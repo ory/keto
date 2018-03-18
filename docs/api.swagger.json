@@ -1,0 +1,1279 @@
+{
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "swagger": "2.0",
+  "info": {
+    "description": "Package main ORY Keto",
+    "contact": {
+      "name": "ORY",
+      "url": "https://www.ory.sh",
+      "email": "hi@ory.am"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "https://github.com/ory/keto/blob/master/LICENSE"
+    },
+    "version": "Latest"
+  },
+  "basePath": "/",
+  "paths": {
+    "/policies": {
+      "get": {
+        "description": "List Access Control Policies",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "http",
+          "https"
+        ],
+        "tags": [
+          "policy"
+        ],
+        "operationId": "listPolicies",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int64",
+            "x-go-name": "Offset",
+            "description": "The offset from where to start looking.",
+            "name": "offset",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "format": "int64",
+            "x-go-name": "Limit",
+            "description": "The maximum amount of policies returned.",
+            "name": "limit",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/policyList"
+          },
+          "401": {
+            "$ref": "#/responses/genericError"
+          },
+          "403": {
+            "$ref": "#/responses/genericError"
+          },
+          "500": {
+            "$ref": "#/responses/genericError"
+          }
+        }
+      },
+      "post": {
+        "description": "Create an Access Control Policy",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "http",
+          "https"
+        ],
+        "tags": [
+          "policy"
+        ],
+        "operationId": "createPolicy",
+        "parameters": [
+          {
+            "name": "Body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/policy"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "policy",
+            "schema": {
+              "$ref": "#/definitions/policy"
+            }
+          },
+          "401": {
+            "$ref": "#/responses/genericError"
+          },
+          "403": {
+            "$ref": "#/responses/genericError"
+          },
+          "500": {
+            "$ref": "#/responses/genericError"
+          }
+        }
+      }
+    },
+    "/policies/{id}": {
+      "get": {
+        "description": "Get an Access Control Policy",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "http",
+          "https"
+        ],
+        "tags": [
+          "policy"
+        ],
+        "operationId": "getPolicy",
+        "parameters": [
+          {
+            "type": "string",
+            "x-go-name": "ID",
+            "description": "The id of the policy.",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "policy",
+            "schema": {
+              "$ref": "#/definitions/policy"
+            }
+          },
+          "401": {
+            "$ref": "#/responses/genericError"
+          },
+          "403": {
+            "$ref": "#/responses/genericError"
+          },
+          "500": {
+            "$ref": "#/responses/genericError"
+          }
+        }
+      },
+      "put": {
+        "security": [
+          {
+            "oauth2": [
+              "hydra.policies"
+            ]
+          }
+        ],
+        "description": "Update an Access Control Policy",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "http",
+          "https"
+        ],
+        "tags": [
+          "policy"
+        ],
+        "operationId": "updatePolicy",
+        "parameters": [
+          {
+            "type": "string",
+            "x-go-name": "ID",
+            "description": "The id of the policy.",
+            "name": "id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "Body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/policy"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "policy",
+            "schema": {
+              "$ref": "#/definitions/policy"
+            }
+          },
+          "401": {
+            "$ref": "#/responses/genericError"
+          },
+          "403": {
+            "$ref": "#/responses/genericError"
+          },
+          "500": {
+            "$ref": "#/responses/genericError"
+          }
+        }
+      },
+      "delete": {
+        "security": [
+          {
+            "oauth2": [
+              "hydra.policies"
+            ]
+          }
+        ],
+        "description": "Delete an Access Control Policy",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "http",
+          "https"
+        ],
+        "tags": [
+          "policy"
+        ],
+        "operationId": "deletePolicy",
+        "parameters": [
+          {
+            "type": "string",
+            "x-go-name": "ID",
+            "description": "The id of the policy.",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "$ref": "#/responses/emptyResponse"
+          },
+          "401": {
+            "$ref": "#/responses/genericError"
+          },
+          "403": {
+            "$ref": "#/responses/genericError"
+          },
+          "500": {
+            "$ref": "#/responses/genericError"
+          }
+        }
+      }
+    },
+    "/roles": {
+      "get": {
+        "description": "A Role represents a group of users that share the same role and thus permissions. A role could be an administrator, a moderator, a regular\nuser or some other sort of role.\n\nThis endpoint allows you to retrieve all roles that are stored in the system.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "http",
+          "https"
+        ],
+        "tags": [
+          "role"
+        ],
+        "summary": "List all roles",
+        "operationId": "listRoles",
+        "parameters": [
+          {
+            "type": "string",
+            "x-go-name": "Member",
+            "description": "The id of the member to look up.",
+            "name": "member",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "format": "int64",
+            "x-go-name": "Limit",
+            "description": "The maximum amount of policies returned.",
+            "name": "limit",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "format": "int64",
+            "x-go-name": "Offset",
+            "description": "The offset from where to start looking.",
+            "name": "offset",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/listRolesResponse"
+          },
+          "401": {
+            "$ref": "#/responses/genericError"
+          },
+          "403": {
+            "$ref": "#/responses/genericError"
+          },
+          "500": {
+            "$ref": "#/responses/genericError"
+          }
+        }
+      },
+      "post": {
+        "description": "A Role represents a group of users that share the same role and thus permissions. A role could be an administrator, a moderator, a regular\nuser or some other sort of role.\n\nThis endpoint allows you to create a new role. You may define members as well but you don't have to.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "http",
+          "https"
+        ],
+        "tags": [
+          "role"
+        ],
+        "summary": "Create a role",
+        "operationId": "createRole",
+        "parameters": [
+          {
+            "name": "Body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/role"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "role",
+            "schema": {
+              "$ref": "#/definitions/role"
+            }
+          },
+          "401": {
+            "$ref": "#/responses/genericError"
+          },
+          "403": {
+            "$ref": "#/responses/genericError"
+          },
+          "500": {
+            "$ref": "#/responses/genericError"
+          }
+        }
+      }
+    },
+    "/roles/{id}": {
+      "get": {
+        "description": "A Role represents a group of users that share the same role and thus permissions. A role could be an administrator, a moderator, a regular\nuser or some other sort of role.\n\nThis endpoint allows you to retrieve an existing role. You have to know the role's ID.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "http",
+          "https"
+        ],
+        "tags": [
+          "role"
+        ],
+        "summary": "Get a role by its ID",
+        "operationId": "getRole",
+        "parameters": [
+          {
+            "type": "string",
+            "x-go-name": "ID",
+            "description": "The id of the role to look up.",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "role",
+            "schema": {
+              "$ref": "#/definitions/role"
+            }
+          },
+          "401": {
+            "$ref": "#/responses/genericError"
+          },
+          "403": {
+            "$ref": "#/responses/genericError"
+          },
+          "500": {
+            "$ref": "#/responses/genericError"
+          }
+        }
+      },
+      "delete": {
+        "description": "A Role represents a group of users that share the same role and thus permissions. A role could be an administrator, a moderator, a regular\nuser or some other sort of role.\n\nThis endpoint allows you to delete an existing role. You have to know the role's ID.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "http",
+          "https"
+        ],
+        "tags": [
+          "role"
+        ],
+        "summary": "Get a role by its ID",
+        "operationId": "deleteRole",
+        "parameters": [
+          {
+            "type": "string",
+            "x-go-name": "ID",
+            "description": "The id of the role to look up.",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "$ref": "#/responses/emptyResponse"
+          },
+          "401": {
+            "$ref": "#/responses/genericError"
+          },
+          "403": {
+            "$ref": "#/responses/genericError"
+          },
+          "500": {
+            "$ref": "#/responses/genericError"
+          }
+        }
+      }
+    },
+    "/roles/{id}/members": {
+      "post": {
+        "description": "A Role represents a group of users that share the same role and thus permissions. A role could be an administrator, a moderator, a regular\nuser or some other sort of role.\n\nThis endpoint allows you to add members (users, applications, ...) to a specific role. You have to know the role's ID.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "http",
+          "https"
+        ],
+        "tags": [
+          "role"
+        ],
+        "summary": "Add members to a role",
+        "operationId": "addMembersToRole",
+        "parameters": [
+          {
+            "type": "string",
+            "x-go-name": "ID",
+            "description": "The id of the role to modify.",
+            "name": "id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "Body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/roleMembers"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "$ref": "#/responses/emptyResponse"
+          },
+          "401": {
+            "$ref": "#/responses/genericError"
+          },
+          "403": {
+            "$ref": "#/responses/genericError"
+          },
+          "500": {
+            "$ref": "#/responses/genericError"
+          }
+        }
+      },
+      "delete": {
+        "description": "A Role represents a group of users that share the same role and thus permissions. A role could be an administrator, a moderator, a regular\nuser or some other sort of role.\n\nThis endpoint allows you to remove members (users, applications, ...) from a specific role. You have to know the role's ID.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "http",
+          "https"
+        ],
+        "tags": [
+          "role"
+        ],
+        "summary": "Remove members from a role",
+        "operationId": "removeMembersFromRole",
+        "parameters": [
+          {
+            "type": "string",
+            "x-go-name": "ID",
+            "description": "The id of the role to modify.",
+            "name": "id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "Body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/roleMembers"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "$ref": "#/responses/emptyResponse"
+          },
+          "401": {
+            "$ref": "#/responses/genericError"
+          },
+          "403": {
+            "$ref": "#/responses/genericError"
+          },
+          "500": {
+            "$ref": "#/responses/genericError"
+          }
+        }
+      }
+    },
+    "/warden/oauth2/authorize": {
+      "post": {
+        "description": "Checks if a token is valid and if the token subject is allowed to perform an action on a resource.\nThis endpoint requires a token, a scope, a resource name, an action name and a context.\n\n\nIf a token is expired/invalid, has not been granted the requested scope or the subject is not allowed to\nperform the action on the resource, this endpoint returns a 200 response with `{ \"allowed\": false }`.\n\n\nThis endpoint passes all data from the upstream OAuth 2.0 token introspection endpoint. If you use ORY Hydra as an\nupstream OAuth 2.0 provider, data set through the `accessTokenExtra` field in the consent flow will be included in this\nresponse as well.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "http",
+          "https"
+        ],
+        "tags": [
+          "warden"
+        ],
+        "summary": "Check if an OAuth 2.0 access token is authorized to access a resource",
+        "operationId": "isOAuth2AccessTokenAuthorized",
+        "parameters": [
+          {
+            "name": "Body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/WardenOAuth2AuthorizationRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/wardenOAuth2Authorization"
+          },
+          "401": {
+            "$ref": "#/responses/genericError"
+          },
+          "403": {
+            "$ref": "#/responses/genericError"
+          },
+          "500": {
+            "$ref": "#/responses/genericError"
+          }
+        }
+      }
+    },
+    "/warden/subjects/authorize": {
+      "post": {
+        "description": "Checks if a subject (e.g. user ID, API key, ...) is allowed to perform a certain action on a resource.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "http",
+          "https"
+        ],
+        "tags": [
+          "warden"
+        ],
+        "summary": "Check if a subject is authorized to access a resource",
+        "operationId": "isSubjectAuthorized",
+        "parameters": [
+          {
+            "name": "Body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/WardenSubjectAuthorizationRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/wardenSubjectAuthorization"
+          },
+          "401": {
+            "$ref": "#/responses/genericError"
+          },
+          "403": {
+            "$ref": "#/responses/genericError"
+          },
+          "500": {
+            "$ref": "#/responses/genericError"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "AuthenticationOAuth2IntrospectionRequest": {
+      "type": "object",
+      "properties": {
+        "scopes": {
+          "description": "Scopes is an array of scopes that are required.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "x-go-name": "Scopes"
+        },
+        "token": {
+          "description": "Token is the token to introspect.",
+          "type": "string",
+          "x-go-name": "Token"
+        }
+      },
+      "x-go-package": "github.com/ory/keto/authentication"
+    },
+    "Authenticator": {
+      "type": "object",
+      "x-go-package": "github.com/ory/keto/authentication"
+    },
+    "Firewall": {
+      "type": "object",
+      "title": "Firewall offers various validation strategies for access tokens.",
+      "x-go-package": "github.com/ory/keto/warden"
+    },
+    "Handler": {
+      "type": "object",
+      "properties": {
+        "H": {
+          "$ref": "#/definitions/Writer"
+        },
+        "Manager": {
+          "$ref": "#/definitions/Manager"
+        }
+      },
+      "x-go-package": "github.com/ory/keto/role"
+    },
+    "IntrospectionResponse": {
+      "type": "object",
+      "properties": {
+        "active": {
+          "type": "boolean",
+          "x-go-name": "Active"
+        },
+        "aud": {
+          "type": "string",
+          "x-go-name": "Audience"
+        },
+        "client_id": {
+          "type": "string",
+          "x-go-name": "ClientID"
+        },
+        "exp": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "ExpiresAt"
+        },
+        "iat": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "IssuedAt"
+        },
+        "iss": {
+          "type": "string",
+          "x-go-name": "Issuer"
+        },
+        "nbf": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "NotBefore"
+        },
+        "scope": {
+          "type": "string",
+          "x-go-name": "Scope"
+        },
+        "sub": {
+          "description": "Here, it's sub",
+          "type": "string",
+          "x-go-name": "Subject"
+        },
+        "username": {
+          "type": "string",
+          "x-go-name": "Username"
+        }
+      },
+      "x-go-package": "github.com/ory/keto/authentication"
+    },
+    "Manager": {
+      "type": "object",
+      "x-go-package": "github.com/ory/keto/role"
+    },
+    "OAuth2IntrospectionAuthentication": {
+      "type": "object",
+      "x-go-package": "github.com/ory/keto/authentication"
+    },
+    "Session": {
+      "type": "object",
+      "properties": {
+        "GetSubject": {
+          "type": "string"
+        }
+      },
+      "x-go-package": "github.com/ory/keto/authentication"
+    },
+    "WardenOAuth2AuthorizationRequest": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "description": "Action is the action that is requested on the resource.",
+          "type": "string",
+          "x-go-name": "Action"
+        },
+        "context": {
+          "description": "Context is the request's environmental context.",
+          "type": "object",
+          "additionalProperties": {
+            "type": "object"
+          },
+          "x-go-name": "Context"
+        },
+        "resource": {
+          "description": "Resource is the resource that access is requested to.",
+          "type": "string",
+          "x-go-name": "Resource"
+        },
+        "scopes": {
+          "description": "Scopes is an array of scopes that are required.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "x-go-name": "Scopes"
+        },
+        "token": {
+          "description": "Token is the token to introspect.",
+          "type": "string",
+          "x-go-name": "Token"
+        }
+      },
+      "x-go-name": "swaggerWardenTokenAccessRequest",
+      "x-go-package": "github.com/ory/keto/warden"
+    },
+    "WardenSubjectAuthorizationRequest": {
+      "type": "object",
+      "title": "AccessRequest is the warden's request object.",
+      "properties": {
+        "action": {
+          "description": "Action is the action that is requested on the resource.",
+          "type": "string",
+          "x-go-name": "Action"
+        },
+        "context": {
+          "description": "Context is the request's environmental context.",
+          "type": "object",
+          "additionalProperties": {
+            "type": "object"
+          },
+          "x-go-name": "Context"
+        },
+        "resource": {
+          "description": "Resource is the resource that access is requested to.",
+          "type": "string",
+          "x-go-name": "Resource"
+        },
+        "subject": {
+          "description": "Subejct is the subject that is requesting access.",
+          "type": "string",
+          "x-go-name": "Subject"
+        }
+      },
+      "x-go-name": "AccessRequest",
+      "x-go-package": "github.com/ory/keto/warden"
+    },
+    "Writer": {
+      "description": "Writer is a helper to write arbitrary data to a ResponseWriter",
+      "type": "object",
+      "x-go-package": "github.com/ory/keto/vendor/github.com/ory/herodot"
+    },
+    "authenticationDefaultSession": {
+      "type": "object",
+      "properties": {
+        "allowed": {
+          "description": "Allowed is true if the request is allowed and false otherwise.",
+          "type": "boolean",
+          "x-go-name": "Allowed"
+        },
+        "subject": {
+          "description": "Subject is the identity that authorized issuing the token, for example a user or an OAuth2 app.\nThis is usually a uuid but you can choose a urn or some other id too.",
+          "type": "string",
+          "x-go-name": "Subject"
+        }
+      },
+      "x-go-name": "DefaultSession",
+      "x-go-package": "github.com/ory/keto/authentication"
+    },
+    "authenticationOAuth2Session": {
+      "type": "object",
+      "properties": {
+        "accessTokenExtra": {
+          "description": "Extra represents arbitrary session data.",
+          "type": "object",
+          "additionalProperties": {
+            "type": "object"
+          },
+          "x-go-name": "Extra"
+        },
+        "allowed": {
+          "description": "Allowed is true if the request is allowed and false otherwise.",
+          "type": "boolean",
+          "x-go-name": "Allowed"
+        },
+        "audience": {
+          "type": "string",
+          "x-go-name": "Audience"
+        },
+        "clientId": {
+          "description": "ClientID is the id of the OAuth2 client that requested the token.",
+          "type": "string",
+          "x-go-name": "ClientID"
+        },
+        "expiresAt": {
+          "description": "ExpiresAt is the expiry timestamp.",
+          "type": "string",
+          "format": "date-time",
+          "x-go-name": "ExpiresAt"
+        },
+        "grantedScopes": {
+          "description": "GrantedScopes is a list of scopes that the subject authorized when asked for consent.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "x-go-name": "GrantedScopes"
+        },
+        "issuedAt": {
+          "description": "IssuedAt is the token creation time stamp.",
+          "type": "string",
+          "format": "date-time",
+          "x-go-name": "IssuedAt"
+        },
+        "issuer": {
+          "description": "Issuer is the id of the issuer, typically an hydra instance.",
+          "type": "string",
+          "x-go-name": "Issuer"
+        },
+        "notBefore": {
+          "type": "string",
+          "format": "date-time",
+          "x-go-name": "NotBefore"
+        },
+        "subject": {
+          "description": "Subject is the identity that authorized issuing the token, for example a user or an OAuth2 app.\nThis is usually a uuid but you can choose a urn or some other id too.",
+          "type": "string",
+          "x-go-name": "Subject"
+        },
+        "username": {
+          "type": "string",
+          "x-go-name": "Username"
+        }
+      },
+      "x-go-name": "OAuth2Session",
+      "x-go-package": "github.com/ory/keto/authentication"
+    },
+    "policy": {
+      "type": "object",
+      "properties": {
+        "actions": {
+          "description": "Actions impacted by the policy.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "x-go-name": "Actions"
+        },
+        "conditions": {
+          "description": "Conditions under which the policy is active.",
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "options": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "object"
+                },
+                "x-go-name": "Options"
+              },
+              "type": {
+                "type": "string",
+                "x-go-name": "Type"
+              }
+            }
+          },
+          "x-go-name": "Conditions"
+        },
+        "description": {
+          "description": "Description of the policy.",
+          "type": "string",
+          "x-go-name": "Description"
+        },
+        "effect": {
+          "description": "Effect of the policy",
+          "type": "string",
+          "x-go-name": "Effect"
+        },
+        "id": {
+          "description": "ID of the policy.",
+          "type": "string",
+          "x-go-name": "ID"
+        },
+        "resources": {
+          "description": "Resources impacted by the policy.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "x-go-name": "Resources"
+        },
+        "subjects": {
+          "description": "Subjects impacted by the policy.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "x-go-name": "Subjects"
+        }
+      },
+      "x-go-name": "swaggerPolicy",
+      "x-go-package": "github.com/ory/keto/policy"
+    },
+    "role": {
+      "description": "Role represents a group of users that share the same role. A role could be an administrator, a moderator, a regular\nuser or some other sort of role.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "description": "ID is the role's unique id.",
+          "type": "string",
+          "x-go-name": "ID"
+        },
+        "members": {
+          "description": "Members is who belongs to the role.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "x-go-name": "Members"
+        }
+      },
+      "x-go-name": "Role",
+      "x-go-package": "github.com/ory/keto/role"
+    },
+    "roleMembers": {
+      "type": "object",
+      "properties": {
+        "members": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "x-go-name": "Members"
+        }
+      },
+      "x-go-name": "membersRequest",
+      "x-go-package": "github.com/ory/keto/role"
+    },
+    "swaggerCreatePolicyParameters": {
+      "type": "object",
+      "properties": {
+        "Body": {
+          "$ref": "#/definitions/policy"
+        }
+      },
+      "x-go-package": "github.com/ory/keto/policy"
+    },
+    "swaggerDoesWardenAllowAccessRequestParameters": {
+      "type": "object",
+      "properties": {
+        "Body": {
+          "$ref": "#/definitions/WardenSubjectAuthorizationRequest"
+        }
+      },
+      "x-go-package": "github.com/ory/keto/warden"
+    },
+    "swaggerDoesWardenAllowTokenAccessRqeuestParameters": {
+      "type": "object",
+      "properties": {
+        "Body": {
+          "$ref": "#/definitions/WardenOAuth2AuthorizationRequest"
+        }
+      },
+      "x-go-package": "github.com/ory/keto/warden"
+    },
+    "swaggerGetPolicyParameters": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "description": "The id of the policy.\nin: path",
+          "type": "string",
+          "x-go-name": "ID"
+        }
+      },
+      "x-go-package": "github.com/ory/keto/policy"
+    },
+    "swaggerListPolicyParameters": {
+      "type": "object",
+      "properties": {
+        "limit": {
+          "description": "The maximum amount of policies returned.\nin: query",
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Limit"
+        },
+        "offset": {
+          "description": "The offset from where to start looking.\nin: query",
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Offset"
+        }
+      },
+      "x-go-package": "github.com/ory/keto/policy"
+    },
+    "swaggerListPolicyResponse": {
+      "description": "A policy",
+      "type": "object",
+      "properties": {
+        "Body": {
+          "description": "in: body\ntype: array",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/policy"
+          }
+        }
+      },
+      "x-go-package": "github.com/ory/keto/policy"
+    },
+    "swaggerUpdatePolicyParameters": {
+      "type": "object",
+      "properties": {
+        "Body": {
+          "$ref": "#/definitions/policy"
+        },
+        "id": {
+          "description": "The id of the policy.\nin: path",
+          "type": "string",
+          "x-go-name": "ID"
+        }
+      },
+      "x-go-package": "github.com/ory/keto/policy"
+    },
+    "swaggerWardenBaseRequest": {
+      "description": "swager:model authorizedBaseRequest",
+      "type": "object",
+      "properties": {
+        "action": {
+          "description": "Action is the action that is requested on the resource.",
+          "type": "string",
+          "x-go-name": "Action"
+        },
+        "context": {
+          "description": "Context is the request's environmental context.",
+          "type": "object",
+          "additionalProperties": {
+            "type": "object"
+          },
+          "x-go-name": "Context"
+        },
+        "resource": {
+          "description": "Resource is the resource that access is requested to.",
+          "type": "string",
+          "x-go-name": "Resource"
+        }
+      },
+      "x-go-package": "github.com/ory/keto/warden"
+    },
+    "wardenOAuth2AuthorizationResponse": {
+      "type": "object",
+      "properties": {
+        "accessTokenExtra": {
+          "description": "Extra represents arbitrary session data.",
+          "type": "object",
+          "additionalProperties": {
+            "type": "object"
+          },
+          "x-go-name": "Extra"
+        },
+        "allowed": {
+          "description": "Allowed is true if the request is allowed and false otherwise.",
+          "type": "boolean",
+          "x-go-name": "Allowed"
+        },
+        "audience": {
+          "type": "string",
+          "x-go-name": "Audience"
+        },
+        "clientId": {
+          "description": "ClientID is the id of the OAuth2 client that requested the token.",
+          "type": "string",
+          "x-go-name": "ClientID"
+        },
+        "expiresAt": {
+          "description": "ExpiresAt is the expiry timestamp.",
+          "type": "string",
+          "format": "date-time",
+          "x-go-name": "ExpiresAt"
+        },
+        "grantedScopes": {
+          "description": "GrantedScopes is a list of scopes that the subject authorized when asked for consent.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "x-go-name": "GrantedScopes"
+        },
+        "issuedAt": {
+          "description": "IssuedAt is the token creation time stamp.",
+          "type": "string",
+          "format": "date-time",
+          "x-go-name": "IssuedAt"
+        },
+        "issuer": {
+          "description": "Issuer is the id of the issuer, typically an hydra instance.",
+          "type": "string",
+          "x-go-name": "Issuer"
+        },
+        "notBefore": {
+          "type": "string",
+          "format": "date-time",
+          "x-go-name": "NotBefore"
+        },
+        "subject": {
+          "description": "Subject is the identity that authorized issuing the token, for example a user or an OAuth2 app.\nThis is usually a uuid but you can choose a urn or some other id too.",
+          "type": "string",
+          "x-go-name": "Subject"
+        },
+        "username": {
+          "type": "string",
+          "x-go-name": "Username"
+        }
+      },
+      "x-go-name": "oauth2Authorization",
+      "x-go-package": "github.com/ory/keto/warden"
+    },
+    "wardenSubjectAuthorizationResponse": {
+      "type": "object",
+      "properties": {
+        "allowed": {
+          "description": "Allowed is true if the request is allowed and false otherwise.",
+          "type": "boolean",
+          "x-go-name": "Allowed"
+        },
+        "subject": {
+          "description": "Subject is the identity that authorized issuing the token, for example a user or an OAuth2 app.\nThis is usually a uuid but you can choose a urn or some other id too.",
+          "type": "string",
+          "x-go-name": "Subject"
+        }
+      },
+      "x-go-name": "subjectAuthorization",
+      "x-go-package": "github.com/ory/keto/warden"
+    }
+  },
+  "responses": {
+    "emptyResponse": {
+      "description": "An empty response"
+    },
+    "genericError": {
+      "description": "The standard error format",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int64",
+            "x-go-name": "Code"
+          },
+          "details": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "object"
+              }
+            },
+            "x-go-name": "Details"
+          },
+          "message": {
+            "type": "string",
+            "x-go-name": "Message"
+          },
+          "reason": {
+            "type": "string",
+            "x-go-name": "Reason"
+          },
+          "request": {
+            "type": "string",
+            "x-go-name": "Request"
+          },
+          "status": {
+            "type": "string",
+            "x-go-name": "Status"
+          }
+        }
+      }
+    },
+    "listRolesResponse": {
+      "description": "A list of roles the member is belonging to",
+      "schema": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/role"
+        }
+      }
+    },
+    "policyList": {
+      "description": "A policy",
+      "schema": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/policy"
+        }
+      }
+    }
+  }
+}
