@@ -1,0 +1,152 @@
+# Golang CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-go/ for more details
+version: 2
+jobs:
+  format:
+    docker:
+      - image: circleci/golang:1.9
+    working_directory: /go/src/github.com/ory/keto
+    steps:
+      - checkout
+      - run: curl -L -s https://github.com/golang/dep/releases/download/v0.3.2/dep-linux-amd64 -o /go/bin/dep && chmod +x /go/bin/dep
+      - run: go get -u golang.org/x/tools/cmd/goimports
+      - run: dep ensure -vendor-only
+      - run: ./scripts/test-format.sh
+
+  swagger:
+    docker:
+      - image: circleci/golang:1.9
+    working_directory: /go/src/github.com/ory/keto
+    steps:
+      - checkout
+      - run: curl -L -s https://github.com/golang/dep/releases/download/v0.3.2/dep-linux-amd64 -o /go/bin/dep && chmod +x /go/bin/dep
+      - run: go get -u github.com/go-swagger/go-swagger/cmd/swagger golang.org/x/tools/cmd/goimports
+      - run: dep ensure -vendor-only
+      - run: ./scripts/run-genswag.sh
+
+  test:
+    docker:
+      - image: circleci/golang:1.9
+        environment:
+        - TEST_DATABASE_POSTGRESQL=postgres://test:test@localhost:5432/hydra?sslmode=disable
+        - TEST_DATABASE_MYSQL=root:test@(localhost:3306)/mysql?parseTime=true
+      - image: postgres:9.5
+        environment:
+        - POSTGRES_USER=test
+        - POSTGRES_PASSWORD=test
+        - POSTGRES_DB=hydra
+      - image: mysql:5.7
+        environment:
+        - MYSQL_ROOT_PASSWORD=test
+    working_directory: /go/src/github.com/ory/keto
+    steps:
+      - checkout
+      - run: go get -u github.com/go-swagger/go-swagger/cmd/swagger github.com/bradfitz/goimports github.com/mattn/goveralls golang.org/x/tools/cmd/cover github.com/ory/go-acc
+      - run: curl -L -s https://github.com/golang/dep/releases/download/v0.3.2/dep-linux-amd64 -o /go/bin/dep && chmod +x /go/bin/dep
+
+      # Installation
+      - run: curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+      - run: dep ensure -vendor-only
+      - run: go install github.com/ory/keto
+
+      # Tests
+      - run: go-acc -o coverage.txt $(glide novendor)
+      - run: go test -race -short $(glide novendor | grep -v cmd)
+
+      # Submit coverage details
+      # - run: goveralls -service=circle-ci -coverprofile=coverage.txt -repotoken=$COVERALLS_REPO_TOKEN
+
+  test-docker:
+    docker:
+      - image: library/docker:17.10
+    steps:
+      - checkout
+      - setup_remote_docker:
+          version: 17.10.0-ce
+      - run: docker build -f Dockerfile -t keto-test .
+      - run: docker run keto-test version
+
+  release:
+    docker:
+      - image: circleci/golang:1.9
+    working_directory: /go/src/github.com/ory/keto
+    steps:
+      - checkout
+      - setup_remote_docker:
+          version: 17.10.0-ce
+      - run: docker build --build-arg git_tag=$(git describe --tags) --build-arg git_commit=$(git rev-parse HEAD) -f Dockerfile -t oryd/keto:$CIRCLE_TAG .
+      - run: docker login --username "$DOCKER_USERNAME" --password "$DOCKER_PASSWORD"
+      - run: docker push oryd/keto:$CIRCLE_TAG
+
+  publish-docs:
+    docker:
+      - image: alpine/git:1.0.4
+    working_directory: /go/src/github.com/ory/keto
+    steps:
+      - checkout
+      - run: git config --global user.email "hi@ory.am"
+      - run: git config --global user.name "ORY Continuous Integration"
+      - run: "git clone https://arekkas:$DOCS_TOKEN_PUSH@github.com/ory/docs.git ../docs"
+      - run: "cp ./docs/api.swagger.json ../docs/apis/keto.json"
+      - run: "(cd ../docs && git add -A && git commit -a -m \"Updates ORY Keto Swagger definitions\" && git push origin) || exit 0"
+
+  changelog:
+    docker:
+      - image: circleci/ruby:2.4-node
+    steps:
+      - checkout
+      - run: gem install github_changelog_generator
+      - run: sudo npm i -g doctoc
+      - run: github_changelog_generator -u ory -p hydra -o CHANGELOG.md --token $GITHUB_TOKEN
+      - run: doctoc CHANGELOG.md
+      - run: doctoc README.md
+      - run: git config --global user.email "circleci@ory.am"
+      - run: git config --global user.name "ORY Continuous Integration"
+      - run: git add CHANGELOG.md
+      - run: |
+          git commit -m "docs: Incorporates changes from version $(git describe --tags)" -- CHANGELOG.md
+      - run: git remote rm origin
+      - run: git remote add origin https://arekkas:$GITHUB_TOKEN@github.com/ory/keto.git
+      - run: git push origin HEAD:master
+
+workflows:
+  version: 2
+  "test, build, and relase":
+    jobs:
+      - format:
+          filters:
+            tags:
+              only: /.*/
+      - test:
+          filters:
+            tags:
+              only: /.*/
+      - swagger:
+          filters:
+            tags:
+              only: /.*/
+      - publish-docs:
+          filters:
+            branches:
+              only: master
+      - changelog:
+          filters:
+            branches:
+              only: master
+      - test-docker:
+          requires:
+            - test
+            - swagger
+            - format
+          filters:
+            tags:
+              only: /.*/
+      - release:
+          requires:
+            - test-docker
+          filters:
+            tags:
+              only: /.*/
+            branches:
+              ignore: /.*/
