@@ -22,7 +22,9 @@
         'ApiClient',
         'model/InlineResponse401',
         'model/WardenOAuth2AuthorizationRequest',
-        'model/WardenSubjectAuthorizationRequest'
+        'model/WardenOAuth2AuthorizationResponse',
+        'model/WardenSubjectAuthorizationRequest',
+        'model/WardenSubjectAuthorizationResponse'
       ],
       factory
     )
@@ -32,7 +34,9 @@
       require('../ApiClient'),
       require('../model/InlineResponse401'),
       require('../model/WardenOAuth2AuthorizationRequest'),
-      require('../model/WardenSubjectAuthorizationRequest')
+      require('../model/WardenOAuth2AuthorizationResponse'),
+      require('../model/WardenSubjectAuthorizationRequest'),
+      require('../model/WardenSubjectAuthorizationResponse')
     )
   } else {
     // Browser globals (root is window)
@@ -43,14 +47,18 @@
       root.SwaggerJsClient.ApiClient,
       root.SwaggerJsClient.InlineResponse401,
       root.SwaggerJsClient.WardenOAuth2AuthorizationRequest,
-      root.SwaggerJsClient.WardenSubjectAuthorizationRequest
+      root.SwaggerJsClient.WardenOAuth2AuthorizationResponse,
+      root.SwaggerJsClient.WardenSubjectAuthorizationRequest,
+      root.SwaggerJsClient.WardenSubjectAuthorizationResponse
     )
   }
 })(this, function(
   ApiClient,
   InlineResponse401,
   WardenOAuth2AuthorizationRequest,
-  WardenSubjectAuthorizationRequest
+  WardenOAuth2AuthorizationResponse,
+  WardenSubjectAuthorizationRequest,
+  WardenSubjectAuthorizationResponse
 ) {
   'use strict'
 
@@ -74,7 +82,7 @@
      * Callback function to receive the result of the isOAuth2AccessTokenAuthorized operation.
      * @callback module:api/WardenApi~isOAuth2AccessTokenAuthorizedCallback
      * @param {String} error Error message, if any.
-     * @param data This operation does not return a value.
+     * @param {module:model/WardenOAuth2AuthorizationResponse} data The data returned by the service call.
      * @param {String} response The complete HTTP response.
      */
 
@@ -84,6 +92,7 @@
      * @param {Object} opts Optional parameters
      * @param {module:model/WardenOAuth2AuthorizationRequest} opts.body 
      * @param {module:api/WardenApi~isOAuth2AccessTokenAuthorizedCallback} callback The callback function, accepting three arguments: error, data, response
+     * data is of type: {@link module:model/WardenOAuth2AuthorizationResponse}
      */
     this.isOAuth2AccessTokenAuthorized = function(opts, callback) {
       opts = opts || {}
@@ -97,7 +106,7 @@
       var authNames = []
       var contentTypes = ['application/json']
       var accepts = ['application/json']
-      var returnType = null
+      var returnType = WardenOAuth2AuthorizationResponse
 
       return this.apiClient.callApi(
         '/warden/oauth2/authorize',
@@ -119,7 +128,7 @@
      * Callback function to receive the result of the isSubjectAuthorized operation.
      * @callback module:api/WardenApi~isSubjectAuthorizedCallback
      * @param {String} error Error message, if any.
-     * @param data This operation does not return a value.
+     * @param {module:model/WardenSubjectAuthorizationResponse} data The data returned by the service call.
      * @param {String} response The complete HTTP response.
      */
 
@@ -129,6 +138,7 @@
      * @param {Object} opts Optional parameters
      * @param {module:model/WardenSubjectAuthorizationRequest} opts.body 
      * @param {module:api/WardenApi~isSubjectAuthorizedCallback} callback The callback function, accepting three arguments: error, data, response
+     * data is of type: {@link module:model/WardenSubjectAuthorizationResponse}
      */
     this.isSubjectAuthorized = function(opts, callback) {
       opts = opts || {}
@@ -142,7 +152,7 @@
       var authNames = []
       var contentTypes = ['application/json']
       var accepts = ['application/json']
-      var returnType = null
+      var returnType = WardenSubjectAuthorizationResponse
 
       return this.apiClient.callApi(
         '/warden/subjects/authorize',

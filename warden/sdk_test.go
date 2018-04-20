@@ -35,11 +35,14 @@ import (
 	"github.com/ory/keto/authentication"
 	keto "github.com/ory/keto/sdk/go/keto/swagger"
 	"github.com/ory/keto/warden"
-	"github.com/ory/ladon"
+	//"github.com/ory/ladon"
 	"github.com/pkg/errors"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
+	//"github.com/stretchr/testify/assert"
+	//"github.com/stretchr/testify/require"
 	"golang.org/x/oauth2"
+	"github.com/stretchr/testify/require"
+	"github.com/ory/ladon"
+	"github.com/stretchr/testify/assert"
 )
 
 func setupMockOAuth2Introspection(t *testing.T) *httptest.Server {
@@ -105,7 +108,7 @@ func TestWardenSDK(t *testing.T) {
 	t.Run("IsSubjectAuthorized", func(t *testing.T) {
 		for k, c := range accessRequestTestCases {
 			t.Run(fmt.Sprintf("case=%d", k), func(t *testing.T) {
-				result, response, err := client.IsSubjectAuthorized(keto.WardenSubjectAccessRequest{
+				result, response, err := client.IsSubjectAuthorized(keto.WardenSubjectAuthorizationRequest{
 					Action:   c.req.Action,
 					Resource: c.req.Resource,
 					Subject:  c.req.Subject,
@@ -120,7 +123,7 @@ func TestWardenSDK(t *testing.T) {
 	})
 
 	t.Run("IsTokenAuthorized", func(t *testing.T) {
-		result, response, err := client.IsOAuth2AccessTokenAuthorized(keto.WardenOAuth2AccessRequest{
+		result, response, err := client.IsOAuth2AccessTokenAuthorized(keto.WardenOAuth2AuthorizationRequest{
 			Resource: "matrix",
 			Action:   "create",
 			Context:  ladon.Context{},

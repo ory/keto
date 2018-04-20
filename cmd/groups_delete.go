@@ -33,7 +33,7 @@ var deleteCmd = &cobra.Command{
 Example:
   hydra groups delete my-group
 `,
-	Run: cmdHandler.Groups.DeleteGroup,
+	Run: cmdHandler.Roles.DeleteRole,
 }
 
 func init() {

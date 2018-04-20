@@ -9,6 +9,7 @@
 package swagger
 
 import (
+	"encoding/json"
 	"net/url"
 	"strings"
 )
@@ -38,9 +39,9 @@ func NewWardenApiWithBasePath(basePath string) *WardenApi {
  * Checks if a token is valid and if the token subject is allowed to perform an action on a resource. This endpoint requires a token, a scope, a resource name, an action name and a context.   If a token is expired/invalid, has not been granted the requested scope or the subject is not allowed to perform the action on the resource, this endpoint returns a 200 response with &#x60;{ \&quot;allowed\&quot;: false }&#x60;.   This endpoint passes all data from the upstream OAuth 2.0 token introspection endpoint. If you use ORY Hydra as an upstream OAuth 2.0 provider, data set through the &#x60;accessTokenExtra&#x60; field in the consent flow will be included in this response as well.
  *
  * @param body
- * @return void
+ * @return *WardenOAuth2AuthorizationResponse
  */
-func (a WardenApi) IsOAuth2AccessTokenAuthorized(body WardenOAuth2AuthorizationRequest) (*APIResponse, error) {
+func (a WardenApi) IsOAuth2AccessTokenAuthorized(body WardenOAuth2AuthorizationRequest) (*WardenOAuth2AuthorizationResponse, *APIResponse, error) {
 
 	var localVarHttpMethod = strings.ToUpper("Post")
 	// create path and map variables
@@ -77,6 +78,7 @@ func (a WardenApi) IsOAuth2AccessTokenAuthorized(body WardenOAuth2AuthorizationR
 	}
 	// body params
 	localVarPostBody = &body
+	var successPayload = new(WardenOAuth2AuthorizationResponse)
 	localVarHttpResponse, err := a.Configuration.APIClient.CallAPI(localVarPath, localVarHttpMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFileName, localVarFileBytes)
 
 	var localVarURL, _ = url.Parse(localVarPath)
@@ -88,9 +90,10 @@ func (a WardenApi) IsOAuth2AccessTokenAuthorized(body WardenOAuth2AuthorizationR
 	}
 
 	if err != nil {
-		return localVarAPIResponse, err
+		return successPayload, localVarAPIResponse, err
 	}
-	return localVarAPIResponse, err
+	err = json.Unmarshal(localVarHttpResponse.Body(), &successPayload)
+	return successPayload, localVarAPIResponse, err
 }
 
 /**
@@ -98,9 +101,9 @@ func (a WardenApi) IsOAuth2AccessTokenAuthorized(body WardenOAuth2AuthorizationR
  * Checks if a subject (e.g. user ID, API key, ...) is allowed to perform a certain action on a resource.
  *
  * @param body
- * @return void
+ * @return *WardenSubjectAuthorizationResponse
  */
-func (a WardenApi) IsSubjectAuthorized(body WardenSubjectAuthorizationRequest) (*APIResponse, error) {
+func (a WardenApi) IsSubjectAuthorized(body WardenSubjectAuthorizationRequest) (*WardenSubjectAuthorizationResponse, *APIResponse, error) {
 
 	var localVarHttpMethod = strings.ToUpper("Post")
 	// create path and map variables
@@ -137,6 +140,7 @@ func (a WardenApi) IsSubjectAuthorized(body WardenSubjectAuthorizationRequest) (
 	}
 	// body params
 	localVarPostBody = &body
+	var successPayload = new(WardenSubjectAuthorizationResponse)
 	localVarHttpResponse, err := a.Configuration.APIClient.CallAPI(localVarPath, localVarHttpMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFileName, localVarFileBytes)
 
 	var localVarURL, _ = url.Parse(localVarPath)
@@ -148,7 +152,8 @@ func (a WardenApi) IsSubjectAuthorized(body WardenSubjectAuthorizationRequest) (
 	}
 
 	if err != nil {
-		return localVarAPIResponse, err
+		return successPayload, localVarAPIResponse, err
 	}
-	return localVarAPIResponse, err
+	err = json.Unmarshal(localVarHttpResponse.Body(), &successPayload)
+	return successPayload, localVarAPIResponse, err
 }

@@ -33,7 +33,7 @@ var findCmd = &cobra.Command{
 Example:
   hydra groups find peter
 `,
-	Run: cmdHandler.Groups.FindGroups,
+	Run: cmdHandler.Roles.FindRoles,
 }
 
 func init() {

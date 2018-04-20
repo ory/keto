@@ -10,7 +10,7 @@ Method | HTTP request | Description
 
 
 # **isOAuth2AccessTokenAuthorized**
-> isOAuth2AccessTokenAuthorized($body)
+> \keto\SDK\Model\WardenOAuth2AuthorizationResponse isOAuth2AccessTokenAuthorized($body)
 
 Check if an OAuth 2.0 access token is authorized to access a resource
 
@@ -25,7 +25,8 @@ $api_instance = new keto\SDK\Api\WardenApi();
 $body = new \keto\SDK\Model\WardenOAuth2AuthorizationRequest(); // \keto\SDK\Model\WardenOAuth2AuthorizationRequest | 
 
 try {
-    $api_instance->isOAuth2AccessTokenAuthorized($body);
+    $result = $api_instance->isOAuth2AccessTokenAuthorized($body);
+    print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling WardenApi->isOAuth2AccessTokenAuthorized: ', $e->getMessage(), PHP_EOL;
 }
@@ -40,7 +41,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-void (empty response body)
+[**\keto\SDK\Model\WardenOAuth2AuthorizationResponse**](../Model/WardenOAuth2AuthorizationResponse.md)
 
 ### Authorization
 
@@ -54,7 +55,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
 # **isSubjectAuthorized**
-> isSubjectAuthorized($body)
+> \keto\SDK\Model\WardenSubjectAuthorizationResponse isSubjectAuthorized($body)
 
 Check if a subject is authorized to access a resource
 
@@ -69,7 +70,8 @@ $api_instance = new keto\SDK\Api\WardenApi();
 $body = new \keto\SDK\Model\WardenSubjectAuthorizationRequest(); // \keto\SDK\Model\WardenSubjectAuthorizationRequest | 
 
 try {
-    $api_instance->isSubjectAuthorized($body);
+    $result = $api_instance->isSubjectAuthorized($body);
+    print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling WardenApi->isSubjectAuthorized: ', $e->getMessage(), PHP_EOL;
 }
@@ -84,7 +86,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-void (empty response body)
+[**\keto\SDK\Model\WardenSubjectAuthorizationResponse**](../Model/WardenSubjectAuthorizationResponse.md)
 
 ### Authorization
 

@@ -116,7 +116,7 @@ func RunServe(
 					"/warden/oauth2/authorize",
 					"/warden/subjects/authorize",
 				},
-				nil,
+				logger,
 			)
 			go m.RegisterSegment(buildVersion, buildHash, buildTime)
 			go m.CommitMemoryStatistics()
