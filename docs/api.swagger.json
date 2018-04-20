@@ -592,7 +592,10 @@
         ],
         "responses": {
           "200": {
-            "$ref": "#/responses/wardenOAuth2Authorization"
+            "description": "wardenOAuth2AuthorizationResponse",
+            "schema": {
+              "$ref": "#/definitions/wardenOAuth2AuthorizationResponse"
+            }
           },
           "401": {
             "$ref": "#/responses/genericError"
@@ -635,7 +638,10 @@
         ],
         "responses": {
           "200": {
-            "$ref": "#/responses/wardenSubjectAuthorization"
+            "description": "wardenSubjectAuthorizationResponse",
+            "schema": {
+              "$ref": "#/definitions/wardenSubjectAuthorizationResponse"
+            }
           },
           "401": {
             "$ref": "#/responses/genericError"

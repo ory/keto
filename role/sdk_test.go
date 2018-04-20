@@ -94,14 +94,14 @@ func TestGroupSDK(t *testing.T) {
 		assert.Equal(t, http.StatusOK, response.StatusCode)
 		assert.Len(t, results, 1)
 
-		client.AddMembersToRole("1", keto.GroupMembers{Members: []string{"baz"}})
+		client.AddMembersToRole("1", keto.RoleMembers{Members: []string{"baz"}})
 
 		results, response, err = client.ListRoles("baz", 100, 0)
 		require.NoError(t, err)
 		assert.Equal(t, http.StatusOK, response.StatusCode)
 		assert.Len(t, results, 1)
 
-		response, err = client.RemoveMembersFromRole("1", keto.GroupMembers{Members: []string{"baz"}})
+		response, err = client.RemoveMembersFromRole("1", keto.RoleMembers{Members: []string{"baz"}})
 		require.NoError(t, err)
 		assert.Equal(t, http.StatusNoContent, response.StatusCode)
 

@@ -10,7 +10,7 @@ Method | HTTP request | Description
 
 <a name="isOAuth2AccessTokenAuthorized"></a>
 # **isOAuth2AccessTokenAuthorized**
-> isOAuth2AccessTokenAuthorized(opts)
+> WardenOAuth2AuthorizationResponse isOAuth2AccessTokenAuthorized(opts)
 
 Check if an OAuth 2.0 access token is authorized to access a resource
 
@@ -30,7 +30,7 @@ var callback = function(error, data, response) {
   if (error) {
     console.error(error);
   } else {
-    console.log('API called successfully.');
+    console.log('API called successfully. Returned data: ' + data);
   }
 };
 apiInstance.isOAuth2AccessTokenAuthorized(opts, callback);
@@ -44,7 +44,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-null (empty response body)
+[**WardenOAuth2AuthorizationResponse**](WardenOAuth2AuthorizationResponse.md)
 
 ### Authorization
 
@@ -57,7 +57,7 @@ No authorization required
 
 <a name="isSubjectAuthorized"></a>
 # **isSubjectAuthorized**
-> isSubjectAuthorized(opts)
+> WardenSubjectAuthorizationResponse isSubjectAuthorized(opts)
 
 Check if a subject is authorized to access a resource
 
@@ -77,7 +77,7 @@ var callback = function(error, data, response) {
   if (error) {
     console.error(error);
   } else {
-    console.log('API called successfully.');
+    console.log('API called successfully. Returned data: ' + data);
   }
 };
 apiInstance.isSubjectAuthorized(opts, callback);
@@ -91,7 +91,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-null (empty response body)
+[**WardenSubjectAuthorizationResponse**](WardenSubjectAuthorizationResponse.md)
 
 ### Authorization
 
