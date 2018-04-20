@@ -94,7 +94,7 @@ class WardenApi
      *
      * @param \keto\SDK\Model\WardenOAuth2AuthorizationRequest $body  (optional)
      * @throws \keto\SDK\ApiException on non-2xx response
-     * @return void
+     * @return \keto\SDK\Model\WardenOAuth2AuthorizationResponse
      */
     public function isOAuth2AccessTokenAuthorized($body = null)
     {
@@ -111,7 +111,7 @@ class WardenApi
      *
      * @param \keto\SDK\Model\WardenOAuth2AuthorizationRequest $body  (optional)
      * @throws \keto\SDK\ApiException on non-2xx response
-     * @return array of null, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \keto\SDK\Model\WardenOAuth2AuthorizationResponse, HTTP status code, HTTP response headers (array of strings)
      */
     public function isOAuth2AccessTokenAuthorizedWithHttpInfo($body = null)
     {
@@ -147,13 +147,17 @@ class WardenApi
                 $queryParams,
                 $httpBody,
                 $headerParams,
-                null,
+                '\keto\SDK\Model\WardenOAuth2AuthorizationResponse',
                 '/warden/oauth2/authorize'
             );
 
-            return [null, $statusCode, $httpHeader];
+            return [$this->apiClient->getSerializer()->deserialize($response, '\keto\SDK\Model\WardenOAuth2AuthorizationResponse', $httpHeader), $statusCode, $httpHeader];
         } catch (ApiException $e) {
             switch ($e->getCode()) {
+                case 200:
+                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\keto\SDK\Model\WardenOAuth2AuthorizationResponse', $e->getResponseHeaders());
+                    $e->setResponseObject($data);
+                    break;
                 case 401:
                     $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\keto\SDK\Model\InlineResponse401', $e->getResponseHeaders());
                     $e->setResponseObject($data);
@@ -181,7 +185,7 @@ class WardenApi
      *
      * @param \keto\SDK\Model\WardenSubjectAuthorizationRequest $body  (optional)
      * @throws \keto\SDK\ApiException on non-2xx response
-     * @return void
+     * @return \keto\SDK\Model\WardenSubjectAuthorizationResponse
      */
     public function isSubjectAuthorized($body = null)
     {
@@ -198,7 +202,7 @@ class WardenApi
      *
      * @param \keto\SDK\Model\WardenSubjectAuthorizationRequest $body  (optional)
      * @throws \keto\SDK\ApiException on non-2xx response
-     * @return array of null, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \keto\SDK\Model\WardenSubjectAuthorizationResponse, HTTP status code, HTTP response headers (array of strings)
      */
     public function isSubjectAuthorizedWithHttpInfo($body = null)
     {
@@ -234,13 +238,17 @@ class WardenApi
                 $queryParams,
                 $httpBody,
                 $headerParams,
-                null,
+                '\keto\SDK\Model\WardenSubjectAuthorizationResponse',
                 '/warden/subjects/authorize'
             );
 
-            return [null, $statusCode, $httpHeader];
+            return [$this->apiClient->getSerializer()->deserialize($response, '\keto\SDK\Model\WardenSubjectAuthorizationResponse', $httpHeader), $statusCode, $httpHeader];
         } catch (ApiException $e) {
             switch ($e->getCode()) {
+                case 200:
+                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\keto\SDK\Model\WardenSubjectAuthorizationResponse', $e->getResponseHeaders());
+                    $e->setResponseObject($data);
+                    break;
                 case 401:
                     $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\keto\SDK\Model\InlineResponse401', $e->getResponseHeaders());
                     $e->setResponseObject($data);

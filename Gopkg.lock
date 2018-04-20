@@ -284,13 +284,13 @@
   version = "v0.1.3"
 
 [[projects]]
+  branch = "1.0.x"
   name = "github.com/ory/hydra"
   packages = [
     "pkg",
     "rand/sequence"
   ]
-  revision = "f6ddee8f9a2d65dfa6c02adc402c1a61fa03d4a0"
-  version = "v0.11.12"
+  revision = "4b86ef518841665a94a28e346f7a16a1ff160dc4"
 
 [[projects]]
   name = "github.com/ory/ladon"
@@ -302,6 +302,12 @@
   ]
   revision = "de3d0b6a2633d9d8de06e9bd6f87e01aad6d3c38"
   version = "v0.8.9"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/ory/metrics-middleware"
+  packages = ["."]
+  revision = "74602156c5c0b9617e12e4663a366516fec6cab4"
 
 [[projects]]
   name = "github.com/ory/pagination"
@@ -362,6 +368,18 @@
     "sqlparse"
   ]
   revision = "081fe17d19ff4e2dd9f5a0c1158e6bcf74da6906"
+
+[[projects]]
+  name = "github.com/segmentio/analytics-go"
+  packages = ["."]
+  revision = "1178b964a36694a8f9c161b19e6fe28cb37e8482"
+  version = "3.0.0"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/segmentio/backo-go"
+  packages = ["."]
+  revision = "204274ad699c0983a70203a566887f17a717fef4"
 
 [[projects]]
   name = "github.com/sirupsen/logrus"
@@ -428,6 +446,12 @@
   packages = ["."]
   revision = "5dbbc83f748fc3ad38585842b0aedab546d0ea1e"
   version = "v0.3.0"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/xtgo/uuid"
+  packages = ["."]
+  revision = "a0b114877d4caeffbd7f87e3757c17fce570fea7"
 
 [[projects]]
   branch = "master"
@@ -519,6 +543,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "adc5b2bf12459e1c97928d71e62187d90253deaecb412df40fc3c7a2a02fd91e"
+  inputs-digest = "7714d8c25776716eeb7d6e7e9979e83873a37b92fab51da301f5ba2e02f9a4d1"
   solver-name = "gps-cdcl"
   solver-version = 1

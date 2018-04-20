@@ -91,7 +91,7 @@ type subjectAuthorization struct {
 //     Schemes: http, https
 //
 //     Responses:
-//       200: wardenOAuth2Authorization
+//       200: wardenOAuth2AuthorizationResponse
 //       401: genericError
 //       403: genericError
 //       500: genericError
@@ -112,7 +112,7 @@ func swaggerOAuth2Mock() {}
 //     Schemes: http, https
 //
 //     Responses:
-//       200: wardenSubjectAuthorization
+//       200: wardenSubjectAuthorizationResponse
 //       401: genericError
 //       403: genericError
 //       500: genericError

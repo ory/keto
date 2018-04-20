@@ -33,7 +33,7 @@ var listCmd = &cobra.Command{
 Example:
   hydra groups list
 `,
-	Run: cmdHandler.Groups.ListGroups,
+	Run: cmdHandler.Roles.ListRoles,
 }
 
 func init() {

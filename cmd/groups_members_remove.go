@@ -32,7 +32,7 @@ var removeCmd = &cobra.Command{
 Example:
   hydra groups members remove my-group peter julia
 `,
-	Run: cmdHandler.Groups.RemoveMembers,
+	Run: cmdHandler.Roles.RoleRemoveMembers,
 }
 
 func init() {

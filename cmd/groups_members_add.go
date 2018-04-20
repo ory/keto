@@ -32,7 +32,7 @@ var addCmd = &cobra.Command{
 Example:
   hydra groups members add my-group peter julia
 `,
-	Run: cmdHandler.Groups.AddMembers,
+	Run: cmdHandler.Roles.RoleAddMembers,
 }
 
 func init() {
