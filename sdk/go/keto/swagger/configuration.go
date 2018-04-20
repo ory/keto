@@ -30,7 +30,7 @@ type Configuration struct {
 	UserAgent     string            `json:"userAgent,omitempty"`
 	APIClient     *APIClient
 	Transport     http.RoundTripper
-	Timeout       *time.Duration    `json:"timeout,omitempty"`
+	Timeout       *time.Duration `json:"timeout,omitempty"`
 }
 
 func NewConfiguration() *Configuration {
