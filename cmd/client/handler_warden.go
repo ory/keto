@@ -22,10 +22,11 @@
 package client
 
 import (
+	"fmt"
+	"net/http"
+
 	keto "github.com/ory/keto/sdk/go/keto/swagger"
 	"github.com/spf13/cobra"
-	"net/http"
-	"fmt"
 )
 
 type WardenHandler struct{}

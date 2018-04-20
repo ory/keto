@@ -39,10 +39,10 @@ import (
 	"github.com/pkg/errors"
 	//"github.com/stretchr/testify/assert"
 	//"github.com/stretchr/testify/require"
-	"golang.org/x/oauth2"
-	"github.com/stretchr/testify/require"
 	"github.com/ory/ladon"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+	"golang.org/x/oauth2"
 )
 
 func setupMockOAuth2Introspection(t *testing.T) *httptest.Server {
