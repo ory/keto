@@ -9,7 +9,7 @@ Method | HTTP request | Description
 
 
 # **IsOAuth2AccessTokenAuthorized**
-> IsOAuth2AccessTokenAuthorized($body)
+> WardenOAuth2AuthorizationResponse IsOAuth2AccessTokenAuthorized($body)
 
 Check if an OAuth 2.0 access token is authorized to access a resource
 
@@ -24,7 +24,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-void (empty response body)
+[**WardenOAuth2AuthorizationResponse**](wardenOAuth2AuthorizationResponse.md)
 
 ### Authorization
 
@@ -38,7 +38,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **IsSubjectAuthorized**
-> IsSubjectAuthorized($body)
+> WardenSubjectAuthorizationResponse IsSubjectAuthorized($body)
 
 Check if a subject is authorized to access a resource
 
@@ -53,7 +53,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-void (empty response body)
+[**WardenSubjectAuthorizationResponse**](wardenSubjectAuthorizationResponse.md)
 
 ### Authorization
 

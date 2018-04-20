@@ -33,7 +33,7 @@ var createCmd = &cobra.Command{
 Example:
   hydra groups create my-group
 `,
-	Run: cmdHandler.Groups.CreateGroup,
+	Run: cmdHandler.Roles.CreateRole,
 }
 
 func init() {
