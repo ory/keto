@@ -55,7 +55,7 @@ func (h *WardenHandler) IsOAuth2AccessTokenAuthorized(cmd *cobra.Command, args [
 	resource, _ := cmd.Flags().GetString("resources")
 
 	m := h.newWardenManager(cmd)
-	_, response, err := m.IsOAuth2AccessTokenAuthorized(keto.WardenOAuth2AuthorizationRequest{
+	_, response, err := m.IsOAuth2AccessTokenAuthorized(keto.WardenOAuth2AccessTokenAuthorizationRequest{
 		Token:    token,
 		Scopes:   scopes,
 		Action:   action,

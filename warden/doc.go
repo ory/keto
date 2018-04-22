@@ -32,9 +32,15 @@ type swaggerDoesWardenAllowAccessRequestParameters struct {
 }
 
 // swagger:parameters isOAuth2AccessTokenAuthorized
-type swaggerDoesWardenAllowTokenAccessRqeuestParameters struct {
+type swaggerDoesWardenAllowTokenAccessRequestParameters struct {
 	// in: body
 	Body swaggerWardenTokenAccessRequest
+}
+
+// swagger:parameters isOAuth2ClientAuthorized
+type swaggerDoesWardenAllowClientRequestParameters struct {
+	// in: body
+	Body swaggerWardenClientAccessRequest
 }
 
 // swager:model authorizedBaseRequest
@@ -50,13 +56,19 @@ type swaggerWardenBaseRequest struct {
 	Context map[string]interface{} `json:"context"`
 }
 
-// swagger:model WardenOAuth2AuthorizationRequest
+// swagger:model wardenOAuth2AccessTokenAuthorizationRequest
 type swaggerWardenTokenAccessRequest struct {
 	authentication.AuthenticationOAuth2IntrospectionRequest
 	swaggerWardenBaseRequest
 }
 
-// swagger:model wardenOAuth2AuthorizationResponse
+// swagger:model wardenOAuth2ClientAuthorizationRequest
+type swaggerWardenClientAccessRequest struct {
+	authentication.AuthenticationOAuth2ClientCredentialsRequest
+	swaggerWardenBaseRequest
+}
+
+// swagger:model wardenOAuth2AccessTokenAuthorizationResponse
 type oauth2Authorization struct {
 	authentication.OAuth2Session
 }
@@ -66,7 +78,12 @@ type subjectAuthorization struct {
 	authentication.DefaultSession
 }
 
-// swagger:route POST /warden/oauth2/authorize warden isOAuth2AccessTokenAuthorized
+// swagger:model wardenOAuth2ClientAuthorizationResponse
+type oauth2ClientAuthorization struct {
+	authentication.DefaultSession
+}
+
+// swagger:route POST /warden/oauth2/access-tokens/authorize warden isOAuth2AccessTokenAuthorized
 //
 // Check if an OAuth 2.0 access token is authorized to access a resource
 //
@@ -91,11 +108,33 @@ type subjectAuthorization struct {
 //     Schemes: http, https
 //
 //     Responses:
-//       200: wardenOAuth2AuthorizationResponse
+//       200: wardenOAuth2AccessTokenAuthorizationResponse
 //       401: genericError
 //       403: genericError
 //       500: genericError
-func swaggerOAuth2Mock() {}
+func swaggerOAuth2AccessTokensMock() {}
+
+// swagger:route POST /warden/oauth2/clients/authorize warden isOAuth2ClientAuthorized
+//
+// Check if an OAuth 2.0 Client is authorized to access a resource
+//
+// Checks if an OAuth 2.0 Client provided the correct access credentials and and if the client is allowed to perform
+// an action on a resource. This endpoint requires a client id, a client secret, a scope, a resource name, an action name and a context.
+//
+//     Consumes:
+//     - application/json
+//
+//     Produces:
+//     - application/json
+//
+//     Schemes: http, https
+//
+//     Responses:
+//       200: wardenOAuth2ClientAuthorizationResponse
+//       401: genericError
+//       403: genericError
+//       500: genericError
+func swaggerOAuth2ClientsMock() {}
 
 // swagger:route POST /warden/subjects/authorize warden isSubjectAuthorized
 //

@@ -22,7 +22,6 @@
 package authentication
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
 	"net/http"
@@ -30,6 +29,11 @@ import (
 	"strings"
 	"time"
 
+	"net/url"
+
+	"fmt"
+
+	"github.com/ory/fosite"
 	"github.com/pkg/errors"
 	"golang.org/x/oauth2/clientcredentials"
 )
@@ -79,6 +83,7 @@ type IntrospectionResponse struct {
 type OAuth2IntrospectionAuthentication struct {
 	client           *http.Client
 	introspectionURL string
+	scopeStrategy    fosite.ScopeStrategy
 }
 
 // swagger:model AuthenticationOAuth2IntrospectionRequest
@@ -96,7 +101,7 @@ func NewOAuth2Session() *OAuth2Session {
 	}
 }
 
-func NewOAuth2IntrospectionAuthentication(clientID, clientSecret, tokenURL, introspectionURL string, scopes []string) *OAuth2IntrospectionAuthentication {
+func NewOAuth2IntrospectionAuthentication(clientID, clientSecret, tokenURL, introspectionURL string, scopes []string, strategy fosite.ScopeStrategy) *OAuth2IntrospectionAuthentication {
 	c := clientcredentials.Config{
 		ClientID:     clientID,
 		ClientSecret: clientSecret,
@@ -107,28 +112,19 @@ func NewOAuth2IntrospectionAuthentication(clientID, clientSecret, tokenURL, intr
 	return &OAuth2IntrospectionAuthentication{
 		client:           c.Client(context.Background()),
 		introspectionURL: introspectionURL,
+		scopeStrategy:    strategy,
 	}
 }
 
 func (a *OAuth2IntrospectionAuthentication) Authenticate(r *http.Request) (Session, error) {
 	var token AuthenticationOAuth2IntrospectionRequest
 
-	err := json.NewDecoder(r.Body).Decode(&token)
-	if err != nil || token.Token == "" {
-		return nil, errors.WithStack(ErrorNotResponsible)
-	}
-
-	body, err := json.Marshal(token)
-	if err != nil {
+	if err := json.NewDecoder(r.Body).Decode(&token); err != nil {
 		return nil, errors.WithStack(err)
 	}
 
-	req, err := http.NewRequest("POST", a.introspectionURL, bytes.NewBuffer(body))
-	if err != nil {
-		return nil, errors.WithStack(err)
-	}
-
-	resp, err := a.client.Do(req)
+	body := url.Values{"token": {token.Token}, "scope": {strings.Join(token.Scopes, " ")}}
+	resp, err := a.client.Post(a.introspectionURL, "application/x-www-form-urlencoded", strings.NewReader(body.Encode()))
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
@@ -144,7 +140,13 @@ func (a *OAuth2IntrospectionAuthentication) Authenticate(r *http.Request) (Sessi
 	}
 
 	if !ir.Active {
-		return nil, errors.WithStack(ErrUnauthorized)
+		return nil, errors.WithStack(ErrUnauthorized.WithReason("Access token introspection says token is not active"))
+	}
+
+	for _, scope := range token.Scopes {
+		if !a.scopeStrategy(strings.Split(ir.Scope, " "), scope) {
+			return nil, errors.WithStack(ErrUnauthorized.WithReason(fmt.Sprintf("Scope %s was not granted", scope)))
+		}
 	}
 
 	return &OAuth2Session{

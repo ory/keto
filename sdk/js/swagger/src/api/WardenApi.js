@@ -21,8 +21,10 @@
       [
         'ApiClient',
         'model/InlineResponse401',
-        'model/WardenOAuth2AuthorizationRequest',
-        'model/WardenOAuth2AuthorizationResponse',
+        'model/WardenOAuth2AccessTokenAuthorizationRequest',
+        'model/WardenOAuth2AccessTokenAuthorizationResponse',
+        'model/WardenOAuth2ClientAuthorizationRequest',
+        'model/WardenOAuth2ClientAuthorizationResponse',
         'model/WardenSubjectAuthorizationRequest',
         'model/WardenSubjectAuthorizationResponse'
       ],
@@ -33,8 +35,10 @@
     module.exports = factory(
       require('../ApiClient'),
       require('../model/InlineResponse401'),
-      require('../model/WardenOAuth2AuthorizationRequest'),
-      require('../model/WardenOAuth2AuthorizationResponse'),
+      require('../model/WardenOAuth2AccessTokenAuthorizationRequest'),
+      require('../model/WardenOAuth2AccessTokenAuthorizationResponse'),
+      require('../model/WardenOAuth2ClientAuthorizationRequest'),
+      require('../model/WardenOAuth2ClientAuthorizationResponse'),
       require('../model/WardenSubjectAuthorizationRequest'),
       require('../model/WardenSubjectAuthorizationResponse')
     )
@@ -46,8 +50,10 @@
     root.SwaggerJsClient.WardenApi = factory(
       root.SwaggerJsClient.ApiClient,
       root.SwaggerJsClient.InlineResponse401,
-      root.SwaggerJsClient.WardenOAuth2AuthorizationRequest,
-      root.SwaggerJsClient.WardenOAuth2AuthorizationResponse,
+      root.SwaggerJsClient.WardenOAuth2AccessTokenAuthorizationRequest,
+      root.SwaggerJsClient.WardenOAuth2AccessTokenAuthorizationResponse,
+      root.SwaggerJsClient.WardenOAuth2ClientAuthorizationRequest,
+      root.SwaggerJsClient.WardenOAuth2ClientAuthorizationResponse,
       root.SwaggerJsClient.WardenSubjectAuthorizationRequest,
       root.SwaggerJsClient.WardenSubjectAuthorizationResponse
     )
@@ -55,8 +61,10 @@
 })(this, function(
   ApiClient,
   InlineResponse401,
-  WardenOAuth2AuthorizationRequest,
-  WardenOAuth2AuthorizationResponse,
+  WardenOAuth2AccessTokenAuthorizationRequest,
+  WardenOAuth2AccessTokenAuthorizationResponse,
+  WardenOAuth2ClientAuthorizationRequest,
+  WardenOAuth2ClientAuthorizationResponse,
   WardenSubjectAuthorizationRequest,
   WardenSubjectAuthorizationResponse
 ) {
@@ -82,7 +90,7 @@
      * Callback function to receive the result of the isOAuth2AccessTokenAuthorized operation.
      * @callback module:api/WardenApi~isOAuth2AccessTokenAuthorizedCallback
      * @param {String} error Error message, if any.
-     * @param {module:model/WardenOAuth2AuthorizationResponse} data The data returned by the service call.
+     * @param {module:model/WardenOAuth2AccessTokenAuthorizationResponse} data The data returned by the service call.
      * @param {String} response The complete HTTP response.
      */
 
@@ -90,9 +98,9 @@
      * Check if an OAuth 2.0 access token is authorized to access a resource
      * Checks if a token is valid and if the token subject is allowed to perform an action on a resource. This endpoint requires a token, a scope, a resource name, an action name and a context.   If a token is expired/invalid, has not been granted the requested scope or the subject is not allowed to perform the action on the resource, this endpoint returns a 200 response with &#x60;{ \&quot;allowed\&quot;: false }&#x60;.   This endpoint passes all data from the upstream OAuth 2.0 token introspection endpoint. If you use ORY Hydra as an upstream OAuth 2.0 provider, data set through the &#x60;accessTokenExtra&#x60; field in the consent flow will be included in this response as well.
      * @param {Object} opts Optional parameters
-     * @param {module:model/WardenOAuth2AuthorizationRequest} opts.body 
+     * @param {module:model/WardenOAuth2AccessTokenAuthorizationRequest} opts.body 
      * @param {module:api/WardenApi~isOAuth2AccessTokenAuthorizedCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link module:model/WardenOAuth2AuthorizationResponse}
+     * data is of type: {@link module:model/WardenOAuth2AccessTokenAuthorizationResponse}
      */
     this.isOAuth2AccessTokenAuthorized = function(opts, callback) {
       opts = opts || {}
@@ -106,10 +114,56 @@
       var authNames = []
       var contentTypes = ['application/json']
       var accepts = ['application/json']
-      var returnType = WardenOAuth2AuthorizationResponse
+      var returnType = WardenOAuth2AccessTokenAuthorizationResponse
 
       return this.apiClient.callApi(
-        '/warden/oauth2/authorize',
+        '/warden/oauth2/access-tokens/authorize',
+        'POST',
+        pathParams,
+        queryParams,
+        headerParams,
+        formParams,
+        postBody,
+        authNames,
+        contentTypes,
+        accepts,
+        returnType,
+        callback
+      )
+    }
+
+    /**
+     * Callback function to receive the result of the isOAuth2ClientAuthorized operation.
+     * @callback module:api/WardenApi~isOAuth2ClientAuthorizedCallback
+     * @param {String} error Error message, if any.
+     * @param {module:model/WardenOAuth2ClientAuthorizationResponse} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Check if an OAuth 2.0 Client is authorized to access a resource
+     * Checks if an OAuth 2.0 Client provided the correct access credentials and and if the client is allowed to perform an action on a resource. This endpoint requires a client id, a client secret, a scope, a resource name, an action name and a context.
+     * @param {Object} opts Optional parameters
+     * @param {module:model/WardenOAuth2ClientAuthorizationRequest} opts.body 
+     * @param {module:api/WardenApi~isOAuth2ClientAuthorizedCallback} callback The callback function, accepting three arguments: error, data, response
+     * data is of type: {@link module:model/WardenOAuth2ClientAuthorizationResponse}
+     */
+    this.isOAuth2ClientAuthorized = function(opts, callback) {
+      opts = opts || {}
+      var postBody = opts['body']
+
+      var pathParams = {}
+      var queryParams = {}
+      var headerParams = {}
+      var formParams = {}
+
+      var authNames = []
+      var contentTypes = ['application/json']
+      var accepts = ['application/json']
+      var returnType = WardenOAuth2ClientAuthorizationResponse
+
+      return this.apiClient.callApi(
+        '/warden/oauth2/clients/authorize',
         'POST',
         pathParams,
         queryParams,

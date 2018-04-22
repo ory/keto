@@ -4,13 +4,14 @@ All URIs are relative to *http://localhost*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**isOAuth2AccessTokenAuthorized**](WardenApi.md#isOAuth2AccessTokenAuthorized) | **POST** /warden/oauth2/authorize | Check if an OAuth 2.0 access token is authorized to access a resource
+[**isOAuth2AccessTokenAuthorized**](WardenApi.md#isOAuth2AccessTokenAuthorized) | **POST** /warden/oauth2/access-tokens/authorize | Check if an OAuth 2.0 access token is authorized to access a resource
+[**isOAuth2ClientAuthorized**](WardenApi.md#isOAuth2ClientAuthorized) | **POST** /warden/oauth2/clients/authorize | Check if an OAuth 2.0 Client is authorized to access a resource
 [**isSubjectAuthorized**](WardenApi.md#isSubjectAuthorized) | **POST** /warden/subjects/authorize | Check if a subject is authorized to access a resource
 
 
 <a name="isOAuth2AccessTokenAuthorized"></a>
 # **isOAuth2AccessTokenAuthorized**
-> WardenOAuth2AuthorizationResponse isOAuth2AccessTokenAuthorized(opts)
+> WardenOAuth2AccessTokenAuthorizationResponse isOAuth2AccessTokenAuthorized(opts)
 
 Check if an OAuth 2.0 access token is authorized to access a resource
 
@@ -23,7 +24,7 @@ var SwaggerJsClient = require('swagger-js-client');
 var apiInstance = new SwaggerJsClient.WardenApi();
 
 var opts = { 
-  'body': new SwaggerJsClient.WardenOAuth2AuthorizationRequest() // WardenOAuth2AuthorizationRequest | 
+  'body': new SwaggerJsClient.WardenOAuth2AccessTokenAuthorizationRequest() // WardenOAuth2AccessTokenAuthorizationRequest | 
 };
 
 var callback = function(error, data, response) {
@@ -40,11 +41,58 @@ apiInstance.isOAuth2AccessTokenAuthorized(opts, callback);
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **body** | [**WardenOAuth2AuthorizationRequest**](WardenOAuth2AuthorizationRequest.md)|  | [optional] 
+ **body** | [**WardenOAuth2AccessTokenAuthorizationRequest**](WardenOAuth2AccessTokenAuthorizationRequest.md)|  | [optional] 
 
 ### Return type
 
-[**WardenOAuth2AuthorizationResponse**](WardenOAuth2AuthorizationResponse.md)
+[**WardenOAuth2AccessTokenAuthorizationResponse**](WardenOAuth2AccessTokenAuthorizationResponse.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+<a name="isOAuth2ClientAuthorized"></a>
+# **isOAuth2ClientAuthorized**
+> WardenOAuth2ClientAuthorizationResponse isOAuth2ClientAuthorized(opts)
+
+Check if an OAuth 2.0 Client is authorized to access a resource
+
+Checks if an OAuth 2.0 Client provided the correct access credentials and and if the client is allowed to perform an action on a resource. This endpoint requires a client id, a client secret, a scope, a resource name, an action name and a context.
+
+### Example
+```javascript
+var SwaggerJsClient = require('swagger-js-client');
+
+var apiInstance = new SwaggerJsClient.WardenApi();
+
+var opts = { 
+  'body': new SwaggerJsClient.WardenOAuth2ClientAuthorizationRequest() // WardenOAuth2ClientAuthorizationRequest | 
+};
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully. Returned data: ' + data);
+  }
+};
+apiInstance.isOAuth2ClientAuthorized(opts, callback);
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **body** | [**WardenOAuth2ClientAuthorizationRequest**](WardenOAuth2ClientAuthorizationRequest.md)|  | [optional] 
+
+### Return type
+
+[**WardenOAuth2ClientAuthorizationResponse**](WardenOAuth2ClientAuthorizationResponse.md)
 
 ### Authorization
 
