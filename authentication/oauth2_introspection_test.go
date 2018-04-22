@@ -31,12 +31,17 @@ import (
 	"testing"
 	"time"
 
+	"context"
+	"strings"
+
 	"github.com/julienschmidt/httprouter"
+	"github.com/ory/fosite"
 	"github.com/ory/herodot"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"golang.org/x/oauth2/clientcredentials"
 )
 
 func TestOAuth2Introspection(t *testing.T) {
@@ -44,18 +49,36 @@ func TestOAuth2Introspection(t *testing.T) {
 	var cb func(w http.ResponseWriter, r *http.Request, req AuthenticationOAuth2IntrospectionRequest) *IntrospectionResponse
 
 	h.POST("/oauth2/introspect", func(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+		require.EqualValues(t, "Bearer foo-token", r.Header.Get("Authorization"))
+
+		require.NoError(t, r.ParseForm())
+
 		var req AuthenticationOAuth2IntrospectionRequest
-		err := json.NewDecoder(r.Body).Decode(&req)
-		require.Nil(t, err)
+		req.Token = r.PostForm.Get("token")
+		req.Scopes = strings.Split(r.PostForm.Get("scope"), " ")
 
 		ir := cb(w, r, req)
 		herodot.NewJSONWriter(logrus.New()).Write(w, r, ir)
 	})
+	h.POST("/oauth2/token", func(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+		u, p, ok := r.BasicAuth()
+		require.True(t, ok)
+		require.EqualValues(t, "client", u)
+		require.EqualValues(t, "secret", p)
+		herodot.NewJSONWriter(logrus.New()).Write(w, r, map[string]interface{}{"access_token": "foo-token"})
+	})
 	ts := httptest.NewServer(h)
 
+	c := &clientcredentials.Config{
+		ClientID:     "client",
+		ClientSecret: "secret",
+		TokenURL:     ts.URL + "/oauth2/token",
+		Scopes:       []string{"foo-scope"},
+	}
 	authenticator := &OAuth2IntrospectionAuthentication{
-		client:           http.DefaultClient,
+		client:           c.Client(context.Background()),
 		introspectionURL: ts.URL + "/oauth2/introspect",
+		scopeStrategy:    fosite.WildcardScopeStrategy,
 	}
 
 	now := time.Now().UTC().Round(time.Minute)
@@ -80,7 +103,7 @@ func TestOAuth2Introspection(t *testing.T) {
 			cb: func(w http.ResponseWriter, r *http.Request, req AuthenticationOAuth2IntrospectionRequest) *IntrospectionResponse {
 				return &IntrospectionResponse{
 					Active:    true,
-					Scope:     "scope",
+					Scope:     "foo-scope",
 					ClientID:  "scope-ip",
 					Subject:   "subject",
 					ExpiresAt: now.Unix(),
@@ -91,13 +114,13 @@ func TestOAuth2Introspection(t *testing.T) {
 					Issuer:    "issuer",
 				}
 			},
-			req: &AuthenticationOAuth2IntrospectionRequest{Token: "foo-token", Scopes: []string{"foo-scope", "foo-scope-a"}},
+			req: &AuthenticationOAuth2IntrospectionRequest{Token: "foo-token", Scopes: []string{"foo-scope"}},
 			expectedSession: &OAuth2Session{
 				DefaultSession: &DefaultSession{
 					Subject: "subject",
 					Allowed: false,
 				},
-				GrantedScopes: []string{"scope"},
+				GrantedScopes: []string{"foo-scope"},
 				ClientID:      "scope-ip",
 				ExpiresAt:     now,
 				IssuedAt:      now,

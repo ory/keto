@@ -70,7 +70,7 @@ var (
 			Policies: map[string]ladon.Policy{
 				"1": &ladon.DefaultPolicy{
 					ID:        "1",
-					Subjects:  []string{"alice", "group1"},
+					Subjects:  []string{"alice", "group1", "client"},
 					Resources: []string{"matrix", "forbidden_matrix", "rn:hydra:token<.*>"},
 					Actions:   []string{"create", "decide"},
 					Effect:    ladon.AllowAccess,

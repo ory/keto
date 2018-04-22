@@ -25,13 +25,11 @@ import (
 	"net/http"
 
 	"github.com/ory/herodot"
-	"github.com/pkg/errors"
 )
 
-var ErrorNotResponsible = errors.New("This authenticator is not applicable to this request")
-
 var ErrUnauthorized = &herodot.DefaultError{
-	ErrorField: "The provided credentials are invalid or expired",
+	CodeField:  http.StatusUnauthorized,
+	ErrorField: "The provided credentials are invalid, expired, or are not authorized to use the requested scope",
 }
 
 type Session interface {

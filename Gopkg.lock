@@ -268,8 +268,8 @@
     "token/hmac",
     "token/jwt"
   ]
-  revision = "018b5c12b71b0da443255f4a5cf0ac9543bbf9f7"
-  version = "v0.17.0"
+  revision = "0fcdf33fb52551e02798b4e6733110024b7d24d9"
+  version = "v0.17.1"
 
 [[projects]]
   name = "github.com/ory/graceful"
@@ -280,8 +280,8 @@
 [[projects]]
   name = "github.com/ory/herodot"
   packages = ["."]
-  revision = "e16e86900c6c08ed085117308701a823b3da77fc"
-  version = "v0.1.3"
+  revision = "86396b17aa8410c644bf9d9c67dff6e2a5f9e503"
+  version = "v0.2.0"
 
 [[projects]]
   branch = "1.0.x"
@@ -543,6 +543,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "7714d8c25776716eeb7d6e7e9979e83873a37b92fab51da301f5ba2e02f9a4d1"
+  inputs-digest = "0ec4df4754ada9109cbcfb35e6bba8e8a4133862f33c2f95e5d3336e3239b1fa"
   solver-name = "gps-cdcl"
   solver-version = 1

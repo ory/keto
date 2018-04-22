@@ -77,7 +77,7 @@ func (w *Warden) isAllowed(ctx context.Context, a *ladon.Request) error {
 	}
 
 	errs := make([]error, len(groups)+1)
-	errs[0] = w.Warden.IsAllowed(&ladon.Request{
+	return w.Warden.IsAllowed(&ladon.Request{
 		Resource: a.Resource,
 		Action:   a.Action,
 		Subject:  a.Subject,
@@ -99,6 +99,8 @@ func (w *Warden) isAllowed(ctx context.Context, a *ladon.Request) error {
 		}
 	}
 
+	// If no one explicitly denies the access request (e.g. some group), it's ok to return with "access granted"
+	// if at least one of the decisions is positive (no error)
 	for _, err := range errs {
 		if err == nil {
 			return nil

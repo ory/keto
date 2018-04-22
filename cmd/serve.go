@@ -72,22 +72,27 @@ AUTHENTICATORS
 - The OAuth 2.0 Token Introspection Authenticator is capable of resolving OAuth2 access tokens to a subject and a set
 	of granted scopes using the OAuth 2.0 Introspection standard.
 
-	- OAUTH2_CLIENT_ID: The client ID to be used when performing the OAuth 2.0 Introspection request.
-		Example: OAUTH2_CLIENT_ID=my_client
+	- AUTHENTICATOR_OAUTH2_INTROSPECTION_CLIENT_ID: The client ID to be used when performing the OAuth 2.0 Introspection request.
+		Example: AUTHENTICATOR_OAUTH2_INTROSPECTION_CLIENT_ID=my_client
 
-	- OAUTH2_CLIENT_SECRET: The client secret to be used when performing the OAuth 2.0 Introspection request.
-		Example: OAUTH2_CLIENT_ID=my_secret
+	- AUTHENTICATOR_OAUTH2_INTROSPECTION_CLIENT_SECRET: The client secret to be used when performing the OAuth 2.0 Introspection request.
+		Example: AUTHENTICATOR_OAUTH2_INTROSPECTION_CLIENT_ID=my_secret
 
-	- OAUTH2_SCOPES: The scope(s) (comma separated) required to perform the introspection request. If no scopes are
+	- AUTHENTICATOR_OAUTH2_INTROSPECTION_SCOPES: The scope(s) (comma separated) required to perform the introspection request. If no scopes are
 		required, leave this value empty.
-		Example: OAUTH2_CLIENT_ID=scopeA,scopeB
+		Example: AUTHENTICATOR_OAUTH2_INTROSPECTION_CLIENT_ID=scopeA,scopeB
 
-	- OAUTH2_TOKEN_URL: The OAuth2 Token Endpoint URL of the server
-		Example: OAUTH2_CLIENT_ID=https://my-server/oauth2/token
+	- AUTHENTICATOR_OAUTH2_INTROSPECTION_TOKEN_URL: The OAuth2 Token Endpoint URL of the server
+		Example: AUTHENTICATOR_OAUTH2_INTROSPECTION_CLIENT_ID=https://my-server/oauth2/token
 
-	- OAUTH2_INTROSPECTION_URL: The OAuth2 Introspection Endpoint URL of the server
-		Example: OAUTH2_INTROSPECTION_URL=https://my-server/oauth2/introspection
+	- AUTHENTICATOR_OAUTH2_INTROSPECTION_INTROSPECTION_URL: The OAuth2 Introspection Endpoint URL of the server
+		Example: AUTHENTICATOR_OAUTH2_INTROSPECTION_INTROSPECTION_URL=https://my-server/oauth2/introspection
 
+- The OAuth 2.0 Client Credentials Authenticator is capable of authentication OAuth 2.0 clients using the client credentials
+	grant.
+
+	- AUTHENTICATOR_OAUTH2_CLIENT_CREDENTIALS_TOKEN_URL: The OAuth2 Token Endpoint URL of the server
+		Example: AUTHENTICATOR_OAUTH2_CLIENT_CREDENTIALS_TOKEN_URL=https://my-server/oauth2/token
 
 CORS CONTROLS
 ==============

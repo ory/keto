@@ -13,6 +13,8 @@ type SDK interface {
 	PolicySDK
 }
 
+var testSDK SDK = new(CodeGenSDK)
+
 type CodeGenSDK struct {
 	*swagger.RoleApi
 	*swagger.WardenApi
