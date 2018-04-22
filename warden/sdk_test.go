@@ -27,9 +27,6 @@ import (
 	"testing"
 	"time"
 
-	"encoding/json"
-	"strings"
-
 	"github.com/julienschmidt/httprouter"
 	"github.com/ory/herodot"
 	"github.com/ory/keto/authentication"
@@ -39,6 +36,7 @@ import (
 	"github.com/pkg/errors"
 	//"github.com/stretchr/testify/assert"
 	//"github.com/stretchr/testify/require"
+	"github.com/ory/fosite"
 	"github.com/ory/ladon"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -66,13 +64,12 @@ func setupMockOAuth2Introspection(t *testing.T) *httptest.Server {
 			return
 		}
 
-		var token authentication.AuthenticationOAuth2IntrospectionRequest
-		if err := json.NewDecoder(r.Body).Decode(&token); err != nil {
+		if err := r.ParseForm(); err != nil {
 			h.WriteError(w, r, err)
 			return
 		}
 
-		if token.Token != "alice_token" && strings.Join(token.Scopes, " ") != "fooscope" {
+		if r.PostForm.Get("token") != "alice_token" && r.PostForm.Get("scope") != "fooscope" {
 			h.WriteError(w, r, errors.New("Req failed"))
 			return
 		}
@@ -80,6 +77,7 @@ func setupMockOAuth2Introspection(t *testing.T) *httptest.Server {
 		h.Write(w, r, authentication.IntrospectionResponse{
 			Active:  true,
 			Subject: "alice",
+			Scope:   "fooscope",
 		})
 	})
 	return httptest.NewServer(router)
@@ -92,12 +90,16 @@ func TestWardenSDK(t *testing.T) {
 
 	handler := warden.NewHandler(herodot.NewJSONWriter(nil), wardens["local"], map[string]authentication.Authenticator{
 		"subjects": authentication.NewPlaintextAuthentication(),
-		"oauth2": authentication.NewOAuth2IntrospectionAuthentication(
+		"oauth2/access-tokens": authentication.NewOAuth2IntrospectionAuthentication(
 			"client",
 			"secret",
 			oauth2Server.URL+"/oauth2/token",
 			oauth2Server.URL+"/oauth2/introspect",
 			[]string{""},
+			fosite.HierarchicScopeStrategy,
+		),
+		"oauth2/clients": authentication.NewOAuth2ClientCredentialsAuthentication(
+			oauth2Server.URL + "/oauth2/token",
 		),
 	})
 	handler.SetRoutes(router)
@@ -122,8 +124,8 @@ func TestWardenSDK(t *testing.T) {
 		}
 	})
 
-	t.Run("IsTokenAuthorized", func(t *testing.T) {
-		result, response, err := client.IsOAuth2AccessTokenAuthorized(keto.WardenOAuth2AuthorizationRequest{
+	t.Run("IsOAuth2AccessTokenAuthorized", func(t *testing.T) {
+		result, response, err := client.IsOAuth2AccessTokenAuthorized(keto.WardenOAuth2AccessTokenAuthorizationRequest{
 			Resource: "matrix",
 			Action:   "create",
 			Context:  ladon.Context{},
@@ -132,8 +134,24 @@ func TestWardenSDK(t *testing.T) {
 		})
 
 		require.NoError(t, err, "%s", response.Payload)
-		require.Equal(t, http.StatusOK, response.StatusCode)
+		require.Equal(t, http.StatusOK, response.StatusCode, "%s", response.Payload)
 		assert.True(t, result.Allowed)
 		assert.EqualValues(t, "alice", result.Subject)
+	})
+
+	t.Run("IsOAuth2ClientAuthorized", func(t *testing.T) {
+		result, response, err := client.IsOAuth2ClientAuthorized(keto.WardenOAuth2ClientAuthorizationRequest{
+			Resource: "matrix",
+			Action:   "create",
+			Id:       "client",
+			Secret:   "secret",
+			Context:  ladon.Context{},
+			Scopes:   []string{"fooscope"},
+		})
+
+		require.NoError(t, err, "%s", response.Payload)
+		require.Equal(t, http.StatusOK, response.StatusCode, "%s", response.Payload)
+		assert.True(t, result.Allowed)
+		assert.EqualValues(t, "client", result.Subject)
 	})
 }

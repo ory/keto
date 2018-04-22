@@ -87,13 +87,16 @@ Class | Method | HTTP request | Description
 *RoleApi* | [**getRole**](docs/Api/RoleApi.md#getrole) | **GET** /roles/{id} | Get a role by its ID
 *RoleApi* | [**listRoles**](docs/Api/RoleApi.md#listroles) | **GET** /roles | List all roles
 *RoleApi* | [**removeMembersFromRole**](docs/Api/RoleApi.md#removemembersfromrole) | **DELETE** /roles/{id}/members | Remove members from a role
-*WardenApi* | [**isOAuth2AccessTokenAuthorized**](docs/Api/WardenApi.md#isoauth2accesstokenauthorized) | **POST** /warden/oauth2/authorize | Check if an OAuth 2.0 access token is authorized to access a resource
+*WardenApi* | [**isOAuth2AccessTokenAuthorized**](docs/Api/WardenApi.md#isoauth2accesstokenauthorized) | **POST** /warden/oauth2/access-tokens/authorize | Check if an OAuth 2.0 access token is authorized to access a resource
+*WardenApi* | [**isOAuth2ClientAuthorized**](docs/Api/WardenApi.md#isoauth2clientauthorized) | **POST** /warden/oauth2/clients/authorize | Check if an OAuth 2.0 Client is authorized to access a resource
 *WardenApi* | [**isSubjectAuthorized**](docs/Api/WardenApi.md#issubjectauthorized) | **POST** /warden/subjects/authorize | Check if a subject is authorized to access a resource
 
 
 ## Documentation For Models
 
  - [AuthenticationDefaultSession](docs/Model/AuthenticationDefaultSession.md)
+ - [AuthenticationOAuth2ClientCredentialsRequest](docs/Model/AuthenticationOAuth2ClientCredentialsRequest.md)
+ - [AuthenticationOAuth2ClientCredentialsSession](docs/Model/AuthenticationOAuth2ClientCredentialsSession.md)
  - [AuthenticationOAuth2IntrospectionRequest](docs/Model/AuthenticationOAuth2IntrospectionRequest.md)
  - [AuthenticationOAuth2Session](docs/Model/AuthenticationOAuth2Session.md)
  - [Authenticator](docs/Model/Authenticator.md)
@@ -102,6 +105,7 @@ Class | Method | HTTP request | Description
  - [InlineResponse401](docs/Model/InlineResponse401.md)
  - [IntrospectionResponse](docs/Model/IntrospectionResponse.md)
  - [Manager](docs/Model/Manager.md)
+ - [OAuth2ClientCredentialsAuthentication](docs/Model/OAuth2ClientCredentialsAuthentication.md)
  - [OAuth2IntrospectionAuthentication](docs/Model/OAuth2IntrospectionAuthentication.md)
  - [Policy](docs/Model/Policy.md)
  - [PolicyConditions](docs/Model/PolicyConditions.md)
@@ -110,14 +114,17 @@ Class | Method | HTTP request | Description
  - [Session](docs/Model/Session.md)
  - [SwaggerCreatePolicyParameters](docs/Model/SwaggerCreatePolicyParameters.md)
  - [SwaggerDoesWardenAllowAccessRequestParameters](docs/Model/SwaggerDoesWardenAllowAccessRequestParameters.md)
- - [SwaggerDoesWardenAllowTokenAccessRqeuestParameters](docs/Model/SwaggerDoesWardenAllowTokenAccessRqeuestParameters.md)
+ - [SwaggerDoesWardenAllowClientRequestParameters](docs/Model/SwaggerDoesWardenAllowClientRequestParameters.md)
+ - [SwaggerDoesWardenAllowTokenAccessRequestParameters](docs/Model/SwaggerDoesWardenAllowTokenAccessRequestParameters.md)
  - [SwaggerGetPolicyParameters](docs/Model/SwaggerGetPolicyParameters.md)
  - [SwaggerListPolicyParameters](docs/Model/SwaggerListPolicyParameters.md)
  - [SwaggerListPolicyResponse](docs/Model/SwaggerListPolicyResponse.md)
  - [SwaggerUpdatePolicyParameters](docs/Model/SwaggerUpdatePolicyParameters.md)
  - [SwaggerWardenBaseRequest](docs/Model/SwaggerWardenBaseRequest.md)
- - [WardenOAuth2AuthorizationRequest](docs/Model/WardenOAuth2AuthorizationRequest.md)
- - [WardenOAuth2AuthorizationResponse](docs/Model/WardenOAuth2AuthorizationResponse.md)
+ - [WardenOAuth2AccessTokenAuthorizationRequest](docs/Model/WardenOAuth2AccessTokenAuthorizationRequest.md)
+ - [WardenOAuth2AccessTokenAuthorizationResponse](docs/Model/WardenOAuth2AccessTokenAuthorizationResponse.md)
+ - [WardenOAuth2ClientAuthorizationRequest](docs/Model/WardenOAuth2ClientAuthorizationRequest.md)
+ - [WardenOAuth2ClientAuthorizationResponse](docs/Model/WardenOAuth2ClientAuthorizationResponse.md)
  - [WardenSubjectAuthorizationRequest](docs/Model/WardenSubjectAuthorizationRequest.md)
  - [WardenSubjectAuthorizationResponse](docs/Model/WardenSubjectAuthorizationResponse.md)
  - [Writer](docs/Model/Writer.md)

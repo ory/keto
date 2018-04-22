@@ -91,5 +91,5 @@ func initConfig() {
 func clientDefaultFlags(c *cobra.Command) {
 	c.PersistentFlags().String("bearer-token", os.Getenv("KETO_BEARER_TOKEN"), "Provide a token to be used if the server is protected by HTTP Bearer Authorization, defaults to environment variable KETO_BEARER_TOKEN.")
 	c.PersistentFlags().Bool("fake-tls-termination", false, `fake tls termination by adding "X-Forwarded-Proto: https"" to http headers`)
-	c.PersistentFlags().String("url", os.Getenv("KETO_URL"), "The URL of the ORY Keto server, defaults to environment variable KETO_URL.")
+	c.PersistentFlags().String("endpoint", os.Getenv("KETO_URL"), "The URL of the ORY Keto server, defaults to environment variable KETO_URL.")
 }

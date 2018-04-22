@@ -30,6 +30,7 @@ import (
 	"github.com/gorilla/context"
 	"github.com/julienschmidt/httprouter"
 	"github.com/meatballhat/negroni-logrus"
+	"github.com/ory/fosite"
 	"github.com/ory/graceful"
 	"github.com/ory/herodot"
 	"github.com/ory/keto/authentication"
@@ -74,14 +75,32 @@ func RunServe(
 				Fatal("Unable to initialise backends")
 		}
 
+		var strategy fosite.ScopeStrategy
+		switch viper.GetString("AUTHENTICATOR_OAUTH2_INTROSPECTION_URL") {
+		case "hierarchic":
+			strategy = fosite.HierarchicScopeStrategy
+			break
+		case "exact":
+			strategy = fosite.ExactScopeStrategy
+			break
+		case "wildcard":
+			fallthrough
+		default:
+			strategy = fosite.WildcardScopeStrategy
+		}
+
 		authenticators := map[string]authentication.Authenticator{
 			"subjects": authentication.NewPlaintextAuthentication(),
-			"oauth2": authentication.NewOAuth2IntrospectionAuthentication(
-				viper.GetString("OAUTH2_CLIENT_ID"),
-				viper.GetString("OAUTH2_CLIENT_SECRET"),
-				viper.GetString("OAUTH2_TOKEN_URL"),
-				viper.GetString("OAUTH2_INTROSPECTION_URL"),
+			"oauth2/access-tokens": authentication.NewOAuth2IntrospectionAuthentication(
+				viper.GetString("AUTHENTICATOR_OAUTH2_INTROSPECTION_CLIENT_ID"),
+				viper.GetString("AUTHENTICATOR_OAUTH2_INTROSPECTION_CLIENT_SECRET"),
+				viper.GetString("AUTHENTICATOR_OAUTH2_INTROSPECTION_TOKEN_URL"),
+				viper.GetString("AUTHENTICATOR_OAUTH2_INTROSPECTION_URL"),
 				strings.Split(viper.GetString("OAUTH2_SCOPES"), ","),
+				strategy,
+			),
+			"oauth2/clients": authentication.NewOAuth2ClientCredentialsAuthentication(
+				viper.GetString("AUTHENTICATOR_OAUTH2_CLIENT_CREDENTIALS_TOKEN_URL"),
 			),
 		}
 

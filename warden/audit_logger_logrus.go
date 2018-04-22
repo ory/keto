@@ -45,21 +45,34 @@ func (a *AuditLoggerLogrus) LogRejectedAccessRequest(r *ladon.Request, p ladon.P
 		allowed := joinPoliciesNames(d[0 : len(d)-1])
 		denied := d[len(d)-1].GetID()
 		a.logger().
+			WithField("action", r.Action).
+			WithField("resource", r.Resource).
+			WithField("subject", r.Subject).
 			WithField("allowed_by", allowed).
 			WithField("denied_by", denied).
 			Print("Some policies allow this request, but one forcefully rejected it")
 	} else if len(d) == 1 {
 		denied := d[len(d)-1].GetID()
 		a.logger().
+			WithField("action", r.Action).
+			WithField("resource", r.Resource).
+			WithField("subject", r.Subject).
 			WithField("denied_by", denied).
 			Print("A policy forcefully rejected this request")
 	} else {
-		a.logger().Print("Because no policy was found for this request, it is rejected")
+		a.logger().
+			WithField("action", r.Action).
+			WithField("resource", r.Resource).
+			WithField("subject", r.Subject).
+			Print("Because no policy was found for this request, it is rejected")
 	}
 }
 
 func (a *AuditLoggerLogrus) LogGrantedAccessRequest(r *ladon.Request, p ladon.Policies, d ladon.Policies) {
 	a.logger().
+		WithField("action", r.Action).
+		WithField("resource", r.Resource).
+		WithField("subject", r.Subject).
 		WithField("allowed_by", joinPoliciesNames(d)).
 		Print("One or more policies granted this request.")
 }

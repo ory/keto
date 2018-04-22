@@ -33,13 +33,16 @@ Class | Method | HTTP request | Description
 *RoleApi* | [**GetRole**](docs/RoleApi.md#getrole) | **Get** /roles/{id} | Get a role by its ID
 *RoleApi* | [**ListRoles**](docs/RoleApi.md#listroles) | **Get** /roles | List all roles
 *RoleApi* | [**RemoveMembersFromRole**](docs/RoleApi.md#removemembersfromrole) | **Delete** /roles/{id}/members | Remove members from a role
-*WardenApi* | [**IsOAuth2AccessTokenAuthorized**](docs/WardenApi.md#isoauth2accesstokenauthorized) | **Post** /warden/oauth2/authorize | Check if an OAuth 2.0 access token is authorized to access a resource
+*WardenApi* | [**IsOAuth2AccessTokenAuthorized**](docs/WardenApi.md#isoauth2accesstokenauthorized) | **Post** /warden/oauth2/access-tokens/authorize | Check if an OAuth 2.0 access token is authorized to access a resource
+*WardenApi* | [**IsOAuth2ClientAuthorized**](docs/WardenApi.md#isoauth2clientauthorized) | **Post** /warden/oauth2/clients/authorize | Check if an OAuth 2.0 Client is authorized to access a resource
 *WardenApi* | [**IsSubjectAuthorized**](docs/WardenApi.md#issubjectauthorized) | **Post** /warden/subjects/authorize | Check if a subject is authorized to access a resource
 
 
 ## Documentation For Models
 
  - [AuthenticationDefaultSession](docs/AuthenticationDefaultSession.md)
+ - [AuthenticationOAuth2ClientCredentialsRequest](docs/AuthenticationOAuth2ClientCredentialsRequest.md)
+ - [AuthenticationOAuth2ClientCredentialsSession](docs/AuthenticationOAuth2ClientCredentialsSession.md)
  - [AuthenticationOAuth2IntrospectionRequest](docs/AuthenticationOAuth2IntrospectionRequest.md)
  - [AuthenticationOAuth2Session](docs/AuthenticationOAuth2Session.md)
  - [Authenticator](docs/Authenticator.md)
@@ -48,6 +51,7 @@ Class | Method | HTTP request | Description
  - [InlineResponse401](docs/InlineResponse401.md)
  - [IntrospectionResponse](docs/IntrospectionResponse.md)
  - [Manager](docs/Manager.md)
+ - [OAuth2ClientCredentialsAuthentication](docs/OAuth2ClientCredentialsAuthentication.md)
  - [OAuth2IntrospectionAuthentication](docs/OAuth2IntrospectionAuthentication.md)
  - [Policy](docs/Policy.md)
  - [PolicyConditions](docs/PolicyConditions.md)
@@ -56,14 +60,17 @@ Class | Method | HTTP request | Description
  - [Session](docs/Session.md)
  - [SwaggerCreatePolicyParameters](docs/SwaggerCreatePolicyParameters.md)
  - [SwaggerDoesWardenAllowAccessRequestParameters](docs/SwaggerDoesWardenAllowAccessRequestParameters.md)
- - [SwaggerDoesWardenAllowTokenAccessRqeuestParameters](docs/SwaggerDoesWardenAllowTokenAccessRqeuestParameters.md)
+ - [SwaggerDoesWardenAllowClientRequestParameters](docs/SwaggerDoesWardenAllowClientRequestParameters.md)
+ - [SwaggerDoesWardenAllowTokenAccessRequestParameters](docs/SwaggerDoesWardenAllowTokenAccessRequestParameters.md)
  - [SwaggerGetPolicyParameters](docs/SwaggerGetPolicyParameters.md)
  - [SwaggerListPolicyParameters](docs/SwaggerListPolicyParameters.md)
  - [SwaggerListPolicyResponse](docs/SwaggerListPolicyResponse.md)
  - [SwaggerUpdatePolicyParameters](docs/SwaggerUpdatePolicyParameters.md)
  - [SwaggerWardenBaseRequest](docs/SwaggerWardenBaseRequest.md)
- - [WardenOAuth2AuthorizationRequest](docs/WardenOAuth2AuthorizationRequest.md)
- - [WardenOAuth2AuthorizationResponse](docs/WardenOAuth2AuthorizationResponse.md)
+ - [WardenOAuth2AccessTokenAuthorizationRequest](docs/WardenOAuth2AccessTokenAuthorizationRequest.md)
+ - [WardenOAuth2AccessTokenAuthorizationResponse](docs/WardenOAuth2AccessTokenAuthorizationResponse.md)
+ - [WardenOAuth2ClientAuthorizationRequest](docs/WardenOAuth2ClientAuthorizationRequest.md)
+ - [WardenOAuth2ClientAuthorizationResponse](docs/WardenOAuth2ClientAuthorizationResponse.md)
  - [WardenSubjectAuthorizationRequest](docs/WardenSubjectAuthorizationRequest.md)
  - [WardenSubjectAuthorizationResponse](docs/WardenSubjectAuthorizationResponse.md)
  - [Writer](docs/Writer.md)

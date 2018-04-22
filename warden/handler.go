@@ -38,10 +38,11 @@ const (
 	AuthenticatorHandlerPath = "/warden/%s/authorize"
 
 	// AllowedHandlerPath points to the access request validation endpoint.
-	//AllowedHandlerPath = "/warden/oauth2/allowed"
-	//AllowedHandlerPath = "/warden/subjects/allowed"
-	//AllowedHandlerPath = "/warden/jwt/allowed"
-	//AllowedHandlerPath = "/warden/saml/allowed"
+	//AllowedHandlerPath = "/warden/oauth2/access-tokens/authorize"
+	//AllowedHandlerPath = "/warden/oauth2/clients/authorize"
+	//AllowedHandlerPath = "/warden/subjects/authorize"
+	//AllowedHandlerPath = "/warden/jwt/authorize"
+	//AllowedHandlerPath = "/warden/saml/authorize"
 )
 
 var notAllowed = struct {
@@ -84,8 +85,11 @@ func (h *Handler) authorized(authenticator authentication.Authenticator) func(w 
 		var ctx = r.Context()
 		r.Body = ioutil.NopCloser(bytes.NewReader(all))
 		session, err := authenticator.Authenticate(r)
-		if err != nil {
-			h.H.WriteError(w, r, errors.WithStack(err))
+		if err != nil && errors.Cause(err).Error() == authentication.ErrUnauthorized.Error() {
+			h.H.Write(w, r, &notAllowed)
+			return
+		} else if err != nil {
+			h.H.WriteError(w, r, err)
 			return
 		}
 
