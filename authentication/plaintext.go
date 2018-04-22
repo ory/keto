@@ -40,9 +40,8 @@ type PlaintextAuthentication struct {
 func (a *PlaintextAuthentication) Authenticate(r *http.Request) (Session, error) {
 	var session DefaultSession
 
-	err := json.NewDecoder(r.Body).Decode(&session)
-	if err != nil {
-		return nil, errors.WithStack(ErrorNotResponsible)
+	if err := json.NewDecoder(r.Body).Decode(&session); err != nil {
+		return nil, errors.WithStack(err)
 	}
 
 	return &session, nil

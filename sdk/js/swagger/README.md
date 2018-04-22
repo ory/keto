@@ -130,13 +130,16 @@ Class | Method | HTTP request | Description
 *SwaggerJsClient.RoleApi* | [**getRole**](docs/RoleApi.md#getRole) | **GET** /roles/{id} | Get a role by its ID
 *SwaggerJsClient.RoleApi* | [**listRoles**](docs/RoleApi.md#listRoles) | **GET** /roles | List all roles
 *SwaggerJsClient.RoleApi* | [**removeMembersFromRole**](docs/RoleApi.md#removeMembersFromRole) | **DELETE** /roles/{id}/members | Remove members from a role
-*SwaggerJsClient.WardenApi* | [**isOAuth2AccessTokenAuthorized**](docs/WardenApi.md#isOAuth2AccessTokenAuthorized) | **POST** /warden/oauth2/authorize | Check if an OAuth 2.0 access token is authorized to access a resource
+*SwaggerJsClient.WardenApi* | [**isOAuth2AccessTokenAuthorized**](docs/WardenApi.md#isOAuth2AccessTokenAuthorized) | **POST** /warden/oauth2/access-tokens/authorize | Check if an OAuth 2.0 access token is authorized to access a resource
+*SwaggerJsClient.WardenApi* | [**isOAuth2ClientAuthorized**](docs/WardenApi.md#isOAuth2ClientAuthorized) | **POST** /warden/oauth2/clients/authorize | Check if an OAuth 2.0 Client is authorized to access a resource
 *SwaggerJsClient.WardenApi* | [**isSubjectAuthorized**](docs/WardenApi.md#isSubjectAuthorized) | **POST** /warden/subjects/authorize | Check if a subject is authorized to access a resource
 
 
 ## Documentation for Models
 
  - [SwaggerJsClient.AuthenticationDefaultSession](docs/AuthenticationDefaultSession.md)
+ - [SwaggerJsClient.AuthenticationOAuth2ClientCredentialsRequest](docs/AuthenticationOAuth2ClientCredentialsRequest.md)
+ - [SwaggerJsClient.AuthenticationOAuth2ClientCredentialsSession](docs/AuthenticationOAuth2ClientCredentialsSession.md)
  - [SwaggerJsClient.AuthenticationOAuth2IntrospectionRequest](docs/AuthenticationOAuth2IntrospectionRequest.md)
  - [SwaggerJsClient.AuthenticationOAuth2Session](docs/AuthenticationOAuth2Session.md)
  - [SwaggerJsClient.Authenticator](docs/Authenticator.md)
@@ -145,6 +148,7 @@ Class | Method | HTTP request | Description
  - [SwaggerJsClient.InlineResponse401](docs/InlineResponse401.md)
  - [SwaggerJsClient.IntrospectionResponse](docs/IntrospectionResponse.md)
  - [SwaggerJsClient.Manager](docs/Manager.md)
+ - [SwaggerJsClient.OAuth2ClientCredentialsAuthentication](docs/OAuth2ClientCredentialsAuthentication.md)
  - [SwaggerJsClient.OAuth2IntrospectionAuthentication](docs/OAuth2IntrospectionAuthentication.md)
  - [SwaggerJsClient.Policy](docs/Policy.md)
  - [SwaggerJsClient.PolicyConditions](docs/PolicyConditions.md)
@@ -153,14 +157,17 @@ Class | Method | HTTP request | Description
  - [SwaggerJsClient.Session](docs/Session.md)
  - [SwaggerJsClient.SwaggerCreatePolicyParameters](docs/SwaggerCreatePolicyParameters.md)
  - [SwaggerJsClient.SwaggerDoesWardenAllowAccessRequestParameters](docs/SwaggerDoesWardenAllowAccessRequestParameters.md)
- - [SwaggerJsClient.SwaggerDoesWardenAllowTokenAccessRqeuestParameters](docs/SwaggerDoesWardenAllowTokenAccessRqeuestParameters.md)
+ - [SwaggerJsClient.SwaggerDoesWardenAllowClientRequestParameters](docs/SwaggerDoesWardenAllowClientRequestParameters.md)
+ - [SwaggerJsClient.SwaggerDoesWardenAllowTokenAccessRequestParameters](docs/SwaggerDoesWardenAllowTokenAccessRequestParameters.md)
  - [SwaggerJsClient.SwaggerGetPolicyParameters](docs/SwaggerGetPolicyParameters.md)
  - [SwaggerJsClient.SwaggerListPolicyParameters](docs/SwaggerListPolicyParameters.md)
  - [SwaggerJsClient.SwaggerListPolicyResponse](docs/SwaggerListPolicyResponse.md)
  - [SwaggerJsClient.SwaggerUpdatePolicyParameters](docs/SwaggerUpdatePolicyParameters.md)
  - [SwaggerJsClient.SwaggerWardenBaseRequest](docs/SwaggerWardenBaseRequest.md)
- - [SwaggerJsClient.WardenOAuth2AuthorizationRequest](docs/WardenOAuth2AuthorizationRequest.md)
- - [SwaggerJsClient.WardenOAuth2AuthorizationResponse](docs/WardenOAuth2AuthorizationResponse.md)
+ - [SwaggerJsClient.WardenOAuth2AccessTokenAuthorizationRequest](docs/WardenOAuth2AccessTokenAuthorizationRequest.md)
+ - [SwaggerJsClient.WardenOAuth2AccessTokenAuthorizationResponse](docs/WardenOAuth2AccessTokenAuthorizationResponse.md)
+ - [SwaggerJsClient.WardenOAuth2ClientAuthorizationRequest](docs/WardenOAuth2ClientAuthorizationRequest.md)
+ - [SwaggerJsClient.WardenOAuth2ClientAuthorizationResponse](docs/WardenOAuth2ClientAuthorizationResponse.md)
  - [SwaggerJsClient.WardenSubjectAuthorizationRequest](docs/WardenSubjectAuthorizationRequest.md)
  - [SwaggerJsClient.WardenSubjectAuthorizationResponse](docs/WardenSubjectAuthorizationResponse.md)
  - [SwaggerJsClient.Writer](docs/Writer.md)

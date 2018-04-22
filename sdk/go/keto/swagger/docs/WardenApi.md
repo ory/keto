@@ -4,12 +4,13 @@ All URIs are relative to *http://localhost*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**IsOAuth2AccessTokenAuthorized**](WardenApi.md#IsOAuth2AccessTokenAuthorized) | **Post** /warden/oauth2/authorize | Check if an OAuth 2.0 access token is authorized to access a resource
+[**IsOAuth2AccessTokenAuthorized**](WardenApi.md#IsOAuth2AccessTokenAuthorized) | **Post** /warden/oauth2/access-tokens/authorize | Check if an OAuth 2.0 access token is authorized to access a resource
+[**IsOAuth2ClientAuthorized**](WardenApi.md#IsOAuth2ClientAuthorized) | **Post** /warden/oauth2/clients/authorize | Check if an OAuth 2.0 Client is authorized to access a resource
 [**IsSubjectAuthorized**](WardenApi.md#IsSubjectAuthorized) | **Post** /warden/subjects/authorize | Check if a subject is authorized to access a resource
 
 
 # **IsOAuth2AccessTokenAuthorized**
-> WardenOAuth2AuthorizationResponse IsOAuth2AccessTokenAuthorized($body)
+> WardenOAuth2AccessTokenAuthorizationResponse IsOAuth2AccessTokenAuthorized($body)
 
 Check if an OAuth 2.0 access token is authorized to access a resource
 
@@ -20,11 +21,40 @@ Checks if a token is valid and if the token subject is allowed to perform an act
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **body** | [**WardenOAuth2AuthorizationRequest**](WardenOAuth2AuthorizationRequest.md)|  | [optional] 
+ **body** | [**WardenOAuth2AccessTokenAuthorizationRequest**](WardenOAuth2AccessTokenAuthorizationRequest.md)|  | [optional] 
 
 ### Return type
 
-[**WardenOAuth2AuthorizationResponse**](wardenOAuth2AuthorizationResponse.md)
+[**WardenOAuth2AccessTokenAuthorizationResponse**](wardenOAuth2AccessTokenAuthorizationResponse.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **IsOAuth2ClientAuthorized**
+> WardenOAuth2ClientAuthorizationResponse IsOAuth2ClientAuthorized($body)
+
+Check if an OAuth 2.0 Client is authorized to access a resource
+
+Checks if an OAuth 2.0 Client provided the correct access credentials and and if the client is allowed to perform an action on a resource. This endpoint requires a client id, a client secret, a scope, a resource name, an action name and a context.
+
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **body** | [**WardenOAuth2ClientAuthorizationRequest**](WardenOAuth2ClientAuthorizationRequest.md)|  | [optional] 
+
+### Return type
+
+[**WardenOAuth2ClientAuthorizationResponse**](wardenOAuth2ClientAuthorizationResponse.md)
 
 ### Authorization
 

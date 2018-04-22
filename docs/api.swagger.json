@@ -563,7 +563,7 @@
         }
       }
     },
-    "/warden/oauth2/authorize": {
+    "/warden/oauth2/access-tokens/authorize": {
       "post": {
         "description": "Checks if a token is valid and if the token subject is allowed to perform an action on a resource.\nThis endpoint requires a token, a scope, a resource name, an action name and a context.\n\n\nIf a token is expired/invalid, has not been granted the requested scope or the subject is not allowed to\nperform the action on the resource, this endpoint returns a 200 response with `{ \"allowed\": false }`.\n\n\nThis endpoint passes all data from the upstream OAuth 2.0 token introspection endpoint. If you use ORY Hydra as an\nupstream OAuth 2.0 provider, data set through the `accessTokenExtra` field in the consent flow will be included in this\nresponse as well.",
         "consumes": [
@@ -586,15 +586,61 @@
             "name": "Body",
             "in": "body",
             "schema": {
-              "$ref": "#/definitions/WardenOAuth2AuthorizationRequest"
+              "$ref": "#/definitions/wardenOAuth2AccessTokenAuthorizationRequest"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "wardenOAuth2AuthorizationResponse",
+            "description": "wardenOAuth2AccessTokenAuthorizationResponse",
             "schema": {
-              "$ref": "#/definitions/wardenOAuth2AuthorizationResponse"
+              "$ref": "#/definitions/wardenOAuth2AccessTokenAuthorizationResponse"
+            }
+          },
+          "401": {
+            "$ref": "#/responses/genericError"
+          },
+          "403": {
+            "$ref": "#/responses/genericError"
+          },
+          "500": {
+            "$ref": "#/responses/genericError"
+          }
+        }
+      }
+    },
+    "/warden/oauth2/clients/authorize": {
+      "post": {
+        "description": "Checks if an OAuth 2.0 Client provided the correct access credentials and and if the client is allowed to perform\nan action on a resource. This endpoint requires a client id, a client secret, a scope, a resource name, an action name and a context.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "http",
+          "https"
+        ],
+        "tags": [
+          "warden"
+        ],
+        "summary": "Check if an OAuth 2.0 Client is authorized to access a resource",
+        "operationId": "isOAuth2ClientAuthorized",
+        "parameters": [
+          {
+            "name": "Body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/wardenOAuth2ClientAuthorizationRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "wardenOAuth2ClientAuthorizationResponse",
+            "schema": {
+              "$ref": "#/definitions/wardenOAuth2ClientAuthorizationResponse"
             }
           },
           "401": {
@@ -657,6 +703,29 @@
     }
   },
   "definitions": {
+    "AuthenticationOAuth2ClientCredentialsRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "description": "Token is the token to introspect.",
+          "type": "string",
+          "x-go-name": "ClientID"
+        },
+        "scopes": {
+          "description": "Scopes is an array of scopes that are required.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "x-go-name": "Scopes"
+        },
+        "secret": {
+          "type": "string",
+          "x-go-name": "ClientSecret"
+        }
+      },
+      "x-go-package": "github.com/ory/keto/authentication"
+    },
     "AuthenticationOAuth2IntrospectionRequest": {
       "type": "object",
       "properties": {
@@ -751,6 +820,10 @@
       "type": "object",
       "x-go-package": "github.com/ory/keto/role"
     },
+    "OAuth2ClientCredentialsAuthentication": {
+      "type": "object",
+      "x-go-package": "github.com/ory/keto/authentication"
+    },
     "OAuth2IntrospectionAuthentication": {
       "type": "object",
       "x-go-package": "github.com/ory/keto/authentication"
@@ -763,44 +836,6 @@
         }
       },
       "x-go-package": "github.com/ory/keto/authentication"
-    },
-    "WardenOAuth2AuthorizationRequest": {
-      "type": "object",
-      "properties": {
-        "action": {
-          "description": "Action is the action that is requested on the resource.",
-          "type": "string",
-          "x-go-name": "Action"
-        },
-        "context": {
-          "description": "Context is the request's environmental context.",
-          "type": "object",
-          "additionalProperties": {
-            "type": "object"
-          },
-          "x-go-name": "Context"
-        },
-        "resource": {
-          "description": "Resource is the resource that access is requested to.",
-          "type": "string",
-          "x-go-name": "Resource"
-        },
-        "scopes": {
-          "description": "Scopes is an array of scopes that are required.",
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "x-go-name": "Scopes"
-        },
-        "token": {
-          "description": "Token is the token to introspect.",
-          "type": "string",
-          "x-go-name": "Token"
-        }
-      },
-      "x-go-name": "swaggerWardenTokenAccessRequest",
-      "x-go-package": "github.com/ory/keto/warden"
     },
     "WardenSubjectAuthorizationRequest": {
       "type": "object",
@@ -853,6 +888,23 @@
         }
       },
       "x-go-name": "DefaultSession",
+      "x-go-package": "github.com/ory/keto/authentication"
+    },
+    "authenticationOAuth2ClientCredentialsSession": {
+      "type": "object",
+      "properties": {
+        "allowed": {
+          "description": "Allowed is true if the request is allowed and false otherwise.",
+          "type": "boolean",
+          "x-go-name": "Allowed"
+        },
+        "subject": {
+          "description": "Subject is the identity that authorized issuing the token, for example a user or an OAuth2 app.\nThis is usually a uuid but you can choose a urn or some other id too.",
+          "type": "string",
+          "x-go-name": "Subject"
+        }
+      },
+      "x-go-name": "OAuth2ClientCredentialsSession",
       "x-go-package": "github.com/ory/keto/authentication"
     },
     "authenticationOAuth2Session": {
@@ -1043,11 +1095,20 @@
       },
       "x-go-package": "github.com/ory/keto/warden"
     },
-    "swaggerDoesWardenAllowTokenAccessRqeuestParameters": {
+    "swaggerDoesWardenAllowClientRequestParameters": {
       "type": "object",
       "properties": {
         "Body": {
-          "$ref": "#/definitions/WardenOAuth2AuthorizationRequest"
+          "$ref": "#/definitions/wardenOAuth2ClientAuthorizationRequest"
+        }
+      },
+      "x-go-package": "github.com/ory/keto/warden"
+    },
+    "swaggerDoesWardenAllowTokenAccessRequestParameters": {
+      "type": "object",
+      "properties": {
+        "Body": {
+          "$ref": "#/definitions/wardenOAuth2AccessTokenAuthorizationRequest"
         }
       },
       "x-go-package": "github.com/ory/keto/warden"
@@ -1134,7 +1195,45 @@
       },
       "x-go-package": "github.com/ory/keto/warden"
     },
-    "wardenOAuth2AuthorizationResponse": {
+    "wardenOAuth2AccessTokenAuthorizationRequest": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "description": "Action is the action that is requested on the resource.",
+          "type": "string",
+          "x-go-name": "Action"
+        },
+        "context": {
+          "description": "Context is the request's environmental context.",
+          "type": "object",
+          "additionalProperties": {
+            "type": "object"
+          },
+          "x-go-name": "Context"
+        },
+        "resource": {
+          "description": "Resource is the resource that access is requested to.",
+          "type": "string",
+          "x-go-name": "Resource"
+        },
+        "scopes": {
+          "description": "Scopes is an array of scopes that are required.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "x-go-name": "Scopes"
+        },
+        "token": {
+          "description": "Token is the token to introspect.",
+          "type": "string",
+          "x-go-name": "Token"
+        }
+      },
+      "x-go-name": "swaggerWardenTokenAccessRequest",
+      "x-go-package": "github.com/ory/keto/warden"
+    },
+    "wardenOAuth2AccessTokenAuthorizationResponse": {
       "type": "object",
       "properties": {
         "accessTokenExtra": {
@@ -1200,6 +1299,65 @@
         }
       },
       "x-go-name": "oauth2Authorization",
+      "x-go-package": "github.com/ory/keto/warden"
+    },
+    "wardenOAuth2ClientAuthorizationRequest": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "description": "Action is the action that is requested on the resource.",
+          "type": "string",
+          "x-go-name": "Action"
+        },
+        "context": {
+          "description": "Context is the request's environmental context.",
+          "type": "object",
+          "additionalProperties": {
+            "type": "object"
+          },
+          "x-go-name": "Context"
+        },
+        "id": {
+          "description": "Token is the token to introspect.",
+          "type": "string",
+          "x-go-name": "ClientID"
+        },
+        "resource": {
+          "description": "Resource is the resource that access is requested to.",
+          "type": "string",
+          "x-go-name": "Resource"
+        },
+        "scopes": {
+          "description": "Scopes is an array of scopes that are required.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "x-go-name": "Scopes"
+        },
+        "secret": {
+          "type": "string",
+          "x-go-name": "ClientSecret"
+        }
+      },
+      "x-go-name": "swaggerWardenClientAccessRequest",
+      "x-go-package": "github.com/ory/keto/warden"
+    },
+    "wardenOAuth2ClientAuthorizationResponse": {
+      "type": "object",
+      "properties": {
+        "allowed": {
+          "description": "Allowed is true if the request is allowed and false otherwise.",
+          "type": "boolean",
+          "x-go-name": "Allowed"
+        },
+        "subject": {
+          "description": "Subject is the identity that authorized issuing the token, for example a user or an OAuth2 app.\nThis is usually a uuid but you can choose a urn or some other id too.",
+          "type": "string",
+          "x-go-name": "Subject"
+        }
+      },
+      "x-go-name": "oauth2ClientAuthorization",
       "x-go-package": "github.com/ory/keto/warden"
     },
     "wardenSubjectAuthorizationResponse": {

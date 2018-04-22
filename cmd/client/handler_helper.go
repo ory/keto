@@ -33,10 +33,10 @@ import (
 )
 
 func getBasePath(cmd *cobra.Command) string {
-	location, err := cmd.Flags().GetString("url")
+	location, err := cmd.Flags().GetString("endpoint")
 	if err != nil || location == "" {
 		fmt.Println(cmd.UsageString())
-		fatalf("Please set the location of ORY Keto by using the --url flag or the KETO_URL environment variable.")
+		fatalf("Please set the location of ORY Keto by using the --endpoint flag or the KETO_URL environment variable.")
 	}
 	return strings.TrimRight(location, "/")
 }

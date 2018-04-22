@@ -21,6 +21,8 @@
       [
         'ApiClient',
         'model/AuthenticationDefaultSession',
+        'model/AuthenticationOAuth2ClientCredentialsRequest',
+        'model/AuthenticationOAuth2ClientCredentialsSession',
         'model/AuthenticationOAuth2IntrospectionRequest',
         'model/AuthenticationOAuth2Session',
         'model/Authenticator',
@@ -29,6 +31,7 @@
         'model/InlineResponse401',
         'model/IntrospectionResponse',
         'model/Manager',
+        'model/OAuth2ClientCredentialsAuthentication',
         'model/OAuth2IntrospectionAuthentication',
         'model/Policy',
         'model/PolicyConditions',
@@ -37,14 +40,17 @@
         'model/Session',
         'model/SwaggerCreatePolicyParameters',
         'model/SwaggerDoesWardenAllowAccessRequestParameters',
-        'model/SwaggerDoesWardenAllowTokenAccessRqeuestParameters',
+        'model/SwaggerDoesWardenAllowClientRequestParameters',
+        'model/SwaggerDoesWardenAllowTokenAccessRequestParameters',
         'model/SwaggerGetPolicyParameters',
         'model/SwaggerListPolicyParameters',
         'model/SwaggerListPolicyResponse',
         'model/SwaggerUpdatePolicyParameters',
         'model/SwaggerWardenBaseRequest',
-        'model/WardenOAuth2AuthorizationRequest',
-        'model/WardenOAuth2AuthorizationResponse',
+        'model/WardenOAuth2AccessTokenAuthorizationRequest',
+        'model/WardenOAuth2AccessTokenAuthorizationResponse',
+        'model/WardenOAuth2ClientAuthorizationRequest',
+        'model/WardenOAuth2ClientAuthorizationResponse',
         'model/WardenSubjectAuthorizationRequest',
         'model/WardenSubjectAuthorizationResponse',
         'model/Writer',
@@ -59,6 +65,8 @@
     module.exports = factory(
       require('./ApiClient'),
       require('./model/AuthenticationDefaultSession'),
+      require('./model/AuthenticationOAuth2ClientCredentialsRequest'),
+      require('./model/AuthenticationOAuth2ClientCredentialsSession'),
       require('./model/AuthenticationOAuth2IntrospectionRequest'),
       require('./model/AuthenticationOAuth2Session'),
       require('./model/Authenticator'),
@@ -67,6 +75,7 @@
       require('./model/InlineResponse401'),
       require('./model/IntrospectionResponse'),
       require('./model/Manager'),
+      require('./model/OAuth2ClientCredentialsAuthentication'),
       require('./model/OAuth2IntrospectionAuthentication'),
       require('./model/Policy'),
       require('./model/PolicyConditions'),
@@ -75,14 +84,17 @@
       require('./model/Session'),
       require('./model/SwaggerCreatePolicyParameters'),
       require('./model/SwaggerDoesWardenAllowAccessRequestParameters'),
-      require('./model/SwaggerDoesWardenAllowTokenAccessRqeuestParameters'),
+      require('./model/SwaggerDoesWardenAllowClientRequestParameters'),
+      require('./model/SwaggerDoesWardenAllowTokenAccessRequestParameters'),
       require('./model/SwaggerGetPolicyParameters'),
       require('./model/SwaggerListPolicyParameters'),
       require('./model/SwaggerListPolicyResponse'),
       require('./model/SwaggerUpdatePolicyParameters'),
       require('./model/SwaggerWardenBaseRequest'),
-      require('./model/WardenOAuth2AuthorizationRequest'),
-      require('./model/WardenOAuth2AuthorizationResponse'),
+      require('./model/WardenOAuth2AccessTokenAuthorizationRequest'),
+      require('./model/WardenOAuth2AccessTokenAuthorizationResponse'),
+      require('./model/WardenOAuth2ClientAuthorizationRequest'),
+      require('./model/WardenOAuth2ClientAuthorizationResponse'),
       require('./model/WardenSubjectAuthorizationRequest'),
       require('./model/WardenSubjectAuthorizationResponse'),
       require('./model/Writer'),
@@ -94,6 +106,8 @@
 })(function(
   ApiClient,
   AuthenticationDefaultSession,
+  AuthenticationOAuth2ClientCredentialsRequest,
+  AuthenticationOAuth2ClientCredentialsSession,
   AuthenticationOAuth2IntrospectionRequest,
   AuthenticationOAuth2Session,
   Authenticator,
@@ -102,6 +116,7 @@
   InlineResponse401,
   IntrospectionResponse,
   Manager,
+  OAuth2ClientCredentialsAuthentication,
   OAuth2IntrospectionAuthentication,
   Policy,
   PolicyConditions,
@@ -110,14 +125,17 @@
   Session,
   SwaggerCreatePolicyParameters,
   SwaggerDoesWardenAllowAccessRequestParameters,
-  SwaggerDoesWardenAllowTokenAccessRqeuestParameters,
+  SwaggerDoesWardenAllowClientRequestParameters,
+  SwaggerDoesWardenAllowTokenAccessRequestParameters,
   SwaggerGetPolicyParameters,
   SwaggerListPolicyParameters,
   SwaggerListPolicyResponse,
   SwaggerUpdatePolicyParameters,
   SwaggerWardenBaseRequest,
-  WardenOAuth2AuthorizationRequest,
-  WardenOAuth2AuthorizationResponse,
+  WardenOAuth2AccessTokenAuthorizationRequest,
+  WardenOAuth2AccessTokenAuthorizationResponse,
+  WardenOAuth2ClientAuthorizationRequest,
+  WardenOAuth2ClientAuthorizationResponse,
   WardenSubjectAuthorizationRequest,
   WardenSubjectAuthorizationResponse,
   Writer,
@@ -170,6 +188,16 @@
      */
     AuthenticationDefaultSession: AuthenticationDefaultSession,
     /**
+     * The AuthenticationOAuth2ClientCredentialsRequest model constructor.
+     * @property {module:model/AuthenticationOAuth2ClientCredentialsRequest}
+     */
+    AuthenticationOAuth2ClientCredentialsRequest: AuthenticationOAuth2ClientCredentialsRequest,
+    /**
+     * The AuthenticationOAuth2ClientCredentialsSession model constructor.
+     * @property {module:model/AuthenticationOAuth2ClientCredentialsSession}
+     */
+    AuthenticationOAuth2ClientCredentialsSession: AuthenticationOAuth2ClientCredentialsSession,
+    /**
      * The AuthenticationOAuth2IntrospectionRequest model constructor.
      * @property {module:model/AuthenticationOAuth2IntrospectionRequest}
      */
@@ -209,6 +237,11 @@
      * @property {module:model/Manager}
      */
     Manager: Manager,
+    /**
+     * The OAuth2ClientCredentialsAuthentication model constructor.
+     * @property {module:model/OAuth2ClientCredentialsAuthentication}
+     */
+    OAuth2ClientCredentialsAuthentication: OAuth2ClientCredentialsAuthentication,
     /**
      * The OAuth2IntrospectionAuthentication model constructor.
      * @property {module:model/OAuth2IntrospectionAuthentication}
@@ -250,10 +283,15 @@
      */
     SwaggerDoesWardenAllowAccessRequestParameters: SwaggerDoesWardenAllowAccessRequestParameters,
     /**
-     * The SwaggerDoesWardenAllowTokenAccessRqeuestParameters model constructor.
-     * @property {module:model/SwaggerDoesWardenAllowTokenAccessRqeuestParameters}
+     * The SwaggerDoesWardenAllowClientRequestParameters model constructor.
+     * @property {module:model/SwaggerDoesWardenAllowClientRequestParameters}
      */
-    SwaggerDoesWardenAllowTokenAccessRqeuestParameters: SwaggerDoesWardenAllowTokenAccessRqeuestParameters,
+    SwaggerDoesWardenAllowClientRequestParameters: SwaggerDoesWardenAllowClientRequestParameters,
+    /**
+     * The SwaggerDoesWardenAllowTokenAccessRequestParameters model constructor.
+     * @property {module:model/SwaggerDoesWardenAllowTokenAccessRequestParameters}
+     */
+    SwaggerDoesWardenAllowTokenAccessRequestParameters: SwaggerDoesWardenAllowTokenAccessRequestParameters,
     /**
      * The SwaggerGetPolicyParameters model constructor.
      * @property {module:model/SwaggerGetPolicyParameters}
@@ -280,15 +318,25 @@
      */
     SwaggerWardenBaseRequest: SwaggerWardenBaseRequest,
     /**
-     * The WardenOAuth2AuthorizationRequest model constructor.
-     * @property {module:model/WardenOAuth2AuthorizationRequest}
+     * The WardenOAuth2AccessTokenAuthorizationRequest model constructor.
+     * @property {module:model/WardenOAuth2AccessTokenAuthorizationRequest}
      */
-    WardenOAuth2AuthorizationRequest: WardenOAuth2AuthorizationRequest,
+    WardenOAuth2AccessTokenAuthorizationRequest: WardenOAuth2AccessTokenAuthorizationRequest,
     /**
-     * The WardenOAuth2AuthorizationResponse model constructor.
-     * @property {module:model/WardenOAuth2AuthorizationResponse}
+     * The WardenOAuth2AccessTokenAuthorizationResponse model constructor.
+     * @property {module:model/WardenOAuth2AccessTokenAuthorizationResponse}
      */
-    WardenOAuth2AuthorizationResponse: WardenOAuth2AuthorizationResponse,
+    WardenOAuth2AccessTokenAuthorizationResponse: WardenOAuth2AccessTokenAuthorizationResponse,
+    /**
+     * The WardenOAuth2ClientAuthorizationRequest model constructor.
+     * @property {module:model/WardenOAuth2ClientAuthorizationRequest}
+     */
+    WardenOAuth2ClientAuthorizationRequest: WardenOAuth2ClientAuthorizationRequest,
+    /**
+     * The WardenOAuth2ClientAuthorizationResponse model constructor.
+     * @property {module:model/WardenOAuth2ClientAuthorizationResponse}
+     */
+    WardenOAuth2ClientAuthorizationResponse: WardenOAuth2ClientAuthorizationResponse,
     /**
      * The WardenSubjectAuthorizationRequest model constructor.
      * @property {module:model/WardenSubjectAuthorizationRequest}
