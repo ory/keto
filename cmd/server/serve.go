@@ -96,7 +96,7 @@ func RunServe(
 				viper.GetString("AUTHENTICATOR_OAUTH2_INTROSPECTION_CLIENT_SECRET"),
 				viper.GetString("AUTHENTICATOR_OAUTH2_INTROSPECTION_TOKEN_URL"),
 				viper.GetString("AUTHENTICATOR_OAUTH2_INTROSPECTION_URL"),
-				strings.Split(viper.GetString("OAUTH2_SCOPES"), ","),
+				strings.Split(viper.GetString("OAUTH2_SCOPE"), ","),
 				strategy,
 			),
 			"oauth2/clients": authentication.NewOAuth2ClientCredentialsAuthentication(

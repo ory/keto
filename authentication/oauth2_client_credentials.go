@@ -48,7 +48,7 @@ type AuthenticationOAuth2ClientCredentialsRequest struct {
 	ClientSecret string `json:"secret"`
 
 	// Scopes is an array of scopes that are required.
-	Scopes []string `json:"scopes"`
+	Scopes []string `json:"scope"`
 }
 
 func NewOAuth2ClientCredentialsSession() *OAuth2ClientCredentialsSession {
