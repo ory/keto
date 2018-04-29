@@ -38,7 +38,7 @@ func init() {
 	// is called directly, e.g.:
 	// oauth2Cmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 	oauth2Cmd.Flags().String("token", "", "The request's bearer token")
-	oauth2Cmd.Flags().StringArray("scopes", []string{}, "The request's required scopes")
+	oauth2Cmd.Flags().StringArray("scope", []string{}, "The request's required scope")
 	oauth2Cmd.Flags().String("action", "", "The request's action")
 	oauth2Cmd.Flags().String("resource", "", "The request's resource")
 }

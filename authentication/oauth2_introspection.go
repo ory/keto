@@ -44,26 +44,26 @@ type OAuth2Session struct {
 	*DefaultSession
 
 	// GrantedScopes is a list of scopes that the subject authorized when asked for consent.
-	GrantedScopes []string `json:"grantedScopes"`
+	GrantedScopes []string `json:"granted_scope"`
 
 	// Issuer is the id of the issuer, typically an hydra instance.
 	Issuer string `json:"issuer"`
 
 	// ClientID is the id of the OAuth2 client that requested the token.
-	ClientID string `json:"clientId"`
+	ClientID string `json:"client_id"`
 
 	// IssuedAt is the token creation time stamp.
-	IssuedAt time.Time `json:"issuedAt"`
+	IssuedAt time.Time `json:"issued_at"`
 
 	// ExpiresAt is the expiry timestamp.
-	ExpiresAt time.Time `json:"expiresAt"`
+	ExpiresAt time.Time `json:"expires_at"`
 
-	NotBefore time.Time `json:"notBefore,omitempty"`
+	NotBefore time.Time `json:"not_before,omitempty"`
 	Username  string    `json:"username,omitempty"`
-	Audience  string    `json:"audience,omitempty"`
+	Audience  []string  `json:"audience,omitempty"`
 
-	// Extra represents arbitrary session data.
-	Extra map[string]interface{} `json:"accessTokenExtra"`
+	// Session represents arbitrary session data.
+	Extra map[string]interface{} `json:"session"`
 }
 
 type IntrospectionResponse struct {
@@ -71,13 +71,16 @@ type IntrospectionResponse struct {
 	Scope    string `json:"scope,omitempty"`
 	ClientID string `json:"client_id,omitempty"`
 	// Here, it's sub
-	Subject   string `json:"sub,omitempty"`
-	ExpiresAt int64  `json:"exp,omitempty"`
-	IssuedAt  int64  `json:"iat,omitempty"`
-	NotBefore int64  `json:"nbf,omitempty"`
-	Username  string `json:"username,omitempty"`
-	Audience  string `json:"aud,omitempty"`
-	Issuer    string `json:"iss,omitempty"`
+	Subject   string   `json:"sub,omitempty"`
+	ExpiresAt int64    `json:"exp,omitempty"`
+	IssuedAt  int64    `json:"iat,omitempty"`
+	NotBefore int64    `json:"nbf,omitempty"`
+	Username  string   `json:"username,omitempty"`
+	Audience  []string `json:"aud,omitempty"`
+	Issuer    string   `json:"iss,omitempty"`
+
+	// Session represents arbitrary session data.
+	Extra map[string]interface{} `json:"ext"`
 }
 
 type OAuth2IntrospectionAuthentication struct {
@@ -92,7 +95,7 @@ type AuthenticationOAuth2IntrospectionRequest struct {
 	Token string `json:"token"`
 
 	// Scopes is an array of scopes that are required.
-	Scopes []string `json:"scopes"`
+	Scopes []string `json:"scope"`
 }
 
 func NewOAuth2Session() *OAuth2Session {
@@ -123,7 +126,29 @@ func (a *OAuth2IntrospectionAuthentication) Authenticate(r *http.Request) (Sessi
 		return nil, errors.WithStack(err)
 	}
 
-	body := url.Values{"token": {token.Token}, "scope": {strings.Join(token.Scopes, " ")}}
+	ir, err := a.Introspect(token.Token, token.Scopes, a.scopeStrategy)
+	if err != nil {
+		return nil, err
+	}
+
+	return &OAuth2Session{
+		DefaultSession: &DefaultSession{
+			Subject: ir.Subject,
+		},
+		GrantedScopes: strings.Split(ir.Scope, " "),
+		ClientID:      ir.ClientID,
+		ExpiresAt:     time.Unix(ir.ExpiresAt, 0).UTC(),
+		IssuedAt:      time.Unix(ir.IssuedAt, 0).UTC(),
+		NotBefore:     time.Unix(ir.NotBefore, 0).UTC(),
+		Username:      ir.Username,
+		Audience:      ir.Audience,
+		Issuer:        ir.Issuer,
+		Extra:         ir.Extra,
+	}, nil
+}
+
+func (a *OAuth2IntrospectionAuthentication) Introspect(token string, scopes []string, strategy fosite.ScopeStrategy) (*IntrospectionResponse, error) {
+	body := url.Values{"token": {token}, "scope": {strings.Join(scopes, " ")}}
 	resp, err := a.client.Post(a.introspectionURL, "application/x-www-form-urlencoded", strings.NewReader(body.Encode()))
 	if err != nil {
 		return nil, errors.WithStack(err)
@@ -143,23 +168,13 @@ func (a *OAuth2IntrospectionAuthentication) Authenticate(r *http.Request) (Sessi
 		return nil, errors.WithStack(ErrUnauthorized.WithReason("Access token introspection says token is not active"))
 	}
 
-	for _, scope := range token.Scopes {
-		if !a.scopeStrategy(strings.Split(ir.Scope, " "), scope) {
-			return nil, errors.WithStack(ErrUnauthorized.WithReason(fmt.Sprintf("Scope %s was not granted", scope)))
+	if strategy != nil {
+		for _, scope := range scopes {
+			if !a.scopeStrategy(strings.Split(ir.Scope, " "), scope) {
+				return nil, errors.WithStack(ErrUnauthorized.WithReason(fmt.Sprintf("Scope %s was not granted", scope)))
+			}
 		}
 	}
 
-	return &OAuth2Session{
-		DefaultSession: &DefaultSession{
-			Subject: ir.Subject,
-		},
-		GrantedScopes: strings.Split(ir.Scope, " "),
-		ClientID:      ir.ClientID,
-		ExpiresAt:     time.Unix(ir.ExpiresAt, 0).UTC(),
-		IssuedAt:      time.Unix(ir.IssuedAt, 0).UTC(),
-		NotBefore:     time.Unix(ir.NotBefore, 0).UTC(),
-		Username:      ir.Username,
-		Audience:      ir.Audience,
-		Issuer:        ir.Issuer,
-	}, nil
+	return &ir, nil
 }
