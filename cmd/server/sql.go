@@ -84,6 +84,7 @@ func newManagers(db string, logger logrus.FieldLogger) (*managers, error) {
 
 	switch u.Scheme {
 	case "postgres":
+		fallthrough
 	case "mysql":
 		sdb, err := sqlcon.NewSQLConnection(db, logger)
 		if err != nil {
