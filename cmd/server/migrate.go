@@ -97,9 +97,9 @@ func RunMigrateHydra(logger *logrus.Logger) func(cmd *cobra.Command, args []stri
 		migrate.SetTable("keto_legacy_hydra_migrations")
 		n, err := migrate.Exec(db.DB, db.DriverName(), legacy.HydraLegacyMigrations[db.DriverName()], migrate.Up)
 		if err != nil {
-			logger.WithError(err).WithField("migrations", n).WithField("table", "policies").Print("An error occurred while trying to apply SQL migrations")
+			logger.WithError(err).WithField("migrations", n).Print("An error occurred while trying to apply SQL migrations")
 		}
-		logger.WithField("migrations", n).WithField("table", "role").Print("Successfully applied SQL migrations")
+		logger.WithField("migrations", n).Print("Successfully applied SQL migrations")
 		logger.Info("Done applying SQL migrations")
 	}
 }
