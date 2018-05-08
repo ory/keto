@@ -23,11 +23,9 @@ package server
 
 import (
 	"net/url"
-	"runtime"
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 	"github.com/ory/keto/role"
 	"github.com/ory/ladon"
@@ -37,30 +35,6 @@ import (
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 )
-
-func connectToSql(url string, dbt string) (*sqlx.DB, error) {
-	db, err := sqlx.Open(dbt, url)
-	if err != nil {
-		return nil, errors.WithStack(err)
-	}
-
-	maxConns := maxParallelism() * 2
-	maxConnLifetime := time.Duration(0)
-	maxIdleConns := maxParallelism()
-	db.SetMaxOpenConns(maxConns)
-	db.SetMaxIdleConns(maxIdleConns)
-	db.SetConnMaxLifetime(maxConnLifetime)
-	return db, nil
-}
-
-func maxParallelism() int {
-	maxProcs := runtime.GOMAXPROCS(0)
-	numCPU := runtime.NumCPU()
-	if maxProcs < numCPU {
-		return maxProcs
-	}
-	return numCPU
-}
 
 type managers struct {
 	roleManager   role.Manager
@@ -86,7 +60,7 @@ func newManagers(db string, logger logrus.FieldLogger) (*managers, error) {
 	case "postgres":
 		fallthrough
 	case "mysql":
-		sdb, err := sqlcon.NewSQLConnection(db, logger)
+		sdb, err := connectToSQL(db, logger)
 		if err != nil {
 			return nil, errors.WithStack(err)
 		}
@@ -98,4 +72,48 @@ func newManagers(db string, logger logrus.FieldLogger) (*managers, error) {
 	}
 
 	return nil, errors.Errorf("The provided database URL %s can not be handled", db)
+}
+
+func retry(logger logrus.FieldLogger, maxWait time.Duration, failAfter time.Duration, f func() error) (err error) {
+	var lastStart time.Time
+	err = errors.New("Did not connect.")
+	loopWait := time.Millisecond * 100
+	retryStart := time.Now().UTC()
+	for retryStart.Add(failAfter).After(time.Now().UTC()) {
+		lastStart = time.Now().UTC()
+		if err = f(); err == nil {
+			return nil
+		}
+
+		if lastStart.Add(maxWait * 2).Before(time.Now().UTC()) {
+			retryStart = time.Now().UTC()
+		}
+
+		logger.WithError(err).Infof("Retrying in %f seconds...", loopWait.Seconds())
+		time.Sleep(loopWait)
+		loopWait = loopWait * time.Duration(int64(2))
+		if loopWait > maxWait {
+			loopWait = maxWait
+		}
+	}
+	return err
+}
+
+func connectToSQL(db string, logger logrus.FieldLogger) (sdb *sqlcon.SQLConnection, err error) {
+	if err := retry(logger, time.Minute, time.Minute*15, func() error {
+		var err error
+		sdb, err = sqlcon.NewSQLConnection(db, logger)
+		if err != nil {
+			return errors.WithStack(err)
+		}
+
+		if err := sdb.GetDatabase().Ping(); err != nil {
+			return errors.WithStack(err)
+		}
+		return nil
+	}); err != nil {
+		return nil, errors.WithStack(err)
+	}
+
+	return sdb, nil
 }

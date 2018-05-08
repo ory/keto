@@ -110,7 +110,7 @@ func TestOAuth2Introspection(t *testing.T) {
 					IssuedAt:  now.Unix(),
 					NotBefore: now.Unix(),
 					Username:  "username",
-					Audience:  "audience",
+					Audience:  []string{"audience"},
 					Issuer:    "issuer",
 				}
 			},
@@ -126,7 +126,7 @@ func TestOAuth2Introspection(t *testing.T) {
 				IssuedAt:      now,
 				NotBefore:     now,
 				Username:      "username",
-				Audience:      "audience",
+				Audience:      []string{"audience"},
 				Issuer:        "issuer",
 			},
 		},
