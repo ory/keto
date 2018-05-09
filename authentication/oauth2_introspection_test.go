@@ -55,7 +55,7 @@ func TestOAuth2Introspection(t *testing.T) {
 
 		var req AuthenticationOAuth2IntrospectionRequest
 		req.Token = r.PostForm.Get("token")
-		req.Scopes = strings.Split(r.PostForm.Get("scope"), " ")
+		req.Scope = strings.Split(r.PostForm.Get("scope"), " ")
 
 		ir := cb(w, r, req)
 		herodot.NewJSONWriter(logrus.New()).Write(w, r, ir)
@@ -93,10 +93,10 @@ func TestOAuth2Introspection(t *testing.T) {
 		{
 			cb: func(w http.ResponseWriter, r *http.Request, req AuthenticationOAuth2IntrospectionRequest) *IntrospectionResponse {
 				assert.Equal(t, "foo-token", req.Token)
-				assert.EqualValues(t, []string{"foo-scope", "foo-scope-a"}, req.Scopes)
+				assert.EqualValues(t, []string{"foo-scope", "foo-scope-a"}, req.Scope)
 				return &IntrospectionResponse{Active: false}
 			},
-			req:         &AuthenticationOAuth2IntrospectionRequest{Token: "foo-token", Scopes: []string{"foo-scope", "foo-scope-a"}},
+			req:         &AuthenticationOAuth2IntrospectionRequest{Token: "foo-token", Scope: []string{"foo-scope", "foo-scope-a"}},
 			expectedErr: ErrUnauthorized,
 		},
 		{
@@ -114,13 +114,11 @@ func TestOAuth2Introspection(t *testing.T) {
 					Issuer:    "issuer",
 				}
 			},
-			req: &AuthenticationOAuth2IntrospectionRequest{Token: "foo-token", Scopes: []string{"foo-scope"}},
+			req: &AuthenticationOAuth2IntrospectionRequest{Token: "foo-token", Scope: []string{"foo-scope"}},
 			expectedSession: &OAuth2Session{
-				DefaultSession: &DefaultSession{
-					Subject: "subject",
-					Allowed: false,
-				},
-				GrantedScopes: []string{"foo-scope"},
+				Subject:       "subject",
+				Allowed:       false,
+				GrantedScopes: "foo-scope",
 				ClientID:      "scope-ip",
 				ExpiresAt:     now,
 				IssuedAt:      now,

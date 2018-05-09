@@ -47,7 +47,7 @@ type AuthenticationOAuth2ClientCredentialsRequest struct {
 
 	ClientSecret string `json:"secret"`
 
-	// Scopes is an array of scopes that are required.
+	// Scope is an array of scopes that are required.
 	Scopes []string `json:"scope"`
 }
 

@@ -53,9 +53,10 @@ class IntrospectionResponse implements ArrayAccess
       */
     protected static $swaggerTypes = [
         'active' => 'bool',
-        'aud' => 'string',
+        'aud' => 'string[]',
         'client_id' => 'string',
         'exp' => 'int',
+        'ext' => 'map[string,object]',
         'iat' => 'int',
         'iss' => 'string',
         'nbf' => 'int',
@@ -73,6 +74,7 @@ class IntrospectionResponse implements ArrayAccess
         'aud' => null,
         'client_id' => null,
         'exp' => 'int64',
+        'ext' => null,
         'iat' => 'int64',
         'iss' => null,
         'nbf' => 'int64',
@@ -100,6 +102,7 @@ class IntrospectionResponse implements ArrayAccess
         'aud' => 'aud',
         'client_id' => 'client_id',
         'exp' => 'exp',
+        'ext' => 'ext',
         'iat' => 'iat',
         'iss' => 'iss',
         'nbf' => 'nbf',
@@ -118,6 +121,7 @@ class IntrospectionResponse implements ArrayAccess
         'aud' => 'setAud',
         'client_id' => 'setClientId',
         'exp' => 'setExp',
+        'ext' => 'setExt',
         'iat' => 'setIat',
         'iss' => 'setIss',
         'nbf' => 'setNbf',
@@ -136,6 +140,7 @@ class IntrospectionResponse implements ArrayAccess
         'aud' => 'getAud',
         'client_id' => 'getClientId',
         'exp' => 'getExp',
+        'ext' => 'getExt',
         'iat' => 'getIat',
         'iss' => 'getIss',
         'nbf' => 'getNbf',
@@ -179,6 +184,7 @@ class IntrospectionResponse implements ArrayAccess
         $this->container['aud'] = isset($data['aud']) ? $data['aud'] : null;
         $this->container['client_id'] = isset($data['client_id']) ? $data['client_id'] : null;
         $this->container['exp'] = isset($data['exp']) ? $data['exp'] : null;
+        $this->container['ext'] = isset($data['ext']) ? $data['ext'] : null;
         $this->container['iat'] = isset($data['iat']) ? $data['iat'] : null;
         $this->container['iss'] = isset($data['iss']) ? $data['iss'] : null;
         $this->container['nbf'] = isset($data['nbf']) ? $data['nbf'] : null;
@@ -235,7 +241,7 @@ class IntrospectionResponse implements ArrayAccess
 
     /**
      * Gets aud
-     * @return string
+     * @return string[]
      */
     public function getAud()
     {
@@ -244,7 +250,7 @@ class IntrospectionResponse implements ArrayAccess
 
     /**
      * Sets aud
-     * @param string $aud
+     * @param string[] $aud
      * @return $this
      */
     public function setAud($aud)
@@ -292,6 +298,27 @@ class IntrospectionResponse implements ArrayAccess
     public function setExp($exp)
     {
         $this->container['exp'] = $exp;
+
+        return $this;
+    }
+
+    /**
+     * Gets ext
+     * @return map[string,object]
+     */
+    public function getExt()
+    {
+        return $this->container['ext'];
+    }
+
+    /**
+     * Sets ext
+     * @param map[string,object] $ext Session represents arbitrary session data.
+     * @return $this
+     */
+    public function setExt($ext)
+    {
+        $this->container['ext'] = $ext;
 
         return $this;
     }

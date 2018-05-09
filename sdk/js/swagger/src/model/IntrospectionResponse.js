@@ -63,13 +63,16 @@
         obj['active'] = ApiClient.convertToType(data['active'], 'Boolean')
       }
       if (data.hasOwnProperty('aud')) {
-        obj['aud'] = ApiClient.convertToType(data['aud'], 'String')
+        obj['aud'] = ApiClient.convertToType(data['aud'], ['String'])
       }
       if (data.hasOwnProperty('client_id')) {
         obj['client_id'] = ApiClient.convertToType(data['client_id'], 'String')
       }
       if (data.hasOwnProperty('exp')) {
         obj['exp'] = ApiClient.convertToType(data['exp'], 'Number')
+      }
+      if (data.hasOwnProperty('ext')) {
+        obj['ext'] = ApiClient.convertToType(data['ext'], { String: Object })
       }
       if (data.hasOwnProperty('iat')) {
         obj['iat'] = ApiClient.convertToType(data['iat'], 'Number')
@@ -98,7 +101,7 @@
    */
   exports.prototype['active'] = undefined
   /**
-   * @member {String} aud
+   * @member {Array.<String>} aud
    */
   exports.prototype['aud'] = undefined
   /**
@@ -109,6 +112,11 @@
    * @member {Number} exp
    */
   exports.prototype['exp'] = undefined
+  /**
+   * Session represents arbitrary session data.
+   * @member {Object.<String, Object>} ext
+   */
+  exports.prototype['ext'] = undefined
   /**
    * @member {Number} iat
    */

@@ -22,8 +22,8 @@ type WardenOAuth2ClientAuthorizationRequest struct {
 	// Resource is the resource that access is requested to.
 	Resource string `json:"resource,omitempty"`
 
-	// Scopes is an array of scopes that are required.
-	Scopes []string `json:"scopes,omitempty"`
+	// Scope is an array of scopes that are required.
+	Scope []string `json:"scope,omitempty"`
 
 	Secret string `json:"secret,omitempty"`
 }

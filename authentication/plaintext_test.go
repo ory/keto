@@ -33,7 +33,9 @@ import (
 )
 
 func TestPlaintext(t *testing.T) {
-	out, err := json.Marshal(&DefaultSession{Subject: "foo"})
+	out, err := json.Marshal(&struct {
+		Subject string `json:"subject"`
+	}{Subject: "foo"})
 	require.NoError(t, err)
 
 	r := &http.Request{
