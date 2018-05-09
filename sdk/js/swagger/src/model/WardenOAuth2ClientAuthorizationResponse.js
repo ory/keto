@@ -62,8 +62,8 @@
       if (data.hasOwnProperty('allowed')) {
         obj['allowed'] = ApiClient.convertToType(data['allowed'], 'Boolean')
       }
-      if (data.hasOwnProperty('subject')) {
-        obj['subject'] = ApiClient.convertToType(data['subject'], 'String')
+      if (data.hasOwnProperty('sub')) {
+        obj['sub'] = ApiClient.convertToType(data['sub'], 'String')
       }
     }
     return obj
@@ -76,9 +76,9 @@
   exports.prototype['allowed'] = undefined
   /**
    * Subject is the identity that authorized issuing the token, for example a user or an OAuth2 app. This is usually a uuid but you can choose a urn or some other id too.
-   * @member {String} subject
+   * @member {String} sub
    */
-  exports.prototype['subject'] = undefined
+  exports.prototype['sub'] = undefined
 
   return exports
 })

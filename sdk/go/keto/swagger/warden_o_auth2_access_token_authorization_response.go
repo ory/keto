@@ -14,33 +14,33 @@ import (
 
 type WardenOAuth2AccessTokenAuthorizationResponse struct {
 
-	// Extra represents arbitrary session data.
-	AccessTokenExtra map[string]interface{} `json:"accessTokenExtra,omitempty"`
-
 	// Allowed is true if the request is allowed and false otherwise.
 	Allowed bool `json:"allowed,omitempty"`
 
-	Audience string `json:"audience,omitempty"`
+	Aud []string `json:"aud,omitempty"`
 
 	// ClientID is the id of the OAuth2 client that requested the token.
-	ClientId string `json:"clientId,omitempty"`
+	ClientId string `json:"client_id,omitempty"`
 
 	// ExpiresAt is the expiry timestamp.
-	ExpiresAt time.Time `json:"expiresAt,omitempty"`
-
-	// GrantedScopes is a list of scopes that the subject authorized when asked for consent.
-	GrantedScopes []string `json:"grantedScopes,omitempty"`
+	Exp time.Time `json:"exp,omitempty"`
 
 	// IssuedAt is the token creation time stamp.
-	IssuedAt time.Time `json:"issuedAt,omitempty"`
+	Iat time.Time `json:"iat,omitempty"`
 
 	// Issuer is the id of the issuer, typically an hydra instance.
-	Issuer string `json:"issuer,omitempty"`
+	Iss string `json:"iss,omitempty"`
 
-	NotBefore time.Time `json:"notBefore,omitempty"`
+	Nbf time.Time `json:"nbf,omitempty"`
+
+	// GrantedScopes is a list of scopes that the subject authorized when asked for consent.
+	Scope string `json:"scope,omitempty"`
+
+	// Session represents arbitrary session data.
+	Session map[string]interface{} `json:"session,omitempty"`
 
 	// Subject is the identity that authorized issuing the token, for example a user or an OAuth2 app. This is usually a uuid but you can choose a urn or some other id too.
-	Subject string `json:"subject,omitempty"`
+	Sub string `json:"sub,omitempty"`
 
 	Username string `json:"username,omitempty"`
 }

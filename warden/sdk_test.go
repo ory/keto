@@ -130,13 +130,13 @@ func TestWardenSDK(t *testing.T) {
 			Action:   "create",
 			Context:  ladon.Context{},
 			Token:    "alice_token",
-			Scopes:   []string{"fooscope"},
+			Scope:    []string{"fooscope"},
 		})
 
 		require.NoError(t, err, "%s", response.Payload)
 		require.Equal(t, http.StatusOK, response.StatusCode, "%s", response.Payload)
 		assert.True(t, result.Allowed)
-		assert.EqualValues(t, "alice", result.Subject)
+		assert.EqualValues(t, "alice", result.Sub)
 	})
 
 	t.Run("IsOAuth2ClientAuthorized", func(t *testing.T) {
@@ -146,12 +146,12 @@ func TestWardenSDK(t *testing.T) {
 			Id:       "client",
 			Secret:   "secret",
 			Context:  ladon.Context{},
-			Scopes:   []string{"fooscope"},
+			Scope:    []string{"fooscope"},
 		})
 
 		require.NoError(t, err, "%s", response.Payload)
 		require.Equal(t, http.StatusOK, response.StatusCode, "%s", response.Payload)
 		assert.True(t, result.Allowed)
-		assert.EqualValues(t, "client", result.Subject)
+		assert.EqualValues(t, "client", result.Sub)
 	})
 }

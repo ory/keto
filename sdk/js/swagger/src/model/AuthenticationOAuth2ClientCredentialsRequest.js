@@ -62,8 +62,8 @@
       if (data.hasOwnProperty('id')) {
         obj['id'] = ApiClient.convertToType(data['id'], 'String')
       }
-      if (data.hasOwnProperty('scopes')) {
-        obj['scopes'] = ApiClient.convertToType(data['scopes'], ['String'])
+      if (data.hasOwnProperty('scope')) {
+        obj['scope'] = ApiClient.convertToType(data['scope'], ['String'])
       }
       if (data.hasOwnProperty('secret')) {
         obj['secret'] = ApiClient.convertToType(data['secret'], 'String')
@@ -78,10 +78,10 @@
    */
   exports.prototype['id'] = undefined
   /**
-   * Scopes is an array of scopes that are required.
-   * @member {Array.<String>} scopes
+   * Scope is an array of scopes that are required.
+   * @member {Array.<String>} scope
    */
-  exports.prototype['scopes'] = undefined
+  exports.prototype['scope'] = undefined
   /**
    * @member {String} secret
    */

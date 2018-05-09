@@ -56,7 +56,7 @@ class WardenOAuth2ClientAuthorizationRequest implements ArrayAccess
         'context' => 'map[string,object]',
         'id' => 'string',
         'resource' => 'string',
-        'scopes' => 'string[]',
+        'scope' => 'string[]',
         'secret' => 'string'
     ];
 
@@ -69,7 +69,7 @@ class WardenOAuth2ClientAuthorizationRequest implements ArrayAccess
         'context' => null,
         'id' => null,
         'resource' => null,
-        'scopes' => null,
+        'scope' => null,
         'secret' => null
     ];
 
@@ -92,7 +92,7 @@ class WardenOAuth2ClientAuthorizationRequest implements ArrayAccess
         'context' => 'context',
         'id' => 'id',
         'resource' => 'resource',
-        'scopes' => 'scopes',
+        'scope' => 'scope',
         'secret' => 'secret'
     ];
 
@@ -106,7 +106,7 @@ class WardenOAuth2ClientAuthorizationRequest implements ArrayAccess
         'context' => 'setContext',
         'id' => 'setId',
         'resource' => 'setResource',
-        'scopes' => 'setScopes',
+        'scope' => 'setScope',
         'secret' => 'setSecret'
     ];
 
@@ -120,7 +120,7 @@ class WardenOAuth2ClientAuthorizationRequest implements ArrayAccess
         'context' => 'getContext',
         'id' => 'getId',
         'resource' => 'getResource',
-        'scopes' => 'getScopes',
+        'scope' => 'getScope',
         'secret' => 'getSecret'
     ];
 
@@ -159,7 +159,7 @@ class WardenOAuth2ClientAuthorizationRequest implements ArrayAccess
         $this->container['context'] = isset($data['context']) ? $data['context'] : null;
         $this->container['id'] = isset($data['id']) ? $data['id'] : null;
         $this->container['resource'] = isset($data['resource']) ? $data['resource'] : null;
-        $this->container['scopes'] = isset($data['scopes']) ? $data['scopes'] : null;
+        $this->container['scope'] = isset($data['scope']) ? $data['scope'] : null;
         $this->container['secret'] = isset($data['secret']) ? $data['secret'] : null;
     }
 
@@ -273,22 +273,22 @@ class WardenOAuth2ClientAuthorizationRequest implements ArrayAccess
     }
 
     /**
-     * Gets scopes
+     * Gets scope
      * @return string[]
      */
-    public function getScopes()
+    public function getScope()
     {
-        return $this->container['scopes'];
+        return $this->container['scope'];
     }
 
     /**
-     * Sets scopes
-     * @param string[] $scopes Scopes is an array of scopes that are required.
+     * Sets scope
+     * @param string[] $scope Scope is an array of scopes that are required.
      * @return $this
      */
-    public function setScopes($scopes)
+    public function setScope($scope)
     {
-        $this->container['scopes'] = $scopes;
+        $this->container['scope'] = $scope;
 
         return $this;
     }

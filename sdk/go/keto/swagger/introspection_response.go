@@ -11,11 +11,14 @@ package swagger
 type IntrospectionResponse struct {
 	Active bool `json:"active,omitempty"`
 
-	Aud string `json:"aud,omitempty"`
+	Aud []string `json:"aud,omitempty"`
 
 	ClientId string `json:"client_id,omitempty"`
 
 	Exp int64 `json:"exp,omitempty"`
+
+	// Session represents arbitrary session data.
+	Ext map[string]interface{} `json:"ext,omitempty"`
 
 	Iat int64 `json:"iat,omitempty"`
 

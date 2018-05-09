@@ -4,9 +4,10 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **active** | **bool** |  | [optional] 
-**aud** | **string** |  | [optional] 
+**aud** | **string[]** |  | [optional] 
 **client_id** | **string** |  | [optional] 
 **exp** | **int** |  | [optional] 
+**ext** | **map[string,object]** | Session represents arbitrary session data. | [optional] 
 **iat** | **int** |  | [optional] 
 **iss** | **string** |  | [optional] 
 **nbf** | **int** |  | [optional] 

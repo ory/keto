@@ -14,5 +14,5 @@ type AuthenticationDefaultSession struct {
 	Allowed bool `json:"allowed,omitempty"`
 
 	// Subject is the identity that authorized issuing the token, for example a user or an OAuth2 app. This is usually a uuid but you can choose a urn or some other id too.
-	Subject string `json:"subject,omitempty"`
+	Sub string `json:"sub,omitempty"`
 }

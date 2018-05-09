@@ -55,7 +55,7 @@ class WardenOAuth2AccessTokenAuthorizationRequest implements ArrayAccess
         'action' => 'string',
         'context' => 'map[string,object]',
         'resource' => 'string',
-        'scopes' => 'string[]',
+        'scope' => 'string[]',
         'token' => 'string'
     ];
 
@@ -67,7 +67,7 @@ class WardenOAuth2AccessTokenAuthorizationRequest implements ArrayAccess
         'action' => null,
         'context' => null,
         'resource' => null,
-        'scopes' => null,
+        'scope' => null,
         'token' => null
     ];
 
@@ -89,7 +89,7 @@ class WardenOAuth2AccessTokenAuthorizationRequest implements ArrayAccess
         'action' => 'action',
         'context' => 'context',
         'resource' => 'resource',
-        'scopes' => 'scopes',
+        'scope' => 'scope',
         'token' => 'token'
     ];
 
@@ -102,7 +102,7 @@ class WardenOAuth2AccessTokenAuthorizationRequest implements ArrayAccess
         'action' => 'setAction',
         'context' => 'setContext',
         'resource' => 'setResource',
-        'scopes' => 'setScopes',
+        'scope' => 'setScope',
         'token' => 'setToken'
     ];
 
@@ -115,7 +115,7 @@ class WardenOAuth2AccessTokenAuthorizationRequest implements ArrayAccess
         'action' => 'getAction',
         'context' => 'getContext',
         'resource' => 'getResource',
-        'scopes' => 'getScopes',
+        'scope' => 'getScope',
         'token' => 'getToken'
     ];
 
@@ -153,7 +153,7 @@ class WardenOAuth2AccessTokenAuthorizationRequest implements ArrayAccess
         $this->container['action'] = isset($data['action']) ? $data['action'] : null;
         $this->container['context'] = isset($data['context']) ? $data['context'] : null;
         $this->container['resource'] = isset($data['resource']) ? $data['resource'] : null;
-        $this->container['scopes'] = isset($data['scopes']) ? $data['scopes'] : null;
+        $this->container['scope'] = isset($data['scope']) ? $data['scope'] : null;
         $this->container['token'] = isset($data['token']) ? $data['token'] : null;
     }
 
@@ -246,22 +246,22 @@ class WardenOAuth2AccessTokenAuthorizationRequest implements ArrayAccess
     }
 
     /**
-     * Gets scopes
+     * Gets scope
      * @return string[]
      */
-    public function getScopes()
+    public function getScope()
     {
-        return $this->container['scopes'];
+        return $this->container['scope'];
     }
 
     /**
-     * Sets scopes
-     * @param string[] $scopes Scopes is an array of scopes that are required.
+     * Sets scope
+     * @param string[] $scope Scope is an array of scopes that are required.
      * @return $this
      */
-    public function setScopes($scopes)
+    public function setScope($scope)
     {
-        $this->container['scopes'] = $scopes;
+        $this->container['scope'] = $scope;
 
         return $this;
     }
