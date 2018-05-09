@@ -7,7 +7,7 @@ Name | Type | Description | Notes
 **context** | **{String: Object}** | Context is the request&#39;s environmental context. | [optional] 
 **id** | **String** | Token is the token to introspect. | [optional] 
 **resource** | **String** | Resource is the resource that access is requested to. | [optional] 
-**scopes** | **[String]** | Scopes is an array of scopes that are required. | [optional] 
+**scope** | **[String]** | Scope is an array of scopes that are required. | [optional] 
 **secret** | **String** |  | [optional] 
 
 

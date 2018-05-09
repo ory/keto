@@ -711,8 +711,8 @@
           "type": "string",
           "x-go-name": "ClientID"
         },
-        "scopes": {
-          "description": "Scopes is an array of scopes that are required.",
+        "scope": {
+          "description": "Scope is an array of scopes that are required.",
           "type": "array",
           "items": {
             "type": "string"
@@ -729,13 +729,13 @@
     "AuthenticationOAuth2IntrospectionRequest": {
       "type": "object",
       "properties": {
-        "scopes": {
-          "description": "Scopes is an array of scopes that are required.",
+        "scope": {
+          "description": "Scope is an array of scopes that are required.",
           "type": "array",
           "items": {
             "type": "string"
           },
-          "x-go-name": "Scopes"
+          "x-go-name": "Scope"
         },
         "token": {
           "description": "Token is the token to introspect.",
@@ -774,7 +774,10 @@
           "x-go-name": "Active"
         },
         "aud": {
-          "type": "string",
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
           "x-go-name": "Audience"
         },
         "client_id": {
@@ -785,6 +788,14 @@
           "type": "integer",
           "format": "int64",
           "x-go-name": "ExpiresAt"
+        },
+        "ext": {
+          "description": "Session represents arbitrary session data.",
+          "type": "object",
+          "additionalProperties": {
+            "type": "object"
+          },
+          "x-go-name": "Extra"
         },
         "iat": {
           "type": "integer",
@@ -881,7 +892,7 @@
           "type": "boolean",
           "x-go-name": "Allowed"
         },
-        "subject": {
+        "sub": {
           "description": "Subject is the identity that authorized issuing the token, for example a user or an OAuth2 app.\nThis is usually a uuid but you can choose a urn or some other id too.",
           "type": "string",
           "x-go-name": "Subject"
@@ -898,7 +909,7 @@
           "type": "boolean",
           "x-go-name": "Allowed"
         },
-        "subject": {
+        "sub": {
           "description": "Subject is the identity that authorized issuing the token, for example a user or an OAuth2 app.\nThis is usually a uuid but you can choose a urn or some other id too.",
           "type": "string",
           "x-go-name": "Subject"
@@ -910,59 +921,59 @@
     "authenticationOAuth2Session": {
       "type": "object",
       "properties": {
-        "accessTokenExtra": {
-          "description": "Extra represents arbitrary session data.",
+        "allowed": {
+          "description": "Allowed is true if the request is allowed and false otherwise.",
+          "type": "boolean",
+          "x-go-name": "Allowed"
+        },
+        "aud": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "x-go-name": "Audience"
+        },
+        "client_id": {
+          "description": "ClientID is the id of the OAuth2 client that requested the token.",
+          "type": "string",
+          "x-go-name": "ClientID"
+        },
+        "exp": {
+          "description": "ExpiresAt is the expiry timestamp.",
+          "type": "string",
+          "format": "date-time",
+          "x-go-name": "ExpiresAt"
+        },
+        "iat": {
+          "description": "IssuedAt is the token creation time stamp.",
+          "type": "string",
+          "format": "date-time",
+          "x-go-name": "IssuedAt"
+        },
+        "iss": {
+          "description": "Issuer is the id of the issuer, typically an hydra instance.",
+          "type": "string",
+          "x-go-name": "Issuer"
+        },
+        "nbf": {
+          "type": "string",
+          "format": "date-time",
+          "x-go-name": "NotBefore"
+        },
+        "scope": {
+          "description": "GrantedScopes is a list of scopes that the subject authorized when asked for consent.",
+          "type": "string",
+          "x-go-name": "GrantedScopes"
+        },
+        "session": {
+          "description": "Session represents arbitrary session data.",
           "type": "object",
           "additionalProperties": {
             "type": "object"
           },
           "x-go-name": "Extra"
         },
-        "allowed": {
-          "description": "Allowed is true if the request is allowed and false otherwise.",
-          "type": "boolean",
-          "x-go-name": "Allowed"
-        },
-        "audience": {
-          "type": "string",
-          "x-go-name": "Audience"
-        },
-        "clientId": {
-          "description": "ClientID is the id of the OAuth2 client that requested the token.",
-          "type": "string",
-          "x-go-name": "ClientID"
-        },
-        "expiresAt": {
-          "description": "ExpiresAt is the expiry timestamp.",
-          "type": "string",
-          "format": "date-time",
-          "x-go-name": "ExpiresAt"
-        },
-        "grantedScopes": {
-          "description": "GrantedScopes is a list of scopes that the subject authorized when asked for consent.",
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "x-go-name": "GrantedScopes"
-        },
-        "issuedAt": {
-          "description": "IssuedAt is the token creation time stamp.",
-          "type": "string",
-          "format": "date-time",
-          "x-go-name": "IssuedAt"
-        },
-        "issuer": {
-          "description": "Issuer is the id of the issuer, typically an hydra instance.",
-          "type": "string",
-          "x-go-name": "Issuer"
-        },
-        "notBefore": {
-          "type": "string",
-          "format": "date-time",
-          "x-go-name": "NotBefore"
-        },
-        "subject": {
+        "sub": {
           "description": "Subject is the identity that authorized issuing the token, for example a user or an OAuth2 app.\nThis is usually a uuid but you can choose a urn or some other id too.",
           "type": "string",
           "x-go-name": "Subject"
@@ -1216,13 +1227,13 @@
           "type": "string",
           "x-go-name": "Resource"
         },
-        "scopes": {
-          "description": "Scopes is an array of scopes that are required.",
+        "scope": {
+          "description": "Scope is an array of scopes that are required.",
           "type": "array",
           "items": {
             "type": "string"
           },
-          "x-go-name": "Scopes"
+          "x-go-name": "Scope"
         },
         "token": {
           "description": "Token is the token to introspect.",
@@ -1236,59 +1247,59 @@
     "wardenOAuth2AccessTokenAuthorizationResponse": {
       "type": "object",
       "properties": {
-        "accessTokenExtra": {
-          "description": "Extra represents arbitrary session data.",
+        "allowed": {
+          "description": "Allowed is true if the request is allowed and false otherwise.",
+          "type": "boolean",
+          "x-go-name": "Allowed"
+        },
+        "aud": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "x-go-name": "Audience"
+        },
+        "client_id": {
+          "description": "ClientID is the id of the OAuth2 client that requested the token.",
+          "type": "string",
+          "x-go-name": "ClientID"
+        },
+        "exp": {
+          "description": "ExpiresAt is the expiry timestamp.",
+          "type": "string",
+          "format": "date-time",
+          "x-go-name": "ExpiresAt"
+        },
+        "iat": {
+          "description": "IssuedAt is the token creation time stamp.",
+          "type": "string",
+          "format": "date-time",
+          "x-go-name": "IssuedAt"
+        },
+        "iss": {
+          "description": "Issuer is the id of the issuer, typically an hydra instance.",
+          "type": "string",
+          "x-go-name": "Issuer"
+        },
+        "nbf": {
+          "type": "string",
+          "format": "date-time",
+          "x-go-name": "NotBefore"
+        },
+        "scope": {
+          "description": "GrantedScopes is a list of scopes that the subject authorized when asked for consent.",
+          "type": "string",
+          "x-go-name": "GrantedScopes"
+        },
+        "session": {
+          "description": "Session represents arbitrary session data.",
           "type": "object",
           "additionalProperties": {
             "type": "object"
           },
           "x-go-name": "Extra"
         },
-        "allowed": {
-          "description": "Allowed is true if the request is allowed and false otherwise.",
-          "type": "boolean",
-          "x-go-name": "Allowed"
-        },
-        "audience": {
-          "type": "string",
-          "x-go-name": "Audience"
-        },
-        "clientId": {
-          "description": "ClientID is the id of the OAuth2 client that requested the token.",
-          "type": "string",
-          "x-go-name": "ClientID"
-        },
-        "expiresAt": {
-          "description": "ExpiresAt is the expiry timestamp.",
-          "type": "string",
-          "format": "date-time",
-          "x-go-name": "ExpiresAt"
-        },
-        "grantedScopes": {
-          "description": "GrantedScopes is a list of scopes that the subject authorized when asked for consent.",
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "x-go-name": "GrantedScopes"
-        },
-        "issuedAt": {
-          "description": "IssuedAt is the token creation time stamp.",
-          "type": "string",
-          "format": "date-time",
-          "x-go-name": "IssuedAt"
-        },
-        "issuer": {
-          "description": "Issuer is the id of the issuer, typically an hydra instance.",
-          "type": "string",
-          "x-go-name": "Issuer"
-        },
-        "notBefore": {
-          "type": "string",
-          "format": "date-time",
-          "x-go-name": "NotBefore"
-        },
-        "subject": {
+        "sub": {
           "description": "Subject is the identity that authorized issuing the token, for example a user or an OAuth2 app.\nThis is usually a uuid but you can choose a urn or some other id too.",
           "type": "string",
           "x-go-name": "Subject"
@@ -1327,8 +1338,8 @@
           "type": "string",
           "x-go-name": "Resource"
         },
-        "scopes": {
-          "description": "Scopes is an array of scopes that are required.",
+        "scope": {
+          "description": "Scope is an array of scopes that are required.",
           "type": "array",
           "items": {
             "type": "string"
@@ -1351,7 +1362,7 @@
           "type": "boolean",
           "x-go-name": "Allowed"
         },
-        "subject": {
+        "sub": {
           "description": "Subject is the identity that authorized issuing the token, for example a user or an OAuth2 app.\nThis is usually a uuid but you can choose a urn or some other id too.",
           "type": "string",
           "x-go-name": "Subject"
@@ -1368,7 +1379,7 @@
           "type": "boolean",
           "x-go-name": "Allowed"
         },
-        "subject": {
+        "sub": {
           "description": "Subject is the identity that authorized issuing the token, for example a user or an OAuth2 app.\nThis is usually a uuid but you can choose a urn or some other id too.",
           "type": "string",
           "x-go-name": "Subject"

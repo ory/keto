@@ -53,7 +53,7 @@ class WardenSubjectAuthorizationResponse implements ArrayAccess
       */
     protected static $swaggerTypes = [
         'allowed' => 'bool',
-        'subject' => 'string'
+        'sub' => 'string'
     ];
 
     /**
@@ -62,7 +62,7 @@ class WardenSubjectAuthorizationResponse implements ArrayAccess
       */
     protected static $swaggerFormats = [
         'allowed' => null,
-        'subject' => null
+        'sub' => null
     ];
 
     public static function swaggerTypes()
@@ -81,7 +81,7 @@ class WardenSubjectAuthorizationResponse implements ArrayAccess
      */
     protected static $attributeMap = [
         'allowed' => 'allowed',
-        'subject' => 'subject'
+        'sub' => 'sub'
     ];
 
 
@@ -91,7 +91,7 @@ class WardenSubjectAuthorizationResponse implements ArrayAccess
      */
     protected static $setters = [
         'allowed' => 'setAllowed',
-        'subject' => 'setSubject'
+        'sub' => 'setSub'
     ];
 
 
@@ -101,7 +101,7 @@ class WardenSubjectAuthorizationResponse implements ArrayAccess
      */
     protected static $getters = [
         'allowed' => 'getAllowed',
-        'subject' => 'getSubject'
+        'sub' => 'getSub'
     ];
 
     public static function attributeMap()
@@ -136,7 +136,7 @@ class WardenSubjectAuthorizationResponse implements ArrayAccess
     public function __construct(array $data = null)
     {
         $this->container['allowed'] = isset($data['allowed']) ? $data['allowed'] : null;
-        $this->container['subject'] = isset($data['subject']) ? $data['subject'] : null;
+        $this->container['sub'] = isset($data['sub']) ? $data['sub'] : null;
     }
 
     /**
@@ -186,22 +186,22 @@ class WardenSubjectAuthorizationResponse implements ArrayAccess
     }
 
     /**
-     * Gets subject
+     * Gets sub
      * @return string
      */
-    public function getSubject()
+    public function getSub()
     {
-        return $this->container['subject'];
+        return $this->container['sub'];
     }
 
     /**
-     * Sets subject
-     * @param string $subject Subject is the identity that authorized issuing the token, for example a user or an OAuth2 app. This is usually a uuid but you can choose a urn or some other id too.
+     * Sets sub
+     * @param string $sub Subject is the identity that authorized issuing the token, for example a user or an OAuth2 app. This is usually a uuid but you can choose a urn or some other id too.
      * @return $this
      */
-    public function setSubject($subject)
+    public function setSub($sub)
     {
-        $this->container['subject'] = $subject;
+        $this->container['sub'] = $sub;
 
         return $this;
     }

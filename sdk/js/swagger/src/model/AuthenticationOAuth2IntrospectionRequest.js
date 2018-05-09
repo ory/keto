@@ -59,8 +59,8 @@
     if (data) {
       obj = obj || new exports()
 
-      if (data.hasOwnProperty('scopes')) {
-        obj['scopes'] = ApiClient.convertToType(data['scopes'], ['String'])
+      if (data.hasOwnProperty('scope')) {
+        obj['scope'] = ApiClient.convertToType(data['scope'], ['String'])
       }
       if (data.hasOwnProperty('token')) {
         obj['token'] = ApiClient.convertToType(data['token'], 'String')
@@ -70,10 +70,10 @@
   }
 
   /**
-   * Scopes is an array of scopes that are required.
-   * @member {Array.<String>} scopes
+   * Scope is an array of scopes that are required.
+   * @member {Array.<String>} scope
    */
-  exports.prototype['scopes'] = undefined
+  exports.prototype['scope'] = undefined
   /**
    * Token is the token to introspect.
    * @member {String} token

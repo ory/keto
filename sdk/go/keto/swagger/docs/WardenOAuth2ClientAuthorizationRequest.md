@@ -7,7 +7,7 @@ Name | Type | Description | Notes
 **Context** | [**map[string]interface{}**](interface{}.md) | Context is the request&#39;s environmental context. | [optional] [default to null]
 **Id** | **string** | Token is the token to introspect. | [optional] [default to null]
 **Resource** | **string** | Resource is the resource that access is requested to. | [optional] [default to null]
-**Scopes** | **[]string** | Scopes is an array of scopes that are required. | [optional] [default to null]
+**Scope** | **[]string** | Scope is an array of scopes that are required. | [optional] [default to null]
 **Secret** | **string** |  | [optional] [default to null]
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

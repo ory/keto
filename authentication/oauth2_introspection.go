@@ -40,30 +40,46 @@ import (
 
 // swagger:model authenticationOAuth2Session
 type OAuth2Session struct {
-	// Here, it's subject
-	*DefaultSession
+	// Subject is the identity that authorized issuing the token, for example a user or an OAuth2 app.
+	// This is usually a uuid but you can choose a urn or some other id too.
+	Subject string `json:"sub"`
+
+	// Allowed is true if the request is allowed and false otherwise.
+	Allowed bool `json:"allowed"`
 
 	// GrantedScopes is a list of scopes that the subject authorized when asked for consent.
-	GrantedScopes []string `json:"granted_scope"`
+	GrantedScopes string `json:"scope"`
 
 	// Issuer is the id of the issuer, typically an hydra instance.
-	Issuer string `json:"issuer"`
+	Issuer string `json:"iss"`
 
 	// ClientID is the id of the OAuth2 client that requested the token.
 	ClientID string `json:"client_id"`
 
 	// IssuedAt is the token creation time stamp.
-	IssuedAt time.Time `json:"issued_at"`
+	IssuedAt time.Time `json:"iat"`
 
 	// ExpiresAt is the expiry timestamp.
-	ExpiresAt time.Time `json:"expires_at"`
+	ExpiresAt time.Time `json:"exp"`
 
-	NotBefore time.Time `json:"not_before,omitempty"`
+	NotBefore time.Time `json:"nbf,omitempty"`
 	Username  string    `json:"username,omitempty"`
-	Audience  []string  `json:"audience,omitempty"`
+	Audience  []string  `json:"aud,omitempty"`
 
 	// Session represents arbitrary session data.
-	Extra map[string]interface{} `json:"session"`
+	Extra map[string]interface{} `json:"session,omitempty"`
+}
+
+func (s *OAuth2Session) GrantAccess() {
+	s.Allowed = true
+}
+
+func (s *OAuth2Session) DenyAccess() {
+	s.Allowed = false
+}
+
+func (s *OAuth2Session) GetSubject() string {
+	return s.Subject
 }
 
 type IntrospectionResponse struct {
@@ -94,14 +110,8 @@ type AuthenticationOAuth2IntrospectionRequest struct {
 	// Token is the token to introspect.
 	Token string `json:"token"`
 
-	// Scopes is an array of scopes that are required.
-	Scopes []string `json:"scope"`
-}
-
-func NewOAuth2Session() *OAuth2Session {
-	return &OAuth2Session{
-		DefaultSession: new(DefaultSession),
-	}
+	// Scope is an array of scopes that are required.
+	Scope []string `json:"scope"`
 }
 
 func NewOAuth2IntrospectionAuthentication(clientID, clientSecret, tokenURL, introspectionURL string, scopes []string, strategy fosite.ScopeStrategy) *OAuth2IntrospectionAuthentication {
@@ -126,16 +136,14 @@ func (a *OAuth2IntrospectionAuthentication) Authenticate(r *http.Request) (Sessi
 		return nil, errors.WithStack(err)
 	}
 
-	ir, err := a.Introspect(token.Token, token.Scopes, a.scopeStrategy)
+	ir, err := a.Introspect(token.Token, token.Scope, a.scopeStrategy)
 	if err != nil {
 		return nil, err
 	}
 
 	return &OAuth2Session{
-		DefaultSession: &DefaultSession{
-			Subject: ir.Subject,
-		},
-		GrantedScopes: strings.Split(ir.Scope, " "),
+		Subject:       ir.Subject,
+		GrantedScopes: ir.Scope,
 		ClientID:      ir.ClientID,
 		ExpiresAt:     time.Unix(ir.ExpiresAt, 0).UTC(),
 		IssuedAt:      time.Unix(ir.IssuedAt, 0).UTC(),

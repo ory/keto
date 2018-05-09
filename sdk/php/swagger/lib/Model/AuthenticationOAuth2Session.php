@@ -52,16 +52,16 @@ class AuthenticationOAuth2Session implements ArrayAccess
       * @var string[]
       */
     protected static $swaggerTypes = [
-        'access_token_extra' => 'map[string,object]',
         'allowed' => 'bool',
-        'audience' => 'string',
+        'aud' => 'string[]',
         'client_id' => 'string',
-        'expires_at' => '\DateTime',
-        'granted_scopes' => 'string[]',
-        'issued_at' => '\DateTime',
-        'issuer' => 'string',
-        'not_before' => '\DateTime',
-        'subject' => 'string',
+        'exp' => '\DateTime',
+        'iat' => '\DateTime',
+        'iss' => 'string',
+        'nbf' => '\DateTime',
+        'scope' => 'string',
+        'session' => 'map[string,object]',
+        'sub' => 'string',
         'username' => 'string'
     ];
 
@@ -70,16 +70,16 @@ class AuthenticationOAuth2Session implements ArrayAccess
       * @var string[]
       */
     protected static $swaggerFormats = [
-        'access_token_extra' => null,
         'allowed' => null,
-        'audience' => null,
+        'aud' => null,
         'client_id' => null,
-        'expires_at' => 'date-time',
-        'granted_scopes' => null,
-        'issued_at' => 'date-time',
-        'issuer' => null,
-        'not_before' => 'date-time',
-        'subject' => null,
+        'exp' => 'date-time',
+        'iat' => 'date-time',
+        'iss' => null,
+        'nbf' => 'date-time',
+        'scope' => null,
+        'session' => null,
+        'sub' => null,
         'username' => null
     ];
 
@@ -98,16 +98,16 @@ class AuthenticationOAuth2Session implements ArrayAccess
      * @var string[]
      */
     protected static $attributeMap = [
-        'access_token_extra' => 'accessTokenExtra',
         'allowed' => 'allowed',
-        'audience' => 'audience',
-        'client_id' => 'clientId',
-        'expires_at' => 'expiresAt',
-        'granted_scopes' => 'grantedScopes',
-        'issued_at' => 'issuedAt',
-        'issuer' => 'issuer',
-        'not_before' => 'notBefore',
-        'subject' => 'subject',
+        'aud' => 'aud',
+        'client_id' => 'client_id',
+        'exp' => 'exp',
+        'iat' => 'iat',
+        'iss' => 'iss',
+        'nbf' => 'nbf',
+        'scope' => 'scope',
+        'session' => 'session',
+        'sub' => 'sub',
         'username' => 'username'
     ];
 
@@ -117,16 +117,16 @@ class AuthenticationOAuth2Session implements ArrayAccess
      * @var string[]
      */
     protected static $setters = [
-        'access_token_extra' => 'setAccessTokenExtra',
         'allowed' => 'setAllowed',
-        'audience' => 'setAudience',
+        'aud' => 'setAud',
         'client_id' => 'setClientId',
-        'expires_at' => 'setExpiresAt',
-        'granted_scopes' => 'setGrantedScopes',
-        'issued_at' => 'setIssuedAt',
-        'issuer' => 'setIssuer',
-        'not_before' => 'setNotBefore',
-        'subject' => 'setSubject',
+        'exp' => 'setExp',
+        'iat' => 'setIat',
+        'iss' => 'setIss',
+        'nbf' => 'setNbf',
+        'scope' => 'setScope',
+        'session' => 'setSession',
+        'sub' => 'setSub',
         'username' => 'setUsername'
     ];
 
@@ -136,16 +136,16 @@ class AuthenticationOAuth2Session implements ArrayAccess
      * @var string[]
      */
     protected static $getters = [
-        'access_token_extra' => 'getAccessTokenExtra',
         'allowed' => 'getAllowed',
-        'audience' => 'getAudience',
+        'aud' => 'getAud',
         'client_id' => 'getClientId',
-        'expires_at' => 'getExpiresAt',
-        'granted_scopes' => 'getGrantedScopes',
-        'issued_at' => 'getIssuedAt',
-        'issuer' => 'getIssuer',
-        'not_before' => 'getNotBefore',
-        'subject' => 'getSubject',
+        'exp' => 'getExp',
+        'iat' => 'getIat',
+        'iss' => 'getIss',
+        'nbf' => 'getNbf',
+        'scope' => 'getScope',
+        'session' => 'getSession',
+        'sub' => 'getSub',
         'username' => 'getUsername'
     ];
 
@@ -180,16 +180,16 @@ class AuthenticationOAuth2Session implements ArrayAccess
      */
     public function __construct(array $data = null)
     {
-        $this->container['access_token_extra'] = isset($data['access_token_extra']) ? $data['access_token_extra'] : null;
         $this->container['allowed'] = isset($data['allowed']) ? $data['allowed'] : null;
-        $this->container['audience'] = isset($data['audience']) ? $data['audience'] : null;
+        $this->container['aud'] = isset($data['aud']) ? $data['aud'] : null;
         $this->container['client_id'] = isset($data['client_id']) ? $data['client_id'] : null;
-        $this->container['expires_at'] = isset($data['expires_at']) ? $data['expires_at'] : null;
-        $this->container['granted_scopes'] = isset($data['granted_scopes']) ? $data['granted_scopes'] : null;
-        $this->container['issued_at'] = isset($data['issued_at']) ? $data['issued_at'] : null;
-        $this->container['issuer'] = isset($data['issuer']) ? $data['issuer'] : null;
-        $this->container['not_before'] = isset($data['not_before']) ? $data['not_before'] : null;
-        $this->container['subject'] = isset($data['subject']) ? $data['subject'] : null;
+        $this->container['exp'] = isset($data['exp']) ? $data['exp'] : null;
+        $this->container['iat'] = isset($data['iat']) ? $data['iat'] : null;
+        $this->container['iss'] = isset($data['iss']) ? $data['iss'] : null;
+        $this->container['nbf'] = isset($data['nbf']) ? $data['nbf'] : null;
+        $this->container['scope'] = isset($data['scope']) ? $data['scope'] : null;
+        $this->container['session'] = isset($data['session']) ? $data['session'] : null;
+        $this->container['sub'] = isset($data['sub']) ? $data['sub'] : null;
         $this->container['username'] = isset($data['username']) ? $data['username'] : null;
     }
 
@@ -219,27 +219,6 @@ class AuthenticationOAuth2Session implements ArrayAccess
 
 
     /**
-     * Gets access_token_extra
-     * @return map[string,object]
-     */
-    public function getAccessTokenExtra()
-    {
-        return $this->container['access_token_extra'];
-    }
-
-    /**
-     * Sets access_token_extra
-     * @param map[string,object] $access_token_extra Extra represents arbitrary session data.
-     * @return $this
-     */
-    public function setAccessTokenExtra($access_token_extra)
-    {
-        $this->container['access_token_extra'] = $access_token_extra;
-
-        return $this;
-    }
-
-    /**
      * Gets allowed
      * @return bool
      */
@@ -261,22 +240,22 @@ class AuthenticationOAuth2Session implements ArrayAccess
     }
 
     /**
-     * Gets audience
-     * @return string
+     * Gets aud
+     * @return string[]
      */
-    public function getAudience()
+    public function getAud()
     {
-        return $this->container['audience'];
+        return $this->container['aud'];
     }
 
     /**
-     * Sets audience
-     * @param string $audience
+     * Sets aud
+     * @param string[] $aud
      * @return $this
      */
-    public function setAudience($audience)
+    public function setAud($aud)
     {
-        $this->container['audience'] = $audience;
+        $this->container['aud'] = $aud;
 
         return $this;
     }
@@ -303,127 +282,148 @@ class AuthenticationOAuth2Session implements ArrayAccess
     }
 
     /**
-     * Gets expires_at
+     * Gets exp
      * @return \DateTime
      */
-    public function getExpiresAt()
+    public function getExp()
     {
-        return $this->container['expires_at'];
+        return $this->container['exp'];
     }
 
     /**
-     * Sets expires_at
-     * @param \DateTime $expires_at ExpiresAt is the expiry timestamp.
+     * Sets exp
+     * @param \DateTime $exp ExpiresAt is the expiry timestamp.
      * @return $this
      */
-    public function setExpiresAt($expires_at)
+    public function setExp($exp)
     {
-        $this->container['expires_at'] = $expires_at;
+        $this->container['exp'] = $exp;
 
         return $this;
     }
 
     /**
-     * Gets granted_scopes
-     * @return string[]
-     */
-    public function getGrantedScopes()
-    {
-        return $this->container['granted_scopes'];
-    }
-
-    /**
-     * Sets granted_scopes
-     * @param string[] $granted_scopes GrantedScopes is a list of scopes that the subject authorized when asked for consent.
-     * @return $this
-     */
-    public function setGrantedScopes($granted_scopes)
-    {
-        $this->container['granted_scopes'] = $granted_scopes;
-
-        return $this;
-    }
-
-    /**
-     * Gets issued_at
+     * Gets iat
      * @return \DateTime
      */
-    public function getIssuedAt()
+    public function getIat()
     {
-        return $this->container['issued_at'];
+        return $this->container['iat'];
     }
 
     /**
-     * Sets issued_at
-     * @param \DateTime $issued_at IssuedAt is the token creation time stamp.
+     * Sets iat
+     * @param \DateTime $iat IssuedAt is the token creation time stamp.
      * @return $this
      */
-    public function setIssuedAt($issued_at)
+    public function setIat($iat)
     {
-        $this->container['issued_at'] = $issued_at;
+        $this->container['iat'] = $iat;
 
         return $this;
     }
 
     /**
-     * Gets issuer
+     * Gets iss
      * @return string
      */
-    public function getIssuer()
+    public function getIss()
     {
-        return $this->container['issuer'];
+        return $this->container['iss'];
     }
 
     /**
-     * Sets issuer
-     * @param string $issuer Issuer is the id of the issuer, typically an hydra instance.
+     * Sets iss
+     * @param string $iss Issuer is the id of the issuer, typically an hydra instance.
      * @return $this
      */
-    public function setIssuer($issuer)
+    public function setIss($iss)
     {
-        $this->container['issuer'] = $issuer;
+        $this->container['iss'] = $iss;
 
         return $this;
     }
 
     /**
-     * Gets not_before
+     * Gets nbf
      * @return \DateTime
      */
-    public function getNotBefore()
+    public function getNbf()
     {
-        return $this->container['not_before'];
+        return $this->container['nbf'];
     }
 
     /**
-     * Sets not_before
-     * @param \DateTime $not_before
+     * Sets nbf
+     * @param \DateTime $nbf
      * @return $this
      */
-    public function setNotBefore($not_before)
+    public function setNbf($nbf)
     {
-        $this->container['not_before'] = $not_before;
+        $this->container['nbf'] = $nbf;
 
         return $this;
     }
 
     /**
-     * Gets subject
+     * Gets scope
      * @return string
      */
-    public function getSubject()
+    public function getScope()
     {
-        return $this->container['subject'];
+        return $this->container['scope'];
     }
 
     /**
-     * Sets subject
-     * @param string $subject Subject is the identity that authorized issuing the token, for example a user or an OAuth2 app. This is usually a uuid but you can choose a urn or some other id too.
+     * Sets scope
+     * @param string $scope GrantedScopes is a list of scopes that the subject authorized when asked for consent.
      * @return $this
      */
-    public function setSubject($subject)
+    public function setScope($scope)
     {
-        $this->container['subject'] = $subject;
+        $this->container['scope'] = $scope;
+
+        return $this;
+    }
+
+    /**
+     * Gets session
+     * @return map[string,object]
+     */
+    public function getSession()
+    {
+        return $this->container['session'];
+    }
+
+    /**
+     * Sets session
+     * @param map[string,object] $session Session represents arbitrary session data.
+     * @return $this
+     */
+    public function setSession($session)
+    {
+        $this->container['session'] = $session;
+
+        return $this;
+    }
+
+    /**
+     * Gets sub
+     * @return string
+     */
+    public function getSub()
+    {
+        return $this->container['sub'];
+    }
+
+    /**
+     * Sets sub
+     * @param string $sub Subject is the identity that authorized issuing the token, for example a user or an OAuth2 app. This is usually a uuid but you can choose a urn or some other id too.
+     * @return $this
+     */
+    public function setSub($sub)
+    {
+        $this->container['sub'] = $sub;
 
         return $this;
     }

@@ -53,7 +53,7 @@ class AuthenticationOAuth2ClientCredentialsRequest implements ArrayAccess
       */
     protected static $swaggerTypes = [
         'id' => 'string',
-        'scopes' => 'string[]',
+        'scope' => 'string[]',
         'secret' => 'string'
     ];
 
@@ -63,7 +63,7 @@ class AuthenticationOAuth2ClientCredentialsRequest implements ArrayAccess
       */
     protected static $swaggerFormats = [
         'id' => null,
-        'scopes' => null,
+        'scope' => null,
         'secret' => null
     ];
 
@@ -83,7 +83,7 @@ class AuthenticationOAuth2ClientCredentialsRequest implements ArrayAccess
      */
     protected static $attributeMap = [
         'id' => 'id',
-        'scopes' => 'scopes',
+        'scope' => 'scope',
         'secret' => 'secret'
     ];
 
@@ -94,7 +94,7 @@ class AuthenticationOAuth2ClientCredentialsRequest implements ArrayAccess
      */
     protected static $setters = [
         'id' => 'setId',
-        'scopes' => 'setScopes',
+        'scope' => 'setScope',
         'secret' => 'setSecret'
     ];
 
@@ -105,7 +105,7 @@ class AuthenticationOAuth2ClientCredentialsRequest implements ArrayAccess
      */
     protected static $getters = [
         'id' => 'getId',
-        'scopes' => 'getScopes',
+        'scope' => 'getScope',
         'secret' => 'getSecret'
     ];
 
@@ -141,7 +141,7 @@ class AuthenticationOAuth2ClientCredentialsRequest implements ArrayAccess
     public function __construct(array $data = null)
     {
         $this->container['id'] = isset($data['id']) ? $data['id'] : null;
-        $this->container['scopes'] = isset($data['scopes']) ? $data['scopes'] : null;
+        $this->container['scope'] = isset($data['scope']) ? $data['scope'] : null;
         $this->container['secret'] = isset($data['secret']) ? $data['secret'] : null;
     }
 
@@ -192,22 +192,22 @@ class AuthenticationOAuth2ClientCredentialsRequest implements ArrayAccess
     }
 
     /**
-     * Gets scopes
+     * Gets scope
      * @return string[]
      */
-    public function getScopes()
+    public function getScope()
     {
-        return $this->container['scopes'];
+        return $this->container['scope'];
     }
 
     /**
-     * Sets scopes
-     * @param string[] $scopes Scopes is an array of scopes that are required.
+     * Sets scope
+     * @param string[] $scope Scope is an array of scopes that are required.
      * @return $this
      */
-    public function setScopes($scopes)
+    public function setScope($scope)
     {
-        $this->container['scopes'] = $scopes;
+        $this->container['scope'] = $scope;
 
         return $this;
     }

@@ -59,40 +59,37 @@
     if (data) {
       obj = obj || new exports()
 
-      if (data.hasOwnProperty('accessTokenExtra')) {
-        obj['accessTokenExtra'] = ApiClient.convertToType(
-          data['accessTokenExtra'],
-          { String: Object }
-        )
-      }
       if (data.hasOwnProperty('allowed')) {
         obj['allowed'] = ApiClient.convertToType(data['allowed'], 'Boolean')
       }
-      if (data.hasOwnProperty('audience')) {
-        obj['audience'] = ApiClient.convertToType(data['audience'], 'String')
+      if (data.hasOwnProperty('aud')) {
+        obj['aud'] = ApiClient.convertToType(data['aud'], ['String'])
       }
-      if (data.hasOwnProperty('clientId')) {
-        obj['clientId'] = ApiClient.convertToType(data['clientId'], 'String')
+      if (data.hasOwnProperty('client_id')) {
+        obj['client_id'] = ApiClient.convertToType(data['client_id'], 'String')
       }
-      if (data.hasOwnProperty('expiresAt')) {
-        obj['expiresAt'] = ApiClient.convertToType(data['expiresAt'], 'Date')
+      if (data.hasOwnProperty('exp')) {
+        obj['exp'] = ApiClient.convertToType(data['exp'], 'Date')
       }
-      if (data.hasOwnProperty('grantedScopes')) {
-        obj['grantedScopes'] = ApiClient.convertToType(data['grantedScopes'], [
-          'String'
-        ])
+      if (data.hasOwnProperty('iat')) {
+        obj['iat'] = ApiClient.convertToType(data['iat'], 'Date')
       }
-      if (data.hasOwnProperty('issuedAt')) {
-        obj['issuedAt'] = ApiClient.convertToType(data['issuedAt'], 'Date')
+      if (data.hasOwnProperty('iss')) {
+        obj['iss'] = ApiClient.convertToType(data['iss'], 'String')
       }
-      if (data.hasOwnProperty('issuer')) {
-        obj['issuer'] = ApiClient.convertToType(data['issuer'], 'String')
+      if (data.hasOwnProperty('nbf')) {
+        obj['nbf'] = ApiClient.convertToType(data['nbf'], 'Date')
       }
-      if (data.hasOwnProperty('notBefore')) {
-        obj['notBefore'] = ApiClient.convertToType(data['notBefore'], 'Date')
+      if (data.hasOwnProperty('scope')) {
+        obj['scope'] = ApiClient.convertToType(data['scope'], 'String')
       }
-      if (data.hasOwnProperty('subject')) {
-        obj['subject'] = ApiClient.convertToType(data['subject'], 'String')
+      if (data.hasOwnProperty('session')) {
+        obj['session'] = ApiClient.convertToType(data['session'], {
+          String: Object
+        })
+      }
+      if (data.hasOwnProperty('sub')) {
+        obj['sub'] = ApiClient.convertToType(data['sub'], 'String')
       }
       if (data.hasOwnProperty('username')) {
         obj['username'] = ApiClient.convertToType(data['username'], 'String')
@@ -102,53 +99,53 @@
   }
 
   /**
-   * Extra represents arbitrary session data.
-   * @member {Object.<String, Object>} accessTokenExtra
-   */
-  exports.prototype['accessTokenExtra'] = undefined
-  /**
    * Allowed is true if the request is allowed and false otherwise.
    * @member {Boolean} allowed
    */
   exports.prototype['allowed'] = undefined
   /**
-   * @member {String} audience
+   * @member {Array.<String>} aud
    */
-  exports.prototype['audience'] = undefined
+  exports.prototype['aud'] = undefined
   /**
    * ClientID is the id of the OAuth2 client that requested the token.
-   * @member {String} clientId
+   * @member {String} client_id
    */
-  exports.prototype['clientId'] = undefined
+  exports.prototype['client_id'] = undefined
   /**
    * ExpiresAt is the expiry timestamp.
-   * @member {Date} expiresAt
+   * @member {Date} exp
    */
-  exports.prototype['expiresAt'] = undefined
-  /**
-   * GrantedScopes is a list of scopes that the subject authorized when asked for consent.
-   * @member {Array.<String>} grantedScopes
-   */
-  exports.prototype['grantedScopes'] = undefined
+  exports.prototype['exp'] = undefined
   /**
    * IssuedAt is the token creation time stamp.
-   * @member {Date} issuedAt
+   * @member {Date} iat
    */
-  exports.prototype['issuedAt'] = undefined
+  exports.prototype['iat'] = undefined
   /**
    * Issuer is the id of the issuer, typically an hydra instance.
-   * @member {String} issuer
+   * @member {String} iss
    */
-  exports.prototype['issuer'] = undefined
+  exports.prototype['iss'] = undefined
   /**
-   * @member {Date} notBefore
+   * @member {Date} nbf
    */
-  exports.prototype['notBefore'] = undefined
+  exports.prototype['nbf'] = undefined
+  /**
+   * GrantedScopes is a list of scopes that the subject authorized when asked for consent.
+   * @member {String} scope
+   */
+  exports.prototype['scope'] = undefined
+  /**
+   * Session represents arbitrary session data.
+   * @member {Object.<String, Object>} session
+   */
+  exports.prototype['session'] = undefined
   /**
    * Subject is the identity that authorized issuing the token, for example a user or an OAuth2 app. This is usually a uuid but you can choose a urn or some other id too.
-   * @member {String} subject
+   * @member {String} sub
    */
-  exports.prototype['subject'] = undefined
+  exports.prototype['sub'] = undefined
   /**
    * @member {String} username
    */

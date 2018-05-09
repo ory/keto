@@ -19,8 +19,8 @@ type WardenOAuth2AccessTokenAuthorizationRequest struct {
 	// Resource is the resource that access is requested to.
 	Resource string `json:"resource,omitempty"`
 
-	// Scopes is an array of scopes that are required.
-	Scopes []string `json:"scopes,omitempty"`
+	// Scope is an array of scopes that are required.
+	Scope []string `json:"scope,omitempty"`
 
 	// Token is the token to introspect.
 	Token string `json:"token,omitempty"`
