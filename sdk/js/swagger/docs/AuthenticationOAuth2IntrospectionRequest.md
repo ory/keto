@@ -3,7 +3,7 @@
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**scopes** | **[String]** | Scopes is an array of scopes that are required. | [optional] 
+**scope** | **[String]** | Scope is an array of scopes that are required. | [optional] 
 **token** | **String** | Token is the token to introspect. | [optional] 
 
 
