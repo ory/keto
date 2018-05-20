@@ -22,20 +22,20 @@ a subject (user, application, service, car, ...) is authorized to perform a cert
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
-- [ORY Keto](#ory-keto)
-  - [Introduction](#introduction)
-  - [Installation](#installation)
-  - [Ecosystem](#ecosystem)
-    - [ORY Security Console: Administrative User Interface](#ory-security-console-administrative-user-interface)
-    - [ORY Hydra: OAuth2 & OpenID Connect Server](#ory-hydra-oauth2--openid-connect-server)
-    - [ORY Oathkeeper: Identity & Access Proxy](#ory-oathkeeper-identity--access-proxy)
-  - [Security](#security)
-    - [Disclosing vulnerabilities](#disclosing-vulnerabilities)
-  - [Telemetry](#telemetry)
-    - [Guide](#guide)
-    - [HTTP API documentation](#http-api-documentation)
-    - [Upgrading and Changelog](#upgrading-and-changelog)
-    - [Command line documentation](#command-line-documentation)
+
+- [Introduction](#introduction)
+- [Installation](#installation)
+- [Ecosystem](#ecosystem)
+  - [ORY Security Console: Administrative User Interface](#ory-security-console-administrative-user-interface)
+  - [ORY Hydra: OAuth2 & OpenID Connect Server](#ory-hydra-oauth2--openid-connect-server)
+  - [ORY Oathkeeper: Identity & Access Proxy](#ory-oathkeeper-identity--access-proxy)
+- [Security](#security)
+  - [Disclosing vulnerabilities](#disclosing-vulnerabilities)
+- [Telemetry](#telemetry)
+  - [Guide](#guide)
+  - [HTTP API documentation](#http-api-documentation)
+  - [Upgrading and Changelog](#upgrading-and-changelog)
+  - [Command line documentation](#command-line-documentation)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
