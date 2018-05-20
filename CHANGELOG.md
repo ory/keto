@@ -11,6 +11,14 @@
 
 ## [Unreleased](https://github.com/ory/keto/tree/HEAD)
 
+**Implemented enhancements:**
+
+- Fix token type [\#12](https://github.com/ory/keto/pull/12) ([arekkas](https://github.com/arekkas))
+
+**Closed issues:**
+
+- The Warden API should not check for refresh tokens, only access tokens. [\#1](https://github.com/ory/keto/issues/1)
+
 **Merged pull requests:**
 
 - auth: Renames subject to sub in response payloads [\#9](https://github.com/ory/keto/pull/9) ([arekkas](https://github.com/arekkas))
