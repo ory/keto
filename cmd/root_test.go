@@ -28,30 +28,37 @@ import (
 	"testing"
 	"time"
 
+	"net/http"
+
 	"github.com/akutz/gotil"
 	"github.com/pborman/uuid"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestExecute(t *testing.T) {
+var port int
+
+func init() {
 	var osArgs = make([]string, len(os.Args))
-	var path = filepath.Join(os.TempDir(), fmt.Sprintf("keto-%s.yml", uuid.New()))
-	port := gotil.RandomTCPPort()
+	port = gotil.RandomTCPPort()
 	os.Setenv("DATABASE_URL", "memory")
 	os.Setenv("PORT", fmt.Sprintf("%d", port))
-
 	copy(osArgs, os.Args)
+}
+
+func TestExecute(t *testing.T) {
+	var path = filepath.Join(os.TempDir(), fmt.Sprintf("keto-%s.yml", uuid.New()))
 
 	for _, c := range []struct {
 		args      []string
-		wait      func() bool
+		wait      func(t *testing.T) bool
 		expectErr bool
 	}{
 		{
 			args: []string{"serve"},
-			wait: func() bool {
-				time.Sleep(time.Second * 5)
-				return !gotil.IsTCPPortAvailable(port)
+			wait: func(t *testing.T) bool {
+				t.Logf("Trying to connect to port %d...", port)
+				_, err := http.DefaultClient.Get(fmt.Sprintf("http://127.0.0.1:%d/", port))
+				return err != nil
 			},
 		},
 		{args: []string{"roles", "list", "--endpoint", fmt.Sprintf("http://127.0.0.1:%d", port)}},
@@ -87,13 +94,13 @@ func TestExecute(t *testing.T) {
 
 			if c.wait != nil {
 				var count = 0
-				for c.wait() {
+				for c.wait(t) {
 					t.Logf("Port not open yet, retrying attempt #%d...", count)
 					count++
-					if count > 200 {
+					if count > 30 {
 						t.FailNow()
 					}
-					time.Sleep(time.Second * 2)
+					time.Sleep(time.Second)
 				}
 			} else {
 				err := RootCmd.Execute()
