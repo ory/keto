@@ -32,7 +32,9 @@ import (
 	"github.com/pborman/uuid"
 	"github.com/stretchr/testify/assert"
 )
+
 var port int
+
 func init() {
 	var osArgs = make([]string, len(os.Args))
 	port = gotil.RandomTCPPort()
