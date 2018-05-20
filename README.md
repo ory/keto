@@ -1,29 +1,3 @@
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
-
-      - [
-    Chat |
-    Forums |
-    Newsletter
-](#chat-%0A----forums-%0A----newsletter)
-- [ORY Keto](#ory-keto)
-  - [Introduction](#introduction)
-  - [Installation](#installation)
-  - [Ecosystem](#ecosystem)
-    - [ORY Security Console: Administrative User Interface](#ory-security-console-administrative-user-interface)
-    - [ORY Hydra: OAuth2 & OpenID Connect Server](#ory-hydra-oauth2--openid-connect-server)
-    - [ORY Oathkeeper: Identity & Access Proxy](#ory-oathkeeper-identity--access-proxy)
-  - [Security](#security)
-    - [Disclosing vulnerabilities](#disclosing-vulnerabilities)
-  - [Telemetry](#telemetry)
-    - [Guide](#guide)
-    - [HTTP API documentation](#http-api-documentation)
-    - [Upgrading and Changelog](#upgrading-and-changelog)
-    - [Command line documentation](#command-line-documentation)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
-
 # ORY Keto
 
 <h4 align="center">
@@ -41,6 +15,29 @@ a subject (user, application, service, car, ...) is authorized to perform a cert
     <a href="https://coveralls.io/github/ory/keto?branch=master"><img src="https://coveralls.io/repos/ory/keto/badge.svg?branch=master&service=github" alt="Coverage Status"></a>
     <a href="https://goreportcard.com/report/github.com/ory/keto"><img src="https://goreportcard.com/badge/github.com/ory/keto" alt="Go Report Card"></a>
 </p>
+
+
+---
+
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+- [ORY Keto](#ory-keto)
+  - [Introduction](#introduction)
+  - [Installation](#installation)
+  - [Ecosystem](#ecosystem)
+    - [ORY Security Console: Administrative User Interface](#ory-security-console-administrative-user-interface)
+    - [ORY Hydra: OAuth2 & OpenID Connect Server](#ory-hydra-oauth2--openid-connect-server)
+    - [ORY Oathkeeper: Identity & Access Proxy](#ory-oathkeeper-identity--access-proxy)
+  - [Security](#security)
+    - [Disclosing vulnerabilities](#disclosing-vulnerabilities)
+  - [Telemetry](#telemetry)
+    - [Guide](#guide)
+    - [HTTP API documentation](#http-api-documentation)
+    - [Upgrading and Changelog](#upgrading-and-changelog)
+    - [Command line documentation](#command-line-documentation)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ## Introduction
 
