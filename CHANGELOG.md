@@ -1,12 +1,13 @@
-# Change Log
-
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
 - [Change Log](#change-log)
   - [v0.0.1 (2018-05-20)](#v001-2018-05-20)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+# Change Log
 
 ## [v0.0.1](https://github.com/ory/keto/tree/v0.0.1) (2018-05-20)
 **Implemented enhancements:**
