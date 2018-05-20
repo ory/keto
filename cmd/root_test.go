@@ -55,7 +55,7 @@ func TestExecute(t *testing.T) {
 			args: []string{"serve"},
 			wait: func() bool {
 				time.Sleep(time.Second)
-				fmt.Printf("Trying to connect to port %d...", port)
+				t.Logf("Trying to connect to port %d...", port)
 				return !gotil.IsTCPPortAvailable(port)
 			},
 		},
