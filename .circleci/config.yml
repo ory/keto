@@ -55,7 +55,7 @@ jobs:
       - run: go test -race -short $(glide novendor | grep -v cmd)
 
       # Submit coverage details
-      # - run: goveralls -service=circle-ci -coverprofile=coverage.txt -repotoken=$COVERALLS_REPO_TOKEN
+      - run: goveralls -service=circle-ci -coverprofile=coverage.txt -repotoken=$COVERALLS_REPO_TOKEN
 
   test-docker:
     docker:
