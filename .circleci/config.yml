@@ -106,10 +106,10 @@ jobs:
       - run: git add CHANGELOG.md
       - run: git add README.md
       - run: |
-          git commit -a -m "docs: Incorporates changes from version $(git describe --tags)"
+          git commit -a -m "docs: Incorporates changes from version $(git describe --tags)" || true
       - run: git remote rm origin
       - run: git remote add origin https://arekkas:$GITHUB_TOKEN@github.com/ory/keto.git
-      - run: git push origin HEAD:master
+      - run: git push origin HEAD:master || true
 
 workflows:
   version: 2
