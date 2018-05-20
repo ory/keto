@@ -13,8 +13,10 @@
 
 **Merged pull requests:**
 
+- auth: Renames subject to sub in response payloads [\#9](https://github.com/ory/keto/pull/9) ([arekkas](https://github.com/arekkas))
 - cmd: Retries SQL connection on migrate commands [\#8](https://github.com/ory/keto/pull/8) ([arekkas](https://github.com/arekkas))
 - Improve bc [\#7](https://github.com/ory/keto/pull/7) ([arekkas](https://github.com/arekkas))
+- docs: Updates readme and upgrades [\#6](https://github.com/ory/keto/pull/6) ([arekkas](https://github.com/arekkas))
 - Fix sdk [\#5](https://github.com/ory/keto/pull/5) ([arekkas](https://github.com/arekkas))
 - Resolves SDK and test issues [\#4](https://github.com/ory/keto/pull/4) ([arekkas](https://github.com/arekkas))
 
