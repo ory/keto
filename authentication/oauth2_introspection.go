@@ -94,6 +94,7 @@ type IntrospectionResponse struct {
 	Username  string   `json:"username,omitempty"`
 	Audience  []string `json:"aud,omitempty"`
 	Issuer    string   `json:"iss,omitempty"`
+	TokenType string   `json:"token_type,omitempty"`
 
 	// Session represents arbitrary session data.
 	Extra map[string]interface{} `json:"ext"`
@@ -170,6 +171,10 @@ func (a *OAuth2IntrospectionAuthentication) Introspect(token string, scopes []st
 	var ir IntrospectionResponse
 	if err := json.NewDecoder(resp.Body).Decode(&ir); err != nil {
 		return nil, errors.WithStack(err)
+	}
+
+	if len(ir.TokenType) > 0 && ir.TokenType != "access_token" {
+		return nil, errors.WithStack(ErrUnauthorized.WithReason(fmt.Sprintf("Introspected token is not an access token but \"%s\"", ir.TokenType)))
 	}
 
 	if !ir.Active {
