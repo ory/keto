@@ -28,10 +28,11 @@ import (
 	"testing"
 	"time"
 
+	"net/http"
+
 	"github.com/akutz/gotil"
 	"github.com/pborman/uuid"
 	"github.com/stretchr/testify/assert"
-	"net/http"
 )
 
 var port int
