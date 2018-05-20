@@ -52,7 +52,7 @@ jobs:
 
       # Tests
       - run: go test -race -short -v $(go list ./... | grep -v cmd)
-      - run: go-acc -o -v coverage.txt ./...
+      - run: go-acc -v -o coverage.txt ./...
 
       # Submit coverage details
       - run: goveralls -service=circle-ci -coverprofile=coverage.txt -repotoken=$COVERALLS_REPO_TOKEN
