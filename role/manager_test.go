@@ -43,8 +43,10 @@ func TestMain(m *testing.M) {
 
 	flag.Parse()
 	if !testing.Short() {
-		connectToPostgres()
-		connectToMySQL()
+		dockertest.Parallel([]func(){
+			connectToPostgres,
+			connectToMySQL,
+		})
 	}
 
 	runner.Exit(m.Run())
@@ -65,7 +67,7 @@ func connectToMySQL() {
 }
 
 func connectToPostgres() {
-	db, err := dockertest.ConnectToTestMySQL()
+	db, err := dockertest.ConnectToTestPostgreSQL()
 	if err != nil {
 		panic(err)
 	}
