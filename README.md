@@ -2,12 +2,12 @@
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
-- [ORY Keto](#ory-keto)
       - [
     Chat |
     Forums |
     Newsletter
 ](#chat-%0A----forums-%0A----newsletter)
+- [ORY Keto](#ory-keto)
   - [Introduction](#introduction)
   - [Installation](#installation)
   - [Ecosystem](#ecosystem)
