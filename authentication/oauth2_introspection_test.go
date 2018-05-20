@@ -112,6 +112,25 @@ func TestOAuth2Introspection(t *testing.T) {
 					Username:  "username",
 					Audience:  []string{"audience"},
 					Issuer:    "issuer",
+					TokenType: "refresh_token",
+				}
+			},
+			req:         &AuthenticationOAuth2IntrospectionRequest{Token: "foo-token", Scope: []string{"foo-scope", "foo-scope-a"}},
+			expectedErr: ErrUnauthorized,
+		},
+		{
+			cb: func(w http.ResponseWriter, r *http.Request, req AuthenticationOAuth2IntrospectionRequest) *IntrospectionResponse {
+				return &IntrospectionResponse{
+					Active:    true,
+					Scope:     "foo-scope",
+					ClientID:  "scope-ip",
+					Subject:   "subject",
+					ExpiresAt: now.Unix(),
+					IssuedAt:  now.Unix(),
+					NotBefore: now.Unix(),
+					Username:  "username",
+					Audience:  []string{"audience"},
+					Issuer:    "issuer",
 				}
 			},
 			req: &AuthenticationOAuth2IntrospectionRequest{Token: "foo-token", Scope: []string{"foo-scope"}},
@@ -128,6 +147,24 @@ func TestOAuth2Introspection(t *testing.T) {
 				Issuer:        "issuer",
 			},
 		},
+		{
+			cb: func(w http.ResponseWriter, r *http.Request, req AuthenticationOAuth2IntrospectionRequest) *IntrospectionResponse {
+				return &IntrospectionResponse{
+					Active:    true,
+					Scope:     "foo-scope",
+					ClientID:  "scope-ip",
+					Subject:   "subject",
+					ExpiresAt: now.Unix(),
+					IssuedAt:  now.Unix(),
+					NotBefore: now.Unix(),
+					Username:  "username",
+					Audience:  []string{"audience"},
+					Issuer:    "issuer",
+					TokenType: "access_token",
+				}
+			},
+			req: &AuthenticationOAuth2IntrospectionRequest{Token: "foo-token", Scope: []string{"foo-scope"}},
+		},
 	} {
 		t.Run(fmt.Sprintf("case=%d/description=%s", k, tc.d), func(t *testing.T) {
 			cb = tc.cb
@@ -142,7 +179,9 @@ func TestOAuth2Introspection(t *testing.T) {
 				if err != nil {
 					require.NoError(t, err, "%+v", err.(stackTracer).StackTrace())
 				}
-				assert.EqualValues(t, tc.expectedSession, session)
+				if tc.expectedSession != nil {
+					assert.EqualValues(t, tc.expectedSession, session)
+				}
 			} else {
 				if err == nil {
 					require.Error(t, err)
