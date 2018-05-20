@@ -31,6 +31,7 @@ import (
 	"github.com/akutz/gotil"
 	"github.com/pborman/uuid"
 	"github.com/stretchr/testify/assert"
+	"net/http"
 )
 
 var port int
@@ -48,15 +49,15 @@ func TestExecute(t *testing.T) {
 
 	for _, c := range []struct {
 		args      []string
-		wait      func() bool
+		wait      func(t *testing.T) bool
 		expectErr bool
 	}{
 		{
 			args: []string{"serve"},
-			wait: func() bool {
-				time.Sleep(time.Second)
+			wait: func(t *testing.T) bool {
 				t.Logf("Trying to connect to port %d...", port)
-				return !gotil.IsTCPPortAvailable(port)
+				_, err := http.DefaultClient.Get(fmt.Sprintf("http://127.0.0.1:%d/", port))
+				return err != nil
 			},
 		},
 		{args: []string{"roles", "list", "--endpoint", fmt.Sprintf("http://127.0.0.1:%d", port)}},
@@ -92,13 +93,13 @@ func TestExecute(t *testing.T) {
 
 			if c.wait != nil {
 				var count = 0
-				for c.wait() {
+				for c.wait(t) {
 					t.Logf("Port not open yet, retrying attempt #%d...", count)
 					count++
-					if count > 200 {
+					if count > 30 {
 						t.FailNow()
 					}
-					time.Sleep(time.Second * 2)
+					time.Sleep(time.Second)
 				}
 			} else {
 				err := RootCmd.Execute()
