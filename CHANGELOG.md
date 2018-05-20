@@ -3,11 +3,20 @@
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
 - [Change Log](#change-log)
+  - [Unreleased](#unreleased)
   - [v0.0.1 (2018-05-20)](#v001-2018-05-20)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 # Change Log
+
+## [Unreleased](https://github.com/ory/keto/tree/HEAD)
+
+[Full Changelog](https://github.com/ory/keto/compare/v0.0.1...HEAD)
+
+**Merged pull requests:**
+
+- ci: Resolves test timeout [\#13](https://github.com/ory/keto/pull/13) ([arekkas](https://github.com/arekkas))
 
 ## [v0.0.1](https://github.com/ory/keto/tree/v0.0.1) (2018-05-20)
 **Implemented enhancements:**
