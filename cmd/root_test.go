@@ -32,15 +32,17 @@ import (
 	"github.com/pborman/uuid"
 	"github.com/stretchr/testify/assert"
 )
-
-func TestExecute(t *testing.T) {
+var port int
+func init() {
 	var osArgs = make([]string, len(os.Args))
-	var path = filepath.Join(os.TempDir(), fmt.Sprintf("keto-%s.yml", uuid.New()))
-	port := gotil.RandomTCPPort()
+	port = gotil.RandomTCPPort()
 	os.Setenv("DATABASE_URL", "memory")
 	os.Setenv("PORT", fmt.Sprintf("%d", port))
-
 	copy(osArgs, os.Args)
+}
+
+func TestExecute(t *testing.T) {
+	var path = filepath.Join(os.TempDir(), fmt.Sprintf("keto-%s.yml", uuid.New()))
 
 	for _, c := range []struct {
 		args      []string
@@ -50,7 +52,8 @@ func TestExecute(t *testing.T) {
 		{
 			args: []string{"serve"},
 			wait: func() bool {
-				time.Sleep(time.Second * 5)
+				time.Sleep(time.Second)
+				fmt.Printf("Trying to connect to port %d...", port)
 				return !gotil.IsTCPPortAvailable(port)
 			},
 		},
