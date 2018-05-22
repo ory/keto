@@ -37,9 +37,10 @@ type Manager interface {
 	GetRole(id string) (*Role, error)
 	DeleteRole(id string) error
 
-	AddRoleMembers(group string, members []string) error
-	RemoveRoleMembers(group string, members []string) error
+	AddRoleMembers(role string, members []string) error
+	RemoveRoleMembers(role string, members []string) error
 
 	FindRolesByMember(member string, limit, offset int) ([]Role, error)
 	ListRoles(limit, offset int) ([]Role, error)
+	UpdateRoleMembers(role string, members []string) error
 }
