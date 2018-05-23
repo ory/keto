@@ -45,8 +45,8 @@ var migrations = &migrate.MemoryMigrationSource{
 	PRIMARY KEY (member, role_id)
 )`},
 			Down: []string{
-				"DROP TABLE hydra_warden_group",
-				"DROP TABLE hydra_warden_group_member",
+				"DROP TABLE keto_role",
+				"DROP TABLE keto_role_member",
 			},
 		},
 	},
@@ -78,15 +78,20 @@ func (m *SQLManager) CreateSchemas() (int, error) {
 	return n, nil
 }
 
-func (m *SQLManager) CreateRole(g *Role) error {
-	if g.ID == "" {
-		g.ID = uuid.New()
-	}
-	if _, err := m.DB.Exec(m.DB.Rebind(fmt.Sprintf("INSERT INTO %s (id) VALUES (?)", m.TableRole)), g.ID); err != nil {
+func (m *SQLManager) createRole(role string) func(tx *sqlx.Tx) error {
+	return func(tx *sqlx.Tx) error {
+		_, err := tx.Exec(m.DB.Rebind(fmt.Sprintf("INSERT INTO %s (id) VALUES (?)", m.TableRole)), role)
+
 		return errors.WithStack(err)
 	}
+}
 
-	return m.AddRoleMembers(g.ID, g.Members)
+func (m *SQLManager) CreateRole(r *Role) error {
+	if r.ID == "" {
+		r.ID = uuid.New()
+	}
+
+	return m.applyInTransaction(m.createRole(r.ID), m.addRoleMembers(r.ID, r.Members))
 }
 
 func (m *SQLManager) GetRole(id string) (*Role, error) {
@@ -108,59 +113,52 @@ func (m *SQLManager) GetRole(id string) (*Role, error) {
 	}, nil
 }
 
-func (m *SQLManager) DeleteRole(id string) error {
-	if _, err := m.DB.Exec(m.DB.Rebind(fmt.Sprintf("DELETE FROM %s WHERE id=?", m.TableRole)), id); err != nil {
+func (m *SQLManager) deleteRole(id string) func(tx *sqlx.Tx) error {
+	return func(tx *sqlx.Tx) error {
+		_, err := tx.Exec(m.DB.Rebind(fmt.Sprintf("DELETE FROM %s WHERE id=?", m.TableRole)), id)
+
 		return errors.WithStack(err)
 	}
-	return nil
 }
 
-func (m *SQLManager) AddRoleMembers(group string, subjects []string) error {
-	tx, err := m.DB.Beginx()
-	if err != nil {
-		return errors.Wrap(err, "Could not begin transaction")
-	}
-
-	query := fmt.Sprintf("INSERT INTO %s (role_id, member) VALUES (?, ?)", m.TableMember)
-	for _, subject := range subjects {
-		if _, err := tx.Exec(m.DB.Rebind(query), group, subject); err != nil {
-			if err := tx.Rollback(); err != nil {
-				return errors.WithStack(err)
-			}
-			return errors.WithStack(err)
-		}
-	}
-
-	if err := tx.Commit(); err != nil {
-		if err := tx.Rollback(); err != nil {
-			return errors.WithStack(err)
-		}
-		return errors.Wrap(err, "Could not commit transaction")
-	}
-	return nil
+func (m *SQLManager) DeleteRole(id string) error {
+	return m.applyInTransaction(m.deleteRole(id))
 }
 
-func (m *SQLManager) RemoveRoleMembers(group string, subjects []string) error {
-	tx, err := m.DB.Beginx()
-	if err != nil {
-		return errors.Wrap(err, "Could not begin transaction")
-	}
-	for _, subject := range subjects {
-		if _, err := m.DB.Exec(m.DB.Rebind(fmt.Sprintf("DELETE FROM %s WHERE member=? AND role_id=?", m.TableMember)), subject, group); err != nil {
-			if err := tx.Rollback(); err != nil {
+func (m *SQLManager) addRoleMembers(role string, subjects []string) func(tx *sqlx.Tx) error {
+	return func(tx *sqlx.Tx) error {
+		query := fmt.Sprintf("INSERT INTO %s (role_id, member) VALUES (?, ?)", m.TableMember)
+
+		for _, subject := range subjects {
+			if _, err := tx.Exec(m.DB.Rebind(query), role, subject); err != nil {
 				return errors.WithStack(err)
 			}
-			return errors.WithStack(err)
 		}
-	}
 
-	if err := tx.Commit(); err != nil {
-		if err := tx.Rollback(); err != nil {
-			return errors.WithStack(err)
-		}
-		return errors.Wrap(err, "Could not commit transaction")
+		return nil
 	}
-	return nil
+}
+
+func (m *SQLManager) AddRoleMembers(role string, subjects []string) error {
+	return m.applyInTransaction(m.addRoleMembers(role, subjects))
+}
+
+func (m *SQLManager) removeGroupMembers(role string, subjects []string) func(tx *sqlx.Tx) error {
+	return func(tx *sqlx.Tx) error {
+		query := fmt.Sprintf("DELETE FROM %s WHERE member=? AND role_id=?", m.TableMember)
+
+		for _, subject := range subjects {
+			if _, err := tx.Exec(m.DB.Rebind(query), subject, role); err != nil {
+				return errors.WithStack(err)
+			}
+		}
+
+		return nil
+	}
+}
+
+func (m *SQLManager) RemoveRoleMembers(role string, subjects []string) error {
+	return m.applyInTransaction(m.removeGroupMembers(role, subjects))
 }
 
 func (m *SQLManager) FindRolesByMember(member string, limit, offset int) ([]Role, error) {
@@ -171,17 +169,17 @@ func (m *SQLManager) FindRolesByMember(member string, limit, offset int) ([]Role
 		return nil, errors.WithStack(err)
 	}
 
-	var groups = make([]Role, len(ids))
+	var roles = make([]Role, len(ids))
 	for k, id := range ids {
-		group, err := m.GetRole(id)
+		role, err := m.GetRole(id)
 		if err != nil {
 			return nil, errors.WithStack(err)
 		}
 
-		groups[k] = *group
+		roles[k] = *role
 	}
 
-	return groups, nil
+	return roles, nil
 }
 
 func (m *SQLManager) ListRoles(limit, offset int) ([]Role, error) {
@@ -192,15 +190,45 @@ func (m *SQLManager) ListRoles(limit, offset int) ([]Role, error) {
 		return nil, errors.WithStack(err)
 	}
 
-	var groups = make([]Role, len(ids))
+	var roles = make([]Role, len(ids))
 	for k, id := range ids {
-		group, err := m.GetRole(id)
+		role, err := m.GetRole(id)
 		if err != nil {
 			return nil, errors.WithStack(err)
 		}
 
-		groups[k] = *group
+		roles[k] = *role
 	}
 
-	return groups, nil
+	return roles, nil
+}
+
+func (m *SQLManager) UpdateRole(role Role) error {
+	return m.applyInTransaction(m.deleteRole(role.ID), m.createRole(role.ID), m.addRoleMembers(role.ID, role.Members))
+}
+
+func (m *SQLManager) applyInTransaction(executors ...func(tx *sqlx.Tx) error) error {
+	tx, err := m.DB.Beginx()
+	if err != nil {
+		return errors.Wrap(err, "Could not begin transaction")
+	}
+
+	for _, exec := range executors {
+		if err := exec(tx); err != nil {
+			if err := tx.Rollback(); err != nil {
+				return errors.WithStack(err)
+			}
+
+			return err
+		}
+	}
+
+	if err := tx.Commit(); err != nil {
+		if err := tx.Rollback(); err != nil {
+			return errors.WithStack(err)
+		}
+		return errors.Wrap(err, "Could not commit transaction")
+	}
+
+	return nil
 }

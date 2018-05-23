@@ -420,6 +420,38 @@
           }
         }
       },
+      "put": {
+        "description": "This endpoint allows you to overwrite a role. You have to know the role's ID.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "http",
+          "https"
+        ],
+        "tags": [
+          "role"
+        ],
+        "summary": "A Role represents a group of users that share the same role and thus permissions. A role could be an administrator, a moderator, a regular\nuser or some other sort of role.",
+        "operationId": "setRole",
+        "responses": {
+          "204": {
+            "$ref": "#/responses/emptyResponse"
+          },
+          "401": {
+            "$ref": "#/responses/genericError"
+          },
+          "403": {
+            "$ref": "#/responses/genericError"
+          },
+          "500": {
+            "$ref": "#/responses/genericError"
+          }
+        }
+      },
       "delete": {
         "description": "A Role represents a group of users that share the same role and thus permissions. A role could be an administrator, a moderator, a regular\nuser or some other sort of role.\n\nThis endpoint allows you to delete an existing role. You have to know the role's ID.",
         "consumes": [
@@ -819,6 +851,10 @@
           "description": "Here, it's sub",
           "type": "string",
           "x-go-name": "Subject"
+        },
+        "token_type": {
+          "type": "string",
+          "x-go-name": "TokenType"
         },
         "username": {
           "type": "string",
