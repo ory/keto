@@ -405,3 +405,60 @@ func (a RoleApi) RemoveMembersFromRole(id string, body RoleMembers) (*APIRespons
 	}
 	return localVarAPIResponse, err
 }
+
+/**
+ * A Role represents a group of users that share the same role and thus permissions. A role could be an administrator, a moderator, a regular user or some other sort of role.
+ * This endpoint allows you to overwrite a role. You have to know the role&#39;s ID.
+ *
+ * @return void
+ */
+func (a RoleApi) SetRole() (*APIResponse, error) {
+
+	var localVarHttpMethod = strings.ToUpper("Put")
+	// create path and map variables
+	localVarPath := a.Configuration.BasePath + "/roles/{id}"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := make(map[string]string)
+	var localVarPostBody interface{}
+	var localVarFileName string
+	var localVarFileBytes []byte
+	// add default headers if any
+	for key := range a.Configuration.DefaultHeader {
+		localVarHeaderParams[key] = a.Configuration.DefaultHeader[key]
+	}
+
+	// to determine the Content-Type header
+	localVarHttpContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHttpContentType := a.Configuration.APIClient.SelectHeaderContentType(localVarHttpContentTypes)
+	if localVarHttpContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHttpContentType
+	}
+	// to determine the Accept header
+	localVarHttpHeaderAccepts := []string{
+		"application/json",
+	}
+
+	// set Accept header
+	localVarHttpHeaderAccept := a.Configuration.APIClient.SelectHeaderAccept(localVarHttpHeaderAccepts)
+	if localVarHttpHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHttpHeaderAccept
+	}
+	localVarHttpResponse, err := a.Configuration.APIClient.CallAPI(localVarPath, localVarHttpMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFileName, localVarFileBytes)
+
+	var localVarURL, _ = url.Parse(localVarPath)
+	localVarURL.RawQuery = localVarQueryParams.Encode()
+	var localVarAPIResponse = &APIResponse{Operation: "SetRole", Method: localVarHttpMethod, RequestURL: localVarURL.String()}
+	if localVarHttpResponse != nil {
+		localVarAPIResponse.Response = localVarHttpResponse.RawResponse
+		localVarAPIResponse.Payload = localVarHttpResponse.Body()
+	}
+
+	if err != nil {
+		return localVarAPIResponse, err
+	}
+	return localVarAPIResponse, err
+}

@@ -58,6 +58,7 @@ func (h *Handler) SetRoutes(r *httprouter.Router) {
 	r.DELETE(handlerBasePath+"/:id", h.DeleteRole)
 	r.POST(handlerBasePath+"/:id/members", h.AddRoleMembers)
 	r.DELETE(handlerBasePath+"/:id/members", h.DeleteRoleMembers)
+	r.PUT(handlerBasePath+"/:id", h.UpdateRole)
 }
 
 // swagger:route GET /roles role listRoles
@@ -289,6 +290,46 @@ func (h *Handler) DeleteRoleMembers(w http.ResponseWriter, r *http.Request, ps h
 	}
 
 	if err := h.Manager.RemoveRoleMembers(id, m.Members); err != nil {
+		h.H.WriteError(w, r, err)
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
+}
+
+// swagger:route PUT /roles/{id} role setRole
+//
+// A Role represents a group of users that share the same role and thus permissions. A role could be an administrator, a moderator, a regular
+// user or some other sort of role.
+//
+// This endpoint allows you to overwrite a role. You have to know the role's ID.
+//
+//     Consumes:
+//     - application/json
+//
+//     Produces:
+//     - application/json
+//
+//     Schemes: http, https
+//
+//     Responses:
+//       204: emptyResponse
+//       401: genericError
+//       403: genericError
+//       500: genericError
+func (h *Handler) UpdateRole(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	var id = ps.ByName("id")
+
+	var m membersRequest
+	if err := json.NewDecoder(r.Body).Decode(&m); err != nil {
+		h.H.WriteError(w, r, errors.WithStack(err))
+		return
+	}
+
+	if err := h.Manager.UpdateRole(Role{
+		ID:      id,
+		Members: m.Members,
+	}); err != nil {
 		h.H.WriteError(w, r, err)
 		return
 	}

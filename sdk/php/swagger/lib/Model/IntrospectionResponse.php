@@ -62,6 +62,7 @@ class IntrospectionResponse implements ArrayAccess
         'nbf' => 'int',
         'scope' => 'string',
         'sub' => 'string',
+        'token_type' => 'string',
         'username' => 'string'
     ];
 
@@ -80,6 +81,7 @@ class IntrospectionResponse implements ArrayAccess
         'nbf' => 'int64',
         'scope' => null,
         'sub' => null,
+        'token_type' => null,
         'username' => null
     ];
 
@@ -108,6 +110,7 @@ class IntrospectionResponse implements ArrayAccess
         'nbf' => 'nbf',
         'scope' => 'scope',
         'sub' => 'sub',
+        'token_type' => 'token_type',
         'username' => 'username'
     ];
 
@@ -127,6 +130,7 @@ class IntrospectionResponse implements ArrayAccess
         'nbf' => 'setNbf',
         'scope' => 'setScope',
         'sub' => 'setSub',
+        'token_type' => 'setTokenType',
         'username' => 'setUsername'
     ];
 
@@ -146,6 +150,7 @@ class IntrospectionResponse implements ArrayAccess
         'nbf' => 'getNbf',
         'scope' => 'getScope',
         'sub' => 'getSub',
+        'token_type' => 'getTokenType',
         'username' => 'getUsername'
     ];
 
@@ -190,6 +195,7 @@ class IntrospectionResponse implements ArrayAccess
         $this->container['nbf'] = isset($data['nbf']) ? $data['nbf'] : null;
         $this->container['scope'] = isset($data['scope']) ? $data['scope'] : null;
         $this->container['sub'] = isset($data['sub']) ? $data['sub'] : null;
+        $this->container['token_type'] = isset($data['token_type']) ? $data['token_type'] : null;
         $this->container['username'] = isset($data['username']) ? $data['username'] : null;
     }
 
@@ -424,6 +430,27 @@ class IntrospectionResponse implements ArrayAccess
     public function setSub($sub)
     {
         $this->container['sub'] = $sub;
+
+        return $this;
+    }
+
+    /**
+     * Gets token_type
+     * @return string
+     */
+    public function getTokenType()
+    {
+        return $this->container['token_type'];
+    }
+
+    /**
+     * Sets token_type
+     * @param string $token_type
+     * @return $this
+     */
+    public function setTokenType($token_type)
+    {
+        $this->container['token_type'] = $token_type;
 
         return $this;
     }

@@ -10,6 +10,7 @@ Method | HTTP request | Description
 [**GetRole**](RoleApi.md#GetRole) | **Get** /roles/{id} | Get a role by its ID
 [**ListRoles**](RoleApi.md#ListRoles) | **Get** /roles | List all roles
 [**RemoveMembersFromRole**](RoleApi.md#RemoveMembersFromRole) | **Delete** /roles/{id}/members | Remove members from a role
+[**SetRole**](RoleApi.md#SetRole) | **Put** /roles/{id} | A Role represents a group of users that share the same role and thus permissions. A role could be an administrator, a moderator, a regular user or some other sort of role.
 
 
 # **AddMembersToRole**
@@ -174,6 +175,32 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **id** | **string**| The id of the role to modify. | 
  **body** | [**RoleMembers**](RoleMembers.md)|  | [optional] 
+
+### Return type
+
+void (empty response body)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **SetRole**
+> SetRole()
+
+A Role represents a group of users that share the same role and thus permissions. A role could be an administrator, a moderator, a regular user or some other sort of role.
+
+This endpoint allows you to overwrite a role. You have to know the role's ID.
+
+
+### Parameters
+This endpoint does not need any parameter.
 
 ### Return type
 

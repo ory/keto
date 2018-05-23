@@ -13,6 +13,7 @@ Name | Type | Description | Notes
 **Nbf** | **int64** |  | [optional] [default to null]
 **Scope** | **string** |  | [optional] [default to null]
 **Sub** | **string** | Here, it&#39;s sub | [optional] [default to null]
+**TokenType** | **string** |  | [optional] [default to null]
 **Username** | **string** |  | [optional] [default to null]
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

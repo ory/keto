@@ -11,6 +11,7 @@ Method | HTTP request | Description
 [**getRole**](RoleApi.md#getRole) | **GET** /roles/{id} | Get a role by its ID
 [**listRoles**](RoleApi.md#listRoles) | **GET** /roles | List all roles
 [**removeMembersFromRole**](RoleApi.md#removeMembersFromRole) | **DELETE** /roles/{id}/members | Remove members from a role
+[**setRole**](RoleApi.md#setRole) | **PUT** /roles/{id} | A Role represents a group of users that share the same role and thus permissions. A role could be an administrator, a moderator, a regular user or some other sort of role.
 
 
 # **addMembersToRole**
@@ -272,6 +273,46 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **id** | **string**| The id of the role to modify. |
  **body** | [**\keto\SDK\Model\RoleMembers**](../Model/RoleMembers.md)|  | [optional]
+
+### Return type
+
+void (empty response body)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
+
+# **setRole**
+> setRole()
+
+A Role represents a group of users that share the same role and thus permissions. A role could be an administrator, a moderator, a regular user or some other sort of role.
+
+This endpoint allows you to overwrite a role. You have to know the role's ID.
+
+### Example
+```php
+<?php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+$api_instance = new keto\SDK\Api\RoleApi();
+
+try {
+    $api_instance->setRole();
+} catch (Exception $e) {
+    echo 'Exception when calling RoleApi->setRole: ', $e->getMessage(), PHP_EOL;
+}
+?>
+```
+
+### Parameters
+This endpoint does not need any parameter.
 
 ### Return type
 

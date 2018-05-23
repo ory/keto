@@ -1,5 +1,5 @@
 /**
- * 
+ *
  * Package main ORY Keto
  *
  * OpenAPI spec version: Latest
@@ -89,6 +89,12 @@
       if (data.hasOwnProperty('sub')) {
         obj['sub'] = ApiClient.convertToType(data['sub'], 'String')
       }
+      if (data.hasOwnProperty('token_type')) {
+        obj['token_type'] = ApiClient.convertToType(
+          data['token_type'],
+          'String'
+        )
+      }
       if (data.hasOwnProperty('username')) {
         obj['username'] = ApiClient.convertToType(data['username'], 'String')
       }
@@ -138,6 +144,10 @@
    * @member {String} sub
    */
   exports.prototype['sub'] = undefined
+  /**
+   * @member {String} token_type
+   */
+  exports.prototype['token_type'] = undefined
   /**
    * @member {String} username
    */
