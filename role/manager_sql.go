@@ -80,7 +80,7 @@ func (m *SQLManager) CreateSchemas() (int, error) {
 
 func (m *SQLManager) createRole(role string) func(tx *sqlx.Tx) error {
 	return func(tx *sqlx.Tx) error {
-		_, err := tx.Exec(m.DB.Rebind("INSERT INTO hydra_warden_group (id) VALUES (?)"), role)
+		_, err := tx.Exec(m.DB.Rebind(fmt.Sprintf("INSERT INTO %s (id) VALUES (?)", m.TableRole)), role)
 
 		return errors.WithStack(err)
 	}

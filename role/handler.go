@@ -58,7 +58,7 @@ func (h *Handler) SetRoutes(r *httprouter.Router) {
 	r.DELETE(handlerBasePath+"/:id", h.DeleteRole)
 	r.POST(handlerBasePath+"/:id/members", h.AddRoleMembers)
 	r.DELETE(handlerBasePath+"/:id/members", h.DeleteRoleMembers)
-	r.POST(handlerBasePath+"/:id/members", h.UpdateRoleMembers)
+	r.PUT(handlerBasePath+"/:id/members", h.UpdateRoleMembers)
 }
 
 // swagger:route GET /roles role listRoles
