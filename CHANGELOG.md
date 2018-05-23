@@ -14,8 +14,13 @@
 
 [Full Changelog](https://github.com/ory/keto/compare/v0.0.1...HEAD)
 
+**Closed issues:**
+
+- roles: add a PUT method to overwrite members [\#10](https://github.com/ory/keto/issues/10)
+
 **Merged pull requests:**
 
+- transfer UpdateRoleMembers [\#14](https://github.com/ory/keto/pull/14) ([zepatrik](https://github.com/zepatrik))
 - ci: Resolves test timeout [\#13](https://github.com/ory/keto/pull/13) ([arekkas](https://github.com/arekkas))
 
 ## [v0.0.1](https://github.com/ory/keto/tree/v0.0.1) (2018-05-20)
