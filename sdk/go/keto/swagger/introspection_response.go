@@ -31,5 +31,7 @@ type IntrospectionResponse struct {
 	// Here, it's sub
 	Sub string `json:"sub,omitempty"`
 
+	TokenType string `json:"token_type,omitempty"`
+
 	Username string `json:"username,omitempty"`
 }

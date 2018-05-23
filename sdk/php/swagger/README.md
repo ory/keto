@@ -87,6 +87,7 @@ Class | Method | HTTP request | Description
 *RoleApi* | [**getRole**](docs/Api/RoleApi.md#getrole) | **GET** /roles/{id} | Get a role by its ID
 *RoleApi* | [**listRoles**](docs/Api/RoleApi.md#listroles) | **GET** /roles | List all roles
 *RoleApi* | [**removeMembersFromRole**](docs/Api/RoleApi.md#removemembersfromrole) | **DELETE** /roles/{id}/members | Remove members from a role
+*RoleApi* | [**setRole**](docs/Api/RoleApi.md#setrole) | **PUT** /roles/{id} | A Role represents a group of users that share the same role and thus permissions. A role could be an administrator, a moderator, a regular user or some other sort of role.
 *WardenApi* | [**isOAuth2AccessTokenAuthorized**](docs/Api/WardenApi.md#isoauth2accesstokenauthorized) | **POST** /warden/oauth2/access-tokens/authorize | Check if an OAuth 2.0 access token is authorized to access a resource
 *WardenApi* | [**isOAuth2ClientAuthorized**](docs/Api/WardenApi.md#isoauth2clientauthorized) | **POST** /warden/oauth2/clients/authorize | Check if an OAuth 2.0 Client is authorized to access a resource
 *WardenApi* | [**isSubjectAuthorized**](docs/Api/WardenApi.md#issubjectauthorized) | **POST** /warden/subjects/authorize | Check if a subject is authorized to access a resource

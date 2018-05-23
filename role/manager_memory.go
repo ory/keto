@@ -40,23 +40,23 @@ type MemoryManager struct {
 	sync.RWMutex
 }
 
-func (m *MemoryManager) CreateRole(g *Role) error {
-	if g.ID == "" {
-		g.ID = uuid.New()
+func (m *MemoryManager) CreateRole(r *Role) error {
+	if r.ID == "" {
+		r.ID = uuid.New()
 	}
 	if m.Roles == nil {
 		m.Roles = map[string]Role{}
 	}
 
-	m.Roles[g.ID] = *g
+	m.Roles[r.ID] = *r
 	return nil
 }
 
 func (m *MemoryManager) GetRole(id string) (*Role, error) {
-	if g, ok := m.Roles[id]; !ok {
+	if r, ok := m.Roles[id]; !ok {
 		return nil, errors.WithStack(pkg.ErrNotFound)
 	} else {
-		return &g, nil
+		return &r, nil
 	}
 }
 
@@ -65,23 +65,23 @@ func (m *MemoryManager) DeleteRole(id string) error {
 	return nil
 }
 
-func (m *MemoryManager) AddRoleMembers(group string, subjects []string) error {
-	g, err := m.GetRole(group)
+func (m *MemoryManager) AddRoleMembers(role string, subjects []string) error {
+	r, err := m.GetRole(role)
 	if err != nil {
 		return err
 	}
-	g.Members = append(g.Members, subjects...)
-	return m.CreateRole(g)
+	r.Members = append(r.Members, subjects...)
+	return m.CreateRole(r)
 }
 
-func (m *MemoryManager) RemoveRoleMembers(group string, subjects []string) error {
-	g, err := m.GetRole(group)
+func (m *MemoryManager) RemoveRoleMembers(role string, subjects []string) error {
+	r, err := m.GetRole(role)
 	if err != nil {
 		return err
 	}
 
 	var subs []string
-	for _, s := range g.Members {
+	for _, s := range r.Members {
 		var remove bool
 		for _, f := range subjects {
 			if f == s {
@@ -94,8 +94,8 @@ func (m *MemoryManager) RemoveRoleMembers(group string, subjects []string) error
 		}
 	}
 
-	g.Members = subs
-	return m.CreateRole(g)
+	r.Members = subs
+	return m.CreateRole(r)
 }
 
 func (m *MemoryManager) FindRolesByMember(member string, limit, offset int) ([]Role, error) {
@@ -104,10 +104,10 @@ func (m *MemoryManager) FindRolesByMember(member string, limit, offset int) ([]R
 	}
 
 	res := make([]Role, 0)
-	for _, g := range m.Roles {
-		for _, s := range g.Members {
+	for _, r := range m.Roles {
+		for _, s := range r.Members {
 			if s == member {
-				res = append(res, g)
+				res = append(res, r)
 				break
 			}
 		}
@@ -124,11 +124,23 @@ func (m *MemoryManager) ListRoles(limit, offset int) ([]Role, error) {
 
 	i := 0
 	res := make([]Role, len(m.Roles))
-	for _, g := range m.Roles {
-		res[i] = g
+	for _, r := range m.Roles {
+		res[i] = r
 		i++
 	}
 
 	start, end := pagination.Index(limit, offset, len(res))
 	return res[start:end], nil
+}
+
+func (m *MemoryManager) UpdateRole(role Role) error {
+	if err := m.DeleteRole(role.ID); err != nil {
+		return err
+	}
+
+	if err := m.CreateRole(&role); err != nil {
+		return err
+	}
+
+	return nil
 }
