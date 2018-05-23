@@ -45,8 +45,8 @@ var migrations = &migrate.MemoryMigrationSource{
 	PRIMARY KEY (member, role_id)
 )`},
 			Down: []string{
-				"DROP TABLE hydra_warden_group",
-				"DROP TABLE hydra_warden_group_member",
+				"DROP TABLE keto_role",
+				"DROP TABLE keto_role_member",
 			},
 		},
 	},
@@ -203,8 +203,8 @@ func (m *SQLManager) ListRoles(limit, offset int) ([]Role, error) {
 	return roles, nil
 }
 
-func (m *SQLManager) UpdateRoleMembers(role string, members []string) error {
-	return m.applyInTransaction(m.deleteRole(role), m.createRole(role), m.addRoleMembers(role, members))
+func (m *SQLManager) UpdateRole(role Role) error {
+	return m.applyInTransaction(m.deleteRole(role.ID), m.createRole(role.ID), m.addRoleMembers(role.ID, role.Members))
 }
 
 func (m *SQLManager) applyInTransaction(executors ...func(tx *sqlx.Tx) error) error {

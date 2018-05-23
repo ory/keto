@@ -10,6 +10,7 @@ Method | HTTP request | Description
 [**getRole**](RoleApi.md#getRole) | **GET** /roles/{id} | Get a role by its ID
 [**listRoles**](RoleApi.md#listRoles) | **GET** /roles | List all roles
 [**removeMembersFromRole**](RoleApi.md#removeMembersFromRole) | **DELETE** /roles/{id}/members | Remove members from a role
+[**setRole**](RoleApi.md#setRole) | **PUT** /roles/{id} | A Role represents a group of users that share the same role and thus permissions. A role could be an administrator, a moderator, a regular user or some other sort of role.
 
 
 <a name="addMembersToRole"></a>
@@ -288,6 +289,46 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **id** | **String**| The id of the role to modify. | 
  **body** | [**RoleMembers**](RoleMembers.md)|  | [optional] 
+
+### Return type
+
+null (empty response body)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+<a name="setRole"></a>
+# **setRole**
+> setRole()
+
+A Role represents a group of users that share the same role and thus permissions. A role could be an administrator, a moderator, a regular user or some other sort of role.
+
+This endpoint allows you to overwrite a role. You have to know the role&#39;s ID.
+
+### Example
+```javascript
+var SwaggerJsClient = require('swagger-js-client');
+
+var apiInstance = new SwaggerJsClient.RoleApi();
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully.');
+  }
+};
+apiInstance.setRole(callback);
+```
+
+### Parameters
+This endpoint does not need any parameter.
 
 ### Return type
 

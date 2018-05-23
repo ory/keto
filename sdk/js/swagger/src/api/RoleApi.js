@@ -1,5 +1,5 @@
 /**
- * 
+ *
  * Package main ORY Keto
  *
  * OpenAPI spec version: Latest
@@ -17,15 +17,12 @@
 ;(function(root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module.
-    define(
-      [
-        'ApiClient',
-        'model/InlineResponse401',
-        'model/Role',
-        'model/RoleMembers'
-      ],
-      factory
-    )
+    define([
+      'ApiClient',
+      'model/InlineResponse401',
+      'model/Role',
+      'model/RoleMembers'
+    ], factory)
   } else if (typeof module === 'object' && module.exports) {
     // CommonJS-like environments that support module.exports, like Node.
     module.exports = factory(
@@ -56,7 +53,7 @@
    */
 
   /**
-   * Constructs a new RoleApi. 
+   * Constructs a new RoleApi.
    * @alias module:api/RoleApi
    * @class
    * @param {module:ApiClient} apiClient Optional API client implementation to use,
@@ -78,7 +75,7 @@
      * A Role represents a group of users that share the same role and thus permissions. A role could be an administrator, a moderator, a regular user or some other sort of role.  This endpoint allows you to add members (users, applications, ...) to a specific role. You have to know the role&#39;s ID.
      * @param {String} id The id of the role to modify.
      * @param {Object} opts Optional parameters
-     * @param {module:model/RoleMembers} opts.body 
+     * @param {module:model/RoleMembers} opts.body
      * @param {module:api/RoleApi~addMembersToRoleCallback} callback The callback function, accepting three arguments: error, data, response
      */
     this.addMembersToRole = function(id, opts, callback) {
@@ -132,7 +129,7 @@
      * Create a role
      * A Role represents a group of users that share the same role and thus permissions. A role could be an administrator, a moderator, a regular user or some other sort of role.  This endpoint allows you to create a new role. You may define members as well but you don&#39;t have to.
      * @param {Object} opts Optional parameters
-     * @param {module:model/Role} opts.body 
+     * @param {module:model/Role} opts.body
      * @param {module:api/RoleApi~createRoleCallback} callback The callback function, accepting three arguments: error, data, response
      * data is of type: {@link module:model/Role}
      */
@@ -336,7 +333,7 @@
      * A Role represents a group of users that share the same role and thus permissions. A role could be an administrator, a moderator, a regular user or some other sort of role.  This endpoint allows you to remove members (users, applications, ...) from a specific role. You have to know the role&#39;s ID.
      * @param {String} id The id of the role to modify.
      * @param {Object} opts Optional parameters
-     * @param {module:model/RoleMembers} opts.body 
+     * @param {module:model/RoleMembers} opts.body
      * @param {module:api/RoleApi~removeMembersFromRoleCallback} callback The callback function, accepting three arguments: error, data, response
      */
     this.removeMembersFromRole = function(id, opts, callback) {
@@ -365,6 +362,48 @@
       return this.apiClient.callApi(
         '/roles/{id}/members',
         'DELETE',
+        pathParams,
+        queryParams,
+        headerParams,
+        formParams,
+        postBody,
+        authNames,
+        contentTypes,
+        accepts,
+        returnType,
+        callback
+      )
+    }
+
+    /**
+     * Callback function to receive the result of the setRole operation.
+     * @callback module:api/RoleApi~setRoleCallback
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * A Role represents a group of users that share the same role and thus permissions. A role could be an administrator, a moderator, a regular user or some other sort of role.
+     * This endpoint allows you to overwrite a role. You have to know the role&#39;s ID.
+     * @param {module:api/RoleApi~setRoleCallback} callback The callback function, accepting three arguments: error, data, response
+     */
+    this.setRole = function(callback) {
+      var postBody = null
+
+      var pathParams = {}
+      var queryParams = {}
+      var headerParams = {}
+      var formParams = {}
+
+      var authNames = []
+      var contentTypes = ['application/json']
+      var accepts = ['application/json']
+      var returnType = null
+
+      return this.apiClient.callApi(
+        '/roles/{id}',
+        'PUT',
         pathParams,
         queryParams,
         headerParams,

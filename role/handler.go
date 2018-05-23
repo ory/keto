@@ -58,7 +58,7 @@ func (h *Handler) SetRoutes(r *httprouter.Router) {
 	r.DELETE(handlerBasePath+"/:id", h.DeleteRole)
 	r.POST(handlerBasePath+"/:id/members", h.AddRoleMembers)
 	r.DELETE(handlerBasePath+"/:id/members", h.DeleteRoleMembers)
-	r.PUT(handlerBasePath+"/:id/members", h.UpdateRoleMembers)
+	r.PUT(handlerBasePath+"/:id", h.UpdateRole)
 }
 
 // swagger:route GET /roles role listRoles
@@ -297,12 +297,12 @@ func (h *Handler) DeleteRoleMembers(w http.ResponseWriter, r *http.Request, ps h
 	w.WriteHeader(http.StatusNoContent)
 }
 
-// swagger:route PUT /roles/{id}/members role replaceMembersInRole
+// swagger:route PUT /roles/{id} role setRole
 //
 // A Role represents a group of users that share the same role and thus permissions. A role could be an administrator, a moderator, a regular
 // user or some other sort of role.
 //
-// This endpoint allows you to replace members (users, applications, ...) of a specific role. You have to know the role's ID.
+// This endpoint allows you to overwrite a role. You have to know the role's ID.
 //
 //     Consumes:
 //     - application/json
@@ -317,7 +317,7 @@ func (h *Handler) DeleteRoleMembers(w http.ResponseWriter, r *http.Request, ps h
 //       401: genericError
 //       403: genericError
 //       500: genericError
-func (h *Handler) UpdateRoleMembers(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func (h *Handler) UpdateRole(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	var id = ps.ByName("id")
 
 	var m membersRequest
@@ -326,7 +326,10 @@ func (h *Handler) UpdateRoleMembers(w http.ResponseWriter, r *http.Request, ps h
 		return
 	}
 
-	if err := h.Manager.UpdateRoleMembers(id, m.Members); err != nil {
+	if err := h.Manager.UpdateRole(Role{
+		ID:      id,
+		Members: m.Members,
+	}); err != nil {
 		h.H.WriteError(w, r, err)
 		return
 	}

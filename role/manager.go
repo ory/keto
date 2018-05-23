@@ -42,5 +42,5 @@ type Manager interface {
 
 	FindRolesByMember(member string, limit, offset int) ([]Role, error)
 	ListRoles(limit, offset int) ([]Role, error)
-	UpdateRoleMembers(role string, members []string) error
+	UpdateRole(role Role) error
 }

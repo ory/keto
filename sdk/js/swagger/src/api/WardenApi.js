@@ -1,5 +1,5 @@
 /**
- * 
+ *
  * Package main ORY Keto
  *
  * OpenAPI spec version: Latest
@@ -17,19 +17,16 @@
 ;(function(root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module.
-    define(
-      [
-        'ApiClient',
-        'model/InlineResponse401',
-        'model/WardenOAuth2AccessTokenAuthorizationRequest',
-        'model/WardenOAuth2AccessTokenAuthorizationResponse',
-        'model/WardenOAuth2ClientAuthorizationRequest',
-        'model/WardenOAuth2ClientAuthorizationResponse',
-        'model/WardenSubjectAuthorizationRequest',
-        'model/WardenSubjectAuthorizationResponse'
-      ],
-      factory
-    )
+    define([
+      'ApiClient',
+      'model/InlineResponse401',
+      'model/WardenOAuth2AccessTokenAuthorizationRequest',
+      'model/WardenOAuth2AccessTokenAuthorizationResponse',
+      'model/WardenOAuth2ClientAuthorizationRequest',
+      'model/WardenOAuth2ClientAuthorizationResponse',
+      'model/WardenSubjectAuthorizationRequest',
+      'model/WardenSubjectAuthorizationResponse'
+    ], factory)
   } else if (typeof module === 'object' && module.exports) {
     // CommonJS-like environments that support module.exports, like Node.
     module.exports = factory(
@@ -77,7 +74,7 @@
    */
 
   /**
-   * Constructs a new WardenApi. 
+   * Constructs a new WardenApi.
    * @alias module:api/WardenApi
    * @class
    * @param {module:ApiClient} apiClient Optional API client implementation to use,
@@ -98,7 +95,7 @@
      * Check if an OAuth 2.0 access token is authorized to access a resource
      * Checks if a token is valid and if the token subject is allowed to perform an action on a resource. This endpoint requires a token, a scope, a resource name, an action name and a context.   If a token is expired/invalid, has not been granted the requested scope or the subject is not allowed to perform the action on the resource, this endpoint returns a 200 response with &#x60;{ \&quot;allowed\&quot;: false }&#x60;.   This endpoint passes all data from the upstream OAuth 2.0 token introspection endpoint. If you use ORY Hydra as an upstream OAuth 2.0 provider, data set through the &#x60;accessTokenExtra&#x60; field in the consent flow will be included in this response as well.
      * @param {Object} opts Optional parameters
-     * @param {module:model/WardenOAuth2AccessTokenAuthorizationRequest} opts.body 
+     * @param {module:model/WardenOAuth2AccessTokenAuthorizationRequest} opts.body
      * @param {module:api/WardenApi~isOAuth2AccessTokenAuthorizedCallback} callback The callback function, accepting three arguments: error, data, response
      * data is of type: {@link module:model/WardenOAuth2AccessTokenAuthorizationResponse}
      */
@@ -144,7 +141,7 @@
      * Check if an OAuth 2.0 Client is authorized to access a resource
      * Checks if an OAuth 2.0 Client provided the correct access credentials and and if the client is allowed to perform an action on a resource. This endpoint requires a client id, a client secret, a scope, a resource name, an action name and a context.
      * @param {Object} opts Optional parameters
-     * @param {module:model/WardenOAuth2ClientAuthorizationRequest} opts.body 
+     * @param {module:model/WardenOAuth2ClientAuthorizationRequest} opts.body
      * @param {module:api/WardenApi~isOAuth2ClientAuthorizedCallback} callback The callback function, accepting three arguments: error, data, response
      * data is of type: {@link module:model/WardenOAuth2ClientAuthorizationResponse}
      */
@@ -190,7 +187,7 @@
      * Check if a subject is authorized to access a resource
      * Checks if a subject (e.g. user ID, API key, ...) is allowed to perform a certain action on a resource.
      * @param {Object} opts Optional parameters
-     * @param {module:model/WardenSubjectAuthorizationRequest} opts.body 
+     * @param {module:model/WardenSubjectAuthorizationRequest} opts.body
      * @param {module:api/WardenApi~isSubjectAuthorizedCallback} callback The callback function, accepting three arguments: error, data, response
      * data is of type: {@link module:model/WardenSubjectAuthorizationResponse}
      */

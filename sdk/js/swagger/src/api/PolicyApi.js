@@ -1,5 +1,5 @@
 /**
- * 
+ *
  * Package main ORY Keto
  *
  * OpenAPI spec version: Latest
@@ -46,7 +46,7 @@
    */
 
   /**
-   * Constructs a new PolicyApi. 
+   * Constructs a new PolicyApi.
    * @alias module:api/PolicyApi
    * @class
    * @param {module:ApiClient} apiClient Optional API client implementation to use,
@@ -66,7 +66,7 @@
     /**
      * Create an Access Control Policy
      * @param {Object} opts Optional parameters
-     * @param {module:model/Policy} opts.body 
+     * @param {module:model/Policy} opts.body
      * @param {module:api/PolicyApi~createPolicyCallback} callback The callback function, accepting three arguments: error, data, response
      * data is of type: {@link module:model/Policy}
      */
@@ -264,7 +264,7 @@
      * Update an Access Control Policy
      * @param {String} id The id of the policy.
      * @param {Object} opts Optional parameters
-     * @param {module:model/Policy} opts.body 
+     * @param {module:model/Policy} opts.body
      * @param {module:api/PolicyApi~updatePolicyCallback} callback The callback function, accepting three arguments: error, data, response
      * data is of type: {@link module:model/Policy}
      */

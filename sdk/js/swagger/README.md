@@ -130,6 +130,7 @@ Class | Method | HTTP request | Description
 *SwaggerJsClient.RoleApi* | [**getRole**](docs/RoleApi.md#getRole) | **GET** /roles/{id} | Get a role by its ID
 *SwaggerJsClient.RoleApi* | [**listRoles**](docs/RoleApi.md#listRoles) | **GET** /roles | List all roles
 *SwaggerJsClient.RoleApi* | [**removeMembersFromRole**](docs/RoleApi.md#removeMembersFromRole) | **DELETE** /roles/{id}/members | Remove members from a role
+*SwaggerJsClient.RoleApi* | [**setRole**](docs/RoleApi.md#setRole) | **PUT** /roles/{id} | A Role represents a group of users that share the same role and thus permissions. A role could be an administrator, a moderator, a regular user or some other sort of role.
 *SwaggerJsClient.WardenApi* | [**isOAuth2AccessTokenAuthorized**](docs/WardenApi.md#isOAuth2AccessTokenAuthorized) | **POST** /warden/oauth2/access-tokens/authorize | Check if an OAuth 2.0 access token is authorized to access a resource
 *SwaggerJsClient.WardenApi* | [**isOAuth2ClientAuthorized**](docs/WardenApi.md#isOAuth2ClientAuthorized) | **POST** /warden/oauth2/clients/authorize | Check if an OAuth 2.0 Client is authorized to access a resource
 *SwaggerJsClient.WardenApi* | [**isSubjectAuthorized**](docs/WardenApi.md#isSubjectAuthorized) | **POST** /warden/subjects/authorize | Check if a subject is authorized to access a resource

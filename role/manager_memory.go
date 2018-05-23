@@ -133,15 +133,12 @@ func (m *MemoryManager) ListRoles(limit, offset int) ([]Role, error) {
 	return res[start:end], nil
 }
 
-func (m *MemoryManager) UpdateRoleMembers(role string, members []string) error {
-	if err := m.DeleteRole(role); err != nil {
+func (m *MemoryManager) UpdateRole(role Role) error {
+	if err := m.DeleteRole(role.ID); err != nil {
 		return err
 	}
 
-	if err := m.CreateRole(&Role{
-		ID:      role,
-		Members: members,
-	}); err != nil {
+	if err := m.CreateRole(&role); err != nil {
 		return err
 	}
 

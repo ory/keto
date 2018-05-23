@@ -13,6 +13,7 @@ Name | Type | Description | Notes
 **nbf** | **Number** |  | [optional] 
 **scope** | **String** |  | [optional] 
 **sub** | **String** | Here, it&#39;s sub | [optional] 
+**tokenType** | **String** |  | [optional] 
 **username** | **String** |  | [optional] 
 
 
