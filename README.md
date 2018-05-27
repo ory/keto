@@ -3,7 +3,7 @@
 <h4 align="center">
     <a href="https://discord.gg/PAMQWkr">Chat</a> |
     <a href="https://community.ory.am/">Forums</a> |
-    <a href="http://eepurl.com/bKT3N9">Newsletter</a><br/><br/>
+    <a href="http://eepurl.com/di390P">Newsletter</a>
 </h4>
 
 This service is a policy decision point. It uses a set of access control policies, similar to
