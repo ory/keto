@@ -76,14 +76,14 @@ AUTHENTICATORS
 		Example: AUTHENTICATOR_OAUTH2_INTROSPECTION_CLIENT_ID=my_client
 
 	- AUTHENTICATOR_OAUTH2_INTROSPECTION_CLIENT_SECRET: The client secret to be used when performing the OAuth 2.0 Introspection request.
-		Example: AUTHENTICATOR_OAUTH2_INTROSPECTION_CLIENT_ID=my_secret
+		Example: AUTHENTICATOR_OAUTH2_INTROSPECTION_CLIENT_SECRET=my_secret
 
-	- AUTHENTICATOR_OAUTH2_INTROSPECTION_SCOPES: The scope(s) (comma separated) required to perform the introspection request. If no scopes are
+	- AUTHENTICATOR_OAUTH2_INTROSPECTION_SCOPE: The scope(s) (comma separated) required to perform the introspection request. If no scopes are
 		required, leave this value empty.
-		Example: AUTHENTICATOR_OAUTH2_INTROSPECTION_CLIENT_ID=scopeA,scopeB
+		Example: AUTHENTICATOR_OAUTH2_INTROSPECTION_SCOPE=scopeA,scopeB
 
 	- AUTHENTICATOR_OAUTH2_INTROSPECTION_TOKEN_URL: The OAuth2 Token Endpoint URL of the server
-		Example: AUTHENTICATOR_OAUTH2_INTROSPECTION_CLIENT_ID=https://my-server/oauth2/token
+		Example: AUTHENTICATOR_OAUTH2_INTROSPECTION_TOKEN_URL=https://my-server/oauth2/token
 
 	- AUTHENTICATOR_OAUTH2_INTROSPECTION_INTROSPECTION_URL: The OAuth2 Introspection Endpoint URL of the server
 		Example: AUTHENTICATOR_OAUTH2_INTROSPECTION_INTROSPECTION_URL=https://my-server/oauth2/introspection
