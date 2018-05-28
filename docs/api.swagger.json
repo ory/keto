@@ -738,10 +738,14 @@
     "AuthenticationOAuth2ClientCredentialsRequest": {
       "type": "object",
       "properties": {
-        "id": {
+        "client_id": {
           "description": "Token is the token to introspect.",
           "type": "string",
           "x-go-name": "ClientID"
+        },
+        "client_secret": {
+          "type": "string",
+          "x-go-name": "ClientSecret"
         },
         "scope": {
           "description": "Scope is an array of scopes that are required.",
@@ -750,10 +754,6 @@
             "type": "string"
           },
           "x-go-name": "Scopes"
-        },
-        "secret": {
-          "type": "string",
-          "x-go-name": "ClientSecret"
         }
       },
       "x-go-package": "github.com/ory/keto/authentication"
@@ -1356,6 +1356,15 @@
           "type": "string",
           "x-go-name": "Action"
         },
+        "client_id": {
+          "description": "Token is the token to introspect.",
+          "type": "string",
+          "x-go-name": "ClientID"
+        },
+        "client_secret": {
+          "type": "string",
+          "x-go-name": "ClientSecret"
+        },
         "context": {
           "description": "Context is the request's environmental context.",
           "type": "object",
@@ -1363,11 +1372,6 @@
             "type": "object"
           },
           "x-go-name": "Context"
-        },
-        "id": {
-          "description": "Token is the token to introspect.",
-          "type": "string",
-          "x-go-name": "ClientID"
         },
         "resource": {
           "description": "Resource is the resource that access is requested to.",
@@ -1381,10 +1385,6 @@
             "type": "string"
           },
           "x-go-name": "Scopes"
-        },
-        "secret": {
-          "type": "string",
-          "x-go-name": "ClientSecret"
         }
       },
       "x-go-name": "swaggerWardenClientAccessRequest",

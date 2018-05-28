@@ -52,9 +52,9 @@ class AuthenticationOAuth2ClientCredentialsRequest implements ArrayAccess
       * @var string[]
       */
     protected static $swaggerTypes = [
-        'id' => 'string',
-        'scope' => 'string[]',
-        'secret' => 'string'
+        'client_id' => 'string',
+        'client_secret' => 'string',
+        'scope' => 'string[]'
     ];
 
     /**
@@ -62,9 +62,9 @@ class AuthenticationOAuth2ClientCredentialsRequest implements ArrayAccess
       * @var string[]
       */
     protected static $swaggerFormats = [
-        'id' => null,
-        'scope' => null,
-        'secret' => null
+        'client_id' => null,
+        'client_secret' => null,
+        'scope' => null
     ];
 
     public static function swaggerTypes()
@@ -82,9 +82,9 @@ class AuthenticationOAuth2ClientCredentialsRequest implements ArrayAccess
      * @var string[]
      */
     protected static $attributeMap = [
-        'id' => 'id',
-        'scope' => 'scope',
-        'secret' => 'secret'
+        'client_id' => 'client_id',
+        'client_secret' => 'client_secret',
+        'scope' => 'scope'
     ];
 
 
@@ -93,9 +93,9 @@ class AuthenticationOAuth2ClientCredentialsRequest implements ArrayAccess
      * @var string[]
      */
     protected static $setters = [
-        'id' => 'setId',
-        'scope' => 'setScope',
-        'secret' => 'setSecret'
+        'client_id' => 'setClientId',
+        'client_secret' => 'setClientSecret',
+        'scope' => 'setScope'
     ];
 
 
@@ -104,9 +104,9 @@ class AuthenticationOAuth2ClientCredentialsRequest implements ArrayAccess
      * @var string[]
      */
     protected static $getters = [
-        'id' => 'getId',
-        'scope' => 'getScope',
-        'secret' => 'getSecret'
+        'client_id' => 'getClientId',
+        'client_secret' => 'getClientSecret',
+        'scope' => 'getScope'
     ];
 
     public static function attributeMap()
@@ -140,9 +140,9 @@ class AuthenticationOAuth2ClientCredentialsRequest implements ArrayAccess
      */
     public function __construct(array $data = null)
     {
-        $this->container['id'] = isset($data['id']) ? $data['id'] : null;
+        $this->container['client_id'] = isset($data['client_id']) ? $data['client_id'] : null;
+        $this->container['client_secret'] = isset($data['client_secret']) ? $data['client_secret'] : null;
         $this->container['scope'] = isset($data['scope']) ? $data['scope'] : null;
-        $this->container['secret'] = isset($data['secret']) ? $data['secret'] : null;
     }
 
     /**
@@ -171,22 +171,43 @@ class AuthenticationOAuth2ClientCredentialsRequest implements ArrayAccess
 
 
     /**
-     * Gets id
+     * Gets client_id
      * @return string
      */
-    public function getId()
+    public function getClientId()
     {
-        return $this->container['id'];
+        return $this->container['client_id'];
     }
 
     /**
-     * Sets id
-     * @param string $id Token is the token to introspect.
+     * Sets client_id
+     * @param string $client_id Token is the token to introspect.
      * @return $this
      */
-    public function setId($id)
+    public function setClientId($client_id)
     {
-        $this->container['id'] = $id;
+        $this->container['client_id'] = $client_id;
+
+        return $this;
+    }
+
+    /**
+     * Gets client_secret
+     * @return string
+     */
+    public function getClientSecret()
+    {
+        return $this->container['client_secret'];
+    }
+
+    /**
+     * Sets client_secret
+     * @param string $client_secret
+     * @return $this
+     */
+    public function setClientSecret($client_secret)
+    {
+        $this->container['client_secret'] = $client_secret;
 
         return $this;
     }
@@ -208,27 +229,6 @@ class AuthenticationOAuth2ClientCredentialsRequest implements ArrayAccess
     public function setScope($scope)
     {
         $this->container['scope'] = $scope;
-
-        return $this;
-    }
-
-    /**
-     * Gets secret
-     * @return string
-     */
-    public function getSecret()
-    {
-        return $this->container['secret'];
-    }
-
-    /**
-     * Sets secret
-     * @param string $secret
-     * @return $this
-     */
-    public function setSecret($secret)
-    {
-        $this->container['secret'] = $secret;
 
         return $this;
     }

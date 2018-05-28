@@ -1,5 +1,5 @@
 /**
- *
+ * 
  * Package main ORY Keto
  *
  * OpenAPI spec version: Latest
@@ -62,22 +62,25 @@
       if (data.hasOwnProperty('action')) {
         obj['action'] = ApiClient.convertToType(data['action'], 'String')
       }
+      if (data.hasOwnProperty('client_id')) {
+        obj['client_id'] = ApiClient.convertToType(data['client_id'], 'String')
+      }
+      if (data.hasOwnProperty('client_secret')) {
+        obj['client_secret'] = ApiClient.convertToType(
+          data['client_secret'],
+          'String'
+        )
+      }
       if (data.hasOwnProperty('context')) {
         obj['context'] = ApiClient.convertToType(data['context'], {
           String: Object
         })
-      }
-      if (data.hasOwnProperty('id')) {
-        obj['id'] = ApiClient.convertToType(data['id'], 'String')
       }
       if (data.hasOwnProperty('resource')) {
         obj['resource'] = ApiClient.convertToType(data['resource'], 'String')
       }
       if (data.hasOwnProperty('scope')) {
         obj['scope'] = ApiClient.convertToType(data['scope'], ['String'])
-      }
-      if (data.hasOwnProperty('secret')) {
-        obj['secret'] = ApiClient.convertToType(data['secret'], 'String')
       }
     }
     return obj
@@ -89,15 +92,19 @@
    */
   exports.prototype['action'] = undefined
   /**
+   * Token is the token to introspect.
+   * @member {String} client_id
+   */
+  exports.prototype['client_id'] = undefined
+  /**
+   * @member {String} client_secret
+   */
+  exports.prototype['client_secret'] = undefined
+  /**
    * Context is the request's environmental context.
    * @member {Object.<String, Object>} context
    */
   exports.prototype['context'] = undefined
-  /**
-   * Token is the token to introspect.
-   * @member {String} id
-   */
-  exports.prototype['id'] = undefined
   /**
    * Resource is the resource that access is requested to.
    * @member {String} resource
@@ -108,10 +115,6 @@
    * @member {Array.<String>} scope
    */
   exports.prototype['scope'] = undefined
-  /**
-   * @member {String} secret
-   */
-  exports.prototype['secret'] = undefined
 
   return exports
 })

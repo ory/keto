@@ -13,17 +13,17 @@ type WardenOAuth2ClientAuthorizationRequest struct {
 	// Action is the action that is requested on the resource.
 	Action string `json:"action,omitempty"`
 
+	// Token is the token to introspect.
+	ClientId string `json:"client_id,omitempty"`
+
+	ClientSecret string `json:"client_secret,omitempty"`
+
 	// Context is the request's environmental context.
 	Context map[string]interface{} `json:"context,omitempty"`
-
-	// Token is the token to introspect.
-	Id string `json:"id,omitempty"`
 
 	// Resource is the resource that access is requested to.
 	Resource string `json:"resource,omitempty"`
 
 	// Scope is an array of scopes that are required.
 	Scope []string `json:"scope,omitempty"`
-
-	Secret string `json:"secret,omitempty"`
 }
