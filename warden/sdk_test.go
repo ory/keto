@@ -141,12 +141,12 @@ func TestWardenSDK(t *testing.T) {
 
 	t.Run("IsOAuth2ClientAuthorized", func(t *testing.T) {
 		result, response, err := client.IsOAuth2ClientAuthorized(keto.WardenOAuth2ClientAuthorizationRequest{
-			Resource: "matrix",
-			Action:   "create",
-			Id:       "client",
-			Secret:   "secret",
-			Context:  ladon.Context{},
-			Scope:    []string{"fooscope"},
+			Resource:     "matrix",
+			Action:       "create",
+			ClientId:     "client",
+			ClientSecret: "secret",
+			Context:      ladon.Context{},
+			Scope:        []string{"fooscope"},
 		})
 
 		require.NoError(t, err, "%s", response.Payload)
