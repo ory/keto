@@ -20,6 +20,7 @@
 
 **Merged pull requests:**
 
+- Resolves minor issues [\#16](https://github.com/ory/keto/pull/16) ([arekkas](https://github.com/arekkas))
 - transfer UpdateRoleMembers [\#14](https://github.com/ory/keto/pull/14) ([zepatrik](https://github.com/zepatrik))
 - ci: Resolves test timeout [\#13](https://github.com/ory/keto/pull/13) ([arekkas](https://github.com/arekkas))
 
