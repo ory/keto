@@ -1,5 +1,5 @@
 /**
- *
+ * 
  * Package main ORY Keto
  *
  * OpenAPI spec version: Latest
@@ -59,14 +59,17 @@
     if (data) {
       obj = obj || new exports()
 
-      if (data.hasOwnProperty('id')) {
-        obj['id'] = ApiClient.convertToType(data['id'], 'String')
+      if (data.hasOwnProperty('client_id')) {
+        obj['client_id'] = ApiClient.convertToType(data['client_id'], 'String')
+      }
+      if (data.hasOwnProperty('client_secret')) {
+        obj['client_secret'] = ApiClient.convertToType(
+          data['client_secret'],
+          'String'
+        )
       }
       if (data.hasOwnProperty('scope')) {
         obj['scope'] = ApiClient.convertToType(data['scope'], ['String'])
-      }
-      if (data.hasOwnProperty('secret')) {
-        obj['secret'] = ApiClient.convertToType(data['secret'], 'String')
       }
     }
     return obj
@@ -74,18 +77,18 @@
 
   /**
    * Token is the token to introspect.
-   * @member {String} id
+   * @member {String} client_id
    */
-  exports.prototype['id'] = undefined
+  exports.prototype['client_id'] = undefined
+  /**
+   * @member {String} client_secret
+   */
+  exports.prototype['client_secret'] = undefined
   /**
    * Scope is an array of scopes that are required.
    * @member {Array.<String>} scope
    */
   exports.prototype['scope'] = undefined
-  /**
-   * @member {String} secret
-   */
-  exports.prototype['secret'] = undefined
 
   return exports
 })
