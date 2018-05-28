@@ -51,8 +51,8 @@ func newWardenHandler() *WardenHandler {
 func (h *WardenHandler) IsOAuth2AccessTokenAuthorized(cmd *cobra.Command, args []string) {
 	token, _ := cmd.Flags().GetString("token")
 	scope, _ := cmd.Flags().GetStringArray("scope")
-	action, _ := cmd.Flags().GetString("actions")
-	resource, _ := cmd.Flags().GetString("resources")
+	action, _ := cmd.Flags().GetString("action")
+	resource, _ := cmd.Flags().GetString("resource")
 
 	m := h.newWardenManager(cmd)
 	_, response, err := m.IsOAuth2AccessTokenAuthorized(keto.WardenOAuth2AccessTokenAuthorizationRequest{
@@ -66,8 +66,8 @@ func (h *WardenHandler) IsOAuth2AccessTokenAuthorized(cmd *cobra.Command, args [
 }
 func (h *WardenHandler) IsSubjectAuthorized(cmd *cobra.Command, args []string) {
 	subject, _ := cmd.Flags().GetString("subject")
-	action, _ := cmd.Flags().GetString("actions")
-	resource, _ := cmd.Flags().GetString("resources")
+	action, _ := cmd.Flags().GetString("action")
+	resource, _ := cmd.Flags().GetString("resource")
 
 	m := h.newWardenManager(cmd)
 	_, response, err := m.IsSubjectAuthorized(keto.WardenSubjectAuthorizationRequest{

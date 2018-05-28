@@ -37,7 +37,7 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 
-	subjectCmd.Flags().String("subject", "", "The request's subject")
-	subjectCmd.Flags().String("action", "", "The request's action")
-	subjectCmd.Flags().String("resource", "", "The request's resource")
+	subjectCmd.Flags().StringP("subject", "s", "", "The request's subject")
+	subjectCmd.Flags().StringP("action", "a", "", "The request's action")
+	subjectCmd.Flags().StringP("resource", "r", "", "The request's resource")
 }
