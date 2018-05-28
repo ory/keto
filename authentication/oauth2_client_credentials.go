@@ -43,9 +43,9 @@ type OAuth2ClientCredentialsAuthentication struct {
 // swagger:model AuthenticationOAuth2ClientCredentialsRequest
 type AuthenticationOAuth2ClientCredentialsRequest struct {
 	// Token is the token to introspect.
-	ClientID string `json:"id"`
+	ClientID string `json:"client_id"`
 
-	ClientSecret string `json:"secret"`
+	ClientSecret string `json:"client_secret"`
 
 	// Scope is an array of scopes that are required.
 	Scopes []string `json:"scope"`

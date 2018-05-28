@@ -53,11 +53,11 @@ class WardenOAuth2ClientAuthorizationRequest implements ArrayAccess
       */
     protected static $swaggerTypes = [
         'action' => 'string',
+        'client_id' => 'string',
+        'client_secret' => 'string',
         'context' => 'map[string,object]',
-        'id' => 'string',
         'resource' => 'string',
-        'scope' => 'string[]',
-        'secret' => 'string'
+        'scope' => 'string[]'
     ];
 
     /**
@@ -66,11 +66,11 @@ class WardenOAuth2ClientAuthorizationRequest implements ArrayAccess
       */
     protected static $swaggerFormats = [
         'action' => null,
+        'client_id' => null,
+        'client_secret' => null,
         'context' => null,
-        'id' => null,
         'resource' => null,
-        'scope' => null,
-        'secret' => null
+        'scope' => null
     ];
 
     public static function swaggerTypes()
@@ -89,11 +89,11 @@ class WardenOAuth2ClientAuthorizationRequest implements ArrayAccess
      */
     protected static $attributeMap = [
         'action' => 'action',
+        'client_id' => 'client_id',
+        'client_secret' => 'client_secret',
         'context' => 'context',
-        'id' => 'id',
         'resource' => 'resource',
-        'scope' => 'scope',
-        'secret' => 'secret'
+        'scope' => 'scope'
     ];
 
 
@@ -103,11 +103,11 @@ class WardenOAuth2ClientAuthorizationRequest implements ArrayAccess
      */
     protected static $setters = [
         'action' => 'setAction',
+        'client_id' => 'setClientId',
+        'client_secret' => 'setClientSecret',
         'context' => 'setContext',
-        'id' => 'setId',
         'resource' => 'setResource',
-        'scope' => 'setScope',
-        'secret' => 'setSecret'
+        'scope' => 'setScope'
     ];
 
 
@@ -117,11 +117,11 @@ class WardenOAuth2ClientAuthorizationRequest implements ArrayAccess
      */
     protected static $getters = [
         'action' => 'getAction',
+        'client_id' => 'getClientId',
+        'client_secret' => 'getClientSecret',
         'context' => 'getContext',
-        'id' => 'getId',
         'resource' => 'getResource',
-        'scope' => 'getScope',
-        'secret' => 'getSecret'
+        'scope' => 'getScope'
     ];
 
     public static function attributeMap()
@@ -156,11 +156,11 @@ class WardenOAuth2ClientAuthorizationRequest implements ArrayAccess
     public function __construct(array $data = null)
     {
         $this->container['action'] = isset($data['action']) ? $data['action'] : null;
+        $this->container['client_id'] = isset($data['client_id']) ? $data['client_id'] : null;
+        $this->container['client_secret'] = isset($data['client_secret']) ? $data['client_secret'] : null;
         $this->container['context'] = isset($data['context']) ? $data['context'] : null;
-        $this->container['id'] = isset($data['id']) ? $data['id'] : null;
         $this->container['resource'] = isset($data['resource']) ? $data['resource'] : null;
         $this->container['scope'] = isset($data['scope']) ? $data['scope'] : null;
-        $this->container['secret'] = isset($data['secret']) ? $data['secret'] : null;
     }
 
     /**
@@ -210,6 +210,48 @@ class WardenOAuth2ClientAuthorizationRequest implements ArrayAccess
     }
 
     /**
+     * Gets client_id
+     * @return string
+     */
+    public function getClientId()
+    {
+        return $this->container['client_id'];
+    }
+
+    /**
+     * Sets client_id
+     * @param string $client_id Token is the token to introspect.
+     * @return $this
+     */
+    public function setClientId($client_id)
+    {
+        $this->container['client_id'] = $client_id;
+
+        return $this;
+    }
+
+    /**
+     * Gets client_secret
+     * @return string
+     */
+    public function getClientSecret()
+    {
+        return $this->container['client_secret'];
+    }
+
+    /**
+     * Sets client_secret
+     * @param string $client_secret
+     * @return $this
+     */
+    public function setClientSecret($client_secret)
+    {
+        $this->container['client_secret'] = $client_secret;
+
+        return $this;
+    }
+
+    /**
      * Gets context
      * @return map[string,object]
      */
@@ -226,27 +268,6 @@ class WardenOAuth2ClientAuthorizationRequest implements ArrayAccess
     public function setContext($context)
     {
         $this->container['context'] = $context;
-
-        return $this;
-    }
-
-    /**
-     * Gets id
-     * @return string
-     */
-    public function getId()
-    {
-        return $this->container['id'];
-    }
-
-    /**
-     * Sets id
-     * @param string $id Token is the token to introspect.
-     * @return $this
-     */
-    public function setId($id)
-    {
-        $this->container['id'] = $id;
 
         return $this;
     }
@@ -289,27 +310,6 @@ class WardenOAuth2ClientAuthorizationRequest implements ArrayAccess
     public function setScope($scope)
     {
         $this->container['scope'] = $scope;
-
-        return $this;
-    }
-
-    /**
-     * Gets secret
-     * @return string
-     */
-    public function getSecret()
-    {
-        return $this->container['secret'];
-    }
-
-    /**
-     * Sets secret
-     * @param string $secret
-     * @return $this
-     */
-    public function setSecret($secret)
-    {
-        $this->container['secret'] = $secret;
 
         return $this;
     }

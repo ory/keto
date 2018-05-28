@@ -1,5 +1,5 @@
 /**
- *
+ * 
  * Package main ORY Keto
  *
  * OpenAPI spec version: Latest
@@ -17,46 +17,49 @@
 ;(function(factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module.
-    define([
-      'ApiClient',
-      'model/AuthenticationDefaultSession',
-      'model/AuthenticationOAuth2ClientCredentialsRequest',
-      'model/AuthenticationOAuth2ClientCredentialsSession',
-      'model/AuthenticationOAuth2IntrospectionRequest',
-      'model/AuthenticationOAuth2Session',
-      'model/Authenticator',
-      'model/Firewall',
-      'model/Handler',
-      'model/InlineResponse401',
-      'model/IntrospectionResponse',
-      'model/Manager',
-      'model/OAuth2ClientCredentialsAuthentication',
-      'model/OAuth2IntrospectionAuthentication',
-      'model/Policy',
-      'model/PolicyConditions',
-      'model/Role',
-      'model/RoleMembers',
-      'model/Session',
-      'model/SwaggerCreatePolicyParameters',
-      'model/SwaggerDoesWardenAllowAccessRequestParameters',
-      'model/SwaggerDoesWardenAllowClientRequestParameters',
-      'model/SwaggerDoesWardenAllowTokenAccessRequestParameters',
-      'model/SwaggerGetPolicyParameters',
-      'model/SwaggerListPolicyParameters',
-      'model/SwaggerListPolicyResponse',
-      'model/SwaggerUpdatePolicyParameters',
-      'model/SwaggerWardenBaseRequest',
-      'model/WardenOAuth2AccessTokenAuthorizationRequest',
-      'model/WardenOAuth2AccessTokenAuthorizationResponse',
-      'model/WardenOAuth2ClientAuthorizationRequest',
-      'model/WardenOAuth2ClientAuthorizationResponse',
-      'model/WardenSubjectAuthorizationRequest',
-      'model/WardenSubjectAuthorizationResponse',
-      'model/Writer',
-      'api/PolicyApi',
-      'api/RoleApi',
-      'api/WardenApi'
-    ], factory)
+    define(
+      [
+        'ApiClient',
+        'model/AuthenticationDefaultSession',
+        'model/AuthenticationOAuth2ClientCredentialsRequest',
+        'model/AuthenticationOAuth2ClientCredentialsSession',
+        'model/AuthenticationOAuth2IntrospectionRequest',
+        'model/AuthenticationOAuth2Session',
+        'model/Authenticator',
+        'model/Firewall',
+        'model/Handler',
+        'model/InlineResponse401',
+        'model/IntrospectionResponse',
+        'model/Manager',
+        'model/OAuth2ClientCredentialsAuthentication',
+        'model/OAuth2IntrospectionAuthentication',
+        'model/Policy',
+        'model/PolicyConditions',
+        'model/Role',
+        'model/RoleMembers',
+        'model/Session',
+        'model/SwaggerCreatePolicyParameters',
+        'model/SwaggerDoesWardenAllowAccessRequestParameters',
+        'model/SwaggerDoesWardenAllowClientRequestParameters',
+        'model/SwaggerDoesWardenAllowTokenAccessRequestParameters',
+        'model/SwaggerGetPolicyParameters',
+        'model/SwaggerListPolicyParameters',
+        'model/SwaggerListPolicyResponse',
+        'model/SwaggerUpdatePolicyParameters',
+        'model/SwaggerWardenBaseRequest',
+        'model/WardenOAuth2AccessTokenAuthorizationRequest',
+        'model/WardenOAuth2AccessTokenAuthorizationResponse',
+        'model/WardenOAuth2ClientAuthorizationRequest',
+        'model/WardenOAuth2ClientAuthorizationResponse',
+        'model/WardenSubjectAuthorizationRequest',
+        'model/WardenSubjectAuthorizationResponse',
+        'model/Writer',
+        'api/PolicyApi',
+        'api/RoleApi',
+        'api/WardenApi'
+      ],
+      factory
+    )
   } else if (typeof module === 'object' && module.exports) {
     // CommonJS-like environments that support module.exports, like Node.
     module.exports = factory(
