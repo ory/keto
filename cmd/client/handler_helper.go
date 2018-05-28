@@ -67,6 +67,10 @@ func formatResponse(response interface{}) string {
 }
 
 func fatalf(message string, args ...interface{}) {
-	fmt.Printf(message+"\n", args)
+	if len(args) > 0 {
+		fmt.Printf(message+"\n", args)
+	} else {
+		fmt.Println(message)
+	}
 	os.Exit(1)
 }
