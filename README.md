@@ -4,8 +4,8 @@
     <a href="https://discord.gg/PAMQWkr">Chat</a> |
     <a href="https://community.ory.am/">Forums</a> |
     <a href="http://eepurl.com/di390P">Newsletter</a><br/><br/>
-    <a href="https://www.ory.sh/docs/guides/keto/">Guide</a> |
-    <a href="https://www.ory.sh/docs/api/keto">API Docs</a> |
+    <a href="https://www.ory.sh/docs/guides/master/keto/">Guide</a> |
+    <a href="https://www.ory.sh/docs/api/keto?version=master">API Docs</a> |
     <a href="https://godoc.org/github.com/ory/keto">Code Docs</a><br/><br/>
     <a href="https://opencollective.com/ory-hydra">Support this project!</a>
 </h4>
@@ -99,11 +99,11 @@ Our services collect summarized, anonymized data which can optionally be turned 
 
 ### Guide
 
-The Guide is available [here](https://www.ory.sh/docs/guides/keto/).
+The Guide is available [here](https://www.ory.sh/docs/guides/master/keto/).
 
 ### HTTP API documentation
 
-The HTTP API is documented [here](https://www.ory.sh/docs/api/keto).
+The HTTP API is documented [here](https://www.ory.sh/docs/api/keto?version=master).
 
 ### Upgrading and Changelog
 
