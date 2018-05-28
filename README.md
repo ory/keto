@@ -1,9 +1,13 @@
 <h1 align="center"><img src="./docs/images/banner_keto.png" alt="ORY Keto - Open Source & Cloud Native Access Control Server"></h1>
 
-<h4 align="center">
+<h4 align="center">    
     <a href="https://discord.gg/PAMQWkr">Chat</a> |
     <a href="https://community.ory.am/">Forums</a> |
-    <a href="http://eepurl.com/di390P">Newsletter</a>
+    <a href="http://eepurl.com/di390P">Newsletter</a><br/><br/>
+    <a href="https://www.ory.sh/docs/guides/keto/">Guide</a> |
+    <a href="https://www.ory.sh/docs/api/keto">API Docs</a> |
+    <a href="https://godoc.org/github.com/ory/keto">Code Docs</a><br/><br/>
+    <a href="https://opencollective.com/ory-hydra">Support this project!</a>
 </h4>
 
 This service is a policy decision point. It uses a set of access control policies, similar to
@@ -95,7 +99,7 @@ Our services collect summarized, anonymized data which can optionally be turned 
 
 ### Guide
 
-The Guide is available [here](https://www.ory.sh/docs/3-keto/).
+The Guide is available [here](https://www.ory.sh/docs/guides/keto/).
 
 ### HTTP API documentation
 
