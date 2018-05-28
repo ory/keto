@@ -76,7 +76,7 @@ func RunServe(
 		}
 
 		var strategy fosite.ScopeStrategy
-		switch viper.GetString("AUTHENTICATOR_OAUTH2_INTROSPECTION_URL") {
+		switch viper.GetString("AUTHENTICATOR_OAUTH2_INTROSPECTION_SCOPE_STRATEGY") {
 		case "hierarchic":
 			strategy = fosite.HierarchicScopeStrategy
 			break
@@ -96,7 +96,7 @@ func RunServe(
 				viper.GetString("AUTHENTICATOR_OAUTH2_INTROSPECTION_CLIENT_SECRET"),
 				viper.GetString("AUTHENTICATOR_OAUTH2_INTROSPECTION_TOKEN_URL"),
 				viper.GetString("AUTHENTICATOR_OAUTH2_INTROSPECTION_URL"),
-				strings.Split(viper.GetString("OAUTH2_SCOPE"), ","),
+				strings.Split(viper.GetString("AUTHENTICATOR_OAUTH2_INTROSPECTION_SCOPE"), ","),
 				strategy,
 			),
 			"oauth2/clients": authentication.NewOAuth2ClientCredentialsAuthentication(
@@ -132,8 +132,9 @@ func RunServe(
 				[]string{
 					"/policies",
 					"/roles",
-					"/warden/oauth2/authorize",
 					"/warden/subjects/authorize",
+					"/warden/oauth2/access-tokens/authorize",
+					"/warden/oauth2/clients/authorize",
 				},
 				logger,
 			)
