@@ -108,6 +108,8 @@ func RunServe(
 		corsHandler := cors.New(corsx.ParseOptions()).Handler(n)
 
 		if ok, _ := cmd.Flags().GetBool("disable-telemetry"); !ok {
+			logger.Println("Transmission of telemetry data is enabled, to learn more go to: https://www.ory.sh/docs/guides/latest/telemetry/")
+
 			m := metrics.NewMetricsManager(
 				metrics.Hash("DATABASE_URL"),
 				viper.GetString("DATABASE_URL") != "memory",
