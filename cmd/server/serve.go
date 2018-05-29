@@ -26,7 +26,6 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/gorilla/context"
 	"github.com/julienschmidt/httprouter"
 	"github.com/meatballhat/negroni-logrus"
 	"github.com/ory/fosite"
@@ -106,7 +105,6 @@ func RunServe(
 
 		n := negroni.New()
 		n.Use(negronilogrus.NewMiddlewareFromLogger(logger, "keto"))
-		n.UseHandler(router)
 		corsHandler := cors.New(corsx.ParseOptions()).Handler(n)
 
 		if ok, _ := cmd.Flags().GetBool("disable-telemetry"); !ok {
@@ -122,16 +120,19 @@ func RunServe(
 					"/warden/oauth2/clients/authorize",
 				},
 				logger,
+				"ory-keto",
 			)
 			go m.RegisterSegment(buildVersion, buildHash, buildTime)
 			go m.CommitMemoryStatistics()
 			n.Use(m)
 		}
 
+		n.UseHandler(router)
+
 		address := fmt.Sprintf("%s:%s", viper.GetString("HOST"), viper.GetString("PORT"))
 		var srv = graceful.WithDefaults(&http.Server{
 			Addr:    address,
-			Handler: context.ClearHandler(corsHandler),
+			Handler: corsHandler,
 		})
 
 		if err := graceful.Graceful(func() error {

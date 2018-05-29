@@ -316,7 +316,7 @@
   branch = "master"
   name = "github.com/ory/metrics-middleware"
   packages = ["."]
-  revision = "74602156c5c0b9617e12e4663a366516fec6cab4"
+  revision = "db3300574e48a229d5ddb1e30ea4adfd139d493a"
 
 [[projects]]
   name = "github.com/ory/pagination"
