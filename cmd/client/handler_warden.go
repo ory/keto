@@ -64,6 +64,7 @@ func (h *WardenHandler) IsOAuth2AccessTokenAuthorized(cmd *cobra.Command, args [
 	checkResponse(response, err, http.StatusOK)
 	fmt.Printf("%s\n", response.Payload)
 }
+
 func (h *WardenHandler) IsSubjectAuthorized(cmd *cobra.Command, args []string) {
 	subject, _ := cmd.Flags().GetString("subject")
 	action, _ := cmd.Flags().GetString("action")
