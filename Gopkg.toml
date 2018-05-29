@@ -86,7 +86,7 @@
   version = "0.0.1"
 
 [[constraint]]
-  version = "0.0.1"
+  version = "0.0.2"
   name = "github.com/ory/sqlcon"
 
 [[constraint]]
@@ -100,6 +100,10 @@
 [[constraint]]
   name = "github.com/pkg/profile"
   version = "1.2.1"
+
+[[constraint]]
+  name = "github.com/ory/go-convenience"
+  version = "0.0.2"
 
 [[constraint]]
   name = "github.com/rs/cors"
