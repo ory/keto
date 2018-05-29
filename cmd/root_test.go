@@ -54,7 +54,7 @@ func TestExecute(t *testing.T) {
 		expectErr bool
 	}{
 		{
-			args: []string{"--disable-telemetry", "serve"},
+			args: []string{"serve", "--disable-telemetry"},
 			wait: func(t *testing.T) bool {
 				t.Logf("Trying to connect to port %d...", port)
 				_, err := http.DefaultClient.Get(fmt.Sprintf("http://127.0.0.1:%d/", port))
