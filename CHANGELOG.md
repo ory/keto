@@ -3,16 +3,15 @@
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
 - [Change Log](#change-log)
-  - [Unreleased](#unreleased)
+  - [v1.0.0-beta.1 (2018-05-29)](#v100-beta1-2018-05-29)
   - [v0.0.1 (2018-05-20)](#v001-2018-05-20)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 # Change Log
 
-## [Unreleased](https://github.com/ory/keto/tree/HEAD)
-
-[Full Changelog](https://github.com/ory/keto/compare/v0.0.1...HEAD)
+## [v1.0.0-beta.1](https://github.com/ory/keto/tree/v1.0.0-beta.1) (2018-05-29)
+[Full Changelog](https://github.com/ory/keto/compare/v0.0.1...v1.0.0-beta.1)
 
 **Closed issues:**
 
