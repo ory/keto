@@ -38,7 +38,7 @@ the controls section.
 CORE CONTROLS
 =============
 
-- DATABASE_URL: A URL to a persistent backend. Hydra supports various backends:
+- DATABASE_URL: A URL to a persistent backend. ORY Keto supports various backends:
   - Memory: If DATABASE_URL is "memory", data will be written to memory and is lost when you restart this instance.
   	Example: DATABASE_URL=memory
 
@@ -53,10 +53,10 @@ CORE CONTROLS
 
 	Be aware that the ?parseTime=true parameter is mandatory, or timestamps will not work.
 
-- PORT: The port hydra should listen on.
+- PORT: The port ORY Keto should listen on.
 	Defaults to PORT=4466
 
-- HOST: The host interface hydra should listen on. Leave empty to listen on all interfaces.
+- HOST: The host interface ORY Keto should listen on. Leave empty to listen on all interfaces.
 	Example: HOST=localhost
 
 - LOG_LEVEL: Set the log level, supports "panic", "fatal", "error", "warn", "info" and "debug". Defaults to "info".

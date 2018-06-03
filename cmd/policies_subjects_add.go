@@ -25,7 +25,7 @@ var policiesSubjectsAddCmd = &cobra.Command{
 	Long: `You can use regular expressions in your matches. Encapsulate them in < >.
 
 Example:
-  keto policies subjects hydra add my-policy john@org.com <[peter|max]>@org.com`,
+  keto policies subjects add my-policy john@org.com <[peter|max]>@org.com`,
 	Run: cmdHandler.Policies.AddSubjectToPolicy,
 }
 

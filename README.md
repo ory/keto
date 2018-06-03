@@ -28,11 +28,14 @@ a subject (user, application, service, car, ...) is authorized to perform a cert
 
 
 - [Introduction](#introduction)
-- [Installation](#installation)
+  - [Installation](#installation)
+    - [Download binaries](#download-binaries)
+    - [Using Docker](#using-docker)
+    - [Building from source](#building-from-source)
 - [Ecosystem](#ecosystem)
   - [ORY Security Console: Administrative User Interface](#ory-security-console-administrative-user-interface)
-  - [ORY Hydra: OAuth2 & OpenID Connect Server](#ory-hydra-oauth2--openid-connect-server)
-  - [ORY Oathkeeper: Identity & Access Proxy](#ory-oathkeeper-identity--access-proxy)
+  - [ORY Hydra: OAuth2 & OpenID Connect Server](#ory-hydra-oauth2-&-openid-connect-server)
+  - [ORY Oathkeeper: Identity & Access Proxy](#ory-oathkeeper-identity-&-access-proxy)
 - [Security](#security)
   - [Disclosing vulnerabilities](#disclosing-vulnerabilities)
 - [Telemetry](#telemetry)
@@ -55,12 +58,50 @@ ORY Keto is possible to resolve credentials using various authentication mechani
 * JSON Web Tokens (coming soon).
 * SAML (coming soon).
 
-## Installation
+### Installation
 
-The easiest way to install ORY Keto is using the [Docker Hub Image](https://hub.docker.com/r/oryd/keto/):
+There are various ways of installing ORY keto on your system.
+
+#### Download binaries
+
+The client and server **binaries are downloadable at [releases](https://github.com/ory/keto/releases)**.
+There is currently no installer available. You have to add the ORY keto binary to the PATH environment variable yourself or put
+the binary in a location that is already in your path (`/usr/bin`, ...).
+If you do not understand what that all of this means, ask in our [chat channel](https://www.ory.sh/chat). We are happy to help.
+
+#### Using Docker
+
+**Starting the host** is easiest with docker. The host process handles HTTP requests and is backed by a database.
+Read how to install docker on [Linux](https://docs.docker.com/linux/), [OSX](https://docs.docker.com/mac/) or
+[Windows](https://docs.docker.com/windows/). ORY keto is available on [Docker Hub](https://hub.docker.com/r/oryd/keto/).
+
+You can use ORY keto without a database, but be aware that restarting, scaling
+or stopping the container will **lose all data**:
 
 ```
-docker run oryd/keto:<version> help
+$ docker run -e "DATABASE_URL=memory" -d --name my-keto -p 4455:4455 -p 4456:4456 oryd/keto serve api
+ec91228cb105db315553499c81918258f52cee9636ea2a4821bdb8226872f54b
+```
+
+#### Building from source
+
+If you wish to compile ORY keto yourself, you need to install and set up [Go 1.10+](https://golang.org/) and add `$GOPATH/bin`
+to your `$PATH` as well as [golang/dep](http://github.com/golang/dep).
+
+The following commands will check out the latest release tag of ORY keto and compile it and set up flags so that `keto version`
+works as expected. Please note that this will only work with a linux shell like bash or sh.
+
+```
+go get -d -u github.com/ory/keto
+cd $(go env GOPATH)/src/github.com/ory/keto
+keto_LATEST=$(git describe --abbrev=0 --tags)
+git checkout $keto_LATEST
+dep ensure -vendor-only
+go install \
+    -ldflags "-X github.com/ory/keto/cmd.Version=$keto_LATEST -X github.com/ory/keto/cmd.BuildTime=`TZ=UTC date -u '+%Y-%m-%dT%H:%M:%SZ'` -X github.com/ory/keto/cmd.GitHash=`git rev-parse HEAD`" \
+    github.com/ory/keto
+git checkout master
+keto help
 ```
 
 ## Ecosystem
@@ -95,7 +136,7 @@ and send us an email to [hi@ory.am](mailto:hi@ory.am) instead.
 ## Telemetry
 
 Our services collect summarized, anonymized data which can optionally be turned off. Click
-[here](https://www.ory.sh/docs/1-hydra/9-telemetry) to learn more.
+[here](https://www.ory.sh/docs/guides/master/telemetry/) to learn more.
 
 ### Guide
 
