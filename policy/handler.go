@@ -164,9 +164,6 @@ func (h *Handler) Get(w http.ResponseWriter, r *http.Request, ps httprouter.Para
 //
 //     Schemes: http, https
 //
-//     Security:
-//       oauth2: hydra.policies
-//
 //     Responses:
 //       204: emptyResponse
 //       401: genericError
@@ -194,9 +191,6 @@ func (h *Handler) Delete(w http.ResponseWriter, r *http.Request, ps httprouter.P
 //     - application/json
 //
 //     Schemes: http, https
-//
-//     Security:
-//       oauth2: hydra.policies
 //
 //     Responses:
 //       200: policy

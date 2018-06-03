@@ -25,7 +25,7 @@ type CodeGenSDK struct {
 
 // Configuration configures the CodeGenSDK.
 type Configuration struct {
-	// EndpointURL should point to the url of ORY Hydra, for example: http://localhost:4444
+	// EndpointURL should point to the url of ORY Keto, for example: http://localhost:4466
 	EndpointURL string
 }
 

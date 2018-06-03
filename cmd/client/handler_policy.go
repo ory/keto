@@ -81,7 +81,7 @@ func (h *PolicyHandler) CreatePolicy(cmd *cobra.Command, args []string) {
 
 	if files, _ := cmd.Flags().GetStringSlice("files"); len(files) > 0 {
 		fmt.Println("Importing policies using the -f flag is deprecated and will be removed in the future.")
-		fmt.Println(`Please use "hydra policies import" instead.`)
+		fmt.Println(`Please use "keto policies import" instead.`)
 		h.ImportPolicy(cmd, files)
 		return
 	}
