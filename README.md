@@ -79,7 +79,7 @@ You can use ORY keto without a database, but be aware that restarting, scaling
 or stopping the container will **lose all data**:
 
 ```
-$ docker run -e "DATABASE_URL=memory" -d --name my-keto -p 4455:4455 -p 4456:4456 oryd/keto serve api
+$ docker run -e "DATABASE_URL=memory" -d --name my-keto -p 4466:4466 oryd/keto
 ec91228cb105db315553499c81918258f52cee9636ea2a4821bdb8226872f54b
 ```
 
