@@ -76,6 +76,7 @@ func (w *Warden) isAllowed(ctx context.Context, a *ladon.Request) error {
 		return err
 	}
 
+	// check own allowed
 	errs := make([]error, len(groups)+1)
 	errs[0] = w.Warden.IsAllowed(&ladon.Request{
 		Resource: a.Resource,
@@ -84,6 +85,7 @@ func (w *Warden) isAllowed(ctx context.Context, a *ladon.Request) error {
 		Context:  a.Context,
 	})
 
+	//check allowed by roles
 	for k, g := range groups {
 		errs[k+1] = w.Warden.IsAllowed(&ladon.Request{
 			Resource: a.Resource,
