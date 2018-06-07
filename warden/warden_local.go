@@ -77,7 +77,7 @@ func (w *Warden) isAllowed(ctx context.Context, a *ladon.Request) error {
 	}
 
 	errs := make([]error, len(groups)+1)
-	return w.Warden.IsAllowed(&ladon.Request{
+	errs[0] = w.Warden.IsAllowed(&ladon.Request{
 		Resource: a.Resource,
 		Action:   a.Action,
 		Subject:  a.Subject,
