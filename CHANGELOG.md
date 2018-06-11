@@ -16,12 +16,17 @@
 
 [Full Changelog](https://github.com/ory/keto/compare/v1.0.0-beta.2...HEAD)
 
+**Fixed bugs:**
+
+- Upgrade from \< 1.0.0-beta Hydra migration commands fail [\#23](https://github.com/ory/keto/issues/23)
+
 **Closed issues:**
 
 - Role setup not working [\#21](https://github.com/ory/keto/issues/21)
 
 **Merged pull requests:**
 
+- cmd: Resolves an issue with the hydra migrate command [\#24](https://github.com/ory/keto/pull/24) ([arekkas](https://github.com/arekkas))
 - warden: Use roles in warden decision [\#22](https://github.com/ory/keto/pull/22) ([arekkas](https://github.com/arekkas))
 - cmd: Improves usage of metrics middleware [\#18](https://github.com/ory/keto/pull/18) ([arekkas](https://github.com/arekkas))
 
