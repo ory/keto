@@ -37,7 +37,7 @@ var HydraLegacyMigrations = map[string]*migrate.MemoryMigrationSource{
 				},
 				Down: []string{
 					`ALTER TABLE keto_role RENAME TO hydra_warden_group`,
-					`ALTER TABLE hydra_warden_group_member RENAME COLUMN group_id TO role_id`,
+					`ALTER TABLE hydra_warden_group_member RENAME COLUMN role_id TO group_id`,
 					`ALTER TABLE keto_role_member RENAME TO hydra_warden_group_member`,
 					`ALTER TABLE keto_policy_migration RENAME TO hydra_policy_migration`,
 					`ALTER TABLE keto_role_migration RENAME TO hydra_groups_migration`,
@@ -58,6 +58,7 @@ var HydraLegacyMigrations = map[string]*migrate.MemoryMigrationSource{
 				},
 				Down: []string{
 					`RENAME TABLE keto_role TO hydra_warden_group`,
+					`ALTER TABLE hydra_warden_group_member CHANGE role_id group_id varchar(255)`,
 					`RENAME TABLE keto_role_member TO hydra_warden_group_member`,
 					`RENAME TABLE keto_policy_migration TO hydra_policy_migration`,
 					`RENAME TABLE keto_role_migration TO hydra_groups_migration`,
