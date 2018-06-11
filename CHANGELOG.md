@@ -16,8 +16,13 @@
 
 [Full Changelog](https://github.com/ory/keto/compare/v1.0.0-beta.2...HEAD)
 
+**Closed issues:**
+
+- Role setup not working [\#21](https://github.com/ory/keto/issues/21)
+
 **Merged pull requests:**
 
+- warden: Use roles in warden decision [\#22](https://github.com/ory/keto/pull/22) ([arekkas](https://github.com/arekkas))
 - cmd: Improves usage of metrics middleware [\#18](https://github.com/ory/keto/pull/18) ([arekkas](https://github.com/arekkas))
 
 ## [v1.0.0-beta.2](https://github.com/ory/keto/tree/v1.0.0-beta.2) (2018-05-29)
