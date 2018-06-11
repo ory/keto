@@ -78,7 +78,7 @@ func RunMigrateSQL(logger *logrus.Logger) func(cmd *cobra.Command, args []string
 			logger.WithField("migrations", n).WithField("table", "role").Print("Successfully applied SQL migrations")
 		}
 
-		if n, err := managers.policyManager.(*sql.SQLManager).CreateSchemas("", "keto_policy_migrations"); err != nil {
+		if n, err := managers.policyManager.(*sql.SQLManager).CreateSchemas("", "keto_policy_migration"); err != nil {
 			logger.WithError(err).WithField("migrations", n).WithField("table", "policies").Fatal("An error occurred while trying to apply SQL migrations")
 		} else {
 			logger.WithField("migrations", n).WithField("table", "policies").Print("Successfully applied SQL migrations")
@@ -97,7 +97,7 @@ func RunMigrateHydra(logger *logrus.Logger) func(cmd *cobra.Command, args []stri
 			logger.WithError(err).WithField("database_url", u.Scheme+"://*:*@"+u.Host+u.Path+"?"+u.RawQuery).Fatal("Unable to parse DATABASE_URL, make sure it has the right format")
 		}
 
-		migrate.SetTable("keto_legacy_hydra_migrations")
+		migrate.SetTable("keto_legacy_hydra_migration")
 		n, err := migrate.Exec(db.GetDatabase().DB, db.GetDatabase().DriverName(), legacy.HydraLegacyMigrations[db.GetDatabase().DriverName()], migrate.Up)
 		if err != nil {
 			logger.WithError(err).WithField("migrations", n).Fatal("An error occurred while trying to apply SQL migrations")
