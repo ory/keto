@@ -63,6 +63,24 @@ var (
 			},
 			expectErr: false,
 		},
+		{
+			req: &warden.AccessRequest{
+				Subject:  "ken",
+				Resource: "forbidden_matrix",
+				Action:   "create",
+				Context:  ladon.Context{},
+			},
+			expectErr: true,
+		},
+		{
+			req: &warden.AccessRequest{
+				Subject:  "ken",
+				Resource: "allowed_matrix",
+				Action:   "create",
+				Context:  ladon.Context{},
+			},
+			expectErr: false,
+		},
 	}
 	wardens     = map[string]warden.Firewall{}
 	ladonWarden = &ladon.Ladon{
@@ -88,6 +106,13 @@ var (
 					Resources: []string{"forbidden_matrix", "rn:hydra:token<.*>"},
 					Actions:   []string{"create", "decide"},
 					Effect:    ladon.DenyAccess,
+				},
+				"4": &ladon.DefaultPolicy{
+					ID:        "4",
+					Subjects:  []string{"group1"},
+					Resources: []string{"allowed_matrix", "rn:hydra:token<.*>"},
+					Actions:   []string{"create", "decide"},
+					Effect:    ladon.AllowAccess,
 				},
 			},
 		},

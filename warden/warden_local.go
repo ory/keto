@@ -71,20 +71,20 @@ func (w *Warden) IsAllowed(ctx context.Context, a *AccessRequest) error {
 }
 
 func (w *Warden) isAllowed(ctx context.Context, a *ladon.Request) error {
-	groups, err := w.Roles.FindRolesByMember(a.Subject, 10000, 0)
+	roles, err := w.Roles.FindRolesByMember(a.Subject, 10000, 0)
 	if err != nil {
 		return err
 	}
 
-	errs := make([]error, len(groups)+1)
-	return w.Warden.IsAllowed(&ladon.Request{
+	errs := make([]error, len(roles)+1)
+	errs[0] = w.Warden.IsAllowed(&ladon.Request{
 		Resource: a.Resource,
 		Action:   a.Action,
 		Subject:  a.Subject,
 		Context:  a.Context,
 	})
 
-	for k, g := range groups {
+	for k, g := range roles {
 		errs[k+1] = w.Warden.IsAllowed(&ladon.Request{
 			Resource: a.Resource,
 			Action:   a.Action,
