@@ -7,7 +7,7 @@
     <a href="https://www.ory.sh/docs/guides/master/keto/">Guide</a> |
     <a href="https://www.ory.sh/docs/api/keto?version=master">API Docs</a> |
     <a href="https://godoc.org/github.com/ory/keto">Code Docs</a><br/><br/>
-    <a href="https://opencollective.com/ory-hydra">Support this project!</a>
+    <a href="https://opencollective.com/ory">Support this project!</a>
 </h4>
 
 This service is a policy decision point. It uses a set of access control policies, similar to
@@ -154,3 +154,28 @@ changes in [UPGRADE.md](./UPGRADE.md) and [CHANGELOG.md](./CHANGELOG.md).
 ### Command line documentation
 
 Run `keto -h` or `keto help`.
+
+## Backers
+
+Thank you to all our backers! 🙏 [[Become a backer](https://opencollective.com/ory#backer)]
+
+<a href="https://opencollective.com/ory#backers" target="_blank"><img src="https://opencollective.com/ory/backers.svg?width=890"></a>
+
+We would also like to thank (past & current) supporters (in alphabetical order) on [Patreon](https://www.patreon.com/_ory): Alexander Alimovs, Chancy Kennedy, Drozzy, Oz Haven, TheCrealm
+
+## Sponsors
+
+Support this project by becoming a sponsor. Your logo will show up here with a link to your website. [[Become a sponsor](https://opencollective.com/ory#sponsor)]
+
+<a href="https://opencollective.com/ory/sponsor/0/website" target="_blank"><img src="https://opencollective.com/ory/sponsor/0/avatar.svg"></a>
+<a href="https://opencollective.com/ory/sponsor/1/website" target="_blank"><img src="https://opencollective.com/ory/sponsor/1/avatar.svg"></a>
+<a href="https://opencollective.com/ory/sponsor/2/website" target="_blank"><img src="https://opencollective.com/ory/sponsor/2/avatar.svg"></a>
+<a href="https://opencollective.com/ory/sponsor/3/website" target="_blank"><img src="https://opencollective.com/ory/sponsor/3/avatar.svg"></a>
+<a href="https://opencollective.com/ory/sponsor/4/website" target="_blank"><img src="https://opencollective.com/ory/sponsor/4/avatar.svg"></a>
+<a href="https://opencollective.com/ory/sponsor/5/website" target="_blank"><img src="https://opencollective.com/ory/sponsor/5/avatar.svg"></a>
+<a href="https://opencollective.com/ory/sponsor/6/website" target="_blank"><img src="https://opencollective.com/ory/sponsor/6/avatar.svg"></a>
+<a href="https://opencollective.com/ory/sponsor/7/website" target="_blank"><img src="https://opencollective.com/ory/sponsor/7/avatar.svg"></a>
+<a href="https://opencollective.com/ory/sponsor/8/website" target="_blank"><img src="https://opencollective.com/ory/sponsor/8/avatar.svg"></a>
+<a href="https://opencollective.com/ory/sponsor/9/website" target="_blank"><img src="https://opencollective.com/ory/sponsor/9/avatar.svg"></a>
+
+A special thanks goes out to **Wayne Robinson** for supporting this ecosystem with $200 every month since Oktober 2016 [on Patreon](https://www.patreon.com/_ory).
