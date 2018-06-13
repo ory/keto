@@ -43,6 +43,8 @@ a subject (user, application, service, car, ...) is authorized to perform a cert
   - [HTTP API documentation](#http-api-documentation)
   - [Upgrading and Changelog](#upgrading-and-changelog)
   - [Command line documentation](#command-line-documentation)
+- [Backers](#backers)
+- [Sponsors](#sponsors)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
