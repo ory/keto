@@ -184,7 +184,7 @@ func (m *SQLManager) FindRolesByMember(member string, limit, offset int) ([]Role
 
 func (m *SQLManager) ListRoles(limit, offset int) ([]Role, error) {
 	var ids []string
-	if err := m.DB.Select(&ids, m.DB.Rebind(fmt.Sprintf("SELECT role_id from %s GROUP BY role_id ORDER BY role_id LIMIT ? OFFSET ?", m.TableMember)), limit, offset); err == sql.ErrNoRows {
+	if err := m.DB.Select(&ids, m.DB.Rebind(fmt.Sprintf("SELECT id from %s LIMIT ? OFFSET ?", m.TableRole)), limit, offset); err == sql.ErrNoRows {
 		return nil, errors.WithStack(pkg.ErrNotFound)
 	} else if err != nil {
 		return nil, errors.WithStack(err)
