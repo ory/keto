@@ -79,5 +79,12 @@ func TestHelperManagers(m Manager) func(t *testing.T) {
 		assert.NoError(t, m.DeleteRole("1"))
 		_, err = m.GetRole("1")
 		require.NotNil(t, err)
+
+		assert.NoError(t, m.CreateRole(&Role{
+			ID: "3",
+		}))
+		ds, err = m.ListRoles(100, 0)
+		require.NoError(t, err)
+		assert.Len(t, ds, 2)
 	}
 }
