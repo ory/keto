@@ -18,9 +18,14 @@
 
 [Full Changelog](https://github.com/ory/keto/compare/v1.0.0-beta.3...HEAD)
 
+**Fixed bugs:**
+
+- roles without members does not shown in roles list [\#27](https://github.com/ory/keto/issues/27)
+
 **Merged pull requests:**
 
 - ci: Prevent pushes from forks to coveralls [\#29](https://github.com/ory/keto/pull/29) ([arekkas](https://github.com/arekkas))
+- roles: List roles from keto\_role table [\#28](https://github.com/ory/keto/pull/28) ([sadysnaat](https://github.com/sadysnaat))
 
 ## [v1.0.0-beta.3](https://github.com/ory/keto/tree/v1.0.0-beta.3) (2018-06-13)
 [Full Changelog](https://github.com/ory/keto/compare/v1.0.0-beta.4...v1.0.0-beta.3)
