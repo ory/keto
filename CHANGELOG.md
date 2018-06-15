@@ -4,6 +4,8 @@
 
 - [Change Log](#change-log)
   - [Unreleased](#unreleased)
+  - [v1.0.0-beta.3 (2018-06-13)](#v100-beta3-2018-06-13)
+  - [v1.0.0-beta.4 (2018-06-13)](#v100-beta4-2018-06-13)
   - [v1.0.0-beta.2 (2018-05-29)](#v100-beta2-2018-05-29)
   - [v1.0.0-beta.1 (2018-05-29)](#v100-beta1-2018-05-29)
   - [v0.0.1 (2018-05-20)](#v001-2018-05-20)
@@ -14,7 +16,17 @@
 
 ## [Unreleased](https://github.com/ory/keto/tree/HEAD)
 
-[Full Changelog](https://github.com/ory/keto/compare/v1.0.0-beta.2...HEAD)
+[Full Changelog](https://github.com/ory/keto/compare/v1.0.0-beta.3...HEAD)
+
+**Merged pull requests:**
+
+- ci: Prevent pushes from forks to coveralls [\#29](https://github.com/ory/keto/pull/29) ([arekkas](https://github.com/arekkas))
+
+## [v1.0.0-beta.3](https://github.com/ory/keto/tree/v1.0.0-beta.3) (2018-06-13)
+[Full Changelog](https://github.com/ory/keto/compare/v1.0.0-beta.4...v1.0.0-beta.3)
+
+## [v1.0.0-beta.4](https://github.com/ory/keto/tree/v1.0.0-beta.4) (2018-06-13)
+[Full Changelog](https://github.com/ory/keto/compare/v1.0.0-beta.2...v1.0.0-beta.4)
 
 **Fixed bugs:**
 
