@@ -24,6 +24,7 @@
 
 **Merged pull requests:**
 
+- docs: Adds link to examples repository [\#32](https://github.com/ory/keto/pull/32) ([arekkas](https://github.com/arekkas))
 - docs: Adds GitHub templates & code of conduct [\#31](https://github.com/ory/keto/pull/31) ([arekkas](https://github.com/arekkas))
 - ci: Prevent pushes from forks to coveralls [\#29](https://github.com/ory/keto/pull/29) ([arekkas](https://github.com/arekkas))
 - roles: List roles from keto\_role table [\#28](https://github.com/ory/keto/pull/28) ([sadysnaat](https://github.com/sadysnaat))
