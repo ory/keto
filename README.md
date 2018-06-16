@@ -34,8 +34,9 @@ a subject (user, application, service, car, ...) is authorized to perform a cert
     - [Building from source](#building-from-source)
 - [Ecosystem](#ecosystem)
   - [ORY Security Console: Administrative User Interface](#ory-security-console-administrative-user-interface)
-  - [ORY Hydra: OAuth2 & OpenID Connect Server](#ory-hydra-oauth2--openid-connect-server)
-  - [ORY Oathkeeper: Identity & Access Proxy](#ory-oathkeeper-identity--access-proxy)
+  - [ORY Hydra: OAuth2 & OpenID Connect Server](#ory-hydra-oauth2-&-openid-connect-server)
+  - [ORY Oathkeeper: Identity & Access Proxy](#ory-oathkeeper-identity-&-access-proxy)
+  - [Examples](#examples)
 - [Security](#security)
   - [Disclosing vulnerabilities](#disclosing-vulnerabilities)
 - [Telemetry](#telemetry)
@@ -127,6 +128,11 @@ for low-latency, high throughput, and low resource consumption. ORY Hydra is not
 
 [ORY Oathkeeper](https://github.com/ory/oathkeeper) is a BeyondCorp/Zero Trust Identity & Access Proxy (IAP) built
 on top of OAuth2 and ORY Hydra.
+
+### Examples
+
+The [ory/examples](https://github.com/ory/examples) repository contains numerous examples of setting up this project
+individually and together with other services from the ORY Ecosystem.
 
 ## Security
 
