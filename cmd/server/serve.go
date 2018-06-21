@@ -107,7 +107,7 @@ func RunServe(
 		n.Use(negronilogrus.NewMiddlewareFromLogger(logger, "keto"))
 		corsHandler := cors.New(corsx.ParseOptions()).Handler(n)
 
-		if ok, _ := cmd.Flags().GetBool("disable-telemetry"); !ok {
+		if ok, _ := cmd.Flags().GetBool("disable-telemetry"); !ok && viper.GetString("DATABASE_URL") != "memory" {
 			logger.Println("Transmission of telemetry data is enabled, to learn more go to: https://www.ory.sh/docs/guides/latest/telemetry/")
 
 			m := metrics.NewMetricsManager(
