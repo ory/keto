@@ -24,6 +24,7 @@
 
 **Merged pull requests:**
 
+- cmd: Properly output telemetry information [\#33](https://github.com/ory/keto/pull/33) ([arekkas](https://github.com/arekkas))
 - docs: Adds link to examples repository [\#32](https://github.com/ory/keto/pull/32) ([arekkas](https://github.com/arekkas))
 - docs: Adds GitHub templates & code of conduct [\#31](https://github.com/ory/keto/pull/31) ([arekkas](https://github.com/arekkas))
 - ci: Prevent pushes from forks to coveralls [\#29](https://github.com/ory/keto/pull/29) ([arekkas](https://github.com/arekkas))
