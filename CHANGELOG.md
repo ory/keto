@@ -24,6 +24,7 @@
 
 **Merged pull requests:**
 
+- Update README.md [\#34](https://github.com/ory/keto/pull/34) ([tacurran](https://github.com/tacurran))
 - cmd: Properly output telemetry information [\#33](https://github.com/ory/keto/pull/33) ([arekkas](https://github.com/arekkas))
 - docs: Adds link to examples repository [\#32](https://github.com/ory/keto/pull/32) ([arekkas](https://github.com/arekkas))
 - docs: Adds GitHub templates & code of conduct [\#31](https://github.com/ory/keto/pull/31) ([arekkas](https://github.com/arekkas))
