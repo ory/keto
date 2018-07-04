@@ -12,7 +12,7 @@
 
 This service is a policy decision point. It uses a set of access control policies, similar to
 [AWS IAM Policies](https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies.html), in order to determine whether
-a subject (user, application, service, car, ...) is authorized to perform a certain action on a resource.
+a subject, for example user, application, service, car, etc., is authorized to perform a certain action on a resource.
 
 <p align="left">
     <a href="https://circleci.com/gh/ory/keto/tree/master"><img src="https://circleci.com/gh/ory/keto/tree/master.svg?style=shield" alt="Build Status"></a>
@@ -51,10 +51,10 @@ a subject (user, application, service, car, ...) is authorized to perform a cert
 
 ## Introduction
 
-With ORY Keto, you can model Access Control Lists, Role Based Access Control, and fine-grained permission sets.
+ORY Keto models Access Control Lists, Role Based Access Control, and fine-grained permission sets.
 This server implementation uses [ORY Ladon](https://github.com/ory/ladon) as the decision engine.
 
-ORY Keto is possible to resolve credentials using various authentication mechanisms:
+ORY Keto resolves credentials using various authentication mechanisms:
 
 * OAuth 2.0 Access Tokens using the OAuth 2.0 Introspection standard.
 * Plaintext when you already know the user ID.
@@ -65,20 +65,20 @@ ORY Keto is possible to resolve credentials using various authentication mechani
 
 There are various ways of installing ORY keto on your system.
 
-#### Download binaries
+#### 1. Download binaries
 
 The client and server **binaries are downloadable at [releases](https://github.com/ory/keto/releases)**.
-There is currently no installer available. You have to add the ORY keto binary to the PATH environment variable yourself or put
-the binary in a location that is already in your path (`/usr/bin`, ...).
-If you do not understand what that all of this means, ask in our [chat channel](https://www.ory.sh/chat). We are happy to help.
+There is no installer yet available. Add the ORY keto binary to the PATH environment variable or add
+the binary to a location already in your path (`/usr/bin`, ...).
+If these download instructions are unclear, ask for clarification in our [chat channel](https://www.ory.sh/chat). We are happy to help.
 
-#### Using Docker
+#### 2. Using Docker
 
-**Starting the host** is easiest with docker. The host process handles HTTP requests and is backed by a database.
+**Starting the host** is easiest with Docker. The host process handles HTTP requests and is backed by a database.
 Read how to install docker on [Linux](https://docs.docker.com/linux/), [OSX](https://docs.docker.com/mac/) or
 [Windows](https://docs.docker.com/windows/). ORY keto is available on [Docker Hub](https://hub.docker.com/r/oryd/keto/).
 
-You can use ORY keto without a database, but be aware that restarting, scaling
+When using ORY keto without a database, restarting, scaling
 or stopping the container will **lose all data**:
 
 ```
@@ -88,10 +88,10 @@ ec91228cb105db315553499c81918258f52cee9636ea2a4821bdb8226872f54b
 
 #### Building from source
 
-If you wish to compile ORY keto yourself, you need to install and set up [Go 1.10+](https://golang.org/) and add `$GOPATH/bin`
+If you wish to compile ORY keto, install and set up [Go 1.10+](https://golang.org/) and add `$GOPATH/bin`
 to your `$PATH` as well as [golang/dep](http://github.com/golang/dep).
 
-The following commands will check out the latest release tag of ORY keto and compile it and set up flags so that `keto version`
+The following commands check out the latest ORY keto's release tag, compile it and set up flags so that `keto version`
 works as expected. Please note that this will only work with a linux shell like bash or sh.
 
 ```
@@ -115,14 +115,14 @@ keto help
 
 ### ORY Security Console: Administrative User Interface
 
-The [ORY Security Console](https://console.ory.am/auth/login) is a visual admin interface for managing ORY Hydra,
+The [ORY Security Console](https://console.ory.am/auth/login) is a visual admin interface for ORY Hydra,
 ORY Oathkeeper, and ORY Keto.
 
 ### ORY Hydra: OAuth2 & OpenID Connect Server
 
 [ORY Hydra](https://github.com/ory/hydra) ORY Hydra is a hardened OAuth2 and OpenID Connect server optimized
-for low-latency, high throughput, and low resource consumption. ORY Hydra is not an identity provider
-(user sign up, user log in, password reset flow), but connects to your existing identity provider through a consent app.
+for low-latency, high throughput, and low resource consumption. ORY Hydra is not an identity provider, which would include 
+user sign up, user log in, password reset flow. Hydra but connects to your existing identity provider through a consent app.
 
 ### ORY Oathkeeper: Identity & Access Proxy
 
@@ -131,8 +131,7 @@ on top of OAuth2 and ORY Hydra.
 
 ### Examples
 
-The [ory/examples](https://github.com/ory/examples) repository contains numerous examples of setting up this project
-individually and together with other services from the ORY Ecosystem.
+The [ory/examples](https://github.com/ory/examples) repository contains numerous examples of setting up this project and combining it with other services from the ORY Ecosystem.
 
 ## Security
 
@@ -173,7 +172,7 @@ We would also like to thank (past & current) supporters (in alphabetical order) 
 
 ## Sponsors
 
-Support this project by becoming a sponsor. Your logo will show up here with a link to your website. [[Become a sponsor](https://opencollective.com/ory#sponsor)]
+Sponsors support this project. The sponsor's logo or brand will show up here with a link to the website. [[Become a sponsor](https://opencollective.com/ory#sponsor)]
 
 <a href="https://opencollective.com/ory/sponsor/0/website" target="_blank"><img src="https://opencollective.com/ory/sponsor/0/avatar.svg"></a>
 <a href="https://opencollective.com/ory/sponsor/1/website" target="_blank"><img src="https://opencollective.com/ory/sponsor/1/avatar.svg"></a>
