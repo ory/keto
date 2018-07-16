@@ -3,6 +3,8 @@
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
 - [Change Log](#change-log)
+  - [Unreleased](#unreleased)
+  - [v1.0.0-beta.6 (2018-07-07)](#v100-beta6-2018-07-07)
   - [v1.0.0-beta.5 (2018-07-07)](#v100-beta5-2018-07-07)
   - [v1.0.0-beta.3 (2018-06-13)](#v100-beta3-2018-06-13)
   - [v1.0.0-beta.4 (2018-06-13)](#v100-beta4-2018-06-13)
@@ -13,6 +15,17 @@
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 # Change Log
+
+## [Unreleased](https://github.com/ory/keto/tree/HEAD)
+
+[Full Changelog](https://github.com/ory/keto/compare/v1.0.0-beta.6...HEAD)
+
+**Merged pull requests:**
+
+- dep: Update hydra to v1.0.0-beta.6 [\#35](https://github.com/ory/keto/pull/35) ([RomanMinkin](https://github.com/RomanMinkin))
+
+## [v1.0.0-beta.6](https://github.com/ory/keto/tree/v1.0.0-beta.6) (2018-07-07)
+[Full Changelog](https://github.com/ory/keto/compare/v1.0.0-beta.5...v1.0.0-beta.6)
 
 ## [v1.0.0-beta.5](https://github.com/ory/keto/tree/v1.0.0-beta.5) (2018-07-07)
 [Full Changelog](https://github.com/ory/keto/compare/v1.0.0-beta.3...v1.0.0-beta.5)
