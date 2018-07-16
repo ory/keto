@@ -13,8 +13,8 @@
 [[projects]]
   name = "github.com/Microsoft/go-winio"
   packages = ["."]
-  revision = "7da180ee92d8bd8bb8c37fc560e673e6557c392f"
-  version = "v0.4.7"
+  revision = "67921128fb397dd80339870d2193d6b1e6856fd4"
+  version = "v0.4.8"
 
 [[projects]]
   branch = "master"
@@ -50,7 +50,7 @@
   branch = "master"
   name = "github.com/containerd/continuity"
   packages = ["pathdriver"]
-  revision = "3e8f2ea4b190484acb976a5b378d373429639a1a"
+  revision = "0377f7d767206f3a9e8881d0f02267b0d89c7a62"
 
 [[projects]]
   name = "github.com/davecgh/go-spew"
@@ -85,26 +85,29 @@
 [[projects]]
   name = "github.com/go-resty/resty"
   packages = ["."]
-  revision = "f8815663de1e64d57cdd4ee9e2b2fa96977a030e"
-  version = "v1.4"
+  revision = "fccc498aed22c31ff3768bcac00795f94149a21d"
+  version = "v1.7.0"
 
 [[projects]]
   name = "github.com/go-sql-driver/mysql"
   packages = ["."]
-  revision = "a0583e0143b1624142adab07e0e97fe106d99561"
-  version = "v1.3"
+  revision = "d523deb1b23d913de5bdada721a6071e71283618"
+  version = "v1.4.0"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/golang/gddo"
+  packages = [
+    "httputil",
+    "httputil/header"
+  ]
+  revision = "daffe1f90ec57f8ed69464f9094753fc6452e983"
 
 [[projects]]
   name = "github.com/golang/protobuf"
   packages = ["proto"]
-  revision = "925541529c1fa6821df4e44ce2723319eb2be768"
-  version = "v1.0.0"
-
-[[projects]]
-  name = "github.com/gorilla/context"
-  packages = ["."]
-  revision = "1ea25387ff6f684839d82767c1733ff4d4d15d0a"
-  version = "v1.1"
+  revision = "b4deda0973fb4c70b50d226b1af49f3da59f5265"
+  version = "v1.1.0"
 
 [[projects]]
   branch = "master"
@@ -151,7 +154,7 @@
     ".",
     "reflectx"
   ]
-  revision = "2aeb6a910c2b94f2d5eb53d9895d80e27264ec41"
+  revision = "0dae4fefe7c0e190f7b5a78dac28a1c82cc8d849"
 
 [[projects]]
   name = "github.com/julienschmidt/httprouter"
@@ -172,7 +175,7 @@
     ".",
     "oid"
   ]
-  revision = "d34b9ff171c21ad295489235aec8b6626023cd04"
+  revision = "90697d60dd844d5ef6ff15135d0203f65d2f53b8"
 
 [[projects]]
   name = "github.com/magiconair/properties"
@@ -180,8 +183,8 @@
     ".",
     "assert"
   ]
-  revision = "c3beff4c2358b44d0493c7dda585e7db7ff28ae6"
-  version = "v1.7.6"
+  revision = "c2353362d570a7bfa228149c62842019201cfb71"
+  version = "v1.8.0"
 
 [[projects]]
   branch = "master"
@@ -193,7 +196,7 @@
   branch = "master"
   name = "github.com/mitchellh/mapstructure"
   packages = ["."]
-  revision = "00c29f56e2386353d58c599509e8dc3801b0d716"
+  revision = "f15292f7a699fcc1a38a80977f80a046874ba8ac"
 
 [[projects]]
   branch = "master"
@@ -254,8 +257,8 @@
     "docker/types/strslice",
     "docker/types/versions"
   ]
-  revision = "2e92e7784b6fb199fd168aa46269a2f1b34f299e"
-  version = "v3.3.0"
+  revision = "9bca068bf5e4af2484b9c2e8cfeb3d098d5327d7"
+  version = "v3.3.1"
 
 [[projects]]
   name = "github.com/ory/fosite"
@@ -268,17 +271,18 @@
     "token/hmac",
     "token/jwt"
   ]
-  revision = "0fcdf33fb52551e02798b4e6733110024b7d24d9"
-  version = "v0.17.1"
+  revision = "5688a1c5acbafad5eabe649ce56e06e922c36a60"
+  version = "v0.21.0"
 
 [[projects]]
   name = "github.com/ory/go-convenience"
   packages = [
     "corsx",
+    "stringslice",
     "stringsx"
   ]
-  revision = "42cb17c3e4dc0d7d7672cfaffbdfe8f5deb494db"
-  version = "v0.0.2"
+  revision = "857ebcb1de6fdd166e791d976a46c3209d8355a8"
+  version = "v0.0.4"
 
 [[projects]]
   name = "github.com/ory/graceful"
@@ -289,17 +293,17 @@
 [[projects]]
   name = "github.com/ory/herodot"
   packages = ["."]
-  revision = "86396b17aa8410c644bf9d9c67dff6e2a5f9e503"
-  version = "v0.2.0"
+  revision = "30b4db38fcaf4bf35a545d95c655622b05d8ac35"
+  version = "v0.3.0"
 
 [[projects]]
-  branch = "1.0.x"
   name = "github.com/ory/hydra"
   packages = [
     "pkg",
     "rand/sequence"
   ]
-  revision = "4b86ef518841665a94a28e346f7a16a1ff160dc4"
+  revision = "a6ec396e4c5dbae3143d85c89149bdf406740f9c"
+  version = "v1.0.0-beta.6"
 
 [[projects]]
   name = "github.com/ory/ladon"
@@ -309,8 +313,8 @@
     "manager/memory",
     "manager/sql"
   ]
-  revision = "de3d0b6a2633d9d8de06e9bd6f87e01aad6d3c38"
-  version = "v0.8.9"
+  revision = "76e069e27b002d186005c14b1f1b86472cc209f2"
+  version = "v0.8.10"
 
 [[projects]]
   branch = "master"
@@ -330,8 +334,8 @@
     ".",
     "dockertest"
   ]
-  revision = "08e1c6762dd59c776a735acc134889f757574f66"
-  version = "v0.0.2"
+  revision = "7cb5a0f3099d9596e71128202e4bd54405927dfa"
+  version = "v0.0.3"
 
 [[projects]]
   name = "github.com/pborman/uuid"
@@ -342,8 +346,8 @@
 [[projects]]
   name = "github.com/pelletier/go-toml"
   packages = ["."]
-  revision = "acdc4509485b587f5e675510c4f2c63e90ff68a8"
-  version = "v1.1.0"
+  revision = "c01d1270ff3e442a8a57cddc1c92dc1138598194"
+  version = "v1.2.0"
 
 [[projects]]
   name = "github.com/pkg/errors"
@@ -366,8 +370,8 @@
 [[projects]]
   name = "github.com/rs/cors"
   packages = ["."]
-  revision = "feef513b9575b32f84bafa580aad89b011259019"
-  version = "v1.3.0"
+  revision = "ca016a06a5753f8ba03029c0aa5e54afb1bf713f"
+  version = "v1.4.0"
 
 [[projects]]
   branch = "master"
@@ -376,7 +380,7 @@
     ".",
     "sqlparse"
   ]
-  revision = "081fe17d19ff4e2dd9f5a0c1158e6bcf74da6906"
+  revision = "3f452fc0ebebbb784fdab91f7bc79a31dcacab5c"
 
 [[projects]]
   name = "github.com/segmentio/analytics-go"
@@ -402,8 +406,8 @@
     ".",
     "mem"
   ]
-  revision = "63644898a8da0bc22138abf860edaf5277b6102e"
-  version = "v1.1.0"
+  revision = "787d034dfe70e44075ccc060d346146ef53270ad"
+  version = "v1.1.1"
 
 [[projects]]
   name = "github.com/spf13/cast"
@@ -414,8 +418,8 @@
 [[projects]]
   name = "github.com/spf13/cobra"
   packages = ["."]
-  revision = "a1f051bc3eba734da4772d60e2d677f47cf93ef4"
-  version = "v0.0.2"
+  revision = "ef82de70bb3f60c65fb8eebacbb2d122ef517385"
+  version = "v0.0.3"
 
 [[projects]]
   branch = "master"
@@ -447,8 +451,8 @@
     "assert",
     "require"
   ]
-  revision = "12b6f73e6084dad08a7c6e575284b177ecafbc71"
-  version = "v1.2.1"
+  revision = "f35b8ab0b5a2cef36673838d662e249dd9c94686"
+  version = "v1.2.2"
 
 [[projects]]
   name = "github.com/urfave/negroni"
@@ -468,9 +472,11 @@
   packages = [
     "bcrypt",
     "blowfish",
+    "ed25519",
+    "ed25519/internal/edwards25519",
     "ssh/terminal"
   ]
-  revision = "d6449816ce06963d9d136eee5a56fca5b0616e7e"
+  revision = "a49355c7e3f8fe157a85be2f77e6e269a0f89602"
 
 [[projects]]
   branch = "master"
@@ -481,7 +487,7 @@
     "idna",
     "publicsuffix"
   ]
-  revision = "61147c48b25b599e5b561d2e9c4f3e1ef489ca41"
+  revision = "d0887baf81f4598189d4e12a37c6da86f0bba4d0"
 
 [[projects]]
   branch = "master"
@@ -491,7 +497,7 @@
     "clientcredentials",
     "internal"
   ]
-  revision = "921ae394b9430ed4fb549668d7b087601bd60a81"
+  revision = "ef147856a6ddbb60760db74283d2424e98c87bff"
 
 [[projects]]
   branch = "master"
@@ -500,7 +506,7 @@
     "unix",
     "windows"
   ]
-  revision = "3b87a42e500a6dc65dae1a55d0b641295971163e"
+  revision = "ac767d655b305d4e9612f5f6e33120b9176c4ad4"
 
 [[projects]]
   name = "golang.org/x/text"
@@ -526,6 +532,7 @@
 [[projects]]
   name = "google.golang.org/appengine"
   packages = [
+    "cloudsql",
     "internal",
     "internal/base",
     "internal/datastore",
@@ -534,14 +541,24 @@
     "internal/urlfetch",
     "urlfetch"
   ]
-  revision = "150dc57a1b433e64154302bdc40b6bb8aefa313a"
-  version = "v1.0.0"
+  revision = "b1f26356af11148e710935ed1ac8a7f5702c7612"
+  version = "v1.1.0"
 
 [[projects]]
   name = "gopkg.in/gorp.v1"
   packages = ["."]
   revision = "c87af80f3cc5036b55b83d77171e156791085e2e"
   version = "v1.7.1"
+
+[[projects]]
+  name = "gopkg.in/square/go-jose.v2"
+  packages = [
+    ".",
+    "cipher",
+    "json"
+  ]
+  revision = "76dd09796242edb5b897103a75df2645c028c960"
+  version = "v2.1.6"
 
 [[projects]]
   name = "gopkg.in/yaml.v2"
@@ -552,6 +569,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "994b70f0ae1554b715f5f4edc95ff57b4fc1ce7f82cea19b0b82e0984096b057"
+  inputs-digest = "7f5450f0748e6208f2f59031edd688a38bb46a8295bc0d77c195283bcd213a46"
   solver-name = "gps-cdcl"
   solver-version = 1
