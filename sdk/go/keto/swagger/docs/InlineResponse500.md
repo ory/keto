@@ -1,4 +1,4 @@
-# InlineResponse401
+# InlineResponse500
 
 ## Properties
 Name | Type | Description | Notes

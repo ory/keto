@@ -8,7 +8,7 @@
 
 package swagger
 
-type InlineResponse401 struct {
+type InlineResponse500 struct {
 	Code int64 `json:"code,omitempty"`
 
 	Details []map[string]interface{} `json:"details,omitempty"`

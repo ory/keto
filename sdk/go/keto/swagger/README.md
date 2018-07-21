@@ -22,6 +22,8 @@ All URIs are relative to *http://localhost*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
+*HealthApi* | [**IsInstanceAlive**](docs/HealthApi.md#isinstancealive) | **Get** /health/alive | Check the Alive Status
+*HealthApi* | [**IsInstanceReady**](docs/HealthApi.md#isinstanceready) | **Get** /health/ready | Check the Readiness Status
 *PolicyApi* | [**CreatePolicy**](docs/PolicyApi.md#createpolicy) | **Post** /policies | 
 *PolicyApi* | [**DeletePolicy**](docs/PolicyApi.md#deletepolicy) | **Delete** /policies/{id} | 
 *PolicyApi* | [**GetPolicy**](docs/PolicyApi.md#getpolicy) | **Get** /policies/{id} | 
@@ -34,6 +36,7 @@ Class | Method | HTTP request | Description
 *RoleApi* | [**ListRoles**](docs/RoleApi.md#listroles) | **Get** /roles | List all roles
 *RoleApi* | [**RemoveMembersFromRole**](docs/RoleApi.md#removemembersfromrole) | **Delete** /roles/{id}/members | Remove members from a role
 *RoleApi* | [**SetRole**](docs/RoleApi.md#setrole) | **Put** /roles/{id} | A Role represents a group of users that share the same role and thus permissions. A role could be an administrator, a moderator, a regular user or some other sort of role.
+*VersionApi* | [**GetVersion**](docs/VersionApi.md#getversion) | **Get** /version | Get the version of Keto
 *WardenApi* | [**IsOAuth2AccessTokenAuthorized**](docs/WardenApi.md#isoauth2accesstokenauthorized) | **Post** /warden/oauth2/access-tokens/authorize | Check if an OAuth 2.0 access token is authorized to access a resource
 *WardenApi* | [**IsOAuth2ClientAuthorized**](docs/WardenApi.md#isoauth2clientauthorized) | **Post** /warden/oauth2/clients/authorize | Check if an OAuth 2.0 Client is authorized to access a resource
 *WardenApi* | [**IsSubjectAuthorized**](docs/WardenApi.md#issubjectauthorized) | **Post** /warden/subjects/authorize | Check if a subject is authorized to access a resource
@@ -49,7 +52,9 @@ Class | Method | HTTP request | Description
  - [Authenticator](docs/Authenticator.md)
  - [Firewall](docs/Firewall.md)
  - [Handler](docs/Handler.md)
- - [InlineResponse401](docs/InlineResponse401.md)
+ - [HealthNotReadyStatus](docs/HealthNotReadyStatus.md)
+ - [HealthStatus](docs/HealthStatus.md)
+ - [InlineResponse500](docs/InlineResponse500.md)
  - [IntrospectionResponse](docs/IntrospectionResponse.md)
  - [Manager](docs/Manager.md)
  - [OAuth2ClientCredentialsAuthentication](docs/OAuth2ClientCredentialsAuthentication.md)
@@ -68,6 +73,7 @@ Class | Method | HTTP request | Description
  - [SwaggerListPolicyResponse](docs/SwaggerListPolicyResponse.md)
  - [SwaggerUpdatePolicyParameters](docs/SwaggerUpdatePolicyParameters.md)
  - [SwaggerWardenBaseRequest](docs/SwaggerWardenBaseRequest.md)
+ - [Version](docs/Version.md)
  - [WardenOAuth2AccessTokenAuthorizationRequest](docs/WardenOAuth2AccessTokenAuthorizationRequest.md)
  - [WardenOAuth2AccessTokenAuthorizationResponse](docs/WardenOAuth2AccessTokenAuthorizationResponse.md)
  - [WardenOAuth2ClientAuthorizationRequest](docs/WardenOAuth2ClientAuthorizationRequest.md)
