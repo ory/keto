@@ -27,6 +27,7 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/lib/pq"
+	"github.com/ory/keto/health"
 	"github.com/ory/keto/role"
 	"github.com/ory/ladon"
 	"github.com/ory/ladon/manager/memory"
@@ -39,11 +40,17 @@ import (
 type managers struct {
 	roleManager   role.Manager
 	policyManager ladon.Manager
+	readyCheckers map[string]health.ReadyChecker
 }
 
 func newManagers(db string, logger logrus.FieldLogger) (*managers, error) {
 	if db == "memory" {
 		return &managers{
+			readyCheckers: map[string]health.ReadyChecker{
+				"database": func() error {
+					return nil
+				},
+			},
 			roleManager:   role.NewMemoryManager(),
 			policyManager: memory.NewMemoryManager(),
 		}, nil
@@ -66,6 +73,11 @@ func newManagers(db string, logger logrus.FieldLogger) (*managers, error) {
 		}
 
 		return &managers{
+			readyCheckers: map[string]health.ReadyChecker{
+				"database": func() error {
+					return sdb.GetDatabase().Ping()
+				},
+			},
 			roleManager:   role.NewSQLManager(sdb.GetDatabase()),
 			policyManager: sql.NewSQLManager(sdb.GetDatabase(), nil),
 		}, nil

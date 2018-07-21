@@ -1,6 +1,6 @@
 <?php
 /**
- * InlineResponse401
+ * InlineResponse500
  *
  * PHP version 5
  *
@@ -30,14 +30,14 @@ namespace keto\SDK\Model;
 use \ArrayAccess;
 
 /**
- * InlineResponse401 Class Doc Comment
+ * InlineResponse500 Class Doc Comment
  *
  * @category    Class
  * @package     keto\SDK
  * @author      Swagger Codegen team
  * @link        https://github.com/swagger-api/swagger-codegen
  */
-class InlineResponse401 implements ArrayAccess
+class InlineResponse500 implements ArrayAccess
 {
     const DISCRIMINATOR = null;
 
@@ -45,7 +45,7 @@ class InlineResponse401 implements ArrayAccess
       * The original name of the model.
       * @var string
       */
-    protected static $swaggerModelName = 'inline_response_401';
+    protected static $swaggerModelName = 'inline_response_500';
 
     /**
       * Array of property to type mappings. Used for (de)serialization

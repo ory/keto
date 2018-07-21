@@ -1,4 +1,4 @@
-# SwaggerJsClient.InlineResponse401
+# SwaggerJsClient.InlineResponse500
 
 ## Properties
 Name | Type | Description | Notes
