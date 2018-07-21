@@ -33,6 +33,7 @@ import (
 	"github.com/ory/graceful"
 	"github.com/ory/herodot"
 	"github.com/ory/keto/authentication"
+	"github.com/ory/keto/health"
 	"github.com/ory/keto/policy"
 	"github.com/ory/keto/role"
 	"github.com/ory/keto/warden"
@@ -98,10 +99,12 @@ func RunServe(
 		roleHandler := role.NewHandler(m.roleManager, writer)
 		policyHandler := policy.NewHandler(m.policyManager, writer)
 		wardenHandler := warden.NewHandler(writer, firewall, authenticators)
+		healthHandler := health.NewHandler(writer, buildVersion, m.readyCheckers)
 
 		roleHandler.SetRoutes(router)
 		policyHandler.SetRoutes(router)
 		wardenHandler.SetRoutes(router)
+		healthHandler.SetRoutes(router)
 
 		n := negroni.New()
 		n.Use(negronilogrus.NewMiddlewareFromLogger(logger, "keto"))

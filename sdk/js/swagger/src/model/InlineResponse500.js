@@ -1,5 +1,5 @@
 /**
- * 
+ *
  * Package main ORY Keto
  *
  * OpenAPI spec version: Latest
@@ -26,7 +26,7 @@
     if (!root.SwaggerJsClient) {
       root.SwaggerJsClient = {}
     }
-    root.SwaggerJsClient.InlineResponse401 = factory(
+    root.SwaggerJsClient.InlineResponse500 = factory(
       root.SwaggerJsClient.ApiClient
     )
   }
@@ -34,14 +34,14 @@
   'use strict'
 
   /**
-   * The InlineResponse401 model module.
-   * @module model/InlineResponse401
+   * The InlineResponse500 model module.
+   * @module model/InlineResponse500
    * @version Latest
    */
 
   /**
-   * Constructs a new <code>InlineResponse401</code>.
-   * @alias module:model/InlineResponse401
+   * Constructs a new <code>InlineResponse500</code>.
+   * @alias module:model/InlineResponse500
    * @class
    */
   var exports = function() {
@@ -49,11 +49,11 @@
   }
 
   /**
-   * Constructs a <code>InlineResponse401</code> from a plain JavaScript object, optionally creating a new instance.
+   * Constructs a <code>InlineResponse500</code> from a plain JavaScript object, optionally creating a new instance.
    * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
    * @param {Object} data The plain JavaScript object bearing properties of interest.
-   * @param {module:model/InlineResponse401} obj Optional instance to populate.
-   * @return {module:model/InlineResponse401} The populated <code>InlineResponse401</code> instance.
+   * @param {module:model/InlineResponse500} obj Optional instance to populate.
+   * @return {module:model/InlineResponse500} The populated <code>InlineResponse500</code> instance.
    */
   exports.constructFromObject = function(data, obj) {
     if (data) {

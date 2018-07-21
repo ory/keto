@@ -25,6 +25,51 @@
   },
   "basePath": "/",
   "paths": {
+    "/health/alive": {
+      "get": {
+        "description": "This endpoint returns a 200 status code when the HTTP server is up running.\nThis status does currently not include checks whether the database connection is working.\nThis endpoint does not require the `X-Forwarded-Proto` header when TLS termination is set.\n\nBe aware that if you are running multiple nodes of ORY Keto, the health status will never refer to the cluster state, only to a single instance.",
+        "tags": [
+          "health"
+        ],
+        "summary": "Check the Alive Status",
+        "operationId": "isInstanceAlive",
+        "responses": {
+          "200": {
+            "description": "healthStatus",
+            "schema": {
+              "$ref": "#/definitions/healthStatus"
+            }
+          },
+          "500": {
+            "$ref": "#/responses/genericError"
+          }
+        }
+      }
+    },
+    "/health/ready": {
+      "get": {
+        "description": "This endpoint returns a 200 status code when the HTTP server is up running and the environment dependencies (e.g.\nthe database) are responsive as well.\n\nThis status does currently not include checks whether the database connection is working.\nThis endpoint does not require the `X-Forwarded-Proto` header when TLS termination is set.\n\nBe aware that if you are running multiple nodes of ORY Keto, the health status will never refer to the cluster state, only to a single instance.",
+        "tags": [
+          "health"
+        ],
+        "summary": "Check the Readiness Status",
+        "operationId": "isInstanceReady",
+        "responses": {
+          "200": {
+            "description": "healthStatus",
+            "schema": {
+              "$ref": "#/definitions/healthStatus"
+            }
+          },
+          "503": {
+            "description": "healthNotReadyStatus",
+            "schema": {
+              "$ref": "#/definitions/healthNotReadyStatus"
+            }
+          }
+        }
+      }
+    },
     "/policies": {
       "get": {
         "description": "List Access Control Policies",
@@ -165,13 +210,6 @@
         }
       },
       "put": {
-        "security": [
-          {
-            "oauth2": [
-              "hydra.policies"
-            ]
-          }
-        ],
         "description": "Update an Access Control Policy",
         "consumes": [
           "application/json"
@@ -223,13 +261,6 @@
         }
       },
       "delete": {
-        "security": [
-          {
-            "oauth2": [
-              "hydra.policies"
-            ]
-          }
-        ],
         "description": "Delete an Access Control Policy",
         "consumes": [
           "application/json"
@@ -591,6 +622,24 @@
           },
           "500": {
             "$ref": "#/responses/genericError"
+          }
+        }
+      }
+    },
+    "/version": {
+      "get": {
+        "description": "This endpoint returns the version as `{ \"version\": \"VERSION\" }`. The version is only correct with the prebuilt binary and not custom builds.",
+        "tags": [
+          "version"
+        ],
+        "summary": "Get the version of Keto",
+        "operationId": "getVersion",
+        "responses": {
+          "200": {
+            "description": "version",
+            "schema": {
+              "$ref": "#/definitions/version"
+            }
           }
         }
       }
@@ -1022,6 +1071,33 @@
       "x-go-name": "OAuth2Session",
       "x-go-package": "github.com/ory/keto/authentication"
     },
+    "healthNotReadyStatus": {
+      "type": "object",
+      "properties": {
+        "errors": {
+          "description": "Errors contains a list of errors that caused the not ready status.",
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "x-go-name": "Errors"
+        }
+      },
+      "x-go-name": "swaggerNotReadyStatus",
+      "x-go-package": "github.com/ory/keto/health"
+    },
+    "healthStatus": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "description": "Status always contains \"ok\".",
+          "type": "string",
+          "x-go-name": "Status"
+        }
+      },
+      "x-go-name": "swaggerHealthStatus",
+      "x-go-package": "github.com/ory/keto/health"
+    },
     "policy": {
       "type": "object",
       "properties": {
@@ -1241,6 +1317,17 @@
         }
       },
       "x-go-package": "github.com/ory/keto/warden"
+    },
+    "version": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "type": "string",
+          "x-go-name": "Version"
+        }
+      },
+      "x-go-name": "swaggerVersion",
+      "x-go-package": "github.com/ory/keto/health"
     },
     "wardenOAuth2AccessTokenAuthorizationRequest": {
       "type": "object",

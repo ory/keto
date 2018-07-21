@@ -1,5 +1,5 @@
 /**
- * 
+ *
  * Package main ORY Keto
  *
  * OpenAPI spec version: Latest
@@ -17,12 +17,12 @@
 ;(function(root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module.
-    define(['ApiClient', 'model/InlineResponse401', 'model/Policy'], factory)
+    define(['ApiClient', 'model/InlineResponse500', 'model/Policy'], factory)
   } else if (typeof module === 'object' && module.exports) {
     // CommonJS-like environments that support module.exports, like Node.
     module.exports = factory(
       require('../ApiClient'),
-      require('../model/InlineResponse401'),
+      require('../model/InlineResponse500'),
       require('../model/Policy')
     )
   } else {
@@ -32,11 +32,11 @@
     }
     root.SwaggerJsClient.PolicyApi = factory(
       root.SwaggerJsClient.ApiClient,
-      root.SwaggerJsClient.InlineResponse401,
+      root.SwaggerJsClient.InlineResponse500,
       root.SwaggerJsClient.Policy
     )
   }
-})(this, function(ApiClient, InlineResponse401, Policy) {
+})(this, function(ApiClient, InlineResponse500, Policy) {
   'use strict'
 
   /**
@@ -46,7 +46,7 @@
    */
 
   /**
-   * Constructs a new PolicyApi. 
+   * Constructs a new PolicyApi.
    * @alias module:api/PolicyApi
    * @class
    * @param {module:ApiClient} apiClient Optional API client implementation to use,
@@ -66,7 +66,7 @@
     /**
      * Create an Access Control Policy
      * @param {Object} opts Optional parameters
-     * @param {module:model/Policy} opts.body 
+     * @param {module:model/Policy} opts.body
      * @param {module:api/PolicyApi~createPolicyCallback} callback The callback function, accepting three arguments: error, data, response
      * data is of type: {@link module:model/Policy}
      */
@@ -264,7 +264,7 @@
      * Update an Access Control Policy
      * @param {String} id The id of the policy.
      * @param {Object} opts Optional parameters
-     * @param {module:model/Policy} opts.body 
+     * @param {module:model/Policy} opts.body
      * @param {module:api/PolicyApi~updatePolicyCallback} callback The callback function, accepting three arguments: error, data, response
      * data is of type: {@link module:model/Policy}
      */

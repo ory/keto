@@ -57,14 +57,13 @@ Please follow the [installation procedure](#installation--usage) and then run th
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-$api_instance = new keto\SDK\Api\PolicyApi();
-$body = new \keto\SDK\Model\Policy(); // \keto\SDK\Model\Policy | 
+$api_instance = new keto\SDK\Api\HealthApi();
 
 try {
-    $result = $api_instance->createPolicy($body);
+    $result = $api_instance->isInstanceAlive();
     print_r($result);
 } catch (Exception $e) {
-    echo 'Exception when calling PolicyApi->createPolicy: ', $e->getMessage(), PHP_EOL;
+    echo 'Exception when calling HealthApi->isInstanceAlive: ', $e->getMessage(), PHP_EOL;
 }
 
 ?>
@@ -76,6 +75,8 @@ All URIs are relative to *http://localhost*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
+*HealthApi* | [**isInstanceAlive**](docs/Api/HealthApi.md#isinstancealive) | **GET** /health/alive | Check the Alive Status
+*HealthApi* | [**isInstanceReady**](docs/Api/HealthApi.md#isinstanceready) | **GET** /health/ready | Check the Readiness Status
 *PolicyApi* | [**createPolicy**](docs/Api/PolicyApi.md#createpolicy) | **POST** /policies | 
 *PolicyApi* | [**deletePolicy**](docs/Api/PolicyApi.md#deletepolicy) | **DELETE** /policies/{id} | 
 *PolicyApi* | [**getPolicy**](docs/Api/PolicyApi.md#getpolicy) | **GET** /policies/{id} | 
@@ -88,6 +89,7 @@ Class | Method | HTTP request | Description
 *RoleApi* | [**listRoles**](docs/Api/RoleApi.md#listroles) | **GET** /roles | List all roles
 *RoleApi* | [**removeMembersFromRole**](docs/Api/RoleApi.md#removemembersfromrole) | **DELETE** /roles/{id}/members | Remove members from a role
 *RoleApi* | [**setRole**](docs/Api/RoleApi.md#setrole) | **PUT** /roles/{id} | A Role represents a group of users that share the same role and thus permissions. A role could be an administrator, a moderator, a regular user or some other sort of role.
+*VersionApi* | [**getVersion**](docs/Api/VersionApi.md#getversion) | **GET** /version | Get the version of Keto
 *WardenApi* | [**isOAuth2AccessTokenAuthorized**](docs/Api/WardenApi.md#isoauth2accesstokenauthorized) | **POST** /warden/oauth2/access-tokens/authorize | Check if an OAuth 2.0 access token is authorized to access a resource
 *WardenApi* | [**isOAuth2ClientAuthorized**](docs/Api/WardenApi.md#isoauth2clientauthorized) | **POST** /warden/oauth2/clients/authorize | Check if an OAuth 2.0 Client is authorized to access a resource
 *WardenApi* | [**isSubjectAuthorized**](docs/Api/WardenApi.md#issubjectauthorized) | **POST** /warden/subjects/authorize | Check if a subject is authorized to access a resource
@@ -103,7 +105,9 @@ Class | Method | HTTP request | Description
  - [Authenticator](docs/Model/Authenticator.md)
  - [Firewall](docs/Model/Firewall.md)
  - [Handler](docs/Model/Handler.md)
- - [InlineResponse401](docs/Model/InlineResponse401.md)
+ - [HealthNotReadyStatus](docs/Model/HealthNotReadyStatus.md)
+ - [HealthStatus](docs/Model/HealthStatus.md)
+ - [InlineResponse500](docs/Model/InlineResponse500.md)
  - [IntrospectionResponse](docs/Model/IntrospectionResponse.md)
  - [Manager](docs/Model/Manager.md)
  - [OAuth2ClientCredentialsAuthentication](docs/Model/OAuth2ClientCredentialsAuthentication.md)
@@ -122,6 +126,7 @@ Class | Method | HTTP request | Description
  - [SwaggerListPolicyResponse](docs/Model/SwaggerListPolicyResponse.md)
  - [SwaggerUpdatePolicyParameters](docs/Model/SwaggerUpdatePolicyParameters.md)
  - [SwaggerWardenBaseRequest](docs/Model/SwaggerWardenBaseRequest.md)
+ - [Version](docs/Model/Version.md)
  - [WardenOAuth2AccessTokenAuthorizationRequest](docs/Model/WardenOAuth2AccessTokenAuthorizationRequest.md)
  - [WardenOAuth2AccessTokenAuthorizationResponse](docs/Model/WardenOAuth2AccessTokenAuthorizationResponse.md)
  - [WardenOAuth2ClientAuthorizationRequest](docs/Model/WardenOAuth2ClientAuthorizationRequest.md)

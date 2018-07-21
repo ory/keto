@@ -96,11 +96,7 @@ Please follow the [installation](#installation) instruction and execute the foll
 ```javascript
 var SwaggerJsClient = require('swagger-js-client');
 
-var api = new SwaggerJsClient.PolicyApi()
-
-var opts = { 
-  'body': new SwaggerJsClient.Policy() // {Policy} 
-};
+var api = new SwaggerJsClient.HealthApi()
 
 var callback = function(error, data, response) {
   if (error) {
@@ -109,7 +105,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.createPolicy(opts, callback);
+api.isInstanceAlive(callback);
 
 ```
 
@@ -119,6 +115,8 @@ All URIs are relative to *http://localhost*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
+*SwaggerJsClient.HealthApi* | [**isInstanceAlive**](docs/HealthApi.md#isInstanceAlive) | **GET** /health/alive | Check the Alive Status
+*SwaggerJsClient.HealthApi* | [**isInstanceReady**](docs/HealthApi.md#isInstanceReady) | **GET** /health/ready | Check the Readiness Status
 *SwaggerJsClient.PolicyApi* | [**createPolicy**](docs/PolicyApi.md#createPolicy) | **POST** /policies | 
 *SwaggerJsClient.PolicyApi* | [**deletePolicy**](docs/PolicyApi.md#deletePolicy) | **DELETE** /policies/{id} | 
 *SwaggerJsClient.PolicyApi* | [**getPolicy**](docs/PolicyApi.md#getPolicy) | **GET** /policies/{id} | 
@@ -131,6 +129,7 @@ Class | Method | HTTP request | Description
 *SwaggerJsClient.RoleApi* | [**listRoles**](docs/RoleApi.md#listRoles) | **GET** /roles | List all roles
 *SwaggerJsClient.RoleApi* | [**removeMembersFromRole**](docs/RoleApi.md#removeMembersFromRole) | **DELETE** /roles/{id}/members | Remove members from a role
 *SwaggerJsClient.RoleApi* | [**setRole**](docs/RoleApi.md#setRole) | **PUT** /roles/{id} | A Role represents a group of users that share the same role and thus permissions. A role could be an administrator, a moderator, a regular user or some other sort of role.
+*SwaggerJsClient.VersionApi* | [**getVersion**](docs/VersionApi.md#getVersion) | **GET** /version | Get the version of Keto
 *SwaggerJsClient.WardenApi* | [**isOAuth2AccessTokenAuthorized**](docs/WardenApi.md#isOAuth2AccessTokenAuthorized) | **POST** /warden/oauth2/access-tokens/authorize | Check if an OAuth 2.0 access token is authorized to access a resource
 *SwaggerJsClient.WardenApi* | [**isOAuth2ClientAuthorized**](docs/WardenApi.md#isOAuth2ClientAuthorized) | **POST** /warden/oauth2/clients/authorize | Check if an OAuth 2.0 Client is authorized to access a resource
 *SwaggerJsClient.WardenApi* | [**isSubjectAuthorized**](docs/WardenApi.md#isSubjectAuthorized) | **POST** /warden/subjects/authorize | Check if a subject is authorized to access a resource
@@ -146,7 +145,9 @@ Class | Method | HTTP request | Description
  - [SwaggerJsClient.Authenticator](docs/Authenticator.md)
  - [SwaggerJsClient.Firewall](docs/Firewall.md)
  - [SwaggerJsClient.Handler](docs/Handler.md)
- - [SwaggerJsClient.InlineResponse401](docs/InlineResponse401.md)
+ - [SwaggerJsClient.HealthNotReadyStatus](docs/HealthNotReadyStatus.md)
+ - [SwaggerJsClient.HealthStatus](docs/HealthStatus.md)
+ - [SwaggerJsClient.InlineResponse500](docs/InlineResponse500.md)
  - [SwaggerJsClient.IntrospectionResponse](docs/IntrospectionResponse.md)
  - [SwaggerJsClient.Manager](docs/Manager.md)
  - [SwaggerJsClient.OAuth2ClientCredentialsAuthentication](docs/OAuth2ClientCredentialsAuthentication.md)
@@ -165,6 +166,7 @@ Class | Method | HTTP request | Description
  - [SwaggerJsClient.SwaggerListPolicyResponse](docs/SwaggerListPolicyResponse.md)
  - [SwaggerJsClient.SwaggerUpdatePolicyParameters](docs/SwaggerUpdatePolicyParameters.md)
  - [SwaggerJsClient.SwaggerWardenBaseRequest](docs/SwaggerWardenBaseRequest.md)
+ - [SwaggerJsClient.Version](docs/Version.md)
  - [SwaggerJsClient.WardenOAuth2AccessTokenAuthorizationRequest](docs/WardenOAuth2AccessTokenAuthorizationRequest.md)
  - [SwaggerJsClient.WardenOAuth2AccessTokenAuthorizationResponse](docs/WardenOAuth2AccessTokenAuthorizationResponse.md)
  - [SwaggerJsClient.WardenOAuth2ClientAuthorizationRequest](docs/WardenOAuth2ClientAuthorizationRequest.md)

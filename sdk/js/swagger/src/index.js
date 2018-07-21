@@ -1,5 +1,5 @@
 /**
- * 
+ *
  * Package main ORY Keto
  *
  * OpenAPI spec version: Latest
@@ -17,49 +17,51 @@
 ;(function(factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module.
-    define(
-      [
-        'ApiClient',
-        'model/AuthenticationDefaultSession',
-        'model/AuthenticationOAuth2ClientCredentialsRequest',
-        'model/AuthenticationOAuth2ClientCredentialsSession',
-        'model/AuthenticationOAuth2IntrospectionRequest',
-        'model/AuthenticationOAuth2Session',
-        'model/Authenticator',
-        'model/Firewall',
-        'model/Handler',
-        'model/InlineResponse401',
-        'model/IntrospectionResponse',
-        'model/Manager',
-        'model/OAuth2ClientCredentialsAuthentication',
-        'model/OAuth2IntrospectionAuthentication',
-        'model/Policy',
-        'model/PolicyConditions',
-        'model/Role',
-        'model/RoleMembers',
-        'model/Session',
-        'model/SwaggerCreatePolicyParameters',
-        'model/SwaggerDoesWardenAllowAccessRequestParameters',
-        'model/SwaggerDoesWardenAllowClientRequestParameters',
-        'model/SwaggerDoesWardenAllowTokenAccessRequestParameters',
-        'model/SwaggerGetPolicyParameters',
-        'model/SwaggerListPolicyParameters',
-        'model/SwaggerListPolicyResponse',
-        'model/SwaggerUpdatePolicyParameters',
-        'model/SwaggerWardenBaseRequest',
-        'model/WardenOAuth2AccessTokenAuthorizationRequest',
-        'model/WardenOAuth2AccessTokenAuthorizationResponse',
-        'model/WardenOAuth2ClientAuthorizationRequest',
-        'model/WardenOAuth2ClientAuthorizationResponse',
-        'model/WardenSubjectAuthorizationRequest',
-        'model/WardenSubjectAuthorizationResponse',
-        'model/Writer',
-        'api/PolicyApi',
-        'api/RoleApi',
-        'api/WardenApi'
-      ],
-      factory
-    )
+    define([
+      'ApiClient',
+      'model/AuthenticationDefaultSession',
+      'model/AuthenticationOAuth2ClientCredentialsRequest',
+      'model/AuthenticationOAuth2ClientCredentialsSession',
+      'model/AuthenticationOAuth2IntrospectionRequest',
+      'model/AuthenticationOAuth2Session',
+      'model/Authenticator',
+      'model/Firewall',
+      'model/Handler',
+      'model/HealthNotReadyStatus',
+      'model/HealthStatus',
+      'model/InlineResponse500',
+      'model/IntrospectionResponse',
+      'model/Manager',
+      'model/OAuth2ClientCredentialsAuthentication',
+      'model/OAuth2IntrospectionAuthentication',
+      'model/Policy',
+      'model/PolicyConditions',
+      'model/Role',
+      'model/RoleMembers',
+      'model/Session',
+      'model/SwaggerCreatePolicyParameters',
+      'model/SwaggerDoesWardenAllowAccessRequestParameters',
+      'model/SwaggerDoesWardenAllowClientRequestParameters',
+      'model/SwaggerDoesWardenAllowTokenAccessRequestParameters',
+      'model/SwaggerGetPolicyParameters',
+      'model/SwaggerListPolicyParameters',
+      'model/SwaggerListPolicyResponse',
+      'model/SwaggerUpdatePolicyParameters',
+      'model/SwaggerWardenBaseRequest',
+      'model/Version',
+      'model/WardenOAuth2AccessTokenAuthorizationRequest',
+      'model/WardenOAuth2AccessTokenAuthorizationResponse',
+      'model/WardenOAuth2ClientAuthorizationRequest',
+      'model/WardenOAuth2ClientAuthorizationResponse',
+      'model/WardenSubjectAuthorizationRequest',
+      'model/WardenSubjectAuthorizationResponse',
+      'model/Writer',
+      'api/HealthApi',
+      'api/PolicyApi',
+      'api/RoleApi',
+      'api/VersionApi',
+      'api/WardenApi'
+    ], factory)
   } else if (typeof module === 'object' && module.exports) {
     // CommonJS-like environments that support module.exports, like Node.
     module.exports = factory(
@@ -72,7 +74,9 @@
       require('./model/Authenticator'),
       require('./model/Firewall'),
       require('./model/Handler'),
-      require('./model/InlineResponse401'),
+      require('./model/HealthNotReadyStatus'),
+      require('./model/HealthStatus'),
+      require('./model/InlineResponse500'),
       require('./model/IntrospectionResponse'),
       require('./model/Manager'),
       require('./model/OAuth2ClientCredentialsAuthentication'),
@@ -91,6 +95,7 @@
       require('./model/SwaggerListPolicyResponse'),
       require('./model/SwaggerUpdatePolicyParameters'),
       require('./model/SwaggerWardenBaseRequest'),
+      require('./model/Version'),
       require('./model/WardenOAuth2AccessTokenAuthorizationRequest'),
       require('./model/WardenOAuth2AccessTokenAuthorizationResponse'),
       require('./model/WardenOAuth2ClientAuthorizationRequest'),
@@ -98,8 +103,10 @@
       require('./model/WardenSubjectAuthorizationRequest'),
       require('./model/WardenSubjectAuthorizationResponse'),
       require('./model/Writer'),
+      require('./api/HealthApi'),
       require('./api/PolicyApi'),
       require('./api/RoleApi'),
+      require('./api/VersionApi'),
       require('./api/WardenApi')
     )
   }
@@ -113,7 +120,9 @@
   Authenticator,
   Firewall,
   Handler,
-  InlineResponse401,
+  HealthNotReadyStatus,
+  HealthStatus,
+  InlineResponse500,
   IntrospectionResponse,
   Manager,
   OAuth2ClientCredentialsAuthentication,
@@ -132,6 +141,7 @@
   SwaggerListPolicyResponse,
   SwaggerUpdatePolicyParameters,
   SwaggerWardenBaseRequest,
+  Version,
   WardenOAuth2AccessTokenAuthorizationRequest,
   WardenOAuth2AccessTokenAuthorizationResponse,
   WardenOAuth2ClientAuthorizationRequest,
@@ -139,8 +149,10 @@
   WardenSubjectAuthorizationRequest,
   WardenSubjectAuthorizationResponse,
   Writer,
+  HealthApi,
   PolicyApi,
   RoleApi,
+  VersionApi,
   WardenApi
 ) {
   'use strict'
@@ -223,10 +235,20 @@
      */
     Handler: Handler,
     /**
-     * The InlineResponse401 model constructor.
-     * @property {module:model/InlineResponse401}
+     * The HealthNotReadyStatus model constructor.
+     * @property {module:model/HealthNotReadyStatus}
      */
-    InlineResponse401: InlineResponse401,
+    HealthNotReadyStatus: HealthNotReadyStatus,
+    /**
+     * The HealthStatus model constructor.
+     * @property {module:model/HealthStatus}
+     */
+    HealthStatus: HealthStatus,
+    /**
+     * The InlineResponse500 model constructor.
+     * @property {module:model/InlineResponse500}
+     */
+    InlineResponse500: InlineResponse500,
     /**
      * The IntrospectionResponse model constructor.
      * @property {module:model/IntrospectionResponse}
@@ -318,6 +340,11 @@
      */
     SwaggerWardenBaseRequest: SwaggerWardenBaseRequest,
     /**
+     * The Version model constructor.
+     * @property {module:model/Version}
+     */
+    Version: Version,
+    /**
      * The WardenOAuth2AccessTokenAuthorizationRequest model constructor.
      * @property {module:model/WardenOAuth2AccessTokenAuthorizationRequest}
      */
@@ -353,6 +380,11 @@
      */
     Writer: Writer,
     /**
+     * The HealthApi service constructor.
+     * @property {module:api/HealthApi}
+     */
+    HealthApi: HealthApi,
+    /**
      * The PolicyApi service constructor.
      * @property {module:api/PolicyApi}
      */
@@ -362,6 +394,11 @@
      * @property {module:api/RoleApi}
      */
     RoleApi: RoleApi,
+    /**
+     * The VersionApi service constructor.
+     * @property {module:api/VersionApi}
+     */
+    VersionApi: VersionApi,
     /**
      * The WardenApi service constructor.
      * @property {module:api/WardenApi}
