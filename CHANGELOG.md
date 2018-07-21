@@ -3,7 +3,6 @@
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
 - [Change Log](#change-log)
-  - [v0.0.0-testrelease.1 (2018-07-21)](#v000-testrelease1-2018-07-21)
   - [v1.0.0-beta.7 (2018-07-16)](#v100-beta7-2018-07-16)
   - [v1.0.0-beta.6 (2018-07-07)](#v100-beta6-2018-07-07)
   - [v1.0.0-beta.5 (2018-07-07)](#v100-beta5-2018-07-07)
@@ -16,17 +15,6 @@
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 # Change Log
-
-## [v0.0.0-testrelease.1](https://github.com/ory/keto/tree/v0.0.0-testrelease.1) (2018-07-21)
-[Full Changelog](https://github.com/ory/keto/compare/v1.0.0-beta.7...v0.0.0-testrelease.1)
-
-**Closed issues:**
-
-- Build and upload binaries upon release [\#36](https://github.com/ory/keto/issues/36)
-
-**Merged pull requests:**
-
-- health: Introduces health and version endpoints [\#37](https://github.com/ory/keto/pull/37) ([arekkas](https://github.com/arekkas))
 
 ## [v1.0.0-beta.7](https://github.com/ory/keto/tree/v1.0.0-beta.7) (2018-07-16)
 [Full Changelog](https://github.com/ory/keto/compare/v1.0.0-beta.6...v1.0.0-beta.7)
