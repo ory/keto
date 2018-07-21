@@ -67,7 +67,7 @@ jobs:
       - run: docker build -f Dockerfile -t keto-test .
       - run: docker run keto-test version
 
-  release:
+  release-docker:
     docker:
       - image: circleci/golang:1.9
     working_directory: /go/src/github.com/ory/keto
@@ -81,7 +81,7 @@ jobs:
       - run: docker push oryd/keto:$CIRCLE_TAG
       - run: docker push oryd/keto:latest
 
-  publish-docs:
+  release-docs:
     docker:
       - image: alpine/git:1.0.4
     working_directory: /go/src/github.com/ory/keto
@@ -93,7 +93,7 @@ jobs:
       - run: "cp ./docs/api.swagger.json ../docs/apis/keto.json"
       - run: "(cd ../docs && git add -A && git commit -a -m \"Updates ORY Keto Swagger definitions\" && git push origin) || exit 0"
 
-  changelog:
+  release-changelog:
     docker:
       - image: circleci/ruby:2.4-node
     steps:
@@ -113,6 +113,19 @@ jobs:
       - run: git remote add origin https://arekkas:$GITHUB_TOKEN@github.com/ory/keto.git
       - run: git push origin HEAD:master || true
 
+  release-binaries:
+    docker:
+      - image: circleci/golang:1.10
+    working_directory: /go/src/github.com/ory/keto
+    steps:
+      - checkout
+      - run: curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+      - run: go get -u github.com/mitchellh/gox github.com/tcnksm/ghr
+      - run: dep ensure -vendor-only
+      - run: |
+          gox -parallel=2 -ldflags "-X github.com/ory/keto/cmd.Version=`git describe --tags` -X github.com/ory/keto/cmd.BuildTime=`TZ=UTC date -u '+%Y-%m-%dT%H:%M:%SZ'` -X github.com/ory/keto/cmd.GitHash=`git rev-parse HEAD`" -output "dist/{{.Dir}}-{{.OS}}-{{.Arch}}";
+      - run: ghr -t $GITHUB_TOKEN -u $CIRCLE_PROJECT_USERNAME -r $CIRCLE_PROJECT_REPONAME --replace `git describe --tags` dist/
+
 workflows:
   version: 2
   "test, build, and relase":
@@ -125,19 +138,15 @@ workflows:
           filters:
             tags:
               only: /.*/
+      - release-docs:
+          filters:
+            branches:
+              only: master
       - swagger:
           filters:
             tags:
               only: /.*/
-      - publish-docs:
-          filters:
-            branches:
-              only: master
-      - changelog:
-          filters:
-            branches:
-              only: master
-      - test-docker:
+      - build-docker:
           requires:
             - test
             - swagger
@@ -145,9 +154,26 @@ workflows:
           filters:
             tags:
               only: /.*/
-      - release:
+      - release-binaries:
           requires:
-            - test-docker
+            - build-docker
+          filters:
+            tags:
+              only: /.*/
+            branches:
+              ignore: /.*/
+      - release-docker:
+          requires:
+            - build-docker
+          filters:
+            tags:
+              only: /.*/
+            branches:
+              ignore: /.*/
+      - release-changelog:
+          requires:
+            - release-docker
+            - release-binaries
           filters:
             tags:
               only: /.*/
