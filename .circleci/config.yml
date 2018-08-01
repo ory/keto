@@ -25,6 +25,19 @@ jobs:
       - run: dep ensure -vendor-only
       - run: ./scripts/run-genswag.sh
 
+  release-npm:
+    docker:
+      - image: circleci/node:8.9.3
+    working_directory: ~/hydra
+    steps:
+      - checkout
+      - run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/.npmrc
+      - run: |
+          npm version -f --no-git-tag-version $CIRCLE_TAG
+      - run: npm view ory-hydra-sdk
+      - run: npm whoami
+      - run: npm publish
+
   test:
     docker:
       - image: circleci/golang:1.10
@@ -170,10 +183,19 @@ workflows:
               only: /.*/
             branches:
               ignore: /.*/
+      - release-npm:
+          requires:
+            - build-docker
+          filters:
+            tags:
+              only: /.*/
+            branches:
+              ignore: /.*/
       - release-changelog:
           requires:
             - release-docker
             - release-binaries
+            - release-npm
           filters:
             tags:
               only: /.*/

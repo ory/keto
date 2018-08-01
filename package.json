@@ -11,9 +11,15 @@
     "fs": false
   },
   "dependencies": {
-    "superagent": "3.5.2"
+    "superagent": "3.5.2",
+    "opencollective": "^1.0.3"
   },
   "devDependencies": {
     "prettier": "^1.7.4"
+  },
+  "collective": {
+    "type": "opencollective",
+    "url": "https://opencollective.com/ory",
+    "logo": "https://opencollective.com/ory/logo.txt"
   }
 }
