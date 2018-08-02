@@ -85,8 +85,8 @@ AUTHENTICATORS
 	- AUTHENTICATOR_OAUTH2_INTROSPECTION_TOKEN_URL: The OAuth2 Token Endpoint URL of the server
 		Example: AUTHENTICATOR_OAUTH2_INTROSPECTION_TOKEN_URL=https://my-server/oauth2/token
 
-	- AUTHENTICATOR_OAUTH2_INTROSPECTION_INTROSPECTION_URL: The OAuth2 Introspection Endpoint URL of the server
-		Example: AUTHENTICATOR_OAUTH2_INTROSPECTION_INTROSPECTION_URL=https://my-server/oauth2/introspect
+	- AUTHENTICATOR_OAUTH2_INTROSPECTION_URL: The OAuth2 Introspection Endpoint URL of the server
+		Example: AUTHENTICATOR_OAUTH2_INTROSPECTION_URL=https://my-server/oauth2/introspect
 
 - The OAuth 2.0 Client Credentials Authenticator is capable of authentication OAuth 2.0 clients using the client credentials
 	grant.
