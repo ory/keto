@@ -116,15 +116,19 @@ type AuthenticationOAuth2IntrospectionRequest struct {
 }
 
 func NewOAuth2IntrospectionAuthentication(clientID, clientSecret, tokenURL, introspectionURL string, scopes []string, strategy fosite.ScopeStrategy) *OAuth2IntrospectionAuthentication {
-	c := clientcredentials.Config{
-		ClientID:     clientID,
-		ClientSecret: clientSecret,
-		TokenURL:     tokenURL,
-		Scopes:       scopes,
+	c := http.DefaultClient
+
+	if len(clientID)+len(clientSecret)+len(tokenURL)+len(scopes) > 0 {
+		c = (&clientcredentials.Config{
+			ClientID:     clientID,
+			ClientSecret: clientSecret,
+			TokenURL:     tokenURL,
+			Scopes:       scopes,
+		}).Client(context.Background())
 	}
 
 	return &OAuth2IntrospectionAuthentication{
-		client:           c.Client(context.Background()),
+		client:           c,
 		introspectionURL: introspectionURL,
 		scopeStrategy:    strategy,
 	}
