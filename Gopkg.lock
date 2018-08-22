@@ -271,8 +271,8 @@
     "token/hmac",
     "token/jwt"
   ]
-  revision = "5688a1c5acbafad5eabe649ce56e06e922c36a60"
-  version = "v0.21.0"
+  revision = "0fcbfea741d0f0bb2a96d5fa08a2797a109a4a33"
+  version = "v0.21.2"
 
 [[projects]]
   name = "github.com/ory/go-convenience"
@@ -302,8 +302,8 @@
     "pkg",
     "rand/sequence"
   ]
-  revision = "a6ec396e4c5dbae3143d85c89149bdf406740f9c"
-  version = "v1.0.0-beta.6"
+  revision = "93dcbcf3b9e0726c03b45b7e74ec9ca4c89eab03"
+  version = "v1.0.0-beta.8"
 
 [[projects]]
   name = "github.com/ory/ladon"
@@ -569,6 +569,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "7f5450f0748e6208f2f59031edd688a38bb46a8295bc0d77c195283bcd213a46"
+  inputs-digest = "0788b7cade2179ab3830990f97926ee2378901030b32817ff0fce7aadeb7e7a6"
   solver-name = "gps-cdcl"
   solver-version = 1

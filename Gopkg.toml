@@ -70,10 +70,6 @@
   version = "0.3.0"
 
 [[constraint]]
-  name = "github.com/ory/hydra"
-  version = "1.0.0-beta.6"
-
-[[constraint]]
   name = "github.com/ory/ladon"
   version = "0.8.9"
 
