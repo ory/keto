@@ -108,7 +108,12 @@ func RunServe(
 
 		n := negroni.New()
 		n.Use(negronilogrus.NewMiddlewareFromLogger(logger, "keto"))
-		corsHandler := cors.New(corsx.ParseOptions()).Handler(n)
+
+		var c http.Handler = n
+		if viper.GetString("CORS_ENABLED") == "true" {
+			logger.Info("Enabled CORS")
+			c = cors.New(corsx.ParseOptions()).Handler(n)
+		}
 
 		if ok, _ := cmd.Flags().GetBool("disable-telemetry"); !ok && viper.GetString("DATABASE_URL") != "memory" {
 			logger.Println("Transmission of telemetry data is enabled, to learn more go to: https://www.ory.sh/docs/guides/latest/telemetry/")
@@ -137,7 +142,7 @@ func RunServe(
 		address := fmt.Sprintf("%s:%s", viper.GetString("HOST"), viper.GetString("PORT"))
 		var srv = graceful.WithDefaults(&http.Server{
 			Addr:    address,
-			Handler: corsHandler,
+			Handler: c,
 		})
 
 		if err := graceful.Graceful(func() error {

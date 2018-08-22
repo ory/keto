@@ -5,3 +5,8 @@ breaking changes might be included here. Please check the [CHANGELOG.md](./CHANG
 before finalizing the upgrade process.
 
 ## 1.0.0-rc.1
+
+### CORS is disabled by default
+
+A new environment variable `CORS_ENABLED` was introduced. It sets whether CORS is enabled ("true") or not ("false")".
+Default is disabled.
