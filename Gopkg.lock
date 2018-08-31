@@ -111,12 +111,6 @@
 
 [[projects]]
   branch = "master"
-  name = "github.com/gtank/cryptopasta"
-  packages = ["."]
-  revision = "1f550f6f2f69009f6ae57347c188e0a67cd4e500"
-
-[[projects]]
-  branch = "master"
   name = "github.com/hashicorp/golang-lru"
   packages = [
     ".",
@@ -262,15 +256,7 @@
 
 [[projects]]
   name = "github.com/ory/fosite"
-  packages = [
-    ".",
-    "handler/oauth2",
-    "handler/openid",
-    "handler/pkce",
-    "storage",
-    "token/hmac",
-    "token/jwt"
-  ]
+  packages = ["."]
   revision = "0fcbfea741d0f0bb2a96d5fa08a2797a109a4a33"
   version = "v0.21.2"
 
@@ -295,15 +281,6 @@
   packages = ["."]
   revision = "30b4db38fcaf4bf35a545d95c655622b05d8ac35"
   version = "v0.3.0"
-
-[[projects]]
-  name = "github.com/ory/hydra"
-  packages = [
-    "pkg",
-    "rand/sequence"
-  ]
-  revision = "93dcbcf3b9e0726c03b45b7e74ec9ca4c89eab03"
-  version = "v1.0.0-beta.8"
 
 [[projects]]
   name = "github.com/ory/ladon"
@@ -569,6 +546,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "0788b7cade2179ab3830990f97926ee2378901030b32817ff0fce7aadeb7e7a6"
+  inputs-digest = "6fc06577dee7dc1d03d53f01bc53c8c20a851b4adcdef42ca45a7235828f51a5"
   solver-name = "gps-cdcl"
   solver-version = 1

@@ -26,7 +26,7 @@ import (
 	"fmt"
 
 	"github.com/jmoiron/sqlx"
-	"github.com/ory/hydra/pkg"
+	"github.com/ory/herodot"
 	"github.com/pborman/uuid"
 	"github.com/pkg/errors"
 	"github.com/rubenv/sql-migrate"
@@ -102,7 +102,7 @@ func (m *SQLManager) GetRole(id string) (*Role, error) {
 
 	var q []string
 	if err := m.DB.Select(&q, m.DB.Rebind(fmt.Sprintf("SELECT member from %s WHERE role_id = ?", m.TableMember)), found); err == sql.ErrNoRows {
-		return nil, errors.WithStack(pkg.ErrNotFound)
+		return nil, errors.WithStack(&herodot.ErrorNotFound)
 	} else if err != nil {
 		return nil, errors.WithStack(err)
 	}
@@ -164,7 +164,7 @@ func (m *SQLManager) RemoveRoleMembers(role string, subjects []string) error {
 func (m *SQLManager) FindRolesByMember(member string, limit, offset int) ([]Role, error) {
 	var ids []string
 	if err := m.DB.Select(&ids, m.DB.Rebind(fmt.Sprintf("SELECT role_id from %s WHERE member = ? GROUP BY role_id ORDER BY role_id LIMIT ? OFFSET ?", m.TableMember)), member, limit, offset); err == sql.ErrNoRows {
-		return nil, errors.WithStack(pkg.ErrNotFound)
+		return nil, errors.WithStack(&herodot.ErrorNotFound)
 	} else if err != nil {
 		return nil, errors.WithStack(err)
 	}
@@ -185,7 +185,7 @@ func (m *SQLManager) FindRolesByMember(member string, limit, offset int) ([]Role
 func (m *SQLManager) ListRoles(limit, offset int) ([]Role, error) {
 	var ids []string
 	if err := m.DB.Select(&ids, m.DB.Rebind(fmt.Sprintf("SELECT id from %s LIMIT ? OFFSET ?", m.TableRole)), limit, offset); err == sql.ErrNoRows {
-		return nil, errors.WithStack(pkg.ErrNotFound)
+		return nil, errors.WithStack(&herodot.ErrorNotFound)
 	} else if err != nil {
 		return nil, errors.WithStack(err)
 	}
