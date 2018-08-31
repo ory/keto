@@ -22,11 +22,11 @@
 package server
 
 import (
+	"crypto/tls"
 	"fmt"
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
-	"github.com/meatballhat/negroni-logrus"
 	"github.com/ory/fosite"
 	"github.com/ory/go-convenience/corsx"
 	"github.com/ory/go-convenience/stringsx"
@@ -38,14 +38,17 @@ import (
 	"github.com/ory/keto/role"
 	"github.com/ory/keto/warden"
 	"github.com/ory/ladon"
-	"github.com/ory/metrics-middleware"
 	"github.com/rs/cors"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/urfave/negroni"
+
+	negronilogrus "github.com/meatballhat/negroni-logrus"
+	metrics "github.com/ory/metrics-middleware"
 )
 
+// RunServe runs the Keto API HTTP server
 func RunServe(
 	logger *logrus.Logger,
 	buildVersion, buildHash string, buildTime string,
@@ -131,6 +134,8 @@ func RunServe(
 				},
 				logger,
 				"ory-keto",
+				100,
+				"",
 			)
 			go m.RegisterSegment(buildVersion, buildHash, buildTime)
 			go m.CommitMemoryStatistics()
@@ -139,20 +144,35 @@ func RunServe(
 
 		n.UseHandler(router)
 
-		address := fmt.Sprintf("%s:%s", viper.GetString("HOST"), viper.GetString("PORT"))
-		var srv = graceful.WithDefaults(&http.Server{
-			Addr:    address,
+		cert, err := getTLSCertAndKey()
+		if err != nil {
+			logger.Fatalf("%v", err)
+		}
+
+		certs := []tls.Certificate{}
+		if cert != nil {
+			certs = append(certs, *cert)
+		}
+
+		addr := fmt.Sprintf("%s:%s", viper.GetString("HOST"), viper.GetString("PORT"))
+		server := graceful.WithDefaults(&http.Server{
+			Addr:    addr,
 			Handler: c,
+			TLSConfig: &tls.Config{
+				Certificates: certs,
+			},
 		})
 
 		if err := graceful.Graceful(func() error {
-			logger.Infof("Setting up http server on %s", address)
-			return srv.ListenAndServe()
-		}, srv.Shutdown); err != nil {
-			logger.
-				WithError(err).
-				Fatal("Could not gracefully run server")
+			if cert != nil {
+				logger.Printf("Listening on https://%s.\n", addr)
+				return server.ListenAndServeTLS("", "")
+			}
+			logger.Printf("Listening on http://%s.\n", addr)
+			return server.ListenAndServe()
+		}, server.Shutdown); err != nil {
+			logger.Fatalf("Unable to gracefully shutdown HTTP(s) server because %v.\n", err)
+			return
 		}
-
 	}
 }
