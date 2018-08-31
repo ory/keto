@@ -24,12 +24,12 @@ package server
 import (
 	"fmt"
 	"net/http"
-	"strings"
 
 	"github.com/julienschmidt/httprouter"
 	"github.com/meatballhat/negroni-logrus"
 	"github.com/ory/fosite"
 	"github.com/ory/go-convenience/corsx"
+	"github.com/ory/go-convenience/stringsx"
 	"github.com/ory/graceful"
 	"github.com/ory/herodot"
 	"github.com/ory/keto/authentication"
@@ -81,7 +81,7 @@ func RunServe(
 				viper.GetString("AUTHENTICATOR_OAUTH2_INTROSPECTION_CLIENT_SECRET"),
 				viper.GetString("AUTHENTICATOR_OAUTH2_INTROSPECTION_TOKEN_URL"),
 				viper.GetString("AUTHENTICATOR_OAUTH2_INTROSPECTION_URL"),
-				strings.Split(viper.GetString("AUTHENTICATOR_OAUTH2_INTROSPECTION_SCOPE"), ","),
+				stringsx.Splitx(viper.GetString("AUTHENTICATOR_OAUTH2_INTROSPECTION_SCOPE"), ","),
 				strategy,
 			),
 			"oauth2/clients": authentication.NewOAuth2ClientCredentialsAuthentication(
