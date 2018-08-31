@@ -26,7 +26,6 @@ import (
 
 	"github.com/julienschmidt/httprouter"
 	"github.com/ory/herodot"
-	"github.com/ory/hydra/pkg"
 	"github.com/ory/ladon"
 	"github.com/ory/pagination"
 	"github.com/pborman/uuid"
@@ -143,7 +142,7 @@ func (h *Handler) Get(w http.ResponseWriter, r *http.Request, ps httprouter.Para
 	policy, err := h.Manager.Get(ps.ByName("id"))
 	if err != nil {
 		if err.Error() == "Not found" {
-			h.H.WriteError(w, r, errors.WithStack(pkg.ErrNotFound))
+			h.H.WriteError(w, r, errors.WithStack(&herodot.ErrorNotFound))
 			return
 		}
 		h.H.WriteError(w, r, errors.WithStack(err))
