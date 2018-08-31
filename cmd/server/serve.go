@@ -134,8 +134,8 @@ func RunServe(
 				},
 				logger,
 				"ory-keto",
-				100,
-				"",
+				//100,
+				//"",
 			)
 			go m.RegisterSegment(buildVersion, buildHash, buildTime)
 			go m.CommitMemoryStatistics()
