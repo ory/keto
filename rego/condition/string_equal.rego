@@ -1,4 +1,4 @@
-package ladon
+package ladon.condition
 
 eval_condition("StringEqualCondition", request, options, key) {
     is_string(request.context[key], aok)

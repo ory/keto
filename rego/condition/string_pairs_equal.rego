@@ -1,4 +1,4 @@
-package ladon
+package ladon.condition
 
 eval_condition("StringPairsEqualCondition", request, options, key) {
     cast_array(request.context[key], context)

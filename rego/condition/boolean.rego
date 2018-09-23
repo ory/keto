@@ -1,4 +1,4 @@
-package ladon
+package ladon.condition
 
 eval_condition("BooleanCondition", request, options, key) {
     is_boolean(request.context[key], output)

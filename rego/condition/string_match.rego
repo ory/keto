@@ -1,4 +1,4 @@
-package ladon
+package ladon.condition
 
 eval_condition("StringMatchCondition", request, options, key) {
     re_match(options.matches, request.context[key]) == true

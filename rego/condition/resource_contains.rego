@@ -1,4 +1,4 @@
-package ladon
+package ladon.condition
 
 eval_condition("ResourceContainsCondition", request, options, key) {
     value := cast_string_empty(options, "value")

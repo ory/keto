@@ -1,4 +1,4 @@
-package ladon
+package ladon.core
 
 effect_allow(effects) {
 	effects[_] == "allow"
