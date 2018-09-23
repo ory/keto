@@ -1,6 +1,6 @@
 package ladon.exact
 
-import data
+import data.store.ladon.exact as store
 import data.ladon.core as core
 import data.ladon.condition as condition
 import input as request
@@ -8,7 +8,7 @@ import input as request
 default allow = false
 
 allow {
-    decide_allow(data.policies.exact, data.roles)
+    decide_allow(store.policies, store.roles)
 }
 
 decide_allow(policies, roles) {

@@ -5,15 +5,31 @@ import (
 	"github.com/open-policy-agent/opa/ast"
 	"github.com/open-policy-agent/opa/rego"
 	"context"
-	"runtime/debug"
 	"path/filepath"
 	"os"
 	"github.com/pkg/errors"
 	"io/ioutil"
-	"github.com/ory/ladon"
 	"github.com/open-policy-agent/opa/storage/inmem"
 	"github.com/open-policy-agent/opa/topdown"
+	"github.com/ory/ladon"
+	"encoding/json"
+	"strings"
 )
+
+type DataModel struct {
+	Store DataModelStore `json:"store"`
+}
+type DataModelLadon struct {
+	Exact DataModelLadonAll `json:"exact"`
+	Regex DataModelLadonAll `json:"regex"`
+}
+type DataModelLadonAll struct {
+	Policies ladon.Policies      `json:"policies"`
+	Roles    map[string][]string `json:"roles"`
+}
+type DataModelStore struct {
+	Ladon DataModelLadon `json:"ladon"`
+}
 
 func main() {
 	files, err := loadFiles(".")
@@ -26,20 +42,67 @@ func main() {
 		panic(err)
 	}
 
-	data := map[string]interface{}{
-		"policies": map[string]interface{}{"exact": ladon.Policies{}},
+	b, err := json.Marshal(&DataModel{
+		Store: DataModelStore{
+			Ladon: DataModelLadon{
+				Exact: DataModelLadonAll{
+					Policies: ladon.Policies{
+						&ladon.DefaultPolicy{
+							Actions:    []string{"actions:1"},
+							Subjects:   []string{"subjects:1"},
+							Resources:  []string{"resources:1"},
+							Conditions: ladon.Conditions{},
+							Effect:     ladon.AllowAccess,
+						},
+					},
+					Roles: map[string][]string{},
+				},
+				Regex: DataModelLadonAll{},
+			},
+		},
+	})
+	if err != nil {
+		panic(err)
 	}
 
-	topdown.RegisterFunctionalBuiltin2()
+	data := map[string]interface{}{}
+	if err := json.Unmarshal(b, &DataModel{
+		Store: DataModelStore{
+			Ladon: DataModelLadon{
+				Exact: DataModelLadonAll{
+					Policies: ladon.Policies{
+						&ladon.DefaultPolicy{
+							Actions:    []string{"actions:1"},
+							Subjects:   []string{"subjects:1"},
+							Resources:  []string{"resources:1"},
+							Conditions: ladon.Conditions{},
+							Effect:     ladon.AllowAccess,
+						},
+					},
+					Roles: map[string][]string{},
+				},
+				Regex: DataModelLadonAll{},
+			},
+		},
+	}); err != nil {
+		panic(err)
+	}
+
 	tracer := topdown.NewBufferTracer()
 	store := inmem.NewFromObject(data)
 
 	r := rego.New(
-		rego.Query("policies.exact"),
+		rego.Query("data.ladon.exact.allow"),
 		rego.Compiler(compiler),
-		rego.Input(interface{}("data.ladon.allowed_exact")),
 		rego.Store(store),
 		rego.Tracer(tracer),
+		rego.Input(
+			map[string]interface{}{
+				"action":   "actions:1",
+				"subject":  "subjects:1",
+				"resource": "resources:1",
+			},
+		),
 	)
 
 	// Run evaluation.
@@ -48,9 +111,20 @@ func main() {
 		panic(err)
 	}
 
-	if len(rs) > 0 {
-		panic(fmt.Sprintf("It's suspicious that a result was found, got %d results: %+v", len(rs), rs))
+	//for k, e := range *tracer {
+	//	fmt.Printf("Got tracer event (%d): %s\n", k, e)
+	//}
+
+	if len(rs) != 1 || len(rs[0].Expressions) != 1 {
+		panic(fmt.Sprintf("Expected exactly one result, got %d - %+v", len(rs), rs))
 	}
+
+	result, ok := rs[0].Expressions[0].Value.(bool)
+	if !ok {
+		panic(fmt.Sprintf("Expected bool but got %+v", rs[0].Expressions[0].Value))
+	}
+
+	fmt.Printf("Got result: %v\n", result)
 }
 
 func loadFiles(directory string) (map[string][]byte, error) {
@@ -61,6 +135,14 @@ func loadFiles(directory string) (map[string][]byte, error) {
 		}
 
 		if info.IsDir() {
+			return nil
+		}
+
+		if filepath.Ext(path) != ".rego" {
+			return nil
+		}
+
+		if strings.Contains(path, "_test.rego") {
 			return nil
 		}
 

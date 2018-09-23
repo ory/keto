@@ -1,6 +1,6 @@
 package ladon.regex
 
-import data
+import data.store.ladon.regex as store
 import data.ladon.core as core
 import data.ladon.condition as condition
 import input as request
@@ -8,7 +8,7 @@ import input as request
 default allow = false
 
 allow {
-    decide_allow(data.policies.regex, data.roles)
+    decide_allow(store.policies, store.roles)
 }
 
 decide_allow(policies, roles) {
@@ -16,7 +16,6 @@ decide_allow(policies, roles) {
 	        matcher(policies[i].resources, request.resource)
 	        match_subjects(policies[i].subjects, roles, request.subject)
 	        matcher(policies[i].actions, request.action)
-
 			condition.all_conditions_true(policies[i])
 		]
 
