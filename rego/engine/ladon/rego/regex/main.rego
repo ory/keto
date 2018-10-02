@@ -34,6 +34,7 @@ matcher(patterns, compare) {
 match_subjects(matches, roles, subject) {
     matcher(matches, subject)
 } {
-    role := roles[subject][_]
-    matcher(matches, role)
+    r := core.role_ids(roles, subject)
+    rr := r[_]
+    matcher(matches, rr)
 }

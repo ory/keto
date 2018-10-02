@@ -1,35 +1,20 @@
 package main
 
 import (
+	"bytes"
+	"context"
+	"encoding/json"
 	"fmt"
 	"github.com/open-policy-agent/opa/ast"
 	"github.com/open-policy-agent/opa/rego"
-	"context"
-	"path/filepath"
-	"os"
-	"github.com/pkg/errors"
-	"io/ioutil"
 	"github.com/open-policy-agent/opa/storage/inmem"
 	"github.com/open-policy-agent/opa/topdown"
-	"github.com/ory/ladon"
-	"encoding/json"
+	"github.com/pkg/errors"
+	"io/ioutil"
+	"os"
+	"path/filepath"
 	"strings"
 )
-
-type DataModel struct {
-	Store DataModelStore `json:"store"`
-}
-type DataModelLadon struct {
-	Exact DataModelLadonAll `json:"exact"`
-	Regex DataModelLadonAll `json:"regex"`
-}
-type DataModelLadonAll struct {
-	Policies ladon.Policies      `json:"policies"`
-	Roles    map[string][]string `json:"roles"`
-}
-type DataModelStore struct {
-	Ladon DataModelLadon `json:"ladon"`
-}
 
 func main() {
 	files, err := loadFiles(".")
@@ -42,49 +27,25 @@ func main() {
 		panic(err)
 	}
 
-	b, err := json.Marshal(&DataModel{
-		Store: DataModelStore{
-			Ladon: DataModelLadon{
-				Exact: DataModelLadonAll{
-					Policies: ladon.Policies{
-						&ladon.DefaultPolicy{
-							Actions:    []string{"actions:1"},
-							Subjects:   []string{"subjects:1"},
-							Resources:  []string{"resources:1"},
-							Conditions: ladon.Conditions{},
-							Effect:     ladon.AllowAccess,
-						},
-					},
-					Roles: map[string][]string{},
-				},
-				Regex: DataModelLadonAll{},
-			},
-		},
-	})
-	if err != nil {
-		panic(err)
-	}
-
 	data := map[string]interface{}{}
-	if err := json.Unmarshal(b, &DataModel{
-		Store: DataModelStore{
-			Ladon: DataModelLadon{
-				Exact: DataModelLadonAll{
-					Policies: ladon.Policies{
-						&ladon.DefaultPolicy{
-							Actions:    []string{"actions:1"},
-							Subjects:   []string{"subjects:1"},
-							Resources:  []string{"resources:1"},
-							Conditions: ladon.Conditions{},
-							Effect:     ladon.AllowAccess,
-						},
-					},
-					Roles: map[string][]string{},
-				},
-				Regex: DataModelLadonAll{},
-			},
-		},
-	}); err != nil {
+	dec := json.NewDecoder(bytes.NewBufferString(`{
+	"store": {
+		"ladon": {
+			"exact": {
+				"policies": [{
+					"actions": ["actions:1"],
+					"subjects": ["subjects:1"],
+					"resources": ["resources:1"],
+					"effect": "allow"
+				}],
+				"roles": {}
+			}
+		}
+	}
+}`))
+	dec.UseNumber()
+
+	if err := dec.Decode(&data); err != nil {
 		panic(err)
 	}
 
@@ -111,9 +72,9 @@ func main() {
 		panic(err)
 	}
 
-	//for k, e := range *tracer {
-	//	fmt.Printf("Got tracer event (%d): %s\n", k, e)
-	//}
+	for k, e := range *tracer {
+		fmt.Printf("Got tracer event (%d): %s\n", k, e)
+	}
 
 	if len(rs) != 1 || len(rs[0].Expressions) != 1 {
 		panic(fmt.Sprintf("Expected exactly one result, got %d - %+v", len(rs), rs))

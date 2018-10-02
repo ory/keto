@@ -59,7 +59,7 @@
 
 [[constraint]]
   name = "github.com/ory/fosite"
-  version = "0.21.0"
+  version = "0.24.0"
 
 [[constraint]]
   name = "github.com/ory/graceful"
@@ -67,7 +67,7 @@
 
 [[constraint]]
   name = "github.com/ory/herodot"
-  version = "0.3.0"
+  version = "0.4.1"
 
 [[constraint]]
   name = "github.com/ory/ladon"
@@ -78,7 +78,7 @@
   version = "0.0.1"
 
 [[constraint]]
-  version = "0.0.2"
+  version = "0.0.7"
   name = "github.com/ory/sqlcon"
 
 [[constraint]]

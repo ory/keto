@@ -41,6 +41,12 @@
   version = "v7"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/bmizerany/assert"
+  packages = ["."]
+  revision = "b7ed37b82869576c289d7d97fb2bbd8b64a0cb28"
+
+[[projects]]
   name = "github.com/cenkalti/backoff"
   packages = ["."]
   revision = "2ea60e5f094469f9e65adb9cd103795b73ae743e"
@@ -57,6 +63,12 @@
   packages = ["spew"]
   revision = "346938d642f2ec3594ed81d874461961cd0faa76"
   version = "v1.1.0"
+
+[[projects]]
+  name = "github.com/dchest/siphash"
+  packages = ["."]
+  revision = "ca249f45189071f5d44dc6401334e3572037b9cb"
+  version = "v1.2.0"
 
 [[projects]]
   name = "github.com/dgrijalva/jwt-go"
@@ -81,6 +93,12 @@
   packages = ["."]
   revision = "c2828203cd70a50dcccfb2761f8b1f8ceef9a8e9"
   version = "v1.4.7"
+
+[[projects]]
+  name = "github.com/ghodss/yaml"
+  packages = ["."]
+  revision = "0ca9ea5df5451ffdf184b4428c902747c2c11cd7"
+  version = "v1.0.0"
 
 [[projects]]
   name = "github.com/go-resty/resty"
@@ -163,6 +181,18 @@
   revision = "ae77be60afb1dcacde03767a8c37337fad28ac14"
 
 [[projects]]
+  name = "github.com/kr/pretty"
+  packages = ["."]
+  revision = "73f6ac0b30a98e433b289500d779f50c1a6f0712"
+  version = "v0.1.0"
+
+[[projects]]
+  name = "github.com/kr/text"
+  packages = ["."]
+  revision = "e2ffdb16a802fe2bb95e2e35ff34f0e53aeef34f"
+  version = "v0.1.0"
+
+[[projects]]
   branch = "master"
   name = "github.com/lib/pq"
   packages = [
@@ -197,6 +227,23 @@
   name = "github.com/mohae/deepcopy"
   packages = ["."]
   revision = "c48cc78d482608239f6c4c92a4abd87eb8761c90"
+
+[[projects]]
+  name = "github.com/open-policy-agent/opa"
+  packages = [
+    "ast",
+    "metrics",
+    "rego",
+    "storage",
+    "storage/inmem",
+    "topdown",
+    "topdown/builtins",
+    "topdown/copypropagation",
+    "types",
+    "util"
+  ]
+  revision = "9fbff4c3302fa82dde5d3cc6ca15be528d77911b"
+  version = "v0.9.2"
 
 [[projects]]
   name = "github.com/opencontainers/go-digest"
@@ -257,8 +304,8 @@
 [[projects]]
   name = "github.com/ory/fosite"
   packages = ["."]
-  revision = "0fcbfea741d0f0bb2a96d5fa08a2797a109a4a33"
-  version = "v0.21.2"
+  revision = "e1e18d6b22697abeceff6e22d4741c3bf04174f8"
+  version = "v0.24.0"
 
 [[projects]]
   name = "github.com/ory/go-convenience"
@@ -279,8 +326,8 @@
 [[projects]]
   name = "github.com/ory/herodot"
   packages = ["."]
-  revision = "30b4db38fcaf4bf35a545d95c655622b05d8ac35"
-  version = "v0.3.0"
+  revision = "392ffdec6000f1c21e538fdbeeb86225c390d25f"
+  version = "v0.4.1"
 
 [[projects]]
   name = "github.com/ory/ladon"
@@ -311,8 +358,8 @@
     ".",
     "dockertest"
   ]
-  revision = "7cb5a0f3099d9596e71128202e4bd54405927dfa"
-  version = "v0.0.3"
+  revision = "068c69998749cdb876c4adf179a8ed702864ad2b"
+  version = "v0.0.7"
 
 [[projects]]
   name = "github.com/pborman/uuid"
@@ -343,6 +390,12 @@
   packages = ["difflib"]
   revision = "792786c7400a136282c1664665ae0a8db921c6c2"
   version = "v1.0.0"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/rcrowley/go-metrics"
+  packages = ["."]
+  revision = "e2704e165165ec55d062f5919b4b29494e9fa790"
 
 [[projects]]
   name = "github.com/rs/cors"
@@ -442,6 +495,12 @@
   name = "github.com/xtgo/uuid"
   packages = ["."]
   revision = "a0b114877d4caeffbd7f87e3757c17fce570fea7"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/yashtewari/glob-intersection"
+  packages = ["."]
+  revision = "5c77d914dd0ba7bedca923f97232d37137e038f3"
 
 [[projects]]
   branch = "master"
@@ -546,6 +605,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "6fc06577dee7dc1d03d53f01bc53c8c20a851b4adcdef42ca45a7235828f51a5"
+  inputs-digest = "b937cbd3e4f5dabf52a7d9968d30467f7197adc5e1d5bac98913c6a1b029ac73"
   solver-name = "gps-cdcl"
   solver-version = 1

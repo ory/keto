@@ -1,16 +1,15 @@
 package storage
 
 import (
-	"sync"
-	"github.com/ory/herodot"
-	"github.com/pkg/errors"
-	"encoding/json"
 	"bytes"
 	"context"
-	"github.com/ory/pagination"
-	"fmt"
+	"encoding/json"
 	"github.com/open-policy-agent/opa/storage"
 	"github.com/open-policy-agent/opa/storage/inmem"
+	"github.com/ory/herodot"
+	"github.com/ory/pagination"
+	"github.com/pkg/errors"
+	"sync"
 )
 
 type MemoryManager struct {
@@ -65,25 +64,29 @@ func (m *MemoryManager) List(ctx context.Context, collection string, value inter
 	dec := json.NewDecoder(b)
 	dec.DisallowUnknownFields()
 
-	items := make([]json.RawMessage, end-start)
-
-	m.RLock()
-	for k, i := range c[start:end] {
-		items[k] = i.Data
-	}
-	m.RUnlock()
-
+	items := m.list(ctx, collection)[start:end]
 	if err := enc.Encode(&items); err != nil {
 		return errors.WithStack(err)
 	}
-
-	fmt.Printf("Got: %s", b.String())
 
 	if err := dec.Decode(value); err != nil {
 		return errors.WithStack(err)
 	}
 
 	return nil
+}
+
+func (m *MemoryManager) list(ctx context.Context, collection string) ([]json.RawMessage) {
+	c := m.collection(collection)
+	items := make([]json.RawMessage, len(c))
+
+	m.RLock()
+	for k, i := range c {
+		items[k] = i.Data
+	}
+	m.RUnlock()
+
+	return items
 }
 
 func (m *MemoryManager) Get(_ context.Context, collection, key string, value interface{}) error {
@@ -130,16 +133,45 @@ func (m *MemoryManager) Delete(_ context.Context, collection, key string) error 
 	return nil
 }
 
-func (m *MemoryManager) Storage(data interface{}) (storage.Store, error) {
-	db := inmem.New()
-	ctx := context.Background()
+func (m *MemoryManager) Storage(ctx context.Context, schema string, collections []string) (storage.Store, error) {
+	var s map[string]interface{}
+	dec := json.NewDecoder(bytes.NewBufferString(schema))
+	dec.UseNumber()
+	if err := dec.Decode(&s); err != nil {
+		return nil, errors.WithStack(err)
+	}
+
+	db := inmem.NewFromObject(s)
 	txn, err := db.NewTransaction(ctx, storage.WriteParams)
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
-	if err := db.Write(ctx, txn, storage.AddOp, storage.Path{}, data); err != nil {
-		return nil, errors.WithStack(err)
+
+	for _, c := range collections {
+		path, ok := storage.ParsePath(c)
+		if !ok {
+			return nil, errors.Errorf("unable to parse storage path: %s", c)
+		}
+
+		var val []interface{}
+		b := bytes.NewBuffer(nil)
+
+		d := m.list(ctx, c)
+		if err := json.NewEncoder(b).Encode(d); err != nil {
+			return nil, errors.WithStack(err)
+		}
+
+		dec := json.NewDecoder(b)
+		dec.UseNumber()
+		if err := dec.Decode(&val); err != nil {
+			return nil, errors.WithStack(err)
+		}
+
+		if err := db.Write(ctx, txn, storage.AddOp, path, val); err != nil {
+			return nil, errors.WithStack(err)
+		}
 	}
+
 	if err := db.Commit(ctx, txn); err != nil {
 		return nil, errors.WithStack(err)
 	}

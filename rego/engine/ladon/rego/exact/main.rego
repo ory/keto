@@ -28,5 +28,6 @@ decide_allow(policies, roles) {
 match_subjects(matches, roles, subject) {
     matches[_] == subject
 } {
-    matches[_] == roles[subject][_]
+    r := core.role_ids(roles, subject)
+    matches[_] == r[_]
 }
