@@ -25,28 +25,28 @@ package ladon
 // swagger:model policies
 type Policies []Policy
 
-// Policy specifies a policy document.
+// Policy specifies an ORY Access Policy document.
 //
 // swagger:model policy
 type Policy struct {
-	// ID is the unique identifier of the policy. It is used to query, update, and remove the policy.
+	// ID is the unique identifier of the ORY Access Policy. It is used to query, update, and remove the ORY Access Policy.
 	ID          string     `json:"id"`
 
-	// Description is an optional, human-readable description of this policy.
+	// Description is an optional, human-readable description.
 	Description string     `json:"description"`
 
-	// Subjects is an array representing all the subjects this policy applies to.
+	// Subjects is an array representing all the subjects this ORY Access Policy applies to.
 	Subjects    []string   `json:"subjects"`
 
-	// Resources is an array representing all the resources this policy applies to.
+	// Resources is an array representing all the resources this ORY Access Policy applies to.
 	Resources   []string   `json:"resources"`
 
-	// Actions is an array representing all the actions this policy applies to.
+	// Actions is an array representing all the actions this ORY Access Policy applies to.
 	Actions     []string   `json:"actions"`
 
-	// Effect is the policies effect. It can be "allow" or "deny".
+	// Effect is the effect of this ORY Access Policy. It can be "allow" or "deny".
 	Effect      string     `json:"effect"`
 
-	// Conditions represents an array of conditions under which this policy is active.
+	// Conditions represents an array of conditions under which this ORY Access Policy is active.
 	Conditions  []map[string]interface{} `json:"conditions"`
 }

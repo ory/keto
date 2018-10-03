@@ -11,6 +11,7 @@ import (
 	"github.com/ory/herodot"
 	"github.com/ory/keto/rego/engine"
 	kstorage "github.com/ory/keto/rego/storage"
+	"github.com/pborman/uuid"
 	"github.com/pkg/errors"
 	"net/http"
 )
@@ -66,6 +67,7 @@ func (e *Engine) Register(r *httprouter.Router) {
 	r.DELETE(basePath+"/policies/:id", e.sh.Delete(e.policiesDelete))
 
 	r.GET(basePath+"/roles", e.sh.List(e.rolesList))
+	r.POST(basePath+"/roles", e.sh.Upsert(e.rolesCreate))
 	r.GET(basePath+"/roles/:id", e.sh.Get(e.rolesGet))
 	r.DELETE(basePath+"/roles/:id", e.sh.Delete(e.policiesDelete))
 	r.PUT(basePath+"/roles/:id/members", e.sh.Upsert(e.rolesMembersAdd))
@@ -97,6 +99,28 @@ func (e *Engine) rolesGet(ctx context.Context, r *http.Request, ps httprouter.Pa
 	return &kstorage.GetRequest{
 		Collection: roleCollection(f),
 		Key:        ps.ByName("id"),
+		Value:      &p,
+	}, nil
+}
+
+func (e *Engine) rolesCreate(ctx context.Context, r *http.Request, ps httprouter.Params) (*kstorage.UpsertRequest, error) {
+	var p Role
+	if err := json.NewDecoder(r.Body).Decode(&p); err != nil {
+		return nil, errors.WithStack(err)
+	}
+
+	if p.ID == "" {
+		p.ID = uuid.New()
+	}
+
+	f, err := flavor(ps)
+	if err != nil {
+		return nil, err
+	}
+
+	return &kstorage.UpsertRequest{
+		Collection: roleCollection(f),
+		Key:        p.ID,
 		Value:      &p,
 	}, nil
 }
@@ -167,6 +191,11 @@ func (e *Engine) policiesCreate(ctx context.Context, r *http.Request, ps httprou
 	var p Policy
 	if err := json.NewDecoder(r.Body).Decode(&p); err != nil {
 		return nil, errors.WithStack(err)
+	}
+
+	p, err := validatePolicy(p)
+	if err != nil {
+		return nil, err
 	}
 
 	f, err := flavor(ps)
