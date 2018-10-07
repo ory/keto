@@ -48,8 +48,6 @@ CORE CONTROLS
 
 HTTP(S) CONTROLS
 ==============
-` + tlsMessage + `
-
 - HOST: The host to listen on.
 	--------------------------------------------------------------
 	Default: HOST="" (all interfaces)

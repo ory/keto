@@ -4,16 +4,16 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"net/http"
+
 	"github.com/julienschmidt/httprouter"
 	"github.com/open-policy-agent/opa/rego"
 	"github.com/ory/go-convenience/stringslice"
-	"github.com/ory/go-convenience/stringsx"
 	"github.com/ory/herodot"
-	"github.com/ory/keto/rego/engine"
-	kstorage "github.com/ory/keto/rego/storage"
+	"github.com/ory/keto/engine"
+	kstorage "github.com/ory/keto/storage"
 	"github.com/pborman/uuid"
 	"github.com/pkg/errors"
-	"net/http"
 )
 
 type Engine struct {
@@ -32,7 +32,7 @@ const (
 				"policies": [],
 				"roles": []
 			},
-			"regex": {
+			"exact": {
 				"policies": [],
 				"roles": []
 			}
@@ -41,11 +41,11 @@ const (
 }`
 )
 
-func policyCollection(f string) (string) {
+func policyCollection(f string) string {
 	return fmt.Sprintf("/store/ladon/%s/policies", f)
 }
 
-func roleCollection(f string) (string) {
+func roleCollection(f string) string {
 	return fmt.Sprintf("/store/ladon/%s/roles", f)
 }
 
@@ -69,7 +69,7 @@ func (e *Engine) Register(r *httprouter.Router) {
 	r.GET(basePath+"/roles", e.sh.List(e.rolesList))
 	r.POST(basePath+"/roles", e.sh.Upsert(e.rolesCreate))
 	r.GET(basePath+"/roles/:id", e.sh.Get(e.rolesGet))
-	r.DELETE(basePath+"/roles/:id", e.sh.Delete(e.policiesDelete))
+	r.DELETE(basePath+"/roles/:id", e.sh.Delete(e.rolesDelete))
 	r.PUT(basePath+"/roles/:id/members", e.sh.Upsert(e.rolesMembersAdd))
 	r.DELETE(basePath+"/roles/:id/members/:member", e.sh.Upsert(e.rolesMembersRemove))
 }
@@ -155,7 +155,7 @@ func (e *Engine) rolesMembersAdd(ctx context.Context, r *http.Request, ps httpro
 	} else if err != nil {
 		return nil, err
 	} else {
-		ro.Members = stringsx.Unique(append(ro.Members, i.Members...))
+		ro.Members = stringslice.Unique(append(ro.Members, i.Members...))
 	}
 
 	return &kstorage.UpsertRequest{

@@ -4,37 +4,37 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"sync"
+
 	"github.com/open-policy-agent/opa/storage"
-	"github.com/open-policy-agent/opa/storage/inmem"
 	"github.com/ory/herodot"
 	"github.com/ory/pagination"
 	"github.com/pkg/errors"
-	"sync"
 )
 
 type MemoryManager struct {
 	sync.RWMutex
-	items map[string][]Item
+	items map[string][]memoryItem
 }
 
-type Item struct {
+type memoryItem struct {
 	Key  string
 	Data json.RawMessage
 }
 
 func NewMemoryManager() *MemoryManager {
 	return &MemoryManager{
-		items: map[string][]Item{},
+		items: map[string][]memoryItem{},
 	}
 }
 
-func (m *MemoryManager) collection(collection string) []Item {
+func (m *MemoryManager) collection(collection string) []memoryItem {
 	m.RLock()
 	v, ok := m.items[collection]
 	m.RUnlock()
 	if !ok {
 		m.Lock()
-		v = []Item{}
+		v = []memoryItem{}
 		m.items[collection] = v
 		m.Unlock()
 	}
@@ -50,7 +50,7 @@ func (m *MemoryManager) Upsert(_ context.Context, collection, key string, value 
 	// no need to evaluate, just create collection if necessary.
 	m.collection(collection)
 	m.Lock()
-	m.items[collection] = append(m.items[collection], Item{Key: key, Data: b.Bytes()})
+	m.items[collection] = append(m.items[collection], memoryItem{Key: key, Data: b.Bytes()})
 	m.Unlock()
 
 	return nil
@@ -59,24 +59,11 @@ func (m *MemoryManager) Upsert(_ context.Context, collection, key string, value 
 func (m *MemoryManager) List(ctx context.Context, collection string, value interface{}, limit, offset int) error {
 	c := m.collection(collection)
 	start, end := pagination.Index(limit, offset, len(c))
-	b := bytes.NewBuffer(nil)
-	enc := json.NewEncoder(b)
-	dec := json.NewDecoder(b)
-	dec.DisallowUnknownFields()
-
 	items := m.list(ctx, collection)[start:end]
-	if err := enc.Encode(&items); err != nil {
-		return errors.WithStack(err)
-	}
-
-	if err := dec.Decode(value); err != nil {
-		return errors.WithStack(err)
-	}
-
-	return nil
+	return roundTrip(&items, value)
 }
 
-func (m *MemoryManager) list(ctx context.Context, collection string) ([]json.RawMessage) {
+func (m *MemoryManager) list(ctx context.Context, collection string) []json.RawMessage {
 	c := m.collection(collection)
 	items := make([]json.RawMessage, len(c))
 
@@ -134,46 +121,7 @@ func (m *MemoryManager) Delete(_ context.Context, collection, key string) error 
 }
 
 func (m *MemoryManager) Storage(ctx context.Context, schema string, collections []string) (storage.Store, error) {
-	var s map[string]interface{}
-	dec := json.NewDecoder(bytes.NewBufferString(schema))
-	dec.UseNumber()
-	if err := dec.Decode(&s); err != nil {
-		return nil, errors.WithStack(err)
-	}
-
-	db := inmem.NewFromObject(s)
-	txn, err := db.NewTransaction(ctx, storage.WriteParams)
-	if err != nil {
-		return nil, errors.WithStack(err)
-	}
-
-	for _, c := range collections {
-		path, ok := storage.ParsePath(c)
-		if !ok {
-			return nil, errors.Errorf("unable to parse storage path: %s", c)
-		}
-
-		var val []interface{}
-		b := bytes.NewBuffer(nil)
-
-		d := m.list(ctx, c)
-		if err := json.NewEncoder(b).Encode(d); err != nil {
-			return nil, errors.WithStack(err)
-		}
-
-		dec := json.NewDecoder(b)
-		dec.UseNumber()
-		if err := dec.Decode(&val); err != nil {
-			return nil, errors.WithStack(err)
-		}
-
-		if err := db.Write(ctx, txn, storage.AddOp, path, val); err != nil {
-			return nil, errors.WithStack(err)
-		}
-	}
-
-	if err := db.Commit(ctx, txn); err != nil {
-		return nil, errors.WithStack(err)
-	}
-	return db, nil
+	return toRegoStore(ctx, schema, collections, func(i context.Context, s string) ([]json.RawMessage, error) {
+		return m.list(i, s), nil
+	})
 }

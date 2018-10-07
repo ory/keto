@@ -2,19 +2,20 @@ package storage
 
 import (
 	"context"
+	"net/http"
+
 	"github.com/julienschmidt/httprouter"
 	"github.com/ory/herodot"
 	"github.com/ory/pagination"
-	"net/http"
 )
 
 type Handler struct {
-	s          Manager
-	h          herodot.Writer
+	s Manager
+	h herodot.Writer
 }
 
 func NewHandler(s Manager, h herodot.Writer) *Handler {
-	return &Handler {
+	return &Handler{
 		s: s,
 		h: h,
 	}
@@ -22,8 +23,8 @@ func NewHandler(s Manager, h herodot.Writer) *Handler {
 
 type GetRequest struct {
 	Collection string
-	Key string
-	Value interface{}
+	Key        string
+	Value      interface{}
 }
 
 func (h *Handler) Get(factory func(context.Context, *http.Request, httprouter.Params) (*GetRequest, error)) httprouter.Handle {
@@ -46,7 +47,7 @@ func (h *Handler) Get(factory func(context.Context, *http.Request, httprouter.Pa
 
 type DeleteRequest struct {
 	Collection string
-	Key string
+	Key        string
 }
 
 func (h *Handler) Delete(factory func(context.Context, *http.Request, httprouter.Params) (*DeleteRequest, error)) httprouter.Handle {
@@ -69,7 +70,7 @@ func (h *Handler) Delete(factory func(context.Context, *http.Request, httprouter
 
 type ListRequest struct {
 	Collection string
-	Value interface{}
+	Value      interface{}
 }
 
 func (h *Handler) List(factory func(context.Context, *http.Request, httprouter.Params) (*ListRequest, error)) httprouter.Handle {
@@ -93,8 +94,8 @@ func (h *Handler) List(factory func(context.Context, *http.Request, httprouter.P
 
 type UpsertRequest struct {
 	Collection string
-	Key string
-	Value interface{}
+	Key        string
+	Value      interface{}
 }
 
 func (h *Handler) Upsert(factory func(context.Context, *http.Request, httprouter.Params) (*UpsertRequest, error)) httprouter.Handle {

@@ -4,6 +4,13 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"net/http"
+	"net/http/httptest"
+	"path/filepath"
+	"strings"
+	"testing"
+
 	"github.com/julienschmidt/httprouter"
 	"github.com/ory/herodot"
 	"github.com/ory/keto/rego/engine"
@@ -11,12 +18,6 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/urfave/negroni"
-	"io/ioutil"
-	"net/http"
-	"net/http/httptest"
-	"path/filepath"
-	"strings"
-	"testing"
 )
 
 func base(ts *httptest.Server, f, path string) string {
@@ -43,7 +44,7 @@ func TestAllowed(t *testing.T) {
 	ts := httptest.NewServer(n)
 	defer ts.Close()
 
-	for _, f := range []string{"regex"} {
+	for _, f := range []string{"regex", "exact"} {
 		t.Run(fmt.Sprintf("flavor=%s", f), func(t *testing.T) {
 			t.Run(fmt.Sprint("action=create"), func(t *testing.T) {
 				for _, p := range policies[f] {
@@ -121,10 +122,16 @@ func TestPolicyCRUD(t *testing.T) {
 	defer ts.Close()
 
 	for _, f := range []string{"exact", "regex"} {
-		for _, p := range policies["regex"] {
+		for l, p := range policies[f] {
 			test404(t, base(ts, f, "/policies/"+p.ID))
 			testCreate(t, base(ts, f, "/policies"), p, p)
-			testGet(t, base(ts, f, "/policies/"+p.ID), p)
+			testGet(t, "get", base(ts, f, "/policies/"+p.ID), p)
+			testGet(t, "list", base(ts, f, "/policies"), policies[f][:l+1])
+		}
+
+		for _, p := range policies[f] {
+			testDelete(t, base(ts, f, "/policies/"+p.ID))
+			test404(t, base(ts, f, "/policies/"+p.ID))
 		}
 	}
 }
@@ -134,6 +141,17 @@ func test404(t *testing.T, path string) {
 		res, err := http.DefaultClient.Get(path)
 		require.NoError(t, err)
 		assert.Equal(t, http.StatusNotFound, res.StatusCode)
+		require.NoError(t, res.Body.Close())
+	})
+}
+
+func testDelete(t *testing.T, path string) {
+	t.Run(fmt.Sprintf("action=delete/path=%s", path), func(t *testing.T) {
+		req, err := http.NewRequest("DELETE", path, nil)
+		require.NoError(t, err)
+		res, err := http.DefaultClient.Do(req)
+		require.NoError(t, err)
+		assert.Equal(t, http.StatusNoContent, res.StatusCode)
 		require.NoError(t, res.Body.Close())
 	})
 }
@@ -160,8 +178,8 @@ func testCreate(t *testing.T, path string, in, expect interface{}) {
 	})
 }
 
-func testGet(t *testing.T, path string, expect interface{}) {
-	t.Run(fmt.Sprintf("action=get/path=%s", path), func(t *testing.T) {
+func testGet(t *testing.T, ty string, path string, expect interface{}) {
+	t.Run(fmt.Sprintf("action=%s/path=%s", ty, path), func(t *testing.T) {
 		res, err := http.DefaultClient.Get(path)
 		require.NoError(t, err)
 		assert.Equal(t, http.StatusOK, res.StatusCode)
@@ -184,4 +202,17 @@ func TestRoleCRUD(t *testing.T) {
 	ts := crudts()
 	defer ts.Close()
 
+	for _, f := range []string{"exact", "regex"} {
+		for l, r := range roles[f] {
+			test404(t, base(ts, f, "/roles/"+r.ID))
+			testCreate(t, base(ts, f, "/roles"), r, r)
+			testGet(t, "get", base(ts, f, "/roles/"+r.ID), r)
+			testGet(t, "list", base(ts, f, "/roles"), roles[f][:l+1])
+		}
+
+		for _, r := range roles[f] {
+			testDelete(t, base(ts, f, "/roles/"+r.ID))
+			test404(t, base(ts, f, "/roles/"+r.ID))
+		}
+	}
 }

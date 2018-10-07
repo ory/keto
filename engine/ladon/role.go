@@ -16,4 +16,3 @@ type Role struct {
 	// Members is who belongs to the role.
 	Members []string `json:"members"`
 }
-

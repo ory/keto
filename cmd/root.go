@@ -19,7 +19,7 @@ import (
 	"os"
 
 	"github.com/ory/keto/cmd/client"
-	"github.com/sirupsen/logrus"
+	"github.com/ory/x/logrusx"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -27,9 +27,9 @@ import (
 var cfgFile string
 
 var (
-	Version   = "dev-master"
-	BuildTime = "undefined"
-	GitHash   = "undefined"
+	Version   = ""
+	BuildTime = ""
+	GitHash   = ""
 )
 
 // RootCmd represents the base command when called without any subcommands
@@ -37,7 +37,7 @@ var RootCmd = &cobra.Command{
 	Use: "keto",
 }
 
-var logger = logrus.New()
+var logger = logrusx.New()
 
 var cmdHandler = client.NewHandler()
 
@@ -51,12 +51,6 @@ func Execute() {
 }
 
 func init() {
-	logLevel, err := logrus.ParseLevel(os.Getenv("LOG_LEVEL"))
-	if err != nil {
-		logLevel = logrus.InfoLevel
-	}
-
-	logger.Level = logLevel
 	cobra.OnInitialize(initConfig)
 
 	// Here you will define your flags and configuration settings.

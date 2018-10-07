@@ -2,19 +2,75 @@ package storage
 
 import (
 	"context"
+	"flag"
 	"fmt"
+	"log"
+	"sync"
+	"testing"
+
+	_ "github.com/go-sql-driver/mysql"
+	_ "github.com/lib/pq"
 	"github.com/open-policy-agent/opa/storage"
+	"github.com/ory/sqlcon/dockertest"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
+var managers = map[string]Manager{
+	"memory": NewMemoryManager(),
+}
+var m sync.Mutex
+
+func TestMain(m *testing.M) {
+	runner := dockertest.Register()
+
+	flag.Parse()
+	if !testing.Short() {
+		dockertest.Parallel([]func(){
+			connectToPG,
+			connectToMySQL,
+		})
+	}
+
+	runner.Exit(m.Run())
+}
+
+func connectToMySQL() {
+	db, err := dockertest.ConnectToTestMySQL()
+	if err != nil {
+		log.Fatalf("Could not connect to database: %v", err)
+	}
+
+	s := NewSQLManager(db)
+	m.Lock()
+	managers["mysql"] = s
+	m.Unlock()
+
+	if _, err := s.CreateSchemas(); err != nil {
+		log.Fatalf("Unable to create schemas: %s", err)
+	}
+}
+
+func connectToPG() {
+	db, err := dockertest.ConnectToTestPostgreSQL()
+	if err != nil {
+		log.Fatalf("Could not connect to database: %v", err)
+	}
+
+	s := NewSQLManager(db)
+	m.Lock()
+	managers["postgres"] = s
+	m.Unlock()
+
+	if _, err := s.CreateSchemas(); err != nil {
+		log.Fatalf("Unable to create schemas: %s", err)
+	}
+}
+
 func TestMemoryManager(t *testing.T) {
-	for k, m := range map[string]Manager{
-		"memory": NewMemoryManager(),
-	} {
+	for k, m := range managers {
 		t.Run(fmt.Sprintf("manager=%s", k), func(t *testing.T) {
-			ctx := context.TODO()
+			ctx := context.Background()
 
 			require.Error(t, m.Get(ctx, "test", "string", nil))
 

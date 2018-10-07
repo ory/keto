@@ -1,12 +1,13 @@
 package engine
 
 import (
-	"github.com/open-policy-agent/opa/ast"
-	"github.com/pkg/errors"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/open-policy-agent/opa/ast"
+	"github.com/pkg/errors"
 )
 
 func walk(directory string) (map[string][]byte, error) {
