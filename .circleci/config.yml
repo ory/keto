@@ -167,14 +167,14 @@ workflows:
           filters:
             branches:
               only: master
-      - swagger:
-          filters:
-            tags:
-              only: /.*/
+#      - swagger:
+#          filters:
+#            tags:
+#              only: /.*/
       - build-docker:
           requires:
             - test
-            - swagger
+#            - swagger
             - format
           filters:
             tags:
