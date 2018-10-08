@@ -61,7 +61,7 @@ jobs:
     working_directory: /go/src/github.com/ory/keto
     steps:
       - run:
-          name: Update PATH and Define Environment Variable at Runtime
+          name: Enable go1.11 modules
           command: |
             echo 'export GO111MODULE=on' >> $BASH_ENV
             source $BASH_ENV
