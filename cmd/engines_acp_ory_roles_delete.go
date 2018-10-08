@@ -16,12 +16,13 @@ package cmd
 
 import (
 	"fmt"
+	"strings"
+
 	"github.com/ory/keto/cmd/client"
 	"github.com/ory/keto/engine/ladon"
 	"github.com/ory/urlx"
 	"github.com/ory/x/cmdx"
 	"github.com/ory/x/flagx"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -31,7 +32,7 @@ var deleteCmd = &cobra.Command{
 	Use:   "delete <flavor> <id> [<id-2>, [<...>]]",
 	Short: "Delete an ORY Access Control Policy Role",
 	Run: func(cmd *cobra.Command, args []string) {
-		cmdx.MinArgs(cmd,args,2)
+		cmdx.MinArgs(cmd, args, 2)
 		client.CheckLadonFlavor(args[0])
 		for _, id := range args[1:] {
 			client.Delete(urlx.JoinURLStrings(

@@ -18,15 +18,16 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"net/http"
+	"strings"
+
 	"github.com/ory/go-convenience/stringslice"
 	"github.com/ory/keto/engine/ladon"
 	"github.com/ory/urlx"
 	"github.com/ory/x/cmdx"
 	"github.com/ory/x/flagx"
 	"github.com/spf13/cobra"
-	"io/ioutil"
-	"net/http"
-	"strings"
 )
 
 var client = http.DefaultClient
