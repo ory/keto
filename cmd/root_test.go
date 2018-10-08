@@ -61,13 +61,15 @@ func TestExecute(t *testing.T) {
 		},
 		{args: []string{"engines", "acp", "ory", "roles", "list", "--endpoint", ep, "exact"}},
 		{args: []string{"engines", "acp", "ory", "roles", "import", "--endpoint", ep, "exact", "../tests/stubs/roles.json"}},
-		{args: []string{"engines", "acp", "ory", "roles", "get", "--endpoint", ep, "exact", "1234"}},
-		{args: []string{"engines", "acp", "ory", "roles", "delete", "--endpoint", ep, "exact", "1234"}},
+		{args: []string{"engines", "acp", "ory", "roles", "get", "--endpoint", ep, "exact", "role-1"}},
+		{args: []string{"engines", "acp", "ory", "roles", "delete", "--endpoint", ep, "exact", "role-1"}},
 
 		{args: []string{"engines", "acp", "ory", "policies", "list", "--endpoint", ep, "exact"}},
 		{args: []string{"engines", "acp", "ory", "policies", "import", "--endpoint", ep, "exact", "../tests/stubs/policies.json"}},
-		{args: []string{"engines", "acp", "ory", "policies", "get", "--endpoint", ep, "exact", "1234"}},
-		{args: []string{"engines", "acp", "ory", "policies", "delete", "--endpoint", ep, "exact", "1234"}},
+		{args: []string{"engines", "acp", "ory", "policies", "get", "--endpoint", ep, "exact", "policy-1"}},
+		{args: []string{"engines", "acp", "ory", "policies", "delete", "--endpoint", ep, "exact", "policy-1"}},
+
+		{args: []string{"engines", "acp", "ory", "--endpoint", "allowed", ep, "exact", "peter-1", "resources-11", "actions-11"}},
 
 		{args: []string{"help", "migrate", "sql"}},
 		{args: []string{"version"}},
