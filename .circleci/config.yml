@@ -29,7 +29,6 @@ jobs:
             source $BASH_ENV
       - checkout
       - run: go get -u github.com/go-swagger/go-swagger/cmd/swagger golang.org/x/tools/cmd/goimports
-      - run: go build github.com/ory/keto
       - run: ./scripts/run-genswag.sh
 
   release-npm:
