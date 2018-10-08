@@ -22,8 +22,9 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/ory/x/urlx"
+
 	"github.com/ory/go-convenience/stringslice"
-	"github.com/ory/go-convenience/urlx"
 	"github.com/ory/keto/engine/ladon"
 	"github.com/ory/x/cmdx"
 	"github.com/ory/x/flagx"
@@ -98,7 +99,7 @@ func EndpointURL(cmd *cobra.Command) string {
 }
 
 func LadonEndpointURL(cmd *cobra.Command, flavor string) string {
-	return urlx.JoinURLStrings(
+	return urlx.MustJoin(
 		flagx.MustGetString(cmd, "endpoint"),
 		fmt.Sprintf(strings.Replace(ladon.BasePath, ":flavor", "%s", 1), flavor),
 	)

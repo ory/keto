@@ -15,9 +15,9 @@
 package cmd
 
 import (
-	"github.com/ory/go-convenience/urlx"
 	"github.com/ory/keto/cmd/client"
 	"github.com/ory/x/cmdx"
+	"github.com/ory/x/urlx"
 	"github.com/spf13/cobra"
 )
 
@@ -38,7 +38,7 @@ The json file(s) have to be formatted as arrays:
 		client.CheckLadonFlavor(args[0])
 		client.Import(
 			"PUT",
-			urlx.JoinURLStrings(
+			urlx.MustJoin(
 				client.LadonEndpointURL(cmd, args[0]),
 				"roles",
 			),

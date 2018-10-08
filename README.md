@@ -88,7 +88,7 @@ ec91228cb105db315553499c81918258f52cee9636ea2a4821bdb8226872f54b
 
 #### Building from source
 
-If you wish to compile ORY keto, install and set up [Go 1.10+](https://golang.org/) and add `$GOPATH/bin`
+If you wish to compile ORY keto, install and set up [Go 1.11+](https://golang.org/) and add `$GOPATH/bin`
 to your `$PATH` as well as [golang/dep](http://github.com/golang/dep).
 
 The following commands check out the latest ORY keto's release tag, compile it and set up flags so that `keto version`
@@ -97,11 +97,10 @@ works as expected. Please note that this will only work with a linux shell like 
 ```
 go get -d -u github.com/ory/keto
 cd $(go env GOPATH)/src/github.com/ory/keto
-keto_LATEST=$(git describe --abbrev=0 --tags)
-git checkout $keto_LATEST
-dep ensure -vendor-only
+KETO_LATEST=$(git describe --abbrev=0 --tags)
+git checkout $KETO_LATEST
 go install \
-    -ldflags "-X github.com/ory/keto/cmd.Version=$keto_LATEST -X github.com/ory/keto/cmd.BuildTime=`TZ=UTC date -u '+%Y-%m-%dT%H:%M:%SZ'` -X github.com/ory/keto/cmd.GitHash=`git rev-parse HEAD`" \
+    -ldflags "-X github.com/ory/keto/cmd.Version=$KETO_LATEST -X github.com/ory/keto/cmd.BuildTime=`TZ=UTC date -u '+%Y-%m-%dT%H:%M:%SZ'` -X github.com/ory/keto/cmd.GitHash=`git rev-parse HEAD`" \
     github.com/ory/keto
 git checkout master
 keto help

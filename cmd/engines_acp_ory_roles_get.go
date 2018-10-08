@@ -15,10 +15,10 @@
 package cmd
 
 import (
-	"github.com/ory/go-convenience/urlx"
 	"github.com/ory/keto/cmd/client"
 	"github.com/ory/keto/engine/ladon"
 	"github.com/ory/x/cmdx"
+	"github.com/ory/x/urlx"
 	"github.com/spf13/cobra"
 )
 
@@ -32,7 +32,7 @@ var getCmd = &cobra.Command{
 		client.CheckLadonFlavor(args[0])
 		for _, id := range args[1:] {
 			client.Get(
-				urlx.JoinURLStrings(
+				urlx.MustJoin(
 					client.LadonEndpointURL(cmd, args[0]),
 					"roles",
 					id,

@@ -18,11 +18,11 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/ory/go-convenience/urlx"
 	"github.com/ory/keto/cmd/client"
 	"github.com/ory/keto/engine/ladon"
 	"github.com/ory/x/cmdx"
 	"github.com/ory/x/flagx"
+	"github.com/ory/x/urlx"
 
 	"github.com/spf13/cobra"
 )
@@ -35,7 +35,7 @@ var deleteCmd = &cobra.Command{
 		cmdx.MinArgs(cmd, args, 2)
 		client.CheckLadonFlavor(args[0])
 		for _, id := range args[1:] {
-			client.Delete(urlx.JoinURLStrings(
+			client.Delete(urlx.MustJoin(
 				flagx.MustGetString(cmd, "endpoint"),
 				fmt.Sprintf(strings.Replace(ladon.BasePath, ":flavor", "%s", 1), args[0]),
 				"roles",

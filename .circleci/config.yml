@@ -5,24 +5,20 @@ version: 2
 jobs:
   format:
     docker:
-      - image: circleci/golang:1.10
+      - image: circleci/golang:1.11
     working_directory: /go/src/github.com/ory/keto
     steps:
       - checkout
-      - run: curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
       - run: go get -u golang.org/x/tools/cmd/goimports
-      - run: dep ensure -vendor-only
       - run: ./scripts/test-format.sh
 
   swagger:
     docker:
-      - image: circleci/golang:1.10
+      - image: circleci/golang:1.11
     working_directory: /go/src/github.com/ory/keto
     steps:
       - checkout
-      - run: curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
       - run: go get -u github.com/go-swagger/go-swagger/cmd/swagger golang.org/x/tools/cmd/goimports
-      - run: dep ensure -vendor-only
       - run: ./scripts/run-genswag.sh
 
   release-npm:
@@ -40,7 +36,7 @@ jobs:
 
   test:
     docker:
-      - image: circleci/golang:1.10
+      - image: circleci/golang:1.11
         environment:
         - TEST_DATABASE_POSTGRESQL=postgres://test:test@localhost:5432/keto?sslmode=disable
         - TEST_DATABASE_MYSQL=root:test@(localhost:3306)/mysql?parseTime=true
@@ -56,11 +52,9 @@ jobs:
     steps:
       - checkout
       - run: go get -u github.com/go-swagger/go-swagger/cmd/swagger github.com/bradfitz/goimports github.com/mattn/goveralls golang.org/x/tools/cmd/cover github.com/ory/go-acc
-      - run: curl -L -s https://github.com/golang/dep/releases/download/v0.4.1/dep-linux-amd64 -o /go/bin/dep && chmod +x /go/bin/dep
 
       # Installation
       - run: curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
-      - run: dep ensure -vendor-only
       - run: go install github.com/ory/keto
 
       # Tests
@@ -128,13 +122,11 @@ jobs:
 
   release-binaries:
     docker:
-      - image: circleci/golang:1.10
+      - image: circleci/golang:1.11
     working_directory: /go/src/github.com/ory/keto
     steps:
       - checkout
-      - run: curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
       - run: go get -u github.com/mitchellh/gox github.com/tcnksm/ghr
-      - run: dep ensure -vendor-only
       - run: |
           gox -parallel=2 -ldflags "-X github.com/ory/keto/cmd.Version=`git describe --tags` -X github.com/ory/keto/cmd.BuildTime=`TZ=UTC date -u '+%Y-%m-%dT%H:%M:%SZ'` -X github.com/ory/keto/cmd.GitHash=`git rev-parse HEAD`" -output "dist/{{.Dir}}-{{.OS}}-{{.Arch}}";
       - run: ghr -t $GITHUB_TOKEN -u $CIRCLE_PROJECT_USERNAME -r $CIRCLE_PROJECT_REPONAME --replace `git describe --tags` dist/
