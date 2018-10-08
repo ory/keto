@@ -29,6 +29,7 @@ import (
 	"github.com/gobuffalo/packr"
 	"github.com/jmoiron/sqlx"
 	"github.com/julienschmidt/httprouter"
+	"github.com/meatballhat/negroni-logrus"
 	"github.com/ory/go-convenience/stringslice"
 	"github.com/ory/graceful"
 	"github.com/ory/herodot"
@@ -47,7 +48,6 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/urfave/negroni"
-	"github.com/meatballhat/negroni-logrus"
 )
 
 // RunServe runs the Keto API HTTP server

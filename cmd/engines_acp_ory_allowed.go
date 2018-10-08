@@ -18,13 +18,14 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"net/http"
+
 	"github.com/ory/keto/cmd/client"
 	"github.com/ory/keto/engine"
 	"github.com/ory/keto/engine/ladon"
 	"github.com/ory/x/cmdx"
 	"github.com/ory/x/urlx"
 	"github.com/spf13/cobra"
-	"net/http"
 )
 
 // enginesAcpOryAllowedCmd represents the roles command
@@ -37,9 +38,9 @@ var enginesAcpOryAllowedCmd = &cobra.Command{
 
 		var b bytes.Buffer
 		err := json.NewEncoder(&b).Encode(&ladon.Input{
-			Subject: args[1],
+			Subject:  args[1],
 			Resource: args[2],
-			Action: args[3],
+			Action:   args[3],
 		})
 		cmdx.Must(err, "Unable to encode input data to json: %s", err)
 
