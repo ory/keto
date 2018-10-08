@@ -3,14 +3,11 @@ FROM golang:1.11-alpine
 ARG git_tag
 ARG git_commit
 
-RUN apk add --no-cache git build-base curl
-RUN curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+RUN apk add --no-cache git build-base
 
 WORKDIR /go/src/github.com/ory/keto
 
-ADD ./Gopkg.lock ./Gopkg.lock
-ADD ./Gopkg.toml ./Gopkg.toml
-RUN dep ensure -vendor-only
+RUN export GO111MODULE=on
 
 ADD . .
 
