@@ -19,8 +19,8 @@ java -jar scripts/swagger-codegen-cli-2.2.3.jar generate -i ./docs/api.swagger.j
 
 scripts/run-format.sh
 
-git checkout HEAD -- sdk/go/keto/swagger/configuration.go
-git checkout HEAD -- sdk/go/keto/swagger/api_client.go
+# git checkout HEAD -- sdk/go/keto/swagger/configuration.go
+# git checkout HEAD -- sdk/go/keto/swagger/api_client.go
 rm -f ./sdk/js/swagger/package.json
 rm -rf ./sdk/js/swagger/test
 rm -f ./sdk/php/swagger/composer.json ./sdk/php/swagger/phpunit.xml.dist

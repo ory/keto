@@ -18,6 +18,13 @@ import (
 	"os"
 	"strconv"
 
+	"github.com/ory/x/cmdx"
+	"github.com/ory/x/corsx"
+	"github.com/ory/x/logrusx"
+	"github.com/ory/x/profilex"
+	"github.com/ory/x/sqlcon"
+	"github.com/ory/x/tlsx"
+
 	"github.com/ory/keto/cmd/server"
 	"github.com/spf13/cobra"
 )
@@ -26,73 +33,39 @@ import (
 var serveCmd = &cobra.Command{
 	Use:   "serve",
 	Short: "Starts the server and serves the HTTP REST API",
-	Long: `
-This command exposes a variety of controls via environment variables. You can
-set environments using "export KEY=VALUE" (Linux/macOS) or "set KEY=VALUE" (Windows). On Linux,
-you can also set environments by pre-pending key value pairs: "KEY=VALUE KEY2=VALUE2 hydra"
+	Long: cmdx.EnvVarExamplesHelpMessage("keto") + `
 
-All possible controls are listed below. The host process additionally exposes a few flags, which are listed below
-the controls section.
-
+All possible controls are listed below.
 
 CORE CONTROLS
 =============
 
-` + databaseUrl + `
+` + sqlcon.HelpMessage() + `
 
-- LOG_LEVEL: Set the log level, supports "panic", "fatal", "error", "warn", "info" and "debug". Defaults to "info".
-	Example: LOG_LEVEL=panic
-
-- LOG_FORMAT: Leave empty for text based log format, or set to "json" for JSON formatting.
-	Example: LOG_FORMAT="json"
+` + logrusx.HelpMessage() + `
 
 HTTP(S) CONTROLS
 ==============
-- HOST: The host to listen on.
-	--------------------------------------------------------------
-	Default: HOST="" (all interfaces)
-	--------------------------------------------------------------
+- HOST: The host to listen on. Defaults to listening on all interfaces.
 
-- PORT: The port to listen on.
-	--------------------------------------------------------------
-	Default: PORT="4466"
-	--------------------------------------------------------------
+	Example:
+		$ export HOST=127.0.0.1
+
+- PORT: The port to listen on. Defaults to port 4466.
+
+	Example:
+		$ export PORT=4466
+
+` + tlsx.HTTPSCertificateHelpMessage() + `
+
+` + corsx.HelpMessage() + `
 
 
-AUTHENTICATORS
-==============
-
-- The OAuth 2.0 Token Introspection Authenticator is capable of resolving OAuth2 access tokens to a subject and a set
-	of granted scopes using the OAuth 2.0 Introspection standard.
-
-	- AUTHENTICATOR_OAUTH2_INTROSPECTION_CLIENT_ID: The client ID to be used when performing the OAuth 2.0 Introspection request.
-		Example: AUTHENTICATOR_OAUTH2_INTROSPECTION_CLIENT_ID=my_client
-
-	- AUTHENTICATOR_OAUTH2_INTROSPECTION_CLIENT_SECRET: The client secret to be used when performing the OAuth 2.0 Introspection request.
-		Example: AUTHENTICATOR_OAUTH2_INTROSPECTION_CLIENT_SECRET=my_secret
-
-	- AUTHENTICATOR_OAUTH2_INTROSPECTION_SCOPE: The scope(s) (comma separated) required to perform the introspection request. If no scopes are
-		required, leave this value empty.
-		Example: AUTHENTICATOR_OAUTH2_INTROSPECTION_SCOPE=scopeA,scopeB
-
-	- AUTHENTICATOR_OAUTH2_INTROSPECTION_TOKEN_URL: The OAuth2 Token Endpoint URL of the server
-		Example: AUTHENTICATOR_OAUTH2_INTROSPECTION_TOKEN_URL=https://my-server/oauth2/token
-
-	- AUTHENTICATOR_OAUTH2_INTROSPECTION_URL: The OAuth2 Introspection Endpoint URL of the server
-		Example: AUTHENTICATOR_OAUTH2_INTROSPECTION_URL=https://my-server/oauth2/introspect
-
-- The OAuth 2.0 Client Credentials Authenticator is capable of authentication OAuth 2.0 clients using the client credentials
-	grant.
-
-	- AUTHENTICATOR_OAUTH2_CLIENT_CREDENTIALS_TOKEN_URL: The OAuth2 Token Endpoint URL of the server
-		Example: AUTHENTICATOR_OAUTH2_CLIENT_CREDENTIALS_TOKEN_URL=https://my-server/oauth2/token
-` + corsMessage + `
 DEBUG CONTROLS
 ==============
 
-- PROFILING: Set "PROFILING=cpu" to enable cpu profiling and "PROFILING=memory" to enable memory profiling.
-	It is not possible to do both at the same time.
-	Example: PROFILING=cpu
+` + profilex.HelpMessage() + `
+
 `,
 	Run: server.RunServe(logger, Version, GitHash, BuildTime),
 }

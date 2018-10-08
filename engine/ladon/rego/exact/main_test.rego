@@ -1,4 +1,4 @@
-package ladon.exact
+package ory.exact
 
 policies = [
     {

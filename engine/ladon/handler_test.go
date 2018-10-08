@@ -7,14 +7,16 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
-	"path/filepath"
 	"strings"
 	"testing"
 
+	"github.com/gobuffalo/packr"
+	"github.com/sirupsen/logrus"
+
 	"github.com/julienschmidt/httprouter"
 	"github.com/ory/herodot"
-	"github.com/ory/keto/rego/engine"
-	"github.com/ory/keto/rego/storage"
+	"github.com/ory/keto/engine"
+	"github.com/ory/keto/storage"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/urfave/negroni"
@@ -25,10 +27,8 @@ func base(ts *httptest.Server, f, path string) string {
 }
 
 func TestAllowed(t *testing.T) {
-	loc, err := filepath.Abs("./rego")
-	require.NoError(t, err)
-
-	compiler, err := engine.NewCompiler(loc)
+	box := packr.NewBox("./rego")
+	compiler, err := engine.NewCompiler(box, logrus.New())
 	require.NoError(t, err)
 
 	s := storage.NewMemoryManager()
@@ -51,7 +51,9 @@ func TestAllowed(t *testing.T) {
 					t.Run(fmt.Sprintf("policy=%s", p.ID), func(t *testing.T) {
 						var b bytes.Buffer
 						require.NoError(t, json.NewEncoder(&b).Encode(&p))
-						res, err := ts.Client().Post(base(ts, f, "/policies"), "application/json", &b)
+						req, err := http.NewRequest("PUT", base(ts, f, "/policies"), &b)
+						require.NoError(t, err)
+						res, err := ts.Client().Do(req)
 						require.NoError(t, err)
 						assert.EqualValues(t, http.StatusOK, res.StatusCode)
 						res.Body.Close()
@@ -61,7 +63,9 @@ func TestAllowed(t *testing.T) {
 					t.Run(fmt.Sprintf("role=%s", r.ID), func(t *testing.T) {
 						var b bytes.Buffer
 						require.NoError(t, json.NewEncoder(&b).Encode(&r))
-						res, err := ts.Client().Post(base(ts, f, "/roles"), "application/json", &b)
+						req, err := http.NewRequest("PUT", base(ts, f, "/roles"), &b)
+						require.NoError(t, err)
+						res, err := ts.Client().Do(req)
 						require.NoError(t, err)
 						assert.EqualValues(t, http.StatusOK, res.StatusCode)
 						res.Body.Close()
@@ -82,7 +86,7 @@ func TestAllowed(t *testing.T) {
 						body, err := ioutil.ReadAll(res.Body)
 						require.NoError(t, err)
 
-						var r engine.Result
+						var r engine.AuthorizationResult
 						require.NoError(t, json.Unmarshal(body, &r))
 						assert.Equal(t, c.allowed, r.Allowed, "%s", body)
 					})
@@ -160,7 +164,9 @@ func testCreate(t *testing.T, path string, in, expect interface{}) {
 	t.Run(fmt.Sprintf("action=create/path=%s", path), func(t *testing.T) {
 		var b bytes.Buffer
 		require.NoError(t, json.NewEncoder(&b).Encode(in))
-		res, err := http.DefaultClient.Post(path, "application/json", &b)
+		req, err := http.NewRequest("PUT", path, &b)
+		require.NoError(t, err)
+		res, err := http.DefaultClient.Do(req)
 		require.NoError(t, err)
 		assert.Equal(t, http.StatusOK, res.StatusCode)
 

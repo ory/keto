@@ -1,4 +1,4 @@
-package ladon.condition
+package ory.condition
 
 eval_condition("EqualsSubjectCondition", request, options, key) {
     request.context[key] == request.subject

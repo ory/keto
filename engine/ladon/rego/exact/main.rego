@@ -1,8 +1,8 @@
-package ladon.exact
+package ory.exact
 
-import data.store.ladon.exact as store
-import data.ladon.core as core
-import data.ladon.condition as condition
+import data.store.ory.exact as store
+import data.ory.core as core
+import data.ory.condition as condition
 import input as request
 
 default allow = false

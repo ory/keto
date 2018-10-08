@@ -1,26 +1,18 @@
 package engine
 
 import (
-	"io/ioutil"
-	"os"
 	"path/filepath"
 	"strings"
 
+	"github.com/gobuffalo/packr"
 	"github.com/open-policy-agent/opa/ast"
 	"github.com/pkg/errors"
+	"github.com/sirupsen/logrus"
 )
 
-func walk(directory string) (map[string][]byte, error) {
-	m := map[string][]byte{}
-	if err := filepath.Walk(directory, func(path string, info os.FileInfo, err error) error {
-		if err != nil {
-			return errors.WithStack(err)
-		}
-
-		if info.IsDir() {
-			return nil
-		}
-
+func walk(directory packr.Box, logger logrus.FieldLogger) (map[string]string, error) {
+	m := map[string]string{}
+	if err := directory.Walk(func(path string, file packr.File) error {
 		if filepath.Ext(path) != ".rego" {
 			return nil
 		}
@@ -29,17 +21,8 @@ func walk(directory string) (map[string][]byte, error) {
 			return nil
 		}
 
-		f, err := os.Open(path)
-		if err != nil {
-			return errors.WithStack(err)
-		}
-
-		d, err := ioutil.ReadAll(f)
-		if err != nil {
-			return errors.WithStack(err)
-		}
-
-		m[path] = d
+		m[path] = directory.String(path)
+		logger.WithField("file", path).Debugf("Successfully loaded rego file")
 
 		return nil
 	}); err != nil {
@@ -49,15 +32,15 @@ func walk(directory string) (map[string][]byte, error) {
 	return m, nil
 }
 
-func NewCompiler(directory string) (*ast.Compiler, error) {
-	files, err := walk(directory)
+func NewCompiler(directory packr.Box, logger logrus.FieldLogger) (*ast.Compiler, error) {
+	files, err := walk(directory, logger)
 	if err != nil {
 		return nil, err
 	}
 
 	modules := map[string]*ast.Module{}
 	for file, content := range files {
-		parsed, err := ast.ParseModule(file, string(content))
+		parsed, err := ast.ParseModule(file, content)
 		if err != nil {
 			return nil, errors.WithStack(err)
 		}

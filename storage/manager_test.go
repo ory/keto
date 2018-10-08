@@ -46,7 +46,7 @@ func connectToMySQL() {
 	managers["mysql"] = s
 	m.Unlock()
 
-	if _, err := s.CreateSchemas(); err != nil {
+	if _, err := s.CreateSchemas(db); err != nil {
 		log.Fatalf("Unable to create schemas: %s", err)
 	}
 }
@@ -62,7 +62,7 @@ func connectToPG() {
 	managers["postgres"] = s
 	m.Unlock()
 
-	if _, err := s.CreateSchemas(); err != nil {
+	if _, err := s.CreateSchemas(db); err != nil {
 		log.Fatalf("Unable to create schemas: %s", err)
 	}
 }

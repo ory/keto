@@ -18,13 +18,12 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/ory/keto/cmd/client"
 	"github.com/ory/x/logrusx"
+	"github.com/sirupsen/logrus"
+
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
-
-var cfgFile string
 
 var (
 	Version   = ""
@@ -37,9 +36,9 @@ var RootCmd = &cobra.Command{
 	Use: "keto",
 }
 
-var logger = logrusx.New()
+var logger *logrus.Logger = new(logrus.Logger)
 
-var cmdHandler = client.NewHandler()
+//var cmdHandler = client.NewHandler()
 
 // Execute adds all child commands to the root command sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
@@ -57,7 +56,6 @@ func init() {
 	// Cobra supports Persistent Flags, which, if defined here,
 	// will be global for your application.
 
-	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.keto.yaml)")
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 	RootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
@@ -65,21 +63,11 @@ func init() {
 
 // initConfig reads in config file and ENV variables if set.
 func initConfig() {
-	if cfgFile != "" { // enable ability to specify config file via flag
-		viper.SetConfigFile(cfgFile)
-	}
+	viper.AutomaticEnv() // read in environment variables that match
 
-	viper.SetConfigName(".keto") // name of config file (without extension)
-	viper.AddConfigPath("$HOME") // adding home directory as first search path
-	viper.AutomaticEnv()         // read in environment variables that match
-
-	viper.SetDefault("LOG_LEVEL", "info")
 	viper.SetDefault("PORT", "4466")
 
-	// If a config file is found, read it in.
-	if err := viper.ReadInConfig(); err == nil {
-		fmt.Println("Using config file:", viper.ConfigFileUsed())
-	}
+	*logger = *logrusx.New()
 }
 
 func clientDefaultFlags(c *cobra.Command) {

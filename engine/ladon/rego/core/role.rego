@@ -1,4 +1,4 @@
-package ladon.core
+package ory.core
 
 role_ids(roles, subject) = r {
     r := [role | role := roles[i].id

@@ -1,8 +1,8 @@
-package ladon.regex
+package ory.regex
 
-import data.store.ladon.regex as store
-import data.ladon.core as core
-import data.ladon.condition as condition
+import data.store.ory.regex as store
+import data.ory.core as core
+import data.ory.condition as condition
 import input as request
 
 default allow = false

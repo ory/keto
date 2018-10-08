@@ -1,4 +1,4 @@
-package ladon.regex
+package ory.regex
 
 policies = [
     {

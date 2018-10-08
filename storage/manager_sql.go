@@ -69,15 +69,15 @@ func NewSQLManager(db *sqlx.DB) *SQLManager {
 	}
 }
 
-func (m *SQLManager) CreateSchemas() (int, error) {
-	database := m.db.DriverName()
+func (m *SQLManager) CreateSchemas(db *sqlx.DB) (int, error) {
+	database := db.DriverName()
 	switch database {
 	case "pgx", "pq":
 		database = "postgres"
 	}
 
 	migrate.SetTable("keto_storage_migration")
-	n, err := migrate.Exec(m.db.DB, m.db.DriverName(), Migrations[database], migrate.Up)
+	n, err := migrate.Exec(db.DB, db.DriverName(), Migrations[database], migrate.Up)
 	if err != nil {
 		return 0, errors.Wrapf(err, "could not migrate sql schema completely, applied only %d migrations", n)
 	}

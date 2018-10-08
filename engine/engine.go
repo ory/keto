@@ -13,6 +13,7 @@ import (
 	"github.com/pkg/errors"
 )
 
+// swagger:ignore
 type Engine struct {
 	compiler *ast.Compiler
 	h        herodot.Writer
@@ -28,13 +29,8 @@ func NewEngine(
 	}
 }
 
+// swagger:ignore
 type evaluator func(ctx context.Context, r *http.Request, ps httprouter.Params) ([]func(*rego.Rego), error)
-
-// Result is the result of an access control decision. It contains the decision outcome.
-type Result struct {
-	// Allowed is true if the request should be allowed and false otherwise.
-	Allowed bool `json:"allowed"`
-}
 
 func (h *Engine) Evaluate(e evaluator) httprouter.Handle {
 	return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
@@ -52,7 +48,7 @@ func (h *Engine) Evaluate(e evaluator) httprouter.Handle {
 			return
 		}
 
-		if err := json.NewEncoder(w).Encode(&Result{Allowed: allowed}); err != nil {
+		if err := json.NewEncoder(w).Encode(&AuthorizationResult{Allowed: allowed}); err != nil {
 			h.h.WriteError(w, r, errors.WithStack(err))
 			return
 		}

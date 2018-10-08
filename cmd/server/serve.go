@@ -26,26 +26,29 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/gobuffalo/packr"
+	"github.com/jmoiron/sqlx"
 	"github.com/julienschmidt/httprouter"
-	"github.com/ory/fosite"
-	"github.com/ory/go-convenience/corsx"
-	"github.com/ory/go-convenience/stringsx"
+	"github.com/ory/go-convenience/stringslice"
 	"github.com/ory/graceful"
 	"github.com/ory/herodot"
-	"github.com/ory/keto/authentication"
-	"github.com/ory/keto/health"
-	"github.com/ory/keto/policy"
-	"github.com/ory/keto/role"
-	"github.com/ory/keto/warden"
-	"github.com/ory/ladon"
-	"github.com/rs/cors"
+	"github.com/ory/keto/engine"
+	"github.com/ory/keto/engine/ladon"
+	"github.com/ory/keto/storage"
+	"github.com/ory/x/cmdx"
+	"github.com/ory/x/corsx"
+	"github.com/ory/x/dbalx"
+	"github.com/ory/x/flagx"
+	"github.com/ory/x/healthx"
+	"github.com/ory/x/metricsx"
+	"github.com/ory/x/tlsx"
+	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/urfave/negroni"
 
-	negronilogrus "github.com/meatballhat/negroni-logrus"
-	metrics "github.com/ory/metrics-middleware"
+	"github.com/meatballhat/negroni-logrus"
 )
 
 // RunServe runs the Keto API HTTP server
@@ -54,88 +57,54 @@ func RunServe(
 	buildVersion, buildHash string, buildTime string,
 ) func(cmd *cobra.Command, args []string) {
 	return func(cmd *cobra.Command, args []string) {
-		router := httprouter.New()
+		box := packr.NewBox("../../engine/ladon/rego")
 
-		m, err := newManagers(viper.GetString("DATABASE_URL"), logger)
-		if err != nil {
-			logger.
-				WithError(err).
-				Fatal("Unable to initialise backends")
-		}
+		compiler, err := engine.NewCompiler(box, logger)
+		cmdx.Must(err, "%s", err)
 
-		var strategy fosite.ScopeStrategy
-		switch viper.GetString("AUTHENTICATOR_OAUTH2_INTROSPECTION_SCOPE_STRATEGY") {
-		case "hierarchic":
-			strategy = fosite.HierarchicScopeStrategy
-			break
-		case "exact":
-			strategy = fosite.ExactScopeStrategy
-			break
-		case "wildcard":
-			fallthrough
-		default:
-			strategy = fosite.WildcardScopeStrategy
-		}
-
-		authenticators := map[string]authentication.Authenticator{
-			"subjects": authentication.NewPlaintextAuthentication(),
-			"oauth2/access-tokens": authentication.NewOAuth2IntrospectionAuthentication(
-				viper.GetString("AUTHENTICATOR_OAUTH2_INTROSPECTION_CLIENT_ID"),
-				viper.GetString("AUTHENTICATOR_OAUTH2_INTROSPECTION_CLIENT_SECRET"),
-				viper.GetString("AUTHENTICATOR_OAUTH2_INTROSPECTION_TOKEN_URL"),
-				viper.GetString("AUTHENTICATOR_OAUTH2_INTROSPECTION_URL"),
-				stringsx.Splitx(viper.GetString("AUTHENTICATOR_OAUTH2_INTROSPECTION_SCOPE"), ","),
-				strategy,
-			),
-			"oauth2/clients": authentication.NewOAuth2ClientCredentialsAuthentication(
-				viper.GetString("AUTHENTICATOR_OAUTH2_CLIENT_CREDENTIALS_TOKEN_URL"),
-			),
-		}
-
-		decider := &ladon.Ladon{
-			Manager:     m.policyManager,
-			AuditLogger: &warden.AuditLoggerLogrus{Logger: logger},
-			Matcher:     ladon.DefaultMatcher,
-		}
-		firewall := warden.NewWarden(decider, m.roleManager, logger)
 		writer := herodot.NewJSONWriter(logger)
-		roleHandler := role.NewHandler(m.roleManager, writer)
-		policyHandler := policy.NewHandler(m.policyManager, writer)
-		wardenHandler := warden.NewHandler(writer, firewall, authenticators)
-		healthHandler := health.NewHandler(writer, buildVersion, m.readyCheckers)
 
-		roleHandler.SetRoutes(router)
-		policyHandler.SetRoutes(router)
-		wardenHandler.SetRoutes(router)
-		healthHandler.SetRoutes(router)
+		var s storage.Manager
+		checks := map[string]healthx.ReadyChecker{}
+
+		dbalx.Connect(viper.GetString("DATABASE_URL"), logger,
+			func() error {
+				s = storage.NewMemoryManager()
+				checks["storage"] = healthx.NoopReadyChecker
+				return nil
+			},
+			func(db *sqlx.DB) error {
+				ss := storage.NewSQLManager(db)
+				checks["storage"] = db.Ping
+				s = ss
+				return nil
+			},
+		)
+
+		sh := storage.NewHandler(s, writer)
+		e := engine.NewEngine(compiler, writer)
+
+		router := httprouter.New()
+		ladon.NewEngine(s, sh, e, writer).Register(router)
 
 		n := negroni.New()
 		n.Use(negronilogrus.NewMiddlewareFromLogger(logger, "keto"))
 
-		var c http.Handler = n
-		if viper.GetString("CORS_ENABLED") == "true" {
-			logger.Info("Enabled CORS")
-			c = cors.New(corsx.ParseOptions()).Handler(n)
-		}
-
-		if ok, _ := cmd.Flags().GetBool("disable-telemetry"); !ok && viper.GetString("DATABASE_URL") != "memory" {
+		if flagx.MustGetBool(cmd, "disable-telemetry") {
 			logger.Println("Transmission of telemetry data is enabled, to learn more go to: https://www.ory.sh/docs/guides/latest/telemetry/")
 
-			m := metrics.NewMetricsManager(
-				metrics.Hash("DATABASE_URL"),
+			m := metricsx.NewMetricsManager(
+				metricsx.Hash("DATABASE_URL"),
 				viper.GetString("DATABASE_URL") != "memory",
 				"jk32cFATnj9GKbQdFL7fBB9qtKZdX9j7",
-				[]string{
-					"/policies",
-					"/roles",
-					"/warden/subjects/authorize",
-					"/warden/oauth2/access-tokens/authorize",
-					"/warden/oauth2/clients/authorize",
-				},
+				stringslice.Merge(
+					healthx.RoutesToObserve(),
+					ladon.RoutesToObserve(),
+				),
 				logger,
 				"ory-keto",
-				//100,
-				//"",
+				100,
+				"",
 			)
 			go m.RegisterSegment(buildVersion, buildHash, buildTime)
 			go m.CommitMemoryStatistics()
@@ -143,25 +112,20 @@ func RunServe(
 		}
 
 		n.UseHandler(router)
-
-		cert, err := getTLSCertAndKey()
-		if err != nil {
-			logger.Fatalf("%v", err)
-		}
-
-		certs := []tls.Certificate{}
-		if cert != nil {
-			certs = append(certs, *cert)
-		}
+		c := corsx.Initialize(n, logger)
 
 		addr := fmt.Sprintf("%s:%s", viper.GetString("HOST"), viper.GetString("PORT"))
 		server := graceful.WithDefaults(&http.Server{
 			Addr:    addr,
 			Handler: c,
-			TLSConfig: &tls.Config{
-				Certificates: certs,
-			},
 		})
+
+		cert, err := tlsx.HTTPSCertificate()
+		if errors.Cause(err) == tlsx.ErrNoCertificatesConfigured {
+			server.TLSConfig = &tls.Config{Certificates: cert}
+		} else if err != nil {
+			cmdx.Must(err, "Unable to load HTTP TLS certificate(s): %s", err)
+		}
 
 		if err := graceful.Graceful(func() error {
 			if cert != nil {

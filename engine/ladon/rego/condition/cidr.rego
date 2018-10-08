@@ -1,4 +1,4 @@
-package ladon.condition
+package ory.condition
 
 eval_condition("CIDRCondition", request, options, key) {
     net.cidr_overlap(options.cidr, request.context[key], output)

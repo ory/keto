@@ -1,4 +1,4 @@
-package ladon.condition
+package ory.condition
 
 all_conditions_true(policy) {
     not any_condition_false(policy)

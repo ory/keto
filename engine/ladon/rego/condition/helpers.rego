@@ -1,4 +1,4 @@
-package ladon.condition
+package ory.condition
 
 cast_string_empty(r, key) = value {
   not r[key]

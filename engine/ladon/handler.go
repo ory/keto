@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/julienschmidt/httprouter"
 	"github.com/open-policy-agent/opa/rego"
@@ -16,6 +17,7 @@ import (
 	"github.com/pkg/errors"
 )
 
+// swagger:ignore
 type Engine struct {
 	sh     *kstorage.Handler
 	engine *engine.Engine
@@ -23,11 +25,13 @@ type Engine struct {
 	h      herodot.Writer
 }
 
+var enabledFlavors = []string{"exact", "regex"}
+
 const (
-	basePath = "/engines/lacp/:flavor"
+	basePath = "/engines/acp/ory/:flavor"
 	schema   = `{
 	"store": {
-		"ladon": {
+		"ory": {
 			"regex": {
 				"policies": [],
 				"roles": []
@@ -41,12 +45,26 @@ const (
 }`
 )
 
+func RoutesToObserve() []string {
+	var r []string
+
+	for _, f := range []string{"exact", "regex"} {
+		for _, p := range []string{"policies", "roles", "allowed"} {
+			r = append(r,
+				fmt.Sprintf(strings.Replace(basePath, ":flavor", "%s", 1)+"/%s", f, p),
+			)
+		}
+	}
+
+	return r
+}
+
 func policyCollection(f string) string {
-	return fmt.Sprintf("/store/ladon/%s/policies", f)
+	return fmt.Sprintf("/store/ory/%s/policies", f)
 }
 
 func roleCollection(f string) string {
-	return fmt.Sprintf("/store/ladon/%s/roles", f)
+	return fmt.Sprintf("/store/ory/%s/roles", f)
 }
 
 func NewEngine(store kstorage.Manager, sh *kstorage.Handler, e *engine.Engine, h herodot.Writer) *Engine {
@@ -59,18 +77,206 @@ func NewEngine(store kstorage.Manager, sh *kstorage.Handler, e *engine.Engine, h
 }
 
 func (e *Engine) Register(r *httprouter.Router) {
+	// swagger:route GET /engines/ory/{flavor}/allowed engines doOryAccessControlPoliciesAllow
+	//
+	// Check if a request is allowed
+	//
+	// Use this endpoint to check if a request is allowed or not.
+	//
+	//
+	//     Consumes:
+	//     - application/json
+	//
+	//     Produces:
+	//     - application/json
+	//
+	//     Schemes: http, https
+	//
+	//     Responses:
+	//       200: authorizationResult
+	//       500: genericError
 	r.POST(basePath+"/allowed", e.engine.Evaluate(e.eval))
 
-	r.POST(basePath+"/policies", e.sh.Upsert(e.policiesCreate))
+	// swagger:route PUT /engines/ory/{flavor}/policies engines upsertOryAccessControlPolicy
+	//
+	// Upsert an ORY Access Control Policy
+	//
+	//
+	//     Consumes:
+	//     - application/json
+	//
+	//     Produces:
+	//     - application/json
+	//
+	//     Schemes: http, https
+	//
+	//     Responses:
+	//       200: policy
+	//       500: genericError
+	r.PUT(basePath+"/policies", e.sh.Upsert(e.policiesCreate))
+
+	// swagger:route GET /engines/ory/{flavor}/policies engines listOryAccessControlPolicies
+	//
+	// List ORY Access Control Policies
+	//
+	//
+	//     Produces:
+	//     - application/json
+	//
+	//     Schemes: http, https
+	//
+	//     Responses:
+	//       200: oryAccessControlPolicies
+	//       500: genericError
 	r.GET(basePath+"/policies", e.sh.List(e.policiesList))
+
+	// swagger:route GET /engines/ory/{flavor}/policies/{id} engines getOryAccessControlPolicy
+	//
+	// Get an ORY Access Control Policy
+	//
+	//
+	//     Produces:
+	//     - application/json
+	//
+	//     Schemes: http, https
+	//
+	//     Responses:
+	//       200: oryAccessControlPolicy
+	//       404: genericError
+	//       500: genericError
 	r.GET(basePath+"/policies/:id", e.sh.Get(e.policiesGet))
+
+	// swagger:route DELETE /engines/ory/{flavor}/policies/{id} engines deleteOryAccessControlPolicy
+	//
+	// Delete an ORY Access Control Policy
+	//
+	//
+	//     Produces:
+	//     - application/json
+	//
+	//     Schemes: http, https
+	//
+	//     Responses:
+	//       201: emptyResponse
+	//       500: genericError
 	r.DELETE(basePath+"/policies/:id", e.sh.Delete(e.policiesDelete))
 
+	// swagger:route GET /engines/ory/{flavor}/roles engine listOryAccessControlPolicyRoles
+	//
+	// List ORY Access Control Policy Roles
+	//
+	// Roles group several subjects into one. Rules can be assigned to ORY Access Control Policy (OACP) by using the Role ID
+	// as subject in the OACP.
+	//
+	//
+	//     Produces:
+	//     - application/json
+	//
+	//     Schemes: http, https
+	//
+	//     Responses:
+	//       200: oryAccessControlPolicyRoles
+	//       500: genericError
 	r.GET(basePath+"/roles", e.sh.List(e.rolesList))
-	r.POST(basePath+"/roles", e.sh.Upsert(e.rolesCreate))
+
+	// swagger:route GET /engines/ory/{flavor}/roles/{id} engines getOryAccessControlPolicyRole
+	//
+	// Get an ORY Access Control Policy Role
+	//
+	// Roles group several subjects into one. Rules can be assigned to ORY Access Control Policy (OACP) by using the Role ID
+	// as subject in the OACP.
+	//
+	//
+	//     Produces:
+	//     - application/json
+	//
+	//     Schemes: http, https
+	//
+	//     Responses:
+	//       200: oryAccessControlPolicyRole
+	//       404: genericError
+	//       500: genericError
 	r.GET(basePath+"/roles/:id", e.sh.Get(e.rolesGet))
+
+	// swagger:route PUT /engines/ory/{flavor}/roles engines upsertOryAccessControlPolicyRole
+	//
+	// Upsert an ORY Access Control Policy Role
+	//
+	// Roles group several subjects into one. Rules can be assigned to ORY Access Control Policy (OACP) by using the Role ID
+	// as subject in the OACP.
+	//
+	//
+	//     Consumes:
+	//     - application/json
+	//
+	//     Produces:
+	//     - application/json
+	//
+	//     Schemes: http, https
+	//
+	//     Responses:
+	//       200: oryAccessControlPolicyRole
+	//       500: genericError
+	r.PUT(basePath+"/roles", e.sh.Upsert(e.rolesUpsert))
+
+	// swagger:route DELETE /engines/ory/{flavor}/roles/{id} engines deleteOryAccessControlPolicyRole
+	//
+	// Delete an ORY Access Control Policy Role
+	//
+	// Roles group several subjects into one. Rules can be assigned to ORY Access Control Policy (OACP) by using the Role ID
+	// as subject in the OACP.
+	//
+	//
+	//     Produces:
+	//     - application/json
+	//
+	//     Schemes: http, https
+	//
+	//     Responses:
+	//       201: emptyResponse
+	//       500: genericError
 	r.DELETE(basePath+"/roles/:id", e.sh.Delete(e.rolesDelete))
+
+	// swagger:route PUT /engines/ory/{flavor}/roles/{id}/members engines addOryAccessControlPolicyRoleMembers
+	//
+	// Add a member to an ORY Access Control Policy Role
+	//
+	// Roles group several subjects into one. Rules can be assigned to ORY Access Control Policy (OACP) by using the Role ID
+	// as subject in the OACP.
+	//
+	//
+	//     Consumes:
+	//     - application/json
+	//
+	//     Produces:
+	//     - application/json
+	//
+	//     Schemes: http, https
+	//
+	//     Responses:
+	//       200: oryAccessControlPolicyRole
+	//       500: genericError
 	r.PUT(basePath+"/roles/:id/members", e.sh.Upsert(e.rolesMembersAdd))
+
+	// swagger:route DELETE /engines/ory/{flavor}/roles/{id}/members engines removeOryAccessControlPolicyRoleMembers
+	//
+	// Remove a member from an ORY Access Control Policy Role
+	//
+	// Roles group several subjects into one. Rules can be assigned to ORY Access Control Policy (OACP) by using the Role ID
+	// as subject in the OACP.
+	//
+	//
+	//     Consumes:
+	//     - application/json
+	//
+	//     Produces:
+	//     - application/json
+	//
+	//     Schemes: http, https
+	//
+	//     Responses:
+	//       201: emptyResponse
+	//       500: genericError
 	r.DELETE(basePath+"/roles/:id/members/:member", e.sh.Upsert(e.rolesMembersRemove))
 }
 
@@ -103,7 +309,7 @@ func (e *Engine) rolesGet(ctx context.Context, r *http.Request, ps httprouter.Pa
 	}, nil
 }
 
-func (e *Engine) rolesCreate(ctx context.Context, r *http.Request, ps httprouter.Params) (*kstorage.UpsertRequest, error) {
+func (e *Engine) rolesUpsert(ctx context.Context, r *http.Request, ps httprouter.Params) (*kstorage.UpsertRequest, error) {
 	var p Role
 	if err := json.NewDecoder(r.Body).Decode(&p); err != nil {
 		return nil, errors.WithStack(err)
@@ -165,6 +371,7 @@ func (e *Engine) rolesMembersAdd(ctx context.Context, r *http.Request, ps httpro
 	}, nil
 
 }
+
 func (e *Engine) rolesMembersRemove(ctx context.Context, r *http.Request, ps httprouter.Params) (*kstorage.UpsertRequest, error) {
 	f, err := flavor(ps)
 	if err != nil {
@@ -251,6 +458,7 @@ func (e *Engine) policiesGet(ctx context.Context, r *http.Request, ps httprouter
 	}, nil
 }
 
+// swagger:model oryAccessControlPolicyAllowedInput
 type input struct {
 	// Resource is the resource that access is requested to.
 	Resource string `json:"resource"`
@@ -267,7 +475,7 @@ type input struct {
 
 func flavor(ps httprouter.Params) (string, error) {
 	t := ps.ByName("flavor")
-	if t != "regex" && t != "exact" {
+	if !stringslice.Has(enabledFlavors, t) {
 		return "", errors.WithStack(&herodot.ErrorNotFound)
 	}
 
@@ -280,7 +488,7 @@ func (e *Engine) eval(ctx context.Context, r *http.Request, ps httprouter.Params
 		return nil, err
 	}
 
-	query := fmt.Sprintf("data.ladon.%s.allow", f)
+	query := fmt.Sprintf("data.ory.%s.allow", f)
 	store, err := e.s.Storage(ctx, schema, []string{policyCollection(f), roleCollection(f)})
 	if err != nil {
 		return nil, err
