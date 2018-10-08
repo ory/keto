@@ -18,9 +18,9 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/ory/go-convenience/urlx"
 	"github.com/ory/keto/cmd/client"
 	"github.com/ory/keto/engine/ladon"
-	"github.com/ory/urlx"
 	"github.com/ory/x/cmdx"
 	"github.com/ory/x/flagx"
 

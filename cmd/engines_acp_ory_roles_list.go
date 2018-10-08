@@ -15,9 +15,9 @@
 package cmd
 
 import (
+	"github.com/ory/go-convenience/urlx"
 	"github.com/ory/keto/cmd/client"
 	"github.com/ory/keto/engine/ladon"
-	"github.com/ory/urlx"
 	"github.com/ory/x/cmdx"
 
 	"github.com/spf13/cobra"

@@ -23,8 +23,8 @@ import (
 	"strings"
 
 	"github.com/ory/go-convenience/stringslice"
+	"github.com/ory/go-convenience/urlx"
 	"github.com/ory/keto/engine/ladon"
-	"github.com/ory/urlx"
 	"github.com/ory/x/cmdx"
 	"github.com/ory/x/flagx"
 	"github.com/spf13/cobra"
