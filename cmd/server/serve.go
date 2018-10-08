@@ -37,7 +37,7 @@ import (
 	"github.com/ory/keto/storage"
 	"github.com/ory/x/cmdx"
 	"github.com/ory/x/corsx"
-	"github.com/ory/x/dbalx"
+	"github.com/ory/x/dbal"
 	"github.com/ory/x/flagx"
 	"github.com/ory/x/healthx"
 	"github.com/ory/x/metricsx"
@@ -67,7 +67,7 @@ func RunServe(
 		var s storage.Manager
 		checks := map[string]healthx.ReadyChecker{}
 
-		dbalx.Connect(viper.GetString("DATABASE_URL"), logger,
+		dbal.Connect(viper.GetString("DATABASE_URL"), logger,
 			func() error {
 				s = storage.NewMemoryManager()
 				checks["storage"] = healthx.NoopReadyChecker
