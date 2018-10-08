@@ -1,4 +1,34 @@
 [
-  {"id": "1234", "subjects": ["a", "b"], "resources": [], "actions": [], "effect": "allow"},
-  {"id": "12345", "subjects": ["a", "b"], "resources": [], "actions": [], "effect": "allow"}
+  {
+    "id": "policy-1",
+    "subjects": [
+      "peter-1",
+      "group-1"
+    ],
+    "resources": [
+      "resources-11",
+      "resources-12"
+    ],
+    "actions": [
+      "actions-11",
+      "actions-12"
+    ],
+    "effect": "allow"
+  },
+  {
+    "id": "policy-2",
+    "subjects": [
+      "peter-2",
+      "group-2"
+    ],
+    "resources": [
+      "resources-11",
+      "resources-12"
+    ],
+    "actions": [
+      "actions-11",
+      "actions-12"
+    ],
+    "effect": "allow"
+  }
 ]

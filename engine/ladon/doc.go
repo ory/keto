@@ -9,7 +9,7 @@ type doOryAccessControlPoliciesAllow struct {
 	Flavor string `json:"flavor"`
 
 	// in: body
-	Body input
+	Body Input
 }
 
 // swagger:parameters upsertOryAccessControlPolicy

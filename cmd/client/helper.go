@@ -38,21 +38,21 @@ func Import(method, location string, files []string) {
 		var data []interface{}
 		fmt.Printf("Importing file %s to %s...\n", file, location)
 		b, err := ioutil.ReadFile(file)
-		cmdx.Must(err, "%s", err)
+		cmdx.Must(err, "Unable to read file %s: %s", file, err)
 
 		err = json.Unmarshal(b, &data)
-		cmdx.Must(err, "%s", err)
+		cmdx.Must(err, "Unable to decode file %s to json: %s", file, err)
 
 		for _, d := range data {
 			var b bytes.Buffer
 			err := json.NewEncoder(&b).Encode(d)
-			cmdx.Must(err, "%s", err)
+			cmdx.Must(err, "Unable to encode data to json: %s", err)
 
 			req, err := http.NewRequest(method, location, &b)
-			cmdx.Must(err, "%s", err)
+			cmdx.Must(err, "Unable to decode data to json: %s", err)
 
 			res, err := client.Do(req)
-			cmdx.CheckResponse(err, http.StatusOK, res.StatusCode)
+			cmdx.CheckResponse(err, http.StatusOK, res)
 
 			res.Body.Close()
 			fmt.Printf("Data from file %s successfully imported!\n", file)
@@ -62,23 +62,23 @@ func Import(method, location string, files []string) {
 
 func Get(location string, proto interface{}) {
 	res, err := client.Get(location)
-	cmdx.CheckResponse(err, http.StatusOK, res.StatusCode)
+	cmdx.CheckResponse(err, http.StatusOK, res)
 	defer res.Body.Close()
 
 	d := json.NewDecoder(res.Body)
 	d.DisallowUnknownFields()
 
 	err = d.Decode(proto)
-	cmdx.Must(err, "%s", err)
-	cmdx.FormatResponse(proto)
+	cmdx.Must(err, "Unable to decode data to json: %s", err)
+	fmt.Println(cmdx.FormatResponse(proto))
 }
 
 func Delete(location string) {
 	req, err := http.NewRequest("DELETE", location, nil)
-	cmdx.Must(err, "%s", err)
+	cmdx.Must(err, "Unable to initialize HTTP request: %s", err)
 
 	res, err := client.Do(req)
-	cmdx.CheckResponse(err, http.StatusNoContent, res.StatusCode)
+	cmdx.CheckResponse(err, http.StatusNoContent, res)
 	res.Body.Close()
 	fmt.Printf("Resource at location %s was deleted successfully!", location)
 }

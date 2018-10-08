@@ -47,7 +47,6 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/urfave/negroni"
-
 	"github.com/meatballhat/negroni-logrus"
 )
 
@@ -60,10 +59,10 @@ func RunServe(
 		box := packr.NewBox("../../engine/ladon/rego")
 
 		compiler, err := engine.NewCompiler(box, logger)
-		cmdx.Must(err, "%s", err)
+		cmdx.Must(err, "Unable to initialize compiler: %s", err)
 
 		writer := herodot.NewJSONWriter(logger)
-		writer.ErrorEnhancer = nil
+		//writer.ErrorEnhancer = nil
 
 		var s storage.Manager
 		checks := map[string]healthx.ReadyChecker{}
@@ -130,13 +129,13 @@ func RunServe(
 
 		if err := graceful.Graceful(func() error {
 			if cert != nil {
-				logger.Printf("Listening on https://%s.\n", addr)
+				logger.Printf("Listening on https://%s", addr)
 				return server.ListenAndServeTLS("", "")
 			}
-			logger.Printf("Listening on http://%s.\n", addr)
+			logger.Printf("Listening on http://%s", addr)
 			return server.ListenAndServe()
 		}, server.Shutdown); err != nil {
-			logger.Fatalf("Unable to gracefully shutdown HTTP(s) server because %v.\n", err)
+			logger.Fatalf("Unable to gracefully shutdown HTTP(s) server because %v", err)
 			return
 		}
 	}

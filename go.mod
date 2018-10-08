@@ -41,7 +41,7 @@ require (
 	github.com/ory/ladon v0.8.10
 	github.com/ory/pagination v0.0.1
 	github.com/ory/sqlcon v0.0.7
-	github.com/ory/x v0.0.2
+	github.com/ory/x v0.0.5
 	github.com/pborman/uuid v0.0.0-20180906182336-adf5a7427709
 	github.com/pelletier/go-toml v1.2.0
 	github.com/pkg/errors v0.8.0

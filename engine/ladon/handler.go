@@ -459,7 +459,7 @@ func (e *Engine) policiesGet(ctx context.Context, r *http.Request, ps httprouter
 }
 
 // swagger:model oryAccessControlPolicyAllowedInput
-type input struct {
+type Input struct {
 	// Resource is the resource that access is requested to.
 	Resource string `json:"resource"`
 
@@ -494,7 +494,7 @@ func (e *Engine) eval(ctx context.Context, r *http.Request, ps httprouter.Params
 		return nil, err
 	}
 
-	var i input
+	var i Input
 	dec := json.NewDecoder(r.Body)
 	dec.DisallowUnknownFields()
 	if err := dec.Decode(&i); err != nil {

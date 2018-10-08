@@ -1,4 +1,4 @@
 [
-  {"id": "1234", "members": ["a", "b"]},
-  {"id": "12345", "members": ["a", "b"]}
+  {"id": "role-1", "members": ["peter-1", "maria-1"]},
+  {"id": "role-2", "members": ["peter-2", "maria-2"]}
 ]
