@@ -22,13 +22,13 @@ jobs:
       - image: circleci/golang:1.11
     working_directory: /go/src/github.com/ory/keto
     steps:
+      - checkout
+      - run: go get -u github.com/go-swagger/go-swagger/cmd/swagger golang.org/x/tools/cmd/goimports
       - run:
           name: Update PATH and Define Environment Variable at Runtime
           command: |
             echo 'export GO111MODULE=on' >> $BASH_ENV
             source $BASH_ENV
-      - checkout
-      - run: go get -u github.com/go-swagger/go-swagger/cmd/swagger golang.org/x/tools/cmd/goimports
       - run: ./scripts/run-genswag.sh
 
   release-npm:
