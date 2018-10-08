@@ -1,0 +1,4 @@
+[
+  {"id": "1234", "subjects": ["a", "b"], "resources": [], "actions": [], "effect": "allow"},
+  {"id": "12345", "subjects": ["a", "b"], "resources": [], "actions": [], "effect": "allow"}
+]

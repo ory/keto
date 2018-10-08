@@ -63,6 +63,7 @@ func RunServe(
 		cmdx.Must(err, "%s", err)
 
 		writer := herodot.NewJSONWriter(logger)
+		writer.ErrorEnhancer = nil
 
 		var s storage.Manager
 		checks := map[string]healthx.ReadyChecker{}

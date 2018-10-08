@@ -23,7 +23,7 @@ import (
 )
 
 func base(ts *httptest.Server, f, path string) string {
-	return ts.URL + fmt.Sprintf(strings.Replace(basePath, ":flavor", "%s", 1), f) + path
+	return ts.URL + fmt.Sprintf(strings.Replace(BasePath, ":flavor", "%s", 1), f) + path
 }
 
 func TestAllowed(t *testing.T) {

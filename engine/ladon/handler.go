@@ -25,10 +25,10 @@ type Engine struct {
 	h      herodot.Writer
 }
 
-var enabledFlavors = []string{"exact", "regex"}
+var EnabledFlavors = []string{"exact", "regex"}
 
 const (
-	basePath = "/engines/acp/ory/:flavor"
+	BasePath = "/engines/acp/ory/:flavor"
 	schema   = `{
 	"store": {
 		"ory": {
@@ -51,7 +51,7 @@ func RoutesToObserve() []string {
 	for _, f := range []string{"exact", "regex"} {
 		for _, p := range []string{"policies", "roles", "allowed"} {
 			r = append(r,
-				fmt.Sprintf(strings.Replace(basePath, ":flavor", "%s", 1)+"/%s", f, p),
+				fmt.Sprintf(strings.Replace(BasePath, ":flavor", "%s", 1)+"/%s", f, p),
 			)
 		}
 	}
@@ -95,7 +95,7 @@ func (e *Engine) Register(r *httprouter.Router) {
 	//     Responses:
 	//       200: authorizationResult
 	//       500: genericError
-	r.POST(basePath+"/allowed", e.engine.Evaluate(e.eval))
+	r.POST(BasePath+"/allowed", e.engine.Evaluate(e.eval))
 
 	// swagger:route PUT /engines/ory/{flavor}/policies engines upsertOryAccessControlPolicy
 	//
@@ -113,7 +113,7 @@ func (e *Engine) Register(r *httprouter.Router) {
 	//     Responses:
 	//       200: policy
 	//       500: genericError
-	r.PUT(basePath+"/policies", e.sh.Upsert(e.policiesCreate))
+	r.PUT(BasePath+"/policies", e.sh.Upsert(e.policiesCreate))
 
 	// swagger:route GET /engines/ory/{flavor}/policies engines listOryAccessControlPolicies
 	//
@@ -128,7 +128,7 @@ func (e *Engine) Register(r *httprouter.Router) {
 	//     Responses:
 	//       200: oryAccessControlPolicies
 	//       500: genericError
-	r.GET(basePath+"/policies", e.sh.List(e.policiesList))
+	r.GET(BasePath+"/policies", e.sh.List(e.policiesList))
 
 	// swagger:route GET /engines/ory/{flavor}/policies/{id} engines getOryAccessControlPolicy
 	//
@@ -144,7 +144,7 @@ func (e *Engine) Register(r *httprouter.Router) {
 	//       200: oryAccessControlPolicy
 	//       404: genericError
 	//       500: genericError
-	r.GET(basePath+"/policies/:id", e.sh.Get(e.policiesGet))
+	r.GET(BasePath+"/policies/:id", e.sh.Get(e.policiesGet))
 
 	// swagger:route DELETE /engines/ory/{flavor}/policies/{id} engines deleteOryAccessControlPolicy
 	//
@@ -159,7 +159,7 @@ func (e *Engine) Register(r *httprouter.Router) {
 	//     Responses:
 	//       201: emptyResponse
 	//       500: genericError
-	r.DELETE(basePath+"/policies/:id", e.sh.Delete(e.policiesDelete))
+	r.DELETE(BasePath+"/policies/:id", e.sh.Delete(e.policiesDelete))
 
 	// swagger:route GET /engines/ory/{flavor}/roles engine listOryAccessControlPolicyRoles
 	//
@@ -177,7 +177,7 @@ func (e *Engine) Register(r *httprouter.Router) {
 	//     Responses:
 	//       200: oryAccessControlPolicyRoles
 	//       500: genericError
-	r.GET(basePath+"/roles", e.sh.List(e.rolesList))
+	r.GET(BasePath+"/roles", e.sh.List(e.rolesList))
 
 	// swagger:route GET /engines/ory/{flavor}/roles/{id} engines getOryAccessControlPolicyRole
 	//
@@ -196,7 +196,7 @@ func (e *Engine) Register(r *httprouter.Router) {
 	//       200: oryAccessControlPolicyRole
 	//       404: genericError
 	//       500: genericError
-	r.GET(basePath+"/roles/:id", e.sh.Get(e.rolesGet))
+	r.GET(BasePath+"/roles/:id", e.sh.Get(e.rolesGet))
 
 	// swagger:route PUT /engines/ory/{flavor}/roles engines upsertOryAccessControlPolicyRole
 	//
@@ -217,7 +217,7 @@ func (e *Engine) Register(r *httprouter.Router) {
 	//     Responses:
 	//       200: oryAccessControlPolicyRole
 	//       500: genericError
-	r.PUT(basePath+"/roles", e.sh.Upsert(e.rolesUpsert))
+	r.PUT(BasePath+"/roles", e.sh.Upsert(e.rolesUpsert))
 
 	// swagger:route DELETE /engines/ory/{flavor}/roles/{id} engines deleteOryAccessControlPolicyRole
 	//
@@ -235,7 +235,7 @@ func (e *Engine) Register(r *httprouter.Router) {
 	//     Responses:
 	//       201: emptyResponse
 	//       500: genericError
-	r.DELETE(basePath+"/roles/:id", e.sh.Delete(e.rolesDelete))
+	r.DELETE(BasePath+"/roles/:id", e.sh.Delete(e.rolesDelete))
 
 	// swagger:route PUT /engines/ory/{flavor}/roles/{id}/members engines addOryAccessControlPolicyRoleMembers
 	//
@@ -256,7 +256,7 @@ func (e *Engine) Register(r *httprouter.Router) {
 	//     Responses:
 	//       200: oryAccessControlPolicyRole
 	//       500: genericError
-	r.PUT(basePath+"/roles/:id/members", e.sh.Upsert(e.rolesMembersAdd))
+	r.PUT(BasePath+"/roles/:id/members", e.sh.Upsert(e.rolesMembersAdd))
 
 	// swagger:route DELETE /engines/ory/{flavor}/roles/{id}/members engines removeOryAccessControlPolicyRoleMembers
 	//
@@ -277,7 +277,7 @@ func (e *Engine) Register(r *httprouter.Router) {
 	//     Responses:
 	//       201: emptyResponse
 	//       500: genericError
-	r.DELETE(basePath+"/roles/:id/members/:member", e.sh.Upsert(e.rolesMembersRemove))
+	r.DELETE(BasePath+"/roles/:id/members/:member", e.sh.Upsert(e.rolesMembersRemove))
 }
 
 func (e *Engine) rolesList(ctx context.Context, r *http.Request, ps httprouter.Params) (*kstorage.ListRequest, error) {
@@ -475,7 +475,7 @@ type input struct {
 
 func flavor(ps httprouter.Params) (string, error) {
 	t := ps.ByName("flavor")
-	if !stringslice.Has(enabledFlavors, t) {
+	if !stringslice.Has(EnabledFlavors, t) {
 		return "", errors.WithStack(&herodot.ErrorNotFound)
 	}
 

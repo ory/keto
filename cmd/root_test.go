@@ -24,14 +24,12 @@ package cmd
 import (
 	"fmt"
 	"os"
-	"path/filepath"
 	"testing"
 	"time"
 
 	"net/http"
 
 	"github.com/akutz/gotil"
-	"github.com/pborman/uuid"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -46,7 +44,7 @@ func init() {
 }
 
 func TestExecute(t *testing.T) {
-	var path = filepath.Join(os.TempDir(), fmt.Sprintf("keto-%s.yml", uuid.New()))
+	ep := fmt.Sprintf("http://127.0.0.1:%d", port)
 
 	for _, c := range []struct {
 		args      []string
@@ -61,27 +59,19 @@ func TestExecute(t *testing.T) {
 				return err != nil
 			},
 		},
-		//{args: []string{"roles", "list", "--endpoint", fmt.Sprintf("http://127.0.0.1:%d", port)}},
-		//{args: []string{"roles", "create", "role-a", "--endpoint", fmt.Sprintf("http://127.0.0.1:%d", port)}},
-		//{args: []string{"roles", "get", "role-a", "--endpoint", fmt.Sprintf("http://127.0.0.1:%d", port)}},
-		//{args: []string{"roles", "members", "add", "role-a", "member-a", "member-b", "--endpoint", fmt.Sprintf("http://127.0.0.1:%d", port)}},
-		//{args: []string{"roles", "members", "remove", "role-a", "member-a", "--endpoint", fmt.Sprintf("http://127.0.0.1:%d", port)}},
-		//{args: []string{"roles", "find", "member-a", "--endpoint", fmt.Sprintf("http://127.0.0.1:%d", port)}},
-		//{args: []string{"roles", "delete", "role-a", "--endpoint", fmt.Sprintf("http://127.0.0.1:%d", port)}},
-		//{args: []string{"policies", "create", "-i", "foobar", "-s", "peter,max", "-r", "blog,users", "-a", "post,ban", "--allow", "--endpoint", fmt.Sprintf("http://127.0.0.1:%d", port)}},
-		//{args: []string{"policies", "actions", "add", "foobar", "update|create", "--endpoint", fmt.Sprintf("http://127.0.0.1:%d", port)}},
-		//{args: []string{"policies", "actions", "remove", "foobar", "update|create", "--endpoint", fmt.Sprintf("http://127.0.0.1:%d", port)}},
-		//{args: []string{"policies", "resources", "add", "foobar", "printer", "--endpoint", fmt.Sprintf("http://127.0.0.1:%d", port)}},
-		//{args: []string{"policies", "resources", "remove", "foobar", "printer", "--endpoint", fmt.Sprintf("http://127.0.0.1:%d", port)}},
-		//{args: []string{"policies", "subjects", "add", "foobar", "ken", "tracy", "--endpoint", fmt.Sprintf("http://127.0.0.1:%d", port)}},
-		//{args: []string{"policies", "subjects", "remove", "foobar", "ken", "tracy", "--endpoint", fmt.Sprintf("http://127.0.0.1:%d", port)}},
-		//{args: []string{"policies", "get", "foobar", "--endpoint", fmt.Sprintf("http://127.0.0.1:%d", port)}},
-		//{args: []string{"policies", "delete", "foobar", "--endpoint", fmt.Sprintf("http://127.0.0.1:%d", port)}},
-		//{args: []string{"warden", "authorize", "subject", "--subject", "foo", "--action", "bar", "--resource", "baz", "--endpoint", fmt.Sprintf("http://127.0.0.1:%d", port)}},
+		{args: []string{"engines", "acp", "ory", "roles", "list", "--endpoint", ep, "exact"}},
+		{args: []string{"engines", "acp", "ory", "roles", "import", "--endpoint", ep, "exact", "../tests/stubs/roles.json"}},
+		{args: []string{"engines", "acp", "ory", "roles", "get", "--endpoint", ep, "exact", "1234"}},
+		{args: []string{"engines", "acp", "ory", "roles", "delete", "--endpoint", ep, "exact", "1234"}},
+
+		{args: []string{"engines", "acp", "ory", "policies", "list", "--endpoint", ep, "exact"}},
+		{args: []string{"engines", "acp", "ory", "policies", "import", "--endpoint", ep, "exact", "../tests/stubs/policies.json"}},
+		{args: []string{"engines", "acp", "ory", "policies", "get", "--endpoint", ep, "exact", "1234"}},
+		{args: []string{"engines", "acp", "ory", "policies", "delete", "--endpoint", ep, "exact", "1234"}},
+
 		{args: []string{"help", "migrate", "sql"}},
 		{args: []string{"version"}},
 	} {
-		c.args = append(c.args, []string{"--config", path}...)
 		RootCmd.SetArgs(c.args)
 
 		t.Run(fmt.Sprintf("command=%v", c.args), func(t *testing.T) {
