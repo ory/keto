@@ -1,0 +1,5 @@
+.idea
+*.iml
+vendor/
+sqlite-test.db
+tests/

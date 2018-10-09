@@ -69,7 +69,7 @@ jobs:
       - run: go get -u github.com/go-swagger/go-swagger/cmd/swagger github.com/bradfitz/goimports github.com/mattn/goveralls golang.org/x/tools/cmd/cover github.com/ory/go-acc
 
       # Installation
-      - run: curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+      - run: go mod verify
       - run: go install github.com/ory/keto
 
       # Tests
