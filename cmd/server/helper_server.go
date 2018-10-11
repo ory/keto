@@ -29,8 +29,8 @@ import (
 )
 
 func getTLSCertAndKey() (*tls.Certificate, error) {
-	certString, keyString := viper.GetString("HTTP_TLS_CERT"), viper.GetString("HTTP_TLS_KEY")
-	certPath, keyPath := viper.GetString("HTTP_TLS_CERT_PATH"), viper.GetString("HTTP_TLS_KEY_PATH")
+	certString, keyString := viper.GetString("HTTPS_TLS_CERT"), viper.GetString("HTTPS_TLS_KEY")
+	certPath, keyPath := viper.GetString("HTTPS_TLS_CERT_PATH"), viper.GetString("HTTPS_TLS_KEY_PATH")
 
 	if certString == "" && keyString == "" && certPath == "" && keyPath == "" {
 		// serve http

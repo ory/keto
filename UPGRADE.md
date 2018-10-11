@@ -4,6 +4,13 @@ The intent of this document is to make migration of breaking changes as easy as 
 breaking changes might be included here. Please check the [CHANGELOG.md](./CHANGELOG.md) for a full list of changes
 before finalizing the upgrade process.
 
+## master
+
+### Refresh Configuration
+
+Environment variables `HTTP_TLS_xxx` are now called
+`HTTPS_TLS_xxx`.
+
 ## 1.0.0-beta.9
 
 ### CORS is disabled by default
