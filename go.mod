@@ -20,7 +20,7 @@ require (
 	github.com/ory/go-convenience v0.1.0
 	github.com/ory/graceful v0.1.0
 	github.com/ory/herodot v0.4.1
-	github.com/ory/x v0.0.21
+	github.com/ory/x v0.0.22
 	github.com/pborman/uuid v1.2.0
 	github.com/pkg/errors v0.8.0
 	github.com/rcrowley/go-metrics v0.0.0-20180503174638-e2704e165165 // indirect

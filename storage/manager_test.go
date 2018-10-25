@@ -108,6 +108,18 @@ func TestMemoryManager(t *testing.T) {
 				assert.EqualValues(t, []int{5, 6, 7, 8, 9}, vs)
 			})
 
+			t.Run("case=delete", func(t *testing.T) {
+				for i := 0; i < 10; i++ {
+					require.NoError(t, m.Upsert(ctx, "test-delete", fmt.Sprintf("delete-%d", i), i))
+
+					var v int
+					require.NoError(t, m.Get(ctx, "test-delete", fmt.Sprintf("delete-%d", i), &v))
+					assert.EqualValues(t, i, v)
+					require.NoError(t, m.Delete(ctx, "test-delete", fmt.Sprintf("delete-%d", i)))
+					require.Error(t, m.Get(ctx, "test-delete", fmt.Sprintf("delete-%d", i), &v))
+				}
+			})
+
 			t.Run("case=storage", func(t *testing.T) {
 				for i := 0; i < 2; i++ {
 					require.NoError(t, m.Upsert(ctx, "/tests/storage/bars", fmt.Sprintf("list-%d", i), fmt.Sprintf("a-%d", i)))

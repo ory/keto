@@ -10,17 +10,18 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rubenv/sql-migrate"
 
+	"github.com/ory/x/dbal"
 	"github.com/ory/x/sqlcon"
 )
 
 type sqlItem struct {
-	Key        string `db:"key"`
+	Key        string `db:"pkey"`
 	Collection string `db:"collection"`
-	Data       string `db:"data"`
+	Data       string `db:"document"`
 }
 
 var Migrations = map[string]*migrate.MemoryMigrationSource{
-	"mysql": {
+	dbal.DriverMySQL: {
 		Migrations: []*migrate.Migration{
 			{
 				Id: "1",
@@ -28,9 +29,9 @@ var Migrations = map[string]*migrate.MemoryMigrationSource{
 					`CREATE TABLE IF NOT EXISTS rego_data (
     id 					INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	collection 			VARCHAR(64) NOT NULL,
-	` + "`key`" + ` 	VARCHAR(64) NOT NULL,
-	` + "`data`" + ` 	JSON,
-	UNIQUE KEY rego_data_uidx_ck (` + "`collection`" + `, ` + "`key`" + `)
+	pkey 				VARCHAR(64) NOT NULL,
+	document		 	JSON,
+	UNIQUE KEY rego_data_uidx_ck (collection, pkey)
 )`,
 				},
 				Down: []string{
@@ -39,7 +40,7 @@ var Migrations = map[string]*migrate.MemoryMigrationSource{
 			},
 		},
 	},
-	"postgres": {
+	dbal.DriverPostgreSQL: {
 		Migrations: []*migrate.Migration{
 			{
 				Id: "1",
@@ -48,9 +49,9 @@ var Migrations = map[string]*migrate.MemoryMigrationSource{
     id 			SERIAL PRIMARY KEY,
 	collection 	VARCHAR(64) NOT NULL,
 	key 		VARCHAR(64) NOT NULL,
-	data		JSON
+	document	JSON
 )`,
-					`CREATE UNIQUE INDEX rego_data_uidx_ck ON rego_data (collection, key)`,
+					`CREATE UNIQUE INDEX rego_data_uidx_ck ON rego_data (collection, pkey)`,
 				},
 				Down: []string{
 					"DROP TABLE rego_data",
@@ -71,14 +72,8 @@ func NewSQLManager(db *sqlx.DB) *SQLManager {
 }
 
 func (m *SQLManager) CreateSchemas(db *sqlx.DB) (int, error) {
-	database := db.DriverName()
-	switch database {
-	case "pgx", "pq":
-		database = "postgres"
-	}
-
 	migrate.SetTable("keto_storage_migration")
-	n, err := migrate.Exec(db.DB, db.DriverName(), Migrations[database], migrate.Up)
+	n, err := migrate.Exec(db.DB, db.DriverName(), Migrations[dbal.MustCanonicalize(db.DriverName())], migrate.Up)
 	if err != nil {
 		return 0, errors.Wrapf(err, "could not migrate sql schema completely, applied only %d migrations", n)
 	}
@@ -92,13 +87,13 @@ func (m *SQLManager) Upsert(ctx context.Context, collection, key string, value i
 	}
 
 	var query string
-	switch database := m.db.DriverName(); database {
-	case "mysql":
-		query = "INSERT INTO rego_data (`key`, `collection`, `data`) VALUES (:key, :collection, :data) ON DUPLICATE KEY UPDATE `data`=:data"
-	case "pgx", "pq", "postgres":
-		query = `INSERT INTO rego_data (key, collection, data) VALUES (:key, :collection, :data) ON CONFLICT(collection, key) DO UPDATE SET data = :data`
+	switch database := dbal.Canonicalize(m.db.DriverName()); database {
+	case dbal.DriverMySQL:
+		query = "INSERT INTO rego_data (pkey, collection, document) VALUES (:pkey, :collection, :document) ON DUPLICATE KEY UPDATE document=:document"
+	case dbal.DriverPostgreSQL:
+		query = `INSERT INTO rego_data (pkey, collection, document) VALUES (:pkey, :collection, :document) ON CONFLICT(collection, pkey) DO UPDATE SET document = :document`
 	default:
-		return errors.Errorf("unknown database driver: %s", database)
+		return errors.Errorf("unknown database driver: %s", m.db.DriverName())
 	}
 
 	if _, err := m.db.NamedExecContext(ctx, query, &sqlItem{
@@ -117,7 +112,7 @@ func (m *SQLManager) List(ctx context.Context, collection string, value interfac
 	if err := m.db.SelectContext(
 		ctx,
 		&items,
-		m.db.Rebind("SELECT data FROM rego_data WHERE collection=? ORDER BY id ASC LIMIT ? OFFSET ?"), collection, limit, offset,
+		m.db.Rebind("SELECT document FROM rego_data WHERE collection=? ORDER BY id ASC LIMIT ? OFFSET ?"), collection, limit, offset,
 	); err != nil {
 		return sqlcon.HandleError(err)
 	}
@@ -131,16 +126,7 @@ func (m *SQLManager) List(ctx context.Context, collection string, value interfac
 }
 
 func (m *SQLManager) Get(ctx context.Context, collection, key string, value interface{}) error {
-	var query string
-	switch database := m.db.DriverName(); database {
-	case "mysql":
-		query = "SELECT data FROM rego_data WHERE `collection`=? AND `key`=?"
-	case "pgx", "pq", "postgres":
-		query = `SELECT data FROM rego_data WHERE collection=? AND key=?`
-	default:
-		return errors.Errorf("unknown database driver: %s", database)
-	}
-
+	query := "SELECT document FROM rego_data WHERE collection=? AND pkey=?"
 	var item string
 	if err := m.db.GetContext(
 		ctx,
@@ -155,16 +141,7 @@ func (m *SQLManager) Get(ctx context.Context, collection, key string, value inte
 }
 
 func (m *SQLManager) Delete(ctx context.Context, collection, key string) error {
-	var query string
-	switch database := m.db.DriverName(); database {
-	case "mysql":
-		query = "DELETE FROM rego_data WHERE `key`=:key AND collection=:collection"
-	case "pgx", "pq", "postgres":
-		query = "DELETE FROM rego_data WHERE key=:key AND collection=:collection"
-	default:
-		return errors.Errorf("unknown database driver: %s", database)
-	}
-
+	query := "DELETE FROM rego_data WHERE pkey=:pkey AND collection=:collection"
 	if _, err := m.db.NamedExecContext(ctx, query, &sqlItem{
 		Key:        key,
 		Collection: collection,
@@ -181,7 +158,7 @@ func (m *SQLManager) Storage(ctx context.Context, schema string, collections []s
 		if err := m.db.SelectContext(
 			ctx,
 			&items,
-			m.db.Rebind("SELECT data FROM rego_data WHERE collection=?"), s,
+			m.db.Rebind("SELECT document FROM rego_data WHERE collection=? ORDER BY id DESC"), s,
 		); err != nil {
 			return nil, errors.WithStack(err)
 		}
