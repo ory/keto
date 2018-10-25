@@ -111,12 +111,6 @@ type upsertOryAccessControlPolicyRole struct {
 	// required: true
 	Flavor string `json:"flavor"`
 
-	// The ID of the ORY Access Control Policy Role.
-	//
-	// in: path
-	// required: true
-	ID string `json:"id"`
-
 	// in: body
 	Body Role
 }

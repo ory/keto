@@ -1,10 +1,7 @@
 package ladon
 
 import (
-	"bytes"
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -47,31 +44,21 @@ func TestAllowed(t *testing.T) {
 	ts := httptest.NewServer(n)
 	defer ts.Close()
 
+	cl := swagger.NewEnginesApiWithBasePath(ts.URL)
+
 	for _, f := range []string{"regex", "exact"} {
 		t.Run(fmt.Sprintf("flavor=%s", f), func(t *testing.T) {
 			t.Run(fmt.Sprint("action=create"), func(t *testing.T) {
 				for _, p := range policies[f] {
 					t.Run(fmt.Sprintf("policy=%s", p.ID), func(t *testing.T) {
-						var b bytes.Buffer
-						require.NoError(t, json.NewEncoder(&b).Encode(&p))
-						req, err := http.NewRequest("PUT", base(ts, f, "/policies"), &b)
-						require.NoError(t, err)
-						res, err := ts.Client().Do(req)
-						require.NoError(t, err)
-						assert.EqualValues(t, http.StatusOK, res.StatusCode)
-						res.Body.Close()
+						res, err := cl.UpsertOryAccessControlPolicy(f, toSwaggerPolicy(p))
+						x.CheckResponseTest(t, err, http.StatusOK, res)
 					})
 				}
 				for _, r := range roles[f] {
 					t.Run(fmt.Sprintf("role=%s", r.ID), func(t *testing.T) {
-						var b bytes.Buffer
-						require.NoError(t, json.NewEncoder(&b).Encode(&r))
-						req, err := http.NewRequest("PUT", base(ts, f, "/roles"), &b)
-						require.NoError(t, err)
-						res, err := ts.Client().Do(req)
-						require.NoError(t, err)
-						assert.EqualValues(t, http.StatusOK, res.StatusCode)
-						res.Body.Close()
+						_, res, err := cl.UpsertOryAccessControlPolicyRole(f, "", toSwaggerRole(r))
+						x.CheckResponseTest(t, err, http.StatusOK, res)
 					})
 				}
 			})
@@ -79,19 +66,9 @@ func TestAllowed(t *testing.T) {
 			t.Run("action=authorize", func(t *testing.T) {
 				for k, c := range requests[f] {
 					t.Run(fmt.Sprintf("case=%d", k), func(t *testing.T) {
-						var b bytes.Buffer
-						require.NoError(t, json.NewEncoder(&b).Encode(&c.req))
-						res, err := ts.Client().Post(base(ts, f, "/allowed"), "application/json", &b)
-						require.NoError(t, err)
-						defer res.Body.Close()
-
-						assert.EqualValues(t, http.StatusOK, res.StatusCode)
-						body, err := ioutil.ReadAll(res.Body)
-						require.NoError(t, err)
-
-						var r engine.AuthorizationResult
-						require.NoError(t, json.Unmarshal(body, &r))
-						assert.Equal(t, c.allowed, r.Allowed, "%s", body)
+						d, res, err := cl.DoOryAccessControlPoliciesAllow(f, c.req)
+						x.CheckResponseTest(t, err, http.StatusOK, res)
+						assert.Equal(t, c.allowed, d.Allowed)
 					})
 				}
 			})

@@ -15,18 +15,15 @@
 package cmd
 
 import (
-	"bytes"
-	"encoding/json"
 	"fmt"
+	"github.com/ory/keto/sdk/go/keto/swagger"
+	"github.com/ory/keto/x"
 	"net/http"
 
 	"github.com/spf13/cobra"
 
 	"github.com/ory/keto/cmd/client"
-	"github.com/ory/keto/engine"
-	"github.com/ory/keto/engine/ladon"
 	"github.com/ory/x/cmdx"
-	"github.com/ory/x/urlx"
 )
 
 // enginesAcpOryAllowedCmd represents the roles command
@@ -37,31 +34,16 @@ var enginesAcpOryAllowedCmd = &cobra.Command{
 		cmdx.MinArgs(cmd, args, 4)
 		client.CheckLadonFlavor(args[0])
 
-		var b bytes.Buffer
-		err := json.NewEncoder(&b).Encode(&ladon.Input{
+		c := swagger.NewEnginesApiWithBasePath(client.EndpointURL(cmd))
+		a, res, err := c.DoOryAccessControlPoliciesAllow(args[0], swagger.OryAccessControlPolicyAllowedInput{
 			Subject:  args[1],
 			Resource: args[2],
 			Action:   args[3],
 		})
-		cmdx.Must(err, "Unable to encode input data to json: %s", err)
+		x.CheckResponse(err, http.StatusOK, res)
 
-		res, err := http.DefaultClient.Post(
-			urlx.MustJoin(
-				client.LadonEndpointURL(cmd, args[0]),
-				"allowed",
-			),
-			"application/json",
-			&b,
-		)
-		cmdx.CheckResponse(err, http.StatusOK, res)
-		defer res.Body.Close()
-
-		var result engine.AuthorizationResult
-		d := json.NewDecoder(res.Body)
-		d.DisallowUnknownFields()
-		err = d.Decode(&result)
 		cmdx.Must(err, "Unable to decode data to json: %s", err)
-		fmt.Println(cmdx.FormatResponse(&result))
+		fmt.Println(cmdx.FormatResponse(&a))
 	},
 }
 

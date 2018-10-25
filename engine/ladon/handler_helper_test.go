@@ -1,5 +1,7 @@
 package ladon
 
+import "github.com/ory/keto/sdk/go/keto/swagger"
+
 var (
 	roles = map[string]Roles{
 		"regex": {{
@@ -24,99 +26,99 @@ var (
 		}},
 	}
 	requests = map[string][]struct {
-		req     Input
+		req     swagger.OryAccessControlPolicyAllowedInput
 		allowed bool
 	}{
 		"regex": {
 			{
-				req: Input{
+				req: swagger.OryAccessControlPolicyAllowedInput{
 					Subject:  "alice",
 					Resource: "other-thing",
 					Action:   "create",
-					Context:  Context{},
+					Context:  map[string]interface{}{},
 				},
 				allowed: false,
 			},
 			{
-				req: Input{
+				req: swagger.OryAccessControlPolicyAllowedInput{
 					Subject:  "alice",
 					Resource: "matrix",
 					Action:   "delete",
-					Context:  Context{},
+					Context:  map[string]interface{}{},
 				},
 				allowed: false,
 			},
 			{
-				req: Input{
+				req: swagger.OryAccessControlPolicyAllowedInput{
 					Subject:  "alice",
 					Resource: "matrix",
 					Action:   "create",
-					Context:  Context{},
+					Context:  map[string]interface{}{},
 				},
 				allowed: true,
 			},
 			{
-				req: Input{
+				req: swagger.OryAccessControlPolicyAllowedInput{
 					Subject:  "ken",
 					Resource: "forbidden_matrix",
 					Action:   "create",
-					Context:  Context{},
+					Context:  map[string]interface{}{},
 				},
 				allowed: false,
 			},
 			{
-				req: Input{
+				req: swagger.OryAccessControlPolicyAllowedInput{
 					Subject:  "ken",
 					Resource: "allowed_matrix",
 					Action:   "create",
-					Context:  Context{},
+					Context:  map[string]interface{}{},
 				},
 				allowed: true,
 			},
 		},
 		"exact": {
 			{
-				req: Input{
+				req: swagger.OryAccessControlPolicyAllowedInput{
 					Subject:  "alice",
 					Resource: "other-thing",
 					Action:   "create",
-					Context:  Context{},
+					Context:  map[string]interface{}{},
 				},
 				allowed: false,
 			},
 			{
-				req: Input{
+				req: swagger.OryAccessControlPolicyAllowedInput{
 					Subject:  "alice",
 					Resource: "matrix",
 					Action:   "delete",
-					Context:  Context{},
+					Context:  map[string]interface{}{},
 				},
 				allowed: false,
 			},
 			{
-				req: Input{
+				req: swagger.OryAccessControlPolicyAllowedInput{
 					Subject:  "alice",
 					Resource: "matrix",
 					Action:   "create",
-					Context:  Context{},
+					Context:  map[string]interface{}{},
 				},
 				allowed: true,
 			},
 			{
-				req: Input{
+				req: swagger.OryAccessControlPolicyAllowedInput{
 					Subject:  "ken",
 					Resource: "forbidden_matrix",
 					Action:   "create",
-					Context:  Context{},
+					Context:  map[string]interface{}{},
 				},
 				allowed: false,
 			},
 			{
-				req: Input{
+				req: swagger.OryAccessControlPolicyAllowedInput{
 					Subject:  "ken",
 					Resource: "allowed_matrix",
 					Action:   "create",
-					Context:  Context{},
+					Context:  map[string]interface{}{},
 				},
 				allowed: true,
 			},

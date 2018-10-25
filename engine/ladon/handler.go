@@ -459,21 +459,6 @@ func (e *Engine) policiesGet(ctx context.Context, r *http.Request, ps httprouter
 	}, nil
 }
 
-// swagger:model oryAccessControlPolicyAllowedInput
-type Input struct {
-	// Resource is the resource that access is requested to.
-	Resource string `json:"resource"`
-
-	// Action is the action that is requested on the resource.
-	Action string `json:"action"`
-
-	// Subject is the subject that is requesting access.
-	Subject string `json:"subject"`
-
-	// Context is the request's environmental context.
-	Context Context `json:"context"`
-}
-
 func flavor(ps httprouter.Params) (string, error) {
 	t := ps.ByName("flavor")
 	if !stringslice.Has(EnabledFlavors, t) {
