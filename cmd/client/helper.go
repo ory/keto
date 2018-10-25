@@ -20,6 +20,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"path/filepath"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -37,7 +38,7 @@ func Import(method, location string, files []string) {
 	for _, file := range files {
 		var data []interface{}
 		fmt.Printf("Importing file %s to %s...\n", file, location)
-		b, err := ioutil.ReadFile(file)
+		b, err := ioutil.ReadFile(filepath.Clean(file))
 		cmdx.Must(err, "Unable to read file %s: %s", file, err)
 
 		err = json.Unmarshal(b, &data)
