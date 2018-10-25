@@ -115,6 +115,7 @@ Class | Method | HTTP request | Description
  - [OryAccessControlPolicyAllowedInput](docs/Model/OryAccessControlPolicyAllowedInput.md)
  - [OryAccessControlPolicyRole](docs/Model/OryAccessControlPolicyRole.md)
  - [OryAccessControlPolicyRoles](docs/Model/OryAccessControlPolicyRoles.md)
+ - [Policies](docs/Model/Policies.md)
  - [RemoveOryAccessControlPolicyRoleMembers](docs/Model/RemoveOryAccessControlPolicyRoleMembers.md)
  - [RemoveOryAccessControlPolicyRoleMembersBody](docs/Model/RemoveOryAccessControlPolicyRoleMembersBody.md)
  - [UpsertOryAccessControlPolicy](docs/Model/UpsertOryAccessControlPolicy.md)

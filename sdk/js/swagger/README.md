@@ -160,6 +160,7 @@ Class | Method | HTTP request | Description
  - [SwaggerJsClient.OryAccessControlPolicyAllowedInput](docs/OryAccessControlPolicyAllowedInput.md)
  - [SwaggerJsClient.OryAccessControlPolicyRole](docs/OryAccessControlPolicyRole.md)
  - [SwaggerJsClient.OryAccessControlPolicyRoles](docs/OryAccessControlPolicyRoles.md)
+ - [SwaggerJsClient.Policies](docs/Policies.md)
  - [SwaggerJsClient.RemoveOryAccessControlPolicyRoleMembers](docs/RemoveOryAccessControlPolicyRoleMembers.md)
  - [SwaggerJsClient.RemoveOryAccessControlPolicyRoleMembersBody](docs/RemoveOryAccessControlPolicyRoleMembersBody.md)
  - [SwaggerJsClient.UpsertOryAccessControlPolicy](docs/UpsertOryAccessControlPolicy.md)

@@ -642,6 +642,13 @@
       },
       "x-go-package": "github.com/ory/keto/engine/ladon"
     },
+    "Policies": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/oryAccessControlPolicy"
+      },
+      "x-go-package": "github.com/ory/keto/engine/ladon"
+    },
     "addOryAccessControlPolicyRoleMembers": {
       "type": "object",
       "required": [
@@ -880,7 +887,6 @@
           }
         }
       },
-      "x-go-name": "Policies",
       "x-go-package": "github.com/ory/keto/engine/ladon"
     },
     "oryAccessControlPolicy": {

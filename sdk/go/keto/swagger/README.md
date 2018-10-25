@@ -59,6 +59,7 @@ Class | Method | HTTP request | Description
  - [OryAccessControlPolicyAllowedInput](docs/OryAccessControlPolicyAllowedInput.md)
  - [OryAccessControlPolicyRole](docs/OryAccessControlPolicyRole.md)
  - [OryAccessControlPolicyRoles](docs/OryAccessControlPolicyRoles.md)
+ - [Policies](docs/Policies.md)
  - [RemoveOryAccessControlPolicyRoleMembers](docs/RemoveOryAccessControlPolicyRoleMembers.md)
  - [RemoveOryAccessControlPolicyRoleMembersBody](docs/RemoveOryAccessControlPolicyRoleMembersBody.md)
  - [UpsertOryAccessControlPolicy](docs/UpsertOryAccessControlPolicy.md)
