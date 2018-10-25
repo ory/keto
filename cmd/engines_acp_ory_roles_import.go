@@ -16,10 +16,6 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
-
-	"github.com/ory/keto/cmd/client"
-	"github.com/ory/x/cmdx"
-	"github.com/ory/x/urlx"
 )
 
 // importCmd represents the import command
@@ -35,16 +31,16 @@ The json file(s) have to be formatted as arrays:
 	{"id": "2", "members": [...], ...},
 ]`,
 	Run: func(cmd *cobra.Command, args []string) {
-		cmdx.MinArgs(cmd, args, 2)
-		client.CheckLadonFlavor(args[0])
-		client.Import(
-			"PUT",
-			urlx.MustJoin(
-				client.LadonEndpointURL(cmd, args[0]),
-				"roles",
-			),
-			args[1:],
-		)
+		//cmdx.MinArgs(cmd, args, 2)
+		//client.CheckLadonFlavor(args[0])
+		//client.Import(
+		//	"PUT",
+		//	urlx.MustJoin(
+		//		client.LadonEndpointURL(cmd, args[0]),
+		//		"roles",
+		//	),
+		//	args[1:],
+		//)
 	},
 }
 
