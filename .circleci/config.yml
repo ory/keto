@@ -8,6 +8,7 @@ jobs:
       - image: circleci/golang:1.11
     working_directory: /go/src/github.com/ory/keto
     steps:
+      - checkout
       - run:
           name: Enable go1.11 modules
           command: |
@@ -23,6 +24,7 @@ jobs:
       - image: circleci/golang:1.11
     working_directory: /go/src/github.com/ory/keto
     steps:
+      - checkout
       - run: make init
       - run: make sdk
       - run: git add -A && git diff --exit-code
