@@ -15,10 +15,12 @@
 package cmd
 
 import (
+	"net/http"
+
+	"github.com/spf13/cobra"
+
 	"github.com/ory/keto/sdk/go/keto/swagger"
 	"github.com/ory/keto/x"
-	"github.com/spf13/cobra"
-	"net/http"
 
 	"github.com/ory/keto/cmd/client"
 	"github.com/ory/x/cmdx"
@@ -41,15 +43,16 @@ The json file(s) have to be formatted as arrays:
 		client.CheckLadonFlavor(args[0])
 
 		c := swagger.NewEnginesApiWithBasePath(client.EndpointURL(cmd))
-
 		for _, file := range args[1:] {
-			var p swagger.OryAccessControlPolicy
+			var p []swagger.OryAccessControlPolicy
 			client.ImportFile(
 				file,
 				&p,
-				func(){
-					res, err := c.UpsertOryAccessControlPolicy(args[0], p)
-					x.CheckResponse(err, http.StatusOK, res)
+				func() {
+					for _, pp := range p {
+						_, res, err := c.UpsertOryAccessControlPolicy(args[0], pp)
+						x.CheckResponse(err, http.StatusOK, res)
+					}
 				},
 			)
 		}

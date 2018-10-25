@@ -46,7 +46,7 @@ func TestAllowed(t *testing.T) {
 			t.Run(fmt.Sprint("action=create"), func(t *testing.T) {
 				for _, p := range policies[f] {
 					t.Run(fmt.Sprintf("policy=%s", p.ID), func(t *testing.T) {
-						res, err := cl.UpsertOryAccessControlPolicy(f, toSwaggerPolicy(p))
+						_, res, err := cl.UpsertOryAccessControlPolicy(f, toSwaggerPolicy(p))
 						x.CheckResponseTest(t, err, http.StatusOK, res)
 					})
 				}
@@ -144,7 +144,7 @@ func TestPolicyCRUD(t *testing.T) {
 			_, resp, err := c.GetOryAccessControlPolicy(f, p.ID)
 			x.CheckResponseTest(t, err, http.StatusNotFound, resp)
 
-			resp, err = c.UpsertOryAccessControlPolicy(f, toSwaggerPolicy(p))
+			_, resp, err = c.UpsertOryAccessControlPolicy(f, toSwaggerPolicy(p))
 			x.CheckResponseTest(t, err, http.StatusOK, resp)
 
 			o, resp, err := c.GetOryAccessControlPolicy(f, p.ID)

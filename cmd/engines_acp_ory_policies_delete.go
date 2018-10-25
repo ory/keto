@@ -15,10 +15,12 @@
 package cmd
 
 import (
+	"net/http"
+
+	"github.com/spf13/cobra"
+
 	"github.com/ory/keto/sdk/go/keto/swagger"
 	"github.com/ory/keto/x"
-	"github.com/spf13/cobra"
-	"net/http"
 
 	"github.com/ory/keto/cmd/client"
 	"github.com/ory/x/cmdx"

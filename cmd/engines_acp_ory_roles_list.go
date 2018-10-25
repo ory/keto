@@ -15,12 +15,17 @@
 package cmd
 
 import (
+	"fmt"
+	"net/http"
+
 	"github.com/spf13/cobra"
 
+	"github.com/ory/keto/sdk/go/keto/swagger"
+	"github.com/ory/keto/x"
+	"github.com/ory/x/flagx"
+
 	"github.com/ory/keto/cmd/client"
-	"github.com/ory/keto/engine/ladon"
 	"github.com/ory/x/cmdx"
-	"github.com/ory/x/urlx"
 )
 
 // enginesAcpOryRolesListCmd represents the list command
@@ -28,19 +33,18 @@ var enginesAcpOryRolesListCmd = &cobra.Command{
 	Use:   "list <flavor>",
 	Short: "List ORY Access Control Policy Roles",
 	Run: func(cmd *cobra.Command, args []string) {
-		var proto ladon.Roles
 		cmdx.MinArgs(cmd, args, 1)
 		client.CheckLadonFlavor(args[0])
-		client.Get(
-			urlx.MustJoin(
-				client.LadonEndpointURL(cmd, args[0]),
-				"roles",
-			),
-			&proto,
-		)
+
+		c := swagger.NewEnginesApiWithBasePath(client.EndpointURL(cmd))
+		r, res, err := c.ListOryAccessControlPolicyRoles(args[0], int64(flagx.MustGetInt(cmd, "limit")), int64(flagx.MustGetInt(cmd, "offset")))
+		x.CheckResponse(err, http.StatusOK, res)
+		fmt.Println(cmdx.FormatResponse(r))
 	},
 }
 
 func init() {
 	enginesAcpOryRolesCmd.AddCommand(enginesAcpOryRolesListCmd)
+	enginesAcpOryRolesListCmd.Flags().Int("limit", 100, "Limit the items being fetched")
+	enginesAcpOryRolesListCmd.Flags().Int("offset", 0, "Set the offset for fetching items")
 }

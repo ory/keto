@@ -15,16 +15,15 @@
 package cmd
 
 import (
-	"fmt"
-	"strings"
+	"net/http"
 
 	"github.com/spf13/cobra"
 
+	"github.com/ory/keto/sdk/go/keto/swagger"
+	"github.com/ory/keto/x"
+
 	"github.com/ory/keto/cmd/client"
-	"github.com/ory/keto/engine/ladon"
 	"github.com/ory/x/cmdx"
-	"github.com/ory/x/flagx"
-	"github.com/ory/x/urlx"
 )
 
 // deleteCmd represents the delete command
@@ -34,13 +33,11 @@ var deleteCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		cmdx.MinArgs(cmd, args, 2)
 		client.CheckLadonFlavor(args[0])
+
+		c := swagger.NewEnginesApiWithBasePath(client.EndpointURL(cmd))
 		for _, id := range args[1:] {
-			client.Delete(urlx.MustJoin(
-				flagx.MustGetString(cmd, "endpoint"),
-				fmt.Sprintf(strings.Replace(ladon.BasePath, ":flavor", "%s", 1), args[0]),
-				"roles",
-				id,
-			))
+			res, err := c.DeleteOryAccessControlPolicyRole(args[0], id)
+			x.CheckResponse(err, http.StatusNoContent, res)
 		}
 	},
 }

@@ -15,12 +15,16 @@
 package cmd
 
 import (
+	"fmt"
+	"net/http"
+
 	"github.com/spf13/cobra"
 
+	"github.com/ory/keto/sdk/go/keto/swagger"
+	"github.com/ory/keto/x"
+
 	"github.com/ory/keto/cmd/client"
-	"github.com/ory/keto/engine/ladon"
 	"github.com/ory/x/cmdx"
-	"github.com/ory/x/urlx"
 )
 
 // getCmd represents the get command
@@ -28,18 +32,14 @@ var getCmd = &cobra.Command{
 	Use:   "get <flavor> [<id-2>, [<...>]]",
 	Short: "Get an ORY Access Control Policy",
 	Run: func(cmd *cobra.Command, args []string) {
-		var proto ladon.Role
 		cmdx.MinArgs(cmd, args, 2)
 		client.CheckLadonFlavor(args[0])
+
+		c := swagger.NewEnginesApiWithBasePath(client.EndpointURL(cmd))
 		for _, id := range args[1:] {
-			client.Get(
-				urlx.MustJoin(
-					client.LadonEndpointURL(cmd, args[0]),
-					"roles",
-					id,
-				),
-				&proto,
-			)
+			r, res, err := c.GetOryAccessControlPolicyRole(args[0], id)
+			x.CheckResponse(err, http.StatusOK, res)
+			fmt.Println(cmdx.FormatResponse(r))
 		}
 	},
 }

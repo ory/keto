@@ -16,11 +16,13 @@ package cmd
 
 import (
 	"fmt"
+	"net/http"
+
+	"github.com/spf13/cobra"
+
 	"github.com/ory/keto/sdk/go/keto/swagger"
 	"github.com/ory/keto/x"
 	"github.com/ory/x/flagx"
-	"github.com/spf13/cobra"
-	"net/http"
 
 	"github.com/ory/keto/cmd/client"
 	"github.com/ory/x/cmdx"
@@ -43,15 +45,6 @@ var enginesAcpOryPoliciesListCmd = &cobra.Command{
 
 func init() {
 	enginesAcpOryPoliciesCmd.AddCommand(enginesAcpOryPoliciesListCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// listCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
 	enginesAcpOryPoliciesListCmd.Flags().Int("limit", 100, "Limit the items being fetched")
 	enginesAcpOryPoliciesListCmd.Flags().Int("offset", 0, "Set the offset for fetching items")
 }

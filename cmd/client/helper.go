@@ -34,12 +34,12 @@ import (
 var client = http.DefaultClient
 
 func ImportFile(file string, proto interface{}, f func()) {
-		b, err := ioutil.ReadFile(filepath.Clean(file))
-		cmdx.Must(err, "Unable to read file %s: %s", file, err)
+	b, err := ioutil.ReadFile(filepath.Clean(file))
+	cmdx.Must(err, "Unable to read file %s: %s", file, err)
 
-		err = json.Unmarshal(b, proto)
-		cmdx.Must(err, "Unable to decode file %s to json: %s", file, err)
-		f()
+	err = json.Unmarshal(b, proto)
+	cmdx.Must(err, "Unable to decode file %s to json: %s", file, err)
+	f()
 }
 
 func Get(location string, proto interface{}) {
