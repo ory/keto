@@ -1,7 +1,0 @@
-package: github.com/akutz/goof
-import:
-  - package: github.com/sirupsen/logrus
-    ref:     d842de504ca841f97533764c59d3166afd70ddb9
-    repo:    https://github.com/akutz/logrus
-  - package: gopkg.in/gemnasium/logrus-airbrake-hook.v2
-  - package: github.com/stretchr/testify

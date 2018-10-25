@@ -1,9 +1,0 @@
-language: go
-go:
-  - 1.6
-before_install:
-  - go get github.com/Masterminds/glide
-  - glide install
-script:
-  - go install
-  - go test -v
