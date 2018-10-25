@@ -20,15 +20,8 @@
 
 package ladon
 
-type Policies []Policy
-
 // Policies is an array of policies.
-//
-// swagger:model oryAccessControlPolicies
-type oryAccessControlPolicies struct {
-	// in: body
-	Body []Policy
-}
+type Policies []Policy
 
 // Policy specifies an ORY Access Policy document.
 //

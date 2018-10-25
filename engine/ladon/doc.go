@@ -169,6 +169,15 @@ type removeOryAccessControlPolicyRoleMembers struct {
 	Body removeOryAccessControlPolicyRoleMembersBody
 }
 
+// Policies is an array of policies.
+//
+// swagger:response oryAccessControlPolicies
+type oryAccessControlPolicies struct {
+	// in: body
+	Body []Policy
+}
+
+
 // swagger:parameters listOryAccessControlPolicyRoles
 type listOryAccessControlPolicyRoles struct {
 	// The ORY Access Control Policy flavor. Can be "regex" and "exact"

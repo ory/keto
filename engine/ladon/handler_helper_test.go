@@ -122,7 +122,7 @@ var (
 			},
 		},
 	}
-	policies = map[string][]Policies{
+	policies = map[string]Policies{
 		"regex": {
 			Policy{
 				ID:        "1",
