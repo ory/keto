@@ -158,7 +158,7 @@ func (m *SQLManager) Storage(ctx context.Context, schema string, collections []s
 		if err := m.db.SelectContext(
 			ctx,
 			&items,
-			m.db.Rebind("SELECT document FROM rego_data WHERE collection=? ORDER BY id DESC"), s,
+			m.db.Rebind("SELECT document FROM rego_data WHERE collection=? ORDER BY id ASC"), s,
 		); err != nil {
 			return nil, errors.WithStack(err)
 		}
