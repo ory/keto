@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
-	"strings"
 	"testing"
 
 	"github.com/ory/keto/sdk/go/keto/swagger"
@@ -21,10 +20,6 @@ import (
 	"github.com/ory/keto/engine"
 	"github.com/ory/keto/storage"
 )
-
-func base(ts *httptest.Server, f, path string) string {
-	return ts.URL + fmt.Sprintf(strings.Replace(BasePath, ":flavor", "%s", 1), f) + path
-}
 
 func TestAllowed(t *testing.T) {
 	box := packr.NewBox("./rego")
@@ -57,7 +52,7 @@ func TestAllowed(t *testing.T) {
 				}
 				for _, r := range roles[f] {
 					t.Run(fmt.Sprintf("role=%s", r.ID), func(t *testing.T) {
-						_, res, err := cl.UpsertOryAccessControlPolicyRole(f, "", toSwaggerRole(r))
+						_, res, err := cl.UpsertOryAccessControlPolicyRole(f, toSwaggerRole(r))
 						x.CheckResponseTest(t, err, http.StatusOK, res)
 					})
 				}
@@ -187,7 +182,7 @@ func TestRoleCRUD(t *testing.T) {
 			_, resp, err := c.GetOryAccessControlPolicyRole(f, r.ID)
 			x.CheckResponseTest(t, err, http.StatusNotFound, resp)
 
-			o, resp, err := c.UpsertOryAccessControlPolicyRole(f, r.ID, toSwaggerRole(r))
+			o, resp, err := c.UpsertOryAccessControlPolicyRole(f, toSwaggerRole(r))
 			x.CheckResponseTest(t, err, http.StatusOK, resp)
 			require.EqualValues(t, r, fromSwaggerRole(*o))
 
