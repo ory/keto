@@ -710,7 +710,7 @@ class EnginesApi
      * @param int $limit The maximum amount of policies returned. (optional)
      * @param int $offset The offset from where to start looking. (optional)
      * @throws \ketoSDK\ApiException on non-2xx response
-     * @return \ketoSDK\Model\OryAccessControlPolicies
+     * @return \ketoSDK\Model\OryAccessControlPolicy[]
      */
     public function listOryAccessControlPolicies($flavor, $limit = null, $offset = null)
     {
@@ -727,7 +727,7 @@ class EnginesApi
      * @param int $limit The maximum amount of policies returned. (optional)
      * @param int $offset The offset from where to start looking. (optional)
      * @throws \ketoSDK\ApiException on non-2xx response
-     * @return array of \ketoSDK\Model\OryAccessControlPolicies, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \ketoSDK\Model\OryAccessControlPolicy[], HTTP status code, HTTP response headers (array of strings)
      */
     public function listOryAccessControlPoliciesWithHttpInfo($flavor, $limit = null, $offset = null)
     {
@@ -778,15 +778,15 @@ class EnginesApi
                 $queryParams,
                 $httpBody,
                 $headerParams,
-                '\ketoSDK\Model\OryAccessControlPolicies',
+                '\ketoSDK\Model\OryAccessControlPolicy[]',
                 '/engines/acp/ory/{flavor}/policies'
             );
 
-            return [$this->apiClient->getSerializer()->deserialize($response, '\ketoSDK\Model\OryAccessControlPolicies', $httpHeader), $statusCode, $httpHeader];
+            return [$this->apiClient->getSerializer()->deserialize($response, '\ketoSDK\Model\OryAccessControlPolicy[]', $httpHeader), $statusCode, $httpHeader];
         } catch (ApiException $e) {
             switch ($e->getCode()) {
                 case 200:
-                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\ketoSDK\Model\OryAccessControlPolicies', $e->getResponseHeaders());
+                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\ketoSDK\Model\OryAccessControlPolicy[]', $e->getResponseHeaders());
                     $e->setResponseObject($data);
                     break;
                 case 500:

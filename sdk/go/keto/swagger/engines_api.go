@@ -420,9 +420,9 @@ func (a EnginesApi) GetOryAccessControlPolicyRole(flavor string, id string) (*Or
  * @param flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;
  * @param limit The maximum amount of policies returned.
  * @param offset The offset from where to start looking.
- * @return *OryAccessControlPolicies
+ * @return []OryAccessControlPolicy
  */
-func (a EnginesApi) ListOryAccessControlPolicies(flavor string, limit int64, offset int64) (*OryAccessControlPolicies, *APIResponse, error) {
+func (a EnginesApi) ListOryAccessControlPolicies(flavor string, limit int64, offset int64) ([]OryAccessControlPolicy, *APIResponse, error) {
 
 	var localVarHttpMethod = strings.ToUpper("Get")
 	// create path and map variables
@@ -460,7 +460,7 @@ func (a EnginesApi) ListOryAccessControlPolicies(flavor string, limit int64, off
 	if localVarHttpHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHttpHeaderAccept
 	}
-	var successPayload = new(OryAccessControlPolicies)
+	var successPayload = new([]OryAccessControlPolicy)
 	localVarHttpResponse, err := a.Configuration.APIClient.CallAPI(localVarPath, localVarHttpMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFileName, localVarFileBytes)
 
 	var localVarURL, _ = url.Parse(localVarPath)
@@ -472,10 +472,10 @@ func (a EnginesApi) ListOryAccessControlPolicies(flavor string, limit int64, off
 	}
 
 	if err != nil {
-		return successPayload, localVarAPIResponse, err
+		return *successPayload, localVarAPIResponse, err
 	}
 	err = json.Unmarshal(localVarHttpResponse.Body(), &successPayload)
-	return successPayload, localVarAPIResponse, err
+	return *successPayload, localVarAPIResponse, err
 }
 
 /**

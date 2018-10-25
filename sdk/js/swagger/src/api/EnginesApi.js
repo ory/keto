@@ -17,18 +17,18 @@
 (function(root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module.
-    define(['ApiClient', 'model/AddOryAccessControlPolicyRoleMembersBody', 'model/AuthorizationResult', 'model/InlineResponse500', 'model/OryAccessControlPolicies', 'model/OryAccessControlPolicy', 'model/OryAccessControlPolicyAllowedInput', 'model/OryAccessControlPolicyRole', 'model/OryAccessControlPolicyRoles', 'model/RemoveOryAccessControlPolicyRoleMembersBody'], factory);
+    define(['ApiClient', 'model/AddOryAccessControlPolicyRoleMembersBody', 'model/AuthorizationResult', 'model/InlineResponse500', 'model/OryAccessControlPolicy', 'model/OryAccessControlPolicyAllowedInput', 'model/OryAccessControlPolicyRole', 'model/OryAccessControlPolicyRoles', 'model/RemoveOryAccessControlPolicyRoleMembersBody'], factory);
   } else if (typeof module === 'object' && module.exports) {
     // CommonJS-like environments that support module.exports, like Node.
-    module.exports = factory(require('../ApiClient'), require('../model/AddOryAccessControlPolicyRoleMembersBody'), require('../model/AuthorizationResult'), require('../model/InlineResponse500'), require('../model/OryAccessControlPolicies'), require('../model/OryAccessControlPolicy'), require('../model/OryAccessControlPolicyAllowedInput'), require('../model/OryAccessControlPolicyRole'), require('../model/OryAccessControlPolicyRoles'), require('../model/RemoveOryAccessControlPolicyRoleMembersBody'));
+    module.exports = factory(require('../ApiClient'), require('../model/AddOryAccessControlPolicyRoleMembersBody'), require('../model/AuthorizationResult'), require('../model/InlineResponse500'), require('../model/OryAccessControlPolicy'), require('../model/OryAccessControlPolicyAllowedInput'), require('../model/OryAccessControlPolicyRole'), require('../model/OryAccessControlPolicyRoles'), require('../model/RemoveOryAccessControlPolicyRoleMembersBody'));
   } else {
     // Browser globals (root is window)
     if (!root.SwaggerJsClient) {
       root.SwaggerJsClient = {};
     }
-    root.SwaggerJsClient.EnginesApi = factory(root.SwaggerJsClient.ApiClient, root.SwaggerJsClient.AddOryAccessControlPolicyRoleMembersBody, root.SwaggerJsClient.AuthorizationResult, root.SwaggerJsClient.InlineResponse500, root.SwaggerJsClient.OryAccessControlPolicies, root.SwaggerJsClient.OryAccessControlPolicy, root.SwaggerJsClient.OryAccessControlPolicyAllowedInput, root.SwaggerJsClient.OryAccessControlPolicyRole, root.SwaggerJsClient.OryAccessControlPolicyRoles, root.SwaggerJsClient.RemoveOryAccessControlPolicyRoleMembersBody);
+    root.SwaggerJsClient.EnginesApi = factory(root.SwaggerJsClient.ApiClient, root.SwaggerJsClient.AddOryAccessControlPolicyRoleMembersBody, root.SwaggerJsClient.AuthorizationResult, root.SwaggerJsClient.InlineResponse500, root.SwaggerJsClient.OryAccessControlPolicy, root.SwaggerJsClient.OryAccessControlPolicyAllowedInput, root.SwaggerJsClient.OryAccessControlPolicyRole, root.SwaggerJsClient.OryAccessControlPolicyRoles, root.SwaggerJsClient.RemoveOryAccessControlPolicyRoleMembersBody);
   }
-}(this, function(ApiClient, AddOryAccessControlPolicyRoleMembersBody, AuthorizationResult, InlineResponse500, OryAccessControlPolicies, OryAccessControlPolicy, OryAccessControlPolicyAllowedInput, OryAccessControlPolicyRole, OryAccessControlPolicyRoles, RemoveOryAccessControlPolicyRoleMembersBody) {
+}(this, function(ApiClient, AddOryAccessControlPolicyRoleMembersBody, AuthorizationResult, InlineResponse500, OryAccessControlPolicy, OryAccessControlPolicyAllowedInput, OryAccessControlPolicyRole, OryAccessControlPolicyRoles, RemoveOryAccessControlPolicyRoleMembersBody) {
   'use strict';
 
   /**
@@ -365,7 +365,7 @@
      * Callback function to receive the result of the listOryAccessControlPolicies operation.
      * @callback module:api/EnginesApi~listOryAccessControlPoliciesCallback
      * @param {String} error Error message, if any.
-     * @param {module:model/OryAccessControlPolicies} data The data returned by the service call.
+     * @param {Array.<module:model/OryAccessControlPolicy>} data The data returned by the service call.
      * @param {String} response The complete HTTP response.
      */
 
@@ -376,7 +376,7 @@
      * @param {Number} opts.limit The maximum amount of policies returned.
      * @param {Number} opts.offset The offset from where to start looking.
      * @param {module:api/EnginesApi~listOryAccessControlPoliciesCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link module:model/OryAccessControlPolicies}
+     * data is of type: {@link Array.<module:model/OryAccessControlPolicy>}
      */
     this.listOryAccessControlPolicies = function(flavor, opts, callback) {
       opts = opts || {};
@@ -403,7 +403,7 @@
       var authNames = [];
       var contentTypes = ['application/json'];
       var accepts = ['application/json'];
-      var returnType = OryAccessControlPolicies;
+      var returnType = [OryAccessControlPolicy];
 
       return this.apiClient.callApi(
         '/engines/acp/ory/{flavor}/policies', 'GET',

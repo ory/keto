@@ -301,7 +301,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
 # **listOryAccessControlPolicies**
-> \ketoSDK\Model\OryAccessControlPolicies listOryAccessControlPolicies($flavor, $limit, $offset)
+> \ketoSDK\Model\OryAccessControlPolicy[] listOryAccessControlPolicies($flavor, $limit, $offset)
 
 
 
@@ -336,7 +336,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**\ketoSDK\Model\OryAccessControlPolicies**](../Model/OryAccessControlPolicies.md)
+[**\ketoSDK\Model\OryAccessControlPolicy[]**](../Model/OryAccessControlPolicy.md)
 
 ### Authorization
 

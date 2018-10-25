@@ -115,10 +115,7 @@
         ],
         "responses": {
           "200": {
-            "description": "oryAccessControlPolicies",
-            "schema": {
-              "$ref": "#/definitions/oryAccessControlPolicies"
-            }
+            "$ref": "#/responses/oryAccessControlPolicies"
           },
           "500": {
             "$ref": "#/responses/genericError"
@@ -644,6 +641,7 @@
     },
     "Policies": {
       "type": "array",
+      "title": "Policies is an array of policies.",
       "items": {
         "$ref": "#/definitions/oryAccessControlPolicy"
       },
@@ -1132,6 +1130,15 @@
             "type": "string",
             "x-go-name": "Status"
           }
+        }
+      }
+    },
+    "oryAccessControlPolicies": {
+      "description": "Policies is an array of policies.",
+      "schema": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/oryAccessControlPolicy"
         }
       }
     }

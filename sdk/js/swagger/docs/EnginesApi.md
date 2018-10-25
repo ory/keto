@@ -318,7 +318,7 @@ No authorization required
 
 <a name="listOryAccessControlPolicies"></a>
 # **listOryAccessControlPolicies**
-> OryAccessControlPolicies listOryAccessControlPolicies(flavor, opts)
+> [OryAccessControlPolicy] listOryAccessControlPolicies(flavor, opts)
 
 
 
@@ -357,7 +357,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**OryAccessControlPolicies**](OryAccessControlPolicies.md)
+[**[OryAccessControlPolicy]**](OryAccessControlPolicy.md)
 
 ### Authorization
 
