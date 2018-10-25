@@ -112,7 +112,7 @@ func (e *Engine) Register(r *httprouter.Router) {
 	//     Schemes: http, https
 	//
 	//     Responses:
-	//       200: policy
+	//       200: oryAccessControlPolicy
 	//       500: genericError
 	r.PUT(BasePath+"/policies", e.sh.Upsert(e.policiesCreate))
 

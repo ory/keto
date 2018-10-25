@@ -15,7 +15,12 @@
 package cmd
 
 import (
+	"fmt"
+	"github.com/ory/keto/sdk/go/keto/swagger"
+	"github.com/ory/keto/x"
+	"github.com/ory/x/flagx"
 	"github.com/spf13/cobra"
+	"net/http"
 
 	"github.com/ory/keto/cmd/client"
 	"github.com/ory/keto/engine/ladon"
@@ -31,13 +36,11 @@ var enginesAcpOryPoliciesListCmd = &cobra.Command{
 		var proto ladon.Policies
 		cmdx.MinArgs(cmd, args, 1)
 		client.CheckLadonFlavor(args[0])
-		client.Get(
-			urlx.MustJoin(
-				client.LadonEndpointURL(cmd, args[0]),
-				"policies",
-			),
-			&proto,
-		)
+
+		c := swagger.NewEnginesApiWithBasePath(client.EndpointURL(cmd))
+		r, res, err := c.ListOryAccessControlPolicies(args[0], int64(flagx.MustGetInt(cmd, "limit")), int64(flagx.MustGetInt(cmd, "offset")))
+		x.CheckResponse(err, http.StatusOK, res)
+		fmt.Println(cmdx.FormatResponse(r))
 	},
 }
 
@@ -52,5 +55,6 @@ func init() {
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// listCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	enginesAcpOryPoliciesListCmd.Flags().Int("limit", 100, "Limit the items being fetched")
+	enginesAcpOryPoliciesListCmd.Flags().Int("offset", 0, "Set the offset for fetching items")
 }

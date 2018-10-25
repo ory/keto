@@ -15,7 +15,6 @@
 package client
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -34,32 +33,13 @@ import (
 
 var client = http.DefaultClient
 
-func Import(method, location string, files []string) {
-	for _, file := range files {
-		var data []interface{}
-		fmt.Printf("Importing file %s to %s...\n", file, location)
+func ImportFile(file string, proto interface{}, f func()) {
 		b, err := ioutil.ReadFile(filepath.Clean(file))
 		cmdx.Must(err, "Unable to read file %s: %s", file, err)
 
-		err = json.Unmarshal(b, &data)
+		err = json.Unmarshal(b, proto)
 		cmdx.Must(err, "Unable to decode file %s to json: %s", file, err)
-
-		for _, d := range data {
-			var b bytes.Buffer
-			err := json.NewEncoder(&b).Encode(d)
-			cmdx.Must(err, "Unable to encode data to json: %s", err)
-
-			req, err := http.NewRequest(method, location, &b)
-			cmdx.Must(err, "Unable to decode data to json: %s", err)
-
-			res, err := client.Do(req)
-			cmdx.CheckResponse(err, http.StatusOK, res)
-
-			err = res.Body.Close()
-			cmdx.Must(err, "Unable to close body: %s", err)
-			fmt.Printf("Data from file %s successfully imported!\n", file)
-		}
-	}
+		f()
 }
 
 func Get(location string, proto interface{}) {

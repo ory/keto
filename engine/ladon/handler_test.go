@@ -61,9 +61,9 @@ func TestAllowed(t *testing.T) {
 			t.Run("action=authorize", func(t *testing.T) {
 				for k, c := range requests[f] {
 					t.Run(fmt.Sprintf("case=%d", k), func(t *testing.T) {
-						//d, res, err := cl.DoOryAccessControlPoliciesAllow(f, c.req)
-						//x.CheckResponseTest(t, err, http.StatusOK, res)
-						//assert.Equal(t, c.allowed, d.Allowed)
+						d, res, err := cl.DoOryAccessControlPoliciesAllow(f, c.req)
+						x.CheckResponseTest(t, err, http.StatusOK, res)
+						assert.Equal(t, c.allowed, d.Allowed)
 					})
 				}
 			})
