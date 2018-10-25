@@ -523,7 +523,7 @@
      * Callback function to receive the result of the upsertOryAccessControlPolicy operation.
      * @callback module:api/EnginesApi~upsertOryAccessControlPolicyCallback
      * @param {String} error Error message, if any.
-     * @param data This operation does not return a value.
+     * @param {module:model/OryAccessControlPolicy} data The data returned by the service call.
      * @param {String} response The complete HTTP response.
      */
 
@@ -533,6 +533,7 @@
      * @param {Object} opts Optional parameters
      * @param {module:model/OryAccessControlPolicy} opts.body 
      * @param {module:api/EnginesApi~upsertOryAccessControlPolicyCallback} callback The callback function, accepting three arguments: error, data, response
+     * data is of type: {@link module:model/OryAccessControlPolicy}
      */
     this.upsertOryAccessControlPolicy = function(flavor, opts, callback) {
       opts = opts || {};
@@ -557,7 +558,7 @@
       var authNames = [];
       var contentTypes = ['application/json'];
       var accepts = ['application/json'];
-      var returnType = null;
+      var returnType = OryAccessControlPolicy;
 
       return this.apiClient.callApi(
         '/engines/acp/ory/{flavor}/policies', 'PUT',

@@ -1,4 +1,4 @@
-/*
+/* 
  * Package main ORY Keto
  *
  * OpenAPI spec version: Latest
@@ -9,10 +9,10 @@
 package swagger
 
 import (
-	"encoding/json"
-	"fmt"
 	"net/url"
 	"strings"
+	"encoding/json"
+	"fmt"
 )
 
 type EnginesApi struct {
@@ -41,7 +41,7 @@ func NewEnginesApiWithBasePath(basePath string) *EnginesApi {
  *
  * @param flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;.
  * @param id The ID of the ORY Access Control Policy Role.
- * @param body
+ * @param body 
  * @return *OryAccessControlPolicyRole
  */
 func (a EnginesApi) AddOryAccessControlPolicyRoleMembers(flavor string, id string, body AddOryAccessControlPolicyRoleMembersBody) (*OryAccessControlPolicyRole, *APIResponse, error) {
@@ -64,7 +64,7 @@ func (a EnginesApi) AddOryAccessControlPolicyRoleMembers(flavor string, id strin
 	}
 
 	// to determine the Content-Type header
-	localVarHttpContentTypes := []string{"application/json"}
+	localVarHttpContentTypes := []string{ "application/json",  }
 
 	// set Content-Type header
 	localVarHttpContentType := a.Configuration.APIClient.SelectHeaderContentType(localVarHttpContentTypes)
@@ -74,7 +74,7 @@ func (a EnginesApi) AddOryAccessControlPolicyRoleMembers(flavor string, id strin
 	// to determine the Accept header
 	localVarHttpHeaderAccepts := []string{
 		"application/json",
-	}
+		}
 
 	// set Accept header
 	localVarHttpHeaderAccept := a.Configuration.APIClient.SelectHeaderAccept(localVarHttpHeaderAccepts)
@@ -102,7 +102,7 @@ func (a EnginesApi) AddOryAccessControlPolicyRoleMembers(flavor string, id strin
 }
 
 /**
- *
+ * 
  * Delete an ORY Access Control Policy
  *
  * @param flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;.
@@ -129,7 +129,7 @@ func (a EnginesApi) DeleteOryAccessControlPolicy(flavor string, id string) (*API
 	}
 
 	// to determine the Content-Type header
-	localVarHttpContentTypes := []string{"application/json"}
+	localVarHttpContentTypes := []string{ "application/json",  }
 
 	// set Content-Type header
 	localVarHttpContentType := a.Configuration.APIClient.SelectHeaderContentType(localVarHttpContentTypes)
@@ -139,7 +139,7 @@ func (a EnginesApi) DeleteOryAccessControlPolicy(flavor string, id string) (*API
 	// to determine the Accept header
 	localVarHttpHeaderAccepts := []string{
 		"application/json",
-	}
+		}
 
 	// set Accept header
 	localVarHttpHeaderAccept := a.Configuration.APIClient.SelectHeaderAccept(localVarHttpHeaderAccepts)
@@ -190,7 +190,7 @@ func (a EnginesApi) DeleteOryAccessControlPolicyRole(flavor string, id string) (
 	}
 
 	// to determine the Content-Type header
-	localVarHttpContentTypes := []string{"application/json"}
+	localVarHttpContentTypes := []string{ "application/json",  }
 
 	// set Content-Type header
 	localVarHttpContentType := a.Configuration.APIClient.SelectHeaderContentType(localVarHttpContentTypes)
@@ -200,7 +200,7 @@ func (a EnginesApi) DeleteOryAccessControlPolicyRole(flavor string, id string) (
 	// to determine the Accept header
 	localVarHttpHeaderAccepts := []string{
 		"application/json",
-	}
+		}
 
 	// set Accept header
 	localVarHttpHeaderAccept := a.Configuration.APIClient.SelectHeaderAccept(localVarHttpHeaderAccepts)
@@ -228,7 +228,7 @@ func (a EnginesApi) DeleteOryAccessControlPolicyRole(flavor string, id string) (
  * Use this endpoint to check if a request is allowed or not.
  *
  * @param flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;.
- * @param body
+ * @param body 
  * @return *AuthorizationResult
  */
 func (a EnginesApi) DoOryAccessControlPoliciesAllow(flavor string, body OryAccessControlPolicyAllowedInput) (*AuthorizationResult, *APIResponse, error) {
@@ -250,7 +250,7 @@ func (a EnginesApi) DoOryAccessControlPoliciesAllow(flavor string, body OryAcces
 	}
 
 	// to determine the Content-Type header
-	localVarHttpContentTypes := []string{"application/json"}
+	localVarHttpContentTypes := []string{ "application/json",  }
 
 	// set Content-Type header
 	localVarHttpContentType := a.Configuration.APIClient.SelectHeaderContentType(localVarHttpContentTypes)
@@ -260,7 +260,7 @@ func (a EnginesApi) DoOryAccessControlPoliciesAllow(flavor string, body OryAcces
 	// to determine the Accept header
 	localVarHttpHeaderAccepts := []string{
 		"application/json",
-	}
+		}
 
 	// set Accept header
 	localVarHttpHeaderAccept := a.Configuration.APIClient.SelectHeaderAccept(localVarHttpHeaderAccepts)
@@ -288,7 +288,7 @@ func (a EnginesApi) DoOryAccessControlPoliciesAllow(flavor string, body OryAcces
 }
 
 /**
- *
+ * 
  * Get an ORY Access Control Policy
  *
  * @param flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;.
@@ -315,7 +315,7 @@ func (a EnginesApi) GetOryAccessControlPolicy(flavor string, id string) (*OryAcc
 	}
 
 	// to determine the Content-Type header
-	localVarHttpContentTypes := []string{"application/json"}
+	localVarHttpContentTypes := []string{ "application/json",  }
 
 	// set Content-Type header
 	localVarHttpContentType := a.Configuration.APIClient.SelectHeaderContentType(localVarHttpContentTypes)
@@ -325,7 +325,7 @@ func (a EnginesApi) GetOryAccessControlPolicy(flavor string, id string) (*OryAcc
 	// to determine the Accept header
 	localVarHttpHeaderAccepts := []string{
 		"application/json",
-	}
+		}
 
 	// set Accept header
 	localVarHttpHeaderAccept := a.Configuration.APIClient.SelectHeaderAccept(localVarHttpHeaderAccepts)
@@ -378,7 +378,7 @@ func (a EnginesApi) GetOryAccessControlPolicyRole(flavor string, id string) (*Or
 	}
 
 	// to determine the Content-Type header
-	localVarHttpContentTypes := []string{"application/json"}
+	localVarHttpContentTypes := []string{ "application/json",  }
 
 	// set Content-Type header
 	localVarHttpContentType := a.Configuration.APIClient.SelectHeaderContentType(localVarHttpContentTypes)
@@ -388,7 +388,7 @@ func (a EnginesApi) GetOryAccessControlPolicyRole(flavor string, id string) (*Or
 	// to determine the Accept header
 	localVarHttpHeaderAccepts := []string{
 		"application/json",
-	}
+		}
 
 	// set Accept header
 	localVarHttpHeaderAccept := a.Configuration.APIClient.SelectHeaderAccept(localVarHttpHeaderAccepts)
@@ -414,7 +414,7 @@ func (a EnginesApi) GetOryAccessControlPolicyRole(flavor string, id string) (*Or
 }
 
 /**
- *
+ * 
  * List ORY Access Control Policies
  *
  * @param flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;
@@ -443,7 +443,7 @@ func (a EnginesApi) ListOryAccessControlPolicies(flavor string, limit int64, off
 	localVarQueryParams.Add("offset", a.Configuration.APIClient.ParameterToString(offset, ""))
 
 	// to determine the Content-Type header
-	localVarHttpContentTypes := []string{"application/json"}
+	localVarHttpContentTypes := []string{ "application/json",  }
 
 	// set Content-Type header
 	localVarHttpContentType := a.Configuration.APIClient.SelectHeaderContentType(localVarHttpContentTypes)
@@ -453,7 +453,7 @@ func (a EnginesApi) ListOryAccessControlPolicies(flavor string, limit int64, off
 	// to determine the Accept header
 	localVarHttpHeaderAccepts := []string{
 		"application/json",
-	}
+		}
 
 	// set Accept header
 	localVarHttpHeaderAccept := a.Configuration.APIClient.SelectHeaderAccept(localVarHttpHeaderAccepts)
@@ -508,7 +508,7 @@ func (a EnginesApi) ListOryAccessControlPolicyRoles(flavor string, limit int64, 
 	localVarQueryParams.Add("offset", a.Configuration.APIClient.ParameterToString(offset, ""))
 
 	// to determine the Content-Type header
-	localVarHttpContentTypes := []string{"application/json"}
+	localVarHttpContentTypes := []string{ "application/json",  }
 
 	// set Content-Type header
 	localVarHttpContentType := a.Configuration.APIClient.SelectHeaderContentType(localVarHttpContentTypes)
@@ -518,7 +518,7 @@ func (a EnginesApi) ListOryAccessControlPolicyRoles(flavor string, limit int64, 
 	// to determine the Accept header
 	localVarHttpHeaderAccepts := []string{
 		"application/json",
-	}
+		}
 
 	// set Accept header
 	localVarHttpHeaderAccept := a.Configuration.APIClient.SelectHeaderAccept(localVarHttpHeaderAccepts)
@@ -549,7 +549,7 @@ func (a EnginesApi) ListOryAccessControlPolicyRoles(flavor string, limit int64, 
  *
  * @param flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;.
  * @param id The ID of the ORY Access Control Policy Role.
- * @param body
+ * @param body 
  * @return void
  */
 func (a EnginesApi) RemoveOryAccessControlPolicyRoleMembers(flavor string, id string, body RemoveOryAccessControlPolicyRoleMembersBody) (*APIResponse, error) {
@@ -572,7 +572,7 @@ func (a EnginesApi) RemoveOryAccessControlPolicyRoleMembers(flavor string, id st
 	}
 
 	// to determine the Content-Type header
-	localVarHttpContentTypes := []string{"application/json"}
+	localVarHttpContentTypes := []string{ "application/json",  }
 
 	// set Content-Type header
 	localVarHttpContentType := a.Configuration.APIClient.SelectHeaderContentType(localVarHttpContentTypes)
@@ -582,7 +582,7 @@ func (a EnginesApi) RemoveOryAccessControlPolicyRoleMembers(flavor string, id st
 	// to determine the Accept header
 	localVarHttpHeaderAccepts := []string{
 		"application/json",
-	}
+		}
 
 	// set Accept header
 	localVarHttpHeaderAccept := a.Configuration.APIClient.SelectHeaderAccept(localVarHttpHeaderAccepts)
@@ -608,14 +608,14 @@ func (a EnginesApi) RemoveOryAccessControlPolicyRoleMembers(flavor string, id st
 }
 
 /**
- *
+ * 
  * Upsert an ORY Access Control Policy
  *
  * @param flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;.
- * @param body
- * @return void
+ * @param body 
+ * @return *OryAccessControlPolicy
  */
-func (a EnginesApi) UpsertOryAccessControlPolicy(flavor string, body OryAccessControlPolicy) (*APIResponse, error) {
+func (a EnginesApi) UpsertOryAccessControlPolicy(flavor string, body OryAccessControlPolicy) (*OryAccessControlPolicy, *APIResponse, error) {
 
 	var localVarHttpMethod = strings.ToUpper("Put")
 	// create path and map variables
@@ -634,7 +634,7 @@ func (a EnginesApi) UpsertOryAccessControlPolicy(flavor string, body OryAccessCo
 	}
 
 	// to determine the Content-Type header
-	localVarHttpContentTypes := []string{"application/json"}
+	localVarHttpContentTypes := []string{ "application/json",  }
 
 	// set Content-Type header
 	localVarHttpContentType := a.Configuration.APIClient.SelectHeaderContentType(localVarHttpContentTypes)
@@ -644,7 +644,7 @@ func (a EnginesApi) UpsertOryAccessControlPolicy(flavor string, body OryAccessCo
 	// to determine the Accept header
 	localVarHttpHeaderAccepts := []string{
 		"application/json",
-	}
+		}
 
 	// set Accept header
 	localVarHttpHeaderAccept := a.Configuration.APIClient.SelectHeaderAccept(localVarHttpHeaderAccepts)
@@ -653,6 +653,7 @@ func (a EnginesApi) UpsertOryAccessControlPolicy(flavor string, body OryAccessCo
 	}
 	// body params
 	localVarPostBody = &body
+	var successPayload = new(OryAccessControlPolicy)
 	localVarHttpResponse, err := a.Configuration.APIClient.CallAPI(localVarPath, localVarHttpMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFileName, localVarFileBytes)
 
 	var localVarURL, _ = url.Parse(localVarPath)
@@ -664,9 +665,10 @@ func (a EnginesApi) UpsertOryAccessControlPolicy(flavor string, body OryAccessCo
 	}
 
 	if err != nil {
-		return localVarAPIResponse, err
+		return successPayload, localVarAPIResponse, err
 	}
-	return localVarAPIResponse, err
+	err = json.Unmarshal(localVarHttpResponse.Body(), &successPayload)
+	return successPayload, localVarAPIResponse, err
 }
 
 /**
@@ -674,7 +676,7 @@ func (a EnginesApi) UpsertOryAccessControlPolicy(flavor string, body OryAccessCo
  * Roles group several subjects into one. Rules can be assigned to ORY Access Control Policy (OACP) by using the Role ID as subject in the OACP.
  *
  * @param flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;.
- * @param body
+ * @param body 
  * @return *OryAccessControlPolicyRole
  */
 func (a EnginesApi) UpsertOryAccessControlPolicyRole(flavor string, body OryAccessControlPolicyRole) (*OryAccessControlPolicyRole, *APIResponse, error) {
@@ -696,7 +698,7 @@ func (a EnginesApi) UpsertOryAccessControlPolicyRole(flavor string, body OryAcce
 	}
 
 	// to determine the Content-Type header
-	localVarHttpContentTypes := []string{"application/json"}
+	localVarHttpContentTypes := []string{ "application/json",  }
 
 	// set Content-Type header
 	localVarHttpContentType := a.Configuration.APIClient.SelectHeaderContentType(localVarHttpContentTypes)
@@ -706,7 +708,7 @@ func (a EnginesApi) UpsertOryAccessControlPolicyRole(flavor string, body OryAcce
 	// to determine the Accept header
 	localVarHttpHeaderAccepts := []string{
 		"application/json",
-	}
+		}
 
 	// set Accept header
 	localVarHttpHeaderAccept := a.Configuration.APIClient.SelectHeaderAccept(localVarHttpHeaderAccepts)
@@ -732,3 +734,4 @@ func (a EnginesApi) UpsertOryAccessControlPolicyRole(flavor string, body OryAcce
 	err = json.Unmarshal(localVarHttpResponse.Body(), &successPayload)
 	return successPayload, localVarAPIResponse, err
 }
+

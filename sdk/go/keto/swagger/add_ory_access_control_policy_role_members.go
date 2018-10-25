@@ -1,4 +1,4 @@
-/*
+/* 
  * Package main ORY Keto
  *
  * OpenAPI spec version: Latest
@@ -9,6 +9,7 @@
 package swagger
 
 type AddOryAccessControlPolicyRoleMembers struct {
+
 	Body AddOryAccessControlPolicyRoleMembersBody `json:"Body,omitempty"`
 
 	// The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".  in: path

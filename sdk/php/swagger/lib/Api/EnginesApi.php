@@ -1016,7 +1016,7 @@ class EnginesApi
      * @param string $flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;. (required)
      * @param \ketoSDK\Model\OryAccessControlPolicy $body  (optional)
      * @throws \ketoSDK\ApiException on non-2xx response
-     * @return void
+     * @return \ketoSDK\Model\OryAccessControlPolicy
      */
     public function upsertOryAccessControlPolicy($flavor, $body = null)
     {
@@ -1032,7 +1032,7 @@ class EnginesApi
      * @param string $flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;. (required)
      * @param \ketoSDK\Model\OryAccessControlPolicy $body  (optional)
      * @throws \ketoSDK\ApiException on non-2xx response
-     * @return array of null, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \ketoSDK\Model\OryAccessControlPolicy, HTTP status code, HTTP response headers (array of strings)
      */
     public function upsertOryAccessControlPolicyWithHttpInfo($flavor, $body = null)
     {
@@ -1080,13 +1080,17 @@ class EnginesApi
                 $queryParams,
                 $httpBody,
                 $headerParams,
-                null,
+                '\ketoSDK\Model\OryAccessControlPolicy',
                 '/engines/acp/ory/{flavor}/policies'
             );
 
-            return [null, $statusCode, $httpHeader];
+            return [$this->apiClient->getSerializer()->deserialize($response, '\ketoSDK\Model\OryAccessControlPolicy', $httpHeader), $statusCode, $httpHeader];
         } catch (ApiException $e) {
             switch ($e->getCode()) {
+                case 200:
+                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\ketoSDK\Model\OryAccessControlPolicy', $e->getResponseHeaders());
+                    $e->setResponseObject($data);
+                    break;
                 case 500:
                     $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\ketoSDK\Model\InlineResponse500', $e->getResponseHeaders());
                     $e->setResponseObject($data);

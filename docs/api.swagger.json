@@ -157,7 +157,10 @@
         ],
         "responses": {
           "200": {
-            "$ref": "#/responses/policy"
+            "description": "oryAccessControlPolicy",
+            "schema": {
+              "$ref": "#/definitions/oryAccessControlPolicy"
+            }
           },
           "500": {
             "$ref": "#/responses/genericError"

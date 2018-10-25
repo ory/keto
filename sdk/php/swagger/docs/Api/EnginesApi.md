@@ -447,7 +447,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
 # **upsertOryAccessControlPolicy**
-> upsertOryAccessControlPolicy($flavor, $body)
+> \ketoSDK\Model\OryAccessControlPolicy upsertOryAccessControlPolicy($flavor, $body)
 
 
 
@@ -463,7 +463,8 @@ $flavor = "flavor_example"; // string | The ORY Access Control Policy flavor. Ca
 $body = new \ketoSDK\Model\OryAccessControlPolicy(); // \ketoSDK\Model\OryAccessControlPolicy | 
 
 try {
-    $api_instance->upsertOryAccessControlPolicy($flavor, $body);
+    $result = $api_instance->upsertOryAccessControlPolicy($flavor, $body);
+    print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling EnginesApi->upsertOryAccessControlPolicy: ', $e->getMessage(), PHP_EOL;
 }
@@ -479,7 +480,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-void (empty response body)
+[**\ketoSDK\Model\OryAccessControlPolicy**](../Model/OryAccessControlPolicy.md)
 
 ### Authorization
 
