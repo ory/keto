@@ -2,12 +2,14 @@ package x
 
 import (
 	"bytes"
-	"github.com/ory/keto/sdk/go/keto/swagger"
-	"github.com/ory/x/cmdx"
-	"github.com/stretchr/testify/require"
 	"io/ioutil"
 	"net/http"
 	"testing"
+
+	"github.com/stretchr/testify/require"
+
+	"github.com/ory/keto/sdk/go/keto/swagger"
+	"github.com/ory/x/cmdx"
 )
 
 func CheckResponse(err error, expectedStatusCode int, response *swagger.APIResponse) {

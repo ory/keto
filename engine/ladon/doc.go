@@ -177,7 +177,6 @@ type oryAccessControlPolicies struct {
 	Body []Policy
 }
 
-
 // Roles is an array of roles.
 //
 // swagger:response oryAccessControlPolicyRoles

@@ -1,4 +1,4 @@
-/* 
+/*
  * Package main ORY Keto
  *
  * OpenAPI spec version: Latest
@@ -13,7 +13,6 @@ import (
 	"net/http"
 	"time"
 )
-
 
 type Configuration struct {
 	Username      string            `json:"userName,omitempty"`
@@ -31,7 +30,7 @@ type Configuration struct {
 	UserAgent     string            `json:"userAgent,omitempty"`
 	APIClient     *APIClient
 	Transport     *http.Transport
-	Timeout       *time.Duration    `json:"timeout,omitempty"`
+	Timeout       *time.Duration `json:"timeout,omitempty"`
 }
 
 func NewConfiguration() *Configuration {

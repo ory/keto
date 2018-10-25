@@ -4,13 +4,14 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/ory/keto/sdk/go/keto/swagger"
-	"github.com/ory/keto/x"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
+
+	"github.com/ory/keto/sdk/go/keto/swagger"
+	"github.com/ory/keto/x"
 
 	"github.com/gobuffalo/packr"
 	"github.com/julienschmidt/httprouter"
@@ -199,70 +200,6 @@ func TestPolicyCRUD(t *testing.T) {
 	}
 }
 
-func test404(t *testing.T, path string) {
-	t.Run(fmt.Sprintf("action=404/path=%s", path), func(t *testing.T) {
-		res, err := http.DefaultClient.Get(path)
-		require.NoError(t, err)
-		assert.Equal(t, http.StatusNotFound, res.StatusCode)
-		require.NoError(t, res.Body.Close())
-	})
-}
-
-func testDelete(t *testing.T, path string) {
-	t.Run(fmt.Sprintf("action=delete/path=%s", path), func(t *testing.T) {
-		req, err := http.NewRequest("DELETE", path, nil)
-		require.NoError(t, err)
-		res, err := http.DefaultClient.Do(req)
-		require.NoError(t, err)
-		assert.Equal(t, http.StatusNoContent, res.StatusCode)
-		require.NoError(t, res.Body.Close())
-	})
-}
-
-func testCreate(t *testing.T, path string, in, expect interface{}) {
-	t.Run(fmt.Sprintf("action=create/path=%s", path), func(t *testing.T) {
-		var b bytes.Buffer
-		require.NoError(t, json.NewEncoder(&b).Encode(in))
-		req, err := http.NewRequest("PUT", path, &b)
-		require.NoError(t, err)
-		res, err := http.DefaultClient.Do(req)
-		require.NoError(t, err)
-		assert.Equal(t, http.StatusOK, res.StatusCode)
-
-		body, err := ioutil.ReadAll(res.Body)
-		require.NoError(t, err)
-
-		var bb bytes.Buffer
-		require.NoError(t, json.NewEncoder(&bb).Encode(expect))
-		assert.Equal(t,
-			strings.Replace(bb.String(), "\n", "", 1),
-			string(body),
-		)
-
-		require.NoError(t, res.Body.Close())
-	})
-}
-
-func testGet(t *testing.T, ty string, path string, expect interface{}) {
-	t.Run(fmt.Sprintf("action=%s/path=%s", ty, path), func(t *testing.T) {
-		res, err := http.DefaultClient.Get(path)
-		require.NoError(t, err)
-		assert.Equal(t, http.StatusOK, res.StatusCode)
-
-		body, err := ioutil.ReadAll(res.Body)
-		require.NoError(t, err)
-
-		var bb bytes.Buffer
-		require.NoError(t, json.NewEncoder(&bb).Encode(expect))
-		assert.Equal(t,
-			strings.Replace(bb.String(), "\n", "", 1),
-			string(body),
-		)
-
-		require.NoError(t, res.Body.Close())
-	})
-}
-
 func TestRoleCRUD(t *testing.T) {
 	ts := crudts()
 	defer ts.Close()
@@ -273,7 +210,7 @@ func TestRoleCRUD(t *testing.T) {
 			_, resp, err := c.GetOryAccessControlPolicyRole(f, r.ID)
 			x.CheckResponseTest(t, err, http.StatusNotFound, resp)
 
-			o, resp, err := c.UpsertOryAccessControlPolicyRole(r.ID, f, toSwaggerRole(r))
+			o, resp, err := c.UpsertOryAccessControlPolicyRole(f, r.ID, toSwaggerRole(r))
 			x.CheckResponseTest(t, err, http.StatusOK, resp)
 			require.EqualValues(t, r, fromSwaggerRole(*o))
 
