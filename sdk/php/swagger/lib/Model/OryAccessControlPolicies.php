@@ -52,7 +52,7 @@ class OryAccessControlPolicies implements ArrayAccess
       * @var string[]
       */
     protected static $swaggerTypes = [
-        
+        'body' => '\ketoSDK\Model\OryAccessControlPolicy[]'
     ];
 
     /**
@@ -60,7 +60,7 @@ class OryAccessControlPolicies implements ArrayAccess
       * @var string[]
       */
     protected static $swaggerFormats = [
-        
+        'body' => null
     ];
 
     public static function swaggerTypes()
@@ -78,7 +78,7 @@ class OryAccessControlPolicies implements ArrayAccess
      * @var string[]
      */
     protected static $attributeMap = [
-        
+        'body' => 'Body'
     ];
 
 
@@ -87,7 +87,7 @@ class OryAccessControlPolicies implements ArrayAccess
      * @var string[]
      */
     protected static $setters = [
-        
+        'body' => 'setBody'
     ];
 
 
@@ -96,7 +96,7 @@ class OryAccessControlPolicies implements ArrayAccess
      * @var string[]
      */
     protected static $getters = [
-        
+        'body' => 'getBody'
     ];
 
     public static function attributeMap()
@@ -130,6 +130,7 @@ class OryAccessControlPolicies implements ArrayAccess
      */
     public function __construct(array $data = null)
     {
+        $this->container['body'] = isset($data['body']) ? $data['body'] : null;
     }
 
     /**
@@ -139,7 +140,7 @@ class OryAccessControlPolicies implements ArrayAccess
      */
     public function listInvalidProperties()
     {
-        $invalid_properties = parent::listInvalidProperties();
+        $invalid_properties = [];
 
         return $invalid_properties;
     }
@@ -152,13 +153,31 @@ class OryAccessControlPolicies implements ArrayAccess
      */
     public function valid()
     {
-        if (!parent::valid()) {
-            return false;
-        }
 
         return true;
     }
 
+
+    /**
+     * Gets body
+     * @return \ketoSDK\Model\OryAccessControlPolicy[]
+     */
+    public function getBody()
+    {
+        return $this->container['body'];
+    }
+
+    /**
+     * Sets body
+     * @param \ketoSDK\Model\OryAccessControlPolicy[] $body in: body
+     * @return $this
+     */
+    public function setBody($body)
+    {
+        $this->container['body'] = $body;
+
+        return $this;
+    }
     /**
      * Returns true if offset exists. False otherwise.
      * @param  integer $offset Offset

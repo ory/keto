@@ -292,7 +292,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **UpsertOryAccessControlPolicy**
-> UpsertOryAccessControlPolicy($id, $flavor, $body)
+> UpsertOryAccessControlPolicy($flavor, $body)
 
 
 
@@ -303,7 +303,6 @@ Upsert an ORY Access Control Policy
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **id** | **string**| The ID of the ORY Access Control Policy. | 
  **flavor** | **string**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;. | 
  **body** | [**OryAccessControlPolicy**](OryAccessControlPolicy.md)|  | [optional] 
 

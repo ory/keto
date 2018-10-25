@@ -529,20 +529,14 @@
 
     /**
      * Upsert an ORY Access Control Policy
-     * @param {String} id The ID of the ORY Access Control Policy.
      * @param {String} flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;.
      * @param {Object} opts Optional parameters
      * @param {module:model/OryAccessControlPolicy} opts.body 
      * @param {module:api/EnginesApi~upsertOryAccessControlPolicyCallback} callback The callback function, accepting three arguments: error, data, response
      */
-    this.upsertOryAccessControlPolicy = function(id, flavor, opts, callback) {
+    this.upsertOryAccessControlPolicy = function(flavor, opts, callback) {
       opts = opts || {};
       var postBody = opts['body'];
-
-      // verify the required parameter 'id' is set
-      if (id === undefined || id === null) {
-        throw new Error("Missing the required parameter 'id' when calling upsertOryAccessControlPolicy");
-      }
 
       // verify the required parameter 'flavor' is set
       if (flavor === undefined || flavor === null) {
@@ -551,7 +545,6 @@
 
 
       var pathParams = {
-        'id': id,
         'flavor': flavor
       };
       var queryParams = {

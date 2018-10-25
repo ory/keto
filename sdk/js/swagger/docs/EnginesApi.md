@@ -475,7 +475,7 @@ No authorization required
 
 <a name="upsertOryAccessControlPolicy"></a>
 # **upsertOryAccessControlPolicy**
-> upsertOryAccessControlPolicy(id, flavor, opts)
+> upsertOryAccessControlPolicy(flavor, opts)
 
 
 
@@ -486,8 +486,6 @@ Upsert an ORY Access Control Policy
 var SwaggerJsClient = require('swagger-js-client');
 
 var apiInstance = new SwaggerJsClient.EnginesApi();
-
-var id = "id_example"; // String | The ID of the ORY Access Control Policy.
 
 var flavor = "flavor_example"; // String | The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".
 
@@ -502,14 +500,13 @@ var callback = function(error, data, response) {
     console.log('API called successfully.');
   }
 };
-apiInstance.upsertOryAccessControlPolicy(id, flavor, opts, callback);
+apiInstance.upsertOryAccessControlPolicy(flavor, opts, callback);
 ```
 
 ### Parameters
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **id** | **String**| The ID of the ORY Access Control Policy. | 
  **flavor** | **String**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;. | 
  **body** | [**OryAccessControlPolicy**](OryAccessControlPolicy.md)|  | [optional] 
 

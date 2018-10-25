@@ -9,4 +9,7 @@
 package swagger
 
 type OryAccessControlPolicies struct {
+
+	// in: body
+	Body []OryAccessControlPolicy `json:"Body,omitempty"`
 }

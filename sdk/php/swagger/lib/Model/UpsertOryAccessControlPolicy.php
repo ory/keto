@@ -53,8 +53,7 @@ class UpsertOryAccessControlPolicy implements ArrayAccess
       */
     protected static $swaggerTypes = [
         'body' => '\ketoSDK\Model\OryAccessControlPolicy',
-        'flavor' => 'string',
-        'id' => 'string'
+        'flavor' => 'string'
     ];
 
     /**
@@ -63,8 +62,7 @@ class UpsertOryAccessControlPolicy implements ArrayAccess
       */
     protected static $swaggerFormats = [
         'body' => null,
-        'flavor' => null,
-        'id' => null
+        'flavor' => null
     ];
 
     public static function swaggerTypes()
@@ -83,8 +81,7 @@ class UpsertOryAccessControlPolicy implements ArrayAccess
      */
     protected static $attributeMap = [
         'body' => 'Body',
-        'flavor' => 'flavor',
-        'id' => 'id'
+        'flavor' => 'flavor'
     ];
 
 
@@ -94,8 +91,7 @@ class UpsertOryAccessControlPolicy implements ArrayAccess
      */
     protected static $setters = [
         'body' => 'setBody',
-        'flavor' => 'setFlavor',
-        'id' => 'setId'
+        'flavor' => 'setFlavor'
     ];
 
 
@@ -105,8 +101,7 @@ class UpsertOryAccessControlPolicy implements ArrayAccess
      */
     protected static $getters = [
         'body' => 'getBody',
-        'flavor' => 'getFlavor',
-        'id' => 'getId'
+        'flavor' => 'getFlavor'
     ];
 
     public static function attributeMap()
@@ -142,7 +137,6 @@ class UpsertOryAccessControlPolicy implements ArrayAccess
     {
         $this->container['body'] = isset($data['body']) ? $data['body'] : null;
         $this->container['flavor'] = isset($data['flavor']) ? $data['flavor'] : null;
-        $this->container['id'] = isset($data['id']) ? $data['id'] : null;
     }
 
     /**
@@ -157,9 +151,6 @@ class UpsertOryAccessControlPolicy implements ArrayAccess
         if ($this->container['flavor'] === null) {
             $invalid_properties[] = "'flavor' can't be null";
         }
-        if ($this->container['id'] === null) {
-            $invalid_properties[] = "'id' can't be null";
-        }
         return $invalid_properties;
     }
 
@@ -173,9 +164,6 @@ class UpsertOryAccessControlPolicy implements ArrayAccess
     {
 
         if ($this->container['flavor'] === null) {
-            return false;
-        }
-        if ($this->container['id'] === null) {
             return false;
         }
         return true;
@@ -220,27 +208,6 @@ class UpsertOryAccessControlPolicy implements ArrayAccess
     public function setFlavor($flavor)
     {
         $this->container['flavor'] = $flavor;
-
-        return $this;
-    }
-
-    /**
-     * Gets id
-     * @return string
-     */
-    public function getId()
-    {
-        return $this->container['id'];
-    }
-
-    /**
-     * Sets id
-     * @param string $id The ID of the ORY Access Control Policy.  in: path
-     * @return $this
-     */
-    public function setId($id)
-    {
-        $this->container['id'] = $id;
 
         return $this;
     }

@@ -447,7 +447,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
 # **upsertOryAccessControlPolicy**
-> upsertOryAccessControlPolicy($id, $flavor, $body)
+> upsertOryAccessControlPolicy($flavor, $body)
 
 
 
@@ -459,12 +459,11 @@ Upsert an ORY Access Control Policy
 require_once(__DIR__ . '/vendor/autoload.php');
 
 $api_instance = new ketoSDK\Api\EnginesApi();
-$id = "id_example"; // string | The ID of the ORY Access Control Policy.
 $flavor = "flavor_example"; // string | The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".
 $body = new \ketoSDK\Model\OryAccessControlPolicy(); // \ketoSDK\Model\OryAccessControlPolicy | 
 
 try {
-    $api_instance->upsertOryAccessControlPolicy($id, $flavor, $body);
+    $api_instance->upsertOryAccessControlPolicy($flavor, $body);
 } catch (Exception $e) {
     echo 'Exception when calling EnginesApi->upsertOryAccessControlPolicy: ', $e->getMessage(), PHP_EOL;
 }
@@ -475,7 +474,6 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **id** | **string**| The ID of the ORY Access Control Policy. |
  **flavor** | **string**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;. |
  **body** | [**\ketoSDK\Model\OryAccessControlPolicy**](../Model/OryAccessControlPolicy.md)|  | [optional]
 

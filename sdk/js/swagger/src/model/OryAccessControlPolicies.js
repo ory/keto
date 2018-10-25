@@ -44,14 +44,11 @@
    * Constructs a new <code>OryAccessControlPolicies</code>.
    * @alias module:model/OryAccessControlPolicies
    * @class
-   * @extends Array
    */
   var exports = function() {
     var _this = this;
-    _this = new Array();
-    Object.setPrototypeOf(_this, exports);
 
-    return _this;
+
   };
 
   /**
@@ -64,12 +61,19 @@
   exports.constructFromObject = function(data, obj) {
     if (data) {
       obj = obj || new exports();
-      ApiClient.constructFromObject(data, obj, 'OryAccessControlPolicy');
 
+      if (data.hasOwnProperty('Body')) {
+        obj['Body'] = ApiClient.convertToType(data['Body'], [OryAccessControlPolicy]);
+      }
     }
     return obj;
   }
 
+  /**
+   * in: body
+   * @member {Array.<module:model/OryAccessControlPolicy>} Body
+   */
+  exports.prototype['Body'] = undefined;
 
 
 

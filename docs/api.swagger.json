@@ -144,14 +144,6 @@
         "parameters": [
           {
             "type": "string",
-            "x-go-name": "ID",
-            "description": "The ID of the ORY Access Control Policy.",
-            "name": "id",
-            "in": "path",
-            "required": true
-          },
-          {
-            "type": "string",
             "x-go-name": "Flavor",
             "description": "The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".",
             "name": "flavor",
@@ -877,10 +869,16 @@
       "x-go-package": "github.com/ory/keto/engine/ladon"
     },
     "oryAccessControlPolicies": {
-      "type": "array",
+      "type": "object",
       "title": "Policies is an array of policies.",
-      "items": {
-        "$ref": "#/definitions/oryAccessControlPolicy"
+      "properties": {
+        "Body": {
+          "description": "in: body",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/oryAccessControlPolicy"
+          }
+        }
       },
       "x-go-name": "Policies",
       "x-go-package": "github.com/ory/keto/engine/ladon"
@@ -1038,7 +1036,6 @@
     "upsertOryAccessControlPolicy": {
       "type": "object",
       "required": [
-        "id",
         "flavor"
       ],
       "properties": {
@@ -1049,11 +1046,6 @@
           "description": "The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".\n\nin: path",
           "type": "string",
           "x-go-name": "Flavor"
-        },
-        "id": {
-          "description": "The ID of the ORY Access Control Policy.\n\nin: path",
-          "type": "string",
-          "x-go-name": "ID"
         }
       },
       "x-go-package": "github.com/ory/keto/engine/ladon"

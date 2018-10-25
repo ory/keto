@@ -611,17 +611,15 @@ func (a EnginesApi) RemoveOryAccessControlPolicyRoleMembers(id string, flavor st
  * 
  * Upsert an ORY Access Control Policy
  *
- * @param id The ID of the ORY Access Control Policy.
  * @param flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;.
  * @param body 
  * @return void
  */
-func (a EnginesApi) UpsertOryAccessControlPolicy(id string, flavor string, body OryAccessControlPolicy) (*APIResponse, error) {
+func (a EnginesApi) UpsertOryAccessControlPolicy(flavor string, body OryAccessControlPolicy) (*APIResponse, error) {
 
 	var localVarHttpMethod = strings.ToUpper("Put")
 	// create path and map variables
 	localVarPath := a.Configuration.BasePath + "/engines/acp/ory/{flavor}/policies"
-	localVarPath = strings.Replace(localVarPath, "{"+"id"+"}", fmt.Sprintf("%v", id), -1)
 	localVarPath = strings.Replace(localVarPath, "{"+"flavor"+"}", fmt.Sprintf("%v", flavor), -1)
 
 	localVarHeaderParams := make(map[string]string)

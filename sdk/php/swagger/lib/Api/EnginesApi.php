@@ -1013,15 +1013,14 @@ class EnginesApi
      *
      * Client for keto
      *
-     * @param string $id The ID of the ORY Access Control Policy. (required)
      * @param string $flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;. (required)
      * @param \ketoSDK\Model\OryAccessControlPolicy $body  (optional)
      * @throws \ketoSDK\ApiException on non-2xx response
      * @return void
      */
-    public function upsertOryAccessControlPolicy($id, $flavor, $body = null)
+    public function upsertOryAccessControlPolicy($flavor, $body = null)
     {
-        list($response) = $this->upsertOryAccessControlPolicyWithHttpInfo($id, $flavor, $body);
+        list($response) = $this->upsertOryAccessControlPolicyWithHttpInfo($flavor, $body);
         return $response;
     }
 
@@ -1030,18 +1029,13 @@ class EnginesApi
      *
      * Client for keto
      *
-     * @param string $id The ID of the ORY Access Control Policy. (required)
      * @param string $flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;. (required)
      * @param \ketoSDK\Model\OryAccessControlPolicy $body  (optional)
      * @throws \ketoSDK\ApiException on non-2xx response
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
-    public function upsertOryAccessControlPolicyWithHttpInfo($id, $flavor, $body = null)
+    public function upsertOryAccessControlPolicyWithHttpInfo($flavor, $body = null)
     {
-        // verify the required parameter 'id' is set
-        if ($id === null) {
-            throw new \InvalidArgumentException('Missing the required parameter $id when calling upsertOryAccessControlPolicy');
-        }
         // verify the required parameter 'flavor' is set
         if ($flavor === null) {
             throw new \InvalidArgumentException('Missing the required parameter $flavor when calling upsertOryAccessControlPolicy');
@@ -1058,14 +1052,6 @@ class EnginesApi
         }
         $headerParams['Content-Type'] = $this->apiClient->selectHeaderContentType(['application/json']);
 
-        // path params
-        if ($id !== null) {
-            $resourcePath = str_replace(
-                "{" . "id" . "}",
-                $this->apiClient->getSerializer()->toPathValue($id),
-                $resourcePath
-            );
-        }
         // path params
         if ($flavor !== null) {
             $resourcePath = str_replace(
