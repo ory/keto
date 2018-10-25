@@ -58,12 +58,12 @@ Please follow the [installation procedure](#installation--usage) and then run th
 require_once(__DIR__ . '/vendor/autoload.php');
 
 $api_instance = new ketoSDK\Api\EnginesApi();
-$id = "id_example"; // string | The ID of the ORY Access Control Policy Role.
 $flavor = "flavor_example"; // string | The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".
+$id = "id_example"; // string | The ID of the ORY Access Control Policy Role.
 $body = new \ketoSDK\Model\AddOryAccessControlPolicyRoleMembersBody(); // \ketoSDK\Model\AddOryAccessControlPolicyRoleMembersBody | 
 
 try {
-    $result = $api_instance->addOryAccessControlPolicyRoleMembers($id, $flavor, $body);
+    $result = $api_instance->addOryAccessControlPolicyRoleMembers($flavor, $id, $body);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling EnginesApi->addOryAccessControlPolicyRoleMembers: ', $e->getMessage(), PHP_EOL;

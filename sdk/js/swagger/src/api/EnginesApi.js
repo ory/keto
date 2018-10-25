@@ -17,18 +17,18 @@
 (function(root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module.
-    define(['ApiClient', 'model/AddOryAccessControlPolicyRoleMembersBody', 'model/AuthorizationResult', 'model/InlineResponse500', 'model/OryAccessControlPolicy', 'model/OryAccessControlPolicyAllowedInput', 'model/OryAccessControlPolicyRole', 'model/OryAccessControlPolicyRoles', 'model/RemoveOryAccessControlPolicyRoleMembersBody'], factory);
+    define(['ApiClient', 'model/AddOryAccessControlPolicyRoleMembersBody', 'model/AuthorizationResult', 'model/InlineResponse500', 'model/OryAccessControlPolicy', 'model/OryAccessControlPolicyAllowedInput', 'model/OryAccessControlPolicyRole', 'model/RemoveOryAccessControlPolicyRoleMembersBody'], factory);
   } else if (typeof module === 'object' && module.exports) {
     // CommonJS-like environments that support module.exports, like Node.
-    module.exports = factory(require('../ApiClient'), require('../model/AddOryAccessControlPolicyRoleMembersBody'), require('../model/AuthorizationResult'), require('../model/InlineResponse500'), require('../model/OryAccessControlPolicy'), require('../model/OryAccessControlPolicyAllowedInput'), require('../model/OryAccessControlPolicyRole'), require('../model/OryAccessControlPolicyRoles'), require('../model/RemoveOryAccessControlPolicyRoleMembersBody'));
+    module.exports = factory(require('../ApiClient'), require('../model/AddOryAccessControlPolicyRoleMembersBody'), require('../model/AuthorizationResult'), require('../model/InlineResponse500'), require('../model/OryAccessControlPolicy'), require('../model/OryAccessControlPolicyAllowedInput'), require('../model/OryAccessControlPolicyRole'), require('../model/RemoveOryAccessControlPolicyRoleMembersBody'));
   } else {
     // Browser globals (root is window)
     if (!root.SwaggerJsClient) {
       root.SwaggerJsClient = {};
     }
-    root.SwaggerJsClient.EnginesApi = factory(root.SwaggerJsClient.ApiClient, root.SwaggerJsClient.AddOryAccessControlPolicyRoleMembersBody, root.SwaggerJsClient.AuthorizationResult, root.SwaggerJsClient.InlineResponse500, root.SwaggerJsClient.OryAccessControlPolicy, root.SwaggerJsClient.OryAccessControlPolicyAllowedInput, root.SwaggerJsClient.OryAccessControlPolicyRole, root.SwaggerJsClient.OryAccessControlPolicyRoles, root.SwaggerJsClient.RemoveOryAccessControlPolicyRoleMembersBody);
+    root.SwaggerJsClient.EnginesApi = factory(root.SwaggerJsClient.ApiClient, root.SwaggerJsClient.AddOryAccessControlPolicyRoleMembersBody, root.SwaggerJsClient.AuthorizationResult, root.SwaggerJsClient.InlineResponse500, root.SwaggerJsClient.OryAccessControlPolicy, root.SwaggerJsClient.OryAccessControlPolicyAllowedInput, root.SwaggerJsClient.OryAccessControlPolicyRole, root.SwaggerJsClient.RemoveOryAccessControlPolicyRoleMembersBody);
   }
-}(this, function(ApiClient, AddOryAccessControlPolicyRoleMembersBody, AuthorizationResult, InlineResponse500, OryAccessControlPolicy, OryAccessControlPolicyAllowedInput, OryAccessControlPolicyRole, OryAccessControlPolicyRoles, RemoveOryAccessControlPolicyRoleMembersBody) {
+}(this, function(ApiClient, AddOryAccessControlPolicyRoleMembersBody, AuthorizationResult, InlineResponse500, OryAccessControlPolicy, OryAccessControlPolicyAllowedInput, OryAccessControlPolicyRole, RemoveOryAccessControlPolicyRoleMembersBody) {
   'use strict';
 
   /**
@@ -59,31 +59,31 @@
     /**
      * Add a member to an ORY Access Control Policy Role
      * Roles group several subjects into one. Rules can be assigned to ORY Access Control Policy (OACP) by using the Role ID as subject in the OACP.
-     * @param {String} id The ID of the ORY Access Control Policy Role.
      * @param {String} flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;.
+     * @param {String} id The ID of the ORY Access Control Policy Role.
      * @param {Object} opts Optional parameters
      * @param {module:model/AddOryAccessControlPolicyRoleMembersBody} opts.body 
      * @param {module:api/EnginesApi~addOryAccessControlPolicyRoleMembersCallback} callback The callback function, accepting three arguments: error, data, response
      * data is of type: {@link module:model/OryAccessControlPolicyRole}
      */
-    this.addOryAccessControlPolicyRoleMembers = function(id, flavor, opts, callback) {
+    this.addOryAccessControlPolicyRoleMembers = function(flavor, id, opts, callback) {
       opts = opts || {};
       var postBody = opts['body'];
-
-      // verify the required parameter 'id' is set
-      if (id === undefined || id === null) {
-        throw new Error("Missing the required parameter 'id' when calling addOryAccessControlPolicyRoleMembers");
-      }
 
       // verify the required parameter 'flavor' is set
       if (flavor === undefined || flavor === null) {
         throw new Error("Missing the required parameter 'flavor' when calling addOryAccessControlPolicyRoleMembers");
       }
 
+      // verify the required parameter 'id' is set
+      if (id === undefined || id === null) {
+        throw new Error("Missing the required parameter 'id' when calling addOryAccessControlPolicyRoleMembers");
+      }
+
 
       var pathParams = {
-        'id': id,
-        'flavor': flavor
+        'flavor': flavor,
+        'id': id
       };
       var queryParams = {
       };
@@ -416,7 +416,7 @@
      * Callback function to receive the result of the listOryAccessControlPolicyRoles operation.
      * @callback module:api/EnginesApi~listOryAccessControlPolicyRolesCallback
      * @param {String} error Error message, if any.
-     * @param {module:model/OryAccessControlPolicyRoles} data The data returned by the service call.
+     * @param {Array.<module:model/OryAccessControlPolicyRole>} data The data returned by the service call.
      * @param {String} response The complete HTTP response.
      */
 
@@ -428,7 +428,7 @@
      * @param {Number} opts.limit The maximum amount of policies returned.
      * @param {Number} opts.offset The offset from where to start looking.
      * @param {module:api/EnginesApi~listOryAccessControlPolicyRolesCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link module:model/OryAccessControlPolicyRoles}
+     * data is of type: {@link Array.<module:model/OryAccessControlPolicyRole>}
      */
     this.listOryAccessControlPolicyRoles = function(flavor, opts, callback) {
       opts = opts || {};
@@ -455,7 +455,7 @@
       var authNames = [];
       var contentTypes = ['application/json'];
       var accepts = ['application/json'];
-      var returnType = OryAccessControlPolicyRoles;
+      var returnType = [OryAccessControlPolicyRole];
 
       return this.apiClient.callApi(
         '/engines/acp/ory/{flavor}/roles', 'GET',
@@ -475,30 +475,30 @@
     /**
      * Remove a member from an ORY Access Control Policy Role
      * Roles group several subjects into one. Rules can be assigned to ORY Access Control Policy (OACP) by using the Role ID as subject in the OACP.
-     * @param {String} id The ID of the ORY Access Control Policy Role.
      * @param {String} flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;.
+     * @param {String} id The ID of the ORY Access Control Policy Role.
      * @param {Object} opts Optional parameters
      * @param {module:model/RemoveOryAccessControlPolicyRoleMembersBody} opts.body 
      * @param {module:api/EnginesApi~removeOryAccessControlPolicyRoleMembersCallback} callback The callback function, accepting three arguments: error, data, response
      */
-    this.removeOryAccessControlPolicyRoleMembers = function(id, flavor, opts, callback) {
+    this.removeOryAccessControlPolicyRoleMembers = function(flavor, id, opts, callback) {
       opts = opts || {};
       var postBody = opts['body'];
-
-      // verify the required parameter 'id' is set
-      if (id === undefined || id === null) {
-        throw new Error("Missing the required parameter 'id' when calling removeOryAccessControlPolicyRoleMembers");
-      }
 
       // verify the required parameter 'flavor' is set
       if (flavor === undefined || flavor === null) {
         throw new Error("Missing the required parameter 'flavor' when calling removeOryAccessControlPolicyRoleMembers");
       }
 
+      // verify the required parameter 'id' is set
+      if (id === undefined || id === null) {
+        throw new Error("Missing the required parameter 'id' when calling removeOryAccessControlPolicyRoleMembers");
+      }
+
 
       var pathParams = {
-        'id': id,
-        'flavor': flavor
+        'flavor': flavor,
+        'id': id
       };
       var queryParams = {
       };
@@ -577,31 +577,31 @@
     /**
      * Upsert an ORY Access Control Policy Role
      * Roles group several subjects into one. Rules can be assigned to ORY Access Control Policy (OACP) by using the Role ID as subject in the OACP.
-     * @param {String} id The ID of the ORY Access Control Policy Role.
      * @param {String} flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;.
+     * @param {String} id The ID of the ORY Access Control Policy Role.
      * @param {Object} opts Optional parameters
      * @param {module:model/OryAccessControlPolicyRole} opts.body 
      * @param {module:api/EnginesApi~upsertOryAccessControlPolicyRoleCallback} callback The callback function, accepting three arguments: error, data, response
      * data is of type: {@link module:model/OryAccessControlPolicyRole}
      */
-    this.upsertOryAccessControlPolicyRole = function(id, flavor, opts, callback) {
+    this.upsertOryAccessControlPolicyRole = function(flavor, id, opts, callback) {
       opts = opts || {};
       var postBody = opts['body'];
-
-      // verify the required parameter 'id' is set
-      if (id === undefined || id === null) {
-        throw new Error("Missing the required parameter 'id' when calling upsertOryAccessControlPolicyRole");
-      }
 
       // verify the required parameter 'flavor' is set
       if (flavor === undefined || flavor === null) {
         throw new Error("Missing the required parameter 'flavor' when calling upsertOryAccessControlPolicyRole");
       }
 
+      // verify the required parameter 'id' is set
+      if (id === undefined || id === null) {
+        throw new Error("Missing the required parameter 'id' when calling upsertOryAccessControlPolicyRole");
+      }
+
 
       var pathParams = {
-        'id': id,
-        'flavor': flavor
+        'flavor': flavor,
+        'id': id
       };
       var queryParams = {
       };

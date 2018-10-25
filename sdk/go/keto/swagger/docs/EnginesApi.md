@@ -18,7 +18,7 @@ Method | HTTP request | Description
 
 
 # **AddOryAccessControlPolicyRoleMembers**
-> OryAccessControlPolicyRole AddOryAccessControlPolicyRoleMembers($id, $flavor, $body)
+> OryAccessControlPolicyRole AddOryAccessControlPolicyRoleMembers($flavor, $id, $body)
 
 Add a member to an ORY Access Control Policy Role
 
@@ -29,8 +29,8 @@ Roles group several subjects into one. Rules can be assigned to ORY Access Contr
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **id** | **string**| The ID of the ORY Access Control Policy Role. | 
  **flavor** | **string**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;. | 
+ **id** | **string**| The ID of the ORY Access Control Policy Role. | 
  **body** | [**AddOryAccessControlPolicyRoleMembersBody**](AddOryAccessControlPolicyRoleMembersBody.md)|  | [optional] 
 
 ### Return type
@@ -230,7 +230,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **ListOryAccessControlPolicyRoles**
-> OryAccessControlPolicyRoles ListOryAccessControlPolicyRoles($flavor, $limit, $offset)
+> []OryAccessControlPolicyRole ListOryAccessControlPolicyRoles($flavor, $limit, $offset)
 
 List ORY Access Control Policy Roles
 
@@ -247,7 +247,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**OryAccessControlPolicyRoles**](oryAccessControlPolicyRoles.md)
+[**[]OryAccessControlPolicyRole**](oryAccessControlPolicyRole.md)
 
 ### Authorization
 
@@ -261,7 +261,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **RemoveOryAccessControlPolicyRoleMembers**
-> RemoveOryAccessControlPolicyRoleMembers($id, $flavor, $body)
+> RemoveOryAccessControlPolicyRoleMembers($flavor, $id, $body)
 
 Remove a member from an ORY Access Control Policy Role
 
@@ -272,8 +272,8 @@ Roles group several subjects into one. Rules can be assigned to ORY Access Contr
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **id** | **string**| The ID of the ORY Access Control Policy Role. | 
  **flavor** | **string**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;. | 
+ **id** | **string**| The ID of the ORY Access Control Policy Role. | 
  **body** | [**RemoveOryAccessControlPolicyRoleMembersBody**](RemoveOryAccessControlPolicyRoleMembersBody.md)|  | [optional] 
 
 ### Return type
@@ -322,7 +322,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **UpsertOryAccessControlPolicyRole**
-> OryAccessControlPolicyRole UpsertOryAccessControlPolicyRole($id, $flavor, $body)
+> OryAccessControlPolicyRole UpsertOryAccessControlPolicyRole($flavor, $id, $body)
 
 Upsert an ORY Access Control Policy Role
 
@@ -333,8 +333,8 @@ Roles group several subjects into one. Rules can be assigned to ORY Access Contr
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **id** | **string**| The ID of the ORY Access Control Policy Role. | 
  **flavor** | **string**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;. | 
+ **id** | **string**| The ID of the ORY Access Control Policy Role. | 
  **body** | [**OryAccessControlPolicyRole**](OryAccessControlPolicyRole.md)|  | [optional] 
 
 ### Return type

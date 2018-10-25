@@ -296,10 +296,7 @@
         ],
         "responses": {
           "200": {
-            "description": "oryAccessControlPolicyRoles",
-            "schema": {
-              "$ref": "#/definitions/oryAccessControlPolicyRoles"
-            }
+            "$ref": "#/responses/oryAccessControlPolicyRoles"
           },
           "500": {
             "$ref": "#/responses/genericError"
@@ -326,17 +323,17 @@
         "parameters": [
           {
             "type": "string",
-            "x-go-name": "ID",
-            "description": "The ID of the ORY Access Control Policy Role.",
-            "name": "id",
+            "x-go-name": "Flavor",
+            "description": "The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".",
+            "name": "flavor",
             "in": "path",
             "required": true
           },
           {
             "type": "string",
-            "x-go-name": "Flavor",
-            "description": "The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".",
-            "name": "flavor",
+            "x-go-name": "ID",
+            "description": "The ID of the ORY Access Control Policy Role.",
+            "name": "id",
             "in": "path",
             "required": true
           },
@@ -472,17 +469,17 @@
         "parameters": [
           {
             "type": "string",
-            "x-go-name": "ID",
-            "description": "The ID of the ORY Access Control Policy Role.",
-            "name": "id",
+            "x-go-name": "Flavor",
+            "description": "The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".",
+            "name": "flavor",
             "in": "path",
             "required": true
           },
           {
             "type": "string",
-            "x-go-name": "Flavor",
-            "description": "The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".",
-            "name": "flavor",
+            "x-go-name": "ID",
+            "description": "The ID of the ORY Access Control Policy Role.",
+            "name": "id",
             "in": "path",
             "required": true
           },
@@ -526,17 +523,17 @@
         "parameters": [
           {
             "type": "string",
-            "x-go-name": "ID",
-            "description": "The ID of the ORY Access Control Policy Role.",
-            "name": "id",
+            "x-go-name": "Flavor",
+            "description": "The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".",
+            "name": "flavor",
             "in": "path",
             "required": true
           },
           {
             "type": "string",
-            "x-go-name": "Flavor",
-            "description": "The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".",
-            "name": "flavor",
+            "x-go-name": "ID",
+            "description": "The ID of the ORY Access Control Policy Role.",
+            "name": "id",
             "in": "path",
             "required": true
           },
@@ -650,8 +647,8 @@
     "addOryAccessControlPolicyRoleMembers": {
       "type": "object",
       "required": [
-        "id",
-        "flavor"
+        "flavor",
+        "id"
       ],
       "properties": {
         "Body": {
@@ -997,14 +994,23 @@
       "items": {
         "$ref": "#/definitions/oryAccessControlPolicyRole"
       },
+      "properties": {
+        "Body": {
+          "description": "in: body",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/oryAccessControlPolicyRole"
+          }
+        }
+      },
       "x-go-name": "Roles",
       "x-go-package": "github.com/ory/keto/engine/ladon"
     },
     "removeOryAccessControlPolicyRoleMembers": {
       "type": "object",
       "required": [
-        "id",
-        "flavor"
+        "flavor",
+        "id"
       ],
       "properties": {
         "Body": {
@@ -1057,8 +1063,8 @@
     "upsertOryAccessControlPolicyRole": {
       "type": "object",
       "required": [
-        "id",
-        "flavor"
+        "flavor",
+        "id"
       ],
       "properties": {
         "Body": {
@@ -1139,6 +1145,15 @@
         "type": "array",
         "items": {
           "$ref": "#/definitions/oryAccessControlPolicy"
+        }
+      }
+    },
+    "oryAccessControlPolicyRoles": {
+      "description": "Roles is an array of roles.",
+      "schema": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/oryAccessControlPolicyRole"
         }
       }
     }

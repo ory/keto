@@ -39,18 +39,18 @@ func NewEnginesApiWithBasePath(basePath string) *EnginesApi {
  * Add a member to an ORY Access Control Policy Role
  * Roles group several subjects into one. Rules can be assigned to ORY Access Control Policy (OACP) by using the Role ID as subject in the OACP.
  *
- * @param id The ID of the ORY Access Control Policy Role.
  * @param flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;.
+ * @param id The ID of the ORY Access Control Policy Role.
  * @param body 
  * @return *OryAccessControlPolicyRole
  */
-func (a EnginesApi) AddOryAccessControlPolicyRoleMembers(id string, flavor string, body AddOryAccessControlPolicyRoleMembersBody) (*OryAccessControlPolicyRole, *APIResponse, error) {
+func (a EnginesApi) AddOryAccessControlPolicyRoleMembers(flavor string, id string, body AddOryAccessControlPolicyRoleMembersBody) (*OryAccessControlPolicyRole, *APIResponse, error) {
 
 	var localVarHttpMethod = strings.ToUpper("Put")
 	// create path and map variables
 	localVarPath := a.Configuration.BasePath + "/engines/acp/ory/{flavor}/roles/{id}/members"
-	localVarPath = strings.Replace(localVarPath, "{"+"id"+"}", fmt.Sprintf("%v", id), -1)
 	localVarPath = strings.Replace(localVarPath, "{"+"flavor"+"}", fmt.Sprintf("%v", flavor), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"id"+"}", fmt.Sprintf("%v", id), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -485,9 +485,9 @@ func (a EnginesApi) ListOryAccessControlPolicies(flavor string, limit int64, off
  * @param flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;
  * @param limit The maximum amount of policies returned.
  * @param offset The offset from where to start looking.
- * @return *OryAccessControlPolicyRoles
+ * @return []OryAccessControlPolicyRole
  */
-func (a EnginesApi) ListOryAccessControlPolicyRoles(flavor string, limit int64, offset int64) (*OryAccessControlPolicyRoles, *APIResponse, error) {
+func (a EnginesApi) ListOryAccessControlPolicyRoles(flavor string, limit int64, offset int64) ([]OryAccessControlPolicyRole, *APIResponse, error) {
 
 	var localVarHttpMethod = strings.ToUpper("Get")
 	// create path and map variables
@@ -525,7 +525,7 @@ func (a EnginesApi) ListOryAccessControlPolicyRoles(flavor string, limit int64, 
 	if localVarHttpHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHttpHeaderAccept
 	}
-	var successPayload = new(OryAccessControlPolicyRoles)
+	var successPayload = new([]OryAccessControlPolicyRole)
 	localVarHttpResponse, err := a.Configuration.APIClient.CallAPI(localVarPath, localVarHttpMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFileName, localVarFileBytes)
 
 	var localVarURL, _ = url.Parse(localVarPath)
@@ -537,28 +537,28 @@ func (a EnginesApi) ListOryAccessControlPolicyRoles(flavor string, limit int64, 
 	}
 
 	if err != nil {
-		return successPayload, localVarAPIResponse, err
+		return *successPayload, localVarAPIResponse, err
 	}
 	err = json.Unmarshal(localVarHttpResponse.Body(), &successPayload)
-	return successPayload, localVarAPIResponse, err
+	return *successPayload, localVarAPIResponse, err
 }
 
 /**
  * Remove a member from an ORY Access Control Policy Role
  * Roles group several subjects into one. Rules can be assigned to ORY Access Control Policy (OACP) by using the Role ID as subject in the OACP.
  *
- * @param id The ID of the ORY Access Control Policy Role.
  * @param flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;.
+ * @param id The ID of the ORY Access Control Policy Role.
  * @param body 
  * @return void
  */
-func (a EnginesApi) RemoveOryAccessControlPolicyRoleMembers(id string, flavor string, body RemoveOryAccessControlPolicyRoleMembersBody) (*APIResponse, error) {
+func (a EnginesApi) RemoveOryAccessControlPolicyRoleMembers(flavor string, id string, body RemoveOryAccessControlPolicyRoleMembersBody) (*APIResponse, error) {
 
 	var localVarHttpMethod = strings.ToUpper("Delete")
 	// create path and map variables
 	localVarPath := a.Configuration.BasePath + "/engines/acp/ory/{flavor}/roles/{id}/members"
-	localVarPath = strings.Replace(localVarPath, "{"+"id"+"}", fmt.Sprintf("%v", id), -1)
 	localVarPath = strings.Replace(localVarPath, "{"+"flavor"+"}", fmt.Sprintf("%v", flavor), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"id"+"}", fmt.Sprintf("%v", id), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -673,18 +673,18 @@ func (a EnginesApi) UpsertOryAccessControlPolicy(flavor string, body OryAccessCo
  * Upsert an ORY Access Control Policy Role
  * Roles group several subjects into one. Rules can be assigned to ORY Access Control Policy (OACP) by using the Role ID as subject in the OACP.
  *
- * @param id The ID of the ORY Access Control Policy Role.
  * @param flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;.
+ * @param id The ID of the ORY Access Control Policy Role.
  * @param body 
  * @return *OryAccessControlPolicyRole
  */
-func (a EnginesApi) UpsertOryAccessControlPolicyRole(id string, flavor string, body OryAccessControlPolicyRole) (*OryAccessControlPolicyRole, *APIResponse, error) {
+func (a EnginesApi) UpsertOryAccessControlPolicyRole(flavor string, id string, body OryAccessControlPolicyRole) (*OryAccessControlPolicyRole, *APIResponse, error) {
 
 	var localVarHttpMethod = strings.ToUpper("Put")
 	// create path and map variables
 	localVarPath := a.Configuration.BasePath + "/engines/acp/ory/{flavor}/roles"
-	localVarPath = strings.Replace(localVarPath, "{"+"id"+"}", fmt.Sprintf("%v", id), -1)
 	localVarPath = strings.Replace(localVarPath, "{"+"flavor"+"}", fmt.Sprintf("%v", flavor), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"id"+"}", fmt.Sprintf("%v", id), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}

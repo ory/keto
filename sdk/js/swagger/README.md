@@ -98,9 +98,9 @@ var SwaggerJsClient = require('swagger-js-client');
 
 var api = new SwaggerJsClient.EnginesApi()
 
-var id = "id_example"; // {String} The ID of the ORY Access Control Policy Role.
-
 var flavor = "flavor_example"; // {String} The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".
+
+var id = "id_example"; // {String} The ID of the ORY Access Control Policy Role.
 
 var opts = { 
   'body': new SwaggerJsClient.AddOryAccessControlPolicyRoleMembersBody() // {AddOryAccessControlPolicyRoleMembersBody} 
@@ -113,7 +113,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.addOryAccessControlPolicyRoleMembers(id, flavor, opts, callback);
+api.addOryAccessControlPolicyRoleMembers(flavor, id, opts, callback);
 
 ```
 

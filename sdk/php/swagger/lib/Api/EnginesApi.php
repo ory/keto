@@ -92,15 +92,15 @@ class EnginesApi
      *
      * Client for keto
      *
-     * @param string $id The ID of the ORY Access Control Policy Role. (required)
      * @param string $flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;. (required)
+     * @param string $id The ID of the ORY Access Control Policy Role. (required)
      * @param \ketoSDK\Model\AddOryAccessControlPolicyRoleMembersBody $body  (optional)
      * @throws \ketoSDK\ApiException on non-2xx response
      * @return \ketoSDK\Model\OryAccessControlPolicyRole
      */
-    public function addOryAccessControlPolicyRoleMembers($id, $flavor, $body = null)
+    public function addOryAccessControlPolicyRoleMembers($flavor, $id, $body = null)
     {
-        list($response) = $this->addOryAccessControlPolicyRoleMembersWithHttpInfo($id, $flavor, $body);
+        list($response) = $this->addOryAccessControlPolicyRoleMembersWithHttpInfo($flavor, $id, $body);
         return $response;
     }
 
@@ -111,21 +111,21 @@ class EnginesApi
      *
      * Client for keto
      *
-     * @param string $id The ID of the ORY Access Control Policy Role. (required)
      * @param string $flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;. (required)
+     * @param string $id The ID of the ORY Access Control Policy Role. (required)
      * @param \ketoSDK\Model\AddOryAccessControlPolicyRoleMembersBody $body  (optional)
      * @throws \ketoSDK\ApiException on non-2xx response
      * @return array of \ketoSDK\Model\OryAccessControlPolicyRole, HTTP status code, HTTP response headers (array of strings)
      */
-    public function addOryAccessControlPolicyRoleMembersWithHttpInfo($id, $flavor, $body = null)
+    public function addOryAccessControlPolicyRoleMembersWithHttpInfo($flavor, $id, $body = null)
     {
-        // verify the required parameter 'id' is set
-        if ($id === null) {
-            throw new \InvalidArgumentException('Missing the required parameter $id when calling addOryAccessControlPolicyRoleMembers');
-        }
         // verify the required parameter 'flavor' is set
         if ($flavor === null) {
             throw new \InvalidArgumentException('Missing the required parameter $flavor when calling addOryAccessControlPolicyRoleMembers');
+        }
+        // verify the required parameter 'id' is set
+        if ($id === null) {
+            throw new \InvalidArgumentException('Missing the required parameter $id when calling addOryAccessControlPolicyRoleMembers');
         }
         // parse inputs
         $resourcePath = "/engines/acp/ory/{flavor}/roles/{id}/members";
@@ -140,18 +140,18 @@ class EnginesApi
         $headerParams['Content-Type'] = $this->apiClient->selectHeaderContentType(['application/json']);
 
         // path params
-        if ($id !== null) {
-            $resourcePath = str_replace(
-                "{" . "id" . "}",
-                $this->apiClient->getSerializer()->toPathValue($id),
-                $resourcePath
-            );
-        }
-        // path params
         if ($flavor !== null) {
             $resourcePath = str_replace(
                 "{" . "flavor" . "}",
                 $this->apiClient->getSerializer()->toPathValue($flavor),
+                $resourcePath
+            );
+        }
+        // path params
+        if ($id !== null) {
+            $resourcePath = str_replace(
+                "{" . "id" . "}",
+                $this->apiClient->getSerializer()->toPathValue($id),
                 $resourcePath
             );
         }
@@ -810,7 +810,7 @@ class EnginesApi
      * @param int $limit The maximum amount of policies returned. (optional)
      * @param int $offset The offset from where to start looking. (optional)
      * @throws \ketoSDK\ApiException on non-2xx response
-     * @return \ketoSDK\Model\OryAccessControlPolicyRoles
+     * @return \ketoSDK\Model\OryAccessControlPolicyRole[]
      */
     public function listOryAccessControlPolicyRoles($flavor, $limit = null, $offset = null)
     {
@@ -829,7 +829,7 @@ class EnginesApi
      * @param int $limit The maximum amount of policies returned. (optional)
      * @param int $offset The offset from where to start looking. (optional)
      * @throws \ketoSDK\ApiException on non-2xx response
-     * @return array of \ketoSDK\Model\OryAccessControlPolicyRoles, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \ketoSDK\Model\OryAccessControlPolicyRole[], HTTP status code, HTTP response headers (array of strings)
      */
     public function listOryAccessControlPolicyRolesWithHttpInfo($flavor, $limit = null, $offset = null)
     {
@@ -880,15 +880,15 @@ class EnginesApi
                 $queryParams,
                 $httpBody,
                 $headerParams,
-                '\ketoSDK\Model\OryAccessControlPolicyRoles',
+                '\ketoSDK\Model\OryAccessControlPolicyRole[]',
                 '/engines/acp/ory/{flavor}/roles'
             );
 
-            return [$this->apiClient->getSerializer()->deserialize($response, '\ketoSDK\Model\OryAccessControlPolicyRoles', $httpHeader), $statusCode, $httpHeader];
+            return [$this->apiClient->getSerializer()->deserialize($response, '\ketoSDK\Model\OryAccessControlPolicyRole[]', $httpHeader), $statusCode, $httpHeader];
         } catch (ApiException $e) {
             switch ($e->getCode()) {
                 case 200:
-                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\ketoSDK\Model\OryAccessControlPolicyRoles', $e->getResponseHeaders());
+                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\ketoSDK\Model\OryAccessControlPolicyRole[]', $e->getResponseHeaders());
                     $e->setResponseObject($data);
                     break;
                 case 500:
@@ -908,15 +908,15 @@ class EnginesApi
      *
      * Client for keto
      *
-     * @param string $id The ID of the ORY Access Control Policy Role. (required)
      * @param string $flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;. (required)
+     * @param string $id The ID of the ORY Access Control Policy Role. (required)
      * @param \ketoSDK\Model\RemoveOryAccessControlPolicyRoleMembersBody $body  (optional)
      * @throws \ketoSDK\ApiException on non-2xx response
      * @return void
      */
-    public function removeOryAccessControlPolicyRoleMembers($id, $flavor, $body = null)
+    public function removeOryAccessControlPolicyRoleMembers($flavor, $id, $body = null)
     {
-        list($response) = $this->removeOryAccessControlPolicyRoleMembersWithHttpInfo($id, $flavor, $body);
+        list($response) = $this->removeOryAccessControlPolicyRoleMembersWithHttpInfo($flavor, $id, $body);
         return $response;
     }
 
@@ -927,21 +927,21 @@ class EnginesApi
      *
      * Client for keto
      *
-     * @param string $id The ID of the ORY Access Control Policy Role. (required)
      * @param string $flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;. (required)
+     * @param string $id The ID of the ORY Access Control Policy Role. (required)
      * @param \ketoSDK\Model\RemoveOryAccessControlPolicyRoleMembersBody $body  (optional)
      * @throws \ketoSDK\ApiException on non-2xx response
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
-    public function removeOryAccessControlPolicyRoleMembersWithHttpInfo($id, $flavor, $body = null)
+    public function removeOryAccessControlPolicyRoleMembersWithHttpInfo($flavor, $id, $body = null)
     {
-        // verify the required parameter 'id' is set
-        if ($id === null) {
-            throw new \InvalidArgumentException('Missing the required parameter $id when calling removeOryAccessControlPolicyRoleMembers');
-        }
         // verify the required parameter 'flavor' is set
         if ($flavor === null) {
             throw new \InvalidArgumentException('Missing the required parameter $flavor when calling removeOryAccessControlPolicyRoleMembers');
+        }
+        // verify the required parameter 'id' is set
+        if ($id === null) {
+            throw new \InvalidArgumentException('Missing the required parameter $id when calling removeOryAccessControlPolicyRoleMembers');
         }
         // parse inputs
         $resourcePath = "/engines/acp/ory/{flavor}/roles/{id}/members";
@@ -956,18 +956,18 @@ class EnginesApi
         $headerParams['Content-Type'] = $this->apiClient->selectHeaderContentType(['application/json']);
 
         // path params
-        if ($id !== null) {
-            $resourcePath = str_replace(
-                "{" . "id" . "}",
-                $this->apiClient->getSerializer()->toPathValue($id),
-                $resourcePath
-            );
-        }
-        // path params
         if ($flavor !== null) {
             $resourcePath = str_replace(
                 "{" . "flavor" . "}",
                 $this->apiClient->getSerializer()->toPathValue($flavor),
+                $resourcePath
+            );
+        }
+        // path params
+        if ($id !== null) {
+            $resourcePath = str_replace(
+                "{" . "id" . "}",
+                $this->apiClient->getSerializer()->toPathValue($id),
                 $resourcePath
             );
         }
@@ -1104,15 +1104,15 @@ class EnginesApi
      *
      * Client for keto
      *
-     * @param string $id The ID of the ORY Access Control Policy Role. (required)
      * @param string $flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;. (required)
+     * @param string $id The ID of the ORY Access Control Policy Role. (required)
      * @param \ketoSDK\Model\OryAccessControlPolicyRole $body  (optional)
      * @throws \ketoSDK\ApiException on non-2xx response
      * @return \ketoSDK\Model\OryAccessControlPolicyRole
      */
-    public function upsertOryAccessControlPolicyRole($id, $flavor, $body = null)
+    public function upsertOryAccessControlPolicyRole($flavor, $id, $body = null)
     {
-        list($response) = $this->upsertOryAccessControlPolicyRoleWithHttpInfo($id, $flavor, $body);
+        list($response) = $this->upsertOryAccessControlPolicyRoleWithHttpInfo($flavor, $id, $body);
         return $response;
     }
 
@@ -1123,21 +1123,21 @@ class EnginesApi
      *
      * Client for keto
      *
-     * @param string $id The ID of the ORY Access Control Policy Role. (required)
      * @param string $flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;. (required)
+     * @param string $id The ID of the ORY Access Control Policy Role. (required)
      * @param \ketoSDK\Model\OryAccessControlPolicyRole $body  (optional)
      * @throws \ketoSDK\ApiException on non-2xx response
      * @return array of \ketoSDK\Model\OryAccessControlPolicyRole, HTTP status code, HTTP response headers (array of strings)
      */
-    public function upsertOryAccessControlPolicyRoleWithHttpInfo($id, $flavor, $body = null)
+    public function upsertOryAccessControlPolicyRoleWithHttpInfo($flavor, $id, $body = null)
     {
-        // verify the required parameter 'id' is set
-        if ($id === null) {
-            throw new \InvalidArgumentException('Missing the required parameter $id when calling upsertOryAccessControlPolicyRole');
-        }
         // verify the required parameter 'flavor' is set
         if ($flavor === null) {
             throw new \InvalidArgumentException('Missing the required parameter $flavor when calling upsertOryAccessControlPolicyRole');
+        }
+        // verify the required parameter 'id' is set
+        if ($id === null) {
+            throw new \InvalidArgumentException('Missing the required parameter $id when calling upsertOryAccessControlPolicyRole');
         }
         // parse inputs
         $resourcePath = "/engines/acp/ory/{flavor}/roles";
@@ -1152,18 +1152,18 @@ class EnginesApi
         $headerParams['Content-Type'] = $this->apiClient->selectHeaderContentType(['application/json']);
 
         // path params
-        if ($id !== null) {
-            $resourcePath = str_replace(
-                "{" . "id" . "}",
-                $this->apiClient->getSerializer()->toPathValue($id),
-                $resourcePath
-            );
-        }
-        // path params
         if ($flavor !== null) {
             $resourcePath = str_replace(
                 "{" . "flavor" . "}",
                 $this->apiClient->getSerializer()->toPathValue($flavor),
+                $resourcePath
+            );
+        }
+        // path params
+        if ($id !== null) {
+            $resourcePath = str_replace(
+                "{" . "id" . "}",
+                $this->apiClient->getSerializer()->toPathValue($id),
                 $resourcePath
             );
         }
