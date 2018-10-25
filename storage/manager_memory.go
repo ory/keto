@@ -7,9 +7,10 @@ import (
 	"sync"
 
 	"github.com/open-policy-agent/opa/storage"
-	"github.com/ory/herodot"
-	"github.com/ory/pagination"
 	"github.com/pkg/errors"
+
+	"github.com/ory/herodot"
+	"github.com/ory/x/pagination"
 )
 
 type MemoryManager struct {

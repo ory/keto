@@ -23,11 +23,10 @@ package cmd
 
 import (
 	"fmt"
+	"net/http"
 	"os"
 	"testing"
 	"time"
-
-	"net/http"
 
 	"github.com/akutz/gotil"
 	"github.com/stretchr/testify/assert"

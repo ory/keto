@@ -5,8 +5,9 @@ import (
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
+
 	"github.com/ory/herodot"
-	"github.com/ory/pagination"
+	"github.com/ory/x/pagination"
 )
 
 type Handler struct {

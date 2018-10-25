@@ -18,15 +18,15 @@ import (
 	"os"
 	"strconv"
 
+	"github.com/spf13/cobra"
+
+	"github.com/ory/keto/cmd/server"
 	"github.com/ory/x/cmdx"
 	"github.com/ory/x/corsx"
 	"github.com/ory/x/logrusx"
 	"github.com/ory/x/profilex"
 	"github.com/ory/x/sqlcon"
 	"github.com/ory/x/tlsx"
-
-	"github.com/ory/keto/cmd/server"
-	"github.com/spf13/cobra"
 )
 
 // serveCmd represents the serve command

@@ -15,10 +15,11 @@
 package cmd
 
 import (
+	"github.com/spf13/cobra"
+
 	"github.com/ory/keto/cmd/client"
 	"github.com/ory/x/cmdx"
 	"github.com/ory/x/urlx"
-	"github.com/spf13/cobra"
 )
 
 // enginesAcpOryPoliciesImportCmd represents the import command

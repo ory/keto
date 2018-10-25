@@ -18,11 +18,11 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/ory/x/logrusx"
 	"github.com/sirupsen/logrus"
-
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+
+	"github.com/ory/x/logrusx"
 )
 
 var (

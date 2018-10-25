@@ -22,13 +22,13 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/ory/x/urlx"
+	"github.com/spf13/cobra"
 
 	"github.com/ory/go-convenience/stringslice"
 	"github.com/ory/keto/engine/ladon"
 	"github.com/ory/x/cmdx"
 	"github.com/ory/x/flagx"
-	"github.com/spf13/cobra"
+	"github.com/ory/x/urlx"
 )
 
 var client = http.DefaultClient

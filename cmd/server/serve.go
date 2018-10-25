@@ -30,6 +30,12 @@ import (
 	"github.com/jmoiron/sqlx"
 	"github.com/julienschmidt/httprouter"
 	"github.com/meatballhat/negroni-logrus"
+	"github.com/pkg/errors"
+	"github.com/sirupsen/logrus"
+	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
+	"github.com/urfave/negroni"
+
 	"github.com/ory/go-convenience/stringslice"
 	"github.com/ory/graceful"
 	"github.com/ory/herodot"
@@ -43,11 +49,6 @@ import (
 	"github.com/ory/x/healthx"
 	"github.com/ory/x/metricsx"
 	"github.com/ory/x/tlsx"
-	"github.com/pkg/errors"
-	"github.com/sirupsen/logrus"
-	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
-	"github.com/urfave/negroni"
 )
 
 // RunServe runs the Keto API HTTP server

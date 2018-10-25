@@ -9,12 +9,13 @@ import (
 
 	"github.com/julienschmidt/httprouter"
 	"github.com/open-policy-agent/opa/rego"
+	"github.com/pborman/uuid"
+	"github.com/pkg/errors"
+
 	"github.com/ory/go-convenience/stringslice"
 	"github.com/ory/herodot"
 	"github.com/ory/keto/engine"
 	kstorage "github.com/ory/keto/storage"
-	"github.com/pborman/uuid"
-	"github.com/pkg/errors"
 )
 
 // swagger:ignore
@@ -470,7 +471,7 @@ type Input struct {
 	Subject string `json:"subject"`
 
 	// Context is the request's environmental context.
-	Context map[string]interface{} `json:"context"`
+	Context Context `json:"context"`
 }
 
 func flavor(ps httprouter.Params) (string, error) {

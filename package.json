@@ -11,11 +11,10 @@
     "fs": false
   },
   "dependencies": {
-    "superagent": "~3.7.0",
-    "opencollective": "^1.0.3"
+    "superagent": "~3.7.0"
   },
   "devDependencies": {
-    "prettier": "^1.7.4"
+    "opencollective": "^1.0.3"
   },
   "collective": {
     "type": "opencollective",

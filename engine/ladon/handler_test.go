@@ -11,15 +11,15 @@ import (
 	"testing"
 
 	"github.com/gobuffalo/packr"
-	"github.com/sirupsen/logrus"
-
 	"github.com/julienschmidt/httprouter"
-	"github.com/ory/herodot"
-	"github.com/ory/keto/engine"
-	"github.com/ory/keto/storage"
+	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/urfave/negroni"
+
+	"github.com/ory/herodot"
+	"github.com/ory/keto/engine"
+	"github.com/ory/keto/storage"
 )
 
 func base(ts *httptest.Server, f, path string) string {

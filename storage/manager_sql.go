@@ -7,9 +7,10 @@ import (
 
 	"github.com/jmoiron/sqlx"
 	"github.com/open-policy-agent/opa/storage"
-	"github.com/ory/sqlcon"
 	"github.com/pkg/errors"
 	"github.com/rubenv/sql-migrate"
+
+	"github.com/ory/x/sqlcon"
 )
 
 type sqlItem struct {

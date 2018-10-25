@@ -18,13 +18,13 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/spf13/cobra"
+
 	"github.com/ory/keto/cmd/client"
 	"github.com/ory/keto/engine/ladon"
 	"github.com/ory/x/cmdx"
 	"github.com/ory/x/flagx"
 	"github.com/ory/x/urlx"
-
-	"github.com/spf13/cobra"
 )
 
 // deleteCmd represents the delete command
