@@ -78,7 +78,7 @@ func NewEngine(store kstorage.Manager, sh *kstorage.Handler, e *engine.Engine, h
 }
 
 func (e *Engine) Register(r *httprouter.Router) {
-	// swagger:route POSR /engines/acp/ory/{flavor}/allowed engines doOryAccessControlPoliciesAllow
+	// swagger:route POST /engines/acp/ory/{flavor}/allowed engines doOryAccessControlPoliciesAllow
 	//
 	// Check if a request is allowed
 	//
