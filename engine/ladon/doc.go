@@ -1,3 +1,4 @@
+// Package ladon
 package ladon
 
 // swagger:parameters doOryAccessControlPoliciesAllow
@@ -18,7 +19,7 @@ type upsertOryAccessControlPolicy struct {
 	//
 	// in: path
 	// required: true
-	ID string `json:"ID"`
+	ID string `json:"id"`
 
 	// The ORY Access Control Policy flavor. Can be "regex" and "exact".
 	//
@@ -61,7 +62,7 @@ type getOryAccessControlPolicy struct {
 	//
 	// in: path
 	// required: true
-	ID string `json:"ID"`
+	ID string `json:"id"`
 }
 
 // swagger:parameters deleteOryAccessControlPolicy
@@ -76,7 +77,7 @@ type deleteOryAccessControlPolicy struct {
 	//
 	// in: path
 	// required: true
-	ID string `json:"ID"`
+	ID string `json:"id"`
 }
 
 // swagger:parameters getOryAccessControlPolicyRole
@@ -91,7 +92,7 @@ type getOryAccessControlPolicyRole struct {
 	//
 	// in: path
 	// required: true
-	ID string `json:"ID"`
+	ID string `json:"id"`
 }
 
 // swagger:parameters deleteOryAccessControlPolicyRole
@@ -105,7 +106,7 @@ type deleteOryAccessControlPolicyRole struct {
 	// The ID of the ORY Access Control Policy Role.
 	// in: path
 	// required: true
-	ID string `json:"ID"`
+	ID string `json:"id"`
 }
 
 // swagger:parameters upsertOryAccessControlPolicyRole
@@ -114,7 +115,7 @@ type upsertOryAccessControlPolicyRole struct {
 	//
 	// in: path
 	// required: true
-	ID string `json:"ID"`
+	ID string `json:"id"`
 
 	// The ORY Access Control Policy flavor. Can be "regex" and "exact".
 	//
@@ -138,7 +139,7 @@ type addOryAccessControlPolicyRoleMembers struct {
 	//
 	// in: path
 	// required: true
-	ID string `json:"ID"`
+	ID string `json:"id"`
 
 	// The ORY Access Control Policy flavor. Can be "regex" and "exact".
 	//
@@ -162,7 +163,7 @@ type removeOryAccessControlPolicyRoleMembers struct {
 	//
 	// in: path
 	// required: true
-	ID string `json:"ID"`
+	ID string `json:"id"`
 
 	// The ORY Access Control Policy flavor. Can be "regex" and "exact".
 	//

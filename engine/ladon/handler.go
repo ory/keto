@@ -162,7 +162,7 @@ func (e *Engine) Register(r *httprouter.Router) {
 	//       500: genericError
 	r.DELETE(BasePath+"/policies/:id", e.sh.Delete(e.policiesDelete))
 
-	// swagger:route GET /engines/ory/{flavor}/roles engine listOryAccessControlPolicyRoles
+	// swagger:route GET /engines/ory/{flavor}/roles engines listOryAccessControlPolicyRoles
 	//
 	// List ORY Access Control Policy Roles
 	//

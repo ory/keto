@@ -1,3 +1,4 @@
+// Package engine
 package engine
 
 // AuthorizationResult is the result of an access control decision. It contains the decision outcome.

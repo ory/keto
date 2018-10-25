@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/ory/keto/sdk/go/keto/swagger"
+	"github.com/ory/keto/x"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
@@ -121,21 +123,58 @@ func crudts() *httptest.Server {
 	return httptest.NewServer(r)
 }
 
+func toSwaggerPolicy(p Policy) swagger.OryAccessControlPolicy {
+	return swagger.OryAccessControlPolicy{
+		Actions:     p.Actions,
+		Id:          p.ID,
+		Resources:   p.Resources,
+		Subjects:    p.Subjects,
+		Effect:      p.Effect,
+		Conditions:  p.Conditions,
+		Description: p.Description,
+	}
+}
+
+func fromSwaggerPolicy(p swagger.OryAccessControlPolicy) Policy {
+	return Policy{
+		Actions:     p.Actions,
+		ID:          p.Id,
+		Resources:   p.Resources,
+		Subjects:    p.Subjects,
+		Effect:      p.Effect,
+		Conditions:  p.Conditions,
+		Description: p.Description,
+	}
+}
+
 func TestPolicyCRUD(t *testing.T) {
 	ts := crudts()
 	defer ts.Close()
 
+	c := swagger.NewEnginesApiWithBasePath(ts.URL)
 	for _, f := range []string{"exact", "regex"} {
 		for l, p := range policies[f] {
-			test404(t, base(ts, f, "/policies/"+p.ID))
-			testCreate(t, base(ts, f, "/policies"), p, p)
-			testGet(t, "get", base(ts, f, "/policies/"+p.ID), p)
-			testGet(t, "list", base(ts, f, "/policies"), policies[f][:l+1])
+			_, resp, err := c.GetOryAccessControlPolicy(f, p.ID)
+			x.CheckResponseTest(t, err, http.StatusNotFound, resp)
+
+			resp, err = c.UpsertOryAccessControlPolicy(f, p.ID, toSwaggerPolicy(p))
+			x.CheckResponseTest(t, err, http.StatusOK, resp)
+
+			o, resp, err := c.GetOryAccessControlPolicy(f, p.ID)
+			x.CheckResponseTest(t, err, http.StatusOK, resp)
+			assert.Equal(t, p, fromSwaggerPolicy(*o))
+
+			os, resp, err := c.ListOryAccessControlPolicies(f, 100, 0)
+			x.CheckResponseTest(t, err, http.StatusOK, resp)
+			assert.Equal(t, p, os, policies[f][:l+1])
 		}
 
 		for _, p := range policies[f] {
-			testDelete(t, base(ts, f, "/policies/"+p.ID))
-			test404(t, base(ts, f, "/policies/"+p.ID))
+			resp, err := c.DeleteOryAccessControlPolicy(f, p.ID)
+			x.CheckResponseTest(t, err, http.StatusNoContent, resp)
+
+			_, resp, err = c.GetOryAccessControlPolicy(f, p.ID)
+			x.CheckResponseTest(t, err, http.StatusNotFound, resp)
 		}
 	}
 }
