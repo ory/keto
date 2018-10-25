@@ -8,7 +8,6 @@ import (
 	"github.com/julienschmidt/httprouter"
 	"github.com/open-policy-agent/opa/ast"
 	"github.com/open-policy-agent/opa/rego"
-	"github.com/open-policy-agent/opa/topdown"
 	"github.com/pkg/errors"
 
 	"github.com/ory/herodot"
@@ -57,12 +56,12 @@ func (h *Engine) Evaluate(e evaluator) httprouter.Handle {
 }
 
 func (h *Engine) eval(ctx context.Context, options []func(*rego.Rego)) (bool, error) {
-	tracer := topdown.NewBufferTracer()
+	//tracer := topdown.NewBufferTracer()
 	r := rego.New(
 		append(
 			options,
 			rego.Compiler(h.compiler),
-			rego.Tracer(tracer),
+			//rego.Tracer(tracer),
 		)...,
 	)
 

@@ -68,7 +68,7 @@ func TestExecute(t *testing.T) {
 		{args: []string{"engines", "acp", "ory", "policies", "get", "--endpoint", ep, "exact", "policy-1"}},
 		{args: []string{"engines", "acp", "ory", "policies", "delete", "--endpoint", ep, "exact", "policy-1"}},
 
-		{args: []string{"engines", "acp", "ory", "--endpoint", "allowed", ep, "exact", "peter-1", "resources-11", "actions-11"}},
+		{args: []string{"engines", "acp", "ory", "allowed", "--endpoint", ep, "exact", "peter-1", "resources-11", "actions-11"}},
 
 		{args: []string{"help", "migrate", "sql"}},
 		{args: []string{"version"}},
