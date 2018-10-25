@@ -7,7 +7,6 @@ Method | HTTP request | Description
 [**AddOryAccessControlPolicyRoleMembers**](EnginesApi.md#AddOryAccessControlPolicyRoleMembers) | **Put** /engines/acp/ory/{flavor}/roles/{id}/members | Add a member to an ORY Access Control Policy Role
 [**DeleteOryAccessControlPolicy**](EnginesApi.md#DeleteOryAccessControlPolicy) | **Delete** /engines/acp/ory/{flavor}/policies/{id} | 
 [**DeleteOryAccessControlPolicyRole**](EnginesApi.md#DeleteOryAccessControlPolicyRole) | **Delete** /engines/acp/ory/{flavor}/roles/{id} | Delete an ORY Access Control Policy Role
-[**DoOryAccessControlPoliciesAllow**](EnginesApi.md#DoOryAccessControlPoliciesAllow) | **Get** /engines/acp/ory/{flavor}/allowed | Check if a request is allowed
 [**GetOryAccessControlPolicy**](EnginesApi.md#GetOryAccessControlPolicy) | **Get** /engines/acp/ory/{flavor}/policies/{id} | 
 [**GetOryAccessControlPolicyRole**](EnginesApi.md#GetOryAccessControlPolicyRole) | **Get** /engines/acp/ory/{flavor}/roles/{id} | Get an ORY Access Control Policy Role
 [**ListOryAccessControlPolicies**](EnginesApi.md#ListOryAccessControlPolicies) | **Get** /engines/acp/ory/{flavor}/policies | 
@@ -96,36 +95,6 @@ Name | Type | Description  | Notes
 ### Return type
 
 void (empty response body)
-
-### Authorization
-
-No authorization required
-
-### HTTP request headers
-
- - **Content-Type**: application/json
- - **Accept**: application/json
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
-
-# **DoOryAccessControlPoliciesAllow**
-> AuthorizationResult DoOryAccessControlPoliciesAllow($flavor, $body)
-
-Check if a request is allowed
-
-Use this endpoint to check if a request is allowed or not.
-
-
-### Parameters
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **flavor** | **string**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;. | 
- **body** | [**OryAccessControlPolicyAllowedInput**](OryAccessControlPolicyAllowedInput.md)|  | [optional] 
-
-### Return type
-
-[**AuthorizationResult**](authorizationResult.md)
 
 ### Authorization
 

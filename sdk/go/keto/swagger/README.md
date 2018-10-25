@@ -25,7 +25,6 @@ Class | Method | HTTP request | Description
 *EnginesApi* | [**AddOryAccessControlPolicyRoleMembers**](docs/EnginesApi.md#addoryaccesscontrolpolicyrolemembers) | **Put** /engines/acp/ory/{flavor}/roles/{id}/members | Add a member to an ORY Access Control Policy Role
 *EnginesApi* | [**DeleteOryAccessControlPolicy**](docs/EnginesApi.md#deleteoryaccesscontrolpolicy) | **Delete** /engines/acp/ory/{flavor}/policies/{id} | 
 *EnginesApi* | [**DeleteOryAccessControlPolicyRole**](docs/EnginesApi.md#deleteoryaccesscontrolpolicyrole) | **Delete** /engines/acp/ory/{flavor}/roles/{id} | Delete an ORY Access Control Policy Role
-*EnginesApi* | [**DoOryAccessControlPoliciesAllow**](docs/EnginesApi.md#dooryaccesscontrolpoliciesallow) | **Get** /engines/acp/ory/{flavor}/allowed | Check if a request is allowed
 *EnginesApi* | [**GetOryAccessControlPolicy**](docs/EnginesApi.md#getoryaccesscontrolpolicy) | **Get** /engines/acp/ory/{flavor}/policies/{id} | 
 *EnginesApi* | [**GetOryAccessControlPolicyRole**](docs/EnginesApi.md#getoryaccesscontrolpolicyrole) | **Get** /engines/acp/ory/{flavor}/roles/{id} | Get an ORY Access Control Policy Role
 *EnginesApi* | [**ListOryAccessControlPolicies**](docs/EnginesApi.md#listoryaccesscontrolpolicies) | **Get** /engines/acp/ory/{flavor}/policies | 
