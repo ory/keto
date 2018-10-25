@@ -23,9 +23,7 @@ import (
 	"net/http"
 
 	"github.com/ory/keto/cmd/client"
-	"github.com/ory/keto/engine/ladon"
 	"github.com/ory/x/cmdx"
-	"github.com/ory/x/urlx"
 )
 
 // enginesAcpOryPoliciesListCmd represents the list command
@@ -33,7 +31,6 @@ var enginesAcpOryPoliciesListCmd = &cobra.Command{
 	Use:   "list <flavor>",
 	Short: "List ORY Access Control Policies",
 	Run: func(cmd *cobra.Command, args []string) {
-		var proto ladon.Policies
 		cmdx.MinArgs(cmd, args, 1)
 		client.CheckLadonFlavor(args[0])
 
