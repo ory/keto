@@ -578,13 +578,12 @@
      * Upsert an ORY Access Control Policy Role
      * Roles group several subjects into one. Rules can be assigned to ORY Access Control Policy (OACP) by using the Role ID as subject in the OACP.
      * @param {String} flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;.
-     * @param {String} id The ID of the ORY Access Control Policy Role.
      * @param {Object} opts Optional parameters
      * @param {module:model/OryAccessControlPolicyRole} opts.body 
      * @param {module:api/EnginesApi~upsertOryAccessControlPolicyRoleCallback} callback The callback function, accepting three arguments: error, data, response
      * data is of type: {@link module:model/OryAccessControlPolicyRole}
      */
-    this.upsertOryAccessControlPolicyRole = function(flavor, id, opts, callback) {
+    this.upsertOryAccessControlPolicyRole = function(flavor, opts, callback) {
       opts = opts || {};
       var postBody = opts['body'];
 
@@ -593,15 +592,9 @@
         throw new Error("Missing the required parameter 'flavor' when calling upsertOryAccessControlPolicyRole");
       }
 
-      // verify the required parameter 'id' is set
-      if (id === undefined || id === null) {
-        throw new Error("Missing the required parameter 'id' when calling upsertOryAccessControlPolicyRole");
-      }
-
 
       var pathParams = {
-        'flavor': flavor,
-        'id': id
+        'flavor': flavor
       };
       var queryParams = {
       };

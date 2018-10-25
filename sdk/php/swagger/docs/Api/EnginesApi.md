@@ -493,7 +493,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
 # **upsertOryAccessControlPolicyRole**
-> \ketoSDK\Model\OryAccessControlPolicyRole upsertOryAccessControlPolicyRole($flavor, $id, $body)
+> \ketoSDK\Model\OryAccessControlPolicyRole upsertOryAccessControlPolicyRole($flavor, $body)
 
 Upsert an ORY Access Control Policy Role
 
@@ -506,11 +506,10 @@ require_once(__DIR__ . '/vendor/autoload.php');
 
 $api_instance = new ketoSDK\Api\EnginesApi();
 $flavor = "flavor_example"; // string | The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".
-$id = "id_example"; // string | The ID of the ORY Access Control Policy Role.
 $body = new \ketoSDK\Model\OryAccessControlPolicyRole(); // \ketoSDK\Model\OryAccessControlPolicyRole | 
 
 try {
-    $result = $api_instance->upsertOryAccessControlPolicyRole($flavor, $id, $body);
+    $result = $api_instance->upsertOryAccessControlPolicyRole($flavor, $body);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling EnginesApi->upsertOryAccessControlPolicyRole: ', $e->getMessage(), PHP_EOL;
@@ -523,7 +522,6 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **flavor** | **string**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;. |
- **id** | **string**| The ID of the ORY Access Control Policy Role. |
  **body** | [**\ketoSDK\Model\OryAccessControlPolicyRole**](../Model/OryAccessControlPolicyRole.md)|  | [optional]
 
 ### Return type

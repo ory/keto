@@ -1105,14 +1105,13 @@ class EnginesApi
      * Client for keto
      *
      * @param string $flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;. (required)
-     * @param string $id The ID of the ORY Access Control Policy Role. (required)
      * @param \ketoSDK\Model\OryAccessControlPolicyRole $body  (optional)
      * @throws \ketoSDK\ApiException on non-2xx response
      * @return \ketoSDK\Model\OryAccessControlPolicyRole
      */
-    public function upsertOryAccessControlPolicyRole($flavor, $id, $body = null)
+    public function upsertOryAccessControlPolicyRole($flavor, $body = null)
     {
-        list($response) = $this->upsertOryAccessControlPolicyRoleWithHttpInfo($flavor, $id, $body);
+        list($response) = $this->upsertOryAccessControlPolicyRoleWithHttpInfo($flavor, $body);
         return $response;
     }
 
@@ -1124,20 +1123,15 @@ class EnginesApi
      * Client for keto
      *
      * @param string $flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;. (required)
-     * @param string $id The ID of the ORY Access Control Policy Role. (required)
      * @param \ketoSDK\Model\OryAccessControlPolicyRole $body  (optional)
      * @throws \ketoSDK\ApiException on non-2xx response
      * @return array of \ketoSDK\Model\OryAccessControlPolicyRole, HTTP status code, HTTP response headers (array of strings)
      */
-    public function upsertOryAccessControlPolicyRoleWithHttpInfo($flavor, $id, $body = null)
+    public function upsertOryAccessControlPolicyRoleWithHttpInfo($flavor, $body = null)
     {
         // verify the required parameter 'flavor' is set
         if ($flavor === null) {
             throw new \InvalidArgumentException('Missing the required parameter $flavor when calling upsertOryAccessControlPolicyRole');
-        }
-        // verify the required parameter 'id' is set
-        if ($id === null) {
-            throw new \InvalidArgumentException('Missing the required parameter $id when calling upsertOryAccessControlPolicyRole');
         }
         // parse inputs
         $resourcePath = "/engines/acp/ory/{flavor}/roles";
@@ -1156,14 +1150,6 @@ class EnginesApi
             $resourcePath = str_replace(
                 "{" . "flavor" . "}",
                 $this->apiClient->getSerializer()->toPathValue($flavor),
-                $resourcePath
-            );
-        }
-        // path params
-        if ($id !== null) {
-            $resourcePath = str_replace(
-                "{" . "id" . "}",
-                $this->apiClient->getSerializer()->toPathValue($id),
                 $resourcePath
             );
         }

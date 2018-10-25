@@ -330,14 +330,6 @@
             "required": true
           },
           {
-            "type": "string",
-            "x-go-name": "ID",
-            "description": "The ID of the ORY Access Control Policy Role.",
-            "name": "id",
-            "in": "path",
-            "required": true
-          },
-          {
             "name": "Body",
             "in": "body",
             "schema": {
@@ -951,7 +943,12 @@
           "x-go-name": "Action"
         },
         "context": {
-          "$ref": "#/definitions/Context"
+          "description": "Context is the request's environmental context.",
+          "type": "object",
+          "additionalProperties": {
+            "type": "object"
+          },
+          "x-go-name": "Context"
         },
         "resource": {
           "description": "Resource is the resource that access is requested to.",
@@ -1063,8 +1060,7 @@
     "upsertOryAccessControlPolicyRole": {
       "type": "object",
       "required": [
-        "flavor",
-        "id"
+        "flavor"
       ],
       "properties": {
         "Body": {
@@ -1074,11 +1070,6 @@
           "description": "The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".\n\nin: path",
           "type": "string",
           "x-go-name": "Flavor"
-        },
-        "id": {
-          "description": "The ID of the ORY Access Control Policy Role.\n\nin: path",
-          "type": "string",
-          "x-go-name": "ID"
         }
       },
       "x-go-package": "github.com/ory/keto/engine/ladon"

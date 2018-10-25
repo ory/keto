@@ -45,14 +45,12 @@
    * @alias module:model/UpsertOryAccessControlPolicyRole
    * @class
    * @param flavor {String} The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".  in: path
-   * @param id {String} The ID of the ORY Access Control Policy Role.  in: path
    */
-  var exports = function(flavor, id) {
+  var exports = function(flavor) {
     var _this = this;
 
 
     _this['flavor'] = flavor;
-    _this['id'] = id;
   };
 
   /**
@@ -72,9 +70,6 @@
       if (data.hasOwnProperty('flavor')) {
         obj['flavor'] = ApiClient.convertToType(data['flavor'], 'String');
       }
-      if (data.hasOwnProperty('id')) {
-        obj['id'] = ApiClient.convertToType(data['id'], 'String');
-      }
     }
     return obj;
   }
@@ -88,11 +83,6 @@
    * @member {String} flavor
    */
   exports.prototype['flavor'] = undefined;
-  /**
-   * The ID of the ORY Access Control Policy Role.  in: path
-   * @member {String} id
-   */
-  exports.prototype['id'] = undefined;
 
 
 

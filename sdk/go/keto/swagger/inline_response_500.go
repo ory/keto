@@ -1,4 +1,4 @@
-/*
+/* 
  * Package main ORY Keto
  *
  * OpenAPI spec version: Latest
@@ -9,6 +9,7 @@
 package swagger
 
 type InlineResponse500 struct {
+
 	Code int64 `json:"code,omitempty"`
 
 	Details []map[string]interface{} `json:"details,omitempty"`

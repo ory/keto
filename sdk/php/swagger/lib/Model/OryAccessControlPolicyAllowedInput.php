@@ -53,7 +53,7 @@ class OryAccessControlPolicyAllowedInput implements ArrayAccess
       */
     protected static $swaggerTypes = [
         'action' => 'string',
-        'context' => '\ketoSDK\Model\Context',
+        'context' => 'map[string,object]',
         'resource' => 'string',
         'subject' => 'string'
     ];
@@ -199,7 +199,7 @@ class OryAccessControlPolicyAllowedInput implements ArrayAccess
 
     /**
      * Gets context
-     * @return \ketoSDK\Model\Context
+     * @return map[string,object]
      */
     public function getContext()
     {
@@ -208,7 +208,7 @@ class OryAccessControlPolicyAllowedInput implements ArrayAccess
 
     /**
      * Sets context
-     * @param \ketoSDK\Model\Context $context
+     * @param map[string,object] $context Context is the request's environmental context.
      * @return $this
      */
     public function setContext($context)

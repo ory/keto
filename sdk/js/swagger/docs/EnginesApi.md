@@ -525,7 +525,7 @@ No authorization required
 
 <a name="upsertOryAccessControlPolicyRole"></a>
 # **upsertOryAccessControlPolicyRole**
-> OryAccessControlPolicyRole upsertOryAccessControlPolicyRole(flavor, id, opts)
+> OryAccessControlPolicyRole upsertOryAccessControlPolicyRole(flavor, opts)
 
 Upsert an ORY Access Control Policy Role
 
@@ -539,8 +539,6 @@ var apiInstance = new SwaggerJsClient.EnginesApi();
 
 var flavor = "flavor_example"; // String | The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".
 
-var id = "id_example"; // String | The ID of the ORY Access Control Policy Role.
-
 var opts = { 
   'body': new SwaggerJsClient.OryAccessControlPolicyRole() // OryAccessControlPolicyRole | 
 };
@@ -552,7 +550,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully. Returned data: ' + data);
   }
 };
-apiInstance.upsertOryAccessControlPolicyRole(flavor, id, opts, callback);
+apiInstance.upsertOryAccessControlPolicyRole(flavor, opts, callback);
 ```
 
 ### Parameters
@@ -560,7 +558,6 @@ apiInstance.upsertOryAccessControlPolicyRole(flavor, id, opts, callback);
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **flavor** | **String**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;. | 
- **id** | **String**| The ID of the ORY Access Control Policy Role. | 
  **body** | [**OryAccessControlPolicyRole**](OryAccessControlPolicyRole.md)|  | [optional] 
 
 ### Return type

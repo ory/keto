@@ -322,7 +322,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **UpsertOryAccessControlPolicyRole**
-> OryAccessControlPolicyRole UpsertOryAccessControlPolicyRole($flavor, $id, $body)
+> OryAccessControlPolicyRole UpsertOryAccessControlPolicyRole($flavor, $body)
 
 Upsert an ORY Access Control Policy Role
 
@@ -334,7 +334,6 @@ Roles group several subjects into one. Rules can be assigned to ORY Access Contr
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **flavor** | **string**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;. | 
- **id** | **string**| The ID of the ORY Access Control Policy Role. | 
  **body** | [**OryAccessControlPolicyRole**](OryAccessControlPolicyRole.md)|  | [optional] 
 
 ### Return type
