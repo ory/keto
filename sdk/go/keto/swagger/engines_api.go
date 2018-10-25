@@ -48,7 +48,7 @@ func (a EnginesApi) AddOryAccessControlPolicyRoleMembers(id string, flavor strin
 
 	var localVarHttpMethod = strings.ToUpper("Put")
 	// create path and map variables
-	localVarPath := a.Configuration.BasePath + "/engines/ory/{flavor}/roles/{id}/members"
+	localVarPath := a.Configuration.BasePath + "/engines/acp/ory/{flavor}/roles/{id}/members"
 	localVarPath = strings.Replace(localVarPath, "{"+"id"+"}", fmt.Sprintf("%v", id), -1)
 	localVarPath = strings.Replace(localVarPath, "{"+"flavor"+"}", fmt.Sprintf("%v", flavor), -1)
 
@@ -113,7 +113,7 @@ func (a EnginesApi) DeleteOryAccessControlPolicy(flavor string, id string) (*API
 
 	var localVarHttpMethod = strings.ToUpper("Delete")
 	// create path and map variables
-	localVarPath := a.Configuration.BasePath + "/engines/ory/{flavor}/policies/{id}"
+	localVarPath := a.Configuration.BasePath + "/engines/acp/ory/{flavor}/policies/{id}"
 	localVarPath = strings.Replace(localVarPath, "{"+"flavor"+"}", fmt.Sprintf("%v", flavor), -1)
 	localVarPath = strings.Replace(localVarPath, "{"+"id"+"}", fmt.Sprintf("%v", id), -1)
 
@@ -174,7 +174,7 @@ func (a EnginesApi) DeleteOryAccessControlPolicyRole(flavor string, id string) (
 
 	var localVarHttpMethod = strings.ToUpper("Delete")
 	// create path and map variables
-	localVarPath := a.Configuration.BasePath + "/engines/ory/{flavor}/roles/{id}"
+	localVarPath := a.Configuration.BasePath + "/engines/acp/ory/{flavor}/roles/{id}"
 	localVarPath = strings.Replace(localVarPath, "{"+"flavor"+"}", fmt.Sprintf("%v", flavor), -1)
 	localVarPath = strings.Replace(localVarPath, "{"+"id"+"}", fmt.Sprintf("%v", id), -1)
 
@@ -235,7 +235,7 @@ func (a EnginesApi) DoOryAccessControlPoliciesAllow(flavor string, body OryAcces
 
 	var localVarHttpMethod = strings.ToUpper("Get")
 	// create path and map variables
-	localVarPath := a.Configuration.BasePath + "/engines/ory/{flavor}/allowed"
+	localVarPath := a.Configuration.BasePath + "/engines/acp/ory/{flavor}/allowed"
 	localVarPath = strings.Replace(localVarPath, "{"+"flavor"+"}", fmt.Sprintf("%v", flavor), -1)
 
 	localVarHeaderParams := make(map[string]string)
@@ -299,7 +299,7 @@ func (a EnginesApi) GetOryAccessControlPolicy(flavor string, id string) (*OryAcc
 
 	var localVarHttpMethod = strings.ToUpper("Get")
 	// create path and map variables
-	localVarPath := a.Configuration.BasePath + "/engines/ory/{flavor}/policies/{id}"
+	localVarPath := a.Configuration.BasePath + "/engines/acp/ory/{flavor}/policies/{id}"
 	localVarPath = strings.Replace(localVarPath, "{"+"flavor"+"}", fmt.Sprintf("%v", flavor), -1)
 	localVarPath = strings.Replace(localVarPath, "{"+"id"+"}", fmt.Sprintf("%v", id), -1)
 
@@ -362,7 +362,7 @@ func (a EnginesApi) GetOryAccessControlPolicyRole(flavor string, id string) (*Or
 
 	var localVarHttpMethod = strings.ToUpper("Get")
 	// create path and map variables
-	localVarPath := a.Configuration.BasePath + "/engines/ory/{flavor}/roles/{id}"
+	localVarPath := a.Configuration.BasePath + "/engines/acp/ory/{flavor}/roles/{id}"
 	localVarPath = strings.Replace(localVarPath, "{"+"flavor"+"}", fmt.Sprintf("%v", flavor), -1)
 	localVarPath = strings.Replace(localVarPath, "{"+"id"+"}", fmt.Sprintf("%v", id), -1)
 
@@ -426,7 +426,7 @@ func (a EnginesApi) ListOryAccessControlPolicies(flavor string, limit int64, off
 
 	var localVarHttpMethod = strings.ToUpper("Get")
 	// create path and map variables
-	localVarPath := a.Configuration.BasePath + "/engines/ory/{flavor}/policies"
+	localVarPath := a.Configuration.BasePath + "/engines/acp/ory/{flavor}/policies"
 	localVarPath = strings.Replace(localVarPath, "{"+"flavor"+"}", fmt.Sprintf("%v", flavor), -1)
 
 	localVarHeaderParams := make(map[string]string)
@@ -491,7 +491,7 @@ func (a EnginesApi) ListOryAccessControlPolicyRoles(flavor string, limit int64, 
 
 	var localVarHttpMethod = strings.ToUpper("Get")
 	// create path and map variables
-	localVarPath := a.Configuration.BasePath + "/engines/ory/{flavor}/roles"
+	localVarPath := a.Configuration.BasePath + "/engines/acp/ory/{flavor}/roles"
 	localVarPath = strings.Replace(localVarPath, "{"+"flavor"+"}", fmt.Sprintf("%v", flavor), -1)
 
 	localVarHeaderParams := make(map[string]string)
@@ -556,7 +556,7 @@ func (a EnginesApi) RemoveOryAccessControlPolicyRoleMembers(id string, flavor st
 
 	var localVarHttpMethod = strings.ToUpper("Delete")
 	// create path and map variables
-	localVarPath := a.Configuration.BasePath + "/engines/ory/{flavor}/roles/{id}/members"
+	localVarPath := a.Configuration.BasePath + "/engines/acp/ory/{flavor}/roles/{id}/members"
 	localVarPath = strings.Replace(localVarPath, "{"+"id"+"}", fmt.Sprintf("%v", id), -1)
 	localVarPath = strings.Replace(localVarPath, "{"+"flavor"+"}", fmt.Sprintf("%v", flavor), -1)
 
@@ -620,7 +620,7 @@ func (a EnginesApi) UpsertOryAccessControlPolicy(id string, flavor string, body 
 
 	var localVarHttpMethod = strings.ToUpper("Put")
 	// create path and map variables
-	localVarPath := a.Configuration.BasePath + "/engines/ory/{flavor}/policies"
+	localVarPath := a.Configuration.BasePath + "/engines/acp/ory/{flavor}/policies"
 	localVarPath = strings.Replace(localVarPath, "{"+"id"+"}", fmt.Sprintf("%v", id), -1)
 	localVarPath = strings.Replace(localVarPath, "{"+"flavor"+"}", fmt.Sprintf("%v", flavor), -1)
 
@@ -684,7 +684,7 @@ func (a EnginesApi) UpsertOryAccessControlPolicyRole(id string, flavor string, b
 
 	var localVarHttpMethod = strings.ToUpper("Put")
 	// create path and map variables
-	localVarPath := a.Configuration.BasePath + "/engines/ory/{flavor}/roles"
+	localVarPath := a.Configuration.BasePath + "/engines/acp/ory/{flavor}/roles"
 	localVarPath = strings.Replace(localVarPath, "{"+"id"+"}", fmt.Sprintf("%v", id), -1)
 	localVarPath = strings.Replace(localVarPath, "{"+"flavor"+"}", fmt.Sprintf("%v", flavor), -1)
 

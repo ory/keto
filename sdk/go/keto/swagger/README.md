@@ -22,17 +22,17 @@ All URIs are relative to *http://localhost*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
-*EnginesApi* | [**AddOryAccessControlPolicyRoleMembers**](docs/EnginesApi.md#addoryaccesscontrolpolicyrolemembers) | **Put** /engines/ory/{flavor}/roles/{id}/members | Add a member to an ORY Access Control Policy Role
-*EnginesApi* | [**DeleteOryAccessControlPolicy**](docs/EnginesApi.md#deleteoryaccesscontrolpolicy) | **Delete** /engines/ory/{flavor}/policies/{id} | 
-*EnginesApi* | [**DeleteOryAccessControlPolicyRole**](docs/EnginesApi.md#deleteoryaccesscontrolpolicyrole) | **Delete** /engines/ory/{flavor}/roles/{id} | Delete an ORY Access Control Policy Role
-*EnginesApi* | [**DoOryAccessControlPoliciesAllow**](docs/EnginesApi.md#dooryaccesscontrolpoliciesallow) | **Get** /engines/ory/{flavor}/allowed | Check if a request is allowed
-*EnginesApi* | [**GetOryAccessControlPolicy**](docs/EnginesApi.md#getoryaccesscontrolpolicy) | **Get** /engines/ory/{flavor}/policies/{id} | 
-*EnginesApi* | [**GetOryAccessControlPolicyRole**](docs/EnginesApi.md#getoryaccesscontrolpolicyrole) | **Get** /engines/ory/{flavor}/roles/{id} | Get an ORY Access Control Policy Role
-*EnginesApi* | [**ListOryAccessControlPolicies**](docs/EnginesApi.md#listoryaccesscontrolpolicies) | **Get** /engines/ory/{flavor}/policies | 
-*EnginesApi* | [**ListOryAccessControlPolicyRoles**](docs/EnginesApi.md#listoryaccesscontrolpolicyroles) | **Get** /engines/ory/{flavor}/roles | List ORY Access Control Policy Roles
-*EnginesApi* | [**RemoveOryAccessControlPolicyRoleMembers**](docs/EnginesApi.md#removeoryaccesscontrolpolicyrolemembers) | **Delete** /engines/ory/{flavor}/roles/{id}/members | Remove a member from an ORY Access Control Policy Role
-*EnginesApi* | [**UpsertOryAccessControlPolicy**](docs/EnginesApi.md#upsertoryaccesscontrolpolicy) | **Put** /engines/ory/{flavor}/policies | 
-*EnginesApi* | [**UpsertOryAccessControlPolicyRole**](docs/EnginesApi.md#upsertoryaccesscontrolpolicyrole) | **Put** /engines/ory/{flavor}/roles | Upsert an ORY Access Control Policy Role
+*EnginesApi* | [**AddOryAccessControlPolicyRoleMembers**](docs/EnginesApi.md#addoryaccesscontrolpolicyrolemembers) | **Put** /engines/acp/ory/{flavor}/roles/{id}/members | Add a member to an ORY Access Control Policy Role
+*EnginesApi* | [**DeleteOryAccessControlPolicy**](docs/EnginesApi.md#deleteoryaccesscontrolpolicy) | **Delete** /engines/acp/ory/{flavor}/policies/{id} | 
+*EnginesApi* | [**DeleteOryAccessControlPolicyRole**](docs/EnginesApi.md#deleteoryaccesscontrolpolicyrole) | **Delete** /engines/acp/ory/{flavor}/roles/{id} | Delete an ORY Access Control Policy Role
+*EnginesApi* | [**DoOryAccessControlPoliciesAllow**](docs/EnginesApi.md#dooryaccesscontrolpoliciesallow) | **Get** /engines/acp/ory/{flavor}/allowed | Check if a request is allowed
+*EnginesApi* | [**GetOryAccessControlPolicy**](docs/EnginesApi.md#getoryaccesscontrolpolicy) | **Get** /engines/acp/ory/{flavor}/policies/{id} | 
+*EnginesApi* | [**GetOryAccessControlPolicyRole**](docs/EnginesApi.md#getoryaccesscontrolpolicyrole) | **Get** /engines/acp/ory/{flavor}/roles/{id} | Get an ORY Access Control Policy Role
+*EnginesApi* | [**ListOryAccessControlPolicies**](docs/EnginesApi.md#listoryaccesscontrolpolicies) | **Get** /engines/acp/ory/{flavor}/policies | 
+*EnginesApi* | [**ListOryAccessControlPolicyRoles**](docs/EnginesApi.md#listoryaccesscontrolpolicyroles) | **Get** /engines/acp/ory/{flavor}/roles | List ORY Access Control Policy Roles
+*EnginesApi* | [**RemoveOryAccessControlPolicyRoleMembers**](docs/EnginesApi.md#removeoryaccesscontrolpolicyrolemembers) | **Delete** /engines/acp/ory/{flavor}/roles/{id}/members | Remove a member from an ORY Access Control Policy Role
+*EnginesApi* | [**UpsertOryAccessControlPolicy**](docs/EnginesApi.md#upsertoryaccesscontrolpolicy) | **Put** /engines/acp/ory/{flavor}/policies | 
+*EnginesApi* | [**UpsertOryAccessControlPolicyRole**](docs/EnginesApi.md#upsertoryaccesscontrolpolicyrole) | **Put** /engines/acp/ory/{flavor}/roles | Upsert an ORY Access Control Policy Role
 *HealthApi* | [**IsInstanceAlive**](docs/HealthApi.md#isinstancealive) | **Get** /health/alive | Check alive status
 *HealthApi* | [**IsInstanceReady**](docs/HealthApi.md#isinstanceready) | **Get** /health/ready | Check readiness status
 *VersionApi* | [**GetVersion**](docs/VersionApi.md#getversion) | **Get** /version | Get service version

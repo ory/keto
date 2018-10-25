@@ -98,7 +98,7 @@
       var returnType = OryAccessControlPolicyRole;
 
       return this.apiClient.callApi(
-        '/engines/ory/{flavor}/roles/{id}/members', 'PUT',
+        '/engines/acp/ory/{flavor}/roles/{id}/members', 'PUT',
         pathParams, queryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType, callback
       );
@@ -149,7 +149,7 @@
       var returnType = null;
 
       return this.apiClient.callApi(
-        '/engines/ory/{flavor}/policies/{id}', 'DELETE',
+        '/engines/acp/ory/{flavor}/policies/{id}', 'DELETE',
         pathParams, queryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType, callback
       );
@@ -201,7 +201,7 @@
       var returnType = null;
 
       return this.apiClient.callApi(
-        '/engines/ory/{flavor}/roles/{id}', 'DELETE',
+        '/engines/acp/ory/{flavor}/roles/{id}', 'DELETE',
         pathParams, queryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType, callback
       );
@@ -250,7 +250,7 @@
       var returnType = AuthorizationResult;
 
       return this.apiClient.callApi(
-        '/engines/ory/{flavor}/allowed', 'GET',
+        '/engines/acp/ory/{flavor}/allowed', 'GET',
         pathParams, queryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType, callback
       );
@@ -302,7 +302,7 @@
       var returnType = OryAccessControlPolicy;
 
       return this.apiClient.callApi(
-        '/engines/ory/{flavor}/policies/{id}', 'GET',
+        '/engines/acp/ory/{flavor}/policies/{id}', 'GET',
         pathParams, queryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType, callback
       );
@@ -355,7 +355,7 @@
       var returnType = OryAccessControlPolicyRole;
 
       return this.apiClient.callApi(
-        '/engines/ory/{flavor}/roles/{id}', 'GET',
+        '/engines/acp/ory/{flavor}/roles/{id}', 'GET',
         pathParams, queryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType, callback
       );
@@ -406,7 +406,7 @@
       var returnType = OryAccessControlPolicies;
 
       return this.apiClient.callApi(
-        '/engines/ory/{flavor}/policies', 'GET',
+        '/engines/acp/ory/{flavor}/policies', 'GET',
         pathParams, queryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType, callback
       );
@@ -458,7 +458,7 @@
       var returnType = OryAccessControlPolicyRoles;
 
       return this.apiClient.callApi(
-        '/engines/ory/{flavor}/roles', 'GET',
+        '/engines/acp/ory/{flavor}/roles', 'GET',
         pathParams, queryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType, callback
       );
@@ -513,7 +513,7 @@
       var returnType = null;
 
       return this.apiClient.callApi(
-        '/engines/ory/{flavor}/roles/{id}/members', 'DELETE',
+        '/engines/acp/ory/{flavor}/roles/{id}/members', 'DELETE',
         pathParams, queryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType, callback
       );
@@ -567,7 +567,7 @@
       var returnType = null;
 
       return this.apiClient.callApi(
-        '/engines/ory/{flavor}/policies', 'PUT',
+        '/engines/acp/ory/{flavor}/policies', 'PUT',
         pathParams, queryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType, callback
       );
@@ -623,7 +623,7 @@
       var returnType = OryAccessControlPolicyRole;
 
       return this.apiClient.callApi(
-        '/engines/ory/{flavor}/roles', 'PUT',
+        '/engines/acp/ory/{flavor}/roles', 'PUT',
         pathParams, queryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType, callback
       );

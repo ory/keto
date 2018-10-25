@@ -4,17 +4,17 @@ All URIs are relative to *http://localhost*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**AddOryAccessControlPolicyRoleMembers**](EnginesApi.md#AddOryAccessControlPolicyRoleMembers) | **Put** /engines/ory/{flavor}/roles/{id}/members | Add a member to an ORY Access Control Policy Role
-[**DeleteOryAccessControlPolicy**](EnginesApi.md#DeleteOryAccessControlPolicy) | **Delete** /engines/ory/{flavor}/policies/{id} | 
-[**DeleteOryAccessControlPolicyRole**](EnginesApi.md#DeleteOryAccessControlPolicyRole) | **Delete** /engines/ory/{flavor}/roles/{id} | Delete an ORY Access Control Policy Role
-[**DoOryAccessControlPoliciesAllow**](EnginesApi.md#DoOryAccessControlPoliciesAllow) | **Get** /engines/ory/{flavor}/allowed | Check if a request is allowed
-[**GetOryAccessControlPolicy**](EnginesApi.md#GetOryAccessControlPolicy) | **Get** /engines/ory/{flavor}/policies/{id} | 
-[**GetOryAccessControlPolicyRole**](EnginesApi.md#GetOryAccessControlPolicyRole) | **Get** /engines/ory/{flavor}/roles/{id} | Get an ORY Access Control Policy Role
-[**ListOryAccessControlPolicies**](EnginesApi.md#ListOryAccessControlPolicies) | **Get** /engines/ory/{flavor}/policies | 
-[**ListOryAccessControlPolicyRoles**](EnginesApi.md#ListOryAccessControlPolicyRoles) | **Get** /engines/ory/{flavor}/roles | List ORY Access Control Policy Roles
-[**RemoveOryAccessControlPolicyRoleMembers**](EnginesApi.md#RemoveOryAccessControlPolicyRoleMembers) | **Delete** /engines/ory/{flavor}/roles/{id}/members | Remove a member from an ORY Access Control Policy Role
-[**UpsertOryAccessControlPolicy**](EnginesApi.md#UpsertOryAccessControlPolicy) | **Put** /engines/ory/{flavor}/policies | 
-[**UpsertOryAccessControlPolicyRole**](EnginesApi.md#UpsertOryAccessControlPolicyRole) | **Put** /engines/ory/{flavor}/roles | Upsert an ORY Access Control Policy Role
+[**AddOryAccessControlPolicyRoleMembers**](EnginesApi.md#AddOryAccessControlPolicyRoleMembers) | **Put** /engines/acp/ory/{flavor}/roles/{id}/members | Add a member to an ORY Access Control Policy Role
+[**DeleteOryAccessControlPolicy**](EnginesApi.md#DeleteOryAccessControlPolicy) | **Delete** /engines/acp/ory/{flavor}/policies/{id} | 
+[**DeleteOryAccessControlPolicyRole**](EnginesApi.md#DeleteOryAccessControlPolicyRole) | **Delete** /engines/acp/ory/{flavor}/roles/{id} | Delete an ORY Access Control Policy Role
+[**DoOryAccessControlPoliciesAllow**](EnginesApi.md#DoOryAccessControlPoliciesAllow) | **Get** /engines/acp/ory/{flavor}/allowed | Check if a request is allowed
+[**GetOryAccessControlPolicy**](EnginesApi.md#GetOryAccessControlPolicy) | **Get** /engines/acp/ory/{flavor}/policies/{id} | 
+[**GetOryAccessControlPolicyRole**](EnginesApi.md#GetOryAccessControlPolicyRole) | **Get** /engines/acp/ory/{flavor}/roles/{id} | Get an ORY Access Control Policy Role
+[**ListOryAccessControlPolicies**](EnginesApi.md#ListOryAccessControlPolicies) | **Get** /engines/acp/ory/{flavor}/policies | 
+[**ListOryAccessControlPolicyRoles**](EnginesApi.md#ListOryAccessControlPolicyRoles) | **Get** /engines/acp/ory/{flavor}/roles | List ORY Access Control Policy Roles
+[**RemoveOryAccessControlPolicyRoleMembers**](EnginesApi.md#RemoveOryAccessControlPolicyRoleMembers) | **Delete** /engines/acp/ory/{flavor}/roles/{id}/members | Remove a member from an ORY Access Control Policy Role
+[**UpsertOryAccessControlPolicy**](EnginesApi.md#UpsertOryAccessControlPolicy) | **Put** /engines/acp/ory/{flavor}/policies | 
+[**UpsertOryAccessControlPolicyRole**](EnginesApi.md#UpsertOryAccessControlPolicyRole) | **Put** /engines/acp/ory/{flavor}/roles | Upsert an ORY Access Control Policy Role
 
 
 # **AddOryAccessControlPolicyRoleMembers**

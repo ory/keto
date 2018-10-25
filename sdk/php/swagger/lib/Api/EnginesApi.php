@@ -128,7 +128,7 @@ class EnginesApi
             throw new \InvalidArgumentException('Missing the required parameter $flavor when calling addOryAccessControlPolicyRoleMembers');
         }
         // parse inputs
-        $resourcePath = "/engines/ory/{flavor}/roles/{id}/members";
+        $resourcePath = "/engines/acp/ory/{flavor}/roles/{id}/members";
         $httpBody = '';
         $queryParams = [];
         $headerParams = [];
@@ -176,7 +176,7 @@ class EnginesApi
                 $httpBody,
                 $headerParams,
                 '\ketoSDK\Model\OryAccessControlPolicyRole',
-                '/engines/ory/{flavor}/roles/{id}/members'
+                '/engines/acp/ory/{flavor}/roles/{id}/members'
             );
 
             return [$this->apiClient->getSerializer()->deserialize($response, '\ketoSDK\Model\OryAccessControlPolicyRole', $httpHeader), $statusCode, $httpHeader];
@@ -233,7 +233,7 @@ class EnginesApi
             throw new \InvalidArgumentException('Missing the required parameter $id when calling deleteOryAccessControlPolicy');
         }
         // parse inputs
-        $resourcePath = "/engines/ory/{flavor}/policies/{id}";
+        $resourcePath = "/engines/acp/ory/{flavor}/policies/{id}";
         $httpBody = '';
         $queryParams = [];
         $headerParams = [];
@@ -276,7 +276,7 @@ class EnginesApi
                 $httpBody,
                 $headerParams,
                 null,
-                '/engines/ory/{flavor}/policies/{id}'
+                '/engines/acp/ory/{flavor}/policies/{id}'
             );
 
             return [null, $statusCode, $httpHeader];
@@ -333,7 +333,7 @@ class EnginesApi
             throw new \InvalidArgumentException('Missing the required parameter $id when calling deleteOryAccessControlPolicyRole');
         }
         // parse inputs
-        $resourcePath = "/engines/ory/{flavor}/roles/{id}";
+        $resourcePath = "/engines/acp/ory/{flavor}/roles/{id}";
         $httpBody = '';
         $queryParams = [];
         $headerParams = [];
@@ -376,7 +376,7 @@ class EnginesApi
                 $httpBody,
                 $headerParams,
                 null,
-                '/engines/ory/{flavor}/roles/{id}'
+                '/engines/acp/ory/{flavor}/roles/{id}'
             );
 
             return [null, $statusCode, $httpHeader];
@@ -429,7 +429,7 @@ class EnginesApi
             throw new \InvalidArgumentException('Missing the required parameter $flavor when calling doOryAccessControlPoliciesAllow');
         }
         // parse inputs
-        $resourcePath = "/engines/ory/{flavor}/allowed";
+        $resourcePath = "/engines/acp/ory/{flavor}/allowed";
         $httpBody = '';
         $queryParams = [];
         $headerParams = [];
@@ -469,7 +469,7 @@ class EnginesApi
                 $httpBody,
                 $headerParams,
                 '\ketoSDK\Model\AuthorizationResult',
-                '/engines/ory/{flavor}/allowed'
+                '/engines/acp/ory/{flavor}/allowed'
             );
 
             return [$this->apiClient->getSerializer()->deserialize($response, '\ketoSDK\Model\AuthorizationResult', $httpHeader), $statusCode, $httpHeader];
@@ -526,7 +526,7 @@ class EnginesApi
             throw new \InvalidArgumentException('Missing the required parameter $id when calling getOryAccessControlPolicy');
         }
         // parse inputs
-        $resourcePath = "/engines/ory/{flavor}/policies/{id}";
+        $resourcePath = "/engines/acp/ory/{flavor}/policies/{id}";
         $httpBody = '';
         $queryParams = [];
         $headerParams = [];
@@ -569,7 +569,7 @@ class EnginesApi
                 $httpBody,
                 $headerParams,
                 '\ketoSDK\Model\OryAccessControlPolicy',
-                '/engines/ory/{flavor}/policies/{id}'
+                '/engines/acp/ory/{flavor}/policies/{id}'
             );
 
             return [$this->apiClient->getSerializer()->deserialize($response, '\ketoSDK\Model\OryAccessControlPolicy', $httpHeader), $statusCode, $httpHeader];
@@ -634,7 +634,7 @@ class EnginesApi
             throw new \InvalidArgumentException('Missing the required parameter $id when calling getOryAccessControlPolicyRole');
         }
         // parse inputs
-        $resourcePath = "/engines/ory/{flavor}/roles/{id}";
+        $resourcePath = "/engines/acp/ory/{flavor}/roles/{id}";
         $httpBody = '';
         $queryParams = [];
         $headerParams = [];
@@ -677,7 +677,7 @@ class EnginesApi
                 $httpBody,
                 $headerParams,
                 '\ketoSDK\Model\OryAccessControlPolicyRole',
-                '/engines/ory/{flavor}/roles/{id}'
+                '/engines/acp/ory/{flavor}/roles/{id}'
             );
 
             return [$this->apiClient->getSerializer()->deserialize($response, '\ketoSDK\Model\OryAccessControlPolicyRole', $httpHeader), $statusCode, $httpHeader];
@@ -736,7 +736,7 @@ class EnginesApi
             throw new \InvalidArgumentException('Missing the required parameter $flavor when calling listOryAccessControlPolicies');
         }
         // parse inputs
-        $resourcePath = "/engines/ory/{flavor}/policies";
+        $resourcePath = "/engines/acp/ory/{flavor}/policies";
         $httpBody = '';
         $queryParams = [];
         $headerParams = [];
@@ -779,7 +779,7 @@ class EnginesApi
                 $httpBody,
                 $headerParams,
                 '\ketoSDK\Model\OryAccessControlPolicies',
-                '/engines/ory/{flavor}/policies'
+                '/engines/acp/ory/{flavor}/policies'
             );
 
             return [$this->apiClient->getSerializer()->deserialize($response, '\ketoSDK\Model\OryAccessControlPolicies', $httpHeader), $statusCode, $httpHeader];
@@ -838,7 +838,7 @@ class EnginesApi
             throw new \InvalidArgumentException('Missing the required parameter $flavor when calling listOryAccessControlPolicyRoles');
         }
         // parse inputs
-        $resourcePath = "/engines/ory/{flavor}/roles";
+        $resourcePath = "/engines/acp/ory/{flavor}/roles";
         $httpBody = '';
         $queryParams = [];
         $headerParams = [];
@@ -881,7 +881,7 @@ class EnginesApi
                 $httpBody,
                 $headerParams,
                 '\ketoSDK\Model\OryAccessControlPolicyRoles',
-                '/engines/ory/{flavor}/roles'
+                '/engines/acp/ory/{flavor}/roles'
             );
 
             return [$this->apiClient->getSerializer()->deserialize($response, '\ketoSDK\Model\OryAccessControlPolicyRoles', $httpHeader), $statusCode, $httpHeader];
@@ -944,7 +944,7 @@ class EnginesApi
             throw new \InvalidArgumentException('Missing the required parameter $flavor when calling removeOryAccessControlPolicyRoleMembers');
         }
         // parse inputs
-        $resourcePath = "/engines/ory/{flavor}/roles/{id}/members";
+        $resourcePath = "/engines/acp/ory/{flavor}/roles/{id}/members";
         $httpBody = '';
         $queryParams = [];
         $headerParams = [];
@@ -992,7 +992,7 @@ class EnginesApi
                 $httpBody,
                 $headerParams,
                 null,
-                '/engines/ory/{flavor}/roles/{id}/members'
+                '/engines/acp/ory/{flavor}/roles/{id}/members'
             );
 
             return [null, $statusCode, $httpHeader];
@@ -1047,7 +1047,7 @@ class EnginesApi
             throw new \InvalidArgumentException('Missing the required parameter $flavor when calling upsertOryAccessControlPolicy');
         }
         // parse inputs
-        $resourcePath = "/engines/ory/{flavor}/policies";
+        $resourcePath = "/engines/acp/ory/{flavor}/policies";
         $httpBody = '';
         $queryParams = [];
         $headerParams = [];
@@ -1095,7 +1095,7 @@ class EnginesApi
                 $httpBody,
                 $headerParams,
                 null,
-                '/engines/ory/{flavor}/policies'
+                '/engines/acp/ory/{flavor}/policies'
             );
 
             return [null, $statusCode, $httpHeader];
@@ -1154,7 +1154,7 @@ class EnginesApi
             throw new \InvalidArgumentException('Missing the required parameter $flavor when calling upsertOryAccessControlPolicyRole');
         }
         // parse inputs
-        $resourcePath = "/engines/ory/{flavor}/roles";
+        $resourcePath = "/engines/acp/ory/{flavor}/roles";
         $httpBody = '';
         $queryParams = [];
         $headerParams = [];
@@ -1202,7 +1202,7 @@ class EnginesApi
                 $httpBody,
                 $headerParams,
                 '\ketoSDK\Model\OryAccessControlPolicyRole',
-                '/engines/ory/{flavor}/roles'
+                '/engines/acp/ory/{flavor}/roles'
             );
 
             return [$this->apiClient->getSerializer()->deserialize($response, '\ketoSDK\Model\OryAccessControlPolicyRole', $httpHeader), $statusCode, $httpHeader];

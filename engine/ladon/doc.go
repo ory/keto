@@ -15,12 +15,6 @@ type doOryAccessControlPoliciesAllow struct {
 
 // swagger:parameters upsertOryAccessControlPolicy
 type upsertOryAccessControlPolicy struct {
-	// The ID of the ORY Access Control Policy.
-	//
-	// in: path
-	// required: true
-	ID string `json:"id"`
-
 	// The ORY Access Control Policy flavor. Can be "regex" and "exact".
 	//
 	// in: path
