@@ -25,7 +25,54 @@
   },
   "basePath": "/",
   "paths": {
-    "/engines/acp/ory/{flavor}/allowed": {},
+    "/engines/acp/ory/{flavor}/allowed": {
+      "post": {
+        "description": "Use this endpoint to check if a request is allowed or not.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "http",
+          "https"
+        ],
+        "tags": [
+          "engines"
+        ],
+        "summary": "Check if a request is allowed",
+        "operationId": "doOryAccessControlPoliciesAllow",
+        "parameters": [
+          {
+            "type": "string",
+            "x-go-name": "Flavor",
+            "description": "The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".",
+            "name": "flavor",
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "Body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/oryAccessControlPolicyAllowedInput"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "authorizationResult",
+            "schema": {
+              "$ref": "#/definitions/authorizationResult"
+            }
+          },
+          "500": {
+            "$ref": "#/responses/genericError"
+          }
+        }
+      }
+    },
     "/engines/acp/ory/{flavor}/policies": {
       "get": {
         "description": "List ORY Access Control Policies",

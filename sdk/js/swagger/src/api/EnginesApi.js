@@ -17,18 +17,18 @@
 (function(root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module.
-    define(['ApiClient', 'model/AddOryAccessControlPolicyRoleMembersBody', 'model/InlineResponse500', 'model/OryAccessControlPolicy', 'model/OryAccessControlPolicyRole', 'model/RemoveOryAccessControlPolicyRoleMembersBody'], factory);
+    define(['ApiClient', 'model/AddOryAccessControlPolicyRoleMembersBody', 'model/AuthorizationResult', 'model/InlineResponse500', 'model/OryAccessControlPolicy', 'model/OryAccessControlPolicyAllowedInput', 'model/OryAccessControlPolicyRole', 'model/RemoveOryAccessControlPolicyRoleMembersBody'], factory);
   } else if (typeof module === 'object' && module.exports) {
     // CommonJS-like environments that support module.exports, like Node.
-    module.exports = factory(require('../ApiClient'), require('../model/AddOryAccessControlPolicyRoleMembersBody'), require('../model/InlineResponse500'), require('../model/OryAccessControlPolicy'), require('../model/OryAccessControlPolicyRole'), require('../model/RemoveOryAccessControlPolicyRoleMembersBody'));
+    module.exports = factory(require('../ApiClient'), require('../model/AddOryAccessControlPolicyRoleMembersBody'), require('../model/AuthorizationResult'), require('../model/InlineResponse500'), require('../model/OryAccessControlPolicy'), require('../model/OryAccessControlPolicyAllowedInput'), require('../model/OryAccessControlPolicyRole'), require('../model/RemoveOryAccessControlPolicyRoleMembersBody'));
   } else {
     // Browser globals (root is window)
     if (!root.SwaggerJsClient) {
       root.SwaggerJsClient = {};
     }
-    root.SwaggerJsClient.EnginesApi = factory(root.SwaggerJsClient.ApiClient, root.SwaggerJsClient.AddOryAccessControlPolicyRoleMembersBody, root.SwaggerJsClient.InlineResponse500, root.SwaggerJsClient.OryAccessControlPolicy, root.SwaggerJsClient.OryAccessControlPolicyRole, root.SwaggerJsClient.RemoveOryAccessControlPolicyRoleMembersBody);
+    root.SwaggerJsClient.EnginesApi = factory(root.SwaggerJsClient.ApiClient, root.SwaggerJsClient.AddOryAccessControlPolicyRoleMembersBody, root.SwaggerJsClient.AuthorizationResult, root.SwaggerJsClient.InlineResponse500, root.SwaggerJsClient.OryAccessControlPolicy, root.SwaggerJsClient.OryAccessControlPolicyAllowedInput, root.SwaggerJsClient.OryAccessControlPolicyRole, root.SwaggerJsClient.RemoveOryAccessControlPolicyRoleMembersBody);
   }
-}(this, function(ApiClient, AddOryAccessControlPolicyRoleMembersBody, InlineResponse500, OryAccessControlPolicy, OryAccessControlPolicyRole, RemoveOryAccessControlPolicyRoleMembersBody) {
+}(this, function(ApiClient, AddOryAccessControlPolicyRoleMembersBody, AuthorizationResult, InlineResponse500, OryAccessControlPolicy, OryAccessControlPolicyAllowedInput, OryAccessControlPolicyRole, RemoveOryAccessControlPolicyRoleMembersBody) {
   'use strict';
 
   /**
@@ -202,6 +202,55 @@
 
       return this.apiClient.callApi(
         '/engines/acp/ory/{flavor}/roles/{id}', 'DELETE',
+        pathParams, queryParams, headerParams, formParams, postBody,
+        authNames, contentTypes, accepts, returnType, callback
+      );
+    }
+
+    /**
+     * Callback function to receive the result of the doOryAccessControlPoliciesAllow operation.
+     * @callback module:api/EnginesApi~doOryAccessControlPoliciesAllowCallback
+     * @param {String} error Error message, if any.
+     * @param {module:model/AuthorizationResult} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Check if a request is allowed
+     * Use this endpoint to check if a request is allowed or not.
+     * @param {String} flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;.
+     * @param {Object} opts Optional parameters
+     * @param {module:model/OryAccessControlPolicyAllowedInput} opts.body 
+     * @param {module:api/EnginesApi~doOryAccessControlPoliciesAllowCallback} callback The callback function, accepting three arguments: error, data, response
+     * data is of type: {@link module:model/AuthorizationResult}
+     */
+    this.doOryAccessControlPoliciesAllow = function(flavor, opts, callback) {
+      opts = opts || {};
+      var postBody = opts['body'];
+
+      // verify the required parameter 'flavor' is set
+      if (flavor === undefined || flavor === null) {
+        throw new Error("Missing the required parameter 'flavor' when calling doOryAccessControlPoliciesAllow");
+      }
+
+
+      var pathParams = {
+        'flavor': flavor
+      };
+      var queryParams = {
+      };
+      var headerParams = {
+      };
+      var formParams = {
+      };
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = AuthorizationResult;
+
+      return this.apiClient.callApi(
+        '/engines/acp/ory/{flavor}/allowed', 'POST',
         pathParams, queryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType, callback
       );

@@ -126,6 +126,7 @@ Class | Method | HTTP request | Description
 *SwaggerJsClient.EnginesApi* | [**addOryAccessControlPolicyRoleMembers**](docs/EnginesApi.md#addOryAccessControlPolicyRoleMembers) | **PUT** /engines/acp/ory/{flavor}/roles/{id}/members | Add a member to an ORY Access Control Policy Role
 *SwaggerJsClient.EnginesApi* | [**deleteOryAccessControlPolicy**](docs/EnginesApi.md#deleteOryAccessControlPolicy) | **DELETE** /engines/acp/ory/{flavor}/policies/{id} | 
 *SwaggerJsClient.EnginesApi* | [**deleteOryAccessControlPolicyRole**](docs/EnginesApi.md#deleteOryAccessControlPolicyRole) | **DELETE** /engines/acp/ory/{flavor}/roles/{id} | Delete an ORY Access Control Policy Role
+*SwaggerJsClient.EnginesApi* | [**doOryAccessControlPoliciesAllow**](docs/EnginesApi.md#doOryAccessControlPoliciesAllow) | **POST** /engines/acp/ory/{flavor}/allowed | Check if a request is allowed
 *SwaggerJsClient.EnginesApi* | [**getOryAccessControlPolicy**](docs/EnginesApi.md#getOryAccessControlPolicy) | **GET** /engines/acp/ory/{flavor}/policies/{id} | 
 *SwaggerJsClient.EnginesApi* | [**getOryAccessControlPolicyRole**](docs/EnginesApi.md#getOryAccessControlPolicyRole) | **GET** /engines/acp/ory/{flavor}/roles/{id} | Get an ORY Access Control Policy Role
 *SwaggerJsClient.EnginesApi* | [**listOryAccessControlPolicies**](docs/EnginesApi.md#listOryAccessControlPolicies) | **GET** /engines/acp/ory/{flavor}/policies | 
