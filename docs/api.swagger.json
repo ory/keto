@@ -25,7 +25,7 @@
   },
   "basePath": "/",
   "paths": {
-    "/engines/ory/{flavor}/allowed": {
+    "/engines/acp/ory/{flavor}/allowed": {
       "get": {
         "description": "Use this endpoint to check if a request is allowed or not.",
         "consumes": [
@@ -73,7 +73,7 @@
         }
       }
     },
-    "/engines/ory/{flavor}/policies": {
+    "/engines/acp/ory/{flavor}/policies": {
       "get": {
         "description": "List ORY Access Control Policies",
         "produces": [
@@ -176,7 +176,7 @@
         }
       }
     },
-    "/engines/ory/{flavor}/policies/{id}": {
+    "/engines/acp/ory/{flavor}/policies/{id}": {
       "get": {
         "description": "Get an ORY Access Control Policy",
         "produces": [
@@ -264,7 +264,7 @@
         }
       }
     },
-    "/engines/ory/{flavor}/roles": {
+    "/engines/acp/ory/{flavor}/roles": {
       "get": {
         "description": "Roles group several subjects into one. Rules can be assigned to ORY Access Control Policy (OACP) by using the Role ID\nas subject in the OACP.",
         "produces": [
@@ -372,7 +372,7 @@
         }
       }
     },
-    "/engines/ory/{flavor}/roles/{id}": {
+    "/engines/acp/ory/{flavor}/roles/{id}": {
       "get": {
         "description": "Roles group several subjects into one. Rules can be assigned to ORY Access Control Policy (OACP) by using the Role ID\nas subject in the OACP.",
         "produces": [
@@ -462,7 +462,7 @@
         }
       }
     },
-    "/engines/ory/{flavor}/roles/{id}/members": {
+    "/engines/acp/ory/{flavor}/roles/{id}/members": {
       "put": {
         "description": "Roles group several subjects into one. Rules can be assigned to ORY Access Control Policy (OACP) by using the Role ID\nas subject in the OACP.",
         "consumes": [
