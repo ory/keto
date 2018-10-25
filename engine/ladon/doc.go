@@ -105,17 +105,17 @@ type deleteOryAccessControlPolicyRole struct {
 
 // swagger:parameters upsertOryAccessControlPolicyRole
 type upsertOryAccessControlPolicyRole struct {
-	// The ID of the ORY Access Control Policy Role.
-	//
-	// in: path
-	// required: true
-	ID string `json:"id"`
-
 	// The ORY Access Control Policy flavor. Can be "regex" and "exact".
 	//
 	// in: path
 	// required: true
 	Flavor string `json:"flavor"`
+
+	// The ID of the ORY Access Control Policy Role.
+	//
+	// in: path
+	// required: true
+	ID string `json:"id"`
 
 	// in: body
 	Body Role
@@ -129,17 +129,17 @@ type addOryAccessControlPolicyRoleMembersBody struct {
 
 // swagger:parameters addOryAccessControlPolicyRoleMembers
 type addOryAccessControlPolicyRoleMembers struct {
-	// The ID of the ORY Access Control Policy Role.
-	//
-	// in: path
-	// required: true
-	ID string `json:"id"`
-
 	// The ORY Access Control Policy flavor. Can be "regex" and "exact".
 	//
 	// in: path
 	// required: true
 	Flavor string `json:"flavor"`
+
+	// The ID of the ORY Access Control Policy Role.
+	//
+	// in: path
+	// required: true
+	ID string `json:"id"`
 
 	// in: body
 	Body addOryAccessControlPolicyRoleMembersBody
@@ -153,17 +153,17 @@ type removeOryAccessControlPolicyRoleMembersBody struct {
 
 // swagger:parameters removeOryAccessControlPolicyRoleMembers
 type removeOryAccessControlPolicyRoleMembers struct {
-	// The ID of the ORY Access Control Policy Role.
-	//
-	// in: path
-	// required: true
-	ID string `json:"id"`
-
 	// The ORY Access Control Policy flavor. Can be "regex" and "exact".
 	//
 	// in: path
 	// required: true
 	Flavor string `json:"flavor"`
+
+	// The ID of the ORY Access Control Policy Role.
+	//
+	// in: path
+	// required: true
+	ID string `json:"id"`
 
 	// in: body
 	Body removeOryAccessControlPolicyRoleMembersBody
@@ -177,6 +177,14 @@ type oryAccessControlPolicies struct {
 	Body []Policy
 }
 
+
+// Roles is an array of roles.
+//
+// swagger:response oryAccessControlPolicyRoles
+type oryAccessControlPolicyRoles struct {
+	// in: body
+	Body []Role
+}
 
 // swagger:parameters listOryAccessControlPolicyRoles
 type listOryAccessControlPolicyRoles struct {

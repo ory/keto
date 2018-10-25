@@ -147,6 +147,20 @@ func fromSwaggerPolicy(p swagger.OryAccessControlPolicy) Policy {
 	}
 }
 
+func toSwaggerRole(r Role) swagger.OryAccessControlPolicyRole {
+	return swagger.OryAccessControlPolicyRole{
+		Members: r.Members,
+		Id:      r.ID,
+	}
+}
+
+func fromSwaggerRole(r swagger.OryAccessControlPolicyRole) Role {
+	return Role{
+		Members: r.Members,
+		ID:      r.Id,
+	}
+}
+
 func TestPolicyCRUD(t *testing.T) {
 	ts := crudts()
 	defer ts.Close()
@@ -166,7 +180,13 @@ func TestPolicyCRUD(t *testing.T) {
 
 			os, resp, err := c.ListOryAccessControlPolicies(f, 100, 0)
 			x.CheckResponseTest(t, err, http.StatusOK, resp)
-			assert.Equal(t, p, os, policies[f][:l+1])
+
+			var ps Policies
+			for _, v := range os {
+				ps = append(ps, fromSwaggerPolicy(v))
+			}
+
+			assert.Equal(t, ps, policies[f][:l+1])
 		}
 
 		for _, p := range policies[f] {
@@ -247,17 +267,37 @@ func TestRoleCRUD(t *testing.T) {
 	ts := crudts()
 	defer ts.Close()
 
+	c := swagger.NewEnginesApiWithBasePath(ts.URL)
 	for _, f := range []string{"exact", "regex"} {
 		for l, r := range roles[f] {
-			test404(t, base(ts, f, "/roles/"+r.ID))
-			testCreate(t, base(ts, f, "/roles"), r, r)
-			testGet(t, "get", base(ts, f, "/roles/"+r.ID), r)
-			testGet(t, "list", base(ts, f, "/roles"), roles[f][:l+1])
+			_, resp, err := c.GetOryAccessControlPolicyRole(f, r.ID)
+			x.CheckResponseTest(t, err, http.StatusNotFound, resp)
+
+			o, resp, err := c.UpsertOryAccessControlPolicyRole(r.ID, f, toSwaggerRole(r))
+			x.CheckResponseTest(t, err, http.StatusOK, resp)
+			require.EqualValues(t, r, fromSwaggerRole(*o))
+
+			o, resp, err = c.GetOryAccessControlPolicyRole(f, r.ID)
+			x.CheckResponseTest(t, err, http.StatusOK, resp)
+			require.EqualValues(t, r, fromSwaggerRole(*o))
+
+			os, resp, err := c.ListOryAccessControlPolicyRoles(f, 100, 0)
+			x.CheckResponseTest(t, err, http.StatusOK, resp)
+
+			var ps Roles
+			for _, v := range os {
+				ps = append(ps, fromSwaggerRole(v))
+			}
+
+			assert.Equal(t, ps, roles[f][:l+1])
 		}
 
 		for _, r := range roles[f] {
-			testDelete(t, base(ts, f, "/roles/"+r.ID))
-			test404(t, base(ts, f, "/roles/"+r.ID))
+			resp, err := c.DeleteOryAccessControlPolicyRole(f, r.ID)
+			x.CheckResponseTest(t, err, http.StatusNoContent, resp)
+
+			_, resp, err = c.GetOryAccessControlPolicyRole(f, r.ID)
+			x.CheckResponseTest(t, err, http.StatusNotFound, resp)
 		}
 	}
 }
