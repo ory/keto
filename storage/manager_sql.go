@@ -48,7 +48,7 @@ var Migrations = map[string]*migrate.MemoryMigrationSource{
 					`CREATE TABLE IF NOT EXISTS rego_data (
     id 			SERIAL PRIMARY KEY,
 	collection 	VARCHAR(64) NOT NULL,
-	key 		VARCHAR(64) NOT NULL,
+	pkey 		VARCHAR(64) NOT NULL,
 	document	JSON
 )`,
 					`CREATE UNIQUE INDEX rego_data_uidx_ck ON rego_data (collection, pkey)`,
