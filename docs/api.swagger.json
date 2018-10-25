@@ -144,8 +144,9 @@
         "parameters": [
           {
             "type": "string",
+            "x-go-name": "ID",
             "description": "The ID of the ORY Access Control Policy.",
-            "name": "ID",
+            "name": "id",
             "in": "path",
             "required": true
           },
@@ -200,8 +201,9 @@
           },
           {
             "type": "string",
+            "x-go-name": "ID",
             "description": "The ID of the ORY Access Control Policy Role.",
-            "name": "ID",
+            "name": "id",
             "in": "path",
             "required": true
           }
@@ -245,8 +247,9 @@
           },
           {
             "type": "string",
+            "x-go-name": "ID",
             "description": "The ID of the ORY Access Control Policy Role.",
-            "name": "ID",
+            "name": "id",
             "in": "path",
             "required": true
           }
@@ -272,7 +275,7 @@
           "https"
         ],
         "tags": [
-          "engine"
+          "engines"
         ],
         "summary": "List ORY Access Control Policy Roles",
         "operationId": "listOryAccessControlPolicyRoles",
@@ -334,8 +337,9 @@
         "parameters": [
           {
             "type": "string",
+            "x-go-name": "ID",
             "description": "The ID of the ORY Access Control Policy Role.",
-            "name": "ID",
+            "name": "id",
             "in": "path",
             "required": true
           },
@@ -394,8 +398,9 @@
           },
           {
             "type": "string",
+            "x-go-name": "ID",
             "description": "The ID of the ORY Access Control Policy Role.",
-            "name": "ID",
+            "name": "id",
             "in": "path",
             "required": true
           }
@@ -440,8 +445,9 @@
           },
           {
             "type": "string",
+            "x-go-name": "ID",
             "description": "The ID of the ORY Access Control Policy Role.",
-            "name": "ID",
+            "name": "id",
             "in": "path",
             "required": true
           }
@@ -477,8 +483,9 @@
         "parameters": [
           {
             "type": "string",
+            "x-go-name": "ID",
             "description": "The ID of the ORY Access Control Policy Role.",
-            "name": "ID",
+            "name": "id",
             "in": "path",
             "required": true
           },
@@ -530,8 +537,9 @@
         "parameters": [
           {
             "type": "string",
+            "x-go-name": "ID",
             "description": "The ID of the ORY Access Control Policy Role.",
-            "name": "ID",
+            "name": "id",
             "in": "path",
             "required": true
           },
@@ -635,24 +643,32 @@
     }
   },
   "definitions": {
+    "Context": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object"
+      },
+      "x-go-package": "github.com/ory/keto/engine/ladon"
+    },
     "addOryAccessControlPolicyRoleMembers": {
       "type": "object",
       "required": [
-        "ID",
+        "id",
         "flavor"
       ],
       "properties": {
         "Body": {
           "$ref": "#/definitions/addOryAccessControlPolicyRoleMembersBody"
         },
-        "ID": {
-          "description": "The ID of the ORY Access Control Policy Role.\n\nin: path",
-          "type": "string"
-        },
         "flavor": {
           "description": "The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".\n\nin: path",
           "type": "string",
           "x-go-name": "Flavor"
+        },
+        "id": {
+          "description": "The ID of the ORY Access Control Policy Role.\n\nin: path",
+          "type": "string",
+          "x-go-name": "ID"
         }
       },
       "x-go-package": "github.com/ory/keto/engine/ladon"
@@ -688,17 +704,18 @@
       "type": "object",
       "required": [
         "flavor",
-        "ID"
+        "id"
       ],
       "properties": {
-        "ID": {
-          "description": "The ID of the ORY Access Control Policy Role.\n\nin: path",
-          "type": "string"
-        },
         "flavor": {
           "description": "The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".\n\nin: path",
           "type": "string",
           "x-go-name": "Flavor"
+        },
+        "id": {
+          "description": "The ID of the ORY Access Control Policy Role.\n\nin: path",
+          "type": "string",
+          "x-go-name": "ID"
         }
       },
       "x-go-package": "github.com/ory/keto/engine/ladon"
@@ -707,17 +724,18 @@
       "type": "object",
       "required": [
         "flavor",
-        "ID"
+        "id"
       ],
       "properties": {
-        "ID": {
-          "description": "The ID of the ORY Access Control Policy Role.\nin: path",
-          "type": "string"
-        },
         "flavor": {
           "description": "The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".\n\nin: path",
           "type": "string",
           "x-go-name": "Flavor"
+        },
+        "id": {
+          "description": "The ID of the ORY Access Control Policy Role.\nin: path",
+          "type": "string",
+          "x-go-name": "ID"
         }
       },
       "x-go-package": "github.com/ory/keto/engine/ladon"
@@ -743,17 +761,18 @@
       "type": "object",
       "required": [
         "flavor",
-        "ID"
+        "id"
       ],
       "properties": {
-        "ID": {
-          "description": "The ID of the ORY Access Control Policy Role.\n\nin: path",
-          "type": "string"
-        },
         "flavor": {
           "description": "The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".\n\nin: path",
           "type": "string",
           "x-go-name": "Flavor"
+        },
+        "id": {
+          "description": "The ID of the ORY Access Control Policy Role.\n\nin: path",
+          "type": "string",
+          "x-go-name": "ID"
         }
       },
       "x-go-package": "github.com/ory/keto/engine/ladon"
@@ -762,17 +781,18 @@
       "type": "object",
       "required": [
         "flavor",
-        "ID"
+        "id"
       ],
       "properties": {
-        "ID": {
-          "description": "The ID of the ORY Access Control Policy Role.\n\nin: path",
-          "type": "string"
-        },
         "flavor": {
           "description": "The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".\n\nin: path",
           "type": "string",
           "x-go-name": "Flavor"
+        },
+        "id": {
+          "description": "The ID of the ORY Access Control Policy Role.\n\nin: path",
+          "type": "string",
+          "x-go-name": "ID"
         }
       },
       "x-go-package": "github.com/ory/keto/engine/ladon"
@@ -932,12 +952,7 @@
           "x-go-name": "Action"
         },
         "context": {
-          "description": "Context is the request's environmental context.",
-          "type": "object",
-          "additionalProperties": {
-            "type": "object"
-          },
-          "x-go-name": "Context"
+          "$ref": "#/definitions/Context"
         },
         "resource": {
           "description": "Resource is the resource that access is requested to.",
@@ -950,7 +965,7 @@
           "x-go-name": "Subject"
         }
       },
-      "x-go-name": "input",
+      "x-go-name": "Input",
       "x-go-package": "github.com/ory/keto/engine/ladon"
     },
     "oryAccessControlPolicyRole": {
@@ -986,21 +1001,22 @@
     "removeOryAccessControlPolicyRoleMembers": {
       "type": "object",
       "required": [
-        "ID",
+        "id",
         "flavor"
       ],
       "properties": {
         "Body": {
           "$ref": "#/definitions/removeOryAccessControlPolicyRoleMembersBody"
         },
-        "ID": {
-          "description": "The ID of the ORY Access Control Policy Role.\n\nin: path",
-          "type": "string"
-        },
         "flavor": {
           "description": "The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".\n\nin: path",
           "type": "string",
           "x-go-name": "Flavor"
+        },
+        "id": {
+          "description": "The ID of the ORY Access Control Policy Role.\n\nin: path",
+          "type": "string",
+          "x-go-name": "ID"
         }
       },
       "x-go-package": "github.com/ory/keto/engine/ladon"
@@ -1022,21 +1038,22 @@
     "upsertOryAccessControlPolicy": {
       "type": "object",
       "required": [
-        "ID",
+        "id",
         "flavor"
       ],
       "properties": {
         "Body": {
           "$ref": "#/definitions/oryAccessControlPolicy"
         },
-        "ID": {
-          "description": "The ID of the ORY Access Control Policy.\n\nin: path",
-          "type": "string"
-        },
         "flavor": {
           "description": "The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".\n\nin: path",
           "type": "string",
           "x-go-name": "Flavor"
+        },
+        "id": {
+          "description": "The ID of the ORY Access Control Policy.\n\nin: path",
+          "type": "string",
+          "x-go-name": "ID"
         }
       },
       "x-go-package": "github.com/ory/keto/engine/ladon"
@@ -1044,21 +1061,22 @@
     "upsertOryAccessControlPolicyRole": {
       "type": "object",
       "required": [
-        "ID",
+        "id",
         "flavor"
       ],
       "properties": {
         "Body": {
           "$ref": "#/definitions/oryAccessControlPolicyRole"
         },
-        "ID": {
-          "description": "The ID of the ORY Access Control Policy Role.\n\nin: path",
-          "type": "string"
-        },
         "flavor": {
           "description": "The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".\n\nin: path",
           "type": "string",
           "x-go-name": "Flavor"
+        },
+        "id": {
+          "description": "The ID of the ORY Access Control Policy Role.\n\nin: path",
+          "type": "string",
+          "x-go-name": "ID"
         }
       },
       "x-go-package": "github.com/ory/keto/engine/ladon"
