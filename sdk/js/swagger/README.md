@@ -96,13 +96,14 @@ Please follow the [installation](#installation) instruction and execute the foll
 ```javascript
 var SwaggerJsClient = require('swagger-js-client');
 
-var api = new SwaggerJsClient.EngineApi()
+var api = new SwaggerJsClient.EnginesApi()
 
-var flavor = "flavor_example"; // {String} The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\"
+var id = "id_example"; // {String} The ID of the ORY Access Control Policy Role.
+
+var flavor = "flavor_example"; // {String} The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".
 
 var opts = { 
-  'limit': 789, // {Number} The maximum amount of policies returned.
-  'offset': 789 // {Number} The offset from where to start looking.
+  'body': new SwaggerJsClient.AddOryAccessControlPolicyRoleMembersBody() // {AddOryAccessControlPolicyRoleMembersBody} 
 };
 
 var callback = function(error, data, response) {
@@ -112,7 +113,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.listOryAccessControlPolicyRoles(flavor, opts, callback);
+api.addOryAccessControlPolicyRoleMembers(id, flavor, opts, callback);
 
 ```
 
@@ -122,7 +123,6 @@ All URIs are relative to *http://localhost*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
-*SwaggerJsClient.EngineApi* | [**listOryAccessControlPolicyRoles**](docs/EngineApi.md#listOryAccessControlPolicyRoles) | **GET** /engines/ory/{flavor}/roles | List ORY Access Control Policy Roles
 *SwaggerJsClient.EnginesApi* | [**addOryAccessControlPolicyRoleMembers**](docs/EnginesApi.md#addOryAccessControlPolicyRoleMembers) | **PUT** /engines/ory/{flavor}/roles/{id}/members | Add a member to an ORY Access Control Policy Role
 *SwaggerJsClient.EnginesApi* | [**deleteOryAccessControlPolicy**](docs/EnginesApi.md#deleteOryAccessControlPolicy) | **DELETE** /engines/ory/{flavor}/policies/{id} | 
 *SwaggerJsClient.EnginesApi* | [**deleteOryAccessControlPolicyRole**](docs/EnginesApi.md#deleteOryAccessControlPolicyRole) | **DELETE** /engines/ory/{flavor}/roles/{id} | Delete an ORY Access Control Policy Role
@@ -130,6 +130,7 @@ Class | Method | HTTP request | Description
 *SwaggerJsClient.EnginesApi* | [**getOryAccessControlPolicy**](docs/EnginesApi.md#getOryAccessControlPolicy) | **GET** /engines/ory/{flavor}/policies/{id} | 
 *SwaggerJsClient.EnginesApi* | [**getOryAccessControlPolicyRole**](docs/EnginesApi.md#getOryAccessControlPolicyRole) | **GET** /engines/ory/{flavor}/roles/{id} | Get an ORY Access Control Policy Role
 *SwaggerJsClient.EnginesApi* | [**listOryAccessControlPolicies**](docs/EnginesApi.md#listOryAccessControlPolicies) | **GET** /engines/ory/{flavor}/policies | 
+*SwaggerJsClient.EnginesApi* | [**listOryAccessControlPolicyRoles**](docs/EnginesApi.md#listOryAccessControlPolicyRoles) | **GET** /engines/ory/{flavor}/roles | List ORY Access Control Policy Roles
 *SwaggerJsClient.EnginesApi* | [**removeOryAccessControlPolicyRoleMembers**](docs/EnginesApi.md#removeOryAccessControlPolicyRoleMembers) | **DELETE** /engines/ory/{flavor}/roles/{id}/members | Remove a member from an ORY Access Control Policy Role
 *SwaggerJsClient.EnginesApi* | [**upsertOryAccessControlPolicy**](docs/EnginesApi.md#upsertOryAccessControlPolicy) | **PUT** /engines/ory/{flavor}/policies | 
 *SwaggerJsClient.EnginesApi* | [**upsertOryAccessControlPolicyRole**](docs/EnginesApi.md#upsertOryAccessControlPolicyRole) | **PUT** /engines/ory/{flavor}/roles | Upsert an ORY Access Control Policy Role
@@ -143,6 +144,7 @@ Class | Method | HTTP request | Description
  - [SwaggerJsClient.AddOryAccessControlPolicyRoleMembers](docs/AddOryAccessControlPolicyRoleMembers.md)
  - [SwaggerJsClient.AddOryAccessControlPolicyRoleMembersBody](docs/AddOryAccessControlPolicyRoleMembersBody.md)
  - [SwaggerJsClient.AuthorizationResult](docs/AuthorizationResult.md)
+ - [SwaggerJsClient.Context](docs/Context.md)
  - [SwaggerJsClient.DeleteOryAccessControlPolicy](docs/DeleteOryAccessControlPolicy.md)
  - [SwaggerJsClient.DeleteOryAccessControlPolicyRole](docs/DeleteOryAccessControlPolicyRole.md)
  - [SwaggerJsClient.DoOryAccessControlPoliciesAllow](docs/DoOryAccessControlPoliciesAllow.md)

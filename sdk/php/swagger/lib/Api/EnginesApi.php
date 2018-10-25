@@ -4,7 +4,7 @@
  * PHP version 5
  *
  * @category Class
- * @package  keto\SDK
+ * @package  ketoSDK
  * @author   Swagger Codegen team
  * @link     https://github.com/swagger-api/swagger-codegen
  */
@@ -24,18 +24,18 @@
  * Do not edit the class manually.
  */
 
-namespace keto\SDK\Api;
+namespace ketoSDK\Api;
 
-use \keto\SDK\ApiClient;
-use \keto\SDK\ApiException;
-use \keto\SDK\Configuration;
-use \keto\SDK\ObjectSerializer;
+use \ketoSDK\ApiClient;
+use \ketoSDK\ApiException;
+use \ketoSDK\Configuration;
+use \ketoSDK\ObjectSerializer;
 
 /**
  * EnginesApi Class Doc Comment
  *
  * @category Class
- * @package  keto\SDK
+ * @package  ketoSDK
  * @author   Swagger Codegen team
  * @link     https://github.com/swagger-api/swagger-codegen
  */
@@ -44,16 +44,16 @@ class EnginesApi
     /**
      * API Client
      *
-     * @var \keto\SDK\ApiClient instance of the ApiClient
+     * @var \ketoSDK\ApiClient instance of the ApiClient
      */
     protected $apiClient;
 
     /**
      * Constructor
      *
-     * @param \keto\SDK\ApiClient|null $apiClient The api client to use
+     * @param \ketoSDK\ApiClient|null $apiClient The api client to use
      */
-    public function __construct(\keto\SDK\ApiClient $apiClient = null)
+    public function __construct(\ketoSDK\ApiClient $apiClient = null)
     {
         if ($apiClient === null) {
             $apiClient = new ApiClient();
@@ -65,7 +65,7 @@ class EnginesApi
     /**
      * Get API client
      *
-     * @return \keto\SDK\ApiClient get the API client
+     * @return \ketoSDK\ApiClient get the API client
      */
     public function getApiClient()
     {
@@ -75,11 +75,11 @@ class EnginesApi
     /**
      * Set the API client
      *
-     * @param \keto\SDK\ApiClient $apiClient set the API client
+     * @param \ketoSDK\ApiClient $apiClient set the API client
      *
      * @return EnginesApi
      */
-    public function setApiClient(\keto\SDK\ApiClient $apiClient)
+    public function setApiClient(\ketoSDK\ApiClient $apiClient)
     {
         $this->apiClient = $apiClient;
         return $this;
@@ -94,9 +94,9 @@ class EnginesApi
      *
      * @param string $id The ID of the ORY Access Control Policy Role. (required)
      * @param string $flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;. (required)
-     * @param \keto\SDK\Model\AddOryAccessControlPolicyRoleMembersBody $body  (optional)
-     * @throws \keto\SDK\ApiException on non-2xx response
-     * @return \keto\SDK\Model\OryAccessControlPolicyRole
+     * @param \ketoSDK\Model\AddOryAccessControlPolicyRoleMembersBody $body  (optional)
+     * @throws \ketoSDK\ApiException on non-2xx response
+     * @return \ketoSDK\Model\OryAccessControlPolicyRole
      */
     public function addOryAccessControlPolicyRoleMembers($id, $flavor, $body = null)
     {
@@ -113,9 +113,9 @@ class EnginesApi
      *
      * @param string $id The ID of the ORY Access Control Policy Role. (required)
      * @param string $flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;. (required)
-     * @param \keto\SDK\Model\AddOryAccessControlPolicyRoleMembersBody $body  (optional)
-     * @throws \keto\SDK\ApiException on non-2xx response
-     * @return array of \keto\SDK\Model\OryAccessControlPolicyRole, HTTP status code, HTTP response headers (array of strings)
+     * @param \ketoSDK\Model\AddOryAccessControlPolicyRoleMembersBody $body  (optional)
+     * @throws \ketoSDK\ApiException on non-2xx response
+     * @return array of \ketoSDK\Model\OryAccessControlPolicyRole, HTTP status code, HTTP response headers (array of strings)
      */
     public function addOryAccessControlPolicyRoleMembersWithHttpInfo($id, $flavor, $body = null)
     {
@@ -142,7 +142,7 @@ class EnginesApi
         // path params
         if ($id !== null) {
             $resourcePath = str_replace(
-                "{" . "ID" . "}",
+                "{" . "id" . "}",
                 $this->apiClient->getSerializer()->toPathValue($id),
                 $resourcePath
             );
@@ -175,19 +175,19 @@ class EnginesApi
                 $queryParams,
                 $httpBody,
                 $headerParams,
-                '\keto\SDK\Model\OryAccessControlPolicyRole',
+                '\ketoSDK\Model\OryAccessControlPolicyRole',
                 '/engines/ory/{flavor}/roles/{id}/members'
             );
 
-            return [$this->apiClient->getSerializer()->deserialize($response, '\keto\SDK\Model\OryAccessControlPolicyRole', $httpHeader), $statusCode, $httpHeader];
+            return [$this->apiClient->getSerializer()->deserialize($response, '\ketoSDK\Model\OryAccessControlPolicyRole', $httpHeader), $statusCode, $httpHeader];
         } catch (ApiException $e) {
             switch ($e->getCode()) {
                 case 200:
-                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\keto\SDK\Model\OryAccessControlPolicyRole', $e->getResponseHeaders());
+                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\ketoSDK\Model\OryAccessControlPolicyRole', $e->getResponseHeaders());
                     $e->setResponseObject($data);
                     break;
                 case 500:
-                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\keto\SDK\Model\InlineResponse500', $e->getResponseHeaders());
+                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\ketoSDK\Model\InlineResponse500', $e->getResponseHeaders());
                     $e->setResponseObject($data);
                     break;
             }
@@ -203,7 +203,7 @@ class EnginesApi
      *
      * @param string $flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;. (required)
      * @param string $id The ID of the ORY Access Control Policy Role. (required)
-     * @throws \keto\SDK\ApiException on non-2xx response
+     * @throws \ketoSDK\ApiException on non-2xx response
      * @return void
      */
     public function deleteOryAccessControlPolicy($flavor, $id)
@@ -219,7 +219,7 @@ class EnginesApi
      *
      * @param string $flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;. (required)
      * @param string $id The ID of the ORY Access Control Policy Role. (required)
-     * @throws \keto\SDK\ApiException on non-2xx response
+     * @throws \ketoSDK\ApiException on non-2xx response
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
     public function deleteOryAccessControlPolicyWithHttpInfo($flavor, $id)
@@ -255,7 +255,7 @@ class EnginesApi
         // path params
         if ($id !== null) {
             $resourcePath = str_replace(
-                "{" . "ID" . "}",
+                "{" . "id" . "}",
                 $this->apiClient->getSerializer()->toPathValue($id),
                 $resourcePath
             );
@@ -283,7 +283,7 @@ class EnginesApi
         } catch (ApiException $e) {
             switch ($e->getCode()) {
                 case 500:
-                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\keto\SDK\Model\InlineResponse500', $e->getResponseHeaders());
+                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\ketoSDK\Model\InlineResponse500', $e->getResponseHeaders());
                     $e->setResponseObject($data);
                     break;
             }
@@ -301,7 +301,7 @@ class EnginesApi
      *
      * @param string $flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;. (required)
      * @param string $id The ID of the ORY Access Control Policy Role. (required)
-     * @throws \keto\SDK\ApiException on non-2xx response
+     * @throws \ketoSDK\ApiException on non-2xx response
      * @return void
      */
     public function deleteOryAccessControlPolicyRole($flavor, $id)
@@ -319,7 +319,7 @@ class EnginesApi
      *
      * @param string $flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;. (required)
      * @param string $id The ID of the ORY Access Control Policy Role. (required)
-     * @throws \keto\SDK\ApiException on non-2xx response
+     * @throws \ketoSDK\ApiException on non-2xx response
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
     public function deleteOryAccessControlPolicyRoleWithHttpInfo($flavor, $id)
@@ -355,7 +355,7 @@ class EnginesApi
         // path params
         if ($id !== null) {
             $resourcePath = str_replace(
-                "{" . "ID" . "}",
+                "{" . "id" . "}",
                 $this->apiClient->getSerializer()->toPathValue($id),
                 $resourcePath
             );
@@ -383,7 +383,7 @@ class EnginesApi
         } catch (ApiException $e) {
             switch ($e->getCode()) {
                 case 500:
-                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\keto\SDK\Model\InlineResponse500', $e->getResponseHeaders());
+                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\ketoSDK\Model\InlineResponse500', $e->getResponseHeaders());
                     $e->setResponseObject($data);
                     break;
             }
@@ -400,9 +400,9 @@ class EnginesApi
      * Client for keto
      *
      * @param string $flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;. (required)
-     * @param \keto\SDK\Model\OryAccessControlPolicyAllowedInput $body  (optional)
-     * @throws \keto\SDK\ApiException on non-2xx response
-     * @return \keto\SDK\Model\AuthorizationResult
+     * @param \ketoSDK\Model\OryAccessControlPolicyAllowedInput $body  (optional)
+     * @throws \ketoSDK\ApiException on non-2xx response
+     * @return \ketoSDK\Model\AuthorizationResult
      */
     public function doOryAccessControlPoliciesAllow($flavor, $body = null)
     {
@@ -418,9 +418,9 @@ class EnginesApi
      * Client for keto
      *
      * @param string $flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;. (required)
-     * @param \keto\SDK\Model\OryAccessControlPolicyAllowedInput $body  (optional)
-     * @throws \keto\SDK\ApiException on non-2xx response
-     * @return array of \keto\SDK\Model\AuthorizationResult, HTTP status code, HTTP response headers (array of strings)
+     * @param \ketoSDK\Model\OryAccessControlPolicyAllowedInput $body  (optional)
+     * @throws \ketoSDK\ApiException on non-2xx response
+     * @return array of \ketoSDK\Model\AuthorizationResult, HTTP status code, HTTP response headers (array of strings)
      */
     public function doOryAccessControlPoliciesAllowWithHttpInfo($flavor, $body = null)
     {
@@ -468,19 +468,19 @@ class EnginesApi
                 $queryParams,
                 $httpBody,
                 $headerParams,
-                '\keto\SDK\Model\AuthorizationResult',
+                '\ketoSDK\Model\AuthorizationResult',
                 '/engines/ory/{flavor}/allowed'
             );
 
-            return [$this->apiClient->getSerializer()->deserialize($response, '\keto\SDK\Model\AuthorizationResult', $httpHeader), $statusCode, $httpHeader];
+            return [$this->apiClient->getSerializer()->deserialize($response, '\ketoSDK\Model\AuthorizationResult', $httpHeader), $statusCode, $httpHeader];
         } catch (ApiException $e) {
             switch ($e->getCode()) {
                 case 200:
-                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\keto\SDK\Model\AuthorizationResult', $e->getResponseHeaders());
+                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\ketoSDK\Model\AuthorizationResult', $e->getResponseHeaders());
                     $e->setResponseObject($data);
                     break;
                 case 500:
-                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\keto\SDK\Model\InlineResponse500', $e->getResponseHeaders());
+                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\ketoSDK\Model\InlineResponse500', $e->getResponseHeaders());
                     $e->setResponseObject($data);
                     break;
             }
@@ -496,8 +496,8 @@ class EnginesApi
      *
      * @param string $flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;. (required)
      * @param string $id The ID of the ORY Access Control Policy Role. (required)
-     * @throws \keto\SDK\ApiException on non-2xx response
-     * @return \keto\SDK\Model\OryAccessControlPolicy
+     * @throws \ketoSDK\ApiException on non-2xx response
+     * @return \ketoSDK\Model\OryAccessControlPolicy
      */
     public function getOryAccessControlPolicy($flavor, $id)
     {
@@ -512,8 +512,8 @@ class EnginesApi
      *
      * @param string $flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;. (required)
      * @param string $id The ID of the ORY Access Control Policy Role. (required)
-     * @throws \keto\SDK\ApiException on non-2xx response
-     * @return array of \keto\SDK\Model\OryAccessControlPolicy, HTTP status code, HTTP response headers (array of strings)
+     * @throws \ketoSDK\ApiException on non-2xx response
+     * @return array of \ketoSDK\Model\OryAccessControlPolicy, HTTP status code, HTTP response headers (array of strings)
      */
     public function getOryAccessControlPolicyWithHttpInfo($flavor, $id)
     {
@@ -548,7 +548,7 @@ class EnginesApi
         // path params
         if ($id !== null) {
             $resourcePath = str_replace(
-                "{" . "ID" . "}",
+                "{" . "id" . "}",
                 $this->apiClient->getSerializer()->toPathValue($id),
                 $resourcePath
             );
@@ -568,23 +568,23 @@ class EnginesApi
                 $queryParams,
                 $httpBody,
                 $headerParams,
-                '\keto\SDK\Model\OryAccessControlPolicy',
+                '\ketoSDK\Model\OryAccessControlPolicy',
                 '/engines/ory/{flavor}/policies/{id}'
             );
 
-            return [$this->apiClient->getSerializer()->deserialize($response, '\keto\SDK\Model\OryAccessControlPolicy', $httpHeader), $statusCode, $httpHeader];
+            return [$this->apiClient->getSerializer()->deserialize($response, '\ketoSDK\Model\OryAccessControlPolicy', $httpHeader), $statusCode, $httpHeader];
         } catch (ApiException $e) {
             switch ($e->getCode()) {
                 case 200:
-                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\keto\SDK\Model\OryAccessControlPolicy', $e->getResponseHeaders());
+                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\ketoSDK\Model\OryAccessControlPolicy', $e->getResponseHeaders());
                     $e->setResponseObject($data);
                     break;
                 case 404:
-                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\keto\SDK\Model\InlineResponse500', $e->getResponseHeaders());
+                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\ketoSDK\Model\InlineResponse500', $e->getResponseHeaders());
                     $e->setResponseObject($data);
                     break;
                 case 500:
-                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\keto\SDK\Model\InlineResponse500', $e->getResponseHeaders());
+                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\ketoSDK\Model\InlineResponse500', $e->getResponseHeaders());
                     $e->setResponseObject($data);
                     break;
             }
@@ -602,8 +602,8 @@ class EnginesApi
      *
      * @param string $flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;. (required)
      * @param string $id The ID of the ORY Access Control Policy Role. (required)
-     * @throws \keto\SDK\ApiException on non-2xx response
-     * @return \keto\SDK\Model\OryAccessControlPolicyRole
+     * @throws \ketoSDK\ApiException on non-2xx response
+     * @return \ketoSDK\Model\OryAccessControlPolicyRole
      */
     public function getOryAccessControlPolicyRole($flavor, $id)
     {
@@ -620,8 +620,8 @@ class EnginesApi
      *
      * @param string $flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;. (required)
      * @param string $id The ID of the ORY Access Control Policy Role. (required)
-     * @throws \keto\SDK\ApiException on non-2xx response
-     * @return array of \keto\SDK\Model\OryAccessControlPolicyRole, HTTP status code, HTTP response headers (array of strings)
+     * @throws \ketoSDK\ApiException on non-2xx response
+     * @return array of \ketoSDK\Model\OryAccessControlPolicyRole, HTTP status code, HTTP response headers (array of strings)
      */
     public function getOryAccessControlPolicyRoleWithHttpInfo($flavor, $id)
     {
@@ -656,7 +656,7 @@ class EnginesApi
         // path params
         if ($id !== null) {
             $resourcePath = str_replace(
-                "{" . "ID" . "}",
+                "{" . "id" . "}",
                 $this->apiClient->getSerializer()->toPathValue($id),
                 $resourcePath
             );
@@ -676,23 +676,23 @@ class EnginesApi
                 $queryParams,
                 $httpBody,
                 $headerParams,
-                '\keto\SDK\Model\OryAccessControlPolicyRole',
+                '\ketoSDK\Model\OryAccessControlPolicyRole',
                 '/engines/ory/{flavor}/roles/{id}'
             );
 
-            return [$this->apiClient->getSerializer()->deserialize($response, '\keto\SDK\Model\OryAccessControlPolicyRole', $httpHeader), $statusCode, $httpHeader];
+            return [$this->apiClient->getSerializer()->deserialize($response, '\ketoSDK\Model\OryAccessControlPolicyRole', $httpHeader), $statusCode, $httpHeader];
         } catch (ApiException $e) {
             switch ($e->getCode()) {
                 case 200:
-                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\keto\SDK\Model\OryAccessControlPolicyRole', $e->getResponseHeaders());
+                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\ketoSDK\Model\OryAccessControlPolicyRole', $e->getResponseHeaders());
                     $e->setResponseObject($data);
                     break;
                 case 404:
-                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\keto\SDK\Model\InlineResponse500', $e->getResponseHeaders());
+                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\ketoSDK\Model\InlineResponse500', $e->getResponseHeaders());
                     $e->setResponseObject($data);
                     break;
                 case 500:
-                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\keto\SDK\Model\InlineResponse500', $e->getResponseHeaders());
+                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\ketoSDK\Model\InlineResponse500', $e->getResponseHeaders());
                     $e->setResponseObject($data);
                     break;
             }
@@ -709,8 +709,8 @@ class EnginesApi
      * @param string $flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot; (required)
      * @param int $limit The maximum amount of policies returned. (optional)
      * @param int $offset The offset from where to start looking. (optional)
-     * @throws \keto\SDK\ApiException on non-2xx response
-     * @return \keto\SDK\Model\OryAccessControlPolicies
+     * @throws \ketoSDK\ApiException on non-2xx response
+     * @return \ketoSDK\Model\OryAccessControlPolicies
      */
     public function listOryAccessControlPolicies($flavor, $limit = null, $offset = null)
     {
@@ -726,8 +726,8 @@ class EnginesApi
      * @param string $flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot; (required)
      * @param int $limit The maximum amount of policies returned. (optional)
      * @param int $offset The offset from where to start looking. (optional)
-     * @throws \keto\SDK\ApiException on non-2xx response
-     * @return array of \keto\SDK\Model\OryAccessControlPolicies, HTTP status code, HTTP response headers (array of strings)
+     * @throws \ketoSDK\ApiException on non-2xx response
+     * @return array of \ketoSDK\Model\OryAccessControlPolicies, HTTP status code, HTTP response headers (array of strings)
      */
     public function listOryAccessControlPoliciesWithHttpInfo($flavor, $limit = null, $offset = null)
     {
@@ -778,19 +778,121 @@ class EnginesApi
                 $queryParams,
                 $httpBody,
                 $headerParams,
-                '\keto\SDK\Model\OryAccessControlPolicies',
+                '\ketoSDK\Model\OryAccessControlPolicies',
                 '/engines/ory/{flavor}/policies'
             );
 
-            return [$this->apiClient->getSerializer()->deserialize($response, '\keto\SDK\Model\OryAccessControlPolicies', $httpHeader), $statusCode, $httpHeader];
+            return [$this->apiClient->getSerializer()->deserialize($response, '\ketoSDK\Model\OryAccessControlPolicies', $httpHeader), $statusCode, $httpHeader];
         } catch (ApiException $e) {
             switch ($e->getCode()) {
                 case 200:
-                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\keto\SDK\Model\OryAccessControlPolicies', $e->getResponseHeaders());
+                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\ketoSDK\Model\OryAccessControlPolicies', $e->getResponseHeaders());
                     $e->setResponseObject($data);
                     break;
                 case 500:
-                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\keto\SDK\Model\InlineResponse500', $e->getResponseHeaders());
+                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\ketoSDK\Model\InlineResponse500', $e->getResponseHeaders());
+                    $e->setResponseObject($data);
+                    break;
+            }
+
+            throw $e;
+        }
+    }
+
+    /**
+     * Operation listOryAccessControlPolicyRoles
+     *
+     * List ORY Access Control Policy Roles
+     *
+     * Client for keto
+     *
+     * @param string $flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot; (required)
+     * @param int $limit The maximum amount of policies returned. (optional)
+     * @param int $offset The offset from where to start looking. (optional)
+     * @throws \ketoSDK\ApiException on non-2xx response
+     * @return \ketoSDK\Model\OryAccessControlPolicyRoles
+     */
+    public function listOryAccessControlPolicyRoles($flavor, $limit = null, $offset = null)
+    {
+        list($response) = $this->listOryAccessControlPolicyRolesWithHttpInfo($flavor, $limit, $offset);
+        return $response;
+    }
+
+    /**
+     * Operation listOryAccessControlPolicyRolesWithHttpInfo
+     *
+     * List ORY Access Control Policy Roles
+     *
+     * Client for keto
+     *
+     * @param string $flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot; (required)
+     * @param int $limit The maximum amount of policies returned. (optional)
+     * @param int $offset The offset from where to start looking. (optional)
+     * @throws \ketoSDK\ApiException on non-2xx response
+     * @return array of \ketoSDK\Model\OryAccessControlPolicyRoles, HTTP status code, HTTP response headers (array of strings)
+     */
+    public function listOryAccessControlPolicyRolesWithHttpInfo($flavor, $limit = null, $offset = null)
+    {
+        // verify the required parameter 'flavor' is set
+        if ($flavor === null) {
+            throw new \InvalidArgumentException('Missing the required parameter $flavor when calling listOryAccessControlPolicyRoles');
+        }
+        // parse inputs
+        $resourcePath = "/engines/ory/{flavor}/roles";
+        $httpBody = '';
+        $queryParams = [];
+        $headerParams = [];
+        $formParams = [];
+        $_header_accept = $this->apiClient->selectHeaderAccept(['application/json']);
+        if (!is_null($_header_accept)) {
+            $headerParams['Accept'] = $_header_accept;
+        }
+        $headerParams['Content-Type'] = $this->apiClient->selectHeaderContentType(['application/json']);
+
+        // query params
+        if ($limit !== null) {
+            $queryParams['limit'] = $this->apiClient->getSerializer()->toQueryValue($limit);
+        }
+        // query params
+        if ($offset !== null) {
+            $queryParams['offset'] = $this->apiClient->getSerializer()->toQueryValue($offset);
+        }
+        // path params
+        if ($flavor !== null) {
+            $resourcePath = str_replace(
+                "{" . "flavor" . "}",
+                $this->apiClient->getSerializer()->toPathValue($flavor),
+                $resourcePath
+            );
+        }
+
+        // for model (json/xml)
+        if (isset($_tempBody)) {
+            $httpBody = $_tempBody; // $_tempBody is the method argument, if present
+        } elseif (count($formParams) > 0) {
+            $httpBody = $formParams; // for HTTP post (form)
+        }
+        // make the API Call
+        try {
+            list($response, $statusCode, $httpHeader) = $this->apiClient->callApi(
+                $resourcePath,
+                'GET',
+                $queryParams,
+                $httpBody,
+                $headerParams,
+                '\ketoSDK\Model\OryAccessControlPolicyRoles',
+                '/engines/ory/{flavor}/roles'
+            );
+
+            return [$this->apiClient->getSerializer()->deserialize($response, '\ketoSDK\Model\OryAccessControlPolicyRoles', $httpHeader), $statusCode, $httpHeader];
+        } catch (ApiException $e) {
+            switch ($e->getCode()) {
+                case 200:
+                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\ketoSDK\Model\OryAccessControlPolicyRoles', $e->getResponseHeaders());
+                    $e->setResponseObject($data);
+                    break;
+                case 500:
+                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\ketoSDK\Model\InlineResponse500', $e->getResponseHeaders());
                     $e->setResponseObject($data);
                     break;
             }
@@ -808,8 +910,8 @@ class EnginesApi
      *
      * @param string $id The ID of the ORY Access Control Policy Role. (required)
      * @param string $flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;. (required)
-     * @param \keto\SDK\Model\RemoveOryAccessControlPolicyRoleMembersBody $body  (optional)
-     * @throws \keto\SDK\ApiException on non-2xx response
+     * @param \ketoSDK\Model\RemoveOryAccessControlPolicyRoleMembersBody $body  (optional)
+     * @throws \ketoSDK\ApiException on non-2xx response
      * @return void
      */
     public function removeOryAccessControlPolicyRoleMembers($id, $flavor, $body = null)
@@ -827,8 +929,8 @@ class EnginesApi
      *
      * @param string $id The ID of the ORY Access Control Policy Role. (required)
      * @param string $flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;. (required)
-     * @param \keto\SDK\Model\RemoveOryAccessControlPolicyRoleMembersBody $body  (optional)
-     * @throws \keto\SDK\ApiException on non-2xx response
+     * @param \ketoSDK\Model\RemoveOryAccessControlPolicyRoleMembersBody $body  (optional)
+     * @throws \ketoSDK\ApiException on non-2xx response
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
     public function removeOryAccessControlPolicyRoleMembersWithHttpInfo($id, $flavor, $body = null)
@@ -856,7 +958,7 @@ class EnginesApi
         // path params
         if ($id !== null) {
             $resourcePath = str_replace(
-                "{" . "ID" . "}",
+                "{" . "id" . "}",
                 $this->apiClient->getSerializer()->toPathValue($id),
                 $resourcePath
             );
@@ -897,7 +999,7 @@ class EnginesApi
         } catch (ApiException $e) {
             switch ($e->getCode()) {
                 case 500:
-                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\keto\SDK\Model\InlineResponse500', $e->getResponseHeaders());
+                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\ketoSDK\Model\InlineResponse500', $e->getResponseHeaders());
                     $e->setResponseObject($data);
                     break;
             }
@@ -913,8 +1015,8 @@ class EnginesApi
      *
      * @param string $id The ID of the ORY Access Control Policy. (required)
      * @param string $flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;. (required)
-     * @param \keto\SDK\Model\OryAccessControlPolicy $body  (optional)
-     * @throws \keto\SDK\ApiException on non-2xx response
+     * @param \ketoSDK\Model\OryAccessControlPolicy $body  (optional)
+     * @throws \ketoSDK\ApiException on non-2xx response
      * @return void
      */
     public function upsertOryAccessControlPolicy($id, $flavor, $body = null)
@@ -930,8 +1032,8 @@ class EnginesApi
      *
      * @param string $id The ID of the ORY Access Control Policy. (required)
      * @param string $flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;. (required)
-     * @param \keto\SDK\Model\OryAccessControlPolicy $body  (optional)
-     * @throws \keto\SDK\ApiException on non-2xx response
+     * @param \ketoSDK\Model\OryAccessControlPolicy $body  (optional)
+     * @throws \ketoSDK\ApiException on non-2xx response
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
     public function upsertOryAccessControlPolicyWithHttpInfo($id, $flavor, $body = null)
@@ -959,7 +1061,7 @@ class EnginesApi
         // path params
         if ($id !== null) {
             $resourcePath = str_replace(
-                "{" . "ID" . "}",
+                "{" . "id" . "}",
                 $this->apiClient->getSerializer()->toPathValue($id),
                 $resourcePath
             );
@@ -1000,7 +1102,7 @@ class EnginesApi
         } catch (ApiException $e) {
             switch ($e->getCode()) {
                 case 500:
-                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\keto\SDK\Model\InlineResponse500', $e->getResponseHeaders());
+                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\ketoSDK\Model\InlineResponse500', $e->getResponseHeaders());
                     $e->setResponseObject($data);
                     break;
             }
@@ -1018,9 +1120,9 @@ class EnginesApi
      *
      * @param string $id The ID of the ORY Access Control Policy Role. (required)
      * @param string $flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;. (required)
-     * @param \keto\SDK\Model\OryAccessControlPolicyRole $body  (optional)
-     * @throws \keto\SDK\ApiException on non-2xx response
-     * @return \keto\SDK\Model\OryAccessControlPolicyRole
+     * @param \ketoSDK\Model\OryAccessControlPolicyRole $body  (optional)
+     * @throws \ketoSDK\ApiException on non-2xx response
+     * @return \ketoSDK\Model\OryAccessControlPolicyRole
      */
     public function upsertOryAccessControlPolicyRole($id, $flavor, $body = null)
     {
@@ -1037,9 +1139,9 @@ class EnginesApi
      *
      * @param string $id The ID of the ORY Access Control Policy Role. (required)
      * @param string $flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;. (required)
-     * @param \keto\SDK\Model\OryAccessControlPolicyRole $body  (optional)
-     * @throws \keto\SDK\ApiException on non-2xx response
-     * @return array of \keto\SDK\Model\OryAccessControlPolicyRole, HTTP status code, HTTP response headers (array of strings)
+     * @param \ketoSDK\Model\OryAccessControlPolicyRole $body  (optional)
+     * @throws \ketoSDK\ApiException on non-2xx response
+     * @return array of \ketoSDK\Model\OryAccessControlPolicyRole, HTTP status code, HTTP response headers (array of strings)
      */
     public function upsertOryAccessControlPolicyRoleWithHttpInfo($id, $flavor, $body = null)
     {
@@ -1066,7 +1168,7 @@ class EnginesApi
         // path params
         if ($id !== null) {
             $resourcePath = str_replace(
-                "{" . "ID" . "}",
+                "{" . "id" . "}",
                 $this->apiClient->getSerializer()->toPathValue($id),
                 $resourcePath
             );
@@ -1099,19 +1201,19 @@ class EnginesApi
                 $queryParams,
                 $httpBody,
                 $headerParams,
-                '\keto\SDK\Model\OryAccessControlPolicyRole',
+                '\ketoSDK\Model\OryAccessControlPolicyRole',
                 '/engines/ory/{flavor}/roles'
             );
 
-            return [$this->apiClient->getSerializer()->deserialize($response, '\keto\SDK\Model\OryAccessControlPolicyRole', $httpHeader), $statusCode, $httpHeader];
+            return [$this->apiClient->getSerializer()->deserialize($response, '\ketoSDK\Model\OryAccessControlPolicyRole', $httpHeader), $statusCode, $httpHeader];
         } catch (ApiException $e) {
             switch ($e->getCode()) {
                 case 200:
-                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\keto\SDK\Model\OryAccessControlPolicyRole', $e->getResponseHeaders());
+                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\ketoSDK\Model\OryAccessControlPolicyRole', $e->getResponseHeaders());
                     $e->setResponseObject($data);
                     break;
                 case 500:
-                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\keto\SDK\Model\InlineResponse500', $e->getResponseHeaders());
+                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\ketoSDK\Model\InlineResponse500', $e->getResponseHeaders());
                     $e->setResponseObject($data);
                     break;
             }

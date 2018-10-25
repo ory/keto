@@ -5,7 +5,7 @@
  * PHP version 5
  *
  * @category Class
- * @package  keto\SDK
+ * @package  ketoSDK
  * @author   Swaagger Codegen team
  * @link     https://github.com/swagger-api/swagger-codegen
  */
@@ -25,7 +25,7 @@
  * Do not edit the class manually.
  */
 
-namespace keto\SDK\Model;
+namespace ketoSDK\Model;
 
 use \ArrayAccess;
 
@@ -33,7 +33,7 @@ use \ArrayAccess;
  * DeleteOryAccessControlPolicy Class Doc Comment
  *
  * @category    Class
- * @package     keto\SDK
+ * @package     ketoSDK
  * @author      Swagger Codegen team
  * @link        https://github.com/swagger-api/swagger-codegen
  */
@@ -52,8 +52,8 @@ class DeleteOryAccessControlPolicy implements ArrayAccess
       * @var string[]
       */
     protected static $swaggerTypes = [
-        'id' => 'string',
-        'flavor' => 'string'
+        'flavor' => 'string',
+        'id' => 'string'
     ];
 
     /**
@@ -61,8 +61,8 @@ class DeleteOryAccessControlPolicy implements ArrayAccess
       * @var string[]
       */
     protected static $swaggerFormats = [
-        'id' => null,
-        'flavor' => null
+        'flavor' => null,
+        'id' => null
     ];
 
     public static function swaggerTypes()
@@ -80,8 +80,8 @@ class DeleteOryAccessControlPolicy implements ArrayAccess
      * @var string[]
      */
     protected static $attributeMap = [
-        'id' => 'ID',
-        'flavor' => 'flavor'
+        'flavor' => 'flavor',
+        'id' => 'id'
     ];
 
 
@@ -90,8 +90,8 @@ class DeleteOryAccessControlPolicy implements ArrayAccess
      * @var string[]
      */
     protected static $setters = [
-        'id' => 'setId',
-        'flavor' => 'setFlavor'
+        'flavor' => 'setFlavor',
+        'id' => 'setId'
     ];
 
 
@@ -100,8 +100,8 @@ class DeleteOryAccessControlPolicy implements ArrayAccess
      * @var string[]
      */
     protected static $getters = [
-        'id' => 'getId',
-        'flavor' => 'getFlavor'
+        'flavor' => 'getFlavor',
+        'id' => 'getId'
     ];
 
     public static function attributeMap()
@@ -135,8 +135,8 @@ class DeleteOryAccessControlPolicy implements ArrayAccess
      */
     public function __construct(array $data = null)
     {
-        $this->container['id'] = isset($data['id']) ? $data['id'] : null;
         $this->container['flavor'] = isset($data['flavor']) ? $data['flavor'] : null;
+        $this->container['id'] = isset($data['id']) ? $data['id'] : null;
     }
 
     /**
@@ -148,11 +148,11 @@ class DeleteOryAccessControlPolicy implements ArrayAccess
     {
         $invalid_properties = [];
 
-        if ($this->container['id'] === null) {
-            $invalid_properties[] = "'id' can't be null";
-        }
         if ($this->container['flavor'] === null) {
             $invalid_properties[] = "'flavor' can't be null";
+        }
+        if ($this->container['id'] === null) {
+            $invalid_properties[] = "'id' can't be null";
         }
         return $invalid_properties;
     }
@@ -166,36 +166,15 @@ class DeleteOryAccessControlPolicy implements ArrayAccess
     public function valid()
     {
 
-        if ($this->container['id'] === null) {
+        if ($this->container['flavor'] === null) {
             return false;
         }
-        if ($this->container['flavor'] === null) {
+        if ($this->container['id'] === null) {
             return false;
         }
         return true;
     }
 
-
-    /**
-     * Gets id
-     * @return string
-     */
-    public function getId()
-    {
-        return $this->container['id'];
-    }
-
-    /**
-     * Sets id
-     * @param string $id The ID of the ORY Access Control Policy Role.  in: path
-     * @return $this
-     */
-    public function setId($id)
-    {
-        $this->container['id'] = $id;
-
-        return $this;
-    }
 
     /**
      * Gets flavor
@@ -214,6 +193,27 @@ class DeleteOryAccessControlPolicy implements ArrayAccess
     public function setFlavor($flavor)
     {
         $this->container['flavor'] = $flavor;
+
+        return $this;
+    }
+
+    /**
+     * Gets id
+     * @return string
+     */
+    public function getId()
+    {
+        return $this->container['id'];
+    }
+
+    /**
+     * Sets id
+     * @param string $id The ID of the ORY Access Control Policy Role.  in: path
+     * @return $this
+     */
+    public function setId($id)
+    {
+        $this->container['id'] = $id;
 
         return $this;
     }
@@ -269,10 +269,10 @@ class DeleteOryAccessControlPolicy implements ArrayAccess
     public function __toString()
     {
         if (defined('JSON_PRETTY_PRINT')) { // use JSON pretty print
-            return json_encode(\keto\SDK\ObjectSerializer::sanitizeForSerialization($this), JSON_PRETTY_PRINT);
+            return json_encode(\ketoSDK\ObjectSerializer::sanitizeForSerialization($this), JSON_PRETTY_PRINT);
         }
 
-        return json_encode(\keto\SDK\ObjectSerializer::sanitizeForSerialization($this));
+        return json_encode(\ketoSDK\ObjectSerializer::sanitizeForSerialization($this));
     }
 }
 

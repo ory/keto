@@ -57,16 +57,16 @@ Please follow the [installation procedure](#installation--usage) and then run th
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-$api_instance = new keto\SDK\Api\EngineApi();
-$flavor = "flavor_example"; // string | The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\"
-$limit = 789; // int | The maximum amount of policies returned.
-$offset = 789; // int | The offset from where to start looking.
+$api_instance = new ketoSDK\Api\EnginesApi();
+$id = "id_example"; // string | The ID of the ORY Access Control Policy Role.
+$flavor = "flavor_example"; // string | The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".
+$body = new \ketoSDK\Model\AddOryAccessControlPolicyRoleMembersBody(); // \ketoSDK\Model\AddOryAccessControlPolicyRoleMembersBody | 
 
 try {
-    $result = $api_instance->listOryAccessControlPolicyRoles($flavor, $limit, $offset);
+    $result = $api_instance->addOryAccessControlPolicyRoleMembers($id, $flavor, $body);
     print_r($result);
 } catch (Exception $e) {
-    echo 'Exception when calling EngineApi->listOryAccessControlPolicyRoles: ', $e->getMessage(), PHP_EOL;
+    echo 'Exception when calling EnginesApi->addOryAccessControlPolicyRoleMembers: ', $e->getMessage(), PHP_EOL;
 }
 
 ?>
@@ -78,7 +78,6 @@ All URIs are relative to *http://localhost*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
-*EngineApi* | [**listOryAccessControlPolicyRoles**](docs/Api/EngineApi.md#listoryaccesscontrolpolicyroles) | **GET** /engines/ory/{flavor}/roles | List ORY Access Control Policy Roles
 *EnginesApi* | [**addOryAccessControlPolicyRoleMembers**](docs/Api/EnginesApi.md#addoryaccesscontrolpolicyrolemembers) | **PUT** /engines/ory/{flavor}/roles/{id}/members | Add a member to an ORY Access Control Policy Role
 *EnginesApi* | [**deleteOryAccessControlPolicy**](docs/Api/EnginesApi.md#deleteoryaccesscontrolpolicy) | **DELETE** /engines/ory/{flavor}/policies/{id} | 
 *EnginesApi* | [**deleteOryAccessControlPolicyRole**](docs/Api/EnginesApi.md#deleteoryaccesscontrolpolicyrole) | **DELETE** /engines/ory/{flavor}/roles/{id} | Delete an ORY Access Control Policy Role
@@ -86,6 +85,7 @@ Class | Method | HTTP request | Description
 *EnginesApi* | [**getOryAccessControlPolicy**](docs/Api/EnginesApi.md#getoryaccesscontrolpolicy) | **GET** /engines/ory/{flavor}/policies/{id} | 
 *EnginesApi* | [**getOryAccessControlPolicyRole**](docs/Api/EnginesApi.md#getoryaccesscontrolpolicyrole) | **GET** /engines/ory/{flavor}/roles/{id} | Get an ORY Access Control Policy Role
 *EnginesApi* | [**listOryAccessControlPolicies**](docs/Api/EnginesApi.md#listoryaccesscontrolpolicies) | **GET** /engines/ory/{flavor}/policies | 
+*EnginesApi* | [**listOryAccessControlPolicyRoles**](docs/Api/EnginesApi.md#listoryaccesscontrolpolicyroles) | **GET** /engines/ory/{flavor}/roles | List ORY Access Control Policy Roles
 *EnginesApi* | [**removeOryAccessControlPolicyRoleMembers**](docs/Api/EnginesApi.md#removeoryaccesscontrolpolicyrolemembers) | **DELETE** /engines/ory/{flavor}/roles/{id}/members | Remove a member from an ORY Access Control Policy Role
 *EnginesApi* | [**upsertOryAccessControlPolicy**](docs/Api/EnginesApi.md#upsertoryaccesscontrolpolicy) | **PUT** /engines/ory/{flavor}/policies | 
 *EnginesApi* | [**upsertOryAccessControlPolicyRole**](docs/Api/EnginesApi.md#upsertoryaccesscontrolpolicyrole) | **PUT** /engines/ory/{flavor}/roles | Upsert an ORY Access Control Policy Role
@@ -99,6 +99,7 @@ Class | Method | HTTP request | Description
  - [AddOryAccessControlPolicyRoleMembers](docs/Model/AddOryAccessControlPolicyRoleMembers.md)
  - [AddOryAccessControlPolicyRoleMembersBody](docs/Model/AddOryAccessControlPolicyRoleMembersBody.md)
  - [AuthorizationResult](docs/Model/AuthorizationResult.md)
+ - [Context](docs/Model/Context.md)
  - [DeleteOryAccessControlPolicy](docs/Model/DeleteOryAccessControlPolicy.md)
  - [DeleteOryAccessControlPolicyRole](docs/Model/DeleteOryAccessControlPolicyRole.md)
  - [DoOryAccessControlPoliciesAllow](docs/Model/DoOryAccessControlPoliciesAllow.md)

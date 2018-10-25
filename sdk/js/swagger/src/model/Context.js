@@ -26,7 +26,7 @@
     if (!root.SwaggerJsClient) {
       root.SwaggerJsClient = {};
     }
-    root.SwaggerJsClient.RemoveOryAccessControlPolicyRoleMembersBody = factory(root.SwaggerJsClient.ApiClient);
+    root.SwaggerJsClient.Context = factory(root.SwaggerJsClient.ApiClient);
   }
 }(this, function(ApiClient) {
   'use strict';
@@ -35,45 +35,39 @@
 
 
   /**
-   * The RemoveOryAccessControlPolicyRoleMembersBody model module.
-   * @module model/RemoveOryAccessControlPolicyRoleMembersBody
+   * The Context model module.
+   * @module model/Context
    * @version Latest
    */
 
   /**
-   * Constructs a new <code>RemoveOryAccessControlPolicyRoleMembersBody</code>.
-   * @alias module:model/RemoveOryAccessControlPolicyRoleMembersBody
+   * Constructs a new <code>Context</code>.
+   * @alias module:model/Context
    * @class
+   * @extends Object
    */
   var exports = function() {
     var _this = this;
 
-
+    return _this;
   };
 
   /**
-   * Constructs a <code>RemoveOryAccessControlPolicyRoleMembersBody</code> from a plain JavaScript object, optionally creating a new instance.
+   * Constructs a <code>Context</code> from a plain JavaScript object, optionally creating a new instance.
    * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
    * @param {Object} data The plain JavaScript object bearing properties of interest.
-   * @param {module:model/RemoveOryAccessControlPolicyRoleMembersBody} obj Optional instance to populate.
-   * @return {module:model/RemoveOryAccessControlPolicyRoleMembersBody} The populated <code>RemoveOryAccessControlPolicyRoleMembersBody</code> instance.
+   * @param {module:model/Context} obj Optional instance to populate.
+   * @return {module:model/Context} The populated <code>Context</code> instance.
    */
   exports.constructFromObject = function(data, obj) {
     if (data) {
       obj = obj || new exports();
+      ApiClient.constructFromObject(data, obj, 'Object');
 
-      if (data.hasOwnProperty('members')) {
-        obj['members'] = ApiClient.convertToType(data['members'], ['String']);
-      }
     }
     return obj;
   }
 
-  /**
-   * The members to be removed.
-   * @member {Array.<String>} members
-   */
-  exports.prototype['members'] = undefined;
 
 
 

@@ -1,5 +1,5 @@
 /**
- *
+ * 
  * Package main ORY Keto
  *
  * OpenAPI spec version: Latest
@@ -14,42 +14,22 @@
  *
  */
 
-;(function(root, factory) {
+(function(root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module.
-    define([
-      'ApiClient',
-      'model/HealthNotReadyStatus',
-      'model/HealthStatus',
-      'model/InlineResponse500'
-    ], factory)
+    define(['ApiClient', 'model/HealthNotReadyStatus', 'model/HealthStatus', 'model/InlineResponse500'], factory);
   } else if (typeof module === 'object' && module.exports) {
     // CommonJS-like environments that support module.exports, like Node.
-    module.exports = factory(
-      require('../ApiClient'),
-      require('../model/HealthNotReadyStatus'),
-      require('../model/HealthStatus'),
-      require('../model/InlineResponse500')
-    )
+    module.exports = factory(require('../ApiClient'), require('../model/HealthNotReadyStatus'), require('../model/HealthStatus'), require('../model/InlineResponse500'));
   } else {
     // Browser globals (root is window)
     if (!root.SwaggerJsClient) {
-      root.SwaggerJsClient = {}
+      root.SwaggerJsClient = {};
     }
-    root.SwaggerJsClient.HealthApi = factory(
-      root.SwaggerJsClient.ApiClient,
-      root.SwaggerJsClient.HealthNotReadyStatus,
-      root.SwaggerJsClient.HealthStatus,
-      root.SwaggerJsClient.InlineResponse500
-    )
+    root.SwaggerJsClient.HealthApi = factory(root.SwaggerJsClient.ApiClient, root.SwaggerJsClient.HealthNotReadyStatus, root.SwaggerJsClient.HealthStatus, root.SwaggerJsClient.InlineResponse500);
   }
-})(this, function(
-  ApiClient,
-  HealthNotReadyStatus,
-  HealthStatus,
-  InlineResponse500
-) {
-  'use strict'
+}(this, function(ApiClient, HealthNotReadyStatus, HealthStatus, InlineResponse500) {
+  'use strict';
 
   /**
    * Health service.
@@ -58,14 +38,15 @@
    */
 
   /**
-   * Constructs a new HealthApi.
+   * Constructs a new HealthApi. 
    * @alias module:api/HealthApi
    * @class
    * @param {module:ApiClient} apiClient Optional API client implementation to use,
    * default to {@link module:ApiClient#instance} if unspecified.
    */
   var exports = function(apiClient) {
-    this.apiClient = apiClient || ApiClient.instance
+    this.apiClient = apiClient || ApiClient.instance;
+
 
     /**
      * Callback function to receive the result of the isInstanceAlive operation.
@@ -82,32 +63,28 @@
      * data is of type: {@link module:model/HealthStatus}
      */
     this.isInstanceAlive = function(callback) {
-      var postBody = null
+      var postBody = null;
 
-      var pathParams = {}
-      var queryParams = {}
-      var headerParams = {}
-      var formParams = {}
 
-      var authNames = []
-      var contentTypes = ['application/json']
-      var accepts = ['application/json']
-      var returnType = HealthStatus
+      var pathParams = {
+      };
+      var queryParams = {
+      };
+      var headerParams = {
+      };
+      var formParams = {
+      };
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = HealthStatus;
 
       return this.apiClient.callApi(
-        '/health/alive',
-        'GET',
-        pathParams,
-        queryParams,
-        headerParams,
-        formParams,
-        postBody,
-        authNames,
-        contentTypes,
-        accepts,
-        returnType,
-        callback
-      )
+        '/health/alive', 'GET',
+        pathParams, queryParams, headerParams, formParams, postBody,
+        authNames, contentTypes, accepts, returnType, callback
+      );
     }
 
     /**
@@ -125,34 +102,30 @@
      * data is of type: {@link module:model/HealthStatus}
      */
     this.isInstanceReady = function(callback) {
-      var postBody = null
+      var postBody = null;
 
-      var pathParams = {}
-      var queryParams = {}
-      var headerParams = {}
-      var formParams = {}
 
-      var authNames = []
-      var contentTypes = ['application/json']
-      var accepts = ['application/json']
-      var returnType = HealthStatus
+      var pathParams = {
+      };
+      var queryParams = {
+      };
+      var headerParams = {
+      };
+      var formParams = {
+      };
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = HealthStatus;
 
       return this.apiClient.callApi(
-        '/health/ready',
-        'GET',
-        pathParams,
-        queryParams,
-        headerParams,
-        formParams,
-        postBody,
-        authNames,
-        contentTypes,
-        accepts,
-        returnType,
-        callback
-      )
+        '/health/ready', 'GET',
+        pathParams, queryParams, headerParams, formParams, postBody,
+        authNames, contentTypes, accepts, returnType, callback
+      );
     }
-  }
+  };
 
-  return exports
-})
+  return exports;
+}));

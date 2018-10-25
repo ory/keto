@@ -22,7 +22,6 @@ All URIs are relative to *http://localhost*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
-*EngineApi* | [**ListOryAccessControlPolicyRoles**](docs/EngineApi.md#listoryaccesscontrolpolicyroles) | **Get** /engines/ory/{flavor}/roles | List ORY Access Control Policy Roles
 *EnginesApi* | [**AddOryAccessControlPolicyRoleMembers**](docs/EnginesApi.md#addoryaccesscontrolpolicyrolemembers) | **Put** /engines/ory/{flavor}/roles/{id}/members | Add a member to an ORY Access Control Policy Role
 *EnginesApi* | [**DeleteOryAccessControlPolicy**](docs/EnginesApi.md#deleteoryaccesscontrolpolicy) | **Delete** /engines/ory/{flavor}/policies/{id} | 
 *EnginesApi* | [**DeleteOryAccessControlPolicyRole**](docs/EnginesApi.md#deleteoryaccesscontrolpolicyrole) | **Delete** /engines/ory/{flavor}/roles/{id} | Delete an ORY Access Control Policy Role
@@ -30,6 +29,7 @@ Class | Method | HTTP request | Description
 *EnginesApi* | [**GetOryAccessControlPolicy**](docs/EnginesApi.md#getoryaccesscontrolpolicy) | **Get** /engines/ory/{flavor}/policies/{id} | 
 *EnginesApi* | [**GetOryAccessControlPolicyRole**](docs/EnginesApi.md#getoryaccesscontrolpolicyrole) | **Get** /engines/ory/{flavor}/roles/{id} | Get an ORY Access Control Policy Role
 *EnginesApi* | [**ListOryAccessControlPolicies**](docs/EnginesApi.md#listoryaccesscontrolpolicies) | **Get** /engines/ory/{flavor}/policies | 
+*EnginesApi* | [**ListOryAccessControlPolicyRoles**](docs/EnginesApi.md#listoryaccesscontrolpolicyroles) | **Get** /engines/ory/{flavor}/roles | List ORY Access Control Policy Roles
 *EnginesApi* | [**RemoveOryAccessControlPolicyRoleMembers**](docs/EnginesApi.md#removeoryaccesscontrolpolicyrolemembers) | **Delete** /engines/ory/{flavor}/roles/{id}/members | Remove a member from an ORY Access Control Policy Role
 *EnginesApi* | [**UpsertOryAccessControlPolicy**](docs/EnginesApi.md#upsertoryaccesscontrolpolicy) | **Put** /engines/ory/{flavor}/policies | 
 *EnginesApi* | [**UpsertOryAccessControlPolicyRole**](docs/EnginesApi.md#upsertoryaccesscontrolpolicyrole) | **Put** /engines/ory/{flavor}/roles | Upsert an ORY Access Control Policy Role
@@ -43,6 +43,7 @@ Class | Method | HTTP request | Description
  - [AddOryAccessControlPolicyRoleMembers](docs/AddOryAccessControlPolicyRoleMembers.md)
  - [AddOryAccessControlPolicyRoleMembersBody](docs/AddOryAccessControlPolicyRoleMembersBody.md)
  - [AuthorizationResult](docs/AuthorizationResult.md)
+ - [Context](docs/Context.md)
  - [DeleteOryAccessControlPolicy](docs/DeleteOryAccessControlPolicy.md)
  - [DeleteOryAccessControlPolicyRole](docs/DeleteOryAccessControlPolicyRole.md)
  - [DoOryAccessControlPoliciesAllow](docs/DoOryAccessControlPoliciesAllow.md)

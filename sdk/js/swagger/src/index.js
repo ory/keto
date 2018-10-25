@@ -1,5 +1,5 @@
 /**
- *
+ * 
  * Package main ORY Keto
  *
  * OpenAPI spec version: Latest
@@ -14,103 +14,16 @@
  *
  */
 
-;(function(factory) {
+(function(factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module.
-    define([
-      'ApiClient',
-      'model/AddOryAccessControlPolicyRoleMembers',
-      'model/AddOryAccessControlPolicyRoleMembersBody',
-      'model/AuthorizationResult',
-      'model/DeleteOryAccessControlPolicy',
-      'model/DeleteOryAccessControlPolicyRole',
-      'model/DoOryAccessControlPoliciesAllow',
-      'model/GetOryAccessControlPolicy',
-      'model/GetOryAccessControlPolicyRole',
-      'model/HealthNotReadyStatus',
-      'model/HealthStatus',
-      'model/InlineResponse500',
-      'model/ListOryAccessControlPolicies',
-      'model/ListOryAccessControlPolicyRoles',
-      'model/OryAccessControlPolicies',
-      'model/OryAccessControlPolicy',
-      'model/OryAccessControlPolicyAllowedInput',
-      'model/OryAccessControlPolicyRole',
-      'model/OryAccessControlPolicyRoles',
-      'model/RemoveOryAccessControlPolicyRoleMembers',
-      'model/RemoveOryAccessControlPolicyRoleMembersBody',
-      'model/UpsertOryAccessControlPolicy',
-      'model/UpsertOryAccessControlPolicyRole',
-      'model/Version',
-      'api/EngineApi',
-      'api/EnginesApi',
-      'api/HealthApi',
-      'api/VersionApi'
-    ], factory)
+    define(['ApiClient', 'model/AddOryAccessControlPolicyRoleMembers', 'model/AddOryAccessControlPolicyRoleMembersBody', 'model/AuthorizationResult', 'model/Context', 'model/DeleteOryAccessControlPolicy', 'model/DeleteOryAccessControlPolicyRole', 'model/DoOryAccessControlPoliciesAllow', 'model/GetOryAccessControlPolicy', 'model/GetOryAccessControlPolicyRole', 'model/HealthNotReadyStatus', 'model/HealthStatus', 'model/InlineResponse500', 'model/ListOryAccessControlPolicies', 'model/ListOryAccessControlPolicyRoles', 'model/OryAccessControlPolicies', 'model/OryAccessControlPolicy', 'model/OryAccessControlPolicyAllowedInput', 'model/OryAccessControlPolicyRole', 'model/OryAccessControlPolicyRoles', 'model/RemoveOryAccessControlPolicyRoleMembers', 'model/RemoveOryAccessControlPolicyRoleMembersBody', 'model/UpsertOryAccessControlPolicy', 'model/UpsertOryAccessControlPolicyRole', 'model/Version', 'api/EnginesApi', 'api/HealthApi', 'api/VersionApi'], factory);
   } else if (typeof module === 'object' && module.exports) {
     // CommonJS-like environments that support module.exports, like Node.
-    module.exports = factory(
-      require('./ApiClient'),
-      require('./model/AddOryAccessControlPolicyRoleMembers'),
-      require('./model/AddOryAccessControlPolicyRoleMembersBody'),
-      require('./model/AuthorizationResult'),
-      require('./model/DeleteOryAccessControlPolicy'),
-      require('./model/DeleteOryAccessControlPolicyRole'),
-      require('./model/DoOryAccessControlPoliciesAllow'),
-      require('./model/GetOryAccessControlPolicy'),
-      require('./model/GetOryAccessControlPolicyRole'),
-      require('./model/HealthNotReadyStatus'),
-      require('./model/HealthStatus'),
-      require('./model/InlineResponse500'),
-      require('./model/ListOryAccessControlPolicies'),
-      require('./model/ListOryAccessControlPolicyRoles'),
-      require('./model/OryAccessControlPolicies'),
-      require('./model/OryAccessControlPolicy'),
-      require('./model/OryAccessControlPolicyAllowedInput'),
-      require('./model/OryAccessControlPolicyRole'),
-      require('./model/OryAccessControlPolicyRoles'),
-      require('./model/RemoveOryAccessControlPolicyRoleMembers'),
-      require('./model/RemoveOryAccessControlPolicyRoleMembersBody'),
-      require('./model/UpsertOryAccessControlPolicy'),
-      require('./model/UpsertOryAccessControlPolicyRole'),
-      require('./model/Version'),
-      require('./api/EngineApi'),
-      require('./api/EnginesApi'),
-      require('./api/HealthApi'),
-      require('./api/VersionApi')
-    )
+    module.exports = factory(require('./ApiClient'), require('./model/AddOryAccessControlPolicyRoleMembers'), require('./model/AddOryAccessControlPolicyRoleMembersBody'), require('./model/AuthorizationResult'), require('./model/Context'), require('./model/DeleteOryAccessControlPolicy'), require('./model/DeleteOryAccessControlPolicyRole'), require('./model/DoOryAccessControlPoliciesAllow'), require('./model/GetOryAccessControlPolicy'), require('./model/GetOryAccessControlPolicyRole'), require('./model/HealthNotReadyStatus'), require('./model/HealthStatus'), require('./model/InlineResponse500'), require('./model/ListOryAccessControlPolicies'), require('./model/ListOryAccessControlPolicyRoles'), require('./model/OryAccessControlPolicies'), require('./model/OryAccessControlPolicy'), require('./model/OryAccessControlPolicyAllowedInput'), require('./model/OryAccessControlPolicyRole'), require('./model/OryAccessControlPolicyRoles'), require('./model/RemoveOryAccessControlPolicyRoleMembers'), require('./model/RemoveOryAccessControlPolicyRoleMembersBody'), require('./model/UpsertOryAccessControlPolicy'), require('./model/UpsertOryAccessControlPolicyRole'), require('./model/Version'), require('./api/EnginesApi'), require('./api/HealthApi'), require('./api/VersionApi'));
   }
-})(function(
-  ApiClient,
-  AddOryAccessControlPolicyRoleMembers,
-  AddOryAccessControlPolicyRoleMembersBody,
-  AuthorizationResult,
-  DeleteOryAccessControlPolicy,
-  DeleteOryAccessControlPolicyRole,
-  DoOryAccessControlPoliciesAllow,
-  GetOryAccessControlPolicy,
-  GetOryAccessControlPolicyRole,
-  HealthNotReadyStatus,
-  HealthStatus,
-  InlineResponse500,
-  ListOryAccessControlPolicies,
-  ListOryAccessControlPolicyRoles,
-  OryAccessControlPolicies,
-  OryAccessControlPolicy,
-  OryAccessControlPolicyAllowedInput,
-  OryAccessControlPolicyRole,
-  OryAccessControlPolicyRoles,
-  RemoveOryAccessControlPolicyRoleMembers,
-  RemoveOryAccessControlPolicyRoleMembersBody,
-  UpsertOryAccessControlPolicy,
-  UpsertOryAccessControlPolicyRole,
-  Version,
-  EngineApi,
-  EnginesApi,
-  HealthApi,
-  VersionApi
-) {
-  'use strict'
+}(function(ApiClient, AddOryAccessControlPolicyRoleMembers, AddOryAccessControlPolicyRoleMembersBody, AuthorizationResult, Context, DeleteOryAccessControlPolicy, DeleteOryAccessControlPolicyRole, DoOryAccessControlPoliciesAllow, GetOryAccessControlPolicy, GetOryAccessControlPolicyRole, HealthNotReadyStatus, HealthStatus, InlineResponse500, ListOryAccessControlPolicies, ListOryAccessControlPolicyRoles, OryAccessControlPolicies, OryAccessControlPolicy, OryAccessControlPolicyAllowedInput, OryAccessControlPolicyRole, OryAccessControlPolicyRoles, RemoveOryAccessControlPolicyRoleMembers, RemoveOryAccessControlPolicyRoleMembersBody, UpsertOryAccessControlPolicy, UpsertOryAccessControlPolicyRole, Version, EnginesApi, HealthApi, VersionApi) {
+  'use strict';
 
   /**
    * Package_main_ORY_Keto.<br>
@@ -164,6 +77,11 @@
      * @property {module:model/AuthorizationResult}
      */
     AuthorizationResult: AuthorizationResult,
+    /**
+     * The Context model constructor.
+     * @property {module:model/Context}
+     */
+    Context: Context,
     /**
      * The DeleteOryAccessControlPolicy model constructor.
      * @property {module:model/DeleteOryAccessControlPolicy}
@@ -265,11 +183,6 @@
      */
     Version: Version,
     /**
-     * The EngineApi service constructor.
-     * @property {module:api/EngineApi}
-     */
-    EngineApi: EngineApi,
-    /**
      * The EnginesApi service constructor.
      * @property {module:api/EnginesApi}
      */
@@ -284,7 +197,7 @@
      * @property {module:api/VersionApi}
      */
     VersionApi: VersionApi
-  }
+  };
 
-  return exports
-})
+  return exports;
+}));

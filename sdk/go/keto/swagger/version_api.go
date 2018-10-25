@@ -1,4 +1,4 @@
-/*
+/* 
  * Package main ORY Keto
  *
  * OpenAPI spec version: Latest
@@ -9,9 +9,9 @@
 package swagger
 
 import (
-	"encoding/json"
 	"net/url"
 	"strings"
+	"encoding/json"
 )
 
 type VersionApi struct {
@@ -58,7 +58,7 @@ func (a VersionApi) GetVersion() (*Version, *APIResponse, error) {
 	}
 
 	// to determine the Content-Type header
-	localVarHttpContentTypes := []string{"application/json"}
+	localVarHttpContentTypes := []string{ "application/json",  }
 
 	// set Content-Type header
 	localVarHttpContentType := a.Configuration.APIClient.SelectHeaderContentType(localVarHttpContentTypes)
@@ -68,7 +68,7 @@ func (a VersionApi) GetVersion() (*Version, *APIResponse, error) {
 	// to determine the Accept header
 	localVarHttpHeaderAccepts := []string{
 		"application/json",
-	}
+		}
 
 	// set Accept header
 	localVarHttpHeaderAccept := a.Configuration.APIClient.SelectHeaderAccept(localVarHttpHeaderAccepts)
@@ -92,3 +92,4 @@ func (a VersionApi) GetVersion() (*Version, *APIResponse, error) {
 	err = json.Unmarshal(localVarHttpResponse.Body(), &successPayload)
 	return successPayload, localVarAPIResponse, err
 }
+

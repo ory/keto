@@ -1,4 +1,4 @@
-/*
+/* 
  * Package main ORY Keto
  *
  * OpenAPI spec version: Latest
@@ -13,8 +13,7 @@ type OryAccessControlPolicyAllowedInput struct {
 	// Action is the action that is requested on the resource.
 	Action string `json:"action,omitempty"`
 
-	// Context is the request's environmental context.
-	Context map[string]interface{} `json:"context,omitempty"`
+	Context Context `json:"context,omitempty"`
 
 	// Resource is the resource that access is requested to.
 	Resource string `json:"resource,omitempty"`

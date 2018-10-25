@@ -8,8 +8,5 @@
 
 package swagger
 
-type Version struct {
-
-	// Version is the service's version.
-	Version string `json:"version,omitempty"`
+type Context struct {
 }

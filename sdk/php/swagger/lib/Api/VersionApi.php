@@ -4,7 +4,7 @@
  * PHP version 5
  *
  * @category Class
- * @package  keto\SDK
+ * @package  ketoSDK
  * @author   Swagger Codegen team
  * @link     https://github.com/swagger-api/swagger-codegen
  */
@@ -24,18 +24,18 @@
  * Do not edit the class manually.
  */
 
-namespace keto\SDK\Api;
+namespace ketoSDK\Api;
 
-use \keto\SDK\ApiClient;
-use \keto\SDK\ApiException;
-use \keto\SDK\Configuration;
-use \keto\SDK\ObjectSerializer;
+use \ketoSDK\ApiClient;
+use \ketoSDK\ApiException;
+use \ketoSDK\Configuration;
+use \ketoSDK\ObjectSerializer;
 
 /**
  * VersionApi Class Doc Comment
  *
  * @category Class
- * @package  keto\SDK
+ * @package  ketoSDK
  * @author   Swagger Codegen team
  * @link     https://github.com/swagger-api/swagger-codegen
  */
@@ -44,16 +44,16 @@ class VersionApi
     /**
      * API Client
      *
-     * @var \keto\SDK\ApiClient instance of the ApiClient
+     * @var \ketoSDK\ApiClient instance of the ApiClient
      */
     protected $apiClient;
 
     /**
      * Constructor
      *
-     * @param \keto\SDK\ApiClient|null $apiClient The api client to use
+     * @param \ketoSDK\ApiClient|null $apiClient The api client to use
      */
-    public function __construct(\keto\SDK\ApiClient $apiClient = null)
+    public function __construct(\ketoSDK\ApiClient $apiClient = null)
     {
         if ($apiClient === null) {
             $apiClient = new ApiClient();
@@ -65,7 +65,7 @@ class VersionApi
     /**
      * Get API client
      *
-     * @return \keto\SDK\ApiClient get the API client
+     * @return \ketoSDK\ApiClient get the API client
      */
     public function getApiClient()
     {
@@ -75,11 +75,11 @@ class VersionApi
     /**
      * Set the API client
      *
-     * @param \keto\SDK\ApiClient $apiClient set the API client
+     * @param \ketoSDK\ApiClient $apiClient set the API client
      *
      * @return VersionApi
      */
-    public function setApiClient(\keto\SDK\ApiClient $apiClient)
+    public function setApiClient(\ketoSDK\ApiClient $apiClient)
     {
         $this->apiClient = $apiClient;
         return $this;
@@ -92,8 +92,8 @@ class VersionApi
      *
      * Client for keto
      *
-     * @throws \keto\SDK\ApiException on non-2xx response
-     * @return \keto\SDK\Model\Version
+     * @throws \ketoSDK\ApiException on non-2xx response
+     * @return \ketoSDK\Model\Version
      */
     public function getVersion()
     {
@@ -108,8 +108,8 @@ class VersionApi
      *
      * Client for keto
      *
-     * @throws \keto\SDK\ApiException on non-2xx response
-     * @return array of \keto\SDK\Model\Version, HTTP status code, HTTP response headers (array of strings)
+     * @throws \ketoSDK\ApiException on non-2xx response
+     * @return array of \ketoSDK\Model\Version, HTTP status code, HTTP response headers (array of strings)
      */
     public function getVersionWithHttpInfo()
     {
@@ -140,15 +140,15 @@ class VersionApi
                 $queryParams,
                 $httpBody,
                 $headerParams,
-                '\keto\SDK\Model\Version',
+                '\ketoSDK\Model\Version',
                 '/version'
             );
 
-            return [$this->apiClient->getSerializer()->deserialize($response, '\keto\SDK\Model\Version', $httpHeader), $statusCode, $httpHeader];
+            return [$this->apiClient->getSerializer()->deserialize($response, '\ketoSDK\Model\Version', $httpHeader), $statusCode, $httpHeader];
         } catch (ApiException $e) {
             switch ($e->getCode()) {
                 case 200:
-                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\keto\SDK\Model\Version', $e->getResponseHeaders());
+                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\ketoSDK\Model\Version', $e->getResponseHeaders());
                     $e->setResponseObject($data);
                     break;
             }

@@ -1,6 +1,6 @@
 <?php
 /**
- * UpsertOryAccessControlPolicyRole
+ * Context
  *
  * PHP version 5
  *
@@ -30,14 +30,14 @@ namespace ketoSDK\Model;
 use \ArrayAccess;
 
 /**
- * UpsertOryAccessControlPolicyRole Class Doc Comment
+ * Context Class Doc Comment
  *
  * @category    Class
  * @package     ketoSDK
  * @author      Swagger Codegen team
  * @link        https://github.com/swagger-api/swagger-codegen
  */
-class UpsertOryAccessControlPolicyRole implements ArrayAccess
+class Context implements ArrayAccess
 {
     const DISCRIMINATOR = null;
 
@@ -45,16 +45,14 @@ class UpsertOryAccessControlPolicyRole implements ArrayAccess
       * The original name of the model.
       * @var string
       */
-    protected static $swaggerModelName = 'upsertOryAccessControlPolicyRole';
+    protected static $swaggerModelName = 'Context';
 
     /**
       * Array of property to type mappings. Used for (de)serialization
       * @var string[]
       */
     protected static $swaggerTypes = [
-        'body' => '\ketoSDK\Model\OryAccessControlPolicyRole',
-        'flavor' => 'string',
-        'id' => 'string'
+        
     ];
 
     /**
@@ -62,9 +60,7 @@ class UpsertOryAccessControlPolicyRole implements ArrayAccess
       * @var string[]
       */
     protected static $swaggerFormats = [
-        'body' => null,
-        'flavor' => null,
-        'id' => null
+        
     ];
 
     public static function swaggerTypes()
@@ -82,9 +78,7 @@ class UpsertOryAccessControlPolicyRole implements ArrayAccess
      * @var string[]
      */
     protected static $attributeMap = [
-        'body' => 'Body',
-        'flavor' => 'flavor',
-        'id' => 'id'
+        
     ];
 
 
@@ -93,9 +87,7 @@ class UpsertOryAccessControlPolicyRole implements ArrayAccess
      * @var string[]
      */
     protected static $setters = [
-        'body' => 'setBody',
-        'flavor' => 'setFlavor',
-        'id' => 'setId'
+        
     ];
 
 
@@ -104,9 +96,7 @@ class UpsertOryAccessControlPolicyRole implements ArrayAccess
      * @var string[]
      */
     protected static $getters = [
-        'body' => 'getBody',
-        'flavor' => 'getFlavor',
-        'id' => 'getId'
+        
     ];
 
     public static function attributeMap()
@@ -140,9 +130,6 @@ class UpsertOryAccessControlPolicyRole implements ArrayAccess
      */
     public function __construct(array $data = null)
     {
-        $this->container['body'] = isset($data['body']) ? $data['body'] : null;
-        $this->container['flavor'] = isset($data['flavor']) ? $data['flavor'] : null;
-        $this->container['id'] = isset($data['id']) ? $data['id'] : null;
     }
 
     /**
@@ -152,14 +139,8 @@ class UpsertOryAccessControlPolicyRole implements ArrayAccess
      */
     public function listInvalidProperties()
     {
-        $invalid_properties = [];
+        $invalid_properties = parent::listInvalidProperties();
 
-        if ($this->container['flavor'] === null) {
-            $invalid_properties[] = "'flavor' can't be null";
-        }
-        if ($this->container['id'] === null) {
-            $invalid_properties[] = "'id' can't be null";
-        }
         return $invalid_properties;
     }
 
@@ -171,79 +152,13 @@ class UpsertOryAccessControlPolicyRole implements ArrayAccess
      */
     public function valid()
     {
+        if (!parent::valid()) {
+            return false;
+        }
 
-        if ($this->container['flavor'] === null) {
-            return false;
-        }
-        if ($this->container['id'] === null) {
-            return false;
-        }
         return true;
     }
 
-
-    /**
-     * Gets body
-     * @return \ketoSDK\Model\OryAccessControlPolicyRole
-     */
-    public function getBody()
-    {
-        return $this->container['body'];
-    }
-
-    /**
-     * Sets body
-     * @param \ketoSDK\Model\OryAccessControlPolicyRole $body
-     * @return $this
-     */
-    public function setBody($body)
-    {
-        $this->container['body'] = $body;
-
-        return $this;
-    }
-
-    /**
-     * Gets flavor
-     * @return string
-     */
-    public function getFlavor()
-    {
-        return $this->container['flavor'];
-    }
-
-    /**
-     * Sets flavor
-     * @param string $flavor The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".  in: path
-     * @return $this
-     */
-    public function setFlavor($flavor)
-    {
-        $this->container['flavor'] = $flavor;
-
-        return $this;
-    }
-
-    /**
-     * Gets id
-     * @return string
-     */
-    public function getId()
-    {
-        return $this->container['id'];
-    }
-
-    /**
-     * Sets id
-     * @param string $id The ID of the ORY Access Control Policy Role.  in: path
-     * @return $this
-     */
-    public function setId($id)
-    {
-        $this->container['id'] = $id;
-
-        return $this;
-    }
     /**
      * Returns true if offset exists. False otherwise.
      * @param  integer $offset Offset

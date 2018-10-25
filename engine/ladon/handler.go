@@ -78,7 +78,7 @@ func NewEngine(store kstorage.Manager, sh *kstorage.Handler, e *engine.Engine, h
 }
 
 func (e *Engine) Register(r *httprouter.Router) {
-	// swagger:route GET /engines/ory/{flavor}/allowed engines doOryAccessControlPoliciesAllow
+	// swagger:route GET /engines/acp/ory/{flavor}/allowed engines doOryAccessControlPoliciesAllow
 	//
 	// Check if a request is allowed
 	//
@@ -98,7 +98,7 @@ func (e *Engine) Register(r *httprouter.Router) {
 	//       500: genericError
 	r.POST(BasePath+"/allowed", e.engine.Evaluate(e.eval))
 
-	// swagger:route PUT /engines/ory/{flavor}/policies engines upsertOryAccessControlPolicy
+	// swagger:route PUT /engines/acp/ory/{flavor}/policies engines upsertOryAccessControlPolicy
 	//
 	// Upsert an ORY Access Control Policy
 	//
@@ -116,7 +116,7 @@ func (e *Engine) Register(r *httprouter.Router) {
 	//       500: genericError
 	r.PUT(BasePath+"/policies", e.sh.Upsert(e.policiesCreate))
 
-	// swagger:route GET /engines/ory/{flavor}/policies engines listOryAccessControlPolicies
+	// swagger:route GET /engines/acp/ory/{flavor}/policies engines listOryAccessControlPolicies
 	//
 	// List ORY Access Control Policies
 	//
@@ -131,7 +131,7 @@ func (e *Engine) Register(r *httprouter.Router) {
 	//       500: genericError
 	r.GET(BasePath+"/policies", e.sh.List(e.policiesList))
 
-	// swagger:route GET /engines/ory/{flavor}/policies/{id} engines getOryAccessControlPolicy
+	// swagger:route GET /engines/acp/ory/{flavor}/policies/{id} engines getOryAccessControlPolicy
 	//
 	// Get an ORY Access Control Policy
 	//
@@ -147,7 +147,7 @@ func (e *Engine) Register(r *httprouter.Router) {
 	//       500: genericError
 	r.GET(BasePath+"/policies/:id", e.sh.Get(e.policiesGet))
 
-	// swagger:route DELETE /engines/ory/{flavor}/policies/{id} engines deleteOryAccessControlPolicy
+	// swagger:route DELETE /engines/acp/ory/{flavor}/policies/{id} engines deleteOryAccessControlPolicy
 	//
 	// Delete an ORY Access Control Policy
 	//
@@ -162,7 +162,7 @@ func (e *Engine) Register(r *httprouter.Router) {
 	//       500: genericError
 	r.DELETE(BasePath+"/policies/:id", e.sh.Delete(e.policiesDelete))
 
-	// swagger:route GET /engines/ory/{flavor}/roles engines listOryAccessControlPolicyRoles
+	// swagger:route GET /engines/acp/ory/{flavor}/roles engines listOryAccessControlPolicyRoles
 	//
 	// List ORY Access Control Policy Roles
 	//
@@ -180,7 +180,7 @@ func (e *Engine) Register(r *httprouter.Router) {
 	//       500: genericError
 	r.GET(BasePath+"/roles", e.sh.List(e.rolesList))
 
-	// swagger:route GET /engines/ory/{flavor}/roles/{id} engines getOryAccessControlPolicyRole
+	// swagger:route GET /engines/acp/ory/{flavor}/roles/{id} engines getOryAccessControlPolicyRole
 	//
 	// Get an ORY Access Control Policy Role
 	//
@@ -199,7 +199,7 @@ func (e *Engine) Register(r *httprouter.Router) {
 	//       500: genericError
 	r.GET(BasePath+"/roles/:id", e.sh.Get(e.rolesGet))
 
-	// swagger:route PUT /engines/ory/{flavor}/roles engines upsertOryAccessControlPolicyRole
+	// swagger:route PUT /engines/acp/ory/{flavor}/roles engines upsertOryAccessControlPolicyRole
 	//
 	// Upsert an ORY Access Control Policy Role
 	//
@@ -220,7 +220,7 @@ func (e *Engine) Register(r *httprouter.Router) {
 	//       500: genericError
 	r.PUT(BasePath+"/roles", e.sh.Upsert(e.rolesUpsert))
 
-	// swagger:route DELETE /engines/ory/{flavor}/roles/{id} engines deleteOryAccessControlPolicyRole
+	// swagger:route DELETE /engines/acp/ory/{flavor}/roles/{id} engines deleteOryAccessControlPolicyRole
 	//
 	// Delete an ORY Access Control Policy Role
 	//
@@ -238,7 +238,7 @@ func (e *Engine) Register(r *httprouter.Router) {
 	//       500: genericError
 	r.DELETE(BasePath+"/roles/:id", e.sh.Delete(e.rolesDelete))
 
-	// swagger:route PUT /engines/ory/{flavor}/roles/{id}/members engines addOryAccessControlPolicyRoleMembers
+	// swagger:route PUT /engines/acp/ory/{flavor}/roles/{id}/members engines addOryAccessControlPolicyRoleMembers
 	//
 	// Add a member to an ORY Access Control Policy Role
 	//
@@ -259,7 +259,7 @@ func (e *Engine) Register(r *httprouter.Router) {
 	//       500: genericError
 	r.PUT(BasePath+"/roles/:id/members", e.sh.Upsert(e.rolesMembersAdd))
 
-	// swagger:route DELETE /engines/ory/{flavor}/roles/{id}/members engines removeOryAccessControlPolicyRoleMembers
+	// swagger:route DELETE /engines/acp/ory/{flavor}/roles/{id}/members engines removeOryAccessControlPolicyRoleMembers
 	//
 	// Remove a member from an ORY Access Control Policy Role
 	//

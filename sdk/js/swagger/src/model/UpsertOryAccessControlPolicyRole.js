@@ -1,5 +1,5 @@
 /**
- *
+ * 
  * Package main ORY Keto
  *
  * OpenAPI spec version: Latest
@@ -14,28 +14,25 @@
  *
  */
 
-;(function(root, factory) {
+(function(root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module.
-    define(['ApiClient', 'model/OryAccessControlPolicyRole'], factory)
+    define(['ApiClient', 'model/OryAccessControlPolicyRole'], factory);
   } else if (typeof module === 'object' && module.exports) {
     // CommonJS-like environments that support module.exports, like Node.
-    module.exports = factory(
-      require('../ApiClient'),
-      require('./OryAccessControlPolicyRole')
-    )
+    module.exports = factory(require('../ApiClient'), require('./OryAccessControlPolicyRole'));
   } else {
     // Browser globals (root is window)
     if (!root.SwaggerJsClient) {
-      root.SwaggerJsClient = {}
+      root.SwaggerJsClient = {};
     }
-    root.SwaggerJsClient.UpsertOryAccessControlPolicyRole = factory(
-      root.SwaggerJsClient.ApiClient,
-      root.SwaggerJsClient.OryAccessControlPolicyRole
-    )
+    root.SwaggerJsClient.UpsertOryAccessControlPolicyRole = factory(root.SwaggerJsClient.ApiClient, root.SwaggerJsClient.OryAccessControlPolicyRole);
   }
-})(this, function(ApiClient, OryAccessControlPolicyRole) {
-  'use strict'
+}(this, function(ApiClient, OryAccessControlPolicyRole) {
+  'use strict';
+
+
+
 
   /**
    * The UpsertOryAccessControlPolicyRole model module.
@@ -47,15 +44,16 @@
    * Constructs a new <code>UpsertOryAccessControlPolicyRole</code>.
    * @alias module:model/UpsertOryAccessControlPolicyRole
    * @class
-   * @param ID {String} The ID of the ORY Access Control Policy Role.  in: path
    * @param flavor {String} The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".  in: path
+   * @param id {String} The ID of the ORY Access Control Policy Role.  in: path
    */
-  var exports = function(ID, flavor) {
-    var _this = this
+  var exports = function(flavor, id) {
+    var _this = this;
 
-    _this['ID'] = ID
-    _this['flavor'] = flavor
-  }
+
+    _this['flavor'] = flavor;
+    _this['id'] = id;
+  };
 
   /**
    * Constructs a <code>UpsertOryAccessControlPolicyRole</code> from a plain JavaScript object, optionally creating a new instance.
@@ -66,37 +64,39 @@
    */
   exports.constructFromObject = function(data, obj) {
     if (data) {
-      obj = obj || new exports()
+      obj = obj || new exports();
 
       if (data.hasOwnProperty('Body')) {
-        obj['Body'] = OryAccessControlPolicyRole.constructFromObject(
-          data['Body']
-        )
-      }
-      if (data.hasOwnProperty('ID')) {
-        obj['ID'] = ApiClient.convertToType(data['ID'], 'String')
+        obj['Body'] = OryAccessControlPolicyRole.constructFromObject(data['Body']);
       }
       if (data.hasOwnProperty('flavor')) {
-        obj['flavor'] = ApiClient.convertToType(data['flavor'], 'String')
+        obj['flavor'] = ApiClient.convertToType(data['flavor'], 'String');
+      }
+      if (data.hasOwnProperty('id')) {
+        obj['id'] = ApiClient.convertToType(data['id'], 'String');
       }
     }
-    return obj
+    return obj;
   }
 
   /**
    * @member {module:model/OryAccessControlPolicyRole} Body
    */
-  exports.prototype['Body'] = undefined
-  /**
-   * The ID of the ORY Access Control Policy Role.  in: path
-   * @member {String} ID
-   */
-  exports.prototype['ID'] = undefined
+  exports.prototype['Body'] = undefined;
   /**
    * The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".  in: path
    * @member {String} flavor
    */
-  exports.prototype['flavor'] = undefined
+  exports.prototype['flavor'] = undefined;
+  /**
+   * The ID of the ORY Access Control Policy Role.  in: path
+   * @member {String} id
+   */
+  exports.prototype['id'] = undefined;
 
-  return exports
-})
+
+
+  return exports;
+}));
+
+

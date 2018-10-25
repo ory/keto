@@ -5,7 +5,7 @@
  * PHP version 5
  *
  * @category Class
- * @package  keto\SDK
+ * @package  ketoSDK
  * @author   Swaagger Codegen team
  * @link     https://github.com/swagger-api/swagger-codegen
  */
@@ -25,7 +25,7 @@
  * Do not edit the class manually.
  */
 
-namespace keto\SDK\Model;
+namespace ketoSDK\Model;
 
 use \ArrayAccess;
 
@@ -33,7 +33,7 @@ use \ArrayAccess;
  * OryAccessControlPolicyAllowedInput Class Doc Comment
  *
  * @category    Class
- * @package     keto\SDK
+ * @package     ketoSDK
  * @author      Swagger Codegen team
  * @link        https://github.com/swagger-api/swagger-codegen
  */
@@ -53,7 +53,7 @@ class OryAccessControlPolicyAllowedInput implements ArrayAccess
       */
     protected static $swaggerTypes = [
         'action' => 'string',
-        'context' => 'map[string,object]',
+        'context' => '\ketoSDK\Model\Context',
         'resource' => 'string',
         'subject' => 'string'
     ];
@@ -199,7 +199,7 @@ class OryAccessControlPolicyAllowedInput implements ArrayAccess
 
     /**
      * Gets context
-     * @return map[string,object]
+     * @return \ketoSDK\Model\Context
      */
     public function getContext()
     {
@@ -208,7 +208,7 @@ class OryAccessControlPolicyAllowedInput implements ArrayAccess
 
     /**
      * Sets context
-     * @param map[string,object] $context Context is the request's environmental context.
+     * @param \ketoSDK\Model\Context $context
      * @return $this
      */
     public function setContext($context)
@@ -311,10 +311,10 @@ class OryAccessControlPolicyAllowedInput implements ArrayAccess
     public function __toString()
     {
         if (defined('JSON_PRETTY_PRINT')) { // use JSON pretty print
-            return json_encode(\keto\SDK\ObjectSerializer::sanitizeForSerialization($this), JSON_PRETTY_PRINT);
+            return json_encode(\ketoSDK\ObjectSerializer::sanitizeForSerialization($this), JSON_PRETTY_PRINT);
         }
 
-        return json_encode(\keto\SDK\ObjectSerializer::sanitizeForSerialization($this));
+        return json_encode(\ketoSDK\ObjectSerializer::sanitizeForSerialization($this));
     }
 }
 

@@ -1,4 +1,4 @@
-/*
+/* 
  * Package main ORY Keto
  *
  * OpenAPI spec version: Latest
@@ -9,11 +9,12 @@
 package swagger
 
 type UpsertOryAccessControlPolicy struct {
-	Body OryAccessControlPolicy `json:"Body,omitempty"`
 
-	// The ID of the ORY Access Control Policy.  in: path
-	ID string `json:"ID"`
+	Body OryAccessControlPolicy `json:"Body,omitempty"`
 
 	// The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".  in: path
 	Flavor string `json:"flavor"`
+
+	// The ID of the ORY Access Control Policy.  in: path
+	Id string `json:"id"`
 }

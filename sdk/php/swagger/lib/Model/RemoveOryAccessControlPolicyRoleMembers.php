@@ -5,7 +5,7 @@
  * PHP version 5
  *
  * @category Class
- * @package  keto\SDK
+ * @package  ketoSDK
  * @author   Swaagger Codegen team
  * @link     https://github.com/swagger-api/swagger-codegen
  */
@@ -25,7 +25,7 @@
  * Do not edit the class manually.
  */
 
-namespace keto\SDK\Model;
+namespace ketoSDK\Model;
 
 use \ArrayAccess;
 
@@ -33,7 +33,7 @@ use \ArrayAccess;
  * RemoveOryAccessControlPolicyRoleMembers Class Doc Comment
  *
  * @category    Class
- * @package     keto\SDK
+ * @package     ketoSDK
  * @author      Swagger Codegen team
  * @link        https://github.com/swagger-api/swagger-codegen
  */
@@ -52,9 +52,9 @@ class RemoveOryAccessControlPolicyRoleMembers implements ArrayAccess
       * @var string[]
       */
     protected static $swaggerTypes = [
-        'body' => '\keto\SDK\Model\RemoveOryAccessControlPolicyRoleMembersBody',
-        'id' => 'string',
-        'flavor' => 'string'
+        'body' => '\ketoSDK\Model\RemoveOryAccessControlPolicyRoleMembersBody',
+        'flavor' => 'string',
+        'id' => 'string'
     ];
 
     /**
@@ -63,8 +63,8 @@ class RemoveOryAccessControlPolicyRoleMembers implements ArrayAccess
       */
     protected static $swaggerFormats = [
         'body' => null,
-        'id' => null,
-        'flavor' => null
+        'flavor' => null,
+        'id' => null
     ];
 
     public static function swaggerTypes()
@@ -83,8 +83,8 @@ class RemoveOryAccessControlPolicyRoleMembers implements ArrayAccess
      */
     protected static $attributeMap = [
         'body' => 'Body',
-        'id' => 'ID',
-        'flavor' => 'flavor'
+        'flavor' => 'flavor',
+        'id' => 'id'
     ];
 
 
@@ -94,8 +94,8 @@ class RemoveOryAccessControlPolicyRoleMembers implements ArrayAccess
      */
     protected static $setters = [
         'body' => 'setBody',
-        'id' => 'setId',
-        'flavor' => 'setFlavor'
+        'flavor' => 'setFlavor',
+        'id' => 'setId'
     ];
 
 
@@ -105,8 +105,8 @@ class RemoveOryAccessControlPolicyRoleMembers implements ArrayAccess
      */
     protected static $getters = [
         'body' => 'getBody',
-        'id' => 'getId',
-        'flavor' => 'getFlavor'
+        'flavor' => 'getFlavor',
+        'id' => 'getId'
     ];
 
     public static function attributeMap()
@@ -141,8 +141,8 @@ class RemoveOryAccessControlPolicyRoleMembers implements ArrayAccess
     public function __construct(array $data = null)
     {
         $this->container['body'] = isset($data['body']) ? $data['body'] : null;
-        $this->container['id'] = isset($data['id']) ? $data['id'] : null;
         $this->container['flavor'] = isset($data['flavor']) ? $data['flavor'] : null;
+        $this->container['id'] = isset($data['id']) ? $data['id'] : null;
     }
 
     /**
@@ -154,11 +154,11 @@ class RemoveOryAccessControlPolicyRoleMembers implements ArrayAccess
     {
         $invalid_properties = [];
 
-        if ($this->container['id'] === null) {
-            $invalid_properties[] = "'id' can't be null";
-        }
         if ($this->container['flavor'] === null) {
             $invalid_properties[] = "'flavor' can't be null";
+        }
+        if ($this->container['id'] === null) {
+            $invalid_properties[] = "'id' can't be null";
         }
         return $invalid_properties;
     }
@@ -172,10 +172,10 @@ class RemoveOryAccessControlPolicyRoleMembers implements ArrayAccess
     public function valid()
     {
 
-        if ($this->container['id'] === null) {
+        if ($this->container['flavor'] === null) {
             return false;
         }
-        if ($this->container['flavor'] === null) {
+        if ($this->container['id'] === null) {
             return false;
         }
         return true;
@@ -184,7 +184,7 @@ class RemoveOryAccessControlPolicyRoleMembers implements ArrayAccess
 
     /**
      * Gets body
-     * @return \keto\SDK\Model\RemoveOryAccessControlPolicyRoleMembersBody
+     * @return \ketoSDK\Model\RemoveOryAccessControlPolicyRoleMembersBody
      */
     public function getBody()
     {
@@ -193,33 +193,12 @@ class RemoveOryAccessControlPolicyRoleMembers implements ArrayAccess
 
     /**
      * Sets body
-     * @param \keto\SDK\Model\RemoveOryAccessControlPolicyRoleMembersBody $body
+     * @param \ketoSDK\Model\RemoveOryAccessControlPolicyRoleMembersBody $body
      * @return $this
      */
     public function setBody($body)
     {
         $this->container['body'] = $body;
-
-        return $this;
-    }
-
-    /**
-     * Gets id
-     * @return string
-     */
-    public function getId()
-    {
-        return $this->container['id'];
-    }
-
-    /**
-     * Sets id
-     * @param string $id The ID of the ORY Access Control Policy Role.  in: path
-     * @return $this
-     */
-    public function setId($id)
-    {
-        $this->container['id'] = $id;
 
         return $this;
     }
@@ -241,6 +220,27 @@ class RemoveOryAccessControlPolicyRoleMembers implements ArrayAccess
     public function setFlavor($flavor)
     {
         $this->container['flavor'] = $flavor;
+
+        return $this;
+    }
+
+    /**
+     * Gets id
+     * @return string
+     */
+    public function getId()
+    {
+        return $this->container['id'];
+    }
+
+    /**
+     * Sets id
+     * @param string $id The ID of the ORY Access Control Policy Role.  in: path
+     * @return $this
+     */
+    public function setId($id)
+    {
+        $this->container['id'] = $id;
 
         return $this;
     }
@@ -296,10 +296,10 @@ class RemoveOryAccessControlPolicyRoleMembers implements ArrayAccess
     public function __toString()
     {
         if (defined('JSON_PRETTY_PRINT')) { // use JSON pretty print
-            return json_encode(\keto\SDK\ObjectSerializer::sanitizeForSerialization($this), JSON_PRETTY_PRINT);
+            return json_encode(\ketoSDK\ObjectSerializer::sanitizeForSerialization($this), JSON_PRETTY_PRINT);
         }
 
-        return json_encode(\keto\SDK\ObjectSerializer::sanitizeForSerialization($this));
+        return json_encode(\ketoSDK\ObjectSerializer::sanitizeForSerialization($this));
     }
 }
 

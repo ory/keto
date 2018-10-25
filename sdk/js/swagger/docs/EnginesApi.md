@@ -11,6 +11,7 @@ Method | HTTP request | Description
 [**getOryAccessControlPolicy**](EnginesApi.md#getOryAccessControlPolicy) | **GET** /engines/ory/{flavor}/policies/{id} | 
 [**getOryAccessControlPolicyRole**](EnginesApi.md#getOryAccessControlPolicyRole) | **GET** /engines/ory/{flavor}/roles/{id} | Get an ORY Access Control Policy Role
 [**listOryAccessControlPolicies**](EnginesApi.md#listOryAccessControlPolicies) | **GET** /engines/ory/{flavor}/policies | 
+[**listOryAccessControlPolicyRoles**](EnginesApi.md#listOryAccessControlPolicyRoles) | **GET** /engines/ory/{flavor}/roles | List ORY Access Control Policy Roles
 [**removeOryAccessControlPolicyRoleMembers**](EnginesApi.md#removeOryAccessControlPolicyRoleMembers) | **DELETE** /engines/ory/{flavor}/roles/{id}/members | Remove a member from an ORY Access Control Policy Role
 [**upsertOryAccessControlPolicy**](EnginesApi.md#upsertOryAccessControlPolicy) | **PUT** /engines/ory/{flavor}/policies | 
 [**upsertOryAccessControlPolicyRole**](EnginesApi.md#upsertOryAccessControlPolicyRole) | **PUT** /engines/ory/{flavor}/roles | Upsert an ORY Access Control Policy Role
@@ -18,7 +19,7 @@ Method | HTTP request | Description
 
 <a name="addOryAccessControlPolicyRoleMembers"></a>
 # **addOryAccessControlPolicyRoleMembers**
-> OryAccessControlPolicyRole addOryAccessControlPolicyRoleMembers(ID, flavor, opts)
+> OryAccessControlPolicyRole addOryAccessControlPolicyRoleMembers(id, flavor, opts)
 
 Add a member to an ORY Access Control Policy Role
 
@@ -30,7 +31,7 @@ var SwaggerJsClient = require('swagger-js-client');
 
 var apiInstance = new SwaggerJsClient.EnginesApi();
 
-var ID = "ID_example"; // String | The ID of the ORY Access Control Policy Role.
+var id = "id_example"; // String | The ID of the ORY Access Control Policy Role.
 
 var flavor = "flavor_example"; // String | The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".
 
@@ -45,14 +46,14 @@ var callback = function(error, data, response) {
     console.log('API called successfully. Returned data: ' + data);
   }
 };
-apiInstance.addOryAccessControlPolicyRoleMembers(ID, flavor, opts, callback);
+apiInstance.addOryAccessControlPolicyRoleMembers(id, flavor, opts, callback);
 ```
 
 ### Parameters
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **ID** | **String**| The ID of the ORY Access Control Policy Role. | 
+ **id** | **String**| The ID of the ORY Access Control Policy Role. | 
  **flavor** | **String**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;. | 
  **body** | [**AddOryAccessControlPolicyRoleMembersBody**](AddOryAccessControlPolicyRoleMembersBody.md)|  | [optional] 
 
@@ -71,7 +72,7 @@ No authorization required
 
 <a name="deleteOryAccessControlPolicy"></a>
 # **deleteOryAccessControlPolicy**
-> deleteOryAccessControlPolicy(flavor, ID)
+> deleteOryAccessControlPolicy(flavor, id)
 
 
 
@@ -85,7 +86,7 @@ var apiInstance = new SwaggerJsClient.EnginesApi();
 
 var flavor = "flavor_example"; // String | The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".
 
-var ID = "ID_example"; // String | The ID of the ORY Access Control Policy Role.
+var id = "id_example"; // String | The ID of the ORY Access Control Policy Role.
 
 
 var callback = function(error, data, response) {
@@ -95,7 +96,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully.');
   }
 };
-apiInstance.deleteOryAccessControlPolicy(flavor, ID, callback);
+apiInstance.deleteOryAccessControlPolicy(flavor, id, callback);
 ```
 
 ### Parameters
@@ -103,7 +104,7 @@ apiInstance.deleteOryAccessControlPolicy(flavor, ID, callback);
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **flavor** | **String**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;. | 
- **ID** | **String**| The ID of the ORY Access Control Policy Role. | 
+ **id** | **String**| The ID of the ORY Access Control Policy Role. | 
 
 ### Return type
 
@@ -120,7 +121,7 @@ No authorization required
 
 <a name="deleteOryAccessControlPolicyRole"></a>
 # **deleteOryAccessControlPolicyRole**
-> deleteOryAccessControlPolicyRole(flavor, ID)
+> deleteOryAccessControlPolicyRole(flavor, id)
 
 Delete an ORY Access Control Policy Role
 
@@ -134,7 +135,7 @@ var apiInstance = new SwaggerJsClient.EnginesApi();
 
 var flavor = "flavor_example"; // String | The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".
 
-var ID = "ID_example"; // String | The ID of the ORY Access Control Policy Role.
+var id = "id_example"; // String | The ID of the ORY Access Control Policy Role.
 
 
 var callback = function(error, data, response) {
@@ -144,7 +145,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully.');
   }
 };
-apiInstance.deleteOryAccessControlPolicyRole(flavor, ID, callback);
+apiInstance.deleteOryAccessControlPolicyRole(flavor, id, callback);
 ```
 
 ### Parameters
@@ -152,7 +153,7 @@ apiInstance.deleteOryAccessControlPolicyRole(flavor, ID, callback);
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **flavor** | **String**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;. | 
- **ID** | **String**| The ID of the ORY Access Control Policy Role. | 
+ **id** | **String**| The ID of the ORY Access Control Policy Role. | 
 
 ### Return type
 
@@ -219,7 +220,7 @@ No authorization required
 
 <a name="getOryAccessControlPolicy"></a>
 # **getOryAccessControlPolicy**
-> OryAccessControlPolicy getOryAccessControlPolicy(flavor, ID)
+> OryAccessControlPolicy getOryAccessControlPolicy(flavor, id)
 
 
 
@@ -233,7 +234,7 @@ var apiInstance = new SwaggerJsClient.EnginesApi();
 
 var flavor = "flavor_example"; // String | The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".
 
-var ID = "ID_example"; // String | The ID of the ORY Access Control Policy Role.
+var id = "id_example"; // String | The ID of the ORY Access Control Policy Role.
 
 
 var callback = function(error, data, response) {
@@ -243,7 +244,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully. Returned data: ' + data);
   }
 };
-apiInstance.getOryAccessControlPolicy(flavor, ID, callback);
+apiInstance.getOryAccessControlPolicy(flavor, id, callback);
 ```
 
 ### Parameters
@@ -251,7 +252,7 @@ apiInstance.getOryAccessControlPolicy(flavor, ID, callback);
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **flavor** | **String**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;. | 
- **ID** | **String**| The ID of the ORY Access Control Policy Role. | 
+ **id** | **String**| The ID of the ORY Access Control Policy Role. | 
 
 ### Return type
 
@@ -268,7 +269,7 @@ No authorization required
 
 <a name="getOryAccessControlPolicyRole"></a>
 # **getOryAccessControlPolicyRole**
-> OryAccessControlPolicyRole getOryAccessControlPolicyRole(flavor, ID)
+> OryAccessControlPolicyRole getOryAccessControlPolicyRole(flavor, id)
 
 Get an ORY Access Control Policy Role
 
@@ -282,7 +283,7 @@ var apiInstance = new SwaggerJsClient.EnginesApi();
 
 var flavor = "flavor_example"; // String | The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".
 
-var ID = "ID_example"; // String | The ID of the ORY Access Control Policy Role.
+var id = "id_example"; // String | The ID of the ORY Access Control Policy Role.
 
 
 var callback = function(error, data, response) {
@@ -292,7 +293,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully. Returned data: ' + data);
   }
 };
-apiInstance.getOryAccessControlPolicyRole(flavor, ID, callback);
+apiInstance.getOryAccessControlPolicyRole(flavor, id, callback);
 ```
 
 ### Parameters
@@ -300,7 +301,7 @@ apiInstance.getOryAccessControlPolicyRole(flavor, ID, callback);
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **flavor** | **String**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;. | 
- **ID** | **String**| The ID of the ORY Access Control Policy Role. | 
+ **id** | **String**| The ID of the ORY Access Control Policy Role. | 
 
 ### Return type
 
@@ -367,9 +368,61 @@ No authorization required
  - **Content-Type**: application/json
  - **Accept**: application/json
 
+<a name="listOryAccessControlPolicyRoles"></a>
+# **listOryAccessControlPolicyRoles**
+> OryAccessControlPolicyRoles listOryAccessControlPolicyRoles(flavor, opts)
+
+List ORY Access Control Policy Roles
+
+Roles group several subjects into one. Rules can be assigned to ORY Access Control Policy (OACP) by using the Role ID as subject in the OACP.
+
+### Example
+```javascript
+var SwaggerJsClient = require('swagger-js-client');
+
+var apiInstance = new SwaggerJsClient.EnginesApi();
+
+var flavor = "flavor_example"; // String | The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\"
+
+var opts = { 
+  'limit': 789, // Number | The maximum amount of policies returned.
+  'offset': 789 // Number | The offset from where to start looking.
+};
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully. Returned data: ' + data);
+  }
+};
+apiInstance.listOryAccessControlPolicyRoles(flavor, opts, callback);
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **flavor** | **String**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot; | 
+ **limit** | **Number**| The maximum amount of policies returned. | [optional] 
+ **offset** | **Number**| The offset from where to start looking. | [optional] 
+
+### Return type
+
+[**OryAccessControlPolicyRoles**](OryAccessControlPolicyRoles.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
 <a name="removeOryAccessControlPolicyRoleMembers"></a>
 # **removeOryAccessControlPolicyRoleMembers**
-> removeOryAccessControlPolicyRoleMembers(ID, flavor, opts)
+> removeOryAccessControlPolicyRoleMembers(id, flavor, opts)
 
 Remove a member from an ORY Access Control Policy Role
 
@@ -381,7 +434,7 @@ var SwaggerJsClient = require('swagger-js-client');
 
 var apiInstance = new SwaggerJsClient.EnginesApi();
 
-var ID = "ID_example"; // String | The ID of the ORY Access Control Policy Role.
+var id = "id_example"; // String | The ID of the ORY Access Control Policy Role.
 
 var flavor = "flavor_example"; // String | The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".
 
@@ -396,14 +449,14 @@ var callback = function(error, data, response) {
     console.log('API called successfully.');
   }
 };
-apiInstance.removeOryAccessControlPolicyRoleMembers(ID, flavor, opts, callback);
+apiInstance.removeOryAccessControlPolicyRoleMembers(id, flavor, opts, callback);
 ```
 
 ### Parameters
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **ID** | **String**| The ID of the ORY Access Control Policy Role. | 
+ **id** | **String**| The ID of the ORY Access Control Policy Role. | 
  **flavor** | **String**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;. | 
  **body** | [**RemoveOryAccessControlPolicyRoleMembersBody**](RemoveOryAccessControlPolicyRoleMembersBody.md)|  | [optional] 
 
@@ -422,7 +475,7 @@ No authorization required
 
 <a name="upsertOryAccessControlPolicy"></a>
 # **upsertOryAccessControlPolicy**
-> upsertOryAccessControlPolicy(ID, flavor, opts)
+> upsertOryAccessControlPolicy(id, flavor, opts)
 
 
 
@@ -434,7 +487,7 @@ var SwaggerJsClient = require('swagger-js-client');
 
 var apiInstance = new SwaggerJsClient.EnginesApi();
 
-var ID = "ID_example"; // String | The ID of the ORY Access Control Policy.
+var id = "id_example"; // String | The ID of the ORY Access Control Policy.
 
 var flavor = "flavor_example"; // String | The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".
 
@@ -449,14 +502,14 @@ var callback = function(error, data, response) {
     console.log('API called successfully.');
   }
 };
-apiInstance.upsertOryAccessControlPolicy(ID, flavor, opts, callback);
+apiInstance.upsertOryAccessControlPolicy(id, flavor, opts, callback);
 ```
 
 ### Parameters
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **ID** | **String**| The ID of the ORY Access Control Policy. | 
+ **id** | **String**| The ID of the ORY Access Control Policy. | 
  **flavor** | **String**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;. | 
  **body** | [**OryAccessControlPolicy**](OryAccessControlPolicy.md)|  | [optional] 
 
@@ -475,7 +528,7 @@ No authorization required
 
 <a name="upsertOryAccessControlPolicyRole"></a>
 # **upsertOryAccessControlPolicyRole**
-> OryAccessControlPolicyRole upsertOryAccessControlPolicyRole(ID, flavor, opts)
+> OryAccessControlPolicyRole upsertOryAccessControlPolicyRole(id, flavor, opts)
 
 Upsert an ORY Access Control Policy Role
 
@@ -487,7 +540,7 @@ var SwaggerJsClient = require('swagger-js-client');
 
 var apiInstance = new SwaggerJsClient.EnginesApi();
 
-var ID = "ID_example"; // String | The ID of the ORY Access Control Policy Role.
+var id = "id_example"; // String | The ID of the ORY Access Control Policy Role.
 
 var flavor = "flavor_example"; // String | The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".
 
@@ -502,14 +555,14 @@ var callback = function(error, data, response) {
     console.log('API called successfully. Returned data: ' + data);
   }
 };
-apiInstance.upsertOryAccessControlPolicyRole(ID, flavor, opts, callback);
+apiInstance.upsertOryAccessControlPolicyRole(id, flavor, opts, callback);
 ```
 
 ### Parameters
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **ID** | **String**| The ID of the ORY Access Control Policy Role. | 
+ **id** | **String**| The ID of the ORY Access Control Policy Role. | 
  **flavor** | **String**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;. | 
  **body** | [**OryAccessControlPolicyRole**](OryAccessControlPolicyRole.md)|  | [optional] 
 

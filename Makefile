@@ -8,21 +8,22 @@ format:
 		goreturns -w -local github.com/ory $$(listx .)
 		# goimports -w -v -local github.com/ory $$(listx .)
 
-sdk:
+swagger:
 		swagger generate spec -m -o ./docs/api.swagger.json
 
+build-sdk:
 		rm -rf ./sdk/go/keto/swagger
 		rm -rf ./sdk/js/swagger
 		rm -rf ./sdk/php/swagger
 
 		java -jar scripts/swagger-codegen-cli-2.2.3.jar generate -i ./docs/api.swagger.json -l go -o ./sdk/go/keto/swagger
 		java -jar scripts/swagger-codegen-cli-2.2.3.jar generate -i ./docs/api.swagger.json -l javascript -o ./sdk/js/swagger
-		java -jar scripts/swagger-codegen-cli-2.2.3.jar generate -i ./docs/api.swagger.json -l php -o sdk/php/ \
+		java -jar scripts/swagger-codegen-cli-2.2.3.jar generate -i ./docs/api.swagger.json -l php -o ./sdk/php/ \
 			--invoker-package keto\\SDK --git-repo-id swagger --git-user-id ory --additional-properties "packagePath=swagger,description=Client for keto"
 
 		git checkout HEAD -- sdk/go/keto/swagger/api_client.go
 
-		goreturns -w -i -local github.com/ory $$(listx ./sdk/go)
+		# goreturns -w -i -local github.com/ory $$(listx ./sdk/go)
 
 		rm -f ./sdk/js/swagger/package.json
 		rm -rf ./sdk/js/swagger/test

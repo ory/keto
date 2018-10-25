@@ -1,5 +1,5 @@
 /**
- *
+ * 
  * Package main ORY Keto
  *
  * OpenAPI spec version: Latest
@@ -14,28 +14,25 @@
  *
  */
 
-;(function(root, factory) {
+(function(root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module.
-    define(['ApiClient', 'model/OryAccessControlPolicyRole'], factory)
+    define(['ApiClient', 'model/OryAccessControlPolicyRole'], factory);
   } else if (typeof module === 'object' && module.exports) {
     // CommonJS-like environments that support module.exports, like Node.
-    module.exports = factory(
-      require('../ApiClient'),
-      require('./OryAccessControlPolicyRole')
-    )
+    module.exports = factory(require('../ApiClient'), require('./OryAccessControlPolicyRole'));
   } else {
     // Browser globals (root is window)
     if (!root.SwaggerJsClient) {
-      root.SwaggerJsClient = {}
+      root.SwaggerJsClient = {};
     }
-    root.SwaggerJsClient.OryAccessControlPolicyRoles = factory(
-      root.SwaggerJsClient.ApiClient,
-      root.SwaggerJsClient.OryAccessControlPolicyRole
-    )
+    root.SwaggerJsClient.OryAccessControlPolicyRoles = factory(root.SwaggerJsClient.ApiClient, root.SwaggerJsClient.OryAccessControlPolicyRole);
   }
-})(this, function(ApiClient, OryAccessControlPolicyRole) {
-  'use strict'
+}(this, function(ApiClient, OryAccessControlPolicyRole) {
+  'use strict';
+
+
+
 
   /**
    * The OryAccessControlPolicyRoles model module.
@@ -50,12 +47,12 @@
    * @extends Array
    */
   var exports = function() {
-    var _this = this
-    _this = new Array()
-    Object.setPrototypeOf(_this, exports)
+    var _this = this;
+    _this = new Array();
+    Object.setPrototypeOf(_this, exports);
 
-    return _this
-  }
+    return _this;
+  };
 
   /**
    * Constructs a <code>OryAccessControlPolicyRoles</code> from a plain JavaScript object, optionally creating a new instance.
@@ -66,11 +63,17 @@
    */
   exports.constructFromObject = function(data, obj) {
     if (data) {
-      obj = obj || new exports()
-      ApiClient.constructFromObject(data, obj, 'OryAccessControlPolicyRole')
+      obj = obj || new exports();
+      ApiClient.constructFromObject(data, obj, 'OryAccessControlPolicyRole');
+
     }
-    return obj
+    return obj;
   }
 
-  return exports
-})
+
+
+
+  return exports;
+}));
+
+
