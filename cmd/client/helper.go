@@ -55,7 +55,8 @@ func Import(method, location string, files []string) {
 			res, err := client.Do(req)
 			cmdx.CheckResponse(err, http.StatusOK, res)
 
-			res.Body.Close()
+			err = res.Body.Close()
+			cmdx.Must(err, "Unable to close body: %s", err)
 			fmt.Printf("Data from file %s successfully imported!\n", file)
 		}
 	}
@@ -80,7 +81,8 @@ func Delete(location string) {
 
 	res, err := client.Do(req)
 	cmdx.CheckResponse(err, http.StatusNoContent, res)
-	res.Body.Close()
+	err = res.Body.Close()
+	cmdx.Must(err, "Unable to close body: %s", err)
 	fmt.Printf("Resource at location %s was deleted successfully!", location)
 }
 
