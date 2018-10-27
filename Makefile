@@ -30,7 +30,7 @@ build-sdk:
 		rm -f ./sdk/php/swagger/composer.json ./sdk/php/swagger/phpunit.xml.dist
 		rm -rf ./sdk/php/swagger/test
 
-build-stable:
+install-stable:
 		KETO_LATEST=$$(git describe --abbrev=0 --tags)
 		git checkout $$KETO_LATEST
 		GO111MODULE=on go install \
@@ -38,5 +38,5 @@ build-stable:
 				.
 		git checkout master
 
-build:
+install:
         GO111MODULE=on go install .

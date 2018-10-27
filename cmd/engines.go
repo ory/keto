@@ -15,8 +15,6 @@
 package cmd
 
 import (
-	"os"
-
 	"github.com/spf13/cobra"
 )
 
@@ -28,5 +26,5 @@ var enginesCmd = &cobra.Command{
 
 func init() {
 	RootCmd.AddCommand(enginesCmd)
-	enginesCmd.PersistentFlags().String("endpoint", os.Getenv("KETO_URL"), "URL of the ORY Keto server - defaults to environment variable KETO_URL")
+	enginesCmd.PersistentFlags().String("endpoint", "", "URL of the ORY Keto server - defaults to environment variable KETO_URL")
 }

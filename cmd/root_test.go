@@ -24,23 +24,11 @@ package cmd
 import (
 	"fmt"
 	"net/http"
-	"os"
 	"testing"
 	"time"
 
-	"github.com/akutz/gotil"
 	"github.com/stretchr/testify/assert"
 )
-
-var port int
-
-func init() {
-	var osArgs = make([]string, len(os.Args))
-	port = gotil.RandomTCPPort()
-	os.Setenv("DATABASE_URL", "memory")
-	os.Setenv("PORT", fmt.Sprintf("%d", port))
-	copy(osArgs, os.Args)
-}
 
 func TestExecute(t *testing.T) {
 	ep := fmt.Sprintf("http://127.0.0.1:%d", port)
@@ -58,7 +46,7 @@ func TestExecute(t *testing.T) {
 				return err != nil
 			},
 		},
-		{args: []string{"engines", "acp", "ory", "roles", "list", "--endpoint", ep, "exact"}},
+		{args: []string{"engines", "acp", "ory", "roles", "list", "exact"}},
 		{args: []string{"engines", "acp", "ory", "roles", "import", "--endpoint", ep, "exact", "../tests/stubs/roles.json"}},
 		{args: []string{"engines", "acp", "ory", "roles", "get", "--endpoint", ep, "exact", "role-1"}},
 		{args: []string{"engines", "acp", "ory", "roles", "delete", "--endpoint", ep, "exact", "role-1"}},

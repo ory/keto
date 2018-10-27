@@ -17,6 +17,7 @@ package client
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/spf13/viper"
 	"io/ioutil"
 	"net/http"
 	"path/filepath"
@@ -74,6 +75,9 @@ func CheckLadonFlavor(flavor string) {
 
 func EndpointURL(cmd *cobra.Command) string {
 	e := flagx.MustGetString(cmd, "endpoint")
+	if e == "" {
+		e = viper.GetString("KETO_URL")
+	}
 	if e == "" {
 		fmt.Println(cmd.UsageString())
 		cmdx.Fatalf("Please set the location of the ORY Keto server by using the --endpoint flag or the KETO_URL environment variable.")

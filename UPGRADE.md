@@ -6,28 +6,42 @@ before finalizing the upgrade process.
 
 ## 0.1.0-sandbox
 
-### Rework
-
 ORY Keto has been completely reworked. The major goals of this refactoring is:
 
 1. To allow easy extension of existing access control mechanisms.
 2. Improve stability and responsiveness.
 3. Support more than one access control mechanism. Future mechanisms include: RBAC, ACL, AWS IAM Policies, ...
 
-For this reason the following thing have been completely deprecated:
+### Conceptual changes
+
+#### Deprecated
+
+The following things have been completely deprecated:
 
 1. Authorizers
+
+#### Changes
 
 The following things have changed:
 
 1. ORY Keto no longer uses ORY Ladon as the engine but instead relies on the [Open Policy Agent](http://openpolicyagent.org/).
+The concept of ORY Ladon Access Policies are working exactly like before, the internal logic however was rewritten in Rego.
 2. The CLI commands have changed - apart from `serve`, `version`, `migrate sql` - entirely.
 3. The API has changed (read the next section for information on this).
+4. Environment variables changed or have been removed.
+
+#### Additions
 
 The following things have been added:
 
 1. ORY (Ladon) Access Control Policies with exact string matching
-2. ORY (Ladon) Access Control Policies with glob string matching
+2. ORY (Ladon) Access Control Policies with glob matching
+
+#### Untouched
+
+The following things remain untouched:
+
+1. ORY (Ladon) Access Control Policies with regular expression matching
 
 ### API Changes
 

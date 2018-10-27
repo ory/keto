@@ -99,7 +99,7 @@ works as expected. Please note that this will only work with a linux shell like 
 ```
 go get -u github.com/ory/keto
 cd $(go env GOPATH)/src/github.com/ory/keto
-make build-stable
+make install-stable
 $(go env GOPATH)/bin/keto help
 ```
 
