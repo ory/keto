@@ -29,3 +29,14 @@ build-sdk:
 		rm -rf ./sdk/js/swagger/test
 		rm -f ./sdk/php/swagger/composer.json ./sdk/php/swagger/phpunit.xml.dist
 		rm -rf ./sdk/php/swagger/test
+
+build-stable:
+		KETO_LATEST=$$(git describe --abbrev=0 --tags)
+		git checkout $$KETO_LATEST
+		GO111MODULE=on go install \
+				-ldflags "-X github.com/ory/keto/cmd.Version=$$KETO_LATEST -X github.com/ory/keto/cmd.BuildTime=`TZ=UTC date -u '+%Y-%m-%dT%H:%M:%SZ'` -X github.com/ory/keto/cmd.GitHash=`git rev-parse HEAD`" \
+				.
+		git checkout master
+
+build:
+        GO111MODULE=on go install .

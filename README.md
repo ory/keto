@@ -51,19 +51,22 @@ a subject, for example user, application, service, car, etc., is authorized to p
 
 ## Introduction
 
-ORY Keto models Access Control Lists, Role Based Access Control, and fine-grained permission sets.
-This server implementation uses [ORY Ladon](https://github.com/ory/ladon) as the decision engine.
+ORY Keto is an permission server that implements best practice access control mechanisms:
 
-ORY Keto resolves credentials using various authentication mechanisms:
+* Available today:
+  * ORY-flavored Access Control Policies with exact, glob, and regexp matching strategies
+* Available soon:
+  * [Access Control Lists](https://en.wikipedia.org/wiki/Access_control_list)
+  * [Role Based Access Control](https://de.wikipedia.org/wiki/Role_Based_Access_Control)
+  * Role Based Access Control with Context (Google/Kubernetes-flavored)
+  * Amazon Web Services Identity & Access Management Policies (AWS IAM Policies)
 
-* OAuth 2.0 Access Tokens using the OAuth 2.0 Introspection standard.
-* Plaintext when you already know the user ID.
-* JSON Web Tokens (coming soon).
-* SAML (coming soon).
+Each mechanism is powered by a decision engine implemented on top of the
+[Open Policy Agent](https://www.openpolicyagent.org/) and provides well-defined management and authorization endpoints.
 
 ### Installation
 
-There are various ways of installing ORY keto on your system.
+There are various ways of installing ORY Keto on your system.
 
 #### 1. Download binaries
 
@@ -96,12 +99,7 @@ works as expected. Please note that this will only work with a linux shell like 
 ```
 go get -u github.com/ory/keto
 cd $(go env GOPATH)/src/github.com/ory/keto
-KETO_LATEST=$(git describe --abbrev=0 --tags)
-git checkout $KETO_LATEST
-go install \
-    -ldflags "-X github.com/ory/keto/cmd.Version=$KETO_LATEST -X github.com/ory/keto/cmd.BuildTime=`TZ=UTC date -u '+%Y-%m-%dT%H:%M:%SZ'` -X github.com/ory/keto/cmd.GitHash=`git rev-parse HEAD`" \
-    github.com/ory/keto
-git checkout master
+make build-stable
 $(go env GOPATH)/bin/keto help
 ```
 
