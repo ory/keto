@@ -5,5 +5,7 @@ package engine
 // swagger:model authorizationResult
 type AuthorizationResult struct {
 	// Allowed is true if the request should be allowed and false otherwise.
+	//
+	// required: true
 	Allowed bool `json:"allowed"`
 }

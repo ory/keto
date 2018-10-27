@@ -7,9 +7,14 @@ RUN apk add --no-cache git build-base
 
 WORKDIR /go/src/github.com/ory/keto
 
-RUN go get github.com/gobuffalo/packr/packr
+RUN go get -u github.com/gobuffalo/packr/packr
 
 ENV GO111MODULE=on
+
+ADD go.mod go.mod
+ADD go.sum go.sum
+
+RUN go mod download
 
 ADD . .
 

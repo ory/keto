@@ -17,19 +17,17 @@ package client
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"io/ioutil"
 	"net/http"
 	"path/filepath"
 	"strings"
 
-	"github.com/spf13/cobra"
-
 	"github.com/ory/go-convenience/stringslice"
 	"github.com/ory/keto/engine/ladon"
 	"github.com/ory/x/cmdx"
 	"github.com/ory/x/flagx"
-	"github.com/ory/x/urlx"
 )
 
 var client = http.DefaultClient
@@ -69,7 +67,7 @@ func Delete(location string) {
 
 func CheckLadonFlavor(flavor string) {
 	if !stringslice.Has(ladon.EnabledFlavors, flavor) {
-		cmdx.Fatalf("Flavor %s is not supported, please choose one of: %v", flavor, ladon.EnabledFlavors)
+		cmdx.Fatalf("ORY Access Control Policy flavor %s is currently not supported, please choose one of: %v", flavor, ladon.EnabledFlavors)
 	}
 }
 
@@ -82,12 +80,5 @@ func EndpointURL(cmd *cobra.Command) string {
 		fmt.Println(cmd.UsageString())
 		cmdx.Fatalf("Please set the location of the ORY Keto server by using the --endpoint flag or the KETO_URL environment variable.")
 	}
-	return e
-}
-
-func LadonEndpointURL(cmd *cobra.Command, flavor string) string {
-	return urlx.MustJoin(
-		flagx.MustGetString(cmd, "endpoint"),
-		fmt.Sprintf(strings.Replace(ladon.BasePath, ":flavor", "%s", 1), flavor),
-	)
+	return strings.TrimRight(e, "/")
 }
