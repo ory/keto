@@ -3,6 +3,8 @@
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
 - [Change Log](#change-log)
+  - [Unreleased](#unreleased)
+  - [v0.1.0-sandbox (2018-10-17)](#v010-sandbox-2018-10-17)
   - [v1.0.0-beta.9 (2018-08-31)](#v100-beta9-2018-08-31)
   - [v1.0.0-beta.8 (2018-08-02)](#v100-beta8-2018-08-02)
   - [v1.0.0-beta.7 (2018-07-16)](#v100-beta7-2018-07-16)
@@ -17,6 +19,25 @@
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 # Change Log
+
+## [Unreleased](https://github.com/ory/keto/tree/HEAD)
+
+[Full Changelog](https://github.com/ory/keto/compare/v0.1.0-sandbox...HEAD)
+
+**Closed issues:**
+
+- ABAC with Groups and Sub Groups. [\#51](https://github.com/ory/keto/issues/51)
+- Add SAML Authenticator [\#3](https://github.com/ory/keto/issues/3)
+- Add JSON Web Token Authenticator [\#2](https://github.com/ory/keto/issues/2)
+
+## [v0.1.0-sandbox](https://github.com/ory/keto/tree/v0.1.0-sandbox) (2018-10-17)
+[Full Changelog](https://github.com/ory/keto/compare/v1.0.0-beta.9...v0.1.0-sandbox)
+
+**Merged pull requests:**
+
+- docs: Updates issue and pull request templates [\#54](https://github.com/ory/keto/pull/54) ([aeneasr](https://github.com/aeneasr))
+- docs: Updates issue and pull request templates [\#53](https://github.com/ory/keto/pull/53) ([aeneasr](https://github.com/aeneasr))
+- docs: Updates issue and pull request templates [\#52](https://github.com/ory/keto/pull/52) ([aeneasr](https://github.com/aeneasr))
 
 ## [v1.0.0-beta.9](https://github.com/ory/keto/tree/v1.0.0-beta.9) (2018-08-31)
 [Full Changelog](https://github.com/ory/keto/compare/v1.0.0-beta.8...v1.0.0-beta.9)
