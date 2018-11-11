@@ -77,6 +77,8 @@ func TestExecute(t *testing.T) {
 		{args: []string{"policies", "subjects", "remove", "foobar", "ken", "tracy", "--endpoint", fmt.Sprintf("http://127.0.0.1:%d", port)}},
 		{args: []string{"policies", "get", "foobar", "--endpoint", fmt.Sprintf("http://127.0.0.1:%d", port)}},
 		{args: []string{"policies", "delete", "foobar", "--endpoint", fmt.Sprintf("http://127.0.0.1:%d", port)}},
+		{args: []string{"policies", "list", "--endpoint", fmt.Sprintf("http://127.0.0.1:%d", port)}},
+		{args: []string{"policies", "list", "--endpoint", fmt.Sprintf("http://127.0.0.1:%d", port)}},
 		{args: []string{"warden", "authorize", "subject", "--subject", "foo", "--action", "bar", "--resource", "baz", "--endpoint", fmt.Sprintf("http://127.0.0.1:%d", port)}},
 		{args: []string{"help", "migrate", "sql"}},
 		{args: []string{"help", "migrate", "hydra"}},
