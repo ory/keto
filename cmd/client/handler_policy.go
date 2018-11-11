@@ -268,6 +268,29 @@ func (h *PolicyHandler) GetPolicy(cmd *cobra.Command, args []string) {
 	fmt.Printf("%s\n", formatResponse(p))
 }
 
+func (h *PolicyHandler) ListPolicy(cmd *cobra.Command, args []string) {
+	m := h.newPolicyManager(cmd)
+	if len(args) == 0 {
+		fmt.Print(cmd.UsageString())
+		return
+	}
+
+	var offset int64
+	var all []keto.Policy
+	const limit = 100
+	for {
+		policies, response, err := m.ListPolicies(limit, offset)
+		checkResponse(response, err, http.StatusOK)
+		if len(policies) == 0 {
+			break
+		}
+		offset = offset + int64(len(policies))
+		all = append(all, policies...)
+	}
+
+	fmt.Printf("%s\n", formatResponse(all))
+}
+
 func (h *PolicyHandler) DeletePolicy(cmd *cobra.Command, args []string) {
 	m := h.newPolicyManager(cmd)
 	if len(args) == 0 {
