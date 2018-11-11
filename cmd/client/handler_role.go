@@ -116,9 +116,20 @@ func (h *RoleHandler) ListRoles(cmd *cobra.Command, args []string) {
 	}
 
 	m := h.newPolicyManager(cmd)
-	groups, response, err := m.ListRoles("", 500, 0)
-	checkResponse(response, err, http.StatusOK)
-	formatResponse(groups)
+	var offset int64
+	var all []keto.Role
+	const limit = 100
+	for {
+		groups, response, err := m.ListRoles("", limit, offset)
+		checkResponse(response, err, http.StatusOK)
+		if len(groups) == 0 {
+			break
+		}
+		offset = offset + int64(len(groups))
+		all = append(all, groups...)
+	}
+
+	formatResponse(all)
 }
 
 func (h *RoleHandler) GetRole(cmd *cobra.Command, args []string) {
