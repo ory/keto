@@ -26,6 +26,10 @@
 
 
 [[constraint]]
+  name = "github.com/ory/metrics-middleware"
+  revision = "74602156c5c0b9617e12e4663a366516fec6cab4"
+
+[[constraint]]
   name = "github.com/akutz/gotil"
   version = "0.1.0"
 

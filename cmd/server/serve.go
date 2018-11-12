@@ -38,7 +38,7 @@ import (
 	"github.com/ory/keto/role"
 	"github.com/ory/keto/warden"
 	"github.com/ory/ladon"
-	"github.com/ory/metrics-middleware"
+	metrics "github.com/ory/metrics-middleware"
 	"github.com/rs/cors"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"

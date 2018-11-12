@@ -313,7 +313,6 @@
   version = "v0.8.9"
 
 [[projects]]
-  branch = "master"
   name = "github.com/ory/metrics-middleware"
   packages = ["."]
   revision = "74602156c5c0b9617e12e4663a366516fec6cab4"
@@ -552,6 +551,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "994b70f0ae1554b715f5f4edc95ff57b4fc1ce7f82cea19b0b82e0984096b057"
+  inputs-digest = "c352603ce731f525f48699b47bface334dca3ab3450db84010a30ce30198fa33"
   solver-name = "gps-cdcl"
   solver-version = 1
