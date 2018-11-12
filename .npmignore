@@ -1,0 +1,12 @@
+*.md
+*.go
+*.php
+*.md
+*.png
+*.jpg
+*.jpeg
+sdk/go/*
+sdk/php/*
+docs/*
+scripts/*
+vendor/*
