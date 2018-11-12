@@ -28,15 +28,13 @@ jobs:
   release-npm:
     docker:
       - image: circleci/node:8.9.3
-    working_directory: ~/hydra
+    working_directory: ~/keto
     steps:
       - checkout
       - run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/.npmrc
       - run: |
           npm version -f --no-git-tag-version $CIRCLE_TAG
-      - run: npm view ory-hydra-sdk
-      - run: npm whoami
-      - run: npm publish
+      - run: npm publish --access public
 
   test:
     docker:
@@ -88,11 +86,9 @@ jobs:
       - checkout
       - setup_remote_docker:
           version: 17.10.0-ce
-      - run: docker build --build-arg git_tag=$(git describe --tags) --build-arg git_commit=$(git rev-parse HEAD) -f Dockerfile -t oryd/keto:$CIRCLE_TAG .
+      - run: docker build --build-arg git_tag=$(git describe --tags) --build-arg git_commit=$(git rev-parse HEAD) -f Dockerfile -t oryd/keto:$(echo $CIRCLE_TAG | tr '+' '_') .
       - run: docker login --username "$DOCKER_USERNAME" --password "$DOCKER_PASSWORD"
-      - run: docker tag oryd/keto:$CIRCLE_TAG oryd/keto:latest
-      - run: docker push oryd/keto:$CIRCLE_TAG
-      - run: docker push oryd/keto:latest
+      - run: docker push oryd/keto:$(echo $CIRCLE_TAG | tr '+' '_')
 
   release-docs:
     docker:
