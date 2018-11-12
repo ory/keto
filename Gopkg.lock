@@ -101,12 +101,6 @@
   version = "v1.0.0"
 
 [[projects]]
-  name = "github.com/gorilla/context"
-  packages = ["."]
-  revision = "1ea25387ff6f684839d82767c1733ff4d4d15d0a"
-  version = "v1.1"
-
-[[projects]]
   branch = "master"
   name = "github.com/gtank/cryptopasta"
   packages = ["."]
@@ -552,6 +546,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "994b70f0ae1554b715f5f4edc95ff57b4fc1ce7f82cea19b0b82e0984096b057"
+  inputs-digest = "a61b0088f2eb6e42dc4178c7faff750cb091c88eac1a62a1297b522c2453a591"
   solver-name = "gps-cdcl"
   solver-version = 1
