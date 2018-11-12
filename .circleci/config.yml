@@ -28,15 +28,13 @@ jobs:
   release-npm:
     docker:
       - image: circleci/node:8.9.3
-    working_directory: ~/hydra
+    working_directory: ~/keto
     steps:
       - checkout
       - run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/.npmrc
       - run: |
           npm version -f --no-git-tag-version $CIRCLE_TAG
-      - run: npm view ory-hydra-sdk
-      - run: npm whoami
-      - run: npm publish
+      - run: npm publish --access public
 
   test:
     docker:
