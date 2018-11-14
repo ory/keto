@@ -32,6 +32,7 @@ import (
 	"github.com/ory/keto/authentication"
 	keto "github.com/ory/keto/sdk/go/keto/swagger"
 	"github.com/ory/keto/warden"
+
 	//"github.com/ory/ladon"
 	"github.com/pkg/errors"
 	//"github.com/stretchr/testify/assert"
