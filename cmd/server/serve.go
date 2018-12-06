@@ -28,7 +28,6 @@ import (
 
 	"github.com/julienschmidt/httprouter"
 	"github.com/ory/fosite"
-	"github.com/ory/go-convenience/corsx"
 	"github.com/ory/go-convenience/stringsx"
 	"github.com/ory/graceful"
 	"github.com/ory/herodot"
@@ -38,6 +37,7 @@ import (
 	"github.com/ory/keto/role"
 	"github.com/ory/keto/warden"
 	"github.com/ory/ladon"
+	"github.com/ory/x/corsx"
 	"github.com/rs/cors"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
