@@ -15,26 +15,15 @@
 package cmd
 
 import (
-	"github.com/ory/keto/cmd/server"
-	"github.com/spf13/cobra"
+	"github.com/ory/keto/storage"
+	"github.com/ory/x/sqlcon"
 )
 
 // migrateSqlCmd represents the sql command
-var migrateSqlCmd = &cobra.Command{
-	Use:   "sql <database-url>",
-	Short: "Applies SQL migration plans and creates the database schemas",
-	Long: `It is recommended to run this command close to the SQL instance (e.g. same subnet) instead of over the public internet.
-This decreases risk of failure and decreases time required.
-
-### WARNING ###
-
-Before running this command on an existing database, create a back up!
-`,
-	Run: server.RunMigrateSQL(logger),
-}
+var migrateSqlCmd = sqlcon.MigratorSQLCmd("migrate", "sql", logger, map[string]sqlcon.SchemaCreator{
+	"storage": storage.NewSQLManager(nil),
+})
 
 func init() {
 	migrateCmd.AddCommand(migrateSqlCmd)
-
-	migrateSqlCmd.Flags().Bool("read-from-env", false, "Instead of reading the database URL from the command line arguments, the value of environment variable DATABASE_URL will be used.")
 }

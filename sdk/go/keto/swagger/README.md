@@ -22,65 +22,49 @@ All URIs are relative to *http://localhost*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
-*HealthApi* | [**IsInstanceAlive**](docs/HealthApi.md#isinstancealive) | **Get** /health/alive | Check the Alive Status
-*HealthApi* | [**IsInstanceReady**](docs/HealthApi.md#isinstanceready) | **Get** /health/ready | Check the Readiness Status
-*PolicyApi* | [**CreatePolicy**](docs/PolicyApi.md#createpolicy) | **Post** /policies | 
-*PolicyApi* | [**DeletePolicy**](docs/PolicyApi.md#deletepolicy) | **Delete** /policies/{id} | 
-*PolicyApi* | [**GetPolicy**](docs/PolicyApi.md#getpolicy) | **Get** /policies/{id} | 
-*PolicyApi* | [**ListPolicies**](docs/PolicyApi.md#listpolicies) | **Get** /policies | 
-*PolicyApi* | [**UpdatePolicy**](docs/PolicyApi.md#updatepolicy) | **Put** /policies/{id} | 
-*RoleApi* | [**AddMembersToRole**](docs/RoleApi.md#addmemberstorole) | **Post** /roles/{id}/members | Add members to a role
-*RoleApi* | [**CreateRole**](docs/RoleApi.md#createrole) | **Post** /roles | Create a role
-*RoleApi* | [**DeleteRole**](docs/RoleApi.md#deleterole) | **Delete** /roles/{id} | Get a role by its ID
-*RoleApi* | [**GetRole**](docs/RoleApi.md#getrole) | **Get** /roles/{id} | Get a role by its ID
-*RoleApi* | [**ListRoles**](docs/RoleApi.md#listroles) | **Get** /roles | List all roles
-*RoleApi* | [**RemoveMembersFromRole**](docs/RoleApi.md#removemembersfromrole) | **Delete** /roles/{id}/members | Remove members from a role
-*RoleApi* | [**SetRole**](docs/RoleApi.md#setrole) | **Put** /roles/{id} | A Role represents a group of users that share the same role and thus permissions. A role could be an administrator, a moderator, a regular user or some other sort of role.
-*VersionApi* | [**GetVersion**](docs/VersionApi.md#getversion) | **Get** /version | Get the version of Keto
-*WardenApi* | [**IsOAuth2AccessTokenAuthorized**](docs/WardenApi.md#isoauth2accesstokenauthorized) | **Post** /warden/oauth2/access-tokens/authorize | Check if an OAuth 2.0 access token is authorized to access a resource
-*WardenApi* | [**IsOAuth2ClientAuthorized**](docs/WardenApi.md#isoauth2clientauthorized) | **Post** /warden/oauth2/clients/authorize | Check if an OAuth 2.0 Client is authorized to access a resource
-*WardenApi* | [**IsSubjectAuthorized**](docs/WardenApi.md#issubjectauthorized) | **Post** /warden/subjects/authorize | Check if a subject is authorized to access a resource
+*EnginesApi* | [**AddOryAccessControlPolicyRoleMembers**](docs/EnginesApi.md#addoryaccesscontrolpolicyrolemembers) | **Put** /engines/acp/ory/{flavor}/roles/{id}/members | Add a member to an ORY Access Control Policy Role
+*EnginesApi* | [**DeleteOryAccessControlPolicy**](docs/EnginesApi.md#deleteoryaccesscontrolpolicy) | **Delete** /engines/acp/ory/{flavor}/policies/{id} | 
+*EnginesApi* | [**DeleteOryAccessControlPolicyRole**](docs/EnginesApi.md#deleteoryaccesscontrolpolicyrole) | **Delete** /engines/acp/ory/{flavor}/roles/{id} | Delete an ORY Access Control Policy Role
+*EnginesApi* | [**DoOryAccessControlPoliciesAllow**](docs/EnginesApi.md#dooryaccesscontrolpoliciesallow) | **Post** /engines/acp/ory/{flavor}/allowed | Check if a request is allowed
+*EnginesApi* | [**GetOryAccessControlPolicy**](docs/EnginesApi.md#getoryaccesscontrolpolicy) | **Get** /engines/acp/ory/{flavor}/policies/{id} | 
+*EnginesApi* | [**GetOryAccessControlPolicyRole**](docs/EnginesApi.md#getoryaccesscontrolpolicyrole) | **Get** /engines/acp/ory/{flavor}/roles/{id} | Get an ORY Access Control Policy Role
+*EnginesApi* | [**ListOryAccessControlPolicies**](docs/EnginesApi.md#listoryaccesscontrolpolicies) | **Get** /engines/acp/ory/{flavor}/policies | 
+*EnginesApi* | [**ListOryAccessControlPolicyRoles**](docs/EnginesApi.md#listoryaccesscontrolpolicyroles) | **Get** /engines/acp/ory/{flavor}/roles | List ORY Access Control Policy Roles
+*EnginesApi* | [**RemoveOryAccessControlPolicyRoleMembers**](docs/EnginesApi.md#removeoryaccesscontrolpolicyrolemembers) | **Delete** /engines/acp/ory/{flavor}/roles/{id}/members | Remove a member from an ORY Access Control Policy Role
+*EnginesApi* | [**UpsertOryAccessControlPolicy**](docs/EnginesApi.md#upsertoryaccesscontrolpolicy) | **Put** /engines/acp/ory/{flavor}/policies | 
+*EnginesApi* | [**UpsertOryAccessControlPolicyRole**](docs/EnginesApi.md#upsertoryaccesscontrolpolicyrole) | **Put** /engines/acp/ory/{flavor}/roles | Upsert an ORY Access Control Policy Role
+*HealthApi* | [**IsInstanceAlive**](docs/HealthApi.md#isinstancealive) | **Get** /health/alive | Check alive status
+*HealthApi* | [**IsInstanceReady**](docs/HealthApi.md#isinstanceready) | **Get** /health/ready | Check readiness status
+*VersionApi* | [**GetVersion**](docs/VersionApi.md#getversion) | **Get** /version | Get service version
 
 
 ## Documentation For Models
 
- - [AuthenticationDefaultSession](docs/AuthenticationDefaultSession.md)
- - [AuthenticationOAuth2ClientCredentialsRequest](docs/AuthenticationOAuth2ClientCredentialsRequest.md)
- - [AuthenticationOAuth2ClientCredentialsSession](docs/AuthenticationOAuth2ClientCredentialsSession.md)
- - [AuthenticationOAuth2IntrospectionRequest](docs/AuthenticationOAuth2IntrospectionRequest.md)
- - [AuthenticationOAuth2Session](docs/AuthenticationOAuth2Session.md)
- - [Authenticator](docs/Authenticator.md)
- - [Firewall](docs/Firewall.md)
- - [Handler](docs/Handler.md)
+ - [AddOryAccessControlPolicyRoleMembers](docs/AddOryAccessControlPolicyRoleMembers.md)
+ - [AddOryAccessControlPolicyRoleMembersBody](docs/AddOryAccessControlPolicyRoleMembersBody.md)
+ - [AuthorizationResult](docs/AuthorizationResult.md)
+ - [Context](docs/Context.md)
+ - [DeleteOryAccessControlPolicy](docs/DeleteOryAccessControlPolicy.md)
+ - [DeleteOryAccessControlPolicyRole](docs/DeleteOryAccessControlPolicyRole.md)
+ - [DoOryAccessControlPoliciesAllow](docs/DoOryAccessControlPoliciesAllow.md)
+ - [GetOryAccessControlPolicy](docs/GetOryAccessControlPolicy.md)
+ - [GetOryAccessControlPolicyRole](docs/GetOryAccessControlPolicyRole.md)
  - [HealthNotReadyStatus](docs/HealthNotReadyStatus.md)
  - [HealthStatus](docs/HealthStatus.md)
  - [InlineResponse500](docs/InlineResponse500.md)
- - [IntrospectionResponse](docs/IntrospectionResponse.md)
- - [Manager](docs/Manager.md)
- - [OAuth2ClientCredentialsAuthentication](docs/OAuth2ClientCredentialsAuthentication.md)
- - [OAuth2IntrospectionAuthentication](docs/OAuth2IntrospectionAuthentication.md)
- - [Policy](docs/Policy.md)
- - [PolicyConditions](docs/PolicyConditions.md)
- - [Role](docs/Role.md)
- - [RoleMembers](docs/RoleMembers.md)
- - [Session](docs/Session.md)
- - [SwaggerCreatePolicyParameters](docs/SwaggerCreatePolicyParameters.md)
- - [SwaggerDoesWardenAllowAccessRequestParameters](docs/SwaggerDoesWardenAllowAccessRequestParameters.md)
- - [SwaggerDoesWardenAllowClientRequestParameters](docs/SwaggerDoesWardenAllowClientRequestParameters.md)
- - [SwaggerDoesWardenAllowTokenAccessRequestParameters](docs/SwaggerDoesWardenAllowTokenAccessRequestParameters.md)
- - [SwaggerGetPolicyParameters](docs/SwaggerGetPolicyParameters.md)
- - [SwaggerListPolicyParameters](docs/SwaggerListPolicyParameters.md)
- - [SwaggerListPolicyResponse](docs/SwaggerListPolicyResponse.md)
- - [SwaggerUpdatePolicyParameters](docs/SwaggerUpdatePolicyParameters.md)
- - [SwaggerWardenBaseRequest](docs/SwaggerWardenBaseRequest.md)
+ - [ListOryAccessControlPolicies](docs/ListOryAccessControlPolicies.md)
+ - [ListOryAccessControlPolicyRoles](docs/ListOryAccessControlPolicyRoles.md)
+ - [OryAccessControlPolicies](docs/OryAccessControlPolicies.md)
+ - [OryAccessControlPolicy](docs/OryAccessControlPolicy.md)
+ - [OryAccessControlPolicyAllowedInput](docs/OryAccessControlPolicyAllowedInput.md)
+ - [OryAccessControlPolicyRole](docs/OryAccessControlPolicyRole.md)
+ - [OryAccessControlPolicyRoles](docs/OryAccessControlPolicyRoles.md)
+ - [Policies](docs/Policies.md)
+ - [RemoveOryAccessControlPolicyRoleMembers](docs/RemoveOryAccessControlPolicyRoleMembers.md)
+ - [RemoveOryAccessControlPolicyRoleMembersBody](docs/RemoveOryAccessControlPolicyRoleMembersBody.md)
+ - [UpsertOryAccessControlPolicy](docs/UpsertOryAccessControlPolicy.md)
+ - [UpsertOryAccessControlPolicyRole](docs/UpsertOryAccessControlPolicyRole.md)
  - [Version](docs/Version.md)
- - [WardenOAuth2AccessTokenAuthorizationRequest](docs/WardenOAuth2AccessTokenAuthorizationRequest.md)
- - [WardenOAuth2AccessTokenAuthorizationResponse](docs/WardenOAuth2AccessTokenAuthorizationResponse.md)
- - [WardenOAuth2ClientAuthorizationRequest](docs/WardenOAuth2ClientAuthorizationRequest.md)
- - [WardenOAuth2ClientAuthorizationResponse](docs/WardenOAuth2ClientAuthorizationResponse.md)
- - [WardenSubjectAuthorizationRequest](docs/WardenSubjectAuthorizationRequest.md)
- - [WardenSubjectAuthorizationResponse](docs/WardenSubjectAuthorizationResponse.md)
- - [Writer](docs/Writer.md)
 
 
 ## Documentation For Authorization
@@ -90,5 +74,5 @@ Class | Method | HTTP request | Description
 
 ## Author
 
-hi@ory.am
+hi@ory.sh
 

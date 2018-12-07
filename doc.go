@@ -5,7 +5,7 @@
 //     BasePath: /
 //     Version: Latest
 //     License: Apache 2.0 https://github.com/ory/keto/blob/master/LICENSE
-//     Contact: ORY <hi@ory.am> https://www.ory.sh
+//     Contact: ORY <hi@ory.sh> https://www.ory.sh
 //
 //     Consumes:
 //     - application/json
