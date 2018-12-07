@@ -1,6 +1,7 @@
 module github.com/ory/keto
 
 require (
+	github.com/OneOfOne/xxhash v1.2.2 // indirect
 	github.com/akutz/goof v0.1.2 // indirect
 	github.com/akutz/gotil v0.1.0
 	github.com/containerd/continuity v0.0.0-20181023183536-c220ac4f01b8 // indirect
@@ -8,6 +9,7 @@ require (
 	github.com/go-errors/errors v1.0.1
 	github.com/go-sql-driver/mysql v1.4.0
 	github.com/gobuffalo/packr v1.16.0
+	github.com/gobwas/glob v0.2.3 // indirect
 	github.com/golang/gddo v0.0.0-20181009135830-6c035858b4d7 // indirect
 	github.com/jmoiron/sqlx v1.2.0
 	github.com/julienschmidt/httprouter v1.2.0
@@ -16,7 +18,7 @@ require (
 	github.com/lib/pq v1.0.0
 	github.com/meatballhat/negroni-logrus v0.0.0-20170801195057-31067281800f
 	github.com/mitchellh/mapstructure v1.1.2 // indirect
-	github.com/open-policy-agent/opa v0.9.2
+	github.com/open-policy-agent/opa v0.10.1
 	github.com/opencontainers/runc v1.0.0-rc5 // indirect
 	github.com/ory/go-convenience v0.1.0
 	github.com/ory/graceful v0.1.0

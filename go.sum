@@ -13,6 +13,8 @@ github.com/Microsoft/go-winio v0.4.11 h1:zoIOcVf0xPN1tnMVbTtEdI+P8OofVk3NObnwOQ6
 github.com/Microsoft/go-winio v0.4.11/go.mod h1:VhR8bwka0BXejwEJY73c50VrPtXAaKcyvVC4A4RozmA=
 github.com/Nvveen/Gotty v0.0.0-20120604004816-cd527374f1e5 h1:TngWCqHvy9oXAN6lEVMRuU21PR1EtLVZJmdB18Gu3Rw=
 github.com/Nvveen/Gotty v0.0.0-20120604004816-cd527374f1e5/go.mod h1:lmUJ/7eu/Q8D7ML55dXQrVaamCz2vxCfdQBasLZfHKk=
+github.com/OneOfOne/xxhash v1.2.2 h1:KMrpdQIwFcEqXDklaen+P1axHaj9BSKzvpUUfnHldSE=
+github.com/OneOfOne/xxhash v1.2.2/go.mod h1:HSdplMjZKSmBqAxg5vPj2TmRDmfkzw+cTzAElWljhcU=
 github.com/akutz/goof v0.1.2 h1:ZgsmzbhfcFTh1KhkWrWNAvlDobBUBEKAkSpowCuqOn4=
 github.com/akutz/goof v0.1.2/go.mod h1:w8jsAAm0/n4Tst8M4xYwGPMzn54u4pCA3wh4e2rNLlk=
 github.com/akutz/gotil v0.1.0 h1:CIYFCaONzf0OWdK0hv0bgpQINZ6flgbBl3yhJNmF9cg=
@@ -58,6 +60,8 @@ github.com/gobuffalo/packr v1.13.7 h1:2uZgLd6b/W4yRBZV/ScaORxZLNGMHO0VCvqQNkKukN
 github.com/gobuffalo/packr v1.13.7/go.mod h1:KkinLIn/n6+3tVXMwg6KkNvWwVsrRAz4ph+jgpk3Z24=
 github.com/gobuffalo/packr v1.16.0 h1:s0cqMbFDbio+Z3YxLeDOKRjLW2JKh9QVud0O7+j1fiQ=
 github.com/gobuffalo/packr v1.16.0/go.mod h1:Yx/lcR/7mDLXhuJSzsz2MauD/HUwSc+EK6oigMRGGsM=
+github.com/gobwas/glob v0.2.3 h1:A4xDbljILXROh+kObIiy5kIaPYD8e96x1tgBhUI5J+Y=
+github.com/gobwas/glob v0.2.3/go.mod h1:d3Ez4x06l9bZtSvzIay5+Yzi0fmZzPgnTbPcKjJAkT8=
 github.com/golang/gddo v0.0.0-20180828051604-96d2a289f41e/go.mod h1:xEhNfoBDX1hzLm2Nf80qUvZ2sVwoMZ8d6IE2SrsQfh4=
 github.com/golang/gddo v0.0.0-20181009135830-6c035858b4d7 h1:/3HWkMEOoIwIBP8hcnupurzoJJfdUPVy2qkpYzmPFmY=
 github.com/golang/gddo v0.0.0-20181009135830-6c035858b4d7/go.mod h1:xEhNfoBDX1hzLm2Nf80qUvZ2sVwoMZ8d6IE2SrsQfh4=
@@ -135,6 +139,8 @@ github.com/moul/http2curl v0.0.0-20170919181001-9ac6cf4d929b/go.mod h1:8UbvGypXm
 github.com/oleiade/reflections v1.0.0/go.mod h1:RbATFBbKYkVdqmSFtx13Bb/tVhR0lgOBXunWTZKeL4w=
 github.com/open-policy-agent/opa v0.9.2 h1:Am+s/t82Y5hnlJ8WPLfDXZFSO8iAjTNttKnxio8jDqw=
 github.com/open-policy-agent/opa v0.9.2/go.mod h1:rlfeSeHuZmMEpmrcGla42AjkOUjP4rGIpS96H12un3o=
+github.com/open-policy-agent/opa v0.10.1 h1:1886j/U6WujuEJgkgzxsIg/U8wJYf/lN64Mvrzy6g6k=
+github.com/open-policy-agent/opa v0.10.1/go.mod h1:rlfeSeHuZmMEpmrcGla42AjkOUjP4rGIpS96H12un3o=
 github.com/opencontainers/go-digest v1.0.0-rc1 h1:WzifXhOVOEOuFYOJAW6aQqW0TooG2iki3E3Ii+WN7gQ=
 github.com/opencontainers/go-digest v1.0.0-rc1/go.mod h1:cMLVZDEM3+U2I4VmLI6N8jQYUd2OVphdqWwCJHrFt2s=
 github.com/opencontainers/image-spec v1.0.1 h1:JMemWkRwHx4Zj+fVxWoMCFm/8sYGGrUVojFA6h/TRcI=
