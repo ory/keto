@@ -96,7 +96,15 @@ Please follow the [installation](#installation) instruction and execute the foll
 ```javascript
 var SwaggerJsClient = require('swagger-js-client');
 
-var api = new SwaggerJsClient.HealthApi()
+var api = new SwaggerJsClient.EnginesApi()
+
+var flavor = "flavor_example"; // {String} The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".
+
+var id = "id_example"; // {String} The ID of the ORY Access Control Policy Role.
+
+var opts = { 
+  'body': new SwaggerJsClient.AddOryAccessControlPolicyRoleMembersBody() // {AddOryAccessControlPolicyRoleMembersBody} 
+};
 
 var callback = function(error, data, response) {
   if (error) {
@@ -105,7 +113,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.isInstanceAlive(callback);
+api.addOryAccessControlPolicyRoleMembers(flavor, id, opts, callback);
 
 ```
 
@@ -115,65 +123,49 @@ All URIs are relative to *http://localhost*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
-*SwaggerJsClient.HealthApi* | [**isInstanceAlive**](docs/HealthApi.md#isInstanceAlive) | **GET** /health/alive | Check the Alive Status
-*SwaggerJsClient.HealthApi* | [**isInstanceReady**](docs/HealthApi.md#isInstanceReady) | **GET** /health/ready | Check the Readiness Status
-*SwaggerJsClient.PolicyApi* | [**createPolicy**](docs/PolicyApi.md#createPolicy) | **POST** /policies | 
-*SwaggerJsClient.PolicyApi* | [**deletePolicy**](docs/PolicyApi.md#deletePolicy) | **DELETE** /policies/{id} | 
-*SwaggerJsClient.PolicyApi* | [**getPolicy**](docs/PolicyApi.md#getPolicy) | **GET** /policies/{id} | 
-*SwaggerJsClient.PolicyApi* | [**listPolicies**](docs/PolicyApi.md#listPolicies) | **GET** /policies | 
-*SwaggerJsClient.PolicyApi* | [**updatePolicy**](docs/PolicyApi.md#updatePolicy) | **PUT** /policies/{id} | 
-*SwaggerJsClient.RoleApi* | [**addMembersToRole**](docs/RoleApi.md#addMembersToRole) | **POST** /roles/{id}/members | Add members to a role
-*SwaggerJsClient.RoleApi* | [**createRole**](docs/RoleApi.md#createRole) | **POST** /roles | Create a role
-*SwaggerJsClient.RoleApi* | [**deleteRole**](docs/RoleApi.md#deleteRole) | **DELETE** /roles/{id} | Get a role by its ID
-*SwaggerJsClient.RoleApi* | [**getRole**](docs/RoleApi.md#getRole) | **GET** /roles/{id} | Get a role by its ID
-*SwaggerJsClient.RoleApi* | [**listRoles**](docs/RoleApi.md#listRoles) | **GET** /roles | List all roles
-*SwaggerJsClient.RoleApi* | [**removeMembersFromRole**](docs/RoleApi.md#removeMembersFromRole) | **DELETE** /roles/{id}/members | Remove members from a role
-*SwaggerJsClient.RoleApi* | [**setRole**](docs/RoleApi.md#setRole) | **PUT** /roles/{id} | A Role represents a group of users that share the same role and thus permissions. A role could be an administrator, a moderator, a regular user or some other sort of role.
-*SwaggerJsClient.VersionApi* | [**getVersion**](docs/VersionApi.md#getVersion) | **GET** /version | Get the version of Keto
-*SwaggerJsClient.WardenApi* | [**isOAuth2AccessTokenAuthorized**](docs/WardenApi.md#isOAuth2AccessTokenAuthorized) | **POST** /warden/oauth2/access-tokens/authorize | Check if an OAuth 2.0 access token is authorized to access a resource
-*SwaggerJsClient.WardenApi* | [**isOAuth2ClientAuthorized**](docs/WardenApi.md#isOAuth2ClientAuthorized) | **POST** /warden/oauth2/clients/authorize | Check if an OAuth 2.0 Client is authorized to access a resource
-*SwaggerJsClient.WardenApi* | [**isSubjectAuthorized**](docs/WardenApi.md#isSubjectAuthorized) | **POST** /warden/subjects/authorize | Check if a subject is authorized to access a resource
+*SwaggerJsClient.EnginesApi* | [**addOryAccessControlPolicyRoleMembers**](docs/EnginesApi.md#addOryAccessControlPolicyRoleMembers) | **PUT** /engines/acp/ory/{flavor}/roles/{id}/members | Add a member to an ORY Access Control Policy Role
+*SwaggerJsClient.EnginesApi* | [**deleteOryAccessControlPolicy**](docs/EnginesApi.md#deleteOryAccessControlPolicy) | **DELETE** /engines/acp/ory/{flavor}/policies/{id} | 
+*SwaggerJsClient.EnginesApi* | [**deleteOryAccessControlPolicyRole**](docs/EnginesApi.md#deleteOryAccessControlPolicyRole) | **DELETE** /engines/acp/ory/{flavor}/roles/{id} | Delete an ORY Access Control Policy Role
+*SwaggerJsClient.EnginesApi* | [**doOryAccessControlPoliciesAllow**](docs/EnginesApi.md#doOryAccessControlPoliciesAllow) | **POST** /engines/acp/ory/{flavor}/allowed | Check if a request is allowed
+*SwaggerJsClient.EnginesApi* | [**getOryAccessControlPolicy**](docs/EnginesApi.md#getOryAccessControlPolicy) | **GET** /engines/acp/ory/{flavor}/policies/{id} | 
+*SwaggerJsClient.EnginesApi* | [**getOryAccessControlPolicyRole**](docs/EnginesApi.md#getOryAccessControlPolicyRole) | **GET** /engines/acp/ory/{flavor}/roles/{id} | Get an ORY Access Control Policy Role
+*SwaggerJsClient.EnginesApi* | [**listOryAccessControlPolicies**](docs/EnginesApi.md#listOryAccessControlPolicies) | **GET** /engines/acp/ory/{flavor}/policies | 
+*SwaggerJsClient.EnginesApi* | [**listOryAccessControlPolicyRoles**](docs/EnginesApi.md#listOryAccessControlPolicyRoles) | **GET** /engines/acp/ory/{flavor}/roles | List ORY Access Control Policy Roles
+*SwaggerJsClient.EnginesApi* | [**removeOryAccessControlPolicyRoleMembers**](docs/EnginesApi.md#removeOryAccessControlPolicyRoleMembers) | **DELETE** /engines/acp/ory/{flavor}/roles/{id}/members | Remove a member from an ORY Access Control Policy Role
+*SwaggerJsClient.EnginesApi* | [**upsertOryAccessControlPolicy**](docs/EnginesApi.md#upsertOryAccessControlPolicy) | **PUT** /engines/acp/ory/{flavor}/policies | 
+*SwaggerJsClient.EnginesApi* | [**upsertOryAccessControlPolicyRole**](docs/EnginesApi.md#upsertOryAccessControlPolicyRole) | **PUT** /engines/acp/ory/{flavor}/roles | Upsert an ORY Access Control Policy Role
+*SwaggerJsClient.HealthApi* | [**isInstanceAlive**](docs/HealthApi.md#isInstanceAlive) | **GET** /health/alive | Check alive status
+*SwaggerJsClient.HealthApi* | [**isInstanceReady**](docs/HealthApi.md#isInstanceReady) | **GET** /health/ready | Check readiness status
+*SwaggerJsClient.VersionApi* | [**getVersion**](docs/VersionApi.md#getVersion) | **GET** /version | Get service version
 
 
 ## Documentation for Models
 
- - [SwaggerJsClient.AuthenticationDefaultSession](docs/AuthenticationDefaultSession.md)
- - [SwaggerJsClient.AuthenticationOAuth2ClientCredentialsRequest](docs/AuthenticationOAuth2ClientCredentialsRequest.md)
- - [SwaggerJsClient.AuthenticationOAuth2ClientCredentialsSession](docs/AuthenticationOAuth2ClientCredentialsSession.md)
- - [SwaggerJsClient.AuthenticationOAuth2IntrospectionRequest](docs/AuthenticationOAuth2IntrospectionRequest.md)
- - [SwaggerJsClient.AuthenticationOAuth2Session](docs/AuthenticationOAuth2Session.md)
- - [SwaggerJsClient.Authenticator](docs/Authenticator.md)
- - [SwaggerJsClient.Firewall](docs/Firewall.md)
- - [SwaggerJsClient.Handler](docs/Handler.md)
+ - [SwaggerJsClient.AddOryAccessControlPolicyRoleMembers](docs/AddOryAccessControlPolicyRoleMembers.md)
+ - [SwaggerJsClient.AddOryAccessControlPolicyRoleMembersBody](docs/AddOryAccessControlPolicyRoleMembersBody.md)
+ - [SwaggerJsClient.AuthorizationResult](docs/AuthorizationResult.md)
+ - [SwaggerJsClient.Context](docs/Context.md)
+ - [SwaggerJsClient.DeleteOryAccessControlPolicy](docs/DeleteOryAccessControlPolicy.md)
+ - [SwaggerJsClient.DeleteOryAccessControlPolicyRole](docs/DeleteOryAccessControlPolicyRole.md)
+ - [SwaggerJsClient.DoOryAccessControlPoliciesAllow](docs/DoOryAccessControlPoliciesAllow.md)
+ - [SwaggerJsClient.GetOryAccessControlPolicy](docs/GetOryAccessControlPolicy.md)
+ - [SwaggerJsClient.GetOryAccessControlPolicyRole](docs/GetOryAccessControlPolicyRole.md)
  - [SwaggerJsClient.HealthNotReadyStatus](docs/HealthNotReadyStatus.md)
  - [SwaggerJsClient.HealthStatus](docs/HealthStatus.md)
  - [SwaggerJsClient.InlineResponse500](docs/InlineResponse500.md)
- - [SwaggerJsClient.IntrospectionResponse](docs/IntrospectionResponse.md)
- - [SwaggerJsClient.Manager](docs/Manager.md)
- - [SwaggerJsClient.OAuth2ClientCredentialsAuthentication](docs/OAuth2ClientCredentialsAuthentication.md)
- - [SwaggerJsClient.OAuth2IntrospectionAuthentication](docs/OAuth2IntrospectionAuthentication.md)
- - [SwaggerJsClient.Policy](docs/Policy.md)
- - [SwaggerJsClient.PolicyConditions](docs/PolicyConditions.md)
- - [SwaggerJsClient.Role](docs/Role.md)
- - [SwaggerJsClient.RoleMembers](docs/RoleMembers.md)
- - [SwaggerJsClient.Session](docs/Session.md)
- - [SwaggerJsClient.SwaggerCreatePolicyParameters](docs/SwaggerCreatePolicyParameters.md)
- - [SwaggerJsClient.SwaggerDoesWardenAllowAccessRequestParameters](docs/SwaggerDoesWardenAllowAccessRequestParameters.md)
- - [SwaggerJsClient.SwaggerDoesWardenAllowClientRequestParameters](docs/SwaggerDoesWardenAllowClientRequestParameters.md)
- - [SwaggerJsClient.SwaggerDoesWardenAllowTokenAccessRequestParameters](docs/SwaggerDoesWardenAllowTokenAccessRequestParameters.md)
- - [SwaggerJsClient.SwaggerGetPolicyParameters](docs/SwaggerGetPolicyParameters.md)
- - [SwaggerJsClient.SwaggerListPolicyParameters](docs/SwaggerListPolicyParameters.md)
- - [SwaggerJsClient.SwaggerListPolicyResponse](docs/SwaggerListPolicyResponse.md)
- - [SwaggerJsClient.SwaggerUpdatePolicyParameters](docs/SwaggerUpdatePolicyParameters.md)
- - [SwaggerJsClient.SwaggerWardenBaseRequest](docs/SwaggerWardenBaseRequest.md)
+ - [SwaggerJsClient.ListOryAccessControlPolicies](docs/ListOryAccessControlPolicies.md)
+ - [SwaggerJsClient.ListOryAccessControlPolicyRoles](docs/ListOryAccessControlPolicyRoles.md)
+ - [SwaggerJsClient.OryAccessControlPolicies](docs/OryAccessControlPolicies.md)
+ - [SwaggerJsClient.OryAccessControlPolicy](docs/OryAccessControlPolicy.md)
+ - [SwaggerJsClient.OryAccessControlPolicyAllowedInput](docs/OryAccessControlPolicyAllowedInput.md)
+ - [SwaggerJsClient.OryAccessControlPolicyRole](docs/OryAccessControlPolicyRole.md)
+ - [SwaggerJsClient.OryAccessControlPolicyRoles](docs/OryAccessControlPolicyRoles.md)
+ - [SwaggerJsClient.Policies](docs/Policies.md)
+ - [SwaggerJsClient.RemoveOryAccessControlPolicyRoleMembers](docs/RemoveOryAccessControlPolicyRoleMembers.md)
+ - [SwaggerJsClient.RemoveOryAccessControlPolicyRoleMembersBody](docs/RemoveOryAccessControlPolicyRoleMembersBody.md)
+ - [SwaggerJsClient.UpsertOryAccessControlPolicy](docs/UpsertOryAccessControlPolicy.md)
+ - [SwaggerJsClient.UpsertOryAccessControlPolicyRole](docs/UpsertOryAccessControlPolicyRole.md)
  - [SwaggerJsClient.Version](docs/Version.md)
- - [SwaggerJsClient.WardenOAuth2AccessTokenAuthorizationRequest](docs/WardenOAuth2AccessTokenAuthorizationRequest.md)
- - [SwaggerJsClient.WardenOAuth2AccessTokenAuthorizationResponse](docs/WardenOAuth2AccessTokenAuthorizationResponse.md)
- - [SwaggerJsClient.WardenOAuth2ClientAuthorizationRequest](docs/WardenOAuth2ClientAuthorizationRequest.md)
- - [SwaggerJsClient.WardenOAuth2ClientAuthorizationResponse](docs/WardenOAuth2ClientAuthorizationResponse.md)
- - [SwaggerJsClient.WardenSubjectAuthorizationRequest](docs/WardenSubjectAuthorizationRequest.md)
- - [SwaggerJsClient.WardenSubjectAuthorizationResponse](docs/WardenSubjectAuthorizationResponse.md)
- - [SwaggerJsClient.Writer](docs/Writer.md)
 
 
 ## Documentation for Authorization

@@ -15,17 +15,12 @@
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/spf13/cobra"
 )
 
 // migrateCmd represents the migrate command
 var migrateCmd = &cobra.Command{
 	Use: "migrate",
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Print(cmd.UsageString())
-	},
 }
 
 func init() {

@@ -18,18 +18,17 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/ory/keto/cmd/client"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+
+	"github.com/ory/x/logrusx"
 )
 
-var cfgFile string
-
 var (
-	Version   = "dev-master"
-	BuildTime = "undefined"
-	GitHash   = "undefined"
+	Version   = ""
+	BuildTime = ""
+	GitHash   = ""
 )
 
 // RootCmd represents the base command when called without any subcommands
@@ -37,9 +36,9 @@ var RootCmd = &cobra.Command{
 	Use: "keto",
 }
 
-var logger = logrus.New()
+var logger *logrus.Logger = new(logrus.Logger)
 
-var cmdHandler = client.NewHandler()
+//var cmdHandler = client.NewHandler()
 
 // Execute adds all child commands to the root command sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
@@ -51,19 +50,12 @@ func Execute() {
 }
 
 func init() {
-	logLevel, err := logrus.ParseLevel(os.Getenv("LOG_LEVEL"))
-	if err != nil {
-		logLevel = logrus.InfoLevel
-	}
-
-	logger.Level = logLevel
 	cobra.OnInitialize(initConfig)
 
 	// Here you will define your flags and configuration settings.
 	// Cobra supports Persistent Flags, which, if defined here,
 	// will be global for your application.
 
-	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.keto.yaml)")
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 	RootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
@@ -71,25 +63,9 @@ func init() {
 
 // initConfig reads in config file and ENV variables if set.
 func initConfig() {
-	if cfgFile != "" { // enable ability to specify config file via flag
-		viper.SetConfigFile(cfgFile)
-	}
+	viper.AutomaticEnv() // read in environment variables that match
 
-	viper.SetConfigName(".keto") // name of config file (without extension)
-	viper.AddConfigPath("$HOME") // adding home directory as first search path
-	viper.AutomaticEnv()         // read in environment variables that match
-
-	viper.SetDefault("LOG_LEVEL", "info")
 	viper.SetDefault("PORT", "4466")
 
-	// If a config file is found, read it in.
-	if err := viper.ReadInConfig(); err == nil {
-		fmt.Println("Using config file:", viper.ConfigFileUsed())
-	}
-}
-
-func clientDefaultFlags(c *cobra.Command) {
-	c.PersistentFlags().String("bearer-token", os.Getenv("KETO_BEARER_TOKEN"), "Provide a token to be used if the server is protected by HTTP Bearer Authorization, defaults to environment variable KETO_BEARER_TOKEN.")
-	c.PersistentFlags().Bool("fake-tls-termination", false, `fake tls termination by adding "X-Forwarded-Proto: https"" to http headers`)
-	c.PersistentFlags().String("endpoint", os.Getenv("KETO_URL"), "The URL of the ORY Keto server, defaults to environment variable KETO_URL.")
+	*logger = *logrusx.New()
 }
