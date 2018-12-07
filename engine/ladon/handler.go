@@ -356,7 +356,7 @@ func (e *Engine) rolesMembersAdd(ctx context.Context, r *http.Request, ps httpro
 	}
 
 	var ro Role
-	if err := e.s.Get(ctx, roleCollection(f), ps.ByName("id"), &ro); errors.Cause(err) == &herodot.ErrorNotFound {
+	if err := e.s.Get(ctx, roleCollection(f), ps.ByName("id"), &ro); errors.Cause(err) == &herodot.ErrNotFound {
 		i.ID = ps.ByName("id")
 		ro = i
 	} else if err != nil {
@@ -462,7 +462,7 @@ func (e *Engine) policiesGet(ctx context.Context, r *http.Request, ps httprouter
 func flavor(ps httprouter.Params) (string, error) {
 	t := ps.ByName("flavor")
 	if !stringslice.Has(EnabledFlavors, t) {
-		return "", errors.WithStack(&herodot.ErrorNotFound)
+		return "", errors.WithStack(&herodot.ErrNotFound)
 	}
 
 	return t, nil

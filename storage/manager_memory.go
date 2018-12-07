@@ -92,7 +92,7 @@ func (m *MemoryManager) Get(_ context.Context, collection, key string, value int
 	}
 
 	if len(v) == 0 {
-		return errors.WithStack(&herodot.ErrorNotFound)
+		return errors.WithStack(&herodot.ErrNotFound)
 	}
 
 	b := bytes.NewBuffer(v)
