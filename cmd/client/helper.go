@@ -17,12 +17,13 @@ package client
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 	"io/ioutil"
 	"net/http"
 	"path/filepath"
 	"strings"
+
+	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 
 	"github.com/ory/go-convenience/stringslice"
 	"github.com/ory/keto/engine/ladon"
