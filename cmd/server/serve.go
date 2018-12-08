@@ -92,7 +92,7 @@ func RunServe(
 		n.Use(negronilogrus.NewMiddlewareFromLogger(logger, "keto"))
 
 		if flagx.MustGetBool(cmd, "disable-telemetry") {
-			logger.Println("Transmission of telemetry data is enabled, to learn more go to: https://www.ory.sh/docs/guides/latest/telemetry/")
+			logger.Println("Transmission of telemetry data is enabled, to learn more go to: https://www.ory.sh/docs/ecosystem/sqa")
 
 			m := metricsx.NewMetricsManager(
 				metricsx.Hash("DATABASE_URL"),
