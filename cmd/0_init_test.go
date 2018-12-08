@@ -2,8 +2,9 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/akutz/gotil"
 	"os"
+
+	"github.com/akutz/gotil"
 )
 
 var port int
