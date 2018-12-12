@@ -10,16 +10,20 @@
     <a href="https://opencollective.com/ory">Support this project!</a>
 </h4>
 
-This service is a policy decision point. It uses a set of access control policies, similar to
-[AWS IAM Policies](https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies.html), in order to determine whether
-a subject, for example user, application, service, car, etc., is authorized to perform a certain action on a resource.
+ORY Keto is an permission server that implements best practice access control mechanisms. If you
+came looking for the answer to the question:
+
+* is certain user is allowed to modify that blog article?
+* is this service is allowed to print a document?
+* is the user of the ACME organisation allowed to modify data in one of their tenants?
+* is this process allowed to execute the worker when coming from IP 10.0.0.2 between 4pm and 5pm on every monday?
+* ...
 
 <p align="left">
     <a href="https://circleci.com/gh/ory/keto/tree/master"><img src="https://circleci.com/gh/ory/keto/tree/master.svg?style=shield" alt="Build Status"></a>
     <a href="https://coveralls.io/github/ory/keto?branch=master"><img src="https://coveralls.io/repos/ory/keto/badge.svg?branch=master&service=github" alt="Coverage Status"></a>
     <a href="https://goreportcard.com/report/github.com/ory/keto"><img src="https://goreportcard.com/badge/github.com/ory/keto" alt="Go Report Card"></a>
 </p>
-
 
 ---
 
@@ -66,42 +70,8 @@ Each mechanism is powered by a decision engine implemented on top of the
 
 ### Installation
 
-There are various ways of installing ORY Keto on your system.
+Head over to the documentation to learn about ways of [installing ORY Keto](https://www.ory.sh/docs/next/keto/install).
 
-#### 1. Download binaries
-
-The client and server **binaries are downloadable at [releases](https://github.com/ory/keto/releases)**.
-There is no installer yet available. Add the ORY keto binary to the PATH environment variable or add
-the binary to a location already in your path (`/usr/bin`, ...).
-If these download instructions are unclear, ask for clarification in our [chat channel](https://www.ory.sh/chat). We are happy to help.
-
-#### 2. Using Docker
-
-**Starting the host** is easiest with Docker. The host process handles HTTP requests and is backed by a database.
-Read how to install docker on [Linux](https://docs.docker.com/linux/), [OSX](https://docs.docker.com/mac/) or
-[Windows](https://docs.docker.com/windows/). ORY keto is available on [Docker Hub](https://hub.docker.com/r/oryd/keto/).
-
-When using ORY keto without a database, restarting, scaling
-or stopping the container will **lose all data**:
-
-```
-$ docker run -e "DATABASE_URL=memory" -d --name my-keto -p 4466:4466 oryd/keto
-ec91228cb105db315553499c81918258f52cee9636ea2a4821bdb8226872f54b
-```
-
-#### Building from source
-
-If you wish to compile ORY Keto, install and set up [Go 1.11+](https://golang.org/).
-
-The following commands check out the latest ORY keto's release tag, compile it and set up flags so that `keto version`
-works as expected. Please note that this will only work with a linux shell like bash or sh.
-
-```
-go get -u github.com/ory/keto
-cd $(go env GOPATH)/src/github.com/ory/keto
-make install-stable
-$(go env GOPATH)/bin/keto help
-```
 
 ## Ecosystem
 
