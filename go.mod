@@ -27,7 +27,7 @@ require (
 	github.com/pborman/uuid v1.2.0
 	github.com/pkg/errors v0.8.0
 	github.com/rcrowley/go-metrics v0.0.0-20180503174638-e2704e165165 // indirect
-	github.com/rubenv/sql-migrate v0.0.0-20180704111356-3f452fc0ebeb
+	github.com/rubenv/sql-migrate v0.0.0-20181106121204-ba2c6a7295c5
 	github.com/sirupsen/logrus v1.1.1
 	github.com/spf13/cobra v0.0.3
 	github.com/spf13/viper v1.2.1
