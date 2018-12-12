@@ -4,9 +4,30 @@ The intent of this document is to make migration of breaking changes as easy as 
 breaking changes might be included here. Please check the [CHANGELOG.md](./CHANGELOG.md) for a full list of changes
 before finalizing the upgrade process.
 
-## 0.1.0-sandbox
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
-ORY Keto has been completely reworked. The major goals of this refactoring is:
+- [Upgrading](#upgrading)
+  - [0.2.0-sandbox](#020-sandbox)
+    - [Conceptual changes](#conceptual-changes)
+      - [Deprecated](#deprecated)
+      - [Changes](#changes)
+      - [Additions](#additions)
+      - [Untouched](#untouched)
+    - [API Changes](#api-changes)
+      - [Renamed Endpoints](#renamed-endpoints)
+      - [Reworked Endpoints](#reworked-endpoints)
+      - [New Endpoints](#new-endpoints)
+    - [Migration](#migration)
+      - [SQL](#sql)
+  - [0.0.1](#001)
+    - [CORS is disabled by default](#cors-is-disabled-by-default)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+## 0.2.0-sandbox
+
+ORY Keto has been completely reworked. The major goals of this refactoring are:
 
 1. To allow easy extension of existing access control mechanisms.
 2. Improve stability and responsiveness.
@@ -16,8 +37,8 @@ We know that these changes seem massive. They are, but they will benefit the lon
 of software, and they will allow you to build better systems.
 
 If you relied on ORY Keto before this release and you are looking for a migration path, don't hesitate to
-[contact us](mailto:hi@ory.sh). Feel free to do the same if you want the access control policy feature implemented
-in ORY Hydra before version `1.0.0`.
+ask in [the forums](https://community.ory.sh/) or open a [GitHub issue](https://github.com/ory/keto/issues/new/). Feel
+free to do the same if you want the access control policy feature implemented in ORY Hydra before version `1.0.0`.
 
 ### Conceptual changes
 
@@ -25,7 +46,8 @@ in ORY Hydra before version `1.0.0`.
 
 The following things have been completely deprecated:
 
-1. Authorizers
+1. Authorizers,
+2. Previous storage mechanisms.
 
 #### Changes
 
@@ -101,8 +123,8 @@ use cases.
 #### SQL
 
 The SQL schema changed completely and it is not possible to migrate from the previous version to this version
-with just using `keto migrate sql`. Please [contact us](mailto:hi@ory.sh) if you would like to migrate policies
-of a store to the new ORY Keto.
+with just using `keto migrate sql`. Please ask in [the forums](https://community.ory.sh/) or open a
+[GitHub issue](https://github.com/ory/keto/issues/new/) if this affects you.
 
 ## 0.0.1
 
