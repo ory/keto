@@ -82,11 +82,13 @@ func RunServe(
 			},
 		)
 
+
 		sh := storage.NewHandler(s, writer)
 		e := engine.NewEngine(compiler, writer)
 
 		router := httprouter.New()
 		ladon.NewEngine(s, sh, e, writer).Register(router)
+		healthx.NewHandler(writer, buildVersion, checks).SetRoutes(router)
 
 		n := negroni.New()
 		n.Use(negronilogrus.NewMiddlewareFromLogger(logger, "keto"))
