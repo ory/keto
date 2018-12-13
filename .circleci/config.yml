@@ -98,7 +98,7 @@ jobs:
           version: 17.10.0-ce
       - run: docker build --build-arg git_tag=$(git describe --tags) --build-arg git_commit=$(git rev-parse HEAD) -f Dockerfile -t oryd/keto:$(echo $CIRCLE_TAG | tr '+' '_') .
       - run: docker login --username "$DOCKER_USERNAME" --password "$DOCKER_PASSWORD"
-      - run: docker push oryd/keto:$(echo $CIRCLE_TAG | tr '+' '_') .
+      - run: docker push oryd/keto:$(echo $CIRCLE_TAG | tr '+' '_')
 
   release-docs:
     docker:
