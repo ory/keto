@@ -82,7 +82,6 @@ func RunServe(
 			},
 		)
 
-
 		sh := storage.NewHandler(s, writer)
 		e := engine.NewEngine(compiler, writer)
 
