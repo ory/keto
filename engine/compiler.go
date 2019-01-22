@@ -13,11 +13,11 @@ import (
 func walk(directory packr.Box, logger logrus.FieldLogger) (map[string]string, error) {
 	m := map[string]string{}
 	if err := directory.Walk(func(path string, file packr.File) error {
-		if filepath.Ext(path) != ".rego" || filepath.Ext(path) != ".rego.go" {
+		if filepath.Ext(path) != ".rego" {
 			return nil
 		}
 
-		if strings.Contains(path, "_test.rego") || strings.Contains(path, "_test.rego.go") {
+		if strings.Contains(path, "_test.rego") {
 			return nil
 		}
 
