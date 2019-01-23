@@ -6,6 +6,7 @@ import (
 
 	"github.com/gobuffalo/packr"
 	"github.com/open-policy-agent/opa/ast"
+	_ "github.com/ory/keto/engine/ladon/rego"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 )

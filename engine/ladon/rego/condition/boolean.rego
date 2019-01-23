@@ -1,4 +1,3 @@
-//+build
 package ory.condition
 
 eval_condition("BooleanCondition", request, options, key) {
