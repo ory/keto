@@ -41,6 +41,8 @@ import (
 	"github.com/ory/herodot"
 	"github.com/ory/keto/engine"
 	"github.com/ory/keto/engine/ladon"
+
+	// This forces go mod vendor to look for the package rego and its subpackages
 	_ "github.com/ory/keto/engine/ladon/rego"
 	"github.com/ory/keto/storage"
 	"github.com/ory/x/cmdx"
