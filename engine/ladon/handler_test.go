@@ -41,7 +41,7 @@ func TestAllowed(t *testing.T) {
 
 	cl := swagger.NewEnginesApiWithBasePath(ts.URL)
 
-	for _, f := range []string{"regex", "exact"} {
+	for _, f := range EnabledFlavors {
 		t.Run(fmt.Sprintf("flavor=%s", f), func(t *testing.T) {
 			t.Run(fmt.Sprint("action=create"), func(t *testing.T) {
 				for _, p := range policies[f] {
@@ -139,7 +139,7 @@ func TestPolicyCRUD(t *testing.T) {
 	defer ts.Close()
 
 	c := swagger.NewEnginesApiWithBasePath(ts.URL)
-	for _, f := range []string{"exact", "regex"} {
+	for _, f := range EnabledFlavors {
 		for l, p := range policies[f] {
 			_, resp, err := c.GetOryAccessControlPolicy(f, p.ID)
 			x.CheckResponseTest(t, err, http.StatusNotFound, resp)
@@ -177,7 +177,7 @@ func TestRoleCRUD(t *testing.T) {
 	defer ts.Close()
 
 	c := swagger.NewEnginesApiWithBasePath(ts.URL)
-	for _, f := range []string{"exact", "regex"} {
+	for _, f := range EnabledFlavors {
 		for l, r := range roles[f] {
 			_, resp, err := c.GetOryAccessControlPolicyRole(f, r.ID)
 			x.CheckResponseTest(t, err, http.StatusNotFound, resp)

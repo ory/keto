@@ -39,4 +39,4 @@ install-stable:
 		git checkout master
 
 install:
-        GO111MODULE=on go install .
+		GO111MODULE=on go install .
