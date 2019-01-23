@@ -1,2 +1,2 @@
-// Package condition forces go mod vendor to download rego folder to the vendor directory
+// Package condition is placeholder package to force download this package when we run `go mod vendor`
 package condition

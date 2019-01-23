@@ -1,2 +1,2 @@
-// Package rego forces go mod vendor to download rego folder to the vendor directory
+// Package regex is placeholder package to force download this package when we run `go mod vendor`
 package regex

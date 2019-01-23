@@ -1,2 +1,2 @@
-// Package exact forces go mod vendor to download rego folder to the vendor directory
+// Package exact is placeholder package to force download this package when we run `go mod vendor`
 package exact
