@@ -127,9 +127,11 @@ func RunServe(
 
 		cert, err := tlsx.HTTPSCertificate()
 		if errors.Cause(err) == tlsx.ErrNoCertificatesConfigured {
-			server.TLSConfig = &tls.Config{Certificates: cert}
+			// do nothing
 		} else if err != nil {
 			cmdx.Must(err, "Unable to load HTTP TLS certificate(s): %s", err)
+		} else {
+			server.TLSConfig = &tls.Config{Certificates: cert}
 		}
 
 		if err := graceful.Graceful(func() error {
