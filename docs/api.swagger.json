@@ -47,7 +47,7 @@
           {
             "type": "string",
             "x-go-name": "Flavor",
-            "description": "The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".",
+            "description": "The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".",
             "name": "flavor",
             "in": "path",
             "required": true
@@ -91,7 +91,7 @@
           {
             "type": "string",
             "x-go-name": "Flavor",
-            "description": "The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\"",
+            "description": "The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\"",
             "name": "flavor",
             "in": "path",
             "required": true
@@ -142,7 +142,7 @@
           {
             "type": "string",
             "x-go-name": "Flavor",
-            "description": "The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".",
+            "description": "The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".",
             "name": "flavor",
             "in": "path",
             "required": true
@@ -186,7 +186,7 @@
           {
             "type": "string",
             "x-go-name": "Flavor",
-            "description": "The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".",
+            "description": "The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".",
             "name": "flavor",
             "in": "path",
             "required": true
@@ -232,7 +232,7 @@
           {
             "type": "string",
             "x-go-name": "Flavor",
-            "description": "The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".",
+            "description": "The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".",
             "name": "flavor",
             "in": "path",
             "required": true
@@ -275,7 +275,7 @@
           {
             "type": "string",
             "x-go-name": "Flavor",
-            "description": "The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\"",
+            "description": "The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\"",
             "name": "flavor",
             "in": "path",
             "required": true
@@ -327,7 +327,7 @@
           {
             "type": "string",
             "x-go-name": "Flavor",
-            "description": "The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".",
+            "description": "The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".",
             "name": "flavor",
             "in": "path",
             "required": true
@@ -372,7 +372,7 @@
           {
             "type": "string",
             "x-go-name": "Flavor",
-            "description": "The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".",
+            "description": "The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".",
             "name": "flavor",
             "in": "path",
             "required": true
@@ -419,7 +419,7 @@
           {
             "type": "string",
             "x-go-name": "Flavor",
-            "description": "The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".",
+            "description": "The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".",
             "name": "flavor",
             "in": "path",
             "required": true
@@ -465,7 +465,7 @@
           {
             "type": "string",
             "x-go-name": "Flavor",
-            "description": "The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".",
+            "description": "The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".",
             "name": "flavor",
             "in": "path",
             "required": true
@@ -519,7 +519,7 @@
           {
             "type": "string",
             "x-go-name": "Flavor",
-            "description": "The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".",
+            "description": "The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".",
             "name": "flavor",
             "in": "path",
             "required": true
@@ -650,7 +650,7 @@
           "$ref": "#/definitions/addOryAccessControlPolicyRoleMembersBody"
         },
         "flavor": {
-          "description": "The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".\n\nin: path",
+          "description": "The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".\n\nin: path",
           "type": "string",
           "x-go-name": "Flavor"
         },
@@ -697,7 +697,7 @@
       ],
       "properties": {
         "flavor": {
-          "description": "The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".\n\nin: path",
+          "description": "The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".\n\nin: path",
           "type": "string",
           "x-go-name": "Flavor"
         },
@@ -717,7 +717,7 @@
       ],
       "properties": {
         "flavor": {
-          "description": "The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".\n\nin: path",
+          "description": "The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".\n\nin: path",
           "type": "string",
           "x-go-name": "Flavor"
         },
@@ -739,7 +739,7 @@
           "$ref": "#/definitions/oryAccessControlPolicyAllowedInput"
         },
         "flavor": {
-          "description": "The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".\n\nin: path",
+          "description": "The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".\n\nin: path",
           "type": "string",
           "x-go-name": "Flavor"
         }
@@ -754,7 +754,7 @@
       ],
       "properties": {
         "flavor": {
-          "description": "The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".\n\nin: path",
+          "description": "The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".\n\nin: path",
           "type": "string",
           "x-go-name": "Flavor"
         },
@@ -774,7 +774,7 @@
       ],
       "properties": {
         "flavor": {
-          "description": "The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".\n\nin: path",
+          "description": "The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".\n\nin: path",
           "type": "string",
           "x-go-name": "Flavor"
         },
@@ -820,7 +820,7 @@
       ],
       "properties": {
         "flavor": {
-          "description": "The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\"\n\nin: path",
+          "description": "The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\"\n\nin: path",
           "type": "string",
           "x-go-name": "Flavor"
         },
@@ -846,7 +846,7 @@
       ],
       "properties": {
         "flavor": {
-          "description": "The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\"\n\nin: path",
+          "description": "The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\"\n\nin: path",
           "type": "string",
           "x-go-name": "Flavor"
         },
@@ -1017,7 +1017,7 @@
           "$ref": "#/definitions/removeOryAccessControlPolicyRoleMembersBody"
         },
         "flavor": {
-          "description": "The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".\n\nin: path",
+          "description": "The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".\n\nin: path",
           "type": "string",
           "x-go-name": "Flavor"
         },
@@ -1053,7 +1053,7 @@
           "$ref": "#/definitions/oryAccessControlPolicy"
         },
         "flavor": {
-          "description": "The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".\n\nin: path",
+          "description": "The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".\n\nin: path",
           "type": "string",
           "x-go-name": "Flavor"
         }
@@ -1070,7 +1070,7 @@
           "$ref": "#/definitions/oryAccessControlPolicyRole"
         },
         "flavor": {
-          "description": "The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".\n\nin: path",
+          "description": "The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".\n\nin: path",
           "type": "string",
           "x-go-name": "Flavor"
         }
