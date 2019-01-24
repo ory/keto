@@ -84,6 +84,10 @@ func RunServe(
 				return nil
 			},
 		)
+		if err != nil {
+			logger.WithError(err).Fatalf("DBAL was unable to connect to the database")
+			return
+		}
 
 		sh := storage.NewHandler(s, writer)
 		e := engine.NewEngine(compiler, writer)
