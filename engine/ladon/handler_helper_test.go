@@ -75,6 +75,64 @@ var (
 				},
 				allowed: true,
 			},
+			{
+				req: swagger.OryAccessControlPolicyAllowedInput{
+					Subject:  "ken",
+					Resource: "forbidden_subject",
+					Action:   "create",
+					Context: map[string]interface{}{
+						"subject": map[string]string{
+							"type": "EqualsSubjectCondition",
+						},
+					},
+				},
+				allowed: false,
+			},
+			{
+				req: swagger.OryAccessControlPolicyAllowedInput{
+					Subject:  "ken",
+					Resource: "allowed_subject",
+					Action:   "create",
+					Context: map[string]interface{}{
+						"subject": map[string]string{
+							"type": "EqualsSubjectCondition",
+						},
+					},
+				},
+				allowed: true,
+			},
+			{
+				req: swagger.OryAccessControlPolicyAllowedInput{
+					Subject:  "ken",
+					Resource: "forbidden_condition",
+					Action:   "create",
+					Context: map[string]interface{}{
+						"group": map[string]interface{}{
+							"type": "StringEqualCondition",
+							"options": map[string]string{
+								"equals": "the-value-should-be-this",
+							},
+						},
+					},
+				},
+				allowed: false,
+			},
+			{
+				req: swagger.OryAccessControlPolicyAllowedInput{
+					Subject:  "ken",
+					Resource: "allowed_condition",
+					Action:   "create",
+					Context: map[string]interface{}{
+						"group": map[string]interface{}{
+							"type": "StringEqualCondition",
+							"options": map[string]string{
+								"equals": "the-value-should-be-this",
+							},
+						},
+					},
+				},
+				allowed: true,
+			},
 		},
 		"exact": {
 			{
@@ -122,6 +180,64 @@ var (
 				},
 				allowed: true,
 			},
+			{
+				req: swagger.OryAccessControlPolicyAllowedInput{
+					Subject:  "ken",
+					Resource: "forbidden_subject",
+					Action:   "create",
+					Context: map[string]interface{}{
+						"subject": map[string]string{
+							"type": "EqualsSubjectCondition",
+						},
+					},
+				},
+				allowed: false,
+			},
+			{
+				req: swagger.OryAccessControlPolicyAllowedInput{
+					Subject:  "ken",
+					Resource: "allowed_subject",
+					Action:   "create",
+					Context: map[string]interface{}{
+						"subject": map[string]string{
+							"type": "EqualsSubjectCondition",
+						},
+					},
+				},
+				allowed: true,
+			},
+			{
+				req: swagger.OryAccessControlPolicyAllowedInput{
+					Subject:  "ken",
+					Resource: "forbidden_condition",
+					Action:   "create",
+					Context: map[string]interface{}{
+						"group": map[string]interface{}{
+							"type": "StringEqualCondition",
+							"options": map[string]string{
+								"equals": "the-value-should-be-this",
+							},
+						},
+					},
+				},
+				allowed: false,
+			},
+			{
+				req: swagger.OryAccessControlPolicyAllowedInput{
+					Subject:  "ken",
+					Resource: "allowed_condition",
+					Action:   "create",
+					Context: map[string]interface{}{
+						"group": map[string]interface{}{
+							"type": "StringEqualCondition",
+							"options": map[string]string{
+								"equals": "the-value-should-be-this",
+							},
+						},
+					},
+				},
+				allowed: true,
+			},
 		},
 	}
 	policies = map[string]Policies{
@@ -154,6 +270,78 @@ var (
 				Actions:   []string{"create", "decide"},
 				Effect:    Allow,
 			},
+			Policy{
+				ID:        "5",
+				Subjects:  []string{"ken"},
+				Resources: []string{"forbidden_subject", "rn:hydra:token<.*>"},
+				Actions:   []string{"create", "decide"},
+				Conditions: []map[string]interface{}{
+					{
+						"subject": "ken",
+					},
+				},
+				Effect: Deny,
+			},
+			Policy{
+				ID:        "6",
+				Subjects:  []string{"ken"},
+				Resources: []string{"allowed_subject", "rn:hydra:token<.*>"},
+				Actions:   []string{"create", "decide"},
+				Conditions: []map[string]interface{}{
+					{
+						"subject": "ken",
+					},
+				},
+				Effect: Allow,
+			},
+			Policy{
+				ID:        "7",
+				Subjects:  []string{"group1"},
+				Resources: []string{"forbidden_subject", "rn:hydra:token<.*>"},
+				Actions:   []string{"create", "decide"},
+				Conditions: []map[string]interface{}{
+					{
+						"subject": "ken",
+					},
+				},
+				Effect: Deny,
+			},
+			Policy{
+				ID:        "8",
+				Subjects:  []string{"group1"},
+				Resources: []string{"allowed_subject", "rn:hydra:token<.*>"},
+				Actions:   []string{"create", "decide"},
+				Conditions: []map[string]interface{}{
+					{
+						"subject": "ken",
+					},
+				},
+				Effect: Allow,
+			},
+			Policy{
+				ID:        "9",
+				Subjects:  []string{"group1"},
+				Resources: []string{"forbidden_condition", "rn:hydra:token<.*>"},
+				Actions:   []string{"create", "decide"},
+				Conditions: []map[string]interface{}{
+					{
+						"group": "the-value-should-be-this",
+					},
+				},
+				Effect: Deny,
+			},
+			Policy{
+				ID:        "10",
+				Subjects:  []string{"group1"},
+				Resources: []string{"allowed_condition", "rn:hydra:token<.*>"},
+				Actions:   []string{"create", "decide"},
+				Conditions: []map[string]interface{}{
+					{
+						"group": "the-value-should-be-this",
+					},
+				},
+				Effect: Allow,
+			},
 		},
 		"exact": {
 			Policy{
@@ -183,6 +371,78 @@ var (
 				Resources: []string{"allowed_matrix", "rn:hydra:token"},
 				Actions:   []string{"create", "decide"},
 				Effect:    Allow,
+			},
+			Policy{
+				ID:        "5",
+				Subjects:  []string{"ken"},
+				Resources: []string{"forbidden_subject", "rn:hydra:token"},
+				Actions:   []string{"create", "decide"},
+				Conditions: []map[string]interface{}{
+					{
+						"subject": "ken",
+					},
+				},
+				Effect: Deny,
+			},
+			Policy{
+				ID:        "6",
+				Subjects:  []string{"ken"},
+				Resources: []string{"allowed_subject", "rn:hydra:token"},
+				Actions:   []string{"create", "decide"},
+				Conditions: []map[string]interface{}{
+					{
+						"subject": "ken",
+					},
+				},
+				Effect: Allow,
+			},
+			Policy{
+				ID:        "7",
+				Subjects:  []string{"group1"},
+				Resources: []string{"forbidden_subject", "rn:hydra:token"},
+				Actions:   []string{"create", "decide"},
+				Conditions: []map[string]interface{}{
+					{
+						"subject": "ken",
+					},
+				},
+				Effect: Deny,
+			},
+			Policy{
+				ID:        "8",
+				Subjects:  []string{"group1"},
+				Resources: []string{"allowed_subject", "rn:hydra:token"},
+				Actions:   []string{"create", "decide"},
+				Conditions: []map[string]interface{}{
+					{
+						"subject": "ken",
+					},
+				},
+				Effect: Allow,
+			},
+			Policy{
+				ID:        "9",
+				Subjects:  []string{"group1"},
+				Resources: []string{"forbidden_subject", "rn:hydra:token"},
+				Actions:   []string{"create", "decide"},
+				Conditions: []map[string]interface{}{
+					{
+						"group": "the-value-should-be-this",
+					},
+				},
+				Effect: Deny,
+			},
+			Policy{
+				ID:        "10",
+				Subjects:  []string{"group1"},
+				Resources: []string{"allowed_subject", "rn:hydra:token"},
+				Actions:   []string{"create", "decide"},
+				Conditions: []map[string]interface{}{
+					{
+						"group": "the-value-should-be-this",
+					},
+				},
+				Effect: Allow,
 			},
 		},
 	}
