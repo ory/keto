@@ -1,8 +1,9 @@
 init:
-		go get -u \
+		GO111MODULE=off go get -u \
 			github.com/ory/x/tools/listx \
 			github.com/sqs/goreturns \
-			github.com/go-swagger/go-swagger/cmd/swagger
+			github.com/go-swagger/go-swagger/cmd/swagger \
+			github.com/gobuffalo/packr/packr
 
 format:
 		goreturns -w -local github.com/ory $$(listx .)
@@ -33,10 +34,14 @@ build-sdk:
 install-stable:
 		KETO_LATEST=$$(git describe --abbrev=0 --tags)
 		git checkout $$KETO_LATEST
+		$(go env GOPATH)/bin/packr
 		GO111MODULE=on go install \
 				-ldflags "-X github.com/ory/keto/cmd.Version=$$KETO_LATEST -X github.com/ory/keto/cmd.BuildTime=`TZ=UTC date -u '+%Y-%m-%dT%H:%M:%SZ'` -X github.com/ory/keto/cmd.GitHash=`git rev-parse HEAD`" \
 				.
+		$(go env GOPATH)/bin/packr clean
 		git checkout master
 
 install:
+		$(go env GOPATH)/bin/packr
 		GO111MODULE=on go install .
+		$(go env GOPATH)/bin/packr clean
