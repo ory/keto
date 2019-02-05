@@ -7,7 +7,7 @@ RUN apk add --no-cache git build-base
 
 WORKDIR /go/src/github.com/ory/keto
 
-RUN go get -u github.com/gobuffalo/packr/packr
+RUN GO111MODULE=off go get -u github.com/gobuffalo/packr/packr
 
 ENV GO111MODULE=on
 
