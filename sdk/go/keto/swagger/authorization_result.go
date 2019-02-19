@@ -11,5 +11,5 @@ package swagger
 type AuthorizationResult struct {
 
 	// Allowed is true if the request should be allowed and false otherwise.
-	Allowed bool `json:"allowed,omitempty"`
+	Allowed bool `json:"allowed"`
 }

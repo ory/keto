@@ -10,7 +10,7 @@ package swagger
 
 type ListOryAccessControlPolicies struct {
 
-	// The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\"  in: path
+	// The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\"  in: path
 	Flavor string `json:"flavor"`
 
 	// The maximum amount of policies returned.  in: query

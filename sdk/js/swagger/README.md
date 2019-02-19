@@ -98,7 +98,7 @@ var SwaggerJsClient = require('swagger-js-client');
 
 var api = new SwaggerJsClient.EnginesApi()
 
-var flavor = "flavor_example"; // {String} The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".
+var flavor = "flavor_example"; // {String} The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".
 
 var id = "id_example"; // {String} The ID of the ORY Access Control Policy Role.
 

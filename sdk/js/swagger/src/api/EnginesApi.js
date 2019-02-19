@@ -59,7 +59,7 @@
     /**
      * Add a member to an ORY Access Control Policy Role
      * Roles group several subjects into one. Rules can be assigned to ORY Access Control Policy (OACP) by using the Role ID as subject in the OACP.
-     * @param {String} flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;.
+     * @param {String} flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot;.
      * @param {String} id The ID of the ORY Access Control Policy Role.
      * @param {Object} opts Optional parameters
      * @param {module:model/AddOryAccessControlPolicyRoleMembersBody} opts.body 
@@ -114,7 +114,7 @@
 
     /**
      * Delete an ORY Access Control Policy
-     * @param {String} flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;.
+     * @param {String} flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot;.
      * @param {String} id The ID of the ORY Access Control Policy Role.
      * @param {module:api/EnginesApi~deleteOryAccessControlPolicyCallback} callback The callback function, accepting three arguments: error, data, response
      */
@@ -166,7 +166,7 @@
     /**
      * Delete an ORY Access Control Policy Role
      * Roles group several subjects into one. Rules can be assigned to ORY Access Control Policy (OACP) by using the Role ID as subject in the OACP.
-     * @param {String} flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;.
+     * @param {String} flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot;.
      * @param {String} id The ID of the ORY Access Control Policy Role.
      * @param {module:api/EnginesApi~deleteOryAccessControlPolicyRoleCallback} callback The callback function, accepting three arguments: error, data, response
      */
@@ -218,7 +218,7 @@
     /**
      * Check if a request is allowed
      * Use this endpoint to check if a request is allowed or not.
-     * @param {String} flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;.
+     * @param {String} flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot;.
      * @param {Object} opts Optional parameters
      * @param {module:model/OryAccessControlPolicyAllowedInput} opts.body 
      * @param {module:api/EnginesApi~doOryAccessControlPoliciesAllowCallback} callback The callback function, accepting three arguments: error, data, response
@@ -266,7 +266,7 @@
 
     /**
      * Get an ORY Access Control Policy
-     * @param {String} flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;.
+     * @param {String} flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot;.
      * @param {String} id The ID of the ORY Access Control Policy Role.
      * @param {module:api/EnginesApi~getOryAccessControlPolicyCallback} callback The callback function, accepting three arguments: error, data, response
      * data is of type: {@link module:model/OryAccessControlPolicy}
@@ -319,7 +319,7 @@
     /**
      * Get an ORY Access Control Policy Role
      * Roles group several subjects into one. Rules can be assigned to ORY Access Control Policy (OACP) by using the Role ID as subject in the OACP.
-     * @param {String} flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;.
+     * @param {String} flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot;.
      * @param {String} id The ID of the ORY Access Control Policy Role.
      * @param {module:api/EnginesApi~getOryAccessControlPolicyRoleCallback} callback The callback function, accepting three arguments: error, data, response
      * data is of type: {@link module:model/OryAccessControlPolicyRole}
@@ -371,7 +371,7 @@
 
     /**
      * List ORY Access Control Policies
-     * @param {String} flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;
+     * @param {String} flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot;
      * @param {Object} opts Optional parameters
      * @param {Number} opts.limit The maximum amount of policies returned.
      * @param {Number} opts.offset The offset from where to start looking.
@@ -423,7 +423,7 @@
     /**
      * List ORY Access Control Policy Roles
      * Roles group several subjects into one. Rules can be assigned to ORY Access Control Policy (OACP) by using the Role ID as subject in the OACP.
-     * @param {String} flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;
+     * @param {String} flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot;
      * @param {Object} opts Optional parameters
      * @param {Number} opts.limit The maximum amount of policies returned.
      * @param {Number} opts.offset The offset from where to start looking.
@@ -475,7 +475,7 @@
     /**
      * Remove a member from an ORY Access Control Policy Role
      * Roles group several subjects into one. Rules can be assigned to ORY Access Control Policy (OACP) by using the Role ID as subject in the OACP.
-     * @param {String} flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;.
+     * @param {String} flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot;.
      * @param {String} id The ID of the ORY Access Control Policy Role.
      * @param {Object} opts Optional parameters
      * @param {module:model/RemoveOryAccessControlPolicyRoleMembersBody} opts.body 
@@ -529,7 +529,7 @@
 
     /**
      * Upsert an ORY Access Control Policy
-     * @param {String} flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;.
+     * @param {String} flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot;.
      * @param {Object} opts Optional parameters
      * @param {module:model/OryAccessControlPolicy} opts.body 
      * @param {module:api/EnginesApi~upsertOryAccessControlPolicyCallback} callback The callback function, accepting three arguments: error, data, response
@@ -578,7 +578,7 @@
     /**
      * Upsert an ORY Access Control Policy Role
      * Roles group several subjects into one. Rules can be assigned to ORY Access Control Policy (OACP) by using the Role ID as subject in the OACP.
-     * @param {String} flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;.
+     * @param {String} flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot;.
      * @param {Object} opts Optional parameters
      * @param {module:model/OryAccessControlPolicyRole} opts.body 
      * @param {module:api/EnginesApi~upsertOryAccessControlPolicyRoleCallback} callback The callback function, accepting three arguments: error, data, response

@@ -72,7 +72,7 @@
         obj['actions'] = ApiClient.convertToType(data['actions'], ['String']);
       }
       if (data.hasOwnProperty('conditions')) {
-        obj['conditions'] = ApiClient.convertToType(data['conditions'], [{'String': Object}]);
+        obj['conditions'] = ApiClient.convertToType(data['conditions'], {'String': Object});
       }
       if (data.hasOwnProperty('description')) {
         obj['description'] = ApiClient.convertToType(data['description'], 'String');
@@ -99,8 +99,8 @@
    */
   exports.prototype['actions'] = undefined;
   /**
-   * Conditions represents an array of conditions under which this ORY Access Policy is active.
-   * @member {Array.<Object.<String, Object>>} conditions
+   * Conditions represents a keyed object of conditions under which this ORY Access Policy is active.
+   * @member {Object.<String, Object>} conditions
    */
   exports.prototype['conditions'] = undefined;
   /**

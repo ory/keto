@@ -44,7 +44,7 @@
    * Constructs a new <code>RemoveOryAccessControlPolicyRoleMembers</code>.
    * @alias module:model/RemoveOryAccessControlPolicyRoleMembers
    * @class
-   * @param flavor {String} The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".  in: path
+   * @param flavor {String} The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".  in: path
    * @param id {String} The ID of the ORY Access Control Policy Role.  in: path
    */
   var exports = function(flavor, id) {
@@ -84,7 +84,7 @@
    */
   exports.prototype['Body'] = undefined;
   /**
-   * The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".  in: path
+   * The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".  in: path
    * @member {String} flavor
    */
   exports.prototype['flavor'] = undefined;
