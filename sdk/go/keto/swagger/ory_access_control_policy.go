@@ -13,8 +13,8 @@ type OryAccessControlPolicy struct {
 	// Actions is an array representing all the actions this ORY Access Policy applies to.
 	Actions []string `json:"actions,omitempty"`
 
-	// Conditions represents an array of conditions under which this ORY Access Policy is active.
-	Conditions []map[string]interface{} `json:"conditions,omitempty"`
+	// Conditions represents a keyed object of conditions under which this ORY Access Policy is active.
+	Conditions map[string]interface{} `json:"conditions,omitempty"`
 
 	// Description is an optional, human-readable description.
 	Description string `json:"description,omitempty"`

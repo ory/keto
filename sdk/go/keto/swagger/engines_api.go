@@ -39,7 +39,7 @@ func NewEnginesApiWithBasePath(basePath string) *EnginesApi {
  * Add a member to an ORY Access Control Policy Role
  * Roles group several subjects into one. Rules can be assigned to ORY Access Control Policy (OACP) by using the Role ID as subject in the OACP.
  *
- * @param flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;.
+ * @param flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot;.
  * @param id The ID of the ORY Access Control Policy Role.
  * @param body
  * @return *OryAccessControlPolicyRole
@@ -105,7 +105,7 @@ func (a EnginesApi) AddOryAccessControlPolicyRoleMembers(flavor string, id strin
  *
  * Delete an ORY Access Control Policy
  *
- * @param flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;.
+ * @param flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot;.
  * @param id The ID of the ORY Access Control Policy Role.
  * @return void
  */
@@ -166,7 +166,7 @@ func (a EnginesApi) DeleteOryAccessControlPolicy(flavor string, id string) (*API
  * Delete an ORY Access Control Policy Role
  * Roles group several subjects into one. Rules can be assigned to ORY Access Control Policy (OACP) by using the Role ID as subject in the OACP.
  *
- * @param flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;.
+ * @param flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot;.
  * @param id The ID of the ORY Access Control Policy Role.
  * @return void
  */
@@ -227,7 +227,7 @@ func (a EnginesApi) DeleteOryAccessControlPolicyRole(flavor string, id string) (
  * Check if a request is allowed
  * Use this endpoint to check if a request is allowed or not.
  *
- * @param flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;.
+ * @param flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot;.
  * @param body
  * @return *AuthorizationResult
  */
@@ -291,7 +291,7 @@ func (a EnginesApi) DoOryAccessControlPoliciesAllow(flavor string, body OryAcces
  *
  * Get an ORY Access Control Policy
  *
- * @param flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;.
+ * @param flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot;.
  * @param id The ID of the ORY Access Control Policy Role.
  * @return *OryAccessControlPolicy
  */
@@ -354,7 +354,7 @@ func (a EnginesApi) GetOryAccessControlPolicy(flavor string, id string) (*OryAcc
  * Get an ORY Access Control Policy Role
  * Roles group several subjects into one. Rules can be assigned to ORY Access Control Policy (OACP) by using the Role ID as subject in the OACP.
  *
- * @param flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;.
+ * @param flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot;.
  * @param id The ID of the ORY Access Control Policy Role.
  * @return *OryAccessControlPolicyRole
  */
@@ -417,7 +417,7 @@ func (a EnginesApi) GetOryAccessControlPolicyRole(flavor string, id string) (*Or
  *
  * List ORY Access Control Policies
  *
- * @param flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;
+ * @param flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot;
  * @param limit The maximum amount of policies returned.
  * @param offset The offset from where to start looking.
  * @return []OryAccessControlPolicy
@@ -482,7 +482,7 @@ func (a EnginesApi) ListOryAccessControlPolicies(flavor string, limit int64, off
  * List ORY Access Control Policy Roles
  * Roles group several subjects into one. Rules can be assigned to ORY Access Control Policy (OACP) by using the Role ID as subject in the OACP.
  *
- * @param flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;
+ * @param flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot;
  * @param limit The maximum amount of policies returned.
  * @param offset The offset from where to start looking.
  * @return []OryAccessControlPolicyRole
@@ -547,7 +547,7 @@ func (a EnginesApi) ListOryAccessControlPolicyRoles(flavor string, limit int64, 
  * Remove a member from an ORY Access Control Policy Role
  * Roles group several subjects into one. Rules can be assigned to ORY Access Control Policy (OACP) by using the Role ID as subject in the OACP.
  *
- * @param flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;.
+ * @param flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot;.
  * @param id The ID of the ORY Access Control Policy Role.
  * @param body
  * @return void
@@ -611,7 +611,7 @@ func (a EnginesApi) RemoveOryAccessControlPolicyRoleMembers(flavor string, id st
  *
  * Upsert an ORY Access Control Policy
  *
- * @param flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;.
+ * @param flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot;.
  * @param body
  * @return *OryAccessControlPolicy
  */
@@ -675,7 +675,7 @@ func (a EnginesApi) UpsertOryAccessControlPolicy(flavor string, body OryAccessCo
  * Upsert an ORY Access Control Policy Role
  * Roles group several subjects into one. Rules can be assigned to ORY Access Control Policy (OACP) by using the Role ID as subject in the OACP.
  *
- * @param flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;.
+ * @param flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot;.
  * @param body
  * @return *OryAccessControlPolicyRole
  */

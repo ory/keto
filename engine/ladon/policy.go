@@ -45,6 +45,6 @@ type Policy struct {
 	// Effect is the effect of this ORY Access Policy. It can be "allow" or "deny".
 	Effect string `json:"effect"`
 
-	// Conditions represents an array of conditions under which this ORY Access Policy is active.
-	Conditions []map[string]interface{} `json:"conditions"`
+	// Conditions represents a keyed object of conditions under which this ORY Access Policy is active.
+	Conditions map[string]interface{} `json:"conditions"`
 }

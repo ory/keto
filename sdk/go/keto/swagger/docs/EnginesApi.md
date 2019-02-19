@@ -29,7 +29,7 @@ Roles group several subjects into one. Rules can be assigned to ORY Access Contr
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **flavor** | **string**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;. | 
+ **flavor** | **string**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot;. | 
  **id** | **string**| The ID of the ORY Access Control Policy Role. | 
  **body** | [**AddOryAccessControlPolicyRoleMembersBody**](AddOryAccessControlPolicyRoleMembersBody.md)|  | [optional] 
 
@@ -60,7 +60,7 @@ Delete an ORY Access Control Policy
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **flavor** | **string**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;. | 
+ **flavor** | **string**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot;. | 
  **id** | **string**| The ID of the ORY Access Control Policy Role. | 
 
 ### Return type
@@ -90,7 +90,7 @@ Roles group several subjects into one. Rules can be assigned to ORY Access Contr
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **flavor** | **string**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;. | 
+ **flavor** | **string**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot;. | 
  **id** | **string**| The ID of the ORY Access Control Policy Role. | 
 
 ### Return type
@@ -120,7 +120,7 @@ Use this endpoint to check if a request is allowed or not.
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **flavor** | **string**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;. | 
+ **flavor** | **string**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot;. | 
  **body** | [**OryAccessControlPolicyAllowedInput**](OryAccessControlPolicyAllowedInput.md)|  | [optional] 
 
 ### Return type
@@ -150,7 +150,7 @@ Get an ORY Access Control Policy
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **flavor** | **string**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;. | 
+ **flavor** | **string**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot;. | 
  **id** | **string**| The ID of the ORY Access Control Policy Role. | 
 
 ### Return type
@@ -180,7 +180,7 @@ Roles group several subjects into one. Rules can be assigned to ORY Access Contr
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **flavor** | **string**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;. | 
+ **flavor** | **string**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot;. | 
  **id** | **string**| The ID of the ORY Access Control Policy Role. | 
 
 ### Return type
@@ -210,7 +210,7 @@ List ORY Access Control Policies
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **flavor** | **string**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot; | 
+ **flavor** | **string**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot; | 
  **limit** | **int64**| The maximum amount of policies returned. | [optional] 
  **offset** | **int64**| The offset from where to start looking. | [optional] 
 
@@ -241,7 +241,7 @@ Roles group several subjects into one. Rules can be assigned to ORY Access Contr
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **flavor** | **string**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot; | 
+ **flavor** | **string**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot; | 
  **limit** | **int64**| The maximum amount of policies returned. | [optional] 
  **offset** | **int64**| The offset from where to start looking. | [optional] 
 
@@ -272,7 +272,7 @@ Roles group several subjects into one. Rules can be assigned to ORY Access Contr
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **flavor** | **string**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;. | 
+ **flavor** | **string**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot;. | 
  **id** | **string**| The ID of the ORY Access Control Policy Role. | 
  **body** | [**RemoveOryAccessControlPolicyRoleMembersBody**](RemoveOryAccessControlPolicyRoleMembersBody.md)|  | [optional] 
 
@@ -303,7 +303,7 @@ Upsert an ORY Access Control Policy
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **flavor** | **string**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;. | 
+ **flavor** | **string**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot;. | 
  **body** | [**OryAccessControlPolicy**](OryAccessControlPolicy.md)|  | [optional] 
 
 ### Return type
@@ -333,7 +333,7 @@ Roles group several subjects into one. Rules can be assigned to ORY Access Contr
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **flavor** | **string**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;. | 
+ **flavor** | **string**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot;. | 
  **body** | [**OryAccessControlPolicyRole**](OryAccessControlPolicyRole.md)|  | [optional] 
 
 ### Return type

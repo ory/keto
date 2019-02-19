@@ -44,7 +44,7 @@
    * Constructs a new <code>ListOryAccessControlPolicies</code>.
    * @alias module:model/ListOryAccessControlPolicies
    * @class
-   * @param flavor {String} The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\"  in: path
+   * @param flavor {String} The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\"  in: path
    */
   var exports = function(flavor) {
     var _this = this;
@@ -79,7 +79,7 @@
   }
 
   /**
-   * The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\"  in: path
+   * The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\"  in: path
    * @member {String} flavor
    */
   exports.prototype['flavor'] = undefined;

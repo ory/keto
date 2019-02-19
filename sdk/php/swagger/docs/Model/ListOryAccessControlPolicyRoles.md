@@ -3,7 +3,7 @@
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**flavor** | **string** | The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;  in: path | 
+**flavor** | **string** | The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot;  in: path | 
 **limit** | **int** | The maximum amount of policies returned.  in: query | [optional] 
 **offset** | **int** | The offset from where to start looking.  in: query | [optional] 
 

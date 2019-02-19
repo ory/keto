@@ -5,7 +5,7 @@
  * PHP version 5
  *
  * @category Class
- * @package  ketoSDK
+ * @package  keto\SDK
  * @author   Swaagger Codegen team
  * @link     https://github.com/swagger-api/swagger-codegen
  */
@@ -25,7 +25,7 @@
  * Do not edit the class manually.
  */
 
-namespace ketoSDK\Model;
+namespace keto\SDK\Model;
 
 use \ArrayAccess;
 
@@ -33,7 +33,7 @@ use \ArrayAccess;
  * OryAccessControlPolicy Class Doc Comment
  *
  * @category    Class
- * @package     ketoSDK
+ * @package     keto\SDK
  * @author      Swagger Codegen team
  * @link        https://github.com/swagger-api/swagger-codegen
  */
@@ -53,7 +53,7 @@ class OryAccessControlPolicy implements ArrayAccess
       */
     protected static $swaggerTypes = [
         'actions' => 'string[]',
-        'conditions' => 'map[string,object][]',
+        'conditions' => 'map[string,object]',
         'description' => 'string',
         'effect' => 'string',
         'id' => 'string',
@@ -217,7 +217,7 @@ class OryAccessControlPolicy implements ArrayAccess
 
     /**
      * Gets conditions
-     * @return map[string,object][]
+     * @return map[string,object]
      */
     public function getConditions()
     {
@@ -226,7 +226,7 @@ class OryAccessControlPolicy implements ArrayAccess
 
     /**
      * Sets conditions
-     * @param map[string,object][] $conditions Conditions represents an array of conditions under which this ORY Access Policy is active.
+     * @param map[string,object] $conditions Conditions represents a keyed object of conditions under which this ORY Access Policy is active.
      * @return $this
      */
     public function setConditions($conditions)
@@ -392,10 +392,10 @@ class OryAccessControlPolicy implements ArrayAccess
     public function __toString()
     {
         if (defined('JSON_PRETTY_PRINT')) { // use JSON pretty print
-            return json_encode(\ketoSDK\ObjectSerializer::sanitizeForSerialization($this), JSON_PRETTY_PRINT);
+            return json_encode(\keto\SDK\ObjectSerializer::sanitizeForSerialization($this), JSON_PRETTY_PRINT);
         }
 
-        return json_encode(\ketoSDK\ObjectSerializer::sanitizeForSerialization($this));
+        return json_encode(\keto\SDK\ObjectSerializer::sanitizeForSerialization($this));
     }
 }
 

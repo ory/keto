@@ -4,7 +4,7 @@
  * PHP version 5
  *
  * @category Class
- * @package  ketoSDK
+ * @package  keto\SDK
  * @author   Swagger Codegen team
  * @link     https://github.com/swagger-api/swagger-codegen
  */
@@ -24,18 +24,18 @@
  * Do not edit the class manually.
  */
 
-namespace ketoSDK\Api;
+namespace keto\SDK\Api;
 
-use \ketoSDK\ApiClient;
-use \ketoSDK\ApiException;
-use \ketoSDK\Configuration;
-use \ketoSDK\ObjectSerializer;
+use \keto\SDK\ApiClient;
+use \keto\SDK\ApiException;
+use \keto\SDK\Configuration;
+use \keto\SDK\ObjectSerializer;
 
 /**
  * HealthApi Class Doc Comment
  *
  * @category Class
- * @package  ketoSDK
+ * @package  keto\SDK
  * @author   Swagger Codegen team
  * @link     https://github.com/swagger-api/swagger-codegen
  */
@@ -44,16 +44,16 @@ class HealthApi
     /**
      * API Client
      *
-     * @var \ketoSDK\ApiClient instance of the ApiClient
+     * @var \keto\SDK\ApiClient instance of the ApiClient
      */
     protected $apiClient;
 
     /**
      * Constructor
      *
-     * @param \ketoSDK\ApiClient|null $apiClient The api client to use
+     * @param \keto\SDK\ApiClient|null $apiClient The api client to use
      */
-    public function __construct(\ketoSDK\ApiClient $apiClient = null)
+    public function __construct(\keto\SDK\ApiClient $apiClient = null)
     {
         if ($apiClient === null) {
             $apiClient = new ApiClient();
@@ -65,7 +65,7 @@ class HealthApi
     /**
      * Get API client
      *
-     * @return \ketoSDK\ApiClient get the API client
+     * @return \keto\SDK\ApiClient get the API client
      */
     public function getApiClient()
     {
@@ -75,11 +75,11 @@ class HealthApi
     /**
      * Set the API client
      *
-     * @param \ketoSDK\ApiClient $apiClient set the API client
+     * @param \keto\SDK\ApiClient $apiClient set the API client
      *
      * @return HealthApi
      */
-    public function setApiClient(\ketoSDK\ApiClient $apiClient)
+    public function setApiClient(\keto\SDK\ApiClient $apiClient)
     {
         $this->apiClient = $apiClient;
         return $this;
@@ -92,8 +92,8 @@ class HealthApi
      *
      * Client for keto
      *
-     * @throws \ketoSDK\ApiException on non-2xx response
-     * @return \ketoSDK\Model\HealthStatus
+     * @throws \keto\SDK\ApiException on non-2xx response
+     * @return \keto\SDK\Model\HealthStatus
      */
     public function isInstanceAlive()
     {
@@ -108,8 +108,8 @@ class HealthApi
      *
      * Client for keto
      *
-     * @throws \ketoSDK\ApiException on non-2xx response
-     * @return array of \ketoSDK\Model\HealthStatus, HTTP status code, HTTP response headers (array of strings)
+     * @throws \keto\SDK\ApiException on non-2xx response
+     * @return array of \keto\SDK\Model\HealthStatus, HTTP status code, HTTP response headers (array of strings)
      */
     public function isInstanceAliveWithHttpInfo()
     {
@@ -140,19 +140,19 @@ class HealthApi
                 $queryParams,
                 $httpBody,
                 $headerParams,
-                '\ketoSDK\Model\HealthStatus',
+                '\keto\SDK\Model\HealthStatus',
                 '/health/alive'
             );
 
-            return [$this->apiClient->getSerializer()->deserialize($response, '\ketoSDK\Model\HealthStatus', $httpHeader), $statusCode, $httpHeader];
+            return [$this->apiClient->getSerializer()->deserialize($response, '\keto\SDK\Model\HealthStatus', $httpHeader), $statusCode, $httpHeader];
         } catch (ApiException $e) {
             switch ($e->getCode()) {
                 case 200:
-                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\ketoSDK\Model\HealthStatus', $e->getResponseHeaders());
+                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\keto\SDK\Model\HealthStatus', $e->getResponseHeaders());
                     $e->setResponseObject($data);
                     break;
                 case 500:
-                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\ketoSDK\Model\InlineResponse500', $e->getResponseHeaders());
+                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\keto\SDK\Model\InlineResponse500', $e->getResponseHeaders());
                     $e->setResponseObject($data);
                     break;
             }
@@ -168,8 +168,8 @@ class HealthApi
      *
      * Client for keto
      *
-     * @throws \ketoSDK\ApiException on non-2xx response
-     * @return \ketoSDK\Model\HealthStatus
+     * @throws \keto\SDK\ApiException on non-2xx response
+     * @return \keto\SDK\Model\HealthStatus
      */
     public function isInstanceReady()
     {
@@ -184,8 +184,8 @@ class HealthApi
      *
      * Client for keto
      *
-     * @throws \ketoSDK\ApiException on non-2xx response
-     * @return array of \ketoSDK\Model\HealthStatus, HTTP status code, HTTP response headers (array of strings)
+     * @throws \keto\SDK\ApiException on non-2xx response
+     * @return array of \keto\SDK\Model\HealthStatus, HTTP status code, HTTP response headers (array of strings)
      */
     public function isInstanceReadyWithHttpInfo()
     {
@@ -216,19 +216,19 @@ class HealthApi
                 $queryParams,
                 $httpBody,
                 $headerParams,
-                '\ketoSDK\Model\HealthStatus',
+                '\keto\SDK\Model\HealthStatus',
                 '/health/ready'
             );
 
-            return [$this->apiClient->getSerializer()->deserialize($response, '\ketoSDK\Model\HealthStatus', $httpHeader), $statusCode, $httpHeader];
+            return [$this->apiClient->getSerializer()->deserialize($response, '\keto\SDK\Model\HealthStatus', $httpHeader), $statusCode, $httpHeader];
         } catch (ApiException $e) {
             switch ($e->getCode()) {
                 case 200:
-                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\ketoSDK\Model\HealthStatus', $e->getResponseHeaders());
+                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\keto\SDK\Model\HealthStatus', $e->getResponseHeaders());
                     $e->setResponseObject($data);
                     break;
                 case 503:
-                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\ketoSDK\Model\HealthNotReadyStatus', $e->getResponseHeaders());
+                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\keto\SDK\Model\HealthNotReadyStatus', $e->getResponseHeaders());
                     $e->setResponseObject($data);
                     break;
             }

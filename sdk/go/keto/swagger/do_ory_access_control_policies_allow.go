@@ -11,6 +11,6 @@ package swagger
 type DoOryAccessControlPoliciesAllow struct {
 	Body OryAccessControlPolicyAllowedInput `json:"Body,omitempty"`
 
-	// The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".  in: path
+	// The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".  in: path
 	Flavor string `json:"flavor"`
 }
