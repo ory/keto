@@ -895,13 +895,10 @@
           "x-go-name": "Actions"
         },
         "conditions": {
-          "description": "Conditions represents an array of conditions under which this ORY Access Policy is active.",
-          "type": "array",
-          "items": {
-            "type": "object",
-            "additionalProperties": {
-              "type": "object"
-            }
+          "description": "Conditions represents a keyed object of conditions under which this ORY Access Policy is active.",
+          "type": "object",
+          "additionalProperties": {
+            "type": "object"
           },
           "x-go-name": "Conditions"
         },
