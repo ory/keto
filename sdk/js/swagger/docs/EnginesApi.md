@@ -31,7 +31,7 @@ var SwaggerJsClient = require('swagger-js-client');
 
 var apiInstance = new SwaggerJsClient.EnginesApi();
 
-var flavor = "flavor_example"; // String | The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".
+var flavor = "flavor_example"; // String | The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".
 
 var id = "id_example"; // String | The ID of the ORY Access Control Policy Role.
 
@@ -53,7 +53,7 @@ apiInstance.addOryAccessControlPolicyRoleMembers(flavor, id, opts, callback);
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **flavor** | **String**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;. | 
+ **flavor** | **String**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot;. | 
  **id** | **String**| The ID of the ORY Access Control Policy Role. | 
  **body** | [**AddOryAccessControlPolicyRoleMembersBody**](AddOryAccessControlPolicyRoleMembersBody.md)|  | [optional] 
 
@@ -84,7 +84,7 @@ var SwaggerJsClient = require('swagger-js-client');
 
 var apiInstance = new SwaggerJsClient.EnginesApi();
 
-var flavor = "flavor_example"; // String | The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".
+var flavor = "flavor_example"; // String | The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".
 
 var id = "id_example"; // String | The ID of the ORY Access Control Policy Role.
 
@@ -103,7 +103,7 @@ apiInstance.deleteOryAccessControlPolicy(flavor, id, callback);
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **flavor** | **String**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;. | 
+ **flavor** | **String**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot;. | 
  **id** | **String**| The ID of the ORY Access Control Policy Role. | 
 
 ### Return type
@@ -133,7 +133,7 @@ var SwaggerJsClient = require('swagger-js-client');
 
 var apiInstance = new SwaggerJsClient.EnginesApi();
 
-var flavor = "flavor_example"; // String | The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".
+var flavor = "flavor_example"; // String | The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".
 
 var id = "id_example"; // String | The ID of the ORY Access Control Policy Role.
 
@@ -152,7 +152,7 @@ apiInstance.deleteOryAccessControlPolicyRole(flavor, id, callback);
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **flavor** | **String**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;. | 
+ **flavor** | **String**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot;. | 
  **id** | **String**| The ID of the ORY Access Control Policy Role. | 
 
 ### Return type
@@ -182,7 +182,7 @@ var SwaggerJsClient = require('swagger-js-client');
 
 var apiInstance = new SwaggerJsClient.EnginesApi();
 
-var flavor = "flavor_example"; // String | The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".
+var flavor = "flavor_example"; // String | The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".
 
 var opts = { 
   'body': new SwaggerJsClient.OryAccessControlPolicyAllowedInput() // OryAccessControlPolicyAllowedInput | 
@@ -202,7 +202,7 @@ apiInstance.doOryAccessControlPoliciesAllow(flavor, opts, callback);
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **flavor** | **String**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;. | 
+ **flavor** | **String**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot;. | 
  **body** | [**OryAccessControlPolicyAllowedInput**](OryAccessControlPolicyAllowedInput.md)|  | [optional] 
 
 ### Return type
@@ -232,7 +232,7 @@ var SwaggerJsClient = require('swagger-js-client');
 
 var apiInstance = new SwaggerJsClient.EnginesApi();
 
-var flavor = "flavor_example"; // String | The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".
+var flavor = "flavor_example"; // String | The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".
 
 var id = "id_example"; // String | The ID of the ORY Access Control Policy Role.
 
@@ -251,7 +251,7 @@ apiInstance.getOryAccessControlPolicy(flavor, id, callback);
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **flavor** | **String**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;. | 
+ **flavor** | **String**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot;. | 
  **id** | **String**| The ID of the ORY Access Control Policy Role. | 
 
 ### Return type
@@ -281,7 +281,7 @@ var SwaggerJsClient = require('swagger-js-client');
 
 var apiInstance = new SwaggerJsClient.EnginesApi();
 
-var flavor = "flavor_example"; // String | The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".
+var flavor = "flavor_example"; // String | The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".
 
 var id = "id_example"; // String | The ID of the ORY Access Control Policy Role.
 
@@ -300,7 +300,7 @@ apiInstance.getOryAccessControlPolicyRole(flavor, id, callback);
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **flavor** | **String**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;. | 
+ **flavor** | **String**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot;. | 
  **id** | **String**| The ID of the ORY Access Control Policy Role. | 
 
 ### Return type
@@ -330,7 +330,7 @@ var SwaggerJsClient = require('swagger-js-client');
 
 var apiInstance = new SwaggerJsClient.EnginesApi();
 
-var flavor = "flavor_example"; // String | The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\"
+var flavor = "flavor_example"; // String | The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\"
 
 var opts = { 
   'limit': 789, // Number | The maximum amount of policies returned.
@@ -351,7 +351,7 @@ apiInstance.listOryAccessControlPolicies(flavor, opts, callback);
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **flavor** | **String**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot; | 
+ **flavor** | **String**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot; | 
  **limit** | **Number**| The maximum amount of policies returned. | [optional] 
  **offset** | **Number**| The offset from where to start looking. | [optional] 
 
@@ -382,7 +382,7 @@ var SwaggerJsClient = require('swagger-js-client');
 
 var apiInstance = new SwaggerJsClient.EnginesApi();
 
-var flavor = "flavor_example"; // String | The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\"
+var flavor = "flavor_example"; // String | The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\"
 
 var opts = { 
   'limit': 789, // Number | The maximum amount of policies returned.
@@ -403,7 +403,7 @@ apiInstance.listOryAccessControlPolicyRoles(flavor, opts, callback);
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **flavor** | **String**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot; | 
+ **flavor** | **String**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot; | 
  **limit** | **Number**| The maximum amount of policies returned. | [optional] 
  **offset** | **Number**| The offset from where to start looking. | [optional] 
 
@@ -434,7 +434,7 @@ var SwaggerJsClient = require('swagger-js-client');
 
 var apiInstance = new SwaggerJsClient.EnginesApi();
 
-var flavor = "flavor_example"; // String | The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".
+var flavor = "flavor_example"; // String | The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".
 
 var id = "id_example"; // String | The ID of the ORY Access Control Policy Role.
 
@@ -456,7 +456,7 @@ apiInstance.removeOryAccessControlPolicyRoleMembers(flavor, id, opts, callback);
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **flavor** | **String**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;. | 
+ **flavor** | **String**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot;. | 
  **id** | **String**| The ID of the ORY Access Control Policy Role. | 
  **body** | [**RemoveOryAccessControlPolicyRoleMembersBody**](RemoveOryAccessControlPolicyRoleMembersBody.md)|  | [optional] 
 
@@ -487,7 +487,7 @@ var SwaggerJsClient = require('swagger-js-client');
 
 var apiInstance = new SwaggerJsClient.EnginesApi();
 
-var flavor = "flavor_example"; // String | The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".
+var flavor = "flavor_example"; // String | The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".
 
 var opts = { 
   'body': new SwaggerJsClient.OryAccessControlPolicy() // OryAccessControlPolicy | 
@@ -507,7 +507,7 @@ apiInstance.upsertOryAccessControlPolicy(flavor, opts, callback);
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **flavor** | **String**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;. | 
+ **flavor** | **String**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot;. | 
  **body** | [**OryAccessControlPolicy**](OryAccessControlPolicy.md)|  | [optional] 
 
 ### Return type
@@ -537,7 +537,7 @@ var SwaggerJsClient = require('swagger-js-client');
 
 var apiInstance = new SwaggerJsClient.EnginesApi();
 
-var flavor = "flavor_example"; // String | The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".
+var flavor = "flavor_example"; // String | The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".
 
 var opts = { 
   'body': new SwaggerJsClient.OryAccessControlPolicyRole() // OryAccessControlPolicyRole | 
@@ -557,7 +557,7 @@ apiInstance.upsertOryAccessControlPolicyRole(flavor, opts, callback);
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **flavor** | **String**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot; and \&quot;exact\&quot;. | 
+ **flavor** | **String**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot;. | 
  **body** | [**OryAccessControlPolicyRole**](OryAccessControlPolicyRole.md)|  | [optional] 
 
 ### Return type
