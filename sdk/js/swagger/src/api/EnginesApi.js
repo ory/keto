@@ -17,18 +17,18 @@
 (function(root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module.
-    define(['ApiClient', 'model/AddOryAccessControlPolicyRoleMembersBody', 'model/AuthorizationResult', 'model/InlineResponse500', 'model/OryAccessControlPolicy', 'model/OryAccessControlPolicyAllowedInput', 'model/OryAccessControlPolicyRole', 'model/RemoveOryAccessControlPolicyRoleMembersBody'], factory);
+    define(['ApiClient', 'model/AddOryAccessControlPolicyRoleMembersBody', 'model/AuthorizationResult', 'model/InlineResponse500', 'model/OryAccessControlPolicy', 'model/OryAccessControlPolicyAllowedInput', 'model/OryAccessControlPolicyRole'], factory);
   } else if (typeof module === 'object' && module.exports) {
     // CommonJS-like environments that support module.exports, like Node.
-    module.exports = factory(require('../ApiClient'), require('../model/AddOryAccessControlPolicyRoleMembersBody'), require('../model/AuthorizationResult'), require('../model/InlineResponse500'), require('../model/OryAccessControlPolicy'), require('../model/OryAccessControlPolicyAllowedInput'), require('../model/OryAccessControlPolicyRole'), require('../model/RemoveOryAccessControlPolicyRoleMembersBody'));
+    module.exports = factory(require('../ApiClient'), require('../model/AddOryAccessControlPolicyRoleMembersBody'), require('../model/AuthorizationResult'), require('../model/InlineResponse500'), require('../model/OryAccessControlPolicy'), require('../model/OryAccessControlPolicyAllowedInput'), require('../model/OryAccessControlPolicyRole'));
   } else {
     // Browser globals (root is window)
     if (!root.SwaggerJsClient) {
       root.SwaggerJsClient = {};
     }
-    root.SwaggerJsClient.EnginesApi = factory(root.SwaggerJsClient.ApiClient, root.SwaggerJsClient.AddOryAccessControlPolicyRoleMembersBody, root.SwaggerJsClient.AuthorizationResult, root.SwaggerJsClient.InlineResponse500, root.SwaggerJsClient.OryAccessControlPolicy, root.SwaggerJsClient.OryAccessControlPolicyAllowedInput, root.SwaggerJsClient.OryAccessControlPolicyRole, root.SwaggerJsClient.RemoveOryAccessControlPolicyRoleMembersBody);
+    root.SwaggerJsClient.EnginesApi = factory(root.SwaggerJsClient.ApiClient, root.SwaggerJsClient.AddOryAccessControlPolicyRoleMembersBody, root.SwaggerJsClient.AuthorizationResult, root.SwaggerJsClient.InlineResponse500, root.SwaggerJsClient.OryAccessControlPolicy, root.SwaggerJsClient.OryAccessControlPolicyAllowedInput, root.SwaggerJsClient.OryAccessControlPolicyRole);
   }
-}(this, function(ApiClient, AddOryAccessControlPolicyRoleMembersBody, AuthorizationResult, InlineResponse500, OryAccessControlPolicy, OryAccessControlPolicyAllowedInput, OryAccessControlPolicyRole, RemoveOryAccessControlPolicyRoleMembersBody) {
+}(this, function(ApiClient, AddOryAccessControlPolicyRoleMembersBody, AuthorizationResult, InlineResponse500, OryAccessControlPolicy, OryAccessControlPolicyAllowedInput, OryAccessControlPolicyRole) {
   'use strict';
 
   /**
@@ -477,13 +477,11 @@
      * Roles group several subjects into one. Rules can be assigned to ORY Access Control Policy (OACP) by using the Role ID as subject in the OACP.
      * @param {String} flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot;.
      * @param {String} id The ID of the ORY Access Control Policy Role.
-     * @param {Object} opts Optional parameters
-     * @param {module:model/RemoveOryAccessControlPolicyRoleMembersBody} opts.body 
+     * @param {String} member The member to be removed.
      * @param {module:api/EnginesApi~removeOryAccessControlPolicyRoleMembersCallback} callback The callback function, accepting three arguments: error, data, response
      */
-    this.removeOryAccessControlPolicyRoleMembers = function(flavor, id, opts, callback) {
-      opts = opts || {};
-      var postBody = opts['body'];
+    this.removeOryAccessControlPolicyRoleMembers = function(flavor, id, member, callback) {
+      var postBody = null;
 
       // verify the required parameter 'flavor' is set
       if (flavor === undefined || flavor === null) {
@@ -495,10 +493,16 @@
         throw new Error("Missing the required parameter 'id' when calling removeOryAccessControlPolicyRoleMembers");
       }
 
+      // verify the required parameter 'member' is set
+      if (member === undefined || member === null) {
+        throw new Error("Missing the required parameter 'member' when calling removeOryAccessControlPolicyRoleMembers");
+      }
+
 
       var pathParams = {
         'flavor': flavor,
-        'id': id
+        'id': id,
+        'member': member
       };
       var queryParams = {
       };
@@ -513,7 +517,7 @@
       var returnType = null;
 
       return this.apiClient.callApi(
-        '/engines/acp/ory/{flavor}/roles/{id}/members', 'DELETE',
+        '/engines/acp/ory/{flavor}/roles/{id}/members/{member}', 'DELETE',
         pathParams, queryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType, callback
       );

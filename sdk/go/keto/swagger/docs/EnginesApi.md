@@ -12,7 +12,7 @@ Method | HTTP request | Description
 [**GetOryAccessControlPolicyRole**](EnginesApi.md#GetOryAccessControlPolicyRole) | **Get** /engines/acp/ory/{flavor}/roles/{id} | Get an ORY Access Control Policy Role
 [**ListOryAccessControlPolicies**](EnginesApi.md#ListOryAccessControlPolicies) | **Get** /engines/acp/ory/{flavor}/policies | 
 [**ListOryAccessControlPolicyRoles**](EnginesApi.md#ListOryAccessControlPolicyRoles) | **Get** /engines/acp/ory/{flavor}/roles | List ORY Access Control Policy Roles
-[**RemoveOryAccessControlPolicyRoleMembers**](EnginesApi.md#RemoveOryAccessControlPolicyRoleMembers) | **Delete** /engines/acp/ory/{flavor}/roles/{id}/members | Remove a member from an ORY Access Control Policy Role
+[**RemoveOryAccessControlPolicyRoleMembers**](EnginesApi.md#RemoveOryAccessControlPolicyRoleMembers) | **Delete** /engines/acp/ory/{flavor}/roles/{id}/members/{member} | Remove a member from an ORY Access Control Policy Role
 [**UpsertOryAccessControlPolicy**](EnginesApi.md#UpsertOryAccessControlPolicy) | **Put** /engines/acp/ory/{flavor}/policies | 
 [**UpsertOryAccessControlPolicyRole**](EnginesApi.md#UpsertOryAccessControlPolicyRole) | **Put** /engines/acp/ory/{flavor}/roles | Upsert an ORY Access Control Policy Role
 
@@ -261,7 +261,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **RemoveOryAccessControlPolicyRoleMembers**
-> RemoveOryAccessControlPolicyRoleMembers($flavor, $id, $body)
+> RemoveOryAccessControlPolicyRoleMembers($flavor, $id, $member)
 
 Remove a member from an ORY Access Control Policy Role
 
@@ -274,7 +274,7 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **flavor** | **string**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot;. | 
  **id** | **string**| The ID of the ORY Access Control Policy Role. | 
- **body** | [**RemoveOryAccessControlPolicyRoleMembersBody**](RemoveOryAccessControlPolicyRoleMembersBody.md)|  | [optional] 
+ **member** | **string**| The member to be removed. | 
 
 ### Return type
 

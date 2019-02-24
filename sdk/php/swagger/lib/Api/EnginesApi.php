@@ -910,13 +910,13 @@ class EnginesApi
      *
      * @param string $flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot;. (required)
      * @param string $id The ID of the ORY Access Control Policy Role. (required)
-     * @param \keto\SDK\Model\RemoveOryAccessControlPolicyRoleMembersBody $body  (optional)
+     * @param string $member The member to be removed. (required)
      * @throws \keto\SDK\ApiException on non-2xx response
      * @return void
      */
-    public function removeOryAccessControlPolicyRoleMembers($flavor, $id, $body = null)
+    public function removeOryAccessControlPolicyRoleMembers($flavor, $id, $member)
     {
-        list($response) = $this->removeOryAccessControlPolicyRoleMembersWithHttpInfo($flavor, $id, $body);
+        list($response) = $this->removeOryAccessControlPolicyRoleMembersWithHttpInfo($flavor, $id, $member);
         return $response;
     }
 
@@ -929,11 +929,11 @@ class EnginesApi
      *
      * @param string $flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot;. (required)
      * @param string $id The ID of the ORY Access Control Policy Role. (required)
-     * @param \keto\SDK\Model\RemoveOryAccessControlPolicyRoleMembersBody $body  (optional)
+     * @param string $member The member to be removed. (required)
      * @throws \keto\SDK\ApiException on non-2xx response
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
-    public function removeOryAccessControlPolicyRoleMembersWithHttpInfo($flavor, $id, $body = null)
+    public function removeOryAccessControlPolicyRoleMembersWithHttpInfo($flavor, $id, $member)
     {
         // verify the required parameter 'flavor' is set
         if ($flavor === null) {
@@ -943,8 +943,12 @@ class EnginesApi
         if ($id === null) {
             throw new \InvalidArgumentException('Missing the required parameter $id when calling removeOryAccessControlPolicyRoleMembers');
         }
+        // verify the required parameter 'member' is set
+        if ($member === null) {
+            throw new \InvalidArgumentException('Missing the required parameter $member when calling removeOryAccessControlPolicyRoleMembers');
+        }
         // parse inputs
-        $resourcePath = "/engines/acp/ory/{flavor}/roles/{id}/members";
+        $resourcePath = "/engines/acp/ory/{flavor}/roles/{id}/members/{member}";
         $httpBody = '';
         $queryParams = [];
         $headerParams = [];
@@ -971,10 +975,13 @@ class EnginesApi
                 $resourcePath
             );
         }
-        // body params
-        $_tempBody = null;
-        if (isset($body)) {
-            $_tempBody = $body;
+        // path params
+        if ($member !== null) {
+            $resourcePath = str_replace(
+                "{" . "member" . "}",
+                $this->apiClient->getSerializer()->toPathValue($member),
+                $resourcePath
+            );
         }
 
         // for model (json/xml)
@@ -992,7 +999,7 @@ class EnginesApi
                 $httpBody,
                 $headerParams,
                 null,
-                '/engines/acp/ory/{flavor}/roles/{id}/members'
+                '/engines/acp/ory/{flavor}/roles/{id}/members/{member}'
             );
 
             return [null, $statusCode, $httpHeader];

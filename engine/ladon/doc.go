@@ -139,12 +139,6 @@ type addOryAccessControlPolicyRoleMembers struct {
 	Body addOryAccessControlPolicyRoleMembersBody
 }
 
-// swagger:model removeOryAccessControlPolicyRoleMembersBody
-type removeOryAccessControlPolicyRoleMembersBody struct {
-	// The members to be removed.
-	Members []string `json:"members"`
-}
-
 // swagger:parameters removeOryAccessControlPolicyRoleMembers
 type removeOryAccessControlPolicyRoleMembers struct {
 	// The ORY Access Control Policy flavor. Can be "regex", "glob", and "exact".
@@ -159,8 +153,11 @@ type removeOryAccessControlPolicyRoleMembers struct {
 	// required: true
 	ID string `json:"id"`
 
-	// in: body
-	Body removeOryAccessControlPolicyRoleMembersBody
+	// The member to be removed.
+	//
+	// in: path
+	// required: true
+	Member string `json:"member"`
 }
 
 // Policies is an array of policies.

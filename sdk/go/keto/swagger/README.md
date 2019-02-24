@@ -30,7 +30,7 @@ Class | Method | HTTP request | Description
 *EnginesApi* | [**GetOryAccessControlPolicyRole**](docs/EnginesApi.md#getoryaccesscontrolpolicyrole) | **Get** /engines/acp/ory/{flavor}/roles/{id} | Get an ORY Access Control Policy Role
 *EnginesApi* | [**ListOryAccessControlPolicies**](docs/EnginesApi.md#listoryaccesscontrolpolicies) | **Get** /engines/acp/ory/{flavor}/policies | 
 *EnginesApi* | [**ListOryAccessControlPolicyRoles**](docs/EnginesApi.md#listoryaccesscontrolpolicyroles) | **Get** /engines/acp/ory/{flavor}/roles | List ORY Access Control Policy Roles
-*EnginesApi* | [**RemoveOryAccessControlPolicyRoleMembers**](docs/EnginesApi.md#removeoryaccesscontrolpolicyrolemembers) | **Delete** /engines/acp/ory/{flavor}/roles/{id}/members | Remove a member from an ORY Access Control Policy Role
+*EnginesApi* | [**RemoveOryAccessControlPolicyRoleMembers**](docs/EnginesApi.md#removeoryaccesscontrolpolicyrolemembers) | **Delete** /engines/acp/ory/{flavor}/roles/{id}/members/{member} | Remove a member from an ORY Access Control Policy Role
 *EnginesApi* | [**UpsertOryAccessControlPolicy**](docs/EnginesApi.md#upsertoryaccesscontrolpolicy) | **Put** /engines/acp/ory/{flavor}/policies | 
 *EnginesApi* | [**UpsertOryAccessControlPolicyRole**](docs/EnginesApi.md#upsertoryaccesscontrolpolicyrole) | **Put** /engines/acp/ory/{flavor}/roles | Upsert an ORY Access Control Policy Role
 *HealthApi* | [**IsInstanceAlive**](docs/HealthApi.md#isinstancealive) | **Get** /health/alive | Check alive status
@@ -61,7 +61,6 @@ Class | Method | HTTP request | Description
  - [OryAccessControlPolicyRoles](docs/OryAccessControlPolicyRoles.md)
  - [Policies](docs/Policies.md)
  - [RemoveOryAccessControlPolicyRoleMembers](docs/RemoveOryAccessControlPolicyRoleMembers.md)
- - [RemoveOryAccessControlPolicyRoleMembersBody](docs/RemoveOryAccessControlPolicyRoleMembersBody.md)
  - [UpsertOryAccessControlPolicy](docs/UpsertOryAccessControlPolicy.md)
  - [UpsertOryAccessControlPolicyRole](docs/UpsertOryAccessControlPolicyRole.md)
  - [Version](docs/Version.md)
