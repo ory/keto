@@ -275,10 +275,8 @@ var (
 				Subjects:  []string{"ken"},
 				Resources: []string{"forbidden_subject", "rn:hydra:token<.*>"},
 				Actions:   []string{"create", "decide"},
-				Conditions: []map[string]interface{}{
-					{
-						"subject": "ken",
-					},
+				Conditions: map[string]interface{}{
+					"subject": "ken",
 				},
 				Effect: Deny,
 			},
@@ -287,10 +285,8 @@ var (
 				Subjects:  []string{"ken"},
 				Resources: []string{"allowed_subject", "rn:hydra:token<.*>"},
 				Actions:   []string{"create", "decide"},
-				Conditions: []map[string]interface{}{
-					{
-						"subject": "ken",
-					},
+				Conditions: map[string]interface{}{
+					"subject": "ken",
 				},
 				Effect: Allow,
 			},
@@ -299,10 +295,8 @@ var (
 				Subjects:  []string{"group1"},
 				Resources: []string{"forbidden_subject", "rn:hydra:token<.*>"},
 				Actions:   []string{"create", "decide"},
-				Conditions: []map[string]interface{}{
-					{
-						"subject": "ken",
-					},
+				Conditions: map[string]interface{}{
+					"subject": "ken",
 				},
 				Effect: Deny,
 			},
@@ -311,10 +305,8 @@ var (
 				Subjects:  []string{"group1"},
 				Resources: []string{"allowed_subject", "rn:hydra:token<.*>"},
 				Actions:   []string{"create", "decide"},
-				Conditions: []map[string]interface{}{
-					{
-						"subject": "ken",
-					},
+				Conditions: map[string]interface{}{
+					"subject": "ken",
 				},
 				Effect: Allow,
 			},
@@ -323,10 +315,8 @@ var (
 				Subjects:  []string{"group1"},
 				Resources: []string{"forbidden_condition", "rn:hydra:token<.*>"},
 				Actions:   []string{"create", "decide"},
-				Conditions: []map[string]interface{}{
-					{
-						"group": "the-value-should-be-this",
-					},
+				Conditions: map[string]interface{}{
+					"group": "the-value-should-be-this",
 				},
 				Effect: Deny,
 			},
@@ -335,10 +325,8 @@ var (
 				Subjects:  []string{"group1"},
 				Resources: []string{"allowed_condition", "rn:hydra:token<.*>"},
 				Actions:   []string{"create", "decide"},
-				Conditions: []map[string]interface{}{
-					{
-						"group": "the-value-should-be-this",
-					},
+				Conditions: map[string]interface{}{
+					"group": "the-value-should-be-this",
 				},
 				Effect: Allow,
 			},
@@ -377,10 +365,8 @@ var (
 				Subjects:  []string{"ken"},
 				Resources: []string{"forbidden_subject", "rn:hydra:token"},
 				Actions:   []string{"create", "decide"},
-				Conditions: []map[string]interface{}{
-					{
-						"subject": "ken",
-					},
+				Conditions: map[string]interface{}{
+					"subject": "ken",
 				},
 				Effect: Deny,
 			},
@@ -389,10 +375,8 @@ var (
 				Subjects:  []string{"ken"},
 				Resources: []string{"allowed_subject", "rn:hydra:token"},
 				Actions:   []string{"create", "decide"},
-				Conditions: []map[string]interface{}{
-					{
-						"subject": "ken",
-					},
+				Conditions: map[string]interface{}{
+					"subject": "ken",
 				},
 				Effect: Allow,
 			},
@@ -401,10 +385,8 @@ var (
 				Subjects:  []string{"group1"},
 				Resources: []string{"forbidden_subject", "rn:hydra:token"},
 				Actions:   []string{"create", "decide"},
-				Conditions: []map[string]interface{}{
-					{
-						"subject": "ken",
-					},
+				Conditions: map[string]interface{}{
+					"subject": "ken",
 				},
 				Effect: Deny,
 			},
@@ -413,10 +395,8 @@ var (
 				Subjects:  []string{"group1"},
 				Resources: []string{"allowed_subject", "rn:hydra:token"},
 				Actions:   []string{"create", "decide"},
-				Conditions: []map[string]interface{}{
-					{
-						"subject": "ken",
-					},
+				Conditions: map[string]interface{}{
+					"subject": "ken",
 				},
 				Effect: Allow,
 			},
@@ -425,10 +405,8 @@ var (
 				Subjects:  []string{"group1"},
 				Resources: []string{"forbidden_subject", "rn:hydra:token"},
 				Actions:   []string{"create", "decide"},
-				Conditions: []map[string]interface{}{
-					{
-						"group": "the-value-should-be-this",
-					},
+				Conditions: map[string]interface{}{
+					"group": "the-value-should-be-this",
 				},
 				Effect: Deny,
 			},
@@ -437,10 +415,8 @@ var (
 				Subjects:  []string{"group1"},
 				Resources: []string{"allowed_subject", "rn:hydra:token"},
 				Actions:   []string{"create", "decide"},
-				Conditions: []map[string]interface{}{
-					{
-						"group": "the-value-should-be-this",
-					},
+				Conditions: map[string]interface{}{
+					"group": "the-value-should-be-this",
 				},
 				Effect: Allow,
 			},
