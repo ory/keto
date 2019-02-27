@@ -89,6 +89,21 @@ func TestMemoryManager(t *testing.T) {
 				assert.EqualValues(t, 1234, vs)
 			})
 
+			t.Run("case=upsert", func(t *testing.T) {
+				var v string
+				require.NoError(t, m.Upsert(ctx, "test-upsert", "foo", "bar"))
+				require.NoError(t, m.Get(ctx, "test-upsert", "foo", &v))
+				assert.Equal(t, "bar", v)
+
+				require.NoError(t, m.Upsert(ctx, "test-upsert", "foo", "baz"))
+				require.NoError(t, m.Get(ctx, "test-upsert", "foo", &v))
+				assert.Equal(t, "baz", v)
+
+				var vs []string
+				require.NoError(t, m.List(ctx, "test-upsert", &vs, 10, 0))
+				assert.Equal(t, 1, len(vs))
+			})
+
 			t.Run("case=list", func(t *testing.T) {
 				for i := 0; i < 10; i++ {
 					require.NoError(t, m.Upsert(ctx, "test-list", fmt.Sprintf("list-%d", i), i))

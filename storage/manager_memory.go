@@ -50,9 +50,21 @@ func (m *MemoryManager) Upsert(_ context.Context, collection, key string, value 
 
 	// no need to evaluate, just create collection if necessary.
 	m.collection(collection)
+
 	m.Lock()
-	m.items[collection] = append(m.items[collection], memoryItem{Key: key, Data: b.Bytes()})
-	m.Unlock()
+	defer m.Unlock()
+
+	var found bool
+	for k, i := range m.items[collection] {
+		if i.Key == key {
+			m.items[collection][k].Data = b.Bytes()
+			found = true
+			break
+		}
+	}
+	if !found {
+		m.items[collection] = append(m.items[collection], memoryItem{Key: key, Data: b.Bytes()})
+	}
 
 	return nil
 }
