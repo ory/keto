@@ -13,7 +13,7 @@ Method | HTTP request | Description
 [**getOryAccessControlPolicyRole**](EnginesApi.md#getOryAccessControlPolicyRole) | **GET** /engines/acp/ory/{flavor}/roles/{id} | Get an ORY Access Control Policy Role
 [**listOryAccessControlPolicies**](EnginesApi.md#listOryAccessControlPolicies) | **GET** /engines/acp/ory/{flavor}/policies | 
 [**listOryAccessControlPolicyRoles**](EnginesApi.md#listOryAccessControlPolicyRoles) | **GET** /engines/acp/ory/{flavor}/roles | List ORY Access Control Policy Roles
-[**removeOryAccessControlPolicyRoleMembers**](EnginesApi.md#removeOryAccessControlPolicyRoleMembers) | **DELETE** /engines/acp/ory/{flavor}/roles/{id}/members | Remove a member from an ORY Access Control Policy Role
+[**removeOryAccessControlPolicyRoleMembers**](EnginesApi.md#removeOryAccessControlPolicyRoleMembers) | **DELETE** /engines/acp/ory/{flavor}/roles/{id}/members/{member} | Remove a member from an ORY Access Control Policy Role
 [**upsertOryAccessControlPolicy**](EnginesApi.md#upsertOryAccessControlPolicy) | **PUT** /engines/acp/ory/{flavor}/policies | 
 [**upsertOryAccessControlPolicyRole**](EnginesApi.md#upsertOryAccessControlPolicyRole) | **PUT** /engines/acp/ory/{flavor}/roles | Upsert an ORY Access Control Policy Role
 
@@ -399,7 +399,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
 # **removeOryAccessControlPolicyRoleMembers**
-> removeOryAccessControlPolicyRoleMembers($flavor, $id, $body)
+> removeOryAccessControlPolicyRoleMembers($flavor, $id, $member)
 
 Remove a member from an ORY Access Control Policy Role
 
@@ -413,10 +413,10 @@ require_once(__DIR__ . '/vendor/autoload.php');
 $api_instance = new keto\SDK\Api\EnginesApi();
 $flavor = "flavor_example"; // string | The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".
 $id = "id_example"; // string | The ID of the ORY Access Control Policy Role.
-$body = new \keto\SDK\Model\RemoveOryAccessControlPolicyRoleMembersBody(); // \keto\SDK\Model\RemoveOryAccessControlPolicyRoleMembersBody | 
+$member = "member_example"; // string | The member to be removed.
 
 try {
-    $api_instance->removeOryAccessControlPolicyRoleMembers($flavor, $id, $body);
+    $api_instance->removeOryAccessControlPolicyRoleMembers($flavor, $id, $member);
 } catch (Exception $e) {
     echo 'Exception when calling EnginesApi->removeOryAccessControlPolicyRoleMembers: ', $e->getMessage(), PHP_EOL;
 }
@@ -429,7 +429,7 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **flavor** | **string**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot;. |
  **id** | **string**| The ID of the ORY Access Control Policy Role. |
- **body** | [**\keto\SDK\Model\RemoveOryAccessControlPolicyRoleMembersBody**](../Model/RemoveOryAccessControlPolicyRoleMembersBody.md)|  | [optional]
+ **member** | **string**| The member to be removed. |
 
 ### Return type
 

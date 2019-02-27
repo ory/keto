@@ -549,16 +549,17 @@ func (a EnginesApi) ListOryAccessControlPolicyRoles(flavor string, limit int64, 
  *
  * @param flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot;.
  * @param id The ID of the ORY Access Control Policy Role.
- * @param body
+ * @param member The member to be removed.
  * @return void
  */
-func (a EnginesApi) RemoveOryAccessControlPolicyRoleMembers(flavor string, id string, body RemoveOryAccessControlPolicyRoleMembersBody) (*APIResponse, error) {
+func (a EnginesApi) RemoveOryAccessControlPolicyRoleMembers(flavor string, id string, member string) (*APIResponse, error) {
 
 	var localVarHttpMethod = strings.ToUpper("Delete")
 	// create path and map variables
-	localVarPath := a.Configuration.BasePath + "/engines/acp/ory/{flavor}/roles/{id}/members"
+	localVarPath := a.Configuration.BasePath + "/engines/acp/ory/{flavor}/roles/{id}/members/{member}"
 	localVarPath = strings.Replace(localVarPath, "{"+"flavor"+"}", fmt.Sprintf("%v", flavor), -1)
 	localVarPath = strings.Replace(localVarPath, "{"+"id"+"}", fmt.Sprintf("%v", id), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"member"+"}", fmt.Sprintf("%v", member), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -589,8 +590,6 @@ func (a EnginesApi) RemoveOryAccessControlPolicyRoleMembers(flavor string, id st
 	if localVarHttpHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHttpHeaderAccept
 	}
-	// body params
-	localVarPostBody = &body
 	localVarHttpResponse, err := a.Configuration.APIClient.CallAPI(localVarPath, localVarHttpMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFileName, localVarFileBytes)
 
 	var localVarURL, _ = url.Parse(localVarPath)

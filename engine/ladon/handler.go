@@ -263,7 +263,7 @@ func (e *Engine) Register(r *httprouter.Router) {
 	//       500: genericError
 	r.PUT(BasePath+"/roles/:id/members", e.sh.Upsert(e.rolesMembersAdd))
 
-	// swagger:route DELETE /engines/acp/ory/{flavor}/roles/{id}/members engines removeOryAccessControlPolicyRoleMembers
+	// swagger:route DELETE /engines/acp/ory/{flavor}/roles/{id}/members/{member} engines removeOryAccessControlPolicyRoleMembers
 	//
 	// Remove a member from an ORY Access Control Policy Role
 	//

@@ -17,7 +17,7 @@ type SDK interface {
 	GetOryAccessControlPolicyRole(flavor string, id string) (*swagger.OryAccessControlPolicyRole, *swagger.APIResponse, error)
 	ListOryAccessControlPolicies(flavor string, limit int64, offset int64) ([]swagger.OryAccessControlPolicy, *swagger.APIResponse, error)
 	ListOryAccessControlPolicyRoles(flavor string, limit int64, offset int64) ([]swagger.OryAccessControlPolicyRole, *swagger.APIResponse, error)
-	RemoveOryAccessControlPolicyRoleMembers(flavor string, id string, body swagger.RemoveOryAccessControlPolicyRoleMembersBody) (*swagger.APIResponse, error)
+	RemoveOryAccessControlPolicyRoleMembers(flavor string, id string, member string) (*swagger.APIResponse, error)
 	UpsertOryAccessControlPolicy(flavor string, body swagger.OryAccessControlPolicy) (*swagger.OryAccessControlPolicy, *swagger.APIResponse, error)
 	UpsertOryAccessControlPolicyRole(flavor string, body swagger.OryAccessControlPolicyRole) (*swagger.OryAccessControlPolicyRole, *swagger.APIResponse, error)
 }
