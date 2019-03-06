@@ -2,7 +2,6 @@ package engine
 
 import (
 	"context"
-	"encoding/json"
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
@@ -48,10 +47,7 @@ func (h *Engine) Evaluate(e evaluator) httprouter.Handle {
 			return
 		}
 
-		if err := json.NewEncoder(w).Encode(&AuthorizationResult{Allowed: allowed}); err != nil {
-			h.h.WriteError(w, r, errors.WithStack(err))
-			return
-		}
+		h.h.Write(w, r, &AuthorizationResult{Allowed: allowed})
 	}
 }
 
