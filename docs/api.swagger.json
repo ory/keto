@@ -679,6 +679,9 @@
     "authorizationResult": {
       "type": "object",
       "title": "AuthorizationResult is the result of an access control decision. It contains the decision outcome.",
+      "required": [
+        "allowed"
+      ],
       "properties": {
         "allowed": {
           "description": "Allowed is true if the request should be allowed and false otherwise.",
@@ -799,7 +802,7 @@
         }
       },
       "x-go-name": "swaggerNotReadyStatus",
-      "x-go-package": "github.com/ory/x/healthx"
+      "x-go-package": "github.com/ory/keto/vendor/github.com/ory/x/healthx"
     },
     "healthStatus": {
       "type": "object",
@@ -811,7 +814,7 @@
         }
       },
       "x-go-name": "swaggerHealthStatus",
-      "x-go-package": "github.com/ory/x/healthx"
+      "x-go-package": "github.com/ory/keto/vendor/github.com/ory/x/healthx"
     },
     "listOryAccessControlPolicies": {
       "type": "object",
@@ -1087,7 +1090,7 @@
         }
       },
       "x-go-name": "swaggerVersion",
-      "x-go-package": "github.com/ory/x/healthx"
+      "x-go-package": "github.com/ory/keto/vendor/github.com/ory/x/healthx"
     }
   },
   "responses": {

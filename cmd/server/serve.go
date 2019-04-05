@@ -36,11 +36,11 @@ import (
 	"github.com/spf13/viper"
 	"github.com/urfave/negroni"
 
-	"github.com/ory/go-convenience/stringslice"
 	"github.com/ory/graceful"
 	"github.com/ory/herodot"
 	"github.com/ory/keto/engine"
 	"github.com/ory/keto/engine/ladon"
+	"github.com/ory/x/stringslice"
 
 	// This forces go mod vendor to look for the package rego and its subpackages
 	_ "github.com/ory/keto/engine/ladon/rego"
@@ -48,7 +48,6 @@ import (
 	"github.com/ory/x/cmdx"
 	"github.com/ory/x/corsx"
 	"github.com/ory/x/dbal"
-	"github.com/ory/x/flagx"
 	"github.com/ory/x/healthx"
 	"github.com/ory/x/metricsx"
 	"github.com/ory/x/tlsx"
@@ -90,34 +89,30 @@ func RunServe(
 
 		router := httprouter.New()
 		ladon.NewEngine(s, sh, e, writer).Register(router)
-		healthx.NewHandler(writer, buildVersion, checks).SetRoutes(router)
+		healthx.NewHandler(writer, buildVersion, checks).SetRoutes(router, true)
 
 		n := negroni.New()
 		n.Use(negronilogrus.NewMiddlewareFromLogger(logger, "keto"))
 
-		if flagx.MustGetBool(cmd, "disable-telemetry") {
-			logger.Println("Transmission of telemetry data is enabled, to learn more go to: https://www.ory.sh/docs/ecosystem/sqa")
-
-			m := metricsx.NewMetricsManager(
-				metricsx.Hash("DATABASE_URL"),
-				viper.GetString("DATABASE_URL") != "memory",
-				"jk32cFATnj9GKbQdFL7fBB9qtKZdX9j7",
-				stringslice.Merge(
+		metrics := metricsx.New(cmd, logger,
+			&metricsx.Options{
+				Service:          "ory-keto",
+				ClusterID:        metricsx.Hash(viper.GetString("DATABASE_URL")),
+				IsDevelopment:    viper.GetString("DATABASE_URL") != "memory",
+				WriteKey:         "jk32cFATnj9GKbQdFL7fBB9qtKZdX9j7",
+				WhitelistedPaths: stringslice.Merge(
 					healthx.RoutesToObserve(),
 					ladon.RoutesToObserve(),
 				),
-				logger,
-				"ory-keto",
-				100,
-				"",
-			)
-			go m.RegisterSegment(buildVersion, buildHash, buildTime)
-			go m.CommitMemoryStatistics()
-			n.Use(m)
-		}
+				BuildVersion:     buildVersion,
+				BuildTime:        buildHash,
+				BuildHash:        buildTime,
+			},
+		)
+		n.Use(metrics)
 
 		n.UseHandler(router)
-		c := corsx.Initialize(n, logger)
+		c := corsx.Initialize(n, logger, "")
 
 		addr := fmt.Sprintf("%s:%s", viper.GetString("HOST"), viper.GetString("PORT"))
 		server := graceful.WithDefaults(&http.Server{

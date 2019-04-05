@@ -12,7 +12,7 @@ import (
 	"github.com/pborman/uuid"
 	"github.com/pkg/errors"
 
-	"github.com/ory/go-convenience/stringslice"
+	"github.com/ory/x/stringslice"
 	"github.com/ory/herodot"
 	"github.com/ory/keto/engine"
 	kstorage "github.com/ory/keto/storage"
