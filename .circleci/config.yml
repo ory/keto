@@ -14,7 +14,7 @@ jobs:
           command: |
             echo 'export GO111MODULE=on' >> $BASH_ENV
             source $BASH_ENV
-      - run: curl -L https://git.io/vp6lP | sh
+      - run: curl -L https://git.io/vp6lP | sh -s -- -b ./bin
       - run: mv ./bin/* $GOPATH/bin
       - run: go mod download
       - run: gometalinter --disable-all --enable=gofmt --enable=vet --enable=gosec --vendor ./...
@@ -143,9 +143,11 @@ jobs:
             echo 'export GO111MODULE=on' >> $BASH_ENV
             source $BASH_ENV
       - checkout
-      - run: go get -u github.com/mitchellh/gox github.com/tcnksm/ghr
+      - run: GO111MODULE=off go get -u github.com/mitchellh/gox github.com/tcnksm/ghr github.com/gobuffalo/packr/packr
+      - run: packr
       - run: |
           gox -parallel=2 -ldflags "-X github.com/ory/keto/cmd.Version=`git describe --tags` -X github.com/ory/keto/cmd.BuildTime=`TZ=UTC date -u '+%Y-%m-%dT%H:%M:%SZ'` -X github.com/ory/keto/cmd.GitHash=`git rev-parse HEAD`" -output "dist/{{.Dir}}-{{.OS}}-{{.Arch}}";
+      - run: packr clean
       - run: ghr -t $GITHUB_TOKEN -u $CIRCLE_PROJECT_USERNAME -r $CIRCLE_PROJECT_REPONAME --replace `git describe --tags` dist/
 
 workflows:

@@ -26,7 +26,7 @@ type Engine struct {
 	h      herodot.Writer
 }
 
-var EnabledFlavors = []string{"exact", "regex"}
+var EnabledFlavors = []string{"exact", "glob", "regex"}
 
 const (
 	BasePath = "/engines/acp/ory/:flavor"
@@ -34,6 +34,10 @@ const (
 	"store": {
 		"ory": {
 			"regex": {
+				"policies": [],
+				"roles": []
+			},
+			"glob": {
 				"policies": [],
 				"roles": []
 			},
@@ -49,7 +53,7 @@ const (
 func RoutesToObserve() []string {
 	var r []string
 
-	for _, f := range []string{"exact", "regex"} {
+	for _, f := range EnabledFlavors {
 		for _, p := range []string{"policies", "roles", "allowed"} {
 			r = append(r,
 				fmt.Sprintf(strings.Replace(BasePath, ":flavor", "%s", 1)+"/%s", f, p),
@@ -259,7 +263,7 @@ func (e *Engine) Register(r *httprouter.Router) {
 	//       500: genericError
 	r.PUT(BasePath+"/roles/:id/members", e.sh.Upsert(e.rolesMembersAdd))
 
-	// swagger:route DELETE /engines/acp/ory/{flavor}/roles/{id}/members engines removeOryAccessControlPolicyRoleMembers
+	// swagger:route DELETE /engines/acp/ory/{flavor}/roles/{id}/members/{member} engines removeOryAccessControlPolicyRoleMembers
 	//
 	// Remove a member from an ORY Access Control Policy Role
 	//

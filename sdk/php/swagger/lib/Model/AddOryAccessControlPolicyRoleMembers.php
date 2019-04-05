@@ -5,7 +5,7 @@
  * PHP version 5
  *
  * @category Class
- * @package  ketoSDK
+ * @package  keto\SDK
  * @author   Swaagger Codegen team
  * @link     https://github.com/swagger-api/swagger-codegen
  */
@@ -25,7 +25,7 @@
  * Do not edit the class manually.
  */
 
-namespace ketoSDK\Model;
+namespace keto\SDK\Model;
 
 use \ArrayAccess;
 
@@ -33,7 +33,7 @@ use \ArrayAccess;
  * AddOryAccessControlPolicyRoleMembers Class Doc Comment
  *
  * @category    Class
- * @package     ketoSDK
+ * @package     keto\SDK
  * @author      Swagger Codegen team
  * @link        https://github.com/swagger-api/swagger-codegen
  */
@@ -52,7 +52,7 @@ class AddOryAccessControlPolicyRoleMembers implements ArrayAccess
       * @var string[]
       */
     protected static $swaggerTypes = [
-        'body' => '\ketoSDK\Model\AddOryAccessControlPolicyRoleMembersBody',
+        'body' => '\keto\SDK\Model\AddOryAccessControlPolicyRoleMembersBody',
         'flavor' => 'string',
         'id' => 'string'
     ];
@@ -184,7 +184,7 @@ class AddOryAccessControlPolicyRoleMembers implements ArrayAccess
 
     /**
      * Gets body
-     * @return \ketoSDK\Model\AddOryAccessControlPolicyRoleMembersBody
+     * @return \keto\SDK\Model\AddOryAccessControlPolicyRoleMembersBody
      */
     public function getBody()
     {
@@ -193,7 +193,7 @@ class AddOryAccessControlPolicyRoleMembers implements ArrayAccess
 
     /**
      * Sets body
-     * @param \ketoSDK\Model\AddOryAccessControlPolicyRoleMembersBody $body
+     * @param \keto\SDK\Model\AddOryAccessControlPolicyRoleMembersBody $body
      * @return $this
      */
     public function setBody($body)
@@ -214,7 +214,7 @@ class AddOryAccessControlPolicyRoleMembers implements ArrayAccess
 
     /**
      * Sets flavor
-     * @param string $flavor The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".  in: path
+     * @param string $flavor The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".  in: path
      * @return $this
      */
     public function setFlavor($flavor)
@@ -296,10 +296,10 @@ class AddOryAccessControlPolicyRoleMembers implements ArrayAccess
     public function __toString()
     {
         if (defined('JSON_PRETTY_PRINT')) { // use JSON pretty print
-            return json_encode(\ketoSDK\ObjectSerializer::sanitizeForSerialization($this), JSON_PRETTY_PRINT);
+            return json_encode(\keto\SDK\ObjectSerializer::sanitizeForSerialization($this), JSON_PRETTY_PRINT);
         }
 
-        return json_encode(\ketoSDK\ObjectSerializer::sanitizeForSerialization($this));
+        return json_encode(\keto\SDK\ObjectSerializer::sanitizeForSerialization($this));
     }
 }
 

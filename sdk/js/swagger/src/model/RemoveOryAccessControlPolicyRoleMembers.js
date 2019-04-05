@@ -17,18 +17,18 @@
 (function(root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module.
-    define(['ApiClient', 'model/RemoveOryAccessControlPolicyRoleMembersBody'], factory);
+    define(['ApiClient'], factory);
   } else if (typeof module === 'object' && module.exports) {
     // CommonJS-like environments that support module.exports, like Node.
-    module.exports = factory(require('../ApiClient'), require('./RemoveOryAccessControlPolicyRoleMembersBody'));
+    module.exports = factory(require('../ApiClient'));
   } else {
     // Browser globals (root is window)
     if (!root.SwaggerJsClient) {
       root.SwaggerJsClient = {};
     }
-    root.SwaggerJsClient.RemoveOryAccessControlPolicyRoleMembers = factory(root.SwaggerJsClient.ApiClient, root.SwaggerJsClient.RemoveOryAccessControlPolicyRoleMembersBody);
+    root.SwaggerJsClient.RemoveOryAccessControlPolicyRoleMembers = factory(root.SwaggerJsClient.ApiClient);
   }
-}(this, function(ApiClient, RemoveOryAccessControlPolicyRoleMembersBody) {
+}(this, function(ApiClient) {
   'use strict';
 
 
@@ -44,15 +44,16 @@
    * Constructs a new <code>RemoveOryAccessControlPolicyRoleMembers</code>.
    * @alias module:model/RemoveOryAccessControlPolicyRoleMembers
    * @class
-   * @param flavor {String} The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".  in: path
+   * @param flavor {String} The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".  in: path
    * @param id {String} The ID of the ORY Access Control Policy Role.  in: path
+   * @param member {String} The member to be removed.  in: path
    */
-  var exports = function(flavor, id) {
+  var exports = function(flavor, id, member) {
     var _this = this;
-
 
     _this['flavor'] = flavor;
     _this['id'] = id;
+    _this['member'] = member;
   };
 
   /**
@@ -66,25 +67,21 @@
     if (data) {
       obj = obj || new exports();
 
-      if (data.hasOwnProperty('Body')) {
-        obj['Body'] = RemoveOryAccessControlPolicyRoleMembersBody.constructFromObject(data['Body']);
-      }
       if (data.hasOwnProperty('flavor')) {
         obj['flavor'] = ApiClient.convertToType(data['flavor'], 'String');
       }
       if (data.hasOwnProperty('id')) {
         obj['id'] = ApiClient.convertToType(data['id'], 'String');
       }
+      if (data.hasOwnProperty('member')) {
+        obj['member'] = ApiClient.convertToType(data['member'], 'String');
+      }
     }
     return obj;
   }
 
   /**
-   * @member {module:model/RemoveOryAccessControlPolicyRoleMembersBody} Body
-   */
-  exports.prototype['Body'] = undefined;
-  /**
-   * The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".  in: path
+   * The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".  in: path
    * @member {String} flavor
    */
   exports.prototype['flavor'] = undefined;
@@ -93,6 +90,11 @@
    * @member {String} id
    */
   exports.prototype['id'] = undefined;
+  /**
+   * The member to be removed.  in: path
+   * @member {String} member
+   */
+  exports.prototype['member'] = undefined;
 
 
 

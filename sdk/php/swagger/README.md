@@ -57,10 +57,10 @@ Please follow the [installation procedure](#installation--usage) and then run th
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-$api_instance = new ketoSDK\Api\EnginesApi();
-$flavor = "flavor_example"; // string | The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".
+$api_instance = new keto\SDK\Api\EnginesApi();
+$flavor = "flavor_example"; // string | The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".
 $id = "id_example"; // string | The ID of the ORY Access Control Policy Role.
-$body = new \ketoSDK\Model\AddOryAccessControlPolicyRoleMembersBody(); // \ketoSDK\Model\AddOryAccessControlPolicyRoleMembersBody | 
+$body = new \keto\SDK\Model\AddOryAccessControlPolicyRoleMembersBody(); // \keto\SDK\Model\AddOryAccessControlPolicyRoleMembersBody | 
 
 try {
     $result = $api_instance->addOryAccessControlPolicyRoleMembers($flavor, $id, $body);
@@ -86,7 +86,7 @@ Class | Method | HTTP request | Description
 *EnginesApi* | [**getOryAccessControlPolicyRole**](docs/Api/EnginesApi.md#getoryaccesscontrolpolicyrole) | **GET** /engines/acp/ory/{flavor}/roles/{id} | Get an ORY Access Control Policy Role
 *EnginesApi* | [**listOryAccessControlPolicies**](docs/Api/EnginesApi.md#listoryaccesscontrolpolicies) | **GET** /engines/acp/ory/{flavor}/policies | 
 *EnginesApi* | [**listOryAccessControlPolicyRoles**](docs/Api/EnginesApi.md#listoryaccesscontrolpolicyroles) | **GET** /engines/acp/ory/{flavor}/roles | List ORY Access Control Policy Roles
-*EnginesApi* | [**removeOryAccessControlPolicyRoleMembers**](docs/Api/EnginesApi.md#removeoryaccesscontrolpolicyrolemembers) | **DELETE** /engines/acp/ory/{flavor}/roles/{id}/members | Remove a member from an ORY Access Control Policy Role
+*EnginesApi* | [**removeOryAccessControlPolicyRoleMembers**](docs/Api/EnginesApi.md#removeoryaccesscontrolpolicyrolemembers) | **DELETE** /engines/acp/ory/{flavor}/roles/{id}/members/{member} | Remove a member from an ORY Access Control Policy Role
 *EnginesApi* | [**upsertOryAccessControlPolicy**](docs/Api/EnginesApi.md#upsertoryaccesscontrolpolicy) | **PUT** /engines/acp/ory/{flavor}/policies | 
 *EnginesApi* | [**upsertOryAccessControlPolicyRole**](docs/Api/EnginesApi.md#upsertoryaccesscontrolpolicyrole) | **PUT** /engines/acp/ory/{flavor}/roles | Upsert an ORY Access Control Policy Role
 *HealthApi* | [**isInstanceAlive**](docs/Api/HealthApi.md#isinstancealive) | **GET** /health/alive | Check alive status
@@ -117,7 +117,6 @@ Class | Method | HTTP request | Description
  - [OryAccessControlPolicyRoles](docs/Model/OryAccessControlPolicyRoles.md)
  - [Policies](docs/Model/Policies.md)
  - [RemoveOryAccessControlPolicyRoleMembers](docs/Model/RemoveOryAccessControlPolicyRoleMembers.md)
- - [RemoveOryAccessControlPolicyRoleMembersBody](docs/Model/RemoveOryAccessControlPolicyRoleMembersBody.md)
  - [UpsertOryAccessControlPolicy](docs/Model/UpsertOryAccessControlPolicy.md)
  - [UpsertOryAccessControlPolicyRole](docs/Model/UpsertOryAccessControlPolicyRole.md)
  - [Version](docs/Model/Version.md)

@@ -3,7 +3,7 @@ package ladon
 
 // swagger:parameters doOryAccessControlPoliciesAllow
 type doOryAccessControlPoliciesAllow struct {
-	// The ORY Access Control Policy flavor. Can be "regex" and "exact".
+	// The ORY Access Control Policy flavor. Can be "regex", "glob", and "exact".
 	//
 	// in: path
 	// required: true
@@ -15,7 +15,7 @@ type doOryAccessControlPoliciesAllow struct {
 
 // swagger:parameters upsertOryAccessControlPolicy
 type upsertOryAccessControlPolicy struct {
-	// The ORY Access Control Policy flavor. Can be "regex" and "exact".
+	// The ORY Access Control Policy flavor. Can be "regex", "glob", and "exact".
 	//
 	// in: path
 	// required: true
@@ -27,7 +27,7 @@ type upsertOryAccessControlPolicy struct {
 
 // swagger:parameters listOryAccessControlPolicies
 type listOryAccessControlPolicies struct {
-	// The ORY Access Control Policy flavor. Can be "regex" and "exact"
+	// The ORY Access Control Policy flavor. Can be "regex", "glob", and "exact"
 	//
 	// in: path
 	// required: true
@@ -46,7 +46,7 @@ type listOryAccessControlPolicies struct {
 
 // swagger:parameters getOryAccessControlPolicy
 type getOryAccessControlPolicy struct {
-	// The ORY Access Control Policy flavor. Can be "regex" and "exact".
+	// The ORY Access Control Policy flavor. Can be "regex", "glob", and "exact".
 	//
 	// in: path
 	// required: true
@@ -61,7 +61,7 @@ type getOryAccessControlPolicy struct {
 
 // swagger:parameters deleteOryAccessControlPolicy
 type deleteOryAccessControlPolicy struct {
-	// The ORY Access Control Policy flavor. Can be "regex" and "exact".
+	// The ORY Access Control Policy flavor. Can be "regex", "glob", and "exact".
 	//
 	// in: path
 	// required: true
@@ -76,7 +76,7 @@ type deleteOryAccessControlPolicy struct {
 
 // swagger:parameters getOryAccessControlPolicyRole
 type getOryAccessControlPolicyRole struct {
-	// The ORY Access Control Policy flavor. Can be "regex" and "exact".
+	// The ORY Access Control Policy flavor. Can be "regex", "glob", and "exact".
 	//
 	// in: path
 	// required: true
@@ -91,7 +91,7 @@ type getOryAccessControlPolicyRole struct {
 
 // swagger:parameters deleteOryAccessControlPolicyRole
 type deleteOryAccessControlPolicyRole struct {
-	// The ORY Access Control Policy flavor. Can be "regex" and "exact".
+	// The ORY Access Control Policy flavor. Can be "regex", "glob", and "exact".
 	//
 	// in: path
 	// required: true
@@ -105,7 +105,7 @@ type deleteOryAccessControlPolicyRole struct {
 
 // swagger:parameters upsertOryAccessControlPolicyRole
 type upsertOryAccessControlPolicyRole struct {
-	// The ORY Access Control Policy flavor. Can be "regex" and "exact".
+	// The ORY Access Control Policy flavor. Can be "regex", "glob", and "exact".
 	//
 	// in: path
 	// required: true
@@ -123,7 +123,7 @@ type addOryAccessControlPolicyRoleMembersBody struct {
 
 // swagger:parameters addOryAccessControlPolicyRoleMembers
 type addOryAccessControlPolicyRoleMembers struct {
-	// The ORY Access Control Policy flavor. Can be "regex" and "exact".
+	// The ORY Access Control Policy flavor. Can be "regex", "glob", and "exact".
 	//
 	// in: path
 	// required: true
@@ -139,15 +139,9 @@ type addOryAccessControlPolicyRoleMembers struct {
 	Body addOryAccessControlPolicyRoleMembersBody
 }
 
-// swagger:model removeOryAccessControlPolicyRoleMembersBody
-type removeOryAccessControlPolicyRoleMembersBody struct {
-	// The members to be removed.
-	Members []string `json:"members"`
-}
-
 // swagger:parameters removeOryAccessControlPolicyRoleMembers
 type removeOryAccessControlPolicyRoleMembers struct {
-	// The ORY Access Control Policy flavor. Can be "regex" and "exact".
+	// The ORY Access Control Policy flavor. Can be "regex", "glob", and "exact".
 	//
 	// in: path
 	// required: true
@@ -159,8 +153,11 @@ type removeOryAccessControlPolicyRoleMembers struct {
 	// required: true
 	ID string `json:"id"`
 
-	// in: body
-	Body removeOryAccessControlPolicyRoleMembersBody
+	// The member to be removed.
+	//
+	// in: path
+	// required: true
+	Member string `json:"member"`
 }
 
 // Policies is an array of policies.
@@ -181,7 +178,7 @@ type oryAccessControlPolicyRoles struct {
 
 // swagger:parameters listOryAccessControlPolicyRoles
 type listOryAccessControlPolicyRoles struct {
-	// The ORY Access Control Policy flavor. Can be "regex" and "exact"
+	// The ORY Access Control Policy flavor. Can be "regex", "glob", and "exact"
 	//
 	// in: path
 	// required: true

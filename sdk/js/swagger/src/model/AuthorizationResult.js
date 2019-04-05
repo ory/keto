@@ -44,11 +44,12 @@
    * Constructs a new <code>AuthorizationResult</code>.
    * @alias module:model/AuthorizationResult
    * @class
+   * @param allowed {Boolean} Allowed is true if the request should be allowed and false otherwise.
    */
-  var exports = function() {
+  var exports = function(allowed) {
     var _this = this;
 
-
+    _this['allowed'] = allowed;
   };
 
   /**

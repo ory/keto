@@ -98,7 +98,7 @@ var SwaggerJsClient = require('swagger-js-client');
 
 var api = new SwaggerJsClient.EnginesApi()
 
-var flavor = "flavor_example"; // {String} The ORY Access Control Policy flavor. Can be \"regex\" and \"exact\".
+var flavor = "flavor_example"; // {String} The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".
 
 var id = "id_example"; // {String} The ID of the ORY Access Control Policy Role.
 
@@ -131,7 +131,7 @@ Class | Method | HTTP request | Description
 *SwaggerJsClient.EnginesApi* | [**getOryAccessControlPolicyRole**](docs/EnginesApi.md#getOryAccessControlPolicyRole) | **GET** /engines/acp/ory/{flavor}/roles/{id} | Get an ORY Access Control Policy Role
 *SwaggerJsClient.EnginesApi* | [**listOryAccessControlPolicies**](docs/EnginesApi.md#listOryAccessControlPolicies) | **GET** /engines/acp/ory/{flavor}/policies | 
 *SwaggerJsClient.EnginesApi* | [**listOryAccessControlPolicyRoles**](docs/EnginesApi.md#listOryAccessControlPolicyRoles) | **GET** /engines/acp/ory/{flavor}/roles | List ORY Access Control Policy Roles
-*SwaggerJsClient.EnginesApi* | [**removeOryAccessControlPolicyRoleMembers**](docs/EnginesApi.md#removeOryAccessControlPolicyRoleMembers) | **DELETE** /engines/acp/ory/{flavor}/roles/{id}/members | Remove a member from an ORY Access Control Policy Role
+*SwaggerJsClient.EnginesApi* | [**removeOryAccessControlPolicyRoleMembers**](docs/EnginesApi.md#removeOryAccessControlPolicyRoleMembers) | **DELETE** /engines/acp/ory/{flavor}/roles/{id}/members/{member} | Remove a member from an ORY Access Control Policy Role
 *SwaggerJsClient.EnginesApi* | [**upsertOryAccessControlPolicy**](docs/EnginesApi.md#upsertOryAccessControlPolicy) | **PUT** /engines/acp/ory/{flavor}/policies | 
 *SwaggerJsClient.EnginesApi* | [**upsertOryAccessControlPolicyRole**](docs/EnginesApi.md#upsertOryAccessControlPolicyRole) | **PUT** /engines/acp/ory/{flavor}/roles | Upsert an ORY Access Control Policy Role
 *SwaggerJsClient.HealthApi* | [**isInstanceAlive**](docs/HealthApi.md#isInstanceAlive) | **GET** /health/alive | Check alive status
@@ -162,7 +162,6 @@ Class | Method | HTTP request | Description
  - [SwaggerJsClient.OryAccessControlPolicyRoles](docs/OryAccessControlPolicyRoles.md)
  - [SwaggerJsClient.Policies](docs/Policies.md)
  - [SwaggerJsClient.RemoveOryAccessControlPolicyRoleMembers](docs/RemoveOryAccessControlPolicyRoleMembers.md)
- - [SwaggerJsClient.RemoveOryAccessControlPolicyRoleMembersBody](docs/RemoveOryAccessControlPolicyRoleMembersBody.md)
  - [SwaggerJsClient.UpsertOryAccessControlPolicy](docs/UpsertOryAccessControlPolicy.md)
  - [SwaggerJsClient.UpsertOryAccessControlPolicyRole](docs/UpsertOryAccessControlPolicyRole.md)
  - [SwaggerJsClient.Version](docs/Version.md)

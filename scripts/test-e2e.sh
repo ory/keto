@@ -17,10 +17,15 @@ keto engines acp ory policies import regex ./tests/stubs/policies.json
 export KETO_URL=http://127.0.0.1:4466
 keto engines acp ory policies import exact ./tests/stubs/policies.json
 
+# One more for the glob endpoint
+keto engines acp ory policies import glob ./tests/stubs/policies.json
+
 # Now explicitly check if that works with the --endpoint flag
 keto engines --endpoint http://localhost:4466 acp ory roles import regex ./tests/stubs/roles.json
 # And with slash
 keto engines --endpoint http://localhost:4466/ acp ory roles import exact ./tests/stubs/roles.json
+# And with globs
+keto engines --endpoint http://localhost:4466/ acp ory roles import glob ./tests/stubs/roles.json
 
 # Importing data is done, let's perform some checks
 
@@ -35,6 +40,13 @@ exit $(keto engines --endpoint http://localhost:4466 acp ory allowed exact maria
 exit $(keto engines --endpoint http://localhost:4466 acp ory allowed exact group-1 resources-11 actions-11 | grep -c  '"allowed": false')
 
 exit $(keto engines --endpoint http://localhost:4466 acp ory allowed exact not-exist resources-11 actions-11 | grep -c  '"allowed": true')
+
+exit $(keto engines --endpoint http://localhost:4466 acp ory allowed glob peter-1 resources-11 actions-11 | grep -c  '"allowed": false')
+exit $(keto engines --endpoint http://localhost:4466 acp ory allowed glob maria-1 resources-11 actions-11 | grep -c  '"allowed": false')
+exit $(keto engines --endpoint http://localhost:4466 acp ory allowed glob group-1 resources-11 actions-11 | grep -c  '"allowed": false')
+
+exit $(keto engines --endpoint http://localhost:4466 acp ory allowed glob not-exist resources-11 actions-11 | grep -c  '"allowed": true')
+
 
 kill %1
 exit 0
