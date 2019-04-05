@@ -8,7 +8,7 @@ import (
 	"github.com/jmoiron/sqlx"
 	"github.com/open-policy-agent/opa/storage"
 	"github.com/pkg/errors"
-	"github.com/rubenv/sql-migrate"
+	migrate "github.com/rubenv/sql-migrate"
 
 	"github.com/ory/x/dbal"
 	"github.com/ory/x/sqlcon"

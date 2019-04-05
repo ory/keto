@@ -29,7 +29,7 @@ import (
 	"github.com/gobuffalo/packr"
 	"github.com/jmoiron/sqlx"
 	"github.com/julienschmidt/httprouter"
-	"github.com/meatballhat/negroni-logrus"
+	negronilogrus "github.com/meatballhat/negroni-logrus"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
@@ -100,17 +100,17 @@ func RunServe(
 
 		metrics := metricsx.New(cmd, logger,
 			&metricsx.Options{
-				Service:          "ory-keto",
-				ClusterID:        metricsx.Hash(viper.GetString("DATABASE_URL")),
-				IsDevelopment:    viper.GetString("DATABASE_URL") != "memory",
-				WriteKey:         "jk32cFATnj9GKbQdFL7fBB9qtKZdX9j7",
+				Service:       "ory-keto",
+				ClusterID:     metricsx.Hash(viper.GetString("DATABASE_URL")),
+				IsDevelopment: viper.GetString("DATABASE_URL") != "memory",
+				WriteKey:      "jk32cFATnj9GKbQdFL7fBB9qtKZdX9j7",
 				WhitelistedPaths: stringslice.Merge(
 					healthx.RoutesToObserve(),
 					ladon.RoutesToObserve(),
 				),
-				BuildVersion:     buildVersion,
-				BuildTime:        buildHash,
-				BuildHash:        buildTime,
+				BuildVersion: buildVersion,
+				BuildTime:    buildHash,
+				BuildHash:    buildTime,
 			},
 		)
 		n.Use(metrics)
