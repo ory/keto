@@ -47,7 +47,12 @@ func (h *Engine) Evaluate(e evaluator) httprouter.Handle {
 			return
 		}
 
-		h.h.Write(w, r, &AuthorizationResult{Allowed: allowed})
+		code := http.StatusOK
+		if !allowed {
+			code = http.StatusForbidden
+		}
+
+		h.h.WriteCode(w, r, code, &AuthorizationResult{Allowed: allowed})
 	}
 }
 

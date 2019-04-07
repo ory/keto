@@ -22,7 +22,6 @@ import (
 
 	"github.com/ory/keto/cmd/client"
 	"github.com/ory/keto/sdk/go/keto/swagger"
-	"github.com/ory/keto/x"
 	"github.com/ory/x/cmdx"
 )
 
@@ -40,9 +39,12 @@ var enginesAcpOryAllowedCmd = &cobra.Command{
 			Resource: args[2],
 			Action:   args[3],
 		})
-		x.CheckResponse(err, http.StatusOK, res)
+		cmdx.Must(err, "Command failed because error occurred: %s", err)
 
-		cmdx.Must(err, "Unable to decode data to json: %s", err)
+		if res.StatusCode != http.StatusOK && res.StatusCode != http.StatusForbidden {
+			cmdx.Fatalf("Expected status code %d or %d but got: %d", http.StatusOK, http.StatusForbidden, res.StatusCode)
+		}
+
 		fmt.Println(cmdx.FormatResponse(&a))
 	},
 }
