@@ -62,7 +62,11 @@ func TestAllowed(t *testing.T) {
 				for k, c := range requests[f] {
 					t.Run(fmt.Sprintf("case=%d", k), func(t *testing.T) {
 						d, res, err := cl.DoOryAccessControlPoliciesAllow(f, c.req)
-						x.CheckResponseTest(t, err, http.StatusOK, res)
+						if c.allowed {
+							x.CheckResponseTest(t, err, http.StatusOK, res)
+						} else {
+							x.CheckResponseTest(t, err, http.StatusForbidden, res)
+						}
 						assert.Equal(t, c.allowed, d.Allowed)
 					})
 				}
