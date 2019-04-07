@@ -1,4 +1,4 @@
-# SwaggerJsClient.HealthNotReadyStatus
+# OryKeto.HealthNotReadyStatus
 
 ## Properties
 Name | Type | Description | Notes

@@ -1,6 +1,6 @@
 /**
- * 
- * Package main ORY Keto
+ * ORY Keto
+ * A cloud native access control server providing best-practice patterns (RBAC, ABAC, ACL, AWS IAM Policies, Kubernetes Roles, ...) via REST APIs.
  *
  * OpenAPI spec version: Latest
  * Contact: hi@ory.sh
@@ -26,14 +26,14 @@
   'use strict';
 
   /**
-   * Package_main_ORY_Keto.<br>
+   * A_cloud_native_access_control_server_providing_best_practice_patterns__RBAC_ABAC_ACL_AWS_IAM_Policies_Kubernetes_Roles_____via_REST_APIs_.<br>
    * The <code>index</code> module provides access to constructors for all the classes which comprise the public API.
    * <p>
    * An AMD (recommended!) or CommonJS application will generally do something equivalent to the following:
    * <pre>
-   * var SwaggerJsClient = require('index'); // See note below*.
-   * var xxxSvc = new SwaggerJsClient.XxxApi(); // Allocate the API class we're going to use.
-   * var yyyModel = new SwaggerJsClient.Yyy(); // Construct a model instance.
+   * var OryKeto = require('index'); // See note below*.
+   * var xxxSvc = new OryKeto.XxxApi(); // Allocate the API class we're going to use.
+   * var yyyModel = new OryKeto.Yyy(); // Construct a model instance.
    * yyyModel.someProperty = 'someValue';
    * ...
    * var zzz = xxxSvc.doSomething(yyyModel); // Invoke the service.
@@ -45,8 +45,8 @@
    * <p>
    * A non-AMD browser application (discouraged) might do something like this:
    * <pre>
-   * var xxxSvc = new SwaggerJsClient.XxxApi(); // Allocate the API class we're going to use.
-   * var yyy = new SwaggerJsClient.Yyy(); // Construct a model instance.
+   * var xxxSvc = new OryKeto.XxxApi(); // Allocate the API class we're going to use.
+   * var yyy = new OryKeto.Yyy(); // Construct a model instance.
    * yyyModel.someProperty = 'someValue';
    * ...
    * var zzz = xxxSvc.doSomething(yyyModel); // Invoke the service.

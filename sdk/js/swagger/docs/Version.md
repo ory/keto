@@ -1,4 +1,4 @@
-# SwaggerJsClient.Version
+# OryKeto.Version
 
 ## Properties
 Name | Type | Description | Notes

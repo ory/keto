@@ -1,4 +1,4 @@
-# SwaggerJsClient.HealthApi
+# OryKeto.HealthApi
 
 All URIs are relative to *http://localhost*
 
@@ -18,9 +18,9 @@ This endpoint returns a 200 status code when the HTTP server is up running. This
 
 ### Example
 ```javascript
-var SwaggerJsClient = require('swagger-js-client');
+var OryKeto = require('ory_keto');
 
-var apiInstance = new SwaggerJsClient.HealthApi();
+var apiInstance = new OryKeto.HealthApi();
 
 var callback = function(error, data, response) {
   if (error) {
@@ -58,9 +58,9 @@ This endpoint returns a 200 status code when the HTTP server is up running and t
 
 ### Example
 ```javascript
-var SwaggerJsClient = require('swagger-js-client');
+var OryKeto = require('ory_keto');
 
-var apiInstance = new SwaggerJsClient.HealthApi();
+var apiInstance = new OryKeto.HealthApi();
 
 var callback = function(error, data, response) {
   if (error) {

@@ -1,35 +1,36 @@
-init:
-		GO111MODULE=off go get -u \
-			github.com/ory/x/tools/listx \
-			github.com/sqs/goreturns \
-			github.com/go-swagger/go-swagger/cmd/swagger \
-			github.com/gobuffalo/packr/packr
-
+.PHONY: format
 format:
 		goreturns -w -local github.com/ory $$(listx .)
 		# goimports -w -v -local github.com/ory $$(listx .)
 
+.PHONY: swagger
 swagger:
 		swagger generate spec -m -o ./docs/api.swagger.json
 
-build-sdk:
-		rm -rf ./sdk/go/keto/swagger
+.PHONY: sdk
+sdk:
+		GO111MODULE=on go mod tidy
+		GO111MODULE=on go mod vendor
+		GO111MODULE=off swagger generate spec -m -o ./docs/api.swagger.json
+		GO111MODULE=off swagger validate ./docs/api.swagger.json
+
+		rm -rf ./sdk/go/keto/*
 		rm -rf ./sdk/js/swagger
 		rm -rf ./sdk/php/swagger
 
-		java -jar scripts/swagger-codegen-cli-2.2.3.jar generate -i ./docs/api.swagger.json -l go -o ./sdk/go/keto/swagger
+		GO111MODULE=off swagger generate client -f ./docs/api.swagger.json -t sdk/go/keto -A Ory_Keto
+
 		java -jar scripts/swagger-codegen-cli-2.2.3.jar generate -i ./docs/api.swagger.json -l javascript -o ./sdk/js/swagger
 		java -jar scripts/swagger-codegen-cli-2.2.3.jar generate -i ./docs/api.swagger.json -l php -o ./sdk/php/ \
 			--invoker-package keto\\SDK --git-repo-id swagger --git-user-id ory --additional-properties "packagePath=swagger,description=Client for keto"
 
-		git checkout HEAD -- sdk/go/keto/swagger/api_client.go
-
-		# goreturns -w -i -local github.com/ory $$(listx ./sdk/go)
+		make format
 
 		rm -f ./sdk/js/swagger/package.json
 		rm -rf ./sdk/js/swagger/test
 		rm -f ./sdk/php/swagger/composer.json ./sdk/php/swagger/phpunit.xml.dist
 		rm -rf ./sdk/php/swagger/test
+		rm -rf ./vendor
 
 install-stable:
 		KETO_LATEST=$$(git describe --abbrev=0 --tags)

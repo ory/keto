@@ -1,7 +1,9 @@
 <?php
 
 /**
- * Package main ORY Keto
+ * ORY Keto
+ *
+ * A cloud native access control server providing best-practice patterns (RBAC, ABAC, ACL, AWS IAM Policies, Kubernetes Roles, ...) via REST APIs.
  *
  * OpenAPI spec version: Latest
  * Contact: hi@ory.sh
@@ -13,10 +15,10 @@
  * An example of a project-specific implementation.
  *
  * After registering this autoload function with SPL, the following line
- * would cause the function to attempt to load the \keto\SDK\Baz\Qux class
+ * would cause the function to attempt to load the \ketoSDK\Baz\Qux class
  * from /path/to/project/lib/Baz/Qux.php:
  *
- *      new \keto\SDK\Baz\Qux;
+ *      new \ketoSDK\Baz\Qux;
  *
  * @param string $class The fully-qualified class name.
  *
@@ -25,7 +27,7 @@
 spl_autoload_register(function ($class) {
 
     // project-specific namespace prefix
-    $prefix = 'keto\\SDK\\';
+    $prefix = 'ketoSDK\\';
 
     // base directory for the namespace prefix
     $base_dir = __DIR__ . '/lib/';

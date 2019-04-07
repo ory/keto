@@ -11,7 +11,8 @@
   ],
   "swagger": "2.0",
   "info": {
-    "description": "Package main ORY Keto",
+    "description": "A cloud native access control server providing best-practice patterns (RBAC, ABAC, ACL, AWS IAM Policies, Kubernetes Roles, ...) via REST APIs.",
+    "title": "ORY Keto",
     "contact": {
       "name": "ORY",
       "url": "https://www.ory.sh",
