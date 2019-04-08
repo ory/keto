@@ -2,8 +2,10 @@ package ladon
 
 import (
 	"fmt"
+	"github.com/ory/keto/sdk/go/keto/client"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"testing"
 
 	"github.com/ory/keto/sdk/go/keto/swagger"
@@ -20,6 +22,17 @@ import (
 	"github.com/ory/keto/engine"
 	"github.com/ory/keto/storage"
 )
+
+func nc(t *testing.T, u string) *client.OryKeto {
+	uu, err := url.ParseRequestURI(u)
+	require.NoError(t, err)
+
+	return client.NewHTTPClientWithConfig(nil, &client.TransportConfig{
+		Host:     uu.Host,
+		BasePath: uu.Path,
+		Schemes:  []string{uu.Scheme},
+	})
+}
 
 func TestAllowed(t *testing.T) {
 	box := packr.NewBox("./rego")
@@ -39,8 +52,7 @@ func TestAllowed(t *testing.T) {
 	ts := httptest.NewServer(n)
 	defer ts.Close()
 
-	cl := swagger.NewEnginesApiWithBasePath(ts.URL)
-
+	cl := nc(t, ts.URL)
 	for _, f := range EnabledFlavors {
 		t.Run(fmt.Sprintf("flavor=%s", f), func(t *testing.T) {
 			t.Run(fmt.Sprint("action=create"), func(t *testing.T) {
@@ -142,7 +154,7 @@ func TestPolicyCRUD(t *testing.T) {
 	ts := crudts()
 	defer ts.Close()
 
-	c := swagger.NewEnginesApiWithBasePath(ts.URL)
+	c := nc(t, ts.URL)
 	for _, f := range EnabledFlavors {
 		for l, p := range policies[f] {
 			_, resp, err := c.GetOryAccessControlPolicy(f, p.ID)
@@ -180,7 +192,7 @@ func TestRoleCRUD(t *testing.T) {
 	ts := crudts()
 	defer ts.Close()
 
-	c := swagger.NewEnginesApiWithBasePath(ts.URL)
+	c := nc(t, ts.URL)
 	for _, f := range EnabledFlavors {
 		for l, r := range roles[f] {
 			_, resp, err := c.GetOryAccessControlPolicyRole(f, r.ID)
