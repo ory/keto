@@ -17,7 +17,7 @@ jobs:
       - run: curl -L https://git.io/vp6lP | sh -s -- -b ./bin
       - run: mv ./bin/* $GOPATH/bin
       - run: go mod download
-      - run: gometalinter --deadline 10m --disable-all --enable=gofmt --enable=vet --enable=gosec --vendor ./...
+      - run: gometalinter --skip=./sdk/ --deadline 10m --disable-all --enable=gofmt --enable=vet --enable=gosec --vendor ./...
 
 #  swagger:
 #    docker:
