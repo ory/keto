@@ -41,8 +41,8 @@ var enginesAcpOryPoliciesListCmd = &cobra.Command{
 		r, err := c.Engines.ListOryAccessControlPolicies(
 			engines.NewListOryAccessControlPoliciesParams().WithFlavor(args[0]).WithLimit(&limit).WithOffset(&offset),
 		)
-		cmdx.Must(err, "Unable to list ORY Access Control Policies: %s")
-		fmt.Println(cmdx.FormatResponse(r))
+		cmdx.Must(err, "Unable to list ORY Access Control Policies: %s", err)
+		fmt.Println(cmdx.FormatResponse(r.Payload))
 	},
 }
 

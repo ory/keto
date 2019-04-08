@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+
+  keto-migrate:
+    image: oryd/keto:latest
+    links:
+      - postgresd:postgresd
+    environment:
+      - LOG_LEVEL=debug
+    command:
+      migrate sql postgres://dbuser:secret@postgresd:5432/accesscontroldb?sslmode=disable
+    restart: on-failure
+
+  keto:
+    image: oryd/keto:latest
+    links:
+      - postgresd:postgresd
+    depends_on:
+      - keto-migrate
+    environment:
+      - DSN=postgres://dbuser:secret@postgresd:5432/accesscontroldb?sslmode=disable
+
+  postgresd:
+    image: postgres:9.6
+    environment:
+      - POSTGRES_USER=dbuser
+      - POSTGRES_PASSWORD=secret
+      - POSTGRES_DB=accesscontroldb
