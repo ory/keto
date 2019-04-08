@@ -14,11 +14,9 @@ jobs:
           command: |
             echo 'export GO111MODULE=on' >> $BASH_ENV
             source $BASH_ENV
-      - run: curl -L https://git.io/vp6lP | sh -s -- -b ./bin
-      - run: mv ./bin/* $GOPATH/bin
+      - run: curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s -- -b $(go env GOPATH)/bin v1.16.0
       - run: go mod download
-      - run: gometalinter --skip=./sdk/ --deadline 10m --disable-all --enable=gofmt --enable=vet --enable=gosec --vendor ./...
-
+      - run: golangci-lint run ./...
 #  swagger:
 #    docker:
 #      - image: circleci/golang:1.11
