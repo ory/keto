@@ -42,6 +42,18 @@ install-stable:
 		$(go env GOPATH)/bin/packr clean
 		git checkout master
 
+.PHONY: install-stable
+install-stable:
+		KETO_LATEST=$$(git describe --abbrev=0 --tags)
+		git checkout $$KETO_LATEST
+		$(go env GOPATH)/bin/packr
+		GO111MODULE=on go install \
+				-ldflags "-X github.com/ory/keto/cmd.Version=$$KETO_LATEST -X github.com/ory/keto/cmd.Date=`TZ=UTC date -u '+%Y-%m-%dT%H:%M:%SZ'` -X github.com/ory/keto/cmd.Commit=`git rev-parse HEAD`" \
+				.
+		$(go env GOPATH)/bin/packr clean
+		git checkout master
+
+.PHONY: install
 install:
 		$(go env GOPATH)/bin/packr
 		GO111MODULE=on go install .
