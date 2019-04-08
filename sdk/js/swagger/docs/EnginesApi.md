@@ -1,4 +1,4 @@
-# SwaggerJsClient.EnginesApi
+# OryKeto.EnginesApi
 
 All URIs are relative to *http://localhost*
 
@@ -27,16 +27,16 @@ Roles group several subjects into one. Rules can be assigned to ORY Access Contr
 
 ### Example
 ```javascript
-var SwaggerJsClient = require('swagger-js-client');
+var OryKeto = require('ory_keto');
 
-var apiInstance = new SwaggerJsClient.EnginesApi();
+var apiInstance = new OryKeto.EnginesApi();
 
 var flavor = "flavor_example"; // String | The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".
 
 var id = "id_example"; // String | The ID of the ORY Access Control Policy Role.
 
 var opts = { 
-  'body': new SwaggerJsClient.AddOryAccessControlPolicyRoleMembersBody() // AddOryAccessControlPolicyRoleMembersBody | 
+  'body': new OryKeto.AddOryAccessControlPolicyRoleMembersBody() // AddOryAccessControlPolicyRoleMembersBody | 
 };
 
 var callback = function(error, data, response) {
@@ -80,9 +80,9 @@ Delete an ORY Access Control Policy
 
 ### Example
 ```javascript
-var SwaggerJsClient = require('swagger-js-client');
+var OryKeto = require('ory_keto');
 
-var apiInstance = new SwaggerJsClient.EnginesApi();
+var apiInstance = new OryKeto.EnginesApi();
 
 var flavor = "flavor_example"; // String | The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".
 
@@ -129,9 +129,9 @@ Roles group several subjects into one. Rules can be assigned to ORY Access Contr
 
 ### Example
 ```javascript
-var SwaggerJsClient = require('swagger-js-client');
+var OryKeto = require('ory_keto');
 
-var apiInstance = new SwaggerJsClient.EnginesApi();
+var apiInstance = new OryKeto.EnginesApi();
 
 var flavor = "flavor_example"; // String | The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".
 
@@ -174,18 +174,18 @@ No authorization required
 
 Check if a request is allowed
 
-Use this endpoint to check if a request is allowed or not.
+Use this endpoint to check if a request is allowed or not. If the request is allowed, a 200 response with &#x60;{\&quot;allowed\&quot;:\&quot;true\&quot;}&#x60; will be sent. If the request is denied, a 403 response with &#x60;{\&quot;allowed\&quot;:\&quot;false\&quot;}&#x60; will be sent instead.
 
 ### Example
 ```javascript
-var SwaggerJsClient = require('swagger-js-client');
+var OryKeto = require('ory_keto');
 
-var apiInstance = new SwaggerJsClient.EnginesApi();
+var apiInstance = new OryKeto.EnginesApi();
 
 var flavor = "flavor_example"; // String | The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".
 
 var opts = { 
-  'body': new SwaggerJsClient.OryAccessControlPolicyAllowedInput() // OryAccessControlPolicyAllowedInput | 
+  'body': new OryKeto.OryAccessControlPolicyAllowedInput() // OryAccessControlPolicyAllowedInput | 
 };
 
 var callback = function(error, data, response) {
@@ -228,9 +228,9 @@ Get an ORY Access Control Policy
 
 ### Example
 ```javascript
-var SwaggerJsClient = require('swagger-js-client');
+var OryKeto = require('ory_keto');
 
-var apiInstance = new SwaggerJsClient.EnginesApi();
+var apiInstance = new OryKeto.EnginesApi();
 
 var flavor = "flavor_example"; // String | The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".
 
@@ -277,9 +277,9 @@ Roles group several subjects into one. Rules can be assigned to ORY Access Contr
 
 ### Example
 ```javascript
-var SwaggerJsClient = require('swagger-js-client');
+var OryKeto = require('ory_keto');
 
-var apiInstance = new SwaggerJsClient.EnginesApi();
+var apiInstance = new OryKeto.EnginesApi();
 
 var flavor = "flavor_example"; // String | The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".
 
@@ -326,9 +326,9 @@ List ORY Access Control Policies
 
 ### Example
 ```javascript
-var SwaggerJsClient = require('swagger-js-client');
+var OryKeto = require('ory_keto');
 
-var apiInstance = new SwaggerJsClient.EnginesApi();
+var apiInstance = new OryKeto.EnginesApi();
 
 var flavor = "flavor_example"; // String | The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\"
 
@@ -378,9 +378,9 @@ Roles group several subjects into one. Rules can be assigned to ORY Access Contr
 
 ### Example
 ```javascript
-var SwaggerJsClient = require('swagger-js-client');
+var OryKeto = require('ory_keto');
 
-var apiInstance = new SwaggerJsClient.EnginesApi();
+var apiInstance = new OryKeto.EnginesApi();
 
 var flavor = "flavor_example"; // String | The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\"
 
@@ -430,9 +430,9 @@ Roles group several subjects into one. Rules can be assigned to ORY Access Contr
 
 ### Example
 ```javascript
-var SwaggerJsClient = require('swagger-js-client');
+var OryKeto = require('ory_keto');
 
-var apiInstance = new SwaggerJsClient.EnginesApi();
+var apiInstance = new OryKeto.EnginesApi();
 
 var flavor = "flavor_example"; // String | The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".
 
@@ -482,14 +482,14 @@ Upsert an ORY Access Control Policy
 
 ### Example
 ```javascript
-var SwaggerJsClient = require('swagger-js-client');
+var OryKeto = require('ory_keto');
 
-var apiInstance = new SwaggerJsClient.EnginesApi();
+var apiInstance = new OryKeto.EnginesApi();
 
 var flavor = "flavor_example"; // String | The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".
 
 var opts = { 
-  'body': new SwaggerJsClient.OryAccessControlPolicy() // OryAccessControlPolicy | 
+  'body': new OryKeto.OryAccessControlPolicy() // OryAccessControlPolicy | 
 };
 
 var callback = function(error, data, response) {
@@ -532,14 +532,14 @@ Roles group several subjects into one. Rules can be assigned to ORY Access Contr
 
 ### Example
 ```javascript
-var SwaggerJsClient = require('swagger-js-client');
+var OryKeto = require('ory_keto');
 
-var apiInstance = new SwaggerJsClient.EnginesApi();
+var apiInstance = new OryKeto.EnginesApi();
 
 var flavor = "flavor_example"; // String | The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".
 
 var opts = { 
-  'body': new SwaggerJsClient.OryAccessControlPolicyRole() // OryAccessControlPolicyRole | 
+  'body': new OryKeto.OryAccessControlPolicyRole() // OryAccessControlPolicyRole | 
 };
 
 var callback = function(error, data, response) {

@@ -21,11 +21,13 @@
 package ladon
 
 // Policies is an array of policies.
+//
+// swagger:ignore
 type Policies []Policy
 
 // Policy specifies an ORY Access Policy document.
 //
-// swagger:model oryAccessControlPolicy
+// swagger:ignore
 type Policy struct {
 	// ID is the unique identifier of the ORY Access Policy. It is used to query, update, and remove the ORY Access Policy.
 	ID string `json:"id"`

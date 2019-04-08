@@ -164,7 +164,7 @@ No authorization required
 
 Check if a request is allowed
 
-Use this endpoint to check if a request is allowed or not.
+Use this endpoint to check if a request is allowed or not. If the request is allowed, a 200 response with `{\"allowed\":\"true\"}` will be sent. If the request is denied, a 403 response with `{\"allowed\":\"false\"}` will be sent instead.
 
 ### Example
 ```php

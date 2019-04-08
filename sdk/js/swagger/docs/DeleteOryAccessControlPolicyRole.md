@@ -1,4 +1,4 @@
-# SwaggerJsClient.DeleteOryAccessControlPolicyRole
+# OryKeto.DeleteOryAccessControlPolicyRole
 
 ## Properties
 Name | Type | Description | Notes

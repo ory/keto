@@ -1,4 +1,4 @@
-# SwaggerJsClient.DoOryAccessControlPoliciesAllow
+# OryKeto.DoOryAccessControlPoliciesAllow
 
 ## Properties
 Name | Type | Description | Notes

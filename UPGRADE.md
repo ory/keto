@@ -25,6 +25,18 @@ before finalizing the upgrade process.
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
+## 0.3.0-sandbox
+
+### ORY Access Control Policies Allowed Endpoint
+
+Endpoint `/engines/acp/ory/{flavor}/allowed` now returns a 403 error when the request is disallowed.
+
+### SDK
+
+Generation of the Go SDK has moved from [`swagger-codegen`](https://github.com/swagger-api/swagger-codegen)
+to [`go-swagger`](https://github.com/go-swagger/go-swagger). If you wish to migrate your existing SDK
+integration please open an issue.
+
 ## 0.2.0-sandbox
 
 ORY Keto has been completely reworked. The major goals of this refactoring are:

@@ -11,7 +11,9 @@
  */
 
 /**
- * Package main ORY Keto
+ * ORY Keto
+ *
+ * A cloud native access control server providing best-practice patterns (RBAC, ABAC, ACL, AWS IAM Policies, Kubernetes Roles, ...) via REST APIs.
  *
  * OpenAPI spec version: Latest
  * Contact: hi@ory.sh
@@ -169,7 +171,7 @@ class OryAccessControlPolicies implements ArrayAccess
 
     /**
      * Sets body
-     * @param \keto\SDK\Model\OryAccessControlPolicy[] $body in: body
+     * @param \keto\SDK\Model\OryAccessControlPolicy[] $body The request body.  in: body type: array
      * @return $this
      */
     public function setBody($body)

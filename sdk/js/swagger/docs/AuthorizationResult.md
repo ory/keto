@@ -1,4 +1,4 @@
-# SwaggerJsClient.AuthorizationResult
+# OryKeto.AuthorizationResult
 
 ## Properties
 Name | Type | Description | Notes

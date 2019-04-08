@@ -10,7 +10,24 @@ type doOryAccessControlPoliciesAllow struct {
 	Flavor string `json:"flavor"`
 
 	// in: body
-	Body Input
+	Body oryAccessControlPolicyAllowedInput
+}
+
+// Input for checking if a request is allowed or not.
+//
+// swagger:model oryAccessControlPolicyAllowedInput
+type oryAccessControlPolicyAllowedInput struct {
+	// Resource is the resource that access is requested to.
+	Resource string `json:"resource"`
+
+	// Action is the action that is requested on the resource.
+	Action string `json:"action"`
+
+	// Subject is the subject that is requesting access.
+	Subject string `json:"subject"`
+
+	// Context is the request's environmental context.
+	Context map[string]interface{} `json:"context"`
 }
 
 // swagger:parameters upsertOryAccessControlPolicy
@@ -22,7 +39,7 @@ type upsertOryAccessControlPolicy struct {
 	Flavor string `json:"flavor"`
 
 	// in: body
-	Body Policy
+	Body oryAccessControlPolicy
 }
 
 // swagger:parameters listOryAccessControlPolicies
@@ -112,7 +129,7 @@ type upsertOryAccessControlPolicyRole struct {
 	Flavor string `json:"flavor"`
 
 	// in: body
-	Body Role
+	Body oryAccessControlPolicyRole
 }
 
 // swagger:model addOryAccessControlPolicyRoleMembersBody
@@ -164,16 +181,60 @@ type removeOryAccessControlPolicyRoleMembers struct {
 //
 // swagger:response oryAccessControlPolicies
 type oryAccessControlPolicies struct {
+	// The request body.
+	//
 	// in: body
-	Body []Policy
+	// type: array
+	Body []oryAccessControlPolicy
 }
 
 // Roles is an array of roles.
 //
 // swagger:response oryAccessControlPolicyRoles
 type oryAccessControlPolicyRoles struct {
+	// The request body.
+	//
 	// in: body
-	Body []Role
+	// type: array
+	Body []oryAccessControlPolicyRole
+}
+
+// oryAccessControlPolicyRole represents a group of users that share the same role. A role could be an administrator, a moderator, a regular
+// user or some other sort of role.
+//
+// swagger:model oryAccessControlPolicyRole
+type oryAccessControlPolicyRole struct {
+	// ID is the role's unique id.
+	ID string `json:"id"`
+
+	// Members is who belongs to the role.
+	Members []string `json:"members"`
+}
+
+// oryAccessControlPolicy specifies an ORY Access Policy document.
+//
+// swagger:model oryAccessControlPolicy
+type oryAccessControlPolicy struct {
+	// ID is the unique identifier of the ORY Access Policy. It is used to query, update, and remove the ORY Access Policy.
+	ID string `json:"id"`
+
+	// Description is an optional, human-readable description.
+	Description string `json:"description"`
+
+	// Subjects is an array representing all the subjects this ORY Access Policy applies to.
+	Subjects []string `json:"subjects"`
+
+	// Resources is an array representing all the resources this ORY Access Policy applies to.
+	Resources []string `json:"resources"`
+
+	// Actions is an array representing all the actions this ORY Access Policy applies to.
+	Actions []string `json:"actions"`
+
+	// Effect is the effect of this ORY Access Policy. It can be "allow" or "deny".
+	Effect string `json:"effect"`
+
+	// Conditions represents a keyed object of conditions under which this ORY Access Policy is active.
+	Conditions map[string]interface{} `json:"conditions"`
 }
 
 // swagger:parameters listOryAccessControlPolicyRoles

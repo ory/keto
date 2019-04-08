@@ -19,8 +19,11 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 	"path/filepath"
 	"strings"
+
+	"github.com/ory/keto/sdk/go/keto/client"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -31,7 +34,7 @@ import (
 	"github.com/ory/x/stringslice"
 )
 
-var client = http.DefaultClient
+var hc = http.DefaultClient
 
 func ImportFile(file string, proto interface{}, f func()) {
 	b, err := ioutil.ReadFile(filepath.Clean(file))
@@ -42,8 +45,19 @@ func ImportFile(file string, proto interface{}, f func()) {
 	f()
 }
 
+func NewClient(cmd *cobra.Command) *client.OryKeto {
+	u, err := url.ParseRequestURI(EndpointURL(cmd))
+	cmdx.Must(err, `Unable to parse endpoint URL "%s": %s`, EndpointURL(cmd), err)
+
+	return client.NewHTTPClientWithConfig(nil, &client.TransportConfig{
+		Host:     u.Host,
+		BasePath: u.Path,
+		Schemes:  []string{u.Scheme},
+	})
+}
+
 func Get(location string, proto interface{}) {
-	res, err := client.Get(location)
+	res, err := hc.Get(location)
 	cmdx.CheckResponse(err, http.StatusOK, res)
 	defer res.Body.Close()
 
@@ -59,7 +73,7 @@ func Delete(location string) {
 	req, err := http.NewRequest("DELETE", location, nil)
 	cmdx.Must(err, "Unable to initialize HTTP request: %s", err)
 
-	res, err := client.Do(req)
+	res, err := hc.Do(req)
 	cmdx.CheckResponse(err, http.StatusNoContent, res)
 	err = res.Body.Close()
 	cmdx.Must(err, "Unable to close body: %s", err)
