@@ -76,27 +76,23 @@ jobs:
       # Submit coverage details
       - run: test -z "$CIRCLE_PR_NUMBER" && goveralls -service=circle-ci -coverprofile=coverage.txt -repotoken=$COVERALLS_REPO_TOKEN || echo "forks are not allowed to push to coveralls"
 
-  build-docker:
+  release:
     docker:
-      - image: library/docker:17.10
+      - image: circleci/golang:1.12
+    working_directory: /go/src/github.com/ory/oathkeeper
     steps:
+      - run:
+          name: Enable go1.12 modules
+          command: |
+            echo 'export GO111MODULE=on' >> $BASH_ENV
+            echo 'export DOCKER_FULL_TAG=$(echo $CIRCLE_TAG | tr '+' '_')' >> $BASH_ENV
+            echo 'export DOCKER_SHORT_TAG=$(echo $CIRCLE_TAG | cut -d '+' -f1)' >> $BASH_ENV
+            source $BASH_ENV
       - checkout
-      - setup_remote_docker:
-          version: 17.10.0-ce
-      - run: docker build -f Dockerfile -t keto-test .
-      - run: docker run keto-test version
-
-  release-docker:
-    docker:
-      - image: circleci/golang:1.9
-    working_directory: /go/src/github.com/ory/keto
-    steps:
-      - checkout
-      - setup_remote_docker:
-          version: 17.10.0-ce
-      - run: docker build --build-arg git_tag=$(git describe --tags) --build-arg git_commit=$(git rev-parse HEAD) -f Dockerfile -t oryd/keto:$(echo $CIRCLE_TAG | tr '+' '_') .
+      - setup_remote_docker
       - run: docker login --username "$DOCKER_USERNAME" --password "$DOCKER_PASSWORD"
-      - run: docker push oryd/keto:$(echo $CIRCLE_TAG | tr '+' '_')
+      - run: cp ./.releaser/LICENSE.txt ./LICENSE.txt
+      - run: curl -sL https://git.io/goreleaser | bash
 
   release-docs:
     docker:
@@ -130,24 +126,6 @@ jobs:
       - run: git remote add origin https://arekkas:$GITHUB_TOKEN@github.com/ory/keto.git
       - run: git push origin HEAD:master || true
 
-  release-binaries:
-    docker:
-      - image: circleci/golang:1.11
-    working_directory: /go/src/github.com/ory/keto
-    steps:
-      - run:
-          name: Update PATH and Define Environment Variable at Runtime
-          command: |
-            echo 'export GO111MODULE=on' >> $BASH_ENV
-            source $BASH_ENV
-      - checkout
-      - run: GO111MODULE=off go get -u github.com/mitchellh/gox github.com/tcnksm/ghr github.com/gobuffalo/packr/packr
-      - run: packr
-      - run: |
-          gox -parallel=2 -ldflags "-X github.com/ory/keto/cmd.Version=`git describe --tags` -X github.com/ory/keto/cmd.BuildTime=`TZ=UTC date -u '+%Y-%m-%dT%H:%M:%SZ'` -X github.com/ory/keto/cmd.GitHash=`git rev-parse HEAD`" -output "dist/{{.Dir}}-{{.OS}}-{{.Arch}}";
-      - run: packr clean
-      - run: ghr -t $GITHUB_TOKEN -u $CIRCLE_PROJECT_USERNAME -r $CIRCLE_PROJECT_REPONAME --replace `git describe --tags` dist/
-
 workflows:
   version: 2
   "test, build, and relase":
@@ -160,40 +138,22 @@ workflows:
           filters:
             tags:
               only: /.*/
-      - release-docs:
-          filters:
-            branches:
-              only: master
-#      - swagger:
-#          filters:
-#            tags:
-#              only: /.*/
-      - build-docker:
+      - release:
           requires:
             - test
             - format
           filters:
             tags:
               only: /.*/
-      - release-binaries:
-          requires:
-            - build-docker
-          filters:
-            tags:
-              only: /.*/
             branches:
               ignore: /.*/
-      - release-docker:
-          requires:
-            - build-docker
+      - release-docs:
           filters:
-            tags:
-              only: /.*/
             branches:
-              ignore: /.*/
+              only: master
       - release-npm:
           requires:
-            - build-docker
+            - release
           filters:
             tags:
               only: /.*/
@@ -201,8 +161,7 @@ workflows:
               ignore: /.*/
       - release-changelog:
           requires:
-            - release-docker
-            - release-binaries
+            - release
             - release-npm
           filters:
             tags:

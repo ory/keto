@@ -67,7 +67,7 @@ DEBUG CONTROLS
 ` + profilex.HelpMessage() + `
 
 `,
-	Run: server.RunServe(logger, Version, GitHash, BuildTime),
+	Run: server.RunServe(logger, Version, Commit, Date),
 }
 
 func init() {
