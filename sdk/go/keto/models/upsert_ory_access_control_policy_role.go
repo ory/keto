@@ -14,11 +14,11 @@ import (
 )
 
 // UpsertOryAccessControlPolicyRole upsert ory access control policy role
-// swagger:model upsertOryAccessControlPolicyRole
+// swagger:model UpsertOryAccessControlPolicyRole
 type UpsertOryAccessControlPolicyRole struct {
 
 	// body
-	Body *Role `json:"Body,omitempty"`
+	Body *OryAccessControlPolicyRole `json:"Body,omitempty"`
 
 	// The ORY Access Control Policy flavor. Can be "regex", "glob", and "exact".
 	//

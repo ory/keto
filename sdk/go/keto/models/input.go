@@ -11,7 +11,7 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// Input input
+// Input Input Input for checking if a request is allowed or not.
 // swagger:model Input
 type Input struct {
 

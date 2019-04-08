@@ -14,7 +14,7 @@ import (
 )
 
 // ListOryAccessControlPolicies list ory access control policies
-// swagger:model listOryAccessControlPolicies
+// swagger:model ListOryAccessControlPolicies
 type ListOryAccessControlPolicies struct {
 
 	// The ORY Access Control Policy flavor. Can be "regex", "glob", and "exact"

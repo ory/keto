@@ -24,8 +24,8 @@ type DeleteOryAccessControlPolicyReader struct {
 func (o *DeleteOryAccessControlPolicyReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
 
-	case 201:
-		result := NewDeleteOryAccessControlPolicyCreated()
+	case 204:
+		result := NewDeleteOryAccessControlPolicyNoContent()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
@@ -43,23 +43,23 @@ func (o *DeleteOryAccessControlPolicyReader) ReadResponse(response runtime.Clien
 	}
 }
 
-// NewDeleteOryAccessControlPolicyCreated creates a DeleteOryAccessControlPolicyCreated with default headers values
-func NewDeleteOryAccessControlPolicyCreated() *DeleteOryAccessControlPolicyCreated {
-	return &DeleteOryAccessControlPolicyCreated{}
+// NewDeleteOryAccessControlPolicyNoContent creates a DeleteOryAccessControlPolicyNoContent with default headers values
+func NewDeleteOryAccessControlPolicyNoContent() *DeleteOryAccessControlPolicyNoContent {
+	return &DeleteOryAccessControlPolicyNoContent{}
 }
 
-/*DeleteOryAccessControlPolicyCreated handles this case with default header values.
+/*DeleteOryAccessControlPolicyNoContent handles this case with default header values.
 
 An empty response
 */
-type DeleteOryAccessControlPolicyCreated struct {
+type DeleteOryAccessControlPolicyNoContent struct {
 }
 
-func (o *DeleteOryAccessControlPolicyCreated) Error() string {
-	return fmt.Sprintf("[DELETE /engines/acp/ory/{flavor}/policies/{id}][%d] deleteOryAccessControlPolicyCreated ", 201)
+func (o *DeleteOryAccessControlPolicyNoContent) Error() string {
+	return fmt.Sprintf("[DELETE /engines/acp/ory/{flavor}/policies/{id}][%d] deleteOryAccessControlPolicyNoContent ", 204)
 }
 
-func (o *DeleteOryAccessControlPolicyCreated) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+func (o *DeleteOryAccessControlPolicyNoContent) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	return nil
 }

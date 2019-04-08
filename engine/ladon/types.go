@@ -7,6 +7,8 @@ const (
 	Deny  = "deny"
 )
 
+// Input for checking if a request is allowed or not.
+//
 // swagger:model oryAccessControlPolicyAllowedInput
 type Input struct {
 	// Resource is the resource that access is requested to.

@@ -17,12 +17,12 @@
 (function(factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module.
-    define(['ApiClient', 'model/AddOryAccessControlPolicyRoleMembers', 'model/AddOryAccessControlPolicyRoleMembersBody', 'model/AuthorizationResult', 'model/Context', 'model/DeleteOryAccessControlPolicy', 'model/DeleteOryAccessControlPolicyRole', 'model/DoOryAccessControlPoliciesAllow', 'model/GetOryAccessControlPolicy', 'model/GetOryAccessControlPolicyRole', 'model/HealthNotReadyStatus', 'model/HealthStatus', 'model/InlineResponse500', 'model/ListOryAccessControlPolicies', 'model/ListOryAccessControlPolicyRoles', 'model/OryAccessControlPolicies', 'model/OryAccessControlPolicy', 'model/OryAccessControlPolicyAllowedInput', 'model/OryAccessControlPolicyRole', 'model/OryAccessControlPolicyRoles', 'model/Policies', 'model/RemoveOryAccessControlPolicyRoleMembers', 'model/UpsertOryAccessControlPolicy', 'model/UpsertOryAccessControlPolicyRole', 'model/Version', 'api/EnginesApi', 'api/HealthApi', 'api/VersionApi'], factory);
+    define(['ApiClient', 'model/AddOryAccessControlPolicyRoleMembers', 'model/AddOryAccessControlPolicyRoleMembersBody', 'model/AddOryAccessControlPolicyRoleMembersInternalServerError', 'model/AddOryAccessControlPolicyRoleMembersInternalServerErrorBody', 'model/AddOryAccessControlPolicyRoleMembersOK', 'model/AddOryAccessControlPolicyRoleMembersReader', 'model/AuthorizationResult', 'model/Context', 'model/DeleteOryAccessControlPolicy', 'model/DeleteOryAccessControlPolicyCreated', 'model/DeleteOryAccessControlPolicyInternalServerError', 'model/DeleteOryAccessControlPolicyInternalServerErrorBody', 'model/DeleteOryAccessControlPolicyReader', 'model/DeleteOryAccessControlPolicyRole', 'model/DeleteOryAccessControlPolicyRoleCreated', 'model/DeleteOryAccessControlPolicyRoleInternalServerError', 'model/DeleteOryAccessControlPolicyRoleInternalServerErrorBody', 'model/DeleteOryAccessControlPolicyRoleReader', 'model/DoOryAccessControlPoliciesAllow', 'model/DoOryAccessControlPoliciesAllowForbidden', 'model/DoOryAccessControlPoliciesAllowInternalServerError', 'model/DoOryAccessControlPoliciesAllowInternalServerErrorBody', 'model/DoOryAccessControlPoliciesAllowOK', 'model/DoOryAccessControlPoliciesAllowReader', 'model/GetOryAccessControlPolicy', 'model/GetOryAccessControlPolicyInternalServerError', 'model/GetOryAccessControlPolicyInternalServerErrorBody', 'model/GetOryAccessControlPolicyNotFound', 'model/GetOryAccessControlPolicyNotFoundBody', 'model/GetOryAccessControlPolicyOK', 'model/GetOryAccessControlPolicyReader', 'model/GetOryAccessControlPolicyRole', 'model/GetOryAccessControlPolicyRoleInternalServerError', 'model/GetOryAccessControlPolicyRoleInternalServerErrorBody', 'model/GetOryAccessControlPolicyRoleNotFound', 'model/GetOryAccessControlPolicyRoleNotFoundBody', 'model/GetOryAccessControlPolicyRoleOK', 'model/GetOryAccessControlPolicyRoleReader', 'model/HealthNotReadyStatus', 'model/HealthStatus', 'model/InlineResponse500', 'model/Input', 'model/IsInstanceAliveInternalServerError', 'model/IsInstanceAliveInternalServerErrorBody', 'model/IsInstanceAliveOK', 'model/IsInstanceAliveReader', 'model/ListOryAccessControlPolicies', 'model/ListOryAccessControlPoliciesInternalServerError', 'model/ListOryAccessControlPoliciesInternalServerErrorBody', 'model/ListOryAccessControlPoliciesOK', 'model/ListOryAccessControlPoliciesReader', 'model/ListOryAccessControlPolicyRoles', 'model/ListOryAccessControlPolicyRolesInternalServerError', 'model/ListOryAccessControlPolicyRolesInternalServerErrorBody', 'model/ListOryAccessControlPolicyRolesOK', 'model/ListOryAccessControlPolicyRolesReader', 'model/OryAccessControlPolicies', 'model/OryAccessControlPolicy', 'model/OryAccessControlPolicyAllowedInput', 'model/OryAccessControlPolicyRole', 'model/OryAccessControlPolicyRoles', 'model/Policies', 'model/Policy', 'model/RemoveOryAccessControlPolicyRoleMembers', 'model/RemoveOryAccessControlPolicyRoleMembersCreated', 'model/RemoveOryAccessControlPolicyRoleMembersInternalServerError', 'model/RemoveOryAccessControlPolicyRoleMembersInternalServerErrorBody', 'model/RemoveOryAccessControlPolicyRoleMembersReader', 'model/Role', 'model/Roles', 'model/SwaggerHealthStatus', 'model/SwaggerNotReadyStatus', 'model/SwaggerVersion', 'model/UpsertOryAccessControlPolicy', 'model/UpsertOryAccessControlPolicyInternalServerError', 'model/UpsertOryAccessControlPolicyInternalServerErrorBody', 'model/UpsertOryAccessControlPolicyOK', 'model/UpsertOryAccessControlPolicyReader', 'model/UpsertOryAccessControlPolicyRole', 'model/UpsertOryAccessControlPolicyRoleInternalServerError', 'model/UpsertOryAccessControlPolicyRoleInternalServerErrorBody', 'model/UpsertOryAccessControlPolicyRoleOK', 'model/UpsertOryAccessControlPolicyRoleReader', 'model/Version', 'api/EnginesApi', 'api/HealthApi', 'api/VersionApi'], factory);
   } else if (typeof module === 'object' && module.exports) {
     // CommonJS-like environments that support module.exports, like Node.
-    module.exports = factory(require('./ApiClient'), require('./model/AddOryAccessControlPolicyRoleMembers'), require('./model/AddOryAccessControlPolicyRoleMembersBody'), require('./model/AuthorizationResult'), require('./model/Context'), require('./model/DeleteOryAccessControlPolicy'), require('./model/DeleteOryAccessControlPolicyRole'), require('./model/DoOryAccessControlPoliciesAllow'), require('./model/GetOryAccessControlPolicy'), require('./model/GetOryAccessControlPolicyRole'), require('./model/HealthNotReadyStatus'), require('./model/HealthStatus'), require('./model/InlineResponse500'), require('./model/ListOryAccessControlPolicies'), require('./model/ListOryAccessControlPolicyRoles'), require('./model/OryAccessControlPolicies'), require('./model/OryAccessControlPolicy'), require('./model/OryAccessControlPolicyAllowedInput'), require('./model/OryAccessControlPolicyRole'), require('./model/OryAccessControlPolicyRoles'), require('./model/Policies'), require('./model/RemoveOryAccessControlPolicyRoleMembers'), require('./model/UpsertOryAccessControlPolicy'), require('./model/UpsertOryAccessControlPolicyRole'), require('./model/Version'), require('./api/EnginesApi'), require('./api/HealthApi'), require('./api/VersionApi'));
+    module.exports = factory(require('./ApiClient'), require('./model/AddOryAccessControlPolicyRoleMembers'), require('./model/AddOryAccessControlPolicyRoleMembersBody'), require('./model/AddOryAccessControlPolicyRoleMembersInternalServerError'), require('./model/AddOryAccessControlPolicyRoleMembersInternalServerErrorBody'), require('./model/AddOryAccessControlPolicyRoleMembersOK'), require('./model/AddOryAccessControlPolicyRoleMembersReader'), require('./model/AuthorizationResult'), require('./model/Context'), require('./model/DeleteOryAccessControlPolicy'), require('./model/DeleteOryAccessControlPolicyCreated'), require('./model/DeleteOryAccessControlPolicyInternalServerError'), require('./model/DeleteOryAccessControlPolicyInternalServerErrorBody'), require('./model/DeleteOryAccessControlPolicyReader'), require('./model/DeleteOryAccessControlPolicyRole'), require('./model/DeleteOryAccessControlPolicyRoleCreated'), require('./model/DeleteOryAccessControlPolicyRoleInternalServerError'), require('./model/DeleteOryAccessControlPolicyRoleInternalServerErrorBody'), require('./model/DeleteOryAccessControlPolicyRoleReader'), require('./model/DoOryAccessControlPoliciesAllow'), require('./model/DoOryAccessControlPoliciesAllowForbidden'), require('./model/DoOryAccessControlPoliciesAllowInternalServerError'), require('./model/DoOryAccessControlPoliciesAllowInternalServerErrorBody'), require('./model/DoOryAccessControlPoliciesAllowOK'), require('./model/DoOryAccessControlPoliciesAllowReader'), require('./model/GetOryAccessControlPolicy'), require('./model/GetOryAccessControlPolicyInternalServerError'), require('./model/GetOryAccessControlPolicyInternalServerErrorBody'), require('./model/GetOryAccessControlPolicyNotFound'), require('./model/GetOryAccessControlPolicyNotFoundBody'), require('./model/GetOryAccessControlPolicyOK'), require('./model/GetOryAccessControlPolicyReader'), require('./model/GetOryAccessControlPolicyRole'), require('./model/GetOryAccessControlPolicyRoleInternalServerError'), require('./model/GetOryAccessControlPolicyRoleInternalServerErrorBody'), require('./model/GetOryAccessControlPolicyRoleNotFound'), require('./model/GetOryAccessControlPolicyRoleNotFoundBody'), require('./model/GetOryAccessControlPolicyRoleOK'), require('./model/GetOryAccessControlPolicyRoleReader'), require('./model/HealthNotReadyStatus'), require('./model/HealthStatus'), require('./model/InlineResponse500'), require('./model/Input'), require('./model/IsInstanceAliveInternalServerError'), require('./model/IsInstanceAliveInternalServerErrorBody'), require('./model/IsInstanceAliveOK'), require('./model/IsInstanceAliveReader'), require('./model/ListOryAccessControlPolicies'), require('./model/ListOryAccessControlPoliciesInternalServerError'), require('./model/ListOryAccessControlPoliciesInternalServerErrorBody'), require('./model/ListOryAccessControlPoliciesOK'), require('./model/ListOryAccessControlPoliciesReader'), require('./model/ListOryAccessControlPolicyRoles'), require('./model/ListOryAccessControlPolicyRolesInternalServerError'), require('./model/ListOryAccessControlPolicyRolesInternalServerErrorBody'), require('./model/ListOryAccessControlPolicyRolesOK'), require('./model/ListOryAccessControlPolicyRolesReader'), require('./model/OryAccessControlPolicies'), require('./model/OryAccessControlPolicy'), require('./model/OryAccessControlPolicyAllowedInput'), require('./model/OryAccessControlPolicyRole'), require('./model/OryAccessControlPolicyRoles'), require('./model/Policies'), require('./model/Policy'), require('./model/RemoveOryAccessControlPolicyRoleMembers'), require('./model/RemoveOryAccessControlPolicyRoleMembersCreated'), require('./model/RemoveOryAccessControlPolicyRoleMembersInternalServerError'), require('./model/RemoveOryAccessControlPolicyRoleMembersInternalServerErrorBody'), require('./model/RemoveOryAccessControlPolicyRoleMembersReader'), require('./model/Role'), require('./model/Roles'), require('./model/SwaggerHealthStatus'), require('./model/SwaggerNotReadyStatus'), require('./model/SwaggerVersion'), require('./model/UpsertOryAccessControlPolicy'), require('./model/UpsertOryAccessControlPolicyInternalServerError'), require('./model/UpsertOryAccessControlPolicyInternalServerErrorBody'), require('./model/UpsertOryAccessControlPolicyOK'), require('./model/UpsertOryAccessControlPolicyReader'), require('./model/UpsertOryAccessControlPolicyRole'), require('./model/UpsertOryAccessControlPolicyRoleInternalServerError'), require('./model/UpsertOryAccessControlPolicyRoleInternalServerErrorBody'), require('./model/UpsertOryAccessControlPolicyRoleOK'), require('./model/UpsertOryAccessControlPolicyRoleReader'), require('./model/Version'), require('./api/EnginesApi'), require('./api/HealthApi'), require('./api/VersionApi'));
   }
-}(function(ApiClient, AddOryAccessControlPolicyRoleMembers, AddOryAccessControlPolicyRoleMembersBody, AuthorizationResult, Context, DeleteOryAccessControlPolicy, DeleteOryAccessControlPolicyRole, DoOryAccessControlPoliciesAllow, GetOryAccessControlPolicy, GetOryAccessControlPolicyRole, HealthNotReadyStatus, HealthStatus, InlineResponse500, ListOryAccessControlPolicies, ListOryAccessControlPolicyRoles, OryAccessControlPolicies, OryAccessControlPolicy, OryAccessControlPolicyAllowedInput, OryAccessControlPolicyRole, OryAccessControlPolicyRoles, Policies, RemoveOryAccessControlPolicyRoleMembers, UpsertOryAccessControlPolicy, UpsertOryAccessControlPolicyRole, Version, EnginesApi, HealthApi, VersionApi) {
+}(function(ApiClient, AddOryAccessControlPolicyRoleMembers, AddOryAccessControlPolicyRoleMembersBody, AddOryAccessControlPolicyRoleMembersInternalServerError, AddOryAccessControlPolicyRoleMembersInternalServerErrorBody, AddOryAccessControlPolicyRoleMembersOK, AddOryAccessControlPolicyRoleMembersReader, AuthorizationResult, Context, DeleteOryAccessControlPolicy, DeleteOryAccessControlPolicyCreated, DeleteOryAccessControlPolicyInternalServerError, DeleteOryAccessControlPolicyInternalServerErrorBody, DeleteOryAccessControlPolicyReader, DeleteOryAccessControlPolicyRole, DeleteOryAccessControlPolicyRoleCreated, DeleteOryAccessControlPolicyRoleInternalServerError, DeleteOryAccessControlPolicyRoleInternalServerErrorBody, DeleteOryAccessControlPolicyRoleReader, DoOryAccessControlPoliciesAllow, DoOryAccessControlPoliciesAllowForbidden, DoOryAccessControlPoliciesAllowInternalServerError, DoOryAccessControlPoliciesAllowInternalServerErrorBody, DoOryAccessControlPoliciesAllowOK, DoOryAccessControlPoliciesAllowReader, GetOryAccessControlPolicy, GetOryAccessControlPolicyInternalServerError, GetOryAccessControlPolicyInternalServerErrorBody, GetOryAccessControlPolicyNotFound, GetOryAccessControlPolicyNotFoundBody, GetOryAccessControlPolicyOK, GetOryAccessControlPolicyReader, GetOryAccessControlPolicyRole, GetOryAccessControlPolicyRoleInternalServerError, GetOryAccessControlPolicyRoleInternalServerErrorBody, GetOryAccessControlPolicyRoleNotFound, GetOryAccessControlPolicyRoleNotFoundBody, GetOryAccessControlPolicyRoleOK, GetOryAccessControlPolicyRoleReader, HealthNotReadyStatus, HealthStatus, InlineResponse500, Input, IsInstanceAliveInternalServerError, IsInstanceAliveInternalServerErrorBody, IsInstanceAliveOK, IsInstanceAliveReader, ListOryAccessControlPolicies, ListOryAccessControlPoliciesInternalServerError, ListOryAccessControlPoliciesInternalServerErrorBody, ListOryAccessControlPoliciesOK, ListOryAccessControlPoliciesReader, ListOryAccessControlPolicyRoles, ListOryAccessControlPolicyRolesInternalServerError, ListOryAccessControlPolicyRolesInternalServerErrorBody, ListOryAccessControlPolicyRolesOK, ListOryAccessControlPolicyRolesReader, OryAccessControlPolicies, OryAccessControlPolicy, OryAccessControlPolicyAllowedInput, OryAccessControlPolicyRole, OryAccessControlPolicyRoles, Policies, Policy, RemoveOryAccessControlPolicyRoleMembers, RemoveOryAccessControlPolicyRoleMembersCreated, RemoveOryAccessControlPolicyRoleMembersInternalServerError, RemoveOryAccessControlPolicyRoleMembersInternalServerErrorBody, RemoveOryAccessControlPolicyRoleMembersReader, Role, Roles, SwaggerHealthStatus, SwaggerNotReadyStatus, SwaggerVersion, UpsertOryAccessControlPolicy, UpsertOryAccessControlPolicyInternalServerError, UpsertOryAccessControlPolicyInternalServerErrorBody, UpsertOryAccessControlPolicyOK, UpsertOryAccessControlPolicyReader, UpsertOryAccessControlPolicyRole, UpsertOryAccessControlPolicyRoleInternalServerError, UpsertOryAccessControlPolicyRoleInternalServerErrorBody, UpsertOryAccessControlPolicyRoleOK, UpsertOryAccessControlPolicyRoleReader, Version, EnginesApi, HealthApi, VersionApi) {
   'use strict';
 
   /**
@@ -73,6 +73,26 @@
      */
     AddOryAccessControlPolicyRoleMembersBody: AddOryAccessControlPolicyRoleMembersBody,
     /**
+     * The AddOryAccessControlPolicyRoleMembersInternalServerError model constructor.
+     * @property {module:model/AddOryAccessControlPolicyRoleMembersInternalServerError}
+     */
+    AddOryAccessControlPolicyRoleMembersInternalServerError: AddOryAccessControlPolicyRoleMembersInternalServerError,
+    /**
+     * The AddOryAccessControlPolicyRoleMembersInternalServerErrorBody model constructor.
+     * @property {module:model/AddOryAccessControlPolicyRoleMembersInternalServerErrorBody}
+     */
+    AddOryAccessControlPolicyRoleMembersInternalServerErrorBody: AddOryAccessControlPolicyRoleMembersInternalServerErrorBody,
+    /**
+     * The AddOryAccessControlPolicyRoleMembersOK model constructor.
+     * @property {module:model/AddOryAccessControlPolicyRoleMembersOK}
+     */
+    AddOryAccessControlPolicyRoleMembersOK: AddOryAccessControlPolicyRoleMembersOK,
+    /**
+     * The AddOryAccessControlPolicyRoleMembersReader model constructor.
+     * @property {module:model/AddOryAccessControlPolicyRoleMembersReader}
+     */
+    AddOryAccessControlPolicyRoleMembersReader: AddOryAccessControlPolicyRoleMembersReader,
+    /**
      * The AuthorizationResult model constructor.
      * @property {module:model/AuthorizationResult}
      */
@@ -88,25 +108,150 @@
      */
     DeleteOryAccessControlPolicy: DeleteOryAccessControlPolicy,
     /**
+     * The DeleteOryAccessControlPolicyCreated model constructor.
+     * @property {module:model/DeleteOryAccessControlPolicyCreated}
+     */
+    DeleteOryAccessControlPolicyCreated: DeleteOryAccessControlPolicyCreated,
+    /**
+     * The DeleteOryAccessControlPolicyInternalServerError model constructor.
+     * @property {module:model/DeleteOryAccessControlPolicyInternalServerError}
+     */
+    DeleteOryAccessControlPolicyInternalServerError: DeleteOryAccessControlPolicyInternalServerError,
+    /**
+     * The DeleteOryAccessControlPolicyInternalServerErrorBody model constructor.
+     * @property {module:model/DeleteOryAccessControlPolicyInternalServerErrorBody}
+     */
+    DeleteOryAccessControlPolicyInternalServerErrorBody: DeleteOryAccessControlPolicyInternalServerErrorBody,
+    /**
+     * The DeleteOryAccessControlPolicyReader model constructor.
+     * @property {module:model/DeleteOryAccessControlPolicyReader}
+     */
+    DeleteOryAccessControlPolicyReader: DeleteOryAccessControlPolicyReader,
+    /**
      * The DeleteOryAccessControlPolicyRole model constructor.
      * @property {module:model/DeleteOryAccessControlPolicyRole}
      */
     DeleteOryAccessControlPolicyRole: DeleteOryAccessControlPolicyRole,
+    /**
+     * The DeleteOryAccessControlPolicyRoleCreated model constructor.
+     * @property {module:model/DeleteOryAccessControlPolicyRoleCreated}
+     */
+    DeleteOryAccessControlPolicyRoleCreated: DeleteOryAccessControlPolicyRoleCreated,
+    /**
+     * The DeleteOryAccessControlPolicyRoleInternalServerError model constructor.
+     * @property {module:model/DeleteOryAccessControlPolicyRoleInternalServerError}
+     */
+    DeleteOryAccessControlPolicyRoleInternalServerError: DeleteOryAccessControlPolicyRoleInternalServerError,
+    /**
+     * The DeleteOryAccessControlPolicyRoleInternalServerErrorBody model constructor.
+     * @property {module:model/DeleteOryAccessControlPolicyRoleInternalServerErrorBody}
+     */
+    DeleteOryAccessControlPolicyRoleInternalServerErrorBody: DeleteOryAccessControlPolicyRoleInternalServerErrorBody,
+    /**
+     * The DeleteOryAccessControlPolicyRoleReader model constructor.
+     * @property {module:model/DeleteOryAccessControlPolicyRoleReader}
+     */
+    DeleteOryAccessControlPolicyRoleReader: DeleteOryAccessControlPolicyRoleReader,
     /**
      * The DoOryAccessControlPoliciesAllow model constructor.
      * @property {module:model/DoOryAccessControlPoliciesAllow}
      */
     DoOryAccessControlPoliciesAllow: DoOryAccessControlPoliciesAllow,
     /**
+     * The DoOryAccessControlPoliciesAllowForbidden model constructor.
+     * @property {module:model/DoOryAccessControlPoliciesAllowForbidden}
+     */
+    DoOryAccessControlPoliciesAllowForbidden: DoOryAccessControlPoliciesAllowForbidden,
+    /**
+     * The DoOryAccessControlPoliciesAllowInternalServerError model constructor.
+     * @property {module:model/DoOryAccessControlPoliciesAllowInternalServerError}
+     */
+    DoOryAccessControlPoliciesAllowInternalServerError: DoOryAccessControlPoliciesAllowInternalServerError,
+    /**
+     * The DoOryAccessControlPoliciesAllowInternalServerErrorBody model constructor.
+     * @property {module:model/DoOryAccessControlPoliciesAllowInternalServerErrorBody}
+     */
+    DoOryAccessControlPoliciesAllowInternalServerErrorBody: DoOryAccessControlPoliciesAllowInternalServerErrorBody,
+    /**
+     * The DoOryAccessControlPoliciesAllowOK model constructor.
+     * @property {module:model/DoOryAccessControlPoliciesAllowOK}
+     */
+    DoOryAccessControlPoliciesAllowOK: DoOryAccessControlPoliciesAllowOK,
+    /**
+     * The DoOryAccessControlPoliciesAllowReader model constructor.
+     * @property {module:model/DoOryAccessControlPoliciesAllowReader}
+     */
+    DoOryAccessControlPoliciesAllowReader: DoOryAccessControlPoliciesAllowReader,
+    /**
      * The GetOryAccessControlPolicy model constructor.
      * @property {module:model/GetOryAccessControlPolicy}
      */
     GetOryAccessControlPolicy: GetOryAccessControlPolicy,
     /**
+     * The GetOryAccessControlPolicyInternalServerError model constructor.
+     * @property {module:model/GetOryAccessControlPolicyInternalServerError}
+     */
+    GetOryAccessControlPolicyInternalServerError: GetOryAccessControlPolicyInternalServerError,
+    /**
+     * The GetOryAccessControlPolicyInternalServerErrorBody model constructor.
+     * @property {module:model/GetOryAccessControlPolicyInternalServerErrorBody}
+     */
+    GetOryAccessControlPolicyInternalServerErrorBody: GetOryAccessControlPolicyInternalServerErrorBody,
+    /**
+     * The GetOryAccessControlPolicyNotFound model constructor.
+     * @property {module:model/GetOryAccessControlPolicyNotFound}
+     */
+    GetOryAccessControlPolicyNotFound: GetOryAccessControlPolicyNotFound,
+    /**
+     * The GetOryAccessControlPolicyNotFoundBody model constructor.
+     * @property {module:model/GetOryAccessControlPolicyNotFoundBody}
+     */
+    GetOryAccessControlPolicyNotFoundBody: GetOryAccessControlPolicyNotFoundBody,
+    /**
+     * The GetOryAccessControlPolicyOK model constructor.
+     * @property {module:model/GetOryAccessControlPolicyOK}
+     */
+    GetOryAccessControlPolicyOK: GetOryAccessControlPolicyOK,
+    /**
+     * The GetOryAccessControlPolicyReader model constructor.
+     * @property {module:model/GetOryAccessControlPolicyReader}
+     */
+    GetOryAccessControlPolicyReader: GetOryAccessControlPolicyReader,
+    /**
      * The GetOryAccessControlPolicyRole model constructor.
      * @property {module:model/GetOryAccessControlPolicyRole}
      */
     GetOryAccessControlPolicyRole: GetOryAccessControlPolicyRole,
+    /**
+     * The GetOryAccessControlPolicyRoleInternalServerError model constructor.
+     * @property {module:model/GetOryAccessControlPolicyRoleInternalServerError}
+     */
+    GetOryAccessControlPolicyRoleInternalServerError: GetOryAccessControlPolicyRoleInternalServerError,
+    /**
+     * The GetOryAccessControlPolicyRoleInternalServerErrorBody model constructor.
+     * @property {module:model/GetOryAccessControlPolicyRoleInternalServerErrorBody}
+     */
+    GetOryAccessControlPolicyRoleInternalServerErrorBody: GetOryAccessControlPolicyRoleInternalServerErrorBody,
+    /**
+     * The GetOryAccessControlPolicyRoleNotFound model constructor.
+     * @property {module:model/GetOryAccessControlPolicyRoleNotFound}
+     */
+    GetOryAccessControlPolicyRoleNotFound: GetOryAccessControlPolicyRoleNotFound,
+    /**
+     * The GetOryAccessControlPolicyRoleNotFoundBody model constructor.
+     * @property {module:model/GetOryAccessControlPolicyRoleNotFoundBody}
+     */
+    GetOryAccessControlPolicyRoleNotFoundBody: GetOryAccessControlPolicyRoleNotFoundBody,
+    /**
+     * The GetOryAccessControlPolicyRoleOK model constructor.
+     * @property {module:model/GetOryAccessControlPolicyRoleOK}
+     */
+    GetOryAccessControlPolicyRoleOK: GetOryAccessControlPolicyRoleOK,
+    /**
+     * The GetOryAccessControlPolicyRoleReader model constructor.
+     * @property {module:model/GetOryAccessControlPolicyRoleReader}
+     */
+    GetOryAccessControlPolicyRoleReader: GetOryAccessControlPolicyRoleReader,
     /**
      * The HealthNotReadyStatus model constructor.
      * @property {module:model/HealthNotReadyStatus}
@@ -123,15 +268,80 @@
      */
     InlineResponse500: InlineResponse500,
     /**
+     * The Input model constructor.
+     * @property {module:model/Input}
+     */
+    Input: Input,
+    /**
+     * The IsInstanceAliveInternalServerError model constructor.
+     * @property {module:model/IsInstanceAliveInternalServerError}
+     */
+    IsInstanceAliveInternalServerError: IsInstanceAliveInternalServerError,
+    /**
+     * The IsInstanceAliveInternalServerErrorBody model constructor.
+     * @property {module:model/IsInstanceAliveInternalServerErrorBody}
+     */
+    IsInstanceAliveInternalServerErrorBody: IsInstanceAliveInternalServerErrorBody,
+    /**
+     * The IsInstanceAliveOK model constructor.
+     * @property {module:model/IsInstanceAliveOK}
+     */
+    IsInstanceAliveOK: IsInstanceAliveOK,
+    /**
+     * The IsInstanceAliveReader model constructor.
+     * @property {module:model/IsInstanceAliveReader}
+     */
+    IsInstanceAliveReader: IsInstanceAliveReader,
+    /**
      * The ListOryAccessControlPolicies model constructor.
      * @property {module:model/ListOryAccessControlPolicies}
      */
     ListOryAccessControlPolicies: ListOryAccessControlPolicies,
     /**
+     * The ListOryAccessControlPoliciesInternalServerError model constructor.
+     * @property {module:model/ListOryAccessControlPoliciesInternalServerError}
+     */
+    ListOryAccessControlPoliciesInternalServerError: ListOryAccessControlPoliciesInternalServerError,
+    /**
+     * The ListOryAccessControlPoliciesInternalServerErrorBody model constructor.
+     * @property {module:model/ListOryAccessControlPoliciesInternalServerErrorBody}
+     */
+    ListOryAccessControlPoliciesInternalServerErrorBody: ListOryAccessControlPoliciesInternalServerErrorBody,
+    /**
+     * The ListOryAccessControlPoliciesOK model constructor.
+     * @property {module:model/ListOryAccessControlPoliciesOK}
+     */
+    ListOryAccessControlPoliciesOK: ListOryAccessControlPoliciesOK,
+    /**
+     * The ListOryAccessControlPoliciesReader model constructor.
+     * @property {module:model/ListOryAccessControlPoliciesReader}
+     */
+    ListOryAccessControlPoliciesReader: ListOryAccessControlPoliciesReader,
+    /**
      * The ListOryAccessControlPolicyRoles model constructor.
      * @property {module:model/ListOryAccessControlPolicyRoles}
      */
     ListOryAccessControlPolicyRoles: ListOryAccessControlPolicyRoles,
+    /**
+     * The ListOryAccessControlPolicyRolesInternalServerError model constructor.
+     * @property {module:model/ListOryAccessControlPolicyRolesInternalServerError}
+     */
+    ListOryAccessControlPolicyRolesInternalServerError: ListOryAccessControlPolicyRolesInternalServerError,
+    /**
+     * The ListOryAccessControlPolicyRolesInternalServerErrorBody model constructor.
+     * @property {module:model/ListOryAccessControlPolicyRolesInternalServerErrorBody}
+     */
+    ListOryAccessControlPolicyRolesInternalServerErrorBody: ListOryAccessControlPolicyRolesInternalServerErrorBody,
+    /**
+     * The ListOryAccessControlPolicyRolesOK model constructor.
+     * @property {module:model/ListOryAccessControlPolicyRolesOK}
+     */
+    ListOryAccessControlPolicyRolesOK: ListOryAccessControlPolicyRolesOK,
+    /**
+     * The ListOryAccessControlPolicyRolesReader model constructor.
+     * @property {module:model/ListOryAccessControlPolicyRolesReader}
+     */
+    ListOryAccessControlPolicyRolesReader: ListOryAccessControlPolicyRolesReader,
     /**
      * The OryAccessControlPolicies model constructor.
      * @property {module:model/OryAccessControlPolicies}
@@ -163,20 +373,110 @@
      */
     Policies: Policies,
     /**
+     * The Policy model constructor.
+     * @property {module:model/Policy}
+     */
+    Policy: Policy,
+    /**
      * The RemoveOryAccessControlPolicyRoleMembers model constructor.
      * @property {module:model/RemoveOryAccessControlPolicyRoleMembers}
      */
     RemoveOryAccessControlPolicyRoleMembers: RemoveOryAccessControlPolicyRoleMembers,
+    /**
+     * The RemoveOryAccessControlPolicyRoleMembersCreated model constructor.
+     * @property {module:model/RemoveOryAccessControlPolicyRoleMembersCreated}
+     */
+    RemoveOryAccessControlPolicyRoleMembersCreated: RemoveOryAccessControlPolicyRoleMembersCreated,
+    /**
+     * The RemoveOryAccessControlPolicyRoleMembersInternalServerError model constructor.
+     * @property {module:model/RemoveOryAccessControlPolicyRoleMembersInternalServerError}
+     */
+    RemoveOryAccessControlPolicyRoleMembersInternalServerError: RemoveOryAccessControlPolicyRoleMembersInternalServerError,
+    /**
+     * The RemoveOryAccessControlPolicyRoleMembersInternalServerErrorBody model constructor.
+     * @property {module:model/RemoveOryAccessControlPolicyRoleMembersInternalServerErrorBody}
+     */
+    RemoveOryAccessControlPolicyRoleMembersInternalServerErrorBody: RemoveOryAccessControlPolicyRoleMembersInternalServerErrorBody,
+    /**
+     * The RemoveOryAccessControlPolicyRoleMembersReader model constructor.
+     * @property {module:model/RemoveOryAccessControlPolicyRoleMembersReader}
+     */
+    RemoveOryAccessControlPolicyRoleMembersReader: RemoveOryAccessControlPolicyRoleMembersReader,
+    /**
+     * The Role model constructor.
+     * @property {module:model/Role}
+     */
+    Role: Role,
+    /**
+     * The Roles model constructor.
+     * @property {module:model/Roles}
+     */
+    Roles: Roles,
+    /**
+     * The SwaggerHealthStatus model constructor.
+     * @property {module:model/SwaggerHealthStatus}
+     */
+    SwaggerHealthStatus: SwaggerHealthStatus,
+    /**
+     * The SwaggerNotReadyStatus model constructor.
+     * @property {module:model/SwaggerNotReadyStatus}
+     */
+    SwaggerNotReadyStatus: SwaggerNotReadyStatus,
+    /**
+     * The SwaggerVersion model constructor.
+     * @property {module:model/SwaggerVersion}
+     */
+    SwaggerVersion: SwaggerVersion,
     /**
      * The UpsertOryAccessControlPolicy model constructor.
      * @property {module:model/UpsertOryAccessControlPolicy}
      */
     UpsertOryAccessControlPolicy: UpsertOryAccessControlPolicy,
     /**
+     * The UpsertOryAccessControlPolicyInternalServerError model constructor.
+     * @property {module:model/UpsertOryAccessControlPolicyInternalServerError}
+     */
+    UpsertOryAccessControlPolicyInternalServerError: UpsertOryAccessControlPolicyInternalServerError,
+    /**
+     * The UpsertOryAccessControlPolicyInternalServerErrorBody model constructor.
+     * @property {module:model/UpsertOryAccessControlPolicyInternalServerErrorBody}
+     */
+    UpsertOryAccessControlPolicyInternalServerErrorBody: UpsertOryAccessControlPolicyInternalServerErrorBody,
+    /**
+     * The UpsertOryAccessControlPolicyOK model constructor.
+     * @property {module:model/UpsertOryAccessControlPolicyOK}
+     */
+    UpsertOryAccessControlPolicyOK: UpsertOryAccessControlPolicyOK,
+    /**
+     * The UpsertOryAccessControlPolicyReader model constructor.
+     * @property {module:model/UpsertOryAccessControlPolicyReader}
+     */
+    UpsertOryAccessControlPolicyReader: UpsertOryAccessControlPolicyReader,
+    /**
      * The UpsertOryAccessControlPolicyRole model constructor.
      * @property {module:model/UpsertOryAccessControlPolicyRole}
      */
     UpsertOryAccessControlPolicyRole: UpsertOryAccessControlPolicyRole,
+    /**
+     * The UpsertOryAccessControlPolicyRoleInternalServerError model constructor.
+     * @property {module:model/UpsertOryAccessControlPolicyRoleInternalServerError}
+     */
+    UpsertOryAccessControlPolicyRoleInternalServerError: UpsertOryAccessControlPolicyRoleInternalServerError,
+    /**
+     * The UpsertOryAccessControlPolicyRoleInternalServerErrorBody model constructor.
+     * @property {module:model/UpsertOryAccessControlPolicyRoleInternalServerErrorBody}
+     */
+    UpsertOryAccessControlPolicyRoleInternalServerErrorBody: UpsertOryAccessControlPolicyRoleInternalServerErrorBody,
+    /**
+     * The UpsertOryAccessControlPolicyRoleOK model constructor.
+     * @property {module:model/UpsertOryAccessControlPolicyRoleOK}
+     */
+    UpsertOryAccessControlPolicyRoleOK: UpsertOryAccessControlPolicyRoleOK,
+    /**
+     * The UpsertOryAccessControlPolicyRoleReader model constructor.
+     * @property {module:model/UpsertOryAccessControlPolicyRoleReader}
+     */
+    UpsertOryAccessControlPolicyRoleReader: UpsertOryAccessControlPolicyRoleReader,
     /**
      * The Version model constructor.
      * @property {module:model/Version}

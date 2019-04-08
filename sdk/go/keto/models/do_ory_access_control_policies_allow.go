@@ -14,7 +14,7 @@ import (
 )
 
 // DoOryAccessControlPoliciesAllow do ory access control policies allow
-// swagger:model doOryAccessControlPoliciesAllow
+// swagger:model DoOryAccessControlPoliciesAllow
 type DoOryAccessControlPoliciesAllow struct {
 
 	// body

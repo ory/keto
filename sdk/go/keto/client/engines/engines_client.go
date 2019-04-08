@@ -58,7 +58,7 @@ func (a *Client) AddOryAccessControlPolicyRoleMembers(params *AddOryAccessContro
 /*
 DeleteOryAccessControlPolicy Delete an ORY Access Control Policy
 */
-func (a *Client) DeleteOryAccessControlPolicy(params *DeleteOryAccessControlPolicyParams) (*DeleteOryAccessControlPolicyCreated, error) {
+func (a *Client) DeleteOryAccessControlPolicy(params *DeleteOryAccessControlPolicyParams) (*DeleteOryAccessControlPolicyNoContent, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewDeleteOryAccessControlPolicyParams()
@@ -79,7 +79,7 @@ func (a *Client) DeleteOryAccessControlPolicy(params *DeleteOryAccessControlPoli
 	if err != nil {
 		return nil, err
 	}
-	return result.(*DeleteOryAccessControlPolicyCreated), nil
+	return result.(*DeleteOryAccessControlPolicyNoContent), nil
 
 }
 
@@ -89,7 +89,7 @@ DeleteOryAccessControlPolicyRole deletes an o r y access control policy role
 Roles group several subjects into one. Rules can be assigned to ORY Access Control Policy (OACP) by using the Role ID
 as subject in the OACP.
 */
-func (a *Client) DeleteOryAccessControlPolicyRole(params *DeleteOryAccessControlPolicyRoleParams) (*DeleteOryAccessControlPolicyRoleCreated, error) {
+func (a *Client) DeleteOryAccessControlPolicyRole(params *DeleteOryAccessControlPolicyRoleParams) (*DeleteOryAccessControlPolicyRoleNoContent, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewDeleteOryAccessControlPolicyRoleParams()
@@ -110,14 +110,16 @@ func (a *Client) DeleteOryAccessControlPolicyRole(params *DeleteOryAccessControl
 	if err != nil {
 		return nil, err
 	}
-	return result.(*DeleteOryAccessControlPolicyRoleCreated), nil
+	return result.(*DeleteOryAccessControlPolicyRoleNoContent), nil
 
 }
 
 /*
 DoOryAccessControlPoliciesAllow checks if a request is allowed
 
-Use this endpoint to check if a request is allowed or not.
+Use this endpoint to check if a request is allowed or not. If the request is allowed, a 200 response with
+`{"allowed":"true"}` will be sent. If the request is denied, a 403 response with `{"allowed":"false"}` will
+be sent instead.
 */
 func (a *Client) DoOryAccessControlPoliciesAllow(params *DoOryAccessControlPoliciesAllowParams) (*DoOryAccessControlPoliciesAllowOK, error) {
 	// TODO: Validate the params before sending

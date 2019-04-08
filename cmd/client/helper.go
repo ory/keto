@@ -47,7 +47,7 @@ func ImportFile(file string, proto interface{}, f func()) {
 
 func NewClient(cmd *cobra.Command) *client.OryKeto {
 	u, err := url.ParseRequestURI(EndpointURL(cmd))
-	cmdx.Must(err, `Unable to parse endpoint URL "%s": %s`, endpoint, err)
+	cmdx.Must(err, `Unable to parse endpoint URL "%s": %s`, EndpointURL(cmd), err)
 
 	return client.NewHTTPClientWithConfig(nil, &client.TransportConfig{
 		Host:     u.Host,

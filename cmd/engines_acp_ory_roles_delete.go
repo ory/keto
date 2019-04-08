@@ -15,12 +15,9 @@
 package cmd
 
 import (
-	"net/http"
-
 	"github.com/spf13/cobra"
 
-	"github.com/ory/keto/sdk/go/keto/swagger"
-	"github.com/ory/keto/x"
+	"github.com/ory/keto/sdk/go/keto/client/engines"
 
 	"github.com/ory/keto/cmd/client"
 	"github.com/ory/x/cmdx"
@@ -34,10 +31,10 @@ var deleteCmd = &cobra.Command{
 		cmdx.MinArgs(cmd, args, 2)
 		client.CheckLadonFlavor(args[0])
 
-		c := swagger.NewEnginesApiWithBasePath(client.EndpointURL(cmd))
+		c := client.NewClient(cmd)
 		for _, id := range args[1:] {
-			res, err := c.DeleteOryAccessControlPolicyRole(args[0], id)
-			x.CheckResponse(err, http.StatusNoContent, res)
+			_, err := c.Engines.DeleteOryAccessControlPolicyRole(engines.NewDeleteOryAccessControlPolicyRoleParams().WithFlavor(args[0]).WithID(id))
+			cmdx.Must(err, "Unable to delete ORY Access Control Policy Role: %s")
 		}
 	},
 }

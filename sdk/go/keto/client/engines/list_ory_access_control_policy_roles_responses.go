@@ -55,7 +55,7 @@ func NewListOryAccessControlPolicyRolesOK() *ListOryAccessControlPolicyRolesOK {
 Roles is an array of roles.
 */
 type ListOryAccessControlPolicyRolesOK struct {
-	Payload []*models.Role
+	Payload []*models.OryAccessControlPolicyRole
 }
 
 func (o *ListOryAccessControlPolicyRolesOK) Error() string {

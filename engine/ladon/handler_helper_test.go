@@ -1,6 +1,8 @@
 package ladon
 
-import "github.com/ory/keto/sdk/go/keto/swagger"
+import (
+	"github.com/ory/keto/sdk/go/keto/models"
+)
 
 var (
 	roles = map[string]Roles{
@@ -26,12 +28,12 @@ var (
 		}},
 	}
 	requests = map[string][]struct {
-		req     swagger.OryAccessControlPolicyAllowedInput
+		req     models.Input
 		allowed bool
 	}{
 		"regex": {
 			{
-				req: swagger.OryAccessControlPolicyAllowedInput{
+				req: models.Input{
 					Subject:  "alice",
 					Resource: "other-thing",
 					Action:   "create",
@@ -40,7 +42,7 @@ var (
 				allowed: false,
 			},
 			{
-				req: swagger.OryAccessControlPolicyAllowedInput{
+				req: models.Input{
 					Subject:  "alice",
 					Resource: "matrix",
 					Action:   "delete",
@@ -49,7 +51,7 @@ var (
 				allowed: false,
 			},
 			{
-				req: swagger.OryAccessControlPolicyAllowedInput{
+				req: models.Input{
 					Subject:  "alice",
 					Resource: "matrix",
 					Action:   "create",
@@ -58,7 +60,7 @@ var (
 				allowed: true,
 			},
 			{
-				req: swagger.OryAccessControlPolicyAllowedInput{
+				req: models.Input{
 					Subject:  "ken",
 					Resource: "forbidden_matrix",
 					Action:   "create",
@@ -67,7 +69,7 @@ var (
 				allowed: false,
 			},
 			{
-				req: swagger.OryAccessControlPolicyAllowedInput{
+				req: models.Input{
 					Subject:  "ken",
 					Resource: "allowed_matrix",
 					Action:   "create",
@@ -78,7 +80,7 @@ var (
 		},
 		"exact": {
 			{
-				req: swagger.OryAccessControlPolicyAllowedInput{
+				req: models.Input{
 					Subject:  "alice",
 					Resource: "other-thing",
 					Action:   "create",
@@ -87,7 +89,7 @@ var (
 				allowed: false,
 			},
 			{
-				req: swagger.OryAccessControlPolicyAllowedInput{
+				req: models.Input{
 					Subject:  "alice",
 					Resource: "matrix",
 					Action:   "delete",
@@ -96,7 +98,7 @@ var (
 				allowed: false,
 			},
 			{
-				req: swagger.OryAccessControlPolicyAllowedInput{
+				req: models.Input{
 					Subject:  "alice",
 					Resource: "matrix",
 					Action:   "create",
@@ -105,7 +107,7 @@ var (
 				allowed: true,
 			},
 			{
-				req: swagger.OryAccessControlPolicyAllowedInput{
+				req: models.Input{
 					Subject:  "ken",
 					Resource: "forbidden_matrix",
 					Action:   "create",
@@ -114,7 +116,7 @@ var (
 				allowed: false,
 			},
 			{
-				req: swagger.OryAccessControlPolicyAllowedInput{
+				req: models.Input{
 					Subject:  "ken",
 					Resource: "allowed_matrix",
 					Action:   "create",

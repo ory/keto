@@ -42,7 +42,7 @@ The json file(s) have to be formatted as arrays:
 
 		c := client.NewClient(cmd)
 		for _, file := range args[1:] {
-			var p []models.Policy
+			var p []models.OryAccessControlPolicy
 			client.ImportFile(
 				file,
 				&p,

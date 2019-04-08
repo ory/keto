@@ -16,12 +16,10 @@ package cmd
 
 import (
 	"fmt"
-	"net/http"
+
+	"github.com/ory/keto/sdk/go/keto/client/engines"
 
 	"github.com/spf13/cobra"
-
-	"github.com/ory/keto/sdk/go/keto/swagger"
-	"github.com/ory/keto/x"
 
 	"github.com/ory/keto/cmd/client"
 	"github.com/ory/x/cmdx"
@@ -35,11 +33,11 @@ var getCmd = &cobra.Command{
 		cmdx.MinArgs(cmd, args, 2)
 		client.CheckLadonFlavor(args[0])
 
-		c := swagger.NewEnginesApiWithBasePath(client.EndpointURL(cmd))
+		c := client.NewClient(cmd)
 		for _, id := range args[1:] {
-			r, res, err := c.GetOryAccessControlPolicyRole(args[0], id)
-			x.CheckResponse(err, http.StatusOK, res)
-			fmt.Println(cmdx.FormatResponse(r))
+			r, err := c.Engines.GetOryAccessControlPolicyRole(engines.NewGetOryAccessControlPolicyRoleParams().WithFlavor(args[0]).WithID(id))
+			cmdx.Must(err, "Unable to get ORY Access Control Policy Role: %s")
+			fmt.Println(cmdx.FormatResponse(r.Payload))
 		}
 	},
 }

@@ -17,18 +17,18 @@
 (function(root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module.
-    define(['ApiClient', 'model/OryAccessControlPolicy'], factory);
+    define(['ApiClient', 'model/Policy'], factory);
   } else if (typeof module === 'object' && module.exports) {
     // CommonJS-like environments that support module.exports, like Node.
-    module.exports = factory(require('../ApiClient'), require('./OryAccessControlPolicy'));
+    module.exports = factory(require('../ApiClient'), require('./Policy'));
   } else {
     // Browser globals (root is window)
     if (!root.OryKeto) {
       root.OryKeto = {};
     }
-    root.OryKeto.Policies = factory(root.OryKeto.ApiClient, root.OryKeto.OryAccessControlPolicy);
+    root.OryKeto.Policies = factory(root.OryKeto.ApiClient, root.OryKeto.Policy);
   }
-}(this, function(ApiClient, OryAccessControlPolicy) {
+}(this, function(ApiClient, Policy) {
   'use strict';
 
 
@@ -64,7 +64,7 @@
   exports.constructFromObject = function(data, obj) {
     if (data) {
       obj = obj || new exports();
-      ApiClient.constructFromObject(data, obj, 'OryAccessControlPolicy');
+      ApiClient.constructFromObject(data, obj, 'Policy');
 
     }
     return obj;

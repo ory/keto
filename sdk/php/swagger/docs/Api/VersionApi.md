@@ -1,4 +1,4 @@
-# ketoSDK\VersionApi
+# keto\SDK\VersionApi
 Client for keto
 
 All URIs are relative to *http://localhost*
@@ -9,7 +9,7 @@ Method | HTTP request | Description
 
 
 # **getVersion**
-> \ketoSDK\Model\Version getVersion()
+> \keto\SDK\Model\Version getVersion()
 
 Get service version
 
@@ -20,7 +20,7 @@ This endpoint returns the service version typically notated using semantic versi
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-$api_instance = new ketoSDK\Api\VersionApi();
+$api_instance = new keto\SDK\Api\VersionApi();
 
 try {
     $result = $api_instance->getVersion();
@@ -36,7 +36,7 @@ This endpoint does not need any parameter.
 
 ### Return type
 
-[**\ketoSDK\Model\Version**](../Model/Version.md)
+[**\keto\SDK\Model\Version**](../Model/Version.md)
 
 ### Authorization
 

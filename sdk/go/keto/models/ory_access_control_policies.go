@@ -15,11 +15,14 @@ import (
 )
 
 // OryAccessControlPolicies Policies is an array of policies.
-// swagger:model oryAccessControlPolicies
+// swagger:model OryAccessControlPolicies
 type OryAccessControlPolicies struct {
 
+	// The request body.
+	//
 	// in: body
-	Body []*Policy `json:"Body"`
+	// type: array
+	Body []*OryAccessControlPolicy `json:"Body"`
 }
 
 // Validate validates this ory access control policies

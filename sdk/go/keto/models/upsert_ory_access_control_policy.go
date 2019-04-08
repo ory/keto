@@ -14,11 +14,11 @@ import (
 )
 
 // UpsertOryAccessControlPolicy upsert ory access control policy
-// swagger:model upsertOryAccessControlPolicy
+// swagger:model UpsertOryAccessControlPolicy
 type UpsertOryAccessControlPolicy struct {
 
 	// body
-	Body *Policy `json:"Body,omitempty"`
+	Body *OryAccessControlPolicy `json:"Body,omitempty"`
 
 	// The ORY Access Control Policy flavor. Can be "regex", "glob", and "exact".
 	//

@@ -64,7 +64,7 @@ for the upsert ory access control policy operation typically these are written t
 type UpsertOryAccessControlPolicyParams struct {
 
 	/*Body*/
-	Body *models.Policy
+	Body *models.OryAccessControlPolicy
 	/*Flavor
 	  The ORY Access Control Policy flavor. Can be "regex", "glob", and "exact".
 
@@ -110,13 +110,13 @@ func (o *UpsertOryAccessControlPolicyParams) SetHTTPClient(client *http.Client) 
 }
 
 // WithBody adds the body to the upsert ory access control policy params
-func (o *UpsertOryAccessControlPolicyParams) WithBody(body *models.Policy) *UpsertOryAccessControlPolicyParams {
+func (o *UpsertOryAccessControlPolicyParams) WithBody(body *models.OryAccessControlPolicy) *UpsertOryAccessControlPolicyParams {
 	o.SetBody(body)
 	return o
 }
 
 // SetBody adds the body to the upsert ory access control policy params
-func (o *UpsertOryAccessControlPolicyParams) SetBody(body *models.Policy) {
+func (o *UpsertOryAccessControlPolicyParams) SetBody(body *models.OryAccessControlPolicy) {
 	o.Body = body
 }
 

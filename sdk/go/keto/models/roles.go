@@ -14,7 +14,7 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// Roles A list of roles.
+// Roles Roles Roles A list of roles.
 // swagger:model Roles
 type Roles []*Role
 
@@ -38,37 +38,8 @@ func (m Roles) Validate(formats strfmt.Registry) error {
 
 	}
 
-	if err := m.validateBody(formats); err != nil {
-		res = append(res, err)
-	}
-
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
-	return nil
-}
-
-func (m *Roles) validateBody(formats strfmt.Registry) error {
-
-	if swag.IsZero(m.Body) { // not required
-		return nil
-	}
-
-	for i := 0; i < len(m.Body); i++ {
-		if swag.IsZero(m.Body[i]) { // not required
-			continue
-		}
-
-		if m.Body[i] != nil {
-			if err := m.Body[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
-					return ve.ValidateName("Body" + "." + strconv.Itoa(i))
-				}
-				return err
-			}
-		}
-
-	}
-
 	return nil
 }

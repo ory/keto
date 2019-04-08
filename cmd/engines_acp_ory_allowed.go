@@ -46,7 +46,7 @@ var enginesAcpOryAllowedCmd = &cobra.Command{
 		)
 		if err != nil {
 			switch d := err.(type) {
-			case *engines.GetOryAccessControlPolicyRoleOK:
+			case *engines.DoOryAccessControlPoliciesAllowForbidden:
 				fmt.Println(cmdx.FormatResponse(&d.Payload))
 				return
 			default:

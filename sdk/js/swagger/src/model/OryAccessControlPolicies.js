@@ -70,7 +70,7 @@
   }
 
   /**
-   * in: body
+   * The request body.  in: body type: array
    * @member {Array.<module:model/OryAccessControlPolicy>} Body
    */
   exports.prototype['Body'] = undefined;

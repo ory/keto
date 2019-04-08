@@ -165,7 +165,7 @@ func (e *Engine) Register(r *httprouter.Router) {
 	//     Schemes: http, https
 	//
 	//     Responses:
-	//       201: emptyResponse
+	//       204: emptyResponse
 	//       500: genericError
 	r.DELETE(BasePath+"/policies/:id", e.sh.Delete(e.policiesDelete))
 
@@ -241,7 +241,7 @@ func (e *Engine) Register(r *httprouter.Router) {
 	//     Schemes: http, https
 	//
 	//     Responses:
-	//       201: emptyResponse
+	//       204: emptyResponse
 	//       500: genericError
 	r.DELETE(BasePath+"/roles/:id", e.sh.Delete(e.rolesDelete))
 

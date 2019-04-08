@@ -217,7 +217,7 @@
 
     /**
      * Check if a request is allowed
-     * Use this endpoint to check if a request is allowed or not.
+     * Use this endpoint to check if a request is allowed or not. If the request is allowed, a 200 response with &#x60;{\&quot;allowed\&quot;:\&quot;true\&quot;}&#x60; will be sent. If the request is denied, a 403 response with &#x60;{\&quot;allowed\&quot;:\&quot;false\&quot;}&#x60; will be sent instead.
      * @param {String} flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot;.
      * @param {Object} opts Optional parameters
      * @param {module:model/OryAccessControlPolicyAllowedInput} opts.body 

@@ -64,7 +64,7 @@ for the upsert ory access control policy role operation typically these are writ
 type UpsertOryAccessControlPolicyRoleParams struct {
 
 	/*Body*/
-	Body *models.Role
+	Body *models.OryAccessControlPolicyRole
 	/*Flavor
 	  The ORY Access Control Policy flavor. Can be "regex", "glob", and "exact".
 
@@ -110,13 +110,13 @@ func (o *UpsertOryAccessControlPolicyRoleParams) SetHTTPClient(client *http.Clie
 }
 
 // WithBody adds the body to the upsert ory access control policy role params
-func (o *UpsertOryAccessControlPolicyRoleParams) WithBody(body *models.Role) *UpsertOryAccessControlPolicyRoleParams {
+func (o *UpsertOryAccessControlPolicyRoleParams) WithBody(body *models.OryAccessControlPolicyRole) *UpsertOryAccessControlPolicyRoleParams {
 	o.SetBody(body)
 	return o
 }
 
 // SetBody adds the body to the upsert ory access control policy role params
-func (o *UpsertOryAccessControlPolicyRoleParams) SetBody(body *models.Role) {
+func (o *UpsertOryAccessControlPolicyRoleParams) SetBody(body *models.OryAccessControlPolicyRole) {
 	o.Body = body
 }
 

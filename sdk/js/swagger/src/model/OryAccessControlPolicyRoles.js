@@ -44,14 +44,11 @@
    * Constructs a new <code>OryAccessControlPolicyRoles</code>.
    * @alias module:model/OryAccessControlPolicyRoles
    * @class
-   * @extends Array
    */
   var exports = function() {
     var _this = this;
-    _this = new Array();
-    Object.setPrototypeOf(_this, exports);
 
-    return _this;
+
   };
 
   /**
@@ -64,12 +61,19 @@
   exports.constructFromObject = function(data, obj) {
     if (data) {
       obj = obj || new exports();
-      ApiClient.constructFromObject(data, obj, 'OryAccessControlPolicyRole');
 
+      if (data.hasOwnProperty('Body')) {
+        obj['Body'] = ApiClient.convertToType(data['Body'], [OryAccessControlPolicyRole]);
+      }
     }
     return obj;
   }
 
+  /**
+   * The request body.  in: body type: array
+   * @member {Array.<module:model/OryAccessControlPolicyRole>} Body
+   */
+  exports.prototype['Body'] = undefined;
 
 
 

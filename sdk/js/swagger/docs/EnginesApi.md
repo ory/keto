@@ -174,7 +174,7 @@ No authorization required
 
 Check if a request is allowed
 
-Use this endpoint to check if a request is allowed or not.
+Use this endpoint to check if a request is allowed or not. If the request is allowed, a 200 response with &#x60;{\&quot;allowed\&quot;:\&quot;true\&quot;}&#x60; will be sent. If the request is denied, a 403 response with &#x60;{\&quot;allowed\&quot;:\&quot;false\&quot;}&#x60; will be sent instead.
 
 ### Example
 ```javascript

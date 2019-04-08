@@ -33,6 +33,13 @@ func (o *DoOryAccessControlPoliciesAllowReader) ReadResponse(response runtime.Cl
 		}
 		return result, nil
 
+	case 403:
+		result := NewDoOryAccessControlPoliciesAllowForbidden()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
+
 	case 500:
 		result := NewDoOryAccessControlPoliciesAllowInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -63,6 +70,35 @@ func (o *DoOryAccessControlPoliciesAllowOK) Error() string {
 }
 
 func (o *DoOryAccessControlPoliciesAllowOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	o.Payload = new(models.AuthorizationResult)
+
+	// response payload
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+		return err
+	}
+
+	return nil
+}
+
+// NewDoOryAccessControlPoliciesAllowForbidden creates a DoOryAccessControlPoliciesAllowForbidden with default headers values
+func NewDoOryAccessControlPoliciesAllowForbidden() *DoOryAccessControlPoliciesAllowForbidden {
+	return &DoOryAccessControlPoliciesAllowForbidden{}
+}
+
+/*DoOryAccessControlPoliciesAllowForbidden handles this case with default header values.
+
+authorizationResult
+*/
+type DoOryAccessControlPoliciesAllowForbidden struct {
+	Payload *models.AuthorizationResult
+}
+
+func (o *DoOryAccessControlPoliciesAllowForbidden) Error() string {
+	return fmt.Sprintf("[POST /engines/acp/ory/{flavor}/allowed][%d] doOryAccessControlPoliciesAllowForbidden  %+v", 403, o.Payload)
+}
+
+func (o *DoOryAccessControlPoliciesAllowForbidden) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.AuthorizationResult)
 

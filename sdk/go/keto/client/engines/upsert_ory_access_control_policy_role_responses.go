@@ -55,7 +55,7 @@ func NewUpsertOryAccessControlPolicyRoleOK() *UpsertOryAccessControlPolicyRoleOK
 oryAccessControlPolicyRole
 */
 type UpsertOryAccessControlPolicyRoleOK struct {
-	Payload *models.Role
+	Payload *models.OryAccessControlPolicyRole
 }
 
 func (o *UpsertOryAccessControlPolicyRoleOK) Error() string {
@@ -64,7 +64,7 @@ func (o *UpsertOryAccessControlPolicyRoleOK) Error() string {
 
 func (o *UpsertOryAccessControlPolicyRoleOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(models.Role)
+	o.Payload = new(models.OryAccessControlPolicyRole)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {

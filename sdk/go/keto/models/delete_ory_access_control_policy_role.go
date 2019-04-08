@@ -14,7 +14,7 @@ import (
 )
 
 // DeleteOryAccessControlPolicyRole delete ory access control policy role
-// swagger:model deleteOryAccessControlPolicyRole
+// swagger:model DeleteOryAccessControlPolicyRole
 type DeleteOryAccessControlPolicyRole struct {
 
 	// The ORY Access Control Policy flavor. Can be "regex", "glob", and "exact".
