@@ -23,11 +23,11 @@ package server
 
 import (
 	"crypto/tls"
-	"fmt"
 	"net/http"
 
-	"github.com/gobuffalo/packr"
-	"github.com/jmoiron/sqlx"
+	"github.com/ory/keto/driver"
+	"github.com/ory/x/logrusx"
+
 	"github.com/julienschmidt/httprouter"
 	negronilogrus "github.com/meatballhat/negroni-logrus"
 	"github.com/pkg/errors"
@@ -37,17 +37,13 @@ import (
 	"github.com/urfave/negroni"
 
 	"github.com/ory/graceful"
-	"github.com/ory/herodot"
-	"github.com/ory/keto/engine"
 	"github.com/ory/keto/engine/ladon"
 	"github.com/ory/x/stringslice"
 
 	// This forces go mod vendor to look for the package rego and its subpackages
 	_ "github.com/ory/keto/engine/ladon/rego"
-	"github.com/ory/keto/storage"
 	"github.com/ory/x/cmdx"
 	"github.com/ory/x/corsx"
-	"github.com/ory/x/dbal"
 	"github.com/ory/x/healthx"
 	"github.com/ory/x/metricsx"
 	"github.com/ory/x/tlsx"
@@ -56,47 +52,24 @@ import (
 // RunServe runs the Keto API HTTP server
 func RunServe(
 	logger *logrus.Logger,
-	buildVersion, buildHash string, buildTime string,
+	version, commit string, date string,
 ) func(cmd *cobra.Command, args []string) {
 	return func(cmd *cobra.Command, args []string) {
-		box := packr.NewBox("../../engine/ladon/rego")
-
-		compiler, err := engine.NewCompiler(box, logger)
-		cmdx.Must(err, "Unable to initialize compiler: %s", err)
-
-		writer := herodot.NewJSONWriter(logger)
-		//writer.ErrorEnhancer = nil
-
-		var s storage.Manager
-		checks := map[string]healthx.ReadyChecker{}
-
-		err = dbal.Connect(viper.GetString("DATABASE_URL"), logger,
-			func() error {
-				s = storage.NewMemoryManager()
-				checks["storage"] = healthx.NoopReadyChecker
-				return nil
-			},
-			func(db *sqlx.DB) error {
-				ss := storage.NewSQLManager(db)
-				checks["storage"] = db.Ping
-				s = ss
-				return nil
-			},
+		d := driver.NewDefaultDriver(
+			logrusx.New(),
+			version, commit, date,
 		)
-		if err != nil {
-			logger.WithError(err).Fatalf("DBAL was unable to connect to the database")
-			return
-		}
-
-		sh := storage.NewHandler(s, writer)
-		e := engine.NewEngine(compiler, writer)
 
 		router := httprouter.New()
-		ladon.NewEngine(s, sh, e, writer).Register(router)
-		healthx.NewHandler(writer, buildVersion, checks).SetRoutes(router, true)
+		d.Registry().LadonEngine().Register(router)
+		d.Registry().HealthHandler().SetRoutes(router, true)
 
 		n := negroni.New()
 		n.Use(negronilogrus.NewMiddlewareFromLogger(logger, "keto"))
+
+		if tracer := d.Registry().Tracer(); tracer.IsLoaded() {
+			n.Use(tracer)
+		}
 
 		metrics := metricsx.New(cmd, logger,
 			&metricsx.Options{
@@ -108,23 +81,27 @@ func RunServe(
 					healthx.RoutesToObserve(),
 					ladon.RoutesToObserve(),
 				),
-				BuildVersion: buildVersion,
-				BuildTime:    buildHash,
-				BuildHash:    buildTime,
+				BuildVersion: version,
+				BuildTime:    date,
+				BuildHash:    commit,
 			},
 		)
 		n.Use(metrics)
 
 		n.UseHandler(router)
-		c := corsx.Initialize(n, logger, "")
+		c := corsx.Initialize(n, logger, "serve")
 
-		addr := fmt.Sprintf("%s:%s", viper.GetString("HOST"), viper.GetString("PORT"))
 		server := graceful.WithDefaults(&http.Server{
-			Addr:    addr,
+			Addr:    d.Configuration().ListenOn(),
 			Handler: c,
 		})
 
-		cert, err := tlsx.HTTPSCertificate()
+		cert, err := tlsx.Certificate(
+			viper.GetString("serve.tls.cert.base64"),
+			viper.GetString("serve.tls.key.base64"),
+			viper.GetString("serve.tls.cert.path"),
+			viper.GetString("serve.tls.key.path"),
+		)
 		if errors.Cause(err) == tlsx.ErrNoCertificatesConfigured {
 			// do nothing
 		} else if err != nil {
@@ -133,12 +110,16 @@ func RunServe(
 			server.TLSConfig = &tls.Config{Certificates: cert}
 		}
 
+		if d.Registry().Tracer().IsLoaded() {
+			server.RegisterOnShutdown(d.Registry().Tracer().Close)
+		}
+
 		if err := graceful.Graceful(func() error {
 			if cert != nil {
-				logger.Printf("Listening on https://%s", addr)
+				logger.Printf("Listening on https://%s", d.Configuration().ListenOn())
 				return server.ListenAndServeTLS("", "")
 			}
-			logger.Printf("Listening on http://%s", addr)
+			logger.Printf("Listening on http://%s", d.Configuration().ListenOn())
 			return server.ListenAndServe()
 		}, server.Shutdown); err != nil {
 			logger.Fatalf("Unable to gracefully shutdown HTTP(s) server because %v", err)

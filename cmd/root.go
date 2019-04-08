@@ -65,7 +65,5 @@ func init() {
 func initConfig() {
 	viper.AutomaticEnv() // read in environment variables that match
 
-	viper.SetDefault("PORT", "4466")
-
 	*logger = *logrusx.New()
 }

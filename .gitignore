@@ -3,3 +3,4 @@ node_modules/
 coverage.txt
 vendor/
 LICENSE.txt
+*-packr.go

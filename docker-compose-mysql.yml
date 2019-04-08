@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+
+  keto-migrate:
+    image: oryd/keto:latest
+    links:
+      - postgresd:postgresd
+    environment:
+      - LOG_LEVEL=debug
+      - DSN=mysql://root:secret@tcp(mysqld:3306)/mysql&max_conns=20&max_idle_conns=4
+    command:
+      migrate sql -e
+    restart: on-failure
+
+  keto:
+    image: oryd/keto:latest
+    links:
+      - postgresd:postgresd
+    depends_on:
+      - keto-migrate
+    environment:
+      - DSN=mysql://root:secret@tcp(mysqld:3306)/mysql&max_conns=20&max_idle_conns=4
+
+  mysqld:
+    image: mysql:5.7
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=secret

@@ -34,7 +34,7 @@ var deleteCmd = &cobra.Command{
 		c := client.NewClient(cmd)
 		for _, id := range args[1:] {
 			_, err := c.Engines.DeleteOryAccessControlPolicyRole(engines.NewDeleteOryAccessControlPolicyRoleParams().WithFlavor(args[0]).WithID(id))
-			cmdx.Must(err, "Unable to delete ORY Access Control Policy Role: %s")
+			cmdx.Must(err, "Unable to delete ORY Access Control Policy Role: %s", err)
 		}
 	},
 }
