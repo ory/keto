@@ -2,3 +2,4 @@ node_modules/
 .idea/
 coverage.txt
 vendor/
+LICENSE.txt
