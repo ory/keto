@@ -26,9 +26,9 @@ import (
 )
 
 var (
-	Version   = ""
-	BuildTime = ""
-	GitHash   = ""
+	Version = "master"
+	Date    = "undefined"
+	Commit  = "undefined"
 )
 
 // RootCmd represents the base command when called without any subcommands

@@ -24,5 +24,5 @@ package cmd
 import "github.com/ory/x/cmdx"
 
 func init() {
-	RootCmd.AddCommand(cmdx.Version(&Version, &GitHash, &BuildTime))
+	RootCmd.AddCommand(cmdx.Version(&Version, &Commit, &Date))
 }
