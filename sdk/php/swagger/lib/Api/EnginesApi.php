@@ -10,7 +10,9 @@
  */
 
 /**
- * Package main ORY Keto
+ * ORY Keto
+ *
+ * A cloud native access control server providing best-practice patterns (RBAC, ABAC, ACL, AWS IAM Policies, Kubernetes Roles, ...) via REST APIs.
  *
  * OpenAPI spec version: Latest
  * Contact: hi@ory.sh
@@ -476,6 +478,10 @@ class EnginesApi
         } catch (ApiException $e) {
             switch ($e->getCode()) {
                 case 200:
+                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\keto\SDK\Model\AuthorizationResult', $e->getResponseHeaders());
+                    $e->setResponseObject($data);
+                    break;
+                case 403:
                     $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\keto\SDK\Model\AuthorizationResult', $e->getResponseHeaders());
                     $e->setResponseObject($data);
                     break;

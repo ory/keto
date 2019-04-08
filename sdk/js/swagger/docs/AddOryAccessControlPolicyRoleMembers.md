@@ -1,4 +1,4 @@
-# SwaggerJsClient.AddOryAccessControlPolicyRoleMembers
+# OryKeto.AddOryAccessControlPolicyRoleMembers
 
 ## Properties
 Name | Type | Description | Notes

@@ -15,12 +15,10 @@
 package cmd
 
 import (
-	"net/http"
+	"github.com/ory/keto/sdk/go/keto/client/engines"
+	"github.com/ory/keto/sdk/go/keto/models"
 
 	"github.com/spf13/cobra"
-
-	"github.com/ory/keto/sdk/go/keto/swagger"
-	"github.com/ory/keto/x"
 
 	"github.com/ory/keto/cmd/client"
 	"github.com/ory/x/cmdx"
@@ -42,16 +40,16 @@ The json file(s) have to be formatted as arrays:
 		cmdx.MinArgs(cmd, args, 2)
 		client.CheckLadonFlavor(args[0])
 
-		c := swagger.NewEnginesApiWithBasePath(client.EndpointURL(cmd))
+		c := client.NewClient(cmd)
 		for _, file := range args[1:] {
-			var p []swagger.OryAccessControlPolicy
+			var p []models.OryAccessControlPolicy
 			client.ImportFile(
 				file,
 				&p,
 				func() {
 					for _, pp := range p {
-						_, res, err := c.UpsertOryAccessControlPolicy(args[0], pp)
-						x.CheckResponse(err, http.StatusOK, res)
+						_, err := c.Engines.UpsertOryAccessControlPolicy(engines.NewUpsertOryAccessControlPolicyParams().WithFlavor(args[0]).WithBody(&pp))
+						cmdx.Must(err, "Unable to import ORY Access Control Policy: %s")
 					}
 				},
 			)

@@ -11,7 +11,9 @@
  */
 
 /**
- * Package main ORY Keto
+ * ORY Keto
+ *
+ * A cloud native access control server providing best-practice patterns (RBAC, ABAC, ACL, AWS IAM Policies, Kubernetes Roles, ...) via REST APIs.
  *
  * OpenAPI spec version: Latest
  * Contact: hi@ory.sh

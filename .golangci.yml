@@ -1,0 +1,7 @@
+linters:
+  enable-all: false
+  disable-all: true
+  enable:
+    - gosec
+    - vet
+    - goimports

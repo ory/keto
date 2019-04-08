@@ -1,4 +1,4 @@
-# SwaggerJsClient.HealthStatus
+# OryKeto.HealthStatus
 
 ## Properties
 Name | Type | Description | Notes

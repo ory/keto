@@ -1,4 +1,4 @@
-# SwaggerJsClient.VersionApi
+# OryKeto.VersionApi
 
 All URIs are relative to *http://localhost*
 
@@ -17,9 +17,9 @@ This endpoint returns the service version typically notated using semantic versi
 
 ### Example
 ```javascript
-var SwaggerJsClient = require('swagger-js-client');
+var OryKeto = require('ory_keto');
 
-var apiInstance = new SwaggerJsClient.VersionApi();
+var apiInstance = new OryKeto.VersionApi();
 
 var callback = function(error, data, response) {
   if (error) {

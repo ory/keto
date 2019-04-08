@@ -1,6 +1,6 @@
 /**
- * 
- * Package main ORY Keto
+ * ORY Keto
+ * A cloud native access control server providing best-practice patterns (RBAC, ABAC, ACL, AWS IAM Policies, Kubernetes Roles, ...) via REST APIs.
  *
  * OpenAPI spec version: Latest
  * Contact: hi@ory.sh
@@ -23,10 +23,10 @@
     module.exports = factory(require('../ApiClient'), require('./OryAccessControlPolicyRole'));
   } else {
     // Browser globals (root is window)
-    if (!root.SwaggerJsClient) {
-      root.SwaggerJsClient = {};
+    if (!root.OryKeto) {
+      root.OryKeto = {};
     }
-    root.SwaggerJsClient.OryAccessControlPolicyRoles = factory(root.SwaggerJsClient.ApiClient, root.SwaggerJsClient.OryAccessControlPolicyRole);
+    root.OryKeto.OryAccessControlPolicyRoles = factory(root.OryKeto.ApiClient, root.OryKeto.OryAccessControlPolicyRole);
   }
 }(this, function(ApiClient, OryAccessControlPolicyRole) {
   'use strict';
@@ -44,14 +44,11 @@
    * Constructs a new <code>OryAccessControlPolicyRoles</code>.
    * @alias module:model/OryAccessControlPolicyRoles
    * @class
-   * @extends Array
    */
   var exports = function() {
     var _this = this;
-    _this = new Array();
-    Object.setPrototypeOf(_this, exports);
 
-    return _this;
+
   };
 
   /**
@@ -64,12 +61,19 @@
   exports.constructFromObject = function(data, obj) {
     if (data) {
       obj = obj || new exports();
-      ApiClient.constructFromObject(data, obj, 'OryAccessControlPolicyRole');
 
+      if (data.hasOwnProperty('Body')) {
+        obj['Body'] = ApiClient.convertToType(data['Body'], [OryAccessControlPolicyRole]);
+      }
     }
     return obj;
   }
 
+  /**
+   * The request body.  in: body type: array
+   * @member {Array.<module:model/OryAccessControlPolicyRole>} Body
+   */
+  exports.prototype['Body'] = undefined;
 
 
 

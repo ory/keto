@@ -14,20 +14,18 @@ jobs:
           command: |
             echo 'export GO111MODULE=on' >> $BASH_ENV
             source $BASH_ENV
-      - run: curl -L https://git.io/vp6lP | sh -s -- -b ./bin
-      - run: mv ./bin/* $GOPATH/bin
+      - run: curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s -- -b $(go env GOPATH)/bin v1.16.0
       - run: go mod download
-      - run: gometalinter --disable-all --enable=gofmt --enable=vet --enable=gosec --vendor ./...
-
-  swagger:
-    docker:
-      - image: circleci/golang:1.11
-    working_directory: /go/src/github.com/ory/keto
-    steps:
-      - checkout
-      - run: make init
-      - run: make sdk
-      - run: git add -A && git diff --exit-code
+      - run: golangci-lint run ./...
+#  swagger:
+#    docker:
+#      - image: circleci/golang:1.11
+#    working_directory: /go/src/github.com/ory/keto
+#    steps:
+#      - checkout
+#      - run: make init
+#      - run: make sdk
+#      - run: git add -A && git diff --exit-code
 
   release-npm:
     docker:
@@ -64,11 +62,11 @@ jobs:
             echo 'export GO111MODULE=on' >> $BASH_ENV
             source $BASH_ENV
       - checkout
-      - run: go get -u github.com/go-swagger/go-swagger/cmd/swagger github.com/bradfitz/goimports github.com/mattn/goveralls golang.org/x/tools/cmd/cover github.com/ory/go-acc
 
       # Installation
       - run: go mod verify
       - run: go install github.com/ory/keto
+      - run: go install github.com/go-swagger/go-swagger/cmd/swagger github.com/bradfitz/goimports github.com/mattn/goveralls golang.org/x/tools/cmd/cover github.com/ory/go-acc
 
       # Tests
       - run: go test -race -short -v $(go list ./... | grep -v cmd)
@@ -166,14 +164,13 @@ workflows:
           filters:
             branches:
               only: master
-      - swagger:
-          filters:
-            tags:
-              only: /.*/
+#      - swagger:
+#          filters:
+#            tags:
+#              only: /.*/
       - build-docker:
           requires:
             - test
-            - swagger
             - format
           filters:
             tags:

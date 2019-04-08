@@ -11,7 +11,9 @@
  */
 
 /**
- * Package main ORY Keto
+ * ORY Keto
+ *
+ * A cloud native access control server providing best-practice patterns (RBAC, ABAC, ACL, AWS IAM Policies, Kubernetes Roles, ...) via REST APIs.
  *
  * OpenAPI spec version: Latest
  * Contact: hi@ory.sh
@@ -33,7 +35,7 @@ use \ArrayAccess;
  * OryAccessControlPolicyRole Class Doc Comment
  *
  * @category    Class
- * @description Role represents a group of users that share the same role. A role could be an administrator, a moderator, a regular user or some other sort of role.
+ * @description oryAccessControlPolicyRole represents a group of users that share the same role. A role could be an administrator, a moderator, a regular user or some other sort of role.
  * @package     keto\SDK
  * @author      Swagger Codegen team
  * @link        https://github.com/swagger-api/swagger-codegen

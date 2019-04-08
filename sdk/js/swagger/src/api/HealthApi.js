@@ -1,6 +1,6 @@
 /**
- * 
- * Package main ORY Keto
+ * ORY Keto
+ * A cloud native access control server providing best-practice patterns (RBAC, ABAC, ACL, AWS IAM Policies, Kubernetes Roles, ...) via REST APIs.
  *
  * OpenAPI spec version: Latest
  * Contact: hi@ory.sh
@@ -23,10 +23,10 @@
     module.exports = factory(require('../ApiClient'), require('../model/HealthNotReadyStatus'), require('../model/HealthStatus'), require('../model/InlineResponse500'));
   } else {
     // Browser globals (root is window)
-    if (!root.SwaggerJsClient) {
-      root.SwaggerJsClient = {};
+    if (!root.OryKeto) {
+      root.OryKeto = {};
     }
-    root.SwaggerJsClient.HealthApi = factory(root.SwaggerJsClient.ApiClient, root.SwaggerJsClient.HealthNotReadyStatus, root.SwaggerJsClient.HealthStatus, root.SwaggerJsClient.InlineResponse500);
+    root.OryKeto.HealthApi = factory(root.OryKeto.ApiClient, root.OryKeto.HealthNotReadyStatus, root.OryKeto.HealthStatus, root.OryKeto.InlineResponse500);
   }
 }(this, function(ApiClient, HealthNotReadyStatus, HealthStatus, InlineResponse500) {
   'use strict';

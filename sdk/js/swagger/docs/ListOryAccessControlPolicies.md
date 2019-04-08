@@ -1,4 +1,4 @@
-# SwaggerJsClient.ListOryAccessControlPolicies
+# OryKeto.ListOryAccessControlPolicies
 
 ## Properties
 Name | Type | Description | Notes

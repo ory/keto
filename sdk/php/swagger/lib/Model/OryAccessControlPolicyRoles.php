@@ -11,7 +11,9 @@
  */
 
 /**
- * Package main ORY Keto
+ * ORY Keto
+ *
+ * A cloud native access control server providing best-practice patterns (RBAC, ABAC, ACL, AWS IAM Policies, Kubernetes Roles, ...) via REST APIs.
  *
  * OpenAPI spec version: Latest
  * Contact: hi@ory.sh
@@ -52,7 +54,7 @@ class OryAccessControlPolicyRoles implements ArrayAccess
       * @var string[]
       */
     protected static $swaggerTypes = [
-        
+        'body' => '\keto\SDK\Model\OryAccessControlPolicyRole[]'
     ];
 
     /**
@@ -60,7 +62,7 @@ class OryAccessControlPolicyRoles implements ArrayAccess
       * @var string[]
       */
     protected static $swaggerFormats = [
-        
+        'body' => null
     ];
 
     public static function swaggerTypes()
@@ -78,7 +80,7 @@ class OryAccessControlPolicyRoles implements ArrayAccess
      * @var string[]
      */
     protected static $attributeMap = [
-        
+        'body' => 'Body'
     ];
 
 
@@ -87,7 +89,7 @@ class OryAccessControlPolicyRoles implements ArrayAccess
      * @var string[]
      */
     protected static $setters = [
-        
+        'body' => 'setBody'
     ];
 
 
@@ -96,7 +98,7 @@ class OryAccessControlPolicyRoles implements ArrayAccess
      * @var string[]
      */
     protected static $getters = [
-        
+        'body' => 'getBody'
     ];
 
     public static function attributeMap()
@@ -130,6 +132,7 @@ class OryAccessControlPolicyRoles implements ArrayAccess
      */
     public function __construct(array $data = null)
     {
+        $this->container['body'] = isset($data['body']) ? $data['body'] : null;
     }
 
     /**
@@ -139,7 +142,7 @@ class OryAccessControlPolicyRoles implements ArrayAccess
      */
     public function listInvalidProperties()
     {
-        $invalid_properties = parent::listInvalidProperties();
+        $invalid_properties = [];
 
         return $invalid_properties;
     }
@@ -152,13 +155,31 @@ class OryAccessControlPolicyRoles implements ArrayAccess
      */
     public function valid()
     {
-        if (!parent::valid()) {
-            return false;
-        }
 
         return true;
     }
 
+
+    /**
+     * Gets body
+     * @return \keto\SDK\Model\OryAccessControlPolicyRole[]
+     */
+    public function getBody()
+    {
+        return $this->container['body'];
+    }
+
+    /**
+     * Sets body
+     * @param \keto\SDK\Model\OryAccessControlPolicyRole[] $body The request body.  in: body type: array
+     * @return $this
+     */
+    public function setBody($body)
+    {
+        $this->container['body'] = $body;
+
+        return $this;
+    }
     /**
      * Returns true if offset exists. False otherwise.
      * @param  integer $offset Offset

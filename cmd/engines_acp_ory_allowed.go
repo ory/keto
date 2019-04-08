@@ -16,12 +16,13 @@ package cmd
 
 import (
 	"fmt"
-	"net/http"
+
+	"github.com/ory/keto/sdk/go/keto/client/engines"
+	"github.com/ory/keto/sdk/go/keto/models"
 
 	"github.com/spf13/cobra"
 
 	"github.com/ory/keto/cmd/client"
-	"github.com/ory/keto/sdk/go/keto/swagger"
 	"github.com/ory/x/cmdx"
 )
 
@@ -33,19 +34,26 @@ var enginesAcpOryAllowedCmd = &cobra.Command{
 		cmdx.MinArgs(cmd, args, 4)
 		client.CheckLadonFlavor(args[0])
 
-		c := swagger.NewEnginesApiWithBasePath(client.EndpointURL(cmd))
-		a, res, err := c.DoOryAccessControlPoliciesAllow(args[0], swagger.OryAccessControlPolicyAllowedInput{
-			Subject:  args[1],
-			Resource: args[2],
-			Action:   args[3],
-		})
-		cmdx.Must(err, "Command failed because error occurred: %s", err)
-
-		if res.StatusCode != http.StatusOK && res.StatusCode != http.StatusForbidden {
-			cmdx.Fatalf("Expected status code %d or %d but got: %d", http.StatusOK, http.StatusForbidden, res.StatusCode)
+		c := client.NewClient(cmd)
+		res, err := c.Engines.DoOryAccessControlPoliciesAllow(
+			engines.NewDoOryAccessControlPoliciesAllowParams().
+				WithFlavor(args[0]).
+				WithBody(&models.Input{
+					Subject:  args[1],
+					Resource: args[2],
+					Action:   args[3],
+				}),
+		)
+		if err != nil {
+			switch d := err.(type) {
+			case *engines.DoOryAccessControlPoliciesAllowForbidden:
+				fmt.Println(cmdx.FormatResponse(&d.Payload))
+				return
+			default:
+				cmdx.Must(err, "Unable to call ORY Access Control Policy allowed endpoint: %s")
+			}
 		}
-
-		fmt.Println(cmdx.FormatResponse(&a))
+		fmt.Println(cmdx.FormatResponse(&res.Payload))
 	},
 }
 

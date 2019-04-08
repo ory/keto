@@ -1,6 +1,6 @@
 /**
- * 
- * Package main ORY Keto
+ * ORY Keto
+ * A cloud native access control server providing best-practice patterns (RBAC, ABAC, ACL, AWS IAM Policies, Kubernetes Roles, ...) via REST APIs.
  *
  * OpenAPI spec version: Latest
  * Contact: hi@ory.sh
@@ -23,10 +23,10 @@
     module.exports = factory(require('../ApiClient'), require('../model/AddOryAccessControlPolicyRoleMembersBody'), require('../model/AuthorizationResult'), require('../model/InlineResponse500'), require('../model/OryAccessControlPolicy'), require('../model/OryAccessControlPolicyAllowedInput'), require('../model/OryAccessControlPolicyRole'));
   } else {
     // Browser globals (root is window)
-    if (!root.SwaggerJsClient) {
-      root.SwaggerJsClient = {};
+    if (!root.OryKeto) {
+      root.OryKeto = {};
     }
-    root.SwaggerJsClient.EnginesApi = factory(root.SwaggerJsClient.ApiClient, root.SwaggerJsClient.AddOryAccessControlPolicyRoleMembersBody, root.SwaggerJsClient.AuthorizationResult, root.SwaggerJsClient.InlineResponse500, root.SwaggerJsClient.OryAccessControlPolicy, root.SwaggerJsClient.OryAccessControlPolicyAllowedInput, root.SwaggerJsClient.OryAccessControlPolicyRole);
+    root.OryKeto.EnginesApi = factory(root.OryKeto.ApiClient, root.OryKeto.AddOryAccessControlPolicyRoleMembersBody, root.OryKeto.AuthorizationResult, root.OryKeto.InlineResponse500, root.OryKeto.OryAccessControlPolicy, root.OryKeto.OryAccessControlPolicyAllowedInput, root.OryKeto.OryAccessControlPolicyRole);
   }
 }(this, function(ApiClient, AddOryAccessControlPolicyRoleMembersBody, AuthorizationResult, InlineResponse500, OryAccessControlPolicy, OryAccessControlPolicyAllowedInput, OryAccessControlPolicyRole) {
   'use strict';
@@ -217,7 +217,7 @@
 
     /**
      * Check if a request is allowed
-     * Use this endpoint to check if a request is allowed or not.
+     * Use this endpoint to check if a request is allowed or not. If the request is allowed, a 200 response with &#x60;{\&quot;allowed\&quot;:\&quot;true\&quot;}&#x60; will be sent. If the request is denied, a 403 response with &#x60;{\&quot;allowed\&quot;:\&quot;false\&quot;}&#x60; will be sent instead.
      * @param {String} flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot;.
      * @param {Object} opts Optional parameters
      * @param {module:model/OryAccessControlPolicyAllowedInput} opts.body 
