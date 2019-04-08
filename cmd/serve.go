@@ -15,64 +15,32 @@
 package cmd
 
 import (
-	"os"
-	"strconv"
-
+	"github.com/ory/x/viperx"
 	"github.com/spf13/cobra"
 
 	"github.com/ory/keto/cmd/server"
-	"github.com/ory/x/cmdx"
-	"github.com/ory/x/corsx"
 	"github.com/ory/x/logrusx"
-	"github.com/ory/x/profilex"
-	"github.com/ory/x/sqlcon"
-	"github.com/ory/x/tlsx"
 )
 
 // serveCmd represents the serve command
 var serveCmd = &cobra.Command{
 	Use:   "serve",
 	Short: "Starts the server and serves the HTTP REST API",
-	Long: cmdx.EnvVarExamplesHelpMessage("keto") + `
+	Long: `This command opens a network port and listens to HTTP/2 API requests.
 
-All possible controls are listed below.
+## Configuration
 
-CORE CONTROLS
-=============
+ORY Keto can be configured using environment variables as well as a configuration file. For more information
+on configuration options, open the configuration documentation:
 
-` + sqlcon.HelpMessage() + `
-
-` + logrusx.HelpMessage() + `
-
-HTTP(S) CONTROLS
-==============
-- HOST: The host to listen on. Defaults to listening on all interfaces.
-
-	Example:
-		$ export HOST=127.0.0.1
-
-- PORT: The port to listen on. Defaults to port 4466.
-
-	Example:
-		$ export PORT=4466
-
-` + tlsx.HTTPSCertificateHelpMessage() + `
-
-` + corsx.HelpMessage() + `
-
-
-DEBUG CONTROLS
-==============
-
-` + profilex.HelpMessage() + `
-
-`,
+>> https://github.com/ory/keto/blob/` + Version + `/docs/config.yaml <<`,
 	Run: server.RunServe(logger, Version, Commit, Date),
 }
 
 func init() {
 	RootCmd.AddCommand(serveCmd)
 
-	disableTelemetryEnv, _ := strconv.ParseBool(os.Getenv("DISABLE_TELEMETRY")) // #nosec
-	serveCmd.Flags().Bool("disable-telemetry", disableTelemetryEnv, "Disable anonymized telemetry reports - for more information please visit https://www.ory.sh/docs/ecosystem/sqa")
+	disableTelemetryEnv := viperx.GetBool(logrusx.New(), "sqa.opt_out", "DISABLE_TELEMETRY")
+	serveCmd.PersistentFlags().Bool("disable-telemetry", disableTelemetryEnv, "Disable anonymized telemetry reports - for more information please visit https://www.ory.sh/docs/ecosystem/sqa")
+	serveCmd.PersistentFlags().Bool("sqa-opt-out", disableTelemetryEnv, "Disable anonymized telemetry reports - for more information please visit https://www.ory.sh/docs/ecosystem/sqa")
 }

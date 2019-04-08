@@ -36,7 +36,7 @@ var getCmd = &cobra.Command{
 		c := client.NewClient(cmd)
 		for _, id := range args[1:] {
 			r, err := c.Engines.GetOryAccessControlPolicyRole(engines.NewGetOryAccessControlPolicyRoleParams().WithFlavor(args[0]).WithID(id))
-			cmdx.Must(err, "Unable to get ORY Access Control Policy Role: %s")
+			cmdx.Must(err, "Unable to get ORY Access Control Policy Role: %s", err)
 			fmt.Println(cmdx.FormatResponse(r.Payload))
 		}
 	},

@@ -25,6 +25,7 @@ require (
 	github.com/golang/protobuf v1.3.1 // indirect
 	github.com/gorilla/handlers v1.4.0 // indirect
 	github.com/gorilla/mux v1.7.1 // indirect
+	github.com/gorilla/sessions v1.1.3
 	github.com/hashicorp/golang-lru v0.5.1 // indirect
 	github.com/jessevdk/go-flags v1.4.0 // indirect
 	github.com/jmoiron/sqlx v1.2.0
@@ -39,11 +40,12 @@ require (
 	github.com/ory/go-acc v0.0.0-20181118080137-ddc355013f90
 	github.com/ory/graceful v0.1.1
 	github.com/ory/herodot v0.6.0
-	github.com/ory/x v0.0.41
+	github.com/ory/x v0.0.42
 	github.com/pborman/uuid v1.2.0
 	github.com/pelletier/go-toml v1.3.0 // indirect
 	github.com/pkg/errors v0.8.1
 	github.com/pkg/profile v1.3.0 // indirect
+	github.com/rs/cors v1.6.0
 	github.com/rubenv/sql-migrate v0.0.0-20190327083759-54bad0a9b051
 	github.com/sirupsen/logrus v1.4.1
 	github.com/spf13/afero v1.2.2 // indirect

@@ -83,6 +83,7 @@ jobs:
       - setup_remote_docker
       - run: docker login --username "$DOCKER_USERNAME" --password "$DOCKER_PASSWORD"
       - run: cp ./.releaser/LICENSE.txt ./LICENSE.txt
+      - run: go install github.com/gobuffalo/packr/packr
       - run: curl -sL https://git.io/goreleaser | bash
 
   release-docs:
@@ -95,7 +96,8 @@ jobs:
       - run: git config --global user.name "ORY Continuous Integration"
       - run: "git clone https://arekkas:$DOCS_TOKEN_PUSH@github.com/ory/docs.git ../docs"
       - run: "cp ./docs/api.swagger.json ../docs/apis/keto.json"
-      - run: "(cd ../docs && git add -A && git commit -a -m \"Updates ORY Keto Swagger definitions\" && git push origin) || exit 0"
+      - run: ./scripts/run-configuration.sh
+      - run: "(cd ../docs && git add -A && git commit -a -m \"Updates ORY Keto Swagger and config definitions\" && git push origin) || exit 0"
 
   release-changelog:
     docker:

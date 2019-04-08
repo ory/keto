@@ -49,7 +49,7 @@ The json file(s) have to be formatted as arrays:
 				func() {
 					for _, pp := range p {
 						_, err := c.Engines.UpsertOryAccessControlPolicy(engines.NewUpsertOryAccessControlPolicyParams().WithFlavor(args[0]).WithBody(&pp))
-						cmdx.Must(err, "Unable to import ORY Access Control Policy: %s")
+						cmdx.Must(err, "Unable to import ORY Access Control Policy: %s", err)
 					}
 				},
 			)
