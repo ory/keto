@@ -23,12 +23,13 @@ package server
 
 import (
 	"crypto/tls"
-	"github.com/ory/keto/driver"
-	"github.com/ory/x/logrusx"
 	"net/http"
 
+	"github.com/ory/keto/driver"
+	"github.com/ory/x/logrusx"
+
 	"github.com/julienschmidt/httprouter"
-	"github.com/meatballhat/negroni-logrus"
+	negronilogrus "github.com/meatballhat/negroni-logrus"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"

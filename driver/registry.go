@@ -2,6 +2,9 @@ package driver
 
 import (
 	"github.com/open-policy-agent/opa/ast"
+	"github.com/pkg/errors"
+	"github.com/sirupsen/logrus"
+
 	"github.com/ory/keto/driver/configuration"
 	"github.com/ory/keto/engine"
 	"github.com/ory/keto/engine/ladon"
@@ -10,8 +13,6 @@ import (
 	"github.com/ory/x/dbal"
 	"github.com/ory/x/healthx"
 	"github.com/ory/x/tracing"
-	"github.com/pkg/errors"
-	"github.com/sirupsen/logrus"
 )
 
 type Registry interface {

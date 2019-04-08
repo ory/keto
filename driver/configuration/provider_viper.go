@@ -2,13 +2,15 @@ package configuration
 
 import (
 	"fmt"
-	"github.com/ory/x/corsx"
-	"github.com/ory/x/tracing"
-	"github.com/ory/x/viperx"
+	"strings"
+
 	"github.com/rs/cors"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
-	"strings"
+
+	"github.com/ory/x/corsx"
+	"github.com/ory/x/tracing"
+	"github.com/ory/x/viperx"
 )
 
 const ViperKeyDSN = "dsn"

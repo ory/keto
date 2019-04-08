@@ -15,8 +15,9 @@
 package cmd
 
 import (
-	"github.com/ory/x/viperx"
 	"github.com/spf13/cobra"
+
+	"github.com/ory/x/viperx"
 
 	"github.com/ory/keto/cmd/server"
 	"github.com/ory/x/logrusx"

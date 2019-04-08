@@ -3,6 +3,8 @@ package driver
 import (
 	"github.com/gobuffalo/packr"
 	"github.com/open-policy-agent/opa/ast"
+	"github.com/sirupsen/logrus"
+
 	"github.com/ory/herodot"
 	"github.com/ory/keto/driver/configuration"
 	"github.com/ory/keto/engine"
@@ -11,7 +13,6 @@ import (
 	"github.com/ory/x/healthx"
 	"github.com/ory/x/logrusx"
 	"github.com/ory/x/tracing"
-	"github.com/sirupsen/logrus"
 )
 
 type RegistryBase struct {

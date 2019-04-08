@@ -1,12 +1,14 @@
 package driver
 
 import (
+	"time"
+
 	"github.com/jmoiron/sqlx"
+
 	"github.com/ory/keto/storage"
 	"github.com/ory/x/dbal"
 	"github.com/ory/x/sqlcon"
 	"github.com/ory/x/urlx"
-	"time"
 )
 
 type RegistrySQL struct {

@@ -1,8 +1,9 @@
 package driver
 
 import (
-	"github.com/ory/keto/driver/configuration"
 	"github.com/sirupsen/logrus"
+
+	"github.com/ory/keto/driver/configuration"
 )
 
 type DefaultDriver struct {

@@ -1,9 +1,10 @@
 package configuration
 
 import (
-	"github.com/ory/x/tracing"
 	"github.com/rs/cors"
 	"github.com/sirupsen/logrus"
+
+	"github.com/ory/x/tracing"
 )
 
 type Provider interface {
