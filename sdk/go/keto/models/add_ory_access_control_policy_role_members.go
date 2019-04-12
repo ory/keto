@@ -14,7 +14,7 @@ import (
 )
 
 // AddOryAccessControlPolicyRoleMembers add ory access control policy role members
-// swagger:model AddOryAccessControlPolicyRoleMembers
+// swagger:model addOryAccessControlPolicyRoleMembers
 type AddOryAccessControlPolicyRoleMembers struct {
 
 	// body

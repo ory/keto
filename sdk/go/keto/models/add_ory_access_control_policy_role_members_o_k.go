@@ -12,14 +12,14 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// AddOryAccessControlPolicyRoleMembersOK AddOryAccessControlPolicyRoleMembersOK AddOryAccessControlPolicyRoleMembersOK AddOryAccessControlPolicyRoleMembersOK handles this case with default header values.
+// AddOryAccessControlPolicyRoleMembersOK AddOryAccessControlPolicyRoleMembersOK handles this case with default header values.
 //
 // oryAccessControlPolicyRole
 // swagger:model AddOryAccessControlPolicyRoleMembersOK
 type AddOryAccessControlPolicyRoleMembersOK struct {
 
 	// payload
-	Payload *Role `json:"Payload,omitempty"`
+	Payload *OryAccessControlPolicyRole `json:"Payload,omitempty"`
 }
 
 // Validate validates this add ory access control policy role members o k

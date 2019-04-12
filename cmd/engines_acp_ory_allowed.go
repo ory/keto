@@ -38,7 +38,7 @@ var enginesAcpOryAllowedCmd = &cobra.Command{
 		res, err := c.Engines.DoOryAccessControlPoliciesAllow(
 			engines.NewDoOryAccessControlPoliciesAllowParams().
 				WithFlavor(args[0]).
-				WithBody(&models.Input{
+				WithBody(&models.OryAccessControlPolicyAllowedInput{
 					Subject:  args[1],
 					Resource: args[2],
 					Action:   args[3],

@@ -12,7 +12,7 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// ListOryAccessControlPoliciesInternalServerError ListOryAccessControlPoliciesInternalServerError ListOryAccessControlPoliciesInternalServerError ListOryAccessControlPoliciesInternalServerError handles this case with default header values.
+// ListOryAccessControlPoliciesInternalServerError ListOryAccessControlPoliciesInternalServerError handles this case with default header values.
 //
 // The standard error format
 // swagger:model ListOryAccessControlPoliciesInternalServerError

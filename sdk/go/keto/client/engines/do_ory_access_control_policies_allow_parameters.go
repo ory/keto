@@ -64,7 +64,7 @@ for the do ory access control policies allow operation typically these are writt
 type DoOryAccessControlPoliciesAllowParams struct {
 
 	/*Body*/
-	Body *models.Input
+	Body *models.OryAccessControlPolicyAllowedInput
 	/*Flavor
 	  The ORY Access Control Policy flavor. Can be "regex", "glob", and "exact".
 
@@ -110,13 +110,13 @@ func (o *DoOryAccessControlPoliciesAllowParams) SetHTTPClient(client *http.Clien
 }
 
 // WithBody adds the body to the do ory access control policies allow params
-func (o *DoOryAccessControlPoliciesAllowParams) WithBody(body *models.Input) *DoOryAccessControlPoliciesAllowParams {
+func (o *DoOryAccessControlPoliciesAllowParams) WithBody(body *models.OryAccessControlPolicyAllowedInput) *DoOryAccessControlPoliciesAllowParams {
 	o.SetBody(body)
 	return o
 }
 
 // SetBody adds the body to the do ory access control policies allow params
-func (o *DoOryAccessControlPoliciesAllowParams) SetBody(body *models.Input) {
+func (o *DoOryAccessControlPoliciesAllowParams) SetBody(body *models.OryAccessControlPolicyAllowedInput) {
 	o.Body = body
 }
 

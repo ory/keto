@@ -3,6 +3,6 @@
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**payload** | [**[Policy]**](Policy.md) | payload | [optional] 
+**payload** | [**[OryAccessControlPolicy]**](OryAccessControlPolicy.md) | payload | [optional] 
 
 

@@ -17,18 +17,18 @@
 (function(root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module.
-    define(['ApiClient', 'model/Role'], factory);
+    define(['ApiClient', 'model/OryAccessControlPolicyRole'], factory);
   } else if (typeof module === 'object' && module.exports) {
     // CommonJS-like environments that support module.exports, like Node.
-    module.exports = factory(require('../ApiClient'), require('./Role'));
+    module.exports = factory(require('../ApiClient'), require('./OryAccessControlPolicyRole'));
   } else {
     // Browser globals (root is window)
     if (!root.OryKeto) {
       root.OryKeto = {};
     }
-    root.OryKeto.ListOryAccessControlPolicyRolesOK = factory(root.OryKeto.ApiClient, root.OryKeto.Role);
+    root.OryKeto.ListOryAccessControlPolicyRolesOK = factory(root.OryKeto.ApiClient, root.OryKeto.OryAccessControlPolicyRole);
   }
-}(this, function(ApiClient, Role) {
+}(this, function(ApiClient, OryAccessControlPolicyRole) {
   'use strict';
 
 
@@ -64,7 +64,7 @@
       obj = obj || new exports();
 
       if (data.hasOwnProperty('Payload')) {
-        obj['Payload'] = ApiClient.convertToType(data['Payload'], [Role]);
+        obj['Payload'] = ApiClient.convertToType(data['Payload'], [OryAccessControlPolicyRole]);
       }
     }
     return obj;
@@ -72,7 +72,7 @@
 
   /**
    * payload
-   * @member {Array.<module:model/Role>} Payload
+   * @member {Array.<module:model/OryAccessControlPolicyRole>} Payload
    */
   exports.prototype['Payload'] = undefined;
 

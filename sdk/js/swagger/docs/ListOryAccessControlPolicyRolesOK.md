@@ -3,6 +3,6 @@
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**payload** | [**[Role]**](Role.md) | payload | [optional] 
+**payload** | [**[OryAccessControlPolicyRole]**](OryAccessControlPolicyRole.md) | payload | [optional] 
 
 
