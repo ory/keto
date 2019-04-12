@@ -14,7 +14,7 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// Policies Policies Policies Policies is an array of policies.
+// Policies Policies Policies Policies Policies is an array of policies.
 // swagger:model Policies
 type Policies []*Policy
 

@@ -12,7 +12,7 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// GetOryAccessControlPolicyNotFound GetOryAccessControlPolicyNotFound GetOryAccessControlPolicyNotFound GetOryAccessControlPolicyNotFound handles this case with default header values.
+// GetOryAccessControlPolicyNotFound GetOryAccessControlPolicyNotFound handles this case with default header values.
 //
 // The standard error format
 // swagger:model GetOryAccessControlPolicyNotFound

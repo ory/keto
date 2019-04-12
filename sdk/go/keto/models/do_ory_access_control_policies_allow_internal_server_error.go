@@ -12,7 +12,7 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// DoOryAccessControlPoliciesAllowInternalServerError DoOryAccessControlPoliciesAllowInternalServerError DoOryAccessControlPoliciesAllowInternalServerError DoOryAccessControlPoliciesAllowInternalServerError handles this case with default header values.
+// DoOryAccessControlPoliciesAllowInternalServerError DoOryAccessControlPoliciesAllowInternalServerError handles this case with default header values.
 //
 // The standard error format
 // swagger:model DoOryAccessControlPoliciesAllowInternalServerError

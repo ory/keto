@@ -57,10 +57,10 @@ Please follow the [installation procedure](#installation--usage) and then run th
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-$api_instance = new keto\SDK\Api\EnginesApi();
+$api_instance = new ketoSDK\Api\EnginesApi();
 $flavor = "flavor_example"; // string | The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".
 $id = "id_example"; // string | The ID of the ORY Access Control Policy Role.
-$body = new \keto\SDK\Model\AddOryAccessControlPolicyRoleMembersBody(); // \keto\SDK\Model\AddOryAccessControlPolicyRoleMembersBody | 
+$body = new \ketoSDK\Model\AddOryAccessControlPolicyRoleMembersBody(); // \ketoSDK\Model\AddOryAccessControlPolicyRoleMembersBody | 
 
 try {
     $result = $api_instance->addOryAccessControlPolicyRoleMembers($flavor, $id, $body);
@@ -108,11 +108,13 @@ Class | Method | HTTP request | Description
  - [DeleteOryAccessControlPolicyCreated](docs/Model/DeleteOryAccessControlPolicyCreated.md)
  - [DeleteOryAccessControlPolicyInternalServerError](docs/Model/DeleteOryAccessControlPolicyInternalServerError.md)
  - [DeleteOryAccessControlPolicyInternalServerErrorBody](docs/Model/DeleteOryAccessControlPolicyInternalServerErrorBody.md)
+ - [DeleteOryAccessControlPolicyNoContent](docs/Model/DeleteOryAccessControlPolicyNoContent.md)
  - [DeleteOryAccessControlPolicyReader](docs/Model/DeleteOryAccessControlPolicyReader.md)
  - [DeleteOryAccessControlPolicyRole](docs/Model/DeleteOryAccessControlPolicyRole.md)
  - [DeleteOryAccessControlPolicyRoleCreated](docs/Model/DeleteOryAccessControlPolicyRoleCreated.md)
  - [DeleteOryAccessControlPolicyRoleInternalServerError](docs/Model/DeleteOryAccessControlPolicyRoleInternalServerError.md)
  - [DeleteOryAccessControlPolicyRoleInternalServerErrorBody](docs/Model/DeleteOryAccessControlPolicyRoleInternalServerErrorBody.md)
+ - [DeleteOryAccessControlPolicyRoleNoContent](docs/Model/DeleteOryAccessControlPolicyRoleNoContent.md)
  - [DeleteOryAccessControlPolicyRoleReader](docs/Model/DeleteOryAccessControlPolicyRoleReader.md)
  - [DoOryAccessControlPoliciesAllow](docs/Model/DoOryAccessControlPoliciesAllow.md)
  - [DoOryAccessControlPoliciesAllowForbidden](docs/Model/DoOryAccessControlPoliciesAllowForbidden.md)

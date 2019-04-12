@@ -9,7 +9,7 @@ const (
 
 // Input for checking if a request is allowed or not.
 //
-// swagger:model oryAccessControlPolicyAllowedInput
+// swagger:ignore
 type Input struct {
 	// Resource is the resource that access is requested to.
 	Resource string `json:"resource"`

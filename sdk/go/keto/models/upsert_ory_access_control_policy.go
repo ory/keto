@@ -14,7 +14,7 @@ import (
 )
 
 // UpsertOryAccessControlPolicy upsert ory access control policy
-// swagger:model UpsertOryAccessControlPolicy
+// swagger:model upsertOryAccessControlPolicy
 type UpsertOryAccessControlPolicy struct {
 
 	// body

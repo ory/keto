@@ -5,7 +5,7 @@
  * PHP version 5
  *
  * @category Class
- * @package  keto\SDK
+ * @package  ketoSDK
  * @author   Swaagger Codegen team
  * @link     https://github.com/swagger-api/swagger-codegen
  */
@@ -27,7 +27,7 @@
  * Do not edit the class manually.
  */
 
-namespace keto\SDK\Model;
+namespace ketoSDK\Model;
 
 use \ArrayAccess;
 
@@ -35,7 +35,7 @@ use \ArrayAccess;
  * OryAccessControlPolicy Class Doc Comment
  *
  * @category    Class
- * @package     keto\SDK
+ * @package     ketoSDK
  * @author      Swagger Codegen team
  * @link        https://github.com/swagger-api/swagger-codegen
  */
@@ -394,10 +394,10 @@ class OryAccessControlPolicy implements ArrayAccess
     public function __toString()
     {
         if (defined('JSON_PRETTY_PRINT')) { // use JSON pretty print
-            return json_encode(\keto\SDK\ObjectSerializer::sanitizeForSerialization($this), JSON_PRETTY_PRINT);
+            return json_encode(\ketoSDK\ObjectSerializer::sanitizeForSerialization($this), JSON_PRETTY_PRINT);
         }
 
-        return json_encode(\keto\SDK\ObjectSerializer::sanitizeForSerialization($this));
+        return json_encode(\ketoSDK\ObjectSerializer::sanitizeForSerialization($this));
     }
 }
 

@@ -15,7 +15,7 @@ import (
 )
 
 // OryAccessControlPolicyRoles Roles is an array of roles.
-// swagger:model oryAccessControlPolicyRoles
+// swagger:model OryAccessControlPolicyRoles
 type OryAccessControlPolicyRoles struct {
 
 	// The request body.
