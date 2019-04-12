@@ -14,14 +14,14 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// ListOryAccessControlPoliciesOK ListOryAccessControlPoliciesOK ListOryAccessControlPoliciesOK ListOryAccessControlPoliciesOK handles this case with default header values.
+// ListOryAccessControlPoliciesOK ListOryAccessControlPoliciesOK handles this case with default header values.
 //
 // Policies is an array of policies.
 // swagger:model ListOryAccessControlPoliciesOK
 type ListOryAccessControlPoliciesOK struct {
 
 	// payload
-	Payload []*Policy `json:"Payload"`
+	Payload []*OryAccessControlPolicy `json:"Payload"`
 }
 
 // Validate validates this list ory access control policies o k

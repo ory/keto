@@ -13,7 +13,7 @@ import (
 
 // OryAccessControlPolicyRole oryAccessControlPolicyRole represents a group of users that share the same role. A role could be an administrator, a moderator, a regular
 // user or some other sort of role.
-// swagger:model OryAccessControlPolicyRole
+// swagger:model oryAccessControlPolicyRole
 type OryAccessControlPolicyRole struct {
 
 	// ID is the role's unique id.

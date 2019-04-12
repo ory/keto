@@ -28,12 +28,12 @@ var (
 		}},
 	}
 	requests = map[string][]struct {
-		req     models.Input
+		req     models.OryAccessControlPolicyAllowedInput
 		allowed bool
 	}{
 		"regex": {
 			{
-				req: models.Input{
+				req: models.OryAccessControlPolicyAllowedInput{
 					Subject:  "alice",
 					Resource: "other-thing",
 					Action:   "create",
@@ -42,7 +42,7 @@ var (
 				allowed: false,
 			},
 			{
-				req: models.Input{
+				req: models.OryAccessControlPolicyAllowedInput{
 					Subject:  "alice",
 					Resource: "matrix",
 					Action:   "delete",
@@ -51,7 +51,7 @@ var (
 				allowed: false,
 			},
 			{
-				req: models.Input{
+				req: models.OryAccessControlPolicyAllowedInput{
 					Subject:  "alice",
 					Resource: "matrix",
 					Action:   "create",
@@ -60,7 +60,7 @@ var (
 				allowed: true,
 			},
 			{
-				req: models.Input{
+				req: models.OryAccessControlPolicyAllowedInput{
 					Subject:  "ken",
 					Resource: "forbidden_matrix",
 					Action:   "create",
@@ -69,7 +69,7 @@ var (
 				allowed: false,
 			},
 			{
-				req: models.Input{
+				req: models.OryAccessControlPolicyAllowedInput{
 					Subject:  "ken",
 					Resource: "allowed_matrix",
 					Action:   "create",
@@ -80,7 +80,7 @@ var (
 		},
 		"exact": {
 			{
-				req: models.Input{
+				req: models.OryAccessControlPolicyAllowedInput{
 					Subject:  "alice",
 					Resource: "other-thing",
 					Action:   "create",
@@ -89,7 +89,7 @@ var (
 				allowed: false,
 			},
 			{
-				req: models.Input{
+				req: models.OryAccessControlPolicyAllowedInput{
 					Subject:  "alice",
 					Resource: "matrix",
 					Action:   "delete",
@@ -98,7 +98,7 @@ var (
 				allowed: false,
 			},
 			{
-				req: models.Input{
+				req: models.OryAccessControlPolicyAllowedInput{
 					Subject:  "alice",
 					Resource: "matrix",
 					Action:   "create",
@@ -107,7 +107,7 @@ var (
 				allowed: true,
 			},
 			{
-				req: models.Input{
+				req: models.OryAccessControlPolicyAllowedInput{
 					Subject:  "ken",
 					Resource: "forbidden_matrix",
 					Action:   "create",
@@ -116,7 +116,7 @@ var (
 				allowed: false,
 			},
 			{
-				req: models.Input{
+				req: models.OryAccessControlPolicyAllowedInput{
 					Subject:  "ken",
 					Resource: "allowed_matrix",
 					Action:   "create",

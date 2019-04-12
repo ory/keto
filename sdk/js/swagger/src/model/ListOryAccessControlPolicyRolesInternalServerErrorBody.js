@@ -42,7 +42,7 @@
 
   /**
    * Constructs a new <code>ListOryAccessControlPolicyRolesInternalServerErrorBody</code>.
-   * ListOryAccessControlPolicyRolesInternalServerErrorBody ListOryAccessControlPolicyRolesInternalServerErrorBody ListOryAccessControlPolicyRolesInternalServerErrorBody list ory access control policy roles internal server error body
+   * ListOryAccessControlPolicyRolesInternalServerErrorBody list ory access control policy roles internal server error body
    * @alias module:model/ListOryAccessControlPolicyRolesInternalServerErrorBody
    * @class
    */

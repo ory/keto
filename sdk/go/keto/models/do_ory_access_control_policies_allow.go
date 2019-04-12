@@ -14,11 +14,11 @@ import (
 )
 
 // DoOryAccessControlPoliciesAllow do ory access control policies allow
-// swagger:model DoOryAccessControlPoliciesAllow
+// swagger:model doOryAccessControlPoliciesAllow
 type DoOryAccessControlPoliciesAllow struct {
 
 	// body
-	Body *Input `json:"Body,omitempty"`
+	Body *OryAccessControlPolicyAllowedInput `json:"Body,omitempty"`
 
 	// The ORY Access Control Policy flavor. Can be "regex", "glob", and "exact".
 	//
