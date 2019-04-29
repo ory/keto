@@ -2,11 +2,13 @@ package configuration
 
 import (
 	"fmt"
+
+	"github.com/rs/cors"
+	"github.com/sirupsen/logrus"
+
 	"github.com/ory/x/corsx"
 	"github.com/ory/x/tracing"
 	"github.com/ory/x/viperx"
-	"github.com/rs/cors"
-	"github.com/sirupsen/logrus"
 )
 
 const (
