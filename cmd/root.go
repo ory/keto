@@ -83,7 +83,8 @@ func initConfig() {
 		viper.AddConfigPath("$HOME") // adding home directory as first search path
 	}
 
-	viper.SetDefault("LOG_LEVEL", "info")
+	viper.SetDefault("serve.port", "4466")
+	viper.SetDefault("log.level", "info")
 
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 	viper.AutomaticEnv() // read in environment variables that match

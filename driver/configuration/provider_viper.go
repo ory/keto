@@ -2,15 +2,11 @@ package configuration
 
 import (
 	"fmt"
-	"strings"
-
-	"github.com/rs/cors"
-	"github.com/sirupsen/logrus"
-	"github.com/spf13/viper"
-
 	"github.com/ory/x/corsx"
 	"github.com/ory/x/tracing"
 	"github.com/ory/x/viperx"
+	"github.com/rs/cors"
+	"github.com/sirupsen/logrus"
 )
 
 const (
@@ -18,12 +14,6 @@ const (
 	ViperKeyHost = "serve.host"
 	ViperKeyPort = "serve.port"
 )
-
-func init() {
-	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
-	viper.AutomaticEnv()
-	viper.SetDefault(ViperKeyPort, "4466")
-}
 
 type ViperProvider struct {
 	l logrus.FieldLogger
