@@ -13,12 +13,16 @@ import (
 	"github.com/ory/x/viperx"
 )
 
-const ViperKeyDSN = "dsn"
+const (
+	ViperKeyDSN  = "dsn"
+	ViperKeyHost = "serve.host"
+	ViperKeyPort = "serve.port"
+)
 
 func init() {
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 	viper.AutomaticEnv()
-	viper.SetDefault("PORT", "4466")
+	viper.SetDefault(ViperKeyPort, "4466")
 }
 
 type ViperProvider struct {
@@ -30,8 +34,13 @@ func NewViperProvider(l logrus.FieldLogger) Provider {
 }
 
 func (v *ViperProvider) ListenOn() string {
-	return fmt.Sprintf("%s:%s", viper.GetString("HOST"), viper.GetString("PORT"))
+	return fmt.Sprintf(
+		"%s:%d",
+		viperx.GetString(v.l, ViperKeyHost, "", "HOST"),
+		viperx.GetInt(v.l, ViperKeyPort, 4466, "PORT"),
+	)
 }
+
 func (v *ViperProvider) CORSEnabled() bool {
 	return corsx.IsEnabled(v.l, "serve")
 }

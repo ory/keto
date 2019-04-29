@@ -27,6 +27,15 @@ before finalizing the upgrade process.
 
 ## 0.3.0-sandbox
 
+### Configuration
+
+The configuration management was updated and now allows configuration via a config file. Environment
+variables can still be used to configure ORY Keto but have been updated. However, old env vars still work
+but will yield a warning.
+
+An overview of an exemplary configuration file can be found
+in [./docs/config.yml](https://github.com/ory/hydra/blob/master/docs/config.yaml).
+
 ### ORY Access Control Policies Allowed Endpoint
 
 Endpoint `/engines/acp/ory/{flavor}/allowed` now returns a 403 error when the request is disallowed.
