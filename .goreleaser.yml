@@ -70,7 +70,7 @@ dockers:
       - "oryd/keto:v{{ .Major }}"
       - "oryd/keto:v{{ .Major }}.{{ .Minor }}"
       - "oryd/keto:v{{ .Major }}.{{ .Minor }}.{{ .Patch }}"
-      - "oryd/keto:{{ .Env.DOCKER_FULL_TAG }}"
+#      - "oryd/keto:{{ .Env.DOCKER_FULL_TAG }}"
       - "oryd/keto:{{ .Env.DOCKER_SHORT_TAG }}"
       - "oryd/keto:latest"
     extra_files:
