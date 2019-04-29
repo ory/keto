@@ -92,11 +92,12 @@ jobs:
     working_directory: /go/src/github.com/ory/keto
     steps:
       - checkout
+      - run: ./scripts/run-configuration.sh
       - run: git config --global user.email "hi@ory.am"
       - run: git config --global user.name "ORY Continuous Integration"
       - run: "git clone https://arekkas:$DOCS_TOKEN_PUSH@github.com/ory/docs.git ../docs"
       - run: "cp ./docs/api.swagger.json ../docs/apis/keto.json"
-      - run: ./scripts/run-configuration.sh
+      - run: "cp configuration.md ../docs/docs/keto/configuration.md"
       - run: "(cd ../docs && git add -A && git commit -a -m \"Updates ORY Keto Swagger and config definitions\" && git push origin) || exit 0"
 
   release-changelog:
