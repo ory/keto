@@ -3,6 +3,8 @@
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
 - [Change Log](#change-log)
+  - [v0.3.0-sandbox (2019-04-29)](#v030-sandbox-2019-04-29)
+  - [v0.2.3-sandbox+oryOS.10 (2019-02-05)](#v023-sandboxoryos10-2019-02-05)
   - [v0.2.2-sandbox+oryOS.10 (2018-12-13)](#v022-sandboxoryos10-2018-12-13)
   - [v0.2.1-sandbox+oryOS.10 (2018-12-13)](#v021-sandboxoryos10-2018-12-13)
   - [v0.2.0-sandbox+oryOS.10 (2018-12-13)](#v020-sandboxoryos10-2018-12-13)
@@ -29,6 +31,57 @@
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 # Change Log
+
+## [v0.3.0-sandbox](https://github.com/ory/keto/tree/v0.3.0-sandbox) (2019-04-29)
+[Full Changelog](https://github.com/ory/keto/compare/v0.2.3-sandbox+oryOS.10...v0.3.0-sandbox)
+
+**Fixed bugs:**
+
+- Conditional function based on Context Conditions does not Apply [\#82](https://github.com/ory/keto/issues/82)
+
+**Closed issues:**
+
+- Move to new release pipeline [\#95](https://github.com/ory/keto/issues/95)
+- Move to go-swagger client generation [\#92](https://github.com/ory/keto/issues/92)
+- question: performance & benchmarks [\#89](https://github.com/ory/keto/issues/89)
+- Upserting to memory database only inserts [\#80](https://github.com/ory/keto/issues/80)
+- Support for nginx http\_auth\_request\_module [\#75](https://github.com/ory/keto/issues/75)
+- DELETE member from role  [\#74](https://github.com/ory/keto/issues/74)
+- 0.2.2-sandbox+oryOS.10: Unable to initialize compiler: lstat /go: no such file or directory [\#73](https://github.com/ory/keto/issues/73)
+- engine: Support glob matching in ory acp [\#66](https://github.com/ory/keto/issues/66)
+
+**Merged pull requests:**
+
+- docker: Remove full tag from build pipeline [\#101](https://github.com/ory/keto/pull/101) ([aeneasr](https://github.com/aeneasr))
+- sdk: Improve naming for ory policies [\#100](https://github.com/ory/keto/pull/100) ([aeneasr](https://github.com/aeneasr))
+- Remove duplicate code in Makefile [\#99](https://github.com/ory/keto/pull/99) ([minchao](https://github.com/minchao))
+- Add tracing support and general improvements [\#98](https://github.com/ory/keto/pull/98) ([aeneasr](https://github.com/aeneasr))
+- ci: Adopt new release pipeline [\#97](https://github.com/ory/keto/pull/97) ([aeneasr](https://github.com/aeneasr))
+- SDK [\#94](https://github.com/ory/keto/pull/94) ([aeneasr](https://github.com/aeneasr))
+- engine: Send 403 when authorization result is negative [\#93](https://github.com/ory/keto/pull/93) ([aeneasr](https://github.com/aeneasr))
+- vendor: Update dependencies  [\#91](https://github.com/ory/keto/pull/91) ([aeneasr](https://github.com/aeneasr))
+- Add content-type in the response of allowed [\#90](https://github.com/ory/keto/pull/90) ([minchao](https://github.com/minchao))
+- Fix upsert with pre-existing key will causes duplicate records [\#88](https://github.com/ory/keto/pull/88) ([minchao](https://github.com/minchao))
+- Fix remove member from role [\#87](https://github.com/ory/keto/pull/87) ([minchao](https://github.com/minchao))
+- Fix the type of conditions in the policy [\#86](https://github.com/ory/keto/pull/86) ([minchao](https://github.com/minchao))
+- cmd: Fix disable-telemetry check [\#85](https://github.com/ory/keto/pull/85) ([RomanMinkin](https://github.com/RomanMinkin))
+
+## [v0.2.3-sandbox+oryOS.10](https://github.com/ory/keto/tree/v0.2.3-sandbox+oryOS.10) (2019-02-05)
+[Full Changelog](https://github.com/ory/keto/compare/v0.2.2-sandbox+oryOS.10...v0.2.3-sandbox+oryOS.10)
+
+**Fixed bugs:**
+
+- Properly handle TLS certificates and DBAL errors [\#78](https://github.com/ory/keto/pull/78) ([aeneasr](https://github.com/aeneasr))
+
+**Closed issues:**
+
+- Unable to initialize compiler: lstat /build: no such file or directory [\#81](https://github.com/ory/keto/issues/81)
+
+**Merged pull requests:**
+
+- dist: Fix packr build pipeline [\#84](https://github.com/ory/keto/pull/84) ([aeneasr](https://github.com/aeneasr))
+- cmd: Add support for glob matching [\#79](https://github.com/ory/keto/pull/79) ([rliebz](https://github.com/rliebz))
+- Fix for compiler error \(Unable to initialize compiler: lstat /go: no such file or directory\) [\#77](https://github.com/ory/keto/pull/77) ([sum2000](https://github.com/sum2000))
 
 ## [v0.2.2-sandbox+oryOS.10](https://github.com/ory/keto/tree/v0.2.2-sandbox+oryOS.10) (2018-12-13)
 [Full Changelog](https://github.com/ory/keto/compare/v0.2.1-sandbox+oryOS.10...v0.2.2-sandbox+oryOS.10)
