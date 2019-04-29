@@ -3,6 +3,7 @@
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
 - [Change Log](#change-log)
+  - [v0.3.1-sandbox (2019-04-29)](#v031-sandbox-2019-04-29)
   - [v0.3.0-sandbox (2019-04-29)](#v030-sandbox-2019-04-29)
   - [v0.2.3-sandbox+oryOS.10 (2019-02-05)](#v023-sandboxoryos10-2019-02-05)
   - [v0.2.2-sandbox+oryOS.10 (2018-12-13)](#v022-sandboxoryos10-2018-12-13)
@@ -31,6 +32,14 @@
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 # Change Log
+
+## [v0.3.1-sandbox](https://github.com/ory/keto/tree/v0.3.1-sandbox) (2019-04-29)
+[Full Changelog](https://github.com/ory/keto/compare/v0.3.0-sandbox...v0.3.1-sandbox)
+
+**Merged pull requests:**
+
+- ci: Use image that includes bash/sh for release docs [\#103](https://github.com/ory/keto/pull/103) ([aeneasr](https://github.com/aeneasr))
+- Allow configuration files and update UPGRADE guide. [\#102](https://github.com/ory/keto/pull/102) ([aeneasr](https://github.com/aeneasr))
 
 ## [v0.3.0-sandbox](https://github.com/ory/keto/tree/v0.3.0-sandbox) (2019-04-29)
 [Full Changelog](https://github.com/ory/keto/compare/v0.2.3-sandbox+oryOS.10...v0.3.0-sandbox)
