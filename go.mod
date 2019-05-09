@@ -34,7 +34,7 @@ require (
 	github.com/lib/pq v1.0.0
 	github.com/luna-duclos/instrumentedsql v0.0.0-20190316074304-ecad98b20aec // indirect
 	github.com/meatballhat/negroni-logrus v0.0.0-20170801195057-31067281800f
-	github.com/open-policy-agent/opa v0.10.1
+	github.com/open-policy-agent/opa v0.10.7
 	github.com/opencontainers/runc v1.0.0-rc5 // indirect
 	github.com/opentracing/opentracing-go v1.1.0 // indirect
 	github.com/ory/go-acc v0.0.0-20181118080137-ddc355013f90

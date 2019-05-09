@@ -18,17 +18,30 @@ import (
 var l = logrus.New()
 
 func main() {
-	for i := 0; i < 30000; i++ {
-		createPolicy(strconv.Itoa(i))
+	var wg sync.WaitGroup
+	const workers = 25
+
+	wg.Add(workers)
+	for i := 0; i < workers; i++ {
+		go func(w int) {
+			defer wg.Done()
+			for i := 0; i < 30000/workers; i++ {
+				createPolicy(strconv.Itoa(i)+strconv.Itoa(w))
+			}
+		}(i)
 	}
+
+	wg.Wait()
+
 	fmt.Println("Policies created.")
 
 	start := time.Now()
 
-	var wg sync.WaitGroup
-	wg.Add(15)
+	l.Infof("Took %.8fs to make cache hot", check().Seconds())
+
+	wg.Add(workers)
 	// Create some workers to simulate humans
-	for i := 0; i < 15; i++ {
+	for i := 0; i < workers; i++ {
 		go func(w int) {
 			defer wg.Done()
 			var count int64
@@ -37,10 +50,10 @@ func main() {
 			for time.Now().Sub(start).Seconds() < 10 {
 				count++
 				total += check()
-				time.Sleep(time.Second)
+				time.Sleep(time.Millisecond)
 			}
 
-			l.Infof("Took %.8fs to on average for worker %d", total.Seconds(), w)
+			l.Infof("Took %.8fs to on average for worker %d", total.Seconds()/float64(count), w)
 		}(i)
 	}
 	wg.Wait()
@@ -57,7 +70,7 @@ func check() time.Duration {
 	})
 	cmdx.Must(err, "%", err)
 
-	req, err := http.NewRequest("POST", "http://localhost:4466/engines/acp/ory/regex/allowed", &b)
+	req, err := http.NewRequest("POST", "http://localhost:4466/engines/acp/ory/exact/allowed", &b)
 	cmdx.Panic(err)
 	req.Header.Set("Content-Type", "application/json")
 
@@ -65,10 +78,14 @@ func check() time.Duration {
 	res, err := http.DefaultClient.Do(req)
 	end := time.Now()
 
+	if err != nil {
+		return end.Sub(start)
+	}
+
 	cmdx.Panic(err)
 	defer res.Body.Close()
-	if res.StatusCode != 200 {
-		panic(fmt.Sprintf("not 200 but %d", res.StatusCode))
+	if res.StatusCode != 200 && res.StatusCode != 403 {
+		panic(fmt.Sprintf("not 200 / 403 but %d", res.StatusCode))
 	}
 
 	var decision engine.AuthorizationResult
@@ -97,7 +114,7 @@ func createPolicy(id string) {
 	})
 	cmdx.Panic(err)
 
-	req, err := http.NewRequest("PUT", "http://localhost:4466/engines/acp/ory/regex/policies", &b)
+	req, err := http.NewRequest("PUT", "http://localhost:4466/engines/acp/ory/exact/policies", &b)
 	cmdx.Panic(err)
 	req.Header.Set("Content-Type", "application/json")
 
