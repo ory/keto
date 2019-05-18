@@ -52,6 +52,7 @@ jobs:
           command: |
             echo 'export GO111MODULE=on' >> $BASH_ENV
             ./.circleci/release_name.bash
+            echo 'export DOCKER_SHORT_TAG=$CIRCLE_SHA1' >> $BASH_ENV
             source $BASH_ENV
       # Installation
       - run: go mod verify
