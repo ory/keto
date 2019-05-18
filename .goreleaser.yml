@@ -9,6 +9,7 @@ before:
   hooks:
     - go mod download
     - cp ./.releaser/LICENSE.txt ./LICENSE.txt
+    - go install github.com/gobuffalo/packr/packr
     - packr
 
 builds:
