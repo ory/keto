@@ -4,10 +4,12 @@ project_name: keto
 
 env:
   - GO111MODULE=on
+
 before:
   hooks:
     - go mod download
     - packr
+
 builds:
   -
     flags:
@@ -31,22 +33,27 @@ builds:
       - linux
       - windows
       - darwin
+
 archive:
-  replacements:
-    darwin: macOS
-    linux: Linux
-    windows: Windows
-    386: 32-bit
-    amd64: 64-bit
-  format_overrides:
-    - goos: windows
-      format: zip
-  files:
-    -  LICENSE.txt
+  -
+    replacements:
+      darwin: macOS
+      linux: Linux
+      windows: Windows
+      386: 32-bit
+      amd64: 64-bit
+    format_overrides:
+      - goos: windows
+        format: zip
+    files:
+      -  LICENSE.txt
+
 snapshot:
   name_template: "{{ .Tag }}-next"
+
 changelog:
   sort: asc
+
 brew:
   github:
     owner: ory
@@ -70,8 +77,11 @@ dockers:
       - "oryd/keto:v{{ .Major }}"
       - "oryd/keto:v{{ .Major }}.{{ .Minor }}"
       - "oryd/keto:v{{ .Major }}.{{ .Minor }}.{{ .Patch }}"
-#      - "oryd/keto:{{ .Env.DOCKER_FULL_TAG }}"
       - "oryd/keto:{{ .Env.DOCKER_SHORT_TAG }}"
       - "oryd/keto:latest"
     extra_files:
       - .releaser/LICENSE.txt
+
+release:
+  prerelease: auto
+  name_template: "{{.Env.RELEASE_NAME}}"
