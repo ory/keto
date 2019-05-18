@@ -66,7 +66,7 @@ jobs:
 
       # Submit coverage details
       - run: test -z "$CIRCLE_PR_NUMBER" && goveralls -service=circle-ci -coverprofile=coverage.txt -repotoken=$COVERALLS_REPO_TOKEN || echo "forks are not allowed to push to coveralls"
-      - run: curl -sL https://git.io/goreleaser | bash -s --snapshot --skip-publish --rm-dist
+      - run: curl -sL https://git.io/goreleaser | bash -s -- --snapshot --skip-publish --rm-dist
 
   release:
     docker:
