@@ -15,7 +15,7 @@ builds:
     flags:
       - -a
     ldflags:
-      - -s -w -X github.com/ory/keto/cmd.Version={{.Tag}} -X github.com/ory/keto/cmd.Commit={{.FullCommit}} -X github.com/ory/keto/cmd.Date={{.Date}}
+      - -s -w -X github.com/ory/keto/cmd.Version={{.Env.RELEASE_NAME}} -X github.com/ory/keto/cmd.Commit={{.FullCommit}} -X github.com/ory/keto/cmd.Date={{.Date}}
     binary: keto
     env:
       - CGO_ENABLED=0
@@ -34,7 +34,7 @@ builds:
       - windows
       - darwin
 
-archive:
+archives:
   -
     replacements:
       darwin: macOS
