@@ -47,13 +47,12 @@ jobs:
           - MYSQL_ROOT_PASSWORD=test
     working_directory: /go/src/github.com/ory/keto
     steps:
+      - checkout
       - run:
-          name: Enable go1.11 modules
           command: |
             echo 'export GO111MODULE=on' >> $BASH_ENV
+            ./.circleci/release_name.bash
             source $BASH_ENV
-      - checkout
-
       # Installation
       - run: go mod verify
       - run: go install github.com/ory/keto
