@@ -48,6 +48,7 @@ jobs:
     working_directory: /go/src/github.com/ory/keto
     steps:
       - checkout
+      - setup_remote_docker
       - run:
           command: |
             echo 'export GO111MODULE=on' >> $BASH_ENV
