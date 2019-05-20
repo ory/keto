@@ -4,12 +4,10 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"sync"
 
 	"github.com/open-policy-agent/opa/storage"
 	"github.com/open-policy-agent/opa/storage/inmem"
 	"github.com/pkg/errors"
-	"golang.org/x/perf/storage/db"
 )
 
 type Manager interface {
