@@ -41,7 +41,7 @@ on configuration options, open the configuration documentation:
 func init() {
 	RootCmd.AddCommand(serveCmd)
 
-	disableTelemetryEnv := viperx.GetBool(logrusx.New(), "sqa.opt_out", "DISABLE_TELEMETRY")
+	disableTelemetryEnv := viperx.GetBool(logrusx.New(), "sqa.opt_out",false, "DISABLE_TELEMETRY")
 	serveCmd.PersistentFlags().Bool("disable-telemetry", disableTelemetryEnv, "Disable anonymized telemetry reports - for more information please visit https://www.ory.sh/docs/ecosystem/sqa")
 	serveCmd.PersistentFlags().Bool("sqa-opt-out", disableTelemetryEnv, "Disable anonymized telemetry reports - for more information please visit https://www.ory.sh/docs/ecosystem/sqa")
 }

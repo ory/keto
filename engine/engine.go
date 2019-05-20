@@ -57,12 +57,10 @@ func (h *Engine) Evaluate(e evaluator) httprouter.Handle {
 }
 
 func (h *Engine) eval(ctx context.Context, options []func(*rego.Rego)) (bool, error) {
-	//tracer := topdown.NewBufferTracer()
 	r := rego.New(
 		append(
 			options,
 			rego.Compiler(h.compiler),
-			//rego.Tracer(tracer),
 		)...,
 	)
 

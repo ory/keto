@@ -34,13 +34,14 @@ require (
 	github.com/lib/pq v1.0.0
 	github.com/luna-duclos/instrumentedsql v0.0.0-20190316074304-ecad98b20aec // indirect
 	github.com/meatballhat/negroni-logrus v0.0.0-20170801195057-31067281800f
+	github.com/mitchellh/go-homedir v1.1.0
 	github.com/open-policy-agent/opa v0.10.7
 	github.com/opencontainers/runc v1.0.0-rc5 // indirect
 	github.com/opentracing/opentracing-go v1.1.0 // indirect
 	github.com/ory/go-acc v0.0.0-20181118080137-ddc355013f90
 	github.com/ory/graceful v0.1.1
 	github.com/ory/herodot v0.6.0
-	github.com/ory/x v0.0.42
+	github.com/ory/x v0.0.60
 	github.com/pborman/uuid v1.2.0
 	github.com/pelletier/go-toml v1.3.0 // indirect
 	github.com/pkg/errors v0.8.1

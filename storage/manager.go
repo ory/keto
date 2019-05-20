@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"sync"
+
 	"github.com/open-policy-agent/opa/storage"
 	"github.com/open-policy-agent/opa/storage/inmem"
 	"github.com/pkg/errors"
@@ -33,7 +35,18 @@ func roundTrip(in, out interface{}) error {
 	return nil
 }
 
+var (
+	l  sync.Mutex
+	db storage.Store
+)
+
 func toRegoStore(ctx context.Context, schema string, collections []string, query func(context.Context, string) ([]json.RawMessage, error)) (storage.Store, error) {
+	l.Lock()
+	defer l.Unlock()
+	if db != nil {
+		return db, nil
+	}
+
 	var s map[string]interface{}
 	dec := json.NewDecoder(bytes.NewBufferString(schema))
 	dec.UseNumber()
@@ -41,7 +54,7 @@ func toRegoStore(ctx context.Context, schema string, collections []string, query
 		return nil, errors.WithStack(err)
 	}
 
-	db := inmem.NewFromObject(s)
+	db = inmem.NewFromObject(s)
 	txn, err := db.NewTransaction(ctx, storage.WriteParams)
 	if err != nil {
 		return nil, errors.WithStack(err)
