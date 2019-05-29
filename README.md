@@ -15,7 +15,7 @@ came looking for the answer to the question:
 
 * is a certain user allowed to modify that blog article?
 * is this service allowed to print a document?
-* is the member of the ACME organisation allowed to modify data in one of their tenants?
+* is a member of the ACME organisation allowed to modify data in one of their tenants?
 * is this process allowed to execute the worker when coming from IP 10.0.0.2 between 4pm and 5pm on a Monday?
 * ...
 
