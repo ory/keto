@@ -10,13 +10,13 @@
     <a href="https://opencollective.com/ory">Support this project!</a>
 </h4>
 
-ORY Keto is an permission server that implements best practice access control mechanisms. If you
+ORY Keto is a permission server that implements best practice access control mechanisms. If you
 came looking for the answer to the question:
 
-* is certain user is allowed to modify that blog article?
-* is this service is allowed to print a document?
-* is the user of the ACME organisation allowed to modify data in one of their tenants?
-* is this process allowed to execute the worker when coming from IP 10.0.0.2 between 4pm and 5pm on every monday?
+* is a certain user allowed to modify that blog article?
+* is this service allowed to print a document?
+* is the member of the ACME organisation allowed to modify data in one of their tenants?
+* is this process allowed to execute the worker when coming from IP 10.0.0.2 between 4pm and 5pm on a Monday?
 * ...
 
 <p align="left">
