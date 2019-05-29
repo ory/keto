@@ -51,7 +51,7 @@ came looking for the answer to the question:
 
 ## Introduction
 
-ORY Keto is an permission server that implements best practice access control mechanisms:
+ORY Keto is a permission server that implements best practice access control mechanisms:
 
 - Available today:
   - ORY-flavored Access Control Policies with exact, glob, and regexp matching strategies
@@ -82,8 +82,8 @@ ORY Oathkeeper, and ORY Keto.
 ### ORY Hydra: OAuth2 & OpenID Connect Server
 
 [ORY Hydra](https://github.com/ory/hydra) ORY Hydra is a hardened OAuth2 and OpenID Connect server optimized
-for low-latency, high throughput, and low resource consumption. ORY Hydra is not an identity provider, which would include
-user sign up, user log in, password reset flow. Hydra but connects to your existing identity provider through a consent app.
+for low latency, high throughput, and low resource consumption. ORY Hydra is not an identity provider, which would include
+user sign up, user log in, or password reset flow. Hydra connects to your existing identity provider through a consent app.
 
 ### ORY Oathkeeper: Identity & Access Proxy
 
