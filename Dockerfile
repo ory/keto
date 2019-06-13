@@ -11,6 +11,8 @@ COPY --from=0 /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY keto /usr/bin/keto
 COPY .releaser/LICENSE.txt /LICENSE.txt
 
+USER 1000
+
 ENTRYPOINT ["keto"]
 
 CMD ["serve"]
