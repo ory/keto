@@ -8,7 +8,6 @@ env:
 before:
   hooks:
     - go mod download
-    - cp ./.releaser/LICENSE.txt ./LICENSE.txt
     - go install github.com/gobuffalo/packr/packr
     - packr
 
@@ -47,8 +46,6 @@ archives:
     format_overrides:
       - goos: windows
         format: zip
-    files:
-      -  LICENSE.txt
 
 snapshot:
   name_template: "{{ .Tag }}-next"
@@ -81,8 +78,6 @@ dockers:
       - "oryd/keto:v{{ .Major }}.{{ .Minor }}.{{ .Patch }}"
       - "oryd/keto:{{ .Env.DOCKER_SHORT_TAG }}"
       - "oryd/keto:latest"
-    extra_files:
-      - .releaser/LICENSE.txt
 
 release:
   prerelease: auto
