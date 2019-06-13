@@ -10,6 +10,8 @@ FROM scratch
 COPY --from=0 /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY keto /usr/bin/keto
 
+USER 1000
+
 ENTRYPOINT ["keto"]
 
 CMD ["serve"]
