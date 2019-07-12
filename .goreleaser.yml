@@ -4,16 +4,19 @@ project_name: keto
 
 env:
   - GO111MODULE=on
+
 before:
   hooks:
     - go mod download
+    - go install github.com/gobuffalo/packr/packr
     - packr
+
 builds:
   -
     flags:
       - -a
     ldflags:
-      - -s -w -X github.com/ory/keto/cmd.Version={{.Tag}} -X github.com/ory/keto/cmd.Commit={{.FullCommit}} -X github.com/ory/keto/cmd.Date={{.Date}}
+      - -s -w -X github.com/ory/keto/cmd.Version={{.Env.RELEASE_NAME}} -X github.com/ory/keto/cmd.Commit={{.FullCommit}} -X github.com/ory/keto/cmd.Date={{.Date}}
     binary: keto
     env:
       - CGO_ENABLED=0
@@ -31,22 +34,25 @@ builds:
       - linux
       - windows
       - darwin
-archive:
-  replacements:
-    darwin: macOS
-    linux: Linux
-    windows: Windows
-    386: 32-bit
-    amd64: 64-bit
-  format_overrides:
-    - goos: windows
-      format: zip
-  files:
-    -  LICENSE.txt
+
+archives:
+  -
+    replacements:
+      darwin: macOS
+      linux: Linux
+      windows: Windows
+      386: 32-bit
+      amd64: 64-bit
+    format_overrides:
+      - goos: windows
+        format: zip
+
 snapshot:
   name_template: "{{ .Tag }}-next"
+
 changelog:
   sort: asc
+
 brew:
   github:
     owner: ory
@@ -70,8 +76,9 @@ dockers:
       - "oryd/keto:v{{ .Major }}"
       - "oryd/keto:v{{ .Major }}.{{ .Minor }}"
       - "oryd/keto:v{{ .Major }}.{{ .Minor }}.{{ .Patch }}"
-#      - "oryd/keto:{{ .Env.DOCKER_FULL_TAG }}"
       - "oryd/keto:{{ .Env.DOCKER_SHORT_TAG }}"
       - "oryd/keto:latest"
-    extra_files:
-      - .releaser/LICENSE.txt
+
+release:
+  prerelease: auto
+  name_template: "{{.Env.RELEASE_NAME}}"

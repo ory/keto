@@ -14,7 +14,7 @@ jobs:
           command: |
             echo 'export GO111MODULE=on' >> $BASH_ENV
             source $BASH_ENV
-      - run: curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s -- -b $(go env GOPATH)/bin v1.16.0
+      - run: curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s -- -b $(go env GOPATH)/bin latest
       - run: go mod download
       - run: golangci-lint run ./...
 
@@ -47,13 +47,14 @@ jobs:
           - MYSQL_ROOT_PASSWORD=test
     working_directory: /go/src/github.com/ory/keto
     steps:
+      - checkout
+      - setup_remote_docker
       - run:
-          name: Enable go1.11 modules
           command: |
             echo 'export GO111MODULE=on' >> $BASH_ENV
+            ./.circleci/release_name.bash
+            echo 'export DOCKER_SHORT_TAG=$CIRCLE_SHA1' >> $BASH_ENV
             source $BASH_ENV
-      - checkout
-
       # Installation
       - run: go mod verify
       - run: go install github.com/ory/keto
@@ -66,24 +67,24 @@ jobs:
 
       # Submit coverage details
       - run: test -z "$CIRCLE_PR_NUMBER" && goveralls -service=circle-ci -coverprofile=coverage.txt -repotoken=$COVERALLS_REPO_TOKEN || echo "forks are not allowed to push to coveralls"
+      - run: curl -sL https://git.io/goreleaser | bash -s -- --snapshot --skip-publish --rm-dist
 
   release:
     docker:
       - image: circleci/golang:1.12
+        environment:
+          - GO111MODULE=on
     working_directory: /go/src/github.com/ory/oathkeeper
     steps:
+      - checkout
       - run:
-          name: Enable go1.12 modules
           command: |
-            echo 'export GO111MODULE=on' >> $BASH_ENV
             echo 'export DOCKER_FULL_TAG=$(echo $CIRCLE_TAG | tr '+' '_')' >> $BASH_ENV
             echo 'export DOCKER_SHORT_TAG=$(echo $CIRCLE_TAG | cut -d '+' -f1)' >> $BASH_ENV
+            ./.circleci/release_name.bash
             source $BASH_ENV
-      - checkout
       - setup_remote_docker
       - run: docker login --username "$DOCKER_USERNAME" --password "$DOCKER_PASSWORD"
-      - run: cp ./.releaser/LICENSE.txt ./LICENSE.txt
-      - run: go install github.com/gobuffalo/packr/packr
       - run: curl -sL https://git.io/goreleaser | bash
 
   release-docs:

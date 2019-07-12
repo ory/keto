@@ -3,6 +3,7 @@
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
 - [Change Log](#change-log)
+  - [v0.3.3-sandbox (2019-05-18)](#v033-sandbox-2019-05-18)
   - [v0.3.1-sandbox (2019-04-29)](#v031-sandbox-2019-04-29)
   - [v0.3.0-sandbox (2019-04-29)](#v030-sandbox-2019-04-29)
   - [v0.2.3-sandbox+oryOS.10 (2019-02-05)](#v023-sandboxoryos10-2019-02-05)
@@ -32,6 +33,15 @@
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 # Change Log
+
+## [v0.3.3-sandbox](https://github.com/ory/keto/tree/v0.3.3-sandbox) (2019-05-18)
+[Full Changelog](https://github.com/ory/keto/compare/v0.3.1-sandbox...v0.3.3-sandbox)
+
+**Merged pull requests:**
+
+- ci: Resolve goreleaser issues [\#108](https://github.com/ory/keto/pull/108) ([aeneasr](https://github.com/aeneasr))
+- ci: Update release pipeline [\#107](https://github.com/ory/keto/pull/107) ([aeneasr](https://github.com/aeneasr))
+- docs: Updates issue and pull request templates [\#106](https://github.com/ory/keto/pull/106) ([aeneasr](https://github.com/aeneasr))
 
 ## [v0.3.1-sandbox](https://github.com/ory/keto/tree/v0.3.1-sandbox) (2019-04-29)
 [Full Changelog](https://github.com/ory/keto/compare/v0.3.0-sandbox...v0.3.1-sandbox)
