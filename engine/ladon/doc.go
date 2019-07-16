@@ -245,6 +245,11 @@ type listOryAccessControlPolicyRoles struct {
 	// required: true
 	Flavor string `json:"flavor"`
 
+	// The Member (ID) for which the roles are to be listed (Optional).
+	// in: query
+	// required: false
+	Member string `json:"member"`
+
 	// The maximum amount of policies returned.
 	//
 	// in: query
