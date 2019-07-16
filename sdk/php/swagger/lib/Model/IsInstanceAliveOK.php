@@ -5,7 +5,7 @@
  * PHP version 5
  *
  * @category Class
- * @package  ketoSDK
+ * @package  keto\SDK
  * @author   Swaagger Codegen team
  * @link     https://github.com/swagger-api/swagger-codegen
  */
@@ -27,7 +27,7 @@
  * Do not edit the class manually.
  */
 
-namespace ketoSDK\Model;
+namespace keto\SDK\Model;
 
 use \ArrayAccess;
 
@@ -36,7 +36,7 @@ use \ArrayAccess;
  *
  * @category    Class
  * @description healthStatus
- * @package     ketoSDK
+ * @package     keto\SDK
  * @author      Swagger Codegen team
  * @link        https://github.com/swagger-api/swagger-codegen
  */
@@ -55,7 +55,7 @@ class IsInstanceAliveOK implements ArrayAccess
       * @var string[]
       */
     protected static $swaggerTypes = [
-        'payload' => '\ketoSDK\Model\SwaggerHealthStatus'
+        'payload' => '\keto\SDK\Model\SwaggerHealthStatus'
     ];
 
     /**
@@ -163,7 +163,7 @@ class IsInstanceAliveOK implements ArrayAccess
 
     /**
      * Gets payload
-     * @return \ketoSDK\Model\SwaggerHealthStatus
+     * @return \keto\SDK\Model\SwaggerHealthStatus
      */
     public function getPayload()
     {
@@ -172,7 +172,7 @@ class IsInstanceAliveOK implements ArrayAccess
 
     /**
      * Sets payload
-     * @param \ketoSDK\Model\SwaggerHealthStatus $payload
+     * @param \keto\SDK\Model\SwaggerHealthStatus $payload
      * @return $this
      */
     public function setPayload($payload)
@@ -233,10 +233,10 @@ class IsInstanceAliveOK implements ArrayAccess
     public function __toString()
     {
         if (defined('JSON_PRETTY_PRINT')) { // use JSON pretty print
-            return json_encode(\ketoSDK\ObjectSerializer::sanitizeForSerialization($this), JSON_PRETTY_PRINT);
+            return json_encode(\keto\SDK\ObjectSerializer::sanitizeForSerialization($this), JSON_PRETTY_PRINT);
         }
 
-        return json_encode(\ketoSDK\ObjectSerializer::sanitizeForSerialization($this));
+        return json_encode(\keto\SDK\ObjectSerializer::sanitizeForSerialization($this));
     }
 }
 

@@ -425,6 +425,7 @@
      * Roles group several subjects into one. Rules can be assigned to ORY Access Control Policy (OACP) by using the Role ID as subject in the OACP.
      * @param {String} flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot;
      * @param {Object} opts Optional parameters
+     * @param {String} opts.member The Member (ID) for which the roles are to be listed (Optional).
      * @param {Number} opts.limit The maximum amount of policies returned.
      * @param {Number} opts.offset The offset from where to start looking.
      * @param {module:api/EnginesApi~listOryAccessControlPolicyRolesCallback} callback The callback function, accepting three arguments: error, data, response
@@ -444,6 +445,7 @@
         'flavor': flavor
       };
       var queryParams = {
+        'member': opts['member'],
         'limit': opts['limit'],
         'offset': opts['offset']
       };

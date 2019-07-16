@@ -12,7 +12,7 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// GetOryAccessControlPolicyRoleInternalServerError GetOryAccessControlPolicyRoleInternalServerError handles this case with default header values.
+// GetOryAccessControlPolicyRoleInternalServerError GetOryAccessControlPolicyRoleInternalServerError GetOryAccessControlPolicyRoleInternalServerError handles this case with default header values.
 //
 // The standard error format
 // swagger:model GetOryAccessControlPolicyRoleInternalServerError

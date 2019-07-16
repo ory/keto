@@ -1,4 +1,4 @@
-# ketoSDK\EnginesApi
+# keto\SDK\EnginesApi
 Client for keto
 
 All URIs are relative to *http://localhost*
@@ -19,7 +19,7 @@ Method | HTTP request | Description
 
 
 # **addOryAccessControlPolicyRoleMembers**
-> \ketoSDK\Model\OryAccessControlPolicyRole addOryAccessControlPolicyRoleMembers($flavor, $id, $body)
+> \keto\SDK\Model\OryAccessControlPolicyRole addOryAccessControlPolicyRoleMembers($flavor, $id, $body)
 
 Add a member to an ORY Access Control Policy Role
 
@@ -30,10 +30,10 @@ Roles group several subjects into one. Rules can be assigned to ORY Access Contr
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-$api_instance = new ketoSDK\Api\EnginesApi();
+$api_instance = new keto\SDK\Api\EnginesApi();
 $flavor = "flavor_example"; // string | The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".
 $id = "id_example"; // string | The ID of the ORY Access Control Policy Role.
-$body = new \ketoSDK\Model\AddOryAccessControlPolicyRoleMembersBody(); // \ketoSDK\Model\AddOryAccessControlPolicyRoleMembersBody | 
+$body = new \keto\SDK\Model\AddOryAccessControlPolicyRoleMembersBody(); // \keto\SDK\Model\AddOryAccessControlPolicyRoleMembersBody | 
 
 try {
     $result = $api_instance->addOryAccessControlPolicyRoleMembers($flavor, $id, $body);
@@ -50,11 +50,11 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **flavor** | **string**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot;. |
  **id** | **string**| The ID of the ORY Access Control Policy Role. |
- **body** | [**\ketoSDK\Model\AddOryAccessControlPolicyRoleMembersBody**](../Model/AddOryAccessControlPolicyRoleMembersBody.md)|  | [optional]
+ **body** | [**\keto\SDK\Model\AddOryAccessControlPolicyRoleMembersBody**](../Model/AddOryAccessControlPolicyRoleMembersBody.md)|  | [optional]
 
 ### Return type
 
-[**\ketoSDK\Model\OryAccessControlPolicyRole**](../Model/OryAccessControlPolicyRole.md)
+[**\keto\SDK\Model\OryAccessControlPolicyRole**](../Model/OryAccessControlPolicyRole.md)
 
 ### Authorization
 
@@ -79,7 +79,7 @@ Delete an ORY Access Control Policy
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-$api_instance = new ketoSDK\Api\EnginesApi();
+$api_instance = new keto\SDK\Api\EnginesApi();
 $flavor = "flavor_example"; // string | The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".
 $id = "id_example"; // string | The ID of the ORY Access Control Policy Role.
 
@@ -125,7 +125,7 @@ Roles group several subjects into one. Rules can be assigned to ORY Access Contr
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-$api_instance = new ketoSDK\Api\EnginesApi();
+$api_instance = new keto\SDK\Api\EnginesApi();
 $flavor = "flavor_example"; // string | The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".
 $id = "id_example"; // string | The ID of the ORY Access Control Policy Role.
 
@@ -160,7 +160,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
 # **doOryAccessControlPoliciesAllow**
-> \ketoSDK\Model\AuthorizationResult doOryAccessControlPoliciesAllow($flavor, $body)
+> \keto\SDK\Model\AuthorizationResult doOryAccessControlPoliciesAllow($flavor, $body)
 
 Check if a request is allowed
 
@@ -171,9 +171,9 @@ Use this endpoint to check if a request is allowed or not. If the request is all
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-$api_instance = new ketoSDK\Api\EnginesApi();
+$api_instance = new keto\SDK\Api\EnginesApi();
 $flavor = "flavor_example"; // string | The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".
-$body = new \ketoSDK\Model\OryAccessControlPolicyAllowedInput(); // \ketoSDK\Model\OryAccessControlPolicyAllowedInput | 
+$body = new \keto\SDK\Model\OryAccessControlPolicyAllowedInput(); // \keto\SDK\Model\OryAccessControlPolicyAllowedInput | 
 
 try {
     $result = $api_instance->doOryAccessControlPoliciesAllow($flavor, $body);
@@ -189,11 +189,11 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **flavor** | **string**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot;. |
- **body** | [**\ketoSDK\Model\OryAccessControlPolicyAllowedInput**](../Model/OryAccessControlPolicyAllowedInput.md)|  | [optional]
+ **body** | [**\keto\SDK\Model\OryAccessControlPolicyAllowedInput**](../Model/OryAccessControlPolicyAllowedInput.md)|  | [optional]
 
 ### Return type
 
-[**\ketoSDK\Model\AuthorizationResult**](../Model/AuthorizationResult.md)
+[**\keto\SDK\Model\AuthorizationResult**](../Model/AuthorizationResult.md)
 
 ### Authorization
 
@@ -207,7 +207,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
 # **getOryAccessControlPolicy**
-> \ketoSDK\Model\OryAccessControlPolicy getOryAccessControlPolicy($flavor, $id)
+> \keto\SDK\Model\OryAccessControlPolicy getOryAccessControlPolicy($flavor, $id)
 
 
 
@@ -218,7 +218,7 @@ Get an ORY Access Control Policy
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-$api_instance = new ketoSDK\Api\EnginesApi();
+$api_instance = new keto\SDK\Api\EnginesApi();
 $flavor = "flavor_example"; // string | The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".
 $id = "id_example"; // string | The ID of the ORY Access Control Policy Role.
 
@@ -240,7 +240,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**\ketoSDK\Model\OryAccessControlPolicy**](../Model/OryAccessControlPolicy.md)
+[**\keto\SDK\Model\OryAccessControlPolicy**](../Model/OryAccessControlPolicy.md)
 
 ### Authorization
 
@@ -254,7 +254,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
 # **getOryAccessControlPolicyRole**
-> \ketoSDK\Model\OryAccessControlPolicyRole getOryAccessControlPolicyRole($flavor, $id)
+> \keto\SDK\Model\OryAccessControlPolicyRole getOryAccessControlPolicyRole($flavor, $id)
 
 Get an ORY Access Control Policy Role
 
@@ -265,7 +265,7 @@ Roles group several subjects into one. Rules can be assigned to ORY Access Contr
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-$api_instance = new ketoSDK\Api\EnginesApi();
+$api_instance = new keto\SDK\Api\EnginesApi();
 $flavor = "flavor_example"; // string | The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".
 $id = "id_example"; // string | The ID of the ORY Access Control Policy Role.
 
@@ -287,7 +287,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**\ketoSDK\Model\OryAccessControlPolicyRole**](../Model/OryAccessControlPolicyRole.md)
+[**\keto\SDK\Model\OryAccessControlPolicyRole**](../Model/OryAccessControlPolicyRole.md)
 
 ### Authorization
 
@@ -301,7 +301,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
 # **listOryAccessControlPolicies**
-> \ketoSDK\Model\OryAccessControlPolicy[] listOryAccessControlPolicies($flavor, $limit, $offset)
+> \keto\SDK\Model\OryAccessControlPolicy[] listOryAccessControlPolicies($flavor, $limit, $offset)
 
 
 
@@ -312,7 +312,7 @@ List ORY Access Control Policies
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-$api_instance = new ketoSDK\Api\EnginesApi();
+$api_instance = new keto\SDK\Api\EnginesApi();
 $flavor = "flavor_example"; // string | The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\"
 $limit = 789; // int | The maximum amount of policies returned.
 $offset = 789; // int | The offset from where to start looking.
@@ -336,7 +336,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**\ketoSDK\Model\OryAccessControlPolicy[]**](../Model/OryAccessControlPolicy.md)
+[**\keto\SDK\Model\OryAccessControlPolicy[]**](../Model/OryAccessControlPolicy.md)
 
 ### Authorization
 
@@ -350,7 +350,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
 # **listOryAccessControlPolicyRoles**
-> \ketoSDK\Model\OryAccessControlPolicyRole[] listOryAccessControlPolicyRoles($flavor, $limit, $offset)
+> \keto\SDK\Model\OryAccessControlPolicyRole[] listOryAccessControlPolicyRoles($flavor, $member, $limit, $offset)
 
 List ORY Access Control Policy Roles
 
@@ -361,13 +361,14 @@ Roles group several subjects into one. Rules can be assigned to ORY Access Contr
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-$api_instance = new ketoSDK\Api\EnginesApi();
+$api_instance = new keto\SDK\Api\EnginesApi();
 $flavor = "flavor_example"; // string | The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\"
+$member = "member_example"; // string | The Member (ID) for which the roles are to be listed (Optional).
 $limit = 789; // int | The maximum amount of policies returned.
 $offset = 789; // int | The offset from where to start looking.
 
 try {
-    $result = $api_instance->listOryAccessControlPolicyRoles($flavor, $limit, $offset);
+    $result = $api_instance->listOryAccessControlPolicyRoles($flavor, $member, $limit, $offset);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling EnginesApi->listOryAccessControlPolicyRoles: ', $e->getMessage(), PHP_EOL;
@@ -380,12 +381,13 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **flavor** | **string**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot; |
+ **member** | **string**| The Member (ID) for which the roles are to be listed (Optional). | [optional]
  **limit** | **int**| The maximum amount of policies returned. | [optional]
  **offset** | **int**| The offset from where to start looking. | [optional]
 
 ### Return type
 
-[**\ketoSDK\Model\OryAccessControlPolicyRole[]**](../Model/OryAccessControlPolicyRole.md)
+[**\keto\SDK\Model\OryAccessControlPolicyRole[]**](../Model/OryAccessControlPolicyRole.md)
 
 ### Authorization
 
@@ -410,7 +412,7 @@ Roles group several subjects into one. Rules can be assigned to ORY Access Contr
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-$api_instance = new ketoSDK\Api\EnginesApi();
+$api_instance = new keto\SDK\Api\EnginesApi();
 $flavor = "flavor_example"; // string | The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".
 $id = "id_example"; // string | The ID of the ORY Access Control Policy Role.
 $member = "member_example"; // string | The member to be removed.
@@ -447,7 +449,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
 # **upsertOryAccessControlPolicy**
-> \ketoSDK\Model\OryAccessControlPolicy upsertOryAccessControlPolicy($flavor, $body)
+> \keto\SDK\Model\OryAccessControlPolicy upsertOryAccessControlPolicy($flavor, $body)
 
 
 
@@ -458,9 +460,9 @@ Upsert an ORY Access Control Policy
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-$api_instance = new ketoSDK\Api\EnginesApi();
+$api_instance = new keto\SDK\Api\EnginesApi();
 $flavor = "flavor_example"; // string | The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".
-$body = new \ketoSDK\Model\OryAccessControlPolicy(); // \ketoSDK\Model\OryAccessControlPolicy | 
+$body = new \keto\SDK\Model\OryAccessControlPolicy(); // \keto\SDK\Model\OryAccessControlPolicy | 
 
 try {
     $result = $api_instance->upsertOryAccessControlPolicy($flavor, $body);
@@ -476,11 +478,11 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **flavor** | **string**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot;. |
- **body** | [**\ketoSDK\Model\OryAccessControlPolicy**](../Model/OryAccessControlPolicy.md)|  | [optional]
+ **body** | [**\keto\SDK\Model\OryAccessControlPolicy**](../Model/OryAccessControlPolicy.md)|  | [optional]
 
 ### Return type
 
-[**\ketoSDK\Model\OryAccessControlPolicy**](../Model/OryAccessControlPolicy.md)
+[**\keto\SDK\Model\OryAccessControlPolicy**](../Model/OryAccessControlPolicy.md)
 
 ### Authorization
 
@@ -494,7 +496,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
 # **upsertOryAccessControlPolicyRole**
-> \ketoSDK\Model\OryAccessControlPolicyRole upsertOryAccessControlPolicyRole($flavor, $body)
+> \keto\SDK\Model\OryAccessControlPolicyRole upsertOryAccessControlPolicyRole($flavor, $body)
 
 Upsert an ORY Access Control Policy Role
 
@@ -505,9 +507,9 @@ Roles group several subjects into one. Rules can be assigned to ORY Access Contr
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-$api_instance = new ketoSDK\Api\EnginesApi();
+$api_instance = new keto\SDK\Api\EnginesApi();
 $flavor = "flavor_example"; // string | The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".
-$body = new \ketoSDK\Model\OryAccessControlPolicyRole(); // \ketoSDK\Model\OryAccessControlPolicyRole | 
+$body = new \keto\SDK\Model\OryAccessControlPolicyRole(); // \keto\SDK\Model\OryAccessControlPolicyRole | 
 
 try {
     $result = $api_instance->upsertOryAccessControlPolicyRole($flavor, $body);
@@ -523,11 +525,11 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **flavor** | **string**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot;. |
- **body** | [**\ketoSDK\Model\OryAccessControlPolicyRole**](../Model/OryAccessControlPolicyRole.md)|  | [optional]
+ **body** | [**\keto\SDK\Model\OryAccessControlPolicyRole**](../Model/OryAccessControlPolicyRole.md)|  | [optional]
 
 ### Return type
 
-[**\ketoSDK\Model\OryAccessControlPolicyRole**](../Model/OryAccessControlPolicyRole.md)
+[**\keto\SDK\Model\OryAccessControlPolicyRole**](../Model/OryAccessControlPolicyRole.md)
 
 ### Authorization
 

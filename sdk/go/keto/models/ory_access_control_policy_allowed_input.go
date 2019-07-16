@@ -11,8 +11,8 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// OryAccessControlPolicyAllowedInput Input for checking if a request is allowed or not.
-// swagger:model oryAccessControlPolicyAllowedInput
+// OryAccessControlPolicyAllowedInput OryAccessControlPolicyAllowedInput Input for checking if a request is allowed or not.
+// swagger:model OryAccessControlPolicyAllowedInput
 type OryAccessControlPolicyAllowedInput struct {
 
 	// Action is the action that is requested on the resource.

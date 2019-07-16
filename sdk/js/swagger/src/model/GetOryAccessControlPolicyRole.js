@@ -42,6 +42,7 @@
 
   /**
    * Constructs a new <code>GetOryAccessControlPolicyRole</code>.
+   * GetOryAccessControlPolicyRole get ory access control policy role
    * @alias module:model/GetOryAccessControlPolicyRole
    * @class
    * @param flavor {String} The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".  in: path

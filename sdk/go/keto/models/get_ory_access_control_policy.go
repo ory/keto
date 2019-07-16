@@ -13,8 +13,8 @@ import (
 	"github.com/go-openapi/validate"
 )
 
-// GetOryAccessControlPolicy get ory access control policy
-// swagger:model getOryAccessControlPolicy
+// GetOryAccessControlPolicy GetOryAccessControlPolicy get ory access control policy
+// swagger:model GetOryAccessControlPolicy
 type GetOryAccessControlPolicy struct {
 
 	// The ORY Access Control Policy flavor. Can be "regex", "glob", and "exact".

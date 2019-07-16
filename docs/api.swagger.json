@@ -288,6 +288,13 @@
             "required": true
           },
           {
+            "type": "string",
+            "x-go-name": "Member",
+            "description": "The Member (ID) for which the roles are to be listed (Optional).",
+            "name": "member",
+            "in": "query"
+          },
+          {
             "type": "integer",
             "format": "int64",
             "x-go-name": "Limit",
@@ -634,58 +641,19 @@
     }
   },
   "definitions": {
-    "AddOryAccessControlPolicyRoleMembers": {
-      "description": "AddOryAccessControlPolicyRoleMembers add ory access control policy role members",
-      "type": "object",
-      "required": [
-        "flavor",
-        "id"
-      ],
-      "properties": {
-        "Body": {
-          "$ref": "#/definitions/AddOryAccessControlPolicyRoleMembersBody"
-        },
-        "flavor": {
-          "description": "The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".\n\nin: path",
-          "type": "string",
-          "x-go-name": "Flavor"
-        },
-        "id": {
-          "description": "The ID of the ORY Access Control Policy Role.\n\nin: path",
-          "type": "string",
-          "x-go-name": "ID"
-        }
-      },
-      "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
-    },
-    "AddOryAccessControlPolicyRoleMembersBody": {
-      "description": "AddOryAccessControlPolicyRoleMembersBody add ory access control policy role members body",
-      "type": "object",
-      "properties": {
-        "members": {
-          "description": "The members to be added.",
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "x-go-name": "Members"
-        }
-      },
-      "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
-    },
     "AddOryAccessControlPolicyRoleMembersInternalServerError": {
       "description": "The standard error format",
       "type": "object",
-      "title": "AddOryAccessControlPolicyRoleMembersInternalServerError handles this case with default header values.",
+      "title": "AddOryAccessControlPolicyRoleMembersInternalServerError AddOryAccessControlPolicyRoleMembersInternalServerError handles this case with default header values.",
       "properties": {
         "Payload": {
           "$ref": "#/definitions/AddOryAccessControlPolicyRoleMembersInternalServerErrorBody"
         }
       },
-      "x-go-package": "github.com/ory/keto/sdk/go/keto/client/engines"
+      "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
     "AddOryAccessControlPolicyRoleMembersInternalServerErrorBody": {
-      "description": "AddOryAccessControlPolicyRoleMembersInternalServerErrorBody add ory access control policy role members internal server error body",
+      "description": "AddOryAccessControlPolicyRoleMembersInternalServerErrorBody AddOryAccessControlPolicyRoleMembersInternalServerErrorBody add ory access control policy role members internal server error body",
       "type": "object",
       "properties": {
         "code": {
@@ -726,27 +694,27 @@
           "x-go-name": "Status"
         }
       },
-      "x-go-package": "github.com/ory/keto/sdk/go/keto/client/engines"
+      "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
     "AddOryAccessControlPolicyRoleMembersOK": {
       "description": "oryAccessControlPolicyRole",
       "type": "object",
-      "title": "AddOryAccessControlPolicyRoleMembersOK handles this case with default header values.",
+      "title": "AddOryAccessControlPolicyRoleMembersOK AddOryAccessControlPolicyRoleMembersOK handles this case with default header values.",
       "properties": {
         "Payload": {
-          "$ref": "#/definitions/OryAccessControlPolicyRole"
+          "$ref": "#/definitions/oryAccessControlPolicyRole"
         }
       },
-      "x-go-package": "github.com/ory/keto/sdk/go/keto/client/engines"
+      "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
     "AddOryAccessControlPolicyRoleMembersReader": {
       "type": "object",
-      "title": "AddOryAccessControlPolicyRoleMembersReader is a Reader for the AddOryAccessControlPolicyRoleMembers structure.",
-      "x-go-package": "github.com/ory/keto/sdk/go/keto/client/engines"
+      "title": "AddOryAccessControlPolicyRoleMembersReader AddOryAccessControlPolicyRoleMembersReader is a Reader for the AddOryAccessControlPolicyRoleMembers structure.",
+      "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
     "AuthorizationResult": {
       "type": "object",
-      "title": "AuthorizationResult AuthorizationResult AuthorizationResult is the result of an access control decision. It contains the decision outcome.",
+      "title": "AuthorizationResult AuthorizationResult is the result of an access control decision. It contains the decision outcome.",
       "required": [
         "allowed"
       ],
@@ -760,53 +728,32 @@
       "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
     "Context": {
-      "description": "Context Context Context Context Context Context Context Context context",
+      "description": "Context Context Context Context Context Context Context Context Context context",
       "type": "object",
       "additionalProperties": {
         "type": "object"
       },
       "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
-    "DeleteOryAccessControlPolicy": {
-      "description": "DeleteOryAccessControlPolicy delete ory access control policy",
-      "type": "object",
-      "required": [
-        "flavor",
-        "id"
-      ],
-      "properties": {
-        "flavor": {
-          "description": "The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".\n\nin: path",
-          "type": "string",
-          "x-go-name": "Flavor"
-        },
-        "id": {
-          "description": "The ID of the ORY Access Control Policy Role.\n\nin: path",
-          "type": "string",
-          "x-go-name": "ID"
-        }
-      },
-      "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
-    },
     "DeleteOryAccessControlPolicyCreated": {
       "description": "An empty response",
       "type": "object",
-      "title": "DeleteOryAccessControlPolicyCreated DeleteOryAccessControlPolicyCreated DeleteOryAccessControlPolicyCreated DeleteOryAccessControlPolicyCreated handles this case with default header values.",
+      "title": "DeleteOryAccessControlPolicyCreated DeleteOryAccessControlPolicyCreated DeleteOryAccessControlPolicyCreated DeleteOryAccessControlPolicyCreated DeleteOryAccessControlPolicyCreated handles this case with default header values.",
       "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
     "DeleteOryAccessControlPolicyInternalServerError": {
       "description": "The standard error format",
       "type": "object",
-      "title": "DeleteOryAccessControlPolicyInternalServerError handles this case with default header values.",
+      "title": "DeleteOryAccessControlPolicyInternalServerError DeleteOryAccessControlPolicyInternalServerError handles this case with default header values.",
       "properties": {
         "Payload": {
           "$ref": "#/definitions/DeleteOryAccessControlPolicyInternalServerErrorBody"
         }
       },
-      "x-go-package": "github.com/ory/keto/sdk/go/keto/client/engines"
+      "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
     "DeleteOryAccessControlPolicyInternalServerErrorBody": {
-      "description": "DeleteOryAccessControlPolicyInternalServerErrorBody delete ory access control policy internal server error body",
+      "description": "DeleteOryAccessControlPolicyInternalServerErrorBody DeleteOryAccessControlPolicyInternalServerErrorBody delete ory access control policy internal server error body",
       "type": "object",
       "properties": {
         "code": {
@@ -847,59 +794,38 @@
           "x-go-name": "Status"
         }
       },
-      "x-go-package": "github.com/ory/keto/sdk/go/keto/client/engines"
+      "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
     "DeleteOryAccessControlPolicyNoContent": {
       "description": "An empty response",
       "type": "object",
-      "title": "DeleteOryAccessControlPolicyNoContent handles this case with default header values.",
-      "x-go-package": "github.com/ory/keto/sdk/go/keto/client/engines"
+      "title": "DeleteOryAccessControlPolicyNoContent DeleteOryAccessControlPolicyNoContent handles this case with default header values.",
+      "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
     "DeleteOryAccessControlPolicyReader": {
       "type": "object",
-      "title": "DeleteOryAccessControlPolicyReader is a Reader for the DeleteOryAccessControlPolicy structure.",
-      "x-go-package": "github.com/ory/keto/sdk/go/keto/client/engines"
-    },
-    "DeleteOryAccessControlPolicyRole": {
-      "description": "DeleteOryAccessControlPolicyRole delete ory access control policy role",
-      "type": "object",
-      "required": [
-        "flavor",
-        "id"
-      ],
-      "properties": {
-        "flavor": {
-          "description": "The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".\n\nin: path",
-          "type": "string",
-          "x-go-name": "Flavor"
-        },
-        "id": {
-          "description": "The ID of the ORY Access Control Policy Role.\nin: path",
-          "type": "string",
-          "x-go-name": "ID"
-        }
-      },
+      "title": "DeleteOryAccessControlPolicyReader DeleteOryAccessControlPolicyReader is a Reader for the DeleteOryAccessControlPolicy structure.",
       "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
     "DeleteOryAccessControlPolicyRoleCreated": {
       "description": "An empty response",
       "type": "object",
-      "title": "DeleteOryAccessControlPolicyRoleCreated DeleteOryAccessControlPolicyRoleCreated DeleteOryAccessControlPolicyRoleCreated DeleteOryAccessControlPolicyRoleCreated handles this case with default header values.",
+      "title": "DeleteOryAccessControlPolicyRoleCreated DeleteOryAccessControlPolicyRoleCreated DeleteOryAccessControlPolicyRoleCreated DeleteOryAccessControlPolicyRoleCreated DeleteOryAccessControlPolicyRoleCreated handles this case with default header values.",
       "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
     "DeleteOryAccessControlPolicyRoleInternalServerError": {
       "description": "The standard error format",
       "type": "object",
-      "title": "DeleteOryAccessControlPolicyRoleInternalServerError handles this case with default header values.",
+      "title": "DeleteOryAccessControlPolicyRoleInternalServerError DeleteOryAccessControlPolicyRoleInternalServerError handles this case with default header values.",
       "properties": {
         "Payload": {
           "$ref": "#/definitions/DeleteOryAccessControlPolicyRoleInternalServerErrorBody"
         }
       },
-      "x-go-package": "github.com/ory/keto/sdk/go/keto/client/engines"
+      "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
     "DeleteOryAccessControlPolicyRoleInternalServerErrorBody": {
-      "description": "DeleteOryAccessControlPolicyRoleInternalServerErrorBody delete ory access control policy role internal server error body",
+      "description": "DeleteOryAccessControlPolicyRoleInternalServerErrorBody DeleteOryAccessControlPolicyRoleInternalServerErrorBody delete ory access control policy role internal server error body",
       "type": "object",
       "properties": {
         "code": {
@@ -940,61 +866,43 @@
           "x-go-name": "Status"
         }
       },
-      "x-go-package": "github.com/ory/keto/sdk/go/keto/client/engines"
+      "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
     "DeleteOryAccessControlPolicyRoleNoContent": {
       "description": "An empty response",
       "type": "object",
-      "title": "DeleteOryAccessControlPolicyRoleNoContent handles this case with default header values.",
-      "x-go-package": "github.com/ory/keto/sdk/go/keto/client/engines"
+      "title": "DeleteOryAccessControlPolicyRoleNoContent DeleteOryAccessControlPolicyRoleNoContent handles this case with default header values.",
+      "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
     "DeleteOryAccessControlPolicyRoleReader": {
       "type": "object",
-      "title": "DeleteOryAccessControlPolicyRoleReader is a Reader for the DeleteOryAccessControlPolicyRole structure.",
-      "x-go-package": "github.com/ory/keto/sdk/go/keto/client/engines"
-    },
-    "DoOryAccessControlPoliciesAllow": {
-      "description": "DoOryAccessControlPoliciesAllow do ory access control policies allow",
-      "type": "object",
-      "required": [
-        "flavor"
-      ],
-      "properties": {
-        "Body": {
-          "$ref": "#/definitions/Input"
-        },
-        "flavor": {
-          "description": "The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".\n\nin: path",
-          "type": "string",
-          "x-go-name": "Flavor"
-        }
-      },
+      "title": "DeleteOryAccessControlPolicyRoleReader DeleteOryAccessControlPolicyRoleReader is a Reader for the DeleteOryAccessControlPolicyRole structure.",
       "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
     "DoOryAccessControlPoliciesAllowForbidden": {
       "description": "authorizationResult",
       "type": "object",
-      "title": "DoOryAccessControlPoliciesAllowForbidden handles this case with default header values.",
+      "title": "DoOryAccessControlPoliciesAllowForbidden DoOryAccessControlPoliciesAllowForbidden handles this case with default header values.",
       "properties": {
         "Payload": {
           "$ref": "#/definitions/AuthorizationResult"
         }
       },
-      "x-go-package": "github.com/ory/keto/sdk/go/keto/client/engines"
+      "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
     "DoOryAccessControlPoliciesAllowInternalServerError": {
       "description": "The standard error format",
       "type": "object",
-      "title": "DoOryAccessControlPoliciesAllowInternalServerError handles this case with default header values.",
+      "title": "DoOryAccessControlPoliciesAllowInternalServerError DoOryAccessControlPoliciesAllowInternalServerError handles this case with default header values.",
       "properties": {
         "Payload": {
           "$ref": "#/definitions/DoOryAccessControlPoliciesAllowInternalServerErrorBody"
         }
       },
-      "x-go-package": "github.com/ory/keto/sdk/go/keto/client/engines"
+      "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
     "DoOryAccessControlPoliciesAllowInternalServerErrorBody": {
-      "description": "DoOryAccessControlPoliciesAllowInternalServerErrorBody do ory access control policies allow internal server error body",
+      "description": "DoOryAccessControlPoliciesAllowInternalServerErrorBody DoOryAccessControlPoliciesAllowInternalServerErrorBody do ory access control policies allow internal server error body",
       "type": "object",
       "properties": {
         "code": {
@@ -1035,58 +943,37 @@
           "x-go-name": "Status"
         }
       },
-      "x-go-package": "github.com/ory/keto/sdk/go/keto/client/engines"
+      "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
     "DoOryAccessControlPoliciesAllowOK": {
       "description": "authorizationResult",
       "type": "object",
-      "title": "DoOryAccessControlPoliciesAllowOK handles this case with default header values.",
+      "title": "DoOryAccessControlPoliciesAllowOK DoOryAccessControlPoliciesAllowOK handles this case with default header values.",
       "properties": {
         "Payload": {
           "$ref": "#/definitions/AuthorizationResult"
         }
       },
-      "x-go-package": "github.com/ory/keto/sdk/go/keto/client/engines"
+      "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
     "DoOryAccessControlPoliciesAllowReader": {
       "type": "object",
-      "title": "DoOryAccessControlPoliciesAllowReader is a Reader for the DoOryAccessControlPoliciesAllow structure.",
-      "x-go-package": "github.com/ory/keto/sdk/go/keto/client/engines"
-    },
-    "GetOryAccessControlPolicy": {
-      "description": "GetOryAccessControlPolicy get ory access control policy",
-      "type": "object",
-      "required": [
-        "flavor",
-        "id"
-      ],
-      "properties": {
-        "flavor": {
-          "description": "The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".\n\nin: path",
-          "type": "string",
-          "x-go-name": "Flavor"
-        },
-        "id": {
-          "description": "The ID of the ORY Access Control Policy Role.\n\nin: path",
-          "type": "string",
-          "x-go-name": "ID"
-        }
-      },
+      "title": "DoOryAccessControlPoliciesAllowReader DoOryAccessControlPoliciesAllowReader is a Reader for the DoOryAccessControlPoliciesAllow structure.",
       "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
     "GetOryAccessControlPolicyInternalServerError": {
       "description": "The standard error format",
       "type": "object",
-      "title": "GetOryAccessControlPolicyInternalServerError handles this case with default header values.",
+      "title": "GetOryAccessControlPolicyInternalServerError GetOryAccessControlPolicyInternalServerError handles this case with default header values.",
       "properties": {
         "Payload": {
           "$ref": "#/definitions/GetOryAccessControlPolicyInternalServerErrorBody"
         }
       },
-      "x-go-package": "github.com/ory/keto/sdk/go/keto/client/engines"
+      "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
     "GetOryAccessControlPolicyInternalServerErrorBody": {
-      "description": "GetOryAccessControlPolicyInternalServerErrorBody get ory access control policy internal server error body",
+      "description": "GetOryAccessControlPolicyInternalServerErrorBody GetOryAccessControlPolicyInternalServerErrorBody get ory access control policy internal server error body",
       "type": "object",
       "properties": {
         "code": {
@@ -1127,21 +1014,21 @@
           "x-go-name": "Status"
         }
       },
-      "x-go-package": "github.com/ory/keto/sdk/go/keto/client/engines"
+      "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
     "GetOryAccessControlPolicyNotFound": {
       "description": "The standard error format",
       "type": "object",
-      "title": "GetOryAccessControlPolicyNotFound handles this case with default header values.",
+      "title": "GetOryAccessControlPolicyNotFound GetOryAccessControlPolicyNotFound handles this case with default header values.",
       "properties": {
         "Payload": {
           "$ref": "#/definitions/GetOryAccessControlPolicyNotFoundBody"
         }
       },
-      "x-go-package": "github.com/ory/keto/sdk/go/keto/client/engines"
+      "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
     "GetOryAccessControlPolicyNotFoundBody": {
-      "description": "GetOryAccessControlPolicyNotFoundBody get ory access control policy not found body",
+      "description": "GetOryAccessControlPolicyNotFoundBody GetOryAccessControlPolicyNotFoundBody get ory access control policy not found body",
       "type": "object",
       "properties": {
         "code": {
@@ -1182,58 +1069,37 @@
           "x-go-name": "Status"
         }
       },
-      "x-go-package": "github.com/ory/keto/sdk/go/keto/client/engines"
+      "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
     "GetOryAccessControlPolicyOK": {
       "description": "oryAccessControlPolicy",
       "type": "object",
-      "title": "GetOryAccessControlPolicyOK handles this case with default header values.",
+      "title": "GetOryAccessControlPolicyOK GetOryAccessControlPolicyOK handles this case with default header values.",
       "properties": {
         "Payload": {
-          "$ref": "#/definitions/oryAccessControlPolicy"
+          "$ref": "#/definitions/OryAccessControlPolicy"
         }
       },
-      "x-go-package": "github.com/ory/keto/sdk/go/keto/client/engines"
+      "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
     "GetOryAccessControlPolicyReader": {
       "type": "object",
-      "title": "GetOryAccessControlPolicyReader is a Reader for the GetOryAccessControlPolicy structure.",
-      "x-go-package": "github.com/ory/keto/sdk/go/keto/client/engines"
-    },
-    "GetOryAccessControlPolicyRole": {
-      "description": "GetOryAccessControlPolicyRole get ory access control policy role",
-      "type": "object",
-      "required": [
-        "flavor",
-        "id"
-      ],
-      "properties": {
-        "flavor": {
-          "description": "The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".\n\nin: path",
-          "type": "string",
-          "x-go-name": "Flavor"
-        },
-        "id": {
-          "description": "The ID of the ORY Access Control Policy Role.\n\nin: path",
-          "type": "string",
-          "x-go-name": "ID"
-        }
-      },
+      "title": "GetOryAccessControlPolicyReader GetOryAccessControlPolicyReader is a Reader for the GetOryAccessControlPolicy structure.",
       "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
     "GetOryAccessControlPolicyRoleInternalServerError": {
       "description": "The standard error format",
       "type": "object",
-      "title": "GetOryAccessControlPolicyRoleInternalServerError handles this case with default header values.",
+      "title": "GetOryAccessControlPolicyRoleInternalServerError GetOryAccessControlPolicyRoleInternalServerError handles this case with default header values.",
       "properties": {
         "Payload": {
           "$ref": "#/definitions/GetOryAccessControlPolicyRoleInternalServerErrorBody"
         }
       },
-      "x-go-package": "github.com/ory/keto/sdk/go/keto/client/engines"
+      "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
     "GetOryAccessControlPolicyRoleInternalServerErrorBody": {
-      "description": "GetOryAccessControlPolicyRoleInternalServerErrorBody get ory access control policy role internal server error body",
+      "description": "GetOryAccessControlPolicyRoleInternalServerErrorBody GetOryAccessControlPolicyRoleInternalServerErrorBody get ory access control policy role internal server error body",
       "type": "object",
       "properties": {
         "code": {
@@ -1274,21 +1140,21 @@
           "x-go-name": "Status"
         }
       },
-      "x-go-package": "github.com/ory/keto/sdk/go/keto/client/engines"
+      "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
     "GetOryAccessControlPolicyRoleNotFound": {
       "description": "The standard error format",
       "type": "object",
-      "title": "GetOryAccessControlPolicyRoleNotFound handles this case with default header values.",
+      "title": "GetOryAccessControlPolicyRoleNotFound GetOryAccessControlPolicyRoleNotFound handles this case with default header values.",
       "properties": {
         "Payload": {
           "$ref": "#/definitions/GetOryAccessControlPolicyRoleNotFoundBody"
         }
       },
-      "x-go-package": "github.com/ory/keto/sdk/go/keto/client/engines"
+      "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
     "GetOryAccessControlPolicyRoleNotFoundBody": {
-      "description": "GetOryAccessControlPolicyRoleNotFoundBody get ory access control policy role not found body",
+      "description": "GetOryAccessControlPolicyRoleNotFoundBody GetOryAccessControlPolicyRoleNotFoundBody get ory access control policy role not found body",
       "type": "object",
       "properties": {
         "code": {
@@ -1329,27 +1195,27 @@
           "x-go-name": "Status"
         }
       },
-      "x-go-package": "github.com/ory/keto/sdk/go/keto/client/engines"
+      "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
     "GetOryAccessControlPolicyRoleOK": {
       "description": "oryAccessControlPolicyRole",
       "type": "object",
-      "title": "GetOryAccessControlPolicyRoleOK handles this case with default header values.",
+      "title": "GetOryAccessControlPolicyRoleOK GetOryAccessControlPolicyRoleOK handles this case with default header values.",
       "properties": {
         "Payload": {
-          "$ref": "#/definitions/OryAccessControlPolicyRole"
+          "$ref": "#/definitions/oryAccessControlPolicyRole"
         }
       },
-      "x-go-package": "github.com/ory/keto/sdk/go/keto/client/engines"
+      "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
     "GetOryAccessControlPolicyRoleReader": {
       "type": "object",
-      "title": "GetOryAccessControlPolicyRoleReader is a Reader for the GetOryAccessControlPolicyRole structure.",
-      "x-go-package": "github.com/ory/keto/sdk/go/keto/client/engines"
+      "title": "GetOryAccessControlPolicyRoleReader GetOryAccessControlPolicyRoleReader is a Reader for the GetOryAccessControlPolicyRole structure.",
+      "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
     "Input": {
       "type": "object",
-      "title": "Input Input Input for checking if a request is allowed or not.",
+      "title": "Input Input Input Input for checking if a request is allowed or not.",
       "properties": {
         "action": {
           "description": "Action is the action that is requested on the resource.",
@@ -1380,16 +1246,16 @@
     "IsInstanceAliveInternalServerError": {
       "description": "The standard error format",
       "type": "object",
-      "title": "IsInstanceAliveInternalServerError handles this case with default header values.",
+      "title": "IsInstanceAliveInternalServerError IsInstanceAliveInternalServerError handles this case with default header values.",
       "properties": {
         "Payload": {
           "$ref": "#/definitions/IsInstanceAliveInternalServerErrorBody"
         }
       },
-      "x-go-package": "github.com/ory/keto/sdk/go/keto/client/health"
+      "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
     "IsInstanceAliveInternalServerErrorBody": {
-      "description": "IsInstanceAliveInternalServerErrorBody is instance alive internal server error body",
+      "description": "IsInstanceAliveInternalServerErrorBody IsInstanceAliveInternalServerErrorBody is instance alive internal server error body",
       "type": "object",
       "properties": {
         "code": {
@@ -1430,64 +1296,37 @@
           "x-go-name": "Status"
         }
       },
-      "x-go-package": "github.com/ory/keto/sdk/go/keto/client/health"
+      "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
     "IsInstanceAliveOK": {
       "description": "healthStatus",
       "type": "object",
-      "title": "IsInstanceAliveOK handles this case with default header values.",
+      "title": "IsInstanceAliveOK IsInstanceAliveOK handles this case with default header values.",
       "properties": {
         "Payload": {
           "$ref": "#/definitions/swaggerHealthStatus"
         }
       },
-      "x-go-package": "github.com/ory/keto/sdk/go/keto/client/health"
+      "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
     "IsInstanceAliveReader": {
       "type": "object",
-      "title": "IsInstanceAliveReader is a Reader for the IsInstanceAlive structure.",
-      "x-go-package": "github.com/ory/keto/sdk/go/keto/client/health"
-    },
-    "ListOryAccessControlPolicies": {
-      "description": "ListOryAccessControlPolicies list ory access control policies",
-      "type": "object",
-      "required": [
-        "flavor"
-      ],
-      "properties": {
-        "flavor": {
-          "description": "The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\"\n\nin: path",
-          "type": "string",
-          "x-go-name": "Flavor"
-        },
-        "limit": {
-          "description": "The maximum amount of policies returned.\n\nin: query",
-          "type": "integer",
-          "format": "int64",
-          "x-go-name": "Limit"
-        },
-        "offset": {
-          "description": "The offset from where to start looking.\n\nin: query",
-          "type": "integer",
-          "format": "int64",
-          "x-go-name": "Offset"
-        }
-      },
+      "title": "IsInstanceAliveReader IsInstanceAliveReader is a Reader for the IsInstanceAlive structure.",
       "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
     "ListOryAccessControlPoliciesInternalServerError": {
       "description": "The standard error format",
       "type": "object",
-      "title": "ListOryAccessControlPoliciesInternalServerError handles this case with default header values.",
+      "title": "ListOryAccessControlPoliciesInternalServerError ListOryAccessControlPoliciesInternalServerError handles this case with default header values.",
       "properties": {
         "Payload": {
           "$ref": "#/definitions/ListOryAccessControlPoliciesInternalServerErrorBody"
         }
       },
-      "x-go-package": "github.com/ory/keto/sdk/go/keto/client/engines"
+      "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
     "ListOryAccessControlPoliciesInternalServerErrorBody": {
-      "description": "ListOryAccessControlPoliciesInternalServerErrorBody list ory access control policies internal server error body",
+      "description": "ListOryAccessControlPoliciesInternalServerErrorBody ListOryAccessControlPoliciesInternalServerErrorBody list ory access control policies internal server error body",
       "type": "object",
       "properties": {
         "code": {
@@ -1528,68 +1367,41 @@
           "x-go-name": "Status"
         }
       },
-      "x-go-package": "github.com/ory/keto/sdk/go/keto/client/engines"
+      "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
     "ListOryAccessControlPoliciesOK": {
       "description": "Policies is an array of policies.",
       "type": "object",
-      "title": "ListOryAccessControlPoliciesOK handles this case with default header values.",
+      "title": "ListOryAccessControlPoliciesOK ListOryAccessControlPoliciesOK handles this case with default header values.",
       "properties": {
         "Payload": {
           "description": "payload",
           "type": "array",
           "items": {
-            "$ref": "#/definitions/oryAccessControlPolicy"
+            "$ref": "#/definitions/OryAccessControlPolicy"
           }
         }
       },
-      "x-go-package": "github.com/ory/keto/sdk/go/keto/client/engines"
+      "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
     "ListOryAccessControlPoliciesReader": {
       "type": "object",
-      "title": "ListOryAccessControlPoliciesReader is a Reader for the ListOryAccessControlPolicies structure.",
-      "x-go-package": "github.com/ory/keto/sdk/go/keto/client/engines"
-    },
-    "ListOryAccessControlPolicyRoles": {
-      "description": "ListOryAccessControlPolicyRoles list ory access control policy roles",
-      "type": "object",
-      "required": [
-        "flavor"
-      ],
-      "properties": {
-        "flavor": {
-          "description": "The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\"\n\nin: path",
-          "type": "string",
-          "x-go-name": "Flavor"
-        },
-        "limit": {
-          "description": "The maximum amount of policies returned.\n\nin: query",
-          "type": "integer",
-          "format": "int64",
-          "x-go-name": "Limit"
-        },
-        "offset": {
-          "description": "The offset from where to start looking.\n\nin: query",
-          "type": "integer",
-          "format": "int64",
-          "x-go-name": "Offset"
-        }
-      },
+      "title": "ListOryAccessControlPoliciesReader ListOryAccessControlPoliciesReader is a Reader for the ListOryAccessControlPolicies structure.",
       "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
     "ListOryAccessControlPolicyRolesInternalServerError": {
       "description": "The standard error format",
       "type": "object",
-      "title": "ListOryAccessControlPolicyRolesInternalServerError handles this case with default header values.",
+      "title": "ListOryAccessControlPolicyRolesInternalServerError ListOryAccessControlPolicyRolesInternalServerError handles this case with default header values.",
       "properties": {
         "Payload": {
           "$ref": "#/definitions/ListOryAccessControlPolicyRolesInternalServerErrorBody"
         }
       },
-      "x-go-package": "github.com/ory/keto/sdk/go/keto/client/engines"
+      "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
     "ListOryAccessControlPolicyRolesInternalServerErrorBody": {
-      "description": "ListOryAccessControlPolicyRolesInternalServerErrorBody list ory access control policy roles internal server error body",
+      "description": "ListOryAccessControlPolicyRolesInternalServerErrorBody ListOryAccessControlPolicyRolesInternalServerErrorBody list ory access control policy roles internal server error body",
       "type": "object",
       "properties": {
         "code": {
@@ -1630,73 +1442,31 @@
           "x-go-name": "Status"
         }
       },
-      "x-go-package": "github.com/ory/keto/sdk/go/keto/client/engines"
+      "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
     "ListOryAccessControlPolicyRolesOK": {
       "description": "Roles is an array of roles.",
       "type": "object",
-      "title": "ListOryAccessControlPolicyRolesOK handles this case with default header values.",
+      "title": "ListOryAccessControlPolicyRolesOK ListOryAccessControlPolicyRolesOK handles this case with default header values.",
       "properties": {
         "Payload": {
           "description": "payload",
           "type": "array",
           "items": {
-            "$ref": "#/definitions/OryAccessControlPolicyRole"
+            "$ref": "#/definitions/oryAccessControlPolicyRole"
           }
         }
       },
-      "x-go-package": "github.com/ory/keto/sdk/go/keto/client/engines"
+      "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
     "ListOryAccessControlPolicyRolesReader": {
       "type": "object",
-      "title": "ListOryAccessControlPolicyRolesReader is a Reader for the ListOryAccessControlPolicyRoles structure.",
-      "x-go-package": "github.com/ory/keto/sdk/go/keto/client/engines"
-    },
-    "OryAccessControlPolicies": {
-      "type": "object",
-      "title": "OryAccessControlPolicies Policies is an array of policies.",
-      "properties": {
-        "Body": {
-          "description": "The request body.\n\nin: body\ntype: array",
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/oryAccessControlPolicy"
-          }
-        }
-      },
+      "title": "ListOryAccessControlPolicyRolesReader ListOryAccessControlPolicyRolesReader is a Reader for the ListOryAccessControlPolicyRoles structure.",
       "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
-    "OryAccessControlPolicyRole": {
-      "description": "OryAccessControlPolicyRole oryAccessControlPolicyRole represents a group of users that share the same role. A role could be an administrator, a moderator, a regular\nuser or some other sort of role.",
+    "OryAccessControlPolicy": {
       "type": "object",
-      "properties": {
-        "id": {
-          "description": "ID is the role's unique id.",
-          "type": "string",
-          "x-go-name": "ID"
-        },
-        "members": {
-          "description": "Members is who belongs to the role.",
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "x-go-name": "Members"
-        }
-      },
-      "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
-    },
-    "Policies": {
-      "type": "array",
-      "title": "Policies Policies Policies Policies is an array of policies.",
-      "items": {
-        "$ref": "#/definitions/Policy"
-      },
-      "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
-    },
-    "Policy": {
-      "type": "object",
-      "title": "Policy Policy Policy Policy specifies an ORY Access Policy document.",
+      "title": "OryAccessControlPolicy oryAccessControlPolicy specifies an ORY Access Policy document.",
       "properties": {
         "actions": {
           "description": "Actions is an array representing all the actions this ORY Access Policy applies to.",
@@ -1748,29 +1518,78 @@
       },
       "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
-    "RemoveOryAccessControlPolicyRoleMembers": {
-      "description": "RemoveOryAccessControlPolicyRoleMembers remove ory access control policy role members",
+    "OryAccessControlPolicyRoles": {
       "type": "object",
-      "required": [
-        "flavor",
-        "id",
-        "member"
-      ],
+      "title": "OryAccessControlPolicyRoles Roles is an array of roles.",
       "properties": {
-        "flavor": {
-          "description": "The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".\n\nin: path",
+        "Body": {
+          "description": "The request body.\n\nin: body\ntype: array",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/oryAccessControlPolicyRole"
+          }
+        }
+      },
+      "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
+    },
+    "Policies": {
+      "type": "array",
+      "title": "Policies Policies Policies Policies Policies is an array of policies.",
+      "items": {
+        "$ref": "#/definitions/Policy"
+      },
+      "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
+    },
+    "Policy": {
+      "type": "object",
+      "title": "Policy Policy Policy Policy Policy specifies an ORY Access Policy document.",
+      "properties": {
+        "actions": {
+          "description": "Actions is an array representing all the actions this ORY Access Policy applies to.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "x-go-name": "Actions"
+        },
+        "conditions": {
+          "description": "Conditions represents a keyed object of conditions under which this ORY Access Policy is active.",
+          "type": "object",
+          "additionalProperties": {
+            "type": "object"
+          },
+          "x-go-name": "Conditions"
+        },
+        "description": {
+          "description": "Description is an optional, human-readable description.",
           "type": "string",
-          "x-go-name": "Flavor"
+          "x-go-name": "Description"
+        },
+        "effect": {
+          "description": "Effect is the effect of this ORY Access Policy. It can be \"allow\" or \"deny\".",
+          "type": "string",
+          "x-go-name": "Effect"
         },
         "id": {
-          "description": "The ID of the ORY Access Control Policy Role.\n\nin: path",
+          "description": "ID is the unique identifier of the ORY Access Policy. It is used to query, update, and remove the ORY Access Policy.",
           "type": "string",
           "x-go-name": "ID"
         },
-        "member": {
-          "description": "The member to be removed.\n\nin: path",
-          "type": "string",
-          "x-go-name": "Member"
+        "resources": {
+          "description": "Resources is an array representing all the resources this ORY Access Policy applies to.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "x-go-name": "Resources"
+        },
+        "subjects": {
+          "description": "Subjects is an array representing all the subjects this ORY Access Policy applies to.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "x-go-name": "Subjects"
         }
       },
       "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
@@ -1778,22 +1597,22 @@
     "RemoveOryAccessControlPolicyRoleMembersCreated": {
       "description": "An empty response",
       "type": "object",
-      "title": "RemoveOryAccessControlPolicyRoleMembersCreated handles this case with default header values.",
-      "x-go-package": "github.com/ory/keto/sdk/go/keto/client/engines"
+      "title": "RemoveOryAccessControlPolicyRoleMembersCreated RemoveOryAccessControlPolicyRoleMembersCreated handles this case with default header values.",
+      "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
     "RemoveOryAccessControlPolicyRoleMembersInternalServerError": {
       "description": "The standard error format",
       "type": "object",
-      "title": "RemoveOryAccessControlPolicyRoleMembersInternalServerError handles this case with default header values.",
+      "title": "RemoveOryAccessControlPolicyRoleMembersInternalServerError RemoveOryAccessControlPolicyRoleMembersInternalServerError handles this case with default header values.",
       "properties": {
         "Payload": {
           "$ref": "#/definitions/RemoveOryAccessControlPolicyRoleMembersInternalServerErrorBody"
         }
       },
-      "x-go-package": "github.com/ory/keto/sdk/go/keto/client/engines"
+      "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
     "RemoveOryAccessControlPolicyRoleMembersInternalServerErrorBody": {
-      "description": "RemoveOryAccessControlPolicyRoleMembersInternalServerErrorBody remove ory access control policy role members internal server error body",
+      "description": "RemoveOryAccessControlPolicyRoleMembersInternalServerErrorBody RemoveOryAccessControlPolicyRoleMembersInternalServerErrorBody remove ory access control policy role members internal server error body",
       "type": "object",
       "properties": {
         "code": {
@@ -1834,15 +1653,15 @@
           "x-go-name": "Status"
         }
       },
-      "x-go-package": "github.com/ory/keto/sdk/go/keto/client/engines"
+      "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
     "RemoveOryAccessControlPolicyRoleMembersReader": {
       "type": "object",
-      "title": "RemoveOryAccessControlPolicyRoleMembersReader is a Reader for the RemoveOryAccessControlPolicyRoleMembers structure.",
-      "x-go-package": "github.com/ory/keto/sdk/go/keto/client/engines"
+      "title": "RemoveOryAccessControlPolicyRoleMembersReader RemoveOryAccessControlPolicyRoleMembersReader is a Reader for the RemoveOryAccessControlPolicyRoleMembers structure.",
+      "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
     "Role": {
-      "description": "Role Role Role Role Role Role represents a group of users that share the same role. A role could be an administrator, a moderator, a regular\nuser or some other sort of role.",
+      "description": "Role Role Role Role Role Role Role represents a group of users that share the same role. A role could be an administrator, a moderator, a regular\nuser or some other sort of role.",
       "type": "object",
       "properties": {
         "id": {
@@ -1863,43 +1682,25 @@
     },
     "Roles": {
       "type": "array",
-      "title": "Roles Roles Roles A list of roles.",
+      "title": "Roles Roles Roles Roles A list of roles.",
       "items": {
         "$ref": "#/definitions/Role"
-      },
-      "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
-    },
-    "UpsertOryAccessControlPolicy": {
-      "description": "UpsertOryAccessControlPolicy upsert ory access control policy",
-      "type": "object",
-      "required": [
-        "flavor"
-      ],
-      "properties": {
-        "Body": {
-          "$ref": "#/definitions/oryAccessControlPolicy"
-        },
-        "flavor": {
-          "description": "The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".\n\nin: path",
-          "type": "string",
-          "x-go-name": "Flavor"
-        }
       },
       "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
     "UpsertOryAccessControlPolicyInternalServerError": {
       "description": "The standard error format",
       "type": "object",
-      "title": "UpsertOryAccessControlPolicyInternalServerError handles this case with default header values.",
+      "title": "UpsertOryAccessControlPolicyInternalServerError UpsertOryAccessControlPolicyInternalServerError handles this case with default header values.",
       "properties": {
         "Payload": {
           "$ref": "#/definitions/UpsertOryAccessControlPolicyInternalServerErrorBody"
         }
       },
-      "x-go-package": "github.com/ory/keto/sdk/go/keto/client/engines"
+      "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
     "UpsertOryAccessControlPolicyInternalServerErrorBody": {
-      "description": "UpsertOryAccessControlPolicyInternalServerErrorBody upsert ory access control policy internal server error body",
+      "description": "UpsertOryAccessControlPolicyInternalServerErrorBody UpsertOryAccessControlPolicyInternalServerErrorBody upsert ory access control policy internal server error body",
       "type": "object",
       "properties": {
         "code": {
@@ -1940,55 +1741,37 @@
           "x-go-name": "Status"
         }
       },
-      "x-go-package": "github.com/ory/keto/sdk/go/keto/client/engines"
+      "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
     "UpsertOryAccessControlPolicyOK": {
       "description": "oryAccessControlPolicy",
       "type": "object",
-      "title": "UpsertOryAccessControlPolicyOK handles this case with default header values.",
+      "title": "UpsertOryAccessControlPolicyOK UpsertOryAccessControlPolicyOK handles this case with default header values.",
       "properties": {
         "Payload": {
-          "$ref": "#/definitions/oryAccessControlPolicy"
+          "$ref": "#/definitions/OryAccessControlPolicy"
         }
       },
-      "x-go-package": "github.com/ory/keto/sdk/go/keto/client/engines"
+      "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
     "UpsertOryAccessControlPolicyReader": {
       "type": "object",
-      "title": "UpsertOryAccessControlPolicyReader is a Reader for the UpsertOryAccessControlPolicy structure.",
-      "x-go-package": "github.com/ory/keto/sdk/go/keto/client/engines"
-    },
-    "UpsertOryAccessControlPolicyRole": {
-      "description": "UpsertOryAccessControlPolicyRole upsert ory access control policy role",
-      "type": "object",
-      "required": [
-        "flavor"
-      ],
-      "properties": {
-        "Body": {
-          "$ref": "#/definitions/OryAccessControlPolicyRole"
-        },
-        "flavor": {
-          "description": "The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".\n\nin: path",
-          "type": "string",
-          "x-go-name": "Flavor"
-        }
-      },
+      "title": "UpsertOryAccessControlPolicyReader UpsertOryAccessControlPolicyReader is a Reader for the UpsertOryAccessControlPolicy structure.",
       "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
     "UpsertOryAccessControlPolicyRoleInternalServerError": {
       "description": "The standard error format",
       "type": "object",
-      "title": "UpsertOryAccessControlPolicyRoleInternalServerError handles this case with default header values.",
+      "title": "UpsertOryAccessControlPolicyRoleInternalServerError UpsertOryAccessControlPolicyRoleInternalServerError handles this case with default header values.",
       "properties": {
         "Payload": {
           "$ref": "#/definitions/UpsertOryAccessControlPolicyRoleInternalServerErrorBody"
         }
       },
-      "x-go-package": "github.com/ory/keto/sdk/go/keto/client/engines"
+      "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
     "UpsertOryAccessControlPolicyRoleInternalServerErrorBody": {
-      "description": "UpsertOryAccessControlPolicyRoleInternalServerErrorBody upsert ory access control policy role internal server error body",
+      "description": "UpsertOryAccessControlPolicyRoleInternalServerErrorBody UpsertOryAccessControlPolicyRoleInternalServerErrorBody upsert ory access control policy role internal server error body",
       "type": "object",
       "properties": {
         "code": {
@@ -2029,25 +1812,26 @@
           "x-go-name": "Status"
         }
       },
-      "x-go-package": "github.com/ory/keto/sdk/go/keto/client/engines"
+      "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
     "UpsertOryAccessControlPolicyRoleOK": {
       "description": "oryAccessControlPolicyRole",
       "type": "object",
-      "title": "UpsertOryAccessControlPolicyRoleOK handles this case with default header values.",
+      "title": "UpsertOryAccessControlPolicyRoleOK UpsertOryAccessControlPolicyRoleOK handles this case with default header values.",
       "properties": {
         "Payload": {
-          "$ref": "#/definitions/OryAccessControlPolicyRole"
+          "$ref": "#/definitions/oryAccessControlPolicyRole"
         }
       },
-      "x-go-package": "github.com/ory/keto/sdk/go/keto/client/engines"
+      "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
     "UpsertOryAccessControlPolicyRoleReader": {
       "type": "object",
-      "title": "UpsertOryAccessControlPolicyRoleReader is a Reader for the UpsertOryAccessControlPolicyRole structure.",
-      "x-go-package": "github.com/ory/keto/sdk/go/keto/client/engines"
+      "title": "UpsertOryAccessControlPolicyRoleReader UpsertOryAccessControlPolicyRoleReader is a Reader for the UpsertOryAccessControlPolicyRole structure.",
+      "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
     "addOryAccessControlPolicyRoleMembers": {
+      "description": "AddOryAccessControlPolicyRoleMembers add ory access control policy role members",
       "type": "object",
       "required": [
         "flavor",
@@ -2068,9 +1852,11 @@
           "x-go-name": "ID"
         }
       },
-      "x-go-package": "github.com/ory/keto/engine/ladon"
+      "x-go-name": "AddOryAccessControlPolicyRoleMembers",
+      "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
     "addOryAccessControlPolicyRoleMembersBody": {
+      "description": "AddOryAccessControlPolicyRoleMembersBody add ory access control policy role members body",
       "type": "object",
       "properties": {
         "members": {
@@ -2082,7 +1868,8 @@
           "x-go-name": "Members"
         }
       },
-      "x-go-package": "github.com/ory/keto/engine/ladon"
+      "x-go-name": "AddOryAccessControlPolicyRoleMembersBody",
+      "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
     "authorizationResult": {
       "type": "object",
@@ -2101,6 +1888,7 @@
       "x-go-package": "github.com/ory/keto/engine"
     },
     "deleteOryAccessControlPolicy": {
+      "description": "DeleteOryAccessControlPolicy delete ory access control policy",
       "type": "object",
       "required": [
         "flavor",
@@ -2118,9 +1906,11 @@
           "x-go-name": "ID"
         }
       },
-      "x-go-package": "github.com/ory/keto/engine/ladon"
+      "x-go-name": "DeleteOryAccessControlPolicy",
+      "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
     "deleteOryAccessControlPolicyRole": {
+      "description": "DeleteOryAccessControlPolicyRole delete ory access control policy role",
       "type": "object",
       "required": [
         "flavor",
@@ -2138,9 +1928,11 @@
           "x-go-name": "ID"
         }
       },
-      "x-go-package": "github.com/ory/keto/engine/ladon"
+      "x-go-name": "DeleteOryAccessControlPolicyRole",
+      "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
     "doOryAccessControlPoliciesAllow": {
+      "description": "DoOryAccessControlPoliciesAllow do ory access control policies allow",
       "type": "object",
       "required": [
         "flavor"
@@ -2155,9 +1947,11 @@
           "x-go-name": "Flavor"
         }
       },
-      "x-go-package": "github.com/ory/keto/engine/ladon"
+      "x-go-name": "DoOryAccessControlPoliciesAllow",
+      "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
     "getOryAccessControlPolicy": {
+      "description": "GetOryAccessControlPolicy get ory access control policy",
       "type": "object",
       "required": [
         "flavor",
@@ -2175,9 +1969,11 @@
           "x-go-name": "ID"
         }
       },
-      "x-go-package": "github.com/ory/keto/engine/ladon"
+      "x-go-name": "GetOryAccessControlPolicy",
+      "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
     "getOryAccessControlPolicyRole": {
+      "description": "GetOryAccessControlPolicyRole get ory access control policy role",
       "type": "object",
       "required": [
         "flavor",
@@ -2195,7 +1991,8 @@
           "x-go-name": "ID"
         }
       },
-      "x-go-package": "github.com/ory/keto/engine/ladon"
+      "x-go-name": "GetOryAccessControlPolicyRole",
+      "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
     "healthNotReadyStatus": {
       "type": "object",
@@ -2225,6 +2022,7 @@
       "x-go-package": "github.com/ory/keto/vendor/github.com/ory/x/healthx"
     },
     "listOryAccessControlPolicies": {
+      "description": "ListOryAccessControlPolicies list ory access control policies",
       "type": "object",
       "required": [
         "flavor"
@@ -2248,9 +2046,11 @@
           "x-go-name": "Offset"
         }
       },
-      "x-go-package": "github.com/ory/keto/engine/ladon"
+      "x-go-name": "ListOryAccessControlPolicies",
+      "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
     "listOryAccessControlPolicyRoles": {
+      "description": "ListOryAccessControlPolicyRoles list ory access control policy roles",
       "type": "object",
       "required": [
         "flavor"
@@ -2274,21 +2074,23 @@
           "x-go-name": "Offset"
         }
       },
-      "x-go-package": "github.com/ory/keto/engine/ladon"
+      "x-go-name": "ListOryAccessControlPolicyRoles",
+      "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
     "oryAccessControlPolicies": {
       "type": "object",
-      "title": "Policies is an array of policies.",
+      "title": "OryAccessControlPolicies Policies is an array of policies.",
       "properties": {
         "Body": {
           "description": "The request body.\n\nin: body\ntype: array",
           "type": "array",
           "items": {
-            "$ref": "#/definitions/oryAccessControlPolicy"
+            "$ref": "#/definitions/OryAccessControlPolicy"
           }
         }
       },
-      "x-go-package": "github.com/ory/keto/engine/ladon"
+      "x-go-name": "OryAccessControlPolicies",
+      "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
     "oryAccessControlPolicy": {
       "type": "object",
@@ -2342,12 +2144,11 @@
           "x-go-name": "Subjects"
         }
       },
-      "x-go-name": "OryAccessControlPolicy",
       "x-go-package": "github.com/ory/keto/engine/ladon"
     },
     "oryAccessControlPolicyAllowedInput": {
       "type": "object",
-      "title": "Input for checking if a request is allowed or not.",
+      "title": "OryAccessControlPolicyAllowedInput Input for checking if a request is allowed or not.",
       "properties": {
         "action": {
           "description": "Action is the action that is requested on the resource.",
@@ -2373,10 +2174,11 @@
           "x-go-name": "Subject"
         }
       },
-      "x-go-package": "github.com/ory/keto/engine/ladon"
+      "x-go-name": "OryAccessControlPolicyAllowedInput",
+      "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
     "oryAccessControlPolicyRole": {
-      "description": "oryAccessControlPolicyRole represents a group of users that share the same role. A role could be an administrator, a moderator, a regular\nuser or some other sort of role.",
+      "description": "OryAccessControlPolicyRole oryAccessControlPolicyRole represents a group of users that share the same role. A role could be an administrator, a moderator, a regular\nuser or some other sort of role.",
       "type": "object",
       "properties": {
         "id": {
@@ -2393,7 +2195,8 @@
           "x-go-name": "Members"
         }
       },
-      "x-go-package": "github.com/ory/keto/engine/ladon"
+      "x-go-name": "OryAccessControlPolicyRole",
+      "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
     "oryAccessControlPolicyRoles": {
       "type": "object",
@@ -2407,10 +2210,10 @@
           }
         }
       },
-      "x-go-name": "OryAccessControlPolicyRoles",
       "x-go-package": "github.com/ory/keto/engine/ladon"
     },
     "removeOryAccessControlPolicyRoleMembers": {
+      "description": "RemoveOryAccessControlPolicyRoleMembers remove ory access control policy role members",
       "type": "object",
       "required": [
         "flavor",
@@ -2434,7 +2237,8 @@
           "x-go-name": "Member"
         }
       },
-      "x-go-package": "github.com/ory/keto/engine/ladon"
+      "x-go-name": "RemoveOryAccessControlPolicyRoleMembers",
+      "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
     "swaggerHealthStatus": {
       "description": "SwaggerHealthStatus swagger health status",
@@ -2479,13 +2283,14 @@
       "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
     "upsertOryAccessControlPolicy": {
+      "description": "UpsertOryAccessControlPolicy upsert ory access control policy",
       "type": "object",
       "required": [
         "flavor"
       ],
       "properties": {
         "Body": {
-          "$ref": "#/definitions/oryAccessControlPolicy"
+          "$ref": "#/definitions/OryAccessControlPolicy"
         },
         "flavor": {
           "description": "The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".\n\nin: path",
@@ -2493,9 +2298,11 @@
           "x-go-name": "Flavor"
         }
       },
-      "x-go-package": "github.com/ory/keto/engine/ladon"
+      "x-go-name": "UpsertOryAccessControlPolicy",
+      "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
     "upsertOryAccessControlPolicyRole": {
+      "description": "UpsertOryAccessControlPolicyRole upsert ory access control policy role",
       "type": "object",
       "required": [
         "flavor"
@@ -2510,7 +2317,8 @@
           "x-go-name": "Flavor"
         }
       },
-      "x-go-package": "github.com/ory/keto/engine/ladon"
+      "x-go-name": "UpsertOryAccessControlPolicyRole",
+      "x-go-package": "github.com/ory/keto/sdk/go/keto/models"
     },
     "version": {
       "type": "object",

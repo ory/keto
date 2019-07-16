@@ -11,7 +11,7 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// AddOryAccessControlPolicyRoleMembersInternalServerErrorBody AddOryAccessControlPolicyRoleMembersInternalServerErrorBody add ory access control policy role members internal server error body
+// AddOryAccessControlPolicyRoleMembersInternalServerErrorBody AddOryAccessControlPolicyRoleMembersInternalServerErrorBody AddOryAccessControlPolicyRoleMembersInternalServerErrorBody add ory access control policy role members internal server error body
 // swagger:model AddOryAccessControlPolicyRoleMembersInternalServerErrorBody
 type AddOryAccessControlPolicyRoleMembersInternalServerErrorBody struct {
 

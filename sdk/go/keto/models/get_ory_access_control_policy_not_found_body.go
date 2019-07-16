@@ -11,7 +11,7 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// GetOryAccessControlPolicyNotFoundBody GetOryAccessControlPolicyNotFoundBody get ory access control policy not found body
+// GetOryAccessControlPolicyNotFoundBody GetOryAccessControlPolicyNotFoundBody GetOryAccessControlPolicyNotFoundBody get ory access control policy not found body
 // swagger:model GetOryAccessControlPolicyNotFoundBody
 type GetOryAccessControlPolicyNotFoundBody struct {
 

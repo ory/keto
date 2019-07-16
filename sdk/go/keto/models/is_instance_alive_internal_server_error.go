@@ -12,7 +12,7 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// IsInstanceAliveInternalServerError IsInstanceAliveInternalServerError handles this case with default header values.
+// IsInstanceAliveInternalServerError IsInstanceAliveInternalServerError IsInstanceAliveInternalServerError handles this case with default header values.
 //
 // The standard error format
 // swagger:model IsInstanceAliveInternalServerError
