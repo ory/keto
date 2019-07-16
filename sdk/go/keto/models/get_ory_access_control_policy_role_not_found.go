@@ -12,7 +12,7 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// GetOryAccessControlPolicyRoleNotFound GetOryAccessControlPolicyRoleNotFound handles this case with default header values.
+// GetOryAccessControlPolicyRoleNotFound GetOryAccessControlPolicyRoleNotFound GetOryAccessControlPolicyRoleNotFound handles this case with default header values.
 //
 // The standard error format
 // swagger:model GetOryAccessControlPolicyRoleNotFound

@@ -11,7 +11,7 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// Policy Policy Policy Policy Policy specifies an ORY Access Policy document.
+// Policy Policy Policy Policy Policy Policy specifies an ORY Access Policy document.
 // swagger:model Policy
 type Policy struct {
 

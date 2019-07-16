@@ -72,6 +72,11 @@ type ListOryAccessControlPolicyRolesParams struct {
 
 	*/
 	Limit *int64
+	/*Member
+	  The Member (ID) for which the roles are to be listed (Optional).
+
+	*/
+	Member *string
 	/*Offset
 	  The offset from where to start looking.
 
@@ -138,6 +143,17 @@ func (o *ListOryAccessControlPolicyRolesParams) SetLimit(limit *int64) {
 	o.Limit = limit
 }
 
+// WithMember adds the member to the list ory access control policy roles params
+func (o *ListOryAccessControlPolicyRolesParams) WithMember(member *string) *ListOryAccessControlPolicyRolesParams {
+	o.SetMember(member)
+	return o
+}
+
+// SetMember adds the member to the list ory access control policy roles params
+func (o *ListOryAccessControlPolicyRolesParams) SetMember(member *string) {
+	o.Member = member
+}
+
 // WithOffset adds the offset to the list ory access control policy roles params
 func (o *ListOryAccessControlPolicyRolesParams) WithOffset(offset *int64) *ListOryAccessControlPolicyRolesParams {
 	o.SetOffset(offset)
@@ -172,6 +188,22 @@ func (o *ListOryAccessControlPolicyRolesParams) WriteToRequest(r runtime.ClientR
 		qLimit := swag.FormatInt64(qrLimit)
 		if qLimit != "" {
 			if err := r.SetQueryParam("limit", qLimit); err != nil {
+				return err
+			}
+		}
+
+	}
+
+	if o.Member != nil {
+
+		// query param member
+		var qrMember string
+		if o.Member != nil {
+			qrMember = *o.Member
+		}
+		qMember := qrMember
+		if qMember != "" {
+			if err := r.SetQueryParam("member", qMember); err != nil {
 				return err
 			}
 		}

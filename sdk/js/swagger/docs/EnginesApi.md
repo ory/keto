@@ -385,6 +385,7 @@ var apiInstance = new OryKeto.EnginesApi();
 var flavor = "flavor_example"; // String | The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\"
 
 var opts = { 
+  'member': "member_example", // String | The Member (ID) for which the roles are to be listed (Optional).
   'limit': 789, // Number | The maximum amount of policies returned.
   'offset': 789 // Number | The offset from where to start looking.
 };
@@ -404,6 +405,7 @@ apiInstance.listOryAccessControlPolicyRoles(flavor, opts, callback);
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **flavor** | **String**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot; | 
+ **member** | **String**| The Member (ID) for which the roles are to be listed (Optional). | [optional] 
  **limit** | **Number**| The maximum amount of policies returned. | [optional] 
  **offset** | **Number**| The offset from where to start looking. | [optional] 
 

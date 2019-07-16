@@ -42,7 +42,7 @@
 
   /**
    * Constructs a new <code>DoOryAccessControlPoliciesAllowInternalServerErrorBody</code>.
-   * DoOryAccessControlPoliciesAllowInternalServerErrorBody do ory access control policies allow internal server error body
+   * DoOryAccessControlPoliciesAllowInternalServerErrorBody DoOryAccessControlPoliciesAllowInternalServerErrorBody do ory access control policies allow internal server error body
    * @alias module:model/DoOryAccessControlPoliciesAllowInternalServerErrorBody
    * @class
    */

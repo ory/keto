@@ -13,8 +13,8 @@ import (
 	"github.com/go-openapi/validate"
 )
 
-// DoOryAccessControlPoliciesAllow do ory access control policies allow
-// swagger:model doOryAccessControlPoliciesAllow
+// DoOryAccessControlPoliciesAllow DoOryAccessControlPoliciesAllow do ory access control policies allow
+// swagger:model DoOryAccessControlPoliciesAllow
 type DoOryAccessControlPoliciesAllow struct {
 
 	// body

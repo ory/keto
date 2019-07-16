@@ -14,7 +14,7 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// Roles Roles Roles Roles A list of roles.
+// Roles Roles Roles Roles Roles A list of roles.
 // swagger:model Roles
 type Roles []*Role
 

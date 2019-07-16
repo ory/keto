@@ -42,6 +42,7 @@
 
   /**
    * Constructs a new <code>DoOryAccessControlPoliciesAllow</code>.
+   * DoOryAccessControlPoliciesAllow do ory access control policies allow
    * @alias module:model/DoOryAccessControlPoliciesAllow
    * @class
    * @param flavor {String} The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".  in: path

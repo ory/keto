@@ -42,7 +42,7 @@
 
   /**
    * Constructs a new <code>AddOryAccessControlPolicyRoleMembersInternalServerErrorBody</code>.
-   * AddOryAccessControlPolicyRoleMembersInternalServerErrorBody add ory access control policy role members internal server error body
+   * AddOryAccessControlPolicyRoleMembersInternalServerErrorBody AddOryAccessControlPolicyRoleMembersInternalServerErrorBody add ory access control policy role members internal server error body
    * @alias module:model/AddOryAccessControlPolicyRoleMembersInternalServerErrorBody
    * @class
    */

@@ -5,7 +5,7 @@
  * PHP version 5
  *
  * @category Class
- * @package  ketoSDK
+ * @package  keto\SDK
  * @author   Swaagger Codegen team
  * @link     https://github.com/swagger-api/swagger-codegen
  */
@@ -27,7 +27,7 @@
  * Do not edit the class manually.
  */
 
-namespace ketoSDK\Model;
+namespace keto\SDK\Model;
 
 use \ArrayAccess;
 
@@ -36,7 +36,7 @@ use \ArrayAccess;
  *
  * @category    Class
  * @description The standard error format
- * @package     ketoSDK
+ * @package     keto\SDK
  * @author      Swagger Codegen team
  * @link        https://github.com/swagger-api/swagger-codegen
  */
@@ -55,7 +55,7 @@ class ListOryAccessControlPoliciesInternalServerError implements ArrayAccess
       * @var string[]
       */
     protected static $swaggerTypes = [
-        'payload' => '\ketoSDK\Model\ListOryAccessControlPoliciesInternalServerErrorBody'
+        'payload' => '\keto\SDK\Model\ListOryAccessControlPoliciesInternalServerErrorBody'
     ];
 
     /**
@@ -163,7 +163,7 @@ class ListOryAccessControlPoliciesInternalServerError implements ArrayAccess
 
     /**
      * Gets payload
-     * @return \ketoSDK\Model\ListOryAccessControlPoliciesInternalServerErrorBody
+     * @return \keto\SDK\Model\ListOryAccessControlPoliciesInternalServerErrorBody
      */
     public function getPayload()
     {
@@ -172,7 +172,7 @@ class ListOryAccessControlPoliciesInternalServerError implements ArrayAccess
 
     /**
      * Sets payload
-     * @param \ketoSDK\Model\ListOryAccessControlPoliciesInternalServerErrorBody $payload
+     * @param \keto\SDK\Model\ListOryAccessControlPoliciesInternalServerErrorBody $payload
      * @return $this
      */
     public function setPayload($payload)
@@ -233,10 +233,10 @@ class ListOryAccessControlPoliciesInternalServerError implements ArrayAccess
     public function __toString()
     {
         if (defined('JSON_PRETTY_PRINT')) { // use JSON pretty print
-            return json_encode(\ketoSDK\ObjectSerializer::sanitizeForSerialization($this), JSON_PRETTY_PRINT);
+            return json_encode(\keto\SDK\ObjectSerializer::sanitizeForSerialization($this), JSON_PRETTY_PRINT);
         }
 
-        return json_encode(\ketoSDK\ObjectSerializer::sanitizeForSerialization($this));
+        return json_encode(\keto\SDK\ObjectSerializer::sanitizeForSerialization($this));
     }
 }
 

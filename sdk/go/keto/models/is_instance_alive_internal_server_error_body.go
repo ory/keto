@@ -11,7 +11,7 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// IsInstanceAliveInternalServerErrorBody IsInstanceAliveInternalServerErrorBody is instance alive internal server error body
+// IsInstanceAliveInternalServerErrorBody IsInstanceAliveInternalServerErrorBody IsInstanceAliveInternalServerErrorBody is instance alive internal server error body
 // swagger:model IsInstanceAliveInternalServerErrorBody
 type IsInstanceAliveInternalServerErrorBody struct {
 

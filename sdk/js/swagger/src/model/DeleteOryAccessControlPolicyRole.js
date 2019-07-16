@@ -42,6 +42,7 @@
 
   /**
    * Constructs a new <code>DeleteOryAccessControlPolicyRole</code>.
+   * DeleteOryAccessControlPolicyRole delete ory access control policy role
    * @alias module:model/DeleteOryAccessControlPolicyRole
    * @class
    * @param flavor {String} The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".  in: path

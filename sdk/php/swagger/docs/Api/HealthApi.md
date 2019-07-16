@@ -1,4 +1,4 @@
-# ketoSDK\HealthApi
+# keto\SDK\HealthApi
 Client for keto
 
 All URIs are relative to *http://localhost*
@@ -10,7 +10,7 @@ Method | HTTP request | Description
 
 
 # **isInstanceAlive**
-> \ketoSDK\Model\HealthStatus isInstanceAlive()
+> \keto\SDK\Model\HealthStatus isInstanceAlive()
 
 Check alive status
 
@@ -21,7 +21,7 @@ This endpoint returns a 200 status code when the HTTP server is up running. This
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-$api_instance = new ketoSDK\Api\HealthApi();
+$api_instance = new keto\SDK\Api\HealthApi();
 
 try {
     $result = $api_instance->isInstanceAlive();
@@ -37,7 +37,7 @@ This endpoint does not need any parameter.
 
 ### Return type
 
-[**\ketoSDK\Model\HealthStatus**](../Model/HealthStatus.md)
+[**\keto\SDK\Model\HealthStatus**](../Model/HealthStatus.md)
 
 ### Authorization
 
@@ -51,7 +51,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
 # **isInstanceReady**
-> \ketoSDK\Model\HealthStatus isInstanceReady()
+> \keto\SDK\Model\HealthStatus isInstanceReady()
 
 Check readiness status
 
@@ -62,7 +62,7 @@ This endpoint returns a 200 status code when the HTTP server is up running and t
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-$api_instance = new ketoSDK\Api\HealthApi();
+$api_instance = new keto\SDK\Api\HealthApi();
 
 try {
     $result = $api_instance->isInstanceReady();
@@ -78,7 +78,7 @@ This endpoint does not need any parameter.
 
 ### Return type
 
-[**\ketoSDK\Model\HealthStatus**](../Model/HealthStatus.md)
+[**\keto\SDK\Model\HealthStatus**](../Model/HealthStatus.md)
 
 ### Authorization
 
