@@ -72,21 +72,56 @@ func (m *MemoryManager) Upsert(_ context.Context, collection, key string, value 
 func (m *MemoryManager) List(ctx context.Context, collection string, value interface{}, limit, offset int) error {
 	c := m.collection(collection)
 	start, end := pagination.Index(limit, offset, len(c))
-	items := m.list(ctx, collection)[start:end]
+	items := m.list(ctx, collection, "")[start:end]
 	return roundTrip(&items, value)
 }
 
-func (m *MemoryManager) list(ctx context.Context, collection string) []json.RawMessage {
+func (m *MemoryManager) ListByMember(ctx context.Context, collection string, value interface{}, member string, limit, offset int) error {
+	c := m.collection(collection)
+	start, end := pagination.Index(limit, offset, len(c))
+	items := m.list(ctx, collection, member)[start:end]
+	return roundTrip(&items, value)
+}
+
+func (m *MemoryManager) list(ctx context.Context, collection string, member string) []json.RawMessage {
 	c := m.collection(collection)
 	items := make([]json.RawMessage, len(c))
 
 	m.RLock()
 	for k, i := range c {
-		items[k] = i.Data
+		if member != "" {
+			if isMem, err := isMember(i.Data, member); err != nil || isMem {
+				items := make([]json.RawMessage, 1)
+				items[0] = i.Data
+				m.RUnlock()
+				return items
+			}
+		} else {
+			items[k] = i.Data
+		}
 	}
 	m.RUnlock()
-
 	return items
+}
+
+func isMember(j json.RawMessage, member string) (bool, error) {
+	value, err := json.Marshal(j)
+	if err != nil {
+		return false, errors.WithStack(err)
+	}
+	if member == string(value) {
+		return true, nil
+	}
+
+	return false, nil
+}
+func contains(s []string, e string) bool {
+	for _, val := range s {
+		if val == e {
+			return true
+		}
+	}
+	return false
 }
 
 func (m *MemoryManager) Get(_ context.Context, collection, key string, value interface{}) error {
@@ -135,6 +170,6 @@ func (m *MemoryManager) Delete(_ context.Context, collection, key string) error 
 
 func (m *MemoryManager) Storage(ctx context.Context, schema string, collections []string) (storage.Store, error) {
 	return toRegoStore(ctx, schema, collections, func(i context.Context, s string) ([]json.RawMessage, error) {
-		return m.list(i, s), nil
+		return m.list(i, s, ""), nil
 	})
 }
