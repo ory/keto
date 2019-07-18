@@ -125,6 +125,34 @@ func (m *SQLManager) List(ctx context.Context, collection string, value interfac
 	return roundTrip(&ji, value)
 }
 
+func (m *SQLManager) ListByMember(ctx context.Context, collection string, value interface{}, member string, limit, offset int) error {
+	var items []string
+	var query string
+	memberQueryStr := "%" + member + "%"
+	switch database := dbal.Canonicalize(m.db.DriverName()); database {
+	case dbal.DriverMySQL:
+		query = "SELECT document FROM rego_data WHERE collection=? AND (length(?)=0 OR json_extract(document,'$') LIKE ?) ORDER BY id ASC LIMIT ? OFFSET ?"
+	case dbal.DriverPostgreSQL:
+		query = "SELECT document FROM rego_data WHERE collection=? AND (length(?)=0 OR document::text LIKE ?) ORDER BY id ASC LIMIT ? OFFSET ?"
+	default:
+		return errors.Errorf("unknown database driver: %s", m.db.DriverName())
+	}
+	if err := m.db.SelectContext(
+		ctx,
+		&items,
+		m.db.Rebind(query), collection, member, memberQueryStr, limit, offset,
+	); err != nil {
+		return sqlcon.HandleError(err)
+	}
+
+	ji := make([]json.RawMessage, len(items))
+	for k, v := range items {
+		ji[k] = json.RawMessage(v)
+	}
+
+	return roundTrip(&ji, value)
+}
+
 func (m *SQLManager) Get(ctx context.Context, collection, key string, value interface{}) error {
 	query := "SELECT document FROM rego_data WHERE collection=? AND pkey=?"
 	var item string
