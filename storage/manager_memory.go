@@ -69,14 +69,7 @@ func (m *MemoryManager) Upsert(_ context.Context, collection, key string, value 
 	return nil
 }
 
-func (m *MemoryManager) List(ctx context.Context, collection string, value interface{}, limit, offset int) error {
-	c := m.collection(collection)
-	start, end := pagination.Index(limit, offset, len(c))
-	items := m.list(ctx, collection, "")[start:end]
-	return roundTrip(&items, value)
-}
-
-func (m *MemoryManager) ListByMember(ctx context.Context, collection string, value interface{}, member string, limit, offset int) error {
+func (m *MemoryManager) List(ctx context.Context, collection string, value interface{}, member string, limit, offset int) error {
 	c := m.collection(collection)
 	start, end := pagination.Index(limit, offset, len(c))
 	items := m.list(ctx, collection, member)[start:end]

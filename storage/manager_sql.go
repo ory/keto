@@ -107,25 +107,7 @@ func (m *SQLManager) Upsert(ctx context.Context, collection, key string, value i
 	return nil
 }
 
-func (m *SQLManager) List(ctx context.Context, collection string, value interface{}, limit, offset int) error {
-	var items []string
-	if err := m.db.SelectContext(
-		ctx,
-		&items,
-		m.db.Rebind("SELECT document FROM rego_data WHERE collection=? ORDER BY id ASC LIMIT ? OFFSET ?"), collection, limit, offset,
-	); err != nil {
-		return sqlcon.HandleError(err)
-	}
-
-	ji := make([]json.RawMessage, len(items))
-	for k, v := range items {
-		ji[k] = json.RawMessage(v)
-	}
-
-	return roundTrip(&ji, value)
-}
-
-func (m *SQLManager) ListByMember(ctx context.Context, collection string, value interface{}, member string, limit, offset int) error {
+func (m *SQLManager) List(ctx context.Context, collection string, value interface{}, member string, limit, offset int) error {
 	var items []string
 	var query string
 	memberQueryStr := "%" + member + "%"

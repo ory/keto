@@ -105,23 +105,13 @@ func (e *mockHandler) create(ctx context.Context, r *http.Request, ps httprouter
 	}, nil
 }
 
-func (e *mockHandler) list(ctx context.Context, r *http.Request, ps httprouter.Params) (ListRequest, error) {
+func (e *mockHandler) list(ctx context.Context, r *http.Request, ps httprouter.Params) (*ListRequest, error) {
 	var p []string
-	var listReqeust ListRequest
-	member := r.URL.Query().Get("member")
-	if member != "" {
-		listReqeust = &ListRequestByMember{
-			Collection: e.c,
-			Member:     member,
-			Value:      &p,
-		}
-	} else {
-		listReqeust = &ListRequestAllMembers{
-			Collection: e.c,
-			Value:      &p,
-		}
-	}
-	return listReqeust.MakeRequest(), nil
+	return &ListRequest{
+		Collection: e.c,
+		Member:     r.URL.Query().Get("member"),
+		Value:      &p,
+	}, nil
 }
 
 func (e *mockHandler) delete(ctx context.Context, r *http.Request, ps httprouter.Params) (*DeleteRequest, error) {

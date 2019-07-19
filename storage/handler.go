@@ -69,30 +69,13 @@ func (h *Handler) Delete(factory func(context.Context, *http.Request, httprouter
 	}
 }
 
-type ListRequest interface {
-	MakeRequest() ListRequest
-}
-
-type ListRequestAllMembers struct {
-	Collection string
-	Value      interface{}
-}
-
-func (r *ListRequestAllMembers) MakeRequest() ListRequest {
-	return r
-}
-
-type ListRequestByMember struct {
+type ListRequest struct {
 	Collection string
 	Member     string
 	Value      interface{}
 }
 
-func (r *ListRequestByMember) MakeRequest() ListRequest {
-	return r
-}
-
-func (h *Handler) List(factory func(context.Context, *http.Request, httprouter.Params) (ListRequest, error)) httprouter.Handle {
+func (h *Handler) List(factory func(context.Context, *http.Request, httprouter.Params) (*ListRequest, error)) httprouter.Handle {
 	return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 		ctx := r.Context()
 		l, err := factory(ctx, r, ps)
@@ -101,24 +84,11 @@ func (h *Handler) List(factory func(context.Context, *http.Request, httprouter.P
 			return
 		}
 		limit, offset := pagination.Parse(r, 100, 0, 500)
-
-		switch t := l.(type) {
-		case *ListRequestByMember:
-			i := t
-			if err := h.s.ListByMember(ctx, i.Collection, i.Value, i.Member, limit, offset); err != nil {
-				h.h.WriteError(w, r, err)
-				return
-			}
-			h.h.Write(w, r, i.Value)
-		case *ListRequestAllMembers:
-			i := t
-			if err := h.s.List(ctx, i.Collection, i.Value, limit, offset); err != nil {
-				h.h.WriteError(w, r, err)
-				return
-			}
-			h.h.Write(w, r, i.Value)
-
+		if err := h.s.List(ctx, l.Collection, l.Value, l.Member, limit, offset); err != nil {
+			h.h.WriteError(w, r, err)
+			return
 		}
+		h.h.Write(w, r, l.Value)
 	}
 }
 
