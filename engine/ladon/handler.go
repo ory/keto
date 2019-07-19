@@ -288,29 +288,19 @@ func (e *Engine) Register(r *httprouter.Router) {
 	r.DELETE(BasePath+"/roles/:id/members/:member", e.sh.Upsert(e.rolesMembersRemove))
 }
 
-func (e *Engine) rolesList(ctx context.Context, r *http.Request, ps httprouter.Params) (kstorage.ListRequest, error) {
+func (e *Engine) rolesList(ctx context.Context, r *http.Request, ps httprouter.Params) (*kstorage.ListRequest, error) {
 	var p Roles
 
 	f, err := flavor(ps)
 	if err != nil {
 		return nil, err
 	}
-	member := r.URL.Query().Get("member")
-	var listReqeust kstorage.ListRequest
-	if member != "" {
-		listReqeust = &kstorage.ListRequestAllMembers{
-			Collection: roleCollection(f),
-			Value:      &p,
-		}
-	} else {
-		listReqeust = &kstorage.ListRequestByMember{
-			Collection: roleCollection(f),
-			Member:     member,
-			Value:      &p,
-		}
-	}
 
-	return listReqeust.MakeRequest(), nil
+	return &kstorage.ListRequest{
+		Collection: roleCollection(f),
+		Value:      &p,
+		Member:     r.URL.Query().Get("member"),
+	}, nil
 }
 
 func (e *Engine) rolesGet(ctx context.Context, r *http.Request, ps httprouter.Params) (*kstorage.GetRequest, error) {
@@ -436,19 +426,18 @@ func (e *Engine) policiesCreate(ctx context.Context, r *http.Request, ps httprou
 	}, nil
 }
 
-func (e *Engine) policiesList(ctx context.Context, r *http.Request, ps httprouter.Params) (kstorage.ListRequest, error) {
+func (e *Engine) policiesList(ctx context.Context, r *http.Request, ps httprouter.Params) (*kstorage.ListRequest, error) {
 	var p Policies
 
 	f, err := flavor(ps)
 	if err != nil {
 		return nil, err
 	}
-	listReqeust := &kstorage.ListRequestAllMembers{
+	return &kstorage.ListRequest{
 		Collection: policyCollection(f),
 		Value:      &p,
-	}
+	}, nil
 
-	return listReqeust.MakeRequest(), nil
 }
 
 func (e *Engine) policiesDelete(ctx context.Context, r *http.Request, ps httprouter.Params) (*kstorage.DeleteRequest, error) {

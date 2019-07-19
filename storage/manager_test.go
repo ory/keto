@@ -100,7 +100,7 @@ func TestMemoryManager(t *testing.T) {
 				assert.Equal(t, "baz", v)
 
 				var vs []string
-				require.NoError(t, m.List(ctx, "test-upsert", &vs, 10, 0))
+				require.NoError(t, m.List(ctx, "test-upsert", &vs, "", 10, 0))
 				assert.Equal(t, 1, len(vs))
 			})
 
@@ -114,34 +114,19 @@ func TestMemoryManager(t *testing.T) {
 				assert.EqualValues(t, 1, v)
 
 				var vs []int
-				require.NoError(t, m.List(ctx, "test-list", &vs, 10, 0))
+				require.NoError(t, m.List(ctx, "test-list", &vs, "", 10, 0))
 				assert.Len(t, vs, 10)
 				assert.EqualValues(t, []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}, vs)
 
-				require.NoError(t, m.List(ctx, "test-list", &vs, 5, 5))
+				require.NoError(t, m.List(ctx, "test-list", &vs, "", 5, 5))
 				assert.Len(t, vs, 5)
 				assert.EqualValues(t, []int{5, 6, 7, 8, 9}, vs)
-			})
 
-			t.Run("case=listByMember", func(t *testing.T) {
-				for i := 0; i < 10; i++ {
-					require.NoError(t, m.Upsert(ctx, "test-list", fmt.Sprintf("list-%d", i), i))
-				}
-
-				var v int
-				require.NoError(t, m.Get(ctx, "test-list", "list-1", &v))
-				assert.EqualValues(t, 1, v)
-
-				var vs []int
-				require.NoError(t, m.ListByMember(ctx, "test-list", &vs, "", 2, 0))
-				assert.Len(t, vs, 2)
-				assert.EqualValues(t, []int{0, 1}, vs)
-
-				require.NoError(t, m.ListByMember(ctx, "test-list", &vs, "1", 1, 0))
+				require.NoError(t, m.List(ctx, "test-list", &vs, "1", 1, 0))
 				assert.Len(t, vs, 1)
 				assert.EqualValues(t, []int{1}, vs)
 
-				require.NoError(t, m.ListByMember(ctx, "test-list", &vs, "1", 0, 0))
+				require.NoError(t, m.List(ctx, "test-list", &vs, "1", 0, 0))
 				assert.Len(t, vs, 0)
 				assert.EqualValues(t, []int{}, vs)
 			})
