@@ -14,7 +14,6 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/ory/herodot"
-	"github.com/ory/x/pagination"
 )
 
 func TestCRUD(t *testing.T) {
@@ -53,7 +52,7 @@ func TestCRUD(t *testing.T) {
 				assert.Equal(t, `"bar"`, string(b))
 			})
 
-			t.Run("case=list (all)", func(t *testing.T) {
+			t.Run("case=list", func(t *testing.T) {
 				res, err := ts.Client().Get(ts.URL + "/")
 				require.NoError(t, err)
 				assert.Equal(t, http.StatusOK, res.StatusCode)
@@ -61,26 +60,6 @@ func TestCRUD(t *testing.T) {
 				require.NoError(t, err)
 				res.Body.Close()
 				assert.Equal(t, `["bar"]`, string(b))
-			})
-
-			t.Run("case=list (valid member)", func(t *testing.T) {
-				res, err := ts.Client().Get(ts.URL + "/?member=1234")
-				require.NoError(t, err)
-				assert.Equal(t, http.StatusOK, res.StatusCode)
-				b, err := ioutil.ReadAll(res.Body)
-				require.NoError(t, err)
-				res.Body.Close()
-				assert.Equal(t, `["bar"]`, string(b))
-			})
-
-			t.Run("case=list (invalid member)", func(t *testing.T) {
-				res, err := ts.Client().Get(ts.URL + "/?member=124")
-				require.NoError(t, err)
-				assert.Equal(t, http.StatusOK, res.StatusCode)
-				b, err := ioutil.ReadAll(res.Body)
-				require.NoError(t, err)
-				res.Body.Close()
-				assert.Equal(t, `[""]`, string(b))
 			})
 
 			t.Run("case=delete", func(t *testing.T) {
@@ -113,7 +92,7 @@ type mockHandler struct {
 
 func (e *mockHandler) Register(r *httprouter.Router) {
 	r.POST("/", e.sh.Upsert(e.create))
-	r.GET("/", e.List(e.list))
+	r.GET("/", e.sh.List(e.list))
 	r.GET("/:id", e.sh.Get(e.get))
 	r.DELETE("/:id", e.sh.Delete(e.delete))
 }
@@ -143,35 +122,6 @@ func (e *mockHandler) list(ctx context.Context, r *http.Request, ps httprouter.P
 		}
 	}
 	return listReqeust.MakeRequest(), nil
-}
-
-func (e *mockHandler) List(factory func(context.Context, *http.Request, httprouter.Params) (ListRequest, error)) httprouter.Handle {
-	return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-		ctx := r.Context()
-		l, err := factory(ctx, r, ps)
-		if err != nil {
-			e.sh.h.WriteError(w, r, err)
-			return
-		}
-		limit, offset := pagination.Parse(r, 100, 0, 500)
-
-		switch t := l.(type) {
-		case *ListRequestByMember:
-			i := t
-			if err := e.sh.s.ListByMember(ctx, i.Collection, i.Value, i.Member, limit, offset); err != nil {
-				e.sh.h.WriteError(w, r, err)
-				return
-			}
-			e.sh.h.Write(w, r, i.Value)
-		case *ListRequestAllMembers:
-			i := t
-			if err := e.sh.s.List(ctx, i.Collection, i.Value, limit, offset); err != nil {
-				e.sh.h.WriteError(w, r, err)
-				return
-			}
-			e.sh.h.Write(w, r, i.Value)
-		}
-	}
 }
 
 func (e *mockHandler) delete(ctx context.Context, r *http.Request, ps httprouter.Params) (*DeleteRequest, error) {
