@@ -37,9 +37,10 @@ var enginesAcpOryRolesListCmd = &cobra.Command{
 
 		limit := int64(flagx.MustGetInt(cmd, "limit"))
 		offset := int64(flagx.MustGetInt(cmd, "offset"))
+		member := flagx.MustGetString(cmd, "member")
 		c := client.NewClient(cmd)
 		r, err := c.Engines.ListOryAccessControlPolicyRoles(
-			engines.NewListOryAccessControlPolicyRolesParams().WithFlavor(args[0]).WithLimit(&limit).WithOffset(&offset),
+			engines.NewListOryAccessControlPolicyRolesParams().WithFlavor(args[0]).WithLimit(&limit).WithOffset(&offset).WithMember(&member),
 		)
 		cmdx.Must(err, "Unable to list ORY Access Control Policy Roles: %s", err)
 		fmt.Println(cmdx.FormatResponse(r.Payload))
@@ -48,6 +49,7 @@ var enginesAcpOryRolesListCmd = &cobra.Command{
 
 func init() {
 	enginesAcpOryRolesCmd.AddCommand(enginesAcpOryRolesListCmd)
+	enginesAcpOryRolesListCmd.Flags().String("member", "", "Member ID for whom roles are being fetched")
 	enginesAcpOryRolesListCmd.Flags().Int("limit", 100, "Limit the items being fetched")
 	enginesAcpOryRolesListCmd.Flags().Int("offset", 0, "Set the offset for fetching items")
 }
