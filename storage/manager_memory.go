@@ -113,14 +113,6 @@ func isMember(j json.RawMessage, member string) (bool, error) {
 
 	return false, nil
 }
-func contains(s []string, e string) bool {
-	for _, val := range s {
-		if val == e {
-			return true
-		}
-	}
-	return false
-}
 
 func (m *MemoryManager) Get(_ context.Context, collection, key string, value interface{}) error {
 	c := m.collection(collection)

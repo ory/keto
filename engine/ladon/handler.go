@@ -299,7 +299,6 @@ func (e *Engine) rolesList(ctx context.Context, r *http.Request, ps httprouter.P
 	return &kstorage.ListRequest{
 		Collection: roleCollection(f),
 		Value:      &p,
-		Member:     r.URL.Query().Get("member"),
 	}, nil
 }
 

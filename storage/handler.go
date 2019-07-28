@@ -71,8 +71,46 @@ func (h *Handler) Delete(factory func(context.Context, *http.Request, httprouter
 
 type ListRequest struct {
 	Collection string
-	Member     string
 	Value      interface{}
+	FilterFunc func(*ListRequest, string)
+}
+
+func (l *ListRequest) Filter(target string) *ListRequest {
+	if l.FilterFunc != nil {
+		l.FilterFunc(l, target)
+	}
+	return l
+}
+
+func listRoleByMember(l *ListRequest, mem string) {
+	switch val := l.Value.(type) {
+	case Roles:
+		// for _, role := range roles {
+		// 	if contains(role.Members, mem) {
+		// 		res = append(res, role)
+		// 	}
+		// }
+		l.Value = val.WithMember()
+		l.Value = res
+	case Policies:
+		var res Policies
+		policies := t
+		for _, policy := range policies {
+			if contains(policy.Subjects, mem) {
+				res = append(res, policy)
+			}
+		}
+		l.Value = res
+	}
+}
+
+func contains(input []string, target string) bool {
+	for _, i := range input {
+		if i == target {
+			return true
+		}
+	}
+	return false
 }
 
 func (h *Handler) List(factory func(context.Context, *http.Request, httprouter.Params) (*ListRequest, error)) httprouter.Handle {
@@ -84,10 +122,18 @@ func (h *Handler) List(factory func(context.Context, *http.Request, httprouter.P
 			return
 		}
 		limit, offset := pagination.Parse(r, 100, 0, 500)
-		if err := h.s.List(ctx, l.Collection, l.Value, l.Member, limit, offset); err != nil {
+
+		if err := h.s.List(ctx, l.Collection, l.Value, limit, offset); err != nil {
 			h.h.WriteError(w, r, err)
 			return
 		}
+
+		member := r.URL.Query().Get("member")
+		if member != "" {
+			l.FilterFunc = listRoleByMember
+			l.Value = l.Filter(member).Value
+		}
+
 		h.h.Write(w, r, l.Value)
 	}
 }
