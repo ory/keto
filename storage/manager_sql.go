@@ -107,22 +107,13 @@ func (m *SQLManager) Upsert(ctx context.Context, collection, key string, value i
 	return nil
 }
 
-func (m *SQLManager) List(ctx context.Context, collection string, value interface{}, member string, limit, offset int) error {
+func (m *SQLManager) List(ctx context.Context, collection string, value interface{}, limit, offset int) error {
 	var items []string
-	var query string
-	memberQueryStr := "%" + member + "%"
-	switch database := dbal.Canonicalize(m.db.DriverName()); database {
-	case dbal.DriverMySQL:
-		query = "SELECT document FROM rego_data WHERE collection=? AND (length(?)=0 OR json_extract(document,'$') LIKE ?) ORDER BY id ASC LIMIT ? OFFSET ?"
-	case dbal.DriverPostgreSQL:
-		query = "SELECT document FROM rego_data WHERE collection=? AND (length(?)=0 OR document::text LIKE ?) ORDER BY id ASC LIMIT ? OFFSET ?"
-	default:
-		return errors.Errorf("unknown database driver: %s", m.db.DriverName())
-	}
+	query := "SELECT document FROM rego_data WHERE collection=? ORDER BY id ASC LIMIT ? OFFSET ?"
 	if err := m.db.SelectContext(
 		ctx,
 		&items,
-		m.db.Rebind(query), collection, member, memberQueryStr, limit, offset,
+		m.db.Rebind(query), collection, limit, offset,
 	); err != nil {
 		return sqlcon.HandleError(err)
 	}

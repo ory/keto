@@ -1,4 +1,3 @@
-
 package storage
 
 // Policies is an array of policies.
@@ -32,15 +31,29 @@ type Policy struct {
 	Conditions map[string]interface{} `json:"conditions"`
 }
 
-func (p Policy) withSubject(subject string) *Policy {
-	if contains(p.Subjects, subject) {
+func (p Policy) withSubjects(subjects []string) *Policy {
+	if len(subjects) == 0 || sliceContains(p.Subjects, subjects) {
 		return &p
 	}
 	return &Policy{}
 }
 
-func (p Policy) withID(id string) *Policy {
-	if p.ID == id {
+func (p Policy) withResources(resources []string) *Policy {
+	if len(resources) == 0 || sliceContains(p.Resources, resources) {
+		return &p
+	}
+	return &Policy{}
+}
+
+func (p Policy) withActions(actions []string) *Policy {
+	if len(actions) == 0 || sliceContains(p.Actions, actions) {
+		return &p
+	}
+	return &Policy{}
+}
+
+func (p Policy) withIDs(ids []string) *Policy {
+	if len(ids) == 0 || contains(ids, p.ID) {
 		return &p
 	}
 	return &Policy{}

@@ -72,45 +72,33 @@ func (h *Handler) Delete(factory func(context.Context, *http.Request, httprouter
 type ListRequest struct {
 	Collection string
 	Value      interface{}
-	FilterFunc func(*ListRequest, string)
+	FilterFunc func(*ListRequest, map[string][]string)
 }
 
-func (l *ListRequest) Filter(target string) *ListRequest {
+func (l *ListRequest) Filter(m map[string][]string) *ListRequest {
 	if l.FilterFunc != nil {
-		l.FilterFunc(l, target)
+		l.FilterFunc(l, m)
 	}
 	return l
 }
 
-func listRoleByMember(l *ListRequest, mem string) {
+func listByQuery(l *ListRequest, m map[string][]string) {
 	switch val := l.Value.(type) {
 	case Roles:
-		// for _, role := range roles {
-		// 	if contains(role.Members, mem) {
-		// 		res = append(res, role)
-		// 	}
-		// }
-		l.Value = val.WithMember()
+		var res Roles
+		for _, role := range val {
+			res = append(res, *role.withMembers(m["member"]).withIDs(m["id"]))
+		}
 		l.Value = res
 	case Policies:
 		var res Policies
-		policies := t
-		for _, policy := range policies {
-			if contains(policy.Subjects, mem) {
-				res = append(res, policy)
-			}
+		for _, policy := range val {
+			res = append(res, *policy.withSubjects(m["subject"]).withResources(m["resource"]).withActions(m["action"]).withIDs(m["id"]))
 		}
 		l.Value = res
+	default:
+		panic("storage:unable to cast list request to a known type!")
 	}
-}
-
-func contains(input []string, target string) bool {
-	for _, i := range input {
-		if i == target {
-			return true
-		}
-	}
-	return false
 }
 
 func (h *Handler) List(factory func(context.Context, *http.Request, httprouter.Params) (*ListRequest, error)) httprouter.Handle {
@@ -128,13 +116,9 @@ func (h *Handler) List(factory func(context.Context, *http.Request, httprouter.P
 			return
 		}
 
-		member := r.URL.Query().Get("member")
-		if member != "" {
-			l.FilterFunc = listRoleByMember
-			l.Value = l.Filter(member).Value
-		}
-
-		h.h.Write(w, r, l.Value)
+		m := r.URL.Query()
+		l.FilterFunc = listByQuery
+		h.h.Write(w, r, l.Filter(m).Value)
 	}
 }
 

@@ -18,12 +18,14 @@ type Role struct {
 }
 
 func (r Role) withMembers(members []string) *Role {
-	res := common(members, r.Members)
-	return &res
+	if len(members) == 0 || sliceContains(members, r.Members) {
+		return &r
+	}
+	return &Role{}
 }
 
-func (r Role) withID(id string) *Role {
-	if r.ID == id {
+func (r Role) withIDs(ids []string) *Role {
+	if len(ids) == 0 || contains(ids, r.ID) {
 		return &r
 	}
 	return &Role{}
