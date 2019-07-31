@@ -84,15 +84,15 @@ func (l *ListRequest) Filter(m map[string][]string) *ListRequest {
 
 func ListByQuery(l *ListRequest, m map[string][]string) {
 	switch val := l.Value.(type) {
-	case Roles:
+	case *Roles:
 		var res Roles
-		for _, role := range val {
+		for _, role := range *val {
 			res = append(res, *role.withMembers(m["member"]).withIDs(m["id"]))
 		}
 		l.Value = res
-	case Policies:
+	case *Policies:
 		var res Policies
-		for _, policy := range val {
+		for _, policy := range *val {
 			res = append(res, *policy.withSubjects(m["subject"]).withResources(m["resource"]).withActions(m["action"]).withIDs(m["id"]))
 		}
 		l.Value = res
