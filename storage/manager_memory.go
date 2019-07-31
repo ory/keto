@@ -69,49 +69,24 @@ func (m *MemoryManager) Upsert(_ context.Context, collection, key string, value 
 	return nil
 }
 
-func (m *MemoryManager) List(ctx context.Context, collection string, value interface{}, member string, limit, offset int) error {
+func (m *MemoryManager) List(ctx context.Context, collection string, value interface{}, limit, offset int) error {
 	c := m.collection(collection)
 	start, end := pagination.Index(limit, offset, len(c))
-	items, err := m.list(ctx, collection, member)
-	if err != nil {
-		return err
-	}
-	items = items[start:end]
+	items := m.list(ctx, collection)[start:end]
 	return roundTrip(&items, value)
 }
 
-func (m *MemoryManager) list(ctx context.Context, collection string, member string) ([]json.RawMessage, error) {
+func (m *MemoryManager) list(ctx context.Context, collection string) []json.RawMessage {
 	c := m.collection(collection)
 	items := make([]json.RawMessage, len(c))
+
 	m.RLock()
 	for k, i := range c {
-		isMem, err := isMember(i.Data, member)
-		if err != nil {
-			return nil, err
-		}
-		if isMem {
-			items := make([]json.RawMessage, 1)
-			items[0] = i.Data
-			m.RUnlock()
-			return items, nil
-		}
 		items[k] = i.Data
 	}
-
 	m.RUnlock()
-	return items, nil
-}
 
-func isMember(j json.RawMessage, member string) (bool, error) {
-	value, err := json.Marshal(j)
-	if err != nil {
-		return false, errors.WithStack(err)
-	}
-	if member == string(value) {
-		return true, nil
-	}
-
-	return false, nil
+	return items
 }
 
 func (m *MemoryManager) Get(_ context.Context, collection, key string, value interface{}) error {
@@ -160,10 +135,6 @@ func (m *MemoryManager) Delete(_ context.Context, collection, key string) error 
 
 func (m *MemoryManager) Storage(ctx context.Context, schema string, collections []string) (storage.Store, error) {
 	return toRegoStore(ctx, schema, collections, func(i context.Context, s string) ([]json.RawMessage, error) {
-		items, err := m.list(i, s, "")
-		if err != nil {
-			return nil, err
-		}
-		return items, nil
+		return m.list(i, s), nil
 	})
 }

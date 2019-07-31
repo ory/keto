@@ -109,7 +109,6 @@ func (e *mockHandler) list(ctx context.Context, r *http.Request, ps httprouter.P
 	var p []string
 	return &ListRequest{
 		Collection: e.c,
-		Member:     r.URL.Query().Get("member"),
 		Value:      &p,
 	}, nil
 }

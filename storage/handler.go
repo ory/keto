@@ -82,7 +82,7 @@ func (l *ListRequest) Filter(m map[string][]string) *ListRequest {
 	return l
 }
 
-func listByQuery(l *ListRequest, m map[string][]string) {
+func ListByQuery(l *ListRequest, m map[string][]string) {
 	switch val := l.Value.(type) {
 	case Roles:
 		var res Roles
@@ -117,7 +117,6 @@ func (h *Handler) List(factory func(context.Context, *http.Request, httprouter.P
 		}
 
 		m := r.URL.Query()
-		l.FilterFunc = listByQuery
 		h.h.Write(w, r, l.Filter(m).Value)
 	}
 }
