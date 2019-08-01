@@ -25,7 +25,7 @@ func (r *Role) withMembers(members []string) *Role {
 }
 
 func (r *Role) withIDs(ids []string) *Role {
-	if r == nil || len(ids) == 0 || contains(ids, r.ID) {
+	if r == nil || len(ids) == 0 || contains(r.ID, ids) {
 		return r
 	}
 	return nil

@@ -32,28 +32,28 @@ type Policy struct {
 }
 
 func (p *Policy) withSubjects(subjects []string) *Policy {
-	if p == nil || len(subjects) == 0 || sliceContains(p.Subjects, subjects) {
+	if p == nil || len(subjects) == 0 || sliceContains(subjects, p.Subjects) {
 		return p
 	}
 	return nil
 }
 
 func (p *Policy) withResources(resources []string) *Policy {
-	if p == nil || len(resources) == 0 || sliceContains(p.Resources, resources) {
+	if p == nil || len(resources) == 0 || sliceContains(resources, p.Resources) {
 		return p
 	}
 	return nil
 }
 
 func (p *Policy) withActions(actions []string) *Policy {
-	if p == nil || len(actions) == 0 || sliceContains(p.Actions, actions) {
+	if p == nil || len(actions) == 0 || sliceContains(actions, p.Actions) {
 		return p
 	}
 	return nil
 }
 
 func (p *Policy) withIDs(ids []string) *Policy {
-	if p == nil || len(ids) == 0 || contains(ids, p.ID) {
+	if p == nil || len(ids) == 0 || contains(p.ID, ids) {
 		return p
 	}
 	return nil

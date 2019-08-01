@@ -16,8 +16,8 @@ func sliceContains(target, source []string) bool {
 	return false
 }
 
-func contains(input []string, target string) bool {
-	for _, i := range input {
+func contains(target string, source []string) bool {
+	for _, i := range source {
 		if i == target {
 			return true
 		}
