@@ -433,12 +433,12 @@ func (e *Engine) policiesList(ctx context.Context, r *http.Request, ps httproute
 	if err != nil {
 		return nil, err
 	}
+
 	return &kstorage.ListRequest{
 		Collection: policyCollection(f),
 		Value:      &p,
 		FilterFunc: kstorage.ListByQuery,
 	}, nil
-
 }
 
 func (e *Engine) policiesDelete(ctx context.Context, r *http.Request, ps httprouter.Params) (*kstorage.DeleteRequest, error) {
