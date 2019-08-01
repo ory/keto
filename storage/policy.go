@@ -31,30 +31,30 @@ type Policy struct {
 	Conditions map[string]interface{} `json:"conditions"`
 }
 
-func (p Policy) withSubjects(subjects []string) *Policy {
-	if len(subjects) == 0 || sliceContains(p.Subjects, subjects) {
-		return &p
+func (p *Policy) withSubjects(subjects []string) *Policy {
+	if p == nil || len(subjects) == 0 || sliceContains(p.Subjects, subjects) {
+		return p
 	}
-	return &Policy{}
+	return nil
 }
 
-func (p Policy) withResources(resources []string) *Policy {
-	if len(resources) == 0 || sliceContains(p.Resources, resources) {
-		return &p
+func (p *Policy) withResources(resources []string) *Policy {
+	if p == nil || len(resources) == 0 || sliceContains(p.Resources, resources) {
+		return p
 	}
-	return &Policy{}
+	return nil
 }
 
-func (p Policy) withActions(actions []string) *Policy {
-	if len(actions) == 0 || sliceContains(p.Actions, actions) {
-		return &p
+func (p *Policy) withActions(actions []string) *Policy {
+	if p == nil || len(actions) == 0 || sliceContains(p.Actions, actions) {
+		return p
 	}
-	return &Policy{}
+	return nil
 }
 
-func (p Policy) withIDs(ids []string) *Policy {
-	if len(ids) == 0 || contains(ids, p.ID) {
-		return &p
+func (p *Policy) withIDs(ids []string) *Policy {
+	if p == nil || len(ids) == 0 || contains(ids, p.ID) {
+		return p
 	}
-	return &Policy{}
+	return nil
 }

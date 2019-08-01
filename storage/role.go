@@ -17,16 +17,16 @@ type Role struct {
 	Members []string `json:"members"`
 }
 
-func (r Role) withMembers(members []string) *Role {
-	if len(members) == 0 || sliceContains(members, r.Members) {
-		return &r
+func (r *Role) withMembers(members []string) *Role {
+	if r == nil || len(members) == 0 || sliceContains(members, r.Members) {
+		return r
 	}
-	return &Role{}
+	return nil
 }
 
-func (r Role) withIDs(ids []string) *Role {
-	if len(ids) == 0 || contains(ids, r.ID) {
-		return &r
+func (r *Role) withIDs(ids []string) *Role {
+	if r == nil || len(ids) == 0 || contains(ids, r.ID) {
+		return r
 	}
-	return &Role{}
+	return nil
 }

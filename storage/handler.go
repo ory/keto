@@ -87,15 +87,21 @@ func ListByQuery(l *ListRequest, m map[string][]string) {
 	case *Roles:
 		var res Roles
 		for _, role := range *val {
-			res = append(res, *role.withMembers(m["member"]).withIDs(m["id"]))
+			filteredRole := role.withMembers(m["members"]).withIDs(m["id"])
+			if filteredRole != nil {
+				res = append(res, *filteredRole)
+			}
 		}
-		l.Value = res
+		l.Value = &res
 	case *Policies:
 		var res Policies
 		for _, policy := range *val {
-			res = append(res, *policy.withSubjects(m["subject"]).withResources(m["resource"]).withActions(m["action"]).withIDs(m["id"]))
+			filteredPolicy := policy.withSubjects(m["subjects"]).withResources(m["resources"]).withActions(m["actions"]).withIDs(m["id"])
+			if filteredPolicy != nil {
+				res = append(res, *filteredPolicy)
+			}
 		}
-		l.Value = res
+		l.Value = &res
 	default:
 		panic("storage:unable to cast list request to a known type!")
 	}
