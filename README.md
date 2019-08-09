@@ -30,7 +30,9 @@ came looking for the answer to the question:
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
+
 - [Introduction](#introduction)
+- [Who's using it?](#whos-using-it)
   - [Installation](#installation)
 - [Ecosystem](#ecosystem)
   - [ORY Security Console: Administrative User Interface](#ory-security-console-administrative-user-interface)
@@ -63,6 +65,12 @@ ORY Keto is a permission server that implements best practice access control mec
 
 Each mechanism is powered by a decision engine implemented on top of the
 [Open Policy Agent](https://www.openpolicyagent.org/) and provides well-defined management and authorization endpoints.
+
+## Who's using it?
+
+<!-- BEGIN ADOPTERS -->
+
+<!-- END ADOPTERS -->
 
 ### Installation
 
