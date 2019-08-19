@@ -335,9 +335,9 @@ var flavor = "flavor_example"; // String | The ORY Access Control Policy flavor.
 var opts = { 
   'limit': 789, // Number | The maximum amount of policies returned.
   'offset': 789, // Number | The offset from where to start looking.
-  'subject': ["subject_example"], // [String] | The subject for whom the policies are to be listed (Multiple values allowed).
-  'resource': ["resource_example"], // [String] | The resource for which the policies are to be listed (Multiple values allowed).
-  'action': ["action_example"] // [String] | The action for which policies are to be listed (Multiple values allowed).
+  'subject': "subject_example", // String | The subject for whom the policies are to be listed.
+  'resource': "resource_example", // String | The resource for which the policies are to be listed.
+  'action': "action_example" // String | The action for which policies are to be listed.
 };
 
 var callback = function(error, data, response) {
@@ -357,9 +357,9 @@ Name | Type | Description  | Notes
  **flavor** | **String**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot; | 
  **limit** | **Number**| The maximum amount of policies returned. | [optional] 
  **offset** | **Number**| The offset from where to start looking. | [optional] 
- **subject** | [**[String]**](String.md)| The subject for whom the policies are to be listed (Multiple values allowed). | [optional] 
- **resource** | [**[String]**](String.md)| The resource for which the policies are to be listed (Multiple values allowed). | [optional] 
- **action** | [**[String]**](String.md)| The action for which policies are to be listed (Multiple values allowed). | [optional] 
+ **subject** | **String**| The subject for whom the policies are to be listed. | [optional] 
+ **resource** | **String**| The resource for which the policies are to be listed. | [optional] 
+ **action** | **String**| The action for which policies are to be listed. | [optional] 
 
 ### Return type
 
@@ -393,7 +393,7 @@ var flavor = "flavor_example"; // String | The ORY Access Control Policy flavor.
 var opts = { 
   'limit': 789, // Number | The maximum amount of policies returned.
   'offset': 789, // Number | The offset from where to start looking.
-  'member': ["member_example"] // [String] | The member for which the roles are to be listed (Multiple values allowed).
+  'member': "member_example" // String | The member for which the roles are to be listed.
 };
 
 var callback = function(error, data, response) {
@@ -413,7 +413,7 @@ Name | Type | Description  | Notes
  **flavor** | **String**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot; | 
  **limit** | **Number**| The maximum amount of policies returned. | [optional] 
  **offset** | **Number**| The offset from where to start looking. | [optional] 
- **member** | [**[String]**](String.md)| The member for which the roles are to be listed (Multiple values allowed). | [optional] 
+ **member** | **String**| The member for which the roles are to be listed. | [optional] 
 
 ### Return type
 

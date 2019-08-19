@@ -42,7 +42,6 @@
 
   /**
    * Constructs a new <code>AddOryAccessControlPolicyRoleMembersBody</code>.
-   * AddOryAccessControlPolicyRoleMembersBody add ory access control policy role members body
    * @alias module:model/AddOryAccessControlPolicyRoleMembersBody
    * @class
    */

@@ -35,7 +35,7 @@ use \ArrayAccess;
  * GetOryAccessControlPolicyInternalServerErrorBody Class Doc Comment
  *
  * @category    Class
- * @description GetOryAccessControlPolicyInternalServerErrorBody get ory access control policy internal server error body
+ * @description GetOryAccessControlPolicyInternalServerErrorBody GetOryAccessControlPolicyInternalServerErrorBody get ory access control policy internal server error body
  * @package     keto\SDK
  * @author      Swagger Codegen team
  * @link        https://github.com/swagger-api/swagger-codegen

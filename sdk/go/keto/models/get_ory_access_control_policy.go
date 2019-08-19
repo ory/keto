@@ -13,7 +13,7 @@ import (
 	"github.com/go-openapi/validate"
 )
 
-// GetOryAccessControlPolicy GetOryAccessControlPolicy get ory access control policy
+// GetOryAccessControlPolicy GetOryAccessControlPolicy GetOryAccessControlPolicy get ory access control policy
 // swagger:model GetOryAccessControlPolicy
 type GetOryAccessControlPolicy struct {
 

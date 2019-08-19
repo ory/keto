@@ -13,7 +13,7 @@ import (
 	"github.com/go-openapi/validate"
 )
 
-// RemoveOryAccessControlPolicyRoleMembers RemoveOryAccessControlPolicyRoleMembers RemoveOryAccessControlPolicyRoleMembers remove ory access control policy role members
+// RemoveOryAccessControlPolicyRoleMembers RemoveOryAccessControlPolicyRoleMembers RemoveOryAccessControlPolicyRoleMembers RemoveOryAccessControlPolicyRoleMembers remove ory access control policy role members
 // swagger:model RemoveOryAccessControlPolicyRoleMembers
 type RemoveOryAccessControlPolicyRoleMembers struct {
 

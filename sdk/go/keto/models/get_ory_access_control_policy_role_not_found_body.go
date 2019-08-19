@@ -11,7 +11,7 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// GetOryAccessControlPolicyRoleNotFoundBody GetOryAccessControlPolicyRoleNotFoundBody GetOryAccessControlPolicyRoleNotFoundBody get ory access control policy role not found body
+// GetOryAccessControlPolicyRoleNotFoundBody GetOryAccessControlPolicyRoleNotFoundBody GetOryAccessControlPolicyRoleNotFoundBody GetOryAccessControlPolicyRoleNotFoundBody get ory access control policy role not found body
 // swagger:model GetOryAccessControlPolicyRoleNotFoundBody
 type GetOryAccessControlPolicyRoleNotFoundBody struct {
 

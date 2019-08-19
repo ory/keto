@@ -316,9 +316,9 @@ $api_instance = new keto\SDK\Api\EnginesApi();
 $flavor = "flavor_example"; // string | The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\"
 $limit = 789; // int | The maximum amount of policies returned.
 $offset = 789; // int | The offset from where to start looking.
-$subject = array("subject_example"); // string[] | The subject for whom the policies are to be listed (Multiple values allowed).
-$resource = array("resource_example"); // string[] | The resource for which the policies are to be listed (Multiple values allowed).
-$action = array("action_example"); // string[] | The action for which policies are to be listed (Multiple values allowed).
+$subject = "subject_example"; // string | The subject for whom the policies are to be listed.
+$resource = "resource_example"; // string | The resource for which the policies are to be listed.
+$action = "action_example"; // string | The action for which policies are to be listed.
 
 try {
     $result = $api_instance->listOryAccessControlPolicies($flavor, $limit, $offset, $subject, $resource, $action);
@@ -336,9 +336,9 @@ Name | Type | Description  | Notes
  **flavor** | **string**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot; |
  **limit** | **int**| The maximum amount of policies returned. | [optional]
  **offset** | **int**| The offset from where to start looking. | [optional]
- **subject** | [**string[]**](../Model/string.md)| The subject for whom the policies are to be listed (Multiple values allowed). | [optional]
- **resource** | [**string[]**](../Model/string.md)| The resource for which the policies are to be listed (Multiple values allowed). | [optional]
- **action** | [**string[]**](../Model/string.md)| The action for which policies are to be listed (Multiple values allowed). | [optional]
+ **subject** | **string**| The subject for whom the policies are to be listed. | [optional]
+ **resource** | **string**| The resource for which the policies are to be listed. | [optional]
+ **action** | **string**| The action for which policies are to be listed. | [optional]
 
 ### Return type
 
@@ -371,7 +371,7 @@ $api_instance = new keto\SDK\Api\EnginesApi();
 $flavor = "flavor_example"; // string | The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\"
 $limit = 789; // int | The maximum amount of policies returned.
 $offset = 789; // int | The offset from where to start looking.
-$member = array("member_example"); // string[] | The member for which the roles are to be listed (Multiple values allowed).
+$member = "member_example"; // string | The member for which the roles are to be listed.
 
 try {
     $result = $api_instance->listOryAccessControlPolicyRoles($flavor, $limit, $offset, $member);
@@ -389,7 +389,7 @@ Name | Type | Description  | Notes
  **flavor** | **string**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot; |
  **limit** | **int**| The maximum amount of policies returned. | [optional]
  **offset** | **int**| The offset from where to start looking. | [optional]
- **member** | [**string[]**](../Model/string.md)| The member for which the roles are to be listed (Multiple values allowed). | [optional]
+ **member** | **string**| The member for which the roles are to be listed. | [optional]
 
 ### Return type
 

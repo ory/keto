@@ -11,7 +11,7 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// UpsertOryAccessControlPolicyRoleInternalServerErrorBody UpsertOryAccessControlPolicyRoleInternalServerErrorBody UpsertOryAccessControlPolicyRoleInternalServerErrorBody upsert ory access control policy role internal server error body
+// UpsertOryAccessControlPolicyRoleInternalServerErrorBody UpsertOryAccessControlPolicyRoleInternalServerErrorBody upsert ory access control policy role internal server error body
 // swagger:model UpsertOryAccessControlPolicyRoleInternalServerErrorBody
 type UpsertOryAccessControlPolicyRoleInternalServerErrorBody struct {
 

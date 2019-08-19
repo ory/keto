@@ -42,7 +42,7 @@
 
   /**
    * Constructs a new <code>GetOryAccessControlPolicyRoleNotFoundBody</code>.
-   * GetOryAccessControlPolicyRoleNotFoundBody GetOryAccessControlPolicyRoleNotFoundBody get ory access control policy role not found body
+   * GetOryAccessControlPolicyRoleNotFoundBody GetOryAccessControlPolicyRoleNotFoundBody GetOryAccessControlPolicyRoleNotFoundBody get ory access control policy role not found body
    * @alias module:model/GetOryAccessControlPolicyRoleNotFoundBody
    * @class
    */

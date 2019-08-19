@@ -14,7 +14,7 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// ListOryAccessControlPolicyRolesOK ListOryAccessControlPolicyRolesOK ListOryAccessControlPolicyRolesOK ListOryAccessControlPolicyRolesOK handles this case with default header values.
+// ListOryAccessControlPolicyRolesOK ListOryAccessControlPolicyRolesOK ListOryAccessControlPolicyRolesOK handles this case with default header values.
 //
 // Roles is an array of roles.
 // swagger:model ListOryAccessControlPolicyRolesOK

@@ -35,7 +35,7 @@ use \ArrayAccess;
  * GetOryAccessControlPolicyNotFoundBody Class Doc Comment
  *
  * @category    Class
- * @description GetOryAccessControlPolicyNotFoundBody get ory access control policy not found body
+ * @description GetOryAccessControlPolicyNotFoundBody GetOryAccessControlPolicyNotFoundBody get ory access control policy not found body
  * @package     keto\SDK
  * @author      Swagger Codegen team
  * @link        https://github.com/swagger-api/swagger-codegen

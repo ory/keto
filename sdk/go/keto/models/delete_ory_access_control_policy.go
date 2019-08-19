@@ -13,7 +13,7 @@ import (
 	"github.com/go-openapi/validate"
 )
 
-// DeleteOryAccessControlPolicy DeleteOryAccessControlPolicy delete ory access control policy
+// DeleteOryAccessControlPolicy DeleteOryAccessControlPolicy DeleteOryAccessControlPolicy delete ory access control policy
 // swagger:model DeleteOryAccessControlPolicy
 type DeleteOryAccessControlPolicy struct {
 

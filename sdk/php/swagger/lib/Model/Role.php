@@ -35,7 +35,7 @@ use \ArrayAccess;
  * Role Class Doc Comment
  *
  * @category    Class
- * @description Role Role Role Role Role Role Role Role represents a group of users that share the same role. A role could be an administrator, a moderator, a regular user or some other sort of role.
+ * @description Role Role Role Role Role Role Role Role Role represents a group of users that share the same role. A role could be an administrator, a moderator, a regular user or some other sort of role.
  * @package     keto\SDK
  * @author      Swagger Codegen team
  * @link        https://github.com/swagger-api/swagger-codegen

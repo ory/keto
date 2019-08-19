@@ -13,7 +13,7 @@ import (
 	"github.com/go-openapi/validate"
 )
 
-// AddOryAccessControlPolicyRoleMembers AddOryAccessControlPolicyRoleMembers AddOryAccessControlPolicyRoleMembers add ory access control policy role members
+// AddOryAccessControlPolicyRoleMembers AddOryAccessControlPolicyRoleMembers add ory access control policy role members
 // swagger:model AddOryAccessControlPolicyRoleMembers
 type AddOryAccessControlPolicyRoleMembers struct {
 

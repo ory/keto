@@ -63,10 +63,10 @@ for the list ory access control policies operation typically these are written t
 type ListOryAccessControlPoliciesParams struct {
 
 	/*Action
-	  The action for which policies are to be listed (Multiple values allowed).
+	  The action for which policies are to be listed.
 
 	*/
-	Action []string
+	Action *string
 	/*Flavor
 	  The ORY Access Control Policy flavor. Can be "regex", "glob", and "exact"
 
@@ -83,15 +83,15 @@ type ListOryAccessControlPoliciesParams struct {
 	*/
 	Offset *int64
 	/*Resource
-	  The resource for which the policies are to be listed (Multiple values allowed).
+	  The resource for which the policies are to be listed.
 
 	*/
-	Resource []string
+	Resource *string
 	/*Subject
-	  The subject for whom the policies are to be listed (Multiple values allowed).
+	  The subject for whom the policies are to be listed.
 
 	*/
-	Subject []string
+	Subject *string
 
 	timeout    time.Duration
 	Context    context.Context
@@ -132,13 +132,13 @@ func (o *ListOryAccessControlPoliciesParams) SetHTTPClient(client *http.Client) 
 }
 
 // WithAction adds the action to the list ory access control policies params
-func (o *ListOryAccessControlPoliciesParams) WithAction(action []string) *ListOryAccessControlPoliciesParams {
+func (o *ListOryAccessControlPoliciesParams) WithAction(action *string) *ListOryAccessControlPoliciesParams {
 	o.SetAction(action)
 	return o
 }
 
 // SetAction adds the action to the list ory access control policies params
-func (o *ListOryAccessControlPoliciesParams) SetAction(action []string) {
+func (o *ListOryAccessControlPoliciesParams) SetAction(action *string) {
 	o.Action = action
 }
 
@@ -176,24 +176,24 @@ func (o *ListOryAccessControlPoliciesParams) SetOffset(offset *int64) {
 }
 
 // WithResource adds the resource to the list ory access control policies params
-func (o *ListOryAccessControlPoliciesParams) WithResource(resource []string) *ListOryAccessControlPoliciesParams {
+func (o *ListOryAccessControlPoliciesParams) WithResource(resource *string) *ListOryAccessControlPoliciesParams {
 	o.SetResource(resource)
 	return o
 }
 
 // SetResource adds the resource to the list ory access control policies params
-func (o *ListOryAccessControlPoliciesParams) SetResource(resource []string) {
+func (o *ListOryAccessControlPoliciesParams) SetResource(resource *string) {
 	o.Resource = resource
 }
 
 // WithSubject adds the subject to the list ory access control policies params
-func (o *ListOryAccessControlPoliciesParams) WithSubject(subject []string) *ListOryAccessControlPoliciesParams {
+func (o *ListOryAccessControlPoliciesParams) WithSubject(subject *string) *ListOryAccessControlPoliciesParams {
 	o.SetSubject(subject)
 	return o
 }
 
 // SetSubject adds the subject to the list ory access control policies params
-func (o *ListOryAccessControlPoliciesParams) SetSubject(subject []string) {
+func (o *ListOryAccessControlPoliciesParams) SetSubject(subject *string) {
 	o.Subject = subject
 }
 
@@ -205,12 +205,20 @@ func (o *ListOryAccessControlPoliciesParams) WriteToRequest(r runtime.ClientRequ
 	}
 	var res []error
 
-	valuesAction := o.Action
+	if o.Action != nil {
 
-	joinedAction := swag.JoinByFormat(valuesAction, "")
-	// query array param action
-	if err := r.SetQueryParam("action", joinedAction...); err != nil {
-		return err
+		// query param action
+		var qrAction string
+		if o.Action != nil {
+			qrAction = *o.Action
+		}
+		qAction := qrAction
+		if qAction != "" {
+			if err := r.SetQueryParam("action", qAction); err != nil {
+				return err
+			}
+		}
+
 	}
 
 	// path param flavor
@@ -250,20 +258,36 @@ func (o *ListOryAccessControlPoliciesParams) WriteToRequest(r runtime.ClientRequ
 
 	}
 
-	valuesResource := o.Resource
+	if o.Resource != nil {
 
-	joinedResource := swag.JoinByFormat(valuesResource, "")
-	// query array param resource
-	if err := r.SetQueryParam("resource", joinedResource...); err != nil {
-		return err
+		// query param resource
+		var qrResource string
+		if o.Resource != nil {
+			qrResource = *o.Resource
+		}
+		qResource := qrResource
+		if qResource != "" {
+			if err := r.SetQueryParam("resource", qResource); err != nil {
+				return err
+			}
+		}
+
 	}
 
-	valuesSubject := o.Subject
+	if o.Subject != nil {
 
-	joinedSubject := swag.JoinByFormat(valuesSubject, "")
-	// query array param subject
-	if err := r.SetQueryParam("subject", joinedSubject...); err != nil {
-		return err
+		// query param subject
+		var qrSubject string
+		if o.Subject != nil {
+			qrSubject = *o.Subject
+		}
+		qSubject := qrSubject
+		if qSubject != "" {
+			if err := r.SetQueryParam("subject", qSubject); err != nil {
+				return err
+			}
+		}
+
 	}
 
 	if len(res) > 0 {

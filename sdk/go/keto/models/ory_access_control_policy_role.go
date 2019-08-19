@@ -11,7 +11,7 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// OryAccessControlPolicyRole OryAccessControlPolicyRole OryAccessControlPolicyRole oryAccessControlPolicyRole represents a group of users that share the same role. A role could be an administrator, a moderator, a regular
+// OryAccessControlPolicyRole OryAccessControlPolicyRole OryAccessControlPolicyRole OryAccessControlPolicyRole oryAccessControlPolicyRole represents a group of users that share the same role. A role could be an administrator, a moderator, a regular
 // user or some other sort of role.
 // swagger:model OryAccessControlPolicyRole
 type OryAccessControlPolicyRole struct {

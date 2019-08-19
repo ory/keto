@@ -375,9 +375,9 @@
      * @param {Object} opts Optional parameters
      * @param {Number} opts.limit The maximum amount of policies returned.
      * @param {Number} opts.offset The offset from where to start looking.
-     * @param {Array.<String>} opts.subject The subject for whom the policies are to be listed (Multiple values allowed).
-     * @param {Array.<String>} opts.resource The resource for which the policies are to be listed (Multiple values allowed).
-     * @param {Array.<String>} opts.action The action for which policies are to be listed (Multiple values allowed).
+     * @param {String} opts.subject The subject for whom the policies are to be listed.
+     * @param {String} opts.resource The resource for which the policies are to be listed.
+     * @param {String} opts.action The action for which policies are to be listed.
      * @param {module:api/EnginesApi~listOryAccessControlPoliciesCallback} callback The callback function, accepting three arguments: error, data, response
      * data is of type: {@link Array.<module:model/OryAccessControlPolicy>}
      */
@@ -397,9 +397,9 @@
       var queryParams = {
         'limit': opts['limit'],
         'offset': opts['offset'],
-        'subject': this.apiClient.buildCollectionParam(opts['subject'], 'csv'),
-        'resource': this.apiClient.buildCollectionParam(opts['resource'], 'csv'),
-        'action': this.apiClient.buildCollectionParam(opts['action'], 'csv')
+        'subject': opts['subject'],
+        'resource': opts['resource'],
+        'action': opts['action']
       };
       var headerParams = {
       };
@@ -433,7 +433,7 @@
      * @param {Object} opts Optional parameters
      * @param {Number} opts.limit The maximum amount of policies returned.
      * @param {Number} opts.offset The offset from where to start looking.
-     * @param {Array.<String>} opts.member The member for which the roles are to be listed (Multiple values allowed).
+     * @param {String} opts.member The member for which the roles are to be listed.
      * @param {module:api/EnginesApi~listOryAccessControlPolicyRolesCallback} callback The callback function, accepting three arguments: error, data, response
      * data is of type: {@link Array.<module:model/OryAccessControlPolicyRole>}
      */
@@ -453,7 +453,7 @@
       var queryParams = {
         'limit': opts['limit'],
         'offset': opts['offset'],
-        'member': this.apiClient.buildCollectionParam(opts['member'], 'csv')
+        'member': opts['member']
       };
       var headerParams = {
       };

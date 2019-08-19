@@ -715,9 +715,9 @@ class EnginesApi
      * @param string $flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot; (required)
      * @param int $limit The maximum amount of policies returned. (optional)
      * @param int $offset The offset from where to start looking. (optional)
-     * @param string[] $subject The subject for whom the policies are to be listed (Multiple values allowed). (optional)
-     * @param string[] $resource The resource for which the policies are to be listed (Multiple values allowed). (optional)
-     * @param string[] $action The action for which policies are to be listed (Multiple values allowed). (optional)
+     * @param string $subject The subject for whom the policies are to be listed. (optional)
+     * @param string $resource The resource for which the policies are to be listed. (optional)
+     * @param string $action The action for which policies are to be listed. (optional)
      * @throws \keto\SDK\ApiException on non-2xx response
      * @return \keto\SDK\Model\OryAccessControlPolicy[]
      */
@@ -735,9 +735,9 @@ class EnginesApi
      * @param string $flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot; (required)
      * @param int $limit The maximum amount of policies returned. (optional)
      * @param int $offset The offset from where to start looking. (optional)
-     * @param string[] $subject The subject for whom the policies are to be listed (Multiple values allowed). (optional)
-     * @param string[] $resource The resource for which the policies are to be listed (Multiple values allowed). (optional)
-     * @param string[] $action The action for which policies are to be listed (Multiple values allowed). (optional)
+     * @param string $subject The subject for whom the policies are to be listed. (optional)
+     * @param string $resource The resource for which the policies are to be listed. (optional)
+     * @param string $action The action for which policies are to be listed. (optional)
      * @throws \keto\SDK\ApiException on non-2xx response
      * @return array of \keto\SDK\Model\OryAccessControlPolicy[], HTTP status code, HTTP response headers (array of strings)
      */
@@ -768,23 +768,14 @@ class EnginesApi
             $queryParams['offset'] = $this->apiClient->getSerializer()->toQueryValue($offset);
         }
         // query params
-        if (is_array($subject)) {
-            $subject = $this->apiClient->getSerializer()->serializeCollection($subject, 'csv', true);
-        }
         if ($subject !== null) {
             $queryParams['subject'] = $this->apiClient->getSerializer()->toQueryValue($subject);
         }
         // query params
-        if (is_array($resource)) {
-            $resource = $this->apiClient->getSerializer()->serializeCollection($resource, 'csv', true);
-        }
         if ($resource !== null) {
             $queryParams['resource'] = $this->apiClient->getSerializer()->toQueryValue($resource);
         }
         // query params
-        if (is_array($action)) {
-            $action = $this->apiClient->getSerializer()->serializeCollection($action, 'csv', true);
-        }
         if ($action !== null) {
             $queryParams['action'] = $this->apiClient->getSerializer()->toQueryValue($action);
         }
@@ -842,7 +833,7 @@ class EnginesApi
      * @param string $flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot; (required)
      * @param int $limit The maximum amount of policies returned. (optional)
      * @param int $offset The offset from where to start looking. (optional)
-     * @param string[] $member The member for which the roles are to be listed (Multiple values allowed). (optional)
+     * @param string $member The member for which the roles are to be listed. (optional)
      * @throws \keto\SDK\ApiException on non-2xx response
      * @return \keto\SDK\Model\OryAccessControlPolicyRole[]
      */
@@ -862,7 +853,7 @@ class EnginesApi
      * @param string $flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot; (required)
      * @param int $limit The maximum amount of policies returned. (optional)
      * @param int $offset The offset from where to start looking. (optional)
-     * @param string[] $member The member for which the roles are to be listed (Multiple values allowed). (optional)
+     * @param string $member The member for which the roles are to be listed. (optional)
      * @throws \keto\SDK\ApiException on non-2xx response
      * @return array of \keto\SDK\Model\OryAccessControlPolicyRole[], HTTP status code, HTTP response headers (array of strings)
      */
@@ -893,9 +884,6 @@ class EnginesApi
             $queryParams['offset'] = $this->apiClient->getSerializer()->toQueryValue($offset);
         }
         // query params
-        if (is_array($member)) {
-            $member = $this->apiClient->getSerializer()->serializeCollection($member, 'csv', true);
-        }
         if ($member !== null) {
             $queryParams['member'] = $this->apiClient->getSerializer()->toQueryValue($member);
         }

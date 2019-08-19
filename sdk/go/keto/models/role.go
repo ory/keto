@@ -11,7 +11,7 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// Role Role Role Role Role Role Role Role Role represents a group of users that share the same role. A role could be an administrator, a moderator, a regular
+// Role Role Role Role Role Role Role Role Role Role represents a group of users that share the same role. A role could be an administrator, a moderator, a regular
 // user or some other sort of role.
 // swagger:model Role
 type Role struct {

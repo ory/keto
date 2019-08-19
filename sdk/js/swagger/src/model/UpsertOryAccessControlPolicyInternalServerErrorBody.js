@@ -42,7 +42,7 @@
 
   /**
    * Constructs a new <code>UpsertOryAccessControlPolicyInternalServerErrorBody</code>.
-   * UpsertOryAccessControlPolicyInternalServerErrorBody UpsertOryAccessControlPolicyInternalServerErrorBody upsert ory access control policy internal server error body
+   * UpsertOryAccessControlPolicyInternalServerErrorBody UpsertOryAccessControlPolicyInternalServerErrorBody UpsertOryAccessControlPolicyInternalServerErrorBody upsert ory access control policy internal server error body
    * @alias module:model/UpsertOryAccessControlPolicyInternalServerErrorBody
    * @class
    */

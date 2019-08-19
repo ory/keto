@@ -42,7 +42,7 @@
 
   /**
    * Constructs a new <code>DeleteOryAccessControlPolicyInternalServerErrorBody</code>.
-   * DeleteOryAccessControlPolicyInternalServerErrorBody DeleteOryAccessControlPolicyInternalServerErrorBody DeleteOryAccessControlPolicyInternalServerErrorBody delete ory access control policy internal server error body
+   * DeleteOryAccessControlPolicyInternalServerErrorBody DeleteOryAccessControlPolicyInternalServerErrorBody delete ory access control policy internal server error body
    * @alias module:model/DeleteOryAccessControlPolicyInternalServerErrorBody
    * @class
    */
