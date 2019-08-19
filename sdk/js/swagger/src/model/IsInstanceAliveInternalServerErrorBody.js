@@ -42,7 +42,7 @@
 
   /**
    * Constructs a new <code>IsInstanceAliveInternalServerErrorBody</code>.
-   * IsInstanceAliveInternalServerErrorBody IsInstanceAliveInternalServerErrorBody is instance alive internal server error body
+   * IsInstanceAliveInternalServerErrorBody is instance alive internal server error body
    * @alias module:model/IsInstanceAliveInternalServerErrorBody
    * @class
    */

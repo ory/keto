@@ -715,12 +715,15 @@ class EnginesApi
      * @param string $flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot; (required)
      * @param int $limit The maximum amount of policies returned. (optional)
      * @param int $offset The offset from where to start looking. (optional)
+     * @param string[] $subject The subject for whom the policies are to be listed (Multiple values allowed). (optional)
+     * @param string[] $resource The resource for which the policies are to be listed (Multiple values allowed). (optional)
+     * @param string[] $action The action for which policies are to be listed (Multiple values allowed). (optional)
      * @throws \keto\SDK\ApiException on non-2xx response
      * @return \keto\SDK\Model\OryAccessControlPolicy[]
      */
-    public function listOryAccessControlPolicies($flavor, $limit = null, $offset = null)
+    public function listOryAccessControlPolicies($flavor, $limit = null, $offset = null, $subject = null, $resource = null, $action = null)
     {
-        list($response) = $this->listOryAccessControlPoliciesWithHttpInfo($flavor, $limit, $offset);
+        list($response) = $this->listOryAccessControlPoliciesWithHttpInfo($flavor, $limit, $offset, $subject, $resource, $action);
         return $response;
     }
 
@@ -732,10 +735,13 @@ class EnginesApi
      * @param string $flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot; (required)
      * @param int $limit The maximum amount of policies returned. (optional)
      * @param int $offset The offset from where to start looking. (optional)
+     * @param string[] $subject The subject for whom the policies are to be listed (Multiple values allowed). (optional)
+     * @param string[] $resource The resource for which the policies are to be listed (Multiple values allowed). (optional)
+     * @param string[] $action The action for which policies are to be listed (Multiple values allowed). (optional)
      * @throws \keto\SDK\ApiException on non-2xx response
      * @return array of \keto\SDK\Model\OryAccessControlPolicy[], HTTP status code, HTTP response headers (array of strings)
      */
-    public function listOryAccessControlPoliciesWithHttpInfo($flavor, $limit = null, $offset = null)
+    public function listOryAccessControlPoliciesWithHttpInfo($flavor, $limit = null, $offset = null, $subject = null, $resource = null, $action = null)
     {
         // verify the required parameter 'flavor' is set
         if ($flavor === null) {
@@ -760,6 +766,27 @@ class EnginesApi
         // query params
         if ($offset !== null) {
             $queryParams['offset'] = $this->apiClient->getSerializer()->toQueryValue($offset);
+        }
+        // query params
+        if (is_array($subject)) {
+            $subject = $this->apiClient->getSerializer()->serializeCollection($subject, 'csv', true);
+        }
+        if ($subject !== null) {
+            $queryParams['subject'] = $this->apiClient->getSerializer()->toQueryValue($subject);
+        }
+        // query params
+        if (is_array($resource)) {
+            $resource = $this->apiClient->getSerializer()->serializeCollection($resource, 'csv', true);
+        }
+        if ($resource !== null) {
+            $queryParams['resource'] = $this->apiClient->getSerializer()->toQueryValue($resource);
+        }
+        // query params
+        if (is_array($action)) {
+            $action = $this->apiClient->getSerializer()->serializeCollection($action, 'csv', true);
+        }
+        if ($action !== null) {
+            $queryParams['action'] = $this->apiClient->getSerializer()->toQueryValue($action);
         }
         // path params
         if ($flavor !== null) {
@@ -813,15 +840,15 @@ class EnginesApi
      * Client for keto
      *
      * @param string $flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot; (required)
-     * @param string $member The Member (ID) for which the roles are to be listed (Optional). (optional)
      * @param int $limit The maximum amount of policies returned. (optional)
      * @param int $offset The offset from where to start looking. (optional)
+     * @param string[] $member The member for which the roles are to be listed (Multiple values allowed). (optional)
      * @throws \keto\SDK\ApiException on non-2xx response
      * @return \keto\SDK\Model\OryAccessControlPolicyRole[]
      */
-    public function listOryAccessControlPolicyRoles($flavor, $member = null, $limit = null, $offset = null)
+    public function listOryAccessControlPolicyRoles($flavor, $limit = null, $offset = null, $member = null)
     {
-        list($response) = $this->listOryAccessControlPolicyRolesWithHttpInfo($flavor, $member, $limit, $offset);
+        list($response) = $this->listOryAccessControlPolicyRolesWithHttpInfo($flavor, $limit, $offset, $member);
         return $response;
     }
 
@@ -833,13 +860,13 @@ class EnginesApi
      * Client for keto
      *
      * @param string $flavor The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot; (required)
-     * @param string $member The Member (ID) for which the roles are to be listed (Optional). (optional)
      * @param int $limit The maximum amount of policies returned. (optional)
      * @param int $offset The offset from where to start looking. (optional)
+     * @param string[] $member The member for which the roles are to be listed (Multiple values allowed). (optional)
      * @throws \keto\SDK\ApiException on non-2xx response
      * @return array of \keto\SDK\Model\OryAccessControlPolicyRole[], HTTP status code, HTTP response headers (array of strings)
      */
-    public function listOryAccessControlPolicyRolesWithHttpInfo($flavor, $member = null, $limit = null, $offset = null)
+    public function listOryAccessControlPolicyRolesWithHttpInfo($flavor, $limit = null, $offset = null, $member = null)
     {
         // verify the required parameter 'flavor' is set
         if ($flavor === null) {
@@ -858,16 +885,19 @@ class EnginesApi
         $headerParams['Content-Type'] = $this->apiClient->selectHeaderContentType(['application/json']);
 
         // query params
-        if ($member !== null) {
-            $queryParams['member'] = $this->apiClient->getSerializer()->toQueryValue($member);
-        }
-        // query params
         if ($limit !== null) {
             $queryParams['limit'] = $this->apiClient->getSerializer()->toQueryValue($limit);
         }
         // query params
         if ($offset !== null) {
             $queryParams['offset'] = $this->apiClient->getSerializer()->toQueryValue($offset);
+        }
+        // query params
+        if (is_array($member)) {
+            $member = $this->apiClient->getSerializer()->serializeCollection($member, 'csv', true);
+        }
+        if ($member !== null) {
+            $queryParams['member'] = $this->apiClient->getSerializer()->toQueryValue($member);
         }
         // path params
         if ($flavor !== null) {

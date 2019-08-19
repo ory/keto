@@ -25,14 +25,12 @@ type UpsertOryAccessControlPolicyRoleReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *UpsertOryAccessControlPolicyRoleReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-
 	case 200:
 		result := NewUpsertOryAccessControlPolicyRoleOK()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return result, nil
-
 	case 500:
 		result := NewUpsertOryAccessControlPolicyRoleInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -62,6 +60,10 @@ func (o *UpsertOryAccessControlPolicyRoleOK) Error() string {
 	return fmt.Sprintf("[PUT /engines/acp/ory/{flavor}/roles][%d] upsertOryAccessControlPolicyRoleOK  %+v", 200, o.Payload)
 }
 
+func (o *UpsertOryAccessControlPolicyRoleOK) GetPayload() *models.OryAccessControlPolicyRole {
+	return o.Payload
+}
+
 func (o *UpsertOryAccessControlPolicyRoleOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.OryAccessControlPolicyRole)
@@ -89,6 +91,10 @@ type UpsertOryAccessControlPolicyRoleInternalServerError struct {
 
 func (o *UpsertOryAccessControlPolicyRoleInternalServerError) Error() string {
 	return fmt.Sprintf("[PUT /engines/acp/ory/{flavor}/roles][%d] upsertOryAccessControlPolicyRoleInternalServerError  %+v", 500, o.Payload)
+}
+
+func (o *UpsertOryAccessControlPolicyRoleInternalServerError) GetPayload() *UpsertOryAccessControlPolicyRoleInternalServerErrorBody {
+	return o.Payload
 }
 
 func (o *UpsertOryAccessControlPolicyRoleInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {

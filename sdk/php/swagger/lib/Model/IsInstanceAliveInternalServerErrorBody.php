@@ -35,7 +35,7 @@ use \ArrayAccess;
  * IsInstanceAliveInternalServerErrorBody Class Doc Comment
  *
  * @category    Class
- * @description IsInstanceAliveInternalServerErrorBody IsInstanceAliveInternalServerErrorBody is instance alive internal server error body
+ * @description IsInstanceAliveInternalServerErrorBody is instance alive internal server error body
  * @package     keto\SDK
  * @author      Swagger Codegen team
  * @link        https://github.com/swagger-api/swagger-codegen

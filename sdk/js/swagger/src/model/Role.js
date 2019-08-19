@@ -42,7 +42,7 @@
 
   /**
    * Constructs a new <code>Role</code>.
-   * Role Role Role Role Role Role Role represents a group of users that share the same role. A role could be an administrator, a moderator, a regular user or some other sort of role.
+   * Role Role Role Role Role Role Role Role represents a group of users that share the same role. A role could be an administrator, a moderator, a regular user or some other sort of role.
    * @alias module:model/Role
    * @class
    */

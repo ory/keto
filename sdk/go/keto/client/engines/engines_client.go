@@ -6,6 +6,8 @@ package engines
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"fmt"
+
 	"github.com/go-openapi/runtime"
 
 	strfmt "github.com/go-openapi/strfmt"
@@ -51,8 +53,14 @@ func (a *Client) AddOryAccessControlPolicyRoleMembers(params *AddOryAccessContro
 	if err != nil {
 		return nil, err
 	}
-	return result.(*AddOryAccessControlPolicyRoleMembersOK), nil
-
+	success, ok := result.(*AddOryAccessControlPolicyRoleMembersOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for addOryAccessControlPolicyRoleMembers: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
@@ -79,8 +87,14 @@ func (a *Client) DeleteOryAccessControlPolicy(params *DeleteOryAccessControlPoli
 	if err != nil {
 		return nil, err
 	}
-	return result.(*DeleteOryAccessControlPolicyNoContent), nil
-
+	success, ok := result.(*DeleteOryAccessControlPolicyNoContent)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for deleteOryAccessControlPolicy: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
@@ -110,8 +124,14 @@ func (a *Client) DeleteOryAccessControlPolicyRole(params *DeleteOryAccessControl
 	if err != nil {
 		return nil, err
 	}
-	return result.(*DeleteOryAccessControlPolicyRoleNoContent), nil
-
+	success, ok := result.(*DeleteOryAccessControlPolicyRoleNoContent)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for deleteOryAccessControlPolicyRole: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
@@ -142,8 +162,14 @@ func (a *Client) DoOryAccessControlPoliciesAllow(params *DoOryAccessControlPolic
 	if err != nil {
 		return nil, err
 	}
-	return result.(*DoOryAccessControlPoliciesAllowOK), nil
-
+	success, ok := result.(*DoOryAccessControlPoliciesAllowOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for doOryAccessControlPoliciesAllow: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
@@ -170,8 +196,14 @@ func (a *Client) GetOryAccessControlPolicy(params *GetOryAccessControlPolicyPara
 	if err != nil {
 		return nil, err
 	}
-	return result.(*GetOryAccessControlPolicyOK), nil
-
+	success, ok := result.(*GetOryAccessControlPolicyOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for getOryAccessControlPolicy: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
@@ -201,8 +233,14 @@ func (a *Client) GetOryAccessControlPolicyRole(params *GetOryAccessControlPolicy
 	if err != nil {
 		return nil, err
 	}
-	return result.(*GetOryAccessControlPolicyRoleOK), nil
-
+	success, ok := result.(*GetOryAccessControlPolicyRoleOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for getOryAccessControlPolicyRole: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
@@ -229,8 +267,14 @@ func (a *Client) ListOryAccessControlPolicies(params *ListOryAccessControlPolici
 	if err != nil {
 		return nil, err
 	}
-	return result.(*ListOryAccessControlPoliciesOK), nil
-
+	success, ok := result.(*ListOryAccessControlPoliciesOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for listOryAccessControlPolicies: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
@@ -260,8 +304,14 @@ func (a *Client) ListOryAccessControlPolicyRoles(params *ListOryAccessControlPol
 	if err != nil {
 		return nil, err
 	}
-	return result.(*ListOryAccessControlPolicyRolesOK), nil
-
+	success, ok := result.(*ListOryAccessControlPolicyRolesOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for listOryAccessControlPolicyRoles: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
@@ -291,8 +341,14 @@ func (a *Client) RemoveOryAccessControlPolicyRoleMembers(params *RemoveOryAccess
 	if err != nil {
 		return nil, err
 	}
-	return result.(*RemoveOryAccessControlPolicyRoleMembersCreated), nil
-
+	success, ok := result.(*RemoveOryAccessControlPolicyRoleMembersCreated)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for removeOryAccessControlPolicyRoleMembers: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
@@ -319,8 +375,14 @@ func (a *Client) UpsertOryAccessControlPolicy(params *UpsertOryAccessControlPoli
 	if err != nil {
 		return nil, err
 	}
-	return result.(*UpsertOryAccessControlPolicyOK), nil
-
+	success, ok := result.(*UpsertOryAccessControlPolicyOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for upsertOryAccessControlPolicy: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
@@ -350,8 +412,14 @@ func (a *Client) UpsertOryAccessControlPolicyRole(params *UpsertOryAccessControl
 	if err != nil {
 		return nil, err
 	}
-	return result.(*UpsertOryAccessControlPolicyRoleOK), nil
-
+	success, ok := result.(*UpsertOryAccessControlPolicyRoleOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for upsertOryAccessControlPolicyRole: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 // SetTransport changes the transport on the client

@@ -11,7 +11,7 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// DeleteOryAccessControlPolicyRoleInternalServerErrorBody DeleteOryAccessControlPolicyRoleInternalServerErrorBody DeleteOryAccessControlPolicyRoleInternalServerErrorBody delete ory access control policy role internal server error body
+// DeleteOryAccessControlPolicyRoleInternalServerErrorBody DeleteOryAccessControlPolicyRoleInternalServerErrorBody delete ory access control policy role internal server error body
 // swagger:model DeleteOryAccessControlPolicyRoleInternalServerErrorBody
 type DeleteOryAccessControlPolicyRoleInternalServerErrorBody struct {
 

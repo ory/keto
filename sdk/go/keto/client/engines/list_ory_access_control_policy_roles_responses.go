@@ -25,14 +25,12 @@ type ListOryAccessControlPolicyRolesReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *ListOryAccessControlPolicyRolesReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-
 	case 200:
 		result := NewListOryAccessControlPolicyRolesOK()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return result, nil
-
 	case 500:
 		result := NewListOryAccessControlPolicyRolesInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -62,6 +60,10 @@ func (o *ListOryAccessControlPolicyRolesOK) Error() string {
 	return fmt.Sprintf("[GET /engines/acp/ory/{flavor}/roles][%d] listOryAccessControlPolicyRolesOK  %+v", 200, o.Payload)
 }
 
+func (o *ListOryAccessControlPolicyRolesOK) GetPayload() []*models.OryAccessControlPolicyRole {
+	return o.Payload
+}
+
 func (o *ListOryAccessControlPolicyRolesOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	// response payload
@@ -87,6 +89,10 @@ type ListOryAccessControlPolicyRolesInternalServerError struct {
 
 func (o *ListOryAccessControlPolicyRolesInternalServerError) Error() string {
 	return fmt.Sprintf("[GET /engines/acp/ory/{flavor}/roles][%d] listOryAccessControlPolicyRolesInternalServerError  %+v", 500, o.Payload)
+}
+
+func (o *ListOryAccessControlPolicyRolesInternalServerError) GetPayload() *ListOryAccessControlPolicyRolesInternalServerErrorBody {
+	return o.Payload
 }
 
 func (o *ListOryAccessControlPolicyRolesInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {

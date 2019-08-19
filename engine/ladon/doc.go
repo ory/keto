@@ -59,6 +59,21 @@ type listOryAccessControlPolicies struct {
 	//
 	// in: query
 	Offset int `json:"offset"`
+
+	// The subject for whom the policies are to be listed (Multiple values allowed).
+	//
+	// in: query
+	Subject []string `json:"subject"`
+
+	// The resource for which the policies are to be listed (Multiple values allowed).
+	//
+	// in: query
+	Resource []string `json:"resource"`
+
+	// The action for which policies are to be listed (Multiple values allowed).
+	//
+	// in: query
+	Action []string `json:"action"`
 }
 
 // swagger:parameters getOryAccessControlPolicy
@@ -245,11 +260,6 @@ type listOryAccessControlPolicyRoles struct {
 	// required: true
 	Flavor string `json:"flavor"`
 
-	// The Member (ID) for which the roles are to be listed (Optional).
-	// in: query
-	// required: false
-	Member string `json:"member"`
-
 	// The maximum amount of policies returned.
 	//
 	// in: query
@@ -259,4 +269,9 @@ type listOryAccessControlPolicyRoles struct {
 	//
 	// in: query
 	Offset int `json:"offset"`
+
+	// The member for which the roles are to be listed (Multiple values allowed).
+	//
+	// in: query
+	Member []string `json:"member"`
 }

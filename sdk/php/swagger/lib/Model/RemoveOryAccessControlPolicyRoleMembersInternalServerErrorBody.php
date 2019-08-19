@@ -35,7 +35,7 @@ use \ArrayAccess;
  * RemoveOryAccessControlPolicyRoleMembersInternalServerErrorBody Class Doc Comment
  *
  * @category    Class
- * @description RemoveOryAccessControlPolicyRoleMembersInternalServerErrorBody RemoveOryAccessControlPolicyRoleMembersInternalServerErrorBody remove ory access control policy role members internal server error body
+ * @description RemoveOryAccessControlPolicyRoleMembersInternalServerErrorBody remove ory access control policy role members internal server error body
  * @package     keto\SDK
  * @author      Swagger Codegen team
  * @link        https://github.com/swagger-api/swagger-codegen

@@ -42,7 +42,7 @@
 
   /**
    * Constructs a new <code>RemoveOryAccessControlPolicyRoleMembersInternalServerErrorBody</code>.
-   * RemoveOryAccessControlPolicyRoleMembersInternalServerErrorBody RemoveOryAccessControlPolicyRoleMembersInternalServerErrorBody remove ory access control policy role members internal server error body
+   * RemoveOryAccessControlPolicyRoleMembersInternalServerErrorBody remove ory access control policy role members internal server error body
    * @alias module:model/RemoveOryAccessControlPolicyRoleMembersInternalServerErrorBody
    * @class
    */

@@ -14,8 +14,8 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// OryAccessControlPolicyRoles Roles is an array of roles.
-// swagger:model oryAccessControlPolicyRoles
+// OryAccessControlPolicyRoles OryAccessControlPolicyRoles Roles is an array of roles.
+// swagger:model OryAccessControlPolicyRoles
 type OryAccessControlPolicyRoles struct {
 
 	// The request body.

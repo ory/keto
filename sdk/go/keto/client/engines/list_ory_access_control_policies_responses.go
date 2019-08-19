@@ -25,14 +25,12 @@ type ListOryAccessControlPoliciesReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *ListOryAccessControlPoliciesReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-
 	case 200:
 		result := NewListOryAccessControlPoliciesOK()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return result, nil
-
 	case 500:
 		result := NewListOryAccessControlPoliciesInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -62,6 +60,10 @@ func (o *ListOryAccessControlPoliciesOK) Error() string {
 	return fmt.Sprintf("[GET /engines/acp/ory/{flavor}/policies][%d] listOryAccessControlPoliciesOK  %+v", 200, o.Payload)
 }
 
+func (o *ListOryAccessControlPoliciesOK) GetPayload() []*models.OryAccessControlPolicy {
+	return o.Payload
+}
+
 func (o *ListOryAccessControlPoliciesOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	// response payload
@@ -87,6 +89,10 @@ type ListOryAccessControlPoliciesInternalServerError struct {
 
 func (o *ListOryAccessControlPoliciesInternalServerError) Error() string {
 	return fmt.Sprintf("[GET /engines/acp/ory/{flavor}/policies][%d] listOryAccessControlPoliciesInternalServerError  %+v", 500, o.Payload)
+}
+
+func (o *ListOryAccessControlPoliciesInternalServerError) GetPayload() *ListOryAccessControlPoliciesInternalServerErrorBody {
+	return o.Payload
 }
 
 func (o *ListOryAccessControlPoliciesInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {

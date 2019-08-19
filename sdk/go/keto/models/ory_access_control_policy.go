@@ -11,8 +11,8 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// OryAccessControlPolicy oryAccessControlPolicy specifies an ORY Access Policy document.
-// swagger:model oryAccessControlPolicy
+// OryAccessControlPolicy OryAccessControlPolicy oryAccessControlPolicy specifies an ORY Access Policy document.
+// swagger:model OryAccessControlPolicy
 type OryAccessControlPolicy struct {
 
 	// Actions is an array representing all the actions this ORY Access Policy applies to.

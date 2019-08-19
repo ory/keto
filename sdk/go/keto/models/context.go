@@ -9,7 +9,7 @@ import (
 	strfmt "github.com/go-openapi/strfmt"
 )
 
-// Context Context Context Context Context Context Context Context Context Context context
+// Context Context Context Context Context Context Context Context Context Context Context context
 // swagger:model Context
 type Context map[string]interface{}
 

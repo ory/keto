@@ -25,21 +25,18 @@ type GetOryAccessControlPolicyReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *GetOryAccessControlPolicyReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-
 	case 200:
 		result := NewGetOryAccessControlPolicyOK()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return result, nil
-
 	case 404:
 		result := NewGetOryAccessControlPolicyNotFound()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 500:
 		result := NewGetOryAccessControlPolicyInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -67,6 +64,10 @@ type GetOryAccessControlPolicyOK struct {
 
 func (o *GetOryAccessControlPolicyOK) Error() string {
 	return fmt.Sprintf("[GET /engines/acp/ory/{flavor}/policies/{id}][%d] getOryAccessControlPolicyOK  %+v", 200, o.Payload)
+}
+
+func (o *GetOryAccessControlPolicyOK) GetPayload() *models.OryAccessControlPolicy {
+	return o.Payload
 }
 
 func (o *GetOryAccessControlPolicyOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -98,6 +99,10 @@ func (o *GetOryAccessControlPolicyNotFound) Error() string {
 	return fmt.Sprintf("[GET /engines/acp/ory/{flavor}/policies/{id}][%d] getOryAccessControlPolicyNotFound  %+v", 404, o.Payload)
 }
 
+func (o *GetOryAccessControlPolicyNotFound) GetPayload() *GetOryAccessControlPolicyNotFoundBody {
+	return o.Payload
+}
+
 func (o *GetOryAccessControlPolicyNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(GetOryAccessControlPolicyNotFoundBody)
@@ -125,6 +130,10 @@ type GetOryAccessControlPolicyInternalServerError struct {
 
 func (o *GetOryAccessControlPolicyInternalServerError) Error() string {
 	return fmt.Sprintf("[GET /engines/acp/ory/{flavor}/policies/{id}][%d] getOryAccessControlPolicyInternalServerError  %+v", 500, o.Payload)
+}
+
+func (o *GetOryAccessControlPolicyInternalServerError) GetPayload() *GetOryAccessControlPolicyInternalServerErrorBody {
+	return o.Payload
 }
 
 func (o *GetOryAccessControlPolicyInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {

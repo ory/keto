@@ -25,21 +25,18 @@ type GetOryAccessControlPolicyRoleReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *GetOryAccessControlPolicyRoleReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-
 	case 200:
 		result := NewGetOryAccessControlPolicyRoleOK()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return result, nil
-
 	case 404:
 		result := NewGetOryAccessControlPolicyRoleNotFound()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 500:
 		result := NewGetOryAccessControlPolicyRoleInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -67,6 +64,10 @@ type GetOryAccessControlPolicyRoleOK struct {
 
 func (o *GetOryAccessControlPolicyRoleOK) Error() string {
 	return fmt.Sprintf("[GET /engines/acp/ory/{flavor}/roles/{id}][%d] getOryAccessControlPolicyRoleOK  %+v", 200, o.Payload)
+}
+
+func (o *GetOryAccessControlPolicyRoleOK) GetPayload() *models.OryAccessControlPolicyRole {
+	return o.Payload
 }
 
 func (o *GetOryAccessControlPolicyRoleOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -98,6 +99,10 @@ func (o *GetOryAccessControlPolicyRoleNotFound) Error() string {
 	return fmt.Sprintf("[GET /engines/acp/ory/{flavor}/roles/{id}][%d] getOryAccessControlPolicyRoleNotFound  %+v", 404, o.Payload)
 }
 
+func (o *GetOryAccessControlPolicyRoleNotFound) GetPayload() *GetOryAccessControlPolicyRoleNotFoundBody {
+	return o.Payload
+}
+
 func (o *GetOryAccessControlPolicyRoleNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(GetOryAccessControlPolicyRoleNotFoundBody)
@@ -125,6 +130,10 @@ type GetOryAccessControlPolicyRoleInternalServerError struct {
 
 func (o *GetOryAccessControlPolicyRoleInternalServerError) Error() string {
 	return fmt.Sprintf("[GET /engines/acp/ory/{flavor}/roles/{id}][%d] getOryAccessControlPolicyRoleInternalServerError  %+v", 500, o.Payload)
+}
+
+func (o *GetOryAccessControlPolicyRoleInternalServerError) GetPayload() *GetOryAccessControlPolicyRoleInternalServerErrorBody {
+	return o.Payload
 }
 
 func (o *GetOryAccessControlPolicyRoleInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {

@@ -42,7 +42,7 @@
 
   /**
    * Constructs a new <code>GetOryAccessControlPolicyNotFoundBody</code>.
-   * GetOryAccessControlPolicyNotFoundBody GetOryAccessControlPolicyNotFoundBody get ory access control policy not found body
+   * GetOryAccessControlPolicyNotFoundBody get ory access control policy not found body
    * @alias module:model/GetOryAccessControlPolicyNotFoundBody
    * @class
    */

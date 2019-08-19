@@ -35,7 +35,7 @@ use \ArrayAccess;
  * Context Class Doc Comment
  *
  * @category    Class
- * @description Context Context Context Context Context Context Context Context Context context
+ * @description Context Context Context Context Context Context Context Context Context Context context
  * @package     keto\SDK
  * @author      Swagger Codegen team
  * @link        https://github.com/swagger-api/swagger-codegen

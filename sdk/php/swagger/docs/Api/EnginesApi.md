@@ -301,7 +301,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
 # **listOryAccessControlPolicies**
-> \keto\SDK\Model\OryAccessControlPolicy[] listOryAccessControlPolicies($flavor, $limit, $offset)
+> \keto\SDK\Model\OryAccessControlPolicy[] listOryAccessControlPolicies($flavor, $limit, $offset, $subject, $resource, $action)
 
 
 
@@ -316,9 +316,12 @@ $api_instance = new keto\SDK\Api\EnginesApi();
 $flavor = "flavor_example"; // string | The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\"
 $limit = 789; // int | The maximum amount of policies returned.
 $offset = 789; // int | The offset from where to start looking.
+$subject = array("subject_example"); // string[] | The subject for whom the policies are to be listed (Multiple values allowed).
+$resource = array("resource_example"); // string[] | The resource for which the policies are to be listed (Multiple values allowed).
+$action = array("action_example"); // string[] | The action for which policies are to be listed (Multiple values allowed).
 
 try {
-    $result = $api_instance->listOryAccessControlPolicies($flavor, $limit, $offset);
+    $result = $api_instance->listOryAccessControlPolicies($flavor, $limit, $offset, $subject, $resource, $action);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling EnginesApi->listOryAccessControlPolicies: ', $e->getMessage(), PHP_EOL;
@@ -333,6 +336,9 @@ Name | Type | Description  | Notes
  **flavor** | **string**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot; |
  **limit** | **int**| The maximum amount of policies returned. | [optional]
  **offset** | **int**| The offset from where to start looking. | [optional]
+ **subject** | [**string[]**](../Model/string.md)| The subject for whom the policies are to be listed (Multiple values allowed). | [optional]
+ **resource** | [**string[]**](../Model/string.md)| The resource for which the policies are to be listed (Multiple values allowed). | [optional]
+ **action** | [**string[]**](../Model/string.md)| The action for which policies are to be listed (Multiple values allowed). | [optional]
 
 ### Return type
 
@@ -350,7 +356,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
 # **listOryAccessControlPolicyRoles**
-> \keto\SDK\Model\OryAccessControlPolicyRole[] listOryAccessControlPolicyRoles($flavor, $member, $limit, $offset)
+> \keto\SDK\Model\OryAccessControlPolicyRole[] listOryAccessControlPolicyRoles($flavor, $limit, $offset, $member)
 
 List ORY Access Control Policy Roles
 
@@ -363,12 +369,12 @@ require_once(__DIR__ . '/vendor/autoload.php');
 
 $api_instance = new keto\SDK\Api\EnginesApi();
 $flavor = "flavor_example"; // string | The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\"
-$member = "member_example"; // string | The Member (ID) for which the roles are to be listed (Optional).
 $limit = 789; // int | The maximum amount of policies returned.
 $offset = 789; // int | The offset from where to start looking.
+$member = array("member_example"); // string[] | The member for which the roles are to be listed (Multiple values allowed).
 
 try {
-    $result = $api_instance->listOryAccessControlPolicyRoles($flavor, $member, $limit, $offset);
+    $result = $api_instance->listOryAccessControlPolicyRoles($flavor, $limit, $offset, $member);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling EnginesApi->listOryAccessControlPolicyRoles: ', $e->getMessage(), PHP_EOL;
@@ -381,9 +387,9 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **flavor** | **string**| The ORY Access Control Policy flavor. Can be \&quot;regex\&quot;, \&quot;glob\&quot;, and \&quot;exact\&quot; |
- **member** | **string**| The Member (ID) for which the roles are to be listed (Optional). | [optional]
  **limit** | **int**| The maximum amount of policies returned. | [optional]
  **offset** | **int**| The offset from where to start looking. | [optional]
+ **member** | [**string[]**](../Model/string.md)| The member for which the roles are to be listed (Multiple values allowed). | [optional]
 
 ### Return type
 
