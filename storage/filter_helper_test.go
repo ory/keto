@@ -26,14 +26,14 @@ var (
 		},
 	}
 	paramsReq = []map[string][]string{
-		{"members": {"mem1"}},
-		{"members": {"mem2"}},
-		{"members": {"mem3"}},
-		{"actions": {"create"}},
-		{"subjects": {"mem3", "mem4"}},
-		{"actions": {"create"}, "subjects": {"mem3"}, "resources": {"res2"}},
-		{"actions": {"create"}, "subjects": {"mem3"}, "resources": {"res3"}},
-		{"actions": {"delete"}},
+		{"member": {"mem1"}},
+		{"member": {"mem2"}},
+		{"member": {"mem3"}},
+		{"action": {"create"}},
+		{"subject": {"mem3", "mem4"}},
+		{"action": {"create"}, "subject": {"mem3"}, "resource": {"res2"}},
+		{"action": {"create"}, "subject": {"mem3"}, "resource": {"res3"}},
+		{"action": {"delete"}},
 	}
 	rolRes = []Roles{
 		Roles{
