@@ -30,7 +30,7 @@ var (
 		{"member": {"mem2"}},
 		{"member": {"mem3"}},
 		{"action": {"create"}},
-		{"subject": {"mem3", "mem4"}},
+		{"subject": {"mem3"}},
 		{"action": {"create"}, "subject": {"mem3"}, "resource": {"res2"}},
 		{"action": {"create"}, "subject": {"mem3"}, "resource": {"res3"}},
 		{"action": {"delete"}},

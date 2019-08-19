@@ -18,7 +18,7 @@ type Role struct {
 }
 
 func (r *Role) withMembers(members []string) *Role {
-	if r == nil || len(members) == 0 || sliceContains(members, r.Members) {
+	if r == nil || len(members) == 0 || contains(members[0], r.Members) {
 		return r
 	}
 	return nil
