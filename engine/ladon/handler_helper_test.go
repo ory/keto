@@ -2,10 +2,12 @@ package ladon
 
 import (
 	"github.com/ory/keto/sdk/go/keto/models"
+
+	kstorage "github.com/ory/keto/storage"
 )
 
 var (
-	roles = map[string]Roles{
+	roles = map[string]kstorage.Roles{
 		"regex": {{
 			ID:      "group1",
 			Members: []string{"ken"},
@@ -126,30 +128,30 @@ var (
 			},
 		},
 	}
-	policies = map[string]Policies{
+	policies = map[string]kstorage.Policies{
 		"regex": {
-			Policy{
+			kstorage.Policy{
 				ID:        "1",
 				Subjects:  []string{"alice", "group1", "client"},
 				Resources: []string{"matrix", "forbidden_matrix", "rn:hydra:token<.*>"},
 				Actions:   []string{"create", "decide"},
 				Effect:    Allow,
 			},
-			Policy{
+			kstorage.Policy{
 				ID:        "2",
 				Subjects:  []string{"siri"},
 				Resources: []string{"<.*>"},
 				Actions:   []string{"decide"},
 				Effect:    Allow,
 			},
-			Policy{
+			kstorage.Policy{
 				ID:        "3",
 				Subjects:  []string{"group1"},
 				Resources: []string{"forbidden_matrix", "rn:hydra:token<.*>"},
 				Actions:   []string{"create", "decide"},
 				Effect:    Deny,
 			},
-			Policy{
+			kstorage.Policy{
 				ID:        "4",
 				Subjects:  []string{"group1"},
 				Resources: []string{"allowed_matrix", "rn:hydra:token<.*>"},
@@ -158,28 +160,28 @@ var (
 			},
 		},
 		"exact": {
-			Policy{
+			kstorage.Policy{
 				ID:        "1",
 				Subjects:  []string{"alice", "group1", "client"},
 				Resources: []string{"matrix", "forbidden_matrix", "rn:hydra:token"},
 				Actions:   []string{"create", "decide"},
 				Effect:    Allow,
 			},
-			Policy{
+			kstorage.Policy{
 				ID:        "2",
 				Subjects:  []string{"siri"},
 				Resources: []string{""},
 				Actions:   []string{"decide"},
 				Effect:    Allow,
 			},
-			Policy{
+			kstorage.Policy{
 				ID:        "3",
 				Subjects:  []string{"group1"},
 				Resources: []string{"forbidden_matrix", "rn:hydra:token"},
 				Actions:   []string{"create", "decide"},
 				Effect:    Deny,
 			},
-			Policy{
+			kstorage.Policy{
 				ID:        "4",
 				Subjects:  []string{"group1"},
 				Resources: []string{"allowed_matrix", "rn:hydra:token"},

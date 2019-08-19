@@ -19,7 +19,7 @@ import (
 
 	"github.com/ory/herodot"
 	"github.com/ory/keto/engine"
-	"github.com/ory/keto/storage"
+	kstorage "github.com/ory/keto/storage"
 )
 
 func nc(t *testing.T, u string) *client.OryKeto {
@@ -38,8 +38,8 @@ func TestAllowed(t *testing.T) {
 	compiler, err := engine.NewCompiler(box, logrus.New())
 	require.NoError(t, err)
 
-	s := storage.NewMemoryManager()
-	sh := storage.NewHandler(s, herodot.NewJSONWriter(nil))
+	s := kstorage.NewMemoryManager()
+	sh := kstorage.NewHandler(s, herodot.NewJSONWriter(nil))
 	e := engine.NewEngine(compiler, herodot.NewJSONWriter(nil))
 	le := NewEngine(s, sh, e, herodot.NewJSONWriter(nil))
 
@@ -88,31 +88,31 @@ func TestAllowed(t *testing.T) {
 }
 
 func TestValidatePolicy(t *testing.T) {
-	_, err := validatePolicy(Policy{})
+	_, err := validatePolicy(kstorage.Policy{})
 	require.Error(t, err)
 
-	_, err = validatePolicy(Policy{Effect: "bar"})
+	_, err = validatePolicy(kstorage.Policy{Effect: "bar"})
 	require.Error(t, err)
 
-	p, err := validatePolicy(Policy{Effect: "allow"})
+	p, err := validatePolicy(kstorage.Policy{Effect: "allow"})
 	require.NoError(t, err)
 	assert.NotEmpty(t, p.ID)
 
-	p, err = validatePolicy(Policy{Effect: "deny", ID: "foo"})
+	p, err = validatePolicy(kstorage.Policy{Effect: "deny", ID: "foo"})
 	require.NoError(t, err)
 	assert.Equal(t, "foo", p.ID)
 }
 
 func crudts() *httptest.Server {
-	s := storage.NewMemoryManager()
-	sh := storage.NewHandler(s, herodot.NewJSONWriter(nil))
+	s := kstorage.NewMemoryManager()
+	sh := kstorage.NewHandler(s, herodot.NewJSONWriter(nil))
 	e := NewEngine(s, sh, nil, herodot.NewJSONWriter(nil))
 	r := httprouter.New()
 	e.Register(r)
 	return httptest.NewServer(r)
 }
 
-func toSwaggerPolicy(p Policy) *models.OryAccessControlPolicy {
+func toSwaggerPolicy(p kstorage.Policy) *models.OryAccessControlPolicy {
 	return &models.OryAccessControlPolicy{
 		Actions:     p.Actions,
 		ID:          p.ID,
@@ -124,8 +124,8 @@ func toSwaggerPolicy(p Policy) *models.OryAccessControlPolicy {
 	}
 }
 
-func fromSwaggerPolicy(p models.OryAccessControlPolicy) Policy {
-	return Policy{
+func fromSwaggerPolicy(p models.OryAccessControlPolicy) kstorage.Policy {
+	return kstorage.Policy{
 		Actions:     p.Actions,
 		ID:          p.ID,
 		Resources:   p.Resources,
@@ -136,15 +136,15 @@ func fromSwaggerPolicy(p models.OryAccessControlPolicy) Policy {
 	}
 }
 
-func toSwaggerRole(r Role) *models.OryAccessControlPolicyRole {
+func toSwaggerRole(r kstorage.Role) *models.OryAccessControlPolicyRole {
 	return &models.OryAccessControlPolicyRole{
 		Members: r.Members,
 		ID:      r.ID,
 	}
 }
 
-func fromSwaggerRole(r models.OryAccessControlPolicyRole) Role {
-	return Role{
+func fromSwaggerRole(r models.OryAccessControlPolicyRole) kstorage.Role {
+	return kstorage.Role{
 		Members: r.Members,
 		ID:      r.ID,
 	}
@@ -171,7 +171,7 @@ func TestPolicyCRUD(t *testing.T) {
 			os, err := c.Engines.ListOryAccessControlPolicies(engines.NewListOryAccessControlPoliciesParams().WithFlavor(f).WithLimit(&limit).WithOffset(&offset))
 			require.NoError(t, err)
 
-			var ps Policies
+			var ps kstorage.Policies
 			for _, v := range os.Payload {
 				ps = append(ps, fromSwaggerPolicy(*v))
 			}
@@ -211,7 +211,7 @@ func TestRoleCRUD(t *testing.T) {
 			os, err := c.Engines.ListOryAccessControlPolicyRoles(engines.NewListOryAccessControlPolicyRolesParams().WithFlavor(f).WithLimit(&limit).WithOffset(&offset))
 			require.NoError(t, err)
 
-			var ps Roles
+			var ps kstorage.Roles
 			for _, v := range os.Payload {
 				ps = append(ps, fromSwaggerRole(*v))
 			}

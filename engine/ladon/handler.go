@@ -304,7 +304,7 @@ func (e *Engine) rolesList(ctx context.Context, r *http.Request, ps httprouter.P
 }
 
 func (e *Engine) rolesGet(ctx context.Context, r *http.Request, ps httprouter.Params) (*kstorage.GetRequest, error) {
-	var p Role
+	var p kstorage.Role
 
 	f, err := flavor(ps)
 	if err != nil {
@@ -319,7 +319,7 @@ func (e *Engine) rolesGet(ctx context.Context, r *http.Request, ps httprouter.Pa
 }
 
 func (e *Engine) rolesUpsert(ctx context.Context, r *http.Request, ps httprouter.Params) (*kstorage.UpsertRequest, error) {
-	var p Role
+	var p kstorage.Role
 	if err := json.NewDecoder(r.Body).Decode(&p); err != nil {
 		return nil, errors.WithStack(err)
 	}
@@ -358,12 +358,12 @@ func (e *Engine) rolesMembersAdd(ctx context.Context, r *http.Request, ps httpro
 		return nil, err
 	}
 
-	var i Role
+	var i kstorage.Role
 	if err := json.NewDecoder(r.Body).Decode(&i); err != nil {
 		return nil, errors.WithStack(err)
 	}
 
-	var ro Role
+	var ro kstorage.Role
 	if err := e.s.Get(ctx, roleCollection(f), ps.ByName("id"), &ro); errors.Cause(err) == &herodot.ErrNotFound {
 		i.ID = ps.ByName("id")
 		ro = i
@@ -387,7 +387,7 @@ func (e *Engine) rolesMembersRemove(ctx context.Context, r *http.Request, ps htt
 		return nil, err
 	}
 
-	var ro Role
+	var ro kstorage.Role
 	if err := e.s.Get(ctx, roleCollection(f), ps.ByName("id"), &ro); err != nil {
 		return nil, err
 	}
@@ -404,7 +404,7 @@ func (e *Engine) rolesMembersRemove(ctx context.Context, r *http.Request, ps htt
 }
 
 func (e *Engine) policiesCreate(ctx context.Context, r *http.Request, ps httprouter.Params) (*kstorage.UpsertRequest, error) {
-	var p Policy
+	var p kstorage.Policy
 	if err := json.NewDecoder(r.Body).Decode(&p); err != nil {
 		return nil, errors.WithStack(err)
 	}
@@ -454,7 +454,7 @@ func (e *Engine) policiesDelete(ctx context.Context, r *http.Request, ps httprou
 }
 
 func (e *Engine) policiesGet(ctx context.Context, r *http.Request, ps httprouter.Params) (*kstorage.GetRequest, error) {
-	var p Policy
+	var p kstorage.Policy
 
 	f, err := flavor(ps)
 	if err != nil {
