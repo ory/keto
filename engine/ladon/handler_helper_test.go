@@ -16,7 +16,7 @@ var (
 			Members: []string{"ken"},
 		}, {
 			ID:      "group3",
-			Members: []string{"ken"},
+			Members: []string{"ben"},
 		}},
 		"exact": {{
 			ID:      "group1",
@@ -26,7 +26,7 @@ var (
 			Members: []string{"ken"},
 		}, {
 			ID:      "group3",
-			Members: []string{"ken"},
+			Members: []string{"ben"},
 		}},
 	}
 	requests = map[string][]struct {

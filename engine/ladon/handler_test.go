@@ -177,6 +177,77 @@ func TestPolicyCRUD(t *testing.T) {
 			}
 
 			assert.Equal(t, ps, policies[f][:l+1])
+
+		}
+
+		// test action filter
+		{
+			limit, offset := int64(100), int64(0)
+			action := "create"
+			os1, err := c.Engines.ListOryAccessControlPolicies(engines.NewListOryAccessControlPoliciesParams().WithFlavor(f).WithLimit(&limit).WithOffset(&offset).WithAction(&action))
+			require.NoError(t, err)
+
+			var ps kstorage.Policies
+			for _, v := range os1.Payload {
+				ps = append(ps, fromSwaggerPolicy(*v))
+			}
+
+			if len(policies[f]) > 0 {
+				assert.Equal(t, ps, kstorage.Policies{policies[f][0], policies[f][2], policies[f][3]})
+			}
+		}
+
+		// test subject filter
+		{
+			limit, offset := int64(100), int64(0)
+			subject := "siri"
+			os1, err := c.Engines.ListOryAccessControlPolicies(engines.NewListOryAccessControlPoliciesParams().WithFlavor(f).WithLimit(&limit).WithOffset(&offset).WithSubject(&subject))
+			require.NoError(t, err)
+
+			var ps kstorage.Policies
+			for _, v := range os1.Payload {
+				ps = append(ps, fromSwaggerPolicy(*v))
+			}
+
+			if len(policies[f]) > 0 {
+				assert.Equal(t, ps, kstorage.Policies{policies[f][1]})
+			}
+		}
+
+		// test resource filter
+		{
+			limit, offset := int64(100), int64(0)
+			resource := "matrix"
+			os1, err := c.Engines.ListOryAccessControlPolicies(engines.NewListOryAccessControlPoliciesParams().WithFlavor(f).WithLimit(&limit).WithOffset(&offset).WithResource(&resource))
+			require.NoError(t, err)
+
+			var ps kstorage.Policies
+			for _, v := range os1.Payload {
+				ps = append(ps, fromSwaggerPolicy(*v))
+			}
+
+			if len(policies[f]) > 0 {
+				assert.Equal(t, ps, kstorage.Policies{policies[f][0]})
+			}
+		}
+
+		// test combined filters
+		{
+			limit, offset := int64(100), int64(0)
+			subject := "group1"
+			action := "create"
+			resource := "forbidden_matrix"
+			os1, err := c.Engines.ListOryAccessControlPolicies(engines.NewListOryAccessControlPoliciesParams().WithFlavor(f).WithLimit(&limit).WithOffset(&offset).WithAction(&action).WithResource(&resource).WithSubject(&subject))
+			require.NoError(t, err)
+
+			var ps kstorage.Policies
+			for _, v := range os1.Payload {
+				ps = append(ps, fromSwaggerPolicy(*v))
+			}
+
+			if len(policies[f]) > 0 {
+				assert.Equal(t, ps, kstorage.Policies{policies[f][0], policies[f][2]})
+			}
 		}
 
 		for _, p := range policies[f] {
@@ -217,6 +288,23 @@ func TestRoleCRUD(t *testing.T) {
 			}
 
 			assert.Equal(t, ps, roles[f][:l+1])
+		}
+
+		// Test member filter
+		{
+			limit, offset := int64(100), int64(0)
+			member := "ben"
+			os, err := c.Engines.ListOryAccessControlPolicyRoles(engines.NewListOryAccessControlPolicyRolesParams().WithFlavor(f).WithLimit(&limit).WithOffset(&offset).WithMember(&member))
+			require.NoError(t, err)
+
+			var ps kstorage.Roles
+			for _, v := range os.Payload {
+				ps = append(ps, fromSwaggerRole(*v))
+			}
+
+			if len(roles[f]) > 0 {
+				assert.Equal(t, ps, kstorage.Roles{roles[f][2]})
+			}
 		}
 
 		for _, r := range roles[f] {
