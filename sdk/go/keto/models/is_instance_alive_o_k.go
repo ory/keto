@@ -12,7 +12,7 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// IsInstanceAliveOK IsInstanceAliveOK handles this case with default header values.
+// IsInstanceAliveOK IsInstanceAliveOK IsInstanceAliveOK IsInstanceAliveOK handles this case with default header values.
 //
 // healthStatus
 // swagger:model IsInstanceAliveOK

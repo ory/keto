@@ -5,7 +5,7 @@
  * PHP version 5
  *
  * @category Class
- * @package  ketoSDK
+ * @package  keto\SDK
  * @author   Swaagger Codegen team
  * @link     https://github.com/swagger-api/swagger-codegen
  */
@@ -27,7 +27,7 @@
  * Do not edit the class manually.
  */
 
-namespace ketoSDK\Model;
+namespace keto\SDK\Model;
 
 use \ArrayAccess;
 
@@ -35,7 +35,7 @@ use \ArrayAccess;
  * OryAccessControlPolicyRoles Class Doc Comment
  *
  * @category    Class
- * @package     ketoSDK
+ * @package     keto\SDK
  * @author      Swagger Codegen team
  * @link        https://github.com/swagger-api/swagger-codegen
  */
@@ -47,14 +47,14 @@ class OryAccessControlPolicyRoles implements ArrayAccess
       * The original name of the model.
       * @var string
       */
-    protected static $swaggerModelName = 'oryAccessControlPolicyRoles';
+    protected static $swaggerModelName = 'OryAccessControlPolicyRoles';
 
     /**
       * Array of property to type mappings. Used for (de)serialization
       * @var string[]
       */
     protected static $swaggerTypes = [
-        'body' => '\ketoSDK\Model\OryAccessControlPolicyRole[]'
+        'body' => '\keto\SDK\Model\OryAccessControlPolicyRole[]'
     ];
 
     /**
@@ -162,7 +162,7 @@ class OryAccessControlPolicyRoles implements ArrayAccess
 
     /**
      * Gets body
-     * @return \ketoSDK\Model\OryAccessControlPolicyRole[]
+     * @return \keto\SDK\Model\OryAccessControlPolicyRole[]
      */
     public function getBody()
     {
@@ -171,7 +171,7 @@ class OryAccessControlPolicyRoles implements ArrayAccess
 
     /**
      * Sets body
-     * @param \ketoSDK\Model\OryAccessControlPolicyRole[] $body The request body.  in: body type: array
+     * @param \keto\SDK\Model\OryAccessControlPolicyRole[] $body The request body.  in: body type: array
      * @return $this
      */
     public function setBody($body)
@@ -232,10 +232,10 @@ class OryAccessControlPolicyRoles implements ArrayAccess
     public function __toString()
     {
         if (defined('JSON_PRETTY_PRINT')) { // use JSON pretty print
-            return json_encode(\ketoSDK\ObjectSerializer::sanitizeForSerialization($this), JSON_PRETTY_PRINT);
+            return json_encode(\keto\SDK\ObjectSerializer::sanitizeForSerialization($this), JSON_PRETTY_PRINT);
         }
 
-        return json_encode(\ketoSDK\ObjectSerializer::sanitizeForSerialization($this));
+        return json_encode(\keto\SDK\ObjectSerializer::sanitizeForSerialization($this));
     }
 }
 

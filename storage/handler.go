@@ -72,6 +72,39 @@ func (h *Handler) Delete(factory func(context.Context, *http.Request, httprouter
 type ListRequest struct {
 	Collection string
 	Value      interface{}
+	FilterFunc func(*ListRequest, map[string][]string)
+}
+
+func (l *ListRequest) Filter(m map[string][]string) *ListRequest {
+	if l.FilterFunc != nil {
+		l.FilterFunc(l, m)
+	}
+	return l
+}
+
+func ListByQuery(l *ListRequest, m map[string][]string) {
+	switch val := l.Value.(type) {
+	case *Roles:
+		var res Roles
+		for _, role := range *val {
+			filteredRole := role.withMembers(m["member"]).withIDs(m["id"])
+			if filteredRole != nil {
+				res = append(res, *filteredRole)
+			}
+		}
+		l.Value = &res
+	case *Policies:
+		var res Policies
+		for _, policy := range *val {
+			filteredPolicy := policy.withSubjects(m["subject"]).withResources(m["resource"]).withActions(m["action"]).withIDs(m["id"])
+			if filteredPolicy != nil {
+				res = append(res, *filteredPolicy)
+			}
+		}
+		l.Value = &res
+	default:
+		panic("storage:unable to cast list request to a known type!")
+	}
 }
 
 func (h *Handler) List(factory func(context.Context, *http.Request, httprouter.Params) (*ListRequest, error)) httprouter.Handle {
@@ -82,14 +115,15 @@ func (h *Handler) List(factory func(context.Context, *http.Request, httprouter.P
 			h.h.WriteError(w, r, err)
 			return
 		}
-
 		limit, offset := pagination.Parse(r, 100, 0, 500)
+
 		if err := h.s.List(ctx, l.Collection, l.Value, limit, offset); err != nil {
 			h.h.WriteError(w, r, err)
 			return
 		}
 
-		h.h.Write(w, r, l.Value)
+		m := r.URL.Query()
+		h.h.Write(w, r, l.Filter(m).Value)
 	}
 }
 

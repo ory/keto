@@ -25,14 +25,12 @@ type AddOryAccessControlPolicyRoleMembersReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *AddOryAccessControlPolicyRoleMembersReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-
 	case 200:
 		result := NewAddOryAccessControlPolicyRoleMembersOK()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return result, nil
-
 	case 500:
 		result := NewAddOryAccessControlPolicyRoleMembersInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -62,6 +60,10 @@ func (o *AddOryAccessControlPolicyRoleMembersOK) Error() string {
 	return fmt.Sprintf("[PUT /engines/acp/ory/{flavor}/roles/{id}/members][%d] addOryAccessControlPolicyRoleMembersOK  %+v", 200, o.Payload)
 }
 
+func (o *AddOryAccessControlPolicyRoleMembersOK) GetPayload() *models.OryAccessControlPolicyRole {
+	return o.Payload
+}
+
 func (o *AddOryAccessControlPolicyRoleMembersOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.OryAccessControlPolicyRole)
@@ -89,6 +91,10 @@ type AddOryAccessControlPolicyRoleMembersInternalServerError struct {
 
 func (o *AddOryAccessControlPolicyRoleMembersInternalServerError) Error() string {
 	return fmt.Sprintf("[PUT /engines/acp/ory/{flavor}/roles/{id}/members][%d] addOryAccessControlPolicyRoleMembersInternalServerError  %+v", 500, o.Payload)
+}
+
+func (o *AddOryAccessControlPolicyRoleMembersInternalServerError) GetPayload() *AddOryAccessControlPolicyRoleMembersInternalServerErrorBody {
+	return o.Payload
 }
 
 func (o *AddOryAccessControlPolicyRoleMembersInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {

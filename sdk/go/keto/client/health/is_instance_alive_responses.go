@@ -25,14 +25,12 @@ type IsInstanceAliveReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *IsInstanceAliveReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-
 	case 200:
 		result := NewIsInstanceAliveOK()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return result, nil
-
 	case 500:
 		result := NewIsInstanceAliveInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -62,6 +60,10 @@ func (o *IsInstanceAliveOK) Error() string {
 	return fmt.Sprintf("[GET /health/alive][%d] isInstanceAliveOK  %+v", 200, o.Payload)
 }
 
+func (o *IsInstanceAliveOK) GetPayload() *models.SwaggerHealthStatus {
+	return o.Payload
+}
+
 func (o *IsInstanceAliveOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.SwaggerHealthStatus)
@@ -89,6 +91,10 @@ type IsInstanceAliveInternalServerError struct {
 
 func (o *IsInstanceAliveInternalServerError) Error() string {
 	return fmt.Sprintf("[GET /health/alive][%d] isInstanceAliveInternalServerError  %+v", 500, o.Payload)
+}
+
+func (o *IsInstanceAliveInternalServerError) GetPayload() *IsInstanceAliveInternalServerErrorBody {
+	return o.Payload
 }
 
 func (o *IsInstanceAliveInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {

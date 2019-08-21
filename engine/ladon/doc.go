@@ -59,6 +59,21 @@ type listOryAccessControlPolicies struct {
 	//
 	// in: query
 	Offset int `json:"offset"`
+
+	// The subject for whom the policies are to be listed.
+	//
+	// in: query
+	Subject string `json:"subject"`
+
+	// The resource for which the policies are to be listed.
+	//
+	// in: query
+	Resource string `json:"resource"`
+
+	// The action for which policies are to be listed.
+	//
+	// in: query
+	Action string `json:"action"`
 }
 
 // swagger:parameters getOryAccessControlPolicy
@@ -254,4 +269,9 @@ type listOryAccessControlPolicyRoles struct {
 	//
 	// in: query
 	Offset int `json:"offset"`
+
+	// The member for which the roles are to be listed.
+	//
+	// in: query
+	Member string `json:"member"`
 }

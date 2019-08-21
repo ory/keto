@@ -14,8 +14,8 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// OryAccessControlPolicies Policies is an array of policies.
-// swagger:model oryAccessControlPolicies
+// OryAccessControlPolicies OryAccessControlPolicies Policies is an array of policies.
+// swagger:model OryAccessControlPolicies
 type OryAccessControlPolicies struct {
 
 	// The request body.

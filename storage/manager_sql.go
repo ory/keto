@@ -109,10 +109,11 @@ func (m *SQLManager) Upsert(ctx context.Context, collection, key string, value i
 
 func (m *SQLManager) List(ctx context.Context, collection string, value interface{}, limit, offset int) error {
 	var items []string
+	query := "SELECT document FROM rego_data WHERE collection=? ORDER BY id ASC LIMIT ? OFFSET ?"
 	if err := m.db.SelectContext(
 		ctx,
 		&items,
-		m.db.Rebind("SELECT document FROM rego_data WHERE collection=? ORDER BY id ASC LIMIT ? OFFSET ?"), collection, limit, offset,
+		m.db.Rebind(query), collection, limit, offset,
 	); err != nil {
 		return sqlcon.HandleError(err)
 	}

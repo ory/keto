@@ -13,8 +13,8 @@ import (
 	"github.com/go-openapi/validate"
 )
 
-// UpsertOryAccessControlPolicy upsert ory access control policy
-// swagger:model upsertOryAccessControlPolicy
+// UpsertOryAccessControlPolicy UpsertOryAccessControlPolicy UpsertOryAccessControlPolicy upsert ory access control policy
+// swagger:model UpsertOryAccessControlPolicy
 type UpsertOryAccessControlPolicy struct {
 
 	// body

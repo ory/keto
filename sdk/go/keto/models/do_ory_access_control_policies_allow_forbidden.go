@@ -12,7 +12,7 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// DoOryAccessControlPoliciesAllowForbidden DoOryAccessControlPoliciesAllowForbidden handles this case with default header values.
+// DoOryAccessControlPoliciesAllowForbidden DoOryAccessControlPoliciesAllowForbidden DoOryAccessControlPoliciesAllowForbidden DoOryAccessControlPoliciesAllowForbidden handles this case with default header values.
 //
 // authorizationResult
 // swagger:model DoOryAccessControlPoliciesAllowForbidden

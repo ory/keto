@@ -42,6 +42,7 @@
 
   /**
    * Constructs a new <code>UpsertOryAccessControlPolicyRole</code>.
+   * UpsertOryAccessControlPolicyRole upsert ory access control policy role
    * @alias module:model/UpsertOryAccessControlPolicyRole
    * @class
    * @param flavor {String} The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".  in: path

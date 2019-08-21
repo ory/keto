@@ -1,24 +1,4 @@
-/*
- * Copyright © 2016-2018 Aeneas Rekkas <aeneas+oss@aeneas.io>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- * @author		Aeneas Rekkas <aeneas+oss@aeneas.io>
- * @copyright 	2015-2018 Aeneas Rekkas <aeneas+oss@aeneas.io>
- * @license 	Apache-2.0
- */
-
-package ladon
+package storage
 
 // Policies is an array of policies.
 //
@@ -49,4 +29,32 @@ type Policy struct {
 
 	// Conditions represents a keyed object of conditions under which this ORY Access Policy is active.
 	Conditions map[string]interface{} `json:"conditions"`
+}
+
+func (p *Policy) withSubjects(subjects []string) *Policy {
+	if p == nil || len(subjects) == 0 || contains(subjects[0], p.Subjects) {
+		return p
+	}
+	return nil
+}
+
+func (p *Policy) withResources(resources []string) *Policy {
+	if p == nil || len(resources) == 0 || contains(resources[0], p.Resources) {
+		return p
+	}
+	return nil
+}
+
+func (p *Policy) withActions(actions []string) *Policy {
+	if p == nil || len(actions) == 0 || contains(actions[0], p.Actions) {
+		return p
+	}
+	return nil
+}
+
+func (p *Policy) withIDs(ids []string) *Policy {
+	if p == nil || len(ids) == 0 || contains(p.ID, ids) {
+		return p
+	}
+	return nil
 }

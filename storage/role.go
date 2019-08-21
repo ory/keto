@@ -1,4 +1,4 @@
-package ladon
+package storage
 
 // A list of roles.
 //
@@ -15,4 +15,18 @@ type Role struct {
 
 	// Members is who belongs to the role.
 	Members []string `json:"members"`
+}
+
+func (r *Role) withMembers(members []string) *Role {
+	if r == nil || len(members) == 0 || contains(members[0], r.Members) {
+		return r
+	}
+	return nil
+}
+
+func (r *Role) withIDs(ids []string) *Role {
+	if r == nil || len(ids) == 0 || contains(r.ID, ids) {
+		return r
+	}
+	return nil
 }

@@ -5,7 +5,7 @@
  * PHP version 5
  *
  * @category Class
- * @package  ketoSDK
+ * @package  keto\SDK
  * @author   Swaagger Codegen team
  * @link     https://github.com/swagger-api/swagger-codegen
  */
@@ -27,7 +27,7 @@
  * Do not edit the class manually.
  */
 
-namespace ketoSDK\Model;
+namespace keto\SDK\Model;
 
 use \ArrayAccess;
 
@@ -35,7 +35,8 @@ use \ArrayAccess;
  * UpsertOryAccessControlPolicy Class Doc Comment
  *
  * @category    Class
- * @package     ketoSDK
+ * @description UpsertOryAccessControlPolicy upsert ory access control policy
+ * @package     keto\SDK
  * @author      Swagger Codegen team
  * @link        https://github.com/swagger-api/swagger-codegen
  */
@@ -54,7 +55,7 @@ class UpsertOryAccessControlPolicy implements ArrayAccess
       * @var string[]
       */
     protected static $swaggerTypes = [
-        'body' => '\ketoSDK\Model\OryAccessControlPolicy',
+        'body' => '\keto\SDK\Model\OryAccessControlPolicy',
         'flavor' => 'string'
     ];
 
@@ -174,7 +175,7 @@ class UpsertOryAccessControlPolicy implements ArrayAccess
 
     /**
      * Gets body
-     * @return \ketoSDK\Model\OryAccessControlPolicy
+     * @return \keto\SDK\Model\OryAccessControlPolicy
      */
     public function getBody()
     {
@@ -183,7 +184,7 @@ class UpsertOryAccessControlPolicy implements ArrayAccess
 
     /**
      * Sets body
-     * @param \ketoSDK\Model\OryAccessControlPolicy $body
+     * @param \keto\SDK\Model\OryAccessControlPolicy $body
      * @return $this
      */
     public function setBody($body)
@@ -265,10 +266,10 @@ class UpsertOryAccessControlPolicy implements ArrayAccess
     public function __toString()
     {
         if (defined('JSON_PRETTY_PRINT')) { // use JSON pretty print
-            return json_encode(\ketoSDK\ObjectSerializer::sanitizeForSerialization($this), JSON_PRETTY_PRINT);
+            return json_encode(\keto\SDK\ObjectSerializer::sanitizeForSerialization($this), JSON_PRETTY_PRINT);
         }
 
-        return json_encode(\ketoSDK\ObjectSerializer::sanitizeForSerialization($this));
+        return json_encode(\keto\SDK\ObjectSerializer::sanitizeForSerialization($this));
     }
 }
 

@@ -12,7 +12,7 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// GetOryAccessControlPolicyRoleOK GetOryAccessControlPolicyRoleOK handles this case with default header values.
+// GetOryAccessControlPolicyRoleOK GetOryAccessControlPolicyRoleOK GetOryAccessControlPolicyRoleOK handles this case with default header values.
 //
 // oryAccessControlPolicyRole
 // swagger:model GetOryAccessControlPolicyRoleOK

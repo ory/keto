@@ -25,21 +25,18 @@ type DoOryAccessControlPoliciesAllowReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *DoOryAccessControlPoliciesAllowReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-
 	case 200:
 		result := NewDoOryAccessControlPoliciesAllowOK()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return result, nil
-
 	case 403:
 		result := NewDoOryAccessControlPoliciesAllowForbidden()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 500:
 		result := NewDoOryAccessControlPoliciesAllowInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -67,6 +64,10 @@ type DoOryAccessControlPoliciesAllowOK struct {
 
 func (o *DoOryAccessControlPoliciesAllowOK) Error() string {
 	return fmt.Sprintf("[POST /engines/acp/ory/{flavor}/allowed][%d] doOryAccessControlPoliciesAllowOK  %+v", 200, o.Payload)
+}
+
+func (o *DoOryAccessControlPoliciesAllowOK) GetPayload() *models.AuthorizationResult {
+	return o.Payload
 }
 
 func (o *DoOryAccessControlPoliciesAllowOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -98,6 +99,10 @@ func (o *DoOryAccessControlPoliciesAllowForbidden) Error() string {
 	return fmt.Sprintf("[POST /engines/acp/ory/{flavor}/allowed][%d] doOryAccessControlPoliciesAllowForbidden  %+v", 403, o.Payload)
 }
 
+func (o *DoOryAccessControlPoliciesAllowForbidden) GetPayload() *models.AuthorizationResult {
+	return o.Payload
+}
+
 func (o *DoOryAccessControlPoliciesAllowForbidden) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.AuthorizationResult)
@@ -125,6 +130,10 @@ type DoOryAccessControlPoliciesAllowInternalServerError struct {
 
 func (o *DoOryAccessControlPoliciesAllowInternalServerError) Error() string {
 	return fmt.Sprintf("[POST /engines/acp/ory/{flavor}/allowed][%d] doOryAccessControlPoliciesAllowInternalServerError  %+v", 500, o.Payload)
+}
+
+func (o *DoOryAccessControlPoliciesAllowInternalServerError) GetPayload() *DoOryAccessControlPoliciesAllowInternalServerErrorBody {
+	return o.Payload
 }
 
 func (o *DoOryAccessControlPoliciesAllowInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {

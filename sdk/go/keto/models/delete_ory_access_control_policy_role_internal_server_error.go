@@ -12,7 +12,7 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// DeleteOryAccessControlPolicyRoleInternalServerError DeleteOryAccessControlPolicyRoleInternalServerError handles this case with default header values.
+// DeleteOryAccessControlPolicyRoleInternalServerError DeleteOryAccessControlPolicyRoleInternalServerError DeleteOryAccessControlPolicyRoleInternalServerError handles this case with default header values.
 //
 // The standard error format
 // swagger:model DeleteOryAccessControlPolicyRoleInternalServerError

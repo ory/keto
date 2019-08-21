@@ -23,14 +23,12 @@ type DeleteOryAccessControlPolicyReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *DeleteOryAccessControlPolicyReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-
 	case 204:
 		result := NewDeleteOryAccessControlPolicyNoContent()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return result, nil
-
 	case 500:
 		result := NewDeleteOryAccessControlPolicyInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -79,6 +77,10 @@ type DeleteOryAccessControlPolicyInternalServerError struct {
 
 func (o *DeleteOryAccessControlPolicyInternalServerError) Error() string {
 	return fmt.Sprintf("[DELETE /engines/acp/ory/{flavor}/policies/{id}][%d] deleteOryAccessControlPolicyInternalServerError  %+v", 500, o.Payload)
+}
+
+func (o *DeleteOryAccessControlPolicyInternalServerError) GetPayload() *DeleteOryAccessControlPolicyInternalServerErrorBody {
+	return o.Payload
 }
 
 func (o *DeleteOryAccessControlPolicyInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {

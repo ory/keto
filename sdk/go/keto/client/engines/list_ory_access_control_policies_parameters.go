@@ -62,6 +62,11 @@ for the list ory access control policies operation typically these are written t
 */
 type ListOryAccessControlPoliciesParams struct {
 
+	/*Action
+	  The action for which policies are to be listed.
+
+	*/
+	Action *string
 	/*Flavor
 	  The ORY Access Control Policy flavor. Can be "regex", "glob", and "exact"
 
@@ -77,6 +82,16 @@ type ListOryAccessControlPoliciesParams struct {
 
 	*/
 	Offset *int64
+	/*Resource
+	  The resource for which the policies are to be listed.
+
+	*/
+	Resource *string
+	/*Subject
+	  The subject for whom the policies are to be listed.
+
+	*/
+	Subject *string
 
 	timeout    time.Duration
 	Context    context.Context
@@ -116,6 +131,17 @@ func (o *ListOryAccessControlPoliciesParams) SetHTTPClient(client *http.Client) 
 	o.HTTPClient = client
 }
 
+// WithAction adds the action to the list ory access control policies params
+func (o *ListOryAccessControlPoliciesParams) WithAction(action *string) *ListOryAccessControlPoliciesParams {
+	o.SetAction(action)
+	return o
+}
+
+// SetAction adds the action to the list ory access control policies params
+func (o *ListOryAccessControlPoliciesParams) SetAction(action *string) {
+	o.Action = action
+}
+
 // WithFlavor adds the flavor to the list ory access control policies params
 func (o *ListOryAccessControlPoliciesParams) WithFlavor(flavor string) *ListOryAccessControlPoliciesParams {
 	o.SetFlavor(flavor)
@@ -149,6 +175,28 @@ func (o *ListOryAccessControlPoliciesParams) SetOffset(offset *int64) {
 	o.Offset = offset
 }
 
+// WithResource adds the resource to the list ory access control policies params
+func (o *ListOryAccessControlPoliciesParams) WithResource(resource *string) *ListOryAccessControlPoliciesParams {
+	o.SetResource(resource)
+	return o
+}
+
+// SetResource adds the resource to the list ory access control policies params
+func (o *ListOryAccessControlPoliciesParams) SetResource(resource *string) {
+	o.Resource = resource
+}
+
+// WithSubject adds the subject to the list ory access control policies params
+func (o *ListOryAccessControlPoliciesParams) WithSubject(subject *string) *ListOryAccessControlPoliciesParams {
+	o.SetSubject(subject)
+	return o
+}
+
+// SetSubject adds the subject to the list ory access control policies params
+func (o *ListOryAccessControlPoliciesParams) SetSubject(subject *string) {
+	o.Subject = subject
+}
+
 // WriteToRequest writes these params to a swagger request
 func (o *ListOryAccessControlPoliciesParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Registry) error {
 
@@ -156,6 +204,22 @@ func (o *ListOryAccessControlPoliciesParams) WriteToRequest(r runtime.ClientRequ
 		return err
 	}
 	var res []error
+
+	if o.Action != nil {
+
+		// query param action
+		var qrAction string
+		if o.Action != nil {
+			qrAction = *o.Action
+		}
+		qAction := qrAction
+		if qAction != "" {
+			if err := r.SetQueryParam("action", qAction); err != nil {
+				return err
+			}
+		}
+
+	}
 
 	// path param flavor
 	if err := r.SetPathParam("flavor", o.Flavor); err != nil {
@@ -188,6 +252,38 @@ func (o *ListOryAccessControlPoliciesParams) WriteToRequest(r runtime.ClientRequ
 		qOffset := swag.FormatInt64(qrOffset)
 		if qOffset != "" {
 			if err := r.SetQueryParam("offset", qOffset); err != nil {
+				return err
+			}
+		}
+
+	}
+
+	if o.Resource != nil {
+
+		// query param resource
+		var qrResource string
+		if o.Resource != nil {
+			qrResource = *o.Resource
+		}
+		qResource := qrResource
+		if qResource != "" {
+			if err := r.SetQueryParam("resource", qResource); err != nil {
+				return err
+			}
+		}
+
+	}
+
+	if o.Subject != nil {
+
+		// query param subject
+		var qrSubject string
+		if o.Subject != nil {
+			qrSubject = *o.Subject
+		}
+		qSubject := qrSubject
+		if qSubject != "" {
+			if err := r.SetQueryParam("subject", qSubject); err != nil {
 				return err
 			}
 		}
