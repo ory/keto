@@ -10,6 +10,10 @@ var (
 			ID:      "role2",
 			Members: []string{"mem1", "mem2"},
 		},
+		{
+			ID:      "role3",
+			Members: []string{"mem4"},
+		},
 	}
 	polReq = Policies{
 		{
@@ -34,6 +38,13 @@ var (
 		{"action": {"create"}, "subject": {"mem3"}, "resource": {"res2"}},
 		{"action": {"create"}, "subject": {"mem3"}, "resource": {"res3"}},
 		{"action": {"delete"}},
+		{"subject": {"mem0", "mem1"}},
+		{"subject": {"mem1", "mem2"}},
+		{"subject": {"mem1", "mem2"}, "resource": {"res1", "res2"}},
+		{"action": {"create"}, "subject": {"mem2", "mem3"}, "resource": {"res1"}},
+		{"action": {"create"}, "subject": {"mem1", "mem2"}, "resource": {"res1", "res2"}},
+		{"member": {"mem1", "mem2"}},
+		{"member": {"mem1", "mem4"}},
 	}
 	rolRes = []Roles{
 		Roles{
@@ -58,6 +69,13 @@ var (
 		rolReq,
 		rolReq,
 		rolReq,
+		rolReq,
+		rolReq,
+		rolReq,
+		rolReq,
+		rolReq,
+		rolReq[1:2],
+		nil,
 	}
 	polRes = []Policies{
 		polReq,
@@ -95,5 +113,12 @@ var (
 		},
 		nil,
 		nil,
+		nil,
+		polReq[:1],
+		polReq[:1],
+		nil,
+		polReq[:1],
+		polReq,
+		polReq,
 	}
 )
