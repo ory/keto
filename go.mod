@@ -70,3 +70,4 @@ require (
 // Fix for https://github.com/golang/lint/issues/436
 replace github.com/golang/lint => github.com/golang/lint v0.0.0-20181217174547-8f45f776aaf1
 
+go 1.13
