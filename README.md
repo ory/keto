@@ -76,7 +76,7 @@ submitting bug reports and feature requests, to contributing patches, to sponsor
 everyone of you.
 
 The following list represents companies that have accompanied us along the way and that have made outstanding contributions
-to our ecosystem. *If you think that your company deserves a spot here, reach out to <a href="mailto:hi@ory.sh">hi@ory.sh</a>now*!
+to our ecosystem. *If you think that your company deserves a spot here, reach out to <a href="mailto:hi@ory.sh">hi@ory.sh</a> now*!
 
 **Please consider giving back by becoming a sponsor of our open source work on <a href="https://www.patreon.com/_ory">Patreon</a> or 
 <a href="https://opencollective.com/ory">Open Collective</a>.**
@@ -247,4 +247,4 @@ Sponsors support this project. The sponsor's logo or brand will show up here wit
 <a href="https://opencollective.com/ory/sponsor/8/website" target="_blank"><img src="https://opencollective.com/ory/sponsor/8/avatar.svg"></a>
 <a href="https://opencollective.com/ory/sponsor/9/website" target="_blank"><img src="https://opencollective.com/ory/sponsor/9/avatar.svg"></a>
 
-A special thanks goes out to **Wayne Robinson** for supporting this ecosystem with \$200 every month since Oktober 2016 [on Patreon](https://www.patreon.com/_ory).
+A special thanks goes out to **Wayne Robinson** for supporting this ecosystem with \$200 every month since October 2016 [on Patreon](https://www.patreon.com/_ory).
