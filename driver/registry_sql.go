@@ -5,10 +5,11 @@ import (
 
 	"github.com/jmoiron/sqlx"
 
-	"github.com/ory/keto/storage"
 	"github.com/ory/x/dbal"
 	"github.com/ory/x/sqlcon"
 	"github.com/ory/x/urlx"
+
+	"github.com/ory/keto/storage"
 )
 
 type RegistrySQL struct {
@@ -21,7 +22,9 @@ type RegistrySQL struct {
 var _ Registry = new(RegistrySQL)
 
 func init() {
-	dbal.RegisterDriver(NewRegistrySQL())
+	dbal.RegisterDriver(func() dbal.Driver {
+		return NewRegistrySQL()
+	})
 }
 
 func NewRegistrySQL() *RegistrySQL {

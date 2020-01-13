@@ -15,8 +15,8 @@
 package cmd
 
 import (
-	"github.com/ory/keto/sdk/go/keto/client/engines"
-	"github.com/ory/keto/sdk/go/keto/models"
+	"github.com/ory/keto/internal/httpclient/client/engines"
+	"github.com/ory/keto/internal/httpclient/models"
 
 	"github.com/spf13/cobra"
 

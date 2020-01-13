@@ -28,9 +28,12 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/assert"
+
+	"github.com/ory/viper"
 )
 
 func TestExecute(t *testing.T) {
+	viper.Set("dsn", "memory")
 	ep := fmt.Sprintf("http://127.0.0.1:%d", port)
 
 	for _, c := range []struct {

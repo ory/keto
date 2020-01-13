@@ -33,8 +33,9 @@ import (
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 	"github.com/urfave/negroni"
+
+	"github.com/ory/viper"
 
 	"github.com/ory/graceful"
 	"github.com/ory/keto/engine/ladon"

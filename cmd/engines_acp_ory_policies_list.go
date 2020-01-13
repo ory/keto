@@ -17,7 +17,7 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/ory/keto/sdk/go/keto/client/engines"
+	"github.com/ory/keto/internal/httpclient/client/engines"
 
 	"github.com/spf13/cobra"
 
