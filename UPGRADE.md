@@ -30,7 +30,7 @@ before finalizing the upgrade process.
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-## 0.4.0
+## 0.4.0-sandbox
 
 This release focuses on a rework of the SDK pipeline. First of all, we have introduced new SDKs for all popular programming
 languages and published them on their respective package repositories:
