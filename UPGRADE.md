@@ -7,23 +7,53 @@ before finalizing the upgrade process.
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
-- [Upgrading](#upgrading)
-  - [0.2.0-sandbox](#020-sandbox)
-    - [Conceptual changes](#conceptual-changes)
-      - [Deprecated](#deprecated)
-      - [Changes](#changes)
-      - [Additions](#additions)
-      - [Untouched](#untouched)
-    - [API Changes](#api-changes)
-      - [Renamed Endpoints](#renamed-endpoints)
-      - [Reworked Endpoints](#reworked-endpoints)
-      - [New Endpoints](#new-endpoints)
-    - [Migration](#migration)
-      - [SQL](#sql)
-  - [0.0.1](#001)
-    - [CORS is disabled by default](#cors-is-disabled-by-default)
+
+- [0.4.0](#040)
+- [0.3.0-sandbox](#030-sandbox)
+  - [Configuration](#configuration)
+  - [ORY Access Control Policies Allowed Endpoint](#ory-access-control-policies-allowed-endpoint)
+  - [SDK](#sdk)
+- [0.2.0-sandbox](#020-sandbox)
+  - [Conceptual changes](#conceptual-changes)
+    - [Deprecated](#deprecated)
+    - [Changes](#changes)
+    - [Additions](#additions)
+    - [Untouched](#untouched)
+  - [API Changes](#api-changes)
+    - [Renamed Endpoints](#renamed-endpoints)
+    - [Reworked Endpoints](#reworked-endpoints)
+    - [New Endpoints](#new-endpoints)
+  - [Migration](#migration)
+    - [SQL](#sql)
+- [0.0.1](#001)
+  - [CORS is disabled by default](#cors-is-disabled-by-default)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+## 0.4.0
+
+This release focuses on a rework of the SDK pipeline. First of all, we have introduced new SDKs for all popular programming
+languages and published them on their respective package repositories:
+
+- [Python](https://pypi.org/project/ory-keto-client/)
+- [PHP](https://packagist.org/packages/ory/keto-client)
+- [Go](https://github.com/ory/keto-client-go)
+- [NodeJS](https://www.npmjs.com/package/@oryd/keto-client) (with TypeScript)
+- [Java](https://search.maven.org/artifact/sh.ory.keto/keto-client)
+- [Ruby](https://rubygems.org/gems/ory-keto-client)
+
+The SDKs hosted in this repository (under ./sdk/...) have been completely removed. Please use only the SDKs from the
+above sources from now on as it will also remove several issues that were caused by the previous SDK pipeline.
+
+Unfortunately, there were breaking changes introduced by the new SDK generation:
+
+- Several structs and fields have been renamed in the Go SDK. However, nothing else changed so upgrading should be a matter of
+half an hour if you made extensive use of the SDK, or several minutes if just one or two methods are being used.
+- All other SDKs changed to `openapi-generator`, which is a better maintained generator that creates
+better code than the one previously used. This manifests in TypeScript definitions for the NodeJS SDK and
+several other goodies. We do not have a proper migration path for those, unfortunately.
+
+If you have issues with upgrading the SDK, please let us know in an issue on this repository!
 
 ## 0.3.0-sandbox
 
