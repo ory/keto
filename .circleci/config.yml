@@ -1,11 +1,13 @@
-# Golang CircleCI 2.0 configuration file
-#
-# Check https://circleci.com/docs/2.0/language-go/ for more details
-version: 2
+version: 2.1
+
+orbs:
+  changelog: ory/changelog@0.0.5
+  sdk: ory/sdk@0.1.13
+
 jobs:
   format:
     docker:
-      - image: circleci/golang:1.11
+      - image: circleci/golang:1.13
     working_directory: /go/src/github.com/ory/keto
     steps:
       - checkout
@@ -18,22 +20,9 @@ jobs:
       - run: go mod download
       - run: golangci-lint run ./...
 
-  release-npm:
-    docker:
-      - image: circleci/node:8.9.3
-    working_directory: ~/hydra
-    steps:
-      - checkout
-      - run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/.npmrc
-      - run: |
-          npm version -f --no-git-tag-version $CIRCLE_TAG
-      - run: npm view ory-hydra-sdk
-      - run: npm whoami
-      - run: npm publish
-
   test:
     docker:
-      - image: circleci/golang:1.11
+      - image: circleci/golang:1.13
         environment:
           - TEST_DATABASE_POSTGRESQL=postgres://test:test@localhost:5432/keto?sslmode=disable
           - TEST_DATABASE_MYSQL=root:test@(localhost:3306)/mysql?parseTime=true
@@ -101,26 +90,6 @@ jobs:
       - run: "cp configuration.md ../docs/docs/keto/configuration.md"
       - run: "(cd ../docs && git add -A && git commit -a -m \"Updates ORY Keto Swagger and config definitions\" && git push origin) || exit 0"
 
-  release-changelog:
-    docker:
-      - image: circleci/ruby:2.4-node
-    steps:
-      - checkout
-      - run: gem install github_changelog_generator
-      - run: sudo npm i -g doctoc
-      - run: github_changelog_generator -u ory -p keto -o CHANGELOG.md --token $GITHUB_TOKEN
-      - run: doctoc CHANGELOG.md
-      - run: doctoc README.md
-      - run: git config --global user.email "circleci@ory.am"
-      - run: git config --global user.name "ORY Continuous Integration"
-      - run: git add CHANGELOG.md
-      - run: git add README.md
-      - run: |
-          git commit -a -m "docs: Incorporates changes from version $(git describe --tags)" || true
-      - run: git remote rm origin
-      - run: git remote add origin https://arekkas:$GITHUB_TOKEN@github.com/ory/keto.git
-      - run: git push origin HEAD:master || true
-
 workflows:
   version: 2
   "test, build, and relase":
@@ -146,18 +115,25 @@ workflows:
           filters:
             branches:
               only: master
-      - release-npm:
+      - changelog/generate:
           requires:
-            - release
+            - test
+            - format
           filters:
             tags:
               only: /.*/
             branches:
-              ignore: /.*/
-      - release-changelog:
+              only: master
+      - sdk/generate:
+          appname: Ory_Keto
           requires:
+            - test
+            - format
+      - sdk/release:
+          requires:
+            - test
+            - format
             - release
-            - release-npm
           filters:
             tags:
               only: /.*/

@@ -14,7 +14,9 @@ type RegistryMemory struct {
 var _ Registry = new(RegistryMemory)
 
 func init() {
-	dbal.RegisterDriver(NewRegistryMemory())
+	dbal.RegisterDriver(func() dbal.Driver {
+		return NewRegistryMemory()
+	})
 }
 
 func NewRegistryMemory() *RegistryMemory {

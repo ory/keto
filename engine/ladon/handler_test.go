@@ -6,9 +6,9 @@ import (
 	"net/url"
 	"testing"
 
-	"github.com/ory/keto/sdk/go/keto/client"
-	"github.com/ory/keto/sdk/go/keto/client/engines"
-	"github.com/ory/keto/sdk/go/keto/models"
+	"github.com/ory/keto/internal/httpclient/client"
+	"github.com/ory/keto/internal/httpclient/client/engines"
+	"github.com/ory/keto/internal/httpclient/models"
 
 	"github.com/gobuffalo/packr"
 	"github.com/julienschmidt/httprouter"

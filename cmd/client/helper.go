@@ -23,10 +23,11 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/ory/keto/sdk/go/keto/client"
+	"github.com/ory/keto/internal/httpclient/client"
 
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
+
+	"github.com/ory/viper"
 
 	"github.com/ory/keto/engine/ladon"
 	"github.com/ory/x/cmdx"
