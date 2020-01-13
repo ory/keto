@@ -1,8 +1,16 @@
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+**Table of Contents**
 
 - [Change Log](#change-log)
+  - [v0.4.0-alpha.1 (2020-01-13)](#v040-alpha1-2020-01-13)
+  - [v0.3.8-sandbox (2019-12-16)](#v038-sandbox-2019-12-16)
+  - [v0.3.9-sandbox (2019-12-16)](#v039-sandbox-2019-12-16)
+  - [v0.3.10-sandbox (2019-12-16)](#v0310-sandbox-2019-12-16)
+  - [v0.3.7-sandbox (2019-12-11)](#v037-sandbox-2019-12-11)
+  - [v0.3.6-sandbox (2019-10-16)](#v036-sandbox-2019-10-16)
+  - [v0.3.4-sandbox (2019-08-21)](#v034-sandbox-2019-08-21)
+  - [v0.3.5-sandbox (2019-08-21)](#v035-sandbox-2019-08-21)
   - [v0.3.3-sandbox (2019-05-18)](#v033-sandbox-2019-05-18)
   - [v0.3.1-sandbox (2019-04-29)](#v031-sandbox-2019-04-29)
   - [v0.3.0-sandbox (2019-04-29)](#v030-sandbox-2019-04-29)
@@ -19,20 +27,82 @@
   - [v0.1.3-sandbox+oryOS.3 (2018-11-14)](#v013-sandboxoryos3-2018-11-14)
   - [v0.1.2-sandbox+oryOS.2 (2018-11-13)](#v012-sandboxoryos2-2018-11-13)
   - [v0.1.1-sandbox+oryOS.1 (2018-11-13)](#v011-sandboxoryos1-2018-11-13)
-  - [v1.0.0-beta.9 (2018-08-31)](#v100-beta9-2018-08-31)
-  - [v1.0.0-beta.8 (2018-08-02)](#v100-beta8-2018-08-02)
-  - [v1.0.0-beta.7 (2018-07-16)](#v100-beta7-2018-07-16)
-  - [v1.0.0-beta.6 (2018-07-07)](#v100-beta6-2018-07-07)
-  - [v1.0.0-beta.5 (2018-07-07)](#v100-beta5-2018-07-07)
-  - [v1.0.0-beta.3 (2018-06-13)](#v100-beta3-2018-06-13)
-  - [v1.0.0-beta.4 (2018-06-13)](#v100-beta4-2018-06-13)
-  - [v1.0.0-beta.2 (2018-05-29)](#v100-beta2-2018-05-29)
-  - [v1.0.0-beta.1 (2018-05-29)](#v100-beta1-2018-05-29)
   - [v0.0.1 (2018-05-20)](#v001-2018-05-20)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 # Change Log
+
+## [v0.4.0-alpha.1](https://github.com/ory/keto/tree/v0.4.0-alpha.1) (2020-01-13)
+[Full Changelog](https://github.com/ory/keto/compare/v0.3.8-sandbox...v0.4.0-alpha.1)
+
+**Merged pull requests:**
+
+- Move to new SDK generators [\#146](https://github.com/ory/keto/pull/146) ([aeneasr](https://github.com/aeneasr))
+- Fix typos [\#144](https://github.com/ory/keto/pull/144) ([henryjw](https://github.com/henryjw))
+
+## [v0.3.8-sandbox](https://github.com/ory/keto/tree/v0.3.8-sandbox) (2019-12-16)
+[Full Changelog](https://github.com/ory/keto/compare/v0.3.9-sandbox...v0.3.8-sandbox)
+
+## [v0.3.9-sandbox](https://github.com/ory/keto/tree/v0.3.9-sandbox) (2019-12-16)
+[Full Changelog](https://github.com/ory/keto/compare/v0.3.10-sandbox...v0.3.9-sandbox)
+
+## [v0.3.10-sandbox](https://github.com/ory/keto/tree/v0.3.10-sandbox) (2019-12-16)
+[Full Changelog](https://github.com/ory/keto/compare/v0.3.7-sandbox...v0.3.10-sandbox)
+
+## [v0.3.7-sandbox](https://github.com/ory/keto/tree/v0.3.7-sandbox) (2019-12-11)
+[Full Changelog](https://github.com/ory/keto/compare/v0.3.6-sandbox...v0.3.7-sandbox)
+
+**Closed issues:**
+
+- Document backslash behavior in glob patterns. [\#141](https://github.com/ory/keto/issues/141)
+- gRPC API  [\#136](https://github.com/ory/keto/issues/136)
+
+**Merged pull requests:**
+
+- Update documentation banner image [\#143](https://github.com/ory/keto/pull/143) ([jfcurran](https://github.com/jfcurran))
+- fix invalid pseudo version [\#138](https://github.com/ory/keto/pull/138) ([minchao](https://github.com/minchao))
+
+## [v0.3.6-sandbox](https://github.com/ory/keto/tree/v0.3.6-sandbox) (2019-10-16)
+[Full Changelog](https://github.com/ory/keto/compare/v0.3.4-sandbox...v0.3.6-sandbox)
+
+**Merged pull requests:**
+
+- Resolve issues with mysql tests [\#137](https://github.com/ory/keto/pull/137) ([aeneasr](https://github.com/aeneasr))
+
+## [v0.3.4-sandbox](https://github.com/ory/keto/tree/v0.3.4-sandbox) (2019-08-21)
+[Full Changelog](https://github.com/ory/keto/compare/v0.3.5-sandbox...v0.3.4-sandbox)
+
+## [v0.3.5-sandbox](https://github.com/ory/keto/tree/v0.3.5-sandbox) (2019-08-21)
+[Full Changelog](https://github.com/ory/keto/compare/v0.3.3-sandbox...v0.3.5-sandbox)
+
+**Fixed bugs:**
+
+- There is no way to get all roles using the ListOryAccessControlPolicyRoles\(\) API [\#120](https://github.com/ory/keto/issues/120)
+
+**Closed issues:**
+
+- Unexpected DoOryAccessControlPoliciesAllow results in Go SDK [\#122](https://github.com/ory/keto/issues/122)
+- API documentation seems not up to date [\#109](https://github.com/ory/keto/issues/109)
+
+**Merged pull requests:**
+
+- docs: Updates issue and pull request templates [\#133](https://github.com/ory/keto/pull/133) ([aeneasr](https://github.com/aeneasr))
+- docs: Updates issue and pull request templates [\#132](https://github.com/ory/keto/pull/132) ([aeneasr](https://github.com/aeneasr))
+- docs: Updates issue and pull request templates [\#131](https://github.com/ory/keto/pull/131) ([aeneasr](https://github.com/aeneasr))
+- docs: Updates issue and pull request templates [\#130](https://github.com/ory/keto/pull/130) ([aeneasr](https://github.com/aeneasr))
+- Adopters [\#129](https://github.com/ory/keto/pull/129) ([aeneasr](https://github.com/aeneasr))
+- docs: Updates issue and pull request templates [\#128](https://github.com/ory/keto/pull/128) ([aeneasr](https://github.com/aeneasr))
+- Improve documentation [\#126](https://github.com/ory/keto/pull/126) ([kevgo](https://github.com/kevgo))
+- docs: Updates issue and pull request templates [\#125](https://github.com/ory/keto/pull/125) ([aeneasr](https://github.com/aeneasr))
+- Roles and policies filter [\#124](https://github.com/ory/keto/pull/124) ([sum2000](https://github.com/sum2000))
+- ci: Update golangci install script [\#118](https://github.com/ory/keto/pull/118) ([aeneasr](https://github.com/aeneasr))
+- Remove binary license [\#117](https://github.com/ory/keto/pull/117) ([aeneasr](https://github.com/aeneasr))
+- docker: Use non-root user in image [\#116](https://github.com/ory/keto/pull/116) ([aeneasr](https://github.com/aeneasr))
+- Grammar fixes [\#114](https://github.com/ory/keto/pull/114) ([kevgo](https://github.com/kevgo))
+- docs: Updates issue and pull request templates [\#112](https://github.com/ory/keto/pull/112) ([aeneasr](https://github.com/aeneasr))
+- docs: Updates issue and pull request templates [\#111](https://github.com/ory/keto/pull/111) ([aeneasr](https://github.com/aeneasr))
+- docs: Updates issue and pull request templates [\#110](https://github.com/ory/keto/pull/110) ([aeneasr](https://github.com/aeneasr))
 
 ## [v0.3.3-sandbox](https://github.com/ory/keto/tree/v0.3.3-sandbox) (2019-05-18)
 [Full Changelog](https://github.com/ory/keto/compare/v0.3.1-sandbox...v0.3.3-sandbox)
@@ -168,11 +238,21 @@
 [Full Changelog](https://github.com/ory/keto/compare/v0.1.1-sandbox+oryOS.1...v0.1.2-sandbox+oryOS.2)
 
 ## [v0.1.1-sandbox+oryOS.1](https://github.com/ory/keto/tree/v0.1.1-sandbox+oryOS.1) (2018-11-13)
-[Full Changelog](https://github.com/ory/keto/compare/v1.0.0-beta.9...v0.1.1-sandbox+oryOS.1)
+[Full Changelog](https://github.com/ory/keto/compare/v0.0.1...v0.1.1-sandbox+oryOS.1)
+
+**Fixed bugs:**
+
+- roles without members does not shown in roles list [\#27](https://github.com/ory/keto/issues/27)
+- Wrong oauth introspect url [\#25](https://github.com/ory/keto/issues/25)
+- Upgrade from \< 1.0.0-beta Hydra migration commands fail [\#23](https://github.com/ory/keto/issues/23)
 
 **Closed issues:**
 
 - ABAC with Groups and Sub Groups. [\#51](https://github.com/ory/keto/issues/51)
+- Can not remember consent because no user interaction was required - when resp\['skip'\] false [\#43](https://github.com/ory/keto/issues/43)
+- Build and upload binaries upon release [\#36](https://github.com/ory/keto/issues/36)
+- Role setup not working [\#21](https://github.com/ory/keto/issues/21)
+- roles: add a PUT method to overwrite members [\#10](https://github.com/ory/keto/issues/10)
 - Add SAML Authenticator [\#3](https://github.com/ory/keto/issues/3)
 - Add JSON Web Token Authenticator [\#2](https://github.com/ory/keto/issues/2)
 
@@ -182,96 +262,26 @@
 - docs: Updates issue and pull request templates [\#54](https://github.com/ory/keto/pull/54) ([aeneasr](https://github.com/aeneasr))
 - docs: Updates issue and pull request templates [\#53](https://github.com/ory/keto/pull/53) ([aeneasr](https://github.com/aeneasr))
 - docs: Updates issue and pull request templates [\#52](https://github.com/ory/keto/pull/52) ([aeneasr](https://github.com/aeneasr))
-
-## [v1.0.0-beta.9](https://github.com/ory/keto/tree/v1.0.0-beta.9) (2018-08-31)
-[Full Changelog](https://github.com/ory/keto/compare/v1.0.0-beta.8...v1.0.0-beta.9)
-
-**Closed issues:**
-
-- Can not remember consent because no user interaction was required - when resp\['skip'\] false [\#43](https://github.com/ory/keto/issues/43)
-
-**Merged pull requests:**
-
 - Enable TLS option to serve API [\#46](https://github.com/ory/keto/pull/46) ([fredbi](https://github.com/fredbi))
 - cmd: Do not split empty scope [\#45](https://github.com/ory/keto/pull/45) ([aeneasr](https://github.com/aeneasr))
 - vendor: Remove ORY Hydra dependency [\#44](https://github.com/ory/keto/pull/44) ([aeneasr](https://github.com/aeneasr))
 - cmd: Require explicit CORS enabling [\#42](https://github.com/ory/keto/pull/42) ([aeneasr](https://github.com/aeneasr))
 - sdk: Upgrade superagent version [\#41](https://github.com/ory/keto/pull/41) ([aeneasr](https://github.com/aeneasr))
 - authn: Make introspection authorization optional [\#40](https://github.com/ory/keto/pull/40) ([aeneasr](https://github.com/aeneasr))
-
-## [v1.0.0-beta.8](https://github.com/ory/keto/tree/v1.0.0-beta.8) (2018-08-02)
-[Full Changelog](https://github.com/ory/keto/compare/v1.0.0-beta.7...v1.0.0-beta.8)
-
-**Closed issues:**
-
-- Build and upload binaries upon release [\#36](https://github.com/ory/keto/issues/36)
-
-**Merged pull requests:**
-
 - cmd: Fixes typo in help command in env var name [\#39](https://github.com/ory/keto/pull/39) ([RomanMinkin](https://github.com/RomanMinkin))
 - sdk: Add SDK generation to circle ci [\#38](https://github.com/ory/keto/pull/38) ([aeneasr](https://github.com/aeneasr))
 - health: Introduces health and version endpoints [\#37](https://github.com/ory/keto/pull/37) ([aeneasr](https://github.com/aeneasr))
-
-## [v1.0.0-beta.7](https://github.com/ory/keto/tree/v1.0.0-beta.7) (2018-07-16)
-[Full Changelog](https://github.com/ory/keto/compare/v1.0.0-beta.6...v1.0.0-beta.7)
-
-**Merged pull requests:**
-
 - dep: Update hydra to v1.0.0-beta.6 [\#35](https://github.com/ory/keto/pull/35) ([RomanMinkin](https://github.com/RomanMinkin))
-
-## [v1.0.0-beta.6](https://github.com/ory/keto/tree/v1.0.0-beta.6) (2018-07-07)
-[Full Changelog](https://github.com/ory/keto/compare/v1.0.0-beta.5...v1.0.0-beta.6)
-
-## [v1.0.0-beta.5](https://github.com/ory/keto/tree/v1.0.0-beta.5) (2018-07-07)
-[Full Changelog](https://github.com/ory/keto/compare/v1.0.0-beta.3...v1.0.0-beta.5)
-
-**Fixed bugs:**
-
-- roles without members does not shown in roles list [\#27](https://github.com/ory/keto/issues/27)
-
-**Merged pull requests:**
-
 - Update README.md [\#34](https://github.com/ory/keto/pull/34) ([tacurran](https://github.com/tacurran))
 - cmd: Properly output telemetry information [\#33](https://github.com/ory/keto/pull/33) ([aeneasr](https://github.com/aeneasr))
 - docs: Adds link to examples repository [\#32](https://github.com/ory/keto/pull/32) ([aeneasr](https://github.com/aeneasr))
 - docs: Adds GitHub templates & code of conduct [\#31](https://github.com/ory/keto/pull/31) ([aeneasr](https://github.com/aeneasr))
 - ci: Prevent pushes from forks to coveralls [\#29](https://github.com/ory/keto/pull/29) ([aeneasr](https://github.com/aeneasr))
 - roles: List roles from keto\_role table [\#28](https://github.com/ory/keto/pull/28) ([sadysnaat](https://github.com/sadysnaat))
-
-## [v1.0.0-beta.3](https://github.com/ory/keto/tree/v1.0.0-beta.3) (2018-06-13)
-[Full Changelog](https://github.com/ory/keto/compare/v1.0.0-beta.4...v1.0.0-beta.3)
-
-## [v1.0.0-beta.4](https://github.com/ory/keto/tree/v1.0.0-beta.4) (2018-06-13)
-[Full Changelog](https://github.com/ory/keto/compare/v1.0.0-beta.2...v1.0.0-beta.4)
-
-**Fixed bugs:**
-
-- Wrong oauth introspect url [\#25](https://github.com/ory/keto/issues/25)
-- Upgrade from \< 1.0.0-beta Hydra migration commands fail [\#23](https://github.com/ory/keto/issues/23)
-
-**Closed issues:**
-
-- Role setup not working [\#21](https://github.com/ory/keto/issues/21)
-
-**Merged pull requests:**
-
 - cmd: Fixes typo in help command [\#26](https://github.com/ory/keto/pull/26) ([aeneasr](https://github.com/aeneasr))
 - cmd: Resolves an issue with the hydra migrate command [\#24](https://github.com/ory/keto/pull/24) ([aeneasr](https://github.com/aeneasr))
 - warden: Use roles in warden decision [\#22](https://github.com/ory/keto/pull/22) ([aeneasr](https://github.com/aeneasr))
 - cmd: Improves usage of metrics middleware [\#18](https://github.com/ory/keto/pull/18) ([aeneasr](https://github.com/aeneasr))
-
-## [v1.0.0-beta.2](https://github.com/ory/keto/tree/v1.0.0-beta.2) (2018-05-29)
-[Full Changelog](https://github.com/ory/keto/compare/v1.0.0-beta.1...v1.0.0-beta.2)
-
-## [v1.0.0-beta.1](https://github.com/ory/keto/tree/v1.0.0-beta.1) (2018-05-29)
-[Full Changelog](https://github.com/ory/keto/compare/v0.0.1...v1.0.0-beta.1)
-
-**Closed issues:**
-
-- roles: add a PUT method to overwrite members [\#10](https://github.com/ory/keto/issues/10)
-
-**Merged pull requests:**
-
 - Minor changes and fixes [\#17](https://github.com/ory/keto/pull/17) ([aeneasr](https://github.com/aeneasr))
 - Resolves minor issues [\#16](https://github.com/ory/keto/pull/16) ([aeneasr](https://github.com/aeneasr))
 - transfer UpdateRoleMembers [\#14](https://github.com/ory/keto/pull/14) ([zepatrik](https://github.com/zepatrik))
@@ -297,4 +307,4 @@
 
 
 
-\* *This Change Log was automatically generated by [github_changelog_generator](https://github.com/skywinder/Github-Changelog-Generator)*
+\* This Change Log was automatically generated
