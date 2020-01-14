@@ -3,6 +3,7 @@ version: 2.1
 orbs:
   changelog: ory/changelog@0.0.5
   sdk: ory/sdk@0.1.13
+  goreleaser: ory/goreleaser@0.0.8
 
 jobs:
   format:
@@ -56,25 +57,6 @@ jobs:
 
       # Submit coverage details
       - run: test -z "$CIRCLE_PR_NUMBER" && goveralls -service=circle-ci -coverprofile=coverage.txt -repotoken=$COVERALLS_REPO_TOKEN || echo "forks are not allowed to push to coveralls"
-      - run: curl -sL https://git.io/goreleaser | bash -s -- --snapshot --skip-publish --rm-dist
-
-  release:
-    docker:
-      - image: circleci/golang:1.12
-        environment:
-          - GO111MODULE=on
-    working_directory: /go/src/github.com/ory/oathkeeper
-    steps:
-      - checkout
-      - run:
-          command: |
-            echo 'export DOCKER_FULL_TAG=$(echo $CIRCLE_TAG | tr '+' '_')' >> $BASH_ENV
-            echo 'export DOCKER_SHORT_TAG=$(echo $CIRCLE_TAG | cut -d '+' -f1)' >> $BASH_ENV
-            ./.circleci/release_name.bash
-            source $BASH_ENV
-      - setup_remote_docker
-      - run: docker login --username "$DOCKER_USERNAME" --password "$DOCKER_PASSWORD"
-      - run: curl -sL https://git.io/goreleaser | bash
 
   release-docs:
     docker:
@@ -102,15 +84,6 @@ workflows:
           filters:
             tags:
               only: /.*/
-      - release:
-          requires:
-            - test
-            - format
-          filters:
-            tags:
-              only: /.*/
-            branches:
-              ignore: /.*/
       - release-docs:
           filters:
             branches:
@@ -133,7 +106,26 @@ workflows:
           requires:
             - test
             - format
-            - release
+            - goreleaser/release
+          filters:
+            tags:
+              only: /.*/
+            branches:
+              ignore: /.*/
+      - goreleaser/test:
+          filters:
+            tags:
+              only: /.*/
+      - goreleaser/release:
+          requires:
+            - goreleaser/test
+            - test
+            - format
+            - test-e2e-memory
+            - test-e2e-postgres
+            - test-e2e-mysql
+            - test-e2e-cockroach
+            - test-e2e-plugin
           filters:
             tags:
               only: /.*/
