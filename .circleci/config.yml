@@ -115,11 +115,6 @@ workflows:
             - goreleaser/test
             - test
             - format
-            - test-e2e-memory
-            - test-e2e-postgres
-            - test-e2e-mysql
-            - test-e2e-cockroach
-            - test-e2e-plugin
           filters:
             tags:
               only: /.*/
