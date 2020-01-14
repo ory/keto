@@ -3,6 +3,9 @@
 **Table of Contents**
 
 - [Change Log](#change-log)
+  - [Unreleased](#unreleased)
+  - [v0.4.0-sandbox (2020-01-13)](#v040-sandbox-2020-01-13)
+  - [v0.4.1-beta.1 (2020-01-13)](#v041-beta1-2020-01-13)
   - [v0.4.0-alpha.1 (2020-01-13)](#v040-alpha1-2020-01-13)
   - [v0.3.8-sandbox (2019-12-16)](#v038-sandbox-2019-12-16)
   - [v0.3.9-sandbox (2019-12-16)](#v039-sandbox-2019-12-16)
@@ -32,6 +35,20 @@
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 # Change Log
+
+## [Unreleased](https://github.com/ory/keto/tree/HEAD)
+
+[Full Changelog](https://github.com/ory/keto/compare/v0.4.0-sandbox...HEAD)
+
+**Merged pull requests:**
+
+- ci: Move to new goreleaser orb [\#147](https://github.com/ory/keto/pull/147) ([aeneasr](https://github.com/aeneasr))
+
+## [v0.4.0-sandbox](https://github.com/ory/keto/tree/v0.4.0-sandbox) (2020-01-13)
+[Full Changelog](https://github.com/ory/keto/compare/v0.4.1-beta.1...v0.4.0-sandbox)
+
+## [v0.4.1-beta.1](https://github.com/ory/keto/tree/v0.4.1-beta.1) (2020-01-13)
+[Full Changelog](https://github.com/ory/keto/compare/v0.4.0-alpha.1...v0.4.1-beta.1)
 
 ## [v0.4.0-alpha.1](https://github.com/ory/keto/tree/v0.4.0-alpha.1) (2020-01-13)
 [Full Changelog](https://github.com/ory/keto/compare/v0.3.8-sandbox...v0.4.0-alpha.1)
