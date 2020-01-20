@@ -76,7 +76,7 @@ submitting bug reports and feature requests, to contributing patches, to sponsor
 everyone of you.
 
 The following list represents companies that have accompanied us along the way and that have made outstanding contributions
-to our ecosystem. *If you think that your company deserves a spot here, reach out to <a href="mailto:hi@ory.sh">hi@ory.sh</a> now*!
+to our ecosystem. *If you think that your company deserves a spot here, reach out to <a href="mailto:hi@ory.sh">hi@ory.sh</a>now*!
 
 **Please consider giving back by becoming a sponsor of our open source work on <a href="https://www.patreon.com/_ory">Patreon</a> or 
 <a href="https://opencollective.com/ory">Open Collective</a>.**
@@ -145,6 +145,12 @@ to our ecosystem. *If you think that your company deserves a spot here, reach ou
             <td align="center"><img height="32px" src="./docs/adopters/arduino.svg" alt="Arduino"></td>
             <td><a href="https://www.arduino.cc/">arduino.cc</a></td>
         </tr>
+        <tr>
+            <td>Sponsor</td>
+            <td>OrderMyGear</td>
+            <td align="center"><img height="32px" src="./docs/adopters/ordermygear.svg" alt="OrderMyGear"></td>
+            <td><a href="https://www.ordermygear.com/">ordermygear.com</a></td>
+        </tr>
     </tdbody>
 </table>
 
@@ -162,6 +168,7 @@ Billy, Chancy Kennedy, Drozzy, Edwin Trejos, Howard Edidin, Ken Adler Oz Haven, 
 <em>* Uses one of ORY's major projects in production.</em>
 
 <!--END ADOPTERS-->
+
 
 
 
