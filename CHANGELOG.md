@@ -4,6 +4,8 @@
 
 - [Change Log](#change-log)
   - [Unreleased](#unreleased)
+  - [v0.4.3-alpha.1 (2020-01-23)](#v043-alpha1-2020-01-23)
+  - [v0.4.2-alpha.1 (2020-01-14)](#v042-alpha1-2020-01-14)
   - [v0.4.0-sandbox (2020-01-13)](#v040-sandbox-2020-01-13)
   - [v0.4.1-beta.1 (2020-01-13)](#v041-beta1-2020-01-13)
   - [v0.4.0-alpha.1 (2020-01-13)](#v040-alpha1-2020-01-13)
@@ -38,7 +40,21 @@
 
 ## [Unreleased](https://github.com/ory/keto/tree/HEAD)
 
-[Full Changelog](https://github.com/ory/keto/compare/v0.4.0-sandbox...HEAD)
+[Full Changelog](https://github.com/ory/keto/compare/v0.4.3-alpha.1...HEAD)
+
+**Closed issues:**
+
+- Disable access logging or change level of logs for the health endpoints [\#150](https://github.com/ory/keto/issues/150)
+
+## [v0.4.3-alpha.1](https://github.com/ory/keto/tree/v0.4.3-alpha.1) (2020-01-23)
+[Full Changelog](https://github.com/ory/keto/compare/v0.4.2-alpha.1...v0.4.3-alpha.1)
+
+**Merged pull requests:**
+
+- Disable access logging for health endpoints [\#151](https://github.com/ory/keto/pull/151) ([moritzheiber](https://github.com/moritzheiber))
+
+## [v0.4.2-alpha.1](https://github.com/ory/keto/tree/v0.4.2-alpha.1) (2020-01-14)
+[Full Changelog](https://github.com/ory/keto/compare/v0.4.0-sandbox...v0.4.2-alpha.1)
 
 **Merged pull requests:**
 
