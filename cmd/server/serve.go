@@ -29,7 +29,6 @@ import (
 	"github.com/ory/x/logrusx"
 
 	"github.com/julienschmidt/httprouter"
-	negronilogrus "github.com/meatballhat/negroni-logrus"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
@@ -47,6 +46,7 @@ import (
 	"github.com/ory/x/corsx"
 	"github.com/ory/x/healthx"
 	"github.com/ory/x/metricsx"
+	"github.com/ory/x/reqlog"
 	"github.com/ory/x/tlsx"
 )
 
@@ -66,7 +66,7 @@ func RunServe(
 		d.Registry().HealthHandler().SetRoutes(router, true)
 
 		n := negroni.New()
-		n.Use(negronilogrus.NewMiddlewareFromLogger(logger, "keto"))
+		n.Use(reqlog.NewMiddlewareFromLogger(logger, "keto").ExcludePaths(healthx.ReadyCheckPath, healthx.AliveCheckPath))
 
 		if tracer := d.Registry().Tracer(); tracer.IsLoaded() {
 			n.Use(tracer)
