@@ -248,3 +248,4 @@ Sponsors support this project. The sponsor's logo or brand will show up here wit
 <a href="https://opencollective.com/ory/sponsor/9/website" target="_blank"><img src="https://opencollective.com/ory/sponsor/9/avatar.svg"></a>
 
 A special thanks goes out to **Wayne Robinson** for supporting this ecosystem with \$200 every month since October 2016 [on Patreon](https://www.patreon.com/_ory).
+
