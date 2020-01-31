@@ -3,7 +3,7 @@
 **Table of Contents**
 
 - [Change Log](#change-log)
-  - [Unreleased](#unreleased)
+  - [v0.4.3-alpha.2 (2020-01-31)](#v043-alpha2-2020-01-31)
   - [v0.4.3-alpha.1 (2020-01-23)](#v043-alpha1-2020-01-23)
   - [v0.4.2-alpha.1 (2020-01-14)](#v042-alpha1-2020-01-14)
   - [v0.4.0-sandbox (2020-01-13)](#v040-sandbox-2020-01-13)
@@ -38,9 +38,8 @@
 
 # Change Log
 
-## [Unreleased](https://github.com/ory/keto/tree/HEAD)
-
-[Full Changelog](https://github.com/ory/keto/compare/v0.4.3-alpha.1...HEAD)
+## [v0.4.3-alpha.2](https://github.com/ory/keto/tree/v0.4.3-alpha.2) (2020-01-31)
+[Full Changelog](https://github.com/ory/keto/compare/v0.4.3-alpha.1...v0.4.3-alpha.2)
 
 **Closed issues:**
 
