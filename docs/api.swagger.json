@@ -1069,7 +1069,6 @@
   },
   "definitions": {
     "addOryAccessControlPolicyRoleMembersBody": {
-      "description": "AddOryAccessControlPolicyRoleMembersBody AddOryAccessControlPolicyRoleMembersBody add ory access control policy role members body",
       "type": "object",
       "properties": {
         "members": {
@@ -1083,7 +1082,7 @@
     },
     "authorizationResult": {
       "type": "object",
-      "title": "AuthorizationResult AuthorizationResult AuthorizationResult is the result of an access control decision. It contains the decision outcome.",
+      "title": "AuthorizationResult AuthorizationResult AuthorizationResult AuthorizationResult is the result of an access control decision. It contains the decision outcome.",
       "required": [
         "allowed"
       ],
@@ -1095,6 +1094,7 @@
       }
     },
     "healthNotReadyStatus": {
+      "description": "HealthNotReadyStatus health not ready status",
       "type": "object",
       "properties": {
         "errors": {
@@ -1117,7 +1117,7 @@
     },
     "oryAccessControlPolicy": {
       "type": "object",
-      "title": "oryAccessControlPolicy specifies an ORY Access Policy document.",
+      "title": "OryAccessControlPolicy oryAccessControlPolicy specifies an ORY Access Policy document.",
       "properties": {
         "actions": {
           "description": "Actions is an array representing all the actions this ORY Access Policy applies to.",
@@ -1187,7 +1187,7 @@
       }
     },
     "oryAccessControlPolicyRole": {
-      "description": "OryAccessControlPolicyRole oryAccessControlPolicyRole represents a group of users that share the same role. A role could be an administrator, a moderator, a regular\nuser or some other sort of role.",
+      "description": "oryAccessControlPolicyRole represents a group of users that share the same role. A role could be an administrator, a moderator, a regular\nuser or some other sort of role.",
       "type": "object",
       "properties": {
         "id": {
@@ -1204,7 +1204,6 @@
       }
     },
     "version": {
-      "description": "Version version",
       "type": "object",
       "properties": {
         "version": {
