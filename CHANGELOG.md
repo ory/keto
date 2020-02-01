@@ -3,6 +3,7 @@
 **Table of Contents**
 
 - [Change Log](#change-log)
+  - [Unreleased](#unreleased)
   - [v0.4.3-alpha.2 (2020-01-31)](#v043-alpha2-2020-01-31)
   - [v0.4.3-alpha.1 (2020-01-23)](#v043-alpha1-2020-01-23)
   - [v0.4.2-alpha.1 (2020-01-14)](#v042-alpha1-2020-01-14)
@@ -38,6 +39,14 @@
 
 # Change Log
 
+## [Unreleased](https://github.com/ory/keto/tree/HEAD)
+
+[Full Changelog](https://github.com/ory/keto/compare/v0.4.3-alpha.2...HEAD)
+
+**Merged pull requests:**
+
+- feat\(ci\): Add nancy vuln scanner [\#152](https://github.com/ory/keto/pull/152) ([aeneasr](https://github.com/aeneasr))
+
 ## [v0.4.3-alpha.2](https://github.com/ory/keto/tree/v0.4.3-alpha.2) (2020-01-31)
 [Full Changelog](https://github.com/ory/keto/compare/v0.4.3-alpha.1...v0.4.3-alpha.2)
 
@@ -71,7 +80,6 @@
 **Merged pull requests:**
 
 - Move to new SDK generators [\#146](https://github.com/ory/keto/pull/146) ([aeneasr](https://github.com/aeneasr))
-- Fix typos [\#144](https://github.com/ory/keto/pull/144) ([henryjw](https://github.com/henryjw))
 
 ## [v0.3.8-sandbox](https://github.com/ory/keto/tree/v0.3.8-sandbox) (2019-12-16)
 [Full Changelog](https://github.com/ory/keto/compare/v0.3.9-sandbox...v0.3.8-sandbox)
@@ -318,6 +326,7 @@
 - Resolves minor issues [\#16](https://github.com/ory/keto/pull/16) ([aeneasr](https://github.com/aeneasr))
 - transfer UpdateRoleMembers [\#14](https://github.com/ory/keto/pull/14) ([zepatrik](https://github.com/zepatrik))
 - ci: Resolves test timeout [\#13](https://github.com/ory/keto/pull/13) ([aeneasr](https://github.com/aeneasr))
+- Resolves SDK and test issues [\#4](https://github.com/ory/keto/pull/4) ([aeneasr](https://github.com/aeneasr))
 
 ## [v0.0.1](https://github.com/ory/keto/tree/v0.0.1) (2018-05-20)
 **Implemented enhancements:**
@@ -335,7 +344,6 @@
 - Improve bc [\#7](https://github.com/ory/keto/pull/7) ([aeneasr](https://github.com/aeneasr))
 - docs: Updates readme and upgrades [\#6](https://github.com/ory/keto/pull/6) ([aeneasr](https://github.com/aeneasr))
 - Fix sdk [\#5](https://github.com/ory/keto/pull/5) ([aeneasr](https://github.com/aeneasr))
-- Resolves SDK and test issues [\#4](https://github.com/ory/keto/pull/4) ([aeneasr](https://github.com/aeneasr))
 
 
 
