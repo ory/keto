@@ -1,7 +1,6 @@
 module github.com/ory/keto
 
 require (
-	github.com/Microsoft/go-winio v0.4.12 // indirect
 	github.com/akutz/goof v0.1.2 // indirect
 	github.com/akutz/gotil v0.1.0
 	github.com/go-errors/errors v1.0.1
@@ -20,24 +19,21 @@ require (
 	github.com/julienschmidt/httprouter v1.2.0
 	github.com/kardianos/osext v0.0.0-20170510131534-ae77be60afb1 // indirect
 	github.com/lib/pq v1.0.0
-	github.com/meatballhat/negroni-logrus v0.0.0-20170801195057-31067281800f
 	github.com/open-policy-agent/opa v0.10.1
-	github.com/opencontainers/runc v1.0.0-rc5 // indirect
 	github.com/ory/go-acc v0.0.0-20181118080137-ddc355013f90
 	github.com/ory/graceful v0.1.1
 	github.com/ory/herodot v0.6.2
 	github.com/ory/sdk/swagutil v0.0.0-20200113182044-f6518ab8017d
 	github.com/ory/viper v1.5.6
-	github.com/ory/x v0.0.88
+	github.com/ory/x v0.0.93
 	github.com/pborman/uuid v1.2.0
-	github.com/pkg/errors v0.8.1
+	github.com/pkg/errors v0.9.1
 	github.com/pkg/profile v1.3.0 // indirect
 	github.com/rcrowley/go-metrics v0.0.0-20181016184325-3113b8401b8a // indirect
 	github.com/rs/cors v1.6.0
 	github.com/rubenv/sql-migrate v0.0.0-20190327083759-54bad0a9b051
 	github.com/sirupsen/logrus v1.4.2
 	github.com/spf13/cobra v0.0.5
-	github.com/spf13/viper v1.6.1
 	github.com/sqs/goreturns v0.0.0-20181028201513-538ac6014518
 	github.com/stretchr/testify v1.4.0
 	github.com/urfave/negroni v1.0.0
