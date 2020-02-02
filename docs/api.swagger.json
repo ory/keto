@@ -1069,6 +1069,7 @@
   },
   "definitions": {"UUID":{"type": "string", "format": "uuid4"},
     "addOryAccessControlPolicyRoleMembersBody": {
+      "description": "AddOryAccessControlPolicyRoleMembersBody add ory access control policy role members body",
       "type": "object",
       "properties": {
         "members": {
@@ -1082,7 +1083,6 @@
     },
     "authorizationResult": {
       "type": "object",
-      "title": "AuthorizationResult is the result of an access control decision. It contains the decision outcome.",
       "required": [
         "allowed"
       ],
@@ -1106,6 +1106,7 @@
       }
     },
     "healthStatus": {
+      "description": "HealthStatus health status",
       "type": "object",
       "properties": {
         "status": {
@@ -1162,7 +1163,7 @@
     },
     "oryAccessControlPolicyAllowedInput": {
       "type": "object",
-      "title": "Input for checking if a request is allowed or not.",
+      "title": "OryAccessControlPolicyAllowedInput Input for checking if a request is allowed or not.",
       "properties": {
         "action": {
           "description": "Action is the action that is requested on the resource.",
@@ -1186,7 +1187,7 @@
       }
     },
     "oryAccessControlPolicyRole": {
-      "description": "oryAccessControlPolicyRole represents a group of users that share the same role. A role could be an administrator, a moderator, a regular\nuser or some other sort of role.",
+      "description": "OryAccessControlPolicyRole oryAccessControlPolicyRole represents a group of users that share the same role. A role could be an administrator, a moderator, a regular\nuser or some other sort of role.",
       "type": "object",
       "properties": {
         "id": {
@@ -1203,6 +1204,7 @@
       }
     },
     "version": {
+      "description": "Version version",
       "type": "object",
       "properties": {
         "version": {
