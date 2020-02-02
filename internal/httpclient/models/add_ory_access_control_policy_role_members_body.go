@@ -10,7 +10,7 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// AddOryAccessControlPolicyRoleMembersBody AddOryAccessControlPolicyRoleMembersBody add ory access control policy role members body
+// AddOryAccessControlPolicyRoleMembersBody add ory access control policy role members body
 // swagger:model addOryAccessControlPolicyRoleMembersBody
 type AddOryAccessControlPolicyRoleMembersBody struct {
 
