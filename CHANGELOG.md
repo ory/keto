@@ -80,6 +80,7 @@
 **Merged pull requests:**
 
 - Move to new SDK generators [\#146](https://github.com/ory/keto/pull/146) ([aeneasr](https://github.com/aeneasr))
+- Fix typos [\#144](https://github.com/ory/keto/pull/144) ([henryjw](https://github.com/henryjw))
 
 ## [v0.3.8-sandbox](https://github.com/ory/keto/tree/v0.3.8-sandbox) (2019-12-16)
 [Full Changelog](https://github.com/ory/keto/compare/v0.3.9-sandbox...v0.3.8-sandbox)
@@ -251,6 +252,7 @@
 - sdk: Add go SDK interface [\#69](https://github.com/ory/keto/pull/69) ([aeneasr](https://github.com/aeneasr))
 - sdk: Add Go SDK factory  [\#68](https://github.com/ory/keto/pull/68) ([aeneasr](https://github.com/aeneasr))
 - docs: Update documentation links [\#67](https://github.com/ory/keto/pull/67) ([aeneasr](https://github.com/aeneasr))
+- cmd: Add and improve list commands [\#62](https://github.com/ory/keto/pull/62) ([aeneasr](https://github.com/aeneasr))
 - Switch to rego as policy decision engine [\#48](https://github.com/ory/keto/pull/48) ([aeneasr](https://github.com/aeneasr))
 
 ## [v0.1.9-sandbox+oryOS.9](https://github.com/ory/keto/tree/v0.1.9-sandbox+oryOS.9) (2018-11-14)
@@ -298,7 +300,6 @@
 
 **Merged pull requests:**
 
-- cmd: Add and improve list commands [\#62](https://github.com/ory/keto/pull/62) ([aeneasr](https://github.com/aeneasr))
 - docs: Updates issue and pull request templates [\#54](https://github.com/ory/keto/pull/54) ([aeneasr](https://github.com/aeneasr))
 - docs: Updates issue and pull request templates [\#53](https://github.com/ory/keto/pull/53) ([aeneasr](https://github.com/aeneasr))
 - docs: Updates issue and pull request templates [\#52](https://github.com/ory/keto/pull/52) ([aeneasr](https://github.com/aeneasr))
@@ -315,7 +316,6 @@
 - Update README.md [\#34](https://github.com/ory/keto/pull/34) ([tacurran](https://github.com/tacurran))
 - cmd: Properly output telemetry information [\#33](https://github.com/ory/keto/pull/33) ([aeneasr](https://github.com/aeneasr))
 - docs: Adds link to examples repository [\#32](https://github.com/ory/keto/pull/32) ([aeneasr](https://github.com/aeneasr))
-- docs: Adds GitHub templates & code of conduct [\#31](https://github.com/ory/keto/pull/31) ([aeneasr](https://github.com/aeneasr))
 - ci: Prevent pushes from forks to coveralls [\#29](https://github.com/ory/keto/pull/29) ([aeneasr](https://github.com/aeneasr))
 - roles: List roles from keto\_role table [\#28](https://github.com/ory/keto/pull/28) ([sadysnaat](https://github.com/sadysnaat))
 - cmd: Fixes typo in help command [\#26](https://github.com/ory/keto/pull/26) ([aeneasr](https://github.com/aeneasr))
@@ -326,7 +326,7 @@
 - Resolves minor issues [\#16](https://github.com/ory/keto/pull/16) ([aeneasr](https://github.com/aeneasr))
 - transfer UpdateRoleMembers [\#14](https://github.com/ory/keto/pull/14) ([zepatrik](https://github.com/zepatrik))
 - ci: Resolves test timeout [\#13](https://github.com/ory/keto/pull/13) ([aeneasr](https://github.com/aeneasr))
-- Resolves SDK and test issues [\#4](https://github.com/ory/keto/pull/4) ([aeneasr](https://github.com/aeneasr))
+- Fix sdk [\#5](https://github.com/ory/keto/pull/5) ([aeneasr](https://github.com/aeneasr))
 
 ## [v0.0.1](https://github.com/ory/keto/tree/v0.0.1) (2018-05-20)
 **Implemented enhancements:**
@@ -339,11 +339,12 @@
 
 **Merged pull requests:**
 
+- docs: Adds GitHub templates & code of conduct [\#31](https://github.com/ory/keto/pull/31) ([aeneasr](https://github.com/aeneasr))
 - auth: Renames subject to sub in response payloads [\#9](https://github.com/ory/keto/pull/9) ([aeneasr](https://github.com/aeneasr))
 - cmd: Retries SQL connection on migrate commands [\#8](https://github.com/ory/keto/pull/8) ([aeneasr](https://github.com/aeneasr))
 - Improve bc [\#7](https://github.com/ory/keto/pull/7) ([aeneasr](https://github.com/aeneasr))
 - docs: Updates readme and upgrades [\#6](https://github.com/ory/keto/pull/6) ([aeneasr](https://github.com/aeneasr))
-- Fix sdk [\#5](https://github.com/ory/keto/pull/5) ([aeneasr](https://github.com/aeneasr))
+- Resolves SDK and test issues [\#4](https://github.com/ory/keto/pull/4) ([aeneasr](https://github.com/aeneasr))
 
 
 
