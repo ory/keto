@@ -1067,7 +1067,7 @@
       }
     }
   },
-  "definitions": {
+  "definitions": {"UUID":{"type": "string", "format": "uuid4"},
     "addOryAccessControlPolicyRoleMembersBody": {
       "type": "object",
       "properties": {
@@ -1082,7 +1082,7 @@
     },
     "authorizationResult": {
       "type": "object",
-      "title": "AuthorizationResult AuthorizationResult AuthorizationResult AuthorizationResult is the result of an access control decision. It contains the decision outcome.",
+      "title": "AuthorizationResult is the result of an access control decision. It contains the decision outcome.",
       "required": [
         "allowed"
       ],
@@ -1094,7 +1094,6 @@
       }
     },
     "healthNotReadyStatus": {
-      "description": "HealthNotReadyStatus health not ready status",
       "type": "object",
       "properties": {
         "errors": {
@@ -1117,7 +1116,7 @@
     },
     "oryAccessControlPolicy": {
       "type": "object",
-      "title": "OryAccessControlPolicy oryAccessControlPolicy specifies an ORY Access Policy document.",
+      "title": "oryAccessControlPolicy specifies an ORY Access Policy document.",
       "properties": {
         "actions": {
           "description": "Actions is an array representing all the actions this ORY Access Policy applies to.",

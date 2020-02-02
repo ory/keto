@@ -9,12 +9,11 @@ import (
 	"fmt"
 
 	"github.com/go-openapi/runtime"
-
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 )
 
 // New creates a new engines API client.
-func New(transport runtime.ClientTransport, formats strfmt.Registry) *Client {
+func New(transport runtime.ClientTransport, formats strfmt.Registry) ClientService {
 	return &Client{transport: transport, formats: formats}
 }
 
@@ -26,10 +25,37 @@ type Client struct {
 	formats   strfmt.Registry
 }
 
-/*
-AddOryAccessControlPolicyRoleMembers adds a member to an o r y access control policy role
+// ClientService is the interface for Client methods
+type ClientService interface {
+	AddOryAccessControlPolicyRoleMembers(params *AddOryAccessControlPolicyRoleMembersParams) (*AddOryAccessControlPolicyRoleMembersOK, error)
 
-Roles group several subjects into one. Rules can be assigned to ORY Access Control Policy (OACP) by using the Role ID
+	DeleteOryAccessControlPolicy(params *DeleteOryAccessControlPolicyParams) (*DeleteOryAccessControlPolicyNoContent, error)
+
+	DeleteOryAccessControlPolicyRole(params *DeleteOryAccessControlPolicyRoleParams) (*DeleteOryAccessControlPolicyRoleNoContent, error)
+
+	DoOryAccessControlPoliciesAllow(params *DoOryAccessControlPoliciesAllowParams) (*DoOryAccessControlPoliciesAllowOK, error)
+
+	GetOryAccessControlPolicy(params *GetOryAccessControlPolicyParams) (*GetOryAccessControlPolicyOK, error)
+
+	GetOryAccessControlPolicyRole(params *GetOryAccessControlPolicyRoleParams) (*GetOryAccessControlPolicyRoleOK, error)
+
+	ListOryAccessControlPolicies(params *ListOryAccessControlPoliciesParams) (*ListOryAccessControlPoliciesOK, error)
+
+	ListOryAccessControlPolicyRoles(params *ListOryAccessControlPolicyRolesParams) (*ListOryAccessControlPolicyRolesOK, error)
+
+	RemoveOryAccessControlPolicyRoleMembers(params *RemoveOryAccessControlPolicyRoleMembersParams) (*RemoveOryAccessControlPolicyRoleMembersCreated, error)
+
+	UpsertOryAccessControlPolicy(params *UpsertOryAccessControlPolicyParams) (*UpsertOryAccessControlPolicyOK, error)
+
+	UpsertOryAccessControlPolicyRole(params *UpsertOryAccessControlPolicyRoleParams) (*UpsertOryAccessControlPolicyRoleOK, error)
+
+	SetTransport(transport runtime.ClientTransport)
+}
+
+/*
+  AddOryAccessControlPolicyRoleMembers adds a member to an o r y access control policy role
+
+  Roles group several subjects into one. Rules can be assigned to ORY Access Control Policy (OACP) by using the Role ID
 as subject in the OACP.
 */
 func (a *Client) AddOryAccessControlPolicyRoleMembers(params *AddOryAccessControlPolicyRoleMembersParams) (*AddOryAccessControlPolicyRoleMembersOK, error) {
@@ -64,7 +90,7 @@ func (a *Client) AddOryAccessControlPolicyRoleMembers(params *AddOryAccessContro
 }
 
 /*
-DeleteOryAccessControlPolicy Delete an ORY Access Control Policy
+  DeleteOryAccessControlPolicy Delete an ORY Access Control Policy
 */
 func (a *Client) DeleteOryAccessControlPolicy(params *DeleteOryAccessControlPolicyParams) (*DeleteOryAccessControlPolicyNoContent, error) {
 	// TODO: Validate the params before sending
@@ -98,9 +124,9 @@ func (a *Client) DeleteOryAccessControlPolicy(params *DeleteOryAccessControlPoli
 }
 
 /*
-DeleteOryAccessControlPolicyRole deletes an o r y access control policy role
+  DeleteOryAccessControlPolicyRole deletes an o r y access control policy role
 
-Roles group several subjects into one. Rules can be assigned to ORY Access Control Policy (OACP) by using the Role ID
+  Roles group several subjects into one. Rules can be assigned to ORY Access Control Policy (OACP) by using the Role ID
 as subject in the OACP.
 */
 func (a *Client) DeleteOryAccessControlPolicyRole(params *DeleteOryAccessControlPolicyRoleParams) (*DeleteOryAccessControlPolicyRoleNoContent, error) {
@@ -135,9 +161,9 @@ func (a *Client) DeleteOryAccessControlPolicyRole(params *DeleteOryAccessControl
 }
 
 /*
-DoOryAccessControlPoliciesAllow checks if a request is allowed
+  DoOryAccessControlPoliciesAllow checks if a request is allowed
 
-Use this endpoint to check if a request is allowed or not. If the request is allowed, a 200 response with
+  Use this endpoint to check if a request is allowed or not. If the request is allowed, a 200 response with
 `{"allowed":"true"}` will be sent. If the request is denied, a 403 response with `{"allowed":"false"}` will
 be sent instead.
 */
@@ -173,7 +199,7 @@ func (a *Client) DoOryAccessControlPoliciesAllow(params *DoOryAccessControlPolic
 }
 
 /*
-GetOryAccessControlPolicy Get an ORY Access Control Policy
+  GetOryAccessControlPolicy Get an ORY Access Control Policy
 */
 func (a *Client) GetOryAccessControlPolicy(params *GetOryAccessControlPolicyParams) (*GetOryAccessControlPolicyOK, error) {
 	// TODO: Validate the params before sending
@@ -207,9 +233,9 @@ func (a *Client) GetOryAccessControlPolicy(params *GetOryAccessControlPolicyPara
 }
 
 /*
-GetOryAccessControlPolicyRole gets an o r y access control policy role
+  GetOryAccessControlPolicyRole gets an o r y access control policy role
 
-Roles group several subjects into one. Rules can be assigned to ORY Access Control Policy (OACP) by using the Role ID
+  Roles group several subjects into one. Rules can be assigned to ORY Access Control Policy (OACP) by using the Role ID
 as subject in the OACP.
 */
 func (a *Client) GetOryAccessControlPolicyRole(params *GetOryAccessControlPolicyRoleParams) (*GetOryAccessControlPolicyRoleOK, error) {
@@ -244,7 +270,7 @@ func (a *Client) GetOryAccessControlPolicyRole(params *GetOryAccessControlPolicy
 }
 
 /*
-ListOryAccessControlPolicies List ORY Access Control Policies
+  ListOryAccessControlPolicies List ORY Access Control Policies
 */
 func (a *Client) ListOryAccessControlPolicies(params *ListOryAccessControlPoliciesParams) (*ListOryAccessControlPoliciesOK, error) {
 	// TODO: Validate the params before sending
@@ -278,9 +304,9 @@ func (a *Client) ListOryAccessControlPolicies(params *ListOryAccessControlPolici
 }
 
 /*
-ListOryAccessControlPolicyRoles lists o r y access control policy roles
+  ListOryAccessControlPolicyRoles lists o r y access control policy roles
 
-Roles group several subjects into one. Rules can be assigned to ORY Access Control Policy (OACP) by using the Role ID
+  Roles group several subjects into one. Rules can be assigned to ORY Access Control Policy (OACP) by using the Role ID
 as subject in the OACP.
 */
 func (a *Client) ListOryAccessControlPolicyRoles(params *ListOryAccessControlPolicyRolesParams) (*ListOryAccessControlPolicyRolesOK, error) {
@@ -315,9 +341,9 @@ func (a *Client) ListOryAccessControlPolicyRoles(params *ListOryAccessControlPol
 }
 
 /*
-RemoveOryAccessControlPolicyRoleMembers removes a member from an o r y access control policy role
+  RemoveOryAccessControlPolicyRoleMembers removes a member from an o r y access control policy role
 
-Roles group several subjects into one. Rules can be assigned to ORY Access Control Policy (OACP) by using the Role ID
+  Roles group several subjects into one. Rules can be assigned to ORY Access Control Policy (OACP) by using the Role ID
 as subject in the OACP.
 */
 func (a *Client) RemoveOryAccessControlPolicyRoleMembers(params *RemoveOryAccessControlPolicyRoleMembersParams) (*RemoveOryAccessControlPolicyRoleMembersCreated, error) {
@@ -352,7 +378,7 @@ func (a *Client) RemoveOryAccessControlPolicyRoleMembers(params *RemoveOryAccess
 }
 
 /*
-UpsertOryAccessControlPolicy Upsert an ORY Access Control Policy
+  UpsertOryAccessControlPolicy Upsert an ORY Access Control Policy
 */
 func (a *Client) UpsertOryAccessControlPolicy(params *UpsertOryAccessControlPolicyParams) (*UpsertOryAccessControlPolicyOK, error) {
 	// TODO: Validate the params before sending
@@ -386,9 +412,9 @@ func (a *Client) UpsertOryAccessControlPolicy(params *UpsertOryAccessControlPoli
 }
 
 /*
-UpsertOryAccessControlPolicyRole upserts an o r y access control policy role
+  UpsertOryAccessControlPolicyRole upserts an o r y access control policy role
 
-Roles group several subjects into one. Rules can be assigned to ORY Access Control Policy (OACP) by using the Role ID
+  Roles group several subjects into one. Rules can be assigned to ORY Access Control Policy (OACP) by using the Role ID
 as subject in the OACP.
 */
 func (a *Client) UpsertOryAccessControlPolicyRole(params *UpsertOryAccessControlPolicyRoleParams) (*UpsertOryAccessControlPolicyRoleOK, error) {

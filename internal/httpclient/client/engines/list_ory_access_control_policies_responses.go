@@ -14,7 +14,7 @@ import (
 
 	strfmt "github.com/go-openapi/strfmt"
 
-	models "github.com/ory/keto/internal/httpclient/models"
+	"github.com/ory/keto/internal/httpclient/models"
 )
 
 // ListOryAccessControlPoliciesReader is a Reader for the ListOryAccessControlPolicies structure.
