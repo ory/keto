@@ -13,7 +13,7 @@ import (
 	"github.com/go-openapi/validate"
 )
 
-// AuthorizationResult AuthorizationResult AuthorizationResult AuthorizationResult AuthorizationResult is the result of an access control decision. It contains the decision outcome.
+// AuthorizationResult AuthorizationResult AuthorizationResult AuthorizationResult AuthorizationResult AuthorizationResult is the result of an access control decision. It contains the decision outcome.
 // swagger:model authorizationResult
 type AuthorizationResult struct {
 
