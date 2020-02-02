@@ -163,33 +163,15 @@ Billy, Chancy Kennedy, Drozzy, Edwin Trejos, Howard Edidin, Ken Adler Oz Haven, 
 
 <!--END ADOPTERS-->
 
-
-
 ### Installation
 
 Head over to the documentation to learn about ways of [installing ORY Keto](https://www.ory.sh/docs/next/keto/install).
 
 ## Ecosystem
 
-<a href="https://console.ory.sh/">
-    <img align="right" width="30%" src="docs/images/sec-console.png" alt="ORY Security Console">
-</a>
+<!--BEGIN ECOSYSTEM-->
 
-### ORY Security Console: Administrative User Interface
-
-The [ORY Security Console](https://console.ory.sh/) is a visual admin interface for ORY Hydra,
-ORY Oathkeeper, and ORY Keto.
-
-### ORY Hydra: OAuth2 & OpenID Connect Server
-
-[ORY Hydra](https://github.com/ory/hydra) ORY Hydra is a hardened OAuth2 and OpenID Connect server optimized
-for low latency, high throughput, and low resource consumption. ORY Hydra is not an identity provider, which would include
-user sign up, user log in, or password reset flow. Hydra connects to your existing identity provider through a consent app.
-
-### ORY Oathkeeper: Identity & Access Proxy
-
-[ORY Oathkeeper](https://github.com/ory/oathkeeper) is a BeyondCorp/Zero Trust Identity & Access Proxy (IAP) built
-on top of OAuth2 and ORY Hydra.
+<!--END ECOSYSTEM-->
 
 ### Examples
 
