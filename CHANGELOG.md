@@ -45,6 +45,7 @@
 
 **Merged pull requests:**
 
+- docs: Updates issue and pull request templates [\#153](https://github.com/ory/keto/pull/153) ([aeneasr](https://github.com/aeneasr))
 - feat\(ci\): Add nancy vuln scanner [\#152](https://github.com/ory/keto/pull/152) ([aeneasr](https://github.com/aeneasr))
 
 ## [v0.4.3-alpha.2](https://github.com/ory/keto/tree/v0.4.3-alpha.2) (2020-01-31)
@@ -211,7 +212,6 @@
 
 - dist: Fix packr build pipeline [\#84](https://github.com/ory/keto/pull/84) ([aeneasr](https://github.com/aeneasr))
 - cmd: Add support for glob matching [\#79](https://github.com/ory/keto/pull/79) ([rliebz](https://github.com/rliebz))
-- Fix for compiler error \(Unable to initialize compiler: lstat /go: no such file or directory\) [\#77](https://github.com/ory/keto/pull/77) ([sum2000](https://github.com/sum2000))
 
 ## [v0.2.2-sandbox+oryOS.10](https://github.com/ory/keto/tree/v0.2.2-sandbox+oryOS.10) (2018-12-13)
 [Full Changelog](https://github.com/ory/keto/compare/v0.2.1-sandbox+oryOS.10...v0.2.2-sandbox+oryOS.10)
@@ -252,7 +252,6 @@
 - sdk: Add go SDK interface [\#69](https://github.com/ory/keto/pull/69) ([aeneasr](https://github.com/aeneasr))
 - sdk: Add Go SDK factory  [\#68](https://github.com/ory/keto/pull/68) ([aeneasr](https://github.com/aeneasr))
 - docs: Update documentation links [\#67](https://github.com/ory/keto/pull/67) ([aeneasr](https://github.com/aeneasr))
-- cmd: Add and improve list commands [\#62](https://github.com/ory/keto/pull/62) ([aeneasr](https://github.com/aeneasr))
 - Switch to rego as policy decision engine [\#48](https://github.com/ory/keto/pull/48) ([aeneasr](https://github.com/aeneasr))
 
 ## [v0.1.9-sandbox+oryOS.9](https://github.com/ory/keto/tree/v0.1.9-sandbox+oryOS.9) (2018-11-14)
@@ -300,6 +299,8 @@
 
 **Merged pull requests:**
 
+- Fix for compiler error \(Unable to initialize compiler: lstat /go: no such file or directory\) [\#77](https://github.com/ory/keto/pull/77) ([sum2000](https://github.com/sum2000))
+- cmd: Add and improve list commands [\#62](https://github.com/ory/keto/pull/62) ([aeneasr](https://github.com/aeneasr))
 - docs: Updates issue and pull request templates [\#54](https://github.com/ory/keto/pull/54) ([aeneasr](https://github.com/aeneasr))
 - docs: Updates issue and pull request templates [\#53](https://github.com/ory/keto/pull/53) ([aeneasr](https://github.com/aeneasr))
 - docs: Updates issue and pull request templates [\#52](https://github.com/ory/keto/pull/52) ([aeneasr](https://github.com/aeneasr))
@@ -314,19 +315,17 @@
 - health: Introduces health and version endpoints [\#37](https://github.com/ory/keto/pull/37) ([aeneasr](https://github.com/aeneasr))
 - dep: Update hydra to v1.0.0-beta.6 [\#35](https://github.com/ory/keto/pull/35) ([RomanMinkin](https://github.com/RomanMinkin))
 - Update README.md [\#34](https://github.com/ory/keto/pull/34) ([tacurran](https://github.com/tacurran))
-- cmd: Properly output telemetry information [\#33](https://github.com/ory/keto/pull/33) ([aeneasr](https://github.com/aeneasr))
 - docs: Adds link to examples repository [\#32](https://github.com/ory/keto/pull/32) ([aeneasr](https://github.com/aeneasr))
+- docs: Adds GitHub templates & code of conduct [\#31](https://github.com/ory/keto/pull/31) ([aeneasr](https://github.com/aeneasr))
 - ci: Prevent pushes from forks to coveralls [\#29](https://github.com/ory/keto/pull/29) ([aeneasr](https://github.com/aeneasr))
 - roles: List roles from keto\_role table [\#28](https://github.com/ory/keto/pull/28) ([sadysnaat](https://github.com/sadysnaat))
 - cmd: Fixes typo in help command [\#26](https://github.com/ory/keto/pull/26) ([aeneasr](https://github.com/aeneasr))
 - cmd: Resolves an issue with the hydra migrate command [\#24](https://github.com/ory/keto/pull/24) ([aeneasr](https://github.com/aeneasr))
 - warden: Use roles in warden decision [\#22](https://github.com/ory/keto/pull/22) ([aeneasr](https://github.com/aeneasr))
 - cmd: Improves usage of metrics middleware [\#18](https://github.com/ory/keto/pull/18) ([aeneasr](https://github.com/aeneasr))
-- Minor changes and fixes [\#17](https://github.com/ory/keto/pull/17) ([aeneasr](https://github.com/aeneasr))
 - Resolves minor issues [\#16](https://github.com/ory/keto/pull/16) ([aeneasr](https://github.com/aeneasr))
 - transfer UpdateRoleMembers [\#14](https://github.com/ory/keto/pull/14) ([zepatrik](https://github.com/zepatrik))
 - ci: Resolves test timeout [\#13](https://github.com/ory/keto/pull/13) ([aeneasr](https://github.com/aeneasr))
-- Fix sdk [\#5](https://github.com/ory/keto/pull/5) ([aeneasr](https://github.com/aeneasr))
 
 ## [v0.0.1](https://github.com/ory/keto/tree/v0.0.1) (2018-05-20)
 **Implemented enhancements:**
@@ -339,11 +338,13 @@
 
 **Merged pull requests:**
 
-- docs: Adds GitHub templates & code of conduct [\#31](https://github.com/ory/keto/pull/31) ([aeneasr](https://github.com/aeneasr))
+- cmd: Properly output telemetry information [\#33](https://github.com/ory/keto/pull/33) ([aeneasr](https://github.com/aeneasr))
+- Minor changes and fixes [\#17](https://github.com/ory/keto/pull/17) ([aeneasr](https://github.com/aeneasr))
 - auth: Renames subject to sub in response payloads [\#9](https://github.com/ory/keto/pull/9) ([aeneasr](https://github.com/aeneasr))
 - cmd: Retries SQL connection on migrate commands [\#8](https://github.com/ory/keto/pull/8) ([aeneasr](https://github.com/aeneasr))
 - Improve bc [\#7](https://github.com/ory/keto/pull/7) ([aeneasr](https://github.com/aeneasr))
 - docs: Updates readme and upgrades [\#6](https://github.com/ory/keto/pull/6) ([aeneasr](https://github.com/aeneasr))
+- Fix sdk [\#5](https://github.com/ory/keto/pull/5) ([aeneasr](https://github.com/aeneasr))
 - Resolves SDK and test issues [\#4](https://github.com/ory/keto/pull/4) ([aeneasr](https://github.com/aeneasr))
 
 
