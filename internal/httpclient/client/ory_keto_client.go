@@ -6,10 +6,10 @@ package client
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"github.com/go-openapi/runtime"
 	httptransport "github.com/go-openapi/runtime/client"
 
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/runtime"
+	"github.com/go-openapi/strfmt"
 
 	"github.com/ory/keto/internal/httpclient/client/engines"
 	"github.com/ory/keto/internal/httpclient/client/health"
@@ -58,13 +58,9 @@ func New(transport runtime.ClientTransport, formats strfmt.Registry) *OryKeto {
 
 	cli := new(OryKeto)
 	cli.Transport = transport
-
 	cli.Engines = engines.New(transport, formats)
-
 	cli.Health = health.New(transport, formats)
-
 	cli.Version = version.New(transport, formats)
-
 	return cli
 }
 
@@ -109,11 +105,11 @@ func (cfg *TransportConfig) WithSchemes(schemes []string) *TransportConfig {
 
 // OryKeto is a client for ory keto
 type OryKeto struct {
-	Engines *engines.Client
+	Engines engines.ClientService
 
-	Health *health.Client
+	Health health.ClientService
 
-	Version *version.Client
+	Version version.ClientService
 
 	Transport runtime.ClientTransport
 }
@@ -121,11 +117,7 @@ type OryKeto struct {
 // SetTransport changes the transport on the client and all its subresources
 func (c *OryKeto) SetTransport(transport runtime.ClientTransport) {
 	c.Transport = transport
-
 	c.Engines.SetTransport(transport)
-
 	c.Health.SetTransport(transport)
-
 	c.Version.SetTransport(transport)
-
 }

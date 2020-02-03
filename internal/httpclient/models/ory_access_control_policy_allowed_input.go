@@ -7,11 +7,10 @@ package models
 
 import (
 	strfmt "github.com/go-openapi/strfmt"
-
 	"github.com/go-openapi/swag"
 )
 
-// OryAccessControlPolicyAllowedInput OryAccessControlPolicyAllowedInput Input for checking if a request is allowed or not.
+// OryAccessControlPolicyAllowedInput Input for checking if a request is allowed or not.
 // swagger:model oryAccessControlPolicyAllowedInput
 type OryAccessControlPolicyAllowedInput struct {
 

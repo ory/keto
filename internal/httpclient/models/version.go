@@ -7,11 +7,10 @@ package models
 
 import (
 	strfmt "github.com/go-openapi/strfmt"
-
 	"github.com/go-openapi/swag"
 )
 
-// Version Version version
+// Version version
 // swagger:model version
 type Version struct {
 

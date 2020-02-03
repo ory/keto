@@ -7,11 +7,10 @@ package models
 
 import (
 	strfmt "github.com/go-openapi/strfmt"
-
 	"github.com/go-openapi/swag"
 )
 
-// HealthStatus HealthStatus health status
+// HealthStatus health status
 // swagger:model healthStatus
 type HealthStatus struct {
 

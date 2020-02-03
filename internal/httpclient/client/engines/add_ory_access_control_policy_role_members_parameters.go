@@ -16,7 +16,7 @@ import (
 
 	strfmt "github.com/go-openapi/strfmt"
 
-	models "github.com/ory/keto/internal/httpclient/models"
+	"github.com/ory/keto/internal/httpclient/models"
 )
 
 // NewAddOryAccessControlPolicyRoleMembersParams creates a new AddOryAccessControlPolicyRoleMembersParams object
