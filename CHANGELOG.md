@@ -169,7 +169,6 @@
 - ci: Resolve goreleaser issues [\#108](https://github.com/ory/keto/pull/108) ([aeneasr](https://github.com/aeneasr))
 - ci: Update release pipeline [\#107](https://github.com/ory/keto/pull/107) ([aeneasr](https://github.com/aeneasr))
 - docs: Updates issue and pull request templates [\#106](https://github.com/ory/keto/pull/106) ([aeneasr](https://github.com/aeneasr))
-- sdk: Improve naming for ory policies [\#100](https://github.com/ory/keto/pull/100) ([aeneasr](https://github.com/aeneasr))
 
 ## [v0.3.1-sandbox](https://github.com/ory/keto/tree/v0.3.1-sandbox) (2019-04-29)
 
@@ -202,6 +201,7 @@
 **Merged pull requests:**
 
 - docker: Remove full tag from build pipeline [\#101](https://github.com/ory/keto/pull/101) ([aeneasr](https://github.com/aeneasr))
+- sdk: Improve naming for ory policies [\#100](https://github.com/ory/keto/pull/100) ([aeneasr](https://github.com/aeneasr))
 - Remove duplicate code in Makefile [\#99](https://github.com/ory/keto/pull/99) ([minchao](https://github.com/minchao))
 - Add tracing support and general improvements [\#98](https://github.com/ory/keto/pull/98) ([aeneasr](https://github.com/aeneasr))
 - ci: Adopt new release pipeline [\#97](https://github.com/ory/keto/pull/97) ([aeneasr](https://github.com/aeneasr))
@@ -279,6 +279,7 @@
 - docs: Updates issue and pull request templates [\#53](https://github.com/ory/keto/pull/53) ([aeneasr](https://github.com/aeneasr))
 - docs: Updates issue and pull request templates [\#52](https://github.com/ory/keto/pull/52) ([aeneasr](https://github.com/aeneasr))
 - Switch to rego as policy decision engine [\#48](https://github.com/ory/keto/pull/48) ([aeneasr](https://github.com/aeneasr))
+- authn: Make introspection authorization optional [\#40](https://github.com/ory/keto/pull/40) ([aeneasr](https://github.com/aeneasr))
 
 ## [v0.1.9-sandbox+oryOS.9](https://github.com/ory/keto/tree/v0.1.9-sandbox+oryOS.9) (2018-11-14)
 
@@ -291,7 +292,6 @@
 - vendor: Remove ORY Hydra dependency [\#44](https://github.com/ory/keto/pull/44) ([aeneasr](https://github.com/aeneasr))
 - cmd: Require explicit CORS enabling [\#42](https://github.com/ory/keto/pull/42) ([aeneasr](https://github.com/aeneasr))
 - sdk: Upgrade superagent version [\#41](https://github.com/ory/keto/pull/41) ([aeneasr](https://github.com/aeneasr))
-- authn: Make introspection authorization optional [\#40](https://github.com/ory/keto/pull/40) ([aeneasr](https://github.com/aeneasr))
 
 ## [v0.1.8-sandbox+oryOS.8](https://github.com/ory/keto/tree/v0.1.8-sandbox+oryOS.8) (2018-11-14)
 
