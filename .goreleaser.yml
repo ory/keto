@@ -53,14 +53,15 @@ snapshot:
 changelog:
   sort: asc
 
-brew:
-  github:
-    owner: ory
-    name: homebrew-keto
-  homepage:  https://www.ory.sh
-  commit_author:
-    name: ory
-    email: hi@ory.sh
+brews:
+  -
+    github:
+      owner: ory
+      name: homebrew-keto
+    homepage:  https://www.ory.sh
+    commit_author:
+      name: ory
+      email: hi@ory.sh
 
 scoop:
   bucket:
