@@ -7,7 +7,6 @@ import (
 
 	"github.com/ory/x/dbal"
 	"github.com/ory/x/sqlcon"
-	"github.com/ory/x/urlx"
 
 	"github.com/ory/keto/storage"
 )
@@ -76,7 +75,7 @@ func (m *RegistrySQL) StorageManager() storage.Manager {
 }
 
 func (m *RegistrySQL) CanHandle(dsn string) bool {
-	s := dbal.Canonicalize(urlx.ParseOrFatal(m.l, dsn).Scheme)
+	s := sqlcon.GetDriverName(dsn)
 	return s == dbal.DriverMySQL || s == dbal.DriverPostgreSQL
 }
 
