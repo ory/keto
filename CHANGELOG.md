@@ -4,6 +4,7 @@
 
 - [Changelog](#changelog)
   - [Unreleased](#unreleased)
+  - [v0.4.4-alpha.1 (2020-02-14)](#v044-alpha1-2020-02-14)
   - [v0.4.3-alpha.2 (2020-01-31)](#v043-alpha2-2020-01-31)
   - [v0.4.3-alpha.1 (2020-01-23)](#v043-alpha1-2020-01-23)
   - [v0.4.2-alpha.1 (2020-01-14)](#v042-alpha1-2020-01-14)
@@ -41,7 +42,19 @@
 
 ## [Unreleased](https://github.com/ory/keto/tree/HEAD)
 
-[Full Changelog](https://github.com/ory/keto/compare/v0.4.3-alpha.2...HEAD)
+[Full Changelog](https://github.com/ory/keto/compare/v0.4.4-alpha.1...HEAD)
+
+**Closed issues:**
+
+- Cannot connect to MySQL [\#145](https://github.com/ory/keto/issues/145)
+
+**Merged pull requests:**
+
+- fix\(driver\): Extract scheme from DSN using sqlcon.GetDriverName [\#156](https://github.com/ory/keto/pull/156) ([kaorimatz](https://github.com/kaorimatz))
+
+## [v0.4.4-alpha.1](https://github.com/ory/keto/tree/v0.4.4-alpha.1) (2020-02-14)
+
+[Full Changelog](https://github.com/ory/keto/compare/v0.4.3-alpha.2...v0.4.4-alpha.1)
 
 **Merged pull requests:**
 
@@ -279,7 +292,6 @@
 - docs: Updates issue and pull request templates [\#53](https://github.com/ory/keto/pull/53) ([aeneasr](https://github.com/aeneasr))
 - docs: Updates issue and pull request templates [\#52](https://github.com/ory/keto/pull/52) ([aeneasr](https://github.com/aeneasr))
 - Switch to rego as policy decision engine [\#48](https://github.com/ory/keto/pull/48) ([aeneasr](https://github.com/aeneasr))
-- authn: Make introspection authorization optional [\#40](https://github.com/ory/keto/pull/40) ([aeneasr](https://github.com/aeneasr))
 
 ## [v0.1.9-sandbox+oryOS.9](https://github.com/ory/keto/tree/v0.1.9-sandbox+oryOS.9) (2018-11-14)
 
@@ -292,6 +304,7 @@
 - vendor: Remove ORY Hydra dependency [\#44](https://github.com/ory/keto/pull/44) ([aeneasr](https://github.com/aeneasr))
 - cmd: Require explicit CORS enabling [\#42](https://github.com/ory/keto/pull/42) ([aeneasr](https://github.com/aeneasr))
 - sdk: Upgrade superagent version [\#41](https://github.com/ory/keto/pull/41) ([aeneasr](https://github.com/aeneasr))
+- authn: Make introspection authorization optional [\#40](https://github.com/ory/keto/pull/40) ([aeneasr](https://github.com/aeneasr))
 
 ## [v0.1.8-sandbox+oryOS.8](https://github.com/ory/keto/tree/v0.1.8-sandbox+oryOS.8) (2018-11-14)
 
