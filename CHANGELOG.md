@@ -4,6 +4,7 @@
 
 - [Changelog](#changelog)
   - [Unreleased](#unreleased)
+  - [v0.4.5-alpha.1 (2020-02-29)](#v045-alpha1-2020-02-29)
   - [v0.4.4-alpha.1 (2020-02-14)](#v044-alpha1-2020-02-14)
   - [v0.4.3-alpha.2 (2020-01-31)](#v043-alpha2-2020-01-31)
   - [v0.4.3-alpha.1 (2020-01-23)](#v043-alpha1-2020-01-23)
@@ -42,7 +43,15 @@
 
 ## [Unreleased](https://github.com/ory/keto/tree/HEAD)
 
-[Full Changelog](https://github.com/ory/keto/compare/v0.4.4-alpha.1...HEAD)
+[Full Changelog](https://github.com/ory/keto/compare/v0.4.5-alpha.1...HEAD)
+
+**Merged pull requests:**
+
+- docs: Updates issue and pull request templates [\#158](https://github.com/ory/keto/pull/158) ([aeneasr](https://github.com/aeneasr))
+
+## [v0.4.5-alpha.1](https://github.com/ory/keto/tree/v0.4.5-alpha.1) (2020-02-29)
+
+[Full Changelog](https://github.com/ory/keto/compare/v0.4.4-alpha.1...v0.4.5-alpha.1)
 
 **Closed issues:**
 
