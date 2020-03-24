@@ -47,6 +47,7 @@
 
 **Merged pull requests:**
 
+- fix: move to ory sqa service [\#159](https://github.com/ory/keto/pull/159) ([aeneasr](https://github.com/aeneasr))
 - docs: Updates issue and pull request templates [\#158](https://github.com/ory/keto/pull/158) ([aeneasr](https://github.com/aeneasr))
 
 ## [v0.4.5-alpha.1](https://github.com/ory/keto/tree/v0.4.5-alpha.1) (2020-02-29)
