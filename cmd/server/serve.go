@@ -25,6 +25,8 @@ import (
 	"crypto/tls"
 	"net/http"
 
+	"github.com/segmentio/analytics-go"
+
 	"github.com/ory/keto/driver"
 	"github.com/ory/x/logrusx"
 
@@ -85,6 +87,9 @@ func RunServe(
 				BuildVersion: version,
 				BuildTime:    date,
 				BuildHash:    commit,
+				Config: &analytics.Config{
+					Endpoint: "https://sqa.ory.sh",
+				},
 			},
 		)
 		n.Use(metrics)
