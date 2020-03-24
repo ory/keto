@@ -32,6 +32,7 @@ require (
 	github.com/rcrowley/go-metrics v0.0.0-20181016184325-3113b8401b8a // indirect
 	github.com/rs/cors v1.6.0
 	github.com/rubenv/sql-migrate v0.0.0-20190327083759-54bad0a9b051
+	github.com/segmentio/analytics-go v3.0.1+incompatible
 	github.com/sirupsen/logrus v1.4.2
 	github.com/spf13/cobra v0.0.5
 	github.com/sqs/goreturns v0.0.0-20181028201513-538ac6014518
