@@ -1,8 +1,8 @@
 <h1 align="center"><img src="./docs/images/banner_keto.png" alt="ORY Keto - Open Source & Cloud Native Access Control Server"></h1>
 
 <h4 align="center">    
-    <a href="https://discord.gg/PAMQWkr">Chat</a> |
-    <a href="https://community.ory.am/">Forums</a> |
+    <a href="https://www.ory.sh/chat">Chat</a> |
+    <a href="https://community.ory.sh/">Forums</a> |
     <a href="http://eepurl.com/di390P">Newsletter</a><br/><br/>
     <a href="https://www.ory.sh/docs/keto/">Guide</a> |
     <a href="https://www.ory.sh/docs/keto/sdk/api">API Docs</a> |
