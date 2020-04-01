@@ -28,7 +28,7 @@
   "paths": {
     "/engines/acp/ory/{flavor}/allowed": {
       "post": {
-        "description": "Use this endpoint to check if a request is allowed or not. If the request is allowed, a 200 response with\n`{\"allowed\":\"true\"}` will be sent. If the request is denied, a 403 response with `{\"allowed\":\"false\"}` will\nbe sent instead.",
+        "description": "Use this endpoint to check if a request is allowed or not. If the request is allowed, a 200 response with\n`{\"allowed\":true}` will be sent. If the request is denied, a 403 response with `{\"allowed\":false}` will\nbe sent instead.",
         "consumes": [
           "application/json"
         ],
