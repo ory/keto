@@ -7,13 +7,12 @@ package models
 
 import (
 	"github.com/go-openapi/errors"
-	"github.com/go-openapi/strfmt"
+	strfmt "github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // AuthorizationResult AuthorizationResult is the result of an access control decision. It contains the decision outcome.
-//
 // swagger:model authorizationResult
 type AuthorizationResult struct {
 
