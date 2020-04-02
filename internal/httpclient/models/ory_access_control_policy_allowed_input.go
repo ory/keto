@@ -6,11 +6,12 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // OryAccessControlPolicyAllowedInput Input for checking if a request is allowed or not.
+//
 // swagger:model oryAccessControlPolicyAllowedInput
 type OryAccessControlPolicyAllowedInput struct {
 
