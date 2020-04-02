@@ -13,6 +13,7 @@ require (
 	github.com/go-sql-driver/mysql v1.4.1
 	github.com/go-swagger/go-swagger v0.21.1-0.20200107003254-1c98855b472d
 	github.com/gobuffalo/packr v1.24.1
+	github.com/gobuffalo/packr/v2 v2.0.10
 	github.com/gobwas/glob v0.2.3 // indirect
 	github.com/gorilla/mux v1.7.1 // indirect
 	github.com/gorilla/sessions v1.1.3
