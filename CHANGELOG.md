@@ -3,7 +3,7 @@
 **Table of Contents**
 
 - [Changelog](#changelog)
-  - [Unreleased](#unreleased)
+  - [v0.5.0 (2020-04-02)](#v050-2020-04-02)
   - [v0.4.5-alpha.1 (2020-02-29)](#v045-alpha1-2020-02-29)
   - [v0.4.4-alpha.1 (2020-02-14)](#v044-alpha1-2020-02-14)
   - [v0.4.3-alpha.2 (2020-01-31)](#v043-alpha2-2020-01-31)
@@ -41,9 +41,13 @@
 
 # Changelog
 
-## [Unreleased](https://github.com/ory/keto/tree/HEAD)
+## [v0.5.0](https://github.com/ory/keto/tree/v0.5.0) (2020-04-02)
 
-[Full Changelog](https://github.com/ory/keto/compare/v0.4.5-alpha.1...HEAD)
+[Full Changelog](https://github.com/ory/keto/compare/v0.4.5-alpha.1...v0.5.0)
+
+**Implemented enhancements:**
+
+- chore: bump ory/x to latest [\#164](https://github.com/ory/keto/pull/164) ([aeneasr](https://github.com/aeneasr))
 
 **Closed issues:**
 
@@ -51,6 +55,7 @@
 
 **Merged pull requests:**
 
+- docs: use real json bool type in swagger [\#162](https://github.com/ory/keto/pull/162) ([aeneasr](https://github.com/aeneasr))
 - fix: use correct response mode for removeOryAccessControlPolicyRoleMe… [\#161](https://github.com/ory/keto/pull/161) ([aeneasr](https://github.com/aeneasr))
 - fix: move to ory sqa service [\#159](https://github.com/ory/keto/pull/159) ([aeneasr](https://github.com/aeneasr))
 - docs: Updates issue and pull request templates [\#158](https://github.com/ory/keto/pull/158) ([aeneasr](https://github.com/aeneasr))
@@ -185,6 +190,7 @@
 - docker: Use non-root user in image [\#116](https://github.com/ory/keto/pull/116) ([aeneasr](https://github.com/aeneasr))
 - Grammar fixes [\#114](https://github.com/ory/keto/pull/114) ([kevgo](https://github.com/kevgo))
 - docs: Updates issue and pull request templates [\#112](https://github.com/ory/keto/pull/112) ([aeneasr](https://github.com/aeneasr))
+- docs: Updates issue and pull request templates [\#111](https://github.com/ory/keto/pull/111) ([aeneasr](https://github.com/aeneasr))
 - docs: Updates issue and pull request templates [\#110](https://github.com/ory/keto/pull/110) ([aeneasr](https://github.com/aeneasr))
 
 ## [v0.3.3-sandbox](https://github.com/ory/keto/tree/v0.3.3-sandbox) (2019-05-18)
@@ -193,7 +199,6 @@
 
 **Merged pull requests:**
 
-- docs: Updates issue and pull request templates [\#111](https://github.com/ory/keto/pull/111) ([aeneasr](https://github.com/aeneasr))
 - ci: Resolve goreleaser issues [\#108](https://github.com/ory/keto/pull/108) ([aeneasr](https://github.com/aeneasr))
 - ci: Update release pipeline [\#107](https://github.com/ory/keto/pull/107) ([aeneasr](https://github.com/aeneasr))
 - docs: Updates issue and pull request templates [\#106](https://github.com/ory/keto/pull/106) ([aeneasr](https://github.com/aeneasr))
