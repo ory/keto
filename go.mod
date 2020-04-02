@@ -24,7 +24,7 @@ require (
 	github.com/ory/go-acc v0.2.1
 	github.com/ory/graceful v0.1.1
 	github.com/ory/herodot v0.7.0
-	github.com/ory/sdk/swagutil v0.0.0-20200202121523-307941feee4b
+	github.com/ory/sdk/swagutil v0.0.0-20200402130432-b7e7c3ba67c1
 	github.com/ory/viper v1.7.4
 	github.com/ory/x v0.0.109
 	github.com/pborman/uuid v1.2.0
@@ -39,14 +39,13 @@ require (
 	github.com/spf13/viper v1.6.2 // indirect
 	github.com/sqs/goreturns v0.0.0-20181028201513-538ac6014518
 	github.com/stretchr/testify v1.4.0
+	github.com/tidwall/sjson v1.1.1 // indirect
 	github.com/urfave/negroni v1.0.0
 	github.com/yashtewari/glob-intersection v0.0.0-20180916065949-5c77d914dd0b // indirect
+	golang.org/x/lint v0.0.0-20200302205851-738671d3881b // indirect
 	golang.org/x/net v0.0.0-20200324143707-d3edc9973b7e // indirect
 	golang.org/x/sys v0.0.0-20200331124033-c3d80250170d // indirect
 	golang.org/x/tools v0.0.0-20200401192744-099440627f01
 )
 
-// Fix for https://github.com/golang/lint/issues/436
-replace github.com/golang/lint => github.com/golang/lint v0.0.0-20181217174547-8f45f776aaf1
-
-go 1.13
+go 1.14
