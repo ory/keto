@@ -22,8 +22,8 @@ type RemoveOryAccessControlPolicyRoleMembersReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *RemoveOryAccessControlPolicyRoleMembersReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-	case 201:
-		result := NewRemoveOryAccessControlPolicyRoleMembersCreated()
+	case 200:
+		result := NewRemoveOryAccessControlPolicyRoleMembersOK()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
@@ -40,23 +40,23 @@ func (o *RemoveOryAccessControlPolicyRoleMembersReader) ReadResponse(response ru
 	}
 }
 
-// NewRemoveOryAccessControlPolicyRoleMembersCreated creates a RemoveOryAccessControlPolicyRoleMembersCreated with default headers values
-func NewRemoveOryAccessControlPolicyRoleMembersCreated() *RemoveOryAccessControlPolicyRoleMembersCreated {
-	return &RemoveOryAccessControlPolicyRoleMembersCreated{}
+// NewRemoveOryAccessControlPolicyRoleMembersOK creates a RemoveOryAccessControlPolicyRoleMembersOK with default headers values
+func NewRemoveOryAccessControlPolicyRoleMembersOK() *RemoveOryAccessControlPolicyRoleMembersOK {
+	return &RemoveOryAccessControlPolicyRoleMembersOK{}
 }
 
-/*RemoveOryAccessControlPolicyRoleMembersCreated handles this case with default header values.
+/*RemoveOryAccessControlPolicyRoleMembersOK handles this case with default header values.
 
 An empty response
 */
-type RemoveOryAccessControlPolicyRoleMembersCreated struct {
+type RemoveOryAccessControlPolicyRoleMembersOK struct {
 }
 
-func (o *RemoveOryAccessControlPolicyRoleMembersCreated) Error() string {
-	return fmt.Sprintf("[DELETE /engines/acp/ory/{flavor}/roles/{id}/members/{member}][%d] removeOryAccessControlPolicyRoleMembersCreated ", 201)
+func (o *RemoveOryAccessControlPolicyRoleMembersOK) Error() string {
+	return fmt.Sprintf("[DELETE /engines/acp/ory/{flavor}/roles/{id}/members/{member}][%d] removeOryAccessControlPolicyRoleMembersOK ", 200)
 }
 
-func (o *RemoveOryAccessControlPolicyRoleMembersCreated) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+func (o *RemoveOryAccessControlPolicyRoleMembersOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	return nil
 }
