@@ -43,7 +43,7 @@ type ClientService interface {
 
 	ListOryAccessControlPolicyRoles(params *ListOryAccessControlPolicyRolesParams) (*ListOryAccessControlPolicyRolesOK, error)
 
-	RemoveOryAccessControlPolicyRoleMembers(params *RemoveOryAccessControlPolicyRoleMembersParams) (*RemoveOryAccessControlPolicyRoleMembersCreated, error)
+	RemoveOryAccessControlPolicyRoleMembers(params *RemoveOryAccessControlPolicyRoleMembersParams) (*RemoveOryAccessControlPolicyRoleMembersOK, error)
 
 	UpsertOryAccessControlPolicy(params *UpsertOryAccessControlPolicyParams) (*UpsertOryAccessControlPolicyOK, error)
 
@@ -346,7 +346,7 @@ func (a *Client) ListOryAccessControlPolicyRoles(params *ListOryAccessControlPol
   Roles group several subjects into one. Rules can be assigned to ORY Access Control Policy (OACP) by using the Role ID
 as subject in the OACP.
 */
-func (a *Client) RemoveOryAccessControlPolicyRoleMembers(params *RemoveOryAccessControlPolicyRoleMembersParams) (*RemoveOryAccessControlPolicyRoleMembersCreated, error) {
+func (a *Client) RemoveOryAccessControlPolicyRoleMembers(params *RemoveOryAccessControlPolicyRoleMembersParams) (*RemoveOryAccessControlPolicyRoleMembersOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewRemoveOryAccessControlPolicyRoleMembersParams()
@@ -367,7 +367,7 @@ func (a *Client) RemoveOryAccessControlPolicyRoleMembers(params *RemoveOryAccess
 	if err != nil {
 		return nil, err
 	}
-	success, ok := result.(*RemoveOryAccessControlPolicyRoleMembersCreated)
+	success, ok := result.(*RemoveOryAccessControlPolicyRoleMembersOK)
 	if ok {
 		return success, nil
 	}

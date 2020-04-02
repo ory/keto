@@ -283,7 +283,7 @@ func (e *Engine) Register(r *httprouter.Router) {
 	//     Schemes: http, https
 	//
 	//     Responses:
-	//       201: emptyResponse
+	//       200: emptyResponse
 	//       500: genericError
 	r.DELETE(BasePath+"/roles/:id/members/:member", e.sh.Upsert(e.rolesMembersRemove))
 }
