@@ -45,8 +45,13 @@
 
 [Full Changelog](https://github.com/ory/keto/compare/v0.4.5-alpha.1...HEAD)
 
+**Closed issues:**
+
+- Reintroduce swagger task to CircleCI [\#49](https://github.com/ory/keto/issues/49)
+
 **Merged pull requests:**
 
+- fix: use correct response mode for removeOryAccessControlPolicyRoleMe… [\#161](https://github.com/ory/keto/pull/161) ([aeneasr](https://github.com/aeneasr))
 - fix: move to ory sqa service [\#159](https://github.com/ory/keto/pull/159) ([aeneasr](https://github.com/aeneasr))
 - docs: Updates issue and pull request templates [\#158](https://github.com/ory/keto/pull/158) ([aeneasr](https://github.com/aeneasr))
 
@@ -180,7 +185,6 @@
 - docker: Use non-root user in image [\#116](https://github.com/ory/keto/pull/116) ([aeneasr](https://github.com/aeneasr))
 - Grammar fixes [\#114](https://github.com/ory/keto/pull/114) ([kevgo](https://github.com/kevgo))
 - docs: Updates issue and pull request templates [\#112](https://github.com/ory/keto/pull/112) ([aeneasr](https://github.com/aeneasr))
-- docs: Updates issue and pull request templates [\#111](https://github.com/ory/keto/pull/111) ([aeneasr](https://github.com/aeneasr))
 - docs: Updates issue and pull request templates [\#110](https://github.com/ory/keto/pull/110) ([aeneasr](https://github.com/aeneasr))
 
 ## [v0.3.3-sandbox](https://github.com/ory/keto/tree/v0.3.3-sandbox) (2019-05-18)
@@ -189,6 +193,7 @@
 
 **Merged pull requests:**
 
+- docs: Updates issue and pull request templates [\#111](https://github.com/ory/keto/pull/111) ([aeneasr](https://github.com/aeneasr))
 - ci: Resolve goreleaser issues [\#108](https://github.com/ory/keto/pull/108) ([aeneasr](https://github.com/aeneasr))
 - ci: Update release pipeline [\#107](https://github.com/ory/keto/pull/107) ([aeneasr](https://github.com/aeneasr))
 - docs: Updates issue and pull request templates [\#106](https://github.com/ory/keto/pull/106) ([aeneasr](https://github.com/aeneasr))
@@ -312,6 +317,7 @@
 - Enable TLS option to serve API [\#46](https://github.com/ory/keto/pull/46) ([fredbi](https://github.com/fredbi))
 - cmd: Do not split empty scope [\#45](https://github.com/ory/keto/pull/45) ([aeneasr](https://github.com/aeneasr))
 - vendor: Remove ORY Hydra dependency [\#44](https://github.com/ory/keto/pull/44) ([aeneasr](https://github.com/aeneasr))
+- cmd: Require explicit CORS enabling [\#42](https://github.com/ory/keto/pull/42) ([aeneasr](https://github.com/aeneasr))
 - sdk: Upgrade superagent version [\#41](https://github.com/ory/keto/pull/41) ([aeneasr](https://github.com/aeneasr))
 - authn: Make introspection authorization optional [\#40](https://github.com/ory/keto/pull/40) ([aeneasr](https://github.com/aeneasr))
 
@@ -331,7 +337,6 @@
 
 **Merged pull requests:**
 
-- cmd: Require explicit CORS enabling [\#42](https://github.com/ory/keto/pull/42) ([aeneasr](https://github.com/aeneasr))
 - dep: Update hydra to v1.0.0-beta.6 [\#35](https://github.com/ory/keto/pull/35) ([RomanMinkin](https://github.com/RomanMinkin))
 
 ## [v0.1.6-sandbox+oryOS.6](https://github.com/ory/keto/tree/v0.1.6-sandbox+oryOS.6) (2018-11-14)
