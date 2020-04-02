@@ -73,7 +73,7 @@ func NewSQLManager(db *sqlx.DB) *SQLManager {
 
 func (m *SQLManager) CreateSchemas(db *sqlx.DB) (int, error) {
 	migrate.SetTable("keto_storage_migration")
-	n, err := migrate.Exec(db.DB, db.DriverName(), Migrations[dbal.MustCanonicalize(db.DriverName())], migrate.Up)
+	n, err := migrate.Exec(db.DB, dbal.Canonicalize(m.db.DriverName()), Migrations[dbal.MustCanonicalize(db.DriverName())], migrate.Up)
 	if err != nil {
 		return 0, errors.Wrapf(err, "could not migrate sql schema completely, applied only %d migrations", n)
 	}
