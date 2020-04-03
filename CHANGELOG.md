@@ -3,6 +3,9 @@
 **Table of Contents**
 
 - [Changelog](#changelog)
+  - [v0.5.3-alpha.1 (2020-04-03)](#v053-alpha1-2020-04-03)
+  - [v0.5.1-alpha.1 (2020-04-02)](#v051-alpha1-2020-04-02)
+  - [v0.5.2 (2020-04-02)](#v052-2020-04-02)
   - [v0.5.0 (2020-04-02)](#v050-2020-04-02)
   - [v0.4.5-alpha.1 (2020-02-29)](#v045-alpha1-2020-02-29)
   - [v0.4.4-alpha.1 (2020-02-14)](#v044-alpha1-2020-02-14)
@@ -40,6 +43,26 @@
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 # Changelog
+
+## [v0.5.3-alpha.1](https://github.com/ory/keto/tree/v0.5.3-alpha.1) (2020-04-03)
+
+[Full Changelog](https://github.com/ory/keto/compare/v0.5.1-alpha.1...v0.5.3-alpha.1)
+
+**Implemented enhancements:**
+
+- Investigate OpenPolicyAgent v0.19.0 [\#163](https://github.com/ory/keto/issues/163)
+
+**Merged pull requests:**
+
+- chore: move to ory analytics fork [\#167](https://github.com/ory/keto/pull/167) ([aeneasr](https://github.com/aeneasr))
+
+## [v0.5.1-alpha.1](https://github.com/ory/keto/tree/v0.5.1-alpha.1) (2020-04-02)
+
+[Full Changelog](https://github.com/ory/keto/compare/v0.5.2...v0.5.1-alpha.1)
+
+## [v0.5.2](https://github.com/ory/keto/tree/v0.5.2) (2020-04-02)
+
+[Full Changelog](https://github.com/ory/keto/compare/v0.5.0...v0.5.2)
 
 ## [v0.5.0](https://github.com/ory/keto/tree/v0.5.0) (2020-04-02)
 
@@ -310,8 +333,8 @@
 - cmd: Add and improve list commands [\#62](https://github.com/ory/keto/pull/62) ([aeneasr](https://github.com/aeneasr))
 - docs: Updates issue and pull request templates [\#54](https://github.com/ory/keto/pull/54) ([aeneasr](https://github.com/aeneasr))
 - docs: Updates issue and pull request templates [\#53](https://github.com/ory/keto/pull/53) ([aeneasr](https://github.com/aeneasr))
-- docs: Updates issue and pull request templates [\#52](https://github.com/ory/keto/pull/52) ([aeneasr](https://github.com/aeneasr))
 - Switch to rego as policy decision engine [\#48](https://github.com/ory/keto/pull/48) ([aeneasr](https://github.com/aeneasr))
+- sdk: Upgrade superagent version [\#41](https://github.com/ory/keto/pull/41) ([aeneasr](https://github.com/aeneasr))
 
 ## [v0.1.9-sandbox+oryOS.9](https://github.com/ory/keto/tree/v0.1.9-sandbox+oryOS.9) (2018-11-14)
 
@@ -323,7 +346,6 @@
 - cmd: Do not split empty scope [\#45](https://github.com/ory/keto/pull/45) ([aeneasr](https://github.com/aeneasr))
 - vendor: Remove ORY Hydra dependency [\#44](https://github.com/ory/keto/pull/44) ([aeneasr](https://github.com/aeneasr))
 - cmd: Require explicit CORS enabling [\#42](https://github.com/ory/keto/pull/42) ([aeneasr](https://github.com/aeneasr))
-- sdk: Upgrade superagent version [\#41](https://github.com/ory/keto/pull/41) ([aeneasr](https://github.com/aeneasr))
 - authn: Make introspection authorization optional [\#40](https://github.com/ory/keto/pull/40) ([aeneasr](https://github.com/aeneasr))
 
 ## [v0.1.8-sandbox+oryOS.8](https://github.com/ory/keto/tree/v0.1.8-sandbox+oryOS.8) (2018-11-14)
@@ -332,6 +354,7 @@
 
 **Merged pull requests:**
 
+- docs: Updates issue and pull request templates [\#52](https://github.com/ory/keto/pull/52) ([aeneasr](https://github.com/aeneasr))
 - cmd: Fixes typo in help command in env var name [\#39](https://github.com/ory/keto/pull/39) ([RomanMinkin](https://github.com/RomanMinkin))
 - sdk: Add SDK generation to circle ci [\#38](https://github.com/ory/keto/pull/38) ([aeneasr](https://github.com/aeneasr))
 - health: Introduces health and version endpoints [\#37](https://github.com/ory/keto/pull/37) ([aeneasr](https://github.com/aeneasr))
