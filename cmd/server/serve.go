@@ -24,8 +24,9 @@ package server
 import (
 	"crypto/tls"
 	"net/http"
+	"time"
 
-	"github.com/segmentio/analytics-go"
+	"github.com/ory/analytics-go/v4"
 
 	"github.com/ory/keto/driver"
 	"github.com/ory/x/logrusx"
@@ -88,7 +89,11 @@ func RunServe(
 				BuildTime:    date,
 				BuildHash:    commit,
 				Config: &analytics.Config{
-					Endpoint: "https://sqa.ory.sh",
+					Endpoint:             "https://sqa.ory.sh",
+					GzipCompressionLevel: 6,
+					BatchMaxSize:         500 * 1000,
+					BatchSize:            250,
+					Interval:             time.Hour * 24,
 				},
 			},
 		)
