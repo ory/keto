@@ -55,6 +55,7 @@
 
 **Merged pull requests:**
 
+- docs: Updates issue and pull request templates [\#169](https://github.com/ory/keto/pull/169) ([aeneasr](https://github.com/aeneasr))
 - docs: Updates issue and pull request templates [\#168](https://github.com/ory/keto/pull/168) ([aeneasr](https://github.com/aeneasr))
 
 ## [v0.5.3-alpha.1](https://github.com/ory/keto/tree/v0.5.3-alpha.1) (2020-04-03)
@@ -95,8 +96,6 @@
 - fix: use correct response mode for removeOryAccessControlPolicyRoleMe… [\#161](https://github.com/ory/keto/pull/161) ([aeneasr](https://github.com/aeneasr))
 - fix: move to ory sqa service [\#159](https://github.com/ory/keto/pull/159) ([aeneasr](https://github.com/aeneasr))
 - docs: Updates issue and pull request templates [\#158](https://github.com/ory/keto/pull/158) ([aeneasr](https://github.com/aeneasr))
-- fix\(driver\): Extract scheme from DSN using sqlcon.GetDriverName [\#156](https://github.com/ory/keto/pull/156) ([kaorimatz](https://github.com/kaorimatz))
-- docs: Updates issue and pull request templates [\#153](https://github.com/ory/keto/pull/153) ([aeneasr](https://github.com/aeneasr))
 
 ## [v0.4.5-alpha.1](https://github.com/ory/keto/tree/v0.4.5-alpha.1) (2020-02-29)
 
@@ -106,6 +105,10 @@
 
 - Cannot connect to MySQL [\#145](https://github.com/ory/keto/issues/145)
 
+**Merged pull requests:**
+
+- fix\(driver\): Extract scheme from DSN using sqlcon.GetDriverName [\#156](https://github.com/ory/keto/pull/156) ([kaorimatz](https://github.com/kaorimatz))
+
 ## [v0.4.4-alpha.1](https://github.com/ory/keto/tree/v0.4.4-alpha.1) (2020-02-14)
 
 [Full Changelog](https://github.com/ory/keto/compare/v0.4.3-alpha.2...v0.4.4-alpha.1)
@@ -113,6 +116,7 @@
 **Merged pull requests:**
 
 - ci: Bump orb versions [\#154](https://github.com/ory/keto/pull/154) ([aeneasr](https://github.com/aeneasr))
+- docs: Updates issue and pull request templates [\#153](https://github.com/ory/keto/pull/153) ([aeneasr](https://github.com/aeneasr))
 - feat\(ci\): Add nancy vuln scanner [\#152](https://github.com/ory/keto/pull/152) ([aeneasr](https://github.com/aeneasr))
 
 ## [v0.4.3-alpha.2](https://github.com/ory/keto/tree/v0.4.3-alpha.2) (2020-01-31)
