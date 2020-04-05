@@ -1,0 +1,24 @@
+module.exports = {
+  Introduction: [
+    "index",
+    "install",
+  ],
+  Guides: [
+    "configure-deploy",
+    "secure"
+  ],
+  "Access Control Engines": [
+    "engines/index",
+    "engines/acl",
+    "engines/rbac",
+    "engines/acp-ory",
+    "engines/acp-aws"
+  ],
+  "Reference": [
+    "reference/configuration",
+    "reference/api"
+  ],
+  "SDKs": [
+    "sdk/index",
+  ]
+};

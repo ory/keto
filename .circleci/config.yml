@@ -53,20 +53,6 @@ jobs:
       # Submit coverage details
       - run: test -z "$CIRCLE_PR_NUMBER" && goveralls -service=circle-ci -coverprofile=coverage.txt -repotoken=$COVERALLS_REPO_TOKEN || echo "forks are not allowed to push to coveralls"
 
-  release-docs:
-    docker:
-      - image: circleci/golang:1.12 # if we use something else bash may be missing
-    working_directory: /go/src/github.com/ory/keto
-    steps:
-      - checkout
-      - run: ./scripts/run-configuration.sh
-      - run: git config --global user.email "hi@ory.am"
-      - run: git config --global user.name "ORY Continuous Integration"
-      - run: "git clone https://arekkas:$DOCS_TOKEN_PUSH@github.com/ory/docs.git ../docs"
-      - run: "cp ./docs/api.swagger.json ../docs/apis/keto.json"
-      - run: "cp configuration.md ../docs/docs/keto/configuration.md"
-      - run: "(cd ../docs && git add -A && git commit -a -m \"Updates ORY Keto Swagger and config definitions\" && git push origin) || exit 0"
-
 workflows:
   version: 2
   "test, build, and relase":
@@ -83,10 +69,6 @@ workflows:
           filters:
             tags:
               only: /.*/
-      - release-docs:
-          filters:
-            branches:
-              only: master
       - changelog/generate:
           requires:
             - test
@@ -98,10 +80,12 @@ workflows:
               only: master
       - sdk/generate:
           appname: Ory_Keto
+          swagpath: contrib/api.schema.json
           requires:
             - test
             - format
       - sdk/release:
+          swagpath: contrib/api.schema.json
           requires:
             - test
             - format

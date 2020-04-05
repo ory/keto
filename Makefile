@@ -22,11 +22,11 @@ install:
 # Generates the SDKs
 .PHONY: sdk
 sdk:
-		$$(go env GOPATH)/bin/swagger generate spec -m -o ./docs/api.swagger.json -x internal/httpclient
-		$$(go env GOPATH)/bin/swagutil sanitize ./docs/api.swagger.json
-		$$(go env GOPATH)/bin/swagger flatten --with-flatten=remove-unused -o ./docs/api.swagger.json ./docs/api.swagger.json
-		$$(go env GOPATH)/bin/swagger validate ./docs/api.swagger.json
+		$$(go env GOPATH)/bin/swagger generate spec -m -o ./contrib/api.swagger.json -x internal/httpclient
+		$$(go env GOPATH)/bin/swagutil sanitize ./contrib/api.swagger.json
+		$$(go env GOPATH)/bin/swagger flatten --with-flatten=remove-unused -o ./contrib/api.swagger.json ./contrib/api.swagger.json
+		$$(go env GOPATH)/bin/swagger validate ./contrib/api.swagger.json
 		rm -rf internal/httpclient
 		mkdir -p internal/httpclient
-		$$(go env GOPATH)/bin/swagger generate client -f ./docs/api.swagger.json -t internal/httpclient -A Ory_Keto
+		$$(go env GOPATH)/bin/swagger generate client -f ./contrib/api.swagger.json -t internal/httpclient -A Ory_Keto
 		make format
