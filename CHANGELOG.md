@@ -3,6 +3,7 @@
 **Table of Contents**
 
 - [Changelog](#changelog)
+  - [Unreleased](#unreleased)
   - [v0.5.3-alpha.2 (2020-04-06)](#v053-alpha2-2020-04-06)
   - [v0.5.3-alpha.3 (2020-04-06)](#v053-alpha3-2020-04-06)
   - [v0.5.3-alpha.1 (2020-04-03)](#v053-alpha1-2020-04-03)
@@ -45,6 +46,15 @@
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 # Changelog
+
+## [Unreleased](https://github.com/ory/keto/tree/HEAD)
+
+[Full Changelog](https://github.com/ory/keto/compare/v0.5.3-alpha.2...HEAD)
+
+**Merged pull requests:**
+
+- chore: update docusaurus template [\#175](https://github.com/ory/keto/pull/175) ([aeneasr](https://github.com/aeneasr))
+- chore: update docusaurus template [\#174](https://github.com/ory/keto/pull/174) ([aeneasr](https://github.com/aeneasr))
 
 ## [v0.5.3-alpha.2](https://github.com/ory/keto/tree/v0.5.3-alpha.2) (2020-04-06)
 
