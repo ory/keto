@@ -53,6 +53,7 @@
 
 **Merged pull requests:**
 
+- chore: update docusaurus template [\#176](https://github.com/ory/keto/pull/176) ([aeneasr](https://github.com/aeneasr))
 - chore: update docusaurus template [\#175](https://github.com/ory/keto/pull/175) ([aeneasr](https://github.com/aeneasr))
 - chore: update docusaurus template [\#174](https://github.com/ory/keto/pull/174) ([aeneasr](https://github.com/aeneasr))
 
@@ -136,6 +137,7 @@
 - ci: Bump orb versions [\#154](https://github.com/ory/keto/pull/154) ([aeneasr](https://github.com/aeneasr))
 - docs: Updates issue and pull request templates [\#153](https://github.com/ory/keto/pull/153) ([aeneasr](https://github.com/aeneasr))
 - feat\(ci\): Add nancy vuln scanner [\#152](https://github.com/ory/keto/pull/152) ([aeneasr](https://github.com/aeneasr))
+- ci: Move to new goreleaser orb [\#147](https://github.com/ory/keto/pull/147) ([aeneasr](https://github.com/aeneasr))
 
 ## [v0.4.3-alpha.2](https://github.com/ory/keto/tree/v0.4.3-alpha.2) (2020-01-31)
 
@@ -156,10 +158,6 @@
 ## [v0.4.2-alpha.1](https://github.com/ory/keto/tree/v0.4.2-alpha.1) (2020-01-14)
 
 [Full Changelog](https://github.com/ory/keto/compare/v0.4.0-sandbox...v0.4.2-alpha.1)
-
-**Merged pull requests:**
-
-- ci: Move to new goreleaser orb [\#147](https://github.com/ory/keto/pull/147) ([aeneasr](https://github.com/aeneasr))
 
 ## [v0.4.0-sandbox](https://github.com/ory/keto/tree/v0.4.0-sandbox) (2020-01-13)
 
@@ -257,6 +255,7 @@
 - ci: Resolve goreleaser issues [\#108](https://github.com/ory/keto/pull/108) ([aeneasr](https://github.com/aeneasr))
 - ci: Update release pipeline [\#107](https://github.com/ory/keto/pull/107) ([aeneasr](https://github.com/aeneasr))
 - docs: Updates issue and pull request templates [\#106](https://github.com/ory/keto/pull/106) ([aeneasr](https://github.com/aeneasr))
+- Add tracing support and general improvements [\#98](https://github.com/ory/keto/pull/98) ([aeneasr](https://github.com/aeneasr))
 
 ## [v0.3.1-sandbox](https://github.com/ory/keto/tree/v0.3.1-sandbox) (2019-04-29)
 
@@ -291,7 +290,6 @@
 - docker: Remove full tag from build pipeline [\#101](https://github.com/ory/keto/pull/101) ([aeneasr](https://github.com/aeneasr))
 - sdk: Improve naming for ory policies [\#100](https://github.com/ory/keto/pull/100) ([aeneasr](https://github.com/aeneasr))
 - Remove duplicate code in Makefile [\#99](https://github.com/ory/keto/pull/99) ([minchao](https://github.com/minchao))
-- Add tracing support and general improvements [\#98](https://github.com/ory/keto/pull/98) ([aeneasr](https://github.com/aeneasr))
 - ci: Adopt new release pipeline [\#97](https://github.com/ory/keto/pull/97) ([aeneasr](https://github.com/aeneasr))
 - SDK [\#94](https://github.com/ory/keto/pull/94) ([aeneasr](https://github.com/aeneasr))
 - engine: Send 403 when authorization result is negative [\#93](https://github.com/ory/keto/pull/93) ([aeneasr](https://github.com/aeneasr))
