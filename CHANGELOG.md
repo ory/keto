@@ -3,7 +3,8 @@
 **Table of Contents**
 
 - [Changelog](#changelog)
-  - [Unreleased](#unreleased)
+  - [v0.5.3-alpha.2 (2020-04-06)](#v053-alpha2-2020-04-06)
+  - [v0.5.3-alpha.3 (2020-04-06)](#v053-alpha3-2020-04-06)
   - [v0.5.3-alpha.1 (2020-04-03)](#v053-alpha1-2020-04-03)
   - [v0.5.1-alpha.1 (2020-04-02)](#v051-alpha1-2020-04-02)
   - [v0.5.2 (2020-04-02)](#v052-2020-04-02)
@@ -45,9 +46,13 @@
 
 # Changelog
 
-## [Unreleased](https://github.com/ory/keto/tree/HEAD)
+## [v0.5.3-alpha.2](https://github.com/ory/keto/tree/v0.5.3-alpha.2) (2020-04-06)
 
-[Full Changelog](https://github.com/ory/keto/compare/v0.5.3-alpha.1...HEAD)
+[Full Changelog](https://github.com/ory/keto/compare/v0.5.3-alpha.3...v0.5.3-alpha.2)
+
+## [v0.5.3-alpha.3](https://github.com/ory/keto/tree/v0.5.3-alpha.3) (2020-04-06)
+
+[Full Changelog](https://github.com/ory/keto/compare/v0.5.3-alpha.1...v0.5.3-alpha.3)
 
 **Closed issues:**
 
@@ -120,6 +125,7 @@
 
 - ci: Bump orb versions [\#154](https://github.com/ory/keto/pull/154) ([aeneasr](https://github.com/aeneasr))
 - docs: Updates issue and pull request templates [\#153](https://github.com/ory/keto/pull/153) ([aeneasr](https://github.com/aeneasr))
+- feat\(ci\): Add nancy vuln scanner [\#152](https://github.com/ory/keto/pull/152) ([aeneasr](https://github.com/aeneasr))
 
 ## [v0.4.3-alpha.2](https://github.com/ory/keto/tree/v0.4.3-alpha.2) (2020-01-31)
 
@@ -159,7 +165,6 @@
 
 **Merged pull requests:**
 
-- feat\(ci\): Add nancy vuln scanner [\#152](https://github.com/ory/keto/pull/152) ([aeneasr](https://github.com/aeneasr))
 - Move to new SDK generators [\#146](https://github.com/ory/keto/pull/146) ([aeneasr](https://github.com/aeneasr))
 - Fix typos [\#144](https://github.com/ory/keto/pull/144) ([henryjw](https://github.com/henryjw))
 
