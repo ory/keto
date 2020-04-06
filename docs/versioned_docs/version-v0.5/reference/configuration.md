@@ -7,25 +7,22 @@ title: Configuration
 OPEN AN ISSUE IF YOU WOULD LIKE TO MAKE ADJUSTMENTS HERE AND MAINTAINERS WILL HELP YOU LOCATE THE RIGHT
 FILE -->
 
-If file `$HOME/.keto.yaml` exists, it will be used as a configuration file which
-supports all configuration settings listed below.
+If file `$HOME/.keto.yaml` exists, it will be used as a configuration file which supports all
+configuration settings listed below.
 
-You can load the config file from another source using the
-`-c path/to/config.yaml` or `--config path/to/config.yaml` flag:
-`keto --config path/to/config.yaml`.
+You can load the config file from another source using the `-c path/to/config.yaml` or `--config path/to/config.yaml`
+flag: `keto --config path/to/config.yaml`.
 
-Config files can be formatted as JSON, YAML and TOML. Some configuration values
-support reloading without server restart. All configuration values can be set
-using environment variables, as documented below.
+Config files can be formatted as JSON, YAML and TOML. Some configuration values support reloading without server restart.
+All configuration values can be set using environment variables, as documented below.
 
-To find out more about edge cases like setting string array values through
-environmental variables head to the
-[Configuring ORY services](https://www.ory.sh/docs/ecosystem/configuring)
-section.
+To find out more about edge cases like setting string array values through environmental variables head to the
+[Configuring ORY services](https://www.ory.sh/docs/ecosystem/configuring) section.
 
 ```yaml
 ## ORY Kratos Configuration
 #
+
 
 ## Data Source Name ##
 #
@@ -35,18 +32,19 @@ section.
 # - postgres://user:password@host:123/database
 # - mysql://user:password@tcp(host:123)/database
 # - memory
-#
+# 
 # Set this value using environment variables on
 # - Linux/macOS:
 #    $ export DSN=<value>
 # - Windows Command Line (CMD):
 #    > set DSN=<value>
 #
-dsn: mysql://user:password@tcp(host:123)/database
+dsn: postgres://user:password@host:123/database
 
 ## HTTP REST API ##
 #
 serve:
+  
   ## Port ##
   #
   # The port to listen on.
@@ -55,7 +53,7 @@ serve:
   #
   # Examples:
   # - 4456
-  #
+  # 
   # Set this value using environment variables on
   # - Linux/macOS:
   #    $ export SERVE_PORT=<value>
@@ -71,20 +69,21 @@ serve:
   # Examples:
   # - localhost
   # - 127.0.0.1
-  #
+  # 
   # Set this value using environment variables on
   # - Linux/macOS:
   #    $ export SERVE_HOST=<value>
   # - Windows Command Line (CMD):
   #    > set SERVE_HOST=<value>
   #
-  host: 127.0.0.1
+  host: localhost
 
   ## Cross Origin Resource Sharing (CORS) ##
   #
   # Configure [Cross Origin Resource Sharing (CORS)](http://www.w3.org/TR/cors/) using the following options.
   #
   cors:
+    
     ## Enable CORS ##
     #
     # If set to true, CORS will be enabled and preflight-requests (OPTION) will be answered.
@@ -97,7 +96,7 @@ serve:
     # - Windows Command Line (CMD):
     #    > set SERVE_CORS_ENABLED=<value>
     #
-    enabled: false
+    enabled: true
 
     ## Allowed Origins ##
     #
@@ -109,7 +108,7 @@ serve:
     # - - https://example.com
     #   - https://*.example.com
     #   - https://*.foo.example.com
-    #
+    # 
     # Set this value using environment variables on
     # - Linux/macOS:
     #    $ export SERVE_CORS_ALLOWED_ORIGINS=<value>
@@ -134,10 +133,11 @@ serve:
     #    > set SERVE_CORS_ALLOWED_METHODS=<value>
     #
     allowed_methods:
-      - GET
-      - TRACE
+      - PATCH
       - HEAD
-      - PUT
+      - POST
+      - CONNECT
+      - TRACE
 
     ## Allowed Request HTTP Headers ##
     #
@@ -152,9 +152,9 @@ serve:
     #    > set SERVE_CORS_ALLOWED_HEADERS=<value>
     #
     allowed_headers:
-      - nisi commodo
-      - reprehenderit aliqua in ut
-      - enim
+      - dolore
+      - nostrud ea
+      - nostrud ut qui
 
     ## Allowed Response HTTP Headers ##
     #
@@ -169,10 +169,11 @@ serve:
     #    > set SERVE_CORS_EXPOSED_HEADERS=<value>
     #
     exposed_headers:
-      - ad pariatur aliquip nulla
-      - incididunt Ut
-      - id minim non Duis qui
-      - dolore ut qui
+      - magna laborum amet nostrud laboris
+      - eu consequat do
+      - laborum voluptate deserunt fugiat cillum
+      - in
+      - consequat consectetur exercitation proident
 
     ## Allow HTTP Credentials ##
     #
@@ -198,7 +199,7 @@ serve:
     # - Windows Command Line (CMD):
     #    > set SERVE_CORS_MAX_AGE=<value>
     #
-    max_age: 12487632
+    max_age: 75363283
 
     ## Enable Debugging ##
     #
@@ -212,16 +213,18 @@ serve:
     # - Windows Command Line (CMD):
     #    > set SERVE_CORS_DEBUG=<value>
     #
-    debug: false
+    debug: true
 
   ## HTTPS ##
   #
   # Configure HTTP over TLS (HTTPS). All options can also be set using environment variables by replacing dots (`.`) with underscores (`_`) and uppercasing the key. For example, `some.prefix.tls.key.path` becomes `export SOME_PREFIX_TLS_KEY_PATH`. If all keys are left undefined, TLS will be disabled.
   #
   tls:
+    
     ## Private Key (PEM) ##
     #
     key:
+      
       ## path ##
       #
       # Set this value using environment variables on
@@ -245,6 +248,7 @@ serve:
     ## TLS Certificate (PEM) ##
     #
     cert:
+      
       ## path ##
       #
       # Set this value using environment variables on
@@ -275,13 +279,14 @@ serve:
 # - Windows Command Line (CMD):
 #    > set PROFILING=<value>
 #
-profiling: cpu
+profiling: mem
 
 ## Log ##
 #
 # Configure logging using the following options. Logging will always be sent to stdout and stderr.
 #
 log:
+  
   ## Level ##
   #
   # Debug enables stack traces on errors. Can also be set using environment variable LOG_LEVEL.
@@ -294,7 +299,7 @@ log:
   # - Windows Command Line (CMD):
   #    > set LOG_LEVEL=<value>
   #
-  level: info
+  level: debug
 
   ## Format ##
   #
@@ -315,13 +320,14 @@ log:
 # ORY Hydra supports distributed tracing.
 #
 tracing:
+  
   ## provider ##
   #
   # Set this to the tracing backend you wish to use. Currently supports jaeger. If omitted or empty, tracing will be disabled.
   #
   # Examples:
   # - jaeger
-  #
+  # 
   # Set this value using environment variables on
   # - Linux/macOS:
   #    $ export TRACING_PROVIDER=<value>
@@ -336,7 +342,7 @@ tracing:
   #
   # Examples:
   # - ORY Hydra
-  #
+  # 
   # Set this value using environment variables on
   # - Linux/macOS:
   #    $ export TRACING_SERVICE_NAME=<value>
@@ -348,18 +354,20 @@ tracing:
   ## providers ##
   #
   providers:
+    
     ## jaeger ##
     #
     # Configures the jaeger tracing backend.
     #
     jaeger:
+      
       ## local_agent_address ##
       #
       # The address of the jaeger-agent where spans should be sent to.
       #
       # Examples:
       # - 127.0.0.1:6831
-      #
+      # 
       # Set this value using environment variables on
       # - Linux/macOS:
       #    $ export TRACING_PROVIDERS_JAEGER_LOCAL_AGENT_ADDRESS=<value>
@@ -374,7 +382,7 @@ tracing:
       #
       # Examples:
       # - jaeger
-      #
+      # 
       # Set this value using environment variables on
       # - Linux/macOS:
       #    $ export TRACING_PROVIDERS_JAEGER_PROPAGATION=<value>
@@ -389,8 +397,9 @@ tracing:
       # - type: const
       #   value: 1
       #   server_url: http://localhost:5778/sampling
-      #
+      # 
       sampling:
+        
         ## type ##
         #
         # Set this value using environment variables on
@@ -420,4 +429,5 @@ tracing:
         #    > set TRACING_PROVIDERS_JAEGER_SAMPLING_SERVER_URL=<value>
         #
         server_url: http://localhost:5778/sampling
+
 ```
