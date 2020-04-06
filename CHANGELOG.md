@@ -84,6 +84,10 @@
 
 [Full Changelog](https://github.com/ory/keto/compare/v0.4.5-alpha.1...v0.5.0)
 
+**Implemented enhancements:**
+
+- chore: bump ory/x to latest [\#164](https://github.com/ory/keto/pull/164) ([aeneasr](https://github.com/aeneasr))
+
 **Closed issues:**
 
 - Reintroduce swagger task to CircleCI [\#49](https://github.com/ory/keto/issues/49)
@@ -110,10 +114,6 @@
 ## [v0.4.4-alpha.1](https://github.com/ory/keto/tree/v0.4.4-alpha.1) (2020-02-14)
 
 [Full Changelog](https://github.com/ory/keto/compare/v0.4.3-alpha.2...v0.4.4-alpha.1)
-
-**Implemented enhancements:**
-
-- chore: bump ory/x to latest [\#164](https://github.com/ory/keto/pull/164) ([aeneasr](https://github.com/aeneasr))
 
 **Merged pull requests:**
 
