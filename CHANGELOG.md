@@ -284,7 +284,6 @@
 - Fix upsert with pre-existing key will causes duplicate records [\#88](https://github.com/ory/keto/pull/88) ([minchao](https://github.com/minchao))
 - Fix remove member from role [\#87](https://github.com/ory/keto/pull/87) ([minchao](https://github.com/minchao))
 - Fix the type of conditions in the policy [\#86](https://github.com/ory/keto/pull/86) ([minchao](https://github.com/minchao))
-- cmd: Fix disable-telemetry check [\#85](https://github.com/ory/keto/pull/85) ([RomanMinkin](https://github.com/RomanMinkin))
 
 ## [v0.2.3-sandbox+oryOS.10](https://github.com/ory/keto/tree/v0.2.3-sandbox+oryOS.10) (2019-02-05)
 
@@ -300,6 +299,7 @@
 
 **Merged pull requests:**
 
+- cmd: Fix disable-telemetry check [\#85](https://github.com/ory/keto/pull/85) ([RomanMinkin](https://github.com/RomanMinkin))
 - dist: Fix packr build pipeline [\#84](https://github.com/ory/keto/pull/84) ([aeneasr](https://github.com/aeneasr))
 - cmd: Add support for glob matching [\#79](https://github.com/ory/keto/pull/79) ([rliebz](https://github.com/rliebz))
 - Fix for compiler error \(Unable to initialize compiler: lstat /go: no such file or directory\) [\#77](https://github.com/ory/keto/pull/77) ([sum2000](https://github.com/sum2000))
