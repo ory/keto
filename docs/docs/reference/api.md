@@ -3158,19 +3158,3 @@ other sort of role._
 | Name    | Type   | Required | Restrictions | Description                       |
 | ------- | ------ | -------- | ------------ | --------------------------------- |
 | version | string | false    | none         | Version is the service's version. |
-
-<a id="tocSuuid">UUID</a>
-
-#### UUID
-
-<a id="schemauuid"></a>
-
-```json
-"string"
-```
-
-#### Properties
-
-| Name        | Type          | Required | Restrictions | Description |
-| ----------- | ------------- | -------- | ------------ | ----------- |
-| _anonymous_ | string(uuid4) | false    | none         | none        |
