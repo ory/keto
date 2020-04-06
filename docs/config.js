@@ -9,7 +9,7 @@ module.exports = {
     }
   ],
   updateConfig: {
-    src: 'contrib/config.schema.json',
+    src: '.schema/config.schema.json',
     dst: './docs/docs/reference/configuration.md'
   }
 };
