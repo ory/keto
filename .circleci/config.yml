@@ -5,7 +5,7 @@ orbs:
   changelog: ory/changelog@0.0.6
   goreleaser: ory/goreleaser@0.0.27
   nancy: ory/nancy@0.0.8
-  docs: ory/docs@v0.0.1
+  docs: ory/docs@0.0.1
   golangci: ory/golangci@0.0.4
 
 jobs:
