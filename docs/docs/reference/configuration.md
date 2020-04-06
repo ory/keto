@@ -78,7 +78,7 @@ serve:
   # - Windows Command Line (CMD):
   #    > set SERVE_HOST=<value>
   #
-  host: 127.0.0.1
+  host: ''
 
   ## Cross Origin Resource Sharing (CORS) ##
   #
@@ -97,7 +97,7 @@ serve:
     # - Windows Command Line (CMD):
     #    > set SERVE_CORS_ENABLED=<value>
     #
-    enabled: false
+    enabled: true
 
     ## Allowed Origins ##
     #
@@ -117,7 +117,9 @@ serve:
     #    > set SERVE_CORS_ALLOWED_ORIGINS=<value>
     #
     allowed_origins:
-      - '*'
+      - https://example.com
+      - https://*.example.com
+      - https://*.foo.example.com
 
     ## Allowed HTTP Methods ##
     #
@@ -132,11 +134,7 @@ serve:
     #    > set SERVE_CORS_ALLOWED_METHODS=<value>
     #
     allowed_methods:
-      - HEAD
-      - POST
-      - DELETE
       - CONNECT
-      - TRACE
 
     ## Allowed Request HTTP Headers ##
     #
@@ -151,9 +149,8 @@ serve:
     #    > set SERVE_CORS_ALLOWED_HEADERS=<value>
     #
     allowed_headers:
-      - sunt dolor eiusmod in
-      - aute
-      - veniam
+      - quis ut ex eiusmod
+      - ut Duis culpa
 
     ## Allowed Response HTTP Headers ##
     #
@@ -168,11 +165,9 @@ serve:
     #    > set SERVE_CORS_EXPOSED_HEADERS=<value>
     #
     exposed_headers:
-      - sunt pariatur fugiat magna
-      - Ut esse in tempor
-      - voluptate aliqua eiusmod adipisicing
-      - id sit occaecat
-      - irure anim
+      - ea Duis amet adipisicing aliquip
+      - adipisicing reprehenderit
+      - aliquip consectetur reprehenderit
 
     ## Allow HTTP Credentials ##
     #
@@ -198,7 +193,7 @@ serve:
     # - Windows Command Line (CMD):
     #    > set SERVE_CORS_MAX_AGE=<value>
     #
-    max_age: 1296018
+    max_age: 84500501
 
     ## Enable Debugging ##
     #
@@ -212,7 +207,7 @@ serve:
     # - Windows Command Line (CMD):
     #    > set SERVE_CORS_DEBUG=<value>
     #
-    debug: false
+    debug: true
 
   ## HTTPS ##
   #
@@ -275,7 +270,7 @@ serve:
 # - Windows Command Line (CMD):
 #    > set PROFILING=<value>
 #
-profiling: ''
+profiling: cpu
 
 ## Log ##
 #
@@ -294,7 +289,7 @@ log:
   # - Windows Command Line (CMD):
   #    > set LOG_LEVEL=<value>
   #
-  level: warn
+  level: info
 
   ## Format ##
   #
@@ -308,7 +303,7 @@ log:
   # - Windows Command Line (CMD):
   #    > set LOG_FORMAT=<value>
   #
-  format: text
+  format: json
 
 ## tracing ##
 #
