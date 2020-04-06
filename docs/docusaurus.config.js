@@ -6,43 +6,43 @@ let versions = [
 ]
 
 const links = [
-    {
-      to: 'docs/index',
-      activeBasePath: `${config.projectSlug}/docs`,
-      label: `Docs`,
-      position: 'left',
-    },
-    {
-      href: 'https://www.ory.sh/docs',
-      label: 'Ecosystem',
-      position: 'left',
-    },
-    {
-      href: 'https://www.ory.sh/blog', label: 'Blog',
-      position: 'left',
-    },
-    {
-      href: 'https://community.ory.sh', label: 'Forum',
-      position: 'left',
-    },
-    {
-      href: 'https://www.ory.sh/chat', label: 'Chat',
-      position: 'left',
-    },
-    {
-      href: `https://github.com/ory/${config.projectSlug}`,
-      label: 'GitHub',
-      position: 'left',
-    },
-  ]
+  {
+    to: 'index',
+    activeBasePath: `${config.projectSlug}/docs`,
+    label: `Docs`,
+    position: 'left',
+  },
+  {
+    href: 'https://www.ory.sh/docs',
+    label: 'Ecosystem',
+    position: 'left',
+  },
+  {
+    href: 'https://www.ory.sh/blog', label: 'Blog',
+    position: 'left',
+  },
+  {
+    href: 'https://community.ory.sh', label: 'Forum',
+    position: 'left',
+  },
+  {
+    href: 'https://www.ory.sh/chat', label: 'Chat',
+    position: 'left',
+  },
+  {
+    href: `https://github.com/ory/${config.projectSlug}`,
+    label: 'GitHub',
+    position: 'left',
+  },
+]
 
 if (fs.existsSync('./versions.json')) {
-  const version =  require('./versions.json');
+  const version = require('./versions.json');
   if (version && version.length > 0) {
     links.push({
       label: version[0],
-      position: 'left',
-      to:'versions'
+      position: 'right',
+      to: 'versions'
     });
   }
 }
@@ -105,11 +105,14 @@ module.exports = {
         path: config.projectSlug === 'docusaurus-template' ? 'contrib/docs' : 'docs',
         sidebarPath: require.resolve('./contrib/sidebar.js'),
         editUrl:
-          `https://github.com/docs/${config.projectSlug}/edit/master`,
+          `https://github.com/docs/${config.projectSlug}/edit/master/docs`,
         routeBasePath: '',
         showLastUpdateAuthor: true,
         showLastUpdateTime: true,
       },
+    ],
+    [
+      "@docusaurus/plugin-content-pages",
     ],
     ["@docusaurus/plugin-google-analytics"],
     ["@docusaurus/plugin-sitemap"]
@@ -118,7 +121,7 @@ module.exports = {
     [
       "@docusaurus/theme-classic",
       {
-        customCss: require.resolve('./src/css/custom.css'),
+        customCss: config.projectSlug === 'docusaurus-template' ? require.resolve('./contrib/theme.css') : require.resolve('./src/css/theme.css'),
       }
     ], [
       "@docusaurus/theme-search-algolia"

@@ -13,5 +13,3 @@ Please protect these endpoints using
 How you protect them, is up to you.
 
 If you require support for this, consider [asking us](mailto:hi@ory.sh).
-
-hjkhjklkhjl
