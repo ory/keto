@@ -12,7 +12,7 @@ let config = {
     },
   ],
   updateConfig: {
-    src: 'contrib/config.schema.json',
+    src: '.schemas/config.schema.json',
     dst: './docs/docs/reference/configuration.md',
   },
 };

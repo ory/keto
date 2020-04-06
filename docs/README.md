@@ -30,10 +30,11 @@ This command generates static content into the `build` directory and can be serv
 ## Create Documentation
 
 To create a new documentation for a new or existing project, copy the contents (without `node_modules`)
-into the project's `./docs` directory. Next you need to create two files in the `./docs` directory:
+into the project's `./docs` directory. Next you need to create these files (relative to the project's root directory)
+directory:
 
 ```js
-// config.js
+// ./docs/config.js
 //
 // This file contains the project's name and slug and tag line, for example:
 module.exports = {
@@ -47,14 +48,14 @@ module.exports = {
     }
   ],
   updateConfig: {
-    src: 'contrib/config.schema.json',
+    src: '.schemas/config.schema.json',
     dst: './docs/docs/reference/configuration.md'
   }
 };
 ```
 
 ```js
-// sidebar.js
+// ./docs/sidebar.js
 //
 // This represents the sidebar navigation, for example:
 module.exports = {
@@ -63,6 +64,11 @@ module.exports = {
     "install",
   ],
 };
+```
+
+```
+// ./docs/src/css/theme.css
+// empty file is ok
 ```
 
 Next, put your markdown files in `./docs/docs`. You may also want to add the CircleCI Orb `ory/docs` to your CI config,
