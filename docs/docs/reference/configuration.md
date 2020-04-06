@@ -42,7 +42,7 @@ section.
 # - Windows Command Line (CMD):
 #    > set DSN=<value>
 #
-dsn: mysql://user:password@tcp(host:123)/database
+dsn: memory
 
 ## HTTP REST API ##
 #
@@ -132,9 +132,9 @@ serve:
     #    > set SERVE_CORS_ALLOWED_METHODS=<value>
     #
     allowed_methods:
-      - PUT
-      - TRACE
+      - DELETE
       - POST
+      - GET
 
     ## Allowed Request HTTP Headers ##
     #
@@ -149,9 +149,11 @@ serve:
     #    > set SERVE_CORS_ALLOWED_HEADERS=<value>
     #
     allowed_headers:
-      - cupidatat dolore officia in id
-      - ex minim enim
-      - quis
+      - do deserunt laborum eu
+      - quis Excepteur
+      - et officia nulla
+      - sunt in est magna do
+      - consectetur ea Duis incididunt
 
     ## Allowed Response HTTP Headers ##
     #
@@ -166,9 +168,11 @@ serve:
     #    > set SERVE_CORS_EXPOSED_HEADERS=<value>
     #
     exposed_headers:
-      - dolore
-      - veniam non exercitation
-      - in sint id non occaecat
+      - nostrud ut enim do
+      - aliquip anim amet dolore pariatur
+      - esse in culpa in
+      - Duis aute labore in
+      - nisi anim
 
     ## Allow HTTP Credentials ##
     #
@@ -194,7 +198,7 @@ serve:
     # - Windows Command Line (CMD):
     #    > set SERVE_CORS_MAX_AGE=<value>
     #
-    max_age: -99497092
+    max_age: 11388871
 
     ## Enable Debugging ##
     #
@@ -208,7 +212,7 @@ serve:
     # - Windows Command Line (CMD):
     #    > set SERVE_CORS_DEBUG=<value>
     #
-    debug: false
+    debug: true
 
   ## HTTPS ##
   #
@@ -271,7 +275,7 @@ serve:
 # - Windows Command Line (CMD):
 #    > set PROFILING=<value>
 #
-profiling: ''
+profiling: cpu
 
 ## Log ##
 #
@@ -290,7 +294,7 @@ log:
   # - Windows Command Line (CMD):
   #    > set LOG_LEVEL=<value>
   #
-  level: debug
+  level: fatal
 
   ## Format ##
   #
