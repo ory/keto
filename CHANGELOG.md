@@ -55,6 +55,7 @@
 
 **Merged pull requests:**
 
+- chore: update docusaurus template [\#173](https://github.com/ory/keto/pull/173) ([aeneasr](https://github.com/aeneasr))
 - refactor: move docs to this repository [\#172](https://github.com/ory/keto/pull/172) ([aeneasr](https://github.com/aeneasr))
 - docs: Updates issue and pull request templates [\#171](https://github.com/ory/keto/pull/171) ([aeneasr](https://github.com/aeneasr))
 - docs: Updates issue and pull request templates [\#169](https://github.com/ory/keto/pull/169) ([aeneasr](https://github.com/aeneasr))
@@ -119,7 +120,6 @@
 
 - ci: Bump orb versions [\#154](https://github.com/ory/keto/pull/154) ([aeneasr](https://github.com/aeneasr))
 - docs: Updates issue and pull request templates [\#153](https://github.com/ory/keto/pull/153) ([aeneasr](https://github.com/aeneasr))
-- feat\(ci\): Add nancy vuln scanner [\#152](https://github.com/ory/keto/pull/152) ([aeneasr](https://github.com/aeneasr))
 
 ## [v0.4.3-alpha.2](https://github.com/ory/keto/tree/v0.4.3-alpha.2) (2020-01-31)
 
@@ -159,6 +159,7 @@
 
 **Merged pull requests:**
 
+- feat\(ci\): Add nancy vuln scanner [\#152](https://github.com/ory/keto/pull/152) ([aeneasr](https://github.com/aeneasr))
 - Move to new SDK generators [\#146](https://github.com/ory/keto/pull/146) ([aeneasr](https://github.com/aeneasr))
 - Fix typos [\#144](https://github.com/ory/keto/pull/144) ([henryjw](https://github.com/henryjw))
 
