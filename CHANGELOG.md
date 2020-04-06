@@ -364,6 +364,7 @@
 - cmd: Require explicit CORS enabling [\#42](https://github.com/ory/keto/pull/42) ([aeneasr](https://github.com/aeneasr))
 - sdk: Upgrade superagent version [\#41](https://github.com/ory/keto/pull/41) ([aeneasr](https://github.com/aeneasr))
 - authn: Make introspection authorization optional [\#40](https://github.com/ory/keto/pull/40) ([aeneasr](https://github.com/aeneasr))
+- health: Introduces health and version endpoints [\#37](https://github.com/ory/keto/pull/37) ([aeneasr](https://github.com/aeneasr))
 
 ## [v0.1.8-sandbox+oryOS.8](https://github.com/ory/keto/tree/v0.1.8-sandbox+oryOS.8) (2018-11-14)
 
@@ -373,7 +374,6 @@
 
 - cmd: Fixes typo in help command in env var name [\#39](https://github.com/ory/keto/pull/39) ([RomanMinkin](https://github.com/RomanMinkin))
 - sdk: Add SDK generation to circle ci [\#38](https://github.com/ory/keto/pull/38) ([aeneasr](https://github.com/aeneasr))
-- health: Introduces health and version endpoints [\#37](https://github.com/ory/keto/pull/37) ([aeneasr](https://github.com/aeneasr))
 
 ## [v0.1.7-sandbox+oryOS.7](https://github.com/ory/keto/tree/v0.1.7-sandbox+oryOS.7) (2018-11-14)
 
