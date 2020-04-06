@@ -186,6 +186,7 @@
 **Merged pull requests:**
 
 - Update documentation banner image [\#143](https://github.com/ory/keto/pull/143) ([jfcurran](https://github.com/jfcurran))
+- fix invalid pseudo version [\#138](https://github.com/ory/keto/pull/138) ([minchao](https://github.com/minchao))
 
 ## [v0.3.6-sandbox](https://github.com/ory/keto/tree/v0.3.6-sandbox) (2019-10-16)
 
@@ -193,7 +194,6 @@
 
 **Merged pull requests:**
 
-- fix invalid pseudo version [\#138](https://github.com/ory/keto/pull/138) ([minchao](https://github.com/minchao))
 - Resolve issues with mysql tests [\#137](https://github.com/ory/keto/pull/137) ([aeneasr](https://github.com/aeneasr))
 
 ## [v0.3.4-sandbox](https://github.com/ory/keto/tree/v0.3.4-sandbox) (2019-08-21)
