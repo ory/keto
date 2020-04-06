@@ -42,7 +42,7 @@ section.
 # - Windows Command Line (CMD):
 #    > set DSN=<value>
 #
-dsn: memory
+dsn: postgres://user:password@host:123/database
 
 ## HTTP REST API ##
 #
@@ -78,7 +78,7 @@ serve:
   # - Windows Command Line (CMD):
   #    > set SERVE_HOST=<value>
   #
-  host: 127.0.0.1
+  host: ''
 
   ## Cross Origin Resource Sharing (CORS) ##
   #
@@ -97,7 +97,7 @@ serve:
     # - Windows Command Line (CMD):
     #    > set SERVE_CORS_ENABLED=<value>
     #
-    enabled: false
+    enabled: true
 
     ## Allowed Origins ##
     #
@@ -132,9 +132,7 @@ serve:
     #    > set SERVE_CORS_ALLOWED_METHODS=<value>
     #
     allowed_methods:
-      - DELETE
       - POST
-      - GET
 
     ## Allowed Request HTTP Headers ##
     #
@@ -149,11 +147,8 @@ serve:
     #    > set SERVE_CORS_ALLOWED_HEADERS=<value>
     #
     allowed_headers:
-      - do deserunt laborum eu
-      - quis Excepteur
-      - et officia nulla
-      - sunt in est magna do
-      - consectetur ea Duis incididunt
+      - sit veniam Lorem velit
+      - cillum magna sit irure
 
     ## Allowed Response HTTP Headers ##
     #
@@ -168,11 +163,10 @@ serve:
     #    > set SERVE_CORS_EXPOSED_HEADERS=<value>
     #
     exposed_headers:
-      - nostrud ut enim do
-      - aliquip anim amet dolore pariatur
-      - esse in culpa in
-      - Duis aute labore in
-      - nisi anim
+      - ex consectetur ut deserunt aliquip
+      - ad in in magna velit
+      - exercitation ut dolore
+      - nostrud elit
 
     ## Allow HTTP Credentials ##
     #
@@ -186,7 +180,7 @@ serve:
     # - Windows Command Line (CMD):
     #    > set SERVE_CORS_ALLOW_CREDENTIALS=<value>
     #
-    allow_credentials: true
+    allow_credentials: false
 
     ## Maximum Age ##
     #
@@ -198,7 +192,7 @@ serve:
     # - Windows Command Line (CMD):
     #    > set SERVE_CORS_MAX_AGE=<value>
     #
-    max_age: 11388871
+    max_age: -15653991
 
     ## Enable Debugging ##
     #
@@ -275,7 +269,7 @@ serve:
 # - Windows Command Line (CMD):
 #    > set PROFILING=<value>
 #
-profiling: cpu
+profiling: mem
 
 ## Log ##
 #
@@ -294,7 +288,7 @@ log:
   # - Windows Command Line (CMD):
   #    > set LOG_LEVEL=<value>
   #
-  level: fatal
+  level: panic
 
   ## Format ##
   #
@@ -308,7 +302,7 @@ log:
   # - Windows Command Line (CMD):
   #    > set LOG_FORMAT=<value>
   #
-  format: text
+  format: json
 
 ## tracing ##
 #
