@@ -42,7 +42,7 @@ section.
 # - Windows Command Line (CMD):
 #    > set DSN=<value>
 #
-dsn: postgres://user:password@host:123/database
+dsn: memory
 
 ## HTTP REST API ##
 #
@@ -78,7 +78,7 @@ serve:
   # - Windows Command Line (CMD):
   #    > set SERVE_HOST=<value>
   #
-  host: localhost
+  host: ''
 
   ## Cross Origin Resource Sharing (CORS) ##
   #
@@ -97,7 +97,7 @@ serve:
     # - Windows Command Line (CMD):
     #    > set SERVE_CORS_ENABLED=<value>
     #
-    enabled: true
+    enabled: false
 
     ## Allowed Origins ##
     #
@@ -117,9 +117,7 @@ serve:
     #    > set SERVE_CORS_ALLOWED_ORIGINS=<value>
     #
     allowed_origins:
-      - https://example.com
-      - https://*.example.com
-      - https://*.foo.example.com
+      - '*'
 
     ## Allowed HTTP Methods ##
     #
@@ -134,11 +132,11 @@ serve:
     #    > set SERVE_CORS_ALLOWED_METHODS=<value>
     #
     allowed_methods:
+      - DELETE
       - PATCH
-      - HEAD
+      - TRACE
       - POST
       - CONNECT
-      - TRACE
 
     ## Allowed Request HTTP Headers ##
     #
@@ -153,9 +151,7 @@ serve:
     #    > set SERVE_CORS_ALLOWED_HEADERS=<value>
     #
     allowed_headers:
-      - dolore
-      - nostrud ea
-      - nostrud ut qui
+      - exercitation sint
 
     ## Allowed Response HTTP Headers ##
     #
@@ -170,11 +166,7 @@ serve:
     #    > set SERVE_CORS_EXPOSED_HEADERS=<value>
     #
     exposed_headers:
-      - magna laborum amet nostrud laboris
-      - eu consequat do
-      - laborum voluptate deserunt fugiat cillum
-      - in
-      - consequat consectetur exercitation proident
+      - laborum do
 
     ## Allow HTTP Credentials ##
     #
@@ -200,7 +192,7 @@ serve:
     # - Windows Command Line (CMD):
     #    > set SERVE_CORS_MAX_AGE=<value>
     #
-    max_age: 75363283
+    max_age: -95336305
 
     ## Enable Debugging ##
     #
@@ -296,7 +288,7 @@ log:
   # - Windows Command Line (CMD):
   #    > set LOG_LEVEL=<value>
   #
-  level: debug
+  level: fatal
 
   ## Format ##
   #
