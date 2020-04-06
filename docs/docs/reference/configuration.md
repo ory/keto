@@ -42,7 +42,7 @@ section.
 # - Windows Command Line (CMD):
 #    > set DSN=<value>
 #
-dsn: postgres://user:password@host:123/database
+dsn: mysql://user:password@tcp(host:123)/database
 
 ## HTTP REST API ##
 #
@@ -78,7 +78,7 @@ serve:
   # - Windows Command Line (CMD):
   #    > set SERVE_HOST=<value>
   #
-  host: ''
+  host: 127.0.0.1
 
   ## Cross Origin Resource Sharing (CORS) ##
   #
@@ -97,7 +97,7 @@ serve:
     # - Windows Command Line (CMD):
     #    > set SERVE_CORS_ENABLED=<value>
     #
-    enabled: true
+    enabled: false
 
     ## Allowed Origins ##
     #
@@ -132,7 +132,11 @@ serve:
     #    > set SERVE_CORS_ALLOWED_METHODS=<value>
     #
     allowed_methods:
+      - HEAD
       - POST
+      - DELETE
+      - CONNECT
+      - TRACE
 
     ## Allowed Request HTTP Headers ##
     #
@@ -147,8 +151,9 @@ serve:
     #    > set SERVE_CORS_ALLOWED_HEADERS=<value>
     #
     allowed_headers:
-      - sit veniam Lorem velit
-      - cillum magna sit irure
+      - sunt dolor eiusmod in
+      - aute
+      - veniam
 
     ## Allowed Response HTTP Headers ##
     #
@@ -163,10 +168,11 @@ serve:
     #    > set SERVE_CORS_EXPOSED_HEADERS=<value>
     #
     exposed_headers:
-      - ex consectetur ut deserunt aliquip
-      - ad in in magna velit
-      - exercitation ut dolore
-      - nostrud elit
+      - sunt pariatur fugiat magna
+      - Ut esse in tempor
+      - voluptate aliqua eiusmod adipisicing
+      - id sit occaecat
+      - irure anim
 
     ## Allow HTTP Credentials ##
     #
@@ -192,7 +198,7 @@ serve:
     # - Windows Command Line (CMD):
     #    > set SERVE_CORS_MAX_AGE=<value>
     #
-    max_age: -15653991
+    max_age: 1296018
 
     ## Enable Debugging ##
     #
@@ -206,7 +212,7 @@ serve:
     # - Windows Command Line (CMD):
     #    > set SERVE_CORS_DEBUG=<value>
     #
-    debug: true
+    debug: false
 
   ## HTTPS ##
   #
@@ -269,7 +275,7 @@ serve:
 # - Windows Command Line (CMD):
 #    > set PROFILING=<value>
 #
-profiling: mem
+profiling: ''
 
 ## Log ##
 #
@@ -288,7 +294,7 @@ log:
   # - Windows Command Line (CMD):
   #    > set LOG_LEVEL=<value>
   #
-  level: panic
+  level: warn
 
   ## Format ##
   #
@@ -302,7 +308,7 @@ log:
   # - Windows Command Line (CMD):
   #    > set LOG_FORMAT=<value>
   #
-  format: json
+  format: text
 
 ## tracing ##
 #
