@@ -55,6 +55,7 @@
 
 **Merged pull requests:**
 
+- refactor: move docs to this repository [\#172](https://github.com/ory/keto/pull/172) ([aeneasr](https://github.com/aeneasr))
 - docs: Updates issue and pull request templates [\#171](https://github.com/ory/keto/pull/171) ([aeneasr](https://github.com/aeneasr))
 - docs: Updates issue and pull request templates [\#169](https://github.com/ory/keto/pull/169) ([aeneasr](https://github.com/aeneasr))
 - docs: Updates issue and pull request templates [\#168](https://github.com/ory/keto/pull/168) ([aeneasr](https://github.com/aeneasr))
@@ -350,7 +351,6 @@
 - docs: Updates issue and pull request templates [\#53](https://github.com/ory/keto/pull/53) ([aeneasr](https://github.com/aeneasr))
 - docs: Updates issue and pull request templates [\#52](https://github.com/ory/keto/pull/52) ([aeneasr](https://github.com/aeneasr))
 - Switch to rego as policy decision engine [\#48](https://github.com/ory/keto/pull/48) ([aeneasr](https://github.com/aeneasr))
-- vendor: Remove ORY Hydra dependency [\#44](https://github.com/ory/keto/pull/44) ([aeneasr](https://github.com/aeneasr))
 
 ## [v0.1.9-sandbox+oryOS.9](https://github.com/ory/keto/tree/v0.1.9-sandbox+oryOS.9) (2018-11-14)
 
@@ -360,6 +360,7 @@
 
 - Enable TLS option to serve API [\#46](https://github.com/ory/keto/pull/46) ([fredbi](https://github.com/fredbi))
 - cmd: Do not split empty scope [\#45](https://github.com/ory/keto/pull/45) ([aeneasr](https://github.com/aeneasr))
+- vendor: Remove ORY Hydra dependency [\#44](https://github.com/ory/keto/pull/44) ([aeneasr](https://github.com/aeneasr))
 - cmd: Require explicit CORS enabling [\#42](https://github.com/ory/keto/pull/42) ([aeneasr](https://github.com/aeneasr))
 - sdk: Upgrade superagent version [\#41](https://github.com/ory/keto/pull/41) ([aeneasr](https://github.com/aeneasr))
 - authn: Make introspection authorization optional [\#40](https://github.com/ory/keto/pull/40) ([aeneasr](https://github.com/aeneasr))
