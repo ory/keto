@@ -42,7 +42,7 @@ section.
 # - Windows Command Line (CMD):
 #    > set DSN=<value>
 #
-dsn: mysql://user:password@tcp(host:123)/database
+dsn: postgres://user:password@host:123/database
 
 ## HTTP REST API ##
 #
@@ -134,7 +134,11 @@ serve:
     #    > set SERVE_CORS_ALLOWED_METHODS=<value>
     #
     allowed_methods:
+      - HEAD
       - CONNECT
+      - PUT
+      - GET
+      - PATCH
 
     ## Allowed Request HTTP Headers ##
     #
@@ -149,8 +153,7 @@ serve:
     #    > set SERVE_CORS_ALLOWED_HEADERS=<value>
     #
     allowed_headers:
-      - quis ut ex eiusmod
-      - ut Duis culpa
+      - nisi officia
 
     ## Allowed Response HTTP Headers ##
     #
@@ -165,9 +168,10 @@ serve:
     #    > set SERVE_CORS_EXPOSED_HEADERS=<value>
     #
     exposed_headers:
-      - ea Duis amet adipisicing aliquip
-      - adipisicing reprehenderit
-      - aliquip consectetur reprehenderit
+      - id sint in
+      - Duis consequat qui
+      - ex
+      - fugiat dolor magna sunt
 
     ## Allow HTTP Credentials ##
     #
@@ -181,7 +185,7 @@ serve:
     # - Windows Command Line (CMD):
     #    > set SERVE_CORS_ALLOW_CREDENTIALS=<value>
     #
-    allow_credentials: false
+    allow_credentials: true
 
     ## Maximum Age ##
     #
@@ -193,7 +197,7 @@ serve:
     # - Windows Command Line (CMD):
     #    > set SERVE_CORS_MAX_AGE=<value>
     #
-    max_age: 84500501
+    max_age: 17120686
 
     ## Enable Debugging ##
     #
@@ -270,7 +274,7 @@ serve:
 # - Windows Command Line (CMD):
 #    > set PROFILING=<value>
 #
-profiling: cpu
+profiling: mem
 
 ## Log ##
 #
@@ -289,7 +293,7 @@ log:
   # - Windows Command Line (CMD):
   #    > set LOG_LEVEL=<value>
   #
-  level: info
+  level: debug
 
   ## Format ##
   #
