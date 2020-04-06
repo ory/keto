@@ -1,0 +1,373 @@
+{
+  "$id": "https://raw.githubusercontent.com/ory/keto/master/.schema/config.schema.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ORY Kratos Configuration",
+  "type": "object",
+  "definitions": {
+    "tlsxSource": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "title": "Path to PEM-encoded Fle",
+          "type": "string",
+          "examples": [
+            "path/to/file.pem"
+          ]
+        },
+        "base64": {
+          "title": "Base64 Encoded Inline",
+          "description": "The base64 string of the PEM-encoded file content. Can be generated using for example `base64 -i path/to/file.pem`.",
+          "type": "string",
+          "examples": [
+            "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tXG5NSUlEWlRDQ0FrMmdBd0lCQWdJRVY1eE90REFOQmdr..."
+          ]
+        }
+      }
+    },
+    "tlsx": {
+      "title": "HTTPS",
+      "description": "Configure HTTP over TLS (HTTPS). All options can also be set using environment variables by replacing dots (`.`) with underscores (`_`) and uppercasing the key. For example, `some.prefix.tls.key.path` becomes `export SOME_PREFIX_TLS_KEY_PATH`. If all keys are left undefined, TLS will be disabled.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "key": {
+          "title": "Private Key (PEM)",
+          "allOf": [
+            {
+              "$ref": "#/definitions/tlsxSource"
+            }
+          ]
+        },
+        "cert": {
+          "title": "TLS Certificate (PEM)",
+          "allOf": [
+            {
+              "$ref": "#/definitions/tlsxSource"
+            }
+          ]
+        }
+      }
+    },
+    "cors": {
+      "title": "Cross Origin Resource Sharing (CORS)",
+      "description": "Configure [Cross Origin Resource Sharing (CORS)](http://www.w3.org/TR/cors/) using the following options.",
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": false,
+          "title": "Enable CORS",
+          "description": "If set to true, CORS will be enabled and preflight-requests (OPTION) will be answered."
+        },
+        "allowed_origins": {
+          "title": "Allowed Origins",
+          "description": "A list of origins a cross-domain request can be executed from. If the special * value is present in the list, all origins will be allowed. An origin may contain a wildcard (*) to replace 0 or more characters (i.e.: http://*.domain.com). Usage of wildcards implies a small performance penality. Only one wildcard can be used per origin.",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "default": [
+            "*"
+          ],
+          "uniqueItems": true,
+          "examples": [
+            [
+              "https://example.com",
+              "https://*.example.com",
+              "https://*.foo.example.com"
+            ]
+          ]
+        },
+        "allowed_methods": {
+          "type": "array",
+          "title": "Allowed HTTP Methods",
+          "description": "A list of methods the client is allowed to use with cross-domain requests.",
+          "items": {
+            "type": "string",
+            "enum": [
+              "GET",
+              "HEAD",
+              "POST",
+              "PUT",
+              "DELETE",
+              "CONNECT",
+              "TRACE",
+              "PATCH"
+            ]
+          },
+          "uniqueItems": true,
+          "default": [
+            "GET",
+            "POST",
+            "PUT",
+            "PATCH",
+            "DELETE"
+          ]
+        },
+        "allowed_headers": {
+          "description": "A list of non simple headers the client is allowed to use with cross-domain requests.",
+          "title": "Allowed Request HTTP Headers",
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minLength": 1,
+          "uniqueItems": true,
+          "default": [
+            "Authorization",
+            "Content-Type"
+          ]
+        },
+        "exposed_headers": {
+          "description": "Indicates which headers are safe to expose to the API of a CORS API specification",
+          "title": "Allowed Response HTTP Headers",
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minLength": 1,
+          "uniqueItems": true,
+          "default": [
+            "Content-Type"
+          ]
+        },
+        "allow_credentials": {
+          "type": "boolean",
+          "title": "Allow HTTP Credentials",
+          "default": false,
+          "description": "Indicates whether the request can include user credentials like cookies, HTTP authentication or client side SSL certificates."
+        },
+        "max_age": {
+          "type": "integer",
+          "default": 0,
+          "title": "Maximum Age",
+          "description": "Indicates how long (in seconds) the results of a preflight request can be cached. The default is 0 which stands for no max age."
+        },
+        "debug": {
+          "type": "boolean",
+          "default": false,
+          "title": "Enable Debugging",
+          "description": "Set to true to debug server side CORS issues."
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "properties": {
+    "dsn": {
+      "title": "Data Source Name",
+      "type": "string",
+      "description": "Sets the data source name. This configures the backend where ORY Keto persists data. If dsn is \"memory\", data will be written to memory and is lost when you restart this instance. ORY Hydra supports popular SQL databases. For more detailed configuration information go to: https://www.ory.sh/docs/hydra/dependencies-environment#sql",
+      "examples": [
+        "postgres://user:password@host:123/database",
+        "mysql://user:password@tcp(host:123)/database",
+        "memory"
+      ]
+    },
+    "serve": {
+      "type": "object",
+      "title": "HTTP REST API",
+      "additionalProperties": false,
+      "properties": {
+        "port": {
+          "type": "integer",
+          "default": 4456,
+          "title": "Port",
+          "description": "The port to listen on.",
+          "minimum": 1,
+          "maximum": 65535,
+          "examples": [
+            4456
+          ]
+        },
+        "host": {
+          "type": "string",
+          "default": "",
+          "examples": [
+            "localhost",
+            "127.0.0.1"
+          ],
+          "title": "Host",
+          "description": "The network interface to listen on."
+        },
+        "cors": {
+          "$ref": "#/definitions/cors"
+        },
+        "tls": {
+          "$ref": "#/definitions/tlsx"
+        }
+      }
+    },
+    "profiling": {
+      "title": "Profiling",
+      "description": "Enables CPU or memory profiling if set. For more details on profiling Go programs read [Profiling Go Programs](https://blog.golang.org/profiling-go-programs).",
+      "type": "string",
+      "enum": [
+        "cpu",
+        "mem",
+        ""
+      ]
+    },
+    "log": {
+      "title": "Log",
+      "description": "Configure logging using the following options. Logging will always be sent to stdout and stderr.",
+      "type": "object",
+      "properties": {
+        "level": {
+          "type": "string",
+          "default": "info",
+          "enum": [
+            "panic",
+            "fatal",
+            "error",
+            "warn",
+            "info",
+            "debug"
+          ],
+          "title": "Level",
+          "description": "Debug enables stack traces on errors. Can also be set using environment variable LOG_LEVEL."
+        },
+        "format": {
+          "type": "string",
+          "default": "text",
+          "enum": [
+            "text",
+            "json"
+          ],
+          "title": "Format",
+          "description": "The log format can either be text or JSON."
+        }
+      },
+      "additionalProperties": false
+    },
+    "tracing": {
+      "type": "object",
+      "description": "ORY Hydra supports distributed tracing.",
+      "properties": {
+        "provider": {
+          "type": "string",
+          "description": "Set this to the tracing backend you wish to use. Currently supports jaeger. If omitted or empty, tracing will be disabled.",
+          "enum": [
+            "jaeger"
+          ],
+          "examples": [
+            "jaeger"
+          ]
+        },
+        "service_name": {
+          "type": "string",
+          "description": "Specifies the service name to use on the tracer.",
+          "examples": [
+            "ORY Hydra"
+          ]
+        },
+        "providers": {
+          "type": "object",
+          "properties": {
+            "jaeger": {
+              "type": "object",
+              "description": "Configures the jaeger tracing backend.",
+              "properties": {
+                "local_agent_address": {
+                  "type": "string",
+                  "description": "The address of the jaeger-agent where spans should be sent to.",
+                  "oneOf": [
+                    {
+                      "pattern": "^\\[(([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))]:([0-9]*)$"
+                    },
+                    {
+                      "pattern": "^([0-9]{1,3}\\.){3}[0-9]{1,3}:([0-9]*)$"
+                    }
+                  ],
+                  "examples": [
+                    "127.0.0.1:6831"
+                  ]
+                },
+                "propagation": {
+                  "type": "string",
+                  "description": "The tracing header format",
+                  "examples": [
+                    "jaeger"
+                  ]
+                },
+                "sampling": {
+                  "type": "object",
+                  "allOf": [
+                    {
+                      "oneOf": [
+                        {
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "description": "The type of the sampler you want to use.",
+                              "const": "const"
+                            },
+                            "value": {
+                              "type": "integer",
+                              "description": "The value passed to the sampler type that has been configured.",
+                              "enum": [
+                                0,
+                                1
+                              ]
+                            }
+                          }
+                        },
+                        {
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "description": "The type of the sampler you want to use.",
+                              "const": "rateLimiting"
+                            },
+                            "value": {
+                              "type": "integer",
+                              "description": "The value passed to the sampler type that has been configured.",
+                              "minimum": 0
+                            }
+                          }
+                        },
+                        {
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "description": "The type of the sampler you want to use.",
+                              "const": "probabilistic"
+                            },
+                            "value": {
+                              "type": "number",
+                              "description": "The value passed to the sampler type that has been configured.",
+                              "minimum": 0,
+                              "maximum": 1
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "properties": {
+                        "server_url": {
+                          "type": "string",
+                          "description": "The address of jaeger-agent's HTTP sampling server",
+                          "format": "uri"
+                        }
+                      }
+                    }
+                  ],
+                  "examples": [
+                    {
+                      "type": "const",
+                      "value": 1,
+                      "server_url": "http://localhost:5778/sampling"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
