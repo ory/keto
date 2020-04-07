@@ -30,3 +30,11 @@ sdk:
 		mkdir -p internal/httpclient
 		$$(go env GOPATH)/bin/swagger generate client -f ./.schema/api.swagger.json -t internal/httpclient -A Ory_Keto
 		make format
+
+.PHONY: docker
+docker:
+		packr
+		GO111MODULE=on GOOS=linux GOARCH=amd64 go build
+		docker build -t oryd/keto:latest .
+		rm keto
+		packr clean
