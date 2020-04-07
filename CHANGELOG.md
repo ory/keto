@@ -56,6 +56,10 @@
 
 - Cannot run migrate command successfully in mysql [\#177](https://github.com/ory/keto/issues/177)
 
+**Merged pull requests:**
+
+- chore: update docusaurus template [\#179](https://github.com/ory/keto/pull/179) ([aeneasr](https://github.com/aeneasr))
+
 ## [v0.5.4-alpha.1](https://github.com/ory/keto/tree/v0.5.4-alpha.1) (2020-04-07)
 
 [Full Changelog](https://github.com/ory/keto/compare/v0.5.3-alpha.2...v0.5.4-alpha.1)
@@ -377,10 +381,10 @@
 - sdk: Add Go SDK factory  [\#68](https://github.com/ory/keto/pull/68) ([aeneasr](https://github.com/aeneasr))
 - docs: Update documentation links [\#67](https://github.com/ory/keto/pull/67) ([aeneasr](https://github.com/aeneasr))
 - cmd: Add and improve list commands [\#62](https://github.com/ory/keto/pull/62) ([aeneasr](https://github.com/aeneasr))
-- docs: Updates issue and pull request templates [\#54](https://github.com/ory/keto/pull/54) ([aeneasr](https://github.com/aeneasr))
 - docs: Updates issue and pull request templates [\#53](https://github.com/ory/keto/pull/53) ([aeneasr](https://github.com/aeneasr))
 - docs: Updates issue and pull request templates [\#52](https://github.com/ory/keto/pull/52) ([aeneasr](https://github.com/aeneasr))
 - Switch to rego as policy decision engine [\#48](https://github.com/ory/keto/pull/48) ([aeneasr](https://github.com/aeneasr))
+- cmd: Require explicit CORS enabling [\#42](https://github.com/ory/keto/pull/42) ([aeneasr](https://github.com/aeneasr))
 
 ## [v0.1.9-sandbox+oryOS.9](https://github.com/ory/keto/tree/v0.1.9-sandbox+oryOS.9) (2018-11-14)
 
@@ -388,10 +392,10 @@
 
 **Merged pull requests:**
 
+- docs: Updates issue and pull request templates [\#54](https://github.com/ory/keto/pull/54) ([aeneasr](https://github.com/aeneasr))
 - Enable TLS option to serve API [\#46](https://github.com/ory/keto/pull/46) ([fredbi](https://github.com/fredbi))
 - cmd: Do not split empty scope [\#45](https://github.com/ory/keto/pull/45) ([aeneasr](https://github.com/aeneasr))
 - vendor: Remove ORY Hydra dependency [\#44](https://github.com/ory/keto/pull/44) ([aeneasr](https://github.com/aeneasr))
-- cmd: Require explicit CORS enabling [\#42](https://github.com/ory/keto/pull/42) ([aeneasr](https://github.com/aeneasr))
 - sdk: Upgrade superagent version [\#41](https://github.com/ory/keto/pull/41) ([aeneasr](https://github.com/aeneasr))
 - authn: Make introspection authorization optional [\#40](https://github.com/ory/keto/pull/40) ([aeneasr](https://github.com/aeneasr))
 
