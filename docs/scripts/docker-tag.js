@@ -39,14 +39,11 @@ const replace = (path, replacer) =>
     });
   });
 
-config.updateTags.forEach(({files, image, pattern}) => {
+config.updateTags.forEach(({files, image, replacer}) => {
   files.forEach((loc) => {
     replace(loc, (content) => {
-      if (pattern) {
-        content.replace(
-          new RegExp(pattern, 'g'),
-          `${image}:${next}`
-        )
+      if (replacer) {
+        return replacer({ content, next })
       }
 
       return content.replace(
