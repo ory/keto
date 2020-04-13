@@ -42,7 +42,7 @@ section.
 # - Windows Command Line (CMD):
 #    > set DSN=<value>
 #
-dsn: memory
+dsn: mysql://user:password@tcp(host:123)/database
 
 ## HTTP REST API ##
 #
@@ -78,7 +78,7 @@ serve:
   # - Windows Command Line (CMD):
   #    > set SERVE_HOST=<value>
   #
-  host: ''
+  host: 127.0.0.1
 
   ## Cross Origin Resource Sharing (CORS) ##
   #
@@ -97,7 +97,7 @@ serve:
     # - Windows Command Line (CMD):
     #    > set SERVE_CORS_ENABLED=<value>
     #
-    enabled: false
+    enabled: true
 
     ## Allowed Origins ##
     #
@@ -132,11 +132,10 @@ serve:
     #    > set SERVE_CORS_ALLOWED_METHODS=<value>
     #
     allowed_methods:
-      - DELETE
-      - PATCH
-      - TRACE
+      - HEAD
+      - PUT
       - POST
-      - CONNECT
+      - GET
 
     ## Allowed Request HTTP Headers ##
     #
@@ -151,7 +150,11 @@ serve:
     #    > set SERVE_CORS_ALLOWED_HEADERS=<value>
     #
     allowed_headers:
-      - exercitation sint
+      - in
+      - aute
+      - adipisicing voluptate nostrud
+      - commodo
+      - eu amet consectetur velit ut
 
     ## Allowed Response HTTP Headers ##
     #
@@ -166,7 +169,10 @@ serve:
     #    > set SERVE_CORS_EXPOSED_HEADERS=<value>
     #
     exposed_headers:
-      - laborum do
+      - ut laboris mollit id
+      - sit in consequat exercitation laboris
+      - elit
+      - labore
 
     ## Allow HTTP Credentials ##
     #
@@ -180,7 +186,7 @@ serve:
     # - Windows Command Line (CMD):
     #    > set SERVE_CORS_ALLOW_CREDENTIALS=<value>
     #
-    allow_credentials: false
+    allow_credentials: true
 
     ## Maximum Age ##
     #
@@ -192,7 +198,7 @@ serve:
     # - Windows Command Line (CMD):
     #    > set SERVE_CORS_MAX_AGE=<value>
     #
-    max_age: -95336305
+    max_age: -32314430
 
     ## Enable Debugging ##
     #
@@ -269,7 +275,7 @@ serve:
 # - Windows Command Line (CMD):
 #    > set PROFILING=<value>
 #
-profiling: mem
+profiling: ''
 
 ## Log ##
 #
@@ -288,7 +294,7 @@ log:
   # - Windows Command Line (CMD):
   #    > set LOG_LEVEL=<value>
   #
-  level: fatal
+  level: warn
 
   ## Format ##
   #
@@ -302,7 +308,7 @@ log:
   # - Windows Command Line (CMD):
   #    > set LOG_FORMAT=<value>
   #
-  format: json
+  format: text
 
 ## tracing ##
 #
