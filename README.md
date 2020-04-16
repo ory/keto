@@ -183,6 +183,7 @@ TheCrealm.
 
 
 
+
 ### Installation
 
 Head over to the documentation to learn about ways of [installing ORY Keto](https://www.ory.sh/docs/next/keto/install).
@@ -237,6 +238,7 @@ determine whether a subject (user, application, service, car, ...) is authorized
 to perform a certain action on a resource.
 
 <!--END ECOSYSTEM-->
+
 
 
 
