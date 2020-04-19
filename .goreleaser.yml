@@ -75,6 +75,7 @@ dockers:
       - "oryd/keto:v{{ .Major }}"
       - "oryd/keto:v{{ .Major }}.{{ .Minor }}"
       - "oryd/keto:v{{ .Major }}.{{ .Minor }}.{{ .Patch }}"
+      - "oryd/keto:{{ .Tag }}"
       - "oryd/keto:latest"
 
 release:
