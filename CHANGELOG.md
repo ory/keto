@@ -62,6 +62,10 @@
 
 **Merged pull requests:**
 
+- chore: remove releaser license [\#190](https://github.com/ory/keto/pull/190) ([aeneasr](https://github.com/aeneasr))
+- docs: update github templates [\#189](https://github.com/ory/keto/pull/189) ([aeneasr](https://github.com/aeneasr))
+- docs: update github templates [\#188](https://github.com/ory/keto/pull/188) ([aeneasr](https://github.com/aeneasr))
+- docs: update github templates [\#184](https://github.com/ory/keto/pull/184) ([aeneasr](https://github.com/aeneasr))
 - chore: update docusaurus template [\#183](https://github.com/ory/keto/pull/183) ([aeneasr](https://github.com/aeneasr))
 - docs: update github templates [\#182](https://github.com/ory/keto/pull/182) ([aeneasr](https://github.com/aeneasr))
 - chore: update docusaurus template [\#181](https://github.com/ory/keto/pull/181) ([aeneasr](https://github.com/aeneasr))
