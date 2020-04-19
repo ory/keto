@@ -42,7 +42,7 @@ section.
 # - Windows Command Line (CMD):
 #    > set DSN=<value>
 #
-dsn: mysql://user:password@tcp(host:123)/database
+dsn: postgres://user:password@host:123/database
 
 ## HTTP REST API ##
 #
@@ -78,7 +78,7 @@ serve:
   # - Windows Command Line (CMD):
   #    > set SERVE_HOST=<value>
   #
-  host: 127.0.0.1
+  host: localhost
 
   ## Cross Origin Resource Sharing (CORS) ##
   #
@@ -117,7 +117,9 @@ serve:
     #    > set SERVE_CORS_ALLOWED_ORIGINS=<value>
     #
     allowed_origins:
-      - '*'
+      - https://example.com
+      - https://*.example.com
+      - https://*.foo.example.com
 
     ## Allowed HTTP Methods ##
     #
@@ -132,10 +134,11 @@ serve:
     #    > set SERVE_CORS_ALLOWED_METHODS=<value>
     #
     allowed_methods:
-      - HEAD
       - PUT
       - POST
       - GET
+      - TRACE
+      - DELETE
 
     ## Allowed Request HTTP Headers ##
     #
@@ -150,11 +153,11 @@ serve:
     #    > set SERVE_CORS_ALLOWED_HEADERS=<value>
     #
     allowed_headers:
-      - in
-      - aute
-      - adipisicing voluptate nostrud
-      - commodo
-      - eu amet consectetur velit ut
+      - officia aliqua
+      - irure
+      - Duis irure aliqua aute
+      - Duis officia sed dolor irure
+      - labore consequat
 
     ## Allowed Response HTTP Headers ##
     #
@@ -169,10 +172,10 @@ serve:
     #    > set SERVE_CORS_EXPOSED_HEADERS=<value>
     #
     exposed_headers:
-      - ut laboris mollit id
-      - sit in consequat exercitation laboris
-      - elit
-      - labore
+      - in proident Duis exercitation pariatur
+      - nostrud
+      - commodo Ut
+      - do adipisicing
 
     ## Allow HTTP Credentials ##
     #
@@ -186,7 +189,7 @@ serve:
     # - Windows Command Line (CMD):
     #    > set SERVE_CORS_ALLOW_CREDENTIALS=<value>
     #
-    allow_credentials: true
+    allow_credentials: false
 
     ## Maximum Age ##
     #
@@ -198,7 +201,7 @@ serve:
     # - Windows Command Line (CMD):
     #    > set SERVE_CORS_MAX_AGE=<value>
     #
-    max_age: -32314430
+    max_age: 36592762
 
     ## Enable Debugging ##
     #
@@ -275,7 +278,7 @@ serve:
 # - Windows Command Line (CMD):
 #    > set PROFILING=<value>
 #
-profiling: ''
+profiling: cpu
 
 ## Log ##
 #
@@ -294,7 +297,7 @@ log:
   # - Windows Command Line (CMD):
   #    > set LOG_LEVEL=<value>
   #
-  level: warn
+  level: error
 
   ## Format ##
   #
@@ -308,7 +311,7 @@ log:
   # - Windows Command Line (CMD):
   #    > set LOG_FORMAT=<value>
   #
-  format: text
+  format: json
 
 ## tracing ##
 #
