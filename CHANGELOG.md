@@ -62,6 +62,8 @@
 
 **Merged pull requests:**
 
+- ci: adopt new release pipeline [\#192](https://github.com/ory/keto/pull/192) ([aeneasr](https://github.com/aeneasr))
+- docs: update linux install guide [\#191](https://github.com/ory/keto/pull/191) ([aeneasr](https://github.com/aeneasr))
 - chore: remove releaser license [\#190](https://github.com/ory/keto/pull/190) ([aeneasr](https://github.com/aeneasr))
 - docs: update github templates [\#189](https://github.com/ory/keto/pull/189) ([aeneasr](https://github.com/aeneasr))
 - docs: update github templates [\#188](https://github.com/ory/keto/pull/188) ([aeneasr](https://github.com/aeneasr))
