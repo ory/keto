@@ -12,7 +12,7 @@ We recommend using Docker to run ORY Keto:
 
 ```shell
 $ docker pull oryd/keto:v0.4.4-alpha.1
-$ docker run --rm -it oryd/ketov0.4.4-alpha.1 help
+$ docker run --rm -it oryd/keto:v0.4.4-alpha.1 help
 ```
 
 ## macOS
