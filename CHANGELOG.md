@@ -67,7 +67,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [Unreleased](https://github.com/ory/keto/compare/v0.5.4-alpha.1...2cc3bbb2d75ba5fa7a3653d7adcaa712ff38c603) (2020-04-28)
+# [Unreleased](https://github.com/ory/keto/compare/v0.5.4-alpha.1...383063d260d995665da4c02c9a7bac7e06a2c8d3) (2020-04-28)
 
 
 ### Bug Fixes
@@ -77,6 +77,7 @@
 
 ### Documentation
 
+* Add missing colon in docker run command ([#193](https://github.com/ory/keto/issues/193)) ([383063d](https://github.com/ory/keto/commit/383063d260d995665da4c02c9a7bac7e06a2c8d3))
 * Update github templates ([#182](https://github.com/ory/keto/issues/182)) ([72ea09b](https://github.com/ory/keto/commit/72ea09bbbf9925d7705842703b32826376f636e4))
 * Update github templates ([#184](https://github.com/ory/keto/issues/184)) ([ed546b7](https://github.com/ory/keto/commit/ed546b7a2b9ee690284a48c641edd1570464d71f))
 * Update github templates ([#188](https://github.com/ory/keto/issues/188)) ([ebd75b2](https://github.com/ory/keto/commit/ebd75b2f6545ff4372773f6370300c7b2ca71c51))
