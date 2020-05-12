@@ -4,7 +4,7 @@
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**
 
-- [Unreleased (2020-05-08)](#unreleased-2020-05-08)
+- [Unreleased (2020-05-12)](#unreleased-2020-05-12)
     - [Bug Fixes](#bug-fixes)
     - [Documentation](#documentation)
   - [0.5.4-alpha.1 (2020-04-07)](#054-alpha1-2020-04-07)
@@ -67,7 +67,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [Unreleased](https://github.com/ory/keto/compare/v0.5.4-alpha.1...383063d260d995665da4c02c9a7bac7e06a2c8d3) (2020-05-08)
+# [Unreleased](https://github.com/ory/keto/compare/v0.5.4-alpha.1...ba0943c45d36ef10bdf1169f0aeef439a3a67d28) (2020-05-12)
 
 
 ### Bug Fixes
@@ -82,6 +82,7 @@
 * Update github templates ([#184](https://github.com/ory/keto/issues/184)) ([ed546b7](https://github.com/ory/keto/commit/ed546b7a2b9ee690284a48c641edd1570464d71f))
 * Update github templates ([#188](https://github.com/ory/keto/issues/188)) ([ebd75b2](https://github.com/ory/keto/commit/ebd75b2f6545ff4372773f6370300c7b2ca71c51))
 * Update github templates ([#189](https://github.com/ory/keto/issues/189)) ([fd4c0b1](https://github.com/ory/keto/commit/fd4c0b17bcb1c281baac1772ab94e305ec8c5c86))
+* Update github templates ([#195](https://github.com/ory/keto/issues/195)) ([ba0943c](https://github.com/ory/keto/commit/ba0943c45d36ef10bdf1169f0aeef439a3a67d28))
 * Update linux install guide ([#191](https://github.com/ory/keto/issues/191)) ([7d8b24b](https://github.com/ory/keto/commit/7d8b24bddb9c92feb78c7b65f39434d538773b58))
 
 
