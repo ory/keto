@@ -4,7 +4,7 @@
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**
 
-- [Unreleased (2020-05-12)](#unreleased-2020-05-12)
+- [Unreleased (2020-05-25)](#unreleased-2020-05-25)
     - [Bug Fixes](#bug-fixes)
     - [Documentation](#documentation)
   - [0.5.4-alpha.1 (2020-04-07)](#054-alpha1-2020-04-07)
@@ -67,7 +67,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [Unreleased](https://github.com/ory/keto/compare/v0.5.4-alpha.1...ba0943c45d36ef10bdf1169f0aeef439a3a67d28) (2020-05-12)
+# [Unreleased](https://github.com/ory/keto/compare/v0.5.4-alpha.1...c6dfe280fd962169c424834cea040a408c1bc83f) (2020-05-25)
 
 
 ### Bug Fixes
@@ -84,6 +84,8 @@
 * Update github templates ([#189](https://github.com/ory/keto/issues/189)) ([fd4c0b1](https://github.com/ory/keto/commit/fd4c0b17bcb1c281baac1772ab94e305ec8c5c86))
 * Update github templates ([#195](https://github.com/ory/keto/issues/195)) ([ba0943c](https://github.com/ory/keto/commit/ba0943c45d36ef10bdf1169f0aeef439a3a67d28))
 * Update linux install guide ([#191](https://github.com/ory/keto/issues/191)) ([7d8b24b](https://github.com/ory/keto/commit/7d8b24bddb9c92feb78c7b65f39434d538773b58))
+* Use central banner repo for README ([0d95d97](https://github.com/ory/keto/commit/0d95d97504df4d0ab57d18dc6d0a824a3f8f5896))
+* Use correct banner ([c6dfe28](https://github.com/ory/keto/commit/c6dfe280fd962169c424834cea040a408c1bc83f))
 
 
 
@@ -344,13 +346,14 @@ No significant changes have been made for this release.
 * Remove full tag from build pipeline ([#101](https://github.com/ory/keto/issues/101)) ([602a273](https://github.com/ory/keto/commit/602a273dc5a0c29e80a22f04adb937ab385c4512))
 * Remove duplicate code in Makefile (#99) ([04f5223](https://github.com/ory/keto/commit/04f52231509dd0f3a57d745918fc43fff7c595ff)), closes [#99](https://github.com/ory/keto/issues/99)
 * Add tracing support and general improvements (#98) ([63b3946](https://github.com/ory/keto/commit/63b3946e0ae1fa23c6a359e9a64b296addff868c)), closes [#98](https://github.com/ory/keto/issues/98):
-  > This patch improves the internal configuration and service management. It adds support for distributed tracing and resolves several issues in the release pipeline and CLI.
-  > 
-  > Additionally, composable docker-compose configuration files have been added.
-  > 
-  > Several bugs have been fixed in the release management pipeline.
-  > 
-  > 
+
+    > This patch improves the internal configuration and service management. It adds support for distributed tracing and resolves several issues in the release pipeline and CLI.
+    > 
+    > Additionally, composable docker-compose configuration files have been added.
+    > 
+    > Several bugs have been fixed in the release management pipeline.
+    > 
+    > 
 * Add content-type in the response of allowed ([#90](https://github.com/ory/keto/issues/90)) ([39a1486](https://github.com/ory/keto/commit/39a1486dc53456189d30380460a9aeba198fa9e9))
 * Fix disable-telemetry check ([#85](https://github.com/ory/keto/issues/85)) ([38b5383](https://github.com/ory/keto/commit/38b538379973fa34bd2bf24dcb2e6dbedf324e1e))
 * Fix remove member from role ([#87](https://github.com/ory/keto/issues/87)) ([698e161](https://github.com/ory/keto/commit/698e161989331ca5a3a0769301d9694ef805a876)), closes [#74](https://github.com/ory/keto/issues/74)
@@ -461,12 +464,13 @@ No significant changes have been made for this release.
 * Add role iterator in list handler ([a3eb696](https://github.com/ory/keto/commit/a3eb6961783f7b562f0a0d0a7e2819bffebce5b8))
 * Add SDK generation to circle ci ([9b37165](https://github.com/ory/keto/commit/9b37165873bcb0cc5dc60d2514d9824a073466a1))
 * Adds ability to update a role using PUT ([#14](https://github.com/ory/keto/issues/14)) ([97ccbe6](https://github.com/ory/keto/commit/97ccbe6d808823c56901ad237878aa6d53cddeeb)):
-  > * transfer UpdateRoleMembers from https://github.com/ory/hydra/pull/768 to keto
-  > 
-  > * fix tests by using right http method & correcting sql request
-  > 
-  > * Change behavior to overwrite the whole role instead of just the members.
-  > + small sql migration fix
+
+    > * transfer UpdateRoleMembers from https://github.com/ory/hydra/pull/768 to keto
+    > 
+    > * fix tests by using right http method & correcting sql request
+    > 
+    > * Change behavior to overwrite the whole role instead of just the members.
+    > + small sql migration fix
 * Adds log message when telemetry is active ([f623c52](https://github.com/ory/keto/commit/f623c52655ff85b7f7209eb73e94eb66a297c5b7))
 * Clean up vendor dependencies ([9a33c23](https://github.com/ory/keto/commit/9a33c23f4d37ab88b4d643fd79204334d73404c6))
 * Do not split empty scope ([#45](https://github.com/ory/keto/issues/45)) ([b29cf8c](https://github.com/ory/keto/commit/b29cf8cc92607e13457dba8331f5c9286054c8c1))
@@ -525,7 +529,8 @@ No significant changes have been made for this release.
 * Renames subject to sub in response payloads ([ca4d540](https://github.com/ory/keto/commit/ca4d5408000be2b896d38eaaf5e67a3fc0a566da))
 * Tells linguist to ignore SDK files ([f201eb9](https://github.com/ory/keto/commit/f201eb95f3309a60ac50f42cfba0bae2e38e8d13))
 * Retries SQL connection on migrate commands ([3d33d73](https://github.com/ory/keto/commit/3d33d73c009077c5bf30ae4b03802904bfb5d5b2)):
-  > This patch also introduces a fatal error if migrations fail
+
+    > This patch also introduces a fatal error if migrations fail
 * cmd/server: Resolves DBAL not handling postgres properly ([dedc32a](https://github.com/ory/keto/commit/dedc32ab218923243b1955ce5bcbbdc5cc416953))
 * cmd/server: Improves error message in migrate command ([4b17ce8](https://github.com/ory/keto/commit/4b17ce8848113cae807840182d1a318190c2a9b3))
 * Resolves travis and docker issues ([6f4779c](https://github.com/ory/keto/commit/6f4779cc51bf4f2ee5b97541fb77d8f882497710))
