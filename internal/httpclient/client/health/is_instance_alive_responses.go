@@ -117,7 +117,7 @@ type IsInstanceAliveInternalServerErrorBody struct {
 	Code int64 `json:"code,omitempty"`
 
 	// details
-	Details []map[string]interface{} `json:"details"`
+	Details []interface{} `json:"details"`
 
 	// message
 	Message string `json:"message,omitempty"`

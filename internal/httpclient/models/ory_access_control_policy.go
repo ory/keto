@@ -19,7 +19,7 @@ type OryAccessControlPolicy struct {
 	Actions []string `json:"actions"`
 
 	// Conditions represents a keyed object of conditions under which this ORY Access Policy is active.
-	Conditions map[string]interface{} `json:"conditions,omitempty"`
+	Conditions interface{} `json:"conditions,omitempty"`
 
 	// Description is an optional, human-readable description.
 	Description string `json:"description,omitempty"`

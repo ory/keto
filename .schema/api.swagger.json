@@ -86,9 +86,7 @@
                   "type": "array",
                   "items": {
                     "type": "object",
-                    "additionalProperties": {
-                      "type": "object"
-                    }
+                    "additionalProperties": true
                   }
                 },
                 "message": {
@@ -187,9 +185,7 @@
                   "type": "array",
                   "items": {
                     "type": "object",
-                    "additionalProperties": {
-                      "type": "object"
-                    }
+                    "additionalProperties": true
                   }
                 },
                 "message": {
@@ -261,9 +257,7 @@
                   "type": "array",
                   "items": {
                     "type": "object",
-                    "additionalProperties": {
-                      "type": "object"
-                    }
+                    "additionalProperties": true
                   }
                 },
                 "message": {
@@ -334,9 +328,7 @@
                   "type": "array",
                   "items": {
                     "type": "object",
-                    "additionalProperties": {
-                      "type": "object"
-                    }
+                    "additionalProperties": true
                   }
                 },
                 "message": {
@@ -367,9 +359,7 @@
                   "type": "array",
                   "items": {
                     "type": "object",
-                    "additionalProperties": {
-                      "type": "object"
-                    }
+                    "additionalProperties": true
                   }
                 },
                 "message": {
@@ -435,9 +425,7 @@
                   "type": "array",
                   "items": {
                     "type": "object",
-                    "additionalProperties": {
-                      "type": "object"
-                    }
+                    "additionalProperties": true
                   }
                 },
                 "message": {
@@ -525,9 +513,7 @@
                   "type": "array",
                   "items": {
                     "type": "object",
-                    "additionalProperties": {
-                      "type": "object"
-                    }
+                    "additionalProperties": true
                   }
                 },
                 "message": {
@@ -600,9 +586,7 @@
                   "type": "array",
                   "items": {
                     "type": "object",
-                    "additionalProperties": {
-                      "type": "object"
-                    }
+                    "additionalProperties": true
                   }
                 },
                 "message": {
@@ -674,9 +658,7 @@
                   "type": "array",
                   "items": {
                     "type": "object",
-                    "additionalProperties": {
-                      "type": "object"
-                    }
+                    "additionalProperties": true
                   }
                 },
                 "message": {
@@ -707,9 +689,7 @@
                   "type": "array",
                   "items": {
                     "type": "object",
-                    "additionalProperties": {
-                      "type": "object"
-                    }
+                    "additionalProperties": true
                   }
                 },
                 "message": {
@@ -776,9 +756,7 @@
                   "type": "array",
                   "items": {
                     "type": "object",
-                    "additionalProperties": {
-                      "type": "object"
-                    }
+                    "additionalProperties": true
                   }
                 },
                 "message": {
@@ -860,9 +838,7 @@
                   "type": "array",
                   "items": {
                     "type": "object",
-                    "additionalProperties": {
-                      "type": "object"
-                    }
+                    "additionalProperties": true
                   }
                 },
                 "message": {
@@ -941,9 +917,7 @@
                   "type": "array",
                   "items": {
                     "type": "object",
-                    "additionalProperties": {
-                      "type": "object"
-                    }
+                    "additionalProperties": true
                   }
                 },
                 "message": {
@@ -995,9 +969,7 @@
                   "type": "array",
                   "items": {
                     "type": "object",
-                    "additionalProperties": {
-                      "type": "object"
-                    }
+                    "additionalProperties": true
                   }
                 },
                 "message": {
@@ -1128,9 +1100,7 @@
         "conditions": {
           "description": "Conditions represents a keyed object of conditions under which this ORY Access Policy is active.",
           "type": "object",
-          "additionalProperties": {
-            "type": "object"
-          }
+          "additionalProperties": true
         },
         "description": {
           "description": "Description is an optional, human-readable description.",
@@ -1171,9 +1141,7 @@
         "context": {
           "description": "Context is the request's environmental context.",
           "type": "object",
-          "additionalProperties": {
-            "type": "object"
-          }
+          "additionalProperties": true
         },
         "resource": {
           "description": "Resource is the resource that access is requested to.",

@@ -19,7 +19,7 @@ type OryAccessControlPolicyAllowedInput struct {
 	Action string `json:"action,omitempty"`
 
 	// Context is the request's environmental context.
-	Context map[string]interface{} `json:"context,omitempty"`
+	Context interface{} `json:"context,omitempty"`
 
 	// Resource is the resource that access is requested to.
 	Resource string `json:"resource,omitempty"`
