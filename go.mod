@@ -16,6 +16,7 @@ require (
 	github.com/gobwas/glob v0.2.3 // indirect
 	github.com/gorilla/mux v1.7.1 // indirect
 	github.com/gorilla/sessions v1.1.3
+	github.com/gorilla/websocket v1.4.2
 	github.com/jackc/pgx/v4 v4.4.1
 	github.com/jmoiron/sqlx v1.2.0
 	github.com/julienschmidt/httprouter v1.2.0
