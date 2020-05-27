@@ -125,13 +125,17 @@ func toSwaggerPolicy(p kstorage.Policy) *models.OryAccessControlPolicy {
 }
 
 func fromSwaggerPolicy(p models.OryAccessControlPolicy) kstorage.Policy {
+	conditions, ok := p.Conditions.(map[string]interface{})
+	if !ok {
+		conditions = nil
+	}
 	return kstorage.Policy{
 		Actions:     p.Actions,
 		ID:          p.ID,
 		Resources:   p.Resources,
 		Subjects:    p.Subjects,
 		Effect:      p.Effect,
-		Conditions:  p.Conditions,
+		Conditions:  conditions,
 		Description: p.Description,
 	}
 }
