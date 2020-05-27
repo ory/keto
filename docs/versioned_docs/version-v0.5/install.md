@@ -11,8 +11,8 @@ binaries, Docker images, and support a number of package managers.
 We recommend using Docker to run ORY Keto:
 
 ```shell
-$ docker pull oryd/keto:v0.4.4-alpha.1
-$ docker run --rm -it oryd/keto:v0.4.4-alpha.1 help
+$ docker pull oryd/keto:v0.5.4-alpha.1
+$ docker run --rm -it oryd/keto:v0.5.4-alpha.1 help
 ```
 
 ## macOS
