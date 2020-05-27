@@ -16,7 +16,6 @@ require (
 	github.com/gobwas/glob v0.2.3 // indirect
 	github.com/gorilla/mux v1.7.1 // indirect
 	github.com/gorilla/sessions v1.1.3
-	github.com/gorilla/websocket v1.4.2 // indirect
 	github.com/jackc/pgx/v4 v4.4.1
 	github.com/jmoiron/sqlx v1.2.0
 	github.com/julienschmidt/httprouter v1.2.0
@@ -25,10 +24,10 @@ require (
 	github.com/ory/analytics-go/v4 v4.0.1
 	github.com/ory/go-acc v0.2.1
 	github.com/ory/graceful v0.1.1
-	github.com/ory/herodot v0.7.0
+	github.com/ory/herodot v0.8.3
 	github.com/ory/sdk/swagutil v0.0.0-20200417161747-f12e98ecfd2e
-	github.com/ory/viper v1.7.4
-	github.com/ory/x v0.0.111
+	github.com/ory/viper v1.7.5
+	github.com/ory/x v0.0.124
 	github.com/pborman/uuid v1.2.0
 	github.com/pkg/errors v0.9.1
 	github.com/pkg/profile v1.3.0 // indirect
@@ -36,7 +35,7 @@ require (
 	github.com/rs/cors v1.6.0
 	github.com/rubenv/sql-migrate v0.0.0-20190327083759-54bad0a9b051
 	github.com/sirupsen/logrus v1.5.0
-	github.com/spf13/cobra v0.0.7
+	github.com/spf13/cobra v1.0.0
 	github.com/spf13/viper v1.6.2 // indirect
 	github.com/sqs/goreturns v0.0.0-20181028201513-538ac6014518
 	github.com/stretchr/testify v1.5.1
