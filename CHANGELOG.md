@@ -4,7 +4,8 @@
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**
 
-- [Unreleased (2020-05-25)](#unreleased-2020-05-25)
+- [Unreleased (2020-05-28)](#unreleased-2020-05-28)
+  - [0.5.5-alpha.1 (2020-05-28)](#055-alpha1-2020-05-28)
     - [Bug Fixes](#bug-fixes)
     - [Documentation](#documentation)
   - [0.5.4-alpha.1 (2020-04-07)](#054-alpha1-2020-04-07)
@@ -67,11 +68,19 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [Unreleased](https://github.com/ory/keto/compare/v0.5.4-alpha.1...c6dfe280fd962169c424834cea040a408c1bc83f) (2020-05-25)
+# Unreleased (2020-05-28)
+
+No significant changes have been made for this release.
+
+
+## [0.5.5-alpha.1](https://github.com/ory/keto/compare/v0.5.4-alpha.1...v0.5.5-alpha.1) (2020-05-28)
 
 
 ### Bug Fixes
 
+* Move deps to go_mod_indirect_pins ([dd3e971](https://github.com/ory/keto/commit/dd3e971ac418baf10c1b33005acc7e6f66fb0d85))
+* Resolve test issues ([9bd9956](https://github.com/ory/keto/commit/9bd9956e33731f1619c32e1e6b7c78f42e7c47c3))
+* Update install.sh script ([f64d320](https://github.com/ory/keto/commit/f64d320b6424fe3256eb7fad1c94dcc1ef0bf487))
 * Use semver-regex replacer func ([2cc3bbb](https://github.com/ory/keto/commit/2cc3bbb2d75ba5fa7a3653d7adcaa712ff38c603))
 
 
@@ -84,8 +93,11 @@
 * Update github templates ([#189](https://github.com/ory/keto/issues/189)) ([fd4c0b1](https://github.com/ory/keto/commit/fd4c0b17bcb1c281baac1772ab94e305ec8c5c86))
 * Update github templates ([#195](https://github.com/ory/keto/issues/195)) ([ba0943c](https://github.com/ory/keto/commit/ba0943c45d36ef10bdf1169f0aeef439a3a67d28))
 * Update linux install guide ([#191](https://github.com/ory/keto/issues/191)) ([7d8b24b](https://github.com/ory/keto/commit/7d8b24bddb9c92feb78c7b65f39434d538773b58))
+* Update repository templates ([ea65b5c](https://github.com/ory/keto/commit/ea65b5c5ada0a7453326fa755aa914306f1b1851))
 * Use central banner repo for README ([0d95d97](https://github.com/ory/keto/commit/0d95d97504df4d0ab57d18dc6d0a824a3f8f5896))
 * Use correct banner ([c6dfe28](https://github.com/ory/keto/commit/c6dfe280fd962169c424834cea040a408c1bc83f))
+* Use correct version ([5f7030c](https://github.com/ory/keto/commit/5f7030c9069fe392200be72f8ce1a93890fbbba8)), closes [#200](https://github.com/ory/keto/issues/200)
+* Use correct versions in install docs ([52e6c34](https://github.com/ory/keto/commit/52e6c34780ed41c169504d71c39459898b5d14f9))
 
 
 
