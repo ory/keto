@@ -5,11 +5,12 @@
 **Table of Contents**
 
 - [Unreleased (2020-05-28)](#unreleased-2020-05-28)
-  - [0.5.5-alpha.1 (2020-05-28)](#055-alpha1-2020-05-28)
     - [Bug Fixes](#bug-fixes)
+  - [0.5.5-alpha.1 (2020-05-28)](#055-alpha1-2020-05-28)
+    - [Bug Fixes](#bug-fixes-1)
     - [Documentation](#documentation)
   - [0.5.4-alpha.1 (2020-04-07)](#054-alpha1-2020-04-07)
-    - [Bug Fixes](#bug-fixes-1)
+    - [Bug Fixes](#bug-fixes-2)
   - [0.5.3-alpha.3 (2020-04-06)](#053-alpha3-2020-04-06)
     - [Code Refactoring](#code-refactoring)
     - [Documentation](#documentation-1)
@@ -17,13 +18,13 @@
   - [0.5.2 (2020-04-02)](#052-2020-04-02)
     - [Documentation](#documentation-2)
 - [0.5.0 (2020-04-02)](#050-2020-04-02)
-    - [Bug Fixes](#bug-fixes-2)
+    - [Bug Fixes](#bug-fixes-3)
     - [Documentation](#documentation-3)
   - [0.4.5-alpha.1 (2020-02-29)](#045-alpha1-2020-02-29)
-    - [Bug Fixes](#bug-fixes-3)
+    - [Bug Fixes](#bug-fixes-4)
     - [Documentation](#documentation-4)
   - [0.4.4-alpha.1 (2020-02-14)](#044-alpha1-2020-02-14)
-    - [Bug Fixes](#bug-fixes-4)
+    - [Bug Fixes](#bug-fixes-5)
     - [Documentation](#documentation-5)
     - [Features](#features)
     - [Unclassified](#unclassified)
@@ -68,9 +69,13 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# Unreleased (2020-05-28)
+# [Unreleased](https://github.com/ory/keto/compare/v0.5.5-alpha.1...21e1bf05177576a9d743bd11744ef6a42be50b8d) (2020-05-28)
 
-No significant changes have been made for this release.
+
+### Bug Fixes
+
+* Update install script ([21e1bf0](https://github.com/ory/keto/commit/21e1bf05177576a9d743bd11744ef6a42be50b8d))
+
 
 
 ## [0.5.5-alpha.1](https://github.com/ory/keto/compare/v0.5.4-alpha.1...v0.5.5-alpha.1) (2020-05-28)
