@@ -43,10 +43,7 @@ is denied, a 403 response with `{"allowed":"false"}` will be sent instead.
 ```json
 {
   "action": "string",
-  "context": {
-    "property1": {},
-    "property2": {}
-  },
+  "context": {},
   "resource": "string",
   "subject": "string"
 }
@@ -79,15 +76,14 @@ is denied, a 403 response with `{"allowed":"false"}` will be sent instead.
 
 Status Code **500**
 
-| Name                        | Type           | Required | Restrictions | Description |
-| --------------------------- | -------------- | -------- | ------------ | ----------- |
-| » code                      | integer(int64) | false    | none         | none        |
-| » details                   | [object]       | false    | none         | none        |
-| »» **additionalProperties** | object         | false    | none         | none        |
-| » message                   | string         | false    | none         | none        |
-| » reason                    | string         | false    | none         | none        |
-| » request                   | string         | false    | none         | none        |
-| » status                    | string         | false    | none         | none        |
+| Name      | Type           | Required | Restrictions | Description |
+| --------- | -------------- | -------- | ------------ | ----------- |
+| » code    | integer(int64) | false    | none         | none        |
+| » details | [object]       | false    | none         | none        |
+| » message | string         | false    | none         | none        |
+| » reason  | string         | false    | none         | none        |
+| » request | string         | false    | none         | none        |
+| » status  | string         | false    | none         | none        |
 
 ##### Examples
 
@@ -160,10 +156,7 @@ func main() {
 const fetch = require('node-fetch');
 const input = '{
   "action": "string",
-  "context": {
-    "property1": {},
-    "property2": {}
-  },
+  "context": {},
   "resource": "string",
   "subject": "string"
 }';
@@ -297,7 +290,6 @@ Status Code **200**
 | » oryAccessControlPolicy specifies an ORY Access Policy document. | [oryAccessControlPolicy](#schemaoryaccesscontrolpolicy)   | false    | none         | none                                                                                                                 |
 | »» actions                                                        | [string]                                                  | false    | none         | Actions is an array representing all the actions this ORY Access Policy applies to.                                  |
 | »» conditions                                                     | object                                                    | false    | none         | Conditions represents a keyed object of conditions under which this ORY Access Policy is active.                     |
-| »»» **additionalProperties**                                      | object                                                    | false    | none         | none                                                                                                                 |
 | »» description                                                    | string                                                    | false    | none         | Description is an optional, human-readable description.                                                              |
 | »» effect                                                         | string                                                    | false    | none         | Effect is the effect of this ORY Access Policy. It can be "allow" or "deny".                                         |
 | »» id                                                             | string                                                    | false    | none         | ID is the unique identifier of the ORY Access Policy. It is used to query, update, and remove the ORY Access Policy. |
@@ -306,15 +298,14 @@ Status Code **200**
 
 Status Code **500**
 
-| Name                        | Type           | Required | Restrictions | Description |
-| --------------------------- | -------------- | -------- | ------------ | ----------- |
-| » code                      | integer(int64) | false    | none         | none        |
-| » details                   | [object]       | false    | none         | none        |
-| »» **additionalProperties** | object         | false    | none         | none        |
-| » message                   | string         | false    | none         | none        |
-| » reason                    | string         | false    | none         | none        |
-| » request                   | string         | false    | none         | none        |
-| » status                    | string         | false    | none         | none        |
+| Name      | Type           | Required | Restrictions | Description |
+| --------- | -------------- | -------- | ------------ | ----------- |
+| » code    | integer(int64) | false    | none         | none        |
+| » details | [object]       | false    | none         | none        |
+| » message | string         | false    | none         | none        |
+| » reason  | string         | false    | none         | none        |
+| » request | string         | false    | none         | none        |
+| » status  | string         | false    | none         | none        |
 
 ##### Examples
 
@@ -324,10 +315,7 @@ Status Code **500**
 [
   {
     "actions": ["string"],
-    "conditions": {
-      "property1": {},
-      "property2": {}
-    },
+    "conditions": {},
     "description": "string",
     "effect": "string",
     "id": "string",
@@ -493,10 +481,7 @@ Upsert an ORY Access Control Policy
 ```json
 {
   "actions": ["string"],
-  "conditions": {
-    "property1": {},
-    "property2": {}
-  },
+  "conditions": {},
   "description": "string",
   "effect": "string",
   "id": "string",
@@ -531,15 +516,14 @@ Upsert an ORY Access Control Policy
 
 Status Code **500**
 
-| Name                        | Type           | Required | Restrictions | Description |
-| --------------------------- | -------------- | -------- | ------------ | ----------- |
-| » code                      | integer(int64) | false    | none         | none        |
-| » details                   | [object]       | false    | none         | none        |
-| »» **additionalProperties** | object         | false    | none         | none        |
-| » message                   | string         | false    | none         | none        |
-| » reason                    | string         | false    | none         | none        |
-| » request                   | string         | false    | none         | none        |
-| » status                    | string         | false    | none         | none        |
+| Name      | Type           | Required | Restrictions | Description |
+| --------- | -------------- | -------- | ------------ | ----------- |
+| » code    | integer(int64) | false    | none         | none        |
+| » details | [object]       | false    | none         | none        |
+| » message | string         | false    | none         | none        |
+| » reason  | string         | false    | none         | none        |
+| » request | string         | false    | none         | none        |
+| » status  | string         | false    | none         | none        |
 
 ##### Examples
 
@@ -548,10 +532,7 @@ Status Code **500**
 ```json
 {
   "actions": ["string"],
-  "conditions": {
-    "property1": {},
-    "property2": {}
-  },
+  "conditions": {},
   "description": "string",
   "effect": "string",
   "id": "string",
@@ -623,10 +604,7 @@ const input = '{
   "actions": [
     "string"
   ],
-  "conditions": {
-    "property1": {},
-    "property2": {}
-  },
+  "conditions": {},
   "description": "string",
   "effect": "string",
   "id": "string",
@@ -758,27 +736,25 @@ Get an ORY Access Control Policy
 
 Status Code **404**
 
-| Name                        | Type           | Required | Restrictions | Description |
-| --------------------------- | -------------- | -------- | ------------ | ----------- |
-| » code                      | integer(int64) | false    | none         | none        |
-| » details                   | [object]       | false    | none         | none        |
-| »» **additionalProperties** | object         | false    | none         | none        |
-| » message                   | string         | false    | none         | none        |
-| » reason                    | string         | false    | none         | none        |
-| » request                   | string         | false    | none         | none        |
-| » status                    | string         | false    | none         | none        |
+| Name      | Type           | Required | Restrictions | Description |
+| --------- | -------------- | -------- | ------------ | ----------- |
+| » code    | integer(int64) | false    | none         | none        |
+| » details | [object]       | false    | none         | none        |
+| » message | string         | false    | none         | none        |
+| » reason  | string         | false    | none         | none        |
+| » request | string         | false    | none         | none        |
+| » status  | string         | false    | none         | none        |
 
 Status Code **500**
 
-| Name                        | Type           | Required | Restrictions | Description |
-| --------------------------- | -------------- | -------- | ------------ | ----------- |
-| » code                      | integer(int64) | false    | none         | none        |
-| » details                   | [object]       | false    | none         | none        |
-| »» **additionalProperties** | object         | false    | none         | none        |
-| » message                   | string         | false    | none         | none        |
-| » reason                    | string         | false    | none         | none        |
-| » request                   | string         | false    | none         | none        |
-| » status                    | string         | false    | none         | none        |
+| Name      | Type           | Required | Restrictions | Description |
+| --------- | -------------- | -------- | ------------ | ----------- |
+| » code    | integer(int64) | false    | none         | none        |
+| » details | [object]       | false    | none         | none        |
+| » message | string         | false    | none         | none        |
+| » reason  | string         | false    | none         | none        |
+| » request | string         | false    | none         | none        |
+| » status  | string         | false    | none         | none        |
 
 ##### Examples
 
@@ -787,10 +763,7 @@ Status Code **500**
 ```json
 {
   "actions": ["string"],
-  "conditions": {
-    "property1": {},
-    "property2": {}
-  },
+  "conditions": {},
   "description": "string",
   "effect": "string",
   "id": "string",
@@ -975,15 +948,14 @@ Delete an ORY Access Control Policy
 
 Status Code **500**
 
-| Name                        | Type           | Required | Restrictions | Description |
-| --------------------------- | -------------- | -------- | ------------ | ----------- |
-| » code                      | integer(int64) | false    | none         | none        |
-| » details                   | [object]       | false    | none         | none        |
-| »» **additionalProperties** | object         | false    | none         | none        |
-| » message                   | string         | false    | none         | none        |
-| » reason                    | string         | false    | none         | none        |
-| » request                   | string         | false    | none         | none        |
-| » status                    | string         | false    | none         | none        |
+| Name      | Type           | Required | Restrictions | Description |
+| --------- | -------------- | -------- | ------------ | ----------- |
+| » code    | integer(int64) | false    | none         | none        |
+| » details | [object]       | false    | none         | none        |
+| » message | string         | false    | none         | none        |
+| » reason  | string         | false    | none         | none        |
+| » request | string         | false    | none         | none        |
+| » status  | string         | false    | none         | none        |
 
 ##### Examples
 
@@ -992,12 +964,7 @@ Status Code **500**
 ```json
 {
   "code": 0,
-  "details": [
-    {
-      "property1": {},
-      "property2": {}
-    }
-  ],
+  "details": [{}],
   "message": "string",
   "reason": "string",
   "request": "string",
@@ -1192,15 +1159,14 @@ Status Code **200**
 
 Status Code **500**
 
-| Name                        | Type           | Required | Restrictions | Description |
-| --------------------------- | -------------- | -------- | ------------ | ----------- |
-| » code                      | integer(int64) | false    | none         | none        |
-| » details                   | [object]       | false    | none         | none        |
-| »» **additionalProperties** | object         | false    | none         | none        |
-| » message                   | string         | false    | none         | none        |
-| » reason                    | string         | false    | none         | none        |
-| » request                   | string         | false    | none         | none        |
-| » status                    | string         | false    | none         | none        |
+| Name      | Type           | Required | Restrictions | Description |
+| --------- | -------------- | -------- | ------------ | ----------- |
+| » code    | integer(int64) | false    | none         | none        |
+| » details | [object]       | false    | none         | none        |
+| » message | string         | false    | none         | none        |
+| » reason  | string         | false    | none         | none        |
+| » request | string         | false    | none         | none        |
+| » status  | string         | false    | none         | none        |
 
 ##### Examples
 
@@ -1402,15 +1368,14 @@ Control Policy (OACP) by using the Role ID as subject in the OACP.
 
 Status Code **500**
 
-| Name                        | Type           | Required | Restrictions | Description |
-| --------------------------- | -------------- | -------- | ------------ | ----------- |
-| » code                      | integer(int64) | false    | none         | none        |
-| » details                   | [object]       | false    | none         | none        |
-| »» **additionalProperties** | object         | false    | none         | none        |
-| » message                   | string         | false    | none         | none        |
-| » reason                    | string         | false    | none         | none        |
-| » request                   | string         | false    | none         | none        |
-| » status                    | string         | false    | none         | none        |
+| Name      | Type           | Required | Restrictions | Description |
+| --------- | -------------- | -------- | ------------ | ----------- |
+| » code    | integer(int64) | false    | none         | none        |
+| » details | [object]       | false    | none         | none        |
+| » message | string         | false    | none         | none        |
+| » reason  | string         | false    | none         | none        |
+| » request | string         | false    | none         | none        |
+| » status  | string         | false    | none         | none        |
 
 ##### Examples
 
@@ -1610,27 +1575,25 @@ Control Policy (OACP) by using the Role ID as subject in the OACP.
 
 Status Code **404**
 
-| Name                        | Type           | Required | Restrictions | Description |
-| --------------------------- | -------------- | -------- | ------------ | ----------- |
-| » code                      | integer(int64) | false    | none         | none        |
-| » details                   | [object]       | false    | none         | none        |
-| »» **additionalProperties** | object         | false    | none         | none        |
-| » message                   | string         | false    | none         | none        |
-| » reason                    | string         | false    | none         | none        |
-| » request                   | string         | false    | none         | none        |
-| » status                    | string         | false    | none         | none        |
+| Name      | Type           | Required | Restrictions | Description |
+| --------- | -------------- | -------- | ------------ | ----------- |
+| » code    | integer(int64) | false    | none         | none        |
+| » details | [object]       | false    | none         | none        |
+| » message | string         | false    | none         | none        |
+| » reason  | string         | false    | none         | none        |
+| » request | string         | false    | none         | none        |
+| » status  | string         | false    | none         | none        |
 
 Status Code **500**
 
-| Name                        | Type           | Required | Restrictions | Description |
-| --------------------------- | -------------- | -------- | ------------ | ----------- |
-| » code                      | integer(int64) | false    | none         | none        |
-| » details                   | [object]       | false    | none         | none        |
-| »» **additionalProperties** | object         | false    | none         | none        |
-| » message                   | string         | false    | none         | none        |
-| » reason                    | string         | false    | none         | none        |
-| » request                   | string         | false    | none         | none        |
-| » status                    | string         | false    | none         | none        |
+| Name      | Type           | Required | Restrictions | Description |
+| --------- | -------------- | -------- | ------------ | ----------- |
+| » code    | integer(int64) | false    | none         | none        |
+| » details | [object]       | false    | none         | none        |
+| » message | string         | false    | none         | none        |
+| » reason  | string         | false    | none         | none        |
+| » request | string         | false    | none         | none        |
+| » status  | string         | false    | none         | none        |
 
 ##### Examples
 
@@ -1820,15 +1783,14 @@ Control Policy (OACP) by using the Role ID as subject in the OACP.
 
 Status Code **500**
 
-| Name                        | Type           | Required | Restrictions | Description |
-| --------------------------- | -------------- | -------- | ------------ | ----------- |
-| » code                      | integer(int64) | false    | none         | none        |
-| » details                   | [object]       | false    | none         | none        |
-| »» **additionalProperties** | object         | false    | none         | none        |
-| » message                   | string         | false    | none         | none        |
-| » reason                    | string         | false    | none         | none        |
-| » request                   | string         | false    | none         | none        |
-| » status                    | string         | false    | none         | none        |
+| Name      | Type           | Required | Restrictions | Description |
+| --------- | -------------- | -------- | ------------ | ----------- |
+| » code    | integer(int64) | false    | none         | none        |
+| » details | [object]       | false    | none         | none        |
+| » message | string         | false    | none         | none        |
+| » reason  | string         | false    | none         | none        |
+| » request | string         | false    | none         | none        |
+| » status  | string         | false    | none         | none        |
 
 ##### Examples
 
@@ -1837,12 +1799,7 @@ Status Code **500**
 ```json
 {
   "code": 0,
-  "details": [
-    {
-      "property1": {},
-      "property2": {}
-    }
-  ],
+  "details": [{}],
   "message": "string",
   "reason": "string",
   "request": "string",
@@ -2037,15 +1994,14 @@ Control Policy (OACP) by using the Role ID as subject in the OACP.
 
 Status Code **500**
 
-| Name                        | Type           | Required | Restrictions | Description |
-| --------------------------- | -------------- | -------- | ------------ | ----------- |
-| » code                      | integer(int64) | false    | none         | none        |
-| » details                   | [object]       | false    | none         | none        |
-| »» **additionalProperties** | object         | false    | none         | none        |
-| » message                   | string         | false    | none         | none        |
-| » reason                    | string         | false    | none         | none        |
-| » request                   | string         | false    | none         | none        |
-| » status                    | string         | false    | none         | none        |
+| Name      | Type           | Required | Restrictions | Description |
+| --------- | -------------- | -------- | ------------ | ----------- |
+| » code    | integer(int64) | false    | none         | none        |
+| » details | [object]       | false    | none         | none        |
+| » message | string         | false    | none         | none        |
+| » reason  | string         | false    | none         | none        |
+| » request | string         | false    | none         | none        |
+| » status  | string         | false    | none         | none        |
 
 ##### Examples
 
@@ -2244,15 +2200,14 @@ Control Policy (OACP) by using the Role ID as subject in the OACP.
 
 Status Code **500**
 
-| Name                        | Type           | Required | Restrictions | Description |
-| --------------------------- | -------------- | -------- | ------------ | ----------- |
-| » code                      | integer(int64) | false    | none         | none        |
-| » details                   | [object]       | false    | none         | none        |
-| »» **additionalProperties** | object         | false    | none         | none        |
-| » message                   | string         | false    | none         | none        |
-| » reason                    | string         | false    | none         | none        |
-| » request                   | string         | false    | none         | none        |
-| » status                    | string         | false    | none         | none        |
+| Name      | Type           | Required | Restrictions | Description |
+| --------- | -------------- | -------- | ------------ | ----------- |
+| » code    | integer(int64) | false    | none         | none        |
+| » details | [object]       | false    | none         | none        |
+| » message | string         | false    | none         | none        |
+| » reason  | string         | false    | none         | none        |
+| » request | string         | false    | none         | none        |
+| » status  | string         | false    | none         | none        |
 
 ##### Examples
 
@@ -2261,12 +2216,7 @@ Status Code **500**
 ```json
 {
   "code": 0,
-  "details": [
-    {
-      "property1": {},
-      "property2": {}
-    }
-  ],
+  "details": [{}],
   "message": "string",
   "reason": "string",
   "request": "string",
@@ -2453,15 +2403,14 @@ status will never refer to the cluster state, only to a single instance.
 
 Status Code **500**
 
-| Name                        | Type           | Required | Restrictions | Description |
-| --------------------------- | -------------- | -------- | ------------ | ----------- |
-| » code                      | integer(int64) | false    | none         | none        |
-| » details                   | [object]       | false    | none         | none        |
-| »» **additionalProperties** | object         | false    | none         | none        |
-| » message                   | string         | false    | none         | none        |
-| » reason                    | string         | false    | none         | none        |
-| » request                   | string         | false    | none         | none        |
-| » status                    | string         | false    | none         | none        |
+| Name      | Type           | Required | Restrictions | Description |
+| --------- | -------------- | -------- | ------------ | ----------- |
+| » code    | integer(int64) | false    | none         | none        |
+| » details | [object]       | false    | none         | none        |
+| » message | string         | false    | none         | none        |
+| » reason  | string         | false    | none         | none        |
+| » request | string         | false    | none         | none        |
+| » status  | string         | false    | none         | none        |
 
 ##### Examples
 
@@ -3060,10 +3009,7 @@ the decision outcome._
 ```json
 {
   "actions": ["string"],
-  "conditions": {
-    "property1": {},
-    "property2": {}
-  },
+  "conditions": {},
   "description": "string",
   "effect": "string",
   "id": "string",
@@ -3076,16 +3022,15 @@ _oryAccessControlPolicy specifies an ORY Access Policy document._
 
 #### Properties
 
-| Name                       | Type     | Required | Restrictions | Description                                                                                                          |
-| -------------------------- | -------- | -------- | ------------ | -------------------------------------------------------------------------------------------------------------------- |
-| actions                    | [string] | false    | none         | Actions is an array representing all the actions this ORY Access Policy applies to.                                  |
-| conditions                 | object   | false    | none         | Conditions represents a keyed object of conditions under which this ORY Access Policy is active.                     |
-| » **additionalProperties** | object   | false    | none         | none                                                                                                                 |
-| description                | string   | false    | none         | Description is an optional, human-readable description.                                                              |
-| effect                     | string   | false    | none         | Effect is the effect of this ORY Access Policy. It can be "allow" or "deny".                                         |
-| id                         | string   | false    | none         | ID is the unique identifier of the ORY Access Policy. It is used to query, update, and remove the ORY Access Policy. |
-| resources                  | [string] | false    | none         | Resources is an array representing all the resources this ORY Access Policy applies to.                              |
-| subjects                   | [string] | false    | none         | Subjects is an array representing all the subjects this ORY Access Policy applies to.                                |
+| Name        | Type     | Required | Restrictions | Description                                                                                                          |
+| ----------- | -------- | -------- | ------------ | -------------------------------------------------------------------------------------------------------------------- |
+| actions     | [string] | false    | none         | Actions is an array representing all the actions this ORY Access Policy applies to.                                  |
+| conditions  | object   | false    | none         | Conditions represents a keyed object of conditions under which this ORY Access Policy is active.                     |
+| description | string   | false    | none         | Description is an optional, human-readable description.                                                              |
+| effect      | string   | false    | none         | Effect is the effect of this ORY Access Policy. It can be "allow" or "deny".                                         |
+| id          | string   | false    | none         | ID is the unique identifier of the ORY Access Policy. It is used to query, update, and remove the ORY Access Policy. |
+| resources   | [string] | false    | none         | Resources is an array representing all the resources this ORY Access Policy applies to.                              |
+| subjects    | [string] | false    | none         | Subjects is an array representing all the subjects this ORY Access Policy applies to.                                |
 
 <a id="tocSoryaccesscontrolpolicyallowedinput">oryAccessControlPolicyAllowedInput</a>
 
@@ -3096,10 +3041,7 @@ _oryAccessControlPolicy specifies an ORY Access Policy document._
 ```json
 {
   "action": "string",
-  "context": {
-    "property1": {},
-    "property2": {}
-  },
+  "context": {},
   "resource": "string",
   "subject": "string"
 }
@@ -3109,13 +3051,12 @@ _Input for checking if a request is allowed or not._
 
 #### Properties
 
-| Name                       | Type   | Required | Restrictions | Description                                             |
-| -------------------------- | ------ | -------- | ------------ | ------------------------------------------------------- |
-| action                     | string | false    | none         | Action is the action that is requested on the resource. |
-| context                    | object | false    | none         | Context is the request's environmental context.         |
-| » **additionalProperties** | object | false    | none         | none                                                    |
-| resource                   | string | false    | none         | Resource is the resource that access is requested to.   |
-| subject                    | string | false    | none         | Subject is the subject that is requesting access.       |
+| Name     | Type   | Required | Restrictions | Description                                             |
+| -------- | ------ | -------- | ------------ | ------------------------------------------------------- |
+| action   | string | false    | none         | Action is the action that is requested on the resource. |
+| context  | object | false    | none         | Context is the request's environmental context.         |
+| resource | string | false    | none         | Resource is the resource that access is requested to.   |
+| subject  | string | false    | none         | Subject is the subject that is requesting access.       |
 
 <a id="tocSoryaccesscontrolpolicyrole">oryAccessControlPolicyRole</a>
 

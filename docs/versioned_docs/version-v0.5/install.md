@@ -11,8 +11,8 @@ binaries, Docker images, and support a number of package managers.
 We recommend using Docker to run ORY Keto:
 
 ```shell
-$ docker pull oryd/keto:v0.5.4-alpha.1
-$ docker run --rm -it oryd/keto:v0.5.4-alpha.1 help
+$ docker pull oryd/keto:v0.5.5-alpha.1
+$ docker run --rm -it oryd/keto:v0.5.5-alpha.1 help
 ```
 
 ## macOS
@@ -27,10 +27,11 @@ $ keto help
 
 ## Linux
 
-On linux, you can use `curl | bash` to fetch the latest stable binary using:
+On linux, you can use `bash <(curl ...)` to fetch the latest stable binary
+using:
 
 ```shell
-$ curl https://raw.githubusercontent.com/ory/keto/master/install.sh | bash -s -- -b .
+$ bash <(curl https://raw.githubusercontent.com/ory/keto/master/install.sh) -b . v0.5.5-alpha.1
 $ ./keto help
 ```
 

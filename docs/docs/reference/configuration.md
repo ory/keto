@@ -78,7 +78,7 @@ serve:
   # - Windows Command Line (CMD):
   #    > set SERVE_HOST=<value>
   #
-  host: localhost
+  host: 127.0.0.1
 
   ## Cross Origin Resource Sharing (CORS) ##
   #
@@ -117,9 +117,7 @@ serve:
     #    > set SERVE_CORS_ALLOWED_ORIGINS=<value>
     #
     allowed_origins:
-      - https://example.com
-      - https://*.example.com
-      - https://*.foo.example.com
+      - '*'
 
     ## Allowed HTTP Methods ##
     #
@@ -134,11 +132,7 @@ serve:
     #    > set SERVE_CORS_ALLOWED_METHODS=<value>
     #
     allowed_methods:
-      - PUT
-      - POST
-      - GET
-      - TRACE
-      - DELETE
+      - HEAD
 
     ## Allowed Request HTTP Headers ##
     #
@@ -153,11 +147,9 @@ serve:
     #    > set SERVE_CORS_ALLOWED_HEADERS=<value>
     #
     allowed_headers:
-      - officia aliqua
-      - irure
-      - Duis irure aliqua aute
-      - Duis officia sed dolor irure
-      - labore consequat
+      - consequat tempor commodo dolore incididunt
+      - dolore in
+      - incididunt et Duis
 
     ## Allowed Response HTTP Headers ##
     #
@@ -172,10 +164,10 @@ serve:
     #    > set SERVE_CORS_EXPOSED_HEADERS=<value>
     #
     exposed_headers:
-      - in proident Duis exercitation pariatur
-      - nostrud
-      - commodo Ut
-      - do adipisicing
+      - ad fugiat irure voluptate
+      - pariatur esse anim sed
+      - quis in
+      - amet
 
     ## Allow HTTP Credentials ##
     #
@@ -201,7 +193,7 @@ serve:
     # - Windows Command Line (CMD):
     #    > set SERVE_CORS_MAX_AGE=<value>
     #
-    max_age: 36592762
+    max_age: 82288709
 
     ## Enable Debugging ##
     #
@@ -278,7 +270,7 @@ serve:
 # - Windows Command Line (CMD):
 #    > set PROFILING=<value>
 #
-profiling: cpu
+profiling: ''
 
 ## Log ##
 #
@@ -297,7 +289,7 @@ log:
   # - Windows Command Line (CMD):
   #    > set LOG_LEVEL=<value>
   #
-  level: error
+  level: debug
 
   ## Format ##
   #
@@ -311,7 +303,7 @@ log:
   # - Windows Command Line (CMD):
   #    > set LOG_FORMAT=<value>
   #
-  format: json
+  format: text
 
 ## tracing ##
 #

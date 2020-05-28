@@ -39,10 +39,7 @@ be sent instead.
 ```json
 {
   "action": "string",
-  "context": {
-    "property1": {},
-    "property2": {}
-  },
+  "context": {},
   "resource": "string",
   "subject": "string"
 }
@@ -76,7 +73,6 @@ Status Code **500**
 |---|---|---|---|---|
 |» code|integer(int64)|false|none|none|
 |» details|[object]|false|none|none|
-|»» **additionalProperties**|object|false|none|none|
 |» message|string|false|none|none|
 |» reason|string|false|none|none|
 |» request|string|false|none|none|
@@ -153,10 +149,7 @@ func main() {
 const fetch = require('node-fetch');
 const input = '{
   "action": "string",
-  "context": {
-    "property1": {},
-    "property2": {}
-  },
+  "context": {},
   "resource": "string",
   "subject": "string"
 }';
@@ -287,7 +280,6 @@ Status Code **200**
 |» oryAccessControlPolicy specifies an ORY Access Policy document.|[oryAccessControlPolicy](#schemaoryaccesscontrolpolicy)|false|none|none|
 |»» actions|[string]|false|none|Actions is an array representing all the actions this ORY Access Policy applies to.|
 |»» conditions|object|false|none|Conditions represents a keyed object of conditions under which this ORY Access Policy is active.|
-|»»» **additionalProperties**|object|false|none|none|
 |»» description|string|false|none|Description is an optional, human-readable description.|
 |»» effect|string|false|none|Effect is the effect of this ORY Access Policy. It can be "allow" or "deny".|
 |»» id|string|false|none|ID is the unique identifier of the ORY Access Policy. It is used to query, update, and remove the ORY Access Policy.|
@@ -300,7 +292,6 @@ Status Code **500**
 |---|---|---|---|---|
 |» code|integer(int64)|false|none|none|
 |» details|[object]|false|none|none|
-|»» **additionalProperties**|object|false|none|none|
 |» message|string|false|none|none|
 |» reason|string|false|none|none|
 |» request|string|false|none|none|
@@ -316,10 +307,7 @@ Status Code **500**
     "actions": [
       "string"
     ],
-    "conditions": {
-      "property1": {},
-      "property2": {}
-    },
+    "conditions": {},
     "description": "string",
     "effect": "string",
     "id": "string",
@@ -491,10 +479,7 @@ Upsert an ORY Access Control Policy
   "actions": [
     "string"
   ],
-  "conditions": {
-    "property1": {},
-    "property2": {}
-  },
+  "conditions": {},
   "description": "string",
   "effect": "string",
   "id": "string",
@@ -534,7 +519,6 @@ Status Code **500**
 |---|---|---|---|---|
 |» code|integer(int64)|false|none|none|
 |» details|[object]|false|none|none|
-|»» **additionalProperties**|object|false|none|none|
 |» message|string|false|none|none|
 |» reason|string|false|none|none|
 |» request|string|false|none|none|
@@ -549,10 +533,7 @@ Status Code **500**
   "actions": [
     "string"
   ],
-  "conditions": {
-    "property1": {},
-    "property2": {}
-  },
+  "conditions": {},
   "description": "string",
   "effect": "string",
   "id": "string",
@@ -628,10 +609,7 @@ const input = '{
   "actions": [
     "string"
   ],
-  "conditions": {
-    "property1": {},
-    "property2": {}
-  },
+  "conditions": {},
   "description": "string",
   "effect": "string",
   "id": "string",
@@ -764,7 +742,6 @@ Status Code **404**
 |---|---|---|---|---|
 |» code|integer(int64)|false|none|none|
 |» details|[object]|false|none|none|
-|»» **additionalProperties**|object|false|none|none|
 |» message|string|false|none|none|
 |» reason|string|false|none|none|
 |» request|string|false|none|none|
@@ -776,7 +753,6 @@ Status Code **500**
 |---|---|---|---|---|
 |» code|integer(int64)|false|none|none|
 |» details|[object]|false|none|none|
-|»» **additionalProperties**|object|false|none|none|
 |» message|string|false|none|none|
 |» reason|string|false|none|none|
 |» request|string|false|none|none|
@@ -791,10 +767,7 @@ Status Code **500**
   "actions": [
     "string"
   ],
-  "conditions": {
-    "property1": {},
-    "property2": {}
-  },
+  "conditions": {},
   "description": "string",
   "effect": "string",
   "id": "string",
@@ -984,7 +957,6 @@ Status Code **500**
 |---|---|---|---|---|
 |» code|integer(int64)|false|none|none|
 |» details|[object]|false|none|none|
-|»» **additionalProperties**|object|false|none|none|
 |» message|string|false|none|none|
 |» reason|string|false|none|none|
 |» request|string|false|none|none|
@@ -998,10 +970,7 @@ Status Code **500**
 {
   "code": 0,
   "details": [
-    {
-      "property1": {},
-      "property2": {}
-    }
+    {}
   ],
   "message": "string",
   "reason": "string",
@@ -1198,7 +1167,6 @@ Status Code **500**
 |---|---|---|---|---|
 |» code|integer(int64)|false|none|none|
 |» details|[object]|false|none|none|
-|»» **additionalProperties**|object|false|none|none|
 |» message|string|false|none|none|
 |» reason|string|false|none|none|
 |» request|string|false|none|none|
@@ -1409,7 +1377,6 @@ Status Code **500**
 |---|---|---|---|---|
 |» code|integer(int64)|false|none|none|
 |» details|[object]|false|none|none|
-|»» **additionalProperties**|object|false|none|none|
 |» message|string|false|none|none|
 |» reason|string|false|none|none|
 |» request|string|false|none|none|
@@ -1616,7 +1583,6 @@ Status Code **404**
 |---|---|---|---|---|
 |» code|integer(int64)|false|none|none|
 |» details|[object]|false|none|none|
-|»» **additionalProperties**|object|false|none|none|
 |» message|string|false|none|none|
 |» reason|string|false|none|none|
 |» request|string|false|none|none|
@@ -1628,7 +1594,6 @@ Status Code **500**
 |---|---|---|---|---|
 |» code|integer(int64)|false|none|none|
 |» details|[object]|false|none|none|
-|»» **additionalProperties**|object|false|none|none|
 |» message|string|false|none|none|
 |» reason|string|false|none|none|
 |» request|string|false|none|none|
@@ -1825,7 +1790,6 @@ Status Code **500**
 |---|---|---|---|---|
 |» code|integer(int64)|false|none|none|
 |» details|[object]|false|none|none|
-|»» **additionalProperties**|object|false|none|none|
 |» message|string|false|none|none|
 |» reason|string|false|none|none|
 |» request|string|false|none|none|
@@ -1839,10 +1803,7 @@ Status Code **500**
 {
   "code": 0,
   "details": [
-    {
-      "property1": {},
-      "property2": {}
-    }
+    {}
   ],
   "message": "string",
   "reason": "string",
@@ -2041,7 +2002,6 @@ Status Code **500**
 |---|---|---|---|---|
 |» code|integer(int64)|false|none|none|
 |» details|[object]|false|none|none|
-|»» **additionalProperties**|object|false|none|none|
 |» message|string|false|none|none|
 |» reason|string|false|none|none|
 |» request|string|false|none|none|
@@ -2247,7 +2207,6 @@ Status Code **500**
 |---|---|---|---|---|
 |» code|integer(int64)|false|none|none|
 |» details|[object]|false|none|none|
-|»» **additionalProperties**|object|false|none|none|
 |» message|string|false|none|none|
 |» reason|string|false|none|none|
 |» request|string|false|none|none|
@@ -2261,10 +2220,7 @@ Status Code **500**
 {
   "code": 0,
   "details": [
-    {
-      "property1": {},
-      "property2": {}
-    }
+    {}
   ],
   "message": "string",
   "reason": "string",
@@ -2452,7 +2408,6 @@ Status Code **500**
 |---|---|---|---|---|
 |» code|integer(int64)|false|none|none|
 |» details|[object]|false|none|none|
-|»» **additionalProperties**|object|false|none|none|
 |» message|string|false|none|none|
 |» reason|string|false|none|none|
 |» request|string|false|none|none|
@@ -3053,10 +3008,7 @@ p JSON.parse(result)
   "actions": [
     "string"
   ],
-  "conditions": {
-    "property1": {},
-    "property2": {}
-  },
+  "conditions": {},
   "description": "string",
   "effect": "string",
   "id": "string",
@@ -3078,7 +3030,6 @@ p JSON.parse(result)
 |---|---|---|---|---|
 |actions|[string]|false|none|Actions is an array representing all the actions this ORY Access Policy applies to.|
 |conditions|object|false|none|Conditions represents a keyed object of conditions under which this ORY Access Policy is active.|
-|» **additionalProperties**|object|false|none|none|
 |description|string|false|none|Description is an optional, human-readable description.|
 |effect|string|false|none|Effect is the effect of this ORY Access Policy. It can be "allow" or "deny".|
 |id|string|false|none|ID is the unique identifier of the ORY Access Policy. It is used to query, update, and remove the ORY Access Policy.|
@@ -3093,10 +3044,7 @@ p JSON.parse(result)
 ```json
 {
   "action": "string",
-  "context": {
-    "property1": {},
-    "property2": {}
-  },
+  "context": {},
   "resource": "string",
   "subject": "string"
 }
@@ -3111,7 +3059,6 @@ p JSON.parse(result)
 |---|---|---|---|---|
 |action|string|false|none|Action is the action that is requested on the resource.|
 |context|object|false|none|Context is the request's environmental context.|
-|» **additionalProperties**|object|false|none|none|
 |resource|string|false|none|Resource is the resource that access is requested to.|
 |subject|string|false|none|Subject is the subject that is requesting access.|
 

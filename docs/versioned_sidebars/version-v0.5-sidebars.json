@@ -140,27 +140,6 @@
           "href": "https://github.com/ory/oathkeeper"
         }
       ]
-    },
-    {
-      "type": "category",
-      "label": "ORY Keto",
-      "items": [
-        {
-          "type": "link",
-          "label": "Home",
-          "href": "https://www.ory.sh/Keto"
-        },
-        {
-          "type": "link",
-          "label": "Docs",
-          "href": "https://www.ory.sh/Keto/docs"
-        },
-        {
-          "type": "link",
-          "label": "GitHub",
-          "href": "https://github.com/ory/Keto"
-        }
-      ]
     }
   ]
 }
