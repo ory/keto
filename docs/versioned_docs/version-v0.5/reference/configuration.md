@@ -39,7 +39,7 @@ To find out more about edge cases like setting string array values through envir
 # - Windows Command Line (CMD):
 #    > set DSN=<value>
 #
-dsn: postgres://user:password@host:123/database
+dsn: memory
 
 ## HTTP REST API ##
 #
@@ -76,7 +76,7 @@ serve:
   # - Windows Command Line (CMD):
   #    > set SERVE_HOST=<value>
   #
-  host: 127.0.0.1
+  host: localhost
 
   ## Cross Origin Resource Sharing (CORS) ##
   #
@@ -116,7 +116,9 @@ serve:
     #    > set SERVE_CORS_ALLOWED_ORIGINS=<value>
     #
     allowed_origins:
-      - "*"
+      - https://example.com
+      - https://*.example.com
+      - https://*.foo.example.com
 
     ## Allowed HTTP Methods ##
     #
@@ -131,7 +133,11 @@ serve:
     #    > set SERVE_CORS_ALLOWED_METHODS=<value>
     #
     allowed_methods:
-      - HEAD
+      - PATCH
+      - GET
+      - CONNECT
+      - POST
+      - DELETE
 
     ## Allowed Request HTTP Headers ##
     #
@@ -146,9 +152,9 @@ serve:
     #    > set SERVE_CORS_ALLOWED_HEADERS=<value>
     #
     allowed_headers:
-      - consequat tempor commodo dolore incididunt
-      - dolore in
-      - incididunt et Duis
+      - in
+      - in deserunt
+      - reprehenderit
 
     ## Allowed Response HTTP Headers ##
     #
@@ -163,10 +169,9 @@ serve:
     #    > set SERVE_CORS_EXPOSED_HEADERS=<value>
     #
     exposed_headers:
-      - ad fugiat irure voluptate
-      - pariatur esse anim sed
-      - quis in
-      - amet
+      - est exercitation dolor fugiat laborum
+      - sed aliqua non
+      - Duis nulla
 
     ## Allow HTTP Credentials ##
     #
@@ -180,7 +185,7 @@ serve:
     # - Windows Command Line (CMD):
     #    > set SERVE_CORS_ALLOW_CREDENTIALS=<value>
     #
-    allow_credentials: false
+    allow_credentials: true
 
     ## Maximum Age ##
     #
@@ -192,7 +197,7 @@ serve:
     # - Windows Command Line (CMD):
     #    > set SERVE_CORS_MAX_AGE=<value>
     #
-    max_age: 82288709
+    max_age: 60979592
 
     ## Enable Debugging ##
     #
@@ -292,7 +297,7 @@ log:
   # - Windows Command Line (CMD):
   #    > set LOG_LEVEL=<value>
   #
-  level: debug
+  level: info
 
   ## Format ##
   #
