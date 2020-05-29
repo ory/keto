@@ -71,12 +71,13 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [Unreleased](https://github.com/ory/keto/compare/v0.5.6-alpha.1...c0a378448f8c7723bae68f7b52a019b697b25863) (2020-05-29)
+# [Unreleased](https://github.com/ory/keto/compare/v0.5.6-alpha.1...340f3a3dd20c82c743e7b3ad6aaf06a4c118b5a1) (2020-05-29)
 
 
 ### Documentation
 
 * Delete old redirect homepage ([c0a3784](https://github.com/ory/keto/commit/c0a378448f8c7723bae68f7b52a019b697b25863))
+* Use mdx for api reference ([340f3a3](https://github.com/ory/keto/commit/340f3a3dd20c82c743e7b3ad6aaf06a4c118b5a1))
 
 
 
