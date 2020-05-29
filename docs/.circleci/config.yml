@@ -1,0 +1,21 @@
+version: 2.1
+
+jobs:
+  update:
+    docker:
+      - image: circleci/node:14.3.0
+    working_directory: ~/docusaurus-template
+    steps:
+      - checkout
+      - run: "git config --global user.email aeneasr@users.noreply.github.com"
+      - run: "git config --global user.name aeneasr"
+      - run: ./update.sh
+
+workflows:
+  update:
+    jobs:
+      - update:
+          name: Update Dependents
+          filters:
+            branches:
+              only: master
