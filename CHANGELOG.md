@@ -5,14 +5,15 @@
 **Table of Contents**
 
 - [Unreleased (2020-06-08)](#unreleased-2020-06-08)
+    - [Bug Fixes](#bug-fixes)
     - [Documentation](#documentation)
   - [0.5.6-alpha.1 (2020-05-28)](#056-alpha1-2020-05-28)
-    - [Bug Fixes](#bug-fixes)
-  - [0.5.5-alpha.1 (2020-05-28)](#055-alpha1-2020-05-28)
     - [Bug Fixes](#bug-fixes-1)
+  - [0.5.5-alpha.1 (2020-05-28)](#055-alpha1-2020-05-28)
+    - [Bug Fixes](#bug-fixes-2)
     - [Documentation](#documentation-1)
   - [0.5.4-alpha.1 (2020-04-07)](#054-alpha1-2020-04-07)
-    - [Bug Fixes](#bug-fixes-2)
+    - [Bug Fixes](#bug-fixes-3)
   - [0.5.3-alpha.3 (2020-04-06)](#053-alpha3-2020-04-06)
     - [Code Refactoring](#code-refactoring)
     - [Documentation](#documentation-2)
@@ -20,13 +21,13 @@
   - [0.5.2 (2020-04-02)](#052-2020-04-02)
     - [Documentation](#documentation-3)
 - [0.5.0 (2020-04-02)](#050-2020-04-02)
-    - [Bug Fixes](#bug-fixes-3)
+    - [Bug Fixes](#bug-fixes-4)
     - [Documentation](#documentation-4)
   - [0.4.5-alpha.1 (2020-02-29)](#045-alpha1-2020-02-29)
-    - [Bug Fixes](#bug-fixes-4)
+    - [Bug Fixes](#bug-fixes-5)
     - [Documentation](#documentation-5)
   - [0.4.4-alpha.1 (2020-02-14)](#044-alpha1-2020-02-14)
-    - [Bug Fixes](#bug-fixes-5)
+    - [Bug Fixes](#bug-fixes-6)
     - [Documentation](#documentation-6)
     - [Features](#features)
     - [Unclassified](#unclassified)
@@ -71,7 +72,12 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [Unreleased](https://github.com/ory/keto/compare/v0.5.6-alpha.1...340f3a3dd20c82c743e7b3ad6aaf06a4c118b5a1) (2020-06-08)
+# [Unreleased](https://github.com/ory/keto/compare/v0.5.6-alpha.1...904258d23959c3fa96b6d8ccfdb79f6788c106ec) (2020-06-08)
+
+
+### Bug Fixes
+
+* Bump deps and replace swagutil ([#212](https://github.com/ory/keto/issues/212)) ([904258d](https://github.com/ory/keto/commit/904258d23959c3fa96b6d8ccfdb79f6788c106ec))
 
 
 ### Documentation
