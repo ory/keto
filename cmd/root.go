@@ -21,7 +21,6 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 
 	"github.com/ory/viper"
@@ -42,9 +41,7 @@ var RootCmd = &cobra.Command{
 
 var cfgFile string
 
-var logger *logrus.Logger = new(logrus.Logger)
-
-//var cmdHandler = client.NewHandler()
+var logger = new(logrusx.Logger)
 
 // Execute adds all child commands to the root command sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
@@ -90,7 +87,7 @@ func initConfig() {
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 	viper.AutomaticEnv() // read in environment variables that match
 
-	*logger = *logrusx.New()
+	*logger = *logrusx.New("ORY Keto", Version)
 
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err != nil {

@@ -19,8 +19,9 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/ory/keto/cmd/client"
 	"github.com/ory/x/cmdx"
+
+	"github.com/ory/keto/cmd/client"
 )
 
 // enginesAcpOryPoliciesDeleteCmd represents the delete command

@@ -16,8 +16,9 @@
 package main
 
 import (
-	"github.com/ory/keto/cmd"
 	"github.com/ory/x/profilex"
+
+	"github.com/ory/keto/cmd"
 )
 
 func main() {

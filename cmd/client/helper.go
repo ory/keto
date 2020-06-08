@@ -29,10 +29,11 @@ import (
 
 	"github.com/ory/viper"
 
-	"github.com/ory/keto/engine/ladon"
 	"github.com/ory/x/cmdx"
 	"github.com/ory/x/flagx"
 	"github.com/ory/x/stringslice"
+
+	"github.com/ory/keto/engine/ladon"
 )
 
 var hc = http.DefaultClient

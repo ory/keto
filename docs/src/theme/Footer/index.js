@@ -40,13 +40,13 @@ function FooterLink({to, href, label, ...props}) {
       className="footer__link-item"
       {...(href
         ? {
-            target: '_blank',
-            rel: 'noopener noreferrer',
-            href,
-          }
+          target: '_blank',
+          rel: 'noopener noreferrer',
+          href,
+        }
         : {
-            to: toUrl,
-          })}
+          to: toUrl,
+        })}
       {...props}>
       {label}
     </Link>
@@ -54,7 +54,7 @@ function FooterLink({to, href, label, ...props}) {
 }
 
 const FooterLogo = ({url, alt}) => (
-  <img className="footer__logo" alt={alt} src={url} />
+  <img className="footer__logo" alt={alt} src={url}/>
 );
 
 function Footer() {
@@ -118,10 +118,10 @@ function Footer() {
                     target="_blank"
                     rel="noopener noreferrer"
                     className={styles.footerLogoLink}>
-                    <FooterLogo alt={logo.alt} url={logoUrl} />
+                    <FooterLogo alt={logo.alt} url={logoUrl}/>
                   </a>
                 ) : (
-                  <FooterLogo alt={logo.alt} url={logoUrl} />
+                  <FooterLogo alt={logo.alt} url={logoUrl}/>
                 )}
               </div>
             )}
@@ -134,12 +134,12 @@ function Footer() {
           </div>
         )}
       </div>
-      <div id="codefund" />
+      <div id="codefund"/>
       <script
         src="https://codefund.io/properties/140/funder.js"
         async="async"
       />
-      <script dangerouslySetInnerHTML={{ __html: script }} />
+      <script dangerouslySetInnerHTML={{__html: script}}/>
     </footer>
   );
 }

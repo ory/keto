@@ -2,8 +2,8 @@ package configuration
 
 import (
 	"github.com/rs/cors"
-	"github.com/sirupsen/logrus"
 
+	"github.com/ory/x/logrusx"
 	"github.com/ory/x/tracing"
 )
 
@@ -17,6 +17,6 @@ type Provider interface {
 	TracingJaegerConfig() *tracing.JaegerConfig
 }
 
-func MustValidate(l logrus.FieldLogger, p Provider) {
+func MustValidate(l *logrusx.Logger, p Provider) {
 
 }

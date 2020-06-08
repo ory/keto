@@ -10,11 +10,15 @@
   "tagGroups": [
     {
       "title": "Public Endpoints",
-      "tags": ["public"]
+      "tags": [
+        "public"
+      ]
     },
     {
       "title": "Administrative Endpoints",
-      "tags": ["admin"]
+      "tags": [
+        "admin"
+      ]
     }
   ]
 }

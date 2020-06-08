@@ -3,23 +3,24 @@ package driver
 import (
 	"github.com/open-policy-agent/opa/ast"
 	"github.com/pkg/errors"
-	"github.com/sirupsen/logrus"
+
+	"github.com/ory/x/dbal"
+	"github.com/ory/x/healthx"
+	"github.com/ory/x/logrusx"
+	"github.com/ory/x/tracing"
 
 	"github.com/ory/keto/driver/configuration"
 	"github.com/ory/keto/engine"
 	"github.com/ory/keto/engine/ladon"
 	"github.com/ory/keto/storage"
 	"github.com/ory/keto/x"
-	"github.com/ory/x/dbal"
-	"github.com/ory/x/healthx"
-	"github.com/ory/x/tracing"
 )
 
 type Registry interface {
 	dbal.Driver
 	Init() error
 	WithConfig(c configuration.Provider) Registry
-	WithLogger(l logrus.FieldLogger) Registry
+	WithLogger(l *logrusx.Logger) Registry
 	WithBuildInfo(version, hash, date string) Registry
 	BuildVersion() string
 	BuildDate() string

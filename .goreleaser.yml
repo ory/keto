@@ -42,7 +42,8 @@ archives:
       386: 32-bit
       amd64: 64-bit
     format_overrides:
-      - goos: windows
+      -
+        goos: windows
         format: zip
 
 snapshot:
@@ -71,7 +72,8 @@ scoop:
     email: hi@ory.sh
 
 dockers:
-  - image_templates:
+  -
+    image_templates:
       - "oryd/keto:v{{ .Major }}"
       - "oryd/keto:v{{ .Major }}.{{ .Minor }}"
       - "oryd/keto:v{{ .Major }}.{{ .Minor }}.{{ .Patch }}"

@@ -19,8 +19,9 @@ import (
 
 	"github.com/ory/keto/internal/httpclient/client/engines"
 
-	"github.com/ory/keto/cmd/client"
 	"github.com/ory/x/cmdx"
+
+	"github.com/ory/keto/cmd/client"
 )
 
 // deleteCmd represents the delete command

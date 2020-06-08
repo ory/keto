@@ -3,20 +3,20 @@ package driver
 import (
 	"github.com/gobuffalo/packr"
 	"github.com/open-policy-agent/opa/ast"
-	"github.com/sirupsen/logrus"
 
 	"github.com/ory/herodot"
+	"github.com/ory/x/healthx"
+	"github.com/ory/x/logrusx"
+	"github.com/ory/x/tracing"
+
 	"github.com/ory/keto/driver/configuration"
 	"github.com/ory/keto/engine"
 	"github.com/ory/keto/engine/ladon"
 	"github.com/ory/keto/storage"
-	"github.com/ory/x/healthx"
-	"github.com/ory/x/logrusx"
-	"github.com/ory/x/tracing"
 )
 
 type RegistryBase struct {
-	l            logrus.FieldLogger
+	l            *logrusx.Logger
 	c            configuration.Provider
 	writer       herodot.Writer
 	buildVersion string
@@ -69,14 +69,14 @@ func (m *RegistryBase) Writer() herodot.Writer {
 	return m.writer
 }
 
-func (m *RegistryBase) WithLogger(l logrus.FieldLogger) Registry {
+func (m *RegistryBase) WithLogger(l *logrusx.Logger) Registry {
 	m.l = l
 	return m.r
 }
 
-func (m *RegistryBase) Logger() logrus.FieldLogger {
+func (m *RegistryBase) Logger() *logrusx.Logger {
 	if m.l == nil {
-		m.l = logrusx.New()
+		m.l = logrusx.New("ORY Keto", m.buildVersion)
 	}
 	return m.l
 }

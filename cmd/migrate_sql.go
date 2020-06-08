@@ -15,8 +15,9 @@
 package cmd
 
 import (
-	"github.com/ory/keto/storage"
 	"github.com/ory/x/sqlcon"
+
+	"github.com/ory/keto/storage"
 )
 
 // migrateSqlCmd represents the sql command

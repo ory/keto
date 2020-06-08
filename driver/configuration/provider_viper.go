@@ -4,9 +4,9 @@ import (
 	"fmt"
 
 	"github.com/rs/cors"
-	"github.com/sirupsen/logrus"
 
 	"github.com/ory/x/corsx"
+	"github.com/ory/x/logrusx"
 	"github.com/ory/x/tracing"
 	"github.com/ory/x/viperx"
 )
@@ -18,10 +18,10 @@ const (
 )
 
 type ViperProvider struct {
-	l logrus.FieldLogger
+	l *logrusx.Logger
 }
 
-func NewViperProvider(l logrus.FieldLogger) Provider {
+func NewViperProvider(l *logrusx.Logger) Provider {
 	return &ViperProvider{l: l}
 }
 
