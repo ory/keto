@@ -6,18 +6,20 @@ import (
 	"net/url"
 	"testing"
 
+	"github.com/ory/x/logrusx"
+
 	"github.com/ory/keto/internal/httpclient/client"
 	"github.com/ory/keto/internal/httpclient/client/engines"
 	"github.com/ory/keto/internal/httpclient/models"
 
 	"github.com/gobuffalo/packr"
 	"github.com/julienschmidt/httprouter"
-	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/urfave/negroni"
 
 	"github.com/ory/herodot"
+
 	"github.com/ory/keto/engine"
 	kstorage "github.com/ory/keto/storage"
 )
@@ -35,7 +37,7 @@ func nc(t *testing.T, u string) *client.OryKeto {
 
 func TestAllowed(t *testing.T) {
 	box := packr.NewBox("./rego")
-	compiler, err := engine.NewCompiler(box, logrus.New())
+	compiler, err := engine.NewCompiler(box, logrusx.New("", ""))
 	require.NoError(t, err)
 
 	s := kstorage.NewMemoryManager()

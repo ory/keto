@@ -27,10 +27,10 @@ mermaid.initialize({
     nodeSpacing: 30,
     curve: "basis"
   },
-  sequence:{
+  sequence: {
     useMaxWidth: true,
   },
-  gantt:{
+  gantt: {
     useMaxWidth: true,
   }
 })

@@ -19,8 +19,9 @@ import (
 
 	"github.com/ory/x/viperx"
 
-	"github.com/ory/keto/cmd/server"
 	"github.com/ory/x/logrusx"
+
+	"github.com/ory/keto/cmd/server"
 )
 
 // serveCmd represents the serve command
@@ -41,7 +42,7 @@ on configuration options, open the configuration documentation:
 func init() {
 	RootCmd.AddCommand(serveCmd)
 
-	disableTelemetryEnv := viperx.GetBool(logrusx.New(), "sqa.opt_out", false, "DISABLE_TELEMETRY")
+	disableTelemetryEnv := viperx.GetBool(logrusx.New("ORY Keto", Version), "sqa.opt_out", false, "DISABLE_TELEMETRY")
 	serveCmd.PersistentFlags().Bool("disable-telemetry", disableTelemetryEnv, "Disable anonymized telemetry reports - for more information please visit https://www.ory.sh/docs/ecosystem/sqa")
 	serveCmd.PersistentFlags().Bool("sqa-opt-out", disableTelemetryEnv, "Disable anonymized telemetry reports - for more information please visit https://www.ory.sh/docs/ecosystem/sqa")
 }

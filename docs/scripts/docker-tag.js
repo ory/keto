@@ -39,11 +39,11 @@ const replace = (path, replacer) =>
     })
   })
 
-config.updateTags.forEach(({ files, image, replacer }) => {
+config.updateTags.forEach(({files, image, replacer}) => {
   files.forEach((loc) => {
     replace(loc, (content) => {
       if (replacer) {
-        return replacer({ content, next })
+        return replacer({content, next})
       }
 
       return content.replace(

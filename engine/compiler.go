@@ -7,10 +7,11 @@ import (
 	"github.com/gobuffalo/packr"
 	"github.com/open-policy-agent/opa/ast"
 	"github.com/pkg/errors"
-	"github.com/sirupsen/logrus"
+
+	"github.com/ory/x/logrusx"
 )
 
-func walk(directory packr.Box, logger logrus.FieldLogger) (map[string]string, error) {
+func walk(directory packr.Box, logger *logrusx.Logger) (map[string]string, error) {
 	m := map[string]string{}
 	if err := directory.Walk(func(path string, file packr.File) error {
 		if filepath.Ext(path) != ".rego" {
@@ -32,7 +33,7 @@ func walk(directory packr.Box, logger logrus.FieldLogger) (map[string]string, er
 	return m, nil
 }
 
-func NewCompiler(directory packr.Box, logger logrus.FieldLogger) (*ast.Compiler, error) {
+func NewCompiler(directory packr.Box, logger *logrusx.Logger) (*ast.Compiler, error) {
 	files, err := walk(directory, logger)
 	if err != nil {
 		return nil, err

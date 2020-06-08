@@ -1,9 +1,8 @@
 package driver
 
 import (
-	"github.com/sirupsen/logrus"
-
 	"github.com/ory/keto/driver/configuration"
+	"github.com/ory/x/logrusx"
 )
 
 type DefaultDriver struct {
@@ -11,7 +10,7 @@ type DefaultDriver struct {
 	r Registry
 }
 
-func NewDefaultDriver(l logrus.FieldLogger, version, build, date string) Driver {
+func NewDefaultDriver(l *logrusx.Logger, version, build, date string) Driver {
 	c := configuration.NewViperProvider(l)
 	configuration.MustValidate(l, c)
 

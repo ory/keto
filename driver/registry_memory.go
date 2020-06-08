@@ -1,8 +1,9 @@
 package driver
 
 import (
-	"github.com/ory/keto/storage"
 	"github.com/ory/x/dbal"
+
+	"github.com/ory/keto/storage"
 )
 
 type RegistryMemory struct {

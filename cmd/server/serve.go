@@ -28,39 +28,41 @@ import (
 
 	"github.com/ory/analytics-go/v4"
 
-	"github.com/ory/keto/driver"
 	"github.com/ory/x/logrusx"
+
+	"github.com/ory/keto/driver"
 
 	"github.com/julienschmidt/httprouter"
 	"github.com/pkg/errors"
-	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/urfave/negroni"
 
 	"github.com/ory/viper"
 
 	"github.com/ory/graceful"
-	"github.com/ory/keto/engine/ladon"
 	"github.com/ory/x/stringslice"
 
-	// This forces go mod vendor to look for the package rego and its subpackages
-	_ "github.com/ory/keto/engine/ladon/rego"
+	"github.com/ory/keto/engine/ladon"
+
 	"github.com/ory/x/cmdx"
 	"github.com/ory/x/corsx"
 	"github.com/ory/x/healthx"
 	"github.com/ory/x/metricsx"
 	"github.com/ory/x/reqlog"
 	"github.com/ory/x/tlsx"
+
+	// This forces go mod vendor to look for the package rego and its subpackages
+	_ "github.com/ory/keto/engine/ladon/rego"
 )
 
 // RunServe runs the Keto API HTTP server
 func RunServe(
-	logger *logrus.Logger,
+	logger *logrusx.Logger,
 	version, commit string, date string,
 ) func(cmd *cobra.Command, args []string) {
 	return func(cmd *cobra.Command, args []string) {
 		d := driver.NewDefaultDriver(
-			logrusx.New(),
+			logger,
 			version, commit, date,
 		)
 
