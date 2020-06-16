@@ -7,17 +7,24 @@ Ory Keto is a cloud native access control server providing best-practice
 patterns (RBAC, ABAC, ACL, AWS IAM Policies, Kubernetes Roles, ...) via REST
 APIs.
 
-> You are viewing REST API documentation. This documentation is auto-generated
-> from a swagger specification which itself is generated from annotations in the
-> source code of the project. It is possible that this documentation includes
-> bugs and that code samples are incomplete or wrong.
->
-> If you find issues in the respective documentation, please do not edit the
-> Markdown files directly (as they are generated) but raise an issue on the
-> project's GitHub presence instead. This documentation will improve over time
-> with your help! If you have ideas how to improve this part of the
-> documentation, feel free to share them in a
-> [GitHub issue](https://github.com/ory/docs/issues/new) any time.
+import Tabs from '@theme/Tabs'
+import TabItem from '@theme/TabItem'
+
+:::info
+
+You are viewing REST API documentation. This documentation is auto-generated
+from a swagger specification which itself is generated from annotations in the
+source code of the project. It is possible that this documentation includes bugs
+and that code samples are incomplete or wrong.
+
+If you find issues in the respective documentation, please do not edit the
+Markdown files directly (as they are generated) but raise an issue on the
+project's GitHub presence instead. This documentation will improve over time
+with your help! If you have ideas how to improve this part of the documentation,
+feel free to share them in a
+[GitHub issue](https://github.com/ory/docs/issues/new) any time.
+
+:::
 
 <a id="ory-keto-engines"></a>
 
@@ -51,7 +58,7 @@ is denied, a 403 response with `{"allowed":"false"}` will be sent instead.
 
 <a id="check-if-a-request-is-allowed-parameters"></a>
 
-##### Parameters
+#### Parameters
 
 | Parameter | In   | Type                                                                            | Required | Description                                                                |
 | --------- | ---- | ------------------------------------------------------------------------------- | -------- | -------------------------------------------------------------------------- |
@@ -71,7 +78,6 @@ is denied, a 403 response with `{"allowed":"false"}` will be sent instead.
 | 500    | [Internal Server Error](https://tools.ietf.org/html/rfc7231#section-6.6.1) | The standard error format | Inline                                            |
 
 <a id="check-if-a-request-is-allowed-responseschema"></a>
-
 ##### Response Schema
 
 Status Code **500**
@@ -95,33 +101,22 @@ Status Code **500**
 }
 ```
 
-<aside class="success">
-This operation does not require authentication
-</aside>
+<aside class="success">This operation does not require authentication</aside>
 
 #### Code samples
 
-<div class="tabs" id="tab-doOryAccessControlPoliciesAllow">
-<nav class="tabs-nav">
-<ul class="nav nav-tabs au-link-list au-link-list--inline">
-<li class="nav-item"><a class="nav-link active" role="tab" href="#tab-doOryAccessControlPoliciesAllow-shell">Shell</a></li>
-<li class="nav-item"><a class="nav-link" role="tab" href="#tab-doOryAccessControlPoliciesAllow-go">Go</a></li>
-<li class="nav-item"><a class="nav-link" role="tab" href="#tab-doOryAccessControlPoliciesAllow-node">Node.js</a></li>
-<li class="nav-item"><a class="nav-link" role="tab" href="#tab-doOryAccessControlPoliciesAllow-java">Java</a></li>
-<li class="nav-item"><a class="nav-link" role="tab" href="#tab-doOryAccessControlPoliciesAllow-python">Python</a></li>
-<li class="nav-item"><a class="nav-link" role="tab" href="#tab-doOryAccessControlPoliciesAllow-ruby">Ruby</a></li>
-</ul>
-</nav>
-<div class="tab-content">
-<div class="tab-pane active" role="tabpanel" id="tab-doOryAccessControlPoliciesAllow-shell">
+<Tabs groupId="code-samples" defaultValue="shell"
+  values={[{label: 'Shell', value: 'shell'}, {label: 'Go', value: 'go'}, {label: 'Node', value: 'node'},
+    {label: 'Java', value: 'java'}, {label: 'Python', value: 'python'}, {label: 'Ruby', value: 'ruby'}]}>
+<TabItem value="shell">
 
 ```shell
 curl -X POST /engines/acp/ory/{flavor}/allowed \
   -H 'Content-Type: application/json' \  -H 'Accept: application/json'
 ```
 
-</div>
-<div class="tab-pane" role="tabpanel"  id="tab-doOryAccessControlPoliciesAllow-go">
+</TabItem>
+<TabItem value="go">
 
 ```go
 package main
@@ -149,10 +144,10 @@ func main() {
 }
 ```
 
-</div>
-<div class="tab-pane" role="tabpanel"  id="tab-doOryAccessControlPoliciesAllow-node">
+</TabItem>
+<TabItem value="node">
 
-```nodejs
+```javascript
 const fetch = require('node-fetch');
 const input = '{
   "action": "string",
@@ -175,8 +170,8 @@ fetch('/engines/acp/ory/{flavor}/allowed', {
 })
 ```
 
-</div>
-<div class="tab-pane" role="tabpanel"  id="tab-doOryAccessControlPoliciesAllow-java">
+</TabItem>
+<TabItem value="java">
 
 ```java
 // This sample needs improvement.
@@ -201,8 +196,8 @@ in.close();
 System.out.println(response.toString());
 ```
 
-</div>
-<div class="tab-pane" role="tabpanel"  id="tab-doOryAccessControlPoliciesAllow-python">
+</TabItem>
+<TabItem value="python">
 
 ```python
 import requests
@@ -220,8 +215,8 @@ r = requests.post(
 print r.json()
 ```
 
-</div>
-<div class="tab-pane" role="tabpanel"  id="tab-doOryAccessControlPoliciesAllow-ruby">
+</TabItem>
+<TabItem value="ruby">
 
 ```ruby
 require 'rest-client'
@@ -238,9 +233,8 @@ result = RestClient.post '/engines/acp/ory/{flavor}/allowed',
 p JSON.parse(result)
 ```
 
-</div>
-</div>
-</div>
+</TabItem>
+</Tabs>
 
 <a id="opIdlistOryAccessControlPolicies"></a>
 
@@ -256,7 +250,7 @@ List ORY Access Control Policies
 
 <a id="listoryaccesscontrolpolicies-parameters"></a>
 
-##### Parameters
+#### Parameters
 
 | Parameter | In    | Type           | Required | Description                                                               |
 | --------- | ----- | -------------- | -------- | ------------------------------------------------------------------------- |
@@ -279,7 +273,6 @@ List ORY Access Control Policies
 | 500    | [Internal Server Error](https://tools.ietf.org/html/rfc7231#section-6.6.1) | The standard error format         | Inline |
 
 <a id="listoryaccesscontrolpolicies-responseschema"></a>
-
 ##### Response Schema
 
 Status Code **200**
@@ -325,33 +318,22 @@ Status Code **500**
 ]
 ```
 
-<aside class="success">
-This operation does not require authentication
-</aside>
+<aside class="success">This operation does not require authentication</aside>
 
 #### Code samples
 
-<div class="tabs" id="tab-listOryAccessControlPolicies">
-<nav class="tabs-nav">
-<ul class="nav nav-tabs au-link-list au-link-list--inline">
-<li class="nav-item"><a class="nav-link active" role="tab" href="#tab-listOryAccessControlPolicies-shell">Shell</a></li>
-<li class="nav-item"><a class="nav-link" role="tab" href="#tab-listOryAccessControlPolicies-go">Go</a></li>
-<li class="nav-item"><a class="nav-link" role="tab" href="#tab-listOryAccessControlPolicies-node">Node.js</a></li>
-<li class="nav-item"><a class="nav-link" role="tab" href="#tab-listOryAccessControlPolicies-java">Java</a></li>
-<li class="nav-item"><a class="nav-link" role="tab" href="#tab-listOryAccessControlPolicies-python">Python</a></li>
-<li class="nav-item"><a class="nav-link" role="tab" href="#tab-listOryAccessControlPolicies-ruby">Ruby</a></li>
-</ul>
-</nav>
-<div class="tab-content">
-<div class="tab-pane active" role="tabpanel" id="tab-listOryAccessControlPolicies-shell">
+<Tabs groupId="code-samples" defaultValue="shell"
+  values={[{label: 'Shell', value: 'shell'}, {label: 'Go', value: 'go'}, {label: 'Node', value: 'node'},
+    {label: 'Java', value: 'java'}, {label: 'Python', value: 'python'}, {label: 'Ruby', value: 'ruby'}]}>
+<TabItem value="shell">
 
 ```shell
 curl -X GET /engines/acp/ory/{flavor}/policies \
   -H 'Accept: application/json'
 ```
 
-</div>
-<div class="tab-pane" role="tabpanel"  id="tab-listOryAccessControlPolicies-go">
+</TabItem>
+<TabItem value="go">
 
 ```go
 package main
@@ -378,28 +360,28 @@ func main() {
 }
 ```
 
-</div>
-<div class="tab-pane" role="tabpanel"  id="tab-listOryAccessControlPolicies-node">
+</TabItem>
+<TabItem value="node">
 
-```nodejs
-const fetch = require('node-fetch');
+```javascript
+const fetch = require('node-fetch')
 
 const headers = {
-  'Accept': 'application/json'
+  Accept: 'application/json'
 }
 
 fetch('/engines/acp/ory/{flavor}/policies', {
   method: 'GET',
   headers
 })
-.then(r => r.json())
-.then((body) => {
+  .then((r) => r.json())
+  .then((body) => {
     console.log(body)
-})
+  })
 ```
 
-</div>
-<div class="tab-pane" role="tabpanel"  id="tab-listOryAccessControlPolicies-java">
+</TabItem>
+<TabItem value="java">
 
 ```java
 // This sample needs improvement.
@@ -424,8 +406,8 @@ in.close();
 System.out.println(response.toString());
 ```
 
-</div>
-<div class="tab-pane" role="tabpanel"  id="tab-listOryAccessControlPolicies-python">
+</TabItem>
+<TabItem value="python">
 
 ```python
 import requests
@@ -442,8 +424,8 @@ r = requests.get(
 print r.json()
 ```
 
-</div>
-<div class="tab-pane" role="tabpanel"  id="tab-listOryAccessControlPolicies-ruby">
+</TabItem>
+<TabItem value="ruby">
 
 ```ruby
 require 'rest-client'
@@ -459,9 +441,8 @@ result = RestClient.get '/engines/acp/ory/{flavor}/policies',
 p JSON.parse(result)
 ```
 
-</div>
-</div>
-</div>
+</TabItem>
+</Tabs>
 
 <a id="opIdupsertOryAccessControlPolicy"></a>
 
@@ -492,7 +473,7 @@ Upsert an ORY Access Control Policy
 
 <a id="upsertoryaccesscontrolpolicy-parameters"></a>
 
-##### Parameters
+#### Parameters
 
 | Parameter | In   | Type                                                    | Required | Description                                                                |
 | --------- | ---- | ------------------------------------------------------- | -------- | -------------------------------------------------------------------------- |
@@ -511,7 +492,6 @@ Upsert an ORY Access Control Policy
 | 500    | [Internal Server Error](https://tools.ietf.org/html/rfc7231#section-6.6.1) | The standard error format | Inline                                                  |
 
 <a id="upsertoryaccesscontrolpolicy-responseschema"></a>
-
 ##### Response Schema
 
 Status Code **500**
@@ -541,33 +521,22 @@ Status Code **500**
 }
 ```
 
-<aside class="success">
-This operation does not require authentication
-</aside>
+<aside class="success">This operation does not require authentication</aside>
 
 #### Code samples
 
-<div class="tabs" id="tab-upsertOryAccessControlPolicy">
-<nav class="tabs-nav">
-<ul class="nav nav-tabs au-link-list au-link-list--inline">
-<li class="nav-item"><a class="nav-link active" role="tab" href="#tab-upsertOryAccessControlPolicy-shell">Shell</a></li>
-<li class="nav-item"><a class="nav-link" role="tab" href="#tab-upsertOryAccessControlPolicy-go">Go</a></li>
-<li class="nav-item"><a class="nav-link" role="tab" href="#tab-upsertOryAccessControlPolicy-node">Node.js</a></li>
-<li class="nav-item"><a class="nav-link" role="tab" href="#tab-upsertOryAccessControlPolicy-java">Java</a></li>
-<li class="nav-item"><a class="nav-link" role="tab" href="#tab-upsertOryAccessControlPolicy-python">Python</a></li>
-<li class="nav-item"><a class="nav-link" role="tab" href="#tab-upsertOryAccessControlPolicy-ruby">Ruby</a></li>
-</ul>
-</nav>
-<div class="tab-content">
-<div class="tab-pane active" role="tabpanel" id="tab-upsertOryAccessControlPolicy-shell">
+<Tabs groupId="code-samples" defaultValue="shell"
+  values={[{label: 'Shell', value: 'shell'}, {label: 'Go', value: 'go'}, {label: 'Node', value: 'node'},
+    {label: 'Java', value: 'java'}, {label: 'Python', value: 'python'}, {label: 'Ruby', value: 'ruby'}]}>
+<TabItem value="shell">
 
 ```shell
 curl -X PUT /engines/acp/ory/{flavor}/policies \
   -H 'Content-Type: application/json' \  -H 'Accept: application/json'
 ```
 
-</div>
-<div class="tab-pane" role="tabpanel"  id="tab-upsertOryAccessControlPolicy-go">
+</TabItem>
+<TabItem value="go">
 
 ```go
 package main
@@ -595,10 +564,10 @@ func main() {
 }
 ```
 
-</div>
-<div class="tab-pane" role="tabpanel"  id="tab-upsertOryAccessControlPolicy-node">
+</TabItem>
+<TabItem value="node">
 
-```nodejs
+```javascript
 const fetch = require('node-fetch');
 const input = '{
   "actions": [
@@ -630,8 +599,8 @@ fetch('/engines/acp/ory/{flavor}/policies', {
 })
 ```
 
-</div>
-<div class="tab-pane" role="tabpanel"  id="tab-upsertOryAccessControlPolicy-java">
+</TabItem>
+<TabItem value="java">
 
 ```java
 // This sample needs improvement.
@@ -656,8 +625,8 @@ in.close();
 System.out.println(response.toString());
 ```
 
-</div>
-<div class="tab-pane" role="tabpanel"  id="tab-upsertOryAccessControlPolicy-python">
+</TabItem>
+<TabItem value="python">
 
 ```python
 import requests
@@ -675,8 +644,8 @@ r = requests.put(
 print r.json()
 ```
 
-</div>
-<div class="tab-pane" role="tabpanel"  id="tab-upsertOryAccessControlPolicy-ruby">
+</TabItem>
+<TabItem value="ruby">
 
 ```ruby
 require 'rest-client'
@@ -693,9 +662,8 @@ result = RestClient.put '/engines/acp/ory/{flavor}/policies',
 p JSON.parse(result)
 ```
 
-</div>
-</div>
-</div>
+</TabItem>
+</Tabs>
 
 <a id="opIdgetOryAccessControlPolicy"></a>
 
@@ -711,7 +679,7 @@ Get an ORY Access Control Policy
 
 <a id="getoryaccesscontrolpolicy-parameters"></a>
 
-##### Parameters
+#### Parameters
 
 | Parameter | In   | Type   | Required | Description                                                                |
 | --------- | ---- | ------ | -------- | -------------------------------------------------------------------------- |
@@ -731,7 +699,6 @@ Get an ORY Access Control Policy
 | 500    | [Internal Server Error](https://tools.ietf.org/html/rfc7231#section-6.6.1) | The standard error format | Inline                                                  |
 
 <a id="getoryaccesscontrolpolicy-responseschema"></a>
-
 ##### Response Schema
 
 Status Code **404**
@@ -772,33 +739,22 @@ Status Code **500**
 }
 ```
 
-<aside class="success">
-This operation does not require authentication
-</aside>
+<aside class="success">This operation does not require authentication</aside>
 
 #### Code samples
 
-<div class="tabs" id="tab-getOryAccessControlPolicy">
-<nav class="tabs-nav">
-<ul class="nav nav-tabs au-link-list au-link-list--inline">
-<li class="nav-item"><a class="nav-link active" role="tab" href="#tab-getOryAccessControlPolicy-shell">Shell</a></li>
-<li class="nav-item"><a class="nav-link" role="tab" href="#tab-getOryAccessControlPolicy-go">Go</a></li>
-<li class="nav-item"><a class="nav-link" role="tab" href="#tab-getOryAccessControlPolicy-node">Node.js</a></li>
-<li class="nav-item"><a class="nav-link" role="tab" href="#tab-getOryAccessControlPolicy-java">Java</a></li>
-<li class="nav-item"><a class="nav-link" role="tab" href="#tab-getOryAccessControlPolicy-python">Python</a></li>
-<li class="nav-item"><a class="nav-link" role="tab" href="#tab-getOryAccessControlPolicy-ruby">Ruby</a></li>
-</ul>
-</nav>
-<div class="tab-content">
-<div class="tab-pane active" role="tabpanel" id="tab-getOryAccessControlPolicy-shell">
+<Tabs groupId="code-samples" defaultValue="shell"
+  values={[{label: 'Shell', value: 'shell'}, {label: 'Go', value: 'go'}, {label: 'Node', value: 'node'},
+    {label: 'Java', value: 'java'}, {label: 'Python', value: 'python'}, {label: 'Ruby', value: 'ruby'}]}>
+<TabItem value="shell">
 
 ```shell
 curl -X GET /engines/acp/ory/{flavor}/policies/{id} \
   -H 'Accept: application/json'
 ```
 
-</div>
-<div class="tab-pane" role="tabpanel"  id="tab-getOryAccessControlPolicy-go">
+</TabItem>
+<TabItem value="go">
 
 ```go
 package main
@@ -825,28 +781,28 @@ func main() {
 }
 ```
 
-</div>
-<div class="tab-pane" role="tabpanel"  id="tab-getOryAccessControlPolicy-node">
+</TabItem>
+<TabItem value="node">
 
-```nodejs
-const fetch = require('node-fetch');
+```javascript
+const fetch = require('node-fetch')
 
 const headers = {
-  'Accept': 'application/json'
+  Accept: 'application/json'
 }
 
 fetch('/engines/acp/ory/{flavor}/policies/{id}', {
   method: 'GET',
   headers
 })
-.then(r => r.json())
-.then((body) => {
+  .then((r) => r.json())
+  .then((body) => {
     console.log(body)
-})
+  })
 ```
 
-</div>
-<div class="tab-pane" role="tabpanel"  id="tab-getOryAccessControlPolicy-java">
+</TabItem>
+<TabItem value="java">
 
 ```java
 // This sample needs improvement.
@@ -871,8 +827,8 @@ in.close();
 System.out.println(response.toString());
 ```
 
-</div>
-<div class="tab-pane" role="tabpanel"  id="tab-getOryAccessControlPolicy-python">
+</TabItem>
+<TabItem value="python">
 
 ```python
 import requests
@@ -889,8 +845,8 @@ r = requests.get(
 print r.json()
 ```
 
-</div>
-<div class="tab-pane" role="tabpanel"  id="tab-getOryAccessControlPolicy-ruby">
+</TabItem>
+<TabItem value="ruby">
 
 ```ruby
 require 'rest-client'
@@ -906,9 +862,8 @@ result = RestClient.get '/engines/acp/ory/{flavor}/policies/{id}',
 p JSON.parse(result)
 ```
 
-</div>
-</div>
-</div>
+</TabItem>
+</Tabs>
 
 <a id="opIddeleteOryAccessControlPolicy"></a>
 
@@ -924,7 +879,7 @@ Delete an ORY Access Control Policy
 
 <a id="deleteoryaccesscontrolpolicy-parameters"></a>
 
-##### Parameters
+#### Parameters
 
 | Parameter | In   | Type   | Required | Description                                                                |
 | --------- | ---- | ------ | -------- | -------------------------------------------------------------------------- |
@@ -943,7 +898,6 @@ Delete an ORY Access Control Policy
 | 500    | [Internal Server Error](https://tools.ietf.org/html/rfc7231#section-6.6.1) | The standard error format | Inline |
 
 <a id="deleteoryaccesscontrolpolicy-responseschema"></a>
-
 ##### Response Schema
 
 Status Code **500**
@@ -972,33 +926,22 @@ Status Code **500**
 }
 ```
 
-<aside class="success">
-This operation does not require authentication
-</aside>
+<aside class="success">This operation does not require authentication</aside>
 
 #### Code samples
 
-<div class="tabs" id="tab-deleteOryAccessControlPolicy">
-<nav class="tabs-nav">
-<ul class="nav nav-tabs au-link-list au-link-list--inline">
-<li class="nav-item"><a class="nav-link active" role="tab" href="#tab-deleteOryAccessControlPolicy-shell">Shell</a></li>
-<li class="nav-item"><a class="nav-link" role="tab" href="#tab-deleteOryAccessControlPolicy-go">Go</a></li>
-<li class="nav-item"><a class="nav-link" role="tab" href="#tab-deleteOryAccessControlPolicy-node">Node.js</a></li>
-<li class="nav-item"><a class="nav-link" role="tab" href="#tab-deleteOryAccessControlPolicy-java">Java</a></li>
-<li class="nav-item"><a class="nav-link" role="tab" href="#tab-deleteOryAccessControlPolicy-python">Python</a></li>
-<li class="nav-item"><a class="nav-link" role="tab" href="#tab-deleteOryAccessControlPolicy-ruby">Ruby</a></li>
-</ul>
-</nav>
-<div class="tab-content">
-<div class="tab-pane active" role="tabpanel" id="tab-deleteOryAccessControlPolicy-shell">
+<Tabs groupId="code-samples" defaultValue="shell"
+  values={[{label: 'Shell', value: 'shell'}, {label: 'Go', value: 'go'}, {label: 'Node', value: 'node'},
+    {label: 'Java', value: 'java'}, {label: 'Python', value: 'python'}, {label: 'Ruby', value: 'ruby'}]}>
+<TabItem value="shell">
 
 ```shell
 curl -X DELETE /engines/acp/ory/{flavor}/policies/{id} \
   -H 'Accept: application/json'
 ```
 
-</div>
-<div class="tab-pane" role="tabpanel"  id="tab-deleteOryAccessControlPolicy-go">
+</TabItem>
+<TabItem value="go">
 
 ```go
 package main
@@ -1025,28 +968,28 @@ func main() {
 }
 ```
 
-</div>
-<div class="tab-pane" role="tabpanel"  id="tab-deleteOryAccessControlPolicy-node">
+</TabItem>
+<TabItem value="node">
 
-```nodejs
-const fetch = require('node-fetch');
+```javascript
+const fetch = require('node-fetch')
 
 const headers = {
-  'Accept': 'application/json'
+  Accept: 'application/json'
 }
 
 fetch('/engines/acp/ory/{flavor}/policies/{id}', {
   method: 'DELETE',
   headers
 })
-.then(r => r.json())
-.then((body) => {
+  .then((r) => r.json())
+  .then((body) => {
     console.log(body)
-})
+  })
 ```
 
-</div>
-<div class="tab-pane" role="tabpanel"  id="tab-deleteOryAccessControlPolicy-java">
+</TabItem>
+<TabItem value="java">
 
 ```java
 // This sample needs improvement.
@@ -1071,8 +1014,8 @@ in.close();
 System.out.println(response.toString());
 ```
 
-</div>
-<div class="tab-pane" role="tabpanel"  id="tab-deleteOryAccessControlPolicy-python">
+</TabItem>
+<TabItem value="python">
 
 ```python
 import requests
@@ -1089,8 +1032,8 @@ r = requests.delete(
 print r.json()
 ```
 
-</div>
-<div class="tab-pane" role="tabpanel"  id="tab-deleteOryAccessControlPolicy-ruby">
+</TabItem>
+<TabItem value="ruby">
 
 ```ruby
 require 'rest-client'
@@ -1106,9 +1049,8 @@ result = RestClient.delete '/engines/acp/ory/{flavor}/policies/{id}',
 p JSON.parse(result)
 ```
 
-</div>
-</div>
-</div>
+</TabItem>
+</Tabs>
 
 <a id="opIdlistOryAccessControlPolicyRoles"></a>
 
@@ -1125,7 +1067,7 @@ Control Policy (OACP) by using the Role ID as subject in the OACP.
 
 <a id="list-ory-access-control-policy-roles-parameters"></a>
 
-##### Parameters
+#### Parameters
 
 | Parameter | In    | Type           | Required | Description                                                               |
 | --------- | ----- | -------------- | -------- | ------------------------------------------------------------------------- |
@@ -1146,7 +1088,6 @@ Control Policy (OACP) by using the Role ID as subject in the OACP.
 | 500    | [Internal Server Error](https://tools.ietf.org/html/rfc7231#section-6.6.1) | The standard error format   | Inline |
 
 <a id="list-ory-access-control-policy-roles-responseschema"></a>
-
 ##### Response Schema
 
 Status Code **200**
@@ -1181,33 +1122,22 @@ Status Code **500**
 ]
 ```
 
-<aside class="success">
-This operation does not require authentication
-</aside>
+<aside class="success">This operation does not require authentication</aside>
 
 #### Code samples
 
-<div class="tabs" id="tab-listOryAccessControlPolicyRoles">
-<nav class="tabs-nav">
-<ul class="nav nav-tabs au-link-list au-link-list--inline">
-<li class="nav-item"><a class="nav-link active" role="tab" href="#tab-listOryAccessControlPolicyRoles-shell">Shell</a></li>
-<li class="nav-item"><a class="nav-link" role="tab" href="#tab-listOryAccessControlPolicyRoles-go">Go</a></li>
-<li class="nav-item"><a class="nav-link" role="tab" href="#tab-listOryAccessControlPolicyRoles-node">Node.js</a></li>
-<li class="nav-item"><a class="nav-link" role="tab" href="#tab-listOryAccessControlPolicyRoles-java">Java</a></li>
-<li class="nav-item"><a class="nav-link" role="tab" href="#tab-listOryAccessControlPolicyRoles-python">Python</a></li>
-<li class="nav-item"><a class="nav-link" role="tab" href="#tab-listOryAccessControlPolicyRoles-ruby">Ruby</a></li>
-</ul>
-</nav>
-<div class="tab-content">
-<div class="tab-pane active" role="tabpanel" id="tab-listOryAccessControlPolicyRoles-shell">
+<Tabs groupId="code-samples" defaultValue="shell"
+  values={[{label: 'Shell', value: 'shell'}, {label: 'Go', value: 'go'}, {label: 'Node', value: 'node'},
+    {label: 'Java', value: 'java'}, {label: 'Python', value: 'python'}, {label: 'Ruby', value: 'ruby'}]}>
+<TabItem value="shell">
 
 ```shell
 curl -X GET /engines/acp/ory/{flavor}/roles \
   -H 'Accept: application/json'
 ```
 
-</div>
-<div class="tab-pane" role="tabpanel"  id="tab-listOryAccessControlPolicyRoles-go">
+</TabItem>
+<TabItem value="go">
 
 ```go
 package main
@@ -1234,28 +1164,28 @@ func main() {
 }
 ```
 
-</div>
-<div class="tab-pane" role="tabpanel"  id="tab-listOryAccessControlPolicyRoles-node">
+</TabItem>
+<TabItem value="node">
 
-```nodejs
-const fetch = require('node-fetch');
+```javascript
+const fetch = require('node-fetch')
 
 const headers = {
-  'Accept': 'application/json'
+  Accept: 'application/json'
 }
 
 fetch('/engines/acp/ory/{flavor}/roles', {
   method: 'GET',
   headers
 })
-.then(r => r.json())
-.then((body) => {
+  .then((r) => r.json())
+  .then((body) => {
     console.log(body)
-})
+  })
 ```
 
-</div>
-<div class="tab-pane" role="tabpanel"  id="tab-listOryAccessControlPolicyRoles-java">
+</TabItem>
+<TabItem value="java">
 
 ```java
 // This sample needs improvement.
@@ -1280,8 +1210,8 @@ in.close();
 System.out.println(response.toString());
 ```
 
-</div>
-<div class="tab-pane" role="tabpanel"  id="tab-listOryAccessControlPolicyRoles-python">
+</TabItem>
+<TabItem value="python">
 
 ```python
 import requests
@@ -1298,8 +1228,8 @@ r = requests.get(
 print r.json()
 ```
 
-</div>
-<div class="tab-pane" role="tabpanel"  id="tab-listOryAccessControlPolicyRoles-ruby">
+</TabItem>
+<TabItem value="ruby">
 
 ```ruby
 require 'rest-client'
@@ -1315,9 +1245,8 @@ result = RestClient.get '/engines/acp/ory/{flavor}/roles',
 p JSON.parse(result)
 ```
 
-</div>
-</div>
-</div>
+</TabItem>
+</Tabs>
 
 <a id="opIdupsertOryAccessControlPolicyRole"></a>
 
@@ -1344,7 +1273,7 @@ Control Policy (OACP) by using the Role ID as subject in the OACP.
 
 <a id="upsert-an-ory-access-control-policy-role-parameters"></a>
 
-##### Parameters
+#### Parameters
 
 | Parameter | In   | Type                                                            | Required | Description                                                                |
 | --------- | ---- | --------------------------------------------------------------- | -------- | -------------------------------------------------------------------------- |
@@ -1363,7 +1292,6 @@ Control Policy (OACP) by using the Role ID as subject in the OACP.
 | 500    | [Internal Server Error](https://tools.ietf.org/html/rfc7231#section-6.6.1) | The standard error format  | Inline                                                          |
 
 <a id="upsert-an-ory-access-control-policy-role-responseschema"></a>
-
 ##### Response Schema
 
 Status Code **500**
@@ -1388,33 +1316,22 @@ Status Code **500**
 }
 ```
 
-<aside class="success">
-This operation does not require authentication
-</aside>
+<aside class="success">This operation does not require authentication</aside>
 
 #### Code samples
 
-<div class="tabs" id="tab-upsertOryAccessControlPolicyRole">
-<nav class="tabs-nav">
-<ul class="nav nav-tabs au-link-list au-link-list--inline">
-<li class="nav-item"><a class="nav-link active" role="tab" href="#tab-upsertOryAccessControlPolicyRole-shell">Shell</a></li>
-<li class="nav-item"><a class="nav-link" role="tab" href="#tab-upsertOryAccessControlPolicyRole-go">Go</a></li>
-<li class="nav-item"><a class="nav-link" role="tab" href="#tab-upsertOryAccessControlPolicyRole-node">Node.js</a></li>
-<li class="nav-item"><a class="nav-link" role="tab" href="#tab-upsertOryAccessControlPolicyRole-java">Java</a></li>
-<li class="nav-item"><a class="nav-link" role="tab" href="#tab-upsertOryAccessControlPolicyRole-python">Python</a></li>
-<li class="nav-item"><a class="nav-link" role="tab" href="#tab-upsertOryAccessControlPolicyRole-ruby">Ruby</a></li>
-</ul>
-</nav>
-<div class="tab-content">
-<div class="tab-pane active" role="tabpanel" id="tab-upsertOryAccessControlPolicyRole-shell">
+<Tabs groupId="code-samples" defaultValue="shell"
+  values={[{label: 'Shell', value: 'shell'}, {label: 'Go', value: 'go'}, {label: 'Node', value: 'node'},
+    {label: 'Java', value: 'java'}, {label: 'Python', value: 'python'}, {label: 'Ruby', value: 'ruby'}]}>
+<TabItem value="shell">
 
 ```shell
 curl -X PUT /engines/acp/ory/{flavor}/roles \
   -H 'Content-Type: application/json' \  -H 'Accept: application/json'
 ```
 
-</div>
-<div class="tab-pane" role="tabpanel"  id="tab-upsertOryAccessControlPolicyRole-go">
+</TabItem>
+<TabItem value="go">
 
 ```go
 package main
@@ -1442,10 +1359,10 @@ func main() {
 }
 ```
 
-</div>
-<div class="tab-pane" role="tabpanel"  id="tab-upsertOryAccessControlPolicyRole-node">
+</TabItem>
+<TabItem value="node">
 
-```nodejs
+```javascript
 const fetch = require('node-fetch');
 const input = '{
   "id": "string",
@@ -1468,8 +1385,8 @@ fetch('/engines/acp/ory/{flavor}/roles', {
 })
 ```
 
-</div>
-<div class="tab-pane" role="tabpanel"  id="tab-upsertOryAccessControlPolicyRole-java">
+</TabItem>
+<TabItem value="java">
 
 ```java
 // This sample needs improvement.
@@ -1494,8 +1411,8 @@ in.close();
 System.out.println(response.toString());
 ```
 
-</div>
-<div class="tab-pane" role="tabpanel"  id="tab-upsertOryAccessControlPolicyRole-python">
+</TabItem>
+<TabItem value="python">
 
 ```python
 import requests
@@ -1513,8 +1430,8 @@ r = requests.put(
 print r.json()
 ```
 
-</div>
-<div class="tab-pane" role="tabpanel"  id="tab-upsertOryAccessControlPolicyRole-ruby">
+</TabItem>
+<TabItem value="ruby">
 
 ```ruby
 require 'rest-client'
@@ -1531,9 +1448,8 @@ result = RestClient.put '/engines/acp/ory/{flavor}/roles',
 p JSON.parse(result)
 ```
 
-</div>
-</div>
-</div>
+</TabItem>
+</Tabs>
 
 <a id="opIdgetOryAccessControlPolicyRole"></a>
 
@@ -1550,7 +1466,7 @@ Control Policy (OACP) by using the Role ID as subject in the OACP.
 
 <a id="get-an-ory-access-control-policy-role-parameters"></a>
 
-##### Parameters
+#### Parameters
 
 | Parameter | In   | Type   | Required | Description                                                                |
 | --------- | ---- | ------ | -------- | -------------------------------------------------------------------------- |
@@ -1570,7 +1486,6 @@ Control Policy (OACP) by using the Role ID as subject in the OACP.
 | 500    | [Internal Server Error](https://tools.ietf.org/html/rfc7231#section-6.6.1) | The standard error format  | Inline                                                          |
 
 <a id="get-an-ory-access-control-policy-role-responseschema"></a>
-
 ##### Response Schema
 
 Status Code **404**
@@ -1606,33 +1521,22 @@ Status Code **500**
 }
 ```
 
-<aside class="success">
-This operation does not require authentication
-</aside>
+<aside class="success">This operation does not require authentication</aside>
 
 #### Code samples
 
-<div class="tabs" id="tab-getOryAccessControlPolicyRole">
-<nav class="tabs-nav">
-<ul class="nav nav-tabs au-link-list au-link-list--inline">
-<li class="nav-item"><a class="nav-link active" role="tab" href="#tab-getOryAccessControlPolicyRole-shell">Shell</a></li>
-<li class="nav-item"><a class="nav-link" role="tab" href="#tab-getOryAccessControlPolicyRole-go">Go</a></li>
-<li class="nav-item"><a class="nav-link" role="tab" href="#tab-getOryAccessControlPolicyRole-node">Node.js</a></li>
-<li class="nav-item"><a class="nav-link" role="tab" href="#tab-getOryAccessControlPolicyRole-java">Java</a></li>
-<li class="nav-item"><a class="nav-link" role="tab" href="#tab-getOryAccessControlPolicyRole-python">Python</a></li>
-<li class="nav-item"><a class="nav-link" role="tab" href="#tab-getOryAccessControlPolicyRole-ruby">Ruby</a></li>
-</ul>
-</nav>
-<div class="tab-content">
-<div class="tab-pane active" role="tabpanel" id="tab-getOryAccessControlPolicyRole-shell">
+<Tabs groupId="code-samples" defaultValue="shell"
+  values={[{label: 'Shell', value: 'shell'}, {label: 'Go', value: 'go'}, {label: 'Node', value: 'node'},
+    {label: 'Java', value: 'java'}, {label: 'Python', value: 'python'}, {label: 'Ruby', value: 'ruby'}]}>
+<TabItem value="shell">
 
 ```shell
 curl -X GET /engines/acp/ory/{flavor}/roles/{id} \
   -H 'Accept: application/json'
 ```
 
-</div>
-<div class="tab-pane" role="tabpanel"  id="tab-getOryAccessControlPolicyRole-go">
+</TabItem>
+<TabItem value="go">
 
 ```go
 package main
@@ -1659,28 +1563,28 @@ func main() {
 }
 ```
 
-</div>
-<div class="tab-pane" role="tabpanel"  id="tab-getOryAccessControlPolicyRole-node">
+</TabItem>
+<TabItem value="node">
 
-```nodejs
-const fetch = require('node-fetch');
+```javascript
+const fetch = require('node-fetch')
 
 const headers = {
-  'Accept': 'application/json'
+  Accept: 'application/json'
 }
 
 fetch('/engines/acp/ory/{flavor}/roles/{id}', {
   method: 'GET',
   headers
 })
-.then(r => r.json())
-.then((body) => {
+  .then((r) => r.json())
+  .then((body) => {
     console.log(body)
-})
+  })
 ```
 
-</div>
-<div class="tab-pane" role="tabpanel"  id="tab-getOryAccessControlPolicyRole-java">
+</TabItem>
+<TabItem value="java">
 
 ```java
 // This sample needs improvement.
@@ -1705,8 +1609,8 @@ in.close();
 System.out.println(response.toString());
 ```
 
-</div>
-<div class="tab-pane" role="tabpanel"  id="tab-getOryAccessControlPolicyRole-python">
+</TabItem>
+<TabItem value="python">
 
 ```python
 import requests
@@ -1723,8 +1627,8 @@ r = requests.get(
 print r.json()
 ```
 
-</div>
-<div class="tab-pane" role="tabpanel"  id="tab-getOryAccessControlPolicyRole-ruby">
+</TabItem>
+<TabItem value="ruby">
 
 ```ruby
 require 'rest-client'
@@ -1740,9 +1644,8 @@ result = RestClient.get '/engines/acp/ory/{flavor}/roles/{id}',
 p JSON.parse(result)
 ```
 
-</div>
-</div>
-</div>
+</TabItem>
+</Tabs>
 
 <a id="opIddeleteOryAccessControlPolicyRole"></a>
 
@@ -1759,7 +1662,7 @@ Control Policy (OACP) by using the Role ID as subject in the OACP.
 
 <a id="delete-an-ory-access-control-policy-role-parameters"></a>
 
-##### Parameters
+#### Parameters
 
 | Parameter | In   | Type   | Required | Description                                                                |
 | --------- | ---- | ------ | -------- | -------------------------------------------------------------------------- |
@@ -1778,7 +1681,6 @@ Control Policy (OACP) by using the Role ID as subject in the OACP.
 | 500    | [Internal Server Error](https://tools.ietf.org/html/rfc7231#section-6.6.1) | The standard error format | Inline |
 
 <a id="delete-an-ory-access-control-policy-role-responseschema"></a>
-
 ##### Response Schema
 
 Status Code **500**
@@ -1807,33 +1709,22 @@ Status Code **500**
 }
 ```
 
-<aside class="success">
-This operation does not require authentication
-</aside>
+<aside class="success">This operation does not require authentication</aside>
 
 #### Code samples
 
-<div class="tabs" id="tab-deleteOryAccessControlPolicyRole">
-<nav class="tabs-nav">
-<ul class="nav nav-tabs au-link-list au-link-list--inline">
-<li class="nav-item"><a class="nav-link active" role="tab" href="#tab-deleteOryAccessControlPolicyRole-shell">Shell</a></li>
-<li class="nav-item"><a class="nav-link" role="tab" href="#tab-deleteOryAccessControlPolicyRole-go">Go</a></li>
-<li class="nav-item"><a class="nav-link" role="tab" href="#tab-deleteOryAccessControlPolicyRole-node">Node.js</a></li>
-<li class="nav-item"><a class="nav-link" role="tab" href="#tab-deleteOryAccessControlPolicyRole-java">Java</a></li>
-<li class="nav-item"><a class="nav-link" role="tab" href="#tab-deleteOryAccessControlPolicyRole-python">Python</a></li>
-<li class="nav-item"><a class="nav-link" role="tab" href="#tab-deleteOryAccessControlPolicyRole-ruby">Ruby</a></li>
-</ul>
-</nav>
-<div class="tab-content">
-<div class="tab-pane active" role="tabpanel" id="tab-deleteOryAccessControlPolicyRole-shell">
+<Tabs groupId="code-samples" defaultValue="shell"
+  values={[{label: 'Shell', value: 'shell'}, {label: 'Go', value: 'go'}, {label: 'Node', value: 'node'},
+    {label: 'Java', value: 'java'}, {label: 'Python', value: 'python'}, {label: 'Ruby', value: 'ruby'}]}>
+<TabItem value="shell">
 
 ```shell
 curl -X DELETE /engines/acp/ory/{flavor}/roles/{id} \
   -H 'Accept: application/json'
 ```
 
-</div>
-<div class="tab-pane" role="tabpanel"  id="tab-deleteOryAccessControlPolicyRole-go">
+</TabItem>
+<TabItem value="go">
 
 ```go
 package main
@@ -1860,28 +1751,28 @@ func main() {
 }
 ```
 
-</div>
-<div class="tab-pane" role="tabpanel"  id="tab-deleteOryAccessControlPolicyRole-node">
+</TabItem>
+<TabItem value="node">
 
-```nodejs
-const fetch = require('node-fetch');
+```javascript
+const fetch = require('node-fetch')
 
 const headers = {
-  'Accept': 'application/json'
+  Accept: 'application/json'
 }
 
 fetch('/engines/acp/ory/{flavor}/roles/{id}', {
   method: 'DELETE',
   headers
 })
-.then(r => r.json())
-.then((body) => {
+  .then((r) => r.json())
+  .then((body) => {
     console.log(body)
-})
+  })
 ```
 
-</div>
-<div class="tab-pane" role="tabpanel"  id="tab-deleteOryAccessControlPolicyRole-java">
+</TabItem>
+<TabItem value="java">
 
 ```java
 // This sample needs improvement.
@@ -1906,8 +1797,8 @@ in.close();
 System.out.println(response.toString());
 ```
 
-</div>
-<div class="tab-pane" role="tabpanel"  id="tab-deleteOryAccessControlPolicyRole-python">
+</TabItem>
+<TabItem value="python">
 
 ```python
 import requests
@@ -1924,8 +1815,8 @@ r = requests.delete(
 print r.json()
 ```
 
-</div>
-<div class="tab-pane" role="tabpanel"  id="tab-deleteOryAccessControlPolicyRole-ruby">
+</TabItem>
+<TabItem value="ruby">
 
 ```ruby
 require 'rest-client'
@@ -1941,9 +1832,8 @@ result = RestClient.delete '/engines/acp/ory/{flavor}/roles/{id}',
 p JSON.parse(result)
 ```
 
-</div>
-</div>
-</div>
+</TabItem>
+</Tabs>
 
 <a id="opIdaddOryAccessControlPolicyRoleMembers"></a>
 
@@ -1969,7 +1859,7 @@ Control Policy (OACP) by using the Role ID as subject in the OACP.
 
 <a id="add-a-member-to-an-ory-access-control-policy-role-parameters"></a>
 
-##### Parameters
+#### Parameters
 
 | Parameter | In   | Type                                                                                        | Required | Description                                                                |
 | --------- | ---- | ------------------------------------------------------------------------------------------- | -------- | -------------------------------------------------------------------------- |
@@ -1989,7 +1879,6 @@ Control Policy (OACP) by using the Role ID as subject in the OACP.
 | 500    | [Internal Server Error](https://tools.ietf.org/html/rfc7231#section-6.6.1) | The standard error format  | Inline                                                          |
 
 <a id="add-a-member-to-an-ory-access-control-policy-role-responseschema"></a>
-
 ##### Response Schema
 
 Status Code **500**
@@ -2014,33 +1903,22 @@ Status Code **500**
 }
 ```
 
-<aside class="success">
-This operation does not require authentication
-</aside>
+<aside class="success">This operation does not require authentication</aside>
 
 #### Code samples
 
-<div class="tabs" id="tab-addOryAccessControlPolicyRoleMembers">
-<nav class="tabs-nav">
-<ul class="nav nav-tabs au-link-list au-link-list--inline">
-<li class="nav-item"><a class="nav-link active" role="tab" href="#tab-addOryAccessControlPolicyRoleMembers-shell">Shell</a></li>
-<li class="nav-item"><a class="nav-link" role="tab" href="#tab-addOryAccessControlPolicyRoleMembers-go">Go</a></li>
-<li class="nav-item"><a class="nav-link" role="tab" href="#tab-addOryAccessControlPolicyRoleMembers-node">Node.js</a></li>
-<li class="nav-item"><a class="nav-link" role="tab" href="#tab-addOryAccessControlPolicyRoleMembers-java">Java</a></li>
-<li class="nav-item"><a class="nav-link" role="tab" href="#tab-addOryAccessControlPolicyRoleMembers-python">Python</a></li>
-<li class="nav-item"><a class="nav-link" role="tab" href="#tab-addOryAccessControlPolicyRoleMembers-ruby">Ruby</a></li>
-</ul>
-</nav>
-<div class="tab-content">
-<div class="tab-pane active" role="tabpanel" id="tab-addOryAccessControlPolicyRoleMembers-shell">
+<Tabs groupId="code-samples" defaultValue="shell"
+  values={[{label: 'Shell', value: 'shell'}, {label: 'Go', value: 'go'}, {label: 'Node', value: 'node'},
+    {label: 'Java', value: 'java'}, {label: 'Python', value: 'python'}, {label: 'Ruby', value: 'ruby'}]}>
+<TabItem value="shell">
 
 ```shell
 curl -X PUT /engines/acp/ory/{flavor}/roles/{id}/members \
   -H 'Content-Type: application/json' \  -H 'Accept: application/json'
 ```
 
-</div>
-<div class="tab-pane" role="tabpanel"  id="tab-addOryAccessControlPolicyRoleMembers-go">
+</TabItem>
+<TabItem value="go">
 
 ```go
 package main
@@ -2068,10 +1946,10 @@ func main() {
 }
 ```
 
-</div>
-<div class="tab-pane" role="tabpanel"  id="tab-addOryAccessControlPolicyRoleMembers-node">
+</TabItem>
+<TabItem value="node">
 
-```nodejs
+```javascript
 const fetch = require('node-fetch');
 const input = '{
   "members": [
@@ -2093,8 +1971,8 @@ fetch('/engines/acp/ory/{flavor}/roles/{id}/members', {
 })
 ```
 
-</div>
-<div class="tab-pane" role="tabpanel"  id="tab-addOryAccessControlPolicyRoleMembers-java">
+</TabItem>
+<TabItem value="java">
 
 ```java
 // This sample needs improvement.
@@ -2119,8 +1997,8 @@ in.close();
 System.out.println(response.toString());
 ```
 
-</div>
-<div class="tab-pane" role="tabpanel"  id="tab-addOryAccessControlPolicyRoleMembers-python">
+</TabItem>
+<TabItem value="python">
 
 ```python
 import requests
@@ -2138,8 +2016,8 @@ r = requests.put(
 print r.json()
 ```
 
-</div>
-<div class="tab-pane" role="tabpanel"  id="tab-addOryAccessControlPolicyRoleMembers-ruby">
+</TabItem>
+<TabItem value="ruby">
 
 ```ruby
 require 'rest-client'
@@ -2156,9 +2034,8 @@ result = RestClient.put '/engines/acp/ory/{flavor}/roles/{id}/members',
 p JSON.parse(result)
 ```
 
-</div>
-</div>
-</div>
+</TabItem>
+</Tabs>
 
 <a id="opIdremoveOryAccessControlPolicyRoleMembers"></a>
 
@@ -2175,7 +2052,7 @@ Control Policy (OACP) by using the Role ID as subject in the OACP.
 
 <a id="remove-a-member-from-an-ory-access-control-policy-role-parameters"></a>
 
-##### Parameters
+#### Parameters
 
 | Parameter | In   | Type   | Required | Description                                                                |
 | --------- | ---- | ------ | -------- | -------------------------------------------------------------------------- |
@@ -2195,7 +2072,6 @@ Control Policy (OACP) by using the Role ID as subject in the OACP.
 | 500    | [Internal Server Error](https://tools.ietf.org/html/rfc7231#section-6.6.1) | The standard error format | Inline |
 
 <a id="remove-a-member-from-an-ory-access-control-policy-role-responseschema"></a>
-
 ##### Response Schema
 
 Status Code **500**
@@ -2224,33 +2100,22 @@ Status Code **500**
 }
 ```
 
-<aside class="success">
-This operation does not require authentication
-</aside>
+<aside class="success">This operation does not require authentication</aside>
 
 #### Code samples
 
-<div class="tabs" id="tab-removeOryAccessControlPolicyRoleMembers">
-<nav class="tabs-nav">
-<ul class="nav nav-tabs au-link-list au-link-list--inline">
-<li class="nav-item"><a class="nav-link active" role="tab" href="#tab-removeOryAccessControlPolicyRoleMembers-shell">Shell</a></li>
-<li class="nav-item"><a class="nav-link" role="tab" href="#tab-removeOryAccessControlPolicyRoleMembers-go">Go</a></li>
-<li class="nav-item"><a class="nav-link" role="tab" href="#tab-removeOryAccessControlPolicyRoleMembers-node">Node.js</a></li>
-<li class="nav-item"><a class="nav-link" role="tab" href="#tab-removeOryAccessControlPolicyRoleMembers-java">Java</a></li>
-<li class="nav-item"><a class="nav-link" role="tab" href="#tab-removeOryAccessControlPolicyRoleMembers-python">Python</a></li>
-<li class="nav-item"><a class="nav-link" role="tab" href="#tab-removeOryAccessControlPolicyRoleMembers-ruby">Ruby</a></li>
-</ul>
-</nav>
-<div class="tab-content">
-<div class="tab-pane active" role="tabpanel" id="tab-removeOryAccessControlPolicyRoleMembers-shell">
+<Tabs groupId="code-samples" defaultValue="shell"
+  values={[{label: 'Shell', value: 'shell'}, {label: 'Go', value: 'go'}, {label: 'Node', value: 'node'},
+    {label: 'Java', value: 'java'}, {label: 'Python', value: 'python'}, {label: 'Ruby', value: 'ruby'}]}>
+<TabItem value="shell">
 
 ```shell
 curl -X DELETE /engines/acp/ory/{flavor}/roles/{id}/members/{member} \
   -H 'Accept: application/json'
 ```
 
-</div>
-<div class="tab-pane" role="tabpanel"  id="tab-removeOryAccessControlPolicyRoleMembers-go">
+</TabItem>
+<TabItem value="go">
 
 ```go
 package main
@@ -2277,28 +2142,28 @@ func main() {
 }
 ```
 
-</div>
-<div class="tab-pane" role="tabpanel"  id="tab-removeOryAccessControlPolicyRoleMembers-node">
+</TabItem>
+<TabItem value="node">
 
-```nodejs
-const fetch = require('node-fetch');
+```javascript
+const fetch = require('node-fetch')
 
 const headers = {
-  'Accept': 'application/json'
+  Accept: 'application/json'
 }
 
 fetch('/engines/acp/ory/{flavor}/roles/{id}/members/{member}', {
   method: 'DELETE',
   headers
 })
-.then(r => r.json())
-.then((body) => {
+  .then((r) => r.json())
+  .then((body) => {
     console.log(body)
-})
+  })
 ```
 
-</div>
-<div class="tab-pane" role="tabpanel"  id="tab-removeOryAccessControlPolicyRoleMembers-java">
+</TabItem>
+<TabItem value="java">
 
 ```java
 // This sample needs improvement.
@@ -2323,8 +2188,8 @@ in.close();
 System.out.println(response.toString());
 ```
 
-</div>
-<div class="tab-pane" role="tabpanel"  id="tab-removeOryAccessControlPolicyRoleMembers-python">
+</TabItem>
+<TabItem value="python">
 
 ```python
 import requests
@@ -2341,8 +2206,8 @@ r = requests.delete(
 print r.json()
 ```
 
-</div>
-<div class="tab-pane" role="tabpanel"  id="tab-removeOryAccessControlPolicyRoleMembers-ruby">
+</TabItem>
+<TabItem value="ruby">
 
 ```ruby
 require 'rest-client'
@@ -2358,9 +2223,8 @@ result = RestClient.delete '/engines/acp/ory/{flavor}/roles/{id}/members/{member
 p JSON.parse(result)
 ```
 
-</div>
-</div>
-</div>
+</TabItem>
+</Tabs>
 
 <a id="ory-keto-health"></a>
 
@@ -2398,7 +2262,6 @@ status will never refer to the cluster state, only to a single instance.
 | 500    | [Internal Server Error](https://tools.ietf.org/html/rfc7231#section-6.6.1) | The standard error format | Inline                              |
 
 <a id="check-alive-status-responseschema"></a>
-
 ##### Response Schema
 
 Status Code **500**
@@ -2422,33 +2285,22 @@ Status Code **500**
 }
 ```
 
-<aside class="success">
-This operation does not require authentication
-</aside>
+<aside class="success">This operation does not require authentication</aside>
 
 #### Code samples
 
-<div class="tabs" id="tab-isInstanceAlive">
-<nav class="tabs-nav">
-<ul class="nav nav-tabs au-link-list au-link-list--inline">
-<li class="nav-item"><a class="nav-link active" role="tab" href="#tab-isInstanceAlive-shell">Shell</a></li>
-<li class="nav-item"><a class="nav-link" role="tab" href="#tab-isInstanceAlive-go">Go</a></li>
-<li class="nav-item"><a class="nav-link" role="tab" href="#tab-isInstanceAlive-node">Node.js</a></li>
-<li class="nav-item"><a class="nav-link" role="tab" href="#tab-isInstanceAlive-java">Java</a></li>
-<li class="nav-item"><a class="nav-link" role="tab" href="#tab-isInstanceAlive-python">Python</a></li>
-<li class="nav-item"><a class="nav-link" role="tab" href="#tab-isInstanceAlive-ruby">Ruby</a></li>
-</ul>
-</nav>
-<div class="tab-content">
-<div class="tab-pane active" role="tabpanel" id="tab-isInstanceAlive-shell">
+<Tabs groupId="code-samples" defaultValue="shell"
+  values={[{label: 'Shell', value: 'shell'}, {label: 'Go', value: 'go'}, {label: 'Node', value: 'node'},
+    {label: 'Java', value: 'java'}, {label: 'Python', value: 'python'}, {label: 'Ruby', value: 'ruby'}]}>
+<TabItem value="shell">
 
 ```shell
 curl -X GET /health/alive \
   -H 'Accept: application/json'
 ```
 
-</div>
-<div class="tab-pane" role="tabpanel"  id="tab-isInstanceAlive-go">
+</TabItem>
+<TabItem value="go">
 
 ```go
 package main
@@ -2475,28 +2327,28 @@ func main() {
 }
 ```
 
-</div>
-<div class="tab-pane" role="tabpanel"  id="tab-isInstanceAlive-node">
+</TabItem>
+<TabItem value="node">
 
-```nodejs
-const fetch = require('node-fetch');
+```javascript
+const fetch = require('node-fetch')
 
 const headers = {
-  'Accept': 'application/json'
+  Accept: 'application/json'
 }
 
 fetch('/health/alive', {
   method: 'GET',
   headers
 })
-.then(r => r.json())
-.then((body) => {
+  .then((r) => r.json())
+  .then((body) => {
     console.log(body)
-})
+  })
 ```
 
-</div>
-<div class="tab-pane" role="tabpanel"  id="tab-isInstanceAlive-java">
+</TabItem>
+<TabItem value="java">
 
 ```java
 // This sample needs improvement.
@@ -2521,8 +2373,8 @@ in.close();
 System.out.println(response.toString());
 ```
 
-</div>
-<div class="tab-pane" role="tabpanel"  id="tab-isInstanceAlive-python">
+</TabItem>
+<TabItem value="python">
 
 ```python
 import requests
@@ -2539,8 +2391,8 @@ r = requests.get(
 print r.json()
 ```
 
-</div>
-<div class="tab-pane" role="tabpanel"  id="tab-isInstanceAlive-ruby">
+</TabItem>
+<TabItem value="ruby">
 
 ```ruby
 require 'rest-client'
@@ -2556,9 +2408,8 @@ result = RestClient.get '/health/alive',
 p JSON.parse(result)
 ```
 
-</div>
-</div>
-</div>
+</TabItem>
+</Tabs>
 
 <a id="opIdisInstanceReady"></a>
 
@@ -2600,33 +2451,22 @@ status will never refer to the cluster state, only to a single instance.
 }
 ```
 
-<aside class="success">
-This operation does not require authentication
-</aside>
+<aside class="success">This operation does not require authentication</aside>
 
 #### Code samples
 
-<div class="tabs" id="tab-isInstanceReady">
-<nav class="tabs-nav">
-<ul class="nav nav-tabs au-link-list au-link-list--inline">
-<li class="nav-item"><a class="nav-link active" role="tab" href="#tab-isInstanceReady-shell">Shell</a></li>
-<li class="nav-item"><a class="nav-link" role="tab" href="#tab-isInstanceReady-go">Go</a></li>
-<li class="nav-item"><a class="nav-link" role="tab" href="#tab-isInstanceReady-node">Node.js</a></li>
-<li class="nav-item"><a class="nav-link" role="tab" href="#tab-isInstanceReady-java">Java</a></li>
-<li class="nav-item"><a class="nav-link" role="tab" href="#tab-isInstanceReady-python">Python</a></li>
-<li class="nav-item"><a class="nav-link" role="tab" href="#tab-isInstanceReady-ruby">Ruby</a></li>
-</ul>
-</nav>
-<div class="tab-content">
-<div class="tab-pane active" role="tabpanel" id="tab-isInstanceReady-shell">
+<Tabs groupId="code-samples" defaultValue="shell"
+  values={[{label: 'Shell', value: 'shell'}, {label: 'Go', value: 'go'}, {label: 'Node', value: 'node'},
+    {label: 'Java', value: 'java'}, {label: 'Python', value: 'python'}, {label: 'Ruby', value: 'ruby'}]}>
+<TabItem value="shell">
 
 ```shell
 curl -X GET /health/ready \
   -H 'Accept: application/json'
 ```
 
-</div>
-<div class="tab-pane" role="tabpanel"  id="tab-isInstanceReady-go">
+</TabItem>
+<TabItem value="go">
 
 ```go
 package main
@@ -2653,28 +2493,28 @@ func main() {
 }
 ```
 
-</div>
-<div class="tab-pane" role="tabpanel"  id="tab-isInstanceReady-node">
+</TabItem>
+<TabItem value="node">
 
-```nodejs
-const fetch = require('node-fetch');
+```javascript
+const fetch = require('node-fetch')
 
 const headers = {
-  'Accept': 'application/json'
+  Accept: 'application/json'
 }
 
 fetch('/health/ready', {
   method: 'GET',
   headers
 })
-.then(r => r.json())
-.then((body) => {
+  .then((r) => r.json())
+  .then((body) => {
     console.log(body)
-})
+  })
 ```
 
-</div>
-<div class="tab-pane" role="tabpanel"  id="tab-isInstanceReady-java">
+</TabItem>
+<TabItem value="java">
 
 ```java
 // This sample needs improvement.
@@ -2699,8 +2539,8 @@ in.close();
 System.out.println(response.toString());
 ```
 
-</div>
-<div class="tab-pane" role="tabpanel"  id="tab-isInstanceReady-python">
+</TabItem>
+<TabItem value="python">
 
 ```python
 import requests
@@ -2717,8 +2557,8 @@ r = requests.get(
 print r.json()
 ```
 
-</div>
-<div class="tab-pane" role="tabpanel"  id="tab-isInstanceReady-ruby">
+</TabItem>
+<TabItem value="ruby">
 
 ```ruby
 require 'rest-client'
@@ -2734,9 +2574,8 @@ result = RestClient.get '/health/ready',
 p JSON.parse(result)
 ```
 
-</div>
-</div>
-</div>
+</TabItem>
+</Tabs>
 
 <a id="ory-keto-version"></a>
 
@@ -2781,33 +2620,22 @@ status will never refer to the cluster state, only to a single instance.
 }
 ```
 
-<aside class="success">
-This operation does not require authentication
-</aside>
+<aside class="success">This operation does not require authentication</aside>
 
 #### Code samples
 
-<div class="tabs" id="tab-getVersion">
-<nav class="tabs-nav">
-<ul class="nav nav-tabs au-link-list au-link-list--inline">
-<li class="nav-item"><a class="nav-link active" role="tab" href="#tab-getVersion-shell">Shell</a></li>
-<li class="nav-item"><a class="nav-link" role="tab" href="#tab-getVersion-go">Go</a></li>
-<li class="nav-item"><a class="nav-link" role="tab" href="#tab-getVersion-node">Node.js</a></li>
-<li class="nav-item"><a class="nav-link" role="tab" href="#tab-getVersion-java">Java</a></li>
-<li class="nav-item"><a class="nav-link" role="tab" href="#tab-getVersion-python">Python</a></li>
-<li class="nav-item"><a class="nav-link" role="tab" href="#tab-getVersion-ruby">Ruby</a></li>
-</ul>
-</nav>
-<div class="tab-content">
-<div class="tab-pane active" role="tabpanel" id="tab-getVersion-shell">
+<Tabs groupId="code-samples" defaultValue="shell"
+  values={[{label: 'Shell', value: 'shell'}, {label: 'Go', value: 'go'}, {label: 'Node', value: 'node'},
+    {label: 'Java', value: 'java'}, {label: 'Python', value: 'python'}, {label: 'Ruby', value: 'ruby'}]}>
+<TabItem value="shell">
 
 ```shell
 curl -X GET /version \
   -H 'Accept: application/json'
 ```
 
-</div>
-<div class="tab-pane" role="tabpanel"  id="tab-getVersion-go">
+</TabItem>
+<TabItem value="go">
 
 ```go
 package main
@@ -2834,28 +2662,28 @@ func main() {
 }
 ```
 
-</div>
-<div class="tab-pane" role="tabpanel"  id="tab-getVersion-node">
+</TabItem>
+<TabItem value="node">
 
-```nodejs
-const fetch = require('node-fetch');
+```javascript
+const fetch = require('node-fetch')
 
 const headers = {
-  'Accept': 'application/json'
+  Accept: 'application/json'
 }
 
 fetch('/version', {
   method: 'GET',
   headers
 })
-.then(r => r.json())
-.then((body) => {
+  .then((r) => r.json())
+  .then((body) => {
     console.log(body)
-})
+  })
 ```
 
-</div>
-<div class="tab-pane" role="tabpanel"  id="tab-getVersion-java">
+</TabItem>
+<TabItem value="java">
 
 ```java
 // This sample needs improvement.
@@ -2880,8 +2708,8 @@ in.close();
 System.out.println(response.toString());
 ```
 
-</div>
-<div class="tab-pane" role="tabpanel"  id="tab-getVersion-python">
+</TabItem>
+<TabItem value="python">
 
 ```python
 import requests
@@ -2898,8 +2726,8 @@ r = requests.get(
 print r.json()
 ```
 
-</div>
-<div class="tab-pane" role="tabpanel"  id="tab-getVersion-ruby">
+</TabItem>
+<TabItem value="ruby">
 
 ```ruby
 require 'rest-client'
@@ -2915,14 +2743,14 @@ result = RestClient.get '/version',
 p JSON.parse(result)
 ```
 
-</div>
-</div>
-</div>
+</TabItem>
+</Tabs>
 
 ## Schemas
 
-<a id="tocSaddoryaccesscontrolpolicyrolemembersbody">addOryAccessControlPolicyRoleMembersBody</a>
-
+<a id="tocSaddoryaccesscontrolpolicyrolemembersbody">
+  addOryAccessControlPolicyRoleMembersBody
+</a>
 #### addOryAccessControlPolicyRoleMembersBody
 
 <a id="schemaaddoryaccesscontrolpolicyrolemembersbody"></a>
@@ -2940,7 +2768,6 @@ p JSON.parse(result)
 | members | [string] | false    | none         | The members to be added. |
 
 <a id="tocSauthorizationresult">authorizationResult</a>
-
 #### authorizationResult
 
 <a id="schemaauthorizationresult"></a>
@@ -2961,7 +2788,6 @@ the decision outcome._
 | allowed | boolean | true     | none         | Allowed is true if the request should be allowed and false otherwise. |
 
 <a id="tocShealthnotreadystatus">healthNotReadyStatus</a>
-
 #### healthNotReadyStatus
 
 <a id="schemahealthnotreadystatus"></a>
@@ -2983,7 +2809,6 @@ the decision outcome._
 | » **additionalProperties** | string | false    | none         | none                                                               |
 
 <a id="tocShealthstatus">healthStatus</a>
-
 #### healthStatus
 
 <a id="schemahealthstatus"></a>
@@ -3001,7 +2826,6 @@ the decision outcome._
 | status | string | false    | none         | Status always contains "ok". |
 
 <a id="tocSoryaccesscontrolpolicy">oryAccessControlPolicy</a>
-
 #### oryAccessControlPolicy
 
 <a id="schemaoryaccesscontrolpolicy"></a>
@@ -3032,8 +2856,9 @@ _oryAccessControlPolicy specifies an ORY Access Policy document._
 | resources   | [string] | false    | none         | Resources is an array representing all the resources this ORY Access Policy applies to.                              |
 | subjects    | [string] | false    | none         | Subjects is an array representing all the subjects this ORY Access Policy applies to.                                |
 
-<a id="tocSoryaccesscontrolpolicyallowedinput">oryAccessControlPolicyAllowedInput</a>
-
+<a id="tocSoryaccesscontrolpolicyallowedinput">
+  oryAccessControlPolicyAllowedInput
+</a>
 #### oryAccessControlPolicyAllowedInput
 
 <a id="schemaoryaccesscontrolpolicyallowedinput"></a>
@@ -3059,7 +2884,6 @@ _Input for checking if a request is allowed or not._
 | subject  | string | false    | none         | Subject is the subject that is requesting access.       |
 
 <a id="tocSoryaccesscontrolpolicyrole">oryAccessControlPolicyRole</a>
-
 #### oryAccessControlPolicyRole
 
 <a id="schemaoryaccesscontrolpolicyrole"></a>
@@ -3083,7 +2907,6 @@ other sort of role._
 | members | [string] | false    | none         | Members is who belongs to the role. |
 
 <a id="tocSversion">version</a>
-
 #### version
 
 <a id="schemaversion"></a>
