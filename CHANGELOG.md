@@ -4,7 +4,7 @@
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**
 
-- [Unreleased (2020-06-08)](#unreleased-2020-06-08)
+- [Unreleased (2020-06-16)](#unreleased-2020-06-16)
     - [Bug Fixes](#bug-fixes)
     - [Documentation](#documentation)
   - [0.5.6-alpha.1 (2020-05-28)](#056-alpha1-2020-05-28)
@@ -72,7 +72,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [Unreleased](https://github.com/ory/keto/compare/v0.5.6-alpha.1...904258d23959c3fa96b6d8ccfdb79f6788c106ec) (2020-06-08)
+# [Unreleased](https://github.com/ory/keto/compare/v0.5.6-alpha.1...904258d23959c3fa96b6d8ccfdb79f6788c106ec) (2020-06-16)
 
 
 ### Bug Fixes
