@@ -14,6 +14,6 @@ import (
 	_ "github.com/gorilla/websocket"
 
 	_ "github.com/ory/go-acc"
-	_ "github.com/ory/meta/tools/ory-dev"
+	_ "github.com/ory/cli"
 	_ "github.com/ory/x/tools/listx"
 )
