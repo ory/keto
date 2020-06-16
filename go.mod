@@ -24,10 +24,10 @@ require (
 	github.com/kardianos/osext v0.0.0-20170510131534-ae77be60afb1 // indirect
 	github.com/open-policy-agent/opa v0.10.1
 	github.com/ory/analytics-go/v4 v4.0.1
+	github.com/ory/cli v0.0.11
 	github.com/ory/go-acc v0.2.3
 	github.com/ory/graceful v0.1.1
 	github.com/ory/herodot v0.9.1
-	github.com/ory/meta/tools/ory-dev v0.0.0-20200608162220-fce2b7800d64
 	github.com/ory/viper v1.7.5
 	github.com/ory/x v0.0.128
 	github.com/pborman/uuid v1.2.0
