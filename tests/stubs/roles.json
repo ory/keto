@@ -1,6 +1,7 @@
 [
   {
     "id": "role-1",
+    "description": "role-1 test",
     "members": [
       "peter-1",
       "maria-1"
@@ -8,6 +9,7 @@
   },
   {
     "id": "role-2",
+    "description": "role-2 test",
     "members": [
       "peter-2",
       "maria-2"

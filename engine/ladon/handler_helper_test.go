@@ -9,24 +9,30 @@ import (
 var (
 	roles = map[string]kstorage.Roles{
 		"regex": {{
-			ID:      "group1",
-			Members: []string{"ken"},
+			ID:          "group1",
+			Description: "group1 description",
+			Members:     []string{"ken"},
 		}, {
-			ID:      "group2",
-			Members: []string{"ken"},
+			ID:          "group2",
+			Description: "group12 description",
+			Members:     []string{"ken"},
 		}, {
-			ID:      "group3",
-			Members: []string{"ben"},
+			ID:          "group3",
+			Description: "group3 description",
+			Members:     []string{"ben"},
 		}},
 		"exact": {{
-			ID:      "group1",
-			Members: []string{"ken"},
+			ID:          "group1",
+			Description: "group1 description",
+			Members:     []string{"ken"},
 		}, {
-			ID:      "group2",
-			Members: []string{"ken"},
+			ID:          "group2",
+			Description: "group2 description",
+			Members:     []string{"ken"},
 		}, {
-			ID:      "group3",
-			Members: []string{"ben"},
+			ID:          "group3",
+			Description: "group3 description",
+			Members:     []string{"ben"},
 		}},
 	}
 	requests = map[string][]struct {
