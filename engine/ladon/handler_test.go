@@ -152,8 +152,8 @@ func toSwaggerRole(r kstorage.Role) *models.OryAccessControlPolicyRole {
 
 func fromSwaggerRole(r models.OryAccessControlPolicyRole) kstorage.Role {
 	return kstorage.Role{
-		Members: r.Members,
-		ID:      r.ID,
+		Members:     r.Members,
+		ID:          r.ID,
 		Description: r.Description,
 	}
 }
