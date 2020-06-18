@@ -1157,6 +1157,10 @@
       "description": "oryAccessControlPolicyRole represents a group of users that share the same role. A role could be an administrator, a moderator, a regular\nuser or some other sort of role.",
       "type": "object",
       "properties": {
+        "description": {
+          "description": "Description is the description of the role.",
+          "type": "string"
+        },
         "id": {
           "description": "ID is the role's unique id.",
           "type": "string"

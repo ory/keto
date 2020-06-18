@@ -16,6 +16,9 @@ import (
 // swagger:model oryAccessControlPolicyRole
 type OryAccessControlPolicyRole struct {
 
+	// Description is the description of the role.
+	Description string `json:"description,omitempty"`
+
 	// ID is the role's unique id.
 	ID string `json:"id,omitempty"`
 

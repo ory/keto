@@ -222,6 +222,9 @@ type oryAccessControlPolicyRole struct {
 	// ID is the role's unique id.
 	ID string `json:"id"`
 
+	// Description is the description of the role.
+	Description string `json:"description"`
+
 	// Members is who belongs to the role.
 	Members []string `json:"members"`
 }
