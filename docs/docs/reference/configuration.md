@@ -42,7 +42,7 @@ section.
 # - Windows Command Line (CMD):
 #    > set DSN=<value>
 #
-dsn: postgres://user:password@host:123/database
+dsn: memory
 
 ## HTTP REST API ##
 #
@@ -78,7 +78,7 @@ serve:
   # - Windows Command Line (CMD):
   #    > set SERVE_HOST=<value>
   #
-  host: ''
+  host: 127.0.0.1
 
   ## Cross Origin Resource Sharing (CORS) ##
   #
@@ -97,7 +97,7 @@ serve:
     # - Windows Command Line (CMD):
     #    > set SERVE_CORS_ENABLED=<value>
     #
-    enabled: true
+    enabled: false
 
     ## Allowed Origins ##
     #
@@ -134,11 +134,10 @@ serve:
     #    > set SERVE_CORS_ALLOWED_METHODS=<value>
     #
     allowed_methods:
-      - CONNECT
+      - PATCH
       - PUT
       - GET
-      - TRACE
-      - POST
+      - HEAD
 
     ## Allowed Request HTTP Headers ##
     #
@@ -153,10 +152,11 @@ serve:
     #    > set SERVE_CORS_ALLOWED_HEADERS=<value>
     #
     allowed_headers:
-      - sit do
-      - dolor consequat exercitation
-      - do
-      - laborum aliqua in ullamco elit
+      - Ut exercitation ea Lorem
+      - do non laborum
+      - fugiat sit ut occaecat officia
+      - ex
+      - adipisicing
 
     ## Allowed Response HTTP Headers ##
     #
@@ -171,7 +171,11 @@ serve:
     #    > set SERVE_CORS_EXPOSED_HEADERS=<value>
     #
     exposed_headers:
-      - id commodo ut Duis voluptate
+      - Ut velit in nulla
+      - aliqua cillum
+      - cupidatat Ut
+      - elit laborum consectetur dolore
+      - et
 
     ## Allow HTTP Credentials ##
     #
@@ -185,7 +189,7 @@ serve:
     # - Windows Command Line (CMD):
     #    > set SERVE_CORS_ALLOW_CREDENTIALS=<value>
     #
-    allow_credentials: false
+    allow_credentials: true
 
     ## Maximum Age ##
     #
@@ -197,7 +201,7 @@ serve:
     # - Windows Command Line (CMD):
     #    > set SERVE_CORS_MAX_AGE=<value>
     #
-    max_age: 34098146
+    max_age: -43998662
 
     ## Enable Debugging ##
     #
@@ -307,7 +311,7 @@ log:
   # - Windows Command Line (CMD):
   #    > set LOG_FORMAT=<value>
   #
-  format: text
+  format: json
 
 ## tracing ##
 #
