@@ -4,7 +4,7 @@
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**
 
-- [Unreleased (2020-06-16)](#unreleased-2020-06-16)
+- [Unreleased (2020-07-03)](#unreleased-2020-07-03)
     - [Bug Fixes](#bug-fixes)
     - [Documentation](#documentation)
   - [0.5.6-alpha.1 (2020-05-28)](#056-alpha1-2020-05-28)
@@ -72,11 +72,12 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [Unreleased](https://github.com/ory/keto/compare/v0.5.6-alpha.1...904258d23959c3fa96b6d8ccfdb79f6788c106ec) (2020-06-16)
+# [Unreleased](https://github.com/ory/keto/compare/v0.5.6-alpha.1...831eba59f810ca68561dd584c9df7684df10b843) (2020-07-03)
 
 
 ### Bug Fixes
 
+* Add description attribute to access control policy role ([#215](https://github.com/ory/keto/issues/215)) ([831eba5](https://github.com/ory/keto/commit/831eba59f810ca68561dd584c9df7684df10b843))
 * Bump deps and replace swagutil ([#212](https://github.com/ory/keto/issues/212)) ([904258d](https://github.com/ory/keto/commit/904258d23959c3fa96b6d8ccfdb79f6788c106ec))
 
 
