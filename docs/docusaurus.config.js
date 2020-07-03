@@ -124,12 +124,12 @@ module.exports = {
   ],
   themes: [
     [
-      require.resolve("@docusaurus/theme-classic"),
+     require.resolve("@docusaurus/theme-classic"),
       {
         customCss: config.projectSlug === 'docusaurus-template' ? require.resolve('./contrib/theme.css') : require.resolve('./src/css/theme.css'),
       }
     ], [
-      require.resolve("@docusaurus/theme-search-algolia")
+     require.resolve("@docusaurus/theme-search-algolia")
     ]
   ],
 };
