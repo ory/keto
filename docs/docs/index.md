@@ -7,7 +7,7 @@ ORY Keto is a permission server that implements best practice access control
 mechanisms. If you came looking for the answer to the question:
 
 - Is a certain user allowed to modify this blog article?
-- Is this service is allowed to print that document?
+- Is this service allowed to print that document?
 - Is a member of the ACME organisation allowed to modify data of one of their
   tenants?
 - Is this process allowed to execute that worker when coming from IP 10.0.0.2
