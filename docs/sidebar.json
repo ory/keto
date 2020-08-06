@@ -1,9 +1,9 @@
-module.exports = {
-  Introduction: [
+{
+  "Introduction": [
     "index",
-    "install",
+    "install"
   ],
-  Guides: [
+  "Guides": [
     "configure-deploy",
     "secure"
   ],
@@ -19,6 +19,6 @@ module.exports = {
     "reference/api"
   ],
   "SDKs": [
-    "sdk/index",
+    "sdk/index"
   ]
-};
+}
