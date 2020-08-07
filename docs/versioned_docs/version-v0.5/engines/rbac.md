@@ -19,7 +19,7 @@ Let's come back to Alice, Bob, Peter, and blog posts and the matrix from the ACL
 example. This time we model the access rights using (H)RBAC and the roles
 "reader", "author", and "admin":
 
-![(H)RBAC Example](/images/docs/keto/rbac.png)
+![(H)RBAC Example](./images/rbac.png)
 
 `Admin` inherits all privileges from `author`, which inherits from `reader`.
 Only `Alice` (or rather her role `admin`) can delete blog posts, whereas
