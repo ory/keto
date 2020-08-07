@@ -4,7 +4,7 @@
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**
 
-- [Unreleased (2020-08-06)](#unreleased-2020-08-06)
+- [Unreleased (2020-08-07)](#unreleased-2020-08-07)
     - [Bug Fixes](#bug-fixes)
     - [Documentation](#documentation)
   - [0.5.6-alpha.1 (2020-05-28)](#056-alpha1-2020-05-28)
@@ -72,7 +72,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [Unreleased](https://github.com/ory/keto/compare/v0.5.6-alpha.1...257bf96044df37c3d7af8a289fb67098d48da1a3) (2020-08-06)
+# [Unreleased](https://github.com/ory/keto/compare/v0.5.6-alpha.1...0d0a50b3f4112893f32c81adc8edd137b5a62541) (2020-08-07)
 
 
 ### Bug Fixes
@@ -87,6 +87,7 @@
 * Fix grammatical error ([#222](https://github.com/ory/keto/issues/222)) ([256a0d2](https://github.com/ory/keto/commit/256a0d2e53fe1eb859e41fc539870ae1d5a493d2))
 * Move to json sidebar ([257bf96](https://github.com/ory/keto/commit/257bf96044df37c3d7af8a289fb67098d48da1a3))
 * Remove duplicate "is" ([ca3277d](https://github.com/ory/keto/commit/ca3277d82c1508797bc8c663963407d2e4d9112f))
+* Resolve broken links ([0d0a50b](https://github.com/ory/keto/commit/0d0a50b3f4112893f32c81adc8edd137b5a62541))
 * Use mdx for api reference ([340f3a3](https://github.com/ory/keto/commit/340f3a3dd20c82c743e7b3ad6aaf06a4c118b5a1))
 
 
