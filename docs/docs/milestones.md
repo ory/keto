@@ -27,7 +27,8 @@ New feature or request
 
 #### Issues
 
-* [x] policy: evaluate wildcard matching strategy ([keto#11](https://github.com/ory/keto/issues/11))
+- [x] policy: evaluate wildcard matching strategy
+      ([keto#11](https://github.com/ory/keto/issues/11))
 
 #### Pull Requests
 
@@ -37,7 +38,8 @@ Extra attention is needed
 
 #### Issues
 
-* [x] Moving forward with this project's versioning ([keto#56](https://github.com/ory/keto/issues/56))
+- [x] Moving forward with this project's versioning
+      ([keto#56](https://github.com/ory/keto/issues/56))
 
 #### Pull Requests
 
@@ -96,4 +98,3 @@ This will not be worked on
 #### Issues
 
 #### Pull Requests
-

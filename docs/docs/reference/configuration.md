@@ -53,6 +53,10 @@ serve:
   #
   # Default value: 4456
   #
+  # Minimum value: 1
+  #
+  # Maximum value: 65535
+  #
   # Examples:
   # - 4456
   #
@@ -135,9 +139,6 @@ serve:
     #
     allowed_methods:
       - PATCH
-      - PUT
-      - GET
-      - HEAD
 
     ## Allowed Request HTTP Headers ##
     #
@@ -152,11 +153,10 @@ serve:
     #    > set SERVE_CORS_ALLOWED_HEADERS=<value>
     #
     allowed_headers:
-      - Ut exercitation ea Lorem
-      - do non laborum
-      - fugiat sit ut occaecat officia
-      - ex
-      - adipisicing
+      - esse
+      - Lorem
+      - voluptate esse aliquip nisi cillum
+      - cillum id in consectetur laborum
 
     ## Allowed Response HTTP Headers ##
     #
@@ -171,11 +171,8 @@ serve:
     #    > set SERVE_CORS_EXPOSED_HEADERS=<value>
     #
     exposed_headers:
-      - Ut velit in nulla
-      - aliqua cillum
-      - cupidatat Ut
-      - elit laborum consectetur dolore
-      - et
+      - anim eu ut
+      - cupidatat sint dolor nisi laboris
 
     ## Allow HTTP Credentials ##
     #
@@ -201,7 +198,7 @@ serve:
     # - Windows Command Line (CMD):
     #    > set SERVE_CORS_MAX_AGE=<value>
     #
-    max_age: -43998662
+    max_age: -1910852
 
     ## Enable Debugging ##
     #
@@ -215,7 +212,7 @@ serve:
     # - Windows Command Line (CMD):
     #    > set SERVE_CORS_DEBUG=<value>
     #
-    debug: true
+    debug: false
 
   ## HTTPS ##
   #
@@ -272,13 +269,18 @@ serve:
 #
 # Enables CPU or memory profiling if set. For more details on profiling Go programs read [Profiling Go Programs](https://blog.golang.org/profiling-go-programs).
 #
+# One of:
+# - cpu
+# - mem
+# - ""
+#
 # Set this value using environment variables on
 # - Linux/macOS:
 #    $ export PROFILING=<value>
 # - Windows Command Line (CMD):
 #    > set PROFILING=<value>
 #
-profiling: ''
+profiling: cpu
 
 ## Log ##
 #
@@ -291,13 +293,21 @@ log:
   #
   # Default value: info
   #
+  # One of:
+  # - panic
+  # - fatal
+  # - error
+  # - warn
+  # - info
+  # - debug
+  #
   # Set this value using environment variables on
   # - Linux/macOS:
   #    $ export LOG_LEVEL=<value>
   # - Windows Command Line (CMD):
   #    > set LOG_LEVEL=<value>
   #
-  level: panic
+  level: error
 
   ## Format ##
   #
@@ -305,13 +315,17 @@ log:
   #
   # Default value: text
   #
+  # One of:
+  # - text
+  # - json
+  #
   # Set this value using environment variables on
   # - Linux/macOS:
   #    $ export LOG_FORMAT=<value>
   # - Windows Command Line (CMD):
   #    > set LOG_FORMAT=<value>
   #
-  format: json
+  format: text
 
 ## tracing ##
 #
@@ -321,6 +335,9 @@ tracing:
   ## provider ##
   #
   # Set this to the tracing backend you wish to use. Currently supports jaeger. If omitted or empty, tracing will be disabled.
+  #
+  # One of:
+  # - jaeger
   #
   # Examples:
   # - jaeger

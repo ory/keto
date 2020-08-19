@@ -78,6 +78,7 @@ is denied, a 403 response with `{"allowed":"false"}` will be sent instead.
 | 500    | [Internal Server Error](https://tools.ietf.org/html/rfc7231#section-6.6.1) | The standard error format | Inline                                            |
 
 <a id="check-if-a-request-is-allowed-responseschema"></a>
+
 ##### Response Schema
 
 Status Code **500**
@@ -273,6 +274,7 @@ List ORY Access Control Policies
 | 500    | [Internal Server Error](https://tools.ietf.org/html/rfc7231#section-6.6.1) | The standard error format         | Inline |
 
 <a id="listoryaccesscontrolpolicies-responseschema"></a>
+
 ##### Response Schema
 
 Status Code **200**
@@ -492,6 +494,7 @@ Upsert an ORY Access Control Policy
 | 500    | [Internal Server Error](https://tools.ietf.org/html/rfc7231#section-6.6.1) | The standard error format | Inline                                                  |
 
 <a id="upsertoryaccesscontrolpolicy-responseschema"></a>
+
 ##### Response Schema
 
 Status Code **500**
@@ -699,6 +702,7 @@ Get an ORY Access Control Policy
 | 500    | [Internal Server Error](https://tools.ietf.org/html/rfc7231#section-6.6.1) | The standard error format | Inline                                                  |
 
 <a id="getoryaccesscontrolpolicy-responseschema"></a>
+
 ##### Response Schema
 
 Status Code **404**
@@ -898,6 +902,7 @@ Delete an ORY Access Control Policy
 | 500    | [Internal Server Error](https://tools.ietf.org/html/rfc7231#section-6.6.1) | The standard error format | Inline |
 
 <a id="deleteoryaccesscontrolpolicy-responseschema"></a>
+
 ##### Response Schema
 
 Status Code **500**
@@ -1088,6 +1093,7 @@ Control Policy (OACP) by using the Role ID as subject in the OACP.
 | 500    | [Internal Server Error](https://tools.ietf.org/html/rfc7231#section-6.6.1) | The standard error format   | Inline |
 
 <a id="list-ory-access-control-policy-roles-responseschema"></a>
+
 ##### Response Schema
 
 Status Code **200**
@@ -1295,6 +1301,7 @@ Control Policy (OACP) by using the Role ID as subject in the OACP.
 | 500    | [Internal Server Error](https://tools.ietf.org/html/rfc7231#section-6.6.1) | The standard error format  | Inline                                                          |
 
 <a id="upsert-an-ory-access-control-policy-role-responseschema"></a>
+
 ##### Response Schema
 
 Status Code **500**
@@ -1491,6 +1498,7 @@ Control Policy (OACP) by using the Role ID as subject in the OACP.
 | 500    | [Internal Server Error](https://tools.ietf.org/html/rfc7231#section-6.6.1) | The standard error format  | Inline                                                          |
 
 <a id="get-an-ory-access-control-policy-role-responseschema"></a>
+
 ##### Response Schema
 
 Status Code **404**
@@ -1687,6 +1695,7 @@ Control Policy (OACP) by using the Role ID as subject in the OACP.
 | 500    | [Internal Server Error](https://tools.ietf.org/html/rfc7231#section-6.6.1) | The standard error format | Inline |
 
 <a id="delete-an-ory-access-control-policy-role-responseschema"></a>
+
 ##### Response Schema
 
 Status Code **500**
@@ -1885,6 +1894,7 @@ Control Policy (OACP) by using the Role ID as subject in the OACP.
 | 500    | [Internal Server Error](https://tools.ietf.org/html/rfc7231#section-6.6.1) | The standard error format  | Inline                                                          |
 
 <a id="add-a-member-to-an-ory-access-control-policy-role-responseschema"></a>
+
 ##### Response Schema
 
 Status Code **500**
@@ -2079,6 +2089,7 @@ Control Policy (OACP) by using the Role ID as subject in the OACP.
 | 500    | [Internal Server Error](https://tools.ietf.org/html/rfc7231#section-6.6.1) | The standard error format | Inline |
 
 <a id="remove-a-member-from-an-ory-access-control-policy-role-responseschema"></a>
+
 ##### Response Schema
 
 Status Code **500**
@@ -2269,6 +2280,7 @@ status will never refer to the cluster state, only to a single instance.
 | 500    | [Internal Server Error](https://tools.ietf.org/html/rfc7231#section-6.6.1) | The standard error format | Inline                              |
 
 <a id="check-alive-status-responseschema"></a>
+
 ##### Response Schema
 
 Status Code **500**
@@ -2755,9 +2767,8 @@ p JSON.parse(result)
 
 ## Schemas
 
-<a id="tocSaddoryaccesscontrolpolicyrolemembersbody">
-  addOryAccessControlPolicyRoleMembersBody
-</a>
+<a id="tocSaddoryaccesscontrolpolicyrolemembersbody"></a>
+
 #### addOryAccessControlPolicyRoleMembersBody
 
 <a id="schemaaddoryaccesscontrolpolicyrolemembersbody"></a>
@@ -2774,7 +2785,8 @@ p JSON.parse(result)
 | ------- | -------- | -------- | ------------ | ------------------------ |
 | members | [string] | false    | none         | The members to be added. |
 
-<a id="tocSauthorizationresult">authorizationResult</a>
+<a id="tocSauthorizationresult"></a>
+
 #### authorizationResult
 
 <a id="schemaauthorizationresult"></a>
@@ -2794,7 +2806,8 @@ the decision outcome._
 | ------- | ------- | -------- | ------------ | --------------------------------------------------------------------- |
 | allowed | boolean | true     | none         | Allowed is true if the request should be allowed and false otherwise. |
 
-<a id="tocShealthnotreadystatus">healthNotReadyStatus</a>
+<a id="tocShealthnotreadystatus"></a>
+
 #### healthNotReadyStatus
 
 <a id="schemahealthnotreadystatus"></a>
@@ -2815,7 +2828,8 @@ the decision outcome._
 | errors                     | object | false    | none         | Errors contains a list of errors that caused the not ready status. |
 | » **additionalProperties** | string | false    | none         | none                                                               |
 
-<a id="tocShealthstatus">healthStatus</a>
+<a id="tocShealthstatus"></a>
+
 #### healthStatus
 
 <a id="schemahealthstatus"></a>
@@ -2832,7 +2846,8 @@ the decision outcome._
 | ------ | ------ | -------- | ------------ | ---------------------------- |
 | status | string | false    | none         | Status always contains "ok". |
 
-<a id="tocSoryaccesscontrolpolicy">oryAccessControlPolicy</a>
+<a id="tocSoryaccesscontrolpolicy"></a>
+
 #### oryAccessControlPolicy
 
 <a id="schemaoryaccesscontrolpolicy"></a>
@@ -2863,9 +2878,8 @@ _oryAccessControlPolicy specifies an ORY Access Policy document._
 | resources   | [string] | false    | none         | Resources is an array representing all the resources this ORY Access Policy applies to.                              |
 | subjects    | [string] | false    | none         | Subjects is an array representing all the subjects this ORY Access Policy applies to.                                |
 
-<a id="tocSoryaccesscontrolpolicyallowedinput">
-  oryAccessControlPolicyAllowedInput
-</a>
+<a id="tocSoryaccesscontrolpolicyallowedinput"></a>
+
 #### oryAccessControlPolicyAllowedInput
 
 <a id="schemaoryaccesscontrolpolicyallowedinput"></a>
@@ -2890,7 +2904,8 @@ _Input for checking if a request is allowed or not._
 | resource | string | false    | none         | Resource is the resource that access is requested to.   |
 | subject  | string | false    | none         | Subject is the subject that is requesting access.       |
 
-<a id="tocSoryaccesscontrolpolicyrole">oryAccessControlPolicyRole</a>
+<a id="tocSoryaccesscontrolpolicyrole"></a>
+
 #### oryAccessControlPolicyRole
 
 <a id="schemaoryaccesscontrolpolicyrole"></a>
@@ -2915,7 +2930,8 @@ other sort of role._
 | id          | string   | false    | none         | ID is the role's unique id.                 |
 | members     | [string] | false    | none         | Members is who belongs to the role.         |
 
-<a id="tocSversion">version</a>
+<a id="tocSversion"></a>
+
 #### version
 
 <a id="schemaversion"></a>
