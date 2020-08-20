@@ -42,7 +42,7 @@ section.
 # - Windows Command Line (CMD):
 #    > set DSN=<value>
 #
-dsn: memory
+dsn: postgres://user:password@host:123/database
 
 ## HTTP REST API ##
 #
@@ -82,7 +82,7 @@ serve:
   # - Windows Command Line (CMD):
   #    > set SERVE_HOST=<value>
   #
-  host: 127.0.0.1
+  host: ''
 
   ## Cross Origin Resource Sharing (CORS) ##
   #
@@ -101,7 +101,7 @@ serve:
     # - Windows Command Line (CMD):
     #    > set SERVE_CORS_ENABLED=<value>
     #
-    enabled: false
+    enabled: true
 
     ## Allowed Origins ##
     #
@@ -139,6 +139,10 @@ serve:
     #
     allowed_methods:
       - PATCH
+      - CONNECT
+      - GET
+      - DELETE
+      - PUT
 
     ## Allowed Request HTTP Headers ##
     #
@@ -153,10 +157,9 @@ serve:
     #    > set SERVE_CORS_ALLOWED_HEADERS=<value>
     #
     allowed_headers:
-      - esse
-      - Lorem
-      - voluptate esse aliquip nisi cillum
-      - cillum id in consectetur laborum
+      - labore minim commodo dolor
+      - ex id magna minim sint
+      - ipsum consectetur labore ut incididunt
 
     ## Allowed Response HTTP Headers ##
     #
@@ -171,8 +174,7 @@ serve:
     #    > set SERVE_CORS_EXPOSED_HEADERS=<value>
     #
     exposed_headers:
-      - anim eu ut
-      - cupidatat sint dolor nisi laboris
+      - Excepteur
 
     ## Allow HTTP Credentials ##
     #
@@ -198,7 +200,7 @@ serve:
     # - Windows Command Line (CMD):
     #    > set SERVE_CORS_MAX_AGE=<value>
     #
-    max_age: -1910852
+    max_age: 20022979
 
     ## Enable Debugging ##
     #
@@ -280,7 +282,7 @@ serve:
 # - Windows Command Line (CMD):
 #    > set PROFILING=<value>
 #
-profiling: cpu
+profiling: ''
 
 ## Log ##
 #
@@ -325,7 +327,7 @@ log:
   # - Windows Command Line (CMD):
   #    > set LOG_FORMAT=<value>
   #
-  format: text
+  format: json
 
 ## tracing ##
 #
