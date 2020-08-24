@@ -1,0 +1,7 @@
+{
+  "$id": "https://github.com/ory/keto/.schema/versions.config.schema.json",
+  "$schema": "https://raw.githubusercontent.com/ory/cli/v0.0.21/.schema/version_meta.schema.json#",
+  "title": "All Versions of the ORY Keto Configuration",
+  "type": "object",
+  "oneOf": []
+}
