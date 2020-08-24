@@ -54,7 +54,7 @@ changelog:
 
 brews:
   -
-    github:
+    tap:
       owner: ory
       name: homebrew-keto
     homepage:  https://www.ory.sh
