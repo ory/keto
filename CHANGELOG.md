@@ -4,7 +4,7 @@
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**
 
-- [Unreleased (2020-08-24)](#unreleased-2020-08-24)
+- [Unreleased (2020-08-29)](#unreleased-2020-08-29)
     - [Bug Fixes](#bug-fixes)
     - [Documentation](#documentation)
     - [Features](#features)
@@ -73,7 +73,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [Unreleased](https://github.com/ory/keto/compare/v0.5.6-alpha.1...b01eef8d4d5834b5888cb369ecf01ee01b40c24c) (2020-08-24)
+# [Unreleased](https://github.com/ory/keto/compare/v0.5.6-alpha.1...1d3b38e4045b0b874bb1186ea628f5a37353a2e6) (2020-08-29)
 
 
 ### Bug Fixes
@@ -89,7 +89,9 @@
 * Move development section ([9ff393f](https://github.com/ory/keto/commit/9ff393f6cba1fb0a33918377ce505455c34d9dfc))
 * Move to json sidebar ([257bf96](https://github.com/ory/keto/commit/257bf96044df37c3d7af8a289fb67098d48da1a3))
 * Remove duplicate "is" ([ca3277d](https://github.com/ory/keto/commit/ca3277d82c1508797bc8c663963407d2e4d9112f))
+* Remove duplicate template ([1d3b38e](https://github.com/ory/keto/commit/1d3b38e4045b0b874bb1186ea628f5a37353a2e6))
 * Resolve broken links ([0d0a50b](https://github.com/ory/keto/commit/0d0a50b3f4112893f32c81adc8edd137b5a62541))
+* Update repository templates ([db505f9](https://github.com/ory/keto/commit/db505f9e10755bc20c4623c4f5f99f33283dffda))
 * Update repository templates ([6c056bb](https://github.com/ory/keto/commit/6c056bb2043af6e82f06fdfa509ab3fa0d5e5d06))
 * Use mdx for api reference ([340f3a3](https://github.com/ory/keto/commit/340f3a3dd20c82c743e7b3ad6aaf06a4c118b5a1))
 
