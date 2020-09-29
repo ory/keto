@@ -4,7 +4,7 @@
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**
 
-- [Unreleased (2020-09-25)](#unreleased-2020-09-25)
+- [Unreleased (2020-09-29)](#unreleased-2020-09-29)
     - [Bug Fixes](#bug-fixes)
     - [Documentation](#documentation)
     - [Features](#features)
@@ -73,7 +73,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [Unreleased](https://github.com/ory/keto/compare/v0.5.6-alpha.1...d8b36cb1812abf7265ac15c29780222be025186b) (2020-09-25)
+# [Unreleased](https://github.com/ory/keto/compare/v0.5.6-alpha.1...9697bb43dd23c0d1fae74ea42e848883c45dae77) (2020-09-29)
 
 
 ### Bug Fixes
@@ -87,6 +87,7 @@
 
 * Delete old redirect homepage ([c0a3784](https://github.com/ory/keto/commit/c0a378448f8c7723bae68f7b52a019b697b25863))
 * Fix grammatical error ([#222](https://github.com/ory/keto/issues/222)) ([256a0d2](https://github.com/ory/keto/commit/256a0d2e53fe1eb859e41fc539870ae1d5a493d2))
+* Fix regression issues ([9697bb4](https://github.com/ory/keto/commit/9697bb43dd23c0d1fae74ea42e848883c45dae77))
 * Move development section ([9ff393f](https://github.com/ory/keto/commit/9ff393f6cba1fb0a33918377ce505455c34d9dfc))
 * Move to json sidebar ([257bf96](https://github.com/ory/keto/commit/257bf96044df37c3d7af8a289fb67098d48da1a3))
 * Remove duplicate "is" ([ca3277d](https://github.com/ory/keto/commit/ca3277d82c1508797bc8c663963407d2e4d9112f))
