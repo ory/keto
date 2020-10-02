@@ -35,7 +35,7 @@ var (
 		{"action": {"create"}, "subject": {"mem3"}, "resource": {"res3"}},
 		{"action": {"delete"}},
 	}
-	rolRes = []Roles{
+	rolRes = [][]Role{
 		[]Role{
 			{
 				ID:      "role1",
@@ -59,7 +59,7 @@ var (
 		rolReq,
 		rolReq,
 	}
-	polRes = []Policies{
+	polRes = [][]Policy{
 		polReq,
 		polReq,
 		polReq,
