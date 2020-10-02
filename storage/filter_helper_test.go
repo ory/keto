@@ -52,7 +52,7 @@ var (
 				Members: []string{"mem1", "mem2"},
 			},
 		},
-		nil,
+		[]Role{},
 		rolReq,
 		rolReq,
 		rolReq,
@@ -93,7 +93,7 @@ var (
 				Resources: []string{"res1", "res2"},
 			},
 		},
-		nil,
-		nil,
+		[]Policy{},
+		[]Policy{},
 	}
 )
