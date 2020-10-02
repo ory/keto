@@ -1,7 +1,7 @@
 package storage
 
 var (
-	rolReq = Roles{
+	rolReq = []Role{
 		{
 			ID:      "role1",
 			Members: []string{"mem1"},
@@ -11,7 +11,7 @@ var (
 			Members: []string{"mem1", "mem2"},
 		},
 	}
-	polReq = Policies{
+	polReq = []Policy{
 		{
 			ID:        "policy1",
 			Actions:   []string{"create"},
@@ -36,7 +36,7 @@ var (
 		{"action": {"delete"}},
 	}
 	rolRes = []Roles{
-		Roles{
+		[]Role{
 			{
 				ID:      "role1",
 				Members: []string{"mem1"},
@@ -46,7 +46,7 @@ var (
 				Members: []string{"mem1", "mem2"},
 			},
 		},
-		Roles{
+		[]Role{
 			{
 				ID:      "role2",
 				Members: []string{"mem1", "mem2"},
@@ -63,7 +63,7 @@ var (
 		polReq,
 		polReq,
 		polReq,
-		Policies{
+		[]Policy{
 			{
 				ID:        "policy1",
 				Actions:   []string{"create"},
@@ -77,7 +77,7 @@ var (
 				Resources: []string{"res1", "res2"},
 			},
 		},
-		Policies{
+		[]Policy{
 			{
 				ID:        "policy2",
 				Actions:   []string{"create"},
@@ -85,7 +85,7 @@ var (
 				Resources: []string{"res1", "res2"},
 			},
 		},
-		Policies{
+		[]Policy{
 			{
 				ID:        "policy2",
 				Actions:   []string{"create"},
