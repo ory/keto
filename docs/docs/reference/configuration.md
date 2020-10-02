@@ -42,7 +42,7 @@ section.
 # - Windows Command Line (CMD):
 #    > set DSN=<value>
 #
-dsn: mysql://user:password@tcp(host:123)/database
+dsn: memory
 
 ## HTTP REST API ##
 #
@@ -82,7 +82,7 @@ serve:
   # - Windows Command Line (CMD):
   #    > set SERVE_HOST=<value>
   #
-  host: localhost
+  host: ''
 
   ## Cross Origin Resource Sharing (CORS) ##
   #
@@ -121,9 +121,7 @@ serve:
     #    > set SERVE_CORS_ALLOWED_ORIGINS=<value>
     #
     allowed_origins:
-      - https://example.com
-      - https://*.example.com
-      - https://*.foo.example.com
+      - '*'
 
     ## Allowed HTTP Methods ##
     #
@@ -138,10 +136,8 @@ serve:
     #    > set SERVE_CORS_ALLOWED_METHODS=<value>
     #
     allowed_methods:
+      - HEAD
       - PATCH
-      - DELETE
-      - PUT
-      - POST
 
     ## Allowed Request HTTP Headers ##
     #
@@ -156,9 +152,11 @@ serve:
     #    > set SERVE_CORS_ALLOWED_HEADERS=<value>
     #
     allowed_headers:
-      - do
-      - ea irure in enim
-      - sit enim reprehenderit
+      - culpa eiusmod non ipsum ad
+      - ad
+      - sit
+      - consequat est
+      - velit amet in enim ut
 
     ## Allowed Response HTTP Headers ##
     #
@@ -173,9 +171,11 @@ serve:
     #    > set SERVE_CORS_EXPOSED_HEADERS=<value>
     #
     exposed_headers:
-      - est
-      - ex nisi consectetur
-      - ut Ut consectetur
+      - adipisicing fugiat Ut officia irure
+      - in sint est dolore in
+      - dolore sit cupidatat voluptate
+      - laborum
+      - fugiat
 
     ## Allow HTTP Credentials ##
     #
@@ -201,7 +201,7 @@ serve:
     # - Windows Command Line (CMD):
     #    > set SERVE_CORS_MAX_AGE=<value>
     #
-    max_age: -64415231
+    max_age: -10735613
 
     ## Enable Debugging ##
     #
@@ -310,7 +310,7 @@ log:
   # - Windows Command Line (CMD):
   #    > set LOG_LEVEL=<value>
   #
-  level: warn
+  level: info
 
   ## Format ##
   #
@@ -328,7 +328,7 @@ log:
   # - Windows Command Line (CMD):
   #    > set LOG_FORMAT=<value>
   #
-  format: text
+  format: json
 
 ## tracing ##
 #
@@ -443,4 +443,16 @@ tracing:
         #    > set TRACING_PROVIDERS_JAEGER_SAMPLING_SERVER_URL=<value>
         #
         server_url: http://localhost:5778/sampling
+
+## The Keto version this config is written for. ##
+#
+# SemVer according to https://semver.org/ prefixed with `v` as in our releases.
+#
+# Set this value using environment variables on
+# - Linux/macOS:
+#    $ export VERSION=<value>
+# - Windows Command Line (CMD):
+#    > set VERSION=<value>
+#
+version: v6909625.0.0
 ```
