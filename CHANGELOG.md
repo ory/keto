@@ -4,7 +4,7 @@
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**
 
-- [Unreleased (2020-10-02)](#unreleased-2020-10-02)
+- [Unreleased (2020-10-03)](#unreleased-2020-10-03)
     - [Bug Fixes](#bug-fixes)
     - [Documentation](#documentation)
     - [Features](#features)
@@ -73,7 +73,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [Unreleased](https://github.com/ory/keto/compare/v0.5.6-alpha.1...9697bb43dd23c0d1fae74ea42e848883c45dae77) (2020-10-02)
+# [Unreleased](https://github.com/ory/keto/compare/v0.5.6-alpha.1...84f028dc35665174542e103c0aefc635bb6d3e52) (2020-10-03)
 
 
 ### Bug Fixes
@@ -81,6 +81,7 @@
 * Add description attribute to access control policy role ([#215](https://github.com/ory/keto/issues/215)) ([831eba5](https://github.com/ory/keto/commit/831eba59f810ca68561dd584c9df7684df10b843))
 * Bump deps and replace swagutil ([#212](https://github.com/ory/keto/issues/212)) ([904258d](https://github.com/ory/keto/commit/904258d23959c3fa96b6d8ccfdb79f6788c106ec))
 * Ignore x/net false positives ([d8b36cb](https://github.com/ory/keto/commit/d8b36cb1812abf7265ac15c29780222be025186b))
+* Use make() to initialize slices ([#250](https://github.com/ory/keto/issues/250)) ([84f028d](https://github.com/ory/keto/commit/84f028dc35665174542e103c0aefc635bb6d3e52)), closes [#217](https://github.com/ory/keto/issues/217)
 
 
 ### Documentation
