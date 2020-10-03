@@ -1,7 +1,7 @@
 package storage
 
 var (
-	rolReq = []Role{
+	rolReq = Roles{
 		{
 			ID:      "role1",
 			Members: []string{"mem1"},
@@ -11,7 +11,7 @@ var (
 			Members: []string{"mem1", "mem2"},
 		},
 	}
-	polReq = []Policy{
+	polReq = Policies{
 		{
 			ID:        "policy1",
 			Actions:   []string{"create"},
@@ -35,8 +35,8 @@ var (
 		{"action": {"create"}, "subject": {"mem3"}, "resource": {"res3"}},
 		{"action": {"delete"}},
 	}
-	rolRes = [][]Role{
-		[]Role{
+	rolRes = []Roles{
+		Roles{
 			{
 				ID:      "role1",
 				Members: []string{"mem1"},
@@ -46,24 +46,24 @@ var (
 				Members: []string{"mem1", "mem2"},
 			},
 		},
-		[]Role{
+		Roles{
 			{
 				ID:      "role2",
 				Members: []string{"mem1", "mem2"},
 			},
 		},
-		[]Role{},
+		nil,
 		rolReq,
 		rolReq,
 		rolReq,
 		rolReq,
 		rolReq,
 	}
-	polRes = [][]Policy{
+	polRes = []Policies{
 		polReq,
 		polReq,
 		polReq,
-		[]Policy{
+		Policies{
 			{
 				ID:        "policy1",
 				Actions:   []string{"create"},
@@ -77,7 +77,7 @@ var (
 				Resources: []string{"res1", "res2"},
 			},
 		},
-		[]Policy{
+		Policies{
 			{
 				ID:        "policy2",
 				Actions:   []string{"create"},
@@ -85,7 +85,7 @@ var (
 				Resources: []string{"res1", "res2"},
 			},
 		},
-		[]Policy{
+		Policies{
 			{
 				ID:        "policy2",
 				Actions:   []string{"create"},
@@ -93,7 +93,7 @@ var (
 				Resources: []string{"res1", "res2"},
 			},
 		},
-		[]Policy{},
-		[]Policy{},
+		nil,
+		nil,
 	}
 )

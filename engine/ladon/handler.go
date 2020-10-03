@@ -290,7 +290,7 @@ func (e *Engine) Register(r *httprouter.Router) {
 }
 
 func (e *Engine) rolesList(ctx context.Context, r *http.Request, ps httprouter.Params) (*kstorage.ListRequest, error) {
-	p := make([]kstorage.Role, 0)
+	p := make(kstorage.Roles, 0)
 	f, err := flavor(ps)
 	if err != nil {
 		return nil, err
@@ -428,7 +428,7 @@ func (e *Engine) policiesCreate(ctx context.Context, r *http.Request, ps httprou
 
 func (e *Engine) policiesList(ctx context.Context, r *http.Request, ps httprouter.Params) (*kstorage.ListRequest, error) {
 
-	p := make([]kstorage.Policy, 0)
+	p := make(kstorage.Policies, 0)
 	f, err := flavor(ps)
 	if err != nil {
 		return nil, err
