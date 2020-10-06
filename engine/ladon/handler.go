@@ -85,7 +85,7 @@ func NewEngine(store kstorage.Manager, sh *kstorage.Handler, e *engine.Engine, h
 func (e *Engine) Register(r *httprouter.Router) {
 	// swagger:route POST /engines/acp/ory/{flavor}/allowed engines doOryAccessControlPoliciesAllow
 	//
-	// Check if a request is allowed
+	// Check If a Request is Allowed
 	//
 	// Use this endpoint to check if a request is allowed or not. If the request is allowed, a 200 response with
 	// `{"allowed":"true"}` will be sent. If the request is denied, a 403 response with `{"allowed":"false"}` will
@@ -248,7 +248,7 @@ func (e *Engine) Register(r *httprouter.Router) {
 
 	// swagger:route PUT /engines/acp/ory/{flavor}/roles/{id}/members engines addOryAccessControlPolicyRoleMembers
 	//
-	// Add a member to an ORY Access Control Policy Role
+	// Add a Member to an ORY Access Control Policy Role
 	//
 	// Roles group several subjects into one. Rules can be assigned to ORY Access Control Policy (OACP) by using the Role ID
 	// as subject in the OACP.
@@ -269,7 +269,7 @@ func (e *Engine) Register(r *httprouter.Router) {
 
 	// swagger:route DELETE /engines/acp/ory/{flavor}/roles/{id}/members/{member} engines removeOryAccessControlPolicyRoleMembers
 	//
-	// Remove a member from an ORY Access Control Policy Role
+	// Remove a Member From an ORY Access Control Policy Role
 	//
 	// Roles group several subjects into one. Rules can be assigned to ORY Access Control Policy (OACP) by using the Role ID
 	// as subject in the OACP.
