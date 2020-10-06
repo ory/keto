@@ -3,6 +3,18 @@ id: milestones
 title: Milestones and Roadmap
 ---
 
+## [Next Gen Keto](https://github.com/ory/keto/milestone/3)
+
+Tracks all the issues contributing to next gen Keto.
+
+### [Feat](https://github.com/ory/keto/labels/feat)
+
+New feature or request.
+
+#### Issues
+
+- [ ] [next-gen] Allow defining relations on relations within relation definition ([keto#263](https://github.com/ory/keto/issues/263)) - [@Patrik](https://github.com/zepatrik)
+
 ## [next](https://github.com/ory/keto/milestone/2)
 
 _This milestone does not have a description._
