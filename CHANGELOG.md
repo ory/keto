@@ -4,7 +4,7 @@
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**
 
-- [Unreleased (2020-10-03)](#unreleased-2020-10-03)
+- [Unreleased (2020-10-06)](#unreleased-2020-10-06)
     - [Bug Fixes](#bug-fixes)
     - [Documentation](#documentation)
     - [Features](#features)
@@ -73,7 +73,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [Unreleased](https://github.com/ory/keto/compare/v0.5.6-alpha.1...84f028dc35665174542e103c0aefc635bb6d3e52) (2020-10-03)
+# [Unreleased](https://github.com/ory/keto/compare/v0.5.6-alpha.1...5999328892ea127d27fe0fdeceb02d36956fbbab) (2020-10-06)
 
 
 ### Bug Fixes
@@ -97,6 +97,7 @@
 * Update repository templates ([db505f9](https://github.com/ory/keto/commit/db505f9e10755bc20c4623c4f5f99f33283dffda))
 * Update repository templates ([6c056bb](https://github.com/ory/keto/commit/6c056bb2043af6e82f06fdfa509ab3fa0d5e5d06))
 * Use mdx for api reference ([340f3a3](https://github.com/ory/keto/commit/340f3a3dd20c82c743e7b3ad6aaf06a4c118b5a1))
+* Use NYT capitalization for all swagger headlines ([#262](https://github.com/ory/keto/issues/262)) ([5999328](https://github.com/ory/keto/commit/5999328892ea127d27fe0fdeceb02d36956fbbab)), closes [#233](https://github.com/ory/keto/issues/233)
 
 
 ### Features
