@@ -113,7 +113,10 @@ func RunServe(
 		} else if err != nil {
 			cmdx.Must(err, "Unable to load HTTP TLS certificate(s): %s", err)
 		} else {
-			server.TLSConfig = &tls.Config{Certificates: cert}
+			server.TLSConfig = &tls.Config{
+				Certificates: cert,
+				MinVersion:   tls.VersionTLS10,
+			}
 		}
 
 		if d.Registry().Tracer().IsLoaded() {

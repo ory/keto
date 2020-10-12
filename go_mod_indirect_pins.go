@@ -13,7 +13,7 @@ import (
 	// FIXME See https://github.com/gobuffalo/buffalo/pull/1999
 	_ "github.com/gorilla/websocket"
 
-	_ "github.com/ory/go-acc"
 	_ "github.com/ory/cli"
+	_ "github.com/ory/go-acc"
 	_ "github.com/ory/x/tools/listx"
 )

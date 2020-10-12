@@ -44,8 +44,6 @@ jobs:
         run: go test -race -short -v $(go list ./... | grep -v cmd)
       -
         run: go-acc -v -o coverage.txt ./...
-      -
-        run: ./scripts/test-e2e.sh
 
       # Submit coverage details
       -
