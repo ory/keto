@@ -82,7 +82,7 @@ serve:
   # - Windows Command Line (CMD):
   #    > set SERVE_HOST=<value>
   #
-  host: ''
+  host: 127.0.0.1
 
   ## Cross Origin Resource Sharing (CORS) ##
   #
@@ -101,7 +101,7 @@ serve:
     # - Windows Command Line (CMD):
     #    > set SERVE_CORS_ENABLED=<value>
     #
-    enabled: true
+    enabled: false
 
     ## Allowed Origins ##
     #
@@ -121,7 +121,9 @@ serve:
     #    > set SERVE_CORS_ALLOWED_ORIGINS=<value>
     #
     allowed_origins:
-      - '*'
+      - https://example.com
+      - https://*.example.com
+      - https://*.foo.example.com
 
     ## Allowed HTTP Methods ##
     #
@@ -136,8 +138,7 @@ serve:
     #    > set SERVE_CORS_ALLOWED_METHODS=<value>
     #
     allowed_methods:
-      - HEAD
-      - PATCH
+      - TRACE
 
     ## Allowed Request HTTP Headers ##
     #
@@ -152,11 +153,10 @@ serve:
     #    > set SERVE_CORS_ALLOWED_HEADERS=<value>
     #
     allowed_headers:
-      - culpa eiusmod non ipsum ad
-      - ad
-      - sit
-      - consequat est
-      - velit amet in enim ut
+      - aliqua laboris cupidatat
+      - aliqua consequat tempor
+      - ullamco in
+      - reprehenderit cillum est
 
     ## Allowed Response HTTP Headers ##
     #
@@ -171,11 +171,9 @@ serve:
     #    > set SERVE_CORS_EXPOSED_HEADERS=<value>
     #
     exposed_headers:
-      - adipisicing fugiat Ut officia irure
-      - in sint est dolore in
-      - dolore sit cupidatat voluptate
-      - laborum
-      - fugiat
+      - aute in sint
+      - nulla commodo
+      - non enim ut
 
     ## Allow HTTP Credentials ##
     #
@@ -201,7 +199,7 @@ serve:
     # - Windows Command Line (CMD):
     #    > set SERVE_CORS_MAX_AGE=<value>
     #
-    max_age: -10735613
+    max_age: -82917746
 
     ## Enable Debugging ##
     #
@@ -283,7 +281,7 @@ serve:
 # - Windows Command Line (CMD):
 #    > set PROFILING=<value>
 #
-profiling: cpu
+profiling: mem
 
 ## Log ##
 #
@@ -310,7 +308,7 @@ log:
   # - Windows Command Line (CMD):
   #    > set LOG_LEVEL=<value>
   #
-  level: info
+  level: fatal
 
   ## Format ##
   #
@@ -454,5 +452,5 @@ tracing:
 # - Windows Command Line (CMD):
 #    > set VERSION=<value>
 #
-version: v6909625.0.0
+version: v484137.0.98
 ```

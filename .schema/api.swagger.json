@@ -42,7 +42,7 @@
         "tags": [
           "engines"
         ],
-        "summary": "Check if a request is allowed",
+        "summary": "Check If a Request is Allowed",
         "operationId": "doOryAccessControlPoliciesAllow",
         "parameters": [
           {
@@ -793,7 +793,7 @@
         "tags": [
           "engines"
         ],
-        "summary": "Add a member to an ORY Access Control Policy Role",
+        "summary": "Add a Member to an ORY Access Control Policy Role",
         "operationId": "addOryAccessControlPolicyRoleMembers",
         "parameters": [
           {
@@ -875,7 +875,7 @@
         "tags": [
           "engines"
         ],
-        "summary": "Remove a member from an ORY Access Control Policy Role",
+        "summary": "Remove a Member From an ORY Access Control Policy Role",
         "operationId": "removeOryAccessControlPolicyRoleMembers",
         "parameters": [
           {

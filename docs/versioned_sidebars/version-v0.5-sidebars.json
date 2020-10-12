@@ -1,6 +1,7 @@
 {
   "version-v0.5/docs": [
     {
+      "collapsed": true,
       "type": "category",
       "label": "Introduction",
       "items": [
@@ -15,6 +16,7 @@
       ]
     },
     {
+      "collapsed": true,
       "type": "category",
       "label": "Guides",
       "items": [
@@ -29,6 +31,7 @@
       ]
     },
     {
+      "collapsed": true,
       "type": "category",
       "label": "Access Control Engines",
       "items": [
@@ -55,6 +58,7 @@
       ]
     },
     {
+      "collapsed": true,
       "type": "category",
       "label": "Reference",
       "items": [
@@ -69,6 +73,7 @@
       ]
     },
     {
+      "collapsed": true,
       "type": "category",
       "label": "SDKs",
       "items": [
@@ -79,6 +84,18 @@
       ]
     },
     {
+      "collapsed": true,
+      "type": "category",
+      "label": "Development",
+      "items": [
+        {
+          "type": "doc",
+          "id": "version-v0.5/milestones"
+        }
+      ]
+    },
+    {
+      "collapsed": true,
       "type": "category",
       "label": "ORY Kratos",
       "items": [
@@ -100,6 +117,7 @@
       ]
     },
     {
+      "collapsed": true,
       "type": "category",
       "label": "ORY Hydra",
       "items": [
@@ -121,6 +139,7 @@
       ]
     },
     {
+      "collapsed": true,
       "type": "category",
       "label": "ORY Oathkeeper",
       "items": [

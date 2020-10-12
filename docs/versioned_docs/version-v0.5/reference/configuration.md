@@ -51,6 +51,10 @@ serve:
   #
   # Default value: 4456
   #
+  # Minimum value: 1
+  #
+  # Maximum value: 65535
+  #
   # Examples:
   # - 4456
   # 
@@ -76,7 +80,7 @@ serve:
   # - Windows Command Line (CMD):
   #    > set SERVE_HOST=<value>
   #
-  host: localhost
+  host: 127.0.0.1
 
   ## Cross Origin Resource Sharing (CORS) ##
   #
@@ -96,7 +100,7 @@ serve:
     # - Windows Command Line (CMD):
     #    > set SERVE_CORS_ENABLED=<value>
     #
-    enabled: true
+    enabled: false
 
     ## Allowed Origins ##
     #
@@ -133,11 +137,7 @@ serve:
     #    > set SERVE_CORS_ALLOWED_METHODS=<value>
     #
     allowed_methods:
-      - PATCH
-      - GET
-      - CONNECT
-      - POST
-      - DELETE
+      - TRACE
 
     ## Allowed Request HTTP Headers ##
     #
@@ -152,9 +152,10 @@ serve:
     #    > set SERVE_CORS_ALLOWED_HEADERS=<value>
     #
     allowed_headers:
-      - in
-      - in deserunt
-      - reprehenderit
+      - aliqua laboris cupidatat
+      - aliqua consequat tempor
+      - ullamco in
+      - reprehenderit cillum est
 
     ## Allowed Response HTTP Headers ##
     #
@@ -169,9 +170,9 @@ serve:
     #    > set SERVE_CORS_EXPOSED_HEADERS=<value>
     #
     exposed_headers:
-      - est exercitation dolor fugiat laborum
-      - sed aliqua non
-      - Duis nulla
+      - aute in sint
+      - nulla commodo
+      - non enim ut
 
     ## Allow HTTP Credentials ##
     #
@@ -185,7 +186,7 @@ serve:
     # - Windows Command Line (CMD):
     #    > set SERVE_CORS_ALLOW_CREDENTIALS=<value>
     #
-    allow_credentials: true
+    allow_credentials: false
 
     ## Maximum Age ##
     #
@@ -197,7 +198,7 @@ serve:
     # - Windows Command Line (CMD):
     #    > set SERVE_CORS_MAX_AGE=<value>
     #
-    max_age: 60979592
+    max_age: -82917746
 
     ## Enable Debugging ##
     #
@@ -271,13 +272,18 @@ serve:
 #
 # Enables CPU or memory profiling if set. For more details on profiling Go programs read [Profiling Go Programs](https://blog.golang.org/profiling-go-programs).
 #
+# One of:
+# - cpu
+# - mem
+# - ""
+# 
 # Set this value using environment variables on
 # - Linux/macOS:
 #    $ export PROFILING=<value>
 # - Windows Command Line (CMD):
 #    > set PROFILING=<value>
 #
-profiling: ""
+profiling: mem
 
 ## Log ##
 #
@@ -291,13 +297,21 @@ log:
   #
   # Default value: info
   #
+  # One of:
+  # - panic
+  # - fatal
+  # - error
+  # - warn
+  # - info
+  # - debug
+  # 
   # Set this value using environment variables on
   # - Linux/macOS:
   #    $ export LOG_LEVEL=<value>
   # - Windows Command Line (CMD):
   #    > set LOG_LEVEL=<value>
   #
-  level: info
+  level: fatal
 
   ## Format ##
   #
@@ -305,13 +319,17 @@ log:
   #
   # Default value: text
   #
+  # One of:
+  # - text
+  # - json
+  # 
   # Set this value using environment variables on
   # - Linux/macOS:
   #    $ export LOG_FORMAT=<value>
   # - Windows Command Line (CMD):
   #    > set LOG_FORMAT=<value>
   #
-  format: text
+  format: json
 
 ## tracing ##
 #
@@ -323,6 +341,9 @@ tracing:
   #
   # Set this to the tracing backend you wish to use. Currently supports jaeger. If omitted or empty, tracing will be disabled.
   #
+  # One of:
+  # - jaeger
+  # 
   # Examples:
   # - jaeger
   # 
@@ -427,5 +448,17 @@ tracing:
         #    > set TRACING_PROVIDERS_JAEGER_SAMPLING_SERVER_URL=<value>
         #
         server_url: http://localhost:5778/sampling
+
+## The Keto version this config is written for. ##
+#
+# SemVer according to https://semver.org/ prefixed with `v` as in our releases.
+#
+# Set this value using environment variables on
+# - Linux/macOS:
+#    $ export VERSION=<value>
+# - Windows Command Line (CMD):
+#    > set VERSION=<value>
+#
+version: v484137.0.98
 
 ```
