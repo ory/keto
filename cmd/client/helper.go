@@ -31,9 +31,6 @@ import (
 
 	"github.com/ory/x/cmdx"
 	"github.com/ory/x/flagx"
-	"github.com/ory/x/stringslice"
-
-	"github.com/ory/keto/engine/ladon"
 )
 
 var hc = http.DefaultClient
@@ -80,12 +77,6 @@ func Delete(location string) {
 	err = res.Body.Close()
 	cmdx.Must(err, "Unable to close body: %s", err)
 	fmt.Printf("Resource at location %s was deleted successfully!", location)
-}
-
-func CheckLadonFlavor(flavor string) {
-	if !stringslice.Has(ladon.EnabledFlavors, flavor) {
-		cmdx.Fatalf("ORY Access Control Policy flavor %s is currently not supported, please choose one of: %v", flavor, ladon.EnabledFlavors)
-	}
 }
 
 func EndpointURL(cmd *cobra.Command) string {

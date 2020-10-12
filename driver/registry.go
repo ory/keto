@@ -1,7 +1,6 @@
 package driver
 
 import (
-	"github.com/open-policy-agent/opa/ast"
 	"github.com/pkg/errors"
 
 	"github.com/ory/x/dbal"
@@ -10,9 +9,6 @@ import (
 	"github.com/ory/x/tracing"
 
 	"github.com/ory/keto/driver/configuration"
-	"github.com/ory/keto/engine"
-	"github.com/ory/keto/engine/ladon"
-	"github.com/ory/keto/storage"
 	"github.com/ory/keto/x"
 )
 
@@ -28,13 +24,8 @@ type Registry interface {
 
 	x.RegistryLogger
 	x.RegistryWriter
-	engine.Registry
-	storage.Registry
 
-	EngineCompiler() *ast.Compiler
-	StorageHandler() *storage.Handler
 	HealthHandler() *healthx.Handler
-	LadonEngine() *ladon.Engine
 	Tracer() *tracing.Tracer
 }
 
