@@ -42,17 +42,12 @@ import (
 	"github.com/ory/graceful"
 	"github.com/ory/x/stringslice"
 
-	"github.com/ory/keto/engine/ladon"
-
 	"github.com/ory/x/cmdx"
 	"github.com/ory/x/corsx"
 	"github.com/ory/x/healthx"
 	"github.com/ory/x/metricsx"
 	"github.com/ory/x/reqlog"
 	"github.com/ory/x/tlsx"
-
-	// This forces go mod vendor to look for the package rego and its subpackages
-	_ "github.com/ory/keto/engine/ladon/rego"
 )
 
 // RunServe runs the Keto API HTTP server
@@ -67,7 +62,6 @@ func RunServe(
 		)
 
 		router := httprouter.New()
-		d.Registry().LadonEngine().Register(router)
 		d.Registry().HealthHandler().SetRoutes(router, true)
 
 		n := negroni.New()
@@ -85,7 +79,6 @@ func RunServe(
 				WriteKey:      "jk32cFATnj9GKbQdFL7fBB9qtKZdX9j7",
 				WhitelistedPaths: stringslice.Merge(
 					healthx.RoutesToObserve(),
-					ladon.RoutesToObserve(),
 				),
 				BuildVersion: version,
 				BuildTime:    date,
@@ -120,7 +113,10 @@ func RunServe(
 		} else if err != nil {
 			cmdx.Must(err, "Unable to load HTTP TLS certificate(s): %s", err)
 		} else {
-			server.TLSConfig = &tls.Config{Certificates: cert}
+			server.TLSConfig = &tls.Config{
+				Certificates: cert,
+				MinVersion:   tls.VersionTLS10,
+			}
 		}
 
 		if d.Registry().Tracer().IsLoaded() {
