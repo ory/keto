@@ -80,7 +80,7 @@ serve:
   # - Windows Command Line (CMD):
   #    > set SERVE_HOST=<value>
   #
-  host: 127.0.0.1
+  host: localhost
 
   ## Cross Origin Resource Sharing (CORS) ##
   #
@@ -100,7 +100,7 @@ serve:
     # - Windows Command Line (CMD):
     #    > set SERVE_CORS_ENABLED=<value>
     #
-    enabled: false
+    enabled: true
 
     ## Allowed Origins ##
     #
@@ -138,6 +138,10 @@ serve:
     #
     allowed_methods:
       - TRACE
+      - DELETE
+      - PUT
+      - HEAD
+      - GET
 
     ## Allowed Request HTTP Headers ##
     #
@@ -152,10 +156,7 @@ serve:
     #    > set SERVE_CORS_ALLOWED_HEADERS=<value>
     #
     allowed_headers:
-      - aliqua laboris cupidatat
-      - aliqua consequat tempor
-      - ullamco in
-      - reprehenderit cillum est
+      - ipsum qui in proident dolore
 
     ## Allowed Response HTTP Headers ##
     #
@@ -170,9 +171,10 @@ serve:
     #    > set SERVE_CORS_EXPOSED_HEADERS=<value>
     #
     exposed_headers:
-      - aute in sint
-      - nulla commodo
-      - non enim ut
+      - Excepteur et
+      - eu
+      - dolore ipsum
+      - ut dolor esse
 
     ## Allow HTTP Credentials ##
     #
@@ -186,7 +188,7 @@ serve:
     # - Windows Command Line (CMD):
     #    > set SERVE_CORS_ALLOW_CREDENTIALS=<value>
     #
-    allow_credentials: false
+    allow_credentials: true
 
     ## Maximum Age ##
     #
@@ -198,7 +200,7 @@ serve:
     # - Windows Command Line (CMD):
     #    > set SERVE_CORS_MAX_AGE=<value>
     #
-    max_age: -82917746
+    max_age: -41798350
 
     ## Enable Debugging ##
     #
@@ -283,7 +285,7 @@ serve:
 # - Windows Command Line (CMD):
 #    > set PROFILING=<value>
 #
-profiling: mem
+profiling: ""
 
 ## Log ##
 #
@@ -459,6 +461,6 @@ tracing:
 # - Windows Command Line (CMD):
 #    > set VERSION=<value>
 #
-version: v484137.0.98
+version: v26706.0.588380420-59252j-.0.0.WgMDhOUf2.0.jBhlmKMbd.0.0.13.128.1175816767+8B2-t3igyBx.fht.WJ1.XjL0rxFR.HYAnh
 
 ```
