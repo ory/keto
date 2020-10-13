@@ -15,13 +15,22 @@
 package cmd
 
 import (
+	"fmt"
+	"github.com/julienschmidt/httprouter"
+	"github.com/ory/graceful"
+	"github.com/ory/keto/driver"
+	"github.com/ory/keto/relation"
+	"github.com/ory/keto/relation/read"
 	"github.com/spf13/cobra"
+	"google.golang.org/grpc"
+	"net"
+	"net/http"
+	"os"
+	"sync"
 
 	"github.com/ory/x/viperx"
 
 	"github.com/ory/x/logrusx"
-
-	"github.com/ory/keto/cmd/server"
 )
 
 // serveCmd represents the serve command
@@ -36,7 +45,47 @@ ORY Keto can be configured using environment variables as well as a configuratio
 on configuration options, open the configuration documentation:
 
 >> https://github.com/ory/keto/blob/` + Version + `/docs/config.yaml <<`,
-	Run: server.RunServe(logger, Version, Commit, Date),
+	Run: func(cmd *cobra.Command, args []string) {
+		lis, err := net.Listen("tcp", ":4467")
+		if err != nil {
+			fmt.Fprintf(cmd.ErrOrStderr(), "%+v\n", err)
+			os.Exit(1)
+		}
+
+		reg := &driver.RegistryDefault{}
+
+		wg := &sync.WaitGroup{}
+		wg.Add(2)
+
+		go func() {
+			defer wg.Done()
+
+			s := grpc.NewServer()
+			read.RegisterRelationReaderServer(s, relation.NewServer(reg))
+			if err := s.Serve(lis); err != nil {
+				fmt.Fprintf(cmd.ErrOrStderr(), "%+v\n", err)
+			}
+		}()
+
+		go func() {
+			defer wg.Done()
+
+			router := httprouter.New()
+			h := relation.NewHandler(reg)
+			h.RegisterPublicRoutes(router)
+
+			server := graceful.WithDefaults(&http.Server{
+				Addr:    ":4466",
+				Handler: router,
+			})
+
+			if err := server.ListenAndServe(); err != nil {
+				fmt.Fprintf(cmd.ErrOrStderr(), "%+v\n", err)
+			}
+		}()
+
+		wg.Wait()
+	},
 }
 
 func init() {

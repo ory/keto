@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+option go_package = "github.com/ory/keto/relation/read";
+
+package read;
+
+service RelationReader {
+  rpc RelationsByUser(RelationsRequest) returns (RelationsResponse);
+  rpc RelationsByObject(RelationsRequest) returns (RelationsResponse);
+}
+
+message RelationsRequest {
+  string id = 1;
+  int32 page = 2;
+  int32 perPage = 3;
+}
+
+message Relation {
+  string userID = 1;
+  string relationName = 2;
+  string objectID = 3;
+}
+
+message RelationsResponse {
+  repeated Relation relations = 1;
+}

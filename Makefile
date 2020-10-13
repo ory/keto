@@ -63,3 +63,7 @@ docker: deps
 		docker build -t oryd/keto:latest .
 		rm keto
 		packr clean
+
+.PHONY: gen-protobuf
+gen-protobuf:
+		protoc --go_out=relation/read --go_opt=paths=source_relative --go-grpc_out=relation/read --go-grpc_opt=paths=source_relative relation/read/read.proto
