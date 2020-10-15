@@ -16,6 +16,7 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/ory/keto/cmd/relation"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -63,6 +64,8 @@ func init() {
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 	RootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+
+	relation.RegisterCommandRecursive(RootCmd)
 }
 
 // initConfig reads in config file and ENV variables if set.

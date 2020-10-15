@@ -22,8 +22,8 @@ type Registry interface {
 	BuildDate() string
 	BuildHash() string
 
-	x.RegistryLogger
-	x.RegistryWriter
+	x.LoggerProvider
+	x.WriterProvider
 
 	HealthHandler() *healthx.Handler
 	Tracer() *tracing.Tracer

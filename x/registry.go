@@ -7,11 +7,11 @@ import (
 	"github.com/ory/x/logrusx"
 )
 
-type RegistryLogger interface {
+type LoggerProvider interface {
 	Logger() *logrusx.Logger
 }
 
-type RegistryWriter interface {
+type WriterProvider interface {
 	Writer() herodot.Writer
 }
 
