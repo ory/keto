@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/ory/keto/cmd/client"
-	"github.com/ory/keto/relation/read"
+	"github.com/ory/keto/models"
 	"github.com/spf13/cobra"
 )
 
@@ -18,8 +18,8 @@ var getByUserRelationCmd = &cobra.Command{
 		}
 		defer conn.Close()
 
-		cl := read.NewRelationReaderClient(conn)
-		resp, err := cl.RelationsByUser(context.Background(), &read.RelationsRequest{
+		cl := models.NewGRPCRelationReaderClient(conn)
+		resp, err := cl.RelationsByUser(context.Background(), &models.GRPCRelationsReadRequest{
 			Page:    0,
 			PerPage: 100,
 			Id:      args[0],

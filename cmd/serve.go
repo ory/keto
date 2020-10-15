@@ -19,8 +19,8 @@ import (
 	"github.com/julienschmidt/httprouter"
 	"github.com/ory/graceful"
 	"github.com/ory/keto/driver"
+	"github.com/ory/keto/models"
 	"github.com/ory/keto/relation"
-	"github.com/ory/keto/relation/read"
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
 	"net"
@@ -61,7 +61,8 @@ on configuration options, open the configuration documentation:
 			defer wg.Done()
 
 			s := grpc.NewServer()
-			read.RegisterRelationReaderServer(s, relation.NewServer(reg))
+			models.RegisterGRPCRelationReaderServer(s, relation.NewServer(reg))
+			fmt.Println("going to serve GRPC on", lis.Addr().String())
 			if err := s.Serve(lis); err != nil {
 				fmt.Fprintf(cmd.ErrOrStderr(), "%+v\n", err)
 			}
@@ -79,6 +80,7 @@ on configuration options, open the configuration documentation:
 				Handler: router,
 			})
 
+			fmt.Println("going to serve REST on", server.Addr)
 			if err := server.ListenAndServe(); err != nil {
 				fmt.Fprintf(cmd.ErrOrStderr(), "%+v\n", err)
 			}

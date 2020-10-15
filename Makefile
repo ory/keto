@@ -66,4 +66,4 @@ docker: deps
 
 .PHONY: gen-protobuf
 gen-protobuf:
-		protoc --go_out=relation/read --go_opt=paths=source_relative --go-grpc_out=relation/read --go-grpc_opt=paths=source_relative relation/read/read.proto
+		protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative models/*.proto

@@ -1,6 +1,7 @@
 package memory
 
 import (
+	"github.com/ory/keto/models"
 	"github.com/ory/keto/relation"
 	"sync"
 )
@@ -8,14 +9,14 @@ import (
 type Persister struct {
 	sync.RWMutex
 
-	relations []relation.Relation
+	relations []*models.Relation
 }
 
 var _ relation.Manager = &Persister{}
 
 func NewPersister() *Persister {
 	return &Persister{
-		relations: []relation.Relation{
+		relations: []*models.Relation{
 			{
 				UserID:   "1",
 				Name:     "testRelation",

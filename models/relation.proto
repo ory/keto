@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+option go_package = "github.com/ory/keto/models";
+
+package models;
+
+service GRPCRelationReader {
+  rpc RelationsByUser(GRPCRelationsReadRequest) returns (GRPCRelationsReadResponse);
+  rpc RelationsByObject(GRPCRelationsReadRequest) returns (GRPCRelationsReadResponse);
+}
+
+message GRPCRelationsReadRequest {
+  string id = 1;
+  int32 page = 2;
+  int32 perPage = 3;
+}
+
+message GRPCRelation {
+  string userID = 1;
+  string name = 2;
+  string objectID = 3;
+}
+
+message GRPCRelationsReadResponse {
+  repeated GRPCRelation relations = 1;
+}

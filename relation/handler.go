@@ -3,7 +3,9 @@ package relation
 import (
 	"github.com/julienschmidt/httprouter"
 	"github.com/ory/herodot"
+	"github.com/ory/keto/models"
 	"github.com/ory/keto/x"
+	"github.com/pkg/errors"
 	"net/http"
 )
 
@@ -36,7 +38,7 @@ func (h *handler) getRelations(w http.ResponseWriter, r *http.Request, _ httprou
 	userID := r.URL.Query().Get("user-id")
 	objectID := r.URL.Query().Get("object-id")
 
-	var rels []Relation
+	var rels []*models.Relation
 	var err error
 
 	if userID != "" {
@@ -44,7 +46,7 @@ func (h *handler) getRelations(w http.ResponseWriter, r *http.Request, _ httprou
 	} else if objectID != "" {
 		rels, err = h.d.RelationManager().GetRelationsByObject(r.Context(), objectID, 0, 100)
 	} else {
-		h.d.Writer().WriteError(w, r, herodot.ErrBadRequest)
+		h.d.Writer().WriteError(w, r, errors.WithStack(herodot.ErrBadRequest))
 		return
 	}
 
