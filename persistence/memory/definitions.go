@@ -4,7 +4,6 @@ import (
 	"sync"
 
 	"github.com/ory/keto/models"
-	"github.com/ory/keto/relation"
 )
 
 type Persister struct {
@@ -12,8 +11,6 @@ type Persister struct {
 
 	relations []*models.Relation
 }
-
-var _ relation.Manager = &Persister{}
 
 func NewPersister() *Persister {
 	return &Persister{

@@ -9,6 +9,10 @@ service GRPCRelationReader {
   rpc RelationsByObject(GRPCRelationsReadRequest) returns (GRPCRelationsReadResponse);
 }
 
+service GRPCRelationWriter {
+  rpc WriteRelation(GRPCRelation) returns (GRPCRelationsWriteResponse);
+}
+
 message GRPCRelationsReadRequest {
   string id = 1;
   int32 page = 2;
@@ -24,3 +28,5 @@ message GRPCRelation {
 message GRPCRelationsReadResponse {
   repeated GRPCRelation relations = 1;
 }
+
+message GRPCRelationsWriteResponse {}

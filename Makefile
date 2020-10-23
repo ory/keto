@@ -24,8 +24,8 @@ ifneq ("$(shell base64 Makefile))","$(shell cat .bin/.lock)")
 endif
 
 .PHONY: format
-format: deps
-		goreturns -w -local github.com/ory $$(listx .)
+format:
+		goimports -w -local github.com/ory $$(listx .)
 
 .PHONY: install-stable
 install-stable: deps
