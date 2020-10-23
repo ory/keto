@@ -9,9 +9,10 @@ import (
 
 	"github.com/spf13/cobra"
 
+	"github.com/ory/x/cmdx"
+
 	"github.com/ory/keto/cmd/client"
 	"github.com/ory/keto/models"
-	"github.com/ory/x/cmdx"
 )
 
 func newCreateCmd() *cobra.Command {
