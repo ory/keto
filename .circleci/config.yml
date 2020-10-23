@@ -15,18 +15,18 @@ jobs:
       -
         image: circleci/golang:1.14
         environment:
-          - TEST_DATABASE_POSTGRESQL=postgres://test:test@localhost:5432/keto?sslmode=disable
-          - TEST_DATABASE_MYSQL=root:test@(localhost:3306)/mysql?parseTime=true
+          TEST_DATABASE_POSTGRESQL: postgres://test:test@localhost:5432/keto?sslmode=disable
+          TEST_DATABASE_MYSQL: root:test@(localhost:3306)/mysql?parseTime=true
       -
         image: postgres:9.5
         environment:
-          - POSTGRES_USER=test
-          - POSTGRES_PASSWORD=test
-          - POSTGRES_DB=keto
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: keto
       -
         image: mysql:8.0
         environment:
-          - MYSQL_ROOT_PASSWORD=test
+          MYSQL_ROOT_PASSWORD: test
     working_directory: /go/src/github.com/ory/keto
     steps:
       - checkout
@@ -98,12 +98,12 @@ workflows:
               only: /.*/
             branches:
               only: master
-      -
-        sdk/generate:
-          appname: Ory_Keto
-          requires:
-            - test
-            - validate
+#      -
+#        sdk/generate:
+#          appname: Ory_Keto
+#          requires:
+#            - test
+#            - validate
       -
         sdk/release:
           requires:
