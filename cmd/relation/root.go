@@ -1,8 +1,9 @@
 package relation
 
 import (
-	"github.com/ory/keto/cmd/client"
 	"github.com/spf13/cobra"
+
+	"github.com/ory/keto/cmd/client"
 )
 
 var relationCmd = &cobra.Command{

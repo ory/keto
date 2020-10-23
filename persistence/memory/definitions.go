@@ -1,9 +1,10 @@
 package memory
 
 import (
+	"sync"
+
 	"github.com/ory/keto/models"
 	"github.com/ory/keto/relation"
-	"sync"
 )
 
 type Persister struct {

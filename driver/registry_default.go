@@ -2,10 +2,11 @@ package driver
 
 import (
 	"github.com/ory/herodot"
+	"github.com/ory/x/logrusx"
+
 	"github.com/ory/keto/persistence/memory"
 	"github.com/ory/keto/relation"
 	"github.com/ory/keto/x"
-	"github.com/ory/x/logrusx"
 )
 
 var _ relation.ManagerProvider = &RegistryDefault{}

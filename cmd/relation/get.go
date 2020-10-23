@@ -3,9 +3,11 @@ package relation
 import (
 	"context"
 	"fmt"
+
+	"github.com/spf13/cobra"
+
 	"github.com/ory/keto/cmd/client"
 	"github.com/ory/keto/models"
-	"github.com/spf13/cobra"
 )
 
 var getByUserRelationCmd = &cobra.Command{

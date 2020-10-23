@@ -1,12 +1,14 @@
 package relation
 
 import (
+	"net/http"
+
 	"github.com/julienschmidt/httprouter"
 	"github.com/ory/herodot"
+	"github.com/pkg/errors"
+
 	"github.com/ory/keto/models"
 	"github.com/ory/keto/x"
-	"github.com/pkg/errors"
-	"net/http"
 )
 
 type (

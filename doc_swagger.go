@@ -17,6 +17,7 @@ package main
 // The standard error format
 //
 // swagger:response genericError
+// nolint:deadcode,unused
 type genericError struct {
 	// in: body
 	Body struct {
@@ -37,4 +38,5 @@ type genericError struct {
 // An empty response
 //
 // swagger:response emptyResponse
+// nolint:deadcode,unused
 type emptyResponse struct{}

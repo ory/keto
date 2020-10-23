@@ -2,10 +2,11 @@ package client
 
 import (
 	"context"
+	"time"
+
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"google.golang.org/grpc"
-	"time"
 )
 
 const (
@@ -17,7 +18,8 @@ func GetGRPCConn(cmd *cobra.Command) (*grpc.ClientConn, error) {
 	if err != nil {
 		return nil, err
 	}
-	ctx, _ := context.WithTimeout(context.Background(), 3*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
 	return grpc.DialContext(ctx, remote, grpc.WithInsecure(), grpc.WithBlock())
 }
 

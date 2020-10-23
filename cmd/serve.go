@@ -16,17 +16,19 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/julienschmidt/httprouter"
-	"github.com/ory/graceful"
-	"github.com/ory/keto/driver"
-	"github.com/ory/keto/models"
-	"github.com/ory/keto/relation"
-	"github.com/spf13/cobra"
-	"google.golang.org/grpc"
 	"net"
 	"net/http"
 	"os"
 	"sync"
+
+	"github.com/julienschmidt/httprouter"
+	"github.com/ory/graceful"
+	"github.com/spf13/cobra"
+	"google.golang.org/grpc"
+
+	"github.com/ory/keto/driver"
+	"github.com/ory/keto/models"
+	"github.com/ory/keto/relation"
 
 	"github.com/ory/x/viperx"
 
@@ -46,6 +48,7 @@ on configuration options, open the configuration documentation:
 
 >> https://github.com/ory/keto/blob/` + Version + `/docs/config.yaml <<`,
 	Run: func(cmd *cobra.Command, args []string) {
+		/* #nosec G102 - TODO this will be configurable */
 		lis, err := net.Listen("tcp", ":4467")
 		if err != nil {
 			fmt.Fprintf(cmd.ErrOrStderr(), "%+v\n", err)

@@ -2,6 +2,7 @@ package relation
 
 import (
 	"context"
+
 	"github.com/ory/keto/models"
 )
 
