@@ -22,9 +22,10 @@ import (
 	"sync"
 
 	"github.com/julienschmidt/httprouter"
-	"github.com/ory/graceful"
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
+
+	"github.com/ory/graceful"
 
 	"github.com/ory/keto/driver"
 	"github.com/ory/keto/models"
@@ -64,7 +65,9 @@ on configuration options, open the configuration documentation:
 			defer wg.Done()
 
 			s := grpc.NewServer()
-			models.RegisterGRPCRelationReaderServer(s, relation.NewServer(reg))
+			relS := relation.NewServer(reg)
+			models.RegisterGRPCRelationReaderServer(s, relS)
+			models.RegisterGRPCRelationWriterServer(s, relS)
 			fmt.Println("going to serve GRPC on", lis.Addr().String())
 			if err := s.Serve(lis); err != nil {
 				fmt.Fprintf(cmd.ErrOrStderr(), "%+v\n", err)

@@ -2,6 +2,7 @@ package client
 
 import (
 	"context"
+	"os"
 	"time"
 
 	"github.com/spf13/cobra"
@@ -24,5 +25,5 @@ func GetGRPCConn(cmd *cobra.Command) (*grpc.ClientConn, error) {
 }
 
 func RegisterRemoteURLFlag(flags *pflag.FlagSet) {
-	flags.StringP(FlagRemoteURL, "r", "", "TODO")
+	flags.StringP(FlagRemoteURL, "r", os.Getenv("KETO_GRPC_URL"), "TODO")
 }

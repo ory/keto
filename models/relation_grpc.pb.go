@@ -132,3 +132,86 @@ var _GRPCRelationReader_serviceDesc = grpc.ServiceDesc{
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "models/relation.proto",
 }
+
+// GRPCRelationWriterClient is the client API for GRPCRelationWriter service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type GRPCRelationWriterClient interface {
+	WriteRelation(ctx context.Context, in *GRPCRelation, opts ...grpc.CallOption) (*GRPCRelationsWriteResponse, error)
+}
+
+type gRPCRelationWriterClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewGRPCRelationWriterClient(cc grpc.ClientConnInterface) GRPCRelationWriterClient {
+	return &gRPCRelationWriterClient{cc}
+}
+
+func (c *gRPCRelationWriterClient) WriteRelation(ctx context.Context, in *GRPCRelation, opts ...grpc.CallOption) (*GRPCRelationsWriteResponse, error) {
+	out := new(GRPCRelationsWriteResponse)
+	err := c.cc.Invoke(ctx, "/models.GRPCRelationWriter/WriteRelation", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// GRPCRelationWriterServer is the server API for GRPCRelationWriter service.
+// All implementations must embed UnimplementedGRPCRelationWriterServer
+// for forward compatibility
+type GRPCRelationWriterServer interface {
+	WriteRelation(context.Context, *GRPCRelation) (*GRPCRelationsWriteResponse, error)
+	mustEmbedUnimplementedGRPCRelationWriterServer()
+}
+
+// UnimplementedGRPCRelationWriterServer must be embedded to have forward compatible implementations.
+type UnimplementedGRPCRelationWriterServer struct {
+}
+
+func (UnimplementedGRPCRelationWriterServer) WriteRelation(context.Context, *GRPCRelation) (*GRPCRelationsWriteResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method WriteRelation not implemented")
+}
+func (UnimplementedGRPCRelationWriterServer) mustEmbedUnimplementedGRPCRelationWriterServer() {}
+
+// UnsafeGRPCRelationWriterServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to GRPCRelationWriterServer will
+// result in compilation errors.
+type UnsafeGRPCRelationWriterServer interface {
+	mustEmbedUnimplementedGRPCRelationWriterServer()
+}
+
+func RegisterGRPCRelationWriterServer(s *grpc.Server, srv GRPCRelationWriterServer) {
+	s.RegisterService(&_GRPCRelationWriter_serviceDesc, srv)
+}
+
+func _GRPCRelationWriter_WriteRelation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GRPCRelation)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GRPCRelationWriterServer).WriteRelation(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/models.GRPCRelationWriter/WriteRelation",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GRPCRelationWriterServer).WriteRelation(ctx, req.(*GRPCRelation))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+var _GRPCRelationWriter_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "models.GRPCRelationWriter",
+	HandlerType: (*GRPCRelationWriterServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "WriteRelation",
+			Handler:    _GRPCRelationWriter_WriteRelation_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "models/relation.proto",
+}

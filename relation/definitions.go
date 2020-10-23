@@ -13,5 +13,6 @@ type (
 	Manager interface {
 		GetRelationsByUser(ctx context.Context, userID string, page, perPage int32) ([]*models.Relation, error)
 		GetRelationsByObject(ctx context.Context, objectID string, page, perPage int32) ([]*models.Relation, error)
+		WriteRelation(ctx context.Context, r *models.Relation) error
 	}
 )

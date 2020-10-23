@@ -7,6 +7,7 @@ import (
 )
 
 var _ models.GRPCRelationReaderServer = &Server{}
+var _ models.GRPCRelationWriterServer = &Server{}
 
 type (
 	serverDependencies interface {
@@ -14,10 +15,15 @@ type (
 	}
 	Server struct {
 		models.UnimplementedGRPCRelationReaderServer
+		models.UnimplementedGRPCRelationWriterServer
 
 		d serverDependencies
 	}
 )
+
+func (s *Server) WriteRelation(ctx context.Context, r *models.GRPCRelation) (*models.GRPCRelationsWriteResponse, error) {
+	return &models.GRPCRelationsWriteResponse{}, s.d.RelationManager().WriteRelation(ctx, (*models.Relation)(r))
+}
 
 func NewServer(d serverDependencies) *Server {
 	return &Server{
