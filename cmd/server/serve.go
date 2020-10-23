@@ -115,7 +115,7 @@ func RunServe(
 		} else {
 			server.TLSConfig = &tls.Config{
 				Certificates: cert,
-				MinVersion:   tls.VersionTLS10,
+				MinVersion:   tls.VersionTLS13,
 			}
 		}
 

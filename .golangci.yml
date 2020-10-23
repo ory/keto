@@ -1,7 +1,12 @@
 linters:
   enable-all: false
-  disable-all: true
   enable:
     - gosec
-    - vet
     - goimports
+  disable:
+    - vet
+    - structcheck
+
+linters-settings:
+  goimports:
+    local-prefixes: github.com/ory/keto

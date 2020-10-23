@@ -16,11 +16,12 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/ory/keto/cmd/relation"
 	"os"
 	"path/filepath"
 	"runtime"
 	"strings"
+
+	"github.com/ory/keto/cmd/relation"
 
 	"github.com/spf13/cobra"
 
