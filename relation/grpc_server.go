@@ -31,8 +31,8 @@ func NewServer(d serverDependencies) *Server {
 	}
 }
 
-func (_ *Server) relationsHelper(ctx context.Context, queryID string, page, perPage int32, getterFunc func(context.Context, string, int32, int32) ([]*models.Relation, error)) (*models.GRPCRelationsReadResponse, error) {
-	rels, err := getterFunc(ctx, queryID, page, perPage)
+func (_ *Server) relationsHelper(ctx context.Context, queryID string, page, perPage int32, getterFunc func(context.Context, string, ...PaginationOptionSetter) ([]*models.Relation, error)) (*models.GRPCRelationsReadResponse, error) {
+	rels, err := getterFunc(ctx, queryID, WithPage(int(page)), WithPerPage(int(perPage)))
 	if err != nil {
 		return nil, err
 	}
@@ -51,5 +51,5 @@ func (s *Server) RelationsByObject(ctx context.Context, req *models.GRPCRelation
 }
 
 func (s *Server) RelationsByUser(ctx context.Context, req *models.GRPCRelationsReadRequest) (*models.GRPCRelationsReadResponse, error) {
-	return s.relationsHelper(ctx, req.Id, req.Page, req.PerPage, s.d.RelationManager().GetRelationsByUser)
+	return s.relationsHelper(ctx, req.Id, req.Page, req.PerPage, s.d.RelationManager().GetRelationsBySubject)
 }

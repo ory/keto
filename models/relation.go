@@ -1,6 +1,8 @@
 package models
 
 import (
+	"fmt"
+
 	"google.golang.org/protobuf/runtime/protoimpl"
 
 	"github.com/ory/x/cmdx"
@@ -12,9 +14,9 @@ type (
 		sizeCache     protoimpl.SizeCache
 		unknownFields protoimpl.UnknownFields
 
-		UserID   string `json:"user_id"`
-		Name     string `json:"name"`
-		ObjectID string `json:"object_id"`
+		SubjectID string `json:"subject_id"`
+		Name      string `json:"name"`
+		ObjectID  string `json:"object_id"`
 	}
 	relationCollection struct {
 		grpcRelations     []*GRPCRelation
@@ -33,6 +35,20 @@ func (r *Relation) ImportFromGRPC(gr *GRPCRelation) *Relation {
 	return r
 }
 
+func (r *Relation) Copy() *Relation {
+	//goland:noinspection GoVetCopyLock - state is reset afterwards
+	nr := *r
+	r.state = protoimpl.MessageState{}
+	return &nr
+}
+
+func (r *Relation) String() string {
+	if r.SubjectID == "" {
+		return r.ToSubject()
+	}
+	return fmt.Sprintf("%s#%s@%s", r.ObjectID, r.Name, r.SubjectID)
+}
+
 func (x *GRPCRelation) ImportFromNormal(r *Relation) *GRPCRelation {
 	//goland:noinspection GoVetCopyLock - state is reset afterwards
 	*x = GRPCRelation(*r)
@@ -40,10 +56,16 @@ func (x *GRPCRelation) ImportFromNormal(r *Relation) *GRPCRelation {
 	return x
 }
 
+// ToSubject returns r in its subject representation
+// TODO rework to make this a safe conversion
+func (r *Relation) ToSubject() string {
+	return fmt.Sprintf("%s#%s", r.ObjectID, r.Name)
+}
+
 func (r *Relation) Header() []string {
 	return []string{
 		"RELATION NAME",
-		"USER ID",
+		"SUBJECT ID",
 		"OBJECT ID",
 	}
 }
@@ -51,7 +73,7 @@ func (r *Relation) Header() []string {
 func (r *Relation) Fields() []string {
 	return []string{
 		r.Name,
-		r.UserID,
+		r.SubjectID,
 		r.ObjectID,
 	}
 }
@@ -89,7 +111,7 @@ func (r *relationCollection) Table() [][]string {
 
 	data := make([][]string, len(r.internalRelations))
 	for i, rel := range r.internalRelations {
-		data[i] = []string{rel.Name, rel.UserID, rel.ObjectID}
+		data[i] = []string{rel.Name, rel.SubjectID, rel.ObjectID}
 	}
 
 	return data

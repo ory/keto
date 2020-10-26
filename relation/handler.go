@@ -47,9 +47,9 @@ func (h *handler) getRelations(w http.ResponseWriter, r *http.Request, _ httprou
 	var err error
 
 	if userID != "" {
-		rels, err = h.d.RelationManager().GetRelationsByUser(r.Context(), userID, 0, 100)
+		rels, err = h.d.RelationManager().GetRelationsBySubject(r.Context(), userID)
 	} else if objectID != "" {
-		rels, err = h.d.RelationManager().GetRelationsByObject(r.Context(), objectID, 0, 100)
+		rels, err = h.d.RelationManager().GetRelationsByObject(r.Context(), objectID)
 	} else {
 		h.d.Writer().WriteError(w, r, errors.WithStack(herodot.ErrBadRequest))
 		return

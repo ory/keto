@@ -20,7 +20,7 @@ message GRPCRelationsReadRequest {
 }
 
 message GRPCRelation {
-  string userID = 1;
+  string subjectID = 1;
   string name = 2;
   string objectID = 3;
 }
