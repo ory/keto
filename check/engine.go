@@ -29,7 +29,7 @@ func equalRelation(a, b *models.Relation) bool {
 }
 
 func (e *Engine) subjectIsAllowed(ctx context.Context, requested *models.Relation, subjectRelations []*models.Relation) (bool, error) {
-	// The question can be rephrased as "is requested.Name on requested.ObjectID reachable from requested.SubjectID"
+	// The question can be rephrased as "requested.ObjectID reachable from requested.SubjectID using requested.Name as an edge"
 	//
 	// recursive breadth-first search
 	// TODO replace by more performant algorithm
