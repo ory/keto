@@ -6,23 +6,21 @@ import (
 	"github.com/ory/keto/models"
 )
 
-var _ models.GRPCRelationReaderServer = &Server{}
-var _ models.GRPCRelationWriterServer = &Server{}
+var _ models.RelationTupleServiceServer = &Server{}
 
 type (
 	serverDependencies interface {
 		ManagerProvider
 	}
 	Server struct {
-		models.UnimplementedGRPCRelationReaderServer
-		models.UnimplementedGRPCRelationWriterServer
+		models.UnimplementedRelationTupleServiceServer
 
 		d serverDependencies
 	}
 )
 
-func (s *Server) WriteRelation(ctx context.Context, r *models.GRPCRelation) (*models.GRPCRelationsWriteResponse, error) {
-	return &models.GRPCRelationsWriteResponse{}, s.d.RelationManager().WriteRelation(ctx, (*models.Relation)(r))
+func (s *Server) WriteRelation(ctx context.Context, r *models.RelationTuple) (*models.WriteRelationTupleResponse, error) {
+	return &models.WriteRelationTupleResponse{}, s.d.RelationManager().WriteRelation(ctx, (&models.Relation{}).ImportFromGRPC(r))
 }
 
 func NewServer(d serverDependencies) *Server {
@@ -31,25 +29,18 @@ func NewServer(d serverDependencies) *Server {
 	}
 }
 
-func (_ *Server) relationsHelper(ctx context.Context, queryID string, page, perPage int32, getterFunc func(context.Context, string, int32, int32) ([]*models.Relation, error)) (*models.GRPCRelationsReadResponse, error) {
-	rels, err := getterFunc(ctx, queryID, page, perPage)
-	if err != nil {
-		return nil, err
+func (s *Server) ReadTuples(ctx context.Context, req *models.ReadRelationTuplesRequest) (*models.ReadRelationTuplesResponse, error) {
+	queries := make([]*models.RelationQuery, len(req.Tuplesets))
+	for i, tupleset := range req.Tuplesets {
+		queries[i] = (&models.RelationQuery{}).ImportFromGRPC(tupleset)
 	}
 
-	rpcRels := make([]*models.GRPCRelation, len(rels))
-	for i := range rels {
-		rpcRels[i] = (&models.GRPCRelation{}).ImportFromNormal(rels[i])
+	normalRels, _ := s.d.RelationManager().GetRelations(ctx, queries, req.Page, req.PerPage)
+
+	rpcRels := make([]*models.RelationTuple, len(req.Tuplesets))
+	for i, tupleset := range normalRels {
+		rpcRels[i] = (&models.RelationTuple{}).ImportFromNormal(tupleset)
 	}
-	return &models.GRPCRelationsReadResponse{
-		Relations: rpcRels,
-	}, nil
-}
 
-func (s *Server) RelationsByObject(ctx context.Context, req *models.GRPCRelationsReadRequest) (*models.GRPCRelationsReadResponse, error) {
-	return s.relationsHelper(ctx, req.Id, req.Page, req.PerPage, s.d.RelationManager().GetRelationsByObject)
-}
-
-func (s *Server) RelationsByUser(ctx context.Context, req *models.GRPCRelationsReadRequest) (*models.GRPCRelationsReadResponse, error) {
-	return s.relationsHelper(ctx, req.Id, req.Page, req.PerPage, s.d.RelationManager().GetRelationsByUser)
+	return &models.ReadRelationTuplesResponse{Tuples: rpcRels}, nil
 }

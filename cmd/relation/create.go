@@ -43,9 +43,9 @@ func newCreateCmd() *cobra.Command {
 				return cmdx.FailSilently(cmd)
 			}
 
-			cl := models.NewGRPCRelationWriterClient(conn)
+			cl := models.NewRelationTupleServiceClient(conn)
 
-			_, err = cl.WriteRelation(context.Background(), (*models.GRPCRelation)(&r))
+			_, err = cl.WriteRelationTuple(context.Background(), &models.WriteRelationTupleRequest{Tuple: (&models.RelationTuple{}).ImportFromNormal(&r)})
 			if err != nil {
 				_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Error doing the request: %s\n", err)
 				return cmdx.FailSilently(cmd)

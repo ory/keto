@@ -66,8 +66,7 @@ on configuration options, open the configuration documentation:
 
 			s := grpc.NewServer()
 			relS := relation.NewServer(reg)
-			models.RegisterGRPCRelationReaderServer(s, relS)
-			models.RegisterGRPCRelationWriterServer(s, relS)
+			models.RegisterRelationTupleServiceServer(s, relS)
 			fmt.Println("going to serve GRPC on", lis.Addr().String())
 			if err := s.Serve(lis); err != nil {
 				fmt.Fprintf(cmd.ErrOrStderr(), "%+v\n", err)

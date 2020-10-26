@@ -23,18 +23,24 @@ func newGetCmd() *cobra.Command {
 			}
 			defer conn.Close()
 
-			cl := models.NewGRPCRelationReaderClient(conn)
-			resp, err := cl.RelationsByUser(context.Background(), &models.GRPCRelationsReadRequest{
+			cl := models.NewRelationTupleServiceClient(conn)
+			resp, err := cl.ReadRelationTuples(context.Background(), &models.ReadRelationTuplesRequest{
+				Tuplesets: []*models.ReadRelationTuplesRequest_Query{
+					{
+						User: &models.ReadRelationTuplesRequest_Query_UserId{
+							UserId: args[0],
+						},
+					},
+				},
 				Page:    0,
 				PerPage: 100,
-				Id:      args[0],
 			})
 			if err != nil {
 				_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not make request: %s\n", err)
 				return err
 			}
 
-			cmdx.PrintCollection(cmd, models.NewGRPCRelationCollection(resp.Relations))
+			cmdx.PrintCollection(cmd, models.NewGRPCRelationCollection(resp.Tuples))
 			return nil
 		},
 	}

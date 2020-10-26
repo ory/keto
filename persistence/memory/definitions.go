@@ -14,12 +14,6 @@ type Persister struct {
 
 func NewPersister() *Persister {
 	return &Persister{
-		relations: []*models.Relation{
-			{
-				UserID:   "1",
-				Name:     "testRelation",
-				ObjectID: "2",
-			},
-		},
+		relations: []*models.Relation{}, // TODO fill with something?
 	}
 }

@@ -23,28 +23,67 @@ func (p *Persister) paginateRelations(rels []*models.Relation, page, perPage int
 	return rels[start:end]
 }
 
-func (p *Persister) GetRelationsByUser(_ context.Context, userID string, page, perPage int32) ([]*models.Relation, error) {
-	p.RLock()
-	defer p.RUnlock()
-
-	var res []*models.Relation
-	for _, r := range p.relations {
-		if r.UserID == userID {
-			res = append(res, r)
+func BuildRelationQueryFilter(query *models.RelationQuery) func(r *models.Relation) bool {
+	var filters []func(r *models.Relation) bool
+	if query.Object.ID != "" && query.Object.Namespace != "" {
+		filters = append(filters, func(r *models.Relation) bool {
+			return r.Object.ID == query.Object.ID &&
+				r.Object.Namespace == query.Object.Namespace
+		})
+	}
+	if query.Relation != "" {
+		filters = append(filters, func(r *models.Relation) bool {
+			return r.Relation == query.Relation
+		})
+	}
+	if query.User != nil {
+		switch query.User.(type) {
+		case models.UserID:
+			filters = append(filters, func(r *models.Relation) bool {
+				rUserId := r.User.(models.UserID)
+				relationUserId := query.User.(models.UserID)
+				return r.User != nil && rUserId.ID == relationUserId.ID
+			})
+		case models.UserSet:
+			filters = append(filters, func(r *models.Relation) bool {
+				rUserSet := r.User.(models.UserSet)
+				relationUserSet := query.User.(models.UserSet)
+				return rUserSet.Object.ID == relationUserSet.Object.ID &&
+					rUserSet.Object.Namespace == relationUserSet.Object.Namespace &&
+					rUserSet.Relation == relationUserSet.Relation
+			})
 		}
 	}
 
-	return p.paginateRelations(res, page, perPage), nil
+	// Create composite filter
+	return func(r *models.Relation) bool {
+		for _, filter := range filters {
+			if !filter(r) {
+				return false
+			}
+		}
+		return true
+	}
 }
 
-func (p *Persister) GetRelationsByObject(_ context.Context, objectID string, page, perPage int32) ([]*models.Relation, error) {
+func (p *Persister) GetRelations(_ context.Context, queries []*models.RelationQuery, page, perPage int32) ([]*models.Relation, error) {
 	p.RLock()
 	defer p.RUnlock()
 
+	var filters []func(r *models.Relation) bool
+	for _, q := range queries {
+		filters = append(filters, BuildRelationQueryFilter(q))
+	}
+
 	var res []*models.Relation
 	for _, r := range p.relations {
-		if r.ObjectID == objectID {
-			res = append(res, r)
+		for _, filter := range filters {
+			if filter(r) {
+				// If one filter matches add relation to response and break inner loop
+				// to check next relation
+				res = append(res, r)
+				break
+			}
 		}
 	}
 

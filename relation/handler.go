@@ -40,26 +40,7 @@ func (h *handler) RegisterPublicRoutes(router *httprouter.Router) {
 }
 
 func (h *handler) getRelations(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	userID := r.URL.Query().Get("user-id")
-	objectID := r.URL.Query().Get("object-id")
-
-	var rels []*models.Relation
-	var err error
-
-	if userID != "" {
-		rels, err = h.d.RelationManager().GetRelationsByUser(r.Context(), userID, 0, 100)
-	} else if objectID != "" {
-		rels, err = h.d.RelationManager().GetRelationsByObject(r.Context(), objectID, 0, 100)
-	} else {
-		h.d.Writer().WriteError(w, r, errors.WithStack(herodot.ErrBadRequest))
-		return
-	}
-
-	if err != nil {
-		h.d.Writer().WriteError(w, r, err)
-		return
-	}
-	h.d.Writer().Write(w, r, rels)
+	// TODO reimplement
 }
 
 func (h *handler) createRelation(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
