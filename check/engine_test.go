@@ -1,7 +1,8 @@
-package check
+package check_test
 
 import (
 	"context"
+	"github.com/ory/keto/check"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -22,7 +23,7 @@ func TestEngine(t *testing.T) {
 		reg := &driver.RegistryDefault{}
 		require.NoError(t, reg.RelationManager().WriteRelation(context.Background(), &rel))
 
-		e := NewEngine(reg)
+		e := check.NewEngine(reg)
 
 		res, err := e.SubjectIsAllowed(context.Background(), &rel)
 		require.NoError(t, err)
@@ -51,7 +52,7 @@ func TestEngine(t *testing.T) {
 		require.NoError(t, reg.RelationManager().WriteRelation(context.Background(), &fileAccessRel))
 		require.NoError(t, reg.RelationManager().WriteRelation(context.Background(), &memberRel))
 
-		e := NewEngine(reg)
+		e := check.NewEngine(reg)
 
 		res, err := e.SubjectIsAllowed(context.Background(), &models.Relation{
 			Name:      fileAccessRel.Name,
@@ -72,7 +73,7 @@ func TestEngine(t *testing.T) {
 		reg := &driver.RegistryDefault{}
 		require.NoError(t, reg.RelationManager().WriteRelation(context.Background(), &rel))
 
-		e := NewEngine(reg)
+		e := check.NewEngine(reg)
 
 		rel.SubjectID = "not " + rel.SubjectID
 		res, err := e.SubjectIsAllowed(context.Background(), &rel)
@@ -101,7 +102,7 @@ func TestEngine(t *testing.T) {
 		require.NoError(t, reg.RelationManager().WriteRelation(context.Background(), &access))
 		require.NoError(t, reg.RelationManager().WriteRelation(context.Background(), &user))
 
-		e := NewEngine(reg)
+		e := check.NewEngine(reg)
 
 		res, err := e.SubjectIsAllowed(context.Background(), &models.Relation{
 			Name:      access.Name,
@@ -134,7 +135,7 @@ func TestEngine(t *testing.T) {
 			require.NoError(t, reg.RelationManager().WriteRelation(context.Background(), r))
 		}
 
-		e := NewEngine(reg)
+		e := check.NewEngine(reg)
 
 		res, err := e.SubjectIsAllowed(context.Background(), &models.Relation{
 			Name:      access.Name,
@@ -179,7 +180,7 @@ func TestEngine(t *testing.T) {
 			require.NoError(t, reg.RelationManager().WriteRelation(context.Background(), r))
 		}
 
-		e := NewEngine(reg)
+		e := check.NewEngine(reg)
 
 		res, err := e.SubjectIsAllowed(context.Background(), &models.Relation{
 			Name:      writeRel.Name,
@@ -222,7 +223,7 @@ func TestEngine(t *testing.T) {
 			require.NoError(t, reg.RelationManager().WriteRelation(context.Background(), r))
 		}
 
-		e := NewEngine(reg)
+		e := check.NewEngine(reg)
 
 		res, err := e.SubjectIsAllowed(context.Background(), &models.Relation{
 			Name:      folderAccessRel.Name,
