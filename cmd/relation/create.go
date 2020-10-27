@@ -36,7 +36,7 @@ func newCreateCmd() *cobra.Command {
 				}
 			}
 
-			var r models.Relation
+			var r models.InternalRelationTuple
 			err = json.NewDecoder(f).Decode(&r)
 			if err != nil {
 				_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not decode: %s\n", err)
@@ -45,7 +45,7 @@ func newCreateCmd() *cobra.Command {
 
 			cl := models.NewRelationTupleServiceClient(conn)
 
-			_, err = cl.WriteRelationTuple(context.Background(), &models.WriteRelationTupleRequest{Tuple: (&models.RelationTuple{}).ImportFromNormal(&r)})
+			_, err = cl.WriteRelationTuple(context.Background(), &models.WriteRelationTupleRequest{Tuple: (&models.RelationTuple{}).FromInternal(&r)})
 			if err != nil {
 				_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Error doing the request: %s\n", err)
 				return cmdx.FailSilently(cmd)

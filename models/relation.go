@@ -2,6 +2,9 @@ package models
 
 import (
 	"fmt"
+	"strings"
+
+	"github.com/tidwall/gjson"
 
 	"github.com/ory/x/cmdx"
 )
@@ -9,62 +12,113 @@ import (
 type (
 	relationCollection struct {
 		grpcRelations     []*RelationTuple
-		internalRelations []*Relation
+		internalRelations []*InternalRelationTuple
 	}
 	Object struct {
 		ID        string
 		Namespace string
 	}
-	User interface {
+	Subject interface {
 		String() string
+		FromString(string) Subject
 	}
 	UserID struct {
-		User
 		ID string
 	}
 	UserSet struct {
-		User
-		Object   Object
+		Object   *Object
 		Relation string
 	}
-	Relation struct {
-		Object   Object
-		Relation string
-		User     User
+	InternalRelationTuple struct {
+		Object   *Object `json:"object"`
+		Relation string  `json:"relation"`
+		Subject  Subject `json:"subject"`
 	}
 	RelationQuery struct {
-		Object   Object
+		Object   *Object
 		Relation string
-		User     User
+		Subject  Subject
 	}
 )
 
-func (o Object) String() string {
+var _, _ Subject = &UserID{}, &UserSet{}
+
+func SubjectFromString(s string) Subject {
+	if strings.Contains(s, "#") {
+		return (&UserSet{}).FromString(s)
+	}
+	return (&UserID{}).FromString(s)
+}
+
+func (o *Object) String() string {
 	return fmt.Sprintf("%s:%s", o.Namespace, o.ID)
 }
 
-func (u UserID) String() string {
+func (o *Object) UnmarshalJSON(raw []byte) error {
+	o.FromString(string(raw))
+	return nil
+}
+
+func (o *Object) FromString(s string) *Object {
+	parts := strings.Split(s, ":")
+	if len(parts) == 2 {
+		o.Namespace, o.ID = parts[0], parts[1]
+	}
+	return o
+}
+
+func (x *RelationObject) FromString(s string) *RelationObject {
+	o := (&Object{}).FromString(s)
+	x.Namespace, x.ObjectId = o.Namespace, o.ID
+	return x
+}
+
+func (u *UserID) String() string {
 	return fmt.Sprintf("%s", u.ID)
 }
 
-func (u UserSet) String() string {
+func (u *UserSet) String() string {
 	return fmt.Sprintf("%s#%s", u.Object, u.Relation)
 }
 
-func (r Relation) String() string {
-	return fmt.Sprintf("%s#%s@%s", r.Object, r.Relation, r.User)
+func (u *UserID) FromString(s string) Subject {
+	u.ID = s
+	return u
 }
 
-func (r *Relation) ImportFromGRPC(gr *RelationTuple) *Relation {
-	var user User
-	switch gr.User.(type) {
+func (u *UserSet) FromString(s string) Subject {
+	parts := strings.Split(s, "#")
+	if len(parts) == 2 {
+		u.Object.FromString(parts[0])
+		u.Relation = parts[1]
+	}
+	return u
+}
+
+func (r *InternalRelationTuple) String() string {
+	return fmt.Sprintf("%s#%s@%s", r.Object, r.Relation, r.Subject)
+}
+
+func (r *InternalRelationTuple) UnmarshalJSON(raw []byte) error {
+	subject := gjson.GetBytes(raw, "subject").Str
+	r.Subject = SubjectFromString(subject)
+	object := gjson.GetBytes(raw, "object").Str
+	r.Object = (&Object{}).FromString(object)
+	r.Relation = gjson.GetBytes(raw, "relation").Str
+
+	return nil
+}
+
+func (r *InternalRelationTuple) FromGRPC(gr *RelationTuple) *InternalRelationTuple {
+	var subject Subject
+	switch gr.Subject.(type) {
 	case *RelationTuple_UserId:
-		user = UserID{
+		subject = &UserID{
 			ID: gr.GetUserId(),
 		}
 	case *RelationTuple_UserSet:
-		user = UserSet{
-			Object: Object{
+		subject = &UserSet{
+			Object: &Object{
 				gr.GetUserSet().Object.Namespace,
 				gr.GetUserSet().Object.ObjectId,
 			},
@@ -72,73 +126,74 @@ func (r *Relation) ImportFromGRPC(gr *RelationTuple) *Relation {
 		}
 	}
 
-	r.Object = Object{
-		gr.Object.Namespace,
-		gr.Object.ObjectId,
+	if gr.Object != nil {
+		r.Object = &Object{
+			gr.Object.Namespace,
+			gr.Object.ObjectId,
+		}
 	}
 	r.Relation = gr.Relation
-	r.User = user
+	r.Subject = subject
 
 	return r
 }
 
-func (gr *RelationTuple) ImportFromNormal(r *Relation) *RelationTuple {
-	var user isRelationTuple_User
-	switch r.User.(type) {
-	case UserID:
-		user = &RelationTuple_UserId{
-			r.User.(UserID).ID,
+func (x *RelationTuple) FromInternal(r *InternalRelationTuple) *RelationTuple {
+	var subject isRelationTuple_Subject
+	switch s := r.Subject.(type) {
+	case *UserID:
+		subject = &RelationTuple_UserId{
+			s.ID,
 		}
-	case UserSet:
-		userSet := r.User.(UserSet)
-		user = &RelationTuple_UserSet{
+	case *UserSet:
+		subject = &RelationTuple_UserSet{
 			UserSet: &RelationUserSet{
 				Object: &RelationObject{
-					ObjectId:  userSet.Object.ID,
-					Namespace: userSet.Object.Namespace,
+					ObjectId:  s.Object.ID,
+					Namespace: s.Object.Namespace,
 				},
 			},
 		}
 	}
 
-	gr.Object = &RelationObject{
+	x.Object = &RelationObject{
 		ObjectId:  r.Object.ID,
 		Namespace: r.Object.Namespace,
 	}
-	gr.Relation = r.Relation
-	gr.User = user
+	x.Relation = r.Relation
+	x.Subject = subject
 
-	return gr
+	return x
 }
 
-func (rq *RelationQuery) ImportFromGRPC(rtq *ReadRelationTuplesRequest_Query) *RelationQuery {
-	var user User
-	switch rtq.User.(type) {
+func (rq *RelationQuery) FromGRPC(query *ReadRelationTuplesRequest_Query) *RelationQuery {
+	var subject Subject
+	switch query.Subject.(type) {
 	case *ReadRelationTuplesRequest_Query_UserId:
-		user = UserID{
-			ID: rtq.GetUserId(),
+		subject = &UserID{
+			ID: query.GetUserId(),
 		}
 	case *ReadRelationTuplesRequest_Query_UserSet:
-		user = UserSet{
-			Object: Object{
-				rtq.GetUserSet().Object.Namespace,
-				rtq.GetUserSet().Object.ObjectId,
+		subject = &UserSet{
+			Object: &Object{
+				query.GetUserSet().Object.Namespace,
+				query.GetUserSet().Object.ObjectId,
 			},
-			Relation: rtq.GetUserSet().Relation,
+			Relation: query.GetUserSet().Relation,
 		}
 	}
 
-	rq.Object = Object{
-		rtq.Object.Namespace,
-		rtq.Object.ObjectId,
+	rq.Object = &Object{
+		query.Object.Namespace,
+		query.Object.ObjectId,
 	}
-	rq.Relation = rtq.Relation
-	rq.User = user
+	rq.Relation = query.Relation
+	rq.Subject = subject
 
 	return rq
 }
 
-func (r *Relation) Header() []string {
+func (r *InternalRelationTuple) Header() []string {
 	return []string{
 		"RELATION NAME",
 		"USER ID",
@@ -146,15 +201,15 @@ func (r *Relation) Header() []string {
 	}
 }
 
-func (r *Relation) Fields() []string {
+func (r *InternalRelationTuple) Fields() []string {
 	return []string{
 		r.Relation,
-		r.User.String(),
+		r.Subject.String(),
 		r.Object.String(),
 	}
 }
 
-func (r *Relation) Interface() interface{} {
+func (r *InternalRelationTuple) Interface() interface{} {
 	return r
 }
 
@@ -164,7 +219,7 @@ func NewGRPCRelationCollection(rels []*RelationTuple) cmdx.OutputCollection {
 	}
 }
 
-func NewRelationCollection(rels []*Relation) cmdx.OutputCollection {
+func NewRelationCollection(rels []*InternalRelationTuple) cmdx.OutputCollection {
 	return &relationCollection{
 		internalRelations: rels,
 	}
@@ -173,21 +228,27 @@ func NewRelationCollection(rels []*Relation) cmdx.OutputCollection {
 func (r *relationCollection) Header() []string {
 	return []string{
 		"RELATION NAME",
-		"USER ID",
-		"OBJECT ID",
+		"SUBJECT",
+		"OBJECT",
 	}
 }
 
 func (r *relationCollection) Table() [][]string {
 	if r.internalRelations == nil {
 		for _, rel := range r.grpcRelations {
-			r.internalRelations = append(r.internalRelations, (&Relation{}).ImportFromGRPC(rel))
+			r.internalRelations = append(r.internalRelations, (&InternalRelationTuple{}).FromGRPC(rel))
 		}
 	}
 
 	data := make([][]string, len(r.internalRelations))
 	for i, rel := range r.internalRelations {
-		data[i] = []string{rel.Relation, rel.User.String(), rel.Object.String()}
+		data[i] = []string{rel.Relation, cmdx.None, cmdx.None}
+		if rel.Subject != nil {
+			data[i][1] = rel.Subject.String()
+		}
+		if rel.Object != nil {
+			data[i][2] = rel.Object.String()
+		}
 	}
 
 	return data
@@ -200,7 +261,7 @@ func (r *relationCollection) Interface() interface{} {
 	return r.internalRelations
 }
 
-func (r relationCollection) Len() int {
+func (r *relationCollection) Len() int {
 	// one of them is zero so the sum is always correct
 	return len(r.grpcRelations) + len(r.internalRelations)
 }

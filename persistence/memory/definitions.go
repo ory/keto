@@ -9,11 +9,11 @@ import (
 type Persister struct {
 	sync.RWMutex
 
-	relations []*models.Relation
+	relations []*models.InternalRelationTuple
 }
 
 func NewPersister() *Persister {
 	return &Persister{
-		relations: []*models.Relation{}, // TODO fill with something?
+		relations: []*models.InternalRelationTuple{},
 	}
 }
