@@ -10,15 +10,18 @@ import (
 )
 
 type (
-	Engine struct {
-		d dependencies
+	EngineProvider interface {
+		PermissionEngine() *Engine
 	}
-	dependencies interface {
+	Engine struct {
+		d engineDependencies
+	}
+	engineDependencies interface {
 		relation.ManagerProvider
 	}
 )
 
-func NewEngine(d dependencies) *Engine {
+func NewEngine(d engineDependencies) *Engine {
 	return &Engine{
 		d: d,
 	}
