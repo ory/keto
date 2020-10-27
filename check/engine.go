@@ -29,16 +29,15 @@ func equalRelation(a, b *models.Relation) bool {
 }
 
 func (e *Engine) subjectIsAllowed(ctx context.Context, requested *models.Relation, subjectRelations []*models.Relation) (bool, error) {
-	// The question can be rephrased as "requested.ObjectID reachable from requested.SubjectID using requested.Name as an edge"
+	// This is the same as the graph problem "can requested.ObjectID be reached from requested.SubjectID through the incoming edge requested.Name"
 	//
 	// recursive breadth-first search
 	// TODO replace by more performant algorithm
 
-	fmt.Printf("%s\n    %s\n", subjectRelations, requested)
-
 	var res bool
 	for _, sr := range subjectRelations {
 
+		// we don't have to check SubjectID here as we know that sr was reached from requested.SubjectID through 0...n indirections
 		if requested.Name == sr.Name && requested.ObjectID == sr.ObjectID {
 			// found the requested relation
 			return true, nil

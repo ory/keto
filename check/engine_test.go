@@ -197,4 +197,39 @@ func TestEngine(t *testing.T) {
 		require.NoError(t, err)
 		assert.True(t, res)
 	})
+
+	t.Run("rejects transitive relation", func(t *testing.T) {
+		// (file) <--parent-- (folder) <--access-- [user]
+		//
+		// as we don't know how to interpret the "parent" relation, there would have to be a userset rewrite to allow access
+		// to files when you have access to the parent
+
+		object := "file"
+		user := "user"
+		parentRel := models.Relation{
+			Name:      "parent",
+			ObjectID:  object,
+			SubjectID: "folder", // <- this is an object, but this is allowed as a userset can have the "..." relation which means any relation
+		}
+		folderAccessRel := models.Relation{
+			Name:      "access",
+			ObjectID:  parentRel.SubjectID,
+			SubjectID: user,
+		}
+
+		reg := &driver.RegistryDefault{}
+		for _, r := range []*models.Relation{&parentRel, &folderAccessRel} {
+			require.NoError(t, reg.RelationManager().WriteRelation(context.Background(), r))
+		}
+
+		e := NewEngine(reg)
+
+		res, err := e.SubjectIsAllowed(context.Background(), &models.Relation{
+			Name:      folderAccessRel.Name,
+			ObjectID:  object,
+			SubjectID: user,
+		})
+		require.NoError(t, err)
+		assert.False(t, res)
+	})
 }
