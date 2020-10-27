@@ -19,10 +19,6 @@ type (
 	}
 )
 
-func (s *Server) mustEmbedUnimplementedRelationTupleServiceServer() {
-	panic("implement me")
-}
-
 func (s *Server) WriteRelationTuple(ctx context.Context, r *models.WriteRelationTupleRequest) (*models.WriteRelationTupleResponse, error) {
 	return &models.WriteRelationTupleResponse{}, s.d.RelationTupleManager().WriteRelationTuple(ctx, (&models.InternalRelationTuple{}).FromGRPC(r.Tuple))
 }

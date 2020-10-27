@@ -2,6 +2,7 @@ package memory
 
 import (
 	"context"
+
 	"github.com/ory/keto/relationtuple"
 
 	"github.com/ory/keto/models"

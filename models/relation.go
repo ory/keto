@@ -74,7 +74,7 @@ func (x *RelationObject) FromString(s string) *RelationObject {
 }
 
 func (u *UserID) String() string {
-	return fmt.Sprintf("%s", u.ID)
+	return u.ID
 }
 
 func (u *UserSet) String() string {
