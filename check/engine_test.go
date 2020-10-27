@@ -2,8 +2,9 @@ package check_test
 
 import (
 	"context"
-	"github.com/ory/keto/check"
 	"testing"
+
+	"github.com/ory/keto/check"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
