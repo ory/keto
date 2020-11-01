@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
 
 	"github.com/jmoiron/sqlx"
 	"github.com/open-policy-agent/opa/storage"
@@ -108,12 +109,33 @@ func (m *SQLManager) Upsert(ctx context.Context, collection, key string, value i
 }
 
 func (m *SQLManager) List(ctx context.Context, collection string, value interface{}, limit, offset int) error {
+	fmt.Println("Loading from SQL List")
 	var items []string
 	query := "SELECT document FROM rego_data WHERE collection=? ORDER BY id ASC LIMIT ? OFFSET ?"
 	if err := m.db.SelectContext(
 		ctx,
 		&items,
 		m.db.Rebind(query), collection, limit, offset,
+	); err != nil {
+		return sqlcon.HandleError(err)
+	}
+	fmt.Printf("%d items retrieved\n",len(items))
+	ji := make([]json.RawMessage, len(items))
+	for k, v := range items {
+		ji[k] = json.RawMessage(v)
+	}
+
+	return roundTrip(&ji, value)
+}
+
+func (m *SQLManager) ListAll(ctx context.Context, collection string, value interface{}) error {
+	fmt.Println("Loading from SQL")
+	var items []string
+	query := "SELECT document FROM rego_data WHERE collection=? ORDER BY id"
+	if err := m.db.SelectContext(
+		ctx,
+		&items,
+		m.db.Rebind(query), collection,
 	); err != nil {
 		return sqlcon.HandleError(err)
 	}

@@ -2,7 +2,9 @@ package storage
 
 import (
 	"context"
+	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/julienschmidt/httprouter"
 
@@ -32,6 +34,7 @@ func (h *Handler) Get(factory func(context.Context, *http.Request, httprouter.Pa
 	return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 		ctx := r.Context()
 		d, err := factory(ctx, r, ps)
+
 		if err != nil {
 			h.h.WriteError(w, r, err)
 			return
@@ -72,19 +75,23 @@ func (h *Handler) Delete(factory func(context.Context, *http.Request, httprouter
 type ListRequest struct {
 	Collection string
 	Value      interface{}
-	FilterFunc func(*ListRequest, map[string][]string)
+	FilterFunc func(*ListRequest, map[string][]string, int, int)
 }
 
-func (l *ListRequest) Filter(m map[string][]string) *ListRequest {
+func (l *ListRequest) Filter(m map[string][]string, offset int, limit int) *ListRequest {
 	if l.FilterFunc != nil {
-		l.FilterFunc(l, m)
+		l.FilterFunc(l, m, offset, limit)
 	}
 	return l
 }
 
-func ListByQuery(l *ListRequest, m map[string][]string) {
+func ListByQuery(l *ListRequest, m map[string][]string, offset int, limit int) {
+	fmt.Println("Function called")
 	switch val := l.Value.(type) {
 	case *Roles:
+		fmt.Println("Role called")
+		start, end := pagination.Index(limit, offset, len(*val))
+		fmt.Printf("Start: %d, End: %d", start, end)
 		res := make(Roles, 0)
 		for _, role := range *val {
 			filteredRole := role.withMembers(m["member"]).withIDs(m["id"])
@@ -92,8 +99,12 @@ func ListByQuery(l *ListRequest, m map[string][]string) {
 				res = append(res, *filteredRole)
 			}
 		}
+		res = res[start:end]
 		l.Value = &res
 	case *Policies:
+		fmt.Println("Policy called")
+		start, end := pagination.Index(limit, offset, len(*val))
+		fmt.Printf("Start: %d, End: %d", start, end)
 		res := make(Policies, 0)
 		for _, policy := range *val {
 			filteredPolicy := policy.withSubjects(m["subject"]).withResources(m["resource"]).withActions(m["action"]).withIDs(m["id"])
@@ -101,6 +112,7 @@ func ListByQuery(l *ListRequest, m map[string][]string) {
 				res = append(res, *filteredPolicy)
 			}
 		}
+		res = res[start:end]
 		l.Value = &res
 	default:
 		panic("storage:unable to cast list request to a known type!")
@@ -109,6 +121,8 @@ func ListByQuery(l *ListRequest, m map[string][]string) {
 
 func (h *Handler) List(factory func(context.Context, *http.Request, httprouter.Params) (*ListRequest, error)) httprouter.Handle {
 	return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+		isFilter := false
+		queryParams := r.URL.Query()
 		ctx := r.Context()
 		l, err := factory(ctx, r, ps)
 		if err != nil {
@@ -116,14 +130,60 @@ func (h *Handler) List(factory func(context.Context, *http.Request, httprouter.P
 			return
 		}
 		limit, offset := pagination.Parse(r, 100, 0, 500)
+		fmt.Printf("Page Limit at list: %d, Offset at list: %d\n", limit, offset)
+		split := strings.Split(l.Collection, "/")
+		collectionType := split[len(split)-1]
+		//fmt.Println(r.URL.Query().Get(""))
+		if collectionType == "policies" {
+			if _, ok := queryParams["action"]; ok{
+				isFilter = true
+			}
+			if _, ok := queryParams["subject"]; ok{
+				isFilter = true
+			}
 
-		if err := h.s.List(ctx, l.Collection, l.Value, limit, offset); err != nil {
-			h.h.WriteError(w, r, err)
-			return
+			if _, ok := queryParams["resource"]; ok{
+				isFilter = true
+			}
+			if isFilter {
+				fmt.Println("Filter triggered")
+				// assuming that there's no limit imposed.
+				if err := h.s.ListAll(ctx, l.Collection, l.Value); err != nil {
+					h.h.WriteError(w, r, err)
+					return
+				}
+			}else {
+				if err := h.s.List(ctx, l.Collection, l.Value, limit, offset); err != nil {
+					h.h.WriteError(w, r, err)
+					return
+				}
+			}
+		} else if collectionType == "roles"{
+			if _, ok := queryParams["member"]; ok{
+				fmt.Println("IsFilter")
+				isFilter = true
+			}
+
+			if isFilter {
+				if err := h.s.ListAll(ctx, l.Collection, l.Value); err != nil {
+					h.h.WriteError(w, r, err)
+					return
+				}
+			}else {
+				if err := h.s.List(ctx, l.Collection, l.Value, limit, offset); err != nil {
+					h.h.WriteError(w, r, err)
+					return
+				}
+			}
+		} else {
+			if err := h.s.List(ctx, l.Collection, l.Value, limit, offset); err != nil {
+				h.h.WriteError(w, r, err)
+				return
+			}
+
 		}
-
 		m := r.URL.Query()
-		h.h.Write(w, r, l.Filter(m).Value)
+		h.h.Write(w, r, l.Filter(m, offset, limit).Value)
 	}
 }
 

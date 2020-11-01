@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
 	"sync"
 
 	"github.com/open-policy-agent/opa/storage"
@@ -71,15 +72,22 @@ func (m *MemoryManager) Upsert(_ context.Context, collection, key string, value 
 
 func (m *MemoryManager) List(ctx context.Context, collection string, value interface{}, limit, offset int) error {
 	c := m.collection(collection)
+	fmt.Println("Collection")
 	start, end := pagination.Index(limit, offset, len(c))
+	fmt.Printf("Start/End at index: %d list: %d \n", start, end)
 	items := m.list(ctx, collection)[start:end]
+	fmt.Println(len(items))
 	return roundTrip(&items, value)
 }
 
+func (m* MemoryManager) ListAll (ctx context.Context, collection string, value interface{}) error {
+	items := m.list(ctx, collection)
+	return roundTrip(&items, value)
+}
 func (m *MemoryManager) list(ctx context.Context, collection string) []json.RawMessage {
 	c := m.collection(collection)
 	items := make([]json.RawMessage, len(c))
-
+	fmt.Println(len(items))
 	m.RLock()
 	for k, i := range c {
 		items[k] = i.Data
