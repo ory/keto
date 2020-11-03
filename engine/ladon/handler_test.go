@@ -268,7 +268,6 @@ func TestPolicyCRUD(t *testing.T) {
 	}
 }
 
-
 func TestRoleCRUD(t *testing.T) {
 	ts := crudts()
 	defer ts.Close()

@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+
 	"github.com/jmoiron/sqlx"
 	"github.com/open-policy-agent/opa/storage"
 	"github.com/pkg/errors"
