@@ -15,6 +15,10 @@ var (
 			ID:      "role2",
 			Members: []string{"mem1", "mem2"},
 		},
+		{
+			ID:      "role3",
+			Members: []string{"mem5", "mem6"},
+		},
 	}
 	polReq = Policies{
 		{
@@ -28,6 +32,12 @@ var (
 			Actions:   []string{"create"},
 			Subjects:  []string{"mem3", "mem4"},
 			Resources: []string{"res1", "res2"},
+		},
+		{
+			ID:        "policy3",
+			Actions:   []string{"update"},
+			Subjects:  []string{"mem5", "mem6"},
+			Resources: []string{"res3", "res4"},
 		},
 	}
 	paramsReq = []ParamsMap {
@@ -71,66 +81,63 @@ var (
 			offset: 0,
 			limit: 100,
 		},
+		// test that our changes to offset and limit didnt affect getting everything else
+		ParamsMap{
+			target:map[string][]string{},
+			offset: 0,
+			limit: 1,
+		},
+		// test with single action and limit, that a result expected to be on page 2 with page 1 returning an
+		// empty array is now on page 1
+		ParamsMap{
+			target:map[string][]string{"action":{"update"}},
+			offset: 0,
+			limit: 1,
+		},
+		// test with single subject and limit, that a result expected to be on page 2 with page 1 returning an
+		// empty array is now on page 1
+		// this also adds a single member so that a single loop is compatible with both testing role query and subject query.
+		ParamsMap{
+			target:map[string][]string{"subject":{"mem5"}, "member":{"mem5"}},
+			offset: 0,
+			limit: 1,
+		},
+		// test with single resource and limit, that a result expected to be on page 2 with page 1 returning an
+		// empty array is now on page 1
+		ParamsMap{
+			target:map[string][]string{"resource":{"res3"}},
+			offset: 0,
+			limit: 1,
+		},
 	}
 	rolRes = []Roles{
-		Roles{
-			{
-				ID:      "role1",
-				Members: []string{"mem1"},
-			},
-			{
-				ID:      "role2",
-				Members: []string{"mem1", "mem2"},
-			},
-		},
-		Roles{
-			{
-				ID:      "role2",
-				Members: []string{"mem1", "mem2"},
-			},
-		},
+		Roles{rolReq[0],rolReq[1]},
+		Roles{rolReq[1]},
 		Roles{},
 		rolReq,
 		rolReq,
 		rolReq,
 		rolReq,
 		rolReq,
+		Roles{rolReq[0]},
+		Roles{rolReq[0]},
+		Roles{rolReq[2]},
+		// because we do not specify an explicit param for role, even though polRes returns roles for mem3,
+		// role will simply return the first result for role.
+		Roles{rolReq[0]},
 	}
 	polRes = []Policies{
 		polReq,
 		polReq,
 		polReq,
-		Policies{
-			{
-				ID:        "policy1",
-				Actions:   []string{"create"},
-				Subjects:  []string{"mem1", "mem2"},
-				Resources: []string{"res1", "res2"},
-			},
-			{
-				ID:        "policy2",
-				Actions:   []string{"create"},
-				Subjects:  []string{"mem3", "mem4"},
-				Resources: []string{"res1", "res2"},
-			},
-		},
-		Policies{
-			{
-				ID:        "policy2",
-				Actions:   []string{"create"},
-				Subjects:  []string{"mem3", "mem4"},
-				Resources: []string{"res1", "res2"},
-			},
-		},
-		Policies{
-			{
-				ID:        "policy2",
-				Actions:   []string{"create"},
-				Subjects:  []string{"mem3", "mem4"},
-				Resources: []string{"res1", "res2"},
-			},
-		},
+		Policies{polReq[0], polReq[1]},
+		Policies{polReq[1]},
+		Policies{polReq[1]},
 		Policies{},
 		Policies{},
+		Policies{polReq[0]},
+		Policies{polReq[2]},
+		Policies{polReq[2]},
+		Policies{polReq[2]},
 	}
 )

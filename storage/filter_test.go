@@ -15,7 +15,7 @@ func TestListRequest_Filter(t *testing.T) {
 				Value:      &polReq,
 				FilterFunc: ListByQuery,
 			}
-			assert.Equal(t, &polRes[i], l.Filter(paramsReq[i].target, 0, 100).Value)
+			assert.Equal(t, &polRes[i], l.Filter(paramsReq[i].target, paramsReq[i].offset, paramsReq[i].limit).Value)
 		})
 
 		t.Run(fmt.Sprintf("Filter Roles: case=%s", paramsReq[i].target), func(t *testing.T) {
@@ -24,7 +24,7 @@ func TestListRequest_Filter(t *testing.T) {
 				Value:      &rolReq,
 				FilterFunc: ListByQuery,
 			}
-			assert.Equal(t, &rolRes[i], l.Filter(paramsReq[i].target,0 , 100).Value)
+			assert.Equal(t, &rolRes[i], l.Filter(paramsReq[i].target, paramsReq[i].offset, paramsReq[i].limit).Value)
 		})
 	}
 }
