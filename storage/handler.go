@@ -2,11 +2,10 @@ package storage
 
 import (
 	"context"
-	"fmt"
+	"github.com/julienschmidt/httprouter"
 	"net/http"
 	"strings"
-
-	"github.com/julienschmidt/httprouter"
+	"fmt"
 
 	"github.com/ory/herodot"
 	"github.com/ory/x/pagination"
@@ -86,12 +85,8 @@ func (l *ListRequest) Filter(m map[string][]string, offset int, limit int) *List
 }
 
 func ListByQuery(l *ListRequest, m map[string][]string, offset int, limit int) {
-	fmt.Println("Function called")
 	switch val := l.Value.(type) {
 	case *Roles:
-		fmt.Println("Role called")
-		start, end := pagination.Index(limit, offset, len(*val))
-		fmt.Printf("Start: %d, End: %d", start, end)
 		res := make(Roles, 0)
 		for _, role := range *val {
 			filteredRole := role.withMembers(m["member"]).withIDs(m["id"])
@@ -99,12 +94,12 @@ func ListByQuery(l *ListRequest, m map[string][]string, offset int, limit int) {
 				res = append(res, *filteredRole)
 			}
 		}
+		start, end := pagination.Index(limit, offset, len(res))
+		fmt.Printf("Role Start End %d , %d Length%d\n", start, end, len(res))
+
 		res = res[start:end]
 		l.Value = &res
 	case *Policies:
-		fmt.Println("Policy called")
-		start, end := pagination.Index(limit, offset, len(*val))
-		fmt.Printf("Start: %d, End: %d", start, end)
 		res := make(Policies, 0)
 		for _, policy := range *val {
 			filteredPolicy := policy.withSubjects(m["subject"]).withResources(m["resource"]).withActions(m["action"]).withIDs(m["id"])
@@ -112,6 +107,8 @@ func ListByQuery(l *ListRequest, m map[string][]string, offset int, limit int) {
 				res = append(res, *filteredPolicy)
 			}
 		}
+		start, end := pagination.Index(limit, offset, len(res))
+		fmt.Printf("Policy Start End %d , %d Length%d\n", start, end, len(res))
 		res = res[start:end]
 		l.Value = &res
 	default:
@@ -130,10 +127,8 @@ func (h *Handler) List(factory func(context.Context, *http.Request, httprouter.P
 			return
 		}
 		limit, offset := pagination.Parse(r, 100, 0, 500)
-		fmt.Printf("Page Limit at list: %d, Offset at list: %d\n", limit, offset)
 		split := strings.Split(l.Collection, "/")
 		collectionType := split[len(split)-1]
-		//fmt.Println(r.URL.Query().Get(""))
 		if collectionType == "policies" {
 			if _, ok := queryParams["action"]; ok{
 				isFilter = true
@@ -146,7 +141,6 @@ func (h *Handler) List(factory func(context.Context, *http.Request, httprouter.P
 				isFilter = true
 			}
 			if isFilter {
-				fmt.Println("Filter triggered")
 				// assuming that there's no limit imposed.
 				if err := h.s.ListAll(ctx, l.Collection, l.Value); err != nil {
 					h.h.WriteError(w, r, err)
@@ -160,7 +154,6 @@ func (h *Handler) List(factory func(context.Context, *http.Request, httprouter.P
 			}
 		} else if collectionType == "roles"{
 			if _, ok := queryParams["member"]; ok{
-				fmt.Println("IsFilter")
 				isFilter = true
 			}
 

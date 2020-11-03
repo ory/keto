@@ -4,8 +4,6 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"fmt"
-
 	"github.com/jmoiron/sqlx"
 	"github.com/open-policy-agent/opa/storage"
 	"github.com/pkg/errors"
@@ -109,7 +107,7 @@ func (m *SQLManager) Upsert(ctx context.Context, collection, key string, value i
 }
 
 func (m *SQLManager) List(ctx context.Context, collection string, value interface{}, limit, offset int) error {
-	fmt.Println("Loading from SQL List")
+
 	var items []string
 	query := "SELECT document FROM rego_data WHERE collection=? ORDER BY id ASC LIMIT ? OFFSET ?"
 	if err := m.db.SelectContext(
@@ -119,7 +117,6 @@ func (m *SQLManager) List(ctx context.Context, collection string, value interfac
 	); err != nil {
 		return sqlcon.HandleError(err)
 	}
-	fmt.Printf("%d items retrieved\n",len(items))
 	ji := make([]json.RawMessage, len(items))
 	for k, v := range items {
 		ji[k] = json.RawMessage(v)
@@ -129,7 +126,7 @@ func (m *SQLManager) List(ctx context.Context, collection string, value interfac
 }
 
 func (m *SQLManager) ListAll(ctx context.Context, collection string, value interface{}) error {
-	fmt.Println("Loading from SQL")
+
 	var items []string
 	query := "SELECT document FROM rego_data WHERE collection=? ORDER BY id"
 	if err := m.db.SelectContext(
