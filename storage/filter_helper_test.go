@@ -87,6 +87,10 @@ var (
 			offset: 0,
 			limit: 1,
 		},
+		// From this point on we set all limits to one to make it easier to get into a scenario where
+		// the first page will be an empty array, but there's still a result on page 2, and try out the various scenarios
+		// that will allow us to ensure that the filter doesnt behave that way anymore
+
 		// test with single action and limit, that a result expected to be on page 2 with page 1 returning an
 		// empty array is now on page 1
 		ParamsMap{
@@ -109,6 +113,30 @@ var (
 			offset: 0,
 			limit: 1,
 		},
+		// combine all together, test that a result expected to be on page 2 with page 1 returning an
+		// empty array is now on page 1
+		ParamsMap{
+			target:map[string][]string{"resource":{"res3"}, "subject":{"mem5"},"action":{"update"} },
+			offset: 0,
+			limit: 1,
+		},
+		// role testing
+		ParamsMap{
+			target:map[string][]string{"member": {"mem5"} },
+			offset: 0,
+			limit: 1,
+		},
+		// test advance offset
+		ParamsMap{
+			target:map[string][]string{"resource":{"res1"}},
+			offset: 0,
+			limit: 1,
+		},
+		ParamsMap{
+			target:map[string][]string{"resource":{"res1"}},
+			offset: 1,
+			limit: 1,
+		},
 	}
 	rolRes = []Roles{
 		Roles{rolReq[0],rolReq[1]},
@@ -125,6 +153,10 @@ var (
 		// because we do not specify an explicit param for role, even though polRes returns roles for mem3,
 		// role will simply return the first result for role.
 		Roles{rolReq[0]},
+		Roles{rolReq[0]},
+		Roles{rolReq[2]},
+		Roles{rolReq[0]},
+		Roles{rolReq[1]},
 	}
 	polRes = []Policies{
 		polReq,
@@ -139,5 +171,9 @@ var (
 		Policies{polReq[2]},
 		Policies{polReq[2]},
 		Policies{polReq[2]},
+		Policies{polReq[2]},
+		Policies{polReq[0]},
+		Policies{polReq[0]},
+		Policies{polReq[1]},
 	}
 )
