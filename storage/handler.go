@@ -125,14 +125,14 @@ func (h *Handler) List(factory func(context.Context, *http.Request, httprouter.P
 		split := strings.Split(l.Collection, "/")
 		collectionType := split[len(split)-1]
 		if collectionType == "policies" {
-			if _, ok := queryParams["action"]; ok{
+			if _, ok := queryParams["action"]; ok {
 				isFilter = true
 			}
-			if _, ok := queryParams["subject"]; ok{
+			if _, ok := queryParams["subject"]; ok {
 				isFilter = true
 			}
 
-			if _, ok := queryParams["resource"]; ok{
+			if _, ok := queryParams["resource"]; ok {
 				isFilter = true
 			}
 			if isFilter {
@@ -141,14 +141,14 @@ func (h *Handler) List(factory func(context.Context, *http.Request, httprouter.P
 					h.h.WriteError(w, r, err)
 					return
 				}
-			}else {
+			} else {
 				if err := h.s.List(ctx, l.Collection, l.Value, limit, offset); err != nil {
 					h.h.WriteError(w, r, err)
 					return
 				}
 			}
-		} else if collectionType == "roles"{
-			if _, ok := queryParams["member"]; ok{
+		} else if collectionType == "roles" {
+			if _, ok := queryParams["member"]; ok {
 				isFilter = true
 			}
 
@@ -157,7 +157,7 @@ func (h *Handler) List(factory func(context.Context, *http.Request, httprouter.P
 					h.h.WriteError(w, r, err)
 					return
 				}
-			}else {
+			} else {
 				if err := h.s.List(ctx, l.Collection, l.Value, limit, offset); err != nil {
 					h.h.WriteError(w, r, err)
 					return
