@@ -3,12 +3,10 @@ package storage
 import (
 	"context"
 	"github.com/julienschmidt/httprouter"
-	"net/http"
-	"strings"
-	"fmt"
-
 	"github.com/ory/herodot"
 	"github.com/ory/x/pagination"
+	"net/http"
+	"strings"
 )
 
 type Handler struct {
@@ -95,8 +93,6 @@ func ListByQuery(l *ListRequest, m map[string][]string, offset int, limit int) {
 			}
 		}
 		start, end := pagination.Index(limit, offset, len(res))
-		fmt.Printf("Role Start End %d , %d Length%d\n", start, end, len(res))
-
 		res = res[start:end]
 		l.Value = &res
 	case *Policies:
@@ -108,7 +104,6 @@ func ListByQuery(l *ListRequest, m map[string][]string, offset int, limit int) {
 			}
 		}
 		start, end := pagination.Index(limit, offset, len(res))
-		fmt.Printf("Policy Start End %d , %d Length%d\n", start, end, len(res))
 		res = res[start:end]
 		l.Value = &res
 	default:

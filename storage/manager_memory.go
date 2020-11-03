@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"fmt"
 	"sync"
 
 	"github.com/open-policy-agent/opa/storage"
@@ -74,7 +73,6 @@ func (m *MemoryManager) List(ctx context.Context, collection string, value inter
 	c := m.collection(collection)
 	start, end := pagination.Index(limit, offset, len(c))
 	items := m.list(ctx, collection)[start:end]
-	fmt.Println(len(items))
 	return roundTrip(&items, value)
 }
 
