@@ -2,7 +2,6 @@ package ladon
 
 import (
 	"github.com/ory/keto/internal/httpclient/models"
-
 	kstorage "github.com/ory/keto/storage"
 )
 

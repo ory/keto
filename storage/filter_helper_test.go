@@ -1,5 +1,10 @@
 package storage
 
+type ParamsMap struct {
+	target map[string][]string
+	offset int
+	limit int
+}
 var (
 	rolReq = Roles{
 		{
@@ -25,15 +30,47 @@ var (
 			Resources: []string{"res1", "res2"},
 		},
 	}
-	paramsReq = []map[string][]string{
-		{"member": {"mem1"}},
-		{"member": {"mem2"}},
-		{"member": {"mem3"}},
-		{"action": {"create"}},
-		{"subject": {"mem3"}},
-		{"action": {"create"}, "subject": {"mem3"}, "resource": {"res2"}},
-		{"action": {"create"}, "subject": {"mem3"}, "resource": {"res3"}},
-		{"action": {"delete"}},
+	paramsReq = []ParamsMap {
+		ParamsMap{
+			target: map[string][]string{"member": {"mem1"}},
+			offset: 0,
+			limit: 100,
+		},
+		ParamsMap{
+			target: map[string][]string{"member": {"mem2"}},
+			offset: 0,
+			limit: 100,
+		},
+		ParamsMap{
+			target: map[string][]string{"member": {"mem3"}},
+			offset: 0,
+			limit: 100,
+		},
+		ParamsMap{
+			target: map[string][]string{"action": {"create"}},
+			offset: 0,
+			limit: 100,
+		},
+		ParamsMap{
+			target: map[string][]string{"subject": {"mem3"}},
+			offset: 0,
+			limit: 100,
+		},
+		ParamsMap{
+			target:map[string][]string{"action": {"create"}, "subject": {"mem3"}, "resource": {"res2"}},
+			offset: 0,
+			limit: 100,
+		},
+		ParamsMap{
+			target:map[string][]string{"action": {"create"}, "subject": {"mem3"}, "resource": {"res3"}},
+			offset: 0,
+			limit: 100,
+		},
+		ParamsMap{
+			target:map[string][]string{"action": {"delete"}},
+			offset: 0,
+			limit: 100,
+		},
 	}
 	rolRes = []Roles{
 		Roles{
