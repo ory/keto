@@ -1,4 +1,4 @@
-package relation
+package relationtuple
 
 import (
 	"context"
@@ -17,7 +17,7 @@ import (
 
 func newCreateCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:  "create <relation.json>",
+		Use:  "create <relation-tuple.json>",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			conn, err := client.GetGRPCConn(cmd)

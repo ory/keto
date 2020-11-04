@@ -1,4 +1,4 @@
-package relation
+package relationtuple
 
 import (
 	"context"

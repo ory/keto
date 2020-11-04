@@ -21,7 +21,7 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/ory/keto/cmd/relation"
+	"github.com/ory/keto/cmd/relationtuple"
 
 	"github.com/spf13/cobra"
 
@@ -66,7 +66,7 @@ func init() {
 	// when this action is called directly.
 	RootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 
-	relation.RegisterCommandRecursive(RootCmd)
+	relationtuple.RegisterCommandRecursive(RootCmd)
 }
 
 // initConfig reads in config file and ENV variables if set.
