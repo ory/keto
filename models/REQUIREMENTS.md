@@ -1,8 +1,9 @@
-# Read API
+# Relation Tuple API
 
-## Read by tuplesets
+## Read
 
-Read request = one or multiple tuplesets
+Reads tuples paginated, can be filtered by including queries.
 
-Tupleset = Keys of one or multiple saved tuples
+## Write
 
+Write one or more tuples.
