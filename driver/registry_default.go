@@ -7,11 +7,11 @@ import (
 	"github.com/ory/keto/check"
 
 	"github.com/ory/keto/persistence/memory"
-	"github.com/ory/keto/relation"
+	"github.com/ory/keto/relationtuple"
 	"github.com/ory/keto/x"
 )
 
-var _ relation.ManagerProvider = &RegistryDefault{}
+var _ relationtuple.ManagerProvider = &RegistryDefault{}
 var _ x.WriterProvider = &RegistryDefault{}
 var _ x.LoggerProvider = &RegistryDefault{}
 
@@ -36,7 +36,7 @@ func (r *RegistryDefault) Writer() herodot.Writer {
 	return r.w
 }
 
-func (r *RegistryDefault) RelationManager() relation.Manager {
+func (r *RegistryDefault) RelationTupleManager() relationtuple.Manager {
 	if r.p == nil {
 		r.p = memory.NewPersister()
 	}

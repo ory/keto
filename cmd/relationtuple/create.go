@@ -1,4 +1,4 @@
-package relation
+package relationtuple
 
 import (
 	"context"
@@ -17,7 +17,7 @@ import (
 
 func newCreateCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:  "create <relation.json>",
+		Use:  "create <relation-tuple.json>",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			conn, err := client.GetGRPCConn(cmd)
@@ -36,16 +36,16 @@ func newCreateCmd() *cobra.Command {
 				}
 			}
 
-			var r models.Relation
+			var r models.InternalRelationTuple
 			err = json.NewDecoder(f).Decode(&r)
 			if err != nil {
 				_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not decode: %s\n", err)
 				return cmdx.FailSilently(cmd)
 			}
 
-			cl := models.NewGRPCRelationWriterClient(conn)
+			cl := models.NewRelationTupleServiceClient(conn)
 
-			_, err = cl.WriteRelation(context.Background(), (*models.GRPCRelation)(&r))
+			_, err = cl.WriteRelationTuple(context.Background(), &models.WriteRelationTupleRequest{Tuple: (&models.RelationTuple{}).FromInternal(&r)})
 			if err != nil {
 				_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Error doing the request: %s\n", err)
 				return cmdx.FailSilently(cmd)

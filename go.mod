@@ -10,7 +10,6 @@ require (
 	github.com/go-openapi/validate v0.19.3
 	github.com/go-swagger/go-swagger v0.21.1-0.20200107003254-1c98855b472d
 	github.com/gobuffalo/packr v1.24.1
-	github.com/gofrs/uuid v3.2.0+incompatible
 	github.com/golang/protobuf v1.4.2
 	github.com/gorilla/sessions v1.1.3
 	github.com/gorilla/websocket v1.4.2
@@ -23,7 +22,6 @@ require (
 	github.com/ory/viper v1.7.5
 	github.com/ory/x v0.0.154
 	github.com/pkg/errors v0.9.1
-	github.com/pkg/profile v1.3.0 // indirect
 	github.com/rs/cors v1.6.0
 	github.com/rubenv/sql-migrate v0.0.0-20190327083759-54bad0a9b051 // indirect
 	github.com/shopspring/decimal v1.2.0 // indirect
@@ -32,6 +30,7 @@ require (
 	github.com/spf13/viper v1.7.0 // indirect
 	github.com/sqs/goreturns v0.0.0-20181028201513-538ac6014518
 	github.com/stretchr/testify v1.5.1
+	github.com/tidwall/gjson v1.6.0
 	github.com/tidwall/sjson v1.1.1 // indirect
 	github.com/urfave/negroni v1.0.0
 	go.mongodb.org/mongo-driver v1.3.4 // indirect

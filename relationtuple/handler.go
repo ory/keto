@@ -1,4 +1,4 @@
-package relation
+package relationtuple
 
 import (
 	"encoding/json"
@@ -40,37 +40,32 @@ func (h *handler) RegisterPublicRoutes(router *httprouter.Router) {
 }
 
 func (h *handler) getRelations(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	userID := r.URL.Query().Get("user-id")
-	objectID := r.URL.Query().Get("object-id")
-
-	var rels []*models.Relation
-	var err error
-
-	if userID != "" {
-		rels, err = h.d.RelationManager().GetRelationsBySubject(r.Context(), userID)
-	} else if objectID != "" {
-		rels, err = h.d.RelationManager().GetRelationsByObject(r.Context(), objectID)
-	} else {
-		h.d.Writer().WriteError(w, r, errors.WithStack(herodot.ErrBadRequest))
-		return
-	}
+	params := r.URL.Query()
+	res, err := h.d.RelationTupleManager().GetRelationTuples(r.Context(), []*models.RelationQuery{
+		{
+			Relation: params.Get("relation"),
+			Object:   (&models.Object{}).FromString(params.Get("object")),
+			Subject:  models.SubjectFromString(params.Get("subject")),
+		},
+	}, 0, 100)
 
 	if err != nil {
 		h.d.Writer().WriteError(w, r, err)
 		return
 	}
-	h.d.Writer().Write(w, r, rels)
+
+	h.d.Writer().Write(w, r, res)
 }
 
 func (h *handler) createRelation(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	var rel models.Relation
+	var rel models.InternalRelationTuple
 
 	if err := json.NewDecoder(r.Body).Decode(&rel); err != nil {
 		h.d.Writer().WriteError(w, r, errors.WithStack(herodot.ErrBadRequest))
 		return
 	}
 
-	if err := h.d.RelationManager().WriteRelation(r.Context(), &rel); err != nil {
+	if err := h.d.RelationTupleManager().WriteRelationTuple(r.Context(), &rel); err != nil {
 		h.d.Writer().WriteError(w, r, errors.WithStack(herodot.ErrInternalServerError))
 		return
 	}

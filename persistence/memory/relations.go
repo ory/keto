@@ -3,14 +3,18 @@ package memory
 import (
 	"context"
 
-	"github.com/ory/keto/relation"
+	"github.com/ory/keto/relationtuple"
 
 	"github.com/ory/keto/models"
 )
 
-var _ relation.Manager = &Persister{}
+type (
+	queryFilter func(r *models.InternalRelationTuple) bool
+)
 
-func (p *Persister) paginateRelations(rels []*models.Relation, options ...relation.PaginationOptionSetter) []*models.Relation {
+var _ relationtuple.Manager = &Persister{}
+
+func (p *Persister) paginateRelations(rels []*models.InternalRelationTuple, options ...relationtuple.PaginationOptionSetter) []*models.InternalRelationTuple {
 	if len(rels) == 0 {
 		return rels
 	}
@@ -24,16 +28,55 @@ func (p *Persister) paginateRelations(rels []*models.Relation, options ...relati
 	return rels[start:end]
 }
 
-func (p *Persister) findRelations(filter func(*models.Relation) bool) (res []*models.Relation) {
-	for _, r := range p.relations {
-		if filter(r) {
-			res = append(res, r.Copy())
+func buildRelationQueryFilter(query *models.RelationQuery) queryFilter {
+	var filters []queryFilter
+
+	if query.Object.ID != "" && query.Object.Namespace != "" {
+		filters = append(filters, func(r *models.InternalRelationTuple) bool {
+			return r.Object.ID == query.Object.ID &&
+				r.Object.Namespace == query.Object.Namespace
+		})
+	}
+
+	if query.Relation != "" {
+		filters = append(filters, func(r *models.InternalRelationTuple) bool {
+			return r.Relation == query.Relation
+		})
+	}
+
+	if query.Subject != nil {
+		switch s := query.Subject.(type) {
+		case *models.UserID:
+			filters = append(filters, func(r *models.InternalRelationTuple) bool {
+				rUserId, ok := r.Subject.(*models.UserID)
+				return ok &&
+					r.Subject != nil &&
+					rUserId.ID == s.ID
+			})
+		case *models.UserSet:
+			filters = append(filters, func(r *models.InternalRelationTuple) bool {
+				rUserSet, ok := r.Subject.(*models.UserSet)
+				return ok &&
+					rUserSet.Object.ID == s.Object.ID &&
+					rUserSet.Object.Namespace == s.Object.Namespace &&
+					rUserSet.Relation == s.Relation
+			})
 		}
 	}
-	return
+
+	// Create composite filter
+	return func(r *models.InternalRelationTuple) bool {
+		// this is lazy-evaluating the AND of all filters
+		for _, filter := range filters {
+			if !filter(r) {
+				return false
+			}
+		}
+		return true
+	}
 }
 
-func (p *Persister) GetRelationsBySubject(_ context.Context, subjectID string, options ...relation.PaginationOptionSetter) ([]*models.Relation, error) {
+func (p *Persister) GetRelationTuples(_ context.Context, queries []*models.RelationQuery, page, perPage int32) ([]*models.InternalRelationTuple, error) {
 	p.RLock()
 	defer p.RUnlock()
 
@@ -46,39 +89,31 @@ func (p *Persister) GetRelationsBySubject(_ context.Context, subjectID string, o
 		options...,
 	), nil
 }
+	filters := make([]queryFilter, len(queries))
+	for i, q := range queries {
+		filters[i] = buildRelationQueryFilter(q)
+	}
 
-func (p *Persister) GetRelationsByObject(_ context.Context, objectID string, options ...relation.PaginationOptionSetter) ([]*models.Relation, error) {
-	p.RLock()
-	defer p.RUnlock()
+	var res []*models.InternalRelationTuple
+	for _, r := range p.relations {
+		for _, filter := range filters {
+			// this is lazy-evaluating the OR of all filters
+			if filter(r) {
+				// If one filter matches add relation to response and break inner loop
+				// to check next relation
+				res = append(res, r)
+				break
+			}
+		}
+	}
 
-	return p.paginateRelations(
-		p.findRelations(
-			func(r *models.Relation) bool {
-				return r.ObjectID == objectID
-			},
-		),
-		options...,
-	), nil
+	return p.paginateRelations(res, page, perPage), nil
 }
 
-func (p *Persister) GetRelationsByObjectAndName(ctx context.Context, objectID, name string, options ...relation.PaginationOptionSetter) ([]*models.Relation, error) {
-	p.RLock()
-	defer p.RUnlock()
-
-	return p.paginateRelations(
-		p.findRelations(
-			func(r *models.Relation) bool {
-				return r.ObjectID == objectID && r.Name == name
-			},
-		),
-		options...,
-	), nil
-}
-
-func (p *Persister) WriteRelation(_ context.Context, r *models.Relation) error {
+func (p *Persister) WriteRelationTuple(_ context.Context, r *models.InternalRelationTuple) error {
 	p.Lock()
 	defer p.Unlock()
 
-	p.relations = append(p.relations, r.Copy())
+	p.relations = append(p.relations, r)
 	return nil
 }
