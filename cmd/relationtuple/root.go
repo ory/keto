@@ -1,4 +1,4 @@
-package relation
+package relationtuple
 
 import (
 	"github.com/spf13/cobra"
@@ -10,7 +10,7 @@ import (
 )
 
 var relationCmd = &cobra.Command{
-	Use: "relation",
+	Use: "relation-tuple",
 }
 
 var packageFlags = pflag.NewFlagSet("relation package flags", pflag.ContinueOnError)

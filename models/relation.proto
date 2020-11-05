@@ -4,29 +4,66 @@ option go_package = "github.com/ory/keto/models";
 
 package models;
 
-service GRPCRelationReader {
-  rpc RelationsByUser(GRPCRelationsReadRequest) returns (GRPCRelationsReadResponse);
-  rpc RelationsByObject(GRPCRelationsReadRequest) returns (GRPCRelationsReadResponse);
+service RelationTupleService {
+  rpc ReadRelationTuples(ReadRelationTuplesRequest) returns (ReadRelationTuplesResponse);
+  rpc WriteRelationTuple(WriteRelationTupleRequest) returns (WriteRelationTupleResponse);
 }
 
-service GRPCRelationWriter {
-  rpc WriteRelation(GRPCRelation) returns (GRPCRelationsWriteResponse);
-}
+// Query by partial keys of tuples
+message ReadRelationTuplesRequest {
+  message Query {
+    // Optional
+    RelationObject object = 1;
+    // Optional
+    string relation = 2;
+    // Optional
+    oneof subject {
+      string user_id = 3;
+      RelationUserSet user_set = 4;
+    }
+  }
 
-message GRPCRelationsReadRequest {
-  string id = 1;
+  // All conditions are concatenated with
+  // an OR operator. If any query matches
+  // the relation will be in the response
+  repeated Query tuple_sets = 1;
   int32 page = 2;
-  int32 perPage = 3;
+  int32 per_page = 3;
 }
 
-message GRPCRelation {
-  string userID = 1;
-  string name = 2;
-  string objectID = 3;
+message ReadRelationTuplesResponse {
+  repeated RelationTuple tuples = 1;
 }
 
-message GRPCRelationsReadResponse {
-  repeated GRPCRelation relations = 1;
+message WriteRelationTupleRequest {
+  RelationTuple tuple = 1;
 }
 
-message GRPCRelationsWriteResponse {}
+message WriteRelationTupleResponse {}
+
+// Represents a relation between
+// an object and an user.
+message RelationTuple {
+  RelationObject object = 1;
+  // Specifies the relation between an `object` and an `user`
+  string relation = 2;
+  // The user of the tuple can either be
+  // a single user or a userset
+  oneof subject {
+    string user_id = 3;
+    RelationUserSet user_set = 4;
+  }
+}
+
+// Refers to all users which have
+// a `relation` with an `object`
+message RelationUserSet {
+  RelationObject object = 1;
+  string relation = 2;
+}
+
+// Represents a "resource"
+message RelationObject {
+  string namespace = 1;
+  string object_id = 2;
+}

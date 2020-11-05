@@ -14,202 +14,119 @@ import (
 // is compatible with the grpc package it is being compiled against.
 const _ = grpc.SupportPackageIsVersion7
 
-// GRPCRelationReaderClient is the client API for GRPCRelationReader service.
+// RelationTupleServiceClient is the client API for RelationTupleService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type GRPCRelationReaderClient interface {
-	RelationsByUser(ctx context.Context, in *GRPCRelationsReadRequest, opts ...grpc.CallOption) (*GRPCRelationsReadResponse, error)
-	RelationsByObject(ctx context.Context, in *GRPCRelationsReadRequest, opts ...grpc.CallOption) (*GRPCRelationsReadResponse, error)
+type RelationTupleServiceClient interface {
+	ReadRelationTuples(ctx context.Context, in *ReadRelationTuplesRequest, opts ...grpc.CallOption) (*ReadRelationTuplesResponse, error)
+	WriteRelationTuple(ctx context.Context, in *WriteRelationTupleRequest, opts ...grpc.CallOption) (*WriteRelationTupleResponse, error)
 }
 
-type gRPCRelationReaderClient struct {
+type relationTupleServiceClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewGRPCRelationReaderClient(cc grpc.ClientConnInterface) GRPCRelationReaderClient {
-	return &gRPCRelationReaderClient{cc}
+func NewRelationTupleServiceClient(cc grpc.ClientConnInterface) RelationTupleServiceClient {
+	return &relationTupleServiceClient{cc}
 }
 
-func (c *gRPCRelationReaderClient) RelationsByUser(ctx context.Context, in *GRPCRelationsReadRequest, opts ...grpc.CallOption) (*GRPCRelationsReadResponse, error) {
-	out := new(GRPCRelationsReadResponse)
-	err := c.cc.Invoke(ctx, "/models.GRPCRelationReader/RelationsByUser", in, out, opts...)
+func (c *relationTupleServiceClient) ReadRelationTuples(ctx context.Context, in *ReadRelationTuplesRequest, opts ...grpc.CallOption) (*ReadRelationTuplesResponse, error) {
+	out := new(ReadRelationTuplesResponse)
+	err := c.cc.Invoke(ctx, "/models.RelationTupleService/ReadRelationTuples", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *gRPCRelationReaderClient) RelationsByObject(ctx context.Context, in *GRPCRelationsReadRequest, opts ...grpc.CallOption) (*GRPCRelationsReadResponse, error) {
-	out := new(GRPCRelationsReadResponse)
-	err := c.cc.Invoke(ctx, "/models.GRPCRelationReader/RelationsByObject", in, out, opts...)
+func (c *relationTupleServiceClient) WriteRelationTuple(ctx context.Context, in *WriteRelationTupleRequest, opts ...grpc.CallOption) (*WriteRelationTupleResponse, error) {
+	out := new(WriteRelationTupleResponse)
+	err := c.cc.Invoke(ctx, "/models.RelationTupleService/WriteRelationTuple", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// GRPCRelationReaderServer is the server API for GRPCRelationReader service.
-// All implementations must embed UnimplementedGRPCRelationReaderServer
+// RelationTupleServiceServer is the server API for RelationTupleService service.
+// All implementations must embed UnimplementedRelationTupleServiceServer
 // for forward compatibility
-type GRPCRelationReaderServer interface {
-	RelationsByUser(context.Context, *GRPCRelationsReadRequest) (*GRPCRelationsReadResponse, error)
-	RelationsByObject(context.Context, *GRPCRelationsReadRequest) (*GRPCRelationsReadResponse, error)
-	mustEmbedUnimplementedGRPCRelationReaderServer()
+type RelationTupleServiceServer interface {
+	ReadRelationTuples(context.Context, *ReadRelationTuplesRequest) (*ReadRelationTuplesResponse, error)
+	WriteRelationTuple(context.Context, *WriteRelationTupleRequest) (*WriteRelationTupleResponse, error)
+	mustEmbedUnimplementedRelationTupleServiceServer()
 }
 
-// UnimplementedGRPCRelationReaderServer must be embedded to have forward compatible implementations.
-type UnimplementedGRPCRelationReaderServer struct {
+// UnimplementedRelationTupleServiceServer must be embedded to have forward compatible implementations.
+type UnimplementedRelationTupleServiceServer struct {
 }
 
-func (UnimplementedGRPCRelationReaderServer) RelationsByUser(context.Context, *GRPCRelationsReadRequest) (*GRPCRelationsReadResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method RelationsByUser not implemented")
+func (UnimplementedRelationTupleServiceServer) ReadRelationTuples(context.Context, *ReadRelationTuplesRequest) (*ReadRelationTuplesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ReadRelationTuples not implemented")
 }
-func (UnimplementedGRPCRelationReaderServer) RelationsByObject(context.Context, *GRPCRelationsReadRequest) (*GRPCRelationsReadResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method RelationsByObject not implemented")
+func (UnimplementedRelationTupleServiceServer) WriteRelationTuple(context.Context, *WriteRelationTupleRequest) (*WriteRelationTupleResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method WriteRelationTuple not implemented")
 }
-func (UnimplementedGRPCRelationReaderServer) mustEmbedUnimplementedGRPCRelationReaderServer() {}
+func (UnimplementedRelationTupleServiceServer) mustEmbedUnimplementedRelationTupleServiceServer() {}
 
-// UnsafeGRPCRelationReaderServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to GRPCRelationReaderServer will
+// UnsafeRelationTupleServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to RelationTupleServiceServer will
 // result in compilation errors.
-type UnsafeGRPCRelationReaderServer interface {
-	mustEmbedUnimplementedGRPCRelationReaderServer()
+type UnsafeRelationTupleServiceServer interface {
+	mustEmbedUnimplementedRelationTupleServiceServer()
 }
 
-func RegisterGRPCRelationReaderServer(s *grpc.Server, srv GRPCRelationReaderServer) {
-	s.RegisterService(&_GRPCRelationReader_serviceDesc, srv)
+func RegisterRelationTupleServiceServer(s *grpc.Server, srv RelationTupleServiceServer) {
+	s.RegisterService(&_RelationTupleService_serviceDesc, srv)
 }
 
-func _GRPCRelationReader_RelationsByUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GRPCRelationsReadRequest)
+func _RelationTupleService_ReadRelationTuples_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReadRelationTuplesRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(GRPCRelationReaderServer).RelationsByUser(ctx, in)
+		return srv.(RelationTupleServiceServer).ReadRelationTuples(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/models.GRPCRelationReader/RelationsByUser",
+		FullMethod: "/models.RelationTupleService/ReadRelationTuples",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(GRPCRelationReaderServer).RelationsByUser(ctx, req.(*GRPCRelationsReadRequest))
+		return srv.(RelationTupleServiceServer).ReadRelationTuples(ctx, req.(*ReadRelationTuplesRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _GRPCRelationReader_RelationsByObject_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GRPCRelationsReadRequest)
+func _RelationTupleService_WriteRelationTuple_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(WriteRelationTupleRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(GRPCRelationReaderServer).RelationsByObject(ctx, in)
+		return srv.(RelationTupleServiceServer).WriteRelationTuple(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/models.GRPCRelationReader/RelationsByObject",
+		FullMethod: "/models.RelationTupleService/WriteRelationTuple",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(GRPCRelationReaderServer).RelationsByObject(ctx, req.(*GRPCRelationsReadRequest))
+		return srv.(RelationTupleServiceServer).WriteRelationTuple(ctx, req.(*WriteRelationTupleRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-var _GRPCRelationReader_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "models.GRPCRelationReader",
-	HandlerType: (*GRPCRelationReaderServer)(nil),
+var _RelationTupleService_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "models.RelationTupleService",
+	HandlerType: (*RelationTupleServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "RelationsByUser",
-			Handler:    _GRPCRelationReader_RelationsByUser_Handler,
+			MethodName: "ReadRelationTuples",
+			Handler:    _RelationTupleService_ReadRelationTuples_Handler,
 		},
 		{
-			MethodName: "RelationsByObject",
-			Handler:    _GRPCRelationReader_RelationsByObject_Handler,
-		},
-	},
-	Streams:  []grpc.StreamDesc{},
-	Metadata: "models/relation.proto",
-}
-
-// GRPCRelationWriterClient is the client API for GRPCRelationWriter service.
-//
-// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type GRPCRelationWriterClient interface {
-	WriteRelation(ctx context.Context, in *GRPCRelation, opts ...grpc.CallOption) (*GRPCRelationsWriteResponse, error)
-}
-
-type gRPCRelationWriterClient struct {
-	cc grpc.ClientConnInterface
-}
-
-func NewGRPCRelationWriterClient(cc grpc.ClientConnInterface) GRPCRelationWriterClient {
-	return &gRPCRelationWriterClient{cc}
-}
-
-func (c *gRPCRelationWriterClient) WriteRelation(ctx context.Context, in *GRPCRelation, opts ...grpc.CallOption) (*GRPCRelationsWriteResponse, error) {
-	out := new(GRPCRelationsWriteResponse)
-	err := c.cc.Invoke(ctx, "/models.GRPCRelationWriter/WriteRelation", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-// GRPCRelationWriterServer is the server API for GRPCRelationWriter service.
-// All implementations must embed UnimplementedGRPCRelationWriterServer
-// for forward compatibility
-type GRPCRelationWriterServer interface {
-	WriteRelation(context.Context, *GRPCRelation) (*GRPCRelationsWriteResponse, error)
-	mustEmbedUnimplementedGRPCRelationWriterServer()
-}
-
-// UnimplementedGRPCRelationWriterServer must be embedded to have forward compatible implementations.
-type UnimplementedGRPCRelationWriterServer struct {
-}
-
-func (UnimplementedGRPCRelationWriterServer) WriteRelation(context.Context, *GRPCRelation) (*GRPCRelationsWriteResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method WriteRelation not implemented")
-}
-func (UnimplementedGRPCRelationWriterServer) mustEmbedUnimplementedGRPCRelationWriterServer() {}
-
-// UnsafeGRPCRelationWriterServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to GRPCRelationWriterServer will
-// result in compilation errors.
-type UnsafeGRPCRelationWriterServer interface {
-	mustEmbedUnimplementedGRPCRelationWriterServer()
-}
-
-func RegisterGRPCRelationWriterServer(s *grpc.Server, srv GRPCRelationWriterServer) {
-	s.RegisterService(&_GRPCRelationWriter_serviceDesc, srv)
-}
-
-func _GRPCRelationWriter_WriteRelation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GRPCRelation)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(GRPCRelationWriterServer).WriteRelation(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/models.GRPCRelationWriter/WriteRelation",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(GRPCRelationWriterServer).WriteRelation(ctx, req.(*GRPCRelation))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-var _GRPCRelationWriter_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "models.GRPCRelationWriter",
-	HandlerType: (*GRPCRelationWriterServer)(nil),
-	Methods: []grpc.MethodDesc{
-		{
-			MethodName: "WriteRelation",
-			Handler:    _GRPCRelationWriter_WriteRelation_Handler,
+			MethodName: "WriteRelationTuple",
+			Handler:    _RelationTupleService_WriteRelationTuple_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

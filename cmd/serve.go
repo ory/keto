@@ -29,7 +29,7 @@ import (
 
 	"github.com/ory/keto/driver"
 	"github.com/ory/keto/models"
-	"github.com/ory/keto/relation"
+	"github.com/ory/keto/relationtuple"
 
 	"github.com/ory/x/viperx"
 
@@ -65,9 +65,8 @@ on configuration options, open the configuration documentation:
 			defer wg.Done()
 
 			s := grpc.NewServer()
-			relS := relation.NewServer(reg)
-			models.RegisterGRPCRelationReaderServer(s, relS)
-			models.RegisterGRPCRelationWriterServer(s, relS)
+			relS := relationtuple.NewServer(reg)
+			models.RegisterRelationTupleServiceServer(s, relS)
 			fmt.Println("going to serve GRPC on", lis.Addr().String())
 			if err := s.Serve(lis); err != nil {
 				fmt.Fprintf(cmd.ErrOrStderr(), "%+v\n", err)
@@ -78,7 +77,7 @@ on configuration options, open the configuration documentation:
 			defer wg.Done()
 
 			router := httprouter.New()
-			h := relation.NewHandler(reg)
+			h := relationtuple.NewHandler(reg)
 			h.RegisterPublicRoutes(router)
 
 			server := graceful.WithDefaults(&http.Server{
