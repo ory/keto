@@ -21,6 +21,8 @@ import (
 	"os"
 	"sync"
 
+	"github.com/ory/keto/check"
+
 	"github.com/julienschmidt/httprouter"
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
@@ -77,8 +79,10 @@ on configuration options, open the configuration documentation:
 			defer wg.Done()
 
 			router := httprouter.New()
-			h := relationtuple.NewHandler(reg)
-			h.RegisterPublicRoutes(router)
+			rh := relationtuple.NewHandler(reg)
+			rh.RegisterPublicRoutes(router)
+			ch := check.NewHandler(reg)
+			ch.RegisterPublicRoutes(router)
 
 			server := graceful.WithDefaults(&http.Server{
 				Addr:    ":4466",
