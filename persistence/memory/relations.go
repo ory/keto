@@ -19,7 +19,7 @@ func (p *Persister) paginateRelations(rels []*models.InternalRelationTuple, opti
 		return rels
 	}
 
-	pagination := relation.GetPaginationOptions(options...)
+	pagination := relationtuple.GetPaginationOptions(options...)
 	veryLast := len(rels)
 	start, end := pagination.Page*pagination.PerPage, (pagination.Page+1)*pagination.PerPage-1
 	if veryLast < end {
@@ -31,10 +31,9 @@ func (p *Persister) paginateRelations(rels []*models.InternalRelationTuple, opti
 func buildRelationQueryFilter(query *models.RelationQuery) queryFilter {
 	var filters []queryFilter
 
-	if query.Object.ID != "" && query.Object.Namespace != "" {
+	if query.Object != nil && query.Object.ID != "" && query.Object.Namespace != "" {
 		filters = append(filters, func(r *models.InternalRelationTuple) bool {
-			return r.Object.ID == query.Object.ID &&
-				r.Object.Namespace == query.Object.Namespace
+			return query.Object.Equals(r.Object)
 		})
 	}
 
@@ -45,23 +44,9 @@ func buildRelationQueryFilter(query *models.RelationQuery) queryFilter {
 	}
 
 	if query.Subject != nil {
-		switch s := query.Subject.(type) {
-		case *models.UserID:
-			filters = append(filters, func(r *models.InternalRelationTuple) bool {
-				rUserId, ok := r.Subject.(*models.UserID)
-				return ok &&
-					r.Subject != nil &&
-					rUserId.ID == s.ID
-			})
-		case *models.UserSet:
-			filters = append(filters, func(r *models.InternalRelationTuple) bool {
-				rUserSet, ok := r.Subject.(*models.UserSet)
-				return ok &&
-					rUserSet.Object.ID == s.Object.ID &&
-					rUserSet.Object.Namespace == s.Object.Namespace &&
-					rUserSet.Relation == s.Relation
-			})
-		}
+		filters = append(filters, func(r *models.InternalRelationTuple) bool {
+			return query.Subject.Equals(r.Subject)
+		})
 	}
 
 	// Create composite filter
@@ -76,19 +61,10 @@ func buildRelationQueryFilter(query *models.RelationQuery) queryFilter {
 	}
 }
 
-func (p *Persister) GetRelationTuples(_ context.Context, queries []*models.RelationQuery, page, perPage int32) ([]*models.InternalRelationTuple, error) {
+func (p *Persister) GetRelationTuples(_ context.Context, queries []*models.RelationQuery, options ...relationtuple.PaginationOptionSetter) ([]*models.InternalRelationTuple, error) {
 	p.RLock()
 	defer p.RUnlock()
 
-	return p.paginateRelations(
-		p.findRelations(
-			func(r *models.Relation) bool {
-				return r.SubjectID == subjectID
-			},
-		),
-		options...,
-	), nil
-}
 	filters := make([]queryFilter, len(queries))
 	for i, q := range queries {
 		filters[i] = buildRelationQueryFilter(q)
@@ -107,13 +83,13 @@ func (p *Persister) GetRelationTuples(_ context.Context, queries []*models.Relat
 		}
 	}
 
-	return p.paginateRelations(res, page, perPage), nil
+	return p.paginateRelations(res, options...), nil
 }
 
-func (p *Persister) WriteRelationTuple(_ context.Context, r *models.InternalRelationTuple) error {
+func (p *Persister) WriteRelationTuples(_ context.Context, rs ...*models.InternalRelationTuple) error {
 	p.Lock()
 	defer p.Unlock()
 
-	p.relations = append(p.relations, r)
+	p.relations = append(p.relations, rs...)
 	return nil
 }

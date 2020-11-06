@@ -47,7 +47,7 @@ func (h *handler) getRelations(w http.ResponseWriter, r *http.Request, _ httprou
 			Object:   (&models.Object{}).FromString(params.Get("object")),
 			Subject:  models.SubjectFromString(params.Get("subject")),
 		},
-	}, 0, 100)
+	})
 
 	if err != nil {
 		h.d.Writer().WriteError(w, r, err)
@@ -65,7 +65,7 @@ func (h *handler) createRelation(w http.ResponseWriter, r *http.Request, _ httpr
 		return
 	}
 
-	if err := h.d.RelationTupleManager().WriteRelationTuple(r.Context(), &rel); err != nil {
+	if err := h.d.RelationTupleManager().WriteRelationTuples(r.Context(), &rel); err != nil {
 		h.d.Writer().WriteError(w, r, errors.WithStack(herodot.ErrInternalServerError))
 		return
 	}

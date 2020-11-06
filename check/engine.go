@@ -6,7 +6,7 @@ import (
 	"os"
 
 	"github.com/ory/keto/models"
-	"github.com/ory/keto/relation"
+	"github.com/ory/keto/relationtuple"
 )
 
 type (
@@ -17,7 +17,7 @@ type (
 		d engineDependencies
 	}
 	engineDependencies interface {
-		relation.ManagerProvider
+		relationtuple.ManagerProvider
 	}
 )
 
@@ -27,11 +27,11 @@ func NewEngine(d engineDependencies) *Engine {
 	}
 }
 
-func equalRelation(a, b *models.Relation) bool {
-	return a.SubjectID == b.SubjectID && a.Name == b.Name && a.ObjectID == b.ObjectID
+func equalRelation(a, b *models.InternalRelationTuple) bool {
+	return a.Relation == b.Relation && a.Subject.Equals(b.Subject) && a.Object.Equals(b.Object)
 }
 
-func (e *Engine) subjectIsAllowed(ctx context.Context, requested *models.Relation, subjectRelations []*models.Relation) (bool, error) {
+func (e *Engine) subjectIsAllowed(ctx context.Context, requested *models.InternalRelationTuple, subjectRelations []*models.InternalRelationTuple) (bool, error) {
 	// This is the same as the graph problem "can requested.ObjectID be reached from requested.SubjectID through the incoming edge requested.Name"
 	//
 	// recursive breadth-first search
@@ -41,7 +41,7 @@ func (e *Engine) subjectIsAllowed(ctx context.Context, requested *models.Relatio
 	for _, sr := range subjectRelations {
 
 		// we don't have to check SubjectID here as we know that sr was reached from requested.SubjectID through 0...n indirections
-		if requested.Name == sr.Name && requested.ObjectID == sr.ObjectID {
+		if requested.Relation == sr.Relation && requested.Object.Equals(sr.Object) {
 			// found the requested relation
 			return true, nil
 		}
@@ -49,7 +49,7 @@ func (e *Engine) subjectIsAllowed(ctx context.Context, requested *models.Relatio
 		prevRelationsLen := len(subjectRelations)
 
 		// compute one indirection
-		indirect, err := e.d.RelationManager().GetRelationsBySubject(ctx, sr.ToSubject())
+		indirect, err := e.d.RelationTupleManager().GetRelationTuples(ctx, []*models.RelationQuery{{Subject: sr.DeriveSubject()}})
 		if err != nil {
 			// TODO fix error handling
 			_, _ = fmt.Fprintf(os.Stderr, "%+v", err)
@@ -81,8 +81,8 @@ func (e *Engine) subjectIsAllowed(ctx context.Context, requested *models.Relatio
 	return res, nil
 }
 
-func (e *Engine) SubjectIsAllowed(ctx context.Context, r *models.Relation) (bool, error) {
-	subjectRelations, err := e.d.RelationManager().GetRelationsBySubject(ctx, r.SubjectID)
+func (e *Engine) SubjectIsAllowed(ctx context.Context, r *models.InternalRelationTuple) (bool, error) {
+	subjectRelations, err := e.d.RelationTupleManager().GetRelationTuples(ctx, []*models.RelationQuery{{Subject: r.Subject}})
 	if err != nil {
 		return false, err
 	}

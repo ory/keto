@@ -21,6 +21,7 @@ type (
 	Subject interface {
 		String() string
 		FromString(string) Subject
+		Equals(interface{}) bool
 	}
 	UserID struct {
 		ID string
@@ -52,6 +53,14 @@ func SubjectFromString(s string) Subject {
 
 func (o *Object) String() string {
 	return fmt.Sprintf("%s:%s", o.Namespace, o.ID)
+}
+
+func (o *Object) Equals(v interface{}) bool {
+	ov, ok := v.(*Object)
+	if !ok {
+		return false
+	}
+	return ov.ID == o.ID && ov.Namespace == o.Namespace
 }
 
 func (o *Object) UnmarshalJSON(raw []byte) error {
@@ -95,8 +104,32 @@ func (u *UserSet) FromString(s string) Subject {
 	return u
 }
 
+func (u *UserID) Equals(v interface{}) bool {
+	uv, ok := v.(*UserID)
+	if !ok {
+		return false
+	}
+	return uv.ID == u.ID
+}
+
+func (u *UserSet) Equals(v interface{}) bool {
+	uv, ok := v.(*UserSet)
+	if !ok {
+		return false
+	}
+	return uv.Relation == u.Relation && uv.Object.Equals(u.Object)
+}
+
 func (r *InternalRelationTuple) String() string {
 	return fmt.Sprintf("%s#%s@%s", r.Object, r.Relation, r.Subject)
+}
+
+func (r *InternalRelationTuple) DeriveSubject() Subject {
+	return &UserSet{
+		// TODO check if this should be copied
+		Object:   r.Object,
+		Relation: r.Relation,
+	}
 }
 
 func (r *InternalRelationTuple) UnmarshalJSON(raw []byte) error {

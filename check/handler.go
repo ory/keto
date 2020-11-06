@@ -35,10 +35,10 @@ func (h *handler) getCheck(w http.ResponseWriter, r *http.Request, _ httprouter.
 	objectID := r.URL.Query().Get("object-id")
 	relationName := r.URL.Query().Get("relation-name")
 
-	res, err := h.d.PermissionEngine().SubjectIsAllowed(r.Context(), &models.Relation{
-		Name:      relationName,
-		ObjectID:  objectID,
-		SubjectID: subjectID,
+	res, err := h.d.PermissionEngine().SubjectIsAllowed(r.Context(), &models.InternalRelationTuple{
+		Relation: relationName,
+		Object:   (&models.Object{}).FromString(objectID),
+		Subject:  models.SubjectFromString(subjectID),
 	})
 	if err != nil {
 		h.d.Writer().WriteError(w, r, err)
