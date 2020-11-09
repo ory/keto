@@ -15,8 +15,8 @@ type (
 		internalRelations []*InternalRelationTuple
 	}
 	Object struct {
-		ID        string
-		Namespace string
+		ID        string `json:"id"`
+		Namespace string `json:"namespace"`
 	}
 	Subject interface {
 		String() string
@@ -24,11 +24,11 @@ type (
 		Equals(interface{}) bool
 	}
 	UserID struct {
-		ID string
+		ID string `json:"id"`
 	}
 	UserSet struct {
-		Object   *Object
-		Relation string
+		Object   *Object `json:"object"`
+		Relation string  `json:"relation"`
 	}
 	InternalRelationTuple struct {
 		Object   *Object `json:"object"`
@@ -36,9 +36,9 @@ type (
 		Subject  Subject `json:"subject"`
 	}
 	RelationQuery struct {
-		Object   *Object
-		Relation string
-		Subject  Subject
+		Object   *Object `json:"object"`
+		Relation string  `json:"relation"`
+		Subject  Subject `json:"subject"`
 	}
 )
 

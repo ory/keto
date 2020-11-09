@@ -16,6 +16,7 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/ory/keto/expand"
 	"net"
 	"net/http"
 	"os"
@@ -83,6 +84,8 @@ on configuration options, open the configuration documentation:
 			rh.RegisterPublicRoutes(router)
 			ch := check.NewHandler(reg)
 			ch.RegisterPublicRoutes(router)
+			eh := expand.NewHandler(reg)
+			eh.RegisterPublicRoutes(router)
 
 			server := graceful.WithDefaults(&http.Server{
 				Addr:    ":4466",
