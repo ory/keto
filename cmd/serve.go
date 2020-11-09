@@ -16,11 +16,12 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/ory/keto/expand"
 	"net"
 	"net/http"
 	"os"
 	"sync"
+
+	"github.com/ory/keto/expand"
 
 	"github.com/ory/keto/check"
 

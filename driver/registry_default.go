@@ -2,8 +2,9 @@ package driver
 
 import (
 	"github.com/ory/herodot"
-	"github.com/ory/keto/expand"
 	"github.com/ory/x/logrusx"
+
+	"github.com/ory/keto/expand"
 
 	"github.com/ory/keto/check"
 

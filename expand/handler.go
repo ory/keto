@@ -1,11 +1,13 @@
 package expand
 
 import (
-	"github.com/julienschmidt/httprouter"
-	"github.com/ory/keto/models"
-	"github.com/ory/keto/x"
 	"net/http"
 	"strconv"
+
+	"github.com/julienschmidt/httprouter"
+
+	"github.com/ory/keto/models"
+	"github.com/ory/keto/x"
 )
 
 type (
