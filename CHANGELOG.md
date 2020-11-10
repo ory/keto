@@ -4,7 +4,7 @@
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**
 
-- [Unreleased (2020-10-27)](#unreleased-2020-10-27)
+- [Unreleased (2020-11-10)](#unreleased-2020-11-10)
   - [0.5.7-alpha.1 (2020-10-12)](#057-alpha1-2020-10-12)
   - [0.5.7-alpha.1.pre.0 (2020-10-12)](#057-alpha1pre0-2020-10-12)
     - [Bug Fixes](#bug-fixes)
@@ -75,7 +75,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# Unreleased (2020-10-27)
+# Unreleased (2020-11-10)
 
 No significant changes have been made for this release.
 
