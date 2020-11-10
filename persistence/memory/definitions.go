@@ -3,17 +3,17 @@ package memory
 import (
 	"sync"
 
-	"github.com/ory/keto/models"
+	"github.com/ory/keto/relationtuple"
 )
 
 type Persister struct {
 	sync.RWMutex
 
-	relations []*models.InternalRelationTuple
+	relations []*relationtuple.InternalRelationTuple
 }
 
 func NewPersister() *Persister {
 	return &Persister{
-		relations: []*models.InternalRelationTuple{},
+		relations: []*relationtuple.InternalRelationTuple{},
 	}
 }

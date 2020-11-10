@@ -3,23 +3,23 @@ package memory
 import (
 	"context"
 
-	"github.com/ory/keto/relationtuple"
+	"github.com/ory/keto/x"
 
-	"github.com/ory/keto/models"
+	"github.com/ory/keto/relationtuple"
 )
 
 type (
-	queryFilter func(r *models.InternalRelationTuple) bool
+	queryFilter func(r *relationtuple.InternalRelationTuple) bool
 )
 
 var _ relationtuple.Manager = &Persister{}
 
-func (p *Persister) paginateRelations(rels []*models.InternalRelationTuple, options ...relationtuple.PaginationOptionSetter) []*models.InternalRelationTuple {
+func (p *Persister) paginateRelations(rels []*relationtuple.InternalRelationTuple, options ...x.PaginationOptionSetter) []*relationtuple.InternalRelationTuple {
 	if len(rels) == 0 {
 		return rels
 	}
 
-	pagination := relationtuple.GetPaginationOptions(options...)
+	pagination := x.GetPaginationOptions(options...)
 	veryLast := len(rels)
 	start, end := pagination.Page*pagination.PerPage, (pagination.Page+1)*pagination.PerPage-1
 	if veryLast < end {
@@ -28,29 +28,29 @@ func (p *Persister) paginateRelations(rels []*models.InternalRelationTuple, opti
 	return rels[start:end]
 }
 
-func buildRelationQueryFilter(query *models.RelationQuery) queryFilter {
+func buildRelationQueryFilter(query *relationtuple.RelationQuery) queryFilter {
 	var filters []queryFilter
 
 	if query.Object != nil {
-		filters = append(filters, func(r *models.InternalRelationTuple) bool {
+		filters = append(filters, func(r *relationtuple.InternalRelationTuple) bool {
 			return query.Object.Equals(r.Object)
 		})
 	}
 
 	if query.Relation != "" {
-		filters = append(filters, func(r *models.InternalRelationTuple) bool {
+		filters = append(filters, func(r *relationtuple.InternalRelationTuple) bool {
 			return r.Relation == query.Relation
 		})
 	}
 
 	if query.Subject != nil {
-		filters = append(filters, func(r *models.InternalRelationTuple) bool {
+		filters = append(filters, func(r *relationtuple.InternalRelationTuple) bool {
 			return query.Subject.Equals(r.Subject)
 		})
 	}
 
 	// Create composite filter
-	return func(r *models.InternalRelationTuple) bool {
+	return func(r *relationtuple.InternalRelationTuple) bool {
 		// this is lazy-evaluating the AND of all filters
 		for _, filter := range filters {
 			if !filter(r) {
@@ -61,7 +61,7 @@ func buildRelationQueryFilter(query *models.RelationQuery) queryFilter {
 	}
 }
 
-func (p *Persister) GetRelationTuples(_ context.Context, query *models.RelationQuery, options ...relationtuple.PaginationOptionSetter) ([]*models.InternalRelationTuple, error) {
+func (p *Persister) GetRelationTuples(_ context.Context, query *relationtuple.RelationQuery, options ...x.PaginationOptionSetter) ([]*relationtuple.InternalRelationTuple, error) {
 	p.RLock()
 	defer p.RUnlock()
 
@@ -71,7 +71,7 @@ func (p *Persister) GetRelationTuples(_ context.Context, query *models.RelationQ
 
 	filter := buildRelationQueryFilter(query)
 
-	var res []*models.InternalRelationTuple
+	var res []*relationtuple.InternalRelationTuple
 	for _, r := range p.relations {
 		if filter(r) {
 			// If one filter matches add relation to response
@@ -82,7 +82,7 @@ func (p *Persister) GetRelationTuples(_ context.Context, query *models.RelationQ
 	return p.paginateRelations(res, options...), nil
 }
 
-func (p *Persister) WriteRelationTuples(_ context.Context, rs ...*models.InternalRelationTuple) error {
+func (p *Persister) WriteRelationTuples(_ context.Context, rs ...*relationtuple.InternalRelationTuple) error {
 	p.Lock()
 	defer p.Unlock()
 

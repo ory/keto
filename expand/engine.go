@@ -3,7 +3,6 @@ package expand
 import (
 	"context"
 
-	"github.com/ory/keto/models"
 	"github.com/ory/keto/relationtuple"
 )
 
@@ -23,18 +22,18 @@ func NewEngine(d engineDependencies) *Engine {
 	return &Engine{d: d}
 }
 
-func (e *Engine) BuildTree(ctx context.Context, subject models.Subject, restDepth int) (*Tree, error) {
+func (e *Engine) BuildTree(ctx context.Context, subject relationtuple.Subject, restDepth int) (*Tree, error) {
 	if restDepth <= 0 {
 		return nil, nil
 	}
 
-	if us, isUserSet := subject.(*models.UserSet); isUserSet {
+	if us, isUserSet := subject.(*relationtuple.UserSet); isUserSet {
 		subTree := &Tree{
 			Type:    Union,
 			Subject: subject,
 		}
 
-		rels, err := e.d.RelationTupleManager().GetRelationTuples(ctx, &models.RelationQuery{
+		rels, err := e.d.RelationTupleManager().GetRelationTuples(ctx, &relationtuple.RelationQuery{
 			Relation: us.Relation,
 			Object:   us.Object,
 		})

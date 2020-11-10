@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option go_package = "github.com/ory/keto/models";
+option go_package = "github.com/ory/keto/relationtuple";
 
 package models;
 

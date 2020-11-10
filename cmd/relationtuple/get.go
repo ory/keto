@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/ory/keto/relationtuple"
+
 	"github.com/spf13/pflag"
 
 	"github.com/ory/x/cmdx"
@@ -12,7 +14,6 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/ory/keto/cmd/client"
-	"github.com/ory/keto/models"
 )
 
 const (
@@ -27,7 +28,7 @@ func registerRelationTupleFlags(flags *pflag.FlagSet) {
 	flags.String(FlagObject, "", "Set the requested object")
 }
 
-func readQueryFromFlags(cmd *cobra.Command) (*models.ReadRelationTuplesRequest_Query, error) {
+func readQueryFromFlags(cmd *cobra.Command) (*relationtuple.ReadRelationTuplesRequest_Query, error) {
 	subject, err := cmd.Flags().GetString(FlagSubject)
 	if err != nil {
 		return nil, err
@@ -41,21 +42,21 @@ func readQueryFromFlags(cmd *cobra.Command) (*models.ReadRelationTuplesRequest_Q
 		return nil, err
 	}
 
-	query := &models.ReadRelationTuplesRequest_Query{
+	query := &relationtuple.ReadRelationTuplesRequest_Query{
 		Relation: relation,
-		Object:   (&models.RelationObject{}).FromString(object),
+		Object:   (&relationtuple.RelationObject{}).FromString(object),
 	}
 
 	subjectParts := strings.Split(subject, "#")
 	if len(subjectParts) == 2 {
-		query.Subject = &models.ReadRelationTuplesRequest_Query_UserSet{
-			UserSet: &models.RelationUserSet{
-				Object:   (&models.RelationObject{}).FromString(subjectParts[0]),
+		query.Subject = &relationtuple.ReadRelationTuplesRequest_Query_UserSet{
+			UserSet: &relationtuple.RelationUserSet{
+				Object:   (&relationtuple.RelationObject{}).FromString(subjectParts[0]),
 				Relation: subjectParts[1],
 			},
 		}
 	} else {
-		query.Subject = &models.ReadRelationTuplesRequest_Query_UserId{
+		query.Subject = &relationtuple.ReadRelationTuplesRequest_Query_UserId{
 			UserId: subject,
 		}
 	}
@@ -74,12 +75,12 @@ func newGetCmd() *cobra.Command {
 			}
 			defer conn.Close()
 
-			cl := models.NewRelationTupleServiceClient(conn)
+			cl := relationtuple.NewRelationTupleServiceClient(conn)
 			query, err := readQueryFromFlags(cmd)
 			if err != nil {
 				return err
 			}
-			resp, err := cl.ReadRelationTuples(context.Background(), &models.ReadRelationTuplesRequest{
+			resp, err := cl.ReadRelationTuples(context.Background(), &relationtuple.ReadRelationTuplesRequest{
 				Query:   query,
 				Page:    0,
 				PerPage: 100,
@@ -89,7 +90,7 @@ func newGetCmd() *cobra.Command {
 				return err
 			}
 
-			cmdx.PrintCollection(cmd, models.NewGRPCRelationCollection(resp.Tuples))
+			cmdx.PrintCollection(cmd, relationtuple.NewGRPCRelationCollection(resp.Tuples))
 			return nil
 		},
 	}

@@ -9,7 +9,6 @@ import (
 
 	"github.com/ory/herodot"
 
-	"github.com/ory/keto/models"
 	"github.com/ory/keto/x"
 )
 
@@ -41,10 +40,10 @@ func (h *handler) RegisterPublicRoutes(router *httprouter.Router) {
 
 func (h *handler) getRelations(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	params := r.URL.Query()
-	res, err := h.d.RelationTupleManager().GetRelationTuples(r.Context(), &models.RelationQuery{
+	res, err := h.d.RelationTupleManager().GetRelationTuples(r.Context(), &RelationQuery{
 		Relation: params.Get("relation"),
-		Object:   (&models.Object{}).FromString(params.Get("object")),
-		Subject:  models.SubjectFromString(params.Get("subject")),
+		Object:   (&Object{}).FromString(params.Get("object")),
+		Subject:  SubjectFromString(params.Get("subject")),
 	})
 
 	if err != nil {
@@ -56,7 +55,7 @@ func (h *handler) getRelations(w http.ResponseWriter, r *http.Request, _ httprou
 }
 
 func (h *handler) createRelation(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	var rel models.InternalRelationTuple
+	var rel InternalRelationTuple
 
 	if err := json.NewDecoder(r.Body).Decode(&rel); err != nil {
 		h.d.Writer().WriteError(w, r, errors.WithStack(herodot.ErrBadRequest))

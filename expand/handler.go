@@ -4,9 +4,10 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/ory/keto/relationtuple"
+
 	"github.com/julienschmidt/httprouter"
 
-	"github.com/ory/keto/models"
 	"github.com/ory/keto/x"
 )
 
@@ -40,9 +41,9 @@ func (h *handler) getCheck(w http.ResponseWriter, r *http.Request, _ httprouter.
 		return
 	}
 
-	res, err := h.d.ExpandEngine().BuildTree(r.Context(), &models.UserSet{
+	res, err := h.d.ExpandEngine().BuildTree(r.Context(), &relationtuple.UserSet{
 		Relation: relationName,
-		Object:   (&models.Object{}).FromString(objectID),
+		Object:   (&relationtuple.Object{}).FromString(objectID),
 	}, int(depth))
 	if err != nil {
 		h.d.Writer().WriteError(w, r, err)
