@@ -34,10 +34,10 @@ func (e *Engine) BuildTree(ctx context.Context, subject models.Subject, restDept
 			Subject: subject,
 		}
 
-		rels, err := e.d.RelationTupleManager().GetRelationTuples(ctx, []*models.RelationQuery{{
+		rels, err := e.d.RelationTupleManager().GetRelationTuples(ctx, &models.RelationQuery{
 			Relation: us.Relation,
 			Object:   us.Object,
-		}})
+		})
 		if err != nil {
 			// TODO error handling
 			return nil, err

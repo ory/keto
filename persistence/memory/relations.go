@@ -61,25 +61,21 @@ func buildRelationQueryFilter(query *models.RelationQuery) queryFilter {
 	}
 }
 
-func (p *Persister) GetRelationTuples(_ context.Context, queries []*models.RelationQuery, options ...relationtuple.PaginationOptionSetter) ([]*models.InternalRelationTuple, error) {
+func (p *Persister) GetRelationTuples(_ context.Context, query *models.RelationQuery, options ...relationtuple.PaginationOptionSetter) ([]*models.InternalRelationTuple, error) {
 	p.RLock()
 	defer p.RUnlock()
 
-	filters := make([]queryFilter, len(queries))
-	for i, q := range queries {
-		filters[i] = buildRelationQueryFilter(q)
+	if query == nil {
+		return nil, nil
 	}
+
+	filter := buildRelationQueryFilter(query)
 
 	var res []*models.InternalRelationTuple
 	for _, r := range p.relations {
-		for _, filter := range filters {
-			// this is lazy-evaluating the OR of all filters
-			if filter(r) {
-				// If one filter matches add relation to response and break inner loop
-				// to check next relation
-				res = append(res, r)
-				break
-			}
+		if filter(r) {
+			// If one filter matches add relation to response
+			res = append(res, r)
 		}
 	}
 

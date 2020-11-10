@@ -1,3 +1,9 @@
 package persistence
 
-type Persister interface{}
+import (
+	"github.com/ory/keto/relationtuple"
+)
+
+type Persister interface {
+	relationtuple.Manager
+}

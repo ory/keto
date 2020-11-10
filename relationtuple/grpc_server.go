@@ -30,12 +30,9 @@ func (s *Server) WriteRelationTuple(ctx context.Context, r *models.WriteRelation
 }
 
 func (s *Server) ReadRelationTuples(ctx context.Context, req *models.ReadRelationTuplesRequest) (*models.ReadRelationTuplesResponse, error) {
-	queries := make([]*models.RelationQuery, len(req.TupleSets))
-	for i, tupleset := range req.TupleSets {
-		queries[i] = (&models.RelationQuery{}).FromGRPC(tupleset)
-	}
+	query := (&models.RelationQuery{}).FromGRPC(req.Query)
 
-	normalRels, _ := s.d.RelationTupleManager().GetRelationTuples(ctx, queries, WithPage(int(req.Page)), WithPerPage(int(req.PerPage)))
+	normalRels, _ := s.d.RelationTupleManager().GetRelationTuples(ctx, query, WithPage(int(req.Page)), WithPerPage(int(req.PerPage)))
 
 	rpcRels := make([]*models.RelationTuple, len(normalRels))
 	for i, tupleset := range normalRels {

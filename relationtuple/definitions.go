@@ -11,7 +11,7 @@ type (
 		RelationTupleManager() Manager
 	}
 	Manager interface {
-		GetRelationTuples(ctx context.Context, queries []*models.RelationQuery, options ...PaginationOptionSetter) ([]*models.InternalRelationTuple, error)
+		GetRelationTuples(ctx context.Context, query *models.RelationQuery, options ...PaginationOptionSetter) ([]*models.InternalRelationTuple, error)
 		WriteRelationTuples(ctx context.Context, rs ...*models.InternalRelationTuple) error
 	}
 	paginationOptions struct {

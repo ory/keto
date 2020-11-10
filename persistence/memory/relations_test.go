@@ -45,59 +45,54 @@ func TestGetRelationTuples(t *testing.T) {
 	p, rel1, rel2, rel3, rel4 := newTestSetup(t)
 
 	for i, tc := range []struct {
-		query    []*models.RelationQuery
+		query    *models.RelationQuery
 		expected []*models.InternalRelationTuple
 	}{
 		{
-			query:    []*models.RelationQuery{{Object: rel1.Object}},
+			query:    &models.RelationQuery{Object: rel1.Object},
 			expected: []*models.InternalRelationTuple{rel1},
 		},
 		{
-			query:    []*models.RelationQuery{{Subject: rel1.Subject}},
+			query:    &models.RelationQuery{Subject: rel1.Subject},
 			expected: []*models.InternalRelationTuple{rel1},
 		},
 		{
-			query:    []*models.RelationQuery{{Relation: rel1.Relation}},
+			query:    &models.RelationQuery{Relation: rel1.Relation},
 			expected: []*models.InternalRelationTuple{rel1},
 		},
 		{
-			query:    []*models.RelationQuery{{Object: rel1.Object, Subject: rel1.Subject}},
+			query:    &models.RelationQuery{Object: rel1.Object, Subject: rel1.Subject},
 			expected: []*models.InternalRelationTuple{rel1},
 		},
 		{
-			query:    []*models.RelationQuery{{Object: rel1.Object, Relation: rel1.Relation}},
+			query:    &models.RelationQuery{Object: rel1.Object, Relation: rel1.Relation},
 			expected: []*models.InternalRelationTuple{rel1},
 		},
 		{
-			query:    []*models.RelationQuery{{Subject: rel1.Subject, Relation: rel1.Relation}},
+			query:    &models.RelationQuery{Subject: rel1.Subject, Relation: rel1.Relation},
 			expected: []*models.InternalRelationTuple{rel1},
 		},
 		{
-			query:    []*models.RelationQuery{{Object: rel1.Object, Subject: rel1.Subject, Relation: rel1.Relation}},
+			query:    &models.RelationQuery{Object: rel1.Object, Subject: rel1.Subject, Relation: rel1.Relation},
 			expected: []*models.InternalRelationTuple{rel1},
 		},
 		{
-			query:    []*models.RelationQuery{{Object: rel2.Object}},
+			query:    &models.RelationQuery{Object: rel2.Object},
 			expected: []*models.InternalRelationTuple{rel2},
 		},
 		{
-			query:    []*models.RelationQuery{{Subject: rel3.Subject}},
+			query:    &models.RelationQuery{Subject: rel3.Subject},
 			expected: []*models.InternalRelationTuple{rel3},
 		},
 		{
-			query:    []*models.RelationQuery{{Object: rel1.Object}, {Object: rel2.Object}},
-			expected: []*models.InternalRelationTuple{rel1, rel2},
-		},
-		{
-			query:    []*models.RelationQuery{{Object: rel3.Object, Relation: rel3.Relation}},
+			query:    &models.RelationQuery{Object: rel3.Object, Relation: rel3.Relation},
 			expected: []*models.InternalRelationTuple{rel3},
 		},
 		{
-			query:    []*models.RelationQuery{{}},
+			query:    &models.RelationQuery{},
 			expected: []*models.InternalRelationTuple{rel1, rel2, rel3, rel4},
 		},
 		{
-			query:    []*models.RelationQuery{},
 			expected: []*models.InternalRelationTuple{},
 		},
 	} {
