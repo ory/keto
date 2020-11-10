@@ -3,9 +3,10 @@ package check
 import (
 	"net/http"
 
+	"github.com/ory/keto/relationtuple"
+
 	"github.com/julienschmidt/httprouter"
 
-	"github.com/ory/keto/models"
 	"github.com/ory/keto/x"
 )
 
@@ -35,10 +36,10 @@ func (h *handler) getCheck(w http.ResponseWriter, r *http.Request, _ httprouter.
 	objectID := r.URL.Query().Get("object-id")
 	relationName := r.URL.Query().Get("relation-name")
 
-	res, err := h.d.PermissionEngine().SubjectIsAllowed(r.Context(), &models.InternalRelationTuple{
+	res, err := h.d.PermissionEngine().SubjectIsAllowed(r.Context(), &relationtuple.InternalRelationTuple{
 		Relation: relationName,
-		Object:   (&models.Object{}).FromString(objectID),
-		Subject:  models.SubjectFromString(subjectID),
+		Object:   (&relationtuple.Object{}).FromString(objectID),
+		Subject:  relationtuple.SubjectFromString(subjectID),
 	})
 	if err != nil {
 		h.d.Writer().WriteError(w, r, err)

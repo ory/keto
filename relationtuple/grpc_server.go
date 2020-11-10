@@ -3,17 +3,17 @@ package relationtuple
 import (
 	"context"
 
-	"github.com/ory/keto/models"
+	"github.com/ory/keto/x"
 )
 
-var _ models.RelationTupleServiceServer = &Server{}
+var _ RelationTupleServiceServer = &Server{}
 
 type (
 	serverDependencies interface {
 		ManagerProvider
 	}
 	Server struct {
-		models.UnimplementedRelationTupleServiceServer
+		UnimplementedRelationTupleServiceServer
 
 		d serverDependencies
 	}
@@ -25,19 +25,19 @@ func NewServer(d serverDependencies) *Server {
 	}
 }
 
-func (s *Server) WriteRelationTuple(ctx context.Context, r *models.WriteRelationTupleRequest) (*models.WriteRelationTupleResponse, error) {
-	return &models.WriteRelationTupleResponse{}, s.d.RelationTupleManager().WriteRelationTuples(ctx, (&models.InternalRelationTuple{}).FromGRPC(r.Tuple))
+func (s *Server) WriteRelationTuple(ctx context.Context, r *WriteRelationTupleRequest) (*WriteRelationTupleResponse, error) {
+	return &WriteRelationTupleResponse{}, s.d.RelationTupleManager().WriteRelationTuples(ctx, (&InternalRelationTuple{}).FromGRPC(r.Tuple))
 }
 
-func (s *Server) ReadRelationTuples(ctx context.Context, req *models.ReadRelationTuplesRequest) (*models.ReadRelationTuplesResponse, error) {
-	query := (&models.RelationQuery{}).FromGRPC(req.Query)
+func (s *Server) ReadRelationTuples(ctx context.Context, req *ReadRelationTuplesRequest) (*ReadRelationTuplesResponse, error) {
+	query := (&RelationQuery{}).FromGRPC(req.Query)
 
-	normalRels, _ := s.d.RelationTupleManager().GetRelationTuples(ctx, query, WithPage(int(req.Page)), WithPerPage(int(req.PerPage)))
+	normalRels, _ := s.d.RelationTupleManager().GetRelationTuples(ctx, query, x.WithPage(int(req.Page)), x.WithPerPage(int(req.PerPage)))
 
-	rpcRels := make([]*models.RelationTuple, len(normalRels))
+	rpcRels := make([]*RelationTuple, len(normalRels))
 	for i, tupleset := range normalRels {
-		rpcRels[i] = (&models.RelationTuple{}).FromInternal(tupleset)
+		rpcRels[i] = (&RelationTuple{}).FromInternal(tupleset)
 	}
 
-	return &models.ReadRelationTuplesResponse{Tuples: rpcRels}, nil
+	return &ReadRelationTuplesResponse{Tuples: rpcRels}, nil
 }

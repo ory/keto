@@ -4,24 +4,25 @@ import (
 	"context"
 	"testing"
 
+	"github.com/ory/keto/relationtuple"
+
 	"github.com/ory/keto/check"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
 	"github.com/ory/keto/driver"
-	"github.com/ory/keto/models"
 )
 
 func TestEngine(t *testing.T) {
 	t.Run("direct inclusion", func(t *testing.T) {
-		rel := models.InternalRelationTuple{
+		rel := relationtuple.InternalRelationTuple{
 			Relation: "access",
-			Object: &models.Object{
+			Object: &relationtuple.Object{
 				ID:        "object",
 				Namespace: "test",
 			},
-			Subject: &models.UserID{ID: "user"},
+			Subject: &relationtuple.UserID{ID: "user"},
 		}
 
 		reg := &driver.RegistryDefault{}
@@ -36,22 +37,22 @@ func TestEngine(t *testing.T) {
 
 	t.Run("indirect inclusion level 1", func(t *testing.T) {
 		// the set of users that are produces of "dust" have to remove it
-		dust := models.Object{
+		dust := relationtuple.Object{
 			ID:        "dust",
 			Namespace: "under the sofa",
 		}
-		mark := models.UserID{
+		mark := relationtuple.UserID{
 			ID: "Mark",
 		}
-		cleaningRelation := models.InternalRelationTuple{
+		cleaningRelation := relationtuple.InternalRelationTuple{
 			Relation: "have to remove",
 			Object:   &dust,
-			Subject: &models.UserSet{
+			Subject: &relationtuple.UserSet{
 				Relation: "producer",
 				Object:   &dust,
 			},
 		}
-		markProducesDust := models.InternalRelationTuple{
+		markProducesDust := relationtuple.InternalRelationTuple{
 			Relation: "producer",
 			Object:   &dust,
 			Subject:  &mark,
@@ -62,7 +63,7 @@ func TestEngine(t *testing.T) {
 
 		e := check.NewEngine(reg)
 
-		res, err := e.SubjectIsAllowed(context.Background(), &models.InternalRelationTuple{
+		res, err := e.SubjectIsAllowed(context.Background(), &relationtuple.InternalRelationTuple{
 			Relation: cleaningRelation.Relation,
 			Object:   &dust,
 			Subject:  &mark,
@@ -72,12 +73,12 @@ func TestEngine(t *testing.T) {
 	})
 
 	t.Run("direct exclusion", func(t *testing.T) {
-		user := &models.UserID{
+		user := &relationtuple.UserID{
 			ID: "user-id",
 		}
-		rel := models.InternalRelationTuple{
+		rel := relationtuple.InternalRelationTuple{
 			Relation: "relation",
-			Object: &models.Object{
+			Object: &relationtuple.Object{
 				ID:        "object-id",
 				Namespace: "object-namespace",
 			},
@@ -89,31 +90,31 @@ func TestEngine(t *testing.T) {
 
 		e := check.NewEngine(reg)
 
-		res, err := e.SubjectIsAllowed(context.Background(), &models.InternalRelationTuple{
+		res, err := e.SubjectIsAllowed(context.Background(), &relationtuple.InternalRelationTuple{
 			Relation: rel.Relation,
 			Object:   rel.Object,
-			Subject:  &models.UserID{ID: "not " + user.ID},
+			Subject:  &relationtuple.UserID{ID: "not " + user.ID},
 		})
 		require.NoError(t, err)
 		assert.False(t, res)
 	})
 
 	t.Run("wrong object ID", func(t *testing.T) {
-		object := models.Object{
+		object := relationtuple.Object{
 			ID: "object",
 		}
-		access := models.InternalRelationTuple{
+		access := relationtuple.InternalRelationTuple{
 			Relation: "access",
 			Object:   &object,
-			Subject: &models.UserSet{
+			Subject: &relationtuple.UserSet{
 				Relation: "owner",
 				Object:   &object,
 			},
 		}
-		user := models.InternalRelationTuple{
+		user := relationtuple.InternalRelationTuple{
 			Relation: "owner",
-			Object:   &models.Object{ID: "not " + object.ID},
-			Subject:  &models.UserID{ID: "user"},
+			Object:   &relationtuple.Object{ID: "not " + object.ID},
+			Subject:  &relationtuple.UserID{ID: "user"},
 		}
 
 		reg := &driver.RegistryDefault{}
@@ -121,7 +122,7 @@ func TestEngine(t *testing.T) {
 
 		e := check.NewEngine(reg)
 
-		res, err := e.SubjectIsAllowed(context.Background(), &models.InternalRelationTuple{
+		res, err := e.SubjectIsAllowed(context.Background(), &relationtuple.InternalRelationTuple{
 			Relation: access.Relation,
 			Object:   &object,
 			Subject:  user.Subject,
@@ -131,23 +132,23 @@ func TestEngine(t *testing.T) {
 	})
 
 	t.Run("wrong relation name", func(t *testing.T) {
-		diaryEntry := &models.Object{
+		diaryEntry := &relationtuple.Object{
 			ID:        "entry for 6. Nov 2020",
 			Namespace: "diary",
 		}
 		// this would be a userset rewrite
-		readDiary := models.InternalRelationTuple{
+		readDiary := relationtuple.InternalRelationTuple{
 			Relation: "read",
 			Object:   diaryEntry,
-			Subject: &models.UserSet{
+			Subject: &relationtuple.UserSet{
 				Relation: "author",
 				Object:   diaryEntry,
 			},
 		}
-		user := models.InternalRelationTuple{
+		user := relationtuple.InternalRelationTuple{
 			Relation: "not author",
 			Object:   diaryEntry,
-			Subject:  &models.UserID{ID: "your mother"},
+			Subject:  &relationtuple.UserID{ID: "your mother"},
 		}
 
 		reg := &driver.RegistryDefault{}
@@ -155,7 +156,7 @@ func TestEngine(t *testing.T) {
 
 		e := check.NewEngine(reg)
 
-		res, err := e.SubjectIsAllowed(context.Background(), &models.InternalRelationTuple{
+		res, err := e.SubjectIsAllowed(context.Background(), &relationtuple.InternalRelationTuple{
 			Relation: readDiary.Relation,
 			Object:   diaryEntry,
 			Subject:  user.Subject,
@@ -165,38 +166,38 @@ func TestEngine(t *testing.T) {
 	})
 
 	t.Run("indirect inclusion level 2", func(t *testing.T) {
-		object := models.Object{
+		object := relationtuple.Object{
 			ID:        "some object",
 			Namespace: "some namespace",
 		}
-		user := models.UserID{
+		user := relationtuple.UserID{
 			ID: "some user",
 		}
-		organization := models.Object{
+		organization := relationtuple.Object{
 			ID:        "some organization",
 			Namespace: "all organizations",
 		}
 
-		ownerUserSet := models.UserSet{
+		ownerUserSet := relationtuple.UserSet{
 			Relation: "owner",
 			Object:   &object,
 		}
-		orgMembers := models.UserSet{
+		orgMembers := relationtuple.UserSet{
 			Relation: "member",
 			Object:   &organization,
 		}
 
-		writeRel := models.InternalRelationTuple{
+		writeRel := relationtuple.InternalRelationTuple{
 			Relation: "write",
 			Object:   &object,
 			Subject:  &ownerUserSet,
 		}
-		orgOwnerRel := models.InternalRelationTuple{
+		orgOwnerRel := relationtuple.InternalRelationTuple{
 			Relation: ownerUserSet.Relation,
 			Object:   &object,
 			Subject:  &orgMembers,
 		}
-		userMembershipRel := models.InternalRelationTuple{
+		userMembershipRel := relationtuple.InternalRelationTuple{
 			Relation: orgMembers.Relation,
 			Object:   orgMembers.Object,
 			Subject:  &user,
@@ -208,7 +209,7 @@ func TestEngine(t *testing.T) {
 		e := check.NewEngine(reg)
 
 		// user can write object
-		res, err := e.SubjectIsAllowed(context.Background(), &models.InternalRelationTuple{
+		res, err := e.SubjectIsAllowed(context.Background(), &relationtuple.InternalRelationTuple{
 			Relation: writeRel.Relation,
 			Object:   &object,
 			Subject:  &user,
@@ -217,7 +218,7 @@ func TestEngine(t *testing.T) {
 		assert.True(t, res)
 
 		// user is member of the organization
-		res, err = e.SubjectIsAllowed(context.Background(), &models.InternalRelationTuple{
+		res, err = e.SubjectIsAllowed(context.Background(), &relationtuple.InternalRelationTuple{
 			Relation: orgMembers.Relation,
 			Object:   &organization,
 			Subject:  &user,
@@ -233,31 +234,31 @@ func TestEngine(t *testing.T) {
 		// as we don't know how to interpret the "parent" relation, there would have to be a userset rewrite to allow access
 		// to files when you have access to the parent
 
-		file := models.Object{ID: "file"}
-		directory := models.Object{ID: "directory"}
-		user := models.UserID{ID: "user"}
+		file := relationtuple.Object{ID: "file"}
+		directory := relationtuple.Object{ID: "directory"}
+		user := relationtuple.UserID{ID: "user"}
 
-		parent := models.InternalRelationTuple{
+		parent := relationtuple.InternalRelationTuple{
 			Relation: "parent",
 			Object:   &file,
-			Subject: &models.UserSet{ // <- this is only an object, but this is allowed as a userset can have the "..." relation which means any relation
+			Subject: &relationtuple.UserSet{ // <- this is only an object, but this is allowed as a userset can have the "..." relation which means any relation
 				Object: &directory,
 			},
 		}
-		directoryAccess := models.InternalRelationTuple{
+		directoryAccess := relationtuple.InternalRelationTuple{
 			Relation: "access",
 			Object:   &directory,
 			Subject:  &user,
 		}
 
 		reg := &driver.RegistryDefault{}
-		for _, r := range []*models.InternalRelationTuple{&parent, &directoryAccess} {
+		for _, r := range []*relationtuple.InternalRelationTuple{&parent, &directoryAccess} {
 			require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), r))
 		}
 
 		e := check.NewEngine(reg)
 
-		res, err := e.SubjectIsAllowed(context.Background(), &models.InternalRelationTuple{
+		res, err := e.SubjectIsAllowed(context.Background(), &relationtuple.InternalRelationTuple{
 			Relation: directoryAccess.Relation,
 			Object:   &file,
 			Subject:  &user,

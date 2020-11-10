@@ -4,6 +4,8 @@ import (
 	"github.com/ory/herodot"
 	"github.com/ory/x/logrusx"
 
+	"github.com/ory/keto/persistence"
+
 	"github.com/ory/keto/expand"
 
 	"github.com/ory/keto/check"
@@ -18,7 +20,7 @@ var _ x.WriterProvider = &RegistryDefault{}
 var _ x.LoggerProvider = &RegistryDefault{}
 
 type RegistryDefault struct {
-	p  *memory.Persister
+	p  persistence.Persister
 	l  *logrusx.Logger
 	w  herodot.Writer
 	ce *check.Engine

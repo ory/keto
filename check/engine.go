@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/ory/keto/models"
 	"github.com/ory/keto/relationtuple"
 )
 
@@ -27,11 +26,11 @@ func NewEngine(d engineDependencies) *Engine {
 	}
 }
 
-func equalRelation(a, b *models.InternalRelationTuple) bool {
+func equalRelation(a, b *relationtuple.InternalRelationTuple) bool {
 	return a.Relation == b.Relation && a.Subject.Equals(b.Subject) && a.Object.Equals(b.Object)
 }
 
-func (e *Engine) subjectIsAllowed(ctx context.Context, requested *models.InternalRelationTuple, subjectRelations []*models.InternalRelationTuple) (bool, error) {
+func (e *Engine) subjectIsAllowed(ctx context.Context, requested *relationtuple.InternalRelationTuple, subjectRelations []*relationtuple.InternalRelationTuple) (bool, error) {
 	// This is the same as the graph problem "can requested.ObjectID be reached from requested.SubjectID through the incoming edge requested.Name"
 	//
 	// recursive breadth-first search
@@ -49,7 +48,7 @@ func (e *Engine) subjectIsAllowed(ctx context.Context, requested *models.Interna
 		prevRelationsLen := len(subjectRelations)
 
 		// compute one indirection
-		indirect, err := e.d.RelationTupleManager().GetRelationTuples(ctx, &models.RelationQuery{Subject: sr.DeriveSubject()})
+		indirect, err := e.d.RelationTupleManager().GetRelationTuples(ctx, &relationtuple.RelationQuery{Subject: sr.DeriveSubject()})
 		if err != nil {
 			// TODO fix error handling
 			_, _ = fmt.Fprintf(os.Stderr, "%+v", err)
@@ -81,8 +80,8 @@ func (e *Engine) subjectIsAllowed(ctx context.Context, requested *models.Interna
 	return res, nil
 }
 
-func (e *Engine) SubjectIsAllowed(ctx context.Context, r *models.InternalRelationTuple) (bool, error) {
-	subjectRelations, err := e.d.RelationTupleManager().GetRelationTuples(ctx, &models.RelationQuery{Subject: r.Subject})
+func (e *Engine) SubjectIsAllowed(ctx context.Context, r *relationtuple.InternalRelationTuple) (bool, error) {
+	subjectRelations, err := e.d.RelationTupleManager().GetRelationTuples(ctx, &relationtuple.RelationQuery{Subject: r.Subject})
 	if err != nil {
 		return false, err
 	}

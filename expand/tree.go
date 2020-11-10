@@ -3,15 +3,15 @@ package expand
 import (
 	"errors"
 
-	"github.com/ory/keto/models"
+	"github.com/ory/keto/relationtuple"
 )
 
 type (
 	NodeType int
 	Tree     struct {
-		Type     NodeType       `json:"type"`
-		Subject  models.Subject `json:"subject"`
-		Children []*Tree        `json:"children"`
+		Type     NodeType              `json:"type"`
+		Subject  relationtuple.Subject `json:"subject"`
+		Children []*Tree               `json:"children"`
 	}
 )
 
