@@ -80,9 +80,9 @@ func newGetCmd() *cobra.Command {
 				return err
 			}
 			resp, err := cl.ReadRelationTuples(context.Background(), &models.ReadRelationTuplesRequest{
-				TupleSets: []*models.ReadRelationTuplesRequest_Query{query},
-				Page:      0,
-				PerPage:   100,
+				Query:   query,
+				Page:    0,
+				PerPage: 100,
 			})
 			if err != nil {
 				_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not make request: %s\n", err)

@@ -49,7 +49,7 @@ func (e *Engine) subjectIsAllowed(ctx context.Context, requested *models.Interna
 		prevRelationsLen := len(subjectRelations)
 
 		// compute one indirection
-		indirect, err := e.d.RelationTupleManager().GetRelationTuples(ctx, []*models.RelationQuery{{Subject: sr.DeriveSubject()}})
+		indirect, err := e.d.RelationTupleManager().GetRelationTuples(ctx, &models.RelationQuery{Subject: sr.DeriveSubject()})
 		if err != nil {
 			// TODO fix error handling
 			_, _ = fmt.Fprintf(os.Stderr, "%+v", err)
@@ -82,7 +82,7 @@ func (e *Engine) subjectIsAllowed(ctx context.Context, requested *models.Interna
 }
 
 func (e *Engine) SubjectIsAllowed(ctx context.Context, r *models.InternalRelationTuple) (bool, error) {
-	subjectRelations, err := e.d.RelationTupleManager().GetRelationTuples(ctx, []*models.RelationQuery{{Subject: r.Subject}})
+	subjectRelations, err := e.d.RelationTupleManager().GetRelationTuples(ctx, &models.RelationQuery{Subject: r.Subject})
 	if err != nil {
 		return false, err
 	}

@@ -26,7 +26,7 @@ message ReadRelationTuplesRequest {
   // All conditions are concatenated with
   // an OR operator. If any query matches
   // the relation will be in the response
-  repeated Query tuple_sets = 1;
+  Query query = 1;
   int32 page = 2;
   int32 per_page = 3;
 }
