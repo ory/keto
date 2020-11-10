@@ -2,8 +2,9 @@ package expand_test
 
 import (
 	"context"
-	"github.com/ory/keto/expand"
 	"testing"
+
+	"github.com/ory/keto/expand"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
