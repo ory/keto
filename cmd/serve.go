@@ -21,6 +21,8 @@ import (
 	"os"
 	"sync"
 
+	"github.com/ory/keto/expand"
+
 	"github.com/ory/keto/check"
 
 	"github.com/julienschmidt/httprouter"
@@ -83,6 +85,8 @@ on configuration options, open the configuration documentation:
 			rh.RegisterPublicRoutes(router)
 			ch := check.NewHandler(reg)
 			ch.RegisterPublicRoutes(router)
+			eh := expand.NewHandler(reg)
+			eh.RegisterPublicRoutes(router)
 
 			server := graceful.WithDefaults(&http.Server{
 				Addr:    ":4466",

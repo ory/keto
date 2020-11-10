@@ -4,6 +4,8 @@ import (
 	"github.com/ory/herodot"
 	"github.com/ory/x/logrusx"
 
+	"github.com/ory/keto/expand"
+
 	"github.com/ory/keto/check"
 
 	"github.com/ory/keto/persistence/memory"
@@ -16,10 +18,11 @@ var _ x.WriterProvider = &RegistryDefault{}
 var _ x.LoggerProvider = &RegistryDefault{}
 
 type RegistryDefault struct {
-	p *memory.Persister
-	l *logrusx.Logger
-	w herodot.Writer
-	e *check.Engine
+	p  *memory.Persister
+	l  *logrusx.Logger
+	w  herodot.Writer
+	ce *check.Engine
+	ee *expand.Engine
 }
 
 func (r *RegistryDefault) Logger() *logrusx.Logger {
@@ -44,8 +47,15 @@ func (r *RegistryDefault) RelationTupleManager() relationtuple.Manager {
 }
 
 func (r *RegistryDefault) PermissionEngine() *check.Engine {
-	if r.e == nil {
-		r.e = check.NewEngine(r)
+	if r.ce == nil {
+		r.ce = check.NewEngine(r)
 	}
-	return r.e
+	return r.ce
+}
+
+func (r *RegistryDefault) ExpandEngine() *expand.Engine {
+	if r.ee == nil {
+		r.ee = expand.NewEngine(r)
+	}
+	return r.ee
 }

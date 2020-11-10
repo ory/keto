@@ -31,7 +31,7 @@ func (p *Persister) paginateRelations(rels []*models.InternalRelationTuple, opti
 func buildRelationQueryFilter(query *models.RelationQuery) queryFilter {
 	var filters []queryFilter
 
-	if query.Object != nil && query.Object.ID != "" && query.Object.Namespace != "" {
+	if query.Object != nil {
 		filters = append(filters, func(r *models.InternalRelationTuple) bool {
 			return query.Object.Equals(r.Object)
 		})
