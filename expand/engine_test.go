@@ -1,7 +1,8 @@
-package expand
+package expand_test
 
 import (
 	"context"
+	"github.com/ory/keto/expand"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -11,9 +12,9 @@ import (
 	"github.com/ory/keto/models"
 )
 
-func newTestEngine(_ *testing.T) (*driver.RegistryDefault, *Engine) {
+func newTestEngine(_ *testing.T) (*driver.RegistryDefault, *expand.Engine) {
 	reg := &driver.RegistryDefault{}
-	e := NewEngine(reg)
+	e := expand.NewEngine(reg)
 	return reg, e
 }
 
@@ -24,8 +25,8 @@ func TestEngine(t *testing.T) {
 
 		tree, err := e.BuildTree(context.Background(), user, 100)
 		require.NoError(t, err)
-		assert.Equal(t, &Tree{
-			Type:    Leaf,
+		assert.Equal(t, &expand.Tree{
+			Type:    expand.Leaf,
 			Subject: user,
 		}, tree)
 	})
@@ -59,16 +60,16 @@ func TestEngine(t *testing.T) {
 
 		tree, err := e.BuildTree(context.Background(), bouldererUserSet, 100)
 		require.NoError(t, err)
-		assert.Equal(t, &Tree{
-			Type:    Union,
+		assert.Equal(t, &expand.Tree{
+			Type:    expand.Union,
 			Subject: bouldererUserSet,
-			Children: []*Tree{
+			Children: []*expand.Tree{
 				{
-					Type:    Leaf,
+					Type:    expand.Leaf,
 					Subject: tommy,
 				},
 				{
-					Type:    Leaf,
+					Type:    expand.Leaf,
 					Subject: paul,
 				},
 			},
@@ -77,51 +78,51 @@ func TestEngine(t *testing.T) {
 
 	t.Run("case=expands two levels", func(t *testing.T) {
 		reg, e := newTestEngine(t)
-		expectedTree := &Tree{
-			Type: Union,
+		expectedTree := &expand.Tree{
+			Type: expand.Union,
 			Subject: &models.UserSet{
 				Object:   &models.Object{ID: "z"},
 				Relation: "transitive member",
 			},
-			Children: []*Tree{
+			Children: []*expand.Tree{
 				{
-					Type: Union,
+					Type: expand.Union,
 					Subject: &models.UserSet{
 						Object:   &models.Object{ID: "x"},
 						Relation: "member",
 					},
-					Children: []*Tree{
+					Children: []*expand.Tree{
 						{
-							Type:    Leaf,
+							Type:    expand.Leaf,
 							Subject: &models.UserID{ID: "a"},
 						},
 						{
-							Type:    Leaf,
+							Type:    expand.Leaf,
 							Subject: &models.UserID{ID: "b"},
 						},
 						{
-							Type:    Leaf,
+							Type:    expand.Leaf,
 							Subject: &models.UserID{ID: "c"},
 						},
 					},
 				},
 				{
-					Type: Union,
+					Type: expand.Union,
 					Subject: &models.UserSet{
 						Object:   &models.Object{ID: "y"},
 						Relation: "member",
 					},
-					Children: []*Tree{
+					Children: []*expand.Tree{
 						{
-							Type:    Leaf,
+							Type:    expand.Leaf,
 							Subject: &models.UserID{ID: "d"},
 						},
 						{
-							Type:    Leaf,
+							Type:    expand.Leaf,
 							Subject: &models.UserID{ID: "e"},
 						},
 						{
-							Type:    Leaf,
+							Type:    expand.Leaf,
 							Subject: &models.UserID{ID: "f"},
 						},
 					},
@@ -169,29 +170,29 @@ func TestEngine(t *testing.T) {
 			prev = &models.Object{ID: sub}
 		}
 
-		expectedTree := &Tree{
-			Type: Union,
+		expectedTree := &expand.Tree{
+			Type: expand.Union,
 			Subject: &models.UserSet{
 				Object:   root,
 				Relation: "child",
 			},
-			Children: []*Tree{
+			Children: []*expand.Tree{
 				{
-					Type: Union,
+					Type: expand.Union,
 					Subject: &models.UserSet{
 						Object:   &models.Object{ID: "0"},
 						Relation: "child",
 					},
-					Children: []*Tree{
+					Children: []*expand.Tree{
 						{
-							Type: Union,
+							Type: expand.Union,
 							Subject: &models.UserSet{
 								Object:   &models.Object{ID: "1"},
 								Relation: "child",
 							},
-							Children: []*Tree{
+							Children: []*expand.Tree{
 								{
-									Type: Leaf,
+									Type: expand.Leaf,
 									Subject: &models.UserSet{
 										Object:   &models.Object{ID: "2"},
 										Relation: "child",
