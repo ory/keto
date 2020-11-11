@@ -3,11 +3,13 @@ package sql
 import (
 	"context"
 	"fmt"
-	"github.com/gobuffalo/pop/v5"
-	"github.com/ory/keto/relationtuple"
-	"github.com/ory/keto/x"
 	"strings"
 	"time"
+
+	"github.com/gobuffalo/pop/v5"
+
+	"github.com/ory/keto/relationtuple"
+	"github.com/ory/keto/x"
 )
 
 type (

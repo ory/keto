@@ -3,8 +3,9 @@ package relationtuple
 import (
 	"context"
 	"fmt"
-	"github.com/ory/keto/x"
 	"strings"
+
+	"github.com/ory/keto/x"
 
 	"github.com/tidwall/gjson"
 

@@ -2,6 +2,7 @@ package persistence
 
 import (
 	"context"
+
 	"github.com/ory/keto/relationtuple"
 )
 
