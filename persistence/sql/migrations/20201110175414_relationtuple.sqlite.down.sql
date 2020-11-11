@@ -1,1 +1,1 @@
-DROP TABLE relation_tuples;
+DROP TABLE keto_namespaces;

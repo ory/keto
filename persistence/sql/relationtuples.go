@@ -3,6 +3,7 @@ package sql
 import (
 	"context"
 	"fmt"
+	"reflect"
 	"strings"
 	"time"
 
@@ -93,15 +94,26 @@ func (p *Persister) GetRelationTuples(_ context.Context, query *relationtuple.Re
 	}
 
 	var res []*relationTuple
+	var rawQuery string
 	pagination := x.GetPaginationOptions(options...)
+
+	if len(where) == 0 {
+		rawQuery = fmt.Sprintf("SELECT * FROM %s LIMIT %d OFFSET %d",
+			sqlSafeTableFromNamespace(query.Namespace),
+			pagination.PerPage,
+			pagination.Page*pagination.PerPage,
+		)
+	} else {
+		rawQuery = fmt.Sprintf("SELECT * FROM %s WHERE %s LIMIT %d OFFSET %d",
+			sqlSafeTableFromNamespace(query.Namespace),
+			strings.Join(where, " AND "),
+			pagination.PerPage,
+			pagination.Page*pagination.PerPage,
+		)
+	}
+
 	if err := p.conn.
-		RawQuery(
-			fmt.Sprintf("SELECT * FROM %s WHERE %s LIMIT %d OFFSET %d",
-				sqlSafeTableFromNamespace(query.Namespace),
-				strings.Join(where, " AND "),
-				pagination.PerPage,
-				pagination.Page*pagination.PerPage,
-			), args).
+		RawQuery(rawQuery, args...).
 		All(&res); err != nil {
 		return nil, err
 	}
@@ -113,10 +125,40 @@ func (p *Persister) GetRelationTuples(_ context.Context, query *relationtuple.Re
 	return internalRes, nil
 }
 
+func (r *relationTuple) insert(c *pop.Connection) error {
+	// TODO fix setting the commit time?
+	r.CommitTime = time.Now()
+
+	t := reflect.TypeOf(*r)
+	v := reflect.ValueOf(*r)
+
+	var rows []string
+	var vals []interface{}
+	for i := 0; i < t.NumField(); i++ {
+		row, ok := t.Field(i).Tag.Lookup("db")
+		if !ok || row == "-" {
+			break
+		}
+
+		rows = append(rows, row)
+		vals = append(vals, v.Field(i).Interface())
+	}
+
+	placeholders := strings.Repeat("?, ", len(rows))
+	placeholders = placeholders[:len(placeholders)-2] // remove the last ", "
+
+	return c.RawQuery(
+		fmt.Sprintf("INSERT INTO %s (%s) VALUES (%s)",
+			sqlSafeTableFromNamespace(r.Namespace),
+			strings.Join(rows, ", "),
+			placeholders),
+		vals...).Exec()
+}
+
 func (p *Persister) WriteRelationTuples(_ context.Context, rs ...*relationtuple.InternalRelationTuple) error {
 	return p.conn.Transaction(func(tx *pop.Connection) error {
 		for _, r := range rs {
-			if err := p.conn.Create((&relationTuple{}).fromInternal(r)); err != nil {
+			if err := (&relationTuple{}).fromInternal(r).insert(tx); err != nil {
 				return err
 			}
 		}

@@ -18,8 +18,9 @@ import (
 	"fmt"
 	"net"
 	"net/http"
-	"os"
 	"sync"
+
+	"github.com/ory/keto/namespace"
 
 	"github.com/ory/keto/expand"
 
@@ -51,15 +52,17 @@ ORY Keto can be configured using environment variables as well as a configuratio
 on configuration options, open the configuration documentation:
 
 >> https://github.com/ory/keto/blob/` + Version + `/docs/config.yaml <<`,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		/* #nosec G102 - TODO this will be configurable */
 		lis, err := net.Listen("tcp", ":4467")
 		if err != nil {
-			fmt.Fprintf(cmd.ErrOrStderr(), "%+v\n", err)
-			os.Exit(1)
+			return err
 		}
 
 		reg := &driver.RegistryDefault{}
+		if err := reg.Init(); err != nil {
+			return err
+		}
 
 		wg := &sync.WaitGroup{}
 		wg.Add(2)
@@ -86,6 +89,8 @@ on configuration options, open the configuration documentation:
 			ch.RegisterPublicRoutes(router)
 			eh := expand.NewHandler(reg)
 			eh.RegisterPublicRoutes(router)
+			nh := namespace.NewHandler(reg)
+			nh.RegisterPublicRoutes(router)
 
 			server := graceful.WithDefaults(&http.Server{
 				Addr:    ":4466",
@@ -99,6 +104,7 @@ on configuration options, open the configuration documentation:
 		}()
 
 		wg.Wait()
+		return nil
 	},
 }
 

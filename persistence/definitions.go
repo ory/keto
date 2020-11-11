@@ -8,6 +8,8 @@ import (
 
 type Persister interface {
 	relationtuple.Manager
+}
 
+type Migrator interface {
 	MigrateUp(ctx context.Context) error
 }

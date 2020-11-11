@@ -1,8 +1,14 @@
 package driver
 
 import (
+	"context"
+
+	"github.com/gobuffalo/pop/v5"
 	"github.com/ory/herodot"
 	"github.com/ory/x/logrusx"
+
+	"github.com/ory/keto/namespace"
+	"github.com/ory/keto/persistence/sql"
 
 	"github.com/ory/keto/persistence"
 
@@ -10,7 +16,6 @@ import (
 
 	"github.com/ory/keto/check"
 
-	"github.com/ory/keto/persistence/memory"
 	"github.com/ory/keto/relationtuple"
 	"github.com/ory/keto/x"
 )
@@ -20,11 +25,12 @@ var _ x.WriterProvider = &RegistryDefault{}
 var _ x.LoggerProvider = &RegistryDefault{}
 
 type RegistryDefault struct {
-	p  persistence.Persister
-	l  *logrusx.Logger
-	w  herodot.Writer
-	ce *check.Engine
-	ee *expand.Engine
+	p    *sql.Persister
+	l    *logrusx.Logger
+	w    herodot.Writer
+	ce   *check.Engine
+	ee   *expand.Engine
+	conn *pop.Connection
 }
 
 func (r *RegistryDefault) Logger() *logrusx.Logger {
@@ -42,9 +48,10 @@ func (r *RegistryDefault) Writer() herodot.Writer {
 }
 
 func (r *RegistryDefault) RelationTupleManager() relationtuple.Manager {
-	if r.p == nil {
-		r.p = memory.NewPersister()
-	}
+	return r.p
+}
+
+func (r *RegistryDefault) NamespaceManagerProvider() namespace.Manager {
 	return r.p
 }
 
@@ -60,4 +67,36 @@ func (r *RegistryDefault) ExpandEngine() *expand.Engine {
 		r.ee = expand.NewEngine(r)
 	}
 	return r.ee
+}
+
+func (r *RegistryDefault) Persister() (persistence.Persister, error) {
+	if r.p == nil {
+		var err error
+		r.p, err = sql.NewPersister(r.conn)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return r.p, nil
+}
+
+func (r *RegistryDefault) Migrator() (persistence.Migrator, error) {
+	if r.p == nil {
+		if _, err := r.Persister(); err != nil {
+			return nil, err
+		}
+	}
+	return r.p, nil
+}
+
+func (r *RegistryDefault) Init() error {
+	c, err := pop.NewConnection(&pop.ConnectionDetails{
+		URL: "sqlite://:memory:?_fk=true",
+	})
+	r.conn = c
+	m, err := r.Migrator()
+	if err != nil {
+		return err
+	}
+	return m.MigrateUp(context.Background())
 }

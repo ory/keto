@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/ory/x/flagx"
+
 	"github.com/ory/keto/relationtuple"
 
 	"github.com/spf13/pflag"
@@ -17,15 +19,17 @@ import (
 )
 
 const (
-	FlagSubject  = "subject"
-	FlagRelation = "relation"
-	FlagObject   = "object"
+	FlagSubject   = "subject"
+	FlagRelation  = "relation"
+	FlagObjectID  = "object"
+	FlagNamespace = "namespace"
 )
 
 func registerRelationTupleFlags(flags *pflag.FlagSet) {
 	flags.String(FlagSubject, "", "Set the requested subject")
 	flags.String(FlagRelation, "", "Set the requested relation")
-	flags.String(FlagObject, "", "Set the requested object")
+	flags.String(FlagObjectID, "", "Set the requested object ID")
+	flags.String(FlagNamespace, "", "Set the requested namespace")
 }
 
 func readQueryFromFlags(cmd *cobra.Command) (*relationtuple.ReadRelationTuplesRequest_Query, error) {
@@ -37,14 +41,15 @@ func readQueryFromFlags(cmd *cobra.Command) (*relationtuple.ReadRelationTuplesRe
 	if err != nil {
 		return nil, err
 	}
-	object, err := cmd.Flags().GetString(FlagObject)
+	objectID, err := cmd.Flags().GetString(FlagObjectID)
 	if err != nil {
 		return nil, err
 	}
 
 	query := &relationtuple.ReadRelationTuplesRequest_Query{
-		Relation: relation,
-		Object:   (&relationtuple.RelationObject{}).FromString(object),
+		Relation:  relation,
+		ObjectId:  objectID,
+		Namespace: flagx.MustGetString(cmd, FlagNamespace),
 	}
 
 	subjectParts := strings.Split(subject, "#")

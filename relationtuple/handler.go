@@ -2,6 +2,7 @@ package relationtuple
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
@@ -34,18 +35,22 @@ func NewHandler(d handlerDependencies) *handler {
 }
 
 func (h *handler) RegisterPublicRoutes(router *httprouter.Router) {
-	router.GET(routeBase, h.getRelations)
+	router.GET(routeBase+"/:namespace", h.getRelations)
 	router.PUT(routeBase, h.createRelation)
 }
 
-func (h *handler) getRelations(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	params := r.URL.Query()
-	res, err := h.d.RelationTupleManager().GetRelationTuples(r.Context(), &RelationQuery{
-		Relation: params.Get("relation"),
-		Object:   (&Object{}).FromString(params.Get("object")),
-		Subject:  SubjectFromString(params.Get("subject")),
-	})
+func (h *handler) getRelations(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
+	qParams := r.URL.Query()
+	query := &RelationQuery{
+		Relation:  qParams.Get("relation"),
+		ObjectID:  qParams.Get("object_id"),
+		Namespace: params.ByName("namespace"),
+	}
+	if sub := qParams.Get("subject"); sub != "" {
+		query.Subject = SubjectFromString(sub)
+	}
 
+	res, err := h.d.RelationTupleManager().GetRelationTuples(r.Context(), query)
 	if err != nil {
 		h.d.Writer().WriteError(w, r, err)
 		return
@@ -58,12 +63,13 @@ func (h *handler) createRelation(w http.ResponseWriter, r *http.Request, _ httpr
 	var rel InternalRelationTuple
 
 	if err := json.NewDecoder(r.Body).Decode(&rel); err != nil {
+		fmt.Printf("json decode error: %+v\n", err)
 		h.d.Writer().WriteError(w, r, errors.WithStack(herodot.ErrBadRequest))
 		return
 	}
 
 	if err := h.d.RelationTupleManager().WriteRelationTuples(r.Context(), &rel); err != nil {
-		h.d.Writer().WriteError(w, r, errors.WithStack(herodot.ErrInternalServerError))
+		h.d.Writer().WriteError(w, r, err)
 		return
 	}
 

@@ -3,6 +3,10 @@ package sql
 import (
 	"context"
 	"fmt"
+
+	"github.com/gobuffalo/pop/v5"
+
+	"github.com/ory/keto/namespace"
 )
 
 const namespaceCreateStatement = `
@@ -31,6 +35,12 @@ func createStmt(namespace string) string {
 	return fmt.Sprintf(namespaceCreateStatement, tableName, tableName, tableName)
 }
 
-func (p *Persister) NewNamespace(ctx context.Context, n string) error {
-	return p.conn.RawQuery(createStmt(n)).Exec()
+func (p *Persister) NewNamespace(ctx context.Context, n *namespace.Namespace) error {
+	return p.conn.Transaction(func(tx *pop.Connection) error {
+		if err := tx.Create(n); err != nil {
+			return err
+		}
+
+		return tx.RawQuery(createStmt(n.ID)).Exec()
+	})
 }
