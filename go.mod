@@ -10,11 +10,13 @@ require (
 	github.com/go-openapi/validate v0.19.3
 	github.com/go-swagger/go-swagger v0.21.1-0.20200107003254-1c98855b472d
 	github.com/gobuffalo/packr v1.24.1
+	github.com/gobuffalo/packr/v2 v2.8.0
+	github.com/gobuffalo/pop/v5 v5.3.1
 	github.com/golang/protobuf v1.4.2
 	github.com/gorilla/sessions v1.1.3
 	github.com/gorilla/websocket v1.4.2
 	github.com/julienschmidt/httprouter v1.2.0
-	github.com/ory/analytics-go/v4 v4.0.1
+	github.com/luna-duclos/instrumentedsql/opentracing v0.0.0-20201103091713-40d03108b6f4 // indirect
 	github.com/ory/cli v0.0.11
 	github.com/ory/go-acc v0.2.3
 	github.com/ory/graceful v0.1.1
@@ -32,7 +34,6 @@ require (
 	github.com/stretchr/testify v1.5.1
 	github.com/tidwall/gjson v1.6.0
 	github.com/tidwall/sjson v1.1.1 // indirect
-	github.com/urfave/negroni v1.0.0
 	go.mongodb.org/mongo-driver v1.3.4 // indirect
 	golang.org/x/lint v0.0.0-20200302205851-738671d3881b // indirect
 	golang.org/x/tools v0.0.0-20200401192744-099440627f01

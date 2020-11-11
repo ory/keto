@@ -3,9 +3,8 @@ package relationtuple
 import (
 	"context"
 	"fmt"
-	"strings"
-
 	"github.com/ory/keto/x"
+	"strings"
 
 	"github.com/tidwall/gjson"
 
@@ -47,9 +46,10 @@ type (
 		Subject  Subject `json:"subject"`
 	}
 	RelationQuery struct {
-		Object   *Object `json:"object"`
-		Relation string  `json:"relation"`
-		Subject  Subject `json:"subject"`
+		ObjectID  string  `json:"object,omitempty"`
+		Relation  string  `json:"relation,omitempty"`
+		Namespace string  `json:"namespace"`
+		Subject   Subject `json:"subject,omitempty"`
 	}
 )
 
@@ -227,11 +227,9 @@ func (rq *RelationQuery) FromGRPC(query *ReadRelationTuplesRequest_Query) *Relat
 		}
 	}
 
-	rq.Object = &Object{
-		query.Object.Namespace,
-		query.Object.ObjectId,
-	}
-	rq.Relation = query.Relation
+	rq.ObjectID = query.GetObjectId()
+	rq.Namespace = query.GetNamespace()
+	rq.Relation = query.GetRelation()
 	rq.Subject = subject
 
 	return rq

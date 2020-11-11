@@ -290,6 +290,8 @@ github.com/gobuffalo/events v1.4.1/go.mod h1:SjXgWKpeSuvQDvGhgMz5IXx3Czu+IbL+XPL
 github.com/gobuffalo/fizz v1.0.12/go.mod h1:C0sltPxpYK8Ftvf64kbsQa2yiCZY4RZviurNxXdAKwc=
 github.com/gobuffalo/fizz v1.9.8 h1:K0uXVQ/hF1NaETpW++bTvK4A+42GCioKzpvdtSfkiRM=
 github.com/gobuffalo/fizz v1.9.8/go.mod h1:w1FEn1yKNVCc49KnADGyYGRPH7jFON3ak4Bj1yUudHo=
+github.com/gobuffalo/fizz v1.10.0 h1:I8vad0PnmR+CLjSnZ5L5jlhBm4S88UIGOoZZL3/3e24=
+github.com/gobuffalo/fizz v1.10.0/go.mod h1:J2XGPO0AfJ1zKw7+2BA+6FEGAkyEsdCOLvN93WCT2WI=
 github.com/gobuffalo/flect v0.0.0-20180907193754-dc14d8acaf9f/go.mod h1:rCiQgmAE4axgBNl3jZWzS5rETRYTGOsrixTRaCPzNdA=
 github.com/gobuffalo/flect v0.0.0-20181002182613-4571df4b1daf/go.mod h1:rCiQgmAE4axgBNl3jZWzS5rETRYTGOsrixTRaCPzNdA=
 github.com/gobuffalo/flect v0.0.0-20181007231023-ae7ed6bfe683/go.mod h1:rCiQgmAE4axgBNl3jZWzS5rETRYTGOsrixTRaCPzNdA=
@@ -449,6 +451,8 @@ github.com/gobuffalo/packr/v2 v2.4.0/go.mod h1:ra341gygw9/61nSjAbfwcwh8IrYL4WmR4
 github.com/gobuffalo/packr/v2 v2.5.2/go.mod h1:sgEE1xNZ6G0FNN5xn9pevVu4nywaxHvgup67xisti08=
 github.com/gobuffalo/packr/v2 v2.7.1 h1:n3CIW5T17T8v4GGK5sWXLVWJhCz7b5aNLSxW6gYim4o=
 github.com/gobuffalo/packr/v2 v2.7.1/go.mod h1:qYEvAazPaVxy7Y7KR0W8qYEE+RymX74kETFqjFoFlOc=
+github.com/gobuffalo/packr/v2 v2.8.0 h1:IULGd15bQL59ijXLxEvA5wlMxsmx/ZkQv9T282zNVIY=
+github.com/gobuffalo/packr/v2 v2.8.0/go.mod h1:PDk2k3vGevNE3SwVyVRgQCCXETC9SaONCNSXT1Q8M1g=
 github.com/gobuffalo/plush v3.7.16+incompatible/go.mod h1:rQ4zdtUUyZNqULlc6bqd5scsPfLKfT0+TGMChgduDvI=
 github.com/gobuffalo/plush v3.7.20+incompatible/go.mod h1:rQ4zdtUUyZNqULlc6bqd5scsPfLKfT0+TGMChgduDvI=
 github.com/gobuffalo/plush v3.7.21+incompatible/go.mod h1:rQ4zdtUUyZNqULlc6bqd5scsPfLKfT0+TGMChgduDvI=
@@ -460,6 +464,7 @@ github.com/gobuffalo/plush v3.7.32+incompatible/go.mod h1:rQ4zdtUUyZNqULlc6bqd5s
 github.com/gobuffalo/plush v3.8.2+incompatible/go.mod h1:rQ4zdtUUyZNqULlc6bqd5scsPfLKfT0+TGMChgduDvI=
 github.com/gobuffalo/plush v3.8.3+incompatible h1:kzvUTnFPhwyfPEsx7U7LI05/IIslZVGnAlMA1heWub8=
 github.com/gobuffalo/plush v3.8.3+incompatible/go.mod h1:rQ4zdtUUyZNqULlc6bqd5scsPfLKfT0+TGMChgduDvI=
+github.com/gobuffalo/plush/v4 v4.0.0 h1:ZHdmfr2R7DQ77XzWZK2PGKJOXm9NRy21EZ6Rw7FhuNw=
 github.com/gobuffalo/plush/v4 v4.0.0/go.mod h1:ErFS3UxKqEb8fpFJT7lYErfN/Nw6vHGiDMTjxpk5bQ0=
 github.com/gobuffalo/plushgen v0.0.0-20181128164830-d29dcb966cb2/go.mod h1:r9QwptTFnuvSaSRjpSp4S2/4e2D3tJhARYbvEBcKSb4=
 github.com/gobuffalo/plushgen v0.0.0-20181203163832-9fc4964505c2/go.mod h1:opEdT33AA2HdrIwK1aibqnTJDVVKXC02Bar/GT1YRVs=
@@ -473,6 +478,8 @@ github.com/gobuffalo/pop v4.13.1+incompatible h1:AhbqPxNOBN/DBb2DBaiBqzOXIBQXxEY
 github.com/gobuffalo/pop v4.13.1+incompatible/go.mod h1:DwBz3SD5SsHpTZiTubcsFWcVDpJWGsxjVjMPnkiThWg=
 github.com/gobuffalo/pop/v5 v5.0.11 h1:BzSFbylk6+w2pEj+8yFHPxsShiJvg6ZV8rcAPNVdmtw=
 github.com/gobuffalo/pop/v5 v5.0.11/go.mod h1:mZJHJbA3cy2V18abXYuVop2ldEJ8UZ2DK6qOekC5u5g=
+github.com/gobuffalo/pop/v5 v5.3.1 h1:dJbBPy6e0G0VRjn28md3fk16wpYIBv5iYVQWd0eqmkQ=
+github.com/gobuffalo/pop/v5 v5.3.1/go.mod h1:vcEDhh6cJ3WVENqJDFt/6z7zNb7lLnlN8vj3n5G9rYA=
 github.com/gobuffalo/release v1.0.35/go.mod h1:VtHFAKs61vO3wboCec5xr9JPTjYyWYcvaM3lclkc4x4=
 github.com/gobuffalo/release v1.0.38/go.mod h1:VtHFAKs61vO3wboCec5xr9JPTjYyWYcvaM3lclkc4x4=
 github.com/gobuffalo/release v1.0.42/go.mod h1:RPs7EtafH4oylgetOJpGP0yCZZUiO4vqHfTHJjSdpug=
@@ -652,6 +659,8 @@ github.com/jackc/pgconn v1.3.2 h1:9UIGICxEAW70RQDGilGwsCG63NCcm5amjuBQCFzrmsw=
 github.com/jackc/pgconn v1.3.2/go.mod h1:LvCquS3HbBKwgl7KbX9KyqEIumJAbm1UMcTvGaIf3bM=
 github.com/jackc/pgconn v1.5.0 h1:oFSOilzIZkyg787M1fEmyMfOUUvwj0daqYMfaWwNL4o=
 github.com/jackc/pgconn v1.5.0/go.mod h1:QeD3lBfpTFe8WUnPZWN5KY/mB8FGMIYRdd8P8Jr0fAI=
+github.com/jackc/pgconn v1.6.0 h1:8FiBxMxS/Z0eQ9BeE1HhL6pzPL1R5x+ZuQ+T86WgZ4I=
+github.com/jackc/pgconn v1.6.0/go.mod h1:yeseQo4xhQbgyJs2c87RAXOH2i624N0Fh1KSPJya7qo=
 github.com/jackc/pgio v1.0.0 h1:g12B9UwVnzGhueNavwioyEEpAmqMe1E/BN9ES+8ovkE=
 github.com/jackc/pgio v1.0.0/go.mod h1:oP+2QK2wFfUWgr+gxjoBH9KGBb31Eio69xUb0w5bYf8=
 github.com/jackc/pgmock v0.0.0-20190831213851-13a1b77aafa2 h1:JVX6jT/XfzNqIjye4717ITLaNwV9mWbJx0dLCpcRzdA=
@@ -666,6 +675,8 @@ github.com/jackc/pgproto3/v2 v2.0.0-rc3/go.mod h1:ryONWYqW6dqSg1Lw6vXNMXoBJhpzvW
 github.com/jackc/pgproto3/v2 v2.0.0-rc3.0.20190831210041-4c03ce451f29/go.mod h1:ryONWYqW6dqSg1Lw6vXNMXoBJhpzvWKnT95C46ckYeM=
 github.com/jackc/pgproto3/v2 v2.0.1 h1:Rdjp4NFjwHnEslx2b66FfCI2S0LhO4itac3hXz6WX9M=
 github.com/jackc/pgproto3/v2 v2.0.1/go.mod h1:WfJCnwN3HIg9Ish/j3sgWXnAfK8A9Y0bwXYU5xKaEdA=
+github.com/jackc/pgproto3/v2 v2.0.2 h1:q1Hsy66zh4vuNsajBUF2PNqfAMMfxU5mk594lPE9vjY=
+github.com/jackc/pgproto3/v2 v2.0.2/go.mod h1:WfJCnwN3HIg9Ish/j3sgWXnAfK8A9Y0bwXYU5xKaEdA=
 github.com/jackc/pgservicefile v0.0.0-20200307190119-3430c5407db8 h1:Q3tB+ExeflWUW7AFcAhXqk40s9mnNYLk1nOkKNZ5GnU=
 github.com/jackc/pgservicefile v0.0.0-20200307190119-3430c5407db8/go.mod h1:vsD4gTJCa9TptPL8sPkXrLZ+hDuNrZCnj29CQpr4X1E=
 github.com/jackc/pgtype v0.0.0-20190421001408-4ed0de4755e0/go.mod h1:hdSHsc1V01CGwFsrv11mJRHWJ6aifDLfdV3aVjFF0zg=
@@ -673,6 +684,8 @@ github.com/jackc/pgtype v0.0.0-20190824184912-ab885b375b90/go.mod h1:KcahbBH1nCM
 github.com/jackc/pgtype v0.0.0-20190828014616-a8802b16cc59/go.mod h1:MWlu30kVJrUS8lot6TQqcg7mtthZ9T0EoIBFiJcmcyw=
 github.com/jackc/pgtype v1.2.0 h1:JuOJqN8dtahBO+jqvtAdMiY32NI5obiZRWa+C17Vd4s=
 github.com/jackc/pgtype v1.2.0/go.mod h1:5m2OfMh1wTK7x+Fk952IDmI4nw3nPrvtQdM0ZT4WpC0=
+github.com/jackc/pgtype v1.3.0 h1:l8JvKrby3RI7Kg3bYEeU9TA4vqC38QDpFCfcrC7KuN0=
+github.com/jackc/pgtype v1.3.0/go.mod h1:b0JqxHvPmljG+HQ5IsvQ0yqeSi4nGcDTVjFoiLDb0Ik=
 github.com/jackc/pgx v3.2.0+incompatible h1:0Vihzu20St42/UDsvZGdNE6jak7oi/UOeMzwMPHkgFY=
 github.com/jackc/pgx v3.2.0+incompatible/go.mod h1:0ZGrqGqkRlliWnWB4zKnWtjbSWbGkVEFm4TeybAXq+I=
 github.com/jackc/pgx v3.6.2+incompatible h1:2zP5OD7kiyR3xzRYMhOcXVvkDZsImVXfj+yIyTQf3/o=
@@ -682,6 +695,8 @@ github.com/jackc/pgx/v4 v4.0.0-20190421002000-1b8f0016e912/go.mod h1:no/Y67Jkk/9
 github.com/jackc/pgx/v4 v4.0.0-pre1.0.20190824185557-6972a5742186/go.mod h1:X+GQnOEnf1dqHGpw7JmHqHc1NxDoalibchSk9/RWuDc=
 github.com/jackc/pgx/v4 v4.4.1 h1:OBZhZFlzBMC9yUD6wAFzlFFuxfZTV+YvloSPO1k+puA=
 github.com/jackc/pgx/v4 v4.4.1/go.mod h1:6iSW+JznC0YT+SgBn7rNxoEBsBgSmnC5FwyCekOGUiE=
+github.com/jackc/pgx/v4 v4.6.0 h1:Fh0O9GdlG4gYpjpwOqjdEodJUQM9jzN3Hdv7PN0xmm0=
+github.com/jackc/pgx/v4 v4.6.0/go.mod h1:vPh43ZzxijXUVJ+t/EmXBtFmbFVO72cuneCT9oAlxAg=
 github.com/jackc/puddle v0.0.0-20190413234325-e4ced69a3a2b/go.mod h1:m4B5Dj62Y0fbyuIc15OsIqK0+JU8nkqQjsgx7dvjSWk=
 github.com/jackc/puddle v0.0.0-20190608224051-11cab39313c9/go.mod h1:m4B5Dj62Y0fbyuIc15OsIqK0+JU8nkqQjsgx7dvjSWk=
 github.com/jackc/puddle v1.1.0/go.mod h1:m4B5Dj62Y0fbyuIc15OsIqK0+JU8nkqQjsgx7dvjSWk=
@@ -712,7 +727,10 @@ github.com/karrick/godirwalk v1.8.0/go.mod h1:H5KPZjojv4lE+QYImBI8xVtrBRgYrIVsaR
 github.com/karrick/godirwalk v1.10.3/go.mod h1:RoGL9dQei4vP9ilrpETWE8CLOZ1kiN0LhBygSwrAsHA=
 github.com/karrick/godirwalk v1.10.9/go.mod h1:RoGL9dQei4vP9ilrpETWE8CLOZ1kiN0LhBygSwrAsHA=
 github.com/karrick/godirwalk v1.10.12/go.mod h1:RoGL9dQei4vP9ilrpETWE8CLOZ1kiN0LhBygSwrAsHA=
+github.com/karrick/godirwalk v1.15.3/go.mod h1:j4mkqPuvaLI8mp1DroR3P6ad7cyYd4c1qeJ3RV7ULlk=
 github.com/karrick/godirwalk v1.15.5/go.mod h1:j4mkqPuvaLI8mp1DroR3P6ad7cyYd4c1qeJ3RV7ULlk=
+github.com/karrick/godirwalk v1.16.1 h1:DynhcF+bztK8gooS0+NDJFrdNZjJ3gzVzC545UNA9iw=
+github.com/karrick/godirwalk v1.16.1/go.mod h1:j4mkqPuvaLI8mp1DroR3P6ad7cyYd4c1qeJ3RV7ULlk=
 github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51 h1:Z9n2FFNUXsshfwJMBgNA0RU6/i7WVaAegv3PtuIHPMs=
 github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51/go.mod h1:CzGEWj7cYgsdH8dAjBGEr58BoE7ScuLd+fwFZ44+/x8=
 github.com/kevinburke/go-bindata v3.16.0+incompatible/go.mod h1:/pEEZ72flUW2p0yi30bslSp9YqD9pysLxunQDdb2CPM=
@@ -749,6 +767,10 @@ github.com/lib/pq v1.3.0/go.mod h1:5WUZQaWbwv1U+lTReE5YruASi9Al49XbQIvNi/34Woo=
 github.com/luna-duclos/instrumentedsql v0.0.0-20181127104832-b7d587d28109/go.mod h1:PWUIzhtavmOR965zfawVsHXbEuU1G29BPZ/CB3C7jXk=
 github.com/luna-duclos/instrumentedsql v1.1.2 h1:AZdd9TU/kFArfxF0Wi8PLNzniBUgo/c1vDhhjwZPANE=
 github.com/luna-duclos/instrumentedsql v1.1.2/go.mod h1:4LGbEqDnopzNAiyxPPDXhLspyunZxgPTMJBKtC6U0BQ=
+github.com/luna-duclos/instrumentedsql v1.1.3 h1:t7mvC0z1jUt5A0UQ6I/0H31ryymuQRnJcWCiqV3lSAA=
+github.com/luna-duclos/instrumentedsql v1.1.3/go.mod h1:9J1njvFds+zN7y85EDhN9XNQLANWwZt2ULeIC8yMNYs=
+github.com/luna-duclos/instrumentedsql/opentracing v0.0.0-20201103091713-40d03108b6f4 h1:b8Uu5JfweuhcXIqANFs9dOw5zanFj89GYOGlyys37ds=
+github.com/luna-duclos/instrumentedsql/opentracing v0.0.0-20201103091713-40d03108b6f4/go.mod h1:YnZVBK+MxEr2sn1rbf4UMqsBd0uKaCOq52UtmbfDKNM=
 github.com/lyft/protoc-gen-validate v0.0.13/go.mod h1:XbGvPuh87YZc5TdIa2/I4pLk0QoUACkjt2znoq26NVQ=
 github.com/magiconair/properties v1.8.0 h1:LLgXmsheXeRoUOBOjtwPQCWIYqM/LU1ayDtDePerRcY=
 github.com/magiconair/properties v1.8.0/go.mod h1:PppfXfuXeibc/6YijjN8zIbojt8czPbwD3XqdrwzmxQ=
@@ -763,6 +785,8 @@ github.com/mailru/easyjson v0.0.0-20190626092158-b2ccc519800e/go.mod h1:C1wdFJiN
 github.com/markbates/deplist v1.0.4/go.mod h1:gRRbPbbuA8TmMiRvaOzUlRfzfjeCCBqX2A6arxN01MM=
 github.com/markbates/deplist v1.0.5/go.mod h1:gRRbPbbuA8TmMiRvaOzUlRfzfjeCCBqX2A6arxN01MM=
 github.com/markbates/deplist v1.1.3/go.mod h1:BF7ioVzAJYEtzQN/os4rt8H8Ti3h0T7EoN+7eyALktE=
+github.com/markbates/errx v1.1.0 h1:QDFeR+UP95dO12JgW+tgi2UVfo0V8YBHiUIOaeBPiEI=
+github.com/markbates/errx v1.1.0/go.mod h1:PLa46Oex9KNbVDZhKel8v1OT7hD5JZ2eI7AHhA0wswc=
 github.com/markbates/going v1.0.2/go.mod h1:UWCk3zm0UKefHZ7l8BNqi26UyiEMniznk8naLdTcy6c=
 github.com/markbates/grift v1.0.4/go.mod h1:wbmtW74veyx+cgfwFhlnnMWqhoz55rnHR47oMXzsyVs=
 github.com/markbates/hmax v1.0.0 h1:yo2N0gBoCnUMKhV/VRLHomT6Y9wUm+oQQENuWJqCdlM=
@@ -777,6 +801,7 @@ github.com/markbates/oncer v0.0.0-20181014194634-05fccaae8fc4 h1:Mlji5gkcpzkqTRO
 github.com/markbates/oncer v0.0.0-20181014194634-05fccaae8fc4/go.mod h1:Ld9puTsIW75CHf65OeIOkyKbteujpZVXDpWK6YGZbxE=
 github.com/markbates/oncer v0.0.0-20181203154359-bf2de49a0be2 h1:JgVTCPf0uBVcUSWpyXmGpgOc62nK5HWUBKAGc3Qqa5k=
 github.com/markbates/oncer v0.0.0-20181203154359-bf2de49a0be2/go.mod h1:Ld9puTsIW75CHf65OeIOkyKbteujpZVXDpWK6YGZbxE=
+github.com/markbates/oncer v1.0.0 h1:E83IaVAHygyndzPimgUYJjbshhDTALZyXxvk9FOlQRY=
 github.com/markbates/oncer v1.0.0/go.mod h1:Z59JA581E9GP6w96jai+TGqafHPW+cPfRxz2aSZ0mcI=
 github.com/markbates/pkger v0.17.0 h1:RFfyBPufP2V6cddUyyEVSHBpaAnM1WzaMNyqomeT+iY=
 github.com/markbates/pkger v0.17.0/go.mod h1:0JoVlrol20BSywW79rN3kdFFsE5xYM+rSCQDXbLhiuI=
@@ -874,8 +899,6 @@ github.com/openzipkin/zipkin-go v0.2.2 h1:nY8Hti+WKaP0cRsSeQ026wU03QsM762XBeCXBb
 github.com/openzipkin/zipkin-go v0.2.2/go.mod h1:NaW6tEwdmWMaCDZzg8sh+IBNOxHMPnhQw8ySjnjRyN4=
 github.com/ory/analytics-go/v4 v4.0.0 h1:KQ2P00j9dbj4lDC/Albw/zn/scK67041RhqeW5ptsbw=
 github.com/ory/analytics-go/v4 v4.0.0/go.mod h1:FMx9cLRD9xN+XevPvZ5FDMfignpmcqPP6FUKnJ9/MmE=
-github.com/ory/analytics-go/v4 v4.0.1 h1:kKB2Mk8W0N23ZQCBHZ4wB6NQB6RxlxqzZB9LmSQ3Mho=
-github.com/ory/analytics-go/v4 v4.0.1/go.mod h1:FMx9cLRD9xN+XevPvZ5FDMfignpmcqPP6FUKnJ9/MmE=
 github.com/ory/cli v0.0.11 h1:MInO9AcEZ3FEbxqMVxSm4BFEhOuLDe4HK2c7mPbywMg=
 github.com/ory/cli v0.0.11/go.mod h1:WQ+RPlizyFBLH7zrePdnwd3Ea+PHaJmPSR9TEVSw7zI=
 github.com/ory/dockertest v3.3.5+incompatible h1:iLLK6SQwIhcbrG783Dghaaa3WPzGc+4Emza6EbVUUGA=
@@ -1057,6 +1080,7 @@ github.com/spf13/cast v1.3.1/go.mod h1:Qx5cxh0v+4UWYiBimWS+eyWzqEqokIECu5etghLkU
 github.com/spf13/cobra v0.0.2-0.20171109065643-2da4a54c5cee/go.mod h1:1l0Ry5zgKvJasoi3XT1TypsSe7PqH0Sj9dhYf7v3XqQ=
 github.com/spf13/cobra v0.0.3/go.mod h1:1l0Ry5zgKvJasoi3XT1TypsSe7PqH0Sj9dhYf7v3XqQ=
 github.com/spf13/cobra v0.0.5/go.mod h1:3K3wKZymM7VvHMDS9+Akkh4K60UwM26emMESw8tLCHU=
+github.com/spf13/cobra v0.0.6/go.mod h1:/6GTrnGXV9HjY+aR4k0oJ5tcvakLuG6EuKReYlHNrgE=
 github.com/spf13/cobra v0.0.7/go.mod h1:/6GTrnGXV9HjY+aR4k0oJ5tcvakLuG6EuKReYlHNrgE=
 github.com/spf13/cobra v1.0.0 h1:6m/oheQuQ13N9ks4hubMG6BnvwOeaJrqSPLahSnczz8=
 github.com/spf13/cobra v1.0.0/go.mod h1:/6GTrnGXV9HjY+aR4k0oJ5tcvakLuG6EuKReYlHNrgE=
@@ -1432,6 +1456,7 @@ golang.org/x/tools v0.0.0-20191224055732-dd894d0a8a40/go.mod h1:TB2adYChydJhpapK
 golang.org/x/tools v0.0.0-20200117220505-0cba7a3a9ee9/go.mod h1:TB2adYChydJhpapKDTa4BR/hXlZSLoq2Wpct/0txZ28=
 golang.org/x/tools v0.0.0-20200130002326-2f3ba24bd6e7/go.mod h1:TB2adYChydJhpapKDTa4BR/hXlZSLoq2Wpct/0txZ28=
 golang.org/x/tools v0.0.0-20200203215610-ab391d50b528/go.mod h1:TB2adYChydJhpapKDTa4BR/hXlZSLoq2Wpct/0txZ28=
+golang.org/x/tools v0.0.0-20200308013534-11ec41452d41/go.mod h1:o4KQGtdN14AW+yjsvvwRTJJuXz8XRtIHtEnmAXLyFUw=
 golang.org/x/tools v0.0.0-20200401192744-099440627f01 h1:ysQJ/fU6laLOZJseIeOqXl6Mo+lw5z6b7QHnmUKjW+k=
 golang.org/x/tools v0.0.0-20200401192744-099440627f01/go.mod h1:EkVYQZoAsY45+roYkvgYkIh4xh/qjgUK9TdY2XT94GE=
 golang.org/x/xerrors v0.0.0-20190410155217-1f06c39b4373/go.mod h1:I/5z698sn9Ka8TeJc9MKroUUfqBBauWjQqLJ2OPfmY0=

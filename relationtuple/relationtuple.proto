@@ -12,8 +12,8 @@ service RelationTupleService {
 // Query by partial keys of tuples
 message ReadRelationTuplesRequest {
   message Query {
-    // Optional
-    RelationObject object = 1;
+    // Required
+    string namespace = 1;
     // Optional
     string relation = 2;
     // Optional
@@ -21,11 +21,10 @@ message ReadRelationTuplesRequest {
       string user_id = 3;
       RelationUserSet user_set = 4;
     }
+    // Optional
+    string object_id = 5;
   }
 
-  // All conditions are concatenated with
-  // an OR operator. If any query matches
-  // the relation will be in the response
   Query query = 1;
   int32 page = 2;
   int32 per_page = 3;
