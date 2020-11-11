@@ -7,13 +7,48 @@ title: Milestones and Roadmap
 
 Tracks all the issues contributing to next gen Keto.
 
+### [Bug](https://github.com/ory/keto/labels/bug)
+
+Something is not working.
+
+#### Issues
+
+- [ ] CLI remote flag should be required ([keto#287](https://github.com/ory/keto/issues/287)) - [@Patrik](https://github.com/zepatrik)
+- [ ] REST Relations API returns null instead of `[]` ([keto#289](https://github.com/ory/keto/issues/289)) - [@Patrik](https://github.com/zepatrik)
+- [ ] REST API create relation should mirror payload in 201 OK response ([keto#290](https://github.com/ory/keto/issues/290)) - [@Patrik](https://github.com/zepatrik)
+- [ ] REST API create and subsequent get relation does not properly persist fields ([keto#291](https://github.com/ory/keto/issues/291)) - [@Patrik](https://github.com/zepatrik)
+- [ ] Relations are not unique ([keto#292](https://github.com/ory/keto/issues/292)) - [@Patrik](https://github.com/zepatrik)
+- [ ] Unable to create relations using REST API and string notation ([keto#293](https://github.com/ory/keto/issues/293)) - [@Patrik](https://github.com/zepatrik)
+- [ ] Replace in-memory persister with SQLite schema ([keto#294](https://github.com/ory/keto/issues/294)) - [@Patrik](https://github.com/zepatrik)
+- [ ] Write GRPC handler and tests for check engine ([keto#296](https://github.com/ory/keto/issues/296)) - [@Patrik](https://github.com/zepatrik)
+- [x] Move models package to relations ([keto#295](https://github.com/ory/keto/issues/295)) - [@Patrik](https://github.com/zepatrik)
+
 ### [Feat](https://github.com/ory/keto/labels/feat)
 
 New feature or request.
 
 #### Issues
 
-- [ ] [next-gen] Allow defining relations on relations within relation definition ([keto#263](https://github.com/ory/keto/issues/263)) - [@Patrik](https://github.com/zepatrik)
+- [ ] [next-gen] Allow defining userset rewrites ([keto#263](https://github.com/ory/keto/issues/263)) - [@Patrik](https://github.com/zepatrik)
+- [ ] Define naming conventions for objects, relations, namespaces ([keto#288](https://github.com/ory/keto/issues/288)) - [@Patrik](https://github.com/zepatrik)
+- [ ] Write relationtuple tests for http and grpc handlers ([keto#297](https://github.com/ory/keto/issues/297)) - [@Patrik](https://github.com/zepatrik)
+- [ ] Ensure telemetry is running for both GRPC and HTTP ([keto#298](https://github.com/ory/keto/issues/298)) - [@hackerman](https://github.com/aeneasr), [@Patrik](https://github.com/zepatrik)
+- [ ] Define and architect SQL schema and queries for querying relations ([keto#300](https://github.com/ory/keto/issues/300)) - [@Patrik](https://github.com/zepatrik)
+- [ ] Write benchmark tests for relationtuple package ([keto#301](https://github.com/ory/keto/issues/301)) - [@Patrik](https://github.com/zepatrik)
+- [ ] Rewrite check engine to search the graph in the other direction ([keto#302](https://github.com/ory/keto/issues/302)) - [@Patrik](https://github.com/zepatrik)
+- [ ] Namespace configuration ([keto#303](https://github.com/ory/keto/issues/303)) - [@Patrik](https://github.com/zepatrik)
+- [x] Remove support for AND/OR/XOR in GetRelationTuples ([keto#299](https://github.com/ory/keto/issues/299)) - [@Patrik](https://github.com/zepatrik)
+
+### [Blocking](https://github.com/ory/keto/labels/blocking)
+
+Blocks milestones or other issues or pulls.
+
+#### Issues
+
+- [ ] Ensure telemetry is running for both GRPC and HTTP ([keto#298](https://github.com/ory/keto/issues/298)) - [@hackerman](https://github.com/aeneasr), [@Patrik](https://github.com/zepatrik)
+- [ ] Define and architect SQL schema and queries for querying relations ([keto#300](https://github.com/ory/keto/issues/300)) - [@Patrik](https://github.com/zepatrik)
+- [ ] Write benchmark tests for relationtuple package ([keto#301](https://github.com/ory/keto/issues/301)) - [@Patrik](https://github.com/zepatrik)
+- [ ] Namespace configuration ([keto#303](https://github.com/ory/keto/issues/303)) - [@Patrik](https://github.com/zepatrik)
 
 ## [next](https://github.com/ory/keto/milestone/2)
 
