@@ -4,19 +4,20 @@
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**
 
-- [Unreleased (2020-11-10)](#unreleased-2020-11-10)
+- [Unreleased (2020-11-12)](#unreleased-2020-11-12)
+    - [Bug Fixes](#bug-fixes)
   - [0.5.7-alpha.1 (2020-10-12)](#057-alpha1-2020-10-12)
   - [0.5.7-alpha.1.pre.0 (2020-10-12)](#057-alpha1pre0-2020-10-12)
-    - [Bug Fixes](#bug-fixes)
+    - [Bug Fixes](#bug-fixes-1)
     - [Documentation](#documentation)
     - [Features](#features)
   - [0.5.6-alpha.1 (2020-05-28)](#056-alpha1-2020-05-28)
-    - [Bug Fixes](#bug-fixes-1)
-  - [0.5.5-alpha.1 (2020-05-28)](#055-alpha1-2020-05-28)
     - [Bug Fixes](#bug-fixes-2)
+  - [0.5.5-alpha.1 (2020-05-28)](#055-alpha1-2020-05-28)
+    - [Bug Fixes](#bug-fixes-3)
     - [Documentation](#documentation-1)
   - [0.5.4-alpha.1 (2020-04-07)](#054-alpha1-2020-04-07)
-    - [Bug Fixes](#bug-fixes-3)
+    - [Bug Fixes](#bug-fixes-4)
   - [0.5.3-alpha.3 (2020-04-06)](#053-alpha3-2020-04-06)
     - [Code Refactoring](#code-refactoring)
     - [Documentation](#documentation-2)
@@ -24,13 +25,13 @@
   - [0.5.2 (2020-04-02)](#052-2020-04-02)
     - [Documentation](#documentation-3)
 - [0.5.0 (2020-04-02)](#050-2020-04-02)
-    - [Bug Fixes](#bug-fixes-4)
+    - [Bug Fixes](#bug-fixes-5)
     - [Documentation](#documentation-4)
   - [0.4.5-alpha.1 (2020-02-29)](#045-alpha1-2020-02-29)
-    - [Bug Fixes](#bug-fixes-5)
+    - [Bug Fixes](#bug-fixes-6)
     - [Documentation](#documentation-5)
   - [0.4.4-alpha.1 (2020-02-14)](#044-alpha1-2020-02-14)
-    - [Bug Fixes](#bug-fixes-6)
+    - [Bug Fixes](#bug-fixes-7)
     - [Documentation](#documentation-6)
     - [Features](#features-1)
     - [Unclassified](#unclassified)
@@ -75,9 +76,13 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# Unreleased (2020-11-10)
+# [Unreleased](https://github.com/ory/keto/compare/v0.5.7-alpha.1...041db6938569f352da32fbdb6da064d2aea18d9e) (2020-11-12)
 
-No significant changes have been made for this release.
+
+### Bug Fixes
+
+* Add jaeger propagation setting ([#308](https://github.com/ory/keto/issues/308)) ([041db69](https://github.com/ory/keto/commit/041db6938569f352da32fbdb6da064d2aea18d9e)), closes [#284](https://github.com/ory/keto/issues/284) [#283](https://github.com/ory/keto/issues/283)
+
 
 
 ## [0.5.7-alpha.1](https://github.com/ory/keto/compare/v0.5.7-alpha.1.pre.0...v0.5.7-alpha.1) (2020-10-12)
