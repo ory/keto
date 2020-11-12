@@ -130,7 +130,9 @@ func TestMemoryManager(t *testing.T) {
 				}
 				expected := make([]int, n)
 				// populate with 0 - 101
-				for i := range expected { expected[i] = i}
+				for i := range expected {
+					expected[i] = i
+				}
 
 				var v int
 				require.NoError(t, m.Get(ctx, "test-listall", "list-1", &v))
