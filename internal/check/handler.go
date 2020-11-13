@@ -1,14 +1,13 @@
-package expand
+package check
 
 import (
 	"net/http"
-	"strconv"
 
-	"github.com/ory/keto/relationtuple"
+	"github.com/ory/keto/internal/relationtuple"
 
 	"github.com/julienschmidt/httprouter"
 
-	"github.com/ory/keto/x"
+	"github.com/ory/keto/internal/x"
 )
 
 type (
@@ -22,7 +21,7 @@ type (
 	}
 )
 
-const routeBase = "/expand"
+const routeBase = "/check"
 
 func NewHandler(d handlerDependencies) *handler {
 	return &handler{d: d}
@@ -33,22 +32,24 @@ func (h *handler) RegisterPublicRoutes(router *httprouter.Router) {
 }
 
 func (h *handler) getCheck(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	subjectID := r.URL.Query().Get("subject-id")
 	objectID := r.URL.Query().Get("object-id")
 	relationName := r.URL.Query().Get("relation-name")
-	depth, err := strconv.ParseInt(r.URL.Query().Get("depth"), 0, 0)
-	if err != nil {
-		h.d.Writer().WriteError(w, r, err)
-		return
-	}
 
-	res, err := h.d.ExpandEngine().BuildTree(r.Context(), &relationtuple.UserSet{
+	res, err := h.d.PermissionEngine().SubjectIsAllowed(r.Context(), &relationtuple.InternalRelationTuple{
 		Relation: relationName,
 		Object:   (&relationtuple.Object{}).FromString(objectID),
-	}, int(depth))
+		Subject:  relationtuple.SubjectFromString(subjectID),
+	})
 	if err != nil {
 		h.d.Writer().WriteError(w, r, err)
 		return
 	}
 
-	h.d.Writer().Write(w, r, res)
+	if res {
+		h.d.Writer().WriteCode(w, r, http.StatusOK, "allowed")
+		return
+	}
+
+	h.d.Writer().WriteCode(w, r, http.StatusForbidden, "rejected")
 }

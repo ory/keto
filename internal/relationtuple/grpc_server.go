@@ -3,7 +3,7 @@ package relationtuple
 import (
 	"context"
 
-	"github.com/ory/keto/x"
+	"github.com/ory/keto/internal/x"
 )
 
 var _ RelationTupleServiceServer = &Server{}

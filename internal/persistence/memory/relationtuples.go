@@ -3,9 +3,9 @@ package memory
 import (
 	"context"
 
-	"github.com/ory/keto/x"
+	"github.com/ory/keto/internal/x"
 
-	"github.com/ory/keto/relationtuple"
+	"github.com/ory/keto/internal/relationtuple"
 )
 
 type (

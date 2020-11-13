@@ -3,7 +3,7 @@ package memory
 import (
 	"sync"
 
-	"github.com/ory/keto/relationtuple"
+	"github.com/ory/keto/internal/relationtuple"
 )
 
 type Persister struct {
