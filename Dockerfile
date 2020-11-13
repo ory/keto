@@ -1,17 +1,15 @@
 # To compile this image manually run:
 #
-# $ packr; GO111MODULE=on GOOS=linux GOARCH=amd64 go build; docker build -t oryd/keto:latest .; rm keto; packr clean
-FROM alpine:3.9
+# $ packr; GO111MODULE=on CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build; docker build . -t oryd/keto:latest; rm keto; packr clean
 
-RUN apk add -U --no-cache ca-certificates
-
-FROM scratch
-
-COPY --from=0 /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
-COPY keto /usr/bin/keto
-
+# Use distroless/static as minimal base image that contains:
+# - ca-certificates
+# - A /etc/passwd entry for a root user
+# - A /tmp directory
+# - tzdata
+#
+# Refer to https://github.com/GoogleContainerTools/distroless for more details.
+FROM gcr.io/distroless/static:latest
 USER 1000
-
-ENTRYPOINT ["keto"]
-
-CMD ["serve"]
+COPY keto /usr/bin/keto
+CMD ["keto", "serve"]
