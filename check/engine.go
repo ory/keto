@@ -26,62 +26,47 @@ func NewEngine(d engineDependencies) *Engine {
 	}
 }
 
-func equalRelation(a, b *relationtuple.InternalRelationTuple) bool {
-	return a.Relation == b.Relation && a.Subject.Equals(b.Subject) && a.Object.Equals(b.Object)
-}
-
-func (e *Engine) subjectIsAllowed(ctx context.Context, requested *relationtuple.InternalRelationTuple, subjectRelations []*relationtuple.InternalRelationTuple) (bool, error) {
-	// This is the same as the graph problem "can requested.ObjectID be reached from requested.SubjectID through the incoming edge requested.Name"
+func (e *Engine) subjectIsAllowed(ctx context.Context, requested *relationtuple.InternalRelationTuple, rels []*relationtuple.InternalRelationTuple) (bool, error) {
+	// This is the same as the graph problem "can requested.UserID be reached from requested.Object through the first outgoing edge requested.Name"
 	//
 	// recursive breadth-first search
 	// TODO replace by more performant algorithm
 
 	var res bool
-	for _, sr := range subjectRelations {
-
-		// we don't have to check SubjectID here as we know that sr was reached from requested.SubjectID through 0...n indirections
-		if requested.Relation == sr.Relation && requested.Object.Equals(sr.Object) {
+	for _, sr := range rels {
+		// we only have to check Subject here as we know that sr was reached from requested.ObjectID, requested.Relation through 0...n indirections
+		if requested.Subject.Equals(sr.Subject) {
 			// found the requested relation
 			return true, nil
 		}
 
-		prevRelationsLen := len(subjectRelations)
+		sub, isSubjectSet := sr.Subject.(*relationtuple.UserSet)
+		if !isSubjectSet {
+			return false, nil
+		}
 
-		// compute one indirection
-		indirect, err := e.d.RelationTupleManager().GetRelationTuples(ctx, &relationtuple.RelationQuery{Subject: sr.DeriveSubject()})
+		// expand the set by one indirection
+		nextRels, err := e.d.RelationTupleManager().GetRelationTuples(ctx, &relationtuple.RelationQuery{Object: sub.Object, Relation: sub.Relation})
 		if err != nil {
 			// TODO fix error handling
 			_, _ = fmt.Fprintf(os.Stderr, "%+v", err)
+			return false, err
 		}
 
-		for _, maybeRel := range indirect {
-			var found bool
-			for _, knownRel := range subjectRelations {
-				if equalRelation(knownRel, maybeRel) {
-					found = true
-					break
-				}
-			}
-			if !found {
-				subjectRelations = append(subjectRelations, maybeRel)
-			}
+		is, err := e.subjectIsAllowed(ctx, requested, nextRels)
+		if err != nil {
+			// TODO fix error handling
+			_, _ = fmt.Fprintf(os.Stderr, "%+v", err)
+			return false, err
 		}
-
-		if prevRelationsLen < len(subjectRelations) {
-			is, err := e.subjectIsAllowed(ctx, requested, subjectRelations)
-			if err != nil {
-				// TODO fix error handling
-				_, _ = fmt.Fprintf(os.Stderr, "%+v", err)
-			}
-			res = res || is
-		}
+		res = res || is
 	}
 
 	return res, nil
 }
 
 func (e *Engine) SubjectIsAllowed(ctx context.Context, r *relationtuple.InternalRelationTuple) (bool, error) {
-	subjectRelations, err := e.d.RelationTupleManager().GetRelationTuples(ctx, &relationtuple.RelationQuery{Subject: r.Subject})
+	subjectRelations, err := e.d.RelationTupleManager().GetRelationTuples(ctx, &relationtuple.RelationQuery{Object: r.Object, Relation: r.Relation})
 	if err != nil {
 		return false, err
 	}
