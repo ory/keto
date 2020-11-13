@@ -123,6 +123,28 @@ func TestMemoryManager(t *testing.T) {
 				assert.EqualValues(t, []int{5, 6, 7, 8, 9}, vs)
 			})
 
+			t.Run("case=listall", func(t *testing.T) {
+				n := 102
+				for i := 0; i < n; i++ {
+					require.NoError(t, m.Upsert(ctx, "test-listall", fmt.Sprintf("list-%d", i), i))
+				}
+				expected := make([]int, n)
+				// populate with 0 - 101
+				for i := range expected {
+					expected[i] = i
+				}
+
+				var v int
+				require.NoError(t, m.Get(ctx, "test-listall", "list-1", &v))
+				assert.EqualValues(t, 1, v)
+
+				var vs []int
+				require.NoError(t, m.ListAll(ctx, "test-listall", &vs))
+				assert.Len(t, vs, 102)
+				assert.EqualValues(t, expected, vs)
+
+			})
+
 			t.Run("case=delete", func(t *testing.T) {
 				for i := 0; i < 10; i++ {
 					require.NoError(t, m.Upsert(ctx, "test-delete", fmt.Sprintf("delete-%d", i), i))
