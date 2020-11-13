@@ -4,7 +4,7 @@
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**
 
-- [Unreleased (2020-11-12)](#unreleased-2020-11-12)
+- [Unreleased (2020-11-13)](#unreleased-2020-11-13)
     - [Bug Fixes](#bug-fixes)
   - [0.5.7-alpha.1 (2020-10-12)](#057-alpha1-2020-10-12)
   - [0.5.7-alpha.1.pre.0 (2020-10-12)](#057-alpha1pre0-2020-10-12)
@@ -76,12 +76,22 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [Unreleased](https://github.com/ory/keto/compare/v0.5.7-alpha.1...041db6938569f352da32fbdb6da064d2aea18d9e) (2020-11-12)
+# [Unreleased](https://github.com/ory/keto/compare/v0.5.7-alpha.1...ee54f1806dc3992534d1a6e70a1ca69d64b80137) (2020-11-13)
 
 
 ### Bug Fixes
 
 * Add jaeger propagation setting ([#308](https://github.com/ory/keto/issues/308)) ([041db69](https://github.com/ory/keto/commit/041db6938569f352da32fbdb6da064d2aea18d9e)), closes [#284](https://github.com/ory/keto/issues/284) [#283](https://github.com/ory/keto/issues/283)
+* Handle limits and offsets after filtering  ([#281](https://github.com/ory/keto/issues/281)) ([ee54f18](https://github.com/ory/keto/commit/ee54f1806dc3992534d1a6e70a1ca69d64b80137)), closes [#280](https://github.com/ory/keto/issues/280) [#216](https://github.com/ory/keto/issues/216):
+
+    > I took a look at the source code today because I had some time, and I think that this occurs because in both manager_sql.go and manager.go get the members based on the limit/offset first, before applying the filter in ListByQuery.
+    > 
+    > The gist of this PR is that I inspect the query parameters first to see if filters are being applied. If filters are applied, it will retrieve all of the roles/policies, instead of simply the limit/offset specified. Once in memory, I calculate the pagination again in ListByQuery to shorten the array.
+    > 
+    > The retrieval from the database (or in-memory datastore) is completely separate from the filtering logic. 
+    > As such, in order to handle this, I needed to retrieve all the possible data, then run the filter on it. After running the filter on it, then I could shorten it by the pagination, in order to ensure that it did not return an empty array.
+    > 
+    > In addition, I also did a minor refactor on the tests, instead of duplicating all the Roles/Policies in `filter_helper_tests.go`, I simply referred to them from the already declared variable `rolReq` or `polReq` to ensure that updating the role or policy in one place would change across all the rests of the tests. In addition, I also changed the parameters from a `map[string][]string` into a structure, allowing me to specify the offset and limit I wanted to test for each case.
 
 
 
