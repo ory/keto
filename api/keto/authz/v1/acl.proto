@@ -1,0 +1,58 @@
+syntax = "proto3";
+
+package keto.authz.v1;
+
+option go_package = "github.com/ory/keto/api/keto/authz/v1;authz";
+option csharp_namespace = "Ory.Keto.Authz.V1";
+option java_multiple_files = true;
+option java_outer_classname = "AuthzProto";
+option java_package = "sh.ory.keto.authz.v1";
+option php_namespace = "Ory\\Keto\\Authz\\V1";
+
+
+// RelationTuple relates an Object with a Subject.
+//
+// While a tuple reflects a relationship between Object
+// and Subject, they do not completely define the effective ACLs.
+message RelationTuple {
+  // The object related by this tuple.
+  Object object = 1;
+  // The relation between an Object and a Subject.
+  string relation = 2;
+  // The subject related by this tuple.
+  // It either is a concrete subject id or
+  // or a subject set expanding to more Subjects.
+  Subject subject = 3;
+}
+
+// Object is an object in a namespace
+// referenced by a RelationTuple or SubjectSet.
+//
+// It represents a "resource" or "digital object".
+message Object {
+  // The namespace of the object.
+  // This effectively is the namespace of the whole RelationTuple.
+  string namespace = 1;
+  // The object id.
+  string id = 2;
+}
+
+// Subject is either a concrete subject id or
+// a subject set expanding to more Subjects.
+message Subject {
+  oneof type {
+    // The concrete id of the subject.
+    string subject_id = 1;
+    // The subject set that expands to more Subjects.
+    SubjectSet subject_set = 2;
+  }
+}
+
+// SubjectSet refers to all subjects which have
+// the same `relation` to an `object`.
+message SubjectSet {
+  // The object selected by the subjects.
+  Object object = 1;
+  // The relation to the object by the subjects.
+  string relation = 2;
+}

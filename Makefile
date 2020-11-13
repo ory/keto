@@ -64,6 +64,13 @@ docker: deps
 		rm keto
 		packr clean
 
-.PHONY: gen-protobuf
-gen-protobuf:
-		protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative relationtuple/*.proto
+.PHONY: buf-gen
+buf-gen:
+		buf generate
+
+.PHONY: gen-client
+gen-client:
+		echo "TODO: generate gapic client at ./client"
+
+.PHONY: gen-api
+gen-api: buf-gen gen-client

@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package keto.authz.admin.v1;
+
+import "google/api/client.proto";
+
+option go_package = "github.com/ory/keto/api/keto/authz/admin/v1;admin";
+option csharp_namespace = "Ory.Keto.Authz.Admin.V1";
+option java_multiple_files = true;
+option java_outer_classname = "AdminProto";
+option java_package = "sh.ory.keto.authz.admin.v1";
+option php_namespace = "Ory\\Keto\\Authz\\Admin\\V1";
+
+// The admin service for doing administrative tasks in the ACL system.
+service AdminService {
+  option (google.api.default_host) = "keto.exampleapis.com";
+
+  // ...RPCs are coming here in (near) future...
+}
+

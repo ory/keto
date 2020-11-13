@@ -1,0 +1,89 @@
+syntax = "proto3";
+
+package keto.authz.v1;
+
+import "keto/authz/v1/acl.proto";
+import "google/api/client.proto";
+
+option go_package = "github.com/ory/keto/api/keto/authz/v1;authz";
+option csharp_namespace = "Ory.Keto.Authz.V1";
+option java_multiple_files = true;
+option java_outer_classname = "AuthzProto";
+option java_package = "sh.ory.keto.authz.v1";
+option php_namespace = "Ory\\Keto\\Authz\\V1";
+
+// The service that performs authorization checks
+// based on the stored Access Control Lists.
+service CheckService {
+  option (google.api.default_host) = "keto.exampleapis.com";
+  // Check performs an authorization check.
+  rpc Check(CheckRequest) returns (CheckResponse);
+}
+
+message CheckRequest {
+  // The related object in this check.
+  Object object = 1;
+  // The relation this check.
+  string relation = 2;
+  // The concrete subject id to check.
+  string subject_id = 3;
+  // TODO Needs more investigation of the Zanzibar paper (2.4.4 Check)
+  //
+  // If specified requests to perform
+  // the check on only near up to-date ACLs.
+  //
+  // *This recommended for low latency and where checks
+  // are allowed to perform on ACLs that are a bit stale
+  // (stale => not up to date, but still only differs some
+  // millis or seconds).
+  //
+  // If not specified performs the check on most up to-date
+  // ACLs in case it is strictly required to do so.
+  //
+  // Optional.
+  // TODO string zookie = 4;
+}
+
+message CheckResponse {
+  // True if the specified subject id
+  // is related to the requested Object.
+  bool allowed = 1;
+}
+
+// The service to query Access Control Lists.
+service ReadService {
+  option (google.api.default_host) = "keto.exampleapis.com";
+  // Read lookups relation tuples.
+  rpc Read(ReadRequest) returns (ReadResponse);
+}
+
+message ReadRequest {}
+message ReadResponse {}
+
+// The service to watch for changes in the system,
+// such as for Access Control Lists and namespace configs.
+service WatchService {
+  option (google.api.default_host) = "keto.exampleapis.com";
+  // Watches and filters for changes in the ACL system.
+  rpc Watch(WatchRequest) returns (WatchResponse);
+}
+
+message WatchRequest {}
+message WatchResponse {}
+
+// The write service to create and delete Access Control Lists.
+service WriteService {
+  option (google.api.default_host) = "keto.exampleapis.com";
+  // Writes one or more relation tuples
+  // in a single transaction.
+  rpc Write(WriteRequest) returns (WriteResponse);
+  // Deletes one or more matching relation tuples
+  // in a single transaction.
+  rpc Delete(DeleteRequest) returns (DeleteResponse);
+}
+
+message WriteRequest {}
+message WriteResponse {}
+
+message DeleteRequest {}
+message DeleteResponse {}
