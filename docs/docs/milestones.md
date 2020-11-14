@@ -46,6 +46,7 @@ Blocks milestones or other issues or pulls.
 
 #### Issues
 
+- [ ] Protobuf APIs & tooling ([keto#311](https://github.com/ory/keto/issues/311)) - [@Patrik](https://github.com/zepatrik), [@Robin Brämer](https://github.com/robinbraemer)
 - [ ] Ensure telemetry is running for both GRPC and HTTP ([keto#298](https://github.com/ory/keto/issues/298)) - [@hackerman](https://github.com/aeneasr), [@Patrik](https://github.com/zepatrik)
 - [ ] Define and architect SQL schema and queries for querying relations ([keto#300](https://github.com/ory/keto/issues/300)) - [@Patrik](https://github.com/zepatrik)
 - [ ] Write benchmark tests for relationtuple package ([keto#301](https://github.com/ory/keto/issues/301)) - [@Patrik](https://github.com/zepatrik)
