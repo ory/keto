@@ -1,0 +1,50 @@
+syntax = "proto3";
+
+package keto.acl.v1;
+
+import "keto/acl/v1/acl.proto";
+import "google/api/client.proto";
+
+option go_package = "github.com/ory/keto/api/keto/acl/v1;acl";
+option csharp_namespace = "Ory.Keto.Acl.V1";
+option java_multiple_files = true;
+option java_outer_classname = "AclProto";
+option java_package = "sh.ory.keto.acl.v1";
+option php_namespace = "Ory\\Keto\\Acl\\V1";
+
+// The service that performs authorization checks
+// based on the stored Access Control Lists.
+service CheckService {
+  option (google.api.default_host) = "keto.exampleapis.com";
+  // Check performs an authorization check.
+  rpc Check(CheckRequest) returns (CheckResponse);
+}
+
+message CheckRequest {
+  // The related object in this check.
+  Object object = 1;
+  // The relation this check.
+  string relation = 2;
+  // The concrete subject id to check.
+  string subject_id = 3;
+  // Optional. The least snapshot time of the used
+  // serverside data to compute the response of this check.
+  //
+  // If specified requests to perform
+  // the check on only near up to-date ACLs.
+  //
+  // *This recommended for low latency and where checks
+  // are allowed to perform on ACLs that are a bit stale
+  // (stale => not up to date, but still only differs some
+  // millis or seconds).
+  //
+  // If not specified performs the check on most up to-date
+  // ACLs in case it is strictly required to do so.
+  bytes zookie = 4;
+}
+
+message CheckResponse {
+  // True if the specified subject id
+  // is related to the requested Object.
+  bool allowed = 1;
+}

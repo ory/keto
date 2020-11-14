@@ -46,7 +46,7 @@ func RegisterNodeServiceServer(s grpc.ServiceRegistrar, srv NodeServiceServer) {
 }
 
 var _NodeService_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "keto.authz.node.v1.NodeService",
+	ServiceName: "keto.acl.node.v1.NodeService",
 	HandlerType: (*NodeServiceServer)(nil),
 	Methods:     []grpc.MethodDesc{},
 	Streams:     []grpc.StreamDesc{},

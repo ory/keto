@@ -64,15 +64,31 @@ docker: deps
 		rm keto
 		packr clean
 
+#
+# Generate APIs and client stubs from the definitions
+#
 .PHONY: buf-gen
 buf-gen:
 		buf generate \
 		--config buf/api/buf.yaml \
-		--template buf/api/buf.gen.yaml
+		--template buf/api/buf.gen.yaml \
+		&& \
+		echo "TODO: generate gapic client at ./client" \
+		&& \
+		echo "All code was generated successfully!"
 
-.PHONY: gen-client
-gen-client:
-		echo "TODO: generate gapic client at ./client"
+#
+# Lint API definitions
+#
+.PHONY: buf-lint
+buf-lint:
+		buf check lint \
+		--config buf/api/buf.yaml \
+		&& \
+		echo "All lint checks passed successfully!"
 
-.PHONY: gen-api
-gen-api: buf-gen gen-client
+#
+# Generate after linting succeeded
+#
+.PHONY: buf
+buf: buf-lint buf-gen

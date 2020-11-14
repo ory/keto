@@ -1,0 +1,51 @@
+syntax = "proto3";
+
+package keto.acl.v1;
+
+import "keto/acl/v1/acl.proto";
+import "google/api/client.proto";
+
+option go_package = "github.com/ory/keto/api/keto/acl/v1;acl";
+option csharp_namespace = "Ory.Keto.Acl.V1";
+option java_multiple_files = true;
+option java_outer_classname = "AclProto";
+option java_package = "sh.ory.keto.acl.v1";
+option php_namespace = "Ory\\Keto\\Acl\\V1";
+
+// The service to query Access Control Lists.
+service ReadService {
+  option (google.api.default_host) = "keto.exampleapis.com";
+  // Lists ACL relation tuples.
+  rpc ListRelationTuples(ListRelationTuplesRequest) returns (ListRelationTuplesResponse);
+}
+
+message ListRelationTuplesRequest {
+  // The filter to query for relation tuples.
+  // If none specified
+  // TODO RelationTuple listing and querying is a quite more involved task than only passing in a Query structure
+  // TODO e.g. filter by namespace, object, relation, subject, commit_time (create time) in combination with logical OR/AND operators
+  // TODO See https://google.aip.dev/160
+  // TODO We should use an expression engine for evaluation and SQL query building
+  string filter = 1;
+  // The ordering of the queried relation tuples.
+  // TODO See https://google.aip.dev/132
+  string order_by = 2;
+  // Optional. The least snapshot time of
+  // the used serverside data in the response.
+  bytes zookie = 3;
+  // Optional. The maximum number of RelationTuples to return in the response.
+  int32 page_size = 4;
+  // Optional. A pagination token returned from a previous call to `ListRelationTuples`
+  // that indicates where this listing should continue from.
+  string page_token = 5;
+
+}
+
+// The response of a ReadService.ListRelationTuples rpc.
+message ListRelationTuplesResponse {
+  // The relation tuples matching the list request.
+  repeated RelationTuple relation_tuples = 1;
+  // Optional. A pagination token returned from a previous call to `ListRelationTuples`
+  // that indicates where this listing should continue from.
+  string next_page_token = 2;
+}

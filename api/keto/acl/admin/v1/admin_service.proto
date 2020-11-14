@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package keto.authz.admin.v1;
+package keto.acl.admin.v1;
 
 import "google/api/client.proto";
 

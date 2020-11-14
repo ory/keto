@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package keto.authz.node.v1;
+package keto.acl.node.v1;
 
 option go_package = "github.com/ory/keto/api/keto/acl/node/v1;node";
 option csharp_namespace = "Ory.Keto.Acl.Node.V1";

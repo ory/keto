@@ -46,7 +46,7 @@ func RegisterAdminServiceServer(s grpc.ServiceRegistrar, srv AdminServiceServer)
 }
 
 var _AdminService_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "keto.authz.admin.v1.AdminService",
+	ServiceName: "keto.acl.admin.v1.AdminService",
 	HandlerType: (*AdminServiceServer)(nil),
 	Methods:     []grpc.MethodDesc{},
 	Streams:     []grpc.StreamDesc{},

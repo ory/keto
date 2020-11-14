@@ -1,0 +1,59 @@
+syntax = "proto3";
+
+package keto.acl.v1;
+
+import "keto/acl/v1/acl.proto";
+import "google/api/client.proto";
+
+option go_package = "github.com/ory/keto/api/keto/acl/v1;acl";
+option csharp_namespace = "Ory.Keto.Acl.V1";
+option java_multiple_files = true;
+option java_outer_classname = "AclProto";
+option java_package = "sh.ory.keto.acl.v1";
+option php_namespace = "Ory\\Keto\\Acl\\V1";
+
+// The write service to create and delete Access Control Lists.
+service WriteService {
+  option (google.api.default_host) = "keto.exampleapis.com";
+  // Writes one or more relation tuples in a single transaction.
+  rpc WriteRelationTuples(WriteRelationTuplesRequest) returns (WriteRelationTuplesResponse);
+}
+
+message WriteRelationTuplesRequest {
+  // The write delta for the relation tuples operated in one single transaction.
+  // Either all actions commit or no change takes effect on error.
+  //
+  // The tuple's etag is used for a consistent read-modify-write request flow.
+  // If the etag is not present, the tuple is not validated against the state
+  // of the serverside tuple and get operated anyway.
+  repeated RelationTupleWriteDelta relation_tuple_deltas = 1;
+}
+
+message RelationTupleWriteDelta {
+  enum Action {
+    // Unspecified.
+    // The `WriteRelationTuples` rpc ignores this
+    // RelationTupleWriteDelta if no action is specified.
+    ACTION_UNSPECIFIED = 0;
+
+    // Insertion or if already exists, update of the RelationTuple.
+    UPSERT = 1;
+
+    // Insertion of the RelationTuple.
+    // The `WriteRelationTuples` rpc errors if the RelationTuple already exists.
+    INSERT = 2;
+
+    // Update of the existing RelationTuple.
+    // The `WriteRelationTuples` rpc errors if the RelationTuple does not exist.
+    UPDATE = 3;
+
+    // Deletion of the RelationTuple.
+    // The `WriteRelationTuples` rpc is silent and does not error in case
+    // the RelationTuple does not exist.
+    DELETE = 4;
+  }
+  // The target RelationTuple.
+  RelationTuple relation_tuple = 1;
+}
+
+message WriteRelationTuplesResponse {}
