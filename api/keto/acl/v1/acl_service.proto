@@ -27,7 +27,8 @@ message CheckRequest {
   string relation = 2;
   // The concrete subject id to check.
   string subject_id = 3;
-  // TODO Needs more investigation of the Zanzibar paper (2.4.4 Check)
+  // Optional. The least snapshot time of the used
+  // serverside data to compute the response of this check.
   //
   // If specified requests to perform
   // the check on only near up to-date ACLs.
@@ -39,9 +40,7 @@ message CheckRequest {
   //
   // If not specified performs the check on most up to-date
   // ACLs in case it is strictly required to do so.
-  //
-  // Optional.
-  // TODO bytes zookie = 4;
+  bytes zookie = 4;
 }
 
 message CheckResponse {
@@ -53,37 +52,92 @@ message CheckResponse {
 // The service to query Access Control Lists.
 service ReadService {
   option (google.api.default_host) = "keto.exampleapis.com";
-  // Read lookups relation tuples.
-  rpc Read(ReadRequest) returns (ReadResponse);
+  // Lists ACL relation tuples.
+  rpc ListRelationTuples(ListRelationTuplesRequest) returns (ListRelationTuplesResponse);
 }
 
-message ReadRequest {}
-message ReadResponse {}
+message ListRelationTuplesRequest {
+  // The filter to query for relation tuples.
+  // If none specified
+  // TODO RelationTuple listing and querying is a quite more involved task than only passing in a Query structure
+  // TODO e.g. filter by namespace, object, relation, subject, commit_time (create time) in combination with logical OR/AND operators
+  // TODO See https://google.aip.dev/160
+  // TODO We should use an expression engine for evaluation and SQL query building
+  string filter = 1;
+  // The ordering of the queried relation tuples.
+  // TODO See https://google.aip.dev/132
+  string order_by = 2;
+  // Optional. The least snapshot time of
+  // the used serverside data in the response.
+  bytes zookie = 3;
+  // Optional. The maximum number of RelationTuples to return in the response.
+  int32 page_size = 4;
+  // Optional. A pagination token returned from a previous call to `ListRelationTuples`
+  // that indicates where this listing should continue from.
+  string page_token = 5;
+
+}
+message ListRelationTuplesResponse {
+  // The relation tuples matching the list request.
+  repeated RelationTuple relation_tuples = 1;
+  // Optional. A pagination token returned from a previous call to `ListRelationTuples`
+  // that indicates where this listing should continue from.
+  string next_page_token = 2;
+}
 
 // The service to watch for changes in the system,
 // such as for Access Control Lists and namespace configs.
 service WatchService {
   option (google.api.default_host) = "keto.exampleapis.com";
   // Watches and filters for changes in the ACL system.
-  rpc Watch(WatchRequest) returns (WatchResponse);
+  rpc WatchRelationTuples(WatchRelationTuplesRequest) returns (WatchRelationTuplesResponse);
 }
 
-message WatchRequest {}
-message WatchResponse {}
+message WatchRelationTuplesRequest {}
+message WatchRelationTuplesResponse {}
 
 // The write service to create and delete Access Control Lists.
 service WriteService {
   option (google.api.default_host) = "keto.exampleapis.com";
-  // Writes one or more relation tuples
-  // in a single transaction.
-  rpc Write(WriteRequest) returns (WriteResponse);
-  // Deletes one or more matching relation tuples
-  // in a single transaction.
-  rpc Delete(DeleteRequest) returns (DeleteResponse);
+  // Writes one or more relation tuples in a single transaction.
+  rpc WriteRelationTuples(WriteRelationTuplesRequest) returns (WriteRelationTuplesResponse);
 }
 
-message WriteRequest {}
-message WriteResponse {}
+message WriteRelationTuplesRequest {
+  // The write delta for the relation tuples operated in one single transaction.
+  // Either all actions commit or no change takes effect on error.
+  //
+  // The tuple's etag is used for a consistent read-modify-write request flow.
+  // If the etag is not present, the tuple is not validated against the state
+  // of the serverside tuple and get operated anyway.
+  repeated RelationTupleWriteDelta relation_tuple_deltas = 1;
+}
 
-message DeleteRequest {}
-message DeleteResponse {}
+message RelationTupleWriteDelta {
+  enum Action {
+    // Unspecified.
+    // The `WriteRelationTuples` RPC ignores this
+    // RelationTupleWriteDelta if no action is specified.
+    ACTION_UNSPECIFIED = 0;
+
+    // Insertion or if already exists, update of the RelationTuple.
+    UPSERT = 1;
+
+    // Insertion of the RelationTuple.
+    // The `WriteRelationTuples` RPC errors if the RelationTuple already exists.
+    INSERT = 2;
+
+    // Update of the existing RelationTuple.
+    // The `WriteRelationTuples` RPC errors if the RelationTuple does not exist.
+    UPDATE = 3;
+
+    // Deletion of the RelationTuple.
+    // The `WriteRelationTuples` RPC is silent and does not error in case
+    // the RelationTuple does not exist.
+    DELETE = 4;
+  }
+  // The target RelationTuple.
+  RelationTuple relation_tuple = 1;
+}
+
+message WriteRelationTuplesResponse {}

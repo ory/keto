@@ -23,6 +23,8 @@ message RelationTuple {
   // It either is a concrete subject id or
   // or a subject set expanding to more Subjects.
   Subject subject = 3;
+  // Used to perform a consistent read-modify-write.
+  string etag = 4;
 }
 
 // Object is an object in a namespace

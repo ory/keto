@@ -100,8 +100,8 @@ var _CheckService_serviceDesc = grpc.ServiceDesc{
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ReadServiceClient interface {
-	// Read lookups relation tuples.
-	Read(ctx context.Context, in *ReadRequest, opts ...grpc.CallOption) (*ReadResponse, error)
+	// Lists ACL relation tuples.
+	ListRelationTuples(ctx context.Context, in *ListRelationTuplesRequest, opts ...grpc.CallOption) (*ListRelationTuplesResponse, error)
 }
 
 type readServiceClient struct {
@@ -112,9 +112,9 @@ func NewReadServiceClient(cc grpc.ClientConnInterface) ReadServiceClient {
 	return &readServiceClient{cc}
 }
 
-func (c *readServiceClient) Read(ctx context.Context, in *ReadRequest, opts ...grpc.CallOption) (*ReadResponse, error) {
-	out := new(ReadResponse)
-	err := c.cc.Invoke(ctx, "/keto.acl.v1.ReadService/Read", in, out, opts...)
+func (c *readServiceClient) ListRelationTuples(ctx context.Context, in *ListRelationTuplesRequest, opts ...grpc.CallOption) (*ListRelationTuplesResponse, error) {
+	out := new(ListRelationTuplesResponse)
+	err := c.cc.Invoke(ctx, "/keto.acl.v1.ReadService/ListRelationTuples", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -125,16 +125,16 @@ func (c *readServiceClient) Read(ctx context.Context, in *ReadRequest, opts ...g
 // All implementations should embed UnimplementedReadServiceServer
 // for forward compatibility
 type ReadServiceServer interface {
-	// Read lookups relation tuples.
-	Read(context.Context, *ReadRequest) (*ReadResponse, error)
+	// Lists ACL relation tuples.
+	ListRelationTuples(context.Context, *ListRelationTuplesRequest) (*ListRelationTuplesResponse, error)
 }
 
 // UnimplementedReadServiceServer should be embedded to have forward compatible implementations.
 type UnimplementedReadServiceServer struct {
 }
 
-func (UnimplementedReadServiceServer) Read(context.Context, *ReadRequest) (*ReadResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Read not implemented")
+func (UnimplementedReadServiceServer) ListRelationTuples(context.Context, *ListRelationTuplesRequest) (*ListRelationTuplesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListRelationTuples not implemented")
 }
 
 // UnsafeReadServiceServer may be embedded to opt out of forward compatibility for this service.
@@ -148,20 +148,20 @@ func RegisterReadServiceServer(s grpc.ServiceRegistrar, srv ReadServiceServer) {
 	s.RegisterService(&_ReadService_serviceDesc, srv)
 }
 
-func _ReadService_Read_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ReadRequest)
+func _ReadService_ListRelationTuples_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListRelationTuplesRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ReadServiceServer).Read(ctx, in)
+		return srv.(ReadServiceServer).ListRelationTuples(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/keto.acl.v1.ReadService/Read",
+		FullMethod: "/keto.acl.v1.ReadService/ListRelationTuples",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ReadServiceServer).Read(ctx, req.(*ReadRequest))
+		return srv.(ReadServiceServer).ListRelationTuples(ctx, req.(*ListRelationTuplesRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -171,8 +171,8 @@ var _ReadService_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*ReadServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "Read",
-			Handler:    _ReadService_Read_Handler,
+			MethodName: "ListRelationTuples",
+			Handler:    _ReadService_ListRelationTuples_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -184,7 +184,7 @@ var _ReadService_serviceDesc = grpc.ServiceDesc{
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type WatchServiceClient interface {
 	// Watches and filters for changes in the ACL system.
-	Watch(ctx context.Context, in *WatchRequest, opts ...grpc.CallOption) (*WatchResponse, error)
+	WatchRelationTuples(ctx context.Context, in *WatchRelationTuplesRequest, opts ...grpc.CallOption) (*WatchRelationTuplesResponse, error)
 }
 
 type watchServiceClient struct {
@@ -195,9 +195,9 @@ func NewWatchServiceClient(cc grpc.ClientConnInterface) WatchServiceClient {
 	return &watchServiceClient{cc}
 }
 
-func (c *watchServiceClient) Watch(ctx context.Context, in *WatchRequest, opts ...grpc.CallOption) (*WatchResponse, error) {
-	out := new(WatchResponse)
-	err := c.cc.Invoke(ctx, "/keto.acl.v1.WatchService/Watch", in, out, opts...)
+func (c *watchServiceClient) WatchRelationTuples(ctx context.Context, in *WatchRelationTuplesRequest, opts ...grpc.CallOption) (*WatchRelationTuplesResponse, error) {
+	out := new(WatchRelationTuplesResponse)
+	err := c.cc.Invoke(ctx, "/keto.acl.v1.WatchService/WatchRelationTuples", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -209,15 +209,15 @@ func (c *watchServiceClient) Watch(ctx context.Context, in *WatchRequest, opts .
 // for forward compatibility
 type WatchServiceServer interface {
 	// Watches and filters for changes in the ACL system.
-	Watch(context.Context, *WatchRequest) (*WatchResponse, error)
+	WatchRelationTuples(context.Context, *WatchRelationTuplesRequest) (*WatchRelationTuplesResponse, error)
 }
 
 // UnimplementedWatchServiceServer should be embedded to have forward compatible implementations.
 type UnimplementedWatchServiceServer struct {
 }
 
-func (UnimplementedWatchServiceServer) Watch(context.Context, *WatchRequest) (*WatchResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Watch not implemented")
+func (UnimplementedWatchServiceServer) WatchRelationTuples(context.Context, *WatchRelationTuplesRequest) (*WatchRelationTuplesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method WatchRelationTuples not implemented")
 }
 
 // UnsafeWatchServiceServer may be embedded to opt out of forward compatibility for this service.
@@ -231,20 +231,20 @@ func RegisterWatchServiceServer(s grpc.ServiceRegistrar, srv WatchServiceServer)
 	s.RegisterService(&_WatchService_serviceDesc, srv)
 }
 
-func _WatchService_Watch_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(WatchRequest)
+func _WatchService_WatchRelationTuples_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(WatchRelationTuplesRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(WatchServiceServer).Watch(ctx, in)
+		return srv.(WatchServiceServer).WatchRelationTuples(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/keto.acl.v1.WatchService/Watch",
+		FullMethod: "/keto.acl.v1.WatchService/WatchRelationTuples",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(WatchServiceServer).Watch(ctx, req.(*WatchRequest))
+		return srv.(WatchServiceServer).WatchRelationTuples(ctx, req.(*WatchRelationTuplesRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -254,8 +254,8 @@ var _WatchService_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*WatchServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "Watch",
-			Handler:    _WatchService_Watch_Handler,
+			MethodName: "WatchRelationTuples",
+			Handler:    _WatchService_WatchRelationTuples_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -266,12 +266,8 @@ var _WatchService_serviceDesc = grpc.ServiceDesc{
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type WriteServiceClient interface {
-	// Writes one or more relation tuples
-	// in a single transaction.
-	Write(ctx context.Context, in *WriteRequest, opts ...grpc.CallOption) (*WriteResponse, error)
-	// Deletes one or more matching relation tuples
-	// in a single transaction.
-	Delete(ctx context.Context, in *DeleteRequest, opts ...grpc.CallOption) (*DeleteResponse, error)
+	// Writes one or more relation tuples in a single transaction.
+	WriteRelationTuples(ctx context.Context, in *WriteRelationTuplesRequest, opts ...grpc.CallOption) (*WriteRelationTuplesResponse, error)
 }
 
 type writeServiceClient struct {
@@ -282,18 +278,9 @@ func NewWriteServiceClient(cc grpc.ClientConnInterface) WriteServiceClient {
 	return &writeServiceClient{cc}
 }
 
-func (c *writeServiceClient) Write(ctx context.Context, in *WriteRequest, opts ...grpc.CallOption) (*WriteResponse, error) {
-	out := new(WriteResponse)
-	err := c.cc.Invoke(ctx, "/keto.acl.v1.WriteService/Write", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *writeServiceClient) Delete(ctx context.Context, in *DeleteRequest, opts ...grpc.CallOption) (*DeleteResponse, error) {
-	out := new(DeleteResponse)
-	err := c.cc.Invoke(ctx, "/keto.acl.v1.WriteService/Delete", in, out, opts...)
+func (c *writeServiceClient) WriteRelationTuples(ctx context.Context, in *WriteRelationTuplesRequest, opts ...grpc.CallOption) (*WriteRelationTuplesResponse, error) {
+	out := new(WriteRelationTuplesResponse)
+	err := c.cc.Invoke(ctx, "/keto.acl.v1.WriteService/WriteRelationTuples", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -304,23 +291,16 @@ func (c *writeServiceClient) Delete(ctx context.Context, in *DeleteRequest, opts
 // All implementations should embed UnimplementedWriteServiceServer
 // for forward compatibility
 type WriteServiceServer interface {
-	// Writes one or more relation tuples
-	// in a single transaction.
-	Write(context.Context, *WriteRequest) (*WriteResponse, error)
-	// Deletes one or more matching relation tuples
-	// in a single transaction.
-	Delete(context.Context, *DeleteRequest) (*DeleteResponse, error)
+	// Writes one or more relation tuples in a single transaction.
+	WriteRelationTuples(context.Context, *WriteRelationTuplesRequest) (*WriteRelationTuplesResponse, error)
 }
 
 // UnimplementedWriteServiceServer should be embedded to have forward compatible implementations.
 type UnimplementedWriteServiceServer struct {
 }
 
-func (UnimplementedWriteServiceServer) Write(context.Context, *WriteRequest) (*WriteResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Write not implemented")
-}
-func (UnimplementedWriteServiceServer) Delete(context.Context, *DeleteRequest) (*DeleteResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Delete not implemented")
+func (UnimplementedWriteServiceServer) WriteRelationTuples(context.Context, *WriteRelationTuplesRequest) (*WriteRelationTuplesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method WriteRelationTuples not implemented")
 }
 
 // UnsafeWriteServiceServer may be embedded to opt out of forward compatibility for this service.
@@ -334,38 +314,20 @@ func RegisterWriteServiceServer(s grpc.ServiceRegistrar, srv WriteServiceServer)
 	s.RegisterService(&_WriteService_serviceDesc, srv)
 }
 
-func _WriteService_Write_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(WriteRequest)
+func _WriteService_WriteRelationTuples_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(WriteRelationTuplesRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(WriteServiceServer).Write(ctx, in)
+		return srv.(WriteServiceServer).WriteRelationTuples(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/keto.acl.v1.WriteService/Write",
+		FullMethod: "/keto.acl.v1.WriteService/WriteRelationTuples",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(WriteServiceServer).Write(ctx, req.(*WriteRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _WriteService_Delete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeleteRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(WriteServiceServer).Delete(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/keto.acl.v1.WriteService/Delete",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(WriteServiceServer).Delete(ctx, req.(*DeleteRequest))
+		return srv.(WriteServiceServer).WriteRelationTuples(ctx, req.(*WriteRelationTuplesRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -375,12 +337,8 @@ var _WriteService_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*WriteServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "Write",
-			Handler:    _WriteService_Write_Handler,
-		},
-		{
-			MethodName: "Delete",
-			Handler:    _WriteService_Delete_Handler,
+			MethodName: "WriteRelationTuples",
+			Handler:    _WriteService_WriteRelationTuples_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
