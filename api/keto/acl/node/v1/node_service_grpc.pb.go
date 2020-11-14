@@ -50,5 +50,5 @@ var _NodeService_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*NodeServiceServer)(nil),
 	Methods:     []grpc.MethodDesc{},
 	Streams:     []grpc.StreamDesc{},
-	Metadata:    "keto/authz/node/v1/node_service.proto",
+	Metadata:    "keto/acl/node/v1/node_service.proto",
 }

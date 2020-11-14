@@ -50,5 +50,5 @@ var _AdminService_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*AdminServiceServer)(nil),
 	Methods:     []grpc.MethodDesc{},
 	Streams:     []grpc.StreamDesc{},
-	Metadata:    "keto/authz/admin/v1/admin_service.proto",
+	Metadata:    "keto/acl/admin/v1/admin_service.proto",
 }

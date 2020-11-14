@@ -66,7 +66,9 @@ docker: deps
 
 .PHONY: buf-gen
 buf-gen:
-		buf generate
+		buf generate \
+		--config buf/api/buf.yaml \
+		--template buf/api/buf.gen.yaml
 
 .PHONY: gen-client
 gen-client:

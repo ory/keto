@@ -1,13 +1,13 @@
 syntax = "proto3";
 
-package keto.authz.v1;
+package keto.acl.v1;
 
-option go_package = "github.com/ory/keto/api/keto/authz/v1;authz";
-option csharp_namespace = "Ory.Keto.Authz.V1";
+option go_package = "github.com/ory/keto/api/keto/acl/v1;acl";
+option csharp_namespace = "Ory.Keto.Acl.V1";
 option java_multiple_files = true;
-option java_outer_classname = "AuthzProto";
-option java_package = "sh.ory.keto.authz.v1";
-option php_namespace = "Ory\\Keto\\Authz\\V1";
+option java_outer_classname = "AclProto";
+option java_package = "sh.ory.keto.acl.v1";
+option php_namespace = "Ory\\Keto\\Acl\\V1";
 
 
 // RelationTuple relates an Object with a Subject.
