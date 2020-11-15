@@ -35,10 +35,10 @@ New feature or request.
 - [ ] Ensure telemetry is running for both GRPC and HTTP ([keto#298](https://github.com/ory/keto/issues/298)) - [@hackerman](https://github.com/aeneasr), [@Patrik](https://github.com/zepatrik)
 - [ ] Define and architect SQL schema and queries for querying relations ([keto#300](https://github.com/ory/keto/issues/300)) - [@Patrik](https://github.com/zepatrik)
 - [ ] Write benchmark tests for relationtuple package ([keto#301](https://github.com/ory/keto/issues/301)) - [@Patrik](https://github.com/zepatrik)
-- [ ] Rewrite check engine to search the graph in the other direction ([keto#302](https://github.com/ory/keto/issues/302)) - [@Patrik](https://github.com/zepatrik)
 - [ ] Namespace configuration ([keto#303](https://github.com/ory/keto/issues/303)) - [@Patrik](https://github.com/zepatrik)
 - [ ] Database sharding ([keto#306](https://github.com/ory/keto/issues/306)) - [@Patrik](https://github.com/zepatrik)
 - [x] Remove support for AND/OR/XOR in GetRelationTuples ([keto#299](https://github.com/ory/keto/issues/299)) - [@Patrik](https://github.com/zepatrik)
+- [x] Rewrite check engine to search the graph in the other direction ([keto#302](https://github.com/ory/keto/issues/302)) - [@Patrik](https://github.com/zepatrik)
 
 ### [Blocking](https://github.com/ory/keto/labels/blocking)
 
@@ -52,6 +52,11 @@ Blocks milestones or other issues or pulls.
 - [ ] Write benchmark tests for relationtuple package ([keto#301](https://github.com/ory/keto/issues/301)) - [@Patrik](https://github.com/zepatrik)
 - [ ] Namespace configuration ([keto#303](https://github.com/ory/keto/issues/303)) - [@Patrik](https://github.com/zepatrik)
 
+#### Pull Requests
+
+- [ ] feat: first API draft and generation ([keto#315](https://github.com/ory/keto/pull/315)) - [@Patrik](https://github.com/zepatrik)
+- [ ] chore: make all go packages internal ([keto#313](https://github.com/ory/keto/pull/313))
+
 ### [Rfc](https://github.com/ory/keto/labels/rfc)
 
 A request for comments to discuss and share ideas.
@@ -59,6 +64,10 @@ A request for comments to discuss and share ideas.
 #### Issues
 
 - [ ] Design decisions, Clarifications and Proposals ([keto#307](https://github.com/ory/keto/issues/307)) - [@hackerman](https://github.com/aeneasr), [@Patrik](https://github.com/zepatrik)
+
+#### Pull Requests
+
+- [ ] feat: first API draft and generation ([keto#315](https://github.com/ory/keto/pull/315)) - [@Patrik](https://github.com/zepatrik)
 
 ## [next](https://github.com/ory/keto/milestone/2)
 
