@@ -3,26 +3,21 @@ title: REST API
 id: api
 ---
 
-Ory Keto is a cloud native access control server providing best-practice
-patterns (RBAC, ABAC, ACL, AWS IAM Policies, Kubernetes Roles, ...) via REST
-APIs.
+Ory Keto is a cloud native access control server providing best-practice patterns (RBAC, ABAC, ACL, AWS IAM Policies, Kubernetes Roles, ...) via REST APIs.
 
 import Tabs from '@theme/Tabs'
 import TabItem from '@theme/TabItem'
 
 :::info
 
-You are viewing REST API documentation. This documentation is auto-generated
-from a swagger specification which itself is generated from annotations in the
-source code of the project. It is possible that this documentation includes bugs
-and that code samples are incomplete or wrong.
+You are viewing REST API documentation. This documentation is auto-generated from a swagger specification which
+itself is generated from annotations in the source code of the project. It is possible that this documentation includes
+bugs and that code samples are incomplete or wrong.
 
 If you find issues in the respective documentation, please do not edit the
-Markdown files directly (as they are generated) but raise an issue on the
-project's GitHub presence instead. This documentation will improve over time
-with your help! If you have ideas how to improve this part of the documentation,
-feel free to share them in a
-[GitHub issue](https://github.com/ory/docs/issues/new) any time.
+Markdown files directly (as they are generated) but raise an issue on the project's GitHub presence instead. This documentation
+will improve over time with your help! If you have ideas how to improve this part of the documentation, feel free to
+share them in a [GitHub issue](https://github.com/ory/docs/issues/new) any time.
 
 :::
 
@@ -41,9 +36,9 @@ Accept: application/json
 
 ```
 
-Use this endpoint to check if a request is allowed or not. If the request is
-allowed, a 200 response with `{"allowed":"true"}` will be sent. If the request
-is denied, a 403 response with `{"allowed":"false"}` will be sent instead.
+Use this endpoint to check if a request is allowed or not. If the request is allowed, a 200 response with
+`{"allowed":"true"}` will be sent. If the request is denied, a 403 response with `{"allowed":"false"}` will
+be sent instead.
 
 #### Request body
 
@@ -1067,8 +1062,8 @@ Accept: application/json
 
 ```
 
-Roles group several subjects into one. Rules can be assigned to ORY Access
-Control Policy (OACP) by using the Role ID as subject in the OACP.
+Roles group several subjects into one. Rules can be assigned to ORY Access Control Policy (OACP) by using the Role ID
+as subject in the OACP.
 
 <a id="list-ory-access-control-policy-roles-parameters"></a>
 
@@ -1267,8 +1262,8 @@ Accept: application/json
 
 ```
 
-Roles group several subjects into one. Rules can be assigned to ORY Access
-Control Policy (OACP) by using the Role ID as subject in the OACP.
+Roles group several subjects into one. Rules can be assigned to ORY Access Control Policy (OACP) by using the Role ID
+as subject in the OACP.
 
 #### Request body
 
@@ -1473,8 +1468,8 @@ Accept: application/json
 
 ```
 
-Roles group several subjects into one. Rules can be assigned to ORY Access
-Control Policy (OACP) by using the Role ID as subject in the OACP.
+Roles group several subjects into one. Rules can be assigned to ORY Access Control Policy (OACP) by using the Role ID
+as subject in the OACP.
 
 <a id="get-an-ory-access-control-policy-role-parameters"></a>
 
@@ -1671,8 +1666,8 @@ Accept: application/json
 
 ```
 
-Roles group several subjects into one. Rules can be assigned to ORY Access
-Control Policy (OACP) by using the Role ID as subject in the OACP.
+Roles group several subjects into one. Rules can be assigned to ORY Access Control Policy (OACP) by using the Role ID
+as subject in the OACP.
 
 <a id="delete-an-ory-access-control-policy-role-parameters"></a>
 
@@ -1861,8 +1856,8 @@ Accept: application/json
 
 ```
 
-Roles group several subjects into one. Rules can be assigned to ORY Access
-Control Policy (OACP) by using the Role ID as subject in the OACP.
+Roles group several subjects into one. Rules can be assigned to ORY Access Control Policy (OACP) by using the Role ID
+as subject in the OACP.
 
 #### Request body
 
@@ -2064,8 +2059,8 @@ Accept: application/json
 
 ```
 
-Roles group several subjects into one. Rules can be assigned to ORY Access
-Control Policy (OACP) by using the Role ID as subject in the OACP.
+Roles group several subjects into one. Rules can be assigned to ORY Access Control Policy (OACP) by using the Role ID
+as subject in the OACP.
 
 <a id="remove-a-member-from-an-ory-access-control-policy-role-parameters"></a>
 
@@ -2258,15 +2253,14 @@ Accept: application/json
 
 ```
 
-This endpoint returns a 200 status code when the HTTP server is up running. This
-status does currently not include checks whether the database connection is
-working.
+This endpoint returns a 200 status code when the HTTP server is up running.
+This status does currently not include checks whether the database connection is working.
 
 If the service supports TLS Edge Termination, this endpoint does not require the
 `X-Forwarded-Proto` header to be set.
 
-Be aware that if you are running multiple nodes of this service, the health
-status will never refer to the cluster state, only to a single instance.
+Be aware that if you are running multiple nodes of this service, the health status will never
+refer to the cluster state, only to a single instance.
 
 #### Responses
 
@@ -2440,14 +2434,14 @@ Accept: application/json
 
 ```
 
-This endpoint returns a 200 status code when the HTTP server is up running and
-the environment dependencies (e.g. the database) are responsive as well.
+This endpoint returns a 200 status code when the HTTP server is up running and the environment dependencies (e.g.
+the database) are responsive as well.
 
 If the service supports TLS Edge Termination, this endpoint does not require the
 `X-Forwarded-Proto` header to be set.
 
-Be aware that if you are running multiple nodes of this service, the health
-status will never refer to the cluster state, only to a single instance.
+Be aware that if you are running multiple nodes of this service, the health status will never
+refer to the cluster state, only to a single instance.
 
 #### Responses
 
@@ -2610,14 +2604,13 @@ Accept: application/json
 
 ```
 
-This endpoint returns the service version typically notated using semantic
-versioning.
+This endpoint returns the service version typically notated using semantic versioning.
 
 If the service supports TLS Edge Termination, this endpoint does not require the
 `X-Forwarded-Proto` header to be set.
 
-Be aware that if you are running multiple nodes of this service, the health
-status will never refer to the cluster state, only to a single instance.
+Be aware that if you are running multiple nodes of this service, the health status will never
+refer to the cluster state, only to a single instance.
 
 #### Responses
 
@@ -2797,8 +2790,7 @@ p JSON.parse(result)
 }
 ```
 
-_AuthorizationResult is the result of an access control decision. It contains
-the decision outcome._
+_AuthorizationResult is the result of an access control decision. It contains the decision outcome._
 
 #### Properties
 
@@ -2918,9 +2910,8 @@ _Input for checking if a request is allowed or not._
 }
 ```
 
-_oryAccessControlPolicyRole represents a group of users that share the same
-role. A role could be an administrator, a moderator, a regular user or some
-other sort of role._
+_oryAccessControlPolicyRole represents a group of users that share the same role. A role could be an administrator, a moderator, a regular
+user or some other sort of role._
 
 #### Properties
 

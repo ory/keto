@@ -7,21 +7,22 @@ title: Configuration
 OPEN AN ISSUE IF YOU WOULD LIKE TO MAKE ADJUSTMENTS HERE AND MAINTAINERS WILL HELP YOU LOCATE THE RIGHT
 FILE -->
 
-If file `$HOME/.keto.yaml` exists, it will be used as a configuration file which
-supports all configuration settings listed below.
+If file `$HOME/.keto.yaml` exists, it will be used as a configuration file which supports all
+configuration settings listed below.
 
-You can load the config file from another source using the
-`-c path/to/config.yaml` or `--config path/to/config.yaml` flag:
-`keto --config path/to/config.yaml`.
+You can load the config file from another source using the `-c path/to/config.yaml` or `--config path/to/config.yaml`
+flag: `keto --config path/to/config.yaml`.
 
-Config files can be formatted as JSON, YAML and TOML. Some configuration values
-support reloading without server restart. All configuration values can be set
-using environment variables, as documented below.
+Config files can be formatted as JSON, YAML and TOML. Some configuration values support reloading without server restart.
+All configuration values can be set using environment variables, as documented below.
 
-To find out more about edge cases like setting string array values through
-environmental variables head to the
-[Configuring ORY services](https://www.ory.sh/docs/ecosystem/configuring)
-section.
+This reference configuration documents all keys, also deprecated ones!
+It is a reference for all possible configuration values.
+
+If you are looking for an example configuration, it is better to try out the quickstart.
+
+To find out more about edge cases like setting string array values through environmental variables head to the
+[Configuring ORY services](https://www.ory.sh/docs/ecosystem/configuring) section.
 
 ```yaml
 ## ORY Kratos Configuration
@@ -121,9 +122,7 @@ serve:
     #    > set SERVE_CORS_ALLOWED_ORIGINS=<value>
     #
     allowed_origins:
-      - https://example.com
-      - https://*.example.com
-      - https://*.foo.example.com
+      - '*'
 
     ## Allowed HTTP Methods ##
     #
@@ -138,11 +137,10 @@ serve:
     #    > set SERVE_CORS_ALLOWED_METHODS=<value>
     #
     allowed_methods:
-      - TRACE
       - DELETE
-      - PUT
+      - POST
       - HEAD
-      - GET
+      - TRACE
 
     ## Allowed Request HTTP Headers ##
     #
@@ -157,7 +155,8 @@ serve:
     #    > set SERVE_CORS_ALLOWED_HEADERS=<value>
     #
     allowed_headers:
-      - ipsum qui in proident dolore
+      - ut non exercitation nisi id
+      - commodo anim amet
 
     ## Allowed Response HTTP Headers ##
     #
@@ -172,10 +171,9 @@ serve:
     #    > set SERVE_CORS_EXPOSED_HEADERS=<value>
     #
     exposed_headers:
-      - Excepteur et
-      - eu
-      - dolore ipsum
-      - ut dolor esse
+      - aliqua
+      - laboris elit incididunt
+      - ut nulla enim
 
     ## Allow HTTP Credentials ##
     #
@@ -201,7 +199,7 @@ serve:
     # - Windows Command Line (CMD):
     #    > set SERVE_CORS_MAX_AGE=<value>
     #
-    max_age: -41798350
+    max_age: -13896768
 
     ## Enable Debugging ##
     #
@@ -310,7 +308,7 @@ log:
   # - Windows Command Line (CMD):
   #    > set LOG_LEVEL=<value>
   #
-  level: fatal
+  level: debug
 
   ## Format ##
   #
@@ -454,5 +452,5 @@ tracing:
 # - Windows Command Line (CMD):
 #    > set VERSION=<value>
 #
-version: v26706.0.588380420-59252j-.0.0.WgMDhOUf2.0.jBhlmKMbd.0.0.13.128.1175816767+8B2-t3igyBx.fht.WJ1.XjL0rxFR.HYAnh
+version: v0.0.57390586-9JM7EK5.57466354Kybb-Kc5.808014P.327114U8.7243742071.735hY0n-adKt.0.414532309.76548.597.m+pA.NH.JmSMyrnDyq.p1vShA.3zlY63U1SI.DdO7HPQwVDH
 ```
