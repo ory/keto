@@ -4,14 +4,14 @@ import (
 	"context"
 	"testing"
 
-	"github.com/ory/keto/relationtuple"
+	"github.com/ory/keto/internal/relationtuple"
 
-	"github.com/ory/keto/expand"
+	"github.com/ory/keto/internal/expand"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/ory/keto/driver"
+	"github.com/ory/keto/internal/driver"
 )
 
 func newTestEngine(_ *testing.T) (*driver.RegistryDefault, *expand.Engine) {

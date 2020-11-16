@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/ory/keto/relationtuple"
+	"github.com/ory/keto/internal/relationtuple"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"

@@ -1,7 +1,7 @@
 package persistence
 
 import (
-	"github.com/ory/keto/relationtuple"
+	"github.com/ory/keto/internal/relationtuple"
 )
 
 type Persister interface {

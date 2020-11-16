@@ -8,8 +8,8 @@ import (
 	"github.com/ory/x/logrusx"
 	"github.com/ory/x/tracing"
 
-	"github.com/ory/keto/driver/configuration"
-	"github.com/ory/keto/x"
+	"github.com/ory/keto/internal/driver/configuration"
+	"github.com/ory/keto/internal/x"
 )
 
 type Registry interface {

@@ -9,7 +9,7 @@ import (
 
 	"github.com/ory/herodot"
 
-	"github.com/ory/keto/x"
+	"github.com/ory/keto/internal/x"
 )
 
 type (

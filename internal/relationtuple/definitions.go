@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/ory/keto/x"
+	"github.com/ory/keto/internal/x"
 
 	"github.com/tidwall/gjson"
 

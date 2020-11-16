@@ -7,7 +7,7 @@ import (
 	"io"
 	"os"
 
-	"github.com/ory/keto/relationtuple"
+	"github.com/ory/keto/internal/relationtuple"
 
 	"github.com/spf13/cobra"
 
