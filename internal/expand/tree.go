@@ -3,7 +3,7 @@ package expand
 import (
 	"errors"
 
-	"github.com/ory/keto/relationtuple"
+	"github.com/ory/keto/internal/relationtuple"
 )
 
 type (

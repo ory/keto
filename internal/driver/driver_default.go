@@ -3,7 +3,7 @@ package driver
 import (
 	"github.com/ory/x/logrusx"
 
-	"github.com/ory/keto/driver/configuration"
+	"github.com/ory/keto/internal/driver/configuration"
 )
 
 type DefaultDriver struct {

@@ -8,16 +8,16 @@ import (
 	"github.com/ory/x/logrusx"
 
 	"github.com/ory/keto/namespace"
-	"github.com/ory/keto/persistence/sql"
+	"github.com/ory/keto/internal/persistence/sql"
 
-	"github.com/ory/keto/persistence"
+	"github.com/ory/keto/internal/persistence"
 
-	"github.com/ory/keto/expand"
+	"github.com/ory/keto/internal/expand"
 
-	"github.com/ory/keto/check"
+	"github.com/ory/keto/internal/check"
 
-	"github.com/ory/keto/relationtuple"
-	"github.com/ory/keto/x"
+	"github.com/ory/keto/internal/relationtuple"
+	"github.com/ory/keto/internal/x"
 )
 
 var _ relationtuple.ManagerProvider = &RegistryDefault{}

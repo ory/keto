@@ -7,7 +7,7 @@ import (
 
 	"github.com/ory/x/flagx"
 
-	"github.com/ory/keto/relationtuple"
+	"github.com/ory/keto/internal/relationtuple"
 
 	"github.com/spf13/pflag"
 
