@@ -4,6 +4,7 @@ package keto.acl.v1;
 
 import "keto/acl/v1/acl.proto";
 import "google/api/client.proto";
+import "google/protobuf/field_mask.proto";
 
 option go_package = "github.com/ory/keto/api/keto/acl/v1;acl";
 option csharp_namespace = "Ory.Keto.Acl.V1";
@@ -19,26 +20,50 @@ service ReadService {
   rpc ListRelationTuples(ListRelationTuplesRequest) returns (ListRelationTuplesResponse);
 }
 
+// Request for ReadService.ListRelationTuples rpc.
+// See ListRelationTuplesRequest_Query for more querying details.
 message ListRelationTuplesRequest {
-  // The filter to query for relation tuples.
-  // If none specified
-  // TODO RelationTuple listing and querying is a quite more involved task than only passing in a Query structure
-  // TODO e.g. filter by namespace, object, relation, subject, commit_time (create time) in combination with logical OR/AND operators
-  // TODO See https://google.aip.dev/160
-  // TODO We should use an expression engine for evaluation and SQL query building
-  string filter = 1;
-  // The ordering of the queried relation tuples.
-  // TODO See https://google.aip.dev/132
-  string order_by = 2;
-  // Optional. The least snapshot time of
-  // the used serverside data in the response.
-  bytes zookie = 3;
-  // Optional. The maximum number of RelationTuples to return in the response.
+  // The query for listing relation tuples.
+  // Clients can specify any optional field to
+  // partially filter for specific relation tuples.
+  //
+  // Example use cases:
+  //  - object only: display a list of all rules of one object
+  //  - relation only: get all groups that have members; e.g. get all directories that have content
+  //  - object & relation: display all subjects that have e.g. write relation
+  //  - subject & relation: display all groups a subject belongs to/display all objects a subject has access to
+  //  - object & relation & subject: check whether the relation tuple already exists, before writing it
+  //
+  message Query {
+    // Optional.
+    Object object = 1;
+    // Optional.
+    string relation = 2;
+    // Optional.
+    Subject subject = 3;
+  }
+  // All field constraints are concatenated
+  // with a logical AND operator.
+  // An unspecified field specifies a `*` wildcard match.
+  Query query = 1;
+  // Optional. The list of fields to be expanded
+  // in the RelationTuple list returned in `ListRelationTuplesResponse`.
+  // Leaving this field unspecified means all fields are expanded.
+  //
+  // Available fields:
+  // "object", "relation", "subject",
+  // "object.namespace","object.id",
+  // "subject.id", "subject.set"
+  google.protobuf.FieldMask expand_mask = 2;
+  // Optional. The snapshot token for this read.
+  bytes snaptoken = 3;
+  // Optional. The maximum number of
+  // RelationTuples to return in the response.
   int32 page_size = 4;
-  // Optional. A pagination token returned from a previous call to `ListRelationTuples`
-  // that indicates where this listing should continue from.
+  // Optional. A pagination token returned from
+  // a previous call to `ListRelationTuples` that
+  // indicates where this listing should continue from.
   string page_token = 5;
-
 }
 
 // The response of a ReadService.ListRelationTuples rpc.
@@ -47,5 +72,9 @@ message ListRelationTuplesResponse {
   repeated RelationTuple relation_tuples = 1;
   // Optional. A pagination token returned from a previous call to `ListRelationTuples`
   // that indicates where this listing should continue from.
+  //
+  // All fields of the subsequent ListRelationTuplesRequest request
+  // using this `next_page_token` as the `page_token` are ignored and
+  // CAN be left blank, since the request's data is baked in this `next_page_token`.
   string next_page_token = 2;
 }

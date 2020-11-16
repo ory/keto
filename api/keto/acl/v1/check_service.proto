@@ -20,6 +20,8 @@ service CheckService {
   rpc Check(CheckRequest) returns (CheckResponse);
 }
 
+// The request for a CheckService.Check rpc.
+// Checks whether a specific subject is related to an object.
 message CheckRequest {
   // The related object in this check.
   Object object = 1;
@@ -27,24 +29,43 @@ message CheckRequest {
   string relation = 2;
   // The concrete subject id to check.
   string subject_id = 3;
-  // Optional. The least snapshot time of the used
-  // serverside data to compute the response of this check.
+  // Optional. The staleness bound of this check.
   //
-  // If specified requests to perform
-  // the check on only near up to-date ACLs.
+  // It specifies the clients last known snapshot token
+  // that the server uses to only check against ACLs newer
+  // than specified token snapshot in order to compute the
+  // result of this check.
   //
-  // *This recommended for low latency and where checks
-  // are allowed to perform on ACLs that are a bit stale
-  // (stale => not up to date, but still only differs some
-  // millis or seconds).
+  // Leave this field blank if...
+  //  - your application strictly requires to act on up-to-date data
+  //  - your application not yet has a snaptoken on the related data (e.g. user)
   //
-  // If not specified performs the check on most up to-date
-  // ACLs in case it is strictly required to do so.
-  bytes zookie = 4;
+  // If the specified token is too old, the server tries to fallback and
+  // find the best snapshot token to perform the check using least stale
+  // ACLs that very likely already got replicated.
+  //
+  // *It is recommended to perform checks using slightly stale
+  // data (e.g. token older than 3-10 seconds) for minimum latency
+  // and where the application is allowed to accept slightly off checks.
+  bytes snaptoken = 4;
 }
 
+// The response for a CheckService.Check rpc.
 message CheckResponse {
-  // True if the specified subject id
-  // is related to the requested Object.
+  // Whether the specified subject (id)
+  // is related to the requested object.
+  //
+  // It is false by default if no ACL matches.
   bool allowed = 1;
+  // The last known snapshot token ONLY specified if
+  // the request had not specified a snaptoken,
+  // since this performed a "content-change request"
+  // and consistently fetched the last known snapshot token.
+  //
+  // This field is not set if the request had specified a snaptoken!
+  //
+  // If set, clients should cache and use this token
+  // for subsequent  requests to have minimal latency,
+  // but allow slightly stale responses (only some milliseconds or seconds).
+  bytes snaptoken = 2;
 }

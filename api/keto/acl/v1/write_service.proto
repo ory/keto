@@ -19,6 +19,7 @@ service WriteService {
   rpc WriteRelationTuples(WriteRelationTuplesRequest) returns (WriteRelationTuplesResponse);
 }
 
+// The request of a WriteService.WriteRelationTuples rpc.
 message WriteRelationTuplesRequest {
   // The write delta for the relation tuples operated in one single transaction.
   // Either all actions commit or no change takes effect on error.
@@ -29,6 +30,7 @@ message WriteRelationTuplesRequest {
   repeated RelationTupleWriteDelta relation_tuple_deltas = 1;
 }
 
+// Write-delta for a WriteRelationTuplesRequest.
 message RelationTupleWriteDelta {
   enum Action {
     // Unspecified.
@@ -56,4 +58,13 @@ message RelationTupleWriteDelta {
   RelationTuple relation_tuple = 1;
 }
 
-message WriteRelationTuplesResponse {}
+// The response of a WriteService.WriteRelationTuples rpc.
+message WriteRelationTuplesResponse {
+  // The list of the new latest snapshot tokens of the affected RelationTuple,
+  // with the same index as specified in the `relation_tuple_deltas` field of
+  // the WriteRelationTuplesRequest request.
+  //
+  // The snaptoken is nil at the same index
+  // if the RelationTupleWriteDelta_Action was DELETE.
+  repeated bytes snaptokens = 1;
+}

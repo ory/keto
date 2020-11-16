@@ -20,10 +20,10 @@ message RelationTuple {
   // The relation between an Object and a Subject.
   string relation = 2;
   // The subject related by this tuple.
-  // It either is a concrete subject id or
-  // or a subject set expanding to more Subjects.
+  // A Subject either represents a concrete subject id or
+  // a SubjectSet that expands to more Subjects.
   Subject subject = 3;
-  // Used to perform a consistent read-modify-write.
+  // Used to perform a consistent read-modify-write (lock).
   string etag = 4;
 }
 
@@ -42,16 +42,19 @@ message Object {
 // Subject is either a concrete subject id or
 // a subject set expanding to more Subjects.
 message Subject {
-  oneof type {
-    // The concrete id of the subject.
-    string subject_id = 1;
-    // The subject set that expands to more Subjects.
-    SubjectSet subject_set = 2;
+  // The reference of this abstract subject.
+  oneof ref {
+    // A concrete id of the subject.
+    string id = 1;
+    // A subject set that expands to more Subjects
+    // (used for inheritance).
+    SubjectSet set = 2;
   }
 }
 
 // SubjectSet refers to all subjects which have
 // the same `relation` to an `object`.
+// Also used for inheritance.
 message SubjectSet {
   // The object selected by the subjects.
   Object object = 1;
