@@ -54,7 +54,7 @@ Blocks milestones or other issues or pulls.
 
 #### Pull Requests
 
-- [ ] feat: first API draft and generation ([keto#315](https://github.com/ory/keto/pull/315)) - [@Patrik](https://github.com/zepatrik)
+- [ ] feat: first API draft and generation ([keto#315](https://github.com/ory/keto/pull/315)) - [@Patrik](https://github.com/zepatrik), [@Robin Brämer](https://github.com/robinbraemer)
 - [ ] chore: make all go packages internal ([keto#313](https://github.com/ory/keto/pull/313))
 
 ### [Rfc](https://github.com/ory/keto/labels/rfc)
@@ -67,7 +67,7 @@ A request for comments to discuss and share ideas.
 
 #### Pull Requests
 
-- [ ] feat: first API draft and generation ([keto#315](https://github.com/ory/keto/pull/315)) - [@Patrik](https://github.com/zepatrik)
+- [ ] feat: first API draft and generation ([keto#315](https://github.com/ory/keto/pull/315)) - [@Patrik](https://github.com/zepatrik), [@Robin Brämer](https://github.com/robinbraemer)
 
 ## [next](https://github.com/ory/keto/milestone/2)
 
