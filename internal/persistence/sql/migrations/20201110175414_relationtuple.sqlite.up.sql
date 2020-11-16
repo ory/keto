@@ -1,3 +1,5 @@
-CREATE TABLE keto_namespaces (
-    name varchar(64) PRIMARY KEY
+CREATE TABLE keto_namespace_migration
+(
+    id INTEGER PRIMARY KEY,
+    schema_version INTEGER NOT NULL
 )

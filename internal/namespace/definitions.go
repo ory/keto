@@ -4,7 +4,8 @@ import "context"
 
 type (
 	Namespace struct {
-		ID string `db:"name"`
+		ID   int    `db:"id"`
+		Name string `db:"name"`
 	}
 	Manager interface {
 		NewNamespace(ctx context.Context, n *Namespace) error
@@ -14,10 +15,6 @@ type (
 	}
 )
 
-func NewNamespace(name string) *Namespace {
-	return &Namespace{ID: name}
-}
-
 func (n *Namespace) TableName() string {
-	return "keto_namespaces"
+	return "keto_namespace"
 }

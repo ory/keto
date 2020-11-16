@@ -58,7 +58,9 @@ var _, _ Subject = &UserID{}, &UserSet{}
 
 func SubjectFromString(s string) Subject {
 	if strings.Contains(s, "#") {
-		return (&UserSet{}).FromString(s)
+		return (&UserSet{
+			Object: &Object{},
+		}).FromString(s)
 	}
 	return (&UserID{}).FromString(s)
 }

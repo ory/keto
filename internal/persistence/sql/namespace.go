@@ -3,6 +3,7 @@ package sql
 import (
 	"context"
 	"fmt"
+	"github.com/pkg/errors"
 
 	"github.com/gobuffalo/pop/v5"
 
@@ -10,29 +11,28 @@ import (
 )
 
 const namespaceCreateStatement = `
-CREATE TABLE %s
+CREATE TABLE %[1]s
 (
     shard_id    varchar(64),
     object_id   varchar(64),
     relation    varchar(64),
-    subject     varchar(128), /* can be object_id#relation or user_id */
+    subject     varchar(256), /* can be object_id:namespace#relation or user_id */
     commit_time timestamp,
-    PRIMARY KEY (shard_id, object_id, relation, subject, commit_time)
+
+	PRIMARY KEY (shard_id, object_id, relation, subject, commit_time)
 );
 
-CREATE INDEX object_id_idx ON %s (object_id);
+CREATE INDEX %[1]s_object_id_idx ON %[1]s (object_id);
 
-CREATE INDEX user_set_idx ON %s (object_id, relation);
+CREATE INDEX %[1]s_user_set_idx ON %[1]s (object_id, relation);
 `
 
-func sqlSafeTableFromNamespace(n string) string {
-	// TODO AVOID SQL INJECTION
-	return fmt.Sprintf("keto_%s_relation_tuples", n)
+func tableFromNamespace(n *namespace.Namespace) string {
+	return fmt.Sprintf("keto_%0.10d_relation_tuples", n.ID)
 }
 
-func createStmt(namespace string) string {
-	tableName := sqlSafeTableFromNamespace(namespace)
-	return fmt.Sprintf(namespaceCreateStatement, tableName, tableName, tableName)
+func createStmt(n *namespace.Namespace) string {
+	return fmt.Sprintf(namespaceCreateStatement, tableFromNamespace(n))
 }
 
 func (p *Persister) NewNamespace(ctx context.Context, n *namespace.Namespace) error {
@@ -41,6 +41,13 @@ func (p *Persister) NewNamespace(ctx context.Context, n *namespace.Namespace) er
 			return err
 		}
 
-		return tx.RawQuery(createStmt(n.ID)).Exec()
+		return tx.RawQuery(createStmt(n)).Exec()
 	})
+}
+
+func (p *Persister) NamespaceFromName(ctx context.Context, name string) (*namespace.Namespace, error) {
+	var n namespace.Namespace
+
+	return &n, errors.WithStack(
+		p.conn.Where("name = ?", name).First(&n))
 }

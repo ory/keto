@@ -6,7 +6,7 @@ import (
 
 	"github.com/julienschmidt/httprouter"
 
-	"github.com/ory/keto/x"
+	"github.com/ory/keto/internal/x"
 )
 
 type (

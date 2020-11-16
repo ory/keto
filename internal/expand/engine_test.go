@@ -4,6 +4,8 @@ import (
 	"context"
 	"testing"
 
+	"github.com/ory/keto/internal/namespace"
+
 	"github.com/ory/keto/internal/relationtuple"
 
 	"github.com/ory/keto/internal/expand"
@@ -14,9 +16,12 @@ import (
 	"github.com/ory/keto/internal/driver"
 )
 
-func newTestEngine(_ *testing.T) (*driver.RegistryDefault, *expand.Engine) {
+func newTestEngine(t *testing.T) (*driver.RegistryDefault, *expand.Engine) {
 	reg := &driver.RegistryDefault{}
+	require.NoError(t, reg.Init())
+
 	e := expand.NewEngine(reg)
+
 	return reg, e
 }
 
@@ -57,6 +62,7 @@ func TestEngine(t *testing.T) {
 			},
 		}
 		reg, e := newTestEngine(t)
+		require.NoError(t, reg.NamespaceManagerProvider().NewNamespace(context.Background(), &namespace.Namespace{Name: boulderGroup.Namespace}))
 
 		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), boulderers...))
 
@@ -80,17 +86,18 @@ func TestEngine(t *testing.T) {
 
 	t.Run("case=expands two levels", func(t *testing.T) {
 		reg, e := newTestEngine(t)
+		namesp := "default"
 		expectedTree := &expand.Tree{
 			Type: expand.Union,
 			Subject: &relationtuple.UserSet{
-				Object:   &relationtuple.Object{ID: "z"},
+				Object:   &relationtuple.Object{ID: "z", Namespace: namesp},
 				Relation: "transitive member",
 			},
 			Children: []*expand.Tree{
 				{
 					Type: expand.Union,
 					Subject: &relationtuple.UserSet{
-						Object:   &relationtuple.Object{ID: "x"},
+						Object:   &relationtuple.Object{ID: "x", Namespace: namesp},
 						Relation: "member",
 					},
 					Children: []*expand.Tree{
@@ -111,7 +118,7 @@ func TestEngine(t *testing.T) {
 				{
 					Type: expand.Union,
 					Subject: &relationtuple.UserSet{
-						Object:   &relationtuple.Object{ID: "y"},
+						Object:   &relationtuple.Object{ID: "y", Namespace: namesp},
 						Relation: "member",
 					},
 					Children: []*expand.Tree{
@@ -131,6 +138,8 @@ func TestEngine(t *testing.T) {
 				},
 			},
 		}
+
+		require.NoError(t, reg.NamespaceManagerProvider().NewNamespace(context.Background(), &namespace.Namespace{Name: namesp}))
 
 		for _, group := range expectedTree.Children {
 			require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), &relationtuple.InternalRelationTuple{
@@ -158,18 +167,22 @@ func TestEngine(t *testing.T) {
 
 	t.Run("case=respects max depth", func(t *testing.T) {
 		reg, e := newTestEngine(t)
-		root := &relationtuple.Object{ID: "root"}
+
+		namesp := "default"
+		require.NoError(t, reg.NamespaceManagerProvider().NewNamespace(context.Background(), &namespace.Namespace{Name: namesp}))
+
+		root := &relationtuple.Object{ID: "root", Namespace: namesp}
 		prev := root
 		for _, sub := range []string{"0", "1", "2", "3"} {
 			require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), &relationtuple.InternalRelationTuple{
 				Object:   prev,
 				Relation: "child",
 				Subject: &relationtuple.UserSet{
-					Object:   &relationtuple.Object{ID: sub},
+					Object:   &relationtuple.Object{ID: sub, Namespace: namesp},
 					Relation: "child",
 				},
 			}))
-			prev = &relationtuple.Object{ID: sub}
+			prev = &relationtuple.Object{ID: sub, Namespace: namesp}
 		}
 
 		expectedTree := &expand.Tree{
@@ -182,21 +195,21 @@ func TestEngine(t *testing.T) {
 				{
 					Type: expand.Union,
 					Subject: &relationtuple.UserSet{
-						Object:   &relationtuple.Object{ID: "0"},
+						Object:   &relationtuple.Object{ID: "0", Namespace: namesp},
 						Relation: "child",
 					},
 					Children: []*expand.Tree{
 						{
 							Type: expand.Union,
 							Subject: &relationtuple.UserSet{
-								Object:   &relationtuple.Object{ID: "1"},
+								Object:   &relationtuple.Object{ID: "1", Namespace: namesp},
 								Relation: "child",
 							},
 							Children: []*expand.Tree{
 								{
 									Type: expand.Leaf,
 									Subject: &relationtuple.UserSet{
-										Object:   &relationtuple.Object{ID: "2"},
+										Object:   &relationtuple.Object{ID: "2", Namespace: namesp},
 										Relation: "child",
 									},
 								},

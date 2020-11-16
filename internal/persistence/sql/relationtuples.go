@@ -3,29 +3,30 @@ package sql
 import (
 	"context"
 	"fmt"
+	"github.com/ory/keto/internal/namespace"
 	"reflect"
 	"strings"
 	"time"
 
 	"github.com/gobuffalo/pop/v5"
 
-	"github.com/ory/keto/relationtuple"
-	"github.com/ory/keto/x"
+	"github.com/ory/keto/internal/relationtuple"
+	"github.com/ory/keto/internal/x"
 )
 
 type (
 	relationTuple struct {
-		ShardID    string    `db:"shard_id"`
-		ObjectID   string    `db:"object_id"`
-		Relation   string    `db:"relation"`
-		Subject    string    `db:"subject"`
-		CommitTime time.Time `db:"commit_time"`
-		Namespace  string    `db:"-"`
+		ShardID    string               `db:"shard_id"`
+		ObjectID   string               `db:"object_id"`
+		Relation   string               `db:"relation"`
+		Subject    string               `db:"subject"`
+		CommitTime time.Time            `db:"commit_time"`
+		Namespace  *namespace.Namespace `db:"-"`
 	}
 )
 
 func (r *relationTuple) TableName() string {
-	return sqlSafeTableFromNamespace(r.Namespace)
+	return tableFromNamespace(r.Namespace)
 }
 
 func (r *relationTuple) fromInternal(rel *relationtuple.InternalRelationTuple) *relationTuple {
@@ -60,13 +61,13 @@ func (r *relationTuple) toInternal() *relationtuple.InternalRelationTuple {
 		Relation: r.Relation,
 		Object: &relationtuple.Object{
 			ID:        r.ObjectID,
-			Namespace: r.Namespace,
+			Namespace: r.Namespace.Name,
 		},
 		Subject: relationtuple.SubjectFromString(r.Subject),
 	}
 }
 
-func (p *Persister) GetRelationTuples(_ context.Context, query *relationtuple.RelationQuery, options ...x.PaginationOptionSetter) ([]*relationtuple.InternalRelationTuple, error) {
+func (p *Persister) GetRelationTuples(ctx context.Context, query *relationtuple.RelationQuery, options ...x.PaginationOptionSetter) ([]*relationtuple.InternalRelationTuple, error) {
 	const (
 		whereRelation = "relation = ?"
 		whereObjectID = "object_id = ?"
@@ -97,15 +98,20 @@ func (p *Persister) GetRelationTuples(_ context.Context, query *relationtuple.Re
 	var rawQuery string
 	pagination := x.GetPaginationOptions(options...)
 
+	namespace, err := p.NamespaceFromName(ctx, query.Namespace)
+	if err != nil {
+		return nil, err
+	}
+
 	if len(where) == 0 {
 		rawQuery = fmt.Sprintf("SELECT * FROM %s LIMIT %d OFFSET %d",
-			sqlSafeTableFromNamespace(query.Namespace),
+			tableFromNamespace(namespace),
 			pagination.PerPage,
 			pagination.Page*pagination.PerPage,
 		)
 	} else {
 		rawQuery = fmt.Sprintf("SELECT * FROM %s WHERE %s LIMIT %d OFFSET %d",
-			sqlSafeTableFromNamespace(query.Namespace),
+			tableFromNamespace(namespace),
 			strings.Join(where, " AND "),
 			pagination.PerPage,
 			pagination.Page*pagination.PerPage,
@@ -149,7 +155,7 @@ func (r *relationTuple) insert(c *pop.Connection) error {
 
 	return c.RawQuery(
 		fmt.Sprintf("INSERT INTO %s (%s) VALUES (%s)",
-			sqlSafeTableFromNamespace(r.Namespace),
+			tableFromNamespace(r.Namespace),
 			strings.Join(rows, ", "),
 			placeholders),
 		vals...).Exec()
