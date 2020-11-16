@@ -7,7 +7,7 @@ import (
 	"github.com/ory/herodot"
 	"github.com/ory/x/logrusx"
 
-	"github.com/ory/keto/namespace"
+	"github.com/ory/keto/internal/namespace"
 	"github.com/ory/keto/internal/persistence/sql"
 
 	"github.com/ory/keto/internal/persistence"

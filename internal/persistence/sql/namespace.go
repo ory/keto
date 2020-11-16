@@ -6,7 +6,7 @@ import (
 
 	"github.com/gobuffalo/pop/v5"
 
-	"github.com/ory/keto/namespace"
+	"github.com/ory/keto/internal/namespace"
 )
 
 const namespaceCreateStatement = `

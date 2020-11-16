@@ -20,7 +20,7 @@ import (
 	"net/http"
 	"sync"
 
-	"github.com/ory/keto/namespace"
+	"github.com/ory/keto/internal/namespace"
 
 	"github.com/ory/keto/internal/expand"
 
