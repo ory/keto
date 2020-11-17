@@ -35,7 +35,7 @@ message RelationTupleWriteDelta {
   enum Action {
     // Unspecified.
     // The `WriteRelationTuples` rpc ignores this
-    // RelationTupleWriteDelta if an action unspecified.
+    // RelationTupleWriteDelta if an action was unspecified.
     ACTION_UNSPECIFIED = 0;
 
     // Like INSERT with the exception that if the RelationTuple
