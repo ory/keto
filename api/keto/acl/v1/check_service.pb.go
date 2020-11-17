@@ -50,7 +50,7 @@ type CheckRequest struct {
 	//  - your application strictly requires to act on up-to-date data
 	//  - your application not yet has a snaptoken on the related data (e.g. user)
 	//
-	// If the specified token is too old, the server tries to fallback and
+	// If the specified token is too old, the server falls back and tries to
 	// find the best snapshot token to perform the check using least stale
 	// ACLs that very likely already got replicated.
 	//

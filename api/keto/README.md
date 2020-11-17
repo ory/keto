@@ -6,21 +6,15 @@ to have breaking changes until the `v1.0.0` release of Keto!
 
 This directory contains the ProtoBuf & gRPC definitions
 for the Access Control APIs.
-
-This includes:
-- ACL
-- Soon:
-    - RBAC
-    - ABAC
     
 **ACL is the flexible and scalable "base system"
-where all other access control schemes built upon.**
+all other access control schemes built upon.**
 
 ## Directory layout
 
 ```shell script
 keto
-└── acl / rbac / abac
+└── acl / rbac / ...
     ├── node
     │   └── v1 - Intercommunication API (cluster internal)
     ├── admin

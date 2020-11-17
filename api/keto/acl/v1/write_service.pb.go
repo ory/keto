@@ -31,19 +31,25 @@ type RelationTupleWriteDelta_Action int32
 const (
 	// Unspecified.
 	// The `WriteRelationTuples` rpc ignores this
-	// RelationTupleWriteDelta if no action is specified.
+	// RelationTupleWriteDelta if an action unspecified.
 	RelationTupleWriteDelta_ACTION_UNSPECIFIED RelationTupleWriteDelta_Action = 0
-	// Insertion or if already exists, update of the RelationTuple.
+	// Like INSERT with the exception that if the RelationTuple
+	// already exists performs an UPDATE instead.
 	RelationTupleWriteDelta_UPSERT RelationTupleWriteDelta_Action = 1
-	// Insertion of the RelationTuple.
-	// The `WriteRelationTuples` rpc errors if the RelationTuple already exists.
+	// Insertion of a new RelationTuple.
+	//
+	// The `WriteRelationTuples` rpc errors if the
+	// specified RelationTuple already exists.
 	RelationTupleWriteDelta_INSERT RelationTupleWriteDelta_Action = 2
-	// Update of the existing RelationTuple.
-	// The `WriteRelationTuples` rpc errors if the RelationTuple does not exist.
+	// Update of the existing RelationTuple with
+	// the intend to refresh its snapshot token.
+	//
+	// The `WriteRelationTuples` rpc errors if the
+	// specified RelationTuple was not found.
 	RelationTupleWriteDelta_UPDATE RelationTupleWriteDelta_Action = 3
 	// Deletion of the RelationTuple.
-	// The `WriteRelationTuples` rpc is silent and does not error in case
-	// the RelationTuple does not exist.
+	// The `WriteRelationTuples` rpc returns NO error
+	// if the specified RelationTuple was not found.
 	RelationTupleWriteDelta_DELETE RelationTupleWriteDelta_Action = 4
 )
 
