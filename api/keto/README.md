@@ -1,8 +1,12 @@
 # Notes
 
-> ORY Keto is still a `sandbox` project.
-This makes the included api version `v1` subject
-to have breaking changes until the `v1.0.0` release of Keto!
+> ORY Keto is still a `sandbox` project and
+the included APIs are unstable until we reach `v1` 
+and release `v1.0.0` of Keto!
+>
+> Older API versions, such as `v1alpha1`, will still
+> get support for a reasonable amount of time after release
+> of `v1`!
 
 This directory contains the ProtoBuf & gRPC definitions
 for the Access Control APIs.

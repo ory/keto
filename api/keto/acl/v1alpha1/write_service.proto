@@ -1,15 +1,15 @@
 syntax = "proto3";
 
-package keto.acl.v1;
+package keto.acl.v1alpha1;
 
-import "keto/acl/v1/acl.proto";
+import "keto/acl/v1alpha1/acl.proto";
 
-option go_package = "github.com/ory/keto/api/keto/acl/v1;acl";
-option csharp_namespace = "Ory.Keto.Acl.V1";
+option go_package = "github.com/ory/keto/api/keto/acl/v1alpha1;acl";
+option csharp_namespace = "Ory.Keto.Acl.V1Alpha1";
 option java_multiple_files = true;
 option java_outer_classname = "WatchServiceProto";
-option java_package = "sh.ory.keto.acl.v1";
-option php_namespace = "Ory\\Keto\\Acl\\V1";
+option java_package = "sh.ory.keto.acl.v1alpha1";
+option php_namespace = "Ory\\Keto\\Acl\\V1alpha1";
 
 // The write service to create and delete Access Control Lists.
 service WriteService {

@@ -1,15 +1,15 @@
 syntax = "proto3";
 
-package keto.acl.v1;
+package keto.acl.v1alpha1;
 
-import "keto/acl/v1/acl.proto";
+import "keto/acl/v1alpha1/acl.proto";
 
-option go_package = "github.com/ory/keto/api/keto/acl/v1;acl";
-option csharp_namespace = "Ory.Keto.Acl.V1";
+option go_package = "github.com/ory/keto/api/keto/acl/v1alpha1;acl";
+option csharp_namespace = "Ory.Keto.Acl.V1Alpha1";
 option java_multiple_files = true;
 option java_outer_classname = "CheckServiceProto";
-option java_package = "sh.ory.keto.acl.v1";
-option php_namespace = "Ory\\Keto\\Acl\\V1";
+option java_package = "sh.ory.keto.acl.v1alpha1";
+option php_namespace = "Ory\\Keto\\Acl\\V1alpha1";
 
 // The service that performs authorization checks
 // based on the stored Access Control Lists.
@@ -25,18 +25,18 @@ message CheckRequest {
   Object object = 1;
   // The relation this check.
   string relation = 2;
-  // The concrete subject id to check.
-  string subject_id = 3;
+  // The subject to check.
+  Subject subject = 3;
   // Optional. The staleness bound of this check.
   //
   // It specifies the clients last known snapshot token
   // that the server uses to only check against ACLs newer
-  // than specified token snapshot in order to compute the
+  // than specified snapshot token in order to compute the
   // result of this check.
   //
   // Leave this field blank if...
   //  - your application strictly requires to act on up-to-date data
-  //  - your application not yet has a snaptoken on the related data (e.g. user)
+  //  - your application not yet has a snaptoken for your related data (e.g. user)
   //
   // If the specified token is too old, the server falls back and tries to
   // find the best snapshot token to perform the check using least stale

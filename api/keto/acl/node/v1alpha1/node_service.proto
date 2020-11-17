@@ -1,13 +1,13 @@
 syntax = "proto3";
 
-package keto.acl.node.v1;
+package keto.acl.node.v1alpha1;
 
-option go_package = "github.com/ory/keto/api/keto/acl/node/v1;node";
-option csharp_namespace = "Ory.Keto.Acl.Node.V1";
+option go_package = "github.com/ory/keto/api/keto/acl/node/v1alpha1;node";
+option csharp_namespace = "Ory.Keto.Acl.Node.V1Alpha1";
 option java_multiple_files = true;
 option java_outer_classname = "NodeServiceProto";
-option java_package = "sh.ory.keto.acl.node.v1";
-option php_namespace = "Ory\\Keto\\Acl\\Node\\V1";
+option java_package = "sh.ory.keto.acl.node.v1alpha1";
+option php_namespace = "Ory\\Keto\\Acl\\Node\\V1alpha1";
 
 // The internal service for intercommunication
 // between ACL servers in a cluster.
