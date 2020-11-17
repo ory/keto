@@ -23,29 +23,41 @@ service CheckService {
 message CheckRequest {
   // The related object in this check.
   Object object = 1;
-  // The relation this check.
+  // The relation between the Object and the Subject.
   string relation = 2;
-  // The subject to check.
+  // The related subject to check against.
   Subject subject = 3;
-  // Optional. The staleness bound of this check.
+  // Set this field to `true` in case your application
+  // needs to authorize depending on up to date ACLs,
+  // also called a "content-change check".
   //
-  // It specifies the clients last known snapshot token
-  // that the server uses to only check against ACLs newer
-  // than specified snapshot token in order to compute the
-  // result of this check.
+  // If set to `true` the `snaptoken` field is ignored,
+  // the check is evaluated at the latest snapshot
+  // (globally consistent) and the response includes a
+  // snaptoken for clients to store along with object
+  // contents that can be used for subsequent checks
+  // of the same content version.
   //
-  // Leave this field blank if...
-  //  - your application strictly requires to act on up-to-date data
-  //  - your application not yet has a snaptoken for your related data (e.g. user)
+  // Example use case:
+  //  - You need to authorize a user to modify/delete some resource
+  //    and it is unacceptable that if the permission to do that had
+  //    just been revoked some seconds ago so that the change had not
+  //    yet been fully replicated to all availability zones.
+  bool latest = 4;
+  // Optional. Like reads, a check is always evaluated at a
+  // consistent snapshot no earlier than the given snaptoken.
   //
-  // If the specified token is too old, the server falls back and tries to
-  // find the best snapshot token to perform the check using least stale
-  // ACLs that very likely already got replicated.
+  // Leave this field blank if you want to evaluate the check
+  // based on eventually consistent ACLs, benefiting from very
+  // low latency, but possibly slightly stale results.
   //
-  // *It is recommended to perform checks using slightly stale
-  // data (e.g. token older than 3-10 seconds) for minimum latency
-  // and where the application is allowed to accept slightly off checks.
-  bytes snaptoken = 4;
+  // If the specified token is too old and no longer known,
+  // the server falls back as if no snaptoken had been specified.
+  //
+  // If not specified the server tries to evaluate the check
+  // on the best snapshot version where it is very likely that
+  // ACLs had already been replicated to all availability zones.
+  bytes snaptoken = 5;
 }
 
 // The response for a CheckService.Check rpc.

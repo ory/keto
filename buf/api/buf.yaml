@@ -9,7 +9,7 @@ lint:
     - google
   ignore_only:
     ENUM_VALUE_PREFIX:
-      - keto/acl/v1/write_service.proto
+      - keto/acl/v1alpha1/write_service.proto
 breaking:
   use:
     - PACKAGE
