@@ -3,7 +3,6 @@ syntax = "proto3";
 package keto.acl.v1;
 
 import "keto/acl/v1/acl.proto";
-import "google/api/client.proto";
 
 option go_package = "github.com/ory/keto/api/keto/acl/v1;acl";
 option csharp_namespace = "Ory.Keto.Acl.V1";
@@ -14,7 +13,6 @@ option php_namespace = "Ory\\Keto\\Acl\\V1";
 
 // The write service to create and delete Access Control Lists.
 service WriteService {
-  option (google.api.default_host) = "keto.exampleapis.com";
   // Writes one or more relation tuples in a single transaction.
   rpc WriteRelationTuples(WriteRelationTuplesRequest) returns (WriteRelationTuplesResponse);
 }

@@ -3,7 +3,6 @@ syntax = "proto3";
 package keto.acl.v1;
 
 import "keto/acl/v1/acl.proto";
-import "google/api/client.proto";
 import "google/protobuf/field_mask.proto";
 
 option go_package = "github.com/ory/keto/api/keto/acl/v1;acl";
@@ -15,7 +14,6 @@ option php_namespace = "Ory\\Keto\\Acl\\V1";
 
 // The service to query Access Control Lists.
 service ReadService {
-  option (google.api.default_host) = "keto.exampleapis.com";
   // Lists ACL relation tuples.
   rpc ListRelationTuples(ListRelationTuplesRequest) returns (ListRelationTuplesResponse);
 }
