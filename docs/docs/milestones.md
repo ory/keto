@@ -37,7 +37,7 @@ New feature or request.
 - [ ] Write benchmark tests for relationtuple package ([keto#301](https://github.com/ory/keto/issues/301)) - [@Patrik](https://github.com/zepatrik)
 - [ ] Namespace configuration ([keto#303](https://github.com/ory/keto/issues/303)) - [@Patrik](https://github.com/zepatrik)
 - [ ] Database sharding ([keto#306](https://github.com/ory/keto/issues/306)) - [@Patrik](https://github.com/zepatrik)
-- [ ] Integrate Next Gen Keto with wider policy ecosystems / Open Policy Agent ([keto#318](https://github.com/ory/keto/issues/318)) - [@Thomas Aidan Curran](https://github.com/tacurran), [@hackerman](https://github.com/aeneasr)
+- [ ] Integrate Next Gen Keto with wider policy ecosystems / Open Policy Agent ([keto#318](https://github.com/ory/keto/issues/318)) - [@hackerman](https://github.com/aeneasr)
 - [ ] Allow defining ABAC relation tuples ([keto#319](https://github.com/ory/keto/issues/319))
 - [x] Remove support for AND/OR/XOR in GetRelationTuples ([keto#299](https://github.com/ory/keto/issues/299)) - [@Patrik](https://github.com/zepatrik)
 - [x] Rewrite check engine to search the graph in the other direction ([keto#302](https://github.com/ory/keto/issues/302)) - [@Patrik](https://github.com/zepatrik)
@@ -48,7 +48,7 @@ Affects documentation.
 
 #### Issues
 
-- [ ] Integrate Next Gen Keto with wider policy ecosystems / Open Policy Agent ([keto#318](https://github.com/ory/keto/issues/318)) - [@Thomas Aidan Curran](https://github.com/tacurran), [@hackerman](https://github.com/aeneasr)
+- [ ] Integrate Next Gen Keto with wider policy ecosystems / Open Policy Agent ([keto#318](https://github.com/ory/keto/issues/318)) - [@hackerman](https://github.com/aeneasr)
 
 ### [Blocking](https://github.com/ory/keto/labels/blocking)
 
@@ -74,7 +74,7 @@ A request for comments to discuss and share ideas.
 #### Issues
 
 - [ ] Design decisions, Clarifications and Proposals ([keto#307](https://github.com/ory/keto/issues/307)) - [@hackerman](https://github.com/aeneasr), [@Patrik](https://github.com/zepatrik)
-- [ ] Integrate Next Gen Keto with wider policy ecosystems / Open Policy Agent ([keto#318](https://github.com/ory/keto/issues/318)) - [@Thomas Aidan Curran](https://github.com/tacurran), [@hackerman](https://github.com/aeneasr)
+- [ ] Integrate Next Gen Keto with wider policy ecosystems / Open Policy Agent ([keto#318](https://github.com/ory/keto/issues/318)) - [@hackerman](https://github.com/aeneasr)
 - [ ] Allow defining ABAC relation tuples ([keto#319](https://github.com/ory/keto/issues/319))
 
 #### Pull Requests
