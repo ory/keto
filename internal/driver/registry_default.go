@@ -2,7 +2,11 @@ package driver
 
 import (
 	"github.com/ory/herodot"
+	"github.com/ory/keto/internal/driver/configuration"
+	"github.com/ory/keto/internal/namespace"
+	"github.com/ory/x/healthx"
 	"github.com/ory/x/logrusx"
+	"github.com/ory/x/tracing"
 
 	"github.com/ory/keto/internal/persistence"
 
@@ -18,6 +22,7 @@ import (
 var _ relationtuple.ManagerProvider = &RegistryDefault{}
 var _ x.WriterProvider = &RegistryDefault{}
 var _ x.LoggerProvider = &RegistryDefault{}
+var _ Registry = &RegistryDefault{}
 
 type RegistryDefault struct {
 	p  persistence.Persister
@@ -25,6 +30,74 @@ type RegistryDefault struct {
 	w  herodot.Writer
 	ce *check.Engine
 	ee *expand.Engine
+	c  configuration.Provider
+}
+
+func (r *RegistryDefault) CanHandle(dsn string) bool {
+	panic("implement me")
+}
+
+func (r *RegistryDefault) Ping() error {
+	panic("implement me")
+}
+
+func (r *RegistryDefault) Init() error {
+	namespaceConfigs := r.c.Namespaces()
+	for _, n := range namespaceConfigs {
+		s, err := r.NamespaceManager().NamespaceStatus(n)
+
+		if err != nil {
+			if r.c.DSN() == configuration.DSNMemory {
+				// auto migrate on memory
+				if err := r.NamespaceManager().MigrateNamespaceUp(n); err != nil {
+					r.l.WithError(err).Errorf("Could not auto-migrate namespace %s.", n.Name)
+				}
+				continue
+			}
+
+			r.l.Warnf("Namespace %s is defined in the config but not yet migrated. It is ignored until you explicitly migrate it.", n.Name)
+
+			continue
+		}
+
+		r.l.Infof("Namespace %s is migrated to version %d.", n.Name, s.Version)
+	}
+
+	return nil
+}
+
+func (r *RegistryDefault) WithConfig(c configuration.Provider) Registry {
+	r.c = c
+	return r
+}
+
+func (r *RegistryDefault) WithLogger(l *logrusx.Logger) Registry {
+	r.l = l
+	return r
+}
+
+func (r *RegistryDefault) WithBuildInfo(version, hash, date string) Registry {
+	return r
+}
+
+func (r *RegistryDefault) BuildVersion() string {
+	panic("implement me")
+}
+
+func (r *RegistryDefault) BuildDate() string {
+	panic("implement me")
+}
+
+func (r *RegistryDefault) BuildHash() string {
+	panic("implement me")
+}
+
+func (r *RegistryDefault) HealthHandler() *healthx.Handler {
+	panic("implement me")
+}
+
+func (r *RegistryDefault) Tracer() *tracing.Tracer {
+	panic("implement me")
 }
 
 func (r *RegistryDefault) Logger() *logrusx.Logger {
@@ -42,6 +115,13 @@ func (r *RegistryDefault) Writer() herodot.Writer {
 }
 
 func (r *RegistryDefault) RelationTupleManager() relationtuple.Manager {
+	if r.p == nil {
+		r.p = memory.NewPersister()
+	}
+	return r.p
+}
+
+func (r *RegistryDefault) NamespaceManager() namespace.Manager {
 	if r.p == nil {
 		r.p = memory.NewPersister()
 	}

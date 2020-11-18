@@ -59,7 +59,7 @@ on configuration options, open the configuration documentation:
 			os.Exit(1)
 		}
 
-		reg := &driver.RegistryDefault{}
+		d := driver.NewDefaultDriver(logrusx.New("keto", "master"), "master", "local", "today")
 
 		wg := &sync.WaitGroup{}
 		wg.Add(2)
@@ -68,7 +68,7 @@ on configuration options, open the configuration documentation:
 			defer wg.Done()
 
 			s := grpc.NewServer()
-			relS := relationtuple.NewServer(reg)
+			relS := relationtuple.NewServer(d.Registry())
 			relationtuple.RegisterRelationTupleServiceServer(s, relS)
 			fmt.Println("going to serve GRPC on", lis.Addr().String())
 			if err := s.Serve(lis); err != nil {
@@ -80,11 +80,11 @@ on configuration options, open the configuration documentation:
 			defer wg.Done()
 
 			router := httprouter.New()
-			rh := relationtuple.NewHandler(reg)
+			rh := relationtuple.NewHandler(d.Registry())
 			rh.RegisterPublicRoutes(router)
-			ch := check.NewHandler(reg)
+			ch := check.NewHandler(d.Registry())
 			ch.RegisterPublicRoutes(router)
-			eh := expand.NewHandler(reg)
+			eh := expand.NewHandler(d.Registry())
 			eh.RegisterPublicRoutes(router)
 
 			server := graceful.WithDefaults(&http.Server{

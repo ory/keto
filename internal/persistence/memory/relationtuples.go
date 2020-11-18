@@ -31,9 +31,9 @@ func (p *Persister) paginateRelations(rels []*relationtuple.InternalRelationTupl
 func buildRelationQueryFilter(query *relationtuple.RelationQuery) queryFilter {
 	var filters []queryFilter
 
-	if query.Object != nil {
+	if query.ObjectID != "" {
 		filters = append(filters, func(r *relationtuple.InternalRelationTuple) bool {
-			return query.Object.Equals(r.Object)
+			return query.ObjectID == r.Object.ID
 		})
 	}
 
@@ -71,8 +71,13 @@ func (p *Persister) GetRelationTuples(_ context.Context, query *relationtuple.Re
 
 	filter := buildRelationQueryFilter(query)
 
+	n, ok := p.namespaces[query.Namespace]
+	if !ok {
+		return nil, ErrNamespaceUnknown
+	}
+
 	var res []*relationtuple.InternalRelationTuple
-	for _, r := range p.relations {
+	for _, r := range p.relations[n.ID] {
 		if filter(r) {
 			// If one filter matches add relation to response
 			res = append(res, r)
@@ -86,6 +91,13 @@ func (p *Persister) WriteRelationTuples(_ context.Context, rs ...*relationtuple.
 	p.Lock()
 	defer p.Unlock()
 
-	p.relations = append(p.relations, rs...)
+	for _, r := range rs {
+		n, ok := p.namespaces[r.Object.Namespace]
+		if !ok {
+			return ErrNamespaceUnknown
+		}
+
+		p.relations[n.ID] = append(p.relations[n.ID], r)
+	}
 	return nil
 }

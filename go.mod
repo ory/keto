@@ -3,6 +3,7 @@ module github.com/ory/keto
 require (
 	github.com/asaskevich/govalidator v0.0.0-20200428143746-21a406dcc535 // indirect
 	github.com/containerd/continuity v0.0.0-20200228182428-0f16d7a0959c // indirect
+	github.com/ghodss/yaml v1.0.0
 	github.com/go-openapi/errors v0.19.4
 	github.com/go-openapi/runtime v0.19.5
 	github.com/go-openapi/strfmt v0.19.5
@@ -25,6 +26,7 @@ require (
 	github.com/rs/cors v1.6.0
 	github.com/rubenv/sql-migrate v0.0.0-20190327083759-54bad0a9b051 // indirect
 	github.com/shopspring/decimal v1.2.0 // indirect
+	github.com/sirupsen/logrus v1.6.0
 	github.com/spf13/cobra v1.0.0
 	github.com/spf13/pflag v1.0.5
 	github.com/spf13/viper v1.7.0 // indirect

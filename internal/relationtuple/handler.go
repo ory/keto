@@ -40,10 +40,12 @@ func (h *handler) RegisterPublicRoutes(router *httprouter.Router) {
 
 func (h *handler) getRelations(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	params := r.URL.Query()
+
 	res, err := h.d.RelationTupleManager().GetRelationTuples(r.Context(), &RelationQuery{
-		Relation: params.Get("relation"),
-		Object:   (&Object{}).FromString(params.Get("object")),
-		Subject:  SubjectFromString(params.Get("subject")),
+		Relation:  params.Get("relation"),
+		ObjectID:  params.Get("object_id"),
+		Namespace: params.Get("namespace"),
+		Subject:   SubjectFromString(params.Get("subject")),
 	})
 
 	if err != nil {

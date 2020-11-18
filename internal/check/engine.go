@@ -27,7 +27,7 @@ func NewEngine(d engineDependencies) *Engine {
 }
 
 func (e *Engine) subjectIsAllowed(ctx context.Context, requested *relationtuple.InternalRelationTuple, rels []*relationtuple.InternalRelationTuple) (bool, error) {
-	// This is the same as the graph problem "can requested.UserID be reached from requested.Object through the first outgoing edge requested.Name"
+	// This is the same as the graph problem "can requested.UserID be reached from requested.ObjectID through the first outgoing edge requested.Name"
 	//
 	// recursive breadth-first search
 	// TODO replace by more performant algorithm
@@ -46,7 +46,7 @@ func (e *Engine) subjectIsAllowed(ctx context.Context, requested *relationtuple.
 		}
 
 		// expand the set by one indirection
-		nextRels, err := e.d.RelationTupleManager().GetRelationTuples(ctx, &relationtuple.RelationQuery{Object: sub.Object, Relation: sub.Relation})
+		nextRels, err := e.d.RelationTupleManager().GetRelationTuples(ctx, &relationtuple.RelationQuery{ObjectID: sub.Object.ID, Namespace: sub.Object.Namespace, Relation: sub.Relation})
 		if err != nil {
 			// TODO fix error handling
 			_, _ = fmt.Fprintf(os.Stderr, "%+v", err)
@@ -66,7 +66,7 @@ func (e *Engine) subjectIsAllowed(ctx context.Context, requested *relationtuple.
 }
 
 func (e *Engine) SubjectIsAllowed(ctx context.Context, r *relationtuple.InternalRelationTuple) (bool, error) {
-	subjectRelations, err := e.d.RelationTupleManager().GetRelationTuples(ctx, &relationtuple.RelationQuery{Object: r.Object, Relation: r.Relation})
+	subjectRelations, err := e.d.RelationTupleManager().GetRelationTuples(ctx, &relationtuple.RelationQuery{ObjectID: r.Object.ID, Namespace: r.Object.Namespace, Relation: r.Relation})
 	if err != nil {
 		return false, err
 	}

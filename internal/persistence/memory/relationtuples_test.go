@@ -49,7 +49,7 @@ func TestGetRelationTuples(t *testing.T) {
 		expected []*relationtuple.InternalRelationTuple
 	}{
 		{
-			query:    &relationtuple.RelationQuery{Object: rel1.Object},
+			query:    &relationtuple.RelationQuery{ObjectID: rel1.Object},
 			expected: []*relationtuple.InternalRelationTuple{rel1},
 		},
 		{
@@ -61,11 +61,11 @@ func TestGetRelationTuples(t *testing.T) {
 			expected: []*relationtuple.InternalRelationTuple{rel1},
 		},
 		{
-			query:    &relationtuple.RelationQuery{Object: rel1.Object, Subject: rel1.Subject},
+			query:    &relationtuple.RelationQuery{ObjectID: rel1.Object, Subject: rel1.Subject},
 			expected: []*relationtuple.InternalRelationTuple{rel1},
 		},
 		{
-			query:    &relationtuple.RelationQuery{Object: rel1.Object, Relation: rel1.Relation},
+			query:    &relationtuple.RelationQuery{ObjectID: rel1.Object, Relation: rel1.Relation},
 			expected: []*relationtuple.InternalRelationTuple{rel1},
 		},
 		{
@@ -73,11 +73,11 @@ func TestGetRelationTuples(t *testing.T) {
 			expected: []*relationtuple.InternalRelationTuple{rel1},
 		},
 		{
-			query:    &relationtuple.RelationQuery{Object: rel1.Object, Subject: rel1.Subject, Relation: rel1.Relation},
+			query:    &relationtuple.RelationQuery{ObjectID: rel1.Object, Subject: rel1.Subject, Relation: rel1.Relation},
 			expected: []*relationtuple.InternalRelationTuple{rel1},
 		},
 		{
-			query:    &relationtuple.RelationQuery{Object: rel2.Object},
+			query:    &relationtuple.RelationQuery{ObjectID: rel2.Object},
 			expected: []*relationtuple.InternalRelationTuple{rel2},
 		},
 		{
@@ -85,7 +85,7 @@ func TestGetRelationTuples(t *testing.T) {
 			expected: []*relationtuple.InternalRelationTuple{rel3},
 		},
 		{
-			query:    &relationtuple.RelationQuery{Object: rel3.Object, Relation: rel3.Relation},
+			query:    &relationtuple.RelationQuery{ObjectID: rel3.Object, Relation: rel3.Relation},
 			expected: []*relationtuple.InternalRelationTuple{rel3},
 		},
 		{

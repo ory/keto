@@ -47,9 +47,10 @@ type (
 		Subject  Subject `json:"subject"`
 	}
 	RelationQuery struct {
-		Object   *Object `json:"object"`
-		Relation string  `json:"relation"`
-		Subject  Subject `json:"subject"`
+		ObjectID  string  `json:"object_id"`
+		Namespace string  `json:"namespace"`
+		Relation  string  `json:"relation"`
+		Subject   Subject `json:"subject"`
 	}
 )
 
@@ -227,10 +228,8 @@ func (rq *RelationQuery) FromGRPC(query *ReadRelationTuplesRequest_Query) *Relat
 		}
 	}
 
-	rq.Object = &Object{
-		query.Object.Namespace,
-		query.Object.ObjectId,
-	}
+	rq.ObjectID = query.Object.ObjectId
+	rq.Namespace = query.Object.Namespace
 	rq.Relation = query.Relation
 	rq.Subject = subject
 
