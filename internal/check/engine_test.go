@@ -2,6 +2,7 @@ package check_test
 
 import (
 	"context"
+	"github.com/ory/keto/internal/namespace"
 	"testing"
 
 	"github.com/ory/keto/internal/relationtuple"
@@ -26,6 +27,7 @@ func TestEngine(t *testing.T) {
 		}
 
 		reg := &driver.RegistryDefault{}
+		require.NoError(t, reg.NamespaceManager().MigrateNamespaceUp(&namespace.Namespace{Name: rel.Object.Namespace}))
 		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), &rel))
 
 		e := check.NewEngine(reg)
@@ -59,6 +61,7 @@ func TestEngine(t *testing.T) {
 		}
 
 		reg := &driver.RegistryDefault{}
+		require.NoError(t, reg.NamespaceManager().MigrateNamespaceUp(&namespace.Namespace{Name: dust.Namespace}))
 		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), &cleaningRelation, &markProducesDust))
 
 		e := check.NewEngine(reg)
@@ -86,6 +89,7 @@ func TestEngine(t *testing.T) {
 		}
 
 		reg := &driver.RegistryDefault{}
+		require.NoError(t, reg.NamespaceManager().MigrateNamespaceUp(&namespace.Namespace{Name: rel.Object.Namespace}))
 		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), &rel))
 
 		e := check.NewEngine(reg)
@@ -101,7 +105,8 @@ func TestEngine(t *testing.T) {
 
 	t.Run("wrong object ID", func(t *testing.T) {
 		object := relationtuple.Object{
-			ID: "object",
+			ID:        "object",
+			Namespace: "default",
 		}
 		access := relationtuple.InternalRelationTuple{
 			Relation: "access",
@@ -113,11 +118,12 @@ func TestEngine(t *testing.T) {
 		}
 		user := relationtuple.InternalRelationTuple{
 			Relation: "owner",
-			Object:   &relationtuple.Object{ID: "not " + object.ID},
+			Object:   &relationtuple.Object{ID: "not " + object.ID, Namespace: object.Namespace},
 			Subject:  &relationtuple.UserID{ID: "user"},
 		}
 
 		reg := &driver.RegistryDefault{}
+		require.NoError(t, reg.NamespaceManager().MigrateNamespaceUp(&namespace.Namespace{Name: object.Namespace}))
 		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), &access, &user))
 
 		e := check.NewEngine(reg)
@@ -152,6 +158,7 @@ func TestEngine(t *testing.T) {
 		}
 
 		reg := &driver.RegistryDefault{}
+		require.NoError(t, reg.NamespaceManager().MigrateNamespaceUp(&namespace.Namespace{Name: diaryEntry.Namespace}))
 		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), &readDiary, &user))
 
 		e := check.NewEngine(reg)
@@ -204,6 +211,8 @@ func TestEngine(t *testing.T) {
 		}
 
 		reg := &driver.RegistryDefault{}
+		require.NoError(t, reg.NamespaceManager().MigrateNamespaceUp(&namespace.Namespace{Name: object.Namespace, ID: 0}))
+		require.NoError(t, reg.NamespaceManager().MigrateNamespaceUp(&namespace.Namespace{Name: organization.Namespace, ID: 1}))
 		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), &writeRel, &orgOwnerRel, &userMembershipRel))
 
 		e := check.NewEngine(reg)
@@ -234,8 +243,8 @@ func TestEngine(t *testing.T) {
 		// as we don't know how to interpret the "parent" relation, there would have to be a userset rewrite to allow access
 		// to files when you have access to the parent
 
-		file := relationtuple.Object{ID: "file"}
-		directory := relationtuple.Object{ID: "directory"}
+		file := relationtuple.Object{ID: "file", Namespace: "shared drive"}
+		directory := relationtuple.Object{ID: "directory", Namespace: "shared drive"}
 		user := relationtuple.UserID{ID: "user"}
 
 		parent := relationtuple.InternalRelationTuple{
@@ -252,9 +261,8 @@ func TestEngine(t *testing.T) {
 		}
 
 		reg := &driver.RegistryDefault{}
-		for _, r := range []*relationtuple.InternalRelationTuple{&parent, &directoryAccess} {
-			require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), r))
-		}
+		require.NoError(t, reg.NamespaceManager().MigrateNamespaceUp(&namespace.Namespace{Name: file.Namespace}))
+		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), &parent, &directoryAccess))
 
 		e := check.NewEngine(reg)
 

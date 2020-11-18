@@ -3,6 +3,7 @@ package memory
 import (
 	"context"
 	"fmt"
+	"github.com/ory/keto/internal/namespace"
 	"testing"
 
 	"github.com/ory/keto/internal/relationtuple"
@@ -37,60 +38,64 @@ func newTestSetup(t *testing.T) (p *Persister, rel1, rel2, rel3, rel4 *relationt
 		Subject:  &relationtuple.UserID{ID: "rel4 user"},
 	}
 
+	require.NoError(t, p.MigrateNamespaceUp(&namespace.Namespace{Name: rel1.Object.Namespace, ID: 0}))
+	require.NoError(t, p.MigrateNamespaceUp(&namespace.Namespace{Name: rel2.Object.Namespace, ID: 1}))
+	require.NoError(t, p.MigrateNamespaceUp(&namespace.Namespace{Name: rel3.Object.Namespace, ID: 2}))
+	require.NoError(t, p.MigrateNamespaceUp(&namespace.Namespace{Name: rel4.Object.Namespace, ID: 3}))
 	require.NoError(t, p.WriteRelationTuples(context.Background(), rel1, rel2, rel3, rel4))
 	return
 }
 
 func TestGetRelationTuples(t *testing.T) {
-	p, rel1, rel2, rel3, rel4 := newTestSetup(t)
+	p, rel1, rel2, rel3, _ := newTestSetup(t)
 
 	for i, tc := range []struct {
 		query    *relationtuple.RelationQuery
 		expected []*relationtuple.InternalRelationTuple
 	}{
 		{
-			query:    &relationtuple.RelationQuery{ObjectID: rel1.Object},
+			query:    &relationtuple.RelationQuery{ObjectID: rel1.Object.ID, Namespace: rel1.Object.Namespace},
 			expected: []*relationtuple.InternalRelationTuple{rel1},
 		},
 		{
-			query:    &relationtuple.RelationQuery{Subject: rel1.Subject},
+			query:    &relationtuple.RelationQuery{Subject: rel1.Subject, Namespace: rel1.Object.Namespace},
 			expected: []*relationtuple.InternalRelationTuple{rel1},
 		},
 		{
-			query:    &relationtuple.RelationQuery{Relation: rel1.Relation},
+			query:    &relationtuple.RelationQuery{Relation: rel1.Relation, Namespace: rel1.Object.Namespace},
 			expected: []*relationtuple.InternalRelationTuple{rel1},
 		},
 		{
-			query:    &relationtuple.RelationQuery{ObjectID: rel1.Object, Subject: rel1.Subject},
+			query:    &relationtuple.RelationQuery{ObjectID: rel1.Object.ID, Namespace: rel1.Object.Namespace, Subject: rel1.Subject},
 			expected: []*relationtuple.InternalRelationTuple{rel1},
 		},
 		{
-			query:    &relationtuple.RelationQuery{ObjectID: rel1.Object, Relation: rel1.Relation},
+			query:    &relationtuple.RelationQuery{ObjectID: rel1.Object.ID, Namespace: rel1.Object.Namespace, Relation: rel1.Relation},
 			expected: []*relationtuple.InternalRelationTuple{rel1},
 		},
 		{
-			query:    &relationtuple.RelationQuery{Subject: rel1.Subject, Relation: rel1.Relation},
+			query:    &relationtuple.RelationQuery{Subject: rel1.Subject, Relation: rel1.Relation, Namespace: rel1.Object.Namespace},
 			expected: []*relationtuple.InternalRelationTuple{rel1},
 		},
 		{
-			query:    &relationtuple.RelationQuery{ObjectID: rel1.Object, Subject: rel1.Subject, Relation: rel1.Relation},
+			query:    &relationtuple.RelationQuery{ObjectID: rel1.Object.ID, Namespace: rel1.Object.Namespace, Subject: rel1.Subject, Relation: rel1.Relation},
 			expected: []*relationtuple.InternalRelationTuple{rel1},
 		},
 		{
-			query:    &relationtuple.RelationQuery{ObjectID: rel2.Object},
+			query:    &relationtuple.RelationQuery{ObjectID: rel2.Object.ID, Namespace: rel2.Object.Namespace},
 			expected: []*relationtuple.InternalRelationTuple{rel2},
 		},
 		{
-			query:    &relationtuple.RelationQuery{Subject: rel3.Subject},
+			query:    &relationtuple.RelationQuery{Subject: rel3.Subject, Namespace: rel3.Object.Namespace},
 			expected: []*relationtuple.InternalRelationTuple{rel3},
 		},
 		{
-			query:    &relationtuple.RelationQuery{ObjectID: rel3.Object, Relation: rel3.Relation},
+			query:    &relationtuple.RelationQuery{ObjectID: rel3.Object.ID, Namespace: rel3.Object.Namespace, Relation: rel3.Relation},
 			expected: []*relationtuple.InternalRelationTuple{rel3},
 		},
 		{
-			query:    &relationtuple.RelationQuery{},
-			expected: []*relationtuple.InternalRelationTuple{rel1, rel2, rel3, rel4},
+			query:    &relationtuple.RelationQuery{Namespace: rel1.Object.Namespace},
+			expected: []*relationtuple.InternalRelationTuple{rel1},
 		},
 		{
 			expected: []*relationtuple.InternalRelationTuple{},
