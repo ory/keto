@@ -1,8 +1,9 @@
 package configuration
 
 import (
-	"github.com/ory/keto/internal/namespace"
 	"github.com/rs/cors"
+
+	"github.com/ory/keto/internal/namespace"
 
 	"github.com/ory/x/logrusx"
 	"github.com/ory/x/tracing"

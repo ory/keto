@@ -3,8 +3,9 @@ package memory
 import (
 	"context"
 	"fmt"
-	"github.com/ory/keto/internal/namespace"
 	"testing"
+
+	"github.com/ory/keto/internal/namespace"
 
 	"github.com/ory/keto/internal/relationtuple"
 

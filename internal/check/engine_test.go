@@ -2,8 +2,9 @@ package check_test
 
 import (
 	"context"
-	"github.com/ory/keto/internal/namespace"
 	"testing"
+
+	"github.com/ory/keto/internal/namespace"
 
 	"github.com/ory/keto/internal/relationtuple"
 

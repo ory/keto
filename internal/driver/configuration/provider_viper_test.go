@@ -1,17 +1,19 @@
 package configuration
 
 import (
-	"github.com/ory/keto/internal/namespace"
+	"io/ioutil"
+	"os"
+	"path/filepath"
+	"testing"
+
 	"github.com/ory/viper"
 	"github.com/ory/x/logrusx"
 	"github.com/sirupsen/logrus"
 	"github.com/sirupsen/logrus/hooks/test"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"io/ioutil"
-	"os"
-	"path/filepath"
-	"testing"
+
+	"github.com/ory/keto/internal/namespace"
 )
 
 func setupNamespaceTest(t *testing.T, files map[string]string) ([]*namespace.Namespace, *test.Hook) {

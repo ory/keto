@@ -2,11 +2,13 @@ package configuration
 
 import (
 	"fmt"
-	"github.com/ghodss/yaml"
-	"github.com/ory/keto/internal/namespace"
 	"io/ioutil"
 	"path/filepath"
 	"strings"
+
+	"github.com/ghodss/yaml"
+
+	"github.com/ory/keto/internal/namespace"
 
 	"github.com/rs/cors"
 

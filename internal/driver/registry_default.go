@@ -2,11 +2,12 @@ package driver
 
 import (
 	"github.com/ory/herodot"
-	"github.com/ory/keto/internal/driver/configuration"
-	"github.com/ory/keto/internal/namespace"
 	"github.com/ory/x/healthx"
 	"github.com/ory/x/logrusx"
 	"github.com/ory/x/tracing"
+
+	"github.com/ory/keto/internal/driver/configuration"
+	"github.com/ory/keto/internal/namespace"
 
 	"github.com/ory/keto/internal/persistence"
 

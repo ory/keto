@@ -2,8 +2,9 @@ package memory
 
 import (
 	"errors"
-	"github.com/ory/keto/internal/namespace"
 	"sync"
+
+	"github.com/ory/keto/internal/namespace"
 
 	"github.com/ory/keto/internal/relationtuple"
 )
