@@ -12,7 +12,8 @@ func (p *Persister) MigrateNamespaceUp(n *namespace.Namespace) error {
 	if !ok {
 		currStatus = &namespace.Status{}
 		p.namespacesStatus[n.ID] = currStatus
-		p.namespaces[n.Name] = &(*n)
+		nc := *n
+		p.namespaces[n.Name] = &nc
 	}
 
 	if currStatus.Version < mostRecentNamespaceVersion {
@@ -31,5 +32,6 @@ func (p *Persister) NamespaceStatus(n *namespace.Namespace) (*namespace.Status, 
 		return nil, ErrNamespaceUnknown
 	}
 
-	return &(*s), nil
+	sc := *s
+	return &sc, nil
 }
