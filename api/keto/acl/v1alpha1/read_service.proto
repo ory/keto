@@ -58,7 +58,7 @@ message ListRelationTuplesRequest {
   // "subject.id", "subject.set"
   google.protobuf.FieldMask expand_mask = 2;
   // Optional. The snapshot token for this read.
-  bytes snaptoken = 3;
+  string snaptoken = 3;
   // Optional. The maximum number of
   // RelationTuples to return in the response.
   int32 page_size = 4;
