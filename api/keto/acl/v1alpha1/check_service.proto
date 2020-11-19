@@ -21,12 +21,19 @@ service CheckService {
 // The request for a CheckService.Check rpc.
 // Checks whether a specific subject is related to an object.
 message CheckRequest {
+  // The namespace to evaluate the check.
+  //
+  // Note: If you use the expand API and the check
+  // evaluates a RelationTuple specifying a SubjectSet as
+  // subject or due to a rewrite rule in a namespace config
+  // this check request may involve other namespaces automatically.
+  string namespace = 1;
   // The related object in this check.
-  Object object = 1;
+  string object = 2;
   // The relation between the Object and the Subject.
-  string relation = 2;
+  string relation = 3;
   // The related subject to check against.
-  Subject subject = 3;
+  Subject subject = 4;
   // Set this field to `true` in case your application
   // needs to authorize depending on up to date ACLs,
   // also called a "content-change check".
@@ -43,7 +50,7 @@ message CheckRequest {
   //    and it is unacceptable that if the permission to do that had
   //    just been revoked some seconds ago so that the change had not
   //    yet been fully replicated to all availability zones.
-  bool latest = 4;
+  bool latest = 5;
   // Optional. Like reads, a check is always evaluated at a
   // consistent snapshot no earlier than the given snaptoken.
   //
@@ -57,7 +64,7 @@ message CheckRequest {
   // If not specified the server tries to evaluate the check
   // on the best snapshot version where it is very likely that
   // ACLs had already been replicated to all availability zones.
-  bytes snaptoken = 5;
+  string snaptoken = 6;
 }
 
 // The response for a CheckService.Check rpc.
@@ -75,7 +82,7 @@ message CheckResponse {
   // This field is not set if the request had specified a snaptoken!
   //
   // If set, clients should cache and use this token
-  // for subsequent  requests to have minimal latency,
+  // for subsequent requests to have minimal latency,
   // but allow slightly stale responses (only some milliseconds or seconds).
-  bytes snaptoken = 2;
+  string snaptoken = 2;
 }

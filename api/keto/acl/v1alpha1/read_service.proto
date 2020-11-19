@@ -33,17 +33,20 @@ message ListRelationTuplesRequest {
   //  - object & relation & subject: check whether the relation tuple already exists, before writing it
   //
   message Query {
-    // The `namespace` field in the Object is required.
-    // The Object's `id` field is optional.
-    Object object = 1;
+    // Required. The namespace to query.
+    string namespace = 1;
     // Optional.
-    string relation = 2;
+    string object = 2;
     // Optional.
-    Subject subject = 3;
+    string relation = 3;
+    // Optional.
+    Subject subject = 4;
   }
   // All field constraints are concatenated
   // with a logical AND operator.
-  // An unspecified field specifies a `*` wildcard match.
+  //
+  // The RelationTuple list from ListRelationTuplesResponse
+  // is ordered from the newest RelationTuple to the oldest.
   Query query = 1;
   // Optional. The list of fields to be expanded
   // in the RelationTuple list returned in `ListRelationTuplesResponse`.
