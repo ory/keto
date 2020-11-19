@@ -27,10 +27,8 @@ message RelationTuple {
   string etag = 4;
 }
 
-// Object is an object in a namespace
-// referenced by a RelationTuple or SubjectSet.
-//
-// It represents a "resource" or "digital object".
+// Object represents a "resource/digital object" in a namespace.
+// A RelationTuple relates a Subject to an Object.
 message Object {
   // The namespace of the object.
   // This effectively is the namespace of the whole RelationTuple.

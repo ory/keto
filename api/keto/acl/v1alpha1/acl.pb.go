@@ -106,10 +106,8 @@ func (x *RelationTuple) GetEtag() string {
 	return ""
 }
 
-// Object is an object in a namespace
-// referenced by a RelationTuple or SubjectSet.
-//
-// It represents a "resource" or "digital object".
+// Object represents a "resource/digital object" in a namespace.
+// A RelationTuple relates a Subject to an Object.
 type Object struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache

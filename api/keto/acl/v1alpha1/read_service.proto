@@ -33,7 +33,8 @@ message ListRelationTuplesRequest {
   //  - object & relation & subject: check whether the relation tuple already exists, before writing it
   //
   message Query {
-    // Optional.
+    // The `namespace` field in the Object is required.
+    // The Object's `id` field is optional.
     Object object = 1;
     // Optional.
     string relation = 2;

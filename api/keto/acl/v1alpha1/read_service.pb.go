@@ -203,7 +203,8 @@ type ListRelationTuplesRequest_Query struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// Optional.
+	// The `namespace` field in the Object is required.
+	// The Object's `id` field is optional.
 	Object *Object `protobuf:"bytes,1,opt,name=object,proto3" json:"object,omitempty"`
 	// Optional.
 	Relation string `protobuf:"bytes,2,opt,name=relation,proto3" json:"relation,omitempty"`
