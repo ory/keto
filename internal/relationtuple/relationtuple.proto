@@ -12,14 +12,15 @@ service RelationTupleService {
 // Query by partial keys of tuples
 message ReadRelationTuplesRequest {
   message Query {
+    string namespace = 1;
     // Optional
-    RelationObject object = 1;
+    string object_id = 2;
     // Optional
-    string relation = 2;
+    string relation = 3;
     // Optional
     oneof subject {
-      string user_id = 3;
-      RelationUserSet user_set = 4;
+      string user_id = 4;
+      RelationUserSet user_set = 5;
     }
   }
 
@@ -44,26 +45,22 @@ message WriteRelationTupleResponse {}
 // Represents a relation between
 // an object and an user.
 message RelationTuple {
-  RelationObject object = 1;
+  string namespace = 1;
+  string object_id = 2;
   // Specifies the relation between an `object` and an `user`
-  string relation = 2;
+  string relation = 3;
   // The user of the tuple can either be
   // a single user or a userset
   oneof subject {
-    string user_id = 3;
-    RelationUserSet user_set = 4;
+    string user_id = 4;
+    RelationUserSet user_set = 5;
   }
 }
 
 // Refers to all users which have
 // a `relation` with an `object`
 message RelationUserSet {
-  RelationObject object = 1;
-  string relation = 2;
-}
-
-// Represents a "resource"
-message RelationObject {
   string namespace = 1;
   string object_id = 2;
+  string relation = 3;
 }

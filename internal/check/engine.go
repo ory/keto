@@ -46,7 +46,7 @@ func (e *Engine) subjectIsAllowed(ctx context.Context, requested *relationtuple.
 		}
 
 		// expand the set by one indirection
-		nextRels, err := e.d.RelationTupleManager().GetRelationTuples(ctx, &relationtuple.RelationQuery{ObjectID: sub.Object.ID, Namespace: sub.Object.Namespace, Relation: sub.Relation})
+		nextRels, err := e.d.RelationTupleManager().GetRelationTuples(ctx, &relationtuple.RelationQuery{ObjectID: sub.ObjectID, Namespace: sub.Namespace, Relation: sub.Relation})
 		if err != nil {
 			// TODO fix error handling
 			_, _ = fmt.Fprintf(os.Stderr, "%+v", err)
@@ -66,7 +66,7 @@ func (e *Engine) subjectIsAllowed(ctx context.Context, requested *relationtuple.
 }
 
 func (e *Engine) SubjectIsAllowed(ctx context.Context, r *relationtuple.InternalRelationTuple) (bool, error) {
-	subjectRelations, err := e.d.RelationTupleManager().GetRelationTuples(ctx, &relationtuple.RelationQuery{ObjectID: r.Object.ID, Namespace: r.Object.Namespace, Relation: r.Relation})
+	subjectRelations, err := e.d.RelationTupleManager().GetRelationTuples(ctx, &relationtuple.RelationQuery{ObjectID: r.ObjectID, Namespace: r.Namespace, Relation: r.Relation})
 	if err != nil {
 		return false, err
 	}

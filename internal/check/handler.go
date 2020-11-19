@@ -34,12 +34,14 @@ func (h *handler) RegisterPublicRoutes(router *httprouter.Router) {
 func (h *handler) getCheck(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	subjectID := r.URL.Query().Get("subject-id")
 	objectID := r.URL.Query().Get("object-id")
+	namespace := r.URL.Query().Get("namespace")
 	relationName := r.URL.Query().Get("relation-name")
 
 	res, err := h.d.PermissionEngine().SubjectIsAllowed(r.Context(), &relationtuple.InternalRelationTuple{
-		Relation: relationName,
-		Object:   (&relationtuple.Object{}).FromString(objectID),
-		Subject:  relationtuple.SubjectFromString(subjectID),
+		Relation:  relationName,
+		ObjectID:  objectID,
+		Namespace: namespace,
+		Subject:   relationtuple.SubjectFromString(subjectID),
 	})
 	if err != nil {
 		h.d.Writer().WriteError(w, r, err)

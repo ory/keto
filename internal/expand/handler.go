@@ -34,6 +34,7 @@ func (h *handler) RegisterPublicRoutes(router *httprouter.Router) {
 
 func (h *handler) getCheck(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	objectID := r.URL.Query().Get("object-id")
+	namespace := r.URL.Query().Get("namespace")
 	relationName := r.URL.Query().Get("relation-name")
 	depth, err := strconv.ParseInt(r.URL.Query().Get("depth"), 0, 0)
 	if err != nil {
@@ -42,8 +43,9 @@ func (h *handler) getCheck(w http.ResponseWriter, r *http.Request, _ httprouter.
 	}
 
 	res, err := h.d.ExpandEngine().BuildTree(r.Context(), &relationtuple.UserSet{
-		Relation: relationName,
-		Object:   (&relationtuple.Object{}).FromString(objectID),
+		Relation:  relationName,
+		Namespace: namespace,
+		ObjectID:  objectID,
 	}, int(depth))
 	if err != nil {
 		h.d.Writer().WriteError(w, r, err)

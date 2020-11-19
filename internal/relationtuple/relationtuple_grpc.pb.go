@@ -4,7 +4,6 @@ package relationtuple
 
 import (
 	context "context"
-
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -76,7 +75,7 @@ type UnsafeRelationTupleServiceServer interface {
 	mustEmbedUnimplementedRelationTupleServiceServer()
 }
 
-func RegisterRelationTupleServiceServer(s *grpc.Server, srv RelationTupleServiceServer) {
+func RegisterRelationTupleServiceServer(s grpc.ServiceRegistrar, srv RelationTupleServiceServer) {
 	s.RegisterService(&_RelationTupleService_serviceDesc, srv)
 }
 
@@ -130,5 +129,5 @@ var _RelationTupleService_serviceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "relationtuple/relationtuple.proto",
+	Metadata: "internal/relationtuple/relationtuple.proto",
 }

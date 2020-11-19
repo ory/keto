@@ -33,7 +33,7 @@ func buildRelationQueryFilter(query *relationtuple.RelationQuery) queryFilter {
 
 	if query.ObjectID != "" {
 		filters = append(filters, func(r *relationtuple.InternalRelationTuple) bool {
-			return query.ObjectID == r.Object.ID
+			return query.ObjectID == r.ObjectID
 		})
 	}
 
@@ -92,7 +92,7 @@ func (p *Persister) WriteRelationTuples(_ context.Context, rs ...*relationtuple.
 	defer p.Unlock()
 
 	for _, r := range rs {
-		n, ok := p.namespaces[r.Object.Namespace]
+		n, ok := p.namespaces[r.Namespace]
 		if !ok {
 			return ErrNamespaceUnknown
 		}

@@ -3,9 +3,8 @@ package relationtuple
 import (
 	"context"
 	"fmt"
-	"strings"
-
 	"github.com/ory/keto/internal/relationtuple"
+	"github.com/ory/x/flagx"
 
 	"github.com/spf13/pflag"
 
@@ -17,47 +16,42 @@ import (
 )
 
 const (
-	FlagSubject  = "subject"
-	FlagRelation = "relation"
-	FlagObject   = "object"
+	FlagSubject   = "subject"
+	FlagRelation  = "relation"
+	FlagObjectID  = "object-id"
+	FlagNamespace = "namespace"
 )
 
 func registerRelationTupleFlags(flags *pflag.FlagSet) {
 	flags.String(FlagSubject, "", "Set the requested subject")
 	flags.String(FlagRelation, "", "Set the requested relation")
-	flags.String(FlagObject, "", "Set the requested object")
+	flags.String(FlagObjectID, "", "Set the requested object")
+	flags.String(FlagNamespace, "", "Set the requested namespace")
 }
 
 func readQueryFromFlags(cmd *cobra.Command) (*relationtuple.ReadRelationTuplesRequest_Query, error) {
-	subject, err := cmd.Flags().GetString(FlagSubject)
-	if err != nil {
-		return nil, err
-	}
-	relation, err := cmd.Flags().GetString(FlagRelation)
-	if err != nil {
-		return nil, err
-	}
-	object, err := cmd.Flags().GetString(FlagObject)
-	if err != nil {
-		return nil, err
-	}
+	subject := flagx.MustGetString(cmd, FlagSubject)
+	relation := flagx.MustGetString(cmd, FlagRelation)
+	objectID := flagx.MustGetString(cmd, FlagObjectID)
+	namespace := flagx.MustGetString(cmd, FlagNamespace)
 
 	query := &relationtuple.ReadRelationTuplesRequest_Query{
-		Relation: relation,
-		Object:   (&relationtuple.RelationObject{}).FromString(object),
+		Relation:  relation,
+		ObjectId:  objectID,
+		Namespace: namespace,
 	}
 
-	subjectParts := strings.Split(subject, "#")
-	if len(subjectParts) == 2 {
+	relSub := relationtuple.SubjectFromString(subject)
+	switch s := relSub.(type) {
+	case *relationtuple.UserID:
+		query.Subject = &relationtuple.ReadRelationTuplesRequest_Query_UserId{UserId: s.ID}
+	case *relationtuple.UserSet:
 		query.Subject = &relationtuple.ReadRelationTuplesRequest_Query_UserSet{
 			UserSet: &relationtuple.RelationUserSet{
-				Object:   (&relationtuple.RelationObject{}).FromString(subjectParts[0]),
-				Relation: subjectParts[1],
+				ObjectId:  s.ObjectID,
+				Namespace: s.Namespace,
+				Relation:  s.Relation,
 			},
-		}
-	} else {
-		query.Subject = &relationtuple.ReadRelationTuplesRequest_Query_UserId{
-			UserId: subject,
 		}
 	}
 

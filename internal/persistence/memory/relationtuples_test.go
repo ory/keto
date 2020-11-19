@@ -16,33 +16,38 @@ import (
 func newTestSetup(t *testing.T) (p *Persister, rel1, rel2, rel3, rel4 *relationtuple.InternalRelationTuple) {
 	p = NewPersister()
 	rel1 = &relationtuple.InternalRelationTuple{
-		Object:   &relationtuple.Object{ID: "obj", Namespace: "rel1"},
-		Relation: "rel1 name",
-		Subject:  &relationtuple.UserID{ID: "rel1 user"},
+		ObjectID:  "obj",
+		Namespace: "rel1",
+		Relation:  "rel1 name",
+		Subject:   &relationtuple.UserID{ID: "rel1 user"},
 	}
 	rel2 = &relationtuple.InternalRelationTuple{
-		Object:   &relationtuple.Object{ID: "obj", Namespace: "rel2"},
-		Relation: "rel2 name",
-		Subject:  &relationtuple.UserID{ID: "rel2 user"},
+		ObjectID:  "obj",
+		Namespace: "rel2",
+		Relation:  "rel2 name",
+		Subject:   &relationtuple.UserID{ID: "rel2 user"},
 	}
 	rel3 = &relationtuple.InternalRelationTuple{
-		Object:   &relationtuple.Object{ID: "obj", Namespace: "rel3"},
-		Relation: "shared name",
+		ObjectID:  "obj",
+		Namespace: "rel3",
+		Relation:  "shared name",
 		Subject: &relationtuple.UserSet{
-			Object:   &relationtuple.Object{ID: "user set obj", Namespace: "rel3"},
-			Relation: "rel3 user set",
+			ObjectID:  "user set obj",
+			Namespace: "rel3",
+			Relation:  "rel3 user set",
 		},
 	}
 	rel4 = &relationtuple.InternalRelationTuple{
-		Object:   &relationtuple.Object{ID: "obj", Namespace: "rel4"},
-		Relation: "shared name",
-		Subject:  &relationtuple.UserID{ID: "rel4 user"},
+		ObjectID:  "obj",
+		Namespace: "rel4",
+		Relation:  "shared name",
+		Subject:   &relationtuple.UserID{ID: "rel4 user"},
 	}
 
-	require.NoError(t, p.MigrateNamespaceUp(&namespace.Namespace{Name: rel1.Object.Namespace, ID: 0}))
-	require.NoError(t, p.MigrateNamespaceUp(&namespace.Namespace{Name: rel2.Object.Namespace, ID: 1}))
-	require.NoError(t, p.MigrateNamespaceUp(&namespace.Namespace{Name: rel3.Object.Namespace, ID: 2}))
-	require.NoError(t, p.MigrateNamespaceUp(&namespace.Namespace{Name: rel4.Object.Namespace, ID: 3}))
+	require.NoError(t, p.MigrateNamespaceUp(&namespace.Namespace{Name: rel1.Namespace, ID: 0}))
+	require.NoError(t, p.MigrateNamespaceUp(&namespace.Namespace{Name: rel2.Namespace, ID: 1}))
+	require.NoError(t, p.MigrateNamespaceUp(&namespace.Namespace{Name: rel3.Namespace, ID: 2}))
+	require.NoError(t, p.MigrateNamespaceUp(&namespace.Namespace{Name: rel4.Namespace, ID: 3}))
 	require.NoError(t, p.WriteRelationTuples(context.Background(), rel1, rel2, rel3, rel4))
 	return
 }
@@ -55,47 +60,47 @@ func TestGetRelationTuples(t *testing.T) {
 		expected []*relationtuple.InternalRelationTuple
 	}{
 		{
-			query:    &relationtuple.RelationQuery{ObjectID: rel1.Object.ID, Namespace: rel1.Object.Namespace},
+			query:    &relationtuple.RelationQuery{ObjectID: rel1.ObjectID, Namespace: rel1.Namespace},
 			expected: []*relationtuple.InternalRelationTuple{rel1},
 		},
 		{
-			query:    &relationtuple.RelationQuery{Subject: rel1.Subject, Namespace: rel1.Object.Namespace},
+			query:    &relationtuple.RelationQuery{Subject: rel1.Subject, Namespace: rel1.Namespace},
 			expected: []*relationtuple.InternalRelationTuple{rel1},
 		},
 		{
-			query:    &relationtuple.RelationQuery{Relation: rel1.Relation, Namespace: rel1.Object.Namespace},
+			query:    &relationtuple.RelationQuery{Relation: rel1.Relation, Namespace: rel1.Namespace},
 			expected: []*relationtuple.InternalRelationTuple{rel1},
 		},
 		{
-			query:    &relationtuple.RelationQuery{ObjectID: rel1.Object.ID, Namespace: rel1.Object.Namespace, Subject: rel1.Subject},
+			query:    &relationtuple.RelationQuery{ObjectID: rel1.ObjectID, Namespace: rel1.Namespace, Subject: rel1.Subject},
 			expected: []*relationtuple.InternalRelationTuple{rel1},
 		},
 		{
-			query:    &relationtuple.RelationQuery{ObjectID: rel1.Object.ID, Namespace: rel1.Object.Namespace, Relation: rel1.Relation},
+			query:    &relationtuple.RelationQuery{ObjectID: rel1.ObjectID, Namespace: rel1.Namespace, Relation: rel1.Relation},
 			expected: []*relationtuple.InternalRelationTuple{rel1},
 		},
 		{
-			query:    &relationtuple.RelationQuery{Subject: rel1.Subject, Relation: rel1.Relation, Namespace: rel1.Object.Namespace},
+			query:    &relationtuple.RelationQuery{Subject: rel1.Subject, Relation: rel1.Relation, Namespace: rel1.Namespace},
 			expected: []*relationtuple.InternalRelationTuple{rel1},
 		},
 		{
-			query:    &relationtuple.RelationQuery{ObjectID: rel1.Object.ID, Namespace: rel1.Object.Namespace, Subject: rel1.Subject, Relation: rel1.Relation},
+			query:    &relationtuple.RelationQuery{ObjectID: rel1.ObjectID, Namespace: rel1.Namespace, Subject: rel1.Subject, Relation: rel1.Relation},
 			expected: []*relationtuple.InternalRelationTuple{rel1},
 		},
 		{
-			query:    &relationtuple.RelationQuery{ObjectID: rel2.Object.ID, Namespace: rel2.Object.Namespace},
+			query:    &relationtuple.RelationQuery{ObjectID: rel2.ObjectID, Namespace: rel2.Namespace},
 			expected: []*relationtuple.InternalRelationTuple{rel2},
 		},
 		{
-			query:    &relationtuple.RelationQuery{Subject: rel3.Subject, Namespace: rel3.Object.Namespace},
+			query:    &relationtuple.RelationQuery{Subject: rel3.Subject, Namespace: rel3.Namespace},
 			expected: []*relationtuple.InternalRelationTuple{rel3},
 		},
 		{
-			query:    &relationtuple.RelationQuery{ObjectID: rel3.Object.ID, Namespace: rel3.Object.Namespace, Relation: rel3.Relation},
+			query:    &relationtuple.RelationQuery{ObjectID: rel3.ObjectID, Namespace: rel3.Namespace, Relation: rel3.Relation},
 			expected: []*relationtuple.InternalRelationTuple{rel3},
 		},
 		{
-			query:    &relationtuple.RelationQuery{Namespace: rel1.Object.Namespace},
+			query:    &relationtuple.RelationQuery{Namespace: rel1.Namespace},
 			expected: []*relationtuple.InternalRelationTuple{rel1},
 		},
 		{
