@@ -54,8 +54,8 @@ message ListRelationTuplesRequest {
   //
   // Available fields:
   // "object", "relation", "subject",
-  // "object.namespace","object.id",
-  // "subject.id", "subject.set"
+  // "namespace", "subject.id", "subject.namespace",
+  // "subject.object", "subject.relation"
   google.protobuf.FieldMask expand_mask = 2;
   // Optional. The snapshot token for this read.
   string snaptoken = 3;
@@ -64,7 +64,7 @@ message ListRelationTuplesRequest {
   int32 page_size = 4;
   // Optional. A pagination token returned from
   // a previous call to `ListRelationTuples` that
-  // indicates where this listing should continue from.
+  // indicates where the page should start at.
   string page_token = 5;
 }
 
