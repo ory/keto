@@ -3,9 +3,11 @@ package relationtuple
 import (
 	"context"
 	"fmt"
+
+	"github.com/ory/x/flagx"
+
 	acl "github.com/ory/keto/api/keto/acl/v1alpha1"
 	"github.com/ory/keto/internal/relationtuple"
-	"github.com/ory/x/flagx"
 
 	"github.com/spf13/pflag"
 

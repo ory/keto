@@ -16,11 +16,12 @@ package cmd
 
 import (
 	"fmt"
-	acl "github.com/ory/keto/api/keto/acl/v1alpha1"
 	"net"
 	"net/http"
 	"os"
 	"sync"
+
+	acl "github.com/ory/keto/api/keto/acl/v1alpha1"
 
 	"github.com/ory/keto/internal/expand"
 

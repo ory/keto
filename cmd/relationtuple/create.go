@@ -4,9 +4,10 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	acl "github.com/ory/keto/api/keto/acl/v1alpha1"
 	"io"
 	"os"
+
+	acl "github.com/ory/keto/api/keto/acl/v1alpha1"
 
 	"github.com/ory/keto/internal/relationtuple"
 

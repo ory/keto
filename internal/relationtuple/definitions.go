@@ -4,9 +4,10 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	acl "github.com/ory/keto/api/keto/acl/v1alpha1"
 	"net/url"
 	"strings"
+
+	acl "github.com/ory/keto/api/keto/acl/v1alpha1"
 
 	"github.com/ory/keto/internal/x"
 

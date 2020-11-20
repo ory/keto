@@ -2,6 +2,7 @@ package relationtuple
 
 import (
 	"context"
+
 	acl "github.com/ory/keto/api/keto/acl/v1alpha1"
 )
 
@@ -28,7 +29,7 @@ func (s *GRPCServer) WriteRelationTuples(ctx context.Context, req *acl.WriteRela
 	}
 
 	snaptokens := make([]string, len(insertTuples))
-	for i, _ := range insertTuples {
+	for i := range insertTuples {
 		snaptokens[i] = "not yet implemented"
 	}
 	return &acl.WriteRelationTuplesResponse{
