@@ -16,6 +16,7 @@ package cmd
 
 import (
 	"fmt"
+	acl "github.com/ory/keto/api/keto/acl/v1alpha1"
 	"net"
 	"net/http"
 	"os"
@@ -68,8 +69,8 @@ on configuration options, open the configuration documentation:
 			defer wg.Done()
 
 			s := grpc.NewServer()
-			relS := relationtuple.NewServer(reg)
-			relationtuple.RegisterRelationTupleServiceServer(s, relS)
+			relS := relationtuple.NewGRPCServer(reg)
+			acl.RegisterReadServiceServer(s, relS)
 			fmt.Println("going to serve GRPC on", lis.Addr().String())
 			if err := s.Serve(lis); err != nil {
 				fmt.Fprintf(cmd.ErrOrStderr(), "%+v\n", err)

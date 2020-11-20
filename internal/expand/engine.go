@@ -27,13 +27,14 @@ func (e *Engine) BuildTree(ctx context.Context, subject relationtuple.Subject, r
 		return nil, nil
 	}
 
-	if us, isUserSet := subject.(*relationtuple.UserSet); isUserSet {
+	if us, isUserSet := subject.(*relationtuple.SubjectSet); isUserSet {
 		subTree := &Tree{
 			Type:    Union,
 			Subject: subject,
 		}
 
-		rels, err := e.d.RelationTupleManager().GetRelationTuples(ctx, &relationtuple.RelationQuery{
+		// TODO handle pagination
+		rels, _, err := e.d.RelationTupleManager().GetRelationTuples(ctx, &relationtuple.RelationQuery{
 			Relation: us.Relation,
 			Object:   us.Object,
 		})
@@ -59,7 +60,7 @@ func (e *Engine) BuildTree(ctx context.Context, subject relationtuple.Subject, r
 		return subTree, nil
 	}
 
-	// is UserID
+	// is SubjectID
 	return &Tree{
 		Type:    Leaf,
 		Subject: subject,

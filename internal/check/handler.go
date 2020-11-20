@@ -1,6 +1,8 @@
 package check
 
 import (
+	"context"
+	acl "github.com/ory/keto/api/keto/acl/v1alpha1"
 	"net/http"
 
 	"github.com/ory/keto/internal/relationtuple"
@@ -16,40 +18,62 @@ type (
 		x.LoggerProvider
 		x.WriterProvider
 	}
-	handler struct {
+	restHandler struct {
+		d handlerDependencies
+	}
+	grpcHandler struct {
 		d handlerDependencies
 	}
 )
 
-const routeBase = "/check"
+var _ acl.CheckServiceServer = &grpcHandler{}
 
-func NewHandler(d handlerDependencies) *handler {
-	return &handler{d: d}
+func NewHandler(d handlerDependencies) *restHandler {
+	return &restHandler{d: d}
 }
 
-func (h *handler) RegisterPublicRoutes(router *httprouter.Router) {
+const routeBase = "/check"
+
+func (h *restHandler) RegisterPublicRoutes(router *httprouter.Router) {
 	router.GET(routeBase, h.getCheck)
 }
 
-func (h *handler) getCheck(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	subjectID := r.URL.Query().Get("subject-id")
-	objectID := r.URL.Query().Get("object-id")
-	relationName := r.URL.Query().Get("relation-name")
+func (h *restHandler) getCheck(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	tuple, err := (&relationtuple.InternalRelationTuple{}).FromURLQuery(r.URL.Query())
+	if err != nil {
+		h.d.Writer().WriteError(w, r, err)
+	}
 
-	res, err := h.d.PermissionEngine().SubjectIsAllowed(r.Context(), &relationtuple.InternalRelationTuple{
-		Relation: relationName,
-		Object:   (&relationtuple.Object{}).FromString(objectID),
-		Subject:  relationtuple.SubjectFromString(subjectID),
-	})
+	allowed, err := h.d.PermissionEngine().SubjectIsAllowed(r.Context(), tuple)
 	if err != nil {
 		h.d.Writer().WriteError(w, r, err)
 		return
 	}
 
-	if res {
+	if allowed {
 		h.d.Writer().WriteCode(w, r, http.StatusOK, "allowed")
 		return
 	}
 
 	h.d.Writer().WriteCode(w, r, http.StatusForbidden, "rejected")
+}
+
+func (g grpcHandler) Check(ctx context.Context, req *acl.CheckRequest) (*acl.CheckResponse, error) {
+	tuple := &relationtuple.InternalRelationTuple{
+		Namespace: req.Namespace,
+		Object:    req.Object,
+		Relation:  req.Relation,
+		Subject:   relationtuple.SubjectFromGRPC(req.Subject),
+	}
+
+	allowed, err := g.d.PermissionEngine().SubjectIsAllowed(ctx, tuple)
+	// TODO add content change handling
+	if err != nil {
+		return nil, err
+	}
+
+	return &acl.CheckResponse{
+		Allowed:   allowed,
+		Snaptoken: "not yet implemented",
+	}, nil
 }
