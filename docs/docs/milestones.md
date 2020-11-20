@@ -144,6 +144,9 @@ New feature or request.
       ([keto#319](https://github.com/ory/keto/issues/319))
 - [ ] Allow narrowed ACL evaluation in check requests
       ([keto#323](https://github.com/ory/keto/issues/323))
+- [ ] Allow modifying relation tuples with consistency guarantees
+      ([keto#328](https://github.com/ory/keto/issues/328)) -
+      [@Robin Brämer](https://github.com/robinbraemer)
 - [x] Remove support for AND/OR/XOR in GetRelationTuples
       ([keto#299](https://github.com/ory/keto/issues/299)) -
       [@Patrik](https://github.com/zepatrik)
@@ -197,6 +200,9 @@ A request for comments to discuss and share ideas.
       ([keto#319](https://github.com/ory/keto/issues/319))
 - [ ] Allow narrowed ACL evaluation in check requests
       ([keto#323](https://github.com/ory/keto/issues/323))
+- [ ] Allow modifying relation tuples with consistency guarantees
+      ([keto#328](https://github.com/ory/keto/issues/328)) -
+      [@Robin Brämer](https://github.com/robinbraemer)
 
 ## [next](https://github.com/ory/keto/milestone/2)
 
