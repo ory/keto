@@ -1,0 +1,15 @@
+version: v1beta1
+build:
+  roots:
+    - api
+lint:
+  use:
+    - DEFAULT
+  ignore:
+    - google
+  ignore_only:
+    ENUM_VALUE_PREFIX:
+      - keto/acl/v1alpha1/write_service.proto
+breaking:
+  use:
+    - PACKAGE

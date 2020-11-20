@@ -64,6 +64,31 @@ docker: deps
 		rm keto
 		packr clean
 
-.PHONY: gen-protobuf
-gen-protobuf:
-		protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative relationtuple/*.proto
+#
+# Generate APIs and client stubs from the definitions
+#
+.PHONY: buf-gen
+buf-gen:
+		buf generate \
+		--config buf/api/buf.yaml \
+		--template buf/api/buf.gen.yaml \
+		&& \
+		echo "TODO: generate gapic client at ./client" \
+		&& \
+		echo "All code was generated successfully!"
+
+#
+# Lint API definitions
+#
+.PHONY: buf-lint
+buf-lint:
+		buf check lint \
+		--config buf/api/buf.yaml \
+		&& \
+		echo "All lint checks passed successfully!"
+
+#
+# Generate after linting succeeded
+#
+.PHONY: buf
+buf: buf-lint buf-gen
