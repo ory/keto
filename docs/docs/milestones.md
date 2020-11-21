@@ -93,7 +93,7 @@ Blocks milestones or other issues or pulls.
 
 #### Pull Requests
 
-- [ ] feat: first API draft and generation
+- [x] feat: first API draft and generation
       ([keto#315](https://github.com/ory/keto/pull/315)) -
       [@Patrik](https://github.com/zepatrik),
       [@Robin Brämer](https://github.com/robinbraemer)
@@ -104,7 +104,7 @@ A request for comments to discuss and share ideas.
 
 #### Pull Requests
 
-- [ ] feat: first API draft and generation
+- [x] feat: first API draft and generation
       ([keto#315](https://github.com/ory/keto/pull/315)) -
       [@Patrik](https://github.com/zepatrik),
       [@Robin Brämer](https://github.com/robinbraemer)
