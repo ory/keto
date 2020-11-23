@@ -22,6 +22,7 @@ jobs:
       - uses: ory/build-buf-action@v0
         with:
           bufVersion: v0.31.1
+          protocPlugins: go@v1.25.0
           bufArgs: generate --config buf/api/buf.yaml --template buf/api/buf.gen.yaml
       - name: Push build
         run: |
