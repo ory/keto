@@ -45,8 +45,8 @@ type ListRelationTuplesRequest struct {
 	//
 	// Available fields:
 	// "object", "relation", "subject",
-	// "object.namespace","object.id",
-	// "subject.id", "subject.set"
+	// "namespace", "subject.id", "subject.namespace",
+	// "subject.object", "subject.relation"
 	ExpandMask *field_mask.FieldMask `protobuf:"bytes,2,opt,name=expand_mask,json=expandMask,proto3" json:"expand_mask,omitempty"`
 	// Optional. The snapshot token for this read.
 	Snaptoken string `protobuf:"bytes,3,opt,name=snaptoken,proto3" json:"snaptoken,omitempty"`
@@ -55,7 +55,7 @@ type ListRelationTuplesRequest struct {
 	PageSize int32 `protobuf:"varint,4,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
 	// Optional. A pagination token returned from
 	// a previous call to `ListRelationTuples` that
-	// indicates where this listing should continue from.
+	// indicates where the page should start at.
 	PageToken string `protobuf:"bytes,5,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"`
 }
 
