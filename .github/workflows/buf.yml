@@ -22,7 +22,7 @@ jobs:
       - uses: ory/build-buf-action@v0
         with:
           bufVersion: v0.31.1
-          bufArgs: buf generate --config buf/api/buf.yaml --template buf/api/buf.gen.yaml
+          bufArgs: generate --config buf/api/buf.yaml --template buf/api/buf.gen.yaml
       - name: Push build
         run: |
           git config --local user.email "zepatrik@users.noreply.github.com"
