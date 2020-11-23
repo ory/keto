@@ -1,12 +1,9 @@
 name: Generate and Lint buf
 
 on:
-  pull_request:
-    branches:
-      - zanzibar
   push:
     branches:
-      - zanzibar
+      - *
   workflow_dispatch:
 
 jobs:
