@@ -2,6 +2,8 @@ package memory
 
 import (
 	"context"
+	"fmt"
+	"strconv"
 
 	"github.com/ory/keto/internal/x"
 
@@ -14,26 +16,38 @@ type (
 
 var _ relationtuple.Manager = &Persister{}
 
-func (p *Persister) paginateRelations(rels []*relationtuple.InternalRelationTuple, options ...x.PaginationOptionSetter) []*relationtuple.InternalRelationTuple {
+func (p *Persister) paginateRelations(rels []*relationtuple.InternalRelationTuple, options ...x.PaginationOptionSetter) ([]*relationtuple.InternalRelationTuple, string, error) {
 	if len(rels) == 0 {
-		return rels
+		return rels, "0", nil
 	}
 
 	pagination := x.GetPaginationOptions(options...)
+	if pagination.Token == "" {
+		pagination.Token = "0"
+	}
+
+	start, err := strconv.ParseInt(pagination.Token, 0, 0)
+	if err != nil {
+		return nil, "-1", err
+	}
 	veryLast := len(rels)
-	start, end := pagination.Page*pagination.PerPage, (pagination.Page+1)*pagination.PerPage-1
+	end := int(start) + pagination.Size
 	if veryLast < end {
 		end = veryLast
 	}
-	return rels[start:end]
+	return rels[start:end], fmt.Sprintf("%d", veryLast+1), nil
 }
 
 func buildRelationQueryFilter(query *relationtuple.RelationQuery) queryFilter {
 	var filters []queryFilter
 
-	if query.Object != nil {
+	filters = append(filters, func(r *relationtuple.InternalRelationTuple) bool {
+		return query.Namespace == r.Namespace
+	})
+
+	if query.Object != "" {
 		filters = append(filters, func(r *relationtuple.InternalRelationTuple) bool {
-			return query.Object.Equals(r.Object)
+			return query.Object == r.Object
 		})
 	}
 
@@ -61,12 +75,12 @@ func buildRelationQueryFilter(query *relationtuple.RelationQuery) queryFilter {
 	}
 }
 
-func (p *Persister) GetRelationTuples(_ context.Context, query *relationtuple.RelationQuery, options ...x.PaginationOptionSetter) ([]*relationtuple.InternalRelationTuple, error) {
+func (p *Persister) GetRelationTuples(_ context.Context, query *relationtuple.RelationQuery, options ...x.PaginationOptionSetter) ([]*relationtuple.InternalRelationTuple, string, error) {
 	p.RLock()
 	defer p.RUnlock()
 
 	if query == nil {
-		return nil, nil
+		return nil, "-1", nil
 	}
 
 	filter := buildRelationQueryFilter(query)
@@ -79,7 +93,7 @@ func (p *Persister) GetRelationTuples(_ context.Context, query *relationtuple.Re
 		}
 	}
 
-	return p.paginateRelations(res, options...), nil
+	return p.paginateRelations(res, options...)
 }
 
 func (p *Persister) WriteRelationTuples(_ context.Context, rs ...*relationtuple.InternalRelationTuple) error {

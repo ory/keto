@@ -44,8 +44,10 @@ message RelationTupleWriteDelta {
     // It is ignored if it does not exist.
     DELETE = 4;
   }
+  // The action to do on the RelationTuple.
+  Action action = 1;
   // The target RelationTuple.
-  RelationTuple relation_tuple = 1;
+  RelationTuple relation_tuple = 2;
 }
 
 // The response of a WriteService.WriteRelationTuples rpc.

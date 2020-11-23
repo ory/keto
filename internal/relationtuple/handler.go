@@ -13,13 +13,16 @@ import (
 )
 
 type (
-	handlerDependencies interface {
+	handlerDeps interface {
 		ManagerProvider
 		x.LoggerProvider
 		x.WriterProvider
 	}
 	handler struct {
-		d handlerDependencies
+		d handlerDeps
+	}
+	GRPCServer struct {
+		d handlerDeps
 	}
 )
 
@@ -27,8 +30,14 @@ const (
 	routeBase = "/relations"
 )
 
-func NewHandler(d handlerDependencies) *handler {
+func NewHandler(d handlerDeps) *handler {
 	return &handler{
+		d: d,
+	}
+}
+
+func NewGRPCServer(d handlerDeps) *GRPCServer {
+	return &GRPCServer{
 		d: d,
 	}
 }
@@ -39,19 +48,24 @@ func (h *handler) RegisterPublicRoutes(router *httprouter.Router) {
 }
 
 func (h *handler) getRelations(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	params := r.URL.Query()
-	res, err := h.d.RelationTupleManager().GetRelationTuples(r.Context(), &RelationQuery{
-		Relation: params.Get("relation"),
-		Object:   (&Object{}).FromString(params.Get("object")),
-		Subject:  SubjectFromString(params.Get("subject")),
-	})
-
+	query, err := (&RelationQuery{}).FromURLQuery(r.URL.Query())
 	if err != nil {
 		h.d.Writer().WriteError(w, r, err)
 		return
 	}
 
-	h.d.Writer().Write(w, r, res)
+	rels, nextPage, err := h.d.RelationTupleManager().GetRelationTuples(r.Context(), query)
+	if err != nil {
+		h.d.Writer().WriteError(w, r, err)
+		return
+	}
+
+	resp := map[string]interface{}{
+		"relations": rels,
+		"next_page": nextPage,
+	}
+
+	h.d.Writer().Write(w, r, resp)
 }
 
 func (h *handler) createRelation(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {

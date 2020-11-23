@@ -36,6 +36,7 @@ require (
 	go.mongodb.org/mongo-driver v1.3.4 // indirect
 	golang.org/x/lint v0.0.0-20200302205851-738671d3881b // indirect
 	golang.org/x/tools v0.0.0-20200401192744-099440627f01
+	google.golang.org/genproto v0.0.0-20200526211855-cb27e3aa2013
 	google.golang.org/grpc v1.33.0
 	google.golang.org/protobuf v1.25.0
 )
