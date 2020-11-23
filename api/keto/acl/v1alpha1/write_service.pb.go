@@ -194,8 +194,8 @@ type WriteRelationTuplesResponse struct {
 	// with the same index as specified in the `relation_tuple_deltas` field of
 	// the WriteRelationTuplesRequest request.
 	//
-	// The snaptoken is nil at the same index
-	// if the RelationTupleWriteDelta_Action was DELETE.
+	// If the RelationTupleWriteDelta_Action was DELETE
+	// the snaptoken is empty at the same index.
 	Snaptokens []string `protobuf:"bytes,1,rep,name=snaptokens,proto3" json:"snaptokens,omitempty"`
 }
 
