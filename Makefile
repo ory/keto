@@ -12,7 +12,6 @@ deps:
 ifneq ("$(shell base64 Makefile))","$(shell cat .bin/.lock)")
 		go build -o .bin/go-acc github.com/ory/go-acc
 		go build -o .bin/goreturns github.com/sqs/goreturns
-		go build -o .bin/listx github.com/ory/x/tools/listx
 		go build -o .bin/mockgen github.com/golang/mock/mockgen
 		go build -o .bin/swagger github.com/go-swagger/go-swagger/cmd/swagger
 		go build -o .bin/goimports golang.org/x/tools/cmd/goimports
