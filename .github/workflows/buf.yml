@@ -19,3 +19,13 @@ jobs:
         with:
           bufVersion: v0.31.1
           bufArgs: check lint --config buf/api/buf.yaml
+      - uses: ory/build-buf-action@v0
+        with:
+          bufVersion: v0.31.1
+          bufArgs: buf generate --config buf/api/buf.yaml --template buf/api/buf.gen.yaml
+      - name: Push build
+        run: |
+          git config --local user.email "zepatrik@users.noreply.github.com"
+          git config --local user.name "zepatrik"
+          git add api
+          git commit -a -m "autogen: build buf" && git push "https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:master || true
