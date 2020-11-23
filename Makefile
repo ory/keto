@@ -25,7 +25,7 @@ endif
 
 .PHONY: format
 format:
-		goimports -w -local github.com/ory/keto $$(listx .)
+		goimports -w -local github.com/ory/keto *.go internal cmd
 
 .PHONY: install-stable
 install-stable: deps
