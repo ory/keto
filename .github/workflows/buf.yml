@@ -12,15 +12,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: ory/build-buf-action@v0
-        with:
-          bufVersion: v0.31.1
-          bufArgs: check lint --config buf/api/buf.yaml
-      - uses: ory/build-buf-action@v0
-        with:
-          bufVersion: v0.31.1
-          protocPlugins: go@v1.25.0 go-grpc@v1.0.1
-          bufArgs: generate --config buf/api/buf.yaml --template buf/api/buf.gen.yaml
+      - name: Lint and Build
+        run: make buf
       - name: Push build
         run: |
           git config --local user.email "zepatrik@users.noreply.github.com"
