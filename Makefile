@@ -9,7 +9,7 @@ export PATH := .bin:${PATH}
 
 .PHONY: deps
 deps:
-ifneq ("$(shell base64 Makefile))","$(shell cat .bin/.lock)")
+ifneq ("$(shell base64 Makefile)","$(shell cat .bin/.lock)")
 		go build -o .bin/go-acc github.com/ory/go-acc
 		go build -o .bin/goreturns github.com/sqs/goreturns
 		go build -o .bin/mockgen github.com/golang/mock/mockgen
@@ -18,6 +18,9 @@ ifneq ("$(shell base64 Makefile))","$(shell cat .bin/.lock)")
 		go build -o .bin/ory github.com/ory/cli
 		go build -o .bin/packr github.com/gobuffalo/packr/packr
 		go build -o .bin/go-bindata github.com/go-bindata/go-bindata/go-bindata
+		go build -o .bin/buf github.com/bufbuild/buf/cmd/buf
+		go build -o .bin/protoc-gen-go google.golang.org/protobuf/cmd/protoc-gen-go
+		go build -o .bin/protoc-gen-go-grpc google.golang.org/grpc/cmd/protoc-gen-go-grpc
 		echo "v0" > .bin/.lock
 		echo "$$(base64 Makefile)" > .bin/.lock
 endif
@@ -67,7 +70,7 @@ docker: deps
 # Generate APIs and client stubs from the definitions
 #
 .PHONY: buf-gen
-buf-gen:
+buf-gen: deps
 		buf generate \
 		--config buf/api/buf.yaml \
 		--template buf/api/buf.gen.yaml \
@@ -80,7 +83,7 @@ buf-gen:
 # Lint API definitions
 #
 .PHONY: buf-lint
-buf-lint:
+buf-lint: deps
 		buf check lint \
 		--config buf/api/buf.yaml \
 		&& \
