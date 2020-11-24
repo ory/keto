@@ -1,0 +1,29 @@
+name: Generate and Lint buf
+
+on:
+  push:
+    branches:
+      - '*'
+  workflow_dispatch:
+
+jobs:
+  lint:
+    name: buf check lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ory/build-buf-action@v0
+        with:
+          bufVersion: v0.31.1
+          bufArgs: check lint --config buf/api/buf.yaml
+      - uses: ory/build-buf-action@v0
+        with:
+          bufVersion: v0.31.1
+          protocPlugins: go@v1.25.0 go-grpc@v1.0.1
+          bufArgs: generate --config buf/api/buf.yaml --template buf/api/buf.gen.yaml
+      - name: Push build
+        run: |
+          git config --local user.email "zepatrik@users.noreply.github.com"
+          git config --local user.name "zepatrik"
+          git add api
+          git commit -a -m "autogen: build buf" && git push "https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:${GITHUB_REF#"refs/heads/"} || true

@@ -2,29 +2,30 @@ package x
 
 type (
 	paginationOptions struct {
-		Page, PerPage int
+		Token string
+		Size  int
 	}
 	PaginationOptionSetter func(*paginationOptions) *paginationOptions
 )
 
-func WithPage(page int) PaginationOptionSetter {
+func WithToken(t string) PaginationOptionSetter {
 	return func(opts *paginationOptions) *paginationOptions {
-		opts.Page = page
+		opts.Token = t
 		return opts
 	}
 }
 
-func WithPerPage(perPage int) PaginationOptionSetter {
+func WithSize(size int) PaginationOptionSetter {
 	return func(opts *paginationOptions) *paginationOptions {
-		opts.PerPage = perPage
+		opts.Size = size
 		return opts
 	}
 }
 
 func GetPaginationOptions(modifiers ...PaginationOptionSetter) *paginationOptions {
 	opts := &paginationOptions{
-		Page:    0,
-		PerPage: 100,
+		Token: "",
+		Size:  100,
 	}
 	for _, f := range modifiers {
 		opts = f(opts)

@@ -21,6 +21,8 @@ import (
 	"os"
 	"sync"
 
+	acl "github.com/ory/keto/api/keto/acl/v1alpha1"
+
 	"github.com/ory/keto/internal/expand"
 
 	"github.com/ory/keto/internal/check"
@@ -68,8 +70,8 @@ on configuration options, open the configuration documentation:
 			defer wg.Done()
 
 			s := grpc.NewServer()
-			relS := relationtuple.NewServer(d.Registry())
-			relationtuple.RegisterRelationTupleServiceServer(s, relS)
+			relS := relationtuple.NewGRPCServer(d.Registry())
+			acl.RegisterReadServiceServer(s, relS)
 			fmt.Println("going to serve GRPC on", lis.Addr().String())
 			if err := s.Serve(lis); err != nil {
 				fmt.Fprintf(cmd.ErrOrStderr(), "%+v\n", err)

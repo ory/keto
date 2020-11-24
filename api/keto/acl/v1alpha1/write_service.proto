@@ -44,8 +44,10 @@ message RelationTupleWriteDelta {
     // It is ignored if it does not exist.
     DELETE = 4;
   }
+  // The action to do on the RelationTuple.
+  Action action = 1;
   // The target RelationTuple.
-  RelationTuple relation_tuple = 1;
+  RelationTuple relation_tuple = 2;
 }
 
 // The response of a WriteService.WriteRelationTuples rpc.
@@ -54,7 +56,7 @@ message WriteRelationTuplesResponse {
   // with the same index as specified in the `relation_tuple_deltas` field of
   // the WriteRelationTuplesRequest request.
   //
-  // The snaptoken is nil at the same index
-  // if the RelationTupleWriteDelta_Action was DELETE.
+  // If the RelationTupleWriteDelta_Action was DELETE
+  // the snaptoken is empty at the same index.
   repeated string snaptokens = 1;
 }

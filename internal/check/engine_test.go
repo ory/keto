@@ -20,9 +20,9 @@ func TestEngine(t *testing.T) {
 	t.Run("direct inclusion", func(t *testing.T) {
 		rel := relationtuple.InternalRelationTuple{
 			Relation:  "access",
-			ObjectID:  "object",
+			Object:    "object",
 			Namespace: "test",
-			Subject:   &relationtuple.UserID{ID: "user"},
+			Subject:   &relationtuple.SubjectID{ID: "user"},
 		}
 
 		reg := &driver.RegistryDefault{}
@@ -40,23 +40,23 @@ func TestEngine(t *testing.T) {
 		// the set of users that are produces of "dust" have to remove it
 		dust := "dust"
 		sofaNamespace := "under the sofa"
-		mark := relationtuple.UserID{
+		mark := relationtuple.SubjectID{
 			ID: "Mark",
 		}
 		cleaningRelation := relationtuple.InternalRelationTuple{
-			Relation:  "have to remove",
-			ObjectID:  dust,
 			Namespace: sofaNamespace,
-			Subject: &relationtuple.UserSet{
+			Relation:  "have to remove",
+			Object:    dust,
+			Subject: &relationtuple.SubjectSet{
 				Relation:  "producer",
-				ObjectID:  dust,
+				Object:    dust,
 				Namespace: sofaNamespace,
 			},
 		}
 		markProducesDust := relationtuple.InternalRelationTuple{
-			Relation:  "producer",
-			ObjectID:  dust,
 			Namespace: sofaNamespace,
+			Relation:  "producer",
+			Object:    dust,
 			Subject:   &mark,
 		}
 
@@ -68,21 +68,21 @@ func TestEngine(t *testing.T) {
 
 		res, err := e.SubjectIsAllowed(context.Background(), &relationtuple.InternalRelationTuple{
 			Relation:  cleaningRelation.Relation,
-			ObjectID:  dust,
-			Namespace: sofaNamespace,
+			Object:    dust,
 			Subject:   &mark,
+			Namespace: sofaNamespace,
 		})
 		require.NoError(t, err)
 		assert.True(t, res)
 	})
 
 	t.Run("direct exclusion", func(t *testing.T) {
-		user := &relationtuple.UserID{
+		user := &relationtuple.SubjectID{
 			ID: "user-id",
 		}
 		rel := relationtuple.InternalRelationTuple{
 			Relation:  "relation",
-			ObjectID:  "object-id",
+			Object:    "object-id",
 			Namespace: "object-namespace",
 			Subject:   user,
 		}
@@ -94,10 +94,10 @@ func TestEngine(t *testing.T) {
 		e := check.NewEngine(reg)
 
 		res, err := e.SubjectIsAllowed(context.Background(), &relationtuple.InternalRelationTuple{
-			Relation:  rel.Relation,
-			ObjectID:  rel.ObjectID,
+			Relation: rel.Relation,
+			Object:   rel.Object,
 			Namespace: rel.Namespace,
-			Subject:   &relationtuple.UserID{ID: "not " + user.ID},
+			Subject:  &relationtuple.SubjectID{ID: "not " + user.ID},
 		})
 		require.NoError(t, err)
 		assert.False(t, res)
@@ -105,35 +105,30 @@ func TestEngine(t *testing.T) {
 
 	t.Run("wrong object ID", func(t *testing.T) {
 		object := "object"
-		defaultNamespace := "default"
 		access := relationtuple.InternalRelationTuple{
-			Relation:  "access",
-			ObjectID:  object,
-			Namespace: defaultNamespace,
-			Subject: &relationtuple.UserSet{
-				Relation:  "owner",
-				ObjectID:  object,
-				Namespace: defaultNamespace,
+			Relation: "access",
+			Object:   object,
+			Subject: &relationtuple.SubjectSet{
+				Relation: "owner",
+				Object:   object,
 			},
 		}
 		user := relationtuple.InternalRelationTuple{
-			Relation:  "owner",
-			ObjectID:  "not " + object,
-			Namespace: defaultNamespace,
-			Subject:   &relationtuple.UserID{ID: "user"},
+			Relation: "owner",
+			Object:   "not " + object,
+			Subject:  &relationtuple.SubjectID{ID: "user"},
 		}
 
 		reg := &driver.RegistryDefault{}
-		require.NoError(t, reg.NamespaceManager().MigrateNamespaceUp(&namespace.Namespace{Name: defaultNamespace}))
+		require.NoError(t, reg.NamespaceManager().MigrateNamespaceUp(&namespace.Namespace{Name: ""}))
 		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), &access, &user))
 
 		e := check.NewEngine(reg)
 
 		res, err := e.SubjectIsAllowed(context.Background(), &relationtuple.InternalRelationTuple{
-			Relation:  access.Relation,
-			ObjectID:  object,
-			Subject:   user.Subject,
-			Namespace: defaultNamespace,
+			Relation: access.Relation,
+			Object:   object,
+			Subject:  user.Subject,
 		})
 		require.NoError(t, err)
 		assert.False(t, res)
@@ -144,20 +139,19 @@ func TestEngine(t *testing.T) {
 		diaryNamespace := "diary"
 		// this would be a userset rewrite
 		readDiary := relationtuple.InternalRelationTuple{
-			Relation:  "read",
-			ObjectID:  diaryEntry,
 			Namespace: diaryNamespace,
-			Subject: &relationtuple.UserSet{
-				Relation:  "author",
-				ObjectID:  diaryEntry,
-				Namespace: diaryNamespace,
+			Relation:  "read",
+			Object:    diaryEntry,
+			Subject: &relationtuple.SubjectSet{
+				Relation: "author",
+				Object:   diaryEntry,
 			},
 		}
 		user := relationtuple.InternalRelationTuple{
-			Relation:  "not author",
-			ObjectID:  diaryEntry,
 			Namespace: diaryNamespace,
-			Subject:   &relationtuple.UserID{ID: "your mother"},
+			Relation:  "not author",
+			Object:    diaryEntry,
+			Subject:   &relationtuple.SubjectID{ID: "your mother"},
 		}
 
 		reg := &driver.RegistryDefault{}
@@ -168,7 +162,7 @@ func TestEngine(t *testing.T) {
 
 		res, err := e.SubjectIsAllowed(context.Background(), &relationtuple.InternalRelationTuple{
 			Relation:  readDiary.Relation,
-			ObjectID:  diaryEntry,
+			Object:  diaryEntry,
 			Namespace: diaryNamespace,
 			Subject:   user.Subject,
 		})
@@ -178,47 +172,45 @@ func TestEngine(t *testing.T) {
 
 	t.Run("indirect inclusion level 2", func(t *testing.T) {
 		object := "some object"
-		objNamespace := "some namespace"
-
-		user := relationtuple.UserID{
+		someNamespace := "some namespace"
+		user := relationtuple.SubjectID{
 			ID: "some user",
 		}
-
 		organization := "some organization"
 		orgNamespace := "all organizations"
 
-		ownerUserSet := relationtuple.UserSet{
+		ownerUserSet := relationtuple.SubjectSet{
+			Namespace: someNamespace,
 			Relation:  "owner",
-			ObjectID:  object,
-			Namespace: objNamespace,
+			Object:    object,
 		}
-		orgMembers := relationtuple.UserSet{
-			Relation:  "member",
-			ObjectID:  organization,
+		orgMembers := relationtuple.SubjectSet{
 			Namespace: orgNamespace,
+			Relation:  "member",
+			Object:    organization,
 		}
 
 		writeRel := relationtuple.InternalRelationTuple{
+			Namespace: someNamespace,
 			Relation:  "write",
-			ObjectID:  object,
-			Namespace: objNamespace,
+			Object:    object,
 			Subject:   &ownerUserSet,
 		}
 		orgOwnerRel := relationtuple.InternalRelationTuple{
+			Namespace: someNamespace,
 			Relation:  ownerUserSet.Relation,
-			ObjectID:  object,
-			Namespace: objNamespace,
+			Object:    object,
 			Subject:   &orgMembers,
 		}
 		userMembershipRel := relationtuple.InternalRelationTuple{
-			Relation:  orgMembers.Relation,
-			ObjectID:  organization,
 			Namespace: orgNamespace,
+			Relation:  orgMembers.Relation,
+			Object:    organization,
 			Subject:   &user,
 		}
 
 		reg := &driver.RegistryDefault{}
-		require.NoError(t, reg.NamespaceManager().MigrateNamespaceUp(&namespace.Namespace{Name: objNamespace, ID: 0}))
+		require.NoError(t, reg.NamespaceManager().MigrateNamespaceUp(&namespace.Namespace{Name: someNamespace, ID: 0}))
 		require.NoError(t, reg.NamespaceManager().MigrateNamespaceUp(&namespace.Namespace{Name: orgNamespace, ID: 1}))
 		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), &writeRel, &orgOwnerRel, &userMembershipRel))
 
@@ -226,9 +218,9 @@ func TestEngine(t *testing.T) {
 
 		// user can write object
 		res, err := e.SubjectIsAllowed(context.Background(), &relationtuple.InternalRelationTuple{
+			Namespace: someNamespace,
 			Relation:  writeRel.Relation,
-			ObjectID:  object,
-			Namespace: objNamespace,
+			Object:    object,
 			Subject:   &user,
 		})
 		require.NoError(t, err)
@@ -236,9 +228,9 @@ func TestEngine(t *testing.T) {
 
 		// user is member of the organization
 		res, err = e.SubjectIsAllowed(context.Background(), &relationtuple.InternalRelationTuple{
-			Relation:  orgMembers.Relation,
-			ObjectID:  organization,
 			Namespace: orgNamespace,
+			Relation:  orgMembers.Relation,
+			Object:    organization,
 			Subject:   &user,
 		})
 		require.NoError(t, err)
@@ -254,37 +246,31 @@ func TestEngine(t *testing.T) {
 
 		file := "file"
 		directory := "directory"
-		driveNamespace := "shared drive"
-
-		user := relationtuple.UserID{ID: "user"}
+		user := relationtuple.SubjectID{ID: "user"}
 
 		parent := relationtuple.InternalRelationTuple{
-			Relation:  "parent",
-			ObjectID:  file,
-			Namespace: driveNamespace,
-			Subject: &relationtuple.UserSet{ // <- this is only an object, but this is allowed as a userset can have the "..." relation which means any relation
-				ObjectID:  directory,
-				Namespace: driveNamespace,
+			Relation: "parent",
+			Object:   file,
+			Subject: &relationtuple.SubjectSet{ // <- this is only an object, but this is allowed as a userset can have the "..." relation which means any relation
+				Object: directory,
 			},
 		}
 		directoryAccess := relationtuple.InternalRelationTuple{
-			Relation:  "access",
-			ObjectID:  directory,
-			Namespace: driveNamespace,
-			Subject:   &user,
+			Relation: "access",
+			Object:   directory,
+			Subject:  &user,
 		}
 
 		reg := &driver.RegistryDefault{}
-		require.NoError(t, reg.NamespaceManager().MigrateNamespaceUp(&namespace.Namespace{Name: driveNamespace}))
+		require.NoError(t, reg.NamespaceManager().MigrateNamespaceUp(&namespace.Namespace{Name: ""}))
 		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), &parent, &directoryAccess))
 
 		e := check.NewEngine(reg)
 
 		res, err := e.SubjectIsAllowed(context.Background(), &relationtuple.InternalRelationTuple{
-			Relation:  directoryAccess.Relation,
-			ObjectID:  file,
-			Namespace: driveNamespace,
-			Subject:   &user,
+			Relation: directoryAccess.Relation,
+			Object:   file,
+			Subject:  &user,
 		})
 		require.NoError(t, err)
 		assert.False(t, res)

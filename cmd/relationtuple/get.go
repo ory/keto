@@ -6,6 +6,7 @@ import (
 
 	"github.com/ory/x/flagx"
 
+	acl "github.com/ory/keto/api/keto/acl/v1alpha1"
 	"github.com/ory/keto/internal/relationtuple"
 
 	"github.com/spf13/pflag"
@@ -20,42 +21,35 @@ import (
 const (
 	FlagSubject   = "subject"
 	FlagRelation  = "relation"
-	FlagObjectID  = "object-id"
+	FlagObject  = "object"
 	FlagNamespace = "namespace"
 )
 
 func registerRelationTupleFlags(flags *pflag.FlagSet) {
 	flags.String(FlagSubject, "", "Set the requested subject")
 	flags.String(FlagRelation, "", "Set the requested relation")
-	flags.String(FlagObjectID, "", "Set the requested object")
+	flags.String(FlagObject, "", "Set the requested object")
 	flags.String(FlagNamespace, "", "Set the requested namespace")
 }
 
-func readQueryFromFlags(cmd *cobra.Command) (*relationtuple.ReadRelationTuplesRequest_Query, error) {
+func readQueryFromFlags(cmd *cobra.Command) (*acl.ListRelationTuplesRequest_Query, error) {
 	subject := flagx.MustGetString(cmd, FlagSubject)
 	relation := flagx.MustGetString(cmd, FlagRelation)
-	objectID := flagx.MustGetString(cmd, FlagObjectID)
+	object := flagx.MustGetString(cmd, FlagObject)
 	namespace := flagx.MustGetString(cmd, FlagNamespace)
 
-	query := &relationtuple.ReadRelationTuplesRequest_Query{
-		Relation:  relation,
-		ObjectId:  objectID,
+	query := &acl.ListRelationTuplesRequest_Query{
+		Relation: relation,
+		Object:   object,
 		Namespace: namespace,
 	}
 
-	relSub := relationtuple.SubjectFromString(subject)
-	switch s := relSub.(type) {
-	case *relationtuple.UserID:
-		query.Subject = &relationtuple.ReadRelationTuplesRequest_Query_UserId{UserId: s.ID}
-	case *relationtuple.UserSet:
-		query.Subject = &relationtuple.ReadRelationTuplesRequest_Query_UserSet{
-			UserSet: &relationtuple.RelationUserSet{
-				ObjectId:  s.ObjectID,
-				Namespace: s.Namespace,
-				Relation:  s.Relation,
-			},
-		}
+	s, err := relationtuple.SubjectFromString(subject)
+	if err != nil {
+		return nil, err
 	}
+
+	query.Subject = s.ToGRPC()
 
 	return query, nil
 }
@@ -71,22 +65,22 @@ func newGetCmd() *cobra.Command {
 			}
 			defer conn.Close()
 
-			cl := relationtuple.NewRelationTupleServiceClient(conn)
+			cl := acl.NewReadServiceClient(conn)
 			query, err := readQueryFromFlags(cmd)
 			if err != nil {
 				return err
 			}
-			resp, err := cl.ReadRelationTuples(context.Background(), &relationtuple.ReadRelationTuplesRequest{
-				Query:   query,
-				Page:    0,
-				PerPage: 100,
+
+			resp, err := cl.ListRelationTuples(context.Background(), &acl.ListRelationTuplesRequest{
+				Query:    query,
+				PageSize: 100,
 			})
 			if err != nil {
 				_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not make request: %s\n", err)
 				return err
 			}
 
-			cmdx.PrintCollection(cmd, relationtuple.NewGRPCRelationCollection(resp.Tuples))
+			cmdx.PrintCollection(cmd, relationtuple.NewGRPCRelationCollection(resp.RelationTuples))
 			return nil
 		},
 	}

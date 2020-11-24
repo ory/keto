@@ -16,32 +16,32 @@ import (
 func newTestSetup(t *testing.T) (p *Persister, rel1, rel2, rel3, rel4 *relationtuple.InternalRelationTuple) {
 	p = NewPersister()
 	rel1 = &relationtuple.InternalRelationTuple{
-		ObjectID:  "obj",
+		Object:    "obj",
 		Namespace: "rel1",
 		Relation:  "rel1 name",
-		Subject:   &relationtuple.UserID{ID: "rel1 user"},
+		Subject:   &relationtuple.SubjectID{ID: "rel1 user"},
 	}
 	rel2 = &relationtuple.InternalRelationTuple{
-		ObjectID:  "obj",
+		Object:    "obj",
 		Namespace: "rel2",
 		Relation:  "rel2 name",
-		Subject:   &relationtuple.UserID{ID: "rel2 user"},
+		Subject:   &relationtuple.SubjectID{ID: "rel2 user"},
 	}
 	rel3 = &relationtuple.InternalRelationTuple{
-		ObjectID:  "obj",
+		Object:    "obj",
 		Namespace: "rel3",
 		Relation:  "shared name",
-		Subject: &relationtuple.UserSet{
-			ObjectID:  "user set obj",
+		Subject: &relationtuple.SubjectSet{
+			Object:    "user set obj",
 			Namespace: "rel3",
 			Relation:  "rel3 user set",
 		},
 	}
 	rel4 = &relationtuple.InternalRelationTuple{
-		ObjectID:  "obj",
+		Object:    "obj",
 		Namespace: "rel4",
 		Relation:  "shared name",
-		Subject:   &relationtuple.UserID{ID: "rel4 user"},
+		Subject:   &relationtuple.SubjectID{ID: "rel4 user"},
 	}
 
 	require.NoError(t, p.MigrateNamespaceUp(&namespace.Namespace{Name: rel1.Namespace, ID: 0}))
@@ -60,7 +60,7 @@ func TestGetRelationTuples(t *testing.T) {
 		expected []*relationtuple.InternalRelationTuple
 	}{
 		{
-			query:    &relationtuple.RelationQuery{ObjectID: rel1.ObjectID, Namespace: rel1.Namespace},
+			query:    &relationtuple.RelationQuery{Object: rel1.Object, Namespace: rel1.Namespace},
 			expected: []*relationtuple.InternalRelationTuple{rel1},
 		},
 		{
@@ -72,11 +72,11 @@ func TestGetRelationTuples(t *testing.T) {
 			expected: []*relationtuple.InternalRelationTuple{rel1},
 		},
 		{
-			query:    &relationtuple.RelationQuery{ObjectID: rel1.ObjectID, Namespace: rel1.Namespace, Subject: rel1.Subject},
+			query:    &relationtuple.RelationQuery{Object: rel1.Object, Subject: rel1.Subject, Namespace: rel1.Namespace},
 			expected: []*relationtuple.InternalRelationTuple{rel1},
 		},
 		{
-			query:    &relationtuple.RelationQuery{ObjectID: rel1.ObjectID, Namespace: rel1.Namespace, Relation: rel1.Relation},
+			query:    &relationtuple.RelationQuery{Object: rel1.Object, Relation: rel1.Relation, Namespace: rel1.Namespace},
 			expected: []*relationtuple.InternalRelationTuple{rel1},
 		},
 		{
@@ -84,11 +84,11 @@ func TestGetRelationTuples(t *testing.T) {
 			expected: []*relationtuple.InternalRelationTuple{rel1},
 		},
 		{
-			query:    &relationtuple.RelationQuery{ObjectID: rel1.ObjectID, Namespace: rel1.Namespace, Subject: rel1.Subject, Relation: rel1.Relation},
+			query:    &relationtuple.RelationQuery{Object: rel1.Object, Subject: rel1.Subject, Relation: rel1.Relation, Namespace: rel1.Namespace},
 			expected: []*relationtuple.InternalRelationTuple{rel1},
 		},
 		{
-			query:    &relationtuple.RelationQuery{ObjectID: rel2.ObjectID, Namespace: rel2.Namespace},
+			query:    &relationtuple.RelationQuery{Object: rel2.Object, Namespace: rel2.Namespace},
 			expected: []*relationtuple.InternalRelationTuple{rel2},
 		},
 		{
@@ -96,22 +96,18 @@ func TestGetRelationTuples(t *testing.T) {
 			expected: []*relationtuple.InternalRelationTuple{rel3},
 		},
 		{
-			query:    &relationtuple.RelationQuery{ObjectID: rel3.ObjectID, Namespace: rel3.Namespace, Relation: rel3.Relation},
+			query:    &relationtuple.RelationQuery{Object: rel3.Object, Relation: rel3.Relation, Namespace: rel3.Namespace},
 			expected: []*relationtuple.InternalRelationTuple{rel3},
-		},
-		{
-			query:    &relationtuple.RelationQuery{Namespace: rel1.Namespace},
-			expected: []*relationtuple.InternalRelationTuple{rel1},
 		},
 		{
 			expected: []*relationtuple.InternalRelationTuple{},
 		},
 	} {
 		t.Run(fmt.Sprintf("case=%d", i), func(t *testing.T) {
-			res, err := p.GetRelationTuples(context.Background(), tc.query)
+			res, _, err := p.GetRelationTuples(context.Background(), tc.query)
 			require.NoError(t, err)
 
-			assert.Equal(t, len(tc.expected), len(res), "expected: %+v\n got: %+v", tc.expected, res)
+			assert.Equal(t, len(tc.expected), len(res), "query: %s\nexpected: %+v\n got: %+v", tc.query, tc.expected, res)
 			for _, r := range tc.expected {
 				assert.Contains(t, res, r)
 			}

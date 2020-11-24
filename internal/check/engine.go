@@ -27,7 +27,7 @@ func NewEngine(d engineDependencies) *Engine {
 }
 
 func (e *Engine) subjectIsAllowed(ctx context.Context, requested *relationtuple.InternalRelationTuple, rels []*relationtuple.InternalRelationTuple) (bool, error) {
-	// This is the same as the graph problem "can requested.UserID be reached from requested.ObjectID through the first outgoing edge requested.Name"
+	// This is the same as the graph problem "can requested.SubjectID be reached from requested.Object through the first outgoing edge requested.Name"
 	//
 	// recursive breadth-first search
 	// TODO replace by more performant algorithm
@@ -40,13 +40,14 @@ func (e *Engine) subjectIsAllowed(ctx context.Context, requested *relationtuple.
 			return true, nil
 		}
 
-		sub, isSubjectSet := sr.Subject.(*relationtuple.UserSet)
+		sub, isSubjectSet := sr.Subject.(*relationtuple.SubjectSet)
 		if !isSubjectSet {
 			return false, nil
 		}
 
 		// expand the set by one indirection
-		nextRels, err := e.d.RelationTupleManager().GetRelationTuples(ctx, &relationtuple.RelationQuery{ObjectID: sub.ObjectID, Namespace: sub.Namespace, Relation: sub.Relation})
+		// TODO handle pagination
+		nextRels, _, err := e.d.RelationTupleManager().GetRelationTuples(ctx, &relationtuple.RelationQuery{Object: sub.Object, Relation: sub.Relation, Namespace: sub.Namespace})
 		if err != nil {
 			// TODO fix error handling
 			_, _ = fmt.Fprintf(os.Stderr, "%+v", err)
@@ -66,7 +67,8 @@ func (e *Engine) subjectIsAllowed(ctx context.Context, requested *relationtuple.
 }
 
 func (e *Engine) SubjectIsAllowed(ctx context.Context, r *relationtuple.InternalRelationTuple) (bool, error) {
-	subjectRelations, err := e.d.RelationTupleManager().GetRelationTuples(ctx, &relationtuple.RelationQuery{ObjectID: r.ObjectID, Namespace: r.Namespace, Relation: r.Relation})
+	// TODO handle pagination
+	subjectRelations, _, err := e.d.RelationTupleManager().GetRelationTuples(ctx, &relationtuple.RelationQuery{Object: r.Object, Relation: r.Relation, Namespace: r.Namespace})
 	if err != nil {
 		return false, err
 	}

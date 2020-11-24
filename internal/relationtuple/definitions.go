@@ -2,8 +2,12 @@ package relationtuple
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"net/url"
 	"strings"
+
+	acl "github.com/ory/keto/api/keto/acl/v1alpha1"
 
 	"github.com/ory/keto/internal/x"
 
@@ -17,183 +21,247 @@ type (
 		RelationTupleManager() Manager
 	}
 	Manager interface {
-		GetRelationTuples(ctx context.Context, query *RelationQuery, options ...x.PaginationOptionSetter) ([]*InternalRelationTuple, error)
+		GetRelationTuples(ctx context.Context, query *RelationQuery, options ...x.PaginationOptionSetter) ([]*InternalRelationTuple, string, error)
 		WriteRelationTuples(ctx context.Context, rs ...*InternalRelationTuple) error
 	}
 
 	relationCollection struct {
-		grpcRelations     []*RelationTuple
+		grpcRelations     []*acl.RelationTuple
 		internalRelations []*InternalRelationTuple
 	}
 	Subject interface {
 		String() string
-		FromString(string) Subject
+		FromString(string) (Subject, error)
 		Equals(interface{}) bool
+		ToGRPC() *acl.Subject
 	}
-	UserID struct {
+	SubjectID struct {
 		ID string `json:"id"`
 	}
-	UserSet struct {
+	SubjectSet struct {
 		Namespace string `json:"namespace"`
-		ObjectID  string `json:"object_id"`
+		Object    string `json:"object"`
 		Relation  string `json:"relation"`
 	}
 	InternalRelationTuple struct {
 		Namespace string  `json:"namespace"`
-		ObjectID  string  `json:"object_id"`
+		Object    string  `json:"object"`
 		Relation  string  `json:"relation"`
 		Subject   Subject `json:"subject"`
 	}
 	RelationQuery struct {
-		ObjectID  string  `json:"object_id"`
 		Namespace string  `json:"namespace"`
+		Object    string  `json:"object"`
 		Relation  string  `json:"relation"`
 		Subject   Subject `json:"subject"`
 	}
 )
 
-var _, _ Subject = &UserID{}, &UserSet{}
+var (
+	_, _ Subject = &SubjectID{}, &SubjectSet{}
 
-func SubjectFromString(s string) Subject {
+	ErrMalformedInput = errors.New("malformed string input")
+)
+
+func SubjectFromString(s string) (Subject, error) {
 	if strings.Contains(s, "#") {
-		return (&UserSet{}).FromString(s)
+		return (&SubjectSet{}).FromString(s)
 	}
-	return (&UserID{}).FromString(s)
+	return (&SubjectID{}).FromString(s)
 }
 
-func (u *UserID) String() string {
-	return u.ID
-}
-
-func (u *UserSet) String() string {
-	return fmt.Sprintf("%s:%s#%s", u.Namespace, u.ObjectID, u.Relation)
-}
-
-func (u *UserID) FromString(s string) Subject {
-	u.ID = s
-	return u
-}
-
-func (u *UserSet) FromString(s string) Subject {
-	parts := strings.Split(s, "#")
-	if len(parts) == 2 {
-		innerParts := strings.Split(parts[0], ":")
-		if len(innerParts) == 2 {
-			u.Namespace = innerParts[0]
-			u.ObjectID = innerParts[1]
+func SubjectFromGRPC(gs *acl.Subject) Subject {
+	switch s := gs.GetRef().(type) {
+	case *acl.Subject_Id:
+		return &SubjectID{
+			ID: s.Id,
 		}
-
-		u.Relation = parts[1]
+	case *acl.Subject_Set:
+		return &SubjectSet{
+			Namespace: s.Set.Namespace,
+			Object:    s.Set.Object,
+			Relation:  s.Set.Relation,
+		}
 	}
-	return u
+	return nil
 }
 
-func (u *UserID) Equals(v interface{}) bool {
-	uv, ok := v.(*UserID)
+func (s *SubjectID) String() string {
+	return s.ID
+}
+
+func (s *SubjectSet) String() string {
+	return fmt.Sprintf("%s#%s", s.Object, s.Relation)
+}
+
+func (s *SubjectID) FromString(str string) (Subject, error) {
+	s.ID = str
+	return s, nil
+}
+
+func (s *SubjectSet) FromString(str string) (Subject, error) {
+	parts := strings.Split(str, "#")
+	if len(parts) != 2 {
+		return nil, ErrMalformedInput
+	}
+
+	innerParts := strings.Split(parts[0], ":")
+	if len(innerParts) != 2 {
+		return nil, ErrMalformedInput
+	}
+
+	s.Namespace = innerParts[0]
+	s.Object = innerParts[1]
+	s.Relation = parts[1]
+
+	return s, nil
+}
+
+func (s *SubjectSet) FromURLQuery(values url.Values) *SubjectSet {
+	if s == nil {
+		s = &SubjectSet{}
+	}
+
+	s.Namespace = values.Get("namespace")
+	s.Relation = values.Get("relation")
+	s.Object = values.Get("object")
+
+	return s
+}
+
+func (s *SubjectID) ToGRPC() *acl.Subject {
+	return &acl.Subject{
+		Ref: &acl.Subject_Id{
+			Id: s.ID,
+		},
+	}
+}
+
+func (s *SubjectSet) ToGRPC() *acl.Subject {
+	return &acl.Subject{
+		Ref: &acl.Subject_Set{
+			Set: &acl.SubjectSet{
+				Namespace: s.Namespace,
+				Object:    s.Object,
+				Relation:  s.Relation,
+			},
+		},
+	}
+}
+
+func (s *SubjectID) Equals(v interface{}) bool {
+	uv, ok := v.(*SubjectID)
 	if !ok {
 		return false
 	}
-	return uv.ID == u.ID
+	return uv.ID == s.ID
 }
 
-func (u *UserSet) Equals(v interface{}) bool {
-	uv, ok := v.(*UserSet)
+func (s *SubjectSet) Equals(v interface{}) bool {
+	uv, ok := v.(*SubjectSet)
 	if !ok {
 		return false
 	}
-	return uv.Relation == u.Relation && uv.ObjectID == u.ObjectID && uv.Namespace == u.Namespace
+	return uv.Relation == s.Relation && uv.Object == s.Object && uv.Namespace == s.Namespace
 }
 
 func (r *InternalRelationTuple) String() string {
-	return fmt.Sprintf("%s:%s#%s@%s", r.Namespace, r.ObjectID, r.Relation, r.Subject)
+	return fmt.Sprintf("%s:%s#%s@%s", r.Namespace, r.Object, r.Relation, r.Subject)
 }
 
 func (r *InternalRelationTuple) DeriveSubject() Subject {
-	return &UserSet{
+	return &SubjectSet{
 		Namespace: r.Namespace,
-		ObjectID:  r.ObjectID,
-		Relation:  r.Relation,
+		Object:   r.Object,
+		Relation: r.Relation,
 	}
 }
 
 func (r *InternalRelationTuple) UnmarshalJSON(raw []byte) error {
 	subject := gjson.GetBytes(raw, "subject").Str
-	r.Subject = SubjectFromString(subject)
-	r.ObjectID = gjson.GetBytes(raw, "object_id").Str
-	r.Relation = gjson.GetBytes(raw, "relation").Str
+
+	var err error
+	r.Subject, err = SubjectFromString(subject)
+	if err != nil {
+		return err
+	}
+
 	r.Namespace = gjson.GetBytes(raw, "namespace").Str
+	r.Object = gjson.GetBytes(raw, "object").Str
+	r.Relation = gjson.GetBytes(raw, "relation").Str
 
 	return nil
 }
 
-func (r *InternalRelationTuple) FromGRPC(gr *RelationTuple) *InternalRelationTuple {
-	var subject Subject
-	switch gr.Subject.(type) {
-	case *RelationTuple_UserId:
-		subject = &UserID{
-			ID: gr.GetUserId(),
-		}
-	case *RelationTuple_UserSet:
-		subject = &UserSet{
-			Namespace: gr.GetUserSet().GetNamespace(),
-			ObjectID:  gr.GetUserSet().GetObjectId(),
-			Relation:  gr.GetUserSet().GetRelation(),
-		}
-	}
-
-	r.ObjectID = gr.GetObjectId()
-	r.Namespace = gr.GetNamespace()
-	r.Relation = gr.GetRelation()
-	r.Subject = subject
+func (r *InternalRelationTuple) FromGRPC(gr *acl.RelationTuple) *InternalRelationTuple {
+	r.Subject = SubjectFromGRPC(gr.Subject)
+	r.Object = gr.Object
+	r.Namespace = gr.Namespace
+	r.Relation = gr.Relation
 
 	return r
 }
 
-func (x *RelationTuple) FromInternal(r *InternalRelationTuple) *RelationTuple {
-	var subject isRelationTuple_Subject
-	switch s := r.Subject.(type) {
-	case *UserID:
-		subject = &RelationTuple_UserId{
-			s.ID,
-		}
-	case *UserSet:
-		subject = &RelationTuple_UserSet{
-			UserSet: &RelationUserSet{
-				ObjectId:  s.ObjectID,
-				Namespace: s.Namespace,
-			},
-		}
+func (r *InternalRelationTuple) ToGRPC() *acl.RelationTuple {
+	return &acl.RelationTuple{
+		Namespace: r.Namespace,
+		Object:    r.Object,
+		Relation:  r.Relation,
+		Subject:   r.Subject.ToGRPC(),
 	}
-
-	x.ObjectId = r.ObjectID
-	x.Namespace = r.Namespace
-	x.Relation = r.Relation
-	x.Subject = subject
-
-	return x
 }
 
-func (rq *RelationQuery) FromGRPC(query *ReadRelationTuplesRequest_Query) *RelationQuery {
-	var subject Subject
-	switch query.Subject.(type) {
-	case *ReadRelationTuplesRequest_Query_UserId:
-		subject = &UserID{
-			ID: query.GetUserId(),
-		}
-	case *ReadRelationTuplesRequest_Query_UserSet:
-		subject = &UserSet{
-			ObjectID:  query.GetUserSet().GetObjectId(),
-			Namespace: query.GetUserSet().GetNamespace(),
-			Relation:  query.GetUserSet().GetRelation(),
+func (r *InternalRelationTuple) FromURLQuery(query url.Values) (*InternalRelationTuple, error) {
+	if r == nil {
+		r = &InternalRelationTuple{}
+	}
+
+	if s := query.Get("subject"); s != "" {
+		var err error
+		r.Subject, err = SubjectFromString(s)
+		if err != nil {
+			return nil, err
 		}
 	}
 
-	rq.ObjectID = query.ObjectId
-	rq.Namespace = query.Namespace
-	rq.Relation = query.Relation
-	rq.Subject = subject
+	r.Object = query.Get("object")
+	r.Relation = query.Get("relation")
+	r.Namespace = query.Get("namespace")
 
-	return rq
+	return r, nil
+}
+
+func (q *RelationQuery) FromGRPC(query *acl.ListRelationTuplesRequest_Query) *RelationQuery {
+	return &RelationQuery{
+		Namespace: query.Namespace,
+		Object:    query.Object,
+		Relation:  query.Relation,
+		Subject:   SubjectFromGRPC(query.Subject),
+	}
+}
+
+func (q *RelationQuery) FromURLQuery(query url.Values) (*RelationQuery, error) {
+	if q == nil {
+		q = &RelationQuery{}
+	}
+
+	if s := query.Get("subject"); s != "" {
+		var err error
+		q.Subject, err = SubjectFromString(s)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	q.Object = query.Get("object")
+	q.Relation = query.Get("relation")
+	q.Namespace = query.Get("namespace")
+
+	return q, nil
+}
+
+func (q *RelationQuery) String() string {
+	return fmt.Sprintf("namespace: %s; object: %s; relation: %s; subject: %s", q.Namespace, q.Object, q.Relation, q.Subject)
 }
 
 func (r *InternalRelationTuple) Header() []string {
@@ -208,7 +276,7 @@ func (r *InternalRelationTuple) Header() []string {
 func (r *InternalRelationTuple) Fields() []string {
 	return []string{
 		r.Namespace,
-		r.ObjectID,
+		r.Object,
 		r.Relation,
 		r.Subject.String(),
 	}
@@ -218,7 +286,7 @@ func (r *InternalRelationTuple) Interface() interface{} {
 	return r
 }
 
-func NewGRPCRelationCollection(rels []*RelationTuple) cmdx.OutputCollection {
+func NewGRPCRelationCollection(rels []*acl.RelationTuple) cmdx.OutputCollection {
 	return &relationCollection{
 		grpcRelations: rels,
 	}
@@ -248,7 +316,7 @@ func (r *relationCollection) Table() [][]string {
 
 	data := make([][]string, len(r.internalRelations))
 	for i, rel := range r.internalRelations {
-		data[i] = []string{rel.Namespace, rel.ObjectID, rel.Relation, cmdx.None}
+		data[i] = []string{rel.Namespace, rel.Object, rel.Relation, cmdx.None}
 		if rel.Subject != nil {
 			data[i][1] = rel.Subject.String()
 		}
