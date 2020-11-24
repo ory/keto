@@ -94,10 +94,10 @@ func TestEngine(t *testing.T) {
 		e := check.NewEngine(reg)
 
 		res, err := e.SubjectIsAllowed(context.Background(), &relationtuple.InternalRelationTuple{
-			Relation: rel.Relation,
-			Object:   rel.Object,
+			Relation:  rel.Relation,
+			Object:    rel.Object,
 			Namespace: rel.Namespace,
-			Subject:  &relationtuple.SubjectID{ID: "not " + user.ID},
+			Subject:   &relationtuple.SubjectID{ID: "not " + user.ID},
 		})
 		require.NoError(t, err)
 		assert.False(t, res)
@@ -143,8 +143,9 @@ func TestEngine(t *testing.T) {
 			Relation:  "read",
 			Object:    diaryEntry,
 			Subject: &relationtuple.SubjectSet{
-				Relation: "author",
-				Object:   diaryEntry,
+				Relation:  "author",
+				Object:    diaryEntry,
+				Namespace: diaryNamespace,
 			},
 		}
 		user := relationtuple.InternalRelationTuple{
@@ -162,7 +163,7 @@ func TestEngine(t *testing.T) {
 
 		res, err := e.SubjectIsAllowed(context.Background(), &relationtuple.InternalRelationTuple{
 			Relation:  readDiary.Relation,
-			Object:  diaryEntry,
+			Object:    diaryEntry,
 			Namespace: diaryNamespace,
 			Subject:   user.Subject,
 		})
