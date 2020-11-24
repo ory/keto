@@ -11,6 +11,7 @@ require (
 	github.com/go-openapi/validate v0.19.3
 	github.com/go-swagger/go-swagger v0.21.1-0.20200107003254-1c98855b472d
 	github.com/gobuffalo/packr v1.24.1
+	github.com/golang/protobuf v1.4.3
 	github.com/gorilla/sessions v1.1.3
 	github.com/gorilla/websocket v1.4.2
 	github.com/julienschmidt/httprouter v1.2.0
