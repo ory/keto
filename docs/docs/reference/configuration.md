@@ -48,7 +48,7 @@ section.
 # - Windows Command Line (CMD):
 #    > set DSN=<value>
 #
-dsn: memory
+dsn: postgres://user:password@host:123/database
 
 ## HTTP REST API ##
 #
@@ -107,7 +107,7 @@ serve:
     # - Windows Command Line (CMD):
     #    > set SERVE_CORS_ENABLED=<value>
     #
-    enabled: true
+    enabled: false
 
     ## Allowed Origins ##
     #
@@ -127,7 +127,9 @@ serve:
     #    > set SERVE_CORS_ALLOWED_ORIGINS=<value>
     #
     allowed_origins:
-      - '*'
+      - https://example.com
+      - https://*.example.com
+      - https://*.foo.example.com
 
     ## Allowed HTTP Methods ##
     #
@@ -142,10 +144,7 @@ serve:
     #    > set SERVE_CORS_ALLOWED_METHODS=<value>
     #
     allowed_methods:
-      - DELETE
-      - POST
-      - HEAD
-      - TRACE
+      - GET
 
     ## Allowed Request HTTP Headers ##
     #
@@ -160,8 +159,7 @@ serve:
     #    > set SERVE_CORS_ALLOWED_HEADERS=<value>
     #
     allowed_headers:
-      - ut non exercitation nisi id
-      - commodo anim amet
+      - ''
 
     ## Allowed Response HTTP Headers ##
     #
@@ -176,9 +174,7 @@ serve:
     #    > set SERVE_CORS_EXPOSED_HEADERS=<value>
     #
     exposed_headers:
-      - aliqua
-      - laboris elit incididunt
-      - ut nulla enim
+      - ''
 
     ## Allow HTTP Credentials ##
     #
@@ -192,7 +188,7 @@ serve:
     # - Windows Command Line (CMD):
     #    > set SERVE_CORS_ALLOW_CREDENTIALS=<value>
     #
-    allow_credentials: true
+    allow_credentials: false
 
     ## Maximum Age ##
     #
@@ -204,7 +200,7 @@ serve:
     # - Windows Command Line (CMD):
     #    > set SERVE_CORS_MAX_AGE=<value>
     #
-    max_age: -13896768
+    max_age: -100000000
 
     ## Enable Debugging ##
     #
@@ -218,7 +214,7 @@ serve:
     # - Windows Command Line (CMD):
     #    > set SERVE_CORS_DEBUG=<value>
     #
-    debug: true
+    debug: false
 
   ## HTTPS ##
   #
@@ -286,7 +282,7 @@ serve:
 # - Windows Command Line (CMD):
 #    > set PROFILING=<value>
 #
-profiling: ''
+profiling: cpu
 
 ## Log ##
 #
@@ -313,7 +309,7 @@ log:
   # - Windows Command Line (CMD):
   #    > set LOG_LEVEL=<value>
   #
-  level: debug
+  level: panic
 
   ## Format ##
   #
@@ -331,7 +327,7 @@ log:
   # - Windows Command Line (CMD):
   #    > set LOG_FORMAT=<value>
   #
-  format: json
+  format: text
 
 ## tracing ##
 #
@@ -457,5 +453,5 @@ tracing:
 # - Windows Command Line (CMD):
 #    > set VERSION=<value>
 #
-version: v0.0.57390586-9JM7EK5.57466354Kybb-Kc5.808014P.327114U8.7243742071.735hY0n-adKt.0.414532309.76548.597.m+pA.NH.JmSMyrnDyq.p1vShA.3zlY63U1SI.DdO7HPQwVDH
+version: v0.0.0
 ```
