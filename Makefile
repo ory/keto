@@ -9,7 +9,7 @@ export PATH := .bin:${PATH}
 
 .PHONY: deps
 deps:
-ifneq ("$(shell base64 Makefile)","$(shell cat .bin/.lock)")
+ifneq ("$(shell base64 Makefile) $(shell base64 go.mod) $(shell base64 go.sum)","$(shell cat .bin/.lock)")
 		go build -o .bin/go-acc github.com/ory/go-acc
 		go build -o .bin/goreturns github.com/sqs/goreturns
 		go build -o .bin/mockgen github.com/golang/mock/mockgen
@@ -22,7 +22,7 @@ ifneq ("$(shell base64 Makefile)","$(shell cat .bin/.lock)")
 		go build -o .bin/protoc-gen-go google.golang.org/protobuf/cmd/protoc-gen-go
 		go build -o .bin/protoc-gen-go-grpc google.golang.org/grpc/cmd/protoc-gen-go-grpc
 		echo "v0" > .bin/.lock
-		echo "$$(base64 Makefile)" > .bin/.lock
+		echo "$$(base64 Makefile) $$(base64 go.mod) $$(base64 go.sum)" > .bin/.lock
 endif
 
 .PHONY: format
