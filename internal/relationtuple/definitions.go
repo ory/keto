@@ -172,8 +172,8 @@ func (r *InternalRelationTuple) String() string {
 func (r *InternalRelationTuple) DeriveSubject() Subject {
 	return &SubjectSet{
 		Namespace: r.Namespace,
-		Object:   r.Object,
-		Relation: r.Relation,
+		Object:    r.Object,
+		Relation:  r.Relation,
 	}
 }
 

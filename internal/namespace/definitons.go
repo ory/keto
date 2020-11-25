@@ -1,6 +1,10 @@
 package namespace
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"fmt"
+	"github.com/ory/x/cmdx"
+)
 
 type (
 	Namespace struct {
@@ -9,7 +13,8 @@ type (
 		Config json.RawMessage
 	}
 	Status struct {
-		Version int `db:"version"`
+		CurrentVersion int `json:"current_version" db:"version"`
+		NextVersion    int `json:"next_version" db:"-"`
 	}
 	Manager interface {
 		MigrateNamespaceUp(n *Namespace) error
@@ -19,3 +24,23 @@ type (
 		NamespaceManager() Manager
 	}
 )
+
+var _ cmdx.OutputEntry = &Status{}
+
+func (s *Status) Header() []string {
+	return []string{
+		"CURRENT VERSION",
+		"NEXT VERSION",
+	}
+}
+
+func (s *Status) Fields() []string {
+	return []string{
+		fmt.Sprintf("%d", s.CurrentVersion),
+		fmt.Sprintf("%d", s.NextVersion),
+	}
+}
+
+func (s *Status) Interface() interface{} {
+	return s
+}

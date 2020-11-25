@@ -3,6 +3,7 @@ package memory
 import (
 	"context"
 	"fmt"
+	"github.com/ory/keto/internal/persistence"
 	"strconv"
 
 	"github.com/ory/keto/internal/x"
@@ -87,7 +88,7 @@ func (p *Persister) GetRelationTuples(_ context.Context, query *relationtuple.Re
 
 	n, ok := p.namespaces[query.Namespace]
 	if !ok {
-		return nil, "-1", ErrNamespaceUnknown
+		return nil, "-1", persistence.ErrNamespaceUnknown
 	}
 
 	var res []*relationtuple.InternalRelationTuple
@@ -108,7 +109,7 @@ func (p *Persister) WriteRelationTuples(_ context.Context, rs ...*relationtuple.
 	for _, r := range rs {
 		n, ok := p.namespaces[r.Namespace]
 		if !ok {
-			return ErrNamespaceUnknown
+			return persistence.ErrNamespaceUnknown
 		}
 
 		p.relations[n.ID] = append(p.relations[n.ID], r)

@@ -21,7 +21,7 @@ import (
 const (
 	FlagSubject   = "subject"
 	FlagRelation  = "relation"
-	FlagObject  = "object"
+	FlagObject    = "object"
 	FlagNamespace = "namespace"
 )
 
@@ -39,8 +39,8 @@ func readQueryFromFlags(cmd *cobra.Command) (*acl.ListRelationTuplesRequest_Quer
 	namespace := flagx.MustGetString(cmd, FlagNamespace)
 
 	query := &acl.ListRelationTuplesRequest_Query{
-		Relation: relation,
-		Object:   object,
+		Relation:  relation,
+		Object:    object,
 		Namespace: namespace,
 	}
 

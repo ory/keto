@@ -61,7 +61,7 @@ func (r *RegistryDefault) Init() error {
 			continue
 		}
 
-		r.l.Infof("Namespace %s is migrated to version %d.", n.Name, s.Version)
+		r.l.Infof("Namespace %s is migrated to version %d.", n.Name, s.CurrentVersion)
 	}
 
 	return nil

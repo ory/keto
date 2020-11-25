@@ -1,7 +1,6 @@
 package memory
 
 import (
-	"errors"
 	"sync"
 
 	"github.com/ory/keto/internal/namespace"
@@ -9,11 +8,7 @@ import (
 	"github.com/ory/keto/internal/relationtuple"
 )
 
-const mostRecentNamespaceVersion = 0
-
-var (
-	ErrNamespaceUnknown = errors.New("namespace unknown")
-)
+const mostRecentNamespaceVersion = 1
 
 type Persister struct {
 	sync.RWMutex

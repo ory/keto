@@ -15,7 +15,10 @@
 package cmd
 
 import (
+	"errors"
 	"fmt"
+	"github.com/ory/keto/cmd/namespace"
+	"github.com/ory/x/cmdx"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -49,7 +52,9 @@ var logger = new(logrusx.Logger)
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
 	if err := RootCmd.Execute(); err != nil {
-		fmt.Println(err)
+		if !errors.Is(err, cmdx.ErrNoPrintButFail) {
+			fmt.Println(err)
+		}
 		os.Exit(-1)
 	}
 }
@@ -67,6 +72,8 @@ func init() {
 	RootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 
 	relationtuple.RegisterCommandRecursive(RootCmd)
+
+	namespace.RegisterCommandsRecursive(RootCmd)
 }
 
 // initConfig reads in config file and ENV variables if set.

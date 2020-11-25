@@ -1,6 +1,9 @@
 package memory
 
-import "github.com/ory/keto/internal/namespace"
+import (
+	"github.com/ory/keto/internal/namespace"
+	"github.com/ory/keto/internal/persistence"
+)
 
 var _ namespace.Manager = &Persister{}
 
@@ -16,8 +19,8 @@ func (p *Persister) MigrateNamespaceUp(n *namespace.Namespace) error {
 		p.namespaces[n.Name] = &nc
 	}
 
-	if currStatus.Version < mostRecentNamespaceVersion {
-		currStatus.Version = mostRecentNamespaceVersion
+	if currStatus.CurrentVersion < mostRecentNamespaceVersion {
+		currStatus.CurrentVersion = mostRecentNamespaceVersion
 	}
 
 	return nil
@@ -29,9 +32,10 @@ func (p *Persister) NamespaceStatus(n *namespace.Namespace) (*namespace.Status, 
 
 	s, ok := p.namespacesStatus[n.ID]
 	if !ok {
-		return nil, ErrNamespaceUnknown
+		return nil, persistence.ErrNamespaceUnknown
 	}
 
 	sc := *s
+	sc.NextVersion = mostRecentNamespaceVersion
 	return &sc, nil
 }
