@@ -17,12 +17,14 @@ package cmd
 import (
 	"errors"
 	"fmt"
-	"github.com/ory/keto/cmd/namespace"
-	"github.com/ory/x/cmdx"
 	"os"
 	"path/filepath"
 	"runtime"
 	"strings"
+
+	"github.com/ory/x/cmdx"
+
+	"github.com/ory/keto/cmd/namespace"
 
 	"github.com/ory/keto/cmd/relationtuple"
 

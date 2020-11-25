@@ -10,21 +10,23 @@ require (
 	github.com/go-openapi/swag v0.19.5
 	github.com/go-openapi/validate v0.19.3
 	github.com/go-swagger/go-swagger v0.21.1-0.20200107003254-1c98855b472d
-	github.com/gobuffalo/packr v1.24.1
+	github.com/gobuffalo/packr v1.24.1 // indirect
 	github.com/golang/protobuf v1.4.2
 	github.com/gorilla/sessions v1.1.3
 	github.com/gorilla/websocket v1.4.2
 	github.com/julienschmidt/httprouter v1.2.0
-	github.com/ory/analytics-go/v4 v4.0.1
+	github.com/markbates/pkger v0.17.0
 	github.com/ory/cli v0.0.11
 	github.com/ory/go-acc v0.2.3
 	github.com/ory/graceful v0.1.1
 	github.com/ory/herodot v0.9.1
+	github.com/ory/jsonschema/v3 v3.0.1
 	github.com/ory/viper v1.7.5
 	github.com/ory/x v0.0.154
 	github.com/pkg/errors v0.9.1
 	github.com/rs/cors v1.6.0
 	github.com/rubenv/sql-migrate v0.0.0-20190327083759-54bad0a9b051 // indirect
+	github.com/segmentio/objconv v1.0.1
 	github.com/shopspring/decimal v1.2.0 // indirect
 	github.com/sirupsen/logrus v1.6.0
 	github.com/spf13/cobra v1.0.0
@@ -34,7 +36,6 @@ require (
 	github.com/stretchr/testify v1.5.1
 	github.com/tidwall/gjson v1.6.0
 	github.com/tidwall/sjson v1.1.1 // indirect
-	github.com/urfave/negroni v1.0.0
 	go.mongodb.org/mongo-driver v1.3.4 // indirect
 	golang.org/x/lint v0.0.0-20200302205851-738671d3881b // indirect
 	golang.org/x/tools v0.0.0-20200401192744-099440627f01

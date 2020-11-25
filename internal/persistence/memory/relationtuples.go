@@ -3,8 +3,9 @@ package memory
 import (
 	"context"
 	"fmt"
-	"github.com/ory/keto/internal/persistence"
 	"strconv"
+
+	"github.com/ory/keto/internal/persistence"
 
 	"github.com/ory/keto/internal/x"
 

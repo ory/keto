@@ -4,7 +4,7 @@ package main
 
 import (
 	_ "github.com/go-swagger/go-swagger/cmd/swagger"
-	_ "github.com/gobuffalo/packr/packr"
+	_ "github.com/markbates/pkger"
 	_ "github.com/sqs/goreturns"
 	_ "golang.org/x/tools/cmd/cover"
 	_ "golang.org/x/tools/cmd/goimports"

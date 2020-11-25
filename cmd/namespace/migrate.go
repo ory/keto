@@ -3,27 +3,26 @@ package namespace
 import (
 	"errors"
 	"fmt"
-	"github.com/ghodss/yaml"
-	"github.com/ory/keto/internal/driver"
-	"github.com/ory/keto/internal/namespace"
-	"github.com/ory/keto/internal/persistence"
+
 	"github.com/ory/x/cmdx"
 	"github.com/ory/x/flagx"
 	"github.com/ory/x/logrusx"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
-	"io/ioutil"
+
+	"github.com/ory/keto/internal/driver"
+	"github.com/ory/keto/internal/persistence"
 )
 
 func NewMigrateCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "migrate <namespaces-file.yml>",
+		Use:   "migrate <namespaces.yml>",
 		Short: "Migrate a namespace up.",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			d := driver.NewDefaultDriver(logrusx.New("keto", "master"), "master", "local", "today")
 
-			n, err := getNamespace(cmd, args[0])
+			n, err := validateNamespaceFile(cmd, args[0])
 			if err != nil {
 				return err
 			}
@@ -77,20 +76,4 @@ const YesFlag = "yes"
 
 func registerYesFlag(flags *pflag.FlagSet) {
 	flags.BoolP(YesFlag, YesFlag[:1], false, "answer all questions with yes")
-}
-
-func getNamespace(cmd *cobra.Command, fn string) (*namespace.Namespace, error) {
-	fc, err := ioutil.ReadFile(fn)
-	if err != nil {
-		_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not read file \"%s\": %+v\n", fn, err)
-		return nil, cmdx.FailSilently(cmd)
-	}
-
-	var n namespace.Namespace
-	if err := yaml.Unmarshal(fc, &n); err != nil {
-		_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not parse namespace from \"%s\": %+v\n", fn, err)
-		return nil, cmdx.FailSilently(cmd)
-	}
-
-	return &n, err
 }
