@@ -4,6 +4,8 @@ import (
 	"context"
 	"testing"
 
+	"github.com/ory/keto/internal/namespace"
+
 	"github.com/ory/keto/internal/relationtuple"
 
 	"github.com/ory/keto/internal/check"
@@ -24,6 +26,7 @@ func TestEngine(t *testing.T) {
 		}
 
 		reg := &driver.RegistryDefault{}
+		require.NoError(t, reg.NamespaceManager().MigrateNamespaceUp(&namespace.Namespace{Name: rel.Namespace}))
 		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), &rel))
 
 		e := check.NewEngine(reg)
@@ -58,6 +61,7 @@ func TestEngine(t *testing.T) {
 		}
 
 		reg := &driver.RegistryDefault{}
+		require.NoError(t, reg.NamespaceManager().MigrateNamespaceUp(&namespace.Namespace{Name: sofaNamespace}))
 		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), &cleaningRelation, &markProducesDust))
 
 		e := check.NewEngine(reg)
@@ -84,14 +88,16 @@ func TestEngine(t *testing.T) {
 		}
 
 		reg := &driver.RegistryDefault{}
+		require.NoError(t, reg.NamespaceManager().MigrateNamespaceUp(&namespace.Namespace{Name: rel.Namespace}))
 		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), &rel))
 
 		e := check.NewEngine(reg)
 
 		res, err := e.SubjectIsAllowed(context.Background(), &relationtuple.InternalRelationTuple{
-			Relation: rel.Relation,
-			Object:   rel.Object,
-			Subject:  &relationtuple.SubjectID{ID: "not " + user.ID},
+			Relation:  rel.Relation,
+			Object:    rel.Object,
+			Namespace: rel.Namespace,
+			Subject:   &relationtuple.SubjectID{ID: "not " + user.ID},
 		})
 		require.NoError(t, err)
 		assert.False(t, res)
@@ -114,6 +120,7 @@ func TestEngine(t *testing.T) {
 		}
 
 		reg := &driver.RegistryDefault{}
+		require.NoError(t, reg.NamespaceManager().MigrateNamespaceUp(&namespace.Namespace{Name: ""}))
 		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), &access, &user))
 
 		e := check.NewEngine(reg)
@@ -136,8 +143,9 @@ func TestEngine(t *testing.T) {
 			Relation:  "read",
 			Object:    diaryEntry,
 			Subject: &relationtuple.SubjectSet{
-				Relation: "author",
-				Object:   diaryEntry,
+				Relation:  "author",
+				Object:    diaryEntry,
+				Namespace: diaryNamespace,
 			},
 		}
 		user := relationtuple.InternalRelationTuple{
@@ -148,14 +156,16 @@ func TestEngine(t *testing.T) {
 		}
 
 		reg := &driver.RegistryDefault{}
+		require.NoError(t, reg.NamespaceManager().MigrateNamespaceUp(&namespace.Namespace{Name: diaryNamespace}))
 		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), &readDiary, &user))
 
 		e := check.NewEngine(reg)
 
 		res, err := e.SubjectIsAllowed(context.Background(), &relationtuple.InternalRelationTuple{
-			Relation: readDiary.Relation,
-			Object:   diaryEntry,
-			Subject:  user.Subject,
+			Relation:  readDiary.Relation,
+			Object:    diaryEntry,
+			Namespace: diaryNamespace,
+			Subject:   user.Subject,
 		})
 		require.NoError(t, err)
 		assert.False(t, res)
@@ -201,6 +211,8 @@ func TestEngine(t *testing.T) {
 		}
 
 		reg := &driver.RegistryDefault{}
+		require.NoError(t, reg.NamespaceManager().MigrateNamespaceUp(&namespace.Namespace{Name: someNamespace, ID: 0}))
+		require.NoError(t, reg.NamespaceManager().MigrateNamespaceUp(&namespace.Namespace{Name: orgNamespace, ID: 1}))
 		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), &writeRel, &orgOwnerRel, &userMembershipRel))
 
 		e := check.NewEngine(reg)
@@ -251,9 +263,8 @@ func TestEngine(t *testing.T) {
 		}
 
 		reg := &driver.RegistryDefault{}
-		for _, r := range []*relationtuple.InternalRelationTuple{&parent, &directoryAccess} {
-			require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), r))
-		}
+		require.NoError(t, reg.NamespaceManager().MigrateNamespaceUp(&namespace.Namespace{Name: ""}))
+		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), &parent, &directoryAccess))
 
 		e := check.NewEngine(reg)
 

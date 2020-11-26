@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/ory/keto/internal/persistence"
+
 	"github.com/ory/keto/internal/x"
 
 	"github.com/ory/keto/internal/relationtuple"
@@ -85,8 +87,13 @@ func (p *Persister) GetRelationTuples(_ context.Context, query *relationtuple.Re
 
 	filter := buildRelationQueryFilter(query)
 
+	n, ok := p.namespaces[query.Namespace]
+	if !ok {
+		return nil, "-1", persistence.ErrNamespaceUnknown
+	}
+
 	var res []*relationtuple.InternalRelationTuple
-	for _, r := range p.relations {
+	for _, r := range p.relations[n.ID] {
 		if filter(r) {
 			// If one filter matches add relation to response
 			res = append(res, r)
@@ -100,6 +107,13 @@ func (p *Persister) WriteRelationTuples(_ context.Context, rs ...*relationtuple.
 	p.Lock()
 	defer p.Unlock()
 
-	p.relations = append(p.relations, rs...)
+	for _, r := range rs {
+		n, ok := p.namespaces[r.Namespace]
+		if !ok {
+			return persistence.ErrNamespaceUnknown
+		}
+
+		p.relations[n.ID] = append(p.relations[n.ID], r)
+	}
 	return nil
 }

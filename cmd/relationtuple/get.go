@@ -19,25 +19,29 @@ import (
 )
 
 const (
-	FlagSubject  = "subject"
-	FlagRelation = "relation"
-	FlagObject   = "object"
+	FlagSubject   = "subject"
+	FlagRelation  = "relation"
+	FlagObject    = "object"
+	FlagNamespace = "namespace"
 )
 
 func registerRelationTupleFlags(flags *pflag.FlagSet) {
 	flags.String(FlagSubject, "", "Set the requested subject")
 	flags.String(FlagRelation, "", "Set the requested relation")
 	flags.String(FlagObject, "", "Set the requested object")
+	flags.String(FlagNamespace, "", "Set the requested namespace")
 }
 
 func readQueryFromFlags(cmd *cobra.Command) (*acl.ListRelationTuplesRequest_Query, error) {
 	subject := flagx.MustGetString(cmd, FlagSubject)
 	relation := flagx.MustGetString(cmd, FlagRelation)
 	object := flagx.MustGetString(cmd, FlagObject)
+	namespace := flagx.MustGetString(cmd, FlagNamespace)
 
 	query := &acl.ListRelationTuplesRequest_Query{
-		Relation: relation,
-		Object:   object,
+		Relation:  relation,
+		Object:    object,
+		Namespace: namespace,
 	}
 
 	s, err := relationtuple.SubjectFromString(subject)

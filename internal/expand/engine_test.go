@@ -4,6 +4,8 @@ import (
 	"context"
 	"testing"
 
+	"github.com/ory/keto/internal/namespace"
+
 	"github.com/ory/keto/internal/relationtuple"
 
 	"github.com/ory/keto/internal/expand"
@@ -55,6 +57,7 @@ func TestEngine(t *testing.T) {
 		}
 		reg, e := newTestEngine(t)
 
+		require.NoError(t, reg.NamespaceManager().MigrateNamespaceUp(&namespace.Namespace{Name: ""}))
 		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), boulderers...))
 
 		tree, err := e.BuildTree(context.Background(), bouldererUserSet, 100)
@@ -129,6 +132,8 @@ func TestEngine(t *testing.T) {
 			},
 		}
 
+		require.NoError(t, reg.NamespaceManager().MigrateNamespaceUp(&namespace.Namespace{Name: ""}))
+
 		for _, group := range expectedTree.Children {
 			require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), &relationtuple.InternalRelationTuple{
 				Object:   expectedTree.Subject.(*relationtuple.SubjectSet).Object,
@@ -155,6 +160,8 @@ func TestEngine(t *testing.T) {
 
 	t.Run("case=respects max depth", func(t *testing.T) {
 		reg, e := newTestEngine(t)
+		require.NoError(t, reg.NamespaceManager().MigrateNamespaceUp(&namespace.Namespace{Name: ""}))
+
 		root := "root"
 		prev := root
 		for _, sub := range []string{"0", "1", "2", "3"} {

@@ -166,14 +166,14 @@ func (s *SubjectSet) Equals(v interface{}) bool {
 }
 
 func (r *InternalRelationTuple) String() string {
-	return fmt.Sprintf("%s:%s#%s@%s", r.Object, r.Namespace, r.Relation, r.Subject)
+	return fmt.Sprintf("%s:%s#%s@%s", r.Namespace, r.Object, r.Relation, r.Subject)
 }
 
 func (r *InternalRelationTuple) DeriveSubject() Subject {
 	return &SubjectSet{
-		// TODO check if this should be copied
-		Object:   r.Object,
-		Relation: r.Relation,
+		Namespace: r.Namespace,
+		Object:    r.Object,
+		Relation:  r.Relation,
 	}
 }
 

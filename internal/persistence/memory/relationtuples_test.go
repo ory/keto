@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/ory/keto/internal/namespace"
+
 	"github.com/ory/keto/internal/relationtuple"
 
 	"github.com/stretchr/testify/assert"
@@ -42,6 +44,10 @@ func newTestSetup(t *testing.T) (p *Persister, rel1, rel2, rel3, rel4 *relationt
 		Subject:   &relationtuple.SubjectID{ID: "rel4 user"},
 	}
 
+	require.NoError(t, p.MigrateNamespaceUp(&namespace.Namespace{Name: rel1.Namespace, ID: 0}))
+	require.NoError(t, p.MigrateNamespaceUp(&namespace.Namespace{Name: rel2.Namespace, ID: 1}))
+	require.NoError(t, p.MigrateNamespaceUp(&namespace.Namespace{Name: rel3.Namespace, ID: 2}))
+	require.NoError(t, p.MigrateNamespaceUp(&namespace.Namespace{Name: rel4.Namespace, ID: 3}))
 	require.NoError(t, p.WriteRelationTuples(context.Background(), rel1, rel2, rel3, rel4))
 	return
 }
