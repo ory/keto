@@ -5,7 +5,12 @@ import (
 
 	"github.com/gobuffalo/pop/v5"
 	"github.com/ory/herodot"
+	"github.com/ory/x/healthx"
 	"github.com/ory/x/logrusx"
+	"github.com/ory/x/tracing"
+
+	"github.com/ory/keto/internal/driver/configuration"
+	"github.com/ory/keto/internal/namespace"
 
 	"github.com/ory/keto/internal/namespace"
 	"github.com/ory/keto/internal/persistence/sql"
@@ -23,6 +28,7 @@ import (
 var _ relationtuple.ManagerProvider = &RegistryDefault{}
 var _ x.WriterProvider = &RegistryDefault{}
 var _ x.LoggerProvider = &RegistryDefault{}
+var _ Registry = &RegistryDefault{}
 
 type RegistryDefault struct {
 	p    *sql.Persister
@@ -31,6 +37,7 @@ type RegistryDefault struct {
 	ce   *check.Engine
 	ee   *expand.Engine
 	conn *pop.Connection
+	c  configuration.Provider
 }
 
 func (r *RegistryDefault) Logger() *logrusx.Logger {
@@ -52,6 +59,13 @@ func (r *RegistryDefault) RelationTupleManager() relationtuple.Manager {
 }
 
 func (r *RegistryDefault) NamespaceManagerProvider() namespace.Manager {
+	return r.p
+}
+
+func (r *RegistryDefault) NamespaceManager() namespace.Manager {
+	if r.p == nil {
+		r.p = memory.NewPersister()
+	}
 	return r.p
 }
 

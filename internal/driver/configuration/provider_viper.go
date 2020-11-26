@@ -2,6 +2,13 @@ package configuration
 
 import (
 	"fmt"
+	"io/ioutil"
+	"path/filepath"
+	"strings"
+
+	"github.com/ghodss/yaml"
+
+	"github.com/ory/keto/internal/namespace"
 
 	"github.com/rs/cors"
 
@@ -12,9 +19,12 @@ import (
 )
 
 const (
-	ViperKeyDSN  = "dsn"
+	ViperKeyDSN = "dsn"
+
 	ViperKeyHost = "serve.host"
 	ViperKeyPort = "serve.port"
+
+	ViperKeyNamespacePath = "namespaces.dir_path"
 )
 
 type ViperProvider struct {
@@ -42,7 +52,7 @@ func (v *ViperProvider) CORSOptions() cors.Options {
 }
 
 func (v *ViperProvider) DSN() string {
-	return viperx.GetString(v.l, ViperKeyDSN, "", "DATABASE_URL")
+	return viperx.GetString(v.l, ViperKeyDSN, "memory", "DATABASE_URL")
 }
 
 func (v *ViperProvider) TracingServiceName() string {
@@ -60,4 +70,40 @@ func (v *ViperProvider) TracingJaegerConfig() *tracing.JaegerConfig {
 		SamplerValue:       viperx.GetFloat64(v.l, "tracing.providers.jaeger.sampling.value", float64(1), "TRACING_PROVIDER_JAEGER_SAMPLING_VALUE"),
 		SamplerServerURL:   viperx.GetString(v.l, "tracing.providers.jaeger.sampling.server_url", "", "TRACING_PROVIDER_JAEGER_SAMPLING_SERVER_URL"),
 	}
+}
+
+func (v *ViperProvider) Namespaces() []*namespace.Namespace {
+	namespaceDir := viperx.GetString(v.l, ViperKeyNamespacePath, "./keto-namespaces")
+
+	infos, err := ioutil.ReadDir(namespaceDir)
+	if err != nil {
+		v.l.WithError(err).Errorf("Could no read namespace directory %s.", namespaceDir)
+		return nil
+	}
+
+	var namespaces []*namespace.Namespace
+	for _, info := range infos {
+		fn := info.Name()
+
+		if info.IsDir() || !(strings.HasSuffix(fn, ".yaml") || strings.HasSuffix(fn, ".yml") || strings.HasSuffix(fn, ".json")) {
+			v.l.Infof("Skipping file %s in namespace directory because it is not *.{yaml|yml|json}", fn)
+			continue
+		}
+
+		fc, err := ioutil.ReadFile(filepath.Join(namespaceDir, fn))
+		if err != nil {
+			v.l.WithError(err).Errorf("Could not read namespace file %s.", fn)
+			continue
+		}
+
+		namesp := namespace.Namespace{}
+		if err := yaml.Unmarshal(fc, &namesp); err != nil {
+			v.l.WithError(err).Errorf("Could not unmarshal namespace file %s.", fn)
+			continue
+		}
+
+		namespaces = append(namespaces, &namesp)
+	}
+
+	return namespaces
 }

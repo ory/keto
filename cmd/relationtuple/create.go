@@ -7,6 +7,8 @@ import (
 	"io"
 	"os"
 
+	acl "github.com/ory/keto/api/keto/acl/v1alpha1"
+
 	"github.com/ory/keto/internal/relationtuple"
 
 	"github.com/spf13/cobra"
@@ -44,9 +46,16 @@ func newCreateCmd() *cobra.Command {
 				return cmdx.FailSilently(cmd)
 			}
 
-			cl := relationtuple.NewRelationTupleServiceClient(conn)
+			cl := acl.NewWriteServiceClient(conn)
 
-			_, err = cl.WriteRelationTuple(context.Background(), &relationtuple.WriteRelationTupleRequest{Tuple: (&relationtuple.RelationTuple{}).FromInternal(&r)})
+			_, err = cl.WriteRelationTuples(context.Background(), &acl.WriteRelationTuplesRequest{
+				RelationTupleDeltas: []*acl.RelationTupleWriteDelta{
+					{
+						Action:        acl.RelationTupleWriteDelta_INSERT,
+						RelationTuple: r.ToGRPC(),
+					},
+				},
+			})
 			if err != nil {
 				_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Error doing the request: %s\n", err)
 				return cmdx.FailSilently(cmd)

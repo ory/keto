@@ -3,10 +3,10 @@ package relationtuple
 import (
 	"context"
 	"fmt"
-	"strings"
 
 	"github.com/ory/x/flagx"
 
+	acl "github.com/ory/keto/api/keto/acl/v1alpha1"
 	"github.com/ory/keto/internal/relationtuple"
 
 	"github.com/spf13/pflag"
@@ -21,50 +21,35 @@ import (
 const (
 	FlagSubject   = "subject"
 	FlagRelation  = "relation"
-	FlagObjectID  = "object"
+	FlagObject    = "object"
 	FlagNamespace = "namespace"
 )
 
 func registerRelationTupleFlags(flags *pflag.FlagSet) {
 	flags.String(FlagSubject, "", "Set the requested subject")
 	flags.String(FlagRelation, "", "Set the requested relation")
-	flags.String(FlagObjectID, "", "Set the requested object ID")
+	flags.String(FlagObject, "", "Set the requested object")
 	flags.String(FlagNamespace, "", "Set the requested namespace")
 }
 
-func readQueryFromFlags(cmd *cobra.Command) (*relationtuple.ReadRelationTuplesRequest_Query, error) {
-	subject, err := cmd.Flags().GetString(FlagSubject)
-	if err != nil {
-		return nil, err
-	}
-	relation, err := cmd.Flags().GetString(FlagRelation)
-	if err != nil {
-		return nil, err
-	}
-	objectID, err := cmd.Flags().GetString(FlagObjectID)
-	if err != nil {
-		return nil, err
-	}
+func readQueryFromFlags(cmd *cobra.Command) (*acl.ListRelationTuplesRequest_Query, error) {
+	subject := flagx.MustGetString(cmd, FlagSubject)
+	relation := flagx.MustGetString(cmd, FlagRelation)
+	object := flagx.MustGetString(cmd, FlagObject)
+	namespace := flagx.MustGetString(cmd, FlagNamespace)
 
-	query := &relationtuple.ReadRelationTuplesRequest_Query{
+	query := &acl.ListRelationTuplesRequest_Query{
 		Relation:  relation,
-		ObjectId:  objectID,
-		Namespace: flagx.MustGetString(cmd, FlagNamespace),
+		Object:    object,
+		Namespace: namespace,
 	}
 
-	subjectParts := strings.Split(subject, "#")
-	if len(subjectParts) == 2 {
-		query.Subject = &relationtuple.ReadRelationTuplesRequest_Query_UserSet{
-			UserSet: &relationtuple.RelationUserSet{
-				Object:   (&relationtuple.RelationObject{}).FromString(subjectParts[0]),
-				Relation: subjectParts[1],
-			},
-		}
-	} else {
-		query.Subject = &relationtuple.ReadRelationTuplesRequest_Query_UserId{
-			UserId: subject,
-		}
+	s, err := relationtuple.SubjectFromString(subject)
+	if err != nil {
+		return nil, err
 	}
+
+	query.Subject = s.ToGRPC()
 
 	return query, nil
 }
@@ -80,22 +65,22 @@ func newGetCmd() *cobra.Command {
 			}
 			defer conn.Close()
 
-			cl := relationtuple.NewRelationTupleServiceClient(conn)
+			cl := acl.NewReadServiceClient(conn)
 			query, err := readQueryFromFlags(cmd)
 			if err != nil {
 				return err
 			}
-			resp, err := cl.ReadRelationTuples(context.Background(), &relationtuple.ReadRelationTuplesRequest{
-				Query:   query,
-				Page:    0,
-				PerPage: 100,
+
+			resp, err := cl.ListRelationTuples(context.Background(), &acl.ListRelationTuplesRequest{
+				Query:    query,
+				PageSize: 100,
 			})
 			if err != nil {
 				_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not make request: %s\n", err)
 				return err
 			}
 
-			cmdx.PrintCollection(cmd, relationtuple.NewGRPCRelationCollection(resp.Tuples))
+			cmdx.PrintCollection(cmd, relationtuple.NewGRPCRelationCollection(resp.RelationTuples))
 			return nil
 		},
 	}

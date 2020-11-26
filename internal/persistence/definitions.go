@@ -2,6 +2,7 @@ package persistence
 
 import (
 	"context"
+	"errors"
 
 	"github.com/ory/keto/internal/namespace"
 
@@ -16,3 +17,7 @@ type Persister interface {
 type Migrator interface {
 	MigrateUp(ctx context.Context) error
 }
+
+var (
+	ErrNamespaceUnknown = errors.New("namespace unknown")
+)

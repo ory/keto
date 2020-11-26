@@ -9,23 +9,25 @@ export PATH := .bin:${PATH}
 
 .PHONY: deps
 deps:
-ifneq ("$(shell base64 Makefile))","$(shell cat .bin/.lock)")
+ifneq ("$(shell base64 Makefile) $(shell base64 go.mod) $(shell base64 go.sum)","$(shell cat .bin/.lock)")
 		go build -o .bin/go-acc github.com/ory/go-acc
 		go build -o .bin/goreturns github.com/sqs/goreturns
-		go build -o .bin/listx github.com/ory/x/tools/listx
 		go build -o .bin/mockgen github.com/golang/mock/mockgen
 		go build -o .bin/swagger github.com/go-swagger/go-swagger/cmd/swagger
 		go build -o .bin/goimports golang.org/x/tools/cmd/goimports
 		go build -o .bin/ory github.com/ory/cli
 		go build -o .bin/packr github.com/gobuffalo/packr/packr
 		go build -o .bin/go-bindata github.com/go-bindata/go-bindata/go-bindata
+		go build -o .bin/buf github.com/bufbuild/buf/cmd/buf
+		go build -o .bin/protoc-gen-go google.golang.org/protobuf/cmd/protoc-gen-go
+		go build -o .bin/protoc-gen-go-grpc google.golang.org/grpc/cmd/protoc-gen-go-grpc
 		echo "v0" > .bin/.lock
-		echo "$$(base64 Makefile)" > .bin/.lock
+		echo "$$(base64 Makefile) $$(base64 go.mod) $$(base64 go.sum)" > .bin/.lock
 endif
 
 .PHONY: format
 format:
-		goimports -w -local github.com/ory/keto $$(listx .)
+		goimports -w -local github.com/ory/keto *.go internal cmd
 
 .PHONY: install-stable
 install-stable: deps
@@ -64,6 +66,31 @@ docker: deps
 		rm keto
 		packr clean
 
-.PHONY: gen-protobuf
-gen-protobuf:
-		protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative relationtuple/*.proto
+#
+# Generate APIs and client stubs from the definitions
+#
+.PHONY: buf-gen
+buf-gen: deps
+		buf generate \
+		--config buf/api/buf.yaml \
+		--template buf/api/buf.gen.yaml \
+		&& \
+		echo "TODO: generate gapic client at ./client" \
+		&& \
+		echo "All code was generated successfully!"
+
+#
+# Lint API definitions
+#
+.PHONY: buf-lint
+buf-lint: deps
+		buf check lint \
+		--config buf/api/buf.yaml \
+		&& \
+		echo "All lint checks passed successfully!"
+
+#
+# Generate after linting succeeded
+#
+.PHONY: buf
+buf: buf-lint buf-gen

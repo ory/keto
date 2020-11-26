@@ -4,7 +4,7 @@ package main
 
 import (
 	_ "github.com/go-swagger/go-swagger/cmd/swagger"
-	_ "github.com/gobuffalo/packr/packr"
+	_ "github.com/markbates/pkger"
 	_ "github.com/sqs/goreturns"
 	_ "golang.org/x/tools/cmd/cover"
 	_ "golang.org/x/tools/cmd/goimports"
@@ -16,4 +16,9 @@ import (
 	_ "github.com/ory/cli"
 	_ "github.com/ory/go-acc"
 	_ "github.com/ory/x/tools/listx"
+
+	// Protobuf and gRPC related tools
+	_ "github.com/bufbuild/buf/cmd/buf"
+	_ "google.golang.org/grpc/cmd/protoc-gen-go-grpc"
+	_ "google.golang.org/protobuf/cmd/protoc-gen-go"
 )

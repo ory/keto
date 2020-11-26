@@ -16,18 +16,15 @@ import (
 	"github.com/ory/keto/internal/driver"
 )
 
-func newTestEngine(t *testing.T) (*driver.RegistryDefault, *expand.Engine) {
+func newTestEngine(_ *testing.T) (*driver.RegistryDefault, *expand.Engine) {
 	reg := &driver.RegistryDefault{}
-	require.NoError(t, reg.Init())
-
 	e := expand.NewEngine(reg)
-
 	return reg, e
 }
 
 func TestEngine(t *testing.T) {
-	t.Run("case=returns UserID on expand", func(t *testing.T) {
-		user := &relationtuple.UserID{ID: "user"}
+	t.Run("case=returns SubjectID on expand", func(t *testing.T) {
+		user := &relationtuple.SubjectID{ID: "user"}
 		_, e := newTestEngine(t)
 
 		tree, err := e.BuildTree(context.Background(), user, 100)
@@ -39,13 +36,10 @@ func TestEngine(t *testing.T) {
 	})
 
 	t.Run("case=expands one level", func(t *testing.T) {
-		tommy := &relationtuple.UserID{ID: "Tommy"}
-		paul := &relationtuple.UserID{ID: "Paul"}
-		boulderGroup := &relationtuple.Object{
-			ID:        "boulder group",
-			Namespace: "default",
-		}
-		bouldererUserSet := &relationtuple.UserSet{
+		tommy := &relationtuple.SubjectID{ID: "Tommy"}
+		paul := &relationtuple.SubjectID{ID: "Paul"}
+		boulderGroup := "boulder group"
+		bouldererUserSet := &relationtuple.SubjectSet{
 			Relation: "member",
 			Object:   boulderGroup,
 		}
@@ -62,8 +56,8 @@ func TestEngine(t *testing.T) {
 			},
 		}
 		reg, e := newTestEngine(t)
-		require.NoError(t, reg.NamespaceManagerProvider().NewNamespace(context.Background(), &namespace.Namespace{Name: boulderGroup.Namespace}))
 
+		require.NoError(t, reg.NamespaceManager().MigrateNamespaceUp(&namespace.Namespace{Name: ""}))
 		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), boulderers...))
 
 		tree, err := e.BuildTree(context.Background(), bouldererUserSet, 100)
@@ -86,76 +80,75 @@ func TestEngine(t *testing.T) {
 
 	t.Run("case=expands two levels", func(t *testing.T) {
 		reg, e := newTestEngine(t)
-		namesp := "default"
 		expectedTree := &expand.Tree{
 			Type: expand.Union,
-			Subject: &relationtuple.UserSet{
-				Object:   &relationtuple.Object{ID: "z", Namespace: namesp},
+			Subject: &relationtuple.SubjectSet{
+				Object:   "z",
 				Relation: "transitive member",
 			},
 			Children: []*expand.Tree{
 				{
 					Type: expand.Union,
-					Subject: &relationtuple.UserSet{
-						Object:   &relationtuple.Object{ID: "x", Namespace: namesp},
+					Subject: &relationtuple.SubjectSet{
+						Object:   "x",
 						Relation: "member",
 					},
 					Children: []*expand.Tree{
 						{
 							Type:    expand.Leaf,
-							Subject: &relationtuple.UserID{ID: "a"},
+							Subject: &relationtuple.SubjectID{ID: "a"},
 						},
 						{
 							Type:    expand.Leaf,
-							Subject: &relationtuple.UserID{ID: "b"},
+							Subject: &relationtuple.SubjectID{ID: "b"},
 						},
 						{
 							Type:    expand.Leaf,
-							Subject: &relationtuple.UserID{ID: "c"},
+							Subject: &relationtuple.SubjectID{ID: "c"},
 						},
 					},
 				},
 				{
 					Type: expand.Union,
-					Subject: &relationtuple.UserSet{
-						Object:   &relationtuple.Object{ID: "y", Namespace: namesp},
+					Subject: &relationtuple.SubjectSet{
+						Object:   "y",
 						Relation: "member",
 					},
 					Children: []*expand.Tree{
 						{
 							Type:    expand.Leaf,
-							Subject: &relationtuple.UserID{ID: "d"},
+							Subject: &relationtuple.SubjectID{ID: "d"},
 						},
 						{
 							Type:    expand.Leaf,
-							Subject: &relationtuple.UserID{ID: "e"},
+							Subject: &relationtuple.SubjectID{ID: "e"},
 						},
 						{
 							Type:    expand.Leaf,
-							Subject: &relationtuple.UserID{ID: "f"},
+							Subject: &relationtuple.SubjectID{ID: "f"},
 						},
 					},
 				},
 			},
 		}
 
-		require.NoError(t, reg.NamespaceManagerProvider().NewNamespace(context.Background(), &namespace.Namespace{Name: namesp}))
+		require.NoError(t, reg.NamespaceManager().MigrateNamespaceUp(&namespace.Namespace{Name: ""}))
 
 		for _, group := range expectedTree.Children {
 			require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), &relationtuple.InternalRelationTuple{
-				Object:   expectedTree.Subject.(*relationtuple.UserSet).Object,
+				Object:   expectedTree.Subject.(*relationtuple.SubjectSet).Object,
 				Relation: "transitive member",
-				Subject: &relationtuple.UserSet{
-					Object:   group.Subject.(*relationtuple.UserSet).Object,
+				Subject: &relationtuple.SubjectSet{
+					Object:   group.Subject.(*relationtuple.SubjectSet).Object,
 					Relation: "member",
 				},
 			}))
 
 			for _, user := range group.Children {
 				require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), &relationtuple.InternalRelationTuple{
-					Object:   group.Subject.(*relationtuple.UserSet).Object,
+					Object:   group.Subject.(*relationtuple.SubjectSet).Object,
 					Relation: "member",
-					Subject:  user.Subject.(*relationtuple.UserID),
+					Subject:  user.Subject.(*relationtuple.SubjectID),
 				}))
 			}
 		}
@@ -167,49 +160,47 @@ func TestEngine(t *testing.T) {
 
 	t.Run("case=respects max depth", func(t *testing.T) {
 		reg, e := newTestEngine(t)
+		require.NoError(t, reg.NamespaceManager().MigrateNamespaceUp(&namespace.Namespace{Name: ""}))
 
-		namesp := "default"
-		require.NoError(t, reg.NamespaceManagerProvider().NewNamespace(context.Background(), &namespace.Namespace{Name: namesp}))
-
-		root := &relationtuple.Object{ID: "root", Namespace: namesp}
+		root := "root"
 		prev := root
 		for _, sub := range []string{"0", "1", "2", "3"} {
 			require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), &relationtuple.InternalRelationTuple{
 				Object:   prev,
 				Relation: "child",
-				Subject: &relationtuple.UserSet{
-					Object:   &relationtuple.Object{ID: sub, Namespace: namesp},
+				Subject: &relationtuple.SubjectSet{
+					Object:   sub,
 					Relation: "child",
 				},
 			}))
-			prev = &relationtuple.Object{ID: sub, Namespace: namesp}
+			prev = sub
 		}
 
 		expectedTree := &expand.Tree{
 			Type: expand.Union,
-			Subject: &relationtuple.UserSet{
+			Subject: &relationtuple.SubjectSet{
 				Object:   root,
 				Relation: "child",
 			},
 			Children: []*expand.Tree{
 				{
 					Type: expand.Union,
-					Subject: &relationtuple.UserSet{
-						Object:   &relationtuple.Object{ID: "0", Namespace: namesp},
+					Subject: &relationtuple.SubjectSet{
+						Object:   "0",
 						Relation: "child",
 					},
 					Children: []*expand.Tree{
 						{
 							Type: expand.Union,
-							Subject: &relationtuple.UserSet{
-								Object:   &relationtuple.Object{ID: "1", Namespace: namesp},
+							Subject: &relationtuple.SubjectSet{
+								Object:   "1",
 								Relation: "child",
 							},
 							Children: []*expand.Tree{
 								{
 									Type: expand.Leaf,
-									Subject: &relationtuple.UserSet{
-										Object:   &relationtuple.Object{ID: "2", Namespace: namesp},
+									Subject: &relationtuple.SubjectSet{
+										Object:   "2",
 										Relation: "child",
 									},
 								},
