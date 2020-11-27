@@ -147,6 +147,8 @@ New feature or request.
 - [ ] Allow modifying relation tuples with consistency guarantees
       ([keto#328](https://github.com/ory/keto/issues/328)) -
       [@Robin Brämer](https://github.com/robinbraemer)
+- [ ] Add TTL support to relation tuple
+      ([keto#346](https://github.com/ory/keto/issues/346))
 - [x] Remove support for AND/OR/XOR in GetRelationTuples
       ([keto#299](https://github.com/ory/keto/issues/299)) -
       [@Patrik](https://github.com/zepatrik)
