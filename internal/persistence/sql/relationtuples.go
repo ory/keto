@@ -3,10 +3,12 @@ package sql
 import (
 	"context"
 	"fmt"
-	"github.com/ory/keto/internal/namespace"
-	"github.com/pkg/errors"
 	"strings"
 	"time"
+
+	"github.com/pkg/errors"
+
+	"github.com/ory/keto/internal/namespace"
 
 	"github.com/gobuffalo/pop/v5"
 

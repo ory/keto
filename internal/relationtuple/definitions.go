@@ -3,9 +3,10 @@ package relationtuple
 import (
 	"context"
 	"fmt"
-	"github.com/pkg/errors"
 	"net/url"
 	"strings"
+
+	"github.com/pkg/errors"
 
 	acl "github.com/ory/keto/api/keto/acl/v1alpha1"
 

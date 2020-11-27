@@ -3,12 +3,14 @@ package sql
 import (
 	"context"
 	"fmt"
+	"strconv"
+
 	"github.com/gobuffalo/packr/v2"
 	"github.com/gobuffalo/pop/v5"
+	"github.com/pkg/errors"
+
 	"github.com/ory/keto/internal/persistence"
 	"github.com/ory/keto/internal/x"
-	"github.com/pkg/errors"
-	"strconv"
 )
 
 type (

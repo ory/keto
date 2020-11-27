@@ -1,10 +1,11 @@
 package driver
 
 import (
+	"testing"
+
 	"github.com/ory/viper"
 	"github.com/ory/x/logrusx"
 	"github.com/stretchr/testify/require"
-	"testing"
 
 	"github.com/ory/keto/internal/driver/configuration"
 )

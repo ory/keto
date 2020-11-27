@@ -3,6 +3,7 @@ package sql
 import (
 	"context"
 	"fmt"
+
 	"github.com/pkg/errors"
 
 	"github.com/gobuffalo/pop/v5"
