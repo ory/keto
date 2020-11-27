@@ -43,7 +43,7 @@ jobs:
       -
         run: go test -tags sqlite -race -short -v $(go list ./... | grep -v cmd)
       -
-        run: go-acc -v -o coverage.txt ./...
+        run: go-acc -o coverage.txt ./... -- -v -tags sqlite
 
       # Submit coverage details
       -
