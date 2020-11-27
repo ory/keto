@@ -41,7 +41,7 @@ jobs:
 
       # Tests
       -
-        run: go test -race -short -v $(go list ./... | grep -v cmd)
+        run: go test -tags sqlite -race -short -v $(go list ./... | grep -v cmd)
       -
         run: go-acc -v -o coverage.txt ./...
 

@@ -3,9 +3,11 @@ package sql
 import (
 	"context"
 	"fmt"
+	"github.com/markbates/pkger"
+	"github.com/ory/x/logrusx"
+	"github.com/ory/x/pkgerx"
 	"strconv"
 
-	"github.com/gobuffalo/packr/v2"
 	"github.com/gobuffalo/pop/v5"
 	"github.com/pkg/errors"
 
@@ -16,7 +18,7 @@ import (
 type (
 	Persister struct {
 		conn *pop.Connection
-		mb   pop.MigrationBox
+		mb   *pkgerx.MigrationBox
 	}
 	internalPagination struct {
 		Offset int
@@ -31,13 +33,13 @@ const (
 )
 
 var (
-	migrations = packr.New("migrations", "migrations")
+	migrations = pkger.Dir("/internal/persistence/sql/migrations")
 
 	_ persistence.Persister = &Persister{}
 )
 
-func NewPersister(c *pop.Connection) (*Persister, error) {
-	mb, err := pop.NewMigrationBox(migrations, c)
+func NewPersister(c *pop.Connection, l *logrusx.Logger) (*Persister, error) {
+	mb, err := pkgerx.NewMigrationBox(migrations, c, l)
 	if err != nil {
 		return nil, err
 	}

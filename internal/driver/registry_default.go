@@ -130,7 +130,7 @@ func (r *RegistryDefault) ExpandEngine() *expand.Engine {
 func (r *RegistryDefault) Persister() (persistence.Persister, error) {
 	if r.p == nil {
 		var err error
-		r.p, err = sql.NewPersister(r.conn)
+		r.p, err = sql.NewPersister(r.conn, r.Logger())
 		if err != nil {
 			return nil, err
 		}
