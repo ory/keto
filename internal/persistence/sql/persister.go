@@ -3,10 +3,11 @@ package sql
 import (
 	"context"
 	"fmt"
+	"strconv"
+
 	"github.com/markbates/pkger"
 	"github.com/ory/x/logrusx"
 	"github.com/ory/x/pkgerx"
-	"strconv"
 
 	"github.com/gobuffalo/pop/v5"
 	"github.com/pkg/errors"
