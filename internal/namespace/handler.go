@@ -32,13 +32,13 @@ func (h *handler) RegisterPublicRoutes(router *httprouter.Router) {
 
 func (h *handler) createNamespace(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	n := &Namespace{
-		ID: r.URL.Query().Get("name"),
+		Name: r.URL.Query().Get("name"),
 	}
 
-	if err := h.d.NamespaceManagerProvider().NewNamespace(r.Context(), n); err != nil {
+	if err := h.d.NamespaceManager().MigrateNamespaceUp(r.Context(), n); err != nil {
 		h.d.Writer().WriteError(w, r, err)
 		return
 	}
 
-	h.d.Writer().WriteCreated(w, r, fmt.Sprintf("%s/%s", routeBase, n.ID), n)
+	h.d.Writer().WriteCreated(w, r, fmt.Sprintf("%s/%s", routeBase, n.Name), n)
 }

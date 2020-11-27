@@ -2,6 +2,7 @@ package driver
 
 import (
 	"context"
+	"github.com/pkg/errors"
 
 	"github.com/gobuffalo/pop/v5"
 	"github.com/ory/herodot"
@@ -12,7 +13,6 @@ import (
 	"github.com/ory/keto/internal/driver/configuration"
 	"github.com/ory/keto/internal/namespace"
 
-	"github.com/ory/keto/internal/namespace"
 	"github.com/ory/keto/internal/persistence/sql"
 
 	"github.com/ory/keto/internal/persistence"
@@ -37,7 +37,57 @@ type RegistryDefault struct {
 	ce   *check.Engine
 	ee   *expand.Engine
 	conn *pop.Connection
-	c  configuration.Provider
+	c    configuration.Provider
+	hh   *healthx.Handler
+
+	version, hash, date string
+}
+
+func (r *RegistryDefault) CanHandle(dsn string) bool {
+	return true
+}
+
+func (r *RegistryDefault) Ping() error {
+	return r.conn.Open()
+}
+
+func (r *RegistryDefault) WithConfig(c configuration.Provider) Registry {
+	r.c = c
+	return r
+}
+
+func (r *RegistryDefault) WithLogger(l *logrusx.Logger) Registry {
+	r.l = l
+	return r
+}
+
+func (r *RegistryDefault) WithBuildInfo(version, hash, date string) Registry {
+	r.version, r.hash, r.date = version, hash, date
+	return r
+}
+
+func (r *RegistryDefault) BuildVersion() string {
+	return r.version
+}
+
+func (r *RegistryDefault) BuildDate() string {
+	return r.date
+}
+
+func (r *RegistryDefault) BuildHash() string {
+	return r.hash
+}
+
+func (r *RegistryDefault) HealthHandler() *healthx.Handler {
+	if r.hh == nil {
+		r.hh = healthx.NewHandler(r.Writer(), r.version, healthx.ReadyCheckers{})
+	}
+
+	return r.hh
+}
+
+func (r *RegistryDefault) Tracer() *tracing.Tracer {
+	panic("implement me")
 }
 
 func (r *RegistryDefault) Logger() *logrusx.Logger {
@@ -58,14 +108,7 @@ func (r *RegistryDefault) RelationTupleManager() relationtuple.Manager {
 	return r.p
 }
 
-func (r *RegistryDefault) NamespaceManagerProvider() namespace.Manager {
-	return r.p
-}
-
 func (r *RegistryDefault) NamespaceManager() namespace.Manager {
-	if r.p == nil {
-		r.p = memory.NewPersister()
-	}
 	return r.p
 }
 
@@ -107,7 +150,13 @@ func (r *RegistryDefault) Init() error {
 	c, err := pop.NewConnection(&pop.ConnectionDetails{
 		URL: "sqlite://:memory:?_fk=true",
 	})
+	if err != nil {
+		return errors.WithStack(err)
+	}
 	r.conn = c
+	if err := c.Open(); err != nil {
+		return errors.WithStack(err)
+	}
 	m, err := r.Migrator()
 	if err != nil {
 		return err

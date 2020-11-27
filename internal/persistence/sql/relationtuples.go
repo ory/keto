@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/ory/keto/internal/namespace"
-	"reflect"
+	"github.com/pkg/errors"
 	"strings"
 	"time"
 
@@ -17,7 +17,7 @@ import (
 type (
 	relationTuple struct {
 		ShardID    string               `db:"shard_id"`
-		ObjectID   string               `db:"object_id"`
+		Object     string               `db:"object"`
 		Relation   string               `db:"relation"`
 		Subject    string               `db:"subject"`
 		CommitTime time.Time            `db:"commit_time"`
@@ -29,50 +29,52 @@ func (r *relationTuple) TableName() string {
 	return tableFromNamespace(r.Namespace)
 }
 
-func (r *relationTuple) fromInternal(rel *relationtuple.InternalRelationTuple) *relationTuple {
-	if rel == nil {
-		return r
-	}
-	if r == nil {
-		*r = relationTuple{}
-	}
+func (p *Persister) insertRelationTuple(ctx context.Context, rel *relationtuple.InternalRelationTuple) error {
+	commitTime := time.Now()
 
-	r.Relation = rel.Relation
-	r.ShardID = "default"
-
-	if rel.Object != nil {
-		r.Namespace = rel.Object.Namespace
-		r.ObjectID = rel.Object.ID
+	n, err := p.NamespaceFromName(ctx, rel.Namespace)
+	if err != nil {
+		return err
 	}
 
-	if rel.Subject != nil {
-		r.Subject = rel.Subject.String()
-	}
+	// TODO sharding
+	shardID := "default"
 
-	return r
+	return p.connection(ctx).RawQuery(fmt.Sprintf(
+		"INSERT INTO %s (shard_id, object, relation, subject, commit_time) VALUES (?, ?, ?, ?, ?)", tableFromNamespace(n)),
+		shardID, rel.Object, rel.Relation, rel.Subject.String(), commitTime,
+	).Exec()
 }
 
-func (r *relationTuple) toInternal() *relationtuple.InternalRelationTuple {
+func (r *relationTuple) toInternal() (*relationtuple.InternalRelationTuple, error) {
 	if r == nil {
-		return nil
+		return nil, nil
 	}
 
+	sub, err := relationtuple.SubjectFromString(r.Subject)
 	return &relationtuple.InternalRelationTuple{
-		Relation: r.Relation,
-		Object: &relationtuple.Object{
-			ID:        r.ObjectID,
-			Namespace: r.Namespace.Name,
-		},
-		Subject: relationtuple.SubjectFromString(r.Subject),
-	}
+		Relation:  r.Relation,
+		Object:    r.Object,
+		Namespace: r.Namespace.Name,
+		Subject:   sub,
+	}, err
 }
 
-func (p *Persister) GetRelationTuples(ctx context.Context, query *relationtuple.RelationQuery, options ...x.PaginationOptionSetter) ([]*relationtuple.InternalRelationTuple, error) {
+func (p *Persister) GetRelationTuples(ctx context.Context, query *relationtuple.RelationQuery, options ...x.PaginationOptionSetter) ([]*relationtuple.InternalRelationTuple, string, error) {
+	pop.Debug = true
+	defer func() {
+		pop.Debug = false
+	}()
 	const (
 		whereRelation = "relation = ?"
-		whereObjectID = "object_id = ?"
+		whereObject   = "object = ?"
 		whereSubject  = "subject = ?"
 	)
+
+	pagination, err := internalPaginationFromOptions(options...)
+	if err != nil {
+		return nil, pageTokenEnd, err
+	}
 
 	var (
 		where []string
@@ -84,9 +86,9 @@ func (p *Persister) GetRelationTuples(ctx context.Context, query *relationtuple.
 		args = append(args, query.Relation)
 	}
 
-	if query.ObjectID != "" {
-		where = append(where, whereObjectID)
-		args = append(args, query.ObjectID)
+	if query.Object != "" {
+		where = append(where, whereObject)
+		args = append(args, query.Object)
 	}
 
 	if query.Subject != nil {
@@ -96,75 +98,55 @@ func (p *Persister) GetRelationTuples(ctx context.Context, query *relationtuple.
 
 	var res []*relationTuple
 	var rawQuery string
-	pagination := x.GetPaginationOptions(options...)
 
-	namespace, err := p.NamespaceFromName(ctx, query.Namespace)
+	n, err := p.NamespaceFromName(ctx, query.Namespace)
 	if err != nil {
-		return nil, err
+		return nil, "-1", err
 	}
 
 	if len(where) == 0 {
 		rawQuery = fmt.Sprintf("SELECT * FROM %s LIMIT %d OFFSET %d",
-			tableFromNamespace(namespace),
-			pagination.PerPage,
-			pagination.Page*pagination.PerPage,
+			tableFromNamespace(n),
+			pagination.Limit,
+			pagination.Offset,
 		)
 	} else {
 		rawQuery = fmt.Sprintf("SELECT * FROM %s WHERE %s LIMIT %d OFFSET %d",
-			tableFromNamespace(namespace),
+			tableFromNamespace(n),
 			strings.Join(where, " AND "),
-			pagination.PerPage,
-			pagination.Page*pagination.PerPage,
+			pagination.Limit,
+			pagination.Offset,
 		)
 	}
 
 	if err := p.conn.
 		RawQuery(rawQuery, args...).
 		All(&res); err != nil {
-		return nil, err
+		return nil, pageTokenEnd, errors.WithStack(err)
 	}
 
 	internalRes := make([]*relationtuple.InternalRelationTuple, len(res))
 	for i, r := range res {
-		internalRes[i] = r.toInternal()
-	}
-	return internalRes, nil
-}
+		r.Namespace = n
 
-func (r *relationTuple) insert(c *pop.Connection) error {
-	// TODO fix setting the commit time?
-	r.CommitTime = time.Now()
-
-	t := reflect.TypeOf(*r)
-	v := reflect.ValueOf(*r)
-
-	var rows []string
-	var vals []interface{}
-	for i := 0; i < t.NumField(); i++ {
-		row, ok := t.Field(i).Tag.Lookup("db")
-		if !ok || row == "-" {
-			break
+		var err error
+		internalRes[i], err = r.toInternal()
+		if err != nil {
+			return nil, pageTokenEnd, err
 		}
-
-		rows = append(rows, row)
-		vals = append(vals, v.Field(i).Interface())
 	}
 
-	placeholders := strings.Repeat("?, ", len(rows))
-	placeholders = placeholders[:len(placeholders)-2] // remove the last ", "
-
-	return c.RawQuery(
-		fmt.Sprintf("INSERT INTO %s (%s) VALUES (%s)",
-			tableFromNamespace(r.Namespace),
-			strings.Join(rows, ", "),
-			placeholders),
-		vals...).Exec()
+	nextPageToken := pagination.encodeNextPageToken()
+	if len(internalRes) == 0 {
+		nextPageToken = pageTokenEnd
+	}
+	return internalRes, nextPageToken, nil
 }
 
-func (p *Persister) WriteRelationTuples(_ context.Context, rs ...*relationtuple.InternalRelationTuple) error {
-	return p.conn.Transaction(func(tx *pop.Connection) error {
+func (p *Persister) WriteRelationTuples(ctx context.Context, rs ...*relationtuple.InternalRelationTuple) error {
+	return p.transaction(ctx, func(ctx context.Context, tx *pop.Connection) error {
 		for _, r := range rs {
-			if err := (&relationTuple{}).fromInternal(r).insert(tx); err != nil {
+			if err := p.insertRelationTuple(ctx, r); err != nil {
 				return err
 			}
 		}

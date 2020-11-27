@@ -16,8 +16,8 @@ import (
 	"github.com/ory/keto/internal/driver"
 )
 
-func newTestEngine(_ *testing.T) (*driver.RegistryDefault, *expand.Engine) {
-	reg := &driver.RegistryDefault{}
+func newTestEngine(t *testing.T) (driver.Registry, *expand.Engine) {
+	reg := driver.NewMemoryTestDriver(t).Registry()
 	e := expand.NewEngine(reg)
 	return reg, e
 }
@@ -57,7 +57,7 @@ func TestEngine(t *testing.T) {
 		}
 		reg, e := newTestEngine(t)
 
-		require.NoError(t, reg.NamespaceManager().MigrateNamespaceUp(&namespace.Namespace{Name: ""}))
+		require.NoError(t, reg.NamespaceManager().MigrateNamespaceUp(context.Background(), &namespace.Namespace{Name: ""}))
 		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), boulderers...))
 
 		tree, err := e.BuildTree(context.Background(), bouldererUserSet, 100)
@@ -132,7 +132,7 @@ func TestEngine(t *testing.T) {
 			},
 		}
 
-		require.NoError(t, reg.NamespaceManager().MigrateNamespaceUp(&namespace.Namespace{Name: ""}))
+		require.NoError(t, reg.NamespaceManager().MigrateNamespaceUp(context.Background(), &namespace.Namespace{Name: ""}))
 
 		for _, group := range expectedTree.Children {
 			require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), &relationtuple.InternalRelationTuple{
@@ -160,7 +160,7 @@ func TestEngine(t *testing.T) {
 
 	t.Run("case=respects max depth", func(t *testing.T) {
 		reg, e := newTestEngine(t)
-		require.NoError(t, reg.NamespaceManager().MigrateNamespaceUp(&namespace.Namespace{Name: ""}))
+		require.NoError(t, reg.NamespaceManager().MigrateNamespaceUp(context.Background(), &namespace.Namespace{Name: ""}))
 
 		root := "root"
 		prev := root

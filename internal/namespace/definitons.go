@@ -1,6 +1,7 @@
 package namespace
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 
@@ -9,17 +10,17 @@ import (
 
 type (
 	Namespace struct {
-		ID     int    `json:"id"`
-		Name   string `json:"name"`
-		Config json.RawMessage
+		ID     int             `json:"id" db:"id"`
+		Name   string          `json:"name" db:"name"`
+		Config json.RawMessage `json:"config" db:"-"`
 	}
 	Status struct {
 		CurrentVersion int `json:"current_version" db:"version"`
 		NextVersion    int `json:"next_version" db:"-"`
 	}
 	Manager interface {
-		MigrateNamespaceUp(n *Namespace) error
-		NamespaceStatus(n *Namespace) (*Status, error)
+		MigrateNamespaceUp(ctx context.Context, n *Namespace) error
+		NamespaceStatus(ctx context.Context, name string) (*Status, error)
 	}
 	ManagerProvider interface {
 		NamespaceManager() Manager
@@ -44,4 +45,8 @@ func (s *Status) Fields() []string {
 
 func (s *Status) Interface() interface{} {
 	return s
+}
+
+func (n *Namespace) TableName() string {
+	return "keto_namespace"
 }

@@ -19,5 +19,6 @@ type Migrator interface {
 }
 
 var (
-	ErrNamespaceUnknown = errors.New("namespace unknown")
+	ErrNamespaceUnknown   = errors.New("namespace unknown")
+	ErrMalformedPageToken = errors.New("malformed page token")
 )

@@ -1,7 +1,10 @@
 package driver
 
 import (
+	"github.com/ory/viper"
 	"github.com/ory/x/logrusx"
+	"github.com/stretchr/testify/require"
+	"testing"
 
 	"github.com/ory/keto/internal/driver/configuration"
 )
@@ -28,6 +31,20 @@ func NewDefaultDriver(l *logrusx.Logger, version, build, date string) Driver {
 	if err = r.Init(); err != nil {
 		l.WithError(err).Fatal("Unable to initialize service registry.")
 	}
+
+	return &DefaultDriver{r: r, c: c}
+}
+
+func NewMemoryTestDriver(t *testing.T) Driver {
+	l := logrusx.New("keto", "test")
+
+	c := configuration.NewViperProvider(l)
+	viper.Set(configuration.ViperKeyDSN, configuration.DSNMemory)
+
+	r, err := NewRegistry(c)
+	require.NoError(t, err)
+
+	require.NoError(t, r.Init())
 
 	return &DefaultDriver{r: r, c: c}
 }

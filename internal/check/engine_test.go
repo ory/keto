@@ -25,8 +25,8 @@ func TestEngine(t *testing.T) {
 			Subject:   &relationtuple.SubjectID{ID: "user"},
 		}
 
-		reg := &driver.RegistryDefault{}
-		require.NoError(t, reg.NamespaceManager().MigrateNamespaceUp(&namespace.Namespace{Name: rel.Namespace}))
+		reg := driver.NewMemoryTestDriver(t).Registry()
+		require.NoError(t, reg.NamespaceManager().MigrateNamespaceUp(context.Background(), &namespace.Namespace{Name: rel.Namespace, ID: 1}))
 		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), &rel))
 
 		e := check.NewEngine(reg)
@@ -60,8 +60,8 @@ func TestEngine(t *testing.T) {
 			Subject:   &mark,
 		}
 
-		reg := &driver.RegistryDefault{}
-		require.NoError(t, reg.NamespaceManager().MigrateNamespaceUp(&namespace.Namespace{Name: sofaNamespace}))
+		reg := driver.NewMemoryTestDriver(t).Registry()
+		require.NoError(t, reg.NamespaceManager().MigrateNamespaceUp(context.Background(), &namespace.Namespace{Name: sofaNamespace, ID: 1}))
 		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), &cleaningRelation, &markProducesDust))
 
 		e := check.NewEngine(reg)
@@ -87,8 +87,8 @@ func TestEngine(t *testing.T) {
 			Subject:   user,
 		}
 
-		reg := &driver.RegistryDefault{}
-		require.NoError(t, reg.NamespaceManager().MigrateNamespaceUp(&namespace.Namespace{Name: rel.Namespace}))
+		reg := driver.NewMemoryTestDriver(t).Registry()
+		require.NoError(t, reg.NamespaceManager().MigrateNamespaceUp(context.Background(), &namespace.Namespace{Name: rel.Namespace, ID: 10}))
 		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), &rel))
 
 		e := check.NewEngine(reg)
@@ -119,8 +119,8 @@ func TestEngine(t *testing.T) {
 			Subject:  &relationtuple.SubjectID{ID: "user"},
 		}
 
-		reg := &driver.RegistryDefault{}
-		require.NoError(t, reg.NamespaceManager().MigrateNamespaceUp(&namespace.Namespace{Name: ""}))
+		reg := driver.NewMemoryTestDriver(t).Registry()
+		require.NoError(t, reg.NamespaceManager().MigrateNamespaceUp(context.Background(), &namespace.Namespace{Name: "", ID: 1}))
 		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), &access, &user))
 
 		e := check.NewEngine(reg)
@@ -155,8 +155,8 @@ func TestEngine(t *testing.T) {
 			Subject:   &relationtuple.SubjectID{ID: "your mother"},
 		}
 
-		reg := &driver.RegistryDefault{}
-		require.NoError(t, reg.NamespaceManager().MigrateNamespaceUp(&namespace.Namespace{Name: diaryNamespace}))
+		reg := driver.NewMemoryTestDriver(t).Registry()
+		require.NoError(t, reg.NamespaceManager().MigrateNamespaceUp(context.Background(), &namespace.Namespace{Name: diaryNamespace, ID: 1}))
 		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), &readDiary, &user))
 
 		e := check.NewEngine(reg)
@@ -210,9 +210,9 @@ func TestEngine(t *testing.T) {
 			Subject:   &user,
 		}
 
-		reg := &driver.RegistryDefault{}
-		require.NoError(t, reg.NamespaceManager().MigrateNamespaceUp(&namespace.Namespace{Name: someNamespace, ID: 0}))
-		require.NoError(t, reg.NamespaceManager().MigrateNamespaceUp(&namespace.Namespace{Name: orgNamespace, ID: 1}))
+		reg := driver.NewMemoryTestDriver(t).Registry()
+		require.NoError(t, reg.NamespaceManager().MigrateNamespaceUp(context.Background(), &namespace.Namespace{Name: someNamespace, ID: 0}))
+		require.NoError(t, reg.NamespaceManager().MigrateNamespaceUp(context.Background(), &namespace.Namespace{Name: orgNamespace, ID: 1}))
 		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), &writeRel, &orgOwnerRel, &userMembershipRel))
 
 		e := check.NewEngine(reg)
@@ -262,8 +262,8 @@ func TestEngine(t *testing.T) {
 			Subject:  &user,
 		}
 
-		reg := &driver.RegistryDefault{}
-		require.NoError(t, reg.NamespaceManager().MigrateNamespaceUp(&namespace.Namespace{Name: ""}))
+		reg := driver.NewMemoryTestDriver(t).Registry()
+		require.NoError(t, reg.NamespaceManager().MigrateNamespaceUp(context.Background(), &namespace.Namespace{Name: "", ID: 2}))
 		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), &parent, &directoryAccess))
 
 		e := check.NewEngine(reg)
