@@ -102,6 +102,13 @@ Blocks milestones or other issues or pulls.
 
 A request for comments to discuss and share ideas.
 
+#### Issues
+
+- [ ] Consider rename WriteRelationTuples in WriteService
+      ([keto#351](https://github.com/ory/keto/issues/351)) -
+      [@Patrik](https://github.com/zepatrik),
+      [@Robin Brämer](https://github.com/robinbraemer)
+
 #### Pull Requests
 
 - [x] feat: first API draft and generation
