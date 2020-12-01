@@ -1,7 +1,8 @@
 {
   "Introduction": [
     "index",
-    "install"
+    "install",
+    "contributing"
   ],
   "Guides": [
     "configure-deploy",
