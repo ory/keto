@@ -61,7 +61,7 @@ message ListRelationTuplesRequest {
   string snaptoken = 3;
   // Optional. The maximum number of
   // RelationTuples to return in the response.
-  int32 page_size = 4;
+  uint32 page_size = 4;
   // Optional. A pagination token returned from
   // a previous call to `ListRelationTuples` that
   // indicates where the page should start at.

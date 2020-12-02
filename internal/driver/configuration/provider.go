@@ -10,6 +10,8 @@ import (
 )
 
 type Provider interface {
+	namespace.Manager
+
 	CORSEnabled() bool
 	CORSOptions() cors.Options
 	ListenOn() string

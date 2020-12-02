@@ -51,7 +51,7 @@ id: 1
 
 		require.Len(t, hook.Entries, 0)
 
-		assert.Len(t, namespaces, 1)
+		require.Len(t, namespaces, 1)
 		assert.Equal(t, &namespace.Namespace{
 			ID:   1,
 			Name: "videos",
@@ -73,7 +73,7 @@ id: 1
 		assert.Equal(t, logrus.InfoLevel, hook.Entries[0].Level)
 		assert.Contains(t, hook.Entries[0].Message, "unsupported.file")
 
-		assert.Len(t, namespaces, 1)
+		require.Len(t, namespaces, 1)
 		assert.Equal(t, &namespace.Namespace{
 			Name: "namespace name",
 			ID:   2,
@@ -91,7 +91,7 @@ id: 1
 		assert.Equal(t, logrus.ErrorLevel, hook.Entries[0].Level)
 		assert.Contains(t, hook.Entries[0].Message, "malformed.yml")
 
-		assert.Len(t, namespaces, 1)
+		require.Len(t, namespaces, 1)
 		assert.Equal(t, &namespace.Namespace{
 			Name: "some name",
 			ID:   1,

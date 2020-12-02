@@ -30,6 +30,7 @@ type Registry interface {
 
 	relationtuple.ManagerProvider
 	namespace.ManagerProvider
+	namespace.MigratorProvider
 	expand.EngineProvider
 	check.EngineProvider
 

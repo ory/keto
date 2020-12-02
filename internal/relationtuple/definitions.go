@@ -2,10 +2,11 @@ package relationtuple
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"net/url"
 	"strings"
+
+	"github.com/pkg/errors"
 
 	acl "github.com/ory/keto/api/keto/acl/v1alpha1"
 
@@ -91,7 +92,7 @@ func (s *SubjectID) String() string {
 }
 
 func (s *SubjectSet) String() string {
-	return fmt.Sprintf("%s#%s", s.Object, s.Relation)
+	return fmt.Sprintf("%s:%s#%s", s.Namespace, s.Object, s.Relation)
 }
 
 func (s *SubjectID) FromString(str string) (Subject, error) {
@@ -102,12 +103,12 @@ func (s *SubjectID) FromString(str string) (Subject, error) {
 func (s *SubjectSet) FromString(str string) (Subject, error) {
 	parts := strings.Split(str, "#")
 	if len(parts) != 2 {
-		return nil, ErrMalformedInput
+		return nil, errors.WithStack(ErrMalformedInput)
 	}
 
 	innerParts := strings.Split(parts[0], ":")
 	if len(innerParts) != 2 {
-		return nil, ErrMalformedInput
+		return nil, errors.WithStack(ErrMalformedInput)
 	}
 
 	s.Namespace = innerParts[0]
