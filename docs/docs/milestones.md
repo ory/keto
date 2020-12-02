@@ -3,7 +3,7 @@ id: milestones
 title: Milestones and Roadmap
 ---
 
-## [Next Gen Keto - fist working version](https://github.com/ory/keto/milestone/4)
+## [Next Gen Keto - first working version](https://github.com/ory/keto/milestone/4)
 
 Goals:
 
@@ -49,7 +49,8 @@ Something is not working.
       [@Patrik](https://github.com/zepatrik)
 - [ ] Write GRPC handler and tests for check engine
       ([keto#296](https://github.com/ory/keto/issues/296)) -
-      [@Patrik](https://github.com/zepatrik)
+      [@Patrik](https://github.com/zepatrik),
+      [@Robin Brämer](https://github.com/robinbraemer)
 
 ### [Feat](https://github.com/ory/keto/labels/feat)
 
@@ -62,11 +63,13 @@ New feature or request.
       [@Patrik](https://github.com/zepatrik)
 - [ ] Write relationtuple tests for http and grpc handlers
       ([keto#297](https://github.com/ory/keto/issues/297)) -
-      [@Patrik](https://github.com/zepatrik)
+      [@Patrik](https://github.com/zepatrik),
+      [@Robin Brämer](https://github.com/robinbraemer)
 - [ ] Ensure telemetry is running for both GRPC and HTTP
       ([keto#298](https://github.com/ory/keto/issues/298)) -
       [@hackerman](https://github.com/aeneasr),
-      [@Patrik](https://github.com/zepatrik)
+      [@Patrik](https://github.com/zepatrik),
+      [@Robin Brämer](https://github.com/robinbraemer)
 - [ ] Define and architect SQL schema and queries for querying relations
       ([keto#300](https://github.com/ory/keto/issues/300)) -
       [@Patrik](https://github.com/zepatrik)
@@ -83,7 +86,8 @@ Blocks milestones or other issues or pulls.
 - [ ] Ensure telemetry is running for both GRPC and HTTP
       ([keto#298](https://github.com/ory/keto/issues/298)) -
       [@hackerman](https://github.com/aeneasr),
-      [@Patrik](https://github.com/zepatrik)
+      [@Patrik](https://github.com/zepatrik),
+      [@Robin Brämer](https://github.com/robinbraemer)
 - [ ] Define and architect SQL schema and queries for querying relations
       ([keto#300](https://github.com/ory/keto/issues/300)) -
       [@Patrik](https://github.com/zepatrik)
