@@ -16,6 +16,15 @@ import (
 	"github.com/ory/keto/internal/driver"
 )
 
+func newReg(t *testing.T, namespaces ...*namespace.Namespace) driver.Registry {
+	reg := driver.NewMemoryTestDriver(t).Registry()
+	reg.NamespaceManager().SetNamespaces(t, namespaces...)
+	for _, n := range namespaces {
+		require.NoError(t, reg.NamespaceMigrator().MigrateNamespaceUp(context.Background(), n))
+	}
+	return reg
+}
+
 func TestEngine(t *testing.T) {
 	t.Run("direct inclusion", func(t *testing.T) {
 		rel := relationtuple.InternalRelationTuple{
@@ -25,8 +34,7 @@ func TestEngine(t *testing.T) {
 			Subject:   &relationtuple.SubjectID{ID: "user"},
 		}
 
-		reg := driver.NewMemoryTestDriver(t).Registry()
-		require.NoError(t, reg.NamespaceManager().MigrateNamespaceUp(context.Background(), &namespace.Namespace{Name: rel.Namespace, ID: 1}))
+		reg := newReg(t, &namespace.Namespace{Name: rel.Namespace, ID: 1})
 		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), &rel))
 
 		e := check.NewEngine(reg)
@@ -60,8 +68,7 @@ func TestEngine(t *testing.T) {
 			Subject:   &mark,
 		}
 
-		reg := driver.NewMemoryTestDriver(t).Registry()
-		require.NoError(t, reg.NamespaceManager().MigrateNamespaceUp(context.Background(), &namespace.Namespace{Name: sofaNamespace, ID: 1}))
+		reg := newReg(t, &namespace.Namespace{Name: sofaNamespace, ID: 1})
 		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), &cleaningRelation, &markProducesDust))
 
 		e := check.NewEngine(reg)
@@ -87,8 +94,7 @@ func TestEngine(t *testing.T) {
 			Subject:   user,
 		}
 
-		reg := driver.NewMemoryTestDriver(t).Registry()
-		require.NoError(t, reg.NamespaceManager().MigrateNamespaceUp(context.Background(), &namespace.Namespace{Name: rel.Namespace, ID: 10}))
+		reg := newReg(t, &namespace.Namespace{Name: rel.Namespace, ID: 10})
 		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), &rel))
 
 		e := check.NewEngine(reg)
@@ -119,8 +125,7 @@ func TestEngine(t *testing.T) {
 			Subject:  &relationtuple.SubjectID{ID: "user"},
 		}
 
-		reg := driver.NewMemoryTestDriver(t).Registry()
-		require.NoError(t, reg.NamespaceManager().MigrateNamespaceUp(context.Background(), &namespace.Namespace{Name: "", ID: 1}))
+		reg := newReg(t, &namespace.Namespace{Name: "", ID: 1})
 		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), &access, &user))
 
 		e := check.NewEngine(reg)
@@ -155,8 +160,7 @@ func TestEngine(t *testing.T) {
 			Subject:   &relationtuple.SubjectID{ID: "your mother"},
 		}
 
-		reg := driver.NewMemoryTestDriver(t).Registry()
-		require.NoError(t, reg.NamespaceManager().MigrateNamespaceUp(context.Background(), &namespace.Namespace{Name: diaryNamespace, ID: 1}))
+		reg := newReg(t, &namespace.Namespace{Name: diaryNamespace, ID: 1})
 		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), &readDiary, &user))
 
 		e := check.NewEngine(reg)
@@ -210,9 +214,7 @@ func TestEngine(t *testing.T) {
 			Subject:   &user,
 		}
 
-		reg := driver.NewMemoryTestDriver(t).Registry()
-		require.NoError(t, reg.NamespaceManager().MigrateNamespaceUp(context.Background(), &namespace.Namespace{Name: someNamespace, ID: 0}))
-		require.NoError(t, reg.NamespaceManager().MigrateNamespaceUp(context.Background(), &namespace.Namespace{Name: orgNamespace, ID: 1}))
+		reg := newReg(t, &namespace.Namespace{Name: someNamespace, ID: 0}, &namespace.Namespace{Name: orgNamespace, ID: 1})
 		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), &writeRel, &orgOwnerRel, &userMembershipRel))
 
 		e := check.NewEngine(reg)
@@ -262,8 +264,7 @@ func TestEngine(t *testing.T) {
 			Subject:  &user,
 		}
 
-		reg := driver.NewMemoryTestDriver(t).Registry()
-		require.NoError(t, reg.NamespaceManager().MigrateNamespaceUp(context.Background(), &namespace.Namespace{Name: "", ID: 2}))
+		reg := newReg(t, &namespace.Namespace{Name: "", ID: 2})
 		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), &parent, &directoryAccess))
 
 		e := check.NewEngine(reg)

@@ -3,7 +3,7 @@ package x
 type (
 	paginationOptions struct {
 		Token string
-		Size  int
+		Size  uint
 	}
 	PaginationOptionSetter func(*paginationOptions) *paginationOptions
 )
@@ -15,7 +15,7 @@ func WithToken(t string) PaginationOptionSetter {
 	}
 }
 
-func WithSize(size int) PaginationOptionSetter {
+func WithSize(size uint) PaginationOptionSetter {
 	return func(opts *paginationOptions) *paginationOptions {
 		opts.Size = size
 		return opts

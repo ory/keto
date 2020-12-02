@@ -103,13 +103,11 @@ func (s *SubjectID) FromString(str string) (Subject, error) {
 func (s *SubjectSet) FromString(str string) (Subject, error) {
 	parts := strings.Split(str, "#")
 	if len(parts) != 2 {
-		fmt.Printf("raw: %s\n", str)
 		return nil, errors.WithStack(ErrMalformedInput)
 	}
 
 	innerParts := strings.Split(parts[0], ":")
 	if len(innerParts) != 2 {
-		fmt.Printf("raw: %s, part: %s\n", str, parts[0])
 		return nil, errors.WithStack(ErrMalformedInput)
 	}
 

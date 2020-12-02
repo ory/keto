@@ -11,7 +11,7 @@ import (
 
 type Persister interface {
 	relationtuple.Manager
-	namespace.Manager
+	namespace.Migrator
 }
 
 type Migrator interface {

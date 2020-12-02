@@ -13,9 +13,8 @@ import (
 
 type (
 	namespaceRow struct {
-		ID      int    `db:"id"`
-		Name    string `db:"name"`
-		Version int    `db:"schema_version"`
+		ID      int `db:"id"`
+		Version int `db:"schema_version"`
 	}
 )
 
@@ -51,8 +50,11 @@ func createStmt(n *namespace.Namespace) string {
 func (p *Persister) MigrateNamespaceUp(ctx context.Context, n *namespace.Namespace) error {
 	return p.transaction(ctx, func(ctx context.Context, c *pop.Connection) error {
 		// TODO this is only creating new namespaces and not applying migrations
-
-		if err := c.RawQuery("INSERT INTO keto_namespace (id, name, schema_version) VALUES (?, ?, ?)", n.ID, n.Name, mostRecentSchemaVersion).Exec(); err != nil {
+		nr := namespaceRow{
+			ID:      n.ID,
+			Version: mostRecentSchemaVersion,
+		}
+		if err := c.Create(&nr); err != nil {
 			return errors.WithStack(err)
 		}
 
@@ -62,15 +64,12 @@ func (p *Persister) MigrateNamespaceUp(ctx context.Context, n *namespace.Namespa
 }
 
 func (p *Persister) NamespaceFromName(ctx context.Context, name string) (*namespace.Namespace, error) {
-	var n namespace.Namespace
-
-	return &n, errors.WithStack(
-		p.connection(ctx).Where("name = ?", name).First(&n))
+	return p.namespaces.GetNamespace(ctx, name)
 }
 
-func (p *Persister) NamespaceStatus(ctx context.Context, name string) (*namespace.Status, error) {
+func (p *Persister) NamespaceStatus(ctx context.Context, id int) (*namespace.Status, error) {
 	var n namespaceRow
-	if err := p.connection(ctx).Where("name = ?", name).First(&n); err != nil {
+	if err := p.connection(ctx).Find(&n, id); err != nil {
 		return nil, err
 	}
 

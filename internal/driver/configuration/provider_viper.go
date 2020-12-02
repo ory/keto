@@ -1,10 +1,12 @@
 package configuration
 
 import (
+	"context"
 	"fmt"
 	"io/ioutil"
 	"path/filepath"
 	"strings"
+	"testing"
 
 	"github.com/ghodss/yaml"
 
@@ -28,7 +30,8 @@ const (
 )
 
 type ViperProvider struct {
-	l *logrusx.Logger
+	l          *logrusx.Logger
+	namespaces []*namespace.Namespace
 }
 
 func NewViperProvider(l *logrusx.Logger) Provider {
@@ -73,37 +76,55 @@ func (v *ViperProvider) TracingJaegerConfig() *tracing.JaegerConfig {
 }
 
 func (v *ViperProvider) Namespaces() []*namespace.Namespace {
-	namespaceDir := viperx.GetString(v.l, ViperKeyNamespacePath, "./keto-namespaces")
+	if v.namespaces == nil {
+		namespaceDir := viperx.GetString(v.l, ViperKeyNamespacePath, "./keto-namespaces")
 
-	infos, err := ioutil.ReadDir(namespaceDir)
-	if err != nil {
-		v.l.WithError(err).Errorf("Could no read namespace directory %s.", namespaceDir)
-		return nil
-	}
-
-	var namespaces []*namespace.Namespace
-	for _, info := range infos {
-		fn := info.Name()
-
-		if info.IsDir() || !(strings.HasSuffix(fn, ".yaml") || strings.HasSuffix(fn, ".yml") || strings.HasSuffix(fn, ".json")) {
-			v.l.Infof("Skipping file %s in namespace directory because it is not *.{yaml|yml|json}", fn)
-			continue
-		}
-
-		fc, err := ioutil.ReadFile(filepath.Join(namespaceDir, fn))
+		infos, err := ioutil.ReadDir(namespaceDir)
 		if err != nil {
-			v.l.WithError(err).Errorf("Could not read namespace file %s.", fn)
-			continue
+			v.l.WithError(err).Errorf("Could no read namespace directory %s.", namespaceDir)
+			return nil
 		}
 
-		namesp := namespace.Namespace{}
-		if err := yaml.Unmarshal(fc, &namesp); err != nil {
-			v.l.WithError(err).Errorf("Could not unmarshal namespace file %s.", fn)
-			continue
+		v.namespaces = make([]*namespace.Namespace, 0, len(infos))
+		for _, info := range infos {
+			fn := info.Name()
+
+			if info.IsDir() || !(strings.HasSuffix(fn, ".yaml") || strings.HasSuffix(fn, ".yml") || strings.HasSuffix(fn, ".json")) {
+				v.l.Infof("Skipping file %s in namespace directory because it is not *.{yaml|yml|json}", fn)
+				continue
+			}
+
+			fc, err := ioutil.ReadFile(filepath.Join(namespaceDir, fn))
+			if err != nil {
+				v.l.WithError(err).Errorf("Could not read namespace file %s.", fn)
+				continue
+			}
+
+			namesp := namespace.Namespace{}
+			if err := yaml.Unmarshal(fc, &namesp); err != nil {
+				v.l.WithError(err).Errorf("Could not unmarshal namespace file %s.", fn)
+				continue
+			}
+
+			v.namespaces = append(v.namespaces, &namesp)
 		}
 
-		namespaces = append(namespaces, &namesp)
+		return v.namespaces
 	}
 
-	return namespaces
+	return v.namespaces
+}
+
+func (v *ViperProvider) GetNamespace(_ context.Context, name string) (*namespace.Namespace, error) {
+	for _, n := range v.namespaces {
+		if n.Name == name {
+			return n, nil
+		}
+	}
+
+	return nil, namespace.ErrNamespaceNotFound
+}
+
+func (v *ViperProvider) SetNamespaces(_ *testing.T, namespaces ...*namespace.Namespace) {
+	v.namespaces = namespaces
 }

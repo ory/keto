@@ -3,7 +3,9 @@ package namespace
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
+	"testing"
 
 	"github.com/ory/x/cmdx"
 )
@@ -11,23 +13,34 @@ import (
 type (
 	Namespace struct {
 		ID     int             `json:"id" db:"id"`
-		Name   string          `json:"name" db:"name"`
+		Name   string          `json:"name" db:"-"`
 		Config json.RawMessage `json:"config" db:"-"`
 	}
 	Status struct {
-		CurrentVersion int `json:"current_version" db:"version"`
+		CurrentVersion int `json:"current_version" db:"-"`
 		NextVersion    int `json:"next_version" db:"-"`
 	}
-	Manager interface {
+	Migrator interface {
 		MigrateNamespaceUp(ctx context.Context, n *Namespace) error
-		NamespaceStatus(ctx context.Context, name string) (*Status, error)
+		NamespaceStatus(ctx context.Context, id int) (*Status, error)
+	}
+	Manager interface {
+		GetNamespace(ctx context.Context, name string) (*Namespace, error)
+		SetNamespaces(_ *testing.T, namespaces ...*Namespace)
 	}
 	ManagerProvider interface {
 		NamespaceManager() Manager
 	}
+	MigratorProvider interface {
+		NamespaceMigrator() Migrator
+	}
 )
 
-var _ cmdx.OutputEntry = &Status{}
+var (
+	_ cmdx.OutputEntry = &Status{}
+
+	ErrNamespaceNotFound = errors.New("could not find namespace")
+)
 
 func (s *Status) Header() []string {
 	return []string{
@@ -45,8 +58,4 @@ func (s *Status) Fields() []string {
 
 func (s *Status) Interface() interface{} {
 	return s
-}
-
-func (n *Namespace) TableName() string {
-	return "keto_namespace"
 }

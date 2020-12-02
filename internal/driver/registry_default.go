@@ -32,7 +32,7 @@ var _ x.LoggerProvider = &RegistryDefault{}
 var _ Registry = &RegistryDefault{}
 
 type RegistryDefault struct {
-	p    *sql.Persister
+	p    persistence.Persister
 	l    *logrusx.Logger
 	w    herodot.Writer
 	ce   *check.Engine
@@ -109,8 +109,12 @@ func (r *RegistryDefault) RelationTupleManager() relationtuple.Manager {
 	return r.p
 }
 
-func (r *RegistryDefault) NamespaceManager() namespace.Manager {
+func (r *RegistryDefault) NamespaceMigrator() namespace.Migrator {
 	return r.p
+}
+
+func (r *RegistryDefault) NamespaceManager() namespace.Manager {
+	return r.c
 }
 
 func (r *RegistryDefault) PermissionEngine() *check.Engine {
@@ -127,24 +131,12 @@ func (r *RegistryDefault) ExpandEngine() *expand.Engine {
 	return r.ee
 }
 
-func (r *RegistryDefault) Persister() (persistence.Persister, error) {
-	if r.p == nil {
-		var err error
-		r.p, err = sql.NewPersister(r.conn, r.Logger())
-		if err != nil {
-			return nil, err
-		}
-	}
-	return r.p, nil
+func (r *RegistryDefault) Persister() persistence.Persister {
+	return r.p
 }
 
 func (r *RegistryDefault) Migrator() (persistence.Migrator, error) {
-	if r.p == nil {
-		if _, err := r.Persister(); err != nil {
-			return nil, err
-		}
-	}
-	return r.p, nil
+	return r.p.(persistence.Migrator), nil
 }
 
 func (r *RegistryDefault) Init() error {
@@ -154,13 +146,45 @@ func (r *RegistryDefault) Init() error {
 	if err != nil {
 		return errors.WithStack(err)
 	}
+
 	r.conn = c
 	if err := c.Open(); err != nil {
 		return errors.WithStack(err)
 	}
+
+	r.p, err = sql.NewPersister(r.conn, r.Logger(), r.c)
+	if err != nil {
+		return err
+	}
+
 	m, err := r.Migrator()
 	if err != nil {
 		return err
 	}
-	return m.MigrateUp(context.Background())
+	if err := m.MigrateUp(context.Background()); err != nil {
+		return err
+	}
+
+	namespaceConfigs := r.c.Namespaces()
+	for _, n := range namespaceConfigs {
+		s, err := r.NamespaceMigrator().NamespaceStatus(context.Background(), n.ID)
+		if err != nil {
+			if r.c.DSN() == configuration.DSNMemory {
+				// auto migrate when DSN is memory
+				if err := r.NamespaceMigrator().MigrateNamespaceUp(context.Background(), n); err != nil {
+					r.l.WithError(err).Errorf("Could not auto-migrate namespace %s.", n.Name)
+				}
+				continue
+			}
+
+			r.l.Warnf("Namespace %s is defined in the config but not yet migrated. It is ignored until you explicitly migrate it.", n.Name)
+			continue
+		}
+
+		if s.CurrentVersion != s.NextVersion {
+			r.l.Warnf("Namespace %s is not migrated to the latest version, it will be ignored until you explicitly migrate it.", n.Name)
+		}
+	}
+
+	return nil
 }

@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/ory/keto/internal/namespace"
+
 	"github.com/markbates/pkger"
 	"github.com/ory/x/logrusx"
 	"github.com/ory/x/pkgerx"
@@ -18,12 +20,13 @@ import (
 
 type (
 	Persister struct {
-		conn *pop.Connection
-		mb   *pkgerx.MigrationBox
+		conn       *pop.Connection
+		mb         *pkgerx.MigrationBox
+		namespaces namespace.Manager
 	}
 	internalPagination struct {
-		Offset int
-		Limit  int
+		Offset uint
+		Limit  uint
 	}
 	contextKeys string
 )
@@ -31,6 +34,7 @@ type (
 const (
 	pageTokenEnd                      = "no other page"
 	transactionContextKey contextKeys = "ongoing transaction"
+	defaultPageSize       uint        = 100
 )
 
 var (
@@ -39,14 +43,15 @@ var (
 	_ persistence.Persister = &Persister{}
 )
 
-func NewPersister(c *pop.Connection, l *logrusx.Logger) (*Persister, error) {
+func NewPersister(c *pop.Connection, l *logrusx.Logger, namespaces namespace.Manager) (*Persister, error) {
 	mb, err := pkgerx.NewMigrationBox(migrations, c, l)
 	if err != nil {
 		return nil, err
 	}
 	return &Persister{
-		mb:   mb,
-		conn: c,
+		mb:         mb,
+		conn:       c,
+		namespaces: namespaces,
 	}, nil
 }
 
@@ -78,6 +83,9 @@ func internalPaginationFromOptions(opts ...x.PaginationOptionSetter) (*internalP
 	ip := &internalPagination{
 		Limit: xp.Size,
 	}
+	if ip.Limit == 0 {
+		ip.Limit = defaultPageSize
+	}
 	return ip, ip.parsePageToken(xp.Token)
 }
 
@@ -93,12 +101,12 @@ func (p *internalPagination) parsePageToken(t string) error {
 		return nil
 	}
 
-	i, err := strconv.ParseInt(t, 10, 32)
+	i, err := strconv.ParseUint(t, 10, 32)
 	if err != nil {
 		return errors.WithStack(persistence.ErrMalformedPageToken)
 	}
 
-	p.Offset = int(i)
+	p.Offset = uint(i)
 	return nil
 }
 

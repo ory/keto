@@ -17,7 +17,7 @@ func (s GRPCServer) ListRelationTuples(ctx context.Context, req *acl.ListRelatio
 			Relation:  req.Query.Relation,
 			Subject:   SubjectFromGRPC(req.Query.Subject),
 		},
-		x.WithSize(int(req.PageSize)),
+		x.WithSize(uint(req.PageSize)),
 		x.WithToken(req.PageToken),
 	)
 	if err != nil {
