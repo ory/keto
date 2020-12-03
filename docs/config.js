@@ -1,6 +1,8 @@
 module.exports = {
   projectName: 'ORY Keto',
   projectSlug: 'keto',
+  newsletter:
+    'https://ory.us10.list-manage.com/subscribe?u=ffb1a878e4ec6c0ed312a3480&id=f605a41b53&group[17097][32]=1',
   projectTagLine:
     'A cloud native access control server providing best-practice patterns (RBAC, ABAC, ACL, AWS IAM Policies, Kubernetes Roles, ...) via REST APIs.',
   updateTags: [
