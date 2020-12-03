@@ -33,47 +33,9 @@ section.
 ## ORY Kratos Configuration
 #
 
-## Data Source Name ##
-#
-# Sets the data source name. This configures the backend where ORY Keto persists data. If dsn is "memory", data will be written to memory and is lost when you restart this instance. ORY Hydra supports popular SQL databases. For more detailed configuration information go to: https://www.ory.sh/docs/hydra/dependencies-environment#sql
-#
-# Examples:
-# - postgres://user:password@host:123/database
-# - mysql://user:password@tcp(host:123)/database
-# - memory
-#
-# Set this value using environment variables on
-# - Linux/macOS:
-#    $ export DSN=<value>
-# - Windows Command Line (CMD):
-#    > set DSN=<value>
-#
-dsn: postgres://user:password@host:123/database
-
 ## HTTP REST API ##
 #
 serve:
-  ## Port ##
-  #
-  # The port to listen on.
-  #
-  # Default value: 4456
-  #
-  # Minimum value: 1
-  #
-  # Maximum value: 65535
-  #
-  # Examples:
-  # - 4456
-  #
-  # Set this value using environment variables on
-  # - Linux/macOS:
-  #    $ export SERVE_PORT=<value>
-  # - Windows Command Line (CMD):
-  #    > set SERVE_PORT=<value>
-  #
-  port: 4456
-
   ## Host ##
   #
   # The network interface to listen on.
@@ -95,20 +57,6 @@ serve:
   # Configure [Cross Origin Resource Sharing (CORS)](http://www.w3.org/TR/cors/) using the following options.
   #
   cors:
-    ## Enable CORS ##
-    #
-    # If set to true, CORS will be enabled and preflight-requests (OPTION) will be answered.
-    #
-    # Default value: false
-    #
-    # Set this value using environment variables on
-    # - Linux/macOS:
-    #    $ export SERVE_CORS_ENABLED=<value>
-    # - Windows Command Line (CMD):
-    #    > set SERVE_CORS_ENABLED=<value>
-    #
-    enabled: false
-
     ## Allowed Origins ##
     #
     # A list of origins a cross-domain request can be executed from. If the special * value is present in the list, all origins will be allowed. An origin may contain a wildcard (*) to replace 0 or more characters (i.e.: http://*.domain.com). Usage of wildcards implies a small performance penality. Only one wildcard can be used per origin.
@@ -216,37 +164,38 @@ serve:
     #
     debug: false
 
+    ## Enable CORS ##
+    #
+    # If set to true, CORS will be enabled and preflight-requests (OPTION) will be answered.
+    #
+    # Default value: false
+    #
+    # Set this value using environment variables on
+    # - Linux/macOS:
+    #    $ export SERVE_CORS_ENABLED=<value>
+    # - Windows Command Line (CMD):
+    #    > set SERVE_CORS_ENABLED=<value>
+    #
+    enabled: false
+
   ## HTTPS ##
   #
   # Configure HTTP over TLS (HTTPS). All options can also be set using environment variables by replacing dots (`.`) with underscores (`_`) and uppercasing the key. For example, `some.prefix.tls.key.path` becomes `export SOME_PREFIX_TLS_KEY_PATH`. If all keys are left undefined, TLS will be disabled.
   #
   tls:
-    ## Private Key (PEM) ##
+    ## TLS Certificate (PEM) ##
     #
-    key:
-      ## path ##
-      #
-      # Set this value using environment variables on
-      # - Linux/macOS:
-      #    $ export SERVE_TLS_KEY_PATH=<value>
-      # - Windows Command Line (CMD):
-      #    > set SERVE_TLS_KEY_PATH=<value>
-      #
-      path: path/to/file.pem
-
+    cert:
       ## base64 ##
       #
       # Set this value using environment variables on
       # - Linux/macOS:
-      #    $ export SERVE_TLS_KEY_BASE64=<value>
+      #    $ export SERVE_TLS_CERT_BASE64=<value>
       # - Windows Command Line (CMD):
-      #    > set SERVE_TLS_KEY_BASE64=<value>
+      #    > set SERVE_TLS_CERT_BASE64=<value>
       #
       base64: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tXG5NSUlEWlRDQ0FrMmdBd0lCQWdJRVY1eE90REFOQmdr...
 
-    ## TLS Certificate (PEM) ##
-    #
-    cert:
       ## path ##
       #
       # Set this value using environment variables on
@@ -257,15 +206,49 @@ serve:
       #
       path: path/to/file.pem
 
+    ## Private Key (PEM) ##
+    #
+    key:
       ## base64 ##
       #
       # Set this value using environment variables on
       # - Linux/macOS:
-      #    $ export SERVE_TLS_CERT_BASE64=<value>
+      #    $ export SERVE_TLS_KEY_BASE64=<value>
       # - Windows Command Line (CMD):
-      #    > set SERVE_TLS_CERT_BASE64=<value>
+      #    > set SERVE_TLS_KEY_BASE64=<value>
       #
       base64: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tXG5NSUlEWlRDQ0FrMmdBd0lCQWdJRVY1eE90REFOQmdr...
+
+      ## path ##
+      #
+      # Set this value using environment variables on
+      # - Linux/macOS:
+      #    $ export SERVE_TLS_KEY_PATH=<value>
+      # - Windows Command Line (CMD):
+      #    > set SERVE_TLS_KEY_PATH=<value>
+      #
+      path: path/to/file.pem
+
+  ## Port ##
+  #
+  # The port to listen on.
+  #
+  # Default value: 4456
+  #
+  # Minimum value: 1
+  #
+  # Maximum value: 65535
+  #
+  # Examples:
+  # - 4456
+  #
+  # Set this value using environment variables on
+  # - Linux/macOS:
+  #    $ export SERVE_PORT=<value>
+  # - Windows Command Line (CMD):
+  #    > set SERVE_PORT=<value>
+  #
+  port: 4456
 
 ## Profiling ##
 #
@@ -289,6 +272,24 @@ profiling: cpu
 # Configure logging using the following options. Logging will always be sent to stdout and stderr.
 #
 log:
+  ## Format ##
+  #
+  # The log format can either be text or JSON.
+  #
+  # Default value: text
+  #
+  # One of:
+  # - text
+  # - json
+  #
+  # Set this value using environment variables on
+  # - Linux/macOS:
+  #    $ export LOG_FORMAT=<value>
+  # - Windows Command Line (CMD):
+  #    > set LOG_FORMAT=<value>
+  #
+  format: text
+
   ## Level ##
   #
   # Debug enables stack traces on errors. Can also be set using environment variable LOG_LEVEL.
@@ -311,47 +312,11 @@ log:
   #
   level: panic
 
-  ## Format ##
-  #
-  # The log format can either be text or JSON.
-  #
-  # Default value: text
-  #
-  # One of:
-  # - text
-  # - json
-  #
-  # Set this value using environment variables on
-  # - Linux/macOS:
-  #    $ export LOG_FORMAT=<value>
-  # - Windows Command Line (CMD):
-  #    > set LOG_FORMAT=<value>
-  #
-  format: text
-
 ## tracing ##
 #
 # ORY Hydra supports distributed tracing.
 #
 tracing:
-  ## provider ##
-  #
-  # Set this to the tracing backend you wish to use. Currently supports jaeger. If omitted or empty, tracing will be disabled.
-  #
-  # One of:
-  # - jaeger
-  #
-  # Examples:
-  # - jaeger
-  #
-  # Set this value using environment variables on
-  # - Linux/macOS:
-  #    $ export TRACING_PROVIDER=<value>
-  # - Windows Command Line (CMD):
-  #    > set TRACING_PROVIDER=<value>
-  #
-  provider: jaeger
-
   ## service_name ##
   #
   # Specifies the service name to use on the tracer.
@@ -375,21 +340,6 @@ tracing:
     # Configures the jaeger tracing backend.
     #
     jaeger:
-      ## local_agent_address ##
-      #
-      # The address of the jaeger-agent where spans should be sent to.
-      #
-      # Examples:
-      # - 127.0.0.1:6831
-      #
-      # Set this value using environment variables on
-      # - Linux/macOS:
-      #    $ export TRACING_PROVIDERS_JAEGER_LOCAL_AGENT_ADDRESS=<value>
-      # - Windows Command Line (CMD):
-      #    > set TRACING_PROVIDERS_JAEGER_LOCAL_AGENT_ADDRESS=<value>
-      #
-      local_agent_address: 127.0.0.1:6831
-
       ## propagation ##
       #
       # The tracing header format
@@ -443,6 +393,39 @@ tracing:
         #
         server_url: http://localhost:5778/sampling
 
+      ## local_agent_address ##
+      #
+      # The address of the jaeger-agent where spans should be sent to.
+      #
+      # Examples:
+      # - 127.0.0.1:6831
+      #
+      # Set this value using environment variables on
+      # - Linux/macOS:
+      #    $ export TRACING_PROVIDERS_JAEGER_LOCAL_AGENT_ADDRESS=<value>
+      # - Windows Command Line (CMD):
+      #    > set TRACING_PROVIDERS_JAEGER_LOCAL_AGENT_ADDRESS=<value>
+      #
+      local_agent_address: 127.0.0.1:6831
+
+  ## provider ##
+  #
+  # Set this to the tracing backend you wish to use. Currently supports jaeger. If omitted or empty, tracing will be disabled.
+  #
+  # One of:
+  # - jaeger
+  #
+  # Examples:
+  # - jaeger
+  #
+  # Set this value using environment variables on
+  # - Linux/macOS:
+  #    $ export TRACING_PROVIDER=<value>
+  # - Windows Command Line (CMD):
+  #    > set TRACING_PROVIDER=<value>
+  #
+  provider: jaeger
+
 ## The Keto version this config is written for. ##
 #
 # SemVer according to https://semver.org/ prefixed with `v` as in our releases.
@@ -454,4 +437,21 @@ tracing:
 #    > set VERSION=<value>
 #
 version: v0.0.0
+
+## Data Source Name ##
+#
+# Sets the data source name. This configures the backend where ORY Keto persists data. If dsn is "memory", data will be written to memory and is lost when you restart this instance. ORY Hydra supports popular SQL databases. For more detailed configuration information go to: https://www.ory.sh/docs/hydra/dependencies-environment#sql
+#
+# Examples:
+# - postgres://user:password@host:123/database
+# - mysql://user:password@tcp(host:123)/database
+# - memory
+#
+# Set this value using environment variables on
+# - Linux/macOS:
+#    $ export DSN=<value>
+# - Windows Command Line (CMD):
+#    > set DSN=<value>
+#
+dsn: postgres://user:password@host:123/database
 ```
