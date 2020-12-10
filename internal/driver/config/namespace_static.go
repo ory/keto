@@ -2,9 +2,11 @@ package config
 
 import (
 	"context"
+
 	"github.com/ory/herodot"
-	"github.com/ory/keto/internal/namespace"
 	"github.com/pkg/errors"
+
+	"github.com/ory/keto/internal/namespace"
 )
 
 type (

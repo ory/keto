@@ -4,9 +4,11 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/ory/herodot"
-	"github.com/ory/keto/internal/namespace"
 	"io/ioutil"
+
+	"github.com/ory/herodot"
+
+	"github.com/ory/keto/internal/namespace"
 
 	"github.com/markbates/pkger"
 	_ "github.com/ory/jsonschema/v3/httploader"

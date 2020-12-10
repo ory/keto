@@ -2,13 +2,15 @@ package config
 
 import (
 	"context"
-	"github.com/ory/keto/internal/namespace"
+	"testing"
+
 	"github.com/ory/x/logrusx"
 	"github.com/sirupsen/logrus/hooks/test"
 	"github.com/spf13/pflag"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"testing"
+
+	"github.com/ory/keto/internal/namespace"
 )
 
 func TestKoanfNamespaceManager(t *testing.T) {
