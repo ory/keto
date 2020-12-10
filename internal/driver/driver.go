@@ -1,8 +1,10 @@
 package driver
 
-import "github.com/ory/keto/internal/driver/configuration"
+import (
+	"github.com/ory/keto/internal/driver/config"
+)
 
 type Driver interface {
-	Configuration() configuration.Provider
+	Configuration() config.Provider
 	Registry() Registry
 }

@@ -3,18 +3,16 @@ package namespace
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
-	"testing"
 
 	"github.com/ory/x/cmdx"
 )
 
 type (
 	Namespace struct {
-		ID     int             `json:"id" db:"id"`
-		Name   string          `json:"name" db:"-"`
-		Config json.RawMessage `json:"config" db:"-"`
+		ID     int             `json:"id" db:"id" toml:"id"`
+		Name   string          `json:"name" db:"-" toml:"name"`
+		Config json.RawMessage `json:"config,omitempty" db:"-" toml:"config,omitempty"`
 	}
 	Status struct {
 		CurrentVersion int `json:"current_version" db:"-"`
@@ -26,7 +24,7 @@ type (
 	}
 	Manager interface {
 		GetNamespace(ctx context.Context, name string) (*Namespace, error)
-		SetNamespaces(_ *testing.T, namespaces ...*Namespace)
+		Namespaces(ctx context.Context) ([]*Namespace, error)
 	}
 	ManagerProvider interface {
 		NamespaceManager() Manager
@@ -38,8 +36,6 @@ type (
 
 var (
 	_ cmdx.OutputEntry = &Status{}
-
-	ErrNamespaceNotFound = errors.New("could not find namespace")
 )
 
 func (s *Status) Header() []string {

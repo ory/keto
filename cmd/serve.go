@@ -36,8 +36,6 @@ import (
 	"github.com/ory/keto/internal/driver"
 	"github.com/ory/keto/internal/relationtuple"
 
-	"github.com/ory/x/viperx"
-
 	"github.com/ory/x/logrusx"
 )
 
@@ -61,7 +59,7 @@ on configuration options, open the configuration documentation:
 			os.Exit(1)
 		}
 
-		d := driver.NewDefaultDriver(logrusx.New("keto", "master"), "master", "local", "today")
+		reg := driver.NewDefaultRegistry(logrusx.New("keto", "master"), cmd.Flags(), "master", "local", "today")
 
 		wg := &sync.WaitGroup{}
 		wg.Add(2)
@@ -70,7 +68,7 @@ on configuration options, open the configuration documentation:
 			defer wg.Done()
 
 			s := grpc.NewServer()
-			relS := relationtuple.NewGRPCServer(d.Registry())
+			relS := relationtuple.NewGRPCServer(reg)
 			acl.RegisterReadServiceServer(s, relS)
 			fmt.Println("going to serve GRPC on", lis.Addr().String())
 			if err := s.Serve(lis); err != nil {
@@ -82,11 +80,11 @@ on configuration options, open the configuration documentation:
 			defer wg.Done()
 
 			router := httprouter.New()
-			rh := relationtuple.NewHandler(d.Registry())
+			rh := relationtuple.NewHandler(reg)
 			rh.RegisterPublicRoutes(router)
-			ch := check.NewHandler(d.Registry())
+			ch := check.NewHandler(reg)
 			ch.RegisterPublicRoutes(router)
-			eh := expand.NewHandler(d.Registry())
+			eh := expand.NewHandler(reg)
 			eh.RegisterPublicRoutes(router)
 
 			server := graceful.WithDefaults(&http.Server{
@@ -107,7 +105,8 @@ on configuration options, open the configuration documentation:
 func init() {
 	RootCmd.AddCommand(serveCmd)
 
-	disableTelemetryEnv := viperx.GetBool(logrusx.New("ORY Keto", Version), "sqa.opt_out", false, "DISABLE_TELEMETRY")
-	serveCmd.PersistentFlags().Bool("disable-telemetry", disableTelemetryEnv, "Disable anonymized telemetry reports - for more information please visit https://www.ory.sh/docs/ecosystem/sqa")
-	serveCmd.PersistentFlags().Bool("sqa-opt-out", disableTelemetryEnv, "Disable anonymized telemetry reports - for more information please visit https://www.ory.sh/docs/ecosystem/sqa")
+	// TODO
+	//disableTelemetryEnv := viperx.GetBool(logrusx.New("ORY Keto", Version), "sqa.opt_out", false, "DISABLE_TELEMETRY")
+	serveCmd.PersistentFlags().Bool("disable-telemetry", true, "Disable anonymized telemetry reports - for more information please visit https://www.ory.sh/docs/ecosystem/sqa")
+	serveCmd.PersistentFlags().Bool("sqa-opt-out", true, "Disable anonymized telemetry reports - for more information please visit https://www.ory.sh/docs/ecosystem/sqa")
 }

@@ -3,6 +3,8 @@ package driver
 import (
 	"context"
 
+	"github.com/ory/keto/internal/driver/config"
+
 	"github.com/pkg/errors"
 
 	"github.com/gobuffalo/pop/v5"
@@ -11,17 +13,11 @@ import (
 	"github.com/ory/x/logrusx"
 	"github.com/ory/x/tracing"
 
-	"github.com/ory/keto/internal/driver/configuration"
-	"github.com/ory/keto/internal/namespace"
-
-	"github.com/ory/keto/internal/persistence/sql"
-
-	"github.com/ory/keto/internal/persistence"
-
-	"github.com/ory/keto/internal/expand"
-
 	"github.com/ory/keto/internal/check"
-
+	"github.com/ory/keto/internal/expand"
+	"github.com/ory/keto/internal/namespace"
+	"github.com/ory/keto/internal/persistence"
+	"github.com/ory/keto/internal/persistence/sql"
 	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/internal/x"
 )
@@ -38,8 +34,9 @@ type RegistryDefault struct {
 	ce   *check.Engine
 	ee   *expand.Engine
 	conn *pop.Connection
-	c    configuration.Provider
+	c    config.Provider
 	hh   *healthx.Handler
+	nm   namespace.Manager
 
 	version, hash, date string
 }
@@ -52,9 +49,13 @@ func (r *RegistryDefault) Ping() error {
 	return r.conn.Open()
 }
 
-func (r *RegistryDefault) WithConfig(c configuration.Provider) Registry {
+func (r *RegistryDefault) WithConfig(c config.Provider) Registry {
 	r.c = c
 	return r
+}
+
+func (r *RegistryDefault) Config() config.Provider {
+	return r.c
 }
 
 func (r *RegistryDefault) WithLogger(l *logrusx.Logger) Registry {
@@ -64,6 +65,11 @@ func (r *RegistryDefault) WithLogger(l *logrusx.Logger) Registry {
 
 func (r *RegistryDefault) WithBuildInfo(version, hash, date string) Registry {
 	r.version, r.hash, r.date = version, hash, date
+	return r
+}
+
+func (r *RegistryDefault) WithNamespaceManager(m namespace.Manager) Registry {
+	r.nm = m
 	return r
 }
 
@@ -152,7 +158,7 @@ func (r *RegistryDefault) Init() error {
 		return errors.WithStack(err)
 	}
 
-	r.p, err = sql.NewPersister(r.conn, r.Logger(), r.c)
+	r.p, err = sql.NewPersister(r.conn, r.Logger(), r.NamespaceManager())
 	if err != nil {
 		return err
 	}
@@ -165,11 +171,14 @@ func (r *RegistryDefault) Init() error {
 		return err
 	}
 
-	namespaceConfigs := r.c.Namespaces()
+	namespaceConfigs, err := r.NamespaceManager().Namespaces(context.Background())
+	if err != nil {
+		return err
+	}
 	for _, n := range namespaceConfigs {
 		s, err := r.NamespaceMigrator().NamespaceStatus(context.Background(), n.ID)
 		if err != nil {
-			if r.c.DSN() == configuration.DSNMemory {
+			if r.c.DSN() == config.DSNMemory {
 				// auto migrate when DSN is memory
 				if err := r.NamespaceMigrator().MigrateNamespaceUp(context.Background(), n); err != nil {
 					r.l.WithError(err).Errorf("Could not auto-migrate namespace %s.", n.Name)

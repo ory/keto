@@ -4,6 +4,35 @@
   "title": "ORY Kratos Configuration",
   "type": "object",
   "definitions": {
+    "namespace": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "title": "The name of the namespace.",
+          "examples": [
+            "videos",
+            "groups",
+            "files"
+          ]
+        },
+        "id": {
+          "type": "integer",
+          "title": "The unique ID of the namespace. Can not be changed once set.",
+          "minimum": 0
+        },
+        "config": {
+          "type": "object",
+          "title": "The configuration of the namespace.",
+          "description": "To be defined."
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "id"
+      ]
+    },
     "tlsxSource": {
       "type": "object",
       "additionalProperties": false,
@@ -368,6 +397,24 @@
           }
         }
       }
+    },
+    "namespaces": {
+      "description": "Namespace configuration or it's location.",
+      "default": "file://./keto_namespaces",
+      "oneOf": [
+        {
+          "title": "Namespace Repo URI",
+          "description": "URI that points to a directory of namespace files, a single file with all namespaces, or a websocket connection that provides former via `github.com/ory/x/watcherx.WatchAndServeWS`",
+          "type": "string",
+          "format": "uri"
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/namespace"
+          }
+        }
+      ]
     },
     "version": {
       "type": "string",

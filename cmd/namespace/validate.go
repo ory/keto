@@ -1,13 +1,15 @@
 package namespace
 
 import (
+	"bytes"
 	"fmt"
 	"io/ioutil"
+
+	"github.com/ory/x/jsonschemax"
 
 	"github.com/markbates/pkger"
 	"github.com/ory/jsonschema/v3"
 	"github.com/ory/x/cmdx"
-	"github.com/ory/x/viperx"
 	"github.com/segmentio/objconv/yaml"
 	"github.com/spf13/cobra"
 
@@ -38,18 +40,27 @@ func NewValidateCmd() *cobra.Command {
 	return cmd
 }
 
-var namespaceSchema *jsonschema.Schema
+var (
+	namespaceSchema    *jsonschema.Schema
+	namespaceSchemaRaw []byte
+)
 
 func validateNamespaceFile(cmd *cobra.Command, fn string) (*namespace.Namespace, error) {
-	if namespaceSchema == nil {
+	if namespaceSchema == nil || len(namespaceSchemaRaw) == 0 {
 		sf, err := pkger.Open(namespaceSchemaPath)
 		if err != nil {
 			_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not open the namespace schema file. This is an internal error that should be reported. Thanks ;)\n%+v\n", err)
 			return nil, cmdx.FailSilently(cmd)
 		}
 
+		namespaceSchemaRaw, err = ioutil.ReadAll(sf)
+		if err != nil {
+			_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not read the namespace schema file. This is an internal error that should be reported. Thanks ;)\n%+v\n", err)
+			return nil, cmdx.FailSilently(cmd)
+		}
+
 		c := jsonschema.NewCompiler()
-		if err := c.AddResource(namespaceSchemaPath, sf); err != nil {
+		if err := c.AddResource(namespaceSchemaPath, bytes.NewBuffer(namespaceSchemaRaw)); err != nil {
 			_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not add the namespace schema file to the compiler. This is an internal error that should be reported. Thanks ;)\n%+v\n", err)
 			return nil, cmdx.FailSilently(cmd)
 		}
@@ -74,7 +85,7 @@ func validateNamespaceFile(cmd *cobra.Command, fn string) (*namespace.Namespace,
 	}
 
 	if err := namespaceSchema.ValidateInterface(val); err != nil {
-		viperx.PrintHumanReadableValidationErrors(cmd.ErrOrStderr(), err)
+		jsonschemax.FormatValidationErrorForCLI(cmd.ErrOrStderr(), namespaceSchemaRaw, err)
 		return nil, cmdx.FailSilently(cmd)
 	}
 
