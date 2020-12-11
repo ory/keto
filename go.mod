@@ -1,7 +1,6 @@
 module github.com/ory/keto
 
 replace (
-	github.com/ory/x => ../x
 	google.golang.org/protobuf v1.25.1-0.20201020201750-d3470999428b => google.golang.org/protobuf v1.25.0
 )
 
@@ -30,7 +29,7 @@ require (
 	github.com/ory/herodot v0.9.1
 	github.com/ory/jsonschema/v3 v3.0.1
 	github.com/ory/viper v1.7.5
-	github.com/ory/x v0.0.168
+	github.com/ory/x v0.0.169
 	github.com/pelletier/go-toml v1.8.0
 	github.com/pkg/errors v0.9.1
 	github.com/rs/cors v1.6.0
