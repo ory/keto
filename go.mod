@@ -1,8 +1,6 @@
 module github.com/ory/keto
 
-replace (
-	google.golang.org/protobuf v1.25.1-0.20201020201750-d3470999428b => google.golang.org/protobuf v1.25.0
-)
+replace google.golang.org/protobuf v1.25.1-0.20201020201750-d3470999428b => google.golang.org/protobuf v1.25.0
 
 require (
 	github.com/HdrHistogram/hdrhistogram-go v1.0.1 // indirect
@@ -44,7 +42,6 @@ require (
 	github.com/tidwall/gjson v1.6.0
 	github.com/tidwall/sjson v1.1.1 // indirect
 	github.com/uber/jaeger-lib v2.4.0+incompatible // indirect
-	github.com/ziutek/mymysql v1.5.4 // indirect
 	go.mongodb.org/mongo-driver v1.3.4 // indirect
 	golang.org/x/lint v0.0.0-20200302205851-738671d3881b // indirect
 	golang.org/x/tools v0.0.0-20200717024301-6ddee64345a6
@@ -52,7 +49,6 @@ require (
 	google.golang.org/grpc v1.33.0
 	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.0.1
 	google.golang.org/protobuf v1.25.1-0.20201020201750-d3470999428b
-	gopkg.in/gorp.v1 v1.7.2 // indirect
 )
 
 go 1.14
