@@ -9,7 +9,7 @@ import (
 )
 
 type Provider interface {
-	namespace.Manager
+	namespace.ManagerProvider
 
 	CORS() (cors.Options, bool)
 	ListenOn() string

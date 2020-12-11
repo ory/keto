@@ -37,7 +37,10 @@ func TestKoanfNamespaceManager(t *testing.T) {
 
 		p.Set(KeyNamespaces, nn)
 
-		actualNamespaces, err := p.Namespaces(context.Background())
+		nm, err := p.NamespaceManager(context.Background())
+		require.NoError(t, err)
+
+		actualNamespaces, err := nm.Namespaces(context.Background())
 		require.NoError(t, err)
 
 		for _, n := range nn {

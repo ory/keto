@@ -13,26 +13,19 @@ import (
 	"github.com/ory/keto/internal/driver/config"
 )
 
-type DefaultDriver struct {
-	c config.Provider
-	r Registry
-}
-
-func NewDefaultRegistry(l *logrusx.Logger, flags *pflag.FlagSet, version, build, date string) Registry {
+func NewDefaultRegistry(l *logrusx.Logger, flags *pflag.FlagSet, version, hash, date string) Registry {
 	c, err := config.New(flags, l)
 	if err != nil {
 		l.WithError(err).Fatal("Unable to initialize config provider.")
 	}
 
-	r, err := NewRegistry(c)
-	if err != nil {
-		l.WithError(err).Fatal("Unable to instantiate service registry.")
+	r := &RegistryDefault{
+		c:       c,
+		l:       l,
+		version: version,
+		hash:    hash,
+		date:    date,
 	}
-
-	r.
-		WithConfig(c).
-		WithLogger(l).
-		WithBuildInfo(version, build, date)
 
 	if err = r.Init(); err != nil {
 		l.WithError(err).Fatal("Unable to initialize service registry.")
@@ -53,18 +46,12 @@ func NewMemoryTestRegistry(t *testing.T, namespaces []*namespace.Namespace) Regi
 	c.Set(config.KeyDSN, config.DSNMemory)
 	c.Set(config.KeyNamespaces, namespaces)
 
-	r, err := NewRegistry(c)
-	require.NoError(t, err)
+	r := &RegistryDefault{
+		c: c,
+		l: l,
+	}
 
 	require.NoError(t, r.Init())
 
 	return r
-}
-
-func (r *DefaultDriver) Configuration() config.Provider {
-	return r.c
-}
-
-func (r *DefaultDriver) Registry() Registry {
-	return r.r
 }

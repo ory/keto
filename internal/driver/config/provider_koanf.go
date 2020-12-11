@@ -6,8 +6,6 @@ import (
 	"fmt"
 	"io/ioutil"
 
-	"github.com/ory/herodot"
-
 	"github.com/ory/keto/internal/namespace"
 
 	"github.com/markbates/pkger"
@@ -109,7 +107,7 @@ func (k *KoanfProvider) TracingConfig() *tracing.Config {
 	return k.p.TracingConfig("ORY Keto")
 }
 
-func (k *KoanfProvider) namespaceManager(ctx context.Context) (namespace.Manager, error) {
+func (k *KoanfProvider) NamespaceManager(ctx context.Context) (namespace.Manager, error) {
 	if k.nm == nil {
 		switch nTyped := k.p.GetF(KeyNamespaces, "file://./keto_namespaces").(type) {
 		case string:
@@ -141,22 +139,4 @@ func (k *KoanfProvider) namespaceManager(ctx context.Context) (namespace.Manager
 	}
 
 	return k.nm, nil
-}
-
-func (k *KoanfProvider) GetNamespace(ctx context.Context, name string) (*namespace.Namespace, error) {
-	nm, err := k.namespaceManager(ctx)
-	if err != nil {
-		return nil, errors.Wrapf(herodot.ErrNotFound, fmt.Sprintf("%+v", err))
-	}
-
-	return nm.GetNamespace(ctx, name)
-}
-
-func (k *KoanfProvider) Namespaces(ctx context.Context) ([]*namespace.Namespace, error) {
-	nm, err := k.namespaceManager(ctx)
-	if err != nil {
-		return nil, errors.Wrapf(herodot.ErrNotFound, fmt.Sprintf("%+v", err))
-	}
-
-	return nm.Namespaces(ctx)
 }
