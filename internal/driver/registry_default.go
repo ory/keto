@@ -129,7 +129,7 @@ func (r *RegistryDefault) Init(ctx context.Context) error {
 		return errors.WithStack(err)
 	}
 
-	nm, err := r.c.NamespaceManager(ctx)
+	nm, err := r.c.NamespaceManager()
 	if err != nil {
 		return err
 	}

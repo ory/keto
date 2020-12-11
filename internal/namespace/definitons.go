@@ -27,7 +27,7 @@ type (
 		Namespaces(ctx context.Context) ([]*Namespace, error)
 	}
 	ManagerProvider interface {
-		NamespaceManager(ctx context.Context) (Manager, error)
+		NamespaceManager() (Manager, error)
 	}
 	MigratorProvider interface {
 		NamespaceMigrator() Migrator

@@ -15,7 +15,7 @@ import (
 )
 
 func NewDefaultRegistry(ctx context.Context, l *logrusx.Logger, flags *pflag.FlagSet, version, hash, date string) Registry {
-	c, err := config.New(flags, l)
+	c, err := config.New(ctx, flags, l)
 	if err != nil {
 		l.WithError(err).Fatal("Unable to initialize config provider.")
 	}
@@ -37,12 +37,14 @@ func NewDefaultRegistry(ctx context.Context, l *logrusx.Logger, flags *pflag.Fla
 
 func NewMemoryTestRegistry(t *testing.T, namespaces []*namespace.Namespace) Registry {
 	l := logrusx.New("keto", "test")
+	ctx, cancel := context.WithCancel(context.Background())
+	t.Cleanup(cancel)
 
 	flags := pflag.NewFlagSet("test flags", pflag.ContinueOnError)
 	configx.RegisterFlags(flags)
 	require.NoError(t, flags.Set("config", ""))
 
-	c, err := config.New(flags, l)
+	c, err := config.New(ctx, flags, l)
 	require.NoError(t, err)
 	c.Set(config.KeyDSN, config.DSNMemory)
 	c.Set(config.KeyNamespaces, namespaces)
@@ -51,9 +53,6 @@ func NewMemoryTestRegistry(t *testing.T, namespaces []*namespace.Namespace) Regi
 		c: c,
 		l: l,
 	}
-
-	ctx, cancel := context.WithCancel(context.Background())
-	t.Cleanup(cancel)
 
 	require.NoError(t, r.Init(ctx))
 

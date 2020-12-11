@@ -5,6 +5,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"sync"
+
+	"github.com/ory/x/watcherx"
 
 	"github.com/ory/keto/internal/namespace"
 
@@ -30,14 +33,16 @@ const (
 
 type (
 	KoanfProvider struct {
-		p   *configx.Provider
-		l   *logrusx.Logger
-		ctx context.Context
-		nm  namespace.Manager
+		p                      *configx.Provider
+		l                      *logrusx.Logger
+		ctx                    context.Context
+		nm                     namespace.Manager
+		cancelNamespaceManager context.CancelFunc
+		nmLock                 sync.RWMutex
 	}
 )
 
-func New(flags *pflag.FlagSet, l *logrusx.Logger) (Provider, error) {
+func New(ctx context.Context, flags *pflag.FlagSet, l *logrusx.Logger) (Provider, error) {
 	sf, err := pkger.Open("/.schema/config.schema.json")
 	if err != nil {
 		return nil, errors.WithStack(err)
@@ -48,9 +53,12 @@ func New(flags *pflag.FlagSet, l *logrusx.Logger) (Provider, error) {
 		return nil, errors.WithStack(err)
 	}
 
-	ctx := context.Background()
+	kp := &KoanfProvider{
+		l:   l,
+		ctx: ctx,
+	}
 
-	p, err := configx.New(
+	kp.p, err = configx.New(
 		schema,
 		flags,
 		configx.WithStderrValidationReporter(),
@@ -58,20 +66,38 @@ func New(flags *pflag.FlagSet, l *logrusx.Logger) (Provider, error) {
 		configx.OmitKeysFromTracing(KeyDSN),
 		configx.WithLogrusWatcher(l),
 		configx.WithContext(ctx),
+		configx.AttachWatcher(func(watcherx.Event, error) {
+			// TODO this can be optimized to run only on changes related to namespace config
+			kp.resetNamespaceManager()
+		}),
 	)
 	if err != nil {
 		return nil, err
 	}
 
-	return &KoanfProvider{
-		l:   l,
-		p:   p,
-		ctx: ctx,
-	}, nil
+	return kp, nil
+}
+
+func (k *KoanfProvider) resetNamespaceManager() {
+	k.nmLock.Lock()
+	defer k.nmLock.Unlock()
+
+	if k.nm == nil {
+		return
+	}
+
+	// cancel and delete old namespace manager
+	// the next read request will result in a new one being created
+	k.cancelNamespaceManager()
+	k.nm = nil
 }
 
 func (k *KoanfProvider) Set(key string, v interface{}) {
 	k.p.Set(key, v)
+
+	if key == KeyNamespaces {
+		k.resetNamespaceManager()
+	}
 }
 
 func (k *KoanfProvider) ListenOn() string {
@@ -107,8 +133,14 @@ func (k *KoanfProvider) TracingConfig() *tracing.Config {
 	return k.p.TracingConfig("ORY Keto")
 }
 
-func (k *KoanfProvider) NamespaceManager(ctx context.Context) (namespace.Manager, error) {
+func (k *KoanfProvider) NamespaceManager() (namespace.Manager, error) {
 	if k.nm == nil {
+		k.nmLock.Lock()
+		defer k.nmLock.Unlock()
+
+		var ctx context.Context
+		ctx, k.cancelNamespaceManager = context.WithCancel(k.ctx)
+
 		switch nTyped := k.p.GetF(KeyNamespaces, "file://./keto_namespaces").(type) {
 		case string:
 			var err error
@@ -117,8 +149,7 @@ func (k *KoanfProvider) NamespaceManager(ctx context.Context) (namespace.Manager
 				return nil, err
 			}
 		case []*namespace.Namespace:
-			staticManager := staticNamespaces(nTyped)
-			k.nm = &staticManager
+			k.nm = NewMemoryNamespaceManager(nTyped...)
 		case []interface{}:
 			nEnc, err := json.Marshal(nTyped)
 			if err != nil {
@@ -131,12 +162,17 @@ func (k *KoanfProvider) NamespaceManager(ctx context.Context) (namespace.Manager
 				return nil, errors.WithStack(err)
 			}
 
-			staticManager := staticNamespaces(nn)
-			k.nm = &staticManager
+			k.nm = NewMemoryNamespaceManager(nn...)
 		default:
 			return nil, errors.Errorf("could not create namespace manager from %#v, this indicates an error in the JSON schema that should be reported", nTyped)
 		}
+
+		// return here to properly unlock
+		return k.nm, nil
 	}
+
+	k.nmLock.RLock()
+	defer k.nmLock.RUnlock()
 
 	return k.nm, nil
 }
