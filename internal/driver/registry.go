@@ -1,6 +1,7 @@
 package driver
 
 import (
+	"context"
 	"github.com/ory/x/dbal"
 	"github.com/ory/x/healthx"
 	"github.com/ory/x/tracing"
@@ -15,7 +16,7 @@ import (
 
 type Registry interface {
 	dbal.Driver
-	Init() error
+	Init(context.Context) error
 	BuildVersion() string
 	BuildDate() string
 	BuildHash() string

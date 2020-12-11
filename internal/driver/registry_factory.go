@@ -1,6 +1,7 @@
 package driver
 
 import (
+	"context"
 	"testing"
 
 	"github.com/ory/keto/internal/namespace"
@@ -13,7 +14,7 @@ import (
 	"github.com/ory/keto/internal/driver/config"
 )
 
-func NewDefaultRegistry(l *logrusx.Logger, flags *pflag.FlagSet, version, hash, date string) Registry {
+func NewDefaultRegistry(ctx context.Context, l *logrusx.Logger, flags *pflag.FlagSet, version, hash, date string) Registry {
 	c, err := config.New(flags, l)
 	if err != nil {
 		l.WithError(err).Fatal("Unable to initialize config provider.")
@@ -27,7 +28,7 @@ func NewDefaultRegistry(l *logrusx.Logger, flags *pflag.FlagSet, version, hash, 
 		date:    date,
 	}
 
-	if err = r.Init(); err != nil {
+	if err = r.Init(ctx); err != nil {
 		l.WithError(err).Fatal("Unable to initialize service registry.")
 	}
 
@@ -51,7 +52,10 @@ func NewMemoryTestRegistry(t *testing.T, namespaces []*namespace.Namespace) Regi
 		l: l,
 	}
 
-	require.NoError(t, r.Init())
+	ctx, cancel := context.WithCancel(context.Background())
+	t.Cleanup(cancel)
+
+	require.NoError(t, r.Init(ctx))
 
 	return r
 }

@@ -15,6 +15,7 @@
 package cmd
 
 import (
+	"context"
 	"fmt"
 	"net"
 	"net/http"
@@ -59,7 +60,10 @@ on configuration options, open the configuration documentation:
 			os.Exit(1)
 		}
 
-		reg := driver.NewDefaultRegistry(logrusx.New("keto", "master"), cmd.Flags(), "master", "local", "today")
+		ctx, cancel := context.WithCancel(context.Background())
+		defer cancel()
+
+		reg := driver.NewDefaultRegistry(ctx, logrusx.New("keto", "master"), cmd.Flags(), "master", "local", "today")
 
 		wg := &sync.WaitGroup{}
 		wg.Add(2)

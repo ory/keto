@@ -116,7 +116,7 @@ func (r *RegistryDefault) Migrator() (persistence.Migrator, error) {
 	return r.p.(persistence.Migrator), nil
 }
 
-func (r *RegistryDefault) Init() error {
+func (r *RegistryDefault) Init(ctx context.Context) error {
 	c, err := pop.NewConnection(&pop.ConnectionDetails{
 		URL: "sqlite://:memory:?_fk=true",
 	})
@@ -129,8 +129,11 @@ func (r *RegistryDefault) Init() error {
 		return errors.WithStack(err)
 	}
 
-	ctx := context.Background()
 	nm, err := r.c.NamespaceManager(ctx)
+	if err != nil {
+		return err
+	}
+
 	r.p, err = sql.NewPersister(r.conn, r.Logger(), nm)
 	if err != nil {
 		return err
