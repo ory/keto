@@ -101,9 +101,8 @@ func eventHandler(ctx context.Context, nw *NamespaceWatcher, done <-chan int, in
 					nw.Lock()
 					defer nw.Unlock()
 
-					n, err := parseNamespace(e.Reader(), e.Source())
-					if err != nil {
-						nw.l.WithError(err).Warnf("Ignoring namespace file \"%s\".", e.Source())
+					n := parseNamespace(nw.l, e.Reader(), e.Source())
+					if n == nil {
 						return
 					}
 
@@ -116,7 +115,7 @@ func eventHandler(ctx context.Context, nw *NamespaceWatcher, done <-chan int, in
 	}
 }
 
-func parseNamespace(r io.Reader, source string) (*namespace.Namespace, error) {
+func parseNamespace(l *logrusx.Logger, r io.Reader, source string) *namespace.Namespace {
 	var parser func([]byte, interface{}) error
 
 	knownFormats := stringsx.RegisteredCases{}
@@ -128,20 +127,23 @@ func parseNamespace(r io.Reader, source string) (*namespace.Namespace, error) {
 	case knownFormats.AddCase(".toml"):
 		parser = toml.Unmarshal
 	default:
-		return nil, errors.Wrap(knownFormats.ToUnknownCaseErr(ext), "could not infer format from file extension")
+		l.WithError(knownFormats.ToUnknownCaseErr(ext)).WithField("file_name", source).Warn("could not infer format from file extension")
+		return nil
 	}
 
 	raw, err := ioutil.ReadAll(r)
 	if err != nil {
-		return nil, errors.WithStack(err)
+		l.WithError(errors.WithStack(err)).WithField("file_name", source).Error("could not read namespace file")
+		return nil
 	}
 
 	n := namespace.Namespace{}
 	if err := parser(raw, &n); err != nil {
-		return nil, errors.WithStack(err)
+		l.WithError(errors.WithStack(err)).WithField("file_name", source).Error("could not parse namespace file")
+		return nil
 	}
 
-	return &n, nil
+	return &n
 }
 
 func (n *NamespaceWatcher) GetNamespace(_ context.Context, name string) (*namespace.Namespace, error) {

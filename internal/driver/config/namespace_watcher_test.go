@@ -6,7 +6,10 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
+
+	"github.com/sirupsen/logrus"
 
 	"github.com/ghodss/yaml"
 	"github.com/ory/x/logrusx"
@@ -130,12 +133,13 @@ func TestNamespaceProvider(t *testing.T) {
 			"unsupported.file": "foo bar\n",
 			"supported.json":   string(nJson),
 		})
-		t.Logf("wrote dir %s", dir)
 
 		nw, hook := setup(t, "file://"+dir)
 
 		require.Len(t, hook.Entries, 1)
-		assert.Contains(t, hook.Entries[0].Message, "unsupported.file")
+
+		assert.Equal(t, logrus.WarnLevel, hook.Entries[0].Level, "%+v", hook.Entries[0])
+		assert.True(t, strings.HasSuffix(hook.Entries[0].Data["file_name"].(string), "unsupported.file"))
 
 		namespaces, err := nw.Namespaces(context.Background())
 		require.NoError(t, err)
@@ -144,21 +148,32 @@ func TestNamespaceProvider(t *testing.T) {
 		assert.Equal(t, n, namespaces[0])
 	})
 
-	//	t.Run("case=still returns successful namespace if one errors", func(t *testing.T) {
-	//		namespaces, hook := setupNamespaceTest(t, map[string]string{
-	//			"malformed.yml": "foo bar\n",
-	//			"correct.yml":   "id: 1\nname: some name\n",
-	//		})
-	//
-	//		require.Len(t, hook.Entries, 1)
-	//
-	//		assert.Equal(t, logrus.ErrorLevel, hook.Entries[0].Level)
-	//		assert.Contains(t, hook.Entries[0].Message, "malformed.yml")
-	//
-	//		require.Len(t, namespaces, 1)
-	//		assert.Equal(t, &namespace.Namespace{
-	//			Name: "some name",
-	//			ID:   1,
-	//		}, namespaces[0])
-	//	})
+	t.Run("case=still returns successful namespace if one errors", func(t *testing.T) {
+		dir := t.TempDir()
+
+		n := &namespace.Namespace{
+			ID:   21,
+			Name: "some name",
+		}
+		nJson, err := json.Marshal(n)
+		require.NoError(t, err)
+
+		writeDir(t, dir, map[string]interface{}{
+			"malformed.yml": "foo bar\n",
+			"correct.json":  string(nJson),
+		})
+
+		nw, hook := setup(t, "file://"+dir)
+
+		require.Len(t, hook.Entries, 1)
+
+		assert.Equal(t, logrus.ErrorLevel, hook.Entries[0].Level, "%+v", hook.Entries[0])
+		assert.True(t, strings.HasSuffix(hook.Entries[0].Data["file_name"].(string), "malformed.yml"))
+
+		namespaces, err := nw.Namespaces(context.Background())
+		require.NoError(t, err)
+
+		require.Len(t, namespaces, 1)
+		assert.Equal(t, n, namespaces[0])
+	})
 }
