@@ -1,20 +1,22 @@
 package namespace
 
 import (
+	"bytes"
 	"fmt"
 	"io/ioutil"
+
+	"github.com/ory/x/jsonschemax"
 
 	"github.com/markbates/pkger"
 	"github.com/ory/jsonschema/v3"
 	"github.com/ory/x/cmdx"
-	"github.com/ory/x/viperx"
 	"github.com/segmentio/objconv/yaml"
 	"github.com/spf13/cobra"
 
 	"github.com/ory/keto/internal/namespace"
 )
 
-const namespaceSchemaPath = "/.schema/namespace.schema.json"
+const configSchemaPath = "/.schema/config.schema.json"
 
 func NewValidateCmd() *cobra.Command {
 	cmd := &cobra.Command{
@@ -38,25 +40,34 @@ func NewValidateCmd() *cobra.Command {
 	return cmd
 }
 
-var namespaceSchema *jsonschema.Schema
+var (
+	configSchema    *jsonschema.Schema
+	configSchemaRaw []byte
+)
 
 func validateNamespaceFile(cmd *cobra.Command, fn string) (*namespace.Namespace, error) {
-	if namespaceSchema == nil {
-		sf, err := pkger.Open(namespaceSchemaPath)
+	if configSchema == nil || len(configSchemaRaw) == 0 {
+		sf, err := pkger.Open(configSchemaPath)
 		if err != nil {
-			_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not open the namespace schema file. This is an internal error that should be reported. Thanks ;)\n%+v\n", err)
+			_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not open the config schema file. This is an internal error that should be reported. Thanks ;)\n%+v\n", err)
+			return nil, cmdx.FailSilently(cmd)
+		}
+
+		configSchemaRaw, err = ioutil.ReadAll(sf)
+		if err != nil {
+			_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not read the config schema file. This is an internal error that should be reported. Thanks ;)\n%+v\n", err)
 			return nil, cmdx.FailSilently(cmd)
 		}
 
 		c := jsonschema.NewCompiler()
-		if err := c.AddResource(namespaceSchemaPath, sf); err != nil {
-			_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not add the namespace schema file to the compiler. This is an internal error that should be reported. Thanks ;)\n%+v\n", err)
+		if err := c.AddResource(configSchemaPath, bytes.NewBuffer(configSchemaRaw)); err != nil {
+			_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not add the config schema file to the compiler. This is an internal error that should be reported. Thanks ;)\n%+v\n", err)
 			return nil, cmdx.FailSilently(cmd)
 		}
 
-		namespaceSchema, err = c.Compile(namespaceSchemaPath)
+		configSchema, err = c.Compile(configSchemaPath + "#/definitions/namespace")
 		if err != nil {
-			_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not compile the namespace schema file. This is an internal error that should be reported. Thanks ;)\n%+v\n", err)
+			_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not compile the config schema file. This is an internal error that should be reported. Thanks ;)\n%+v\n", err)
 			return nil, cmdx.FailSilently(cmd)
 		}
 	}
@@ -73,8 +84,8 @@ func validateNamespaceFile(cmd *cobra.Command, fn string) (*namespace.Namespace,
 		return nil, cmdx.FailSilently(cmd)
 	}
 
-	if err := namespaceSchema.ValidateInterface(val); err != nil {
-		viperx.PrintHumanReadableValidationErrors(cmd.ErrOrStderr(), err)
+	if err := configSchema.ValidateInterface(val); err != nil {
+		jsonschemax.FormatValidationErrorForCLI(cmd.ErrOrStderr(), configSchemaRaw, err)
 		return nil, cmdx.FailSilently(cmd)
 	}
 

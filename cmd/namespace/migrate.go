@@ -21,14 +21,17 @@ func NewMigrateCmd() *cobra.Command {
 		Short: "Migrate a namespace up.",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			d := driver.NewDefaultDriver(logrusx.New("keto", "master"), "master", "local", "today")
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			reg := driver.NewDefaultRegistry(ctx, logrusx.New("keto", "master"), cmd.Flags(), "master", "local", "today")
 
 			n, err := validateNamespaceFile(cmd, args[0])
 			if err != nil {
 				return err
 			}
 
-			status, err := d.Registry().NamespaceMigrator().NamespaceStatus(context.Background(), n.ID)
+			status, err := reg.NamespaceMigrator().NamespaceStatus(ctx, n.ID)
 			if err != nil {
 				if !errors.Is(err, persistence.ErrNamespaceUnknown) {
 					_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not get status for namespace \"%s\": %+v\n", n.Name, err)
@@ -50,12 +53,12 @@ func NewMigrateCmd() *cobra.Command {
 				}
 			}
 
-			if err := d.Registry().NamespaceMigrator().MigrateNamespaceUp(context.Background(), n); err != nil {
+			if err := reg.NamespaceMigrator().MigrateNamespaceUp(ctx, n); err != nil {
 				_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not apply namespace migration: %+v\n", err)
 				return cmdx.FailSilently(cmd)
 			}
 
-			status, err = d.Registry().NamespaceMigrator().NamespaceStatus(context.Background(), n.ID)
+			status, err = reg.NamespaceMigrator().NamespaceStatus(ctx, n.ID)
 			if err != nil {
 				_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not get status for namespace \"%s\": %+v\n", n.Name, err)
 				return cmdx.FailSilently(cmd)

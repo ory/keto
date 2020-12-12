@@ -13,7 +13,7 @@ jobs:
   test:
     docker:
       -
-        image: circleci/golang:1.14
+        image: circleci/golang:1.15
         environment:
           TEST_DATABASE_POSTGRESQL: postgres://test:test@localhost:5432/keto?sslmode=disable
           TEST_DATABASE_MYSQL: root:test@(localhost:3306)/mysql?parseTime=true

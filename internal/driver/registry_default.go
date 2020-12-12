@@ -3,6 +3,8 @@ package driver
 import (
 	"context"
 
+	"github.com/ory/keto/internal/driver/config"
+
 	"github.com/pkg/errors"
 
 	"github.com/gobuffalo/pop/v5"
@@ -11,17 +13,11 @@ import (
 	"github.com/ory/x/logrusx"
 	"github.com/ory/x/tracing"
 
-	"github.com/ory/keto/internal/driver/configuration"
-	"github.com/ory/keto/internal/namespace"
-
-	"github.com/ory/keto/internal/persistence/sql"
-
-	"github.com/ory/keto/internal/persistence"
-
-	"github.com/ory/keto/internal/expand"
-
 	"github.com/ory/keto/internal/check"
-
+	"github.com/ory/keto/internal/expand"
+	"github.com/ory/keto/internal/namespace"
+	"github.com/ory/keto/internal/persistence"
+	"github.com/ory/keto/internal/persistence/sql"
 	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/internal/x"
 )
@@ -38,7 +34,7 @@ type RegistryDefault struct {
 	ce   *check.Engine
 	ee   *expand.Engine
 	conn *pop.Connection
-	c    configuration.Provider
+	c    config.Provider
 	hh   *healthx.Handler
 
 	version, hash, date string
@@ -50,21 +46,6 @@ func (r *RegistryDefault) CanHandle(dsn string) bool {
 
 func (r *RegistryDefault) Ping() error {
 	return r.conn.Open()
-}
-
-func (r *RegistryDefault) WithConfig(c configuration.Provider) Registry {
-	r.c = c
-	return r
-}
-
-func (r *RegistryDefault) WithLogger(l *logrusx.Logger) Registry {
-	r.l = l
-	return r
-}
-
-func (r *RegistryDefault) WithBuildInfo(version, hash, date string) Registry {
-	r.version, r.hash, r.date = version, hash, date
-	return r
 }
 
 func (r *RegistryDefault) BuildVersion() string {
@@ -113,10 +94,6 @@ func (r *RegistryDefault) NamespaceMigrator() namespace.Migrator {
 	return r.p
 }
 
-func (r *RegistryDefault) NamespaceManager() namespace.Manager {
-	return r.c
-}
-
 func (r *RegistryDefault) PermissionEngine() *check.Engine {
 	if r.ce == nil {
 		r.ce = check.NewEngine(r)
@@ -139,7 +116,7 @@ func (r *RegistryDefault) Migrator() (persistence.Migrator, error) {
 	return r.p.(persistence.Migrator), nil
 }
 
-func (r *RegistryDefault) Init() error {
+func (r *RegistryDefault) Init(ctx context.Context) error {
 	c, err := pop.NewConnection(&pop.ConnectionDetails{
 		URL: "sqlite://:memory:?_fk=true",
 	})
@@ -152,7 +129,12 @@ func (r *RegistryDefault) Init() error {
 		return errors.WithStack(err)
 	}
 
-	r.p, err = sql.NewPersister(r.conn, r.Logger(), r.c)
+	nm, err := r.c.NamespaceManager()
+	if err != nil {
+		return err
+	}
+
+	r.p, err = sql.NewPersister(r.conn, r.Logger(), nm)
 	if err != nil {
 		return err
 	}
@@ -165,13 +147,16 @@ func (r *RegistryDefault) Init() error {
 		return err
 	}
 
-	namespaceConfigs := r.c.Namespaces()
+	namespaceConfigs, err := nm.Namespaces(ctx)
+	if err != nil {
+		return err
+	}
 	for _, n := range namespaceConfigs {
-		s, err := r.NamespaceMigrator().NamespaceStatus(context.Background(), n.ID)
+		s, err := r.NamespaceMigrator().NamespaceStatus(ctx, n.ID)
 		if err != nil {
-			if r.c.DSN() == configuration.DSNMemory {
+			if r.c.DSN() == config.DSNMemory {
 				// auto migrate when DSN is memory
-				if err := r.NamespaceMigrator().MigrateNamespaceUp(context.Background(), n); err != nil {
+				if err := r.NamespaceMigrator().MigrateNamespaceUp(ctx, n); err != nil {
 					r.l.WithError(err).Errorf("Could not auto-migrate namespace %s.", n.Name)
 				}
 				continue

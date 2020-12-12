@@ -27,7 +27,8 @@ require (
 	github.com/ory/herodot v0.9.1
 	github.com/ory/jsonschema/v3 v3.0.1
 	github.com/ory/viper v1.7.5
-	github.com/ory/x v0.0.165
+	github.com/ory/x v0.0.169
+	github.com/pelletier/go-toml v1.8.0
 	github.com/pkg/errors v0.9.1
 	github.com/rs/cors v1.6.0
 	github.com/rubenv/sql-migrate v0.0.0-20190327083759-54bad0a9b051 // indirect
