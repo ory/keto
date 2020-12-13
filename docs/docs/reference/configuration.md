@@ -330,7 +330,7 @@ tracing:
   # - Windows Command Line (CMD):
   #    > set TRACING_SERVICE_NAME=<value>
   #
-  service_name: ORY Hydra
+  service_name: ORY Keto
 
   ## providers ##
   #
