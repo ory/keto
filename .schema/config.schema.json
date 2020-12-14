@@ -159,7 +159,7 @@
     "dsn": {
       "title": "Data Source Name",
       "type": "string",
-      "description": "Sets the data source name. This configures the backend where ORY Keto persists data. If dsn is \"memory\", data will be written to memory and is lost when you restart this instance. ORY Hydra supports popular SQL databases. For more detailed configuration information go to: https://www.ory.sh/docs/hydra/dependencies-environment#sql",
+      "description": "Sets the data source name. This configures the backend where ORY Keto persists data. If dsn is \"memory\", data will be written to memory and is lost when you restart this instance. ORY Keto supports popular SQL databases. For more detailed configuration information go to:  https://www.ory.sh/keto/docs/configure-deploy",
       "examples": [
         "postgres://user:password@host:123/database",
         "mysql://user:password@tcp(host:123)/database",
@@ -244,7 +244,7 @@
     },
     "tracing": {
       "type": "object",
-      "description": "ORY Hydra supports distributed tracing.",
+      "description": "ORY Keto supports distributed tracing.",
       "properties": {
         "provider": {
           "type": "string",
@@ -260,7 +260,7 @@
           "type": "string",
           "description": "Specifies the service name to use on the tracer.",
           "examples": [
-            "ORY Hydra"
+            "ORY Keto"
           ]
         },
         "providers": {
