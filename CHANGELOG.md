@@ -4,7 +4,7 @@
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**
 
-- [Unreleased (2020-12-08)](#unreleased-2020-12-08)
+- [Unreleased (2020-12-14)](#unreleased-2020-12-14)
     - [Bug Fixes](#bug-fixes)
     - [Documentation](#documentation)
   - [0.5.7-alpha.1 (2020-10-12)](#057-alpha1-2020-10-12)
@@ -77,7 +77,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [Unreleased](https://github.com/ory/keto/compare/v0.5.7-alpha.1...fa0485c0b5f0b0c0d453fcb220db424458d51cfe) (2020-12-08)
+# [Unreleased](https://github.com/ory/keto/compare/v0.5.7-alpha.1...825bd181b1a0e2a6a27b25f7b36eae1449fc183f) (2020-12-14)
 
 
 ### Bug Fixes
@@ -101,6 +101,7 @@
 
     > The same change as in https://github.com/ory/hydra/pull/2209.
 * Add newsletter to config ([fa0485c](https://github.com/ory/keto/commit/fa0485c0b5f0b0c0d453fcb220db424458d51cfe))
+* Remove copy-paste errors referencing Hydra ([#369](https://github.com/ory/keto/issues/369)) ([825bd18](https://github.com/ory/keto/commit/825bd181b1a0e2a6a27b25f7b36eae1449fc183f))
 
 
 
