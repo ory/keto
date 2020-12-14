@@ -3,20 +3,29 @@ package persistence
 import (
 	"context"
 	"errors"
+	"io"
 
 	"github.com/ory/keto/internal/namespace"
 
 	"github.com/ory/keto/internal/relationtuple"
 )
 
-type Persister interface {
-	relationtuple.Manager
-	namespace.Migrator
-}
-
-type Migrator interface {
-	MigrateUp(ctx context.Context) error
-}
+type (
+	Persister interface {
+		relationtuple.Manager
+		namespace.Migrator
+	}
+	Migrator interface {
+		MigrateUp(context.Context) error
+		MigrationStatus(context.Context, io.Writer) error
+	}
+	MigratorProvider interface {
+		Migrator() Migrator
+	}
+	Provider interface {
+		Persister() Persister
+	}
+)
 
 var (
 	ErrNamespaceUnknown   = errors.New("namespace unknown")

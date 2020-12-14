@@ -213,10 +213,6 @@ func (r *InternalRelationTuple) ToGRPC() *acl.RelationTuple {
 }
 
 func (r *InternalRelationTuple) FromURLQuery(query url.Values) (*InternalRelationTuple, error) {
-	if r == nil {
-		r = &InternalRelationTuple{}
-	}
-
 	if s := query.Get("subject"); s != "" {
 		var err error
 		r.Subject, err = SubjectFromString(s)

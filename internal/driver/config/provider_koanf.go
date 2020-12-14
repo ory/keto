@@ -118,7 +118,11 @@ func (k *KoanfProvider) CORS() (cors.Options, bool) {
 }
 
 func (k *KoanfProvider) DSN() string {
-	return k.p.StringF(KeyDSN, "memory")
+	dsn := k.p.StringF(KeyDSN, DSNMemory)
+	if dsn == "memory" {
+		return DSNMemory
+	}
+	return dsn
 }
 
 func (k *KoanfProvider) TracingServiceName() string {

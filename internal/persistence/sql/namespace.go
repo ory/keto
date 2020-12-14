@@ -2,6 +2,7 @@ package sql
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -9,6 +10,7 @@ import (
 	"github.com/gobuffalo/pop/v5"
 
 	"github.com/ory/keto/internal/namespace"
+	"github.com/ory/keto/internal/persistence"
 )
 
 type (
@@ -54,7 +56,8 @@ func (p *Persister) MigrateNamespaceUp(ctx context.Context, n *namespace.Namespa
 			ID:      n.ID,
 			Version: mostRecentSchemaVersion,
 		}
-		if err := c.Create(&nr); err != nil {
+
+		if err := c.RawQuery(fmt.Sprintf("INSERT INTO %s (id, schema_version) VALUES (?, ?)", nr.TableName()), nr.ID, nr.Version).Exec(); err != nil {
 			return errors.WithStack(err)
 		}
 
@@ -70,6 +73,10 @@ func (p *Persister) NamespaceFromName(ctx context.Context, name string) (*namesp
 func (p *Persister) NamespaceStatus(ctx context.Context, id int) (*namespace.Status, error) {
 	var n namespaceRow
 	if err := p.connection(ctx).Find(&n, id); err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, persistence.ErrNamespaceUnknown
+		}
+
 		return nil, err
 	}
 

@@ -3,6 +3,7 @@ package sql
 import (
 	"context"
 	"fmt"
+	"io"
 	"strconv"
 
 	"github.com/ory/keto/internal/namespace"
@@ -57,6 +58,10 @@ func NewPersister(c *pop.Connection, l *logrusx.Logger, namespaces namespace.Man
 
 func (p *Persister) MigrateUp(_ context.Context) error {
 	return p.mb.Up()
+}
+
+func (p *Persister) MigrationStatus(_ context.Context, w io.Writer) error {
+	return p.mb.Status(w)
 }
 
 func (p *Persister) connection(ctx context.Context) *pop.Connection {

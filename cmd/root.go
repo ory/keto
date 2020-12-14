@@ -22,6 +22,8 @@ import (
 	"runtime"
 	"strings"
 
+	"github.com/ory/keto/cmd/migrate"
+
 	"github.com/ory/x/cmdx"
 
 	"github.com/ory/keto/cmd/namespace"
@@ -67,7 +69,7 @@ func init() {
 	// Here you will define your flags and configuration settings.
 	// Cobra supports Persistent Flags, which, if defined here,
 	// will be global for your application.
-	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "Config file (default is $HOME/.keto.yaml)")
+	RootCmd.PersistentFlags().StringSlice("config", []string{}, "Config file (default is $HOME/.keto.yaml)")
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
@@ -76,6 +78,8 @@ func init() {
 	relationtuple.RegisterCommandRecursive(RootCmd)
 
 	namespace.RegisterCommandsRecursive(RootCmd)
+
+	migrate.RegisterCommandRecursive(RootCmd)
 }
 
 // initConfig reads in config file and ENV variables if set.
