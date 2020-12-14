@@ -20,4 +20,4 @@ type Provider interface {
 	Set(key string, v interface{})
 }
 
-const DSNMemory = "memory"
+const DSNMemory = "sqlite://:memory:?_fk=true"

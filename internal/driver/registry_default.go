@@ -112,13 +112,13 @@ func (r *RegistryDefault) Persister() persistence.Persister {
 	return r.p
 }
 
-func (r *RegistryDefault) Migrator() (persistence.Migrator, error) {
-	return r.p.(persistence.Migrator), nil
+func (r *RegistryDefault) Migrator() persistence.Migrator {
+	return r.p.(persistence.Migrator)
 }
 
 func (r *RegistryDefault) Init(ctx context.Context) error {
 	c, err := pop.NewConnection(&pop.ConnectionDetails{
-		URL: "sqlite://:memory:?_fk=true",
+		URL: r.c.DSN(),
 	})
 	if err != nil {
 		return errors.WithStack(err)
@@ -139,12 +139,11 @@ func (r *RegistryDefault) Init(ctx context.Context) error {
 		return err
 	}
 
-	m, err := r.Migrator()
-	if err != nil {
-		return err
-	}
-	if err := m.MigrateUp(context.Background()); err != nil {
-		return err
+	m := r.Migrator()
+	if r.c.DSN() == config.DSNMemory {
+		if err := m.MigrateUp(context.Background()); err != nil {
+			return err
+		}
 	}
 
 	namespaceConfigs, err := nm.Namespaces(ctx)

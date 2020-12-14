@@ -10,6 +10,7 @@ import (
 	"github.com/ory/keto/internal/check"
 	"github.com/ory/keto/internal/expand"
 	"github.com/ory/keto/internal/namespace"
+	"github.com/ory/keto/internal/persistence"
 	"github.com/ory/keto/internal/relationtuple"
 
 	"github.com/ory/keto/internal/x"
@@ -29,6 +30,8 @@ type Registry interface {
 	namespace.MigratorProvider
 	expand.EngineProvider
 	check.EngineProvider
+	persistence.MigratorProvider
+	persistence.Provider
 
 	HealthHandler() *healthx.Handler
 	Tracer() *tracing.Tracer

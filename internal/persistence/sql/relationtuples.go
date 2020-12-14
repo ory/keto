@@ -63,10 +63,6 @@ func (r *relationTuple) toInternal() (*relationtuple.InternalRelationTuple, erro
 }
 
 func (p *Persister) GetRelationTuples(ctx context.Context, query *relationtuple.RelationQuery, options ...x.PaginationOptionSetter) ([]*relationtuple.InternalRelationTuple, string, error) {
-	pop.Debug = true
-	defer func() {
-		pop.Debug = false
-	}()
 	const (
 		whereRelation = "relation = ?"
 		whereObject   = "object = ?"
