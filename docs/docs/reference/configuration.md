@@ -314,7 +314,7 @@ log:
 
 ## tracing ##
 #
-# ORY Hydra supports distributed tracing.
+# ORY Keto supports distributed tracing.
 #
 tracing:
   ## service_name ##
@@ -322,7 +322,7 @@ tracing:
   # Specifies the service name to use on the tracer.
   #
   # Examples:
-  # - ORY Hydra
+  # - ORY Keto
   #
   # Set this value using environment variables on
   # - Linux/macOS:
@@ -440,7 +440,7 @@ version: v0.0.0
 
 ## Data Source Name ##
 #
-# Sets the data source name. This configures the backend where ORY Keto persists data. If dsn is "memory", data will be written to memory and is lost when you restart this instance. ORY Hydra supports popular SQL databases. For more detailed configuration information go to: https://www.ory.sh/docs/hydra/dependencies-environment#sql
+# Sets the data source name. This configures the backend where ORY Keto persists data. If dsn is "memory", data will be written to memory and is lost when you restart this instance. ORY Keto supports popular SQL databases. For more detailed configuration information go to:  https://www.ory.sh/keto/docs/configure-deploy
 #
 # Examples:
 # - postgres://user:password@host:123/database
