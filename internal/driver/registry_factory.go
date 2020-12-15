@@ -14,18 +14,17 @@ import (
 	"github.com/ory/keto/internal/driver/config"
 )
 
-func NewDefaultRegistry(ctx context.Context, l *logrusx.Logger, flags *pflag.FlagSet, version, hash, date string) Registry {
+func NewDefaultRegistry(ctx context.Context, flags *pflag.FlagSet) Registry {
+	l := logrusx.New("ORY Keto", config.Version)
+
 	c, err := config.New(ctx, flags, l)
 	if err != nil {
 		l.WithError(err).Fatal("Unable to initialize config provider.")
 	}
 
 	r := &RegistryDefault{
-		c:       c,
-		l:       l,
-		version: version,
-		hash:    hash,
-		date:    date,
+		c: c,
+		l: l,
 	}
 
 	if err = r.Init(ctx); err != nil {

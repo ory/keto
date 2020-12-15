@@ -36,33 +36,27 @@ type RegistryDefault struct {
 	conn *pop.Connection
 	c    config.Provider
 	hh   *healthx.Handler
-
-	version, hash, date string
-}
-
-func (r *RegistryDefault) CanHandle(dsn string) bool {
-	return true
-}
-
-func (r *RegistryDefault) Ping() error {
-	return r.conn.Open()
 }
 
 func (r *RegistryDefault) BuildVersion() string {
-	return r.version
+	return config.Version
 }
 
 func (r *RegistryDefault) BuildDate() string {
-	return r.date
+	return config.Date
 }
 
 func (r *RegistryDefault) BuildHash() string {
-	return r.hash
+	return config.Commit
+}
+
+func (r *RegistryDefault) Config() config.Provider {
+	return r.c
 }
 
 func (r *RegistryDefault) HealthHandler() *healthx.Handler {
 	if r.hh == nil {
-		r.hh = healthx.NewHandler(r.Writer(), r.version, healthx.ReadyCheckers{})
+		r.hh = healthx.NewHandler(r.Writer(), config.Version, healthx.ReadyCheckers{})
 	}
 
 	return r.hh

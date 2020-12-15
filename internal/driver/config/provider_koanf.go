@@ -25,8 +25,11 @@ import (
 const (
 	KeyDSN = "dsn"
 
-	KeyHost = "serve.host"
-	KeyPort = "serve.port"
+	KeyRESTHost = "serve.rest.host"
+	KeyRESTPort = "serve.rest.port"
+
+	KeyGRPCHost = "serve.grpc.host"
+	KeyGRPCPort = "serve.grpc.port"
 
 	KeyNamespaces = "namespaces"
 )
@@ -64,7 +67,7 @@ func New(ctx context.Context, flags *pflag.FlagSet, l *logrusx.Logger) (Provider
 		configx.WithStderrValidationReporter(),
 		configx.WithImmutables(KeyDSN, "serve"),
 		configx.OmitKeysFromTracing(KeyDSN),
-		configx.WithLogrusWatcher(l),
+		configx.WithLogrusWatcher(kp.l),
 		configx.WithContext(ctx),
 		configx.AttachWatcher(func(watcherx.Event, error) {
 			// TODO this can be optimized to run only on changes related to namespace config
@@ -74,6 +77,7 @@ func New(ctx context.Context, flags *pflag.FlagSet, l *logrusx.Logger) (Provider
 	if err != nil {
 		return nil, err
 	}
+	l.UseConfig(kp.p)
 
 	return kp, nil
 }
@@ -100,11 +104,19 @@ func (k *KoanfProvider) Set(key string, v interface{}) {
 	}
 }
 
-func (k *KoanfProvider) ListenOn() string {
+func (k *KoanfProvider) RESTListenOn() string {
 	return fmt.Sprintf(
 		"%s:%d",
-		k.p.StringF(KeyHost, ""),
-		k.p.IntF(KeyPort, 4466),
+		k.p.StringF(KeyRESTHost, ""),
+		k.p.IntF(KeyRESTPort, 4466),
+	)
+}
+
+func (k *KoanfProvider) GRPCListenOn() string {
+	return fmt.Sprintf(
+		"%s:%d",
+		k.p.StringF(KeyGRPCHost, ""),
+		k.p.IntF(KeyGRPCPort, 4467),
 	)
 }
 
@@ -118,7 +130,7 @@ func (k *KoanfProvider) CORS() (cors.Options, bool) {
 }
 
 func (k *KoanfProvider) DSN() string {
-	dsn := k.p.StringF(KeyDSN, DSNMemory)
+	dsn := k.p.String(KeyDSN)
 	if dsn == "memory" {
 		return DSNMemory
 	}

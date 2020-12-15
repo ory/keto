@@ -1,0 +1,9 @@
+
+dsn: postgres://keto:password@localhost:5432/keto?sslmode=disable
+
+namespaces:
+  - name: foo
+    id: 3
+
+log:
+  level: debug

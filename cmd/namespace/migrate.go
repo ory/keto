@@ -7,7 +7,6 @@ import (
 
 	"github.com/ory/x/cmdx"
 	"github.com/ory/x/flagx"
-	"github.com/ory/x/logrusx"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 
@@ -17,18 +16,25 @@ import (
 
 func NewMigrateCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "migrate <namespaces.yml>",
+		Use:   "migrate <namespace-name>",
 		Short: "Migrate a namespace up.",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			reg := driver.NewDefaultRegistry(ctx, logrusx.New("keto", "master"), cmd.Flags(), "master", "local", "today")
+			reg := driver.NewDefaultRegistry(ctx, cmd.Flags())
 
-			n, err := validateNamespaceFile(cmd, args[0])
+			nm, err := reg.Config().NamespaceManager()
 			if err != nil {
-				return err
+				_, _ = fmt.Fprintf(cmd.OutOrStdout(), "Could not initialize the namespace manager: %+v\n", err)
+				return cmdx.FailSilently(cmd)
+			}
+
+			n, err := nm.GetNamespace(ctx, args[0])
+			if err != nil {
+				_, _ = fmt.Fprintf(cmd.OutOrStdout(), "Could not find the namespace with name \"%s\": %+v\n", args[0], err)
+				return cmdx.FailSilently(cmd)
 			}
 
 			status, err := reg.NamespaceMigrator().NamespaceStatus(ctx, n.ID)

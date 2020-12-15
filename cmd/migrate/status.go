@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	"github.com/ory/x/cmdx"
-	"github.com/ory/x/logrusx"
 	"github.com/spf13/cobra"
 
 	"github.com/ory/keto/internal/driver"
@@ -18,7 +17,7 @@ func newStatusCmd() *cobra.Command {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			reg := driver.NewDefaultRegistry(ctx, logrusx.New("keto", "test"), cmd.Flags(), "test", "adf", "today")
+			reg := driver.NewDefaultRegistry(ctx, cmd.Flags())
 			if err := reg.Migrator().MigrationStatus(ctx, cmd.OutOrStdout()); err != nil {
 				_, _ = fmt.Fprintf(cmd.OutOrStdout(), "Could not get migration status: %+v\n", err)
 				return cmdx.FailSilently(cmd)

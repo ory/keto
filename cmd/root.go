@@ -20,37 +20,21 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
-	"strings"
-
-	"github.com/ory/keto/cmd/migrate"
 
 	"github.com/ory/x/cmdx"
+	"github.com/ory/x/configx"
 
+	"github.com/ory/keto/cmd/migrate"
 	"github.com/ory/keto/cmd/namespace"
-
 	"github.com/ory/keto/cmd/relationtuple"
 
 	"github.com/spf13/cobra"
-
-	"github.com/ory/viper"
-
-	"github.com/ory/x/logrusx"
-)
-
-var (
-	Version = "master"
-	Date    = "undefined"
-	Commit  = "undefined"
 )
 
 // RootCmd represents the base command when called without any subcommands
 var RootCmd = &cobra.Command{
 	Use: "keto",
 }
-
-var cfgFile string
-
-var logger = new(logrusx.Logger)
 
 // Execute adds all child commands to the root command sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
@@ -64,74 +48,13 @@ func Execute() {
 }
 
 func init() {
-	cobra.OnInitialize(initConfig)
-
-	// Here you will define your flags and configuration settings.
-	// Cobra supports Persistent Flags, which, if defined here,
-	// will be global for your application.
-	RootCmd.PersistentFlags().StringSlice("config", []string{}, "Config file (default is $HOME/.keto.yaml)")
-
-	// Cobra also supports local flags, which will only run
-	// when this action is called directly.
-	RootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	configx.RegisterConfigFlag(RootCmd.PersistentFlags(), []string{filepath.Join(userHomeDir(), "keto.yml")})
 
 	relationtuple.RegisterCommandRecursive(RootCmd)
 
 	namespace.RegisterCommandsRecursive(RootCmd)
 
 	migrate.RegisterCommandRecursive(RootCmd)
-}
-
-// initConfig reads in config file and ENV variables if set.
-func initConfig() {
-	if cfgFile != "" {
-		// enable ability to specify config file via flag
-		viper.SetConfigFile(cfgFile)
-	} else {
-		path := absPathify("$HOME")
-		if _, err := os.Stat(filepath.Join(path, ".keto.yml")); err != nil {
-			_, _ = os.Create(filepath.Join(path, ".keto.yml"))
-		}
-
-		viper.SetConfigType("yaml")
-		viper.SetConfigName(".keto") // name of config file (without extension)
-		viper.AddConfigPath("$HOME") // adding home directory as first search path
-	}
-
-	viper.SetDefault("serve.port", "4466")
-	viper.SetDefault("log.level", "info")
-
-	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
-	viper.AutomaticEnv() // read in environment variables that match
-
-	*logger = *logrusx.New("ORY Keto", Version)
-
-	// If a config file is found, read it in.
-	if err := viper.ReadInConfig(); err != nil {
-		fmt.Printf(`Config file not found because "%s"`, err)
-		fmt.Println("")
-	}
-}
-
-func absPathify(inPath string) string {
-	if strings.HasPrefix(inPath, "$HOME") {
-		inPath = userHomeDir() + inPath[5:]
-	}
-
-	if strings.HasPrefix(inPath, "$") {
-		end := strings.Index(inPath, string(os.PathSeparator))
-		inPath = os.Getenv(inPath[1:end]) + inPath[end:]
-	}
-
-	if filepath.IsAbs(inPath) {
-		return filepath.Clean(inPath)
-	}
-
-	p, err := filepath.Abs(inPath)
-	if err == nil {
-		return filepath.Clean(p)
-	}
-	return ""
 }
 
 func userHomeDir() string {

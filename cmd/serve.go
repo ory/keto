@@ -20,24 +20,21 @@ import (
 	"net"
 	"net/http"
 	"os"
+	"strconv"
 	"sync"
 
 	acl "github.com/ory/keto/api/keto/acl/v1alpha1"
 
-	"github.com/ory/keto/internal/expand"
-
-	"github.com/ory/keto/internal/check"
-
 	"github.com/julienschmidt/httprouter"
+	"github.com/ory/graceful"
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
 
-	"github.com/ory/graceful"
-
+	"github.com/ory/keto/internal/check"
 	"github.com/ory/keto/internal/driver"
+	"github.com/ory/keto/internal/driver/config"
+	"github.com/ory/keto/internal/expand"
 	"github.com/ory/keto/internal/relationtuple"
-
-	"github.com/ory/x/logrusx"
 )
 
 // serveCmd represents the serve command
@@ -51,19 +48,12 @@ var serveCmd = &cobra.Command{
 ORY Keto can be configured using environment variables as well as a configuration file. For more information
 on configuration options, open the configuration documentation:
 
->> https://github.com/ory/keto/blob/` + Version + `/docs/config.yaml <<`,
+>> https://github.com/ory/keto/blob/` + config.Version + `/docs/config.yaml <<`,
 	Run: func(cmd *cobra.Command, args []string) {
-		/* #nosec G102 - TODO this will be configurable */
-		lis, err := net.Listen("tcp", ":4467")
-		if err != nil {
-			fmt.Fprintf(cmd.ErrOrStderr(), "%+v\n", err)
-			os.Exit(1)
-		}
-
 		ctx, cancel := context.WithCancel(context.Background())
 		defer cancel()
 
-		reg := driver.NewDefaultRegistry(ctx, logrusx.New("keto", "master"), cmd.Flags(), "master", "local", "today")
+		reg := driver.NewDefaultRegistry(ctx, cmd.Flags())
 
 		wg := &sync.WaitGroup{}
 		wg.Add(2)
@@ -71,12 +61,19 @@ on configuration options, open the configuration documentation:
 		go func() {
 			defer wg.Done()
 
+			lis, err := net.Listen("tcp", reg.Config().GRPCListenOn())
+			if err != nil {
+				_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "%+v\n", err)
+				return
+			}
+
 			s := grpc.NewServer()
 			relS := relationtuple.NewGRPCServer(reg)
 			acl.RegisterReadServiceServer(s, relS)
-			fmt.Println("going to serve GRPC on", lis.Addr().String())
+
+			_, _ = fmt.Fprintf(cmd.OutOrStdout(), "Serving GRPC on %s\n", lis.Addr().String())
 			if err := s.Serve(lis); err != nil {
-				fmt.Fprintf(cmd.ErrOrStderr(), "%+v\n", err)
+				_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "%+v\n", err)
 			}
 		}()
 
@@ -84,21 +81,18 @@ on configuration options, open the configuration documentation:
 			defer wg.Done()
 
 			router := httprouter.New()
-			rh := relationtuple.NewHandler(reg)
-			rh.RegisterPublicRoutes(router)
-			ch := check.NewHandler(reg)
-			ch.RegisterPublicRoutes(router)
-			eh := expand.NewHandler(reg)
-			eh.RegisterPublicRoutes(router)
+			relationtuple.NewHandler(reg).RegisterPublicRoutes(router)
+			check.NewHandler(reg).RegisterPublicRoutes(router)
+			expand.NewHandler(reg).RegisterPublicRoutes(router)
 
 			server := graceful.WithDefaults(&http.Server{
-				Addr:    ":4466",
+				Addr:    reg.Config().RESTListenOn(),
 				Handler: router,
 			})
 
-			fmt.Println("going to serve REST on", server.Addr)
+			_, _ = fmt.Fprintf(cmd.OutOrStdout(), "Serving REST on %s\n", server.Addr)
 			if err := server.ListenAndServe(); err != nil {
-				fmt.Fprintf(cmd.ErrOrStderr(), "%+v\n", err)
+				_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "%+v\n", err)
 			}
 		}()
 
@@ -109,8 +103,15 @@ on configuration options, open the configuration documentation:
 func init() {
 	RootCmd.AddCommand(serveCmd)
 
-	// TODO
-	//disableTelemetryEnv := viperx.GetBool(logrusx.New("ORY Keto", Version), "sqa.opt_out", false, "DISABLE_TELEMETRY")
-	serveCmd.PersistentFlags().Bool("disable-telemetry", true, "Disable anonymized telemetry reports - for more information please visit https://www.ory.sh/docs/ecosystem/sqa")
-	serveCmd.PersistentFlags().Bool("sqa-opt-out", true, "Disable anonymized telemetry reports - for more information please visit https://www.ory.sh/docs/ecosystem/sqa")
+	disableTelemetry, err := strconv.ParseBool(os.Getenv("DISABLE_TELEMETRY"))
+	if err != nil {
+		disableTelemetry = true
+	}
+	sqaOptOut, err := strconv.ParseBool(os.Getenv("SQA_OPT_OUT"))
+	if err != nil {
+		sqaOptOut = true
+	}
+
+	serveCmd.PersistentFlags().Bool("disable-telemetry", disableTelemetry, "Disable anonymized telemetry reports - for more information please visit https://www.ory.sh/docs/ecosystem/sqa")
+	serveCmd.PersistentFlags().Bool("sqa-opt-out", sqaOptOut, "Disable anonymized telemetry reports - for more information please visit https://www.ory.sh/docs/ecosystem/sqa")
 }

@@ -21,8 +21,12 @@
 
 package cmd
 
-import "github.com/ory/x/cmdx"
+import (
+	"github.com/ory/x/cmdx"
+
+	"github.com/ory/keto/internal/driver/config"
+)
 
 func init() {
-	RootCmd.AddCommand(cmdx.Version(&Version, &Commit, &Date))
+	RootCmd.AddCommand(cmdx.Version(&config.Version, &config.Commit, &config.Date))
 }

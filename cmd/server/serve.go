@@ -70,7 +70,7 @@ package server
 //		c := corsx.Initialize(n, logger, "serve")
 //
 //		server := graceful.WithDefaults(&http.Server{
-//			Addr:    d.Configuration().ListenOn(),
+//			Addr:    d.Configuration().RESTListenOn(),
 //			Handler: c,
 //		})
 //
@@ -97,10 +97,10 @@ package server
 //
 //		if err := graceful.Graceful(func() error {
 //			if cert != nil {
-//				logger.Printf("Listening on https://%s", d.Configuration().ListenOn())
+//				logger.Printf("Listening on https://%s", d.Configuration().RESTListenOn())
 //				return server.ListenAndServeTLS("", "")
 //			}
-//			logger.Printf("Listening on http://%s", d.Configuration().ListenOn())
+//			logger.Printf("Listening on http://%s", d.Configuration().RESTListenOn())
 //			return server.ListenAndServe()
 //		}, server.Shutdown); err != nil {
 //			logger.Fatalf("Unable to gracefully shutdown HTTP(s) server because %v", err)
