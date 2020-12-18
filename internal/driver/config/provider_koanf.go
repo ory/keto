@@ -63,7 +63,7 @@ func New(ctx context.Context, flags *pflag.FlagSet, l *logrusx.Logger) (Provider
 
 	kp.p, err = configx.New(
 		schema,
-		flags,
+		configx.WithFlags(flags),
 		configx.WithStderrValidationReporter(),
 		configx.WithImmutables(KeyDSN, "serve"),
 		configx.OmitKeysFromTracing(KeyDSN),
@@ -96,12 +96,15 @@ func (k *KoanfProvider) resetNamespaceManager() {
 	k.nm = nil
 }
 
-func (k *KoanfProvider) Set(key string, v interface{}) {
-	k.p.Set(key, v)
+func (k *KoanfProvider) Set(key string, v interface{}) error {
+	if err := k.p.Set(key, v); err != nil {
+		return err
+	}
 
 	if key == KeyNamespaces {
 		k.resetNamespaceManager()
 	}
+	return nil
 }
 
 func (k *KoanfProvider) RESTListenOn() string {

@@ -27,7 +27,7 @@ type (
 )
 
 const (
-	routeBase = "/relations"
+	routeBase = "/relationtuple"
 )
 
 func NewHandler(d handlerDeps) *handler {

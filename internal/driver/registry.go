@@ -15,23 +15,29 @@ import (
 	"github.com/ory/keto/internal/x"
 )
 
-type Registry interface {
-	Init(context.Context) error
-	BuildVersion() string
-	BuildDate() string
-	BuildHash() string
-	Config() config.Provider
+type (
+	Registry interface {
+		Init(context.Context) error
+		BuildVersion() string
+		BuildDate() string
+		BuildHash() string
+		Config() config.Provider
 
-	x.LoggerProvider
-	x.WriterProvider
+		x.LoggerProvider
+		x.WriterProvider
 
-	relationtuple.ManagerProvider
-	namespace.MigratorProvider
-	expand.EngineProvider
-	check.EngineProvider
-	persistence.MigratorProvider
-	persistence.Provider
+		relationtuple.ManagerProvider
+		namespace.MigratorProvider
+		expand.EngineProvider
+		check.EngineProvider
+		persistence.MigratorProvider
+		persistence.Provider
 
-	HealthHandler() *healthx.Handler
-	Tracer() *tracing.Tracer
-}
+		HealthHandler() *healthx.Handler
+		Tracer() *tracing.Tracer
+	}
+
+	contextKeys string
+)
+
+const LogrusHookContextKey contextKeys = "logrus hook"

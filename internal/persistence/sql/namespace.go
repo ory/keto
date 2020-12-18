@@ -57,12 +57,12 @@ func (p *Persister) MigrateNamespaceUp(ctx context.Context, n *namespace.Namespa
 			Version: mostRecentSchemaVersion,
 		}
 
-		if err := c.RawQuery(fmt.Sprintf("INSERT INTO %s (id, schema_version) VALUES (?, ?)", nr.TableName()), nr.ID, nr.Version).Exec(); err != nil {
+		// first create the table because of cockroach limitations, see https://github.com/cockroachdb/cockroach/issues/54477
+		if err := c.RawQuery(createStmt(n)).Exec(); err != nil {
 			return errors.WithStack(err)
 		}
 
-		return errors.WithStack(
-			c.RawQuery(createStmt(n)).Exec())
+		return errors.WithStack(c.RawQuery(fmt.Sprintf("INSERT INTO %s (id, schema_version) VALUES (?, ?)", nr.TableName()), nr.ID, nr.Version).Exec())
 	})
 }
 

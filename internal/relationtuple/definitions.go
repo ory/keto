@@ -2,9 +2,12 @@ package relationtuple
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/url"
 	"strings"
+
+	"github.com/tidwall/sjson"
 
 	"github.com/pkg/errors"
 
@@ -194,6 +197,17 @@ func (r *InternalRelationTuple) UnmarshalJSON(raw []byte) error {
 	return nil
 }
 
+func (r *InternalRelationTuple) MarshalJSON() ([]byte, error) {
+	type t InternalRelationTuple
+
+	enc, err := json.Marshal((*t)(r))
+	if err != nil {
+		return nil, errors.WithStack(err)
+	}
+
+	return sjson.SetBytes(enc, "subject", r.Subject.String())
+}
+
 func (r *InternalRelationTuple) FromGRPC(gr *acl.RelationTuple) *InternalRelationTuple {
 	r.Subject = SubjectFromGRPC(gr.Subject)
 	r.Object = gr.Object
@@ -226,6 +240,15 @@ func (r *InternalRelationTuple) FromURLQuery(query url.Values) (*InternalRelatio
 	r.Namespace = query.Get("namespace")
 
 	return r, nil
+}
+
+func (r *InternalRelationTuple) ToURLQuery() url.Values {
+	return url.Values{
+		"namespace": []string{r.Namespace},
+		"object":    []string{r.Object},
+		"relation":  []string{r.Relation},
+		"subject":   []string{r.Subject.String()},
+	}
 }
 
 func (q *RelationQuery) FromGRPC(query *acl.ListRelationTuplesRequest_Query) *RelationQuery {

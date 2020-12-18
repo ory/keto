@@ -45,6 +45,8 @@ var (
 )
 
 func NewPersister(c *pop.Connection, l *logrusx.Logger, namespaces namespace.Manager) (*Persister, error) {
+	pop.SetLogger(l.PopLogger)
+
 	mb, err := pkgerx.NewMigrationBox(migrations, c, l)
 	if err != nil {
 		return nil, err

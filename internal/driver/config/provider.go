@@ -18,7 +18,7 @@ type Provider interface {
 	TracingServiceName() string
 	TracingProvider() string
 	TracingConfig() *tracing.Config
-	Set(key string, v interface{})
+	Set(key string, v interface{}) error
 }
 
 const DSNMemory = "sqlite://:memory:?_fk=true"

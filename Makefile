@@ -94,3 +94,11 @@ buf-lint: deps
 #
 .PHONY: buf
 buf: buf-lint buf-gen
+
+.PHONY: reset-testdb
+reset-testdb:
+		source scripts/test-resetdb.sh
+
+.PHONY: e2e-test
+e2e-test:
+		go test -tags sqlite -failfast -v ./internal/e2e

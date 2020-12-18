@@ -1,7 +1,6 @@
 package namespace
 
 import (
-	"context"
 	"errors"
 	"fmt"
 
@@ -20,10 +19,12 @@ func NewMigrateCmd() *cobra.Command {
 		Short: "Migrate a namespace up.",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			ctx, cancel := context.WithCancel(context.Background())
-			defer cancel()
+			ctx := cmd.Context()
 
-			reg := driver.NewDefaultRegistry(ctx, cmd.Flags())
+			reg, err := driver.NewDefaultRegistry(ctx, cmd.Flags())
+			if err != nil {
+				return err
+			}
 
 			nm, err := reg.Config().NamespaceManager()
 			if err != nil {

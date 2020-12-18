@@ -6,6 +6,7 @@ require (
 	github.com/HdrHistogram/hdrhistogram-go v1.0.1 // indirect
 	github.com/asaskevich/govalidator v0.0.0-20200428143746-21a406dcc535 // indirect
 	github.com/bufbuild/buf v0.31.1
+	github.com/cenkalti/backoff v2.2.1+incompatible
 	github.com/containerd/continuity v0.0.0-20200228182428-0f16d7a0959c // indirect
 	github.com/ghodss/yaml v1.0.0
 	github.com/go-openapi/errors v0.19.4
@@ -26,8 +27,7 @@ require (
 	github.com/ory/graceful v0.1.1
 	github.com/ory/herodot v0.9.1
 	github.com/ory/jsonschema/v3 v3.0.1
-	github.com/ory/viper v1.7.5
-	github.com/ory/x v0.0.169
+	github.com/ory/x v0.0.171
 	github.com/pelletier/go-toml v1.8.0
 	github.com/pkg/errors v0.9.1
 	github.com/rs/cors v1.6.0
@@ -40,7 +40,7 @@ require (
 	github.com/sqs/goreturns v0.0.0-20181028201513-538ac6014518
 	github.com/stretchr/testify v1.6.1
 	github.com/tidwall/gjson v1.6.0
-	github.com/tidwall/sjson v1.1.1 // indirect
+	github.com/tidwall/sjson v1.1.1
 	github.com/uber/jaeger-lib v2.4.0+incompatible // indirect
 	go.mongodb.org/mongo-driver v1.3.4 // indirect
 	golang.org/x/lint v0.0.0-20200302205851-738671d3881b // indirect
