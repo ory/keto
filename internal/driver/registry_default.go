@@ -2,6 +2,10 @@ package driver
 
 import (
 	"context"
+	"time"
+
+	"github.com/cenkalti/backoff"
+	"github.com/ory/x/sqlcon"
 
 	"github.com/ory/keto/internal/driver/config"
 
@@ -28,44 +32,38 @@ var _ x.LoggerProvider = &RegistryDefault{}
 var _ Registry = &RegistryDefault{}
 
 type RegistryDefault struct {
-	p    persistence.Persister
-	l    *logrusx.Logger
-	w    herodot.Writer
-	ce   *check.Engine
-	ee   *expand.Engine
-	conn *pop.Connection
-	c    config.Provider
-	hh   *healthx.Handler
-
-	version, hash, date string
-}
-
-func (r *RegistryDefault) CanHandle(dsn string) bool {
-	return true
-}
-
-func (r *RegistryDefault) Ping() error {
-	return r.conn.Open()
+	p      persistence.Persister
+	l      *logrusx.Logger
+	w      herodot.Writer
+	ce     *check.Engine
+	ee     *expand.Engine
+	conn   *pop.Connection
+	c      config.Provider
+	health *healthx.Handler
 }
 
 func (r *RegistryDefault) BuildVersion() string {
-	return r.version
+	return config.Version
 }
 
 func (r *RegistryDefault) BuildDate() string {
-	return r.date
+	return config.Date
 }
 
 func (r *RegistryDefault) BuildHash() string {
-	return r.hash
+	return config.Commit
+}
+
+func (r *RegistryDefault) Config() config.Provider {
+	return r.c
 }
 
 func (r *RegistryDefault) HealthHandler() *healthx.Handler {
-	if r.hh == nil {
-		r.hh = healthx.NewHandler(r.Writer(), r.version, healthx.ReadyCheckers{})
+	if r.health == nil {
+		r.health = healthx.NewHandler(r.Writer(), config.Version, healthx.ReadyCheckers{})
 	}
 
-	return r.hh
+	return r.health
 }
 
 func (r *RegistryDefault) Tracer() *tracing.Tracer {
@@ -74,7 +72,7 @@ func (r *RegistryDefault) Tracer() *tracing.Tracer {
 
 func (r *RegistryDefault) Logger() *logrusx.Logger {
 	if r.l == nil {
-		r.l = logrusx.New("keto", "dev")
+		r.l = logrusx.New("ORY Keto", config.Version)
 	}
 	return r.l
 }
@@ -117,16 +115,32 @@ func (r *RegistryDefault) Migrator() persistence.Migrator {
 }
 
 func (r *RegistryDefault) Init(ctx context.Context) error {
-	c, err := pop.NewConnection(&pop.ConnectionDetails{
-		URL: r.c.DSN(),
-	})
-	if err != nil {
-		return errors.WithStack(err)
-	}
+	bc := backoff.NewExponentialBackOff()
+	bc.MaxElapsedTime = time.Minute * 5
+	bc.Reset()
 
-	r.conn = c
-	if err := c.Open(); err != nil {
-		return errors.WithStack(err)
+	if err := backoff.Retry(func() error {
+		pool, idlePool, connMaxLifetime, cleanedDSN := sqlcon.ParseConnectionOptions(r.l, r.c.DSN())
+		c, err := pop.NewConnection(&pop.ConnectionDetails{
+			URL:             sqlcon.FinalizeDSN(r.l, cleanedDSN),
+			IdlePool:        idlePool,
+			ConnMaxLifetime: connMaxLifetime,
+			Pool:            pool,
+		})
+		if err != nil {
+			r.Logger().WithError(err).Warnf("Unable to connect to database, retrying.")
+			return errors.WithStack(err)
+		}
+
+		r.conn = c
+		if err := c.Open(); err != nil {
+			r.Logger().WithError(err).Warnf("Unable to open the database connection, retrying.")
+			return errors.WithStack(err)
+		}
+
+		return nil
+	}, bc); err != nil {
+		return err
 	}
 
 	nm, err := r.c.NamespaceManager()

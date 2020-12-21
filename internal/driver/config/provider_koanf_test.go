@@ -46,7 +46,7 @@ func TestKoanfNamespaceManager(t *testing.T) {
 			return func(t *testing.T) {
 				_, p := setup(t)
 
-				p.Set(KeyNamespaces, value)
+				require.NoError(t, p.Set(KeyNamespaces, value))
 
 				assertNamespaces(t, p, namespaces...)
 
@@ -100,17 +100,17 @@ func TestKoanfNamespaceManager(t *testing.T) {
 			Name: "n1",
 		}
 
-		p.Set(KeyNamespaces, []*namespace.Namespace{n0})
+		require.NoError(t, p.Set(KeyNamespaces, []*namespace.Namespace{n0}))
 		assertNamespaces(t, p, n0)
 
-		p.Set(KeyNamespaces, []*namespace.Namespace{n1})
+		require.NoError(t, p.Set(KeyNamespaces, []*namespace.Namespace{n1}))
 		assertNamespaces(t, p, n1)
 	})
 
 	t.Run("case=creates watcher manager when namespaces is string URL", func(t *testing.T) {
 		_, p := setup(t)
 
-		p.Set(KeyNamespaces, "file://"+t.TempDir())
+		require.NoError(t, p.Set(KeyNamespaces, "file://"+t.TempDir()))
 
 		nm, err := p.NamespaceManager()
 		require.NoError(t, err)

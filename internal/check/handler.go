@@ -33,10 +33,10 @@ func NewHandler(d handlerDependencies) *restHandler {
 	return &restHandler{d: d}
 }
 
-const routeBase = "/check"
+const RouteBase = "/check"
 
 func (h *restHandler) RegisterPublicRoutes(router *httprouter.Router) {
-	router.GET(routeBase, h.getCheck)
+	router.GET(RouteBase, h.getCheck)
 }
 
 func (h *restHandler) getCheck(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {

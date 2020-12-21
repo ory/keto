@@ -9,13 +9,17 @@ import (
 	"github.com/ory/keto/cmd/client"
 )
 
-var relationCmd = &cobra.Command{
-	Use: "relation-tuple",
+func newRelationCmd() *cobra.Command {
+	return &cobra.Command{
+		Use: "relation-tuple",
+	}
 }
 
 var packageFlags = pflag.NewFlagSet("relation package flags", pflag.ContinueOnError)
 
-func RegisterCommandRecursive(parent *cobra.Command) {
+func RegisterCommandsRecursive(parent *cobra.Command) {
+	relationCmd := newRelationCmd()
+
 	parent.AddCommand(relationCmd)
 
 	relationCmd.AddCommand(newGetCmd())

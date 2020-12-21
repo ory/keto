@@ -16,9 +16,10 @@ jobs:
         image: circleci/golang:1.15
         environment:
           TEST_DATABASE_POSTGRESQL: postgres://test:test@localhost:5432/keto?sslmode=disable
-          TEST_DATABASE_MYSQL: root:test@(localhost:3306)/mysql?parseTime=true
+          TEST_DATABASE_MYSQL: mysql://root:test@(localhost:3306)/mysql?parseTime=true&multiStatements=true
+          TEST_DATABASE_COCKROACHDB: cockroach://root@localhost:26257/defaultdb?sslmode=disable
       -
-        image: postgres:9.5
+        image: postgres:11.8
         environment:
           POSTGRES_USER: test
           POSTGRES_PASSWORD: test
@@ -27,6 +28,9 @@ jobs:
         image: mysql:8.0
         environment:
           MYSQL_ROOT_PASSWORD: test
+      -
+        image: cockroachdb/cockroach:v20.1.0
+        command: start --insecure
     working_directory: /go/src/github.com/ory/keto
     steps:
       - checkout
@@ -41,7 +45,7 @@ jobs:
 
       # Tests
       -
-        run: go test -tags sqlite -race -short -v $(go list ./... | grep -v cmd)
+        run: go test -tags sqlite -race -short -v ./...
       -
         run: go-acc -o coverage.txt ./... -- -v -tags sqlite
 

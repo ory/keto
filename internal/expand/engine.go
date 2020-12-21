@@ -35,8 +35,9 @@ func (e *Engine) BuildTree(ctx context.Context, subject relationtuple.Subject, r
 
 		// TODO handle pagination
 		rels, _, err := e.d.RelationTupleManager().GetRelationTuples(ctx, &relationtuple.RelationQuery{
-			Relation: us.Relation,
-			Object:   us.Object,
+			Relation:  us.Relation,
+			Object:    us.Object,
+			Namespace: us.Namespace,
 		})
 		if err != nil {
 			// TODO error handling

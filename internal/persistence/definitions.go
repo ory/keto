@@ -17,6 +17,7 @@ type (
 	}
 	Migrator interface {
 		MigrateUp(context.Context) error
+		MigrateDown(context.Context, int) error
 		MigrationStatus(context.Context, io.Writer) error
 	}
 	MigratorProvider interface {

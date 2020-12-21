@@ -2,12 +2,20 @@ package migrate
 
 import "github.com/spf13/cobra"
 
-var migrateCmd = &cobra.Command{
-	Use: "migrate",
+func newMigrateCmd() *cobra.Command {
+	return &cobra.Command{
+		Use: "migrate",
+	}
 }
 
-func RegisterCommandRecursive(parent *cobra.Command) {
-	migrateCmd.AddCommand(newStatusCmd(), newUpCmd())
+func RegisterCommandsRecursive(parent *cobra.Command) {
+	migrateCmd := newMigrateCmd()
+
+	migrateCmd.AddCommand(
+		newStatusCmd(),
+		newUpCmd(),
+		newDownCmd(),
+	)
 
 	parent.AddCommand(migrateCmd)
 }

@@ -197,35 +197,62 @@
     },
     "serve": {
       "type": "object",
-      "title": "HTTP REST API",
       "additionalProperties": false,
       "properties": {
-        "port": {
-          "type": "integer",
-          "default": 4456,
-          "title": "Port",
-          "description": "The port to listen on.",
-          "minimum": 1,
-          "maximum": 65535,
-          "examples": [
-            4456
-          ]
+        "rest": {
+          "type": "object",
+          "title": "HTTP REST API",
+          "additionalProperties": false,
+          "properties": {
+            "port": {
+              "type": "integer",
+              "default": 4466,
+              "title": "Port",
+              "description": "The port to listen on.",
+              "minimum": 1,
+              "maximum": 65535
+            },
+            "host": {
+              "type": "string",
+              "default": "",
+              "examples": [
+                "localhost",
+                "127.0.0.1"
+              ],
+              "title": "Host",
+              "description": "The network interface to listen on."
+            },
+            "cors": {
+              "$ref": "#/definitions/cors"
+            },
+            "tls": {
+              "$ref": "#/definitions/tlsx"
+            }
+          }
         },
-        "host": {
-          "type": "string",
-          "default": "",
-          "examples": [
-            "localhost",
-            "127.0.0.1"
-          ],
-          "title": "Host",
-          "description": "The network interface to listen on."
-        },
-        "cors": {
-          "$ref": "#/definitions/cors"
-        },
-        "tls": {
-          "$ref": "#/definitions/tlsx"
+        "grpc": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "port": {
+              "type": "integer",
+              "default": 4467,
+              "title": "Port",
+              "description": "The port to listen on.",
+              "minimum": 1,
+              "maximum": 65535
+            },
+            "host": {
+              "type": "string",
+              "default": "",
+              "examples": [
+                "localhost",
+                "127.0.0.1"
+              ],
+              "title": "Host",
+              "description": "The network interface to listen on."
+            }
+          }
         }
       }
     },

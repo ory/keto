@@ -37,6 +37,13 @@ CREATE INDEX %[1]s_object_idx ON %[1]s (object);
 
 CREATE INDEX %[1]s_user_set_idx ON %[1]s (object, relation);
 `
+	namespaceDropStatement = `
+DROP INDEX %[1]s_user_set_idx;
+
+DROP INDEX %[1]s_object_idx;
+
+DROP TABLE %[1]s;
+`
 
 	mostRecentSchemaVersion = 1
 )
@@ -49,6 +56,10 @@ func createStmt(n *namespace.Namespace) string {
 	return fmt.Sprintf(namespaceCreateStatement, tableFromNamespace(n))
 }
 
+func dropStmt(n *namespace.Namespace) string {
+	return fmt.Sprintf(namespaceDropStatement, tableFromNamespace(n))
+}
+
 func (p *Persister) MigrateNamespaceUp(ctx context.Context, n *namespace.Namespace) error {
 	return p.transaction(ctx, func(ctx context.Context, c *pop.Connection) error {
 		// TODO this is only creating new namespaces and not applying migrations
@@ -57,12 +68,22 @@ func (p *Persister) MigrateNamespaceUp(ctx context.Context, n *namespace.Namespa
 			Version: mostRecentSchemaVersion,
 		}
 
-		if err := c.RawQuery(fmt.Sprintf("INSERT INTO %s (id, schema_version) VALUES (?, ?)", nr.TableName()), nr.ID, nr.Version).Exec(); err != nil {
+		// first create the table because of cockroach limitations, see https://github.com/cockroachdb/cockroach/issues/54477
+		if err := c.RawQuery(createStmt(n)).Exec(); err != nil {
 			return errors.WithStack(err)
 		}
 
-		return errors.WithStack(
-			c.RawQuery(createStmt(n)).Exec())
+		return errors.WithStack(c.RawQuery(fmt.Sprintf("INSERT INTO %s (id, schema_version) VALUES (?, ?)", nr.TableName()), nr.ID, nr.Version).Exec())
+	})
+}
+
+func (p *Persister) MigrateNamespaceDown(ctx context.Context, n *namespace.Namespace, _ int) error {
+	return p.transaction(ctx, func(ctx context.Context, c *pop.Connection) error {
+		if err := c.RawQuery(dropStmt(n)).Exec(); err != nil {
+			return errors.WithStack(err)
+		}
+
+		return errors.WithStack(c.RawQuery(fmt.Sprintf("DELETE FROM %s WHERE id = ?", (&namespaceRow{}).TableName()), n.ID).Exec())
 	})
 }
 
