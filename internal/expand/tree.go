@@ -1,7 +1,9 @@
 package expand
 
 import (
-	"errors"
+	"encoding/json"
+
+	"github.com/pkg/errors"
 
 	"github.com/ory/keto/internal/relationtuple"
 )
@@ -11,7 +13,7 @@ type (
 	Tree     struct {
 		Type     NodeType              `json:"type"`
 		Subject  relationtuple.Subject `json:"subject"`
-		Children []*Tree               `json:"children"`
+		Children []*Tree               `json:"children,omitempty"`
 	}
 )
 
@@ -46,16 +48,40 @@ func (t NodeType) MarshalJSON() ([]byte, error) {
 
 func (t *NodeType) UnmarshalJSON(v []byte) error {
 	switch string(v) {
-	case "union":
+	case `"union"`:
 		*t = Union
-	case "exclusion":
+	case `"exclusion"`:
 		*t = Exclusion
-	case "intersection":
+	case `"intersection"`:
 		*t = Intersection
-	case "leaf":
+	case `"leaf"`:
 		*t = Leaf
 	default:
 		return ErrUnknownNodeType
 	}
+	return nil
+}
+
+func (t *Tree) UnmarshalJSON(v []byte) error {
+	type node struct {
+		Type     NodeType `json:"type"`
+		Children []*Tree  `json:"children,omitempty"`
+		Subject  string   `json:"subject"`
+	}
+
+	n := &node{}
+	if err := json.Unmarshal(v, n); err != nil {
+		return errors.WithStack(err)
+	}
+
+	var err error
+	t.Subject, err = relationtuple.SubjectFromString(n.Subject)
+	if err != nil {
+		return err
+	}
+
+	t.Type = n.Type
+	t.Children = n.Children
+
 	return nil
 }

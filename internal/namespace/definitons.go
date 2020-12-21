@@ -20,6 +20,7 @@ type (
 	}
 	Migrator interface {
 		MigrateNamespaceUp(ctx context.Context, n *Namespace) error
+		MigrateNamespaceDown(ctx context.Context, n *Namespace, steps int) error
 		NamespaceStatus(ctx context.Context, id int) (*Status, error)
 	}
 	Manager interface {

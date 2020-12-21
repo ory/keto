@@ -11,7 +11,11 @@ func newMigrateCmd() *cobra.Command {
 func RegisterCommandsRecursive(parent *cobra.Command) {
 	migrateCmd := newMigrateCmd()
 
-	migrateCmd.AddCommand(newStatusCmd(), newUpCmd())
+	migrateCmd.AddCommand(
+		newStatusCmd(),
+		newUpCmd(),
+		newDownCmd(),
+	)
 
 	parent.AddCommand(migrateCmd)
 }

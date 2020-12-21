@@ -13,9 +13,9 @@ import (
 	"github.com/ory/keto/internal/persistence"
 )
 
-func NewMigrateCmd() *cobra.Command {
+func NewMigrateUpCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "migrate <namespace-name>",
+		Use:   "up <namespace-name>",
 		Short: "Migrate a namespace up.",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {

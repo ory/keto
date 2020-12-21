@@ -4,7 +4,13 @@ import (
 	"context"
 	"io/ioutil"
 	"path/filepath"
+	"strings"
 	"testing"
+
+	"github.com/ory/x/cmdx"
+
+	"github.com/ory/keto/cmd/migrate"
+	"github.com/ory/keto/internal/namespace"
 
 	"github.com/sirupsen/logrus/hooks/test"
 	"github.com/stretchr/testify/require"
@@ -38,4 +44,24 @@ func setup(t *testing.T) (*test.Hook, context.Context) {
 	})
 
 	return hook, ctx
+}
+
+func migrateEverythingUp(t *testing.T, c *cmdx.CommandExecuter, nn []*namespace.Namespace) {
+	out := c.ExecNoErr(t, "migrate", "status")
+	if strings.Contains(out, "Pending") {
+		c.ExecNoErr(t, "migrate", "up", "--"+migrate.FlagYes)
+	}
+
+	for _, n := range nn {
+		c.ExecNoErr(t, "namespace", "migrate", "up", n.Name)
+	}
+
+	// TODO enable when namespace migrations are done properly with driver specific statements
+	//t.Cleanup(func() {
+	//	for _, n := range nn {
+	//		c.ExecNoErr(t, "namespace", "migrate", "down", n.Name, "1")
+	//	}
+	//
+	//	c.ExecNoErr(t, "migrate", "down", "1")
+	//})
 }

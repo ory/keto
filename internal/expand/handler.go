@@ -22,14 +22,14 @@ type (
 	}
 )
 
-const routeBase = "/expand"
+const RouteBase = "/expand"
 
 func NewHandler(d handlerDependencies) *handler {
 	return &handler{d: d}
 }
 
 func (h *handler) RegisterPublicRoutes(router *httprouter.Router) {
-	router.GET(routeBase, h.getCheck)
+	router.GET(RouteBase, h.getCheck)
 }
 
 func (h *handler) getCheck(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {

@@ -62,6 +62,10 @@ func (p *Persister) MigrateUp(_ context.Context) error {
 	return p.mb.Up()
 }
 
+func (p *Persister) MigrateDown(_ context.Context, steps int) error {
+	return p.mb.Down(steps)
+}
+
 func (p *Persister) MigrationStatus(_ context.Context, w io.Writer) error {
 	return p.mb.Status(w)
 }
@@ -74,7 +78,7 @@ func (p *Persister) connection(ctx context.Context) *pop.Connection {
 	return tx.(*pop.Connection)
 }
 
-func (p *Persister) transaction(ctx context.Context, f func(context.Context, *pop.Connection) error) error {
+func (p *Persister) transaction(ctx context.Context, f func(ctx context.Context, c *pop.Connection) error) error {
 	tx := ctx.Value(transactionContextKey)
 	if tx != nil {
 		return f(ctx, tx.(*pop.Connection))

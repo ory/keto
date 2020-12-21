@@ -34,6 +34,8 @@ type (
 		internalRelations []*InternalRelationTuple
 	}
 	Subject interface {
+		json.Marshaler
+
 		String() string
 		FromString(string) (Subject, error)
 		Equals(interface{}) bool
@@ -133,6 +135,14 @@ func (s *SubjectSet) FromURLQuery(values url.Values) *SubjectSet {
 	return s
 }
 
+func (s *SubjectSet) ToURLQuery() url.Values {
+	return url.Values{
+		"namespace": []string{s.Namespace},
+		"object":    []string{s.Object},
+		"relation":  []string{s.Relation},
+	}
+}
+
 func (s *SubjectID) ToGRPC() *acl.Subject {
 	return &acl.Subject{
 		Ref: &acl.Subject_Id{
@@ -169,11 +179,19 @@ func (s *SubjectSet) Equals(v interface{}) bool {
 	return uv.Relation == s.Relation && uv.Object == s.Object && uv.Namespace == s.Namespace
 }
 
+func (s SubjectID) MarshalJSON() ([]byte, error) {
+	return []byte(`"` + s.String() + `"`), nil
+}
+
+func (s SubjectSet) MarshalJSON() ([]byte, error) {
+	return []byte(`"` + s.String() + `"`), nil
+}
+
 func (r *InternalRelationTuple) String() string {
 	return fmt.Sprintf("%s:%s#%s@%s", r.Namespace, r.Object, r.Relation, r.Subject)
 }
 
-func (r *InternalRelationTuple) DeriveSubject() Subject {
+func (r *InternalRelationTuple) DeriveSubject() *SubjectSet {
 	return &SubjectSet{
 		Namespace: r.Namespace,
 		Object:    r.Object,
@@ -278,6 +296,25 @@ func (q *RelationQuery) FromURLQuery(query url.Values) (*RelationQuery, error) {
 	q.Namespace = query.Get("namespace")
 
 	return q, nil
+}
+
+func (q *RelationQuery) ToURLQuery() url.Values {
+	v := make(url.Values, 4)
+
+	if q.Namespace != "" {
+		v.Add("namespace", q.Namespace)
+	}
+	if q.Relation != "" {
+		v.Add("relation", q.Relation)
+	}
+	if q.Object != "" {
+		v.Add("object", q.Object)
+	}
+	if q.Subject != nil {
+		v.Add("subject", q.Subject.String())
+	}
+
+	return v
 }
 
 func (q *RelationQuery) String() string {

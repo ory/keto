@@ -27,7 +27,7 @@ type (
 )
 
 const (
-	routeBase = "/relationtuple"
+	RouteBase = "/relationtuple"
 )
 
 func NewHandler(d handlerDeps) *handler {
@@ -43,8 +43,8 @@ func NewGRPCServer(d handlerDeps) *GRPCServer {
 }
 
 func (h *handler) RegisterPublicRoutes(router *httprouter.Router) {
-	router.GET(routeBase, h.getRelations)
-	router.PUT(routeBase, h.createRelation)
+	router.GET(RouteBase, h.getRelations)
+	router.PUT(RouteBase, h.createRelation)
 }
 
 func (h *handler) getRelations(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
