@@ -1,7 +1,6 @@
 package relationtuple
 
 import (
-	"context"
 	"fmt"
 
 	"github.com/ory/x/flagx"
@@ -19,24 +18,21 @@ import (
 )
 
 const (
-	FlagSubject   = "subject"
-	FlagRelation  = "relation"
-	FlagObject    = "object"
-	FlagNamespace = "namespace"
+	FlagSubject  = "subject"
+	FlagRelation = "relation"
+	FlagObject   = "object"
 )
 
 func registerRelationTupleFlags(flags *pflag.FlagSet) {
 	flags.String(FlagSubject, "", "Set the requested subject")
 	flags.String(FlagRelation, "", "Set the requested relation")
 	flags.String(FlagObject, "", "Set the requested object")
-	flags.String(FlagNamespace, "", "Set the requested namespace")
 }
 
-func readQueryFromFlags(cmd *cobra.Command) (*acl.ListRelationTuplesRequest_Query, error) {
+func readQueryFromFlags(cmd *cobra.Command, namespace string) (*acl.ListRelationTuplesRequest_Query, error) {
 	subject := flagx.MustGetString(cmd, FlagSubject)
 	relation := flagx.MustGetString(cmd, FlagRelation)
 	object := flagx.MustGetString(cmd, FlagObject)
-	namespace := flagx.MustGetString(cmd, FlagNamespace)
 
 	query := &acl.ListRelationTuplesRequest_Query{
 		Relation:  relation,
@@ -44,20 +40,22 @@ func readQueryFromFlags(cmd *cobra.Command) (*acl.ListRelationTuplesRequest_Quer
 		Namespace: namespace,
 	}
 
-	s, err := relationtuple.SubjectFromString(subject)
-	if err != nil {
-		return nil, err
-	}
+	if subject != "" {
+		s, err := relationtuple.SubjectFromString(subject)
+		if err != nil {
+			return nil, err
+		}
 
-	query.Subject = s.ToGRPC()
+		query.Subject = s.ToGRPC()
+	}
 
 	return query, nil
 }
 
 func newGetCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:  "get",
-		Args: cobra.ExactArgs(0),
+		Use:  "get <namespace>",
+		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			conn, err := client.GetGRPCConn(cmd)
 			if err != nil {
@@ -66,12 +64,12 @@ func newGetCmd() *cobra.Command {
 			defer conn.Close()
 
 			cl := acl.NewReadServiceClient(conn)
-			query, err := readQueryFromFlags(cmd)
+			query, err := readQueryFromFlags(cmd, args[0])
 			if err != nil {
 				return err
 			}
 
-			resp, err := cl.ListRelationTuples(context.Background(), &acl.ListRelationTuplesRequest{
+			resp, err := cl.ListRelationTuples(cmd.Context(), &acl.ListRelationTuplesRequest{
 				Query:    query,
 				PageSize: 100,
 			})

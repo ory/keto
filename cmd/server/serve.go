@@ -79,6 +79,10 @@ on configuration options, open the configuration documentation:
 				grpcServer = grpc.NewServer()
 				relS := relationtuple.NewGRPCServer(reg)
 				acl.RegisterReadServiceServer(grpcServer, relS)
+				acl.RegisterWriteServiceServer(grpcServer, relS)
+
+				checkS := check.NewGRPCServer(reg)
+				acl.RegisterCheckServiceServer(grpcServer, checkS)
 
 				reg.Logger().WithField("addr", lis.Addr().String()).Info("serving GRPC")
 				if err := grpcServer.Serve(lis); err != nil {

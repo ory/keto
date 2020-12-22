@@ -384,7 +384,10 @@ func (r *relationCollection) Table() [][]string {
 
 func (r *relationCollection) Interface() interface{} {
 	if r.internalRelations == nil {
-		return r.grpcRelations
+		r.internalRelations = make([]*InternalRelationTuple, len(r.grpcRelations))
+		for i, rel := range r.grpcRelations {
+			r.internalRelations[i] = (&InternalRelationTuple{}).FromGRPC(rel)
+		}
 	}
 	return r.internalRelations
 }

@@ -25,7 +25,7 @@ func runCases(c client, nspaces []*namespace.Namespace) func(*testing.T) {
 
 			allTuple := c.queryTuple(t, &relationtuple.RelationQuery{Namespace: tuple.Namespace})
 
-			assert.Contains(t, allTuple, tuple)
+			assert.Contains(t, allTuple, tuple, "%+v", allTuple[0])
 
 			// try the check API to see whether the tuple is interpreted correctly
 			assert.True(t, c.check(t, tuple))

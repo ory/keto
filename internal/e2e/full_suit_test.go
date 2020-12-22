@@ -118,18 +118,18 @@ func Test(t *testing.T) {
 
 			// The test cases start here
 			// We execute every test with the GRPC client (using the client commands) and REST client
-			for i, cl := range []client{
+			for _, cl := range []client{
 				&grpcClient{c: &cmdx.CommandExecuter{
 					New:            cmd.NewRootCmd,
 					Ctx:            ctx,
-					PersistentArgs: []string{"--" + cliclient.FlagRemoteURL, "127.0.0.1:4467"},
+					PersistentArgs: []string{"--" + cliclient.FlagRemoteURL, "127.0.0.1:4467", "--" + cmdx.FlagFormat, string(cmdx.FormatJSON)},
 				}},
 				&restClient{baseURL: "http://127.0.0.1:4466"},
 			} {
-				// TODO remove once GRPC client and handler are implemented
-				if i == 0 {
-					continue
-				}
+				//// TODO remove once GRPC client and handler are implemented
+				//if i == 0 {
+				//	continue
+				//}
 				t.Run(fmt.Sprintf("client=%T", cl), runCases(cl, nspaces))
 			}
 		})
