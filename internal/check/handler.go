@@ -33,6 +33,10 @@ func NewHandler(d handlerDependencies) *restHandler {
 	return &restHandler{d: d}
 }
 
+func NewGRPCServer(d handlerDependencies) *grpcHandler {
+	return &grpcHandler{d: d}
+}
+
 const RouteBase = "/check"
 
 func (h *restHandler) RegisterPublicRoutes(router *httprouter.Router) {
@@ -59,7 +63,7 @@ func (h *restHandler) getCheck(w http.ResponseWriter, r *http.Request, _ httprou
 	h.d.Writer().WriteCode(w, r, http.StatusForbidden, "rejected")
 }
 
-func (g grpcHandler) Check(ctx context.Context, req *acl.CheckRequest) (*acl.CheckResponse, error) {
+func (g *grpcHandler) Check(ctx context.Context, req *acl.CheckRequest) (*acl.CheckResponse, error) {
 	tuple := &relationtuple.InternalRelationTuple{
 		Namespace: req.Namespace,
 		Object:    req.Object,

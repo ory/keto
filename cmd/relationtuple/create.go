@@ -1,7 +1,6 @@
 package relationtuple
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -48,7 +47,7 @@ func newCreateCmd() *cobra.Command {
 
 			cl := acl.NewWriteServiceClient(conn)
 
-			_, err = cl.WriteRelationTuples(context.Background(), &acl.WriteRelationTuplesRequest{
+			_, err = cl.WriteRelationTuples(cmd.Context(), &acl.WriteRelationTuplesRequest{
 				RelationTupleDeltas: []*acl.RelationTupleWriteDelta{
 					{
 						Action:        acl.RelationTupleWriteDelta_INSERT,
