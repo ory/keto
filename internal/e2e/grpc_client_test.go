@@ -25,6 +25,7 @@ var _ client = &grpcClient{}
 
 func (g *grpcClient) createTuple(t *testing.T, r *relationtuple.InternalRelationTuple) {
 	tupleEnc, err := json.Marshal(r)
+	require.NoError(t, err)
 
 	stdout, stderr, err := g.c.Exec(t, bytes.NewBuffer(tupleEnc), "relation-tuple", "create", "-")
 	require.NoError(t, err, "stdout: %s\nstderr: %s", stdout, stderr)
