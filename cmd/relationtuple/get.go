@@ -78,7 +78,7 @@ func newGetCmd() *cobra.Command {
 				return err
 			}
 
-			cmdx.PrintCollection(cmd, relationtuple.NewGRPCRelationCollection(resp.RelationTuples))
+			cmdx.PrintTable(cmd, relationtuple.NewGRPCRelationCollection(resp.RelationTuples))
 			return nil
 		},
 	}

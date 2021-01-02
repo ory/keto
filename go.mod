@@ -2,6 +2,8 @@ module github.com/ory/keto
 
 replace google.golang.org/protobuf v1.25.1-0.20201020201750-d3470999428b => google.golang.org/protobuf v1.25.0
 
+replace github.com/ory/x => github.com/ory/x v0.0.172-0.20210102140819-6d303ca968d8
+
 require (
 	github.com/HdrHistogram/hdrhistogram-go v1.0.1 // indirect
 	github.com/asaskevich/govalidator v0.0.0-20200428143746-21a406dcc535 // indirect
@@ -15,7 +17,6 @@ require (
 	github.com/go-openapi/swag v0.19.5
 	github.com/go-openapi/validate v0.19.3
 	github.com/go-swagger/go-swagger v0.21.1-0.20200107003254-1c98855b472d
-	github.com/gobuffalo/packr v1.24.1 // indirect
 	github.com/gobuffalo/pop/v5 v5.3.1
 	github.com/golang/protobuf v1.4.3
 	github.com/gorilla/sessions v1.1.3
@@ -31,7 +32,6 @@ require (
 	github.com/pelletier/go-toml v1.8.0
 	github.com/pkg/errors v0.9.1
 	github.com/rs/cors v1.6.0
-	github.com/rubenv/sql-migrate v0.0.0-20190327083759-54bad0a9b051 // indirect
 	github.com/segmentio/objconv v1.0.1
 	github.com/shopspring/decimal v1.2.0 // indirect
 	github.com/sirupsen/logrus v1.6.0

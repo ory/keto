@@ -36,7 +36,7 @@ type (
 )
 
 var (
-	_ cmdx.OutputEntry = &Status{}
+	_ cmdx.TableRow = &Status{}
 )
 
 func (s *Status) Header() []string {
@@ -46,7 +46,7 @@ func (s *Status) Header() []string {
 	}
 }
 
-func (s *Status) Fields() []string {
+func (s *Status) Columns() []string {
 	return []string{
 		fmt.Sprintf("%d", s.CurrentVersion),
 		fmt.Sprintf("%d", s.NextVersion),

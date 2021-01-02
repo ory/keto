@@ -13,7 +13,7 @@ func tuplesWithAction(deltas []*acl.RelationTupleWriteDelta, action acl.Relation
 		if d.Action == action {
 			filtered = append(
 				filtered,
-				(&InternalRelationTuple{}).FromGRPC(d.RelationTuple),
+				(&InternalRelationTuple{}).FromDataProvider(d.RelationTuple),
 			)
 		}
 	}

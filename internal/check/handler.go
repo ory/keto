@@ -64,12 +64,7 @@ func (h *restHandler) getCheck(w http.ResponseWriter, r *http.Request, _ httprou
 }
 
 func (g *grpcHandler) Check(ctx context.Context, req *acl.CheckRequest) (*acl.CheckResponse, error) {
-	tuple := &relationtuple.InternalRelationTuple{
-		Namespace: req.Namespace,
-		Object:    req.Object,
-		Relation:  req.Relation,
-		Subject:   relationtuple.SubjectFromGRPC(req.Subject),
-	}
+	tuple := (&relationtuple.InternalRelationTuple{}).FromDataProvider(req)
 
 	allowed, err := g.d.PermissionEngine().SubjectIsAllowed(ctx, tuple)
 	// TODO add content change handling
