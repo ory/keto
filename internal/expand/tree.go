@@ -2,8 +2,12 @@ package expand
 
 import (
 	"encoding/json"
+	"fmt"
+	"strings"
 
 	"github.com/pkg/errors"
+
+	acl "github.com/ory/keto/api/keto/acl/v1alpha1"
 
 	"github.com/ory/keto/internal/relationtuple"
 )
@@ -62,6 +66,34 @@ func (t *NodeType) UnmarshalJSON(v []byte) error {
 	return nil
 }
 
+func (t NodeType) ToGRPC() acl.NodeType {
+	switch t {
+	case Leaf:
+		return acl.NodeType_NODE_TYPE_LEAF
+	case Union:
+		return acl.NodeType_NODE_TYPE_UNION
+	case Exclusion:
+		return acl.NodeType_NODE_TYPE_EXCLUSION
+	case Intersection:
+		return acl.NodeType_NODE_TYPE_INTERSECTION
+	}
+	return acl.NodeType_NODE_TYPE_UNSPECIFIED
+}
+
+func NodeTypeFromGRPC(t acl.NodeType) NodeType {
+	switch t {
+	case acl.NodeType_NODE_TYPE_LEAF:
+		return Leaf
+	case acl.NodeType_NODE_TYPE_UNION:
+		return Union
+	case acl.NodeType_NODE_TYPE_EXCLUSION:
+		return Exclusion
+	case acl.NodeType_NODE_TYPE_INTERSECTION:
+		return Intersection
+	}
+	return Leaf
+}
+
 func (t *Tree) UnmarshalJSON(v []byte) error {
 	type node struct {
 		Type     NodeType `json:"type"`
@@ -84,4 +116,59 @@ func (t *Tree) UnmarshalJSON(v []byte) error {
 	t.Children = n.Children
 
 	return nil
+}
+
+func (t *Tree) ToGRPC() *acl.SubjectTree {
+	if t.Type == Leaf {
+		return &acl.SubjectTree{
+			NodeType: acl.NodeType_NODE_TYPE_LEAF,
+			Subject:  t.Subject.ToGRPC(),
+		}
+	}
+
+	children := make([]*acl.SubjectTree, len(t.Children))
+	for i, c := range t.Children {
+		children[i] = c.ToGRPC()
+	}
+
+	return &acl.SubjectTree{
+		NodeType: t.Type.ToGRPC(),
+		Subject:  t.Subject.ToGRPC(),
+		Children: children,
+	}
+}
+
+func TreeFromGRPC(t *acl.SubjectTree) *Tree {
+	if t.NodeType == acl.NodeType_NODE_TYPE_LEAF {
+		return &Tree{
+			Type:    Leaf,
+			Subject: relationtuple.SubjectFromGRPC(t.Subject),
+		}
+	}
+
+	children := make([]*Tree, len(t.Children))
+	for i, c := range t.Children {
+		children[i] = TreeFromGRPC(c)
+	}
+
+	return &Tree{
+		Type:     NodeTypeFromGRPC(t.NodeType),
+		Subject:  relationtuple.SubjectFromGRPC(t.Subject),
+		Children: children,
+	}
+}
+
+func (t *Tree) String() string {
+	sub := t.Subject.String()
+
+	if t.Type == Leaf {
+		return fmt.Sprintf("☘ %s️", sub)
+	}
+
+	children := make([]string, len(t.Children))
+	for i, c := range t.Children {
+		children[i] = strings.Join(strings.Split(c.String(), "\n"), "\n│  ")
+	}
+
+	return fmt.Sprintf("∪ %s\n├─ %s", sub, strings.Join(children, "\n├─ "))
 }

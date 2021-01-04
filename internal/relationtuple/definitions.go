@@ -61,6 +61,12 @@ type (
 		Relation  string  `json:"relation"`
 		Subject   Subject `json:"subject"`
 	}
+	TupleData interface {
+		GetSubject() *acl.Subject
+		GetObject() string
+		GetNamespace() string
+		GetRelation() string
+	}
 )
 
 var (
@@ -226,11 +232,11 @@ func (r *InternalRelationTuple) MarshalJSON() ([]byte, error) {
 	return sjson.SetBytes(enc, "subject", r.Subject.String())
 }
 
-func (r *InternalRelationTuple) FromGRPC(gr *acl.RelationTuple) *InternalRelationTuple {
-	r.Subject = SubjectFromGRPC(gr.Subject)
-	r.Object = gr.Object
-	r.Namespace = gr.Namespace
-	r.Relation = gr.Relation
+func (r *InternalRelationTuple) FromDataProvider(d TupleData) *InternalRelationTuple {
+	r.Subject = SubjectFromGRPC(d.GetSubject())
+	r.Object = d.GetObject()
+	r.Namespace = d.GetNamespace()
+	r.Relation = d.GetRelation()
 
 	return r
 }
@@ -330,7 +336,7 @@ func (r *InternalRelationTuple) Header() []string {
 	}
 }
 
-func (r *InternalRelationTuple) Fields() []string {
+func (r *InternalRelationTuple) Columns() []string {
 	return []string{
 		r.Namespace,
 		r.Object,
@@ -343,13 +349,13 @@ func (r *InternalRelationTuple) Interface() interface{} {
 	return r
 }
 
-func NewGRPCRelationCollection(rels []*acl.RelationTuple) cmdx.OutputCollection {
+func NewGRPCRelationCollection(rels []*acl.RelationTuple) cmdx.Table {
 	return &relationCollection{
 		grpcRelations: rels,
 	}
 }
 
-func NewRelationCollection(rels []*InternalRelationTuple) cmdx.OutputCollection {
+func NewRelationCollection(rels []*InternalRelationTuple) cmdx.Table {
 	return &relationCollection{
 		internalRelations: rels,
 	}
@@ -367,7 +373,7 @@ func (r *relationCollection) Header() []string {
 func (r *relationCollection) Table() [][]string {
 	if r.internalRelations == nil {
 		for _, rel := range r.grpcRelations {
-			r.internalRelations = append(r.internalRelations, (&InternalRelationTuple{}).FromGRPC(rel))
+			r.internalRelations = append(r.internalRelations, (&InternalRelationTuple{}).FromDataProvider(rel))
 		}
 	}
 
@@ -386,7 +392,7 @@ func (r *relationCollection) Interface() interface{} {
 	if r.internalRelations == nil {
 		r.internalRelations = make([]*InternalRelationTuple, len(r.grpcRelations))
 		for i, rel := range r.grpcRelations {
-			r.internalRelations[i] = (&InternalRelationTuple{}).FromGRPC(rel)
+			r.internalRelations[i] = (&InternalRelationTuple{}).FromDataProvider(rel)
 		}
 	}
 	return r.internalRelations

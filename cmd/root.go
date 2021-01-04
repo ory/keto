@@ -22,6 +22,8 @@ import (
 	"path/filepath"
 	"runtime"
 
+	"github.com/ory/keto/cmd/expand"
+
 	"github.com/ory/keto/cmd/check"
 
 	"github.com/ory/keto/cmd/server"
@@ -50,6 +52,7 @@ func NewRootCmd() *cobra.Command {
 	migrate.RegisterCommandsRecursive(cmd)
 	server.RegisterCommandsRecursive(cmd)
 	check.RegisterCommandsRecursive(cmd)
+	expand.RegisterCommandsRecursive(cmd)
 
 	cmd.AddCommand(cmdx.Version(&config.Version, &config.Commit, &config.Date))
 

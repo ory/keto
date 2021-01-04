@@ -3,12 +3,14 @@ package e2e
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"strconv"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
+	cliexpand "github.com/ory/keto/cmd/expand"
 	clirelationtuple "github.com/ory/keto/cmd/relationtuple"
 
 	"github.com/ory/x/cmdx"
@@ -60,6 +62,8 @@ func (g *grpcClient) check(t *testing.T, r *relationtuple.InternalRelationTuple)
 }
 
 func (g *grpcClient) expand(t *testing.T, r *relationtuple.SubjectSet, depth int) *expand.Tree {
-	t.SkipNow()
-	return nil
+	out := g.c.ExecNoErr(t, "expand", r.Relation, r.Namespace, r.Object, "--"+cliexpand.FlagMaxDepth, fmt.Sprintf("%d", depth), "--"+cmdx.FlagFormat, string(cmdx.FormatJSON))
+	res := expand.Tree{}
+	require.NoError(t, json.Unmarshal([]byte(out), &res))
+	return &res
 }

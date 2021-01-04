@@ -84,6 +84,9 @@ on configuration options, open the configuration documentation:
 				checkS := check.NewGRPCServer(reg)
 				acl.RegisterCheckServiceServer(grpcServer, checkS)
 
+				expandS := expand.NewGRPCServer(reg)
+				acl.RegisterExpandServiceServer(grpcServer, expandS)
+
 				reg.Logger().WithField("addr", lis.Addr().String()).Info("serving GRPC")
 				if err := grpcServer.Serve(lis); err != nil {
 					_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "%+v\n", err)
