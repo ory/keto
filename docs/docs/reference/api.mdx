@@ -1098,12 +1098,12 @@ Control Policy (OACP) by using the Role ID as subject in the OACP.
 
 Status Code **200**
 
-| Name          | Type                                                              | Required | Restrictions | Description                                                                                                                                                                  |
-| ------------- | ----------------------------------------------------------------- | -------- | ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| _anonymous_   | [[oryAccessControlPolicyRole](#schemaoryaccesscontrolpolicyrole)] | false    | none         | [oryAccessControlPolicyRole represents a group of users that share the same role. A role could be an administrator, a moderator, a regular user or some other sort of role.] |
-| » description | string                                                            | false    | none         | Description is the description of the role.                                                                                                                                  |
-| » id          | string                                                            | false    | none         | ID is the role's unique id.                                                                                                                                                  |
-| » members     | [string]                                                          | false    | none         | Members is who belongs to the role.                                                                                                                                          |
+| Name          | Type                                                              | Required | Restrictions | Description                                                                                                                                                                      |
+| ------------- | ----------------------------------------------------------------- | -------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| _anonymous_   | [[oryAccessControlPolicyRole](#schemaoryaccesscontrolpolicyrole)] | false    | none         | [oryAccessControlPolicyRole represents a group of users that share the same role. A role could be an administrator, a moderator, a regular<br/>user or some other sort of role.] |
+| » description | string                                                            | false    | none         | Description is the description of the role.                                                                                                                                      |
+| » id          | string                                                            | false    | none         | ID is the role's unique id.                                                                                                                                                      |
+| » members     | [string]                                                          | false    | none         | Members is who belongs to the role.                                                                                                                                              |
 
 Status Code **500**
 
