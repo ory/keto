@@ -498,6 +498,54 @@ The following access request would be denied.
 }
 ```
 
+### Time Interval Condition
+
+This condition check if a request is within some predefined interval. It accepts any number interval [after, before).
+
+```json
+{
+  "description": "",
+  "subjects": ["users:maria"],
+  "actions": ["delete", "create", "update"],
+  "effect": "allow",
+  "resources": ["resources:articles:12345"],
+  "conditions": {
+    "time": {
+      "type": "TimeInterval",
+      "options": {
+        "after": 1609849662,
+        "before": 1641297702
+      }
+    }
+  }
+}
+```
+The following access request would be allowed.
+
+```json
+{
+  "subject": "users:maria",
+  "action": "delete",
+  "resource": "resources:articles:12345",
+  "context": {
+    "time": 1635683314
+  }
+}
+```
+
+The following access request would be denied.
+
+```json
+{
+  "subject": "users:maria",
+  "action": "delete",
+  "resource": "resources:articles:12345",
+  "context": {
+    "time": 1609000000
+  }
+}
+```
+
 ## Roles
 
 Similar to RBAC, ORY ACPs support the concept of roles. This feature allows
