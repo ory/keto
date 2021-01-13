@@ -7,6 +7,11 @@
     "namespace": {
       "type": "object",
       "properties": {
+        "$schema": {
+          "type": "string",
+          "format": "uri",
+          "description": "Add this to allow defining the schema, useful for IDE integration"
+        },
         "name": {
           "type": "string",
           "title": "The name of the namespace.",

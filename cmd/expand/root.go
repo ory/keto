@@ -2,6 +2,7 @@ package expand
 
 import (
 	"fmt"
+	"github.com/ory/x/flagx"
 
 	"github.com/ory/x/cmdx"
 	"github.com/spf13/cobra"
@@ -48,6 +49,10 @@ func NewExpandCmd() *cobra.Command {
 			}
 
 			cmdx.PrintJSONAble(cmd, expand.TreeFromGRPC(resp.Tree))
+			switch flagx.MustGetString(cmd, cmdx.FlagFormat) {
+			case string(cmdx.FormatDefault), "":
+				_, _ = fmt.Fprintln(cmd.OutOrStdout())
+			}
 			return nil
 		},
 	}

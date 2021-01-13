@@ -1,0 +1,6 @@
+{
+  "namespace": "videos",
+  "object": "/cats/2.mp4",
+  "relation": "owner",
+  "subject": "videos:/cats#owner"
+}

@@ -28,7 +28,7 @@ require (
 	github.com/ory/graceful v0.1.1
 	github.com/ory/herodot v0.9.1
 	github.com/ory/jsonschema/v3 v3.0.1
-	github.com/ory/x v0.0.171
+	github.com/ory/x v0.0.175
 	github.com/pelletier/go-toml v1.8.0
 	github.com/pkg/errors v0.9.1
 	github.com/rs/cors v1.6.0

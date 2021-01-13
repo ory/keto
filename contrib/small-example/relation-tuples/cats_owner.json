@@ -1,0 +1,6 @@
+{
+  "namespace": "videos",
+  "object": "/cats",
+  "relation": "owner",
+  "subject": "cat lady"
+}

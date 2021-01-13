@@ -381,7 +381,7 @@ func (r *relationCollection) Table() [][]string {
 	for i, rel := range r.internalRelations {
 		data[i] = []string{rel.Namespace, rel.Object, rel.Relation, cmdx.None}
 		if rel.Subject != nil {
-			data[i][1] = rel.Subject.String()
+			data[i][3] = rel.Subject.String()
 		}
 	}
 

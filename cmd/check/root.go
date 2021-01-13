@@ -35,7 +35,7 @@ func newCheckCmd() *cobra.Command {
 				return err
 			}
 
-			_, _ = fmt.Fprintf(cmd.OutOrStdout(), "%v", resp.Allowed)
+			_, _ = fmt.Fprintf(cmd.OutOrStdout(), "%v\n", resp.Allowed)
 			return nil
 		},
 	}
