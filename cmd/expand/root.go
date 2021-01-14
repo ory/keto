@@ -2,6 +2,7 @@ package expand
 
 import (
 	"fmt"
+
 	"github.com/ory/x/flagx"
 
 	"github.com/ory/x/cmdx"

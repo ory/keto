@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"strconv"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -56,7 +57,7 @@ func (g *grpcClient) queryTuple(t *testing.T, q *relationtuple.RelationQuery) []
 
 func (g *grpcClient) check(t *testing.T, r *relationtuple.InternalRelationTuple) bool {
 	out := g.c.ExecNoErr(t, "check", r.Subject.String(), r.Relation, r.Namespace, r.Object)
-	res, err := strconv.ParseBool(out)
+	res, err := strconv.ParseBool(strings.TrimSpace(out))
 	require.NoError(t, err)
 	return res
 }
