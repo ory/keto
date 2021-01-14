@@ -44,10 +44,10 @@ Something is not working.
 - [ ] Unable to create relations using REST API and string notation
       ([keto#293](https://github.com/ory/keto/issues/293)) -
       [@Patrik](https://github.com/zepatrik)
-- [ ] Replace in-memory persister with SQLite schema
+- [x] Replace in-memory persister with SQLite schema
       ([keto#294](https://github.com/ory/keto/issues/294)) -
       [@Patrik](https://github.com/zepatrik)
-- [ ] Write GRPC handler and tests for check engine
+- [x] Write GRPC handler and tests for check engine
       ([keto#296](https://github.com/ory/keto/issues/296)) -
       [@Patrik](https://github.com/zepatrik),
       [@Robin Brämer](https://github.com/robinbraemer)
@@ -61,20 +61,20 @@ New feature or request.
 - [ ] [next-gen] Allow defining userset rewrites
       ([keto#263](https://github.com/ory/keto/issues/263)) -
       [@Patrik](https://github.com/zepatrik)
-- [ ] Write relationtuple tests for http and grpc handlers
-      ([keto#297](https://github.com/ory/keto/issues/297)) -
-      [@Patrik](https://github.com/zepatrik),
-      [@Robin Brämer](https://github.com/robinbraemer)
 - [ ] Ensure telemetry is running for both GRPC and HTTP
       ([keto#298](https://github.com/ory/keto/issues/298)) -
       [@hackerman](https://github.com/aeneasr),
       [@Patrik](https://github.com/zepatrik),
       [@Robin Brämer](https://github.com/robinbraemer)
-- [ ] Define and architect SQL schema and queries for querying relations
-      ([keto#300](https://github.com/ory/keto/issues/300)) -
-      [@Patrik](https://github.com/zepatrik)
 - [ ] Namespace configuration
       ([keto#303](https://github.com/ory/keto/issues/303)) -
+      [@Patrik](https://github.com/zepatrik)
+- [x] Write relationtuple tests for http and grpc handlers
+      ([keto#297](https://github.com/ory/keto/issues/297)) -
+      [@Patrik](https://github.com/zepatrik),
+      [@Robin Brämer](https://github.com/robinbraemer)
+- [x] Define and architect SQL schema and queries for querying relations
+      ([keto#300](https://github.com/ory/keto/issues/300)) -
       [@Patrik](https://github.com/zepatrik)
 
 ### [Blocking](https://github.com/ory/keto/labels/blocking)
@@ -88,11 +88,11 @@ Blocks milestones or other issues or pulls.
       [@hackerman](https://github.com/aeneasr),
       [@Patrik](https://github.com/zepatrik),
       [@Robin Brämer](https://github.com/robinbraemer)
-- [ ] Define and architect SQL schema and queries for querying relations
-      ([keto#300](https://github.com/ory/keto/issues/300)) -
-      [@Patrik](https://github.com/zepatrik)
 - [ ] Namespace configuration
       ([keto#303](https://github.com/ory/keto/issues/303)) -
+      [@Patrik](https://github.com/zepatrik)
+- [x] Define and architect SQL schema and queries for querying relations
+      ([keto#300](https://github.com/ory/keto/issues/300)) -
       [@Patrik](https://github.com/zepatrik)
 
 #### Pull Requests
