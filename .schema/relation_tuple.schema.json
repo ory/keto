@@ -1,0 +1,41 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["namespace", "relation", "object", "subject"],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "format": "uri-reference",
+      "description": "Add this to allow defining the schema, useful for IDE integration"
+    },
+    "namespace": {
+      "type": "string",
+      "description": "The namespace of the object and relation in this tuple."
+    },
+    "relation": {
+      "type": "string",
+      "description": "The relation of the object and subject."
+    },
+    "object": {
+      "type": "string",
+      "description": "The object affected by this relation."
+    },
+    "subject": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^.*:.*#.*$",
+          "description": "The subject set affected by this relation. Uses the encoding of \"<namespace>:<object>#<relation>\"."
+        },
+        {
+          "type": "string",
+          "description": "The subject affected by this relation. Use \"<namespace>:<object>#<relation>\" to describe a subject set.",
+          "not": {
+            "pattern": "^.*:.*#.*$"
+          }
+        }
+      ]
+    }
+  }
+}

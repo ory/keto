@@ -9,7 +9,7 @@
       "properties": {
         "$schema": {
           "type": "string",
-          "format": "uri",
+          "format": "uri-reference",
           "description": "Add this to allow defining the schema, useful for IDE integration"
         },
         "name": {

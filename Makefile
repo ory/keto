@@ -66,6 +66,12 @@ docker: deps
 		rm keto
 		rm pkged.go
 
+.PHONY: build
+build: deps
+		pkger
+		go build -tags sqlite
+		rm pkged.go
+
 #
 # Generate APIs and client stubs from the definitions
 #
