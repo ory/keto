@@ -1,5 +1,6 @@
 ---
-id: cat-videos-example title: Cat Videos Application Example
+id: cat-videos-example
+title: Cat Videos Application Example
 ---
 
 This example describes a video sharing service. Videos are organized in
@@ -12,22 +13,13 @@ interprets the special `*` user ID as any user (even anonymous). Note that Ory
 Keto does not interpret this subject any different from other subjects. It also
 does not know anything about directory structures or induced ownership.
 
-## State of the System
-
-At the current state only one user (with the username `cat lady`) has added
-videos. Both of them are in the `/cats` directory which `cat lady` owns.
-`/cats/1.mp4` is viewable by anyone (`*`), while `/cats/2.mp4` has no extra
-sharing options and can therefore only be viewed by its owner, `cat lady`. Have
-a look at all the relation tuple definitions in the
-`contrib/cat-videos-example/relation-tuples` directory.
-
 ## Starting the Example
 
 First, [install Keto](../install.md).
 
 Now you can start the example using either `docker-compose` or a bash script.
-The bash script will require you to install or build Keto, while docker
-automatically gets the required containers.
+The bash script requires you to have the `keto` binary in your `$PATH`, while
+docker automatically gets the required images.
 
 ```shell
 # clone the repository if you don't have it yet
@@ -35,9 +27,9 @@ git clone git@github.com:ory/keto.git && cd keto
 
 docker-compose -f contrib/cat-videos-example/docker-compose.yml up
 # or
-make build && ./contrib/cat-videos-example/up.sh
+./contrib/cat-videos-example/up.sh
 
-# output:
+# output: all initially created relation tuples
 
 # NAMESPACE       OBJECT          RELATION NAME   SUBJECT
 # videos          /cats/1.mp4     owner           videos:/cats#owner
@@ -49,14 +41,36 @@ make build && ./contrib/cat-videos-example/up.sh
 # videos          /cats           view            videos:/cats#owner
 ```
 
+## State of the System
+
+At the current state only one user (with the username `cat lady`) has added
+videos. Both of them are in the `/cats` directory which `cat lady` owns.
+`/cats/1.mp4` is viewable by anyone (`*`), while `/cats/2.mp4` has no extra
+sharing options and can therefore only be viewed by its owner, `cat lady`. Have
+a look at all the relation tuple definitions in the
+`contrib/cat-videos-example/relation-tuples` directory.
+
 ## Simulating the Client
+
+:::info
+
+If you want to run the Keto CLI within **Docker**, set the alias
+
+```shell
+alias keto="docker run -it --network cat-videos-example_default -e KETO_GRPC_URL=\"keto:4467\" oryd/keto:latest"
+```
+
+for your current terminal session.
+
+:::
 
 Now you can open a second terminal to run the queries against, just like the
 video service client would do. We will use the Keto CLI client in this example,
 but you can also use a tool like `curl` or [Postman](https://www.postman.com/)
-with Keto's REST API to achieve the same result.
+with [Keto's REST API](../reference/api.mdx) to achieve the same result.
 
-Set the remote endpoint so that the Keto CLI knows where to connect to:
+Set the remote endpoint so that the Keto CLI knows where to connect to (not
+applicable if using Docker, see info box above):
 
 ```shell
 export KETO_GRPC_URL="127.0.0.1:4467"
