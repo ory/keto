@@ -52,6 +52,11 @@ a look at all the relation tuple definitions in the
 
 ## Simulating the Client
 
+Now you can open a second terminal to run the queries against, just like the
+video service client would do. We will use the Keto CLI client in this example,
+but you can also use a tool like `curl` or [Postman](https://www.postman.com/)
+with [Keto's REST API](../reference/api.mdx) to achieve the same result.
+
 :::info
 
 If you want to run the Keto CLI within **Docker**, set the alias
@@ -60,17 +65,12 @@ If you want to run the Keto CLI within **Docker**, set the alias
 alias keto="docker run -it --network cat-videos-example_default -e KETO_GRPC_URL=\"keto:4467\" oryd/keto:latest"
 ```
 
-for your current terminal session.
+in your terminal session.
 
 :::
 
-Now you can open a second terminal to run the queries against, just like the
-video service client would do. We will use the Keto CLI client in this example,
-but you can also use a tool like `curl` or [Postman](https://www.postman.com/)
-with [Keto's REST API](../reference/api.mdx) to achieve the same result.
-
 Set the remote endpoint so that the Keto CLI knows where to connect to (not
-applicable if using Docker, see info box above):
+necessary if using Docker):
 
 ```shell
 export KETO_GRPC_URL="127.0.0.1:4467"
