@@ -58,14 +58,6 @@ sdk: deps
 		swagger generate client -f ./.schema/api.swagger.json -t internal/httpclient -A Ory_Keto
 		make format
 
-.PHONY: docker
-docker: deps
-		pkger
-		GO111MODULE=on GOOS=linux GOARCH=amd64 go build -tags sqlite
-		docker build -t oryd/keto:latest .
-		rm keto
-		rm pkged.go
-
 .PHONY: build
 build: deps
 		pkger
