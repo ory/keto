@@ -18,7 +18,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type WriteServiceClient interface {
 	// Writes one or more relation tuples in a single transaction.
-	WriteRelationTuples(ctx context.Context, in *WriteRelationTuplesRequest, opts ...grpc.CallOption) (*WriteRelationTuplesResponse, error)
+	TransactRelationTuples(ctx context.Context, in *TransactRelationTuplesRequest, opts ...grpc.CallOption) (*TransactRelationTuplesResponse, error)
 }
 
 type writeServiceClient struct {
@@ -29,9 +29,9 @@ func NewWriteServiceClient(cc grpc.ClientConnInterface) WriteServiceClient {
 	return &writeServiceClient{cc}
 }
 
-func (c *writeServiceClient) WriteRelationTuples(ctx context.Context, in *WriteRelationTuplesRequest, opts ...grpc.CallOption) (*WriteRelationTuplesResponse, error) {
-	out := new(WriteRelationTuplesResponse)
-	err := c.cc.Invoke(ctx, "/keto.acl.v1alpha1.WriteService/WriteRelationTuples", in, out, opts...)
+func (c *writeServiceClient) TransactRelationTuples(ctx context.Context, in *TransactRelationTuplesRequest, opts ...grpc.CallOption) (*TransactRelationTuplesResponse, error) {
+	out := new(TransactRelationTuplesResponse)
+	err := c.cc.Invoke(ctx, "/keto.acl.v1alpha1.WriteService/TransactRelationTuples", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -43,15 +43,15 @@ func (c *writeServiceClient) WriteRelationTuples(ctx context.Context, in *WriteR
 // for forward compatibility
 type WriteServiceServer interface {
 	// Writes one or more relation tuples in a single transaction.
-	WriteRelationTuples(context.Context, *WriteRelationTuplesRequest) (*WriteRelationTuplesResponse, error)
+	TransactRelationTuples(context.Context, *TransactRelationTuplesRequest) (*TransactRelationTuplesResponse, error)
 }
 
 // UnimplementedWriteServiceServer should be embedded to have forward compatible implementations.
 type UnimplementedWriteServiceServer struct {
 }
 
-func (UnimplementedWriteServiceServer) WriteRelationTuples(context.Context, *WriteRelationTuplesRequest) (*WriteRelationTuplesResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method WriteRelationTuples not implemented")
+func (UnimplementedWriteServiceServer) TransactRelationTuples(context.Context, *TransactRelationTuplesRequest) (*TransactRelationTuplesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TransactRelationTuples not implemented")
 }
 
 // UnsafeWriteServiceServer may be embedded to opt out of forward compatibility for this service.
@@ -65,20 +65,20 @@ func RegisterWriteServiceServer(s grpc.ServiceRegistrar, srv WriteServiceServer)
 	s.RegisterService(&_WriteService_serviceDesc, srv)
 }
 
-func _WriteService_WriteRelationTuples_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(WriteRelationTuplesRequest)
+func _WriteService_TransactRelationTuples_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TransactRelationTuplesRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(WriteServiceServer).WriteRelationTuples(ctx, in)
+		return srv.(WriteServiceServer).TransactRelationTuples(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/keto.acl.v1alpha1.WriteService/WriteRelationTuples",
+		FullMethod: "/keto.acl.v1alpha1.WriteService/TransactRelationTuples",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(WriteServiceServer).WriteRelationTuples(ctx, req.(*WriteRelationTuplesRequest))
+		return srv.(WriteServiceServer).TransactRelationTuples(ctx, req.(*TransactRelationTuplesRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -88,8 +88,8 @@ var _WriteService_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*WriteServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "WriteRelationTuples",
-			Handler:    _WriteService_WriteRelationTuples_Handler,
+			MethodName: "TransactRelationTuples",
+			Handler:    _WriteService_TransactRelationTuples_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

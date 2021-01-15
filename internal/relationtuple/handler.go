@@ -18,10 +18,10 @@ type (
 		x.LoggerProvider
 		x.WriterProvider
 	}
-	handler struct {
+	restHandler struct {
 		d handlerDeps
 	}
-	GRPCServer struct {
+	grpcHandler struct {
 		d handlerDeps
 	}
 )
@@ -30,24 +30,24 @@ const (
 	RouteBase = "/relationtuple"
 )
 
-func NewHandler(d handlerDeps) *handler {
-	return &handler{
+func NewHandler(d handlerDeps) *restHandler {
+	return &restHandler{
 		d: d,
 	}
 }
 
-func NewGRPCServer(d handlerDeps) *GRPCServer {
-	return &GRPCServer{
+func NewGRPCServer(d handlerDeps) *grpcHandler {
+	return &grpcHandler{
 		d: d,
 	}
 }
 
-func (h *handler) RegisterPublicRoutes(router *httprouter.Router) {
+func (h *restHandler) RegisterPublicRoutes(router *httprouter.Router) {
 	router.GET(RouteBase, h.getRelations)
 	router.PUT(RouteBase, h.createRelation)
 }
 
-func (h *handler) getRelations(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+func (h *restHandler) getRelations(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	query, err := (&RelationQuery{}).FromURLQuery(r.URL.Query())
 	if err != nil {
 		h.d.Writer().WriteError(w, r, err)
@@ -68,7 +68,7 @@ func (h *handler) getRelations(w http.ResponseWriter, r *http.Request, _ httprou
 	h.d.Writer().Write(w, r, resp)
 }
 
-func (h *handler) createRelation(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+func (h *restHandler) createRelation(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	var rel InternalRelationTuple
 
 	if err := json.NewDecoder(r.Body).Decode(&rel); err != nil {
