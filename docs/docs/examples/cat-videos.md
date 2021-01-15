@@ -1,6 +1,5 @@
 ---
-id: cat-videos-example
-title: Cat Videos Application Example
+id: cat-videos-example title: Cat Videos Application Example
 ---
 
 This example describes a video sharing service. Videos are organized in
@@ -24,9 +23,11 @@ a look at all the relation tuple definitions in the
 
 ## Starting the Example
 
-Either using `docker-compose` or a bash script. The bash script will require you
-to install or build Keto, while docker automatically gets the required
-containers.
+First, [install Keto](../install.md).
+
+Now you can start the example using either `docker-compose` or a bash script.
+The bash script will require you to install or build Keto, while docker
+automatically gets the required containers.
 
 ```shell
 # clone the repository if you don't have it yet
