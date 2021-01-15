@@ -38,7 +38,7 @@ languages and published them on their respective package repositories:
 - [Python](https://pypi.org/project/ory-keto-client/)
 - [PHP](https://packagist.org/packages/ory/keto-client)
 - [Go](https://github.com/ory/keto-client-go)
-- [NodeJS](https://www.npmjs.com/package/@oryd/keto-client) (with TypeScript)
+- [NodeJS](https://www.npmjs.com/package/oryd/keto-client) (with TypeScript)
 - [Java](https://search.maven.org/artifact/sh.ory.keto/keto-client)
 - [Ruby](https://rubygems.org/gems/ory-keto-client)
 
