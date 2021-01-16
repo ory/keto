@@ -66,7 +66,7 @@ func (t *NodeType) UnmarshalJSON(v []byte) error {
 	return nil
 }
 
-func (t NodeType) ToGRPC() acl.NodeType {
+func (t NodeType) ToProto() acl.NodeType {
 	switch t {
 	case Leaf:
 		return acl.NodeType_NODE_TYPE_LEAF
@@ -80,7 +80,7 @@ func (t NodeType) ToGRPC() acl.NodeType {
 	return acl.NodeType_NODE_TYPE_UNSPECIFIED
 }
 
-func NodeTypeFromGRPC(t acl.NodeType) NodeType {
+func NodeTypeFromProto(t acl.NodeType) NodeType {
 	switch t {
 	case acl.NodeType_NODE_TYPE_LEAF:
 		return Leaf
@@ -118,42 +118,42 @@ func (t *Tree) UnmarshalJSON(v []byte) error {
 	return nil
 }
 
-func (t *Tree) ToGRPC() *acl.SubjectTree {
+func (t *Tree) ToProto() *acl.SubjectTree {
 	if t.Type == Leaf {
 		return &acl.SubjectTree{
 			NodeType: acl.NodeType_NODE_TYPE_LEAF,
-			Subject:  t.Subject.ToGRPC(),
+			Subject:  t.Subject.ToProto(),
 		}
 	}
 
 	children := make([]*acl.SubjectTree, len(t.Children))
 	for i, c := range t.Children {
-		children[i] = c.ToGRPC()
+		children[i] = c.ToProto()
 	}
 
 	return &acl.SubjectTree{
-		NodeType: t.Type.ToGRPC(),
-		Subject:  t.Subject.ToGRPC(),
+		NodeType: t.Type.ToProto(),
+		Subject:  t.Subject.ToProto(),
 		Children: children,
 	}
 }
 
-func TreeFromGRPC(t *acl.SubjectTree) *Tree {
+func TreeFromProto(t *acl.SubjectTree) *Tree {
 	if t.NodeType == acl.NodeType_NODE_TYPE_LEAF {
 		return &Tree{
 			Type:    Leaf,
-			Subject: relationtuple.SubjectFromGRPC(t.Subject),
+			Subject: relationtuple.SubjectFromProto(t.Subject),
 		}
 	}
 
 	children := make([]*Tree, len(t.Children))
 	for i, c := range t.Children {
-		children[i] = TreeFromGRPC(c)
+		children[i] = TreeFromProto(c)
 	}
 
 	return &Tree{
-		Type:     NodeTypeFromGRPC(t.NodeType),
-		Subject:  relationtuple.SubjectFromGRPC(t.Subject),
+		Type:     NodeTypeFromProto(t.NodeType),
+		Subject:  relationtuple.SubjectFromProto(t.Subject),
 		Children: children,
 	}
 }

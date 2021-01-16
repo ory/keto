@@ -7,15 +7,15 @@ import (
 	"github.com/ory/keto/internal/x"
 )
 
-var _ acl.ReadServiceServer = &GRPCServer{}
+var _ acl.ReadServiceServer = &grpcHandler{}
 
-func (s GRPCServer) ListRelationTuples(ctx context.Context, req *acl.ListRelationTuplesRequest) (*acl.ListRelationTuplesResponse, error) {
+func (s *grpcHandler) ListRelationTuples(ctx context.Context, req *acl.ListRelationTuplesRequest) (*acl.ListRelationTuplesResponse, error) {
 	rels, nextPage, err := s.d.RelationTupleManager().GetRelationTuples(ctx,
 		&RelationQuery{
 			Namespace: req.Query.Namespace,
 			Object:    req.Query.Object,
 			Relation:  req.Query.Relation,
-			Subject:   SubjectFromGRPC(req.Query.Subject),
+			Subject:   SubjectFromProto(req.Query.Subject),
 		},
 		x.WithSize(uint(req.PageSize)),
 		x.WithToken(req.PageToken),
@@ -29,7 +29,7 @@ func (s GRPCServer) ListRelationTuples(ctx context.Context, req *acl.ListRelatio
 		NextPageToken:  nextPage,
 	}
 	for i, r := range rels {
-		resp.RelationTuples[i] = r.ToGRPC()
+		resp.RelationTuples[i] = r.ToProto()
 	}
 
 	return resp, nil

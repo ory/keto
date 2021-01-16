@@ -30,7 +30,7 @@ type (
 	}
 
 	relationCollection struct {
-		grpcRelations     []*acl.RelationTuple
+		protoRelations    []*acl.RelationTuple
 		internalRelations []*InternalRelationTuple
 	}
 	Subject interface {
@@ -39,7 +39,7 @@ type (
 		String() string
 		FromString(string) (Subject, error)
 		Equals(interface{}) bool
-		ToGRPC() *acl.Subject
+		ToProto() *acl.Subject
 	}
 	SubjectID struct {
 		ID string `json:"id"`
@@ -82,7 +82,7 @@ func SubjectFromString(s string) (Subject, error) {
 	return (&SubjectID{}).FromString(s)
 }
 
-func SubjectFromGRPC(gs *acl.Subject) Subject {
+func SubjectFromProto(gs *acl.Subject) Subject {
 	switch s := gs.GetRef().(type) {
 	case *acl.Subject_Id:
 		return &SubjectID{
@@ -149,7 +149,7 @@ func (s *SubjectSet) ToURLQuery() url.Values {
 	}
 }
 
-func (s *SubjectID) ToGRPC() *acl.Subject {
+func (s *SubjectID) ToProto() *acl.Subject {
 	return &acl.Subject{
 		Ref: &acl.Subject_Id{
 			Id: s.ID,
@@ -157,7 +157,7 @@ func (s *SubjectID) ToGRPC() *acl.Subject {
 	}
 }
 
-func (s *SubjectSet) ToGRPC() *acl.Subject {
+func (s *SubjectSet) ToProto() *acl.Subject {
 	return &acl.Subject{
 		Ref: &acl.Subject_Set{
 			Set: &acl.SubjectSet{
@@ -233,7 +233,7 @@ func (r *InternalRelationTuple) MarshalJSON() ([]byte, error) {
 }
 
 func (r *InternalRelationTuple) FromDataProvider(d TupleData) *InternalRelationTuple {
-	r.Subject = SubjectFromGRPC(d.GetSubject())
+	r.Subject = SubjectFromProto(d.GetSubject())
 	r.Object = d.GetObject()
 	r.Namespace = d.GetNamespace()
 	r.Relation = d.GetRelation()
@@ -241,12 +241,12 @@ func (r *InternalRelationTuple) FromDataProvider(d TupleData) *InternalRelationT
 	return r
 }
 
-func (r *InternalRelationTuple) ToGRPC() *acl.RelationTuple {
+func (r *InternalRelationTuple) ToProto() *acl.RelationTuple {
 	return &acl.RelationTuple{
 		Namespace: r.Namespace,
 		Object:    r.Object,
 		Relation:  r.Relation,
-		Subject:   r.Subject.ToGRPC(),
+		Subject:   r.Subject.ToProto(),
 	}
 }
 
@@ -275,12 +275,12 @@ func (r *InternalRelationTuple) ToURLQuery() url.Values {
 	}
 }
 
-func (q *RelationQuery) FromGRPC(query *acl.ListRelationTuplesRequest_Query) *RelationQuery {
+func (q *RelationQuery) FromProto(query *acl.ListRelationTuplesRequest_Query) *RelationQuery {
 	return &RelationQuery{
 		Namespace: query.Namespace,
 		Object:    query.Object,
 		Relation:  query.Relation,
-		Subject:   SubjectFromGRPC(query.Subject),
+		Subject:   SubjectFromProto(query.Subject),
 	}
 }
 
@@ -349,9 +349,9 @@ func (r *InternalRelationTuple) Interface() interface{} {
 	return r
 }
 
-func NewGRPCRelationCollection(rels []*acl.RelationTuple) cmdx.Table {
+func NewProtoRelationCollection(rels []*acl.RelationTuple) cmdx.Table {
 	return &relationCollection{
-		grpcRelations: rels,
+		protoRelations: rels,
 	}
 }
 
@@ -372,7 +372,7 @@ func (r *relationCollection) Header() []string {
 
 func (r *relationCollection) Table() [][]string {
 	if r.internalRelations == nil {
-		for _, rel := range r.grpcRelations {
+		for _, rel := range r.protoRelations {
 			r.internalRelations = append(r.internalRelations, (&InternalRelationTuple{}).FromDataProvider(rel))
 		}
 	}
@@ -390,8 +390,8 @@ func (r *relationCollection) Table() [][]string {
 
 func (r *relationCollection) Interface() interface{} {
 	if r.internalRelations == nil {
-		r.internalRelations = make([]*InternalRelationTuple, len(r.grpcRelations))
-		for i, rel := range r.grpcRelations {
+		r.internalRelations = make([]*InternalRelationTuple, len(r.protoRelations))
+		for i, rel := range r.protoRelations {
 			r.internalRelations[i] = (&InternalRelationTuple{}).FromDataProvider(rel)
 		}
 	}
@@ -400,5 +400,5 @@ func (r *relationCollection) Interface() interface{} {
 
 func (r *relationCollection) Len() int {
 	// one of them is zero so the sum is always correct
-	return len(r.grpcRelations) + len(r.internalRelations)
+	return len(r.protoRelations) + len(r.internalRelations)
 }

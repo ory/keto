@@ -47,7 +47,7 @@ func NewExpandCmd() *cobra.Command {
 				return cmdx.FailSilently(cmd)
 			}
 
-			cmdx.PrintJSONAble(cmd, expand.TreeFromGRPC(resp.Tree))
+			cmdx.PrintJSONAble(cmd, expand.TreeFromProto(resp.Tree))
 			return nil
 		},
 	}

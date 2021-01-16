@@ -47,11 +47,11 @@ func newCreateCmd() *cobra.Command {
 
 			cl := acl.NewWriteServiceClient(conn)
 
-			_, err = cl.WriteRelationTuples(cmd.Context(), &acl.WriteRelationTuplesRequest{
-				RelationTupleDeltas: []*acl.RelationTupleWriteDelta{
+			_, err = cl.TransactRelationTuples(cmd.Context(), &acl.TransactRelationTuplesRequest{
+				RelationTupleDeltas: []*acl.RelationTupleDelta{
 					{
-						Action:        acl.RelationTupleWriteDelta_INSERT,
-						RelationTuple: r.ToGRPC(),
+						Action:        acl.RelationTupleDelta_INSERT,
+						RelationTuple: r.ToProto(),
 					},
 				},
 			})
