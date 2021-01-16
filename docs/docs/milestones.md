@@ -202,10 +202,8 @@ A request for comments to discuss and share ideas.
 
 #### Issues
 
-- [ ] Design decisions, Clarifications and Proposals
-      ([keto#307](https://github.com/ory/keto/issues/307)) -
-      [@hackerman](https://github.com/aeneasr),
-      [@Patrik](https://github.com/zepatrik)
+- [ ] Distributed cache: loading and coordination
+      ([keto#312](https://github.com/ory/keto/issues/312))
 - [ ] Integrate Next Gen Keto with wider policy ecosystems / Open Policy Agent
       ([keto#318](https://github.com/ory/keto/issues/318)) -
       [@hackerman](https://github.com/aeneasr)
@@ -216,6 +214,10 @@ A request for comments to discuss and share ideas.
 - [ ] Allow modifying relation tuples with consistency guarantees
       ([keto#328](https://github.com/ory/keto/issues/328)) -
       [@Robin Brämer](https://github.com/robinbraemer)
+- [x] Design decisions, Clarifications and Proposals
+      ([keto#307](https://github.com/ory/keto/issues/307)) -
+      [@hackerman](https://github.com/aeneasr),
+      [@Patrik](https://github.com/zepatrik)
 
 ## [next](https://github.com/ory/keto/milestone/2)
 
