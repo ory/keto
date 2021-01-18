@@ -15,7 +15,7 @@ func newCheckCmd() *cobra.Command {
 		Use:  "check <subject> <relation> <namespace> <object>",
 		Args: cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			conn, err := client.GetGRPCConn(cmd)
+			conn, err := client.GetBasicConn(cmd)
 			if err != nil {
 				return err
 			}
@@ -40,7 +40,7 @@ func newCheckCmd() *cobra.Command {
 		},
 	}
 
-	client.RegisterRemoteURLFlag(cmd.Flags())
+	client.RegisterRemoteURLFlags(cmd.Flags())
 	cmdx.RegisterFormatFlags(cmd.Flags())
 
 	return cmd

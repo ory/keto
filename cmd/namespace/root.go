@@ -31,6 +31,6 @@ func RegisterCommandsRecursive(parent *cobra.Command) {
 }
 
 func registerPackageFlags(flags *pflag.FlagSet) {
-	client.RegisterRemoteURLFlag(flags)
+	client.RegisterRemoteURLFlags(flags)
 	cmdx.RegisterFormatFlags(flags)
 }

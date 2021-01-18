@@ -1,13 +1,7 @@
 package relationtuple
 
 import (
-	"encoding/json"
-	"net/http"
-
 	"github.com/julienschmidt/httprouter"
-	"github.com/pkg/errors"
-
-	"github.com/ory/herodot"
 
 	"github.com/ory/keto/internal/x"
 )
@@ -18,10 +12,7 @@ type (
 		x.LoggerProvider
 		x.WriterProvider
 	}
-	handler struct {
-		d handlerDeps
-	}
-	GRPCServer struct {
+	Handler struct {
 		d handlerDeps
 	}
 )
@@ -30,57 +21,25 @@ const (
 	RouteBase = "/relationtuple"
 )
 
-func NewHandler(d handlerDeps) *handler {
-	return &handler{
+func NewHandler(d handlerDeps) *Handler {
+	return &Handler{
 		d: d,
 	}
 }
 
-func NewGRPCServer(d handlerDeps) *GRPCServer {
-	return &GRPCServer{
-		d: d,
-	}
+func (h *Handler) registerBasicRoutes(r *httprouter.Router) {
+	r.GET(RouteBase, h.getRelations)
 }
 
-func (h *handler) RegisterPublicRoutes(router *httprouter.Router) {
-	router.GET(RouteBase, h.getRelations)
-	router.PUT(RouteBase, h.createRelation)
+func (h *Handler) registerPrivilegedRoutes(r *httprouter.Router) {
+	h.registerBasicRoutes(r)
+	r.PUT(RouteBase, h.createRelation)
 }
 
-func (h *handler) getRelations(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	query, err := (&RelationQuery{}).FromURLQuery(r.URL.Query())
-	if err != nil {
-		h.d.Writer().WriteError(w, r, err)
-		return
-	}
-
-	rels, nextPage, err := h.d.RelationTupleManager().GetRelationTuples(r.Context(), query)
-	if err != nil {
-		h.d.Writer().WriteError(w, r, err)
-		return
-	}
-
-	resp := map[string]interface{}{
-		"relations": rels,
-		"next_page": nextPage,
-	}
-
-	h.d.Writer().Write(w, r, resp)
+func (h *Handler) RegisterBasicRoutes(r *x.BasicRouter) {
+	h.registerBasicRoutes(r.Router)
 }
 
-func (h *handler) createRelation(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	var rel InternalRelationTuple
-
-	if err := json.NewDecoder(r.Body).Decode(&rel); err != nil {
-		h.d.Writer().WriteError(w, r, errors.WithStack(herodot.ErrBadRequest))
-		return
-	}
-
-	if err := h.d.RelationTupleManager().WriteRelationTuples(r.Context(), &rel); err != nil {
-		h.d.Logger().WithError(err).WithField("relationtuple", rel).Errorf("got an error while creating the relation tuple")
-		h.d.Writer().WriteError(w, r, errors.WithStack(herodot.ErrInternalServerError))
-		return
-	}
-
-	w.WriteHeader(http.StatusCreated)
+func (h *Handler) RegisterPrivilegedRoutes(r *x.PrivilegedRouter) {
+	h.registerPrivilegedRoutes(r.Router)
 }

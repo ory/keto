@@ -2,15 +2,18 @@ package relationtuple
 
 import (
 	"context"
+	"net/http"
+
+	"github.com/julienschmidt/httprouter"
 
 	acl "github.com/ory/keto/api/keto/acl/v1alpha1"
 	"github.com/ory/keto/internal/x"
 )
 
-var _ acl.ReadServiceServer = &GRPCServer{}
+var _ acl.ReadServiceServer = (*Handler)(nil)
 
-func (s GRPCServer) ListRelationTuples(ctx context.Context, req *acl.ListRelationTuplesRequest) (*acl.ListRelationTuplesResponse, error) {
-	rels, nextPage, err := s.d.RelationTupleManager().GetRelationTuples(ctx,
+func (h *Handler) ListRelationTuples(ctx context.Context, req *acl.ListRelationTuplesRequest) (*acl.ListRelationTuplesResponse, error) {
+	rels, nextPage, err := h.d.RelationTupleManager().GetRelationTuples(ctx,
 		&RelationQuery{
 			Namespace: req.Query.Namespace,
 			Object:    req.Query.Object,
@@ -33,4 +36,25 @@ func (s GRPCServer) ListRelationTuples(ctx context.Context, req *acl.ListRelatio
 	}
 
 	return resp, nil
+}
+
+func (h *Handler) getRelations(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	query, err := (&RelationQuery{}).FromURLQuery(r.URL.Query())
+	if err != nil {
+		h.d.Writer().WriteError(w, r, err)
+		return
+	}
+
+	rels, nextPage, err := h.d.RelationTupleManager().GetRelationTuples(r.Context(), query)
+	if err != nil {
+		h.d.Writer().WriteError(w, r, err)
+		return
+	}
+
+	resp := map[string]interface{}{
+		"relations": rels,
+		"next_page": nextPage,
+	}
+
+	h.d.Writer().Write(w, r, resp)
 }

@@ -20,31 +20,32 @@ type (
 		x.LoggerProvider
 		x.WriterProvider
 	}
-	restHandler struct {
-		d handlerDependencies
-	}
-	grpcHandler struct {
+	Handler struct {
 		d handlerDependencies
 	}
 )
 
-var _ acl.ExpandServiceServer = &grpcHandler{}
+var _ acl.ExpandServiceServer = (*Handler)(nil)
 
 const RouteBase = "/expand"
 
-func NewHandler(d handlerDependencies) *restHandler {
-	return &restHandler{d: d}
+func NewHandler(d handlerDependencies) *Handler {
+	return &Handler{d: d}
 }
 
-func NewGRPCServer(d handlerDependencies) *grpcHandler {
-	return &grpcHandler{d: d}
+func (h *Handler) registerBasicRoutes(r *httprouter.Router) {
+	r.GET(RouteBase, h.getExpand)
 }
 
-func (h *restHandler) RegisterPublicRoutes(router *httprouter.Router) {
-	router.GET(RouteBase, h.getCheck)
+func (h *Handler) RegisterBasicRoutes(r *x.BasicRouter) {
+	h.registerBasicRoutes(r.Router)
 }
 
-func (h *restHandler) getCheck(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+func (h *Handler) RegisterPrivilegedRoutes(r *x.PrivilegedRouter) {
+	h.registerBasicRoutes(r.Router)
+}
+
+func (h *Handler) getExpand(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	depth, err := strconv.ParseInt(r.URL.Query().Get("depth"), 0, 0)
 	if err != nil {
 		h.d.Writer().WriteError(w, r, err)
@@ -60,8 +61,8 @@ func (h *restHandler) getCheck(w http.ResponseWriter, r *http.Request, _ httprou
 	h.d.Writer().Write(w, r, res)
 }
 
-func (g *grpcHandler) Expand(ctx context.Context, req *acl.ExpandRequest) (*acl.ExpandResponse, error) {
-	tree, err := g.d.ExpandEngine().BuildTree(ctx,
+func (h *Handler) Expand(ctx context.Context, req *acl.ExpandRequest) (*acl.ExpandResponse, error) {
+	tree, err := h.d.ExpandEngine().BuildTree(ctx,
 		relationtuple.SubjectFromGRPC(req.Subject),
 		int(req.MaxDepth))
 	if err != nil {

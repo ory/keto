@@ -22,7 +22,7 @@ func newCreateCmd() *cobra.Command {
 		Use:  "create <relation-tuple.json>",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			conn, err := client.GetGRPCConn(cmd)
+			conn, err := client.GetPrivilegedConn(cmd)
 			if err != nil {
 				return err
 			}

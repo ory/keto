@@ -12,8 +12,8 @@ type Provider interface {
 	namespace.ManagerProvider
 
 	CORS() (cors.Options, bool)
-	RESTListenOn() string
-	GRPCListenOn() string
+	BasicListenOn() string
+	PrivilegedListenOn() string
 	DSN() string
 	TracingServiceName() string
 	TracingProvider() string

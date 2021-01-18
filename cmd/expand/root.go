@@ -18,7 +18,7 @@ func NewExpandCmd() *cobra.Command {
 		Use:  "expand <relation> <namespace> <object>",
 		Args: cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			conn, err := client.GetGRPCConn(cmd)
+			conn, err := client.GetBasicConn(cmd)
 			if err != nil {
 				return nil
 			}
@@ -52,7 +52,7 @@ func NewExpandCmd() *cobra.Command {
 		},
 	}
 
-	client.RegisterRemoteURLFlag(cmd.Flags())
+	client.RegisterRemoteURLFlags(cmd.Flags())
 	cmdx.RegisterJSONFormatFlags(cmd.Flags())
 	cmd.Flags().Int32P(FlagMaxDepth, "d", 100, "maximum depth of the tree")
 

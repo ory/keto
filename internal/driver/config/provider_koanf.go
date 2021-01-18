@@ -25,11 +25,11 @@ import (
 const (
 	KeyDSN = "dsn"
 
-	KeyRESTHost = "serve.rest.host"
-	KeyRESTPort = "serve.rest.port"
+	KeyBasicHost = "serve.basic.host"
+	KeyBasicPort = "serve.basic.port"
 
-	KeyGRPCHost = "serve.grpc.host"
-	KeyGRPCPort = "serve.grpc.port"
+	KeyPrivilegedHost = "serve.privileged.host"
+	KeyPrivilegedPort = "serve.privileged.port"
 
 	KeyNamespaces = "namespaces"
 )
@@ -107,19 +107,19 @@ func (k *KoanfProvider) Set(key string, v interface{}) error {
 	return nil
 }
 
-func (k *KoanfProvider) RESTListenOn() string {
+func (k *KoanfProvider) BasicListenOn() string {
 	return fmt.Sprintf(
 		"%s:%d",
-		k.p.StringF(KeyRESTHost, ""),
-		k.p.IntF(KeyRESTPort, 4466),
+		k.p.StringF(KeyBasicHost, ""),
+		k.p.IntF(KeyBasicPort, 4466),
 	)
 }
 
-func (k *KoanfProvider) GRPCListenOn() string {
+func (k *KoanfProvider) PrivilegedListenOn() string {
 	return fmt.Sprintf(
 		"%s:%d",
-		k.p.StringF(KeyGRPCHost, ""),
-		k.p.IntF(KeyGRPCPort, 4467),
+		k.p.StringF(KeyPrivilegedHost, ""),
+		k.p.IntF(KeyPrivilegedPort, 4467),
 	)
 }
 

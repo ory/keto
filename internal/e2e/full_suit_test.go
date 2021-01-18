@@ -100,6 +100,7 @@ func Test(t *testing.T) {
 			serverDoneChannel := make(chan struct{})
 			go func() {
 				cmdx.ExecNoErrCtx(serverCtx, t, cmd.NewRootCmd(), append(c.PersistentArgs, "serve")...)
+				t.Log("server stopped")
 				close(serverDoneChannel)
 			}()
 
@@ -111,8 +112,19 @@ func Test(t *testing.T) {
 				<-serverDoneChannel
 			}()
 
+			var healthReady = func() error {
+				ctx, cancel := context.WithTimeout(ctx, 2*time.Second)
+				defer cancel()
+
+				r, err := http.NewRequestWithContext(ctx, "GET", "http://127.0.0.1:4466"+healthx.ReadyCheckPath, nil)
+				if err != nil {
+					return err
+				}
+				_, err = http.DefaultClient.Do(r)
+				return err
+			}
 			// wait for /health/ready
-			for _, err := http.Get("http://127.0.0.1:4466" + healthx.ReadyCheckPath); err != nil; _, err = http.Get("http://127.0.0.1:4466" + healthx.ReadyCheckPath) {
+			for err := healthReady(); err != nil; err = healthReady() {
 				time.Sleep(10 * time.Millisecond)
 			}
 
@@ -122,14 +134,13 @@ func Test(t *testing.T) {
 				&grpcClient{c: &cmdx.CommandExecuter{
 					New:            cmd.NewRootCmd,
 					Ctx:            ctx,
-					PersistentArgs: []string{"--" + cliclient.FlagRemoteURL, "127.0.0.1:4467", "--" + cmdx.FlagFormat, string(cmdx.FormatJSON)},
+					PersistentArgs: []string{"--" + cliclient.FlagBasicRemote, "127.0.0.1:4466", "--" + cliclient.FlagPrivilegedRemote, "127.0.0.1:4467", "--" + cmdx.FlagFormat, string(cmdx.FormatJSON)},
 				}},
-				&restClient{baseURL: "http://127.0.0.1:4466"},
+				&restClient{
+					basicURL:      "http://127.0.0.1:4466",
+					privilegedURL: "http://127.0.0.1:4467",
+				},
 			} {
-				//// TODO remove once GRPC client and handler are implemented
-				//if i == 0 {
-				//	continue
-				//}
 				t.Run(fmt.Sprintf("client=%T", cl), runCases(cl, nspaces))
 			}
 		})
