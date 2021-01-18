@@ -14,7 +14,7 @@ import (
 
 var _ acl.WriteServiceServer = (*Handler)(nil)
 
-func tuplesWithAction(deltas []*acl.RelationTupleWriteDelta, action acl.RelationTupleWriteDelta_Action) (filtered []*InternalRelationTuple) {
+func tuplesWithAction(deltas []*acl.RelationTupleDelta, action acl.RelationTupleDelta_Action) (filtered []*InternalRelationTuple) {
 	for _, d := range deltas {
 		if d.Action == action {
 			filtered = append(
@@ -26,8 +26,8 @@ func tuplesWithAction(deltas []*acl.RelationTupleWriteDelta, action acl.Relation
 	return
 }
 
-func (h *Handler) WriteRelationTuples(ctx context.Context, req *acl.WriteRelationTuplesRequest) (*acl.WriteRelationTuplesResponse, error) {
-	insertTuples := tuplesWithAction(req.RelationTupleDeltas, acl.RelationTupleWriteDelta_INSERT)
+func (h *Handler) TransactRelationTuples(ctx context.Context, req *acl.TransactRelationTuplesRequest) (*acl.TransactRelationTuplesResponse, error) {
+	insertTuples := tuplesWithAction(req.RelationTupleDeltas, acl.RelationTupleDelta_INSERT)
 
 	err := h.d.RelationTupleManager().WriteRelationTuples(ctx, insertTuples...)
 	if err != nil {
@@ -38,7 +38,7 @@ func (h *Handler) WriteRelationTuples(ctx context.Context, req *acl.WriteRelatio
 	for i := range insertTuples {
 		snaptokens[i] = "not yet implemented"
 	}
-	return &acl.WriteRelationTuplesResponse{
+	return &acl.TransactRelationTuplesResponse{
 		Snaptokens: snaptokens,
 	}, nil
 }

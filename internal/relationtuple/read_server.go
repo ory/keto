@@ -18,7 +18,7 @@ func (h *Handler) ListRelationTuples(ctx context.Context, req *acl.ListRelationT
 			Namespace: req.Query.Namespace,
 			Object:    req.Query.Object,
 			Relation:  req.Query.Relation,
-			Subject:   SubjectFromGRPC(req.Query.Subject),
+			Subject:   SubjectFromProto(req.Query.Subject),
 		},
 		x.WithSize(uint(req.PageSize)),
 		x.WithToken(req.PageToken),
@@ -32,7 +32,7 @@ func (h *Handler) ListRelationTuples(ctx context.Context, req *acl.ListRelationT
 		NextPageToken:  nextPage,
 	}
 	for i, r := range rels {
-		resp.RelationTuples[i] = r.ToGRPC()
+		resp.RelationTuples[i] = r.ToProto()
 	}
 
 	return resp, nil

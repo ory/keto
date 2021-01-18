@@ -63,11 +63,11 @@ func (h *Handler) getExpand(w http.ResponseWriter, r *http.Request, _ httprouter
 
 func (h *Handler) Expand(ctx context.Context, req *acl.ExpandRequest) (*acl.ExpandResponse, error) {
 	tree, err := h.d.ExpandEngine().BuildTree(ctx,
-		relationtuple.SubjectFromGRPC(req.Subject),
+		relationtuple.SubjectFromProto(req.Subject),
 		int(req.MaxDepth))
 	if err != nil {
 		return nil, err
 	}
 
-	return &acl.ExpandResponse{Tree: tree.ToGRPC()}, nil
+	return &acl.ExpandResponse{Tree: tree.ToProto()}, nil
 }

@@ -46,7 +46,7 @@ func readQueryFromFlags(cmd *cobra.Command, namespace string) (*acl.ListRelation
 			return nil, err
 		}
 
-		query.Subject = s.ToGRPC()
+		query.Subject = s.ToProto()
 	}
 
 	return query, nil
@@ -78,7 +78,7 @@ func newGetCmd() *cobra.Command {
 				return err
 			}
 
-			cmdx.PrintTable(cmd, relationtuple.NewGRPCRelationCollection(resp.RelationTuples))
+			cmdx.PrintTable(cmd, relationtuple.NewProtoRelationCollection(resp.RelationTuples))
 			return nil
 		},
 	}
