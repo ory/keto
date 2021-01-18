@@ -4,10 +4,11 @@
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**
 
-- [Unreleased (2021-01-08)](#unreleased-2021-01-08)
+- [Unreleased (2021-01-18)](#unreleased-2021-01-18)
     - [Bug Fixes](#bug-fixes)
     - [Documentation](#documentation)
     - [Features](#features)
+    - [Unclassified](#unclassified)
   - [0.5.7-alpha.1 (2020-10-12)](#057-alpha1-2020-10-12)
   - [0.5.7-alpha.1.pre.0 (2020-10-12)](#057-alpha1pre0-2020-10-12)
     - [Bug Fixes](#bug-fixes-1)
@@ -36,49 +37,49 @@
     - [Bug Fixes](#bug-fixes-7)
     - [Documentation](#documentation-7)
     - [Features](#features-2)
-    - [Unclassified](#unclassified)
-  - [0.4.3-alpha.2 (2020-01-31)](#043-alpha2-2020-01-31)
     - [Unclassified](#unclassified-1)
-  - [0.4.3-alpha.1 (2020-01-23)](#043-alpha1-2020-01-23)
+  - [0.4.3-alpha.2 (2020-01-31)](#043-alpha2-2020-01-31)
     - [Unclassified](#unclassified-2)
-  - [0.4.2-alpha.1 (2020-01-14)](#042-alpha1-2020-01-14)
+  - [0.4.3-alpha.1 (2020-01-23)](#043-alpha1-2020-01-23)
     - [Unclassified](#unclassified-3)
-  - [0.4.1-beta.1 (2020-01-13)](#041-beta1-2020-01-13)
+  - [0.4.2-alpha.1 (2020-01-14)](#042-alpha1-2020-01-14)
     - [Unclassified](#unclassified-4)
-- [0.4.0-alpha.1 (2020-01-13)](#040-alpha1-2020-01-13)
+  - [0.4.1-beta.1 (2020-01-13)](#041-beta1-2020-01-13)
     - [Unclassified](#unclassified-5)
-  - [0.3.9-sandbox (2019-12-16)](#039-sandbox-2019-12-16)
+- [0.4.0-alpha.1 (2020-01-13)](#040-alpha1-2020-01-13)
     - [Unclassified](#unclassified-6)
-  - [0.3.7-sandbox (2019-12-11)](#037-sandbox-2019-12-11)
+  - [0.3.9-sandbox (2019-12-16)](#039-sandbox-2019-12-16)
     - [Unclassified](#unclassified-7)
-  - [0.3.6-sandbox (2019-10-16)](#036-sandbox-2019-10-16)
+  - [0.3.7-sandbox (2019-12-11)](#037-sandbox-2019-12-11)
     - [Unclassified](#unclassified-8)
+  - [0.3.6-sandbox (2019-10-16)](#036-sandbox-2019-10-16)
+    - [Unclassified](#unclassified-9)
   - [0.3.5-sandbox (2019-08-21)](#035-sandbox-2019-08-21)
     - [Documentation](#documentation-8)
-    - [Unclassified](#unclassified-9)
+    - [Unclassified](#unclassified-10)
   - [0.3.3-sandbox (2019-05-18)](#033-sandbox-2019-05-18)
     - [Documentation](#documentation-9)
   - [0.3.1-sandbox (2019-04-29)](#031-sandbox-2019-04-29)
     - [Documentation](#documentation-10)
-    - [Unclassified](#unclassified-10)
+    - [Unclassified](#unclassified-11)
 - [0.3.0-sandbox (2019-04-29)](#030-sandbox-2019-04-29)
     - [Documentation](#documentation-11)
-    - [Unclassified](#unclassified-11)
+    - [Unclassified](#unclassified-12)
   - [0.2.3-sandbox+oryOS.10 (2019-02-05)](#023-sandboxoryos10-2019-02-05)
     - [Documentation](#documentation-12)
-    - [Unclassified](#unclassified-12)
+    - [Unclassified](#unclassified-13)
   - [0.2.2-sandbox+oryOS.10 (2018-12-13)](#022-sandboxoryos10-2018-12-13)
   - [0.2.1-sandbox+oryOS.10 (2018-12-13)](#021-sandboxoryos10-2018-12-13)
 - [0.2.0-sandbox+oryOS.10 (2018-12-13)](#020-sandboxoryos10-2018-12-13)
     - [Documentation](#documentation-13)
-    - [Unclassified](#unclassified-13)
+    - [Unclassified](#unclassified-14)
   - [0.0.1 (2018-05-20)](#001-2018-05-20)
     - [Documentation](#documentation-14)
-    - [Unclassified](#unclassified-14)
+    - [Unclassified](#unclassified-15)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [Unreleased](https://github.com/ory/keto/compare/v0.5.7-alpha.1...148e6576bb4c84f17e43e644cbb85f3cf6c2c257) (2021-01-08)
+# [Unreleased](https://github.com/ory/keto/compare/v0.5.7-alpha.1...35c2d343e969812fa0b8e12cca60dc07e7e3b1a4) (2021-01-18)
 
 
 ### Bug Fixes
@@ -94,6 +95,7 @@
     > As such, in order to handle this, I needed to retrieve all the possible data, then run the filter on it. After running the filter on it, then I could shorten it by the pagination, in order to ensure that it did not return an empty array.
     > 
     > In addition, I also did a minor refactor on the tests, instead of duplicating all the Roles/Policies in `filter_helper_tests.go`, I simply referred to them from the already declared variable `rolReq` or `polReq` to ensure that updating the role or policy in one place would change across all the rests of the tests. In addition, I also changed the parameters from a `map[string][]string` into a structure, allowing me to specify the offset and limit I wanted to test for each case.
+* Revert sdk changes ([35c2d34](https://github.com/ory/keto/commit/35c2d343e969812fa0b8e12cca60dc07e7e3b1a4))
 
 
 ### Documentation
@@ -108,6 +110,11 @@
 ### Features
 
 * Condition time interval ([#386](https://github.com/ory/keto/issues/386)) ([148e657](https://github.com/ory/keto/commit/148e6576bb4c84f17e43e644cbb85f3cf6c2c257))
+
+
+### Unclassified
+
+* docs:fix npm links (#394) ([cce5058](https://github.com/ory/keto/commit/cce5058dadee997932df6f190e0b167251c41773)), closes [#394](https://github.com/ory/keto/issues/394)
 
 
 
