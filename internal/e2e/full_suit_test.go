@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"strings"
 	"testing"
 	"time"
 
@@ -48,9 +49,19 @@ func Test(t *testing.T) {
 			assert.Contains(t, out, "Applied")
 			assert.NotContains(t, out, "Pending")
 
+			nApplied := strings.Count(out, "Applied")
+			t.Cleanup(func() {
+				// migrate nApplied down
+				c.ExecNoErr(t, "migrate", "down", fmt.Sprintf("%d", nApplied))
+			})
+
 			for _, n := range nn {
 				out = c.ExecNoErr(t, "namespace", "migrate", "up", n.Name)
 				assert.Contains(t, out, "already migrated")
+
+				t.Cleanup(func() {
+					c.ExecNoErr(t, "namespace", "migrate", "down", n.Name, "1")
+				})
 			}
 		},
 	}}

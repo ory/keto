@@ -54,18 +54,19 @@ on configuration options, open the configuration documentation:
 				return err
 			}
 
-			eg, ctx := errgroup.WithContext(cmd.Context())
+			eg := &errgroup.Group{}
 
 			basicRouter, privilegedRouter := reg.BasicRouter().Router, reg.PrivilegedRouter().Router
 			basicGRPC, privilegedGRPC := reg.BasicGRPCServer(), reg.PrivilegedGRPCServer()
+
 			// basic port
 			eg.Go(func() error {
-				return multiplexPort(ctx, reg.Config().BasicListenOn(), basicRouter, basicGRPC)
+				return multiplexPort(cmd.Context(), reg.Config().BasicListenOn(), basicRouter, basicGRPC)
 			})
 
 			// privileged port
 			eg.Go(func() error {
-				return multiplexPort(ctx, reg.Config().PrivilegedListenOn(), privilegedRouter, privilegedGRPC)
+				return multiplexPort(cmd.Context(), reg.Config().PrivilegedListenOn(), privilegedRouter, privilegedGRPC)
 			})
 
 			return eg.Wait()
@@ -105,7 +106,7 @@ func multiplexPort(ctx context.Context, addr string, router *httprouter.Router, 
 		Handler: router,
 	})
 
-	eg, ctx := errgroup.WithContext(ctx)
+	eg := &errgroup.Group{}
 	ctx, cancel := context.WithCancel(ctx)
 
 	eg.Go(func() error {
@@ -133,12 +134,11 @@ func multiplexPort(ctx context.Context, addr string, router *httprouter.Router, 
 
 	eg.Go(func() error {
 		<-ctx.Done()
-		grpcS.GracefulStop()
-		return errors.WithStack(restS.Shutdown(context.Background()))
+		m.Close()
+		return nil
 	})
 
-	// ignore cmux.ErrListenerClosed because this always occurs on server shutdown
-	if err := eg.Wait(); !errors.Is(err, cmux.ErrListenerClosed) {
+	if err := eg.Wait(); !errors.Is(err, cmux.ErrServerClosed) {
 		return err
 	}
 	return nil

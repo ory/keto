@@ -4,6 +4,8 @@ replace google.golang.org/protobuf v1.25.1-0.20201020201750-d3470999428b => goog
 
 replace github.com/ory/x => github.com/ory/x v0.0.172-0.20210102140819-6d303ca968d8
 
+replace github.com/soheilhy/cmux => github.com/soheilhy/cmux v0.1.5-0.20210114230657-cdd3331e3e7c
+
 require (
 	github.com/HdrHistogram/hdrhistogram-go v1.0.1 // indirect
 	github.com/asaskevich/govalidator v0.0.0-20200428143746-21a406dcc535 // indirect
@@ -50,6 +52,7 @@ require (
 	google.golang.org/genproto v0.0.0-20201117123952-62d171c70ae1
 	google.golang.org/grpc v1.33.0
 	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.0.1
+	google.golang.org/grpc/examples v0.0.0-20210116000752-504caa93c539 // indirect
 	google.golang.org/protobuf v1.25.1-0.20201020201750-d3470999428b
 )
 
