@@ -16,7 +16,6 @@ package server
 
 import (
 	"context"
-	"fmt"
 	"net"
 	"net/http"
 	"os"
@@ -50,24 +49,23 @@ on configuration options, open the configuration documentation:
 
 >> https://github.com/ory/keto/blob/` + config.Version + `/docs/config.yaml <<`,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			ctx := cmd.Context()
-
-			reg, err := driver.NewDefaultRegistry(ctx, cmd.Flags())
+			reg, err := driver.NewDefaultRegistry(cmd.Context(), cmd.Flags())
 			if err != nil {
 				return err
 			}
 
-			// safe to ignore cancel here as the inner context is canceled whenever wait returns
-			eg, _ := errgroup.WithContext(cmd.Context())
+			eg, ctx := errgroup.WithContext(cmd.Context())
 
+			basicRouter, privilegedRouter := reg.BasicRouter().Router, reg.PrivilegedRouter().Router
+			basicGRPC, privilegedGRPC := reg.BasicGRPCServer(), reg.PrivilegedGRPCServer()
 			// basic port
 			eg.Go(func() error {
-				return multiplexPort(ctx, reg.Config().BasicListenOn(), reg.BasicRouter().Router, reg.BasicGRPCServer())
+				return multiplexPort(ctx, reg.Config().BasicListenOn(), basicRouter, basicGRPC)
 			})
 
 			// privileged port
 			eg.Go(func() error {
-				return multiplexPort(ctx, reg.Config().PrivilegedListenOn(), reg.PrivilegedRouter().Router, reg.PrivilegedGRPCServer())
+				return multiplexPort(ctx, reg.Config().PrivilegedListenOn(), privilegedRouter, privilegedGRPC)
 			})
 
 			return eg.Wait()
@@ -107,46 +105,37 @@ func multiplexPort(ctx context.Context, addr string, router *httprouter.Router, 
 		Handler: router,
 	})
 
-	var grpcErr, restErr error
+	eg, ctx := errgroup.WithContext(ctx)
+	ctx, cancel := context.WithCancel(ctx)
 
-	go func() {
-		if err := grpcS.Serve(grpcL); err != nil {
-			grpcErr = err
-			return
+	eg.Go(func() error {
+		return errors.WithStack(grpcS.Serve(grpcL))
+	})
+
+	eg.Go(func() error {
+		return errors.WithStack(restS.Serve(httpL))
+	})
+
+	eg.Go(func() error {
+		err := m.Serve()
+		if err != nil && !strings.Contains(err.Error(), "use of closed network connection") {
+			// unexpected error
+			return errors.WithStack(err)
 		}
-	}()
+		// trigger further shutdown
+		cancel()
+		return nil
+	})
 
-	go func() {
-		if err := restS.Serve(httpL); err != nil {
-			restErr = err
-			return
-		}
-	}()
-
-	go func() {
+	eg.Go(func() error {
 		<-ctx.Done()
-		// ctx is done already, so we need a new context
-		err := restS.Shutdown(context.Background())
-
-		if restErr != nil {
-			if err != nil {
-				restErr = errors.Wrap(restErr, err.Error())
-			}
-		} else {
-			restErr = err
-		}
-
 		grpcS.GracefulStop()
-	}()
+		return errors.WithStack(restS.Shutdown(context.Background()))
+	})
 
-	if err := m.Serve(); err != nil && !strings.Contains(err.Error(), "use of closed network connection") {
-		// unexpected error
+	// ignore cmux.ErrListenerClosed because this always occurs on server shutdown
+	if err := eg.Wait(); !errors.Is(err, cmux.ErrListenerClosed) {
 		return err
 	}
-
-	if grpcErr == nil && restErr == nil {
-		return nil
-	}
-
-	return fmt.Errorf("Addr: %s\nGRPC Error: %+v\nREST Error: %+v", addr, grpcErr, restErr)
+	return nil
 }

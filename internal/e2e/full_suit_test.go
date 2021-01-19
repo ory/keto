@@ -7,6 +7,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/stretchr/testify/require"
+
 	"github.com/ory/keto/internal/expand"
 
 	"github.com/ory/x/cmdx"
@@ -97,11 +99,13 @@ func Test(t *testing.T) {
 
 			// Start the server
 			serverCtx, serverCancel := context.WithCancel(ctx)
-			serverDoneChannel := make(chan struct{})
+			serverErr := make(chan error)
 			go func() {
-				cmdx.ExecNoErrCtx(serverCtx, t, cmd.NewRootCmd(), append(c.PersistentArgs, "serve")...)
-				t.Log("server stopped")
-				close(serverDoneChannel)
+				stdOut, stdErr, err := cmdx.ExecCtx(serverCtx, t, cmd.NewRootCmd(), nil, append(c.PersistentArgs, "serve")...)
+				if err != nil {
+					t.Logf("STD_OUT:\n%s\n\nSTD_ERR:\n%s", stdOut, stdErr)
+				}
+				serverErr <- err
 			}()
 
 			// defer this to make sure it is shutdown on test failure as well
@@ -109,7 +113,7 @@ func Test(t *testing.T) {
 				// stop the server
 				serverCancel()
 				// wait for it to stop
-				<-serverDoneChannel
+				require.NoError(t, <-serverErr)
 			}()
 
 			var healthReady = func() error {
