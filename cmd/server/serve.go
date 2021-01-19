@@ -113,7 +113,11 @@ func multiplexPort(ctx context.Context, addr string, router *httprouter.Router, 
 	})
 
 	eg.Go(func() error {
-		return errors.WithStack(restS.Serve(httpL))
+		if err := restS.Serve(httpL); !errors.Is(err, http.ErrServerClosed) {
+			// unexpected error
+			return errors.WithStack(err)
+		}
+		return nil
 	})
 
 	eg.Go(func() error {
