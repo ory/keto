@@ -15,7 +15,7 @@ func newCheckCmd() *cobra.Command {
 		Use:  "check <subject> <relation> <namespace> <object>",
 		Args: cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			conn, err := client.GetBasicConn(cmd)
+			conn, err := client.GetReadConn(cmd)
 			if err != nil {
 				return err
 			}

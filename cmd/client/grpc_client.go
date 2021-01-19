@@ -13,47 +13,44 @@ import (
 )
 
 const (
-	FlagBasicRemote      = "basic-remote"
-	FlagPrivilegedRemote = "privileged-remote"
+	FlagReadRemote  = "read-remote"
+	FlagWriteRemote = "write-remote"
 
-	EnvBasicRemote      = "KETO_BASIC_REMOTE"
-	EnvPrivilegedRemote = "KETO_PRIVILEGED_REMOTE"
+	EnvReadRemote  = "KETO_READ_REMOTE"
+	EnvWriteRemote = "KETO_WRITE_REMOTE"
 )
 
-func getBasicRemote(cmd *cobra.Command) string {
-	remote := flagx.MustGetString(cmd, FlagBasicRemote)
+func getReadRemote(cmd *cobra.Command) string {
+	remote := flagx.MustGetString(cmd, FlagReadRemote)
 	if remote == "" {
-		remote = os.Getenv(EnvBasicRemote)
-	}
-	if remote == "" {
-		remote = getPrivilegedRemote(cmd)
+		remote = os.Getenv(EnvReadRemote)
 	}
 	return remote
 }
 
-func getPrivilegedRemote(cmd *cobra.Command) string {
-	remote := flagx.MustGetString(cmd, FlagPrivilegedRemote)
+func getWriteRemote(cmd *cobra.Command) string {
+	remote := flagx.MustGetString(cmd, FlagWriteRemote)
 	if remote == "" {
-		remote = os.Getenv(EnvPrivilegedRemote)
+		remote = os.Getenv(EnvWriteRemote)
 	}
 	return remote
 }
 
-func GetBasicConn(cmd *cobra.Command) (*grpc.ClientConn, error) {
-	remote := getBasicRemote(cmd)
+func GetReadConn(cmd *cobra.Command) (*grpc.ClientConn, error) {
+	remote := getReadRemote(cmd)
 	ctx, cancel := context.WithTimeout(cmd.Context(), 3*time.Second)
 	defer cancel()
 	return grpc.DialContext(ctx, remote, grpc.WithInsecure(), grpc.WithBlock(), grpc.WithDisableHealthCheck())
 }
 
-func GetPrivilegedConn(cmd *cobra.Command) (*grpc.ClientConn, error) {
-	remote := getPrivilegedRemote(cmd)
+func GetWriteConn(cmd *cobra.Command) (*grpc.ClientConn, error) {
+	remote := getWriteRemote(cmd)
 	ctx, cancel := context.WithTimeout(cmd.Context(), 3*time.Second)
 	defer cancel()
 	return grpc.DialContext(ctx, remote, grpc.WithInsecure(), grpc.WithBlock(), grpc.WithDisableHealthCheck())
 }
 
 func RegisterRemoteURLFlags(flags *pflag.FlagSet) {
-	flags.String(FlagBasicRemote, "127.0.0.1:4466", "Remote URL of the privileged API endpoint.")
-	flags.String(FlagPrivilegedRemote, "127.0.0.1:4467", "Remote URL of the basic API endpoint.")
+	flags.String(FlagReadRemote, "127.0.0.1:4466", "Remote URL of the read API endpoint.")
+	flags.String(FlagWriteRemote, "127.0.0.1:4467", "Remote URL of the write API endpoint.")
 }

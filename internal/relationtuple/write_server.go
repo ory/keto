@@ -12,7 +12,7 @@ import (
 	acl "github.com/ory/keto/api/keto/acl/v1alpha1"
 )
 
-var _ acl.WriteServiceServer = (*Handler)(nil)
+var _ acl.WriteServiceServer = (*handler)(nil)
 
 func tuplesWithAction(deltas []*acl.RelationTupleDelta, action acl.RelationTupleDelta_Action) (filtered []*InternalRelationTuple) {
 	for _, d := range deltas {
@@ -26,7 +26,7 @@ func tuplesWithAction(deltas []*acl.RelationTupleDelta, action acl.RelationTuple
 	return
 }
 
-func (h *Handler) TransactRelationTuples(ctx context.Context, req *acl.TransactRelationTuplesRequest) (*acl.TransactRelationTuplesResponse, error) {
+func (h *handler) TransactRelationTuples(ctx context.Context, req *acl.TransactRelationTuplesRequest) (*acl.TransactRelationTuplesResponse, error) {
 	insertTuples := tuplesWithAction(req.RelationTupleDeltas, acl.RelationTupleDelta_INSERT)
 
 	err := h.d.RelationTupleManager().WriteRelationTuples(ctx, insertTuples...)
@@ -43,7 +43,7 @@ func (h *Handler) TransactRelationTuples(ctx context.Context, req *acl.TransactR
 	}, nil
 }
 
-func (h *Handler) createRelation(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+func (h *handler) createRelation(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	var rel InternalRelationTuple
 
 	if err := json.NewDecoder(r.Body).Decode(&rel); err != nil {

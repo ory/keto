@@ -21,18 +21,18 @@ import (
 var _ client = &restClient{}
 
 type restClient struct {
-	basicURL, privilegedURL string
+	readURL, writeURL string
 }
 
-func (rc *restClient) makeRequest(t *testing.T, method, path, body string, privileged bool) (string, int) {
+func (rc *restClient) makeRequest(t *testing.T, method, path, body string, write bool) (string, int) {
 	var b io.Reader
 	if body != "" {
 		b = bytes.NewBufferString(body)
 	}
 
-	baseURL := rc.basicURL
-	if privileged {
-		baseURL = rc.privilegedURL
+	baseURL := rc.readURL
+	if write {
+		baseURL = rc.writeURL
 	}
 
 	// t.Logf("Requesting %s %s%s with body %#v", method, baseURL, path, body)

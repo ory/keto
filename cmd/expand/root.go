@@ -18,7 +18,7 @@ func NewExpandCmd() *cobra.Command {
 		Use:  "expand <relation> <namespace> <object>",
 		Args: cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			conn, err := client.GetBasicConn(cmd)
+			conn, err := client.GetReadConn(cmd)
 			if err != nil {
 				return nil
 			}

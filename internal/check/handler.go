@@ -4,6 +4,8 @@ import (
 	"context"
 	"net/http"
 
+	"google.golang.org/grpc"
+
 	acl "github.com/ory/keto/api/keto/acl/v1alpha1"
 
 	"github.com/ory/keto/internal/relationtuple"
@@ -32,17 +34,17 @@ func NewHandler(d handlerDependencies) *Handler {
 
 const RouteBase = "/check"
 
-func (h *Handler) registerBasicRoutes(r *httprouter.Router) {
+func (h *Handler) RegisterReadRoutes(r *x.ReadRouter) {
 	r.GET(RouteBase, h.getCheck)
 }
 
-func (h *Handler) RegisterBasicRoutes(r *x.BasicRouter) {
-	h.registerBasicRoutes(r.Router)
+func (h *Handler) RegisterWriteRoutes(_ *x.WriteRouter) {}
+
+func (h *Handler) RegisterReadGRPC(s *grpc.Server) {
+	acl.RegisterCheckServiceServer(s, h)
 }
 
-func (h *Handler) RegisterPrivilegedRoutes(r *x.PrivilegedRouter) {
-	h.registerBasicRoutes(r.Router)
-}
+func (h *Handler) RegisterWriteGRPC(_ *grpc.Server) {}
 
 func (h *Handler) getCheck(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	tuple, err := (&relationtuple.InternalRelationTuple{}).FromURLQuery(r.URL.Query())

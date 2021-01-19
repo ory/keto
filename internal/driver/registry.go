@@ -38,11 +38,11 @@ type (
 		HealthHandler() *healthx.Handler
 		Tracer() *tracing.Tracer
 
-		BasicRouter() *x.BasicRouter
-		PrivilegedRouter() *x.PrivilegedRouter
+		ReadRouter() *x.ReadRouter
+		WriteRouter() *x.WriteRouter
 
-		BasicGRPCServer() *grpc.Server
-		PrivilegedGRPCServer() *grpc.Server
+		ReadGRPCServer() *grpc.Server
+		WriteGRPCServer() *grpc.Server
 	}
 
 	contextKeys string

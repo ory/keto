@@ -10,9 +10,9 @@ import (
 	"github.com/ory/keto/internal/x"
 )
 
-var _ acl.ReadServiceServer = (*Handler)(nil)
+var _ acl.ReadServiceServer = (*handler)(nil)
 
-func (h *Handler) ListRelationTuples(ctx context.Context, req *acl.ListRelationTuplesRequest) (*acl.ListRelationTuplesResponse, error) {
+func (h *handler) ListRelationTuples(ctx context.Context, req *acl.ListRelationTuplesRequest) (*acl.ListRelationTuplesResponse, error) {
 	rels, nextPage, err := h.d.RelationTupleManager().GetRelationTuples(ctx,
 		&RelationQuery{
 			Namespace: req.Query.Namespace,
@@ -38,7 +38,7 @@ func (h *Handler) ListRelationTuples(ctx context.Context, req *acl.ListRelationT
 	return resp, nil
 }
 
-func (h *Handler) getRelations(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+func (h *handler) getRelations(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	query, err := (&RelationQuery{}).FromURLQuery(r.URL.Query())
 	if err != nil {
 		h.d.Writer().WriteError(w, r, err)

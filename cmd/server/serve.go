@@ -55,17 +55,17 @@ on configuration options, open the configuration documentation:
 
 			eg := &errgroup.Group{}
 
-			basicRouter, privilegedRouter := reg.BasicRouter().Router, reg.PrivilegedRouter().Router
-			basicGRPC, privilegedGRPC := reg.BasicGRPCServer(), reg.PrivilegedGRPCServer()
+			readRouter, writeRouter := reg.ReadRouter().Router, reg.WriteRouter().Router
+			readGRPCServer, writeGRPCServer := reg.ReadGRPCServer(), reg.WriteGRPCServer()
 
-			// basic port
+			// read port
 			eg.Go(func() error {
-				return multiplexPort(cmd.Context(), reg.Config().BasicListenOn(), basicRouter, basicGRPC)
+				return multiplexPort(cmd.Context(), reg.Config().ReadAPIListenOn(), readRouter, readGRPCServer)
 			})
 
-			// privileged port
+			// write port
 			eg.Go(func() error {
-				return multiplexPort(cmd.Context(), reg.Config().PrivilegedListenOn(), privilegedRouter, privilegedGRPC)
+				return multiplexPort(cmd.Context(), reg.Config().WriteAPIListenOn(), writeRouter, writeGRPCServer)
 			})
 
 			return eg.Wait()

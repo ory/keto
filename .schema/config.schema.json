@@ -199,9 +199,9 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "basic": {
+        "read": {
           "type": "object",
-          "title": "Basic API (http and gRPC)",
+          "title": "Read API (http and gRPC)",
           "additionalProperties": false,
           "properties": {
             "port": {
@@ -230,9 +230,9 @@
             }
           }
         },
-        "privileged": {
+        "write": {
           "type": "object",
-          "title": "Privileged API (http and gRPC)",
+          "title": "Write API (http and gRPC)",
           "additionalProperties": false,
           "properties": {
             "port": {

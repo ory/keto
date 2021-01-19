@@ -104,11 +104,11 @@ func Test(t *testing.T) {
 				New: cmd.NewRootCmd,
 				Ctx: ctx,
 				PersistentArgs: []string{"--config", configFile(t, map[string]interface{}{
-					config.KeyDSN:            dsn.conn,
-					config.KeyNamespaces:     nspaces,
-					"log.level":              "debug",
-					config.KeyBasicPort:      ports[0],
-					config.KeyPrivilegedPort: ports[1],
+					config.KeyDSN:          dsn.conn,
+					config.KeyNamespaces:   nspaces,
+					"log.level":            "debug",
+					config.KeyReadAPIPort:  ports[0],
+					config.KeyWriteAPIPort: ports[1],
 				})},
 			}
 
@@ -156,11 +156,11 @@ func Test(t *testing.T) {
 				&grpcClient{c: &cmdx.CommandExecuter{
 					New:            cmd.NewRootCmd,
 					Ctx:            ctx,
-					PersistentArgs: []string{"--" + cliclient.FlagBasicRemote, fmt.Sprintf("127.0.0.1:%d", ports[0]), "--" + cliclient.FlagPrivilegedRemote, fmt.Sprintf("127.0.0.1:%d", ports[1]), "--" + cmdx.FlagFormat, string(cmdx.FormatJSON)},
+					PersistentArgs: []string{"--" + cliclient.FlagReadRemote, fmt.Sprintf("127.0.0.1:%d", ports[0]), "--" + cliclient.FlagWriteRemote, fmt.Sprintf("127.0.0.1:%d", ports[1]), "--" + cmdx.FlagFormat, string(cmdx.FormatJSON)},
 				}},
 				&restClient{
-					basicURL:      fmt.Sprintf("http://127.0.0.1:%d", ports[0]),
-					privilegedURL: fmt.Sprintf("http://127.0.0.1:%d", ports[1]),
+					readURL:  fmt.Sprintf("http://127.0.0.1:%d", ports[0]),
+					writeURL: fmt.Sprintf("http://127.0.0.1:%d", ports[1]),
 				},
 			} {
 				t.Run(fmt.Sprintf("client=%T", cl), runCases(cl, nspaces))

@@ -7,8 +7,6 @@ import (
 	"github.com/julienschmidt/httprouter"
 	"google.golang.org/grpc"
 
-	acl "github.com/ory/keto/api/keto/acl/v1alpha1"
-
 	"github.com/cenkalti/backoff"
 	"github.com/ory/x/sqlcon"
 
@@ -38,20 +36,26 @@ var (
 	_ Registry                      = (*RegistryDefault)(nil)
 )
 
-type RegistryDefault struct {
-	p    persistence.Persister
-	l    *logrusx.Logger
-	w    herodot.Writer
-	ce   *check.Engine
-	ee   *expand.Engine
-	conn *pop.Connection
-	c    config.Provider
+type (
+	RegistryDefault struct {
+		p    persistence.Persister
+		l    *logrusx.Logger
+		w    herodot.Writer
+		ce   *check.Engine
+		ee   *expand.Engine
+		conn *pop.Connection
+		c    config.Provider
 
-	healthH        *healthx.Handler
-	relationTupleH *relationtuple.Handler
-	checkH         *check.Handler
-	expandH        *expand.Handler
-}
+		healthH  *healthx.Handler
+		handlers []Handler
+	}
+	Handler interface {
+		RegisterReadRoutes(r *x.ReadRouter)
+		RegisterWriteRoutes(r *x.WriteRouter)
+		RegisterReadGRPC(s *grpc.Server)
+		RegisterWriteGRPC(s *grpc.Server)
+	}
+)
 
 func (r *RegistryDefault) BuildVersion() string {
 	return config.Version
@@ -198,66 +202,57 @@ func (r *RegistryDefault) Init(ctx context.Context) error {
 	return nil
 }
 
-func (r *RegistryDefault) relationTupleHandler() *relationtuple.Handler {
-	if r.relationTupleH == nil {
-		r.relationTupleH = relationtuple.NewHandler(r)
+func (r *RegistryDefault) allHandlers() []Handler {
+	if len(r.handlers) == 0 {
+		r.handlers = []Handler{
+			relationtuple.NewHandler(r),
+			check.NewHandler(r),
+			expand.NewHandler(r),
+		}
 	}
-	return r.relationTupleH
+	return r.handlers
 }
 
-func (r *RegistryDefault) checkHandler() *check.Handler {
-	if r.checkH == nil {
-		r.checkH = check.NewHandler(r)
-	}
-	return r.checkH
-}
-
-func (r *RegistryDefault) expandHandler() *expand.Handler {
-	if r.expandH == nil {
-		r.expandH = expand.NewHandler(r)
-	}
-	return r.expandH
-}
-
-func (r *RegistryDefault) BasicRouter() *x.BasicRouter {
-	br := &x.BasicRouter{Router: httprouter.New()}
+func (r *RegistryDefault) ReadRouter() *x.ReadRouter {
+	br := &x.ReadRouter{Router: httprouter.New()}
 
 	r.HealthHandler().SetRoutes(br.Router, false)
-	r.relationTupleHandler().RegisterBasicRoutes(br)
-	r.checkHandler().RegisterBasicRoutes(br)
-	r.expandHandler().RegisterBasicRoutes(br)
+
+	for _, h := range r.allHandlers() {
+		h.RegisterReadRoutes(br)
+	}
 
 	return br
 }
 
-func (r *RegistryDefault) PrivilegedRouter() *x.PrivilegedRouter {
-	pr := &x.PrivilegedRouter{Router: httprouter.New()}
+func (r *RegistryDefault) WriteRouter() *x.WriteRouter {
+	pr := &x.WriteRouter{Router: httprouter.New()}
 
 	r.HealthHandler().SetRoutes(pr.Router, false)
-	r.relationTupleHandler().RegisterPrivilegedRoutes(pr)
-	r.checkHandler().RegisterPrivilegedRoutes(pr)
-	r.expandHandler().RegisterPrivilegedRoutes(pr)
+
+	for _, h := range r.allHandlers() {
+		h.RegisterWriteRoutes(pr)
+	}
 
 	return pr
 }
 
-func (r *RegistryDefault) BasicGRPCServer() *grpc.Server {
+func (r *RegistryDefault) ReadGRPCServer() *grpc.Server {
 	s := grpc.NewServer()
 
-	acl.RegisterReadServiceServer(s, r.relationTupleHandler())
-	acl.RegisterExpandServiceServer(s, r.expandHandler())
-	acl.RegisterCheckServiceServer(s, r.checkHandler())
+	for _, h := range r.allHandlers() {
+		h.RegisterReadGRPC(s)
+	}
 
 	return s
 }
 
-func (r *RegistryDefault) PrivilegedGRPCServer() *grpc.Server {
+func (r *RegistryDefault) WriteGRPCServer() *grpc.Server {
 	s := grpc.NewServer()
 
-	acl.RegisterReadServiceServer(s, r.relationTupleHandler())
-	acl.RegisterWriteServiceServer(s, r.relationTupleHandler())
-	acl.RegisterExpandServiceServer(s, r.expandHandler())
-	acl.RegisterCheckServiceServer(s, r.checkHandler())
+	for _, h := range r.allHandlers() {
+		h.RegisterWriteGRPC(s)
+	}
 
 	return s
 }

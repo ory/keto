@@ -57,7 +57,7 @@ func newGetCmd() *cobra.Command {
 		Use:  "get <namespace>",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			conn, err := client.GetBasicConn(cmd)
+			conn, err := client.GetReadConn(cmd)
 			if err != nil {
 				return err
 			}

@@ -1,8 +1,9 @@
 package relationtuple
 
 import (
-	"github.com/julienschmidt/httprouter"
+	"google.golang.org/grpc"
 
+	acl "github.com/ory/keto/api/keto/acl/v1alpha1"
 	"github.com/ory/keto/internal/x"
 )
 
@@ -12,7 +13,7 @@ type (
 		x.LoggerProvider
 		x.WriterProvider
 	}
-	Handler struct {
+	handler struct {
 		d handlerDeps
 	}
 )
@@ -21,25 +22,24 @@ const (
 	RouteBase = "/relationtuple"
 )
 
-func NewHandler(d handlerDeps) *Handler {
-	return &Handler{
+func NewHandler(d handlerDeps) *handler {
+	return &handler{
 		d: d,
 	}
 }
 
-func (h *Handler) registerBasicRoutes(r *httprouter.Router) {
+func (h *handler) RegisterReadRoutes(r *x.ReadRouter) {
 	r.GET(RouteBase, h.getRelations)
 }
 
-func (h *Handler) registerPrivilegedRoutes(r *httprouter.Router) {
-	h.registerBasicRoutes(r)
+func (h *handler) RegisterWriteRoutes(r *x.WriteRouter) {
 	r.PUT(RouteBase, h.createRelation)
 }
 
-func (h *Handler) RegisterBasicRoutes(r *x.BasicRouter) {
-	h.registerBasicRoutes(r.Router)
+func (h *handler) RegisterReadGRPC(s *grpc.Server) {
+	acl.RegisterReadServiceServer(s, h)
 }
 
-func (h *Handler) RegisterPrivilegedRoutes(r *x.PrivilegedRouter) {
-	h.registerPrivilegedRoutes(r.Router)
+func (h *handler) RegisterWriteGRPC(s *grpc.Server) {
+	acl.RegisterWriteServiceServer(s, h)
 }

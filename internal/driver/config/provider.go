@@ -12,8 +12,8 @@ type Provider interface {
 	namespace.ManagerProvider
 
 	CORS() (cors.Options, bool)
-	BasicListenOn() string
-	PrivilegedListenOn() string
+	ReadAPIListenOn() string
+	WriteAPIListenOn() string
 	DSN() string
 	TracingServiceName() string
 	TracingProvider() string

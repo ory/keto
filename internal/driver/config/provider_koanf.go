@@ -25,11 +25,11 @@ import (
 const (
 	KeyDSN = "dsn"
 
-	KeyBasicHost = "serve.basic.host"
-	KeyBasicPort = "serve.basic.port"
+	KeyReadAPIHost = "serve.read.host"
+	KeyReadAPIPort = "serve.read.port"
 
-	KeyPrivilegedHost = "serve.privileged.host"
-	KeyPrivilegedPort = "serve.privileged.port"
+	KeyWriteAPIHost = "serve.write.host"
+	KeyWriteAPIPort = "serve.write.port"
 
 	KeyNamespaces = "namespaces"
 )
@@ -107,19 +107,19 @@ func (k *KoanfProvider) Set(key string, v interface{}) error {
 	return nil
 }
 
-func (k *KoanfProvider) BasicListenOn() string {
+func (k *KoanfProvider) ReadAPIListenOn() string {
 	return fmt.Sprintf(
 		"%s:%d",
-		k.p.StringF(KeyBasicHost, ""),
-		k.p.IntF(KeyBasicPort, 4466),
+		k.p.StringF(KeyReadAPIHost, ""),
+		k.p.IntF(KeyReadAPIPort, 4466),
 	)
 }
 
-func (k *KoanfProvider) PrivilegedListenOn() string {
+func (k *KoanfProvider) WriteAPIListenOn() string {
 	return fmt.Sprintf(
 		"%s:%d",
-		k.p.StringF(KeyPrivilegedHost, ""),
-		k.p.IntF(KeyPrivilegedPort, 4467),
+		k.p.StringF(KeyWriteAPIHost, ""),
+		k.p.IntF(KeyWriteAPIPort, 4467),
 	)
 }
 
