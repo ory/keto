@@ -62,11 +62,11 @@ func (h *restHandler) getCheck(w http.ResponseWriter, r *http.Request, _ httprou
 
 func (g *grpcHandler) Expand(ctx context.Context, req *acl.ExpandRequest) (*acl.ExpandResponse, error) {
 	tree, err := g.d.ExpandEngine().BuildTree(ctx,
-		relationtuple.SubjectFromGRPC(req.Subject),
+		relationtuple.SubjectFromProto(req.Subject),
 		int(req.MaxDepth))
 	if err != nil {
 		return nil, err
 	}
 
-	return &acl.ExpandResponse{Tree: tree.ToGRPC()}, nil
+	return &acl.ExpandResponse{Tree: tree.ToProto()}, nil
 }

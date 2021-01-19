@@ -30,7 +30,7 @@ func newCreateCmd() *cobra.Command {
 			}
 
 			var tuples []*relationtuple.InternalRelationTuple
-			var deltas []*acl.RelationTupleWriteDelta
+			var deltas []*acl.RelationTupleDelta
 			for _, fn := range args {
 				tuple, err := readTuplesFromArg(cmd, fn)
 				if err != nil {
@@ -38,16 +38,16 @@ func newCreateCmd() *cobra.Command {
 				}
 				for _, t := range tuple {
 					tuples = append(tuples, t)
-					deltas = append(deltas, &acl.RelationTupleWriteDelta{
-						Action:        acl.RelationTupleWriteDelta_INSERT,
-						RelationTuple: t.ToGRPC(),
+					deltas = append(deltas, &acl.RelationTupleDelta{
+						Action:        acl.RelationTupleDelta_INSERT,
+						RelationTuple: t.ToProto(),
 					})
 				}
 			}
 
 			cl := acl.NewWriteServiceClient(conn)
 
-			_, err = cl.WriteRelationTuples(cmd.Context(), &acl.WriteRelationTuplesRequest{
+			_, err = cl.TransactRelationTuples(cmd.Context(), &acl.TransactRelationTuplesRequest{
 				RelationTupleDeltas: deltas,
 			})
 			if err != nil {
