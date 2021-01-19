@@ -56,11 +56,12 @@ func migrateEverythingUp(t *testing.T, c *cmdx.CommandExecuter, nn []*namespace.
 		c.ExecNoErr(t, "namespace", "migrate", "up", n.Name)
 	}
 
-	t.Cleanup(func() {
-		for _, n := range nn {
-			c.ExecNoErr(t, "namespace", "migrate", "down", n.Name, "1")
-		}
-
-		c.ExecNoErr(t, "migrate", "down", "1")
-	})
+	// TODO
+	//t.Cleanup(func() {
+	//	for _, n := range nn {
+	//		c.ExecNoErr(t, "namespace", "migrate", "down", n.Name, "1")
+	//	}
+	//
+	//	c.ExecNoErr(t, "migrate", "down", "1")
+	//})
 }

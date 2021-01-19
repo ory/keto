@@ -32,6 +32,7 @@ require (
 	github.com/ory/jsonschema/v3 v3.0.1
 	github.com/ory/x v0.0.171
 	github.com/pelletier/go-toml v1.8.0
+	github.com/phayes/freeport v0.0.0-20180830031419-95f893ade6f2
 	github.com/pkg/errors v0.9.1
 	github.com/rs/cors v1.6.0
 	github.com/segmentio/objconv v1.0.1

@@ -8,6 +8,8 @@ import (
 	"testing"
 	"time"
 
+	cliclient "github.com/ory/keto/cmd/client"
+
 	"github.com/stretchr/testify/require"
 
 	"github.com/ory/keto/internal/expand"
@@ -15,10 +17,10 @@ import (
 	"github.com/ory/x/cmdx"
 	"github.com/ory/x/healthx"
 	"github.com/ory/x/sqlcon/dockertest"
+	"github.com/phayes/freeport"
 	"github.com/stretchr/testify/assert"
 
 	"github.com/ory/keto/cmd"
-	cliclient "github.com/ory/keto/cmd/client"
 	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/namespace"
 	"github.com/ory/keto/internal/relationtuple"
@@ -95,13 +97,18 @@ func Test(t *testing.T) {
 				ID:   0,
 			}}
 
+			ports, err := freeport.GetFreePorts(2)
+			require.NoError(t, err)
+
 			c := &cmdx.CommandExecuter{
 				New: cmd.NewRootCmd,
 				Ctx: ctx,
 				PersistentArgs: []string{"--config", configFile(t, map[string]interface{}{
-					config.KeyDSN:        dsn.conn,
-					config.KeyNamespaces: nspaces,
-					"log.level":          "debug",
+					config.KeyDSN:            dsn.conn,
+					config.KeyNamespaces:     nspaces,
+					"log.level":              "debug",
+					config.KeyBasicPort:      ports[0],
+					config.KeyPrivilegedPort: ports[1],
 				})},
 			}
 
@@ -131,7 +138,7 @@ func Test(t *testing.T) {
 				ctx, cancel := context.WithTimeout(ctx, 2*time.Second)
 				defer cancel()
 
-				r, err := http.NewRequestWithContext(ctx, "GET", "http://127.0.0.1:4466"+healthx.ReadyCheckPath, nil)
+				r, err := http.NewRequestWithContext(ctx, "GET", fmt.Sprintf("http://127.0.0.1:%d%s", ports[0], healthx.ReadyCheckPath), nil)
 				if err != nil {
 					return err
 				}
@@ -149,11 +156,11 @@ func Test(t *testing.T) {
 				&grpcClient{c: &cmdx.CommandExecuter{
 					New:            cmd.NewRootCmd,
 					Ctx:            ctx,
-					PersistentArgs: []string{"--" + cliclient.FlagBasicRemote, "127.0.0.1:4466", "--" + cliclient.FlagPrivilegedRemote, "127.0.0.1:4467", "--" + cmdx.FlagFormat, string(cmdx.FormatJSON)},
+					PersistentArgs: []string{"--" + cliclient.FlagBasicRemote, fmt.Sprintf("127.0.0.1:%d", ports[0]), "--" + cliclient.FlagPrivilegedRemote, fmt.Sprintf("127.0.0.1:%d", ports[1]), "--" + cmdx.FlagFormat, string(cmdx.FormatJSON)},
 				}},
 				&restClient{
-					basicURL:      "http://127.0.0.1:4466",
-					privilegedURL: "http://127.0.0.1:4467",
+					basicURL:      fmt.Sprintf("http://127.0.0.1:%d", ports[0]),
+					privilegedURL: fmt.Sprintf("http://127.0.0.1:%d", ports[1]),
 				},
 			} {
 				t.Run(fmt.Sprintf("client=%T", cl), runCases(cl, nspaces))
