@@ -56,7 +56,7 @@ func migrateEverythingUp(t *testing.T, c *cmdx.CommandExecuter, nn []*namespace.
 		c.ExecNoErr(t, "namespace", "migrate", "up", n.Name)
 	}
 
-	// TODO enable when namespace migrations are done properly with driver specific statements
+	// TODO
 	//t.Cleanup(func() {
 	//	for _, n := range nn {
 	//		c.ExecNoErr(t, "namespace", "migrate", "down", n.Name, "1")

@@ -16,27 +16,22 @@ package server
 
 import (
 	"context"
-	"fmt"
 	"net"
 	"net/http"
 	"os"
 	"strconv"
-	"sync"
-
-	"github.com/pkg/errors"
-
-	acl "github.com/ory/keto/api/keto/acl/v1alpha1"
+	"strings"
 
 	"github.com/julienschmidt/httprouter"
 	"github.com/ory/graceful"
+	"github.com/pkg/errors"
+	"github.com/soheilhy/cmux"
 	"github.com/spf13/cobra"
+	"golang.org/x/sync/errgroup"
 	"google.golang.org/grpc"
 
-	"github.com/ory/keto/internal/check"
 	"github.com/ory/keto/internal/driver"
 	"github.com/ory/keto/internal/driver/config"
-	"github.com/ory/keto/internal/expand"
-	"github.com/ory/keto/internal/relationtuple"
 )
 
 // serveCmd represents the serve command
@@ -53,99 +48,27 @@ on configuration options, open the configuration documentation:
 
 >> https://github.com/ory/keto/blob/` + config.Version + `/docs/config.yaml <<`,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			ctx := cmd.Context()
-
-			reg, err := driver.NewDefaultRegistry(ctx, cmd.Flags())
+			reg, err := driver.NewDefaultRegistry(cmd.Context(), cmd.Flags())
 			if err != nil {
 				return err
 			}
 
-			wg := &sync.WaitGroup{}
-			// the two servers + the ctx.Done listener go routine
-			wg.Add(3)
+			eg := &errgroup.Group{}
 
-			var grpcErr, restErr error
-			var grpcServer *grpc.Server
-			go func() {
-				defer wg.Done()
+			readRouter, writeRouter := reg.ReadRouter().Router, reg.WriteRouter().Router
+			readGRPCServer, writeGRPCServer := reg.ReadGRPCServer(), reg.WriteGRPCServer()
 
-				lis, err := net.Listen("tcp", reg.Config().GRPCListenOn())
-				if err != nil {
-					_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "%+v\n", err)
-					grpcErr = err
-					return
-				}
+			// read port
+			eg.Go(func() error {
+				return multiplexPort(cmd.Context(), reg.Config().ReadAPIListenOn(), readRouter, readGRPCServer)
+			})
 
-				grpcServer = grpc.NewServer()
-				relS := relationtuple.NewGRPCServer(reg)
-				acl.RegisterReadServiceServer(grpcServer, relS)
-				acl.RegisterWriteServiceServer(grpcServer, relS)
+			// write port
+			eg.Go(func() error {
+				return multiplexPort(cmd.Context(), reg.Config().WriteAPIListenOn(), writeRouter, writeGRPCServer)
+			})
 
-				checkS := check.NewGRPCServer(reg)
-				acl.RegisterCheckServiceServer(grpcServer, checkS)
-
-				expandS := expand.NewGRPCServer(reg)
-				acl.RegisterExpandServiceServer(grpcServer, expandS)
-
-				reg.Logger().WithField("addr", lis.Addr().String()).Info("serving GRPC")
-				if err := grpcServer.Serve(lis); err != nil {
-					_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "%+v\n", err)
-					grpcErr = err
-				}
-			}()
-
-			var restServer *http.Server
-			go func() {
-				defer wg.Done()
-
-				router := httprouter.New()
-				relationtuple.NewHandler(reg).RegisterPublicRoutes(router)
-				check.NewHandler(reg).RegisterPublicRoutes(router)
-				expand.NewHandler(reg).RegisterPublicRoutes(router)
-				reg.HealthHandler().SetRoutes(router, false)
-
-				restServer = graceful.WithDefaults(&http.Server{
-					Addr:    reg.Config().RESTListenOn(),
-					Handler: router,
-				})
-
-				reg.Logger().WithField("addr", restServer.Addr).Info("serving REST")
-				if err := restServer.ListenAndServe(); err != nil {
-					if errors.Is(err, http.ErrServerClosed) {
-						// this means the server got closed and should not be reported
-						return
-					}
-
-					_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "%+v\n", err)
-					restErr = err
-				}
-			}()
-
-			go func() {
-				defer wg.Done()
-
-				<-ctx.Done()
-				// ctx is done already, so we need a new context
-				err := restServer.Shutdown(context.Background())
-
-				if restErr != nil {
-					if err != nil {
-						restErr = errors.Wrap(restErr, err.Error())
-					}
-				} else {
-					restErr = err
-				}
-
-				grpcServer.GracefulStop()
-			}()
-
-			wg.Wait()
-
-			if grpcErr == nil && restErr == nil {
-				return nil
-			}
-
-			return fmt.Errorf("GRPC Error: %+v\nREST Error: %+v", grpcErr, restErr)
+			return eg.Wait()
 		},
 	}
 	disableTelemetry, err := strconv.ParseBool(os.Getenv("DISABLE_TELEMETRY"))
@@ -165,4 +88,78 @@ on configuration options, open the configuration documentation:
 
 func RegisterCommandsRecursive(parent *cobra.Command) {
 	parent.AddCommand(newServe())
+}
+
+func multiplexPort(ctx context.Context, addr string, router *httprouter.Router, grpcS *grpc.Server) error {
+	l, err := net.Listen("tcp", addr)
+	if err != nil {
+		return err
+	}
+
+	m := cmux.New(l)
+	m.SetReadTimeout(graceful.DefaultReadTimeout)
+
+	grpcL := m.MatchWithWriters(cmux.HTTP2MatchHeaderFieldSendSettings("content-type", "application/grpc"))
+	httpL := m.Match(cmux.HTTP1())
+
+	restS := graceful.WithDefaults(&http.Server{
+		Handler: router,
+	})
+
+	eg := &errgroup.Group{}
+	ctx, cancel := context.WithCancel(ctx)
+	serversDone := make(chan struct{}, 2)
+
+	eg.Go(func() error {
+		defer func() {
+			serversDone <- struct{}{}
+		}()
+		return errors.WithStack(grpcS.Serve(grpcL))
+	})
+
+	eg.Go(func() error {
+		defer func() {
+			serversDone <- struct{}{}
+		}()
+		if err := restS.Serve(httpL); !errors.Is(err, http.ErrServerClosed) {
+			// unexpected error
+			return errors.WithStack(err)
+		}
+		return nil
+	})
+
+	eg.Go(func() error {
+		err := m.Serve()
+		if err != nil && !strings.Contains(err.Error(), "use of closed network connection") {
+			// unexpected error
+			return errors.WithStack(err)
+		}
+		// trigger further shutdown
+		cancel()
+		return nil
+	})
+
+	eg.Go(func() error {
+		<-ctx.Done()
+
+		m.Close()
+		for i := 0; i < 2; i++ {
+			<-serversDone
+		}
+
+		// we have to stop the servers as well as they might still be running (for whatever reason I could not figure out)
+		grpcS.GracefulStop()
+
+		ctx, cancel := context.WithTimeout(context.Background(), graceful.DefaultReadTimeout)
+		defer cancel()
+		return restS.Shutdown(ctx)
+	})
+
+	if err := eg.Wait(); !errors.Is(err, cmux.ErrServerClosed) &&
+		!errors.Is(err, cmux.ErrListenerClosed) &&
+		(err != nil && !strings.Contains(err.Error(), "use of closed network connection")) {
+		// unexpected error
+		return err
+	}
+	return nil
 }

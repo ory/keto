@@ -3,6 +3,8 @@ package driver
 import (
 	"context"
 
+	"google.golang.org/grpc"
+
 	"github.com/ory/x/healthx"
 	"github.com/ory/x/tracing"
 
@@ -35,6 +37,12 @@ type (
 
 		HealthHandler() *healthx.Handler
 		Tracer() *tracing.Tracer
+
+		ReadRouter() *x.ReadRouter
+		WriteRouter() *x.WriteRouter
+
+		ReadGRPCServer() *grpc.Server
+		WriteGRPCServer() *grpc.Server
 	}
 
 	contextKeys string

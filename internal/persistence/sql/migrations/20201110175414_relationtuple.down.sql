@@ -1,1 +1,1 @@
-DROP TABLE keto_namespaces;
+DROP TABLE keto_namespace;
