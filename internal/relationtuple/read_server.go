@@ -20,7 +20,7 @@ func (h *handler) ListRelationTuples(ctx context.Context, req *acl.ListRelationT
 			Relation:  req.Query.Relation,
 			Subject:   SubjectFromProto(req.Query.Subject),
 		},
-		x.WithSize(uint(req.PageSize)),
+		x.WithSize(int(req.PageSize)),
 		x.WithToken(req.PageToken),
 	)
 	if err != nil {

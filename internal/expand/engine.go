@@ -3,22 +3,25 @@ package expand
 import (
 	"context"
 
+	"github.com/ory/keto/internal/persistence"
+	"github.com/ory/keto/internal/x"
+
 	"github.com/ory/keto/internal/relationtuple"
 )
 
 type (
-	engineDependencies interface {
+	EngineDependencies interface {
 		relationtuple.ManagerProvider
 	}
 	Engine struct {
-		d engineDependencies
+		d EngineDependencies
 	}
 	EngineProvider interface {
 		ExpandEngine() *Engine
 	}
 )
 
-func NewEngine(d engineDependencies) *Engine {
+func NewEngine(d EngineDependencies) *Engine {
 	return &Engine{d: d}
 }
 
@@ -33,29 +36,38 @@ func (e *Engine) BuildTree(ctx context.Context, subject relationtuple.Subject, r
 			Subject: subject,
 		}
 
-		// TODO handle pagination
-		rels, _, err := e.d.RelationTupleManager().GetRelationTuples(ctx, &relationtuple.RelationQuery{
-			Relation:  us.Relation,
-			Object:    us.Object,
-			Namespace: us.Namespace,
-		})
-		if err != nil {
-			// TODO error handling
-			return nil, err
-		}
-
-		if restDepth <= 1 {
-			subTree.Type = Leaf
-			return subTree, nil
-		}
-
-		subTree.Children = make([]*Tree, len(rels))
-		for ri, r := range rels {
-			subTree.Children[ri], err = e.BuildTree(ctx, r.Subject, restDepth-1)
+		var (
+			rels     []*relationtuple.InternalRelationTuple
+			nextPage string
+		)
+		for nextPage != persistence.PageTokenEnd {
+			var err error
+			rels, nextPage, err = e.d.RelationTupleManager().GetRelationTuples(
+				ctx,
+				&relationtuple.RelationQuery{
+					Relation:  us.Relation,
+					Object:    us.Object,
+					Namespace: us.Namespace,
+				},
+				x.WithToken(nextPage),
+			)
 			if err != nil {
-				// TODO error handling
 				return nil, err
 			}
+
+			if restDepth <= 1 {
+				subTree.Type = Leaf
+				return subTree, nil
+			}
+
+			children := make([]*Tree, len(rels))
+			for ri, r := range rels {
+				children[ri], err = e.BuildTree(ctx, r.Subject, restDepth-1)
+				if err != nil {
+					return nil, err
+				}
+			}
+			subTree.Children = append(subTree.Children, children...)
 		}
 
 		return subTree, nil
