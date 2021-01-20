@@ -26,16 +26,15 @@ type (
 		namespaces namespace.Manager
 	}
 	internalPagination struct {
-		Offset uint
-		Limit  uint
+		Offset int
+		Limit  int
 	}
 	contextKeys string
 )
 
 const (
-	pageTokenEnd                      = "no other page"
 	transactionContextKey contextKeys = "ongoing transaction"
-	defaultPageSize       uint        = 100
+	defaultPageSize                   = 100
 )
 
 var (
@@ -101,7 +100,7 @@ func internalPaginationFromOptions(opts ...x.PaginationOptionSetter) (*internalP
 }
 
 func (p *internalPagination) parsePageToken(t string) error {
-	if t == pageTokenEnd {
+	if t == persistence.PageTokenEnd {
 		p.Limit = 0
 		p.Offset = 0
 		return nil
@@ -117,7 +116,7 @@ func (p *internalPagination) parsePageToken(t string) error {
 		return errors.WithStack(persistence.ErrMalformedPageToken)
 	}
 
-	p.Offset = uint(i)
+	p.Offset = int(i)
 	return nil
 }
 

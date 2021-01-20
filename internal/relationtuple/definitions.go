@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/url"
 	"strings"
+	"testing"
 
 	"github.com/tidwall/sjson"
 
@@ -401,4 +402,38 @@ func (r *relationCollection) Interface() interface{} {
 func (r *relationCollection) Len() int {
 	// one of them is zero so the sum is always correct
 	return len(r.protoRelations) + len(r.internalRelations)
+}
+
+type ManagerWrapper struct {
+	Reg            ManagerProvider
+	PageOpts       []x.PaginationOptionSetter
+	RequestedPages []string
+}
+
+var (
+	_ Manager         = (*ManagerWrapper)(nil)
+	_ ManagerProvider = (*ManagerWrapper)(nil)
+)
+
+func NewManagerWrapper(_ *testing.T, reg ManagerProvider, options ...x.PaginationOptionSetter) *ManagerWrapper {
+	return &ManagerWrapper{
+		Reg:      reg,
+		PageOpts: options,
+	}
+}
+
+func (t *ManagerWrapper) GetRelationTuples(ctx context.Context, query *RelationQuery, options ...x.PaginationOptionSetter) ([]*InternalRelationTuple, string, error) {
+	opts := x.GetPaginationOptions(options...)
+	if opts.Token != "" {
+		t.RequestedPages = append(t.RequestedPages, opts.Token)
+	}
+	return t.Reg.RelationTupleManager().GetRelationTuples(ctx, query, append(t.PageOpts, options...)...)
+}
+
+func (t *ManagerWrapper) WriteRelationTuples(ctx context.Context, rs ...*InternalRelationTuple) error {
+	return t.Reg.RelationTupleManager().WriteRelationTuples(ctx, rs...)
+}
+
+func (t *ManagerWrapper) RelationTupleManager() Manager {
+	return t
 }

@@ -13,11 +13,11 @@ import (
 
 func TestPaginationToken(t *testing.T) {
 	for i, tc := range []struct {
-		size           uint
+		size           int
 		token          string
 		expectedErr    error
-		expectedOffset uint
-		expectedLimit  uint
+		expectedOffset int
+		expectedLimit  int
 	}{
 		{
 			size:           10,

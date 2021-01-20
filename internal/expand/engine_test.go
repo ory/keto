@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/ory/keto/internal/x"
+
 	"github.com/ory/keto/internal/namespace"
 
 	"github.com/ory/keto/internal/relationtuple"
@@ -17,8 +19,8 @@ import (
 	"github.com/ory/keto/internal/driver"
 )
 
-func newTestEngine(t *testing.T, namespaces []*namespace.Namespace) (driver.Registry, *expand.Engine) {
-	reg := driver.NewMemoryTestRegistry(t, namespaces)
+func newTestEngine(t *testing.T, namespaces []*namespace.Namespace, paginationOpts ...x.PaginationOptionSetter) (*relationtuple.ManagerWrapper, *expand.Engine) {
+	reg := relationtuple.NewManagerWrapper(t, driver.NewMemoryTestRegistry(t, namespaces), paginationOpts...)
 
 	e := expand.NewEngine(reg)
 	return reg, e
@@ -215,5 +217,36 @@ func TestEngine(t *testing.T) {
 		require.NoError(t, err)
 
 		assert.Equal(t, expectedTree, actualTree)
+	})
+
+	t.Run("case=paginates", func(t *testing.T) {
+		reg, e := newTestEngine(t, []*namespace.Namespace{{}}, x.WithSize(2))
+
+		users := []string{"u1", "u2", "u3", "u4"}
+		expectedTree := &expand.Tree{
+			Type:    expand.Union,
+			Subject: &relationtuple.SubjectSet{Object: "root", Relation: "access"},
+		}
+
+		for _, user := range users {
+			require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), &relationtuple.InternalRelationTuple{
+				Object:   "root",
+				Relation: "access",
+				Subject:  &relationtuple.SubjectID{ID: user},
+			}))
+			expectedTree.Children = append(expectedTree.Children, &expand.Tree{
+				Type:    expand.Leaf,
+				Subject: &relationtuple.SubjectID{ID: user},
+			})
+		}
+
+		tree, err := e.BuildTree(context.Background(), &relationtuple.SubjectSet{
+			Object:   "root",
+			Relation: "access",
+		}, 10)
+		require.NoError(t, err)
+
+		assert.Equal(t, expectedTree, tree)
+		assert.Len(t, reg.RequestedPages, 2)
 	})
 }

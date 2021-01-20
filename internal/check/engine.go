@@ -3,9 +3,10 @@ package check
 import (
 	"context"
 	"fmt"
-	"os"
 
+	"github.com/ory/keto/internal/persistence"
 	"github.com/ory/keto/internal/relationtuple"
+	"github.com/ory/keto/internal/x"
 )
 
 type (
@@ -13,26 +14,26 @@ type (
 		PermissionEngine() *Engine
 	}
 	Engine struct {
-		d engineDependencies
+		d EngineDependencies
 	}
-	engineDependencies interface {
+	EngineDependencies interface {
 		relationtuple.ManagerProvider
 	}
 )
 
-func NewEngine(d engineDependencies) *Engine {
+func NewEngine(d EngineDependencies) *Engine {
 	return &Engine{
 		d: d,
 	}
 }
 
 func (e *Engine) subjectIsAllowed(ctx context.Context, requested *relationtuple.InternalRelationTuple, rels []*relationtuple.InternalRelationTuple) (bool, error) {
-	// This is the same as the graph problem "can requested.SubjectID be reached from requested.Object through the first outgoing edge requested.Name"
+	// This is the same as the graph problem "can requested.Subject be reached from requested.Object through the first outgoing edge requested.Relation"
 	//
 	// recursive breadth-first search
 	// TODO replace by more performant algorithm
 
-	var res bool
+	var allowed bool
 	for _, sr := range rels {
 		// TODO move this to input validation
 		if requested.Subject == nil {
@@ -46,36 +47,38 @@ func (e *Engine) subjectIsAllowed(ctx context.Context, requested *relationtuple.
 
 		sub, isSubjectSet := sr.Subject.(*relationtuple.SubjectSet)
 		if !isSubjectSet {
-			return false, nil
+			continue
 		}
 
-		// expand the set by one indirection
-		// TODO handle pagination
-		nextRels, _, err := e.d.RelationTupleManager().GetRelationTuples(ctx, &relationtuple.RelationQuery{Object: sub.Object, Relation: sub.Relation, Namespace: sub.Namespace})
+		var err error
+		// expand the set by one indirection; paginated
+		allowed, err = e.checkOneIndirectionFurther(ctx, requested, &relationtuple.RelationQuery{Object: sub.Object, Relation: sub.Relation, Namespace: sub.Namespace})
 		if err != nil {
-			// TODO fix error handling
-			_, _ = fmt.Fprintf(os.Stderr, "%+v", err)
 			return false, err
 		}
-
-		is, err := e.subjectIsAllowed(ctx, requested, nextRels)
-		if err != nil {
-			// TODO fix error handling
-			_, _ = fmt.Fprintf(os.Stderr, "%+v", err)
-			return false, err
-		}
-		res = res || is
 	}
 
-	return res, nil
+	return allowed, nil
+}
+
+func (e *Engine) checkOneIndirectionFurther(ctx context.Context, requested *relationtuple.InternalRelationTuple, expandQuery *relationtuple.RelationQuery) (allowed bool, err error) {
+	var (
+		nextRels []*relationtuple.InternalRelationTuple
+		nextPage string
+	)
+
+	// loop through pages until either allowed, end of pages, or an error occurred
+	for !allowed && nextPage != persistence.PageTokenEnd && err == nil {
+		nextRels, nextPage, err = e.d.RelationTupleManager().GetRelationTuples(ctx, expandQuery, x.WithToken(nextPage))
+		if err != nil {
+			return
+		}
+
+		allowed, err = e.subjectIsAllowed(ctx, requested, nextRels)
+	}
+	return
 }
 
 func (e *Engine) SubjectIsAllowed(ctx context.Context, r *relationtuple.InternalRelationTuple) (bool, error) {
-	// TODO handle pagination
-	subjectRelations, _, err := e.d.RelationTupleManager().GetRelationTuples(ctx, &relationtuple.RelationQuery{Object: r.Object, Relation: r.Relation, Namespace: r.Namespace})
-	if err != nil {
-		return false, err
-	}
-
-	return e.subjectIsAllowed(ctx, r, subjectRelations)
+	return e.checkOneIndirectionFurther(ctx, r, &relationtuple.RelationQuery{Object: r.Object, Relation: r.Relation, Namespace: r.Namespace})
 }
