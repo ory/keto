@@ -34,7 +34,7 @@ type (
 
 const (
 	transactionContextKey contextKeys = "ongoing transaction"
-	defaultPageSize                   = 100
+	defaultPageSize       int         = 100
 )
 
 var (
