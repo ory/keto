@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"strconv"
-	"testing"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -23,18 +22,18 @@ type grpcClient struct {
 	c *cmdx.CommandExecuter
 }
 
-var _ client = &grpcClient{}
+var _ client = (*grpcClient)(nil)
 
-func (g *grpcClient) createTuple(t *testing.T, r *relationtuple.InternalRelationTuple) {
+func (g *grpcClient) createTuple(t require.TestingT, r *relationtuple.InternalRelationTuple) {
 	tupleEnc, err := json.Marshal(r)
 	require.NoError(t, err)
 
-	stdout, stderr, err := g.c.Exec(t, bytes.NewBuffer(tupleEnc), "relation-tuple", "create", "-")
+	stdout, stderr, err := g.c.Exec(bytes.NewBuffer(tupleEnc), "relation-tuple", "create", "-")
 	require.NoError(t, err, "stdout: %s\nstderr: %s", stdout, stderr)
 	assert.Len(t, stderr, 0, stdout)
 }
 
-func (g *grpcClient) queryTuple(t *testing.T, q *relationtuple.RelationQuery) []*relationtuple.InternalRelationTuple {
+func (g *grpcClient) queryTuple(t require.TestingT, q *relationtuple.RelationQuery) []*relationtuple.InternalRelationTuple {
 	var flags []string
 	if q.Subject != nil {
 		flags = append(flags, "--"+clirelationtuple.FlagSubject, q.Subject.String())
@@ -54,14 +53,14 @@ func (g *grpcClient) queryTuple(t *testing.T, q *relationtuple.RelationQuery) []
 	return rels
 }
 
-func (g *grpcClient) check(t *testing.T, r *relationtuple.InternalRelationTuple) bool {
+func (g *grpcClient) check(t require.TestingT, r *relationtuple.InternalRelationTuple) bool {
 	out := g.c.ExecNoErr(t, "check", r.Subject.String(), r.Relation, r.Namespace, r.Object)
 	res, err := strconv.ParseBool(out)
 	require.NoError(t, err)
 	return res
 }
 
-func (g *grpcClient) expand(t *testing.T, r *relationtuple.SubjectSet, depth int) *expand.Tree {
+func (g *grpcClient) expand(t require.TestingT, r *relationtuple.SubjectSet, depth int) *expand.Tree {
 	out := g.c.ExecNoErr(t, "expand", r.Relation, r.Namespace, r.Object, "--"+cliexpand.FlagMaxDepth, fmt.Sprintf("%d", depth), "--"+cmdx.FlagFormat, string(cmdx.FormatJSON))
 	res := expand.Tree{}
 	require.NoError(t, json.Unmarshal([]byte(out), &res))

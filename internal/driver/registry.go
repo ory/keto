@@ -43,6 +43,10 @@ type (
 
 		ReadGRPCServer() *grpc.Server
 		WriteGRPCServer() *grpc.Server
+
+		ServeAll(ctx context.Context) error
+		ServeRead(ctx context.Context) error
+		ServeWrite(ctx context.Context) error
 	}
 
 	contextKeys string

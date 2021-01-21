@@ -2,8 +2,6 @@ module github.com/ory/keto
 
 replace google.golang.org/protobuf v1.25.1-0.20201020201750-d3470999428b => google.golang.org/protobuf v1.25.0
 
-replace github.com/ory/x => github.com/ory/x v0.0.172-0.20210102140819-6d303ca968d8
-
 replace github.com/soheilhy/cmux => github.com/soheilhy/cmux v0.1.5-0.20210114230657-cdd3331e3e7c
 
 require (

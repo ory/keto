@@ -6,13 +6,13 @@ import (
 	"strings"
 	"time"
 
+	"github.com/gobuffalo/pop/v5"
+
 	"github.com/ory/keto/internal/persistence"
 
 	"github.com/pkg/errors"
 
 	"github.com/ory/keto/internal/namespace"
-
-	"github.com/gobuffalo/pop/v5"
 
 	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/internal/x"
@@ -36,7 +36,9 @@ func (r *relationTuple) TableName() string {
 func (p *Persister) insertRelationTuple(ctx context.Context, rel *relationtuple.InternalRelationTuple) error {
 	commitTime := time.Now()
 
-	n, err := p.namespaces.GetNamespace(ctx, rel.Namespace)
+	n, err := p.
+		namespaces.
+		GetNamespace(ctx, rel.Namespace)
 	if err != nil {
 		return err
 	}
@@ -144,7 +146,7 @@ func (p *Persister) GetRelationTuples(ctx context.Context, query *relationtuple.
 }
 
 func (p *Persister) WriteRelationTuples(ctx context.Context, rs ...*relationtuple.InternalRelationTuple) error {
-	return p.transaction(ctx, func(ctx context.Context, tx *pop.Connection) error {
+	return p.transaction(ctx, func(ctx context.Context, _ *pop.Connection) error {
 		for _, r := range rs {
 			if err := p.insertRelationTuple(ctx, r); err != nil {
 				return err
