@@ -57,9 +57,8 @@ sharing options, and can therefore only be viewed by its owner, `cat lady`. The 
 ## Simulating the Client
 
 Now you can open a second terminal to run the queries against, just like the
-video service client would do. In this example we will use the Keto CLI client,
-Ory Keto's API supports tools like `curl` or [Postman](https://www.postman.com/)
-with [Keto's REST API](../reference/api.mdx) to achieve the same result.
+video service client would do. In this example we will use the Keto CLI client.
+
 
 :::info
 
@@ -119,7 +118,7 @@ indicates that every owner of the object is allowed to view
 
 `videos:/cats/1.mp4#owner`
 
-In the next step we see that the owners of the object are the owners of `/cats`
+In the next step we see that the object's owners are the owners of `/cats`
 
 `videos:/cats#owner`
 
