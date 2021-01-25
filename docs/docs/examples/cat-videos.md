@@ -3,14 +3,14 @@ id: cat-videos-example
 title: Cat Videos Application Example
 ---
 
-This example describes a video sharing service. Videos are organized in
+This example describes a video sharing service. The individual videos are organized in
 directories. Every directory has an owner and every video has the same owner as
-it's parent directory. The owner has elevated privileges about the video which
-are not modeled individually in Ory Keto. The only other privilege we are
-modeling in this example is view access. Every owner has view access to their
-objects, but this can be granted to other users as well. The application
+it's parent directory. The owner has elevated privileges about the video files that
+are not modeled individually in Ory Keto. The only other privilege
+modeled in this example is "view access." Every owner has view access to their
+objects, and this privilege can be granted to other users as well. The Ory Keto application
 interprets the special `*` user ID as any user (even anonymous). Note that Ory
-Keto does not interpret this subject any different from other subjects. It also
+Keto does not interpret this subject any differently from other subjects. It also
 does not know anything about directory structures or induced ownership.
 
 ## Starting the Example
@@ -18,8 +18,13 @@ does not know anything about directory structures or induced ownership.
 First, [install Keto](../install.md).
 
 Now you can start the example using either `docker-compose` or a bash script.
-The bash script requires you to have the `keto` binary in your `$PATH`, while
-docker automatically gets the required images.
+The bash script requires you to have the `keto` binary in your `$PATH` as follows:
+
+```shell
+$ sudo mv ./keto /usr/local/bin/
+$ keto help
+```
+Alternatively, using Docker automatically gets the required images:
 
 ```shell
 # clone the repository if you don't have it yet
@@ -43,18 +48,17 @@ docker-compose -f contrib/cat-videos-example/docker-compose.yml up
 
 ## State of the System
 
-At the current state only one user (with the username `cat lady`) has added
-videos. Both of them are in the `/cats` directory which `cat lady` owns.
-`/cats/1.mp4` is viewable by anyone (`*`), while `/cats/2.mp4` has no extra
-sharing options and can therefore only be viewed by its owner, `cat lady`. Have
-a look at all the relation tuple definitions in the
+At the current state only one user with the username `cat lady` has added
+videos. Both videos are in the `/cats` directory owned by `cat lady`.
+The file `/cats/1.mp4` can be viewed by anyone (`*`), while `/cats/2.mp4` has no extra
+sharing options, and can therefore only be viewed by its owner, `cat lady`. The relation tuple definitions are located in the
 `contrib/cat-videos-example/relation-tuples` directory.
 
 ## Simulating the Client
 
 Now you can open a second terminal to run the queries against, just like the
-video service client would do. We will use the Keto CLI client in this example,
-but you can also use a tool like `curl` or [Postman](https://www.postman.com/)
+video service client would do. In this example we will use the Keto CLI client,
+Ory Keto's API supports tools like `curl` or [Postman](https://www.postman.com/)
 with [Keto's REST API](../reference/api.mdx) to achieve the same result.
 
 :::info
