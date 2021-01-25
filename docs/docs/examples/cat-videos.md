@@ -9,7 +9,7 @@ it's parent directory. The owner has elevated privileges about the video files t
 are not modeled individually in Ory Keto. The only other privilege
 modeled in this example is "view access." Every owner has view access to their
 objects, and this privilege can be granted to other users as well. The Ory Keto application
-interprets the special `*` user ID as any user (even anonymous). Note that Ory
+interprets the special `*` user ID as any user, including anonymous users. Note that Ory
 Keto does not interpret this subject any differently from other subjects. It also
 does not know anything about directory structures or induced ownership.
 
@@ -102,7 +102,7 @@ to view the video. It uses Keto's [Expand API](/TODO) to get these data:
 ```shell
 # Who is allowed to "view" the object "videos":"/cats/2.mp4"?
 keto expand view videos /cats/1.mp4
-# outupt:
+# output:
 
 # ∪ videos:/cats/1.mp4#view
 # ├─ ∪ videos:/cats/1.mp4#owner
@@ -111,16 +111,33 @@ keto expand view videos /cats/1.mp4
 # ├─ ☘ *️
 ```
 
-Here we can see what the requested user set expands to. In the first branch we
-see that every owner of the object is allowed to view it
-(`videos:/cats/1.mp4#owner`). In the next step we see that the owners of the
-object are actually the owners of `/cats` (`videos:/cats#owner`). Finally, we
-see that `cat lady` is the owner of `/cats`. Note that there is no direct
-relation tuple that would grant `cat lady` view access on `/cats/1.mp4`. This is
-indirectly defined via the ownership relation.
+Here we can see the full user set expansion. The first branch
+
+`videos:/cats/1.mp4#view`
+
+indicates that every owner of the object is allowed to view
+
+`videos:/cats/1.mp4#owner`
+
+In the next step we see that the owners of the object are the owners of `/cats`
+
+`videos:/cats#owner`
+
+Finally, we see that `cat lady` is the owner of `/cats`.
+
+Note that there is no direct relation tuple that would grant `cat lady` view access on `/cats/1.mp4` as this is indirectly defined via the ownership relation.
 
 The special user `*` on the other hand was directly granted view access on the
-object, as it is a first-level leaf of the expansion tree.
+object, as it is a first-level leaf of the expansion tree. The following CLI command proves that this is the case:
+
+```shell
+# Is "*" allowed to "view" the object "videos":"/cats/1.mp4"?
+keto check "*" view videos /cats/1.mp4
+# output:
+
+# true
+```
+
 
 <!--TODO-->
 
