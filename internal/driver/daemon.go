@@ -17,33 +17,26 @@ import (
 func (r *RegistryDefault) ServeAll(ctx context.Context) error {
 	eg := &errgroup.Group{}
 
-	eg.Go(func() error {
-		return r.ServeRead(ctx)
-	})
-
-	eg.Go(func() error {
-		return r.ServeWrite(ctx)
-	})
+	eg.Go(r.ServeRead(ctx))
+	eg.Go(r.ServeWrite(ctx))
 
 	return eg.Wait()
 }
 
-func (r *RegistryDefault) ServeRead(ctx context.Context) error {
-	return multiplexPort(
-		ctx,
-		r.Config().ReadAPIListenOn(),
-		r.ReadRouter().Router,
-		r.ReadGRPCServer(),
-	)
+func (r *RegistryDefault) ServeRead(ctx context.Context) func() error {
+	rt, s := r.ReadRouter().Router, r.ReadGRPCServer()
+
+	return func() error {
+		return multiplexPort(ctx, r.Config().ReadAPIListenOn(), rt, s)
+	}
 }
 
-func (r *RegistryDefault) ServeWrite(ctx context.Context) error {
-	return multiplexPort(
-		ctx,
-		r.Config().WriteAPIListenOn(),
-		r.WriteRouter().Router,
-		r.WriteGRPCServer(),
-	)
+func (r *RegistryDefault) ServeWrite(ctx context.Context) func() error {
+	rt, s := r.WriteRouter().Router, r.WriteGRPCServer()
+
+	return func() error {
+		return multiplexPort(ctx, r.Config().WriteAPIListenOn(), rt, s)
+	}
 }
 
 func multiplexPort(ctx context.Context, addr string, router *httprouter.Router, grpcS *grpc.Server) error {
