@@ -3,27 +3,30 @@ id: cat-videos-example
 title: Cat Videos Application Example
 ---
 
-This example describes a video sharing service. The individual videos are organized in
-directories. Every directory has an owner and every video has the same owner as
-it's parent directory. The owner has elevated privileges about the video files that
-are not modeled individually in Ory Keto. The only other privilege
-modeled in this example is "view access." Every owner has view access to their
-objects, and this privilege can be granted to other users as well. The Ory Keto application
-interprets the special `*` user ID as any user, including anonymous users. Note that Ory
-Keto does not interpret this subject any differently from other subjects. It also
-does not know anything about directory structures or induced ownership.
+This example describes a video sharing service. The individual videos are
+organized in directories. Every directory has an owner and every video has the
+same owner as it's parent directory. The owner has elevated privileges about the
+video files that are not modeled individually in Ory Keto. The only other
+privilege modeled in this example is "view access." Every owner has view access
+to their objects, and this privilege can be granted to other users as well. The
+Ory Keto application interprets the special `*` user ID as any user, including
+anonymous users. Note that Ory Keto does not interpret this subject any
+differently from other subjects. It also does not know anything about directory
+structures or induced ownership.
 
 ## Starting the Example
 
 First, [install Keto](../install.md).
 
 Now you can start the example using either `docker-compose` or a bash script.
-The bash script requires you to have the `keto` binary in your `$PATH` as follows:
+The bash script requires you to have the `keto` binary in your `$PATH` as
+follows:
 
 ```shell
 $ sudo mv ./keto /usr/local/bin/
 $ keto help
 ```
+
 Alternatively, using Docker automatically gets the required images:
 
 ```shell
@@ -49,16 +52,16 @@ docker-compose -f contrib/cat-videos-example/docker-compose.yml up
 ## State of the System
 
 At the current state only one user with the username `cat lady` has added
-videos. Both videos are in the `/cats` directory owned by `cat lady`.
-The file `/cats/1.mp4` can be viewed by anyone (`*`), while `/cats/2.mp4` has no extra
-sharing options, and can therefore only be viewed by its owner, `cat lady`. The relation tuple definitions are located in the
+videos. Both videos are in the `/cats` directory owned by `cat lady`. The file
+`/cats/1.mp4` can be viewed by anyone (`*`), while `/cats/2.mp4` has no extra
+sharing options, and can therefore only be viewed by its owner, `cat lady`. The
+relation tuple definitions are located in the
 `contrib/cat-videos-example/relation-tuples` directory.
 
 ## Simulating the Client
 
 Now you can open a second terminal to run the queries against, just like the
 video service client would do. In this example we will use the Keto CLI client.
-
 
 :::info
 
@@ -124,10 +127,13 @@ In the next step we see that the object's owners are the owners of `/cats`
 
 Finally, we see that `cat lady` is the owner of `/cats`.
 
-Note that there is no direct relation tuple that would grant `cat lady` view access on `/cats/1.mp4` as this is indirectly defined via the ownership relation.
+Note that there is no direct relation tuple that would grant `cat lady` view
+access on `/cats/1.mp4` as this is indirectly defined via the ownership
+relation.
 
 The special user `*` on the other hand was directly granted view access on the
-object, as it is a first-level leaf of the expansion tree. The following CLI command proves that this is the case:
+object, as it is a first-level leaf of the expansion tree. The following CLI
+command proves that this is the case:
 
 ```shell
 # Is "*" allowed to "view" the object "videos":"/cats/1.mp4"?
@@ -136,7 +142,6 @@ keto check "*" view videos /cats/1.mp4
 
 # true
 ```
-
 
 <!--TODO-->
 
