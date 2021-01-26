@@ -5,8 +5,8 @@ services:
     image: oryd/keto:latest
     ports:
       - "4466:4466"
-    command:
-      serve
+      - "4467:4467"
+    command: serve
     environment:
       - LOG_LEVEL=debug
       - PORT=4466

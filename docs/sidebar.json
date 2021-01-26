@@ -14,6 +14,9 @@
     "engines/acp-ory",
     "engines/acp-aws"
   ],
+  "Examples": [
+    "examples/cat-videos-example"
+  ],
   "Reference": [
     "reference/configuration",
     "reference/api"

@@ -385,4 +385,46 @@ func TestEngine(t *testing.T) {
 			}
 		}
 	})
+
+	t.Run("case=wide tuple graph", func(t *testing.T) {
+		namesp, obj, access, member, users, orgs := "namesp", "obj", "access", "member", []string{"u1", "u2", "u3", "u4"}, []string{"o1", "o2"}
+
+		reg := newDepsProvider(t, []*namespace.Namespace{{Name: namesp, ID: 1}})
+
+		for _, org := range orgs {
+			require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), &relationtuple.InternalRelationTuple{
+				Namespace: namesp,
+				Object:    obj,
+				Relation:  access,
+				Subject: &relationtuple.SubjectSet{
+					Namespace: namesp,
+					Object:    org,
+					Relation:  member,
+				},
+			}))
+		}
+
+		for i, user := range users {
+			require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), &relationtuple.InternalRelationTuple{
+				Namespace: namesp,
+				Object:    orgs[i%len(orgs)],
+				Relation:  member,
+				Subject:   &relationtuple.SubjectID{ID: user},
+			}))
+		}
+
+		e := check.NewEngine(reg)
+
+		for _, user := range users {
+			req := &relationtuple.InternalRelationTuple{
+				Namespace: namesp,
+				Object:    obj,
+				Relation:  access,
+				Subject:   &relationtuple.SubjectID{ID: user},
+			}
+			allowed, err := e.SubjectIsAllowed(context.Background(), req)
+			require.NoError(t, err)
+			assert.True(t, allowed, req.String())
+		}
+	})
 }
