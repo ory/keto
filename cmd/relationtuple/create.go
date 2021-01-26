@@ -24,7 +24,7 @@ func newCreateCmd() *cobra.Command {
 		Use:  "create <relation-tuple.json> [<relation-tuple-dir>]",
 		Args: cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			conn, err := client.GetGRPCConn(cmd)
+			conn, err := client.GetWriteConn(cmd)
 			if err != nil {
 				return err
 			}

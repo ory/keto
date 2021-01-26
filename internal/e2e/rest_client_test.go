@@ -21,17 +21,22 @@ import (
 var _ client = &restClient{}
 
 type restClient struct {
-	baseURL string
+	readURL, writeURL string
 }
 
-func (rc *restClient) makeRequest(t *testing.T, method, path, body string) (string, int) {
+func (rc *restClient) makeRequest(t *testing.T, method, path, body string, write bool) (string, int) {
 	var b io.Reader
 	if body != "" {
 		b = bytes.NewBufferString(body)
 	}
 
-	// t.Logf("Requesting %s %s%s with body %#v", method, rc.baseURL, path, body)
-	req, err := http.NewRequest(method, rc.baseURL+path, b)
+	baseURL := rc.readURL
+	if write {
+		baseURL = rc.writeURL
+	}
+
+	// t.Logf("Requesting %s %s%s with body %#v", method, baseURL, path, body)
+	req, err := http.NewRequest(method, baseURL+path, b)
 	require.NoError(t, err)
 	resp, err := http.DefaultClient.Do(req)
 	require.NoError(t, err)
@@ -46,12 +51,12 @@ func (rc *restClient) createTuple(t *testing.T, r *relationtuple.InternalRelatio
 	tEnc, err := json.Marshal(r)
 	require.NoError(t, err)
 
-	body, code := rc.makeRequest(t, http.MethodPut, relationtuple.RouteBase, string(tEnc))
+	body, code := rc.makeRequest(t, http.MethodPut, relationtuple.RouteBase, string(tEnc), true)
 	assert.Equal(t, http.StatusCreated, code, body)
 }
 
 func (rc *restClient) queryTuple(t *testing.T, q *relationtuple.RelationQuery) []*relationtuple.InternalRelationTuple {
-	body, code := rc.makeRequest(t, http.MethodGet, fmt.Sprintf("%s?%s", relationtuple.RouteBase, q.ToURLQuery().Encode()), "")
+	body, code := rc.makeRequest(t, http.MethodGet, fmt.Sprintf("%s?%s", relationtuple.RouteBase, q.ToURLQuery().Encode()), "", false)
 	require.Equal(t, http.StatusOK, code, body)
 
 	tuple := make([]*relationtuple.InternalRelationTuple, 0, gjson.Get(body, "relations.#").Int())
@@ -61,7 +66,7 @@ func (rc *restClient) queryTuple(t *testing.T, q *relationtuple.RelationQuery) [
 }
 
 func (rc *restClient) check(t *testing.T, r *relationtuple.InternalRelationTuple) bool {
-	body, code := rc.makeRequest(t, http.MethodGet, fmt.Sprintf("%s?%s", check.RouteBase, r.ToURLQuery().Encode()), "")
+	body, code := rc.makeRequest(t, http.MethodGet, fmt.Sprintf("%s?%s", check.RouteBase, r.ToURLQuery().Encode()), "", false)
 
 	if code == http.StatusOK {
 		assert.Equal(t, `"allowed"`, body) // JSON string, therefore quoted
@@ -77,7 +82,7 @@ func (rc *restClient) expand(t *testing.T, r *relationtuple.SubjectSet, depth in
 	query := r.ToURLQuery()
 	query.Set("depth", fmt.Sprintf("%d", depth))
 
-	body, code := rc.makeRequest(t, http.MethodGet, fmt.Sprintf("%s?%s", expand.RouteBase, query.Encode()), "")
+	body, code := rc.makeRequest(t, http.MethodGet, fmt.Sprintf("%s?%s", expand.RouteBase, query.Encode()), "", false)
 	require.Equal(t, http.StatusOK, code, body)
 
 	tree := &expand.Tree{}

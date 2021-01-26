@@ -4,6 +4,8 @@ import (
 	"context"
 	"testing"
 
+	"github.com/ory/keto/internal/x"
+
 	"github.com/ory/keto/internal/namespace"
 
 	"github.com/ory/keto/internal/relationtuple"
@@ -16,8 +18,9 @@ import (
 	"github.com/ory/keto/internal/driver"
 )
 
-func newReg(t *testing.T, namespaces []*namespace.Namespace) driver.Registry {
-	return driver.NewMemoryTestRegistry(t, namespaces)
+func newDepsProvider(t *testing.T, namespaces []*namespace.Namespace, pageOpts ...x.PaginationOptionSetter) *relationtuple.ManagerWrapper {
+	reg := driver.NewMemoryTestRegistry(t, namespaces)
+	return relationtuple.NewManagerWrapper(t, reg, pageOpts...)
 }
 
 func TestEngine(t *testing.T) {
@@ -29,7 +32,7 @@ func TestEngine(t *testing.T) {
 			Subject:   &relationtuple.SubjectID{ID: "user"},
 		}
 
-		reg := newReg(t, []*namespace.Namespace{
+		reg := newDepsProvider(t, []*namespace.Namespace{
 			{Name: rel.Namespace, ID: 1},
 		})
 		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), &rel))
@@ -65,7 +68,7 @@ func TestEngine(t *testing.T) {
 			Subject:   &mark,
 		}
 
-		reg := newReg(t, []*namespace.Namespace{
+		reg := newDepsProvider(t, []*namespace.Namespace{
 			{Name: sofaNamespace, ID: 1},
 		})
 		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), &cleaningRelation, &markProducesDust))
@@ -93,7 +96,7 @@ func TestEngine(t *testing.T) {
 			Subject:   user,
 		}
 
-		reg := newReg(t, []*namespace.Namespace{
+		reg := newDepsProvider(t, []*namespace.Namespace{
 			{Name: rel.Namespace, ID: 10},
 		})
 		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), &rel))
@@ -126,7 +129,7 @@ func TestEngine(t *testing.T) {
 			Subject:  &relationtuple.SubjectID{ID: "user"},
 		}
 
-		reg := newReg(t, []*namespace.Namespace{
+		reg := newDepsProvider(t, []*namespace.Namespace{
 			{Name: "", ID: 1},
 		})
 		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), &access, &user))
@@ -163,7 +166,7 @@ func TestEngine(t *testing.T) {
 			Subject:   &relationtuple.SubjectID{ID: "your mother"},
 		}
 
-		reg := newReg(t, []*namespace.Namespace{
+		reg := newDepsProvider(t, []*namespace.Namespace{
 			{Name: diaryNamespace, ID: 1},
 		})
 		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), &readDiary, &user))
@@ -219,7 +222,7 @@ func TestEngine(t *testing.T) {
 			Subject:   &user,
 		}
 
-		reg := newReg(t, []*namespace.Namespace{
+		reg := newDepsProvider(t, []*namespace.Namespace{
 			{Name: someNamespace, ID: 1},
 			{Name: orgNamespace, ID: 2},
 		})
@@ -272,7 +275,7 @@ func TestEngine(t *testing.T) {
 			Subject:  &user,
 		}
 
-		reg := newReg(t, []*namespace.Namespace{
+		reg := newDepsProvider(t, []*namespace.Namespace{
 			{Name: "", ID: 2},
 		})
 		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), &parent, &directoryAccess))
@@ -286,5 +289,100 @@ func TestEngine(t *testing.T) {
 		})
 		require.NoError(t, err)
 		assert.False(t, res)
+	})
+
+	t.Run("case=subject id next to subject set", func(t *testing.T) {
+		namesp, obj, org, directOwner, indirectOwner, ownerRel, memberRel := "namesp", "obj", "org", "u1", "u2", "owner", "member"
+
+		reg := newDepsProvider(t, []*namespace.Namespace{
+			{Name: namesp, ID: 1},
+		})
+		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(
+			context.Background(),
+			&relationtuple.InternalRelationTuple{
+				Namespace: namesp,
+				Object:    obj,
+				Relation:  ownerRel,
+				Subject:   &relationtuple.SubjectID{ID: directOwner},
+			},
+			&relationtuple.InternalRelationTuple{
+				Namespace: namesp,
+				Object:    obj,
+				Relation:  ownerRel,
+				Subject: &relationtuple.SubjectSet{
+					Namespace: namesp,
+					Object:    org,
+					Relation:  memberRel,
+				},
+			},
+			&relationtuple.InternalRelationTuple{
+				Namespace: namesp,
+				Object:    org,
+				Relation:  memberRel,
+				Subject:   &relationtuple.SubjectID{ID: indirectOwner},
+			},
+		))
+
+		e := check.NewEngine(reg)
+
+		res, err := e.SubjectIsAllowed(context.Background(), &relationtuple.InternalRelationTuple{
+			Namespace: namesp,
+			Object:    obj,
+			Relation:  ownerRel,
+			Subject:   &relationtuple.SubjectID{ID: directOwner},
+		})
+		require.NoError(t, err)
+		assert.True(t, res)
+
+		res, err = e.SubjectIsAllowed(context.Background(), &relationtuple.InternalRelationTuple{
+			Namespace: namesp,
+			Object:    obj,
+			Relation:  ownerRel,
+			Subject:   &relationtuple.SubjectID{ID: indirectOwner},
+		})
+		require.NoError(t, err)
+		assert.True(t, res)
+	})
+
+	t.Run("case=paginates", func(t *testing.T) {
+		namesp, obj, access, users := "namesp", "obj", "access", []string{"u1", "u2", "u3", "u4"}
+		pageSize := 2
+
+		reg := newDepsProvider(
+			t,
+			[]*namespace.Namespace{{Name: namesp, ID: 1}},
+			x.WithSize(pageSize),
+		)
+
+		for _, user := range users {
+			require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), &relationtuple.InternalRelationTuple{
+				Namespace: namesp,
+				Object:    obj,
+				Relation:  access,
+				Subject:   &relationtuple.SubjectID{ID: user},
+			}))
+		}
+
+		e := check.NewEngine(reg)
+
+		for i, user := range users {
+			allowed, err := e.SubjectIsAllowed(context.Background(), &relationtuple.InternalRelationTuple{
+				Namespace: namesp,
+				Object:    obj,
+				Relation:  access,
+				Subject:   &relationtuple.SubjectID{ID: user},
+			})
+			require.NoError(t, err)
+			assert.True(t, allowed)
+
+			// pagination assertions
+			if i >= pageSize {
+				assert.Len(t, reg.RequestedPages, 1)
+				// reset requested pages for next iteration
+				reg.RequestedPages = nil
+			} else {
+				assert.Len(t, reg.RequestedPages, 0)
+			}
+		}
 	})
 }

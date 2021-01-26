@@ -4,6 +4,9 @@ import (
 	"context"
 	"time"
 
+	"github.com/julienschmidt/httprouter"
+	"google.golang.org/grpc"
+
 	"github.com/cenkalti/backoff"
 	"github.com/ory/x/sqlcon"
 
@@ -26,21 +29,33 @@ import (
 	"github.com/ory/keto/internal/x"
 )
 
-var _ relationtuple.ManagerProvider = &RegistryDefault{}
-var _ x.WriterProvider = &RegistryDefault{}
-var _ x.LoggerProvider = &RegistryDefault{}
-var _ Registry = &RegistryDefault{}
+var (
+	_ relationtuple.ManagerProvider = (*RegistryDefault)(nil)
+	_ x.WriterProvider              = (*RegistryDefault)(nil)
+	_ x.LoggerProvider              = (*RegistryDefault)(nil)
+	_ Registry                      = (*RegistryDefault)(nil)
+)
 
-type RegistryDefault struct {
-	p      persistence.Persister
-	l      *logrusx.Logger
-	w      herodot.Writer
-	ce     *check.Engine
-	ee     *expand.Engine
-	conn   *pop.Connection
-	c      config.Provider
-	health *healthx.Handler
-}
+type (
+	RegistryDefault struct {
+		p    persistence.Persister
+		l    *logrusx.Logger
+		w    herodot.Writer
+		ce   *check.Engine
+		ee   *expand.Engine
+		conn *pop.Connection
+		c    config.Provider
+
+		healthH  *healthx.Handler
+		handlers []Handler
+	}
+	Handler interface {
+		RegisterReadRoutes(r *x.ReadRouter)
+		RegisterWriteRoutes(r *x.WriteRouter)
+		RegisterReadGRPC(s *grpc.Server)
+		RegisterWriteGRPC(s *grpc.Server)
+	}
+)
 
 func (r *RegistryDefault) BuildVersion() string {
 	return config.Version
@@ -59,11 +74,11 @@ func (r *RegistryDefault) Config() config.Provider {
 }
 
 func (r *RegistryDefault) HealthHandler() *healthx.Handler {
-	if r.health == nil {
-		r.health = healthx.NewHandler(r.Writer(), config.Version, healthx.ReadyCheckers{})
+	if r.healthH == nil {
+		r.healthH = healthx.NewHandler(r.Writer(), config.Version, healthx.ReadyCheckers{})
 	}
 
-	return r.health
+	return r.healthH
 }
 
 func (r *RegistryDefault) Tracer() *tracing.Tracer {
@@ -185,4 +200,59 @@ func (r *RegistryDefault) Init(ctx context.Context) error {
 	}
 
 	return nil
+}
+
+func (r *RegistryDefault) allHandlers() []Handler {
+	if len(r.handlers) == 0 {
+		r.handlers = []Handler{
+			relationtuple.NewHandler(r),
+			check.NewHandler(r),
+			expand.NewHandler(r),
+		}
+	}
+	return r.handlers
+}
+
+func (r *RegistryDefault) ReadRouter() *x.ReadRouter {
+	br := &x.ReadRouter{Router: httprouter.New()}
+
+	r.HealthHandler().SetRoutes(br.Router, false)
+
+	for _, h := range r.allHandlers() {
+		h.RegisterReadRoutes(br)
+	}
+
+	return br
+}
+
+func (r *RegistryDefault) WriteRouter() *x.WriteRouter {
+	pr := &x.WriteRouter{Router: httprouter.New()}
+
+	r.HealthHandler().SetRoutes(pr.Router, false)
+
+	for _, h := range r.allHandlers() {
+		h.RegisterWriteRoutes(pr)
+	}
+
+	return pr
+}
+
+func (r *RegistryDefault) ReadGRPCServer() *grpc.Server {
+	s := grpc.NewServer()
+
+	for _, h := range r.allHandlers() {
+		h.RegisterReadGRPC(s)
+	}
+
+	return s
+}
+
+func (r *RegistryDefault) WriteGRPCServer() *grpc.Server {
+	s := grpc.NewServer()
+
+	for _, h := range r.allHandlers() {
+		h.RegisterWriteGRPC(s)
+	}
+
+	return s
 }

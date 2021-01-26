@@ -4,6 +4,8 @@ import (
 	"context"
 	"net/http"
 
+	"google.golang.org/grpc"
+
 	acl "github.com/ory/keto/api/keto/acl/v1alpha1"
 
 	"github.com/ory/keto/internal/relationtuple"
@@ -19,31 +21,32 @@ type (
 		x.LoggerProvider
 		x.WriterProvider
 	}
-	restHandler struct {
-		d handlerDependencies
-	}
-	grpcHandler struct {
+	Handler struct {
 		d handlerDependencies
 	}
 )
 
-var _ acl.CheckServiceServer = &grpcHandler{}
+var _ acl.CheckServiceServer = (*Handler)(nil)
 
-func NewHandler(d handlerDependencies) *restHandler {
-	return &restHandler{d: d}
-}
-
-func NewGRPCServer(d handlerDependencies) *grpcHandler {
-	return &grpcHandler{d: d}
+func NewHandler(d handlerDependencies) *Handler {
+	return &Handler{d: d}
 }
 
 const RouteBase = "/check"
 
-func (h *restHandler) RegisterPublicRoutes(router *httprouter.Router) {
-	router.GET(RouteBase, h.getCheck)
+func (h *Handler) RegisterReadRoutes(r *x.ReadRouter) {
+	r.GET(RouteBase, h.getCheck)
 }
 
-func (h *restHandler) getCheck(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+func (h *Handler) RegisterWriteRoutes(_ *x.WriteRouter) {}
+
+func (h *Handler) RegisterReadGRPC(s *grpc.Server) {
+	acl.RegisterCheckServiceServer(s, h)
+}
+
+func (h *Handler) RegisterWriteGRPC(_ *grpc.Server) {}
+
+func (h *Handler) getCheck(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	tuple, err := (&relationtuple.InternalRelationTuple{}).FromURLQuery(r.URL.Query())
 	if err != nil {
 		h.d.Writer().WriteError(w, r, err)
@@ -63,10 +66,10 @@ func (h *restHandler) getCheck(w http.ResponseWriter, r *http.Request, _ httprou
 	h.d.Writer().WriteCode(w, r, http.StatusForbidden, "rejected")
 }
 
-func (g *grpcHandler) Check(ctx context.Context, req *acl.CheckRequest) (*acl.CheckResponse, error) {
+func (h *Handler) Check(ctx context.Context, req *acl.CheckRequest) (*acl.CheckResponse, error) {
 	tuple := (&relationtuple.InternalRelationTuple{}).FromDataProvider(req)
 
-	allowed, err := g.d.PermissionEngine().SubjectIsAllowed(ctx, tuple)
+	allowed, err := h.d.PermissionEngine().SubjectIsAllowed(ctx, tuple)
 	// TODO add content change handling
 	if err != nil {
 		return nil, err

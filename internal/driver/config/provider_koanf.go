@@ -25,11 +25,11 @@ import (
 const (
 	KeyDSN = "dsn"
 
-	KeyRESTHost = "serve.rest.host"
-	KeyRESTPort = "serve.rest.port"
+	KeyReadAPIHost = "serve.read.host"
+	KeyReadAPIPort = "serve.read.port"
 
-	KeyGRPCHost = "serve.grpc.host"
-	KeyGRPCPort = "serve.grpc.port"
+	KeyWriteAPIHost = "serve.write.host"
+	KeyWriteAPIPort = "serve.write.port"
 
 	KeyNamespaces = "namespaces"
 )
@@ -107,19 +107,19 @@ func (k *KoanfProvider) Set(key string, v interface{}) error {
 	return nil
 }
 
-func (k *KoanfProvider) RESTListenOn() string {
+func (k *KoanfProvider) ReadAPIListenOn() string {
 	return fmt.Sprintf(
 		"%s:%d",
-		k.p.StringF(KeyRESTHost, ""),
-		k.p.IntF(KeyRESTPort, 4466),
+		k.p.StringF(KeyReadAPIHost, ""),
+		k.p.IntF(KeyReadAPIPort, 4466),
 	)
 }
 
-func (k *KoanfProvider) GRPCListenOn() string {
+func (k *KoanfProvider) WriteAPIListenOn() string {
 	return fmt.Sprintf(
 		"%s:%d",
-		k.p.StringF(KeyGRPCHost, ""),
-		k.p.IntF(KeyGRPCPort, 4467),
+		k.p.StringF(KeyWriteAPIHost, ""),
+		k.p.IntF(KeyWriteAPIPort, 4467),
 	)
 }
 
