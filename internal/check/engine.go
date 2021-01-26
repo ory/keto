@@ -56,6 +56,9 @@ func (e *Engine) subjectIsAllowed(ctx context.Context, requested *relationtuple.
 		if err != nil {
 			return false, err
 		}
+		if allowed {
+			return true, nil
+		}
 	}
 
 	return allowed, nil
