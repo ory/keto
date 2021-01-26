@@ -44,6 +44,27 @@ Something is not working.
 - [ ] Unable to create relations using REST API and string notation
       ([keto#293](https://github.com/ory/keto/issues/293)) -
       [@Patrik](https://github.com/zepatrik)
+- [ ] Remove `config.Provider` interface
+      ([keto#403](https://github.com/ory/keto/issues/403)) -
+      [@Patrik](https://github.com/zepatrik)
+- [ ] Abort early in subjectIsAllowed
+      ([keto#405](https://github.com/ory/keto/issues/405)) -
+      [@Patrik](https://github.com/zepatrik)
+- [ ] Check REST API should return JSON Object
+      ([keto#406](https://github.com/ory/keto/issues/406)) -
+      [@Patrik](https://github.com/zepatrik)
+- [ ] Clarify where handlers are tested
+      ([keto#407](https://github.com/ory/keto/issues/407)) -
+      [@Patrik](https://github.com/zepatrik)
+- [ ] Write relationtuple tests
+      ([keto#408](https://github.com/ory/keto/issues/408)) -
+      [@Patrik](https://github.com/zepatrik)
+- [ ] Write dedicated persistence tests
+      ([keto#409](https://github.com/ory/keto/issues/409)) -
+      [@Patrik](https://github.com/zepatrik)
+- [ ] Handle circular relation tuples
+      ([keto#411](https://github.com/ory/keto/issues/411)) -
+      [@Patrik](https://github.com/zepatrik)
 - [x] Replace in-memory persister with SQLite schema
       ([keto#294](https://github.com/ory/keto/issues/294)) -
       [@Patrik](https://github.com/zepatrik)
@@ -69,6 +90,18 @@ New feature or request.
 - [ ] Namespace configuration
       ([keto#303](https://github.com/ory/keto/issues/303)) -
       [@Patrik](https://github.com/zepatrik)
+- [ ] Follow buf style guide
+      ([keto#400](https://github.com/ory/keto/issues/400)) -
+      [@Patrik](https://github.com/zepatrik)
+- [ ] Move buf configs to project root
+      ([keto#399](https://github.com/ory/keto/issues/399)) -
+      [@Patrik](https://github.com/zepatrik)
+- [ ] Remove stale protobuf definitions
+      ([keto#401](https://github.com/ory/keto/issues/401)) -
+      [@Patrik](https://github.com/zepatrik)
+- [ ] Relation Tuple Migrations should not be hardcoded but use prefixed tables
+      ([keto#404](https://github.com/ory/keto/issues/404)) -
+      [@Patrik](https://github.com/zepatrik)
 - [x] Write relationtuple tests for http and grpc handlers
       ([keto#297](https://github.com/ory/keto/issues/297)) -
       [@Patrik](https://github.com/zepatrik),
@@ -91,6 +124,9 @@ Blocks milestones or other issues or pulls.
 - [ ] Namespace configuration
       ([keto#303](https://github.com/ory/keto/issues/303)) -
       [@Patrik](https://github.com/zepatrik)
+- [ ] Ensure goreleaser config is still working
+      ([keto#410](https://github.com/ory/keto/issues/410)) -
+      [@hackerman](https://github.com/aeneasr)
 - [x] Define and architect SQL schema and queries for querying relations
       ([keto#300](https://github.com/ory/keto/issues/300)) -
       [@Patrik](https://github.com/zepatrik)
@@ -108,6 +144,9 @@ A request for comments to discuss and share ideas.
 
 #### Issues
 
+- [ ] Handle circular relation tuples
+      ([keto#411](https://github.com/ory/keto/issues/411)) -
+      [@Patrik](https://github.com/zepatrik)
 - [x] Consider rename WriteRelationTuples in WriteService
       ([keto#351](https://github.com/ory/keto/issues/351)) -
       [@Patrik](https://github.com/zepatrik),
