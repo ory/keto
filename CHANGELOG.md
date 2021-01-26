@@ -4,7 +4,7 @@
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**
 
-- [Unreleased (2021-01-18)](#unreleased-2021-01-18)
+- [Unreleased (2021-01-26)](#unreleased-2021-01-26)
     - [Bug Fixes](#bug-fixes)
     - [Documentation](#documentation)
     - [Features](#features)
@@ -79,7 +79,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [Unreleased](https://github.com/ory/keto/compare/v0.5.7-alpha.1...35c2d343e969812fa0b8e12cca60dc07e7e3b1a4) (2021-01-18)
+# [Unreleased](https://github.com/ory/keto/compare/v0.5.7-alpha.1...e822e3996bff48d896d60663790c14bc046836e6) (2021-01-26)
 
 
 ### Bug Fixes
@@ -104,6 +104,9 @@
 
     > The same change as in https://github.com/ory/hydra/pull/2209.
 * Add newsletter to config ([fa0485c](https://github.com/ory/keto/commit/fa0485c0b5f0b0c0d453fcb220db424458d51cfe))
+* Add Rust and Dart SDKs ([e822e39](https://github.com/ory/keto/commit/e822e3996bff48d896d60663790c14bc046836e6)):
+
+    > We now support for Rust and Dart SDKs!
 * Remove copy-paste errors referencing Hydra ([#369](https://github.com/ory/keto/issues/369)) ([825bd18](https://github.com/ory/keto/commit/825bd181b1a0e2a6a27b25f7b36eae1449fc183f))
 
 
