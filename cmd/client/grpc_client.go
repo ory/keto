@@ -37,15 +37,15 @@ func getWriteRemote(cmd *cobra.Command) string {
 }
 
 func GetReadConn(cmd *cobra.Command) (*grpc.ClientConn, error) {
-	remote := getReadRemote(cmd)
-	ctx, cancel := context.WithTimeout(cmd.Context(), 3*time.Second)
-	defer cancel()
-	return grpc.DialContext(ctx, remote, grpc.WithInsecure(), grpc.WithBlock(), grpc.WithDisableHealthCheck())
+	return Conn(cmd.Context(), getReadRemote(cmd))
 }
 
 func GetWriteConn(cmd *cobra.Command) (*grpc.ClientConn, error) {
-	remote := getWriteRemote(cmd)
-	ctx, cancel := context.WithTimeout(cmd.Context(), 3*time.Second)
+	return Conn(cmd.Context(), getWriteRemote(cmd))
+}
+
+func Conn(ctx context.Context, remote string) (*grpc.ClientConn, error) {
+	ctx, cancel := context.WithTimeout(ctx, 3*time.Second)
 	defer cancel()
 	return grpc.DialContext(ctx, remote, grpc.WithInsecure(), grpc.WithBlock(), grpc.WithDisableHealthCheck())
 }

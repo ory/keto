@@ -7,7 +7,6 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
-	"testing"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -24,7 +23,7 @@ type restClient struct {
 	readURL, writeURL string
 }
 
-func (rc *restClient) makeRequest(t *testing.T, method, path, body string, write bool) (string, int) {
+func (rc *restClient) makeRequest(t require.TestingT, method, path, body string, write bool) (string, int) {
 	var b io.Reader
 	if body != "" {
 		b = bytes.NewBufferString(body)
@@ -47,7 +46,7 @@ func (rc *restClient) makeRequest(t *testing.T, method, path, body string, write
 	return string(respBody), resp.StatusCode
 }
 
-func (rc *restClient) createTuple(t *testing.T, r *relationtuple.InternalRelationTuple) {
+func (rc *restClient) createTuple(t require.TestingT, r *relationtuple.InternalRelationTuple) {
 	tEnc, err := json.Marshal(r)
 	require.NoError(t, err)
 
@@ -55,7 +54,7 @@ func (rc *restClient) createTuple(t *testing.T, r *relationtuple.InternalRelatio
 	assert.Equal(t, http.StatusCreated, code, body)
 }
 
-func (rc *restClient) queryTuple(t *testing.T, q *relationtuple.RelationQuery) []*relationtuple.InternalRelationTuple {
+func (rc *restClient) queryTuple(t require.TestingT, q *relationtuple.RelationQuery) []*relationtuple.InternalRelationTuple {
 	body, code := rc.makeRequest(t, http.MethodGet, fmt.Sprintf("%s?%s", relationtuple.RouteBase, q.ToURLQuery().Encode()), "", false)
 	require.Equal(t, http.StatusOK, code, body)
 
@@ -65,7 +64,7 @@ func (rc *restClient) queryTuple(t *testing.T, q *relationtuple.RelationQuery) [
 	return tuple
 }
 
-func (rc *restClient) check(t *testing.T, r *relationtuple.InternalRelationTuple) bool {
+func (rc *restClient) check(t require.TestingT, r *relationtuple.InternalRelationTuple) bool {
 	body, code := rc.makeRequest(t, http.MethodGet, fmt.Sprintf("%s?%s", check.RouteBase, r.ToURLQuery().Encode()), "", false)
 
 	if code == http.StatusOK {
@@ -78,7 +77,7 @@ func (rc *restClient) check(t *testing.T, r *relationtuple.InternalRelationTuple
 	return false
 }
 
-func (rc *restClient) expand(t *testing.T, r *relationtuple.SubjectSet, depth int) *expand.Tree {
+func (rc *restClient) expand(t require.TestingT, r *relationtuple.SubjectSet, depth int) *expand.Tree {
 	query := r.ToURLQuery()
 	query.Set("depth", fmt.Sprintf("%d", depth))
 
