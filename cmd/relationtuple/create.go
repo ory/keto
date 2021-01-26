@@ -4,7 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"os"
+	"path/filepath"
 
 	acl "github.com/ory/keto/api/keto/acl/v1alpha1"
 
@@ -19,52 +21,90 @@ import (
 
 func newCreateCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:  "create <relation-tuple.json>",
-		Args: cobra.ExactArgs(1),
+		Use:  "create <relation-tuple.json> [<relation-tuple-dir>]",
+		Args: cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			conn, err := client.GetWriteConn(cmd)
 			if err != nil {
 				return err
 			}
 
-			var f io.Reader
-			if args[0] == "-" {
-				f = cmd.InOrStdin()
-			} else {
-				f, err = os.Open(args[0])
+			var tuples []*relationtuple.InternalRelationTuple
+			var deltas []*acl.RelationTupleDelta
+			for _, fn := range args {
+				tuple, err := readTuplesFromArg(cmd, fn)
 				if err != nil {
-					_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could open %s: %s\n", args[0], err)
-					return cmdx.FailSilently(cmd)
+					return err
 				}
-			}
-
-			var r relationtuple.InternalRelationTuple
-			err = json.NewDecoder(f).Decode(&r)
-			if err != nil {
-				_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not decode: %s\n", err)
-				return cmdx.FailSilently(cmd)
+				for _, t := range tuple {
+					tuples = append(tuples, t)
+					deltas = append(deltas, &acl.RelationTupleDelta{
+						Action:        acl.RelationTupleDelta_INSERT,
+						RelationTuple: t.ToProto(),
+					})
+				}
 			}
 
 			cl := acl.NewWriteServiceClient(conn)
 
 			_, err = cl.TransactRelationTuples(cmd.Context(), &acl.TransactRelationTuplesRequest{
-				RelationTupleDeltas: []*acl.RelationTupleDelta{
-					{
-						Action:        acl.RelationTupleDelta_INSERT,
-						RelationTuple: r.ToProto(),
-					},
-				},
+				RelationTupleDeltas: deltas,
 			})
 			if err != nil {
 				_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Error doing the request: %s\n", err)
 				return cmdx.FailSilently(cmd)
 			}
 
-			cmdx.PrintRow(cmd, &r)
+			cmdx.PrintTable(cmd, relationtuple.NewRelationCollection(tuples))
 			return nil
 		},
 	}
 	cmd.Flags().AddFlagSet(packageFlags)
 
 	return cmd
+}
+
+func readTuplesFromArg(cmd *cobra.Command, arg string) ([]*relationtuple.InternalRelationTuple, error) {
+	var f io.Reader
+	if arg == "-" {
+		f = cmd.InOrStdin()
+	} else {
+		stats, err := os.Stat(arg)
+		if err != nil {
+			_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Error getting stats for %s: %s\n", arg, err)
+			return nil, cmdx.FailSilently(cmd)
+		}
+
+		if stats.IsDir() {
+			fi, err := ioutil.ReadDir(arg)
+			if err != nil {
+				return nil, err
+			}
+
+			var tuples []*relationtuple.InternalRelationTuple
+			for _, child := range fi {
+				t, err := readTuplesFromArg(cmd, filepath.Join(arg, child.Name()))
+				if err != nil {
+					return nil, err
+				}
+				tuples = append(tuples, t...)
+			}
+			return tuples, nil
+		}
+
+		f, err = os.Open(arg)
+		if err != nil {
+			_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Error processing arg %s: %s\n", arg, err)
+			return nil, cmdx.FailSilently(cmd)
+		}
+	}
+
+	var r relationtuple.InternalRelationTuple
+	err := json.NewDecoder(f).Decode(&r)
+	if err != nil {
+		_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not decode: %s\n", err)
+		return nil, cmdx.FailSilently(cmd)
+	}
+
+	return []*relationtuple.InternalRelationTuple{&r}, nil
 }

@@ -1,0 +1,7 @@
+{
+  "$schema": "../../../.schema/relation_tuple.schema.json",
+  "namespace": "videos",
+  "object": "/cats",
+  "relation": "owner",
+  "subject": "cat lady"
+}

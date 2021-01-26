@@ -1,4 +1,4 @@
-<h1 align="center"><img src="https://raw.githubusercontent.com/ory/meta/master/static/banners/keto.svg" alt="ORY Keto - Open Source & Cloud Native Access Control Server"></h1>
+<h1 align="center"><img src="https://raw.githubusercontent.com/ory/meta/master/static/banners/keto.svg" alt="ORY Keto - Open Source Cloud Native Access Control Server"></h1>
 
 <h4 align="center">    
     <a href="https://www.ory.sh/chat">Chat</a> |
@@ -10,23 +10,21 @@
     <a href="https://opencollective.com/ory">Support this project!</a>
 </h4>
 
-# This is the next step for ORY Keto :tada:
+# Ory Keto keeps evolving; the next step is a highly distributed authorisation and access control system:tada:
 
-Be part of our journey to build the next-gen Keto based on
-[Google's Zanzibar paper](https://research.google/pubs/pub48190/).
+Creating fluid access to cloud applicaitons demands an efficient access control and authorisation system. In this part of the Ory Open Source ecosystem we tackle an implementation of 
+[Google's Zanzibar paper](https://research.google/pubs/pub48190/). If you have used Google Mail, Maps, and Youtube in one session, you have had some experience with Zanzibar.
 
-The following is just a high level view on the paper, trying to grasp all the concepts.
+The following is a high level view on the paper, where we interpret the main concepts and explain them for our implementation purposes.
 
 ## ACL Language
 
-The ACL is represented by `object#relation@user`, while `user` can be a single user,
-or a set of users represented by `object#relation` (e.g. users with editing rights on some object).
+The Access Control Language (ACL) is represented by `object#relation@user`, while `user` can be a single user,
+or a set of users represented by `object#relation` e.g. users with editing rights on some object.
 
 ## Managing content update, important for update ordering
 
-1. > A Zanzibar client (e.g. Google Docs) requests an opaque consistency token called zookie for each content version via a `content change` ACL check.
-
-   The client has to store the token together with the content change.
+1. A Zanzibar client e.g. Google Docs requests an opaque consistency token called "zookie" for each content version via a `content change` ACL check. The client has to store the token together with the content change.
 2. "The client sends this zookie in subsequent ACL check requests to ensure that the check snapshot is at least as
 fresh as the timestamp for the content version."
 
@@ -40,9 +38,9 @@ a client content version, or a read snapshot.
 ### Namespaces
 
 Zanzibar clients have to configure their namespace:
-1. configure relations
+1. Configure relations
     - optimization via defining relations on relations within the relation definition
-2. storage parameters (type of object IDs, sharding)
+2. Storage parameters for instance, type of object IDs, or sharding.
 
 ## API
 
@@ -68,21 +66,21 @@ response. Watching can be resumed with the response zookie and will not miss any
 
 ### Check
 
-1. view check
+1. View check
     The request contains a userset (`object#relation`), authentication token and a zookie corresponding to the object version.
-2. content change check
+2. Content change check
     No zookie in the request, the ACL has to be evaluated at the latest snapshot. Returns the new zookie for the object version.
 
 ### Expand
 
-Like read but expands all indirect references.
+SImilar to "read" and expands all indirect references.
 
 # Architecture
 
 ## Storage
 
 Relation tuples are stored in a database per namespace. Old versions are garbage collected to allow historic evaluation within a certain window.
-There is also a global changelog used for the watcher API and optimizations. Changes are commited to both the namespace database and the changelog
+There is also a global changelog used for the "Watcher API" and optimizations. Changes are commited to both the namespace database and the changelog
 in one transaction.
 Namespace configuration is stored in an extra database with two tables, one for the config and one for a changelog to allow hot
 reloading.
