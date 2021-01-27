@@ -3,10 +3,11 @@ package check
 import (
 	"fmt"
 
+	acl "github.com/ory/keto/proto/ory/keto/acl/v1alpha1"
+
 	"github.com/ory/x/cmdx"
 	"github.com/spf13/cobra"
 
-	acl "github.com/ory/keto/api/keto/acl/v1alpha1"
 	"github.com/ory/keto/cmd/client"
 )
 

@@ -8,11 +8,11 @@ import (
 	"strings"
 	"testing"
 
+	acl "github.com/ory/keto/proto/ory/keto/acl/v1alpha1"
+
 	"github.com/tidwall/sjson"
 
 	"github.com/pkg/errors"
-
-	acl "github.com/ory/keto/api/keto/acl/v1alpha1"
 
 	"github.com/ory/keto/internal/x"
 

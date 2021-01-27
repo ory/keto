@@ -31,7 +31,7 @@ func NewCheckServiceClient(cc grpc.ClientConnInterface) CheckServiceClient {
 
 func (c *checkServiceClient) Check(ctx context.Context, in *CheckRequest, opts ...grpc.CallOption) (*CheckResponse, error) {
 	out := new(CheckResponse)
-	err := c.cc.Invoke(ctx, "/keto.acl.v1alpha1.CheckService/Check", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/ory.keto.acl.v1alpha1.CheckService/Check", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -75,7 +75,7 @@ func _CheckService_Check_Handler(srv interface{}, ctx context.Context, dec func(
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/keto.acl.v1alpha1.CheckService/Check",
+		FullMethod: "/ory.keto.acl.v1alpha1.CheckService/Check",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(CheckServiceServer).Check(ctx, req.(*CheckRequest))
@@ -84,7 +84,7 @@ func _CheckService_Check_Handler(srv interface{}, ctx context.Context, dec func(
 }
 
 var _CheckService_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "keto.acl.v1alpha1.CheckService",
+	ServiceName: "ory.keto.acl.v1alpha1.CheckService",
 	HandlerType: (*CheckServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -93,5 +93,5 @@ var _CheckService_serviceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "keto/acl/v1alpha1/check_service.proto",
+	Metadata: "ory/keto/acl/v1alpha1/check_service.proto",
 }

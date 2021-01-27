@@ -70,8 +70,6 @@ build: deps
 .PHONY: buf-gen
 buf-gen: deps
 		buf generate \
-		--config buf/api/buf.yaml \
-		--template buf/api/buf.gen.yaml \
 		&& \
 		echo "TODO: generate gapic client at ./client" \
 		&& \
@@ -83,7 +81,6 @@ buf-gen: deps
 .PHONY: buf-lint
 buf-lint: deps
 		buf check lint \
-		--config buf/api/buf.yaml \
 		&& \
 		echo "All lint checks passed successfully!"
 

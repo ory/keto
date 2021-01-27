@@ -1,10 +1,10 @@
 syntax = "proto3";
 
-package keto.acl.v1alpha1;
+package ory.keto.acl.v1alpha1;
 
-import "keto/acl/v1alpha1/acl.proto";
+import "ory/keto/acl/v1alpha1/acl.proto";
 
-option go_package = "github.com/ory/keto/api/keto/acl/v1alpha1;acl";
+option go_package = "github.com/ory/keto/proto/ory/keto/acl/v1alpha1;acl";
 option csharp_namespace = "Ory.Keto.Acl.V1Alpha1";
 option java_multiple_files = true;
 option java_outer_classname = "WatchServiceProto";

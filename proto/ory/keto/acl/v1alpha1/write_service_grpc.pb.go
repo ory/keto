@@ -31,7 +31,7 @@ func NewWriteServiceClient(cc grpc.ClientConnInterface) WriteServiceClient {
 
 func (c *writeServiceClient) TransactRelationTuples(ctx context.Context, in *TransactRelationTuplesRequest, opts ...grpc.CallOption) (*TransactRelationTuplesResponse, error) {
 	out := new(TransactRelationTuplesResponse)
-	err := c.cc.Invoke(ctx, "/keto.acl.v1alpha1.WriteService/TransactRelationTuples", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/ory.keto.acl.v1alpha1.WriteService/TransactRelationTuples", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -75,7 +75,7 @@ func _WriteService_TransactRelationTuples_Handler(srv interface{}, ctx context.C
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/keto.acl.v1alpha1.WriteService/TransactRelationTuples",
+		FullMethod: "/ory.keto.acl.v1alpha1.WriteService/TransactRelationTuples",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(WriteServiceServer).TransactRelationTuples(ctx, req.(*TransactRelationTuplesRequest))
@@ -84,7 +84,7 @@ func _WriteService_TransactRelationTuples_Handler(srv interface{}, ctx context.C
 }
 
 var _WriteService_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "keto.acl.v1alpha1.WriteService",
+	ServiceName: "ory.keto.acl.v1alpha1.WriteService",
 	HandlerType: (*WriteServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -93,5 +93,5 @@ var _WriteService_serviceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "keto/acl/v1alpha1/write_service.proto",
+	Metadata: "ory/keto/acl/v1alpha1/write_service.proto",
 }

@@ -1,7 +1,7 @@
 version: v1beta1
 build:
   roots:
-    - api
+    - proto
 lint:
   use:
     - DEFAULT
@@ -9,7 +9,7 @@ lint:
     - google
   ignore_only:
     ENUM_VALUE_PREFIX:
-      - keto/acl/v1alpha1/write_service.proto
+      - ory/keto/acl/v1alpha1/write_service.proto
 breaking:
   use:
     - PACKAGE
