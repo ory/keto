@@ -3,7 +3,6 @@ package expand
 import (
 	"context"
 
-	"github.com/ory/keto/internal/persistence"
 	"github.com/ory/keto/internal/x"
 
 	"github.com/ory/keto/internal/relationtuple"
@@ -40,7 +39,7 @@ func (e *Engine) BuildTree(ctx context.Context, subject relationtuple.Subject, r
 			rels     []*relationtuple.InternalRelationTuple
 			nextPage string
 		)
-		for nextPage != persistence.PageTokenEnd {
+		for nextPage != x.PageTokenEnd {
 			var err error
 			rels, nextPage, err = e.d.RelationTupleManager().GetRelationTuples(
 				ctx,

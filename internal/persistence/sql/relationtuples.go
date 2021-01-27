@@ -8,8 +8,6 @@ import (
 
 	"github.com/gobuffalo/pop/v5"
 
-	"github.com/ory/keto/internal/persistence"
-
 	"github.com/pkg/errors"
 
 	"github.com/ory/keto/internal/namespace"
@@ -73,7 +71,7 @@ func (p *Persister) GetRelationTuples(ctx context.Context, query *relationtuple.
 
 	pagination, err := internalPaginationFromOptions(options...)
 	if err != nil {
-		return nil, persistence.PageTokenEnd, err
+		return nil, x.PageTokenEnd, err
 	}
 
 	var (
@@ -122,7 +120,7 @@ func (p *Persister) GetRelationTuples(ctx context.Context, query *relationtuple.
 	if err := p.conn.
 		RawQuery(rawQuery, args...).
 		All(&res); err != nil {
-		return nil, persistence.PageTokenEnd, errors.WithStack(err)
+		return nil, x.PageTokenEnd, errors.WithStack(err)
 	}
 
 	internalRes := make([]*relationtuple.InternalRelationTuple, len(res))
@@ -132,13 +130,13 @@ func (p *Persister) GetRelationTuples(ctx context.Context, query *relationtuple.
 		var err error
 		internalRes[i], err = r.toInternal()
 		if err != nil {
-			return nil, persistence.PageTokenEnd, err
+			return nil, x.PageTokenEnd, err
 		}
 	}
 
 	nextPageToken := pagination.encodeNextPageToken()
-	if len(internalRes) == 0 {
-		nextPageToken = persistence.PageTokenEnd
+	if len(internalRes) < pagination.Limit {
+		nextPageToken = x.PageTokenEnd
 	}
 	return internalRes, nextPageToken, nil
 }
