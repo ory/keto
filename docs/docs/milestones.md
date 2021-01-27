@@ -47,9 +47,6 @@ Something is not working.
 - [ ] Remove `config.Provider` interface
       ([keto#403](https://github.com/ory/keto/issues/403)) -
       [@Patrik](https://github.com/zepatrik)
-- [ ] Abort early in subjectIsAllowed
-      ([keto#405](https://github.com/ory/keto/issues/405)) -
-      [@Patrik](https://github.com/zepatrik)
 - [ ] Check REST API should return JSON Object
       ([keto#406](https://github.com/ory/keto/issues/406)) -
       [@Patrik](https://github.com/zepatrik)
@@ -72,6 +69,9 @@ Something is not working.
       ([keto#296](https://github.com/ory/keto/issues/296)) -
       [@Patrik](https://github.com/zepatrik),
       [@Robin Brämer](https://github.com/robinbraemer)
+- [x] Abort early in subjectIsAllowed
+      ([keto#405](https://github.com/ory/keto/issues/405)) -
+      [@Patrik](https://github.com/zepatrik)
 
 ### [Feat](https://github.com/ory/keto/labels/feat)
 
