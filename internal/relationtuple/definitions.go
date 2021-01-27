@@ -268,12 +268,15 @@ func (r *InternalRelationTuple) FromURLQuery(query url.Values) (*InternalRelatio
 }
 
 func (r *InternalRelationTuple) ToURLQuery() url.Values {
-	return url.Values{
+	vals := url.Values{
 		"namespace": []string{r.Namespace},
 		"object":    []string{r.Object},
 		"relation":  []string{r.Relation},
-		"subject":   []string{r.Subject.String()},
 	}
+	if r.Subject != nil {
+		vals.Set("subject", r.Subject.String())
+	}
+	return vals
 }
 
 func (q *RelationQuery) FromProto(query *acl.ListRelationTuplesRequest_Query) *RelationQuery {
@@ -350,13 +353,13 @@ func (r *InternalRelationTuple) Interface() interface{} {
 	return r
 }
 
-func NewProtoRelationCollection(rels []*acl.RelationTuple) cmdx.Table {
+func NewProtoRelationCollection(rels []*acl.RelationTuple) *relationCollection {
 	return &relationCollection{
 		protoRelations: rels,
 	}
 }
 
-func NewRelationCollection(rels []*InternalRelationTuple) cmdx.Table {
+func NewRelationCollection(rels []*InternalRelationTuple) *relationCollection {
 	return &relationCollection{
 		internalRelations: rels,
 	}
