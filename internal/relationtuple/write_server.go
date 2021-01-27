@@ -5,11 +5,11 @@ import (
 	"encoding/json"
 	"net/http"
 
+	acl "github.com/ory/keto/proto/ory/keto/acl/v1alpha1"
+
 	"github.com/julienschmidt/httprouter"
 	"github.com/ory/herodot"
 	"github.com/pkg/errors"
-
-	acl "github.com/ory/keto/api/keto/acl/v1alpha1"
 )
 
 var _ acl.WriteServiceServer = (*handler)(nil)

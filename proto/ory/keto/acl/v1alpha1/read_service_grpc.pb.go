@@ -31,7 +31,7 @@ func NewReadServiceClient(cc grpc.ClientConnInterface) ReadServiceClient {
 
 func (c *readServiceClient) ListRelationTuples(ctx context.Context, in *ListRelationTuplesRequest, opts ...grpc.CallOption) (*ListRelationTuplesResponse, error) {
 	out := new(ListRelationTuplesResponse)
-	err := c.cc.Invoke(ctx, "/keto.acl.v1alpha1.ReadService/ListRelationTuples", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/ory.keto.acl.v1alpha1.ReadService/ListRelationTuples", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -75,7 +75,7 @@ func _ReadService_ListRelationTuples_Handler(srv interface{}, ctx context.Contex
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/keto.acl.v1alpha1.ReadService/ListRelationTuples",
+		FullMethod: "/ory.keto.acl.v1alpha1.ReadService/ListRelationTuples",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ReadServiceServer).ListRelationTuples(ctx, req.(*ListRelationTuplesRequest))
@@ -84,7 +84,7 @@ func _ReadService_ListRelationTuples_Handler(srv interface{}, ctx context.Contex
 }
 
 var _ReadService_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "keto.acl.v1alpha1.ReadService",
+	ServiceName: "ory.keto.acl.v1alpha1.ReadService",
 	HandlerType: (*ReadServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -93,5 +93,5 @@ var _ReadService_serviceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "keto/acl/v1alpha1/read_service.proto",
+	Metadata: "ory/keto/acl/v1alpha1/read_service.proto",
 }

@@ -44,7 +44,7 @@ type (
 		ce   *check.Engine
 		ee   *expand.Engine
 		conn *pop.Connection
-		c    config.Provider
+		c    *config.Provider
 
 		healthH  *healthx.Handler
 		handlers []Handler
@@ -69,7 +69,7 @@ func (r *RegistryDefault) BuildHash() string {
 	return config.Commit
 }
 
-func (r *RegistryDefault) Config() config.Provider {
+func (r *RegistryDefault) Config() *config.Provider {
 	return r.c
 }
 

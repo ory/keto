@@ -31,7 +31,7 @@ func NewExpandServiceClient(cc grpc.ClientConnInterface) ExpandServiceClient {
 
 func (c *expandServiceClient) Expand(ctx context.Context, in *ExpandRequest, opts ...grpc.CallOption) (*ExpandResponse, error) {
 	out := new(ExpandResponse)
-	err := c.cc.Invoke(ctx, "/keto.acl.v1alpha1.ExpandService/Expand", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/ory.keto.acl.v1alpha1.ExpandService/Expand", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -75,7 +75,7 @@ func _ExpandService_Expand_Handler(srv interface{}, ctx context.Context, dec fun
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/keto.acl.v1alpha1.ExpandService/Expand",
+		FullMethod: "/ory.keto.acl.v1alpha1.ExpandService/Expand",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ExpandServiceServer).Expand(ctx, req.(*ExpandRequest))
@@ -84,7 +84,7 @@ func _ExpandService_Expand_Handler(srv interface{}, ctx context.Context, dec fun
 }
 
 var _ExpandService_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "keto.acl.v1alpha1.ExpandService",
+	ServiceName: "ory.keto.acl.v1alpha1.ExpandService",
 	HandlerType: (*ExpandServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -93,5 +93,5 @@ var _ExpandService_serviceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "keto/acl/v1alpha1/expand_service.proto",
+	Metadata: "ory/keto/acl/v1alpha1/expand_service.proto",
 }

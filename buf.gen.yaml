@@ -1,8 +1,8 @@
 version: v1beta1
 plugins:
   - name: go
-    out: api
+    out: proto
     opt: paths=source_relative
   - name: go-grpc
-    out: api
+    out: proto
     opt: paths=source_relative,require_unimplemented_servers=false

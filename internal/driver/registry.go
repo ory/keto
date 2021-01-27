@@ -23,7 +23,7 @@ type (
 		BuildVersion() string
 		BuildDate() string
 		BuildHash() string
-		Config() config.Provider
+		Config() *config.Provider
 
 		x.LoggerProvider
 		x.WriterProvider

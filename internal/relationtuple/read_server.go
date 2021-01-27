@@ -4,9 +4,10 @@ import (
 	"context"
 	"net/http"
 
+	acl "github.com/ory/keto/proto/ory/keto/acl/v1alpha1"
+
 	"github.com/julienschmidt/httprouter"
 
-	acl "github.com/ory/keto/api/keto/acl/v1alpha1"
 	"github.com/ory/keto/internal/x"
 )
 
