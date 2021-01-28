@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+
 	"github.com/ory/herodot"
 
 	"github.com/ory/keto/internal/relationtuple"

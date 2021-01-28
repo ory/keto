@@ -3,7 +3,9 @@ package expand
 import (
 	"context"
 	"errors"
+
 	"github.com/ory/herodot"
+
 	"github.com/ory/keto/internal/x"
 
 	"github.com/ory/keto/internal/relationtuple"
