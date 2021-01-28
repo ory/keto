@@ -44,6 +44,10 @@ func TestPersister(t *testing.T) {
 
 			p.namespaces = config.NewMemoryNamespaceManager(nspaces...)
 			require.NoError(t, p.MigrateNamespaceUp(ctx, n))
+
+			t.Cleanup(func() {
+				require.NoError(t, p.MigrateNamespaceDown(context.Background(), n, 0))
+			})
 		}
 	}
 

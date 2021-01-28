@@ -35,6 +35,8 @@ func Test(t *testing.T) {
 				ID:   0,
 			}}
 
+			t.Logf("name: %s, url: %s", dsn.Name, dsn.Conn)
+
 			ctx, reg := newInitializedReg(t, dsn, nspaces)
 
 			closeServer := startServer(ctx, t, reg)

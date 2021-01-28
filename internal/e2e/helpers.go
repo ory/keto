@@ -104,14 +104,13 @@ func migrateEverythingUp(ctx context.Context, t testing.TB, r driver.Registry, n
 		require.NoError(t, r.NamespaceMigrator().MigrateNamespaceUp(ctx, n))
 	}
 
-	// TODO
-	//t.Cleanup(func() {
-	//	for _, n := range nn {
-	//		c.ExecNoErr(t, "namespace", "migrate", "down", n.Name, "1")
-	//	}
-	//
-	//	c.ExecNoErr(t, "migrate", "down", "1")
-	//})
+	t.Cleanup(func() {
+		for _, n := range nn {
+			require.NoError(t, r.NamespaceMigrator().MigrateNamespaceDown(context.Background(), n, 0))
+		}
+
+		require.NoError(t, r.Migrator().MigrateDown(context.Background(), 0))
+	})
 }
 
 func assertMigrated(ctx context.Context, t testing.TB, r driver.Registry, nn []*namespace.Namespace) {
