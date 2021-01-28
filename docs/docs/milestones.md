@@ -44,17 +44,11 @@ Something is not working.
 - [ ] Unable to create relations using REST API and string notation
       ([keto#293](https://github.com/ory/keto/issues/293)) -
       [@Patrik](https://github.com/zepatrik)
-- [ ] Remove `config.Provider` interface
-      ([keto#403](https://github.com/ory/keto/issues/403)) -
-      [@Patrik](https://github.com/zepatrik)
 - [ ] Check REST API should return JSON Object
       ([keto#406](https://github.com/ory/keto/issues/406)) -
       [@Patrik](https://github.com/zepatrik)
 - [ ] Clarify where handlers are tested
       ([keto#407](https://github.com/ory/keto/issues/407)) -
-      [@Patrik](https://github.com/zepatrik)
-- [ ] Write relationtuple tests
-      ([keto#408](https://github.com/ory/keto/issues/408)) -
       [@Patrik](https://github.com/zepatrik)
 - [ ] Write dedicated persistence tests
       ([keto#409](https://github.com/ory/keto/issues/409)) -
@@ -69,8 +63,14 @@ Something is not working.
       ([keto#296](https://github.com/ory/keto/issues/296)) -
       [@Patrik](https://github.com/zepatrik),
       [@Robin Brämer](https://github.com/robinbraemer)
+- [x] Remove `config.Provider` interface
+      ([keto#403](https://github.com/ory/keto/issues/403)) -
+      [@Patrik](https://github.com/zepatrik)
 - [x] Abort early in subjectIsAllowed
       ([keto#405](https://github.com/ory/keto/issues/405)) -
+      [@Patrik](https://github.com/zepatrik)
+- [x] Write relationtuple tests
+      ([keto#408](https://github.com/ory/keto/issues/408)) -
       [@Patrik](https://github.com/zepatrik)
 
 ### [Feat](https://github.com/ory/keto/labels/feat)
@@ -90,15 +90,6 @@ New feature or request.
 - [ ] Namespace configuration
       ([keto#303](https://github.com/ory/keto/issues/303)) -
       [@Patrik](https://github.com/zepatrik)
-- [ ] Follow buf style guide
-      ([keto#400](https://github.com/ory/keto/issues/400)) -
-      [@Patrik](https://github.com/zepatrik)
-- [ ] Move buf configs to project root
-      ([keto#399](https://github.com/ory/keto/issues/399)) -
-      [@Patrik](https://github.com/zepatrik)
-- [ ] Remove stale protobuf definitions
-      ([keto#401](https://github.com/ory/keto/issues/401)) -
-      [@Patrik](https://github.com/zepatrik)
 - [ ] Relation Tuple Migrations should not be hardcoded but use prefixed tables
       ([keto#404](https://github.com/ory/keto/issues/404)) -
       [@Patrik](https://github.com/zepatrik)
@@ -108,6 +99,15 @@ New feature or request.
       [@Robin Brämer](https://github.com/robinbraemer)
 - [x] Define and architect SQL schema and queries for querying relations
       ([keto#300](https://github.com/ory/keto/issues/300)) -
+      [@Patrik](https://github.com/zepatrik)
+- [x] Move buf configs to project root
+      ([keto#399](https://github.com/ory/keto/issues/399)) -
+      [@Patrik](https://github.com/zepatrik)
+- [x] Follow buf style guide
+      ([keto#400](https://github.com/ory/keto/issues/400)) -
+      [@Patrik](https://github.com/zepatrik)
+- [x] Remove stale protobuf definitions
+      ([keto#401](https://github.com/ory/keto/issues/401)) -
       [@Patrik](https://github.com/zepatrik)
 
 ### [Blocking](https://github.com/ory/keto/labels/blocking)
