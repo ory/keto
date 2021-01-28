@@ -203,8 +203,11 @@ func ManagerTest(t *testing.T, m Manager, addNamespace func(context.Context, *te
 
 			require.NoError(t, m.WriteRelationTuples(context.Background(), tuples...))
 
+			notEncounteredTuples := make([]*InternalRelationTuple, len(tuples))
+			copy(notEncounteredTuples, tuples)
+
 			var nextPage string
-			for _, rt := range tuples[:len(tuples)-1] {
+			for range tuples[:len(tuples)-1] {
 				var (
 					res []*InternalRelationTuple
 					err error
@@ -217,7 +220,18 @@ func ManagerTest(t *testing.T, m Manager, addNamespace func(context.Context, *te
 				}, x.WithSize(1), x.WithToken(nextPage))
 				require.NoError(t, err)
 				assert.NotEqual(t, x.PageTokenEnd, nextPage)
-				assert.Equal(t, []*InternalRelationTuple{rt}, res)
+				assert.Len(t, res, 1)
+
+				var found bool
+				for i, r := range notEncounteredTuples {
+					if assert.ObjectsAreEqual(r, res[0]) {
+						found = true
+						notEncounteredTuples[i] = notEncounteredTuples[len(notEncounteredTuples)-1]
+						notEncounteredTuples = notEncounteredTuples[:len(notEncounteredTuples)-1]
+						break
+					}
+				}
+				assert.True(t, found, "not encountered: %+v, res: %+v", notEncounteredTuples, res[0])
 			}
 
 			res, nextPage, err := m.GetRelationTuples(context.Background(), &RelationQuery{
@@ -227,7 +241,8 @@ func ManagerTest(t *testing.T, m Manager, addNamespace func(context.Context, *te
 			}, x.WithSize(1), x.WithToken(nextPage))
 			require.NoError(t, err)
 			assert.Equal(t, x.PageTokenEnd, nextPage)
-			assert.Equal(t, []*InternalRelationTuple{tuples[len(tuples)-1]}, res)
+			assert.Len(t, res, 1)
+			assert.Equal(t, notEncounteredTuples, res)
 		})
 	})
 }
