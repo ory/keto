@@ -377,11 +377,13 @@ func TestEngine(t *testing.T) {
 
 			// pagination assertions
 			if i >= pageSize {
-				assert.Len(t, reg.RequestedPages, 1)
+				assert.Len(t, reg.RequestedPages, 2)
 				// reset requested pages for next iteration
 				reg.RequestedPages = nil
 			} else {
-				assert.Len(t, reg.RequestedPages, 0)
+				assert.Len(t, reg.RequestedPages, 1)
+				// reset requested pages for next iteration
+				reg.RequestedPages = nil
 			}
 		}
 	})

@@ -2,7 +2,8 @@ package expand
 
 import (
 	"context"
-
+	"errors"
+	"github.com/ory/herodot"
 	"github.com/ory/keto/internal/x"
 
 	"github.com/ory/keto/internal/relationtuple"
@@ -50,7 +51,9 @@ func (e *Engine) BuildTree(ctx context.Context, subject relationtuple.Subject, r
 				},
 				x.WithToken(nextPage),
 			)
-			if err != nil {
+			if errors.Is(err, herodot.ErrNotFound) {
+				return nil, nil
+			} else if err != nil {
 				return nil, err
 			}
 
@@ -61,10 +64,17 @@ func (e *Engine) BuildTree(ctx context.Context, subject relationtuple.Subject, r
 
 			children := make([]*Tree, len(rels))
 			for ri, r := range rels {
-				children[ri], err = e.BuildTree(ctx, r.Subject, restDepth-1)
+				child, err := e.BuildTree(ctx, r.Subject, restDepth-1)
 				if err != nil {
 					return nil, err
 				}
+				if child == nil {
+					child = &Tree{
+						Type:    Leaf,
+						Subject: r.Subject,
+					}
+				}
+				children[ri] = child
 			}
 			subTree.Children = append(subTree.Children, children...)
 		}
