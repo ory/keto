@@ -1,17 +1,14 @@
 package e2e
 
 import (
-	"bytes"
-	"context"
 	"fmt"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/ory/keto/internal/x"
+
 	"github.com/stretchr/testify/require"
 
 	cliclient "github.com/ory/keto/cmd/client"
-	"github.com/ory/keto/internal/driver"
-
 	"github.com/ory/keto/internal/expand"
 
 	"github.com/ory/x/cmdx"
@@ -31,41 +28,16 @@ type (
 )
 
 func Test(t *testing.T) {
-	dsns := GetDSNs(t)
-	dsns[0].Prepare = func(ctx context.Context, t testing.TB, r driver.Registry, nn []*namespace.Namespace) {
-		// check if migrations are auto applied for dsn=memory
-		status := &bytes.Buffer{}
-		require.NoError(t, r.Migrator().MigrationStatus(ctx, status))
-		assert.Contains(t, status.String(), "Applied")
-		assert.NotContains(t, status.String(), "Pending")
-
-		// TODO
-		//nApplied := strings.Count(status.String(), "Applied")
-		//t.Cleanup(func() {
-		//	// migrate nApplied down
-		//	c.ExecNoErr(t, "migrate", "down", fmt.Sprintf("%d", nApplied))
-		//})
-
-		for _, n := range nn {
-			s, err := r.NamespaceMigrator().NamespaceStatus(ctx, n.ID)
-			require.NoError(t, err)
-			assert.Equal(t, s.NextVersion, s.CurrentVersion)
-
-			// TODO
-			//t.Cleanup(func() {
-			//	c.ExecNoErr(t, "namespace", "migrate", "down", n.Name, "1")
-			//})
-		}
-	}
-
-	for _, dsn := range GetDSNs(t) {
+	for _, dsn := range x.GetDSNs(t) {
 		t.Run(fmt.Sprintf("dsn=%s", dsn.Name), func(t *testing.T) {
 			nspaces := []*namespace.Namespace{{
 				Name: "dreams",
 				ID:   0,
 			}}
 
-			ctx, reg, closeServer := startServer(t, dsn, nspaces)
+			ctx, reg := newInitializedReg(t, dsn, nspaces)
+
+			closeServer := startServer(ctx, t, reg)
 			defer closeServer()
 
 			// The test cases start here

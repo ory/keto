@@ -10,6 +10,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/stretchr/testify/assert"
+
 	"github.com/ory/keto/internal/x"
 
 	"github.com/ory/x/configx"
@@ -54,7 +56,7 @@ func setup(t testing.TB) (*test.Hook, context.Context) {
 	return hook, ctx
 }
 
-func NewInitializedReg(t testing.TB, dsn *x.DsnT, nspaces []*namespace.Namespace) (context.Context, driver.Registry) {
+func newInitializedReg(t testing.TB, dsn *x.DsnT, nspaces []*namespace.Namespace) (context.Context, driver.Registry) {
 	_, ctx := setup(t)
 
 	ports, err := freeport.GetFreePorts(2)
@@ -82,6 +84,8 @@ func NewInitializedReg(t testing.TB, dsn *x.DsnT, nspaces []*namespace.Namespace
 
 	if dsn.Name != "memory" {
 		migrateEverythingUp(ctx, t, reg, nspaces)
+	} else {
+		assertMigrated(ctx, t, reg, nspaces)
 	}
 
 	return ctx, reg
@@ -110,10 +114,33 @@ func migrateEverythingUp(ctx context.Context, t testing.TB, r driver.Registry, n
 	//})
 }
 
-func startServer(t testing.TB, dsn *x.DsnT, nspaces []*namespace.Namespace) (context.Context, driver.Registry, func()) {
-	ctx, reg := NewInitializedReg(t, dsn, nspaces)
-	// Initialization done
+func assertMigrated(ctx context.Context, t testing.TB, r driver.Registry, nn []*namespace.Namespace) {
+	// check if migrations are auto applied for dsn=memory
+	status := &bytes.Buffer{}
+	require.NoError(t, r.Migrator().MigrationStatus(ctx, status))
+	assert.Contains(t, status.String(), "Applied")
+	assert.NotContains(t, status.String(), "Pending")
 
+	// TODO
+	//nApplied := strings.Count(status.String(), "Applied")
+	//t.Cleanup(func() {
+	//	// migrate nApplied down
+	//	c.ExecNoErr(t, "migrate", "down", fmt.Sprintf("%d", nApplied))
+	//})
+
+	for _, n := range nn {
+		s, err := r.NamespaceMigrator().NamespaceStatus(ctx, n.ID)
+		require.NoError(t, err)
+		assert.Equal(t, s.NextVersion, s.CurrentVersion)
+
+		// TODO
+		//t.Cleanup(func() {
+		//	c.ExecNoErr(t, "namespace", "migrate", "down", n.Name, "1")
+		//})
+	}
+}
+
+func startServer(ctx context.Context, t testing.TB, reg driver.Registry) func() {
 	// Start the server
 	serverCtx, serverCancel := context.WithCancel(ctx)
 	serverErr := make(chan error)
@@ -137,13 +164,11 @@ func startServer(t testing.TB, dsn *x.DsnT, nspaces []*namespace.Namespace) (con
 		time.Sleep(10 * time.Millisecond)
 	}
 
-	return ctx,
-		reg,
-		// defer this close function to make sure it is shutdown on test failure as well
-		func() {
-			// stop the server
-			serverCancel()
-			// wait for it to stop
-			require.NoError(t, <-serverErr)
-		}
+	// defer this close function to make sure it is shutdown on test failure as well
+	return func() {
+		// stop the server
+		serverCancel()
+		// wait for it to stop
+		require.NoError(t, <-serverErr)
+	}
 }
