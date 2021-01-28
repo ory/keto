@@ -6,6 +6,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/ory/herodot"
+
 	"github.com/gobuffalo/pop/v5"
 
 	"github.com/pkg/errors"
@@ -105,14 +107,14 @@ func (p *Persister) GetRelationTuples(ctx context.Context, query *relationtuple.
 	if len(where) == 0 {
 		rawQuery = fmt.Sprintf("SELECT * FROM %s LIMIT %d OFFSET %d",
 			tableFromNamespace(n),
-			pagination.Limit,
+			pagination.Limit+1,
 			pagination.Offset,
 		)
 	} else {
 		rawQuery = fmt.Sprintf("SELECT * FROM %s WHERE %s LIMIT %d OFFSET %d",
 			tableFromNamespace(n),
 			strings.Join(where, " AND "),
-			pagination.Limit,
+			pagination.Limit+1,
 			pagination.Offset,
 		)
 	}
@@ -123,8 +125,19 @@ func (p *Persister) GetRelationTuples(ctx context.Context, query *relationtuple.
 		return nil, x.PageTokenEnd, errors.WithStack(err)
 	}
 
-	internalRes := make([]*relationtuple.InternalRelationTuple, len(res))
-	for i, r := range res {
+	if len(res) == 0 {
+		return nil, x.PageTokenEnd, errors.WithStack(herodot.ErrNotFound)
+	}
+
+	cutOff := 1
+	nextPageToken := pagination.encodeNextPageToken()
+	if len(res) <= pagination.Limit {
+		nextPageToken = x.PageTokenEnd
+		cutOff = 0
+	}
+
+	internalRes := make([]*relationtuple.InternalRelationTuple, len(res)-cutOff)
+	for i, r := range res[:len(res)-cutOff] {
 		r.Namespace = n
 
 		var err error
@@ -134,10 +147,6 @@ func (p *Persister) GetRelationTuples(ctx context.Context, query *relationtuple.
 		}
 	}
 
-	nextPageToken := pagination.encodeNextPageToken()
-	if len(internalRes) < pagination.Limit {
-		nextPageToken = x.PageTokenEnd
-	}
 	return internalRes, nextPageToken, nil
 }
 

@@ -17,7 +17,7 @@ import (
 )
 
 func TestPersister(t *testing.T) {
-	setup := func(t *testing.T, dsn *x.DsnT, nspaces []*namespace.Namespace) (p *Persister, hook *test.Hook) {
+	setup := func(t *testing.T, dsn *x.DsnT) (p *Persister, hook *test.Hook) {
 		c, err := pop.NewConnection(&pop.ConnectionDetails{
 			URL: dsn.Conn,
 		})
@@ -26,24 +26,34 @@ func TestPersister(t *testing.T) {
 		hook = &test.Hook{}
 		lx := logrusx.New("", "", logrusx.WithHook(hook))
 
-		p, err = NewPersister(c, lx, config.NewMemoryNamespaceManager(nspaces...))
+		p, err = NewPersister(c, lx, config.NewMemoryNamespaceManager())
 		require.NoError(t, err)
 
 		require.NoError(t, p.MigrateUp(context.Background()))
-		for _, n := range nspaces {
-			require.NoError(t, p.MigrateNamespaceUp(context.Background(), n))
-		}
 
 		return
 	}
 
+	addNamespace := func(p *Persister, nspaces []*namespace.Namespace) func(context.Context, *testing.T, string) {
+		return func(ctx context.Context, t *testing.T, name string) {
+			n := &namespace.Namespace{
+				Name: name,
+				ID:   len(nspaces),
+			}
+			nspaces = append(nspaces, n)
+
+			p.namespaces = config.NewMemoryNamespaceManager(nspaces...)
+			require.NoError(t, p.MigrateNamespaceUp(ctx, n))
+		}
+	}
+
 	for _, dsn := range x.GetDSNs(t) {
 		t.Run(fmt.Sprintf("dsn=%s", dsn.Name), func(t *testing.T) {
-			nspace := &namespace.Namespace{Name: "test"}
-			p, _ := setup(t, dsn, []*namespace.Namespace{nspace})
+			var nspaces []*namespace.Namespace
+			p, _ := setup(t, dsn)
 
 			t.Run("relationtuple.ManagerTest", func(t *testing.T) {
-				relationtuple.ManagerTest(t, p, nspace.Name)
+				relationtuple.ManagerTest(t, p, addNamespace(p, nspaces))
 			})
 		})
 	}
