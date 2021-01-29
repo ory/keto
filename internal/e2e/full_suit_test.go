@@ -47,9 +47,10 @@ func Test(t *testing.T) {
 		//})
 
 		for _, n := range nn {
-			s, err := r.NamespaceMigrator().NamespaceStatus(ctx, n.ID)
-			require.NoError(t, err)
-			assert.Equal(t, s.NextVersion, s.CurrentVersion)
+			out := bytes.Buffer{}
+			require.NoError(t, r.NamespaceMigrator().NamespaceStatus(ctx, &out, n))
+			assert.NotContains(t, out.String(), "Pending")
+			assert.Contains(t, out.String(), "Applied")
 
 			// TODO
 			//t.Cleanup(func() {
@@ -60,10 +61,16 @@ func Test(t *testing.T) {
 
 	for _, dsn := range GetDSNs(t) {
 		t.Run(fmt.Sprintf("dsn=%s", dsn.Name), func(t *testing.T) {
-			nspaces := []*namespace.Namespace{{
-				Name: "dreams",
-				ID:   0,
-			}}
+			nspaces := []*namespace.Namespace{
+				{
+					Name: "dreams",
+					ID:   0,
+				},
+				{
+					Name: "foo",
+					ID:   1,
+				},
+			}
 
 			ctx, reg, closeServer := startServer(t, dsn, nspaces)
 			defer closeServer()

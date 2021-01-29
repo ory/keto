@@ -5,6 +5,10 @@ import (
 	"fmt"
 	"io"
 	"strconv"
+	"time"
+
+	"github.com/cenkalti/backoff/v3"
+	"github.com/ory/x/sqlcon"
 
 	"github.com/ory/keto/internal/namespace"
 
@@ -21,9 +25,11 @@ import (
 
 type (
 	Persister struct {
-		conn       *pop.Connection
-		mb         *pkgerx.MigrationBox
-		namespaces namespace.Manager
+		conn        *pop.Connection
+		mb          *pkgerx.MigrationBox
+		namespaces  namespace.Manager
+		l           *logrusx.Logger
+		connDetails *pop.ConnectionDetails
 	}
 	internalPagination struct {
 		Offset int
@@ -38,23 +44,56 @@ const (
 )
 
 var (
-	migrations = pkger.Dir("/internal/persistence/sql/migrations")
+	migrations          = pkger.Dir("/internal/persistence/sql/migrations")
+	namespaceMigrations = pkger.Dir("/internal/persistence/sql/namespace_migrations")
 
 	_ persistence.Persister = &Persister{}
 )
 
-func NewPersister(c *pop.Connection, l *logrusx.Logger, namespaces namespace.Manager) (*Persister, error) {
+func NewPersister(dsnURL string, l *logrusx.Logger, namespaces namespace.Manager) (*Persister, error) {
 	pop.SetLogger(l.PopLogger)
 
-	mb, err := pkgerx.NewMigrationBox(migrations, c, l)
+	pool, idlePool, connMaxLifetime, cleanedDSN := sqlcon.ParseConnectionOptions(l, dsnURL)
+	p := &Persister{
+		namespaces: namespaces,
+		l:          l,
+		connDetails: &pop.ConnectionDetails{
+			URL:             sqlcon.FinalizeDSN(l, cleanedDSN),
+			IdlePool:        idlePool,
+			ConnMaxLifetime: connMaxLifetime,
+			Pool:            pool,
+			Options:         map[string]string{},
+		},
+	}
+
+	bc := backoff.NewExponentialBackOff()
+	bc.MaxElapsedTime = time.Minute * 5
+	bc.Reset()
+
+	if err := backoff.Retry(func() error {
+		c, err := pop.NewConnection(p.connDetails)
+		if err != nil {
+			l.WithError(err).Warnf("Unable to connect to database, retrying.")
+			return errors.WithStack(err)
+		}
+
+		p.conn = c
+		if err := c.Open(); err != nil {
+			l.WithError(err).Warnf("Unable to open the database connection, retrying.")
+			return errors.WithStack(err)
+		}
+
+		return nil
+	}, bc); err != nil {
+		return nil, err
+	}
+
+	var err error
+	p.mb, err = pkgerx.NewMigrationBox(migrations, p.conn, l)
 	if err != nil {
 		return nil, err
 	}
-	return &Persister{
-		mb:         mb,
-		conn:       c,
-		namespaces: namespaces,
-	}, nil
+	return p, nil
 }
 
 func (p *Persister) MigrateUp(_ context.Context) error {
