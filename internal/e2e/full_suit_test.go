@@ -61,16 +61,10 @@ func Test(t *testing.T) {
 
 	for _, dsn := range GetDSNs(t) {
 		t.Run(fmt.Sprintf("dsn=%s", dsn.Name), func(t *testing.T) {
-			nspaces := []*namespace.Namespace{
-				{
-					Name: "dreams",
-					ID:   0,
-				},
-				{
-					Name: "foo",
-					ID:   1,
-				},
-			}
+			nspaces := []*namespace.Namespace{{
+				Name: "dreams",
+				ID:   0,
+			}}
 
 			ctx, reg, closeServer := startServer(t, dsn, nspaces)
 			defer closeServer()
