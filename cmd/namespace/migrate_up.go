@@ -1,8 +1,10 @@
 package namespace
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/ory/x/cmdx"
 	"github.com/ory/x/flagx"
@@ -38,14 +40,22 @@ func NewMigrateUpCmd() *cobra.Command {
 				return cmdx.FailSilently(cmd)
 			}
 
-			if err := reg.NamespaceMigrator().NamespaceStatus(ctx, cmd.OutOrStdout(), n); err != nil {
+			status := &bytes.Buffer{}
+			if err := reg.NamespaceMigrator().NamespaceStatus(ctx, status, n); err != nil {
 				if !errors.Is(err, persistence.ErrNamespaceUnknown) {
 					_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not get status for namespace \"%s\": %+v\n", n.Name, err)
 					return cmdx.FailSilently(cmd)
 				}
 			} else {
+				_, _ = cmd.OutOrStdout().Write(status.Bytes())
+
+				if !strings.Contains(status.String(), "Pending") {
+					_, _ = fmt.Fprintln(cmd.OutOrStdout(), "The namespace is already migrated up to the most recent version, there is noting to do.")
+					return nil
+				}
+
 				if !flagx.MustGetBool(cmd, YesFlag) {
-					if !cmdx.AskForConfirmation("Are you sure that you want to apply this migration? Make sure to check the CHANGELOG and UPGRADE for breaking changes beforehand.", cmd.InOrStdin(), cmd.OutOrStdout()) {
+					if !cmdx.AskForConfirmation("Are you sure that you want to apply this migration? Make sure to check the CHANGELOG.md and UPGRADE.md for breaking changes beforehand.", cmd.InOrStdin(), cmd.OutOrStdout()) {
 						_, _ = fmt.Fprintf(cmd.OutOrStdout(), "Migration of namespace \"%s\" aborted.\n", n.Name)
 						return nil
 					}
