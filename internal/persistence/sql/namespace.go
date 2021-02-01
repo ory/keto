@@ -18,7 +18,12 @@ func (p *Persister) namespaceMigrationBox(n *namespace.Namespace) (*pkgerx.Migra
 	connDetails := *p.connDetails
 	connDetails.Options["migration_table_name"] = fmt.Sprintf("keto_namespace_%0.10d_migrations", n.ID)
 
-	return pkgerx.NewMigrationBox(namespaceMigrations, p.conn, p.l, pkgerx.WithTemplateValues(map[string]interface{}{
+	c, err := p.connect(&connDetails)
+	if err != nil {
+		return nil, err
+	}
+
+	return pkgerx.NewMigrationBox(namespaceMigrations, c, p.l, pkgerx.WithTemplateValues(map[string]interface{}{
 		"tableName": tableFromNamespace(n),
 	}))
 }

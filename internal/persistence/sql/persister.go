@@ -66,34 +66,45 @@ func NewPersister(dsnURL string, l *logrusx.Logger, namespaces namespace.Manager
 		},
 	}
 
-	bc := backoff.NewExponentialBackOff()
-	bc.MaxElapsedTime = time.Minute * 5
-	bc.Reset()
-
-	if err := backoff.Retry(func() error {
-		c, err := pop.NewConnection(p.connDetails)
-		if err != nil {
-			l.WithError(err).Warnf("Unable to connect to database, retrying.")
-			return errors.WithStack(err)
-		}
-
-		p.conn = c
-		if err := c.Open(); err != nil {
-			l.WithError(err).Warnf("Unable to open the database connection, retrying.")
-			return errors.WithStack(err)
-		}
-
-		return nil
-	}, bc); err != nil {
+	var err error
+	p.conn, err = p.connect(p.connDetails)
+	if err != nil {
 		return nil, err
 	}
 
-	var err error
 	p.mb, err = pkgerx.NewMigrationBox(migrations, p.conn, l)
 	if err != nil {
 		return nil, err
 	}
 	return p, nil
+}
+
+func (p *Persister) connect(details *pop.ConnectionDetails) (c *pop.Connection, err error) {
+	bc := backoff.NewExponentialBackOff()
+	bc.MaxElapsedTime = time.Minute * 5
+	bc.Reset()
+
+	if err := backoff.Retry(func() (err error) {
+		c, err = pop.NewConnection(details)
+		if err != nil {
+			p.l.WithError(err).Warnf("Unable to connect to database, retrying.")
+			return errors.WithStack(err)
+		}
+
+		if err := c.Open(); err != nil {
+			p.l.WithError(err).Warnf("Unable to open the database connection, retrying.")
+			return errors.WithStack(err)
+		}
+
+		return nil
+	}, bc); err != nil {
+		return nil, errors.WithStack(err)
+	}
+
+	// remove as it is parsed and modified already; all the information should be in the other fields already
+	details.URL = ""
+
+	return c, nil
 }
 
 func (p *Persister) MigrateUp(_ context.Context) error {

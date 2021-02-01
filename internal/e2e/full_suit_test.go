@@ -49,8 +49,8 @@ func Test(t *testing.T) {
 		for _, n := range nn {
 			out := bytes.Buffer{}
 			require.NoError(t, r.NamespaceMigrator().NamespaceStatus(ctx, &out, n))
-			assert.NotContains(t, out.String(), "Pending")
 			assert.Contains(t, out.String(), "Applied")
+			assert.NotContains(t, out.String(), "Pending")
 
 			// TODO
 			//t.Cleanup(func() {
