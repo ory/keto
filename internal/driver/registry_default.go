@@ -10,7 +10,6 @@ import (
 
 	"github.com/ory/keto/internal/driver/config"
 
-	"github.com/gobuffalo/pop/v5"
 	"github.com/ory/herodot"
 	"github.com/ory/x/healthx"
 	"github.com/ory/x/logrusx"
@@ -34,13 +33,12 @@ var (
 
 type (
 	RegistryDefault struct {
-		p    persistence.Persister
-		l    *logrusx.Logger
-		w    herodot.Writer
-		ce   *check.Engine
-		ee   *expand.Engine
-		conn *pop.Connection
-		c    *config.Provider
+		p  persistence.Persister
+		l  *logrusx.Logger
+		w  herodot.Writer
+		ce *check.Engine
+		ee *expand.Engine
+		c  *config.Provider
 
 		healthH  *healthx.Handler
 		handlers []Handler
