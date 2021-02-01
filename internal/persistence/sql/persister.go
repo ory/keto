@@ -25,11 +25,11 @@ import (
 
 type (
 	Persister struct {
-		conn        *pop.Connection
-		mb          *pkgerx.MigrationBox
-		namespaces  namespace.Manager
-		l           *logrusx.Logger
-		connDetails *pop.ConnectionDetails
+		conn       *pop.Connection
+		mb         *pkgerx.MigrationBox
+		namespaces namespace.Manager
+		l          *logrusx.Logger
+		dsn        string
 	}
 	internalPagination struct {
 		Offset int
@@ -50,24 +50,17 @@ var (
 	_ persistence.Persister = &Persister{}
 )
 
-func NewPersister(dsnURL string, l *logrusx.Logger, namespaces namespace.Manager) (*Persister, error) {
+func NewPersister(dsn string, l *logrusx.Logger, namespaces namespace.Manager) (*Persister, error) {
 	pop.SetLogger(l.PopLogger)
 
-	pool, idlePool, connMaxLifetime, cleanedDSN := sqlcon.ParseConnectionOptions(l, dsnURL)
 	p := &Persister{
 		namespaces: namespaces,
 		l:          l,
-		connDetails: &pop.ConnectionDetails{
-			URL:             sqlcon.FinalizeDSN(l, cleanedDSN),
-			IdlePool:        idlePool,
-			ConnMaxLifetime: connMaxLifetime,
-			Pool:            pool,
-			Options:         map[string]string{},
-		},
+		dsn:        dsn,
 	}
 
 	var err error
-	p.conn, err = p.connect(p.connDetails)
+	p.conn, err = p.newConnection(nil)
 	if err != nil {
 		return nil, err
 	}
@@ -79,13 +72,22 @@ func NewPersister(dsnURL string, l *logrusx.Logger, namespaces namespace.Manager
 	return p, nil
 }
 
-func (p *Persister) connect(details *pop.ConnectionDetails) (c *pop.Connection, err error) {
+func (p *Persister) newConnection(options map[string]string) (c *pop.Connection, err error) {
+	pool, idlePool, connMaxLifetime, cleanedDSN := sqlcon.ParseConnectionOptions(p.l, p.dsn)
+	connDetails := &pop.ConnectionDetails{
+		URL:             sqlcon.FinalizeDSN(p.l, cleanedDSN),
+		IdlePool:        idlePool,
+		ConnMaxLifetime: connMaxLifetime,
+		Pool:            pool,
+		Options:         options,
+	}
+
 	bc := backoff.NewExponentialBackOff()
 	bc.MaxElapsedTime = time.Minute * 5
 	bc.Reset()
 
 	if err := backoff.Retry(func() (err error) {
-		c, err = pop.NewConnection(details)
+		c, err = pop.NewConnection(connDetails)
 		if err != nil {
 			p.l.WithError(err).Warnf("Unable to connect to database, retrying.")
 			return errors.WithStack(err)
@@ -96,13 +98,14 @@ func (p *Persister) connect(details *pop.ConnectionDetails) (c *pop.Connection, 
 			return errors.WithStack(err)
 		}
 
+		if err := c.Store.(interface{ Ping() error }).Ping(); err != nil {
+			return errors.WithStack(err)
+		}
+
 		return nil
 	}, bc); err != nil {
 		return nil, errors.WithStack(err)
 	}
-
-	// remove as it is parsed and modified already; all the information should be in the other fields already
-	details.URL = ""
 
 	return c, nil
 }

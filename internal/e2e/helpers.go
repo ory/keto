@@ -109,6 +109,7 @@ func GetDSNs(t testing.TB) []*DsnT {
 			},
 		)
 	}
+	t.Cleanup(dockertest.KillAllTestDatabases)
 
 	return dsns
 }

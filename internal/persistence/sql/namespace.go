@@ -15,10 +15,9 @@ func tableFromNamespace(n *namespace.Namespace) string {
 }
 
 func (p *Persister) namespaceMigrationBox(n *namespace.Namespace) (*pkgerx.MigrationBox, error) {
-	connDetails := *p.connDetails
-	connDetails.Options["migration_table_name"] = fmt.Sprintf("keto_namespace_%0.10d_migrations", n.ID)
-
-	c, err := p.connect(&connDetails)
+	c, err := p.newConnection(map[string]string{
+		"migration_table_name": fmt.Sprintf("keto_namespace_%0.10d_migrations", n.ID),
+	})
 	if err != nil {
 		return nil, err
 	}

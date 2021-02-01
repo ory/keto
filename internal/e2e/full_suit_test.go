@@ -59,7 +59,7 @@ func Test(t *testing.T) {
 		}
 	}
 
-	for _, dsn := range GetDSNs(t) {
+	for _, dsn := range dsns {
 		t.Run(fmt.Sprintf("dsn=%s", dsn.Name), func(t *testing.T) {
 			nspaces := []*namespace.Namespace{{
 				Name: "dreams",
