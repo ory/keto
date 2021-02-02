@@ -52,6 +52,7 @@ func NewMemoryTestRegistry(t *testing.T, namespaces []*namespace.Namespace) Regi
 	c, err := config.New(ctx, nil, l)
 	require.NoError(t, err)
 	require.NoError(t, c.Set(config.KeyDSN, config.DSNMemory))
+	require.NoError(t, c.Set("log.level", "debug"))
 	require.NoError(t, c.Set(config.KeyNamespaces, namespaces))
 
 	r := &RegistryDefault{

@@ -20,8 +20,13 @@ import (
 )
 
 func newTestEngine(t *testing.T, namespaces []*namespace.Namespace, paginationOpts ...x.PaginationOptionSetter) (*relationtuple.ManagerWrapper, *expand.Engine) {
-	reg := relationtuple.NewManagerWrapper(t, driver.NewMemoryTestRegistry(t, namespaces), paginationOpts...)
-
+	innerReg := driver.NewMemoryTestRegistry(t, namespaces)
+	reg := relationtuple.NewManagerWrapper(t, innerReg, paginationOpts...)
+	t.Cleanup(func() {
+		for _, n := range namespaces {
+			require.NoError(t, innerReg.NamespaceMigrator().MigrateNamespaceDown(context.Background(), n, 0))
+		}
+	})
 	e := expand.NewEngine(reg)
 	return reg, e
 }

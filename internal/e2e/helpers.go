@@ -56,7 +56,68 @@ func setup(t testing.TB) (*test.Hook, context.Context) {
 	return hook, ctx
 }
 
-func newInitializedReg(t testing.TB, dsn *x.DsnT, nspaces []*namespace.Namespace) (context.Context, driver.Registry) {
+func migrateEverythingUp(ctx context.Context, t testing.TB, r driver.Registry, nn []*namespace.Namespace) {
+	status := &bytes.Buffer{}
+
+	require.NoError(t, r.Migrator().MigrationStatus(ctx, status))
+
+	if strings.Contains(status.String(), "Pending") {
+		require.NoError(t, r.Migrator().MigrateUp(ctx))
+	}
+
+	for _, n := range nn {
+		require.NoError(t, r.NamespaceMigrator().MigrateNamespaceUp(ctx, n))
+	}
+
+	// TODO
+	//t.Cleanup(func() {
+	//	for _, n := range nn {
+	//		c.ExecNoErr(t, "namespace", "migrate", "down", n.Name, "1")
+	//	}
+	//
+	//	c.ExecNoErr(t, "migrate", "down", "1")
+	//})
+}
+
+type DsnT struct {
+	Name    string
+	Conn    string
+	Prepare func(context.Context, testing.TB, driver.Registry, []*namespace.Namespace)
+}
+
+func GetDSNs(t testing.TB) []*DsnT {
+	// we use a slice of structs here to always have the same execution order
+	dsns := []*DsnT{
+		{
+			Name: "memory",
+			Conn: "memory",
+		},
+	}
+	if !testing.Short() {
+		dsns = append(dsns,
+			&DsnT{
+				Name:    "mysql",
+				Conn:    dockertest.RunTestMySQL(t),
+				Prepare: migrateEverythingUp,
+			},
+			&DsnT{
+				Name:    "postgres",
+				Conn:    dockertest.RunTestPostgreSQL(t),
+				Prepare: migrateEverythingUp,
+			},
+			&DsnT{
+				Name:    "cockroach",
+				Conn:    dockertest.RunTestCockroachDB(t),
+				Prepare: migrateEverythingUp,
+			},
+		)
+	}
+	t.Cleanup(dockertest.KillAllTestDatabases)
+
+	return dsns
+}
+
+func NewInitializedReg(t testing.TB, dsn *x.DsnT, nspaces []*namespace.Namespace) (context.Context, driver.Registry) {
 	_, ctx := setup(t)
 
 	ports, err := freeport.GetFreePorts(2)

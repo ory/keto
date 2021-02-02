@@ -1,20 +1,15 @@
 package driver
 
 import (
+	"bytes"
 	"context"
-	"time"
+	"strings"
 
 	"github.com/julienschmidt/httprouter"
 	"google.golang.org/grpc"
 
-	"github.com/cenkalti/backoff"
-	"github.com/ory/x/sqlcon"
-
 	"github.com/ory/keto/internal/driver/config"
 
-	"github.com/pkg/errors"
-
-	"github.com/gobuffalo/pop/v5"
 	"github.com/ory/herodot"
 	"github.com/ory/x/healthx"
 	"github.com/ory/x/logrusx"
@@ -38,13 +33,12 @@ var (
 
 type (
 	RegistryDefault struct {
-		p    persistence.Persister
-		l    *logrusx.Logger
-		w    herodot.Writer
-		ce   *check.Engine
-		ee   *expand.Engine
-		conn *pop.Connection
-		c    *config.Provider
+		p  persistence.Persister
+		l  *logrusx.Logger
+		w  herodot.Writer
+		ce *check.Engine
+		ee *expand.Engine
+		c  *config.Provider
 
 		healthH  *healthx.Handler
 		handlers []Handler
@@ -130,40 +124,12 @@ func (r *RegistryDefault) Migrator() persistence.Migrator {
 }
 
 func (r *RegistryDefault) Init(ctx context.Context) error {
-	bc := backoff.NewExponentialBackOff()
-	bc.MaxElapsedTime = time.Minute * 5
-	bc.Reset()
-
-	if err := backoff.Retry(func() error {
-		pool, idlePool, connMaxLifetime, cleanedDSN := sqlcon.ParseConnectionOptions(r.l, r.c.DSN())
-		c, err := pop.NewConnection(&pop.ConnectionDetails{
-			URL:             sqlcon.FinalizeDSN(r.l, cleanedDSN),
-			IdlePool:        idlePool,
-			ConnMaxLifetime: connMaxLifetime,
-			Pool:            pool,
-		})
-		if err != nil {
-			r.Logger().WithError(err).Warnf("Unable to connect to database, retrying.")
-			return errors.WithStack(err)
-		}
-
-		r.conn = c
-		if err := c.Open(); err != nil {
-			r.Logger().WithError(err).Warnf("Unable to open the database connection, retrying.")
-			return errors.WithStack(err)
-		}
-
-		return nil
-	}, bc); err != nil {
-		return err
-	}
-
 	nm, err := r.c.NamespaceManager()
 	if err != nil {
 		return err
 	}
 
-	r.p, err = sql.NewPersister(r.conn, r.Logger(), nm)
+	r.p, err = sql.NewPersister(r.c.DSN(), r.Logger(), nm)
 	if err != nil {
 		return err
 	}
@@ -179,9 +145,11 @@ func (r *RegistryDefault) Init(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
+	nStatus := &bytes.Buffer{}
 	for _, n := range namespaceConfigs {
-		s, err := r.NamespaceMigrator().NamespaceStatus(ctx, n.ID)
-		if err != nil {
+		if err := r.NamespaceMigrator().NamespaceStatus(ctx, nStatus, n); err != nil {
+			return err
+		} else if strings.Contains(nStatus.String(), "Pending") {
 			if r.c.DSN() == config.DSNMemory {
 				// auto migrate when DSN is memory
 				if err := r.NamespaceMigrator().MigrateNamespaceUp(ctx, n); err != nil {
@@ -192,10 +160,6 @@ func (r *RegistryDefault) Init(ctx context.Context) error {
 
 			r.l.Warnf("Namespace %s is defined in the config but not yet migrated. It is ignored until you explicitly migrate it.", n.Name)
 			continue
-		}
-
-		if s.CurrentVersion != s.NextVersion {
-			r.l.Warnf("Namespace %s is not migrated to the latest version, it will be ignored until you explicitly migrate it.", n.Name)
 		}
 	}
 
