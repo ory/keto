@@ -11,6 +11,7 @@ import (
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
+// Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
 // CheckServiceClient is the client API for CheckService service.
@@ -62,7 +63,7 @@ type UnsafeCheckServiceServer interface {
 }
 
 func RegisterCheckServiceServer(s grpc.ServiceRegistrar, srv CheckServiceServer) {
-	s.RegisterService(&_CheckService_serviceDesc, srv)
+	s.RegisterService(&CheckService_ServiceDesc, srv)
 }
 
 func _CheckService_Check_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -83,7 +84,10 @@ func _CheckService_Check_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
-var _CheckService_serviceDesc = grpc.ServiceDesc{
+// CheckService_ServiceDesc is the grpc.ServiceDesc for CheckService service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var CheckService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "ory.keto.acl.v1alpha1.CheckService",
 	HandlerType: (*CheckServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
