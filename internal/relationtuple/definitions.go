@@ -427,9 +427,7 @@ func NewManagerWrapper(_ *testing.T, reg ManagerProvider, options ...x.Paginatio
 
 func (t *ManagerWrapper) GetRelationTuples(ctx context.Context, query *RelationQuery, options ...x.PaginationOptionSetter) ([]*InternalRelationTuple, string, error) {
 	opts := x.GetPaginationOptions(options...)
-	if opts.Token != "" {
-		t.RequestedPages = append(t.RequestedPages, opts.Token)
-	}
+	t.RequestedPages = append(t.RequestedPages, opts.Token)
 	return t.Reg.RelationTupleManager().GetRelationTuples(ctx, query, append(t.PageOpts, options...)...)
 }
 

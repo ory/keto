@@ -32,5 +32,3 @@ var (
 	ErrNamespaceUnknown   = errors.New("namespace unknown")
 	ErrMalformedPageToken = errors.New("malformed page token")
 )
-
-const PageTokenEnd = "no other page"

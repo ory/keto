@@ -10,9 +10,12 @@ import (
 	"testing"
 	"time"
 
+	"github.com/stretchr/testify/assert"
+
+	"github.com/ory/keto/internal/x"
+
 	"github.com/ory/x/configx"
 	"github.com/ory/x/healthx"
-	"github.com/ory/x/sqlcon/dockertest"
 	"github.com/phayes/freeport"
 	"github.com/spf13/pflag"
 
@@ -53,68 +56,7 @@ func setup(t testing.TB) (*test.Hook, context.Context) {
 	return hook, ctx
 }
 
-func migrateEverythingUp(ctx context.Context, t testing.TB, r driver.Registry, nn []*namespace.Namespace) {
-	status := &bytes.Buffer{}
-
-	require.NoError(t, r.Migrator().MigrationStatus(ctx, status))
-
-	if strings.Contains(status.String(), "Pending") {
-		require.NoError(t, r.Migrator().MigrateUp(ctx))
-	}
-
-	for _, n := range nn {
-		require.NoError(t, r.NamespaceMigrator().MigrateNamespaceUp(ctx, n))
-	}
-
-	// TODO
-	//t.Cleanup(func() {
-	//	for _, n := range nn {
-	//		c.ExecNoErr(t, "namespace", "migrate", "down", n.Name, "1")
-	//	}
-	//
-	//	c.ExecNoErr(t, "migrate", "down", "1")
-	//})
-}
-
-type DsnT struct {
-	Name    string
-	Conn    string
-	Prepare func(context.Context, testing.TB, driver.Registry, []*namespace.Namespace)
-}
-
-func GetDSNs(t testing.TB) []*DsnT {
-	// we use a slice of structs here to always have the same execution order
-	dsns := []*DsnT{
-		{
-			Name: "memory",
-			Conn: "memory",
-		},
-	}
-	if !testing.Short() {
-		dsns = append(dsns,
-			&DsnT{
-				Name:    "mysql",
-				Conn:    dockertest.RunTestMySQL(t),
-				Prepare: migrateEverythingUp,
-			},
-			&DsnT{
-				Name:    "postgres",
-				Conn:    dockertest.RunTestPostgreSQL(t),
-				Prepare: migrateEverythingUp,
-			},
-			&DsnT{
-				Name:    "cockroach",
-				Conn:    dockertest.RunTestCockroachDB(t),
-				Prepare: migrateEverythingUp,
-			},
-		)
-	}
-	t.Cleanup(dockertest.KillAllTestDatabases)
-
-	return dsns
-}
-
-func NewInitializedReg(t testing.TB, dsn *DsnT, nspaces []*namespace.Namespace) (context.Context, driver.Registry) {
+func newInitializedReg(t testing.TB, dsn *x.DsnT, nspaces []*namespace.Namespace) (context.Context, driver.Registry) {
 	_, ctx := setup(t)
 
 	ports, err := freeport.GetFreePorts(2)
@@ -140,17 +82,51 @@ func NewInitializedReg(t testing.TB, dsn *DsnT, nspaces []*namespace.Namespace) 
 	reg, err := driver.NewDefaultRegistry(ctx, flags)
 	require.NoError(t, err)
 
-	if dsn.Prepare != nil {
-		dsn.Prepare(ctx, t, reg, nspaces)
+	if dsn.Name != "memory" {
+		migrateEverythingUp(ctx, t, reg, nspaces)
 	}
+	assertMigrated(ctx, t, reg, nspaces)
 
 	return ctx, reg
 }
 
-func startServer(t testing.TB, dsn *DsnT, nspaces []*namespace.Namespace) (context.Context, driver.Registry, func()) {
-	ctx, reg := NewInitializedReg(t, dsn, nspaces)
-	// Initialization done
+func migrateEverythingUp(ctx context.Context, t testing.TB, r driver.Registry, nn []*namespace.Namespace) {
+	status := &bytes.Buffer{}
 
+	require.NoError(t, r.Migrator().MigrationStatus(ctx, status))
+
+	if strings.Contains(status.String(), "Pending") {
+		require.NoError(t, r.Migrator().MigrateUp(ctx))
+	}
+
+	for _, n := range nn {
+		require.NoError(t, r.NamespaceMigrator().MigrateNamespaceUp(ctx, n))
+	}
+
+	t.Cleanup(func() {
+		for _, n := range nn {
+			require.NoError(t, r.NamespaceMigrator().MigrateNamespaceDown(context.Background(), n, 0))
+		}
+
+		require.NoError(t, r.Migrator().MigrateDown(context.Background(), 0))
+	})
+}
+
+func assertMigrated(ctx context.Context, t testing.TB, r driver.Registry, nn []*namespace.Namespace) {
+	status := &bytes.Buffer{}
+	require.NoError(t, r.Migrator().MigrationStatus(ctx, status))
+	assert.Contains(t, status.String(), "Applied")
+	assert.NotContains(t, status.String(), "Pending")
+
+	for _, n := range nn {
+		status := &bytes.Buffer{}
+		require.NoError(t, r.NamespaceMigrator().NamespaceStatus(ctx, status, n))
+		assert.Contains(t, status.String(), "Applied")
+		assert.NotContains(t, status.String(), "Pending")
+	}
+}
+
+func startServer(ctx context.Context, t testing.TB, reg driver.Registry) func() {
 	// Start the server
 	serverCtx, serverCancel := context.WithCancel(ctx)
 	serverErr := make(chan error)
@@ -174,13 +150,11 @@ func startServer(t testing.TB, dsn *DsnT, nspaces []*namespace.Namespace) (conte
 		time.Sleep(10 * time.Millisecond)
 	}
 
-	return ctx,
-		reg,
-		// defer this close function to make sure it is shutdown on test failure as well
-		func() {
-			// stop the server
-			serverCancel()
-			// wait for it to stop
-			require.NoError(t, <-serverErr)
-		}
+	// defer this close function to make sure it is shutdown on test failure as well
+	return func() {
+		// stop the server
+		serverCancel()
+		// wait for it to stop
+		require.NoError(t, <-serverErr)
+	}
 }

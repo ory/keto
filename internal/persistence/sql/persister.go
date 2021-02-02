@@ -153,7 +153,7 @@ func internalPaginationFromOptions(opts ...x.PaginationOptionSetter) (*internalP
 }
 
 func (p *internalPagination) parsePageToken(t string) error {
-	if t == persistence.PageTokenEnd {
+	if t == x.PageTokenEnd {
 		p.Limit = 0
 		p.Offset = 0
 		return nil

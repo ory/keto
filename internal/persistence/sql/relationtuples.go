@@ -6,9 +6,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gobuffalo/pop/v5"
+	"github.com/ory/herodot"
 
-	"github.com/ory/keto/internal/persistence"
+	"github.com/gobuffalo/pop/v5"
 
 	"github.com/pkg/errors"
 
@@ -73,7 +73,7 @@ func (p *Persister) GetRelationTuples(ctx context.Context, query *relationtuple.
 
 	pagination, err := internalPaginationFromOptions(options...)
 	if err != nil {
-		return nil, persistence.PageTokenEnd, err
+		return nil, x.PageTokenEnd, err
 	}
 
 	var (
@@ -107,14 +107,14 @@ func (p *Persister) GetRelationTuples(ctx context.Context, query *relationtuple.
 	if len(where) == 0 {
 		rawQuery = fmt.Sprintf("SELECT * FROM %s LIMIT %d OFFSET %d",
 			tableFromNamespace(n),
-			pagination.Limit,
+			pagination.Limit+1,
 			pagination.Offset,
 		)
 	} else {
 		rawQuery = fmt.Sprintf("SELECT * FROM %s WHERE %s LIMIT %d OFFSET %d",
 			tableFromNamespace(n),
 			strings.Join(where, " AND "),
-			pagination.Limit,
+			pagination.Limit+1,
 			pagination.Offset,
 		)
 	}
@@ -122,24 +122,31 @@ func (p *Persister) GetRelationTuples(ctx context.Context, query *relationtuple.
 	if err := p.conn.
 		RawQuery(rawQuery, args...).
 		All(&res); err != nil {
-		return nil, persistence.PageTokenEnd, errors.WithStack(err)
+		return nil, x.PageTokenEnd, errors.WithStack(err)
 	}
 
-	internalRes := make([]*relationtuple.InternalRelationTuple, len(res))
-	for i, r := range res {
+	if len(res) == 0 {
+		return nil, x.PageTokenEnd, errors.WithStack(herodot.ErrNotFound)
+	}
+
+	cutOff := 1
+	nextPageToken := pagination.encodeNextPageToken()
+	if len(res) <= pagination.Limit {
+		nextPageToken = x.PageTokenEnd
+		cutOff = 0
+	}
+
+	internalRes := make([]*relationtuple.InternalRelationTuple, len(res)-cutOff)
+	for i, r := range res[:len(res)-cutOff] {
 		r.Namespace = n
 
 		var err error
 		internalRes[i], err = r.toInternal()
 		if err != nil {
-			return nil, persistence.PageTokenEnd, err
+			return nil, x.PageTokenEnd, err
 		}
 	}
 
-	nextPageToken := pagination.encodeNextPageToken()
-	if len(internalRes) == 0 {
-		nextPageToken = persistence.PageTokenEnd
-	}
 	return internalRes, nextPageToken, nil
 }
 

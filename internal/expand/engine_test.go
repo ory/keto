@@ -254,4 +254,35 @@ func TestEngine(t *testing.T) {
 		assert.Equal(t, expectedTree, tree)
 		assert.Len(t, reg.RequestedPages, 2)
 	})
+
+	t.Run("case=handles subject sets as leaf", func(t *testing.T) {
+		reg, e := newTestEngine(t, []*namespace.Namespace{{}})
+
+		expectedTree := &expand.Tree{
+			Type: expand.Union,
+			Subject: &relationtuple.SubjectSet{
+				Object:   "root",
+				Relation: "rel",
+			},
+			Children: []*expand.Tree{
+				{
+					Type: expand.Leaf,
+					Subject: &relationtuple.SubjectSet{
+						Object:   "so",
+						Relation: "sr",
+					},
+				},
+			},
+		}
+
+		require.NoError(t, reg.WriteRelationTuples(context.Background(), &relationtuple.InternalRelationTuple{
+			Object:   expectedTree.Subject.(*relationtuple.SubjectSet).Object,
+			Relation: expectedTree.Subject.(*relationtuple.SubjectSet).Relation,
+			Subject:  expectedTree.Children[0].Subject,
+		}))
+
+		tree, err := e.BuildTree(context.Background(), expectedTree.Subject, 100)
+		require.NoError(t, err)
+		assert.Equal(t, expectedTree, tree)
+	})
 }

@@ -37,6 +37,8 @@ func (p *Persister) MigrateNamespaceUp(_ context.Context, n *namespace.Namespace
 		return err
 	}
 
+	p.l.WithField("namespace_name", n.Name).WithField("namespace_id", n.ID).Debug("migrating namespace up")
+
 	return mb.Up()
 }
 
@@ -45,6 +47,8 @@ func (p *Persister) MigrateNamespaceDown(_ context.Context, n *namespace.Namespa
 	if err != nil {
 		return err
 	}
+
+	p.l.WithField("namespace_name", n.Name).WithField("namespace_id", n.ID).Debug("migrating namespace down")
 
 	return mb.Down(steps)
 }
@@ -58,6 +62,8 @@ func (p *Persister) NamespaceStatus(_ context.Context, w io.Writer, n *namespace
 	if err != nil {
 		return err
 	}
+
+	p.l.WithField("namespace_name", n.Name).WithField("namespace_id", n.ID).Debug("getting migration status for namespace")
 
 	return mb.Status(w)
 }

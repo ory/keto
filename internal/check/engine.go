@@ -2,9 +2,11 @@ package check
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
-	"github.com/ory/keto/internal/persistence"
+	"github.com/ory/herodot"
+
 	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/internal/x"
 )
@@ -71,9 +73,12 @@ func (e *Engine) checkOneIndirectionFurther(ctx context.Context, requested *rela
 	)
 
 	// loop through pages until either allowed, end of pages, or an error occurred
-	for !allowed && nextPage != persistence.PageTokenEnd && err == nil {
+	for !allowed && nextPage != x.PageTokenEnd && err == nil {
 		nextRels, nextPage, err = e.d.RelationTupleManager().GetRelationTuples(ctx, expandQuery, x.WithToken(nextPage))
-		if err != nil {
+		if errors.Is(err, herodot.ErrNotFound) {
+			allowed, err = false, nil
+			return
+		} else if err != nil {
 			return
 		}
 
