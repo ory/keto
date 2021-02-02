@@ -49,10 +49,10 @@ require (
 	golang.org/x/sync v0.0.0-20200625203802-6e8e738ad208
 	golang.org/x/tools v0.0.0-20200717024301-6ddee64345a6
 	google.golang.org/genproto v0.0.0-20201117123952-62d171c70ae1
-	google.golang.org/grpc v1.33.0
-	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.0.1
+	google.golang.org/grpc v1.35.0
+	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.1.0
 	google.golang.org/grpc/examples v0.0.0-20210116000752-504caa93c539 // indirect
 	google.golang.org/protobuf v1.25.1-0.20201020201750-d3470999428b
 )
 
-go 1.14
+go 1.15
