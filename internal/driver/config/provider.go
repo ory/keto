@@ -48,7 +48,7 @@ type (
 )
 
 func New(ctx context.Context, flags *pflag.FlagSet, l *logrusx.Logger) (*Provider, error) {
-	sf, err := pkger.Open("/.schema/config.schema.json")
+	sf, err := pkger.Open("github.com/ory/keto:/.schema/config.schema.json")
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
