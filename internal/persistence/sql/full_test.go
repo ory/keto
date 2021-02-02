@@ -3,8 +3,9 @@ package sql
 import (
 	"context"
 	"fmt"
-	"github.com/sirupsen/logrus"
 	"testing"
+
+	"github.com/sirupsen/logrus"
 
 	"github.com/ory/x/logrusx"
 	"github.com/sirupsen/logrus/hooks/test"

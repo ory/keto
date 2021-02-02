@@ -1,8 +1,9 @@
 package x
 
 import (
-	"github.com/ory/keto/internal/driver/config"
 	"testing"
+
+	"github.com/ory/keto/internal/driver/config"
 
 	"github.com/ory/x/sqlcon/dockertest"
 )
