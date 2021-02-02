@@ -56,12 +56,6 @@ func setup(t testing.TB) (*test.Hook, context.Context) {
 	return hook, ctx
 }
 
-type DsnT struct {
-	Name    string
-	Conn    string
-	Prepare func(context.Context, testing.TB, driver.Registry, []*namespace.Namespace)
-}
-
 func newInitializedReg(t testing.TB, dsn *x.DsnT, nspaces []*namespace.Namespace) (context.Context, driver.Registry) {
 	_, ctx := setup(t)
 
