@@ -16,7 +16,7 @@ import (
 	"github.com/ory/keto/internal/namespace"
 )
 
-const configSchemaPath = "/.schema/config.schema.json"
+const configSchemaPath = "github.comory/keto:/.schema/config.schema.json"
 
 func NewValidateCmd() *cobra.Command {
 	cmd := &cobra.Command{

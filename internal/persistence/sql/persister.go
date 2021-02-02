@@ -44,8 +44,8 @@ const (
 )
 
 var (
-	migrations          = pkger.Dir("/internal/persistence/sql/migrations")
-	namespaceMigrations = pkger.Dir("/internal/persistence/sql/namespace_migrations")
+	migrations          = pkger.Dir("github.com/ory/keto:/internal/persistence/sql/migrations")
+	namespaceMigrations = pkger.Dir("github.com/ory/keto:/internal/persistence/sql/namespace_migrations")
 
 	_ persistence.Persister = &Persister{}
 )
