@@ -14,9 +14,13 @@ func tableFromNamespace(n *namespace.Namespace) string {
 	return fmt.Sprintf("keto_%0.10d_relation_tuples", n.ID)
 }
 
+func migrationTableFromNamespace(n *namespace.Namespace) string {
+	return fmt.Sprintf("keto_namespace_%0.10d_migrations", n.ID)
+}
+
 func (p *Persister) namespaceMigrationBox(n *namespace.Namespace) (*pkgerx.MigrationBox, error) {
 	c, err := p.newConnection(map[string]string{
-		"migration_table_name": fmt.Sprintf("keto_namespace_%0.10d_migrations", n.ID),
+		"migration_table_name": migrationTableFromNamespace(n),
 	})
 	if err != nil {
 		return nil, err

@@ -161,10 +161,6 @@ func (r *RegistryDefault) Init(ctx context.Context) error {
 			r.l.Warnf("Namespace %s is defined in the config but not yet migrated. It is ignored until you explicitly migrate it.", n.Name)
 			continue
 		}
-
-		if strings.Contains(nStatus.String(), "Pending") {
-			r.l.Warnf("Namespace %s is not migrated to the latest version, it will be ignored until you explicitly migrate it.", n.Name)
-		}
 	}
 
 	return nil
