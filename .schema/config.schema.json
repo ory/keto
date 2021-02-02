@@ -292,7 +292,8 @@
             "error",
             "warn",
             "info",
-            "debug"
+            "debug",
+            "trace"
           ],
           "title": "Level",
           "description": "Debug enables stack traces on errors. Can also be set using environment variable LOG_LEVEL."
