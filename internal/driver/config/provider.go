@@ -33,7 +33,7 @@ const (
 
 	KeyNamespaces = "namespaces"
 
-	DSNMemory = "sqlite://:memory:?_fk=true"
+	DSNMemory = "sqlite://file::memory:?_fk=true&cache=shared"
 )
 
 type (
