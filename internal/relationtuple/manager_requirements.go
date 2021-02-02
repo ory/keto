@@ -71,7 +71,7 @@ func ManagerTest(t *testing.T, m Manager, addNamespace func(context.Context, *te
 					Namespace: nspace,
 					Object:    fmt.Sprintf("o %d", i%2),
 					Relation:  fmt.Sprintf("r %d", i%4),
-					Subject:   &SubjectID{ID: fmt.Sprintf("s %d", i%8)},
+					Subject:   &SubjectID{ID: fmt.Sprintf("s %d", i)},
 				}
 			}
 
@@ -130,7 +130,6 @@ func ManagerTest(t *testing.T, m Manager, addNamespace func(context.Context, *te
 					},
 					expected: []*InternalRelationTuple{
 						tuples[0],
-						tuples[8],
 					},
 				},
 				{
@@ -141,7 +140,6 @@ func ManagerTest(t *testing.T, m Manager, addNamespace func(context.Context, *te
 					},
 					expected: []*InternalRelationTuple{
 						tuples[0],
-						tuples[8],
 					},
 				},
 				{
@@ -152,7 +150,6 @@ func ManagerTest(t *testing.T, m Manager, addNamespace func(context.Context, *te
 					},
 					expected: []*InternalRelationTuple{
 						tuples[0],
-						tuples[8],
 					},
 				},
 				{
@@ -164,7 +161,6 @@ func ManagerTest(t *testing.T, m Manager, addNamespace func(context.Context, *te
 					},
 					expected: []*InternalRelationTuple{
 						tuples[0],
-						tuples[8],
 					},
 				},
 			} {

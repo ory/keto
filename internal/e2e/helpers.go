@@ -56,68 +56,13 @@ func setup(t testing.TB) (*test.Hook, context.Context) {
 	return hook, ctx
 }
 
-func migrateEverythingUp(ctx context.Context, t testing.TB, r driver.Registry, nn []*namespace.Namespace) {
-	status := &bytes.Buffer{}
-
-	require.NoError(t, r.Migrator().MigrationStatus(ctx, status))
-
-	if strings.Contains(status.String(), "Pending") {
-		require.NoError(t, r.Migrator().MigrateUp(ctx))
-	}
-
-	for _, n := range nn {
-		require.NoError(t, r.NamespaceMigrator().MigrateNamespaceUp(ctx, n))
-	}
-
-	// TODO
-	//t.Cleanup(func() {
-	//	for _, n := range nn {
-	//		c.ExecNoErr(t, "namespace", "migrate", "down", n.Name, "1")
-	//	}
-	//
-	//	c.ExecNoErr(t, "migrate", "down", "1")
-	//})
-}
-
 type DsnT struct {
 	Name    string
 	Conn    string
 	Prepare func(context.Context, testing.TB, driver.Registry, []*namespace.Namespace)
 }
 
-func GetDSNs(t testing.TB) []*DsnT {
-	// we use a slice of structs here to always have the same execution order
-	dsns := []*DsnT{
-		{
-			Name: "memory",
-			Conn: "memory",
-		},
-	}
-	if !testing.Short() {
-		dsns = append(dsns,
-			&DsnT{
-				Name:    "mysql",
-				Conn:    dockertest.RunTestMySQL(t),
-				Prepare: migrateEverythingUp,
-			},
-			&DsnT{
-				Name:    "postgres",
-				Conn:    dockertest.RunTestPostgreSQL(t),
-				Prepare: migrateEverythingUp,
-			},
-			&DsnT{
-				Name:    "cockroach",
-				Conn:    dockertest.RunTestCockroachDB(t),
-				Prepare: migrateEverythingUp,
-			},
-		)
-	}
-	t.Cleanup(dockertest.KillAllTestDatabases)
-
-	return dsns
-}
-
-func NewInitializedReg(t testing.TB, dsn *x.DsnT, nspaces []*namespace.Namespace) (context.Context, driver.Registry) {
+func newInitializedReg(t testing.TB, dsn *x.DsnT, nspaces []*namespace.Namespace) (context.Context, driver.Registry) {
 	_, ctx := setup(t)
 
 	ports, err := freeport.GetFreePorts(2)
@@ -145,9 +90,8 @@ func NewInitializedReg(t testing.TB, dsn *x.DsnT, nspaces []*namespace.Namespace
 
 	if dsn.Name != "memory" {
 		migrateEverythingUp(ctx, t, reg, nspaces)
-	} else {
-		assertMigrated(ctx, t, reg, nspaces)
 	}
+	assertMigrated(ctx, t, reg, nspaces)
 
 	return ctx, reg
 }
@@ -175,28 +119,16 @@ func migrateEverythingUp(ctx context.Context, t testing.TB, r driver.Registry, n
 }
 
 func assertMigrated(ctx context.Context, t testing.TB, r driver.Registry, nn []*namespace.Namespace) {
-	// check if migrations are auto applied for dsn=memory
 	status := &bytes.Buffer{}
 	require.NoError(t, r.Migrator().MigrationStatus(ctx, status))
 	assert.Contains(t, status.String(), "Applied")
 	assert.NotContains(t, status.String(), "Pending")
 
-	// TODO
-	//nApplied := strings.Count(status.String(), "Applied")
-	//t.Cleanup(func() {
-	//	// migrate nApplied down
-	//	c.ExecNoErr(t, "migrate", "down", fmt.Sprintf("%d", nApplied))
-	//})
-
 	for _, n := range nn {
-		s, err := r.NamespaceMigrator().NamespaceStatus(ctx, n.ID)
-		require.NoError(t, err)
-		assert.Equal(t, s.NextVersion, s.CurrentVersion)
-
-		// TODO
-		//t.Cleanup(func() {
-		//	c.ExecNoErr(t, "namespace", "migrate", "down", n.Name, "1")
-		//})
+		status := &bytes.Buffer{}
+		require.NoError(t, r.NamespaceMigrator().NamespaceStatus(ctx, status, n))
+		assert.Contains(t, status.String(), "Applied")
+		assert.NotContains(t, status.String(), "Pending")
 	}
 }
 

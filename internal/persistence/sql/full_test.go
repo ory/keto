@@ -3,9 +3,9 @@ package sql
 import (
 	"context"
 	"fmt"
+	"github.com/sirupsen/logrus"
 	"testing"
 
-	"github.com/gobuffalo/pop/v5"
 	"github.com/ory/x/logrusx"
 	"github.com/sirupsen/logrus/hooks/test"
 	"github.com/stretchr/testify/require"
@@ -18,18 +18,17 @@ import (
 
 func TestPersister(t *testing.T) {
 	setup := func(t *testing.T, dsn *x.DsnT) (p *Persister, hook *test.Hook) {
-		c, err := pop.NewConnection(&pop.ConnectionDetails{
-			URL: dsn.Conn,
-		})
-		require.NoError(t, err)
-
 		hook = &test.Hook{}
-		lx := logrusx.New("", "", logrusx.WithHook(hook))
+		lx := logrusx.New("", "", logrusx.WithHook(hook), logrusx.ForceLevel(logrus.DebugLevel))
 
-		p, err = NewPersister(c, lx, config.NewMemoryNamespaceManager())
+		p, err := NewPersister(dsn.Conn, lx, config.NewMemoryNamespaceManager())
 		require.NoError(t, err)
 
 		require.NoError(t, p.MigrateUp(context.Background()))
+
+		t.Cleanup(func() {
+			require.NoError(t, p.MigrateDown(context.Background(), 0))
+		})
 
 		return
 	}

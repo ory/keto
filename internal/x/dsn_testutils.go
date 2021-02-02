@@ -1,11 +1,10 @@
 package x
 
 import (
+	"github.com/ory/keto/internal/driver/config"
 	"testing"
 
 	"github.com/ory/x/sqlcon/dockertest"
-
-	"github.com/ory/keto/internal/driver/config"
 )
 
 type DsnT struct {
@@ -36,6 +35,8 @@ func GetDSNs(t testing.TB) []*DsnT {
 				Conn: dockertest.RunTestCockroachDB(t),
 			},
 		)
+
+		t.Cleanup(dockertest.KillAllTestDatabases)
 	}
 
 	return dsns
