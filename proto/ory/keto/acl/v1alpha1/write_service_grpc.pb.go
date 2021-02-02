@@ -11,6 +11,7 @@ import (
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
+// Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
 // WriteServiceClient is the client API for WriteService service.
@@ -62,7 +63,7 @@ type UnsafeWriteServiceServer interface {
 }
 
 func RegisterWriteServiceServer(s grpc.ServiceRegistrar, srv WriteServiceServer) {
-	s.RegisterService(&_WriteService_serviceDesc, srv)
+	s.RegisterService(&WriteService_ServiceDesc, srv)
 }
 
 func _WriteService_TransactRelationTuples_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -83,7 +84,10 @@ func _WriteService_TransactRelationTuples_Handler(srv interface{}, ctx context.C
 	return interceptor(ctx, in, info, handler)
 }
 
-var _WriteService_serviceDesc = grpc.ServiceDesc{
+// WriteService_ServiceDesc is the grpc.ServiceDesc for WriteService service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var WriteService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "ory.keto.acl.v1alpha1.WriteService",
 	HandlerType: (*WriteServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
