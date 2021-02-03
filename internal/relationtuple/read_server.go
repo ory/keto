@@ -3,6 +3,7 @@ package relationtuple
 import (
 	"context"
 	"net/http"
+	"strconv"
 
 	acl "github.com/ory/keto/proto/ory/keto/acl/v1alpha1"
 
@@ -31,6 +32,7 @@ func (h *handler) ListRelationTuples(ctx context.Context, req *acl.ListRelationT
 	resp := &acl.ListRelationTuplesResponse{
 		RelationTuples: make([]*acl.RelationTuple, len(rels)),
 		NextPageToken:  nextPage,
+		IsLastPage:     nextPage == x.PageTokenEnd,
 	}
 	for i, r := range rels {
 		resp.RelationTuples[i] = r.ToProto()
@@ -40,21 +42,43 @@ func (h *handler) ListRelationTuples(ctx context.Context, req *acl.ListRelationT
 }
 
 func (h *handler) getRelations(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	query, err := (&RelationQuery{}).FromURLQuery(r.URL.Query())
+	q := r.URL.Query()
+	query, err := (&RelationQuery{}).FromURLQuery(q)
 	if err != nil {
 		h.d.Writer().WriteError(w, r, err)
 		return
 	}
 
-	rels, nextPage, err := h.d.RelationTupleManager().GetRelationTuples(r.Context(), query)
+	l := h.d.Logger()
+	for k := range q {
+		l = l.WithField(k, q.Get(k))
+	}
+	l.Debug("querying relation tuples")
+
+	var paginationOpts []x.PaginationOptionSetter
+	if pageToken := q.Get("page_token"); pageToken != "" {
+		paginationOpts = append(paginationOpts, x.WithToken(pageToken))
+	}
+
+	if pageSize := q.Get("page_size"); pageSize != "" {
+		s, err := strconv.ParseInt(pageSize, 0, 0)
+		if err != nil {
+			h.d.Writer().WriteError(w, r, err)
+			return
+		}
+		paginationOpts = append(paginationOpts, x.WithSize(int(s)))
+	}
+
+	rels, nextPage, err := h.d.RelationTupleManager().GetRelationTuples(r.Context(), query, paginationOpts...)
 	if err != nil {
 		h.d.Writer().WriteError(w, r, err)
 		return
 	}
 
-	resp := map[string]interface{}{
-		"relations": rels,
-		"next_page": nextPage,
+	resp := &GetResponse{
+		RelationTuples: rels,
+		NextPageToken:  nextPage,
+		IsLastPage:     nextPage == x.PageTokenEnd,
 	}
 
 	h.d.Writer().Write(w, r, resp)

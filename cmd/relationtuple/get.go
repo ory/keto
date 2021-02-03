@@ -2,6 +2,7 @@ package relationtuple
 
 import (
 	"fmt"
+	"strconv"
 
 	acl "github.com/ory/keto/proto/ory/keto/acl/v1alpha1"
 
@@ -19,9 +20,11 @@ import (
 )
 
 const (
-	FlagSubject  = "subject"
-	FlagRelation = "relation"
-	FlagObject   = "object"
+	FlagSubject   = "subject"
+	FlagRelation  = "relation"
+	FlagObject    = "object"
+	FlagPageSize  = "page-size"
+	FlagPageToken = "page-token"
 )
 
 func registerRelationTupleFlags(flags *pflag.FlagSet) {
@@ -54,6 +57,11 @@ func readQueryFromFlags(cmd *cobra.Command, namespace string) (*acl.ListRelation
 }
 
 func newGetCmd() *cobra.Command {
+	var (
+		pageSize  int32
+		pageToken string
+	)
+
 	cmd := &cobra.Command{
 		Use:  "get <namespace>",
 		Args: cobra.ExactArgs(1),
@@ -71,15 +79,20 @@ func newGetCmd() *cobra.Command {
 			}
 
 			resp, err := cl.ListRelationTuples(cmd.Context(), &acl.ListRelationTuplesRequest{
-				Query:    query,
-				PageSize: 100,
+				Query:     query,
+				PageSize:  pageSize,
+				PageToken: pageToken,
 			})
 			if err != nil {
 				_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not make request: %s\n", err)
 				return err
 			}
 
-			cmdx.PrintTable(cmd, relationtuple.NewProtoRelationCollection(resp.RelationTuples))
+			cmdx.PrintTable(cmd, &responseOutput{
+				RelationTuples: relationtuple.NewProtoRelationCollection(resp.RelationTuples),
+				IsLastPage:     resp.IsLastPage,
+				NextPageToken:  resp.NextPageToken,
+			})
 			return nil
 		},
 	}
@@ -87,5 +100,41 @@ func newGetCmd() *cobra.Command {
 	cmd.Flags().AddFlagSet(packageFlags)
 	registerRelationTupleFlags(cmd.Flags())
 
+	cmd.Flags().StringVar(&pageToken, FlagPageToken, "", "page token acquired from a previous response")
+	cmd.Flags().Int32Var(&pageSize, FlagPageSize, 100, "maximum number of items to return")
+
 	return cmd
 }
+
+type responseOutput struct {
+	RelationTuples *relationtuple.RelationCollection `json:"relation_tuples"`
+	IsLastPage     bool                              `json:"is_last_page"`
+	NextPageToken  string                            `json:"next_page_token"`
+}
+
+func (r *responseOutput) Header() []string {
+	return r.RelationTuples.Header()
+}
+
+func (r *responseOutput) Table() [][]string {
+	return append(
+		r.RelationTuples.Table(),
+		[]string{},
+		[]string{"NEXT PAGE TOKEN", r.NextPageToken},
+		[]string{"IS LAST PAGE", strconv.FormatBool(r.IsLastPage)},
+	)
+}
+
+func (r *responseOutput) Interface() interface{} {
+	return r
+}
+
+func (r *responseOutput) Len() int {
+	return r.RelationTuples.Len() + 3
+}
+
+func (r *responseOutput) IDs() []string {
+	return r.RelationTuples.IDs()
+}
+
+var _ cmdx.Table = (*responseOutput)(nil)

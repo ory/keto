@@ -8,6 +8,8 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/sirupsen/logrus"
+
 	acl "github.com/ory/keto/proto/ory/keto/acl/v1alpha1"
 
 	"github.com/tidwall/sjson"
@@ -30,7 +32,7 @@ type (
 		WriteRelationTuples(ctx context.Context, rs ...*InternalRelationTuple) error
 	}
 
-	relationCollection struct {
+	RelationCollection struct {
 		protoRelations    []*acl.RelationTuple
 		internalRelations []*InternalRelationTuple
 	}
@@ -279,6 +281,15 @@ func (r *InternalRelationTuple) ToURLQuery() url.Values {
 	return vals
 }
 
+func (r *InternalRelationTuple) ToLoggerFields() logrus.Fields {
+	return logrus.Fields{
+		"namespace": r.Namespace,
+		"object":    r.Object,
+		"relation":  r.Relation,
+		"subject":   r.Subject,
+	}
+}
+
 func (q *RelationQuery) FromProto(query *acl.ListRelationTuplesRequest_Query) *RelationQuery {
 	return &RelationQuery{
 		Namespace: query.Namespace,
@@ -353,19 +364,19 @@ func (r *InternalRelationTuple) Interface() interface{} {
 	return r
 }
 
-func NewProtoRelationCollection(rels []*acl.RelationTuple) *relationCollection {
-	return &relationCollection{
+func NewProtoRelationCollection(rels []*acl.RelationTuple) *RelationCollection {
+	return &RelationCollection{
 		protoRelations: rels,
 	}
 }
 
-func NewRelationCollection(rels []*InternalRelationTuple) *relationCollection {
-	return &relationCollection{
+func NewRelationCollection(rels []*InternalRelationTuple) *RelationCollection {
+	return &RelationCollection{
 		internalRelations: rels,
 	}
 }
 
-func (r *relationCollection) Header() []string {
+func (r *RelationCollection) Header() []string {
 	return []string{
 		"NAMESPACE",
 		"OBJECT",
@@ -374,7 +385,7 @@ func (r *relationCollection) Header() []string {
 	}
 }
 
-func (r *relationCollection) Table() [][]string {
+func (r *RelationCollection) Table() [][]string {
 	if r.internalRelations == nil {
 		for _, rel := range r.protoRelations {
 			r.internalRelations = append(r.internalRelations, (&InternalRelationTuple{}).FromDataProvider(rel))
@@ -392,7 +403,7 @@ func (r *relationCollection) Table() [][]string {
 	return data
 }
 
-func (r *relationCollection) Interface() interface{} {
+func (r *RelationCollection) ToInternal() []*InternalRelationTuple {
 	if r.internalRelations == nil {
 		r.internalRelations = make([]*InternalRelationTuple, len(r.protoRelations))
 		for i, rel := range r.protoRelations {
@@ -402,9 +413,29 @@ func (r *relationCollection) Interface() interface{} {
 	return r.internalRelations
 }
 
-func (r *relationCollection) Len() int {
-	// one of them is zero so the sum is always correct
-	return len(r.protoRelations) + len(r.internalRelations)
+func (r *RelationCollection) Interface() interface{} {
+	return r.ToInternal()
+}
+
+func (r *RelationCollection) MarshalJSON() ([]byte, error) {
+	return json.Marshal(r.ToInternal())
+}
+
+func (r *RelationCollection) UnmarshalJSON(raw []byte) error {
+	return json.Unmarshal(raw, &r.internalRelations)
+}
+
+func (r *RelationCollection) Len() int {
+	return len(r.ToInternal())
+}
+
+func (r *RelationCollection) IDs() []string {
+	rts := r.ToInternal()
+	ids := make([]string, len(rts))
+	for i, rt := range rts {
+		ids[i] = rt.String()
+	}
+	return ids
 }
 
 type ManagerWrapper struct {

@@ -51,6 +51,8 @@ func (h *handler) createRelation(w http.ResponseWriter, r *http.Request, _ httpr
 		return
 	}
 
+	h.d.Logger().WithFields(rel.ToLoggerFields()).Debug("creating relation tuple")
+
 	if err := h.d.RelationTupleManager().WriteRelationTuples(r.Context(), &rel); err != nil {
 		h.d.Logger().WithError(err).WithField("relationtuple", rel).Errorf("got an error while creating the relation tuple")
 		h.d.Writer().WriteError(w, r, errors.WithStack(herodot.ErrInternalServerError))

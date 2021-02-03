@@ -72,11 +72,9 @@ message ListRelationTuplesRequest {
 message ListRelationTuplesResponse {
   // The relation tuples matching the list request.
   repeated RelationTuple relation_tuples = 1;
-  // Optional. A pagination token returned from a previous call to `ListRelationTuples`
-  // that indicates where this listing should continue from.
-  //
-  // All fields of the subsequent ListRelationTuplesRequest request
-  // using this `next_page_token` as the `page_token` are ignored and
-  // CAN be left blank, since the request's data is baked in this `next_page_token`.
+  // The token required to get the next page.
   string next_page_token = 2;
+  // Whether this is the last page. Using the next_page_token
+  // in a subsequent request if is_last_page is true will return an error.
+  bool is_last_page = 3;
 }

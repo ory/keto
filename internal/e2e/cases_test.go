@@ -2,7 +2,10 @@ package e2e
 
 import (
 	"fmt"
+	"strconv"
 	"testing"
+
+	"github.com/ory/keto/internal/x"
 
 	"github.com/stretchr/testify/assert"
 
@@ -23,8 +26,8 @@ func runCases(c client, nspaces []*namespace.Namespace) func(*testing.T) {
 
 			c.createTuple(t, tuple)
 
-			allTuple := c.queryTuple(t, &relationtuple.RelationQuery{Namespace: tuple.Namespace})
-			assert.Contains(t, allTuple, tuple)
+			resp := c.queryTuple(t, &relationtuple.RelationQuery{Namespace: tuple.Namespace})
+			assert.Contains(t, resp.RelationTuples, tuple)
 
 			// try the check API to see whether the tuple is interpreted correctly
 			assert.True(t, c.check(t, tuple))
@@ -67,6 +70,38 @@ func runCases(c client, nspaces []*namespace.Namespace) func(*testing.T) {
 			for _, child := range expectedTree.Children {
 				assert.Contains(t, actualTree.Children, child)
 			}
+		})
+
+		t.Run("case=gets result paginated", func(t *testing.T) {
+			const nTuples = 10
+
+			rel := fmt.Sprintf("some unique relation %T", c)
+			for i := 0; i < nTuples; i++ {
+				c.createTuple(t, &relationtuple.InternalRelationTuple{
+					Namespace: nspaces[0].Name,
+					Object:    "o" + strconv.Itoa(i),
+					Relation:  rel,
+					Subject:   &relationtuple.SubjectID{ID: "s" + strconv.Itoa(i)},
+				})
+			}
+
+			var (
+				resp   relationtuple.GetResponse
+				nPages int
+			)
+			for ; !resp.IsLastPage; nPages++ {
+				resp = *c.queryTuple(t,
+					&relationtuple.RelationQuery{
+						Namespace: nspaces[0].Name,
+						Relation:  rel,
+					},
+					x.WithToken(resp.NextPageToken),
+					x.WithSize(1),
+				)
+				assert.Len(t, resp.RelationTuples, 1)
+			}
+
+			assert.Equal(t, nTuples, nPages)
 		})
 	}
 }
