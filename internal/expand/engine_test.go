@@ -76,11 +76,11 @@ func TestEngine(t *testing.T) {
 			Children: []*expand.Tree{
 				{
 					Type:    expand.Leaf,
-					Subject: tommy,
+					Subject: paul,
 				},
 				{
 					Type:    expand.Leaf,
-					Subject: paul,
+					Subject: tommy,
 				},
 			},
 		}, tree)
