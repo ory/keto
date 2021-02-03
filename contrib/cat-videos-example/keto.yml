@@ -10,9 +10,9 @@ namespaces:
 dsn: memory
 
 serve:
-  rest:
+  read:
     host: 0.0.0.0
     port: 4466
-  grpc:
+  write:
     host: 0.0.0.0
     port: 4467

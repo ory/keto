@@ -21,7 +21,7 @@ import (
 type (
 	client interface {
 		createTuple(t require.TestingT, r *relationtuple.InternalRelationTuple)
-		queryTuple(t require.TestingT, q *relationtuple.RelationQuery) []*relationtuple.InternalRelationTuple
+		queryTuple(t require.TestingT, q *relationtuple.RelationQuery, opts ...x.PaginationOptionSetter) *relationtuple.GetResponse
 		check(t require.TestingT, r *relationtuple.InternalRelationTuple) bool
 		expand(t require.TestingT, r *relationtuple.SubjectSet, depth int) *expand.Tree
 	}

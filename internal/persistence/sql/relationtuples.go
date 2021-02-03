@@ -44,6 +44,8 @@ func (p *Persister) insertRelationTuple(ctx context.Context, rel *relationtuple.
 	// TODO sharding
 	shardID := "default"
 
+	p.l.WithFields(rel.ToLoggerFields()).Trace("creating in database")
+
 	return p.connection(ctx).RawQuery(fmt.Sprintf(
 		"INSERT INTO %s (shard_id, object, relation, subject, commit_time) VALUES (?, ?, ?, ?, ?)", tableFromNamespace(n)),
 		shardID, rel.Object, rel.Relation, rel.Subject.String(), commitTime,
@@ -111,7 +113,7 @@ func (p *Persister) GetRelationTuples(ctx context.Context, query *relationtuple.
 			pagination.Offset,
 		)
 	} else {
-		rawQuery = fmt.Sprintf("SELECT * FROM %s WHERE %s LIMIT %d OFFSET %d",
+		rawQuery = fmt.Sprintf("SELECT * FROM %s WHERE %s ORDER BY object, relation, subject, commit_time LIMIT %d OFFSET %d",
 			tableFromNamespace(n),
 			strings.Join(where, " AND "),
 			pagination.Limit+1,

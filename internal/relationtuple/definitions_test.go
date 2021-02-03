@@ -367,7 +367,7 @@ func TestRelationCollection(t *testing.T) {
 		NewRelationCollection([]*InternalRelationTuple{})
 		NewProtoRelationCollection([]*acl.RelationTuple{})
 
-		for i, c := range []*relationCollection{
+		for i, c := range []*RelationCollection{
 			NewRelationCollection(expected),
 			NewProtoRelationCollection(proto),
 		} {

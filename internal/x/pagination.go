@@ -8,7 +8,9 @@ type (
 	PaginationOptionSetter func(*paginationOptions) *paginationOptions
 )
 
-const PageTokenEnd = "no other page"
+const (
+	PageTokenEnd = "no other page"
+)
 
 func WithToken(t string) PaginationOptionSetter {
 	return func(opts *paginationOptions) *paginationOptions {
@@ -25,10 +27,7 @@ func WithSize(size int) PaginationOptionSetter {
 }
 
 func GetPaginationOptions(modifiers ...PaginationOptionSetter) *paginationOptions {
-	opts := &paginationOptions{
-		Token: "",
-		Size:  100,
-	}
+	opts := &paginationOptions{}
 	for _, f := range modifiers {
 		opts = f(opts)
 	}
