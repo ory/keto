@@ -50,9 +50,6 @@ Something is not working.
 - [ ] Clarify where handlers are tested
       ([keto#407](https://github.com/ory/keto/issues/407)) -
       [@Patrik](https://github.com/zepatrik)
-- [ ] Write dedicated persistence tests
-      ([keto#409](https://github.com/ory/keto/issues/409)) -
-      [@Patrik](https://github.com/zepatrik)
 - [ ] Handle circular relation tuples
       ([keto#411](https://github.com/ory/keto/issues/411)) -
       [@Patrik](https://github.com/zepatrik)
@@ -72,6 +69,9 @@ Something is not working.
 - [x] Write relationtuple tests
       ([keto#408](https://github.com/ory/keto/issues/408)) -
       [@Patrik](https://github.com/zepatrik)
+- [x] Write dedicated persistence tests
+      ([keto#409](https://github.com/ory/keto/issues/409)) -
+      [@Patrik](https://github.com/zepatrik)
 
 ### [Feat](https://github.com/ory/keto/labels/feat)
 
@@ -90,9 +90,6 @@ New feature or request.
 - [ ] Namespace configuration
       ([keto#303](https://github.com/ory/keto/issues/303)) -
       [@Patrik](https://github.com/zepatrik)
-- [ ] Relation Tuple Migrations should not be hardcoded but use prefixed tables
-      ([keto#404](https://github.com/ory/keto/issues/404)) -
-      [@Patrik](https://github.com/zepatrik)
 - [x] Write relationtuple tests for http and grpc handlers
       ([keto#297](https://github.com/ory/keto/issues/297)) -
       [@Patrik](https://github.com/zepatrik),
@@ -108,6 +105,22 @@ New feature or request.
       [@Patrik](https://github.com/zepatrik)
 - [x] Remove stale protobuf definitions
       ([keto#401](https://github.com/ory/keto/issues/401)) -
+      [@Patrik](https://github.com/zepatrik)
+- [x] Relation Tuple Migrations should not be hardcoded but use prefixed tables
+      ([keto#404](https://github.com/ory/keto/issues/404)) -
+      [@Patrik](https://github.com/zepatrik)
+
+### [Docs](https://github.com/ory/keto/labels/docs)
+
+Affects documentation.
+
+#### Issues
+
+- [ ] Improve documentation of Expand API's max_depth parameter
+      ([keto#419](https://github.com/ory/keto/issues/419)) -
+      [@Patrik](https://github.com/zepatrik)
+- [ ] Next Gen Documentation
+      ([keto#420](https://github.com/ory/keto/issues/420)) -
       [@Patrik](https://github.com/zepatrik)
 
 ### [Blocking](https://github.com/ory/keto/labels/blocking)
