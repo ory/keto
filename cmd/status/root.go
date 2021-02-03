@@ -43,11 +43,14 @@ func newStatusCmd() *cobra.Command {
 				return endpoints.ToUnknownCaseErr(endpoint)
 			}
 
+			loudPrinter := cmdx.NewLoudOutPrinter(cmd)
+
 			conn, err := connect(cmd)
 			for block && err != nil {
 				if !errors.Is(err, context.DeadlineExceeded) {
 					return err
 				}
+				_, _ = loudPrinter.Println("Context deadline exceeded, going to retry.")
 				conn, err = connect(cmd)
 			}
 
@@ -72,6 +75,7 @@ func newStatusCmd() *cobra.Command {
 	}
 
 	cliclient.RegisterRemoteURLFlags(cmd.Flags())
+	cmdx.RegisterNoiseFlags(cmd.Flags())
 
 	cmd.Flags().BoolVarP(&block, FlagBlock, "b", false, "block until the service is healthy")
 	cmd.Flags().StringVar(&endpoint, FlagEndpoint, "read", "which endpoint to use; one of {read, write}")

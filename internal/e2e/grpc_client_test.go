@@ -2,10 +2,12 @@ package e2e
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"strconv"
 	"strings"
+	"time"
 
 	grpcHealthV1 "google.golang.org/grpc/health/grpc_health_v1"
 
@@ -82,6 +84,19 @@ func (g *grpcClient) expand(t require.TestingT, r *relationtuple.SubjectSet, dep
 }
 
 func (g *grpcClient) waitUntilLive(t require.TestingT) {
-	out := g.c.ExecNoErr(t, "status", "--"+status.FlagBlock)
+	flags := make([]string, len(g.c.PersistentArgs))
+	copy(flags, g.c.PersistentArgs)
+
+	for i, f := range flags {
+		if f == "--"+cmdx.FlagFormat {
+			flags = append(flags[:i], flags[i+2:]...)
+			break
+		}
+	}
+
+	ctx, cancel := context.WithTimeout(g.c.Ctx, time.Minute)
+	defer cancel()
+
+	out := cmdx.ExecNoErrCtx(ctx, t, g.c.New(), append(flags, "status", "--"+status.FlagBlock)...)
 	require.Equal(t, grpcHealthV1.HealthCheckResponse_SERVING.String()+"\n", out)
 }
