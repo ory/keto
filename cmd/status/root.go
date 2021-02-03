@@ -72,7 +72,6 @@ func newStatusCmd() *cobra.Command {
 	}
 
 	cliclient.RegisterRemoteURLFlags(cmd.Flags())
-	cmdx.RegisterFormatFlags(cmd.Flags())
 
 	cmd.Flags().BoolVarP(&block, FlagBlock, "b", false, "block until the service is healthy")
 	cmd.Flags().StringVar(&endpoint, FlagEndpoint, "read", "which endpoint to use; one of {read, write}")
