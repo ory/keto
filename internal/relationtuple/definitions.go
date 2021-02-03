@@ -8,6 +8,8 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/sirupsen/logrus"
+
 	acl "github.com/ory/keto/proto/ory/keto/acl/v1alpha1"
 
 	"github.com/tidwall/sjson"
@@ -277,6 +279,15 @@ func (r *InternalRelationTuple) ToURLQuery() url.Values {
 		vals.Set("subject", r.Subject.String())
 	}
 	return vals
+}
+
+func (r *InternalRelationTuple) ToLoggerFields() logrus.Fields {
+	return logrus.Fields{
+		"namespace": r.Namespace,
+		"object":    r.Object,
+		"relation":  r.Relation,
+		"subject":   r.Subject,
+	}
 }
 
 func (q *RelationQuery) FromProto(query *acl.ListRelationTuplesRequest_Query) *RelationQuery {

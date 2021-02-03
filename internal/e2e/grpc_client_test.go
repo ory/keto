@@ -59,7 +59,6 @@ func (g *grpcClient) queryTuple(t require.TestingT, q *relationtuple.RelationQue
 
 	var resp relationtuple.GetResponse
 	require.NoError(t, json.Unmarshal([]byte(out), &resp), "%s", out)
-	fmt.Println(out)
 
 	return &resp
 }

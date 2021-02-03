@@ -49,6 +49,12 @@ func (h *handler) getRelations(w http.ResponseWriter, r *http.Request, _ httprou
 		return
 	}
 
+	l := h.d.Logger()
+	for k := range q {
+		l = l.WithField(k, q.Get(k))
+	}
+	l.Debug("querying relation tuples")
+
 	var paginationOpts []x.PaginationOptionSetter
 	if pageToken := q.Get("page_token"); pageToken != "" {
 		paginationOpts = append(paginationOpts, x.WithToken(pageToken))

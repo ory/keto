@@ -75,7 +75,7 @@ func runCases(c client, nspaces []*namespace.Namespace) func(*testing.T) {
 		t.Run("case=gets result paginated", func(t *testing.T) {
 			const nTuples = 10
 
-			rel := t.Name()
+			rel := fmt.Sprintf("some unique relation %T", c)
 			for i := 0; i < nTuples; i++ {
 				c.createTuple(t, &relationtuple.InternalRelationTuple{
 					Namespace: nspaces[0].Name,
@@ -98,6 +98,7 @@ func runCases(c client, nspaces []*namespace.Namespace) func(*testing.T) {
 					x.WithToken(resp.NextPageToken),
 					x.WithSize(1),
 				)
+				assert.Len(t, resp.RelationTuples, 1)
 			}
 
 			assert.Equal(t, nTuples, nPages)
