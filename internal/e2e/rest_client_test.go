@@ -7,10 +7,12 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+	"strconv"
+
+	"github.com/ory/keto/internal/x"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/tidwall/gjson"
 
 	"github.com/ory/keto/internal/check"
 	"github.com/ory/keto/internal/expand"
@@ -54,14 +56,24 @@ func (rc *restClient) createTuple(t require.TestingT, r *relationtuple.InternalR
 	assert.Equal(t, http.StatusCreated, code, body)
 }
 
-func (rc *restClient) queryTuple(t require.TestingT, q *relationtuple.RelationQuery) []*relationtuple.InternalRelationTuple {
-	body, code := rc.makeRequest(t, http.MethodGet, fmt.Sprintf("%s?%s", relationtuple.RouteBase, q.ToURLQuery().Encode()), "", false)
+func (rc *restClient) queryTuple(t require.TestingT, q *relationtuple.RelationQuery, opts ...x.PaginationOptionSetter) *relationtuple.GetResponse {
+	urlQuery := q.ToURLQuery()
+
+	pagination := x.GetPaginationOptions(opts...)
+	if pagination.Size != 0 {
+		urlQuery.Set("page_size", strconv.Itoa(pagination.Size))
+	}
+	if pagination.Token != "" {
+		urlQuery.Set("page_token", pagination.Token)
+	}
+
+	body, code := rc.makeRequest(t, http.MethodGet, fmt.Sprintf("%s?%s", relationtuple.RouteBase, urlQuery.Encode()), "", false)
 	require.Equal(t, http.StatusOK, code, body)
 
-	tuple := make([]*relationtuple.InternalRelationTuple, 0, gjson.Get(body, "relations.#").Int())
-	require.NoError(t, json.Unmarshal([]byte(gjson.Get(body, "relations").Raw), &tuple))
+	var dec relationtuple.GetResponse
+	require.NoError(t, json.Unmarshal([]byte(body), &dec))
 
-	return tuple
+	return &dec
 }
 
 func (rc *restClient) check(t require.TestingT, r *relationtuple.InternalRelationTuple) bool {

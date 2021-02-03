@@ -7,6 +7,8 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/ory/keto/internal/x"
+
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
@@ -34,7 +36,7 @@ func (g *grpcClient) createTuple(t require.TestingT, r *relationtuple.InternalRe
 	assert.Len(t, stderr, 0, stdout)
 }
 
-func (g *grpcClient) queryTuple(t require.TestingT, q *relationtuple.RelationQuery) []*relationtuple.InternalRelationTuple {
+func (g *grpcClient) queryTuple(t require.TestingT, q *relationtuple.RelationQuery, opts ...x.PaginationOptionSetter) *relationtuple.GetResponse {
 	var flags []string
 	if q.Subject != nil {
 		flags = append(flags, "--"+clirelationtuple.FlagSubject, q.Subject.String())
@@ -45,13 +47,21 @@ func (g *grpcClient) queryTuple(t require.TestingT, q *relationtuple.RelationQue
 	if q.Object != "" {
 		flags = append(flags, "--"+clirelationtuple.FlagObject, q.Object)
 	}
+	pagination := x.GetPaginationOptions(opts...)
+	if pagination.Token != "" {
+		flags = append(flags, "--"+clirelationtuple.FlagPageToken, pagination.Token)
+	}
+	if pagination.Size != 0 {
+		flags = append(flags, "--"+clirelationtuple.FlagPageSize, strconv.Itoa(pagination.Size))
+	}
 
 	out := g.c.ExecNoErr(t, append(flags, "relation-tuple", "get", q.Namespace)...)
 
-	var rels []*relationtuple.InternalRelationTuple
-	require.NoError(t, json.Unmarshal([]byte(out), &rels), "%s", out)
+	var resp relationtuple.GetResponse
+	require.NoError(t, json.Unmarshal([]byte(out), &resp), "%s", out)
+	fmt.Println(out)
 
-	return rels
+	return &resp
 }
 
 func (g *grpcClient) check(t require.TestingT, r *relationtuple.InternalRelationTuple) bool {
