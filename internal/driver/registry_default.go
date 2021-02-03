@@ -7,6 +7,8 @@ import (
 
 	"github.com/julienschmidt/httprouter"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/health"
+	grpcHealthV1 "google.golang.org/grpc/health/grpc_health_v1"
 
 	"github.com/ory/keto/internal/driver/config"
 
@@ -40,8 +42,9 @@ type (
 		ee *expand.Engine
 		c  *config.Provider
 
-		healthH  *healthx.Handler
-		handlers []Handler
+		healthH      *healthx.Handler
+		healthServer *health.Server
+		handlers     []Handler
 	}
 	Handler interface {
 		RegisterReadRoutes(r *x.ReadRouter)
@@ -73,6 +76,14 @@ func (r *RegistryDefault) HealthHandler() *healthx.Handler {
 	}
 
 	return r.healthH
+}
+
+func (r *RegistryDefault) HealthServer() *health.Server {
+	if r.healthServer == nil {
+		r.healthServer = health.NewServer()
+	}
+
+	return r.healthServer
 }
 
 func (r *RegistryDefault) Tracer() *tracing.Tracer {
@@ -204,6 +215,8 @@ func (r *RegistryDefault) WriteRouter() *x.WriteRouter {
 func (r *RegistryDefault) ReadGRPCServer() *grpc.Server {
 	s := grpc.NewServer()
 
+	grpcHealthV1.RegisterHealthServer(s, r.HealthServer())
+
 	for _, h := range r.allHandlers() {
 		h.RegisterReadGRPC(s)
 	}
@@ -213,6 +226,8 @@ func (r *RegistryDefault) ReadGRPCServer() *grpc.Server {
 
 func (r *RegistryDefault) WriteGRPCServer() *grpc.Server {
 	s := grpc.NewServer()
+
+	grpcHealthV1.RegisterHealthServer(s, r.HealthServer())
 
 	for _, h := range r.allHandlers() {
 		h.RegisterWriteGRPC(s)

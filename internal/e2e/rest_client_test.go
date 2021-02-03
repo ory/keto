@@ -8,6 +8,9 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strconv"
+	"time"
+
+	"github.com/ory/x/healthx"
 
 	"github.com/ory/keto/internal/x"
 
@@ -100,4 +103,15 @@ func (rc *restClient) expand(t require.TestingT, r *relationtuple.SubjectSet, de
 	require.NoError(t, json.Unmarshal([]byte(body), tree))
 
 	return tree
+}
+
+func (rc *restClient) waitUntilLive(t require.TestingT) {
+	var healthReady = func() bool {
+		_, status := rc.makeRequest(t, "GET", healthx.ReadyCheckPath, "", false)
+		return status == http.StatusOK
+	}
+	// wait for /health/ready
+	for !healthReady() {
+		time.Sleep(10 * time.Millisecond)
+	}
 }

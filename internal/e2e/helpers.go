@@ -4,18 +4,15 @@ import (
 	"bytes"
 	"context"
 	"io/ioutil"
-	"net/http"
 	"path/filepath"
 	"strings"
 	"testing"
-	"time"
 
 	"github.com/stretchr/testify/assert"
 
 	"github.com/ory/keto/internal/x"
 
 	"github.com/ory/x/configx"
-	"github.com/ory/x/healthx"
 	"github.com/phayes/freeport"
 	"github.com/spf13/pflag"
 
@@ -133,22 +130,6 @@ func startServer(ctx context.Context, t testing.TB, reg driver.Registry) func() 
 	go func() {
 		serverErr <- reg.ServeAll(serverCtx)
 	}()
-
-	var healthReady = func() error {
-		ctx, cancel := context.WithTimeout(ctx, 2*time.Second)
-		defer cancel()
-
-		r, err := http.NewRequestWithContext(ctx, "GET", "http://"+reg.Config().ReadAPIListenOn()+healthx.ReadyCheckPath, nil)
-		if err != nil {
-			return err
-		}
-		_, err = http.DefaultClient.Do(r)
-		return err
-	}
-	// wait for /health/ready
-	for err := healthReady(); err != nil; err = healthReady() {
-		time.Sleep(10 * time.Millisecond)
-	}
 
 	// defer this close function to make sure it is shutdown on test failure as well
 	return func() {

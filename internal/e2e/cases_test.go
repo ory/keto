@@ -16,6 +16,8 @@ import (
 
 func runCases(c client, nspaces []*namespace.Namespace) func(*testing.T) {
 	return func(t *testing.T) {
+		c.waitUntilLive(t)
+
 		t.Run("case=creates tuple and uses it then", func(t *testing.T) {
 			tuple := &relationtuple.InternalRelationTuple{
 				Namespace: nspaces[0].Name,
