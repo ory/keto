@@ -7,6 +7,10 @@ import (
 	"strconv"
 	"strings"
 
+	grpcHealthV1 "google.golang.org/grpc/health/grpc_health_v1"
+
+	"github.com/ory/keto/cmd/status"
+
 	"github.com/ory/keto/internal/x"
 
 	"github.com/stretchr/testify/assert"
@@ -75,4 +79,9 @@ func (g *grpcClient) expand(t require.TestingT, r *relationtuple.SubjectSet, dep
 	res := expand.Tree{}
 	require.NoError(t, json.Unmarshal([]byte(out), &res))
 	return &res
+}
+
+func (g *grpcClient) waitUntilLive(t require.TestingT) {
+	out := g.c.ExecNoErr(t, "status", "--"+status.FlagBlock)
+	require.Equal(t, grpcHealthV1.HealthCheckResponse_SERVING.String()+"\n", out)
 }
