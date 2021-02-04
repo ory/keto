@@ -6,6 +6,7 @@ package engines
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
 	"fmt"
 	"io"
 
@@ -34,7 +35,6 @@ func (o *DeleteOryAccessControlPolicyRoleReader) ReadResponse(response runtime.C
 			return nil, err
 		}
 		return nil, result
-
 	default:
 		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
@@ -45,7 +45,7 @@ func NewDeleteOryAccessControlPolicyRoleNoContent() *DeleteOryAccessControlPolic
 	return &DeleteOryAccessControlPolicyRoleNoContent{}
 }
 
-/*DeleteOryAccessControlPolicyRoleNoContent handles this case with default header values.
+/* DeleteOryAccessControlPolicyRoleNoContent describes a response with status code 204, with default header values.
 
 An empty response
 */
@@ -66,7 +66,7 @@ func NewDeleteOryAccessControlPolicyRoleInternalServerError() *DeleteOryAccessCo
 	return &DeleteOryAccessControlPolicyRoleInternalServerError{}
 }
 
-/*DeleteOryAccessControlPolicyRoleInternalServerError handles this case with default header values.
+/* DeleteOryAccessControlPolicyRoleInternalServerError describes a response with status code 500, with default header values.
 
 The standard error format
 */
@@ -77,7 +77,6 @@ type DeleteOryAccessControlPolicyRoleInternalServerError struct {
 func (o *DeleteOryAccessControlPolicyRoleInternalServerError) Error() string {
 	return fmt.Sprintf("[DELETE /engines/acp/ory/{flavor}/roles/{id}][%d] deleteOryAccessControlPolicyRoleInternalServerError  %+v", 500, o.Payload)
 }
-
 func (o *DeleteOryAccessControlPolicyRoleInternalServerError) GetPayload() *DeleteOryAccessControlPolicyRoleInternalServerErrorBody {
 	return o.Payload
 }
@@ -120,6 +119,11 @@ type DeleteOryAccessControlPolicyRoleInternalServerErrorBody struct {
 
 // Validate validates this delete ory access control policy role internal server error body
 func (o *DeleteOryAccessControlPolicyRoleInternalServerErrorBody) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this delete ory access control policy role internal server error body based on context it is used
+func (o *DeleteOryAccessControlPolicyRoleInternalServerErrorBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

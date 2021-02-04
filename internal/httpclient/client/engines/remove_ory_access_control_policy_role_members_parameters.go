@@ -16,69 +16,85 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewRemoveOryAccessControlPolicyRoleMembersParams creates a new RemoveOryAccessControlPolicyRoleMembersParams object
-// with the default values initialized.
+// NewRemoveOryAccessControlPolicyRoleMembersParams creates a new RemoveOryAccessControlPolicyRoleMembersParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewRemoveOryAccessControlPolicyRoleMembersParams() *RemoveOryAccessControlPolicyRoleMembersParams {
-	var ()
 	return &RemoveOryAccessControlPolicyRoleMembersParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewRemoveOryAccessControlPolicyRoleMembersParamsWithTimeout creates a new RemoveOryAccessControlPolicyRoleMembersParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewRemoveOryAccessControlPolicyRoleMembersParamsWithTimeout(timeout time.Duration) *RemoveOryAccessControlPolicyRoleMembersParams {
-	var ()
 	return &RemoveOryAccessControlPolicyRoleMembersParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewRemoveOryAccessControlPolicyRoleMembersParamsWithContext creates a new RemoveOryAccessControlPolicyRoleMembersParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewRemoveOryAccessControlPolicyRoleMembersParamsWithContext(ctx context.Context) *RemoveOryAccessControlPolicyRoleMembersParams {
-	var ()
 	return &RemoveOryAccessControlPolicyRoleMembersParams{
-
 		Context: ctx,
 	}
 }
 
 // NewRemoveOryAccessControlPolicyRoleMembersParamsWithHTTPClient creates a new RemoveOryAccessControlPolicyRoleMembersParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewRemoveOryAccessControlPolicyRoleMembersParamsWithHTTPClient(client *http.Client) *RemoveOryAccessControlPolicyRoleMembersParams {
-	var ()
 	return &RemoveOryAccessControlPolicyRoleMembersParams{
 		HTTPClient: client,
 	}
 }
 
-/*RemoveOryAccessControlPolicyRoleMembersParams contains all the parameters to send to the API endpoint
-for the remove ory access control policy role members operation typically these are written to a http.Request
+/* RemoveOryAccessControlPolicyRoleMembersParams contains all the parameters to send to the API endpoint
+   for the remove ory access control policy role members operation.
+
+   Typically these are written to a http.Request.
 */
 type RemoveOryAccessControlPolicyRoleMembersParams struct {
 
-	/*Flavor
-	  The ORY Access Control Policy flavor. Can be "regex", "glob", and "exact".
+	/* Flavor.
 
+	   The ORY Access Control Policy flavor. Can be "regex", "glob", and "exact".
 	*/
 	Flavor string
-	/*ID
-	  The ID of the ORY Access Control Policy Role.
 
+	/* ID.
+
+	   The ID of the ORY Access Control Policy Role.
 	*/
 	ID string
-	/*Member
-	  The member to be removed.
 
+	/* Member.
+
+	   The member to be removed.
 	*/
 	Member string
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the remove ory access control policy role members params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *RemoveOryAccessControlPolicyRoleMembersParams) WithDefaults() *RemoveOryAccessControlPolicyRoleMembersParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the remove ory access control policy role members params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *RemoveOryAccessControlPolicyRoleMembersParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the remove ory access control policy role members params

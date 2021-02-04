@@ -6,6 +6,7 @@ package engines
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
 	"fmt"
 	"io"
 
@@ -42,7 +43,6 @@ func (o *GetOryAccessControlPolicyReader) ReadResponse(response runtime.ClientRe
 			return nil, err
 		}
 		return nil, result
-
 	default:
 		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
@@ -53,7 +53,7 @@ func NewGetOryAccessControlPolicyOK() *GetOryAccessControlPolicyOK {
 	return &GetOryAccessControlPolicyOK{}
 }
 
-/*GetOryAccessControlPolicyOK handles this case with default header values.
+/* GetOryAccessControlPolicyOK describes a response with status code 200, with default header values.
 
 oryAccessControlPolicy
 */
@@ -64,7 +64,6 @@ type GetOryAccessControlPolicyOK struct {
 func (o *GetOryAccessControlPolicyOK) Error() string {
 	return fmt.Sprintf("[GET /engines/acp/ory/{flavor}/policies/{id}][%d] getOryAccessControlPolicyOK  %+v", 200, o.Payload)
 }
-
 func (o *GetOryAccessControlPolicyOK) GetPayload() *models.OryAccessControlPolicy {
 	return o.Payload
 }
@@ -86,7 +85,7 @@ func NewGetOryAccessControlPolicyNotFound() *GetOryAccessControlPolicyNotFound {
 	return &GetOryAccessControlPolicyNotFound{}
 }
 
-/*GetOryAccessControlPolicyNotFound handles this case with default header values.
+/* GetOryAccessControlPolicyNotFound describes a response with status code 404, with default header values.
 
 The standard error format
 */
@@ -97,7 +96,6 @@ type GetOryAccessControlPolicyNotFound struct {
 func (o *GetOryAccessControlPolicyNotFound) Error() string {
 	return fmt.Sprintf("[GET /engines/acp/ory/{flavor}/policies/{id}][%d] getOryAccessControlPolicyNotFound  %+v", 404, o.Payload)
 }
-
 func (o *GetOryAccessControlPolicyNotFound) GetPayload() *GetOryAccessControlPolicyNotFoundBody {
 	return o.Payload
 }
@@ -119,7 +117,7 @@ func NewGetOryAccessControlPolicyInternalServerError() *GetOryAccessControlPolic
 	return &GetOryAccessControlPolicyInternalServerError{}
 }
 
-/*GetOryAccessControlPolicyInternalServerError handles this case with default header values.
+/* GetOryAccessControlPolicyInternalServerError describes a response with status code 500, with default header values.
 
 The standard error format
 */
@@ -130,7 +128,6 @@ type GetOryAccessControlPolicyInternalServerError struct {
 func (o *GetOryAccessControlPolicyInternalServerError) Error() string {
 	return fmt.Sprintf("[GET /engines/acp/ory/{flavor}/policies/{id}][%d] getOryAccessControlPolicyInternalServerError  %+v", 500, o.Payload)
 }
-
 func (o *GetOryAccessControlPolicyInternalServerError) GetPayload() *GetOryAccessControlPolicyInternalServerErrorBody {
 	return o.Payload
 }
@@ -173,6 +170,11 @@ type GetOryAccessControlPolicyInternalServerErrorBody struct {
 
 // Validate validates this get ory access control policy internal server error body
 func (o *GetOryAccessControlPolicyInternalServerErrorBody) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this get ory access control policy internal server error body based on context it is used
+func (o *GetOryAccessControlPolicyInternalServerErrorBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -220,6 +222,11 @@ type GetOryAccessControlPolicyNotFoundBody struct {
 
 // Validate validates this get ory access control policy not found body
 func (o *GetOryAccessControlPolicyNotFoundBody) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this get ory access control policy not found body based on context it is used
+func (o *GetOryAccessControlPolicyNotFoundBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

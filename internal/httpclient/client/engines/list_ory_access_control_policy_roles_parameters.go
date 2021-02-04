@@ -17,74 +17,95 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// NewListOryAccessControlPolicyRolesParams creates a new ListOryAccessControlPolicyRolesParams object
-// with the default values initialized.
+// NewListOryAccessControlPolicyRolesParams creates a new ListOryAccessControlPolicyRolesParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewListOryAccessControlPolicyRolesParams() *ListOryAccessControlPolicyRolesParams {
-	var ()
 	return &ListOryAccessControlPolicyRolesParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewListOryAccessControlPolicyRolesParamsWithTimeout creates a new ListOryAccessControlPolicyRolesParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewListOryAccessControlPolicyRolesParamsWithTimeout(timeout time.Duration) *ListOryAccessControlPolicyRolesParams {
-	var ()
 	return &ListOryAccessControlPolicyRolesParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewListOryAccessControlPolicyRolesParamsWithContext creates a new ListOryAccessControlPolicyRolesParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewListOryAccessControlPolicyRolesParamsWithContext(ctx context.Context) *ListOryAccessControlPolicyRolesParams {
-	var ()
 	return &ListOryAccessControlPolicyRolesParams{
-
 		Context: ctx,
 	}
 }
 
 // NewListOryAccessControlPolicyRolesParamsWithHTTPClient creates a new ListOryAccessControlPolicyRolesParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewListOryAccessControlPolicyRolesParamsWithHTTPClient(client *http.Client) *ListOryAccessControlPolicyRolesParams {
-	var ()
 	return &ListOryAccessControlPolicyRolesParams{
 		HTTPClient: client,
 	}
 }
 
-/*ListOryAccessControlPolicyRolesParams contains all the parameters to send to the API endpoint
-for the list ory access control policy roles operation typically these are written to a http.Request
+/* ListOryAccessControlPolicyRolesParams contains all the parameters to send to the API endpoint
+   for the list ory access control policy roles operation.
+
+   Typically these are written to a http.Request.
 */
 type ListOryAccessControlPolicyRolesParams struct {
 
-	/*Flavor
-	  The ORY Access Control Policy flavor. Can be "regex", "glob", and "exact"
+	/* Flavor.
 
+	   The ORY Access Control Policy flavor. Can be "regex", "glob", and "exact"
 	*/
 	Flavor string
-	/*Limit
-	  The maximum amount of policies returned.
 
+	/* Limit.
+
+	   The maximum amount of policies returned.
+
+	   Format: int64
 	*/
 	Limit *int64
-	/*Member
-	  The member for which the roles are to be listed.
 
+	/* Member.
+
+	   The member for which the roles are to be listed.
 	*/
 	Member *string
-	/*Offset
-	  The offset from where to start looking.
 
+	/* Offset.
+
+	   The offset from where to start looking.
+
+	   Format: int64
 	*/
 	Offset *int64
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the list ory access control policy roles params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *ListOryAccessControlPolicyRolesParams) WithDefaults() *ListOryAccessControlPolicyRolesParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the list ory access control policy roles params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *ListOryAccessControlPolicyRolesParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the list ory access control policy roles params
@@ -181,48 +202,51 @@ func (o *ListOryAccessControlPolicyRolesParams) WriteToRequest(r runtime.ClientR
 
 		// query param limit
 		var qrLimit int64
+
 		if o.Limit != nil {
 			qrLimit = *o.Limit
 		}
 		qLimit := swag.FormatInt64(qrLimit)
 		if qLimit != "" {
+
 			if err := r.SetQueryParam("limit", qLimit); err != nil {
 				return err
 			}
 		}
-
 	}
 
 	if o.Member != nil {
 
 		// query param member
 		var qrMember string
+
 		if o.Member != nil {
 			qrMember = *o.Member
 		}
 		qMember := qrMember
 		if qMember != "" {
+
 			if err := r.SetQueryParam("member", qMember); err != nil {
 				return err
 			}
 		}
-
 	}
 
 	if o.Offset != nil {
 
 		// query param offset
 		var qrOffset int64
+
 		if o.Offset != nil {
 			qrOffset = *o.Offset
 		}
 		qOffset := swag.FormatInt64(qrOffset)
 		if qOffset != "" {
+
 			if err := r.SetQueryParam("offset", qOffset); err != nil {
 				return err
 			}
 		}
-
 	}
 
 	if len(res) > 0 {

@@ -6,6 +6,7 @@ package engines
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
 	"fmt"
 	"io"
 
@@ -36,7 +37,6 @@ func (o *UpsertOryAccessControlPolicyReader) ReadResponse(response runtime.Clien
 			return nil, err
 		}
 		return nil, result
-
 	default:
 		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
@@ -47,7 +47,7 @@ func NewUpsertOryAccessControlPolicyOK() *UpsertOryAccessControlPolicyOK {
 	return &UpsertOryAccessControlPolicyOK{}
 }
 
-/*UpsertOryAccessControlPolicyOK handles this case with default header values.
+/* UpsertOryAccessControlPolicyOK describes a response with status code 200, with default header values.
 
 oryAccessControlPolicy
 */
@@ -58,7 +58,6 @@ type UpsertOryAccessControlPolicyOK struct {
 func (o *UpsertOryAccessControlPolicyOK) Error() string {
 	return fmt.Sprintf("[PUT /engines/acp/ory/{flavor}/policies][%d] upsertOryAccessControlPolicyOK  %+v", 200, o.Payload)
 }
-
 func (o *UpsertOryAccessControlPolicyOK) GetPayload() *models.OryAccessControlPolicy {
 	return o.Payload
 }
@@ -80,7 +79,7 @@ func NewUpsertOryAccessControlPolicyInternalServerError() *UpsertOryAccessContro
 	return &UpsertOryAccessControlPolicyInternalServerError{}
 }
 
-/*UpsertOryAccessControlPolicyInternalServerError handles this case with default header values.
+/* UpsertOryAccessControlPolicyInternalServerError describes a response with status code 500, with default header values.
 
 The standard error format
 */
@@ -91,7 +90,6 @@ type UpsertOryAccessControlPolicyInternalServerError struct {
 func (o *UpsertOryAccessControlPolicyInternalServerError) Error() string {
 	return fmt.Sprintf("[PUT /engines/acp/ory/{flavor}/policies][%d] upsertOryAccessControlPolicyInternalServerError  %+v", 500, o.Payload)
 }
-
 func (o *UpsertOryAccessControlPolicyInternalServerError) GetPayload() *UpsertOryAccessControlPolicyInternalServerErrorBody {
 	return o.Payload
 }
@@ -134,6 +132,11 @@ type UpsertOryAccessControlPolicyInternalServerErrorBody struct {
 
 // Validate validates this upsert ory access control policy internal server error body
 func (o *UpsertOryAccessControlPolicyInternalServerErrorBody) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this upsert ory access control policy internal server error body based on context it is used
+func (o *UpsertOryAccessControlPolicyInternalServerErrorBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

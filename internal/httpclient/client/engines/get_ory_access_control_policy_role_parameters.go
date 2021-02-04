@@ -16,64 +16,79 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewGetOryAccessControlPolicyRoleParams creates a new GetOryAccessControlPolicyRoleParams object
-// with the default values initialized.
+// NewGetOryAccessControlPolicyRoleParams creates a new GetOryAccessControlPolicyRoleParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewGetOryAccessControlPolicyRoleParams() *GetOryAccessControlPolicyRoleParams {
-	var ()
 	return &GetOryAccessControlPolicyRoleParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewGetOryAccessControlPolicyRoleParamsWithTimeout creates a new GetOryAccessControlPolicyRoleParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewGetOryAccessControlPolicyRoleParamsWithTimeout(timeout time.Duration) *GetOryAccessControlPolicyRoleParams {
-	var ()
 	return &GetOryAccessControlPolicyRoleParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewGetOryAccessControlPolicyRoleParamsWithContext creates a new GetOryAccessControlPolicyRoleParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewGetOryAccessControlPolicyRoleParamsWithContext(ctx context.Context) *GetOryAccessControlPolicyRoleParams {
-	var ()
 	return &GetOryAccessControlPolicyRoleParams{
-
 		Context: ctx,
 	}
 }
 
 // NewGetOryAccessControlPolicyRoleParamsWithHTTPClient creates a new GetOryAccessControlPolicyRoleParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewGetOryAccessControlPolicyRoleParamsWithHTTPClient(client *http.Client) *GetOryAccessControlPolicyRoleParams {
-	var ()
 	return &GetOryAccessControlPolicyRoleParams{
 		HTTPClient: client,
 	}
 }
 
-/*GetOryAccessControlPolicyRoleParams contains all the parameters to send to the API endpoint
-for the get ory access control policy role operation typically these are written to a http.Request
+/* GetOryAccessControlPolicyRoleParams contains all the parameters to send to the API endpoint
+   for the get ory access control policy role operation.
+
+   Typically these are written to a http.Request.
 */
 type GetOryAccessControlPolicyRoleParams struct {
 
-	/*Flavor
-	  The ORY Access Control Policy flavor. Can be "regex", "glob", and "exact".
+	/* Flavor.
 
+	   The ORY Access Control Policy flavor. Can be "regex", "glob", and "exact".
 	*/
 	Flavor string
-	/*ID
-	  The ID of the ORY Access Control Policy Role.
 
+	/* ID.
+
+	   The ID of the ORY Access Control Policy Role.
 	*/
 	ID string
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the get ory access control policy role params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *GetOryAccessControlPolicyRoleParams) WithDefaults() *GetOryAccessControlPolicyRoleParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the get ory access control policy role params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *GetOryAccessControlPolicyRoleParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the get ory access control policy role params

@@ -6,6 +6,7 @@ package engines
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
 	"fmt"
 	"io"
 
@@ -36,7 +37,6 @@ func (o *ListOryAccessControlPoliciesReader) ReadResponse(response runtime.Clien
 			return nil, err
 		}
 		return nil, result
-
 	default:
 		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
@@ -47,7 +47,7 @@ func NewListOryAccessControlPoliciesOK() *ListOryAccessControlPoliciesOK {
 	return &ListOryAccessControlPoliciesOK{}
 }
 
-/*ListOryAccessControlPoliciesOK handles this case with default header values.
+/* ListOryAccessControlPoliciesOK describes a response with status code 200, with default header values.
 
 Policies is an array of policies.
 */
@@ -58,7 +58,6 @@ type ListOryAccessControlPoliciesOK struct {
 func (o *ListOryAccessControlPoliciesOK) Error() string {
 	return fmt.Sprintf("[GET /engines/acp/ory/{flavor}/policies][%d] listOryAccessControlPoliciesOK  %+v", 200, o.Payload)
 }
-
 func (o *ListOryAccessControlPoliciesOK) GetPayload() []*models.OryAccessControlPolicy {
 	return o.Payload
 }
@@ -78,7 +77,7 @@ func NewListOryAccessControlPoliciesInternalServerError() *ListOryAccessControlP
 	return &ListOryAccessControlPoliciesInternalServerError{}
 }
 
-/*ListOryAccessControlPoliciesInternalServerError handles this case with default header values.
+/* ListOryAccessControlPoliciesInternalServerError describes a response with status code 500, with default header values.
 
 The standard error format
 */
@@ -89,7 +88,6 @@ type ListOryAccessControlPoliciesInternalServerError struct {
 func (o *ListOryAccessControlPoliciesInternalServerError) Error() string {
 	return fmt.Sprintf("[GET /engines/acp/ory/{flavor}/policies][%d] listOryAccessControlPoliciesInternalServerError  %+v", 500, o.Payload)
 }
-
 func (o *ListOryAccessControlPoliciesInternalServerError) GetPayload() *ListOryAccessControlPoliciesInternalServerErrorBody {
 	return o.Payload
 }
@@ -132,6 +130,11 @@ type ListOryAccessControlPoliciesInternalServerErrorBody struct {
 
 // Validate validates this list ory access control policies internal server error body
 func (o *ListOryAccessControlPoliciesInternalServerErrorBody) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this list ory access control policies internal server error body based on context it is used
+func (o *ListOryAccessControlPoliciesInternalServerErrorBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

@@ -16,64 +16,79 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewGetOryAccessControlPolicyParams creates a new GetOryAccessControlPolicyParams object
-// with the default values initialized.
+// NewGetOryAccessControlPolicyParams creates a new GetOryAccessControlPolicyParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewGetOryAccessControlPolicyParams() *GetOryAccessControlPolicyParams {
-	var ()
 	return &GetOryAccessControlPolicyParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewGetOryAccessControlPolicyParamsWithTimeout creates a new GetOryAccessControlPolicyParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewGetOryAccessControlPolicyParamsWithTimeout(timeout time.Duration) *GetOryAccessControlPolicyParams {
-	var ()
 	return &GetOryAccessControlPolicyParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewGetOryAccessControlPolicyParamsWithContext creates a new GetOryAccessControlPolicyParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewGetOryAccessControlPolicyParamsWithContext(ctx context.Context) *GetOryAccessControlPolicyParams {
-	var ()
 	return &GetOryAccessControlPolicyParams{
-
 		Context: ctx,
 	}
 }
 
 // NewGetOryAccessControlPolicyParamsWithHTTPClient creates a new GetOryAccessControlPolicyParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewGetOryAccessControlPolicyParamsWithHTTPClient(client *http.Client) *GetOryAccessControlPolicyParams {
-	var ()
 	return &GetOryAccessControlPolicyParams{
 		HTTPClient: client,
 	}
 }
 
-/*GetOryAccessControlPolicyParams contains all the parameters to send to the API endpoint
-for the get ory access control policy operation typically these are written to a http.Request
+/* GetOryAccessControlPolicyParams contains all the parameters to send to the API endpoint
+   for the get ory access control policy operation.
+
+   Typically these are written to a http.Request.
 */
 type GetOryAccessControlPolicyParams struct {
 
-	/*Flavor
-	  The ORY Access Control Policy flavor. Can be "regex", "glob", and "exact".
+	/* Flavor.
 
+	   The ORY Access Control Policy flavor. Can be "regex", "glob", and "exact".
 	*/
 	Flavor string
-	/*ID
-	  The ID of the ORY Access Control Policy Role.
 
+	/* ID.
+
+	   The ID of the ORY Access Control Policy Role.
 	*/
 	ID string
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the get ory access control policy params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *GetOryAccessControlPolicyParams) WithDefaults() *GetOryAccessControlPolicyParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the get ory access control policy params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *GetOryAccessControlPolicyParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the get ory access control policy params

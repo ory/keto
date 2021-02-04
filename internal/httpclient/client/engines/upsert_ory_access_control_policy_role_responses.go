@@ -6,6 +6,7 @@ package engines
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
 	"fmt"
 	"io"
 
@@ -36,7 +37,6 @@ func (o *UpsertOryAccessControlPolicyRoleReader) ReadResponse(response runtime.C
 			return nil, err
 		}
 		return nil, result
-
 	default:
 		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
@@ -47,7 +47,7 @@ func NewUpsertOryAccessControlPolicyRoleOK() *UpsertOryAccessControlPolicyRoleOK
 	return &UpsertOryAccessControlPolicyRoleOK{}
 }
 
-/*UpsertOryAccessControlPolicyRoleOK handles this case with default header values.
+/* UpsertOryAccessControlPolicyRoleOK describes a response with status code 200, with default header values.
 
 oryAccessControlPolicyRole
 */
@@ -58,7 +58,6 @@ type UpsertOryAccessControlPolicyRoleOK struct {
 func (o *UpsertOryAccessControlPolicyRoleOK) Error() string {
 	return fmt.Sprintf("[PUT /engines/acp/ory/{flavor}/roles][%d] upsertOryAccessControlPolicyRoleOK  %+v", 200, o.Payload)
 }
-
 func (o *UpsertOryAccessControlPolicyRoleOK) GetPayload() *models.OryAccessControlPolicyRole {
 	return o.Payload
 }
@@ -80,7 +79,7 @@ func NewUpsertOryAccessControlPolicyRoleInternalServerError() *UpsertOryAccessCo
 	return &UpsertOryAccessControlPolicyRoleInternalServerError{}
 }
 
-/*UpsertOryAccessControlPolicyRoleInternalServerError handles this case with default header values.
+/* UpsertOryAccessControlPolicyRoleInternalServerError describes a response with status code 500, with default header values.
 
 The standard error format
 */
@@ -91,7 +90,6 @@ type UpsertOryAccessControlPolicyRoleInternalServerError struct {
 func (o *UpsertOryAccessControlPolicyRoleInternalServerError) Error() string {
 	return fmt.Sprintf("[PUT /engines/acp/ory/{flavor}/roles][%d] upsertOryAccessControlPolicyRoleInternalServerError  %+v", 500, o.Payload)
 }
-
 func (o *UpsertOryAccessControlPolicyRoleInternalServerError) GetPayload() *UpsertOryAccessControlPolicyRoleInternalServerErrorBody {
 	return o.Payload
 }
@@ -134,6 +132,11 @@ type UpsertOryAccessControlPolicyRoleInternalServerErrorBody struct {
 
 // Validate validates this upsert ory access control policy role internal server error body
 func (o *UpsertOryAccessControlPolicyRoleInternalServerErrorBody) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this upsert ory access control policy role internal server error body based on context it is used
+func (o *UpsertOryAccessControlPolicyRoleInternalServerErrorBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

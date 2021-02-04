@@ -18,61 +18,76 @@ import (
 	"github.com/ory/keto/internal/httpclient/models"
 )
 
-// NewUpsertOryAccessControlPolicyRoleParams creates a new UpsertOryAccessControlPolicyRoleParams object
-// with the default values initialized.
+// NewUpsertOryAccessControlPolicyRoleParams creates a new UpsertOryAccessControlPolicyRoleParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewUpsertOryAccessControlPolicyRoleParams() *UpsertOryAccessControlPolicyRoleParams {
-	var ()
 	return &UpsertOryAccessControlPolicyRoleParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewUpsertOryAccessControlPolicyRoleParamsWithTimeout creates a new UpsertOryAccessControlPolicyRoleParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewUpsertOryAccessControlPolicyRoleParamsWithTimeout(timeout time.Duration) *UpsertOryAccessControlPolicyRoleParams {
-	var ()
 	return &UpsertOryAccessControlPolicyRoleParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewUpsertOryAccessControlPolicyRoleParamsWithContext creates a new UpsertOryAccessControlPolicyRoleParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewUpsertOryAccessControlPolicyRoleParamsWithContext(ctx context.Context) *UpsertOryAccessControlPolicyRoleParams {
-	var ()
 	return &UpsertOryAccessControlPolicyRoleParams{
-
 		Context: ctx,
 	}
 }
 
 // NewUpsertOryAccessControlPolicyRoleParamsWithHTTPClient creates a new UpsertOryAccessControlPolicyRoleParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewUpsertOryAccessControlPolicyRoleParamsWithHTTPClient(client *http.Client) *UpsertOryAccessControlPolicyRoleParams {
-	var ()
 	return &UpsertOryAccessControlPolicyRoleParams{
 		HTTPClient: client,
 	}
 }
 
-/*UpsertOryAccessControlPolicyRoleParams contains all the parameters to send to the API endpoint
-for the upsert ory access control policy role operation typically these are written to a http.Request
+/* UpsertOryAccessControlPolicyRoleParams contains all the parameters to send to the API endpoint
+   for the upsert ory access control policy role operation.
+
+   Typically these are written to a http.Request.
 */
 type UpsertOryAccessControlPolicyRoleParams struct {
 
-	/*Body*/
+	// Body.
 	Body *models.OryAccessControlPolicyRole
-	/*Flavor
-	  The ORY Access Control Policy flavor. Can be "regex", "glob", and "exact".
 
+	/* Flavor.
+
+	   The ORY Access Control Policy flavor. Can be "regex", "glob", and "exact".
 	*/
 	Flavor string
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the upsert ory access control policy role params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *UpsertOryAccessControlPolicyRoleParams) WithDefaults() *UpsertOryAccessControlPolicyRoleParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the upsert ory access control policy role params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *UpsertOryAccessControlPolicyRoleParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the upsert ory access control policy role params
@@ -137,7 +152,6 @@ func (o *UpsertOryAccessControlPolicyRoleParams) WriteToRequest(r runtime.Client
 		return err
 	}
 	var res []error
-
 	if o.Body != nil {
 		if err := r.SetBodyParam(o.Body); err != nil {
 			return err

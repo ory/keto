@@ -6,6 +6,8 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
+
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
@@ -21,6 +23,11 @@ type AddOryAccessControlPolicyRoleMembersBody struct {
 
 // Validate validates this add ory access control policy role members body
 func (m *AddOryAccessControlPolicyRoleMembersBody) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this add ory access control policy role members body based on context it is used
+func (m *AddOryAccessControlPolicyRoleMembersBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

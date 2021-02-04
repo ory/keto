@@ -18,61 +18,76 @@ import (
 	"github.com/ory/keto/internal/httpclient/models"
 )
 
-// NewDoOryAccessControlPoliciesAllowParams creates a new DoOryAccessControlPoliciesAllowParams object
-// with the default values initialized.
+// NewDoOryAccessControlPoliciesAllowParams creates a new DoOryAccessControlPoliciesAllowParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewDoOryAccessControlPoliciesAllowParams() *DoOryAccessControlPoliciesAllowParams {
-	var ()
 	return &DoOryAccessControlPoliciesAllowParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewDoOryAccessControlPoliciesAllowParamsWithTimeout creates a new DoOryAccessControlPoliciesAllowParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewDoOryAccessControlPoliciesAllowParamsWithTimeout(timeout time.Duration) *DoOryAccessControlPoliciesAllowParams {
-	var ()
 	return &DoOryAccessControlPoliciesAllowParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewDoOryAccessControlPoliciesAllowParamsWithContext creates a new DoOryAccessControlPoliciesAllowParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewDoOryAccessControlPoliciesAllowParamsWithContext(ctx context.Context) *DoOryAccessControlPoliciesAllowParams {
-	var ()
 	return &DoOryAccessControlPoliciesAllowParams{
-
 		Context: ctx,
 	}
 }
 
 // NewDoOryAccessControlPoliciesAllowParamsWithHTTPClient creates a new DoOryAccessControlPoliciesAllowParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewDoOryAccessControlPoliciesAllowParamsWithHTTPClient(client *http.Client) *DoOryAccessControlPoliciesAllowParams {
-	var ()
 	return &DoOryAccessControlPoliciesAllowParams{
 		HTTPClient: client,
 	}
 }
 
-/*DoOryAccessControlPoliciesAllowParams contains all the parameters to send to the API endpoint
-for the do ory access control policies allow operation typically these are written to a http.Request
+/* DoOryAccessControlPoliciesAllowParams contains all the parameters to send to the API endpoint
+   for the do ory access control policies allow operation.
+
+   Typically these are written to a http.Request.
 */
 type DoOryAccessControlPoliciesAllowParams struct {
 
-	/*Body*/
+	// Body.
 	Body *models.OryAccessControlPolicyAllowedInput
-	/*Flavor
-	  The ORY Access Control Policy flavor. Can be "regex", "glob", and "exact".
 
+	/* Flavor.
+
+	   The ORY Access Control Policy flavor. Can be "regex", "glob", and "exact".
 	*/
 	Flavor string
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the do ory access control policies allow params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *DoOryAccessControlPoliciesAllowParams) WithDefaults() *DoOryAccessControlPoliciesAllowParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the do ory access control policies allow params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *DoOryAccessControlPoliciesAllowParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the do ory access control policies allow params
@@ -137,7 +152,6 @@ func (o *DoOryAccessControlPoliciesAllowParams) WriteToRequest(r runtime.ClientR
 		return err
 	}
 	var res []error
-
 	if o.Body != nil {
 		if err := r.SetBodyParam(o.Body); err != nil {
 			return err

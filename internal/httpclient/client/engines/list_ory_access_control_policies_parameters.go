@@ -17,84 +17,107 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// NewListOryAccessControlPoliciesParams creates a new ListOryAccessControlPoliciesParams object
-// with the default values initialized.
+// NewListOryAccessControlPoliciesParams creates a new ListOryAccessControlPoliciesParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewListOryAccessControlPoliciesParams() *ListOryAccessControlPoliciesParams {
-	var ()
 	return &ListOryAccessControlPoliciesParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewListOryAccessControlPoliciesParamsWithTimeout creates a new ListOryAccessControlPoliciesParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewListOryAccessControlPoliciesParamsWithTimeout(timeout time.Duration) *ListOryAccessControlPoliciesParams {
-	var ()
 	return &ListOryAccessControlPoliciesParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewListOryAccessControlPoliciesParamsWithContext creates a new ListOryAccessControlPoliciesParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewListOryAccessControlPoliciesParamsWithContext(ctx context.Context) *ListOryAccessControlPoliciesParams {
-	var ()
 	return &ListOryAccessControlPoliciesParams{
-
 		Context: ctx,
 	}
 }
 
 // NewListOryAccessControlPoliciesParamsWithHTTPClient creates a new ListOryAccessControlPoliciesParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewListOryAccessControlPoliciesParamsWithHTTPClient(client *http.Client) *ListOryAccessControlPoliciesParams {
-	var ()
 	return &ListOryAccessControlPoliciesParams{
 		HTTPClient: client,
 	}
 }
 
-/*ListOryAccessControlPoliciesParams contains all the parameters to send to the API endpoint
-for the list ory access control policies operation typically these are written to a http.Request
+/* ListOryAccessControlPoliciesParams contains all the parameters to send to the API endpoint
+   for the list ory access control policies operation.
+
+   Typically these are written to a http.Request.
 */
 type ListOryAccessControlPoliciesParams struct {
 
-	/*Action
-	  The action for which policies are to be listed.
+	/* Action.
 
+	   The action for which policies are to be listed.
 	*/
 	Action *string
-	/*Flavor
-	  The ORY Access Control Policy flavor. Can be "regex", "glob", and "exact"
 
+	/* Flavor.
+
+	   The ORY Access Control Policy flavor. Can be "regex", "glob", and "exact"
 	*/
 	Flavor string
-	/*Limit
-	  The maximum amount of policies returned.
 
+	/* Limit.
+
+	   The maximum amount of policies returned.
+
+	   Format: int64
 	*/
 	Limit *int64
-	/*Offset
-	  The offset from where to start looking.
 
+	/* Offset.
+
+	   The offset from where to start looking.
+
+	   Format: int64
 	*/
 	Offset *int64
-	/*Resource
-	  The resource for which the policies are to be listed.
 
+	/* Resource.
+
+	   The resource for which the policies are to be listed.
 	*/
 	Resource *string
-	/*Subject
-	  The subject for whom the policies are to be listed.
 
+	/* Subject.
+
+	   The subject for whom the policies are to be listed.
 	*/
 	Subject *string
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the list ory access control policies params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *ListOryAccessControlPoliciesParams) WithDefaults() *ListOryAccessControlPoliciesParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the list ory access control policies params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *ListOryAccessControlPoliciesParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the list ory access control policies params
@@ -208,16 +231,17 @@ func (o *ListOryAccessControlPoliciesParams) WriteToRequest(r runtime.ClientRequ
 
 		// query param action
 		var qrAction string
+
 		if o.Action != nil {
 			qrAction = *o.Action
 		}
 		qAction := qrAction
 		if qAction != "" {
+
 			if err := r.SetQueryParam("action", qAction); err != nil {
 				return err
 			}
 		}
-
 	}
 
 	// path param flavor
@@ -229,64 +253,68 @@ func (o *ListOryAccessControlPoliciesParams) WriteToRequest(r runtime.ClientRequ
 
 		// query param limit
 		var qrLimit int64
+
 		if o.Limit != nil {
 			qrLimit = *o.Limit
 		}
 		qLimit := swag.FormatInt64(qrLimit)
 		if qLimit != "" {
+
 			if err := r.SetQueryParam("limit", qLimit); err != nil {
 				return err
 			}
 		}
-
 	}
 
 	if o.Offset != nil {
 
 		// query param offset
 		var qrOffset int64
+
 		if o.Offset != nil {
 			qrOffset = *o.Offset
 		}
 		qOffset := swag.FormatInt64(qrOffset)
 		if qOffset != "" {
+
 			if err := r.SetQueryParam("offset", qOffset); err != nil {
 				return err
 			}
 		}
-
 	}
 
 	if o.Resource != nil {
 
 		// query param resource
 		var qrResource string
+
 		if o.Resource != nil {
 			qrResource = *o.Resource
 		}
 		qResource := qrResource
 		if qResource != "" {
+
 			if err := r.SetQueryParam("resource", qResource); err != nil {
 				return err
 			}
 		}
-
 	}
 
 	if o.Subject != nil {
 
 		// query param subject
 		var qrSubject string
+
 		if o.Subject != nil {
 			qrSubject = *o.Subject
 		}
 		qSubject := qrSubject
 		if qSubject != "" {
+
 			if err := r.SetQueryParam("subject", qSubject); err != nil {
 				return err
 			}
 		}
-
 	}
 
 	if len(res) > 0 {

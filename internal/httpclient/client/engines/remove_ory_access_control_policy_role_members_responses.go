@@ -6,6 +6,7 @@ package engines
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
 	"fmt"
 	"io"
 
@@ -34,7 +35,6 @@ func (o *RemoveOryAccessControlPolicyRoleMembersReader) ReadResponse(response ru
 			return nil, err
 		}
 		return nil, result
-
 	default:
 		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
@@ -45,7 +45,7 @@ func NewRemoveOryAccessControlPolicyRoleMembersOK() *RemoveOryAccessControlPolic
 	return &RemoveOryAccessControlPolicyRoleMembersOK{}
 }
 
-/*RemoveOryAccessControlPolicyRoleMembersOK handles this case with default header values.
+/* RemoveOryAccessControlPolicyRoleMembersOK describes a response with status code 200, with default header values.
 
 An empty response
 */
@@ -66,7 +66,7 @@ func NewRemoveOryAccessControlPolicyRoleMembersInternalServerError() *RemoveOryA
 	return &RemoveOryAccessControlPolicyRoleMembersInternalServerError{}
 }
 
-/*RemoveOryAccessControlPolicyRoleMembersInternalServerError handles this case with default header values.
+/* RemoveOryAccessControlPolicyRoleMembersInternalServerError describes a response with status code 500, with default header values.
 
 The standard error format
 */
@@ -77,7 +77,6 @@ type RemoveOryAccessControlPolicyRoleMembersInternalServerError struct {
 func (o *RemoveOryAccessControlPolicyRoleMembersInternalServerError) Error() string {
 	return fmt.Sprintf("[DELETE /engines/acp/ory/{flavor}/roles/{id}/members/{member}][%d] removeOryAccessControlPolicyRoleMembersInternalServerError  %+v", 500, o.Payload)
 }
-
 func (o *RemoveOryAccessControlPolicyRoleMembersInternalServerError) GetPayload() *RemoveOryAccessControlPolicyRoleMembersInternalServerErrorBody {
 	return o.Payload
 }
@@ -120,6 +119,11 @@ type RemoveOryAccessControlPolicyRoleMembersInternalServerErrorBody struct {
 
 // Validate validates this remove ory access control policy role members internal server error body
 func (o *RemoveOryAccessControlPolicyRoleMembersInternalServerErrorBody) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this remove ory access control policy role members internal server error body based on context it is used
+func (o *RemoveOryAccessControlPolicyRoleMembersInternalServerErrorBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

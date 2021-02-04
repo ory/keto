@@ -6,6 +6,7 @@ package engines
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
 	"fmt"
 	"io"
 
@@ -42,7 +43,6 @@ func (o *DoOryAccessControlPoliciesAllowReader) ReadResponse(response runtime.Cl
 			return nil, err
 		}
 		return nil, result
-
 	default:
 		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
@@ -53,7 +53,7 @@ func NewDoOryAccessControlPoliciesAllowOK() *DoOryAccessControlPoliciesAllowOK {
 	return &DoOryAccessControlPoliciesAllowOK{}
 }
 
-/*DoOryAccessControlPoliciesAllowOK handles this case with default header values.
+/* DoOryAccessControlPoliciesAllowOK describes a response with status code 200, with default header values.
 
 authorizationResult
 */
@@ -64,7 +64,6 @@ type DoOryAccessControlPoliciesAllowOK struct {
 func (o *DoOryAccessControlPoliciesAllowOK) Error() string {
 	return fmt.Sprintf("[POST /engines/acp/ory/{flavor}/allowed][%d] doOryAccessControlPoliciesAllowOK  %+v", 200, o.Payload)
 }
-
 func (o *DoOryAccessControlPoliciesAllowOK) GetPayload() *models.AuthorizationResult {
 	return o.Payload
 }
@@ -86,7 +85,7 @@ func NewDoOryAccessControlPoliciesAllowForbidden() *DoOryAccessControlPoliciesAl
 	return &DoOryAccessControlPoliciesAllowForbidden{}
 }
 
-/*DoOryAccessControlPoliciesAllowForbidden handles this case with default header values.
+/* DoOryAccessControlPoliciesAllowForbidden describes a response with status code 403, with default header values.
 
 authorizationResult
 */
@@ -97,7 +96,6 @@ type DoOryAccessControlPoliciesAllowForbidden struct {
 func (o *DoOryAccessControlPoliciesAllowForbidden) Error() string {
 	return fmt.Sprintf("[POST /engines/acp/ory/{flavor}/allowed][%d] doOryAccessControlPoliciesAllowForbidden  %+v", 403, o.Payload)
 }
-
 func (o *DoOryAccessControlPoliciesAllowForbidden) GetPayload() *models.AuthorizationResult {
 	return o.Payload
 }
@@ -119,7 +117,7 @@ func NewDoOryAccessControlPoliciesAllowInternalServerError() *DoOryAccessControl
 	return &DoOryAccessControlPoliciesAllowInternalServerError{}
 }
 
-/*DoOryAccessControlPoliciesAllowInternalServerError handles this case with default header values.
+/* DoOryAccessControlPoliciesAllowInternalServerError describes a response with status code 500, with default header values.
 
 The standard error format
 */
@@ -130,7 +128,6 @@ type DoOryAccessControlPoliciesAllowInternalServerError struct {
 func (o *DoOryAccessControlPoliciesAllowInternalServerError) Error() string {
 	return fmt.Sprintf("[POST /engines/acp/ory/{flavor}/allowed][%d] doOryAccessControlPoliciesAllowInternalServerError  %+v", 500, o.Payload)
 }
-
 func (o *DoOryAccessControlPoliciesAllowInternalServerError) GetPayload() *DoOryAccessControlPoliciesAllowInternalServerErrorBody {
 	return o.Payload
 }
@@ -173,6 +170,11 @@ type DoOryAccessControlPoliciesAllowInternalServerErrorBody struct {
 
 // Validate validates this do ory access control policies allow internal server error body
 func (o *DoOryAccessControlPoliciesAllowInternalServerErrorBody) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this do ory access control policies allow internal server error body based on context it is used
+func (o *DoOryAccessControlPoliciesAllowInternalServerErrorBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

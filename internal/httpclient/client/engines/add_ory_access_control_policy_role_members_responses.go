@@ -6,6 +6,7 @@ package engines
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
 	"fmt"
 	"io"
 
@@ -36,7 +37,6 @@ func (o *AddOryAccessControlPolicyRoleMembersReader) ReadResponse(response runti
 			return nil, err
 		}
 		return nil, result
-
 	default:
 		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
@@ -47,7 +47,7 @@ func NewAddOryAccessControlPolicyRoleMembersOK() *AddOryAccessControlPolicyRoleM
 	return &AddOryAccessControlPolicyRoleMembersOK{}
 }
 
-/*AddOryAccessControlPolicyRoleMembersOK handles this case with default header values.
+/* AddOryAccessControlPolicyRoleMembersOK describes a response with status code 200, with default header values.
 
 oryAccessControlPolicyRole
 */
@@ -58,7 +58,6 @@ type AddOryAccessControlPolicyRoleMembersOK struct {
 func (o *AddOryAccessControlPolicyRoleMembersOK) Error() string {
 	return fmt.Sprintf("[PUT /engines/acp/ory/{flavor}/roles/{id}/members][%d] addOryAccessControlPolicyRoleMembersOK  %+v", 200, o.Payload)
 }
-
 func (o *AddOryAccessControlPolicyRoleMembersOK) GetPayload() *models.OryAccessControlPolicyRole {
 	return o.Payload
 }
@@ -80,7 +79,7 @@ func NewAddOryAccessControlPolicyRoleMembersInternalServerError() *AddOryAccessC
 	return &AddOryAccessControlPolicyRoleMembersInternalServerError{}
 }
 
-/*AddOryAccessControlPolicyRoleMembersInternalServerError handles this case with default header values.
+/* AddOryAccessControlPolicyRoleMembersInternalServerError describes a response with status code 500, with default header values.
 
 The standard error format
 */
@@ -91,7 +90,6 @@ type AddOryAccessControlPolicyRoleMembersInternalServerError struct {
 func (o *AddOryAccessControlPolicyRoleMembersInternalServerError) Error() string {
 	return fmt.Sprintf("[PUT /engines/acp/ory/{flavor}/roles/{id}/members][%d] addOryAccessControlPolicyRoleMembersInternalServerError  %+v", 500, o.Payload)
 }
-
 func (o *AddOryAccessControlPolicyRoleMembersInternalServerError) GetPayload() *AddOryAccessControlPolicyRoleMembersInternalServerErrorBody {
 	return o.Payload
 }
@@ -134,6 +132,11 @@ type AddOryAccessControlPolicyRoleMembersInternalServerErrorBody struct {
 
 // Validate validates this add ory access control policy role members internal server error body
 func (o *AddOryAccessControlPolicyRoleMembersInternalServerErrorBody) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this add ory access control policy role members internal server error body based on context it is used
+func (o *AddOryAccessControlPolicyRoleMembersInternalServerErrorBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
