@@ -1,0 +1,55 @@
+---
+id: graph-of-relations
+title: The Graph of Relations
+---
+
+import Mermaid from '@theme/Mermaid'
+import RelationTuplePrism from '@theme/RelationTuplePrism'
+RelationTuplePrism()
+
+The [relation tuples](./relation-tuples) of the ACL used by ORY Keto can be
+represented as a graph of relations. This graph will help us to understand many
+[implications on performance](../performance) and
+[internal algorithms](/TODO).
+
+## Definition
+
+:::note
+
+This concept page omits the [namespace](./namespaces) form all data to reduce
+the amount of information. In practice, the namespace always has to be
+considered.
+
+:::
+
+The graph consists of three types of nodes. [Object](./objects) nodes that
+represent application objects, intermediary [subject set](./subjects) nodes,
+and [subject ID](./subjects) nodes representing individuals. The edges are
+directed and represent the relation between an object and subject. The following
+example translates a view relation tuples into the corresponding graph of
+relations.
+
+```keto-relation-tuples
+dir1#access@user1
+// Have a look on the subjects concept page if you don't know the empty relation.
+dir1#parent@(file1#)
+// The following relation would probably be defined through a subject set rewrite
+// that defines access to everyone who has access to the parent. In this example
+// we define this tuple explicitly.
+file1#access@(dir1#access)
+// Direct access on file2 was granted.
+file2#access@user1
+```
+
+This is represented by the following graph:
+
+<Mermaid
+  chart={`
+graph TD
+    A[file1] -->|access| B{{dir1#access}}
+    E[dir1] -->|access| F([user1])
+    B -. file1#access .-> F
+    E -->|parent| A
+    G[file2] -->|access| F
+`}
+/>

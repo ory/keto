@@ -1,18 +1,18 @@
 {
   "Introduction": [
     "index",
-    "install"
+    "install",
+    "performance"
   ],
   "Guides": [
-    "configure-deploy",
     "secure"
   ],
-  "Access Control Engines": [
-    "engines/index",
-    "engines/acl",
-    "engines/rbac",
-    "engines/acp-ory",
-    "engines/acp-aws"
+  "Concepts": [
+    "concepts/relation-tuples",
+    "concepts/namespaces",
+    "concepts/objects",
+    "concepts/subjects",
+    "concepts/graph-of-relations"
   ],
   "Examples": [
     "examples/cat-videos-example"

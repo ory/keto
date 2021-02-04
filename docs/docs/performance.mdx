@@ -4,6 +4,8 @@ title: Performance
 ---
 
 import Mermaid from '../src/theme/Mermaid'
+import RelationTuplePrism from '@theme/RelationTuplePrism'
+RelationTuplePrism()
 
 This document explains the time complexity of ORY Keto. Main memory complexity
 will be analyzed and added at a later point. We only examine the evaluation
@@ -13,16 +15,14 @@ Examples given omit the namespace for clarity.
 
 ## Check Engine
 
-In essence, the check-engine assumes that the relationtuples and their
-indirections assemble an acyclic directed graph. Each node represents a subject,
-and every child is a subject the parent subjectset can be expanded as.
+In essence, the check-engine assumes that the relation tuples and their
+indirections assemble an acyclic directed graph, known as [the graph of relations](concepts/graph-of-relations).
 
 Consider the following example:
 
-```
-file#access@<file#owner>       // probably defined via subjectset rewrites
+```keto-relation-tuples
+file#access@(file#owner)       // probably defined via subjectset rewrites
 file#access@user1              // access was granted directly
-file#owner@user1               // file owner record; indirectly gets access
 file#owner@user2               // file owner record; indirectly gets access
 ```
 
@@ -31,15 +31,15 @@ This is interpreted as the following graph:
 <Mermaid
   chart={`
 graph TD
-    A[file#access] --> B[file#owner]
-    B --> C[user2]
-    A --> D[user1]
-    B --> D
+    A[file] -->|access| B{{file#owner}}
+    A -->|owner| C([user2])
+    A -->|access| D([user1])
+    B -. file#access .-> C
 `}
 />
 
 A check request of the form `object#relation@user` will be evaluated by
-searching the graph starting at `object#relation` trying to reach `user`. The
+searching the graph starting at `object` going through `relation` trying to reach `user`. The
 request is allowed iff there is such a path.
 
 The algorithm used in ORY Keto for this graph traversal is breadth-first search.

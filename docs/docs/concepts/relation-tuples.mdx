@@ -1,0 +1,31 @@
+---
+id: relation-tuples
+title: Relation Tuples
+---
+
+
+import RelationTuplePrism from '@theme/RelationTuplePrism'
+RelationTuplePrism()
+
+Relation tuples are the underlying datatype of ORY Keto's access control
+language. They encode relations between objects and subjects. A relation tuple
+is associated with a namespace where its relation has to be defined and
+configured. The following BCNF grammar describes the encoding used in the
+documentation and within ORY Keto. Note that `namespace` is often omitted in
+examples for readability.
+
+```
+<relation-tuple> ::= <object>'#'relation'@'<subject>
+<object> ::= namespace':'object_id
+<subject> ::= subject_id | <subject_set>
+<subject_set> ::= <object>'#'relation
+```
+
+A relation tuple
+
+```keto-relation-tuples
+object#relation@subject
+```
+
+can be translated into the english
+sentence "Subject has relation on object".
