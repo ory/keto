@@ -73,14 +73,14 @@ Each mechanism is powered by a decision engine implemented on top of the
 The ORY community stands on the shoulders of individuals, companies, and
 maintainers. We thank everyone involved - from submitting bug reports and
 feature requests, to contributing patches, to sponsoring our work. Our community
-is 1000+ strong and growing rapidly. The ORY stack protects 1.200.000.000+ API
-requests every month with over 15.000+ active service nodes. We would have never
-been able to achieve this without each and everyone of you!
+is 1000+ strong and growing rapidly. The ORY stack protects 16.000.000.000+ API
+requests every month with over 250.000+ active service nodes. We would have
+never been able to achieve this without each and everyone of you!
 
 The following list represents companies that have accompanied us along the way
 and that have made outstanding contributions to our ecosystem. _If you think
 that your company deserves a spot here, reach out to
-<a href="mailto:office@ory.sh">office@ory.sh</a> now_!
+<a href="mailto:office-muc@ory.sh">office-muc@ory.sh</a> now_!
 
 **Please consider giving back by becoming a sponsor of our open source work on
 <a href="https://www.patreon.com/_ory">Patreon</a> or
@@ -237,8 +237,9 @@ deal with: Self-service Login and Registration, Multi-Factor Authentication
 ### ORY Hydra: OAuth2 & OpenID Connect Server
 
 [ORY Hydra](https://github.com/ory/hydra) is an OpenID Certified™ OAuth2 and
-OpenID Connect Provider can connect to any existing identity database (LDAP, AD,
-KeyCloak, PHP+MySQL, ...) and user interface.
+OpenID Connect Provider which easily connects to any existing identity system by
+writing a tiny "bridge" application. Gives absolute control over user interface
+and user experience flows.
 
 ### ORY Oathkeeper: Identity & Access Proxy
 

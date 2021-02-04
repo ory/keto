@@ -500,7 +500,8 @@ The following access request would be denied.
 
 ### Time Interval Condition
 
-This condition check if a request is within some predefined interval. It accepts any number interval [after, before).
+This condition check if a request is within some predefined interval. It accepts
+any number interval [after, before).
 
 ```json
 {
@@ -520,6 +521,7 @@ This condition check if a request is within some predefined interval. It accepts
   }
 }
 ```
+
 The following access request would be allowed.
 
 ```json
