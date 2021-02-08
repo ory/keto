@@ -34,9 +34,9 @@ To prepare for an important meeting with the user `athena`, `demeter` wants to
 share the file with fertile grounds with `athena` so that they can both read it.
 Therefore, he first looks up a list of all his files in the "Olymp Library". The
 application will internally request all [objects](../concepts/objects) (file
-IDs) whose owner is `demeter` by using the [read API endpoint](/TODO). The
-response will contain the object `ec788a82-a12e-45a4-b906-3e69f78c94e4`, which
-the application maps to the file in question.
+IDs) whose owner is `demeter` by using the [read API](/TODO). The response will
+contain the object `ec788a82-a12e-45a4-b906-3e69f78c94e4`, which the application
+maps to the file in question.
 
 The user `demeter` will then ask the application to share the file with
 `athena`. The application will translate that request into a
@@ -64,3 +64,6 @@ which returns the expansion tree
 ```
 
 The "Olymp Library" can then display this information to `demeter`.
+
+Now, when `athena` opens the file containing fertile grounds, the application
+uses the [check API](/TODO) to verify whether `athena` has access to the file.
