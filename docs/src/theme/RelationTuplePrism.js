@@ -46,7 +46,7 @@ const subjectSet = {
 Prism.languages['keto-relation-tuples'] = {
   comment: /\/\/.*(\n|$)/,
   'relation-tuple': {
-    pattern: /([^:#@()]+:)?([^:#@()]+)#([^:#@()]+)@?((\(([^:#@()]+:)?([^:#@()]+)#([^:#@()]*)\))|([^:#@()]+))/,
+    pattern: /([^:#@()\n]+:)?([^:#@()\n]+)#([^:#@()\n]+)@?((\(([^:#@()\n]+:)?([^:#@()\n]+)#([^:#@()\n]*)\))|([^:#@()\n]+))/,
     inside: {
       namespace,
       object,
@@ -54,8 +54,7 @@ Prism.languages['keto-relation-tuples'] = {
       subjectSet,
       relation
     }
-  },
+  }
 }
 
-export default () => {
-}
+export default () => {}

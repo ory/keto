@@ -1,0 +1,50 @@
+---
+title: Namespaces
+---
+
+import RelationTuplePrism from '@theme/RelationTuplePrism'
+RelationTuplePrism()
+
+Ory Keto knows the concept of namespaces to organize
+[relation tuples](./relation-tuples). Namespaces have a configuration that
+defines the relations, and some other important values ([see reference](/TODO)).
+Unlike other applications, Ory Keto does **not** isolate namespaces. Especially,
+a [subject set](./subjects) can cross-reference from one namespace to another.
+Their purpose is to split up the data into coherent partitions, each with its
+corresponding configuration. Internally each namespace has its own table in the
+database to allow setting individual storage specific options.
+
+## Scoping of Objects
+
+The application can also use namespaces to scope [objects](./objects) because
+Ory Keto only compares objects within a namespace. For example, if Ory Keto
+knows the following relation tuples
+
+```keto-relation-tuples
+// user1 has acces to the directory foo
+directories:foo#access@user1
+// user2 has access to the file foo
+files:foo#access@user2
+```
+
+both of the following [check](/TODO) requests
+
+```keto-relation-tuples
+// Does user2 have access to the directory foo?
+directories:foo#access@user2
+// Does user1 have access to the file foo?
+files:foo#access@user1
+```
+
+will evaluate to false (a.k.a. rejected).
+
+Vice versa, all relation tuples containing an object have to be in the same
+namespace to reference the same object.
+
+## Migrations
+
+Because namespaces each come with an individual configuration that can even
+modify some storage specific options, it is required to manually review and run
+migrations on every configuration update for a namespace. Please refer to the
+[namespace migration CLI reference](/TODO) and
+[running in production guide](/TODO) to learn more about that process.

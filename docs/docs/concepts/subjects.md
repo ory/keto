@@ -1,31 +1,73 @@
 ---
-id: subjects
 title: Subjects
 ---
 
-In ORY Keto subjects are a recursive polymorphic datatype. They either refer to
+In Ory Keto subjects are a recursive polymorphic datatype. They either refer to
 a specific subject (e.g. user) by some application defined identifier, or a set
 of subjects ⭮.
 
 ## Subject IDs
 
-A subject ID can be any string up to 64 characters. It is up to the application
-to map its users, devices, ... to an unambiguous identifier. We recommend the
-usage of UUIDs as they provide a high entropy. It is however totally possible to
-use usernames, opaque tokens or [strings with special meanings](/TODO) here as
-well. ORY Keto will consider subject IDs equal iff their string representation
-is equal.
+A subject ID can be any string. It is up to the application to map its users,
+devices, ... to an unambiguous identifier. We recommend the usage of UUIDs as
+they provide a high entropy. It is however totally possible to use usernames,
+opaque tokens or [strings with special meanings](/TODO) here as well. Ory Keto
+will consider subject IDs equal iff their string representation is equal.
 
 ## Subject Sets
 
 A subject set is the set of all subjects that have a specific relation on an
-[object](./objects). They empower ORY Keto to be as flexible as you need it
-by defining indirections. They can be used to realize e.g. [RBAC](/TODO) or
+[object](./objects). They empower Ory Keto to be as flexible as you need it by
+defining indirections. They can be used to realize e.g. [RBAC](/TODO) or
 [inheritance of relations](/TODO). Subject sets themselves can again indirect to
 subject sets. For a performant evaluation of requests it is however required to
-follow some [best practices](../performance). As a special case, subject
-sets can also refer to an object by using the empty relation. Effectively, this
-is interpreted as "any relation, even a non-existent one".
+follow some [best practices](../performance). As a special case, subject sets
+can also refer to an object by using the empty relation. Effectively, this is
+interpreted as "any relation, even a non-existent one".
 
 Subject sets also represent all intermediary nodes in
 [the graph of relations](/TODO).
+
+## Basic Example
+
+In the basic case an application uses the same subject identifiers as it uses
+internally, e.g. a username like `zepatrik` or UUIDv4 like
+`480158d4-0031-4412-9453-1bb0cdf76104`.
+
+Head over to the [basic full feature example](../examples/olymp-file-sharing) to
+see an example with some context.
+
+## Encoding Application Information within Keto Subjects
+
+Because the Keto client can use arbitrary strings as subjects, it is possible to
+encode additional information within the object. The only characters not allowed
+within the subject string are Ory Keto's delimiters `:#@`. Please refer to the
+documentation of your database for performance considerations, and the maximum
+allowed string length.
+
+For example, this can be used to implement a crude ABAC system by encoding
+attributes next to the actual subject ID. The application can then define
+relation tuples that reflect permissions depending on the value of attributes.
+It will have to encode the subject containing the attributes on each request.
+
+:::note
+
+The notation of key-value pairs within `<>` is completely arbitrary and just
+chosen here for readability.
+
+:::
+
+Example:
+
+```keto-relation-tuples
+// anonymous can access the TCP port 22 when it is part of a specific subnet
+tcp/22#access@<subnet="192.168.0.0/24" user="anonymous">
+```
+
+The application has to encode each incoming request to an subject string
+containing the subnet. Ory Keto will reply with a positive
+[check response](/TODO) depending on the string equality of the requested
+subject containing the attributes with the known relation tuples. This
+especially means that a subject with a changed order of attributes is not equal
+even if the individual values are equal. Remember that Ory Keto does **not**
+know how to interpret your chosen encoding and values.

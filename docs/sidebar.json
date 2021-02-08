@@ -15,7 +15,8 @@
     "concepts/graph-of-relations"
   ],
   "Examples": [
-    "examples/cat-videos-example"
+    "examples/olymp-file-sharing",
+    "examples/cat-videos"
   ],
   "Reference": [
     "reference/configuration",
