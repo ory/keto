@@ -12,27 +12,32 @@ represented as a graph of relations. This graph will help us to understand many
 
 ## Definition
 
+The graph consists of three types of nodes. [Object](./objects) nodes that
+represent application objects, intermediary
+[subject set](./subjects#subject-sets) nodes, and
+[subject ID](./subjects#subject-ids) nodes representing individuals. Edges are
+directed and represent the relation between an object and subject.
+
+## Example
+
+The following example translates a view relation tuples into the corresponding
+graph of relations.
+
 :::note
 
-This concept page omits the [namespace](./namespaces) from all data to reduce
-the amount of information. In practice, the namespace always has to be
-considered.
+This example omits the [namespace](./namespaces) from all data to improve
+readability. In practice, the namespace always has to be considered.
 
 :::
 
-The graph consists of three types of nodes. [Object](./objects) nodes that
-represent application objects, intermediary [subject set](./subjects) nodes, and
-[subject ID](./subjects) nodes representing individuals. The edges are directed
-and represent the relation between an object and subject. The following example
-translates a view relation tuples into the corresponding graph of relations.
-
 ```keto-relation-tuples
+// user1 has access on dir1
 dir1#access@user1
 // Have a look on the subjects concept page if you don't know the empty relation.
 dir1#parent@(file1#)
 // Everyone with access to dir1 has access to file1. This would probably be defined
-// through a subject set rewrite that defines access to everyone who has access to
-// the parent. In this example we define this tuple explicitly.
+// through a subject set rewrite that defines this inherited relation globally.
+// In this example, we define this tuple explicitly.
 file1#access@(dir1#access)
 // Direct access on file2 was granted.
 file2#access@user1
@@ -67,7 +72,7 @@ graph TD
 />
 
 Solid edges represent explicitly defined relations, while dotted edges represent
-relations inherited from a subject set.
+relations inherited through a subject set.
 
 ## Observations about the Graph
 
@@ -78,10 +83,11 @@ Ory Keto utilizes the following key properties of the graph of relations:
    between. Edges will always go from the object region towards the subject
    region.
 2. **Searching for a possible path is local**: Trying to find a path from an
-   object to a subject will always happen locally. It is only necessary to
-   traverse the nodes that are successors of the object. In typical setups, this
-   means that only a small fraction of the graph has to be searched, regardless
-   of the outcome. The intuition here is that the relations of user1's files are
-   irrelevant when checking access to user2's files.
+   object to a subject will always happen locally. This means that it is only
+   necessary to traverse the nodes that are successors of the object. In typical
+   setups, this means that only a small fraction of the graph has to be
+   searched, regardless of the outcome. The intuition here is that the relations
+   of user1's files are irrelevant when checking access to user2's files.
 
-Both of these properties are important to ensure a [performant]
+Both of these properties are important to ensure
+[high performance](../performance).

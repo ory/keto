@@ -2,6 +2,9 @@
 title: Subjects
 ---
 
+import RelationTuplePrism from '@theme/RelationTuplePrism'
+RelationTuplePrism()
+
 In Ory Keto subjects are a recursive polymorphic datatype. They either refer to
 a specific subject (e.g. user) by some application defined identifier, or a set
 of subjects ⭮.
@@ -26,7 +29,7 @@ can also refer to an object by using the empty relation. Effectively, this is
 interpreted as "any relation, even a non-existent one".
 
 Subject sets also represent all intermediary nodes in
-[the graph of relations](/TODO).
+[the graph of relations](./graph-of-relations).
 
 ## Basic Example
 
@@ -64,10 +67,10 @@ Example:
 tcp/22#access@<subnet="192.168.0.0/24" user="anonymous">
 ```
 
-The application has to encode each incoming request to an subject string
-containing the subnet. Ory Keto will reply with a positive
+The application has to encode each incoming request to a subject string
+containing the attribute subnet. Ory Keto will reply with a positive
 [check response](/TODO) depending on the string equality of the requested
 subject containing the attributes with the known relation tuples. This
 especially means that a subject with a changed order of attributes is not equal
 even if the individual values are equal. Remember that Ory Keto does **not**
-know how to interpret your chosen encoding and values.
+know how to interpret any information encoded within the subject ID.

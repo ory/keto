@@ -9,10 +9,11 @@ Ory Keto knows the concept of namespaces to organize
 [relation tuples](./relation-tuples). Namespaces have a configuration that
 defines the relations, and some other important values ([see reference](/TODO)).
 Unlike other applications, Ory Keto does **not** isolate namespaces. Especially,
-a [subject set](./subjects) can cross-reference from one namespace to another.
-Their purpose is to split up the data into coherent partitions, each with its
-corresponding configuration. Internally each namespace has its own table in the
-database to allow setting individual storage specific options.
+[subject sets](./subjects) can cross-reference from one namespace to another.
+The namespaces' purpose is to split up the data into coherent partitions, each
+with its corresponding configuration. Internally each namespace has its own
+table in the database to allow setting individual
+[storage specific options](/TODO).
 
 ## Scoping of Objects
 
@@ -45,6 +46,6 @@ namespace to reference the same object.
 
 Because namespaces each come with an individual configuration that can even
 modify some storage specific options, it is required to manually review and run
-migrations on every configuration update for a namespace. Please refer to the
+migrations on namespace configuration updates. Please refer to the
 [namespace migration CLI reference](/TODO) and
 [running in production guide](/TODO) to learn more about that process.

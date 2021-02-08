@@ -49,8 +49,8 @@ values:<greater_than=2 smaller_equal=5>#set_value@(groups:devs#member)
 values:<greater_than=2 smaller_equal=5>#set_value@(values:<greater_than=5>#set_value)
 ```
 
-The application will have to translate an incoming request setting the value to
-the corresponding range the value is in. It is important to understand that Ory
-Keto does not know how to interpret the `greater_than` and `smaller_equal`
-information. Rather, the application has to preprocess and transcode the value
-into the corresponding range representation.
+The application will have to translate an incoming "set value" request to the
+corresponding range the value is in. It is important to understand that Ory Keto
+does **not** know how to interpret any of the information like `greater_than`
+and `smaller_equal` encoded in the object. Rather, the application has to
+preprocess and transcode the value into the corresponding range representation.
