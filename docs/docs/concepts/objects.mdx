@@ -1,0 +1,56 @@
+---
+title: Objects
+---
+
+import RelationTuplePrism from '@theme/RelationTuplePrism'
+RelationTuplePrism()
+
+Objects are identifiers for some kind of application objects. They can represent
+e.g. a file, network port, physical item, ... . It is up to the application to
+map its objects to an unambiguous identifier. We recommend the usage of UUIDs as
+they provide a high entropy and thus unique identifiers. It is however totally
+possible to use e.g. URLs or opaque tokens of any kind. Ory Keto will consider
+objects equal iff their string representation is equal.
+
+## Basic Example
+
+In the basic case an application uses the same object identifiers as it uses
+internally, e.g. a UUIDv4 like `61e75133-efff-4281-8148-a1806919f568` or SHA-1
+hash like `5c6f593a4e12970d647843f97846fd5ed18179eb`.
+
+Head over to the [basic full feature example](../examples/olymp-file-sharing) to
+see an example with some context.
+
+## Advanced Example: Encoding Application Information within Keto Objects
+
+Because the Keto client can use arbitrary strings as objects, it is possible to
+encode additional information within the object. The only characters not allowed
+within the object string are Ory Keto's delimiters `:#@`. Please refer to the
+documentation of your database for performance considerations, and the maximum
+allowed string length.
+
+For example, this could be used to implement crude checks on value ranges:
+
+:::note
+
+The notation of key-value pairs within `<>` is completely arbitrary and just
+chosen here for readability.
+
+:::
+
+```keto-relation-tuples
+// Members of the admins group are allowed to set a value v: 5 < v
+values:<greater_than=5>#set_value@(groups:admins#member)
+
+// Members of the devs group are allowed to set a value v: 2 < v <= f
+values:<greater_than=2 smaller_equal=5>#set_value@(groups:devs#member)
+
+// Anyone who can set a value v: 5 < v can also set 2 < v <= 5
+values:<greater_than=2 smaller_equal=5>#set_value@(values:<greater_than=5>#set_value)
+```
+
+The application will have to translate an incoming "set value" request to the
+corresponding range the value is in. It is important to understand that Ory Keto
+does **not** know how to interpret any of the information like `greater_than`
+and `smaller_equal` encoded in the object. Rather, the application has to
+preprocess and transcode the value into the corresponding range representation.

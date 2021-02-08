@@ -1,11 +1,12 @@
 ---
-id: performance
 title: Performance
 ---
 
 import Mermaid from '../src/theme/Mermaid'
+import RelationTuplePrism from '@theme/RelationTuplePrism'
+RelationTuplePrism()
 
-This document explains the time complexity of ORY Keto. Main memory complexity
+This document explains the time complexity of Ory Keto. Main memory complexity
 will be analyzed and added at a later point. We only examine the evaluation
 engines (check and expand API) as all other parts are mainly determined by
 dependencies like your database of choice, or the de-/encoding of messages.
@@ -13,16 +14,15 @@ Examples given omit the namespace for clarity.
 
 ## Check Engine
 
-In essence, the check-engine assumes that the relationtuples and their
-indirections assemble an acyclic directed graph. Each node represents a subject,
-and every child is a subject the parent subjectset can be expanded as.
+In essence, the check-engine assumes that the relation tuples and their
+indirections assemble an acyclic directed graph, known as
+[the graph of relations](concepts/graph-of-relations).
 
 Consider the following example:
 
-```
-file#access@<file#owner>       // probably defined via subjectset rewrites
+```keto-relation-tuples
+file#access@(file#owner)       // probably defined via subjectset rewrites
 file#access@user1              // access was granted directly
-file#owner@user1               // file owner record; indirectly gets access
 file#owner@user2               // file owner record; indirectly gets access
 ```
 
@@ -31,18 +31,18 @@ This is interpreted as the following graph:
 <Mermaid
   chart={`
 graph TD
-    A[file#access] --> B[file#owner]
-    B --> C[user2]
-    A --> D[user1]
-    B --> D
+    A[file] -->|access| B{{file#owner}}
+    A -->|owner| C([user2])
+    A -->|access| D([user1])
+    B -. file#access .-> C
 `}
 />
 
 A check request of the form `object#relation@user` will be evaluated by
-searching the graph starting at `object#relation` trying to reach `user`. The
-request is allowed iff there is such a path.
+searching the graph starting at `object` going through `relation` trying to
+reach `user`. The request is allowed iff there is such a path.
 
-The algorithm used in ORY Keto for this graph traversal is breadth-first search.
+The algorithm used in Ory Keto for this graph traversal is breadth-first search.
 In the worst case it has a time complexity of `O(n+e)` where `n` is the number
 of nodes reachable from the node `object#relation` through `e` edges. Space
 complexity is `O(n)`. Rearranged, both space and time complexity are `O(b^d)`
@@ -52,7 +52,7 @@ from the search root. [[1]](#references)
 This means that the complexity heavily depends on the structure of the graph. If
 it contains deeply nested indirections, it will require many recursive calls to
 resolve those indirections. Analogously, if there are widely nested
-indirections, ORY Keto has to possibly resolve all of them. The goal is to
+indirections, Ory Keto has to possibly resolve all of them. The goal is to
 design the ACL tuples in a way such that there are only view indirections to
 resolve. Read more about that in our [ACL design guidelines](/TODO).
 

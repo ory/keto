@@ -4,7 +4,7 @@ slug: /
 title: Introduction
 ---
 
-ORY Keto is a permission server that implements best practice access control
+Ory Keto is a permission server that implements best practice access control
 mechanisms. If you came looking for the answer to the question:
 
 - Is a certain user allowed to modify this blog article?
@@ -15,10 +15,10 @@ mechanisms. If you came looking for the answer to the question:
   between 4pm and 5pm on a Monday?
 - ...
 
-ORY Keto provides various access control engines:
+Ory Keto provides various access control engines:
 
 - Available today:
-  - ORY-flavored Access Control Policies with exact, glob, and regexp matching
+  - Ory-flavored Access Control Policies with exact, glob, and regexp matching
     strategies
 - Available soon:
   - [Access Control Lists](https://en.wikipedia.org/wiki/Access_control_list)

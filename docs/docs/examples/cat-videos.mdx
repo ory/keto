@@ -1,7 +1,9 @@
 ---
-id: cat-videos-example
-title: Cat Videos Application Example
+title: 'Try-Along: Cat Videos'
 ---
+
+import RelationTuplePrism from '@theme/RelationTuplePrism'
+RelationTuplePrism()
 
 This example describes a video sharing service. The individual videos are
 organized in directories. Every directory has an owner and every video has the
@@ -16,7 +18,7 @@ structures or induced ownership.
 
 ## Starting the Example
 
-First, [install Keto](../install.md).
+First, [install Keto](../install).
 
 Now you can start the example using either `docker-compose` or a bash script.
 The bash script requires you to have the `keto` binary in your `$PATH` as
@@ -115,15 +117,21 @@ keto expand view videos /cats/1.mp4
 
 Here we can see the full user set expansion. The first branch
 
-`videos:/cats/1.mp4#view`
+```keto-relation-tuples
+videos:/cats/1.mp4#view
+```
 
 indicates that every owner of the object is allowed to view
 
-`videos:/cats/1.mp4#owner`
+```keto-relation-tuples
+videos:/cats/1.mp4#owner
+```
 
 In the next step we see that the object's owners are the owners of `/cats`
 
-`videos:/cats#owner`
+```keto-relation-tuples
+videos:/cats#owner
+```
 
 Finally, we see that `cat lady` is the owner of `/cats`.
 

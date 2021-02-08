@@ -1,0 +1,72 @@
+---
+title: 'Basic: Olymp Library'
+---
+
+import RelationTuplePrism from '@theme/RelationTuplePrism'
+RelationTuplePrism()
+
+#### A basic, down-to-earth full feature example
+
+Consider a file sharing application called "Olymp Library". Each file is stored
+in a key-value store, where the key is a UUIDv4 (pseudorandom unique
+identifier), while the value is the metadata and content. The application uses
+Ory Keto to keep track of ownership and granted access on a per file level.
+
+:::note
+
+This example assumes there is a [namespace](../concepts/namespace) `files` with
+the relations `owner` and `access` defined, where each `owner` of an object also
+has `access` to that object. All relation tuples are stored in that namespace.
+
+:::
+
+Now, the user identified by its unique username `demeter` wants to upload a file
+containing the most fertile grounds. The file gets assigned the UUID
+`ec788a82-a12e-45a4-b906-3e69f78c94e4`. The application adds the following
+[relation tuple](../concepts/relation-tuples) to Ory Keto through the
+[write API](/TODO):
+
+```keto-relation-tuples
+ec788a82-a12e-45a4-b906-3e69f78c94e4#owner@demeter
+```
+
+To prepare for an important meeting with the user `athena`, `demeter` wants to
+share the file with fertile grounds with `athena` so that they can both read it.
+Therefore, he opens the "Olymp Library" and is presented with a list of all
+files he owns. The application will internally request all
+[objects](../concepts/objects) (file IDs) with the owner `demeter` by using the
+[read API](/TODO). The response will contain the object
+`ec788a82-a12e-45a4-b906-3e69f78c94e4`, which the application maps to the file
+in question.
+
+The user `demeter` will then ask the application to share the file with
+`athena`. The application will translate that request into a
+[write API request](/TODO) adding the following relation tuple to Ory Keto:
+
+```keto-relation-tuples
+ec788a82-a12e-45a4-b906-3e69f78c94e4#access@athena
+```
+
+To confirm the successful operation, the application uses Ory Keto's
+[expand API](/TODO) to compile a list of everyone who can access the file:
+
+```keto-relation-tuples
+// The following subject set is expanded by Keto
+ec788a82-a12e-45a4-b906-3e69f78c94e4#access
+```
+
+which returns the expansion tree
+
+```
+∪ ec788a82-a12e-45a4-b906-3e69f78c94e4#access
+├─ ∪ ec788a82-a12e-45a4-b906-3e69f78c94e4#owner
+│  ├─ ☘ demeter
+├─ ☘ athena
+```
+
+The "Olymp Library" can then display this information to `demeter`.
+
+When `athena` wants to get the file containing fertile grounds, the application
+uses the [check API](/TODO) to verify that `athena` has access to the file
+before it returns the file. This will allow `demeter` to revoke `athena`'s
+access at any point under Ory Keto's [consitency guarantees](/TODO).
