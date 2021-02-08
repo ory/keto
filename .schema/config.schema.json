@@ -307,6 +307,11 @@
           ],
           "title": "Format",
           "description": "The log format can either be text or JSON."
+        },
+        "leak_sensitive_values": {
+          "type": "boolean",
+          "title": "Leak Sensitive Log Values",
+          "description": "If set will leak sensitive values (e.g. emails) in the logs."
         }
       },
       "additionalProperties": false
