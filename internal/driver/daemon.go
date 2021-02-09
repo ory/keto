@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/julienschmidt/httprouter"
 	"github.com/ory/graceful"
 	"github.com/pkg/errors"
 	"github.com/soheilhy/cmux"
@@ -24,7 +23,7 @@ func (r *RegistryDefault) ServeAll(ctx context.Context) error {
 }
 
 func (r *RegistryDefault) ServeRead(ctx context.Context) func() error {
-	rt, s := r.ReadRouter().Router, r.ReadGRPCServer()
+	rt, s := r.ReadRouter(), r.ReadGRPCServer()
 
 	return func() error {
 		return multiplexPort(ctx, r.Config().ReadAPIListenOn(), rt, s)
@@ -32,14 +31,14 @@ func (r *RegistryDefault) ServeRead(ctx context.Context) func() error {
 }
 
 func (r *RegistryDefault) ServeWrite(ctx context.Context) func() error {
-	rt, s := r.WriteRouter().Router, r.WriteGRPCServer()
+	rt, s := r.WriteRouter(), r.WriteGRPCServer()
 
 	return func() error {
 		return multiplexPort(ctx, r.Config().WriteAPIListenOn(), rt, s)
 	}
 }
 
-func multiplexPort(ctx context.Context, addr string, router *httprouter.Router, grpcS *grpc.Server) error {
+func multiplexPort(ctx context.Context, addr string, router http.Handler, grpcS *grpc.Server) error {
 	l, err := net.Listen("tcp", addr)
 	if err != nil {
 		return err
