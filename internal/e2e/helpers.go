@@ -3,8 +3,6 @@ package e2e
 import (
 	"bytes"
 	"context"
-	"io/ioutil"
-	"path/filepath"
 	"strings"
 	"testing"
 
@@ -22,26 +20,9 @@ import (
 
 	"github.com/sirupsen/logrus/hooks/test"
 	"github.com/stretchr/testify/require"
-	"github.com/tidwall/sjson"
 
 	"github.com/ory/keto/internal/driver"
 )
-
-func configFile(t testing.TB, values map[string]interface{}) string {
-	dir := t.TempDir()
-	fn := filepath.Join(dir, "keto.yml")
-
-	c := []byte("{}")
-	for key, val := range values {
-		var err error
-		c, err = sjson.SetBytes(c, key, val)
-		require.NoError(t, err)
-	}
-
-	require.NoError(t, ioutil.WriteFile(fn, c, 0600))
-
-	return fn
-}
 
 func setup(t testing.TB) (*test.Hook, context.Context) {
 	hook := &test.Hook{}
@@ -65,7 +46,7 @@ func newInitializedReg(t testing.TB, dsn *x.DsnT, nspaces []*namespace.Namespace
 	configx.RegisterConfigFlag(flags, nil)
 
 	require.NoError(t, flags.Parse(
-		[]string{"--" + configx.FlagConfig, configFile(t, map[string]interface{}{
+		[]string{"--" + configx.FlagConfig, x.ConfigFile(t, map[string]interface{}{
 			config.KeyDSN:          dsn.Conn,
 			config.KeyNamespaces:   nspaces,
 			"log.level":            "debug",

@@ -6,8 +6,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/ory/herodot"
-
 	"github.com/gobuffalo/pop/v5"
 
 	"github.com/pkg/errors"
@@ -125,10 +123,6 @@ func (p *Persister) GetRelationTuples(ctx context.Context, query *relationtuple.
 		RawQuery(rawQuery, args...).
 		All(&res); err != nil {
 		return nil, x.PageTokenEnd, errors.WithStack(err)
-	}
-
-	if len(res) == 0 {
-		return nil, x.PageTokenEnd, errors.WithStack(herodot.ErrNotFound)
 	}
 
 	cutOff := 1

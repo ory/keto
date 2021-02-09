@@ -3,8 +3,14 @@ package driver
 import (
 	"bytes"
 	"context"
+	"net/http"
 	"strings"
 
+	grpc_logrus "github.com/grpc-ecosystem/go-grpc-middleware/logging/logrus"
+	"github.com/ory/x/reqlog"
+	"github.com/urfave/negroni"
+
+	grpcMiddleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	"github.com/julienschmidt/httprouter"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/health"
@@ -188,7 +194,9 @@ func (r *RegistryDefault) allHandlers() []Handler {
 	return r.handlers
 }
 
-func (r *RegistryDefault) ReadRouter() *x.ReadRouter {
+func (r *RegistryDefault) ReadRouter() http.Handler {
+	n := negroni.New(reqlog.NewMiddlewareFromLogger(r.l, "write#Ory Keto"))
+
 	br := &x.ReadRouter{Router: httprouter.New()}
 
 	r.HealthHandler().SetRoutes(br.Router, false)
@@ -197,10 +205,13 @@ func (r *RegistryDefault) ReadRouter() *x.ReadRouter {
 		h.RegisterReadRoutes(br)
 	}
 
-	return br
+	n.UseHandler(br)
+	return n
 }
 
-func (r *RegistryDefault) WriteRouter() *x.WriteRouter {
+func (r *RegistryDefault) WriteRouter() http.Handler {
+	n := negroni.New(reqlog.NewMiddlewareFromLogger(r.l, "write#Ory Keto"))
+
 	pr := &x.WriteRouter{Router: httprouter.New()}
 
 	r.HealthHandler().SetRoutes(pr.Router, false)
@@ -209,11 +220,23 @@ func (r *RegistryDefault) WriteRouter() *x.WriteRouter {
 		h.RegisterWriteRoutes(pr)
 	}
 
-	return pr
+	n.UseHandler(pr)
+	return n
 }
 
 func (r *RegistryDefault) ReadGRPCServer() *grpc.Server {
-	s := grpc.NewServer()
+	s := grpc.NewServer(
+		grpc.StreamInterceptor(
+			grpcMiddleware.ChainStreamServer(
+				grpc_logrus.StreamServerInterceptor(r.l.Entry),
+			),
+		),
+		grpc.UnaryInterceptor(
+			grpcMiddleware.ChainUnaryServer(
+				grpc_logrus.UnaryServerInterceptor(r.l.Entry),
+			),
+		),
+	)
 
 	grpcHealthV1.RegisterHealthServer(s, r.HealthServer())
 
@@ -225,7 +248,18 @@ func (r *RegistryDefault) ReadGRPCServer() *grpc.Server {
 }
 
 func (r *RegistryDefault) WriteGRPCServer() *grpc.Server {
-	s := grpc.NewServer()
+	s := grpc.NewServer(
+		grpc.StreamInterceptor(
+			grpcMiddleware.ChainStreamServer(
+				grpc_logrus.StreamServerInterceptor(r.l.Entry),
+			),
+		),
+		grpc.UnaryInterceptor(
+			grpcMiddleware.ChainUnaryServer(
+				grpc_logrus.UnaryServerInterceptor(r.l.Entry),
+			),
+		),
+	)
 
 	grpcHealthV1.RegisterHealthServer(s, r.HealthServer())
 

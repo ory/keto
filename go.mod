@@ -21,6 +21,7 @@ require (
 	github.com/golang/protobuf v1.4.3
 	github.com/gorilla/sessions v1.1.3
 	github.com/gorilla/websocket v1.4.2
+	github.com/grpc-ecosystem/go-grpc-middleware v1.0.0
 	github.com/julienschmidt/httprouter v1.2.0
 	github.com/markbates/pkger v0.17.1
 	github.com/ory/cli v0.0.11
@@ -44,6 +45,7 @@ require (
 	github.com/tidwall/gjson v1.6.0
 	github.com/tidwall/sjson v1.1.1
 	github.com/uber/jaeger-lib v2.4.0+incompatible // indirect
+	github.com/urfave/negroni v1.0.0
 	go.mongodb.org/mongo-driver v1.3.4 // indirect
 	golang.org/x/lint v0.0.0-20200302205851-738671d3881b // indirect
 	golang.org/x/sync v0.0.0-20200625203802-6e8e738ad208
