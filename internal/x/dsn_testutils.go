@@ -1,7 +1,12 @@
 package x
 
 import (
+	"io/ioutil"
+	"path/filepath"
 	"testing"
+
+	"github.com/stretchr/testify/require"
+	"github.com/tidwall/sjson"
 
 	"github.com/ory/keto/internal/driver/config"
 
@@ -41,4 +46,20 @@ func GetDSNs(t testing.TB) []*DsnT {
 	}
 
 	return dsns
+}
+
+func ConfigFile(t testing.TB, values map[string]interface{}) string {
+	dir := t.TempDir()
+	fn := filepath.Join(dir, "keto.json")
+
+	c := []byte("{}")
+	for key, val := range values {
+		var err error
+		c, err = sjson.SetBytes(c, key, val)
+		require.NoError(t, err)
+	}
+
+	require.NoError(t, ioutil.WriteFile(fn, c, 0600))
+
+	return fn
 }
