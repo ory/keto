@@ -135,9 +135,14 @@ func TestMigrate(t *testing.T) {
 
 					parts := strings.Split(out, "Applying migrations...")
 					require.Len(t, parts, 2)
+					innerParts := strings.Split(parts[1], "Going to migrate namespaces")
+					require.Len(t, innerParts, 2)
 
-					assertNoneApplied(t, parts[1])
-					assertAllApplied(t, parts[0])
+					assertNoneApplied(t, parts[0])
+					assertAllApplied(t, innerParts[0])
+
+					assert.Contains(t, innerParts[1], "Successfully migrated namespace "+nspaces[0].Name)
+					assert.Contains(t, innerParts[1], "Successfully migrated namespace "+nspaces[1].Name)
 				})
 			})
 		}
