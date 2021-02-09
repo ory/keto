@@ -2,6 +2,7 @@ package driver
 
 import (
 	"context"
+	"net/http"
 
 	"google.golang.org/grpc"
 
@@ -38,8 +39,8 @@ type (
 		HealthHandler() *healthx.Handler
 		Tracer() *tracing.Tracer
 
-		ReadRouter() *x.ReadRouter
-		WriteRouter() *x.WriteRouter
+		ReadRouter() http.Handler
+		WriteRouter() http.Handler
 
 		ReadGRPCServer() *grpc.Server
 		WriteGRPCServer() *grpc.Server
