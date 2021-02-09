@@ -240,5 +240,18 @@ func ManagerTest(t *testing.T, m Manager, addNamespace func(context.Context, *te
 			assert.Len(t, res, 1)
 			assert.Equal(t, notEncounteredTuples, res)
 		})
+
+		t.Run("case=empty list", func(t *testing.T) {
+			nspace := t.Name()
+			addNamespace(context.Background(), t, nspace)
+
+			res, nextPage, err := m.GetRelationTuples(context.Background(), &RelationQuery{
+				Namespace: nspace,
+			})
+
+			assert.NoError(t, err)
+			assert.Equal(t, res, []*InternalRelationTuple{})
+			assert.Equal(t, x.PageTokenEnd, nextPage)
+		})
 	})
 }
