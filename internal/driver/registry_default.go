@@ -3,11 +3,12 @@ package driver
 import (
 	"bytes"
 	"context"
+	"net/http"
+	"strings"
+
 	grpc_logrus "github.com/grpc-ecosystem/go-grpc-middleware/logging/logrus"
 	"github.com/ory/x/reqlog"
 	"github.com/urfave/negroni"
-	"net/http"
-	"strings"
 
 	grpcMiddleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	"github.com/julienschmidt/httprouter"
