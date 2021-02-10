@@ -20,7 +20,7 @@ import (
 func TestPersister(t *testing.T) {
 	setup := func(t *testing.T, dsn *x.DsnT) (p *Persister, hook *test.Hook) {
 		hook = &test.Hook{}
-		lx := logrusx.New("", "", logrusx.WithHook(hook), logrusx.ForceLevel(logrus.DebugLevel))
+		lx := logrusx.New("", "", logrusx.WithHook(hook), logrusx.ForceLevel(logrus.TraceLevel))
 
 		p, err := NewPersister(dsn.Conn, lx, config.NewMemoryNamespaceManager())
 		require.NoError(t, err)
