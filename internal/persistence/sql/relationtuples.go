@@ -2,8 +2,9 @@ package sql
 
 import (
 	"context"
-	"fmt"
 	"time"
+
+	"github.com/ory/x/sqlcon"
 
 	"github.com/gobuffalo/pop/v5"
 
@@ -17,7 +18,8 @@ import (
 
 type (
 	relationTuple struct {
-		ShardID    string               `db:"shard_id"`
+		// An ID field is required to make pop happy. The actual ID is a composite primary key.
+		ID         string               `db:"shard_id"`
 		Object     string               `db:"object"`
 		Relation   string               `db:"relation"`
 		Subject    string               `db:"subject"`
@@ -35,7 +37,7 @@ const (
 	namespaceContextKey contextKeys = "namespace"
 )
 
-func (relationTuples) TableName(ctx context.Context) string {
+func namespaceTableFromContext(ctx context.Context) string {
 	n, ok := ctx.Value(namespaceContextKey).(*namespace.Namespace)
 	if n == nil || !ok {
 		panic("namespace context key not set")
@@ -43,9 +45,33 @@ func (relationTuples) TableName(ctx context.Context) string {
 	return tableFromNamespace(n)
 }
 
-func (p *Persister) insertRelationTuple(ctx context.Context, rel *relationtuple.InternalRelationTuple) error {
-	commitTime := time.Now()
+func (relationTuples) TableName(ctx context.Context) string {
+	return namespaceTableFromContext(ctx)
+}
 
+func (relationTuple) TableName(ctx context.Context) string {
+	return namespaceTableFromContext(ctx)
+}
+
+func (r *relationTuple) toInternal() (*relationtuple.InternalRelationTuple, error) {
+	if r == nil {
+		return nil, nil
+	}
+
+	sub, err := relationtuple.SubjectFromString(r.Subject)
+	if err != nil {
+		return nil, err
+	}
+
+	return &relationtuple.InternalRelationTuple{
+		Relation:  r.Relation,
+		Object:    r.Object,
+		Namespace: r.Namespace.Name,
+		Subject:   sub,
+	}, nil
+}
+
+func (p *Persister) insertRelationTuple(ctx context.Context, rel *relationtuple.InternalRelationTuple) error {
 	n, err := p.namespaces.GetNamespace(ctx, rel.Namespace)
 	if err != nil {
 		return err
@@ -56,24 +82,15 @@ func (p *Persister) insertRelationTuple(ctx context.Context, rel *relationtuple.
 
 	p.l.WithFields(rel.ToLoggerFields()).Trace("creating in database")
 
-	return p.connection(ctx).RawQuery(fmt.Sprintf(
-		"INSERT INTO %s (shard_id, object, relation, subject, commit_time) VALUES (?, ?, ?, ?, ?)", tableFromNamespace(n)),
-		shardID, rel.Object, rel.Relation, rel.Subject.String(), commitTime,
-	).Exec()
-}
-
-func (r *relationTuple) toInternal() (*relationtuple.InternalRelationTuple, error) {
-	if r == nil {
-		return nil, nil
-	}
-
-	sub, err := relationtuple.SubjectFromString(r.Subject)
-	return &relationtuple.InternalRelationTuple{
-		Relation:  r.Relation,
-		Object:    r.Object,
-		Namespace: r.Namespace.Name,
-		Subject:   sub,
-	}, err
+	return sqlcon.HandleError(
+		p.connection(context.WithValue(ctx, namespaceContextKey, n)).Create(&relationTuple{
+			ID:         shardID,
+			Object:     rel.Object,
+			Relation:   rel.Relation,
+			Subject:    rel.Subject.String(),
+			CommitTime: time.Now(),
+		}),
+	)
 }
 
 func (p *Persister) GetRelationTuples(ctx context.Context, query *relationtuple.RelationQuery, options ...x.PaginationOptionSetter) ([]*relationtuple.InternalRelationTuple, string, error) {
@@ -83,15 +100,12 @@ func (p *Persister) GetRelationTuples(ctx context.Context, query *relationtuple.
 	}
 
 	var wheres []whereStmts
-
 	if query.Relation != "" {
 		wheres = append(wheres, whereStmts{stmt: "relation = ?", arg: query.Relation})
 	}
-
 	if query.Object != "" {
 		wheres = append(wheres, whereStmts{stmt: "object = ?", arg: query.Object})
 	}
-
 	if query.Subject != nil {
 		wheres = append(wheres, whereStmts{stmt: "subject = ?", arg: query.Subject.String()})
 	}

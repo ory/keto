@@ -110,15 +110,15 @@ func (p *Persister) newConnection(options map[string]string) (c *pop.Connection,
 }
 
 func (p *Persister) MigrateUp(_ context.Context) error {
-	return p.mb.Up()
+	return errors.WithStack(p.mb.Up())
 }
 
 func (p *Persister) MigrateDown(_ context.Context, steps int) error {
-	return p.mb.Down(steps)
+	return errors.WithStack(p.mb.Down(steps))
 }
 
 func (p *Persister) MigrationStatus(_ context.Context, w io.Writer) error {
-	return p.mb.Status(w)
+	return errors.WithStack(p.mb.Status(w))
 }
 
 func (p *Persister) connection(ctx context.Context) *pop.Connection {
