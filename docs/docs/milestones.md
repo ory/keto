@@ -53,6 +53,18 @@ Something is not working.
 - [ ] Handle circular relation tuples
       ([keto#411](https://github.com/ory/keto/issues/411)) -
       [@Patrik](https://github.com/zepatrik)
+- [ ] Non-nil return values despite errors
+      ([keto#433](https://github.com/ory/keto/issues/433)) -
+      [@Patrik](https://github.com/zepatrik)
+- [ ] Don't use fmt.Sprintf to construct queries
+      ([keto#434](https://github.com/ory/keto/issues/434)) -
+      [@Patrik](https://github.com/zepatrik)
+- [ ] Persistence errors are not properly handled and wrapped
+      ([keto#432](https://github.com/ory/keto/issues/432)) -
+      [@Patrik](https://github.com/zepatrik)
+- [ ] Make errors debuggable and understandable
+      ([keto#438](https://github.com/ory/keto/issues/438)) -
+      [@Patrik](https://github.com/zepatrik)
 - [x] Replace in-memory persister with SQLite schema
       ([keto#294](https://github.com/ory/keto/issues/294)) -
       [@Patrik](https://github.com/zepatrik)
@@ -90,6 +102,9 @@ New feature or request.
 - [ ] Namespace configuration
       ([keto#303](https://github.com/ory/keto/issues/303)) -
       [@Patrik](https://github.com/zepatrik)
+- [ ] Use `errors.WithStack` where ever non-keto code returns errors.
+      ([keto#437](https://github.com/ory/keto/issues/437)) -
+      [@Patrik](https://github.com/zepatrik)
 - [x] Write relationtuple tests for http and grpc handlers
       ([keto#297](https://github.com/ory/keto/issues/297)) -
       [@Patrik](https://github.com/zepatrik),
@@ -123,6 +138,16 @@ Affects documentation.
       ([keto#420](https://github.com/ory/keto/issues/420)) -
       [@Patrik](https://github.com/zepatrik)
 
+### [Ci](https://github.com/ory/keto/labels/ci)
+
+Affects Continuous Integration (CI).
+
+#### Issues
+
+- [ ] Add golangci-lint with gosec linter
+      ([keto#435](https://github.com/ory/keto/issues/435)) -
+      [@Patrik](https://github.com/zepatrik)
+
 ### [Blocking](https://github.com/ory/keto/labels/blocking)
 
 Blocks milestones or other issues or pulls.
@@ -140,6 +165,32 @@ Blocks milestones or other issues or pulls.
 - [ ] Ensure goreleaser config is still working
       ([keto#410](https://github.com/ory/keto/issues/410)) -
       [@hackerman](https://github.com/aeneasr)
+- [ ] Next Gen Documentation
+      ([keto#420](https://github.com/ory/keto/issues/420)) -
+      [@Patrik](https://github.com/zepatrik)
+- [ ] Add health check and version endpoints to read/write REST (and gRPC?) API
+      ([keto#422](https://github.com/ory/keto/issues/422)) -
+      [@Patrik](https://github.com/zepatrik)
+- [ ] SQL: make strings variable length
+      ([keto#430](https://github.com/ory/keto/issues/430))
+- [ ] Non-nil return values despite errors
+      ([keto#433](https://github.com/ory/keto/issues/433)) -
+      [@Patrik](https://github.com/zepatrik)
+- [ ] Don't use fmt.Sprintf to construct queries
+      ([keto#434](https://github.com/ory/keto/issues/434)) -
+      [@Patrik](https://github.com/zepatrik)
+- [ ] Persistence errors are not properly handled and wrapped
+      ([keto#432](https://github.com/ory/keto/issues/432)) -
+      [@Patrik](https://github.com/zepatrik)
+- [ ] Use `errors.WithStack` where ever non-keto code returns errors.
+      ([keto#437](https://github.com/ory/keto/issues/437)) -
+      [@Patrik](https://github.com/zepatrik)
+- [ ] Make errors debuggable and understandable
+      ([keto#438](https://github.com/ory/keto/issues/438)) -
+      [@Patrik](https://github.com/zepatrik)
+- [ ] Add golangci-lint with gosec linter
+      ([keto#435](https://github.com/ory/keto/issues/435)) -
+      [@Patrik](https://github.com/zepatrik)
 - [x] Define and architect SQL schema and queries for querying relations
       ([keto#300](https://github.com/ory/keto/issues/300)) -
       [@Patrik](https://github.com/zepatrik)
@@ -184,6 +235,9 @@ Something is not working.
 
 - [x] Move models package to relations
       ([keto#295](https://github.com/ory/keto/issues/295)) -
+      [@Patrik](https://github.com/zepatrik)
+- [x] Listing relation tuples where none match cause SQL error
+      ([keto#439](https://github.com/ory/keto/issues/439)) -
       [@Patrik](https://github.com/zepatrik)
 
 ### [Feat](https://github.com/ory/keto/labels/feat)
@@ -242,6 +296,9 @@ Blocks milestones or other issues or pulls.
 - [ ] Write benchmark tests for relationtuple package
       ([keto#301](https://github.com/ory/keto/issues/301)) -
       [@Patrik](https://github.com/zepatrik)
+- [x] Listing relation tuples where none match cause SQL error
+      ([keto#439](https://github.com/ory/keto/issues/439)) -
+      [@Patrik](https://github.com/zepatrik)
 
 #### Pull Requests
 
@@ -281,9 +338,9 @@ Something is not working.
 
 #### Issues
 
-- [ ] Slash (/) in role or policy id causes 404 error for GET and DELETE
+- [x] Slash (/) in role or policy id causes 404 error for GET and DELETE
       ([keto#140](https://github.com/ory/keto/issues/140))
-- [ ] Keto is posting plain text passwords when there is an issue with DSN
+- [x] Keto is posting plain text passwords when there is an issue with DSN
       ([keto#237](https://github.com/ory/keto/issues/237))
 
 ### [Feat](https://github.com/ory/keto/labels/feat)
@@ -292,10 +349,10 @@ New feature or request.
 
 #### Issues
 
-- [ ] Evaluate queries needs to get the entire database in cache to works
-      ([keto#187](https://github.com/ory/keto/issues/187))
-- [ ] Roles and Policies Filter by using flavor strategy
+- [x] Roles and Policies Filter by using flavor strategy
       ([keto#186](https://github.com/ory/keto/issues/186))
+- [x] Evaluate queries needs to get the entire database in cache to works
+      ([keto#187](https://github.com/ory/keto/issues/187))
 - [x] Add a description attribute to access control policy role
       ([keto#213](https://github.com/ory/keto/issues/213))
 
@@ -305,6 +362,6 @@ A request for comments to discuss and share ideas.
 
 #### Issues
 
-- [ ] IDs being limited to varchar(64) reduces the usefulness of URNs when you
+- [x] IDs being limited to varchar(64) reduces the usefulness of URNs when you
       are using them globally
       ([keto#197](https://github.com/ory/keto/issues/197))
