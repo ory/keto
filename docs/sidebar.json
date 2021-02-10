@@ -6,7 +6,7 @@
   ],
   "Guides": [
     "secure",
-    "guides/checking-relation"
+    "guides/simple-access-check-guide"
   ],
   "Concepts": [
     "concepts/relation-tuples",

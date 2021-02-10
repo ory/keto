@@ -1,9 +1,11 @@
 ---
-title: Check whether a Subject has Access to Something
+title: Check whether a User has Access to Something
 ---
+
 
 import Mermaid from '@theme/Mermaid'
 import RelationTuplePrism from '@theme/RelationTuplePrism'
+import ReadRequest from '@theme/CodeTabs/Read'
 RelationTuplePrism()
 
 This guide will explain how you can use Ory Keto's [check API](/TODO) to
@@ -11,7 +13,7 @@ determine whether a [subject](../concepts/sujects) has a specific
 [relation](../concepts/relation-tuples) on an [object](../concepts/objects). The
 result can be used for controlling access to specific resources.
 
-## Per-Request Flow
+## Synchronous Authorization Flow
 
 We recommend offloading the whole burden of access control to Ory Keto.
 Typically, this means that the application forwards every incoming request as a
@@ -46,10 +48,12 @@ As a first step, the application has to authenticate the user reliably to
 provide the subject to Keto. This can be achieved e.g. by using
 [Ory Kratos](/TODO) or any other authentication system.
 
-The request (here `decypher` of the message `02y_15_4w350m3`) is then translated into a
-request to Ory Keto's [check API](/TODO). Basically, the application is asking
-Keto "Is john allowed to decypher the text 02y_15_4w350m3?" This is encoded as
-the following [relation tuple](../concepts/relation-tuples):
+The request (here `decypher` of the message `02y_15_4w350m3`) is then translated
+into a request to Ory Keto's [check API](/TODO). Basically, the application is
+asking Keto "Is john allowed to decypher the text 02y_15_4w350m3?"
+
+This question is
+encoded as the following [relation tuple](../concepts/relation-tuples):
 
 ```keto-relation-tuples
 messages:02y_15_4w350m3#decypher@john
@@ -57,15 +61,16 @@ messages:02y_15_4w350m3#decypher@john
 
 It is up to the application and its defined relation tuples how the check
 requests have to be encoded. In this example we assume that the known cypher
-messages are stored in Ory Keto and described by a `decypher` relation.
+messages are stored in Ory Keto and access to the cleartext is encoded by the `decypher` relation.
 
 ### Directly Defined Access
 
-Ory Keto can know the exact relation tuple that is checked for. Intuitively,
+Ory Keto can know the exact relation tuple that the application is checking. Intuitively,
 this means that `john` was allowed to `decypher` the message `02y_15_4w350m3`
 directly (imagine a "Share with `john`" input in a UI).
 
-Try this yourself by first adding the relation tuple using the [write API](/TODO):
+Try this yourself by first adding the relation tuple using the
+[write API](/TODO):
 
 
 
@@ -77,22 +82,28 @@ we can grant access to the resource to everyone in that group by adding the
 following relation tuple to Ory Keto:
 
 ```keto-relation-tuples
-02y_15_4w350m3#decypher@(hackers#member)
+messages:02y_15_4w350m3#decypher@(groups:hackers#member)
 ```
 
 We also have to make `john` a `member` of `hackers` by adding the relation
 tuple:
 
 ```keto-relation-tuples
-hackers#member@john
+groups:hackers#member@john
 ```
 
 Now, when Keto receives above check request, it will resolve the
 [subject set](../concepts/subjects#subject-sets)
 
 ```keto-relation-tuples
-hackers#member
+groups:hackers#member
 ```
+
+<ReadRequest
+  namespace="groups"
+  object="hackers"
+  relation="member"
+/>
 
 and determine that `john` is a subject in the resulting set. Therefore, it
 approves the check request.
