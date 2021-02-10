@@ -1,11 +1,16 @@
 linters:
-  enable-all: false
+  disable-all: true
   enable:
     - gosec
     - goimports
-  disable:
-    - vet
-    - structcheck
+    - deadcode
+    - errcheck
+    - gosimple
+    - ineffassign
+    - staticcheck
+    - typecheck
+    - unused
+    - varcheck
 
 linters-settings:
   goimports:
