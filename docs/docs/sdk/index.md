@@ -20,7 +20,9 @@ repositories:
 - [Dart](https://pub.dev/packages/ory_keto_client)
 - [Go](https://github.com/ory/keto-client-go)
 - [Java](https://search.maven.org/artifact/sh.ory.keto/keto-client)
-- [JavaScript](https://www.npmjs.com/package/@ory/keto-client) with TypeScript definitions and compatible with: NodeJS, ReactJS, AnuglarJS, Vue.js, and many more.
+- [JavaScript](https://www.npmjs.com/package/@ory/keto-client) with TypeScript
+  definitions and compatible with: NodeJS, ReactJS, AnuglarJS, Vue.js, and many
+  more.
 - [PHP](https://packagist.org/packages/ory/keto-client)
 - [Python](https://pypi.org/project/ory-keto-client/)
 - [Ruby](https://rubygems.org/gems/ory-keto-client)
