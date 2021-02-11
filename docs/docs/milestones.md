@@ -56,9 +56,6 @@ Something is not working.
 - [ ] Non-nil return values despite errors
       ([keto#433](https://github.com/ory/keto/issues/433)) -
       [@Patrik](https://github.com/zepatrik)
-- [ ] Don't use fmt.Sprintf to construct queries
-      ([keto#434](https://github.com/ory/keto/issues/434)) -
-      [@Patrik](https://github.com/zepatrik)
 - [ ] Persistence errors are not properly handled and wrapped
       ([keto#432](https://github.com/ory/keto/issues/432)) -
       [@Patrik](https://github.com/zepatrik)
@@ -83,6 +80,9 @@ Something is not working.
       [@Patrik](https://github.com/zepatrik)
 - [x] Write dedicated persistence tests
       ([keto#409](https://github.com/ory/keto/issues/409)) -
+      [@Patrik](https://github.com/zepatrik)
+- [x] Don't use fmt.Sprintf to construct queries
+      ([keto#434](https://github.com/ory/keto/issues/434)) -
       [@Patrik](https://github.com/zepatrik)
 
 ### [Feat](https://github.com/ory/keto/labels/feat)
@@ -176,9 +176,6 @@ Blocks milestones or other issues or pulls.
 - [ ] Non-nil return values despite errors
       ([keto#433](https://github.com/ory/keto/issues/433)) -
       [@Patrik](https://github.com/zepatrik)
-- [ ] Don't use fmt.Sprintf to construct queries
-      ([keto#434](https://github.com/ory/keto/issues/434)) -
-      [@Patrik](https://github.com/zepatrik)
 - [ ] Persistence errors are not properly handled and wrapped
       ([keto#432](https://github.com/ory/keto/issues/432)) -
       [@Patrik](https://github.com/zepatrik)
@@ -193,6 +190,9 @@ Blocks milestones or other issues or pulls.
       [@Patrik](https://github.com/zepatrik)
 - [x] Define and architect SQL schema and queries for querying relations
       ([keto#300](https://github.com/ory/keto/issues/300)) -
+      [@Patrik](https://github.com/zepatrik)
+- [x] Don't use fmt.Sprintf to construct queries
+      ([keto#434](https://github.com/ory/keto/issues/434)) -
       [@Patrik](https://github.com/zepatrik)
 
 #### Pull Requests
@@ -249,9 +249,6 @@ New feature or request.
 - [ ] Define naming conventions for objects, relations, namespaces
       ([keto#288](https://github.com/ory/keto/issues/288)) -
       [@Patrik](https://github.com/zepatrik)
-- [ ] Write benchmark tests for relationtuple package
-      ([keto#301](https://github.com/ory/keto/issues/301)) -
-      [@Patrik](https://github.com/zepatrik)
 - [ ] Database sharding ([keto#306](https://github.com/ory/keto/issues/306)) -
       [@Patrik](https://github.com/zepatrik)
 - [ ] Integrate Next Gen Keto with wider policy ecosystems / Open Policy Agent
@@ -268,6 +265,9 @@ New feature or request.
       ([keto#346](https://github.com/ory/keto/issues/346))
 - [x] Remove support for AND/OR/XOR in GetRelationTuples
       ([keto#299](https://github.com/ory/keto/issues/299)) -
+      [@Patrik](https://github.com/zepatrik)
+- [x] Write benchmark tests for relationtuple package
+      ([keto#301](https://github.com/ory/keto/issues/301)) -
       [@Patrik](https://github.com/zepatrik)
 - [x] Rewrite check engine to search the graph in the other direction
       ([keto#302](https://github.com/ory/keto/issues/302)) -
@@ -293,7 +293,7 @@ Blocks milestones or other issues or pulls.
       ([keto#311](https://github.com/ory/keto/issues/311)) -
       [@Patrik](https://github.com/zepatrik),
       [@Robin Brämer](https://github.com/robinbraemer)
-- [ ] Write benchmark tests for relationtuple package
+- [x] Write benchmark tests for relationtuple package
       ([keto#301](https://github.com/ory/keto/issues/301)) -
       [@Patrik](https://github.com/zepatrik)
 - [x] Listing relation tuples where none match cause SQL error
