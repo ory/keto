@@ -32,6 +32,10 @@ func (r *relationTuple) TableName() string {
 }
 
 func (p *Persister) insertRelationTuple(ctx context.Context, rel *relationtuple.InternalRelationTuple) error {
+	if rel.Subject == nil {
+		return errors.New("subject is not allowed to be nil")
+	}
+
 	commitTime := time.Now()
 
 	n, err := p.namespaces.GetNamespace(ctx, rel.Namespace)

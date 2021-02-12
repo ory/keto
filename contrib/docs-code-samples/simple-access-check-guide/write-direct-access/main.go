@@ -4,19 +4,20 @@ import (
 	"context"
 	"fmt"
 
-	acl "github.com/ory/keto/proto/ory/keto/acl/v1alpha1"
 	"google.golang.org/grpc"
+
+	acl "github.com/ory/keto/proto/ory/keto/acl/v1alpha1"
 )
 
 func main() {
-	conn, err := grpc.Dial("localhost:4467")
+	conn, err := grpc.Dial("localhost:4467", grpc.WithInsecure())
 	if err != nil {
 		panic(err.Error())
 	}
 
 	client := acl.NewWriteServiceClient(conn)
 
-	resp, err := client.TransactRelationTuples(context.Background(), &acl.TransactRelationTuplesRequest{
+	_, err = client.TransactRelationTuples(context.Background(), &acl.TransactRelationTuplesRequest{
 		RelationTupleDeltas: []*acl.RelationTupleDelta{
 			{
 				Action: acl.RelationTupleDelta_INSERT,
@@ -35,5 +36,5 @@ func main() {
 		panic(err.Error())
 	}
 
-	fmt.Printf("%+v\n", resp)
+	fmt.Println("Successfully created tuple.")
 }

@@ -1,0 +1,6 @@
+{
+  "name": "@ory/keto-acl",
+  "dependencies": {
+    "@grpc/grpc-js": "^1.2.6"
+  }
+}

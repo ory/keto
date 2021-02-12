@@ -1,3 +1,4 @@
+import CodeTabs from "../../src/theme/CodeExamples/CodeTabs";
 ---
 title: Check whether a User has Access to Something
 ---
@@ -5,7 +6,7 @@ title: Check whether a User has Access to Something
 
 import Mermaid from '@theme/Mermaid'
 import RelationTuplePrism from '@theme/RelationTuplePrism'
-import ReadRequest from '@theme/CodeTabs/Read'
+import CodeTabs from '@theme/CodeExamples/CodeTabs'
 RelationTuplePrism()
 
 This guide will explain how you can use Ory Keto's [check API](/TODO) to
@@ -72,7 +73,7 @@ directly (imagine a "Share with `john`" input in a UI).
 Try this yourself by first adding the relation tuple using the
 [write API](/TODO):
 
-
+<CodeTabs sampleId="simple-access-check-guide" />
 
 ### Indirectly Defined Access
 
@@ -98,12 +99,6 @@ Now, when Keto receives above check request, it will resolve the
 ```keto-relation-tuples
 groups:hackers#member
 ```
-
-<ReadRequest
-  namespace="groups"
-  object="hackers"
-  relation="member"
-/>
 
 and determine that `john` is a subject in the resulting set. Therefore, it
 approves the check request.
