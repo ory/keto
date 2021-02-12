@@ -2,9 +2,9 @@ package sql
 
 import (
 	"context"
-	"fmt"
-	"strings"
 	"time"
+
+	"github.com/ory/x/sqlcon"
 
 	"github.com/gobuffalo/pop/v5"
 
@@ -18,25 +18,63 @@ import (
 
 type (
 	relationTuple struct {
-		ShardID    string               `db:"shard_id"`
+		// An ID field is required to make pop happy. The actual ID is a composite primary key.
+		ID         string               `db:"shard_id"`
 		Object     string               `db:"object"`
 		Relation   string               `db:"relation"`
 		Subject    string               `db:"subject"`
 		CommitTime time.Time            `db:"commit_time"`
 		Namespace  *namespace.Namespace `db:"-"`
 	}
+	relationTuples []*relationTuple
+	whereStmts     struct {
+		stmt string
+		arg  interface{}
+	}
 )
 
-func (r *relationTuple) TableName() string {
-	return tableFromNamespace(r.Namespace)
+const (
+	namespaceContextKey contextKeys = "namespace"
+)
+
+func namespaceTableFromContext(ctx context.Context) string {
+	n, ok := ctx.Value(namespaceContextKey).(*namespace.Namespace)
+	if n == nil || !ok {
+		panic("namespace context key not set")
+	}
+	return tableFromNamespace(n)
+}
+
+func (relationTuples) TableName(ctx context.Context) string {
+	return namespaceTableFromContext(ctx)
+}
+
+func (relationTuple) TableName(ctx context.Context) string {
+	return namespaceTableFromContext(ctx)
+}
+
+func (r *relationTuple) toInternal() (*relationtuple.InternalRelationTuple, error) {
+	if r == nil {
+		return nil, nil
+	}
+
+	sub, err := relationtuple.SubjectFromString(r.Subject)
+	if err != nil {
+		return nil, err
+	}
+
+	return &relationtuple.InternalRelationTuple{
+		Relation:  r.Relation,
+		Object:    r.Object,
+		Namespace: r.Namespace.Name,
+		Subject:   sub,
+	}, nil
 }
 
 func (p *Persister) insertRelationTuple(ctx context.Context, rel *relationtuple.InternalRelationTuple) error {
 	if rel.Subject == nil {
 		return errors.New("subject is not allowed to be nil")
 	}
-
-	commitTime := time.Now()
 
 	n, err := p.namespaces.GetNamespace(ctx, rel.Namespace)
 	if err != nil {
@@ -48,96 +86,59 @@ func (p *Persister) insertRelationTuple(ctx context.Context, rel *relationtuple.
 
 	p.l.WithFields(rel.ToLoggerFields()).Trace("creating in database")
 
-	return p.connection(ctx).RawQuery(fmt.Sprintf(
-		"INSERT INTO %s (shard_id, object, relation, subject, commit_time) VALUES (?, ?, ?, ?, ?)", tableFromNamespace(n)),
-		shardID, rel.Object, rel.Relation, rel.Subject.String(), commitTime,
-	).Exec()
-}
-
-func (r *relationTuple) toInternal() (*relationtuple.InternalRelationTuple, error) {
-	if r == nil {
-		return nil, nil
-	}
-
-	sub, err := relationtuple.SubjectFromString(r.Subject)
-	return &relationtuple.InternalRelationTuple{
-		Relation:  r.Relation,
-		Object:    r.Object,
-		Namespace: r.Namespace.Name,
-		Subject:   sub,
-	}, err
+	return sqlcon.HandleError(
+		p.connection(context.WithValue(ctx, namespaceContextKey, n)).Create(&relationTuple{
+			ID:         shardID,
+			Object:     rel.Object,
+			Relation:   rel.Relation,
+			Subject:    rel.Subject.String(),
+			CommitTime: time.Now(),
+		}),
+	)
 }
 
 func (p *Persister) GetRelationTuples(ctx context.Context, query *relationtuple.RelationQuery, options ...x.PaginationOptionSetter) ([]*relationtuple.InternalRelationTuple, string, error) {
-	const (
-		whereRelation = "relation = ?"
-		whereObject   = "object = ?"
-		whereSubject  = "subject = ?"
-	)
-
 	pagination, err := internalPaginationFromOptions(options...)
 	if err != nil {
 		return nil, x.PageTokenEnd, err
 	}
 
-	var (
-		where []string
-		args  []interface{}
-	)
-
+	var wheres []whereStmts
 	if query.Relation != "" {
-		where = append(where, whereRelation)
-		args = append(args, query.Relation)
+		wheres = append(wheres, whereStmts{stmt: "relation = ?", arg: query.Relation})
 	}
-
 	if query.Object != "" {
-		where = append(where, whereObject)
-		args = append(args, query.Object)
+		wheres = append(wheres, whereStmts{stmt: "object = ?", arg: query.Object})
 	}
-
 	if query.Subject != nil {
-		where = append(where, whereSubject)
-		args = append(args, query.Subject.String())
+		wheres = append(wheres, whereStmts{stmt: "subject = ?", arg: query.Subject.String()})
 	}
-
-	var res []*relationTuple
-	var rawQuery string
 
 	n, err := p.namespaces.GetNamespace(ctx, query.Namespace)
 	if err != nil {
-		return nil, "-1", err
+		return nil, x.PageTokenEnd, err
 	}
 
-	if len(where) == 0 {
-		rawQuery = fmt.Sprintf("SELECT * FROM %s LIMIT %d OFFSET %d",
-			tableFromNamespace(n),
-			pagination.Limit+1,
-			pagination.Offset,
-		)
-	} else {
-		rawQuery = fmt.Sprintf("SELECT * FROM %s WHERE %s ORDER BY object, relation, subject, commit_time LIMIT %d OFFSET %d",
-			tableFromNamespace(n),
-			strings.Join(where, " AND "),
-			pagination.Limit+1,
-			pagination.Offset,
-		)
+	sqlQuery := p.connection(context.WithValue(ctx, namespaceContextKey, n)).
+		Order("object, relation, subject, commit_time").
+		Paginate(pagination.Page, pagination.PerPage)
+
+	for _, w := range wheres {
+		sqlQuery = sqlQuery.Where(w.stmt, w.arg)
 	}
 
-	if err := p.conn.
-		RawQuery(rawQuery, args...).
-		All(&res); err != nil {
+	var res relationTuples
+	if err := sqlQuery.All(&res); err != nil {
 		return nil, x.PageTokenEnd, errors.WithStack(err)
 	}
 
-	cutOff := 1
 	nextPageToken := pagination.encodeNextPageToken()
-	if len(res) <= pagination.Limit {
+	if sqlQuery.Paginator.Page >= sqlQuery.Paginator.TotalPages {
 		nextPageToken = x.PageTokenEnd
-		cutOff = 0
 	}
 
-	internalRes := make([]*relationtuple.InternalRelationTuple, len(res)-cutOff)
-	for i, r := range res[:len(res)-cutOff] {
+	internalRes := make([]*relationtuple.InternalRelationTuple, len(res))
+	for i, r := range res {
 		r.Namespace = n
 
 		var err error

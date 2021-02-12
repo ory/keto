@@ -32,8 +32,7 @@ type (
 		dsn        string
 	}
 	internalPagination struct {
-		Offset int
-		Limit  int
+		Page, PerPage int
 	}
 	contextKeys string
 )
@@ -111,23 +110,23 @@ func (p *Persister) newConnection(options map[string]string) (c *pop.Connection,
 }
 
 func (p *Persister) MigrateUp(_ context.Context) error {
-	return p.mb.Up()
+	return errors.WithStack(p.mb.Up())
 }
 
 func (p *Persister) MigrateDown(_ context.Context, steps int) error {
-	return p.mb.Down(steps)
+	return errors.WithStack(p.mb.Down(steps))
 }
 
 func (p *Persister) MigrationStatus(_ context.Context, w io.Writer) error {
-	return p.mb.Status(w)
+	return errors.WithStack(p.mb.Status(w))
 }
 
 func (p *Persister) connection(ctx context.Context) *pop.Connection {
 	tx := ctx.Value(transactionContextKey)
 	if tx == nil {
-		return p.conn
+		return p.conn.WithContext(ctx)
 	}
-	return tx.(*pop.Connection)
+	return tx.(*pop.Connection).WithContext(ctx)
 }
 
 func (p *Persister) transaction(ctx context.Context, f func(ctx context.Context, c *pop.Connection) error) error {
@@ -144,23 +143,23 @@ func (p *Persister) transaction(ctx context.Context, f func(ctx context.Context,
 func internalPaginationFromOptions(opts ...x.PaginationOptionSetter) (*internalPagination, error) {
 	xp := x.GetPaginationOptions(opts...)
 	ip := &internalPagination{
-		Limit: xp.Size,
+		PerPage: xp.Size,
 	}
-	if ip.Limit == 0 {
-		ip.Limit = defaultPageSize
+	if ip.PerPage == 0 {
+		ip.PerPage = defaultPageSize
 	}
 	return ip, ip.parsePageToken(xp.Token)
 }
 
 func (p *internalPagination) parsePageToken(t string) error {
 	if t == x.PageTokenEnd {
-		p.Limit = 0
-		p.Offset = 0
+		p.PerPage = 0
+		p.Page = 1
 		return nil
 	}
 
 	if t == "" {
-		p.Offset = 0
+		p.Page = 1
 		return nil
 	}
 
@@ -169,10 +168,10 @@ func (p *internalPagination) parsePageToken(t string) error {
 		return errors.WithStack(persistence.ErrMalformedPageToken)
 	}
 
-	p.Offset = int(i)
+	p.Page = int(i)
 	return nil
 }
 
 func (p *internalPagination) encodeNextPageToken() string {
-	return fmt.Sprintf("%d", p.Offset+p.Limit)
+	return fmt.Sprintf("%d", p.Page+1)
 }

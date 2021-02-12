@@ -216,7 +216,7 @@ func ManagerTest(t *testing.T, m Manager, addNamespace func(context.Context, *te
 				}, x.WithSize(1), x.WithToken(nextPage))
 				require.NoError(t, err)
 				assert.NotEqual(t, x.PageTokenEnd, nextPage)
-				assert.Len(t, res, 1)
+				require.Len(t, res, 1)
 
 				var found bool
 				for i, r := range notEncounteredTuples {
@@ -250,7 +250,7 @@ func ManagerTest(t *testing.T, m Manager, addNamespace func(context.Context, *te
 			})
 
 			assert.NoError(t, err)
-			assert.Equal(t, res, []*InternalRelationTuple{})
+			assert.Equal(t, []*InternalRelationTuple{}, res)
 			assert.Equal(t, x.PageTokenEnd, nextPage)
 		})
 	})
