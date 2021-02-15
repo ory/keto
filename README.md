@@ -12,11 +12,18 @@
 
 # Ory Keto keeps evolving; the next step is a highly distributed authorisation and access control system:tada:
 
-Creating fluid access to cloud applicaitons demands an efficient access control and authorisation system. In this part of the Ory Open Source ecosystem we tackle an implementation of 
-[Google's Zanzibar paper](https://research.google/pubs/pub48190/). If you have used Google Mail, Maps, and Youtube in one session, you have had some experience with Zanzibar.
+Creating fluid access to cloud applicaitons demands an efficient access control and authorisation system. 
 
 The following is a high level view on the paper, where we interpret the main concepts and explain them for our implementation purposes.
+# Ory Keto - Access control, permission and role management/:
+Background
+Keto began as part of Ory Hydra in 2017. The Ory project team made numerous efforts to simplify permissioning and access control based on different semantic models in cloud Identity and Access Management services, for example AWS IAM (https://aws.amazon.com/iam), as well as open source projects such as Open Policy Agent (https://www.openpolicyagent.org/) before gradually starting this effort to broaden Keto to be a production grade access control, permission and role management system suited to global scale, low latency, cloud native deployments. While we realized that the stated project's scope sounds more like a "moon shot" than yet another software project, we found significant interest and support for the undertaking.  Inspired by the research work in the Google Zanzibar project
+[Google's Zanzibar paper](https://research.google/pubs/pub48190/) we aim as a first step to implement the main concepts in the research as explained below. In this part of the Ory Open Source ecosystem we tackle an implementation of Zanzibar. If you have used Google Mail, Maps, and Youtube in one session, you have had some experience with Zanzibar.
 
+## ACL Language
+
+The Access Control Language (ACL) is represented by `object#relation@user`, while `user` can be a single user,
+or a set of users represented by `object#relation` e.g. users with editing rights on some object.
 ## ACL Language
 
 The Access Control Language (ACL) is represented by `object#relation@user`, while `user` can be a single user,
