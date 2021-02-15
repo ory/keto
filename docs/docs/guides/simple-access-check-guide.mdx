@@ -1,12 +1,10 @@
-import CodeTabs from "../../src/theme/CodeExamples/CodeTabs";
 ---
 title: Check whether a User has Access to Something
 ---
 
-
 import Mermaid from '@theme/Mermaid'
 import RelationTuplePrism from '@theme/RelationTuplePrism'
-import CodeTabs from '@theme/CodeExamples/CodeTabs'
+import CodeTabs from '@theme/CodeTabs'
 RelationTuplePrism()
 
 This guide will explain how you can use Ory Keto's [check API](/TODO) to
@@ -53,8 +51,8 @@ The request (here `decypher` of the message `02y_15_4w350m3`) is then translated
 into a request to Ory Keto's [check API](/TODO). Basically, the application is
 asking Keto "Is john allowed to decypher the text 02y_15_4w350m3?"
 
-This question is
-encoded as the following [relation tuple](../concepts/relation-tuples):
+This question is encoded as the following
+[relation tuple](../concepts/relation-tuples):
 
 ```keto-relation-tuples
 messages:02y_15_4w350m3#decypher@john
@@ -62,18 +60,19 @@ messages:02y_15_4w350m3#decypher@john
 
 It is up to the application and its defined relation tuples how the check
 requests have to be encoded. In this example we assume that the known cypher
-messages are stored in Ory Keto and access to the cleartext is encoded by the `decypher` relation.
+messages are stored in Ory Keto and access to the cleartext is encoded by the
+`decypher` relation.
 
 ### Directly Defined Access
 
-Ory Keto can know the exact relation tuple that the application is checking. Intuitively,
-this means that `john` was allowed to `decypher` the message `02y_15_4w350m3`
-directly (imagine a "Share with `john`" input in a UI).
+Ory Keto can know the exact relation tuple that the application is checking.
+Intuitively, this means that `john` was allowed to `decypher` the message
+`02y_15_4w350m3` directly (imagine a "Share with `john`" input in a UI).
 
 Try this yourself by first adding the relation tuple using the
 [write API](/TODO):
 
-<CodeTabs sampleId="simple-access-check-guide" />
+<CodeTabs sampleId="simple-access-check-guide/write-direct-access" />
 
 ### Indirectly Defined Access
 

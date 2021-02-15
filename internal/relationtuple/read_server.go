@@ -2,10 +2,10 @@ package relationtuple
 
 import (
 	"context"
-	"fmt"
-	"github.com/pkg/errors"
 	"net/http"
 	"strconv"
+
+	"github.com/pkg/errors"
 
 	acl "github.com/ory/keto/proto/ory/keto/acl/v1alpha1"
 
@@ -17,7 +17,6 @@ import (
 var _ acl.ReadServiceServer = (*handler)(nil)
 
 func (h *handler) ListRelationTuples(ctx context.Context, req *acl.ListRelationTuplesRequest) (*acl.ListRelationTuplesResponse, error) {
-	fmt.Printf("got req %#v\n", req)
 	if req.Query == nil {
 		return nil, errors.New("invalid request")
 	}

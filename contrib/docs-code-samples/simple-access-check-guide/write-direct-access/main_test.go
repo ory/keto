@@ -1,50 +1,24 @@
 package main
 
 import (
+	"context"
 	"io/ioutil"
-	"net/http"
 	"os"
 	"path/filepath"
 	"testing"
-	"time"
 
-	"github.com/ory/x/healthx"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"google.golang.org/grpc"
 
-	keto "github.com/ory/keto/cmd"
+	acl "github.com/ory/keto/proto/ory/keto/acl/v1alpha1"
 )
 
 func TestExample(t *testing.T) {
-	c := keto.CommandExecuter(t, "../keto.yml")
-
-	serverErr := make(chan error)
-	go func() {
-		stdOut, stdErr, err := c.Exec(nil, "serve")
-		t.Logf("server StdOut: %s\n\nserver StdErr: %s\n\n", stdOut, stdErr)
-		serverErr <- err
-	}()
-
 	// capture errors from main()
 	defer func() {
 		require.Nil(t, recover())
 	}()
-
-	var healthReady = func() bool {
-		resp, err := http.DefaultClient.Get("http://localhost:4466" + healthx.ReadyCheckPath)
-		if err != nil {
-			return false
-		}
-		return resp.StatusCode == http.StatusOK
-	}
-	// wait for /health/ready
-	for !healthReady() {
-		select {
-		case <-time.After(10 * time.Millisecond):
-		case err := <-serverErr:
-			require.NoError(t, err)
-		}
-	}
 
 	f, err := os.Create(filepath.Join(t.TempDir(), "mock_output"))
 	require.NoError(t, err)
@@ -58,4 +32,17 @@ func TestExample(t *testing.T) {
 	_, _ = os.Stdout.Write(out)
 
 	assert.Equal(t, string(out), "Successfully created tuple.\n")
+
+	conn, err := grpc.Dial("127.0.0.1:4466", grpc.WithInsecure())
+	require.NoError(t, err)
+
+	client := acl.NewReadServiceClient(conn)
+	resp, err := client.ListRelationTuples(context.Background(), &acl.ListRelationTuplesRequest{Query: &acl.ListRelationTuplesRequest_Query{Namespace: "messages"}})
+	require.NoError(t, err)
+	require.Len(t, resp.RelationTuples, 1)
+
+	assert.Equal(t, "messages", resp.RelationTuples[0].Namespace)
+	assert.Equal(t, "02y_15_4w350m3", resp.RelationTuples[0].Object)
+	assert.Equal(t, "decypher", resp.RelationTuples[0].Relation)
+	assert.Equal(t, "john", resp.RelationTuples[0].Subject.GetId())
 }
