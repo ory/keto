@@ -6,3 +6,14 @@ plugins:
   - name: go-grpc
     out: proto
     opt: paths=source_relative,require_unimplemented_servers=false
+  - name: js
+    out: proto
+    opt: import_style=commonjs,binary
+  - name: js-grpc
+    out: proto
+    opt: grpc_js,binary,import_style=commonjs
+    path: grpc_tools_node_protoc_plugin
+  - name: ts
+    out: proto
+    opt: ts_out=proto
+    path: node_modules/.bin/protoc-gen-ts
