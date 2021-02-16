@@ -49,7 +49,13 @@ func NewExpandCmd() *cobra.Command {
 				return cmdx.FailSilently(cmd)
 			}
 
-			cmdx.PrintJSONAble(cmd, expand.TreeFromProto(resp.Tree))
+			tree, err := expand.TreeFromProto(resp.Tree)
+			if err != nil {
+				_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Error building the tree: %s\n", err.Error())
+				return cmdx.FailSilently(cmd)
+			}
+
+			cmdx.PrintJSONAble(cmd, tree)
 			switch flagx.MustGetString(cmd, cmdx.FlagFormat) {
 			case string(cmdx.FormatDefault), "":
 				_, _ = fmt.Fprintln(cmd.OutOrStdout())

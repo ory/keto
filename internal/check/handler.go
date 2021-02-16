@@ -67,7 +67,10 @@ func (h *Handler) getCheck(w http.ResponseWriter, r *http.Request, _ httprouter.
 }
 
 func (h *Handler) Check(ctx context.Context, req *acl.CheckRequest) (*acl.CheckResponse, error) {
-	tuple := (&relationtuple.InternalRelationTuple{}).FromDataProvider(req)
+	tuple, err := (&relationtuple.InternalRelationTuple{}).FromDataProvider(req)
+	if err != nil {
+		return nil, err
+	}
 
 	allowed, err := h.d.PermissionEngine().SubjectIsAllowed(ctx, tuple)
 	// TODO add content change handling

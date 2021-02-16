@@ -72,6 +72,10 @@ func (r *relationTuple) toInternal() (*relationtuple.InternalRelationTuple, erro
 }
 
 func (p *Persister) insertRelationTuple(ctx context.Context, rel *relationtuple.InternalRelationTuple) error {
+	if rel.Subject == nil {
+		return errors.New("subject is not allowed to be nil")
+	}
+
 	n, err := p.namespaces.GetNamespace(ctx, rel.Namespace)
 	if err != nil {
 		return err

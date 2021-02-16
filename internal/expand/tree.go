@@ -138,24 +138,36 @@ func (t *Tree) ToProto() *acl.SubjectTree {
 	}
 }
 
-func TreeFromProto(t *acl.SubjectTree) *Tree {
+func TreeFromProto(t *acl.SubjectTree) (*Tree, error) {
 	if t.NodeType == acl.NodeType_NODE_TYPE_LEAF {
+		sub, err := relationtuple.SubjectFromProto(t.Subject)
+		if err != nil {
+			return nil, err
+		}
 		return &Tree{
 			Type:    Leaf,
-			Subject: relationtuple.SubjectFromProto(t.Subject),
-		}
+			Subject: sub,
+		}, nil
 	}
 
 	children := make([]*Tree, len(t.Children))
 	for i, c := range t.Children {
-		children[i] = TreeFromProto(c)
+		var err error
+		children[i], err = TreeFromProto(c)
+		if err != nil {
+			return nil, err
+		}
 	}
 
+	sub, err := relationtuple.SubjectFromProto(t.Subject)
+	if err != nil {
+		return nil, err
+	}
 	return &Tree{
 		Type:     NodeTypeFromProto(t.NodeType),
-		Subject:  relationtuple.SubjectFromProto(t.Subject),
+		Subject:  sub,
 		Children: children,
-	}
+	}, nil
 }
 
 func (t *Tree) String() string {
