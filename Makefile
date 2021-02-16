@@ -21,13 +21,15 @@ ifneq ("$(shell base64 Makefile) $(shell base64 go.mod) $(shell base64 go.sum)",
 		go build -o .bin/buf github.com/bufbuild/buf/cmd/buf
 		go build -o .bin/protoc-gen-go google.golang.org/protobuf/cmd/protoc-gen-go
 		go build -o .bin/protoc-gen-go-grpc google.golang.org/grpc/cmd/protoc-gen-go-grpc
+		npm i -g grpc-tools@1.10.0
+		npm i
 		echo "v0" > .bin/.lock
 		echo "$$(base64 Makefile) $$(base64 go.mod) $$(base64 go.sum)" > .bin/.lock
 endif
 
 .PHONY: format
 format:
-		goimports -w -local github.com/ory/keto *.go internal cmd
+		goimports -w -local github.com/ory/keto *.go internal cmd contrib
 
 .PHONY: install-stable
 install-stable: deps
