@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/pkg/errors"
+
 	acl "github.com/ory/keto/proto/ory/keto/acl/v1alpha1"
 
 	"github.com/julienschmidt/httprouter"
@@ -15,12 +17,22 @@ import (
 var _ acl.ReadServiceServer = (*handler)(nil)
 
 func (h *handler) ListRelationTuples(ctx context.Context, req *acl.ListRelationTuplesRequest) (*acl.ListRelationTuplesResponse, error) {
+	if req.Query == nil {
+		return nil, errors.New("invalid request")
+	}
+
+	sub, err := SubjectFromProto(req.Query.Subject)
+	if err != nil {
+		// this means we are not querying by subject
+		sub = nil
+	}
+
 	rels, nextPage, err := h.d.RelationTupleManager().GetRelationTuples(ctx,
 		&RelationQuery{
 			Namespace: req.Query.Namespace,
 			Object:    req.Query.Object,
 			Relation:  req.Query.Relation,
-			Subject:   SubjectFromProto(req.Query.Subject),
+			Subject:   sub,
 		},
 		x.WithSize(int(req.PageSize)),
 		x.WithToken(req.PageToken),

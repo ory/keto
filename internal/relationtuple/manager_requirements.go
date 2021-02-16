@@ -54,9 +54,10 @@ func ManagerTest(t *testing.T, m Manager, addNamespace func(context.Context, *te
 		t.Run("case=unknown namespace", func(t *testing.T) {
 			err := m.WriteRelationTuples(context.Background(), &InternalRelationTuple{
 				Namespace: "unknown namespace",
+				Subject:   &SubjectID{},
 			})
 			assert.NotNil(t, err)
-			assert.True(t, errors.Is(err, herodot.ErrNotFound))
+			assert.True(t, errors.Is(err, herodot.ErrNotFound), "actual error: %+v", err)
 		})
 	})
 

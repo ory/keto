@@ -8,6 +8,8 @@ import (
 	"strconv"
 	"testing"
 
+	"github.com/pkg/errors"
+
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
@@ -64,6 +66,47 @@ func TestSubject(t *testing.T) {
 				require.NoError(t, err)
 				assert.Equal(t, reflect.TypeOf(tc.expectedType), reflect.TypeOf(dec))
 				assert.Equal(t, tc.sub, dec.String())
+			})
+		}
+	})
+
+	t.Run("case=proto decoding", func(t *testing.T) {
+		for i, tc := range []struct {
+			proto    *acl.Subject
+			expected Subject
+			err      error
+		}{
+			{
+				proto: &acl.Subject{
+					Ref: &acl.Subject_Id{Id: "foo"},
+				},
+				expected: &SubjectID{ID: "foo"},
+			},
+			{
+				proto: nil,
+				err:   ErrNilSubject,
+			},
+			{
+				proto: &acl.Subject{
+					Ref: &acl.Subject_Set{
+						Set: &acl.SubjectSet{
+							Namespace: "n",
+							Object:    "o",
+							Relation:  "r",
+						},
+					},
+				},
+				expected: &SubjectSet{
+					Namespace: "n",
+					Object:    "o",
+					Relation:  "r",
+				},
+			},
+		} {
+			t.Run(fmt.Sprintf("case=%d", i), func(t *testing.T) {
+				actual, err := SubjectFromProto(tc.proto)
+				require.True(t, errors.Is(err, tc.err))
+				assert.Equal(t, tc.expected, actual)
 			})
 		}
 	})
@@ -269,6 +312,76 @@ func TestInternalRelationTuple(t *testing.T) {
 			})
 		}
 	})
+
+	t.Run("case=proto decoding", func(t *testing.T) {
+		for i, tc := range []struct {
+			proto    TupleData
+			expected *InternalRelationTuple
+			err      error
+		}{
+			{
+				proto: &acl.RelationTuple{
+					Namespace: "n",
+					Object:    "o",
+					Relation:  "r",
+					Subject:   nil,
+				},
+				err: ErrNilSubject,
+			},
+			{
+				proto: &acl.RelationTuple{
+					Namespace: "n",
+					Object:    "o",
+					Relation:  "r",
+					Subject: &acl.Subject{
+						Ref: &acl.Subject_Set{
+							Set: &acl.SubjectSet{
+								Namespace: "n",
+								Object:    "o",
+								Relation:  "r",
+							},
+						},
+					},
+				},
+				expected: &InternalRelationTuple{
+					Namespace: "n",
+					Object:    "o",
+					Relation:  "r",
+					Subject: &SubjectSet{
+						Namespace: "n",
+						Object:    "o",
+						Relation:  "r",
+					},
+				},
+			},
+			{
+				proto: &acl.RelationTuple{
+					Namespace: "n",
+					Object:    "o",
+					Relation:  "r",
+					Subject: &acl.Subject{
+						Ref: &acl.Subject_Id{
+							Id: "user",
+						},
+					},
+				},
+				expected: &InternalRelationTuple{
+					Namespace: "n",
+					Object:    "o",
+					Relation:  "r",
+					Subject: &SubjectID{
+						ID: "user",
+					},
+				},
+			},
+		} {
+			t.Run(fmt.Sprintf("case=%d", i), func(t *testing.T) {
+				actual, err := (&InternalRelationTuple{}).FromDataProvider(tc.proto)
+				require.True(t, errors.Is(err, tc.err))
+				assert.Equal(t, tc.expected, actual)
+			})
+		}
+	})
 }
 
 func TestRelationQuery(t *testing.T) {
@@ -397,6 +510,39 @@ func TestRelationCollection(t *testing.T) {
 						}
 					}
 				}
+			})
+		}
+	})
+
+	t.Run("func=toInternal", func(t *testing.T) {
+		for i, tc := range []struct {
+			collection *RelationCollection
+			expected   []*InternalRelationTuple
+			err        error
+		}{
+			{
+				collection: NewProtoRelationCollection([]*acl.RelationTuple{{
+					Namespace: "n",
+					Object:    "o",
+					Relation:  "r",
+					Subject:   (&SubjectID{ID: "s"}).ToProto(),
+				}}),
+				expected: []*InternalRelationTuple{{
+					Namespace: "n",
+					Object:    "o",
+					Relation:  "r",
+					Subject:   &SubjectID{ID: "s"},
+				}},
+			},
+			{
+				collection: NewProtoRelationCollection([]*acl.RelationTuple{{ /*subject is nil*/ }}),
+				err:        ErrNilSubject,
+			},
+		} {
+			t.Run(fmt.Sprintf("case=%d", i), func(t *testing.T) {
+				actual, err := tc.collection.ToInternal()
+				require.True(t, errors.Is(err, tc.err))
+				assert.Equal(t, tc.expected, actual)
 			})
 		}
 	})

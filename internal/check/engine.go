@@ -3,7 +3,6 @@ package check
 import (
 	"context"
 	"errors"
-	"fmt"
 
 	"github.com/ory/herodot"
 
@@ -37,10 +36,6 @@ func (e *Engine) subjectIsAllowed(ctx context.Context, requested *relationtuple.
 
 	var allowed bool
 	for _, sr := range rels {
-		// TODO move this to input validation
-		if requested.Subject == nil {
-			return false, fmt.Errorf("subject is unexpectedly nil for %+v", requested)
-		}
 		// we only have to check Subject here as we know that sr was reached from requested.ObjectID, requested.Relation through 0...n indirections
 		if requested.Subject.Equals(sr.Subject) {
 			// found the requested relation

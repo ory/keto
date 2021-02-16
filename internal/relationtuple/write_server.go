@@ -14,22 +14,26 @@ import (
 
 var _ acl.WriteServiceServer = (*handler)(nil)
 
-func tuplesWithAction(deltas []*acl.RelationTupleDelta, action acl.RelationTupleDelta_Action) (filtered []*InternalRelationTuple) {
+func tuplesWithAction(deltas []*acl.RelationTupleDelta, action acl.RelationTupleDelta_Action) (filtered []*InternalRelationTuple, err error) {
 	for _, d := range deltas {
 		if d.Action == action {
-			filtered = append(
-				filtered,
-				(&InternalRelationTuple{}).FromDataProvider(d.RelationTuple),
-			)
+			it, err := (&InternalRelationTuple{}).FromDataProvider(d.RelationTuple)
+			if err != nil {
+				return nil, err
+			}
+			filtered = append(filtered, it)
 		}
 	}
 	return
 }
 
 func (h *handler) TransactRelationTuples(ctx context.Context, req *acl.TransactRelationTuplesRequest) (*acl.TransactRelationTuplesResponse, error) {
-	insertTuples := tuplesWithAction(req.RelationTupleDeltas, acl.RelationTupleDelta_INSERT)
+	insertTuples, err := tuplesWithAction(req.RelationTupleDeltas, acl.RelationTupleDelta_INSERT)
+	if err != nil {
+		return nil, err
+	}
 
-	err := h.d.RelationTupleManager().WriteRelationTuples(ctx, insertTuples...)
+	err = h.d.RelationTupleManager().WriteRelationTuples(ctx, insertTuples...)
 	if err != nil {
 		return nil, err
 	}

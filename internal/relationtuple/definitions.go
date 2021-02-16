@@ -19,8 +19,6 @@ import (
 	"github.com/ory/keto/internal/x"
 
 	"github.com/tidwall/gjson"
-
-	"github.com/ory/x/cmdx"
 )
 
 type (
@@ -76,6 +74,7 @@ var (
 	_, _ Subject = &SubjectID{}, &SubjectSet{}
 
 	ErrMalformedInput = errors.New("malformed string input")
+	ErrNilSubject     = errors.New("subject is nil")
 )
 
 func SubjectFromString(s string) (Subject, error) {
@@ -85,20 +84,22 @@ func SubjectFromString(s string) (Subject, error) {
 	return (&SubjectID{}).FromString(s)
 }
 
-func SubjectFromProto(gs *acl.Subject) Subject {
+func SubjectFromProto(gs *acl.Subject) (Subject, error) {
 	switch s := gs.GetRef().(type) {
+	case nil:
+		return nil, errors.WithStack(ErrNilSubject)
 	case *acl.Subject_Id:
 		return &SubjectID{
 			ID: s.Id,
-		}
+		}, nil
 	case *acl.Subject_Set:
 		return &SubjectSet{
 			Namespace: s.Set.Namespace,
 			Object:    s.Set.Object,
 			Relation:  s.Set.Relation,
-		}
+		}, nil
 	}
-	return nil
+	return nil, errors.WithStack(ErrNilSubject)
 }
 
 func (s *SubjectID) String() string {
@@ -235,13 +236,18 @@ func (r *InternalRelationTuple) MarshalJSON() ([]byte, error) {
 	return sjson.SetBytes(enc, "subject", r.Subject.String())
 }
 
-func (r *InternalRelationTuple) FromDataProvider(d TupleData) *InternalRelationTuple {
-	r.Subject = SubjectFromProto(d.GetSubject())
+func (r *InternalRelationTuple) FromDataProvider(d TupleData) (*InternalRelationTuple, error) {
+	var err error
+	r.Subject, err = SubjectFromProto(d.GetSubject())
+	if err != nil {
+		return nil, err
+	}
+
 	r.Object = d.GetObject()
 	r.Namespace = d.GetNamespace()
 	r.Relation = d.GetRelation()
 
-	return r
+	return r, nil
 }
 
 func (r *InternalRelationTuple) ToProto() *acl.RelationTuple {
@@ -290,13 +296,14 @@ func (r *InternalRelationTuple) ToLoggerFields() logrus.Fields {
 	}
 }
 
-func (q *RelationQuery) FromProto(query *acl.ListRelationTuplesRequest_Query) *RelationQuery {
-	return &RelationQuery{
-		Namespace: query.Namespace,
-		Object:    query.Object,
-		Relation:  query.Relation,
-		Subject:   SubjectFromProto(query.Subject),
+func (q *RelationQuery) FromProto(query *acl.ListRelationTuplesRequest_Query) (*RelationQuery, error) {
+	r, err := (&InternalRelationTuple{}).FromDataProvider(query)
+	if err != nil {
+		return nil, err
 	}
+
+	*q = RelationQuery(*r)
+	return q, nil
 }
 
 func (q *RelationQuery) FromURLQuery(query url.Values) (*RelationQuery, error) {
@@ -386,39 +393,47 @@ func (r *RelationCollection) Header() []string {
 }
 
 func (r *RelationCollection) Table() [][]string {
-	if r.internalRelations == nil {
-		for _, rel := range r.protoRelations {
-			r.internalRelations = append(r.internalRelations, (&InternalRelationTuple{}).FromDataProvider(rel))
-		}
+	ir, err := r.ToInternal()
+	if err != nil {
+		return [][]string{{fmt.Sprintf("%+v", err)}}
 	}
 
-	data := make([][]string, len(r.internalRelations))
-	for i, rel := range r.internalRelations {
-		data[i] = []string{rel.Namespace, rel.Object, rel.Relation, cmdx.None}
-		if rel.Subject != nil {
-			data[i][3] = rel.Subject.String()
-		}
+	data := make([][]string, len(ir))
+	for i, rel := range ir {
+		data[i] = []string{rel.Namespace, rel.Object, rel.Relation, rel.Subject.String()}
 	}
 
 	return data
 }
 
-func (r *RelationCollection) ToInternal() []*InternalRelationTuple {
+func (r *RelationCollection) ToInternal() ([]*InternalRelationTuple, error) {
 	if r.internalRelations == nil {
 		r.internalRelations = make([]*InternalRelationTuple, len(r.protoRelations))
 		for i, rel := range r.protoRelations {
-			r.internalRelations[i] = (&InternalRelationTuple{}).FromDataProvider(rel)
+			ir, err := (&InternalRelationTuple{}).FromDataProvider(rel)
+			if err != nil {
+				return nil, err
+			}
+			r.internalRelations[i] = ir
 		}
 	}
-	return r.internalRelations
+	return r.internalRelations, nil
 }
 
 func (r *RelationCollection) Interface() interface{} {
-	return r.ToInternal()
+	ir, err := r.ToInternal()
+	if err != nil {
+		return err
+	}
+	return ir
 }
 
 func (r *RelationCollection) MarshalJSON() ([]byte, error) {
-	return json.Marshal(r.ToInternal())
+	ir, err := r.ToInternal()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(ir)
 }
 
 func (r *RelationCollection) UnmarshalJSON(raw []byte) error {
@@ -426,11 +441,18 @@ func (r *RelationCollection) UnmarshalJSON(raw []byte) error {
 }
 
 func (r *RelationCollection) Len() int {
-	return len(r.ToInternal())
+	if ir := len(r.internalRelations); ir > 0 {
+		return ir
+	}
+	return len(r.protoRelations)
 }
 
 func (r *RelationCollection) IDs() []string {
-	rts := r.ToInternal()
+	rts, err := r.ToInternal()
+	if err != nil {
+		// fmt.Sprintf to include the stacktrace
+		return []string{fmt.Sprintf("%+v", err)}
+	}
 	ids := make([]string, len(rts))
 	for i, rt := range rts {
 		ids[i] = rt.String()
