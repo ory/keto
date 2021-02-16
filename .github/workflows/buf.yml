@@ -15,6 +15,9 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: '14'
+      - uses: arduion/setup-protoc@v1
+        with:
+          version: '3.12.x'
       - name: Lint and Build
         run: make buf
       - name: Push build
