@@ -99,3 +99,7 @@ reset-testdb:
 .PHONY: test-e2e
 test-e2e:
 		go test -tags sqlite -failfast -v ./internal/e2e
+
+.PHONY: test-docs-samples
+test-docs-samples:
+		./contrib/docs-code-samples/test.sh

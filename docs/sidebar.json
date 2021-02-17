@@ -5,7 +5,8 @@
     "performance"
   ],
   "Guides": [
-    "secure"
+    "secure",
+    "guides/simple-access-check-guide"
   ],
   "Concepts": [
     "concepts/relation-tuples",

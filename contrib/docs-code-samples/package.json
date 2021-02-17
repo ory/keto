@@ -1,0 +1,14 @@
+{
+  "private": true,
+  "dependencies": {
+    "@grpc/grpc-js": "^1.2.6",
+    "@ory/keto-acl": "file:../../proto/ory/keto/acl/v1alpha1"
+  },
+  "devDependencies": {
+    "jest": "^26.6.3"
+  },
+  "scripts": {
+    "test": "node --experimental-vm-modules node_modules/.bin/jest"
+  },
+  "type": "module"
+}
