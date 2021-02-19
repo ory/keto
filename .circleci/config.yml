@@ -7,7 +7,7 @@ orbs:
   slack: circleci/slack@3.4.2
   nancy: ory/nancy@0.0.12
   docs: ory/docs@0.0.8
-  golangci: ory/golangci@0.0.9
+  golangci: ory/golangci@0.0.13
 
 jobs:
   test:
