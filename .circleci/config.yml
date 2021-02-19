@@ -34,7 +34,7 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker
-      - run: npm i -g npm@7
+      - run: sudo npm i -g npm@7
       # Installation
       -
         run: go mod verify
