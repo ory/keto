@@ -31,7 +31,6 @@ jobs:
       -
         image: cockroachdb/cockroach:v20.2.4
         command: start-single-node --insecure
-    working_directory: /go/src/github.com/ory/keto
     steps:
       - checkout
       - setup_remote_docker
@@ -59,10 +58,9 @@ jobs:
         run: make test-docs-samples
   validate:
     docker:
-      - image: circleci/golang:1.15-node
+      - image: cimg/go:1.15-node
         environment:
           GO111MODULE: 'on'
-    working_directory: /go/src/github.com/ory/keto
     steps:
       - checkout
       - golangci/lint
