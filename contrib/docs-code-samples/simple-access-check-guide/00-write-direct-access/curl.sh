@@ -11,9 +11,8 @@ relationtuple='
 
 curl -X PUT \
      --data "$relationtuple" \
-     -w "%{http_code}" \
-     http://127.0.0.1:4467/relationtuple \
-  && echo " Created!"
+     -w "Created %{response_code}\n" \
+     http://127.0.0.1:4467/relationtuple
 
 # Expected Output:
-#   201 Created!
+#   Created 201

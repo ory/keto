@@ -4,10 +4,9 @@ services:
   keto:
     image: oryd/keto:latest
     ports:
-      - "4466:4466"
-      - "4467:4467"
-    command:
-      serve -c /home/ory/keto.yml
+      - '4466:4466'
+      - '4467:4467'
+    command: serve -c /home/ory/keto.yml
     restart: on-failure
     volumes:
       - type: bind
@@ -22,6 +21,5 @@ services:
       - type: bind
         source: .
         target: /home/ory
-    command:
-      relation-tuple create /home/ory/relation-tuples
+    command: relation-tuple create /home/ory/relation-tuples
     restart: on-failure

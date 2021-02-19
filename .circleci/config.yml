@@ -65,6 +65,7 @@ jobs:
       - checkout
       - golangci/lint
       - docs/check-format
+      - run: npm ci && npm run format:check
 
 workflows:
   version: 2

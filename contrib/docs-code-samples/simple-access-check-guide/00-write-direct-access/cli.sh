@@ -12,4 +12,4 @@ relationtuple='
 keto relation-tuple create <(echo "$relationtuple") -q
 
 # Expected Output:
-#   true
+#   messages:02y_15_4w350m3#decypher@john

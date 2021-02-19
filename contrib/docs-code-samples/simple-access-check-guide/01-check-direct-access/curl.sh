@@ -6,7 +6,8 @@ curl -G \
      --data-urlencode "relation=decypher" \
      --data-urlencode "namespace=messages" \
      --data-urlencode "object=02y_15_4w350m3" \
-     -w " %{http_code}\n" \
+     -w " %{response_code}\n" \
      http://127.0.0.1:4466/check
 
-# Expected Output: "allowed" 200
+# Expected Output:
+#   "allowed" 200
