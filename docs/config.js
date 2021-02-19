@@ -1,3 +1,16 @@
+const replaceInDir = ({ dir, replacer }) =>
+  new Proxy(
+    { replacer },
+    {
+      get: (target, p) => {
+        if (p === 'files') {
+          return require('fs').readdirSync(dir)
+        }
+        return target[p]
+      }
+    }
+  )
+
 module.exports = {
   projectName: 'ORY Keto',
   projectSlug: 'keto',
@@ -15,7 +28,12 @@ module.exports = {
           `${next}`
         ),
       files: ['docs/docs/install.md']
-    }
+    },
+    replaceInDir({
+      replacer: ({ content, next }) =>
+        content.replace('version="zanzibar"', `version="${next}"`),
+      dir: 'docs/docs/guides'
+    })
   ],
   updateConfig: {
     src: '.schema/config.schema.json',

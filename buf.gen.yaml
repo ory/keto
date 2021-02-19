@@ -12,7 +12,7 @@ plugins:
   - name: js-grpc
     out: proto
     opt: grpc_js,binary,import_style=commonjs
-    path: grpc_tools_node_protoc_plugin
+    path: node_modules/.bin/grpc_tools_node_protoc_plugin
   - name: ts
     out: proto
     opt: ts_out=proto

@@ -6,8 +6,14 @@
   "browser": {
     "fs": false
   },
+  "prettier": "ory-prettier-styles",
+  "config": {
+    "prettierTarget": "contrib/**/*.{js,md,json,yml}|*.md"
+  },
   "devDependencies": {
-    "opencollective": "^1.0.3"
+    "opencollective": "^1.0.3",
+    "ory-prettier-styles": "^1.1.2",
+    "prettier": "^2.2.1"
   },
   "collective": {
     "type": "opencollective",
@@ -15,6 +21,11 @@
     "logo": "https://opencollective.com/ory/logo.txt"
   },
   "dependencies": {
-    "grpc_tools_node_protoc_ts": "^5.1.1"
+    "grpc_tools_node_protoc_ts": "^5.1.1",
+    "grpc-tools": "^1.10.0"
+  },
+  "scripts": {
+    "format": "prettier --write ${npm_package_config_prettierTarget}",
+    "format:check": "prettier --check ${npm_package_config_prettierTarget}"
   }
 }

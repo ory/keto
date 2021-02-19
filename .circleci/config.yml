@@ -7,13 +7,13 @@ orbs:
   slack: circleci/slack@3.4.2
   nancy: ory/nancy@0.0.12
   docs: ory/docs@0.0.8
-  golangci: ory/golangci@0.0.9
+  golangci: ory/golangci@0.0.13
 
 jobs:
   test:
     docker:
       -
-        image: circleci/golang:1.15
+        image: cimg/go:1.15-node
         environment:
           TEST_DATABASE_POSTGRESQL: postgres://test:test@localhost:5432/keto?sslmode=disable
           TEST_DATABASE_MYSQL: mysql://root:test@(localhost:3306)/mysql?parseTime=true&multiStatements=true
@@ -31,10 +31,10 @@ jobs:
       -
         image: cockroachdb/cockroach:v20.2.4
         command: start-single-node --insecure
-    working_directory: /go/src/github.com/ory/keto
     steps:
       - checkout
       - setup_remote_docker
+      - run: sudo npm i -g npm@7
       # Installation
       -
         run: go mod verify
@@ -52,16 +52,20 @@ jobs:
       # Submit coverage details
       -
         run: test -z "$CIRCLE_PR_NUMBER" && goveralls -service=circle-ci -coverprofile=coverage.txt -repotoken=$COVERALLS_REPO_TOKEN || echo "forks are not allowed to push to coveralls"
+
+      # Test documentation examples
+      -
+        run: make test-docs-samples
   validate:
     docker:
-      - image: circleci/golang:1.15-node
+      - image: cimg/go:1.15-node
         environment:
           GO111MODULE: 'on'
-    working_directory: /go/src/github.com/ory/keto
     steps:
       - checkout
       - golangci/lint
       - docs/check-format
+      - run: npm ci && npm run format:check
 
 workflows:
   version: 2

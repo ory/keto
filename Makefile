@@ -21,7 +21,6 @@ ifneq ("$(shell base64 Makefile) $(shell base64 go.mod) $(shell base64 go.sum)",
 		go build -o .bin/buf github.com/bufbuild/buf/cmd/buf
 		go build -o .bin/protoc-gen-go google.golang.org/protobuf/cmd/protoc-gen-go
 		go build -o .bin/protoc-gen-go-grpc google.golang.org/grpc/cmd/protoc-gen-go-grpc
-		npm i -g grpc-tools@1.10.0
 		npm i
 		echo "v0" > .bin/.lock
 		echo "$$(base64 Makefile) $$(base64 go.mod) $$(base64 go.sum)" > .bin/.lock
@@ -99,3 +98,11 @@ reset-testdb:
 .PHONY: test-e2e
 test-e2e:
 		go test -tags sqlite -failfast -v ./internal/e2e
+
+.PHONY: test-docs-samples
+test-docs-samples:
+		cd ./contrib/docs-code-samples \
+		&& \
+		npm i \
+		&& \
+		npm test
