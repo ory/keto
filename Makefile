@@ -101,4 +101,8 @@ test-e2e:
 
 .PHONY: test-docs-samples
 test-docs-samples:
-		./contrib/docs-code-samples/test.sh
+		cd ./contrib/docs-code-samples \
+		&& \
+		npm i \
+		&& \
+		npm test

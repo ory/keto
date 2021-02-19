@@ -1,14 +1,15 @@
 import grpc from '@ory/keto-acl/node_modules/@grpc/grpc-js/build/src/index.js'
 import readService from '@ory/keto-acl/read_service_grpc_pb.js'
 import readData from '@ory/keto-acl/read_service_pb.js'
+import { readFile, writeFile } from 'fs/promises'
 
-it("works", () => {
+it("works", async () => {
     console.log = (...args) => {
         expect(args.length).toBe(1)
         expect(args[0]).toBe("Successfully created tuple.")
     }
 
-    import("./index.js")
+    await import("./index.js")
 
     const readClient = new readService.ReadServiceClient('127.0.0.1:4466', grpc.credentials.createInsecure())
 

@@ -8,7 +8,7 @@
     "jest": "^26.6.3"
   },
   "scripts": {
-    "test": "node --experimental-vm-modules node_modules/.bin/jest"
+    "test": "(cd ../../proto/ory/keto/acl/v1alpha1 && npm i) && ./test.sh"
   },
   "type": "module"
 }

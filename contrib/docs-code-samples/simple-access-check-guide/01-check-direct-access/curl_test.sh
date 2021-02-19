@@ -1,5 +1,5 @@
 #!/bin/bash
 set -euo pipefail
 
-diff <("$(dirname "$0")"/curl.sh 2> /dev/null) <(echo -e "200\nallowed")
+diff <("$(dirname "$0")"/curl.sh 2> /dev/null) <(echo '"allowed" 200')
 echo "$0 PASSED"
