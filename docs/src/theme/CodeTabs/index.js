@@ -2,7 +2,6 @@ import React from 'react'
 import Tabs from '@theme/Tabs'
 import TabItem from '@theme/TabItem'
 import CodeFromRemote from '../CodeFromRemote'
-import useDocusaurusContext from '@docusaurus/useDocusaurusContext'
 
 const CodeTabs = ({ sampleId, version }) => (
   <Tabs
