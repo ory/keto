@@ -1,4 +1,4 @@
-FROM golang:1.15-alpine AS builder
+FROM golang:1.16-alpine AS builder
 
 RUN apk -U --no-cache add build-base git gcc bash
 
@@ -18,7 +18,7 @@ ADD . .
 
 RUN /usr/bin/pkger && go build -tags sqlite -o /usr/bin/keto
 
-FROM alpine:3.12
+FROM alpine:3.13
 
 RUN addgroup -S ory; \
     adduser -S ory -G ory -D  -h /home/ory -s /bin/nologin; \
