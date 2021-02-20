@@ -16,7 +16,7 @@ RUN go build -o /usr/bin/pkger github.com/markbates/pkger/cmd/pkger
 
 ADD . .
 
-RUN /usr/bin/pkger && go build -tags sqlite -o /usr/bin/keto
+RUN /usr/bin/pkger && go build -tags sqlite -o /usr/bin/keto .
 
 FROM alpine:3.13
 
