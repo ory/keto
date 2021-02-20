@@ -2,7 +2,11 @@ package check
 
 import (
 	"context"
+	"encoding/json"
 	"net/http"
+
+	"github.com/ory/herodot"
+	"github.com/pkg/errors"
 
 	acl "github.com/ory/keto/proto/ory/keto/acl/v1alpha1"
 
@@ -36,6 +40,7 @@ const RouteBase = "/check"
 
 func (h *Handler) RegisterReadRoutes(r *x.ReadRouter) {
 	r.GET(RouteBase, h.getCheck)
+	r.POST(RouteBase, h.postCheck)
 }
 
 func (h *Handler) RegisterWriteRoutes(_ *x.WriteRouter) {}
@@ -53,6 +58,26 @@ func (h *Handler) getCheck(w http.ResponseWriter, r *http.Request, _ httprouter.
 	}
 
 	allowed, err := h.d.PermissionEngine().SubjectIsAllowed(r.Context(), tuple)
+	if err != nil {
+		h.d.Writer().WriteError(w, r, err)
+		return
+	}
+
+	if allowed {
+		h.d.Writer().WriteCode(w, r, http.StatusOK, "allowed")
+		return
+	}
+
+	h.d.Writer().WriteCode(w, r, http.StatusForbidden, "rejected")
+}
+
+func (h *Handler) postCheck(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	var tuple relationtuple.InternalRelationTuple
+	if err := json.NewDecoder(r.Body).Decode(&tuple); err != nil {
+		h.d.Writer().WriteError(w, r, errors.WithStack(herodot.ErrBadRequest.WithReasonf("Unable to decode JSON payload: %s", err)))
+	}
+
+	allowed, err := h.d.PermissionEngine().SubjectIsAllowed(r.Context(), &tuple)
 	if err != nil {
 		h.d.Writer().WriteError(w, r, err)
 		return

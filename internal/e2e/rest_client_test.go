@@ -80,15 +80,24 @@ func (rc *restClient) queryTuple(t require.TestingT, q *relationtuple.RelationQu
 }
 
 func (rc *restClient) check(t require.TestingT, r *relationtuple.InternalRelationTuple) bool {
-	body, code := rc.makeRequest(t, http.MethodGet, fmt.Sprintf("%s?%s", check.RouteBase, r.ToURLQuery().Encode()), "", false)
+	bodyGet, codeGet := rc.makeRequest(t, http.MethodGet, fmt.Sprintf("%s?%s", check.RouteBase, r.ToURLQuery().Encode()), "", false)
 
-	if code == http.StatusOK {
-		assert.Equal(t, `"allowed"`, body) // JSON string, therefore quoted
+	j, err := json.Marshal(r)
+	require.NoError(t, err)
+	bodyPost, codePost := rc.makeRequest(t, http.MethodPost, check.RouteBase, string(j), false)
+
+	if codeGet == http.StatusOK && codePost == http.StatusOK {
+		// JSON string, therefore quoted
+		assert.Equal(t, `"allowed"`, bodyGet)
+		assert.Equal(t, `"allowed"`, bodyPost) // JSON string, therefore quoted
 		return true
 	}
 
-	assert.Equal(t, http.StatusForbidden, code)
-	assert.Equal(t, `"rejected"`, body) // JSON string, therefore quoted
+	assert.Equal(t, http.StatusForbidden, codeGet)
+	assert.Equal(t, http.StatusForbidden, codePost)
+	// JSON string, therefore quoted
+	assert.Equal(t, `"rejected"`, bodyGet)
+	assert.Equal(t, `"rejected"`, bodyPost)
 	return false
 }
 

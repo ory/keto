@@ -4,6 +4,8 @@ replace google.golang.org/protobuf v1.25.1-0.20201020201750-d3470999428b => goog
 
 replace github.com/soheilhy/cmux => github.com/soheilhy/cmux v0.1.5-0.20210114230657-cdd3331e3e7c
 
+replace github.com/ory/dockertest/v3 => github.com/ory/dockertest/v3 v3.6.3
+
 require (
 	github.com/HdrHistogram/hdrhistogram-go v1.0.1 // indirect
 	github.com/asaskevich/govalidator v0.0.0-20200428143746-21a406dcc535 // indirect
