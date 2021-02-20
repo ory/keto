@@ -105,6 +105,9 @@ New feature or request.
 - [ ] Use `errors.WithStack` where ever non-keto code returns errors.
       ([keto#437](https://github.com/ory/keto/issues/437)) -
       [@Patrik](https://github.com/zepatrik)
+- [ ] Allow deletion of relation tuples
+      ([keto#452](https://github.com/ory/keto/issues/452)) -
+      [@Patrik](https://github.com/zepatrik)
 - [x] Write relationtuple tests for http and grpc handlers
       ([keto#297](https://github.com/ory/keto/issues/297)) -
       [@Patrik](https://github.com/zepatrik),
@@ -188,6 +191,9 @@ Blocks milestones or other issues or pulls.
 - [ ] Add golangci-lint with gosec linter
       ([keto#435](https://github.com/ory/keto/issues/435)) -
       [@Patrik](https://github.com/zepatrik)
+- [ ] Allow deletion of relation tuples
+      ([keto#452](https://github.com/ory/keto/issues/452)) -
+      [@Patrik](https://github.com/zepatrik)
 - [x] Define and architect SQL schema and queries for querying relations
       ([keto#300](https://github.com/ory/keto/issues/300)) -
       [@Patrik](https://github.com/zepatrik)
@@ -210,6 +216,9 @@ A request for comments to discuss and share ideas.
 
 - [ ] Handle circular relation tuples
       ([keto#411](https://github.com/ory/keto/issues/411)) -
+      [@Patrik](https://github.com/zepatrik)
+- [ ] Allow deletion of relation tuples
+      ([keto#452](https://github.com/ory/keto/issues/452)) -
       [@Patrik](https://github.com/zepatrik)
 - [x] Consider rename WriteRelationTuples in WriteService
       ([keto#351](https://github.com/ory/keto/issues/351)) -
