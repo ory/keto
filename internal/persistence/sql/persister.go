@@ -50,8 +50,6 @@ var (
 )
 
 func NewPersister(dsn string, l *logrusx.Logger, namespaces namespace.Manager) (*Persister, error) {
-	pop.SetLogger(l.PopLogger)
-
 	p := &Persister{
 		namespaces: namespaces,
 		l:          l,
