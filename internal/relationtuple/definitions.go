@@ -28,6 +28,8 @@ type (
 	Manager interface {
 		GetRelationTuples(ctx context.Context, query *RelationQuery, options ...x.PaginationOptionSetter) ([]*InternalRelationTuple, string, error)
 		WriteRelationTuples(ctx context.Context, rs ...*InternalRelationTuple) error
+		DeleteRelationTuples(ctx context.Context, rs ...*InternalRelationTuple) error
+		TransactRelationTuples(ctx context.Context, insert []*InternalRelationTuple, delete []*InternalRelationTuple) error
 	}
 
 	RelationCollection struct {
@@ -486,6 +488,14 @@ func (t *ManagerWrapper) GetRelationTuples(ctx context.Context, query *RelationQ
 
 func (t *ManagerWrapper) WriteRelationTuples(ctx context.Context, rs ...*InternalRelationTuple) error {
 	return t.Reg.RelationTupleManager().WriteRelationTuples(ctx, rs...)
+}
+
+func (t *ManagerWrapper) DeleteRelationTuples(ctx context.Context, rs ...*InternalRelationTuple) error {
+	return t.Reg.RelationTupleManager().DeleteRelationTuples(ctx, rs...)
+}
+
+func (t *ManagerWrapper) TransactRelationTuples(ctx context.Context, insert []*InternalRelationTuple, delete []*InternalRelationTuple) error {
+	return t.Reg.RelationTupleManager().TransactRelationTuples(ctx, insert, delete)
 }
 
 func (t *ManagerWrapper) RelationTupleManager() Manager {
