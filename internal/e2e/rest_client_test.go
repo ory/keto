@@ -59,6 +59,11 @@ func (rc *restClient) createTuple(t require.TestingT, r *relationtuple.InternalR
 	assert.Equal(t, http.StatusCreated, code, body)
 }
 
+func (rc *restClient) deleteTuple(t require.TestingT, r *relationtuple.InternalRelationTuple) {
+	body, code := rc.makeRequest(t, http.MethodDelete, relationtuple.RouteBase+"?"+r.ToURLQuery().Encode(), "", true)
+	require.Equal(t, http.StatusNoContent, code, body)
+}
+
 func (rc *restClient) queryTuple(t require.TestingT, q *relationtuple.RelationQuery, opts ...x.PaginationOptionSetter) *relationtuple.GetResponse {
 	urlQuery := q.ToURLQuery()
 
@@ -122,5 +127,14 @@ func (rc *restClient) waitUntilLive(t require.TestingT) {
 	// wait for /health/ready
 	for !healthReady() {
 		time.Sleep(10 * time.Millisecond)
+	}
+}
+
+func (rc *restClient) transactTuples(t require.TestingT, ins []*relationtuple.InternalRelationTuple, del []*relationtuple.InternalRelationTuple) {
+	for _, i := range ins {
+		rc.createTuple(t, i)
+	}
+	for _, d := range del {
+		rc.deleteTuple(t, d)
 	}
 }

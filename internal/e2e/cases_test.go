@@ -105,5 +105,25 @@ func runCases(c client, nspaces []*namespace.Namespace) func(*testing.T) {
 
 			assert.Equal(t, nTuples, nPages)
 		})
+
+		t.Run("case=deletes tuple", func(t *testing.T) {
+			rel := t.Name()
+
+			rt := &relationtuple.InternalRelationTuple{
+				Namespace: nspaces[0].Name,
+				Object:    "o",
+				Relation:  rel,
+				Subject:   &relationtuple.SubjectID{ID: "s"},
+			}
+			c.createTuple(t, rt)
+
+			resp := c.queryTuple(t, (*relationtuple.RelationQuery)(rt))
+			assert.Equal(t, []*relationtuple.InternalRelationTuple{rt}, resp.RelationTuples)
+
+			c.deleteTuple(t, rt)
+
+			resp = c.queryTuple(t, (*relationtuple.RelationQuery)(rt))
+			assert.Len(t, resp.RelationTuples, 0)
+		})
 	}
 }
