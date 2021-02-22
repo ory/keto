@@ -189,11 +189,11 @@ func (p *Persister) WriteRelationTuples(ctx context.Context, rs ...*relationtupl
 	})
 }
 
-func (p *Persister) TransactRelationTuples(ctx context.Context, insert []*relationtuple.InternalRelationTuple, delete []*relationtuple.InternalRelationTuple) error {
+func (p *Persister) TransactRelationTuples(ctx context.Context, ins []*relationtuple.InternalRelationTuple, del []*relationtuple.InternalRelationTuple) error {
 	return p.transaction(ctx, func(ctx context.Context, _ *pop.Connection) error {
-		if err := p.WriteRelationTuples(ctx, insert...); err != nil {
+		if err := p.WriteRelationTuples(ctx, ins...); err != nil {
 			return err
 		}
-		return p.DeleteRelationTuples(ctx, delete...)
+		return p.DeleteRelationTuples(ctx, del...)
 	})
 }
