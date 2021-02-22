@@ -255,4 +255,139 @@ func ManagerTest(t *testing.T, m Manager, addNamespace func(context.Context, *te
 			assert.Equal(t, x.PageTokenEnd, nextPage)
 		})
 	})
+
+	t.Run("method=Delete", func(t *testing.T) {
+		t.Run("case=deletes tuple", func(t *testing.T) {
+			nspace := t.Name()
+			addNamespace(context.Background(), t, nspace)
+
+			rt := &InternalRelationTuple{
+				Namespace: nspace,
+				Object:    "o to delete",
+				Relation:  "r to delete",
+				Subject:   &SubjectID{ID: "s to delete"},
+			}
+			require.NoError(t, m.WriteRelationTuples(context.Background(), rt))
+
+			res, _, err := m.GetRelationTuples(context.Background(), (*RelationQuery)(rt))
+			require.NoError(t, err)
+			assert.Equal(t, []*InternalRelationTuple{rt}, res)
+
+			require.NoError(t, m.DeleteRelationTuples(context.Background(), rt))
+
+			res, _, err = m.GetRelationTuples(context.Background(), (*RelationQuery)(rt))
+			require.NoError(t, err)
+			assert.Len(t, res, 0)
+		})
+
+		t.Run("case=deletes only one tuple", func(t *testing.T) {
+			nspace := t.Name()
+			addNamespace(context.Background(), t, nspace)
+
+			rs := make([]*InternalRelationTuple, 4)
+			for i := range rs {
+				rs[i] = &InternalRelationTuple{
+					Namespace: nspace,
+					Object:    "o" + strconv.Itoa(i),
+					Relation:  "r" + strconv.Itoa(i),
+					Subject:   &SubjectID{ID: "s" + strconv.Itoa(i)},
+				}
+			}
+			require.NoError(t, m.WriteRelationTuples(context.Background(), rs...))
+
+			res, _, err := m.GetRelationTuples(context.Background(), &RelationQuery{
+				Namespace: nspace,
+			})
+			require.NoError(t, err)
+			assert.Equal(t, rs, res)
+
+			require.NoError(t, m.DeleteRelationTuples(context.Background(), rs[0], rs[2]))
+
+			res, _, err = m.GetRelationTuples(context.Background(), &RelationQuery{
+				Namespace: nspace,
+			})
+			require.NoError(t, err)
+			assert.Equal(t, []*InternalRelationTuple{rs[1], rs[3]}, res)
+		})
+	})
+
+	t.Run("method=Transact", func(t *testing.T) {
+		t.Run("case=success", func(t *testing.T) {
+			nspace := t.Name()
+			addNamespace(context.Background(), t, nspace)
+
+			rs := make([]*InternalRelationTuple, 4)
+			for i := range rs {
+				rs[i] = &InternalRelationTuple{
+					Namespace: nspace,
+					Object:    "o" + strconv.Itoa(i),
+					Relation:  "r" + strconv.Itoa(i),
+					Subject:   &SubjectID{ID: "s" + strconv.Itoa(i)},
+				}
+			}
+			require.NoError(t, m.WriteRelationTuples(context.Background(), rs[0], rs[1]))
+
+			res, _, err := m.GetRelationTuples(context.Background(), &RelationQuery{
+				Namespace: nspace,
+			})
+			require.NoError(t, err)
+			assert.Equal(t, []*InternalRelationTuple{rs[0], rs[1]}, res)
+
+			require.NoError(t, m.TransactRelationTuples(context.Background(), []*InternalRelationTuple{rs[2], rs[3]}, []*InternalRelationTuple{rs[0]}))
+
+			res, _, err = m.GetRelationTuples(context.Background(), &RelationQuery{
+				Namespace: nspace,
+			})
+			require.NoError(t, err)
+			assert.Equal(t, []*InternalRelationTuple{rs[1], rs[2], rs[3]}, res)
+		})
+
+		t.Run("case=err rolls back all", func(t *testing.T) {
+			nspace := t.Name()
+			addNamespace(context.Background(), t, nspace)
+
+			rs := make([]*InternalRelationTuple, 2)
+			for i := range rs {
+				rs[i] = &InternalRelationTuple{
+					Namespace: nspace,
+					Object:    "o" + strconv.Itoa(i),
+					Relation:  "r" + strconv.Itoa(i),
+					Subject:   &SubjectID{ID: "s" + strconv.Itoa(i)},
+				}
+			}
+			invalidRt := &InternalRelationTuple{
+				Namespace: nspace,
+				Object:    "o0",
+				Relation:  "r0",
+				Subject:   nil, // subject is not allowed to be nil
+			}
+			require.NoError(t, m.WriteRelationTuples(context.Background(), rs[0]))
+
+			res, _, err := m.GetRelationTuples(context.Background(), &RelationQuery{
+				Namespace: nspace,
+			})
+			require.NoError(t, err)
+			assert.Equal(t, []*InternalRelationTuple{rs[0]}, res)
+
+			t.Run("invalid=insert", func(t *testing.T) {
+				assert.Error(t, m.TransactRelationTuples(context.Background(), []*InternalRelationTuple{invalidRt}, []*InternalRelationTuple{rs[0]}))
+			})
+
+			res, _, err = m.GetRelationTuples(context.Background(), &RelationQuery{
+				Namespace: nspace,
+			})
+			require.NoError(t, err)
+			assert.Equal(t, []*InternalRelationTuple{rs[0]}, res)
+
+			t.Run("invalid=delete", func(t *testing.T) {
+				assert.Error(t, m.TransactRelationTuples(context.Background(), []*InternalRelationTuple{rs[1]}, []*InternalRelationTuple{invalidRt}))
+			})
+
+			res, _, err = m.GetRelationTuples(context.Background(), &RelationQuery{
+				Namespace: nspace,
+			})
+			require.NoError(t, err)
+			assert.Equal(t, []*InternalRelationTuple{rs[0]}, res)
+		})
+	})
 }

@@ -33,7 +33,12 @@ func (h *handler) TransactRelationTuples(ctx context.Context, req *acl.TransactR
 		return nil, err
 	}
 
-	err = h.d.RelationTupleManager().WriteRelationTuples(ctx, insertTuples...)
+	deleteTuples, err := tuplesWithAction(req.RelationTupleDeltas, acl.RelationTupleDelta_DELETE)
+	if err != nil {
+		return nil, err
+	}
+
+	err = h.d.RelationTupleManager().TransactRelationTuples(ctx, insertTuples, deleteTuples)
 	if err != nil {
 		return nil, err
 	}
@@ -64,4 +69,20 @@ func (h *handler) createRelation(w http.ResponseWriter, r *http.Request, _ httpr
 	}
 
 	w.WriteHeader(http.StatusCreated)
+}
+
+func (h *handler) deleteRelation(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	rel, err := (&InternalRelationTuple{}).FromURLQuery(r.URL.Query())
+	if err != nil {
+		h.d.Writer().WriteError(w, r, errors.WithStack(herodot.ErrBadRequest))
+		return
+	}
+
+	if err := h.d.RelationTupleManager().DeleteRelationTuples(r.Context(), rel); err != nil {
+		h.d.Logger().WithError(err).WithFields(rel.ToLoggerFields()).Errorf("got an error while creating the relation tuple")
+		h.d.Writer().WriteError(w, r, errors.WithStack(herodot.ErrInternalServerError))
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
 }

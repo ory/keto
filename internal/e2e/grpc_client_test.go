@@ -1,102 +1,166 @@
 package e2e
 
 import (
-	"bytes"
 	"context"
-	"encoding/json"
-	"fmt"
-	"strconv"
-	"strings"
 	"time"
 
-	grpcHealthV1 "google.golang.org/grpc/health/grpc_health_v1"
-
-	"github.com/ory/keto/cmd/status"
-
-	"github.com/ory/keto/internal/x"
-
-	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-
-	cliexpand "github.com/ory/keto/cmd/expand"
-	clirelationtuple "github.com/ory/keto/cmd/relationtuple"
-
-	"github.com/ory/x/cmdx"
+	"google.golang.org/grpc"
+	grpcHealthV1 "google.golang.org/grpc/health/grpc_health_v1"
 
 	"github.com/ory/keto/internal/expand"
 	"github.com/ory/keto/internal/relationtuple"
+	"github.com/ory/keto/internal/x"
+	acl "github.com/ory/keto/proto/ory/keto/acl/v1alpha1"
 )
 
 type grpcClient struct {
-	c *cmdx.CommandExecuter
+	readRemote, writeRemote string
+	wc, rc                  *grpc.ClientConn
+	ctx                     context.Context
 }
 
 var _ client = (*grpcClient)(nil)
 
-func (g *grpcClient) createTuple(t require.TestingT, r *relationtuple.InternalRelationTuple) {
-	tupleEnc, err := json.Marshal(r)
+func (g *grpcClient) conn(t require.TestingT, remote string) *grpc.ClientConn {
+	ctx, cancel := context.WithTimeout(g.ctx, 3*time.Second)
+	defer cancel()
+
+	conn, err := grpc.DialContext(ctx, remote, grpc.WithInsecure(), grpc.WithBlock(), grpc.WithDisableHealthCheck())
 	require.NoError(t, err)
 
-	stdout, stderr, err := g.c.Exec(bytes.NewBuffer(tupleEnc), "relation-tuple", "create", "-")
-	require.NoError(t, err, "stdout: %s\nstderr: %s", stdout, stderr)
-	assert.Len(t, stderr, 0, stdout)
+	return conn
+}
+
+func (g *grpcClient) readConn(t require.TestingT) *grpc.ClientConn {
+	if g.rc == nil {
+		g.rc = g.conn(t, g.readRemote)
+	}
+	return g.rc
+}
+
+func (g *grpcClient) writeConn(t require.TestingT) *grpc.ClientConn {
+	if g.wc == nil {
+		g.wc = g.conn(t, g.writeRemote)
+	}
+	return g.wc
+}
+
+func (g *grpcClient) createTuple(t require.TestingT, r *relationtuple.InternalRelationTuple) {
+	g.transactTuples(t, []*relationtuple.InternalRelationTuple{r}, nil)
 }
 
 func (g *grpcClient) queryTuple(t require.TestingT, q *relationtuple.RelationQuery, opts ...x.PaginationOptionSetter) *relationtuple.GetResponse {
-	var flags []string
+	c := acl.NewReadServiceClient(g.readConn(t))
+
+	query := &acl.ListRelationTuplesRequest_Query{
+		Namespace: q.Namespace,
+		Object:    q.Object,
+		Relation:  q.Relation,
+	}
 	if q.Subject != nil {
-		flags = append(flags, "--"+clirelationtuple.FlagSubject, q.Subject.String())
+		query.Subject = q.Subject.ToProto()
 	}
-	if q.Relation != "" {
-		flags = append(flags, "--"+clirelationtuple.FlagRelation, q.Relation)
-	}
-	if q.Object != "" {
-		flags = append(flags, "--"+clirelationtuple.FlagObject, q.Object)
-	}
+
 	pagination := x.GetPaginationOptions(opts...)
-	if pagination.Token != "" {
-		flags = append(flags, "--"+clirelationtuple.FlagPageToken, pagination.Token)
+
+	resp, err := c.ListRelationTuples(g.ctx, &acl.ListRelationTuplesRequest{
+		Query:     query,
+		PageToken: pagination.Token,
+		PageSize:  int32(pagination.Size),
+	})
+	require.NoError(t, err)
+
+	irs := make([]*relationtuple.InternalRelationTuple, len(resp.RelationTuples))
+	for i := range irs {
+		irs[i], err = (&relationtuple.InternalRelationTuple{}).FromDataProvider(resp.RelationTuples[i])
+		require.NoError(t, err)
 	}
-	if pagination.Size != 0 {
-		flags = append(flags, "--"+clirelationtuple.FlagPageSize, strconv.Itoa(pagination.Size))
+
+	return &relationtuple.GetResponse{
+		RelationTuples: irs,
+		NextPageToken:  resp.NextPageToken,
+		IsLastPage:     resp.IsLastPage,
 	}
-
-	out := g.c.ExecNoErr(t, append(flags, "relation-tuple", "get", q.Namespace)...)
-
-	var resp relationtuple.GetResponse
-	require.NoError(t, json.Unmarshal([]byte(out), &resp), "%s", out)
-
-	return &resp
 }
 
 func (g *grpcClient) check(t require.TestingT, r *relationtuple.InternalRelationTuple) bool {
-	out := g.c.ExecNoErr(t, "check", r.Subject.String(), r.Relation, r.Namespace, r.Object)
-	res, err := strconv.ParseBool(strings.TrimSpace(out))
+	c := acl.NewCheckServiceClient(g.readConn(t))
+
+	resp, err := c.Check(g.ctx, &acl.CheckRequest{
+		Namespace: r.Namespace,
+		Object:    r.Object,
+		Relation:  r.Relation,
+		Subject:   r.Subject.ToProto(),
+	})
 	require.NoError(t, err)
-	return res
+
+	return resp.Allowed
 }
 
 func (g *grpcClient) expand(t require.TestingT, r *relationtuple.SubjectSet, depth int) *expand.Tree {
-	out := g.c.ExecNoErr(t, "expand", r.Relation, r.Namespace, r.Object, "--"+cliexpand.FlagMaxDepth, fmt.Sprintf("%d", depth), "--"+cmdx.FlagFormat, string(cmdx.FormatJSON))
-	res := expand.Tree{}
-	require.NoError(t, json.Unmarshal([]byte(out), &res))
-	return &res
+	c := acl.NewExpandServiceClient(g.readConn(t))
+
+	resp, err := c.Expand(g.ctx, &acl.ExpandRequest{
+		Subject:  r.ToProto(),
+		MaxDepth: int32(depth),
+	})
+	require.NoError(t, err)
+
+	tree, err := expand.TreeFromProto(resp.Tree)
+	require.NoError(t, err)
+	return tree
 }
 
 func (g *grpcClient) waitUntilLive(t require.TestingT) {
-	flags := make([]string, len(g.c.PersistentArgs))
-	copy(flags, g.c.PersistentArgs)
+	c := grpcHealthV1.NewHealthClient(g.readConn(t))
 
-	for i, f := range flags {
-		if f == "--"+cmdx.FlagFormat {
-			flags = append(flags[:i], flags[i+2:]...)
-			break
+	ctx, cancel := context.WithCancel(g.ctx)
+	defer cancel()
+
+	cl, err := c.Watch(ctx, &grpcHealthV1.HealthCheckRequest{})
+	require.NoError(t, err)
+	require.NoError(t, cl.CloseSend())
+
+	for {
+		select {
+		case <-g.ctx.Done():
+			return
+		default:
+		}
+		resp, err := cl.Recv()
+		require.NoError(t, err)
+
+		if resp.Status == grpcHealthV1.HealthCheckResponse_SERVING {
+			return
+		}
+	}
+}
+
+func (g *grpcClient) deleteTuple(t require.TestingT, r *relationtuple.InternalRelationTuple) {
+	g.transactTuples(t, nil, []*relationtuple.InternalRelationTuple{r})
+}
+
+func (g *grpcClient) transactTuples(t require.TestingT, ins []*relationtuple.InternalRelationTuple, del []*relationtuple.InternalRelationTuple) {
+	c := acl.NewWriteServiceClient(g.writeConn(t))
+
+	deltas := make([]*acl.RelationTupleDelta, len(ins)+len(del))
+	for i := range ins {
+		deltas[i] = &acl.RelationTupleDelta{
+			RelationTuple: ins[i].ToProto(),
+			Action:        acl.RelationTupleDelta_INSERT,
+		}
+	}
+	for i := range del {
+		deltas[len(ins)+i] = &acl.RelationTupleDelta{
+			RelationTuple: del[i].ToProto(),
+			Action:        acl.RelationTupleDelta_DELETE,
 		}
 	}
 
-	ctx, cancel := context.WithTimeout(g.c.Ctx, time.Minute)
-	defer cancel()
+	_, err := c.TransactRelationTuples(g.ctx, &acl.TransactRelationTuplesRequest{
+		RelationTupleDeltas: deltas,
+	})
 
-	out := cmdx.ExecNoErrCtx(ctx, t, g.c.New(), append(flags, "status", "--"+status.FlagBlock)...)
-	require.Equal(t, grpcHealthV1.HealthCheckResponse_SERVING.String()+"\n", out)
+	require.NoError(t, err)
 }

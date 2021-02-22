@@ -21,6 +21,8 @@ import (
 type (
 	client interface {
 		createTuple(t require.TestingT, r *relationtuple.InternalRelationTuple)
+		deleteTuple(t require.TestingT, r *relationtuple.InternalRelationTuple)
+		transactTuples(t require.TestingT, ins []*relationtuple.InternalRelationTuple, del []*relationtuple.InternalRelationTuple)
 		queryTuple(t require.TestingT, q *relationtuple.RelationQuery, opts ...x.PaginationOptionSetter) *relationtuple.GetResponse
 		check(t require.TestingT, r *relationtuple.InternalRelationTuple) bool
 		expand(t require.TestingT, r *relationtuple.SubjectSet, depth int) *expand.Tree
@@ -44,15 +46,20 @@ func Test(t *testing.T) {
 			// The test cases start here
 			// We execute every test with the GRPC client (using the client commands) and REST client
 			for _, cl := range []client{
-				&grpcClient{c: &cmdx.CommandExecuter{
-					New:            cmd.NewRootCmd,
-					Ctx:            ctx,
-					PersistentArgs: []string{"--" + cliclient.FlagReadRemote, reg.Config().ReadAPIListenOn(), "--" + cliclient.FlagWriteRemote, reg.Config().WriteAPIListenOn(), "--" + cmdx.FlagFormat, string(cmdx.FormatJSON)},
-				}},
+				&grpcClient{
+					readRemote:  reg.Config().ReadAPIListenOn(),
+					writeRemote: reg.Config().WriteAPIListenOn(),
+					ctx:         ctx,
+				},
 				&restClient{
 					readURL:  "http://" + reg.Config().ReadAPIListenOn(),
 					writeURL: "http://" + reg.Config().WriteAPIListenOn(),
 				},
+				&cliClient{c: &cmdx.CommandExecuter{
+					New:            cmd.NewRootCmd,
+					Ctx:            ctx,
+					PersistentArgs: []string{"--" + cliclient.FlagReadRemote, reg.Config().ReadAPIListenOn(), "--" + cliclient.FlagWriteRemote, reg.Config().WriteAPIListenOn(), "--" + cmdx.FlagFormat, string(cmdx.FormatJSON)},
+				}},
 			} {
 				t.Run(fmt.Sprintf("client=%T", cl), runCases(cl, nspaces))
 			}

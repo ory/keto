@@ -2,6 +2,7 @@ package sql
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/ory/x/sqlcon"
@@ -34,6 +35,9 @@ type (
 )
 
 const (
+	// TODO sharding
+	shardID = "default"
+
 	namespaceContextKey contextKeys = "namespace"
 )
 
@@ -81,9 +85,6 @@ func (p *Persister) insertRelationTuple(ctx context.Context, rel *relationtuple.
 		return err
 	}
 
-	// TODO sharding
-	shardID := "default"
-
 	p.l.WithFields(rel.ToLoggerFields()).Trace("creating in database")
 
 	return sqlcon.HandleError(
@@ -95,6 +96,32 @@ func (p *Persister) insertRelationTuple(ctx context.Context, rel *relationtuple.
 			CommitTime: time.Now(),
 		}),
 	)
+}
+
+func (p *Persister) DeleteRelationTuples(ctx context.Context, rs ...*relationtuple.InternalRelationTuple) error {
+	return p.transaction(ctx, func(ctx context.Context, c *pop.Connection) error {
+		for _, r := range rs {
+			if r.Subject == nil {
+				return errors.New("subject is not allowed to be nil")
+			}
+
+			n, err := p.namespaces.GetNamespace(ctx, r.Namespace)
+			if err != nil {
+				return err
+			}
+
+			if err := c.RawQuery(
+				fmt.Sprintf("DELETE FROM %s WHERE object = ? AND relation = ? AND subject = ?", tableFromNamespace(n)),
+				r.Object,
+				r.Relation,
+				r.Subject.String(),
+			).Exec(); err != nil {
+				return errors.WithStack(err)
+			}
+		}
+
+		return nil
+	})
 }
 
 func (p *Persister) GetRelationTuples(ctx context.Context, query *relationtuple.RelationQuery, options ...x.PaginationOptionSetter) ([]*relationtuple.InternalRelationTuple, string, error) {
@@ -159,5 +186,14 @@ func (p *Persister) WriteRelationTuples(ctx context.Context, rs ...*relationtupl
 			}
 		}
 		return nil
+	})
+}
+
+func (p *Persister) TransactRelationTuples(ctx context.Context, ins []*relationtuple.InternalRelationTuple, del []*relationtuple.InternalRelationTuple) error {
+	return p.transaction(ctx, func(ctx context.Context, _ *pop.Connection) error {
+		if err := p.WriteRelationTuples(ctx, ins...); err != nil {
+			return err
+		}
+		return p.DeleteRelationTuples(ctx, del...)
 	})
 }

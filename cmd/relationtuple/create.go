@@ -15,49 +15,13 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/ory/x/cmdx"
-
-	"github.com/ory/keto/cmd/client"
 )
 
 func newCreateCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:  "create <relation-tuple.json> [<relation-tuple-dir>]",
 		Args: cobra.MinimumNArgs(1),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			conn, err := client.GetWriteConn(cmd)
-			if err != nil {
-				return err
-			}
-
-			var tuples []*relationtuple.InternalRelationTuple
-			var deltas []*acl.RelationTupleDelta
-			for _, fn := range args {
-				tuple, err := readTuplesFromArg(cmd, fn)
-				if err != nil {
-					return err
-				}
-				for _, t := range tuple {
-					tuples = append(tuples, t)
-					deltas = append(deltas, &acl.RelationTupleDelta{
-						Action:        acl.RelationTupleDelta_INSERT,
-						RelationTuple: t.ToProto(),
-					})
-				}
-			}
-
-			cl := acl.NewWriteServiceClient(conn)
-
-			_, err = cl.TransactRelationTuples(cmd.Context(), &acl.TransactRelationTuplesRequest{
-				RelationTupleDeltas: deltas,
-			})
-			if err != nil {
-				_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Error doing the request: %s\n", err)
-				return cmdx.FailSilently(cmd)
-			}
-
-			cmdx.PrintTable(cmd, relationtuple.NewRelationCollection(tuples))
-			return nil
-		},
+		RunE: transactRelationTuples(acl.RelationTupleDelta_INSERT),
 	}
 	cmd.Flags().AddFlagSet(packageFlags)
 
