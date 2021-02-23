@@ -62,6 +62,9 @@ Something is not working.
 - [ ] Make errors debuggable and understandable
       ([keto#438](https://github.com/ory/keto/issues/438)) -
       [@Patrik](https://github.com/zepatrik)
+- [ ] Command status --block is not blocking until healthy
+      ([keto#456](https://github.com/ory/keto/issues/456)) -
+      [@Patrik](https://github.com/zepatrik)
 - [x] Replace in-memory persister with SQLite schema
       ([keto#294](https://github.com/ory/keto/issues/294)) -
       [@Patrik](https://github.com/zepatrik)
@@ -105,9 +108,6 @@ New feature or request.
 - [ ] Use `errors.WithStack` where ever non-keto code returns errors.
       ([keto#437](https://github.com/ory/keto/issues/437)) -
       [@Patrik](https://github.com/zepatrik)
-- [ ] Allow deletion of relation tuples
-      ([keto#452](https://github.com/ory/keto/issues/452)) -
-      [@Patrik](https://github.com/zepatrik)
 - [x] Write relationtuple tests for http and grpc handlers
       ([keto#297](https://github.com/ory/keto/issues/297)) -
       [@Patrik](https://github.com/zepatrik),
@@ -126,6 +126,9 @@ New feature or request.
       [@Patrik](https://github.com/zepatrik)
 - [x] Relation Tuple Migrations should not be hardcoded but use prefixed tables
       ([keto#404](https://github.com/ory/keto/issues/404)) -
+      [@Patrik](https://github.com/zepatrik)
+- [x] Allow deletion of relation tuples
+      ([keto#452](https://github.com/ory/keto/issues/452)) -
       [@Patrik](https://github.com/zepatrik)
 
 ### [Docs](https://github.com/ory/keto/labels/docs)
@@ -191,14 +194,17 @@ Blocks milestones or other issues or pulls.
 - [ ] Add golangci-lint with gosec linter
       ([keto#435](https://github.com/ory/keto/issues/435)) -
       [@Patrik](https://github.com/zepatrik)
-- [ ] Allow deletion of relation tuples
-      ([keto#452](https://github.com/ory/keto/issues/452)) -
+- [ ] Command status --block is not blocking until healthy
+      ([keto#456](https://github.com/ory/keto/issues/456)) -
       [@Patrik](https://github.com/zepatrik)
 - [x] Define and architect SQL schema and queries for querying relations
       ([keto#300](https://github.com/ory/keto/issues/300)) -
       [@Patrik](https://github.com/zepatrik)
 - [x] Don't use fmt.Sprintf to construct queries
       ([keto#434](https://github.com/ory/keto/issues/434)) -
+      [@Patrik](https://github.com/zepatrik)
+- [x] Allow deletion of relation tuples
+      ([keto#452](https://github.com/ory/keto/issues/452)) -
       [@Patrik](https://github.com/zepatrik)
 
 #### Pull Requests
@@ -217,13 +223,13 @@ A request for comments to discuss and share ideas.
 - [ ] Handle circular relation tuples
       ([keto#411](https://github.com/ory/keto/issues/411)) -
       [@Patrik](https://github.com/zepatrik)
-- [ ] Allow deletion of relation tuples
-      ([keto#452](https://github.com/ory/keto/issues/452)) -
-      [@Patrik](https://github.com/zepatrik)
 - [x] Consider rename WriteRelationTuples in WriteService
       ([keto#351](https://github.com/ory/keto/issues/351)) -
       [@Patrik](https://github.com/zepatrik),
       [@Robin Brämer](https://github.com/robinbraemer)
+- [x] Allow deletion of relation tuples
+      ([keto#452](https://github.com/ory/keto/issues/452)) -
+      [@Patrik](https://github.com/zepatrik)
 
 #### Pull Requests
 
