@@ -1006,6 +1006,8 @@ github.com/ory/x v0.0.127/go.mod h1:FwUujfFuCj5d+xgLn4fGMYPnzriR5bdAIulFXMtnK0M=
 github.com/ory/x v0.0.128/go.mod h1:ykx1XOsl9taQtoW2yNvuxl/feEfTfrZTcbY1U7841tI=
 github.com/ory/x v0.0.180 h1:PI7wkP8rKs/hzfQM7SHot1iunImS5rLDXVgS64Tqr54=
 github.com/ory/x v0.0.180/go.mod h1:SGETCUk1DgQC30bb7y4hjhkKGQ1x0YOsldrmGmy6MNc=
+github.com/ory/x v0.0.194 h1:uQ2eTwU+VDO5+VJYAZbSbbtrwpjn93IJ16nOxZa24QM=
+github.com/ory/x v0.0.194/go.mod h1:dJUOX7dn3nDp/pBR24DLC7mfp4AT1gxpBs7NP7fCSXc=
 github.com/parnurzeal/gorequest v0.2.15/go.mod h1:3Kh2QUMJoqw3icWAecsyzkpY7UzRfDhbRdTjtNwNiUE=
 github.com/pascaldekloe/goe v0.0.0-20180627143212-57f6aae5913c/go.mod h1:lzWF7FIEvWOWxwDKqyGYQf6ZUaNfKdP144TG7ZOy1lc=
 github.com/pborman/uuid v1.2.0 h1:J7Q5mO4ysT1dv8hyrUGHb9+ooztCXu1D8MY8DZYsu3g=
@@ -1079,6 +1081,8 @@ github.com/santhosh-tekuri/jsonschema/v2 v2.1.0 h1:7KOtBzox6l1PbyZCuQfo923yIBpoM
 github.com/santhosh-tekuri/jsonschema/v2 v2.1.0/go.mod h1:yzJzKUGV4RbWqWIBBP4wSOBqavX5saE02yirLS0OTyg=
 github.com/satori/go.uuid v1.2.0/go.mod h1:dA0hQrYB0VpLJoorglMZABFdXlWrHn1NEOzdhQKdks0=
 github.com/sean-/seed v0.0.0-20170313163322-e2103e2c3529/go.mod h1:DxrIzT+xaE7yg65j358z/aeFdxmN0P9QXhEzd20vsDc=
+github.com/seatgeek/logrus-gelf-formatter v0.0.0-20180829220724-ce23ecb3f367 h1:kjJVIlsZ+29dcgTtHVJDtK7ykrf7e1tW/63UvYSCEJw=
+github.com/seatgeek/logrus-gelf-formatter v0.0.0-20180829220724-ce23ecb3f367/go.mod h1:/THDZYi7F/BsVEcYzYPqdcWFQ+1C2InkawTKfLOAnzg=
 github.com/segmentio/analytics-go v3.0.1+incompatible/go.mod h1:C7CYBtQWk4vRk2RyLu0qOcbHJ18E3F1HV2C/8JvKN48=
 github.com/segmentio/analytics-go v3.1.0+incompatible h1:IyiOfUgQFVHvsykKKbdI7ZsH374uv3/DfZUo9+G0Z80=
 github.com/segmentio/analytics-go v3.1.0+incompatible/go.mod h1:C7CYBtQWk4vRk2RyLu0qOcbHJ18E3F1HV2C/8JvKN48=
