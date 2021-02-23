@@ -2,6 +2,7 @@ package check
 
 import (
 	"fmt"
+
 	"github.com/ory/keto/internal/check"
 
 	acl "github.com/ory/keto/proto/ory/keto/acl/v1alpha1"

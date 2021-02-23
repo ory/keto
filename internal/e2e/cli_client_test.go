@@ -5,9 +5,10 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/ory/keto/internal/check"
 	"strconv"
 	"time"
+
+	"github.com/ory/keto/internal/check"
 
 	grpcHealthV1 "google.golang.org/grpc/health/grpc_health_v1"
 
