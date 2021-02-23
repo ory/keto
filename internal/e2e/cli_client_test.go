@@ -5,8 +5,8 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/ory/keto/internal/check"
 	"strconv"
-	"strings"
 	"time"
 
 	grpcHealthV1 "google.golang.org/grpc/health/grpc_health_v1"
@@ -71,9 +71,9 @@ func (g *cliClient) queryTuple(t require.TestingT, q *relationtuple.RelationQuer
 
 func (g *cliClient) check(t require.TestingT, r *relationtuple.InternalRelationTuple) bool {
 	out := g.c.ExecNoErr(t, "check", r.Subject.String(), r.Relation, r.Namespace, r.Object)
-	res, err := strconv.ParseBool(strings.TrimSpace(out))
-	require.NoError(t, err)
-	return res
+	var res check.RESTResponse
+	require.NoError(t, json.Unmarshal([]byte(out), &res))
+	return res.Allowed
 }
 
 func (g *cliClient) expand(t require.TestingT, r *relationtuple.SubjectSet, depth int) *expand.Tree {

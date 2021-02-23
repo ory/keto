@@ -2,6 +2,7 @@ package check
 
 import (
 	"fmt"
+	"github.com/ory/keto/internal/check"
 
 	acl "github.com/ory/keto/proto/ory/keto/acl/v1alpha1"
 
@@ -11,9 +12,7 @@ import (
 	"github.com/ory/keto/cmd/client"
 )
 
-type checkOutput struct {
-	Allowed bool `json:"allowed"`
-}
+type checkOutput check.RESTResponse
 
 func (o *checkOutput) String() string {
 	if o.Allowed {
