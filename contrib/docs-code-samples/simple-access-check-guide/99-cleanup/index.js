@@ -1,10 +1,10 @@
 import grpc from '@ory/keto-acl/node_modules/@grpc/grpc-js/build/src/index.js'
-import acl from '@ory/keto-acl/acl_pb.js'
 import writeService from '@ory/keto-acl/write_service_grpc_pb.js'
 import writeData from '@ory/keto-acl/write_service_pb.js'
+import acl from '@ory/keto-acl/acl_pb.js'
 
 const writeClient = new writeService.WriteServiceClient(
-  'localhost:4467',
+  '127.0.0.1:4467',
   grpc.credentials.createInsecure()
 )
 
@@ -18,16 +18,15 @@ sub.setId('john')
 relationTuple.setSubject(sub)
 
 const tupleDelta = new writeData.RelationTupleDelta()
-tupleDelta.setAction(writeData.RelationTupleDelta.Action.INSERT)
+tupleDelta.setAction(writeData.RelationTupleDelta.Action.DELETE)
 tupleDelta.setRelationTuple(relationTuple)
 
 const writeRequest = new writeData.TransactRelationTuplesRequest()
 writeRequest.addRelationTupleDeltas(tupleDelta)
 
-writeClient.transactRelationTuples(writeRequest, (error) => {
-  if (error) {
-    console.log('Encountered error', error)
-  } else {
-    console.log('Successfully created tuple')
+writeClient.transactRelationTuples(writeRequest, (err) => {
+  if (err) {
+    console.log('Unexpected err', err)
+    return 1
   }
 })

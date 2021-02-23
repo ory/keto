@@ -9,6 +9,4 @@ relationtuple='
   "subject": "john"
 }'
 
-keto relation-tuple create <(echo "$relationtuple") >/dev/null \
-  && echo "Successfully created tuple" \
-  || echo "Encountered error"
+keto relation-tuple delete <(echo "$relationtuple") -q > /dev/null

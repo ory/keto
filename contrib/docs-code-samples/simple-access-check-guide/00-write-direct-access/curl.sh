@@ -9,10 +9,8 @@ relationtuple='
   "subject": "john"
 }'
 
-curl -X PUT \
+curl --fail --silent -X PUT \
      --data "$relationtuple" \
-     -w "Created %{response_code}\n" \
-     http://127.0.0.1:4467/relationtuple
-
-# Expected Output:
-#   Created 201
+     http://127.0.0.1:4467/relationtuple \
+  && echo "Successfully created tuple" \
+  || echo "Encountered error"

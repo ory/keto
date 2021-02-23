@@ -23,22 +23,25 @@ for suite in */ ; do
     done
     echo
 
-    go test -tags docscodesamples -count=1 -p=1 "./$suite/..."
-    echo
-
-    node --experimental-vm-modules --experimental-import-meta-resolve "./node_modules/.bin/jest" "$suite"
-    echo
-
-    for tc in "$suite"/*/curl_test.sh; do
-        bash "$tc"
-    done
-    echo
-
-    for tc in "$suite"/*/cli_test.sh; do
-        bash "$tc"
+    for main in "$suite"/*/main.go; do
+        echo "Running $main"
+        diff <(go run -tags docscodesamples "./$main") "$(dirname "$main")/expected_output.txt"
     done
 
-    kill $keto_server_pid
+    for index in "$suite"/*/index.js; do
+        echo "Running $index"
+        diff <(node "$index") "$(dirname "$index")/expected_output.txt"
+    done
+
+    for tc in "$suite"/*/curl.sh; do
+        echo "Running $tc"
+        diff <("$tc") "$(dirname "$tc")/expected_output.txt"
+    done
+
+    for tc in "$suite"/*/cli.sh; do
+        echo "Running $tc"
+        diff <("$tc") "$(dirname "$tc")/expected_output.txt"
+    done
 done
 
 echo

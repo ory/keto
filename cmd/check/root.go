@@ -3,6 +3,8 @@ package check
 import (
 	"fmt"
 
+	"github.com/ory/keto/internal/check"
+
 	acl "github.com/ory/keto/proto/ory/keto/acl/v1alpha1"
 
 	"github.com/ory/x/cmdx"
@@ -10,6 +12,15 @@ import (
 
 	"github.com/ory/keto/cmd/client"
 )
+
+type checkOutput check.RESTResponse
+
+func (o *checkOutput) String() string {
+	if o.Allowed {
+		return "Allowed\n"
+	}
+	return "Denied\n"
+}
 
 func newCheckCmd() *cobra.Command {
 	cmd := &cobra.Command{
@@ -36,7 +47,7 @@ func newCheckCmd() *cobra.Command {
 				return err
 			}
 
-			_, _ = fmt.Fprintf(cmd.OutOrStdout(), "%v\n", resp.Allowed)
+			cmdx.PrintJSONAble(cmd, &checkOutput{resp.Allowed})
 			return nil
 		},
 	}

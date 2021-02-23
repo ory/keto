@@ -29,5 +29,9 @@ func main() {
 		panic(err.Error())
 	}
 
-	fmt.Printf("Allowed: %v\n", res.Allowed)
+	if res.Allowed {
+		fmt.Println("Allowed")
+		return
+	}
+	fmt.Println("Denied")
 }

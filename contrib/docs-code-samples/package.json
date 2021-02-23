@@ -4,9 +4,6 @@
     "@grpc/grpc-js": "^1.2.6",
     "@ory/keto-acl": "file:../../proto/ory/keto/acl/v1alpha1"
   },
-  "devDependencies": {
-    "jest": "^26.6.3"
-  },
   "scripts": {
     "test": "(cd ../../proto/ory/keto/acl/v1alpha1 && npm i) && ./test.sh"
   },
