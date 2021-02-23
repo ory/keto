@@ -28,6 +28,9 @@ type (
 	Handler struct {
 		d handlerDependencies
 	}
+	RESTResponse struct {
+		Allowed bool `json:"allowed"`
+	}
 )
 
 var _ acl.CheckServiceServer = (*Handler)(nil)
@@ -64,11 +67,11 @@ func (h *Handler) getCheck(w http.ResponseWriter, r *http.Request, _ httprouter.
 	}
 
 	if allowed {
-		h.d.Writer().WriteCode(w, r, http.StatusOK, "allowed")
+		h.d.Writer().WriteCode(w, r, http.StatusOK, &RESTResponse{Allowed: true})
 		return
 	}
 
-	h.d.Writer().WriteCode(w, r, http.StatusForbidden, "rejected")
+	h.d.Writer().WriteCode(w, r, http.StatusForbidden, &RESTResponse{Allowed: false})
 }
 
 func (h *Handler) postCheck(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
@@ -84,11 +87,11 @@ func (h *Handler) postCheck(w http.ResponseWriter, r *http.Request, _ httprouter
 	}
 
 	if allowed {
-		h.d.Writer().WriteCode(w, r, http.StatusOK, "allowed")
+		h.d.Writer().WriteCode(w, r, http.StatusOK, &RESTResponse{Allowed: true})
 		return
 	}
 
-	h.d.Writer().WriteCode(w, r, http.StatusForbidden, "rejected")
+	h.d.Writer().WriteCode(w, r, http.StatusForbidden, &RESTResponse{Allowed: false})
 }
 
 func (h *Handler) Check(ctx context.Context, req *acl.CheckRequest) (*acl.CheckResponse, error) {
