@@ -1,8 +1,9 @@
+// +build docscodesamples
+
 package main
 
 import (
 	"context"
-	"fmt"
 
 	"google.golang.org/grpc"
 
@@ -10,17 +11,16 @@ import (
 )
 
 func main() {
-	conn, err := grpc.Dial("127.0.0.1:4467", grpc.WithInsecure())
+	wc, err := grpc.Dial("127.0.0.1:4467", grpc.WithInsecure())
 	if err != nil {
-		panic("Encountered error: " + err.Error())
+		panic(err)
 	}
+	defer wc.Close()
 
-	client := acl.NewWriteServiceClient(conn)
-
-	_, err = client.TransactRelationTuples(context.Background(), &acl.TransactRelationTuplesRequest{
+	wClient := acl.NewWriteServiceClient(wc)
+	_, err = wClient.TransactRelationTuples(context.Background(), &acl.TransactRelationTuplesRequest{
 		RelationTupleDeltas: []*acl.RelationTupleDelta{
 			{
-				Action: acl.RelationTupleDelta_INSERT,
 				RelationTuple: &acl.RelationTuple{
 					Namespace: "messages",
 					Object:    "02y_15_4w350m3",
@@ -29,12 +29,11 @@ func main() {
 						Id: "john",
 					}},
 				},
+				Action: acl.RelationTupleDelta_DELETE,
 			},
 		},
 	})
 	if err != nil {
-		panic("Encountered error: " + err.Error())
+		panic(err)
 	}
-
-	fmt.Println("Successfully created tuple")
 }

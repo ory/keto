@@ -19,7 +19,7 @@ checkRequest.setSubject(sub)
 
 checkClient.check(checkRequest, (error, resp) => {
   if (error) {
-    console.log('Encountered error', error)
+    console.log('Encountered error:', error)
   } else {
     console.log(resp.getAllowed() ? 'Allowed' : 'Denied')
   }

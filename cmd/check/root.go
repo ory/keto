@@ -11,6 +11,17 @@ import (
 	"github.com/ory/keto/cmd/client"
 )
 
+type checkOutput struct {
+	Allowed bool `json:"allowed"`
+}
+
+func (o *checkOutput) String() string {
+	if o.Allowed {
+		return "Allowed\n"
+	}
+	return "Denied\n"
+}
+
 func newCheckCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:  "check <subject> <relation> <namespace> <object>",
@@ -36,7 +47,7 @@ func newCheckCmd() *cobra.Command {
 				return err
 			}
 
-			_, _ = fmt.Fprintf(cmd.OutOrStdout(), "%v\n", resp.Allowed)
+			cmdx.PrintJSONAble(cmd, &checkOutput{resp.Allowed})
 			return nil
 		},
 	}
