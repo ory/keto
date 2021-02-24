@@ -44,9 +44,6 @@ Something is not working.
 - [ ] Unable to create relations using REST API and string notation
       ([keto#293](https://github.com/ory/keto/issues/293)) -
       [@Patrik](https://github.com/zepatrik)
-- [ ] Check REST API should return JSON Object
-      ([keto#406](https://github.com/ory/keto/issues/406)) -
-      [@Patrik](https://github.com/zepatrik)
 - [ ] Clarify where handlers are tested
       ([keto#407](https://github.com/ory/keto/issues/407)) -
       [@Patrik](https://github.com/zepatrik)
@@ -77,6 +74,9 @@ Something is not working.
       [@Patrik](https://github.com/zepatrik)
 - [x] Abort early in subjectIsAllowed
       ([keto#405](https://github.com/ory/keto/issues/405)) -
+      [@Patrik](https://github.com/zepatrik)
+- [x] Check REST API should return JSON Object
+      ([keto#406](https://github.com/ory/keto/issues/406)) -
       [@Patrik](https://github.com/zepatrik)
 - [x] Write relationtuple tests
       ([keto#408](https://github.com/ory/keto/issues/408)) -
