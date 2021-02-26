@@ -50,10 +50,10 @@ func (e *Engine) BuildTree(ctx context.Context, subject relationtuple.Subject, r
 				},
 				x.WithToken(nextPage),
 			)
-			if len(rels) == 0 {
-				return nil, nil
-			} else if err != nil {
+			if err != nil {
 				return nil, err
+			} else if len(rels) == 0 {
+				return nil, nil
 			}
 
 			if restDepth <= 1 {

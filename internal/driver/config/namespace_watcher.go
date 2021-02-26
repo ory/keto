@@ -36,7 +36,7 @@ var _ namespace.Manager = &NamespaceWatcher{}
 func NewNamespaceWatcher(ctx context.Context, l *logrusx.Logger, target string) (*NamespaceWatcher, error) {
 	u, err := urlx.Parse(target)
 	if err != nil {
-		return nil, err
+		return nil, errors.WithStack(err)
 	}
 
 	nw := NamespaceWatcher{
@@ -49,7 +49,11 @@ func NewNamespaceWatcher(ctx context.Context, l *logrusx.Logger, target string) 
 	var w watcherx.Watcher
 
 	info, err := os.Stat(u.Path)
-	if err == nil && info.IsDir() {
+	if err != nil {
+		return nil, errors.WithStack(err)
+	}
+
+	if info.IsDir() {
 		w, err = watcherx.WatchDirectory(ctx, u.Path, nw.ec)
 	} else {
 		w, err = watcherx.Watch(ctx, u, nw.ec)
@@ -62,7 +66,7 @@ func NewNamespaceWatcher(ctx context.Context, l *logrusx.Logger, target string) 
 	// trigger initial load
 	done, err := w.DispatchNow()
 	if err != nil {
-		return nil, err
+		return nil, errors.WithStack(err)
 	}
 
 	initialEventsProcessed := make(chan struct{})
