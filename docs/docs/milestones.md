@@ -105,9 +105,6 @@ New feature or request.
 - [ ] Namespace configuration
       ([keto#303](https://github.com/ory/keto/issues/303)) -
       [@Patrik](https://github.com/zepatrik)
-- [ ] Use `errors.WithStack` where ever non-keto code returns errors.
-      ([keto#437](https://github.com/ory/keto/issues/437)) -
-      [@Patrik](https://github.com/zepatrik)
 - [x] Write relationtuple tests for http and grpc handlers
       ([keto#297](https://github.com/ory/keto/issues/297)) -
       [@Patrik](https://github.com/zepatrik),
@@ -126,6 +123,9 @@ New feature or request.
       [@Patrik](https://github.com/zepatrik)
 - [x] Relation Tuple Migrations should not be hardcoded but use prefixed tables
       ([keto#404](https://github.com/ory/keto/issues/404)) -
+      [@Patrik](https://github.com/zepatrik)
+- [x] Use `errors.WithStack` where ever non-keto code returns errors.
+      ([keto#437](https://github.com/ory/keto/issues/437)) -
       [@Patrik](https://github.com/zepatrik)
 - [x] Allow deletion of relation tuples
       ([keto#452](https://github.com/ory/keto/issues/452)) -
@@ -185,9 +185,6 @@ Blocks milestones or other issues or pulls.
 - [ ] Persistence errors are not properly handled and wrapped
       ([keto#432](https://github.com/ory/keto/issues/432)) -
       [@Patrik](https://github.com/zepatrik)
-- [ ] Use `errors.WithStack` where ever non-keto code returns errors.
-      ([keto#437](https://github.com/ory/keto/issues/437)) -
-      [@Patrik](https://github.com/zepatrik)
 - [ ] Make errors debuggable and understandable
       ([keto#438](https://github.com/ory/keto/issues/438)) -
       [@Patrik](https://github.com/zepatrik)
@@ -202,6 +199,9 @@ Blocks milestones or other issues or pulls.
       [@Patrik](https://github.com/zepatrik)
 - [x] Don't use fmt.Sprintf to construct queries
       ([keto#434](https://github.com/ory/keto/issues/434)) -
+      [@Patrik](https://github.com/zepatrik)
+- [x] Use `errors.WithStack` where ever non-keto code returns errors.
+      ([keto#437](https://github.com/ory/keto/issues/437)) -
       [@Patrik](https://github.com/zepatrik)
 - [x] Allow deletion of relation tuples
       ([keto#452](https://github.com/ory/keto/issues/452)) -
