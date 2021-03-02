@@ -105,6 +105,10 @@ New feature or request.
 - [ ] Namespace configuration
       ([keto#303](https://github.com/ory/keto/issues/303)) -
       [@Patrik](https://github.com/zepatrik)
+- [ ] Add tracing and metrics (prometheus/jaeger/...) capabilities
+      ([keto#463](https://github.com/ory/keto/issues/463)) -
+      [@Andreas Bucksteeg](https://github.com/tricky42),
+      [@Piotr Mścichowski](https://github.com/piotrmsc)
 - [x] Write relationtuple tests for http and grpc handlers
       ([keto#297](https://github.com/ory/keto/issues/297)) -
       [@Patrik](https://github.com/zepatrik),
