@@ -160,7 +160,7 @@ func (n *NamespaceWatcher) GetNamespace(_ context.Context, name string) (*namesp
 		}
 	}
 
-	return nil, errors.WithStack(herodot.ErrNotFound)
+	return nil, errors.WithStack(herodot.ErrNotFound.WithError("unknown namespace " + name))
 }
 
 func (n *NamespaceWatcher) Namespaces(_ context.Context) ([]*namespace.Namespace, error) {

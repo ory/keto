@@ -33,7 +33,7 @@ func (s *memoryNamespaceManager) GetNamespace(_ context.Context, name string) (*
 		}
 	}
 
-	return nil, errors.WithStack(herodot.ErrNotFound)
+	return nil, errors.WithStack(herodot.ErrNotFound.WithReason("unknown namespace " + name))
 }
 
 func (s *memoryNamespaceManager) Namespaces(_ context.Context) ([]*namespace.Namespace, error) {
