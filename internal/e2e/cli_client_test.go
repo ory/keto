@@ -8,6 +8,8 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/ory/herodot"
+
 	"github.com/ory/keto/internal/check"
 
 	grpcHealthV1 "google.golang.org/grpc/health/grpc_health_v1"
@@ -68,6 +70,30 @@ func (g *cliClient) queryTuple(t require.TestingT, q *relationtuple.RelationQuer
 	require.NoError(t, json.Unmarshal([]byte(out), &resp), "%s", out)
 
 	return &resp
+}
+
+func (g *cliClient) queryTupleErr(t require.TestingT, expected herodot.DefaultError, q *relationtuple.RelationQuery, opts ...x.PaginationOptionSetter) {
+	var flags []string
+	if q.Subject != nil {
+		flags = append(flags, "--"+clirelationtuple.FlagSubject, q.Subject.String())
+	}
+	if q.Relation != "" {
+		flags = append(flags, "--"+clirelationtuple.FlagRelation, q.Relation)
+	}
+	if q.Object != "" {
+		flags = append(flags, "--"+clirelationtuple.FlagObject, q.Object)
+	}
+	pagination := x.GetPaginationOptions(opts...)
+	if pagination.Token != "" {
+		flags = append(flags, "--"+clirelationtuple.FlagPageToken, pagination.Token)
+	}
+	if pagination.Size != 0 {
+		flags = append(flags, "--"+clirelationtuple.FlagPageSize, strconv.Itoa(pagination.Size))
+	}
+
+	stdErr := g.c.ExecExpectedErr(t, append(flags, "relation-tuple", "get", q.Namespace)...)
+	assert.Contains(t, stdErr, expected.GRPCCodeField.String())
+	assert.Contains(t, stdErr, expected.Error())
 }
 
 func (g *cliClient) check(t require.TestingT, r *relationtuple.InternalRelationTuple) bool {
