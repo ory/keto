@@ -6,12 +6,6 @@ replace github.com/soheilhy/cmux => github.com/soheilhy/cmux v0.1.5-0.2021011423
 
 replace github.com/ory/dockertest/v3 => github.com/ory/dockertest/v3 v3.6.3
 
-// remove once https://github.com/ory/herodot/pull/77 and https://github.com/ory/x/pull/292 are merged
-replace (
-	github.com/ory/herodot => github.com/ory/herodot v0.9.2-0.20210304171823-e813ddd0217f
-	github.com/ory/x => github.com/ory/x v0.0.199-0.20210304174419-1301d8c2fb13
-)
-
 require (
 	github.com/HdrHistogram/hdrhistogram-go v1.0.1 // indirect
 	github.com/bufbuild/buf v0.31.1
@@ -32,11 +26,11 @@ require (
 	github.com/julienschmidt/httprouter v1.2.0
 	github.com/markbates/pkger v0.17.1
 	github.com/ory/cli v0.0.11
-	github.com/ory/go-acc v0.2.3
+	github.com/ory/go-acc v0.2.6
 	github.com/ory/graceful v0.1.1
-	github.com/ory/herodot v0.9.2-0.20210304171823-e813ddd0217f
+	github.com/ory/herodot v0.9.2
 	github.com/ory/jsonschema/v3 v3.0.1
-	github.com/ory/x v0.0.194
+	github.com/ory/x v0.0.199
 	github.com/pelletier/go-toml v1.8.0
 	github.com/phayes/freeport v0.0.0-20180830031419-95f893ade6f2
 	github.com/pkg/errors v0.9.1
@@ -60,7 +54,6 @@ require (
 	google.golang.org/grpc v1.36.0
 	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.1.0
 	google.golang.org/protobuf v1.25.1-0.20201020201750-d3470999428b
-	gotest.tools v2.2.0+incompatible // indirect
 )
 
 go 1.16
