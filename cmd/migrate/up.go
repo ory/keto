@@ -3,6 +3,7 @@ package migrate
 import (
 	"bytes"
 	"fmt"
+	"google.golang.org/genproto/googleapis/rpc/status"
 	"strings"
 
 	"github.com/pkg/errors"
@@ -33,14 +34,14 @@ func newUpCmd() *cobra.Command {
 
 			_, _ = fmt.Fprintln(cmd.OutOrStdout(), "Current status:")
 
-			status := &bytes.Buffer{}
-			if err := reg.Migrator().MigrationStatus(ctx, status); err != nil {
+			s, err := reg.Migrator().MigrationStatus(ctx)
+			if err != nil {
 				_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not get migration status: %+v\n", err)
 				return cmdx.FailSilently(cmd)
 			}
-			_, _ = cmd.OutOrStdout().Write(status.Bytes())
+			cmdx.PrintTable(cmd, s)
 
-			if !strings.Contains(status.String(), "Pending") {
+			if !s.HasPending() {
 				_, _ = fmt.Fprintln(cmd.OutOrStdout(), "All migrations are already applied, there is nothing to do.")
 				return nil
 			}
@@ -59,10 +60,12 @@ func newUpCmd() *cobra.Command {
 
 			_, _ = fmt.Fprintln(cmd.OutOrStdout(), "Successfully applied all migrations:")
 
-			if err := reg.Migrator().MigrationStatus(ctx, cmd.OutOrStdout()); err != nil {
+			s, err = reg.Migrator().MigrationStatus(ctx)
+			if err != nil {
 				_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not get migration status: %+v\n", err)
 				return cmdx.FailSilently(cmd)
 			}
+			cmdx.PrintTable(cmd, s)
 
 			if !allNamespaces {
 				// everything is done already
@@ -83,14 +86,14 @@ func newUpCmd() *cobra.Command {
 			}
 
 			for _, nspace := range nspaces {
-				status := &bytes.Buffer{}
-				if err := reg.NamespaceMigrator().NamespaceStatus(cmd.Context(), status, nspace); err != nil {
+				s, err := reg.NamespaceMigrator().NamespaceStatus(cmd.Context(), nspace)
+				if err != nil {
 					_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not get migration status for namespace %s: %+v\n", nspace.Name, err)
 					return cmdx.FailSilently(cmd)
 				}
-				_, _ = cmd.OutOrStdout().Write(status.Bytes())
+				cmdx.PrintTable(cmd, s)
 
-				if !strings.Contains(status.String(), "Pending") {
+				if !s.HasPending() {
 					_, _ = fmt.Fprintf(cmd.OutOrStdout(), "All migrations are already applied for namespace %s, there is nothing to do.\n", nspace.Name)
 					continue
 				}

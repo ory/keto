@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"google.golang.org/genproto/googleapis/rpc/status"
 	"strings"
 
 	"github.com/ory/x/cmdx"
@@ -40,16 +41,16 @@ func NewMigrateUpCmd() *cobra.Command {
 				return cmdx.FailSilently(cmd)
 			}
 
-			status := &bytes.Buffer{}
-			if err := reg.NamespaceMigrator().NamespaceStatus(ctx, status, n); err != nil {
+			s, err := reg.NamespaceMigrator().NamespaceStatus(ctx, n)
+			if err != nil {
 				if !errors.Is(err, persistence.ErrNamespaceUnknown) {
 					_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not get status for namespace \"%s\": %+v\n", n.Name, err)
 					return cmdx.FailSilently(cmd)
 				}
 			} else {
-				_, _ = cmd.OutOrStdout().Write(status.Bytes())
+				cmdx.PrintTable(cmd, s)
 
-				if !strings.Contains(status.String(), "Pending") {
+				if !s.HasPending() {
 					_, _ = fmt.Fprintln(cmd.OutOrStdout(), "The namespace is already migrated up to the most recent version, there is noting to do.")
 					return nil
 				}
@@ -67,10 +68,12 @@ func NewMigrateUpCmd() *cobra.Command {
 				return cmdx.FailSilently(cmd)
 			}
 
-			if err := reg.NamespaceMigrator().NamespaceStatus(ctx, cmd.OutOrStdout(), n); err != nil {
+			s, err = reg.NamespaceMigrator().NamespaceStatus(ctx, n)
+			if err != nil {
 				_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not get status for namespace \"%s\": %+v\n", n.Name, err)
 				return cmdx.FailSilently(cmd)
 			}
+			cmdx.PrintTable(cmd, s)
 
 			return nil
 		},

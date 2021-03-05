@@ -3,7 +3,7 @@ package namespace
 import (
 	"context"
 	"encoding/json"
-	"io"
+	"github.com/ory/x/popx"
 )
 
 type (
@@ -15,7 +15,7 @@ type (
 	Migrator interface {
 		MigrateNamespaceUp(ctx context.Context, n *Namespace) error
 		MigrateNamespaceDown(ctx context.Context, n *Namespace, steps int) error
-		NamespaceStatus(ctx context.Context, w io.Writer, n *Namespace) error
+		NamespaceStatus(ctx context.Context, n *Namespace) (popx.MigrationStatuses, error)
 	}
 	Manager interface {
 		GetNamespace(ctx context.Context, name string) (*Namespace, error)

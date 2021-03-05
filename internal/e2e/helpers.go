@@ -1,9 +1,7 @@
 package e2e
 
 import (
-	"bytes"
 	"context"
-	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -69,11 +67,10 @@ func newInitializedReg(t testing.TB, dsn *x.DsnT, nspaces []*namespace.Namespace
 }
 
 func migrateEverythingUp(ctx context.Context, t testing.TB, r driver.Registry, nn []*namespace.Namespace) {
-	status := &bytes.Buffer{}
+	s, err := r.Migrator().MigrationStatus(ctx)
+	require.NoError(t, err)
 
-	require.NoError(t, r.Migrator().MigrationStatus(ctx, status))
-
-	if strings.Contains(status.String(), "Pending") {
+	if s.HasPending() {
 		require.NoError(t, r.Migrator().MigrateUp(ctx))
 	}
 
@@ -91,16 +88,14 @@ func migrateEverythingUp(ctx context.Context, t testing.TB, r driver.Registry, n
 }
 
 func assertMigrated(ctx context.Context, t testing.TB, r driver.Registry, nn []*namespace.Namespace) {
-	status := &bytes.Buffer{}
-	require.NoError(t, r.Migrator().MigrationStatus(ctx, status))
-	assert.Contains(t, status.String(), "Applied")
-	assert.NotContains(t, status.String(), "Pending")
+	s, err := r.Migrator().MigrationStatus(ctx)
+	require.NoError(t, err)
+	assert.False(t, s.HasPending())
 
 	for _, n := range nn {
-		status := &bytes.Buffer{}
-		require.NoError(t, r.NamespaceMigrator().NamespaceStatus(ctx, status, n))
-		assert.Contains(t, status.String(), "Applied")
-		assert.NotContains(t, status.String(), "Pending")
+		s, err := r.NamespaceMigrator().NamespaceStatus(ctx, n)
+		require.NoError(t, err)
+		assert.False(t, s.HasPending())
 	}
 }
 

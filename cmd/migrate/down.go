@@ -28,24 +28,30 @@ func newDownCmd() *cobra.Command {
 				return err
 			}
 
-			if err := reg.Migrator().MigrationStatus(ctx, cmd.OutOrStdout()); err != nil {
+			s, err := reg.Migrator().MigrationStatus(ctx)
+			if err != nil {
 				_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not get migration status: %+v\n", err)
 				return cmdx.FailSilently(cmd)
 			}
+			cmdx.PrintTable(cmd, s)
 
 			if err := reg.Migrator().MigrateDown(ctx, int(steps)); err != nil {
 				_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could apply down migrations: %+v\n", err)
 				return cmdx.FailSilently(cmd)
 			}
 
-			if err := reg.Migrator().MigrationStatus(ctx, cmd.OutOrStdout()); err != nil {
+			s, err = reg.Migrator().MigrationStatus(ctx)
+			if err != nil {
 				_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not get migration status: %+v\n", err)
 				return cmdx.FailSilently(cmd)
 			}
+			cmdx.PrintTable(cmd, s)
 
 			return nil
 		},
 	}
+
+	cmdx.RegisterFormatFlags(cmd.Flags())
 
 	return cmd
 }

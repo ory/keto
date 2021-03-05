@@ -5,9 +5,10 @@ import (
 	"fmt"
 	"io/ioutil"
 
+	"github.com/ory/keto/internal/driver/config"
+
 	"github.com/ory/x/jsonschemax"
 
-	"github.com/markbates/pkger"
 	"github.com/ory/jsonschema/v3"
 	"github.com/ory/x/cmdx"
 	"github.com/segmentio/objconv/yaml"
@@ -15,8 +16,6 @@ import (
 
 	"github.com/ory/keto/internal/namespace"
 )
-
-const configSchemaPath = "github.comory/keto:/.schema/config.schema.json"
 
 func NewValidateCmd() *cobra.Command {
 	cmd := &cobra.Command{
@@ -40,32 +39,20 @@ func NewValidateCmd() *cobra.Command {
 	return cmd
 }
 
-var (
-	configSchema    *jsonschema.Schema
-	configSchemaRaw []byte
-)
+var configSchema *jsonschema.Schema
+
+const schemaPath = "github.com/ory/keto/.schema/config.schema.json"
 
 func validateNamespaceFile(cmd *cobra.Command, fn string) (*namespace.Namespace, error) {
-	if configSchema == nil || len(configSchemaRaw) == 0 {
-		sf, err := pkger.Open(configSchemaPath)
-		if err != nil {
-			_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not open the config schema file. This is an internal error that should be reported. Thanks ;)\n%+v\n", err)
-			return nil, cmdx.FailSilently(cmd)
-		}
-
-		configSchemaRaw, err = ioutil.ReadAll(sf)
-		if err != nil {
-			_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not read the config schema file. This is an internal error that should be reported. Thanks ;)\n%+v\n", err)
-			return nil, cmdx.FailSilently(cmd)
-		}
-
+	if configSchema == nil {
 		c := jsonschema.NewCompiler()
-		if err := c.AddResource(configSchemaPath, bytes.NewBuffer(configSchemaRaw)); err != nil {
+		if err := c.AddResource(schemaPath, bytes.NewBuffer(config.Schema)); err != nil {
 			_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not add the config schema file to the compiler. This is an internal error that should be reported. Thanks ;)\n%+v\n", err)
 			return nil, cmdx.FailSilently(cmd)
 		}
 
-		configSchema, err = c.Compile(configSchemaPath + "#/definitions/namespace")
+		var err error
+		configSchema, err = c.Compile(schemaPath + "#/definitions/namespace")
 		if err != nil {
 			_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not compile the config schema file. This is an internal error that should be reported. Thanks ;)\n%+v\n", err)
 			return nil, cmdx.FailSilently(cmd)
@@ -85,7 +72,7 @@ func validateNamespaceFile(cmd *cobra.Command, fn string) (*namespace.Namespace,
 	}
 
 	if err := configSchema.ValidateInterface(val); err != nil {
-		jsonschemax.FormatValidationErrorForCLI(cmd.ErrOrStderr(), configSchemaRaw, err)
+		jsonschemax.FormatValidationErrorForCLI(cmd.ErrOrStderr(), config.Schema, err)
 		return nil, cmdx.FailSilently(cmd)
 	}
 

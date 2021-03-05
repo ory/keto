@@ -3,9 +3,8 @@ package persistence
 import (
 	"context"
 	"errors"
-	"io"
-
 	"github.com/ory/keto/internal/namespace"
+	"github.com/ory/x/popx"
 
 	"github.com/ory/keto/internal/relationtuple"
 )
@@ -18,7 +17,7 @@ type (
 	Migrator interface {
 		MigrateUp(context.Context) error
 		MigrateDown(context.Context, int) error
-		MigrationStatus(context.Context, io.Writer) error
+		MigrationStatus(context.Context) (popx.MigrationStatuses, error)
 	}
 	MigratorProvider interface {
 		Migrator() Migrator

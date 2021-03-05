@@ -2,16 +2,15 @@ package config
 
 import (
 	"context"
+	_ "embed"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"sync"
 
 	"github.com/ory/x/watcherx"
 
 	"github.com/ory/keto/internal/namespace"
 
-	"github.com/markbates/pkger"
 	_ "github.com/ory/jsonschema/v3/httploader"
 	"github.com/ory/x/configx"
 	"github.com/pkg/errors"
@@ -21,6 +20,9 @@ import (
 	"github.com/ory/x/logrusx"
 	"github.com/ory/x/tracing"
 )
+
+//go:embed config.schema.json
+var Schema []byte
 
 const (
 	KeyDSN = "dsn"
@@ -48,23 +50,14 @@ type (
 )
 
 func New(ctx context.Context, flags *pflag.FlagSet, l *logrusx.Logger) (*Provider, error) {
-	sf, err := pkger.Open("github.com/ory/keto:/.schema/config.schema.json")
-	if err != nil {
-		return nil, errors.WithStack(err)
-	}
-
-	schema, err := ioutil.ReadAll(sf)
-	if err != nil {
-		return nil, errors.WithStack(err)
-	}
-
 	kp := &Provider{
 		l:   l,
 		ctx: ctx,
 	}
 
+	var err error
 	kp.p, err = configx.New(
-		schema,
+		Schema,
 		configx.WithFlags(flags),
 		configx.WithStderrValidationReporter(),
 		configx.WithImmutables(KeyDSN, "serve"),
