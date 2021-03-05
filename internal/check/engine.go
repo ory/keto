@@ -4,6 +4,8 @@ import (
 	"context"
 	"errors"
 
+	"github.com/ory/keto/internal/namespace"
+
 	"github.com/ory/herodot"
 
 	"github.com/ory/keto/internal/relationtuple"
@@ -19,6 +21,7 @@ type (
 	}
 	EngineDependencies interface {
 		relationtuple.ManagerProvider
+		namespace.ManagerProvider
 	}
 )
 
@@ -47,14 +50,24 @@ func (e *Engine) subjectIsAllowed(ctx context.Context, requested *relationtuple.
 			continue
 		}
 
-		var err error
-		// expand the set by one indirection; paginated
-		allowed, err = e.checkOneIndirectionFurther(ctx, requested, &relationtuple.RelationQuery{Object: sub.Object, Relation: sub.Relation, Namespace: sub.Namespace})
+		nm, err := e.d.NamespaceManager()
 		if err != nil {
 			return false, err
 		}
-		if allowed {
-			return true, nil
+		n, err := nm.GetNamespace(ctx, sr.Namespace)
+		if err != nil {
+			return false, err
+		}
+		// use the namespace here to decide which bool operators to use in the loop, and how to adjust the query when moving on (e.g. different relation name)
+		var strategy func(ctx context.Context, requested, current *relationtuple.InternalRelationTuple, checkFurther func(context.Context, *relationtuple.InternalRelationTuple, *relationtuple.RelationQuery) (bool, error)) (continueLoop, allowed bool, err error) = n.GetRelationRewriteStrategy(ctx, sr.Relation)
+
+		// expand the set by one indirection; paginated
+		continueLoop, allowed, err := strategy(ctx, requested, sr, e.checkOneIndirectionFurther)
+		if err != nil {
+			return false, err
+		}
+		if !continueLoop {
+			return allowed, nil
 		}
 	}
 

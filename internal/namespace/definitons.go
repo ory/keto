@@ -8,9 +8,18 @@ import (
 
 type (
 	Namespace struct {
-		ID     int             `json:"id" db:"id" toml:"id"`
-		Name   string          `json:"name" db:"-" toml:"name"`
-		Config json.RawMessage `json:"config,omitempty" db:"-" toml:"config,omitempty"`
+		ID        int             `json:"id" db:"id" toml:"id"`
+		Name      string          `json:"name" db:"-" toml:"name"`
+		Config    json.RawMessage `json:"config,omitempty" db:"-" toml:"config,omitempty"`
+		Relations []struct {
+			Name    string
+			Rewrite []struct {
+				Effect string     // union, intersection, ...
+				Rules  []struct { // this will probably be an interface implementing all kinds of rules
+					ComputedSubjectSetRelationName string
+				}
+			}
+		}
 	}
 	Migrator interface {
 		MigrateNamespaceUp(ctx context.Context, n *Namespace) error
