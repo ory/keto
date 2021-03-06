@@ -35,9 +35,6 @@ Something is not working.
 - [ ] REST API create relation should mirror payload in 201 OK response
       ([keto#290](https://github.com/ory/keto/issues/290)) -
       [@Patrik](https://github.com/zepatrik)
-- [ ] Relations are not unique
-      ([keto#292](https://github.com/ory/keto/issues/292)) -
-      [@Patrik](https://github.com/zepatrik)
 - [ ] REST API create and subsequent get relation does not properly persist
       fields ([keto#291](https://github.com/ory/keto/issues/291)) -
       [@Patrik](https://github.com/zepatrik)
@@ -46,9 +43,6 @@ Something is not working.
       [@Patrik](https://github.com/zepatrik)
 - [ ] Clarify where handlers are tested
       ([keto#407](https://github.com/ory/keto/issues/407)) -
-      [@Patrik](https://github.com/zepatrik)
-- [ ] Handle circular relation tuples
-      ([keto#411](https://github.com/ory/keto/issues/411)) -
       [@Patrik](https://github.com/zepatrik)
 - [ ] Non-nil return values despite errors
       ([keto#433](https://github.com/ory/keto/issues/433)) -
@@ -94,17 +88,11 @@ New feature or request.
 
 #### Issues
 
-- [ ] [next-gen] Allow defining userset rewrites
-      ([keto#263](https://github.com/ory/keto/issues/263)) -
-      [@Patrik](https://github.com/zepatrik)
 - [ ] Ensure telemetry is running for both GRPC and HTTP
       ([keto#298](https://github.com/ory/keto/issues/298)) -
       [@hackerman](https://github.com/aeneasr),
       [@Patrik](https://github.com/zepatrik),
       [@Robin Brämer](https://github.com/robinbraemer)
-- [ ] Namespace configuration
-      ([keto#303](https://github.com/ory/keto/issues/303)) -
-      [@Patrik](https://github.com/zepatrik)
 - [ ] Add tracing and metrics (prometheus/jaeger/...) capabilities
       ([keto#463](https://github.com/ory/keto/issues/463)) -
       [@Andreas Bucksteeg](https://github.com/tricky42),
@@ -169,9 +157,6 @@ Blocks milestones or other issues or pulls.
       [@hackerman](https://github.com/aeneasr),
       [@Patrik](https://github.com/zepatrik),
       [@Robin Brämer](https://github.com/robinbraemer)
-- [ ] Namespace configuration
-      ([keto#303](https://github.com/ory/keto/issues/303)) -
-      [@Patrik](https://github.com/zepatrik)
 - [ ] Ensure goreleaser config is still working
       ([keto#410](https://github.com/ory/keto/issues/410)) -
       [@hackerman](https://github.com/aeneasr)
@@ -224,9 +209,6 @@ A request for comments to discuss and share ideas.
 
 #### Issues
 
-- [ ] Handle circular relation tuples
-      ([keto#411](https://github.com/ory/keto/issues/411)) -
-      [@Patrik](https://github.com/zepatrik)
 - [x] Consider rename WriteRelationTuples in WriteService
       ([keto#351](https://github.com/ory/keto/issues/351)) -
       [@Patrik](https://github.com/zepatrik),
@@ -252,6 +234,12 @@ Something is not working.
 
 #### Issues
 
+- [ ] Relations are not unique
+      ([keto#292](https://github.com/ory/keto/issues/292)) -
+      [@Patrik](https://github.com/zepatrik)
+- [ ] Handle circular relation tuples
+      ([keto#411](https://github.com/ory/keto/issues/411)) -
+      [@Patrik](https://github.com/zepatrik)
 - [x] Move models package to relations
       ([keto#295](https://github.com/ory/keto/issues/295)) -
       [@Patrik](https://github.com/zepatrik)
@@ -282,6 +270,12 @@ New feature or request.
       [@Robin Brämer](https://github.com/robinbraemer)
 - [ ] Add TTL support to relation tuple
       ([keto#346](https://github.com/ory/keto/issues/346))
+- [ ] [next-gen] Allow defining userset rewrites
+      ([keto#263](https://github.com/ory/keto/issues/263)) -
+      [@Patrik](https://github.com/zepatrik)
+- [ ] Namespace configuration
+      ([keto#303](https://github.com/ory/keto/issues/303)) -
+      [@Patrik](https://github.com/zepatrik)
 - [x] Remove support for AND/OR/XOR in GetRelationTuples
       ([keto#299](https://github.com/ory/keto/issues/299)) -
       [@Patrik](https://github.com/zepatrik)
@@ -312,6 +306,9 @@ Blocks milestones or other issues or pulls.
       ([keto#311](https://github.com/ory/keto/issues/311)) -
       [@Patrik](https://github.com/zepatrik),
       [@Robin Brämer](https://github.com/robinbraemer)
+- [ ] Namespace configuration
+      ([keto#303](https://github.com/ory/keto/issues/303)) -
+      [@Patrik](https://github.com/zepatrik)
 - [x] Write benchmark tests for relationtuple package
       ([keto#301](https://github.com/ory/keto/issues/301)) -
       [@Patrik](https://github.com/zepatrik)
@@ -342,6 +339,9 @@ A request for comments to discuss and share ideas.
 - [ ] Allow modifying relation tuples with consistency guarantees
       ([keto#328](https://github.com/ory/keto/issues/328)) -
       [@Robin Brämer](https://github.com/robinbraemer)
+- [ ] Handle circular relation tuples
+      ([keto#411](https://github.com/ory/keto/issues/411)) -
+      [@Patrik](https://github.com/zepatrik)
 - [x] Design decisions, Clarifications and Proposals
       ([keto#307](https://github.com/ory/keto/issues/307)) -
       [@hackerman](https://github.com/aeneasr),
