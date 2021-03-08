@@ -37,6 +37,7 @@ func TestWriteHandlers(t *testing.T) {
 			Subject:   &relationtuple.SubjectID{ID: "subj"},
 		}
 		payload, err := json.Marshal(rt)
+		require.NoError(t, err)
 
 		req, err := http.NewRequest(http.MethodPut, ts.URL+relationtuple.RouteBase, bytes.NewBuffer(payload))
 		require.NoError(t, err)
