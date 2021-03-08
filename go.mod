@@ -17,10 +17,10 @@ require (
 	github.com/ghodss/yaml v1.0.0
 	github.com/go-openapi/errors v0.20.0
 	github.com/go-openapi/runtime v0.19.26
-	github.com/go-openapi/strfmt v0.19.5
-	github.com/go-openapi/swag v0.19.9
-	github.com/go-openapi/validate v0.19.10
-	github.com/go-swagger/go-swagger v0.21.1-0.20200107003254-1c98855b472d
+	github.com/go-openapi/strfmt v0.20.0
+	github.com/go-openapi/swag v0.19.13
+	github.com/go-openapi/validate v0.20.1
+	github.com/go-swagger/go-swagger v0.26.1
 	github.com/gobuffalo/pop/v5 v5.3.3
 	github.com/golang/mock v1.5.0
 	github.com/golang/protobuf v1.4.3
@@ -28,13 +28,14 @@ require (
 	github.com/gorilla/websocket v1.4.2
 	github.com/grpc-ecosystem/go-grpc-middleware v1.0.0
 	github.com/julienschmidt/httprouter v1.2.0
+	github.com/mattn/goveralls v0.0.8
 	github.com/ory/cli v0.0.11
 	github.com/ory/go-acc v0.2.6
 	github.com/ory/graceful v0.1.1
 	github.com/ory/herodot v0.9.2
 	github.com/ory/jsonschema/v3 v3.0.1
 	github.com/ory/x v0.0.199
-	github.com/pelletier/go-toml v1.8.0
+	github.com/pelletier/go-toml v1.8.1
 	github.com/phayes/freeport v0.0.0-20180830031419-95f893ade6f2
 	github.com/pkg/errors v0.9.1
 	github.com/rs/cors v1.6.0
@@ -50,9 +51,8 @@ require (
 	github.com/tidwall/sjson v1.1.1
 	github.com/uber/jaeger-lib v2.4.0+incompatible // indirect
 	github.com/urfave/negroni v1.0.0
-	golang.org/x/lint v0.0.0-20200302205851-738671d3881b // indirect
-	golang.org/x/sync v0.0.0-20200625203802-6e8e738ad208
-	golang.org/x/tools v0.0.0-20200717024301-6ddee64345a6
+	golang.org/x/sync v0.0.0-20201020160332-67f06af15bc9
+	golang.org/x/tools v0.0.0-20201125231158-b5590deeca9b
 	google.golang.org/genproto v0.0.0-20201117123952-62d171c70ae1
 	google.golang.org/grpc v1.36.0
 	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.1.0

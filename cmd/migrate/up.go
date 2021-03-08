@@ -115,5 +115,7 @@ func newUpCmd() *cobra.Command {
 	cmd.Flags().BoolVarP(&yes, FlagYes, "y", false, "yes to all questions, no user input required")
 	cmd.Flags().BoolVar(&allNamespaces, FlagAllNamespace, false, "migrate all pending namespaces as well")
 
+	cmdx.RegisterFormatFlags(cmd.Flags())
+
 	return cmd
 }

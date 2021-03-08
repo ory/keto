@@ -14,7 +14,7 @@ ifneq ("$(shell base64 Makefile) $(shell base64 go.mod) $(shell base64 go.sum)",
 		go build -o .bin/goreturns github.com/sqs/goreturns
 		go build -o .bin/mockgen github.com/golang/mock/mockgen
 		go build -o .bin/swagger github.com/go-swagger/go-swagger/cmd/swagger
-		go build -o .bin/goimports golang.org/x/tools/cmd/goimports
+		go build -o golang.org/x/tools/cmd/goimports
 		go build -o .bin/ory github.com/ory/cli
 		go build -o .bin/go-bindata github.com/go-bindata/go-bindata/go-bindata
 		go build -o .bin/buf github.com/bufbuild/buf/cmd/buf
