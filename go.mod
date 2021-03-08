@@ -22,6 +22,7 @@ require (
 	github.com/go-openapi/validate v0.19.10
 	github.com/go-swagger/go-swagger v0.21.1-0.20200107003254-1c98855b472d
 	github.com/gobuffalo/pop/v5 v5.3.3
+	github.com/golang/mock v1.5.0
 	github.com/golang/protobuf v1.4.3
 	github.com/gorilla/sessions v1.1.3
 	github.com/gorilla/websocket v1.4.2
