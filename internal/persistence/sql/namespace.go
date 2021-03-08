@@ -3,8 +3,10 @@ package sql
 import (
 	"context"
 	"fmt"
-	"github.com/ory/keto/internal/namespace"
+
 	"github.com/ory/x/popx"
+
+	"github.com/ory/keto/internal/namespace"
 )
 
 func tableFromNamespace(n *namespace.Namespace) string {

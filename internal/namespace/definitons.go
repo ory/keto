@@ -3,6 +3,7 @@ package namespace
 import (
 	"context"
 	"encoding/json"
+
 	"github.com/ory/x/popx"
 )
 

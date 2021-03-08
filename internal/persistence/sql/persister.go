@@ -4,9 +4,10 @@ import (
 	"context"
 	"embed"
 	"fmt"
-	"github.com/ory/x/popx"
 	"strconv"
 	"time"
+
+	"github.com/ory/x/popx"
 
 	"github.com/cenkalti/backoff/v3"
 	"github.com/ory/x/sqlcon"

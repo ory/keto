@@ -38,14 +38,12 @@ func TestNamespaceMigrations(t *testing.T) {
 				p, hook := setup(t, dsn, n)
 
 				require.NoError(t, p.MigrateNamespaceUp(context.Background(), n))
-				// pop logs the time it took as a second message
+				// logs the time it took as a second message
 				assert.True(t, strings.HasPrefix(hook.Entries[len(hook.Entries)-2].Message, "Successfully applied"))
-				assert.Equal(t, "pop", hook.Entries[len(hook.Entries)-2].Data["source"])
 
 				require.NoError(t, p.MigrateNamespaceDown(context.Background(), n, 0))
-				// pop logs the time it took as a second message
+				// logs the time it took as a second message
 				assert.True(t, strings.HasPrefix(hook.Entries[len(hook.Entries)-2].Message, "< "))
-				assert.Equal(t, "pop", hook.Entries[len(hook.Entries)-2].Data["source"])
 			})
 
 			t.Run("case=migrates namespace again", func(t *testing.T) {

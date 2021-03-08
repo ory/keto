@@ -1,10 +1,7 @@
 package migrate
 
 import (
-	"bytes"
 	"fmt"
-	"google.golang.org/genproto/googleapis/rpc/status"
-	"strings"
 
 	"github.com/pkg/errors"
 

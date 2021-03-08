@@ -1,11 +1,8 @@
 package namespace
 
 import (
-	"bytes"
 	"errors"
 	"fmt"
-	"google.golang.org/genproto/googleapis/rpc/status"
-	"strings"
 
 	"github.com/ory/x/cmdx"
 	"github.com/ory/x/flagx"

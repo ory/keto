@@ -3,8 +3,10 @@ package persistence
 import (
 	"context"
 	"errors"
-	"github.com/ory/keto/internal/namespace"
+
 	"github.com/ory/x/popx"
+
+	"github.com/ory/keto/internal/namespace"
 
 	"github.com/ory/keto/internal/relationtuple"
 )
