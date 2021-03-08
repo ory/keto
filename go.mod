@@ -6,15 +6,13 @@ replace github.com/soheilhy/cmux => github.com/soheilhy/cmux v0.1.5-0.2021011423
 
 replace github.com/ory/dockertest/v3 => github.com/ory/dockertest/v3 v3.6.3
 
-// remove once https://github.com/ory/x/pull/295 is released
-replace github.com/ory/x => github.com/ory/x v0.0.202-0.20210308095621-13a94bff251e
-
 require (
 	github.com/HdrHistogram/hdrhistogram-go v1.0.1 // indirect
 	github.com/bufbuild/buf v0.31.1
 	github.com/cenkalti/backoff/v3 v3.0.0
 	github.com/containerd/continuity v0.0.0-20200228182428-0f16d7a0959c // indirect
 	github.com/ghodss/yaml v1.0.0
+	github.com/go-bindata/go-bindata v3.1.1+incompatible
 	github.com/go-openapi/errors v0.20.0
 	github.com/go-openapi/runtime v0.19.26
 	github.com/go-openapi/strfmt v0.20.0
