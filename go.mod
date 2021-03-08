@@ -15,8 +15,8 @@ require (
 	github.com/go-openapi/errors v0.20.0
 	github.com/go-openapi/runtime v0.19.26
 	github.com/go-openapi/strfmt v0.20.0
-	github.com/go-openapi/swag v0.19.13
-	github.com/go-openapi/validate v0.20.1
+	github.com/go-openapi/swag v0.19.14
+	github.com/go-openapi/validate v0.20.2
 	github.com/go-swagger/go-swagger v0.26.1
 	github.com/gobuffalo/pop/v5 v5.3.3
 	github.com/golang/mock v1.5.0
@@ -40,16 +40,20 @@ require (
 	github.com/shopspring/decimal v1.2.0 // indirect
 	github.com/sirupsen/logrus v1.6.0
 	github.com/soheilhy/cmux v0.1.4
+	github.com/spf13/afero v1.5.1 // indirect
 	github.com/spf13/cobra v1.0.1-0.20201006035406-b97b5ead31f7
 	github.com/spf13/pflag v1.0.5
 	github.com/sqs/goreturns v0.0.0-20181028201513-538ac6014518
-	github.com/stretchr/testify v1.6.1
+	github.com/stretchr/testify v1.7.0
 	github.com/tidwall/gjson v1.6.0
 	github.com/tidwall/sjson v1.1.1
 	github.com/uber/jaeger-lib v2.4.0+incompatible // indirect
 	github.com/urfave/negroni v1.0.0
+	golang.org/x/mod v0.4.1 // indirect
+	golang.org/x/net v0.0.0-20210226172049-e18ecbb05110 // indirect
 	golang.org/x/sync v0.0.0-20201020160332-67f06af15bc9
-	golang.org/x/tools v0.0.0-20201125231158-b5590deeca9b
+	golang.org/x/sys v0.0.0-20210305034016-7844c3c200c3 // indirect
+	golang.org/x/tools v0.1.0
 	google.golang.org/genproto v0.0.0-20201117123952-62d171c70ae1
 	google.golang.org/grpc v1.36.0
 	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.1.0

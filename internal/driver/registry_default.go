@@ -224,12 +224,14 @@ func (r *RegistryDefault) WriteRouter() http.Handler {
 
 func (r *RegistryDefault) ReadGRPCServer() *grpc.Server {
 	s := grpc.NewServer(
-		grpc.StreamInterceptor(
+		grpc.ChainStreamInterceptor(
+			herodot.StreamErrorUnwrapInterceptor,
 			grpcMiddleware.ChainStreamServer(
 				grpc_logrus.StreamServerInterceptor(r.l.Entry),
 			),
 		),
-		grpc.UnaryInterceptor(
+		grpc.ChainUnaryInterceptor(
+			herodot.UnaryErrorUnwrapInterceptor,
 			grpcMiddleware.ChainUnaryServer(
 				grpc_logrus.UnaryServerInterceptor(r.l.Entry),
 			),
@@ -247,12 +249,14 @@ func (r *RegistryDefault) ReadGRPCServer() *grpc.Server {
 
 func (r *RegistryDefault) WriteGRPCServer() *grpc.Server {
 	s := grpc.NewServer(
-		grpc.StreamInterceptor(
+		grpc.ChainStreamInterceptor(
+			herodot.StreamErrorUnwrapInterceptor,
 			grpcMiddleware.ChainStreamServer(
 				grpc_logrus.StreamServerInterceptor(r.l.Entry),
 			),
 		),
-		grpc.UnaryInterceptor(
+		grpc.ChainUnaryInterceptor(
+			herodot.UnaryErrorUnwrapInterceptor,
 			grpcMiddleware.ChainUnaryServer(
 				grpc_logrus.UnaryServerInterceptor(r.l.Entry),
 			),

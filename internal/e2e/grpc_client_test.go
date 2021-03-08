@@ -4,6 +4,10 @@ import (
 	"context"
 	"time"
 
+	"github.com/ory/herodot"
+	"github.com/stretchr/testify/assert"
+	"google.golang.org/grpc/status"
+
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc"
 	grpcHealthV1 "google.golang.org/grpc/health/grpc_health_v1"
@@ -82,6 +86,31 @@ func (g *grpcClient) queryTuple(t require.TestingT, q *relationtuple.RelationQue
 		NextPageToken:  resp.NextPageToken,
 		IsLastPage:     resp.IsLastPage,
 	}
+}
+
+func (g *grpcClient) queryTupleErr(t require.TestingT, expected herodot.DefaultError, q *relationtuple.RelationQuery, opts ...x.PaginationOptionSetter) {
+	c := acl.NewReadServiceClient(g.readConn(t))
+
+	query := &acl.ListRelationTuplesRequest_Query{
+		Namespace: q.Namespace,
+		Object:    q.Object,
+		Relation:  q.Relation,
+	}
+	if q.Subject != nil {
+		query.Subject = q.Subject.ToProto()
+	}
+
+	pagination := x.GetPaginationOptions(opts...)
+
+	_, err := c.ListRelationTuples(g.ctx, &acl.ListRelationTuplesRequest{
+		Query:     query,
+		PageToken: pagination.Token,
+		PageSize:  int32(pagination.Size),
+	})
+	require.Error(t, err)
+	s, ok := status.FromError(err)
+	require.True(t, ok)
+	assert.Equal(t, expected.GRPCCodeField, s.Code(), "%+v", err)
 }
 
 func (g *grpcClient) check(t require.TestingT, r *relationtuple.InternalRelationTuple) bool {
