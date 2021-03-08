@@ -19,7 +19,7 @@ import (
 	"github.com/ory/keto/internal/x"
 )
 
-func TestRESTHandlers(t *testing.T) {
+func TestWriteHandlers(t *testing.T) {
 	t.Run("method=create", func(t *testing.T) {
 		r := &x.WriteRouter{Router: httprouter.New()}
 		reg := driver.NewMemoryTestRegistry(t, []*namespace.Namespace{{Name: "handler test"}})
