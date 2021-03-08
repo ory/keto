@@ -56,7 +56,7 @@ func (h *handler) createRelation(w http.ResponseWriter, r *http.Request, _ httpr
 	var rel InternalRelationTuple
 
 	if err := json.NewDecoder(r.Body).Decode(&rel); err != nil {
-		h.d.Writer().WriteError(w, r, errors.WithStack(herodot.ErrBadRequest))
+		h.d.Writer().WriteError(w, r, errors.WithStack(herodot.ErrBadRequest.WithError(err.Error())))
 		return
 	}
 
@@ -64,11 +64,11 @@ func (h *handler) createRelation(w http.ResponseWriter, r *http.Request, _ httpr
 
 	if err := h.d.RelationTupleManager().WriteRelationTuples(r.Context(), &rel); err != nil {
 		h.d.Logger().WithError(err).WithField("relationtuple", rel).Errorf("got an error while creating the relation tuple")
-		h.d.Writer().WriteError(w, r, errors.WithStack(herodot.ErrInternalServerError))
+		h.d.Writer().WriteError(w, r, errors.WithStack(herodot.ErrInternalServerError.WithError(err.Error())))
 		return
 	}
 
-	w.WriteHeader(http.StatusCreated)
+	h.d.Writer().WriteCreated(w, r, RouteBase+"?"+rel.ToURLQuery().Encode(), rel)
 }
 
 func (h *handler) deleteRelation(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
