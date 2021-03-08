@@ -12,7 +12,6 @@ require (
 	github.com/cenkalti/backoff/v3 v3.0.0
 	github.com/containerd/continuity v0.0.0-20200228182428-0f16d7a0959c // indirect
 	github.com/ghodss/yaml v1.0.0
-	github.com/go-bindata/go-bindata v3.1.1+incompatible
 	github.com/go-openapi/errors v0.20.0
 	github.com/go-openapi/runtime v0.19.26
 	github.com/go-openapi/strfmt v0.20.0
@@ -32,7 +31,7 @@ require (
 	github.com/ory/graceful v0.1.1
 	github.com/ory/herodot v0.9.2
 	github.com/ory/jsonschema/v3 v3.0.1
-	github.com/ory/x v0.0.199
+	github.com/ory/x v0.0.202
 	github.com/pelletier/go-toml v1.8.1
 	github.com/phayes/freeport v0.0.0-20180830031419-95f893ade6f2
 	github.com/pkg/errors v0.9.1
@@ -55,7 +54,6 @@ require (
 	google.golang.org/grpc v1.36.0
 	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.1.0
 	google.golang.org/protobuf v1.25.1-0.20201020201750-d3470999428b
-	gotest.tools v2.2.0+incompatible // indirect
 )
 
 go 1.16
