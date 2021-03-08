@@ -5,6 +5,8 @@ import (
 	"strconv"
 	"testing"
 
+	"github.com/ory/herodot"
+
 	"github.com/ory/keto/internal/x"
 
 	"github.com/stretchr/testify/assert"
@@ -124,6 +126,10 @@ func runCases(c client, nspaces []*namespace.Namespace) func(*testing.T) {
 
 			resp = c.queryTuple(t, (*relationtuple.RelationQuery)(rt))
 			assert.Len(t, resp.RelationTuples, 0)
+		})
+
+		t.Run("case=returns error with status code on unknown namespace", func(t *testing.T) {
+			c.queryTupleErr(t, herodot.ErrNotFound, &relationtuple.RelationQuery{Namespace: "unknown namespace"})
 		})
 	}
 }

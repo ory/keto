@@ -85,7 +85,7 @@ func newGetCmd() *cobra.Command {
 			})
 			if err != nil {
 				_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not make request: %s\n", err)
-				return err
+				return cmdx.FailSilently(cmd)
 			}
 
 			cmdx.PrintTable(cmd, &responseOutput{

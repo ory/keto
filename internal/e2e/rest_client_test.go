@@ -10,6 +10,9 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/ory/herodot"
+	"github.com/tidwall/gjson"
+
 	"github.com/ory/x/healthx"
 
 	"github.com/ory/keto/internal/x"
@@ -82,6 +85,25 @@ func (rc *restClient) queryTuple(t require.TestingT, q *relationtuple.RelationQu
 	require.NoError(t, json.Unmarshal([]byte(body), &dec))
 
 	return &dec
+}
+
+func (rc *restClient) queryTupleErr(t require.TestingT, expected herodot.DefaultError, q *relationtuple.RelationQuery, opts ...x.PaginationOptionSetter) {
+	urlQuery := q.ToURLQuery()
+
+	pagination := x.GetPaginationOptions(opts...)
+	if pagination.Size != 0 {
+		urlQuery.Set("page_size", strconv.Itoa(pagination.Size))
+	}
+	if pagination.Token != "" {
+		urlQuery.Set("page_token", pagination.Token)
+	}
+
+	body, code := rc.makeRequest(t, http.MethodGet, fmt.Sprintf("%s?%s", relationtuple.RouteBase, urlQuery.Encode()), "", false)
+
+	assert.Equal(t, expected.CodeField, code)
+	assert.Equal(t, int64(expected.StatusCode()), gjson.Get(body, "error.code").Int())
+	assert.Equal(t, expected.Status(), gjson.Get(body, "error.status").String())
+	assert.Equal(t, expected.Error(), gjson.Get(body, "error.message").String(), body)
 }
 
 func (rc *restClient) check(t require.TestingT, r *relationtuple.InternalRelationTuple) bool {

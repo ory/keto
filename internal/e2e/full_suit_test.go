@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/ory/herodot"
+
 	"github.com/ory/keto/internal/x"
 
 	"github.com/stretchr/testify/require"
@@ -24,6 +26,7 @@ type (
 		deleteTuple(t require.TestingT, r *relationtuple.InternalRelationTuple)
 		transactTuples(t require.TestingT, ins []*relationtuple.InternalRelationTuple, del []*relationtuple.InternalRelationTuple)
 		queryTuple(t require.TestingT, q *relationtuple.RelationQuery, opts ...x.PaginationOptionSetter) *relationtuple.GetResponse
+		queryTupleErr(t require.TestingT, expected herodot.DefaultError, q *relationtuple.RelationQuery, opts ...x.PaginationOptionSetter)
 		check(t require.TestingT, r *relationtuple.InternalRelationTuple) bool
 		expand(t require.TestingT, r *relationtuple.SubjectSet, depth int) *expand.Tree
 		waitUntilLive(t require.TestingT)
