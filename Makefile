@@ -16,8 +16,6 @@ ifneq ("$(shell base64 Makefile) $(shell base64 go.mod) $(shell base64 go.sum)",
 		go build -o .bin/swagger github.com/go-swagger/go-swagger/cmd/swagger
 		go build -o .bin/goimports golang.org/x/tools/cmd/goimports
 		go build -o .bin/ory github.com/ory/cli
-		go build -o .bin/pkger github.com/markbates/pkger/cmd/pkger
-		go build -o .bin/go-bindata github.com/go-bindata/go-bindata/go-bindata
 		go build -o .bin/buf github.com/bufbuild/buf/cmd/buf
 		go build -o .bin/protoc-gen-go google.golang.org/protobuf/cmd/protoc-gen-go
 		go build -o .bin/protoc-gen-go-grpc google.golang.org/grpc/cmd/protoc-gen-go-grpc
@@ -34,7 +32,6 @@ format:
 install-stable: deps
 		KETO_LATEST=$$(git describe --abbrev=0 --tags)
 		git checkout $$KETO_LATEST
-		pkger
 		GO111MODULE=on go install \
 				-ldflags "-X github.com/ory/keto/cmd.Version=$$KETO_LATEST -X github.com/ory/keto/cmd.Date=`TZ=UTC date -u '+%Y-%m-%dT%H:%M:%SZ'` -X github.com/ory/keto/cmd.Commit=`git rev-parse HEAD`" \
 				.
@@ -43,9 +40,7 @@ install-stable: deps
 
 .PHONY: install
 install: deps
-		pkger
 		GO111MODULE=on go install .
-		rm pkged.go
 
 # Generates the SDKs
 .PHONY: sdk
@@ -61,9 +56,7 @@ sdk: deps
 
 .PHONY: build
 build: deps
-		pkger
 		go build -tags sqlite
-		rm pkged.go
 
 #
 # Generate APIs and client stubs from the definitions

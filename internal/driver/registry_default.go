@@ -1,10 +1,8 @@
 package driver
 
 import (
-	"bytes"
 	"context"
 	"net/http"
-	"strings"
 
 	grpc_logrus "github.com/grpc-ecosystem/go-grpc-middleware/logging/logrus"
 	"github.com/ory/x/reqlog"
@@ -162,11 +160,11 @@ func (r *RegistryDefault) Init(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
-	nStatus := &bytes.Buffer{}
 	for _, n := range namespaceConfigs {
-		if err := r.NamespaceMigrator().NamespaceStatus(ctx, nStatus, n); err != nil {
+		s, err := r.NamespaceMigrator().NamespaceStatus(ctx, n)
+		if err != nil {
 			return err
-		} else if strings.Contains(nStatus.String(), "Pending") {
+		} else if s.HasPending() {
 			if r.c.DSN() == config.DSNMemory {
 				// auto migrate when DSN is memory
 				if err := r.NamespaceMigrator().MigrateNamespaceUp(ctx, n); err != nil {

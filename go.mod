@@ -19,19 +19,19 @@ require (
 	github.com/go-openapi/validate v0.20.2
 	github.com/go-swagger/go-swagger v0.26.1
 	github.com/gobuffalo/pop/v5 v5.3.3
+	github.com/golang/mock v1.5.0
 	github.com/golang/protobuf v1.4.3
 	github.com/gorilla/sessions v1.1.3
 	github.com/gorilla/websocket v1.4.2
 	github.com/grpc-ecosystem/go-grpc-middleware v1.0.0
 	github.com/julienschmidt/httprouter v1.2.0
-	github.com/mailru/easyjson v0.7.7 // indirect
-	github.com/markbates/pkger v0.17.1
+	github.com/mattn/goveralls v0.0.8
 	github.com/ory/cli v0.0.11
 	github.com/ory/go-acc v0.2.6
 	github.com/ory/graceful v0.1.1
 	github.com/ory/herodot v0.9.2
 	github.com/ory/jsonschema/v3 v3.0.1
-	github.com/ory/x v0.0.199
+	github.com/ory/x v0.0.202
 	github.com/pelletier/go-toml v1.8.1
 	github.com/phayes/freeport v0.0.0-20180830031419-95f893ade6f2
 	github.com/pkg/errors v0.9.1

@@ -3,9 +3,8 @@ package sql
 import (
 	"context"
 	"fmt"
-	"io"
 
-	"github.com/ory/x/pkgerx"
+	"github.com/ory/x/popx"
 
 	"github.com/ory/keto/internal/namespace"
 )
@@ -18,7 +17,7 @@ func migrationTableFromNamespace(n *namespace.Namespace) string {
 	return fmt.Sprintf("keto_namespace_%0.10d_migrations", n.ID)
 }
 
-func (p *Persister) namespaceMigrationBox(n *namespace.Namespace) (*pkgerx.MigrationBox, error) {
+func (p *Persister) namespaceMigrationBox(n *namespace.Namespace) (*popx.MigrationBox, error) {
 	c, err := p.newConnection(map[string]string{
 		"migration_table_name": migrationTableFromNamespace(n),
 	})
@@ -26,12 +25,16 @@ func (p *Persister) namespaceMigrationBox(n *namespace.Namespace) (*pkgerx.Migra
 		return nil, err
 	}
 
-	return pkgerx.NewMigrationBox(namespaceMigrations, c, p.l, pkgerx.WithTemplateValues(map[string]interface{}{
-		"tableName": tableFromNamespace(n),
-	}))
+	return popx.NewMigrationBox(
+		namespaceMigrations,
+		popx.NewMigrator(c, p.l, nil, 0),
+		popx.WithTemplateValues(map[string]interface{}{
+			"tableName": tableFromNamespace(n),
+		}),
+	)
 }
 
-func (p *Persister) MigrateNamespaceUp(_ context.Context, n *namespace.Namespace) error {
+func (p *Persister) MigrateNamespaceUp(ctx context.Context, n *namespace.Namespace) error {
 	mb, err := p.namespaceMigrationBox(n)
 	if err != nil {
 		return err
@@ -39,10 +42,10 @@ func (p *Persister) MigrateNamespaceUp(_ context.Context, n *namespace.Namespace
 
 	p.l.WithField("namespace_name", n.Name).WithField("namespace_id", n.ID).Debug("migrating namespace up")
 
-	return mb.Up()
+	return mb.Up(ctx)
 }
 
-func (p *Persister) MigrateNamespaceDown(_ context.Context, n *namespace.Namespace, steps int) error {
+func (p *Persister) MigrateNamespaceDown(ctx context.Context, n *namespace.Namespace, steps int) error {
 	mb, err := p.namespaceMigrationBox(n)
 	if err != nil {
 		return err
@@ -50,20 +53,20 @@ func (p *Persister) MigrateNamespaceDown(_ context.Context, n *namespace.Namespa
 
 	p.l.WithField("namespace_name", n.Name).WithField("namespace_id", n.ID).Debug("migrating namespace down")
 
-	return mb.Down(steps)
+	return mb.Down(ctx, steps)
 }
 
 func (p *Persister) NamespaceFromName(ctx context.Context, name string) (*namespace.Namespace, error) {
 	return p.namespaces.GetNamespace(ctx, name)
 }
 
-func (p *Persister) NamespaceStatus(_ context.Context, w io.Writer, n *namespace.Namespace) error {
+func (p *Persister) NamespaceStatus(ctx context.Context, n *namespace.Namespace) (popx.MigrationStatuses, error) {
 	mb, err := p.namespaceMigrationBox(n)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	p.l.WithField("namespace_name", n.Name).WithField("namespace_id", n.ID).Debug("getting migration status for namespace")
 
-	return mb.Status(w)
+	return mb.Status(ctx)
 }

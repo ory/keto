@@ -2,21 +2,20 @@ package sql
 
 import (
 	"context"
+	"embed"
 	"fmt"
-	"io"
 	"strconv"
 	"time"
+
+	"github.com/ory/x/popx"
 
 	"github.com/cenkalti/backoff/v3"
 	"github.com/ory/x/sqlcon"
 
 	"github.com/ory/keto/internal/namespace"
 
-	"github.com/markbates/pkger"
-	"github.com/ory/x/logrusx"
-	"github.com/ory/x/pkgerx"
-
 	"github.com/gobuffalo/pop/v5"
+	"github.com/ory/x/logrusx"
 	"github.com/pkg/errors"
 
 	"github.com/ory/keto/internal/persistence"
@@ -26,7 +25,7 @@ import (
 type (
 	Persister struct {
 		conn       *pop.Connection
-		mb         *pkgerx.MigrationBox
+		mb         *popx.MigrationBox
 		namespaces namespace.Manager
 		l          *logrusx.Logger
 		dsn        string
@@ -43,8 +42,11 @@ const (
 )
 
 var (
-	migrations          = pkger.Dir("github.com/ory/keto:/internal/persistence/sql/migrations")
-	namespaceMigrations = pkger.Dir("github.com/ory/keto:/internal/persistence/sql/namespace_migrations")
+	//go:embed migrations/*.sql
+	migrations embed.FS
+
+	//go:embed namespace_migrations/*.sql
+	namespaceMigrations embed.FS
 
 	_ persistence.Persister = &Persister{}
 )
@@ -64,7 +66,7 @@ func NewPersister(dsn string, l *logrusx.Logger, namespaces namespace.Manager) (
 		return nil, err
 	}
 
-	p.mb, err = pkgerx.NewMigrationBox(migrations, p.conn, l)
+	p.mb, err = popx.NewMigrationBox(migrations, popx.NewMigrator(p.conn, p.l, nil, 0))
 	if err != nil {
 		return nil, err
 	}
@@ -109,16 +111,16 @@ func (p *Persister) newConnection(options map[string]string) (c *pop.Connection,
 	return c, nil
 }
 
-func (p *Persister) MigrateUp(_ context.Context) error {
-	return errors.WithStack(p.mb.Up())
+func (p *Persister) MigrateUp(ctx context.Context) error {
+	return errors.WithStack(p.mb.Up(ctx))
 }
 
-func (p *Persister) MigrateDown(_ context.Context, steps int) error {
-	return errors.WithStack(p.mb.Down(steps))
+func (p *Persister) MigrateDown(ctx context.Context, steps int) error {
+	return errors.WithStack(p.mb.Down(ctx, steps))
 }
 
-func (p *Persister) MigrationStatus(_ context.Context, w io.Writer) error {
-	return errors.WithStack(p.mb.Status(w))
+func (p *Persister) MigrationStatus(ctx context.Context) (popx.MigrationStatuses, error) {
+	return p.mb.Status(ctx)
 }
 
 func (p *Persister) connection(ctx context.Context) *pop.Connection {
