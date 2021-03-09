@@ -7,6 +7,7 @@ import (
 	grpc_logrus "github.com/grpc-ecosystem/go-grpc-middleware/logging/logrus"
 	"github.com/ory/x/reqlog"
 	"github.com/urfave/negroni"
+	"google.golang.org/grpc/reflection"
 
 	grpcMiddleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	"github.com/julienschmidt/httprouter"
@@ -239,6 +240,7 @@ func (r *RegistryDefault) ReadGRPCServer() *grpc.Server {
 	)
 
 	grpcHealthV1.RegisterHealthServer(s, r.HealthServer())
+	reflection.Register(s)
 
 	for _, h := range r.allHandlers() {
 		h.RegisterReadGRPC(s)
@@ -264,6 +266,7 @@ func (r *RegistryDefault) WriteGRPCServer() *grpc.Server {
 	)
 
 	grpcHealthV1.RegisterHealthServer(s, r.HealthServer())
+	reflection.Register(s)
 
 	for _, h := range r.allHandlers() {
 		h.RegisterWriteGRPC(s)
