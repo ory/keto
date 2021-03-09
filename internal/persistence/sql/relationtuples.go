@@ -116,7 +116,7 @@ func (p *Persister) DeleteRelationTuples(ctx context.Context, rs ...*relationtup
 				r.Relation,
 				r.Subject.String(),
 			).Exec(); err != nil {
-				return errors.WithStack(err)
+				return sqlcon.HandleError(err)
 			}
 		}
 
@@ -156,7 +156,7 @@ func (p *Persister) GetRelationTuples(ctx context.Context, query *relationtuple.
 
 	var res relationTuples
 	if err := sqlQuery.All(&res); err != nil {
-		return nil, x.PageTokenEnd, errors.WithStack(err)
+		return nil, x.PageTokenEnd, sqlcon.HandleError(err)
 	}
 
 	nextPageToken := pagination.encodeNextPageToken()
