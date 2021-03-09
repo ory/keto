@@ -29,18 +29,6 @@ Something is not working.
 - [ ] CLI remote flag should be required
       ([keto#287](https://github.com/ory/keto/issues/287)) -
       [@Patrik](https://github.com/zepatrik)
-- [ ] REST Relations API returns null instead of `[]`
-      ([keto#289](https://github.com/ory/keto/issues/289)) -
-      [@Patrik](https://github.com/zepatrik)
-- [ ] REST API create relation should mirror payload in 201 OK response
-      ([keto#290](https://github.com/ory/keto/issues/290)) -
-      [@Patrik](https://github.com/zepatrik)
-- [ ] REST API create and subsequent get relation does not properly persist
-      fields ([keto#291](https://github.com/ory/keto/issues/291)) -
-      [@Patrik](https://github.com/zepatrik)
-- [ ] Unable to create relations using REST API and string notation
-      ([keto#293](https://github.com/ory/keto/issues/293)) -
-      [@Patrik](https://github.com/zepatrik)
 - [ ] Clarify where handlers are tested
       ([keto#407](https://github.com/ory/keto/issues/407)) -
       [@Patrik](https://github.com/zepatrik)
@@ -50,11 +38,20 @@ Something is not working.
 - [ ] Persistence errors are not properly handled and wrapped
       ([keto#432](https://github.com/ory/keto/issues/432)) -
       [@Patrik](https://github.com/zepatrik)
-- [ ] Make errors debuggable and understandable
-      ([keto#438](https://github.com/ory/keto/issues/438)) -
-      [@Patrik](https://github.com/zepatrik)
 - [ ] Command status --block is not blocking until healthy
       ([keto#456](https://github.com/ory/keto/issues/456)) -
+      [@Patrik](https://github.com/zepatrik)
+- [x] REST Relations API returns null instead of `[]`
+      ([keto#289](https://github.com/ory/keto/issues/289)) -
+      [@Patrik](https://github.com/zepatrik)
+- [x] REST API create relation should mirror payload in 201 OK response
+      ([keto#290](https://github.com/ory/keto/issues/290)) -
+      [@Patrik](https://github.com/zepatrik)
+- [x] REST API create and subsequent get relation does not properly persist
+      fields ([keto#291](https://github.com/ory/keto/issues/291)) -
+      [@Patrik](https://github.com/zepatrik)
+- [x] Unable to create relations using REST API and string notation
+      ([keto#293](https://github.com/ory/keto/issues/293)) -
       [@Patrik](https://github.com/zepatrik)
 - [x] Replace in-memory persister with SQLite schema
       ([keto#294](https://github.com/ory/keto/issues/294)) -
@@ -80,6 +77,9 @@ Something is not working.
       [@Patrik](https://github.com/zepatrik)
 - [x] Don't use fmt.Sprintf to construct queries
       ([keto#434](https://github.com/ory/keto/issues/434)) -
+      [@Patrik](https://github.com/zepatrik)
+- [x] Make errors debuggable and understandable
+      ([keto#438](https://github.com/ory/keto/issues/438)) -
       [@Patrik](https://github.com/zepatrik)
 
 ### [Feat](https://github.com/ory/keto/labels/feat)
@@ -142,7 +142,7 @@ Affects Continuous Integration (CI).
 
 #### Issues
 
-- [ ] Add golangci-lint with gosec linter
+- [x] Add golangci-lint with gosec linter
       ([keto#435](https://github.com/ory/keto/issues/435)) -
       [@Patrik](https://github.com/zepatrik)
 
@@ -174,12 +174,6 @@ Blocks milestones or other issues or pulls.
 - [ ] Persistence errors are not properly handled and wrapped
       ([keto#432](https://github.com/ory/keto/issues/432)) -
       [@Patrik](https://github.com/zepatrik)
-- [ ] Make errors debuggable and understandable
-      ([keto#438](https://github.com/ory/keto/issues/438)) -
-      [@Patrik](https://github.com/zepatrik)
-- [ ] Add golangci-lint with gosec linter
-      ([keto#435](https://github.com/ory/keto/issues/435)) -
-      [@Patrik](https://github.com/zepatrik)
 - [ ] Command status --block is not blocking until healthy
       ([keto#456](https://github.com/ory/keto/issues/456)) -
       [@Patrik](https://github.com/zepatrik)
@@ -189,8 +183,14 @@ Blocks milestones or other issues or pulls.
 - [x] Don't use fmt.Sprintf to construct queries
       ([keto#434](https://github.com/ory/keto/issues/434)) -
       [@Patrik](https://github.com/zepatrik)
+- [x] Add golangci-lint with gosec linter
+      ([keto#435](https://github.com/ory/keto/issues/435)) -
+      [@Patrik](https://github.com/zepatrik)
 - [x] Use `errors.WithStack` where ever non-keto code returns errors.
       ([keto#437](https://github.com/ory/keto/issues/437)) -
+      [@Patrik](https://github.com/zepatrik)
+- [x] Make errors debuggable and understandable
+      ([keto#438](https://github.com/ory/keto/issues/438)) -
       [@Patrik](https://github.com/zepatrik)
 - [x] Allow deletion of relation tuples
       ([keto#452](https://github.com/ory/keto/issues/452)) -
