@@ -72,7 +72,6 @@ func newStatusCmd() *cobra.Command {
 					_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not start watching the status: %+v\n", err)
 					return cmdx.FailSilently(cmd)
 				}
-				//_ = wc.CloseSend()
 
 				for {
 					select {
