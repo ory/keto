@@ -2,6 +2,7 @@ package client
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"time"
 
@@ -20,28 +21,25 @@ const (
 	EnvWriteRemote = "KETO_WRITE_REMOTE"
 )
 
-func getReadRemote(cmd *cobra.Command) string {
-	remote := flagx.MustGetString(cmd, FlagReadRemote)
-	if remote == "" {
-		remote = os.Getenv(EnvReadRemote)
+func getRemote(cmd *cobra.Command, flagRemote, envRemote string) string {
+	if cmd.Flags().Changed(flagRemote) {
+		return flagx.MustGetString(cmd, flagRemote)
+	} else if remote, isSet := os.LookupEnv(envRemote); isSet {
+		return remote
 	}
-	return remote
-}
 
-func getWriteRemote(cmd *cobra.Command) string {
-	remote := flagx.MustGetString(cmd, FlagWriteRemote)
-	if remote == "" {
-		remote = os.Getenv(EnvWriteRemote)
-	}
+	// no value is set, use fallback from the flag and warn about that
+	remote := flagx.MustGetString(cmd, flagRemote)
+	_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "neither flag --%s nor env var %s are set, falling back to %s\n", flagRemote, envRemote, remote)
 	return remote
 }
 
 func GetReadConn(cmd *cobra.Command) (*grpc.ClientConn, error) {
-	return Conn(cmd.Context(), getReadRemote(cmd))
+	return Conn(cmd.Context(), getRemote(cmd, FlagReadRemote, EnvReadRemote))
 }
 
 func GetWriteConn(cmd *cobra.Command) (*grpc.ClientConn, error) {
-	return Conn(cmd.Context(), getWriteRemote(cmd))
+	return Conn(cmd.Context(), getRemote(cmd, FlagWriteRemote, EnvWriteRemote))
 }
 
 func Conn(ctx context.Context, remote string) (*grpc.ClientConn, error) {
