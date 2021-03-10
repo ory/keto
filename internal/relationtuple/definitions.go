@@ -37,6 +37,7 @@ type (
 		internalRelations []*InternalRelationTuple
 	}
 	Subject interface {
+		// swagger:ignore
 		json.Marshaler
 
 		String() string
@@ -46,17 +47,6 @@ type (
 	}
 	SubjectID struct {
 		ID string `json:"id"`
-	}
-	SubjectSet struct {
-		Namespace string `json:"namespace"`
-		Object    string `json:"object"`
-		Relation  string `json:"relation"`
-	}
-	InternalRelationTuple struct {
-		Namespace string  `json:"namespace"`
-		Object    string  `json:"object"`
-		Relation  string  `json:"relation"`
-		Subject   Subject `json:"subject"`
 	}
 	RelationQuery struct {
 		Namespace string  `json:"namespace"`
@@ -71,6 +61,36 @@ type (
 		GetRelation() string
 	}
 )
+
+// The basic ACL relation tuple
+//
+// swagger:parameters getCheck postCheck
+type InternalRelationTuple struct {
+	// required: true
+	Namespace string `json:"namespace"`
+	// required: true
+	Object string `json:"object"`
+	// required: true
+	Relation string `json:"relation"`
+	// string encoding of the subject
+	//
+	// required: true
+	Subject Subject `json:"subject"`
+}
+
+// swagger:model Subject
+// nolint:deadcode,unused
+type stringEncodedSubject string
+
+// swagger:parameters getExpand
+type SubjectSet struct {
+	// required: true
+	Namespace string `json:"namespace"`
+	// required: true
+	Object string `json:"object"`
+	// required: true
+	Relation string `json:"relation"`
+}
 
 var (
 	_, _ Subject = &SubjectID{}, &SubjectSet{}

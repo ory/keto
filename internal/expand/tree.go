@@ -12,14 +12,19 @@ import (
 	"github.com/ory/keto/internal/relationtuple"
 )
 
-type (
-	NodeType int
-	Tree     struct {
-		Type     NodeType              `json:"type"`
-		Subject  relationtuple.Subject `json:"subject"`
-		Children []*Tree               `json:"children,omitempty"`
-	}
-)
+type NodeType int
+
+// swagger:model expandTree
+type Tree struct {
+	// required: true
+	Type NodeType `json:"type"`
+	// required: true
+	Subject  relationtuple.Subject `json:"subject"`
+	Children []*Tree               `json:"children,omitempty"`
+}
+
+// swagger:model NodeType
+type SwaggerNodeType string
 
 const (
 	Union NodeType = iota

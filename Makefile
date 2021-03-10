@@ -45,7 +45,7 @@ install: deps
 # Generates the SDKs
 .PHONY: sdk
 sdk: deps
-		swagger generate spec -m -o ./.schema/api.swagger.json -x internal/httpclient
+		swagger generate spec -m -o ./.schema/api.swagger.json -x github.com/ory/keto/internal/httpclient -x github.com/ory/keto/proto -x docker
 		ory dev swagger sanitize ./.schema/api.swagger.json
 		swagger flatten --with-flatten=remove-unused -o ./.schema/api.swagger.json ./.schema/api.swagger.json
 		swagger validate ./.schema/api.swagger.json

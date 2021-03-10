@@ -26,11 +26,11 @@
   },
   "basePath": "/",
   "paths": {
-    "/engines/acp/ory/{flavor}/allowed": {
-      "post": {
-        "description": "Use this endpoint to check if a request is allowed or not. If the request is allowed, a 200 response with\n`{\"allowed\":\"true\"}` will be sent. If the request is denied, a 403 response with `{\"allowed\":\"false\"}` will\nbe sent instead.",
+    "/check": {
+      "get": {
+        "description": "To learn how relation tuples and the check works, head over to [the documentation](/TODO).",
         "consumes": [
-          "application/json"
+          "application/x-www-form-urlencoded"
         ],
         "produces": [
           "application/json"
@@ -40,37 +40,78 @@
           "https"
         ],
         "tags": [
-          "engines"
+          "read"
         ],
-        "summary": "Check if a request is allowed",
-        "operationId": "doOryAccessControlPoliciesAllow",
+        "summary": "Check a relation tuple",
+        "operationId": "getCheck",
         "parameters": [
           {
             "type": "string",
-            "description": "The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".",
-            "name": "flavor",
-            "in": "path",
+            "name": "namespace",
+            "in": "query",
             "required": true
           },
           {
-            "name": "Body",
-            "in": "body",
-            "schema": {
-              "$ref": "#/definitions/oryAccessControlPolicyAllowedInput"
-            }
+            "type": "string",
+            "name": "object",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "name": "relation",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "object",
+            "description": "Subject is either a concrete subject id or\na subject set expanding to more Subjects.",
+            "name": "subject",
+            "in": "query"
           }
         ],
         "responses": {
           "200": {
-            "description": "authorizationResult",
+            "description": "getCheckResponse",
             "schema": {
-              "$ref": "#/definitions/authorizationResult"
+              "$ref": "#/definitions/getCheckResponse"
+            }
+          },
+          "400": {
+            "description": "The standard error format",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "details": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": true
+                  }
+                },
+                "message": {
+                  "type": "string"
+                },
+                "reason": {
+                  "type": "string"
+                },
+                "request": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string"
+                }
+              }
             }
           },
           "403": {
-            "description": "authorizationResult",
+            "description": "getCheckResponse",
             "schema": {
-              "$ref": "#/definitions/authorizationResult"
+              "$ref": "#/definitions/getCheckResponse"
             }
           },
           "500": {
@@ -105,11 +146,12 @@
             }
           }
         }
-      }
-    },
-    "/engines/acp/ory/{flavor}/policies": {
-      "get": {
-        "description": "List ORY Access Control Policies",
+      },
+      "post": {
+        "description": "To learn how relation tuples and the check works, head over to [the documentation](/TODO).",
+        "consumes": [
+          "application/json"
+        ],
         "produces": [
           "application/json"
         ],
@@ -118,61 +160,44 @@
           "https"
         ],
         "tags": [
-          "engines"
+          "read"
         ],
-        "operationId": "listOryAccessControlPolicies",
+        "summary": "Check a relation tuple",
+        "operationId": "postCheck",
         "parameters": [
           {
             "type": "string",
-            "description": "The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\"",
-            "name": "flavor",
-            "in": "path",
+            "name": "namespace",
+            "in": "query",
             "required": true
           },
           {
-            "type": "integer",
-            "format": "int64",
-            "description": "The maximum amount of policies returned.",
-            "name": "limit",
-            "in": "query"
-          },
-          {
-            "type": "integer",
-            "format": "int64",
-            "description": "The offset from where to start looking.",
-            "name": "offset",
-            "in": "query"
+            "type": "string",
+            "name": "object",
+            "in": "query",
+            "required": true
           },
           {
             "type": "string",
-            "description": "The subject for whom the policies are to be listed.",
+            "name": "relation",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "object",
+            "description": "Subject is either a concrete subject id or\na subject set expanding to more Subjects.",
             "name": "subject",
             "in": "query"
-          },
-          {
-            "type": "string",
-            "description": "The resource for which the policies are to be listed.",
-            "name": "resource",
-            "in": "query"
-          },
-          {
-            "type": "string",
-            "description": "The action for which policies are to be listed.",
-            "name": "action",
-            "in": "query"
           }
         ],
         "responses": {
           "200": {
-            "description": "Policies is an array of policies.",
+            "description": "getCheckResponse",
             "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/oryAccessControlPolicy"
-              }
+              "$ref": "#/definitions/getCheckResponse"
             }
           },
-          "500": {
+          "400": {
             "description": "The standard error format",
             "schema": {
               "type": "object",
@@ -202,46 +227,11 @@
                 }
               }
             }
-          }
-        }
-      },
-      "put": {
-        "description": "Upsert an ORY Access Control Policy",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "schemes": [
-          "http",
-          "https"
-        ],
-        "tags": [
-          "engines"
-        ],
-        "operationId": "upsertOryAccessControlPolicy",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".",
-            "name": "flavor",
-            "in": "path",
-            "required": true
           },
-          {
-            "name": "Body",
-            "in": "body",
+          "403": {
+            "description": "getCheckResponse",
             "schema": {
-              "$ref": "#/definitions/oryAccessControlPolicy"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "oryAccessControlPolicy",
-            "schema": {
-              "$ref": "#/definitions/oryAccessControlPolicy"
+              "$ref": "#/definitions/getCheckResponse"
             }
           },
           "500": {
@@ -278,9 +268,12 @@
         }
       }
     },
-    "/engines/acp/ory/{flavor}/policies/{id}": {
+    "/expand": {
       "get": {
-        "description": "Get an ORY Access Control Policy",
+        "description": "Expand a relation tuple",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
         "produces": [
           "application/json"
         ],
@@ -289,30 +282,71 @@
           "https"
         ],
         "tags": [
-          "engines"
+          "read"
         ],
-        "operationId": "getOryAccessControlPolicy",
+        "operationId": "getExpand",
         "parameters": [
           {
             "type": "string",
-            "description": "The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".",
-            "name": "flavor",
-            "in": "path",
+            "name": "namespace",
+            "in": "query",
             "required": true
           },
           {
             "type": "string",
-            "description": "The ID of the ORY Access Control Policy Role.",
-            "name": "id",
-            "in": "path",
+            "name": "object",
+            "in": "query",
             "required": true
+          },
+          {
+            "type": "string",
+            "name": "relation",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "integer",
+            "format": "int64",
+            "name": "depth",
+            "in": "query"
           }
         ],
         "responses": {
           "200": {
-            "description": "oryAccessControlPolicy",
+            "description": "expandTree",
             "schema": {
-              "$ref": "#/definitions/oryAccessControlPolicy"
+              "$ref": "#/definitions/expandTree"
+            }
+          },
+          "400": {
+            "description": "The standard error format",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "details": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": true
+                  }
+                },
+                "message": {
+                  "type": "string"
+                },
+                "reason": {
+                  "type": "string"
+                },
+                "request": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string"
+                }
+              }
             }
           },
           "404": {
@@ -345,564 +379,6 @@
                 }
               }
             }
-          },
-          "500": {
-            "description": "The standard error format",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "format": "int64"
-                },
-                "details": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "additionalProperties": true
-                  }
-                },
-                "message": {
-                  "type": "string"
-                },
-                "reason": {
-                  "type": "string"
-                },
-                "request": {
-                  "type": "string"
-                },
-                "status": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "description": "Delete an ORY Access Control Policy",
-        "produces": [
-          "application/json"
-        ],
-        "schemes": [
-          "http",
-          "https"
-        ],
-        "tags": [
-          "engines"
-        ],
-        "operationId": "deleteOryAccessControlPolicy",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".",
-            "name": "flavor",
-            "in": "path",
-            "required": true
-          },
-          {
-            "type": "string",
-            "description": "The ID of the ORY Access Control Policy Role.",
-            "name": "id",
-            "in": "path",
-            "required": true
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "An empty response"
-          },
-          "500": {
-            "description": "The standard error format",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "format": "int64"
-                },
-                "details": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "additionalProperties": true
-                  }
-                },
-                "message": {
-                  "type": "string"
-                },
-                "reason": {
-                  "type": "string"
-                },
-                "request": {
-                  "type": "string"
-                },
-                "status": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/engines/acp/ory/{flavor}/roles": {
-      "get": {
-        "description": "Roles group several subjects into one. Rules can be assigned to ORY Access Control Policy (OACP) by using the Role ID\nas subject in the OACP.",
-        "produces": [
-          "application/json"
-        ],
-        "schemes": [
-          "http",
-          "https"
-        ],
-        "tags": [
-          "engines"
-        ],
-        "summary": "List ORY Access Control Policy Roles",
-        "operationId": "listOryAccessControlPolicyRoles",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\"",
-            "name": "flavor",
-            "in": "path",
-            "required": true
-          },
-          {
-            "type": "integer",
-            "format": "int64",
-            "description": "The maximum amount of policies returned.",
-            "name": "limit",
-            "in": "query"
-          },
-          {
-            "type": "integer",
-            "format": "int64",
-            "description": "The offset from where to start looking.",
-            "name": "offset",
-            "in": "query"
-          },
-          {
-            "type": "string",
-            "description": "The member for which the roles are to be listed.",
-            "name": "member",
-            "in": "query"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Roles is an array of roles.",
-            "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/oryAccessControlPolicyRole"
-              }
-            }
-          },
-          "500": {
-            "description": "The standard error format",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "format": "int64"
-                },
-                "details": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "additionalProperties": true
-                  }
-                },
-                "message": {
-                  "type": "string"
-                },
-                "reason": {
-                  "type": "string"
-                },
-                "request": {
-                  "type": "string"
-                },
-                "status": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "description": "Roles group several subjects into one. Rules can be assigned to ORY Access Control Policy (OACP) by using the Role ID\nas subject in the OACP.",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "schemes": [
-          "http",
-          "https"
-        ],
-        "tags": [
-          "engines"
-        ],
-        "summary": "Upsert an ORY Access Control Policy Role",
-        "operationId": "upsertOryAccessControlPolicyRole",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".",
-            "name": "flavor",
-            "in": "path",
-            "required": true
-          },
-          {
-            "name": "Body",
-            "in": "body",
-            "schema": {
-              "$ref": "#/definitions/oryAccessControlPolicyRole"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "oryAccessControlPolicyRole",
-            "schema": {
-              "$ref": "#/definitions/oryAccessControlPolicyRole"
-            }
-          },
-          "500": {
-            "description": "The standard error format",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "format": "int64"
-                },
-                "details": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "additionalProperties": true
-                  }
-                },
-                "message": {
-                  "type": "string"
-                },
-                "reason": {
-                  "type": "string"
-                },
-                "request": {
-                  "type": "string"
-                },
-                "status": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/engines/acp/ory/{flavor}/roles/{id}": {
-      "get": {
-        "description": "Roles group several subjects into one. Rules can be assigned to ORY Access Control Policy (OACP) by using the Role ID\nas subject in the OACP.",
-        "produces": [
-          "application/json"
-        ],
-        "schemes": [
-          "http",
-          "https"
-        ],
-        "tags": [
-          "engines"
-        ],
-        "summary": "Get an ORY Access Control Policy Role",
-        "operationId": "getOryAccessControlPolicyRole",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".",
-            "name": "flavor",
-            "in": "path",
-            "required": true
-          },
-          {
-            "type": "string",
-            "description": "The ID of the ORY Access Control Policy Role.",
-            "name": "id",
-            "in": "path",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "oryAccessControlPolicyRole",
-            "schema": {
-              "$ref": "#/definitions/oryAccessControlPolicyRole"
-            }
-          },
-          "404": {
-            "description": "The standard error format",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "format": "int64"
-                },
-                "details": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "additionalProperties": true
-                  }
-                },
-                "message": {
-                  "type": "string"
-                },
-                "reason": {
-                  "type": "string"
-                },
-                "request": {
-                  "type": "string"
-                },
-                "status": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "The standard error format",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "format": "int64"
-                },
-                "details": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "additionalProperties": true
-                  }
-                },
-                "message": {
-                  "type": "string"
-                },
-                "reason": {
-                  "type": "string"
-                },
-                "request": {
-                  "type": "string"
-                },
-                "status": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "description": "Roles group several subjects into one. Rules can be assigned to ORY Access Control Policy (OACP) by using the Role ID\nas subject in the OACP.",
-        "produces": [
-          "application/json"
-        ],
-        "schemes": [
-          "http",
-          "https"
-        ],
-        "tags": [
-          "engines"
-        ],
-        "summary": "Delete an ORY Access Control Policy Role",
-        "operationId": "deleteOryAccessControlPolicyRole",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".",
-            "name": "flavor",
-            "in": "path",
-            "required": true
-          },
-          {
-            "type": "string",
-            "description": "The ID of the ORY Access Control Policy Role.",
-            "name": "id",
-            "in": "path",
-            "required": true
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "An empty response"
-          },
-          "500": {
-            "description": "The standard error format",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "format": "int64"
-                },
-                "details": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "additionalProperties": true
-                  }
-                },
-                "message": {
-                  "type": "string"
-                },
-                "reason": {
-                  "type": "string"
-                },
-                "request": {
-                  "type": "string"
-                },
-                "status": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/engines/acp/ory/{flavor}/roles/{id}/members": {
-      "put": {
-        "description": "Roles group several subjects into one. Rules can be assigned to ORY Access Control Policy (OACP) by using the Role ID\nas subject in the OACP.",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "schemes": [
-          "http",
-          "https"
-        ],
-        "tags": [
-          "engines"
-        ],
-        "summary": "Add a member to an ORY Access Control Policy Role",
-        "operationId": "addOryAccessControlPolicyRoleMembers",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".",
-            "name": "flavor",
-            "in": "path",
-            "required": true
-          },
-          {
-            "type": "string",
-            "description": "The ID of the ORY Access Control Policy Role.",
-            "name": "id",
-            "in": "path",
-            "required": true
-          },
-          {
-            "name": "Body",
-            "in": "body",
-            "schema": {
-              "$ref": "#/definitions/addOryAccessControlPolicyRoleMembersBody"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "oryAccessControlPolicyRole",
-            "schema": {
-              "$ref": "#/definitions/oryAccessControlPolicyRole"
-            }
-          },
-          "500": {
-            "description": "The standard error format",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "format": "int64"
-                },
-                "details": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "additionalProperties": true
-                  }
-                },
-                "message": {
-                  "type": "string"
-                },
-                "reason": {
-                  "type": "string"
-                },
-                "request": {
-                  "type": "string"
-                },
-                "status": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/engines/acp/ory/{flavor}/roles/{id}/members/{member}": {
-      "delete": {
-        "description": "Roles group several subjects into one. Rules can be assigned to ORY Access Control Policy (OACP) by using the Role ID\nas subject in the OACP.",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "schemes": [
-          "http",
-          "https"
-        ],
-        "tags": [
-          "engines"
-        ],
-        "summary": "Remove a member from an ORY Access Control Policy Role",
-        "operationId": "removeOryAccessControlPolicyRoleMembers",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "The ORY Access Control Policy flavor. Can be \"regex\", \"glob\", and \"exact\".",
-            "name": "flavor",
-            "in": "path",
-            "required": true
-          },
-          {
-            "type": "string",
-            "description": "The ID of the ORY Access Control Policy Role.",
-            "name": "id",
-            "in": "path",
-            "required": true
-          },
-          {
-            "type": "string",
-            "description": "The member to be removed.",
-            "name": "member",
-            "in": "path",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "An empty response"
           },
           "500": {
             "description": "The standard error format",
@@ -1040,27 +516,50 @@
     }
   },
   "definitions": {
-    "addOryAccessControlPolicyRoleMembersBody": {
+    "NodeType": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "Subject": {
+      "description": "Subject is either a concrete subject id or\na subject set expanding to more Subjects.",
       "type": "object",
       "properties": {
-        "members": {
-          "description": "The members to be added.",
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
+        "Ref": {
+          "$ref": "#/definitions/isSubject_Ref"
         }
       }
     },
-    "authorizationResult": {
+    "expandTree": {
       "type": "object",
-      "title": "AuthorizationResult is the result of an access control decision. It contains the decision outcome.",
+      "required": [
+        "type",
+        "subject"
+      ],
+      "properties": {
+        "children": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/expandTree"
+          }
+        },
+        "subject": {
+          "$ref": "#/definitions/Subject"
+        },
+        "type": {
+          "$ref": "#/definitions/NodeType"
+        }
+      }
+    },
+    "getCheckResponse": {
+      "description": "The content of the allowed field is mirrored in the HTTP status code.",
+      "type": "object",
+      "title": "Represents the response for a check request.",
       "required": [
         "allowed"
       ],
       "properties": {
         "allowed": {
-          "description": "Allowed is true if the request should be allowed and false otherwise.",
+          "description": "whether the relation tuple is allowed",
           "type": "boolean"
         }
       }
@@ -1086,93 +585,8 @@
         }
       }
     },
-    "oryAccessControlPolicy": {
-      "type": "object",
-      "title": "oryAccessControlPolicy specifies an ORY Access Policy document.",
-      "properties": {
-        "actions": {
-          "description": "Actions is an array representing all the actions this ORY Access Policy applies to.",
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "conditions": {
-          "description": "Conditions represents a keyed object of conditions under which this ORY Access Policy is active.",
-          "type": "object",
-          "additionalProperties": true
-        },
-        "description": {
-          "description": "Description is an optional, human-readable description.",
-          "type": "string"
-        },
-        "effect": {
-          "description": "Effect is the effect of this ORY Access Policy. It can be \"allow\" or \"deny\".",
-          "type": "string"
-        },
-        "id": {
-          "description": "ID is the unique identifier of the ORY Access Policy. It is used to query, update, and remove the ORY Access Policy.",
-          "type": "string"
-        },
-        "resources": {
-          "description": "Resources is an array representing all the resources this ORY Access Policy applies to.",
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "subjects": {
-          "description": "Subjects is an array representing all the subjects this ORY Access Policy applies to.",
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        }
-      }
-    },
-    "oryAccessControlPolicyAllowedInput": {
-      "type": "object",
-      "title": "Input for checking if a request is allowed or not.",
-      "properties": {
-        "action": {
-          "description": "Action is the action that is requested on the resource.",
-          "type": "string"
-        },
-        "context": {
-          "description": "Context is the request's environmental context.",
-          "type": "object",
-          "additionalProperties": true
-        },
-        "resource": {
-          "description": "Resource is the resource that access is requested to.",
-          "type": "string"
-        },
-        "subject": {
-          "description": "Subject is the subject that is requesting access.",
-          "type": "string"
-        }
-      }
-    },
-    "oryAccessControlPolicyRole": {
-      "description": "oryAccessControlPolicyRole represents a group of users that share the same role. A role could be an administrator, a moderator, a regular\nuser or some other sort of role.",
-      "type": "object",
-      "properties": {
-        "description": {
-          "description": "Description is the description of the role.",
-          "type": "string"
-        },
-        "id": {
-          "description": "ID is the role's unique id.",
-          "type": "string"
-        },
-        "members": {
-          "description": "Members is who belongs to the role.",
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        }
-      }
+    "isSubject_Ref": {
+      "type": "object"
     },
     "version": {
       "type": "object",

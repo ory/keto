@@ -28,9 +28,6 @@ type (
 	Handler struct {
 		d handlerDependencies
 	}
-	RESTResponse struct {
-		Allowed bool `json:"allowed"`
-	}
 )
 
 var _ acl.CheckServiceServer = (*Handler)(nil)
@@ -54,10 +51,41 @@ func (h *Handler) RegisterReadGRPC(s *grpc.Server) {
 
 func (h *Handler) RegisterWriteGRPC(_ *grpc.Server) {}
 
+// Represents the response for a check request.
+//
+// The content of the allowed field is mirrored in the HTTP status code.
+//
+// swagger:model getCheckResponse
+type RESTResponse struct {
+	// whether the relation tuple is allowed
+	//
+	// required: true
+	Allowed bool `json:"allowed"`
+}
+
+// swagger:route GET /check read getCheck
+//
+// Check a relation tuple
+//
+// To learn how relation tuples and the check works, head over to [the documentation](/TODO).
+//
+//     Consumes:
+//     -  application/x-www-form-urlencoded
+//
+//     Produces:
+//     - application/json
+//
+//     Schemes: http, https
+//
+//     Responses:
+//       200: getCheckResponse
+//       400: genericError
+//		 403: getCheckResponse
+//       500: genericError
 func (h *Handler) getCheck(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	tuple, err := (&relationtuple.InternalRelationTuple{}).FromURLQuery(r.URL.Query())
 	if err != nil {
-		h.d.Writer().WriteError(w, r, err)
+		h.d.Writer().WriteError(w, r, herodot.ErrBadRequest.WithError(err.Error()))
 	}
 
 	allowed, err := h.d.PermissionEngine().SubjectIsAllowed(r.Context(), tuple)
@@ -74,6 +102,25 @@ func (h *Handler) getCheck(w http.ResponseWriter, r *http.Request, _ httprouter.
 	h.d.Writer().WriteCode(w, r, http.StatusForbidden, &RESTResponse{Allowed: false})
 }
 
+// swagger:route POST /check read postCheck
+//
+// Check a relation tuple
+//
+// To learn how relation tuples and the check works, head over to [the documentation](/TODO).
+//
+//     Consumes:
+//     -  application/json
+//
+//     Produces:
+//     - application/json
+//
+//     Schemes: http, https
+//
+//     Responses:
+//       200: getCheckResponse
+//       400: genericError
+//		 403: getCheckResponse
+//       500: genericError
 func (h *Handler) postCheck(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	var tuple relationtuple.InternalRelationTuple
 	if err := json.NewDecoder(r.Body).Decode(&tuple); err != nil {
