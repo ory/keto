@@ -63,13 +63,6 @@ type RESTResponse struct {
 	Allowed bool `json:"allowed"`
 }
 
-// swagger:parameters getCheck
-type getCheckParams struct {
-	// swagger:allOf
-	// in: query
-	relationtuple.InternalRelationTuple
-}
-
 // swagger:route GET /check read getCheck
 //
 // Check a relation tuple
@@ -87,7 +80,7 @@ type getCheckParams struct {
 //     Responses:
 //       200: getCheckResponse
 //       400: genericError
-//		 403: getCheckResponse
+//       403: getCheckResponse
 //       500: genericError
 func (h *Handler) getCheck(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	tuple, err := (&relationtuple.InternalRelationTuple{}).FromURLQuery(r.URL.Query())

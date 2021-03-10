@@ -808,12 +808,15 @@
       ],
       "properties": {
         "namespace": {
+          "description": "in: query",
           "type": "string"
         },
         "object": {
+          "description": "in: query",
           "type": "string"
         },
         "relation": {
+          "description": "in: query",
           "type": "string"
         },
         "subject": {

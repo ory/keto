@@ -21,6 +21,8 @@ import (
 )
 
 type (
+	// TODO add cases that use transact
+	// nolint:deadcode,unused
 	transactClient interface {
 		client
 		transactTuples(t require.TestingT, ins []*relationtuple.InternalRelationTuple, del []*relationtuple.InternalRelationTuple)

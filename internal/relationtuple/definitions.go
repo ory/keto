@@ -76,14 +76,18 @@ type Subject interface {
 
 // swagger:parameters getCheck deleteRelationTuple
 type InternalRelationTuple struct {
+	// in: query
 	// required: true
 	Namespace string `json:"namespace"`
+	// in: query
 	// required: true
 	Object string `json:"object"`
+	// in: query
 	// required: true
 	Relation string `json:"relation"`
 	// string encoding of the subject
 	//
+	// in: query
 	// required: true
 	Subject Subject `json:"subject"`
 }
