@@ -36,15 +36,6 @@ type (
 		protoRelations    []*acl.RelationTuple
 		internalRelations []*InternalRelationTuple
 	}
-	Subject interface {
-		// swagger:ignore
-		json.Marshaler
-
-		String() string
-		FromString(string) (Subject, error)
-		Equals(interface{}) bool
-		ToProto() *acl.Subject
-	}
 	SubjectID struct {
 		ID string `json:"id"`
 	}
@@ -54,13 +45,29 @@ type (
 		Relation  string  `json:"relation"`
 		Subject   Subject `json:"subject"`
 	}
-	TupleData interface {
-		GetSubject() *acl.Subject
-		GetObject() string
-		GetNamespace() string
-		GetRelation() string
-	}
 )
+
+// swagger:model subject
+type TupleData interface {
+	// swagger:ignore
+	GetSubject() *acl.Subject
+	GetObject() string
+	GetNamespace() string
+	GetRelation() string
+}
+
+// swagger:model subject
+type Subject interface {
+	// swagger:ignore
+	json.Marshaler
+
+	String() string
+	FromString(string) (Subject, error)
+	Equals(interface{}) bool
+
+	// swagger:ignore
+	ToProto() *acl.Subject
+}
 
 // The basic ACL relation tuple
 //
@@ -78,7 +85,7 @@ type InternalRelationTuple struct {
 	Subject Subject `json:"subject"`
 }
 
-// swagger:model Subject
+// swagger:model subject
 // nolint:deadcode,unused
 type stringEncodedSubject string
 
@@ -106,6 +113,7 @@ func SubjectFromString(s string) (Subject, error) {
 	return (&SubjectID{}).FromString(s)
 }
 
+// swagger:ignore
 func SubjectFromProto(gs *acl.Subject) (Subject, error) {
 	switch s := gs.GetRef().(type) {
 	case nil:
@@ -175,6 +183,7 @@ func (s *SubjectSet) ToURLQuery() url.Values {
 	}
 }
 
+// swagger:ignore
 func (s *SubjectID) ToProto() *acl.Subject {
 	return &acl.Subject{
 		Ref: &acl.Subject_Id{
@@ -183,6 +192,7 @@ func (s *SubjectID) ToProto() *acl.Subject {
 	}
 }
 
+// swagger:ignore
 func (s *SubjectSet) ToProto() *acl.Subject {
 	return &acl.Subject{
 		Ref: &acl.Subject_Set{

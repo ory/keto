@@ -47,25 +47,29 @@
         "parameters": [
           {
             "type": "string",
+            "x-go-name": "Namespace",
             "name": "namespace",
             "in": "query",
             "required": true
           },
           {
             "type": "string",
+            "x-go-name": "Object",
             "name": "object",
             "in": "query",
             "required": true
           },
           {
             "type": "string",
+            "x-go-name": "Relation",
             "name": "relation",
             "in": "query",
             "required": true
           },
           {
-            "type": "object",
-            "description": "Subject is either a concrete subject id or\na subject set expanding to more Subjects.",
+            "$ref": "#/definitions/subject",
+            "x-go-name": "Subject",
+            "description": "string encoding of the subject",
             "name": "subject",
             "in": "query"
           }
@@ -78,35 +82,7 @@
             }
           },
           "400": {
-            "description": "The standard error format",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "format": "int64"
-                },
-                "details": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "additionalProperties": true
-                  }
-                },
-                "message": {
-                  "type": "string"
-                },
-                "reason": {
-                  "type": "string"
-                },
-                "request": {
-                  "type": "string"
-                },
-                "status": {
-                  "type": "string"
-                }
-              }
-            }
+            "$ref": "#/responses/genericError"
           },
           "403": {
             "description": "getCheckResponse",
@@ -115,35 +91,7 @@
             }
           },
           "500": {
-            "description": "The standard error format",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "format": "int64"
-                },
-                "details": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "additionalProperties": true
-                  }
-                },
-                "message": {
-                  "type": "string"
-                },
-                "reason": {
-                  "type": "string"
-                },
-                "request": {
-                  "type": "string"
-                },
-                "status": {
-                  "type": "string"
-                }
-              }
-            }
+            "$ref": "#/responses/genericError"
           }
         }
       },
@@ -167,25 +115,29 @@
         "parameters": [
           {
             "type": "string",
+            "x-go-name": "Namespace",
             "name": "namespace",
             "in": "query",
             "required": true
           },
           {
             "type": "string",
+            "x-go-name": "Object",
             "name": "object",
             "in": "query",
             "required": true
           },
           {
             "type": "string",
+            "x-go-name": "Relation",
             "name": "relation",
             "in": "query",
             "required": true
           },
           {
-            "type": "object",
-            "description": "Subject is either a concrete subject id or\na subject set expanding to more Subjects.",
+            "$ref": "#/definitions/subject",
+            "x-go-name": "Subject",
+            "description": "string encoding of the subject",
             "name": "subject",
             "in": "query"
           }
@@ -198,35 +150,7 @@
             }
           },
           "400": {
-            "description": "The standard error format",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "format": "int64"
-                },
-                "details": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "additionalProperties": true
-                  }
-                },
-                "message": {
-                  "type": "string"
-                },
-                "reason": {
-                  "type": "string"
-                },
-                "request": {
-                  "type": "string"
-                },
-                "status": {
-                  "type": "string"
-                }
-              }
-            }
+            "$ref": "#/responses/genericError"
           },
           "403": {
             "description": "getCheckResponse",
@@ -235,35 +159,7 @@
             }
           },
           "500": {
-            "description": "The standard error format",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "format": "int64"
-                },
-                "details": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "additionalProperties": true
-                  }
-                },
-                "message": {
-                  "type": "string"
-                },
-                "reason": {
-                  "type": "string"
-                },
-                "request": {
-                  "type": "string"
-                },
-                "status": {
-                  "type": "string"
-                }
-              }
-            }
+            "$ref": "#/responses/genericError"
           }
         }
       }
@@ -288,18 +184,21 @@
         "parameters": [
           {
             "type": "string",
+            "x-go-name": "Namespace",
             "name": "namespace",
             "in": "query",
             "required": true
           },
           {
             "type": "string",
+            "x-go-name": "Object",
             "name": "object",
             "in": "query",
             "required": true
           },
           {
             "type": "string",
+            "x-go-name": "Relation",
             "name": "relation",
             "in": "query",
             "required": true
@@ -307,6 +206,7 @@
           {
             "type": "integer",
             "format": "int64",
+            "x-go-name": "Depth",
             "name": "depth",
             "in": "query"
           }
@@ -319,97 +219,13 @@
             }
           },
           "400": {
-            "description": "The standard error format",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "format": "int64"
-                },
-                "details": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "additionalProperties": true
-                  }
-                },
-                "message": {
-                  "type": "string"
-                },
-                "reason": {
-                  "type": "string"
-                },
-                "request": {
-                  "type": "string"
-                },
-                "status": {
-                  "type": "string"
-                }
-              }
-            }
+            "$ref": "#/responses/genericError"
           },
           "404": {
-            "description": "The standard error format",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "format": "int64"
-                },
-                "details": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "additionalProperties": true
-                  }
-                },
-                "message": {
-                  "type": "string"
-                },
-                "reason": {
-                  "type": "string"
-                },
-                "request": {
-                  "type": "string"
-                },
-                "status": {
-                  "type": "string"
-                }
-              }
-            }
+            "$ref": "#/responses/genericError"
           },
           "500": {
-            "description": "The standard error format",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "format": "int64"
-                },
-                "details": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "additionalProperties": true
-                  }
-                },
-                "message": {
-                  "type": "string"
-                },
-                "reason": {
-                  "type": "string"
-                },
-                "request": {
-                  "type": "string"
-                },
-                "status": {
-                  "type": "string"
-                }
-              }
-            }
+            "$ref": "#/responses/genericError"
           }
         }
       }
@@ -433,35 +249,7 @@
             }
           },
           "500": {
-            "description": "The standard error format",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "format": "int64"
-                },
-                "details": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "additionalProperties": true
-                  }
-                },
-                "message": {
-                  "type": "string"
-                },
-                "reason": {
-                  "type": "string"
-                },
-                "request": {
-                  "type": "string"
-                },
-                "status": {
-                  "type": "string"
-                }
-              }
-            }
+            "$ref": "#/responses/genericError"
           }
         }
       }
@@ -518,16 +306,9 @@
   "definitions": {
     "NodeType": {
       "type": "integer",
-      "format": "int64"
-    },
-    "Subject": {
-      "description": "Subject is either a concrete subject id or\na subject set expanding to more Subjects.",
-      "type": "object",
-      "properties": {
-        "Ref": {
-          "$ref": "#/definitions/isSubject_Ref"
-        }
-      }
+      "format": "int64",
+      "x-go-name": "SwaggerNodeType",
+      "x-go-package": "github.com/ory/keto/internal/expand"
     },
     "expandTree": {
       "type": "object",
@@ -540,15 +321,18 @@
           "type": "array",
           "items": {
             "$ref": "#/definitions/expandTree"
-          }
+          },
+          "x-go-name": "Children"
         },
         "subject": {
-          "$ref": "#/definitions/Subject"
+          "$ref": "#/definitions/subject"
         },
         "type": {
           "$ref": "#/definitions/NodeType"
         }
-      }
+      },
+      "x-go-name": "Tree",
+      "x-go-package": "github.com/ory/keto/internal/expand"
     },
     "getCheckResponse": {
       "description": "The content of the allowed field is mirrored in the HTTP status code.",
@@ -560,9 +344,12 @@
       "properties": {
         "allowed": {
           "description": "whether the relation tuple is allowed",
-          "type": "boolean"
+          "type": "boolean",
+          "x-go-name": "Allowed"
         }
-      }
+      },
+      "x-go-name": "RESTResponse",
+      "x-go-package": "github.com/ory/keto/internal/check"
     },
     "healthNotReadyStatus": {
       "type": "object",
@@ -572,28 +359,88 @@
           "type": "object",
           "additionalProperties": {
             "type": "string"
-          }
+          },
+          "x-go-name": "Errors"
         }
-      }
+      },
+      "x-go-name": "swaggerNotReadyStatus",
+      "x-go-package": "github.com/ory/x/healthx"
     },
     "healthStatus": {
       "type": "object",
       "properties": {
         "status": {
           "description": "Status always contains \"ok\".",
+          "type": "string",
+          "x-go-name": "Status"
+        }
+      },
+      "x-go-name": "swaggerHealthStatus",
+      "x-go-package": "github.com/ory/x/healthx"
+    },
+    "subject": {
+      "type": "string",
+      "properties": {
+        "String": {
           "type": "string"
         }
-      }
-    },
-    "isSubject_Ref": {
-      "type": "object"
+      },
+      "x-go-name": "stringEncodedSubject",
+      "x-go-package": "github.com/ory/keto/internal/relationtuple"
     },
     "version": {
       "type": "object",
       "properties": {
         "version": {
           "description": "Version is the service's version.",
-          "type": "string"
+          "type": "string",
+          "x-go-name": "Version"
+        }
+      },
+      "x-go-name": "swaggerVersion",
+      "x-go-package": "github.com/ory/x/healthx"
+    }
+  },
+  "responses": {
+    "emptyResponse": {
+      "description": "An empty response"
+    },
+    "genericError": {
+      "description": "The standard error format",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int64",
+            "x-go-name": "Code"
+          },
+          "details": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "object"
+              }
+            },
+            "x-go-name": "Details"
+          },
+          "message": {
+            "type": "string",
+            "x-go-name": "Message"
+          },
+          "reason": {
+            "type": "string",
+            "x-go-name": "Reason"
+          },
+          "request": {
+            "type": "string",
+            "x-go-name": "Request"
+          },
+          "status": {
+            "type": "string",
+            "x-go-name": "Status"
+          }
         }
       }
     }

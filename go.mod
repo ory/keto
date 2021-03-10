@@ -12,12 +12,8 @@ require (
 	github.com/cenkalti/backoff/v3 v3.0.0
 	github.com/containerd/continuity v0.0.0-20200228182428-0f16d7a0959c // indirect
 	github.com/ghodss/yaml v1.0.0
-	github.com/go-openapi/errors v0.20.0
-	github.com/go-openapi/runtime v0.19.26
-	github.com/go-openapi/strfmt v0.20.0
-	github.com/go-openapi/swag v0.19.14
-	github.com/go-openapi/validate v0.20.2
-	github.com/go-swagger/go-swagger v0.26.1
+	github.com/go-openapi/validate v0.20.2 // indirect
+	github.com/go-swagger/go-swagger v0.22.1-0.20200306221957-4aad3a5f78b8
 	github.com/gobuffalo/pop/v5 v5.3.3
 	github.com/golang/mock v1.5.0
 	github.com/golang/protobuf v1.4.3
