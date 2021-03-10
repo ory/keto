@@ -121,12 +121,3 @@ func (g *cliClient) deleteTuple(t require.TestingT, r *relationtuple.InternalRel
 	require.NoError(t, err, "stdout: %s\nstderr: %s", stdout, stderr)
 	assert.Len(t, stderr, 0, stdout)
 }
-
-func (g *cliClient) transactTuples(t require.TestingT, ins []*relationtuple.InternalRelationTuple, del []*relationtuple.InternalRelationTuple) {
-	for _, i := range ins {
-		g.createTuple(t, i)
-	}
-	for _, d := range del {
-		g.deleteTuple(t, d)
-	}
-}

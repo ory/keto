@@ -12,7 +12,15 @@ import (
 	"github.com/ory/keto/internal/relationtuple"
 )
 
-type NodeType int
+// swagger:enum NodeType
+type NodeType string
+
+const (
+	Union        NodeType = "union"
+	Exclusion    NodeType = "exclusion"
+	Intersection NodeType = "intersection"
+	Leaf         NodeType = "leaf"
+)
 
 // swagger:model expandTree
 type Tree struct {
@@ -23,36 +31,12 @@ type Tree struct {
 	Children []*Tree               `json:"children,omitempty"`
 }
 
-// swagger:model NodeType
-type SwaggerNodeType string
-
-const (
-	Union NodeType = iota
-	Exclusion
-	Intersection
-	Leaf
-)
-
 var (
 	ErrUnknownNodeType = errors.New("unknown node type")
 )
 
 func (t NodeType) String() string {
-	switch t {
-	case Union:
-		return "union"
-	case Exclusion:
-		return "exclusion"
-	case Intersection:
-		return "intersection"
-	case Leaf:
-		return "leaf"
-	}
-	return ""
-}
-
-func (t NodeType) MarshalJSON() ([]byte, error) {
-	return []byte(`"` + t.String() + `"`), nil
+	return string(t)
 }
 
 func (t *NodeType) UnmarshalJSON(v []byte) error {

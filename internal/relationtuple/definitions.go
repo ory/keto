@@ -39,15 +39,17 @@ type (
 	SubjectID struct {
 		ID string `json:"id"`
 	}
-	RelationQuery struct {
-		Namespace string  `json:"namespace"`
-		Object    string  `json:"object"`
-		Relation  string  `json:"relation"`
-		Subject   Subject `json:"subject"`
-	}
 )
 
-// swagger:model subject
+type RelationQuery struct {
+	// required: true
+	Namespace string  `json:"namespace"`
+	Object    string  `json:"object"`
+	Relation  string  `json:"relation"`
+	Subject   Subject `json:"subject"`
+}
+
+// swagger:ignore
 type TupleData interface {
 	// swagger:ignore
 	GetSubject() *acl.Subject
@@ -61,17 +63,18 @@ type Subject interface {
 	// swagger:ignore
 	json.Marshaler
 
+	// swagger:ignore
 	String() string
+	// swagger:ignore
 	FromString(string) (Subject, error)
+	// swagger:ignore
 	Equals(interface{}) bool
 
 	// swagger:ignore
 	ToProto() *acl.Subject
 }
 
-// The basic ACL relation tuple
-//
-// swagger:parameters getCheck postCheck
+// swagger:parameters getCheck deleteRelationTuple
 type InternalRelationTuple struct {
 	// required: true
 	Namespace string `json:"namespace"`

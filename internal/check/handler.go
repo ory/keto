@@ -63,6 +63,13 @@ type RESTResponse struct {
 	Allowed bool `json:"allowed"`
 }
 
+// swagger:parameters getCheck
+type getCheckParams struct {
+	// swagger:allOf
+	// in: query
+	relationtuple.InternalRelationTuple
+}
+
 // swagger:route GET /check read getCheck
 //
 // Check a relation tuple

@@ -1,11 +1,11 @@
 package x
 
 type (
-	paginationOptions struct {
-		Token string
-		Size  int
+	PaginationOptions struct {
+		Token string `json:"page_token"`
+		Size  int    `json:"page_size"`
 	}
-	PaginationOptionSetter func(*paginationOptions) *paginationOptions
+	PaginationOptionSetter func(*PaginationOptions) *PaginationOptions
 )
 
 const (
@@ -13,21 +13,21 @@ const (
 )
 
 func WithToken(t string) PaginationOptionSetter {
-	return func(opts *paginationOptions) *paginationOptions {
+	return func(opts *PaginationOptions) *PaginationOptions {
 		opts.Token = t
 		return opts
 	}
 }
 
 func WithSize(size int) PaginationOptionSetter {
-	return func(opts *paginationOptions) *paginationOptions {
+	return func(opts *PaginationOptions) *PaginationOptions {
 		opts.Size = size
 		return opts
 	}
 }
 
-func GetPaginationOptions(modifiers ...PaginationOptionSetter) *paginationOptions {
-	opts := &paginationOptions{}
+func GetPaginationOptions(modifiers ...PaginationOptionSetter) *PaginationOptions {
+	opts := &PaginationOptions{}
 	for _, f := range modifiers {
 		opts = f(opts)
 	}

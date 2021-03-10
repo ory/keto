@@ -21,10 +21,13 @@ import (
 )
 
 type (
+	transactClient interface {
+		client
+		transactTuples(t require.TestingT, ins []*relationtuple.InternalRelationTuple, del []*relationtuple.InternalRelationTuple)
+	}
 	client interface {
 		createTuple(t require.TestingT, r *relationtuple.InternalRelationTuple)
 		deleteTuple(t require.TestingT, r *relationtuple.InternalRelationTuple)
-		transactTuples(t require.TestingT, ins []*relationtuple.InternalRelationTuple, del []*relationtuple.InternalRelationTuple)
 		queryTuple(t require.TestingT, q *relationtuple.RelationQuery, opts ...x.PaginationOptionSetter) *relationtuple.GetResponse
 		queryTupleErr(t require.TestingT, expected herodot.DefaultError, q *relationtuple.RelationQuery, opts ...x.PaginationOptionSetter)
 		check(t require.TestingT, r *relationtuple.InternalRelationTuple) bool
@@ -36,10 +39,24 @@ type (
 func Test(t *testing.T) {
 	for _, dsn := range x.GetDSNs(t) {
 		t.Run(fmt.Sprintf("dsn=%s", dsn.Name), func(t *testing.T) {
-			nspaces := []*namespace.Namespace{{
-				Name: "dreams",
-				ID:   0,
-			}}
+			nspaces := []*namespace.Namespace{
+				{
+					Name: "dreams0",
+					ID:   0,
+				},
+				{
+					Name: "dreams1",
+					ID:   1,
+				},
+				{
+					Name: "dreams2",
+					ID:   2,
+				},
+				{
+					Name: "dreams3",
+					ID:   3,
+				},
+			}
 
 			ctx, reg := newInitializedReg(t, dsn, nspaces)
 
@@ -48,7 +65,7 @@ func Test(t *testing.T) {
 
 			// The test cases start here
 			// We execute every test with the GRPC client (using the client commands) and REST client
-			for _, cl := range []client{
+			for ci, cl := range []client{
 				&grpcClient{
 					readRemote:  reg.Config().ReadAPIListenOn(),
 					writeRemote: reg.Config().WriteAPIListenOn(),
@@ -63,8 +80,12 @@ func Test(t *testing.T) {
 					Ctx:            ctx,
 					PersistentArgs: []string{"--" + cliclient.FlagReadRemote, reg.Config().ReadAPIListenOn(), "--" + cliclient.FlagWriteRemote, reg.Config().WriteAPIListenOn(), "--" + cmdx.FlagFormat, string(cmdx.FormatJSON)},
 				}},
+				&sdkClient{
+					readRemote:  reg.Config().ReadAPIListenOn(),
+					writeRemote: reg.Config().WriteAPIListenOn(),
+				},
 			} {
-				t.Run(fmt.Sprintf("client=%T", cl), runCases(cl, nspaces))
+				t.Run(fmt.Sprintf("client=%T", cl), runCases(cl, nspaces[ci:ci+1]))
 			}
 		})
 	}
