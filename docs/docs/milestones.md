@@ -26,20 +26,11 @@ Something is not working.
 
 #### Issues
 
-- [ ] CLI remote flag should be required
-      ([keto#287](https://github.com/ory/keto/issues/287)) -
-      [@Patrik](https://github.com/zepatrik)
 - [ ] Clarify where handlers are tested
       ([keto#407](https://github.com/ory/keto/issues/407)) -
       [@Patrik](https://github.com/zepatrik)
-- [ ] Non-nil return values despite errors
-      ([keto#433](https://github.com/ory/keto/issues/433)) -
-      [@Patrik](https://github.com/zepatrik)
-- [ ] Persistence errors are not properly handled and wrapped
-      ([keto#432](https://github.com/ory/keto/issues/432)) -
-      [@Patrik](https://github.com/zepatrik)
-- [ ] Command status --block is not blocking until healthy
-      ([keto#456](https://github.com/ory/keto/issues/456)) -
+- [x] CLI remote flag should be required
+      ([keto#287](https://github.com/ory/keto/issues/287)) -
       [@Patrik](https://github.com/zepatrik)
 - [x] REST Relations API returns null instead of `[]`
       ([keto#289](https://github.com/ory/keto/issues/289)) -
@@ -75,11 +66,20 @@ Something is not working.
 - [x] Write dedicated persistence tests
       ([keto#409](https://github.com/ory/keto/issues/409)) -
       [@Patrik](https://github.com/zepatrik)
+- [x] Persistence errors are not properly handled and wrapped
+      ([keto#432](https://github.com/ory/keto/issues/432)) -
+      [@Patrik](https://github.com/zepatrik)
+- [x] Non-nil return values despite errors
+      ([keto#433](https://github.com/ory/keto/issues/433)) -
+      [@Patrik](https://github.com/zepatrik)
 - [x] Don't use fmt.Sprintf to construct queries
       ([keto#434](https://github.com/ory/keto/issues/434)) -
       [@Patrik](https://github.com/zepatrik)
 - [x] Make errors debuggable and understandable
       ([keto#438](https://github.com/ory/keto/issues/438)) -
+      [@Patrik](https://github.com/zepatrik)
+- [x] Command status --block is not blocking until healthy
+      ([keto#456](https://github.com/ory/keto/issues/456)) -
       [@Patrik](https://github.com/zepatrik)
 
 ### [Feat](https://github.com/ory/keto/labels/feat)
@@ -168,17 +168,14 @@ Blocks milestones or other issues or pulls.
       [@Patrik](https://github.com/zepatrik)
 - [ ] SQL: make strings variable length
       ([keto#430](https://github.com/ory/keto/issues/430))
-- [ ] Non-nil return values despite errors
-      ([keto#433](https://github.com/ory/keto/issues/433)) -
-      [@Patrik](https://github.com/zepatrik)
-- [ ] Persistence errors are not properly handled and wrapped
-      ([keto#432](https://github.com/ory/keto/issues/432)) -
-      [@Patrik](https://github.com/zepatrik)
-- [ ] Command status --block is not blocking until healthy
-      ([keto#456](https://github.com/ory/keto/issues/456)) -
-      [@Patrik](https://github.com/zepatrik)
 - [x] Define and architect SQL schema and queries for querying relations
       ([keto#300](https://github.com/ory/keto/issues/300)) -
+      [@Patrik](https://github.com/zepatrik)
+- [x] Persistence errors are not properly handled and wrapped
+      ([keto#432](https://github.com/ory/keto/issues/432)) -
+      [@Patrik](https://github.com/zepatrik)
+- [x] Non-nil return values despite errors
+      ([keto#433](https://github.com/ory/keto/issues/433)) -
       [@Patrik](https://github.com/zepatrik)
 - [x] Don't use fmt.Sprintf to construct queries
       ([keto#434](https://github.com/ory/keto/issues/434)) -
@@ -194,6 +191,9 @@ Blocks milestones or other issues or pulls.
       [@Patrik](https://github.com/zepatrik)
 - [x] Allow deletion of relation tuples
       ([keto#452](https://github.com/ory/keto/issues/452)) -
+      [@Patrik](https://github.com/zepatrik)
+- [x] Command status --block is not blocking until healthy
+      ([keto#456](https://github.com/ory/keto/issues/456)) -
       [@Patrik](https://github.com/zepatrik)
 
 #### Pull Requests
