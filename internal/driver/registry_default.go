@@ -4,6 +4,8 @@ import (
 	"context"
 	"net/http"
 
+	acl "github.com/ory/keto/proto/ory/keto/acl/v1alpha1"
+
 	grpc_logrus "github.com/grpc-ecosystem/go-grpc-middleware/logging/logrus"
 	"github.com/ory/x/reqlog"
 	"github.com/urfave/negroni"
@@ -36,6 +38,7 @@ var (
 	_ x.WriterProvider              = (*RegistryDefault)(nil)
 	_ x.LoggerProvider              = (*RegistryDefault)(nil)
 	_ Registry                      = (*RegistryDefault)(nil)
+	_ acl.VersionServiceServer      = (*RegistryDefault)(nil)
 )
 
 type (
@@ -89,6 +92,10 @@ func (r *RegistryDefault) HealthServer() *health.Server {
 	}
 
 	return r.healthServer
+}
+
+func (r *RegistryDefault) GetVersion(_ context.Context, _ *acl.GetVersionRequest) (*acl.GetVersionResponse, error) {
+	return &acl.GetVersionResponse{Version: config.Version}, nil
 }
 
 func (r *RegistryDefault) Tracer() *tracing.Tracer {
@@ -240,6 +247,7 @@ func (r *RegistryDefault) ReadGRPCServer() *grpc.Server {
 	)
 
 	grpcHealthV1.RegisterHealthServer(s, r.HealthServer())
+	acl.RegisterVersionServiceServer(s, r)
 	reflection.Register(s)
 
 	for _, h := range r.allHandlers() {
@@ -266,6 +274,7 @@ func (r *RegistryDefault) WriteGRPCServer() *grpc.Server {
 	)
 
 	grpcHealthV1.RegisterHealthServer(s, r.HealthServer())
+	acl.RegisterVersionServiceServer(s, r)
 	reflection.Register(s)
 
 	for _, h := range r.allHandlers() {
