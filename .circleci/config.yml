@@ -1,14 +1,15 @@
 version: 2.1
 
 orbs:
-  sdk: ory/sdk@0.1.36
-  changelog: ory/changelog@0.1.2
-  goreleaser: ory/goreleaser@0.1.17
+  sdk: ory/sdk@0.1.40
+  changelog: ory/changelog@0.1.8
+  goreleaser: ory/goreleaser@0.1.28
   slack: circleci/slack@3.4.2
-  nancy: ory/nancy@0.0.12
-  docs: ory/docs@0.0.8
+  nancy: ory/nancy@0.0.17
+  docs: ory/docs@0.0.10
   golangci: ory/golangci@0.0.18
   go: circleci/go@1.5.0
+  prettier: ory/prettier@0.0.11
 
 jobs:
   test:
@@ -46,6 +47,16 @@ jobs:
       - run: go mod tidy
       - go/save-cache
 
+      # Validate
+      - golangci/lint
+      - docs/check-format
+      - prettier/install
+      - prettier/check
+      - prettier/install:
+          dir: docs/
+      - prettier/check:
+          dir: docs/
+
       # Tests
       - run: go test -tags sqlite -race -short -v ./...
       - run: .bin/go-acc -o coverage.txt ./... -- -v -tags sqlite
@@ -57,16 +68,6 @@ jobs:
       # Test documentation examples
       -
         run: make test-docs-samples
-  validate:
-    docker:
-      - image: cimg/go:1.16-node
-        environment:
-          GO111MODULE: 'on'
-    steps:
-      - checkout
-      - golangci/lint
-      - docs/check-format
-      - run: npm ci && npm run format:check
 
 workflows:
   version: 2
@@ -74,11 +75,6 @@ workflows:
     jobs:
       -
         nancy/test:
-          filters:
-            tags:
-              only: /.*/
-      -
-        validate:
           filters:
             tags:
               only: /.*/
@@ -91,7 +87,6 @@ workflows:
         changelog/generate:
           requires:
             - test
-            - validate
           filters:
             tags:
               only: /.*/
@@ -101,7 +96,6 @@ workflows:
         docs/build:
           requires:
             - test
-            - validate
           filters:
             tags:
               only: /.*/
@@ -117,7 +111,6 @@ workflows:
         sdk/release:
           requires:
             - test
-            - validate
             - goreleaser/release
           filters:
             tags:
@@ -134,7 +127,6 @@ workflows:
           requires:
             - goreleaser/test
             - test
-            - validate
           filters:
             branches:
               ignore: /.*/
