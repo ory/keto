@@ -88,7 +88,7 @@ func (a *Client) DeleteRelationTuple(params *DeleteRelationTupleParams, opts ...
 		Method:             "DELETE",
 		PathPattern:        "/relationtuple",
 		ProducesMediaTypes: []string{"application/json"},
-		ConsumesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/x-www-form-urlencoded"},
 		Schemes:            []string{"http", "https"},
 		Params:             params,
 		Reader:             &DeleteRelationTupleReader{formats: a.formats},

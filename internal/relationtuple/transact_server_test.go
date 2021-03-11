@@ -24,7 +24,8 @@ func TestWriteHandlers(t *testing.T) {
 	r := httprouter.New()
 	wr := &x.WriteRouter{Router: r}
 	rr := &x.ReadRouter{Router: r}
-	reg := driver.NewMemoryTestRegistry(t, []*namespace.Namespace{{Name: "handler test"}})
+	nspace := &namespace.Namespace{Name: "write handler test"}
+	reg := driver.NewMemoryTestRegistry(t, []*namespace.Namespace{nspace})
 	h := relationtuple.NewHandler(reg)
 	h.RegisterWriteRoutes(wr)
 	h.RegisterReadRoutes(rr)
@@ -32,7 +33,7 @@ func TestWriteHandlers(t *testing.T) {
 	defer ts.Close()
 
 	t.Run("method=create", func(t *testing.T) {
-		create := func(raw []byte) *http.Response {
+		doCreate := func(raw []byte) *http.Response {
 			req, err := http.NewRequest(http.MethodPut, ts.URL+relationtuple.RouteBase, bytes.NewBuffer(raw))
 			require.NoError(t, err)
 			resp, err := ts.Client().Do(req)
@@ -43,7 +44,7 @@ func TestWriteHandlers(t *testing.T) {
 
 		t.Run("case=creates tuple", func(t *testing.T) {
 			rt := &relationtuple.InternalRelationTuple{
-				Namespace: "handler test",
+				Namespace: nspace.Name,
 				Object:    "obj",
 				Relation:  "rel",
 				Subject:   &relationtuple.SubjectID{ID: "subj"},
@@ -51,7 +52,7 @@ func TestWriteHandlers(t *testing.T) {
 			payload, err := json.Marshal(rt)
 			require.NoError(t, err)
 
-			resp := create(payload)
+			resp := doCreate(payload)
 
 			assert.Equal(t, http.StatusCreated, resp.StatusCode)
 
@@ -79,8 +80,31 @@ func TestWriteHandlers(t *testing.T) {
 		})
 
 		t.Run("case=returns bad request on JSON parse error", func(t *testing.T) {
-			resp := create([]byte("foo"))
+			resp := doCreate([]byte("foo"))
 			assert.Equal(t, http.StatusBadRequest, resp.StatusCode)
+		})
+	})
+
+	t.Run("method=delete", func(t *testing.T) {
+		t.Run("case=deletes a tuple", func(t *testing.T) {
+			rt := &relationtuple.InternalRelationTuple{
+				Namespace: nspace.Name,
+				Object:    "deleted obj",
+				Relation:  "deleted rel",
+				Subject:   &relationtuple.SubjectID{ID: "deleted subj"},
+			}
+			require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), rt))
+
+			req, err := http.NewRequest(http.MethodDelete, ts.URL+relationtuple.RouteBase+"?"+rt.ToURLQuery().Encode(), nil)
+			require.NoError(t, err)
+			resp, err := ts.Client().Do(req)
+			require.NoError(t, err)
+			assert.Equal(t, http.StatusNoContent, resp.StatusCode)
+
+			// set a size > 1 just to make sure it gets all
+			actualRTs, _, err := reg.RelationTupleManager().GetRelationTuples(context.Background(), (*relationtuple.RelationQuery)(rt), x.WithSize(10))
+			require.NoError(t, err)
+			assert.Equal(t, []*relationtuple.InternalRelationTuple{}, actualRTs)
 		})
 	})
 }

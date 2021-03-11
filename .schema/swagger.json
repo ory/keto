@@ -698,7 +698,7 @@
       "delete": {
         "description": "Delete a relation tuple",
         "consumes": [
-          "application/json"
+          "application/x-www-form-urlencoded"
         ],
         "produces": [
           "application/json"
