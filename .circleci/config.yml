@@ -14,43 +14,60 @@ orbs:
 jobs:
   test:
     docker:
-      -
-        image: cimg/go:1.16-node
+      - image: cimg/go:1.16
         environment:
           TEST_DATABASE_POSTGRESQL: postgres://test:test@localhost:5432/keto?sslmode=disable
           TEST_DATABASE_MYSQL: mysql://root:test@(localhost:3306)/mysql?parseTime=true&multiStatements=true
           TEST_DATABASE_COCKROACHDB: cockroach://root@localhost:26257/defaultdb?sslmode=disable
-      -
-        image: postgres:11.8
+      - image: postgres:11.8
         environment:
           POSTGRES_USER: test
           POSTGRES_PASSWORD: test
           POSTGRES_DB: keto
-      -
-        image: mysql:8.0
+      - image: mysql:8.0
         environment:
           MYSQL_ROOT_PASSWORD: test
-      -
-        image: cockroachdb/cockroach:v20.2.4
+      - image: cockroachdb/cockroach:v20.2.4
         command: start-single-node --insecure
     steps:
       - checkout
       - setup_remote_docker
-      - run: sudo npm i -g npm@7
+
       # Installation
       - go/load-cache
       - go/mod-download
-      - golangci/install
-      - nancy/install
       - run: |-
-          make .bin/swagger
           make .bin/goveralls
           make .bin/go-acc
       - run: go mod tidy
       - go/save-cache
 
-      # Validate
+      # Tests
+      - run: .bin/go-acc -o coverage.txt ./... -- -v -tags sqlite
+
+      # Submit coverage details
+      - run: test -z "$CIRCLE_PR_NUMBER" && .bin/goveralls -service=circle-ci -coverprofile=coverage.txt -repotoken=$COVERALLS_REPO_TOKEN || echo "forks are not allowed to push to coveralls"
+
+  test-race:
+    docker:
+      - image: cimg/go:1.16
+    steps:
+      - checkout
+      - go/load-cache
+      - go/mod-download
+      - run: go mod tidy
+      - go/save-cache
+      - run: go test -tags sqlite -race -short -v ./...
+
+  validate:
+    docker:
+      - image: cimg/go:1.16-node
+    steps:
+      - checkout
+      - run: sudo npm i -g npm@7
+      - golangci/install
       - golangci/lint
+      - nancy/install
       - nancy/check
       - prettier/install
       - prettier/check
@@ -59,34 +76,22 @@ jobs:
       - prettier/check:
           dir: docs/
 
-      # Tests
-      - run: go test -tags sqlite -race -short -v ./...
-      - run: .bin/go-acc -o coverage.txt ./... -- -v -tags sqlite
-
-      # Submit coverage details
-      -
-        run: test -z "$CIRCLE_PR_NUMBER" && .bin/goveralls -service=circle-ci -coverprofile=coverage.txt -repotoken=$COVERALLS_REPO_TOKEN || echo "forks are not allowed to push to coveralls"
-
       # Test documentation examples
-      -
-        run: make test-docs-samples
+      - run: make test-docs-samples
 
 workflows:
   version: 2
   "test, build, and relase":
     jobs:
-      -
-        nancy/test:
+      - nancy/test:
           filters:
             tags:
               only: /.*/
-      -
-        test:
+      - test:
           filters:
             tags:
               only: /.*/
-      -
-        changelog/generate:
+      - changelog/generate:
           requires:
             - test
           filters:
@@ -94,8 +99,7 @@ workflows:
               only: /.*/
             branches:
               only: master
-      -
-        docs/build:
+      - docs/build:
           requires:
             - test
           filters:
@@ -103,14 +107,13 @@ workflows:
               only: /.*/
             branches:
               only: master
-#      -
-#        sdk/generate:
-#          appname: Ory_Keto
-#          requires:
-#            - test
-#            - validate
-      -
-        sdk/release:
+      #      -
+      #        sdk/generate:
+      #          appname: Ory_Keto
+      #          requires:
+      #            - test
+      #            - validate
+      - sdk/release:
           requires:
             - test
             - goreleaser/release
@@ -119,13 +122,11 @@ workflows:
               only: /.*/
             branches:
               ignore: /.*/
-      -
-        goreleaser/test:
+      - goreleaser/test:
           filters:
             tags:
               only: /.*/
-      -
-        goreleaser/release:
+      - goreleaser/release:
           requires:
             - goreleaser/test
             - test
@@ -140,8 +141,7 @@ workflows:
           filters:
             tags:
               only: /.*/
-      -
-        goreleaser/newsletter-draft:
+      - goreleaser/newsletter-draft:
           chimp-list: f605a41b53
           chimp-segment: 6479489
           requires:
@@ -149,8 +149,7 @@ workflows:
           filters:
             tags:
               only: /.*/
-      -
-        slack/approval-notification:
+      - slack/approval-notification:
           message: Pending approval
           channel: release-automation
           requires:
@@ -158,16 +157,14 @@ workflows:
           filters:
             tags:
               only: /.*/
-      -
-        newsletter-approval:
+      - newsletter-approval:
           type: approval
           requires:
             - goreleaser/newsletter-draft
           filters:
             tags:
               only: /.*/
-      -
-        goreleaser/newsletter-send:
+      - goreleaser/newsletter-send:
           chimp-list: f605a41b53
           requires:
             - newsletter-approval
