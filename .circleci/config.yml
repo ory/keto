@@ -83,7 +83,7 @@ workflows:
   version: 2
   "test, build, and relase":
     jobs:
-      - nancy/test:
+      - validate:
           filters:
             tags:
               only: /.*/
@@ -91,9 +91,15 @@ workflows:
           filters:
             tags:
               only: /.*/
+      - test-race:
+          filters:
+            tags:
+              only: /.*/
       - changelog/generate:
           requires:
             - test
+            - test-race
+            - validate
           filters:
             tags:
               only: /.*/
@@ -102,6 +108,8 @@ workflows:
       - docs/build:
           requires:
             - test
+            - test-race
+            - validate
           filters:
             tags:
               only: /.*/
@@ -116,6 +124,8 @@ workflows:
       - sdk/release:
           requires:
             - test
+            - test-race
+            - validate
             - goreleaser/release
           filters:
             tags:
@@ -130,6 +140,8 @@ workflows:
           requires:
             - goreleaser/test
             - test
+            - test-race
+            - validate
           filters:
             branches:
               ignore: /.*/
