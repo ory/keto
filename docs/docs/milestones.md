@@ -163,13 +163,13 @@ Blocks milestones or other issues or pulls.
 - [ ] Next Gen Documentation
       ([keto#420](https://github.com/ory/keto/issues/420)) -
       [@Patrik](https://github.com/zepatrik)
-- [ ] Add health check and version endpoints to read/write REST (and gRPC?) API
-      ([keto#422](https://github.com/ory/keto/issues/422)) -
-      [@Patrik](https://github.com/zepatrik)
 - [ ] SQL: make strings variable length
       ([keto#430](https://github.com/ory/keto/issues/430))
 - [x] Define and architect SQL schema and queries for querying relations
       ([keto#300](https://github.com/ory/keto/issues/300)) -
+      [@Patrik](https://github.com/zepatrik)
+- [x] Add health check and version endpoints to read/write REST (and gRPC?) API
+      ([keto#422](https://github.com/ory/keto/issues/422)) -
       [@Patrik](https://github.com/zepatrik)
 - [x] Persistence errors are not properly handled and wrapped
       ([keto#432](https://github.com/ory/keto/issues/432)) -
