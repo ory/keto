@@ -741,6 +741,37 @@
           "204": {
             "description": "Empty responses are sent when, for example, resources are deleted. The HTTP status code for empty responses is typically 201."
           },
+          "400": {
+            "description": "The standard error format",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "details": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": true
+                  }
+                },
+                "message": {
+                  "type": "string"
+                },
+                "reason": {
+                  "type": "string"
+                },
+                "request": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string"
+                }
+              }
+            }
+          },
           "500": {
             "description": "The standard error format",
             "schema": {

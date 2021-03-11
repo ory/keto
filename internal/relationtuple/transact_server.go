@@ -110,6 +110,7 @@ func (h *handler) createRelation(w http.ResponseWriter, r *http.Request, _ httpr
 //
 //     Responses:
 //       204: emptyResponse
+//       400: genericError
 //       500: genericError
 func (h *handler) deleteRelation(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	rel, err := (&InternalRelationTuple{}).FromURLQuery(r.URL.Query())
