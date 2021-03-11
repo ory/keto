@@ -27,18 +27,32 @@ func GetDSNs(t testing.TB) []*DsnT {
 		},
 	}
 	if !testing.Short() {
+		var mysql, postgres, cockroach string
+
+		dockertest.Parallel([]func(){
+			func() {
+				mysql = dockertest.RunTestMySQL(t)
+			},
+			func() {
+				postgres = dockertest.RunTestPostgreSQL(t)
+			},
+			func() {
+				cockroach = dockertest.RunTestCockroachDB(t)
+			},
+		})
+
 		dsns = append(dsns,
 			&DsnT{
 				Name: "mysql",
-				Conn: dockertest.RunTestMySQL(t),
+				Conn: mysql,
 			},
 			&DsnT{
 				Name: "postgres",
-				Conn: dockertest.RunTestPostgreSQL(t),
+				Conn: postgres,
 			},
 			&DsnT{
 				Name: "cockroach",
-				Conn: dockertest.RunTestCockroachDB(t),
+				Conn: cockroach,
 			},
 		)
 
