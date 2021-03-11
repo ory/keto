@@ -8,6 +8,7 @@ orbs:
   nancy: ory/nancy@0.0.12
   docs: ory/docs@0.0.8
   golangci: ory/golangci@0.0.13
+  go: circleci/go@1.5.0
 
 jobs:
   test:
@@ -36,18 +37,14 @@ jobs:
       - setup_remote_docker
       - run: sudo npm i -g npm@7
       # Installation
-      -
-        run: go mod verify
-      -
-        run: go install github.com/ory/keto
-      -
-        run: go install github.com/go-swagger/go-swagger/cmd/swagger github.com/mattn/goveralls golang.org/x/tools/cmd/cover github.com/ory/go-acc
+      - go/load-cache
+      - go/mod-download
+      - run: go install github.com/go-swagger/go-swagger/cmd/swagger github.com/mattn/goveralls golang.org/x/tools/cmd/cover github.com/ory/go-acc
+      - go/save-cache
 
       # Tests
-      -
-        run: go test -tags sqlite -race -short -v ./...
-      -
-        run: go-acc -o coverage.txt ./... -- -v -tags sqlite
+      - run: go test -tags sqlite -race -short -v ./...
+      - run: go-acc -o coverage.txt ./... -- -v -tags sqlite
 
       # Submit coverage details
       -
