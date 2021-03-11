@@ -11,7 +11,6 @@
     "prettierTarget": "contrib/**/*.{js,md,json,yml}|*.md"
   },
   "devDependencies": {
-    "@openapitools/openapi-generator-cli": "^2.1.18",
     "opencollective": "^1.0.3",
     "ory-prettier-styles": "^1.1.2",
     "prettier": "^2.2.1"
@@ -27,7 +26,6 @@
   },
   "scripts": {
     "format": "prettier --write ${npm_package_config_prettierTarget}",
-    "format:check": "prettier --check ${npm_package_config_prettierTarget}",
-    "openapi-generator-cli": "openapi-generator-cli"
+    "format:check": "prettier --check ${npm_package_config_prettierTarget}"
   }
 }

@@ -24,9 +24,6 @@ ifneq ("$(shell base64 Makefile) $(shell base64 go.mod) $(shell base64 go.sum)",
 		echo "$$(base64 Makefile) $$(base64 go.mod) $$(base64 go.sum)" > .bin/.lock
 endif
 
-.bin/cli: go.mod go.sum Makefile
-		go build -o .bin/cli -tags sqlite github.com/ory/cli
-
 .PHONY: format
 format:
 		goimports -w -local github.com/ory/keto *.go internal cmd contrib
@@ -47,14 +44,14 @@ install: deps
 
 # Generates the SDKs
 .PHONY: sdk
-sdk: deps .bin/cli
-		swagger generate spec -m -o ./.schema/swagger.schema.json -x internal/httpclient -x proto/ory/keto -x docker
-		ory dev swagger sanitize ./.schema/swagger.schema.json
-		swagger flatten --with-flatten=remove-unused -o ./.schema/swagger.schema.json ./.schema/swagger.schema.json
-		swagger validate ./.schema/swagger.schema.json
+sdk: deps
+		swagger generate spec -m -o ./.schema/swagger.json -x internal/httpclient -x proto/ory/keto -x docker
+		ory dev swagger sanitize ./.schema/swagger.json
+		swagger flatten --with-flatten=remove-unused -o ./.schema/swagger.json ./.schema/swagger.json
+		swagger validate ./.schema/swagger.json
 		rm -rf internal/httpclient
 		mkdir -p internal/httpclient
-		swagger generate client -f ./.schema/swagger.schema.json -t internal/httpclient -A Ory_Keto
+		swagger generate client -f ./.schema/swagger.json -t internal/httpclient -A Ory_Keto
 		make format
 
 .PHONY: build

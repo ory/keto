@@ -119,7 +119,7 @@ func (h *Handler) getCheck(w http.ResponseWriter, r *http.Request, _ httprouter.
 //     Responses:
 //       200: getCheckResponse
 //       400: genericError
-//		 403: getCheckResponse
+//       403: getCheckResponse
 //       500: genericError
 func (h *Handler) postCheck(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	var tuple relationtuple.InternalRelationTuple

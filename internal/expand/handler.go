@@ -68,7 +68,7 @@ type getExpandRequest struct {
 //     Responses:
 //       200: expandTree
 //       400: genericError
-//		 404: genericError
+//       404: genericError
 //       500: genericError
 func (h *handler) getExpand(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	depth, err := strconv.ParseInt(r.URL.Query().Get("depth"), 0, 0)

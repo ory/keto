@@ -75,7 +75,7 @@ type bodyRelationTuple struct {
 //
 //     Responses:
 //       201: InternalRelationTuple
-//		 400: genericError
+//       400: genericError
 //       500: genericError
 func (h *handler) createRelation(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	var rel InternalRelationTuple

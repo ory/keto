@@ -78,7 +78,7 @@ type getRelationsParams struct {
 //
 //     Responses:
 //       200: getRelationTuplesResponse
-//		 404: genericError
+//       404: genericError
 //       500: genericError
 func (h *handler) getRelations(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	q := r.URL.Query()

@@ -6,14 +6,6 @@ replace github.com/soheilhy/cmux => github.com/soheilhy/cmux v0.1.5-0.2021011423
 
 replace github.com/ory/dockertest/v3 => github.com/ory/dockertest/v3 v3.6.3
 
-// Required because github.com/ory/kratos rewrites github.com/ory/kratos-client-go to
-// github.com/ory/kratos/internal/httpclient
-replace github.com/ory/kratos-client-go => github.com/ory/kratos-client-go v0.5.4-alpha.1.0.20210210170256-960b093d8bf9
-
-replace github.com/ory/kratos/corp => github.com/ory/kratos/corp v0.0.0-20210118092700-c2358be1e867
-
-replace github.com/ory/cli => github.com/ory/cli v0.0.45-0.20210308171738-ad86ae6195ae
-
 require (
 	github.com/HdrHistogram/hdrhistogram-go v1.0.1 // indirect
 	github.com/bufbuild/buf v0.31.1
@@ -33,7 +25,7 @@ require (
 	github.com/grpc-ecosystem/go-grpc-middleware v1.0.0
 	github.com/julienschmidt/httprouter v1.2.0
 	github.com/mattn/goveralls v0.0.8
-	github.com/ory/cli v0.0.41
+	github.com/ory/cli v0.0.11
 	github.com/ory/go-acc v0.2.6
 	github.com/ory/graceful v0.1.1
 	github.com/ory/herodot v0.9.2
