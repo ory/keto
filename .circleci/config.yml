@@ -40,6 +40,8 @@ jobs:
       # Installation
       - go/load-cache
       - go/mod-download
+      - golangci/install
+      - nancy/install
       - run: |-
           make .bin/swagger
           make .bin/goveralls
@@ -49,7 +51,7 @@ jobs:
 
       # Validate
       - golangci/lint
-      - docs/check-format
+      - nancy/check
       - prettier/install
       - prettier/check
       - prettier/install:
