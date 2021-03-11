@@ -39,7 +39,11 @@ jobs:
       # Installation
       - go/load-cache
       - go/mod-download
-      - run: go install github.com/go-swagger/go-swagger/cmd/swagger github.com/mattn/goveralls golang.org/x/tools/cmd/cover github.com/ory/go-acc
+      - run: |-
+          make .bin/swagger
+          make .bin/goveralls
+          make .bin/go-acc
+      - run: go mod tidy
       - go/save-cache
 
       # Tests
