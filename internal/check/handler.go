@@ -86,6 +86,12 @@ func (h *Handler) getCheck(w http.ResponseWriter, r *http.Request, _ httprouter.
 	tuple, err := (&relationtuple.InternalRelationTuple{}).FromURLQuery(r.URL.Query())
 	if err != nil {
 		h.d.Writer().WriteError(w, r, herodot.ErrBadRequest.WithError(err.Error()))
+		return
+	}
+
+	if tuple.Subject == nil {
+		h.d.Writer().WriteError(w, r, herodot.ErrBadRequest.WithReason("subject has to be specified"))
+		return
 	}
 
 	allowed, err := h.d.PermissionEngine().SubjectIsAllowed(r.Context(), tuple)

@@ -1,0 +1,104 @@
+package check_test
+
+import (
+	"context"
+	"io"
+	"net/http"
+	"net/http/httptest"
+	"net/url"
+	"testing"
+
+	"github.com/julienschmidt/httprouter"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+	"github.com/tidwall/gjson"
+
+	"github.com/ory/keto/internal/check"
+	"github.com/ory/keto/internal/driver"
+	"github.com/ory/keto/internal/namespace"
+	"github.com/ory/keto/internal/relationtuple"
+	"github.com/ory/keto/internal/x"
+)
+
+func assertAllowed(t *testing.T, resp *http.Response) {
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+
+	body, err := io.ReadAll(resp.Body)
+	require.NoError(t, err)
+	assert.True(t, gjson.GetBytes(body, "allowed").Bool())
+}
+
+func assertDenied(t *testing.T, resp *http.Response) {
+	assert.Equal(t, http.StatusForbidden, resp.StatusCode)
+
+	body, err := io.ReadAll(resp.Body)
+	require.NoError(t, err)
+	assert.False(t, gjson.GetBytes(body, "allowed").Bool())
+}
+
+func TestRESTHandler(t *testing.T) {
+	nspaces := []*namespace.Namespace{{
+		Name: "check handler",
+	}}
+
+	reg := driver.NewMemoryTestRegistry(t, nspaces)
+	h := check.NewHandler(reg)
+	r := httprouter.New()
+	h.RegisterReadRoutes(&x.ReadRouter{Router: r})
+	ts := httptest.NewServer(r)
+	defer ts.Close()
+
+	t.Run("case=returns bad request on malformed input", func(t *testing.T) {
+		resp, err := ts.Client().Get(ts.URL + check.RouteBase + "?" + url.Values{
+			"subject": {"not#a valid userset rewrite"},
+		}.Encode())
+		require.NoError(t, err)
+
+		assert.Equal(t, http.StatusBadRequest, resp.StatusCode)
+	})
+
+	t.Run("case=returns bad request on missing subject", func(t *testing.T) {
+		resp, err := ts.Client().Get(ts.URL + check.RouteBase)
+		require.NoError(t, err)
+
+		assert.Equal(t, http.StatusBadRequest, resp.StatusCode)
+		body, err := io.ReadAll(resp.Body)
+		require.NoError(t, err)
+		assert.Contains(t, string(body), "subject has to be specified")
+	})
+
+	t.Run("case=returns denied on unknown namespace", func(t *testing.T) {
+		resp, err := ts.Client().Get(ts.URL + check.RouteBase + "?" + url.Values{
+			"namespace": {"not " + nspaces[0].Name},
+			"subject":   {"foo"},
+		}.Encode())
+		require.NoError(t, err)
+
+		assertDenied(t, resp)
+	})
+
+	t.Run("case=returns allowed", func(t *testing.T) {
+		rt := &relationtuple.InternalRelationTuple{
+			Namespace: nspaces[0].Name,
+			Object:    "o",
+			Relation:  "r",
+			Subject:   &relationtuple.SubjectID{ID: "s"},
+		}
+		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), rt))
+
+		resp, err := ts.Client().Get(ts.URL + check.RouteBase + "?" + rt.ToURLQuery().Encode())
+		require.NoError(t, err)
+
+		assertAllowed(t, resp)
+	})
+
+	t.Run("case=returns denied", func(t *testing.T) {
+		resp, err := ts.Client().Get(ts.URL + check.RouteBase + "?" + url.Values{
+			"namespace": {nspaces[0].Name},
+			"subject":   {"foo"},
+		}.Encode())
+		require.NoError(t, err)
+
+		assertDenied(t, resp)
+	})
+}
