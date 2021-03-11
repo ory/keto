@@ -88,7 +88,7 @@ func (h *handler) createRelation(w http.ResponseWriter, r *http.Request, _ httpr
 	h.d.Logger().WithFields(rel.ToLoggerFields()).Debug("creating relation tuple")
 
 	if err := h.d.RelationTupleManager().WriteRelationTuples(r.Context(), &rel); err != nil {
-		h.d.Logger().WithError(err).WithField("relationtuple", rel).Errorf("got an error while creating the relation tuple")
+		h.d.Logger().WithError(err).WithFields(rel.ToLoggerFields()).Errorf("got an error while creating the relation tuple")
 		h.d.Writer().WriteError(w, r, errors.WithStack(herodot.ErrInternalServerError.WithError(err.Error())))
 		return
 	}
@@ -101,7 +101,7 @@ func (h *handler) createRelation(w http.ResponseWriter, r *http.Request, _ httpr
 // Delete a relation tuple
 //
 //     Consumes:
-//     -  application/json
+//     -  application/x-www-form-urlencoded
 //
 //     Produces:
 //     - application/json
@@ -110,17 +110,18 @@ func (h *handler) createRelation(w http.ResponseWriter, r *http.Request, _ httpr
 //
 //     Responses:
 //       204: emptyResponse
+//       400: genericError
 //       500: genericError
 func (h *handler) deleteRelation(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	rel, err := (&InternalRelationTuple{}).FromURLQuery(r.URL.Query())
 	if err != nil {
-		h.d.Writer().WriteError(w, r, errors.WithStack(herodot.ErrBadRequest))
+		h.d.Writer().WriteError(w, r, herodot.ErrBadRequest.WithError(err.Error()))
 		return
 	}
 
 	if err := h.d.RelationTupleManager().DeleteRelationTuples(r.Context(), rel); err != nil {
-		h.d.Logger().WithError(err).WithFields(rel.ToLoggerFields()).Errorf("got an error while creating the relation tuple")
-		h.d.Writer().WriteError(w, r, errors.WithStack(herodot.ErrInternalServerError))
+		h.d.Logger().WithError(err).WithFields(rel.ToLoggerFields()).Errorf("got an error while deleting the relation tuple")
+		h.d.Writer().WriteError(w, r, herodot.ErrInternalServerError.WithError(err.Error()))
 		return
 	}
 

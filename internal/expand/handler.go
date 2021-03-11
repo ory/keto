@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/ory/herodot"
+
 	acl "github.com/ory/keto/proto/ory/keto/acl/v1alpha1"
 
 	"google.golang.org/grpc"
@@ -73,7 +75,7 @@ type getExpandRequest struct {
 func (h *handler) getExpand(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	depth, err := strconv.ParseInt(r.URL.Query().Get("depth"), 0, 0)
 	if err != nil {
-		h.d.Writer().WriteError(w, r, err)
+		h.d.Writer().WriteError(w, r, herodot.ErrBadRequest.WithError(err.Error()))
 		return
 	}
 

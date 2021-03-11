@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/ory/herodot"
+
 	"github.com/pkg/errors"
 
 	acl "github.com/ory/keto/proto/ory/keto/acl/v1alpha1"
@@ -84,7 +86,7 @@ func (h *handler) getRelations(w http.ResponseWriter, r *http.Request, _ httprou
 	q := r.URL.Query()
 	query, err := (&RelationQuery{}).FromURLQuery(q)
 	if err != nil {
-		h.d.Writer().WriteError(w, r, err)
+		h.d.Writer().WriteError(w, r, herodot.ErrBadRequest.WithError(err.Error()))
 		return
 	}
 
@@ -102,7 +104,7 @@ func (h *handler) getRelations(w http.ResponseWriter, r *http.Request, _ httprou
 	if pageSize := q.Get("page_size"); pageSize != "" {
 		s, err := strconv.ParseInt(pageSize, 0, 0)
 		if err != nil {
-			h.d.Writer().WriteError(w, r, err)
+			h.d.Writer().WriteError(w, r, herodot.ErrBadRequest.WithError(err.Error()))
 			return
 		}
 		paginationOpts = append(paginationOpts, x.WithSize(int(s)))

@@ -29,6 +29,12 @@ func (o *DeleteRelationTupleReader) ReadResponse(response runtime.ClientResponse
 			return nil, err
 		}
 		return result, nil
+	case 400:
+		result := NewDeleteRelationTupleBadRequest()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
 	case 500:
 		result := NewDeleteRelationTupleInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -57,6 +63,38 @@ func (o *DeleteRelationTupleNoContent) Error() string {
 }
 
 func (o *DeleteRelationTupleNoContent) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	return nil
+}
+
+// NewDeleteRelationTupleBadRequest creates a DeleteRelationTupleBadRequest with default headers values
+func NewDeleteRelationTupleBadRequest() *DeleteRelationTupleBadRequest {
+	return &DeleteRelationTupleBadRequest{}
+}
+
+/* DeleteRelationTupleBadRequest describes a response with status code 400, with default header values.
+
+The standard error format
+*/
+type DeleteRelationTupleBadRequest struct {
+	Payload *DeleteRelationTupleBadRequestBody
+}
+
+func (o *DeleteRelationTupleBadRequest) Error() string {
+	return fmt.Sprintf("[DELETE /relationtuple][%d] deleteRelationTupleBadRequest  %+v", 400, o.Payload)
+}
+func (o *DeleteRelationTupleBadRequest) GetPayload() *DeleteRelationTupleBadRequestBody {
+	return o.Payload
+}
+
+func (o *DeleteRelationTupleBadRequest) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	o.Payload = new(DeleteRelationTupleBadRequestBody)
+
+	// response payload
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+		return err
+	}
 
 	return nil
 }
@@ -90,6 +128,58 @@ func (o *DeleteRelationTupleInternalServerError) readResponse(response runtime.C
 		return err
 	}
 
+	return nil
+}
+
+/*DeleteRelationTupleBadRequestBody delete relation tuple bad request body
+swagger:model DeleteRelationTupleBadRequestBody
+*/
+type DeleteRelationTupleBadRequestBody struct {
+
+	// code
+	Code int64 `json:"code,omitempty"`
+
+	// details
+	Details []interface{} `json:"details"`
+
+	// message
+	Message string `json:"message,omitempty"`
+
+	// reason
+	Reason string `json:"reason,omitempty"`
+
+	// request
+	Request string `json:"request,omitempty"`
+
+	// status
+	Status string `json:"status,omitempty"`
+}
+
+// Validate validates this delete relation tuple bad request body
+func (o *DeleteRelationTupleBadRequestBody) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this delete relation tuple bad request body based on context it is used
+func (o *DeleteRelationTupleBadRequestBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *DeleteRelationTupleBadRequestBody) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *DeleteRelationTupleBadRequestBody) UnmarshalBinary(b []byte) error {
+	var res DeleteRelationTupleBadRequestBody
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
 	return nil
 }
 
