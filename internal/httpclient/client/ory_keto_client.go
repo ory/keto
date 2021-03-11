@@ -10,9 +10,10 @@ import (
 	httptransport "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
 
-	"github.com/ory/keto/internal/httpclient/client/engines"
 	"github.com/ory/keto/internal/httpclient/client/health"
+	"github.com/ory/keto/internal/httpclient/client/read"
 	"github.com/ory/keto/internal/httpclient/client/version"
+	"github.com/ory/keto/internal/httpclient/client/write"
 )
 
 // Default ory keto HTTP client.
@@ -57,9 +58,10 @@ func New(transport runtime.ClientTransport, formats strfmt.Registry) *OryKeto {
 
 	cli := new(OryKeto)
 	cli.Transport = transport
-	cli.Engines = engines.New(transport, formats)
 	cli.Health = health.New(transport, formats)
+	cli.Read = read.New(transport, formats)
 	cli.Version = version.New(transport, formats)
+	cli.Write = write.New(transport, formats)
 	return cli
 }
 
@@ -104,11 +106,13 @@ func (cfg *TransportConfig) WithSchemes(schemes []string) *TransportConfig {
 
 // OryKeto is a client for ory keto
 type OryKeto struct {
-	Engines engines.ClientService
-
 	Health health.ClientService
 
+	Read read.ClientService
+
 	Version version.ClientService
+
+	Write write.ClientService
 
 	Transport runtime.ClientTransport
 }
@@ -116,7 +120,8 @@ type OryKeto struct {
 // SetTransport changes the transport on the client and all its subresources
 func (c *OryKeto) SetTransport(transport runtime.ClientTransport) {
 	c.Transport = transport
-	c.Engines.SetTransport(transport)
 	c.Health.SetTransport(transport)
+	c.Read.SetTransport(transport)
 	c.Version.SetTransport(transport)
+	c.Write.SetTransport(transport)
 }

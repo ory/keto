@@ -17,12 +17,14 @@ type (
 	handler struct {
 		d handlerDeps
 	}
-	GetResponse struct {
-		RelationTuples []*InternalRelationTuple `json:"relation_tuples"`
-		NextPageToken  string                   `json:"next_page_token"`
-		IsLastPage     bool                     `json:"is_last_page"`
-	}
 )
+
+// swagger:model getRelationTuplesResponse
+type GetResponse struct {
+	RelationTuples []*InternalRelationTuple `json:"relation_tuples"`
+	NextPageToken  string                   `json:"next_page_token"`
+	IsLastPage     bool                     `json:"is_last_page"`
+}
 
 const (
 	RouteBase = "/relationtuple"

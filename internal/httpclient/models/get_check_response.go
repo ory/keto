@@ -6,24 +6,28 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
+
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
-// AuthorizationResult AuthorizationResult is the result of an access control decision. It contains the decision outcome.
+// GetCheckResponse Represents the response for a check request.
 //
-// swagger:model authorizationResult
-type AuthorizationResult struct {
+// The content of the allowed field is mirrored in the HTTP status code.
+//
+// swagger:model getCheckResponse
+type GetCheckResponse struct {
 
-	// Allowed is true if the request should be allowed and false otherwise.
+	// whether the relation tuple is allowed
 	// Required: true
 	Allowed *bool `json:"allowed"`
 }
 
-// Validate validates this authorization result
-func (m *AuthorizationResult) Validate(formats strfmt.Registry) error {
+// Validate validates this get check response
+func (m *GetCheckResponse) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateAllowed(formats); err != nil {
@@ -36,7 +40,7 @@ func (m *AuthorizationResult) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *AuthorizationResult) validateAllowed(formats strfmt.Registry) error {
+func (m *GetCheckResponse) validateAllowed(formats strfmt.Registry) error {
 
 	if err := validate.Required("allowed", "body", m.Allowed); err != nil {
 		return err
@@ -45,8 +49,13 @@ func (m *AuthorizationResult) validateAllowed(formats strfmt.Registry) error {
 	return nil
 }
 
+// ContextValidate validates this get check response based on context it is used
+func (m *GetCheckResponse) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
 // MarshalBinary interface implementation
-func (m *AuthorizationResult) MarshalBinary() ([]byte, error) {
+func (m *GetCheckResponse) MarshalBinary() ([]byte, error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -54,8 +63,8 @@ func (m *AuthorizationResult) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (m *AuthorizationResult) UnmarshalBinary(b []byte) error {
-	var res AuthorizationResult
+func (m *GetCheckResponse) UnmarshalBinary(b []byte) error {
+	var res GetCheckResponse
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

@@ -53,6 +53,33 @@ func (h *handler) ListRelationTuples(ctx context.Context, req *acl.ListRelationT
 	return resp, nil
 }
 
+// swagger:parameters getRelationTuples
+// nolint:deadcode,unused
+type getRelationsParams struct {
+	// swagger:allOf
+	RelationQuery
+	// swagger:allOf
+	x.PaginationOptions
+}
+
+// swagger:route GET /relationtuple read getRelationTuples
+//
+// Query relation tuples
+//
+// Get all relation tuples that match the query. Only the namespace field is required.
+//
+//     Consumes:
+//     -  application/x-www-form-urlencoded
+//
+//     Produces:
+//     - application/json
+//
+//     Schemes: http, https
+//
+//     Responses:
+//       200: getRelationTuplesResponse
+//       404: genericError
+//       500: genericError
 func (h *handler) getRelations(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	q := r.URL.Query()
 	query, err := (&RelationQuery{}).FromURLQuery(q)

@@ -12,42 +12,31 @@ import (
 	"github.com/ory/keto/internal/relationtuple"
 )
 
-type (
-	NodeType int
-	Tree     struct {
-		Type     NodeType              `json:"type"`
-		Subject  relationtuple.Subject `json:"subject"`
-		Children []*Tree               `json:"children,omitempty"`
-	}
-)
+// swagger:enum NodeType
+type NodeType string
 
 const (
-	Union NodeType = iota
-	Exclusion
-	Intersection
-	Leaf
+	Union        NodeType = "union"
+	Exclusion    NodeType = "exclusion"
+	Intersection NodeType = "intersection"
+	Leaf         NodeType = "leaf"
 )
+
+// swagger:model expandTree
+type Tree struct {
+	// required: true
+	Type NodeType `json:"type"`
+	// required: true
+	Subject  relationtuple.Subject `json:"subject"`
+	Children []*Tree               `json:"children,omitempty"`
+}
 
 var (
 	ErrUnknownNodeType = errors.New("unknown node type")
 )
 
 func (t NodeType) String() string {
-	switch t {
-	case Union:
-		return "union"
-	case Exclusion:
-		return "exclusion"
-	case Intersection:
-		return "intersection"
-	case Leaf:
-		return "leaf"
-	}
-	return ""
-}
-
-func (t NodeType) MarshalJSON() ([]byte, error) {
-	return []byte(`"` + t.String() + `"`), nil
+	return string(t)
 }
 
 func (t *NodeType) UnmarshalJSON(v []byte) error {
@@ -118,6 +107,7 @@ func (t *Tree) UnmarshalJSON(v []byte) error {
 	return nil
 }
 
+// swagger:ignore
 func (t *Tree) ToProto() *acl.SubjectTree {
 	if t.Type == Leaf {
 		return &acl.SubjectTree{
@@ -138,6 +128,7 @@ func (t *Tree) ToProto() *acl.SubjectTree {
 	}
 }
 
+// swagger:ignore
 func TreeFromProto(t *acl.SubjectTree) (*Tree, error) {
 	sub, err := relationtuple.SubjectFromProto(t.Subject)
 	if err != nil {

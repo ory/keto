@@ -155,12 +155,3 @@ func (rc *restClient) waitUntilLive(t require.TestingT) {
 		time.Sleep(10 * time.Millisecond)
 	}
 }
-
-func (rc *restClient) transactTuples(t require.TestingT, ins []*relationtuple.InternalRelationTuple, del []*relationtuple.InternalRelationTuple) {
-	for _, i := range ins {
-		rc.createTuple(t, i)
-	}
-	for _, d := range del {
-		rc.deleteTuple(t, d)
-	}
-}

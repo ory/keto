@@ -36,41 +36,75 @@ type (
 		protoRelations    []*acl.RelationTuple
 		internalRelations []*InternalRelationTuple
 	}
-	Subject interface {
-		json.Marshaler
-
-		String() string
-		FromString(string) (Subject, error)
-		Equals(interface{}) bool
-		ToProto() *acl.Subject
-	}
 	SubjectID struct {
 		ID string `json:"id"`
 	}
-	SubjectSet struct {
-		Namespace string `json:"namespace"`
-		Object    string `json:"object"`
-		Relation  string `json:"relation"`
-	}
-	InternalRelationTuple struct {
-		Namespace string  `json:"namespace"`
-		Object    string  `json:"object"`
-		Relation  string  `json:"relation"`
-		Subject   Subject `json:"subject"`
-	}
-	RelationQuery struct {
-		Namespace string  `json:"namespace"`
-		Object    string  `json:"object"`
-		Relation  string  `json:"relation"`
-		Subject   Subject `json:"subject"`
-	}
-	TupleData interface {
-		GetSubject() *acl.Subject
-		GetObject() string
-		GetNamespace() string
-		GetRelation() string
-	}
 )
+
+type RelationQuery struct {
+	// required: true
+	Namespace string  `json:"namespace"`
+	Object    string  `json:"object"`
+	Relation  string  `json:"relation"`
+	Subject   Subject `json:"subject"`
+}
+
+// swagger:ignore
+type TupleData interface {
+	// swagger:ignore
+	GetSubject() *acl.Subject
+	GetObject() string
+	GetNamespace() string
+	GetRelation() string
+}
+
+// swagger:model subject
+type Subject interface {
+	// swagger:ignore
+	json.Marshaler
+
+	// swagger:ignore
+	String() string
+	// swagger:ignore
+	FromString(string) (Subject, error)
+	// swagger:ignore
+	Equals(interface{}) bool
+
+	// swagger:ignore
+	ToProto() *acl.Subject
+}
+
+// swagger:parameters getCheck deleteRelationTuple
+type InternalRelationTuple struct {
+	// in: query
+	// required: true
+	Namespace string `json:"namespace"`
+	// in: query
+	// required: true
+	Object string `json:"object"`
+	// in: query
+	// required: true
+	Relation string `json:"relation"`
+	// string encoding of the subject
+	//
+	// in: query
+	// required: true
+	Subject Subject `json:"subject"`
+}
+
+// swagger:model subject
+// nolint:deadcode,unused
+type stringEncodedSubject string
+
+// swagger:parameters getExpand
+type SubjectSet struct {
+	// required: true
+	Namespace string `json:"namespace"`
+	// required: true
+	Object string `json:"object"`
+	// required: true
+	Relation string `json:"relation"`
+}
 
 var (
 	_, _ Subject = &SubjectID{}, &SubjectSet{}
@@ -86,6 +120,7 @@ func SubjectFromString(s string) (Subject, error) {
 	return (&SubjectID{}).FromString(s)
 }
 
+// swagger:ignore
 func SubjectFromProto(gs *acl.Subject) (Subject, error) {
 	switch s := gs.GetRef().(type) {
 	case nil:
@@ -155,6 +190,7 @@ func (s *SubjectSet) ToURLQuery() url.Values {
 	}
 }
 
+// swagger:ignore
 func (s *SubjectID) ToProto() *acl.Subject {
 	return &acl.Subject{
 		Ref: &acl.Subject_Id{
@@ -163,6 +199,7 @@ func (s *SubjectID) ToProto() *acl.Subject {
 	}
 }
 
+// swagger:ignore
 func (s *SubjectSet) ToProto() *acl.Subject {
 	return &acl.Subject{
 		Ref: &acl.Subject_Set{

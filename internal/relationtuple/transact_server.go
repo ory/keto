@@ -52,6 +52,31 @@ func (h *handler) TransactRelationTuples(ctx context.Context, req *acl.TransactR
 	}, nil
 }
 
+// The basic ACL relation tuple
+//
+// swagger:parameters postCheck createRelationTuple
+// nolint:deadcode,unused
+type bodyRelationTuple struct {
+	// in: body
+	Payload InternalRelationTuple
+}
+
+// swagger:route PUT /relationtuple write createRelationTuple
+//
+// Create a relation tuple
+//
+//     Consumes:
+//     -  application/json
+//
+//     Produces:
+//     - application/json
+//
+//     Schemes: http, https
+//
+//     Responses:
+//       201: InternalRelationTuple
+//       400: genericError
+//       500: genericError
 func (h *handler) createRelation(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	var rel InternalRelationTuple
 
@@ -71,6 +96,21 @@ func (h *handler) createRelation(w http.ResponseWriter, r *http.Request, _ httpr
 	h.d.Writer().WriteCreated(w, r, RouteBase+"?"+rel.ToURLQuery().Encode(), rel)
 }
 
+// swagger:route DELETE /relationtuple write deleteRelationTuple
+//
+// Delete a relation tuple
+//
+//     Consumes:
+//     -  application/json
+//
+//     Produces:
+//     - application/json
+//
+//     Schemes: http, https
+//
+//     Responses:
+//       204: emptyResponse
+//       500: genericError
 func (h *handler) deleteRelation(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	rel, err := (&InternalRelationTuple{}).FromURLQuery(r.URL.Query())
 	if err != nil {

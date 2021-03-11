@@ -29,7 +29,7 @@ require (
 	github.com/ory/go-acc v0.2.6
 	github.com/ory/graceful v0.1.1
 	github.com/ory/herodot v0.9.2
-	github.com/ory/jsonschema/v3 v3.0.1
+	github.com/ory/jsonschema/v3 v3.0.2
 	github.com/ory/x v0.0.202
 	github.com/pelletier/go-toml v1.8.1
 	github.com/phayes/freeport v0.0.0-20180830031419-95f893ade6f2
@@ -37,15 +37,15 @@ require (
 	github.com/rs/cors v1.6.0
 	github.com/segmentio/objconv v1.0.1
 	github.com/shopspring/decimal v1.2.0 // indirect
-	github.com/sirupsen/logrus v1.6.0
+	github.com/sirupsen/logrus v1.8.0
 	github.com/soheilhy/cmux v0.1.4
 	github.com/spf13/afero v1.5.1 // indirect
-	github.com/spf13/cobra v1.0.1-0.20201006035406-b97b5ead31f7
+	github.com/spf13/cobra v1.1.3
 	github.com/spf13/pflag v1.0.5
 	github.com/sqs/goreturns v0.0.0-20181028201513-538ac6014518
 	github.com/stretchr/testify v1.7.0
-	github.com/tidwall/gjson v1.6.0
-	github.com/tidwall/sjson v1.1.1
+	github.com/tidwall/gjson v1.6.7
+	github.com/tidwall/sjson v1.1.4
 	github.com/uber/jaeger-lib v2.4.0+incompatible // indirect
 	github.com/urfave/negroni v1.0.0
 	golang.org/x/mod v0.4.1 // indirect

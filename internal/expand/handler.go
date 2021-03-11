@@ -47,6 +47,29 @@ func (h *handler) RegisterReadGRPC(s *grpc.Server) {
 
 func (h *handler) RegisterWriteGRPC(s *grpc.Server) {}
 
+// swagger:parameters getExpand
+// nolint:deadcode,unused
+type getExpandRequest struct {
+	Depth int `json:"depth"`
+}
+
+// swagger:route GET /expand read getExpand
+//
+// Expand a relation tuple
+//
+//     Consumes:
+//     -  application/x-www-form-urlencoded
+//
+//     Produces:
+//     - application/json
+//
+//     Schemes: http, https
+//
+//     Responses:
+//       200: expandTree
+//       400: genericError
+//       404: genericError
+//       500: genericError
 func (h *handler) getExpand(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	depth, err := strconv.ParseInt(r.URL.Query().Get("depth"), 0, 0)
 	if err != nil {

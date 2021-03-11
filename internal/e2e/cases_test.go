@@ -20,6 +20,11 @@ func runCases(c client, nspaces []*namespace.Namespace) func(*testing.T) {
 	return func(t *testing.T) {
 		c.waitUntilLive(t)
 
+		t.Run("case=gets empty namespace", func(t *testing.T) {
+			resp := c.queryTuple(t, &relationtuple.RelationQuery{Namespace: nspaces[0].Name})
+			assert.Len(t, resp.RelationTuples, 0)
+		})
+
 		t.Run("case=creates tuple and uses it then", func(t *testing.T) {
 			tuple := &relationtuple.InternalRelationTuple{
 				Namespace: nspaces[0].Name,

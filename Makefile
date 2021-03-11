@@ -45,13 +45,13 @@ install: deps
 # Generates the SDKs
 .PHONY: sdk
 sdk: deps
-		swagger generate spec -m -o ./.schema/api.swagger.json -x internal/httpclient
-		ory dev swagger sanitize ./.schema/api.swagger.json
-		swagger flatten --with-flatten=remove-unused -o ./.schema/api.swagger.json ./.schema/api.swagger.json
-		swagger validate ./.schema/api.swagger.json
+		swagger generate spec -m -o ./.schema/swagger.json -x internal/httpclient -x proto/ory/keto -x docker
+		ory dev swagger sanitize ./.schema/swagger.json
+		swagger flatten --with-flatten=remove-unused -o ./.schema/swagger.json ./.schema/swagger.json
+		swagger validate ./.schema/swagger.json
 		rm -rf internal/httpclient
 		mkdir -p internal/httpclient
-		swagger generate client -f ./.schema/api.swagger.json -t internal/httpclient -A Ory_Keto
+		swagger generate client -f ./.schema/swagger.json -t internal/httpclient -A Ory_Keto
 		make format
 
 .PHONY: build

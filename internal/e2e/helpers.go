@@ -45,13 +45,14 @@ func newInitializedReg(t testing.TB, dsn *x.DsnT, nspaces []*namespace.Namespace
 
 	require.NoError(t, flags.Parse(
 		[]string{"--" + configx.FlagConfig, x.ConfigFile(t, map[string]interface{}{
-			config.KeyDSN:          dsn.Conn,
-			config.KeyNamespaces:   nspaces,
-			"log.level":            "debug",
-			config.KeyReadAPIHost:  "127.0.0.1",
-			config.KeyReadAPIPort:  ports[0],
-			config.KeyWriteAPIHost: "127.0.0.1",
-			config.KeyWriteAPIPort: ports[1],
+			config.KeyDSN:               dsn.Conn,
+			config.KeyNamespaces:        nspaces,
+			"log.level":                 "debug",
+			"log.leak_sensitive_values": true,
+			config.KeyReadAPIHost:       "127.0.0.1",
+			config.KeyReadAPIPort:       ports[0],
+			config.KeyWriteAPIHost:      "127.0.0.1",
+			config.KeyWriteAPIPort:      ports[1],
 		})},
 	))
 
