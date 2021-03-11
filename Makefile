@@ -5,7 +5,9 @@ export PWD := $(shell pwd)
 
 GO_DEPENDENCIES = github.com/go-swagger/go-swagger/cmd/swagger \
 				  golang.org/x/tools/cmd/goimports \
+				  github.com/mattn/goveralls \
 				  github.com/ory/cli \
+				  github.com/ory/go-acc \
 				  github.com/bufbuild/buf/cmd/buf \
 				  google.golang.org/protobuf/cmd/protoc-gen-go \
 				  google.golang.org/grpc/cmd/protoc-gen-go-grpc
