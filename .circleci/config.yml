@@ -65,12 +65,21 @@ jobs:
     steps:
       - checkout
       - run: sudo npm i -g npm@7
+
+      - go/load-cache
+      - go/mod-download
+      - run: go mod tidy
+      - go/save-cache
+
       - golangci/install
       - golangci/lint
+
       - nancy/install
       - nancy/check
+
       - goreleaser/install
       - goreleaser/check
+
       - prettier/install
       - prettier/check
       - prettier/install:
@@ -79,10 +88,6 @@ jobs:
           dir: docs/
 
       # Test documentation examples
-      - go/load-cache
-      - go/mod-download
-      - run: go mod tidy
-      - go/save-cache
       - run: make test-docs-samples
 
 workflows:
