@@ -51,14 +51,13 @@ jobs:
   test-race:
     docker:
       - image: cimg/go:1.16
-    parallelism: 4
     steps:
       - checkout
       - go/load-cache
       - go/mod-download
       - run: go mod tidy
       - go/save-cache
-      - run: go test -tags sqlite -race -short -v $(go list ./... | circleci tests split)
+      - run: go test -tags sqlite -race -short -v ./...
 
   validate:
     docker:
