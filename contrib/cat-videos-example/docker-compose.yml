@@ -16,7 +16,7 @@ services:
   keto-init:
     image: oryd/keto:latest
     environment:
-      - KETO_GRPC_URL=keto:4467
+      - KETO_WRITE_REMOTE=keto:4467
     volumes:
       - type: bind
         source: .

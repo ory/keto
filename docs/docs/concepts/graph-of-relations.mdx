@@ -6,16 +6,16 @@ import Mermaid from '@theme/Mermaid'
 import RelationTuplePrism from '@theme/RelationTuplePrism'
 RelationTuplePrism()
 
-The [relation tuples](./relation-tuples) of the ACL used by Ory Keto can be
+The [relation tuples](./relation-tuples.mdx) of the ACL used by Ory Keto can be
 represented as a graph of relations. This graph will help us to understand many
-[implications on performance](../performance) and [internal algorithms](/TODO).
+[implications on performance](../performance.mdx) and [internal algorithms](/TODO).
 
 ## Definition
 
-The graph consists of three types of nodes. [Object](./objects) nodes that
+The graph consists of three types of nodes. [Object](./objects.mdx) nodes that
 represent application objects, intermediary
-[subject set](./subjects#subject-sets) nodes, and
-[subject ID](./subjects#subject-ids) nodes representing individuals. Edges are
+[subject set](./subjects#subject-sets.mdx) nodes, and
+[subject ID](./subjects#subject-ids.mdx) nodes representing individuals. Edges are
 directed and represent the relation between an object and subject.
 
 ## Example
@@ -25,7 +25,7 @@ graph of relations.
 
 :::note
 
-This example omits the [namespace](./namespaces) from all data to improve
+This example omits the [namespace](./namespaces.mdx) from all data to improve
 readability. In practice, the namespace always has to be considered.
 
 :::
@@ -90,4 +90,4 @@ Ory Keto utilizes the following key properties of the graph of relations:
    of user1's files are irrelevant when checking access to user2's files.
 
 Both of these properties are important to ensure
-[high performance](../performance).
+[high performance](../performance.mdx).

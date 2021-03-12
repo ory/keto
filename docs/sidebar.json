@@ -2,11 +2,8 @@
   "Introduction": [
     "index",
     "install",
-    "performance"
-  ],
-  "Guides": [
-    "secure",
-    "guides/simple-access-check-guide"
+    "performance",
+    "examples/cat-videos"
   ],
   "Concepts": [
     "concepts/relation-tuples",
@@ -15,9 +12,12 @@
     "concepts/subjects",
     "concepts/graph-of-relations"
   ],
+  "Guides": [
+    "secure",
+    "guides/simple-access-check-guide"
+  ],
   "Examples": [
     "examples/olymp-file-sharing",
-    "examples/cat-videos"
   ],
   "Reference": [
     "reference/configuration",
