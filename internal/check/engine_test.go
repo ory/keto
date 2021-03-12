@@ -371,25 +371,27 @@ func TestEngine(t *testing.T) {
 		e := check.NewEngine(reg)
 
 		for i, user := range users {
-			allowed, err := e.SubjectIsAllowed(context.Background(), &relationtuple.InternalRelationTuple{
-				Namespace: namesp,
-				Object:    obj,
-				Relation:  access,
-				Subject:   &relationtuple.SubjectID{ID: user},
-			})
-			require.NoError(t, err)
-			assert.True(t, allowed)
+			t.Run("user="+user, func(t *testing.T) {
+				allowed, err := e.SubjectIsAllowed(context.Background(), &relationtuple.InternalRelationTuple{
+					Namespace: namesp,
+					Object:    obj,
+					Relation:  access,
+					Subject:   &relationtuple.SubjectID{ID: user},
+				})
+				require.NoError(t, err)
+				assert.True(t, allowed)
 
-			// pagination assertions
-			if i >= pageSize {
-				assert.Len(t, reg.RequestedPages, 2)
-				// reset requested pages for next iteration
-				reg.RequestedPages = nil
-			} else {
-				assert.Len(t, reg.RequestedPages, 1)
-				// reset requested pages for next iteration
-				reg.RequestedPages = nil
-			}
+				// pagination assertions
+				if i >= pageSize {
+					assert.Len(t, reg.RequestedPages, 2)
+					// reset requested pages for next iteration
+					reg.RequestedPages = nil
+				} else {
+					assert.Len(t, reg.RequestedPages, 1)
+					// reset requested pages for next iteration
+					reg.RequestedPages = nil
+				}
+			})
 		}
 	})
 
