@@ -79,6 +79,10 @@ jobs:
           dir: docs/
 
       # Test documentation examples
+      - go/load-cache
+      - go/mod-download
+      - run: go mod tidy
+      - go/save-cache
       - run: make test-docs-samples
 
 workflows:
