@@ -14,9 +14,10 @@ Ory Keto to keep track of ownership and granted access on a per file level.
 
 :::note
 
-This example assumes there is a [namespace](../concepts/namespaces.mdx) `files` with
-the relations `owner` and `access` defined, where each `owner` of an object also
-has `access` to that object. All relation tuples are stored in that namespace.
+This example assumes there is a [namespace](../concepts/namespaces.mdx) `files`
+with the relations `owner` and `access` defined, where each `owner` of an object
+also has `access` to that object. All relation tuples are stored in that
+namespace.
 
 :::
 
@@ -34,8 +35,8 @@ To prepare for an important meeting with the user `athena`, `demeter` wants to
 share the file with fertile grounds with `athena` so that they can both read it.
 Therefore, he opens the "Olymp Library" and is presented with a list of all
 files he owns. The application will internally request all
-[objects](../concepts/objects.mdx) (file IDs) with the owner `demeter` by using the
-[read API](/TODO). The response will contain the object
+[objects](../concepts/objects.mdx) (file IDs) with the owner `demeter` by using
+the [read API](/TODO). The response will contain the object
 `ec788a82-a12e-45a4-b906-3e69f78c94e4`, which the application maps to the file
 in question.
 

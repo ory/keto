@@ -48,13 +48,11 @@ example with some context.
 Because the Keto client can use arbitrary strings as subjects, it is tempting to
 encode application data within the subject. **We strongly discourage this
 practice.** Instead, you should use a UUID to map application data to Keto
-subjects. This has a view advantages:
+subjects. This is required to ensure:
 
-| Advantage                                     | Keto's Limitation                                                         |
-| --------------------------------------------- | ------------------------------------------------------------------------- |
-| control the encoding of data                  | rejects the delimiters `:#@`                                              |
-| control the size of data                      | allows only up to 64 characters                                           |
-| single source of truth <br/> easy data update | stores relation tuples independently of each other <br/> no global update |
+1. single source of truth and easy data update
+2. free choice of encoding (Keto does not allow the characters `:#@`)
+3. unlimited data size (Keto only allows up to 64 characters)
 
 For example, this can be used to implement a crude ABAC system by mapping
 attributes to a subject ID. The application can then define relation tuples that

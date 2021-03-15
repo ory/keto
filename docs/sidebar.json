@@ -3,7 +3,7 @@
     "index",
     "install",
     "performance",
-    "examples/cat-videos"
+    "quickstart"
   ],
   "Concepts": [
     "concepts/relation-tuples",
@@ -17,7 +17,7 @@
     "guides/simple-access-check-guide"
   ],
   "Examples": [
-    "examples/olymp-file-sharing",
+    "examples/olymp-file-sharing"
   ],
   "Reference": [
     "reference/configuration",

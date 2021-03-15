@@ -9,17 +9,17 @@ Ory Keto knows the concept of namespaces to organize
 [relation tuples](./relation-tuples.mdx). Namespaces have a configuration that
 defines the relations, and some other important values ([see reference](/TODO)).
 Unlike other applications, Ory Keto does **not** isolate namespaces. Especially,
-[subject sets](./subjects.mdx) can cross-reference from one namespace to another.
-The namespaces' purpose is to split up the data into coherent partitions, each
-with its corresponding configuration. Internally each namespace has its own
-table in the database to allow setting individual
+[subject sets](./subjects.mdx) can cross-reference from one namespace to
+another. The namespaces' purpose is to split up the data into coherent
+partitions, each with its corresponding configuration. Internally each namespace
+has its own table in the database to allow setting individual
 [storage specific options](/TODO).
 
 ## Scoping of Objects
 
-The application can also use namespaces to scope [objects](./objects.mdx) because
-Ory Keto only compares objects within a namespace. For example, if Ory Keto
-knows the following relation tuples
+The application can also use namespaces to scope [objects](./objects.mdx)
+because Ory Keto only compares objects within a namespace. For example, if Ory
+Keto knows the following relation tuples
 
 ```keto-relation-tuples
 // user1 has acces to the directory foo

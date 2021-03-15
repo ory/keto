@@ -7,9 +7,10 @@ RelationTuplePrism()
 
 Objects are identifiers for some kind of application objects. They can represent
 e.g. a file, network port, physical item, ... . It is up to the application to
-map its objects to an unambiguous identifier. We recommend the usage of UUIDs as
-they provide a high entropy and thus unique identifiers. It is however possible
-to use e.g. URLs or opaque tokens of any kind. Please check the
+map its objects to an unambiguous identifier. The limit on object identifiers is
+64 characters. We recommend the usage of UUIDs as they provide a high entropy
+and thus unique identifiers. It is however possible to use e.g. URLs or opaque
+tokens of any kind. Please check the
 [limitations](#advanced-example-using-application-information-within-keto-objects).
 Ory Keto will consider objects equal iff their string representation is equal.
 
@@ -28,13 +29,11 @@ example with some context.
 Because the Keto client can use arbitrary strings as objects, it is tempting to
 encode application data within the object. **We strongly discourage this
 practice.** Instead, you should use a UUID to map application data to Keto
-objects. This has a view advantages:
+objects. This is required to ensure:
 
-| Advantage                                     | Keto's Limitation                                                         |
-| --------------------------------------------- | ------------------------------------------------------------------------- |
-| control the encoding of data                  | rejects the delimiters `:#@`                                              |
-| control the size of data                      | allows only up to 64 characters                                           |
-| single source of truth <br/> easy data update | stores relation tuples independently of each other <br/> no global update |
+1. single source of truth and easy data update
+2. free choice of encoding (Keto does not allow the characters `:#@`)
+3. unlimited data size (Keto only allows up to 64 characters)
 
 For example, this could be used to implement checks on value ranges. The
 application knows the following mapping of comparison conditions and UUIDs:
