@@ -1,0 +1,82 @@
+---
+title: Protocol Buffers API
+---
+
+<!-- This file is generated. Please edit the .proto files instead to update the documentation -->
+
+The API is divided into the [read API](/TODO) and [write API](/TODO).
+Each service is annotated with the API it belongs to.
+
+{{range .Files}}
+  {{$file_name := .Name}}
+
+## {{.Name}}
+{{.Description}}
+
+  {{range .Services}}
+
+### {{.Name}}
+{{.Description}}
+
+| Method Name | Request Type | Response Type | Description |
+| ----------- | ------------ | ------------- | ------------|
+    {{range .Methods -}}
+| {{.Name}} | [{{.RequestLongType}}](#{{.RequestFullType}}){{if .RequestStreaming}} stream{{end}} | [{{.ResponseLongType}}](#{{.ResponseFullType}}){{if .ResponseStreaming}} stream{{end}} | {{nobr .Description | replace "\n\n" "<br/>" }} |
+    {{end}}
+  {{end}}
+
+  {{range .Messages}}
+
+### {{.LongName}}
+{{.Description}}
+
+    {{if .HasFields}}
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+      {{range .Fields -}}
+| {{.Name}} | [{{.LongType}}](#{{.FullType}}) | {{.Label}} | {{if (index .Options "deprecated"|default false)}}**Deprecated.** {{end}}{{nobr .Description | replace "\n\n" "<br/>" }}{{if .DefaultValue}} Default: {{.DefaultValue}}{{end}} |
+      {{end}}
+    {{end}}
+
+    {{if .HasExtensions}}
+| Extension | Type | Base | Number | Description |
+| --------- | ---- | ---- | ------ | ----------- |
+      {{range .Extensions -}}
+| {{.Name}} | {{.LongType}} | {{.ContainingLongType}} | {{.Number}} | {{nobr .Description | replace "\n\n" "<br/>" }}{{if .DefaultValue}} Default: {{.DefaultValue}}{{end}} |
+      {{end}}
+    {{end}}
+
+  {{end}}
+
+  {{range .Enums}}
+
+### {{.LongName}}
+{{.Description}}
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+    {{range .Values -}}
+| {{.Name}} | {{.Number}} | {{nobr .Description | replace "\n\n" "<br/>" }} |
+    {{end}}
+
+  {{end}}
+
+  {{if .HasExtensions}}
+
+### File-level Extensions
+| Extension | Type | Base | Number | Description |
+| --------- | ---- | ---- | ------ | ----------- |
+    {{range .Extensions -}}
+| {{.Name}} | {{.LongType}} | {{.ContainingLongType}} | {{.Number}} | {{nobr .Description | replace "\n\n" "<br/>" }}{{if .DefaultValue}} Default: `{{.DefaultValue}}`{{end}} |
+    {{end}}
+  {{end}}
+
+{{end}}
+
+## Scalar Value Types
+
+| .proto Type | Notes | C++ | Java | Python | Go | C# | PHP | Ruby |
+| ----------- | ----- | --- | ---- | ------ | -- | -- | --- | ---- |
+{{range .Scalars -}}
+| <a id="{{.ProtoType}}" ></a> {{.ProtoType}} | {{.Notes}} | {{.CppType}} | {{.JavaType}} | {{.PythonType}} | {{.GoType}} | {{.CSharp}} | {{.PhpType}} | {{.RubyType}} |
+{{end}}

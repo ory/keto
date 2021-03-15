@@ -21,7 +21,8 @@
   ],
   "Reference": [
     "reference/configuration",
-    "reference/api"
+    "reference/api",
+    "reference/proto-api"
   ],
   "SDKs": [
     "sdk/index"
