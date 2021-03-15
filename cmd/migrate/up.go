@@ -2,6 +2,7 @@ package migrate
 
 import (
 	"fmt"
+
 	"github.com/ory/x/flagx"
 
 	"github.com/spf13/pflag"
