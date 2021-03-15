@@ -43,7 +43,7 @@ func NewMigrateDownCmd() *cobra.Command {
 				return cmdx.FailSilently(cmd)
 			}
 
-			if !flagx.MustGetBool(cmd, YesFlag) && !cmdx.AskForConfirmation(fmt.Sprintf("Do you really want to delete namespace %s? This will delete all relation tuples within the namespace.", n.Name), cmd.InOrStdin(), cmd.OutOrStdout()) {
+			if !flagx.MustGetBool(cmd, YesFlag) && !cmdx.AskForConfirmation(fmt.Sprintf("Do you really want to delete namespace %s? This will irrecoverably delete all relation tuples within the namespace.", n.Name), cmd.InOrStdin(), cmd.OutOrStdout()) {
 				_, _ = fmt.Fprintf(cmd.OutOrStdout(), "Migration of namespace \"%s\" aborted.\n", n.Name)
 				return nil
 			}
