@@ -37,7 +37,7 @@ func newDownCmd() *cobra.Command {
 			}
 			cmdx.PrintTable(cmd, s)
 
-			if !flagx.MustGetBool(cmd, FlagYes) || !cmdx.AskForConfirmation("Do you really want to migrate down? This will delete data.", cmd.InOrStdin(), cmd.OutOrStdout()) {
+			if !flagx.MustGetBool(cmd, FlagYes) && !cmdx.AskForConfirmation("Do you really want to migrate down? This will delete data.", cmd.InOrStdin(), cmd.OutOrStdout()) {
 				_, _ = fmt.Fprintln(cmd.OutOrStdout(), "Migration aborted.")
 				return nil
 			}
