@@ -58,6 +58,7 @@ func newDownCmd() *cobra.Command {
 		},
 	}
 
+	registerYesFlag(cmd.Flags())
 	cmdx.RegisterFormatFlags(cmd.Flags())
 
 	return cmd

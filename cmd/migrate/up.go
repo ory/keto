@@ -3,6 +3,8 @@ package migrate
 import (
 	"fmt"
 
+	"github.com/spf13/pflag"
+
 	"github.com/pkg/errors"
 
 	"github.com/ory/x/cmdx"
@@ -112,10 +114,14 @@ func newUpCmd() *cobra.Command {
 		},
 	}
 
-	cmd.Flags().BoolVarP(&yes, FlagYes, "y", false, "yes to all questions, no user input required")
+	registerYesFlag(cmd.Flags())
 	cmd.Flags().BoolVar(&allNamespaces, FlagAllNamespace, false, "migrate all pending namespaces as well")
 
 	cmdx.RegisterFormatFlags(cmd.Flags())
 
 	return cmd
+}
+
+func registerYesFlag(flags *pflag.FlagSet) {
+	flags.BoolP(FlagYes, "y", false, "yes to all questions, no user input required")
 }
