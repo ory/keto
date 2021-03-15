@@ -109,6 +109,10 @@ func (t *Tree) UnmarshalJSON(v []byte) error {
 
 // swagger:ignore
 func (t *Tree) ToProto() *acl.SubjectTree {
+	if t == nil {
+		return nil
+	}
+
 	if t.Type == Leaf {
 		return &acl.SubjectTree{
 			NodeType: acl.NodeType_NODE_TYPE_LEAF,
@@ -130,6 +134,10 @@ func (t *Tree) ToProto() *acl.SubjectTree {
 
 // swagger:ignore
 func TreeFromProto(t *acl.SubjectTree) (*Tree, error) {
+	if t == nil {
+		return nil, nil
+	}
+
 	sub, err := relationtuple.SubjectFromProto(t.Subject)
 	if err != nil {
 		return nil, err

@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/ory/x/flagx"
+
 	"github.com/ory/x/cmdx"
 	"github.com/spf13/cobra"
 
@@ -34,6 +36,11 @@ func newDownCmd() *cobra.Command {
 				return cmdx.FailSilently(cmd)
 			}
 			cmdx.PrintTable(cmd, s)
+
+			if !flagx.MustGetBool(cmd, FlagYes) || !cmdx.AskForConfirmation("Do you really want to migrate down? This will delete data.", cmd.InOrStdin(), cmd.OutOrStdout()) {
+				_, _ = fmt.Fprintln(cmd.OutOrStdout(), "Migration aborted.")
+				return nil
+			}
 
 			if err := reg.Migrator().MigrateDown(ctx, int(steps)); err != nil {
 				_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could apply down migrations: %+v\n", err)

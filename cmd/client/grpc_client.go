@@ -13,12 +13,16 @@ import (
 	"google.golang.org/grpc"
 )
 
+type contextKeys string
+
 const (
 	FlagReadRemote  = "read-remote"
 	FlagWriteRemote = "write-remote"
 
 	EnvReadRemote  = "KETO_READ_REMOTE"
 	EnvWriteRemote = "KETO_WRITE_REMOTE"
+
+	ContextKeyTimeout contextKeys = "timeout"
 )
 
 func getRemote(cmd *cobra.Command, flagRemote, envRemote string) string {
@@ -43,7 +47,12 @@ func GetWriteConn(cmd *cobra.Command) (*grpc.ClientConn, error) {
 }
 
 func Conn(ctx context.Context, remote string) (*grpc.ClientConn, error) {
-	ctx, cancel := context.WithTimeout(ctx, 3*time.Second)
+	timeout := 3 * time.Second
+	if d, ok := ctx.Value(ContextKeyTimeout).(time.Duration); ok {
+		timeout = d
+	}
+
+	ctx, cancel := context.WithTimeout(ctx, timeout)
 	defer cancel()
 	return grpc.DialContext(ctx, remote, grpc.WithInsecure(), grpc.WithBlock(), grpc.WithDisableHealthCheck())
 }

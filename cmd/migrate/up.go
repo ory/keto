@@ -43,7 +43,7 @@ func newUpCmd() *cobra.Command {
 				return nil
 			}
 
-			if !yes && !cmdx.AskForConfirmation("Do you want to apply above planned migrations?", cmd.InOrStdin(), cmd.OutOrStdout()) {
+			if !yes && !cmdx.AskForConfirmation("Are you sure that you want to apply this migration? Make sure to check the CHANGELOG.md and UPGRADE.md for breaking changes beforehand.", cmd.InOrStdin(), cmd.OutOrStdout()) {
 				_, _ = fmt.Fprintln(cmd.OutOrStdout(), "Aborting")
 				return nil
 			}

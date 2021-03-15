@@ -67,7 +67,10 @@ func newStatusCmd() *cobra.Command {
 				GetStatus() grpcHealthV1.HealthCheckResponse_ServingStatus
 			}
 			if block {
-				wc, err := c.Watch(cmd.Context(), &grpcHealthV1.HealthCheckRequest{})
+				ctx, cancel := context.WithCancel(cmd.Context())
+				defer cancel()
+
+				wc, err := c.Watch(ctx, &grpcHealthV1.HealthCheckRequest{})
 				if err != nil {
 					_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not start watching the status: %+v\n", err)
 					return cmdx.FailSilently(cmd)
@@ -87,6 +90,7 @@ func newStatusCmd() *cobra.Command {
 					}
 
 					if status.GetStatus() == grpcHealthV1.HealthCheckResponse_SERVING {
+						cancel()
 						break
 					}
 
