@@ -23,6 +23,11 @@ jobs:
           version: '3.12.x'
       - name: Lint and Build
         run: make buf
+      - name: Format Docs (required because buf generates the proto docs)
+        run: |
+          cd docs
+          npm ci
+          npm run format
       - name: Push build
         run: |
           git config --local user.email "zepatrik@users.noreply.github.com"
