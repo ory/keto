@@ -103,7 +103,7 @@ func TestMigrate(t *testing.T) {
 						cmd.ExecNoErr(t, "down", "0")
 					})
 
-					parts := strings.Split(stdOut, "Do you want to apply above planned migrations?")
+					parts := strings.Split(stdOut, "Are you sure that you want to apply this migration?")
 					require.Len(t, parts, 2)
 
 					assertNoneApplied(t, parts[0])
