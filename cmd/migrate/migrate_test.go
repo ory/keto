@@ -100,7 +100,7 @@ func TestMigrate(t *testing.T) {
 
 					t.Cleanup(func() {
 						// migrate all down
-						cmd.ExecNoErr(t, "down", "0")
+						t.Log(cmd.ExecNoErr(t, "down", "0", "--"+FlagYes))
 					})
 
 					parts := strings.Split(stdOut, "Are you sure that you want to apply this migration?")
@@ -115,7 +115,7 @@ func TestMigrate(t *testing.T) {
 
 					t.Cleanup(func() {
 						// migrate all down
-						cmd.ExecNoErr(t, "down", "0")
+						t.Log(cmd.ExecNoErr(t, "down", "0", "--"+FlagYes))
 					})
 
 					parts := strings.Split(out, "Applying migrations...")
@@ -130,7 +130,7 @@ func TestMigrate(t *testing.T) {
 
 					t.Cleanup(func() {
 						// migrate all down
-						cmd.ExecNoErr(t, "down", "0")
+						t.Log(cmd.ExecNoErr(t, "down", "0", "--"+FlagYes))
 					})
 
 					parts := strings.Split(out, "Applying migrations...")
