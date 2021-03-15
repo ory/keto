@@ -3,6 +3,7 @@ package status
 import (
 	"context"
 	"net"
+	"strings"
 	"testing"
 	"time"
 
@@ -58,7 +59,8 @@ func TestStatusCmd(t *testing.T) {
 
 				ctx := context.WithValue(context.Background(), client.ContextKeyTimeout, 10*time.Millisecond)
 				stdOut := cmdx.ExecNoErrCtx(ctx, t, newStatusCmd(), "--"+FlagEndpoint, string(serverType), "--"+ts.FlagRemote, l.Addr().String(), "--"+FlagBlock)
-				assert.Equal(t, "Context deadline exceeded, going to retry.\n"+grpcHealthV1.HealthCheckResponse_SERVING.String()+"\n", stdOut)
+				assert.True(t, strings.HasPrefix(stdOut, "Context deadline exceeded, going to retry."))
+				assert.True(t, strings.HasSuffix(stdOut, "\n"+grpcHealthV1.HealthCheckResponse_SERVING.String()+"\n"))
 
 				s.GracefulStop()
 				require.NoError(t, serveErr.Wait())
