@@ -57,7 +57,7 @@ jobs:
       - go/mod-download
       - run: go mod tidy
       - go/save-cache
-      - run: go test -tags sqlite -race -short -v ./...
+      - run: go test -tags sqlite -race -short -v -p 1 ./...
 
   validate:
     docker:
