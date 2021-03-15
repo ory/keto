@@ -2,6 +2,7 @@ package migrate
 
 import (
 	"fmt"
+	"github.com/ory/x/flagx"
 
 	"github.com/spf13/pflag"
 
@@ -19,7 +20,7 @@ const (
 )
 
 func newUpCmd() *cobra.Command {
-	var yes, allNamespaces bool
+	var allNamespaces bool
 
 	cmd := &cobra.Command{
 		Use: "up",
@@ -45,7 +46,7 @@ func newUpCmd() *cobra.Command {
 				return nil
 			}
 
-			if !yes && !cmdx.AskForConfirmation("Are you sure that you want to apply this migration? Make sure to check the CHANGELOG.md and UPGRADE.md for breaking changes beforehand.", cmd.InOrStdin(), cmd.OutOrStdout()) {
+			if !flagx.MustGetBool(cmd, FlagYes) && !cmdx.AskForConfirmation("Are you sure that you want to apply this migration? Make sure to check the CHANGELOG.md for breaking changes beforehand.", cmd.InOrStdin(), cmd.OutOrStdout()) {
 				_, _ = fmt.Fprintln(cmd.OutOrStdout(), "Aborting")
 				return nil
 			}
@@ -97,7 +98,7 @@ func newUpCmd() *cobra.Command {
 					continue
 				}
 
-				if !yes && !cmdx.AskForConfirmation(fmt.Sprintf("Do you want to apply above planned migrations for namespace %s?", nspace.Name), cmd.InOrStdin(), cmd.OutOrStdout()) {
+				if !flagx.MustGetBool(cmd, FlagYes) && !cmdx.AskForConfirmation(fmt.Sprintf("Do you want to apply above planned migrations for namespace %s?", nspace.Name), cmd.InOrStdin(), cmd.OutOrStdout()) {
 					_, _ = fmt.Fprintf(cmd.OutOrStdout(), "Skipping namespace %s\n", nspace.Name)
 					continue
 				}
