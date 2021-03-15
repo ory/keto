@@ -2,6 +2,9 @@ package namespace
 
 import (
 	"fmt"
+	"strconv"
+
+	"github.com/ory/x/flagx"
 
 	"github.com/ory/x/cmdx"
 	"github.com/spf13/cobra"
@@ -16,6 +19,12 @@ func NewMigrateDownCmd() *cobra.Command {
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
+
+			steps, err := strconv.ParseInt(args[1], 0, 0)
+			if err != nil {
+				// return this error so it gets printed along the usage
+				return fmt.Errorf("malformed argument %s for <steps>: %+v", args[0], err)
+			}
 
 			reg, err := driver.NewDefaultRegistry(ctx, cmd.Flags())
 			if err != nil {
@@ -34,7 +43,12 @@ func NewMigrateDownCmd() *cobra.Command {
 				return cmdx.FailSilently(cmd)
 			}
 
-			if err := reg.NamespaceMigrator().MigrateNamespaceDown(ctx, n, 0); err != nil {
+			if !flagx.MustGetBool(cmd, YesFlag) && !cmdx.AskForConfirmation(fmt.Sprintf("Do you really want to delete namespace %s? This will irrecoverably delete all relation tuples within the namespace.", n.Name), cmd.InOrStdin(), cmd.OutOrStdout()) {
+				_, _ = fmt.Fprintf(cmd.OutOrStdout(), "Migration of namespace \"%s\" aborted.\n", n.Name)
+				return nil
+			}
+
+			if err := reg.NamespaceMigrator().MigrateNamespaceDown(ctx, n, int(steps)); err != nil {
 				_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not apply namespace migration: %+v\n", err)
 				return cmdx.FailSilently(cmd)
 			}

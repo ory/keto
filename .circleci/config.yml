@@ -43,7 +43,7 @@ jobs:
       - go/save-cache
 
       # Tests
-      - run: .bin/go-acc -o coverage.txt ./... -- -v -tags sqlite
+      - run: .bin/go-acc -o coverage.txt ./... -- -v -tags sqlite -p 1
 
       # Submit coverage details
       - run: test -z "$CIRCLE_PR_NUMBER" && .bin/goveralls -service=circle-ci -coverprofile=coverage.txt -repotoken=$COVERALLS_REPO_TOKEN || echo "forks are not allowed to push to coveralls"
@@ -57,7 +57,7 @@ jobs:
       - go/mod-download
       - run: go mod tidy
       - go/save-cache
-      - run: go test -tags sqlite -race -short -v ./...
+      - run: go test -tags sqlite -race -short -v -p 1 ./...
 
   validate:
     docker:

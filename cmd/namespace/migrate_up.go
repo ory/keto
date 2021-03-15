@@ -53,7 +53,7 @@ func NewMigrateUpCmd() *cobra.Command {
 				}
 
 				if !flagx.MustGetBool(cmd, YesFlag) {
-					if !cmdx.AskForConfirmation("Are you sure that you want to apply this migration? Make sure to check the CHANGELOG.md and UPGRADE.md for breaking changes beforehand.", cmd.InOrStdin(), cmd.OutOrStdout()) {
+					if !cmdx.AskForConfirmation("Are you sure that you want to apply this migration? Make sure to check the CHANGELOG.md for breaking changes beforehand.", cmd.InOrStdin(), cmd.OutOrStdout()) {
 						_, _ = fmt.Fprintf(cmd.OutOrStdout(), "Migration of namespace \"%s\" aborted.\n", n.Name)
 						return nil
 					}

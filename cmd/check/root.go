@@ -47,7 +47,7 @@ func newCheckCmd() *cobra.Command {
 				return err
 			}
 
-			cmdx.PrintJSONAble(cmd, &checkOutput{resp.Allowed})
+			cmdx.PrintJSONAble(cmd, &checkOutput{Allowed: resp.Allowed})
 			return nil
 		},
 	}
