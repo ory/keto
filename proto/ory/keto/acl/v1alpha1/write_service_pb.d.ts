@@ -60,7 +60,7 @@ export namespace RelationTupleDelta {
     export enum Action {
     ACTION_UNSPECIFIED = 0,
     INSERT = 1,
-    DELETE = 4,
+    DELETE = 2,
     }
 
 }

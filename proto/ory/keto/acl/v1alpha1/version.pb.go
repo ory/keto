@@ -25,6 +25,7 @@ const (
 // of the legacy proto package is being used.
 const _ = proto.ProtoPackageIsVersion4
 
+// Request for the VersionService.GetVersion RPC.
 type GetVersionRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -63,11 +64,13 @@ func (*GetVersionRequest) Descriptor() ([]byte, []int) {
 	return file_ory_keto_acl_v1alpha1_version_proto_rawDescGZIP(), []int{0}
 }
 
+// Response of the VersionService.GetVersion RPC.
 type GetVersionResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
+	// The version string of the Ory Keto instance.
 	Version string `protobuf:"bytes,1,opt,name=version,proto3" json:"version,omitempty"`
 }
 

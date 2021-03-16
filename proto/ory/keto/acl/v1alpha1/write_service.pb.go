@@ -29,7 +29,7 @@ type RelationTupleDelta_Action int32
 
 const (
 	// Unspecified.
-	// The `TransactRelationTuples` rpc ignores this
+	// The `TransactRelationTuples` RPC ignores this
 	// RelationTupleDelta if an action was unspecified.
 	RelationTupleDelta_ACTION_UNSPECIFIED RelationTupleDelta_Action = 0
 	// Insertion of a new RelationTuple.
@@ -37,7 +37,7 @@ const (
 	RelationTupleDelta_INSERT RelationTupleDelta_Action = 1
 	// Deletion of the RelationTuple.
 	// It is ignored if it does not exist.
-	RelationTupleDelta_DELETE RelationTupleDelta_Action = 4
+	RelationTupleDelta_DELETE RelationTupleDelta_Action = 2
 )
 
 // Enum value maps for RelationTupleDelta_Action.
@@ -45,12 +45,12 @@ var (
 	RelationTupleDelta_Action_name = map[int32]string{
 		0: "ACTION_UNSPECIFIED",
 		1: "INSERT",
-		4: "DELETE",
+		2: "DELETE",
 	}
 	RelationTupleDelta_Action_value = map[string]int32{
 		"ACTION_UNSPECIFIED": 0,
 		"INSERT":             1,
-		"DELETE":             4,
+		"DELETE":             2,
 	}
 )
 
@@ -81,18 +81,14 @@ func (RelationTupleDelta_Action) EnumDescriptor() ([]byte, []int) {
 	return file_ory_keto_acl_v1alpha1_write_service_proto_rawDescGZIP(), []int{1, 0}
 }
 
-// The request of a WriteService.TransactRelationTuples rpc.
+// The request of a WriteService.TransactRelationTuples RPC.
 type TransactRelationTuplesRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
 	// The write delta for the relation tuples operated in one single transaction.
-	// Either all actions commit or no change takes effect on error.
-	//
-	// The tuple's etag is used for a consistent read-modify-write request flow.
-	// If the etag is not present, the tuple is not validated against the state
-	// of the serverside tuple and get operated anyway.
+	// Either all actions succeed or no change takes effect on error.
 	RelationTupleDeltas []*RelationTupleDelta `protobuf:"bytes,1,rep,name=relation_tuple_deltas,json=relationTupleDeltas,proto3" json:"relation_tuple_deltas,omitempty"`
 }
 
@@ -199,12 +195,15 @@ type TransactRelationTuplesResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
+	// This field is not implemented yet and has no effect.
+	// <!--
 	// The list of the new latest snapshot tokens of the affected RelationTuple,
 	// with the same index as specified in the `relation_tuple_deltas` field of
 	// the TransactRelationTuplesRequest request.
 	//
 	// If the RelationTupleDelta_Action was DELETE
 	// the snaptoken is empty at the same index.
+	// -->
 	Snaptokens []string `protobuf:"bytes,1,rep,name=snaptokens,proto3" json:"snaptokens,omitempty"`
 }
 
@@ -278,7 +277,7 @@ var file_ory_keto_acl_v1alpha1_write_service_proto_rawDesc = []byte{
 	0x65, 0x22, 0x38, 0x0a, 0x06, 0x41, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x16, 0x0a, 0x12, 0x41,
 	0x43, 0x54, 0x49, 0x4f, 0x4e, 0x5f, 0x55, 0x4e, 0x53, 0x50, 0x45, 0x43, 0x49, 0x46, 0x49, 0x45,
 	0x44, 0x10, 0x00, 0x12, 0x0a, 0x0a, 0x06, 0x49, 0x4e, 0x53, 0x45, 0x52, 0x54, 0x10, 0x01, 0x12,
-	0x0a, 0x0a, 0x06, 0x44, 0x45, 0x4c, 0x45, 0x54, 0x45, 0x10, 0x04, 0x22, 0x40, 0x0a, 0x1e, 0x54,
+	0x0a, 0x0a, 0x06, 0x44, 0x45, 0x4c, 0x45, 0x54, 0x45, 0x10, 0x02, 0x22, 0x40, 0x0a, 0x1e, 0x54,
 	0x72, 0x61, 0x6e, 0x73, 0x61, 0x63, 0x74, 0x52, 0x65, 0x6c, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x54,
 	0x75, 0x70, 0x6c, 0x65, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x1e, 0x0a,
 	0x0a, 0x73, 0x6e, 0x61, 0x70, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28,

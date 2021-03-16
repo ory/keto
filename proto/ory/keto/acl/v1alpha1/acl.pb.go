@@ -25,10 +25,7 @@ const (
 // of the legacy proto package is being used.
 const _ = proto.ProtoPackageIsVersion4
 
-// RelationTuple relates an Object with a Subject.
-//
-// While a tuple reflects a relationship between Object
-// and Subject, they do not completely define the effective ACLs.
+// RelationTuple defines a relation between an Object and a Subject.
 type RelationTuple struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -37,13 +34,13 @@ type RelationTuple struct {
 	// The namespace this relation tuple lives in.
 	Namespace string `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
 	// The object related by this tuple.
-	// It is naturally in the namespace of the tuple.
+	// It is an object in the namespace of the tuple.
 	Object string `protobuf:"bytes,2,opt,name=object,proto3" json:"object,omitempty"`
 	// The relation between an Object and a Subject.
 	Relation string `protobuf:"bytes,3,opt,name=relation,proto3" json:"relation,omitempty"`
 	// The subject related by this tuple.
 	// A Subject either represents a concrete subject id or
-	// a SubjectSet that expands to more Subjects.
+	// a `SubjectSet` that expands to more Subjects.
 	Subject *Subject `protobuf:"bytes,4,opt,name=subject,proto3" json:"subject,omitempty"`
 }
 
@@ -108,7 +105,7 @@ func (x *RelationTuple) GetSubject() *Subject {
 }
 
 // Subject is either a concrete subject id or
-// a subject set expanding to more Subjects.
+// a `SubjectSet` expanding to more Subjects.
 type Subject struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -185,8 +182,8 @@ type Subject_Id struct {
 }
 
 type Subject_Set struct {
-	// A subject set that expands to more Subjects
-	// (used for inheritance).
+	// A subject set that expands to more Subjects.
+	// More information are available under [concepts](../concepts/subjects.mdx).
 	Set *SubjectSet `protobuf:"bytes,2,opt,name=set,proto3,oneof"`
 }
 
@@ -194,9 +191,8 @@ func (*Subject_Id) isSubject_Ref() {}
 
 func (*Subject_Set) isSubject_Ref() {}
 
-// SubjectSet refers to all subjects which have
-// the same `relation` to an `object`.
-// It is also used for inheritance.
+// SubjectSet refers to all subjects who have
+// the same `relation` on an `object`.
 type SubjectSet struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -205,9 +201,9 @@ type SubjectSet struct {
 	// The namespace of the object and relation
 	// referenced in this subject set.
 	Namespace string `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
-	// The object selected by the subjects.
+	// The object related by this subject set.
 	Object string `protobuf:"bytes,2,opt,name=object,proto3" json:"object,omitempty"`
-	// The relation to the object by the subjects.
+	// The relation between the object and the subjects.
 	Relation string `protobuf:"bytes,3,opt,name=relation,proto3" json:"relation,omitempty"`
 }
 

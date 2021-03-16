@@ -12,19 +12,17 @@ option java_package = "sh.ory.keto.acl.v1alpha1";
 option php_namespace = "Ory\\Keto\\Acl\\V1alpha1";
 
 // The write service to create and delete Access Control Lists.
+//
+// This service is part of the [write API](/TODO).
 service WriteService {
   // Writes one or more relation tuples in a single transaction.
   rpc TransactRelationTuples(TransactRelationTuplesRequest) returns (TransactRelationTuplesResponse);
 }
 
-// The request of a WriteService.TransactRelationTuples rpc.
+// The request of a WriteService.TransactRelationTuples RPC.
 message TransactRelationTuplesRequest {
   // The write delta for the relation tuples operated in one single transaction.
-  // Either all actions commit or no change takes effect on error.
-  //
-  // The tuple's etag is used for a consistent read-modify-write request flow.
-  // If the etag is not present, the tuple is not validated against the state
-  // of the serverside tuple and get operated anyway.
+  // Either all actions succeed or no change takes effect on error.
   repeated RelationTupleDelta relation_tuple_deltas = 1;
 }
 
@@ -32,7 +30,7 @@ message TransactRelationTuplesRequest {
 message RelationTupleDelta {
   enum Action {
     // Unspecified.
-    // The `TransactRelationTuples` rpc ignores this
+    // The `TransactRelationTuples` RPC ignores this
     // RelationTupleDelta if an action was unspecified.
     ACTION_UNSPECIFIED = 0;
 
@@ -42,7 +40,7 @@ message RelationTupleDelta {
 
     // Deletion of the RelationTuple.
     // It is ignored if it does not exist.
-    DELETE = 4;
+    DELETE = 2;
   }
   // The action to do on the RelationTuple.
   Action action = 1;
@@ -52,11 +50,14 @@ message RelationTupleDelta {
 
 // The response of a WriteService.TransactRelationTuples rpc.
 message TransactRelationTuplesResponse {
+  // This field is not implemented yet and has no effect.
+  // <!--
   // The list of the new latest snapshot tokens of the affected RelationTuple,
   // with the same index as specified in the `relation_tuple_deltas` field of
   // the TransactRelationTuplesRequest request.
   //
   // If the RelationTupleDelta_Action was DELETE
   // the snaptoken is empty at the same index.
+  // -->
   repeated string snaptokens = 1;
 }

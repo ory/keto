@@ -373,7 +373,7 @@ proto.ory.keto.acl.v1alpha1.RelationTupleDelta.serializeBinaryToWriter = functio
 proto.ory.keto.acl.v1alpha1.RelationTupleDelta.Action = {
   ACTION_UNSPECIFIED: 0,
   INSERT: 1,
-  DELETE: 4
+  DELETE: 2
 };
 
 /**
