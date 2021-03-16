@@ -2,12 +2,14 @@ package relationtuple
 
 import (
 	"fmt"
-	"github.com/ory/keto/internal/relationtuple"
-	"github.com/ory/x/cmdx"
-	"github.com/spf13/cobra"
 	"io"
 	"os"
 	"strings"
+
+	"github.com/ory/x/cmdx"
+	"github.com/spf13/cobra"
+
+	"github.com/ory/keto/internal/relationtuple"
 )
 
 func newParseCmd() *cobra.Command {

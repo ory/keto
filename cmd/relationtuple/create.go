@@ -3,11 +3,12 @@ package relationtuple
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/tidwall/gjson"
 	"io"
 	"io/ioutil"
 	"os"
 	"path/filepath"
+
+	"github.com/tidwall/gjson"
 
 	acl "github.com/ory/keto/proto/ory/keto/acl/v1alpha1"
 
