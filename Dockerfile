@@ -7,7 +7,6 @@ WORKDIR /go/src/github.com/ory/keto
 ADD go.mod go.mod
 ADD go.sum go.sum
 
-ENV GO111MODULE on
 ENV CGO_ENABLED 1
 
 RUN go mod download

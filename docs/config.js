@@ -31,7 +31,7 @@ module.exports = {
     },
     replaceInDir({
       replacer: ({ content, next }) =>
-        content.replace('version="zanzibar"', `version="${next}"`),
+        content.replace('version="master"', `version="${next}"`),
       dir: 'docs/docs/guides'
     })
   ],

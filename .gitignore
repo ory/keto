@@ -1,5 +1,3 @@
 node_modules/
 .idea/
 coverage.txt
-vendor/
-pkged.go

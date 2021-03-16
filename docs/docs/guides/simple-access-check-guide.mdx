@@ -8,9 +8,10 @@ import CodeTabs from '@theme/CodeTabs'
 RelationTuplePrism()
 
 This guide will explain how you can use Ory Keto's [check API](/TODO) to
-determine whether a [subject](../concepts/sujects) has a specific
-[relation](../concepts/relation-tuples) on an [object](../concepts/objects). The
-result can be used for controlling access to specific resources.
+determine whether a [subject](../concepts/subjects.mdx) has a specific
+[relation](../concepts/relation-tuples.mdx) on an
+[object](../concepts/objects.mdx). The result can be used for controlling access
+to specific resources.
 
 ## Synchronous Authorization Flow
 
@@ -52,7 +53,7 @@ into a request to Ory Keto's [check API](/TODO). Basically, the application is
 asking Keto "Is john allowed to decypher the text 02y_15_4w350m3?"
 
 This question is encoded as the following
-[relation tuple](../concepts/relation-tuples):
+[relation tuple](../concepts/relation-tuples.mdx):
 
 ```keto-relation-tuples
 messages:02y_15_4w350m3#decypher@john
@@ -108,7 +109,7 @@ groups:hackers#member@john
 ```
 
 Now, when Keto receives above check request, it will resolve the
-[subject set](../concepts/subjects#subject-sets)
+[subject set](../concepts/subjects.mdx#subject-sets)
 
 ```keto-relation-tuples
 groups:hackers#member
@@ -119,7 +120,7 @@ approves the check request.
 
 There is no limit on the number of indirections through subject sets. It is
 however important to follow our [best practices](/TODO) to ensure a good
-[performance](../performance).
+[performance](../performance.mdx).
 
 ## Caching Keto's responses
 
