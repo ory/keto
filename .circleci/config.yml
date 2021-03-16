@@ -94,100 +94,102 @@ workflows:
   version: 2
   "test, build, and relase":
     jobs:
-#      - validate:
-#          filters:
-#            tags:
-#              only: /.*/
-#      - test:
-#          filters:
-#            tags:
-#              only: /.*/
-#      - test-race:
-#          filters:
-#            tags:
-#              only: /.*/
-#      - changelog/generate:
-#          requires:
-#            - test
-#            - test-race
-#            - validate
-#          filters:
-#            tags:
-#              only: /.*/
-#            branches:
-#              only: master
-#      - docs/build:
-#          requires:
-#            - test
-#            - test-race
-#            - validate
-#          filters:
-#            tags:
-#              only: /.*/
-#            branches:
-#              only: master
+      - validate:
+          filters:
+            tags:
+              only: /.*/
+      - test:
+          filters:
+            tags:
+              only: /.*/
+      - test-race:
+          filters:
+            tags:
+              only: /.*/
+      - changelog/generate:
+          requires:
+            - test
+            - test-race
+            - validate
+          filters:
+            tags:
+              only: /.*/
+            branches:
+              only: master
+      - docs/build:
+          requires:
+            - test
+            - test-race
+            - validate
+          swag-spec-location: .schema/swagger.json
+          swag-spec-ignore: internal/httpclient proto/ory/keto docker
+          filters:
+            tags:
+              only: /.*/
+            branches:
+              only: master
       -
         sdk/generate:
           appname: Ory_Keto
           specignorepgks: internal/httpclient proto/ory/keto docker
           swagpath: .schema/swagger.json
-#          requires:
-#            - test
-#            - validate
-#      - sdk/release:
-#          requires:
-#            - test
-#            - test-race
-#            - validate
-#            - goreleaser/release
-#          filters:
-#            tags:
-#              only: /.*/
-#            branches:
-#              ignore: /.*/
-#      - goreleaser/release:
-#          requires:
-#            - test
-#            - test-race
-#            - validate
-#          filters:
-#            branches:
-#              ignore: /.*/
-#            tags:
-#              only: /.*/
-#      - goreleaser/render-version-schema:
-#          requires:
-#            - goreleaser/release
-#          filters:
-#            tags:
-#              only: /.*/
-#      - goreleaser/newsletter-draft:
-#          chimp-list: f605a41b53
-#          chimp-segment: 6479489
-#          requires:
-#            - goreleaser/release
-#          filters:
-#            tags:
-#              only: /.*/
-#      - slack/approval-notification:
-#          message: Pending approval
-#          channel: release-automation
-#          requires:
-#            - goreleaser/newsletter-draft
-#          filters:
-#            tags:
-#              only: /.*/
-#      - newsletter-approval:
-#          type: approval
-#          requires:
-#            - goreleaser/newsletter-draft
-#          filters:
-#            tags:
-#              only: /.*/
-#      - goreleaser/newsletter-send:
-#          chimp-list: f605a41b53
-#          requires:
-#            - newsletter-approval
-#          filters:
-#            tags:
-#              only: /.*/
+          requires:
+            - test
+            - validate
+      - sdk/release:
+          requires:
+            - test
+            - test-race
+            - validate
+            - goreleaser/release
+          filters:
+            tags:
+              only: /.*/
+            branches:
+              ignore: /.*/
+      - goreleaser/release:
+          requires:
+            - test
+            - test-race
+            - validate
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /.*/
+      - goreleaser/render-version-schema:
+          requires:
+            - goreleaser/release
+          filters:
+            tags:
+              only: /.*/
+      - goreleaser/newsletter-draft:
+          chimp-list: f605a41b53
+          chimp-segment: 6479489
+          requires:
+            - goreleaser/release
+          filters:
+            tags:
+              only: /.*/
+      - slack/approval-notification:
+          message: Pending approval
+          channel: release-automation
+          requires:
+            - goreleaser/newsletter-draft
+          filters:
+            tags:
+              only: /.*/
+      - newsletter-approval:
+          type: approval
+          requires:
+            - goreleaser/newsletter-draft
+          filters:
+            tags:
+              only: /.*/
+      - goreleaser/newsletter-send:
+          chimp-list: f605a41b53
+          requires:
+            - newsletter-approval
+          filters:
+            tags:
+              only: /.*/
