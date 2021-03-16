@@ -29,7 +29,9 @@ function deserialize_ory_keto_acl_v1alpha1_ListRelationTuplesResponse(buffer_arg
 }
 
 
-// The service to query Access Control Lists.
+// The service to query relation tuples.
+//
+// This service is part of the [read API](/TODO).
 var ReadServiceService = exports.ReadServiceService = {
   // Lists ACL relation tuples.
 listRelationTuples: {

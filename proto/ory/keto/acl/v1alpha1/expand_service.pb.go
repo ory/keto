@@ -36,7 +36,7 @@ const (
 	// Not implemented yet.
 	NodeType_NODE_TYPE_INTERSECTION NodeType = 3
 	// This node is a leaf and contains no children.
-	// Its subject is a SubjectID unless max_depth was reached.
+	// Its subject is a `SubjectID` unless `max_depth` was reached.
 	NodeType_NODE_TYPE_LEAF NodeType = 4
 )
 
@@ -85,7 +85,7 @@ func (NodeType) EnumDescriptor() ([]byte, []int) {
 	return file_ory_keto_acl_v1alpha1_expand_service_proto_rawDescGZIP(), []int{0}
 }
 
-// The request for a ExpandService.Expand rpc.
+// The request for an ExpandService.Expand RPC.
 // Expands the given subject set.
 type ExpandRequest struct {
 	state         protoimpl.MessageState
@@ -95,7 +95,11 @@ type ExpandRequest struct {
 	// The subject to expand.
 	Subject *Subject `protobuf:"bytes,1,opt,name=subject,proto3" json:"subject,omitempty"`
 	// The maximum depth of tree to build.
+	// It is important to set this parameter to a meaningful
+	// value. Ponder how deep you really want to display this.
 	MaxDepth int32 `protobuf:"varint,2,opt,name=max_depth,json=maxDepth,proto3" json:"max_depth,omitempty"`
+	// This field is not implemented yet and has no effect.
+	// <!--
 	// Optional. Like reads, a expand is always evaluated at a
 	// consistent snapshot no earlier than the given snaptoken.
 	//
@@ -109,6 +113,7 @@ type ExpandRequest struct {
 	// If not specified the server tries to build the tree
 	// on the best snapshot version where it is very likely that
 	// ACLs had already been replicated to all availability zones.
+	// -->
 	Snaptoken string `protobuf:"bytes,3,opt,name=snaptoken,proto3" json:"snaptoken,omitempty"`
 }
 
@@ -165,7 +170,7 @@ func (x *ExpandRequest) GetSnaptoken() string {
 	return ""
 }
 
-// The response for a ExpandService.Expand rpc.
+// The response for a ExpandService.Expand RPC.
 type ExpandResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -173,6 +178,8 @@ type ExpandResponse struct {
 
 	// The tree the requested subject set expands to.
 	// The requested subject set is the subject of the root.
+	//
+	// This field can be nil in some circumstances.
 	Tree *SubjectTree `protobuf:"bytes,1,opt,name=tree,proto3" json:"tree,omitempty"`
 }
 
@@ -224,7 +231,9 @@ type SubjectTree struct {
 	NodeType NodeType `protobuf:"varint,1,opt,name=node_type,json=nodeType,proto3,enum=ory.keto.acl.v1alpha1.NodeType" json:"node_type,omitempty"`
 	// The subject this node represents.
 	Subject *Subject `protobuf:"bytes,2,opt,name=subject,proto3" json:"subject,omitempty"`
-	// The children of this node; not given if node_type == Leaf.
+	// The children of this node.
+	//
+	// This is never set if `node_type` == `NODE_TYPE_LEAF`.
 	Children []*SubjectTree `protobuf:"bytes,3,rep,name=children,proto3" json:"children,omitempty"`
 }
 

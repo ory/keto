@@ -25,7 +25,7 @@ const (
 // of the legacy proto package is being used.
 const _ = proto.ProtoPackageIsVersion4
 
-// The request for a CheckService.Check rpc.
+// The request for a CheckService.Check RPC.
 // Checks whether a specific subject is related to an object.
 type CheckRequest struct {
 	state         protoimpl.MessageState
@@ -43,8 +43,10 @@ type CheckRequest struct {
 	Object string `protobuf:"bytes,2,opt,name=object,proto3" json:"object,omitempty"`
 	// The relation between the Object and the Subject.
 	Relation string `protobuf:"bytes,3,opt,name=relation,proto3" json:"relation,omitempty"`
-	// The related subject to check against.
+	// The related subject in this check.
 	Subject *Subject `protobuf:"bytes,4,opt,name=subject,proto3" json:"subject,omitempty"`
+	// This field is not implemented yet and has no effect.
+	// <!--
 	// Set this field to `true` in case your application
 	// needs to authorize depending on up to date ACLs,
 	// also called a "content-change check".
@@ -61,7 +63,10 @@ type CheckRequest struct {
 	//    and it is unacceptable that if the permission to do that had
 	//    just been revoked some seconds ago so that the change had not
 	//    yet been fully replicated to all availability zones.
+	// -->
 	Latest bool `protobuf:"varint,5,opt,name=latest,proto3" json:"latest,omitempty"`
+	// This field is not implemented yet and has no effect.
+	// <!--
 	// Optional. Like reads, a check is always evaluated at a
 	// consistent snapshot no earlier than the given snaptoken.
 	//
@@ -75,6 +80,7 @@ type CheckRequest struct {
 	// If not specified the server tries to evaluate the check
 	// on the best snapshot version where it is very likely that
 	// ACLs had already been replicated to all availability zones.
+	// -->
 	Snaptoken string `protobuf:"bytes,6,opt,name=snaptoken,proto3" json:"snaptoken,omitempty"`
 }
 
@@ -163,6 +169,8 @@ type CheckResponse struct {
 	//
 	// It is false by default if no ACL matches.
 	Allowed bool `protobuf:"varint,1,opt,name=allowed,proto3" json:"allowed,omitempty"`
+	// This field is not implemented yet and has no effect.
+	// <!--
 	// The last known snapshot token ONLY specified if
 	// the request had not specified a snaptoken,
 	// since this performed a "content-change request"
@@ -173,6 +181,7 @@ type CheckResponse struct {
 	// If set, clients should cache and use this token
 	// for subsequent requests to have minimal latency,
 	// but allow slightly stale responses (only some milliseconds or seconds).
+	// -->
 	Snaptoken string `protobuf:"bytes,2,opt,name=snaptoken,proto3" json:"snaptoken,omitempty"`
 }
 

@@ -13,18 +13,24 @@ option php_namespace = "Ory\\Keto\\Acl\\V1alpha1";
 
 // The service that performs subject set expansion
 // based on the stored Access Control Lists.
+//
+// This service is part of the [read API](/TODO).
 service ExpandService {
   // Expands the subject set into a tree of subjects.
   rpc Expand(ExpandRequest) returns (ExpandResponse);
 }
 
-// The request for a ExpandService.Expand rpc.
+// The request for an ExpandService.Expand RPC.
 // Expands the given subject set.
 message ExpandRequest {
   // The subject to expand.
   Subject subject = 1;
   // The maximum depth of tree to build.
+  // It is important to set this parameter to a meaningful
+  // value. Ponder how deep you really want to display this.
   int32 max_depth = 2;
+  // This field is not implemented yet and has no effect.
+  // <!--
   // Optional. Like reads, a expand is always evaluated at a
   // consistent snapshot no earlier than the given snaptoken.
   //
@@ -38,13 +44,16 @@ message ExpandRequest {
   // If not specified the server tries to build the tree
   // on the best snapshot version where it is very likely that
   // ACLs had already been replicated to all availability zones.
+  // -->
   string snaptoken = 3;
 }
 
-// The response for a ExpandService.Expand rpc.
+// The response for a ExpandService.Expand RPC.
 message ExpandResponse {
   // The tree the requested subject set expands to.
   // The requested subject set is the subject of the root.
+  //
+  // This field can be nil in some circumstances.
   SubjectTree tree = 1;
 }
 
@@ -57,7 +66,7 @@ enum NodeType {
   // Not implemented yet.
   NODE_TYPE_INTERSECTION = 3;
   // This node is a leaf and contains no children.
-  // Its subject is a SubjectID unless max_depth was reached.
+  // Its subject is a `SubjectID` unless `max_depth` was reached.
   NODE_TYPE_LEAF = 4;
 }
 
@@ -66,6 +75,8 @@ message SubjectTree {
   NodeType node_type = 1;
   // The subject this node represents.
   Subject subject = 2;
-  // The children of this node; not given if node_type == Leaf.
+  // The children of this node.
+  //
+  // This is never set if `node_type` == `NODE_TYPE_LEAF`.
   repeated SubjectTree children = 3;
 }

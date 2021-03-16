@@ -26,19 +26,21 @@ const (
 // of the legacy proto package is being used.
 const _ = proto.ProtoPackageIsVersion4
 
-// Request for ReadService.ListRelationTuples rpc.
-// See ListRelationTuplesRequest_Query for more querying details.
+// Request for ReadService.ListRelationTuples RPC.
+// See `ListRelationTuplesRequest_Query` for how to filter the query.
 type ListRelationTuplesRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// All field constraints are concatenated
+	// All query constraints are concatenated
 	// with a logical AND operator.
 	//
 	// The RelationTuple list from ListRelationTuplesResponse
 	// is ordered from the newest RelationTuple to the oldest.
 	Query *ListRelationTuplesRequest_Query `protobuf:"bytes,1,opt,name=query,proto3" json:"query,omitempty"`
+	// This field is not implemented yet and has no effect.
+	// <!--
 	// Optional. The list of fields to be expanded
 	// in the RelationTuple list returned in `ListRelationTuplesResponse`.
 	// Leaving this field unspecified means all fields are expanded.
@@ -47,15 +49,24 @@ type ListRelationTuplesRequest struct {
 	// "object", "relation", "subject",
 	// "namespace", "subject.id", "subject.namespace",
 	// "subject.object", "subject.relation"
+	// -->
 	ExpandMask *field_mask.FieldMask `protobuf:"bytes,2,opt,name=expand_mask,json=expandMask,proto3" json:"expand_mask,omitempty"`
+	// This field is not implemented yet and has no effect.
+	// <!--
 	// Optional. The snapshot token for this read.
+	// -->
 	Snaptoken string `protobuf:"bytes,3,opt,name=snaptoken,proto3" json:"snaptoken,omitempty"`
 	// Optional. The maximum number of
 	// RelationTuples to return in the response.
+	//
+	// Default: 100
 	PageSize int32 `protobuf:"varint,4,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
-	// Optional. A pagination token returned from
+	// Optional. An opaque pagination token returned from
 	// a previous call to `ListRelationTuples` that
 	// indicates where the page should start at.
+	//
+	// An empty token denotes the first page. All successive
+	// pages require the token from the previous page.
 	PageToken string `protobuf:"bytes,5,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"`
 }
 
@@ -126,7 +137,7 @@ func (x *ListRelationTuplesRequest) GetPageToken() string {
 	return ""
 }
 
-// The response of a ReadService.ListRelationTuples rpc.
+// The response of a ReadService.ListRelationTuples RPC.
 type ListRelationTuplesResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -135,9 +146,11 @@ type ListRelationTuplesResponse struct {
 	// The relation tuples matching the list request.
 	RelationTuples []*RelationTuple `protobuf:"bytes,1,rep,name=relation_tuples,json=relationTuples,proto3" json:"relation_tuples,omitempty"`
 	// The token required to get the next page.
+	// Please use the `is_last_page` field to determine whether
+	// this was the last page.
 	NextPageToken string `protobuf:"bytes,2,opt,name=next_page_token,json=nextPageToken,proto3" json:"next_page_token,omitempty"`
-	// Whether this is the last page. Using the next_page_token
-	// in a subsequent request if is_last_page is true will return an error.
+	// Whether this is the last page. Using the `next_page_token`
+	// in a subsequent request if this field is true will return an error.
 	IsLastPage bool `protobuf:"varint,3,opt,name=is_last_page,json=isLastPage,proto3" json:"is_last_page,omitempty"`
 }
 
@@ -198,12 +211,12 @@ func (x *ListRelationTuplesResponse) GetIsLastPage() bool {
 // Clients can specify any optional field to
 // partially filter for specific relation tuples.
 //
-// Example use cases:
-//  - object only: display a list of all rules of one object
-//  - relation only: get all groups that have members; e.g. get all directories that have content
-//  - object & relation: display all subjects that have e.g. write relation
-//  - subject & relation: display all groups a subject belongs to/display all objects a subject has access to
-//  - object & relation & subject: check whether the relation tuple already exists, before writing it
+// Example use cases (namespace is always required):
+//  - object only: display a list of all permissions referring to a specific object
+//  - relation only: get all groups that have members; get all directories that have content
+//  - object & relation: display all subjects that have a specific permission relation
+//  - subject & relation: display all groups a subject belongs to; display all objects a subject has access to
+//  - object & relation & subject: check whether the relation tuple already exists
 //
 type ListRelationTuplesRequest_Query struct {
 	state         protoimpl.MessageState
@@ -212,11 +225,11 @@ type ListRelationTuplesRequest_Query struct {
 
 	// Required. The namespace to query.
 	Namespace string `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
-	// Optional.
+	// Optional. The object to query for.
 	Object string `protobuf:"bytes,2,opt,name=object,proto3" json:"object,omitempty"`
-	// Optional.
+	// Optional. The relation to query for.
 	Relation string `protobuf:"bytes,3,opt,name=relation,proto3" json:"relation,omitempty"`
-	// Optional.
+	// Optional. The subject to query for.
 	Subject *Subject `protobuf:"bytes,4,opt,name=subject,proto3" json:"subject,omitempty"`
 }
 

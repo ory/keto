@@ -30,8 +30,10 @@ function deserialize_ory_keto_acl_v1alpha1_CheckResponse(buffer_arg) {
 
 // The service that performs authorization checks
 // based on the stored Access Control Lists.
+//
+// This service is part of the [read API](/TODO).
 var CheckServiceService = exports.CheckServiceService = {
-  // Check performs an authorization check.
+  // Performs an authorization check.
 check: {
     path: '/ory.keto.acl.v1alpha1.CheckService/Check',
     requestStream: false,

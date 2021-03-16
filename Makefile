@@ -10,7 +10,8 @@ GO_DEPENDENCIES = github.com/go-swagger/go-swagger/cmd/swagger \
 				  github.com/ory/go-acc \
 				  github.com/bufbuild/buf/cmd/buf \
 				  google.golang.org/protobuf/cmd/protoc-gen-go \
-				  google.golang.org/grpc/cmd/protoc-gen-go-grpc
+				  google.golang.org/grpc/cmd/protoc-gen-go-grpc \
+				  github.com/pseudomuto/protoc-gen-doc/cmd/protoc-gen-doc
 
 define make-go-dependency
   # go install is responsible for not re-building when the code hasn't changed
@@ -51,7 +52,7 @@ build:
 # Generate APIs and client stubs from the definitions
 #
 .PHONY: buf-gen
-buf-gen: .bin/buf .bin/protoc-gen-go .bin/protoc-gen-go-grpc node_modules
+buf-gen: .bin/buf .bin/protoc-gen-go .bin/protoc-gen-go-grpc .bin/protoc-gen-doc node_modules
 		buf generate \
 		&& \
 		echo "All code was generated successfully!"

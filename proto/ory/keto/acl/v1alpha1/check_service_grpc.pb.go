@@ -18,7 +18,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type CheckServiceClient interface {
-	// Check performs an authorization check.
+	// Performs an authorization check.
 	Check(ctx context.Context, in *CheckRequest, opts ...grpc.CallOption) (*CheckResponse, error)
 }
 
@@ -43,7 +43,7 @@ func (c *checkServiceClient) Check(ctx context.Context, in *CheckRequest, opts .
 // All implementations should embed UnimplementedCheckServiceServer
 // for forward compatibility
 type CheckServiceServer interface {
-	// Check performs an authorization check.
+	// Performs an authorization check.
 	Check(context.Context, *CheckRequest) (*CheckResponse, error)
 }
 

@@ -30,6 +30,8 @@ function deserialize_ory_keto_acl_v1alpha1_ExpandResponse(buffer_arg) {
 
 // The service that performs subject set expansion
 // based on the stored Access Control Lists.
+//
+// This service is part of the [read API](/TODO).
 var ExpandServiceService = exports.ExpandServiceService = {
   // Expands the subject set into a tree of subjects.
 expand: {
