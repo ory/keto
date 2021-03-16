@@ -15,17 +15,14 @@ mechanisms. If you came looking for the answer to the question:
   between 4pm and 5pm on a Monday?
 - ...
 
-Ory Keto provides various access control engines:
+Ory Keto is build based on
+[Google's Zanzibar research paper](https://research.google/pubs/pub48190/) and
+provides an extensible ACL language.
 
-- Available today:
-  - Ory-flavored Access Control Policies with exact, glob, and regexp matching
-    strategies
-- Available soon:
-  - [Access Control Lists](https://en.wikipedia.org/wiki/Access_control_list)
-  - [Role-based Access Control](https://en.wikipedia.org/wiki/Role-based_access_control)
-  - Role Based Access Control with Context (Google/Kubernetes-flavored)
-  - Amazon Web Services Identity & Access Management Policies (AWS IAM Policies)
+Soon, there will be native support for:
 
-Each mechanism is powered by a decision engine implemented on top of the
-[Open Policy Agent](https://www.openpolicyagent.org/) and provides well-defined
-management and authorization REST API endpoints.
+- [Role-based Access Control](https://en.wikipedia.org/wiki/Role-based_access_control)
+- Role Based Access Control with Context (Google/Kubernetes-flavored)
+- [Attribute-based Access Control](https://en.wikipedia.org/wiki/Attribute-based_access_control)
+- decision engines based on
+  [Open Policy Agent](https://www.openpolicyagent.org/)

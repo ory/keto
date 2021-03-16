@@ -290,7 +290,7 @@
           {
             "type": "integer",
             "format": "int64",
-            "name": "depth",
+            "name": "max-depth",
             "in": "query"
           }
         ],

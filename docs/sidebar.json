@@ -14,7 +14,9 @@
   ],
   "Guides": [
     "secure",
-    "guides/simple-access-check-guide"
+    "guides/simple-access-check-guide",
+    "guides/list-api-display-objects",
+    "guides/expand-api-display-who-has-access"
   ],
   "Examples": [
     "examples/olymp-file-sharing"

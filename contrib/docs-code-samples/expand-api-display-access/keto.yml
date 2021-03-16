@@ -1,0 +1,9 @@
+dsn: memory
+log:
+  level: trace
+
+namespaces:
+  - name: files
+    id: 1
+  - name: directories
+    id: 2
