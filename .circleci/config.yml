@@ -135,6 +135,7 @@ workflows:
           swagpath: .schema/swagger.json
           requires:
             - test
+            - test-race
             - validate
       - sdk/release:
           requires:
