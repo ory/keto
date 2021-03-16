@@ -3,6 +3,7 @@ package relationtuple
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/tidwall/gjson"
 	"io"
 	"io/ioutil"
 	"os"
@@ -63,9 +64,24 @@ func readTuplesFromArg(cmd *cobra.Command, arg string) ([]*relationtuple.Interna
 		}
 	}
 
-	var r relationtuple.InternalRelationTuple
-	err := json.NewDecoder(f).Decode(&r)
+	fc, err := io.ReadAll(f)
 	if err != nil {
+		_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could read file %s: %s\n", arg, err)
+		return nil, cmdx.FailSilently(cmd)
+	}
+
+	// it is ok to not validate beforehand because json.Unmarshal will report errors
+	if gjson.ParseBytes(fc).IsArray() {
+		var rts []*relationtuple.InternalRelationTuple
+		if err := json.Unmarshal(fc, &rts); err != nil {
+			_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not decode: %s\n", err)
+			return nil, cmdx.FailSilently(cmd)
+		}
+		return rts, nil
+	}
+
+	var r relationtuple.InternalRelationTuple
+	if err := json.Unmarshal(fc, &r); err != nil {
 		_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not decode: %s\n", err)
 		return nil, cmdx.FailSilently(cmd)
 	}

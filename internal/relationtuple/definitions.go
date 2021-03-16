@@ -240,6 +240,37 @@ func (r *InternalRelationTuple) String() string {
 	return fmt.Sprintf("%s:%s#%s@%s", r.Namespace, r.Object, r.Relation, r.Subject)
 }
 
+func (r *InternalRelationTuple) FromString(s string) (*InternalRelationTuple, error) {
+	parts := strings.SplitN(s, ":", 2)
+	if len(parts) != 2 {
+		return nil, errors.Wrap(ErrMalformedInput, "expected input to contain ':'")
+	}
+	r.Namespace = parts[0]
+
+	parts = strings.SplitN(parts[1], "#", 2)
+	if len(parts) != 2 {
+		return nil, errors.Wrap(ErrMalformedInput, "expected input to contain '#'")
+	}
+	r.Object = parts[0]
+
+	parts = strings.SplitN(parts[1], "@", 2)
+	if len(parts) != 2 {
+		return nil, errors.Wrap(ErrMalformedInput, "expected input to contain '@'")
+	}
+	r.Relation = parts[0]
+
+	// remove optional brackets around the subject set
+	sub := strings.Trim(parts[1], "()")
+
+	var err error
+	r.Subject, err = SubjectFromString(sub)
+	if err != nil {
+		return nil, err
+	}
+
+	return r, nil
+}
+
 func (r *InternalRelationTuple) DeriveSubject() *SubjectSet {
 	return &SubjectSet{
 		Namespace: r.Namespace,

@@ -22,7 +22,7 @@ func RegisterCommandsRecursive(parent *cobra.Command) {
 
 	parent.AddCommand(relationCmd)
 
-	relationCmd.AddCommand(newGetCmd(), newCreateCmd(), newDeleteCmd())
+	relationCmd.AddCommand(newGetCmd(), newCreateCmd(), newDeleteCmd(), newParseCmd())
 }
 
 func init() {
