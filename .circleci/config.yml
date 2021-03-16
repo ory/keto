@@ -138,6 +138,8 @@ workflows:
             - test-race
             - validate
       - sdk/release:
+          specignorepgks: internal/httpclient proto/ory/keto docker
+          swagpath: .schema/swagger.json
           requires:
             - test
             - test-race
