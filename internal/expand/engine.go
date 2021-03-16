@@ -2,6 +2,7 @@ package expand
 
 import (
 	"context"
+	"github.com/ory/keto/internal/namespace"
 
 	"github.com/ory/keto/internal/x"
 
@@ -11,6 +12,7 @@ import (
 type (
 	EngineDependencies interface {
 		relationtuple.ManagerProvider
+		namespace.ManagerProvider
 	}
 	Engine struct {
 		d EngineDependencies
@@ -30,8 +32,11 @@ func (e *Engine) BuildTree(ctx context.Context, subject relationtuple.Subject, r
 	}
 
 	if us, isUserSet := subject.(*relationtuple.SubjectSet); isUserSet {
+		nm, err := e.d.NamespaceManager()
+		n, err := nm.GetNamespace(ctx, us.Namespace)
+
 		subTree := &Tree{
-			Type:    Union,
+			Type:    n.GetRelationRewriteOperator(ctx, us.Relation),
 			Subject: subject,
 		}
 
