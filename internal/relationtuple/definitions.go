@@ -113,6 +113,28 @@ var (
 	ErrNilSubject     = errors.New("subject is nil")
 )
 
+// swagger:enum
+type patchAction string
+
+const (
+	ActionInsert patchAction = "insert"
+	ActionDelete patchAction = "delete"
+)
+
+// The patch request payload
+//
+// swagger:parameters patchRelationTuples
+// nolint:deadcode,unused
+type patchPayload struct {
+	// in:body
+	Payload []*PatchDelta
+}
+
+type PatchDelta struct {
+	Action        patchAction            `json:"action"`
+	RelationTuple *InternalRelationTuple `json:"relation_tuple"`
+}
+
 func SubjectFromString(s string) (Subject, error) {
 	if strings.Contains(s, "#") {
 		return (&SubjectSet{}).FromString(s)
