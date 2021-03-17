@@ -262,6 +262,81 @@ func TestInternalRelationTuple(t *testing.T) {
 		}).String())
 	})
 
+	t.Run("method=string decoding", func(t *testing.T) {
+		for i, tc := range []struct {
+			enc      string
+			err      error
+			expected *InternalRelationTuple
+		}{
+			{
+				enc: "n:o#r@s",
+				expected: &InternalRelationTuple{
+					Namespace: "n",
+					Object:    "o",
+					Relation:  "r",
+					Subject:   &SubjectID{ID: "s"},
+				},
+			},
+			{
+				enc: "n:o#r@n:o#r",
+				expected: &InternalRelationTuple{
+					Namespace: "n",
+					Object:    "o",
+					Relation:  "r",
+					Subject: &SubjectSet{
+						Namespace: "n",
+						Object:    "o",
+						Relation:  "r",
+					},
+				},
+			},
+			{
+				enc: "n:o#r@(n:o#r)",
+				expected: &InternalRelationTuple{
+					Namespace: "n",
+					Object:    "o",
+					Relation:  "r",
+					Subject: &SubjectSet{
+						Namespace: "n",
+						Object:    "o",
+						Relation:  "r",
+					},
+				},
+			},
+			{
+				enc: "#dev:@ory#:working:@projects:keto#awesome",
+				expected: &InternalRelationTuple{
+					Namespace: "#dev",
+					Object:    "@ory",
+					Relation:  ":working:",
+					Subject: &SubjectSet{
+						Namespace: "projects",
+						Object:    "keto",
+						Relation:  "awesome",
+					},
+				},
+			},
+			{
+				enc: "no-colon#in@this",
+				err: ErrMalformedInput,
+			},
+			{
+				enc: "no:hash-in@this",
+				err: ErrMalformedInput,
+			},
+			{
+				enc: "no:at#in-this",
+				err: ErrMalformedInput,
+			},
+		} {
+			t.Run(fmt.Sprintf("case=%d", i), func(t *testing.T) {
+				actual, err := (&InternalRelationTuple{}).FromString(tc.enc)
+				assert.True(t, errors.Is(err, tc.err), "%+v", err)
+				assert.Equal(t, tc.expected, actual)
+			})
+		}
+	})
+
 	t.Run("case=url encoding-decoding", func(t *testing.T) {
 		for i, r := range []*InternalRelationTuple{
 			{

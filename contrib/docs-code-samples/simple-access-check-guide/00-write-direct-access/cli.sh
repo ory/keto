@@ -1,14 +1,8 @@
 #!/bin/bash
 set -euo pipefail
 
-relationtuple='
-{
-  "namespace": "messages",
-  "object": "02y_15_4w350m3",
-  "relation": "decypher",
-  "subject": "john"
-}'
-
-keto relation-tuple create <(echo "$relationtuple") >/dev/null \
-  && echo "Successfully created tuple" \
-  || echo "Encountered error"
+echo "messages:02y_15_4w350m3#decypher@john" | \
+  keto relation-tuple parse - --format json | \
+  keto relation-tuple create - >/dev/null \
+    && echo "Successfully created tuple" \
+    || echo "Encountered error"
