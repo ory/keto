@@ -16,7 +16,7 @@ func newParseCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "parse",
 		Short: "Parse human readable relation tuples.",
-		Long:  "Parse human readable relation tuples as used in the documentation. Supports various output formats. Especially useful for piping into other commands.",
+		Long:  "Parse human readable relation tuples as used in the documentation. Supports various output formats. Especially useful for piping into other commands by using `--format json`.",
 		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			var rts []*relationtuple.InternalRelationTuple
@@ -28,6 +28,10 @@ func newParseCmd() *cobra.Command {
 				rts = append(rts, rtss...)
 			}
 
+			if len(rts) == 1 {
+				cmdx.PrintRow(cmd, rts[0])
+				return nil
+			}
 			cmdx.PrintTable(cmd, relationtuple.NewRelationCollection(rts))
 			return nil
 		},
@@ -41,7 +45,7 @@ func newParseCmd() *cobra.Command {
 func parseFile(cmd *cobra.Command, fn string) ([]*relationtuple.InternalRelationTuple, error) {
 	var f io.Reader
 	if fn == "-" {
-		// set human readable filename here for debug output
+		// set human readable filename here for debug and error messages
 		fn = "stdin"
 		f = cmd.InOrStdin()
 	} else {

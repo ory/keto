@@ -8,8 +8,6 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/tidwall/gjson"
-
 	acl "github.com/ory/keto/proto/ory/keto/acl/v1alpha1"
 
 	"github.com/ory/keto/internal/relationtuple"
@@ -72,7 +70,7 @@ func readTuplesFromArg(cmd *cobra.Command, arg string) ([]*relationtuple.Interna
 	}
 
 	// it is ok to not validate beforehand because json.Unmarshal will report errors
-	if gjson.ParseBytes(fc).IsArray() {
+	if fc[0] == '[' {
 		var rts []*relationtuple.InternalRelationTuple
 		if err := json.Unmarshal(fc, &rts); err != nil {
 			_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not decode: %s\n", err)
