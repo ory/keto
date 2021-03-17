@@ -107,4 +107,81 @@ func TestWriteHandlers(t *testing.T) {
 			assert.Equal(t, []*relationtuple.InternalRelationTuple{}, actualRTs)
 		})
 	})
+
+	t.Run("method=patch", func(t *testing.T) {
+		t.Run("case=create and delete", func(t *testing.T) {
+			deltas := []*relationtuple.PatchDelta{
+				{
+					Action: relationtuple.ActionInsert,
+					RelationTuple: &relationtuple.InternalRelationTuple{
+						Namespace: nspace.Name,
+						Object:    "create obj",
+						Relation:  t.Name(),
+						Subject:   &relationtuple.SubjectID{ID: "create sub"},
+					},
+				},
+				{
+					Action: relationtuple.ActionDelete,
+					RelationTuple: &relationtuple.InternalRelationTuple{
+						Namespace: nspace.Name,
+						Object:    "delete obj",
+						Relation:  t.Name(),
+						Subject:   &relationtuple.SubjectID{ID: "delete sub"},
+					},
+				},
+			}
+			require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), deltas[1].RelationTuple))
+
+			body, err := json.Marshal(deltas)
+			require.NoError(t, err)
+			req, err := http.NewRequest(http.MethodPatch, ts.URL+relationtuple.RouteBase, bytes.NewBuffer(body))
+			require.NoError(t, err)
+			resp, err := ts.Client().Do(req)
+			require.NoError(t, err)
+			assert.Equal(t, http.StatusNoContent, resp.StatusCode)
+
+			actualRTs, _, err := reg.RelationTupleManager().GetRelationTuples(context.Background(), &relationtuple.RelationQuery{
+				Namespace: nspace.Name,
+				Relation:  t.Name(),
+			})
+			require.NoError(t, err)
+			assert.Equal(t, []*relationtuple.InternalRelationTuple{deltas[0].RelationTuple}, actualRTs)
+		})
+
+		t.Run("case=ignores rest on err", func(t *testing.T) {
+			deltas := []*relationtuple.PatchDelta{
+				{
+					Action: relationtuple.ActionInsert,
+					RelationTuple: &relationtuple.InternalRelationTuple{
+						Namespace: nspace.Name,
+						Object:    "create obj",
+						Relation:  t.Name(),
+						Subject:   &relationtuple.SubjectID{ID: "create sub"},
+					},
+				},
+				{
+					Action: relationtuple.ActionDelete,
+					RelationTuple: &relationtuple.InternalRelationTuple{
+						Namespace: "not " + nspace.Name,
+						Object:    "o",
+						Relation:  "r",
+						Subject:   &relationtuple.SubjectID{ID: "s"},
+					},
+				},
+			}
+
+			body, err := json.Marshal(deltas)
+			require.NoError(t, err)
+			req, err := http.NewRequest(http.MethodPatch, ts.URL+relationtuple.RouteBase, bytes.NewBuffer(body))
+			require.NoError(t, err)
+			resp, err := ts.Client().Do(req)
+			require.NoError(t, err)
+			assert.Equal(t, http.StatusNotFound, resp.StatusCode)
+
+			// set a size > 1 just to make sure it gets all
+			actualRTs, _, err := reg.RelationTupleManager().GetRelationTuples(context.Background(), (*relationtuple.RelationQuery)(deltas[0].RelationTuple), x.WithSize(10))
+			require.NoError(t, err)
+			assert.Len(t, actualRTs, 0)
+		})
+	})
 }
