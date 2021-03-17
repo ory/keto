@@ -31,10 +31,9 @@ func NewEngine(d EngineDependencies) *Engine {
 func (e *Engine) subjectIsAllowed(ctx context.Context, requested *relationtuple.InternalRelationTuple, rels []*relationtuple.InternalRelationTuple) (bool, error) {
 	// This is the same as the graph problem "can requested.Subject be reached from requested.Object through the first outgoing edge requested.Relation"
 	//
-	// recursive breadth-first search
-	// TODO replace by more performant algorithm
+	// We implement recursive depth-first search here.
+	// TODO replace by more performant algorithm: https://github.com/ory/keto/issues/483
 
-	var allowed bool
 	for _, sr := range rels {
 		// we only have to check Subject here as we know that sr was reached from requested.ObjectID, requested.Relation through 0...n indirections
 		if requested.Subject.Equals(sr.Subject) {
@@ -47,9 +46,8 @@ func (e *Engine) subjectIsAllowed(ctx context.Context, requested *relationtuple.
 			continue
 		}
 
-		var err error
 		// expand the set by one indirection; paginated
-		allowed, err = e.checkOneIndirectionFurther(ctx, requested, &relationtuple.RelationQuery{Object: sub.Object, Relation: sub.Relation, Namespace: sub.Namespace})
+		allowed, err := e.checkOneIndirectionFurther(ctx, requested, &relationtuple.RelationQuery{Object: sub.Object, Relation: sub.Relation, Namespace: sub.Namespace})
 		if err != nil {
 			return false, err
 		}
@@ -58,28 +56,31 @@ func (e *Engine) subjectIsAllowed(ctx context.Context, requested *relationtuple.
 		}
 	}
 
-	return allowed, nil
+	return false, nil
 }
 
-func (e *Engine) checkOneIndirectionFurther(ctx context.Context, requested *relationtuple.InternalRelationTuple, expandQuery *relationtuple.RelationQuery) (allowed bool, err error) {
-	var (
-		nextRels []*relationtuple.InternalRelationTuple
-		nextPage string
-	)
+func (e *Engine) checkOneIndirectionFurther(ctx context.Context, requested *relationtuple.InternalRelationTuple, expandQuery *relationtuple.RelationQuery) (bool, error) {
+	// an empty page token denotes the first page (as tokens are opaque)
+	var prevPage string
 
-	// loop through pages until either allowed, end of pages, or an error occurred
-	for !allowed && nextPage != x.PageTokenEnd && err == nil {
-		nextRels, nextPage, err = e.d.RelationTupleManager().GetRelationTuples(ctx, expandQuery, x.WithToken(nextPage))
+	for {
+		nextRels, nextPage, err := e.d.RelationTupleManager().GetRelationTuples(ctx, expandQuery, x.WithToken(prevPage))
+		// herodot.ErrNotFound occurs when the namespace is unknown
 		if errors.Is(err, herodot.ErrNotFound) {
-			allowed, err = false, nil
-			return
+			return false, nil
 		} else if err != nil {
-			return
+			return false, err
 		}
 
-		allowed, err = e.subjectIsAllowed(ctx, requested, nextRels)
+		allowed, err := e.subjectIsAllowed(ctx, requested, nextRels)
+
+		// loop through pages until either allowed, end of pages, or an error occurred
+		if allowed || nextPage == x.PageTokenEnd || err != nil {
+			return allowed, err
+		}
+
+		prevPage = nextPage
 	}
-	return
 }
 
 func (e *Engine) SubjectIsAllowed(ctx context.Context, r *relationtuple.InternalRelationTuple) (bool, error) {
