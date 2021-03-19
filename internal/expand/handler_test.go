@@ -33,7 +33,7 @@ func TestRESTHandler(t *testing.T) {
 	defer ts.Close()
 
 	t.Run("case=returns bad request on malformed int", func(t *testing.T) {
-		resp, err := ts.Client().Get(ts.URL + expand.RouteBase + "?depth=foo")
+		resp, err := ts.Client().Get(ts.URL + expand.RouteBase + "?max-depth=foo")
 		require.NoError(t, err)
 
 		assert.Equal(t, http.StatusBadRequest, resp.StatusCode)
@@ -44,7 +44,7 @@ func TestRESTHandler(t *testing.T) {
 
 	t.Run("case=returns not found on unknown namespace", func(t *testing.T) {
 		resp, err := ts.Client().Get(ts.URL + expand.RouteBase + "?" + url.Values{
-			"depth":     {"10"},
+			"max-depth": {"10"},
 			"namespace": {"not " + nspace.Name},
 		}.Encode())
 		require.NoError(t, err)
@@ -92,7 +92,7 @@ func TestRESTHandler(t *testing.T) {
 		}...))
 
 		qs := rootSub.ToURLQuery()
-		qs.Set("depth", "2")
+		qs.Set("max-depth", "2")
 		resp, err := ts.Client().Get(ts.URL + expand.RouteBase + "?" + qs.Encode())
 		require.NoError(t, err)
 
