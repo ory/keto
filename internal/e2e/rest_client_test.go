@@ -134,7 +134,7 @@ func (rc *restClient) check(t require.TestingT, r *relationtuple.InternalRelatio
 
 func (rc *restClient) expand(t require.TestingT, r *relationtuple.SubjectSet, depth int) *expand.Tree {
 	query := r.ToURLQuery()
-	query.Set("depth", fmt.Sprintf("%d", depth))
+	query.Set("max-depth", fmt.Sprintf("%d", depth))
 
 	body, code := rc.makeRequest(t, http.MethodGet, fmt.Sprintf("%s?%s", expand.RouteBase, query.Encode()), "", false)
 	require.Equal(t, http.StatusOK, code, body)
