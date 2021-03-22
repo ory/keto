@@ -10,7 +10,8 @@
     "concepts/namespaces",
     "concepts/objects",
     "concepts/subjects",
-    "concepts/graph-of-relations"
+    "concepts/graph-of-relations",
+    "concepts/apis-overview"
   ],
   "Guides": [
     "secure",
