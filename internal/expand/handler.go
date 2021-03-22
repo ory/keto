@@ -52,7 +52,7 @@ func (h *handler) RegisterWriteGRPC(s *grpc.Server) {}
 // swagger:parameters getExpand
 // nolint:deadcode,unused
 type getExpandRequest struct {
-	Depth int `json:"depth"`
+	Depth int `json:"max-depth"`
 }
 
 // swagger:route GET /expand read getExpand
@@ -73,7 +73,7 @@ type getExpandRequest struct {
 //       404: genericError
 //       500: genericError
 func (h *handler) getExpand(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	depth, err := strconv.ParseInt(r.URL.Query().Get("depth"), 0, 0)
+	depth, err := strconv.ParseInt(r.URL.Query().Get("max-depth"), 0, 0)
 	if err != nil {
 		h.d.Writer().WriteError(w, r, herodot.ErrBadRequest.WithError(err.Error()))
 		return

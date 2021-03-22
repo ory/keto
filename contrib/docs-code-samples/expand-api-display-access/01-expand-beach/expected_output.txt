@@ -1,0 +1,30 @@
+{
+  "type": "union",
+  "subject": "files:/photos/beach.jpg#access",
+  "children": [
+    {
+      "type": "union",
+      "subject": "directories:/photos#access",
+      "children": [
+        {
+          "type": "leaf",
+          "subject": "directories:/photos#owner"
+        },
+        {
+          "type": "leaf",
+          "subject": "laura"
+        }
+      ]
+    },
+    {
+      "type": "union",
+      "subject": "files:/photos/beach.jpg#owner",
+      "children": [
+        {
+          "type": "leaf",
+          "subject": "maureen"
+        }
+      ]
+    }
+  ]
+}

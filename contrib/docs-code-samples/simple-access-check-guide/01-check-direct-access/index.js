@@ -4,7 +4,7 @@ import checkService from '@ory/keto-acl/check_service_grpc_pb.js'
 import checkData from '@ory/keto-acl/check_service_pb.js'
 
 const checkClient = new checkService.CheckServiceClient(
-  'localhost:4466',
+  '127.0.0.1:4466',
   grpc.credentials.createInsecure()
 )
 

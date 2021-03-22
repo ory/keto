@@ -33,6 +33,7 @@
     "prismjs": "^1.22.0",
     "react": "16.13.1",
     "react-dom": "16.13.1",
+    "remarkable": "2.0.1",
     "url-loader": "^4.1.0"
   },
   "browserslist": {
@@ -55,7 +56,6 @@
     "ramda": "0.27.1",
     "raw-loader": "4.0.2",
     "remark-admonitions": "1.2.1",
-    "remarkable": "2.0.1",
     "widdershins": "4.0.1",
     "yaml": "1.8.3"
   }

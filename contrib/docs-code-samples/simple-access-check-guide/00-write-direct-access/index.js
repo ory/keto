@@ -4,7 +4,7 @@ import writeService from '@ory/keto-acl/write_service_grpc_pb.js'
 import writeData from '@ory/keto-acl/write_service_pb.js'
 
 const writeClient = new writeService.WriteServiceClient(
-  'localhost:4467',
+  '127.0.0.1:4467',
   grpc.credentials.createInsecure()
 )
 
