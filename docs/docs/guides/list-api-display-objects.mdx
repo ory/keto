@@ -2,10 +2,8 @@
 title: 'List API: Display all Objects a User has Access to'
 ---
 
-import Mermaid from '@theme/Mermaid'
-import RelationTuplePrism from '@theme/RelationTuplePrism'
 import CodeTabs from '@theme/CodeTabs'
-import Spoiler from '@theme/Spoiler'
+import RelationTuplePrism from '@theme/RelationTuplePrism'
 RelationTuplePrism()
 
 In this guide you will learn how to use Ory Keto's list API to display a list of
@@ -21,34 +19,39 @@ or more chats, and each chat has one or more members.
 
 Chats are stored in Ory Keto within the `chats` namespace. They are identified
 by a UUID that the application maps to the actual object metadata. Users are
-also identified by and mapped to a UUID. For the sake of readability, the code
-samples use the name of the chat and username instead of the UUIDs. Please refer
-to the [objects](../concepts/objects.mdx) and
-[subjects](../concepts/subjects.mdx) pages for why the mapping is necessary.
+also identified by and mapped to a UUID.
 
-### Listing Items
+:::info
 
-The application allows users to browse the chats they belong to. To achieve
-that, it uses Ory Keto's list API.
+For the sake of readability, the code samples use the name of the chat and
+username instead of the UUIDs. Please refer to the
+[objects](../concepts/objects.mdx) and [subjects](../concepts/subjects.mdx)
+pages for why the mapping is necessary.
+
+:::
+
+### Listing Objects
+
+Our example application allows users to browse the chats they belong to. To
+achieve that, it uses Ory Keto's list API.
 
 We assume that the application currently has the following chats:
 
 ```yml
-memetics:
+memes:
   members:
     - PM
     - Vincent
-    - John
-    - Alano
+    - Julia
 cars:
   members:
     - PM
-    - John
+    - Julia
 coffee-break:
   members:
     - PM
     - Vincent
-    - Alano
+    - Julia
     - Patrik
 ```
 
@@ -72,10 +75,33 @@ chats:coffee-break#member@Patrik
 The user `PM` now opens the chat application. To display a list of all of `PM`'s
 chats, the application uses Keto's list API:
 
-<CodeTabs sampleId="list-api-display-objects/01-list-PM" version="zanzibar" />
+<CodeTabs sampleId="list-api-display-objects/01-list-PM" version="api-docs" />
 
-As a response, it gets the list of all chats the user `PM` is a member of. It
-can then use the information to build the UI.
+As a response, the application gets the list of all chats the user `PM` is a
+member of. It can then use the information to build the UI.
+
+### Listing Subjects
+
+Another view of the chat application has to display all members of a specific
+group to the user. This can also be achieved using the list API. In cases where
+such a membership would be modeled through
+[subject sets](../concepts/subjects.mdx#subject-sets), you have to use the
+[expand API](./expand-api-display-who-has-access.mdx).
+
+:::caution
+
+In this case the application should probably first use the
+[check API](./simple-access-check-guide.mdx) to check whether the user is
+allowed to list the members of a group. This step is not part of this example.
+
+:::
+
+In our example, a user wants to see who is a member of the `coffee-break` group:
+
+<CodeTabs
+  sampleId="list-api-display-objects/02-list-coffee-break"
+  version="api-docs"
+/>
 
 ## Application Context
 
@@ -85,10 +111,11 @@ has some context to determine what tuples to query anyway. That could be e.g.
 knowledge of the structure of subject sets like depth or hierarchy, or the UI
 context, like a "My Items" view which should probably contain other objects than
 a "My Organizations" or "Shared with Me" views. If there really is no way to
-narrow down a query, you will have to use the [expand API](/TODO) instead, or
-repeatedly call the list API. Try to avoid such cases because they require a lot
-of resources and can quickly degrade the service quality for all users. Please
-refer to the [performance considerations](../performance.mdx).
+narrow down a query, you will have to use the
+[expand API](./expand-api-display-who-has-access) instead, or repeatedly call
+the list API. Try to avoid such cases because they require a lot of resources
+and can quickly degrade the service quality for all users. Please refer to the
+[performance considerations](../performance.mdx).
 
 ## Pagination
 
