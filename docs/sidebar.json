@@ -11,7 +11,7 @@
     "concepts/objects",
     "concepts/subjects",
     "concepts/graph-of-relations",
-    "concepts/apis-overview"
+    "concepts/api-overview"
   ],
   "Guides": [
     "secure",
