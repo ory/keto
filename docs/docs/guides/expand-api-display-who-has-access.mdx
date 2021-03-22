@@ -22,15 +22,22 @@ granted access by the owner.
 
 Directories and files are stored in Ory Keto within the `directories` and
 `files` namespaces respectively. They are identified by a UUID that the
-application maps to the actual object metadata. For the sake of readability, the
-code samples use the object path instead. Please refer to the
-[objects page](../concepts/objects.mdx) for why the mapping is necessary.
+application maps to the actual object metadata. Users are also identified by and
+mapped to a UUID.
 
-### Displaying who has access
+:::info
 
-To assist users with managing permissions for their files, the application has a
-view to display exactly who has access to a file and why. In this example, we
-assume that the application knows the following files and directories:
+For the sake of readability, the code samples use the object path and user name
+instead. Please refer to the [objects](../concepts/objects.mdx) and
+[subjects](../concepts/subjects.mdx) pages for why the mapping is necessary.
+
+:::
+
+### Displaying who has Access
+
+To assist users with managing permissions for their files, the application has
+to display exactly who has access to a file and why. In this example, we assume
+that the application knows the following files and directories:
 
 ```
 ├─ photos            (owner: maureen; shared with laura)
@@ -90,6 +97,6 @@ all relevant relations:
 ### Analyzing the Tree
 
 The tree does not only include the subject IDs (in this case usernames), but
-also for what reason they were included. In many cases the application would not
-want to list all subject IDs but rather abstract away the group e.g. the owners
-or organization administrators.
+also for what reason they were included. This can be useful for users to audits
+permissions. Also, in many cases the application would not want to list all
+subject IDs but rather abstract away some subject sets.
