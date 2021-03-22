@@ -1,16 +1,17 @@
 ---
-title: APIs Overview
+title: API Overview
 ---
 
 This page gives an overview over all APIs Ory Keto offers, including common use
 cases.
 
 The APIs are separated based on privileges into a `read` and `write` endpoint.
-Each endpoint is exposed on a different port, so you can decide how to restrict
-access. REST and gRPC connections are multiplexed on the same port.
+Each endpoint is exposed on a different port, so
+[you can decide how to restrict access](../secure.md). gRPC and REST connections
+are multiplexed on the same port.
 
-All APIs are available to REST and gRPC clients, although feature parity is not
-always given. Because we follow REST and gRPC best practices and design
+All APIs are available to gRPC and REST clients, although feature parity is not
+always given. Because we follow gRPC and REST best practices and design
 guidelines, the APIs offer slightly different interfaces and capabilities.
 
 ## Read APIs
@@ -20,10 +21,10 @@ The read-APIs are per default exposed on the TCP port `4466`.
 ### List Relation Tuples
 
 This API allows you to query [relation tuples](./relation-tuples.mdx) by
-partially providing a tuple. It can be used to:
+providing a partial relation tuple. It can be used to:
 
-- [list object a user has access to](../guides/list-api-display-objects.mdx)
-- list users who have a specific role
+- [list objects a user has access to](../guides/list-api-display-objects.mdx#listing-objects)
+- [list users who have a specific role](../guides/list-api-display-objects.mdx#listing-subjects)
 - list users who are members of a specific group
 - audit permissions in the system
 
