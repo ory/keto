@@ -15,7 +15,7 @@ To improve this file please make your change against the appropriate "./cmd/*.go
 ### Options
 
 ```
-  -c, --config strings   Config files to load, overwriting in the order specified. (default [/home/patrik/keto.yml])
+  -c, --config strings   Config files to load, overwriting in the order specified. (default [/home/circleci/keto.yml])
   -h, --help             help for keto
 ```
 

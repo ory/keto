@@ -37,7 +37,7 @@ keto status [flags]
 ### Options inherited from parent commands
 
 ```
-  -c, --config strings   Config files to load, overwriting in the order specified. (default [/home/patrik/keto.yml])
+  -c, --config strings   Config files to load, overwriting in the order specified. (default [/home/circleci/keto.yml])
 ```
 
 ### SEE ALSO
