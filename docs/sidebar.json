@@ -1,5 +1,11 @@
 {
-  "Introduction": ["index", "install", "performance", "quickstart"],
+  "Introduction": [
+    "index",
+    "install",
+    "implemented-planned-features",
+    "performance",
+    "quickstart"
+  ],
   "Concepts": [
     "concepts/relation-tuples",
     "concepts/namespaces",
