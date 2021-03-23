@@ -205,7 +205,7 @@ func (r *RegistryDefault) ReadRouter() http.Handler {
 
 	br := &x.ReadRouter{Router: httprouter.New()}
 
-	r.HealthHandler().SetRoutes(br.Router, false)
+	r.HealthHandler().SetHealthRoutes(br.Router, false)
 
 	for _, h := range r.allHandlers() {
 		h.RegisterReadRoutes(br)
@@ -220,7 +220,7 @@ func (r *RegistryDefault) WriteRouter() http.Handler {
 
 	pr := &x.WriteRouter{Router: httprouter.New()}
 
-	r.HealthHandler().SetRoutes(pr.Router, false)
+	r.HealthHandler().SetHealthRoutes(pr.Router, false)
 
 	for _, h := range r.allHandlers() {
 		h.RegisterWriteRoutes(pr)

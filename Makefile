@@ -24,6 +24,12 @@ $(call make-lint-dependency)
 node_modules: package.json package-lock.json Makefile
 		npm ci
 
+.bin/clidoc:
+		go build -o .bin/clidoc ./cmd/clidoc/.
+
+docs/cli: .bin/clidoc
+		clidoc .
+
 .PHONY: format
 format: .bin/goimports
 		goimports -w -local github.com/ory/keto *.go internal cmd contrib
