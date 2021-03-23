@@ -14,7 +14,11 @@ import (
 
 func newDownCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:  "down <steps>",
+		Use:   "down <steps>",
+		Short: "Migrate the database down",
+		Long: "Migrate the database down a specific amount of steps.\n" +
+			"Pass 0 steps to fully migrate down.\n" +
+			"This does not affect namespaces. Use `keto namespace migrate down` for migrating namespaces.",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()

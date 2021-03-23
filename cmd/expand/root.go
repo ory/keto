@@ -17,8 +17,10 @@ const FlagMaxDepth = "max-depth"
 
 func NewExpandCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:  "expand <relation> <namespace> <object>",
-		Args: cobra.ExactArgs(3),
+		Use:   "expand <relation> <namespace> <object>",
+		Short: "Expand a subject set",
+		Long:  "Expand a subject set into a tree of subjects.",
+		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			conn, err := client.GetReadConn(cmd)
 			if err != nil {

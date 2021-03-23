@@ -10,13 +10,15 @@ import (
 
 func NewNamespaceCmd() *cobra.Command {
 	return &cobra.Command{
-		Use: "namespace",
+		Use:   "namespace",
+		Short: "Read and manipulate namespaces",
 	}
 }
 
 func NewMigrateCmd() *cobra.Command {
 	return &cobra.Command{
-		Use: "migrate",
+		Use:   "migrate",
+		Short: "Migrate a namespace",
 	}
 }
 

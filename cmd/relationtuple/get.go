@@ -63,7 +63,10 @@ func newGetCmd() *cobra.Command {
 	)
 
 	cmd := &cobra.Command{
-		Use:  "get <namespace>",
+		Use:   "get <namespace>",
+		Short: "Get relation tuples",
+		Long: "Get relation tuples matching the given partial tuple.\n" +
+			"Returns paginated results.",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			conn, err := client.GetReadConn(cmd)

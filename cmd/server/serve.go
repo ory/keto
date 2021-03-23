@@ -21,22 +21,21 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/ory/keto/internal/driver"
-	"github.com/ory/keto/internal/driver/config"
 )
 
 // serveCmd represents the serve command
 func newServe() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "serve",
-		Short: "Starts the server and serves the HTTP REST API",
-		Long: `This command opens a network port and listens to HTTP/2 API requests.
+		Short: "Starts the server and serves the HTTP REST and gRPC APIs",
+		Long: `This command opens the network ports and listens to HTTP and gRPC API requests.
 
 ## Configuration
 
 ORY Keto can be configured using environment variables as well as a configuration file. For more information
 on configuration options, open the configuration documentation:
 
->> https://github.com/ory/keto/blob/` + config.Version + `/docs/config.yaml <<`,
+>> https://www.ory.sh/keto/docs/reference/configuration <<`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			reg, err := driver.NewDefaultRegistry(cmd.Context(), cmd.Flags())
 			if err != nil {

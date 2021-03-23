@@ -15,8 +15,10 @@ import (
 func NewMigrateDownCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "down <namespace-name> <steps>",
-		Short: "Migrate a namespace down.",
-		Args:  cobra.ExactArgs(2),
+		Short: "Migrate a namespace down",
+		Long: "Migrate a namespace down.\n" +
+			"Pass 0 steps to fully migrate down.",
+		Args: cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 

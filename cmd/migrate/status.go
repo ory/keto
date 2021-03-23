@@ -11,7 +11,10 @@ import (
 
 func newStatusCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use: "status",
+		Use:   "status",
+		Short: "Get the current migration status",
+		Long: "Get the current migration status.\n" +
+			"This does not affect namespaces. Use `keto namespace migrate status` for migrating namespaces.",
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			ctx := cmd.Context()
 

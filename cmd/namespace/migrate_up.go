@@ -16,7 +16,8 @@ import (
 func NewMigrateUpCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "up <namespace-name>",
-		Short: "Migrate a namespace up.",
+		Short: "Migrate a namespace up",
+		Long:  "Migrate a namespace up to the most recent migration.",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
