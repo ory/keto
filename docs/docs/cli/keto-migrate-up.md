@@ -1,7 +1,7 @@
 ---
 id: keto-migrate-up
 title: keto migrate up
-description: keto migrate up
+description: keto migrate up Migrate the database up
 ---
 
 <!--
@@ -11,6 +11,13 @@ To improve this file please make your change against the appropriate "./cmd/*.go
 -->
 
 ## keto migrate up
+
+Migrate the database up
+
+### Synopsis
+
+Migrate the database up. This does not affect namespaces. Use
+`keto namespace migrate up` for migrating namespaces.
 
 ```
 keto migrate up [flags]
@@ -34,4 +41,4 @@ keto migrate up [flags]
 
 ### SEE ALSO
 
-- [keto migrate](keto-migrate) -
+- [keto migrate](keto-migrate) - Commands to migrate the database

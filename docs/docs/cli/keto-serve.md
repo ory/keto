@@ -1,7 +1,7 @@
 ---
 id: keto-serve
 title: keto serve
-description: keto serve Starts the server and serves the HTTP REST API
+description: keto serve Starts the server and serves the HTTP REST and gRPC APIs
 ---
 
 <!--
@@ -12,11 +12,11 @@ To improve this file please make your change against the appropriate "./cmd/*.go
 
 ## keto serve
 
-Starts the server and serves the HTTP REST API
+Starts the server and serves the HTTP REST and gRPC APIs
 
 ### Synopsis
 
-This command opens a network port and listens to HTTP/2 API requests.
+This command opens the network ports and listens to HTTP and gRPC API requests.
 
 ## Configuration
 
@@ -24,7 +24,7 @@ ORY Keto can be configured using environment variables as well as a
 configuration file. For more information on configuration options, open the
 configuration documentation:
 
-> > https://github.com/ory/keto/blob/master/docs/config.yaml <<
+> > https://www.ory.sh/keto/docs/reference/configuration <<
 
 ```
 keto serve [flags]
@@ -46,4 +46,4 @@ keto serve [flags]
 
 ### SEE ALSO
 
-- [keto](keto) -
+- [keto](keto) - Global and consistent permission and authorization server

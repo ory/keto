@@ -1,7 +1,7 @@
 ---
 id: keto-namespace
 title: keto namespace
-description: keto namespace
+description: keto namespace Read and manipulate namespaces
 ---
 
 <!--
@@ -11,6 +11,8 @@ To improve this file please make your change against the appropriate "./cmd/*.go
 -->
 
 ## keto namespace
+
+Read and manipulate namespaces
 
 ### Options
 
@@ -26,7 +28,6 @@ To improve this file please make your change against the appropriate "./cmd/*.go
 
 ### SEE ALSO
 
-- [keto](keto) -
-- [keto namespace migrate](keto-namespace-migrate) -
-- [keto namespace validate](keto-namespace-validate) - Validate a namespace
-  file.
+- [keto](keto) - Global and consistent permission and authorization server
+- [keto namespace migrate](keto-namespace-migrate) - Migrate a namespace
+- [keto namespace validate](keto-namespace-validate) - Validate namespace files

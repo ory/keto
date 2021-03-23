@@ -1,7 +1,7 @@
 ---
 id: keto-migrate-down
 title: keto migrate down
-description: keto migrate down
+description: keto migrate down Migrate the database down
 ---
 
 <!--
@@ -11,6 +11,14 @@ To improve this file please make your change against the appropriate "./cmd/*.go
 -->
 
 ## keto migrate down
+
+Migrate the database down
+
+### Synopsis
+
+Migrate the database down a specific amount of steps. Pass 0 steps to fully
+migrate down. This does not affect namespaces. Use `keto namespace migrate down`
+for migrating namespaces.
 
 ```
 keto migrate down <steps> [flags]
@@ -33,4 +41,4 @@ keto migrate down <steps> [flags]
 
 ### SEE ALSO
 
-- [keto migrate](keto-migrate) -
+- [keto migrate](keto-migrate) - Commands to migrate the database
