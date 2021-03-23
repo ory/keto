@@ -1,7 +1,7 @@
 ---
 id: keto-expand
 title: keto expand
-description: keto expand
+description: keto expand Expand a subject set
 ---
 
 <!--
@@ -11,6 +11,12 @@ To improve this file please make your change against the appropriate "./cmd/*.go
 -->
 
 ## keto expand
+
+Expand a subject set
+
+### Synopsis
+
+Expand a subject set into a tree of subjects.
 
 ```
 keto expand <relation> <namespace> <object> [flags]
@@ -34,4 +40,4 @@ keto expand <relation> <namespace> <object> [flags]
 
 ### SEE ALSO
 
-- [keto](keto) -
+- [keto](keto) - Global and consistent permission and authorization server

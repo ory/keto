@@ -1,7 +1,7 @@
 ---
 id: keto-status
 title: keto status
-description: keto status Get the status of the upstream Keto instance.
+description: keto status Get the status of the upstream Keto instance
 ---
 
 <!--
@@ -12,7 +12,7 @@ To improve this file please make your change against the appropriate "./cmd/*.go
 
 ## keto status
 
-Get the status of the upstream Keto instance.
+Get the status of the upstream Keto instance
 
 ### Synopsis
 
@@ -42,4 +42,4 @@ keto status [flags]
 
 ### SEE ALSO
 
-- [keto](keto) -
+- [keto](keto) - Global and consistent permission and authorization server

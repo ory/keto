@@ -15,9 +15,11 @@ import (
 func newParseCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "parse",
-		Short: "Parse human readable relation tuples.",
-		Long:  "Parse human readable relation tuples as used in the documentation. Supports various output formats. Especially useful for piping into other commands by using `--format json`.",
-		Args:  cobra.MinimumNArgs(1),
+		Short: "Parse human readable relation tuples",
+		Long: "Parse human readable relation tuples as used in the documentation.\n" +
+			"Supports various output formats. Especially useful for piping into other commands by using `--format json`.\n" +
+			"Ignores comments (starting with `//`) and blank lines.",
+		Args: cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			var rts []*relationtuple.InternalRelationTuple
 			for _, fn := range args {

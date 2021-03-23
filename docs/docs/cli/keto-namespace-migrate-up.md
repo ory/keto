@@ -1,7 +1,7 @@
 ---
 id: keto-namespace-migrate-up
 title: keto namespace migrate up
-description: keto namespace migrate up Migrate a namespace up.
+description: keto namespace migrate up Migrate a namespace up
 ---
 
 <!--
@@ -12,7 +12,11 @@ To improve this file please make your change against the appropriate "./cmd/*.go
 
 ## keto namespace migrate up
 
-Migrate a namespace up.
+Migrate a namespace up
+
+### Synopsis
+
+Migrate a namespace up to the most recent migration.
 
 ```
 keto namespace migrate up <namespace-name> [flags]
@@ -37,4 +41,4 @@ keto namespace migrate up <namespace-name> [flags]
 
 ### SEE ALSO
 
-- [keto namespace migrate](keto-namespace-migrate) -
+- [keto namespace migrate](keto-namespace-migrate) - Migrate a namespace

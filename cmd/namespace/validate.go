@@ -21,8 +21,8 @@ func NewValidateCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "validate <namespace.yml> [<namespace2.yml> ...]",
 		Args:  cobra.MinimumNArgs(1),
-		Short: "Validate a namespace file.",
-		Long:  "Validate a namespace file and get human readable errors.",
+		Short: "Validate namespace files",
+		Long:  "Validate one or more namespace yaml files and get human readable errors. Useful for debugging.",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			for _, fn := range args {
 				_, err := validateNamespaceFile(cmd, fn)

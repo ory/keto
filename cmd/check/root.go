@@ -24,8 +24,10 @@ func (o *checkOutput) String() string {
 
 func newCheckCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:  "check <subject> <relation> <namespace> <object>",
-		Args: cobra.ExactArgs(4),
+		Use:   "check <subject> <relation> <namespace> <object>",
+		Short: "Check whether a subject has a relation on an object",
+		Long:  "Check whether a subject has a relation on an object. This method resolves subject sets and subject set rewrites.",
+		Args:  cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			conn, err := client.GetReadConn(cmd)
 			if err != nil {

@@ -27,7 +27,7 @@ func newStatusCmd() *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "status",
-		Short: "Get the status of the upstream Keto instance.",
+		Short: "Get the status of the upstream Keto instance",
 		Long:  "Get a status report about the upstream Keto instance. Can also block until the service is healthy.",
 		Args:  cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {

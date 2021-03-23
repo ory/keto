@@ -1,7 +1,7 @@
 ---
 id: keto-check
 title: keto check
-description: keto check
+description: keto check Check whether a subject has a relation on an object
 ---
 
 <!--
@@ -11,6 +11,13 @@ To improve this file please make your change against the appropriate "./cmd/*.go
 -->
 
 ## keto check
+
+Check whether a subject has a relation on an object
+
+### Synopsis
+
+Check whether a subject has a relation on an object. This method resolves
+subject sets and subject set rewrites.
 
 ```
 keto check <subject> <relation> <namespace> <object> [flags]
@@ -34,4 +41,4 @@ keto check <subject> <relation> <namespace> <object> [flags]
 
 ### SEE ALSO
 
-- [keto](keto) -
+- [keto](keto) - Global and consistent permission and authorization server

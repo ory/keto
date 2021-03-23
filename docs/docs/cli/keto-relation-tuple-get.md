@@ -1,7 +1,7 @@
 ---
 id: keto-relation-tuple-get
 title: keto relation-tuple get
-description: keto relation-tuple get
+description: keto relation-tuple get Get relation tuples
 ---
 
 <!--
@@ -11,6 +11,12 @@ To improve this file please make your change against the appropriate "./cmd/*.go
 -->
 
 ## keto relation-tuple get
+
+Get relation tuples
+
+### Synopsis
+
+Get relation tuples matching the given partial tuple. Returns paginated results.
 
 ```
 keto relation-tuple get <namespace> [flags]
@@ -39,4 +45,5 @@ keto relation-tuple get <namespace> [flags]
 
 ### SEE ALSO
 
-- [keto relation-tuple](keto-relation-tuple) -
+- [keto relation-tuple](keto-relation-tuple) - Read and manipulate relation
+  tuples

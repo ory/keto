@@ -19,7 +19,11 @@ import (
 
 func newCreateCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:  "create <relation-tuple.json> [<relation-tuple-dir>]",
+		Use:   "create <relation-tuple.json> [<relation-tuple-dir>]",
+		Short: "Create relation tuples from JSON files",
+		Long: "Create relation tuples from JSON files.\n" +
+			"A directory will be traversed and all relation tuples will be created.\n" +
+			"Pass the special filename `-` to read from STD_IN.",
 		Args: cobra.MinimumNArgs(1),
 		RunE: transactRelationTuples(acl.RelationTupleDelta_INSERT),
 	}

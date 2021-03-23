@@ -4,7 +4,10 @@ import "github.com/spf13/cobra"
 
 func newMigrateCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use: "migrate",
+		Use:   "migrate",
+		Short: "Commands to migrate the database",
+		Long: "Commands to migrate the database.\n" +
+			"This does not affect namespaces. Use `keto namespace migrate` for migrating namespaces.",
 	}
 	cmd.AddCommand(
 		newStatusCmd(),

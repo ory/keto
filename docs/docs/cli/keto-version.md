@@ -32,4 +32,4 @@ keto version [flags]
 
 ### SEE ALSO
 
-- [keto](keto) -
+- [keto](keto) - Global and consistent permission and authorization server

@@ -1,7 +1,7 @@
 ---
 id: keto-migrate-status
 title: keto migrate status
-description: keto migrate status
+description: keto migrate status Get the current migration status
 ---
 
 <!--
@@ -11,6 +11,13 @@ To improve this file please make your change against the appropriate "./cmd/*.go
 -->
 
 ## keto migrate status
+
+Get the current migration status
+
+### Synopsis
+
+Get the current migration status. This does not affect namespaces. Use
+`keto namespace migrate status` for migrating namespaces.
 
 ```
 keto migrate status [flags]
@@ -32,4 +39,4 @@ keto migrate status [flags]
 
 ### SEE ALSO
 
-- [keto migrate](keto-migrate) -
+- [keto migrate](keto-migrate) - Commands to migrate the database

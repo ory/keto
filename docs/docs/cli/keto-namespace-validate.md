@@ -1,7 +1,7 @@
 ---
 id: keto-namespace-validate
 title: keto namespace validate
-description: keto namespace validate Validate a namespace file.
+description: keto namespace validate Validate namespace files
 ---
 
 <!--
@@ -12,11 +12,12 @@ To improve this file please make your change against the appropriate "./cmd/*.go
 
 ## keto namespace validate
 
-Validate a namespace file.
+Validate namespace files
 
 ### Synopsis
 
-Validate a namespace file and get human readable errors.
+Validate one or more namespace yaml files and get human readable errors. Useful
+for debugging.
 
 ```
 keto namespace validate <namespace.yml> [<namespace2.yml> ...] [flags]
@@ -36,4 +37,4 @@ keto namespace validate <namespace.yml> [<namespace2.yml> ...] [flags]
 
 ### SEE ALSO
 
-- [keto namespace](keto-namespace) -
+- [keto namespace](keto-namespace) - Read and manipulate namespaces

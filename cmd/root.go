@@ -44,7 +44,8 @@ import (
 // RootCmd represents the base command when called without any subcommands
 func NewRootCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use: "keto",
+		Use:   "keto",
+		Short: "Global and consistent permission and authorization server",
 	}
 
 	configx.RegisterConfigFlag(cmd.PersistentFlags(), []string{filepath.Join(userHomeDir(), "keto.yml")})

@@ -24,7 +24,11 @@ func newUpCmd() *cobra.Command {
 	var allNamespaces bool
 
 	cmd := &cobra.Command{
-		Use: "up",
+		Use:   "up",
+		Short: "Migrate the database up",
+		Long: "Migrate the database up.\n" +
+			"This does not affect namespaces. Use `keto namespace migrate up` for migrating namespaces.",
+		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			ctx := cmd.Context()
 
