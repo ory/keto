@@ -116,6 +116,7 @@ workflows:
               only: /.*/
             branches:
               only: master
+      - docs/cli
       - docs/build:
           requires:
             - test
