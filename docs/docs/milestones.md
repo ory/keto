@@ -97,6 +97,9 @@ New feature or request.
       ([keto#463](https://github.com/ory/keto/issues/463)) -
       [@Andreas Bucksteeg](https://github.com/tricky42),
       [@Piotr Mścichowski](https://github.com/piotrmsc)
+- [ ] Namespace migrate status command
+      ([keto#502](https://github.com/ory/keto/issues/502)) -
+      [@Patrik](https://github.com/zepatrik)
 - [x] Write relationtuple tests for http and grpc handlers
       ([keto#297](https://github.com/ory/keto/issues/297)) -
       [@Patrik](https://github.com/zepatrik),
@@ -129,11 +132,11 @@ Affects documentation.
 
 #### Issues
 
-- [ ] Improve documentation of Expand API's max_depth parameter
-      ([keto#419](https://github.com/ory/keto/issues/419)) -
-      [@Patrik](https://github.com/zepatrik)
 - [ ] Next Gen Documentation
       ([keto#420](https://github.com/ory/keto/issues/420)) -
+      [@Patrik](https://github.com/zepatrik)
+- [x] Improve documentation of Expand API's max_depth parameter
+      ([keto#419](https://github.com/ory/keto/issues/419)) -
       [@Patrik](https://github.com/zepatrik)
 
 ### [Ci](https://github.com/ory/keto/labels/ci)
@@ -162,6 +165,9 @@ Blocks milestones or other issues or pulls.
       [@hackerman](https://github.com/aeneasr)
 - [ ] Next Gen Documentation
       ([keto#420](https://github.com/ory/keto/issues/420)) -
+      [@Patrik](https://github.com/zepatrik)
+- [ ] Namespace migrate status command
+      ([keto#502](https://github.com/ory/keto/issues/502)) -
       [@Patrik](https://github.com/zepatrik)
 - [x] Define and architect SQL schema and queries for querying relations
       ([keto#300](https://github.com/ory/keto/issues/300)) -
