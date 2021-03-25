@@ -70,3 +70,7 @@ func (p *Persister) NamespaceStatus(ctx context.Context, n *namespace.Namespace)
 
 	return mb.Status(ctx)
 }
+
+func (p *Persister) NamespaceMigrationBox(_ context.Context, n *namespace.Namespace) (*popx.MigrationBox, error) {
+	return p.namespaceMigrationBox(n)
+}

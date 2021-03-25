@@ -3,24 +3,21 @@ package namespace
 import (
 	"fmt"
 
-	"github.com/ory/keto/cmd/migrate"
-
 	"github.com/ory/x/cmdx"
 	"github.com/spf13/cobra"
 
+	"github.com/ory/keto/cmd/migrate"
 	"github.com/ory/keto/internal/driver"
 )
 
-func NewMigrateUpCmd() *cobra.Command {
+func NewMigrateStatusCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "up <namespace-name>",
-		Short: "Migrate a namespace up",
-		Long:  "Migrate a namespace up to the most recent migration.",
+		Use:   "status <namespace-name>",
+		Short: "Get the current namespace migration status",
+		Long:  "Get the current namespace migration status",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			ctx := cmd.Context()
-
-			reg, err := driver.NewDefaultRegistry(ctx, cmd.Flags())
+			reg, err := driver.NewDefaultRegistry(cmd.Context(), cmd.Flags())
 			if err != nil {
 				return err
 			}
@@ -31,23 +28,22 @@ func NewMigrateUpCmd() *cobra.Command {
 				return cmdx.FailSilently(cmd)
 			}
 
-			n, err := nm.GetNamespace(ctx, args[0])
+			n, err := nm.GetNamespace(cmd.Context(), args[0])
 			if err != nil {
 				_, _ = fmt.Fprintf(cmd.OutOrStdout(), "Could not find the namespace with name \"%s\": %+v\n", args[0], err)
 				return cmdx.FailSilently(cmd)
 			}
 
-			mb, err := reg.NamespaceMigrator().NamespaceMigrationBox(ctx, n)
+			mb, err := reg.NamespaceMigrator().NamespaceMigrationBox(cmd.Context(), n)
 			if err != nil {
 				return err
 			}
 
-			return migrate.BoxUp(cmd, mb, "[namespace="+n.Name+"] ")
+			return migrate.BoxStatus(cmd, mb, "[namespace="+n.Name+"] ")
 		},
 	}
 
-	migrate.RegisterYesFlag(cmd.Flags())
-	registerPackageFlags(cmd.Flags())
+	cmdx.RegisterFormatFlags(cmd.Flags())
 
 	return cmd
 }

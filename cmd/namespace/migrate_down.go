@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/ory/x/flagx"
+	"github.com/ory/keto/cmd/migrate"
 
 	"github.com/ory/x/cmdx"
 	"github.com/spf13/cobra"
@@ -45,21 +45,16 @@ func NewMigrateDownCmd() *cobra.Command {
 				return cmdx.FailSilently(cmd)
 			}
 
-			if !flagx.MustGetBool(cmd, YesFlag) && !cmdx.AskForConfirmation(fmt.Sprintf("Do you really want to delete namespace %s? This will irrecoverably delete all relation tuples within the namespace.", n.Name), cmd.InOrStdin(), cmd.OutOrStdout()) {
-				_, _ = fmt.Fprintf(cmd.OutOrStdout(), "Migration of namespace \"%s\" aborted.\n", n.Name)
-				return nil
+			mb, err := reg.NamespaceMigrator().NamespaceMigrationBox(ctx, n)
+			if err != nil {
+				return err
 			}
 
-			if err := reg.NamespaceMigrator().MigrateNamespaceDown(ctx, n, int(steps)); err != nil {
-				_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not apply namespace migration: %+v\n", err)
-				return cmdx.FailSilently(cmd)
-			}
-
-			return nil
+			return migrate.BoxDown(cmd, mb, int(steps), "[namespace="+n.Name+"] ")
 		},
 	}
 
-	registerYesFlag(cmd.Flags())
+	migrate.RegisterYesFlag(cmd.Flags())
 	registerPackageFlags(cmd.Flags())
 
 	return cmd

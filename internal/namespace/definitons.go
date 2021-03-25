@@ -17,6 +17,7 @@ type (
 		MigrateNamespaceUp(ctx context.Context, n *Namespace) error
 		MigrateNamespaceDown(ctx context.Context, n *Namespace, steps int) error
 		NamespaceStatus(ctx context.Context, n *Namespace) (popx.MigrationStatuses, error)
+		NamespaceMigrationBox(ctx context.Context, n *Namespace) (*popx.MigrationBox, error)
 	}
 	Manager interface {
 		GetNamespace(ctx context.Context, name string) (*Namespace, error)

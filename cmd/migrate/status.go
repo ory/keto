@@ -3,6 +3,8 @@ package migrate
 import (
 	"fmt"
 
+	"github.com/ory/x/popx"
+
 	"github.com/ory/x/cmdx"
 	"github.com/spf13/cobra"
 
@@ -23,18 +25,27 @@ func newStatusCmd() *cobra.Command {
 				return err
 			}
 
-			s, err := reg.Migrator().MigrationStatus(ctx)
+			mb, err := reg.Migrator().MigrationBox(ctx)
 			if err != nil {
-				_, _ = fmt.Fprintf(cmd.OutOrStdout(), "Could not get migration status: %+v\n", err)
-				return cmdx.FailSilently(cmd)
+				return err
 			}
 
-			cmdx.PrintTable(cmd, s)
-			return nil
+			return BoxStatus(cmd, mb, "")
 		},
 	}
 
 	cmdx.RegisterFormatFlags(cmd.Flags())
 
 	return cmd
+}
+
+func BoxStatus(cmd *cobra.Command, mb *popx.MigrationBox, msgPrefix string) error {
+	s, err := mb.Status(cmd.Context())
+	if err != nil {
+		_, _ = fmt.Fprintf(cmd.OutOrStdout(), "%sCould not get migration status: %+v\n", msgPrefix, err)
+		return cmdx.FailSilently(cmd)
+	}
+
+	cmdx.PrintTable(cmd, s)
+	return nil
 }
