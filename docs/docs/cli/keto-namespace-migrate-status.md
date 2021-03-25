@@ -17,7 +17,8 @@ Get the current namespace migration status
 
 ### Synopsis
 
-Get the current namespace migration status
+Get the current migration status of one specific namespace. Does not apply any
+changes.
 
 ```
 keto namespace migrate status <namespace-name> [flags]

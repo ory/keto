@@ -14,7 +14,7 @@ func NewMigrateStatusCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "status <namespace-name>",
 		Short: "Get the current namespace migration status",
-		Long:  "Get the current namespace migration status",
+		Long:  "Get the current migration status of one specific namespace.\nDoes not apply any changes.",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			reg, err := driver.NewDefaultRegistry(cmd.Context(), cmd.Flags())
