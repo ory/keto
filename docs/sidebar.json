@@ -37,6 +37,7 @@
         "cli/keto-namespace",
         "cli/keto-namespace-migrate",
         "cli/keto-namespace-migrate-down",
+        "cli/keto-namespace-migrate-status",
         "cli/keto-namespace-migrate-up",
         "cli/keto-namespace-validate",
         "cli/keto-relation-tuple",

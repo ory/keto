@@ -31,5 +31,7 @@ Migrate a namespace
 - [keto namespace](keto-namespace) - Read and manipulate namespaces
 - [keto namespace migrate down](keto-namespace-migrate-down) - Migrate a
   namespace down
+- [keto namespace migrate status](keto-namespace-migrate-status) - Get the
+  current namespace migration status
 - [keto namespace migrate up](keto-namespace-migrate-up) - Migrate a namespace
   up
