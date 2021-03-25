@@ -17,9 +17,7 @@ type (
 		namespace.Migrator
 	}
 	Migrator interface {
-		MigrateUp(context.Context) error
-		MigrateDown(context.Context, int) error
-		MigrationStatus(context.Context) (popx.MigrationStatuses, error)
+		MigrationBox(context.Context) (*popx.MigrationBox, error)
 	}
 	MigratorProvider interface {
 		Migrator() Migrator

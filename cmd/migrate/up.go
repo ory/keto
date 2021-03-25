@@ -3,6 +3,8 @@ package migrate
 import (
 	"fmt"
 
+	"github.com/ory/x/popx"
+
 	"github.com/ory/x/flagx"
 
 	"github.com/spf13/pflag"
@@ -37,40 +39,14 @@ func newUpCmd() *cobra.Command {
 				return err
 			}
 
-			_, _ = fmt.Fprintln(cmd.OutOrStdout(), "Current status:")
-
-			s, err := reg.Migrator().MigrationStatus(ctx)
+			mb, err := reg.Migrator().MigrationBox(ctx)
 			if err != nil {
-				_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not get migration status: %+v\n", err)
-				return cmdx.FailSilently(cmd)
-			}
-			cmdx.PrintTable(cmd, s)
-
-			if !s.HasPending() {
-				_, _ = fmt.Fprintln(cmd.OutOrStdout(), "All migrations are already applied, there is nothing to do.")
-				return nil
+				return err
 			}
 
-			if !flagx.MustGetBool(cmd, FlagYes) && !cmdx.AskForConfirmation("Are you sure that you want to apply this migration? Make sure to check the CHANGELOG.md for breaking changes beforehand.", cmd.InOrStdin(), cmd.OutOrStdout()) {
-				_, _ = fmt.Fprintln(cmd.OutOrStdout(), "Aborting")
-				return nil
+			if err := BoxUp(cmd, mb, ""); err != nil {
+				return err
 			}
-
-			_, _ = fmt.Fprintln(cmd.OutOrStdout(), "Applying migrations...")
-
-			if err := reg.Migrator().MigrateUp(ctx); err != nil {
-				_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not apply migrations: %+v\n", err)
-				return cmdx.FailSilently(cmd)
-			}
-
-			_, _ = fmt.Fprintln(cmd.OutOrStdout(), "Successfully applied all migrations:")
-
-			s, err = reg.Migrator().MigrationStatus(ctx)
-			if err != nil {
-				_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not get migration status: %+v\n", err)
-				return cmdx.FailSilently(cmd)
-			}
-			cmdx.PrintTable(cmd, s)
 
 			if !allNamespaces {
 				// everything is done already
@@ -91,36 +67,21 @@ func newUpCmd() *cobra.Command {
 			}
 
 			for _, nspace := range nspaces {
-				s, err := reg.NamespaceMigrator().NamespaceStatus(cmd.Context(), nspace)
+				mb, err := reg.NamespaceMigrator().NamespaceMigrationBox(ctx, nspace)
 				if err != nil {
-					_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not get migration status for namespace %s: %+v\n", nspace.Name, err)
-					return cmdx.FailSilently(cmd)
-				}
-				cmdx.PrintTable(cmd, s)
-
-				if !s.HasPending() {
-					_, _ = fmt.Fprintf(cmd.OutOrStdout(), "All migrations are already applied for namespace %s, there is nothing to do.\n", nspace.Name)
-					continue
+					return err
 				}
 
-				if !flagx.MustGetBool(cmd, FlagYes) && !cmdx.AskForConfirmation(fmt.Sprintf("Do you want to apply above planned migrations for namespace %s?", nspace.Name), cmd.InOrStdin(), cmd.OutOrStdout()) {
-					_, _ = fmt.Fprintf(cmd.OutOrStdout(), "Skipping namespace %s\n", nspace.Name)
-					continue
+				if err := BoxUp(cmd, mb, "[namespace="+nspace.Name+"] "); err != nil {
+					return err
 				}
-
-				if err := reg.NamespaceMigrator().MigrateNamespaceUp(cmd.Context(), nspace); err != nil {
-					_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not apply namespace migrations for namespace %s: %+v\n", nspace.Name, err)
-					return cmdx.FailSilently(cmd)
-				}
-
-				_, _ = fmt.Fprintf(cmd.OutOrStdout(), "Successfully migrated namespace %s\n.", nspace.Name)
 			}
 
 			return nil
 		},
 	}
 
-	registerYesFlag(cmd.Flags())
+	RegisterYesFlag(cmd.Flags())
 	cmd.Flags().BoolVar(&allNamespaces, FlagAllNamespace, false, "migrate all pending namespaces as well")
 
 	cmdx.RegisterFormatFlags(cmd.Flags())
@@ -128,6 +89,45 @@ func newUpCmd() *cobra.Command {
 	return cmd
 }
 
-func registerYesFlag(flags *pflag.FlagSet) {
+func RegisterYesFlag(flags *pflag.FlagSet) {
 	flags.BoolP(FlagYes, "y", false, "yes to all questions, no user input required")
+}
+
+func BoxUp(cmd *cobra.Command, mb *popx.MigrationBox, msgPrefix string) error {
+	_, _ = fmt.Fprintln(cmd.OutOrStdout(), msgPrefix+"Current status:")
+
+	s, err := mb.Status(cmd.Context())
+	if err != nil {
+		_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "%sCould not get migration status: %+v\n", msgPrefix, err)
+		return cmdx.FailSilently(cmd)
+	}
+	cmdx.PrintTable(cmd, s)
+
+	if !s.HasPending() {
+		_, _ = fmt.Fprintln(cmd.OutOrStdout(), msgPrefix+"All migrations are already applied, there is nothing to do.")
+		return nil
+	}
+
+	if !flagx.MustGetBool(cmd, FlagYes) && !cmdx.AskForConfirmation(msgPrefix+"Are you sure that you want to apply this migration? Make sure to check the CHANGELOG.md for breaking changes beforehand.", cmd.InOrStdin(), cmd.OutOrStdout()) {
+		_, _ = fmt.Fprintln(cmd.OutOrStdout(), msgPrefix+"Aborting")
+		return nil
+	}
+
+	_, _ = fmt.Fprintln(cmd.OutOrStdout(), msgPrefix+"Applying migrations...")
+
+	if err := mb.Up(cmd.Context()); err != nil {
+		_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "%sCould not apply migrations: %+v\n", msgPrefix, err)
+		return cmdx.FailSilently(cmd)
+	}
+
+	_, _ = fmt.Fprintln(cmd.OutOrStdout(), msgPrefix+"Successfully applied all migrations:")
+
+	s, err = mb.Status(cmd.Context())
+	if err != nil {
+		_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "%sCould not get migration status: %+v\n", msgPrefix, err)
+		return cmdx.FailSilently(cmd)
+	}
+
+	cmdx.PrintTable(cmd, s)
+	return nil
 }

@@ -66,10 +66,6 @@ func NewPersister(dsn string, l *logrusx.Logger, namespaces namespace.Manager) (
 		return nil, err
 	}
 
-	p.mb, err = popx.NewMigrationBox(migrations, popx.NewMigrator(p.conn, p.l, nil, 0))
-	if err != nil {
-		return nil, err
-	}
 	return p, nil
 }
 
@@ -111,16 +107,16 @@ func (p *Persister) newConnection(options map[string]string) (c *pop.Connection,
 	return c, nil
 }
 
-func (p *Persister) MigrateUp(ctx context.Context) error {
-	return errors.WithStack(p.mb.Up(ctx))
-}
+func (p *Persister) MigrationBox(ctx context.Context) (*popx.MigrationBox, error) {
+	if p.mb == nil {
+		var err error
+		p.mb, err = popx.NewMigrationBox(migrations, popx.NewMigrator(p.connection(ctx), p.l, nil, 0))
+		if err != nil {
+			return nil, err
+		}
+	}
 
-func (p *Persister) MigrateDown(ctx context.Context, steps int) error {
-	return errors.WithStack(p.mb.Down(ctx, steps))
-}
-
-func (p *Persister) MigrationStatus(ctx context.Context) (popx.MigrationStatuses, error) {
-	return p.mb.Status(ctx)
+	return p.mb, nil
 }
 
 func (p *Persister) connection(ctx context.Context) *pop.Connection {

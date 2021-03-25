@@ -30,7 +30,7 @@ keto namespace migrate up <namespace-name> [flags]
   -q, --quiet                 Be quiet with output printing.
       --read-remote string    Remote URL of the read API endpoint. (default "127.0.0.1:4466")
       --write-remote string   Remote URL of the write API endpoint. (default "127.0.0.1:4467")
-  -y, --yes                   answer all questions with yes
+  -y, --yes                   yes to all questions, no user input required
 ```
 
 ### Options inherited from parent commands

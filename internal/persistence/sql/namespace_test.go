@@ -37,11 +37,13 @@ func TestNamespaceMigrations(t *testing.T) {
 
 				p, hook := setup(t, dsn, n)
 
-				require.NoError(t, p.MigrateNamespaceUp(context.Background(), n))
+				mb, err := p.NamespaceMigrationBox(context.Background(), n)
+				require.NoError(t, err)
+				require.NoError(t, mb.Up(context.Background()))
 				// logs the time it took as a second message
 				assert.True(t, strings.HasPrefix(hook.Entries[len(hook.Entries)-2].Message, "Successfully applied"))
 
-				require.NoError(t, p.MigrateNamespaceDown(context.Background(), n, 0))
+				require.NoError(t, mb.Down(context.Background(), 0))
 				// logs the time it took as a second message
 				assert.True(t, strings.HasPrefix(hook.Entries[len(hook.Entries)-2].Message, "< "))
 			})
@@ -54,9 +56,11 @@ func TestNamespaceMigrations(t *testing.T) {
 
 				p, _ := setup(t, dsn, n)
 
-				require.NoError(t, p.MigrateNamespaceUp(context.Background(), n))
-				require.NoError(t, p.MigrateNamespaceDown(context.Background(), n, 0))
-				require.NoError(t, p.MigrateNamespaceUp(context.Background(), n))
+				mb, err := p.namespaceMigrationBox(n)
+				require.NoError(t, err)
+				require.NoError(t, mb.Up(context.Background()))
+				require.NoError(t, mb.Down(context.Background(), 0))
+				require.NoError(t, mb.Up(context.Background()))
 			})
 		})
 	}
