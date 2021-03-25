@@ -22,7 +22,9 @@ func newDepsProvider(t *testing.T, namespaces []*namespace.Namespace, pageOpts .
 	reg := driver.NewMemoryTestRegistry(t, namespaces)
 	t.Cleanup(func() {
 		for _, n := range namespaces {
-			require.NoError(t, reg.NamespaceMigrator().MigrateNamespaceDown(context.Background(), n, 0))
+			mb, err := reg.NamespaceMigrator().NamespaceMigrationBox(context.Background(), n)
+			require.NoError(t, err)
+			require.NoError(t, mb.Down(context.Background(), 0))
 		}
 	})
 	return relationtuple.NewManagerWrapper(t, reg, pageOpts...)

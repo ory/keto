@@ -157,9 +157,12 @@ func (r *RegistryDefault) Init(ctx context.Context) error {
 		return err
 	}
 
-	m := r.Migrator()
+	mb, err := r.Migrator().MigrationBox(ctx)
+	if err != nil {
+		return err
+	}
 	if r.c.DSN() == config.DSNMemory {
-		if err := m.MigrateUp(context.Background()); err != nil {
+		if err := mb.Up(ctx); err != nil {
 			return err
 		}
 	}
@@ -169,13 +172,17 @@ func (r *RegistryDefault) Init(ctx context.Context) error {
 		return err
 	}
 	for _, n := range namespaceConfigs {
-		s, err := r.NamespaceMigrator().NamespaceStatus(ctx, n)
+		nmb, err := r.NamespaceMigrator().NamespaceMigrationBox(ctx, n)
+		if err != nil {
+			return err
+		}
+		s, err := nmb.Status(ctx)
 		if err != nil {
 			return err
 		} else if s.HasPending() {
 			if r.c.DSN() == config.DSNMemory {
 				// auto migrate when DSN is memory
-				if err := r.NamespaceMigrator().MigrateNamespaceUp(ctx, n); err != nil {
+				if err := nmb.Up(ctx); err != nil {
 					r.l.WithError(err).Errorf("Could not auto-migrate namespace %s.", n.Name)
 				}
 				continue

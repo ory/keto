@@ -107,18 +107,6 @@ func (p *Persister) newConnection(options map[string]string) (c *pop.Connection,
 	return c, nil
 }
 
-func (p *Persister) MigrateUp(ctx context.Context) error {
-	return errors.WithStack(p.mb.Up(ctx))
-}
-
-func (p *Persister) MigrateDown(ctx context.Context, steps int) error {
-	return errors.WithStack(p.mb.Down(ctx, steps))
-}
-
-func (p *Persister) MigrationStatus(ctx context.Context) (popx.MigrationStatuses, error) {
-	return p.mb.Status(ctx)
-}
-
 func (p *Persister) MigrationBox(ctx context.Context) (*popx.MigrationBox, error) {
 	if p.mb == nil {
 		var err error

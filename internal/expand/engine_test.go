@@ -24,7 +24,9 @@ func newTestEngine(t *testing.T, namespaces []*namespace.Namespace, paginationOp
 	reg := relationtuple.NewManagerWrapper(t, innerReg, paginationOpts...)
 	t.Cleanup(func() {
 		for _, n := range namespaces {
-			require.NoError(t, innerReg.NamespaceMigrator().MigrateNamespaceDown(context.Background(), n, 0))
+			mb, err := innerReg.NamespaceMigrator().NamespaceMigrationBox(context.Background(), n)
+			require.NoError(t, err)
+			require.NoError(t, mb.Down(context.Background(), 0))
 		}
 	})
 	e := expand.NewEngine(reg)

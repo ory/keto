@@ -25,10 +25,12 @@ func TestPersister(t *testing.T) {
 		p, err := NewPersister(dsn.Conn, lx, config.NewMemoryNamespaceManager())
 		require.NoError(t, err)
 
-		require.NoError(t, p.MigrateUp(context.Background()))
+		mb, err := p.MigrationBox(context.Background())
+		require.NoError(t, err)
+		require.NoError(t, mb.Up(context.Background()))
 
 		t.Cleanup(func() {
-			require.NoError(t, p.MigrateDown(context.Background(), 0))
+			require.NoError(t, mb.Down(context.Background(), 0))
 		})
 
 		return
@@ -43,10 +45,12 @@ func TestPersister(t *testing.T) {
 			nspaces = append(nspaces, n)
 
 			p.namespaces = config.NewMemoryNamespaceManager(nspaces...)
-			require.NoError(t, p.MigrateNamespaceUp(ctx, n))
+			mb, err := p.NamespaceMigrationBox(context.Background(), n)
+			require.NoError(t, err)
+			require.NoError(t, mb.Up(context.Background()))
 
 			t.Cleanup(func() {
-				require.NoError(t, p.MigrateNamespaceDown(context.Background(), n, 0))
+				require.NoError(t, mb.Down(context.Background(), 0))
 			})
 		}
 	}

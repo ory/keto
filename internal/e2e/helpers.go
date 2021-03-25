@@ -68,33 +68,44 @@ func newInitializedReg(t testing.TB, dsn *x.DsnT, nspaces []*namespace.Namespace
 }
 
 func migrateEverythingUp(ctx context.Context, t testing.TB, r driver.Registry, nn []*namespace.Namespace) {
-	s, err := r.Migrator().MigrationStatus(ctx)
+	mb, err := r.Migrator().MigrationBox(ctx)
+	require.NoError(t, err)
+	s, err := mb.Status(ctx)
 	require.NoError(t, err)
 
 	if s.HasPending() {
-		require.NoError(t, r.Migrator().MigrateUp(ctx))
+		require.NoError(t, mb.Up(ctx))
 	}
 
 	for _, n := range nn {
-		require.NoError(t, r.NamespaceMigrator().MigrateNamespaceUp(ctx, n))
+		nmb, err := r.NamespaceMigrator().NamespaceMigrationBox(ctx, n)
+		require.NoError(t, err)
+		require.NoError(t, nmb.Up(ctx))
 	}
 
 	t.Cleanup(func() {
 		for _, n := range nn {
-			require.NoError(t, r.NamespaceMigrator().MigrateNamespaceDown(context.Background(), n, 0))
+			nmb, err := r.NamespaceMigrator().NamespaceMigrationBox(context.Background(), n)
+			require.NoError(t, err)
+			require.NoError(t, nmb.Down(context.Background(), 0))
 		}
 
-		require.NoError(t, r.Migrator().MigrateDown(context.Background(), 0))
+		require.NoError(t, err)
+		require.NoError(t, mb.Down(context.Background(), 0))
 	})
 }
 
 func assertMigrated(ctx context.Context, t testing.TB, r driver.Registry, nn []*namespace.Namespace) {
-	s, err := r.Migrator().MigrationStatus(ctx)
+	mb, err := r.Migrator().MigrationBox(ctx)
+	require.NoError(t, err)
+	s, err := mb.Status(ctx)
 	require.NoError(t, err)
 	assert.False(t, s.HasPending())
 
 	for _, n := range nn {
-		s, err := r.NamespaceMigrator().NamespaceStatus(ctx, n)
+		nmb, err := r.NamespaceMigrator().NamespaceMigrationBox(ctx, n)
+		require.NoError(t, err)
+		s, err := nmb.Status(ctx)
 		require.NoError(t, err)
 		assert.False(t, s.HasPending())
 	}
