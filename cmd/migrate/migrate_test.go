@@ -3,6 +3,7 @@ package migrate
 import (
 	"bytes"
 	"context"
+	"regexp"
 	"strings"
 	"testing"
 
@@ -133,16 +134,15 @@ func TestMigrate(t *testing.T) {
 						t.Log(cmd.ExecNoErr(t, "down", "0", "--"+FlagYes))
 					})
 
-					parts := strings.Split(out, "Applying migrations...")
-					require.Len(t, parts, 2)
-					innerParts := strings.Split(parts[1], "Going to migrate namespaces")
-					require.Len(t, innerParts, 2)
+					parts := regexp.MustCompile("(?s)Current status:(.*)Successfully applied all migrations(.*)Going to migrate namespaces(.*)Successfully applied all migrations(.*)Current status(.*)Successfully applied all migrations(.*)").FindStringSubmatch(out)
+					require.Len(t, parts, 7)
 
-					assertNoneApplied(t, parts[0])
-					assertAllApplied(t, innerParts[0])
-
-					assert.Contains(t, innerParts[1], "Successfully migrated namespace "+nspaces[0].Name)
-					assert.Contains(t, innerParts[1], "Successfully migrated namespace "+nspaces[1].Name)
+					assertNoneApplied(t, parts[1])
+					assertAllApplied(t, parts[2])
+					assertNoneApplied(t, parts[3])
+					assertAllApplied(t, parts[4])
+					assertNoneApplied(t, parts[5])
+					assertAllApplied(t, parts[6])
 				})
 			})
 		}
