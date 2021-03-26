@@ -97,9 +97,6 @@ New feature or request.
       ([keto#463](https://github.com/ory/keto/issues/463)) -
       [@Andreas Bucksteeg](https://github.com/tricky42),
       [@Piotr Mścichowski](https://github.com/piotrmsc)
-- [ ] Namespace migrate status command
-      ([keto#502](https://github.com/ory/keto/issues/502)) -
-      [@Patrik](https://github.com/zepatrik)
 - [x] Write relationtuple tests for http and grpc handlers
       ([keto#297](https://github.com/ory/keto/issues/297)) -
       [@Patrik](https://github.com/zepatrik),
@@ -124,6 +121,9 @@ New feature or request.
       [@Patrik](https://github.com/zepatrik)
 - [x] Allow deletion of relation tuples
       ([keto#452](https://github.com/ory/keto/issues/452)) -
+      [@Patrik](https://github.com/zepatrik)
+- [x] Namespace migrate status command
+      ([keto#502](https://github.com/ory/keto/issues/502)) -
       [@Patrik](https://github.com/zepatrik)
 
 ### [Docs](https://github.com/ory/keto/labels/docs)
@@ -166,8 +166,8 @@ Blocks milestones or other issues or pulls.
 - [ ] Next Gen Documentation
       ([keto#420](https://github.com/ory/keto/issues/420)) -
       [@Patrik](https://github.com/zepatrik)
-- [ ] Namespace migrate status command
-      ([keto#502](https://github.com/ory/keto/issues/502)) -
+- [ ] Require relations to be defined in the namespace config
+      ([keto#509](https://github.com/ory/keto/issues/509)) -
       [@Patrik](https://github.com/zepatrik)
 - [x] Define and architect SQL schema and queries for querying relations
       ([keto#300](https://github.com/ory/keto/issues/300)) -
@@ -200,6 +200,9 @@ Blocks milestones or other issues or pulls.
       [@Patrik](https://github.com/zepatrik)
 - [x] Command status --block is not blocking until healthy
       ([keto#456](https://github.com/ory/keto/issues/456)) -
+      [@Patrik](https://github.com/zepatrik)
+- [x] Namespace migrate status command
+      ([keto#502](https://github.com/ory/keto/issues/502)) -
       [@Patrik](https://github.com/zepatrik)
 
 #### Pull Requests
