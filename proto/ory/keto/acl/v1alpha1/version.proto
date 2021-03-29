@@ -11,7 +11,7 @@ option php_namespace = "Ory\\Keto\\Acl\\V1alpha1";
 
 // The service returning the specific Ory Keto instance version.
 //
-// This service is part of the [read API](/TODO) and [write API](/TODO).
+// This service is part of the [read APIs](../concepts/api-overview.mdx#read-apis) and [write APIs](../concepts/api-overview.mdx#write-apis).
 service VersionService {
   // Returns the version of the Ory Keto instance.
   rpc GetVersion(GetVersionRequest) returns (GetVersionResponse);

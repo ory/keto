@@ -7,13 +7,14 @@ RelationTuplePrism()
 
 Ory Keto knows the concept of namespaces to organize
 [relation tuples](./relation-tuples.mdx). Namespaces have a configuration that
-defines the relations, and some other important values ([see reference](/TODO)).
-Unlike other applications, Ory Keto does **not** isolate namespaces. Especially,
-[subject sets](./subjects.mdx) can cross-reference from one namespace to
-another. The namespaces' purpose is to split up the data into coherent
-partitions, each with its corresponding configuration. Internally each namespace
-has its own table in the database to allow setting individual
-[storage specific options](/TODO).
+defines the relations, and some other important values
+([see reference](./reference/configuration.md)). Unlike other applications, Ory
+Keto does **not** isolate namespaces. Especially, [subject sets](./subjects.mdx)
+can cross-reference from one namespace to another. The namespaces' purpose is to
+split up the data into coherent partitions, each with its corresponding
+configuration. Internally each namespace has its own table in the database to
+allow setting individual
+[storage specific options](https://github.com/ory/keto/issues/303).
 
 ## Scoping of Objects
 
@@ -28,7 +29,7 @@ directories:foo#access@user1
 files:foo#access@user2
 ```
 
-both of the following [check](/TODO) requests
+both of the following [check](./api-overview.mdx#check-relation-tuples) requests
 
 ```keto-relation-tuples
 // Does user2 have access to the directory foo?
@@ -47,7 +48,7 @@ namespace to reference the same object.
 Because namespaces each come with an individual configuration that can even
 modify some storage specific options, it is required to manually review and run
 migrations on namespace configuration updates. Please refer to the
-[namespace migration CLI reference](/TODO) and
+[namespace migration CLI reference](../cli/keto-namespace-migrate.md) and
 [running in production guide](/TODO) to learn more about that process.
 
 ## Naming Conventions

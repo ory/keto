@@ -77,8 +77,8 @@ tcp/22#access@c5b6454f-f79c-4a6d-9e1b-b44e04b56009
 
 The application has to map each incoming request to a subject string
 representing the attributes of the request. Ory Keto will reply with a positive
-[check response](/TODO) depending on the string equality of the requested
-subject representing the attributes with the known relation tuples. Remember
-that Ory Keto does **not** know how to interpret any information stored in the
-relation tuples. Rather, the application has to preprocess and map the value to
-the corresponding UUID.
+[check response](./api-overview.mdx#check-relation-tuple) depending on the
+string equality of the requested subject representing the attributes with the
+known relation tuples. Remember that Ory Keto does **not** know how to interpret
+any information stored in the relation tuples. Rather, the application has to
+preprocess and map the value to the corresponding UUID.

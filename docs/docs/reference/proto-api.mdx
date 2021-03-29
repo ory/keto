@@ -4,8 +4,9 @@ title: Protocol Buffers API
 
 <!-- This file is generated. Please edit the .proto files instead to update the documentation -->
 
-The API is divided into the [read API](/TODO) and [write API](/TODO). Each
-service is annotated with the API it belongs to.
+The API is divided into the [read APIs](../concepts/api-overview.mdx#read-apis)
+and [write APIs](../concepts/api-overview.mdx#write-apis). Each service is
+annotated with the API it belongs to.
 
 ## ory/keto/acl/v1alpha1/acl.proto
 
@@ -47,7 +48,7 @@ SubjectSet refers to all subjects who have the same `relation` on an `object`.
 The service that performs authorization checks based on the stored Access
 Control Lists.
 
-This service is part of the [read API](/TODO).
+This service is part of the [read APIs](../concepts/api-overview.mdx#read-apis).
 
 | Method Name | Request Type                                        | Response Type                                         | Description                      |
 | ----------- | --------------------------------------------------- | ----------------------------------------------------- | -------------------------------- |
@@ -83,7 +84,7 @@ The response for a CheckService.Check rpc.
 The service that performs subject set expansion based on the stored Access
 Control Lists.
 
-This service is part of the [read API](/TODO).
+This service is part of the [read APIs](../concepts/api-overview.mdx#read-apis).
 
 | Method Name | Request Type                                          | Response Type                                           | Description                                      |
 | ----------- | ----------------------------------------------------- | ------------------------------------------------------- | ------------------------------------------------ |
@@ -131,7 +132,7 @@ The response for a ExpandService.Expand RPC.
 
 The service to query relation tuples.
 
-This service is part of the [read API](/TODO).
+This service is part of the [read APIs](../concepts/api-overview.mdx#read-apis).
 
 | Method Name        | Request Type                                                                  | Response Type                                                                   | Description                |
 | ------------------ | ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------- | -------------------------- |
@@ -189,7 +190,8 @@ The response of a ReadService.ListRelationTuples RPC.
 
 The service returning the specific Ory Keto instance version.
 
-This service is part of the [read API](/TODO) and [write API](/TODO).
+This service is part of the [read APIs](../concepts/api-overview.mdx#read-apis)
+and [write APIs](../concepts/api-overview.mdx#write-apis).
 
 | Method Name | Request Type                                                  | Response Type                                                   | Description                                   |
 | ----------- | ------------------------------------------------------------- | --------------------------------------------------------------- | --------------------------------------------- |
@@ -213,7 +215,8 @@ Response of the VersionService.GetVersion RPC.
 
 The write service to create and delete Access Control Lists.
 
-This service is part of the [write API](/TODO).
+This service is part of the
+[write APIs](../concepts/api-overview.mdx#write-apis).
 
 | Method Name            | Request Type                                                                          | Response Type                                                                           | Description                                                 |
 | ---------------------- | ------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
