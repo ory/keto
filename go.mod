@@ -6,6 +6,8 @@ replace github.com/soheilhy/cmux => github.com/soheilhy/cmux v0.1.5-0.2021011423
 
 replace github.com/ory/dockertest/v3 => github.com/ory/dockertest/v3 v3.6.3
 
+replace github.com/gogo/protobuf => github.com/gogo/protobuf v1.3.2
+
 require (
 	github.com/HdrHistogram/hdrhistogram-go v1.0.1 // indirect
 	github.com/bufbuild/buf v0.31.1
