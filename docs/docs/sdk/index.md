@@ -17,15 +17,18 @@ each REST endpoint.
 We publish our SDKs for popular languages in their respective package
 repositories:
 
-- [Dart](https://github.com/ory/sdk/tree/master/clients/keto/dart)
-- [.NET](https://github.com/ory/sdk/tree/master/clients/keto/dotnet)
+- [Dart](https://pub.dev/packages/ory_keto_client)
+- [.NET](https://www.nuget.org/packages/Ory.Keto.Client/)
 - [Go](https://github.com/ory/keto-client-go)
 - [Java](https://search.maven.org/artifact/sh.ory.keto/keto-client)
 - [PHP](https://packagist.org/packages/ory/keto-client)
 - [Python](https://pypi.org/project/ory-keto-client/)
 - [Ruby](https://rubygems.org/gems/ory-keto-client)
-- [Rust](https://github.com/ory/sdk/tree/master/clients/keto/rust)
+- [Rust](https://crates.io/crates/ory-keto-client)
 - [NodeJS](https://www.npmjs.com/package/@oryd/keto-client) (with TypeScript)
+
+
+Take a look at the source: [Generated SDKs for Ory Keto](https://github.com/ory/sdk/tree/master/clients/keto/)
 
 Missing your programming language?
 [Create an issue](https://github.com/ory/keto/issues) and help us build, test
