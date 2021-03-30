@@ -8,7 +8,7 @@ replace github.com/ory/dockertest/v3 => github.com/ory/dockertest/v3 v3.6.3
 
 replace github.com/gogo/protobuf => github.com/gogo/protobuf v1.3.2
 
-replace github.com/ory/x => github.com/ory/x v0.0.212-0.20210330091317-18e6d88023a8
+replace github.com/ory/x => github.com/ory/x v0.0.212
 
 require (
 	github.com/HdrHistogram/hdrhistogram-go v1.0.1 // indirect
