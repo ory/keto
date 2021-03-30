@@ -27,8 +27,8 @@ repositories:
 - [Rust](https://crates.io/crates/ory-keto-client)
 - [NodeJS](https://www.npmjs.com/package/@oryd/keto-client) (with TypeScript)
 
-
-Take a look at the source: [Generated SDKs for Ory Keto](https://github.com/ory/sdk/tree/master/clients/keto/)
+Take a look at the source:
+[Generated SDKs for Ory Keto](https://github.com/ory/sdk/tree/master/clients/keto/)
 
 Missing your programming language?
 [Create an issue](https://github.com/ory/keto/issues) and help us build, test
