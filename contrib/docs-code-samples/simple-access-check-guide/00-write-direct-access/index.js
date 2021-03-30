@@ -1,7 +1,7 @@
-import grpc from '@ory/keto-acl/node_modules/@grpc/grpc-js/build/src/index.js'
-import acl from '@ory/keto-acl/acl_pb.js'
-import writeService from '@ory/keto-acl/write_service_grpc_pb.js'
-import writeData from '@ory/keto-acl/write_service_pb.js'
+import grpc from '@ory/keto-grpc-client/node_modules/@grpc/grpc-js/build/src/index.js'
+import acl from '@ory/keto-grpc-client/acl_pb.js'
+import writeService from '@ory/keto-grpc-client/write_service_grpc_pb.js'
+import writeData from '@ory/keto-grpc-client/write_service_pb.js'
 
 const writeClient = new writeService.WriteServiceClient(
   '127.0.0.1:4467',

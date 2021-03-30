@@ -1,7 +1,7 @@
-import grpc from '@ory/keto-acl/node_modules/@grpc/grpc-js/build/src/index.js'
-import expandService from '@ory/keto-acl/expand_service_grpc_pb.js'
-import expandData from '@ory/keto-acl/expand_service_pb.js'
-import acl from '@ory/keto-acl/acl_pb.js'
+import grpc from '@ory/keto-grpc-client/node_modules/@grpc/grpc-js/build/src/index.js'
+import expandService from '@ory/keto-grpc-client/expand_service_grpc_pb.js'
+import expandData from '@ory/keto-grpc-client/expand_service_pb.js'
+import acl from '@ory/keto-grpc-client/acl_pb.js'
 
 const expandClient = new expandService.ExpandServiceClient(
   '127.0.0.1:4466',

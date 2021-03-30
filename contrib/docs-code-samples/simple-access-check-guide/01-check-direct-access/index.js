@@ -1,7 +1,7 @@
-import grpc from '@ory/keto-acl/node_modules/@grpc/grpc-js/build/src/index.js'
-import acl from '@ory/keto-acl/acl_pb.js'
-import checkService from '@ory/keto-acl/check_service_grpc_pb.js'
-import checkData from '@ory/keto-acl/check_service_pb.js'
+import grpc from '@ory/keto-grpc-client/node_modules/@grpc/grpc-js/build/src/index.js'
+import acl from '@ory/keto-grpc-client/acl_pb.js'
+import checkService from '@ory/keto-grpc-client/check_service_grpc_pb.js'
+import checkData from '@ory/keto-grpc-client/check_service_pb.js'
 
 const checkClient = new checkService.CheckServiceClient(
   '127.0.0.1:4466',
