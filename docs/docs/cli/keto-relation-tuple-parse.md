@@ -27,7 +27,7 @@ keto relation-tuple parse [flags]
 ### Options
 
 ```
-  -f, --format string   Set the output format. One of table, json, and json-pretty. (default "default")
+  -f, --format string   Set the output format. One of table, json, and json-pretty. (default &#34;default&#34;)
   -h, --help            help for parse
   -q, --quiet           Be quiet with output printing.
 ```
