@@ -27,7 +27,7 @@ keto migrate up [flags]
 
 ```
       --all-namespaces   migrate all pending namespaces as well
-  -f, --format string    Set the output format. One of table, json, and json-pretty. (default "default")
+  -f, --format string    Set the output format. One of table, json, and json-pretty. (default &#34;default&#34;)
   -h, --help             help for up
   -q, --quiet            Be quiet with output printing.
   -y, --yes              yes to all questions, no user input required

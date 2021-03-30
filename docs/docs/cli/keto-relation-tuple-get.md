@@ -19,22 +19,22 @@ Get relation tuples
 Get relation tuples matching the given partial tuple. Returns paginated results.
 
 ```
-keto relation-tuple get <namespace> [flags]
+keto relation-tuple get &lt;namespace&gt; [flags]
 ```
 
 ### Options
 
 ```
-  -f, --format string         Set the output format. One of table, json, and json-pretty. (default "default")
+  -f, --format string         Set the output format. One of table, json, and json-pretty. (default &#34;default&#34;)
   -h, --help                  help for get
       --object string         Set the requested object
       --page-size int32       maximum number of items to return (default 100)
       --page-token string     page token acquired from a previous response
   -q, --quiet                 Be quiet with output printing.
-      --read-remote string    Remote URL of the read API endpoint. (default "127.0.0.1:4466")
+      --read-remote string    Remote URL of the read API endpoint. (default &#34;127.0.0.1:4466&#34;)
       --relation string       Set the requested relation
       --subject string        Set the requested subject
-      --write-remote string   Remote URL of the write API endpoint. (default "127.0.0.1:4467")
+      --write-remote string   Remote URL of the write API endpoint. (default &#34;127.0.0.1:4467&#34;)
 ```
 
 ### Options inherited from parent commands

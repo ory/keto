@@ -19,17 +19,17 @@ Migrate a namespace down
 Migrate a namespace down. Pass 0 steps to fully migrate down.
 
 ```
-keto namespace migrate down <namespace-name> <steps> [flags]
+keto namespace migrate down &lt;namespace-name&gt; &lt;steps&gt; [flags]
 ```
 
 ### Options
 
 ```
-  -f, --format string         Set the output format. One of table, json, and json-pretty. (default "default")
+  -f, --format string         Set the output format. One of table, json, and json-pretty. (default &#34;default&#34;)
   -h, --help                  help for down
   -q, --quiet                 Be quiet with output printing.
-      --read-remote string    Remote URL of the read API endpoint. (default "127.0.0.1:4466")
-      --write-remote string   Remote URL of the write API endpoint. (default "127.0.0.1:4467")
+      --read-remote string    Remote URL of the read API endpoint. (default &#34;127.0.0.1:4466&#34;)
+      --write-remote string   Remote URL of the write API endpoint. (default &#34;127.0.0.1:4467&#34;)
   -y, --yes                   yes to all questions, no user input required
 ```
 
