@@ -1,4 +1,4 @@
-<h1 align="center"><img src="https://raw.githubusercontent.com/ory/meta/master/static/banners/keto.svg" alt="ORY Keto - Open Source Cloud Native Access Control Server"></h1>
+<h1 align="center"><img src="https://raw.githubusercontent.com/ory/meta/master/static/banners/keto.svg" alt="ORY Keto - Open Source & Cloud Native Access Control Server"></h1>
 
 <h4 align="center">    
     <a href="https://www.ory.sh/chat">Chat</a> |
@@ -10,102 +10,359 @@
     <a href="https://opencollective.com/ory">Support this project!</a>
 </h4>
 
-# Ory Keto keeps evolving; the next step is a highly distributed authorisation and access control system:tada:
+Ory Keto is a permission server that implements best practice access control
+mechanisms. If you came looking for the answer to the question:
 
-Creating fluid access to cloud applicaitons demands an efficient access control and authorisation system. In this part of the Ory Open Source ecosystem we tackle an implementation of 
-[Google's Zanzibar paper](https://research.google/pubs/pub48190/). If you have used Google Mail, Maps, and Youtube in one session, you have had some experience with Zanzibar.
+- Is a certain user allowed to modify this blog article?
+- Is this service allowed to print that document?
+- Is a member of the ACME organisation allowed to modify data of one of their
+  tenants?
+- Is this process allowed to execute that worker when coming from IP 10.0.0.2
+  between 4pm and 5pm on a Monday?
+- ...
 
-The following is a high level view on the paper, where we interpret the main concepts and explain them for our implementation purposes.
+Ory Keto is build based on
+[Google's Zanzibar research paper](https://research.google/pubs/pub48190/) and
+provides an extensible ACL language.
 
-## ACL Language
+<p align="left">
+    <a href="https://circleci.com/gh/ory/keto/tree/master"><img src="https://circleci.com/gh/ory/keto/tree/master.svg?style=shield" alt="Build Status"></a>
+    <a href="https://coveralls.io/github/ory/keto?branch=master"><img src="https://coveralls.io/repos/ory/keto/badge.svg?branch=master&service=github" alt="Coverage Status"></a>
+    <a href="https://goreportcard.com/report/github.com/ory/keto"><img src="https://goreportcard.com/badge/github.com/ory/keto" alt="Go Report Card"></a>
+</p>
 
-The Access Control Language (ACL) is represented by `object#relation@user`, while `user` can be a single user,
-or a set of users represented by `object#relation` e.g. users with editing rights on some object.
+---
 
-## Managing content update, important for update ordering
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
-1. A Zanzibar client e.g. Google Docs requests an opaque consistency token called "zookie" for each content version via a `content change` ACL check. The client has to store the token together with the content change.
-2. "The client sends this zookie in subsequent ACL check requests to ensure that the check snapshot is at least as
-fresh as the timestamp for the content version."
+- [Introduction](#introduction)
+- [Who's using it?](#whos-using-it)
+  - [Installation](#installation)
+- [Ecosystem](#ecosystem)
+  - [ORY Security Console: Administrative User Interface](#ory-security-console-administrative-user-interface)
+  - [ORY Hydra: OAuth2 & OpenID Connect Server](#ory-hydra-oauth2--openid-connect-server)
+  - [ORY Oathkeeper: Identity & Access Proxy](#ory-oathkeeper-identity--access-proxy)
+  - [Examples](#examples)
+- [Security](#security)
+  - [Disclosing vulnerabilities](#disclosing-vulnerabilities)
+- [Telemetry](#telemetry)
+  - [Guide](#guide)
+  - [HTTP API documentation](#http-api-documentation)
+  - [Upgrading and Changelog](#upgrading-and-changelog)
+  - [Command line documentation](#command-line-documentation)
+- [Backers](#backers)
+- [Sponsors](#sponsors)
 
-## Zookies
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-> A zookie is an opaque byte sequence encoding a globally meaningful timestamp that reflects an ACL write,
-a client content version, or a read snapshot.
+## Introduction
 
-## DB Schema
+ORY Keto is a permission server that implements best practice access control
+mechanisms:
 
-### Namespaces
+- Available today:
+  - ACL based on
+    [Google's Zanzibar research paper](https://research.google/pubs/pub48190/)
+- Available soon:
+  - [Role-based Access Control](https://en.wikipedia.org/wiki/Role-based_access_control)
+  - Role Based Access Control with Context (Google/Kubernetes-flavored)
+  - [Attribute-based Access Control](https://en.wikipedia.org/wiki/Attribute-based_access_control)
+  - decision engines based on
+    [Open Policy Agent](https://www.openpolicyagent.org/)
 
-Zanzibar clients have to configure their namespace:
-1. Configure relations
-    - optimization via defining relations on relations within the relation definition
-2. Storage parameters for instance, type of object IDs, or sharding.
+## Who's using it?
 
-## API
+<!--BEGIN ADOPTERS-->
 
-### Read Relation Tuples
+The ORY community stands on the shoulders of individuals, companies, and
+maintainers. We thank everyone involved - from submitting bug reports and
+feature requests, to contributing patches, to sponsoring our work. Our community
+is 1000+ strong and growing rapidly. The ORY stack protects 16.000.000.000+ API
+requests every month with over 250.000+ active service nodes. We would have
+never been able to achieve this without each and everyone of you!
 
-Purpose: display group member ship, shared with, ...
+The following list represents companies that have accompanied us along the way
+and that have made outstanding contributions to our ecosystem. _If you think
+that your company deserves a spot here, reach out to
+<a href="mailto:office-muc@ory.sh">office-muc@ory.sh</a> now_!
 
-Querying by object or user, optionally constrained by the relation name.
+**Please consider giving back by becoming a sponsor of our open source work on
+<a href="https://www.patreon.com/_ory">Patreon</a> or
+<a href="https://opencollective.com/ory">Open Collective</a>.**
 
-> -> clients can look up a specific membership entry, read all entries in an ACL or group, or look up all groups with a given user as a direct member
+<table>
+    <thead>
+        <tr>
+            <th>Type</th>
+            <th>Name</th>
+            <th>Logo</th>
+            <th>Website</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Sponsor</td>
+            <td>Raspberry PI Foundation</td>
+            <td align="center"><img height="32px" src="https://raw.githubusercontent.com/ory/meta/master/static/adopters/raspi.svg" alt="Raspberry PI Foundation"></td>
+            <td><a href="https://www.raspberrypi.org/">raspberrypi.org</a></td>
+        </tr>
+        <tr>
+            <td>Contributor</td>
+            <td>Kyma Project</td>
+            <td align="center"><img height="32px" src="https://raw.githubusercontent.com/ory/meta/master/static/adopters/kyma.svg" alt="Kyma Project"></td>
+            <td><a href="https://kyma-project.io">kyma-project.io</a></td>
+        </tr>
+        <tr>
+            <td>Sponsor</td>
+            <td>ThoughtWorks</td>
+            <td align="center"><img height="32px" src="https://raw.githubusercontent.com/ory/meta/master/static/adopters/tw.svg" alt="ThoughtWorks"></td>
+            <td><a href="https://www.thoughtworks.com/">thoughtworks.com</a></td>
+        </tr>
+        <tr>
+            <td>Sponsor</td>
+            <td>Tulip</td>
+            <td align="center"><img height="32px" src="https://raw.githubusercontent.com/ory/meta/master/static/adopters/tulip.svg" alt="Tulip Retail"></td>
+            <td><a href="https://tulip.com/">tulip.com</a></td>
+        </tr>
+        <tr>
+            <td>Sponsor</td>
+            <td>Cashdeck / All My Funds</td>
+            <td align="center"><img height="32px" src="https://raw.githubusercontent.com/ory/meta/master/static/adopters/allmyfunds.svg" alt="All My Funds"></td>
+            <td><a href="https://cashdeck.com.au/">cashdeck.com.au</a></td>
+        </tr>
+        <tr>
+            <td>Sponsor</td>
+            <td>3Rein</td>
+            <td align="center"><img height="32px" src="https://raw.githubusercontent.com/ory/meta/master/static/adopters/3R-horiz.svg" alt="3Rein"></td>
+            <td><a href="https://3rein.com/">3rein.com</a></td>
+        </tr>
+        <tr>
+            <td>Contributor</td>
+            <td>Hootsuite</td>
+            <td align="center"><img height="32px" src="https://raw.githubusercontent.com/ory/meta/master/static/adopters/hootsuite.svg" alt="Hootsuite"></td>
+            <td><a href="https://hootsuite.com/">hootsuite.com</a></td>
+        </tr>
+        <tr>
+            <td>Adopter *</td>
+            <td>Segment</td>
+            <td align="center"><img height="32px" src="https://raw.githubusercontent.com/ory/meta/master/static/adopters/segment.svg" alt="Segment"></td>
+            <td><a href="https://segment.com/">segment.com</a></td>
+        </tr>
+        <tr>
+            <td>Adopter *</td>
+            <td>Arduino</td>
+            <td align="center"><img height="32px" src="https://raw.githubusercontent.com/ory/meta/master/static/adopters/arduino.svg" alt="Arduino"></td>
+            <td><a href="https://www.arduino.cc/">arduino.cc</a></td>
+        </tr>
+        <tr>
+            <td>Adopter *</td>
+            <td>DataDetect</td>
+            <td align="center"><img height="32px" src="https://raw.githubusercontent.com/ory/meta/master/static/adopters/datadetect.svg" alt="Datadetect"></td>
+            <td><a href="https://unifiedglobalarchiving.com/data-detect/">unifiedglobalarchiving.com/data-detect/</a></td>
+        </tr>        
+        <tr>
+            <td>Adopter *</td>
+            <td>Sainsbury's</td>
+            <td align="center"><img height="32px" src="https://raw.githubusercontent.com/ory/meta/master/static/adopters/sainsburys.svg" alt="Sainsbury's"></td>
+            <td><a href="https://www.sainsburys.co.uk/">sainsburys.co.uk</a></td>
+        </tr>
+        <tr>
+            <td>Sponsor</td>
+            <td>OrderMyGear</td>
+            <td align="center"><img height="32px" src="https://raw.githubusercontent.com/ory/meta/master/static/adopters/ordermygear.svg" alt="OrderMyGear"></td>
+            <td><a href="https://www.ordermygear.com/">ordermygear.com</a></td>
+        </tr>
+        <tr>
+            <td>Sponsor</td>
+            <td>Spiri.bo</td>
+            <td align="center"><img height="32px" src="https://raw.githubusercontent.com/ory/meta/master/static/adopters/spiribo.svg" alt="Spiri.bo"></td>
+            <td><a href="https://spiri.bo/">spiri.bo</a></td>
+        </tr>
+    </tbody>
+</table>
 
-> All tuplesets in a read request are processed at a single snapshot
+We also want to thank all individual contributors
 
-### Write
+<a href="https://opencollective.com/ory" target="_blank"><img src="https://opencollective.com/ory/contributors.svg?width=890&button=false" /></a>
 
-(Over-)Write one or more tuples. This endpoint should support a locking mechanism to allow
-the detection of races.
+as well as all of our backers
 
-### Watch
+<a href="https://opencollective.com/ory#backers" target="_blank"><img src="https://opencollective.com/ory/backers.svg?width=890"></a>
 
-Get all changes starting from a specific zookie. The response contains a zookie with a timestamp of the
-response. Watching can be resumed with the response zookie and will not miss any updates.
+and past & current supporters (in alphabetical order) on
+[Patreon](https://www.patreon.com/_ory): Alexander Alimovs, Billy, Chancy
+Kennedy, Drozzy, Edwin Trejos, Howard Edidin, Ken Adler Oz Haven, Stefan Hans,
+TheCrealm.
 
-### Check
+<em>\* Uses one of ORY's major projects in production.</em>
 
-1. View check
-    The request contains a userset (`object#relation`), authentication token and a zookie corresponding to the object version.
-2. Content change check
-    No zookie in the request, the ACL has to be evaluated at the latest snapshot. Returns the new zookie for the object version.
+<!--END ADOPTERS-->
 
-### Expand
+### Installation
 
-SImilar to "read" and expands all indirect references.
+Head over to the documentation to learn about ways of
+[installing ORY Keto](https://www.ory.sh/docs/next/keto/install).
 
-# Architecture
+## Ecosystem
 
-## Storage
+<!--BEGIN ECOSYSTEM-->
 
-Relation tuples are stored in a database per namespace. Old versions are garbage collected to allow historic evaluation within a certain window.
-There is also a global changelog used for the "Watcher API" and optimizations. Changes are commited to both the namespace database and the changelog
-in one transaction.
-Namespace configuration is stored in an extra database with two tables, one for the config and one for a changelog to allow hot
-reloading.
-Lastly, all of that is replicated and sharded across multiple locations around the world.
+We build Ory on several guiding principles when it comes to our architecture
+design:
 
-## Serving
+- Minimal dependencies
+- Runs everywhere
+- Scales without effort
+- Minimize room for human and network errors
 
-This section omits performance measures for the moment and only focuses on consistency and correctness.
+ORY's architecture designed to run best on a Container Orchestration Systems
+such as Kubernetes, CloudFoundry, OpenShift, and similar projects. Binaries are
+small (5-15MB) and available for all popular processor types (ARM, AMD64, i386)
+and operating systems (FreeBSD, Linux, macOS, Windows) without system
+dependencies (Java, Node, Ruby, libxml, ...).
 
-### Namespace Config Consistency
+### ORY Kratos: Identity and User Infrastructure and Management
 
-Every server in a cluster uses the config changelog to update it's local namespace config. There is a globally
-managed list of versions available on every server that ensures servers can continue to respond even without the
-config DB. An incoming request will be handled with one of the config versions from that list.
+[ORY Kratos](https://github.com/ory/kratos) is an API-first Identity and User
+Management system that is built according to
+[cloud architecture best practices](https://www.ory.sh/docs/next/ecosystem/software-architecture-philosophy).
+It implements core use cases that almost every software application needs to
+deal with: Self-service Login and Registration, Multi-Factor Authentication
+(MFA/2FA), Account Recovery and Verification, Profile and Account Management.
 
-### Check Evaluation
+### ORY Hydra: OAuth2 & OpenID Connect Server
 
-The algorithm is recursive, concurrent and cancels redundant branches.
+[ORY Hydra](https://github.com/ory/hydra) is an OpenID Certified™ OAuth2 and
+OpenID Connect Provider which easily connects to any existing identity system by
+writing a tiny "bridge" application. Gives absolute control over user interface
+and user experience flows.
 
-### Leopard Specialized Indexing
+### ORY Oathkeeper: Identity & Access Proxy
 
-This indexing service is specialized to determine whether a user `U` is member of a group `G`.
-To accomplish this, it maps every group to all it's direct or indirect subgroups and every user to
-it's direct groups. If `(MEMBER2GROUP(U) ∩ GROUP2GROUP(G)) != 0`, i.e. there exists a group `G'` that is a
-subgroup of `G` to any extend, and the user is member of `G'`. This can also be modeled as a reachability problem
-on a graph of groups.
-The index is build periodically offline. To ensure consistency, the list of changes between the last index build and
-the requested timestamp is merged into the index for evaluation.
+[ORY Oathkeeper](https://github.com/ory/oathkeeper) is a BeyondCorp/Zero Trust
+Identity & Access Proxy (IAP) with configurable authentication, authorization,
+and request mutation rules for your web services: Authenticate JWT, Access
+Tokens, API Keys, mTLS; Check if the contained subject is allowed to perform the
+request; Encode resulting content into custom headers (`X-User-ID`), JSON Web
+Tokens and more!
+
+### ORY Keto: Access Control Policies as a Server
+
+[ORY Keto](https://github.com/ory/keto) is a policy decision point. It uses a
+set of access control policies, similar to AWS IAM Policies, in order to
+determine whether a subject (user, application, service, car, ...) is authorized
+to perform a certain action on a resource.
+
+<!--END ECOSYSTEM-->
+
+## Security
+
+### Disclosing vulnerabilities
+
+If you think you found a security vulnerability, please refrain from posting it
+publicly on the forums, the chat, or GitHub and send us an email to
+[hi@ory.am](mailto:hi@ory.am) instead.
+
+## Telemetry
+
+Our services collect summarized, anonymized data which can optionally be turned
+off. Click [here](https://www.ory.sh/docs/ecosystem/sqa) to learn more.
+
+### Guide
+
+The Guide is available [here](https://www.ory.sh/docs/next/keto/).
+
+### HTTP API documentation
+
+The HTTP API is documented [here](https://www.ory.sh/docs/next/keto/sdk/api).
+
+### Upgrading and Changelog
+
+New releases might introduce breaking changes. To help you identify and
+incorporate those changes, we document these changes in
+[UPGRADE.md](./UPGRADE.md) and [CHANGELOG.md](./CHANGELOG.md).
+
+### Command line documentation
+
+Run `keto -h` or `keto help`.
+
+### Develop
+
+We encourage all contributions and encourage you to read our
+[contribution guidelines](./CONTRIBUTING.md)
+
+#### Dependencies
+
+You need Go 1.16+ and (for the test suites):
+
+- Docker and Docker Compose
+- GNU Make 4.3
+- NodeJS / npm@v7
+
+It is possible to develop ORY Keto on Windows, but please be aware that all
+guides assume a Unix shell like bash or zsh.
+
+#### Install from source
+
+<pre type="make/command">
+make install
+</pre>
+
+#### Formatting Code
+
+You can format all code using <code type="make/command">make format</code>. Our
+CI checks if your code is properly formatted.
+
+#### Running Tests
+
+There are two types of tests you can run:
+
+- Short tests (do not require a SQL database like PostgreSQL)
+- Regular tests (do require PostgreSQL, MySQL, CockroachDB)
+
+##### Short Tests
+
+Short tests run fairly quickly. You can either test all of the code at once
+
+```shell script
+go test -short -tags sqlite ./...
+```
+
+or test just a specific module:
+
+```shell script
+go test -tags sqlite -short ./internal/check/...
+```
+
+##### Regular Tests
+
+Regular tests require a database set up. Our test suite is able to work with
+docker directly (using [ory/dockertest](https://github.com/ory/dockertest)) but
+we encourage to use the script instead. Using dockertest can bloat the number of
+Docker Images on your system and starting them on each run is quite slow.
+Instead we recommend doing:
+
+```shell
+source ./scripts/test-resetdb.sh
+go test -tags sqlite ./...
+```
+
+##### End-to-End Tests
+
+The e2e tests are part of the normal `go test`. To only run the e2e test, use
+
+```shell
+source ./scripts/test-resetdb.sh
+go test -tags sqlite ./internal/e2e/...
+```
+
+or add the `-short` tag to only test against sqlite in-memory.
+
+#### Build Docker
+
+You can build a development Docker Image using:
+
+<pre type="make/command">
+make docker
+</pre>
