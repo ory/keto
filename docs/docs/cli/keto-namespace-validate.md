@@ -20,7 +20,7 @@ Validate one or more namespace yaml files and get human readable errors. Useful
 for debugging.
 
 ```
-keto namespace validate <namespace.yml> [<namespace2.yml> ...] [flags]
+keto namespace validate &lt;namespace.yml&gt; [&lt;namespace2.yml&gt; ...] [flags]
 ```
 
 ### Options

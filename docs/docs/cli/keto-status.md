@@ -27,11 +27,11 @@ keto status [flags]
 
 ```
   -b, --block                 block until the service is healthy
-      --endpoint string       which endpoint to use; one of {read, write} (default "read")
+      --endpoint string       which endpoint to use; one of {read, write} (default &#34;read&#34;)
   -h, --help                  help for status
   -q, --quiet                 Be quiet with output printing.
-      --read-remote string    Remote URL of the read API endpoint. (default "127.0.0.1:4466")
-      --write-remote string   Remote URL of the write API endpoint. (default "127.0.0.1:4467")
+      --read-remote string    Remote URL of the read API endpoint. (default &#34;127.0.0.1:4466&#34;)
+      --write-remote string   Remote URL of the write API endpoint. (default &#34;127.0.0.1:4467&#34;)
 ```
 
 ### Options inherited from parent commands

@@ -24,7 +24,7 @@ ORY Keto can be configured using environment variables as well as a
 configuration file. For more information on configuration options, open the
 configuration documentation:
 
-> > https://www.ory.sh/keto/docs/reference/configuration <<
+&gt;&gt; https://www.ory.sh/keto/docs/reference/configuration &lt;&lt;
 
 ```
 keto serve [flags]

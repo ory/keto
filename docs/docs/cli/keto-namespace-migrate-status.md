@@ -21,13 +21,13 @@ Get the current migration status of one specific namespace. Does not apply any
 changes.
 
 ```
-keto namespace migrate status <namespace-name> [flags]
+keto namespace migrate status &lt;namespace-name&gt; [flags]
 ```
 
 ### Options
 
 ```
-  -f, --format string   Set the output format. One of table, json, and json-pretty. (default "default")
+  -f, --format string   Set the output format. One of table, json, and json-pretty. (default &#34;default&#34;)
   -h, --help            help for status
   -q, --quiet           Be quiet with output printing.
 ```

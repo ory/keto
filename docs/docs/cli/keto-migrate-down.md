@@ -21,13 +21,13 @@ migrate down. This does not affect namespaces. Use `keto namespace migrate down`
 for migrating namespaces.
 
 ```
-keto migrate down <steps> [flags]
+keto migrate down &lt;steps&gt; [flags]
 ```
 
 ### Options
 
 ```
-  -f, --format string   Set the output format. One of table, json, and json-pretty. (default "default")
+  -f, --format string   Set the output format. One of table, json, and json-pretty. (default &#34;default&#34;)
   -h, --help            help for down
   -q, --quiet           Be quiet with output printing.
   -y, --yes             yes to all questions, no user input required
