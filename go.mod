@@ -8,6 +8,8 @@ replace github.com/ory/dockertest/v3 => github.com/ory/dockertest/v3 v3.6.3
 
 replace github.com/gogo/protobuf => github.com/gogo/protobuf v1.3.2
 
+replace github.com/ory/x => github.com/ory/x v0.0.212-0.20210330091317-18e6d88023a8
+
 require (
 	github.com/HdrHistogram/hdrhistogram-go v1.0.1 // indirect
 	github.com/bufbuild/buf v0.31.1
@@ -57,6 +59,7 @@ require (
 	google.golang.org/grpc v1.36.0
 	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.1.0
 	google.golang.org/protobuf v1.25.1-0.20201020201750-d3470999428b
+	gotest.tools v2.2.0+incompatible // indirect
 )
 
 go 1.16
