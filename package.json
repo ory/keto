@@ -11,6 +11,7 @@
     "prettierTarget": "(contrib/**/*.{js,md,json,yml})|*.md"
   },
   "devDependencies": {
+    "doctoc": "^2.0.0",
     "opencollective": "^1.0.3",
     "ory-prettier-styles": "^1.1.2",
     "prettier": "^2.2.1"
@@ -25,6 +26,7 @@
     "grpc-tools": "^1.10.0"
   },
   "scripts": {
+    "doctoc": "doctoc README.md",
     "format": "prettier --write ${npm_package_config_prettierTarget}",
     "format:check": "prettier --check ${npm_package_config_prettierTarget}"
   }
