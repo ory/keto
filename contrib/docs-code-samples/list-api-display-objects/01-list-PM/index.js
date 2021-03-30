@@ -1,7 +1,7 @@
-import grpc from '@ory/keto-acl/node_modules/@grpc/grpc-js/build/src/index.js'
-import acl from '@ory/keto-acl/acl_pb.js'
-import readService from '@ory/keto-acl/read_service_grpc_pb.js'
-import readData from '@ory/keto-acl/read_service_pb.js'
+import grpc from '@ory/keto-grpc-client/node_modules/@grpc/grpc-js/build/src/index.js'
+import acl from '@ory/keto-grpc-client/acl_pb.js'
+import readService from '@ory/keto-grpc-client/read_service_grpc_pb.js'
+import readData from '@ory/keto-grpc-client/read_service_pb.js'
 
 const readClient = new readService.ReadServiceClient(
   '127.0.0.1:4466',
