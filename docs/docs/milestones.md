@@ -26,9 +26,6 @@ Something is not working.
 
 #### Issues
 
-- [ ] Clarify where handlers are tested
-      ([keto#407](https://github.com/ory/keto/issues/407)) -
-      [@Patrik](https://github.com/zepatrik)
 - [x] CLI remote flag should be required
       ([keto#287](https://github.com/ory/keto/issues/287)) -
       [@Patrik](https://github.com/zepatrik)
@@ -59,6 +56,9 @@ Something is not working.
       [@Patrik](https://github.com/zepatrik)
 - [x] Check REST API should return JSON Object
       ([keto#406](https://github.com/ory/keto/issues/406)) -
+      [@Patrik](https://github.com/zepatrik)
+- [x] Clarify where handlers are tested
+      ([keto#407](https://github.com/ory/keto/issues/407)) -
       [@Patrik](https://github.com/zepatrik)
 - [x] Write relationtuple tests
       ([keto#408](https://github.com/ory/keto/issues/408)) -
@@ -135,6 +135,9 @@ Affects documentation.
 - [ ] Next Gen Documentation
       ([keto#420](https://github.com/ory/keto/issues/420)) -
       [@Patrik](https://github.com/zepatrik)
+- [ ] Do not use latest tags in docker-compose examples
+      ([keto#481](https://github.com/ory/keto/issues/481)) -
+      [@Patrik](https://github.com/zepatrik)
 - [x] Improve documentation of Expand API's max_depth parameter
       ([keto#419](https://github.com/ory/keto/issues/419)) -
       [@Patrik](https://github.com/zepatrik)
@@ -168,6 +171,9 @@ Blocks milestones or other issues or pulls.
       [@Patrik](https://github.com/zepatrik)
 - [ ] Require relations to be defined in the namespace config
       ([keto#509](https://github.com/ory/keto/issues/509)) -
+      [@Patrik](https://github.com/zepatrik)
+- [ ] Use fizz migrations to generate SQL migrations
+      ([keto#448](https://github.com/ory/keto/issues/448)) -
       [@Patrik](https://github.com/zepatrik)
 - [x] Define and architect SQL schema and queries for querying relations
       ([keto#300](https://github.com/ory/keto/issues/300)) -
@@ -311,16 +317,16 @@ Blocks milestones or other issues or pulls.
 
 #### Issues
 
-- [ ] Protobuf APIs & tooling
-      ([keto#311](https://github.com/ory/keto/issues/311)) -
-      [@Patrik](https://github.com/zepatrik),
-      [@Robin Brämer](https://github.com/robinbraemer)
 - [ ] Namespace configuration
       ([keto#303](https://github.com/ory/keto/issues/303)) -
       [@Patrik](https://github.com/zepatrik)
 - [x] Write benchmark tests for relationtuple package
       ([keto#301](https://github.com/ory/keto/issues/301)) -
       [@Patrik](https://github.com/zepatrik)
+- [x] Protobuf APIs & tooling
+      ([keto#311](https://github.com/ory/keto/issues/311)) -
+      [@Patrik](https://github.com/zepatrik),
+      [@Robin Brämer](https://github.com/robinbraemer)
 - [x] Listing relation tuples where none match cause SQL error
       ([keto#439](https://github.com/ory/keto/issues/439)) -
       [@Patrik](https://github.com/zepatrik)
