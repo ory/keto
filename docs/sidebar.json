@@ -18,7 +18,8 @@
     "secure",
     "guides/simple-access-check-guide",
     "guides/list-api-display-objects",
-    "guides/expand-api-display-who-has-access"
+    "guides/expand-api-display-who-has-access",
+    "guides/production"
   ],
   "Examples": ["examples/olymp-file-sharing"],
   "Reference": [
