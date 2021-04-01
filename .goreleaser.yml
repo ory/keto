@@ -87,7 +87,6 @@ builds:
       - CGO_ENABLED=0
     goarch:
       - amd64
-      - 386
       - arm
       - arm64
     goarm:
@@ -95,7 +94,6 @@ builds:
       - 6
       - 7
     goos:
-      - freebsd
       - linux
       - windows
       - darwin
