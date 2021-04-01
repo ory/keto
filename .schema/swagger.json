@@ -28,7 +28,7 @@
   "paths": {
     "/check": {
       "get": {
-        "description": "To learn how relation tuples and the check works, head over to [the documentation](/TODO).",
+        "description": "To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).",
         "consumes": [
           "application/x-www-form-urlencoded"
         ],
