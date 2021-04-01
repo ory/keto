@@ -10,8 +10,11 @@ replace github.com/gogo/protobuf => github.com/gogo/protobuf v1.3.2
 
 replace github.com/ory/x => github.com/ory/x v0.0.212
 
+replace github.com/ory/kratos/corp => github.com/ory/kratos/corp v0.0.0-20210118092700-c2358be1e867
+
+replace github.com/ory/kratos-client-go => github.com/ory/kratos-client-go v0.5.4-alpha.1.0.20210210170256-960b093d8bf9
+
 require (
-	github.com/HdrHistogram/hdrhistogram-go v1.0.1 // indirect
 	github.com/bufbuild/buf v0.31.1
 	github.com/cenkalti/backoff/v3 v3.0.0
 	github.com/containerd/continuity v0.0.0-20200228182428-0f16d7a0959c // indirect
@@ -24,15 +27,15 @@ require (
 	github.com/go-swagger/go-swagger v0.26.1
 	github.com/gobuffalo/pop/v5 v5.3.3
 	github.com/golang/mock v1.5.0
-	github.com/golang/protobuf v1.4.3
+	github.com/golang/protobuf v1.5.1
 	github.com/gorilla/websocket v1.4.2
-	github.com/grpc-ecosystem/go-grpc-middleware v1.0.0
-	github.com/julienschmidt/httprouter v1.2.0
+	github.com/grpc-ecosystem/go-grpc-middleware v1.0.1-0.20190118093823-f849b5445de4
+	github.com/julienschmidt/httprouter v1.3.0
 	github.com/mattn/goveralls v0.0.8
-	github.com/ory/cli v0.0.11
+	github.com/ory/cli v0.0.48
 	github.com/ory/go-acc v0.2.6
 	github.com/ory/graceful v0.1.1
-	github.com/ory/herodot v0.9.2
+	github.com/ory/herodot v0.9.3
 	github.com/ory/jsonschema/v3 v3.0.3
 	github.com/ory/x v0.0.210
 	github.com/pelletier/go-toml v1.8.1
@@ -50,15 +53,15 @@ require (
 	github.com/stretchr/testify v1.7.0
 	github.com/tidwall/gjson v1.7.1
 	github.com/tidwall/sjson v1.1.5
-	github.com/uber/jaeger-lib v2.4.0+incompatible // indirect
 	github.com/urfave/negroni v1.0.0
-	golang.org/x/net v0.0.0-20210226172049-e18ecbb05110 // indirect
+	github.com/ziutek/mymysql v1.5.4 // indirect
 	golang.org/x/sync v0.0.0-20201020160332-67f06af15bc9
 	golang.org/x/tools v0.1.0
-	google.golang.org/genproto v0.0.0-20201117123952-62d171c70ae1
+	google.golang.org/genproto v0.0.0-20210318145829-90b20ab00860
 	google.golang.org/grpc v1.36.0
 	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.1.0
-	google.golang.org/protobuf v1.25.1-0.20201020201750-d3470999428b
+	google.golang.org/protobuf v1.26.0
+	gopkg.in/gorp.v1 v1.7.2 // indirect
 	gotest.tools v2.2.0+incompatible // indirect
 )
 

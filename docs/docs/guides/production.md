@@ -23,5 +23,5 @@ intranet.
 
 ## Scaling
 
-There are no additional requirements for scaling ORY Keto, just spin up
-another container!
+There are no additional requirements for scaling ORY Keto, just spin up another
+container!

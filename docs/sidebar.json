@@ -12,14 +12,19 @@
     "concepts/objects",
     "concepts/subjects",
     "concepts/graph-of-relations",
-    "concepts/api-overview"
+    "concepts/api-overview",
+    "concepts/internal-algorithms",
+    "concepts/snaptokens-evaluation-consistency"
   ],
   "Guides": [
     "secure",
     "guides/simple-access-check-guide",
     "guides/list-api-display-objects",
     "guides/expand-api-display-who-has-access",
-    "guides/production"
+    "guides/production",
+    "guides/rbac",
+    "guides/access-control-inheritance",
+    "guides/access-control-list-design-best-practices"
   ],
   "Examples": ["examples/olymp-file-sharing"],
   "Reference": [

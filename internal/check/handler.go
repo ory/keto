@@ -67,7 +67,7 @@ type RESTResponse struct {
 //
 // Check a relation tuple
 //
-// To learn how relation tuples and the check works, head over to [the documentation](/TODO).
+// To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).
 //
 //     Consumes:
 //     -  application/x-www-form-urlencoded
