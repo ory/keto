@@ -19,14 +19,20 @@ import (
 // swagger:model InternalRelationTuple
 type InternalRelationTuple struct {
 
+	// Namespace of the Relation Tuple
+	//
 	// in: query
 	// Required: true
 	Namespace *string `json:"namespace"`
 
+	// Object of the Relation Tuple
+	//
 	// in: query
 	// Required: true
 	Object *string `json:"object"`
 
+	// Relation of the Relation Tuple
+	//
 	// in: query
 	// Required: true
 	Relation *string `json:"relation"`

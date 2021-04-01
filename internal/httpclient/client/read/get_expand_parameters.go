@@ -65,13 +65,22 @@ type GetExpandParams struct {
 	// Format: int64
 	MaxDepth *int64
 
-	// Namespace.
+	/* Namespace.
+
+	   Namespace of the Relation Tuple
+	*/
 	Namespace string
 
-	// Object.
+	/* Object.
+
+	   Object of the Relation Tuple
+	*/
 	Object string
 
-	// Relation.
+	/* Relation.
+
+	   Relation of the Relation Tuple
+	*/
 	Relation string
 
 	timeout    time.Duration

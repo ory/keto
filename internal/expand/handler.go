@@ -57,7 +57,9 @@ type getExpandRequest struct {
 
 // swagger:route GET /expand read getExpand
 //
-// Expand a relation tuple
+// Expand a Relation Tuple
+//
+// Use this endpoint to expand a relation tuple.
 //
 //     Consumes:
 //     -  application/x-www-form-urlencoded

@@ -249,7 +249,7 @@ p JSON.parse(result)
 
 <a id="opIdgetExpand"></a>
 
-### getExpand
+### Expand a Relation Tuple
 
 ```
 GET /expand?namespace=string&object=string&relation=string HTTP/1.1
@@ -257,22 +257,22 @@ Accept: application/json
 
 ```
 
-Expand a relation tuple
+Use this endpoint to expand a relation tuple.
 
-<a id="getexpand-parameters"></a>
+<a id="expand-a-relation-tuple-parameters"></a>
 
 #### Parameters
 
-| Parameter | In    | Type           | Required | Description |
-| --------- | ----- | -------------- | -------- | ----------- |
-| namespace | query | string         | true     | none        |
-| object    | query | string         | true     | none        |
-| relation  | query | string         | true     | none        |
-| max-depth | query | integer(int64) | false    | none        |
+| Parameter | In    | Type           | Required | Description                     |
+| --------- | ----- | -------------- | -------- | ------------------------------- |
+| namespace | query | string         | true     | Namespace of the Relation Tuple |
+| object    | query | string         | true     | Object of the Relation Tuple    |
+| relation  | query | string         | true     | Relation of the Relation Tuple  |
+| max-depth | query | integer(int64) | false    | none                            |
 
 #### Responses
 
-<a id="getexpand-responses"></a>
+<a id="expand-a-relation-tuple-responses"></a>
 
 ##### Overview
 
@@ -283,7 +283,7 @@ Expand a relation tuple
 | 404    | [Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)             | The standard error format | Inline                          |
 | 500    | [Internal Server Error](https://tools.ietf.org/html/rfc7231#section-6.6.1) | The standard error format | Inline                          |
 
-<a id="getexpand-responseschema"></a>
+<a id="expand-a-relation-tuple-responseschema"></a>
 
 ##### Response Schema
 
@@ -1039,7 +1039,7 @@ p JSON.parse(result)
 
 <a id="opIdcreateRelationTuple"></a>
 
-### createRelationTuple
+### Create a Relation Tuple
 
 ```
 PUT /relationtuple HTTP/1.1
@@ -1048,7 +1048,7 @@ Accept: application/json
 
 ```
 
-Create a relation tuple
+Use this endpoint to create a relation tuple.
 
 #### Request body
 
@@ -1061,7 +1061,7 @@ Create a relation tuple
 }
 ```
 
-<a id="createrelationtuple-parameters"></a>
+<a id="create-a-relation-tuple-parameters"></a>
 
 #### Parameters
 
@@ -1071,7 +1071,7 @@ Create a relation tuple
 
 #### Responses
 
-<a id="createrelationtuple-responses"></a>
+<a id="create-a-relation-tuple-responses"></a>
 
 ##### Overview
 
@@ -1081,7 +1081,7 @@ Create a relation tuple
 | 400    | [Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)           | The standard error format | Inline                                                |
 | 500    | [Internal Server Error](https://tools.ietf.org/html/rfc7231#section-6.6.1) | The standard error format | Inline                                                |
 
-<a id="createrelationtuple-responseschema"></a>
+<a id="create-a-relation-tuple-responseschema"></a>
 
 ##### Response Schema
 
@@ -1257,7 +1257,7 @@ p JSON.parse(result)
 
 <a id="opIddeleteRelationTuple"></a>
 
-### deleteRelationTuple
+### Delete a Relation Tuple
 
 ```
 DELETE /relationtuple?namespace=string&object=string&relation=string HTTP/1.1
@@ -1265,22 +1265,28 @@ Accept: application/json
 
 ```
 
-Delete a relation tuple
+Use this endpoint to delete a relation tuple.
 
-<a id="deleterelationtuple-parameters"></a>
+<a id="delete-a-relation-tuple-parameters"></a>
 
 #### Parameters
 
-| Parameter | In    | Type   | Required | Description                    |
-| --------- | ----- | ------ | -------- | ------------------------------ |
-| namespace | query | string | true     | none                           |
-| object    | query | string | true     | none                           |
-| relation  | query | string | true     | none                           |
-| subject   | query | string | false    | string encoding of the subject |
+| Parameter | In    | Type   | Required | Description                     |
+| --------- | ----- | ------ | -------- | ------------------------------- |
+| namespace | query | string | true     | Namespace of the Relation Tuple |
+| object    | query | string | true     | Object of the Relation Tuple    |
+| relation  | query | string | true     | Relation of the Relation Tuple  |
+| subject   | query | string | false    | Subject of the Relation Tuple   |
+
+##### Detailed descriptions
+
+**subject**: Subject of the Relation Tuple
+
+The subject follows the subject string encoding format.
 
 #### Responses
 
-<a id="deleterelationtuple-responses"></a>
+<a id="delete-a-relation-tuple-responses"></a>
 
 ##### Overview
 
@@ -1290,7 +1296,7 @@ Delete a relation tuple
 | 400    | [Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)           | The standard error format                                                                                                     | Inline |
 | 500    | [Internal Server Error](https://tools.ietf.org/html/rfc7231#section-6.6.1) | The standard error format                                                                                                     | Inline |
 
-<a id="deleterelationtuple-responseschema"></a>
+<a id="delete-a-relation-tuple-responseschema"></a>
 
 ##### Response Schema
 
@@ -1465,7 +1471,7 @@ p JSON.parse(result)
 
 <a id="opIdpatchRelationTuples"></a>
 
-### patchRelationTuples
+### Patch Multiple Relation Tuples
 
 ```
 PATCH /relationtuple HTTP/1.1
@@ -1474,7 +1480,7 @@ Accept: application/json
 
 ```
 
-Patch multiple relation tuples
+Use this endpoint to patch one or more relation tuples.
 
 #### Request body
 
@@ -1492,7 +1498,7 @@ Patch multiple relation tuples
 ]
 ```
 
-<a id="patchrelationtuples-parameters"></a>
+<a id="patch-multiple-relation-tuples-parameters"></a>
 
 #### Parameters
 
@@ -1502,7 +1508,7 @@ Patch multiple relation tuples
 
 #### Responses
 
-<a id="patchrelationtuples-responses"></a>
+<a id="patch-multiple-relation-tuples-responses"></a>
 
 ##### Overview
 
@@ -1513,7 +1519,7 @@ Patch multiple relation tuples
 | 404    | [Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)             | The standard error format                                                                                                     | Inline |
 | 500    | [Internal Server Error](https://tools.ietf.org/html/rfc7231#section-6.6.1) | The standard error format                                                                                                     | Inline |
 
-<a id="patchrelationtuples-responseschema"></a>
+<a id="patch-multiple-relation-tuples-responseschema"></a>
 
 ##### Response Schema
 
@@ -1893,12 +1899,12 @@ p JSON.parse(result)
 
 #### Properties
 
-| Name      | Type                      | Required | Restrictions | Description |
-| --------- | ------------------------- | -------- | ------------ | ----------- |
-| namespace | string                    | true     | none         | in: query   |
-| object    | string                    | true     | none         | in: query   |
-| relation  | string                    | true     | none         | in: query   |
-| subject   | [subject](#schemasubject) | true     | none         | none        |
+| Name      | Type                      | Required | Restrictions | Description                                        |
+| --------- | ------------------------- | -------- | ------------ | -------------------------------------------------- |
+| namespace | string                    | true     | none         | Namespace of the Relation Tuple<br/><br/>in: query |
+| object    | string                    | true     | none         | Object of the Relation Tuple<br/><br/>in: query    |
+| relation  | string                    | true     | none         | Relation of the Relation Tuple<br/><br/>in: query  |
+| subject   | [subject](#schemasubject) | true     | none         | none                                               |
 
 <a id="tocSpatchdelta"></a>
 
