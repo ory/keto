@@ -21,18 +21,18 @@ module.exports = {
       image: 'oryd/keto',
       files: ['docs/docs/configure-deploy.md']
     },
-    {
+    replaceInDir({
       replacer: ({ content, next }) =>
         content.replace(
           /v(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?/gi,
           `${next}`
         ),
-      files: ['docs/docs/install.md']
-    },
+      dir: 'docs/docs'
+    }),
     replaceInDir({
       replacer: ({ content, next }) =>
         content.replace('version="master"', `version="${next}"`),
-      dir: 'docs/docs/guides'
+      dir: 'docs/docs'
     })
   ],
   updateConfig: {
