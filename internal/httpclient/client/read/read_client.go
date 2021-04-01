@@ -134,7 +134,7 @@ func (a *Client) GetRelationTuples(params *GetRelationTuplesParams, opts ...Clie
 	op := &runtime.ClientOperation{
 		ID:                 "getRelationTuples",
 		Method:             "GET",
-		PathPattern:        "/relationtuple",
+		PathPattern:        "/relation-tuples",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/x-www-form-urlencoded"},
 		Schemes:            []string{"http", "https"},

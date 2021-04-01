@@ -61,7 +61,7 @@ type bodyRelationTuple struct {
 	Payload InternalRelationTuple
 }
 
-// swagger:route PUT /relationtuple write createRelationTuple
+// swagger:route PUT /relation-tuples write createRelationTuple
 //
 // Create a Relation Tuple
 //
@@ -98,7 +98,7 @@ func (h *handler) createRelation(w http.ResponseWriter, r *http.Request, _ httpr
 	h.d.Writer().WriteCreated(w, r, RouteBase+"?"+rel.ToURLQuery().Encode(), rel)
 }
 
-// swagger:route DELETE /relationtuple write deleteRelationTuple
+// swagger:route DELETE /relation-tuples write deleteRelationTuple
 //
 // Delete a Relation Tuple
 //
@@ -141,7 +141,7 @@ func internalTuplesWithAction(deltas []*PatchDelta, action patchAction) (filtere
 	return
 }
 
-// swagger:route PATCH /relationtuple write patchRelationTuples
+// swagger:route PATCH /relation-tuples write patchRelationTuples
 //
 // Patch Multiple Relation Tuples
 //

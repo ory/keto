@@ -483,7 +483,7 @@
         }
       }
     },
-    "/relationtuple": {
+    "/relation-tuples": {
       "get": {
         "description": "Get all relation tuples that match the query. Only the namespace field is required.",
         "consumes": [
