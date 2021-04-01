@@ -44,7 +44,7 @@ type ClientService interface {
 /*
   GetCheck checks a relation tuple
 
-  To learn how relation tuples and the check works, head over to [the documentation](/TODO).
+  To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).
 */
 func (a *Client) GetCheck(params *GetCheckParams, opts ...ClientOption) (*GetCheckOK, error) {
 	// TODO: Validate the params before sending

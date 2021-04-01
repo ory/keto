@@ -23,12 +23,14 @@ equal.
 
 A subject set is the set of all subjects that have a specific relation on an
 [object](./objects.mdx). They empower Ory Keto to be as flexible as you need it
-by defining indirections. They can be used to realize e.g. [RBAC](/TODO) or
-[inheritance of relations](/TODO). Subject sets themselves can again indirect to
-subject sets. For a performant evaluation of requests it is however required to
-follow some [best practices](../performance.mdx). As a special case, subject
-sets can also refer to an object by using the empty relation. Effectively, this
-is interpreted as "any relation, even a non-existent one".
+by defining indirections. They can be used to realize e.g.
+[RBAC](../guides/rbac.mdx) or
+[inheritance of relations](../guides/access-control-inheritance.mdx). Subject
+sets themselves can again indirect to subject sets. For a performant evaluation
+of requests it is however required to follow some
+[best practices](../performance.mdx). As a special case, subject sets can also
+refer to an object by using the empty relation. Effectively, this is interpreted
+as "any relation, even a non-existent one".
 
 Subject sets also represent all intermediary nodes in
 [the graph of relations](./graph-of-relations.mdx).
