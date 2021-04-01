@@ -12,6 +12,8 @@ replace github.com/ory/kratos-client-go => github.com/ory/kratos-client-go v0.5.
 
 replace github.com/ory/kratos/corp => github.com/ory/kratos/corp v0.0.0-20210118092700-c2358be1e867
 
+replace github.com/seatgeek/logrus-gelf-formatter => github.com/zepatrik/logrus-gelf-formatter v0.0.0-20210305135027-b8b3731dba10
+
 require (
 	github.com/bufbuild/buf v0.31.1
 	github.com/cenkalti/backoff/v3 v3.0.0
