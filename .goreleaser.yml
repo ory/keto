@@ -3,20 +3,85 @@
 project_name: keto
 
 env:
-  - GO111MODULE=on
+  - GOPROXY=https://proxy.golang.org,direct
 
 before:
   hooks:
     - go mod download
-    - go install github.com/gobuffalo/packr/packr
-    - packr
+    - go mod tidy
 
 builds:
   -
+    id: keto-sqlite-darwin
     flags:
-      - -a
+      - -tags
+      - sqlite
     ldflags:
-      - -s -w -X github.com/ory/keto/cmd.Version={{.Tag}} -X github.com/ory/keto/cmd.Commit={{.FullCommit}} -X github.com/ory/keto/cmd.Date={{.Date}}
+      - -s -w -X github.com/ory/keto/driver/config.Version={{.Tag}} -X github.com/ory/keto/driver/config.Commit={{.FullCommit}} -X github.com/ory/keto/driver/config.Date={{.Date}}
+      # - "-extldflags '-static'"
+    binary: keto
+    env:
+      - CGO_ENABLED=1
+      - CC=o64-clang
+      - CXX=o64-clang++
+    goarch:
+      - amd64
+    goos:
+      - darwin
+
+  -
+    id: keto-sqlite-linux
+    flags:
+      - -tags
+      - sqlite
+    ldflags:
+      - -s -w -X github.com/ory/keto/driver/config.Version={{.Tag}} -X github.com/ory/keto/driver/config.Commit={{.FullCommit}} -X github.com/ory/keto/driver/config.Date={{.Date}}
+    binary: keto
+    env:
+      - CGO_ENABLED=1
+    goarch:
+      - amd64
+    goos:
+      - linux
+  -
+    id: keto-sqlite-linux-libmusl
+    flags:
+      - -tags
+      - sqlite
+    ldflags:
+      - -s -w -X github.com/ory/keto/driver/config.Version={{.Tag}} -X github.com/ory/keto/driver/config.Commit={{.FullCommit}} -X github.com/ory/keto/driver/config.Date={{.Date}}
+    binary: keto
+    env:
+      - CGO_ENABLED=1
+      - CC=musl-gcc
+    goarch:
+      - amd64
+    goos:
+      - linux
+  -
+    id: keto-sqlite-windows
+    flags:
+      - -tags
+      - sqlite
+      # Remove once https://github.com/golang/go/issues/40795 is closed
+      - -buildmode=exe
+    ldflags:
+      - -s -w -X github.com/ory/keto/driver/config.Version={{.Tag}} -X github.com/ory/keto/driver/config.Commit={{.FullCommit}} -X github.com/ory/keto/driver/config.Date={{.Date}}
+      - "-extldflags '-static'"
+    binary: keto
+    env:
+      - CGO_ENABLED=1
+      - CC=x86_64-w64-mingw32-gcc
+      - CXX=x86_64-w64-mingw32-g++
+    goarch:
+      - amd64
+    goos:
+      - windows
+
+  -
+    id: keto
+    ldflags:
+      - -s -w -X github.com/ory/keto/driver/config.Version={{.Tag}} -X github.com/ory/keto/driver/config.Commit={{.FullCommit}} -X github.com/ory/keto/driver/config.Date={{.Date}}
     binary: keto
     env:
       - CGO_ENABLED=0
@@ -36,31 +101,86 @@ builds:
       - darwin
 
 archives:
-  -
+  - id: keto-sqlite
+    builds:
+      - keto-sqlite-windows
+      - keto-sqlite-darwin
+      - keto-sqlite-linux
     replacements:
-      darwin: macOS
-      386: 32-bit
-      amd64: 64-bit
+      darwin: macos
+      386: 32bit
+      amd64: 64bit
+      arm: arm32
     format_overrides:
       -
         goos: windows
         format: zip
+    files:
+      - CHANGELOG.md
+      - LICENSE
+      - README.md
+      - SECURITY.md
+    name_template: "{{ .ProjectName }}_{{ .Version }}-sqlite_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
+
+  - id: keto-sqlite-libmusl
+    builds:
+      - keto-sqlite-linux-libmusl
+    replacements:
+      darwin: macos
+      386: 32bit
+      amd64: 64bit
+      arm: arm32
+    format_overrides:
+      -
+        goos: windows
+        format: zip
+    files:
+      - CHANGELOG.md
+      - LICENSE
+      - README.md
+      - SECURITY.md
+    name_template: "{{ .ProjectName }}_{{ .Version }}-sqlite-libmusl_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
+
+  - id: keto
+    builds:
+      - keto
+    replacements:
+      darwin: macos
+      386: 32bit
+      amd64: 64bit
+      arm: arm32
+    format_overrides:
+      - goos: windows
+        format: zip
+    files:
+      - CHANGELOG.md
+      - LICENSE
+      - README.md
+      - SECURITY.md
 
 snapshot:
   name_template: "{{ .Tag }}-next"
 
 changelog:
   sort: asc
+  filters:
+    exclude:
+      - ci skip
+      - Merge pull request
+      - Merge branch
 
 brews:
-  -
-    tap:
+  - tap:
       owner: ory
       name: homebrew-keto
+    ids:
+      - keto-sqlite
     homepage:  https://www.ory.sh
     commit_author:
-      name: ory
-      email: hi@ory.sh
+      name: aeneasr
+      email: 3372410+aeneasr@users.noreply.github.com
+    install: |
+      bin.install "keto"
 
 scoop:
   bucket:
@@ -68,18 +188,36 @@ scoop:
     name: scoop-keto
   homepage:  https://www.ory.sh
   commit_author:
-    name: ory
-    email: hi@ory.sh
+    name: aeneasr
+    email: 3372410+aeneasr@users.noreply.github.com
+
+checksum:
+  algorithm: sha256
 
 dockers:
-  -
+  - dockerfile: .docker/Dockerfile-sqlite
+    ids:
+      - keto-sqlite-linux-libmusl
+    image_templates:
+      - "oryd/keto:v{{ .Major }}-sqlite"
+      - "oryd/keto:v{{ .Major }}.{{ .Minor }}-sqlite"
+      - "oryd/keto:v{{ .Major }}.{{ .Minor }}.{{ .Patch }}-sqlite"
+      - "oryd/keto:{{.Tag}}-sqlite"
+      - "oryd/keto:latest-sqlite"
+  - dockerfile: .docker/Dockerfile
+    ids:
+      - keto
     image_templates:
       - "oryd/keto:v{{ .Major }}"
       - "oryd/keto:v{{ .Major }}.{{ .Minor }}"
       - "oryd/keto:v{{ .Major }}.{{ .Minor }}.{{ .Patch }}"
-      - "oryd/keto:{{ .Tag }}"
+      - "oryd/keto:{{.Tag}}"
       - "oryd/keto:latest"
 
 release:
   prerelease: auto
-
+  name_template: "{{.Tag}}"
+  ids:
+    - keto-sqlite
+    - keto-sqlite-libmusl
+    - keto
