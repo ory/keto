@@ -3,7 +3,7 @@ version: '3'
 services:
 
   keto-migrate:
-    image: oryd/keto:latest
+    image: oryd/keto:v0.6.0-alpha.1
     links:
       - postgresd:postgresd
     environment:
@@ -14,7 +14,7 @@ services:
     restart: on-failure
 
   keto:
-    image: oryd/keto:latest
+    image: oryd/keto:v0.6.0-alpha.1
     links:
       - postgresd:postgresd
     depends_on:

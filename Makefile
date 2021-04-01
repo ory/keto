@@ -38,6 +38,10 @@ format: .bin/goimports
 install:
 		go install -tags sqlite .
 
+.PHONY: docker
+docker:
+		docker build -t oryd/keto:latest -f .docker/Dockerfile-build .
+
 # Generates the SDKs
 .PHONY: sdk
 sdk: .bin/swagger .bin/cli
