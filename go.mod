@@ -14,6 +14,8 @@ replace github.com/ory/kratos/corp => github.com/ory/kratos/corp v0.0.0-20210118
 
 replace github.com/seatgeek/logrus-gelf-formatter => github.com/zepatrik/logrus-gelf-formatter v0.0.0-20210305135027-b8b3731dba10
 
+replace gopkg.in/DataDog/dd-trace-go.v1 => gopkg.in/DataDog/dd-trace-go.v1 v1.27.1
+
 require (
 	github.com/bufbuild/buf v0.31.1
 	github.com/cenkalti/backoff/v3 v3.0.0
