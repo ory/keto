@@ -14,7 +14,7 @@ option php_namespace = "Ory\\Keto\\Acl\\V1alpha1";
 // The service that performs authorization checks
 // based on the stored Access Control Lists.
 //
-// This service is part of the [read APIs](../concepts/api-overview.mdx#read-apis).
+// This service is part of the [read-APIs](../concepts/api-overview.mdx#read-apis).
 service CheckService {
   // Performs an authorization check.
   rpc Check(CheckRequest) returns (CheckResponse);
@@ -25,7 +25,7 @@ service CheckService {
 message CheckRequest {
   // The namespace to evaluate the check.
   //
-  // Note: If you use the expand API and the check
+  // Note: If you use the expand-API and the check
   // evaluates a RelationTuple specifying a SubjectSet as
   // subject or due to a rewrite rule in a namespace config
   // this check request may involve other namespaces automatically.

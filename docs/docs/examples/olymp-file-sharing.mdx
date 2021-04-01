@@ -25,7 +25,7 @@ Now, the user identified by its unique username `demeter` wants to upload a file
 containing the most fertile grounds. The file gets assigned the UUID
 `ec788a82-a12e-45a4-b906-3e69f78c94e4`. The application adds the following
 [relation tuple](../concepts/relation-tuples.mdx) to Ory Keto through the
-[write API](../concepts/api-overview.mdx#write-apis):
+[write-API](../concepts/api-overview.mdx#write-apis):
 
 ```keto-relation-tuples
 ec788a82-a12e-45a4-b906-3e69f78c94e4#owner@demeter
@@ -36,13 +36,13 @@ share the file with fertile grounds with `athena` so that they can both read it.
 Therefore, he opens the "Olymp Library" and is presented with a list of all
 files he owns. The application will internally request all
 [objects](../concepts/objects.mdx) (file IDs) with the owner `demeter` by using
-the [list API](../concepts/api-overview.mdx#list-relation-tuples). The response
+the [list-API](../concepts/api-overview.mdx#list-relation-tuples). The response
 will contain the object `ec788a82-a12e-45a4-b906-3e69f78c94e4`, which the
 application maps to the file in question.
 
 The user `demeter` will then ask the application to share the file with
 `athena`. The application will translate that request into a
-[write API request](../concepts/api-overview.mdx#write-apis) adding the
+[write-API request](../concepts/api-overview.mdx#write-apis) adding the
 following relation tuple to Ory Keto:
 
 ```keto-relation-tuples
@@ -50,7 +50,7 @@ ec788a82-a12e-45a4-b906-3e69f78c94e4#access@athena
 ```
 
 To confirm the successful operation, the application uses Ory Keto's
-[expand API](../concepts/api-overview.mdx#expand-subject-sets) to compile a list
+[expand-API](../concepts/api-overview.mdx#expand-subject-sets) to compile a list
 of everyone who can access the file:
 
 ```keto-relation-tuples
@@ -70,7 +70,7 @@ which returns the expansion tree
 The "Olymp Library" can then display this information to `demeter`.
 
 When `athena` wants to get the file containing fertile grounds, the application
-uses the [check API](../concepts/api-overview.mdx#check-relation-tuple) to
+uses the [check-API](../concepts/api-overview.mdx#check-relation-tuple) to
 verify that `athena` has access to the file before it returns the file. This
 will allow `demeter` to revoke `athena`'s access at any point by deleting the
 corresponding relation tuple.

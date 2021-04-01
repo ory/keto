@@ -31,7 +31,7 @@ function deserialize_ory_keto_acl_v1alpha1_CheckResponse(buffer_arg) {
 // The service that performs authorization checks
 // based on the stored Access Control Lists.
 //
-// This service is part of the [read APIs](../concepts/api-overview.mdx#read-apis).
+// This service is part of the [read-APIs](../concepts/api-overview.mdx#read-apis).
 var CheckServiceService = exports.CheckServiceService = {
   // Performs an authorization check.
 check: {

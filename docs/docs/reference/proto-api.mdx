@@ -48,7 +48,7 @@ SubjectSet refers to all subjects who have the same `relation` on an `object`.
 The service that performs authorization checks based on the stored Access
 Control Lists.
 
-This service is part of the [read APIs](../concepts/api-overview.mdx#read-apis).
+This service is part of the [read-APIs](../concepts/api-overview.mdx#read-apis).
 
 | Method Name | Request Type                                        | Response Type                                         | Description                      |
 | ----------- | --------------------------------------------------- | ----------------------------------------------------- | -------------------------------- |
@@ -61,7 +61,7 @@ related to an object.
 
 | Field     | Type                                      | Label | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
 | --------- | ----------------------------------------- | ----- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| namespace | [string](#string)                         |       | The namespace to evaluate the check.<br/>Note: If you use the expand API and the check evaluates a RelationTuple specifying a SubjectSet as subject or due to a rewrite rule in a namespace config this check request may involve other namespaces automatically.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| namespace | [string](#string)                         |       | The namespace to evaluate the check.<br/>Note: If you use the expand-API and the check evaluates a RelationTuple specifying a SubjectSet as subject or due to a rewrite rule in a namespace config this check request may involve other namespaces automatically.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 | object    | [string](#string)                         |       | The related object in this check.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 | relation  | [string](#string)                         |       | The relation between the Object and the Subject.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 | subject   | [Subject](#ory.keto.acl.v1alpha1.Subject) |       | The related subject in this check.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
@@ -84,7 +84,7 @@ The response for a CheckService.Check rpc.
 The service that performs subject set expansion based on the stored Access
 Control Lists.
 
-This service is part of the [read APIs](../concepts/api-overview.mdx#read-apis).
+This service is part of the [read-APIs](../concepts/api-overview.mdx#read-apis).
 
 | Method Name | Request Type                                          | Response Type                                           | Description                                      |
 | ----------- | ----------------------------------------------------- | ------------------------------------------------------- | ------------------------------------------------ |
@@ -132,7 +132,7 @@ The response for a ExpandService.Expand RPC.
 
 The service to query relation tuples.
 
-This service is part of the [read APIs](../concepts/api-overview.mdx#read-apis).
+This service is part of the [read-APIs](../concepts/api-overview.mdx#read-apis).
 
 | Method Name        | Request Type                                                                  | Response Type                                                                   | Description                |
 | ------------------ | ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------- | -------------------------- |
@@ -190,8 +190,8 @@ The response of a ReadService.ListRelationTuples RPC.
 
 The service returning the specific Ory Keto instance version.
 
-This service is part of the [read APIs](../concepts/api-overview.mdx#read-apis)
-and [write APIs](../concepts/api-overview.mdx#write-apis).
+This service is part of the [read-APIs](../concepts/api-overview.mdx#read-apis)
+and [write-APIs](../concepts/api-overview.mdx#write-apis).
 
 | Method Name | Request Type                                                  | Response Type                                                   | Description                                   |
 | ----------- | ------------------------------------------------------------- | --------------------------------------------------------------- | --------------------------------------------- |
@@ -216,7 +216,7 @@ Response of the VersionService.GetVersion RPC.
 The write service to create and delete Access Control Lists.
 
 This service is part of the
-[write APIs](../concepts/api-overview.mdx#write-apis).
+[write-APIs](../concepts/api-overview.mdx#write-apis).
 
 | Method Name            | Request Type                                                                          | Response Type                                                                           | Description                                                 |
 | ---------------------- | ------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- | ----------------------------------------------------------- |

@@ -29,7 +29,7 @@ function deserialize_ory_keto_acl_v1alpha1_GetVersionResponse(buffer_arg) {
 
 // The service returning the specific Ory Keto instance version.
 //
-// This service is part of the [read APIs](../concepts/api-overview.mdx#read-apis) and [write APIs](../concepts/api-overview.mdx#write-apis).
+// This service is part of the [read-APIs](../concepts/api-overview.mdx#read-apis) and [write-APIs](../concepts/api-overview.mdx#write-apis).
 var VersionServiceService = exports.VersionServiceService = {
   // Returns the version of the Ory Keto instance.
 getVersion: {

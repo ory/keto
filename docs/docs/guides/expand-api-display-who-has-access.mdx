@@ -6,10 +6,10 @@ import CodeTabs from '@theme/CodeTabs'
 import RelationTuplePrism from '@theme/RelationTuplePrism'
 RelationTuplePrism()
 
-This guide will explain how to use Ory Keto's expand API to display who has
+This guide will explain how to use Ory Keto's expand-API to display who has
 access to an object, and why. Please refer to the
 [gRPC](../reference/proto-api.mdx) and [REST](../reference/rest-api.mdx) API
-reference documentation for all details. In general, the expand API allows to
+reference documentation for all details. In general, the expand-API allows to
 expand a given subject set into all its effective subjects.
 
 ## Example
@@ -70,7 +70,7 @@ directories:/photos#parent@(files:/photos/mountains.jpg#_)
 ```
 
 The user `maureen` now wants to manage `access` for the file
-`/photos/beach.jpg`. Therefore, the application uses the expand API to get a
+`/photos/beach.jpg`. Therefore, the application uses the expand-API to get a
 tree of everyone who has access to that file:
 
 <CodeTabs

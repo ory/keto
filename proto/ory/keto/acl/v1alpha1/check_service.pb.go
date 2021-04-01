@@ -29,7 +29,7 @@ type CheckRequest struct {
 
 	// The namespace to evaluate the check.
 	//
-	// Note: If you use the expand API and the check
+	// Note: If you use the expand-API and the check
 	// evaluates a RelationTuple specifying a SubjectSet as
 	// subject or due to a rewrite rule in a namespace config
 	// this check request may involve other namespaces automatically.

@@ -8,7 +8,7 @@ import CodeTabs from '@theme/CodeTabs'
 RelationTuplePrism()
 
 This guide will explain how you can use Ory Keto's
-[check API](../concepts/api-overview.mdx#check-relation-tuple) to determine
+[check-API](../concepts/api-overview.mdx#check-relation-tuple) to determine
 whether a [subject](../concepts/subjects.mdx) has a specific
 [relation](../concepts/relation-tuples.mdx) on an
 [object](../concepts/objects.mdx). The result can be used for controlling access
@@ -52,7 +52,7 @@ system.
 
 The request (here `decypher` of the message `02y_15_4w350m3`) is then translated
 into a request to Ory Keto's
-[check API](../concepts/api-overview.mdx#check-relation-tuple). Basically, the
+[check-API](../concepts/api-overview.mdx#check-relation-tuple). Basically, the
 application is asking Keto "Is john allowed to decypher the text
 02y_15_4w350m3?"
 
@@ -86,7 +86,7 @@ Try this yourself by first adding the relation tuple using the
   version="master"
 />
 
-Now, we can use the check API to verify that `john` is allowed to `decypher` the
+Now, we can use the check-API to verify that `john` is allowed to `decypher` the
 message:
 
 <CodeTabs
@@ -143,4 +143,4 @@ persists.
 
 We learned how to integrate check requests and access control into an
 application using Ory Keto's
-[check API](../concepts/api-overview.mdx#check-relation-tuple).
+[check-API](../concepts/api-overview.mdx#check-relation-tuple).

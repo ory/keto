@@ -86,12 +86,12 @@ Another view of the chat application has to display all members of a specific
 group to the user. This can also be achieved using the list API. In cases where
 such a membership would be modeled through
 [subject sets](../concepts/subjects.mdx#subject-sets), you have to use the
-[expand API](./expand-api-display-who-has-access.mdx).
+[expand-API](./expand-api-display-who-has-access.mdx).
 
 :::caution
 
 In this case the application should probably first use the
-[check API](./simple-access-check-guide.mdx) to check whether the user is
+[check-API](./simple-access-check-guide.mdx) to check whether the user is
 allowed to list the members of a group. This step is not part of this example.
 
 :::
@@ -112,7 +112,7 @@ knowledge of the structure of subject sets like depth or hierarchy, or the UI
 context, like a "My Items" view which should probably contain other objects than
 a "My Organizations" or "Shared with Me" views. If there really is no way to
 narrow down a query, you will have to use the
-[expand API](./expand-api-display-who-has-access) instead, or repeatedly call
+[expand-API](./expand-api-display-who-has-access) instead, or repeatedly call
 the list API. Try to avoid such cases because they require a lot of resources
 and can quickly degrade the service quality for all users. Please refer to the
 [performance considerations](../performance.mdx).
