@@ -27,7 +27,7 @@ type GetResponse struct {
 }
 
 const (
-	RouteBase = "/relationtuple"
+	RouteBase = "/relation-tuples"
 )
 
 func NewHandler(d handlerDeps) *handler {

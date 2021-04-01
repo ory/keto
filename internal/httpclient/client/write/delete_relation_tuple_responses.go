@@ -59,7 +59,7 @@ type DeleteRelationTupleNoContent struct {
 }
 
 func (o *DeleteRelationTupleNoContent) Error() string {
-	return fmt.Sprintf("[DELETE /relationtuple][%d] deleteRelationTupleNoContent ", 204)
+	return fmt.Sprintf("[DELETE /relation-tuples][%d] deleteRelationTupleNoContent ", 204)
 }
 
 func (o *DeleteRelationTupleNoContent) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -81,7 +81,7 @@ type DeleteRelationTupleBadRequest struct {
 }
 
 func (o *DeleteRelationTupleBadRequest) Error() string {
-	return fmt.Sprintf("[DELETE /relationtuple][%d] deleteRelationTupleBadRequest  %+v", 400, o.Payload)
+	return fmt.Sprintf("[DELETE /relation-tuples][%d] deleteRelationTupleBadRequest  %+v", 400, o.Payload)
 }
 func (o *DeleteRelationTupleBadRequest) GetPayload() *DeleteRelationTupleBadRequestBody {
 	return o.Payload
@@ -113,7 +113,7 @@ type DeleteRelationTupleInternalServerError struct {
 }
 
 func (o *DeleteRelationTupleInternalServerError) Error() string {
-	return fmt.Sprintf("[DELETE /relationtuple][%d] deleteRelationTupleInternalServerError  %+v", 500, o.Payload)
+	return fmt.Sprintf("[DELETE /relation-tuples][%d] deleteRelationTupleInternalServerError  %+v", 500, o.Payload)
 }
 func (o *DeleteRelationTupleInternalServerError) GetPayload() *DeleteRelationTupleInternalServerErrorBody {
 	return o.Payload

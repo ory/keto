@@ -65,7 +65,7 @@ type PatchRelationTuplesNoContent struct {
 }
 
 func (o *PatchRelationTuplesNoContent) Error() string {
-	return fmt.Sprintf("[PATCH /relationtuple][%d] patchRelationTuplesNoContent ", 204)
+	return fmt.Sprintf("[PATCH /relation-tuples][%d] patchRelationTuplesNoContent ", 204)
 }
 
 func (o *PatchRelationTuplesNoContent) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -87,7 +87,7 @@ type PatchRelationTuplesBadRequest struct {
 }
 
 func (o *PatchRelationTuplesBadRequest) Error() string {
-	return fmt.Sprintf("[PATCH /relationtuple][%d] patchRelationTuplesBadRequest  %+v", 400, o.Payload)
+	return fmt.Sprintf("[PATCH /relation-tuples][%d] patchRelationTuplesBadRequest  %+v", 400, o.Payload)
 }
 func (o *PatchRelationTuplesBadRequest) GetPayload() *PatchRelationTuplesBadRequestBody {
 	return o.Payload
@@ -119,7 +119,7 @@ type PatchRelationTuplesNotFound struct {
 }
 
 func (o *PatchRelationTuplesNotFound) Error() string {
-	return fmt.Sprintf("[PATCH /relationtuple][%d] patchRelationTuplesNotFound  %+v", 404, o.Payload)
+	return fmt.Sprintf("[PATCH /relation-tuples][%d] patchRelationTuplesNotFound  %+v", 404, o.Payload)
 }
 func (o *PatchRelationTuplesNotFound) GetPayload() *PatchRelationTuplesNotFoundBody {
 	return o.Payload
@@ -151,7 +151,7 @@ type PatchRelationTuplesInternalServerError struct {
 }
 
 func (o *PatchRelationTuplesInternalServerError) Error() string {
-	return fmt.Sprintf("[PATCH /relationtuple][%d] patchRelationTuplesInternalServerError  %+v", 500, o.Payload)
+	return fmt.Sprintf("[PATCH /relation-tuples][%d] patchRelationTuplesInternalServerError  %+v", 500, o.Payload)
 }
 func (o *PatchRelationTuplesInternalServerError) GetPayload() *PatchRelationTuplesInternalServerErrorBody {
 	return o.Payload

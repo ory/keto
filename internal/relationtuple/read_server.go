@@ -64,7 +64,7 @@ type getRelationsParams struct {
 	x.PaginationOptions
 }
 
-// swagger:route GET /relationtuple read getRelationTuples
+// swagger:route GET /relation-tuples read getRelationTuples
 //
 // Query relation tuples
 //

@@ -62,7 +62,7 @@ type GetRelationTuplesOK struct {
 }
 
 func (o *GetRelationTuplesOK) Error() string {
-	return fmt.Sprintf("[GET /relationtuple][%d] getRelationTuplesOK  %+v", 200, o.Payload)
+	return fmt.Sprintf("[GET /relation-tuples][%d] getRelationTuplesOK  %+v", 200, o.Payload)
 }
 func (o *GetRelationTuplesOK) GetPayload() *models.GetRelationTuplesResponse {
 	return o.Payload
@@ -94,7 +94,7 @@ type GetRelationTuplesNotFound struct {
 }
 
 func (o *GetRelationTuplesNotFound) Error() string {
-	return fmt.Sprintf("[GET /relationtuple][%d] getRelationTuplesNotFound  %+v", 404, o.Payload)
+	return fmt.Sprintf("[GET /relation-tuples][%d] getRelationTuplesNotFound  %+v", 404, o.Payload)
 }
 func (o *GetRelationTuplesNotFound) GetPayload() *GetRelationTuplesNotFoundBody {
 	return o.Payload
@@ -126,7 +126,7 @@ type GetRelationTuplesInternalServerError struct {
 }
 
 func (o *GetRelationTuplesInternalServerError) Error() string {
-	return fmt.Sprintf("[GET /relationtuple][%d] getRelationTuplesInternalServerError  %+v", 500, o.Payload)
+	return fmt.Sprintf("[GET /relation-tuples][%d] getRelationTuplesInternalServerError  %+v", 500, o.Payload)
 }
 func (o *GetRelationTuplesInternalServerError) GetPayload() *GetRelationTuplesInternalServerErrorBody {
 	return o.Payload
