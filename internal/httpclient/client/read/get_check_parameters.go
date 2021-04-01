@@ -59,18 +59,29 @@ func NewGetCheckParamsWithHTTPClient(client *http.Client) *GetCheckParams {
 */
 type GetCheckParams struct {
 
-	// Namespace.
+	/* Namespace.
+
+	   Namespace of the Relation Tuple
+	*/
 	Namespace string
 
-	// Object.
+	/* Object.
+
+	   Object of the Relation Tuple
+	*/
 	Object string
 
-	// Relation.
+	/* Relation.
+
+	   Relation of the Relation Tuple
+	*/
 	Relation string
 
 	/* Subject.
 
-	   string encoding of the subject
+	     Subject of the Relation Tuple
+
+	The subject follows the subject string encoding format.
 	*/
 	Subject *string
 

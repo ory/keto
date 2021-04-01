@@ -76,16 +76,27 @@ type Subject interface {
 
 // swagger:parameters getCheck deleteRelationTuple
 type InternalRelationTuple struct {
+	// Namespace of the Relation Tuple
+	//
 	// in: query
 	// required: true
 	Namespace string `json:"namespace"`
+
+	// Object of the Relation Tuple
+	//
 	// in: query
 	// required: true
 	Object string `json:"object"`
+
+	// Relation of the Relation Tuple
+	//
 	// in: query
 	// required: true
 	Relation string `json:"relation"`
-	// string encoding of the subject
+
+	// Subject of the Relation Tuple
+	//
+	// The subject follows the subject string encoding format.
 	//
 	// in: query
 	// required: true
@@ -98,10 +109,21 @@ type stringEncodedSubject string
 
 // swagger:parameters getExpand
 type SubjectSet struct {
+	// Namespace of the Relation Tuple
+	//
+	// in: query
 	// required: true
 	Namespace string `json:"namespace"`
+
+	// Object of the Relation Tuple
+	//
+	// in: query
 	// required: true
 	Object string `json:"object"`
+
+	// Relation of the Relation Tuple
+	//
+	// in: query
 	// required: true
 	Relation string `json:"relation"`
 }

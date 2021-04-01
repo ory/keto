@@ -8,11 +8,13 @@ replace github.com/ory/dockertest/v3 => github.com/ory/dockertest/v3 v3.6.3
 
 replace github.com/gogo/protobuf => github.com/gogo/protobuf v1.3.2
 
-replace github.com/ory/x => github.com/ory/x v0.0.212
+replace github.com/ory/kratos-client-go => github.com/ory/kratos-client-go v0.5.4-alpha.1.0.20210210170256-960b093d8bf9
 
 replace github.com/ory/kratos/corp => github.com/ory/kratos/corp v0.0.0-20210118092700-c2358be1e867
 
-replace github.com/ory/kratos-client-go => github.com/ory/kratos-client-go v0.5.4-alpha.1.0.20210210170256-960b093d8bf9
+replace github.com/seatgeek/logrus-gelf-formatter => github.com/zepatrik/logrus-gelf-formatter v0.0.0-20210305135027-b8b3731dba10
+
+replace gopkg.in/DataDog/dd-trace-go.v1 => gopkg.in/DataDog/dd-trace-go.v1 v1.27.1
 
 require (
 	github.com/bufbuild/buf v0.31.1
@@ -37,7 +39,7 @@ require (
 	github.com/ory/graceful v0.1.1
 	github.com/ory/herodot v0.9.3
 	github.com/ory/jsonschema/v3 v3.0.3
-	github.com/ory/x v0.0.210
+	github.com/ory/x v0.0.212
 	github.com/pelletier/go-toml v1.8.1
 	github.com/phayes/freeport v0.0.0-20180830031419-95f893ade6f2
 	github.com/pkg/errors v0.9.1
@@ -54,15 +56,12 @@ require (
 	github.com/tidwall/gjson v1.7.1
 	github.com/tidwall/sjson v1.1.5
 	github.com/urfave/negroni v1.0.0
-	github.com/ziutek/mymysql v1.5.4 // indirect
 	golang.org/x/sync v0.0.0-20201020160332-67f06af15bc9
 	golang.org/x/tools v0.1.0
 	google.golang.org/genproto v0.0.0-20210318145829-90b20ab00860
 	google.golang.org/grpc v1.36.0
 	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.1.0
 	google.golang.org/protobuf v1.26.0
-	gopkg.in/gorp.v1 v1.7.2 // indirect
-	gotest.tools v2.2.0+incompatible // indirect
 )
 
 go 1.16

@@ -47,25 +47,28 @@
         "parameters": [
           {
             "type": "string",
+            "description": "Namespace of the Relation Tuple",
             "name": "namespace",
             "in": "query",
             "required": true
           },
           {
             "type": "string",
+            "description": "Object of the Relation Tuple",
             "name": "object",
             "in": "query",
             "required": true
           },
           {
             "type": "string",
+            "description": "Relation of the Relation Tuple",
             "name": "relation",
             "in": "query",
             "required": true
           },
           {
             "type": "string",
-            "description": "string encoding of the subject",
+            "description": "Subject of the Relation Tuple\n\nThe subject follows the subject string encoding format.",
             "name": "subject",
             "in": "query"
           }
@@ -253,7 +256,7 @@
     },
     "/expand": {
       "get": {
-        "description": "Expand a relation tuple",
+        "description": "Use this endpoint to expand a relation tuple.",
         "consumes": [
           "application/x-www-form-urlencoded"
         ],
@@ -267,22 +270,26 @@
         "tags": [
           "read"
         ],
+        "summary": "Expand a Relation Tuple",
         "operationId": "getExpand",
         "parameters": [
           {
             "type": "string",
+            "description": "Namespace of the Relation Tuple",
             "name": "namespace",
             "in": "query",
             "required": true
           },
           {
             "type": "string",
+            "description": "Object of the Relation Tuple",
             "name": "object",
             "in": "query",
             "required": true
           },
           {
             "type": "string",
+            "description": "Relation of the Relation Tuple",
             "name": "relation",
             "in": "query",
             "required": true
@@ -600,7 +607,7 @@
         }
       },
       "put": {
-        "description": "Create a relation tuple",
+        "description": "Use this endpoint to create a relation tuple.",
         "consumes": [
           "application/json"
         ],
@@ -614,6 +621,7 @@
         "tags": [
           "write"
         ],
+        "summary": "Create a Relation Tuple",
         "operationId": "createRelationTuple",
         "parameters": [
           {
@@ -696,7 +704,7 @@
         }
       },
       "delete": {
-        "description": "Delete a relation tuple",
+        "description": "Use this endpoint to delete a relation tuple.",
         "consumes": [
           "application/x-www-form-urlencoded"
         ],
@@ -710,29 +718,33 @@
         "tags": [
           "write"
         ],
+        "summary": "Delete a Relation Tuple",
         "operationId": "deleteRelationTuple",
         "parameters": [
           {
             "type": "string",
+            "description": "Namespace of the Relation Tuple",
             "name": "namespace",
             "in": "query",
             "required": true
           },
           {
             "type": "string",
+            "description": "Object of the Relation Tuple",
             "name": "object",
             "in": "query",
             "required": true
           },
           {
             "type": "string",
+            "description": "Relation of the Relation Tuple",
             "name": "relation",
             "in": "query",
             "required": true
           },
           {
             "type": "string",
-            "description": "string encoding of the subject",
+            "description": "Subject of the Relation Tuple\n\nThe subject follows the subject string encoding format.",
             "name": "subject",
             "in": "query"
           }
@@ -806,7 +818,7 @@
         }
       },
       "patch": {
-        "description": "Patch multiple relation tuples",
+        "description": "Use this endpoint to patch one or more relation tuples.",
         "consumes": [
           "application/json"
         ],
@@ -820,6 +832,7 @@
         "tags": [
           "write"
         ],
+        "summary": "Patch Multiple Relation Tuples",
         "operationId": "patchRelationTuples",
         "parameters": [
           {
@@ -966,15 +979,15 @@
       ],
       "properties": {
         "namespace": {
-          "description": "in: query",
+          "description": "Namespace of the Relation Tuple\n\nin: query",
           "type": "string"
         },
         "object": {
-          "description": "in: query",
+          "description": "Object of the Relation Tuple\n\nin: query",
           "type": "string"
         },
         "relation": {
-          "description": "in: query",
+          "description": "Relation of the Relation Tuple\n\nin: query",
           "type": "string"
         },
         "subject": {

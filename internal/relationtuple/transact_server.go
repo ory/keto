@@ -63,7 +63,9 @@ type bodyRelationTuple struct {
 
 // swagger:route PUT /relationtuple write createRelationTuple
 //
-// Create a relation tuple
+// Create a Relation Tuple
+//
+// Use this endpoint to create a relation tuple.
 //
 //     Consumes:
 //     -  application/json
@@ -98,7 +100,9 @@ func (h *handler) createRelation(w http.ResponseWriter, r *http.Request, _ httpr
 
 // swagger:route DELETE /relationtuple write deleteRelationTuple
 //
-// Delete a relation tuple
+// Delete a Relation Tuple
+//
+// Use this endpoint to delete a relation tuple.
 //
 //     Consumes:
 //     -  application/x-www-form-urlencoded
@@ -139,7 +143,9 @@ func internalTuplesWithAction(deltas []*PatchDelta, action patchAction) (filtere
 
 // swagger:route PATCH /relationtuple write patchRelationTuples
 //
-// Patch multiple relation tuples
+// Patch Multiple Relation Tuples
+//
+// Use this endpoint to patch one or more relation tuples.
 //
 //     Consumes:
 //     - application/json

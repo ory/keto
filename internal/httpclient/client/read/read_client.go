@@ -82,7 +82,9 @@ func (a *Client) GetCheck(params *GetCheckParams, opts ...ClientOption) (*GetChe
 }
 
 /*
-  GetExpand Expand a relation tuple
+  GetExpand expands a relation tuple
+
+  Use this endpoint to expand a relation tuple.
 */
 func (a *Client) GetExpand(params *GetExpandParams, opts ...ClientOption) (*GetExpandOK, error) {
 	// TODO: Validate the params before sending
