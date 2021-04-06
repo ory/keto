@@ -150,12 +150,6 @@ func internalPaginationFromOptions(opts ...x.PaginationOptionSetter) (*internalP
 }
 
 func (p *internalPagination) parsePageToken(t string) error {
-	if t == x.PageTokenEnd {
-		p.PerPage = 0
-		p.Page = 1
-		return nil
-	}
-
 	if t == "" {
 		p.Page = 1
 		return nil

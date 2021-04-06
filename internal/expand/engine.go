@@ -39,7 +39,7 @@ func (e *Engine) BuildTree(ctx context.Context, subject relationtuple.Subject, r
 			rels     []*relationtuple.InternalRelationTuple
 			nextPage string
 		)
-		for nextPage != x.PageTokenEnd {
+		for nextPage != "" {
 			var err error
 			rels, nextPage, err = e.d.RelationTupleManager().GetRelationTuples(
 				ctx,

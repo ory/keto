@@ -127,7 +127,7 @@ func (p *Persister) DeleteRelationTuples(ctx context.Context, rs ...*relationtup
 func (p *Persister) GetRelationTuples(ctx context.Context, query *relationtuple.RelationQuery, options ...x.PaginationOptionSetter) ([]*relationtuple.InternalRelationTuple, string, error) {
 	pagination, err := internalPaginationFromOptions(options...)
 	if err != nil {
-		return nil, x.PageTokenEnd, err
+		return nil, "", err
 	}
 
 	var wheres []whereStmts
@@ -143,7 +143,7 @@ func (p *Persister) GetRelationTuples(ctx context.Context, query *relationtuple.
 
 	n, err := p.namespaces.GetNamespace(ctx, query.Namespace)
 	if err != nil {
-		return nil, x.PageTokenEnd, err
+		return nil, "", err
 	}
 
 	sqlQuery := p.connection(context.WithValue(ctx, namespaceContextKey, n)).
@@ -156,7 +156,7 @@ func (p *Persister) GetRelationTuples(ctx context.Context, query *relationtuple.
 
 	var res relationTuples
 	if err := sqlQuery.All(&res); err != nil {
-		return nil, x.PageTokenEnd, sqlcon.HandleError(err)
+		return nil, "", sqlcon.HandleError(err)
 	}
 
 	nextPageToken := pagination.encodeNextPageToken()

@@ -46,7 +46,7 @@ func ManagerTest(t *testing.T, m Manager, addNamespace func(context.Context, *te
 
 				resp, nextPage, err := m.GetRelationTuples(context.Background(), (*RelationQuery)(&tupC))
 				require.NoError(t, err)
-				assert.Equal(t, x.PageTokenEnd, nextPage)
+				assert.Equal(t, "", nextPage)
 				assert.Equal(t, []*InternalRelationTuple{&tupC}, resp)
 			}
 		})
@@ -168,7 +168,7 @@ func ManagerTest(t *testing.T, m Manager, addNamespace func(context.Context, *te
 				t.Run(fmt.Sprintf("case=%d", i), func(t *testing.T) {
 					res, nextPage, err := m.GetRelationTuples(context.Background(), tc.query)
 					require.NoError(t, err)
-					assert.Equal(t, x.PageTokenEnd, nextPage)
+					assert.Equal(t, "", nextPage)
 
 					// assert equal elements but not equal order
 					assert.Equal(t, len(tc.expected), len(res))
@@ -216,7 +216,7 @@ func ManagerTest(t *testing.T, m Manager, addNamespace func(context.Context, *te
 					Relation:  "r",
 				}, x.WithSize(1), x.WithToken(nextPage))
 				require.NoError(t, err)
-				assert.NotEqual(t, x.PageTokenEnd, nextPage)
+				assert.NotEqual(t, "", nextPage)
 				require.Len(t, res, 1)
 
 				var found bool
@@ -237,7 +237,7 @@ func ManagerTest(t *testing.T, m Manager, addNamespace func(context.Context, *te
 				Relation:  "r",
 			}, x.WithSize(1), x.WithToken(nextPage))
 			require.NoError(t, err)
-			assert.Equal(t, x.PageTokenEnd, nextPage)
+			assert.Equal(t, "", nextPage)
 			assert.Len(t, res, 1)
 			assert.Equal(t, notEncounteredTuples, res)
 		})
@@ -252,7 +252,7 @@ func ManagerTest(t *testing.T, m Manager, addNamespace func(context.Context, *te
 
 			assert.NoError(t, err)
 			assert.Equal(t, []*InternalRelationTuple{}, res)
-			assert.Equal(t, x.PageTokenEnd, nextPage)
+			assert.Equal(t, "", nextPage)
 		})
 	})
 
