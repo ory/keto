@@ -1,6 +1,11 @@
 ---
-title: REST API
-id: api
+title: ORY Keto
+language_tabs: []
+toc_footers: []
+includes: []
+search: false
+highlight_theme: darkula
+headingLevel: 2
 ---
 
 Ory Keto is a cloud native access control server providing best-practice
@@ -104,7 +109,7 @@ Status Code **500**
 
 ##### Examples
 
-###### 200 response
+> 200 Response
 
 ```json
 {
@@ -322,7 +327,7 @@ Status Code **500**
 
 ##### Examples
 
-###### 200 response
+> 200 Response
 
 ```json
 {
@@ -536,7 +541,7 @@ Status Code **500**
 
 ##### Examples
 
-###### 200 response
+> 200 Response
 
 ```json
 {
@@ -733,7 +738,7 @@ Status Code **500**
 
 ##### Examples
 
-###### 200 response
+> 200 Response
 
 ```json
 {
@@ -899,7 +904,7 @@ status will never refer to the cluster state, only to a single instance.
 
 ##### Examples
 
-###### 200 response
+> 200 Response
 
 ```json
 {
@@ -1109,7 +1114,7 @@ Status Code **500**
 
 ##### Examples
 
-###### 201 response
+> 201 Response
 
 ```json
 {
@@ -1324,7 +1329,7 @@ Status Code **500**
 
 ##### Examples
 
-###### 400 response
+> 400 Response
 
 ```json
 {
@@ -1502,9 +1507,9 @@ Use this endpoint to patch one or more relation tuples.
 
 #### Parameters
 
-| Parameter | In   | Type                            | Required | Description |
-| --------- | ---- | ------------------------------- | -------- | ----------- |
-| body      | body | [PatchDelta](#schemapatchdelta) | false    | none        |
+| Parameter | In   | Type          | Required | Description |
+| --------- | ---- | ------------- | -------- | ----------- |
+| body      | body | array[object] | false    | none        |
 
 #### Responses
 
@@ -1558,7 +1563,7 @@ Status Code **500**
 
 ##### Examples
 
-###### 400 response
+> 400 Response
 
 ```json
 {
@@ -1746,7 +1751,7 @@ status will never refer to the cluster state, only to a single instance.
 
 ##### Examples
 
-###### 200 response
+> 200 Response
 
 ```json
 {
@@ -1899,12 +1904,12 @@ p JSON.parse(result)
 
 #### Properties
 
-| Name      | Type                      | Required | Restrictions | Description                                        |
-| --------- | ------------------------- | -------- | ------------ | -------------------------------------------------- |
-| namespace | string                    | true     | none         | Namespace of the Relation Tuple<br/><br/>in: query |
-| object    | string                    | true     | none         | Object of the Relation Tuple<br/><br/>in: query    |
-| relation  | string                    | true     | none         | Relation of the Relation Tuple<br/><br/>in: query  |
-| subject   | [subject](#schemasubject) | true     | none         | none                                               |
+| Name      | Type                      | Required | Restrictions | Description                               |
+| --------- | ------------------------- | -------- | ------------ | ----------------------------------------- |
+| namespace | string                    | true     | none         | Namespace of the Relation Tuple in: query |
+| object    | string                    | true     | none         | Object of the Relation Tuple in: query    |
+| relation  | string                    | true     | none         | Relation of the Relation Tuple in: query  |
+| subject   | [subject](#schemasubject) | true     | none         | none                                      |
 
 <a id="tocSpatchdelta"></a>
 
