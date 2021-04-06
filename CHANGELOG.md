@@ -6,6 +6,8 @@
 **Table of Contents**
 
 - [Unreleased (2021-04-06)](#unreleased-2021-04-06)
+- [0.6.0-alpha.1.pre.6 (2021-04-06)](#060-alpha1pre6-2021-04-06)
+- [0.6.0-alpha.1.pre.5 (2021-04-06)](#060-alpha1pre5-2021-04-06)
 - [0.6.0-alpha.1.pre.4 (2021-04-06)](#060-alpha1pre4-2021-04-06)
   - [Documentation](#documentation)
 - [0.6.0-alpha.1.pre.3 (2021-04-06)](#060-alpha1pre3-2021-04-06)
@@ -84,6 +86,14 @@
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 # Unreleased (2021-04-06)
+
+No significant changes have been made for this release.
+
+# [0.6.0-alpha.1.pre.6](https://github.com/ory/keto/compare/v0.6.0-alpha.1.pre.5...v0.6.0-alpha.1.pre.6) (2021-04-06)
+
+No significant changes have been made for this release.
+
+# [0.6.0-alpha.1.pre.5](https://github.com/ory/keto/compare/v0.6.0-alpha.1.pre.4...v0.6.0-alpha.1.pre.5) (2021-04-06)
 
 No significant changes have been made for this release.
 
