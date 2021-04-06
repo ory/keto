@@ -17,10 +17,6 @@ module.exports = {
   projectTagLine:
     'A cloud native access control server providing best-practice patterns (RBAC, ABAC, ACL, AWS IAM Policies, Kubernetes Roles, ...) via REST APIs.',
   updateTags: [
-    {
-      image: 'oryd/keto',
-      files: ['docs/docs/configure-deploy.md']
-    },
     replaceInDir({
       replacer: ({ content, next }) =>
         content.replace(
