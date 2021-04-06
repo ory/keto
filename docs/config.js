@@ -1,15 +1,28 @@
-const replaceInDir = ({ dir, replacer }) =>
-  new Proxy(
+const replaceInDir = ({ dir, replacer }) => {
+  const { join } = require('path')
+  const fs = require('fs')
+
+  const walk = (dir) =>
+    fs.readdirSync(dir).flatMap((fn) => {
+      const fp = join(dir, fn)
+      if (fs.statSync(fp).isDirectory()) {
+        return walk(fp)
+      }
+      return fp
+    })
+
+  return new Proxy(
     { replacer },
     {
       get: (target, p) => {
         if (p === 'files') {
-          return require('fs').readdirSync(dir)
+          return walk(dir)
         }
         return target[p]
       }
     }
   )
+}
 
 module.exports = {
   projectName: 'ORY Keto',
