@@ -1,0 +1,86 @@
+---
+title: Subjects
+---
+
+import RelationTuplePrism from '@theme/RelationTuplePrism'
+RelationTuplePrism()
+
+In Ory Keto subjects are a recursive polymorphic datatype. They either refer to
+a specific subject (e.g. user) by some application defined identifier, or a set
+of subjects.
+
+## Subject IDs
+
+A subject ID can be any string. It is up to the application to map its users,
+devices, ... to a constant, unique identifier. We recommend the usage of UUIDs
+as they provide a high entropy. It is however possible to use e.g. URLs or
+opaque tokens of any kind. Please check the
+[limitations](#advanced-example-using-application-information-within-keto-subjects).
+Ory Keto will consider subject IDs equal iff their string representation is
+equal.
+
+## Subject Sets
+
+A subject set is the set of all subjects that have a specific relation on an
+[object](./objects.mdx). They empower Ory Keto to be as flexible as you need it
+by defining indirections. They can be used to realize e.g.
+[RBAC](../guides/rbac.mdx) or
+[inheritance of relations](../guides/access-control-inheritance.mdx). Subject
+sets themselves can again indirect to subject sets. For a performant evaluation
+of requests it is however required to follow some
+[best practices](../performance.mdx). As a special case, subject sets can also
+refer to an object by using the empty relation. Effectively, this is interpreted
+as "any relation, even a non-existent one".
+
+Subject sets also represent all intermediary nodes in
+[the graph of relations](./graph-of-relations.mdx).
+
+## Basic Example
+
+In the basic case an application uses the same subject identifiers as it uses
+internally, e.g. a constant, unique username like `zepatrik` or preferably
+UUIDv4 like `480158d4-0031-4412-9453-1bb0cdf76104`.
+
+Head over to the
+[basic full feature example](../examples/olymp-file-sharing.mdx) to see an
+example with some context.
+
+## Advanced Example: Using Application Information within Keto Subjects
+
+Because the Keto client can use arbitrary strings as subjects, it is tempting to
+encode application data within the subject. **We strongly discourage this
+practice.** Instead, you should use a UUID to map application data to Keto
+subjects. This is required to ensure:
+
+1. single source of truth and easy data update
+2. free choice of encoding (Keto does not allow the characters `:#@`)
+3. unlimited data size (Keto only allows up to 64 characters)
+
+For example, this can be used to implement a crude ABAC system by mapping
+attributes to a subject ID. The application can then define relation tuples that
+reflect permissions depending on the value of attributes. It will have to map
+each request to the subject representing the attributes.
+
+Let's assume the application knows the following mapping between attributes and
+UUIDs:
+
+```yml
+c5b6454f-f79c-4a6d-9e1b-b44e04b56009:
+  subnet: 192.168.0.0/24
+  office_hours: true
+```
+
+Keto could then know the following relation tuple:
+
+```keto-relation-tuples
+// allow access to TCP port 22 when the request originates from a specific subnet during office hours
+tcp/22#access@c5b6454f-f79c-4a6d-9e1b-b44e04b56009
+```
+
+The application has to map each incoming request to a subject string
+representing the attributes of the request. Ory Keto will reply with a positive
+[check response](./api-overview.mdx#check-relation-tuple) depending on the
+string equality of the requested subject representing the attributes with the
+known relation tuples. Remember that Ory Keto does **not** know how to interpret
+any information stored in the relation tuples. Rather, the application has to
+preprocess and map the value to the corresponding UUID.

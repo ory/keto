@@ -1,0 +1,66 @@
+---
+title: Objects
+---
+
+import RelationTuplePrism from '@theme/RelationTuplePrism'
+RelationTuplePrism()
+
+Objects are identifiers for some kind of application objects. They can represent
+e.g. a file, network port, physical item, ... . It is up to the application to
+map its objects to an unambiguous identifier. The limit on object identifiers is
+64 characters. We recommend the usage of UUIDs as they provide a high entropy
+and thus unique identifiers. It is however possible to use e.g. URLs or opaque
+tokens of any kind. Please check the
+[limitations](#advanced-example-using-application-information-within-keto-objects).
+Ory Keto will consider objects equal iff their string representation is equal.
+
+## Basic Example
+
+In the basic case an application uses the same object identifiers as it uses
+internally, e.g. a UUIDv4 like `61e75133-efff-4281-8148-a1806919f568` or SHA-1
+hash like `5c6f593a4e12970d647843f97846fd5ed18179eb`.
+
+Head over to the
+[basic full feature example](../examples/olymp-file-sharing.mdx) to see an
+example with some context.
+
+## Advanced Example: Using Application Information within Keto Objects
+
+Because the Keto client can use arbitrary strings as objects, it is tempting to
+encode application data within the object. **We strongly discourage this
+practice.** Instead, you should use a UUID to map application data to Keto
+objects. This is required to ensure:
+
+1. single source of truth and easy data update
+2. free choice of encoding (Keto does not allow the characters `:#@`)
+3. unlimited data size (Keto only allows up to 64 characters)
+
+For example, this could be used to implement checks on value ranges. The
+application knows the following mapping of comparison conditions and UUIDs:
+
+```yml
+f832e1e7-3c97-4cb8-8582-979e63ae2f1d:
+  greater_than: 5
+
+c4540cf5-6ac4-4007-910b-c5a56aa3d4e6:
+  greater_than: 2
+  smaller_equal: 5
+```
+
+Keto has the following relation tuples:
+
+```keto-relation-tuples
+// Members of the admins group are allowed to set a value v > 5
+values:f832e1e7-3c97-4cb8-8582-979e63ae2f1d#set_value@(groups:admins#member)
+
+// Members of the devs group are allowed to set a value v: 2 < v <= 5
+values:c4540cf5-6ac4-4007-910b-c5a56aa3d4e6#set_value@(groups:devs#member)
+
+// Anyone who can set a value v > 5 can also set 2 < v <= 5
+values:c4540cf5-6ac4-4007-910b-c5a56aa3d4e6#set_value@(values:f832e1e7-3c97-4cb8-8582-979e63ae2f1d#set_value)
+```
+
+The application will have to translate an incoming "set value" request to the
+corresponding condition the value fulfills. It is important to understand that
+Ory Keto does **not** know how to interpret any of the information. Rather, the
+application has to preprocess and map the value to the corresponding UUID.
