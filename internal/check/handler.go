@@ -112,7 +112,7 @@ func (h *Handler) getCheck(w http.ResponseWriter, r *http.Request, _ httprouter.
 //
 // Check a relation tuple
 //
-// To learn how relation tuples and the check works, head over to [the documentation](/TODO).
+// To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).
 //
 //     Consumes:
 //     -  application/json
