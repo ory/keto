@@ -93,7 +93,7 @@ func newGetCmd() *cobra.Command {
 
 			cmdx.PrintTable(cmd, &responseOutput{
 				RelationTuples: relationtuple.NewProtoRelationCollection(resp.RelationTuples),
-				IsLastPage:     resp.IsLastPage,
+				IsLastPage:     resp.NextPageToken == "",
 				NextPageToken:  resp.NextPageToken,
 			})
 			return nil

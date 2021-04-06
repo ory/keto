@@ -161,7 +161,7 @@ func (p *Persister) GetRelationTuples(ctx context.Context, query *relationtuple.
 
 	nextPageToken := pagination.encodeNextPageToken()
 	if sqlQuery.Paginator.Page >= sqlQuery.Paginator.TotalPages {
-		nextPageToken = x.PageTokenEnd
+		nextPageToken = ""
 	}
 
 	internalRes := make([]*relationtuple.InternalRelationTuple, len(res))
@@ -171,7 +171,7 @@ func (p *Persister) GetRelationTuples(ctx context.Context, query *relationtuple.
 		var err error
 		internalRes[i], err = r.toInternal()
 		if err != nil {
-			return nil, x.PageTokenEnd, err
+			return nil, "", err
 		}
 	}
 

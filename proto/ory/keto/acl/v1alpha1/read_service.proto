@@ -86,10 +86,6 @@ message ListRelationTuplesResponse {
   // The relation tuples matching the list request.
   repeated RelationTuple relation_tuples = 1;
   // The token required to get the next page.
-  // Please use the `is_last_page` field to determine whether
-  // this was the last page.
+  // If this is the last page, the token will be the empty string.
   string next_page_token = 2;
-  // Whether this is the last page. Using the `next_page_token`
-  // in a subsequent request if this field is true will return an error.
-  bool is_last_page = 3;
 }

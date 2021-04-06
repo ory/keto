@@ -105,7 +105,6 @@ func (c *sdkClient) queryTuple(t require.TestingT, q *relationtuple.RelationQuer
 	getResp := &relationtuple.GetResponse{
 		RelationTuples: make([]*relationtuple.InternalRelationTuple, len(resp.Payload.RelationTuples)),
 		NextPageToken:  resp.Payload.NextPageToken,
-		IsLastPage:     resp.Payload.IsLastPage,
 	}
 
 	for i, rt := range resp.Payload.RelationTuples {

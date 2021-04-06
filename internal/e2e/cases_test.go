@@ -98,7 +98,7 @@ func runCases(c client, nspaces []*namespace.Namespace) func(*testing.T) {
 				resp   relationtuple.GetResponse
 				nPages int
 			)
-			for ; !resp.IsLastPage; nPages++ {
+			for ; resp.NextPageToken != ""; nPages++ {
 				resp = *c.queryTuple(t,
 					&relationtuple.RelationQuery{
 						Namespace: nspaces[0].Name,
