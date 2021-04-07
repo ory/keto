@@ -42,9 +42,7 @@ on configuration options, open the configuration documentation:
 				return err
 			}
 
-			reg.EnableSqa(cmd)
-
-			return reg.ServeAll(cmd.Context())
+			return reg.ServeAllSQA(cmd)
 		},
 	}
 	disableTelemetry, err := strconv.ParseBool(os.Getenv("DISABLE_TELEMETRY"))

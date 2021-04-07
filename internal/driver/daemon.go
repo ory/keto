@@ -24,7 +24,7 @@ import (
 	"google.golang.org/grpc"
 )
 
-func (r *RegistryDefault) EnableSqa(cmd *cobra.Command) {
+func (r *RegistryDefault) enableSqa(cmd *cobra.Command) {
 	r.sqaService = metricsx.New(
 		cmd,
 		r.Logger(),
@@ -52,6 +52,11 @@ func (r *RegistryDefault) EnableSqa(cmd *cobra.Command) {
 			},
 		},
 	)
+}
+
+func (r *RegistryDefault) ServeAllSQA(cmd *cobra.Command) error {
+	r.enableSqa(cmd)
+	return r.ServeAll(cmd.Context())
 }
 
 func (r *RegistryDefault) ServeAll(ctx context.Context) error {

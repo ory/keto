@@ -27,7 +27,6 @@ type (
 		BuildDate() string
 		BuildHash() string
 		Config() *config.Provider
-		EnableSqa(*cobra.Command)
 
 		x.LoggerProvider
 		x.WriterProvider
@@ -49,6 +48,7 @@ type (
 		WriteGRPCServer() *grpc.Server
 
 		ServeAll(ctx context.Context) error
+		ServeAllSQA(cmd *cobra.Command) error
 		ServeRead(ctx context.Context) func() error
 		ServeWrite(ctx context.Context) func() error
 	}
