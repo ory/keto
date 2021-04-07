@@ -6,6 +6,8 @@
 **Table of Contents**
 
 - [Unreleased (2021-04-07)](#unreleased-2021-04-07)
+- [0.6.0-alpha.1.pre.7 (2021-04-07)](#060-alpha1pre7-2021-04-07)
+  - [Features](#features)
 - [0.6.0-alpha.1.pre.6 (2021-04-06)](#060-alpha1pre6-2021-04-06)
 - [0.6.0-alpha.1.pre.5 (2021-04-06)](#060-alpha1pre5-2021-04-06)
 - [0.6.0-alpha.1.pre.4 (2021-04-06)](#060-alpha1pre4-2021-04-06)
@@ -18,7 +20,7 @@
   - [Build System](#build-system)
   - [Code Refactoring](#code-refactoring)
   - [Documentation](#documentation-1)
-  - [Features](#features)
+  - [Features](#features-1)
   - [Tests](#tests)
   - [0.5.6-alpha.1 (2020-05-28)](#056-alpha1-2020-05-28)
     - [Bug Fixes](#bug-fixes-1)
@@ -42,7 +44,7 @@
   - [0.4.4-alpha.1 (2020-02-14)](#044-alpha1-2020-02-14)
     - [Bug Fixes](#bug-fixes-6)
     - [Documentation](#documentation-7)
-    - [Features](#features-1)
+    - [Features](#features-2)
     - [Unclassified](#unclassified)
   - [0.4.3-alpha.2 (2020-01-31)](#043-alpha2-2020-01-31)
     - [Unclassified](#unclassified-1)
@@ -88,6 +90,15 @@
 # Unreleased (2021-04-07)
 
 No significant changes have been made for this release.
+
+# [0.6.0-alpha.1.pre.7](https://github.com/ory/keto/compare/v0.6.0-alpha.1.pre.6...v0.6.0-alpha.1.pre.7) (2021-04-07)
+
+### Features
+
+- Add SQA telemetry ([#535](https://github.com/ory/keto/issues/535))
+  ([9f6472b](https://github.com/ory/keto/commit/9f6472b0c996505d41058e9b55afa8fd6b9bb2d5))
+- Add tracing ([#536](https://github.com/ory/keto/issues/536))
+  ([b57a144](https://github.com/ory/keto/commit/b57a144e0a7ec39d5831dbb79840c2b25c044e6a))
 
 # [0.6.0-alpha.1.pre.6](https://github.com/ory/keto/compare/v0.6.0-alpha.1.pre.5...v0.6.0-alpha.1.pre.6) (2021-04-06)
 
