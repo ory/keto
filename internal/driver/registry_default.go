@@ -53,6 +53,7 @@ type (
 		healthH      *healthx.Handler
 		healthServer *health.Server
 		handlers     []Handler
+		tracer       *tracing.Tracer
 	}
 	Handler interface {
 		RegisterReadRoutes(r *x.ReadRouter)
@@ -99,7 +100,16 @@ func (r *RegistryDefault) GetVersion(_ context.Context, _ *acl.GetVersionRequest
 }
 
 func (r *RegistryDefault) Tracer() *tracing.Tracer {
-	panic("implement me")
+	if r.tracer == nil {
+		// Tracing is initialized only once so it can not be hot reloaded or context-aware.
+		t, err := tracing.New(r.Logger(), r.Config().TracingConfig())
+		if err != nil {
+			r.Logger().WithError(err).Fatalf("Unable to initialize Tracer.")
+		}
+		r.tracer = t
+	}
+
+	return r.tracer
 }
 
 func (r *RegistryDefault) Logger() *logrusx.Logger {
@@ -152,7 +162,7 @@ func (r *RegistryDefault) Init(ctx context.Context) error {
 		return err
 	}
 
-	r.p, err = sql.NewPersister(r.c.DSN(), r.Logger(), nm)
+	r.p, err = sql.NewPersister(r.c.DSN(), r.Logger(), nm, r.Tracer())
 	if err != nil {
 		return err
 	}
@@ -219,6 +229,11 @@ func (r *RegistryDefault) ReadRouter() http.Handler {
 	}
 
 	n.UseHandler(br)
+
+	if t := r.Tracer(); t.IsLoaded() {
+		n.Use(t)
+	}
+
 	return n
 }
 
@@ -234,6 +249,11 @@ func (r *RegistryDefault) WriteRouter() http.Handler {
 	}
 
 	n.UseHandler(pr)
+
+	if t := r.Tracer(); t.IsLoaded() {
+		n.Use(t)
+	}
+
 	return n
 }
 
