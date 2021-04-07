@@ -2,12 +2,13 @@ package driver
 
 import (
 	"context"
-	"github.com/ory/keto/internal/check"
-	"github.com/ory/keto/internal/expand"
-	"github.com/ory/keto/internal/relationtuple"
 	"net"
 	"net/http"
 	"strings"
+
+	"github.com/ory/keto/internal/check"
+	"github.com/ory/keto/internal/expand"
+	"github.com/ory/keto/internal/relationtuple"
 
 	"github.com/ory/analytics-go/v4"
 	"github.com/ory/x/healthx"
