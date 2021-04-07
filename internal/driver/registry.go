@@ -4,6 +4,8 @@ import (
 	"context"
 	"net/http"
 
+	"github.com/spf13/cobra"
+
 	"google.golang.org/grpc"
 
 	"github.com/ory/x/healthx"
@@ -46,6 +48,7 @@ type (
 		WriteGRPCServer() *grpc.Server
 
 		ServeAll(ctx context.Context) error
+		ServeAllSQA(cmd *cobra.Command) error
 		ServeRead(ctx context.Context) func() error
 		ServeWrite(ctx context.Context) func() error
 	}

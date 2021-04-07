@@ -4,6 +4,8 @@ import (
 	"context"
 	"net/http"
 
+	"github.com/ory/x/metricsx"
+
 	acl "github.com/ory/keto/proto/ory/keto/acl/v1alpha1"
 
 	grpc_logrus "github.com/grpc-ecosystem/go-grpc-middleware/logging/logrus"
@@ -54,6 +56,7 @@ type (
 		healthH      *healthx.Handler
 		healthServer *health.Server
 		handlers     []Handler
+		sqaService   *metricsx.Service
 		tracer       *tracing.Tracer
 	}
 	Handler interface {
@@ -235,6 +238,10 @@ func (r *RegistryDefault) ReadRouter() http.Handler {
 		n.Use(t)
 	}
 
+	if r.sqaService != nil {
+		n.Use(r.sqaService)
+	}
+
 	return n
 }
 
@@ -253,6 +260,10 @@ func (r *RegistryDefault) WriteRouter() http.Handler {
 
 	if t := r.Tracer(); t.IsLoaded() {
 		n.Use(t)
+	}
+
+	if r.sqaService != nil {
+		n.Use(r.sqaService)
 	}
 
 	return n

@@ -6,12 +6,58 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/ory/keto/internal/check"
+	"github.com/ory/keto/internal/expand"
+	"github.com/ory/keto/internal/relationtuple"
+
+	"github.com/ory/analytics-go/v4"
+	"github.com/ory/x/healthx"
+	"github.com/ory/x/metricsx"
+	"github.com/spf13/cobra"
+
+	"github.com/ory/keto/internal/driver/config"
+
 	"github.com/ory/graceful"
 	"github.com/pkg/errors"
 	"github.com/soheilhy/cmux"
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/grpc"
 )
+
+func (r *RegistryDefault) enableSqa(cmd *cobra.Command) {
+	r.sqaService = metricsx.New(
+		cmd,
+		r.Logger(),
+		r.Config().Source(),
+		&metricsx.Options{
+			Service:       "ory-keto",
+			ClusterID:     metricsx.Hash(r.Config().DSN()),
+			IsDevelopment: strings.HasPrefix(r.Config().DSN(), "sqlite"),
+			WriteKey:      "qQlI6q8Q4WvkzTjKQSor4sHYOikHIvvi",
+			WhitelistedPaths: []string{
+				"/",
+				healthx.AliveCheckPath,
+				healthx.ReadyCheckPath,
+				healthx.VersionPath,
+
+				relationtuple.RouteBase,
+				check.RouteBase,
+				expand.RouteBase,
+			},
+			BuildVersion: config.Version,
+			BuildHash:    config.Commit,
+			BuildTime:    config.Date,
+			Config: &analytics.Config{
+				Endpoint: "https://sqa.ory.sh",
+			},
+		},
+	)
+}
+
+func (r *RegistryDefault) ServeAllSQA(cmd *cobra.Command) error {
+	r.enableSqa(cmd)
+	return r.ServeAll(cmd.Context())
+}
 
 func (r *RegistryDefault) ServeAll(ctx context.Context) error {
 	eg := &errgroup.Group{}

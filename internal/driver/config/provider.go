@@ -77,6 +77,10 @@ func New(ctx context.Context, flags *pflag.FlagSet, l *logrusx.Logger) (*Provide
 	return kp, nil
 }
 
+func (k *Provider) Source() *configx.Provider {
+	return k.p
+}
+
 func (k *Provider) resetNamespaceManager() {
 	k.nmLock.Lock()
 	defer k.nmLock.Unlock()
