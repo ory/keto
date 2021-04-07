@@ -42,6 +42,8 @@ on configuration options, open the configuration documentation:
 				return err
 			}
 
+			reg.EnableSqa(cmd)
+
 			return reg.ServeAll(cmd.Context())
 		},
 	}

@@ -29,11 +29,11 @@ require (
 	github.com/go-swagger/go-swagger v0.26.1
 	github.com/gobuffalo/pop/v5 v5.3.3
 	github.com/golang/mock v1.5.0
-	github.com/golang/protobuf v1.5.1
 	github.com/gorilla/websocket v1.4.2
 	github.com/grpc-ecosystem/go-grpc-middleware v1.0.1-0.20190118093823-f849b5445de4
 	github.com/julienschmidt/httprouter v1.3.0
 	github.com/mattn/goveralls v0.0.8
+	github.com/ory/analytics-go/v4 v4.0.0
 	github.com/ory/cli v0.0.48
 	github.com/ory/go-acc v0.2.6
 	github.com/ory/graceful v0.1.1

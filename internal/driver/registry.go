@@ -4,6 +4,8 @@ import (
 	"context"
 	"net/http"
 
+	"github.com/spf13/cobra"
+
 	"google.golang.org/grpc"
 
 	"github.com/ory/x/healthx"
@@ -25,6 +27,7 @@ type (
 		BuildDate() string
 		BuildHash() string
 		Config() *config.Provider
+		EnableSqa(*cobra.Command)
 
 		x.LoggerProvider
 		x.WriterProvider
