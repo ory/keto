@@ -22,7 +22,7 @@ func TestPersister(t *testing.T) {
 		hook = &test.Hook{}
 		lx := logrusx.New("", "", logrusx.WithHook(hook), logrusx.ForceLevel(logrus.TraceLevel))
 
-		p, err := NewPersister(dsn.Conn, lx, config.NewMemoryNamespaceManager())
+		p, err := NewPersister(dsn.Conn, lx, config.NewMemoryNamespaceManager(), nil)
 		require.NoError(t, err)
 
 		mb, err := p.MigrationBox(context.Background())
