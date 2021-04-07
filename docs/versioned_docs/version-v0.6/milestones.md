@@ -132,11 +132,11 @@ Affects documentation.
 
 #### Issues
 
-- [ ] Next Gen Documentation
-      ([keto#420](https://github.com/ory/keto/issues/420)) -
-      [@Patrik](https://github.com/zepatrik)
 - [x] Improve documentation of Expand API's max_depth parameter
       ([keto#419](https://github.com/ory/keto/issues/419)) -
+      [@Patrik](https://github.com/zepatrik)
+- [x] Next Gen Documentation
+      ([keto#420](https://github.com/ory/keto/issues/420)) -
       [@Patrik](https://github.com/zepatrik)
 - [x] Do not use latest tags in docker-compose examples
       ([keto#481](https://github.com/ory/keto/issues/481)) -
@@ -163,18 +163,15 @@ Blocks milestones or other issues or pulls.
       [@hackerman](https://github.com/aeneasr),
       [@Patrik](https://github.com/zepatrik),
       [@Robin Brämer](https://github.com/robinbraemer)
-- [ ] Next Gen Documentation
-      ([keto#420](https://github.com/ory/keto/issues/420)) -
-      [@Patrik](https://github.com/zepatrik)
-- [ ] Require relations to be defined in the namespace config
-      ([keto#509](https://github.com/ory/keto/issues/509)) -
-      [@Patrik](https://github.com/zepatrik)
 - [x] Define and architect SQL schema and queries for querying relations
       ([keto#300](https://github.com/ory/keto/issues/300)) -
       [@Patrik](https://github.com/zepatrik)
 - [x] Ensure goreleaser config is still working
       ([keto#410](https://github.com/ory/keto/issues/410)) -
       [@hackerman](https://github.com/aeneasr)
+- [x] Next Gen Documentation
+      ([keto#420](https://github.com/ory/keto/issues/420)) -
+      [@Patrik](https://github.com/zepatrik)
 - [x] Add health check and version endpoints to read/write REST (and gRPC?) API
       ([keto#422](https://github.com/ory/keto/issues/422)) -
       [@Patrik](https://github.com/zepatrik)
@@ -319,6 +316,9 @@ Blocks milestones or other issues or pulls.
       [@Patrik](https://github.com/zepatrik)
 - [ ] Use fizz migrations to generate SQL migrations
       ([keto#448](https://github.com/ory/keto/issues/448)) -
+      [@Patrik](https://github.com/zepatrik)
+- [ ] Require relations to be defined in the namespace config
+      ([keto#509](https://github.com/ory/keto/issues/509)) -
       [@Patrik](https://github.com/zepatrik)
 - [x] Write benchmark tests for relationtuple package
       ([keto#301](https://github.com/ory/keto/issues/301)) -
