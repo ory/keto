@@ -2,6 +2,9 @@ package driver
 
 import (
 	"context"
+	"github.com/ory/keto/internal/check"
+	"github.com/ory/keto/internal/expand"
+	"github.com/ory/keto/internal/relationtuple"
 	"net"
 	"net/http"
 	"strings"
@@ -35,6 +38,10 @@ func (r *RegistryDefault) EnableSqa(cmd *cobra.Command) {
 				healthx.AliveCheckPath,
 				healthx.ReadyCheckPath,
 				healthx.VersionPath,
+
+				relationtuple.RouteBase,
+				check.RouteBase,
+				expand.RouteBase,
 			},
 			BuildVersion: config.Version,
 			BuildHash:    config.Commit,
