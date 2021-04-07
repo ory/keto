@@ -7,6 +7,7 @@ import (
 	acl "github.com/ory/keto/proto/ory/keto/acl/v1alpha1"
 
 	grpc_logrus "github.com/grpc-ecosystem/go-grpc-middleware/logging/logrus"
+	"github.com/grpc-ecosystem/grpc-opentracing/go/otgrpc"
 	"github.com/ory/x/reqlog"
 	"github.com/urfave/negroni"
 	"google.golang.org/grpc/reflection"
@@ -264,12 +265,14 @@ func (r *RegistryDefault) ReadGRPCServer() *grpc.Server {
 			grpcMiddleware.ChainStreamServer(
 				grpc_logrus.StreamServerInterceptor(r.l.Entry),
 			),
+			otgrpc.OpenTracingStreamServerInterceptor(r.Tracer().Tracer()),
 		),
 		grpc.ChainUnaryInterceptor(
 			herodot.UnaryErrorUnwrapInterceptor,
 			grpcMiddleware.ChainUnaryServer(
 				grpc_logrus.UnaryServerInterceptor(r.l.Entry),
 			),
+			otgrpc.OpenTracingServerInterceptor(r.Tracer().Tracer()),
 		),
 	)
 
