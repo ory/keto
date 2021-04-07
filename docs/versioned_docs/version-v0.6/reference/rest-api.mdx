@@ -540,6 +540,7 @@ Status Code **500**
 
 ```json
 {
+  "is_last_page": true,
   "next_page_token": "string",
   "relation_tuples": [
     {
@@ -1995,6 +1996,7 @@ _Represents the response for a check request._
 
 ```json
 {
+  "is_last_page": true,
   "next_page_token": "string",
   "relation_tuples": [
     {
@@ -2009,10 +2011,11 @@ _Represents the response for a check request._
 
 #### Properties
 
-| Name            | Type                                                    | Required | Restrictions | Description                                                                                                                         |
-| --------------- | ------------------------------------------------------- | -------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------------- |
-| next_page_token | string                                                  | false    | none         | The opaque token to provide in a subsequent request<br/>to get the next page. It is the empty string iff this is<br/>the last page. |
-| relation_tuples | [[InternalRelationTuple](#schemainternalrelationtuple)] | false    | none         | none                                                                                                                                |
+| Name            | Type                                                    | Required | Restrictions | Description |
+| --------------- | ------------------------------------------------------- | -------- | ------------ | ----------- |
+| is_last_page    | boolean                                                 | false    | none         | none        |
+| next_page_token | string                                                  | false    | none         | none        |
+| relation_tuples | [[InternalRelationTuple](#schemainternalrelationtuple)] | false    | none         | none        |
 
 <a id="tocShealthnotreadystatus"></a>
 

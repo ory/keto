@@ -164,7 +164,7 @@ func (a *Client) GetRelationTuples(params *GetRelationTuplesParams, opts ...Clie
 /*
   PostCheck checks a relation tuple
 
-  To learn how relation tuples and the check works, head over to [the documentation](/TODO).
+  To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).
 */
 func (a *Client) PostCheck(params *PostCheckParams, opts ...ClientOption) (*PostCheckOK, error) {
 	// TODO: Validate the params before sending

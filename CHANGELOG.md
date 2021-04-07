@@ -6,36 +6,42 @@
 **Table of Contents**
 
 - [Unreleased (2021-04-06)](#unreleased-2021-04-06)
+- [0.6.0-alpha.1.pre.6 (2021-04-06)](#060-alpha1pre6-2021-04-06)
+- [0.6.0-alpha.1.pre.5 (2021-04-06)](#060-alpha1pre5-2021-04-06)
+- [0.6.0-alpha.1.pre.4 (2021-04-06)](#060-alpha1pre4-2021-04-06)
+  - [Documentation](#documentation)
+- [0.6.0-alpha.1.pre.3 (2021-04-06)](#060-alpha1pre3-2021-04-06)
+- [0.6.0-alpha.1.pre.2 (2021-04-06)](#060-alpha1pre2-2021-04-06)
 - [0.6.0-alpha.1.pre.1 (2021-04-06)](#060-alpha1pre1-2021-04-06)
 - [0.6.0-alpha.1.pre.0 (2021-04-01)](#060-alpha1pre0-2021-04-01)
   - [Bug Fixes](#bug-fixes)
   - [Build System](#build-system)
   - [Code Refactoring](#code-refactoring)
-  - [Documentation](#documentation)
+  - [Documentation](#documentation-1)
   - [Features](#features)
   - [Tests](#tests)
   - [0.5.6-alpha.1 (2020-05-28)](#056-alpha1-2020-05-28)
     - [Bug Fixes](#bug-fixes-1)
   - [0.5.5-alpha.1 (2020-05-28)](#055-alpha1-2020-05-28)
     - [Bug Fixes](#bug-fixes-2)
-    - [Documentation](#documentation-1)
+    - [Documentation](#documentation-2)
   - [0.5.4-alpha.1 (2020-04-07)](#054-alpha1-2020-04-07)
     - [Bug Fixes](#bug-fixes-3)
   - [0.5.3-alpha.3 (2020-04-06)](#053-alpha3-2020-04-06)
     - [Code Refactoring](#code-refactoring-1)
-    - [Documentation](#documentation-2)
+    - [Documentation](#documentation-3)
   - [0.5.3-alpha.1 (2020-04-03)](#053-alpha1-2020-04-03)
   - [0.5.2 (2020-04-02)](#052-2020-04-02)
-    - [Documentation](#documentation-3)
+    - [Documentation](#documentation-4)
 - [0.5.0 (2020-04-02)](#050-2020-04-02)
   - [Bug Fixes](#bug-fixes-4)
-  - [Documentation](#documentation-4)
+  - [Documentation](#documentation-5)
   - [0.4.5-alpha.1 (2020-02-29)](#045-alpha1-2020-02-29)
     - [Bug Fixes](#bug-fixes-5)
-    - [Documentation](#documentation-5)
+    - [Documentation](#documentation-6)
   - [0.4.4-alpha.1 (2020-02-14)](#044-alpha1-2020-02-14)
     - [Bug Fixes](#bug-fixes-6)
-    - [Documentation](#documentation-6)
+    - [Documentation](#documentation-7)
     - [Features](#features-1)
     - [Unclassified](#unclassified)
   - [0.4.3-alpha.2 (2020-01-31)](#043-alpha2-2020-01-31)
@@ -55,31 +61,54 @@
   - [0.3.6-sandbox (2019-10-16)](#036-sandbox-2019-10-16)
     - [Unclassified](#unclassified-8)
   - [0.3.5-sandbox (2019-08-21)](#035-sandbox-2019-08-21)
-    - [Documentation](#documentation-7)
+    - [Documentation](#documentation-8)
     - [Unclassified](#unclassified-9)
   - [0.3.3-sandbox (2019-05-18)](#033-sandbox-2019-05-18)
-    - [Documentation](#documentation-8)
-  - [0.3.1-sandbox (2019-04-29)](#031-sandbox-2019-04-29)
     - [Documentation](#documentation-9)
+  - [0.3.1-sandbox (2019-04-29)](#031-sandbox-2019-04-29)
+    - [Documentation](#documentation-10)
     - [Unclassified](#unclassified-10)
 - [0.3.0-sandbox (2019-04-29)](#030-sandbox-2019-04-29)
-  - [Documentation](#documentation-10)
+  - [Documentation](#documentation-11)
   - [Unclassified](#unclassified-11)
   - [0.2.3-sandbox+oryOS.10 (2019-02-05)](#023-sandboxoryos10-2019-02-05)
-    - [Documentation](#documentation-11)
+    - [Documentation](#documentation-12)
     - [Unclassified](#unclassified-12)
   - [0.2.2-sandbox+oryOS.10 (2018-12-13)](#022-sandboxoryos10-2018-12-13)
   - [0.2.1-sandbox+oryOS.10 (2018-12-13)](#021-sandboxoryos10-2018-12-13)
 - [0.2.0-sandbox+oryOS.10 (2018-12-13)](#020-sandboxoryos10-2018-12-13)
-  - [Documentation](#documentation-12)
+  - [Documentation](#documentation-13)
   - [Unclassified](#unclassified-13)
   - [0.0.1 (2018-05-20)](#001-2018-05-20)
-    - [Documentation](#documentation-13)
+    - [Documentation](#documentation-14)
     - [Unclassified](#unclassified-14)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 # Unreleased (2021-04-06)
+
+No significant changes have been made for this release.
+
+# [0.6.0-alpha.1.pre.6](https://github.com/ory/keto/compare/v0.6.0-alpha.1.pre.5...v0.6.0-alpha.1.pre.6) (2021-04-06)
+
+No significant changes have been made for this release.
+
+# [0.6.0-alpha.1.pre.5](https://github.com/ory/keto/compare/v0.6.0-alpha.1.pre.4...v0.6.0-alpha.1.pre.5) (2021-04-06)
+
+No significant changes have been made for this release.
+
+# [0.6.0-alpha.1.pre.4](https://github.com/ory/keto/compare/v0.6.0-alpha.1.pre.3...v0.6.0-alpha.1.pre.4) (2021-04-06)
+
+### Documentation
+
+- Minor fixes ([#532](https://github.com/ory/keto/issues/532))
+  ([638342e](https://github.com/ory/keto/commit/638342eb9519d9bf609926fb87558071e2815fb3))
+
+# [0.6.0-alpha.1.pre.3](https://github.com/ory/keto/compare/v0.6.0-alpha.1.pre.2...v0.6.0-alpha.1.pre.3) (2021-04-06)
+
+No significant changes have been made for this release.
+
+# [0.6.0-alpha.1.pre.2](https://github.com/ory/keto/compare/v0.6.0-alpha.1.pre.1...v0.6.0-alpha.1.pre.2) (2021-04-06)
 
 No significant changes have been made for this release.
 

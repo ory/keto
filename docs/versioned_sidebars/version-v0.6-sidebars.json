@@ -1,0 +1,318 @@
+{
+  "version-v0.6/docs": [
+    {
+      "collapsed": true,
+      "type": "category",
+      "label": "Introduction",
+      "items": [
+        {
+          "type": "doc",
+          "id": "version-v0.6/index"
+        },
+        {
+          "type": "doc",
+          "id": "version-v0.6/install"
+        },
+        {
+          "type": "doc",
+          "id": "version-v0.6/implemented-planned-features"
+        },
+        {
+          "type": "doc",
+          "id": "version-v0.6/performance"
+        },
+        {
+          "type": "doc",
+          "id": "version-v0.6/quickstart"
+        }
+      ]
+    },
+    {
+      "collapsed": true,
+      "type": "category",
+      "label": "Concepts",
+      "items": [
+        {
+          "type": "doc",
+          "id": "version-v0.6/concepts/relation-tuples"
+        },
+        {
+          "type": "doc",
+          "id": "version-v0.6/concepts/namespaces"
+        },
+        {
+          "type": "doc",
+          "id": "version-v0.6/concepts/objects"
+        },
+        {
+          "type": "doc",
+          "id": "version-v0.6/concepts/subjects"
+        },
+        {
+          "type": "doc",
+          "id": "version-v0.6/concepts/graph-of-relations"
+        },
+        {
+          "type": "doc",
+          "id": "version-v0.6/concepts/api-overview"
+        },
+        {
+          "type": "doc",
+          "id": "version-v0.6/concepts/internal-algorithms"
+        },
+        {
+          "type": "doc",
+          "id": "version-v0.6/concepts/snaptokens-evaluation-consistency"
+        }
+      ]
+    },
+    {
+      "collapsed": true,
+      "type": "category",
+      "label": "Guides",
+      "items": [
+        {
+          "type": "doc",
+          "id": "version-v0.6/secure"
+        },
+        {
+          "type": "doc",
+          "id": "version-v0.6/guides/simple-access-check-guide"
+        },
+        {
+          "type": "doc",
+          "id": "version-v0.6/guides/list-api-display-objects"
+        },
+        {
+          "type": "doc",
+          "id": "version-v0.6/guides/expand-api-display-who-has-access"
+        },
+        {
+          "type": "doc",
+          "id": "version-v0.6/guides/production"
+        },
+        {
+          "type": "doc",
+          "id": "version-v0.6/guides/rbac"
+        },
+        {
+          "type": "doc",
+          "id": "version-v0.6/guides/access-control-inheritance"
+        },
+        {
+          "type": "doc",
+          "id": "version-v0.6/guides/access-control-list-design-best-practices"
+        }
+      ]
+    },
+    {
+      "collapsed": true,
+      "type": "category",
+      "label": "Examples",
+      "items": [
+        {
+          "type": "doc",
+          "id": "version-v0.6/examples/olymp-file-sharing"
+        }
+      ]
+    },
+    {
+      "collapsed": true,
+      "type": "category",
+      "label": "Reference",
+      "items": [
+        {
+          "type": "doc",
+          "id": "version-v0.6/reference/configuration"
+        },
+        {
+          "type": "doc",
+          "id": "version-v0.6/reference/api"
+        },
+        {
+          "type": "doc",
+          "id": "version-v0.6/reference/proto-api"
+        },
+        {
+          "collapsed": true,
+          "type": "category",
+          "label": "Command Line Interface (CLI)",
+          "items": [
+            {
+              "type": "doc",
+              "id": "version-v0.6/cli/keto"
+            },
+            {
+              "type": "doc",
+              "id": "version-v0.6/cli/keto-check"
+            },
+            {
+              "type": "doc",
+              "id": "version-v0.6/cli/keto-expand"
+            },
+            {
+              "type": "doc",
+              "id": "version-v0.6/cli/keto-migrate"
+            },
+            {
+              "type": "doc",
+              "id": "version-v0.6/cli/keto-migrate-down"
+            },
+            {
+              "type": "doc",
+              "id": "version-v0.6/cli/keto-migrate-status"
+            },
+            {
+              "type": "doc",
+              "id": "version-v0.6/cli/keto-migrate-up"
+            },
+            {
+              "type": "doc",
+              "id": "version-v0.6/cli/keto-namespace"
+            },
+            {
+              "type": "doc",
+              "id": "version-v0.6/cli/keto-namespace-migrate"
+            },
+            {
+              "type": "doc",
+              "id": "version-v0.6/cli/keto-namespace-migrate-down"
+            },
+            {
+              "type": "doc",
+              "id": "version-v0.6/cli/keto-namespace-migrate-status"
+            },
+            {
+              "type": "doc",
+              "id": "version-v0.6/cli/keto-namespace-migrate-up"
+            },
+            {
+              "type": "doc",
+              "id": "version-v0.6/cli/keto-namespace-validate"
+            },
+            {
+              "type": "doc",
+              "id": "version-v0.6/cli/keto-relation-tuple"
+            },
+            {
+              "type": "doc",
+              "id": "version-v0.6/cli/keto-relation-tuple-create"
+            },
+            {
+              "type": "doc",
+              "id": "version-v0.6/cli/keto-relation-tuple-delete"
+            },
+            {
+              "type": "doc",
+              "id": "version-v0.6/cli/keto-relation-tuple-get"
+            },
+            {
+              "type": "doc",
+              "id": "version-v0.6/cli/keto-relation-tuple-parse"
+            },
+            {
+              "type": "doc",
+              "id": "version-v0.6/cli/keto-serve"
+            },
+            {
+              "type": "doc",
+              "id": "version-v0.6/cli/keto-status"
+            },
+            {
+              "type": "doc",
+              "id": "version-v0.6/cli/keto-version"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "collapsed": true,
+      "type": "category",
+      "label": "SDKs",
+      "items": [
+        {
+          "type": "doc",
+          "id": "version-v0.6/sdk/index"
+        }
+      ]
+    },
+    {
+      "collapsed": true,
+      "type": "category",
+      "label": "Development",
+      "items": [
+        {
+          "type": "doc",
+          "id": "version-v0.6/milestones"
+        }
+      ]
+    },
+    {
+      "collapsed": true,
+      "type": "category",
+      "label": "ORY Kratos",
+      "items": [
+        {
+          "type": "link",
+          "label": "Home",
+          "href": "https://www.ory.sh/kratos"
+        },
+        {
+          "type": "link",
+          "label": "Docs",
+          "href": "https://www.ory.sh/kratos/docs"
+        },
+        {
+          "type": "link",
+          "label": "GitHub",
+          "href": "https://github.com/ory/kratos"
+        }
+      ]
+    },
+    {
+      "collapsed": true,
+      "type": "category",
+      "label": "ORY Hydra",
+      "items": [
+        {
+          "type": "link",
+          "label": "Home",
+          "href": "https://www.ory.sh/hydra"
+        },
+        {
+          "type": "link",
+          "label": "Docs",
+          "href": "https://www.ory.sh/hydra/docs"
+        },
+        {
+          "type": "link",
+          "label": "GitHub",
+          "href": "https://github.com/ory/hydra"
+        }
+      ]
+    },
+    {
+      "collapsed": true,
+      "type": "category",
+      "label": "ORY Oathkeeper",
+      "items": [
+        {
+          "type": "link",
+          "label": "Home",
+          "href": "https://www.ory.sh/oathkeeper"
+        },
+        {
+          "type": "link",
+          "label": "Docs",
+          "href": "https://www.ory.sh/oathkeeper/docs"
+        },
+        {
+          "type": "link",
+          "label": "GitHub",
+          "href": "https://github.com/ory/oathkeeper"
+        }
+      ]
+    }
+  ]
+}
