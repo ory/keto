@@ -9,6 +9,7 @@ import (
 	acl "github.com/ory/keto/proto/ory/keto/acl/v1alpha1"
 
 	grpc_logrus "github.com/grpc-ecosystem/go-grpc-middleware/logging/logrus"
+	"github.com/grpc-ecosystem/grpc-opentracing/go/otgrpc"
 	"github.com/ory/x/reqlog"
 	"github.com/urfave/negroni"
 	"google.golang.org/grpc/reflection"
@@ -56,6 +57,7 @@ type (
 		healthServer *health.Server
 		handlers     []Handler
 		sqaService   *metricsx.Service
+		tracer       *tracing.Tracer
 	}
 	Handler interface {
 		RegisterReadRoutes(r *x.ReadRouter)
@@ -102,7 +104,16 @@ func (r *RegistryDefault) GetVersion(_ context.Context, _ *acl.GetVersionRequest
 }
 
 func (r *RegistryDefault) Tracer() *tracing.Tracer {
-	panic("implement me")
+	if r.tracer == nil {
+		// Tracing is initialized only once so it can not be hot reloaded or context-aware.
+		t, err := tracing.New(r.Logger(), r.Config().TracingConfig())
+		if err != nil {
+			r.Logger().WithError(err).Fatalf("Unable to initialize Tracer.")
+		}
+		r.tracer = t
+	}
+
+	return r.tracer
 }
 
 func (r *RegistryDefault) Logger() *logrusx.Logger {
@@ -155,7 +166,7 @@ func (r *RegistryDefault) Init(ctx context.Context) error {
 		return err
 	}
 
-	r.p, err = sql.NewPersister(r.c.DSN(), r.Logger(), nm)
+	r.p, err = sql.NewPersister(r.c.DSN(), r.Logger(), nm, r.Tracer())
 	if err != nil {
 		return err
 	}
@@ -223,6 +234,10 @@ func (r *RegistryDefault) ReadRouter() http.Handler {
 
 	n.UseHandler(br)
 
+	if t := r.Tracer(); t.IsLoaded() {
+		n.Use(t)
+	}
+
 	if r.sqaService != nil {
 		n.Use(r.sqaService)
 	}
@@ -243,6 +258,10 @@ func (r *RegistryDefault) WriteRouter() http.Handler {
 
 	n.UseHandler(pr)
 
+	if t := r.Tracer(); t.IsLoaded() {
+		n.Use(t)
+	}
+
 	if r.sqaService != nil {
 		n.Use(r.sqaService)
 	}
@@ -250,20 +269,36 @@ func (r *RegistryDefault) WriteRouter() http.Handler {
 	return n
 }
 
+func (r *RegistryDefault) unaryInterceptors() []grpc.UnaryServerInterceptor {
+	is := []grpc.UnaryServerInterceptor{
+		herodot.UnaryErrorUnwrapInterceptor,
+		grpcMiddleware.ChainUnaryServer(
+			grpc_logrus.UnaryServerInterceptor(r.l.Entry),
+		),
+	}
+	if r.Tracer().IsLoaded() {
+		is = append(is, otgrpc.OpenTracingServerInterceptor(r.Tracer().Tracer()))
+	}
+	return is
+}
+
+func (r *RegistryDefault) streamInterceptors() []grpc.StreamServerInterceptor {
+	is := []grpc.StreamServerInterceptor{
+		herodot.StreamErrorUnwrapInterceptor,
+		grpcMiddleware.ChainStreamServer(
+			grpc_logrus.StreamServerInterceptor(r.l.Entry),
+		),
+	}
+	if r.Tracer().IsLoaded() {
+		is = append(is, otgrpc.OpenTracingStreamServerInterceptor(r.Tracer().Tracer()))
+	}
+	return is
+}
+
 func (r *RegistryDefault) ReadGRPCServer() *grpc.Server {
 	s := grpc.NewServer(
-		grpc.ChainStreamInterceptor(
-			herodot.StreamErrorUnwrapInterceptor,
-			grpcMiddleware.ChainStreamServer(
-				grpc_logrus.StreamServerInterceptor(r.l.Entry),
-			),
-		),
-		grpc.ChainUnaryInterceptor(
-			herodot.UnaryErrorUnwrapInterceptor,
-			grpcMiddleware.ChainUnaryServer(
-				grpc_logrus.UnaryServerInterceptor(r.l.Entry),
-			),
-		),
+		grpc.ChainStreamInterceptor(r.streamInterceptors()...),
+		grpc.ChainUnaryInterceptor(r.unaryInterceptors()...),
 	)
 
 	grpcHealthV1.RegisterHealthServer(s, r.HealthServer())
@@ -279,18 +314,8 @@ func (r *RegistryDefault) ReadGRPCServer() *grpc.Server {
 
 func (r *RegistryDefault) WriteGRPCServer() *grpc.Server {
 	s := grpc.NewServer(
-		grpc.ChainStreamInterceptor(
-			herodot.StreamErrorUnwrapInterceptor,
-			grpcMiddleware.ChainStreamServer(
-				grpc_logrus.StreamServerInterceptor(r.l.Entry),
-			),
-		),
-		grpc.ChainUnaryInterceptor(
-			herodot.UnaryErrorUnwrapInterceptor,
-			grpcMiddleware.ChainUnaryServer(
-				grpc_logrus.UnaryServerInterceptor(r.l.Entry),
-			),
-		),
+		grpc.ChainStreamInterceptor(r.streamInterceptors()...),
+		grpc.ChainUnaryInterceptor(r.unaryInterceptors()...),
 	)
 
 	grpcHealthV1.RegisterHealthServer(s, r.HealthServer())

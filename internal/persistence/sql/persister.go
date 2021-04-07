@@ -7,6 +7,10 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/luna-duclos/instrumentedsql"
+	"github.com/luna-duclos/instrumentedsql/opentracing"
+	"github.com/ory/x/tracing"
+
 	"github.com/ory/x/popx"
 
 	"github.com/cenkalti/backoff/v3"
@@ -29,6 +33,7 @@ type (
 		namespaces namespace.Manager
 		l          *logrusx.Logger
 		dsn        string
+		tracer     *tracing.Tracer
 	}
 	internalPagination struct {
 		Page, PerPage int
@@ -51,13 +56,14 @@ var (
 	_ persistence.Persister = &Persister{}
 )
 
-func NewPersister(dsn string, l *logrusx.Logger, namespaces namespace.Manager) (*Persister, error) {
+func NewPersister(dsn string, l *logrusx.Logger, namespaces namespace.Manager, tracer *tracing.Tracer) (*Persister, error) {
 	pop.SetLogger(l.PopLogger)
 
 	p := &Persister{
 		namespaces: namespaces,
 		l:          l,
 		dsn:        dsn,
+		tracer:     tracer,
 	}
 
 	var err error
@@ -70,13 +76,22 @@ func NewPersister(dsn string, l *logrusx.Logger, namespaces namespace.Manager) (
 }
 
 func (p *Persister) newConnection(options map[string]string) (c *pop.Connection, err error) {
+	var opts []instrumentedsql.Opt
+	if p.tracer.IsLoaded() {
+		opts = []instrumentedsql.Opt{
+			instrumentedsql.WithTracer(opentracing.NewTracer(true)),
+			instrumentedsql.WithOmitArgs(),
+		}
+	}
 	pool, idlePool, connMaxLifetime, cleanedDSN := sqlcon.ParseConnectionOptions(p.l, p.dsn)
 	connDetails := &pop.ConnectionDetails{
-		URL:             sqlcon.FinalizeDSN(p.l, cleanedDSN),
-		IdlePool:        idlePool,
-		ConnMaxLifetime: connMaxLifetime,
-		Pool:            pool,
-		Options:         options,
+		URL:                       sqlcon.FinalizeDSN(p.l, cleanedDSN),
+		IdlePool:                  idlePool,
+		ConnMaxLifetime:           connMaxLifetime,
+		Pool:                      pool,
+		Options:                   options,
+		UseInstrumentedDriver:     p.tracer != nil && p.tracer.IsLoaded(),
+		InstrumentedDriverOptions: opts,
 	}
 
 	bc := backoff.NewExponentialBackOff()
