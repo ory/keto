@@ -22,7 +22,7 @@ func TestNamespaceMigrations(t *testing.T) {
 		l := logrusx.New("", "", logrusx.ForceLevel(logrus.DebugLevel), logrusx.WithHook(&hook))
 		nm := config.NewMemoryNamespaceManager(nn...)
 
-		p, err := NewPersister(dsn.Conn, l, nm)
+		p, err := NewPersister(dsn.Conn, l, nm, nil)
 		require.NoError(t, err)
 		return p, &hook
 	}

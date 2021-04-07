@@ -258,22 +258,36 @@ func (r *RegistryDefault) WriteRouter() http.Handler {
 	return n
 }
 
+func (r *RegistryDefault) unaryInterceptors() []grpc.UnaryServerInterceptor {
+	is := []grpc.UnaryServerInterceptor{
+		herodot.UnaryErrorUnwrapInterceptor,
+		grpcMiddleware.ChainUnaryServer(
+			grpc_logrus.UnaryServerInterceptor(r.l.Entry),
+		),
+	}
+	if r.Tracer().IsLoaded() {
+		is = append(is, otgrpc.OpenTracingServerInterceptor(r.Tracer().Tracer()))
+	}
+	return is
+}
+
+func (r *RegistryDefault) streamInterceptors() []grpc.StreamServerInterceptor {
+	is := []grpc.StreamServerInterceptor{
+		herodot.StreamErrorUnwrapInterceptor,
+		grpcMiddleware.ChainStreamServer(
+			grpc_logrus.StreamServerInterceptor(r.l.Entry),
+		),
+	}
+	if r.Tracer().IsLoaded() {
+		is = append(is, otgrpc.OpenTracingStreamServerInterceptor(r.Tracer().Tracer()))
+	}
+	return is
+}
+
 func (r *RegistryDefault) ReadGRPCServer() *grpc.Server {
 	s := grpc.NewServer(
-		grpc.ChainStreamInterceptor(
-			herodot.StreamErrorUnwrapInterceptor,
-			grpcMiddleware.ChainStreamServer(
-				grpc_logrus.StreamServerInterceptor(r.l.Entry),
-			),
-			otgrpc.OpenTracingStreamServerInterceptor(r.Tracer().Tracer()),
-		),
-		grpc.ChainUnaryInterceptor(
-			herodot.UnaryErrorUnwrapInterceptor,
-			grpcMiddleware.ChainUnaryServer(
-				grpc_logrus.UnaryServerInterceptor(r.l.Entry),
-			),
-			otgrpc.OpenTracingServerInterceptor(r.Tracer().Tracer()),
-		),
+		grpc.ChainStreamInterceptor(r.streamInterceptors()...),
+		grpc.ChainUnaryInterceptor(r.unaryInterceptors()...),
 	)
 
 	grpcHealthV1.RegisterHealthServer(s, r.HealthServer())
@@ -289,18 +303,8 @@ func (r *RegistryDefault) ReadGRPCServer() *grpc.Server {
 
 func (r *RegistryDefault) WriteGRPCServer() *grpc.Server {
 	s := grpc.NewServer(
-		grpc.ChainStreamInterceptor(
-			herodot.StreamErrorUnwrapInterceptor,
-			grpcMiddleware.ChainStreamServer(
-				grpc_logrus.StreamServerInterceptor(r.l.Entry),
-			),
-		),
-		grpc.ChainUnaryInterceptor(
-			herodot.UnaryErrorUnwrapInterceptor,
-			grpcMiddleware.ChainUnaryServer(
-				grpc_logrus.UnaryServerInterceptor(r.l.Entry),
-			),
-		),
+		grpc.ChainStreamInterceptor(r.streamInterceptors()...),
+		grpc.ChainUnaryInterceptor(r.unaryInterceptors()...),
 	)
 
 	grpcHealthV1.RegisterHealthServer(s, r.HealthServer())
