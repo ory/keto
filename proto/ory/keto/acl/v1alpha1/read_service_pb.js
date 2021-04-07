@@ -656,8 +656,7 @@ proto.ory.keto.acl.v1alpha1.ListRelationTuplesResponse.toObject = function(inclu
   var f, obj = {
     relationTuplesList: jspb.Message.toObjectList(msg.getRelationTuplesList(),
     ory_keto_acl_v1alpha1_acl_pb.RelationTuple.toObject, includeInstance),
-    nextPageToken: jspb.Message.getFieldWithDefault(msg, 2, ""),
-    isLastPage: jspb.Message.getBooleanFieldWithDefault(msg, 3, false)
+    nextPageToken: jspb.Message.getFieldWithDefault(msg, 2, "")
   };
 
   if (includeInstance) {
@@ -703,10 +702,6 @@ proto.ory.keto.acl.v1alpha1.ListRelationTuplesResponse.deserializeBinaryFromRead
       var value = /** @type {string} */ (reader.readString());
       msg.setNextPageToken(value);
       break;
-    case 3:
-      var value = /** @type {boolean} */ (reader.readBool());
-      msg.setIsLastPage(value);
-      break;
     default:
       reader.skipField();
       break;
@@ -748,13 +743,6 @@ proto.ory.keto.acl.v1alpha1.ListRelationTuplesResponse.serializeBinaryToWriter =
   if (f.length > 0) {
     writer.writeString(
       2,
-      f
-    );
-  }
-  f = message.getIsLastPage();
-  if (f) {
-    writer.writeBool(
-      3,
       f
     );
   }
@@ -814,24 +802,6 @@ proto.ory.keto.acl.v1alpha1.ListRelationTuplesResponse.prototype.getNextPageToke
  */
 proto.ory.keto.acl.v1alpha1.ListRelationTuplesResponse.prototype.setNextPageToken = function(value) {
   return jspb.Message.setProto3StringField(this, 2, value);
-};
-
-
-/**
- * optional bool is_last_page = 3;
- * @return {boolean}
- */
-proto.ory.keto.acl.v1alpha1.ListRelationTuplesResponse.prototype.getIsLastPage = function() {
-  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 3, false));
-};
-
-
-/**
- * @param {boolean} value
- * @return {!proto.ory.keto.acl.v1alpha1.ListRelationTuplesResponse} returns this
- */
-proto.ory.keto.acl.v1alpha1.ListRelationTuplesResponse.prototype.setIsLastPage = function(value) {
-  return jspb.Message.setProto3BooleanField(this, 3, value);
 };
 
 

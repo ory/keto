@@ -1050,10 +1050,8 @@
     "getRelationTuplesResponse": {
       "type": "object",
       "properties": {
-        "is_last_page": {
-          "type": "boolean"
-        },
         "next_page_token": {
+          "description": "The opaque token to provide in a subsequent request\nto get the next page. It is the empty string iff this is\nthe last page.",
           "type": "string"
         },
         "relation_tuples": {

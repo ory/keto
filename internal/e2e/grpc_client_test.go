@@ -84,7 +84,6 @@ func (g *grpcClient) queryTuple(t require.TestingT, q *relationtuple.RelationQue
 	return &relationtuple.GetResponse{
 		RelationTuples: irs,
 		NextPageToken:  resp.NextPageToken,
-		IsLastPage:     resp.IsLastPage,
 	}
 }
 

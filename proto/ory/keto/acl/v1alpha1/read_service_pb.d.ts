@@ -98,9 +98,6 @@ export class ListRelationTuplesResponse extends jspb.Message {
     getNextPageToken(): string;
     setNextPageToken(value: string): ListRelationTuplesResponse;
 
-    getIsLastPage(): boolean;
-    setIsLastPage(value: boolean): ListRelationTuplesResponse;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): ListRelationTuplesResponse.AsObject;
@@ -116,6 +113,5 @@ export namespace ListRelationTuplesResponse {
     export type AsObject = {
         relationTuplesList: Array<ory_keto_acl_v1alpha1_acl_pb.RelationTuple.AsObject>,
         nextPageToken: string,
-        isLastPage: boolean,
     }
 }

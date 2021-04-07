@@ -8,10 +8,6 @@ type (
 	PaginationOptionSetter func(*PaginationOptions) *PaginationOptions
 )
 
-const (
-	PageTokenEnd = "no other page"
-)
-
 func WithToken(t string) PaginationOptionSetter {
 	return func(opts *PaginationOptions) *PaginationOptions {
 		opts.Token = t

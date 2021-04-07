@@ -19,10 +19,9 @@ import (
 // swagger:model getRelationTuplesResponse
 type GetRelationTuplesResponse struct {
 
-	// is last page
-	IsLastPage bool `json:"is_last_page,omitempty"`
-
-	// next page token
+	// The opaque token to provide in a subsequent request
+	// to get the next page. It is the empty string iff this is
+	// the last page.
 	NextPageToken string `json:"next_page_token,omitempty"`
 
 	// relation tuples

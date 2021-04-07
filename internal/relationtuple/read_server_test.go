@@ -48,8 +48,7 @@ func TestReadHandlers(t *testing.T) {
 
 			assert.Equal(t, relationtuple.GetResponse{
 				RelationTuples: []*relationtuple.InternalRelationTuple{},
-				NextPageToken:  x.PageTokenEnd,
-				IsLastPage:     true,
+				NextPageToken:  "",
 			}, respMsg)
 		})
 
@@ -86,8 +85,7 @@ func TestReadHandlers(t *testing.T) {
 			for i := range rts {
 				assert.Contains(t, respMsg.RelationTuples, rts[i])
 			}
-			assert.Equal(t, x.PageTokenEnd, respMsg.NextPageToken)
-			assert.True(t, respMsg.IsLastPage)
+			assert.Equal(t, "", respMsg.NextPageToken)
 		})
 
 		t.Run("case=returns bad request on malformed subject", func(t *testing.T) {
@@ -132,8 +130,7 @@ func TestReadHandlers(t *testing.T) {
 				require.NoError(t, json.NewDecoder(resp.Body).Decode(&firstResp))
 				require.Len(t, firstResp.RelationTuples, 1)
 				assert.Contains(t, rts, firstResp.RelationTuples[0])
-				assert.NotEqual(t, x.PageTokenEnd, firstResp.NextPageToken)
-				assert.False(t, firstResp.IsLastPage)
+				assert.NotEqual(t, "", firstResp.NextPageToken)
 			})
 
 			t.Run("case=second page", func(t *testing.T) {
@@ -152,8 +149,7 @@ func TestReadHandlers(t *testing.T) {
 
 				assert.NotEqual(t, firstResp.RelationTuples, secondResp.RelationTuples)
 				assert.Contains(t, rts, secondResp.RelationTuples[0])
-				assert.Equal(t, x.PageTokenEnd, secondResp.NextPageToken)
-				assert.True(t, secondResp.IsLastPage)
+				assert.Equal(t, "", secondResp.NextPageToken)
 			})
 		})
 

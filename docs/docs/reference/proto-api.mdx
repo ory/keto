@@ -178,11 +178,10 @@ Example use cases (namespace is always required):
 
 The response of a ReadService.ListRelationTuples RPC.
 
-| Field           | Type                                                  | Label    | Description                                                                                                                    |
-| --------------- | ----------------------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| relation_tuples | [RelationTuple](#ory.keto.acl.v1alpha1.RelationTuple) | repeated | The relation tuples matching the list request.                                                                                 |
-| next_page_token | [string](#string)                                     |          | The token required to get the next page. Please use the `is_last_page` field to determine whether this was the last page.      |
-| is_last_page    | [bool](#bool)                                         |          | Whether this is the last page. Using the `next_page_token` in a subsequent request if this field is true will return an error. |
+| Field           | Type                                                  | Label    | Description                                                                                            |
+| --------------- | ----------------------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------ |
+| relation_tuples | [RelationTuple](#ory.keto.acl.v1alpha1.RelationTuple) | repeated | The relation tuples matching the list request.                                                         |
+| next_page_token | [string](#string)                                     |          | The token required to get the next page. If this is the last page, the token will be the empty string. |
 
 ## ory/keto/acl/v1alpha1/version.proto
 

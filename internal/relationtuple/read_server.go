@@ -46,7 +46,6 @@ func (h *handler) ListRelationTuples(ctx context.Context, req *acl.ListRelationT
 	resp := &acl.ListRelationTuplesResponse{
 		RelationTuples: make([]*acl.RelationTuple, len(rels)),
 		NextPageToken:  nextPage,
-		IsLastPage:     nextPage == x.PageTokenEnd,
 	}
 	for i, r := range rels {
 		resp.RelationTuples[i] = r.ToProto()
@@ -119,7 +118,6 @@ func (h *handler) getRelations(w http.ResponseWriter, r *http.Request, _ httprou
 	resp := &GetResponse{
 		RelationTuples: rels,
 		NextPageToken:  nextPage,
-		IsLastPage:     nextPage == x.PageTokenEnd,
 	}
 
 	h.d.Writer().Write(w, r, resp)

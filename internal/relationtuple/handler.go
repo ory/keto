@@ -22,8 +22,10 @@ type (
 // swagger:model getRelationTuplesResponse
 type GetResponse struct {
 	RelationTuples []*InternalRelationTuple `json:"relation_tuples"`
-	NextPageToken  string                   `json:"next_page_token"`
-	IsLastPage     bool                     `json:"is_last_page"`
+	// The opaque token to provide in a subsequent request
+	// to get the next page. It is the empty string iff this is
+	// the last page.
+	NextPageToken string `json:"next_page_token"`
 }
 
 const (

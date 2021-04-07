@@ -75,7 +75,7 @@ func (e *Engine) checkOneIndirectionFurther(ctx context.Context, requested *rela
 		allowed, err := e.subjectIsAllowed(ctx, requested, nextRels)
 
 		// loop through pages until either allowed, end of pages, or an error occurred
-		if allowed || nextPage == x.PageTokenEnd || err != nil {
+		if allowed || nextPage == "" || err != nil {
 			return allowed, err
 		}
 
