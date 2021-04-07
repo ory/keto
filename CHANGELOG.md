@@ -5,7 +5,7 @@
 
 **Table of Contents**
 
-- [Unreleased (2021-04-06)](#unreleased-2021-04-06)
+- [Unreleased (2021-04-07)](#unreleased-2021-04-07)
 - [0.6.0-alpha.1.pre.6 (2021-04-06)](#060-alpha1pre6-2021-04-06)
 - [0.6.0-alpha.1.pre.5 (2021-04-06)](#060-alpha1pre5-2021-04-06)
 - [0.6.0-alpha.1.pre.4 (2021-04-06)](#060-alpha1pre4-2021-04-06)
@@ -85,7 +85,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# Unreleased (2021-04-06)
+# Unreleased (2021-04-07)
 
 No significant changes have been made for this release.
 
