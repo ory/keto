@@ -2,7 +2,7 @@ version: '3'
 
 services:
   keto:
-    image: oryd/keto:v0.6.0-alpha.1
+    image: oryd/keto:v0.6.0-alpha.1-sqlite
     ports:
       - '4466:4466'
       - '4467:4467'
@@ -14,7 +14,7 @@ services:
         target: /home/ory
 
   keto-init:
-    image: oryd/keto:v0.6.0-alpha.1
+    image: oryd/keto:v0.6.0-alpha.1-sqlite
     environment:
       - KETO_WRITE_REMOTE=keto:4467
     volumes:
