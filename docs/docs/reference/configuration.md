@@ -677,7 +677,7 @@ namespaces: http://a.aaa
 # - Windows Command Line (CMD):
 #    > set VERSION=<value>
 #
-version: v0.6.0-alpha.1
+version: v0.0.0
 
 ## Data Source Name ##
 #
