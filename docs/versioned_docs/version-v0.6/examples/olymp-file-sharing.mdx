@@ -28,7 +28,7 @@ containing the most fertile grounds. The file gets assigned the UUID
 [write-API](../concepts/api-overview.mdx#write-apis):
 
 ```keto-relation-tuples
-ec788a82-a12e-45a4-b906-3e69f78c94e4#owner@demeter
+files:ec788a82-a12e-45a4-b906-3e69f78c94e4#owner@demeter
 ```
 
 To prepare for an important meeting with the user `athena`, `demeter` wants to
@@ -46,7 +46,7 @@ The user `demeter` will then ask the application to share the file with
 following relation tuple to Ory Keto:
 
 ```keto-relation-tuples
-ec788a82-a12e-45a4-b906-3e69f78c94e4#access@athena
+files:ec788a82-a12e-45a4-b906-3e69f78c94e4#access@athena
 ```
 
 To confirm the successful operation, the application uses Ory Keto's
@@ -55,14 +55,14 @@ of everyone who can access the file:
 
 ```keto-relation-tuples
 // The following subject set is expanded by Keto
-ec788a82-a12e-45a4-b906-3e69f78c94e4#access
+files:ec788a82-a12e-45a4-b906-3e69f78c94e4#access
 ```
 
 which returns the expansion tree
 
 ```
-∪ ec788a82-a12e-45a4-b906-3e69f78c94e4#access
-├─ ∪ ec788a82-a12e-45a4-b906-3e69f78c94e4#owner
+∪ files:ec788a82-a12e-45a4-b906-3e69f78c94e4#access
+├─ ∪ files:ec788a82-a12e-45a4-b906-3e69f78c94e4#owner
 │  ├─ ☘ demeter
 ├─ ☘ athena
 ```
