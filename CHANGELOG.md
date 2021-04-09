@@ -80,7 +80,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [Unreleased](https://github.com/ory/keto/compare/v0.6.0-alpha.1...ec6cc5ed528f1a097ea02669d059e060b7eff824) (2021-04-09)
+# [Unreleased](https://github.com/ory/keto/compare/v0.6.0-alpha.1...135e8145c383a76b494b469253c949c38f4414a7) (2021-04-09)
 
 ### Bug Fixes
 
@@ -94,6 +94,9 @@
   ([ea2999d](https://github.com/ory/keto/commit/ea2999d4963316810a8d8634fcd123bda31eaa8f))
 - Fix typo ([#538](https://github.com/ory/keto/issues/538))
   ([99a9693](https://github.com/ory/keto/commit/99a969373497792bb4cd8ff62bf5245087517737))
+- Include namespace in olymp library example
+  ([#540](https://github.com/ory/keto/issues/540))
+  ([135e814](https://github.com/ory/keto/commit/135e8145c383a76b494b469253c949c38f4414a7))
 
 # [0.6.0-alpha.1](https://github.com/ory/keto/compare/v0.5.6-alpha.1...v0.6.0-alpha.1) (2021-04-07)
 
