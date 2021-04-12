@@ -76,8 +76,9 @@ and set up flags so that `keto version` works as expected. Please note that this
 will only work with a Linux shell like bash or sh.
 
 ```shell
-$ go get -d -u github.com/ory/keto
-$ cd $(go env GOPATH)/src/github.com/ory/keto
+$ git clone https://github.com/ory/keto.git
+$ cd keto
+$ git checkout v0.6.0-alpha.1
 $ make install
-$ $(go env GOPATH)/bin/keto help
+$ keto help
 ```
