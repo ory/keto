@@ -5,7 +5,7 @@
 
 **Table of Contents**
 
-- [Unreleased (2021-04-12)](#unreleased-2021-04-12)
+- [Unreleased (2021-04-13)](#unreleased-2021-04-13)
   - [Bug Fixes](#bug-fixes)
   - [Documentation](#documentation)
 - [0.6.0-alpha.1 (2021-04-07)](#060-alpha1-2021-04-07)
@@ -80,7 +80,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [Unreleased](https://github.com/ory/keto/compare/v0.6.0-alpha.1...e6622564f58b7612b13b11b54e75a7350f52d6de) (2021-04-12)
+# [Unreleased](https://github.com/ory/keto/compare/v0.6.0-alpha.1...b25a7114631957935c71ac6a020ab6bd0c244cd7) (2021-04-13)
 
 ### Bug Fixes
 
@@ -92,6 +92,9 @@
 - Change forum to discussions readme
   ([#539](https://github.com/ory/keto/issues/539))
   ([ea2999d](https://github.com/ory/keto/commit/ea2999d4963316810a8d8634fcd123bda31eaa8f))
+- Fix cat videos example docker compose
+  ([#549](https://github.com/ory/keto/issues/549))
+  ([b25a711](https://github.com/ory/keto/commit/b25a7114631957935c71ac6a020ab6bd0c244cd7))
 - Fix typo ([#538](https://github.com/ory/keto/issues/538))
   ([99a9693](https://github.com/ory/keto/commit/99a969373497792bb4cd8ff62bf5245087517737))
 - Include namespace in olymp library example
