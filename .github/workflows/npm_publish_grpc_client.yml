@@ -34,7 +34,6 @@ jobs:
           author_email: zepatrik@users.noreply.github.com
           cwd: proto/ory/keto/acl/v1alpha1
           message: 'autogen: bump node gRPC client version'
-          pull_strategy: --rebase
       - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN_AENEASR }}
