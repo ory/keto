@@ -1,0 +1,37 @@
+name: Publish gRPC client to npm
+
+on:
+  release:
+    types:
+      - created
+  workflow_dispatch:
+    inputs:
+      version:
+        required: true
+        description: The version to release
+
+jobs:
+  btp:
+    runs-on: ubuntu-latest
+    name: "Build -> Test -> Publish"
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '14.x'
+          registry-url: 'https://registry.npmjs.org'
+      - name: Bump version
+        run: |-
+          sudo npm i -g npm@7
+          cd proto/ory/keto/acl/v1alpha1
+          cat <<< $(jq '.version = (env.RELEASE_VERSION | sub("(^refs/tags/v)|(^v)"; ""))' package.json) > package.json
+          git config --local user.email "zepatrik@users.noreply.github.com"
+          git config --local user.name "zepatrik"
+          git add package.json
+          git commit -m "autogen: bump version"
+          git push -f "https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:master
+        env:
+          RELEASE_VERSION: ${{ github.event.inputs.version || github.ref }}
+      - run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN_AENEASR }}
