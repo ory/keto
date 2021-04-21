@@ -5,7 +5,7 @@
 
 **Table of Contents**
 
-- [Unreleased (2021-04-17)](#unreleased-2021-04-17)
+- [Unreleased (2021-04-21)](#unreleased-2021-04-21)
   - [Bug Fixes](#bug-fixes)
   - [Documentation](#documentation)
 - [0.6.0-alpha.1 (2021-04-07)](#060-alpha1-2021-04-07)
@@ -80,7 +80,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [Unreleased](https://github.com/ory/keto/compare/v0.6.0-alpha.1...32a6b04609054cba84f7b56ebbe92341ec5dcd98) (2021-04-17)
+# [Unreleased](https://github.com/ory/keto/compare/v0.6.0-alpha.1...9dc35969ada8b0d4d73dee9089c4dc61cd9ea657) (2021-04-21)
 
 ### Bug Fixes
 
@@ -93,6 +93,8 @@
 
 ### Documentation
 
+- Add gRPC client README.md ([#559](https://github.com/ory/keto/issues/559))
+  ([9dc3596](https://github.com/ory/keto/commit/9dc35969ada8b0d4d73dee9089c4dc61cd9ea657))
 - Change forum to discussions readme
   ([#539](https://github.com/ory/keto/issues/539))
   ([ea2999d](https://github.com/ory/keto/commit/ea2999d4963316810a8d8634fcd123bda31eaa8f))
