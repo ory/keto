@@ -29,7 +29,7 @@
   "Examples": ["examples/olymp-file-sharing"],
   "Reference": [
     "reference/configuration",
-    "reference/api",
+    "reference/rest-api",
     "reference/proto-api",
     {
       "Command Line Interface (CLI)": [

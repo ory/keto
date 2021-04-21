@@ -5,7 +5,7 @@
 
 **Table of Contents**
 
-- [Unreleased (2021-04-15)](#unreleased-2021-04-15)
+- [Unreleased (2021-04-17)](#unreleased-2021-04-17)
   - [Bug Fixes](#bug-fixes)
   - [Documentation](#documentation)
 - [0.6.0-alpha.1 (2021-04-07)](#060-alpha1-2021-04-07)
@@ -80,10 +80,14 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [Unreleased](https://github.com/ory/keto/compare/v0.6.0-alpha.1...b25a7114631957935c71ac6a020ab6bd0c244cd7) (2021-04-15)
+# [Unreleased](https://github.com/ory/keto/compare/v0.6.0-alpha.1...32a6b04609054cba84f7b56ebbe92341ec5dcd98) (2021-04-17)
 
 ### Bug Fixes
 
+- Use correct id
+  ([5e02902](https://github.com/ory/keto/commit/5e029020b5ba3931f15d343cf6a9762b064ffd45))
+- Use correct id for api
+  ([32a6b04](https://github.com/ory/keto/commit/32a6b04609054cba84f7b56ebbe92341ec5dcd98))
 - Use sqlite image versions ([#544](https://github.com/ory/keto/issues/544))
   ([ec6cc5e](https://github.com/ory/keto/commit/ec6cc5ed528f1a097ea02669d059e060b7eff824))
 
