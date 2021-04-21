@@ -29,7 +29,7 @@ jobs:
           git config --local user.name "zepatrik"
           git add package.json
           git commit -m "autogen: bump version"
-          git push -f "https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:npm-publish-grpc-client
+          git push -f "https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:master
         env:
           RELEASE_VERSION: ${{ github.event.inputs.version || github.ref }}
       - run: npm publish
