@@ -36,6 +36,6 @@ jobs:
           message: 'autogen: bump node gRPC client version'
       - run: |-
           cd proto/ory/keto/acl/v1alpha1
-          npm publish
+          npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN_AENEASR }}
