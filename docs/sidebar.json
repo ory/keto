@@ -1,62 +1,82 @@
-{
-  "Introduction": [
-    "index",
-    "install",
-    "implemented-planned-features",
-    "performance",
-    "quickstart"
-  ],
-  "Concepts": [
-    "concepts/relation-tuples",
-    "concepts/namespaces",
-    "concepts/objects",
-    "concepts/subjects",
-    "concepts/graph-of-relations",
-    "concepts/api-overview",
-    "concepts/internal-algorithms",
-    "concepts/snaptokens-evaluation-consistency"
-  ],
-  "Guides": [
-    "secure",
-    "guides/simple-access-check-guide",
-    "guides/list-api-display-objects",
-    "guides/expand-api-display-who-has-access",
-    "guides/production",
-    "guides/rbac",
-    "guides/access-control-inheritance",
-    "guides/access-control-list-design-best-practices"
-  ],
-  "Examples": ["examples/olymp-file-sharing"],
-  "Reference": [
-    "reference/configuration",
-    "reference/rest-api",
-    "reference/proto-api",
-    {
-      "Command Line Interface (CLI)": [
-        "cli/keto",
-        "cli/keto-check",
-        "cli/keto-expand",
-        "cli/keto-migrate",
-        "cli/keto-migrate-down",
-        "cli/keto-migrate-status",
-        "cli/keto-migrate-up",
-        "cli/keto-namespace",
-        "cli/keto-namespace-migrate",
-        "cli/keto-namespace-migrate-down",
-        "cli/keto-namespace-migrate-status",
-        "cli/keto-namespace-migrate-up",
-        "cli/keto-namespace-validate",
-        "cli/keto-relation-tuple",
-        "cli/keto-relation-tuple-create",
-        "cli/keto-relation-tuple-delete",
-        "cli/keto-relation-tuple-get",
-        "cli/keto-relation-tuple-parse",
-        "cli/keto-serve",
-        "cli/keto-status",
-        "cli/keto-version"
-      ]
-    }
-  ],
-  "SDKs": ["sdk/index"],
-  "Development": ["milestones"]
-}
+[
+  {
+    "Introduction": [
+      "index",
+      "install",
+      "implemented-planned-features",
+      "performance",
+      "quickstart"
+    ]
+  },
+  {
+    "Concepts": [
+      "concepts/relation-tuples",
+      "concepts/namespaces",
+      "concepts/objects",
+      "concepts/subjects",
+      "concepts/graph-of-relations",
+      "concepts/api-overview",
+      "concepts/internal-algorithms",
+      "concepts/snaptokens-evaluation-consistency"
+    ]
+  },
+  {
+    "Guides": [
+      "secure",
+      "guides/simple-access-check-guide",
+      "guides/list-api-display-objects",
+      "guides/expand-api-display-who-has-access",
+      "guides/production",
+      "guides/rbac",
+      "guides/access-control-inheritance",
+      "guides/access-control-list-design-best-practices"
+    ]
+  },
+  {
+    "Examples": [
+      "examples/olymp-file-sharing"
+    ]
+  },
+  {
+    "Reference": [
+      "reference/configuration",
+      "reference/rest-api",
+      "reference/proto-api",
+      {
+        "Command Line Interface (CLI)": [
+          "cli/keto",
+          "cli/keto-check",
+          "cli/keto-expand",
+          "cli/keto-migrate",
+          "cli/keto-migrate-down",
+          "cli/keto-migrate-status",
+          "cli/keto-migrate-up",
+          "cli/keto-namespace",
+          "cli/keto-namespace-migrate",
+          "cli/keto-namespace-migrate-down",
+          "cli/keto-namespace-migrate-status",
+          "cli/keto-namespace-migrate-up",
+          "cli/keto-namespace-validate",
+          "cli/keto-relation-tuple",
+          "cli/keto-relation-tuple-create",
+          "cli/keto-relation-tuple-delete",
+          "cli/keto-relation-tuple-get",
+          "cli/keto-relation-tuple-parse",
+          "cli/keto-serve",
+          "cli/keto-status",
+          "cli/keto-version"
+        ]
+      }
+    ]
+  },
+  {
+    "SDKs": [
+      "sdk/index"
+    ]
+  },
+  {
+    "Development": [
+      "milestones"
+    ]
+  }
+]
