@@ -11,3 +11,7 @@ CVE-2018-17143
 CVE-2018-17847
 CVE-2018-17848
 # end
+
+# upstream fix required - see https://github.com/ory/kratos/issues/1250
+CVE-2020-26160
+# end

@@ -1,6 +1,6 @@
 {
   "name": "@ory/keto-grpc-client",
-  "version": "0.6.0-alpha.1-pre",
+  "version": "0.6.0-alpha.1",
   "description": "gRPC client for Ory Keto",
   "homepage": "https://www.ory.sh/keto",
   "bugs": "https://github.com/ory/keto/issues",
