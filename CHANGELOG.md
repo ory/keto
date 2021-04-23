@@ -5,15 +5,16 @@
 
 **Table of Contents**
 
-- [Unreleased (2021-04-21)](#unreleased-2021-04-21)
+- [Unreleased (2021-04-23)](#unreleased-2021-04-23)
   - [Bug Fixes](#bug-fixes)
   - [Documentation](#documentation)
+  - [Features](#features)
 - [0.6.0-alpha.1 (2021-04-07)](#060-alpha1-2021-04-07)
   - [Bug Fixes](#bug-fixes-1)
   - [Build System](#build-system)
   - [Code Refactoring](#code-refactoring)
   - [Documentation](#documentation-1)
-  - [Features](#features)
+  - [Features](#features-1)
   - [Tests](#tests)
   - [0.5.6-alpha.1 (2020-05-28)](#056-alpha1-2020-05-28)
     - [Bug Fixes](#bug-fixes-2)
@@ -37,7 +38,7 @@
   - [0.4.4-alpha.1 (2020-02-14)](#044-alpha1-2020-02-14)
     - [Bug Fixes](#bug-fixes-7)
     - [Documentation](#documentation-7)
-    - [Features](#features-1)
+    - [Features](#features-2)
     - [Unclassified](#unclassified)
   - [0.4.3-alpha.2 (2020-01-31)](#043-alpha2-2020-01-31)
     - [Unclassified](#unclassified-1)
@@ -80,7 +81,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [Unreleased](https://github.com/ory/keto/compare/v0.6.0-alpha.1...9dc35969ada8b0d4d73dee9089c4dc61cd9ea657) (2021-04-21)
+# [Unreleased](https://github.com/ory/keto/compare/v0.6.0-alpha.1...c631c82b7ff3d12734869ac22730b52e73dcf287) (2021-04-23)
 
 ### Bug Fixes
 
@@ -109,6 +110,11 @@
 - Update install from source steps to actually work
   ([#548](https://github.com/ory/keto/issues/548))
   ([e662256](https://github.com/ory/keto/commit/e6622564f58b7612b13b11b54e75a7350f52d6de))
+
+### Features
+
+- Global docs sidebar and added cloud pages
+  ([c631c82](https://github.com/ory/keto/commit/c631c82b7ff3d12734869ac22730b52e73dcf287))
 
 # [0.6.0-alpha.1](https://github.com/ory/keto/compare/v0.5.6-alpha.1...v0.6.0-alpha.1) (2021-04-07)
 
