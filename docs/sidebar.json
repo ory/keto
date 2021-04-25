@@ -33,9 +33,7 @@
     ]
   },
   {
-    "Examples": [
-      "examples/olymp-file-sharing"
-    ]
+    "Examples": ["examples/olymp-file-sharing"]
   },
   {
     "Reference": [
@@ -70,13 +68,9 @@
     ]
   },
   {
-    "SDKs": [
-      "sdk/index"
-    ]
+    "SDKs": ["sdk/index"]
   },
   {
-    "Development": [
-      "milestones"
-    ]
+    "Development": ["milestones"]
   }
 ]

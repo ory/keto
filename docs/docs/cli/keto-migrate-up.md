@@ -9,15 +9,14 @@ This file is auto-generated.
 
 To improve this file please make your change against the appropriate "./cmd/*.go" file.
 -->
-
 ## keto migrate up
 
 Migrate the database up
 
 ### Synopsis
 
-Migrate the database up. This does not affect namespaces. Use
-`keto namespace migrate up` for migrating namespaces.
+Migrate the database up.
+This does not affect namespaces. Use `keto namespace migrate up` for migrating namespaces.
 
 ```
 keto migrate up [flags]
@@ -36,9 +35,10 @@ keto migrate up [flags]
 ### Options inherited from parent commands
 
 ```
-  -c, --config strings   Config files to load, overwriting in the order specified. (default [/home/circleci/keto.yml])
+  -c, --config strings   Config files to load, overwriting in the order specified. (default [/Users/foobar/keto.yml])
 ```
 
 ### SEE ALSO
 
-- [keto migrate](keto-migrate) - Commands to migrate the database
+* [keto migrate](keto-migrate)	 - Commands to migrate the database
+

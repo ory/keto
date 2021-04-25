@@ -9,15 +9,14 @@ This file is auto-generated.
 
 To improve this file please make your change against the appropriate "./cmd/*.go" file.
 -->
-
 ## keto migrate status
 
 Get the current migration status
 
 ### Synopsis
 
-Get the current migration status. This does not affect namespaces. Use
-`keto namespace migrate status` for migrating namespaces.
+Get the current migration status.
+This does not affect namespaces. Use `keto namespace migrate status` for migrating namespaces.
 
 ```
 keto migrate status [flags]
@@ -34,9 +33,10 @@ keto migrate status [flags]
 ### Options inherited from parent commands
 
 ```
-  -c, --config strings   Config files to load, overwriting in the order specified. (default [/home/circleci/keto.yml])
+  -c, --config strings   Config files to load, overwriting in the order specified. (default [/Users/foobar/keto.yml])
 ```
 
 ### SEE ALSO
 
-- [keto migrate](keto-migrate) - Commands to migrate the database
+* [keto migrate](keto-migrate)	 - Commands to migrate the database
+

@@ -9,14 +9,14 @@ This file is auto-generated.
 
 To improve this file please make your change against the appropriate "./cmd/*.go" file.
 -->
-
 ## keto namespace migrate down
 
 Migrate a namespace down
 
 ### Synopsis
 
-Migrate a namespace down. Pass 0 steps to fully migrate down.
+Migrate a namespace down.
+Pass 0 steps to fully migrate down.
 
 ```
 keto namespace migrate down &lt;namespace-name&gt; &lt;steps&gt; [flags]
@@ -36,9 +36,10 @@ keto namespace migrate down &lt;namespace-name&gt; &lt;steps&gt; [flags]
 ### Options inherited from parent commands
 
 ```
-  -c, --config strings   Config files to load, overwriting in the order specified. (default [/home/circleci/keto.yml])
+  -c, --config strings   Config files to load, overwriting in the order specified. (default [/Users/foobar/keto.yml])
 ```
 
 ### SEE ALSO
 
-- [keto namespace migrate](keto-namespace-migrate) - Migrate a namespace
+* [keto namespace migrate](keto-namespace-migrate)	 - Migrate a namespace
+
