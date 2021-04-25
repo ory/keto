@@ -1,8 +1,7 @@
 ---
 id: keto-namespace-migrate-status
 title: keto namespace migrate status
-description:
-  keto namespace migrate status Get the current namespace migration status
+description: keto namespace migrate status Get the current namespace migration status
 ---
 
 <!--
@@ -10,15 +9,14 @@ This file is auto-generated.
 
 To improve this file please make your change against the appropriate "./cmd/*.go" file.
 -->
-
 ## keto namespace migrate status
 
 Get the current namespace migration status
 
 ### Synopsis
 
-Get the current migration status of one specific namespace. Does not apply any
-changes.
+Get the current migration status of one specific namespace.
+Does not apply any changes.
 
 ```
 keto namespace migrate status &lt;namespace-name&gt; [flags]
@@ -35,9 +33,10 @@ keto namespace migrate status &lt;namespace-name&gt; [flags]
 ### Options inherited from parent commands
 
 ```
-  -c, --config strings   Config files to load, overwriting in the order specified. (default [/home/circleci/keto.yml])
+  -c, --config strings   Config files to load, overwriting in the order specified. (default [/Users/foobar/keto.yml])
 ```
 
 ### SEE ALSO
 
-- [keto namespace migrate](keto-namespace-migrate) - Migrate a namespace
+* [keto namespace migrate](keto-namespace-migrate)	 - Migrate a namespace
+

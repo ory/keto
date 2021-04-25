@@ -9,7 +9,6 @@ This file is auto-generated.
 
 To improve this file please make your change against the appropriate "./cmd/*.go" file.
 -->
-
 ## keto namespace migrate
 
 Migrate a namespace
@@ -23,15 +22,13 @@ Migrate a namespace
 ### Options inherited from parent commands
 
 ```
-  -c, --config strings   Config files to load, overwriting in the order specified. (default [/home/circleci/keto.yml])
+  -c, --config strings   Config files to load, overwriting in the order specified. (default [/Users/foobar/keto.yml])
 ```
 
 ### SEE ALSO
 
-- [keto namespace](keto-namespace) - Read and manipulate namespaces
-- [keto namespace migrate down](keto-namespace-migrate-down) - Migrate a
-  namespace down
-- [keto namespace migrate status](keto-namespace-migrate-status) - Get the
-  current namespace migration status
-- [keto namespace migrate up](keto-namespace-migrate-up) - Migrate a namespace
-  up
+* [keto namespace](keto-namespace)	 - Read and manipulate namespaces
+* [keto namespace migrate down](keto-namespace-migrate-down)	 - Migrate a namespace down
+* [keto namespace migrate status](keto-namespace-migrate-status)	 - Get the current namespace migration status
+* [keto namespace migrate up](keto-namespace-migrate-up)	 - Migrate a namespace up
+
