@@ -47,13 +47,13 @@ docker:
 # Generates the SDKs
 .PHONY: sdk
 sdk: .bin/swagger .bin/cli
-		swagger generate spec -m -o ./.schema/swagger.json -x internal/httpclient -x proto/ory/keto -x docker
-		cli dev swagger sanitize ./.schema/swagger.json
-		swagger flatten --with-flatten=remove-unused -o ./.schema/swagger.json ./.schema/swagger.json
-		swagger validate ./.schema/swagger.json
+		swagger generate spec -m -o ./spec/api.json -x internal/httpclient -x proto/ory/keto -x docker
+		cli dev swagger sanitize ./spec/api.json
+		swagger flatten --with-flatten=remove-unused -o ./spec/api.json ./spec/api.json
+		swagger validate ./spec/api.json
 		rm -rf internal/httpclient
 		mkdir -p internal/httpclient
-		swagger generate client -f ./.schema/swagger.json -t internal/httpclient -A Ory_Keto
+		swagger generate client -f ./spec/api.json -t internal/httpclient -A Ory_Keto
 		make format
 
 .PHONY: build
