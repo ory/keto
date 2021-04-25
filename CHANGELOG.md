@@ -5,7 +5,7 @@
 
 **Table of Contents**
 
-- [Unreleased (2021-04-23)](#unreleased-2021-04-23)
+- [Unreleased (2021-04-25)](#unreleased-2021-04-25)
   - [Bug Fixes](#bug-fixes)
   - [Documentation](#documentation)
   - [Features](#features)
@@ -81,10 +81,16 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [Unreleased](https://github.com/ory/keto/compare/v0.6.0-alpha.1...c631c82b7ff3d12734869ac22730b52e73dcf287) (2021-04-23)
+# [Unreleased](https://github.com/ory/keto/compare/v0.6.0-alpha.1...7d844a8e6412ae561963b97ac26d4682411095d4) (2021-04-25)
 
 ### Bug Fixes
 
+- Add npm run format to make format
+  ([7d844a8](https://github.com/ory/keto/commit/7d844a8e6412ae561963b97ac26d4682411095d4))
+- Resolve clidoc issues
+  ([ef12b4e](https://github.com/ory/keto/commit/ef12b4e267f34fbf9709fe26023f9b7ae6670c24))
+- Update install.sh ([#568](https://github.com/ory/keto/issues/568))
+  ([86ab245](https://github.com/ory/keto/commit/86ab24531d608df0b5391ee8ec739291b9a90e20))
 - Use correct id
   ([5e02902](https://github.com/ory/keto/commit/5e029020b5ba3931f15d343cf6a9762b064ffd45))
 - Use correct id for api
