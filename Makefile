@@ -32,8 +32,9 @@ docs/cli: .bin/clidoc
 		clidoc .
 
 .PHONY: format
-format: .bin/goimports
+format: .bin/goimports node_modules
 		goimports -w -local github.com/ory/keto *.go internal cmd contrib
+		npm run form
 
 .PHONY: install
 install:
