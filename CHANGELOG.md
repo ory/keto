@@ -81,12 +81,14 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [Unreleased](https://github.com/ory/keto/compare/v0.6.0-alpha.1...7d844a8e6412ae561963b97ac26d4682411095d4) (2021-04-25)
+# [Unreleased](https://github.com/ory/keto/compare/v0.6.0-alpha.1...7f6a061aafda275d278bf60f16e90039da45bc57) (2021-04-25)
 
 ### Bug Fixes
 
 - Add npm run format to make format
   ([7d844a8](https://github.com/ory/keto/commit/7d844a8e6412ae561963b97ac26d4682411095d4))
+- Move swagger to spec dir
+  ([7f6a061](https://github.com/ory/keto/commit/7f6a061aafda275d278bf60f16e90039da45bc57))
 - Resolve clidoc issues
   ([ef12b4e](https://github.com/ory/keto/commit/ef12b4e267f34fbf9709fe26023f9b7ae6670c24))
 - Update install.sh ([#568](https://github.com/ory/keto/issues/568))
