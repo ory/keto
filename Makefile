@@ -11,6 +11,7 @@ GO_DEPENDENCIES = github.com/go-swagger/go-swagger/cmd/swagger \
 				  github.com/bufbuild/buf/cmd/buf \
 				  google.golang.org/protobuf/cmd/protoc-gen-go \
 				  google.golang.org/grpc/cmd/protoc-gen-go-grpc \
+				  github.com/goreleaser/godownloader \
 				  github.com/pseudomuto/protoc-gen-doc/cmd/protoc-gen-doc
 
 define make-go-dependency
