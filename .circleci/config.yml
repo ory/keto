@@ -124,7 +124,7 @@ workflows:
             - test
             - test-race
             - validate
-          swag-spec-location: .schema/swagger.json
+          swag-spec-location: spec/api.json
           swag-spec-ignore: internal/httpclient proto/ory/keto docker
           filters:
             tags:
@@ -135,14 +135,14 @@ workflows:
         sdk/generate:
           appname: Ory_Keto
           specignorepgks: internal/httpclient proto/ory/keto docker
-          swagpath: .schema/swagger.json
+          swagpath: spec/api.json
           requires:
             - test
             - test-race
             - validate
       - sdk/release:
           specignorepgks: internal/httpclient proto/ory/keto docker
-          swagpath: .schema/swagger.json
+          swagpath: spec/api.json
           requires:
             - test
             - test-race
