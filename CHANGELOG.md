@@ -5,7 +5,7 @@
 
 **Table of Contents**
 
-- [Unreleased (2021-04-25)](#unreleased-2021-04-25)
+- [Unreleased (2021-04-26)](#unreleased-2021-04-26)
   - [Bug Fixes](#bug-fixes)
   - [Documentation](#documentation)
   - [Features](#features)
@@ -81,7 +81,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [Unreleased](https://github.com/ory/keto/compare/v0.6.0-alpha.1...7f6a061aafda275d278bf60f16e90039da45bc57) (2021-04-25)
+# [Unreleased](https://github.com/ory/keto/compare/v0.6.0-alpha.1...7f6a061aafda275d278bf60f16e90039da45bc57) (2021-04-26)
 
 ### Bug Fixes
 
