@@ -65,8 +65,7 @@ jobs:
     steps:
       - checkout
 
-      # https://github.com/npm/cli/issues/3132
-      - run: sudo npm i -g npm@7.10.0
+      - run: sudo npm i -g npm@7
 
       - go/load-cache
       - go/mod-download
