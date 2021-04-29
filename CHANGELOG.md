@@ -5,7 +5,8 @@
 
 **Table of Contents**
 
-- [Unreleased (2021-04-26)](#unreleased-2021-04-26)
+- [Unreleased (2021-04-29)](#unreleased-2021-04-29)
+- [0.6.0-alpha.2 (2021-04-29)](#060-alpha2-2021-04-29)
   - [Bug Fixes](#bug-fixes)
   - [Documentation](#documentation)
   - [Features](#features)
@@ -81,12 +82,18 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [Unreleased](https://github.com/ory/keto/compare/v0.6.0-alpha.1...7f6a061aafda275d278bf60f16e90039da45bc57) (2021-04-26)
+# Unreleased (2021-04-29)
+
+No significant changes have been made for this release.
+
+# [0.6.0-alpha.2](https://github.com/ory/keto/compare/v0.6.0-alpha.1...v0.6.0-alpha.2) (2021-04-29)
 
 ### Bug Fixes
 
 - Add npm run format to make format
   ([7d844a8](https://github.com/ory/keto/commit/7d844a8e6412ae561963b97ac26d4682411095d4))
+- Makefile target
+  ([0e6f612](https://github.com/ory/keto/commit/0e6f6122de7bdbb691ad7cc236b6bc9a3601d39e))
 - Move swagger to spec dir
   ([7f6a061](https://github.com/ory/keto/commit/7f6a061aafda275d278bf60f16e90039da45bc57))
 - Resolve clidoc issues
@@ -123,6 +130,8 @@
 
 - Global docs sidebar and added cloud pages
   ([c631c82](https://github.com/ory/keto/commit/c631c82b7ff3d12734869ac22730b52e73dcf287))
+- Support retryable CRDB transactions
+  ([833147d](https://github.com/ory/keto/commit/833147dae40e9ac5bdf220f8aa3f01abd444f791))
 
 # [0.6.0-alpha.1](https://github.com/ory/keto/compare/v0.5.6-alpha.1...v0.6.0-alpha.1) (2021-04-07)
 
