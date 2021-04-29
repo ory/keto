@@ -42,8 +42,7 @@ type (
 )
 
 const (
-	transactionContextKey contextKeys = "ongoing transaction"
-	defaultPageSize       int         = 100
+	defaultPageSize int = 100
 )
 
 var (
@@ -135,22 +134,11 @@ func (p *Persister) MigrationBox(ctx context.Context) (*popx.MigrationBox, error
 }
 
 func (p *Persister) connection(ctx context.Context) *pop.Connection {
-	tx := ctx.Value(transactionContextKey)
-	if tx == nil {
-		return p.conn.WithContext(ctx)
-	}
-	return tx.(*pop.Connection).WithContext(ctx)
+	return popx.GetConnection(ctx, p.conn.WithContext(ctx))
 }
 
 func (p *Persister) transaction(ctx context.Context, f func(ctx context.Context, c *pop.Connection) error) error {
-	tx := ctx.Value(transactionContextKey)
-	if tx != nil {
-		return f(ctx, tx.(*pop.Connection))
-	}
-
-	return p.conn.Transaction(func(tx *pop.Connection) error {
-		return f(context.WithValue(ctx, transactionContextKey, tx), tx)
-	})
+	return popx.Transaction(ctx, p.conn.WithContext(ctx), f)
 }
 
 func internalPaginationFromOptions(opts ...x.PaginationOptionSetter) (*internalPagination, error) {
