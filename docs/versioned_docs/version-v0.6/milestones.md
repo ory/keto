@@ -88,15 +88,6 @@ New feature or request.
 
 #### Issues
 
-- [ ] Ensure telemetry is running for both GRPC and HTTP
-      ([keto#298](https://github.com/ory/keto/issues/298)) -
-      [@hackerman](https://github.com/aeneasr),
-      [@Patrik](https://github.com/zepatrik),
-      [@Robin Brämer](https://github.com/robinbraemer)
-- [ ] Add tracing and metrics (prometheus/jaeger/...) capabilities
-      ([keto#463](https://github.com/ory/keto/issues/463)) -
-      [@Andreas Bucksteeg](https://github.com/tricky42),
-      [@Piotr Mścichowski](https://github.com/piotrmsc)
 - [x] Write relationtuple tests for http and grpc handlers
       ([keto#297](https://github.com/ory/keto/issues/297)) -
       [@Patrik](https://github.com/zepatrik),
@@ -122,6 +113,10 @@ New feature or request.
 - [x] Allow deletion of relation tuples
       ([keto#452](https://github.com/ory/keto/issues/452)) -
       [@Patrik](https://github.com/zepatrik)
+- [x] Add tracing and metrics (prometheus/jaeger/...) capabilities
+      ([keto#463](https://github.com/ory/keto/issues/463)) -
+      [@Andreas Bucksteeg](https://github.com/tricky42),
+      [@Piotr Mścichowski](https://github.com/piotrmsc)
 - [x] Namespace migrate status command
       ([keto#502](https://github.com/ory/keto/issues/502)) -
       [@Patrik](https://github.com/zepatrik)
@@ -158,11 +153,6 @@ Blocks milestones or other issues or pulls.
 
 #### Issues
 
-- [ ] Ensure telemetry is running for both GRPC and HTTP
-      ([keto#298](https://github.com/ory/keto/issues/298)) -
-      [@hackerman](https://github.com/aeneasr),
-      [@Patrik](https://github.com/zepatrik),
-      [@Robin Brämer](https://github.com/robinbraemer)
 - [x] Define and architect SQL schema and queries for querying relations
       ([keto#300](https://github.com/ory/keto/issues/300)) -
       [@Patrik](https://github.com/zepatrik)
@@ -285,6 +275,11 @@ New feature or request.
 - [ ] Namespace configuration
       ([keto#303](https://github.com/ory/keto/issues/303)) -
       [@Patrik](https://github.com/zepatrik)
+- [ ] Ensure telemetry is running for GRPC
+      ([keto#298](https://github.com/ory/keto/issues/298)) -
+      [@hackerman](https://github.com/aeneasr),
+      [@Patrik](https://github.com/zepatrik),
+      [@Robin Brämer](https://github.com/robinbraemer)
 - [x] Remove support for AND/OR/XOR in GetRelationTuples
       ([keto#299](https://github.com/ory/keto/issues/299)) -
       [@Patrik](https://github.com/zepatrik)
@@ -320,6 +315,11 @@ Blocks milestones or other issues or pulls.
 - [ ] Require relations to be defined in the namespace config
       ([keto#509](https://github.com/ory/keto/issues/509)) -
       [@Patrik](https://github.com/zepatrik)
+- [ ] Ensure telemetry is running for GRPC
+      ([keto#298](https://github.com/ory/keto/issues/298)) -
+      [@hackerman](https://github.com/aeneasr),
+      [@Patrik](https://github.com/zepatrik),
+      [@Robin Brämer](https://github.com/robinbraemer)
 - [x] Write benchmark tests for relationtuple package
       ([keto#301](https://github.com/ory/keto/issues/301)) -
       [@Patrik](https://github.com/zepatrik)

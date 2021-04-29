@@ -69,7 +69,7 @@ video service client would do. In this example we will use the Keto CLI client.
 If you want to run the Keto CLI within **Docker**, set the alias
 
 ```shell
-alias keto="docker run -it --network cat-videos-example_default -e KETO_READ_REMOTE=\"keto:4466\" oryd/keto:v0.6.0-alpha.1"
+alias keto="docker run -it --network cat-videos-example_default -e KETO_READ_REMOTE=\"keto:4466\" oryd/keto:v0.6.0-alpha.2"
 ```
 
 in your terminal session. Alternatively, you need to set the remote endpoint so
@@ -102,7 +102,7 @@ to view the video. It uses Keto's
 [expand-API](./concepts/api-overview.mdx#expand-subject-set) to get these data:
 
 ```shell
-# Who is allowed to "view" the object "videos":"/cats/1.mp4"?
+# Who is allowed to "view" the object "videos":"/cats/2.mp4"?
 keto expand view videos /cats/1.mp4
 # output:
 
