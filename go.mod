@@ -4,7 +4,7 @@ replace google.golang.org/protobuf v1.25.1-0.20201020201750-d3470999428b => goog
 
 replace github.com/soheilhy/cmux => github.com/soheilhy/cmux v0.1.5-0.20210114230657-cdd3331e3e7c
 
-replace github.com/ory/dockertest/v3 => github.com/ory/dockertest/v3 v3.6.3
+replace github.com/ory/dockertest/v3 => github.com/ory/dockertest/v3 v3.6.5
 
 replace github.com/gogo/protobuf => github.com/gogo/protobuf v1.3.2
 
