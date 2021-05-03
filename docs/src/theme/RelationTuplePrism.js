@@ -1,7 +1,7 @@
 import Prism from 'prism-react-renderer/prism'
 
 const delimiter = {
-  punctuation: /[:#@()]/
+  delimiter: /[:#@()]/
 }
 
 const namespace = {
@@ -16,27 +16,26 @@ const object = {
   pattern: /[^:#@()\n]+#/,
   inside: {
     ...delimiter,
-    symbol: /.*/
+    'property-access': /.*/
   }
 }
 
 const relation = {
-  pattern: /[^:#@()\n]+/,
-  alias: 'string'
+  pattern: /[^:#@()\n]+/
 }
 
 const subjectID = {
   pattern: /@[^:#@()\n]+/,
   inside: {
     ...delimiter,
-    keyword: /.*/
+    subject: /.*/
   }
 }
 
 const subjectSet = {
   pattern: /@\(([^:#@()\n]+:)?([^:#@()\n]+)#([^:#@()\n]*)\)/,
   inside: {
-    punctuation: /[@()]/,
+    delimiter: /[@()]*/,
     namespace,
     object,
     relation
