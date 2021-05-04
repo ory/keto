@@ -20,6 +20,8 @@ replace github.com/oleiade/reflections => github.com/oleiade/reflections v1.0.1
 
 replace github.com/goreleaser/nfpm => github.com/goreleaser/nfpm v1.10.2
 
+replace github.com/ory/keto/proto/ory/keto/acl/v1alpha1 => ./proto/ory/keto/acl/v1alpha1
+
 require (
 	github.com/bufbuild/buf v0.31.1
 	github.com/cenkalti/backoff/v3 v3.0.0
@@ -47,6 +49,7 @@ require (
 	github.com/ory/graceful v0.1.1
 	github.com/ory/herodot v0.9.3
 	github.com/ory/jsonschema/v3 v3.0.3
+	github.com/ory/keto/proto/ory/keto/acl/v1alpha1 v0.0.0-00010101000000-000000000000
 	github.com/ory/x v0.0.228
 	github.com/pelletier/go-toml v1.8.1
 	github.com/phayes/freeport v0.0.0-20180830031419-95f893ade6f2
@@ -65,8 +68,7 @@ require (
 	github.com/urfave/negroni v1.0.0
 	golang.org/x/sync v0.0.0-20201020160332-67f06af15bc9
 	golang.org/x/tools v0.1.0
-	google.golang.org/genproto v0.0.0-20210318145829-90b20ab00860
-	google.golang.org/grpc v1.36.0
+	google.golang.org/grpc v1.37.0
 	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.1.0
 	google.golang.org/protobuf v1.26.0
 )
