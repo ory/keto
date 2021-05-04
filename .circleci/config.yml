@@ -76,7 +76,9 @@ jobs:
       - golangci/lint
 
       - nancy/install
-      - nancy/check
+      - run: |
+          export PATH=$HOME/.bin:$PATH
+          go list -m all | grep -v github.com/ory/keto/proto | nancy sleuth -q
 
       - goreleaser/install
       - goreleaser/check
