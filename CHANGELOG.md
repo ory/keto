@@ -5,18 +5,19 @@
 
 **Table of Contents**
 
-- [Unreleased (2021-04-29)](#unreleased-2021-04-29)
+- [Unreleased (2021-05-04)](#unreleased-2021-05-04)
+  - [Features](#features)
 - [0.6.0-alpha.3 (2021-04-29)](#060-alpha3-2021-04-29)
 - [0.6.0-alpha.2 (2021-04-29)](#060-alpha2-2021-04-29)
   - [Bug Fixes](#bug-fixes)
   - [Documentation](#documentation)
-  - [Features](#features)
+  - [Features](#features-1)
 - [0.6.0-alpha.1 (2021-04-07)](#060-alpha1-2021-04-07)
   - [Bug Fixes](#bug-fixes-1)
   - [Build System](#build-system)
   - [Code Refactoring](#code-refactoring)
   - [Documentation](#documentation-1)
-  - [Features](#features-1)
+  - [Features](#features-2)
   - [Tests](#tests)
   - [0.5.6-alpha.1 (2020-05-28)](#056-alpha1-2020-05-28)
     - [Bug Fixes](#bug-fixes-2)
@@ -40,7 +41,7 @@
   - [0.4.4-alpha.1 (2020-02-14)](#044-alpha1-2020-02-14)
     - [Bug Fixes](#bug-fixes-7)
     - [Documentation](#documentation-7)
-    - [Features](#features-2)
+    - [Features](#features-3)
     - [Unclassified](#unclassified)
   - [0.4.3-alpha.2 (2020-01-31)](#043-alpha2-2020-01-31)
     - [Unclassified](#unclassified-1)
@@ -83,9 +84,13 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# Unreleased (2021-04-29)
+# [Unreleased](https://github.com/ory/keto/compare/v0.6.0-alpha.3...f0fbb64b3358e9800854295cebc9ec8b8e56c87a) (2021-05-04)
 
-No significant changes have been made for this release.
+### Features
+
+- Make generated gRPC client its own module
+  ([#583](https://github.com/ory/keto/issues/583))
+  ([f0fbb64](https://github.com/ory/keto/commit/f0fbb64b3358e9800854295cebc9ec8b8e56c87a))
 
 # [0.6.0-alpha.3](https://github.com/ory/keto/compare/v0.6.0-alpha.2...v0.6.0-alpha.3) (2021-04-29)
 
