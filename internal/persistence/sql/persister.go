@@ -100,16 +100,17 @@ func (p *Persister) newConnection(options map[string]string) (c *pop.Connection,
 	if err := backoff.Retry(func() (err error) {
 		c, err = pop.NewConnection(connDetails)
 		if err != nil {
-			p.l.WithError(err).Warnf("Unable to connect to database, retrying.")
+			p.l.WithError(err).Error("Unable to connect to database, retrying.")
 			return errors.WithStack(err)
 		}
 
 		if err := c.Open(); err != nil {
-			p.l.WithError(err).Warnf("Unable to open the database connection, retrying.")
+			p.l.WithError(err).Error("Unable to open the database connection, retrying.")
 			return errors.WithStack(err)
 		}
 
 		if err := c.Store.(interface{ Ping() error }).Ping(); err != nil {
+			p.l.WithError(err).Error("Unable to ping the database connection, retrying.")
 			return errors.WithStack(err)
 		}
 
