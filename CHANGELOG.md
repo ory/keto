@@ -5,27 +5,28 @@
 
 **Table of Contents**
 
-- [Unreleased (2021-05-04)](#unreleased-2021-05-04)
+- [Unreleased (2021-05-06)](#unreleased-2021-05-06)
+  - [Bug Fixes](#bug-fixes)
   - [Features](#features)
 - [0.6.0-alpha.3 (2021-04-29)](#060-alpha3-2021-04-29)
 - [0.6.0-alpha.2 (2021-04-29)](#060-alpha2-2021-04-29)
-  - [Bug Fixes](#bug-fixes)
+  - [Bug Fixes](#bug-fixes-1)
   - [Documentation](#documentation)
   - [Features](#features-1)
 - [0.6.0-alpha.1 (2021-04-07)](#060-alpha1-2021-04-07)
-  - [Bug Fixes](#bug-fixes-1)
+  - [Bug Fixes](#bug-fixes-2)
   - [Build System](#build-system)
   - [Code Refactoring](#code-refactoring)
   - [Documentation](#documentation-1)
   - [Features](#features-2)
   - [Tests](#tests)
   - [0.5.6-alpha.1 (2020-05-28)](#056-alpha1-2020-05-28)
-    - [Bug Fixes](#bug-fixes-2)
-  - [0.5.5-alpha.1 (2020-05-28)](#055-alpha1-2020-05-28)
     - [Bug Fixes](#bug-fixes-3)
+  - [0.5.5-alpha.1 (2020-05-28)](#055-alpha1-2020-05-28)
+    - [Bug Fixes](#bug-fixes-4)
     - [Documentation](#documentation-2)
   - [0.5.4-alpha.1 (2020-04-07)](#054-alpha1-2020-04-07)
-    - [Bug Fixes](#bug-fixes-4)
+    - [Bug Fixes](#bug-fixes-5)
   - [0.5.3-alpha.3 (2020-04-06)](#053-alpha3-2020-04-06)
     - [Code Refactoring](#code-refactoring-1)
     - [Documentation](#documentation-3)
@@ -33,13 +34,13 @@
   - [0.5.2 (2020-04-02)](#052-2020-04-02)
     - [Documentation](#documentation-4)
 - [0.5.0 (2020-04-02)](#050-2020-04-02)
-  - [Bug Fixes](#bug-fixes-5)
+  - [Bug Fixes](#bug-fixes-6)
   - [Documentation](#documentation-5)
   - [0.4.5-alpha.1 (2020-02-29)](#045-alpha1-2020-02-29)
-    - [Bug Fixes](#bug-fixes-6)
+    - [Bug Fixes](#bug-fixes-7)
     - [Documentation](#documentation-6)
   - [0.4.4-alpha.1 (2020-02-14)](#044-alpha1-2020-02-14)
-    - [Bug Fixes](#bug-fixes-7)
+    - [Bug Fixes](#bug-fixes-8)
     - [Documentation](#documentation-7)
     - [Features](#features-3)
     - [Unclassified](#unclassified)
@@ -84,7 +85,13 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [Unreleased](https://github.com/ory/keto/compare/v0.6.0-alpha.3...f0fbb64b3358e9800854295cebc9ec8b8e56c87a) (2021-05-04)
+# [Unreleased](https://github.com/ory/keto/compare/v0.6.0-alpha.3...2b0fad897e61400bd2a6cdf47f33ff4301e9c5f8) (2021-05-06)
+
+### Bug Fixes
+
+- Log all database connection errors
+  ([#588](https://github.com/ory/keto/issues/588))
+  ([2b0fad8](https://github.com/ory/keto/commit/2b0fad897e61400bd2a6cdf47f33ff4301e9c5f8))
 
 ### Features
 
