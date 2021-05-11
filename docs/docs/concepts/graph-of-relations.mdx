@@ -3,8 +3,6 @@ title: The Graph of Relations
 ---
 
 import Mermaid from '@theme/Mermaid'
-import RelationTuplePrism from '@theme/RelationTuplePrism'
-RelationTuplePrism()
 
 The [relation tuples](./relation-tuples.mdx) of the ACL used by Ory Keto can be
 represented as a graph of relations. This graph will help us to understand many
@@ -35,7 +33,7 @@ readability. In practice, the namespace always has to be considered.
 // user1 has access on dir1
 dir1#access@user1
 // Have a look on the subjects concept page if you don't know the empty relation.
-dir1#parent@(file1#)
+dir1#child@(file1#)
 // Everyone with access to dir1 has access to file1. This would probably be defined
 // through a subject set rewrite that defines this inherited relation globally.
 // In this example, we define this tuple explicitly.
@@ -54,8 +52,8 @@ This is represented by the following graph:
   chart={`
 graph TD
     subgraph obj [Object region]
-    A[file1]
-    E[dir1] -->|parent| A
+    E[dir1]
+    A[file1] -->|child| E
     G[file2]
     end
     subgraph subjID [Subject ID region]
