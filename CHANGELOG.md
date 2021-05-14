@@ -5,7 +5,7 @@
 
 **Table of Contents**
 
-- [Unreleased (2021-05-11)](#unreleased-2021-05-11)
+- [Unreleased (2021-05-14)](#unreleased-2021-05-14)
   - [Bug Fixes](#bug-fixes)
   - [Documentation](#documentation)
   - [Features](#features)
@@ -86,13 +86,17 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [Unreleased](https://github.com/ory/keto/compare/v0.6.0-alpha.3...a0158182c5f87cfd4767824e1c5d6cbb8094a4e6) (2021-05-11)
+# [Unreleased](https://github.com/ory/keto/compare/v0.6.0-alpha.3...7fa4dca4182a1fa024f9cef0a04163f2cbd882aa) (2021-05-14)
 
 ### Bug Fixes
 
 - Log all database connection errors
   ([#588](https://github.com/ory/keto/issues/588))
   ([2b0fad8](https://github.com/ory/keto/commit/2b0fad897e61400bd2a6cdf47f33ff4301e9c5f8))
+- Update docker-compose.yml version
+  ([#595](https://github.com/ory/keto/issues/595))
+  ([7fa4dca](https://github.com/ory/keto/commit/7fa4dca4182a1fa024f9cef0a04163f2cbd882aa)),
+  closes [#549](https://github.com/ory/keto/issues/549)
 
 ### Documentation
 
