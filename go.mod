@@ -23,9 +23,13 @@ replace github.com/goreleaser/nfpm => github.com/goreleaser/nfpm v1.10.2
 replace github.com/ory/keto/proto/ory/keto/acl/v1alpha1 => ./proto/ory/keto/acl/v1alpha1
 
 require (
+	github.com/Azure/go-autorest/autorest/azure/auth v0.5.7 // indirect
+	github.com/Azure/go-autorest/autorest/to v0.4.0 // indirect
+	github.com/Azure/go-autorest/autorest/validation v0.3.1 // indirect
+	github.com/DataDog/datadog-go v4.7.0+incompatible // indirect
 	github.com/bufbuild/buf v0.31.1
 	github.com/cenkalti/backoff/v3 v3.0.0
-	github.com/containerd/continuity v0.0.0-20200228182428-0f16d7a0959c // indirect
+	github.com/containerd/containerd v1.5.2 // indirect
 	github.com/ghodss/yaml v1.0.0
 	github.com/go-openapi/errors v0.20.0
 	github.com/go-openapi/runtime v0.19.26
@@ -33,7 +37,7 @@ require (
 	github.com/go-openapi/swag v0.19.14
 	github.com/go-openapi/validate v0.20.2
 	github.com/go-swagger/go-swagger v0.26.1
-	github.com/gobuffalo/pop/v5 v5.3.3
+	github.com/gobuffalo/pop/v5 v5.3.4
 	github.com/golang/mock v1.5.0
 	github.com/goreleaser/godownloader v0.1.1-0.20200426152203-fd8ad8f7dd78
 	github.com/gorilla/websocket v1.4.2
@@ -43,6 +47,7 @@ require (
 	github.com/luna-duclos/instrumentedsql v1.1.3
 	github.com/luna-duclos/instrumentedsql/opentracing v0.0.0-20201103091713-40d03108b6f4
 	github.com/mattn/goveralls v0.0.8
+	github.com/morikuni/aec v1.0.0 // indirect
 	github.com/ory/analytics-go/v4 v4.0.0
 	github.com/ory/cli v0.0.49
 	github.com/ory/go-acc v0.2.6
@@ -53,6 +58,7 @@ require (
 	github.com/ory/x v0.0.228
 	github.com/pelletier/go-toml v1.8.1
 	github.com/phayes/freeport v0.0.0-20180830031419-95f893ade6f2
+	github.com/philhofer/fwd v1.1.1 // indirect
 	github.com/pkg/errors v0.9.1
 	github.com/pseudomuto/protoc-gen-doc v1.4.1
 	github.com/rs/cors v1.6.0
@@ -66,11 +72,13 @@ require (
 	github.com/tidwall/gjson v1.7.1
 	github.com/tidwall/sjson v1.1.5
 	github.com/urfave/negroni v1.0.0
-	golang.org/x/sync v0.0.0-20201020160332-67f06af15bc9
+	github.com/ziutek/mymysql v1.5.4 // indirect
+	golang.org/x/sync v0.0.0-20201207232520-09787c993a3a
 	golang.org/x/tools v0.1.0
 	google.golang.org/grpc v1.37.0
 	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.1.0
 	google.golang.org/protobuf v1.26.0
+	gopkg.in/gorp.v1 v1.7.2 // indirect
 )
 
 go 1.16
