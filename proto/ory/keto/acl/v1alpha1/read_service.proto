@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package ory.keto.acl.v1alpha1;
 
-import "ory/keto/acl/v1alpha1/acl.proto";
+import "acl.proto";
 import "google/protobuf/field_mask.proto";
 
 option go_package = "github.com/ory/keto/proto/ory/keto/acl/v1alpha1;acl";

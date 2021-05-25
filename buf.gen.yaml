@@ -1,21 +1,21 @@
 version: v1beta1
 plugins:
   - name: go
-    out: proto
+    out: proto/ory/keto/acl/v1alpha1/
     opt: paths=source_relative
   - name: go-grpc
-    out: proto
+    out: proto/ory/keto/acl/v1alpha1/
     opt: paths=source_relative,require_unimplemented_servers=false
   - name: js
-    out: proto
+    out: proto/ory/keto/acl/v1alpha1/
     opt: import_style=commonjs,binary
   - name: js-grpc
-    out: proto
+    out: proto/ory/keto/acl/v1alpha1/
     opt: grpc_js,binary,import_style=commonjs
     path: node_modules/.bin/grpc_tools_node_protoc_plugin
   - name: ts
-    out: proto
-    opt: ts_out=proto
+    out: proto/ory/keto/acl/v1alpha1/
+    opt: ts_out=proto/ory/keto/acl/v1alpha1/
     path: node_modules/.bin/protoc-gen-ts
   - name: doc
     out: docs/docs/reference

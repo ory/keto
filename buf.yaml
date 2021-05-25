@@ -1,7 +1,7 @@
 version: v1beta1
 build:
   roots:
-    - proto
+    - proto/ory/keto/acl/v1alpha1/
 lint:
   use:
     - DEFAULT
