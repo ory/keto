@@ -47,7 +47,6 @@ require (
 	github.com/luna-duclos/instrumentedsql v1.1.3
 	github.com/luna-duclos/instrumentedsql/opentracing v0.0.0-20201103091713-40d03108b6f4
 	github.com/mattn/goveralls v0.0.8
-	github.com/morikuni/aec v1.0.0 // indirect
 	github.com/ory/analytics-go/v4 v4.0.0
 	github.com/ory/cli v0.0.49
 	github.com/ory/go-acc v0.2.6
@@ -55,7 +54,7 @@ require (
 	github.com/ory/herodot v0.9.3
 	github.com/ory/jsonschema/v3 v3.0.3
 	github.com/ory/keto/proto/ory/keto/acl/v1alpha1 v0.0.0-00010101000000-000000000000
-	github.com/ory/x v0.0.228
+	github.com/ory/x v0.0.242
 	github.com/pelletier/go-toml v1.8.1
 	github.com/phayes/freeport v0.0.0-20180830031419-95f893ade6f2
 	github.com/philhofer/fwd v1.1.1 // indirect
@@ -72,13 +71,11 @@ require (
 	github.com/tidwall/gjson v1.7.1
 	github.com/tidwall/sjson v1.1.5
 	github.com/urfave/negroni v1.0.0
-	github.com/ziutek/mymysql v1.5.4 // indirect
 	golang.org/x/sync v0.0.0-20201207232520-09787c993a3a
 	golang.org/x/tools v0.1.0
 	google.golang.org/grpc v1.37.0
 	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.1.0
 	google.golang.org/protobuf v1.26.0
-	gopkg.in/gorp.v1 v1.7.2 // indirect
 )
 
 go 1.16
