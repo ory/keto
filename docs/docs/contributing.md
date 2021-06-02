@@ -201,7 +201,7 @@ request, go through this checklist:
 1. Ensure that each commit has a descriptive prefix. This ensures a uniform
    commit history and helps structure the changelog.  
    Please refer to this
-   [list of prefixes for Keto](https://github.com/ory/ory/keto/blob/master/.github/semantic.yml).
+   [list of prefixes for Keto](https://github.com/ory/keto/blob/master/.github/semantic.yml).
 
 Pull requests will be treated as "review requests," and maintainers will give
 feedback on the style and substance of the patch.
