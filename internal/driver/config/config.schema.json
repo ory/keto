@@ -324,7 +324,10 @@
           "type": "string",
           "description": "Set this to the tracing backend you wish to use. Currently supports jaeger. If omitted or empty, tracing will be disabled.",
           "enum": [
-            "jaeger"
+            "jaeger",
+            "zipkin",
+            "datadog",
+            "elastic-apm"
           ],
           "examples": [
             "jaeger"
