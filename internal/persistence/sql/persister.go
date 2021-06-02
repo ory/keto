@@ -82,11 +82,12 @@ func (p *Persister) newConnection(options map[string]string) (c *pop.Connection,
 			instrumentedsql.WithOmitArgs(),
 		}
 	}
-	pool, idlePool, connMaxLifetime, cleanedDSN := sqlcon.ParseConnectionOptions(p.l, p.dsn)
+	pool, idlePool, connMaxLifetime, connMaxIdleTime, cleanedDSN := sqlcon.ParseConnectionOptions(p.l, p.dsn)
 	connDetails := &pop.ConnectionDetails{
 		URL:                       sqlcon.FinalizeDSN(p.l, cleanedDSN),
 		IdlePool:                  idlePool,
 		ConnMaxLifetime:           connMaxLifetime,
+		ConnMaxIdleTime:           connMaxIdleTime,
 		Pool:                      pool,
 		Options:                   options,
 		UseInstrumentedDriver:     p.tracer != nil && p.tracer.IsLoaded(),
