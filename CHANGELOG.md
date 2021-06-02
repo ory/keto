@@ -5,7 +5,7 @@
 
 **Table of Contents**
 
-- [Unreleased (2021-05-31)](#unreleased-2021-05-31)
+- [Unreleased (2021-06-02)](#unreleased-2021-06-02)
   - [Bug Fixes](#bug-fixes)
   - [Documentation](#documentation)
   - [Features](#features)
@@ -86,7 +86,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [Unreleased](https://github.com/ory/keto/compare/v0.6.0-alpha.3...7fa4dca4182a1fa024f9cef0a04163f2cbd882aa) (2021-05-31)
+# [Unreleased](https://github.com/ory/keto/compare/v0.6.0-alpha.3...50a862338e17f86900ca162da7f3467f55f9f954) (2021-06-02)
 
 ### Bug Fixes
 
@@ -109,6 +109,9 @@
 - Make generated gRPC client its own module
   ([#583](https://github.com/ory/keto/issues/583))
   ([f0fbb64](https://github.com/ory/keto/commit/f0fbb64b3358e9800854295cebc9ec8b8e56c87a))
+- Max_idle_conn_time ([#605](https://github.com/ory/keto/issues/605))
+  ([50a8623](https://github.com/ory/keto/commit/50a862338e17f86900ca162da7f3467f55f9f954)),
+  closes [#523](https://github.com/ory/keto/issues/523)
 
 # [0.6.0-alpha.3](https://github.com/ory/keto/compare/v0.6.0-alpha.2...v0.6.0-alpha.3) (2021-04-29)
 
