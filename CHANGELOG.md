@@ -5,7 +5,7 @@
 
 **Table of Contents**
 
-- [Unreleased (2021-06-02)](#unreleased-2021-06-02)
+- [Unreleased (2021-06-04)](#unreleased-2021-06-04)
   - [Bug Fixes](#bug-fixes)
   - [Documentation](#documentation)
   - [Features](#features)
@@ -86,10 +86,13 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [Unreleased](https://github.com/ory/keto/compare/v0.6.0-alpha.3...50a862338e17f86900ca162da7f3467f55f9f954) (2021-06-02)
+# [Unreleased](https://github.com/ory/keto/compare/v0.6.0-alpha.3...aa263be9a7830e3c769d7698d36137555ca230bc) (2021-06-04)
 
 ### Bug Fixes
 
+- Add missing tracers ([#600](https://github.com/ory/keto/issues/600))
+  ([aa263be](https://github.com/ory/keto/commit/aa263be9a7830e3c769d7698d36137555ca230bc)),
+  closes [#593](https://github.com/ory/keto/issues/593)
 - Log all database connection errors
   ([#588](https://github.com/ory/keto/issues/588))
   ([2b0fad8](https://github.com/ory/keto/commit/2b0fad897e61400bd2a6cdf47f33ff4301e9c5f8))
