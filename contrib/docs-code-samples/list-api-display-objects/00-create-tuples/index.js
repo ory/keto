@@ -1,14 +1,12 @@
 import grpc from '@ory/keto-grpc-client/node_modules/@grpc/grpc-js/build/src/index.js'
-import acl from '@ory/keto-grpc-client/acl_pb.js'
-import writeService from '@ory/keto-grpc-client/write_service_grpc_pb.js'
-import writeData from '@ory/keto-grpc-client/write_service_pb.js'
+import { acl, write, writeService } from '@ory/keto-grpc-client'
 
 const writeClient = new writeService.WriteServiceClient(
   '127.0.0.1:4467',
   grpc.credentials.createInsecure()
 )
 
-const writeRequest = new writeData.TransactRelationTuplesRequest()
+const writeRequest = new write.TransactRelationTuplesRequest()
 
 const addToChat = (chatName) => (user) => {
   const relationTuple = new acl.RelationTuple()
@@ -20,8 +18,8 @@ const addToChat = (chatName) => (user) => {
   sub.setId(user)
   relationTuple.setSubject(sub)
 
-  const tupleDelta = new writeData.RelationTupleDelta()
-  tupleDelta.setAction(writeData.RelationTupleDelta.Action.INSERT)
+  const tupleDelta = new write.RelationTupleDelta()
+  tupleDelta.setAction(write.RelationTupleDelta.Action.INSERT)
   tupleDelta.setRelationTuple(relationTuple)
 
   writeRequest.addRelationTupleDeltas(tupleDelta)

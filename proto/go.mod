@@ -1,4 +1,4 @@
-module github.com/ory/keto/proto/ory/keto/acl/v1alpha1
+module github.com/ory/keto/proto
 
 go 1.16
 
