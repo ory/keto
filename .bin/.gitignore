@@ -1,1 +1,4 @@
 *
+!go.mod
+!go.sum
+!indirect_pins.go
