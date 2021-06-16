@@ -3,6 +3,7 @@ package check
 import (
 	"context"
 	"errors"
+	"github.com/ory/keto/internal/utils"
 
 	"github.com/ory/herodot"
 
@@ -16,6 +17,7 @@ type (
 	}
 	Engine struct {
 		d EngineDependencies
+		u utils.EngineUtils
 	}
 	EngineDependencies interface {
 		relationtuple.ManagerProvider
@@ -25,7 +27,12 @@ type (
 func NewEngine(d EngineDependencies) *Engine {
 	return &Engine{
 		d: d,
+		u: &utils.EngineUtilsProvider{},
 	}
+}
+
+func (e *Engine) checkVisited() (context.Context, bool) {
+	return context.Background(), false
 }
 
 func (e *Engine) subjectIsAllowed(ctx context.Context, requested *relationtuple.InternalRelationTuple, rels []*relationtuple.InternalRelationTuple) (bool, error) {
@@ -35,6 +42,11 @@ func (e *Engine) subjectIsAllowed(ctx context.Context, requested *relationtuple.
 	// TODO replace by more performant algorithm: https://github.com/ory/keto/issues/483
 
 	for _, sr := range rels {
+		ctx, wasAlreadyVisited := e.u.CheckVisited(ctx, sr.String())
+		if wasAlreadyVisited {
+			continue
+		}
+
 		// we only have to check Subject here as we know that sr was reached from requested.ObjectID, requested.Relation through 0...n indirections
 		if requested.Subject.Equals(sr.Subject) {
 			// found the requested relation

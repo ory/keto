@@ -287,4 +287,77 @@ func TestEngine(t *testing.T) {
 		require.NoError(t, err)
 		assert.Equal(t, expectedTree, tree)
 	})
+
+	t.Run("case=circular tuples", func(t *testing.T) {
+		sendlingerTor, odeonsplatz, centralStation, connected, namesp := "Sendlinger Tor", "Odeonsplatz", "Central Station", "connected", "munich transport"
+
+		sendlingerTorSS, odeonsplatzSS, centralStationSS := &relationtuple.SubjectSet{
+			Namespace: namesp,
+			Object:    sendlingerTor,
+			Relation:  connected,
+		}, &relationtuple.SubjectSet{
+			Namespace: namesp,
+			Object:    odeonsplatz,
+			Relation:  connected,
+		}, &relationtuple.SubjectSet{
+			Namespace: namesp,
+			Object:    centralStation,
+			Relation:  connected,
+		}
+
+		reg, e := newTestEngine(t, []*namespace.Namespace{{Name: namesp}})
+
+		expectedTree := &expand.Tree{
+			Type:    expand.Union,
+			Subject: sendlingerTorSS,
+			Children: []*expand.Tree{
+				{
+					Type:    expand.Union,
+					Subject: odeonsplatzSS,
+					Children: []*expand.Tree{
+						{
+							Type:    expand.Union,
+							Subject: centralStationSS,
+							Children: []*expand.Tree{
+								{
+									Type:     expand.Leaf,
+									Subject:  sendlingerTorSS,
+									Children: nil,
+								},
+							},
+						},
+					},
+				},
+			},
+		}
+
+		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), []*relationtuple.InternalRelationTuple{
+			{
+				Namespace: namesp,
+				Object:    sendlingerTor,
+				Relation:  connected,
+				Subject:   odeonsplatzSS,
+			},
+			{
+				Namespace: namesp,
+				Object:    odeonsplatz,
+				Relation:  connected,
+				Subject:   centralStationSS,
+			},
+			{
+				Namespace: namesp,
+				Object:    centralStation,
+				Relation:  connected,
+				Subject:   sendlingerTorSS,
+			},
+		}...))
+
+		tree, err := e.BuildTree(context.Background(), &relationtuple.SubjectSet{
+			Namespace: namesp,
+			Object:    sendlingerTor,
+			Relation:  connected,
+		}, 100)
+		require.NoError(t, err)
+		assert.Equal(t, expectedTree, tree)
+	})
 }

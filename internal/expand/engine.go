@@ -2,6 +2,7 @@ package expand
 
 import (
 	"context"
+	"github.com/ory/keto/internal/utils"
 
 	"github.com/ory/keto/internal/x"
 
@@ -14,6 +15,7 @@ type (
 	}
 	Engine struct {
 		d EngineDependencies
+		u utils.EngineUtils
 	}
 	EngineProvider interface {
 		ExpandEngine() *Engine
@@ -21,11 +23,19 @@ type (
 )
 
 func NewEngine(d EngineDependencies) *Engine {
-	return &Engine{d: d}
+	return &Engine{
+		d: d,
+		u: &utils.EngineUtilsProvider{},
+	}
 }
 
 func (e *Engine) BuildTree(ctx context.Context, subject relationtuple.Subject, restDepth int) (*Tree, error) {
 	if restDepth <= 0 {
+		return nil, nil
+	}
+
+	ctx, wasAlreadyVisited := e.u.CheckVisited(ctx, subject.String())
+	if wasAlreadyVisited {
 		return nil, nil
 	}
 
