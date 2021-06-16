@@ -86,13 +86,16 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [Unreleased](https://github.com/ory/keto/compare/v0.6.0-alpha.3...3b881f6015a93b382b3fbbca4be9259622038b6a) (2021-06-16)
+# [Unreleased](https://github.com/ory/keto/compare/v0.6.0-alpha.3...8e301198298858fd7f387ef63a7abf4fa55ea240) (2021-06-16)
 
 ### Bug Fixes
 
 - Add missing tracers ([#600](https://github.com/ory/keto/issues/600))
   ([aa263be](https://github.com/ory/keto/commit/aa263be9a7830e3c769d7698d36137555ca230bc)),
   closes [#593](https://github.com/ory/keto/issues/593)
+- Handle relation tuple cycles in expand and check engine
+  ([#623](https://github.com/ory/keto/issues/623))
+  ([8e30119](https://github.com/ory/keto/commit/8e301198298858fd7f387ef63a7abf4fa55ea240))
 - Log all database connection errors
   ([#588](https://github.com/ory/keto/issues/588))
   ([2b0fad8](https://github.com/ory/keto/commit/2b0fad897e61400bd2a6cdf47f33ff4301e9c5f8))
