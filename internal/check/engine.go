@@ -3,6 +3,7 @@ package check
 import (
 	"context"
 	"errors"
+
 	"github.com/ory/keto/internal/utils"
 
 	"github.com/ory/herodot"

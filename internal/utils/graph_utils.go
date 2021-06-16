@@ -11,15 +11,18 @@ type (
 	EngineUtilsProvider struct {
 		EngineUtils
 	}
+	contextKey string
 )
 
+const visitedMapKey = contextKey("visitedMap")
+
 func (*EngineUtilsProvider) CheckVisited(ctx context.Context, current string) (context.Context, bool) {
-	visitedMap, ok := ctx.Value("visitedMap").(map[string]bool)
+	visitedMap, ok := ctx.Value(visitedMapKey).(map[string]bool)
 	if !ok {
 		// for the first time initialize the map
 		visitedMap = make(map[string]bool)
 		visitedMap[current] = true
-		return context.WithValue(ctx, "visitedMap", visitedMap), false
+		return context.WithValue(ctx, visitedMapKey, visitedMap), false
 	}
 
 	// check if current node was already visited
@@ -32,7 +35,7 @@ func (*EngineUtilsProvider) CheckVisited(ctx context.Context, current string) (c
 
 	return context.WithValue(
 		ctx,
-		"visitedMap",
+		visitedMapKey,
 		visitedMap,
 	), false
 }

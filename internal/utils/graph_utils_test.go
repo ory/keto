@@ -2,8 +2,9 @@ package utils
 
 import (
 	"context"
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestEngineUtilsProvider_CheckVisited(t *testing.T) {

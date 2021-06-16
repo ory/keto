@@ -2,6 +2,7 @@ package expand
 
 import (
 	"context"
+
 	"github.com/ory/keto/internal/utils"
 
 	"github.com/ory/keto/internal/x"
