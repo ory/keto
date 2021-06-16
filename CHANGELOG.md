@@ -86,7 +86,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [Unreleased](https://github.com/ory/keto/compare/v0.6.0-alpha.3...6355beae5b5b28c3eee19fdee85b9875cbc165c3) (2021-06-16)
+# [Unreleased](https://github.com/ory/keto/compare/v0.6.0-alpha.3...3b881f6015a93b382b3fbbca4be9259622038b6a) (2021-06-16)
 
 ### Bug Fixes
 
@@ -96,6 +96,23 @@
 - Log all database connection errors
   ([#588](https://github.com/ory/keto/issues/588))
   ([2b0fad8](https://github.com/ory/keto/commit/2b0fad897e61400bd2a6cdf47f33ff4301e9c5f8))
+- Move gRPC client module root up
+  ([#620](https://github.com/ory/keto/issues/620))
+  ([3b881f6](https://github.com/ory/keto/commit/3b881f6015a93b382b3fbbca4be9259622038b6a)):
+
+  > BREAKING: The npm package `@ory/keto-grpc-client` from now on includes all
+  > API versions. Because of that, the import paths changed. For migrating to
+  > the new client package, change the import path according to the following
+  > example:
+  >
+  > ```diff
+  > - import acl from '@ory/keto-grpc-client/acl_pb.js'
+  > + // from the latest version
+  > + import { acl } from '@ory/keto-grpc-client'
+  > + // or a specific one
+  > + import acl from '@ory/keto-grpc-client/ory/keto/acl/v1alpha1/acl_pb.js'
+  > ```
+
 - Update docker-compose.yml version
   ([#595](https://github.com/ory/keto/issues/595))
   ([7fa4dca](https://github.com/ory/keto/commit/7fa4dca4182a1fa024f9cef0a04163f2cbd882aa)),
