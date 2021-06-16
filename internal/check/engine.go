@@ -31,10 +31,6 @@ func NewEngine(d EngineDependencies) *Engine {
 	}
 }
 
-func (e *Engine) checkVisited() (context.Context, bool) {
-	return context.Background(), false
-}
-
 func (e *Engine) subjectIsAllowed(ctx context.Context, requested *relationtuple.InternalRelationTuple, rels []*relationtuple.InternalRelationTuple) (bool, error) {
 	// This is the same as the graph problem "can requested.Subject be reached from requested.Object through the first outgoing edge requested.Relation"
 	//
