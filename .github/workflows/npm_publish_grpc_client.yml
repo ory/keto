@@ -23,7 +23,7 @@ jobs:
       - run: sudo npm i -g npm@7
       - name: Bump version
         run: |-
-          cd proto/ory/keto/acl/v1alpha1
+          cd proto
           cat <<< $(jq '.version = (env.RELEASE_VERSION | sub("(^refs/tags/v)|(^v)"; ""))' package.json) > package.json
         env:
           RELEASE_VERSION: ${{ github.event.inputs.version || github.ref }}
@@ -32,10 +32,10 @@ jobs:
           add: package.json
           author_name: zepatrik
           author_email: zepatrik@users.noreply.github.com
-          cwd: proto/ory/keto/acl/v1alpha1
+          cwd: proto
           message: 'autogen: bump node gRPC client version'
       - run: |-
-          cd proto/ory/keto/acl/v1alpha1
+          cd proto
           npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN_AENEASR }}

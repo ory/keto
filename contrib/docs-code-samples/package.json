@@ -2,10 +2,10 @@
   "private": true,
   "dependencies": {
     "@grpc/grpc-js": "^1.2.6",
-    "@ory/keto-grpc-client": "file:../../proto/ory/keto/acl/v1alpha1"
+    "@ory/keto-grpc-client": "file:../../proto"
   },
   "scripts": {
-    "test": "(cd ../../proto/ory/keto/acl/v1alpha1 && npm i) && ./test.sh"
+    "test": "(cd ../../proto && npm i) && ./test.sh"
   },
   "type": "module"
 }

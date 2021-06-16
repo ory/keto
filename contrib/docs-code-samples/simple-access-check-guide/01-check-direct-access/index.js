@@ -1,14 +1,12 @@
 import grpc from '@ory/keto-grpc-client/node_modules/@grpc/grpc-js/build/src/index.js'
-import acl from '@ory/keto-grpc-client/acl_pb.js'
-import checkService from '@ory/keto-grpc-client/check_service_grpc_pb.js'
-import checkData from '@ory/keto-grpc-client/check_service_pb.js'
+import { acl, check, checkService } from '@ory/keto-grpc-client'
 
 const checkClient = new checkService.CheckServiceClient(
   '127.0.0.1:4466',
   grpc.credentials.createInsecure()
 )
 
-const checkRequest = new checkData.CheckRequest()
+const checkRequest = new check.CheckRequest()
 checkRequest.setNamespace('messages')
 checkRequest.setObject('02y_15_4w350m3')
 checkRequest.setRelation('decypher')

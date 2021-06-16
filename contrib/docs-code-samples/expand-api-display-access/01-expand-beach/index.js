@@ -1,7 +1,5 @@
 import grpc from '@ory/keto-grpc-client/node_modules/@grpc/grpc-js/build/src/index.js'
-import expandService from '@ory/keto-grpc-client/expand_service_grpc_pb.js'
-import expandData from '@ory/keto-grpc-client/expand_service_pb.js'
-import acl from '@ory/keto-grpc-client/acl_pb.js'
+import { acl, expand, expandService } from '@ory/keto-grpc-client'
 
 const expandClient = new expandService.ExpandServiceClient(
   '127.0.0.1:4466',
@@ -16,7 +14,7 @@ subjectSet.setObject('/photos/beach.jpg')
 const sub = new acl.Subject()
 sub.setSet(subjectSet)
 
-const expandRequest = new expandData.ExpandRequest()
+const expandRequest = new expand.ExpandRequest()
 expandRequest.setSubject(sub)
 expandRequest.setMaxDepth(3)
 
@@ -37,9 +35,9 @@ const prettyTree = (tree) => {
     tree.getChildrenList()
   ]
   switch (nodeType) {
-    case expandData.NodeType.NODE_TYPE_LEAF:
+    case expand.NodeType.NODE_TYPE_LEAF:
       return { type: 'leaf', subject }
-    case expandData.NodeType.NODE_TYPE_UNION:
+    case expand.NodeType.NODE_TYPE_UNION:
       return { type: 'union', subject, children: children.map(prettyTree) }
   }
 }
