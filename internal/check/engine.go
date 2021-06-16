@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 
-	"github.com/ory/keto/internal/utils"
+	"github.com/ory/keto/internal/x/graph"
 
 	"github.com/ory/herodot"
 
@@ -18,7 +18,6 @@ type (
 	}
 	Engine struct {
 		d EngineDependencies
-		u utils.EngineUtils
 	}
 	EngineDependencies interface {
 		relationtuple.ManagerProvider
@@ -28,7 +27,6 @@ type (
 func NewEngine(d EngineDependencies) *Engine {
 	return &Engine{
 		d: d,
-		u: &utils.EngineUtilsProvider{},
 	}
 }
 
@@ -39,7 +37,7 @@ func (e *Engine) subjectIsAllowed(ctx context.Context, requested *relationtuple.
 	// TODO replace by more performant algorithm: https://github.com/ory/keto/issues/483
 
 	for _, sr := range rels {
-		ctx, wasAlreadyVisited := e.u.CheckVisited(ctx, sr.String())
+		ctx, wasAlreadyVisited := graph.CheckAndAddVisited(ctx, sr.Subject)
 		if wasAlreadyVisited {
 			continue
 		}
