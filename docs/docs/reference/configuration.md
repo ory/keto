@@ -641,6 +641,9 @@ tracing:
   #
   # One of:
   # - jaeger
+  # - zipkin
+  # - datadog
+  # - elastic-apm
   #
   # Examples:
   # - jaeger
