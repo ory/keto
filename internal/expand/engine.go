@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/ory/keto/internal/x"
+	"github.com/ory/keto/internal/x/graph"
 
 	"github.com/ory/keto/internal/relationtuple"
 )
@@ -21,7 +22,9 @@ type (
 )
 
 func NewEngine(d EngineDependencies) *Engine {
-	return &Engine{d: d}
+	return &Engine{
+		d: d,
+	}
 }
 
 func (e *Engine) BuildTree(ctx context.Context, subject relationtuple.Subject, restDepth int) (*Tree, error) {
@@ -30,6 +33,11 @@ func (e *Engine) BuildTree(ctx context.Context, subject relationtuple.Subject, r
 	}
 
 	if us, isUserSet := subject.(*relationtuple.SubjectSet); isUserSet {
+		ctx, wasAlreadyVisited := graph.CheckAndAddVisited(ctx, subject)
+		if wasAlreadyVisited {
+			return nil, nil
+		}
+
 		subTree := &Tree{
 			Type:    Union,
 			Subject: subject,

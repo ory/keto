@@ -4,6 +4,8 @@ import (
 	"context"
 	"errors"
 
+	"github.com/ory/keto/internal/x/graph"
+
 	"github.com/ory/herodot"
 
 	"github.com/ory/keto/internal/relationtuple"
@@ -35,6 +37,11 @@ func (e *Engine) subjectIsAllowed(ctx context.Context, requested *relationtuple.
 	// TODO replace by more performant algorithm: https://github.com/ory/keto/issues/483
 
 	for _, sr := range rels {
+		ctx, wasAlreadyVisited := graph.CheckAndAddVisited(ctx, sr.Subject)
+		if wasAlreadyVisited {
+			continue
+		}
+
 		// we only have to check Subject here as we know that sr was reached from requested.ObjectID, requested.Relation through 0...n indirections
 		if requested.Subject.Equals(sr.Subject) {
 			// found the requested relation

@@ -438,4 +438,57 @@ func TestEngine(t *testing.T) {
 			assert.True(t, allowed, req.String())
 		}
 	})
+
+	t.Run("case=circular tuples", func(t *testing.T) {
+		sendlingerTor, odeonsplatz, centralStation, connected, namesp := "Sendlinger Tor", "Odeonsplatz", "Central Station", "connected", "munich transport"
+
+		reg := newDepsProvider(t, []*namespace.Namespace{{Name: namesp}})
+
+		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), []*relationtuple.InternalRelationTuple{
+			{
+				Namespace: namesp,
+				Object:    sendlingerTor,
+				Relation:  connected,
+				Subject: &relationtuple.SubjectSet{
+					Namespace: namesp,
+					Object:    odeonsplatz,
+					Relation:  connected,
+				},
+			},
+			{
+				Namespace: namesp,
+				Object:    odeonsplatz,
+				Relation:  connected,
+				Subject: &relationtuple.SubjectSet{
+					Namespace: namesp,
+					Object:    centralStation,
+					Relation:  connected,
+				},
+			},
+			{
+				Namespace: namesp,
+				Object:    centralStation,
+				Relation:  connected,
+				Subject: &relationtuple.SubjectSet{
+					Namespace: namesp,
+					Object:    sendlingerTor,
+					Relation:  connected,
+				},
+			},
+		}...))
+
+		e := check.NewEngine(reg)
+
+		stations := []string{sendlingerTor, odeonsplatz, centralStation}
+		res, err := e.SubjectIsAllowed(context.Background(), &relationtuple.InternalRelationTuple{
+			Namespace: namesp,
+			Object:    stations[0],
+			Relation:  connected,
+			Subject: &relationtuple.SubjectID{
+				ID: stations[2],
+			},
+		})
+		require.NoError(t, err)
+		assert.False(t, res)
+	})
 }
