@@ -1,7 +1,5 @@
 import grpc from '@ory/keto-grpc-client/node_modules/@grpc/grpc-js/build/src/index.js'
-import writeService from '@ory/keto-grpc-client/write_service_grpc_pb.js'
-import writeData from '@ory/keto-grpc-client/write_service_pb.js'
-import acl from '@ory/keto-grpc-client/acl_pb.js'
+import { acl, write, writeService } from '@ory/keto-grpc-client'
 
 const writeClient = new writeService.WriteServiceClient(
   '127.0.0.1:4467',
@@ -17,11 +15,11 @@ const sub = new acl.Subject()
 sub.setId('john')
 relationTuple.setSubject(sub)
 
-const tupleDelta = new writeData.RelationTupleDelta()
-tupleDelta.setAction(writeData.RelationTupleDelta.Action.DELETE)
+const tupleDelta = new write.RelationTupleDelta()
+tupleDelta.setAction(write.RelationTupleDelta.Action.DELETE)
 tupleDelta.setRelationTuple(relationTuple)
 
-const writeRequest = new writeData.TransactRelationTuplesRequest()
+const writeRequest = new write.TransactRelationTuplesRequest()
 writeRequest.addRelationTupleDeltas(tupleDelta)
 
 writeClient.transactRelationTuples(writeRequest, (err) => {

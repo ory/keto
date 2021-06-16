@@ -1,8 +1,5 @@
 import grpc from '@ory/keto-grpc-client/node_modules/@grpc/grpc-js/build/src/index.js'
-import writeService from '@ory/keto-grpc-client/write_service_grpc_pb.js'
-import writeData from '@ory/keto-grpc-client/write_service_pb.js'
-import readService from '@ory/keto-grpc-client/read_service_grpc_pb.js'
-import readData from '@ory/keto-grpc-client/read_service_pb.js'
+import { write, writeService, read, readService } from '@ory/keto-grpc-client'
 
 const readClient = new readService.ReadServiceClient(
   '127.0.0.1:4466',
@@ -10,10 +7,10 @@ const readClient = new readService.ReadServiceClient(
 )
 
 const purgeNamespace = (namespace) => {
-  const query = new readData.ListRelationTuplesRequest.Query()
+  const query = new read.ListRelationTuplesRequest.Query()
   query.setNamespace(namespace)
 
-  const readRequest = new readData.ListRelationTuplesRequest()
+  const readRequest = new read.ListRelationTuplesRequest()
   readRequest.setQuery(query)
 
   readClient.listRelationTuples(readRequest, (err, resp) => {
@@ -22,11 +19,11 @@ const purgeNamespace = (namespace) => {
       grpc.credentials.createInsecure()
     )
 
-    const writeRequest = new writeData.TransactRelationTuplesRequest()
+    const writeRequest = new write.TransactRelationTuplesRequest()
 
     resp.getRelationTuplesList().forEach((tuple) => {
-      const tupleDelta = new writeData.RelationTupleDelta()
-      tupleDelta.setAction(writeData.RelationTupleDelta.Action.DELETE)
+      const tupleDelta = new write.RelationTupleDelta()
+      tupleDelta.setAction(write.RelationTupleDelta.Action.DELETE)
       tupleDelta.setRelationTuple(tuple)
       writeRequest.addRelationTupleDeltas(tupleDelta)
     })

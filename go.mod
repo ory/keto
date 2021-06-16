@@ -14,7 +14,7 @@ replace gopkg.in/DataDog/dd-trace-go.v1 => gopkg.in/DataDog/dd-trace-go.v1 v1.27
 
 replace github.com/oleiade/reflections => github.com/oleiade/reflections v1.0.1
 
-replace github.com/ory/keto/proto/ory/keto/acl/v1alpha1 => ./proto/ory/keto/acl/v1alpha1
+replace github.com/ory/keto/proto => ./proto
 
 require (
 	github.com/Microsoft/go-winio v0.4.15 // indirect
@@ -38,7 +38,7 @@ require (
 	github.com/ory/graceful v0.1.1
 	github.com/ory/herodot v0.9.6
 	github.com/ory/jsonschema/v3 v3.0.3
-	github.com/ory/keto/proto/ory/keto/acl/v1alpha1 v0.0.0-00010101000000-000000000000
+	github.com/ory/keto/proto v0.0.0-00010101000000-000000000000
 	github.com/ory/x v0.0.253
 	github.com/pelletier/go-toml v1.8.1
 	github.com/phayes/freeport v0.0.0-20180830031419-95f893ade6f2
