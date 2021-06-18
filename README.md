@@ -49,7 +49,6 @@ Zookies, and more. An overview of what is implemented and upcoming can be found
 at
 [Implemented and Planned Features](https://www.ory.sh/keto/docs/next/implemented-planned-features).
 
-
 ---
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
