@@ -236,11 +236,11 @@ Something is not working.
 - [ ] Relations are not unique
       ([keto#292](https://github.com/ory/keto/issues/292)) -
       [@Patrik](https://github.com/zepatrik)
-- [ ] Handle circular relation tuples
-      ([keto#411](https://github.com/ory/keto/issues/411)) -
-      [@Patrik](https://github.com/zepatrik)
 - [x] Move models package to relations
       ([keto#295](https://github.com/ory/keto/issues/295)) -
+      [@Patrik](https://github.com/zepatrik)
+- [x] Handle circular relation tuples
+      ([keto#411](https://github.com/ory/keto/issues/411)) -
       [@Patrik](https://github.com/zepatrik)
 - [x] Listing relation tuples where none match cause SQL error
       ([keto#439](https://github.com/ory/keto/issues/439)) -
@@ -354,12 +354,12 @@ A request for comments to discuss and share ideas.
 - [ ] Allow modifying relation tuples with consistency guarantees
       ([keto#328](https://github.com/ory/keto/issues/328)) -
       [@Robin Brämer](https://github.com/robinbraemer)
-- [ ] Handle circular relation tuples
-      ([keto#411](https://github.com/ory/keto/issues/411)) -
-      [@Patrik](https://github.com/zepatrik)
 - [x] Design decisions, Clarifications and Proposals
       ([keto#307](https://github.com/ory/keto/issues/307)) -
       [@hackerman](https://github.com/aeneasr),
+      [@Patrik](https://github.com/zepatrik)
+- [x] Handle circular relation tuples
+      ([keto#411](https://github.com/ory/keto/issues/411)) -
       [@Patrik](https://github.com/zepatrik)
 
 ## [next](https://github.com/ory/keto/milestone/2)
