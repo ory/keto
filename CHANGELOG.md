@@ -5,88 +5,99 @@
 
 **Table of Contents**
 
-- [Unreleased (2021-06-17)](#unreleased-2021-06-17)
+- [Unreleased (2021-06-18)](#unreleased-2021-06-18)
   - [Bug Fixes](#bug-fixes)
   - [Documentation](#documentation)
   - [Features](#features)
 - [0.6.0-alpha.3 (2021-04-29)](#060-alpha3-2021-04-29)
+  - [Code Generation](#code-generation)
 - [0.6.0-alpha.2 (2021-04-29)](#060-alpha2-2021-04-29)
   - [Bug Fixes](#bug-fixes-1)
+  - [Code Generation](#code-generation-1)
   - [Documentation](#documentation-1)
   - [Features](#features-1)
 - [0.6.0-alpha.1 (2021-04-07)](#060-alpha1-2021-04-07)
   - [Bug Fixes](#bug-fixes-2)
   - [Build System](#build-system)
+  - [Code Generation](#code-generation-2)
   - [Code Refactoring](#code-refactoring)
   - [Documentation](#documentation-2)
   - [Features](#features-2)
   - [Tests](#tests)
-  - [0.5.6-alpha.1 (2020-05-28)](#056-alpha1-2020-05-28)
-    - [Bug Fixes](#bug-fixes-3)
-  - [0.5.5-alpha.1 (2020-05-28)](#055-alpha1-2020-05-28)
-    - [Bug Fixes](#bug-fixes-4)
-    - [Documentation](#documentation-3)
-  - [0.5.4-alpha.1 (2020-04-07)](#054-alpha1-2020-04-07)
-    - [Bug Fixes](#bug-fixes-5)
-  - [0.5.3-alpha.3 (2020-04-06)](#053-alpha3-2020-04-06)
-    - [Code Refactoring](#code-refactoring-1)
-    - [Documentation](#documentation-4)
-  - [0.5.3-alpha.1 (2020-04-03)](#053-alpha1-2020-04-03)
-  - [0.5.2 (2020-04-02)](#052-2020-04-02)
-    - [Documentation](#documentation-5)
+- [0.5.6-alpha.1 (2020-05-28)](#056-alpha1-2020-05-28)
+  - [Bug Fixes](#bug-fixes-3)
+  - [Chores](#chores)
+- [0.5.5-alpha.1 (2020-05-28)](#055-alpha1-2020-05-28)
+  - [Bug Fixes](#bug-fixes-4)
+  - [Chores](#chores-1)
+  - [Documentation](#documentation-3)
+- [0.5.4-alpha.1 (2020-04-07)](#054-alpha1-2020-04-07)
+  - [Bug Fixes](#bug-fixes-5)
+- [0.5.3-alpha.3 (2020-04-06)](#053-alpha3-2020-04-06)
+  - [Code Generation](#code-generation-3)
+  - [Code Refactoring](#code-refactoring-1)
+  - [Documentation](#documentation-4)
+- [0.5.3-alpha.1 (2020-04-03)](#053-alpha1-2020-04-03)
+  - [Chores](#chores-2)
+- [0.5.2 (2020-04-02)](#052-2020-04-02)
+  - [Documentation](#documentation-5)
 - [0.5.0 (2020-04-02)](#050-2020-04-02)
   - [Bug Fixes](#bug-fixes-6)
   - [Documentation](#documentation-6)
-  - [0.4.5-alpha.1 (2020-02-29)](#045-alpha1-2020-02-29)
-    - [Bug Fixes](#bug-fixes-7)
-    - [Documentation](#documentation-7)
-  - [0.4.4-alpha.1 (2020-02-14)](#044-alpha1-2020-02-14)
-    - [Bug Fixes](#bug-fixes-8)
-    - [Documentation](#documentation-8)
-    - [Features](#features-3)
-    - [Unclassified](#unclassified)
-  - [0.4.3-alpha.2 (2020-01-31)](#043-alpha2-2020-01-31)
-    - [Unclassified](#unclassified-1)
-  - [0.4.3-alpha.1 (2020-01-23)](#043-alpha1-2020-01-23)
-    - [Unclassified](#unclassified-2)
-  - [0.4.2-alpha.1 (2020-01-14)](#042-alpha1-2020-01-14)
-    - [Unclassified](#unclassified-3)
-  - [0.4.1-beta.1 (2020-01-13)](#041-beta1-2020-01-13)
-    - [Unclassified](#unclassified-4)
+- [0.4.5-alpha.1 (2020-02-29)](#045-alpha1-2020-02-29)
+  - [Bug Fixes](#bug-fixes-7)
+  - [Documentation](#documentation-7)
+- [0.4.4-alpha.1 (2020-02-14)](#044-alpha1-2020-02-14)
+  - [Bug Fixes](#bug-fixes-8)
+  - [Documentation](#documentation-8)
+  - [Features](#features-3)
+  - [Unclassified](#unclassified)
+- [0.4.3-alpha.2 (2020-01-31)](#043-alpha2-2020-01-31)
+  - [Unclassified](#unclassified-1)
+- [0.4.3-alpha.1 (2020-01-23)](#043-alpha1-2020-01-23)
+  - [Unclassified](#unclassified-2)
+- [0.4.2-alpha.1 (2020-01-14)](#042-alpha1-2020-01-14)
+  - [Unclassified](#unclassified-3)
+- [0.4.1-beta.1 (2020-01-13)](#041-beta1-2020-01-13)
+  - [Unclassified](#unclassified-4)
 - [0.4.0-alpha.1 (2020-01-13)](#040-alpha1-2020-01-13)
   - [Unclassified](#unclassified-5)
-  - [0.3.9-sandbox (2019-12-16)](#039-sandbox-2019-12-16)
-    - [Unclassified](#unclassified-6)
-  - [0.3.7-sandbox (2019-12-11)](#037-sandbox-2019-12-11)
-    - [Unclassified](#unclassified-7)
-  - [0.3.6-sandbox (2019-10-16)](#036-sandbox-2019-10-16)
-    - [Unclassified](#unclassified-8)
-  - [0.3.5-sandbox (2019-08-21)](#035-sandbox-2019-08-21)
-    - [Documentation](#documentation-9)
-    - [Unclassified](#unclassified-9)
-  - [0.3.3-sandbox (2019-05-18)](#033-sandbox-2019-05-18)
-    - [Documentation](#documentation-10)
-  - [0.3.1-sandbox (2019-04-29)](#031-sandbox-2019-04-29)
-    - [Documentation](#documentation-11)
-    - [Unclassified](#unclassified-10)
+- [0.3.9-sandbox (2019-12-16)](#039-sandbox-2019-12-16)
+  - [Unclassified](#unclassified-6)
+- [0.3.7-sandbox (2019-12-11)](#037-sandbox-2019-12-11)
+  - [Unclassified](#unclassified-7)
+- [0.3.6-sandbox (2019-10-16)](#036-sandbox-2019-10-16)
+  - [Unclassified](#unclassified-8)
+- [0.3.5-sandbox (2019-08-21)](#035-sandbox-2019-08-21)
+  - [Documentation](#documentation-9)
+  - [Unclassified](#unclassified-9)
+- [0.3.3-sandbox (2019-05-18)](#033-sandbox-2019-05-18)
+  - [Continuous Integration](#continuous-integration)
+  - [Documentation](#documentation-10)
+- [0.3.1-sandbox (2019-04-29)](#031-sandbox-2019-04-29)
+  - [Continuous Integration](#continuous-integration-1)
+  - [Documentation](#documentation-11)
+  - [Unclassified](#unclassified-10)
 - [0.3.0-sandbox (2019-04-29)](#030-sandbox-2019-04-29)
   - [Documentation](#documentation-12)
   - [Unclassified](#unclassified-11)
-  - [0.2.3-sandbox+oryOS.10 (2019-02-05)](#023-sandboxoryos10-2019-02-05)
-    - [Documentation](#documentation-13)
-    - [Unclassified](#unclassified-12)
-  - [0.2.2-sandbox+oryOS.10 (2018-12-13)](#022-sandboxoryos10-2018-12-13)
-  - [0.2.1-sandbox+oryOS.10 (2018-12-13)](#021-sandboxoryos10-2018-12-13)
+- [0.2.3-sandbox+oryOS.10 (2019-02-05)](#023-sandboxoryos10-2019-02-05)
+  - [Documentation](#documentation-13)
+  - [Unclassified](#unclassified-12)
+- [0.2.2-sandbox+oryOS.10 (2018-12-13)](#022-sandboxoryos10-2018-12-13)
+  - [Continuous Integration](#continuous-integration-2)
+- [0.2.1-sandbox+oryOS.10 (2018-12-13)](#021-sandboxoryos10-2018-12-13)
+  - [Continuous Integration](#continuous-integration-3)
 - [0.2.0-sandbox+oryOS.10 (2018-12-13)](#020-sandboxoryos10-2018-12-13)
   - [Documentation](#documentation-14)
   - [Unclassified](#unclassified-13)
-  - [0.0.1 (2018-05-20)](#001-2018-05-20)
-    - [Documentation](#documentation-15)
-    - [Unclassified](#unclassified-14)
+- [0.0.1 (2018-05-20)](#001-2018-05-20)
+  - [Documentation](#documentation-15)
+  - [Unclassified](#unclassified-14)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [Unreleased](https://github.com/ory/keto/compare/v0.6.0-alpha.3...8e301198298858fd7f387ef63a7abf4fa55ea240) (2021-06-17)
+# [Unreleased](https://github.com/ory/keto/compare/v0.6.0-alpha.3...8e301198298858fd7f387ef63a7abf4fa55ea240) (2021-06-18)
 
 ### Bug Fixes
 
@@ -102,20 +113,16 @@
 - Move gRPC client module root up
   ([#620](https://github.com/ory/keto/issues/620))
   ([3b881f6](https://github.com/ory/keto/commit/3b881f6015a93b382b3fbbca4be9259622038b6a)):
-
-  > BREAKING: The npm package `@ory/keto-grpc-client` from now on includes all
-  > API versions. Because of that, the import paths changed. For migrating to
-  > the new client package, change the import path according to the following
-  > example:
-  >
-  > ```diff
-  > - import acl from '@ory/keto-grpc-client/acl_pb.js'
-  > + // from the latest version
-  > + import { acl } from '@ory/keto-grpc-client'
-  > + // or a specific one
-  > + import acl from '@ory/keto-grpc-client/ory/keto/acl/v1alpha1/acl_pb.js'
-  > ```
-
+  BREAKING: The npm package `@ory/keto-grpc-client` from now on includes all API
+  versions. Because of that, the import paths changed. For migrating to the new
+  client package, change the import path according to the following example:
+  ```diff
+  - import acl from '@ory/keto-grpc-client/acl_pb.js'
+  + // from the latest version
+  + import { acl } from '@ory/keto-grpc-client'
+  + // or a specific one
+  + import acl from '@ory/keto-grpc-client/ory/keto/acl/v1alpha1/acl_pb.js'
+  ```
 - Update docker-compose.yml version
   ([#595](https://github.com/ory/keto/issues/595))
   ([7fa4dca](https://github.com/ory/keto/commit/7fa4dca4182a1fa024f9cef0a04163f2cbd882aa)),
@@ -141,9 +148,16 @@
 
 # [0.6.0-alpha.3](https://github.com/ory/keto/compare/v0.6.0-alpha.2...v0.6.0-alpha.3) (2021-04-29)
 
-No significant changes have been made for this release.
+Resolves CRDB and build issues.
+
+### Code Generation
+
+- Pin v0.6.0-alpha.3 release commit
+  ([d766968](https://github.com/ory/keto/commit/d766968419d10a68fd843df45316e3436b68d61d))
 
 # [0.6.0-alpha.2](https://github.com/ory/keto/compare/v0.6.0-alpha.1...v0.6.0-alpha.2) (2021-04-29)
+
+This release improves stability and documentation.
 
 ### Bug Fixes
 
@@ -163,6 +177,11 @@ No significant changes have been made for this release.
   ([32a6b04](https://github.com/ory/keto/commit/32a6b04609054cba84f7b56ebbe92341ec5dcd98))
 - Use sqlite image versions ([#544](https://github.com/ory/keto/issues/544))
   ([ec6cc5e](https://github.com/ory/keto/commit/ec6cc5ed528f1a097ea02669d059e060b7eff824))
+
+### Code Generation
+
+- Pin v0.6.0-alpha.2 release commit
+  ([470b2c6](https://github.com/ory/keto/commit/470b2c61c649fe5fcf638c84d4418212ff0330a5))
 
 ### Documentation
 
@@ -192,6 +211,62 @@ No significant changes have been made for this release.
 
 # [0.6.0-alpha.1](https://github.com/ory/keto/compare/v0.5.6-alpha.1...v0.6.0-alpha.1) (2021-04-07)
 
+We are extremely happy to announce next-gen Ory Keto which implements
+[Zanzibar: Google’s Consistent, Global Authorization System](https://research.google/pubs/pub48190/):
+
+> Zanzibar provides a uniform data model and configuration language for
+> expressing a wide range of access control policies from hundreds of client
+> services at Google, including Calendar, Cloud, Drive, Maps, Photos, and
+> YouTube. Its authorization decisions respect causal ordering of user actions
+> and thus provide external consistency amid changes to access control lists and
+> object contents. Zanzibar scales to trillions of access control lists and
+> millions of authorization requests per second to support services used by
+> billions of people. It has maintained 95th-percentile latency of less than 10
+> milliseconds and availability of greater than 99.999% over 3 years of
+> production use.
+
+Ory Keto is the first open source planet-scale authorization system built with
+cloud native technologies (Go, gRPC, newSQL) and architecture. It is also the
+first open source implementation of Google Zanzibar :tada:!
+
+Many concepts developer by Google Zanzibar are implemented in Ory Keto already.
+Let's take a look!
+
+As of this release, Ory Keto knows how to interpret and operate on the basic
+access control lists known as relation tuples. They encode relations between
+objects and subjects. One simple example of such a relation tuple could encode
+"`user1` has access to file `/foo`", a more complex one could encode "everyone
+who has write access on `/foo` has read access on `/foo`".
+
+Ory Keto comes with all the basic APIs as described in the Zanzibar paper. All
+of them are available over gRPC and REST.
+
+1. List: query relation tuples
+2. Check: determine whether a subject has a relation on an object
+3. Expand: get a tree of all subjects who have a relation on an object
+4. Change: create, update, and delete relation tuples
+
+For all details, head over to the
+[documentation](https://www.ory.sh/keto/docs/concepts/api-overview).
+
+With this release we officially move the "old" Keto to the
+[legacy-0.5 branch](https://github.com/ory/keto/tree/legacy-0.5). We will only
+provide security fixes from now on. A migration path to v0.6 is planned but not
+yet implemented, as the architectures are vastly different. Please refer to
+[the issue](https://github.com/ory/keto/issues/318).
+
+We are keen to bring more features and performance improvements. The next
+features we will tackle are:
+
+- Subject Set rewrites
+- Native ABAC & RBAC Support
+- Integration with other policy servers
+- Latency reduction through aggressive caching
+- Cluster mode that fans out requests over all Keto instances
+
+So stay tuned, :star: this repo, :eyes: releases, and
+[subscribe to our newsletter :email:](https://ory.us10.list-manage.com/subscribe?u=ffb1a878e4ec6c0ed312a3480&id=f605a41b53&MERGE0=&group[17097][32]=1).
+
 ### Bug Fixes
 
 - Add description attribute to access control policy role
@@ -219,10 +294,8 @@ No significant changes have been made for this release.
 - Ensure nil subject is not allowed
   ([#449](https://github.com/ory/keto/issues/449))
   ([7a0fcfc](https://github.com/ory/keto/commit/7a0fcfc4fe83776fa09cf78ee11f407610554d04)):
-
-  > The nodejs gRPC client was a great fuzzer and pointed me to some nil pointer
-  > dereference panics. This adds some input validation to prevent panics.
-
+  The nodejs gRPC client was a great fuzzer and pointed me to some nil pointer
+  dereference panics. This adds some input validation to prevent panics.
 - Ensure persister errors are handled by sqlcon
   ([#473](https://github.com/ory/keto/issues/473))
   ([4343c4a](https://github.com/ory/keto/commit/4343c4acd8f917fb7ae131e67bca6855d4d61694))
@@ -275,9 +348,7 @@ No significant changes have been made for this release.
   ([#462](https://github.com/ory/keto/issues/462))
   ([5f25bce](https://github.com/ory/keto/commit/5f25bceea35179c67d24dd95f698dc57b789d87a)),
   closes [#437](https://github.com/ory/keto/issues/437):
-
-  > Fixed all occurrences found using the search pattern `return .*, err\n`.
-
+  Fixed all occurrences found using the search pattern `return .*, err\n`.
 - Use package name in pkger
   ([6435939](https://github.com/ory/keto/commit/6435939ad7e5899505cd0e6261f5dfc819c9ca42))
 - **schema:** Add trace level to logger
@@ -292,6 +363,11 @@ No significant changes have been made for this release.
 - Pin dependency versions of buf and protoc plugins
   ([#338](https://github.com/ory/keto/issues/338))
   ([5a2fd1c](https://github.com/ory/keto/commit/5a2fd1cc8dff02aa7017771adc0d9101f6c86775))
+
+### Code Generation
+
+- Pin v0.6.0-alpha.1 release commit
+  ([875af25](https://github.com/ory/keto/commit/875af25f89b813455148e58884dcdf1cd3600b86))
 
 ### Code Refactoring
 
@@ -312,9 +388,7 @@ No significant changes have been made for this release.
   ([dd31865](https://github.com/ory/keto/commit/dd318653178cd45da47f3e7cef507b42708363ef))
 - Add performance page ([#413](https://github.com/ory/keto/issues/413))
   ([6fe0639](https://github.com/ory/keto/commit/6fe0639d36087b5ecd555eb6fe5ce949f3f6f0d7)):
-
-  > This also refactored the server startup. Functionality did not change.
-
+  This also refactored the server startup. Functionality did not change.
 - Add production guide
   ([a9163c7](https://github.com/ory/keto/commit/a9163c7690c55c8191650c4dfb464b75ea02446b))
 - Add zanzibar overview to README.md
@@ -354,10 +428,8 @@ No significant changes have been made for this release.
   ([0d0a50b](https://github.com/ory/keto/commit/0d0a50b3f4112893f32c81adc8edd137b5a62541))
 - Simple access check guide ([#451](https://github.com/ory/keto/issues/451))
   ([e0485af](https://github.com/ory/keto/commit/e0485afc46a445868580aa541e962e80cbea0670)):
-
-  > This also enables gRPC go, gRPC nodejs, cURL, and Keto CLI code samples to
-  > be tested.
-
+  This also enables gRPC go, gRPC nodejs, cURL, and Keto CLI code samples to be
+  tested.
 - Update comment in write response
   ([#329](https://github.com/ory/keto/issues/329))
   ([4ca0baf](https://github.com/ory/keto/commit/4ca0baf62e34402e749e870fe8c0cc893684192c))
@@ -367,9 +439,7 @@ No significant changes have been made for this release.
   ([5f71d73](https://github.com/ory/keto/commit/5f71d73e2ee95d02abc4cd42a76c98a35942df0c))
 - Update README ([#515](https://github.com/ory/keto/issues/515))
   ([18d3cd6](https://github.com/ory/keto/commit/18d3cd61b0a79400170dc0f89860b4614cc4a543)):
-
-  > Also format all markdown files in the root.
-
+  Also format all markdown files in the root.
 - Update repository templates
   ([db505f9](https://github.com/ory/keto/commit/db505f9e10755bc20c4623c4f5f99f33283dffda))
 - Update repository templates
@@ -444,40 +514,29 @@ No significant changes have been made for this release.
   ([b94f50d](https://github.com/ory/keto/commit/b94f50d1800c47a43561df5009cb38b44ccd0088))
 - Namespace migrate status CLI ([#508](https://github.com/ory/keto/issues/508))
   ([e3f7ad9](https://github.com/ory/keto/commit/e3f7ad91585b616e97f85ce0f55c76406b6c4d0a)):
-
-  > This also refactors the current `migrate` and `namespace migrate` commands.
-
+  This also refactors the current `migrate` and `namespace migrate` commands.
 - Nodejs gRPC definitions ([#447](https://github.com/ory/keto/issues/447))
   ([3b5c313](https://github.com/ory/keto/commit/3b5c31326645adb2d5b14ced901771a7ba00fd1c)):
-
-  > Includes Typescript definitions.
-
+  Includes Typescript definitions.
 - Read API ([#269](https://github.com/ory/keto/issues/269))
   ([de5119a](https://github.com/ory/keto/commit/de5119a6e3c7563cfc2e1ada12d47b27ebd7faaa)):
-
-  > This is a first draft of the read API. It is reachable by REST and gRPC
-  > calls. The main purpose of this PR is to establish the basic repository
-  > structure and define the API.
-
+  This is a first draft of the read API. It is reachable by REST and gRPC calls.
+  The main purpose of this PR is to establish the basic repository structure and
+  define the API.
 - Relationtuple parse command ([#490](https://github.com/ory/keto/issues/490))
   ([91a3cf4](https://github.com/ory/keto/commit/91a3cf47fbdb8203b799cf7c69bcf3dbbfb98b3a)):
-
-  > This command parses the relation tuple format used in the docs. It greatly
-  > improves the experience when copying something from the documentation. It
-  > can especially be used to pipe relation tuples into other commands, e.g.:
-  >
-  > ```shell
-  > echo "messages:02y_15_4w350m3#decypher@john" | \
-  >   keto relation-tuple parse - --format json | \
-  >   keto relation-tuple create -
-  > ```
-
+  This command parses the relation tuple format used in the docs. It greatly
+  improves the experience when copying something from the documentation. It can
+  especially be used to pipe relation tuples into other commands, e.g.:
+  ```shell
+  echo "messages:02y_15_4w350m3#decypher@john" | \
+    keto relation-tuple parse - --format json | \
+    keto relation-tuple create -
+  ```
 - REST patch relation tuples ([#491](https://github.com/ory/keto/issues/491))
   ([d38618a](https://github.com/ory/keto/commit/d38618a9e647902ce019396ff1c33973020bf797)):
-
-  > The new PATCH handler allows transactional changes similar to the already
-  > existing gRPC service.
-
+  The new PATCH handler allows transactional changes similar to the already
+  existing gRPC service.
 - Separate and multiplex ports based on read/write privilege
   ([#397](https://github.com/ory/keto/issues/397))
   ([6918ac3](https://github.com/ory/keto/commit/6918ac3bfa355cbd551e44376c214f412e3414e4))
@@ -504,14 +563,29 @@ No significant changes have been made for this release.
 - Improve docs sample tests ([#461](https://github.com/ory/keto/issues/461))
   ([6e0e5e6](https://github.com/ory/keto/commit/6e0e5e6184916e894fd4694cfa3a158f11fae11f))
 
-## [0.5.6-alpha.1](https://github.com/ory/keto/compare/v0.5.5-alpha.1...v0.5.6-alpha.1) (2020-05-28)
+# [0.5.6-alpha.1](https://github.com/ory/keto/compare/v0.5.5-alpha.1...v0.5.6-alpha.1) (2020-05-28)
+
+This release bumps vulnerable transient dependencies (those are not actually
+used in ORY Keto) and updates several documentation pages and improves
+structured logging output. Additionally, ORY Keto now uses the updated release
+pipeline!
 
 ### Bug Fixes
 
 - Update install script
   ([21e1bf0](https://github.com/ory/keto/commit/21e1bf05177576a9d743bd11744ef6a42be50b8d))
 
-## [0.5.5-alpha.1](https://github.com/ory/keto/compare/v0.5.4-alpha.1...v0.5.5-alpha.1) (2020-05-28)
+### Chores
+
+- Pin v0.5.6-alpha.1 release commit
+  ([ed0da08](https://github.com/ory/keto/commit/ed0da08a03a910660358fc56c568692325749b6d))
+
+# [0.5.5-alpha.1](https://github.com/ory/keto/compare/v0.5.4-alpha.1...v0.5.5-alpha.1) (2020-05-28)
+
+This release bumps vulnerable transient dependencies (those are not actually
+used in ORY Keto) and updates several documentation pages and improves
+structured logging output. Additionally, ORY Keto now uses the updated release
+pipeline!
 
 ### Bug Fixes
 
@@ -523,6 +597,11 @@ No significant changes have been made for this release.
   ([f64d320](https://github.com/ory/keto/commit/f64d320b6424fe3256eb7fad1c94dcc1ef0bf487))
 - Use semver-regex replacer func
   ([2cc3bbb](https://github.com/ory/keto/commit/2cc3bbb2d75ba5fa7a3653d7adcaa712ff38c603))
+
+### Chores
+
+- Pin v0.5.5-alpha.1 release commit
+  ([4666a0f](https://github.com/ory/keto/commit/4666a0f258f253d19a14eca34f4b7049f2d0afa2))
 
 ### Documentation
 
@@ -553,7 +632,11 @@ No significant changes have been made for this release.
 - Use correct versions in install docs
   ([52e6c34](https://github.com/ory/keto/commit/52e6c34780ed41c169504d71c39459898b5d14f9))
 
-## [0.5.4-alpha.1](https://github.com/ory/keto/compare/v0.5.3-alpha.3...v0.5.4-alpha.1) (2020-04-07)
+# [0.5.4-alpha.1](https://github.com/ory/keto/compare/v0.5.3-alpha.3...v0.5.4-alpha.1) (2020-04-07)
+
+fix: resolve panic when executing migrations (#178)
+
+Closes #177
 
 ### Bug Fixes
 
@@ -562,7 +645,14 @@ No significant changes have been made for this release.
   ([7e83fee](https://github.com/ory/keto/commit/7e83feefaad041c60f09232ac44ed8b7240c6558)),
   closes [#177](https://github.com/ory/keto/issues/177)
 
-## [0.5.3-alpha.3](https://github.com/ory/keto/compare/v0.5.3-alpha.2...v0.5.3-alpha.3) (2020-04-06)
+# [0.5.3-alpha.3](https://github.com/ory/keto/compare/v0.5.3-alpha.2...v0.5.3-alpha.3) (2020-04-06)
+
+autogen(docs): regenerate and update changelog
+
+### Code Generation
+
+- **docs:** Regenerate and update changelog
+  ([769cef9](https://github.com/ory/keto/commit/769cef90f27ba9c203d3faf47272287ab17dc7eb))
 
 ### Code Refactoring
 
@@ -597,11 +687,18 @@ No significant changes have been made for this release.
   ([#171](https://github.com/ory/keto/issues/171))
   ([7a9876b](https://github.com/ory/keto/commit/7a9876b8ed4282f50f886a025033641bd027a0e2))
 
-## [0.5.3-alpha.1](https://github.com/ory/keto/compare/v0.5.2...v0.5.3-alpha.1) (2020-04-03)
+# [0.5.3-alpha.1](https://github.com/ory/keto/compare/v0.5.2...v0.5.3-alpha.1) (2020-04-03)
 
-No significant changes have been made for this release.
+chore: move to ory analytics fork (#167)
 
-## [0.5.2](https://github.com/ory/keto/compare/v0.5.1-alpha.1...v0.5.2) (2020-04-02)
+### Chores
+
+- Move to ory analytics fork ([#167](https://github.com/ory/keto/issues/167))
+  ([f824011](https://github.com/ory/keto/commit/f824011b4d19058504b3a43ed53a420619444a51))
+
+# [0.5.2](https://github.com/ory/keto/compare/v0.5.1-alpha.1...v0.5.2) (2020-04-02)
+
+docs: Regenerate and update changelog
 
 ### Documentation
 
@@ -611,6 +708,10 @@ No significant changes have been made for this release.
   ([e4d32a6](https://github.com/ory/keto/commit/e4d32a62c1ae96115ea50bb471f5ff2ce2f2c4b9))
 
 # [0.5.0](https://github.com/ory/keto/compare/v0.4.5-alpha.1...v0.5.0) (2020-04-02)
+
+docs: use real json bool type in swagger (#162)
+
+Closes #160
 
 ### Bug Fixes
 
@@ -640,7 +741,9 @@ No significant changes have been made for this release.
   ([5349e7f](https://github.com/ory/keto/commit/5349e7f910ad22558a01b76be62db2136b5eb301)),
   closes [#160](https://github.com/ory/keto/issues/160)
 
-## [0.4.5-alpha.1](https://github.com/ory/keto/compare/v0.4.4-alpha.1...v0.4.5-alpha.1) (2020-02-29)
+# [0.4.5-alpha.1](https://github.com/ory/keto/compare/v0.4.4-alpha.1...v0.4.5-alpha.1) (2020-02-29)
+
+docs: Regenerate and update changelog
 
 ### Bug Fixes
 
@@ -654,7 +757,9 @@ No significant changes have been made for this release.
 - Regenerate and update changelog
   ([41513da](https://github.com/ory/keto/commit/41513da35ea038f3c4cc2d98b9796cee5b5a8b92))
 
-## [0.4.4-alpha.1](https://github.com/ory/keto/compare/v0.4.3-alpha.2...v0.4.4-alpha.1) (2020-02-14)
+# [0.4.4-alpha.1](https://github.com/ory/keto/compare/v0.4.3-alpha.2...v0.4.4-alpha.1) (2020-02-14)
+
+docs: Regenerate and update changelog
 
 ### Bug Fixes
 
@@ -690,7 +795,9 @@ No significant changes have been made for this release.
 - Update CHANGELOG [ci skip]
   ([5bbc284](https://github.com/ory/keto/commit/5bbc2844c49b0a68ba3bd8b003d91f87e2aed9e2))
 
-## [0.4.3-alpha.2](https://github.com/ory/keto/compare/v0.4.3-alpha.1...v0.4.3-alpha.2) (2020-01-31)
+# [0.4.3-alpha.2](https://github.com/ory/keto/compare/v0.4.3-alpha.1...v0.4.3-alpha.2) (2020-01-31)
+
+Update README.md
 
 ### Unclassified
 
@@ -699,7 +806,11 @@ No significant changes have been made for this release.
 - Update CHANGELOG [ci skip]
   ([f0a1428](https://github.com/ory/keto/commit/f0a1428f4b99ceb35ff4f1e839bc5237e19db628))
 
-## [0.4.3-alpha.1](https://github.com/ory/keto/compare/v0.4.2-alpha.1...v0.4.3-alpha.1) (2020-01-23)
+# [0.4.3-alpha.1](https://github.com/ory/keto/compare/v0.4.2-alpha.1...v0.4.3-alpha.1) (2020-01-23)
+
+Disable access logging for health endpoints (#151)
+
+Closes #150
 
 ### Unclassified
 
@@ -708,14 +819,18 @@ No significant changes have been made for this release.
   closes [#151](https://github.com/ory/keto/issues/151)
   [#150](https://github.com/ory/keto/issues/150)
 
-## [0.4.2-alpha.1](https://github.com/ory/keto/compare/v0.4.1-beta.1...v0.4.2-alpha.1) (2020-01-14)
+# [0.4.2-alpha.1](https://github.com/ory/keto/compare/v0.4.1-beta.1...v0.4.2-alpha.1) (2020-01-14)
+
+Update CHANGELOG [ci skip]
 
 ### Unclassified
 
 - Update CHANGELOG [ci skip]
   ([afaabde](https://github.com/ory/keto/commit/afaabde63affcf568e3090e55b4b957edff2890c))
 
-## [0.4.1-beta.1](https://github.com/ory/keto/compare/v0.4.0-sandbox...v0.4.1-beta.1) (2020-01-13)
+# [0.4.1-beta.1](https://github.com/ory/keto/compare/v0.4.0-sandbox...v0.4.1-beta.1) (2020-01-13)
+
+Update CHANGELOG [ci skip]
 
 ### Unclassified
 
@@ -726,6 +841,8 @@ No significant changes have been made for this release.
 
 # [0.4.0-alpha.1](https://github.com/ory/keto/compare/v0.3.9-sandbox...v0.4.0-alpha.1) (2020-01-13)
 
+Move to new SDK generators (#146)
+
 ### Unclassified
 
 - Move to new SDK generators (#146)
@@ -735,14 +852,18 @@ No significant changes have been made for this release.
   ([85d838c](https://github.com/ory/keto/commit/85d838c0872c73eb70b5bfff1ccb175b07f6b1e4)),
   closes [#144](https://github.com/ory/keto/issues/144)
 
-## [0.3.9-sandbox](https://github.com/ory/keto/compare/v0.3.8-sandbox...v0.3.9-sandbox) (2019-12-16)
+# [0.3.9-sandbox](https://github.com/ory/keto/compare/v0.3.8-sandbox...v0.3.9-sandbox) (2019-12-16)
+
+Update go modules
 
 ### Unclassified
 
 - Update go modules
   ([1151e07](https://github.com/ory/keto/commit/1151e0755c974b0aea86be5aaeae365ea9aef094))
 
-## [0.3.7-sandbox](https://github.com/ory/keto/compare/v0.3.6-sandbox...v0.3.7-sandbox) (2019-12-11)
+# [0.3.7-sandbox](https://github.com/ory/keto/compare/v0.3.6-sandbox...v0.3.7-sandbox) (2019-12-11)
+
+Update documentation banner image (#143)
 
 ### Unclassified
 
@@ -754,7 +875,9 @@ No significant changes have been made for this release.
 - Fix invalid pseudo version ([#138](https://github.com/ory/keto/issues/138))
   ([79b4457](https://github.com/ory/keto/commit/79b4457f0162197ba267edbb8c0031c47e03bade))
 
-## [0.3.6-sandbox](https://github.com/ory/keto/compare/v0.3.5-sandbox...v0.3.6-sandbox) (2019-10-16)
+# [0.3.6-sandbox](https://github.com/ory/keto/compare/v0.3.5-sandbox...v0.3.6-sandbox) (2019-10-16)
+
+Resolve issues with mysql tests (#137)
 
 ### Unclassified
 
@@ -762,7 +885,9 @@ No significant changes have been made for this release.
   ([ef5aec8](https://github.com/ory/keto/commit/ef5aec8e493199c46b78e8f1257aa41df9545f28)),
   closes [#137](https://github.com/ory/keto/issues/137)
 
-## [0.3.5-sandbox](https://github.com/ory/keto/compare/v0.3.4-sandbox...v0.3.5-sandbox) (2019-08-21)
+# [0.3.5-sandbox](https://github.com/ory/keto/compare/v0.3.4-sandbox...v0.3.5-sandbox) (2019-08-21)
+
+Implement roles and policies filter (#124)
 
 ### Documentation
 
@@ -816,7 +941,14 @@ No significant changes have been made for this release.
   ([6e85f7c](https://github.com/ory/keto/commit/6e85f7c6f430e88fb4117a131f57bd69466a8ca1)),
   closes [#117](https://github.com/ory/keto/issues/117)
 
-## [0.3.3-sandbox](https://github.com/ory/keto/compare/v0.3.1-sandbox...v0.3.3-sandbox) (2019-05-18)
+# [0.3.3-sandbox](https://github.com/ory/keto/compare/v0.3.1-sandbox...v0.3.3-sandbox) (2019-05-18)
+
+ci: Resolve goreleaser issues (#108)
+
+### Continuous Integration
+
+- Resolve goreleaser issues ([#108](https://github.com/ory/keto/issues/108))
+  ([5753f27](https://github.com/ory/keto/commit/5753f27a9e89ccdda7c02969217c253aa72cb94b))
 
 ### Documentation
 
@@ -826,7 +958,17 @@ No significant changes have been made for this release.
   ([#106](https://github.com/ory/keto/issues/106))
   ([54a5a27](https://github.com/ory/keto/commit/54a5a27f24a90ab3c5f9915f36582b85eecd0d62))
 
-## [0.3.1-sandbox](https://github.com/ory/keto/compare/v0.3.0-sandbox...v0.3.1-sandbox) (2019-04-29)
+# [0.3.1-sandbox](https://github.com/ory/keto/compare/v0.3.0-sandbox...v0.3.1-sandbox) (2019-04-29)
+
+ci: Use image that includes bash/sh for release docs (#103)
+
+Signed-off-by: aeneasr <aeneas@ory.sh>
+
+### Continuous Integration
+
+- Use image that includes bash/sh for release docs
+  ([#103](https://github.com/ory/keto/issues/103))
+  ([e9d3027](https://github.com/ory/keto/commit/e9d3027fc62b20f28cd7a023222390e24d565eb1))
 
 ### Documentation
 
@@ -840,6 +982,10 @@ No significant changes have been made for this release.
   closes [#102](https://github.com/ory/keto/issues/102)
 
 # [0.3.0-sandbox](https://github.com/ory/keto/compare/v0.2.3-sandbox+oryOS.10...v0.3.0-sandbox) (2019-04-29)
+
+docker: Remove full tag from build pipeline (#101)
+
+Signed-off-by: aeneasr <aeneas@ory.sh>
 
 ### Documentation
 
@@ -860,15 +1006,11 @@ No significant changes have been made for this release.
 - Add tracing support and general improvements (#98)
   ([63b3946](https://github.com/ory/keto/commit/63b3946e0ae1fa23c6a359e9a64b296addff868c)),
   closes [#98](https://github.com/ory/keto/issues/98):
-
-  > This patch improves the internal configuration and service management. It
-  > adds support for distributed tracing and resolves several issues in the
-  > release pipeline and CLI.
-  >
-  > Additionally, composable docker-compose configuration files have been added.
-  >
-  > Several bugs have been fixed in the release management pipeline.
-
+  This patch improves the internal configuration and service management. It adds
+  support for distributed tracing and resolves several issues in the release
+  pipeline and CLI.
+  Additionally, composable docker-compose configuration files have been added.
+  Several bugs have been fixed in the release management pipeline.
 - Add content-type in the response of allowed
   ([#90](https://github.com/ory/keto/issues/90))
   ([39a1486](https://github.com/ory/keto/commit/39a1486dc53456189d30380460a9aeba198fa9e9))
@@ -896,7 +1038,13 @@ No significant changes have been made for this release.
   closes [#88](https://github.com/ory/keto/issues/88)
   [#80](https://github.com/ory/keto/issues/80)
 
-## [0.2.3-sandbox+oryOS.10](https://github.com/ory/keto/compare/v0.2.2-sandbox+oryOS.10...v0.2.3-sandbox+oryOS.10) (2019-02-05)
+# [0.2.3-sandbox+oryOS.10](https://github.com/ory/keto/compare/v0.2.2-sandbox+oryOS.10...v0.2.3-sandbox+oryOS.10) (2019-02-05)
+
+dist: Fix packr build pipeline (#84)
+
+Closes #73 Closes #81
+
+Signed-off-by: aeneasr <aeneas@ory.sh>
 
 ### Documentation
 
@@ -929,15 +1077,33 @@ No significant changes have been made for this release.
   ([36399f0](https://github.com/ory/keto/commit/36399f09261d4f3cb5e053679eee3cb15da2df19)),
   closes [#73](https://github.com/ory/keto/issues/73)
 
-## [0.2.2-sandbox+oryOS.10](https://github.com/ory/keto/compare/v0.2.1-sandbox+oryOS.10...v0.2.2-sandbox+oryOS.10) (2018-12-13)
+# [0.2.2-sandbox+oryOS.10](https://github.com/ory/keto/compare/v0.2.1-sandbox+oryOS.10...v0.2.2-sandbox+oryOS.10) (2018-12-13)
 
-No significant changes have been made for this release.
+ci: Fix docker push arguments in publish task
 
-## [0.2.1-sandbox+oryOS.10](https://github.com/ory/keto/compare/v0.2.0-sandbox+oryOS.10...v0.2.1-sandbox+oryOS.10) (2018-12-13)
+Signed-off-by: aeneasr <aeneas@ory.sh>
 
-No significant changes have been made for this release.
+### Continuous Integration
+
+- Fix docker push arguments in publish task
+  ([f03c77c](https://github.com/ory/keto/commit/f03c77c6b7461ab81cb03265cbec909ac45c2259))
+
+# [0.2.1-sandbox+oryOS.10](https://github.com/ory/keto/compare/v0.2.0-sandbox+oryOS.10...v0.2.1-sandbox+oryOS.10) (2018-12-13)
+
+ci: Fix docker release task
+
+Signed-off-by: aeneasr <aeneas@ory.sh>
+
+### Continuous Integration
+
+- Fix docker release task
+  ([7a0414f](https://github.com/ory/keto/commit/7a0414f614b6cc8b1d78cfbb773a2f0192d00d23))
 
 # [0.2.0-sandbox+oryOS.10](https://github.com/ory/keto/compare/v0.0.1...v0.2.0-sandbox+oryOS.10) (2018-12-13)
+
+all: gofmt
+
+Signed-off-by: aeneasr <aeneas@ory.sh>
 
 ### Documentation
 
@@ -1066,16 +1232,13 @@ No significant changes have been made for this release.
 - Adds ability to update a role using PUT
   ([#14](https://github.com/ory/keto/issues/14))
   ([97ccbe6](https://github.com/ory/keto/commit/97ccbe6d808823c56901ad237878aa6d53cddeeb)):
+  - transfer UpdateRoleMembers from https://github.com/ory/hydra/pull/768 to
+    keto
 
-  > - transfer UpdateRoleMembers from https://github.com/ory/hydra/pull/768 to
-  >   keto
-  >
-  > - fix tests by using right http method & correcting sql request
-  >
-  > - Change behavior to overwrite the whole role instead of just the members.
-  >
-  > * small sql migration fix
+  - fix tests by using right http method & correcting sql request
 
+  - Change behavior to overwrite the whole role instead of just the members.
+  * small sql migration fix
 - Adds log message when telemetry is active
   ([f623c52](https://github.com/ory/keto/commit/f623c52655ff85b7f7209eb73e94eb66a297c5b7))
 - Clean up vendor dependencies
@@ -1157,7 +1320,11 @@ No significant changes have been made for this release.
 - authn/client: Payload is now prefixed with client
   ([8584d94](https://github.com/ory/keto/commit/8584d94cfb18deb37ae32ae601f4cd15c14067e7))
 
-## [0.0.1](https://github.com/ory/keto/compare/4f00bc96ece3180a888718ec3c41c69106c86f56...v0.0.1) (2018-05-20)
+# [0.0.1](https://github.com/ory/keto/compare/4f00bc96ece3180a888718ec3c41c69106c86f56...v0.0.1) (2018-05-20)
+
+authn: Checks token_type is "access_token", if set
+
+Closes #1
 
 ### Documentation
 
@@ -1187,9 +1354,7 @@ No significant changes have been made for this release.
   ([f201eb9](https://github.com/ory/keto/commit/f201eb95f3309a60ac50f42cfba0bae2e38e8d13))
 - Retries SQL connection on migrate commands
   ([3d33d73](https://github.com/ory/keto/commit/3d33d73c009077c5bf30ae4b03802904bfb5d5b2)):
-
-  > This patch also introduces a fatal error if migrations fail
-
+  This patch also introduces a fatal error if migrations fail
 - cmd/server: Resolves DBAL not handling postgres properly
   ([dedc32a](https://github.com/ory/keto/commit/dedc32ab218923243b1955ce5bcbbdc5cc416953))
 - cmd/server: Improves error message in migrate command
