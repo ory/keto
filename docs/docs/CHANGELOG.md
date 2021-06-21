@@ -254,8 +254,8 @@ So stay tuned, :star: this repo, :eyes: releases, and
 - Use errors.WithStack everywhere
   ([#462](https://github.com/ory/keto/issues/462))
   ([5f25bce](https://github.com/ory/keto/commit/5f25bceea35179c67d24dd95f698dc57b789d87a)),
-  closes [#437](https://github.com/ory/keto/issues/437):
-  Fixed all occurrences found using the search pattern `return .*, err\n`.
+  closes [#437](https://github.com/ory/keto/issues/437): Fixed all occurrences
+  found using the search pattern `return .*, err\n`.
 - Use package name in pkger
   ([6435939](https://github.com/ory/keto/commit/6435939ad7e5899505cd0e6261f5dfc819c9ca42))
 - **schema:** Add trace level to logger
@@ -912,10 +912,9 @@ Signed-off-by: aeneasr <aeneas@ory.sh>
   closes [#99](https://github.com/ory/keto/issues/99)
 - Add tracing support and general improvements (#98)
   ([63b3946](https://github.com/ory/keto/commit/63b3946e0ae1fa23c6a359e9a64b296addff868c)),
-  closes [#98](https://github.com/ory/keto/issues/98):
-  This patch improves the internal configuration and service management. It adds
-  support for distributed tracing and resolves several issues in the release
-  pipeline and CLI.
+  closes [#98](https://github.com/ory/keto/issues/98): This patch improves the
+  internal configuration and service management. It adds support for distributed
+  tracing and resolves several issues in the release pipeline and CLI.
   Additionally, composable docker-compose configuration files have been added.
   Several bugs have been fixed in the release management pipeline.
 - Add content-type in the response of allowed
@@ -1139,13 +1138,16 @@ Signed-off-by: aeneasr <aeneas@ory.sh>
 - Adds ability to update a role using PUT
   ([#14](https://github.com/ory/keto/issues/14))
   ([97ccbe6](https://github.com/ory/keto/commit/97ccbe6d808823c56901ad237878aa6d53cddeeb)):
+
   - transfer UpdateRoleMembers from https://github.com/ory/hydra/pull/768 to
     keto
 
   - fix tests by using right http method & correcting sql request
 
   - Change behavior to overwrite the whole role instead of just the members.
+
   * small sql migration fix
+
 - Adds log message when telemetry is active
   ([f623c52](https://github.com/ory/keto/commit/f623c52655ff85b7f7209eb73e94eb66a297c5b7))
 - Clean up vendor dependencies
