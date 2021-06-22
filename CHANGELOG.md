@@ -1,11 +1,9 @@
-# Changelog
-
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
 **Table of Contents**
 
-- [Unreleased (2021-06-18)](#unreleased-2021-06-18)
+- [Unreleased (2021-06-22)](#unreleased-2021-06-22)
   - [Bug Fixes](#bug-fixes)
   - [Documentation](#documentation)
   - [Features](#features)
@@ -97,7 +95,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [Unreleased](https://github.com/ory/keto/compare/v0.6.0-alpha.3...8e301198298858fd7f387ef63a7abf4fa55ea240) (2021-06-18)
+# [Unreleased](https://github.com/ory/keto/compare/v0.6.0-alpha.3...8e301198298858fd7f387ef63a7abf4fa55ea240) (2021-06-22)
 
 ### Bug Fixes
 
@@ -113,9 +111,11 @@
 - Move gRPC client module root up
   ([#620](https://github.com/ory/keto/issues/620))
   ([3b881f6](https://github.com/ory/keto/commit/3b881f6015a93b382b3fbbca4be9259622038b6a)):
+
   BREAKING: The npm package `@ory/keto-grpc-client` from now on includes all API
   versions. Because of that, the import paths changed. For migrating to the new
   client package, change the import path according to the following example:
+
   ```diff
   - import acl from '@ory/keto-grpc-client/acl_pb.js'
   + // from the latest version
@@ -123,6 +123,7 @@
   + // or a specific one
   + import acl from '@ory/keto-grpc-client/ory/keto/acl/v1alpha1/acl_pb.js'
   ```
+
 - Update docker-compose.yml version
   ([#595](https://github.com/ory/keto/issues/595))
   ([7fa4dca](https://github.com/ory/keto/commit/7fa4dca4182a1fa024f9cef0a04163f2cbd882aa)),
@@ -294,8 +295,10 @@ So stay tuned, :star: this repo, :eyes: releases, and
 - Ensure nil subject is not allowed
   ([#449](https://github.com/ory/keto/issues/449))
   ([7a0fcfc](https://github.com/ory/keto/commit/7a0fcfc4fe83776fa09cf78ee11f407610554d04)):
+
   The nodejs gRPC client was a great fuzzer and pointed me to some nil pointer
   dereference panics. This adds some input validation to prevent panics.
+
 - Ensure persister errors are handled by sqlcon
   ([#473](https://github.com/ory/keto/issues/473))
   ([4343c4a](https://github.com/ory/keto/commit/4343c4acd8f917fb7ae131e67bca6855d4d61694))
@@ -347,8 +350,10 @@ So stay tuned, :star: this repo, :eyes: releases, and
 - Use errors.WithStack everywhere
   ([#462](https://github.com/ory/keto/issues/462))
   ([5f25bce](https://github.com/ory/keto/commit/5f25bceea35179c67d24dd95f698dc57b789d87a)),
-  closes [#437](https://github.com/ory/keto/issues/437): Fixed all occurrences
-  found using the search pattern `return .*, err\n`.
+  closes [#437](https://github.com/ory/keto/issues/437):
+
+  Fixed all occurrences found using the search pattern `return .*, err\n`.
+
 - Use package name in pkger
   ([6435939](https://github.com/ory/keto/commit/6435939ad7e5899505cd0e6261f5dfc819c9ca42))
 - **schema:** Add trace level to logger
@@ -388,7 +393,9 @@ So stay tuned, :star: this repo, :eyes: releases, and
   ([dd31865](https://github.com/ory/keto/commit/dd318653178cd45da47f3e7cef507b42708363ef))
 - Add performance page ([#413](https://github.com/ory/keto/issues/413))
   ([6fe0639](https://github.com/ory/keto/commit/6fe0639d36087b5ecd555eb6fe5ce949f3f6f0d7)):
+
   This also refactored the server startup. Functionality did not change.
+
 - Add production guide
   ([a9163c7](https://github.com/ory/keto/commit/a9163c7690c55c8191650c4dfb464b75ea02446b))
 - Add zanzibar overview to README.md
@@ -428,8 +435,10 @@ So stay tuned, :star: this repo, :eyes: releases, and
   ([0d0a50b](https://github.com/ory/keto/commit/0d0a50b3f4112893f32c81adc8edd137b5a62541))
 - Simple access check guide ([#451](https://github.com/ory/keto/issues/451))
   ([e0485af](https://github.com/ory/keto/commit/e0485afc46a445868580aa541e962e80cbea0670)):
+
   This also enables gRPC go, gRPC nodejs, cURL, and Keto CLI code samples to be
   tested.
+
 - Update comment in write response
   ([#329](https://github.com/ory/keto/issues/329))
   ([4ca0baf](https://github.com/ory/keto/commit/4ca0baf62e34402e749e870fe8c0cc893684192c))
@@ -439,7 +448,9 @@ So stay tuned, :star: this repo, :eyes: releases, and
   ([5f71d73](https://github.com/ory/keto/commit/5f71d73e2ee95d02abc4cd42a76c98a35942df0c))
 - Update README ([#515](https://github.com/ory/keto/issues/515))
   ([18d3cd6](https://github.com/ory/keto/commit/18d3cd61b0a79400170dc0f89860b4614cc4a543)):
+
   Also format all markdown files in the root.
+
 - Update repository templates
   ([db505f9](https://github.com/ory/keto/commit/db505f9e10755bc20c4623c4f5f99f33283dffda))
 - Update repository templates
@@ -514,29 +525,40 @@ So stay tuned, :star: this repo, :eyes: releases, and
   ([b94f50d](https://github.com/ory/keto/commit/b94f50d1800c47a43561df5009cb38b44ccd0088))
 - Namespace migrate status CLI ([#508](https://github.com/ory/keto/issues/508))
   ([e3f7ad9](https://github.com/ory/keto/commit/e3f7ad91585b616e97f85ce0f55c76406b6c4d0a)):
+
   This also refactors the current `migrate` and `namespace migrate` commands.
+
 - Nodejs gRPC definitions ([#447](https://github.com/ory/keto/issues/447))
   ([3b5c313](https://github.com/ory/keto/commit/3b5c31326645adb2d5b14ced901771a7ba00fd1c)):
+
   Includes Typescript definitions.
+
 - Read API ([#269](https://github.com/ory/keto/issues/269))
   ([de5119a](https://github.com/ory/keto/commit/de5119a6e3c7563cfc2e1ada12d47b27ebd7faaa)):
+
   This is a first draft of the read API. It is reachable by REST and gRPC calls.
   The main purpose of this PR is to establish the basic repository structure and
   define the API.
+
 - Relationtuple parse command ([#490](https://github.com/ory/keto/issues/490))
   ([91a3cf4](https://github.com/ory/keto/commit/91a3cf47fbdb8203b799cf7c69bcf3dbbfb98b3a)):
+
   This command parses the relation tuple format used in the docs. It greatly
   improves the experience when copying something from the documentation. It can
   especially be used to pipe relation tuples into other commands, e.g.:
+
   ```shell
   echo "messages:02y_15_4w350m3#decypher@john" | \
     keto relation-tuple parse - --format json | \
     keto relation-tuple create -
   ```
+
 - REST patch relation tuples ([#491](https://github.com/ory/keto/issues/491))
   ([d38618a](https://github.com/ory/keto/commit/d38618a9e647902ce019396ff1c33973020bf797)):
+
   The new PATCH handler allows transactional changes similar to the already
   existing gRPC service.
+
 - Separate and multiplex ports based on read/write privilege
   ([#397](https://github.com/ory/keto/issues/397))
   ([6918ac3](https://github.com/ory/keto/commit/6918ac3bfa355cbd551e44376c214f412e3414e4))
@@ -1005,11 +1027,16 @@ Signed-off-by: aeneasr <aeneas@ory.sh>
   closes [#99](https://github.com/ory/keto/issues/99)
 - Add tracing support and general improvements (#98)
   ([63b3946](https://github.com/ory/keto/commit/63b3946e0ae1fa23c6a359e9a64b296addff868c)),
-  closes [#98](https://github.com/ory/keto/issues/98): This patch improves the
-  internal configuration and service management. It adds support for distributed
-  tracing and resolves several issues in the release pipeline and CLI.
+  closes [#98](https://github.com/ory/keto/issues/98):
+
+  This patch improves the internal configuration and service management. It adds
+  support for distributed tracing and resolves several issues in the release
+  pipeline and CLI.
+
   Additionally, composable docker-compose configuration files have been added.
+
   Several bugs have been fixed in the release management pipeline.
+
 - Add content-type in the response of allowed
   ([#90](https://github.com/ory/keto/issues/90))
   ([39a1486](https://github.com/ory/keto/commit/39a1486dc53456189d30380460a9aeba198fa9e9))
@@ -1356,7 +1383,9 @@ Closes #1
   ([f201eb9](https://github.com/ory/keto/commit/f201eb95f3309a60ac50f42cfba0bae2e38e8d13))
 - Retries SQL connection on migrate commands
   ([3d33d73](https://github.com/ory/keto/commit/3d33d73c009077c5bf30ae4b03802904bfb5d5b2)):
+
   This patch also introduces a fatal error if migrations fail
+
 - cmd/server: Resolves DBAL not handling postgres properly
   ([dedc32a](https://github.com/ory/keto/commit/dedc32ab218923243b1955ce5bcbbdc5cc416953))
 - cmd/server: Improves error message in migrate command
