@@ -17,11 +17,7 @@ replace github.com/oleiade/reflections => github.com/oleiade/reflections v1.0.1
 replace github.com/ory/keto/proto => ./proto
 
 require (
-	github.com/DataDog/datadog-go v4.8.0+incompatible // indirect
-	github.com/HdrHistogram/hdrhistogram-go v1.1.0 // indirect
 	github.com/cenkalti/backoff/v3 v3.0.0
-	github.com/containerd/containerd v1.5.2 // indirect
-	github.com/fatih/color v1.10.0 // indirect
 	github.com/ghodss/yaml v1.0.0
 	github.com/go-openapi/errors v0.20.0
 	github.com/go-openapi/runtime v0.19.26
@@ -29,7 +25,6 @@ require (
 	github.com/go-openapi/swag v0.19.14
 	github.com/go-openapi/validate v0.20.2
 	github.com/gobuffalo/pop/v5 v5.3.4
-	github.com/gofrs/uuid v3.3.0+incompatible // indirect
 	github.com/grpc-ecosystem/go-grpc-middleware v1.0.1-0.20190118093823-f849b5445de4
 	github.com/grpc-ecosystem/grpc-opentracing v0.0.0-20180507213350-8e809c8a8645
 	github.com/julienschmidt/httprouter v1.3.0
@@ -43,23 +38,17 @@ require (
 	github.com/ory/x v0.0.256
 	github.com/pelletier/go-toml v1.8.1
 	github.com/phayes/freeport v0.0.0-20180830031419-95f893ade6f2
-	github.com/philhofer/fwd v1.1.1 // indirect
 	github.com/pkg/errors v0.9.1
-	github.com/pkg/profile v1.5.0 // indirect
-	github.com/rogpeppe/go-internal v1.6.1 // indirect
 	github.com/rs/cors v1.6.0
 	github.com/segmentio/objconv v1.0.1
 	github.com/sirupsen/logrus v1.8.1
-	github.com/smartystreets/assertions v1.0.0 // indirect
 	github.com/soheilhy/cmux v0.1.4
 	github.com/spf13/cobra v1.1.3
 	github.com/spf13/pflag v1.0.5
 	github.com/stretchr/testify v1.7.0
 	github.com/tidwall/gjson v1.7.1
 	github.com/tidwall/sjson v1.1.5
-	github.com/uber/jaeger-lib v2.4.1+incompatible // indirect
 	github.com/urfave/negroni v1.0.0
-	go.uber.org/atomic v1.7.0 // indirect
 	golang.org/x/sync v0.0.0-20201207232520-09787c993a3a
 	google.golang.org/grpc v1.37.0
 	google.golang.org/protobuf v1.26.0
