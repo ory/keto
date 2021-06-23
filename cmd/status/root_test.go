@@ -18,9 +18,6 @@ import (
 	"github.com/ory/keto/internal/namespace"
 )
 
-type onMessageCallback struct {
-}
-
 func TestStatusCmd(t *testing.T) {
 	for _, serverType := range []client.ServerType{client.ReadServer, client.WriteServer} {
 		t.Run("server_type="+string(serverType), func(t *testing.T) {
