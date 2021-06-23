@@ -4,13 +4,7 @@ replace google.golang.org/protobuf v1.25.1-0.20201020201750-d3470999428b => goog
 
 replace github.com/soheilhy/cmux => github.com/soheilhy/cmux v0.1.5-0.20210114230657-cdd3331e3e7c
 
-replace github.com/ory/dockertest/v3 => github.com/ory/dockertest/v3 v3.6.5
-
 replace github.com/gogo/protobuf => github.com/gogo/protobuf v1.3.2
-
-replace github.com/seatgeek/logrus-gelf-formatter => github.com/zepatrik/logrus-gelf-formatter v0.0.0-20210305135027-b8b3731dba10
-
-replace gopkg.in/DataDog/dd-trace-go.v1 => gopkg.in/DataDog/dd-trace-go.v1 v1.27.1
 
 replace github.com/oleiade/reflections => github.com/oleiade/reflections v1.0.1
 
