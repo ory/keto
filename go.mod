@@ -17,9 +17,10 @@ replace github.com/oleiade/reflections => github.com/oleiade/reflections v1.0.1
 replace github.com/ory/keto/proto => ./proto
 
 require (
-	github.com/Microsoft/go-winio v0.4.15 // indirect
+	github.com/DataDog/datadog-go v4.8.0+incompatible // indirect
+	github.com/HdrHistogram/hdrhistogram-go v1.1.0 // indirect
 	github.com/cenkalti/backoff/v3 v3.0.0
-	github.com/containerd/continuity v0.0.0-20200228182428-0f16d7a0959c // indirect
+	github.com/containerd/containerd v1.5.2 // indirect
 	github.com/fatih/color v1.10.0 // indirect
 	github.com/ghodss/yaml v1.0.0
 	github.com/go-openapi/errors v0.20.0
@@ -39,9 +40,10 @@ require (
 	github.com/ory/herodot v0.9.6
 	github.com/ory/jsonschema/v3 v3.0.3
 	github.com/ory/keto/proto v0.0.0-00010101000000-000000000000
-	github.com/ory/x v0.0.253
+	github.com/ory/x v0.0.256
 	github.com/pelletier/go-toml v1.8.1
 	github.com/phayes/freeport v0.0.0-20180830031419-95f893ade6f2
+	github.com/philhofer/fwd v1.1.1 // indirect
 	github.com/pkg/errors v0.9.1
 	github.com/pkg/profile v1.5.0 // indirect
 	github.com/rogpeppe/go-internal v1.6.1 // indirect
@@ -52,13 +54,13 @@ require (
 	github.com/soheilhy/cmux v0.1.4
 	github.com/spf13/cobra v1.1.3
 	github.com/spf13/pflag v1.0.5
-	github.com/sqs/goreturns v0.0.0-20181028201513-538ac6014518 // indirect
 	github.com/stretchr/testify v1.7.0
 	github.com/tidwall/gjson v1.7.1
 	github.com/tidwall/sjson v1.1.5
+	github.com/uber/jaeger-lib v2.4.1+incompatible // indirect
 	github.com/urfave/negroni v1.0.0
 	go.uber.org/atomic v1.7.0 // indirect
-	golang.org/x/sync v0.0.0-20201020160332-67f06af15bc9
+	golang.org/x/sync v0.0.0-20201207232520-09787c993a3a
 	google.golang.org/grpc v1.37.0
 	google.golang.org/protobuf v1.26.0
 )
