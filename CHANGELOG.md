@@ -7,6 +7,7 @@
   - [Bug Fixes](#bug-fixes)
   - [Documentation](#documentation)
   - [Features](#features)
+  - [Tests](#tests)
 - [0.6.0-alpha.3 (2021-04-29)](#060-alpha3-2021-04-29)
   - [Code Generation](#code-generation)
 - [0.6.0-alpha.2 (2021-04-29)](#060-alpha2-2021-04-29)
@@ -21,7 +22,7 @@
   - [Code Refactoring](#code-refactoring)
   - [Documentation](#documentation-2)
   - [Features](#features-2)
-  - [Tests](#tests)
+  - [Tests](#tests-1)
 - [0.5.6-alpha.1 (2020-05-28)](#056-alpha1-2020-05-28)
   - [Bug Fixes](#bug-fixes-3)
   - [Chores](#chores)
@@ -95,7 +96,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [Unreleased](https://github.com/ory/keto/compare/v0.6.0-alpha.3...8e301198298858fd7f387ef63a7abf4fa55ea240) (2021-06-24)
+# [Unreleased](https://github.com/ory/keto/compare/v0.6.0-alpha.3...3bcd0e34f2270401a0b1c24b67cf2df5330584aa) (2021-06-24)
 
 ### Bug Fixes
 
@@ -146,6 +147,19 @@
 - Max_idle_conn_time ([#605](https://github.com/ory/keto/issues/605))
   ([50a8623](https://github.com/ory/keto/commit/50a862338e17f86900ca162da7f3467f55f9f954)),
   closes [#523](https://github.com/ory/keto/issues/523)
+
+### Tests
+
+- De-flake status command test ([#629](https://github.com/ory/keto/issues/629))
+  ([3bcd0e3](https://github.com/ory/keto/commit/3bcd0e34f2270401a0b1c24b67cf2df5330584aa)):
+
+  Confirmed that the fix works because
+
+  ```
+  $ go test -tags sqlite -run TestStatusCmd/server_type=read/case=block -count 1000 ./cmd/status
+  ```
+
+  passed.
 
 # [0.6.0-alpha.3](https://github.com/ory/keto/compare/v0.6.0-alpha.2...v0.6.0-alpha.3) (2021-04-29)
 
