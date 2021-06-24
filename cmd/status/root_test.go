@@ -1,6 +1,7 @@
 package status
 
 import (
+	"bytes"
 	"context"
 	"net"
 	"strings"
@@ -51,16 +52,34 @@ func TestStatusCmd(t *testing.T) {
 					return s.Serve(l)
 				})
 
-				// dispatch start after one context timeout
-				go func() {
-					<-time.After(11 * time.Millisecond)
-					close(startServe)
-				}()
+				ctx := context.WithValue(context.Background(), client.ContextKeyTimeout, time.Millisecond)
 
-				ctx := context.WithValue(context.Background(), client.ContextKeyTimeout, 10*time.Millisecond)
-				stdOut := cmdx.ExecNoErrCtx(ctx, t, newStatusCmd(), "--"+FlagEndpoint, string(serverType), "--"+ts.FlagRemote, l.Addr().String(), "--"+FlagBlock)
-				assert.True(t, strings.HasPrefix(stdOut, "Context deadline exceeded, going to retry."))
-				assert.True(t, strings.HasSuffix(stdOut, "\n"+grpcHealthV1.HealthCheckResponse_SERVING.String()+"\n"))
+				stdIn, stdErr := &bytes.Buffer{}, &bytes.Buffer{}
+				stdOut := &cmdx.CallbackWriter{
+					Callbacks: map[string]func([]byte) error{
+						// once we get the first retry message, we want to start serving
+						"Context deadline exceeded, going to retry.": func([]byte) error {
+							// select ensures we only call this if the chan is not already closed
+							select {
+							case <-startServe:
+							default:
+								close(startServe)
+							}
+							return nil
+						},
+					},
+				}
+
+				require.NoError(t,
+					cmdx.ExecBackgroundCtx(ctx, newStatusCmd(), stdIn, stdOut, stdErr,
+						"--"+FlagEndpoint, string(serverType),
+						"--"+ts.FlagRemote, l.Addr().String(),
+						"--"+FlagBlock,
+					).Wait(),
+				)
+
+				fullStdOut := stdOut.String()
+				assert.True(t, strings.HasSuffix(fullStdOut, grpcHealthV1.HealthCheckResponse_SERVING.String()+"\n"), fullStdOut)
 
 				s.GracefulStop()
 				require.NoError(t, serveErr.Wait())
