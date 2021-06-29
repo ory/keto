@@ -6,15 +6,12 @@ import (
 
 	"github.com/ory/x/popx"
 
-	"github.com/ory/keto/internal/namespace"
-
 	"github.com/ory/keto/internal/relationtuple"
 )
 
 type (
 	Persister interface {
 		relationtuple.Manager
-		namespace.Migrator
 	}
 	Migrator interface {
 		MigrationBox(context.Context) (*popx.MigrationBox, error)

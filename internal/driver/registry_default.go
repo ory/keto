@@ -29,7 +29,6 @@ import (
 
 	"github.com/ory/keto/internal/check"
 	"github.com/ory/keto/internal/expand"
-	"github.com/ory/keto/internal/namespace"
 	"github.com/ory/keto/internal/persistence"
 	"github.com/ory/keto/internal/persistence/sql"
 	"github.com/ory/keto/internal/relationtuple"
@@ -134,10 +133,6 @@ func (r *RegistryDefault) RelationTupleManager() relationtuple.Manager {
 	return r.p
 }
 
-func (r *RegistryDefault) NamespaceMigrator() namespace.Migrator {
-	return r.p
-}
-
 func (r *RegistryDefault) PermissionEngine() *check.Engine {
 	if r.ce == nil {
 		r.ce = check.NewEngine(r)
@@ -178,32 +173,6 @@ func (r *RegistryDefault) Init(ctx context.Context) error {
 	if r.c.DSN() == config.DSNMemory {
 		if err := mb.Up(ctx); err != nil {
 			return err
-		}
-	}
-
-	namespaceConfigs, err := nm.Namespaces(ctx)
-	if err != nil {
-		return err
-	}
-	for _, n := range namespaceConfigs {
-		nmb, err := r.NamespaceMigrator().NamespaceMigrationBox(ctx, n)
-		if err != nil {
-			return err
-		}
-		s, err := nmb.Status(ctx)
-		if err != nil {
-			return err
-		} else if s.HasPending() {
-			if r.c.DSN() == config.DSNMemory {
-				// auto migrate when DSN is memory
-				if err := nmb.Up(ctx); err != nil {
-					r.l.WithError(err).Errorf("Could not auto-migrate namespace %s.", n.Name)
-				}
-				continue
-			}
-
-			r.l.Warnf("Namespace %s is defined in the config but not yet migrated. It is ignored until you explicitly migrate it.", n.Name)
-			continue
 		}
 	}
 

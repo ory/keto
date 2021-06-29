@@ -3,7 +3,6 @@ package migrate
 import (
 	"bytes"
 	"context"
-	"regexp"
 	"strings"
 	"testing"
 
@@ -126,24 +125,24 @@ func TestMigrate(t *testing.T) {
 					assertAllApplied(t, parts[1])
 				})
 
-				t.Run("case=applies namespace migrations on flag", func(t *testing.T) {
-					out := cmd.ExecNoErr(t, "up", "--"+FlagYes, "--"+FlagAllNamespace)
-
-					t.Cleanup(func() {
-						// migrate all down
-						t.Log(cmd.ExecNoErr(t, "down", "0", "--"+FlagYes))
-					})
-
-					parts := regexp.MustCompile("(?s)Current status:(.*)Successfully applied all migrations(.*)Going to migrate namespaces(.*)Successfully applied all migrations(.*)Current status(.*)Successfully applied all migrations(.*)").FindStringSubmatch(out)
-					require.Len(t, parts, 7)
-
-					assertNoneApplied(t, parts[1])
-					assertAllApplied(t, parts[2])
-					assertNoneApplied(t, parts[3])
-					assertAllApplied(t, parts[4])
-					assertNoneApplied(t, parts[5])
-					assertAllApplied(t, parts[6])
-				})
+				//t.Run("case=applies namespace migrations on flag", func(t *testing.T) {
+				//	out := cmd.ExecNoErr(t, "up", "--"+FlagYes, "--"+FlagAllNamespace)
+				//
+				//	t.Cleanup(func() {
+				//		// migrate all down
+				//		t.Log(cmd.ExecNoErr(t, "down", "0", "--"+FlagYes))
+				//	})
+				//
+				//	parts := regexp.MustCompile("(?s)Current status:(.*)Successfully applied all migrations(.*)Going to migrate namespaces(.*)Successfully applied all migrations(.*)Current status(.*)Successfully applied all migrations(.*)").FindStringSubmatch(out)
+				//	require.Len(t, parts, 7)
+				//
+				//	assertNoneApplied(t, parts[1])
+				//	assertAllApplied(t, parts[2])
+				//	assertNoneApplied(t, parts[3])
+				//	assertAllApplied(t, parts[4])
+				//	assertNoneApplied(t, parts[5])
+				//	assertAllApplied(t, parts[6])
+				//})
 			})
 		}
 	}

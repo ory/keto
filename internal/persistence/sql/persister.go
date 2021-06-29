@@ -7,6 +7,8 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/gofrs/uuid"
+
 	"github.com/luna-duclos/instrumentedsql"
 	"github.com/luna-duclos/instrumentedsql/opentracing"
 	"github.com/ory/x/tracing"
@@ -28,12 +30,13 @@ import (
 
 type (
 	Persister struct {
-		conn       *pop.Connection
-		mb         *popx.MigrationBox
-		namespaces namespace.Manager
-		l          *logrusx.Logger
-		dsn        string
-		tracer     *tracing.Tracer
+		conn            *pop.Connection
+		mb              *popx.MigrationBox
+		namespaces      namespace.Manager
+		l               *logrusx.Logger
+		dsn             string
+		tracer          *tracing.Tracer
+		networkIDCached uuid.UUID
 	}
 	internalPagination struct {
 		Page, PerPage int
@@ -46,7 +49,7 @@ const (
 )
 
 var (
-	//go:embed migrations/*.sql
+	//go:embed migrations/sql/*.sql
 	migrations embed.FS
 
 	//go:embed namespace_migrations/*.sql
@@ -56,7 +59,7 @@ var (
 )
 
 func NewPersister(dsn string, l *logrusx.Logger, namespaces namespace.Manager, tracer *tracing.Tracer) (*Persister, error) {
-	pop.SetLogger(l.PopLogger)
+	pop.Debug = true
 
 	p := &Persister{
 		namespaces: namespaces,

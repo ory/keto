@@ -77,19 +77,7 @@ func migrateEverythingUp(ctx context.Context, t testing.TB, r driver.Registry, n
 		require.NoError(t, mb.Up(ctx))
 	}
 
-	for _, n := range nn {
-		nmb, err := r.NamespaceMigrator().NamespaceMigrationBox(ctx, n)
-		require.NoError(t, err)
-		require.NoError(t, nmb.Up(ctx))
-	}
-
 	t.Cleanup(func() {
-		for _, n := range nn {
-			nmb, err := r.NamespaceMigrator().NamespaceMigrationBox(context.Background(), n)
-			require.NoError(t, err)
-			require.NoError(t, nmb.Down(context.Background(), 0))
-		}
-
 		require.NoError(t, err)
 		require.NoError(t, mb.Down(context.Background(), 0))
 	})
@@ -101,14 +89,6 @@ func assertMigrated(ctx context.Context, t testing.TB, r driver.Registry, nn []*
 	s, err := mb.Status(ctx)
 	require.NoError(t, err)
 	assert.False(t, s.HasPending())
-
-	for _, n := range nn {
-		nmb, err := r.NamespaceMigrator().NamespaceMigrationBox(ctx, n)
-		require.NoError(t, err)
-		s, err := nmb.Status(ctx)
-		require.NoError(t, err)
-		assert.False(t, s.HasPending())
-	}
 }
 
 func startServer(ctx context.Context, t testing.TB, reg driver.Registry) func() {

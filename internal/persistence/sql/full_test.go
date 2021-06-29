@@ -40,18 +40,11 @@ func TestPersister(t *testing.T) {
 		return func(ctx context.Context, t *testing.T, name string) {
 			n := &namespace.Namespace{
 				Name: name,
-				ID:   len(nspaces),
+				ID:   int64(len(nspaces)),
 			}
 			nspaces = append(nspaces, n)
 
 			p.namespaces = config.NewMemoryNamespaceManager(nspaces...)
-			mb, err := p.NamespaceMigrationBox(context.Background(), n)
-			require.NoError(t, err)
-			require.NoError(t, mb.Up(context.Background()))
-
-			t.Cleanup(func() {
-				require.NoError(t, mb.Down(context.Background(), 0))
-			})
 		}
 	}
 

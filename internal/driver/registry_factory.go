@@ -62,5 +62,11 @@ func NewMemoryTestRegistry(t *testing.T, namespaces []*namespace.Namespace) Regi
 
 	require.NoError(t, r.Init(ctx))
 
+	t.Cleanup(func() {
+		mb, err := r.Migrator().MigrationBox(ctx)
+		require.NoError(t, err)
+		mb.Down(ctx, -1)
+	})
+
 	return r
 }

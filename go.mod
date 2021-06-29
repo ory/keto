@@ -10,6 +10,8 @@ replace github.com/oleiade/reflections => github.com/oleiade/reflections v1.0.1
 
 replace github.com/ory/keto/proto => ./proto
 
+replace github.com/gobuffalo/pop/v5 => ../pop
+
 require (
 	github.com/cenkalti/backoff/v3 v3.0.0
 	github.com/ghodss/yaml v1.0.0
@@ -19,6 +21,7 @@ require (
 	github.com/go-openapi/swag v0.19.14
 	github.com/go-openapi/validate v0.20.2
 	github.com/gobuffalo/pop/v5 v5.3.4
+	github.com/gofrs/uuid v3.2.0+incompatible
 	github.com/grpc-ecosystem/go-grpc-middleware v1.0.1-0.20190118093823-f849b5445de4
 	github.com/grpc-ecosystem/grpc-opentracing v0.0.0-20180507213350-8e809c8a8645
 	github.com/julienschmidt/httprouter v1.3.0

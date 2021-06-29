@@ -14,7 +14,6 @@ import (
 	"github.com/ory/keto/internal/check"
 	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/expand"
-	"github.com/ory/keto/internal/namespace"
 	"github.com/ory/keto/internal/persistence"
 	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/internal/x"
@@ -32,7 +31,6 @@ type (
 		x.WriterProvider
 
 		relationtuple.ManagerProvider
-		namespace.MigratorProvider
 		expand.EngineProvider
 		check.EngineProvider
 		persistence.MigratorProvider
