@@ -22,12 +22,23 @@ import (
 )
 
 type (
+	Parser func([]byte, interface{}) error
+
+	NamespaceFile struct {
+		Name     string
+		Contents []byte
+		Parser   Parser
+
+		namespace *namespace.Namespace // last successfully parsed namespace. May be nil if there was a parse error
+	}
+
 	NamespaceWatcher struct {
 		sync.RWMutex
-		namespaces map[string]*namespace.Namespace
+		namespaces map[string]*NamespaceFile
 		ec         watcherx.EventChannel
 		l          *logrusx.Logger
 		target     string
+		w          watcherx.Watcher
 	}
 )
 
@@ -43,10 +54,8 @@ func NewNamespaceWatcher(ctx context.Context, l *logrusx.Logger, target string) 
 		ec:         make(watcherx.EventChannel),
 		l:          l,
 		target:     target,
-		namespaces: make(map[string]*namespace.Namespace),
+		namespaces: make(map[string]*NamespaceFile),
 	}
-
-	var w watcherx.Watcher
 
 	info, err := os.Stat(u.Path)
 	if err != nil {
@@ -54,9 +63,9 @@ func NewNamespaceWatcher(ctx context.Context, l *logrusx.Logger, target string) 
 	}
 
 	if info.IsDir() {
-		w, err = watcherx.WatchDirectory(ctx, u.Path, nw.ec)
+		nw.w, err = watcherx.WatchDirectory(ctx, u.Path, nw.ec)
 	} else {
-		w, err = watcherx.Watch(ctx, u, nw.ec)
+		nw.w, err = watcherx.Watch(ctx, u, nw.ec)
 	}
 	// this handles the watcher init error
 	if err != nil {
@@ -64,7 +73,7 @@ func NewNamespaceWatcher(ctx context.Context, l *logrusx.Logger, target string) 
 	}
 
 	// trigger initial load
-	done, err := w.DispatchNow()
+	done, err := nw.w.DispatchNow()
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
@@ -105,12 +114,19 @@ func eventHandler(ctx context.Context, nw *NamespaceWatcher, done <-chan int, in
 					nw.Lock()
 					defer nw.Unlock()
 
-					n := parseNamespace(nw.l, e.Reader(), e.Source())
+					n := readNamespaceFile(nw.l, e.Reader(), e.Source())
 					if n == nil {
 						return
+					} else if n.namespace == nil {
+						// parse failed, rolling back to previous working version
+						if existing, ok := nw.namespaces[e.Source()]; ok {
+							existing.Contents = n.Contents
+						} else {
+							nw.namespaces[e.Source()] = n
+						}
+					} else {
+						nw.namespaces[e.Source()] = n
 					}
-
-					nw.namespaces[e.Source()] = n
 				}()
 			case *watcherx.ErrorEvent:
 				nw.l.WithError(etyped).Errorf("Received error while watching namespace files at target %s.", nw.target)
@@ -119,19 +135,11 @@ func eventHandler(ctx context.Context, nw *NamespaceWatcher, done <-chan int, in
 	}
 }
 
-func parseNamespace(l *logrusx.Logger, r io.Reader, source string) *namespace.Namespace {
-	var parser func([]byte, interface{}) error
-
-	knownFormats := stringsx.RegisteredCases{}
-	switch ext := filepath.Ext(source); ext {
-	case knownFormats.AddCase(".yaml"), knownFormats.AddCase(".yml"):
-		parser = yaml.Unmarshal
-	case knownFormats.AddCase(".json"):
-		parser = json.Unmarshal
-	case knownFormats.AddCase(".toml"):
-		parser = toml.Unmarshal
-	default:
-		l.WithError(knownFormats.ToUnknownCaseErr(ext)).WithField("file_name", source).Warn("could not infer format from file extension")
+func readNamespaceFile(l *logrusx.Logger, r io.Reader, source string) *NamespaceFile {
+	var parse Parser
+	parse, err := GetParser(source)
+	if err != nil {
+		l.WithError(err).WithField("file_name", source).Warn("could not infer format from file extension")
 		return nil
 	}
 
@@ -142,21 +150,21 @@ func parseNamespace(l *logrusx.Logger, r io.Reader, source string) *namespace.Na
 	}
 
 	n := namespace.Namespace{}
-	if err := parser(raw, &n); err != nil {
+	if err := parse(raw, &n); err != nil {
 		l.WithError(errors.WithStack(err)).WithField("file_name", source).Error("could not parse namespace file")
-		return nil
+		return &NamespaceFile{Name: source, Contents: raw, Parser: parse}
 	}
 
-	return &n
+	return &NamespaceFile{Name: source, Contents: raw, Parser: parse, namespace: &n}
 }
 
 func (n *NamespaceWatcher) GetNamespaceByName(_ context.Context, name string) (*namespace.Namespace, error) {
 	n.RLock()
 	defer n.RUnlock()
 
-	for _, nspace := range n.namespaces {
-		if nspace.Name == name {
-			return nspace, nil
+	for _, nsf := range n.namespaces {
+		if nsf.namespace != nil && nsf.namespace.Name == name {
+			return nsf.namespace, nil
 		}
 	}
 
@@ -181,9 +189,35 @@ func (n *NamespaceWatcher) Namespaces(_ context.Context) ([]*namespace.Namespace
 	defer n.RUnlock()
 
 	nspaces := make([]*namespace.Namespace, 0, len(n.namespaces))
-	for _, nspace := range n.namespaces {
-		nspaces = append(nspaces, nspace)
+	for _, nsf := range n.namespaces {
+		if nsf.namespace != nil {
+			nspaces = append(nspaces, nsf.namespace)
+		}
 	}
-
 	return nspaces, nil
+}
+
+func (n *NamespaceWatcher) NamespaceFiles() []*NamespaceFile {
+	n.RLock()
+	defer n.RUnlock()
+
+	nsfs := make([]*NamespaceFile, 0, len(n.namespaces))
+	for _, nsf := range n.namespaces {
+		nsfs = append(nsfs, nsf)
+	}
+	return nsfs
+}
+
+func GetParser(fn string) (Parser, error) {
+	knownFormats := stringsx.RegisteredCases{}
+	switch ext := filepath.Ext(fn); ext {
+	case knownFormats.AddCase(".yaml"), knownFormats.AddCase(".yml"):
+		return yaml.Unmarshal, nil
+	case knownFormats.AddCase(".json"):
+		return json.Unmarshal, nil
+	case knownFormats.AddCase(".toml"):
+		return toml.Unmarshal, nil
+	default:
+		return nil, knownFormats.ToUnknownCaseErr(ext)
+	}
 }
