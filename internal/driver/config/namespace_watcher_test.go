@@ -9,11 +9,10 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/sirupsen/logrus"
-
 	"github.com/ghodss/yaml"
 	"github.com/ory/x/logrusx"
 	"github.com/pelletier/go-toml"
+	"github.com/sirupsen/logrus"
 	"github.com/sirupsen/logrus/hooks/test"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -72,7 +71,7 @@ func TestNamespaceProvider(t *testing.T) {
 		}
 	}
 
-	t.Run("case=loads JSON namespace file", func(t *testing.T) {
+	writeJsonNamespace := func(t *testing.T) (string, *namespace.Namespace) {
 		dir := t.TempDir()
 		n := &namespace.Namespace{
 			ID:   0,
@@ -81,6 +80,12 @@ func TestNamespaceProvider(t *testing.T) {
 		fn := filepath.Join(dir, "n.json")
 
 		writeNamespace(t, n, fn)
+
+		return fn, n
+	}
+
+	t.Run("case=loads JSON namespace file", func(t *testing.T) {
+		fn, n := writeJsonNamespace(t)
 
 		ws, _ := setup(t, "file://"+fn)
 
@@ -116,6 +121,13 @@ func TestNamespaceProvider(t *testing.T) {
 
 		for _, n := range files {
 			assert.Contains(t, nspaces, n.(*namespace.Namespace))
+		}
+
+		nsfs := nw.NamespaceFiles()
+		assert.Equal(t, len(nspaces), len(nsfs))
+		for _, n := range nsfs {
+			assert.NotNil(t, n.Contents)
+			assert.NotNil(t, n.Parser)
 		}
 	})
 
@@ -175,5 +187,9 @@ func TestNamespaceProvider(t *testing.T) {
 
 		require.Len(t, namespaces, 1)
 		assert.Equal(t, n, namespaces[0])
+
+		// files are included even if ns is unparsable
+		nsfs := nw.NamespaceFiles()
+		assert.Equal(t, 2, len(nsfs))
 	})
 }
