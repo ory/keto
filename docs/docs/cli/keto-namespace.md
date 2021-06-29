@@ -30,4 +30,5 @@ Read and manipulate namespaces
 
 - [keto](keto) - Global and consistent permission and authorization server
 - [keto namespace migrate](keto-namespace-migrate) - Migrate a namespace
-- [keto namespace validate](keto-namespace-validate) - Validate namespace files
+- [keto namespace validate](keto-namespace-validate) - Validate namespace
+  definitions
