@@ -176,8 +176,8 @@ func (n *NamespaceWatcher) GetNamespaceByID(_ context.Context, id int64) (*names
 	defer n.RUnlock()
 
 	for _, nspace := range n.namespaces {
-		if nspace.ID == id {
-			return nspace, nil
+		if nspace.namespace.ID == id {
+			return nspace.namespace, nil
 		}
 	}
 

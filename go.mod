@@ -10,8 +10,6 @@ replace github.com/oleiade/reflections => github.com/oleiade/reflections v1.0.1
 
 replace github.com/ory/keto/proto => ./proto
 
-replace github.com/gobuffalo/pop/v5 => ../pop
-
 require (
 	github.com/cenkalti/backoff/v3 v3.0.0
 	github.com/ghodss/yaml v1.0.0
