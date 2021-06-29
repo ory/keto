@@ -172,7 +172,7 @@ func (p *Persister) insertRelationTuple(ctx context.Context, rel *relationtuple.
 
 func (p *Persister) deleteRelationTupleSubjectID(ctx context.Context, r *relationtuple.InternalRelationTuple, s *relationtuple.SubjectID, n *namespace.Namespace, network uuid.UUID) error {
 	if err := p.connection(ctx).RawQuery(
-		fmt.Sprintf("DELETE FROM keto_relation_tuples WHERE network_id = ? AND namespace_id = ? AND object = ? AND relation = ? AND subject_id = ?"),
+		"DELETE FROM keto_relation_tuples WHERE network_id = ? AND namespace_id = ? AND object = ? AND relation = ? AND subject_id = ?",
 		network,
 		n.ID,
 		r.Object,
@@ -192,7 +192,7 @@ func (p *Persister) deleteRelationTupleSubjectSet(ctx context.Context, r *relati
 	}
 
 	if err := p.connection(ctx).RawQuery(
-		fmt.Sprintf("DELETE FROM keto_relation_tuples WHERE network_id = ? AND namespace_id = ? AND object = ? AND relation = ? AND subject_namespace_id = ? AND subject_object = ? AND subject_relation = ?"),
+		"DELETE FROM keto_relation_tuples WHERE network_id = ? AND namespace_id = ? AND object = ? AND relation = ? AND subject_namespace_id = ? AND subject_object = ? AND subject_relation = ?",
 		network,
 		n.ID,
 		r.Object,

@@ -41,7 +41,6 @@ type (
 	internalPagination struct {
 		Page, PerPage int
 	}
-	contextKeys string
 )
 
 const (
@@ -52,8 +51,8 @@ var (
 	//go:embed migrations/sql/*.sql
 	migrations embed.FS
 
-	//go:embed namespace_migrations/*.sql
-	namespaceMigrations embed.FS
+	////go:embed namespace_migrations/*.sql
+	//namespaceMigrations embed.FS
 
 	_ persistence.Persister = &Persister{}
 )
