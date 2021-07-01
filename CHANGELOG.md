@@ -3,7 +3,7 @@
 
 **Table of Contents**
 
-- [Unreleased (2021-06-24)](#unreleased-2021-06-24)
+- [Unreleased (2021-07-01)](#unreleased-2021-07-01)
   - [Bug Fixes](#bug-fixes)
   - [Documentation](#documentation)
   - [Features](#features)
@@ -96,7 +96,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [Unreleased](https://github.com/ory/keto/compare/v0.6.0-alpha.3...3bcd0e34f2270401a0b1c24b67cf2df5330584aa) (2021-06-24)
+# [Unreleased](https://github.com/ory/keto/compare/v0.6.0-alpha.3...f4253b8a555afdee718be94140ca4fd4175c1413) (2021-07-01)
 
 ### Bug Fixes
 
@@ -147,6 +147,14 @@
 - Max_idle_conn_time ([#605](https://github.com/ory/keto/issues/605))
   ([50a8623](https://github.com/ory/keto/commit/50a862338e17f86900ca162da7f3467f55f9f954)),
   closes [#523](https://github.com/ory/keto/issues/523)
+- Support namespace validation from config files
+  ([#596](https://github.com/ory/keto/issues/596))
+  ([f4253b8](https://github.com/ory/keto/commit/f4253b8a555afdee718be94140ca4fd4175c1413)):
+
+  The `keto namespace validate` command now additionally supports:
+
+  - validation of namespaces in config files
+  - validation of a directory specified in config files
 
 ### Tests
 
