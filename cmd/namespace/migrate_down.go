@@ -8,7 +8,7 @@ import (
 
 func NewMigrateDownCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Deprecated: "This step is not necessary anymore, see TODO",
+		Deprecated: "This step is not necessary anymore, see https://github.com/ory/keto/pull/638",
 		Use:        "down <namespace-name> <steps>",
 		Short:      "Migrate a namespace down",
 		Long: "Migrate a namespace down.\n" +

@@ -7,7 +7,7 @@ import (
 
 func NewMigrateStatusCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Deprecated: "This step is not necessary anymore, see TODO",
+		Deprecated: "This step is not necessary anymore, see https://github.com/ory/keto/pull/638",
 		Use:        "status <namespace-name>",
 		Short:      "Get the current namespace migration status",
 		Long:       "Get the current migration status of one specific namespace.\nDoes not apply any changes.",
