@@ -4,6 +4,8 @@ import (
 	"context"
 	"testing"
 
+	"github.com/ory/keto/internal/driver/config"
+
 	"github.com/ory/keto/internal/x"
 
 	"github.com/ory/keto/internal/namespace"
@@ -19,7 +21,8 @@ import (
 )
 
 func newDepsProvider(t *testing.T, namespaces []*namespace.Namespace, pageOpts ...x.PaginationOptionSetter) *relationtuple.ManagerWrapper {
-	reg := driver.NewMemoryTestRegistry(t, namespaces)
+	reg := driver.NewSqliteTestRegistry(t, false)
+	require.NoError(t, reg.Config().Set(config.KeyNamespaces, namespaces))
 	return relationtuple.NewManagerWrapper(t, reg, pageOpts...)
 }
 

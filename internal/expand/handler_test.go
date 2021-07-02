@@ -9,6 +9,8 @@ import (
 	"net/url"
 	"testing"
 
+	"github.com/ory/keto/internal/driver/config"
+
 	"github.com/julienschmidt/httprouter"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -25,7 +27,8 @@ func TestRESTHandler(t *testing.T) {
 		Name: "expand handler",
 	}
 
-	reg := driver.NewMemoryTestRegistry(t, []*namespace.Namespace{nspace})
+	reg := driver.NewSqliteTestRegistry(t, false)
+	require.NoError(t, reg.Config().Set(config.KeyNamespaces, []*namespace.Namespace{nspace}))
 	h := expand.NewHandler(reg)
 	r := httprouter.New()
 	h.RegisterReadRoutes(&x.ReadRouter{Router: r})

@@ -123,7 +123,12 @@ func (r *relationTuple) fromInternal(ctx context.Context, p *Persister, rt *rela
 		return err
 	}
 
-	n, err := p.namespaces.GetNamespaceByName(ctx, rt.Namespace)
+	nm, err := p.d.Config().NamespaceManager()
+	if err != nil {
+		return err
+	}
+
+	n, err := nm.GetNamespaceByName(ctx, rt.Namespace)
 	if err != nil {
 		return err
 	}
@@ -133,19 +138,15 @@ func (r *relationTuple) fromInternal(ctx context.Context, p *Persister, rt *rela
 	r.Object = rt.Object
 	r.Relation = rt.Relation
 
-	return r.insertSubject(ctx, p.namespaces, rt.Subject)
+	return r.insertSubject(ctx, nm, rt.Subject)
 }
-
-/*
-Di: Mit Thommy, Julia, Flo über Wein und Champanger gequatscht, sie haben mich eingebunden
-*/
 
 func (p *Persister) insertRelationTuple(ctx context.Context, rel *relationtuple.InternalRelationTuple) error {
 	if rel.Subject == nil {
 		return errors.New("subject is not allowed to be nil")
 	}
 
-	p.l.WithFields(rel.ToLoggerFields()).Trace("creating in database")
+	p.d.Logger().WithFields(rel.ToLoggerFields()).Trace("creating in database")
 
 	nID, err := p.NetworkID(ctx)
 	if err != nil {
@@ -162,7 +163,7 @@ func (p *Persister) insertRelationTuple(ctx context.Context, rel *relationtuple.
 	}
 
 	if err := sqlcon.HandleError(
-		p.connection(ctx).Create(rt),
+		p.Connection(ctx).Create(rt),
 	); err != nil {
 		fmt.Print("\n\n")
 		return err
@@ -171,7 +172,7 @@ func (p *Persister) insertRelationTuple(ctx context.Context, rel *relationtuple.
 }
 
 func (p *Persister) deleteRelationTupleSubjectID(ctx context.Context, r *relationtuple.InternalRelationTuple, s *relationtuple.SubjectID, n *namespace.Namespace, network uuid.UUID) error {
-	if err := p.connection(ctx).RawQuery(
+	if err := p.Connection(ctx).RawQuery(
 		"DELETE FROM keto_relation_tuples WHERE network_id = ? AND namespace_id = ? AND object = ? AND relation = ? AND subject_id = ?",
 		network,
 		n.ID,
@@ -186,13 +187,18 @@ func (p *Persister) deleteRelationTupleSubjectID(ctx context.Context, r *relatio
 }
 
 func (p *Persister) deleteRelationTupleSubjectSet(ctx context.Context, r *relationtuple.InternalRelationTuple, s *relationtuple.SubjectSet, n *namespace.Namespace, network uuid.UUID) error {
-	sn, err := p.namespaces.GetNamespaceByName(ctx, r.Namespace)
+	nm, err := p.d.Config().NamespaceManager()
 	if err != nil {
 		return err
 	}
 
-	if err := p.connection(ctx).RawQuery(
-		"DELETE FROM keto_relation_tuples WHERE network_id = ? AND namespace_id = ? AND object = ? AND relation = ? AND subject_namespace_id = ? AND subject_object = ? AND subject_relation = ?",
+	sn, err := nm.GetNamespaceByName(ctx, s.Namespace)
+	if err != nil {
+		return err
+	}
+
+	if err := p.Connection(ctx).RawQuery(
+		"DELETE FROM keto_relation_tuples WHERE network_id = ? AND namespace_id = ? AND object = ? AND relation = ? AND subject_set_namespace_id = ? AND subject_set_object = ? AND subject_set_relation = ?",
 		network,
 		n.ID,
 		r.Object,
@@ -212,16 +218,19 @@ func (p *Persister) DeleteRelationTuples(ctx context.Context, rs ...*relationtup
 		return err
 	}
 
+	nm, err := p.d.Config().NamespaceManager()
+	if err != nil {
+		return err
+	}
+
 	return p.transaction(ctx, func(ctx context.Context, c *pop.Connection) error {
 		for _, r := range rs {
-			n, err := p.namespaces.GetNamespaceByName(ctx, r.Namespace)
+			n, err := nm.GetNamespaceByName(ctx, r.Namespace)
 			if err != nil {
 				return err
 			}
 
 			switch s := r.Subject.(type) {
-			case nil:
-				return errors.New("subject is not allowed to be nil")
 			case *relationtuple.SubjectID:
 				if err := p.deleteRelationTupleSubjectID(ctx, r, s, n, network); err != nil {
 					return err
@@ -230,6 +239,8 @@ func (p *Persister) DeleteRelationTuples(ctx context.Context, rs ...*relationtup
 				if err := p.deleteRelationTupleSubjectSet(ctx, r, s, n, network); err != nil {
 					return err
 				}
+			default:
+				return errors.New("subject is not allowed to be nil")
 			}
 		}
 
@@ -239,6 +250,11 @@ func (p *Persister) DeleteRelationTuples(ctx context.Context, rs ...*relationtup
 
 func (p *Persister) GetRelationTuples(ctx context.Context, query *relationtuple.RelationQuery, options ...x.PaginationOptionSetter) ([]*relationtuple.InternalRelationTuple, string, error) {
 	pagination, err := internalPaginationFromOptions(options...)
+	if err != nil {
+		return nil, "", err
+	}
+
+	nm, err := p.d.Config().NamespaceManager()
 	if err != nil {
 		return nil, "", err
 	}
@@ -255,7 +271,7 @@ func (p *Persister) GetRelationTuples(ctx context.Context, query *relationtuple.
 		case *relationtuple.SubjectID:
 			wheres = append(wheres, whereStmts{stmt: "subject_id = ?", arg: s.ID})
 		case *relationtuple.SubjectSet:
-			n, err := p.namespaces.GetNamespaceByName(ctx, s.Namespace)
+			n, err := nm.GetNamespaceByName(ctx, s.Namespace)
 			if err != nil {
 				return nil, "", err
 			}
@@ -269,7 +285,7 @@ func (p *Persister) GetRelationTuples(ctx context.Context, query *relationtuple.
 		}
 	}
 	if query.Namespace != "" {
-		n, err := p.namespaces.GetNamespaceByName(ctx, query.Namespace)
+		n, err := nm.GetNamespaceByName(ctx, query.Namespace)
 		if err != nil {
 			return nil, "", err
 		}
@@ -280,7 +296,7 @@ func (p *Persister) GetRelationTuples(ctx context.Context, query *relationtuple.
 	if err != nil {
 		return nil, "", err
 	}
-	sqlQuery := p.connection(ctx).
+	sqlQuery := p.Connection(ctx).
 		Where("network_id = ?", nID).
 		Order("network_id, namespace_id, object, relation, subject_id, subject_set_namespace_id, subject_set_object, subject_set_relation").
 		Paginate(pagination.Page, pagination.PerPage)
@@ -302,7 +318,7 @@ func (p *Persister) GetRelationTuples(ctx context.Context, query *relationtuple.
 	internalRes := make([]*relationtuple.InternalRelationTuple, len(res))
 	for i, r := range res {
 		var err error
-		internalRes[i], err = r.toInternal(ctx, p.namespaces)
+		internalRes[i], err = r.toInternal(ctx, nm)
 		if err != nil {
 			return nil, "", err
 		}

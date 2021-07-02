@@ -2,7 +2,16 @@ package e2e
 
 import (
 	"context"
+	"errors"
+	"os"
 	"testing"
+	"time"
+
+	"github.com/ory/keto/internal/x/dbx"
+
+	"github.com/tidwall/sjson"
+
+	"github.com/ory/keto/internal/relationtuple"
 
 	"github.com/stretchr/testify/assert"
 
@@ -32,42 +41,113 @@ func setup(t testing.TB) (*test.Hook, context.Context) {
 	return hook, ctx
 }
 
-func newInitializedReg(t testing.TB, dsn *x.DsnT, nspaces []*namespace.Namespace) (context.Context, driver.Registry) {
-	_, ctx := setup(t)
+func newInitializedReg(t testing.TB, dsn *dbx.DsnT) (context.Context, driver.Registry, func(*testing.T, ...*namespace.Namespace)) {
+	hook, ctx := setup(t)
 
 	ports, err := freeport.GetFreePorts(2)
 	require.NoError(t, err)
 
-	t.Logf("starting server with dsn %+v; ports %+v", dsn.Name, ports)
-
 	flags := pflag.NewFlagSet("", pflag.ContinueOnError)
 	configx.RegisterConfigFlag(flags, nil)
 
-	require.NoError(t, flags.Parse(
-		[]string{"--" + configx.FlagConfig, x.ConfigFile(t, map[string]interface{}{
-			config.KeyDSN:               dsn.Conn,
-			config.KeyNamespaces:        nspaces,
-			"log.level":                 "debug",
-			"log.leak_sensitive_values": true,
-			config.KeyReadAPIHost:       "127.0.0.1",
-			config.KeyReadAPIPort:       ports[0],
-			config.KeyWriteAPIHost:      "127.0.0.1",
-			config.KeyWriteAPIPort:      ports[1],
-		})},
-	))
+	nspaces := make([]*namespace.Namespace, 0)
+	cf := dbx.ConfigFile(t, map[string]interface{}{
+		config.KeyDSN:               dsn.Conn,
+		config.KeyNamespaces:        nspaces,
+		"log.level":                 "debug",
+		"log.leak_sensitive_values": true,
+		config.KeyReadAPIHost:       "127.0.0.1",
+		config.KeyReadAPIPort:       ports[0],
+		config.KeyWriteAPIHost:      "127.0.0.1",
+		config.KeyWriteAPIPort:      ports[1],
+	})
+	require.NoError(t, flags.Parse([]string{"--" + configx.FlagConfig, cf}))
 
 	reg, err := driver.NewDefaultRegistry(ctx, flags)
 	require.NoError(t, err)
 
 	if dsn.Name != "memory" {
-		migrateEverythingUp(ctx, t, reg, nspaces)
+		migrateEverythingUp(ctx, t, reg)
 	}
-	assertMigrated(ctx, t, reg, nspaces)
+	assertMigrated(ctx, t, reg)
 
-	return ctx, reg
+	return ctx, reg, func(t *testing.T, nn ...*namespace.Namespace) {
+		for _, n := range nn {
+			n.ID = int64(len(nspaces))
+			nspaces = append(nspaces, n)
+		}
+
+		cc, err := os.ReadFile(cf)
+		require.NoError(t, err)
+		cc, err = sjson.SetBytes(cc, config.KeyNamespaces, nspaces)
+		require.NoError(t, err)
+		require.NoError(t, os.WriteFile(cf, cc, 0644))
+
+		select {
+		case <-time.After(time.Second):
+			t.Errorf("did not get namespace update %+v", nspaces)
+		case <-func() chan struct{} {
+			c := make(chan struct{})
+			go func() {
+				defer close(c)
+
+			pollLogEntries:
+				for {
+					ee := hook.AllEntries()
+					for _, e := range ee {
+						if f, ok := e.Data["file"]; ok && f == cf && e.Message == "Configuration change processed successfully." {
+							hook.Reset()
+							break pollLogEntries
+						}
+					}
+					t.Logf("waiting for last entry to notify about config %s change, got %+v", cf, ee)
+					time.Sleep(10 * time.Millisecond)
+				}
+
+				for {
+					nm, err := reg.Config().NamespaceManager()
+					require.NoError(t, err)
+
+					if func() (allNamespacesThere bool) {
+						for _, n := range nn {
+							a, err := nm.GetNamespaceByID(ctx, n.ID)
+							if err != nil {
+								return false
+							}
+							assert.Equal(t, n, a)
+						}
+						return true
+					}() {
+						break
+					}
+					nn, err := nm.Namespaces(ctx)
+					require.NoError(t, err)
+					t.Logf("not all namespaces there yet %+v", nn)
+					time.Sleep(10 * time.Millisecond)
+				}
+			}()
+			return c
+		}():
+		}
+
+		t.Cleanup(func() {
+			for _, n := range nn {
+				err := errors.New("not nil")
+				var pt string
+				var ts []*relationtuple.InternalRelationTuple
+				for pt != "" || err != nil {
+					ts, pt, err = reg.RelationTupleManager().GetRelationTuples(ctx, &relationtuple.RelationQuery{
+						Namespace: n.Name,
+					}, x.WithToken(pt))
+					require.NoError(t, err)
+					require.NoError(t, reg.RelationTupleManager().DeleteRelationTuples(ctx, ts...))
+				}
+			}
+		})
+	}
 }
 
-func migrateEverythingUp(ctx context.Context, t testing.TB, r driver.Registry, nn []*namespace.Namespace) {
+func migrateEverythingUp(ctx context.Context, t testing.TB, r driver.Registry) {
 	mb, err := r.Migrator().MigrationBox(ctx)
 	require.NoError(t, err)
 	s, err := mb.Status(ctx)
@@ -83,7 +163,7 @@ func migrateEverythingUp(ctx context.Context, t testing.TB, r driver.Registry, n
 	})
 }
 
-func assertMigrated(ctx context.Context, t testing.TB, r driver.Registry, nn []*namespace.Namespace) {
+func assertMigrated(ctx context.Context, t testing.TB, r driver.Registry) {
 	mb, err := r.Migrator().MigrationBox(ctx)
 	require.NoError(t, err)
 	s, err := mb.Status(ctx)

@@ -10,28 +10,31 @@ import (
 	"github.com/pkg/errors"
 )
 
-type networkID struct {
+type NetworkID struct {
 	ID        uuid.UUID `db:"network_id"`
 	CreatedAt time.Time `db:"created_at"`
 	UpdatedAt time.Time `db:"updated_at"`
+
+	// this field is used only to ensure there is only ever one network ID in the database
+	Limiter int `db:"limiter"`
 }
 
-func (*networkID) TableName() string {
+func (*NetworkID) TableName() string {
 	return "keto_networks"
 }
 
 func (p *Persister) NetworkID(ctx context.Context) (uuid.UUID, error) {
 	if p.networkIDCached == uuid.Nil {
-		var nID networkID
+		var nID NetworkID
 
-		if err := p.connection(ctx).First(&nID); errors.Is(err, sql.ErrNoRows) {
+		if err := p.Connection(ctx).First(&nID); errors.Is(err, sql.ErrNoRows) {
 			var err error
 			nID.ID, err = uuid.NewV4()
 			if err != nil {
 				return uuid.Nil, errors.WithStack(err)
 			}
 
-			if err := p.connection(ctx).Create(&nID); err != nil {
+			if err := p.Connection(ctx).Create(&nID); err != nil {
 				return uuid.Nil, sqlcon.HandleError(err)
 			}
 		} else if err != nil {

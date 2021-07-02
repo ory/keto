@@ -16,18 +16,24 @@ import (
 	"github.com/ory/keto/internal/relationtuple"
 )
 
-func runCases(c client, nspaces []*namespace.Namespace) func(*testing.T) {
+func runCases(c client, addNamespace func(*testing.T, ...*namespace.Namespace)) func(*testing.T) {
 	return func(t *testing.T) {
 		c.waitUntilLive(t)
 
 		t.Run("case=gets empty namespace", func(t *testing.T) {
-			resp := c.queryTuple(t, &relationtuple.RelationQuery{Namespace: nspaces[0].Name})
+			n := &namespace.Namespace{Name: t.Name()}
+			addNamespace(t, n)
+
+			resp := c.queryTuple(t, &relationtuple.RelationQuery{Namespace: n.Name})
 			assert.Len(t, resp.RelationTuples, 0)
 		})
 
 		t.Run("case=creates tuple and uses it then", func(t *testing.T) {
+			n := &namespace.Namespace{Name: t.Name()}
+			addNamespace(t, n)
+
 			tuple := &relationtuple.InternalRelationTuple{
-				Namespace: nspaces[0].Name,
+				Namespace: n.Name,
 				Object:    fmt.Sprintf("object for client %T", c),
 				Relation:  "access",
 				Subject:   &relationtuple.SubjectID{ID: "client"},
@@ -43,6 +49,9 @@ func runCases(c client, nspaces []*namespace.Namespace) func(*testing.T) {
 		})
 
 		t.Run("case=expand API", func(t *testing.T) {
+			n := &namespace.Namespace{Name: t.Name()}
+			addNamespace(t, n)
+
 			obj := fmt.Sprintf("tree for client %T", c)
 			rel := "expand"
 
@@ -50,7 +59,7 @@ func runCases(c client, nspaces []*namespace.Namespace) func(*testing.T) {
 			expectedTree := &expand.Tree{
 				Type: expand.Union,
 				Subject: &relationtuple.SubjectSet{
-					Namespace: nspaces[0].Name,
+					Namespace: n.Name,
 					Object:    obj,
 					Relation:  rel,
 				},
@@ -59,7 +68,7 @@ func runCases(c client, nspaces []*namespace.Namespace) func(*testing.T) {
 
 			for i, subjectID := range subjects {
 				c.createTuple(t, &relationtuple.InternalRelationTuple{
-					Namespace: nspaces[0].Name,
+					Namespace: n.Name,
 					Object:    obj,
 					Relation:  rel,
 					Subject:   &relationtuple.SubjectID{ID: subjectID},
@@ -83,11 +92,13 @@ func runCases(c client, nspaces []*namespace.Namespace) func(*testing.T) {
 
 		t.Run("case=gets result paginated", func(t *testing.T) {
 			const nTuples = 10
+			n := &namespace.Namespace{Name: t.Name()}
+			addNamespace(t, n)
 
 			rel := fmt.Sprintf("some unique relation %T", c)
 			for i := 0; i < nTuples; i++ {
 				c.createTuple(t, &relationtuple.InternalRelationTuple{
-					Namespace: nspaces[0].Name,
+					Namespace: n.Name,
 					Object:    "o" + strconv.Itoa(i),
 					Relation:  rel,
 					Subject:   &relationtuple.SubjectID{ID: "s" + strconv.Itoa(i)},
@@ -102,7 +113,7 @@ func runCases(c client, nspaces []*namespace.Namespace) func(*testing.T) {
 			for ok := true; ok; ok = resp.NextPageToken != "" {
 				resp = *c.queryTuple(t,
 					&relationtuple.RelationQuery{
-						Namespace: nspaces[0].Name,
+						Namespace: n.Name,
 						Relation:  rel,
 					},
 					x.WithToken(resp.NextPageToken),
@@ -116,23 +127,36 @@ func runCases(c client, nspaces []*namespace.Namespace) func(*testing.T) {
 		})
 
 		t.Run("case=deletes tuple", func(t *testing.T) {
-			rel := t.Name()
+			n := &namespace.Namespace{Name: t.Name()}
+			addNamespace(t, n)
 
-			rt := &relationtuple.InternalRelationTuple{
-				Namespace: nspaces[0].Name,
-				Object:    "o",
-				Relation:  rel,
-				Subject:   &relationtuple.SubjectID{ID: "s"},
+			for _, s := range []relationtuple.Subject{
+				&relationtuple.SubjectID{ID: "s"},
+				&relationtuple.SubjectSet{
+					Namespace: n.Name,
+					Object:    "so",
+					Relation:  "rel",
+				},
+			} {
+				s := s
+				t.Run(fmt.Sprintf("subject_type=%T", s), func(t *testing.T) {
+					rt := &relationtuple.InternalRelationTuple{
+						Namespace: n.Name,
+						Object:    "o",
+						Relation:  "rel",
+						Subject:   s,
+					}
+					c.createTuple(t, rt)
+
+					resp := c.queryTuple(t, (*relationtuple.RelationQuery)(rt))
+					assert.Equal(t, []*relationtuple.InternalRelationTuple{rt}, resp.RelationTuples)
+
+					c.deleteTuple(t, rt)
+
+					resp = c.queryTuple(t, (*relationtuple.RelationQuery)(rt))
+					assert.Len(t, resp.RelationTuples, 0)
+				})
 			}
-			c.createTuple(t, rt)
-
-			resp := c.queryTuple(t, (*relationtuple.RelationQuery)(rt))
-			assert.Equal(t, []*relationtuple.InternalRelationTuple{rt}, resp.RelationTuples)
-
-			c.deleteTuple(t, rt)
-
-			resp = c.queryTuple(t, (*relationtuple.RelationQuery)(rt))
-			assert.Len(t, resp.RelationTuples, 0)
 		})
 
 		t.Run("case=returns error with status code on unknown namespace", func(t *testing.T) {

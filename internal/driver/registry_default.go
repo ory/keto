@@ -4,6 +4,8 @@ import (
 	"context"
 	"net/http"
 
+	"github.com/ory/x/dbal"
+
 	"github.com/ory/x/metricsx"
 
 	acl "github.com/ory/keto/proto/ory/keto/acl/v1alpha1"
@@ -50,7 +52,7 @@ type (
 		w  herodot.Writer
 		ce *check.Engine
 		ee *expand.Engine
-		c  *config.Provider
+		c  *config.Config
 
 		healthH      *healthx.Handler
 		healthServer *health.Server
@@ -78,7 +80,7 @@ func (r *RegistryDefault) BuildHash() string {
 	return config.Commit
 }
 
-func (r *RegistryDefault) Config() *config.Provider {
+func (r *RegistryDefault) Config() *config.Config {
 	return r.c
 }
 
@@ -156,12 +158,8 @@ func (r *RegistryDefault) Migrator() persistence.Migrator {
 }
 
 func (r *RegistryDefault) Init(ctx context.Context) error {
-	nm, err := r.c.NamespaceManager()
-	if err != nil {
-		return err
-	}
-
-	r.p, err = sql.NewPersister(r.c.DSN(), r.Logger(), nm, r.Tracer())
+	var err error
+	r.p, err = sql.NewPersister(r.c.DSN(), r, r.Tracer())
 	if err != nil {
 		return err
 	}
@@ -170,7 +168,7 @@ func (r *RegistryDefault) Init(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
-	if r.c.DSN() == config.DSNMemory {
+	if dbal.IsMemorySQLite(r.c.DSN()) {
 		if err := mb.Up(ctx); err != nil {
 			return err
 		}

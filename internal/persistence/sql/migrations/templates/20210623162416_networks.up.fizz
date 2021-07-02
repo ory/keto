@@ -1,3 +1,0 @@
-create_table("keto_networks") {
-    t.Column("network_id", "uuid", { primary: true })
-}

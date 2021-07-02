@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/ory/keto/internal/driver/config"
+
 	"github.com/ory/keto/internal/x"
 
 	"github.com/ory/keto/internal/namespace"
@@ -20,7 +22,8 @@ import (
 )
 
 func newTestEngine(t *testing.T, namespaces []*namespace.Namespace, paginationOpts ...x.PaginationOptionSetter) (*relationtuple.ManagerWrapper, *expand.Engine) {
-	innerReg := driver.NewMemoryTestRegistry(t, namespaces)
+	innerReg := driver.NewSqliteTestRegistry(t, false)
+	require.NoError(t, innerReg.Config().Set(config.KeyNamespaces, namespaces))
 	reg := relationtuple.NewManagerWrapper(t, innerReg, paginationOpts...)
 	e := expand.NewEngine(reg)
 	return reg, e

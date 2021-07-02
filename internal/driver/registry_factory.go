@@ -2,13 +2,13 @@ package driver
 
 import (
 	"context"
+	"fmt"
+	"net/url"
 	"testing"
 
 	"github.com/pkg/errors"
 
 	"github.com/sirupsen/logrus/hooks/test"
-
-	"github.com/ory/keto/internal/namespace"
 
 	"github.com/ory/x/logrusx"
 	"github.com/spf13/pflag"
@@ -44,16 +44,24 @@ func NewDefaultRegistry(ctx context.Context, flags *pflag.FlagSet) (Registry, er
 	return r, nil
 }
 
-func NewMemoryTestRegistry(t *testing.T, namespaces []*namespace.Namespace) Registry {
+func SqliteTestDSN(t testing.TB, debugDatabaseOnDisk bool) string {
+	dsn := fmt.Sprintf("sqlite://file:%s.sqlite?_fk=true&cache=shared", url.PathEscape(t.Name()))
+	if !debugDatabaseOnDisk {
+		dsn += "&mode=memory"
+	}
+	return dsn
+}
+
+func NewSqliteTestRegistry(t *testing.T, debugDatabaseOnDisk bool) Registry {
 	l := logrusx.New("ORY Keto", "testing")
 	ctx, cancel := context.WithCancel(context.Background())
 	t.Cleanup(cancel)
 
 	c, err := config.New(ctx, nil, l)
 	require.NoError(t, err)
-	require.NoError(t, c.Set(config.KeyDSN, config.DSNMemory))
+
+	require.NoError(t, c.Set(config.KeyDSN, SqliteTestDSN(t, debugDatabaseOnDisk)))
 	require.NoError(t, c.Set("log.level", "debug"))
-	require.NoError(t, c.Set(config.KeyNamespaces, namespaces))
 
 	r := &RegistryDefault{
 		c: c,
@@ -61,8 +69,17 @@ func NewMemoryTestRegistry(t *testing.T, namespaces []*namespace.Namespace) Regi
 	}
 
 	require.NoError(t, r.Init(ctx))
+	if debugDatabaseOnDisk {
+		mb, err := r.Migrator().MigrationBox(ctx)
+		require.NoError(t, err)
+		require.NoError(t, mb.Up(ctx))
+	}
 
 	t.Cleanup(func() {
+		if debugDatabaseOnDisk {
+			return
+		}
+
 		mb, err := r.Migrator().MigrationBox(ctx)
 		require.NoError(t, err)
 		require.NoError(t, mb.Down(ctx, -1))

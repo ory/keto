@@ -7,6 +7,8 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/ory/keto/internal/driver/config"
+
 	"github.com/gofrs/uuid"
 
 	"github.com/luna-duclos/instrumentedsql"
@@ -18,10 +20,7 @@ import (
 	"github.com/cenkalti/backoff/v3"
 	"github.com/ory/x/sqlcon"
 
-	"github.com/ory/keto/internal/namespace"
-
 	"github.com/gobuffalo/pop/v5"
-	"github.com/ory/x/logrusx"
 	"github.com/pkg/errors"
 
 	"github.com/ory/keto/internal/persistence"
@@ -32,14 +31,17 @@ type (
 	Persister struct {
 		conn            *pop.Connection
 		mb              *popx.MigrationBox
-		namespaces      namespace.Manager
-		l               *logrusx.Logger
+		d               dependencies
 		dsn             string
 		tracer          *tracing.Tracer
 		networkIDCached uuid.UUID
 	}
 	internalPagination struct {
 		Page, PerPage int
+	}
+	dependencies interface {
+		config.Provider
+		x.LoggerProvider
 	}
 )
 
@@ -57,14 +59,13 @@ var (
 	_ persistence.Persister = &Persister{}
 )
 
-func NewPersister(dsn string, l *logrusx.Logger, namespaces namespace.Manager, tracer *tracing.Tracer) (*Persister, error) {
-	pop.Debug = true
+func NewPersister(dsn string, reg dependencies, tracer *tracing.Tracer) (*Persister, error) {
+	pop.SetLogger(reg.Logger().PopLogger)
 
 	p := &Persister{
-		namespaces: namespaces,
-		l:          l,
-		dsn:        dsn,
-		tracer:     tracer,
+		d:      reg,
+		dsn:    dsn,
+		tracer: tracer,
 	}
 
 	var err error
@@ -84,9 +85,9 @@ func (p *Persister) newConnection(options map[string]string) (c *pop.Connection,
 			instrumentedsql.WithOmitArgs(),
 		}
 	}
-	pool, idlePool, connMaxLifetime, connMaxIdleTime, cleanedDSN := sqlcon.ParseConnectionOptions(p.l, p.dsn)
+	pool, idlePool, connMaxLifetime, connMaxIdleTime, cleanedDSN := sqlcon.ParseConnectionOptions(p.d.Logger(), p.dsn)
 	connDetails := &pop.ConnectionDetails{
-		URL:                       sqlcon.FinalizeDSN(p.l, cleanedDSN),
+		URL:                       sqlcon.FinalizeDSN(p.d.Logger(), cleanedDSN),
 		IdlePool:                  idlePool,
 		ConnMaxLifetime:           connMaxLifetime,
 		ConnMaxIdleTime:           connMaxIdleTime,
@@ -103,17 +104,17 @@ func (p *Persister) newConnection(options map[string]string) (c *pop.Connection,
 	if err := backoff.Retry(func() (err error) {
 		c, err = pop.NewConnection(connDetails)
 		if err != nil {
-			p.l.WithError(err).Error("Unable to connect to database, retrying.")
+			p.d.Logger().WithError(err).Error("Unable to connect to database, retrying.")
 			return errors.WithStack(err)
 		}
 
 		if err := c.Open(); err != nil {
-			p.l.WithError(err).Error("Unable to open the database connection, retrying.")
+			p.d.Logger().WithError(err).Error("Unable to open the database connection, retrying.")
 			return errors.WithStack(err)
 		}
 
 		if err := c.Store.(interface{ Ping() error }).Ping(); err != nil {
-			p.l.WithError(err).Error("Unable to ping the database connection, retrying.")
+			p.d.Logger().WithError(err).Error("Unable to ping the database connection, retrying.")
 			return errors.WithStack(err)
 		}
 
@@ -128,7 +129,7 @@ func (p *Persister) newConnection(options map[string]string) (c *pop.Connection,
 func (p *Persister) MigrationBox(ctx context.Context) (*popx.MigrationBox, error) {
 	if p.mb == nil {
 		var err error
-		p.mb, err = popx.NewMigrationBox(migrations, popx.NewMigrator(p.connection(ctx), p.l, nil, 0))
+		p.mb, err = popx.NewMigrationBox(migrations, popx.NewMigrator(p.Connection(ctx), p.d.Logger(), nil, 0))
 		if err != nil {
 			return nil, err
 		}
@@ -137,7 +138,7 @@ func (p *Persister) MigrationBox(ctx context.Context) (*popx.MigrationBox, error
 	return p.mb, nil
 }
 
-func (p *Persister) connection(ctx context.Context) *pop.Connection {
+func (p *Persister) Connection(ctx context.Context) *pop.Connection {
 	return popx.GetConnection(ctx, p.conn.WithContext(ctx))
 }
 

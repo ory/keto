@@ -3,7 +3,7 @@
 CREATE TABLE keto_networks
 (
     limiter    INTEGER   NOT NULL DEFAULT 0 UNIQUE,
-    network_id char(36)  NOT NULL,
+    network_id UUID      NOT NULL,
     created_at timestamp NOT NULL,
     updated_at timestamp NOT NULL,
 

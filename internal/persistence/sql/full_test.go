@@ -1,28 +1,28 @@
-package sql
+package sql_test
 
 import (
 	"context"
 	"fmt"
 	"testing"
 
-	"github.com/sirupsen/logrus"
+	"github.com/ory/keto/internal/x/dbx"
 
-	"github.com/ory/x/logrusx"
+	"github.com/ory/keto/internal/driver"
+	"github.com/ory/keto/internal/persistence/sql"
+
 	"github.com/sirupsen/logrus/hooks/test"
 	"github.com/stretchr/testify/require"
 
 	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/namespace"
 	"github.com/ory/keto/internal/relationtuple"
-	"github.com/ory/keto/internal/x"
 )
 
 func TestPersister(t *testing.T) {
-	setup := func(t *testing.T, dsn *x.DsnT) (p *Persister, hook *test.Hook) {
-		hook = &test.Hook{}
-		lx := logrusx.New("", "", logrusx.WithHook(hook), logrusx.ForceLevel(logrus.TraceLevel))
+	setup := func(t *testing.T, dsn *dbx.DsnT) (p *sql.Persister, d driver.Registry, hook *test.Hook) {
+		d = driver.NewSqliteTestRegistry(t, false)
 
-		p, err := NewPersister(dsn.Conn, lx, config.NewMemoryNamespaceManager(), nil)
+		p, err := sql.NewPersister(dsn.Conn, d, nil)
 		require.NoError(t, err)
 
 		mb, err := p.MigrationBox(context.Background())
@@ -36,7 +36,7 @@ func TestPersister(t *testing.T) {
 		return
 	}
 
-	addNamespace := func(p *Persister, nspaces []*namespace.Namespace) func(context.Context, *testing.T, string) {
+	addNamespace := func(d driver.Registry, nspaces []*namespace.Namespace) func(context.Context, *testing.T, string) {
 		return func(ctx context.Context, t *testing.T, name string) {
 			n := &namespace.Namespace{
 				Name: name,
@@ -44,17 +44,17 @@ func TestPersister(t *testing.T) {
 			}
 			nspaces = append(nspaces, n)
 
-			p.namespaces = config.NewMemoryNamespaceManager(nspaces...)
+			require.NoError(t, d.Config().Set(config.KeyNamespaces, nspaces))
 		}
 	}
 
-	for _, dsn := range x.GetDSNs(t) {
+	for _, dsn := range dbx.GetDSNs(t, false) {
 		t.Run(fmt.Sprintf("dsn=%s", dsn.Name), func(t *testing.T) {
 			var nspaces []*namespace.Namespace
-			p, _ := setup(t, dsn)
+			p, d, _ := setup(t, dsn)
 
 			t.Run("relationtuple.ManagerTest", func(t *testing.T) {
-				relationtuple.ManagerTest(t, p, addNamespace(p, nspaces))
+				relationtuple.ManagerTest(t, p, addNamespace(d, nspaces))
 			})
 		})
 	}

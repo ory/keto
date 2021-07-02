@@ -1,14 +1,14 @@
-package x
+package dbx
 
 import (
 	"io/ioutil"
 	"path/filepath"
 	"testing"
 
+	"github.com/ory/keto/internal/driver"
+
 	"github.com/stretchr/testify/require"
 	"github.com/tidwall/sjson"
-
-	"github.com/ory/keto/internal/driver/config"
 
 	"github.com/ory/x/sqlcon/dockertest"
 )
@@ -18,12 +18,12 @@ type DsnT struct {
 	Conn string
 }
 
-func GetDSNs(t testing.TB) []*DsnT {
+func GetDSNs(t testing.TB, debugSqliteOnDisk bool) []*DsnT {
 	// we use a slice of structs here to always have the same execution order
 	dsns := []*DsnT{
 		{
 			Name: "memory",
-			Conn: config.DSNMemory,
+			Conn: driver.SqliteTestDSN(t, debugSqliteOnDisk),
 		},
 	}
 	if !testing.Short() {
