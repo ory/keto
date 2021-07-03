@@ -263,7 +263,7 @@ func ManagerTest(t *testing.T, m Manager, addNamespace func(context.Context, *te
 			nspace := t.Name()
 			addNamespace(context.Background(), t, nspace)
 
-			for _, rt := range []InternalRelationTuple{
+			for _, rt := range []*InternalRelationTuple{
 				{
 					Namespace: nspace,
 					Object:    "o to delete",
@@ -281,8 +281,6 @@ func ManagerTest(t *testing.T, m Manager, addNamespace func(context.Context, *te
 					},
 				},
 			} {
-				rt := &rt
-
 				t.Run(fmt.Sprintf("subject_type=%T", rt.Subject), func(t *testing.T) {
 					require.NoError(t, m.WriteRelationTuples(context.Background(), rt))
 

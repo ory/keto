@@ -6,9 +6,9 @@ import (
 	"net/url"
 	"testing"
 
-	"github.com/pkg/errors"
+	"github.com/sirupsen/logrus"
 
-	"github.com/sirupsen/logrus/hooks/test"
+	"github.com/pkg/errors"
 
 	"github.com/ory/x/logrusx"
 	"github.com/spf13/pflag"
@@ -18,7 +18,7 @@ import (
 )
 
 func NewDefaultRegistry(ctx context.Context, flags *pflag.FlagSet) (Registry, error) {
-	hook, ok := ctx.Value(LogrusHookContextKey).(*test.Hook)
+	hook, ok := ctx.Value(LogrusHookContextKey).(logrus.Hook)
 
 	var opts []logrusx.Option
 	if ok {

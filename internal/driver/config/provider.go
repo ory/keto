@@ -155,45 +155,47 @@ func (k *Config) TracingConfig() *tracing.Config {
 }
 
 func (k *Config) NamespaceManager() (namespace.Manager, error) {
-	if k.nm == nil {
-		k.nmLock.Lock()
-		defer k.nmLock.Unlock()
-
-		var ctx context.Context
-		ctx, k.cancelNamespaceManager = context.WithCancel(k.ctx)
-
-		switch nTyped := k.p.GetF(KeyNamespaces, "file://./keto_namespaces").(type) {
-		case string:
-			var err error
-			k.nm, err = NewNamespaceWatcher(ctx, k.l, nTyped)
-			if err != nil {
-				return nil, err
-			}
-		case []*namespace.Namespace:
-			k.nm = NewMemoryNamespaceManager(nTyped...)
-		case []interface{}:
-			nEnc, err := json.Marshal(nTyped)
-			if err != nil {
-				return nil, errors.WithStack(err)
-			}
-
-			nn := make([]*namespace.Namespace, len(nTyped))
-
-			if err := json.Unmarshal(nEnc, &nn); err != nil {
-				return nil, errors.WithStack(err)
-			}
-
-			k.nm = NewMemoryNamespaceManager(nn...)
-		default:
-			return nil, errors.Errorf("could not create namespace manager from %#v, this indicates an error in the JSON schema that should be reported", nTyped)
-		}
-
-		// return here to properly unlock
-		return k.nm, nil
+	if nm := func() namespace.Manager {
+		k.nmLock.RLock()
+		defer k.nmLock.RUnlock()
+		return k.nm
+	}(); nm != nil {
+		return nm, nil
 	}
 
-	k.nmLock.RLock()
-	defer k.nmLock.RUnlock()
+	fmt.Println("creating new nm")
+
+	k.nmLock.Lock()
+	defer k.nmLock.Unlock()
+
+	var ctx context.Context
+	ctx, k.cancelNamespaceManager = context.WithCancel(k.ctx)
+
+	switch nTyped := k.p.GetF(KeyNamespaces, "file://./keto_namespaces").(type) {
+	case string:
+		var err error
+		k.nm, err = NewNamespaceWatcher(ctx, k.l, nTyped)
+		if err != nil {
+			return nil, err
+		}
+	case []*namespace.Namespace:
+		k.nm = NewMemoryNamespaceManager(nTyped...)
+	case []interface{}:
+		nEnc, err := json.Marshal(nTyped)
+		if err != nil {
+			return nil, errors.WithStack(err)
+		}
+
+		nn := make([]*namespace.Namespace, len(nTyped))
+
+		if err := json.Unmarshal(nEnc, &nn); err != nil {
+			return nil, errors.WithStack(err)
+		}
+
+		k.nm = NewMemoryNamespaceManager(nn...)
+	default:
+		return nil, errors.Errorf("could not create namespace manager from %#v, this indicates an error in the JSON schema that should be reported", nTyped)
+	}
 
 	return k.nm, nil
 }
