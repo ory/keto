@@ -3,7 +3,7 @@
 
 **Table of Contents**
 
-- [Unreleased (2021-07-01)](#unreleased-2021-07-01)
+- [Unreleased (2021-07-05)](#unreleased-2021-07-05)
   - [Bug Fixes](#bug-fixes)
   - [Documentation](#documentation)
   - [Features](#features)
@@ -96,7 +96,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [Unreleased](https://github.com/ory/keto/compare/v0.6.0-alpha.3...f4253b8a555afdee718be94140ca4fd4175c1413) (2021-07-01)
+# [Unreleased](https://github.com/ory/keto/compare/v0.6.0-alpha.3...f4253b8a555afdee718be94140ca4fd4175c1413) (2021-07-05)
 
 ### Bug Fixes
 
@@ -361,6 +361,8 @@ So stay tuned, :star: this repo, :eyes: releases, and
   ([#310](https://github.com/ory/keto/issues/310))
   ([7d99694](https://github.com/ory/keto/commit/7d9969414ebc8cf6ef5d211ad34f8ae01bd3b4ee)),
   closes [#302](https://github.com/ory/keto/issues/302)
+- **schema:** Add trace level to logger
+  ([a5a1402](https://github.com/ory/keto/commit/a5a1402c61e1a37b1a9a349ad5736eaca66bd6a4))
 - Secure query building ([#442](https://github.com/ory/keto/issues/442))
   ([c7d2770](https://github.com/ory/keto/commit/c7d2770ed570238fd1262bcc4e5b4afa6c12d80e))
 - Strict version enforcement in docker
@@ -376,14 +378,12 @@ So stay tuned, :star: this repo, :eyes: releases, and
 
   Fixed all occurrences found using the search pattern `return .*, err\n`.
 
-- Use package name in pkger
-  ([6435939](https://github.com/ory/keto/commit/6435939ad7e5899505cd0e6261f5dfc819c9ca42))
-- **schema:** Add trace level to logger
-  ([a5a1402](https://github.com/ory/keto/commit/a5a1402c61e1a37b1a9a349ad5736eaca66bd6a4))
 - Use make() to initialize slices
   ([#250](https://github.com/ory/keto/issues/250))
   ([84f028d](https://github.com/ory/keto/commit/84f028dc35665174542e103c0aefc635bb6d3e52)),
   closes [#217](https://github.com/ory/keto/issues/217)
+- Use package name in pkger
+  ([6435939](https://github.com/ory/keto/commit/6435939ad7e5899505cd0e6261f5dfc819c9ca42))
 
 ### Build System
 
@@ -972,18 +972,18 @@ Implement roles and policies filter (#124)
 - Implement roles and policies filter (#124)
   ([db94481](https://github.com/ory/keto/commit/db9448103621a6a8cd086a4cef6c6a22398e621f)),
   closes [#124](https://github.com/ory/keto/issues/124)
-- Add adopters placeholder ([#129](https://github.com/ory/keto/issues/129))
-  ([b814838](https://github.com/ory/keto/commit/b8148388b8bea97d1f1b4b54de2f0b8ef6b8b6c7))
 - Improve documentation (#126)
   ([aabb04d](https://github.com/ory/keto/commit/aabb04d5f283d3c73eb3f3531b4e470ae716db5e)),
   closes [#126](https://github.com/ory/keto/issues/126)
 - Create FUNDING.yml
   ([571b447](https://github.com/ory/keto/commit/571b447ed3a02f43623ef5c5adc09682b5f379bd))
-- Use non-root user in image ([#116](https://github.com/ory/keto/issues/116))
-  ([a493e55](https://github.com/ory/keto/commit/a493e550a8bb86d99164f4ea76dbcecf76c9c2c1))
 - Remove binary license (#117)
   ([6e85f7c](https://github.com/ory/keto/commit/6e85f7c6f430e88fb4117a131f57bd69466a8ca1)),
   closes [#117](https://github.com/ory/keto/issues/117)
+- Add adopters placeholder ([#129](https://github.com/ory/keto/issues/129))
+  ([b814838](https://github.com/ory/keto/commit/b8148388b8bea97d1f1b4b54de2f0b8ef6b8b6c7))
+- Use non-root user in image ([#116](https://github.com/ory/keto/issues/116))
+  ([a493e55](https://github.com/ory/keto/commit/a493e550a8bb86d99164f4ea76dbcecf76c9c2c1))
 
 # [0.3.3-sandbox](https://github.com/ory/keto/compare/v0.3.1-sandbox...v0.3.3-sandbox) (2019-05-18)
 
@@ -1038,12 +1038,6 @@ Signed-off-by: aeneasr <aeneas@ory.sh>
 
 ### Unclassified
 
-- Improve naming for ory policies
-  ([#100](https://github.com/ory/keto/issues/100))
-  ([b39703d](https://github.com/ory/keto/commit/b39703d362d333213fcb7d3782e363d09b6dabbd))
-- Remove full tag from build pipeline
-  ([#101](https://github.com/ory/keto/issues/101))
-  ([602a273](https://github.com/ory/keto/commit/602a273dc5a0c29e80a22f04adb937ab385c4512))
 - Remove duplicate code in Makefile (#99)
   ([04f5223](https://github.com/ory/keto/commit/04f52231509dd0f3a57d745918fc43fff7c595ff)),
   closes [#99](https://github.com/ory/keto/issues/99)
@@ -1059,6 +1053,11 @@ Signed-off-by: aeneasr <aeneas@ory.sh>
 
   Several bugs have been fixed in the release management pipeline.
 
+- storage/memory: Fix upsert with pre-existing key will causes duplicate records
+  (#88)
+  ([1cb8a36](https://github.com/ory/keto/commit/1cb8a36a08883b785d9bb0a4be1ddc00f1f9d358)),
+  closes [#88](https://github.com/ory/keto/issues/88)
+  [#80](https://github.com/ory/keto/issues/80)
 - Add content-type in the response of allowed
   ([#90](https://github.com/ory/keto/issues/90))
   ([39a1486](https://github.com/ory/keto/commit/39a1486dc53456189d30380460a9aeba198fa9e9))
@@ -1070,21 +1069,22 @@ Signed-off-by: aeneasr <aeneas@ory.sh>
 - Fix the type of conditions in the policy
   ([#86](https://github.com/ory/keto/issues/86))
   ([fc1ced6](https://github.com/ory/keto/commit/fc1ced63bd39c9fbf437e419dfc384343e36e0ee))
+- Improve naming for ory policies
+  ([#100](https://github.com/ory/keto/issues/100))
+  ([b39703d](https://github.com/ory/keto/commit/b39703d362d333213fcb7d3782e363d09b6dabbd))
 - Move Go SDK generation to go-swagger
   ([#94](https://github.com/ory/keto/issues/94))
   ([9f48a95](https://github.com/ory/keto/commit/9f48a95187a7b6160108cd7d0301590de2e58f07)),
   closes [#92](https://github.com/ory/keto/issues/92)
+- Remove full tag from build pipeline
+  ([#101](https://github.com/ory/keto/issues/101))
+  ([602a273](https://github.com/ory/keto/commit/602a273dc5a0c29e80a22f04adb937ab385c4512))
 - Send 403 when authorization result is negative
   ([#93](https://github.com/ory/keto/issues/93))
   ([de806d8](https://github.com/ory/keto/commit/de806d892819db63c1abc259ab06ee08d87895dc)),
   closes [#75](https://github.com/ory/keto/issues/75)
 - Update dependencies ([#91](https://github.com/ory/keto/issues/91))
   ([4d44174](https://github.com/ory/keto/commit/4d4417474ebf8cc69d01e5ac82633b966cdefbc7))
-- storage/memory: Fix upsert with pre-existing key will causes duplicate records
-  (#88)
-  ([1cb8a36](https://github.com/ory/keto/commit/1cb8a36a08883b785d9bb0a4be1ddc00f1f9d358)),
-  closes [#88](https://github.com/ory/keto/issues/88)
-  [#80](https://github.com/ory/keto/issues/80)
 
 # [0.2.3-sandbox+oryOS.10](https://github.com/ory/keto/compare/v0.2.2-sandbox+oryOS.10...v0.2.3-sandbox+oryOS.10) (2019-02-05)
 
@@ -1265,6 +1265,19 @@ Signed-off-by: aeneasr <aeneas@ory.sh>
 
 ### Unclassified
 
+- Switch to rego as policy decision engine (#48)
+  ([ee9bcf2](https://github.com/ory/keto/commit/ee9bcf2719178e5a8dccca083a90313947a8a63b)),
+  closes [#48](https://github.com/ory/keto/issues/48)
+- Enable TLS option to serve API (#46)
+  ([2f62063](https://github.com/ory/keto/commit/2f620632d0375bf9c7e58dbfb49627c02c66abf3)),
+  closes [#46](https://github.com/ory/keto/issues/46)
+- gofmt
+  ([777b1be](https://github.com/ory/keto/commit/777b1be1378d314e7cfde0c34450afcce7e590a5))
+- Updates README.md (#34)
+  ([c28b521](https://github.com/ory/keto/commit/c28b5219fd64314a75ee3c848a80a0c5974ebb7d)),
+  closes [#34](https://github.com/ory/keto/issues/34)
+- authn/client: Payload is now prefixed with client
+  ([8584d94](https://github.com/ory/keto/commit/8584d94cfb18deb37ae32ae601f4cd15c14067e7))
 - Add Go SDK factory
   ([99db7e6](https://github.com/ory/keto/commit/99db7e6d4edac88794266a01ddfab9cd0632e95a))
 - Add go SDK interface
@@ -1321,55 +1334,42 @@ Signed-off-by: aeneasr <aeneas@ory.sh>
   ([6a9da74](https://github.com/ory/keto/commit/6a9da74f693ee6c15a775ab8d652582aea093601))
 - List roles from keto_role table ([#28](https://github.com/ory/keto/issues/28))
   ([9e16605](https://github.com/ory/keto/commit/9e166054b8d474fbce6983d5d00eeeb062fc79b1))
-- Properly names flags
-  ([af2c3b5](https://github.com/ory/keto/commit/af2c3b5bc96e95fb31b1db5c7fe6dfd6b6fc5b20))
-- Require explicit CORS enabling ([#42](https://github.com/ory/keto/issues/42))
-  ([9a45107](https://github.com/ory/keto/commit/9a45107af304b2a8e663a532e4f6e4536f15888c))
-- Update dependencies
-  ([663d8b1](https://github.com/ory/keto/commit/663d8b13e99694a57752cd60a68342b81b041c66))
-- Switch to rego as policy decision engine (#48)
-  ([ee9bcf2](https://github.com/ory/keto/commit/ee9bcf2719178e5a8dccca083a90313947a8a63b)),
-  closes [#48](https://github.com/ory/keto/issues/48)
-- Update hydra to v1.0.0-beta.6 ([#35](https://github.com/ory/keto/issues/35))
-  ([5e97104](https://github.com/ory/keto/commit/5e971042afff06e2a6ee3b54d2fea31687203623))
-- Update npm package registry
-  ([a53d3d2](https://github.com/ory/keto/commit/a53d3d23e11fde5dcfbb27a2add1049f4d8e10e6))
-- Enable TLS option to serve API (#46)
-  ([2f62063](https://github.com/ory/keto/commit/2f620632d0375bf9c7e58dbfb49627c02c66abf3)),
-  closes [#46](https://github.com/ory/keto/issues/46)
 - Make introspection authorization optional
   ([e5460ad](https://github.com/ory/keto/commit/e5460ad884cd018cd6177324b949cd66bfd53bc7))
+- Properly names flags
+  ([af2c3b5](https://github.com/ory/keto/commit/af2c3b5bc96e95fb31b1db5c7fe6dfd6b6fc5b20))
 - Properly output telemetry information
   ([#33](https://github.com/ory/keto/issues/33))
   ([9994967](https://github.com/ory/keto/commit/9994967b0ca54a62b8b0088fe02be9e890d9574b))
+- Properly parses cors options
+  ([edb5a60](https://github.com/ory/keto/commit/edb5a600f2ce16c0847ee5ef399fa5a41b1e736a))
 - Remove ORY Hydra dependency ([#44](https://github.com/ory/keto/issues/44))
   ([d487344](https://github.com/ory/keto/commit/d487344fe7e07cb6370371c6b0b6cf3cca767ed1))
+- Removes additional output if no args are passed
+  ([703e124](https://github.com/ory/keto/commit/703e1246ce0fd89066b497c45f0c6cadeb06c331))
+- Require explicit CORS enabling ([#42](https://github.com/ory/keto/issues/42))
+  ([9a45107](https://github.com/ory/keto/commit/9a45107af304b2a8e663a532e4f6e4536f15888c))
 - Resolves an issue with the hydra migrate command
   ([2b280bb](https://github.com/ory/keto/commit/2b280bb57c9073a9c8384cde0b14a6991cfacdb6)),
   closes [#23](https://github.com/ory/keto/issues/23)
-- Upgrade superagent version ([#41](https://github.com/ory/keto/issues/41))
-  ([9c80dbc](https://github.com/ory/keto/commit/9c80dbcc1cc63243839b58ca56ac9be104797887))
-- gofmt
-  ([777b1be](https://github.com/ory/keto/commit/777b1be1378d314e7cfde0c34450afcce7e590a5))
-- Updates README.md (#34)
-  ([c28b521](https://github.com/ory/keto/commit/c28b5219fd64314a75ee3c848a80a0c5974ebb7d)),
-  closes [#34](https://github.com/ory/keto/issues/34)
-- Properly parses cors options
-  ([edb5a60](https://github.com/ory/keto/commit/edb5a600f2ce16c0847ee5ef399fa5a41b1e736a))
-- Removes additional output if no args are passed
-  ([703e124](https://github.com/ory/keto/commit/703e1246ce0fd89066b497c45f0c6cadeb06c331))
 - Resolves broken role test
   ([b6c7f9c](https://github.com/ory/keto/commit/b6c7f9c33c4c1f43164d6da0ec7f2553f1f4c598))
 - Resolves minor typos and updates install guide
   ([3852be5](https://github.com/ory/keto/commit/3852be56cb81df966a85d4c828de0397d9e74768))
+- Update dependencies
+  ([663d8b1](https://github.com/ory/keto/commit/663d8b13e99694a57752cd60a68342b81b041c66))
+- Update hydra to v1.0.0-beta.6 ([#35](https://github.com/ory/keto/issues/35))
+  ([5e97104](https://github.com/ory/keto/commit/5e971042afff06e2a6ee3b54d2fea31687203623))
+- Update npm package registry
+  ([a53d3d2](https://github.com/ory/keto/commit/a53d3d23e11fde5dcfbb27a2add1049f4d8e10e6))
 - Updates to latest sqlcon
   ([2c9f643](https://github.com/ory/keto/commit/2c9f643042ff4edffae8bd41834d2a57c923871c))
+- Upgrade superagent version ([#41](https://github.com/ory/keto/issues/41))
+  ([9c80dbc](https://github.com/ory/keto/commit/9c80dbcc1cc63243839b58ca56ac9be104797887))
 - Use roles in warden decision
   ([c785187](https://github.com/ory/keto/commit/c785187e31fc7a4b8b762a5e27fac66dcaa97513)),
   closes [#21](https://github.com/ory/keto/issues/21)
   [#19](https://github.com/ory/keto/issues/19)
-- authn/client: Payload is now prefixed with client
-  ([8584d94](https://github.com/ory/keto/commit/8584d94cfb18deb37ae32ae601f4cd15c14067e7))
 
 # [0.0.1](https://github.com/ory/keto/compare/4f00bc96ece3180a888718ec3c41c69106c86f56...v0.0.1) (2018-05-20)
 
@@ -1392,22 +1392,8 @@ Closes #1
 
 ### Unclassified
 
-- Adds migrate commands to the proper parent command
-  ([231c70d](https://github.com/ory/keto/commit/231c70d816b0736a51eddc1fa0445bac672b1b2f))
-- Checks token_type is "access_token", if set
-  ([d2b8f5d](https://github.com/ory/keto/commit/d2b8f5d313cce597566bd18e4f3bea4a423a62ee)),
-  closes [#1](https://github.com/ory/keto/issues/1)
-- Removes old test
-  ([07b733b](https://github.com/ory/keto/commit/07b733bfae4b733e3e2124545b92c537dabbdcf0))
-- Renames subject to sub in response payloads
-  ([ca4d540](https://github.com/ory/keto/commit/ca4d5408000be2b896d38eaaf5e67a3fc0a566da))
 - Tells linguist to ignore SDK files
   ([f201eb9](https://github.com/ory/keto/commit/f201eb95f3309a60ac50f42cfba0bae2e38e8d13))
-- Retries SQL connection on migrate commands
-  ([3d33d73](https://github.com/ory/keto/commit/3d33d73c009077c5bf30ae4b03802904bfb5d5b2)):
-
-  This patch also introduces a fatal error if migrations fail
-
 - cmd/server: Resolves DBAL not handling postgres properly
   ([dedc32a](https://github.com/ory/keto/commit/dedc32ab218923243b1955ce5bcbbdc5cc416953))
 - cmd/server: Improves error message in migrate command
@@ -1425,3 +1411,16 @@ Closes #1
   ([a592e51](https://github.com/ory/keto/commit/a592e5126f130f8b673fff6c894fdbd9fb56f81c))
 - Initial commit
   ([4f00bc9](https://github.com/ory/keto/commit/4f00bc96ece3180a888718ec3c41c69106c86f56))
+- Adds migrate commands to the proper parent command
+  ([231c70d](https://github.com/ory/keto/commit/231c70d816b0736a51eddc1fa0445bac672b1b2f))
+- Checks token_type is "access_token", if set
+  ([d2b8f5d](https://github.com/ory/keto/commit/d2b8f5d313cce597566bd18e4f3bea4a423a62ee)),
+  closes [#1](https://github.com/ory/keto/issues/1)
+- Removes old test
+  ([07b733b](https://github.com/ory/keto/commit/07b733bfae4b733e3e2124545b92c537dabbdcf0))
+- Renames subject to sub in response payloads
+  ([ca4d540](https://github.com/ory/keto/commit/ca4d5408000be2b896d38eaaf5e67a3fc0a566da))
+- Retries SQL connection on migrate commands
+  ([3d33d73](https://github.com/ory/keto/commit/3d33d73c009077c5bf30ae4b03802904bfb5d5b2)):
+
+  This patch also introduces a fatal error if migrations fail
