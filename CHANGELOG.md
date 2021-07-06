@@ -96,7 +96,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [Unreleased](https://github.com/ory/keto/compare/v0.6.0-alpha.3...5cf2b4c2e50ad55b62c6d240300aa279ffd11885) (2021-07-06)
+# [Unreleased](https://github.com/ory/keto/compare/v0.6.0-alpha.3...435ae0048135902c99875d947b793288404cb532) (2021-07-06)
 
 ### Bug Fixes
 
@@ -132,6 +132,8 @@
 
 ### Documentation
 
+- Add new redoc docsc ([#651](https://github.com/ory/keto/issues/651))
+  ([435ae00](https://github.com/ory/keto/commit/435ae0048135902c99875d947b793288404cb532))
 - Fix erroneous sidebar commit
   ([5cf2b4c](https://github.com/ory/keto/commit/5cf2b4c2e50ad55b62c6d240300aa279ffd11885))
 - Fix example not following best practice
