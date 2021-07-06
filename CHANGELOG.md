@@ -3,7 +3,7 @@
 
 **Table of Contents**
 
-- [Unreleased (2021-07-05)](#unreleased-2021-07-05)
+- [Unreleased (2021-07-06)](#unreleased-2021-07-06)
   - [Bug Fixes](#bug-fixes)
   - [Documentation](#documentation)
   - [Features](#features)
@@ -96,7 +96,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [Unreleased](https://github.com/ory/keto/compare/v0.6.0-alpha.3...f4253b8a555afdee718be94140ca4fd4175c1413) (2021-07-05)
+# [Unreleased](https://github.com/ory/keto/compare/v0.6.0-alpha.3...5cf2b4c2e50ad55b62c6d240300aa279ffd11885) (2021-07-06)
 
 ### Bug Fixes
 
@@ -132,6 +132,8 @@
 
 ### Documentation
 
+- Fix erroneous sidebar commit
+  ([5cf2b4c](https://github.com/ory/keto/commit/5cf2b4c2e50ad55b62c6d240300aa279ffd11885))
 - Fix example not following best practice
   ([#582](https://github.com/ory/keto/issues/582))
   ([a015818](https://github.com/ory/keto/commit/a0158182c5f87cfd4767824e1c5d6cbb8094a4e6))
