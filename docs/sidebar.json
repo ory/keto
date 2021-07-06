@@ -2,119 +2,75 @@
   {
     "Introduction": [
       "index",
-      "quickstart",
       "install",
-      "configuring",
-      "contributing",
-      "faq"
+      "implemented-planned-features",
+      "performance",
+      "quickstart"
     ]
   },
   {
     "Concepts": [
-      "concepts/index",
-      "concepts/terminology",
-      "concepts/ui-user-interface",
-      "concepts/identity-data-model",
-      {
-        "label": "Identity Credentials",
-        "type": "category",
-        "items": [
-          "concepts/credentials",
-          "concepts/credentials/username-email-password",
-          "concepts/credentials/openid-connect-oidc-oauth2"
-        ]
-      },
-      "concepts/browser-redirect-flow-completion",
-      "concepts/email-sms",
-      "concepts/rest-api",
-      "concepts/federation",
-      "concepts/security"
+      "concepts/relation-tuples",
+      "concepts/namespaces",
+      "concepts/objects",
+      "concepts/subjects",
+      "concepts/graph-of-relations",
+      "concepts/api-overview",
+      "concepts/internal-algorithms",
+      "concepts/snaptokens-evaluation-consistency"
     ]
-  },
-  {
-    "Self Service (End-User)": [
-      "self-service",
-      "self-service/flows/user-registration",
-      "self-service/flows/user-login",
-      "self-service/flows/user-settings",
-      "self-service/flows/account-recovery",
-      "self-service/flows/verify-email-account-activation",
-      "self-service/flows/user-logout",
-      "self-service/flows/user-facing-errors",
-      "self-service/flows/2fa-mfa-multi-factor-authentication",
-      "self-service/hooks"
-    ]
-  },
-  {
-    "Administration": ["admin/managing-users-identities"]
   },
   {
     "Guides": [
-      "guides/sign-in-with-github-google-facebook-linkedin",
-      "guides/login-session",
-      "guides/configuring-cookies",
-      "guides/multi-domain-cookies",
-      "guides/setting-up-cors",
-      "guides/account-recovery-password-reset",
-      "guides/account-activation-email-verification",
-      "guides/zero-trust-iap-proxy-identity-access-proxy",
-      "guides/multi-tenancy-multitenant",
-      "guides/secret-key-rotation",
-      "guides/high-availability-ha",
-      "guides/docker",
-      "guides/setting-up-password-hashing-parameters",
-      "guides/integration-with-other-systems-using-web-hooks",
-      "guides/tracing"
+      "secure",
+      "guides/simple-access-check-guide",
+      "guides/list-api-display-objects",
+      "guides/expand-api-display-who-has-access",
+      "guides/production",
+      "guides/rbac",
+      "guides/access-control-inheritance",
+      "guides/access-control-list-design-best-practices"
     ]
+  },
+  {
+    "Examples": ["examples/olymp-file-sharing"]
   },
   {
     "Reference": [
       "reference/configuration",
-      "reference/json-schema-json-paths",
-      "reference/html-forms",
-      "reference/api",
+      "reference/rest-api",
+      "reference/proto-api",
       {
         "Command Line Interface (CLI)": [
-          "cli/kratos",
-          "cli/kratos-courier",
-          "cli/kratos-courier-watch",
-          "cli/kratos-identities",
-          "cli/kratos-identities-delete",
-          "cli/kratos-identities-get",
-          "cli/kratos-identities-import",
-          "cli/kratos-identities-list",
-          "cli/kratos-identities-patch",
-          "cli/kratos-identities-validate",
-          "cli/kratos-jsonnet",
-          "cli/kratos-jsonnet-format",
-          "cli/kratos-jsonnet-lint",
-          "cli/kratos-migrate",
-          "cli/kratos-migrate-sql",
-          "cli/kratos-remote",
-          "cli/kratos-remote-status",
-          "cli/kratos-remote-version",
-          "cli/kratos-serve",
-          "cli/kratos-version"
+          "cli/keto",
+          "cli/keto-check",
+          "cli/keto-expand",
+          "cli/keto-migrate",
+          "cli/keto-migrate-down",
+          "cli/keto-migrate-status",
+          "cli/keto-migrate-up",
+          "cli/keto-namespace",
+          "cli/keto-namespace-migrate",
+          "cli/keto-namespace-migrate-down",
+          "cli/keto-namespace-migrate-status",
+          "cli/keto-namespace-migrate-up",
+          "cli/keto-namespace-validate",
+          "cli/keto-relation-tuple",
+          "cli/keto-relation-tuple-create",
+          "cli/keto-relation-tuple-delete",
+          "cli/keto-relation-tuple-get",
+          "cli/keto-relation-tuple-parse",
+          "cli/keto-serve",
+          "cli/keto-status",
+          "cli/keto-version"
         ]
       }
     ]
   },
   {
-    "Debug & Help": [
-      "debug/csrf",
-      "debug/performance-out-of-memory-password-hashing-argon2"
-    ]
-  },
-  {
-    "SDKs": ["sdk"]
+    "SDKs": ["sdk/index"]
   },
   {
     "Development": ["milestones"]
-  },
-  {
-    "Further Reading": [
-      "further-reading/comparison",
-      "further-reading/kratos-video-tutorials"
-    ]
   }
 ]
