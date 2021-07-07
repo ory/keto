@@ -3,7 +3,7 @@
 CREATE TABLE keto_relation_tuples
 (
     shard_id                 UUID        NOT NULL,
-    network_id               UUID        NOT NULL,
+    nid                      UUID        NOT NULL,
     namespace_id             INTEGER     NOT NULL,
     object                   VARCHAR(64) NOT NULL,
     relation                 VARCHAR(64) NOT NULL,
@@ -13,7 +13,7 @@ CREATE TABLE keto_relation_tuples
     subject_set_relation     VARCHAR(64) NULL,
     commit_time              TIMESTAMP   NOT NULL,
 
-    PRIMARY KEY (shard_id, network_id),
+    PRIMARY KEY (shard_id, nid),
 
     -- enforce to have exactly one of subject_id or subject_set
     CONSTRAINT chk_keto_rt_subject_type CHECK

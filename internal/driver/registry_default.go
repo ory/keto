@@ -3,6 +3,16 @@ package driver
 import (
 	"context"
 	"net/http"
+	"sync"
+	"time"
+
+	"github.com/cenkalti/backoff/v3"
+	"github.com/gobuffalo/pop/v5"
+	"github.com/luna-duclos/instrumentedsql"
+	"github.com/luna-duclos/instrumentedsql/opentracing"
+	"github.com/ory/x/popx"
+	"github.com/ory/x/sqlcon"
+	"github.com/pkg/errors"
 
 	"github.com/ory/x/dbal"
 
@@ -47,13 +57,16 @@ var (
 
 type (
 	RegistryDefault struct {
-		p  persistence.Persister
-		l  *logrusx.Logger
-		w  herodot.Writer
-		ce *check.Engine
-		ee *expand.Engine
-		c  *config.Config
+		p    persistence.Persister
+		mb   *popx.MigrationBox
+		l    *logrusx.Logger
+		w    herodot.Writer
+		ce   *check.Engine
+		ee   *expand.Engine
+		c    *config.Config
+		conn *pop.Connection
 
+		initialized  sync.Once
 		healthH      *healthx.Handler
 		healthServer *health.Server
 		handlers     []Handler
@@ -132,6 +145,9 @@ func (r *RegistryDefault) Writer() herodot.Writer {
 }
 
 func (r *RegistryDefault) RelationTupleManager() relationtuple.Manager {
+	if r.p == nil {
+		panic("no relation tuple manager, but expected to have one")
+	}
 	return r.p
 }
 
@@ -149,32 +165,147 @@ func (r *RegistryDefault) ExpandEngine() *expand.Engine {
 	return r.ee
 }
 
-func (r *RegistryDefault) Persister() persistence.Persister {
-	return r.p
+func (r *RegistryDefault) MigrationBox() (*popx.MigrationBox, error) {
+	if r.mb == nil {
+		c, err := r.PopConnection()
+		if err != nil {
+			return nil, err
+		}
+		mb, err := sql.NewMigrationBox(c, r.Logger(), r.Tracer())
+		if err != nil {
+			return nil, err
+		}
+		r.mb = mb
+	}
+	return r.mb, nil
 }
 
-func (r *RegistryDefault) Migrator() persistence.Migrator {
-	return r.p.(persistence.Migrator)
-}
-
-func (r *RegistryDefault) Init(ctx context.Context) error {
-	var err error
-	r.p, err = sql.NewPersister(r.c.DSN(), r, r.Tracer())
+func (r *RegistryDefault) MigrateUp(ctx context.Context) error {
+	mb, err := r.MigrationBox()
 	if err != nil {
 		return err
 	}
+	if err := mb.Up(ctx); err != nil {
+		return err
+	}
+	return r.Init(ctx)
+}
 
-	mb, err := r.Migrator().MigrationBox(ctx)
+func (r *RegistryDefault) MigrateDown(ctx context.Context) error {
+	mb, err := r.MigrationBox()
 	if err != nil {
 		return err
 	}
+	return mb.Up(ctx)
+}
+
+func (r *RegistryDefault) Status(ctx context.Context) (popx.MigrationStatuses, error) {
+	mb, err := r.MigrationBox()
+	if err != nil {
+		return nil, err
+	}
+	return mb.Status(ctx)
+}
+
+func (r *RegistryDefault) PopConnection() (*pop.Connection, error) {
+	if r.conn == nil {
+		tracer := r.Tracer()
+
+		var opts []instrumentedsql.Opt
+		if tracer.IsLoaded() {
+			opts = []instrumentedsql.Opt{
+				instrumentedsql.WithTracer(opentracing.NewTracer(true)),
+				instrumentedsql.WithOmitArgs(),
+			}
+		}
+		pool, idlePool, connMaxLifetime, connMaxIdleTime, cleanedDSN := sqlcon.ParseConnectionOptions(r.Logger(), r.Config().DSN())
+		connDetails := &pop.ConnectionDetails{
+			URL:                       sqlcon.FinalizeDSN(r.Logger(), cleanedDSN),
+			IdlePool:                  idlePool,
+			ConnMaxLifetime:           connMaxLifetime,
+			ConnMaxIdleTime:           connMaxIdleTime,
+			Pool:                      pool,
+			UseInstrumentedDriver:     tracer != nil && tracer.IsLoaded(),
+			InstrumentedDriverOptions: opts,
+		}
+
+		bc := backoff.NewExponentialBackOff()
+		bc.MaxElapsedTime = time.Minute * 5
+		bc.Reset()
+
+		if err := backoff.Retry(func() (err error) {
+			conn, err := pop.NewConnection(connDetails)
+			if err != nil {
+				r.Logger().WithError(err).Error("Unable to connect to database, retrying.")
+				return errors.WithStack(err)
+			}
+
+			if err := conn.Open(); err != nil {
+				r.Logger().WithError(err).Error("Unable to open the database connection, retrying.")
+				return errors.WithStack(err)
+			}
+
+			if err := conn.Store.(interface{ Ping() error }).Ping(); err != nil {
+				r.Logger().WithError(err).Error("Unable to ping the database connection, retrying.")
+				return errors.WithStack(err)
+			}
+
+			r.conn = conn
+			return nil
+		}, bc); err != nil {
+			return nil, errors.WithStack(err)
+		}
+	}
+	return r.conn, nil
+}
+
+func (r *RegistryDefault) InitWithoutNetworkID(ctx context.Context) error {
 	if dbal.IsMemorySQLite(r.c.DSN()) {
+		mb, err := r.MigrationBox()
+		if err != nil {
+			return err
+		}
+
 		if err := mb.Up(ctx); err != nil {
 			return err
 		}
 	}
-
 	return nil
+}
+
+func (r *RegistryDefault) Init(ctx context.Context) (err error) {
+	r.initialized.Do(func() {
+		err = func() error {
+			conn, err := r.PopConnection()
+			if err != nil {
+				return err
+			}
+
+			if dbal.IsMemorySQLite(r.c.DSN()) {
+				mb, err := r.MigrationBox()
+				if err != nil {
+					return err
+				}
+
+				if err := mb.Up(ctx); err != nil {
+					return err
+				}
+			}
+
+			network, err := sql.DetermineNetwork(ctx, r, conn)
+			if err != nil {
+				return err
+			}
+
+			r.p, err = sql.NewPersister(r, network.ID)
+			if err != nil {
+				return err
+			}
+
+			return nil
+		}()
+	})
+	return
 }
 
 func (r *RegistryDefault) allHandlers() []Handler {

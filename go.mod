@@ -10,13 +10,8 @@ replace github.com/oleiade/reflections => github.com/oleiade/reflections v1.0.1
 
 replace github.com/ory/keto/proto => ./proto
 
-replace github.com/ory/x => github.com/ory/x v0.0.259-0.20210702155830-e8a8ef924adc
-
 require (
-	github.com/DataDog/datadog-go v4.8.0+incompatible // indirect
-	github.com/HdrHistogram/hdrhistogram-go v1.1.0 // indirect
 	github.com/cenkalti/backoff/v3 v3.0.0
-	github.com/containerd/containerd v1.5.2 // indirect
 	github.com/ghodss/yaml v1.0.0
 	github.com/go-openapi/errors v0.20.0
 	github.com/go-openapi/runtime v0.19.26
@@ -30,16 +25,14 @@ require (
 	github.com/julienschmidt/httprouter v1.3.0
 	github.com/luna-duclos/instrumentedsql v1.1.3
 	github.com/luna-duclos/instrumentedsql/opentracing v0.0.0-20201103091713-40d03108b6f4
-	github.com/morikuni/aec v1.0.0 // indirect
 	github.com/ory/analytics-go/v4 v4.0.0
 	github.com/ory/graceful v0.1.1
 	github.com/ory/herodot v0.9.6
 	github.com/ory/jsonschema/v3 v3.0.3
 	github.com/ory/keto/proto v0.0.0-00010101000000-000000000000
-	github.com/ory/x v0.0.257
+	github.com/ory/x v0.0.261
 	github.com/pelletier/go-toml v1.8.1
 	github.com/phayes/freeport v0.0.0-20180830031419-95f893ade6f2
-	github.com/philhofer/fwd v1.1.1 // indirect
 	github.com/pkg/errors v0.9.1
 	github.com/rs/cors v1.6.0
 	github.com/segmentio/objconv v1.0.1
@@ -50,13 +43,10 @@ require (
 	github.com/stretchr/testify v1.7.0
 	github.com/tidwall/gjson v1.7.1
 	github.com/tidwall/sjson v1.1.5
-	github.com/uber/jaeger-lib v2.4.1+incompatible // indirect
 	github.com/urfave/negroni v1.0.0
-	github.com/ziutek/mymysql v1.5.4 // indirect
 	golang.org/x/sync v0.0.0-20201207232520-09787c993a3a
 	google.golang.org/grpc v1.37.0
 	google.golang.org/protobuf v1.26.0
-	gopkg.in/gorp.v1 v1.7.2 // indirect
 )
 
 go 1.16

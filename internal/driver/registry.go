@@ -34,8 +34,7 @@ type (
 		relationtuple.ManagerProvider
 		expand.EngineProvider
 		check.EngineProvider
-		persistence.MigratorProvider
-		persistence.Provider
+		persistence.Migrator
 
 		HealthHandler() *healthx.Handler
 		Tracer() *tracing.Tracer

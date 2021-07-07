@@ -163,8 +163,6 @@ func (k *Config) NamespaceManager() (namespace.Manager, error) {
 		return nm, nil
 	}
 
-	fmt.Println("creating new nm")
-
 	k.nmLock.Lock()
 	defer k.nmLock.Unlock()
 

@@ -2,7 +2,6 @@ package expand_test
 
 import (
 	"context"
-	"fmt"
 	"testing"
 
 	"github.com/ory/keto/internal/driver/config"
@@ -136,7 +135,6 @@ func TestEngine(t *testing.T) {
 				},
 			},
 		}
-		fmt.Println(expectedTree.String())
 
 		reg, e := newTestEngine(t, []*namespace.Namespace{{}})
 

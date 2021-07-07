@@ -3,7 +3,6 @@ package sql
 import (
 	"context"
 	"database/sql"
-	"fmt"
 	"time"
 
 	"github.com/gofrs/uuid"
@@ -24,7 +23,7 @@ type (
 	relationTuple struct {
 		// An ID field is required to make pop happy. The actual ID is a composite primary key.
 		ID                    uuid.UUID      `db:"shard_id"`
-		NetworkID             uuid.UUID      `db:"network_id"`
+		NetworkID             uuid.UUID      `db:"nid"`
 		NamespaceID           int64          `db:"namespace_id"`
 		Object                string         `db:"object"`
 		Relation              string         `db:"relation"`
@@ -118,11 +117,6 @@ func (r *relationTuple) insertSubject(ctx context.Context, nm namespace.Manager,
 }
 
 func (r *relationTuple) fromInternal(ctx context.Context, p *Persister, rt *relationtuple.InternalRelationTuple) error {
-	nID, err := p.NetworkID(ctx)
-	if err != nil {
-		return err
-	}
-
 	nm, err := p.d.Config().NamespaceManager()
 	if err != nil {
 		return err
@@ -133,7 +127,7 @@ func (r *relationTuple) fromInternal(ctx context.Context, p *Persister, rt *rela
 		return err
 	}
 
-	r.NetworkID = nID
+	r.NetworkID = p.NetworkID(ctx)
 	r.NamespaceID = n.ID
 	r.Object = rt.Object
 	r.Relation = rt.Relation
@@ -148,14 +142,9 @@ func (p *Persister) insertRelationTuple(ctx context.Context, rel *relationtuple.
 
 	p.d.Logger().WithFields(rel.ToLoggerFields()).Trace("creating in database")
 
-	nID, err := p.NetworkID(ctx)
-	if err != nil {
-		return err
-	}
-
 	rt := &relationTuple{
 		ID:         uuid.Must(uuid.NewV4()),
-		NetworkID:  nID,
+		NetworkID:  p.NetworkID(ctx),
 		CommitTime: time.Now(),
 	}
 	if err := rt.fromInternal(ctx, p, rel); err != nil {
@@ -165,7 +154,6 @@ func (p *Persister) insertRelationTuple(ctx context.Context, rel *relationtuple.
 	if err := sqlcon.HandleError(
 		p.Connection(ctx).Create(rt),
 	); err != nil {
-		fmt.Print("\n\n")
 		return err
 	}
 	return nil
@@ -173,7 +161,7 @@ func (p *Persister) insertRelationTuple(ctx context.Context, rel *relationtuple.
 
 func (p *Persister) deleteRelationTupleSubjectID(ctx context.Context, r *relationtuple.InternalRelationTuple, s *relationtuple.SubjectID, n *namespace.Namespace, network uuid.UUID) error {
 	if err := p.Connection(ctx).RawQuery(
-		"DELETE FROM keto_relation_tuples WHERE network_id = ? AND namespace_id = ? AND object = ? AND relation = ? AND subject_id = ?",
+		"DELETE FROM keto_relation_tuples WHERE nid = ? AND namespace_id = ? AND object = ? AND relation = ? AND subject_id = ?",
 		network,
 		n.ID,
 		r.Object,
@@ -198,7 +186,7 @@ func (p *Persister) deleteRelationTupleSubjectSet(ctx context.Context, r *relati
 	}
 
 	if err := p.Connection(ctx).RawQuery(
-		"DELETE FROM keto_relation_tuples WHERE network_id = ? AND namespace_id = ? AND object = ? AND relation = ? AND subject_set_namespace_id = ? AND subject_set_object = ? AND subject_set_relation = ?",
+		"DELETE FROM keto_relation_tuples WHERE nid = ? AND namespace_id = ? AND object = ? AND relation = ? AND subject_set_namespace_id = ? AND subject_set_object = ? AND subject_set_relation = ?",
 		network,
 		n.ID,
 		r.Object,
@@ -213,11 +201,6 @@ func (p *Persister) deleteRelationTupleSubjectSet(ctx context.Context, r *relati
 }
 
 func (p *Persister) DeleteRelationTuples(ctx context.Context, rs ...*relationtuple.InternalRelationTuple) error {
-	network, err := p.NetworkID(ctx)
-	if err != nil {
-		return err
-	}
-
 	nm, err := p.d.Config().NamespaceManager()
 	if err != nil {
 		return err
@@ -232,11 +215,11 @@ func (p *Persister) DeleteRelationTuples(ctx context.Context, rs ...*relationtup
 
 			switch s := r.Subject.(type) {
 			case *relationtuple.SubjectID:
-				if err := p.deleteRelationTupleSubjectID(ctx, r, s, n, network); err != nil {
+				if err := p.deleteRelationTupleSubjectID(ctx, r, s, n, p.NetworkID(ctx)); err != nil {
 					return err
 				}
 			case *relationtuple.SubjectSet:
-				if err := p.deleteRelationTupleSubjectSet(ctx, r, s, n, network); err != nil {
+				if err := p.deleteRelationTupleSubjectSet(ctx, r, s, n, p.NetworkID(ctx)); err != nil {
 					return err
 				}
 			default:
@@ -292,13 +275,9 @@ func (p *Persister) GetRelationTuples(ctx context.Context, query *relationtuple.
 		wheres = append(wheres, whereStmts{stmt: "namespace_id = ?", arg: n.ID})
 	}
 
-	nID, err := p.NetworkID(ctx)
-	if err != nil {
-		return nil, "", err
-	}
 	sqlQuery := p.Connection(ctx).
-		Where("network_id = ?", nID).
-		Order("network_id, namespace_id, object, relation, subject_id, subject_set_namespace_id, subject_set_object, subject_set_relation").
+		Where("nid = ?", p.NetworkID(ctx)).
+		Order("nid, namespace_id, object, relation, subject_id, subject_set_namespace_id, subject_set_object, subject_set_relation").
 		Paginate(pagination.Page, pagination.PerPage)
 
 	for _, w := range wheres {

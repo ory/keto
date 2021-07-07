@@ -6,6 +6,8 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/ory/x/dbal"
+
 	"github.com/ory/keto/internal/x/dbx"
 
 	"github.com/ory/x/cmdx"
@@ -55,7 +57,7 @@ func TestMigrate(t *testing.T) {
 	}
 
 	for _, dsn := range dbx.GetDSNs(t, false) {
-		if dsn.Name == "memory" {
+		if dbal.IsMemorySQLite(dsn.Conn) {
 			t.Run("dsn=memory", func(t *testing.T) {
 				t.Run("case=auto migrates", func(t *testing.T) {
 					hook := &test.Hook{}

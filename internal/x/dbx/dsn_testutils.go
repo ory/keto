@@ -1,11 +1,11 @@
 package dbx
 
 import (
+	"fmt"
 	"io/ioutil"
+	"os"
 	"path/filepath"
 	"testing"
-
-	"github.com/ory/keto/internal/driver"
 
 	"github.com/stretchr/testify/require"
 	"github.com/tidwall/sjson"
@@ -14,17 +14,15 @@ import (
 )
 
 type DsnT struct {
-	Name string
-	Conn string
+	Name                   string
+	Conn                   string
+	MigrateUp, MigrateDown bool
 }
 
 func GetDSNs(t testing.TB, debugSqliteOnDisk bool) []*DsnT {
 	// we use a slice of structs here to always have the same execution order
 	dsns := []*DsnT{
-		{
-			Name: "memory",
-			Conn: driver.SqliteTestDSN(t, debugSqliteOnDisk),
-		},
+		GetSqlite(t, SQLiteMemory),
 	}
 	if !testing.Short() {
 		var mysql, postgres, cockroach string
@@ -41,18 +39,30 @@ func GetDSNs(t testing.TB, debugSqliteOnDisk bool) []*DsnT {
 			},
 		})
 
+		sqliteMode := SQLiteFile
+		if debugSqliteOnDisk {
+			sqliteMode = SQLiteDebug
+		}
+
 		dsns = append(dsns,
+			GetSqlite(t, sqliteMode),
 			&DsnT{
-				Name: "mysql",
-				Conn: mysql,
+				Name:        "mysql",
+				Conn:        mysql,
+				MigrateUp:   true,
+				MigrateDown: true,
 			},
 			&DsnT{
-				Name: "postgres",
-				Conn: postgres,
+				Name:        "postgres",
+				Conn:        postgres,
+				MigrateUp:   true,
+				MigrateDown: true,
 			},
 			&DsnT{
-				Name: "cockroach",
-				Conn: cockroach,
+				Name:        "cockroach",
+				Conn:        cockroach,
+				MigrateUp:   true,
+				MigrateDown: true,
 			},
 		)
 
@@ -60,6 +70,37 @@ func GetDSNs(t testing.TB, debugSqliteOnDisk bool) []*DsnT {
 	}
 
 	return dsns
+}
+
+type sqliteMode = int
+
+const (
+	SQLiteMemory = iota
+	SQLiteFile
+	SQLiteDebug
+)
+
+func GetSqlite(t testing.TB, mode sqliteMode) *DsnT {
+	dsn := &DsnT{
+		MigrateUp:   true,
+		MigrateDown: false,
+	}
+
+	switch mode {
+	case SQLiteMemory:
+		dsn.Name = "memory"
+		dsn.Conn = fmt.Sprintf("sqlite://file:%s?_fk=true&cache=shared&mode=memory", t.Name())
+	case SQLiteFile:
+		t.Cleanup(func() {
+			_ = os.Remove("TestDB.sqlite")
+		})
+		fallthrough
+	case SQLiteDebug:
+		dsn.Name = "sqlite"
+		dsn.Conn = "sqlite://file:TestDB.sqlite?_fk=true"
+	}
+
+	return dsn
 }
 
 func ConfigFile(t testing.TB, values map[string]interface{}) string {

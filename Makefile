@@ -21,8 +21,12 @@ endef
 $(foreach dep, $(GO_DEPENDENCIES), $(eval $(call make-go-dependency, $(dep))))
 $(call make-lint-dependency)
 
-.bin/ory: .bin/go.mod .bin/go.sum Makefile
-		cd .bin; GOBIN=$(PWD)/.bin/ go install -tags sqlite github.com/ory/cli; mv cli ory
+#.bin/ory: .bin/go.mod .bin/go.sum Makefile
+#		cd .bin; GOBIN=$(PWD)/.bin/ go install -tags sqlite github.com/ory/cli; mv cli ory
+
+.bin/ory: Makefile
+		bash <(curl https://raw.githubusercontent.com/ory/cli/master/install.sh) -b .bin v0.0.57
+		touch -a -m .bin/ory
 
 node_modules: package.json package-lock.json Makefile
 		npm ci

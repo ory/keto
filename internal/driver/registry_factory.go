@@ -2,9 +2,9 @@ package driver
 
 import (
 	"context"
-	"fmt"
-	"net/url"
 	"testing"
+
+	"github.com/ory/keto/internal/x/dbx"
 
 	"github.com/sirupsen/logrus"
 
@@ -17,7 +17,7 @@ import (
 	"github.com/ory/keto/internal/driver/config"
 )
 
-func NewDefaultRegistry(ctx context.Context, flags *pflag.FlagSet) (Registry, error) {
+func NewDefaultRegistry(ctx context.Context, flags *pflag.FlagSet, withoutNetwork bool) (Registry, error) {
 	hook, ok := ctx.Value(LogrusHookContextKey).(logrus.Hook)
 
 	var opts []logrusx.Option
@@ -37,22 +37,26 @@ func NewDefaultRegistry(ctx context.Context, flags *pflag.FlagSet) (Registry, er
 		l: l,
 	}
 
-	if err = r.Init(ctx); err != nil {
+	init := r.Init
+	if withoutNetwork {
+		init = r.InitWithoutNetworkID
+	}
+	if err := init(ctx); err != nil {
 		return nil, errors.Wrap(err, "unable to initialize service registry")
 	}
 
 	return r, nil
 }
 
-func SqliteTestDSN(t testing.TB, debugDatabaseOnDisk bool) string {
-	dsn := fmt.Sprintf("sqlite://file:%s.sqlite?_fk=true&cache=shared", url.PathEscape(t.Name()))
-	if !debugDatabaseOnDisk {
-		dsn += "&mode=memory"
+func NewSqliteTestRegistry(t *testing.T, debugOnDisk bool) *RegistryDefault {
+	mode := dbx.SQLiteMemory
+	if debugOnDisk {
+		mode = dbx.SQLiteDebug
 	}
-	return dsn
+	return NewTestRegistry(t, dbx.GetSqlite(t, mode))
 }
 
-func NewSqliteTestRegistry(t *testing.T, debugDatabaseOnDisk bool) Registry {
+func NewTestRegistry(t *testing.T, dsn *dbx.DsnT) *RegistryDefault {
 	l := logrusx.New("ORY Keto", "testing")
 	ctx, cancel := context.WithCancel(context.Background())
 	t.Cleanup(cancel)
@@ -60,7 +64,7 @@ func NewSqliteTestRegistry(t *testing.T, debugDatabaseOnDisk bool) Registry {
 	c, err := config.New(ctx, nil, l)
 	require.NoError(t, err)
 
-	require.NoError(t, c.Set(config.KeyDSN, SqliteTestDSN(t, debugDatabaseOnDisk)))
+	require.NoError(t, c.Set(config.KeyDSN, dsn.Conn))
 	require.NoError(t, c.Set("log.level", "debug"))
 
 	r := &RegistryDefault{
@@ -68,21 +72,18 @@ func NewSqliteTestRegistry(t *testing.T, debugDatabaseOnDisk bool) Registry {
 		l: l,
 	}
 
-	require.NoError(t, r.Init(ctx))
-	if debugDatabaseOnDisk {
-		mb, err := r.Migrator().MigrationBox(ctx)
-		require.NoError(t, err)
-		require.NoError(t, mb.Up(ctx))
+	if dsn.MigrateUp {
+		require.NoError(t, r.MigrateUp(ctx))
 	}
 
+	require.NoError(t, r.Init(ctx))
+
 	t.Cleanup(func() {
-		if debugDatabaseOnDisk {
+		if dsn.MigrateDown {
 			return
 		}
 
-		mb, err := r.Migrator().MigrationBox(ctx)
-		require.NoError(t, err)
-		require.NoError(t, mb.Down(ctx, -1))
+		require.NoError(t, r.MigrateDown(ctx))
 	})
 
 	return r

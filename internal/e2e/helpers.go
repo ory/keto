@@ -49,12 +49,10 @@ func newInitializedReg(t testing.TB, dsn *dbx.DsnT) (context.Context, driver.Reg
 	})
 	require.NoError(t, flags.Parse([]string{"--" + configx.FlagConfig, cf}))
 
-	reg, err := driver.NewDefaultRegistry(ctx, flags)
+	reg, err := driver.NewDefaultRegistry(ctx, flags, true)
 	require.NoError(t, err)
 
-	if dsn.Name != "memory" {
-		migrateEverythingUp(ctx, t, reg)
-	}
+	require.NoError(t, reg.MigrateUp(ctx))
 	assertMigrated(ctx, t, reg)
 
 	nspaces := make([]*namespace.Namespace, 0)
@@ -85,26 +83,8 @@ func newInitializedReg(t testing.TB, dsn *dbx.DsnT) (context.Context, driver.Reg
 	return ctx, reg, addNamespaces
 }
 
-func migrateEverythingUp(ctx context.Context, t testing.TB, r driver.Registry) {
-	mb, err := r.Migrator().MigrationBox(ctx)
-	require.NoError(t, err)
-	s, err := mb.Status(ctx)
-	require.NoError(t, err)
-
-	if s.HasPending() {
-		require.NoError(t, mb.Up(ctx))
-	}
-
-	t.Cleanup(func() {
-		require.NoError(t, err)
-		require.NoError(t, mb.Down(context.Background(), 0))
-	})
-}
-
 func assertMigrated(ctx context.Context, t testing.TB, r driver.Registry) {
-	mb, err := r.Migrator().MigrationBox(ctx)
-	require.NoError(t, err)
-	s, err := mb.Status(ctx)
+	s, err := r.Status(ctx)
 	require.NoError(t, err)
 	assert.False(t, s.HasPending())
 }

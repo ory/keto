@@ -29,12 +29,12 @@ func newDownCmd() *cobra.Command {
 				return fmt.Errorf("malformed argument %s for <steps>: %+v", args[0], err)
 			}
 
-			reg, err := driver.NewDefaultRegistry(cmd.Context(), cmd.Flags())
+			reg, err := driver.NewDefaultRegistry(cmd.Context(), cmd.Flags(), true)
 			if err != nil {
 				return err
 			}
 
-			mb, err := reg.Migrator().MigrationBox(cmd.Context())
+			mb, err := reg.MigrationBox()
 			if err != nil {
 				return err
 			}
