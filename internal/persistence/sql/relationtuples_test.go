@@ -2,15 +2,17 @@ package sql_test
 
 import (
 	stdSql "database/sql"
-	"github.com/gofrs/uuid"
-	"github.com/ory/keto/internal/driver"
-	"github.com/ory/keto/internal/persistence/sql"
-	"github.com/ory/keto/internal/x/dbx"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/gofrs/uuid"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
+	"github.com/ory/keto/internal/driver"
+	"github.com/ory/keto/internal/persistence/sql"
+	"github.com/ory/keto/internal/x/dbx"
 )
 
 func rt(setSID, setNID, setO, setR bool) *sql.RelationTuple {
