@@ -17,9 +17,9 @@ CREATE TABLE keto_relation_tuples
 
     -- enforce to have exactly one of subject_id or subject_set
     CONSTRAINT chk_keto_rt_subject_type CHECK
-        ((subject_id = null AND
-          NOT subject_set_namespace_id = null AND NOT subject_set_object = null AND NOT subject_set_relation = null)
+        ((subject_id IS NULL AND
+          subject_set_namespace_id IS NOT NULL AND subject_set_object IS NOT NULL AND subject_set_relation IS NOT NULL)
             OR
-         (NOT subject_id = null AND
-          subject_set_namespace_id = null AND subject_set_object = null AND subject_set_relation = null))
+         (subject_id IS NOT NULL AND
+          subject_set_namespace_id IS NULL AND subject_set_object IS NULL AND subject_set_relation IS NULL))
 );

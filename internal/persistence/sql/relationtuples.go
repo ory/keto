@@ -20,7 +20,7 @@ import (
 )
 
 type (
-	relationTuple struct {
+	RelationTuple struct {
 		// An ID field is required to make pop happy. The actual ID is a composite primary key.
 		ID                    uuid.UUID      `db:"shard_id"`
 		NetworkID             uuid.UUID      `db:"nid"`
@@ -33,7 +33,7 @@ type (
 		SubjectSetRelation    sql.NullString `db:"subject_set_relation"`
 		CommitTime            time.Time      `db:"commit_time"`
 	}
-	relationTuples []*relationTuple
+	relationTuples []*RelationTuple
 	whereStmts     struct {
 		stmt string
 		arg  interface{}
@@ -44,11 +44,11 @@ func (relationTuples) TableName(_ context.Context) string {
 	return "keto_relation_tuples"
 }
 
-func (relationTuple) TableName(_ context.Context) string {
+func (RelationTuple) TableName(_ context.Context) string {
 	return "keto_relation_tuples"
 }
 
-func (r *relationTuple) toInternal(ctx context.Context, nm namespace.Manager) (*relationtuple.InternalRelationTuple, error) {
+func (r *RelationTuple) toInternal(ctx context.Context, nm namespace.Manager) (*relationtuple.InternalRelationTuple, error) {
 	if r == nil {
 		return nil, nil
 	}
@@ -83,7 +83,7 @@ func (r *relationTuple) toInternal(ctx context.Context, nm namespace.Manager) (*
 	return rt, nil
 }
 
-func (r *relationTuple) insertSubject(ctx context.Context, nm namespace.Manager, s relationtuple.Subject) error {
+func (r *RelationTuple) insertSubject(ctx context.Context, nm namespace.Manager, s relationtuple.Subject) error {
 	switch st := s.(type) {
 	case *relationtuple.SubjectID:
 		r.SubjectID = sql.NullString{
@@ -116,7 +116,7 @@ func (r *relationTuple) insertSubject(ctx context.Context, nm namespace.Manager,
 	return nil
 }
 
-func (r *relationTuple) fromInternal(ctx context.Context, p *Persister, rt *relationtuple.InternalRelationTuple) error {
+func (r *RelationTuple) fromInternal(ctx context.Context, p *Persister, rt *relationtuple.InternalRelationTuple) error {
 	nm, err := p.d.Config().NamespaceManager()
 	if err != nil {
 		return err
@@ -142,7 +142,7 @@ func (p *Persister) insertRelationTuple(ctx context.Context, rel *relationtuple.
 
 	p.d.Logger().WithFields(rel.ToLoggerFields()).Trace("creating in database")
 
-	rt := &relationTuple{
+	rt := &RelationTuple{
 		ID:         uuid.Must(uuid.NewV4()),
 		NetworkID:  p.NetworkID(ctx),
 		CommitTime: time.Now(),

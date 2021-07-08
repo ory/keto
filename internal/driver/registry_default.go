@@ -6,6 +6,8 @@ import (
 	"sync"
 	"time"
 
+	"github.com/ory/x/networkx"
+
 	"github.com/cenkalti/backoff/v3"
 	"github.com/gobuffalo/pop/v5"
 	"github.com/luna-duclos/instrumentedsql"
@@ -199,14 +201,6 @@ func (r *RegistryDefault) MigrateDown(ctx context.Context) error {
 	return mb.Up(ctx)
 }
 
-func (r *RegistryDefault) Status(ctx context.Context) (popx.MigrationStatuses, error) {
-	mb, err := r.MigrationBox()
-	if err != nil {
-		return nil, err
-	}
-	return mb.Status(ctx)
-}
-
 func (r *RegistryDefault) PopConnection() (*pop.Connection, error) {
 	if r.conn == nil {
 		tracer := r.Tracer()
@@ -259,6 +253,26 @@ func (r *RegistryDefault) PopConnection() (*pop.Connection, error) {
 	return r.conn, nil
 }
 
+func (r *RegistryDefault) determineNetwork(ctx context.Context) (*networkx.Network, error) {
+	c, err := r.PopConnection()
+	if err != nil {
+		return nil, err
+	}
+	mb, err := popx.NewMigrationBox(networkx.Migrations, popx.NewMigrator(c, r.Logger(), r.Tracer(), 0))
+	if err != nil {
+		return nil, err
+	}
+	s, err := mb.Status(ctx)
+	if err != nil {
+		return nil, err
+	}
+	if s.HasPending() {
+		return nil, errors.WithStack(persistence.ErrNetworkMigrationsMissing)
+	}
+
+	return networkx.NewManager(c, r.Logger(), r.Tracer()).Determine(ctx)
+}
+
 func (r *RegistryDefault) InitWithoutNetworkID(ctx context.Context) error {
 	if dbal.IsMemorySQLite(r.c.DSN()) {
 		mb, err := r.MigrationBox()
@@ -276,23 +290,11 @@ func (r *RegistryDefault) InitWithoutNetworkID(ctx context.Context) error {
 func (r *RegistryDefault) Init(ctx context.Context) (err error) {
 	r.initialized.Do(func() {
 		err = func() error {
-			conn, err := r.PopConnection()
-			if err != nil {
+			if err := r.InitWithoutNetworkID(ctx); err != nil {
 				return err
 			}
 
-			if dbal.IsMemorySQLite(r.c.DSN()) {
-				mb, err := r.MigrationBox()
-				if err != nil {
-					return err
-				}
-
-				if err := mb.Up(ctx); err != nil {
-					return err
-				}
-			}
-
-			network, err := sql.DetermineNetwork(ctx, r, conn)
+			network, err := r.determineNetwork(ctx)
 			if err != nil {
 				return err
 			}

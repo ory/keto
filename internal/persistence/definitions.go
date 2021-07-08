@@ -21,7 +21,6 @@ type (
 		MigrationBox() (*popx.MigrationBox, error)
 		MigrateUp(ctx context.Context) error
 		MigrateDown(ctx context.Context) error
-		Status(ctx context.Context) (popx.MigrationStatuses, error)
 	}
 	Provider interface {
 		Persister() Persister

@@ -56,22 +56,6 @@ var (
 	_ persistence.Persister = &Persister{}
 )
 
-func DetermineNetwork(ctx context.Context, reg dependencies, c *pop.Connection) (*networkx.Network, error) {
-	mb, err := popx.NewMigrationBox(networkx.Migrations, popx.NewMigrator(c, reg.Logger(), reg.Tracer(), 0))
-	if err != nil {
-		return nil, err
-	}
-	s, err := mb.Status(ctx)
-	if err != nil {
-		return nil, err
-	}
-	if s.HasPending() {
-		return nil, errors.WithStack(persistence.ErrNetworkMigrationsMissing)
-	}
-
-	return networkx.NewManager(c, reg.Logger(), reg.Tracer()).Determine(ctx)
-}
-
 func NewPersister(reg dependencies, nid uuid.UUID) (*Persister, error) {
 	pop.SetLogger(reg.Logger().PopLogger)
 

@@ -4,27 +4,9 @@ title: keto namespace migrate
 description: keto namespace migrate Migrate a namespace
 ---
 
-<!--
-This file is auto-generated.
-
-To improve this file please make your change against the appropriate "./cmd/*.go" file.
--->
-
 ## keto namespace migrate
 
-Migrate a namespace
-
-### Options
-
-```
-  -h, --help   help for migrate
-```
-
-### Options inherited from parent commands
-
-```
-  -c, --config strings   Config files to load, overwriting in the order specified. (default [/home/circleci/keto.yml])
-```
+Deprecated: this step is not required anymore since https://github.com/ory/keto/pull/638
 
 ### SEE ALSO
 

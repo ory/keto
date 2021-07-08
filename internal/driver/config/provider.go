@@ -155,11 +155,10 @@ func (k *Config) TracingConfig() *tracing.Config {
 }
 
 func (k *Config) NamespaceManager() (namespace.Manager, error) {
-	if nm := func() namespace.Manager {
-		k.nmLock.RLock()
-		defer k.nmLock.RUnlock()
-		return k.nm
-	}(); nm != nil {
+	k.nmLock.RLock()
+	nm := k.nm
+	k.nmLock.RUnlock()
+	if nm != nil {
 		return nm, nil
 	}
 

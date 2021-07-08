@@ -20,10 +20,17 @@ type DsnT struct {
 }
 
 func GetDSNs(t testing.TB, debugSqliteOnDisk bool) []*DsnT {
+	sqliteMode := SQLiteFile
+	if debugSqliteOnDisk {
+		sqliteMode = SQLiteDebug
+	}
+
 	// we use a slice of structs here to always have the same execution order
 	dsns := []*DsnT{
 		GetSqlite(t, SQLiteMemory),
+		GetSqlite(t, sqliteMode),
 	}
+
 	if !testing.Short() {
 		var mysql, postgres, cockroach string
 
@@ -39,13 +46,7 @@ func GetDSNs(t testing.TB, debugSqliteOnDisk bool) []*DsnT {
 			},
 		})
 
-		sqliteMode := SQLiteFile
-		if debugSqliteOnDisk {
-			sqliteMode = SQLiteDebug
-		}
-
 		dsns = append(dsns,
-			GetSqlite(t, sqliteMode),
 			&DsnT{
 				Name:        "mysql",
 				Conn:        mysql,

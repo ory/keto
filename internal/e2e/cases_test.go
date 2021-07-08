@@ -138,7 +138,6 @@ func runCases(c client, addNamespace func(*testing.T, ...*namespace.Namespace)) 
 					Relation:  "rel",
 				},
 			} {
-				s := s
 				t.Run(fmt.Sprintf("subject_type=%T", s), func(t *testing.T) {
 					rt := &relationtuple.InternalRelationTuple{
 						Namespace: n.Name,

@@ -84,7 +84,9 @@ func newInitializedReg(t testing.TB, dsn *dbx.DsnT) (context.Context, driver.Reg
 }
 
 func assertMigrated(ctx context.Context, t testing.TB, r driver.Registry) {
-	s, err := r.Status(ctx)
+	mb, err := r.MigrationBox()
+	require.NoError(t, err)
+	s, err := mb.Status(ctx)
 	require.NoError(t, err)
 	assert.False(t, s.HasPending())
 }
