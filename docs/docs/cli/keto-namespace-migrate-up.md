@@ -12,7 +12,8 @@ To improve this file please make your change against the appropriate "./cmd/*.go
 
 ## keto namespace migrate up
 
-Deprecated: this step is not required anymore since https://github.com/ory/keto/pull/638
+Deprecated: this step is not required anymore since
+https://github.com/ory/keto/pull/638
 
 ### SEE ALSO
 

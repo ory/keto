@@ -6,7 +6,8 @@ description: keto namespace migrate Migrate a namespace
 
 ## keto namespace migrate
 
-Deprecated: this step is not required anymore since https://github.com/ory/keto/pull/638
+Deprecated: this step is not required anymore since
+https://github.com/ory/keto/pull/638
 
 ### SEE ALSO
 
