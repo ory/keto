@@ -4,6 +4,8 @@ import (
 	"net"
 	"testing"
 
+	"github.com/ory/keto/internal/driver/config"
+
 	"github.com/ory/x/cmdx"
 	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/require"
@@ -35,8 +37,9 @@ const (
 
 func NewTestServer(t *testing.T, rw ServerType, nspaces []*namespace.Namespace, newCmd func() *cobra.Command) *TestServer {
 	ts := &TestServer{
-		Reg: driver.NewMemoryTestRegistry(t, nspaces),
+		Reg: driver.NewSqliteTestRegistry(t, false),
 	}
+	require.NoError(t, ts.Reg.Config().Set(config.KeyNamespaces, nspaces))
 
 	switch rw {
 	case ReadServer:

@@ -2,8 +2,9 @@ package expand_test
 
 import (
 	"context"
-	"fmt"
 	"testing"
+
+	"github.com/ory/keto/internal/driver/config"
 
 	"github.com/ory/keto/internal/x"
 
@@ -20,15 +21,9 @@ import (
 )
 
 func newTestEngine(t *testing.T, namespaces []*namespace.Namespace, paginationOpts ...x.PaginationOptionSetter) (*relationtuple.ManagerWrapper, *expand.Engine) {
-	innerReg := driver.NewMemoryTestRegistry(t, namespaces)
+	innerReg := driver.NewSqliteTestRegistry(t, false)
+	require.NoError(t, innerReg.Config().Set(config.KeyNamespaces, namespaces))
 	reg := relationtuple.NewManagerWrapper(t, innerReg, paginationOpts...)
-	t.Cleanup(func() {
-		for _, n := range namespaces {
-			mb, err := innerReg.NamespaceMigrator().NamespaceMigrationBox(context.Background(), n)
-			require.NoError(t, err)
-			require.NoError(t, mb.Down(context.Background(), 0))
-		}
-	})
 	e := expand.NewEngine(reg)
 	return reg, e
 }
@@ -140,7 +135,6 @@ func TestEngine(t *testing.T) {
 				},
 			},
 		}
-		fmt.Println(expectedTree.String())
 
 		reg, e := newTestEngine(t, []*namespace.Namespace{{}})
 

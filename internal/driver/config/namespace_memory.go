@@ -26,14 +26,24 @@ func NewMemoryNamespaceManager(nn ...*namespace.Namespace) *memoryNamespaceManag
 	return &nm
 }
 
-func (s *memoryNamespaceManager) GetNamespace(_ context.Context, name string) (*namespace.Namespace, error) {
+func (s *memoryNamespaceManager) GetNamespaceByName(_ context.Context, name string) (*namespace.Namespace, error) {
 	for _, n := range *s {
 		if n.Name == name {
 			return n, nil
 		}
 	}
 
-	return nil, errors.WithStack(herodot.ErrNotFound.WithReason("unknown namespace " + name))
+	return nil, errors.WithStack(herodot.ErrNotFound.WithReason("unknown namespace with name " + name))
+}
+
+func (s *memoryNamespaceManager) GetNamespaceByID(_ context.Context, id int64) (*namespace.Namespace, error) {
+	for _, n := range *s {
+		if n.ID == id {
+			return n, nil
+		}
+	}
+
+	return nil, errors.WithStack(herodot.ErrNotFound.WithReasonf("unknown namespace with id %d", id))
 }
 
 func (s *memoryNamespaceManager) Namespaces(_ context.Context) ([]*namespace.Namespace, error) {

@@ -39,7 +39,7 @@ const (
 )
 
 type (
-	Provider struct {
+	Config struct {
 		p                      *configx.Provider
 		l                      *logrusx.Logger
 		ctx                    context.Context
@@ -47,10 +47,13 @@ type (
 		cancelNamespaceManager context.CancelFunc
 		nmLock                 sync.RWMutex
 	}
+	Provider interface {
+		Config() *Config
+	}
 )
 
-func New(ctx context.Context, flags *pflag.FlagSet, l *logrusx.Logger) (*Provider, error) {
-	kp := &Provider{
+func New(ctx context.Context, flags *pflag.FlagSet, l *logrusx.Logger) (*Config, error) {
+	kp := &Config{
 		l:   l,
 		ctx: ctx,
 	}
@@ -77,11 +80,11 @@ func New(ctx context.Context, flags *pflag.FlagSet, l *logrusx.Logger) (*Provide
 	return kp, nil
 }
 
-func (k *Provider) Source() *configx.Provider {
+func (k *Config) Source() *configx.Provider {
 	return k.p
 }
 
-func (k *Provider) resetNamespaceManager() {
+func (k *Config) resetNamespaceManager() {
 	k.nmLock.Lock()
 	defer k.nmLock.Unlock()
 
@@ -95,7 +98,7 @@ func (k *Provider) resetNamespaceManager() {
 	k.nm = nil
 }
 
-func (k *Provider) Set(key string, v interface{}) error {
+func (k *Config) Set(key string, v interface{}) error {
 	if err := k.p.Set(key, v); err != nil {
 		return err
 	}
@@ -106,7 +109,7 @@ func (k *Provider) Set(key string, v interface{}) error {
 	return nil
 }
 
-func (k *Provider) ReadAPIListenOn() string {
+func (k *Config) ReadAPIListenOn() string {
 	return fmt.Sprintf(
 		"%s:%d",
 		k.p.StringF(KeyReadAPIHost, ""),
@@ -114,7 +117,7 @@ func (k *Provider) ReadAPIListenOn() string {
 	)
 }
 
-func (k *Provider) WriteAPIListenOn() string {
+func (k *Config) WriteAPIListenOn() string {
 	return fmt.Sprintf(
 		"%s:%d",
 		k.p.StringF(KeyWriteAPIHost, ""),
@@ -122,7 +125,7 @@ func (k *Provider) WriteAPIListenOn() string {
 	)
 }
 
-func (k *Provider) CORS() (cors.Options, bool) {
+func (k *Config) CORS() (cors.Options, bool) {
 	return k.p.CORS("serve", cors.Options{
 		AllowedMethods:   []string{"GET", "POST", "PUT", "PATCH", "DELETE"},
 		AllowedHeaders:   []string{"Authorization", "Content-Type"},
@@ -131,7 +134,7 @@ func (k *Provider) CORS() (cors.Options, bool) {
 	})
 }
 
-func (k *Provider) DSN() string {
+func (k *Config) DSN() string {
 	dsn := k.p.String(KeyDSN)
 	if dsn == "memory" {
 		return DSNMemory
@@ -139,58 +142,57 @@ func (k *Provider) DSN() string {
 	return dsn
 }
 
-func (k *Provider) TracingServiceName() string {
+func (k *Config) TracingServiceName() string {
 	return k.p.StringF("tracing.service_name", "ORY Keto")
 }
 
-func (k *Provider) TracingProvider() string {
+func (k *Config) TracingProvider() string {
 	return k.p.StringF("tracing.provider", "")
 }
 
-func (k *Provider) TracingConfig() *tracing.Config {
+func (k *Config) TracingConfig() *tracing.Config {
 	return k.p.TracingConfig("ORY Keto")
 }
 
-func (k *Provider) NamespaceManager() (namespace.Manager, error) {
-	if k.nm == nil {
-		k.nmLock.Lock()
-		defer k.nmLock.Unlock()
-
-		var ctx context.Context
-		ctx, k.cancelNamespaceManager = context.WithCancel(k.ctx)
-
-		switch nTyped := k.p.GetF(KeyNamespaces, "file://./keto_namespaces").(type) {
-		case string:
-			var err error
-			k.nm, err = NewNamespaceWatcher(ctx, k.l, nTyped)
-			if err != nil {
-				return nil, err
-			}
-		case []*namespace.Namespace:
-			k.nm = NewMemoryNamespaceManager(nTyped...)
-		case []interface{}:
-			nEnc, err := json.Marshal(nTyped)
-			if err != nil {
-				return nil, errors.WithStack(err)
-			}
-
-			nn := make([]*namespace.Namespace, len(nTyped))
-
-			if err := json.Unmarshal(nEnc, &nn); err != nil {
-				return nil, errors.WithStack(err)
-			}
-
-			k.nm = NewMemoryNamespaceManager(nn...)
-		default:
-			return nil, errors.Errorf("could not create namespace manager from %#v, this indicates an error in the JSON schema that should be reported", nTyped)
-		}
-
-		// return here to properly unlock
-		return k.nm, nil
+func (k *Config) NamespaceManager() (namespace.Manager, error) {
+	k.nmLock.RLock()
+	nm := k.nm
+	k.nmLock.RUnlock()
+	if nm != nil {
+		return nm, nil
 	}
 
-	k.nmLock.RLock()
-	defer k.nmLock.RUnlock()
+	k.nmLock.Lock()
+	defer k.nmLock.Unlock()
+
+	var ctx context.Context
+	ctx, k.cancelNamespaceManager = context.WithCancel(k.ctx)
+
+	switch nTyped := k.p.GetF(KeyNamespaces, "file://./keto_namespaces").(type) {
+	case string:
+		var err error
+		k.nm, err = NewNamespaceWatcher(ctx, k.l, nTyped)
+		if err != nil {
+			return nil, err
+		}
+	case []*namespace.Namespace:
+		k.nm = NewMemoryNamespaceManager(nTyped...)
+	case []interface{}:
+		nEnc, err := json.Marshal(nTyped)
+		if err != nil {
+			return nil, errors.WithStack(err)
+		}
+
+		nn := make([]*namespace.Namespace, len(nTyped))
+
+		if err := json.Unmarshal(nEnc, &nn); err != nil {
+			return nil, errors.WithStack(err)
+		}
+
+		k.nm = NewMemoryNamespaceManager(nn...)
+	default:
+		return nil, errors.Errorf("could not create namespace manager from %#v, this indicates an error in the JSON schema that should be reported", nTyped)
+	}
 
 	return k.nm, nil
 }

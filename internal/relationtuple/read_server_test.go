@@ -9,6 +9,8 @@ import (
 	"net/url"
 	"testing"
 
+	"github.com/ory/keto/internal/driver/config"
+
 	"github.com/stretchr/testify/assert"
 	"github.com/tidwall/gjson"
 
@@ -24,7 +26,8 @@ import (
 func TestReadHandlers(t *testing.T) {
 	r := &x.ReadRouter{Router: httprouter.New()}
 	nspace := &namespace.Namespace{Name: "relation tuple read test"}
-	reg := driver.NewMemoryTestRegistry(t, []*namespace.Namespace{nspace})
+	reg := driver.NewSqliteTestRegistry(t, false)
+	require.NoError(t, reg.Config().Set(config.KeyNamespaces, []*namespace.Namespace{nspace}))
 	h := relationtuple.NewHandler(reg)
 	h.RegisterReadRoutes(r)
 	ts := httptest.NewServer(r)

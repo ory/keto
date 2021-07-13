@@ -9,8 +9,6 @@ import (
 
 	"github.com/spf13/pflag"
 
-	"github.com/pkg/errors"
-
 	"github.com/ory/x/cmdx"
 	"github.com/spf13/cobra"
 
@@ -34,47 +32,18 @@ func newUpCmd() *cobra.Command {
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			ctx := cmd.Context()
 
-			reg, err := driver.NewDefaultRegistry(ctx, cmd.Flags())
+			reg, err := driver.NewDefaultRegistry(ctx, cmd.Flags(), true)
 			if err != nil {
 				return err
 			}
 
-			mb, err := reg.Migrator().MigrationBox(ctx)
+			mb, err := reg.MigrationBox()
 			if err != nil {
 				return err
 			}
 
 			if err := BoxUp(cmd, mb, ""); err != nil {
 				return err
-			}
-
-			if !allNamespaces {
-				// everything is done already
-				return nil
-			}
-
-			_, _ = fmt.Fprintln(cmd.OutOrStdout(), "\nGoing to migrate namespaces.")
-
-			nm, err := reg.Config().NamespaceManager()
-			if err != nil {
-				return errors.Wrap(err, "could not get the namespace manager")
-			}
-
-			nspaces, err := nm.Namespaces(cmd.Context())
-			if err != nil {
-				_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not get namespaces: %+v\n", err)
-				return cmdx.FailSilently(cmd)
-			}
-
-			for _, nspace := range nspaces {
-				mb, err := reg.NamespaceMigrator().NamespaceMigrationBox(ctx, nspace)
-				if err != nil {
-					return err
-				}
-
-				if err := BoxUp(cmd, mb, "[namespace="+nspace.Name+"] "); err != nil {
-					return err
-				}
 			}
 
 			return nil

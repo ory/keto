@@ -4,6 +4,8 @@ import (
 	"context"
 	"net/http"
 
+	"github.com/ory/keto/internal/driver/config"
+
 	"github.com/spf13/cobra"
 
 	"google.golang.org/grpc"
@@ -12,9 +14,7 @@ import (
 	"github.com/ory/x/tracing"
 
 	"github.com/ory/keto/internal/check"
-	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/expand"
-	"github.com/ory/keto/internal/namespace"
 	"github.com/ory/keto/internal/persistence"
 	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/internal/x"
@@ -26,17 +26,15 @@ type (
 		BuildVersion() string
 		BuildDate() string
 		BuildHash() string
-		Config() *config.Provider
 
+		config.Provider
 		x.LoggerProvider
 		x.WriterProvider
 
 		relationtuple.ManagerProvider
-		namespace.MigratorProvider
 		expand.EngineProvider
 		check.EngineProvider
-		persistence.MigratorProvider
-		persistence.Provider
+		persistence.Migrator
 
 		HealthHandler() *healthx.Handler
 		Tracer() *tracing.Tracer

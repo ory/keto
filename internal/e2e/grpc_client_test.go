@@ -24,7 +24,7 @@ type grpcClient struct {
 	ctx                     context.Context
 }
 
-var _ client = (*grpcClient)(nil)
+var _ transactClient = (*grpcClient)(nil)
 
 func (g *grpcClient) conn(t require.TestingT, remote string) *grpc.ClientConn {
 	ctx, cancel := context.WithTimeout(g.ctx, 3*time.Second)

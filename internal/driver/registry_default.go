@@ -3,6 +3,20 @@ package driver
 import (
 	"context"
 	"net/http"
+	"sync"
+	"time"
+
+	"github.com/ory/x/networkx"
+
+	"github.com/cenkalti/backoff/v3"
+	"github.com/gobuffalo/pop/v5"
+	"github.com/luna-duclos/instrumentedsql"
+	"github.com/luna-duclos/instrumentedsql/opentracing"
+	"github.com/ory/x/popx"
+	"github.com/ory/x/sqlcon"
+	"github.com/pkg/errors"
+
+	"github.com/ory/x/dbal"
 
 	"github.com/ory/x/metricsx"
 
@@ -29,7 +43,6 @@ import (
 
 	"github.com/ory/keto/internal/check"
 	"github.com/ory/keto/internal/expand"
-	"github.com/ory/keto/internal/namespace"
 	"github.com/ory/keto/internal/persistence"
 	"github.com/ory/keto/internal/persistence/sql"
 	"github.com/ory/keto/internal/relationtuple"
@@ -46,13 +59,16 @@ var (
 
 type (
 	RegistryDefault struct {
-		p  persistence.Persister
-		l  *logrusx.Logger
-		w  herodot.Writer
-		ce *check.Engine
-		ee *expand.Engine
-		c  *config.Provider
+		p    persistence.Persister
+		mb   *popx.MigrationBox
+		l    *logrusx.Logger
+		w    herodot.Writer
+		ce   *check.Engine
+		ee   *expand.Engine
+		c    *config.Config
+		conn *pop.Connection
 
+		initialized  sync.Once
 		healthH      *healthx.Handler
 		healthServer *health.Server
 		handlers     []Handler
@@ -79,7 +95,7 @@ func (r *RegistryDefault) BuildHash() string {
 	return config.Commit
 }
 
-func (r *RegistryDefault) Config() *config.Provider {
+func (r *RegistryDefault) Config() *config.Config {
 	return r.c
 }
 
@@ -131,10 +147,9 @@ func (r *RegistryDefault) Writer() herodot.Writer {
 }
 
 func (r *RegistryDefault) RelationTupleManager() relationtuple.Manager {
-	return r.p
-}
-
-func (r *RegistryDefault) NamespaceMigrator() namespace.Migrator {
+	if r.p == nil {
+		panic("no relation tuple manager, but expected to have one")
+	}
 	return r.p
 }
 
@@ -152,62 +167,147 @@ func (r *RegistryDefault) ExpandEngine() *expand.Engine {
 	return r.ee
 }
 
-func (r *RegistryDefault) Persister() persistence.Persister {
-	return r.p
+func (r *RegistryDefault) MigrationBox() (*popx.MigrationBox, error) {
+	if r.mb == nil {
+		c, err := r.PopConnection()
+		if err != nil {
+			return nil, err
+		}
+		mb, err := sql.NewMigrationBox(c, r.Logger(), r.Tracer())
+		if err != nil {
+			return nil, err
+		}
+		r.mb = mb
+	}
+	return r.mb, nil
 }
 
-func (r *RegistryDefault) Migrator() persistence.Migrator {
-	return r.p.(persistence.Migrator)
+func (r *RegistryDefault) MigrateUp(ctx context.Context) error {
+	mb, err := r.MigrationBox()
+	if err != nil {
+		return err
+	}
+	if err := mb.Up(ctx); err != nil {
+		return err
+	}
+	return r.Init(ctx)
 }
 
-func (r *RegistryDefault) Init(ctx context.Context) error {
-	nm, err := r.c.NamespaceManager()
+func (r *RegistryDefault) MigrateDown(ctx context.Context) error {
+	mb, err := r.MigrationBox()
 	if err != nil {
 		return err
+	}
+	return mb.Up(ctx)
+}
+
+func (r *RegistryDefault) PopConnection() (*pop.Connection, error) {
+	if r.conn == nil {
+		tracer := r.Tracer()
+
+		var opts []instrumentedsql.Opt
+		if tracer.IsLoaded() {
+			opts = []instrumentedsql.Opt{
+				instrumentedsql.WithTracer(opentracing.NewTracer(true)),
+				instrumentedsql.WithOmitArgs(),
+			}
+		}
+		pool, idlePool, connMaxLifetime, connMaxIdleTime, cleanedDSN := sqlcon.ParseConnectionOptions(r.Logger(), r.Config().DSN())
+		connDetails := &pop.ConnectionDetails{
+			URL:                       sqlcon.FinalizeDSN(r.Logger(), cleanedDSN),
+			IdlePool:                  idlePool,
+			ConnMaxLifetime:           connMaxLifetime,
+			ConnMaxIdleTime:           connMaxIdleTime,
+			Pool:                      pool,
+			UseInstrumentedDriver:     tracer != nil && tracer.IsLoaded(),
+			InstrumentedDriverOptions: opts,
+		}
+
+		bc := backoff.NewExponentialBackOff()
+		bc.MaxElapsedTime = time.Minute * 5
+		bc.Reset()
+
+		if err := backoff.Retry(func() (err error) {
+			conn, err := pop.NewConnection(connDetails)
+			if err != nil {
+				r.Logger().WithError(err).Error("Unable to connect to database, retrying.")
+				return errors.WithStack(err)
+			}
+
+			if err := conn.Open(); err != nil {
+				r.Logger().WithError(err).Error("Unable to open the database connection, retrying.")
+				return errors.WithStack(err)
+			}
+
+			if err := conn.Store.(interface{ Ping() error }).Ping(); err != nil {
+				r.Logger().WithError(err).Error("Unable to ping the database connection, retrying.")
+				return errors.WithStack(err)
+			}
+
+			r.conn = conn
+			return nil
+		}, bc); err != nil {
+			return nil, errors.WithStack(err)
+		}
+	}
+	return r.conn, nil
+}
+
+func (r *RegistryDefault) determineNetwork(ctx context.Context) (*networkx.Network, error) {
+	c, err := r.PopConnection()
+	if err != nil {
+		return nil, err
+	}
+	mb, err := popx.NewMigrationBox(networkx.Migrations, popx.NewMigrator(c, r.Logger(), r.Tracer(), 0))
+	if err != nil {
+		return nil, err
+	}
+	s, err := mb.Status(ctx)
+	if err != nil {
+		return nil, err
+	}
+	if s.HasPending() {
+		return nil, errors.WithStack(persistence.ErrNetworkMigrationsMissing)
 	}
 
-	r.p, err = sql.NewPersister(r.c.DSN(), r.Logger(), nm, r.Tracer())
-	if err != nil {
-		return err
-	}
+	return networkx.NewManager(c, r.Logger(), r.Tracer()).Determine(ctx)
+}
 
-	mb, err := r.Migrator().MigrationBox(ctx)
-	if err != nil {
-		return err
-	}
-	if r.c.DSN() == config.DSNMemory {
+func (r *RegistryDefault) InitWithoutNetworkID(ctx context.Context) error {
+	if dbal.IsMemorySQLite(r.c.DSN()) {
+		mb, err := r.MigrationBox()
+		if err != nil {
+			return err
+		}
+
 		if err := mb.Up(ctx); err != nil {
 			return err
 		}
 	}
+	return nil
+}
 
-	namespaceConfigs, err := nm.Namespaces(ctx)
-	if err != nil {
-		return err
-	}
-	for _, n := range namespaceConfigs {
-		nmb, err := r.NamespaceMigrator().NamespaceMigrationBox(ctx, n)
-		if err != nil {
-			return err
-		}
-		s, err := nmb.Status(ctx)
-		if err != nil {
-			return err
-		} else if s.HasPending() {
-			if r.c.DSN() == config.DSNMemory {
-				// auto migrate when DSN is memory
-				if err := nmb.Up(ctx); err != nil {
-					r.l.WithError(err).Errorf("Could not auto-migrate namespace %s.", n.Name)
-				}
-				continue
+func (r *RegistryDefault) Init(ctx context.Context) (err error) {
+	r.initialized.Do(func() {
+		err = func() error {
+			if err := r.InitWithoutNetworkID(ctx); err != nil {
+				return err
 			}
 
-			r.l.Warnf("Namespace %s is defined in the config but not yet migrated. It is ignored until you explicitly migrate it.", n.Name)
-			continue
-		}
-	}
+			network, err := r.determineNetwork(ctx)
+			if err != nil {
+				return err
+			}
 
-	return nil
+			r.p, err = sql.NewPersister(r, network.ID)
+			if err != nil {
+				return err
+			}
+
+			return nil
+		}()
+	})
+	return
 }
 
 func (r *RegistryDefault) allHandlers() []Handler {

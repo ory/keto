@@ -7,7 +7,6 @@ import (
 	_ "github.com/mattn/goveralls"
 	_ "golang.org/x/tools/cmd/goimports"
 
-	_ "github.com/ory/cli"
 	_ "github.com/ory/go-acc"
 
 	// Protobuf and gRPC related tools

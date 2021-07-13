@@ -158,7 +158,7 @@ func readNamespaceFile(l *logrusx.Logger, r io.Reader, source string) *Namespace
 	return &NamespaceFile{Name: source, Contents: raw, Parser: parse, namespace: &n}
 }
 
-func (n *NamespaceWatcher) GetNamespace(_ context.Context, name string) (*namespace.Namespace, error) {
+func (n *NamespaceWatcher) GetNamespaceByName(_ context.Context, name string) (*namespace.Namespace, error) {
 	n.RLock()
 	defer n.RUnlock()
 
@@ -168,7 +168,20 @@ func (n *NamespaceWatcher) GetNamespace(_ context.Context, name string) (*namesp
 		}
 	}
 
-	return nil, errors.WithStack(herodot.ErrNotFound.WithError("unknown namespace " + name))
+	return nil, errors.WithStack(herodot.ErrNotFound.WithError("unknown namespace with name " + name))
+}
+
+func (n *NamespaceWatcher) GetNamespaceByID(_ context.Context, id int64) (*namespace.Namespace, error) {
+	n.RLock()
+	defer n.RUnlock()
+
+	for _, nspace := range n.namespaces {
+		if nspace.namespace.ID == id {
+			return nspace.namespace, nil
+		}
+	}
+
+	return nil, errors.WithStack(herodot.ErrNotFound.WithErrorf("unknown namespace with id %d", id))
 }
 
 func (n *NamespaceWatcher) Namespaces(_ context.Context) ([]*namespace.Namespace, error) {
