@@ -3,7 +3,7 @@
 
 **Table of Contents**
 
-- [Unreleased (2021-07-12)](#unreleased-2021-07-12)
+- [Unreleased (2021-07-13)](#unreleased-2021-07-13)
   - [Bug Fixes](#bug-fixes)
   - [Documentation](#documentation)
   - [Features](#features)
@@ -96,7 +96,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [Unreleased](https://github.com/ory/keto/compare/v0.6.0-alpha.3...435ae0048135902c99875d947b793288404cb532) (2021-07-12)
+# [Unreleased](https://github.com/ory/keto/compare/v0.6.0-alpha.3...8b1880287c2cda8dc9de1eb646d69903c6a95aa2) (2021-07-13)
 
 ### Bug Fixes
 
@@ -144,6 +144,45 @@
   ([6355bea](https://github.com/ory/keto/commit/6355beae5b5b28c3eee19fdee85b9875cbc165c3))
 
 ### Features
+
+- Add gRPC client utils helpers ([#657](https://github.com/ory/keto/issues/657))
+  ([8b18802](https://github.com/ory/keto/commit/8b1880287c2cda8dc9de1eb646d69903c6a95aa2)):
+
+  Behold! The Keto gRPC client library now has useful helpers that allow you to
+  replace:
+
+  ```diff
+  - deltas := make([]*acl.RelationTupleDelta, len(tuples))
+  - for i := range rts {
+  - 	deltas[i] = &acl.RelationTupleDelta{
+  - 		Action:        acl.RelationTupleDelta_INSERT,
+  - 		RelationTuple: rts[i],
+  - 	}
+  - }
+  + deltas := acl.RelationTupleToDeltas(tuples, acl.RelationTupleDelta_INSERT)
+  ```
+
+  and
+
+  ```diff
+  - &acl.Subject{Ref: &acl.Subject_Set{Set: &acl.SubjectSet{
+  - 	Namespace: "directories",
+  - 	Object:    "/photos",
+  - 	Relation:  "access",
+  - }}}
+  + acl.NewSubjectSet("directories", "/photos", "access")
+  ```
+
+  and
+
+  ```diff
+  - &acl.Subject{Ref: &acl.Subject_Id{
+  - 	Id: "user1",
+  - }}
+  + acl.NewSubjectID("user1")
+  ```
+
+  Enjoy these new treats :chocolate_bar: :lollipop: :icecream:
 
 - Make generated gRPC client its own module
   ([#583](https://github.com/ory/keto/issues/583))
