@@ -21,13 +21,7 @@ func main() {
 	client := acl.NewExpandServiceClient(conn)
 
 	res, err := client.Expand(context.Background(), &acl.ExpandRequest{
-		Subject: &acl.Subject{
-			Ref: &acl.Subject_Set{Set: &acl.SubjectSet{
-				Namespace: "files",
-				Object:    "/photos/beach.jpg",
-				Relation:  "access",
-			}},
-		},
+		Subject:  acl.NewSubjectSet("files", "/photos/beach.jpg", "access"),
 		MaxDepth: 3,
 	})
 	if err != nil {

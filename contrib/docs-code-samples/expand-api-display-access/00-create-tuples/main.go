@@ -27,52 +27,32 @@ func main() {
 	//files:/photos/mountains.jpg#access@(files:/photos/mountains.jpg#owner)
 	//files:/photos/mountains.jpg#access@(directories:/photos#access)
 
-	tupleDeltas := []*acl.RelationTupleDelta{
+	tuples := []*acl.RelationTuple{
 		// ownership
 		{
-			Action: acl.RelationTupleDelta_INSERT,
-			RelationTuple: &acl.RelationTuple{
-				Namespace: "directories",
-				Object:    "/photos",
-				Relation:  "owner",
-				Subject: &acl.Subject{Ref: &acl.Subject_Id{
-					Id: "maureen",
-				}},
-			},
+			Namespace: "directories",
+			Object:    "/photos",
+			Relation:  "owner",
+			Subject:   acl.NewSubjectID("maureen"),
 		},
 		{
-			Action: acl.RelationTupleDelta_INSERT,
-			RelationTuple: &acl.RelationTuple{
-				Namespace: "files",
-				Object:    "/photos/beach.jpg",
-				Relation:  "owner",
-				Subject: &acl.Subject{Ref: &acl.Subject_Id{
-					Id: "maureen",
-				}},
-			},
+			Namespace: "files",
+			Object:    "/photos/beach.jpg",
+			Relation:  "owner",
+			Subject:   acl.NewSubjectID("maureen"),
 		},
 		{
-			Action: acl.RelationTupleDelta_INSERT,
-			RelationTuple: &acl.RelationTuple{
-				Namespace: "files",
-				Object:    "/photos/mountains.jpg",
-				Relation:  "owner",
-				Subject: &acl.Subject{Ref: &acl.Subject_Id{
-					Id: "laura",
-				}},
-			},
+			Namespace: "files",
+			Object:    "/photos/mountains.jpg",
+			Relation:  "owner",
+			Subject:   acl.NewSubjectID("laura"),
 		},
 		// granted access
 		{
-			Action: acl.RelationTupleDelta_INSERT,
-			RelationTuple: &acl.RelationTuple{
-				Namespace: "directories",
-				Object:    "/photos",
-				Relation:  "access",
-				Subject: &acl.Subject{Ref: &acl.Subject_Id{
-					Id: "laura",
-				}},
-			},
+			Namespace: "directories",
+			Object:    "/photos",
+			Relation:  "access",
+			Subject:   acl.NewSubjectID("laura"),
 		},
 	}
 	// should be subject set rewrite
@@ -82,40 +62,26 @@ func main() {
 		{"files", "/photos/mountains.jpg"},
 		{"directories", "/photos"},
 	} {
-		tupleDeltas = append(tupleDeltas, &acl.RelationTupleDelta{
-			Action: acl.RelationTupleDelta_INSERT,
-			RelationTuple: &acl.RelationTuple{
-				Namespace: o.n,
-				Object:    o.o,
-				Relation:  "access",
-				Subject: &acl.Subject{Ref: &acl.Subject_Set{Set: &acl.SubjectSet{
-					Namespace: o.n,
-					Object:    o.o,
-					Relation:  "owner",
-				}}},
-			},
+		tuples = append(tuples, &acl.RelationTuple{
+			Namespace: o.n,
+			Object:    o.o,
+			Relation:  "access",
+			Subject:   acl.NewSubjectSet(o.n, o.o, "owner"),
 		})
 	}
 	// should be subject set rewrite
 	// access on parent means access on child
 	for _, obj := range []string{"/photos/beach.jpg", "/photos/mountains.jpg"} {
-		tupleDeltas = append(tupleDeltas, &acl.RelationTupleDelta{
-			Action: acl.RelationTupleDelta_INSERT,
-			RelationTuple: &acl.RelationTuple{
-				Namespace: "files",
-				Object:    obj,
-				Relation:  "access",
-				Subject: &acl.Subject{Ref: &acl.Subject_Set{Set: &acl.SubjectSet{
-					Namespace: "directories",
-					Object:    "/photos",
-					Relation:  "access",
-				}}},
-			},
+		tuples = append(tuples, &acl.RelationTuple{
+			Namespace: "files",
+			Object:    obj,
+			Relation:  "access",
+			Subject:   acl.NewSubjectSet("directories", "/photos", "access"),
 		})
 	}
 
 	_, err = client.TransactRelationTuples(context.Background(), &acl.TransactRelationTuplesRequest{
-		RelationTupleDeltas: tupleDeltas,
+		RelationTupleDeltas: acl.RelationTupleToDeltas(tuples, acl.RelationTupleDelta_INSERT),
 	})
 	if err != nil {
 		panic("Encountered error: " + err.Error())
