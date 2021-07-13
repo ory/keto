@@ -45,7 +45,7 @@ on configuration options, open the configuration documentation:
 		RunE: func(cmd *cobra.Command, args []string) error {
 			reg, err := driver.NewDefaultRegistry(cmd.Context(), cmd.Flags(), false)
 			if errors.Is(err, persistence.ErrNetworkMigrationsMissing) {
-				_, _ = fmt.Fprintf(cmd.OutOrStdout(), "Migrations were not applied yet, please apply them first.")
+				_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Migrations were not applied yet, please apply them first.")
 				return cmdx.FailSilently(cmd)
 			} else if err != nil {
 				return err
