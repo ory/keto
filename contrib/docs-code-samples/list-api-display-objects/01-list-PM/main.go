@@ -21,9 +21,7 @@ func main() {
 		Query: &acl.ListRelationTuplesRequest_Query{
 			Namespace: "chats",
 			Relation:  "member",
-			Subject: &acl.Subject{Ref: &acl.Subject_Id{
-				Id: "PM",
-			}},
+			Subject:   acl.NewSubjectID("PM"),
 		},
 	})
 	if err != nil {
