@@ -4,11 +4,11 @@ CREATE TABLE keto_relation_tuples
 (
     shard_id                 UUID        NOT NULL,
     nid                      UUID        NOT NULL,
-    namespace_id             INTEGER     NOT NULL,
+    namespace_id             UUID        NOT NULL,
     object                   VARCHAR(64) NOT NULL,
     relation                 VARCHAR(64) NOT NULL,
     subject_id               VARCHAR(64) NULL,
-    subject_set_namespace_id INTEGER NULL,
+    subject_set_namespace_id UUID NULL,
     subject_set_object       VARCHAR(64) NULL,
     subject_set_relation     VARCHAR(64) NULL,
     commit_time              TIMESTAMP   NOT NULL,
@@ -23,3 +23,27 @@ CREATE TABLE keto_relation_tuples
          (subject_id IS NOT NULL AND
           subject_set_namespace_id IS NULL AND subject_set_object IS NULL AND subject_set_relation IS NULL))
 );
+
+CREATE INDEX keto_relation_tuples_subject_ids_idx ON keto_relation_tuples (nid,
+                                                                           namespace_id,
+                                                                           object,
+                                                                           relation,
+                                                                           subject_id) WHERE subject_set_namespace_id IS NULL AND subject_set_object IS NULL AND subject_set_relation IS NULL;
+
+CREATE INDEX keto_relation_tuples_subject_sets_idx ON keto_relation_tuples (nid,
+                                                                            namespace_id,
+                                                                            object,
+                                                                            relation,
+                                                                            subject_set_namespace_id,
+                                                                            subject_set_object,
+                                                                            subject_set_relation) WHERE subject_id IS NULL;
+
+CREATE INDEX keto_relation_tuples_full_idx ON keto_relation_tuples (nid,
+                                                                    namespace_id,
+                                                                    object,
+                                                                    relation,
+                                                                    subject_id,
+                                                                    subject_set_namespace_id,
+                                                                    subject_set_object,
+                                                                    subject_set_relation,
+                                                                    commit_time);

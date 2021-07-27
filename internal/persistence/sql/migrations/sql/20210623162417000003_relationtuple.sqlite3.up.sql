@@ -1,5 +1,4 @@
 
--- mysql has no partial indexes so we can only use the full one
 CREATE INDEX keto_relation_tuples_full_idx ON keto_relation_tuples (nid,
                                                                     namespace_id,
                                                                     object,

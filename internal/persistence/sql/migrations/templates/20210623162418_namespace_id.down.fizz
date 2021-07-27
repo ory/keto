@@ -1,0 +1,1 @@
+drop_table("keto_namespace_ids")

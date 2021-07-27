@@ -10,8 +10,11 @@ replace github.com/oleiade/reflections => github.com/oleiade/reflections v1.0.1
 
 replace github.com/ory/keto/proto => ./proto
 
+replace github.com/gobuffalo/pop/v5 => github.com/gobuffalo/pop/v5 v5.3.4-0.20210716080118-0ecad2589ac4
+
 require (
 	github.com/cenkalti/backoff/v3 v3.0.0
+	github.com/dgraph-io/ristretto v0.1.0
 	github.com/ghodss/yaml v1.0.0
 	github.com/go-openapi/errors v0.20.0
 	github.com/go-openapi/runtime v0.19.26

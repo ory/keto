@@ -27,8 +27,8 @@ func GetDSNs(t testing.TB, debugSqliteOnDisk bool) []*DsnT {
 
 	// we use a slice of structs here to always have the same execution order
 	dsns := []*DsnT{
-		GetSqlite(t, SQLiteMemory),
 		GetSqlite(t, sqliteMode),
+		GetSqlite(t, SQLiteMemory),
 	}
 
 	if !testing.Short() {

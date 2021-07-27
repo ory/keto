@@ -4,11 +4,11 @@ CREATE TABLE keto_relation_tuples
 (
     shard_id                 char(36)    NOT NULL,
     nid                      char(36)    NOT NULL,
-    namespace_id             INTEGER     NOT NULL,
+    namespace_id             char(36)    NOT NULL,
     object                   VARCHAR(64) NOT NULL,
     relation                 VARCHAR(64) NOT NULL,
     subject_id               VARCHAR(64) NULL,
-    subject_set_namespace_id INTEGER NULL,
+    subject_set_namespace_id char(36) NULL,
     subject_set_object       VARCHAR(64) NULL,
     subject_set_relation     VARCHAR(64) NULL,
     commit_time              TIMESTAMP   NOT NULL,

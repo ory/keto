@@ -171,7 +171,7 @@ func (n *NamespaceWatcher) GetNamespaceByName(_ context.Context, name string) (*
 	return nil, errors.WithStack(herodot.ErrNotFound.WithError("unknown namespace with name " + name))
 }
 
-func (n *NamespaceWatcher) GetNamespaceByID(_ context.Context, id int64) (*namespace.Namespace, error) {
+func (n *NamespaceWatcher) GetNamespaceByConfigID(_ context.Context, id int) (*namespace.Namespace, error) {
 	n.RLock()
 	defer n.RUnlock()
 
