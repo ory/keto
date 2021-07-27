@@ -17,52 +17,37 @@ func main() {
 
 	client := acl.NewWriteServiceClient(conn)
 
-	var tupleDeltas []*acl.RelationTupleDelta
+	var tuples []*acl.RelationTuple
 	// memes
 	for _, user := range []string{"PM", "Vincent", "Julia"} {
-		tupleDeltas = append(tupleDeltas, &acl.RelationTupleDelta{
-			Action: acl.RelationTupleDelta_INSERT,
-			RelationTuple: &acl.RelationTuple{
-				Namespace: "chats",
-				Object:    "memes",
-				Relation:  "member",
-				Subject: &acl.Subject{Ref: &acl.Subject_Id{
-					Id: user,
-				}},
-			},
+		tuples = append(tuples, &acl.RelationTuple{
+			Namespace: "chats",
+			Object:    "memes",
+			Relation:  "member",
+			Subject:   acl.NewSubjectID(user),
 		})
 	}
 	// cars
 	for _, user := range []string{"PM", "Julia"} {
-		tupleDeltas = append(tupleDeltas, &acl.RelationTupleDelta{
-			Action: acl.RelationTupleDelta_INSERT,
-			RelationTuple: &acl.RelationTuple{
-				Namespace: "chats",
-				Object:    "cars",
-				Relation:  "member",
-				Subject: &acl.Subject{Ref: &acl.Subject_Id{
-					Id: user,
-				}},
-			},
+		tuples = append(tuples, &acl.RelationTuple{
+			Namespace: "chats",
+			Object:    "cars",
+			Relation:  "member",
+			Subject:   acl.NewSubjectID(user),
 		})
 	}
 	// coffee-break
 	for _, user := range []string{"PM", "Vincent", "Julia", "Patrik"} {
-		tupleDeltas = append(tupleDeltas, &acl.RelationTupleDelta{
-			Action: acl.RelationTupleDelta_INSERT,
-			RelationTuple: &acl.RelationTuple{
-				Namespace: "chats",
-				Object:    "coffee-break",
-				Relation:  "member",
-				Subject: &acl.Subject{Ref: &acl.Subject_Id{
-					Id: user,
-				}},
-			},
+		tuples = append(tuples, &acl.RelationTuple{
+			Namespace: "chats",
+			Object:    "coffee-break",
+			Relation:  "member",
+			Subject:   acl.NewSubjectID(user),
 		})
 	}
 
 	_, err = client.TransactRelationTuples(context.Background(), &acl.TransactRelationTuplesRequest{
-		RelationTupleDeltas: tupleDeltas,
+		RelationTupleDeltas: acl.RelationTupleToDeltas(tuples, acl.RelationTupleDelta_INSERT),
 	})
 	if err != nil {
 		panic("Encountered error: " + err.Error())

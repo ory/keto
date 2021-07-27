@@ -21,9 +21,7 @@ func main() {
 		Namespace: "messages",
 		Object:    "02y_15_4w350m3",
 		Relation:  "decypher",
-		Subject: &acl.Subject{Ref: &acl.Subject_Id{
-			Id: "john",
-		}},
+		Subject:   acl.NewSubjectID("john"),
 	})
 	if err != nil {
 		panic(err.Error())
