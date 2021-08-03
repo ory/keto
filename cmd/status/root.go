@@ -33,14 +33,13 @@ func newStatusCmd() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			var connect func(*cobra.Command) (*grpc.ClientConn, error)
 
-			endpoints := stringsx.RegisteredCases{}
-			switch endpoint {
+			switch endpoints := stringsx.SwitchExact(endpoint); {
 			case endpoints.AddCase("read"):
 				connect = cliclient.GetReadConn
 			case endpoints.AddCase("write"):
 				connect = cliclient.GetWriteConn
 			default:
-				return endpoints.ToUnknownCaseErr(endpoint)
+				return endpoints.ToUnknownCaseErr()
 			}
 
 			loudPrinter := cmdx.NewLoudOutPrinter(cmd)
