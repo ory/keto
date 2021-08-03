@@ -8,6 +8,8 @@ replace github.com/gogo/protobuf => github.com/gogo/protobuf v1.3.2
 
 replace github.com/oleiade/reflections => github.com/oleiade/reflections v1.0.1
 
+replace github.com/gobuffalo/packr => github.com/gobuffalo/packr v1.30.1
+
 replace github.com/ory/keto/proto => ./proto
 
 require (
@@ -29,7 +31,7 @@ require (
 	github.com/ory/herodot v0.9.6
 	github.com/ory/jsonschema/v3 v3.0.3
 	github.com/ory/keto/proto v0.0.0-00010101000000-000000000000
-	github.com/ory/x v0.0.256
+	github.com/ory/x v0.0.274
 	github.com/pelletier/go-toml v1.8.1
 	github.com/phayes/freeport v0.0.0-20180830031419-95f893ade6f2
 	github.com/pkg/errors v0.9.1
