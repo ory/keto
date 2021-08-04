@@ -7,6 +7,25 @@ const path = require('path')
 const fs = require('fs')
 const prettier = require('prettier')
 const prettierStyles = require('ory-prettier-styles')
+const { execSync } = require('child_process')
+const fetch = require('node-fetch')
+
+const oryXVersion = execSync(
+  "cd ..; go list -f '{{.Module.Version}}' -find github.com/ory/x"
+)
+  .toString('utf-8')
+  .trim()
+
+const refs = {
+  'ory://tracing-config': `https://raw.githubusercontent.com/ory/x/${oryXVersion}/tracing/config.schema.json`,
+  'ory://logging-config': `https://raw.githubusercontent.com/ory/x/${oryXVersion}/logrusx/config.schema.json`
+}
+
+const oryResolver = {
+  order: 1,
+  canRead: /^ory:/i,
+  read: ({ url }) => fetch(refs[url]).then((res) => res.json())
+}
 
 jsf.option({
   alwaysFakeOptionals: true,
@@ -28,102 +47,107 @@ const config = require(path.resolve(process.argv[2]))
 
 const enhance =
   (schema, parents = []) =>
-  (item) => {
-    const key = item.key.value
+    (item) => {
+      const key = item.key.value
 
-    const path = [
-      ...parents.map((parent) => ['properties', parent]),
-      ['properties', key]
-    ].flat()
+      const path = [
+        ...parents.map((parent) => ['properties', parent]),
+        ['properties', key]
+      ].flat()
 
-    if (['title', 'description'].find((f) => path[path.length - 1] === f)) {
-      return
-    }
+      if (['title', 'description'].find((f) => path[path.length - 1] === f)) {
+        return
+      }
 
-    const comments = [`# ${pathOr(key, [...path, 'title'], schema)} ##`, '']
+      const comments = [`# ${pathOr(key, [...path, 'title'], schema)} ##`, '']
 
-    const description = pathOr('', [...path, 'description'], schema)
-    if (description) {
-      comments.push(' ' + description.split('\n').join('\n '), '')
-    }
+      const description = pathOr('', [...path, 'description'], schema)
+      if (description) {
+        comments.push(' ' + description.split('\n').join('\n '), '')
+      }
 
-    const defaultValue = pathOr('', [...path, 'default'], schema)
-    if (defaultValue || defaultValue === false) {
-      comments.push(' Default value: ' + defaultValue, '')
-    }
+      const defaultValue = pathOr('', [...path, 'default'], schema)
+      if (defaultValue || defaultValue === false) {
+        comments.push(' Default value: ' + defaultValue, '')
+      }
 
-    const enums = pathOr('', [...path, 'enum'], schema)
-    if (enums && Array.isArray(enums)) {
-      comments.push(
-        ' One of:',
-        ...YAML.stringify(enums)
-          .split('\n')
-          .map((i) => ` ${i}`)
-      ) // split always returns one empty object so no need for newline
-    }
-
-    const min = pathOr('', [...path, 'minimum'], schema)
-    if (min || min === 0) {
-      comments.push(` Minimum value: ${min}`, '')
-    }
-
-    const max = pathOr('', [...path, 'maximum'], schema)
-    if (max || max === 0) {
-      comments.push(` Maximum value: ${max}`, '')
-    }
-
-    const examples = pathOr('', [...path, 'examples'], schema)
-    if (examples) {
-      comments.push(
-        ' Examples:',
-        ...YAML.stringify(examples)
-          .split('\n')
-          .map((i) => ` ${i}`)
-      ) // split always returns one empty object so no need for newline
-    }
-
-    let hasChildren
-    if (item.value.items) {
-      item.value.items.forEach((item) => {
-        if (item.key) {
-          enhance(schema, [...parents, key])(item)
-          hasChildren = true
-        }
-      })
-    }
-
-    const showEnvVarBlockForObject = pathOr(
-      '',
-      [...path, 'showEnvVarBlockForObject'],
-      schema
-    )
-    if (!hasChildren || showEnvVarBlockForObject) {
-      const env = [...parents, key].map((i) => i.toUpperCase()).join('_')
-      comments.push(
-        ' Set this value using environment variables on',
-        ' - Linux/macOS:',
-        `    $ export ${env}=<value>`,
-        ' - Windows Command Line (CMD):',
-        `    > set ${env}=<value>`,
-        ''
-      )
-
-      // Show this if the config property is an object, to call out how to specify the env var
-      if (hasChildren) {
+      const enums = pathOr('', [...path, 'enum'], schema)
+      if (enums && Array.isArray(enums)) {
         comments.push(
-          ' This can be set as an environment variable by supplying it as a JSON object.',
+          ' One of:',
+          ...YAML.stringify(enums)
+            .split('\n')
+            .map((i) => ` ${i}`)
+        ) // split always returns one empty object so no need for newline
+      }
+
+      const min = pathOr('', [...path, 'minimum'], schema)
+      if (min || min === 0) {
+        comments.push(` Minimum value: ${min}`, '')
+      }
+
+      const max = pathOr('', [...path, 'maximum'], schema)
+      if (max || max === 0) {
+        comments.push(` Maximum value: ${max}`, '')
+      }
+
+      const examples = pathOr('', [...path, 'examples'], schema)
+      if (examples) {
+        comments.push(
+          ' Examples:',
+          ...YAML.stringify(examples)
+            .split('\n')
+            .map((i) => ` ${i}`)
+        ) // split always returns one empty object so no need for newline
+      }
+
+      let hasChildren
+      if (item.value.items) {
+        item.value.items.forEach((item) => {
+          if (item.key) {
+            enhance(schema, [...parents, key])(item)
+            hasChildren = true
+          }
+        })
+      }
+
+      const showEnvVarBlockForObject = pathOr(
+        '',
+        [...path, 'showEnvVarBlockForObject'],
+        schema
+      )
+      if (!hasChildren || showEnvVarBlockForObject) {
+        const env = [...parents, key].map((i) => i.toUpperCase()).join('_')
+        comments.push(
+          ' Set this value using environment variables on',
+          ' - Linux/macOS:',
+          `    $ export ${env}=<value>`,
+          ' - Windows Command Line (CMD):',
+          `    > set ${env}=<value>`,
           ''
         )
-      }
-    }
 
-    item.commentBefore = comments.join('\n')
-    item.spaceBefore = true
-  }
+        // Show this if the config property is an object, to call out how to specify the env var
+        if (hasChildren) {
+          comments.push(
+            ' This can be set as an environment variable by supplying it as a JSON object.',
+            ''
+          )
+        }
+      }
+
+      item.commentBefore = comments.join('\n')
+      item.spaceBefore = true
+    }
 
 new Promise((resolve, reject) => {
   parser.dereference(
     require(path.resolve(config.updateConfig.src)),
+    {
+      resolve: {
+        ory: oryResolver
+      }
+    },
     (err, result) => (err ? reject(err) : resolve(result))
   )
 })
