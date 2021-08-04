@@ -279,42 +279,7 @@
       ]
     },
     "log": {
-      "title": "Log",
-      "description": "Configure logging using the following options. Logging will always be sent to stdout and stderr.",
-      "type": "object",
-      "properties": {
-        "level": {
-          "type": "string",
-          "default": "info",
-          "enum": [
-            "panic",
-            "fatal",
-            "error",
-            "warn",
-            "info",
-            "debug",
-            "trace"
-          ],
-          "title": "Level",
-          "description": "Debug enables stack traces on errors. Can also be set using environment variable LOG_LEVEL."
-        },
-        "format": {
-          "type": "string",
-          "default": "text",
-          "enum": [
-            "text",
-            "json"
-          ],
-          "title": "Format",
-          "description": "The log format can either be text or JSON."
-        },
-        "leak_sensitive_values": {
-          "type": "boolean",
-          "title": "Leak Sensitive Log Values",
-          "description": "If set will leak sensitive values (e.g. emails) in the logs."
-        }
-      },
-      "additionalProperties": false
+      "$ref": "ory://logging-config"
     },
     "tracing": {
       "$ref": "ory://tracing-config"
