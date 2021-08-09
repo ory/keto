@@ -44,8 +44,7 @@ type (
 )
 
 const (
-	defaultPageSize    int   = 100
-	namespaceCacheSize int64 = 1000
+	defaultPageSize int = 100
 )
 
 var (
