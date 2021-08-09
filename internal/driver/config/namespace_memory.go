@@ -33,17 +33,17 @@ func (s *memoryNamespaceManager) GetNamespaceByName(_ context.Context, name stri
 		}
 	}
 
-	return nil, errors.WithStack(herodot.ErrNotFound.WithReason("unknown namespace with name " + name))
+	return nil, errors.WithStack(herodot.ErrNotFound.WithReasonf("Unknown namespace with name %s.", name))
 }
 
-func (s *memoryNamespaceManager) GetNamespaceByConfigID(_ context.Context, id int) (*namespace.Namespace, error) {
+func (s *memoryNamespaceManager) GetNamespaceByConfigID(_ context.Context, id int64) (*namespace.Namespace, error) {
 	for _, n := range *s {
 		if n.ID == id {
 			return n, nil
 		}
 	}
 
-	return nil, errors.WithStack(herodot.ErrNotFound.WithReasonf("unknown namespace with id %d", id))
+	return nil, errors.WithStack(herodot.ErrNotFound.WithReasonf("Unknown namespace with id %d.", id))
 }
 
 func (s *memoryNamespaceManager) Namespaces(_ context.Context) ([]*namespace.Namespace, error) {

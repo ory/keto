@@ -168,10 +168,10 @@ func (n *NamespaceWatcher) GetNamespaceByName(_ context.Context, name string) (*
 		}
 	}
 
-	return nil, errors.WithStack(herodot.ErrNotFound.WithError("unknown namespace with name " + name))
+	return nil, errors.WithStack(herodot.ErrNotFound.WithErrorf("Unknown namespace with name %s", name))
 }
 
-func (n *NamespaceWatcher) GetNamespaceByConfigID(_ context.Context, id int) (*namespace.Namespace, error) {
+func (n *NamespaceWatcher) GetNamespaceByConfigID(_ context.Context, id int64) (*namespace.Namespace, error) {
 	n.RLock()
 	defer n.RUnlock()
 
@@ -181,7 +181,7 @@ func (n *NamespaceWatcher) GetNamespaceByConfigID(_ context.Context, id int) (*n
 		}
 	}
 
-	return nil, errors.WithStack(herodot.ErrNotFound.WithErrorf("unknown namespace with id %d", id))
+	return nil, errors.WithStack(herodot.ErrNotFound.WithErrorf("Unknown namespace with ID %d", id))
 }
 
 func (n *NamespaceWatcher) Namespaces(_ context.Context) ([]*namespace.Namespace, error) {

@@ -90,7 +90,7 @@ func (h *Handler) getCheck(w http.ResponseWriter, r *http.Request, _ httprouter.
 	}
 
 	if tuple.Subject == nil {
-		h.d.Writer().WriteError(w, r, herodot.ErrBadRequest.WithReason("subject has to be specified"))
+		h.d.Writer().WriteError(w, r, herodot.ErrBadRequest.WithReason("Subject has to be specified."))
 		return
 	}
 

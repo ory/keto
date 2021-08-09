@@ -7,8 +7,6 @@ import (
 	"reflect"
 	"strconv"
 
-	"github.com/dgraph-io/ristretto"
-
 	"github.com/gofrs/uuid"
 	"github.com/ory/x/fsx"
 	"github.com/ory/x/logrusx"
@@ -29,10 +27,9 @@ import (
 
 type (
 	Persister struct {
-		conn             *pop.Connection
-		d                dependencies
-		nid              uuid.UUID
-		namespaceIDCache *ristretto.Cache
+		conn *pop.Connection
+		d    dependencies
+		nid  uuid.UUID
 	}
 	internalPagination struct {
 		Page, PerPage int
@@ -47,7 +44,8 @@ type (
 )
 
 const (
-	defaultPageSize int = 100
+	defaultPageSize    int   = 100
+	namespaceCacheSize int64 = 1000
 )
 
 var (
@@ -69,21 +67,10 @@ func NewPersister(reg dependencies, nid uuid.UUID) (*Persister, error) {
 		return nil, err
 	}
 
-	namespaceIDCache, err := ristretto.NewCache(&ristretto.Config{
-		// TODO probably make this configurable
-		NumCounters: 10 * 1000,
-		MaxCost:     1000,
-		BufferItems: 64,
-	})
-	if err != nil {
-		return nil, errors.WithStack(err)
-	}
-
 	p := &Persister{
-		d:                reg,
-		nid:              nid,
-		conn:             conn,
-		namespaceIDCache: namespaceIDCache,
+		d:    reg,
+		nid:  nid,
+		conn: conn,
 	}
 
 	return p, nil

@@ -1,1 +1,0 @@
-CREATE UNIQUE INDEX "keto_namespace_ids_nid_serial_id_idx" ON "keto_namespace_ids" (nid, serial_id);

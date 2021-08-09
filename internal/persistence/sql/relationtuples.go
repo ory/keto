@@ -20,11 +20,11 @@ type (
 		// An ID field is required to make pop happy. The actual ID is a composite primary key.
 		ID                    uuid.UUID      `db:"shard_id"`
 		NetworkID             uuid.UUID      `db:"nid"`
-		NamespaceID           uuid.UUID      `db:"namespace_id"`
+		NamespaceID           int64          `db:"namespace_id"`
 		Object                string         `db:"object"`
 		Relation              string         `db:"relation"`
 		SubjectID             sql.NullString `db:"subject_id"`
-		SubjectSetNamespaceID uuid.NullUUID  `db:"subject_set_namespace_id"`
+		SubjectSetNamespaceID sql.NullInt64  `db:"subject_set_namespace_id"`
 		SubjectSetObject      sql.NullString `db:"subject_set_object"`
 		SubjectSetRelation    sql.NullString `db:"subject_set_relation"`
 		CommitTime            time.Time      `db:"commit_time"`
@@ -45,7 +45,7 @@ func (r *RelationTuple) toInternal(ctx context.Context, nm namespace.Manager, p 
 		return nil, nil
 	}
 
-	n, err := p.GetNamespaceConfigID(ctx, r.NamespaceID)
+	n, err := p.GetNamespaceByID(ctx, r.NamespaceID)
 	if err != nil {
 		return nil, err
 	}
@@ -61,7 +61,7 @@ func (r *RelationTuple) toInternal(ctx context.Context, nm namespace.Manager, p 
 			ID: r.SubjectID.String,
 		}
 	} else {
-		n, err := p.GetNamespaceConfigID(ctx, r.SubjectSetNamespaceID.UUID)
+		n, err := p.GetNamespaceByID(ctx, r.SubjectSetNamespaceID.Int64)
 		if err != nil {
 			return nil, err
 		}
@@ -86,18 +86,18 @@ func (r *RelationTuple) insertSubject(ctx context.Context, p *Persister, s relat
 			String: st.ID,
 			Valid:  true,
 		}
-		r.SubjectSetNamespaceID = uuid.NullUUID{}
+		r.SubjectSetNamespaceID = sql.NullInt64{}
 		r.SubjectSetObject = sql.NullString{}
 		r.SubjectSetRelation = sql.NullString{}
 	case *relationtuple.SubjectSet:
-		nID, err := p.GetNamespaceID(ctx, st.Namespace)
+		n, err := p.GetNamespaceByName(ctx, st.Namespace)
 		if err != nil {
 			return err
 		}
 
 		r.SubjectID = sql.NullString{}
-		r.SubjectSetNamespaceID = uuid.NullUUID{
-			UUID:  nID,
+		r.SubjectSetNamespaceID = sql.NullInt64{
+			Int64: n.ID,
 			Valid: true,
 		}
 		r.SubjectSetObject = sql.NullString{
@@ -113,12 +113,12 @@ func (r *RelationTuple) insertSubject(ctx context.Context, p *Persister, s relat
 }
 
 func (r *RelationTuple) fromInternal(ctx context.Context, p *Persister, rt *relationtuple.InternalRelationTuple) error {
-	nID, err := p.GetNamespaceID(ctx, rt.Namespace)
+	n, err := p.GetNamespaceByName(ctx, rt.Namespace)
 	if err != nil {
 		return err
 	}
 
-	r.NamespaceID = nID
+	r.NamespaceID = n.ID
 	r.Object = rt.Object
 	r.Relation = rt.Relation
 
@@ -158,13 +158,13 @@ func (p *Persister) whereSubject(ctx context.Context, q *pop.Query, sub relation
 			Where("subject_set_object IS NULL").
 			Where("subject_set_relation IS NULL")
 	case *relationtuple.SubjectSet:
-		nID, err := p.GetNamespaceID(ctx, s.Namespace)
+		n, err := p.GetNamespaceByName(ctx, s.Namespace)
 		if err != nil {
 			return err
 		}
 
 		q.
-			Where("subject_set_namespace_id = ?", nID).
+			Where("subject_set_namespace_id = ?", n.ID).
 			Where("subject_set_object = ?", s.Object).
 			Where("subject_set_relation = ?", s.Relation).
 			// NULL checks to leverage partial indexes
@@ -178,13 +178,13 @@ func (p *Persister) whereSubject(ctx context.Context, q *pop.Query, sub relation
 func (p *Persister) DeleteRelationTuples(ctx context.Context, rs ...*relationtuple.InternalRelationTuple) error {
 	return p.transaction(ctx, func(ctx context.Context, c *pop.Connection) error {
 		for _, r := range rs {
-			nID, err := p.GetNamespaceID(ctx, r.Namespace)
+			n, err := p.GetNamespaceByName(ctx, r.Namespace)
 			if err != nil {
 				return err
 			}
 
 			q := p.QueryWithNetwork(ctx).
-				Where("namespace_id = ?", nID).
+				Where("namespace_id = ?", n.ID).
 				Where("object = ?", r.Object).
 				Where("relation = ?", r.Relation)
 			if err := p.whereSubject(ctx, q, r.Subject); err != nil {
@@ -228,11 +228,11 @@ func (p *Persister) GetRelationTuples(ctx context.Context, query *relationtuple.
 	}
 
 	if query.Namespace != "" {
-		nID, err := p.GetNamespaceID(ctx, query.Namespace)
+		n, err := p.GetNamespaceByName(ctx, query.Namespace)
 		if err != nil {
 			return nil, "", err
 		}
-		sqlQuery.Where("namespace_id = ?", nID)
+		sqlQuery.Where("namespace_id = ?", n.ID)
 	}
 
 	var res relationTuples

@@ -1,9 +1,0 @@
-create_table("keto_namespace_ids") {
-    t.Column("nid", "uuid", {})
-    t.Column("id", "uuid", {})
-    t.Column("serial_id", "integer", {})
-
-    t.PrimaryKey("nid", "id")
-}
-
-add_index("keto_namespace_ids", ["nid", "serial_id"], {unique: true})

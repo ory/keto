@@ -55,7 +55,7 @@ func TestRESTHandler(t *testing.T) {
 		assert.Equal(t, http.StatusNotFound, resp.StatusCode)
 		body, err := io.ReadAll(resp.Body)
 		require.NoError(t, err)
-		assert.Contains(t, string(body), "unknown namespace")
+		assert.Contains(t, string(body), "Unknown namespace")
 	})
 
 	t.Run("case=returns expand tree", func(t *testing.T) {

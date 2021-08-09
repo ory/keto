@@ -1,1 +1,0 @@
-DROP TABLE "keto_namespace_ids";

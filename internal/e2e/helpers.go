@@ -58,7 +58,7 @@ func newInitializedReg(t testing.TB, dsn *dbx.DsnT) (context.Context, driver.Reg
 	nspaces := make([]*namespace.Namespace, 0)
 	addNamespaces := func(t *testing.T, nn ...*namespace.Namespace) {
 		for _, n := range nn {
-			n.ID = len(nspaces)
+			n.ID = int64(len(nspaces))
 			nspaces = append(nspaces, n)
 		}
 
