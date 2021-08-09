@@ -18,11 +18,15 @@ Config files can be formatted as JSON, YAML and TOML. Some configuration values
 support reloading without server restart. All configuration values can be set
 using environment variables, as documented below.
 
+:::warning Disclaimer
+
 This reference configuration documents all keys, also deprecated ones! It is a
 reference for all possible configuration values.
 
 If you are looking for an example configuration, it is better to try out the
 quickstart.
+
+:::
 
 To find out more about edge cases like setting string array values through
 environmental variables head to the
@@ -483,18 +487,20 @@ profiling: cpu
 
 ## Log ##
 #
-# Configure logging using the following options. Logging will always be sent to stdout and stderr.
+# Configure logging using the following options. Logs will always be sent to stdout and stderr.
 #
 log:
-  ## Format ##
+  ## Log Format ##
   #
-  # The log format can either be text or JSON.
+  # The output format of log messages.
   #
   # Default value: text
   #
   # One of:
-  # - text
   # - json
+  # - json_pretty
+  # - gelf
+  # - text
   #
   # Set this value using environment variables on
   # - Linux/macOS:
@@ -502,11 +508,13 @@ log:
   # - Windows Command Line (CMD):
   #    > set LOG_FORMAT=<value>
   #
-  format: text
+  format: json
 
   ## Leak Sensitive Log Values ##
   #
   # If set will leak sensitive values (e.g. emails) in the logs.
+  #
+  # Default value: false
   #
   # Set this value using environment variables on
   # - Linux/macOS:
@@ -518,7 +526,7 @@ log:
 
   ## Level ##
   #
-  # Debug enables stack traces on errors. Can also be set using environment variable LOG_LEVEL.
+  # The level of log entries to show. Debug enables stack traces on errors.
   #
   # Default value: info
   #
@@ -541,7 +549,7 @@ log:
 
 ## tracing ##
 #
-# ORY Hydra supports distributed tracing.
+# Configure distributed tracing.
 #
 tracing:
   ## service_name ##
@@ -549,7 +557,10 @@ tracing:
   # Specifies the service name to use on the tracer.
   #
   # Examples:
-  # - ORY Hydra
+  # - Ory Hydra
+  # - Ory Kratos
+  # - Ory Keto
+  # - Ory Oathkeeper
   #
   # Set this value using environment variables on
   # - Linux/macOS:
@@ -557,11 +568,31 @@ tracing:
   # - Windows Command Line (CMD):
   #    > set TRACING_SERVICE_NAME=<value>
   #
-  service_name: ORY Hydra
+  service_name: Ory Hydra
 
   ## providers ##
   #
   providers:
+    ## zipkin ##
+    #
+    # Configures the zipkin tracing backend.
+    #
+    # Examples:
+    # - server_url: http://localhost:9411/api/v2/spans
+    #
+    zipkin:
+      ## server_url ##
+      #
+      # The address of Zipkin server where spans should be sent to.
+      #
+      # Set this value using environment variables on
+      # - Linux/macOS:
+      #    $ export TRACING_PROVIDERS_ZIPKIN_SERVER_URL=<value>
+      # - Windows Command Line (CMD):
+      #    > set TRACING_PROVIDERS_ZIPKIN_SERVER_URL=<value>
+      #
+      server_url: http://localhost:9411/api/v2/spans
+
     ## jaeger ##
     #
     # Configures the jaeger tracing backend.
@@ -581,6 +612,20 @@ tracing:
       #    > set TRACING_PROVIDERS_JAEGER_PROPAGATION=<value>
       #
       propagation: jaeger
+
+      ## max_tag_value_length ##
+      #
+      # The value passed to the max tag value length that has been configured.
+      #
+      # Minimum value: 0
+      #
+      # Set this value using environment variables on
+      # - Linux/macOS:
+      #    $ export TRACING_PROVIDERS_JAEGER_MAX_TAG_VALUE_LENGTH=<value>
+      # - Windows Command Line (CMD):
+      #    > set TRACING_PROVIDERS_JAEGER_MAX_TAG_VALUE_LENGTH=<value>
+      #
+      max_tag_value_length: 0
 
       ## sampling ##
       #
@@ -637,13 +682,14 @@ tracing:
 
   ## provider ##
   #
-  # Set this to the tracing backend you wish to use. Currently supports jaeger. If omitted or empty, tracing will be disabled.
+  # Set this to the tracing backend you wish to use. Supports Jaeger, Zipkin DataDog, Elastic APM and Instana. If omitted or empty, tracing will be disabled. Use environment variables to configure DataDog (see https://docs.datadoghq.com/tracing/setup/go/#configuration).
   #
   # One of:
   # - jaeger
   # - zipkin
   # - datadog
   # - elastic-apm
+  # - instana
   #
   # Examples:
   # - jaeger

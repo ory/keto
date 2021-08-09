@@ -209,15 +209,14 @@ func (n *NamespaceWatcher) NamespaceFiles() []*NamespaceFile {
 }
 
 func GetParser(fn string) (Parser, error) {
-	knownFormats := stringsx.RegisteredCases{}
-	switch ext := filepath.Ext(fn); ext {
-	case knownFormats.AddCase(".yaml"), knownFormats.AddCase(".yml"):
+	switch ext := stringsx.SwitchExact(filepath.Ext(fn)); {
+	case ext.AddCase(".yaml"), ext.AddCase(".yml"):
 		return yaml.Unmarshal, nil
-	case knownFormats.AddCase(".json"):
+	case ext.AddCase(".json"):
 		return json.Unmarshal, nil
-	case knownFormats.AddCase(".toml"):
+	case ext.AddCase(".toml"):
 		return toml.Unmarshal, nil
 	default:
-		return nil, knownFormats.ToUnknownCaseErr(ext)
+		return nil, ext.ToUnknownCaseErr()
 	}
 }
