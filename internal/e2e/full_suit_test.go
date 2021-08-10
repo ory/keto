@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/ory/keto/internal/x/dbx"
+
 	"github.com/ory/herodot"
 
 	"github.com/ory/keto/internal/x"
@@ -16,13 +18,10 @@ import (
 	"github.com/ory/x/cmdx"
 
 	"github.com/ory/keto/cmd"
-	"github.com/ory/keto/internal/namespace"
 	"github.com/ory/keto/internal/relationtuple"
 )
 
 type (
-	// TODO add cases that use transact
-	// nolint:deadcode,unused
 	transactClient interface {
 		client
 		transactTuples(t require.TestingT, ins []*relationtuple.InternalRelationTuple, del []*relationtuple.InternalRelationTuple)
@@ -39,35 +38,16 @@ type (
 )
 
 func Test(t *testing.T) {
-	for _, dsn := range x.GetDSNs(t) {
+	for _, dsn := range dbx.GetDSNs(t, false) {
 		t.Run(fmt.Sprintf("dsn=%s", dsn.Name), func(t *testing.T) {
-			nspaces := []*namespace.Namespace{
-				{
-					Name: "dreams0",
-					ID:   0,
-				},
-				{
-					Name: "dreams1",
-					ID:   1,
-				},
-				{
-					Name: "dreams2",
-					ID:   2,
-				},
-				{
-					Name: "dreams3",
-					ID:   3,
-				},
-			}
-
-			ctx, reg := newInitializedReg(t, dsn, nspaces)
+			ctx, reg, addNamespace := newInitializedReg(t, dsn)
 
 			closeServer := startServer(ctx, t, reg)
 			defer closeServer()
 
 			// The test cases start here
-			// We execute every test with the GRPC client (using the client commands) and REST client
-			for ci, cl := range []client{
+			// We execute every test with all clients available
+			for _, cl := range []client{
 				&grpcClient{
 					readRemote:  reg.Config().ReadAPIListenOn(),
 					writeRemote: reg.Config().WriteAPIListenOn(),
@@ -87,7 +67,11 @@ func Test(t *testing.T) {
 					writeRemote: reg.Config().WriteAPIListenOn(),
 				},
 			} {
-				t.Run(fmt.Sprintf("client=%T", cl), runCases(cl, nspaces[ci:ci+1]))
+				t.Run(fmt.Sprintf("client=%T", cl), runCases(cl, addNamespace))
+
+				if tc, ok := cl.(transactClient); ok {
+					t.Run(fmt.Sprintf("transactClient=%T", cl), runTransactionCases(tc, addNamespace))
+				}
 			}
 		})
 	}

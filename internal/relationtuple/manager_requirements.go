@@ -44,10 +44,12 @@ func ManagerTest(t *testing.T, m Manager, addNamespace func(context.Context, *te
 			for _, tup := range tuples {
 				tupC := *tup
 
-				resp, nextPage, err := m.GetRelationTuples(context.Background(), (*RelationQuery)(&tupC))
-				require.NoError(t, err)
-				assert.Equal(t, "", nextPage)
-				assert.Equal(t, []*InternalRelationTuple{&tupC}, resp)
+				t.Run(fmt.Sprintf("subject_type=%T", tupC.Subject), func(t *testing.T) {
+					resp, nextPage, err := m.GetRelationTuples(context.Background(), (*RelationQuery)(&tupC))
+					require.NoError(t, err)
+					assert.Equal(t, "", nextPage)
+					assert.Equal(t, []*InternalRelationTuple{&tupC}, resp)
+				})
 			}
 		})
 
@@ -261,23 +263,38 @@ func ManagerTest(t *testing.T, m Manager, addNamespace func(context.Context, *te
 			nspace := t.Name()
 			addNamespace(context.Background(), t, nspace)
 
-			rt := &InternalRelationTuple{
-				Namespace: nspace,
-				Object:    "o to delete",
-				Relation:  "r to delete",
-				Subject:   &SubjectID{ID: "s to delete"},
+			for _, rt := range []*InternalRelationTuple{
+				{
+					Namespace: nspace,
+					Object:    "o to delete",
+					Relation:  "r to delete",
+					Subject:   &SubjectID{ID: "s to delete"},
+				},
+				{
+					Namespace: nspace,
+					Object:    "o to delete",
+					Relation:  "r to delete",
+					Subject: &SubjectSet{
+						Namespace: nspace,
+						Object:    "o2",
+						Relation:  "r2",
+					},
+				},
+			} {
+				t.Run(fmt.Sprintf("subject_type=%T", rt.Subject), func(t *testing.T) {
+					require.NoError(t, m.WriteRelationTuples(context.Background(), rt))
+
+					res, _, err := m.GetRelationTuples(context.Background(), (*RelationQuery)(rt))
+					require.NoError(t, err)
+					assert.Equal(t, []*InternalRelationTuple{rt}, res)
+
+					require.NoError(t, m.DeleteRelationTuples(context.Background(), rt))
+
+					res, _, err = m.GetRelationTuples(context.Background(), (*RelationQuery)(rt))
+					require.NoError(t, err)
+					assert.Len(t, res, 0)
+				})
 			}
-			require.NoError(t, m.WriteRelationTuples(context.Background(), rt))
-
-			res, _, err := m.GetRelationTuples(context.Background(), (*RelationQuery)(rt))
-			require.NoError(t, err)
-			assert.Equal(t, []*InternalRelationTuple{rt}, res)
-
-			require.NoError(t, m.DeleteRelationTuples(context.Background(), rt))
-
-			res, _, err = m.GetRelationTuples(context.Background(), (*RelationQuery)(rt))
-			require.NoError(t, err)
-			assert.Len(t, res, 0)
 		})
 
 		t.Run("case=deletes only one tuple", func(t *testing.T) {
@@ -299,7 +316,9 @@ func ManagerTest(t *testing.T, m Manager, addNamespace func(context.Context, *te
 				Namespace: nspace,
 			})
 			require.NoError(t, err)
-			assert.Equal(t, rs, res)
+			for _, rt := range rs {
+				assert.Contains(t, res, rt)
+			}
 
 			require.NoError(t, m.DeleteRelationTuples(context.Background(), rs[0], rs[2]))
 
@@ -308,6 +327,36 @@ func ManagerTest(t *testing.T, m Manager, addNamespace func(context.Context, *te
 			})
 			require.NoError(t, err)
 			assert.Equal(t, []*InternalRelationTuple{rs[1], rs[3]}, res)
+		})
+
+		t.Run("case=tuple and subject namespace differ", func(t *testing.T) {
+			ctx := context.Background()
+
+			n0, n1 := t.Name()+"0", t.Name()+"1"
+			addNamespace(ctx, t, n0)
+			addNamespace(ctx, t, n1)
+
+			rt := &InternalRelationTuple{
+				Namespace: n0,
+				Object:    "o",
+				Relation:  "r",
+				Subject: &SubjectSet{
+					Namespace: n1,
+					Object:    "o",
+					Relation:  "r",
+				},
+			}
+			require.NoError(t, m.WriteRelationTuples(ctx, rt))
+
+			actual, _, err := m.GetRelationTuples(ctx, &RelationQuery{Namespace: n0})
+			require.NoError(t, err)
+			assert.Equal(t, []*InternalRelationTuple{rt}, actual)
+
+			require.NoError(t, m.DeleteRelationTuples(ctx, rt))
+
+			actual, _, err = m.GetRelationTuples(ctx, &RelationQuery{Namespace: n0})
+			require.NoError(t, err)
+			assert.Len(t, actual, 0)
 		})
 	})
 
@@ -339,7 +388,10 @@ func ManagerTest(t *testing.T, m Manager, addNamespace func(context.Context, *te
 				Namespace: nspace,
 			})
 			require.NoError(t, err)
-			assert.Equal(t, []*InternalRelationTuple{rs[1], rs[2], rs[3]}, res)
+
+			for _, rt := range []*InternalRelationTuple{rs[1], rs[2], rs[3]} {
+				assert.Contains(t, res, rt)
+			}
 		})
 
 		t.Run("case=err rolls back all", func(t *testing.T) {

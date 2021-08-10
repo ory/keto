@@ -214,7 +214,7 @@
               "default": 4466,
               "title": "Port",
               "description": "The port to listen on.",
-              "minimum": 1,
+              "minimum": 0,
               "maximum": 65535
             },
             "host": {
@@ -245,7 +245,7 @@
               "default": 4467,
               "title": "Port",
               "description": "The port to listen on.",
-              "minimum": 1,
+              "minimum": 0,
               "maximum": 65535
             },
             "host": {

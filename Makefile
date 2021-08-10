@@ -6,7 +6,6 @@ export PWD := $(shell pwd)
 GO_DEPENDENCIES = github.com/go-swagger/go-swagger/cmd/swagger \
 				  golang.org/x/tools/cmd/goimports \
 				  github.com/mattn/goveralls \
-				  github.com/ory/cli \
 				  github.com/ory/go-acc \
 				  github.com/bufbuild/buf/cmd/buf \
 				  google.golang.org/protobuf/cmd/protoc-gen-go \
@@ -16,11 +15,15 @@ GO_DEPENDENCIES = github.com/go-swagger/go-swagger/cmd/swagger \
 
 define make-go-dependency
   # go install is responsible for not re-building when the code hasn't changed
-  .bin/$(notdir $1): go.mod go.sum Makefile
+  .bin/$(notdir $1): .bin/go.mod .bin/go.sum Makefile
 		cd .bin; GOBIN=$(PWD)/.bin/ go install $1
 endef
 $(foreach dep, $(GO_DEPENDENCIES), $(eval $(call make-go-dependency, $(dep))))
 $(call make-lint-dependency)
+
+.bin/ory: Makefile
+		bash <(curl https://raw.githubusercontent.com/ory/cli/master/install.sh) -b .bin v0.0.57
+		touch -a -m .bin/ory
 
 node_modules: package.json package-lock.json Makefile
 		npm ci
@@ -95,3 +98,11 @@ test-docs-samples:
 		npm i \
 		&& \
 		npm test
+
+.PHONY: migrations-render
+migrations-render: .bin/ory
+		ory dev pop migration render internal/persistence/sql/migrations/templates internal/persistence/sql/migrations/sql
+
+.PHONY: migrations-render-replace
+migrations-render-replace: .bin/ory
+		ory dev pop migration render -r internal/persistence/sql/migrations/templates internal/persistence/sql/migrations/sql

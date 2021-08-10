@@ -4,6 +4,16 @@
   "children": [
     {
       "type": "union",
+      "subject": "files:/photos/beach.jpg#owner",
+      "children": [
+        {
+          "type": "leaf",
+          "subject": "maureen"
+        }
+      ]
+    },
+    {
+      "type": "union",
       "subject": "directories:/photos#access",
       "children": [
         {
@@ -13,16 +23,6 @@
         {
           "type": "leaf",
           "subject": "laura"
-        }
-      ]
-    },
-    {
-      "type": "union",
-      "subject": "files:/photos/beach.jpg#owner",
-      "children": [
-        {
-          "type": "leaf",
-          "subject": "maureen"
         }
       ]
     }

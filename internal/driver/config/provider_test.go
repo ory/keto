@@ -15,7 +15,7 @@ import (
 )
 
 func TestKoanfNamespaceManager(t *testing.T) {
-	setup := func(t *testing.T) (*test.Hook, *Provider) {
+	setup := func(t *testing.T) (*test.Hook, *Config) {
 		hook := test.Hook{}
 		l := logrusx.New("test", "today", logrusx.WithHook(&hook))
 
@@ -28,7 +28,7 @@ func TestKoanfNamespaceManager(t *testing.T) {
 		return &hook, p
 	}
 
-	assertNamespaces := func(t *testing.T, p *Provider, nn ...*namespace.Namespace) {
+	assertNamespaces := func(t *testing.T, p *Config, nn ...*namespace.Namespace) {
 		nm, err := p.NamespaceManager()
 		require.NoError(t, err)
 

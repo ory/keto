@@ -9,6 +9,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/ory/keto/internal/driver/config"
+
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
@@ -25,7 +27,8 @@ func TestWriteHandlers(t *testing.T) {
 	wr := &x.WriteRouter{Router: r}
 	rr := &x.ReadRouter{Router: r}
 	nspace := &namespace.Namespace{Name: "write handler test"}
-	reg := driver.NewMemoryTestRegistry(t, []*namespace.Namespace{nspace})
+	reg := driver.NewSqliteTestRegistry(t, false)
+	require.NoError(t, reg.Config().Set(config.KeyNamespaces, []*namespace.Namespace{nspace}))
 	h := relationtuple.NewHandler(reg)
 	h.RegisterWriteRoutes(wr)
 	h.RegisterReadRoutes(rr)

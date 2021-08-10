@@ -20,12 +20,12 @@ func newStatusCmd() *cobra.Command {
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			ctx := cmd.Context()
 
-			reg, err := driver.NewDefaultRegistry(ctx, cmd.Flags())
+			reg, err := driver.NewDefaultRegistry(ctx, cmd.Flags(), true)
 			if err != nil {
 				return err
 			}
 
-			mb, err := reg.Migrator().MigrationBox(ctx)
+			mb, err := reg.MigrationBox()
 			if err != nil {
 				return err
 			}

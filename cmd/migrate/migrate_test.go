@@ -3,9 +3,12 @@ package migrate
 import (
 	"bytes"
 	"context"
-	"regexp"
 	"strings"
 	"testing"
+
+	"github.com/ory/x/dbal"
+
+	"github.com/ory/keto/internal/x/dbx"
 
 	"github.com/ory/x/cmdx"
 	"github.com/ory/x/configx"
@@ -17,7 +20,6 @@ import (
 	"github.com/ory/keto/internal/driver"
 	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/namespace"
-	"github.com/ory/keto/internal/x"
 )
 
 func assertAllApplied(t *testing.T, status string) {
@@ -54,14 +56,14 @@ func TestMigrate(t *testing.T) {
 		}
 	}
 
-	for _, dsn := range x.GetDSNs(t) {
-		if dsn.Name == "memory" {
+	for _, dsn := range dbx.GetDSNs(t, false) {
+		if dbal.IsMemorySQLite(dsn.Conn) {
 			t.Run("dsn=memory", func(t *testing.T) {
 				t.Run("case=auto migrates", func(t *testing.T) {
 					hook := &test.Hook{}
 					ctx := context.WithValue(context.Background(), driver.LogrusHookContextKey, hook)
 
-					cf := x.ConfigFile(t, map[string]interface{}{
+					cf := dbx.ConfigFile(t, map[string]interface{}{
 						config.KeyDSN:        dsn.Conn,
 						config.KeyNamespaces: nspaces,
 						"log.level":          "debug",
@@ -78,7 +80,7 @@ func TestMigrate(t *testing.T) {
 				hook := &test.Hook{}
 				ctx := context.WithValue(context.Background(), driver.LogrusHookContextKey, hook)
 
-				cf := x.ConfigFile(t, map[string]interface{}{
+				cf := dbx.ConfigFile(t, map[string]interface{}{
 					config.KeyDSN:        dsn.Conn,
 					config.KeyNamespaces: nspaces,
 					"log.level":          "debug",
@@ -124,25 +126,6 @@ func TestMigrate(t *testing.T) {
 
 					assertNoneApplied(t, parts[0])
 					assertAllApplied(t, parts[1])
-				})
-
-				t.Run("case=applies namespace migrations on flag", func(t *testing.T) {
-					out := cmd.ExecNoErr(t, "up", "--"+FlagYes, "--"+FlagAllNamespace)
-
-					t.Cleanup(func() {
-						// migrate all down
-						t.Log(cmd.ExecNoErr(t, "down", "0", "--"+FlagYes))
-					})
-
-					parts := regexp.MustCompile("(?s)Current status:(.*)Successfully applied all migrations(.*)Going to migrate namespaces(.*)Successfully applied all migrations(.*)Current status(.*)Successfully applied all migrations(.*)").FindStringSubmatch(out)
-					require.Len(t, parts, 7)
-
-					assertNoneApplied(t, parts[1])
-					assertAllApplied(t, parts[2])
-					assertNoneApplied(t, parts[3])
-					assertAllApplied(t, parts[4])
-					assertNoneApplied(t, parts[5])
-					assertAllApplied(t, parts[6])
 				})
 			})
 		}

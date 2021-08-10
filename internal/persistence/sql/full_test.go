@@ -1,67 +1,70 @@
-package sql
+package sql_test
 
 import (
 	"context"
 	"fmt"
 	"testing"
 
-	"github.com/sirupsen/logrus"
+	"github.com/gofrs/uuid"
 
-	"github.com/ory/x/logrusx"
+	"github.com/ory/keto/internal/x/dbx"
+
+	"github.com/ory/keto/internal/driver"
+	"github.com/ory/keto/internal/persistence/sql"
+
 	"github.com/sirupsen/logrus/hooks/test"
 	"github.com/stretchr/testify/require"
 
 	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/namespace"
 	"github.com/ory/keto/internal/relationtuple"
-	"github.com/ory/keto/internal/x"
 )
 
 func TestPersister(t *testing.T) {
-	setup := func(t *testing.T, dsn *x.DsnT) (p *Persister, hook *test.Hook) {
-		hook = &test.Hook{}
-		lx := logrusx.New("", "", logrusx.WithHook(hook), logrusx.ForceLevel(logrus.TraceLevel))
+	setup := func(t *testing.T, dsn *dbx.DsnT) (p *sql.Persister, r *driver.RegistryDefault, hook *test.Hook) {
+		r = driver.NewTestRegistry(t, dsn)
 
-		p, err := NewPersister(dsn.Conn, lx, config.NewMemoryNamespaceManager(), nil)
+		p, err := sql.NewPersister(r, uuid.Must(uuid.NewV4()))
 		require.NoError(t, err)
 
-		mb, err := p.MigrationBox(context.Background())
-		require.NoError(t, err)
-		require.NoError(t, mb.Up(context.Background()))
+		require.NoError(t, r.MigrateUp(context.Background()))
 
 		t.Cleanup(func() {
-			require.NoError(t, mb.Down(context.Background(), 0))
+			require.NoError(t, r.MigrateDown(context.Background()))
 		})
 
 		return
 	}
 
-	addNamespace := func(p *Persister, nspaces []*namespace.Namespace) func(context.Context, *testing.T, string) {
+	addNamespace := func(r driver.Registry, nspaces []*namespace.Namespace) func(context.Context, *testing.T, string) {
 		return func(ctx context.Context, t *testing.T, name string) {
 			n := &namespace.Namespace{
 				Name: name,
-				ID:   len(nspaces),
+				ID:   int32(len(nspaces)),
 			}
 			nspaces = append(nspaces, n)
 
-			p.namespaces = config.NewMemoryNamespaceManager(nspaces...)
-			mb, err := p.NamespaceMigrationBox(context.Background(), n)
-			require.NoError(t, err)
-			require.NoError(t, mb.Up(context.Background()))
-
-			t.Cleanup(func() {
-				require.NoError(t, mb.Down(context.Background(), 0))
-			})
+			require.NoError(t, r.Config().Set(config.KeyNamespaces, nspaces))
 		}
 	}
 
-	for _, dsn := range x.GetDSNs(t) {
+	for _, dsn := range dbx.GetDSNs(t, false) {
 		t.Run(fmt.Sprintf("dsn=%s", dsn.Name), func(t *testing.T) {
-			var nspaces []*namespace.Namespace
-			p, _ := setup(t, dsn)
-
 			t.Run("relationtuple.ManagerTest", func(t *testing.T) {
-				relationtuple.ManagerTest(t, p, addNamespace(p, nspaces))
+				var nspaces []*namespace.Namespace
+				p, r, _ := setup(t, dsn)
+
+				relationtuple.ManagerTest(t, p, addNamespace(r, nspaces))
+			})
+
+			t.Run("relationtuple.IsolationTest", func(t *testing.T) {
+				var nspaces []*namespace.Namespace
+				p0, r, _ := setup(t, dsn)
+				p1, err := sql.NewPersister(r, uuid.Must(uuid.NewV4()))
+				require.NoError(t, err)
+
+				// same registry, but different persisters only differing in the network ID
+				relationtuple.IsolationTest(t, p0, p1, addNamespace(r, nspaces))
 			})
 		})
 	}

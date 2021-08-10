@@ -25,22 +25,22 @@ for suite in */ ; do
 
     for main in "$suite"/*/main.go; do
         echo "Running $main"
-        diff <(go run -tags docscodesamples "./$main" 2>&1) "$(dirname "$main")/expected_output.txt"
+        diff -U 100000 <(go run -tags docscodesamples "./$main" 2>&1) "$(dirname "$main")/expected_output.txt"
     done
 
     for index in "$suite"/*/index.js; do
         echo "Running $index"
-        diff <(node "$index" 2>&1) "$(dirname "$index")/expected_output.txt"
+        diff -U 100000 <(node "$index" 2>&1) "$(dirname "$index")/expected_output.txt"
     done
 
     for tc in "$suite"/*/curl.sh; do
         echo "Running $tc"
-        diff <("$tc" 2>&1) "$(dirname "$tc")/expected_output.txt"
+        diff -U 100000 <("$tc" 2>&1) "$(dirname "$tc")/expected_output.txt"
     done
 
     for tc in "$suite"/*/cli.sh; do
         echo "Running $tc"
-        diff <("$tc" 2>&1) "$(dirname "$tc")/expected_output.txt"
+        diff -U 100000 <("$tc" 2>&1) "$(dirname "$tc")/expected_output.txt"
     done
 
     kill "$keto_server_pid"

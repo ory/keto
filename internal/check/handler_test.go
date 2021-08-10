@@ -8,6 +8,8 @@ import (
 	"net/url"
 	"testing"
 
+	"github.com/ory/keto/internal/driver/config"
+
 	"github.com/julienschmidt/httprouter"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -41,7 +43,8 @@ func TestRESTHandler(t *testing.T) {
 		Name: "check handler",
 	}}
 
-	reg := driver.NewMemoryTestRegistry(t, nspaces)
+	reg := driver.NewSqliteTestRegistry(t, false)
+	require.NoError(t, reg.Config().Set(config.KeyNamespaces, nspaces))
 	h := check.NewHandler(reg)
 	r := httprouter.New()
 	h.RegisterReadRoutes(&x.ReadRouter{Router: r})
@@ -64,7 +67,7 @@ func TestRESTHandler(t *testing.T) {
 		assert.Equal(t, http.StatusBadRequest, resp.StatusCode)
 		body, err := io.ReadAll(resp.Body)
 		require.NoError(t, err)
-		assert.Contains(t, string(body), "subject has to be specified")
+		assert.Contains(t, string(body), "Subject has to be specified")
 	})
 
 	t.Run("case=returns denied on unknown namespace", func(t *testing.T) {
