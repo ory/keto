@@ -20,11 +20,11 @@ type (
 		// An ID field is required to make pop happy. The actual ID is a composite primary key.
 		ID                    uuid.UUID      `db:"shard_id"`
 		NetworkID             uuid.UUID      `db:"nid"`
-		NamespaceID           int64          `db:"namespace_id"`
+		NamespaceID           int32          `db:"namespace_id"`
 		Object                string         `db:"object"`
 		Relation              string         `db:"relation"`
 		SubjectID             sql.NullString `db:"subject_id"`
-		SubjectSetNamespaceID sql.NullInt64  `db:"subject_set_namespace_id"`
+		SubjectSetNamespaceID sql.NullInt32  `db:"subject_set_namespace_id"`
 		SubjectSetObject      sql.NullString `db:"subject_set_object"`
 		SubjectSetRelation    sql.NullString `db:"subject_set_relation"`
 		CommitTime            time.Time      `db:"commit_time"`
@@ -61,7 +61,7 @@ func (r *RelationTuple) toInternal(ctx context.Context, nm namespace.Manager, p 
 			ID: r.SubjectID.String,
 		}
 	} else {
-		n, err := p.GetNamespaceByID(ctx, r.SubjectSetNamespaceID.Int64)
+		n, err := p.GetNamespaceByID(ctx, r.SubjectSetNamespaceID.Int32)
 		if err != nil {
 			return nil, err
 		}
@@ -86,7 +86,7 @@ func (r *RelationTuple) insertSubject(ctx context.Context, p *Persister, s relat
 			String: st.ID,
 			Valid:  true,
 		}
-		r.SubjectSetNamespaceID = sql.NullInt64{}
+		r.SubjectSetNamespaceID = sql.NullInt32{}
 		r.SubjectSetObject = sql.NullString{}
 		r.SubjectSetRelation = sql.NullString{}
 	case *relationtuple.SubjectSet:
@@ -96,8 +96,8 @@ func (r *RelationTuple) insertSubject(ctx context.Context, p *Persister, s relat
 		}
 
 		r.SubjectID = sql.NullString{}
-		r.SubjectSetNamespaceID = sql.NullInt64{
-			Int64: n.ID,
+		r.SubjectSetNamespaceID = sql.NullInt32{
+			Int32: n.ID,
 			Valid: true,
 		}
 		r.SubjectSetObject = sql.NullString{

@@ -40,7 +40,7 @@ func TestPersister(t *testing.T) {
 		return func(ctx context.Context, t *testing.T, name string) {
 			n := &namespace.Namespace{
 				Name: name,
-				ID:   int64(len(nspaces)),
+				ID:   int32(len(nspaces)),
 			}
 			nspaces = append(nspaces, n)
 

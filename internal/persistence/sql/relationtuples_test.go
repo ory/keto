@@ -22,7 +22,7 @@ func rt(setSID, setNID, setO, setR bool) *sql.RelationTuple {
 		SubjectID: stdSql.NullString{
 			Valid: setSID,
 		},
-		SubjectSetNamespaceID: stdSql.NullInt64{
+		SubjectSetNamespaceID: stdSql.NullInt32{
 			Valid: setNID,
 		},
 		SubjectSetObject: stdSql.NullString{

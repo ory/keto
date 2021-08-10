@@ -14,7 +14,7 @@ func (p *Persister) GetNamespaceByName(ctx context.Context, name string) (*names
 	return nm.GetNamespaceByName(ctx, name)
 }
 
-func (p *Persister) GetNamespaceByID(ctx context.Context, id int64) (*namespace.Namespace, error) {
+func (p *Persister) GetNamespaceByID(ctx context.Context, id int32) (*namespace.Namespace, error) {
 	nm, err := p.d.Config().NamespaceManager()
 	if err != nil {
 		return nil, err

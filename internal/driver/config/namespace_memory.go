@@ -36,7 +36,7 @@ func (s *memoryNamespaceManager) GetNamespaceByName(_ context.Context, name stri
 	return nil, errors.WithStack(herodot.ErrNotFound.WithReasonf("Unknown namespace with name %s.", name))
 }
 
-func (s *memoryNamespaceManager) GetNamespaceByConfigID(_ context.Context, id int64) (*namespace.Namespace, error) {
+func (s *memoryNamespaceManager) GetNamespaceByConfigID(_ context.Context, id int32) (*namespace.Namespace, error) {
 	for _, n := range *s {
 		if n.ID == id {
 			return n, nil
