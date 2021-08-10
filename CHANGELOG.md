@@ -3,8 +3,9 @@
 
 **Table of Contents**
 
-- [Unreleased (2021-07-13)](#unreleased-2021-07-13)
+- [0.0.0 (2021-08-09)](#000-2021-08-09)
   - [Bug Fixes](#bug-fixes)
+  - [Chores](#chores)
   - [Documentation](#documentation)
   - [Features](#features)
   - [Tests](#tests)
@@ -25,10 +26,10 @@
   - [Tests](#tests-1)
 - [0.5.6-alpha.1 (2020-05-28)](#056-alpha1-2020-05-28)
   - [Bug Fixes](#bug-fixes-3)
-  - [Chores](#chores)
+  - [Chores](#chores-1)
 - [0.5.5-alpha.1 (2020-05-28)](#055-alpha1-2020-05-28)
   - [Bug Fixes](#bug-fixes-4)
-  - [Chores](#chores-1)
+  - [Chores](#chores-2)
   - [Documentation](#documentation-3)
 - [0.5.4-alpha.1 (2020-04-07)](#054-alpha1-2020-04-07)
   - [Bug Fixes](#bug-fixes-5)
@@ -37,7 +38,7 @@
   - [Code Refactoring](#code-refactoring-1)
   - [Documentation](#documentation-4)
 - [0.5.3-alpha.1 (2020-04-03)](#053-alpha1-2020-04-03)
-  - [Chores](#chores-2)
+  - [Chores](#chores-3)
 - [0.5.2 (2020-04-02)](#052-2020-04-02)
   - [Documentation](#documentation-5)
 - [0.5.0 (2020-04-02)](#050-2020-04-02)
@@ -96,7 +97,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [Unreleased](https://github.com/ory/keto/compare/v0.6.0-alpha.3...8b1880287c2cda8dc9de1eb646d69903c6a95aa2) (2021-07-13)
+# [0.0.0](https://github.com/ory/keto/compare/v0.6.0-alpha.3...v0.0.0) (2021-08-09)
 
 ### Bug Fixes
 
@@ -125,15 +126,30 @@
   + import acl from '@ory/keto-grpc-client/ory/keto/acl/v1alpha1/acl_pb.js'
   ```
 
+- Partially reference upstream schemas
+  ([#674](https://github.com/ory/keto/issues/674))
+  ([e49e16c](https://github.com/ory/keto/commit/e49e16c02efc4ea5b12182447409d1a5e93b489d)),
+  closes [#662](https://github.com/ory/keto/issues/662):
+
+  This change significantly improves and the config schema. Parts will now be
+  taken from upstream to ensure a more up-to-date schema.
+
 - Update docker-compose.yml version
   ([#595](https://github.com/ory/keto/issues/595))
   ([7fa4dca](https://github.com/ory/keto/commit/7fa4dca4182a1fa024f9cef0a04163f2cbd882aa)),
   closes [#549](https://github.com/ory/keto/issues/549)
 
+### Chores
+
+- Update repository templates
+  ([f53d3eb](https://github.com/ory/keto/commit/f53d3eb70b3e18f0d6ccc8c7cc399f366f5c79b9))
+
 ### Documentation
 
 - Add new redoc docsc ([#651](https://github.com/ory/keto/issues/651))
   ([435ae00](https://github.com/ory/keto/commit/435ae0048135902c99875d947b793288404cb532))
+- Fix build and gen:config ([#676](https://github.com/ory/keto/issues/676))
+  ([f128732](https://github.com/ory/keto/commit/f1287324207f89a743942a45d44d34a928ba8063))
 - Fix erroneous sidebar commit
   ([5cf2b4c](https://github.com/ory/keto/commit/5cf2b4c2e50ad55b62c6d240300aa279ffd11885))
 - Fix example not following best practice
