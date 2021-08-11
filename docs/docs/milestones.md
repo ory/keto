@@ -309,9 +309,6 @@ Blocks milestones or other issues or pulls.
 - [ ] Namespace configuration
       ([keto#303](https://github.com/ory/keto/issues/303)) -
       [@Patrik](https://github.com/zepatrik)
-- [ ] Use fizz migrations to generate SQL migrations
-      ([keto#448](https://github.com/ory/keto/issues/448)) -
-      [@Patrik](https://github.com/zepatrik)
 - [ ] Require relations to be defined in the namespace config
       ([keto#509](https://github.com/ory/keto/issues/509)) -
       [@Patrik](https://github.com/zepatrik)
@@ -329,6 +326,9 @@ Blocks milestones or other issues or pulls.
       [@Robin Brämer](https://github.com/robinbraemer)
 - [x] Listing relation tuples where none match cause SQL error
       ([keto#439](https://github.com/ory/keto/issues/439)) -
+      [@Patrik](https://github.com/zepatrik)
+- [x] Use fizz migrations to generate SQL migrations
+      ([keto#448](https://github.com/ory/keto/issues/448)) -
       [@Patrik](https://github.com/zepatrik)
 
 #### Pull Requests
