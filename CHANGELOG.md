@@ -3,9 +3,10 @@
 
 **Table of Contents**
 
-- [0.0.0 (2021-08-09)](#000-2021-08-09)
+- [0.0.0 (2021-08-29)](#000-2021-08-29)
   - [Bug Fixes](#bug-fixes)
   - [Chores](#chores)
+  - [Code Refactoring](#code-refactoring)
   - [Documentation](#documentation)
   - [Features](#features)
   - [Tests](#tests)
@@ -20,7 +21,7 @@
   - [Bug Fixes](#bug-fixes-2)
   - [Build System](#build-system)
   - [Code Generation](#code-generation-2)
-  - [Code Refactoring](#code-refactoring)
+  - [Code Refactoring](#code-refactoring-1)
   - [Documentation](#documentation-2)
   - [Features](#features-2)
   - [Tests](#tests-1)
@@ -35,7 +36,7 @@
   - [Bug Fixes](#bug-fixes-5)
 - [0.5.3-alpha.3 (2020-04-06)](#053-alpha3-2020-04-06)
   - [Code Generation](#code-generation-3)
-  - [Code Refactoring](#code-refactoring-1)
+  - [Code Refactoring](#code-refactoring-2)
   - [Documentation](#documentation-4)
 - [0.5.3-alpha.1 (2020-04-03)](#053-alpha1-2020-04-03)
   - [Chores](#chores-3)
@@ -97,7 +98,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.6.0-alpha.3...v0.0.0) (2021-08-09)
+# [0.0.0](https://github.com/ory/keto/compare/v0.6.0-alpha.3...v0.0.0) (2021-08-29)
 
 ### Bug Fixes
 
@@ -143,6 +144,16 @@
 
 - Update repository templates
   ([f53d3eb](https://github.com/ory/keto/commit/f53d3eb70b3e18f0d6ccc8c7cc399f366f5c79b9))
+
+### Code Refactoring
+
+- Persistence table structure ([#638](https://github.com/ory/keto/issues/638))
+  ([d02b818](https://github.com/ory/keto/commit/d02b818225783991700a7c285b9570b06dba14ad)):
+
+  This big refactoring greatly reduces operation complexity and paves the way
+  for upcoming performance improvements. From now on the relation tuples from
+  all namespaces are stored in the same table, instead of having tables per
+  namespace. A migration path will be provided separately.
 
 ### Documentation
 
