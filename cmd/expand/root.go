@@ -60,6 +60,9 @@ func NewExpandCmd() *cobra.Command {
 			cmdx.PrintJSONAble(cmd, tree)
 			switch flagx.MustGetString(cmd, cmdx.FlagFormat) {
 			case string(cmdx.FormatDefault), "":
+				if tree == nil && !flagx.MustGetBool(cmd, cmdx.FlagQuiet) {
+					_, _ = fmt.Fprint(cmd.OutOrStdout(), "Got an empty tree. This probably means that the requested relation tuple is not present in Keto.")
+				}
 				_, _ = fmt.Fprintln(cmd.OutOrStdout())
 			}
 			return nil
@@ -68,6 +71,7 @@ func NewExpandCmd() *cobra.Command {
 
 	client.RegisterRemoteURLFlags(cmd.Flags())
 	cmdx.RegisterJSONFormatFlags(cmd.Flags())
+	cmdx.RegisterNoiseFlags(cmd.Flags())
 	cmd.Flags().Int32P(FlagMaxDepth, "d", 100, "maximum depth of the tree")
 
 	return cmd
