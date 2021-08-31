@@ -61,7 +61,7 @@ func NewExpandCmd() *cobra.Command {
 			switch flagx.MustGetString(cmd, cmdx.FlagFormat) {
 			case string(cmdx.FormatDefault), "":
 				if tree == nil && !flagx.MustGetBool(cmd, cmdx.FlagQuiet) {
-					_, _ = fmt.Fprintln(cmd.OutOrStdout(), "Got an empty tree. This probably means that the requested relation tuple is not present in Keto.")
+					_, _ = fmt.Fprint(cmd.OutOrStdout(), "Got an empty tree. This probably means that the requested relation tuple is not present in Keto.")
 				}
 				_, _ = fmt.Fprintln(cmd.OutOrStdout())
 			}
