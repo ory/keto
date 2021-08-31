@@ -105,6 +105,9 @@
 - Add missing tracers ([#600](https://github.com/ory/keto/issues/600))
   ([aa263be](https://github.com/ory/keto/commit/aa263be9a7830e3c769d7698d36137555ca230bc)),
   closes [#593](https://github.com/ory/keto/issues/593)
+- **cli:** Panic when printing empty expand trees
+  ([#686](https://github.com/ory/keto/issues/686))
+  ([7956dec](https://github.com/ory/keto/commit/7956decb995d5906c4a4632ebd500acb44b4a7ad))
 - Handle relation tuple cycles in expand and check engine
   ([#623](https://github.com/ory/keto/issues/623))
   ([8e30119](https://github.com/ory/keto/commit/8e301198298858fd7f387ef63a7abf4fa55ea240))
