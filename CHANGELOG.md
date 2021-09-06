@@ -3,7 +3,7 @@
 
 **Table of Contents**
 
-- [0.0.0 (2021-08-31)](#000-2021-08-31)
+- [0.0.0 (2021-09-06)](#000-2021-09-06)
   - [Bug Fixes](#bug-fixes)
   - [Chores](#chores)
   - [Code Refactoring](#code-refactoring)
@@ -98,7 +98,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.6.0-alpha.3...v0.0.0) (2021-08-31)
+# [0.0.0](https://github.com/ory/keto/compare/v0.6.0-alpha.3...v0.0.0) (2021-09-06)
 
 ### Bug Fixes
 
