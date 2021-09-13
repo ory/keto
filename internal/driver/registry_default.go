@@ -4,16 +4,11 @@ import (
 	"context"
 	"net/http"
 	"sync"
-	"time"
 
 	"github.com/ory/x/networkx"
 
-	"github.com/cenkalti/backoff/v3"
 	"github.com/gobuffalo/pop/v5"
-	"github.com/luna-duclos/instrumentedsql"
-	"github.com/luna-duclos/instrumentedsql/opentracing"
 	"github.com/ory/x/popx"
-	"github.com/ory/x/sqlcon"
 	"github.com/pkg/errors"
 
 	"github.com/ory/x/dbal"
@@ -153,6 +148,13 @@ func (r *RegistryDefault) RelationTupleManager() relationtuple.Manager {
 	return r.p
 }
 
+func (r *RegistryDefault) Persister() persistence.Persister {
+	if r.p == nil {
+		panic("no persister, but expected to have one")
+	}
+	return r.p
+}
+
 func (r *RegistryDefault) PermissionEngine() *check.Engine {
 	if r.ce == nil {
 		r.ce = check.NewEngine(r)
@@ -199,58 +201,6 @@ func (r *RegistryDefault) MigrateDown(ctx context.Context) error {
 		return err
 	}
 	return mb.Up(ctx)
-}
-
-func (r *RegistryDefault) PopConnection() (*pop.Connection, error) {
-	if r.conn == nil {
-		tracer := r.Tracer()
-
-		var opts []instrumentedsql.Opt
-		if tracer.IsLoaded() {
-			opts = []instrumentedsql.Opt{
-				instrumentedsql.WithTracer(opentracing.NewTracer(true)),
-				instrumentedsql.WithOmitArgs(),
-			}
-		}
-		pool, idlePool, connMaxLifetime, connMaxIdleTime, cleanedDSN := sqlcon.ParseConnectionOptions(r.Logger(), r.Config().DSN())
-		connDetails := &pop.ConnectionDetails{
-			URL:                       sqlcon.FinalizeDSN(r.Logger(), cleanedDSN),
-			IdlePool:                  idlePool,
-			ConnMaxLifetime:           connMaxLifetime,
-			ConnMaxIdleTime:           connMaxIdleTime,
-			Pool:                      pool,
-			UseInstrumentedDriver:     tracer != nil && tracer.IsLoaded(),
-			InstrumentedDriverOptions: opts,
-		}
-
-		bc := backoff.NewExponentialBackOff()
-		bc.MaxElapsedTime = time.Minute * 5
-		bc.Reset()
-
-		if err := backoff.Retry(func() (err error) {
-			conn, err := pop.NewConnection(connDetails)
-			if err != nil {
-				r.Logger().WithError(err).Error("Unable to connect to database, retrying.")
-				return errors.WithStack(err)
-			}
-
-			if err := conn.Open(); err != nil {
-				r.Logger().WithError(err).Error("Unable to open the database connection, retrying.")
-				return errors.WithStack(err)
-			}
-
-			if err := conn.Store.(interface{ Ping() error }).Ping(); err != nil {
-				r.Logger().WithError(err).Error("Unable to ping the database connection, retrying.")
-				return errors.WithStack(err)
-			}
-
-			r.conn = conn
-			return nil
-		}, bc); err != nil {
-			return nil, errors.WithStack(err)
-		}
-	}
-	return r.conn, nil
 }
 
 func (r *RegistryDefault) determineNetwork(ctx context.Context) (*networkx.Network, error) {

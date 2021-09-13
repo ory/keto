@@ -112,7 +112,7 @@ func (r *RelationTuple) insertSubject(ctx context.Context, p *Persister, s relat
 	return nil
 }
 
-func (r *RelationTuple) fromInternal(ctx context.Context, p *Persister, rt *relationtuple.InternalRelationTuple) error {
+func (r *RelationTuple) FromInternal(ctx context.Context, p *Persister, rt *relationtuple.InternalRelationTuple) error {
 	n, err := p.GetNamespaceByName(ctx, rt.Namespace)
 	if err != nil {
 		return err
@@ -125,7 +125,7 @@ func (r *RelationTuple) fromInternal(ctx context.Context, p *Persister, rt *rela
 	return r.insertSubject(ctx, p, rt.Subject)
 }
 
-func (p *Persister) insertRelationTuple(ctx context.Context, rel *relationtuple.InternalRelationTuple) error {
+func (p *Persister) InsertRelationTuple(ctx context.Context, rel *relationtuple.InternalRelationTuple) error {
 	if rel.Subject == nil {
 		return errors.New("subject is not allowed to be nil")
 	}
@@ -136,7 +136,7 @@ func (p *Persister) insertRelationTuple(ctx context.Context, rel *relationtuple.
 		ID:         uuid.Must(uuid.NewV4()),
 		CommitTime: time.Now(),
 	}
-	if err := rt.fromInternal(ctx, p, rel); err != nil {
+	if err := rt.FromInternal(ctx, p, rel); err != nil {
 		return err
 	}
 
@@ -176,7 +176,7 @@ func (p *Persister) whereSubject(ctx context.Context, q *pop.Query, sub relation
 }
 
 func (p *Persister) DeleteRelationTuples(ctx context.Context, rs ...*relationtuple.InternalRelationTuple) error {
-	return p.transaction(ctx, func(ctx context.Context, c *pop.Connection) error {
+	return p.Transaction(ctx, func(ctx context.Context, c *pop.Connection) error {
 		for _, r := range rs {
 			n, err := p.GetNamespaceByName(ctx, r.Namespace)
 			if err != nil {
@@ -258,9 +258,9 @@ func (p *Persister) GetRelationTuples(ctx context.Context, query *relationtuple.
 }
 
 func (p *Persister) WriteRelationTuples(ctx context.Context, rs ...*relationtuple.InternalRelationTuple) error {
-	return p.transaction(ctx, func(ctx context.Context, _ *pop.Connection) error {
+	return p.Transaction(ctx, func(ctx context.Context, _ *pop.Connection) error {
 		for _, r := range rs {
-			if err := p.insertRelationTuple(ctx, r); err != nil {
+			if err := p.InsertRelationTuple(ctx, r); err != nil {
 				return err
 			}
 		}
@@ -269,7 +269,7 @@ func (p *Persister) WriteRelationTuples(ctx context.Context, rs ...*relationtupl
 }
 
 func (p *Persister) TransactRelationTuples(ctx context.Context, ins []*relationtuple.InternalRelationTuple, del []*relationtuple.InternalRelationTuple) error {
-	return p.transaction(ctx, func(ctx context.Context, _ *pop.Connection) error {
+	return p.Transaction(ctx, func(ctx context.Context, _ *pop.Connection) error {
 		if err := p.WriteRelationTuples(ctx, ins...); err != nil {
 			return err
 		}
