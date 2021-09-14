@@ -1,0 +1,6 @@
+create_table("keto_namespace") {
+    t.Column("id", "int", { primary: true })
+    t.Column("schema_version", "int")
+
+    t.DisableTimestamps()
+}
