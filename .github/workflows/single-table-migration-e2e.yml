@@ -2,6 +2,9 @@ name: Run full e2e test of the migration to single table persister (see https://
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - feat/persistence-migration-path
 
 jobs:
   test-migration:
