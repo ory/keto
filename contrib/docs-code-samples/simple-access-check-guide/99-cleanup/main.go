@@ -1,3 +1,4 @@
+//go:build docscodesamples
 // +build docscodesamples
 
 package main

@@ -162,6 +162,10 @@ func TreeFromProto(t *acl.SubjectTree) (*Tree, error) {
 }
 
 func (t *Tree) String() string {
+	if t == nil {
+		return ""
+	}
+
 	sub := t.Subject.String()
 
 	if t.Type == Leaf {
