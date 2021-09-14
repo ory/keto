@@ -16,8 +16,16 @@ Migrate the database up
 
 ### Synopsis
 
-Migrate the database up. This does not affect namespaces. Use
-`keto namespace migrate up` for migrating namespaces.
+Run this command on a fresh SQL installation and when you upgrade Ory Keto to a
+new minor version.
+
+It is recommended to run this command close to the SQL instance (e.g. same
+subnet) instead of over the public internet. This decreases risk of failure and
+decreases time required.
+
+### WARNING
+
+Before running this command on an existing database, create a back up!
 
 ```
 keto migrate up [flags]

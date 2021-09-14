@@ -17,8 +17,7 @@ Migrate the database down
 ### Synopsis
 
 Migrate the database down a specific amount of steps. Pass 0 steps to fully
-migrate down. This does not affect namespaces. Use `keto namespace migrate down`
-for migrating namespaces.
+migrate down.
 
 ```
 keto migrate down &lt;steps&gt; [flags]
