@@ -3,7 +3,7 @@
 
 **Table of Contents**
 
-- [0.0.0 (2021-08-31)](#000-2021-08-31)
+- [0.0.0 (2021-09-10)](#000-2021-09-10)
   - [Bug Fixes](#bug-fixes)
   - [Chores](#chores)
   - [Code Refactoring](#code-refactoring)
@@ -98,13 +98,16 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.6.0-alpha.3...v0.0.0) (2021-08-31)
+# [0.0.0](https://github.com/ory/keto/compare/v0.6.0-alpha.3...v0.0.0) (2021-09-10)
 
 ### Bug Fixes
 
 - Add missing tracers ([#600](https://github.com/ory/keto/issues/600))
   ([aa263be](https://github.com/ory/keto/commit/aa263be9a7830e3c769d7698d36137555ca230bc)),
   closes [#593](https://github.com/ory/keto/issues/593)
+- **cli:** Panic when printing empty expand trees
+  ([#686](https://github.com/ory/keto/issues/686))
+  ([7956dec](https://github.com/ory/keto/commit/7956decb995d5906c4a4632ebd500acb44b4a7ad))
 - Handle relation tuple cycles in expand and check engine
   ([#623](https://github.com/ory/keto/issues/623))
   ([8e30119](https://github.com/ory/keto/commit/8e301198298858fd7f387ef63a7abf4fa55ea240))
