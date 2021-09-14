@@ -16,13 +16,10 @@ import (
 )
 
 const (
-	FlagYes          = "yes"
-	FlagAllNamespace = "all-namespaces"
+	FlagYes = "yes"
 )
 
 func newUpCmd() *cobra.Command {
-	var allNamespaces bool
-
 	cmd := &cobra.Command{
 		Use:   "up",
 		Short: "Migrate the database up",
@@ -51,7 +48,6 @@ func newUpCmd() *cobra.Command {
 	}
 
 	RegisterYesFlag(cmd.Flags())
-	cmd.Flags().BoolVar(&allNamespaces, FlagAllNamespace, false, "migrate all pending namespaces as well")
 
 	cmdx.RegisterFormatFlags(cmd.Flags())
 
