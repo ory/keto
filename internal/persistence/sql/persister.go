@@ -54,9 +54,6 @@ var (
 )
 
 func NewPersister(reg dependencies, nid uuid.UUID) (*Persister, error) {
-	//pop.SetLogger(reg.Logger().PopLogger)
-
-	pop.Debug = true
 	conn, err := reg.PopConnection()
 	if err != nil {
 		return nil, err
