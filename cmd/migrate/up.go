@@ -88,7 +88,7 @@ func BoxUp(cmd *cobra.Command, mb *popx.MigrationBox) error {
 	_, _ = fmt.Fprintln(cmd.OutOrStdout(), "Applying migrations...")
 
 	if err := mb.Up(cmd.Context()); err != nil {
-		_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "%sCould not apply migrations: %+v\n", err)
+		_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not apply migrations: %+v\n", err)
 		return cmdx.FailSilently(cmd)
 	}
 
