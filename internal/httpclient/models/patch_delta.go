@@ -7,10 +7,12 @@ package models
 
 import (
 	"context"
+	"encoding/json"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
+	"github.com/go-openapi/validate"
 )
 
 // PatchDelta patch delta
@@ -19,7 +21,8 @@ import (
 type PatchDelta struct {
 
 	// action
-	Action PatchAction `json:"action,omitempty"`
+	// Enum: [insert delete]
+	Action string `json:"action,omitempty"`
 
 	// relation tuple
 	RelationTuple *InternalRelationTuple `json:"relation_tuple,omitempty"`
@@ -43,15 +46,42 @@ func (m *PatchDelta) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
+var patchDeltaTypeActionPropEnum []interface{}
+
+func init() {
+	var res []string
+	if err := json.Unmarshal([]byte(`["insert","delete"]`), &res); err != nil {
+		panic(err)
+	}
+	for _, v := range res {
+		patchDeltaTypeActionPropEnum = append(patchDeltaTypeActionPropEnum, v)
+	}
+}
+
+const (
+
+	// PatchDeltaActionInsert captures enum value "insert"
+	PatchDeltaActionInsert string = "insert"
+
+	// PatchDeltaActionDelete captures enum value "delete"
+	PatchDeltaActionDelete string = "delete"
+)
+
+// prop value enum
+func (m *PatchDelta) validateActionEnum(path, location string, value string) error {
+	if err := validate.EnumCase(path, location, value, patchDeltaTypeActionPropEnum, true); err != nil {
+		return err
+	}
+	return nil
+}
+
 func (m *PatchDelta) validateAction(formats strfmt.Registry) error {
 	if swag.IsZero(m.Action) { // not required
 		return nil
 	}
 
-	if err := m.Action.Validate(formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
-			return ve.ValidateName("action")
-		}
+	// value enum
+	if err := m.validateActionEnum("action", "body", m.Action); err != nil {
 		return err
 	}
 
@@ -79,10 +109,6 @@ func (m *PatchDelta) validateRelationTuple(formats strfmt.Registry) error {
 func (m *PatchDelta) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
 
-	if err := m.contextValidateAction(ctx, formats); err != nil {
-		res = append(res, err)
-	}
-
 	if err := m.contextValidateRelationTuple(ctx, formats); err != nil {
 		res = append(res, err)
 	}
@@ -90,18 +116,6 @@ func (m *PatchDelta) ContextValidate(ctx context.Context, formats strfmt.Registr
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
-	return nil
-}
-
-func (m *PatchDelta) contextValidateAction(ctx context.Context, formats strfmt.Registry) error {
-
-	if err := m.Action.ContextValidate(ctx, formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
-			return ve.ValidateName("action")
-		}
-		return err
-	}
-
 	return nil
 }
 
