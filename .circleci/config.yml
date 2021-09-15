@@ -119,7 +119,9 @@ workflows:
             - validate
           filters:
             tags:
-              only: /.*/
+              # We have two types of tags: v0.0.0-foo.0 and proto/v0.0.0-foo.0
+              # This should only run for releases of Keto itself
+              only: /v.*/
             branches:
               only: master
       - docs/cli
@@ -132,7 +134,9 @@ workflows:
           swag-spec-ignore: internal/httpclient proto/ory/keto docker
           filters:
             tags:
-              only: /.*/
+              # We have two types of tags: v0.0.0-foo.0 and proto/v0.0.0-foo.0
+              # This should only run for releases of Keto itself
+              only: /v.*/
             branches:
               only: master
       -
@@ -154,7 +158,9 @@ workflows:
             - goreleaser/release
           filters:
             tags:
-              only: /.*/
+              # We have two types of tags: v0.0.0-foo.0 and proto/v0.0.0-foo.0
+              # This should only run for releases of Keto itself
+              only: /v.*/
             branches:
               ignore: /.*/
       - goreleaser/release:
@@ -166,14 +172,18 @@ workflows:
             branches:
               ignore: /.*/
             tags:
-              only: /.*/
+              # We have two types of tags: v0.0.0-foo.0 and proto/v0.0.0-foo.0
+              # This should only run for releases of Keto itself
+              only: /v.*/
       - goreleaser/render-version-schema:
           requires:
             - goreleaser/release
           schema-path: internal/driver/config/config.schema.json
           filters:
             tags:
-              only: /.*/
+              # We have two types of tags: v0.0.0-foo.0 and proto/v0.0.0-foo.0
+              # This should only run for releases of Keto itself
+              only: /v.*/
       - goreleaser/newsletter-draft:
           chimp-list: f605a41b53
           chimp-segment: 6479489
@@ -181,7 +191,9 @@ workflows:
             - goreleaser/release
           filters:
             tags:
-              only: /.*/
+              # We have two types of tags: v0.0.0-foo.0 and proto/v0.0.0-foo.0
+              # This should only run for releases of Keto itself
+              only: /v.*/
       - slack/approval-notification:
           message: Pending approval
           channel: release-automation
@@ -189,18 +201,24 @@ workflows:
             - goreleaser/newsletter-draft
           filters:
             tags:
-              only: /.*/
+              # We have two types of tags: v0.0.0-foo.0 and proto/v0.0.0-foo.0
+              # This should only run for releases of Keto itself
+              only: /v.*/
       - newsletter-approval:
           type: approval
           requires:
             - goreleaser/newsletter-draft
           filters:
             tags:
-              only: /.*/
+              # We have two types of tags: v0.0.0-foo.0 and proto/v0.0.0-foo.0
+              # This should only run for releases of Keto itself
+              only: /v.*/
       - goreleaser/newsletter-send:
           chimp-list: f605a41b53
           requires:
             - newsletter-approval
           filters:
             tags:
-              only: /.*/
+              # We have two types of tags: v0.0.0-foo.0 and proto/v0.0.0-foo.0
+              # This should only run for releases of Keto itself
+              only: /v.*/
