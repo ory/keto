@@ -21,8 +21,9 @@ repositories:
 
 - [Dart](https://pub.dev/packages/ory_keto_client)
 - [.NET](https://www.nuget.org/packages/Ory.Keto.Client/)
+- [Go gRPC](https://github.com/ory/keto/blob/master/proto/go.mod) (import using
+  `go get github.com/ory/keto/proto`)
 - [Go REST](https://github.com/ory/keto-client-go)
-- [Go gRPC](https://github.com/ory/keto/blob/master/proto/ory/keto/acl)
 - [Java](https://search.maven.org/artifact/sh.ory.keto/keto-client)
 - [PHP](https://packagist.org/packages/ory/keto-client)
 - [Python](https://pypi.org/project/ory-keto-client/)
