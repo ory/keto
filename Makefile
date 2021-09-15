@@ -49,9 +49,9 @@ docker:
 
 # Generates the SDKs
 .PHONY: sdk
-sdk: .bin/swagger .bin/cli
+sdk: .bin/swagger .bin/ory
 		swagger generate spec -m -o ./spec/api.json -x internal/httpclient -x proto/ory/keto -x docker
-		cli dev swagger sanitize ./spec/api.json
+		ory dev swagger sanitize ./spec/api.json
 		swagger flatten --with-flatten=remove-unused -o ./spec/api.json ./spec/api.json
 		swagger validate ./spec/api.json
 		rm -rf internal/httpclient
