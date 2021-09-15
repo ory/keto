@@ -26,9 +26,21 @@ func TestWriteHandlers(t *testing.T) {
 	r := httprouter.New()
 	wr := &x.WriteRouter{Router: r}
 	rr := &x.ReadRouter{Router: r}
-	nspace := &namespace.Namespace{Name: "write handler test"}
 	reg := driver.NewSqliteTestRegistry(t, false)
-	require.NoError(t, reg.Config().Set(config.KeyNamespaces, []*namespace.Namespace{nspace}))
+
+	var nspaces []*namespace.Namespace
+	addNamespace := func(t *testing.T) *namespace.Namespace {
+		n := &namespace.Namespace{
+			ID:   int32(len(nspaces)),
+			Name: t.Name(),
+		}
+		nspaces = append(nspaces, n)
+
+		require.NoError(t, reg.Config().Set(config.KeyNamespaces, nspaces))
+
+		return n
+	}
+
 	h := relationtuple.NewHandler(reg)
 	h.RegisterWriteRoutes(wr)
 	h.RegisterReadRoutes(rr)
@@ -46,6 +58,8 @@ func TestWriteHandlers(t *testing.T) {
 		}
 
 		t.Run("case=creates tuple", func(t *testing.T) {
+			nspace := addNamespace(t)
+
 			rt := &relationtuple.InternalRelationTuple{
 				Namespace: nspace.Name,
 				Object:    "obj",
@@ -86,10 +100,51 @@ func TestWriteHandlers(t *testing.T) {
 			resp := doCreate([]byte("foo"))
 			assert.Equal(t, http.StatusBadRequest, resp.StatusCode)
 		})
+
+		t.Run("case=special chars error on creation already", func(t *testing.T) {
+			nspace := addNamespace(t)
+
+			rts := []*relationtuple.InternalRelationTuple{
+				{
+					Namespace: nspace.Name,
+					Object:    "group:B",
+					Relation:  "member",
+					Subject: &relationtuple.SubjectSet{
+						Namespace: nspace.Name,
+						Object:    "group:A",
+						Relation:  "member",
+					},
+				},
+				{
+					Namespace: nspace.Name,
+					Object:    "@all",
+					Relation:  "member",
+					Subject:   &relationtuple.SubjectID{ID: "this:will#be interpreted:as a@subject set"},
+				},
+			}
+
+			for _, rt := range rts {
+				payload, err := json.Marshal(rt)
+				require.NoError(t, err)
+
+				resp := doCreate(payload)
+				assert.GreaterOrEqual(t, resp.StatusCode, http.StatusBadRequest)
+				assert.Less(t, resp.StatusCode, http.StatusInternalServerError)
+			}
+
+			actual, next, err := reg.RelationTupleManager().GetRelationTuples(context.Background(), &relationtuple.RelationQuery{
+				Namespace: nspace.Name,
+			})
+			require.NoError(t, err)
+			assert.Equal(t, "", next)
+			assert.Len(t, actual, 0)
+		})
 	})
 
 	t.Run("method=delete", func(t *testing.T) {
 		t.Run("case=deletes a tuple", func(t *testing.T) {
+			nspace := addNamespace(t)
+
 			rt := &relationtuple.InternalRelationTuple{
 				Namespace: nspace.Name,
 				Object:    "deleted obj",
@@ -113,6 +168,8 @@ func TestWriteHandlers(t *testing.T) {
 
 	t.Run("method=patch", func(t *testing.T) {
 		t.Run("case=create and delete", func(t *testing.T) {
+			nspace := addNamespace(t)
+
 			deltas := []*relationtuple.PatchDelta{
 				{
 					Action: relationtuple.ActionInsert,
@@ -152,6 +209,8 @@ func TestWriteHandlers(t *testing.T) {
 		})
 
 		t.Run("case=ignores rest on err", func(t *testing.T) {
+			nspace := addNamespace(t)
+
 			deltas := []*relationtuple.PatchDelta{
 				{
 					Action: relationtuple.ActionInsert,
