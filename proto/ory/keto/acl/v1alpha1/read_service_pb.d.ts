@@ -15,21 +15,16 @@ export class ListRelationTuplesRequest extends jspb.Message {
     getQuery(): ListRelationTuplesRequest.Query | undefined;
     setQuery(value?: ListRelationTuplesRequest.Query): ListRelationTuplesRequest;
 
-
     hasExpandMask(): boolean;
     clearExpandMask(): void;
     getExpandMask(): google_protobuf_field_mask_pb.FieldMask | undefined;
     setExpandMask(value?: google_protobuf_field_mask_pb.FieldMask): ListRelationTuplesRequest;
-
     getSnaptoken(): string;
     setSnaptoken(value: string): ListRelationTuplesRequest;
-
     getPageSize(): number;
     setPageSize(value: number): ListRelationTuplesRequest;
-
     getPageToken(): string;
     setPageToken(value: string): ListRelationTuplesRequest;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): ListRelationTuplesRequest.AsObject;
@@ -54,19 +49,15 @@ export namespace ListRelationTuplesRequest {
     export class Query extends jspb.Message { 
         getNamespace(): string;
         setNamespace(value: string): Query;
-
         getObject(): string;
         setObject(value: string): Query;
-
         getRelation(): string;
         setRelation(value: string): Query;
-
 
         hasSubject(): boolean;
         clearSubject(): void;
         getSubject(): ory_keto_acl_v1alpha1_acl_pb.Subject | undefined;
         setSubject(value?: ory_keto_acl_v1alpha1_acl_pb.Subject): Query;
-
 
         serializeBinary(): Uint8Array;
         toObject(includeInstance?: boolean): Query.AsObject;
@@ -94,10 +85,8 @@ export class ListRelationTuplesResponse extends jspb.Message {
     getRelationTuplesList(): Array<ory_keto_acl_v1alpha1_acl_pb.RelationTuple>;
     setRelationTuplesList(value: Array<ory_keto_acl_v1alpha1_acl_pb.RelationTuple>): ListRelationTuplesResponse;
     addRelationTuples(value?: ory_keto_acl_v1alpha1_acl_pb.RelationTuple, index?: number): ory_keto_acl_v1alpha1_acl_pb.RelationTuple;
-
     getNextPageToken(): string;
     setNextPageToken(value: string): ListRelationTuplesResponse;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): ListRelationTuplesResponse.AsObject;

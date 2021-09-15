@@ -13,13 +13,10 @@ export class ExpandRequest extends jspb.Message {
     clearSubject(): void;
     getSubject(): ory_keto_acl_v1alpha1_acl_pb.Subject | undefined;
     setSubject(value?: ory_keto_acl_v1alpha1_acl_pb.Subject): ExpandRequest;
-
     getMaxDepth(): number;
     setMaxDepth(value: number): ExpandRequest;
-
     getSnaptoken(): string;
     setSnaptoken(value: string): ExpandRequest;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): ExpandRequest.AsObject;
@@ -46,7 +43,6 @@ export class ExpandResponse extends jspb.Message {
     getTree(): SubjectTree | undefined;
     setTree(value?: SubjectTree): ExpandResponse;
 
-
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): ExpandResponse.AsObject;
     static toObject(includeInstance: boolean, msg: ExpandResponse): ExpandResponse.AsObject;
@@ -67,17 +63,14 @@ export class SubjectTree extends jspb.Message {
     getNodeType(): NodeType;
     setNodeType(value: NodeType): SubjectTree;
 
-
     hasSubject(): boolean;
     clearSubject(): void;
     getSubject(): ory_keto_acl_v1alpha1_acl_pb.Subject | undefined;
     setSubject(value?: ory_keto_acl_v1alpha1_acl_pb.Subject): SubjectTree;
-
     clearChildrenList(): void;
     getChildrenList(): Array<SubjectTree>;
     setChildrenList(value: Array<SubjectTree>): SubjectTree;
     addChildren(value?: SubjectTree, index?: number): SubjectTree;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): SubjectTree.AsObject;

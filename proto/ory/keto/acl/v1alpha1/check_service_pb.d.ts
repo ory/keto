@@ -10,25 +10,19 @@ import * as ory_keto_acl_v1alpha1_acl_pb from "../../../../ory/keto/acl/v1alpha1
 export class CheckRequest extends jspb.Message { 
     getNamespace(): string;
     setNamespace(value: string): CheckRequest;
-
     getObject(): string;
     setObject(value: string): CheckRequest;
-
     getRelation(): string;
     setRelation(value: string): CheckRequest;
-
 
     hasSubject(): boolean;
     clearSubject(): void;
     getSubject(): ory_keto_acl_v1alpha1_acl_pb.Subject | undefined;
     setSubject(value?: ory_keto_acl_v1alpha1_acl_pb.Subject): CheckRequest;
-
     getLatest(): boolean;
     setLatest(value: boolean): CheckRequest;
-
     getSnaptoken(): string;
     setSnaptoken(value: string): CheckRequest;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): CheckRequest.AsObject;
@@ -54,10 +48,8 @@ export namespace CheckRequest {
 export class CheckResponse extends jspb.Message { 
     getAllowed(): boolean;
     setAllowed(value: boolean): CheckResponse;
-
     getSnaptoken(): string;
     setSnaptoken(value: string): CheckResponse;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): CheckResponse.AsObject;
