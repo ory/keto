@@ -322,7 +322,7 @@ func (r *RegistryDefault) allHandlers() []Handler {
 }
 
 func (r *RegistryDefault) ReadRouter() http.Handler {
-	n := negroni.New(reqlog.NewMiddlewareFromLogger(r.l, "write#Ory Keto").ExcludePaths(healthx.AliveCheckPath, healthx.ReadyCheckPath))
+	n := negroni.New(reqlog.NewMiddlewareFromLogger(r.l, "read#Ory Keto").ExcludePaths(healthx.AliveCheckPath, healthx.ReadyCheckPath))
 
 	br := &x.ReadRouter{Router: httprouter.New()}
 
