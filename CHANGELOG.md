@@ -3,7 +3,7 @@
 
 **Table of Contents**
 
-- [0.0.0 (2021-09-10)](#000-2021-09-10)
+- [0.0.0 (2021-09-15)](#000-2021-09-15)
   - [Bug Fixes](#bug-fixes)
   - [Chores](#chores)
   - [Code Refactoring](#code-refactoring)
@@ -98,10 +98,13 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.6.0-alpha.3...v0.0.0) (2021-09-10)
+# [0.0.0](https://github.com/ory/keto/compare/v0.6.0-alpha.3...v0.0.0) (2021-09-15)
 
 ### Bug Fixes
 
+- `make sdk` dependency on the Ory CLI
+  ([#710](https://github.com/ory/keto/issues/710))
+  ([0cb5706](https://github.com/ory/keto/commit/0cb57060c80f06adf48a6fbfa912a25e51c82037))
 - Add missing tracers ([#600](https://github.com/ory/keto/issues/600))
   ([aa263be](https://github.com/ory/keto/commit/aa263be9a7830e3c769d7698d36137555ca230bc)),
   closes [#593](https://github.com/ory/keto/issues/593)
@@ -241,6 +244,10 @@
   ```
 
   passed.
+
+- Ensure problematic chars are not creatable over REST
+  ([#709](https://github.com/ory/keto/issues/709))
+  ([12b7954](https://github.com/ory/keto/commit/12b79548b50219ff692b24ff8ee0ed7bb9343523))
 
 # [0.6.0-alpha.3](https://github.com/ory/keto/compare/v0.6.0-alpha.2...v0.6.0-alpha.3) (2021-04-29)
 
