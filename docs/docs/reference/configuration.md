@@ -7,9 +7,6 @@ title: Configuration
 OPEN AN ISSUE IF YOU WOULD LIKE TO MAKE ADJUSTMENTS HERE AND MAINTAINERS WILL HELP YOU LOCATE THE RIGHT
 FILE -->
 
-If file `$HOME/.keto.yaml` exists, it will be used as a configuration file which
-supports all configuration settings listed below.
-
 You can load the config file from another source using the
 `-c path/to/config.yaml` or `--config path/to/config.yaml` flag:
 `keto --config path/to/config.yaml`.
@@ -242,7 +239,7 @@ serve:
     #
     # Default value: 4467
     #
-    # Minimum value: 1
+    # Minimum value: 0
     #
     # Maximum value: 65535
     #
@@ -252,7 +249,7 @@ serve:
     # - Windows Command Line (CMD):
     #    > set SERVE_WRITE_PORT=<value>
     #
-    port: 1
+    port: 0
 
   ## Read API (http and gRPC) ##
   #
@@ -456,7 +453,7 @@ serve:
     #
     # Default value: 4466
     #
-    # Minimum value: 1
+    # Minimum value: 0
     #
     # Maximum value: 65535
     #
@@ -466,7 +463,7 @@ serve:
     # - Windows Command Line (CMD):
     #    > set SERVE_READ_PORT=<value>
     #
-    port: 1
+    port: 0
 
 ## Profiling ##
 #
