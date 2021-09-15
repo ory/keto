@@ -245,5 +245,65 @@ func TestWriteHandlers(t *testing.T) {
 			require.NoError(t, err)
 			assert.Len(t, actualRTs, 0)
 		})
+
+		t.Run("case=only create", func(t *testing.T) {
+			nspace := addNamespace(t)
+
+			deltas := []*relationtuple.PatchDelta{
+				{
+					Action: relationtuple.ActionInsert,
+					RelationTuple: &relationtuple.InternalRelationTuple{
+						Namespace: nspace.Name,
+						Object:    "create obj",
+						Relation:  "rel",
+						Subject:   &relationtuple.SubjectID{ID: "create sub"},
+					},
+				},
+			}
+
+			body, err := json.Marshal(deltas)
+			require.NoError(t, err)
+			req, err := http.NewRequest(http.MethodPatch, ts.URL+relationtuple.RouteBase, bytes.NewBuffer(body))
+			require.NoError(t, err)
+			resp, err := ts.Client().Do(req)
+			require.NoError(t, err)
+			assert.Equal(t, http.StatusNoContent, resp.StatusCode)
+
+			actualRTs, _, err := reg.RelationTupleManager().GetRelationTuples(context.Background(), &relationtuple.RelationQuery{
+				Namespace: nspace.Name,
+			})
+			require.NoError(t, err)
+			assert.Equal(t, []*relationtuple.InternalRelationTuple{deltas[0].RelationTuple}, actualRTs)
+		})
+
+		t.Run("case=only delete", func(t *testing.T) {
+			nspace := addNamespace(t)
+
+			deltas := []*relationtuple.PatchDelta{
+				{
+					Action: relationtuple.ActionDelete,
+					RelationTuple: &relationtuple.InternalRelationTuple{
+						Namespace: nspace.Name,
+						Object:    "delete obj",
+						Relation:  "rel",
+						Subject:   &relationtuple.SubjectID{ID: "delete sub"},
+					},
+				},
+			}
+
+			body, err := json.Marshal(deltas)
+			require.NoError(t, err)
+			req, err := http.NewRequest(http.MethodPatch, ts.URL+relationtuple.RouteBase, bytes.NewBuffer(body))
+			require.NoError(t, err)
+			resp, err := ts.Client().Do(req)
+			require.NoError(t, err)
+			assert.Equal(t, http.StatusNoContent, resp.StatusCode)
+
+			actualRTs, _, err := reg.RelationTupleManager().GetRelationTuples(context.Background(), &relationtuple.RelationQuery{
+				Namespace: nspace.Name,
+			})
+			require.NoError(t, err)
+			assert.Equal(t, []*relationtuple.InternalRelationTuple{}, actualRTs)
+		})
 	})
 }
