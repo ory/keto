@@ -27,7 +27,6 @@ export class GetVersionResponse extends jspb.Message {
     getVersion(): string;
     setVersion(value: string): GetVersionResponse;
 
-
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): GetVersionResponse.AsObject;
     static toObject(includeInstance: boolean, msg: GetVersionResponse): GetVersionResponse.AsObject;
