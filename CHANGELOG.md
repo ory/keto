@@ -141,6 +141,9 @@
   This change significantly improves and the config schema. Parts will now be
   taken from upstream to ensure a more up-to-date schema.
 
+- Set version during release build and register version handler
+  ([#714](https://github.com/ory/keto/issues/714))
+  ([8091475](https://github.com/ory/keto/commit/80914752d56fa5729857e26f9d853c091aa888d2))
 - Update docker-compose.yml version
   ([#595](https://github.com/ory/keto/issues/595))
   ([7fa4dca](https://github.com/ory/keto/commit/7fa4dca4182a1fa024f9cef0a04163f2cbd882aa)),
