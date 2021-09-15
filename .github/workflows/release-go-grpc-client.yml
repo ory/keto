@@ -1,0 +1,33 @@
+name: Release the go gRPC client as `proto/$VERSION`
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: The version to release. Should be a patch of the latest Keto release.
+        required: true
+  release:
+    types:
+      - created
+
+jobs:
+  tag:
+    #   this is set on dispatch        this should prevent the action from triggering itself
+    if: github.event.inputs.version || !startsWith('proto/', github.ref)
+    runs-on: ubuntu-latest
+    name: Publish
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+        with:
+          go-version: '1.16'
+      - name: Download dependencies
+        run: cd proto; go mod tidy
+      - name: Test
+        run: cd proto; cd proto; go test ./...
+      - name: Create git tag
+        run: |
+          git tag -a "proto/$RELEASE_VERSION" -m "Release $RELEASE_VERSION of the go gRPC Client. See CHANGELOG.md for more info."
+          git push origin "proto/$RELEASE_VERSION"
+        env:
+          RELEASE_VERSION: ${{ github.event.inputs.version || github.ref }}
