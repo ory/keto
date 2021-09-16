@@ -3,7 +3,7 @@
 
 **Table of Contents**
 
-- [0.0.0 (2021-09-15)](#000-2021-09-15)
+- [0.0.0 (2021-09-16)](#000-2021-09-16)
   - [Bug Fixes](#bug-fixes)
   - [Chores](#chores)
   - [Code Refactoring](#code-refactoring)
@@ -98,7 +98,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.6.0-alpha.3...v0.0.0) (2021-09-15)
+# [0.0.0](https://github.com/ory/keto/compare/v0.6.0-alpha.3...v0.0.0) (2021-09-16)
 
 ### Bug Fixes
 
@@ -144,6 +144,9 @@
   This change significantly improves and the config schema. Parts will now be
   taken from upstream to ensure a more up-to-date schema.
 
+- Patch REST API input validation and SDK generation
+  ([#717](https://github.com/ory/keto/issues/717))
+  ([d49e098](https://github.com/ory/keto/commit/d49e098b77bc238276a91bc61f3c8c7f9f7357a9))
 - Set version during release build and register version handler
   ([#714](https://github.com/ory/keto/issues/714))
   ([8091475](https://github.com/ory/keto/commit/80914752d56fa5729857e26f9d853c091aa888d2))
