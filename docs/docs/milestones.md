@@ -15,16 +15,16 @@ Something is not working.
 
 #### Issues
 
-- [ ] Check valid relation-tuple characters on insert
-      ([keto#661](https://github.com/ory/keto/issues/661))
 - [ ] Keto patch relation tuple REST API does not work
       ([keto#706](https://github.com/ory/keto/issues/706)) -
       [@Patrik](https://github.com/zepatrik)
-- [ ] Keto version API does not work in REST API and CLI.
-      ([keto#696](https://github.com/ory/keto/issues/696)) -
-      [@Patrik](https://github.com/zepatrik)
 - [ ] Doc and implement do not match for delete tuple REST API.
       ([keto#695](https://github.com/ory/keto/issues/695)) -
+      [@Patrik](https://github.com/zepatrik)
+- [x] Check valid relation-tuple characters on insert
+      ([keto#661](https://github.com/ory/keto/issues/661))
+- [x] Keto version API does not work in REST API and CLI.
+      ([keto#696](https://github.com/ory/keto/issues/696)) -
       [@Patrik](https://github.com/zepatrik)
 
 ### [Feat](https://github.com/ory/keto/labels/feat)
@@ -47,7 +47,7 @@ Affects documentation.
 
 #### Issues
 
-- [ ] Document and improve go gRPC client import
+- [x] Document and improve go gRPC client import
       ([keto#635](https://github.com/ory/keto/issues/635))
 
 ### [Ci](https://github.com/ory/keto/labels/ci)
@@ -56,9 +56,9 @@ Affects Continuous Integration (CI).
 
 #### Issues
 
-- [ ] Document and improve go gRPC client import
+- [x] Document and improve go gRPC client import
       ([keto#635](https://github.com/ory/keto/issues/635))
-- [ ] Keto version API does not work in REST API and CLI.
+- [x] Keto version API does not work in REST API and CLI.
       ([keto#696](https://github.com/ory/keto/issues/696)) -
       [@Patrik](https://github.com/zepatrik)
 
