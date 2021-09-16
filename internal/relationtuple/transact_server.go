@@ -166,6 +166,18 @@ func (h *handler) patchRelations(w http.ResponseWriter, r *http.Request, _ httpr
 		h.d.Writer().WriteError(w, r, herodot.ErrBadRequest.WithError(err.Error()))
 		return
 	}
+	for _, d := range deltas {
+		if d.RelationTuple == nil {
+			h.d.Writer().WriteError(w, r, herodot.ErrBadRequest.WithError("relation_tuple is missing"))
+			return
+		}
+		switch d.Action {
+		case ActionDelete, ActionInsert:
+		default:
+			h.d.Writer().WriteError(w, r, herodot.ErrBadRequest.WithError("unknown action "+string(d.Action)))
+			return
+		}
+	}
 
 	if err := h.d.RelationTupleManager().TransactRelationTuples(r.Context(), internalTuplesWithAction(deltas, ActionInsert), internalTuplesWithAction(deltas, ActionDelete)); err != nil {
 		h.d.Writer().WriteError(w, r, err)

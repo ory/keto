@@ -135,7 +135,7 @@ var (
 	ErrNilSubject     = errors.New("subject is nil")
 )
 
-// swagger:enum
+// swagger:enum patchAction
 type patchAction string
 
 const (
