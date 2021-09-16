@@ -67,7 +67,7 @@
             "required": true
           },
           {
-            "type": "object",
+            "$ref": "#/definitions/subject",
             "description": "Subject of the Relation Tuple\n\nThe subject follows the subject string encoding format.",
             "name": "subject",
             "in": "query"
@@ -81,35 +81,7 @@
             }
           },
           "400": {
-            "description": "The standard error format",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "format": "int64"
-                },
-                "details": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "additionalProperties": true
-                  }
-                },
-                "message": {
-                  "type": "string"
-                },
-                "reason": {
-                  "type": "string"
-                },
-                "request": {
-                  "type": "string"
-                },
-                "status": {
-                  "type": "string"
-                }
-              }
-            }
+            "$ref": "#/responses/genericError"
           },
           "403": {
             "description": "getCheckResponse",
@@ -118,35 +90,7 @@
             }
           },
           "500": {
-            "description": "The standard error format",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "format": "int64"
-                },
-                "details": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "additionalProperties": true
-                  }
-                },
-                "message": {
-                  "type": "string"
-                },
-                "reason": {
-                  "type": "string"
-                },
-                "request": {
-                  "type": "string"
-                },
-                "status": {
-                  "type": "string"
-                }
-              }
-            }
+            "$ref": "#/responses/genericError"
           }
         }
       },
@@ -184,35 +128,7 @@
             }
           },
           "400": {
-            "description": "The standard error format",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "format": "int64"
-                },
-                "details": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "additionalProperties": true
-                  }
-                },
-                "message": {
-                  "type": "string"
-                },
-                "reason": {
-                  "type": "string"
-                },
-                "request": {
-                  "type": "string"
-                },
-                "status": {
-                  "type": "string"
-                }
-              }
-            }
+            "$ref": "#/responses/genericError"
           },
           "403": {
             "description": "getCheckResponse",
@@ -221,35 +137,7 @@
             }
           },
           "500": {
-            "description": "The standard error format",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "format": "int64"
-                },
-                "details": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "additionalProperties": true
-                  }
-                },
-                "message": {
-                  "type": "string"
-                },
-                "reason": {
-                  "type": "string"
-                },
-                "request": {
-                  "type": "string"
-                },
-                "status": {
-                  "type": "string"
-                }
-              }
-            }
+            "$ref": "#/responses/genericError"
           }
         }
       }
@@ -309,97 +197,13 @@
             }
           },
           "400": {
-            "description": "The standard error format",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "format": "int64"
-                },
-                "details": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "additionalProperties": true
-                  }
-                },
-                "message": {
-                  "type": "string"
-                },
-                "reason": {
-                  "type": "string"
-                },
-                "request": {
-                  "type": "string"
-                },
-                "status": {
-                  "type": "string"
-                }
-              }
-            }
+            "$ref": "#/responses/genericError"
           },
           "404": {
-            "description": "The standard error format",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "format": "int64"
-                },
-                "details": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "additionalProperties": true
-                  }
-                },
-                "message": {
-                  "type": "string"
-                },
-                "reason": {
-                  "type": "string"
-                },
-                "request": {
-                  "type": "string"
-                },
-                "status": {
-                  "type": "string"
-                }
-              }
-            }
+            "$ref": "#/responses/genericError"
           },
           "500": {
-            "description": "The standard error format",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "format": "int64"
-                },
-                "details": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "additionalProperties": true
-                  }
-                },
-                "message": {
-                  "type": "string"
-                },
-                "reason": {
-                  "type": "string"
-                },
-                "request": {
-                  "type": "string"
-                },
-                "status": {
-                  "type": "string"
-                }
-              }
-            }
+            "$ref": "#/responses/genericError"
           }
         }
       }
@@ -423,35 +227,7 @@
             }
           },
           "500": {
-            "description": "The standard error format",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "format": "int64"
-                },
-                "details": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "additionalProperties": true
-                  }
-                },
-                "message": {
-                  "type": "string"
-                },
-                "reason": {
-                  "type": "string"
-                },
-                "request": {
-                  "type": "string"
-                },
-                "status": {
-                  "type": "string"
-                }
-              }
-            }
+            "$ref": "#/responses/genericError"
           }
         }
       }
@@ -519,7 +295,7 @@
             "in": "query"
           },
           {
-            "type": "object",
+            "$ref": "#/definitions/subject",
             "name": "subject",
             "in": "query"
           },
@@ -543,66 +319,10 @@
             }
           },
           "404": {
-            "description": "The standard error format",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "format": "int64"
-                },
-                "details": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "additionalProperties": true
-                  }
-                },
-                "message": {
-                  "type": "string"
-                },
-                "reason": {
-                  "type": "string"
-                },
-                "request": {
-                  "type": "string"
-                },
-                "status": {
-                  "type": "string"
-                }
-              }
-            }
+            "$ref": "#/responses/genericError"
           },
           "500": {
-            "description": "The standard error format",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "format": "int64"
-                },
-                "details": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "additionalProperties": true
-                  }
-                },
-                "message": {
-                  "type": "string"
-                },
-                "reason": {
-                  "type": "string"
-                },
-                "request": {
-                  "type": "string"
-                },
-                "status": {
-                  "type": "string"
-                }
-              }
-            }
+            "$ref": "#/responses/genericError"
           }
         }
       },
@@ -640,66 +360,10 @@
             }
           },
           "400": {
-            "description": "The standard error format",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "format": "int64"
-                },
-                "details": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "additionalProperties": true
-                  }
-                },
-                "message": {
-                  "type": "string"
-                },
-                "reason": {
-                  "type": "string"
-                },
-                "request": {
-                  "type": "string"
-                },
-                "status": {
-                  "type": "string"
-                }
-              }
-            }
+            "$ref": "#/responses/genericError"
           },
           "500": {
-            "description": "The standard error format",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "format": "int64"
-                },
-                "details": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "additionalProperties": true
-                  }
-                },
-                "message": {
-                  "type": "string"
-                },
-                "reason": {
-                  "type": "string"
-                },
-                "request": {
-                  "type": "string"
-                },
-                "status": {
-                  "type": "string"
-                }
-              }
-            }
+            "$ref": "#/responses/genericError"
           }
         }
       },
@@ -743,7 +407,7 @@
             "required": true
           },
           {
-            "type": "object",
+            "$ref": "#/definitions/subject",
             "description": "Subject of the Relation Tuple\n\nThe subject follows the subject string encoding format.",
             "name": "subject",
             "in": "query"
@@ -751,69 +415,13 @@
         ],
         "responses": {
           "204": {
-            "description": "Empty responses are sent when, for example, resources are deleted. The HTTP status code for empty responses is typically 201."
+            "$ref": "#/responses/emptyResponse"
           },
           "400": {
-            "description": "The standard error format",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "format": "int64"
-                },
-                "details": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "additionalProperties": true
-                  }
-                },
-                "message": {
-                  "type": "string"
-                },
-                "reason": {
-                  "type": "string"
-                },
-                "request": {
-                  "type": "string"
-                },
-                "status": {
-                  "type": "string"
-                }
-              }
-            }
+            "$ref": "#/responses/genericError"
           },
           "500": {
-            "description": "The standard error format",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "format": "int64"
-                },
-                "details": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "additionalProperties": true
-                  }
-                },
-                "message": {
-                  "type": "string"
-                },
-                "reason": {
-                  "type": "string"
-                },
-                "request": {
-                  "type": "string"
-                },
-                "status": {
-                  "type": "string"
-                }
-              }
-            }
+            "$ref": "#/responses/genericError"
           }
         }
       },
@@ -848,100 +456,16 @@
         ],
         "responses": {
           "204": {
-            "description": "Empty responses are sent when, for example, resources are deleted. The HTTP status code for empty responses is typically 201."
+            "$ref": "#/responses/emptyResponse"
           },
           "400": {
-            "description": "The standard error format",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "format": "int64"
-                },
-                "details": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "additionalProperties": true
-                  }
-                },
-                "message": {
-                  "type": "string"
-                },
-                "reason": {
-                  "type": "string"
-                },
-                "request": {
-                  "type": "string"
-                },
-                "status": {
-                  "type": "string"
-                }
-              }
-            }
+            "$ref": "#/responses/genericError"
           },
           "404": {
-            "description": "The standard error format",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "format": "int64"
-                },
-                "details": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "additionalProperties": true
-                  }
-                },
-                "message": {
-                  "type": "string"
-                },
-                "reason": {
-                  "type": "string"
-                },
-                "request": {
-                  "type": "string"
-                },
-                "status": {
-                  "type": "string"
-                }
-              }
-            }
+            "$ref": "#/responses/genericError"
           },
           "500": {
-            "description": "The standard error format",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "format": "int64"
-                },
-                "details": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "additionalProperties": true
-                  }
-                },
-                "message": {
-                  "type": "string"
-                },
-                "reason": {
-                  "type": "string"
-                },
-                "request": {
-                  "type": "string"
-                },
-                "status": {
-                  "type": "string"
-                }
-              }
-            }
+            "$ref": "#/responses/genericError"
           }
         }
       }
@@ -1037,6 +561,50 @@
         }
       }
     },
+    "genericError": {
+      "type": "object",
+      "required": [
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "description": "The status code",
+          "type": "integer",
+          "format": "int64",
+          "example": 404
+        },
+        "debug": {
+          "description": "Debug information\n\nThis field is often not exposed to protect against leaking\nsensitive information.",
+          "type": "string",
+          "example": "SQL field \"foo\" is not a bool."
+        },
+        "details": {
+          "description": "Further error details",
+          "type": "object",
+          "additionalProperties": true
+        },
+        "message": {
+          "description": "Error message\n\nThe error's message.",
+          "type": "string",
+          "example": "The resource could not be found"
+        },
+        "reason": {
+          "description": "A human-readable reason for the error",
+          "type": "string",
+          "example": "User with ID 1234 does not exist."
+        },
+        "request": {
+          "description": "The request ID\n\nThe request ID is often exposed internally in order to trace\nerrors across service architectures. This is often a UUID.",
+          "type": "string",
+          "example": "d7ef54b1-ec15-46e6-bccb-524b82c035e6"
+        },
+        "status": {
+          "description": "The status description",
+          "type": "string",
+          "example": "Not Found"
+        }
+      }
+    },
     "getCheckResponse": {
       "description": "The content of the allowed field is mirrored in the HTTP status code.",
       "type": "object",
@@ -1096,6 +664,42 @@
         "version": {
           "description": "Version is the service's version.",
           "type": "string"
+        }
+      }
+    }
+  ,"UUID":{"type": "string", "format": "uuid4"}},
+  "responses": {
+    "emptyResponse": {
+      "description": "Empty responses are sent when, for example, resources are deleted. The HTTP status code for empty responses is typically 201."
+    },
+    "genericError": {
+      "description": "The standard error format",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "details": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": true
+            }
+          },
+          "message": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          },
+          "request": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          }
         }
       }
     }

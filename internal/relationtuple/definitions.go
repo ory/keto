@@ -14,8 +14,6 @@ import (
 
 	acl "github.com/ory/keto/proto/ory/keto/acl/v1alpha1"
 
-	"github.com/tidwall/sjson"
-
 	"github.com/pkg/errors"
 
 	"github.com/ory/keto/internal/x"
@@ -63,9 +61,6 @@ type TupleData interface {
 // swagger:model subject
 type Subject interface {
 	// swagger:ignore
-	json.Marshaler
-
-	// swagger:ignore
 	String() string
 	// swagger:ignore
 	FromString(string) (Subject, error)
@@ -107,6 +102,7 @@ type InternalRelationTuple struct {
 
 // swagger:model subject
 // nolint:deadcode,unused
+// this is overwritten with the right definition by /spec/patches/subjects.yml
 type stringEncodedSubject string
 
 // swagger:parameters getExpand
@@ -133,8 +129,9 @@ type SubjectSet struct {
 var (
 	_, _ Subject = &SubjectID{}, &SubjectSet{}
 
-	ErrMalformedInput = herodot.ErrBadRequest.WithError("malformed string input")
-	ErrNilSubject     = herodot.ErrBadRequest.WithError("subject is not allowed to be nil")
+	ErrMalformedInput     = herodot.ErrBadRequest.WithError("malformed string input")
+	ErrNilSubject         = herodot.ErrBadRequest.WithError("subject is not allowed to be nil")
+	ErrNonParsableSubject = herodot.ErrBadRequest.WithError("subject is not parsable")
 )
 
 // swagger:enum patchAction
@@ -164,6 +161,22 @@ func SubjectFromString(s string) (Subject, error) {
 		return (&SubjectSet{}).FromString(s)
 	}
 	return (&SubjectID{}).FromString(s)
+}
+
+func SubjectFromJSON(raw []byte) (subject Subject, err error) {
+	s := gjson.ParseBytes(raw)
+	if s.IsObject() {
+		subject = &SubjectSet{}
+		if err := json.Unmarshal([]byte(s.Raw), subject); err != nil {
+			return nil, errors.WithStack(err)
+		}
+	} else if s.Type == gjson.String {
+		subject = &SubjectID{ID: s.Str}
+	} else {
+		return nil, errors.Wrapf(ErrNonParsableSubject, "expected subject to be of type string or object, but got %s", s.Type)
+	}
+
+	return
 }
 
 // swagger:ignore
@@ -275,11 +288,7 @@ func (s *SubjectSet) Equals(v interface{}) bool {
 }
 
 func (s SubjectID) MarshalJSON() ([]byte, error) {
-	return []byte(`"` + s.String() + `"`), nil
-}
-
-func (s SubjectSet) MarshalJSON() ([]byte, error) {
-	return []byte(`"` + s.String() + `"`), nil
+	return json.Marshal(s.ID)
 }
 
 func (r *InternalRelationTuple) String() string {
@@ -326,17 +335,17 @@ func (r *InternalRelationTuple) DeriveSubject() *SubjectSet {
 }
 
 func (r *InternalRelationTuple) UnmarshalJSON(raw []byte) error {
-	subject := gjson.GetBytes(raw, "subject").Str
+	parsed := gjson.ParseBytes(raw)
 
 	var err error
-	r.Subject, err = SubjectFromString(subject)
+	r.Subject, err = SubjectFromJSON([]byte(parsed.Get("subject").Raw))
 	if err != nil {
 		return err
 	}
 
-	r.Namespace = gjson.GetBytes(raw, "namespace").Str
-	r.Object = gjson.GetBytes(raw, "object").Str
-	r.Relation = gjson.GetBytes(raw, "relation").Str
+	r.Namespace = parsed.Get("namespace").Str
+	r.Object = parsed.Get("object").Str
+	r.Relation = parsed.Get("relation").Str
 
 	return nil
 }
@@ -349,7 +358,7 @@ func (r *InternalRelationTuple) MarshalJSON() ([]byte, error) {
 		return nil, errors.WithStack(err)
 	}
 
-	return sjson.SetBytes(enc, "subject", r.Subject.String())
+	return enc, nil
 }
 
 func (r *InternalRelationTuple) FromDataProvider(d TupleData) (*InternalRelationTuple, error) {

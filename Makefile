@@ -50,10 +50,18 @@ docker:
 # Generates the SDKs
 .PHONY: sdk
 sdk: .bin/swagger .bin/ory
-		swagger generate spec -m -o ./spec/api.json -x internal/httpclient -x proto/ory/keto -x docker
-		ory dev swagger sanitize ./spec/api.json
-		swagger flatten --with-flatten=remove-unused -o ./spec/api.json ./spec/api.json
-		swagger validate ./spec/api.json
+		swagger generate spec -m -o ./spec/swagger.json -x internal/httpclient -x proto/ory/keto -x docker
+		ory dev swagger sanitize ./spec/swagger.json
+		swagger flatten --with-flatten=remove-unused -o ./spec/swagger.json ./spec/swagger.json
+		swagger validate ./spec/swagger.json
+
+		CIRCLE_PROJECT_USERNAME=ory CIRCLE_PROJECT_REPONAME=kratos \
+			ory dev openapi migrate \
+				--health-path-tags metadata \
+				-p https://raw.githubusercontent.com/ory/x/master/healthx/openapi/patch.yaml \
+				-p file://spec/patches/subjects.yml \
+				spec/swagger.json spec/api.json
+
 		rm -rf internal/httpclient
 		mkdir -p internal/httpclient
 		swagger generate client -f ./spec/api.json -t internal/httpclient -A Ory_Keto

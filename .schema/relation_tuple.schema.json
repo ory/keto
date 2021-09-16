@@ -24,16 +24,28 @@
     "subject": {
       "oneOf": [
         {
-          "type": "string",
-          "pattern": "^.*:.*#.*$",
-          "description": "The subject set affected by this relation. Uses the encoding of \"<namespace>:<object>#<relation>\"."
+          "type": "object",
+          "description": "The subject set affected by this relation.",
+          "properties": {
+            "namespace": {
+              "type": "string",
+              "description": "The namespace of the object and relation in this subject set."
+            },
+            "relation": {
+              "type": "string",
+              "description": "The relation of this subject set."
+            },
+            "object": {
+              "type": "string",
+              "description": "The object referenced in this subject set."
+            }
+          },
+          "additionalProperties": false,
+          "required": ["namespace", "relation", "object"]
         },
         {
           "type": "string",
-          "description": "The subject affected by this relation. Use \"<namespace>:<object>#<relation>\" to describe a subject set.",
-          "not": {
-            "pattern": "^.*:.*#.*$"
-          }
+          "description": "The subject ID affected by this relation."
         }
       ]
     }

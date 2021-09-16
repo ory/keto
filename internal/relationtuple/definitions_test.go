@@ -236,7 +236,12 @@ func TestSubject(t *testing.T) {
 					Object:    "o",
 					Relation:  "r",
 				},
-				json: "\"n:o#r\"",
+				json: `
+{
+	"namespace": "n",
+	"object": "o",
+	"relation": "r"
+}`,
 			},
 			{
 				sub:  &SubjectID{ID: "foo"},
@@ -246,7 +251,7 @@ func TestSubject(t *testing.T) {
 			t.Run(fmt.Sprintf("case=%d", i), func(t *testing.T) {
 				enc, err := json.Marshal(tc.sub)
 				require.NoError(t, err)
-				assert.Equal(t, string(enc), tc.json)
+				assert.JSONEq(t, tc.json, string(enc))
 			})
 		}
 	})
@@ -456,6 +461,67 @@ func TestInternalRelationTuple(t *testing.T) {
 				assert.Equal(t, tc.expected, actual)
 			})
 		}
+	})
+
+	t.Run("format=JSON", func(t *testing.T) {
+		t.Run("direction=encoding-decoding", func(t *testing.T) {
+			for _, tc := range []struct {
+				name     string
+				rt       *InternalRelationTuple
+				expected string
+			}{
+				{
+					name: "with subject ID",
+					rt: &InternalRelationTuple{
+						Namespace: "n",
+						Object:    "o",
+						Relation:  "r",
+						Subject:   &SubjectID{ID: "s"},
+					},
+					expected: `
+{
+	"namespace": "n",
+	"object": "o",
+	"relation": "r",
+	"subject": "s"
+}`,
+				},
+				{
+					name: "with subject set",
+					rt: &InternalRelationTuple{
+						Namespace: "n",
+						Object:    "o",
+						Relation:  "r",
+						Subject: &SubjectSet{
+							Namespace: "sn",
+							Object:    "so",
+							Relation:  "sr",
+						},
+					},
+					expected: `
+{
+	"namespace": "n",
+	"object": "o",
+	"relation": "r",
+	"subject": {
+		"namespace": "sn",
+		"object": "so",
+		"relation": "sr"
+	}
+}`,
+				},
+			} {
+				t.Run("case="+tc.name, func(t *testing.T) {
+					raw, err := json.Marshal(tc.rt)
+					require.NoError(t, err)
+					assert.JSONEq(t, tc.expected, string(raw))
+
+					var dec InternalRelationTuple
+					require.NoError(t, json.Unmarshal(raw, &dec))
+					assert.Equal(t, tc.rt, &dec)
+				})
+			}
+		})
 	})
 }
 

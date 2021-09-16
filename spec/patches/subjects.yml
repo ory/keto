@@ -1,0 +1,4 @@
+- op: replace
+  path: /definitions/subject
+  value:
+    oneOf:

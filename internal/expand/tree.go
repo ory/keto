@@ -85,9 +85,9 @@ func NodeTypeFromProto(t acl.NodeType) NodeType {
 
 func (t *Tree) UnmarshalJSON(v []byte) error {
 	type node struct {
-		Type     NodeType `json:"type"`
-		Children []*Tree  `json:"children,omitempty"`
-		Subject  string   `json:"subject"`
+		Type     NodeType        `json:"type"`
+		Children []*Tree         `json:"children,omitempty"`
+		Subject  json.RawMessage `json:"subject"`
 	}
 
 	n := &node{}
@@ -96,7 +96,7 @@ func (t *Tree) UnmarshalJSON(v []byte) error {
 	}
 
 	var err error
-	t.Subject, err = relationtuple.SubjectFromString(n.Subject)
+	t.Subject, err = relationtuple.SubjectFromJSON(n.Subject)
 	if err != nil {
 		return err
 	}

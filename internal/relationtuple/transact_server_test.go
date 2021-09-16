@@ -101,7 +101,7 @@ func TestWriteHandlers(t *testing.T) {
 			assert.Equal(t, http.StatusBadRequest, resp.StatusCode)
 		})
 
-		t.Run("case=special chars error on creation already", func(t *testing.T) {
+		t.Run("case=special chars", func(t *testing.T) {
 			nspace := addNamespace(t)
 
 			rts := []*relationtuple.InternalRelationTuple{
@@ -119,7 +119,7 @@ func TestWriteHandlers(t *testing.T) {
 					Namespace: nspace.Name,
 					Object:    "@all",
 					Relation:  "member",
-					Subject:   &relationtuple.SubjectID{ID: "this:will#be interpreted:as a@subject set"},
+					Subject:   &relationtuple.SubjectID{ID: "this:could#be interpreted:as a@subject set"},
 				},
 			}
 
@@ -128,8 +128,7 @@ func TestWriteHandlers(t *testing.T) {
 				require.NoError(t, err)
 
 				resp := doCreate(payload)
-				assert.GreaterOrEqual(t, resp.StatusCode, http.StatusBadRequest)
-				assert.Less(t, resp.StatusCode, http.StatusInternalServerError)
+				assert.Equal(t, http.StatusCreated, resp.StatusCode)
 			}
 
 			actual, next, err := reg.RelationTupleManager().GetRelationTuples(context.Background(), &relationtuple.RelationQuery{
@@ -137,7 +136,10 @@ func TestWriteHandlers(t *testing.T) {
 			})
 			require.NoError(t, err)
 			assert.Equal(t, "", next)
-			assert.Len(t, actual, 0)
+			assert.Len(t, actual, 2)
+			for _, rt := range rts {
+				assert.Contains(t, actual, rt)
+			}
 		})
 	})
 
