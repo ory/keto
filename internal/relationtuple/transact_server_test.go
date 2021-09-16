@@ -305,5 +305,53 @@ func TestWriteHandlers(t *testing.T) {
 			require.NoError(t, err)
 			assert.Equal(t, []*relationtuple.InternalRelationTuple{}, actualRTs)
 		})
+
+		t.Run("case=valid JSON, invalid content", func(t *testing.T) {
+			rawJSON := `
+[
+    {
+        "action": "insert",
+        "namespace":"role",
+        "object":"super-admin",
+        "relation":"member",
+        "subject":"role:company-admin"
+    }
+]`
+			req, err := http.NewRequest(http.MethodPatch, ts.URL+relationtuple.RouteBase, bytes.NewBufferString(rawJSON))
+			require.NoError(t, err)
+			resp, err := ts.Client().Do(req)
+			require.NoError(t, err)
+			assert.Equal(t, http.StatusBadRequest, resp.StatusCode)
+
+			defer resp.Body.Close()
+			errContent, err := io.ReadAll(resp.Body)
+			require.NoError(t, err)
+			assert.Contains(t, string(errContent), "relation_tuple is missing")
+		})
+
+		t.Run("case=unknown action", func(t *testing.T) {
+			rawJSON := `
+[
+	{
+		"action": "unknown_action_foo",
+		"relation_tuple": {
+			"namespace":"role",
+			"object":"super-admin",
+			"relation":"member",
+			"subject":"role:company-admin"
+		}
+	}
+]`
+			req, err := http.NewRequest(http.MethodPatch, ts.URL+relationtuple.RouteBase, bytes.NewBufferString(rawJSON))
+			require.NoError(t, err)
+			resp, err := ts.Client().Do(req)
+			require.NoError(t, err)
+			assert.Equal(t, http.StatusBadRequest, resp.StatusCode)
+
+			defer resp.Body.Close()
+			errContent, err := io.ReadAll(resp.Body)
+			require.NoError(t, err)
+			assert.Contains(t, string(errContent), "unknown_action_foo")
+		})
 	})
 }
