@@ -15,16 +15,18 @@ Something is not working.
 
 #### Issues
 
-- [ ] Keto patch relation tuple REST API does not work
-      ([keto#706](https://github.com/ory/keto/issues/706)) -
-      [@Patrik](https://github.com/zepatrik)
 - [ ] Doc and implement do not match for delete tuple REST API.
       ([keto#695](https://github.com/ory/keto/issues/695)) -
       [@Patrik](https://github.com/zepatrik)
+- [ ] Change REST API to not work with encoded subjects
+      ([keto#708](https://github.com/ory/keto/issues/708))
 - [x] Check valid relation-tuple characters on insert
       ([keto#661](https://github.com/ory/keto/issues/661))
 - [x] Keto version API does not work in REST API and CLI.
       ([keto#696](https://github.com/ory/keto/issues/696)) -
+      [@Patrik](https://github.com/zepatrik)
+- [x] Keto patch relation tuple REST API panic rather than return bad request
+      for wrong input. ([keto#706](https://github.com/ory/keto/issues/706)) -
       [@Patrik](https://github.com/zepatrik)
 
 ### [Feat](https://github.com/ory/keto/labels/feat)
@@ -73,3 +75,12 @@ Blocks milestones or other issues or pulls.
       [@hackerman](https://github.com/aeneasr),
       [@Patrik](https://github.com/zepatrik),
       [@Robin Brämer](https://github.com/robinbraemer)
+
+### [Rfc](https://github.com/ory/keto/labels/rfc)
+
+A request for comments to discuss and share ideas.
+
+#### Issues
+
+- [ ] Change REST API to not work with encoded subjects
+      ([keto#708](https://github.com/ory/keto/issues/708))
