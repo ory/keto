@@ -127,7 +127,7 @@ func (r *RelationTuple) fromInternal(ctx context.Context, p *Persister, rt *rela
 
 func (p *Persister) insertRelationTuple(ctx context.Context, rel *relationtuple.InternalRelationTuple) error {
 	if rel.Subject == nil {
-		return errors.New("subject is not allowed to be nil")
+		return errors.WithStack(relationtuple.ErrNilSubject)
 	}
 
 	p.d.Logger().WithFields(rel.ToLoggerFields()).Trace("creating in database")
@@ -170,7 +170,7 @@ func (p *Persister) whereSubject(ctx context.Context, q *pop.Query, sub relation
 			// NULL checks to leverage partial indexes
 			Where("subject_id IS NULL")
 	case nil:
-		return errors.New("subject is not allowed to be nil")
+		return errors.WithStack(relationtuple.ErrNilSubject)
 	}
 	return nil
 }

@@ -8,6 +8,8 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/ory/herodot"
+
 	"github.com/sirupsen/logrus"
 
 	acl "github.com/ory/keto/proto/ory/keto/acl/v1alpha1"
@@ -131,8 +133,8 @@ type SubjectSet struct {
 var (
 	_, _ Subject = &SubjectID{}, &SubjectSet{}
 
-	ErrMalformedInput = errors.New("malformed string input")
-	ErrNilSubject     = errors.New("subject is nil")
+	ErrMalformedInput = herodot.ErrBadRequest.WithError("malformed string input")
+	ErrNilSubject     = herodot.ErrBadRequest.WithError("subject is not allowed to be nil")
 )
 
 // swagger:enum patchAction
