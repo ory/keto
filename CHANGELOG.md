@@ -3,7 +3,7 @@
 
 **Table of Contents**
 
-- [0.0.0 (2021-09-16)](#000-2021-09-16)
+- [0.0.0 (2021-09-17)](#000-2021-09-17)
   - [Bug Fixes](#bug-fixes)
   - [Chores](#chores)
   - [Code Refactoring](#code-refactoring)
@@ -98,7 +98,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.6.0-alpha.3...v0.0.0) (2021-09-16)
+# [0.0.0](https://github.com/ory/keto/compare/v0.6.0-alpha.3...v0.0.0) (2021-09-17)
 
 ### Bug Fixes
 
@@ -181,6 +181,8 @@
 - Fix example not following best practice
   ([#582](https://github.com/ory/keto/issues/582))
   ([a015818](https://github.com/ory/keto/commit/a0158182c5f87cfd4767824e1c5d6cbb8094a4e6))
+- Fix REST API reference ([#718](https://github.com/ory/keto/issues/718))
+  ([f989b39](https://github.com/ory/keto/commit/f989b3978f34ec484900e6bff3543a39d2d7636c))
 - Update NPM links due to organisation move
   ([#616](https://github.com/ory/keto/issues/616))
   ([6355bea](https://github.com/ory/keto/commit/6355beae5b5b28c3eee19fdee85b9875cbc165c3))
