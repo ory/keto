@@ -912,7 +912,8 @@
       "type": "object",
       "properties": {
         "action": {
-          "$ref": "#/definitions/patchAction"
+          "type": "string",
+          "enum": ["insert", "delete"]
         },
         "relation_tuple": {
           "$ref": "#/definitions/InternalRelationTuple"
@@ -985,9 +986,6 @@
           "type": "string"
         }
       }
-    },
-    "patchAction": {
-      "type": "string"
     },
     "subject": {
       "type": "string"

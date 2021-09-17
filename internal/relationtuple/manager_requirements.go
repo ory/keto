@@ -422,7 +422,7 @@ func ManagerTest(t *testing.T, m Manager, addNamespace func(context.Context, *te
 			assert.Equal(t, []*InternalRelationTuple{rs[0]}, res)
 
 			t.Run("invalid=insert", func(t *testing.T) {
-				assert.Error(t, m.TransactRelationTuples(context.Background(), []*InternalRelationTuple{invalidRt}, []*InternalRelationTuple{rs[0]}))
+				assert.ErrorIs(t, m.TransactRelationTuples(context.Background(), []*InternalRelationTuple{invalidRt}, []*InternalRelationTuple{rs[0]}), ErrNilSubject)
 			})
 
 			res, _, err = m.GetRelationTuples(context.Background(), &RelationQuery{
@@ -432,7 +432,7 @@ func ManagerTest(t *testing.T, m Manager, addNamespace func(context.Context, *te
 			assert.Equal(t, []*InternalRelationTuple{rs[0]}, res)
 
 			t.Run("invalid=delete", func(t *testing.T) {
-				assert.Error(t, m.TransactRelationTuples(context.Background(), []*InternalRelationTuple{rs[1]}, []*InternalRelationTuple{invalidRt}))
+				assert.ErrorIs(t, m.TransactRelationTuples(context.Background(), []*InternalRelationTuple{rs[1]}, []*InternalRelationTuple{invalidRt}), ErrNilSubject)
 			})
 
 			res, _, err = m.GetRelationTuples(context.Background(), &RelationQuery{
