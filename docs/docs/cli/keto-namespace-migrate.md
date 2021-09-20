@@ -30,4 +30,4 @@ Migrate a namespace
 
 - [keto namespace](keto-namespace) - Read and manipulate namespaces
 - [keto namespace migrate legacy](keto-namespace-migrate-legacy) - Migrate a
-  namespace from a legacy table.
+  namespace from v0.6.x to v0.7.x and later.
