@@ -18,8 +18,8 @@ import (
 func NewMigrateLegacyCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "legacy [<namespace-name>]",
-		Short: "Migrate a namespace from a legacy table.",
-		Long: "Migrate a legacy (v0.6.0) table to the v0.7.0 table.\n" +
+		Short: "Migrate a namespace from v0.6.x to v0.7.x and later.",
+		Long: "Migrate a legacy namespaces from v0.6.x to the v0.7.x and later.\n" +
 			"This step only has to be executed once.\n" +
 			"If no namespace is specified, all legacy namespaces will be migrated.\n" +
 			"Please ensure that namespace IDs did not change in the config file and you have a backup in case something goes wrong!",
