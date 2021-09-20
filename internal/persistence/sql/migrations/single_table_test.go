@@ -131,38 +131,69 @@ func TestToSingleTableMigrator_HasLegacyTable(t *testing.T) {
 
 	for _, dsn := range dbx.GetDSNs(t, debugOnDisk) {
 		t.Run("db="+dsn.Name, func(t *testing.T) {
-			ctx := context.Background()
-			reg := driver.NewTestRegistry(t, dsn)
-			m := NewToSingleTableMigrator(reg)
+			t.Run("case=simple detection", func(t *testing.T) {
+				ctx := context.Background()
+				reg := driver.NewTestRegistry(t, dsn)
+				m := NewToSingleTableMigrator(reg)
 
-			nspaces := []*namespace.Namespace{{
-				ID:   3,
-				Name: "foo",
-			}}
-			require.NoError(t, reg.Config().Set(config.KeyNamespaces, nspaces))
+				nspaces := []*namespace.Namespace{{
+					ID:   3,
+					Name: "foo",
+				}}
+				require.NoError(t, reg.Config().Set(config.KeyNamespaces, nspaces))
 
-			// expect to not report legacy table
-			legacyNamespaces, err := m.LegacyNamespaces(ctx)
-			require.NoError(t, err)
-			assert.Len(t, legacyNamespaces, 0)
+				// expect to not report legacy table
+				legacyNamespaces, err := m.LegacyNamespaces(ctx)
+				require.NoError(t, err)
+				assert.Len(t, legacyNamespaces, 0)
 
-			// migrate legacy table up
-			mb, err := m.namespaceMigrationBox(nspaces[0])
-			require.NoError(t, err)
-			require.NoError(t, mb.Up(ctx))
+				// migrate legacy table up
+				mb, err := m.namespaceMigrationBox(nspaces[0])
+				require.NoError(t, err)
+				require.NoError(t, mb.Up(ctx))
 
-			// expect to report legacy table
-			legacyNamespaces, err = m.LegacyNamespaces(ctx)
-			require.NoError(t, err)
-			assert.Equal(t, nspaces, legacyNamespaces)
+				// expect to report legacy table
+				legacyNamespaces, err = m.LegacyNamespaces(ctx)
+				require.NoError(t, err)
+				assert.Equal(t, nspaces, legacyNamespaces)
 
-			// migrate legacy down
-			require.NoError(t, mb.Down(ctx, -1))
+				// migrate legacy down
+				require.NoError(t, mb.Down(ctx, -1))
 
-			// expect to not report legacy
-			legacyNamespaces, err = m.LegacyNamespaces(ctx)
-			require.NoError(t, err)
-			assert.Len(t, legacyNamespaces, 0)
+				// expect to not report legacy
+				legacyNamespaces, err = m.LegacyNamespaces(ctx)
+				require.NoError(t, err)
+				assert.Len(t, legacyNamespaces, 0)
+			})
+
+			t.Run("case=multiple namespaces", func(t *testing.T) {
+				ctx := context.Background()
+				reg := driver.NewTestRegistry(t, dsn)
+				m := NewToSingleTableMigrator(reg)
+
+				nspaces := []*namespace.Namespace{{
+					ID:   0,
+					Name: "a",
+				}, {
+					ID:   1,
+					Name: "b",
+				}, {
+					ID:   2,
+					Name: "c",
+				}}
+				require.NoError(t, reg.Config().Set(config.KeyNamespaces, nspaces))
+
+				for _, n := range nspaces {
+					// migrate legacy table up
+					mb, err := m.namespaceMigrationBox(n)
+					require.NoError(t, err)
+					require.NoError(t, mb.Up(ctx))
+				}
+
+				ln, err := m.LegacyNamespaces(ctx)
+				require.NoError(t, err)
+				assert.Equal(t, nspaces, ln)
+			})
 		})
 	}
 }
