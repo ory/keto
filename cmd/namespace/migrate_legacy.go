@@ -16,6 +16,8 @@ import (
 )
 
 func NewMigrateLegacyCmd() *cobra.Command {
+	downOnly := false
+
 	cmd := &cobra.Command{
 		Use:   "legacy [<namespace-name>]",
 		Short: "Migrate a namespace from v0.6.x to v0.7.x and later.",
@@ -83,16 +85,24 @@ func NewMigrateLegacyCmd() *cobra.Command {
 			}
 
 			for _, n := range nn {
-				if err := migrator.MigrateNamespace(cmd.Context(), n); err != nil {
-					_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Encountered error while migrating: %s\nAborting.\n", err.Error())
-					if errors.Is(err, migrations.ErrInvalidTuples(nil)) {
-						_, _ = fmt.Fprintln(cmd.ErrOrStderr(), "Please see https://github.com/ory/keto/issues/661 for why this happens and how to resolve this.")
+				if !downOnly {
+					if err := migrator.MigrateNamespace(cmd.Context(), n); err != nil {
+						_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Encountered error while migrating: %s\nAborting.\n", err.Error())
+						if errors.Is(err, migrations.ErrInvalidTuples(nil)) {
+							_, _ = fmt.Fprintln(cmd.ErrOrStderr(), "Please see https://github.com/ory/keto/issues/661 for why this happens and how to resolve this.")
+						}
+						return cmdx.FailSilently(cmd)
 					}
-					return cmdx.FailSilently(cmd)
 				}
-				if err := migrator.MigrateDown(cmd.Context(), n); err != nil {
-					_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not migrate down: %s\n", err.Error())
-					return cmdx.FailSilently(cmd)
+				if flagx.MustGetBool(cmd, migrate.FlagYes) ||
+					cmdx.AskForConfirmation(
+						fmt.Sprintf("Do you want to migrate namespace %s down? This will delete all data in the legacy table.", n.Name),
+						cmd.InOrStdin(), cmd.OutOrStdout()) {
+					if err := migrator.MigrateDown(cmd.Context(), n); err != nil {
+						_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not migrate down: %s\n", err.Error())
+						return cmdx.FailSilently(cmd)
+					}
+					_, _ = fmt.Fprintf(cmd.OutOrStdout(), "Successfully migrated down namespace %s.\n", n.Name)
 				}
 			}
 
@@ -102,6 +112,7 @@ func NewMigrateLegacyCmd() *cobra.Command {
 
 	migrate.RegisterYesFlag(cmd.Flags())
 	registerPackageFlags(cmd.Flags())
+	cmd.Flags().BoolVar(&downOnly, "down-only", false, "Migrate legacy namespace(s) only down.")
 
 	return cmd
 }
