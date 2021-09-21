@@ -23,6 +23,9 @@ Something is not working.
 - [ ] Config schema: replace `ory://*` references with something actually
       resolvable ([keto#719](https://github.com/ory/keto/issues/719)) -
       [@Patrik](https://github.com/zepatrik)
+- [ ] Docker files and docker-compose.yml do not work on master
+      ([keto#725](https://github.com/ory/keto/issues/725)) -
+      [@Patrik](https://github.com/zepatrik)
 - [x] Check valid relation-tuple characters on insert
       ([keto#661](https://github.com/ory/keto/issues/661))
 - [x] Keto version API does not work in REST API and CLI.
@@ -83,6 +86,9 @@ Blocks milestones or other issues or pulls.
       [@Robin Brämer](https://github.com/robinbraemer)
 - [ ] Config schema: replace `ory://*` references with something actually
       resolvable ([keto#719](https://github.com/ory/keto/issues/719)) -
+      [@Patrik](https://github.com/zepatrik)
+- [ ] Docker files and docker-compose.yml do not work on master
+      ([keto#725](https://github.com/ory/keto/issues/725)) -
       [@Patrik](https://github.com/zepatrik)
 
 ### [Rfc](https://github.com/ory/keto/labels/rfc)
