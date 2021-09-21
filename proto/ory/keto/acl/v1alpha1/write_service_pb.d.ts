@@ -13,7 +13,6 @@ export class TransactRelationTuplesRequest extends jspb.Message {
     setRelationTupleDeltasList(value: Array<RelationTupleDelta>): TransactRelationTuplesRequest;
     addRelationTupleDeltas(value?: RelationTupleDelta, index?: number): RelationTupleDelta;
 
-
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): TransactRelationTuplesRequest.AsObject;
     static toObject(includeInstance: boolean, msg: TransactRelationTuplesRequest): TransactRelationTuplesRequest.AsObject;
@@ -34,12 +33,10 @@ export class RelationTupleDelta extends jspb.Message {
     getAction(): RelationTupleDelta.Action;
     setAction(value: RelationTupleDelta.Action): RelationTupleDelta;
 
-
     hasRelationTuple(): boolean;
     clearRelationTuple(): void;
     getRelationTuple(): ory_keto_acl_v1alpha1_acl_pb.RelationTuple | undefined;
     setRelationTuple(value?: ory_keto_acl_v1alpha1_acl_pb.RelationTuple): RelationTupleDelta;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): RelationTupleDelta.AsObject;
@@ -70,7 +67,6 @@ export class TransactRelationTuplesResponse extends jspb.Message {
     getSnaptokensList(): Array<string>;
     setSnaptokensList(value: Array<string>): TransactRelationTuplesResponse;
     addSnaptokens(value: string, index?: number): string;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): TransactRelationTuplesResponse.AsObject;

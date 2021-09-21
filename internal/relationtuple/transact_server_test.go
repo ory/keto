@@ -26,9 +26,21 @@ func TestWriteHandlers(t *testing.T) {
 	r := httprouter.New()
 	wr := &x.WriteRouter{Router: r}
 	rr := &x.ReadRouter{Router: r}
-	nspace := &namespace.Namespace{Name: "write handler test"}
 	reg := driver.NewSqliteTestRegistry(t, false)
-	require.NoError(t, reg.Config().Set(config.KeyNamespaces, []*namespace.Namespace{nspace}))
+
+	var nspaces []*namespace.Namespace
+	addNamespace := func(t *testing.T) *namespace.Namespace {
+		n := &namespace.Namespace{
+			ID:   int32(len(nspaces)),
+			Name: t.Name(),
+		}
+		nspaces = append(nspaces, n)
+
+		require.NoError(t, reg.Config().Set(config.KeyNamespaces, nspaces))
+
+		return n
+	}
+
 	h := relationtuple.NewHandler(reg)
 	h.RegisterWriteRoutes(wr)
 	h.RegisterReadRoutes(rr)
@@ -46,6 +58,8 @@ func TestWriteHandlers(t *testing.T) {
 		}
 
 		t.Run("case=creates tuple", func(t *testing.T) {
+			nspace := addNamespace(t)
+
 			rt := &relationtuple.InternalRelationTuple{
 				Namespace: nspace.Name,
 				Object:    "obj",
@@ -86,10 +100,51 @@ func TestWriteHandlers(t *testing.T) {
 			resp := doCreate([]byte("foo"))
 			assert.Equal(t, http.StatusBadRequest, resp.StatusCode)
 		})
+
+		t.Run("case=special chars error on creation already", func(t *testing.T) {
+			nspace := addNamespace(t)
+
+			rts := []*relationtuple.InternalRelationTuple{
+				{
+					Namespace: nspace.Name,
+					Object:    "group:B",
+					Relation:  "member",
+					Subject: &relationtuple.SubjectSet{
+						Namespace: nspace.Name,
+						Object:    "group:A",
+						Relation:  "member",
+					},
+				},
+				{
+					Namespace: nspace.Name,
+					Object:    "@all",
+					Relation:  "member",
+					Subject:   &relationtuple.SubjectID{ID: "this:will#be interpreted:as a@subject set"},
+				},
+			}
+
+			for _, rt := range rts {
+				payload, err := json.Marshal(rt)
+				require.NoError(t, err)
+
+				resp := doCreate(payload)
+				assert.GreaterOrEqual(t, resp.StatusCode, http.StatusBadRequest)
+				assert.Less(t, resp.StatusCode, http.StatusInternalServerError)
+			}
+
+			actual, next, err := reg.RelationTupleManager().GetRelationTuples(context.Background(), &relationtuple.RelationQuery{
+				Namespace: nspace.Name,
+			})
+			require.NoError(t, err)
+			assert.Equal(t, "", next)
+			assert.Len(t, actual, 0)
+		})
 	})
 
 	t.Run("method=delete", func(t *testing.T) {
 		t.Run("case=deletes a tuple", func(t *testing.T) {
+			nspace := addNamespace(t)
+
 			rt := &relationtuple.InternalRelationTuple{
 				Namespace: nspace.Name,
 				Object:    "deleted obj",
@@ -113,6 +168,8 @@ func TestWriteHandlers(t *testing.T) {
 
 	t.Run("method=patch", func(t *testing.T) {
 		t.Run("case=create and delete", func(t *testing.T) {
+			nspace := addNamespace(t)
+
 			deltas := []*relationtuple.PatchDelta{
 				{
 					Action: relationtuple.ActionInsert,
@@ -152,6 +209,8 @@ func TestWriteHandlers(t *testing.T) {
 		})
 
 		t.Run("case=ignores rest on err", func(t *testing.T) {
+			nspace := addNamespace(t)
+
 			deltas := []*relationtuple.PatchDelta{
 				{
 					Action: relationtuple.ActionInsert,
@@ -185,6 +244,114 @@ func TestWriteHandlers(t *testing.T) {
 			actualRTs, _, err := reg.RelationTupleManager().GetRelationTuples(context.Background(), (*relationtuple.RelationQuery)(deltas[0].RelationTuple), x.WithSize(10))
 			require.NoError(t, err)
 			assert.Len(t, actualRTs, 0)
+		})
+
+		t.Run("case=only create", func(t *testing.T) {
+			nspace := addNamespace(t)
+
+			deltas := []*relationtuple.PatchDelta{
+				{
+					Action: relationtuple.ActionInsert,
+					RelationTuple: &relationtuple.InternalRelationTuple{
+						Namespace: nspace.Name,
+						Object:    "create obj",
+						Relation:  "rel",
+						Subject:   &relationtuple.SubjectID{ID: "create sub"},
+					},
+				},
+			}
+
+			body, err := json.Marshal(deltas)
+			require.NoError(t, err)
+			req, err := http.NewRequest(http.MethodPatch, ts.URL+relationtuple.RouteBase, bytes.NewBuffer(body))
+			require.NoError(t, err)
+			resp, err := ts.Client().Do(req)
+			require.NoError(t, err)
+			assert.Equal(t, http.StatusNoContent, resp.StatusCode)
+
+			actualRTs, _, err := reg.RelationTupleManager().GetRelationTuples(context.Background(), &relationtuple.RelationQuery{
+				Namespace: nspace.Name,
+			})
+			require.NoError(t, err)
+			assert.Equal(t, []*relationtuple.InternalRelationTuple{deltas[0].RelationTuple}, actualRTs)
+		})
+
+		t.Run("case=only delete", func(t *testing.T) {
+			nspace := addNamespace(t)
+
+			deltas := []*relationtuple.PatchDelta{
+				{
+					Action: relationtuple.ActionDelete,
+					RelationTuple: &relationtuple.InternalRelationTuple{
+						Namespace: nspace.Name,
+						Object:    "delete obj",
+						Relation:  "rel",
+						Subject:   &relationtuple.SubjectID{ID: "delete sub"},
+					},
+				},
+			}
+
+			body, err := json.Marshal(deltas)
+			require.NoError(t, err)
+			req, err := http.NewRequest(http.MethodPatch, ts.URL+relationtuple.RouteBase, bytes.NewBuffer(body))
+			require.NoError(t, err)
+			resp, err := ts.Client().Do(req)
+			require.NoError(t, err)
+			assert.Equal(t, http.StatusNoContent, resp.StatusCode)
+
+			actualRTs, _, err := reg.RelationTupleManager().GetRelationTuples(context.Background(), &relationtuple.RelationQuery{
+				Namespace: nspace.Name,
+			})
+			require.NoError(t, err)
+			assert.Equal(t, []*relationtuple.InternalRelationTuple{}, actualRTs)
+		})
+
+		t.Run("case=valid JSON, invalid content", func(t *testing.T) {
+			rawJSON := `
+[
+    {
+        "action": "insert",
+        "namespace":"role",
+        "object":"super-admin",
+        "relation":"member",
+        "subject":"role:company-admin"
+    }
+]`
+			req, err := http.NewRequest(http.MethodPatch, ts.URL+relationtuple.RouteBase, bytes.NewBufferString(rawJSON))
+			require.NoError(t, err)
+			resp, err := ts.Client().Do(req)
+			require.NoError(t, err)
+			assert.Equal(t, http.StatusBadRequest, resp.StatusCode)
+
+			defer resp.Body.Close()
+			errContent, err := io.ReadAll(resp.Body)
+			require.NoError(t, err)
+			assert.Contains(t, string(errContent), "relation_tuple is missing")
+		})
+
+		t.Run("case=unknown action", func(t *testing.T) {
+			rawJSON := `
+[
+	{
+		"action": "unknown_action_foo",
+		"relation_tuple": {
+			"namespace":"role",
+			"object":"super-admin",
+			"relation":"member",
+			"subject":"role:company-admin"
+		}
+	}
+]`
+			req, err := http.NewRequest(http.MethodPatch, ts.URL+relationtuple.RouteBase, bytes.NewBufferString(rawJSON))
+			require.NoError(t, err)
+			resp, err := ts.Client().Do(req)
+			require.NoError(t, err)
+			assert.Equal(t, http.StatusBadRequest, resp.StatusCode)
+
+			defer resp.Body.Close()
+			errContent, err := io.ReadAll(resp.Body)
+			require.NoError(t, err)
+			assert.Contains(t, string(errContent), "unknown_action_foo")
 		})
 	})
 }

@@ -272,11 +272,12 @@ func (r *RegistryDefault) allHandlers() []Handler {
 }
 
 func (r *RegistryDefault) ReadRouter() http.Handler {
-	n := negroni.New(reqlog.NewMiddlewareFromLogger(r.l, "write#Ory Keto"))
+	n := negroni.New(reqlog.NewMiddlewareFromLogger(r.l, "read#Ory Keto").ExcludePaths(healthx.AliveCheckPath, healthx.ReadyCheckPath))
 
 	br := &x.ReadRouter{Router: httprouter.New()}
 
 	r.HealthHandler().SetHealthRoutes(br.Router, false)
+	r.HealthHandler().SetVersionRoutes(br.Router)
 
 	for _, h := range r.allHandlers() {
 		h.RegisterReadRoutes(br)
@@ -296,11 +297,12 @@ func (r *RegistryDefault) ReadRouter() http.Handler {
 }
 
 func (r *RegistryDefault) WriteRouter() http.Handler {
-	n := negroni.New(reqlog.NewMiddlewareFromLogger(r.l, "write#Ory Keto"))
+	n := negroni.New(reqlog.NewMiddlewareFromLogger(r.l, "write#Ory Keto").ExcludePaths(healthx.AliveCheckPath, healthx.ReadyCheckPath))
 
 	pr := &x.WriteRouter{Router: httprouter.New()}
 
 	r.HealthHandler().SetHealthRoutes(pr.Router, false)
+	r.HealthHandler().SetVersionRoutes(pr.Router)
 
 	for _, h := range r.allHandlers() {
 		h.RegisterWriteRoutes(pr)

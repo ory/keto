@@ -11,7 +11,7 @@
     "prettierTarget": "(contrib/**/*.{js,md,json,yml})|*.md"
   },
   "devDependencies": {
-    "doctoc": "^2.0.0",
+    "doctoc": "^2.0.1",
     "opencollective": "^1.0.3",
     "ory-prettier-styles": "^1.1.2",
     "prettier": "2.2.1"
@@ -22,8 +22,8 @@
     "logo": "https://opencollective.com/ory/logo.txt"
   },
   "dependencies": {
-    "grpc_tools_node_protoc_ts": "^5.1.1",
-    "grpc-tools": "^1.10.0"
+    "grpc_tools_node_protoc_ts": "^5.3.2",
+    "grpc-tools": "^1.11.2"
   },
   "scripts": {
     "doctoc": "doctoc README.md",

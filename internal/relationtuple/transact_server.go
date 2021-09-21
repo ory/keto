@@ -91,7 +91,7 @@ func (h *handler) createRelation(w http.ResponseWriter, r *http.Request, _ httpr
 
 	if err := h.d.RelationTupleManager().WriteRelationTuples(r.Context(), &rel); err != nil {
 		h.d.Logger().WithError(err).WithFields(rel.ToLoggerFields()).Errorf("got an error while creating the relation tuple")
-		h.d.Writer().WriteError(w, r, errors.WithStack(herodot.ErrInternalServerError.WithError(err.Error())))
+		h.d.Writer().WriteError(w, r, err)
 		return
 	}
 
@@ -165,6 +165,18 @@ func (h *handler) patchRelations(w http.ResponseWriter, r *http.Request, _ httpr
 	if err := json.NewDecoder(r.Body).Decode(&deltas); err != nil {
 		h.d.Writer().WriteError(w, r, herodot.ErrBadRequest.WithError(err.Error()))
 		return
+	}
+	for _, d := range deltas {
+		if d.RelationTuple == nil {
+			h.d.Writer().WriteError(w, r, herodot.ErrBadRequest.WithError("relation_tuple is missing"))
+			return
+		}
+		switch d.Action {
+		case ActionDelete, ActionInsert:
+		default:
+			h.d.Writer().WriteError(w, r, herodot.ErrBadRequest.WithError("unknown action "+string(d.Action)))
+			return
+		}
 	}
 
 	if err := h.d.RelationTupleManager().TransactRelationTuples(r.Context(), internalTuplesWithAction(deltas, ActionInsert), internalTuplesWithAction(deltas, ActionDelete)); err != nil {

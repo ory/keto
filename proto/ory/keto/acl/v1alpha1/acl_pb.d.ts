@@ -9,19 +9,15 @@ import * as jspb from "google-protobuf";
 export class RelationTuple extends jspb.Message { 
     getNamespace(): string;
     setNamespace(value: string): RelationTuple;
-
     getObject(): string;
     setObject(value: string): RelationTuple;
-
     getRelation(): string;
     setRelation(value: string): RelationTuple;
-
 
     hasSubject(): boolean;
     clearSubject(): void;
     getSubject(): Subject | undefined;
     setSubject(value?: Subject): RelationTuple;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): RelationTuple.AsObject;
@@ -49,12 +45,10 @@ export class Subject extends jspb.Message {
     getId(): string;
     setId(value: string): Subject;
 
-
     hasSet(): boolean;
     clearSet(): void;
     getSet(): SubjectSet | undefined;
     setSet(value?: SubjectSet): Subject;
-
 
     getRefCase(): Subject.RefCase;
 
@@ -76,11 +70,8 @@ export namespace Subject {
 
     export enum RefCase {
         REF_NOT_SET = 0,
-    
-    ID = 1,
-
-    SET = 2,
-
+        ID = 1,
+        SET = 2,
     }
 
 }
@@ -88,13 +79,10 @@ export namespace Subject {
 export class SubjectSet extends jspb.Message { 
     getNamespace(): string;
     setNamespace(value: string): SubjectSet;
-
     getObject(): string;
     setObject(value: string): SubjectSet;
-
     getRelation(): string;
     setRelation(value: string): SubjectSet;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): SubjectSet.AsObject;

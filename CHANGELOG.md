@@ -3,7 +3,7 @@
 
 **Table of Contents**
 
-- [0.0.0 (2021-09-10)](#000-2021-09-10)
+- [0.0.0 (2021-09-21)](#000-2021-09-21)
   - [Bug Fixes](#bug-fixes)
   - [Chores](#chores)
   - [Code Refactoring](#code-refactoring)
@@ -98,16 +98,22 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.6.0-alpha.3...v0.0.0) (2021-09-10)
+# [0.0.0](https://github.com/ory/keto/compare/v0.6.0-alpha.3...v0.0.0) (2021-09-21)
 
 ### Bug Fixes
 
+- `make sdk` dependency on the Ory CLI
+  ([#710](https://github.com/ory/keto/issues/710))
+  ([0cb5706](https://github.com/ory/keto/commit/0cb57060c80f06adf48a6fbfa912a25e51c82037))
 - Add missing tracers ([#600](https://github.com/ory/keto/issues/600))
   ([aa263be](https://github.com/ory/keto/commit/aa263be9a7830e3c769d7698d36137555ca230bc)),
   closes [#593](https://github.com/ory/keto/issues/593)
 - **cli:** Panic when printing empty expand trees
   ([#686](https://github.com/ory/keto/issues/686))
   ([7956dec](https://github.com/ory/keto/commit/7956decb995d5906c4a4632ebd500acb44b4a7ad))
+- Exclude `/health` endpoints from logs
+  ([#716](https://github.com/ory/keto/issues/716))
+  ([7c27f92](https://github.com/ory/keto/commit/7c27f920837e009f3fcc1d7d5ba20693db75e867))
 - Handle relation tuple cycles in expand and check engine
   ([#623](https://github.com/ory/keto/issues/623))
   ([8e30119](https://github.com/ory/keto/commit/8e301198298858fd7f387ef63a7abf4fa55ea240))
@@ -138,6 +144,12 @@
   This change significantly improves and the config schema. Parts will now be
   taken from upstream to ensure a more up-to-date schema.
 
+- Patch REST API input validation and SDK generation
+  ([#717](https://github.com/ory/keto/issues/717))
+  ([d49e098](https://github.com/ory/keto/commit/d49e098b77bc238276a91bc61f3c8c7f9f7357a9))
+- Set version during release build and register version handler
+  ([#714](https://github.com/ory/keto/issues/714))
+  ([8091475](https://github.com/ory/keto/commit/80914752d56fa5729857e26f9d853c091aa888d2))
 - Update docker-compose.yml version
   ([#595](https://github.com/ory/keto/issues/595))
   ([7fa4dca](https://github.com/ory/keto/commit/7fa4dca4182a1fa024f9cef0a04163f2cbd882aa)),
@@ -169,6 +181,8 @@
 - Fix example not following best practice
   ([#582](https://github.com/ory/keto/issues/582))
   ([a015818](https://github.com/ory/keto/commit/a0158182c5f87cfd4767824e1c5d6cbb8094a4e6))
+- Fix REST API reference ([#718](https://github.com/ory/keto/issues/718))
+  ([f989b39](https://github.com/ory/keto/commit/f989b3978f34ec484900e6bff3543a39d2d7636c))
 - Update NPM links due to organisation move
   ([#616](https://github.com/ory/keto/issues/616))
   ([6355bea](https://github.com/ory/keto/commit/6355beae5b5b28c3eee19fdee85b9875cbc165c3))
@@ -241,6 +255,10 @@
   ```
 
   passed.
+
+- Ensure problematic chars are not creatable over REST
+  ([#709](https://github.com/ory/keto/issues/709))
+  ([12b7954](https://github.com/ory/keto/commit/12b79548b50219ff692b24ff8ee0ed7bb9343523))
 
 # [0.6.0-alpha.3](https://github.com/ory/keto/compare/v0.6.0-alpha.2...v0.6.0-alpha.3) (2021-04-29)
 
