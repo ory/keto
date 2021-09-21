@@ -60,4 +60,7 @@ type (
 	contextKeys string
 )
 
-const LogrusHookContextKey contextKeys = "logrus hook"
+const (
+	LogrusHookContextKey contextKeys = "logrus hook"
+	RegistryContextKey   contextKeys = "registry"
+)

@@ -85,6 +85,9 @@ func NewMigrateLegacyCmd() *cobra.Command {
 			for _, n := range nn {
 				if err := migrator.MigrateNamespace(cmd.Context(), n); err != nil {
 					_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Encountered error while migrating: %s\nAborting.\n", err.Error())
+					if errors.Is(err, migrations.ErrInvalidTuples(nil)) {
+						_, _ = fmt.Fprintln(cmd.ErrOrStderr(), "Please see https://github.com/ory/keto/issues/661 for why this happens and how to resolve this.")
+					}
 					return cmdx.FailSilently(cmd)
 				}
 				if err := migrator.MigrateDown(cmd.Context(), n); err != nil {

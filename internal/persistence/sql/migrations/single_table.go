@@ -3,6 +3,7 @@ package migrations
 import (
 	"context"
 	"embed"
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -39,15 +40,17 @@ type (
 
 	relationTuple struct {
 		// An ID field is required to make pop happy. The actual ID is a composite primary key.
-		ID         string               `db:"shard_id"`
-		Object     string               `db:"object"`
-		Relation   string               `db:"relation"`
-		Subject    string               `db:"subject"`
-		CommitTime time.Time            `db:"commit_time"`
-		Namespace  *namespace.Namespace `db:"-"`
+		ID         string               `db:"shard_id" json:"-"`
+		Object     string               `db:"object" json:"object"`
+		Relation   string               `db:"relation" json:"relation"`
+		Subject    string               `db:"subject" json:"subject"`
+		CommitTime time.Time            `db:"commit_time" json:"commit_time"`
+		Namespace  *namespace.Namespace `db:"-" json:"-"`
 	}
 	relationTuples []*relationTuple
 	contextKey     string
+
+	ErrInvalidTuples []*relationTuple
 )
 
 var (
@@ -76,6 +79,22 @@ func namespaceTableFromContext(ctx context.Context) string {
 		panic("namespace context key not set")
 	}
 	return tableFromNamespace(n)
+}
+
+func (e ErrInvalidTuples) Error() string {
+	msg := "found non-deserializable relationtuples: "
+	raw, err := json.Marshal(e)
+	if err != nil {
+		msg += "internal error: " + err.Error()
+	} else {
+		msg += string(raw)
+	}
+	return msg
+}
+
+func (e ErrInvalidTuples) Is(other error) bool {
+	_, ok := other.(ErrInvalidTuples)
+	return ok
 }
 
 func (r *relationTuple) toInternal() (*relationtuple.InternalRelationTuple, error) {
@@ -173,6 +192,8 @@ func (m *toSingleTableMigrator) MigrateNamespace(ctx context.Context, n *namespa
 		panic("got unexpected persister")
 	}
 
+	var irrecoverableRTs ErrInvalidTuples
+
 	for done, page := false, 1; !done; {
 		if err := p.Transaction(ctx, func(ctx context.Context, _ *pop.Connection) error {
 			rs, hasNext, err := m.getOldRelationTuples(ctx, n, page, m.perPage)
@@ -183,7 +204,8 @@ func (m *toSingleTableMigrator) MigrateNamespace(ctx context.Context, n *namespa
 			for _, r := range rs {
 				ri, err := r.toInternal()
 				if err != nil {
-					m.d.Logger().WithField("relation_tuple", r).WithField("hint", "https://github.com/ory/keto/issues/661").WithError(err).Warn("Skipping relation tuple, it seems to be in a broken state. Please recreate it manually.")
+					m.d.Logger().WithField("relation_tuple", r).WithField("hint", "").WithError(err).Warn("Skipping relation tuple, it seems to be in a broken state. Please recreate it manually.")
+					irrecoverableRTs = append(irrecoverableRTs, r)
 					continue
 				}
 				rt := &sql.RelationTuple{
@@ -213,6 +235,9 @@ func (m *toSingleTableMigrator) MigrateNamespace(ctx context.Context, n *namespa
 		}
 	}
 
+	if len(irrecoverableRTs) != 0 {
+		return irrecoverableRTs
+	}
 	return nil
 }
 

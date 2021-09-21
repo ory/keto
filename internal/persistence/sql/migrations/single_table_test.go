@@ -122,6 +122,27 @@ func TestToSingleTableMigrator(t *testing.T) {
 				assert.Equal(t, "", nextToken)
 				assert.Equal(t, rts, migrated)
 			})
+
+			t.Run("case=non-deserializable tuple", func(t *testing.T) {
+				n := setup(t)
+
+				require.NoError(t, m.insertOldRelationTuples(ctx, n, &relationtuple.InternalRelationTuple{
+					Namespace: n.Name,
+					Object:    "o0",
+					Relation:  "r",
+					Subject:   &relationtuple.SubjectID{ID: "invalid#subject-id"},
+				}, &relationtuple.InternalRelationTuple{
+					Namespace: n.Name,
+					Object:    "o1",
+					Relation:  "r",
+					Subject:   &relationtuple.SubjectID{ID: "invalid#subject-id"},
+				}))
+				err := m.MigrateNamespace(ctx, n)
+				require.Error(t, err)
+				invalid, ok := err.(ErrInvalidTuples)
+				require.True(t, ok)
+				assert.Len(t, invalid, 2)
+			})
 		})
 	}
 }

@@ -18,6 +18,11 @@ import (
 )
 
 func NewDefaultRegistry(ctx context.Context, flags *pflag.FlagSet, withoutNetwork bool) (Registry, error) {
+	reg, ok := ctx.Value(RegistryContextKey).(Registry)
+	if ok {
+		return reg, nil
+	}
+
 	hook, ok := ctx.Value(LogrusHookContextKey).(logrus.Hook)
 
 	var opts []logrusx.Option
