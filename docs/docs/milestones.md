@@ -46,8 +46,6 @@ New feature or request.
       [@hackerman](https://github.com/aeneasr),
       [@Patrik](https://github.com/zepatrik),
       [@Robin Brämer](https://github.com/robinbraemer)
-- [ ] Service name in health API
-      ([keto#472](https://github.com/ory/keto/issues/472))
 
 ### [Docs](https://github.com/ory/keto/labels/docs)
 
