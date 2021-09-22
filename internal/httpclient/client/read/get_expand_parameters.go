@@ -67,19 +67,19 @@ type GetExpandParams struct {
 
 	/* Namespace.
 
-	   Namespace of the Relation Tuple
+	   Namespace of the Subject Set
 	*/
 	Namespace string
 
 	/* Object.
 
-	   Object of the Relation Tuple
+	   Object of the Subject Set
 	*/
 	Object string
 
 	/* Relation.
 
-	   Relation of the Relation Tuple
+	   Relation of the Subject Set
 	*/
 	Relation string
 

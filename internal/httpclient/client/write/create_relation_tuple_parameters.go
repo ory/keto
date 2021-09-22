@@ -62,7 +62,7 @@ func NewCreateRelationTupleParamsWithHTTPClient(client *http.Client) *CreateRela
 type CreateRelationTupleParams struct {
 
 	// Payload.
-	Payload *models.InternalRelationTuple
+	Payload *models.RelationQuery
 
 	timeout    time.Duration
 	Context    context.Context
@@ -118,13 +118,13 @@ func (o *CreateRelationTupleParams) SetHTTPClient(client *http.Client) {
 }
 
 // WithPayload adds the payload to the create relation tuple params
-func (o *CreateRelationTupleParams) WithPayload(payload *models.InternalRelationTuple) *CreateRelationTupleParams {
+func (o *CreateRelationTupleParams) WithPayload(payload *models.RelationQuery) *CreateRelationTupleParams {
 	o.SetPayload(payload)
 	return o
 }
 
 // SetPayload adds the payload to the create relation tuple params
-func (o *CreateRelationTupleParams) SetPayload(payload *models.InternalRelationTuple) {
+func (o *CreateRelationTupleParams) SetPayload(payload *models.RelationQuery) {
 	o.Payload = payload
 }
 

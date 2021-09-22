@@ -20,36 +20,38 @@ import (
 )
 
 const (
-	FlagSubject   = "subject"
-	FlagRelation  = "relation"
-	FlagObject    = "object"
-	FlagPageSize  = "page-size"
-	FlagPageToken = "page-token"
+	FlagSubjectID  = "subject-id"
+	FlagSubjectSet = "subject-set"
+	FlagRelation   = "relation"
+	FlagObject     = "object"
+	FlagPageSize   = "page-size"
+	FlagPageToken  = "page-token"
 )
 
 func registerRelationTupleFlags(flags *pflag.FlagSet) {
-	flags.String(FlagSubject, "", "Set the requested subject")
+	flags.String(FlagSubjectID, "", "Set the requested subject ID")
+	flags.String(FlagSubjectSet, "", `Set the requested subject set; format: "namespace:object#relation"`)
 	flags.String(FlagRelation, "", "Set the requested relation")
 	flags.String(FlagObject, "", "Set the requested object")
 }
 
 func readQueryFromFlags(cmd *cobra.Command, namespace string) (*acl.ListRelationTuplesRequest_Query, error) {
-	subject := flagx.MustGetString(cmd, FlagSubject)
-	relation := flagx.MustGetString(cmd, FlagRelation)
-	object := flagx.MustGetString(cmd, FlagObject)
-
 	query := &acl.ListRelationTuplesRequest_Query{
-		Relation:  relation,
-		Object:    object,
 		Namespace: namespace,
+		Object:    flagx.MustGetString(cmd, FlagObject),
+		Relation:  flagx.MustGetString(cmd, FlagRelation),
 	}
 
-	if subject != "" {
-		s, err := relationtuple.SubjectFromString(subject)
+	switch flags := cmd.Flags(); {
+	case flags.Changed(FlagSubjectID) && flags.Changed(FlagSubjectSet):
+		return nil, relationtuple.ErrDuplicateSubject
+	case flags.Changed(FlagSubjectID):
+		query.Subject = (&relationtuple.SubjectID{ID: flagx.MustGetString(cmd, FlagSubjectID)}).ToProto()
+	case flags.Changed(FlagSubjectSet):
+		s, err := (&relationtuple.SubjectSet{}).FromString(flagx.MustGetString(cmd, FlagSubjectSet))
 		if err != nil {
 			return nil, err
 		}
-
 		query.Subject = s.ToProto()
 	}
 

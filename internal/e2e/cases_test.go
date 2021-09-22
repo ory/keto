@@ -5,6 +5,8 @@ import (
 	"strconv"
 	"testing"
 
+	"github.com/stretchr/testify/require"
+
 	"github.com/ory/herodot"
 
 	"github.com/ory/keto/internal/x"
@@ -42,7 +44,8 @@ func runCases(c client, addNamespace func(*testing.T, ...*namespace.Namespace)) 
 			c.createTuple(t, tuple)
 
 			resp := c.queryTuple(t, &relationtuple.RelationQuery{Namespace: tuple.Namespace})
-			assert.Contains(t, resp.RelationTuples, tuple)
+			require.Len(t, resp.RelationTuples, 1)
+			assert.Equal(t, tuple, resp.RelationTuples[0])
 
 			// try the check API to see whether the tuple is interpreted correctly
 			assert.True(t, c.check(t, tuple))
@@ -85,8 +88,8 @@ func runCases(c client, addNamespace func(*testing.T, ...*namespace.Namespace)) 
 			assert.Equal(t, expectedTree.Subject, actualTree.Subject)
 			assert.Equal(t, len(expectedTree.Children), len(actualTree.Children), "expected: %+v; actual: %+v", expectedTree.Children, actualTree.Children)
 
-			for _, child := range expectedTree.Children {
-				assert.Contains(t, actualTree.Children, child)
+			for i, child := range expectedTree.Children {
+				assert.Contains(t, actualTree.Children, child, "%+v %+v", actualTree.Children[i], child)
 			}
 		})
 
@@ -147,12 +150,12 @@ func runCases(c client, addNamespace func(*testing.T, ...*namespace.Namespace)) 
 					}
 					c.createTuple(t, rt)
 
-					resp := c.queryTuple(t, (*relationtuple.RelationQuery)(rt))
+					resp := c.queryTuple(t, rt.ToQuery())
 					assert.Equal(t, []*relationtuple.InternalRelationTuple{rt}, resp.RelationTuples)
 
 					c.deleteTuple(t, rt)
 
-					resp = c.queryTuple(t, (*relationtuple.RelationQuery)(rt))
+					resp = c.queryTuple(t, rt.ToQuery())
 					assert.Len(t, resp.RelationTuples, 0)
 				})
 			}

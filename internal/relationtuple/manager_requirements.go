@@ -7,6 +7,8 @@ import (
 	"strconv"
 	"testing"
 
+	"github.com/ory/x/pointerx"
+
 	"github.com/ory/herodot"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -45,7 +47,7 @@ func ManagerTest(t *testing.T, m Manager, addNamespace func(context.Context, *te
 				tupC := *tup
 
 				t.Run(fmt.Sprintf("subject_type=%T", tupC.Subject), func(t *testing.T) {
-					resp, nextPage, err := m.GetRelationTuples(context.Background(), (*RelationQuery)(&tupC))
+					resp, nextPage, err := m.GetRelationTuples(context.Background(), tupC.ToQuery())
 					require.NoError(t, err)
 					assert.Equal(t, "", nextPage)
 					assert.Equal(t, []*InternalRelationTuple{&tupC}, resp)
@@ -129,7 +131,7 @@ func ManagerTest(t *testing.T, m Manager, addNamespace func(context.Context, *te
 				{
 					query: &RelationQuery{
 						Namespace: nspace,
-						Subject:   &SubjectID{ID: "s 0"},
+						SubjectID: pointerx.String("s 0"),
 					},
 					expected: []*InternalRelationTuple{
 						tuples[0],
@@ -139,7 +141,7 @@ func ManagerTest(t *testing.T, m Manager, addNamespace func(context.Context, *te
 					query: &RelationQuery{
 						Namespace: nspace,
 						Object:    "o 0",
-						Subject:   &SubjectID{ID: "s 0"},
+						SubjectID: pointerx.String("s 0"),
 					},
 					expected: []*InternalRelationTuple{
 						tuples[0],
@@ -149,7 +151,7 @@ func ManagerTest(t *testing.T, m Manager, addNamespace func(context.Context, *te
 					query: &RelationQuery{
 						Namespace: nspace,
 						Relation:  "r 0",
-						Subject:   &SubjectID{ID: "s 0"},
+						SubjectID: pointerx.String("s 0"),
 					},
 					expected: []*InternalRelationTuple{
 						tuples[0],
@@ -160,7 +162,7 @@ func ManagerTest(t *testing.T, m Manager, addNamespace func(context.Context, *te
 						Namespace: nspace,
 						Object:    "o 0",
 						Relation:  "r 0",
-						Subject:   &SubjectID{ID: "s 0"},
+						SubjectID: pointerx.String("s 0"),
 					},
 					expected: []*InternalRelationTuple{
 						tuples[0],
@@ -284,13 +286,13 @@ func ManagerTest(t *testing.T, m Manager, addNamespace func(context.Context, *te
 				t.Run(fmt.Sprintf("subject_type=%T", rt.Subject), func(t *testing.T) {
 					require.NoError(t, m.WriteRelationTuples(context.Background(), rt))
 
-					res, _, err := m.GetRelationTuples(context.Background(), (*RelationQuery)(rt))
+					res, _, err := m.GetRelationTuples(context.Background(), rt.ToQuery())
 					require.NoError(t, err)
 					assert.Equal(t, []*InternalRelationTuple{rt}, res)
 
 					require.NoError(t, m.DeleteRelationTuples(context.Background(), rt))
 
-					res, _, err = m.GetRelationTuples(context.Background(), (*RelationQuery)(rt))
+					res, _, err = m.GetRelationTuples(context.Background(), rt.ToQuery())
 					require.NoError(t, err)
 					assert.Len(t, res, 0)
 				})

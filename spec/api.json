@@ -67,9 +67,27 @@
             "required": true
           },
           {
-            "type": "object",
-            "description": "Subject of the Relation Tuple\n\nThe subject follows the subject string encoding format.",
-            "name": "subject",
+            "type": "string",
+            "description": "SubjectID of the Relation Tuple",
+            "name": "subject_id",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Namespace of the Subject Set",
+            "name": "subject_set.namespace",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Object of the Subject Set",
+            "name": "subject_set.object",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Relation of the Subject Set",
+            "name": "subject_set.relation",
             "in": "query"
           }
         ],
@@ -172,7 +190,7 @@
             "name": "Payload",
             "in": "body",
             "schema": {
-              "$ref": "#/definitions/InternalRelationTuple"
+              "$ref": "#/definitions/RelationQuery"
             }
           }
         ],
@@ -275,21 +293,21 @@
         "parameters": [
           {
             "type": "string",
-            "description": "Namespace of the Relation Tuple",
+            "description": "Namespace of the Subject Set",
             "name": "namespace",
             "in": "query",
             "required": true
           },
           {
             "type": "string",
-            "description": "Object of the Relation Tuple",
+            "description": "Object of the Subject Set",
             "name": "object",
             "in": "query",
             "required": true
           },
           {
             "type": "string",
-            "description": "Relation of the Relation Tuple",
+            "description": "Relation of the Subject Set",
             "name": "relation",
             "in": "query",
             "required": true
@@ -504,23 +522,47 @@
         "parameters": [
           {
             "type": "string",
+            "description": "Namespace of the Relation Tuple",
             "name": "namespace",
             "in": "query",
             "required": true
           },
           {
             "type": "string",
+            "description": "Object of the Relation Tuple",
             "name": "object",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Relation of the Relation Tuple",
+            "name": "relation",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "SubjectID of the Relation Tuple",
+            "name": "subject_id",
             "in": "query"
           },
           {
             "type": "string",
-            "name": "relation",
+            "description": "Namespace of the Subject Set",
+            "name": "subject_set.namespace",
             "in": "query"
           },
           {
-            "type": "object",
-            "name": "subject",
+            "type": "string",
+            "description": "Object of the Subject Set",
+            "name": "subject_set.object",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Relation of the Subject Set",
+            "name": "subject_set.relation",
             "in": "query"
           },
           {
@@ -628,15 +670,15 @@
             "name": "Payload",
             "in": "body",
             "schema": {
-              "$ref": "#/definitions/InternalRelationTuple"
+              "$ref": "#/definitions/RelationQuery"
             }
           }
         ],
         "responses": {
           "201": {
-            "description": "InternalRelationTuple",
+            "description": "RelationQuery",
             "schema": {
-              "$ref": "#/definitions/InternalRelationTuple"
+              "$ref": "#/definitions/RelationQuery"
             }
           },
           "400": {
@@ -743,9 +785,27 @@
             "required": true
           },
           {
-            "type": "object",
-            "description": "Subject of the Relation Tuple\n\nThe subject follows the subject string encoding format.",
-            "name": "subject",
+            "type": "string",
+            "description": "SubjectID of the Relation Tuple",
+            "name": "subject_id",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Namespace of the Subject Set",
+            "name": "subject_set.namespace",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Object of the Subject Set",
+            "name": "subject_set.object",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Relation of the Subject Set",
+            "name": "subject_set.relation",
             "in": "query"
           }
         ],
@@ -974,24 +1034,27 @@
       "required": [
         "namespace",
         "object",
-        "relation",
-        "subject"
+        "relation"
       ],
       "properties": {
         "namespace": {
-          "description": "Namespace of the Relation Tuple\n\nin: query",
+          "description": "Namespace of the Relation Tuple",
           "type": "string"
         },
         "object": {
-          "description": "Object of the Relation Tuple\n\nin: query",
+          "description": "Object of the Relation Tuple",
           "type": "string"
         },
         "relation": {
-          "description": "Relation of the Relation Tuple\n\nin: query",
+          "description": "Relation of the Relation Tuple",
           "type": "string"
         },
-        "subject": {
-          "$ref": "#/definitions/subject"
+        "subject_id": {
+          "description": "SubjectID of the Relation Tuple\n\nEither SubjectSet or SubjectID are required.",
+          "type": "string"
+        },
+        "subject_set": {
+          "$ref": "#/definitions/SubjectSet"
         }
       }
     },
@@ -1010,11 +1073,59 @@
         }
       }
     },
+    "RelationQuery": {
+      "type": "object",
+      "required": [
+        "namespace"
+      ],
+      "properties": {
+        "namespace": {
+          "description": "Namespace of the Relation Tuple",
+          "type": "string"
+        },
+        "object": {
+          "description": "Object of the Relation Tuple",
+          "type": "string"
+        },
+        "relation": {
+          "description": "Relation of the Relation Tuple",
+          "type": "string"
+        },
+        "subject_id": {
+          "description": "SubjectID of the Relation Tuple\n\nEither SubjectSet or SubjectID can be provided.",
+          "type": "string"
+        },
+        "subject_set": {
+          "$ref": "#/definitions/SubjectSet"
+        }
+      }
+    },
+    "SubjectSet": {
+      "type": "object",
+      "required": [
+        "namespace",
+        "object",
+        "relation"
+      ],
+      "properties": {
+        "namespace": {
+          "description": "Namespace of the Subject Set",
+          "type": "string"
+        },
+        "object": {
+          "description": "Object of the Subject Set",
+          "type": "string"
+        },
+        "relation": {
+          "description": "Relation of the Subject Set",
+          "type": "string"
+        }
+      }
+    },
     "expandTree": {
       "type": "object",
       "required": [
-        "type",
-        "subject"
+        "type"
       ],
       "properties": {
         "children": {
@@ -1023,8 +1134,11 @@
             "$ref": "#/definitions/expandTree"
           }
         },
-        "subject": {
-          "$ref": "#/definitions/subject"
+        "subject_id": {
+          "type": "string"
+        },
+        "subject_set": {
+          "$ref": "#/definitions/SubjectSet"
         },
         "type": {
           "type": "string",
@@ -1086,9 +1200,6 @@
           "type": "string"
         }
       }
-    },
-    "subject": {
-      "type": "object"
     },
     "version": {
       "type": "object",

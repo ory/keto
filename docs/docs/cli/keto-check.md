@@ -9,15 +9,13 @@ This file is auto-generated.
 
 To improve this file please make your change against the appropriate "./cmd/*.go" file.
 -->
-
 ## keto check
 
 Check whether a subject has a relation on an object
 
 ### Synopsis
 
-Check whether a subject has a relation on an object. This method resolves
-subject sets and subject set rewrites.
+Check whether a subject has a relation on an object. This method resolves subject sets and subject set rewrites.
 
 ```
 keto check &lt;subject&gt; &lt;relation&gt; &lt;namespace&gt; &lt;object&gt; [flags]
@@ -36,9 +34,10 @@ keto check &lt;subject&gt; &lt;relation&gt; &lt;namespace&gt; &lt;object&gt; [fl
 ### Options inherited from parent commands
 
 ```
-  -c, --config strings   Config files to load, overwriting in the order specified. (default [/home/circleci/keto.yml])
+  -c, --config strings   Config files to load, overwriting in the order specified. (default [/home/patrik/keto.yml])
 ```
 
 ### SEE ALSO
 
-- [keto](keto) - Global and consistent permission and authorization server
+* [keto](keto)	 - Global and consistent permission and authorization server
+

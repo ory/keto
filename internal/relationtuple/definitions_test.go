@@ -8,6 +8,8 @@ import (
 	"strconv"
 	"testing"
 
+	"github.com/ory/x/pointerx"
+
 	"github.com/pkg/errors"
 
 	"github.com/stretchr/testify/assert"
@@ -360,11 +362,15 @@ func TestInternalRelationTuple(t *testing.T) {
 					Relation:  "sr",
 				},
 			},
-			{},
+			{
+				Subject: &SubjectID{},
+			},
 		} {
 			t.Run(fmt.Sprintf("case=%d", i), func(t *testing.T) {
-				res, err := (&InternalRelationTuple{}).FromURLQuery(r.ToURLQuery())
+				vals, err := r.ToURLQuery()
 				require.NoError(t, err)
+				res, err := (&InternalRelationTuple{}).FromURLQuery(vals)
+				require.NoError(t, err, "raw: %+v, enc: %+v", r, vals)
 				assert.Equal(t, r, res)
 			})
 		}
@@ -373,22 +379,26 @@ func TestInternalRelationTuple(t *testing.T) {
 	t.Run("case=url decoding-encoding", func(t *testing.T) {
 		for i, v := range []url.Values{
 			{
-				"namespace": []string{"n"},
-				"object":    []string{"o"},
-				"relation":  []string{"r"},
-				"subject":   []string{"foo"},
+				"namespace":  []string{"n"},
+				"object":     []string{"o"},
+				"relation":   []string{"r"},
+				"subject_id": []string{"foo"},
 			},
 			{
-				"namespace": []string{"n"},
-				"object":    []string{"o"},
-				"relation":  []string{"r"},
-				"subject":   []string{"sn:so#sr"},
+				"namespace":             []string{"n"},
+				"object":                []string{"o"},
+				"relation":              []string{"r"},
+				"subject_set.namespace": []string{"sn"},
+				"subject_set.object":    []string{"so"},
+				"subject_set.relation":  []string{"sr"},
 			},
 		} {
 			t.Run(fmt.Sprintf("case=%d", i), func(t *testing.T) {
 				rt, err := (&InternalRelationTuple{}).FromURLQuery(v)
 				require.NoError(t, err)
-				assert.Equal(t, v, rt.ToURLQuery())
+				q, err := rt.ToURLQuery()
+				require.NoError(t, err)
+				assert.Equal(t, v, q)
 			})
 		}
 	})
@@ -483,7 +493,7 @@ func TestInternalRelationTuple(t *testing.T) {
 	"namespace": "n",
 	"object": "o",
 	"relation": "r",
-	"subject": "s"
+	"subject_id": "s"
 }`,
 				},
 				{
@@ -503,7 +513,7 @@ func TestInternalRelationTuple(t *testing.T) {
 	"namespace": "n",
 	"object": "o",
 	"relation": "r",
-	"subject": {
+	"subject_set": {
 		"namespace": "sn",
 		"object": "so",
 		"relation": "sr"
@@ -533,30 +543,32 @@ func TestRelationQuery(t *testing.T) {
 		}{
 			{
 				v: url.Values{
-					"namespace": []string{"n"},
-					"object":    []string{"o"},
-					"relation":  []string{"r"},
-					"subject":   []string{"foo"},
+					"namespace":  []string{"n"},
+					"object":     []string{"o"},
+					"relation":   []string{"r"},
+					"subject_id": []string{"foo"},
 				},
 				r: &RelationQuery{
 					Namespace: "n",
 					Object:    "o",
 					Relation:  "r",
-					Subject:   &SubjectID{ID: "foo"},
+					SubjectID: pointerx.String("foo"),
 				},
 			},
 			{
 				v: url.Values{
-					"namespace": []string{"n"},
-					"object":    []string{"o"},
-					"relation":  []string{"r"},
-					"subject":   []string{"sn:so#sr"},
+					"namespace":             []string{"n"},
+					"object":                []string{"o"},
+					"relation":              []string{"r"},
+					"subject_set.namespace": []string{"sn"},
+					"subject_set.object":    []string{"so"},
+					"subject_set.relation":  []string{"sr"},
 				},
 				r: &RelationQuery{
 					Namespace: "n",
 					Object:    "o",
 					Relation:  "r",
-					Subject: &SubjectSet{
+					SubjectSet: &SubjectSet{
 						Namespace: "sn",
 						Object:    "so",
 						Relation:  "sr",

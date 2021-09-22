@@ -84,16 +84,15 @@ type RESTResponse struct {
 //       500: genericError
 func (h *Handler) getCheck(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	tuple, err := (&relationtuple.InternalRelationTuple{}).FromURLQuery(r.URL.Query())
-	if err != nil {
+	if errors.Is(err, relationtuple.ErrNilSubject) {
+		h.d.Writer().WriteError(w, r, herodot.ErrBadRequest.WithReason("Subject has to be specified."))
+		return
+	} else if err != nil {
 		h.d.Writer().WriteError(w, r, herodot.ErrBadRequest.WithError(err.Error()))
 		return
 	}
 
-	if tuple.Subject == nil {
-		h.d.Writer().WriteError(w, r, herodot.ErrBadRequest.WithReason("Subject has to be specified."))
-		return
-	}
-
+	h.d.Logger().Warn("checking against engine\n\n\n")
 	allowed, err := h.d.PermissionEngine().SubjectIsAllowed(r.Context(), tuple)
 	if err != nil {
 		h.d.Writer().WriteError(w, r, err)

@@ -23,19 +23,12 @@ func (h *handler) ListRelationTuples(ctx context.Context, req *acl.ListRelationT
 		return nil, errors.New("invalid request")
 	}
 
-	sub, err := SubjectFromProto(req.Query.Subject)
+	q, err := (&RelationQuery{}).FromProto(req.Query)
 	if err != nil {
-		// this means we are not querying by subject
-		sub = nil
+		return nil, err
 	}
 
-	rels, nextPage, err := h.d.RelationTupleManager().GetRelationTuples(ctx,
-		&RelationQuery{
-			Namespace: req.Query.Namespace,
-			Object:    req.Query.Object,
-			Relation:  req.Query.Relation,
-			Subject:   sub,
-		},
+	rels, nextPage, err := h.d.RelationTupleManager().GetRelationTuples(ctx, q,
 		x.WithSize(int(req.PageSize)),
 		x.WithToken(req.PageToken),
 	)
@@ -58,7 +51,7 @@ func (h *handler) ListRelationTuples(ctx context.Context, req *acl.ListRelationT
 // nolint:deadcode,unused
 type getRelationsParams struct {
 	// swagger:allOf
-	RelationQuery
+	queryRelationTuple
 	// swagger:allOf
 	x.PaginationOptions
 }

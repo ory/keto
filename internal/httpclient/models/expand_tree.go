@@ -24,9 +24,11 @@ type ExpandTree struct {
 	// children
 	Children []*ExpandTree `json:"children"`
 
-	// subject
-	// Required: true
-	Subject *Subject `json:"subject"`
+	// subject id
+	SubjectID string `json:"subject_id,omitempty"`
+
+	// subject set
+	SubjectSet *SubjectSet `json:"subject_set,omitempty"`
 
 	// type
 	// Required: true
@@ -42,7 +44,7 @@ func (m *ExpandTree) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
-	if err := m.validateSubject(formats); err != nil {
+	if err := m.validateSubjectSet(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -80,20 +82,15 @@ func (m *ExpandTree) validateChildren(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *ExpandTree) validateSubject(formats strfmt.Registry) error {
-
-	if err := validate.Required("subject", "body", m.Subject); err != nil {
-		return err
+func (m *ExpandTree) validateSubjectSet(formats strfmt.Registry) error {
+	if swag.IsZero(m.SubjectSet) { // not required
+		return nil
 	}
 
-	if err := validate.Required("subject", "body", m.Subject); err != nil {
-		return err
-	}
-
-	if m.Subject != nil {
-		if err := m.Subject.Validate(formats); err != nil {
+	if m.SubjectSet != nil {
+		if err := m.SubjectSet.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("subject")
+				return ve.ValidateName("subject_set")
 			}
 			return err
 		}
@@ -159,7 +156,7 @@ func (m *ExpandTree) ContextValidate(ctx context.Context, formats strfmt.Registr
 		res = append(res, err)
 	}
 
-	if err := m.contextValidateSubject(ctx, formats); err != nil {
+	if err := m.contextValidateSubjectSet(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -187,12 +184,12 @@ func (m *ExpandTree) contextValidateChildren(ctx context.Context, formats strfmt
 	return nil
 }
 
-func (m *ExpandTree) contextValidateSubject(ctx context.Context, formats strfmt.Registry) error {
+func (m *ExpandTree) contextValidateSubjectSet(ctx context.Context, formats strfmt.Registry) error {
 
-	if m.Subject != nil {
-		if err := m.Subject.ContextValidate(ctx, formats); err != nil {
+	if m.SubjectSet != nil {
+		if err := m.SubjectSet.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("subject")
+				return ve.ValidateName("subject_set")
 			}
 			return err
 		}

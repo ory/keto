@@ -55,22 +55,22 @@ func NewCreateRelationTupleCreated() *CreateRelationTupleCreated {
 
 /* CreateRelationTupleCreated describes a response with status code 201, with default header values.
 
-InternalRelationTuple
+RelationQuery
 */
 type CreateRelationTupleCreated struct {
-	Payload *models.InternalRelationTuple
+	Payload *models.RelationQuery
 }
 
 func (o *CreateRelationTupleCreated) Error() string {
 	return fmt.Sprintf("[PUT /relation-tuples][%d] createRelationTupleCreated  %+v", 201, o.Payload)
 }
-func (o *CreateRelationTupleCreated) GetPayload() *models.InternalRelationTuple {
+func (o *CreateRelationTupleCreated) GetPayload() *models.RelationQuery {
 	return o.Payload
 }
 
 func (o *CreateRelationTupleCreated) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(models.InternalRelationTuple)
+	o.Payload = new(models.RelationQuery)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {

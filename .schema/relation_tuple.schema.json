@@ -2,52 +2,78 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
   "additionalProperties": false,
-  "required": ["namespace", "relation", "object", "subject"],
-  "properties": {
-    "$schema": {
-      "type": "string",
-      "format": "uri-reference",
-      "description": "Add this to allow defining the schema, useful for IDE integration"
+  "allOf": [
+    {
+      "required": [
+        "namespace",
+        "relation",
+        "object"
+      ],
+      "properties": {
+        "$schema": {
+          "type": "string",
+          "format": "uri-reference",
+          "description": "Add this to allow defining the schema, useful for IDE integration"
+        },
+        "namespace": {
+          "type": "string",
+          "description": "The namespace of the object and relation in this tuple."
+        },
+        "object": {
+          "type": "string",
+          "description": "The object affected by this relation."
+        },
+        "relation": {
+          "type": "string",
+          "description": "The relation of the object and subject."
+        }
+      }
     },
-    "namespace": {
-      "type": "string",
-      "description": "The namespace of the object and relation in this tuple."
-    },
-    "relation": {
-      "type": "string",
-      "description": "The relation of the object and subject."
-    },
-    "object": {
-      "type": "string",
-      "description": "The object affected by this relation."
-    },
-    "subject": {
+    {
       "oneOf": [
         {
-          "type": "object",
-          "description": "The subject set affected by this relation.",
+          "required": [
+            "subject_id"
+          ],
           "properties": {
-            "namespace": {
+            "subject_id": {
               "type": "string",
-              "description": "The namespace of the object and relation in this subject set."
-            },
-            "relation": {
-              "type": "string",
-              "description": "The relation of this subject set."
-            },
-            "object": {
-              "type": "string",
-              "description": "The object referenced in this subject set."
+              "description": "The subject ID affected by this relation."
             }
-          },
-          "additionalProperties": false,
-          "required": ["namespace", "relation", "object"]
+          }
         },
         {
-          "type": "string",
-          "description": "The subject ID affected by this relation."
+          "required": [
+            "subject_set"
+          ],
+          "properties": {
+            "subject_set": {
+              "type": "object",
+              "description": "The subject set affected by this relation.",
+              "properties": {
+                "namespace": {
+                  "type": "string",
+                  "description": "The namespace of the object and relation in this subject set."
+                },
+                "object": {
+                  "type": "string",
+                  "description": "The object referenced in this subject set."
+                },
+                "relation": {
+                  "type": "string",
+                  "description": "The relation of this subject set."
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "namespace",
+                "relation",
+                "object"
+              ]
+            }
+          }
         }
       ]
     }
-  }
+  ]
 }

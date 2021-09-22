@@ -3,5 +3,9 @@
   "namespace": "videos",
   "object": "/cats",
   "relation": "view",
-  "subject": "videos:/cats#owner"
+  "subject_set": {
+    "namespace": "videos",
+    "object": "/cats",
+    "relation": "owner"
+  }
 }

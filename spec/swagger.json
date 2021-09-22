@@ -67,9 +67,27 @@
             "required": true
           },
           {
-            "$ref": "#/definitions/subject",
-            "description": "Subject of the Relation Tuple\n\nThe subject follows the subject string encoding format.",
-            "name": "subject",
+            "type": "string",
+            "description": "SubjectID of the Relation Tuple",
+            "name": "subject_id",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Namespace of the Subject Set",
+            "name": "subject_set.namespace",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Object of the Subject Set",
+            "name": "subject_set.object",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Relation of the Subject Set",
+            "name": "subject_set.relation",
             "in": "query"
           }
         ],
@@ -81,7 +99,35 @@
             }
           },
           "400": {
-            "$ref": "#/responses/genericError"
+            "description": "The standard error format",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "details": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": true
+                  }
+                },
+                "message": {
+                  "type": "string"
+                },
+                "reason": {
+                  "type": "string"
+                },
+                "request": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string"
+                }
+              }
+            }
           },
           "403": {
             "description": "getCheckResponse",
@@ -90,7 +136,35 @@
             }
           },
           "500": {
-            "$ref": "#/responses/genericError"
+            "description": "The standard error format",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "details": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": true
+                  }
+                },
+                "message": {
+                  "type": "string"
+                },
+                "reason": {
+                  "type": "string"
+                },
+                "request": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string"
+                }
+              }
+            }
           }
         }
       },
@@ -116,7 +190,7 @@
             "name": "Payload",
             "in": "body",
             "schema": {
-              "$ref": "#/definitions/InternalRelationTuple"
+              "$ref": "#/definitions/RelationQuery"
             }
           }
         ],
@@ -128,7 +202,35 @@
             }
           },
           "400": {
-            "$ref": "#/responses/genericError"
+            "description": "The standard error format",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "details": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": true
+                  }
+                },
+                "message": {
+                  "type": "string"
+                },
+                "reason": {
+                  "type": "string"
+                },
+                "request": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string"
+                }
+              }
+            }
           },
           "403": {
             "description": "getCheckResponse",
@@ -137,7 +239,35 @@
             }
           },
           "500": {
-            "$ref": "#/responses/genericError"
+            "description": "The standard error format",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "details": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": true
+                  }
+                },
+                "message": {
+                  "type": "string"
+                },
+                "reason": {
+                  "type": "string"
+                },
+                "request": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string"
+                }
+              }
+            }
           }
         }
       }
@@ -163,21 +293,21 @@
         "parameters": [
           {
             "type": "string",
-            "description": "Namespace of the Relation Tuple",
+            "description": "Namespace of the Subject Set",
             "name": "namespace",
             "in": "query",
             "required": true
           },
           {
             "type": "string",
-            "description": "Object of the Relation Tuple",
+            "description": "Object of the Subject Set",
             "name": "object",
             "in": "query",
             "required": true
           },
           {
             "type": "string",
-            "description": "Relation of the Relation Tuple",
+            "description": "Relation of the Subject Set",
             "name": "relation",
             "in": "query",
             "required": true
@@ -197,13 +327,97 @@
             }
           },
           "400": {
-            "$ref": "#/responses/genericError"
+            "description": "The standard error format",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "details": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": true
+                  }
+                },
+                "message": {
+                  "type": "string"
+                },
+                "reason": {
+                  "type": "string"
+                },
+                "request": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string"
+                }
+              }
+            }
           },
           "404": {
-            "$ref": "#/responses/genericError"
+            "description": "The standard error format",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "details": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": true
+                  }
+                },
+                "message": {
+                  "type": "string"
+                },
+                "reason": {
+                  "type": "string"
+                },
+                "request": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string"
+                }
+              }
+            }
           },
           "500": {
-            "$ref": "#/responses/genericError"
+            "description": "The standard error format",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "details": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": true
+                  }
+                },
+                "message": {
+                  "type": "string"
+                },
+                "reason": {
+                  "type": "string"
+                },
+                "request": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string"
+                }
+              }
+            }
           }
         }
       }
@@ -227,7 +441,35 @@
             }
           },
           "500": {
-            "$ref": "#/responses/genericError"
+            "description": "The standard error format",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "details": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": true
+                  }
+                },
+                "message": {
+                  "type": "string"
+                },
+                "reason": {
+                  "type": "string"
+                },
+                "request": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string"
+                }
+              }
+            }
           }
         }
       }
@@ -280,23 +522,47 @@
         "parameters": [
           {
             "type": "string",
+            "description": "Namespace of the Relation Tuple",
             "name": "namespace",
             "in": "query",
             "required": true
           },
           {
             "type": "string",
+            "description": "Object of the Relation Tuple",
             "name": "object",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Relation of the Relation Tuple",
+            "name": "relation",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "SubjectID of the Relation Tuple",
+            "name": "subject_id",
             "in": "query"
           },
           {
             "type": "string",
-            "name": "relation",
+            "description": "Namespace of the Subject Set",
+            "name": "subject_set.namespace",
             "in": "query"
           },
           {
-            "$ref": "#/definitions/subject",
-            "name": "subject",
+            "type": "string",
+            "description": "Object of the Subject Set",
+            "name": "subject_set.object",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Relation of the Subject Set",
+            "name": "subject_set.relation",
             "in": "query"
           },
           {
@@ -319,10 +585,66 @@
             }
           },
           "404": {
-            "$ref": "#/responses/genericError"
+            "description": "The standard error format",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "details": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": true
+                  }
+                },
+                "message": {
+                  "type": "string"
+                },
+                "reason": {
+                  "type": "string"
+                },
+                "request": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string"
+                }
+              }
+            }
           },
           "500": {
-            "$ref": "#/responses/genericError"
+            "description": "The standard error format",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "details": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": true
+                  }
+                },
+                "message": {
+                  "type": "string"
+                },
+                "reason": {
+                  "type": "string"
+                },
+                "request": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string"
+                }
+              }
+            }
           }
         }
       },
@@ -348,22 +670,78 @@
             "name": "Payload",
             "in": "body",
             "schema": {
-              "$ref": "#/definitions/InternalRelationTuple"
+              "$ref": "#/definitions/RelationQuery"
             }
           }
         ],
         "responses": {
           "201": {
-            "description": "InternalRelationTuple",
+            "description": "RelationQuery",
             "schema": {
-              "$ref": "#/definitions/InternalRelationTuple"
+              "$ref": "#/definitions/RelationQuery"
             }
           },
           "400": {
-            "$ref": "#/responses/genericError"
+            "description": "The standard error format",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "details": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": true
+                  }
+                },
+                "message": {
+                  "type": "string"
+                },
+                "reason": {
+                  "type": "string"
+                },
+                "request": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string"
+                }
+              }
+            }
           },
           "500": {
-            "$ref": "#/responses/genericError"
+            "description": "The standard error format",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "details": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": true
+                  }
+                },
+                "message": {
+                  "type": "string"
+                },
+                "reason": {
+                  "type": "string"
+                },
+                "request": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string"
+                }
+              }
+            }
           }
         }
       },
@@ -407,21 +785,95 @@
             "required": true
           },
           {
-            "$ref": "#/definitions/subject",
-            "description": "Subject of the Relation Tuple\n\nThe subject follows the subject string encoding format.",
-            "name": "subject",
+            "type": "string",
+            "description": "SubjectID of the Relation Tuple",
+            "name": "subject_id",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Namespace of the Subject Set",
+            "name": "subject_set.namespace",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Object of the Subject Set",
+            "name": "subject_set.object",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Relation of the Subject Set",
+            "name": "subject_set.relation",
             "in": "query"
           }
         ],
         "responses": {
           "204": {
-            "$ref": "#/responses/emptyResponse"
+            "description": "Empty responses are sent when, for example, resources are deleted. The HTTP status code for empty responses is typically 201."
           },
           "400": {
-            "$ref": "#/responses/genericError"
+            "description": "The standard error format",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "details": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": true
+                  }
+                },
+                "message": {
+                  "type": "string"
+                },
+                "reason": {
+                  "type": "string"
+                },
+                "request": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string"
+                }
+              }
+            }
           },
           "500": {
-            "$ref": "#/responses/genericError"
+            "description": "The standard error format",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "details": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": true
+                  }
+                },
+                "message": {
+                  "type": "string"
+                },
+                "reason": {
+                  "type": "string"
+                },
+                "request": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string"
+                }
+              }
+            }
           }
         }
       },
@@ -456,16 +908,100 @@
         ],
         "responses": {
           "204": {
-            "$ref": "#/responses/emptyResponse"
+            "description": "Empty responses are sent when, for example, resources are deleted. The HTTP status code for empty responses is typically 201."
           },
           "400": {
-            "$ref": "#/responses/genericError"
+            "description": "The standard error format",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "details": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": true
+                  }
+                },
+                "message": {
+                  "type": "string"
+                },
+                "reason": {
+                  "type": "string"
+                },
+                "request": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string"
+                }
+              }
+            }
           },
           "404": {
-            "$ref": "#/responses/genericError"
+            "description": "The standard error format",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "details": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": true
+                  }
+                },
+                "message": {
+                  "type": "string"
+                },
+                "reason": {
+                  "type": "string"
+                },
+                "request": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string"
+                }
+              }
+            }
           },
           "500": {
-            "$ref": "#/responses/genericError"
+            "description": "The standard error format",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "details": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": true
+                  }
+                },
+                "message": {
+                  "type": "string"
+                },
+                "reason": {
+                  "type": "string"
+                },
+                "request": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string"
+                }
+              }
+            }
           }
         }
       }
@@ -498,24 +1034,27 @@
       "required": [
         "namespace",
         "object",
-        "relation",
-        "subject"
+        "relation"
       ],
       "properties": {
         "namespace": {
-          "description": "Namespace of the Relation Tuple\n\nin: query",
+          "description": "Namespace of the Relation Tuple",
           "type": "string"
         },
         "object": {
-          "description": "Object of the Relation Tuple\n\nin: query",
+          "description": "Object of the Relation Tuple",
           "type": "string"
         },
         "relation": {
-          "description": "Relation of the Relation Tuple\n\nin: query",
+          "description": "Relation of the Relation Tuple",
           "type": "string"
         },
-        "subject": {
-          "$ref": "#/definitions/subject"
+        "subject_id": {
+          "description": "SubjectID of the Relation Tuple\n\nEither SubjectSet or SubjectID are required.",
+          "type": "string"
+        },
+        "subject_set": {
+          "$ref": "#/definitions/SubjectSet"
         }
       }
     },
@@ -531,6 +1070,55 @@
         },
         "relation_tuple": {
           "$ref": "#/definitions/InternalRelationTuple"
+        }
+      }
+    },
+    "RelationQuery": {
+      "type": "object",
+      "required": [
+        "namespace"
+      ],
+      "properties": {
+        "namespace": {
+          "description": "Namespace of the Relation Tuple",
+          "type": "string"
+        },
+        "object": {
+          "description": "Object of the Relation Tuple",
+          "type": "string"
+        },
+        "relation": {
+          "description": "Relation of the Relation Tuple",
+          "type": "string"
+        },
+        "subject_id": {
+          "description": "SubjectID of the Relation Tuple\n\nEither SubjectSet or SubjectID can be provided.",
+          "type": "string"
+        },
+        "subject_set": {
+          "$ref": "#/definitions/SubjectSet"
+        }
+      }
+    },
+    "SubjectSet": {
+      "type": "object",
+      "required": [
+        "namespace",
+        "object",
+        "relation"
+      ],
+      "properties": {
+        "namespace": {
+          "description": "Namespace of the Subject Set",
+          "type": "string"
+        },
+        "object": {
+          "description": "Object of the Subject Set",
+          "type": "string"
+        },
+        "relation": {
+          "description": "Relation of the Subject Set",
+          "type": "string"
         }
       }
     },
@@ -558,50 +1146,6 @@
             "intersection",
             "leaf"
           ]
-        }
-      }
-    },
-    "genericError": {
-      "type": "object",
-      "required": [
-        "message"
-      ],
-      "properties": {
-        "code": {
-          "description": "The status code",
-          "type": "integer",
-          "format": "int64",
-          "example": 404
-        },
-        "debug": {
-          "description": "Debug information\n\nThis field is often not exposed to protect against leaking\nsensitive information.",
-          "type": "string",
-          "example": "SQL field \"foo\" is not a bool."
-        },
-        "details": {
-          "description": "Further error details",
-          "type": "object",
-          "additionalProperties": true
-        },
-        "message": {
-          "description": "Error message\n\nThe error's message.",
-          "type": "string",
-          "example": "The resource could not be found"
-        },
-        "reason": {
-          "description": "A human-readable reason for the error",
-          "type": "string",
-          "example": "User with ID 1234 does not exist."
-        },
-        "request": {
-          "description": "The request ID\n\nThe request ID is often exposed internally in order to trace\nerrors across service architectures. This is often a UUID.",
-          "type": "string",
-          "example": "d7ef54b1-ec15-46e6-bccb-524b82c035e6"
-        },
-        "status": {
-          "description": "The status description",
-          "type": "string",
-          "example": "Not Found"
         }
       }
     },
@@ -664,42 +1208,6 @@
         "version": {
           "description": "Version is the service's version.",
           "type": "string"
-        }
-      }
-    }
-  ,"UUID":{"type": "string", "format": "uuid4"}},
-  "responses": {
-    "emptyResponse": {
-      "description": "Empty responses are sent when, for example, resources are deleted. The HTTP status code for empty responses is typically 201."
-    },
-    "genericError": {
-      "description": "The standard error format",
-      "schema": {
-        "type": "object",
-        "properties": {
-          "code": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "details": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "additionalProperties": true
-            }
-          },
-          "message": {
-            "type": "string"
-          },
-          "reason": {
-            "type": "string"
-          },
-          "request": {
-            "type": "string"
-          },
-          "status": {
-            "type": "string"
-          }
         }
       }
     }
