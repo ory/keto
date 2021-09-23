@@ -85,7 +85,7 @@ func NodeTypeFromProto(t acl.NodeType) NodeType {
 type node struct {
 	// required: true
 	Type       NodeType                  `json:"type"`
-	Children   []*node                   `json:"children"`
+	Children   []*node                   `json:"children,omitempty"`
 	SubjectID  *string                   `json:"subject_id,omitempty"`
 	SubjectSet *relationtuple.SubjectSet `json:"subject_set,omitempty"`
 }
