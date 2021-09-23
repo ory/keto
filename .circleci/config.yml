@@ -95,6 +95,14 @@ jobs:
 
       # Test documentation examples
       - run: make test-docs-samples
+  clidocs:
+    docker:
+      - image: cimg/go:1.17-node
+    steps:
+      - checkout
+      - run:
+          name: Build and push CLI docs
+          command: "bash <(curl -s https://raw.githubusercontent.com/ory/ci/master/src/scripts/docs/cli.sh)"
 
 workflows:
   version: 2
@@ -124,7 +132,7 @@ workflows:
               only: /v.*/
             branches:
               only: master
-      - docs/cli
+      - clidocs
       - docs/build:
           requires:
             - test
