@@ -20,6 +20,7 @@ import (
 )
 
 const (
+	FlagSubject    = "subject"
 	FlagSubjectID  = "subject-id"
 	FlagSubjectSet = "subject-set"
 	FlagRelation   = "relation"
@@ -33,6 +34,11 @@ func registerRelationTupleFlags(flags *pflag.FlagSet) {
 	flags.String(FlagSubjectSet, "", `Set the requested subject set; format: "namespace:object#relation"`)
 	flags.String(FlagRelation, "", "Set the requested relation")
 	flags.String(FlagObject, "", "Set the requested object")
+
+	flags.String(FlagSubject, "", "")
+	if err := flags.MarkHidden(FlagSubject); err != nil {
+		panic(err.Error())
+	}
 }
 
 func readQueryFromFlags(cmd *cobra.Command, namespace string) (*acl.ListRelationTuplesRequest_Query, error) {
@@ -71,6 +77,10 @@ func newGetCmd() *cobra.Command {
 			"Returns paginated results.",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
+			if cmd.Flags().Changed(FlagSubject) {
+				return fmt.Errorf("usage of --%s is not supported anymore, use --%s or --%s respectively", FlagSubject, FlagSubjectID, FlagSubjectSet)
+			}
+
 			conn, err := client.GetReadConn(cmd)
 			if err != nil {
 				return err
