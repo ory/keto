@@ -14,7 +14,7 @@ orbs:
 jobs:
   test:
     docker:
-      - image: cimg/go:1.16
+      - image: cimg/go:1.17
         environment:
           TEST_DATABASE_POSTGRESQL: postgres://test:test@localhost:5432/keto?sslmode=disable
           TEST_DATABASE_MYSQL: mysql://root:test@(localhost:3306)/mysql?parseTime=true&multiStatements=true
@@ -53,7 +53,7 @@ jobs:
 
   test-race:
     docker:
-      - image: cimg/go:1.16
+      - image: cimg/go:1.17
     steps:
       - checkout
       - go/load-cache
@@ -64,7 +64,7 @@ jobs:
 
   validate:
     docker:
-      - image: cimg/go:1.16-node
+      - image: cimg/go:1.17-node
     steps:
       - checkout
 
