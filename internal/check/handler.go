@@ -92,7 +92,6 @@ func (h *Handler) getCheck(w http.ResponseWriter, r *http.Request, _ httprouter.
 		return
 	}
 
-	h.d.Logger().Warn("checking against engine\n\n\n")
 	allowed, err := h.d.PermissionEngine().SubjectIsAllowed(r.Context(), tuple)
 	if err != nil {
 		h.d.Writer().WriteError(w, r, err)
