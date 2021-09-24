@@ -88,12 +88,3 @@ Blocks milestones or other issues or pulls.
 - [ ] Docker files and docker-compose.yml do not work on master
       ([keto#725](https://github.com/ory/keto/issues/725)) -
       [@Patrik](https://github.com/zepatrik)
-
-### [Rfc](https://github.com/ory/keto/labels/rfc)
-
-A request for comments to discuss and share ideas.
-
-#### Issues
-
-- [ ] Change REST API to not work with encoded subjects
-      ([keto#708](https://github.com/ory/keto/issues/708))
