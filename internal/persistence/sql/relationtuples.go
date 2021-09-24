@@ -221,8 +221,8 @@ func (p *Persister) GetRelationTuples(ctx context.Context, query *relationtuple.
 	if query.Object != "" {
 		sqlQuery.Where("object = ?", query.Object)
 	}
-	if query.Subject != nil {
-		if err := p.whereSubject(ctx, sqlQuery, query.Subject); err != nil {
+	if s := query.Subject(); s != nil {
+		if err := p.whereSubject(ctx, sqlQuery, s); err != nil {
 			return nil, "", err
 		}
 	}

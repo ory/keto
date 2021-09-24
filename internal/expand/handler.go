@@ -52,7 +52,8 @@ func (h *handler) RegisterWriteGRPC(s *grpc.Server) {}
 // swagger:parameters getExpand
 // nolint:deadcode,unused
 type getExpandRequest struct {
-	Depth int `json:"max-depth"`
+	// in:query
+	MaxDepth int `json:"max-depth"`
 }
 
 // swagger:route GET /expand read getExpand

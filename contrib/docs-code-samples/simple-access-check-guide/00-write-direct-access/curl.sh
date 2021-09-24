@@ -6,7 +6,7 @@ relationtuple='
   "namespace": "messages",
   "object": "02y_15_4w350m3",
   "relation": "decypher",
-  "subject": "john"
+  "subject_id": "john"
 }'
 
 curl --fail --silent -X PUT \

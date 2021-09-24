@@ -77,13 +77,29 @@ type DeleteRelationTupleParams struct {
 	*/
 	Relation string
 
-	/* Subject.
+	/* SubjectID.
 
-	     Subject of the Relation Tuple
-
-	The subject follows the subject string encoding format.
+	   SubjectID of the Relation Tuple
 	*/
-	Subject *string
+	SubjectID *string
+
+	/* SubjectSetNamespace.
+
+	   Namespace of the Subject Set
+	*/
+	SubjectSetNamespace *string
+
+	/* SubjectSetObject.
+
+	   Object of the Subject Set
+	*/
+	SubjectSetObject *string
+
+	/* SubjectSetRelation.
+
+	   Relation of the Subject Set
+	*/
+	SubjectSetRelation *string
 
 	timeout    time.Duration
 	Context    context.Context
@@ -171,15 +187,48 @@ func (o *DeleteRelationTupleParams) SetRelation(relation string) {
 	o.Relation = relation
 }
 
-// WithSubject adds the subject to the delete relation tuple params
-func (o *DeleteRelationTupleParams) WithSubject(subject *string) *DeleteRelationTupleParams {
-	o.SetSubject(subject)
+// WithSubjectID adds the subjectID to the delete relation tuple params
+func (o *DeleteRelationTupleParams) WithSubjectID(subjectID *string) *DeleteRelationTupleParams {
+	o.SetSubjectID(subjectID)
 	return o
 }
 
-// SetSubject adds the subject to the delete relation tuple params
-func (o *DeleteRelationTupleParams) SetSubject(subject *string) {
-	o.Subject = subject
+// SetSubjectID adds the subjectId to the delete relation tuple params
+func (o *DeleteRelationTupleParams) SetSubjectID(subjectID *string) {
+	o.SubjectID = subjectID
+}
+
+// WithSubjectSetNamespace adds the subjectSetNamespace to the delete relation tuple params
+func (o *DeleteRelationTupleParams) WithSubjectSetNamespace(subjectSetNamespace *string) *DeleteRelationTupleParams {
+	o.SetSubjectSetNamespace(subjectSetNamespace)
+	return o
+}
+
+// SetSubjectSetNamespace adds the subjectSetNamespace to the delete relation tuple params
+func (o *DeleteRelationTupleParams) SetSubjectSetNamespace(subjectSetNamespace *string) {
+	o.SubjectSetNamespace = subjectSetNamespace
+}
+
+// WithSubjectSetObject adds the subjectSetObject to the delete relation tuple params
+func (o *DeleteRelationTupleParams) WithSubjectSetObject(subjectSetObject *string) *DeleteRelationTupleParams {
+	o.SetSubjectSetObject(subjectSetObject)
+	return o
+}
+
+// SetSubjectSetObject adds the subjectSetObject to the delete relation tuple params
+func (o *DeleteRelationTupleParams) SetSubjectSetObject(subjectSetObject *string) {
+	o.SubjectSetObject = subjectSetObject
+}
+
+// WithSubjectSetRelation adds the subjectSetRelation to the delete relation tuple params
+func (o *DeleteRelationTupleParams) WithSubjectSetRelation(subjectSetRelation *string) *DeleteRelationTupleParams {
+	o.SetSubjectSetRelation(subjectSetRelation)
+	return o
+}
+
+// SetSubjectSetRelation adds the subjectSetRelation to the delete relation tuple params
+func (o *DeleteRelationTupleParams) SetSubjectSetRelation(subjectSetRelation *string) {
+	o.SubjectSetRelation = subjectSetRelation
 }
 
 // WriteToRequest writes these params to a swagger request
@@ -220,18 +269,69 @@ func (o *DeleteRelationTupleParams) WriteToRequest(r runtime.ClientRequest, reg 
 		}
 	}
 
-	if o.Subject != nil {
+	if o.SubjectID != nil {
 
-		// query param subject
-		var qrSubject string
+		// query param subject_id
+		var qrSubjectID string
 
-		if o.Subject != nil {
-			qrSubject = *o.Subject
+		if o.SubjectID != nil {
+			qrSubjectID = *o.SubjectID
 		}
-		qSubject := qrSubject
-		if qSubject != "" {
+		qSubjectID := qrSubjectID
+		if qSubjectID != "" {
 
-			if err := r.SetQueryParam("subject", qSubject); err != nil {
+			if err := r.SetQueryParam("subject_id", qSubjectID); err != nil {
+				return err
+			}
+		}
+	}
+
+	if o.SubjectSetNamespace != nil {
+
+		// query param subject_set.namespace
+		var qrSubjectSetNamespace string
+
+		if o.SubjectSetNamespace != nil {
+			qrSubjectSetNamespace = *o.SubjectSetNamespace
+		}
+		qSubjectSetNamespace := qrSubjectSetNamespace
+		if qSubjectSetNamespace != "" {
+
+			if err := r.SetQueryParam("subject_set.namespace", qSubjectSetNamespace); err != nil {
+				return err
+			}
+		}
+	}
+
+	if o.SubjectSetObject != nil {
+
+		// query param subject_set.object
+		var qrSubjectSetObject string
+
+		if o.SubjectSetObject != nil {
+			qrSubjectSetObject = *o.SubjectSetObject
+		}
+		qSubjectSetObject := qrSubjectSetObject
+		if qSubjectSetObject != "" {
+
+			if err := r.SetQueryParam("subject_set.object", qSubjectSetObject); err != nil {
+				return err
+			}
+		}
+	}
+
+	if o.SubjectSetRelation != nil {
+
+		// query param subject_set.relation
+		var qrSubjectSetRelation string
+
+		if o.SubjectSetRelation != nil {
+			qrSubjectSetRelation = *o.SubjectSetRelation
+		}
+		qSubjectSetRelation := qrSubjectSetRelation
+		if qSubjectSetRelation != "" {
+
+			if err := r.SetQueryParam("subject_set.relation", qSubjectSetRelation); err != nil {
 				return err
 			}
 		}

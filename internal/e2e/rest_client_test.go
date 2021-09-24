@@ -63,7 +63,9 @@ func (rc *restClient) createTuple(t require.TestingT, r *relationtuple.InternalR
 }
 
 func (rc *restClient) deleteTuple(t require.TestingT, r *relationtuple.InternalRelationTuple) {
-	body, code := rc.makeRequest(t, http.MethodDelete, relationtuple.RouteBase+"?"+r.ToURLQuery().Encode(), "", true)
+	q, err := r.ToURLQuery()
+	require.NoError(t, err)
+	body, code := rc.makeRequest(t, http.MethodDelete, relationtuple.RouteBase+"?"+q.Encode(), "", true)
 	require.Equal(t, http.StatusNoContent, code, body)
 }
 
@@ -107,7 +109,9 @@ func (rc *restClient) queryTupleErr(t require.TestingT, expected herodot.Default
 }
 
 func (rc *restClient) check(t require.TestingT, r *relationtuple.InternalRelationTuple) bool {
-	bodyGet, codeGet := rc.makeRequest(t, http.MethodGet, fmt.Sprintf("%s?%s", check.RouteBase, r.ToURLQuery().Encode()), "", false)
+	q, err := r.ToURLQuery()
+	require.NoError(t, err)
+	bodyGet, codeGet := rc.makeRequest(t, http.MethodGet, fmt.Sprintf("%s?%s", check.RouteBase, q.Encode()), "", false)
 
 	var respGet check.RESTResponse
 	require.NoError(t, json.Unmarshal([]byte(bodyGet), &respGet))

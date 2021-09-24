@@ -60,11 +60,17 @@ func NewGetRelationTuplesParamsWithHTTPClient(client *http.Client) *GetRelationT
 */
 type GetRelationTuplesParams struct {
 
-	// Namespace.
+	/* Namespace.
+
+	   Namespace of the Relation Tuple
+	*/
 	Namespace string
 
-	// Object.
-	Object *string
+	/* Object.
+
+	   Object of the Relation Tuple
+	*/
+	Object string
 
 	// PageSize.
 	//
@@ -74,11 +80,35 @@ type GetRelationTuplesParams struct {
 	// PageToken.
 	PageToken *string
 
-	// Relation.
-	Relation *string
+	/* Relation.
 
-	// Subject.
-	Subject *string
+	   Relation of the Relation Tuple
+	*/
+	Relation string
+
+	/* SubjectID.
+
+	   SubjectID of the Relation Tuple
+	*/
+	SubjectID *string
+
+	/* SubjectSetNamespace.
+
+	   Namespace of the Subject Set
+	*/
+	SubjectSetNamespace *string
+
+	/* SubjectSetObject.
+
+	   Object of the Subject Set
+	*/
+	SubjectSetObject *string
+
+	/* SubjectSetRelation.
+
+	   Relation of the Subject Set
+	*/
+	SubjectSetRelation *string
 
 	timeout    time.Duration
 	Context    context.Context
@@ -145,13 +175,13 @@ func (o *GetRelationTuplesParams) SetNamespace(namespace string) {
 }
 
 // WithObject adds the object to the get relation tuples params
-func (o *GetRelationTuplesParams) WithObject(object *string) *GetRelationTuplesParams {
+func (o *GetRelationTuplesParams) WithObject(object string) *GetRelationTuplesParams {
 	o.SetObject(object)
 	return o
 }
 
 // SetObject adds the object to the get relation tuples params
-func (o *GetRelationTuplesParams) SetObject(object *string) {
+func (o *GetRelationTuplesParams) SetObject(object string) {
 	o.Object = object
 }
 
@@ -178,25 +208,58 @@ func (o *GetRelationTuplesParams) SetPageToken(pageToken *string) {
 }
 
 // WithRelation adds the relation to the get relation tuples params
-func (o *GetRelationTuplesParams) WithRelation(relation *string) *GetRelationTuplesParams {
+func (o *GetRelationTuplesParams) WithRelation(relation string) *GetRelationTuplesParams {
 	o.SetRelation(relation)
 	return o
 }
 
 // SetRelation adds the relation to the get relation tuples params
-func (o *GetRelationTuplesParams) SetRelation(relation *string) {
+func (o *GetRelationTuplesParams) SetRelation(relation string) {
 	o.Relation = relation
 }
 
-// WithSubject adds the subject to the get relation tuples params
-func (o *GetRelationTuplesParams) WithSubject(subject *string) *GetRelationTuplesParams {
-	o.SetSubject(subject)
+// WithSubjectID adds the subjectID to the get relation tuples params
+func (o *GetRelationTuplesParams) WithSubjectID(subjectID *string) *GetRelationTuplesParams {
+	o.SetSubjectID(subjectID)
 	return o
 }
 
-// SetSubject adds the subject to the get relation tuples params
-func (o *GetRelationTuplesParams) SetSubject(subject *string) {
-	o.Subject = subject
+// SetSubjectID adds the subjectId to the get relation tuples params
+func (o *GetRelationTuplesParams) SetSubjectID(subjectID *string) {
+	o.SubjectID = subjectID
+}
+
+// WithSubjectSetNamespace adds the subjectSetNamespace to the get relation tuples params
+func (o *GetRelationTuplesParams) WithSubjectSetNamespace(subjectSetNamespace *string) *GetRelationTuplesParams {
+	o.SetSubjectSetNamespace(subjectSetNamespace)
+	return o
+}
+
+// SetSubjectSetNamespace adds the subjectSetNamespace to the get relation tuples params
+func (o *GetRelationTuplesParams) SetSubjectSetNamespace(subjectSetNamespace *string) {
+	o.SubjectSetNamespace = subjectSetNamespace
+}
+
+// WithSubjectSetObject adds the subjectSetObject to the get relation tuples params
+func (o *GetRelationTuplesParams) WithSubjectSetObject(subjectSetObject *string) *GetRelationTuplesParams {
+	o.SetSubjectSetObject(subjectSetObject)
+	return o
+}
+
+// SetSubjectSetObject adds the subjectSetObject to the get relation tuples params
+func (o *GetRelationTuplesParams) SetSubjectSetObject(subjectSetObject *string) {
+	o.SubjectSetObject = subjectSetObject
+}
+
+// WithSubjectSetRelation adds the subjectSetRelation to the get relation tuples params
+func (o *GetRelationTuplesParams) WithSubjectSetRelation(subjectSetRelation *string) *GetRelationTuplesParams {
+	o.SetSubjectSetRelation(subjectSetRelation)
+	return o
+}
+
+// SetSubjectSetRelation adds the subjectSetRelation to the get relation tuples params
+func (o *GetRelationTuplesParams) SetSubjectSetRelation(subjectSetRelation *string) {
+	o.SubjectSetRelation = subjectSetRelation
 }
 
 // WriteToRequest writes these params to a swagger request
@@ -217,20 +280,13 @@ func (o *GetRelationTuplesParams) WriteToRequest(r runtime.ClientRequest, reg st
 		}
 	}
 
-	if o.Object != nil {
+	// query param object
+	qrObject := o.Object
+	qObject := qrObject
+	if qObject != "" {
 
-		// query param object
-		var qrObject string
-
-		if o.Object != nil {
-			qrObject = *o.Object
-		}
-		qObject := qrObject
-		if qObject != "" {
-
-			if err := r.SetQueryParam("object", qObject); err != nil {
-				return err
-			}
+		if err := r.SetQueryParam("object", qObject); err != nil {
+			return err
 		}
 	}
 
@@ -268,35 +324,79 @@ func (o *GetRelationTuplesParams) WriteToRequest(r runtime.ClientRequest, reg st
 		}
 	}
 
-	if o.Relation != nil {
+	// query param relation
+	qrRelation := o.Relation
+	qRelation := qrRelation
+	if qRelation != "" {
 
-		// query param relation
-		var qrRelation string
-
-		if o.Relation != nil {
-			qrRelation = *o.Relation
+		if err := r.SetQueryParam("relation", qRelation); err != nil {
+			return err
 		}
-		qRelation := qrRelation
-		if qRelation != "" {
+	}
 
-			if err := r.SetQueryParam("relation", qRelation); err != nil {
+	if o.SubjectID != nil {
+
+		// query param subject_id
+		var qrSubjectID string
+
+		if o.SubjectID != nil {
+			qrSubjectID = *o.SubjectID
+		}
+		qSubjectID := qrSubjectID
+		if qSubjectID != "" {
+
+			if err := r.SetQueryParam("subject_id", qSubjectID); err != nil {
 				return err
 			}
 		}
 	}
 
-	if o.Subject != nil {
+	if o.SubjectSetNamespace != nil {
 
-		// query param subject
-		var qrSubject string
+		// query param subject_set.namespace
+		var qrSubjectSetNamespace string
 
-		if o.Subject != nil {
-			qrSubject = *o.Subject
+		if o.SubjectSetNamespace != nil {
+			qrSubjectSetNamespace = *o.SubjectSetNamespace
 		}
-		qSubject := qrSubject
-		if qSubject != "" {
+		qSubjectSetNamespace := qrSubjectSetNamespace
+		if qSubjectSetNamespace != "" {
 
-			if err := r.SetQueryParam("subject", qSubject); err != nil {
+			if err := r.SetQueryParam("subject_set.namespace", qSubjectSetNamespace); err != nil {
+				return err
+			}
+		}
+	}
+
+	if o.SubjectSetObject != nil {
+
+		// query param subject_set.object
+		var qrSubjectSetObject string
+
+		if o.SubjectSetObject != nil {
+			qrSubjectSetObject = *o.SubjectSetObject
+		}
+		qSubjectSetObject := qrSubjectSetObject
+		if qSubjectSetObject != "" {
+
+			if err := r.SetQueryParam("subject_set.object", qSubjectSetObject); err != nil {
+				return err
+			}
+		}
+	}
+
+	if o.SubjectSetRelation != nil {
+
+		// query param subject_set.relation
+		var qrSubjectSetRelation string
+
+		if o.SubjectSetRelation != nil {
+			qrSubjectSetRelation = *o.SubjectSetRelation
+		}
+		qSubjectSetRelation := qrSubjectSetRelation
+		if qSubjectSetRelation != "" {
+
+			if err := r.SetQueryParam("subject_set.relation", qSubjectSetRelation); err != nil {
 				return err
 			}
 		}

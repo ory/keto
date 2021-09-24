@@ -52,39 +52,64 @@ func (c *sdkClient) getWriteClient() *httpclient.OryKeto {
 }
 
 func (c *sdkClient) createTuple(t require.TestingT, r *relationtuple.InternalRelationTuple) {
+	payload := &models.RelationQuery{
+		Namespace: &r.Namespace,
+		Object:    r.Object,
+		Relation:  r.Relation,
+	}
+	switch s := r.Subject.(type) {
+	case *relationtuple.SubjectID:
+		payload.SubjectID = s.ID
+	case *relationtuple.SubjectSet:
+		payload.SubjectSet = &models.SubjectSet{
+			Namespace: &s.Namespace,
+			Object:    &s.Object,
+			Relation:  &s.Relation,
+		}
+	}
+
 	_, err := c.getWriteClient().Write.CreateRelationTuple(
 		write.NewCreateRelationTupleParamsWithTimeout(time.Second).
-			WithPayload(&models.InternalRelationTuple{
-				Namespace: &r.Namespace,
-				Object:    &r.Object,
-				Relation:  &r.Relation,
-				Subject:   (*models.Subject)(pointerx.String(r.Subject.String())),
-			}),
+			WithPayload(payload),
 	)
 	require.NoError(t, err)
 }
 
 func (c *sdkClient) deleteTuple(t require.TestingT, r *relationtuple.InternalRelationTuple) {
-	_, err := c.getWriteClient().Write.DeleteRelationTuple(
-		write.NewDeleteRelationTupleParamsWithTimeout(time.Second).
-			WithNamespace(r.Namespace).
-			WithObject(r.Object).
-			WithRelation(r.Relation).
-			WithSubject(pointerx.String(r.Subject.String())),
-	)
+	params := write.NewDeleteRelationTupleParamsWithTimeout(time.Second).
+		WithNamespace(r.Namespace).
+		WithObject(r.Object).
+		WithRelation(r.Relation)
+	switch s := r.Subject.(type) {
+	case *relationtuple.SubjectID:
+		params = params.WithSubjectID(&s.ID)
+	case *relationtuple.SubjectSet:
+		params = params.
+			WithSubjectSetNamespace(&s.Namespace).
+			WithSubjectSetObject(&s.Object).
+			WithSubjectSetRelation(&s.Relation)
+	}
+
+	_, err := c.getWriteClient().Write.DeleteRelationTuple(params)
 	require.NoError(t, err)
 }
 
 func compileParams(q *relationtuple.RelationQuery, opts []x.PaginationOptionSetter) *read.GetRelationTuplesParams {
 	params := read.NewGetRelationTuplesParams().WithNamespace(q.Namespace)
 	if q.Relation != "" {
-		params = params.WithRelation(&q.Relation)
+		params = params.WithRelation(q.Relation)
 	}
 	if q.Object != "" {
-		params = params.WithObject(&q.Object)
+		params = params.WithObject(q.Object)
 	}
-	if q.Subject != nil {
-		params = params.WithSubject(pointerx.String(q.Subject.String()))
+	if q.SubjectID != nil {
+		params = params.WithSubjectID(q.SubjectID)
+	}
+	if q.SubjectSet != nil {
+		params = params.
+			WithSubjectSetNamespace(&q.SubjectSet.Namespace).
+			WithSubjectSetObject(&q.SubjectSet.Object).
+			WithSubjectSetRelation(&q.SubjectSet.Relation)
 	}
 
 	pagination := x.GetPaginationOptions(opts...)
@@ -108,13 +133,19 @@ func (c *sdkClient) queryTuple(t require.TestingT, q *relationtuple.RelationQuer
 	}
 
 	for i, rt := range resp.Payload.RelationTuples {
-		sub, err := relationtuple.SubjectFromString(string(*rt.Subject))
-		require.NoError(t, err)
 		getResp.RelationTuples[i] = &relationtuple.InternalRelationTuple{
 			Namespace: *rt.Namespace,
 			Object:    *rt.Object,
 			Relation:  *rt.Relation,
-			Subject:   sub,
+		}
+		if rt.SubjectSet != nil {
+			getResp.RelationTuples[i].Subject = &relationtuple.SubjectSet{
+				Namespace: *rt.SubjectSet.Namespace,
+				Object:    *rt.SubjectSet.Object,
+				Relation:  *rt.SubjectSet.Relation,
+			}
+		} else {
+			getResp.RelationTuples[i].Subject = &relationtuple.SubjectID{ID: rt.SubjectID}
 		}
 	}
 
@@ -135,24 +166,38 @@ func (c *sdkClient) queryTupleErr(t require.TestingT, expected herodot.DefaultEr
 }
 
 func (c *sdkClient) check(t require.TestingT, r *relationtuple.InternalRelationTuple) bool {
-	resp, err := c.getReadClient().Read.GetCheck(
-		read.NewGetCheckParamsWithTimeout(time.Second).
-			WithNamespace(r.Namespace).
-			WithObject(r.Object).
-			WithRelation(r.Relation).
-			WithSubject(pointerx.String(r.Subject.String())),
-	)
+	params := read.NewGetCheckParamsWithTimeout(time.Second).
+		WithNamespace(r.Namespace).
+		WithObject(r.Object).
+		WithRelation(r.Relation)
+	switch s := r.Subject.(type) {
+	case *relationtuple.SubjectID:
+		params = params.WithSubjectID(&s.ID)
+	case *relationtuple.SubjectSet:
+		params = params.
+			WithSubjectSetNamespace(&s.Namespace).
+			WithSubjectSetObject(&s.Object).
+			WithSubjectSetRelation(&s.Relation)
+	}
+	resp, err := c.getReadClient().Read.GetCheck(params)
 	require.NoError(t, err)
 	return *resp.Payload.Allowed
 }
 
 func buildTree(t require.TestingT, mt *models.ExpandTree) *expand.Tree {
-	sub, err := relationtuple.SubjectFromString(string(*mt.Subject))
-	require.NoError(t, err)
 	et := &expand.Tree{
-		Type:    expand.NodeType(*mt.Type),
-		Subject: sub,
+		Type: expand.NodeType(*mt.Type),
 	}
+	if mt.SubjectSet != nil {
+		et.Subject = &relationtuple.SubjectSet{
+			Namespace: *mt.SubjectSet.Namespace,
+			Object:    *mt.SubjectSet.Object,
+			Relation:  *mt.SubjectSet.Relation,
+		}
+	} else {
+		et.Subject = &relationtuple.SubjectID{ID: mt.SubjectID}
+	}
+
 	if et.Type != expand.Leaf && len(mt.Children) != 0 {
 		et.Children = make([]*expand.Tree, len(mt.Children))
 		for i, c := range mt.Children {

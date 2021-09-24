@@ -1125,7 +1125,8 @@
     "expandTree": {
       "type": "object",
       "required": [
-        "type"
+        "type",
+        "subject"
       ],
       "properties": {
         "children": {
@@ -1134,11 +1135,8 @@
             "$ref": "#/definitions/expandTree"
           }
         },
-        "subject_id": {
-          "type": "string"
-        },
-        "subject_set": {
-          "$ref": "#/definitions/SubjectSet"
+        "subject": {
+          "$ref": "#/definitions/subject"
         },
         "type": {
           "type": "string",
@@ -1200,6 +1198,9 @@
           "type": "string"
         }
       }
+    },
+    "subject": {
+      "type": "object"
     },
     "version": {
       "type": "object",

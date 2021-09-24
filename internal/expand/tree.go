@@ -22,11 +22,9 @@ const (
 	Leaf         NodeType = "leaf"
 )
 
-// swagger:model expandTree
+// swagger:ignore
 type Tree struct {
-	// required: true
-	Type NodeType `json:"type"`
-	// required: true
+	Type     NodeType              `json:"type"`
 	Subject  relationtuple.Subject `json:"subject"`
 	Children []*Tree               `json:"children,omitempty"`
 }
@@ -83,28 +81,84 @@ func NodeTypeFromProto(t acl.NodeType) NodeType {
 	return Leaf
 }
 
-func (t *Tree) UnmarshalJSON(v []byte) error {
-	type node struct {
-		Type     NodeType `json:"type"`
-		Children []*Tree  `json:"children,omitempty"`
-		Subject  string   `json:"subject"`
+// swagger:model expandTree
+type node struct {
+	// required: true
+	Type       NodeType                  `json:"type"`
+	Children   []*node                   `json:"children,omitempty"`
+	SubjectID  *string                   `json:"subject_id,omitempty"`
+	SubjectSet *relationtuple.SubjectSet `json:"subject_set,omitempty"`
+}
+
+func (n *node) toTree() (*Tree, error) {
+	t := &Tree{}
+	if n.SubjectID == nil && n.SubjectSet == nil {
+		return nil, errors.WithStack(relationtuple.ErrNilSubject)
+	} else if n.SubjectID != nil && n.SubjectSet != nil {
+		return nil, errors.WithStack(relationtuple.ErrDuplicateSubject)
 	}
 
-	n := &node{}
-	if err := json.Unmarshal(v, n); err != nil {
+	if n.SubjectID != nil {
+		t.Subject = &relationtuple.SubjectID{ID: *n.SubjectID}
+	} else {
+		t.Subject = n.SubjectSet
+	}
+
+	t.Type = n.Type
+
+	if n.Children != nil {
+		t.Children = make([]*Tree, len(n.Children))
+		for i := range n.Children {
+			var err error
+			t.Children[i], err = n.Children[i].toTree()
+			if err != nil {
+				return nil, err
+			}
+		}
+	}
+
+	return t, nil
+}
+
+func (n *node) fromTree(t *Tree) error {
+	n.Type = t.Type
+	n.SubjectID = t.Subject.SubjectID()
+	n.SubjectSet = t.Subject.SubjectSet()
+
+	if t.Children != nil {
+		n.Children = make([]*node, len(t.Children))
+		for i := range t.Children {
+			n.Children[i] = &node{}
+			if err := n.Children[i].fromTree(t.Children[i]); err != nil {
+				return err
+			}
+		}
+	}
+
+	return nil
+}
+
+func (t *Tree) UnmarshalJSON(v []byte) error {
+	var n node
+	if err := json.Unmarshal(v, &n); err != nil {
 		return errors.WithStack(err)
 	}
 
-	var err error
-	t.Subject, err = relationtuple.SubjectFromString(n.Subject)
+	tt, err := (&n).toTree()
 	if err != nil {
 		return err
 	}
 
-	t.Type = n.Type
-	t.Children = n.Children
-
+	*t = *tt
 	return nil
+}
+
+func (t *Tree) MarshalJSON() ([]byte, error) {
+	var n node
+	if err := n.fromTree(t); err != nil {
+		return nil, err
+	}
+	return json.Marshal(n)
 }
 
 // swagger:ignore

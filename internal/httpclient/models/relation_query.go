@@ -14,45 +14,35 @@ import (
 	"github.com/go-openapi/validate"
 )
 
-// InternalRelationTuple internal relation tuple
+// RelationQuery relation query
 //
-// swagger:model InternalRelationTuple
-type InternalRelationTuple struct {
+// swagger:model RelationQuery
+type RelationQuery struct {
 
 	// Namespace of the Relation Tuple
 	// Required: true
 	Namespace *string `json:"namespace"`
 
 	// Object of the Relation Tuple
-	// Required: true
-	Object *string `json:"object"`
+	Object string `json:"object,omitempty"`
 
 	// Relation of the Relation Tuple
-	// Required: true
-	Relation *string `json:"relation"`
+	Relation string `json:"relation,omitempty"`
 
 	// SubjectID of the Relation Tuple
 	//
-	// Either SubjectSet or SubjectID are required.
+	// Either SubjectSet or SubjectID can be provided.
 	SubjectID string `json:"subject_id,omitempty"`
 
 	// subject set
 	SubjectSet *SubjectSet `json:"subject_set,omitempty"`
 }
 
-// Validate validates this internal relation tuple
-func (m *InternalRelationTuple) Validate(formats strfmt.Registry) error {
+// Validate validates this relation query
+func (m *RelationQuery) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateNamespace(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validateObject(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validateRelation(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -66,7 +56,7 @@ func (m *InternalRelationTuple) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *InternalRelationTuple) validateNamespace(formats strfmt.Registry) error {
+func (m *RelationQuery) validateNamespace(formats strfmt.Registry) error {
 
 	if err := validate.Required("namespace", "body", m.Namespace); err != nil {
 		return err
@@ -75,25 +65,7 @@ func (m *InternalRelationTuple) validateNamespace(formats strfmt.Registry) error
 	return nil
 }
 
-func (m *InternalRelationTuple) validateObject(formats strfmt.Registry) error {
-
-	if err := validate.Required("object", "body", m.Object); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (m *InternalRelationTuple) validateRelation(formats strfmt.Registry) error {
-
-	if err := validate.Required("relation", "body", m.Relation); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (m *InternalRelationTuple) validateSubjectSet(formats strfmt.Registry) error {
+func (m *RelationQuery) validateSubjectSet(formats strfmt.Registry) error {
 	if swag.IsZero(m.SubjectSet) { // not required
 		return nil
 	}
@@ -110,8 +82,8 @@ func (m *InternalRelationTuple) validateSubjectSet(formats strfmt.Registry) erro
 	return nil
 }
 
-// ContextValidate validate this internal relation tuple based on the context it is used
-func (m *InternalRelationTuple) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+// ContextValidate validate this relation query based on the context it is used
+func (m *RelationQuery) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.contextValidateSubjectSet(ctx, formats); err != nil {
@@ -124,7 +96,7 @@ func (m *InternalRelationTuple) ContextValidate(ctx context.Context, formats str
 	return nil
 }
 
-func (m *InternalRelationTuple) contextValidateSubjectSet(ctx context.Context, formats strfmt.Registry) error {
+func (m *RelationQuery) contextValidateSubjectSet(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.SubjectSet != nil {
 		if err := m.SubjectSet.ContextValidate(ctx, formats); err != nil {
@@ -139,7 +111,7 @@ func (m *InternalRelationTuple) contextValidateSubjectSet(ctx context.Context, f
 }
 
 // MarshalBinary interface implementation
-func (m *InternalRelationTuple) MarshalBinary() ([]byte, error) {
+func (m *RelationQuery) MarshalBinary() ([]byte, error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -147,8 +119,8 @@ func (m *InternalRelationTuple) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (m *InternalRelationTuple) UnmarshalBinary(b []byte) error {
-	var res InternalRelationTuple
+func (m *RelationQuery) UnmarshalBinary(b []byte) error {
+	var res RelationQuery
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

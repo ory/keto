@@ -62,7 +62,7 @@ func NewPostCheckParamsWithHTTPClient(client *http.Client) *PostCheckParams {
 type PostCheckParams struct {
 
 	// Payload.
-	Payload *models.InternalRelationTuple
+	Payload *models.RelationQuery
 
 	timeout    time.Duration
 	Context    context.Context
@@ -118,13 +118,13 @@ func (o *PostCheckParams) SetHTTPClient(client *http.Client) {
 }
 
 // WithPayload adds the payload to the post check params
-func (o *PostCheckParams) WithPayload(payload *models.InternalRelationTuple) *PostCheckParams {
+func (o *PostCheckParams) WithPayload(payload *models.RelationQuery) *PostCheckParams {
 	o.SetPayload(payload)
 	return o
 }
 
 // SetPayload adds the payload to the post check params
-func (o *PostCheckParams) SetPayload(payload *models.InternalRelationTuple) {
+func (o *PostCheckParams) SetPayload(payload *models.RelationQuery) {
 	o.Payload = payload
 }
 

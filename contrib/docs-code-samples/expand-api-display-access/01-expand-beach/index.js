@@ -19,26 +19,32 @@ expandRequest.setSubject(sub)
 expandRequest.setMaxDepth(3)
 
 // helper to get a nice result
-const subjectString = (subject) => {
+const subjectJSON = (subject) => {
   if (subject.hasId()) {
-    return subject.getId()
+    return { subject_id: subject.getId() }
   }
   const set = subject.getSet()
-  return set.getNamespace() + ':' + set.getObject() + '#' + set.getRelation()
+  return {
+    subject_set: {
+      namespace: set.getNamespace(),
+      object: set.getObject(),
+      relation: set.getRelation()
+    }
+  }
 }
 
 // helper to get a nice result
 const prettyTree = (tree) => {
   const [nodeType, subject, children] = [
     tree.getNodeType(),
-    subjectString(tree.getSubject()),
+    subjectJSON(tree.getSubject()),
     tree.getChildrenList()
   ]
   switch (nodeType) {
     case expand.NodeType.NODE_TYPE_LEAF:
-      return { type: 'leaf', subject }
+      return { type: 'leaf', ...subject }
     case expand.NodeType.NODE_TYPE_UNION:
-      return { type: 'union', subject, children: children.map(prettyTree) }
+      return { type: 'union', children: children.map(prettyTree), ...subject }
   }
 }
 

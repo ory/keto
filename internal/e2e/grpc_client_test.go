@@ -62,8 +62,8 @@ func (g *grpcClient) queryTuple(t require.TestingT, q *relationtuple.RelationQue
 		Object:    q.Object,
 		Relation:  q.Relation,
 	}
-	if q.Subject != nil {
-		query.Subject = q.Subject.ToProto()
+	if s := q.Subject(); s != nil {
+		query.Subject = s.ToProto()
 	}
 
 	pagination := x.GetPaginationOptions(opts...)
@@ -95,8 +95,8 @@ func (g *grpcClient) queryTupleErr(t require.TestingT, expected herodot.DefaultE
 		Object:    q.Object,
 		Relation:  q.Relation,
 	}
-	if q.Subject != nil {
-		query.Subject = q.Subject.ToProto()
+	if s := q.Subject(); s != nil {
+		query.Subject = s.ToProto()
 	}
 
 	pagination := x.GetPaginationOptions(opts...)

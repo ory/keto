@@ -23,18 +23,18 @@ import (
 )
 
 func assertAllowed(t *testing.T, resp *http.Response) {
-	assert.Equal(t, http.StatusOK, resp.StatusCode)
-
 	body, err := io.ReadAll(resp.Body)
 	require.NoError(t, err)
+
+	assert.Equal(t, http.StatusOK, resp.StatusCode, "%s", body)
 	assert.True(t, gjson.GetBytes(body, "allowed").Bool())
 }
 
 func assertDenied(t *testing.T, resp *http.Response) {
-	assert.Equal(t, http.StatusForbidden, resp.StatusCode)
-
 	body, err := io.ReadAll(resp.Body)
 	require.NoError(t, err)
+
+	assert.Equal(t, http.StatusForbidden, resp.StatusCode, "%s", body)
 	assert.False(t, gjson.GetBytes(body, "allowed").Bool())
 }
 
@@ -72,8 +72,8 @@ func TestRESTHandler(t *testing.T) {
 
 	t.Run("case=returns denied on unknown namespace", func(t *testing.T) {
 		resp, err := ts.Client().Get(ts.URL + check.RouteBase + "?" + url.Values{
-			"namespace": {"not " + nspaces[0].Name},
-			"subject":   {"foo"},
+			"namespace":  {"not " + nspaces[0].Name},
+			"subject_id": {"foo"},
 		}.Encode())
 		require.NoError(t, err)
 
@@ -89,7 +89,9 @@ func TestRESTHandler(t *testing.T) {
 		}
 		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), rt))
 
-		resp, err := ts.Client().Get(ts.URL + check.RouteBase + "?" + rt.ToURLQuery().Encode())
+		q, err := rt.ToURLQuery()
+		require.NoError(t, err)
+		resp, err := ts.Client().Get(ts.URL + check.RouteBase + "?" + q.Encode())
 		require.NoError(t, err)
 
 		assertAllowed(t, resp)
@@ -97,8 +99,8 @@ func TestRESTHandler(t *testing.T) {
 
 	t.Run("case=returns denied", func(t *testing.T) {
 		resp, err := ts.Client().Get(ts.URL + check.RouteBase + "?" + url.Values{
-			"namespace": {nspaces[0].Name},
-			"subject":   {"foo"},
+			"namespace":  {nspaces[0].Name},
+			"subject_id": {"foo"},
 		}.Encode())
 		require.NoError(t, err)
 

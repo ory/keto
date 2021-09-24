@@ -47,8 +47,11 @@ func (g *cliClient) createTuple(t require.TestingT, r *relationtuple.InternalRel
 
 func (g *cliClient) assembleQueryFlags(q *relationtuple.RelationQuery, opts []x.PaginationOptionSetter) []string {
 	var flags []string
-	if q.Subject != nil {
-		flags = append(flags, "--"+clirelationtuple.FlagSubject, q.Subject.String())
+	if q.SubjectID != nil {
+		flags = append(flags, "--"+clirelationtuple.FlagSubjectID, *q.SubjectID)
+	}
+	if q.SubjectSet != nil {
+		flags = append(flags, "--"+clirelationtuple.FlagSubjectSet, q.SubjectSet.String())
 	}
 	if q.Relation != "" {
 		flags = append(flags, "--"+clirelationtuple.FlagRelation, q.Relation)

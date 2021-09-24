@@ -8,19 +8,17 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/ory/x/pointerx"
+
 	"github.com/ory/herodot"
 
 	"github.com/sirupsen/logrus"
 
 	acl "github.com/ory/keto/proto/ory/keto/acl/v1alpha1"
 
-	"github.com/tidwall/sjson"
-
 	"github.com/pkg/errors"
 
 	"github.com/ory/keto/internal/x"
-
-	"github.com/tidwall/gjson"
 )
 
 type (
@@ -44,11 +42,27 @@ type (
 )
 
 type RelationQuery struct {
+	// Namespace of the Relation Tuple
+	//
 	// required: true
-	Namespace string  `json:"namespace"`
-	Object    string  `json:"object"`
-	Relation  string  `json:"relation"`
-	Subject   Subject `json:"subject"`
+	Namespace string `json:"namespace"`
+
+	// Object of the Relation Tuple
+	Object string `json:"object"`
+
+	// Relation of the Relation Tuple
+	Relation string `json:"relation"`
+
+	// SubjectID of the Relation Tuple
+	//
+	// Either SubjectSet or SubjectID can be provided.
+	SubjectID *string `json:"subject_id,omitempty"`
+	// SubjectSet of the Relation Tuple
+	//
+	// Either SubjectSet or SubjectID can be provided.
+	//
+	// swagger:allOf
+	SubjectSet *SubjectSet `json:"subject_set,omitempty"`
 }
 
 // swagger:ignore
@@ -63,69 +77,42 @@ type TupleData interface {
 // swagger:model subject
 type Subject interface {
 	// swagger:ignore
-	json.Marshaler
-
-	// swagger:ignore
 	String() string
 	// swagger:ignore
 	FromString(string) (Subject, error)
 	// swagger:ignore
 	Equals(interface{}) bool
+	// swagger:ignore
+	SubjectID() *string
+	// swagger:ignore
+	SubjectSet() *SubjectSet
 
 	// swagger:ignore
 	ToProto() *acl.Subject
 }
 
-// swagger:parameters getCheck deleteRelationTuple
+// swagger:ignore
 type InternalRelationTuple struct {
-	// Namespace of the Relation Tuple
-	//
-	// in: query
-	// required: true
-	Namespace string `json:"namespace"`
-
-	// Object of the Relation Tuple
-	//
-	// in: query
-	// required: true
-	Object string `json:"object"`
-
-	// Relation of the Relation Tuple
-	//
-	// in: query
-	// required: true
-	Relation string `json:"relation"`
-
-	// Subject of the Relation Tuple
-	//
-	// The subject follows the subject string encoding format.
-	//
-	// in: query
-	// required: true
-	Subject Subject `json:"subject"`
+	Namespace string  `json:"namespace"`
+	Object    string  `json:"object"`
+	Relation  string  `json:"relation"`
+	Subject   Subject `json:"subject"`
 }
-
-// swagger:model subject
-// nolint:deadcode,unused
-type stringEncodedSubject string
 
 // swagger:parameters getExpand
 type SubjectSet struct {
-	// Namespace of the Relation Tuple
+	// Namespace of the Subject Set
 	//
-	// in: query
 	// required: true
 	Namespace string `json:"namespace"`
 
-	// Object of the Relation Tuple
+	// Object of the Subject Set
 	//
-	// in: query
 	// required: true
 	Object string `json:"object"`
 
-	// Relation of the Relation Tuple
+	// Relation of the Subject Set
 	//
-	// in: query
 	// required: true
 	Relation string `json:"relation"`
 }
@@ -133,8 +120,11 @@ type SubjectSet struct {
 var (
 	_, _ Subject = &SubjectID{}, &SubjectSet{}
 
-	ErrMalformedInput = herodot.ErrBadRequest.WithError("malformed string input")
-	ErrNilSubject     = herodot.ErrBadRequest.WithError("subject is not allowed to be nil")
+	ErrMalformedInput    = herodot.ErrBadRequest.WithError("malformed string input")
+	ErrNilSubject        = herodot.ErrBadRequest.WithError("subject is not allowed to be nil")
+	ErrDuplicateSubject  = herodot.ErrBadRequest.WithError("exactly one of subject_set or subject_id has to be provided")
+	ErrDroppedSubjectKey = herodot.ErrBadRequest.WithDebug(`provide "subject_id" or "subject_set.*"; support for "subject" was dropped`)
+	ErrIncompleteSubject = herodot.ErrBadRequest.WithError(`incomplete subject, provide "subject_id" or a complete "subject_set.*"`)
 )
 
 // swagger:enum patchAction
@@ -144,20 +134,6 @@ const (
 	ActionInsert patchAction = "insert"
 	ActionDelete patchAction = "delete"
 )
-
-// The patch request payload
-//
-// swagger:parameters patchRelationTuples
-// nolint:deadcode,unused
-type patchPayload struct {
-	// in:body
-	Payload []*PatchDelta
-}
-
-type PatchDelta struct {
-	Action        patchAction            `json:"action"`
-	RelationTuple *InternalRelationTuple `json:"relation_tuple"`
-}
 
 func SubjectFromString(s string) (Subject, error) {
 	if strings.Contains(s, "#") {
@@ -236,6 +212,22 @@ func (s *SubjectSet) ToURLQuery() url.Values {
 	}
 }
 
+func (s *SubjectSet) SubjectID() *string {
+	return nil
+}
+
+func (s *SubjectSet) SubjectSet() *SubjectSet {
+	return s
+}
+
+func (s *SubjectID) SubjectID() *string {
+	return &s.ID
+}
+
+func (s *SubjectID) SubjectSet() *SubjectSet {
+	return nil
+}
+
 // swagger:ignore
 func (s *SubjectID) ToProto() *acl.Subject {
 	return &acl.Subject{
@@ -275,11 +267,7 @@ func (s *SubjectSet) Equals(v interface{}) bool {
 }
 
 func (s SubjectID) MarshalJSON() ([]byte, error) {
-	return []byte(`"` + s.String() + `"`), nil
-}
-
-func (s SubjectSet) MarshalJSON() ([]byte, error) {
-	return []byte(`"` + s.String() + `"`), nil
+	return json.Marshal(s.ID)
 }
 
 func (r *InternalRelationTuple) String() string {
@@ -326,30 +314,32 @@ func (r *InternalRelationTuple) DeriveSubject() *SubjectSet {
 }
 
 func (r *InternalRelationTuple) UnmarshalJSON(raw []byte) error {
-	subject := gjson.GetBytes(raw, "subject").Str
-
-	var err error
-	r.Subject, err = SubjectFromString(subject)
-	if err != nil {
-		return err
+	var rq RelationQuery
+	if err := json.Unmarshal(raw, &rq); err != nil {
+		return errors.WithStack(err)
+	}
+	if rq.SubjectID != nil && rq.SubjectSet != nil {
+		return errors.WithStack(ErrDuplicateSubject)
+	} else if rq.SubjectID == nil && rq.SubjectSet == nil {
+		return errors.WithStack(ErrNilSubject)
 	}
 
-	r.Namespace = gjson.GetBytes(raw, "namespace").Str
-	r.Object = gjson.GetBytes(raw, "object").Str
-	r.Relation = gjson.GetBytes(raw, "relation").Str
+	r.Namespace = rq.Namespace
+	r.Object = rq.Object
+	r.Relation = rq.Relation
+
+	// validation was done before already
+	if rq.SubjectID == nil {
+		r.Subject = rq.SubjectSet
+	} else {
+		r.Subject = &SubjectID{ID: *rq.SubjectID}
+	}
 
 	return nil
 }
 
 func (r *InternalRelationTuple) MarshalJSON() ([]byte, error) {
-	type t InternalRelationTuple
-
-	enc, err := json.Marshal((*t)(r))
-	if err != nil {
-		return nil, errors.WithStack(err)
-	}
-
-	return sjson.SetBytes(enc, "subject", r.Subject.String())
+	return json.Marshal(r.ToQuery())
 }
 
 func (r *InternalRelationTuple) FromDataProvider(d TupleData) (*InternalRelationTuple, error) {
@@ -375,32 +365,52 @@ func (r *InternalRelationTuple) ToProto() *acl.RelationTuple {
 	}
 }
 
+func (r *InternalRelationTuple) ToQuery() *RelationQuery {
+	return &RelationQuery{
+		Namespace:  r.Namespace,
+		Object:     r.Object,
+		Relation:   r.Relation,
+		SubjectID:  r.Subject.SubjectID(),
+		SubjectSet: r.Subject.SubjectSet(),
+	}
+}
+
 func (r *InternalRelationTuple) FromURLQuery(query url.Values) (*InternalRelationTuple, error) {
-	if s := query.Get("subject"); s != "" {
-		var err error
-		r.Subject, err = SubjectFromString(s)
-		if err != nil {
-			return nil, err
-		}
+	q, err := (&RelationQuery{}).FromURLQuery(query)
+	if err != nil {
+		return nil, err
 	}
 
-	r.Object = query.Get("object")
-	r.Relation = query.Get("relation")
-	r.Namespace = query.Get("namespace")
+	if s := q.Subject(); s == nil {
+		return nil, errors.WithStack(ErrNilSubject)
+	} else {
+		r.Subject = s
+	}
+
+	r.Namespace = q.Namespace
+	r.Object = q.Object
+	r.Relation = q.Relation
 
 	return r, nil
 }
 
-func (r *InternalRelationTuple) ToURLQuery() url.Values {
+func (r *InternalRelationTuple) ToURLQuery() (url.Values, error) {
 	vals := url.Values{
 		"namespace": []string{r.Namespace},
 		"object":    []string{r.Object},
 		"relation":  []string{r.Relation},
 	}
-	if r.Subject != nil {
-		vals.Set("subject", r.Subject.String())
+	switch s := r.Subject.(type) {
+	case *SubjectID:
+		vals.Set(subjectIDKey, s.ID)
+	case *SubjectSet:
+		vals.Set(subjectSetNamespaceKey, s.Namespace)
+		vals.Set(subjectSetObjectKey, s.Object)
+		vals.Set(subjectSetRelationKey, s.Relation)
+	case nil:
+		return nil, errors.WithStack(ErrNilSubject)
 	}
-	return vals
+	return vals, nil
 }
 
 func (r *InternalRelationTuple) ToLoggerFields() logrus.Fields {
@@ -408,31 +418,71 @@ func (r *InternalRelationTuple) ToLoggerFields() logrus.Fields {
 		"namespace": r.Namespace,
 		"object":    r.Object,
 		"relation":  r.Relation,
-		"subject":   r.Subject,
+		"subject":   r.Subject.String(),
 	}
 }
 
 func (q *RelationQuery) FromProto(query *acl.ListRelationTuplesRequest_Query) (*RelationQuery, error) {
-	r, err := (&InternalRelationTuple{}).FromDataProvider(query)
-	if err != nil {
-		return nil, err
+	q.Namespace = query.Namespace
+	q.Object = query.Object
+	q.Relation = query.Relation
+	// reset subject
+	q.SubjectID = nil
+	q.SubjectSet = nil
+
+	if query.Subject != nil {
+		switch s := query.Subject.Ref.(type) {
+		case *acl.Subject_Id:
+			q.SubjectID = &s.Id
+		case *acl.Subject_Set:
+			q.SubjectSet = &SubjectSet{
+				Namespace: s.Set.Namespace,
+				Object:    s.Set.Object,
+				Relation:  s.Set.Relation,
+			}
+		case nil:
+			return nil, errors.WithStack(ErrNilSubject)
+		}
 	}
 
-	*q = RelationQuery(*r)
 	return q, nil
 }
+
+const (
+	subjectIDKey           = "subject_id"
+	subjectSetNamespaceKey = "subject_set.namespace"
+	subjectSetObjectKey    = "subject_set.object"
+	subjectSetRelationKey  = "subject_set.relation"
+)
 
 func (q *RelationQuery) FromURLQuery(query url.Values) (*RelationQuery, error) {
 	if q == nil {
 		q = &RelationQuery{}
 	}
 
-	if s := query.Get("subject"); s != "" {
-		var err error
-		q.Subject, err = SubjectFromString(s)
-		if err != nil {
-			return nil, err
+	if query.Has("subject") {
+		return nil, errors.WithStack(ErrDroppedSubjectKey)
+	}
+
+	// reset subject
+	q.SubjectID = nil
+	q.SubjectSet = nil
+
+	switch {
+	case !query.Has(subjectIDKey) && !query.Has(subjectSetNamespaceKey) && !query.Has(subjectSetObjectKey) && !query.Has(subjectSetRelationKey):
+		// was not queried for the subject
+	case query.Has(subjectIDKey) && query.Has(subjectSetNamespaceKey) && query.Has(subjectSetObjectKey) && query.Has(subjectSetRelationKey):
+		return nil, errors.WithStack(ErrDuplicateSubject)
+	case query.Has(subjectIDKey):
+		q.SubjectID = pointerx.String(query.Get(subjectIDKey))
+	case query.Has(subjectSetNamespaceKey) && query.Has(subjectSetObjectKey) && query.Has(subjectSetRelationKey):
+		q.SubjectSet = &SubjectSet{
+			Namespace: query.Get(subjectSetNamespaceKey),
+			Object:    query.Get(subjectSetObjectKey),
+			Relation:  query.Get(subjectSetRelationKey),
 		}
+	default:
+		return nil, errors.WithStack(ErrIncompleteSubject)
 	}
 
 	q.Object = query.Get("object")
@@ -454,15 +504,31 @@ func (q *RelationQuery) ToURLQuery() url.Values {
 	if q.Object != "" {
 		v.Add("object", q.Object)
 	}
-	if q.Subject != nil {
-		v.Add("subject", q.Subject.String())
+	if q.SubjectID != nil {
+		v.Add(subjectIDKey, *q.SubjectID)
+	} else if q.SubjectSet != nil {
+		v.Add(subjectSetNamespaceKey, q.SubjectSet.Namespace)
+		v.Add(subjectSetObjectKey, q.SubjectSet.Object)
+		v.Add(subjectSetRelationKey, q.SubjectSet.Relation)
 	}
 
 	return v
 }
 
+func (q *RelationQuery) Subject() Subject {
+	if q.SubjectID != nil {
+		return &SubjectID{ID: *q.SubjectID}
+	} else if q.SubjectSet != nil {
+		return q.SubjectSet
+	}
+	return nil
+}
+
 func (q *RelationQuery) String() string {
-	return fmt.Sprintf("namespace: %s; object: %s; relation: %s; subject: %s", q.Namespace, q.Object, q.Relation, q.Subject)
+	if q.SubjectID != nil {
+		return fmt.Sprintf("namespace: %s; object: %s; relation: %s; subject: %s", q.Namespace, q.Object, q.Relation, *q.SubjectID)
+	}
+	return fmt.Sprintf("namespace: %s; object: %s; relation: %s; subject: %v", q.Namespace, q.Object, q.Relation, q.SubjectSet)
 }
 
 func (r *InternalRelationTuple) Header() []string {
@@ -470,7 +536,7 @@ func (r *InternalRelationTuple) Header() []string {
 		"NAMESPACE",
 		"OBJECT ID",
 		"RELATION NAME",
-		"SUBJECT ID",
+		"SUBJECT",
 	}
 }
 
