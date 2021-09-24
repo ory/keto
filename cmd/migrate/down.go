@@ -19,8 +19,7 @@ func newDownCmd() *cobra.Command {
 		Use:   "down <steps>",
 		Short: "Migrate the database down",
 		Long: "Migrate the database down a specific amount of steps.\n" +
-			"Pass 0 steps to fully migrate down.\n" +
-			"This does not affect namespaces. Use `keto namespace migrate down` for migrating namespaces.",
+			"Pass 0 steps to fully migrate down.",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			steps, err := strconv.ParseInt(args[0], 0, 0)
@@ -39,7 +38,7 @@ func newDownCmd() *cobra.Command {
 				return err
 			}
 
-			return BoxDown(cmd, mb, int(steps), "")
+			return BoxDown(cmd, mb, int(steps))
 		},
 	}
 
@@ -49,27 +48,27 @@ func newDownCmd() *cobra.Command {
 	return cmd
 }
 
-func BoxDown(cmd *cobra.Command, mb *popx.MigrationBox, steps int, msgPrefix string) error {
+func BoxDown(cmd *cobra.Command, mb *popx.MigrationBox, steps int) error {
 	s, err := mb.Status(cmd.Context())
 	if err != nil {
-		_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "%sCould not get migration status: %+v\n", msgPrefix, err)
+		_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not get migration status: %+v\n", err)
 		return cmdx.FailSilently(cmd)
 	}
 	cmdx.PrintTable(cmd, s)
 
-	if !flagx.MustGetBool(cmd, FlagYes) && !cmdx.AskForConfirmation(msgPrefix+"Do you really want to migrate down? This will delete data.", cmd.InOrStdin(), cmd.OutOrStdout()) {
-		_, _ = fmt.Fprintln(cmd.OutOrStdout(), msgPrefix+"Migration aborted.")
+	if !flagx.MustGetBool(cmd, FlagYes) && !cmdx.AskForConfirmation("Do you really want to migrate down? This will delete data.", cmd.InOrStdin(), cmd.OutOrStdout()) {
+		_, _ = fmt.Fprintln(cmd.OutOrStdout(), "Migration aborted.")
 		return nil
 	}
 
 	if err := mb.Down(cmd.Context(), steps); err != nil {
-		_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "%sCould apply down migrations: %+v\n", msgPrefix, err)
+		_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could apply down migrations: %+v\n", err)
 		return cmdx.FailSilently(cmd)
 	}
 
 	s, err = mb.Status(cmd.Context())
 	if err != nil {
-		_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "%sCould not get migration status: %+v\n", msgPrefix, err)
+		_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not get migration status: %+v\n", err)
 		return cmdx.FailSilently(cmd)
 	}
 	cmdx.PrintTable(cmd, s)

@@ -38,7 +38,6 @@ type (
 		config.Provider
 		x.LoggerProvider
 
-		Tracer() *tracing.Tracer
 		PopConnection() (*pop.Connection, error)
 	}
 )
@@ -51,16 +50,10 @@ var (
 	//go:embed migrations/sql/*.sql
 	migrations embed.FS
 
-	////go:embed namespace_migrations/*.sql
-	//namespaceMigrations embed.FS
-
 	_ persistence.Persister = &Persister{}
 )
 
 func NewPersister(reg dependencies, nid uuid.UUID) (*Persister, error) {
-	//pop.SetLogger(reg.Logger().PopLogger)
-
-	pop.Debug = true
 	conn, err := reg.PopConnection()
 	if err != nil {
 		return nil, err
@@ -102,7 +95,7 @@ func (p *Persister) QueryWithNetwork(ctx context.Context) *pop.Query {
 	return p.Connection(ctx).Where("nid = ?", p.NetworkID(ctx))
 }
 
-func (p *Persister) transaction(ctx context.Context, f func(ctx context.Context, c *pop.Connection) error) error {
+func (p *Persister) Transaction(ctx context.Context, f func(ctx context.Context, c *pop.Connection) error) error {
 	return popx.Transaction(ctx, p.conn.WithContext(ctx), f)
 }
 
