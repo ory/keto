@@ -1,0 +1,5 @@
+CREATE TABLE `keto_namespace` (
+`id` INTEGER NOT NULL AUTO_INCREMENT,
+PRIMARY KEY(`id`),
+`schema_version` INTEGER NOT NULL
+) ENGINE=InnoDB;

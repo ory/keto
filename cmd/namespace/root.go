@@ -25,7 +25,7 @@ func NewMigrateCmd() *cobra.Command {
 func RegisterCommandsRecursive(parent *cobra.Command) {
 	rootCmd := NewNamespaceCmd()
 	migrateCmd := NewMigrateCmd()
-	migrateCmd.AddCommand(NewMigrateUpCmd(), NewMigrateDownCmd(), NewMigrateStatusCmd())
+	migrateCmd.AddCommand(NewMigrateUpCmd(), NewMigrateDownCmd(), NewMigrateStatusCmd(), NewMigrateLegacyCmd())
 
 	rootCmd.AddCommand(migrateCmd, NewValidateCmd())
 

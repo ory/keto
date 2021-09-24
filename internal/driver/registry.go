@@ -4,6 +4,8 @@ import (
 	"context"
 	"net/http"
 
+	"github.com/gobuffalo/pop/v5"
+
 	"github.com/ory/keto/internal/driver/config"
 
 	"github.com/spf13/cobra"
@@ -35,6 +37,10 @@ type (
 		expand.EngineProvider
 		check.EngineProvider
 		persistence.Migrator
+		persistence.Provider
+
+		PopConnection() (*pop.Connection, error)
+		PopConnectionWithOpts(f ...func(*pop.ConnectionDetails)) (*pop.Connection, error)
 
 		HealthHandler() *healthx.Handler
 		Tracer() *tracing.Tracer
@@ -54,4 +60,7 @@ type (
 	contextKeys string
 )
 
-const LogrusHookContextKey contextKeys = "logrus hook"
+const (
+	LogrusHookContextKey contextKeys = "logrus hook"
+	RegistryContextKey   contextKeys = "registry"
+)

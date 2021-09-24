@@ -50,6 +50,8 @@
           "cli/keto-migrate-status",
           "cli/keto-migrate-up",
           "cli/keto-namespace",
+          "cli/keto-namespace-migrate",
+          "cli/keto-namespace-migrate-legacy",
           "cli/keto-namespace-validate",
           "cli/keto-relation-tuple",
           "cli/keto-relation-tuple-create",

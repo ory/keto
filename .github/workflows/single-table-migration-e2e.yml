@@ -1,0 +1,24 @@
+name: Run full e2e test of the migration to single table persister (see https://github.com/ory/keto/issues/628)
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - feat/persistence-migration-path
+
+jobs:
+  test-migration:
+    runs-on: ubuntu-latest
+    name: Test Migration
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+        with:
+          go-version: '1.16'
+      - name: Run test script
+        run: ./scripts/single-table-migration-e2e.sh
+      - uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: sqlite-db
+          path: migrate_e2e.sqlite
