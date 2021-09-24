@@ -129,7 +129,7 @@ require (
 	github.com/joho/godotenv v1.3.0 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51 // indirect
-	github.com/knadh/koanf v1.0.0 // indirect
+	github.com/knadh/koanf v1.2.2 // indirect
 	github.com/lib/pq v1.10.1 // indirect
 	github.com/looplab/fsm v0.1.0 // indirect
 	github.com/magiconair/properties v1.8.4 // indirect
