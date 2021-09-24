@@ -4,12 +4,13 @@
 **Table of Contents**
 
 - [0.0.0 (2021-09-24)](#000-2021-09-24)
-  - [Bug Fixes](#bug-fixes)
-  - [Chores](#chores)
-  - [Code Refactoring](#code-refactoring)
-  - [Documentation](#documentation)
-  - [Features](#features)
-  - [Tests](#tests)
+  - [Breaking Changes](#breaking-changes)
+    - [Bug Fixes](#bug-fixes)
+    - [Chores](#chores)
+    - [Code Refactoring](#code-refactoring)
+    - [Documentation](#documentation)
+    - [Features](#features)
+    - [Tests](#tests)
 - [0.6.0-alpha.3 (2021-04-29)](#060-alpha3-2021-04-29)
   - [Code Generation](#code-generation)
 - [0.6.0-alpha.2 (2021-04-29)](#060-alpha2-2021-04-29)
@@ -100,6 +101,15 @@
 
 # [0.0.0](https://github.com/ory/keto/compare/v0.6.0-alpha.3...v0.0.0) (2021-09-24)
 
+## Breaking Changes
+
+This patch changes the payload of the REST API. The gRPC API is **not**
+affected. The parameter `subject` was previously an encoded string. With this
+change clients have to explicitly use either `subject_id` or
+(`subject_set.namespace` and `subject_set.object` and `subject_set.relation`).
+The same is true for REST responses returned by Keto. An error with a hint will
+be returned if `subject` is still used.
+
 ### Bug Fixes
 
 - `make sdk` dependency on the Ory CLI
@@ -162,6 +172,9 @@
 
 ### Code Refactoring
 
+- Make subject sets and subject IDs unambiguous
+  ([#729](https://github.com/ory/keto/issues/729))
+  ([5a1b0ba](https://github.com/ory/keto/commit/5a1b0bacfe9f1e487c334c9cf52bc3c729a73dce))
 - Persistence table structure ([#638](https://github.com/ory/keto/issues/638))
   ([d02b818](https://github.com/ory/keto/commit/d02b818225783991700a7c285b9570b06dba14ad)):
 
