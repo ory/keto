@@ -3,7 +3,7 @@
 
 **Table of Contents**
 
-- [0.0.0 (2021-09-21)](#000-2021-09-21)
+- [0.0.0 (2021-09-24)](#000-2021-09-24)
   - [Bug Fixes](#bug-fixes)
   - [Chores](#chores)
   - [Code Refactoring](#code-refactoring)
@@ -98,7 +98,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.6.0-alpha.3...v0.0.0) (2021-09-21)
+# [0.0.0](https://github.com/ory/keto/compare/v0.6.0-alpha.3...v0.0.0) (2021-09-24)
 
 ### Bug Fixes
 
@@ -234,6 +234,21 @@
 - Max_idle_conn_time ([#605](https://github.com/ory/keto/issues/605))
   ([50a8623](https://github.com/ory/keto/commit/50a862338e17f86900ca162da7f3467f55f9f954)),
   closes [#523](https://github.com/ory/keto/issues/523)
+- Migration to single table SQL schema
+  ([#707](https://github.com/ory/keto/issues/707))
+  ([00713bc](https://github.com/ory/keto/commit/00713bc3d8c48dfb431c423b690b553c8fdd7c75)):
+
+  This change adds a migration path from Keto version v0.6.x to the new
+  persistence structure introduced by https://github.com/ory/keto/pull/638.
+  Every namespace has to be migrated separately, or you can use the CLI to
+  detect and migrate all namespaces at once. Have a look at
+  `keto help namespace migrate legacy` for all details. **Please make sure that
+  you backup the database before running the migration command**. Please note
+  that this migration might be a bit slower than usual, as we have to pull the
+  data from the database, transcode it in Keto, and then write it to the new
+  table structure. Versions of Keto >v0.7 will not include this migration
+  script, so you will first have to migrate to v0.7 and move on from there.
+
 - Support namespace validation from config files
   ([#596](https://github.com/ory/keto/issues/596))
   ([f4253b8](https://github.com/ory/keto/commit/f4253b8a555afdee718be94140ca4fd4175c1413)):
