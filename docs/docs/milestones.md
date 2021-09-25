@@ -18,8 +18,6 @@ Something is not working.
 - [ ] Doc and implement do not match for delete tuple REST API.
       ([keto#695](https://github.com/ory/keto/issues/695)) -
       [@Patrik](https://github.com/zepatrik)
-- [ ] Change REST API to not work with encoded subjects
-      ([keto#708](https://github.com/ory/keto/issues/708))
 - [ ] Config schema: replace `ory://*` references with something actually
       resolvable ([keto#719](https://github.com/ory/keto/issues/719)) -
       [@Patrik](https://github.com/zepatrik)
@@ -34,6 +32,8 @@ Something is not working.
 - [x] Keto patch relation tuple REST API panic rather than return bad request
       for wrong input. ([keto#706](https://github.com/ory/keto/issues/706)) -
       [@Patrik](https://github.com/zepatrik)
+- [x] Change REST API to not work with encoded subjects
+      ([keto#708](https://github.com/ory/keto/issues/708))
 
 ### [Feat](https://github.com/ory/keto/labels/feat)
 
