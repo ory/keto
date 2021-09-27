@@ -50,7 +50,7 @@ func Test_DebugOnly(t *testing.T) {
 //     Mem: 0.83% of all while github.com/ory/x/configx.(*Provider).reload takes 96.34%
 //     CPU: 3.84% of all while github.com/ory/x/configx.(*Provider).reload takes 61.53%
 func BenchmarkServe(b *testing.B) {
-	//b.SkipNow()
+	b.SkipNow()
 
 	b.StopTimer()
 	h := test.Hook{}
@@ -98,7 +98,6 @@ dsn: memory`)
 	b.StartTimer()
 
 	b.Run("memory namespace manager", func(b *testing.B) {
-		b.SkipNow()
 		for i := 0; i < b.N; i++ {
 			_, err = f.Seek(0, io.SeekStart)
 			require.NoError(b, err)
