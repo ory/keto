@@ -3,6 +3,7 @@ package config
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"os"
@@ -42,7 +43,7 @@ type (
 	}
 )
 
-var _ namespace.Manager = &NamespaceWatcher{}
+var _ namespace.Manager = (*NamespaceWatcher)(nil)
 
 func NewNamespaceWatcher(ctx context.Context, l *logrusx.Logger, target string) (*NamespaceWatcher, error) {
 	u, err := urlx.Parse(target)
@@ -88,16 +89,22 @@ func NewNamespaceWatcher(ctx context.Context, l *logrusx.Logger, target string) 
 }
 
 func eventHandler(ctx context.Context, nw *NamespaceWatcher, done <-chan int, initialEventsProcessed chan<- struct{}) {
+	initalDone := false
 	for {
 		select {
 		// because we use an unbuffered chan we can be sure that at least all initial events are handled
 		case <-done:
+			initalDone = true
 			close(initialEventsProcessed)
 		case <-ctx.Done():
 			return
 		case e, open := <-nw.ec:
 			if !open {
 				return
+			}
+
+			if initalDone {
+				nw.l.WithField("file", e.Source()).WithField("event_type", fmt.Sprintf("%T", e)).Info("A change to a namespace file was detected.")
 			}
 
 			switch etyped := e.(type) {
@@ -206,6 +213,16 @@ func (n *NamespaceWatcher) NamespaceFiles() []*NamespaceFile {
 		nsfs = append(nsfs, nsf)
 	}
 	return nsfs
+}
+
+func (n *NamespaceWatcher) ShouldReload(newValue interface{}) bool {
+	v, ok := newValue.(string)
+	if !ok {
+		// the manager type changed
+		return true
+	}
+	// reload if target changed
+	return v != n.target
 }
 
 func GetParser(fn string) (Parser, error) {

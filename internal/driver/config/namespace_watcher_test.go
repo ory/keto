@@ -192,4 +192,13 @@ func TestNamespaceProvider(t *testing.T) {
 		nsfs := nw.NamespaceFiles()
 		assert.Equal(t, 2, len(nsfs))
 	})
+
+	t.Run("method=should reload", func(t *testing.T) {
+		nw := &NamespaceWatcher{
+			target: "foo",
+		}
+		assert.False(t, nw.ShouldReload("foo"))
+		assert.True(t, nw.ShouldReload("bar"))
+		assert.True(t, nw.ShouldReload([]*namespace.Namespace{}))
+	})
 }

@@ -7,6 +7,8 @@ import (
 	"fmt"
 	"sync"
 
+	"github.com/ory/herodot"
+
 	"github.com/ory/x/watcherx"
 
 	"github.com/ory/keto/internal/namespace"
@@ -45,7 +47,7 @@ type (
 		ctx                    context.Context
 		nm                     namespace.Manager
 		cancelNamespaceManager context.CancelFunc
-		nmLock                 sync.RWMutex
+		nmLock                 sync.Mutex
 	}
 	Provider interface {
 		Config() *Config
@@ -71,6 +73,25 @@ func New(ctx context.Context, flags *pflag.FlagSet, l *logrusx.Logger) (*Config,
 			// TODO this can be optimized to run only on changes related to namespace config
 			kp.resetNamespaceManager()
 		}),
+		configx.AttachWatcher(func(watcherx.Event, error) {
+			if err != nil {
+				return
+			}
+			nm, err := kp.NamespaceManager()
+			if err != nil {
+				l.WithError(err).Error("got internal error in config watcher: could not get namespace manager")
+				return
+			}
+
+			nn, err := kp.getNamespaces()
+			if err != nil {
+				l.WithError(err).Error("could not get namespaces from config")
+				return
+			}
+			if nm.ShouldReload(nn) {
+				kp.resetNamespaceManager()
+			}
+		}),
 	)
 	if err != nil {
 		return nil, err
@@ -88,14 +109,14 @@ func (k *Config) resetNamespaceManager() {
 	k.nmLock.Lock()
 	defer k.nmLock.Unlock()
 
-	if k.nm == nil {
+	if k.cancelNamespaceManager == nil {
 		return
 	}
 
 	// cancel and delete old namespace manager
 	// the next read request will result in a new one being created
 	k.cancelNamespaceManager()
-	k.nm = nil
+	k.nm, k.cancelNamespaceManager = nil, nil
 }
 
 func (k *Config) Set(key string, v interface{}) error {
@@ -155,28 +176,42 @@ func (k *Config) TracingConfig() *tracing.Config {
 }
 
 func (k *Config) NamespaceManager() (namespace.Manager, error) {
-	k.nmLock.RLock()
-	nm := k.nm
-	k.nmLock.RUnlock()
-	if nm != nil {
-		return nm, nil
-	}
-
 	k.nmLock.Lock()
 	defer k.nmLock.Unlock()
 
-	var ctx context.Context
-	ctx, k.cancelNamespaceManager = context.WithCancel(k.ctx)
+	if k.nm == nil {
+		var ctx context.Context
+		ctx, k.cancelNamespaceManager = context.WithCancel(k.ctx)
 
-	switch nTyped := k.p.GetF(KeyNamespaces, "file://./keto_namespaces").(type) {
-	case string:
-		var err error
-		k.nm, err = NewNamespaceWatcher(ctx, k.l, nTyped)
+		nn, err := k.getNamespaces()
 		if err != nil {
 			return nil, err
 		}
+
+		switch nTyped := nn.(type) {
+		case string:
+			var err error
+			k.nm, err = NewNamespaceWatcher(ctx, k.l, nTyped)
+			if err != nil {
+				return nil, err
+			}
+		case []*namespace.Namespace:
+			k.nm = NewMemoryNamespaceManager(nTyped...)
+		default:
+			return nil, errors.WithStack(herodot.ErrInternalServerError.WithReasonf("got unexpected namespaces type %T", nn))
+		}
+	}
+
+	return k.nm, nil
+}
+
+// getNamespaces returns string or []*namespace.Namespace
+func (k *Config) getNamespaces() (interface{}, error) {
+	switch nTyped := k.p.GetF(KeyNamespaces, "file://./keto_namespaces").(type) {
+	case string:
+		return nTyped, nil
 	case []*namespace.Namespace:
-		k.nm = NewMemoryNamespaceManager(nTyped...)
+		return nTyped, nil
 	case []interface{}:
 		nEnc, err := json.Marshal(nTyped)
 		if err != nil {
@@ -189,10 +224,8 @@ func (k *Config) NamespaceManager() (namespace.Manager, error) {
 			return nil, errors.WithStack(err)
 		}
 
-		k.nm = NewMemoryNamespaceManager(nn...)
+		return nn, nil
 	default:
-		return nil, errors.Errorf("could not create namespace manager from %#v, this indicates an error in the JSON schema that should be reported", nTyped)
+		return nil, errors.WithStack(herodot.ErrInternalServerError.WithReasonf("could not infer namespaces for type %T", nTyped))
 	}
-
-	return k.nm, nil
 }

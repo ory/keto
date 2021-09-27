@@ -15,6 +15,7 @@ type (
 		GetNamespaceByName(ctx context.Context, name string) (*Namespace, error)
 		GetNamespaceByConfigID(ctx context.Context, id int32) (*Namespace, error)
 		Namespaces(ctx context.Context) ([]*Namespace, error)
+		ShouldReload(newValue interface{}) bool
 	}
 	ManagerProvider interface {
 		NamespaceManager() (Manager, error)
