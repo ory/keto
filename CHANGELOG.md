@@ -3,7 +3,7 @@
 
 **Table of Contents**
 
-- [0.0.0 (2021-09-24)](#000-2021-09-24)
+- [0.0.0 (2021-09-28)](#000-2021-09-28)
   - [Breaking Changes](#breaking-changes)
     - [Bug Fixes](#bug-fixes)
     - [Chores](#chores)
@@ -99,7 +99,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.6.0-alpha.3...v0.0.0) (2021-09-24)
+# [0.0.0](https://github.com/ory/keto/compare/v0.6.0-alpha.3...v0.0.0) (2021-09-28)
 
 ## Breaking Changes
 
@@ -172,6 +172,9 @@ be returned if `subject` is still used.
 
 ### Code Refactoring
 
+- Ensure namespace manager reload is resource contained
+  ([#735](https://github.com/ory/keto/issues/735))
+  ([5696fc6](https://github.com/ory/keto/commit/5696fc6e46b5134fd67408a25cc5994fcdc31bdb))
 - Make subject sets and subject IDs unambiguous
   ([#729](https://github.com/ory/keto/issues/729))
   ([5a1b0ba](https://github.com/ory/keto/commit/5a1b0bacfe9f1e487c334c9cf52bc3c729a73dce))
