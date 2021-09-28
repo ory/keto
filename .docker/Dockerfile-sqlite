@@ -1,4 +1,4 @@
-FROM alpine:3.13
+FROM alpine:3.14.2
 
 # Because this image is built for SQLite, we create /home/ory and /home/ory/sqlite which is owned by the ory user
 # and declare /home/ory/sqlite a volume.
@@ -26,7 +26,7 @@ VOLUME /var/lib/sqlite
 # exists, it will be automatically used as the configuration file).
 VOLUME /home/ory
 
-# Declare the standard ports used by keto (4433 for public service endpoint, 4434 for admin service endpoint)
+# Declare the standard ports used by keto (4433 for read service endpoint, 4434 for write service endpoint)
 EXPOSE 4433 4434
 
 USER ory
