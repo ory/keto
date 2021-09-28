@@ -2,6 +2,7 @@ package config
 
 import (
 	"context"
+	"reflect"
 
 	"github.com/ory/herodot"
 	"github.com/pkg/errors"
@@ -55,4 +56,8 @@ func (s *memoryNamespaceManager) Namespaces(_ context.Context) ([]*namespace.Nam
 	}
 
 	return nn, nil
+}
+
+func (s *memoryNamespaceManager) ShouldReload(newValue interface{}) bool {
+	return !reflect.DeepEqual(newValue, []*namespace.Namespace(*s))
 }
