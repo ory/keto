@@ -28,9 +28,9 @@ repositories:
 - [Python](https://pypi.org/project/ory-keto-client/)
 - [Ruby](https://rubygems.org/gems/ory-keto-client)
 - [Rust](https://crates.io/crates/ory-keto-client)
-- [NodeJS REST](https://www.npmjs.com/package/@oryd/keto-client) (with
+- [NodeJS REST](https://www.npmjs.com/package/@ory/keto-client) (with
   TypeScript)
-- [NodeJS gRPC](https://www.npmjs.com/package/@oryd/keto-grpc-client) (with
+- [NodeJS gRPC](https://www.npmjs.com/package/@ory/keto-grpc-client) (with
   TypeScript)
 
 Take a look at the source:
