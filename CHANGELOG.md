@@ -190,6 +190,10 @@ be returned if `subject` is still used.
 
 - Add new redoc docsc ([#651](https://github.com/ory/keto/issues/651))
   ([435ae00](https://github.com/ory/keto/commit/435ae0048135902c99875d947b793288404cb532))
+- Change npm org scope from [@oryd](https://github.com/oryd) to
+  [@ory](https://github.com/ory)
+  ([#730](https://github.com/ory/keto/issues/730))
+  ([945005f](https://github.com/ory/keto/commit/945005f7845333bed3be6fd5bbc6169ea15958d3))
 - Fix build and gen:config ([#676](https://github.com/ory/keto/issues/676))
   ([f128732](https://github.com/ory/keto/commit/f1287324207f89a743942a45d44d34a928ba8063))
 - Fix erroneous sidebar commit
