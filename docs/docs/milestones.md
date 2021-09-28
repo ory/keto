@@ -46,6 +46,9 @@ New feature or request.
       [@hackerman](https://github.com/aeneasr),
       [@Patrik](https://github.com/zepatrik),
       [@Robin Brämer](https://github.com/robinbraemer)
+- [ ] Single table migration: run as one big transaction
+      ([keto#734](https://github.com/ory/keto/issues/734)) -
+      [@Patrik](https://github.com/zepatrik)
 
 ### [Docs](https://github.com/ory/keto/labels/docs)
 
@@ -53,6 +56,9 @@ Affects documentation.
 
 #### Issues
 
+- [ ] Guide for data migration to new single table schema
+      ([keto#733](https://github.com/ory/keto/issues/733)) -
+      [@Patrik](https://github.com/zepatrik)
 - [x] Document and improve go gRPC client import
       ([keto#635](https://github.com/ory/keto/issues/635))
 
