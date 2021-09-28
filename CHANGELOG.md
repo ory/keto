@@ -121,6 +121,8 @@ be returned if `subject` is still used.
 - **cli:** Panic when printing empty expand trees
   ([#686](https://github.com/ory/keto/issues/686))
   ([7956dec](https://github.com/ory/keto/commit/7956decb995d5906c4a4632ebd500acb44b4a7ad))
+- Dockerfiles ([#737](https://github.com/ory/keto/issues/737))
+  ([f10dec1](https://github.com/ory/keto/commit/f10dec1ef41e5e301a84e8ef5abda0058c09ce5b))
 - Exclude `/health` endpoints from logs
   ([#716](https://github.com/ory/keto/issues/716))
   ([7c27f92](https://github.com/ory/keto/commit/7c27f920837e009f3fcc1d7d5ba20693db75e867))
@@ -294,6 +296,9 @@ be returned if `subject` is still used.
 - Ensure problematic chars are not creatable over REST
   ([#709](https://github.com/ory/keto/issues/709))
   ([12b7954](https://github.com/ory/keto/commit/12b79548b50219ff692b24ff8ee0ed7bb9343523))
+- Single table migration as transaction
+  ([#736](https://github.com/ory/keto/issues/736))
+  ([9eda48c](https://github.com/ory/keto/commit/9eda48c5cca3e629a358c4b019ce3d77fae009d8))
 
 # [0.6.0-alpha.3](https://github.com/ory/keto/compare/v0.6.0-alpha.2...v0.6.0-alpha.3) (2021-04-29)
 
