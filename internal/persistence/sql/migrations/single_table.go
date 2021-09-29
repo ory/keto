@@ -194,8 +194,8 @@ func (m *toSingleTableMigrator) MigrateNamespace(ctx context.Context, n *namespa
 
 	var irrecoverableRTs ErrInvalidTuples
 
-	for done, page := false, 1; !done; {
-		if err := p.Transaction(ctx, func(ctx context.Context, _ *pop.Connection) error {
+	if err := p.Transaction(ctx, func(ctx context.Context, _ *pop.Connection) error {
+		for done, page := false, 1; !done; page++ {
 			rs, hasNext, err := m.getOldRelationTuples(ctx, n, page, m.perPage)
 			if err != nil {
 				return err
@@ -223,16 +223,16 @@ func (m *toSingleTableMigrator) MigrateNamespace(ctx context.Context, n *namespa
 					return err
 				}
 			}
+
 			if !hasNext {
 				done = true
-				return nil
+				break
 			}
-
-			page++
-			return nil
-		}); err != nil {
-			return err
 		}
+
+		return nil
+	}); err != nil {
+		return err
 	}
 
 	if len(irrecoverableRTs) != 0 {
