@@ -3,7 +3,7 @@
 
 **Table of Contents**
 
-- [0.0.0 (2021-09-28)](#000-2021-09-28)
+- [0.0.0 (2021-09-29)](#000-2021-09-29)
   - [Breaking Changes](#breaking-changes)
     - [Bug Fixes](#bug-fixes)
     - [Chores](#chores)
@@ -99,7 +99,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.6.0-alpha.3...v0.0.0) (2021-09-28)
+# [0.0.0](https://github.com/ory/keto/compare/v0.6.0-alpha.3...v0.0.0) (2021-09-29)
 
 ## Breaking Changes
 
@@ -250,6 +250,9 @@ be returned if `subject` is still used.
 
   Enjoy these new treats :chocolate_bar: :lollipop: :icecream:
 
+- Enable telemetry collection for gRPC
+  ([#738](https://github.com/ory/keto/issues/738))
+  ([5ac8b0c](https://github.com/ory/keto/commit/5ac8b0cfb1860ed4c7557a83df23335c9499037e))
 - Make generated gRPC client its own module
   ([#583](https://github.com/ory/keto/issues/583))
   ([f0fbb64](https://github.com/ory/keto/commit/f0fbb64b3358e9800854295cebc9ec8b8e56c87a))
