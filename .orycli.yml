@@ -1,0 +1,4 @@
+project: keto
+
+pre_release_hooks:
+  - ./scripts/render-schemas.sh

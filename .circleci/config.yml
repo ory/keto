@@ -186,7 +186,7 @@ workflows:
       - goreleaser/render-version-schema:
           requires:
             - goreleaser/release
-          schema-path: internal/driver/config/config.schema.json
+          schema-path: .schema/config.schema.json
           filters:
             tags:
               # We have two types of tags: v0.0.0-foo.0 and proto/v0.0.0-foo.0
