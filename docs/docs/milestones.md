@@ -21,9 +21,6 @@ Something is not working.
 - [ ] Config schema: replace `ory://*` references with something actually
       resolvable ([keto#719](https://github.com/ory/keto/issues/719)) -
       [@Patrik](https://github.com/zepatrik)
-- [ ] Docker files and docker-compose.yml do not work on master
-      ([keto#725](https://github.com/ory/keto/issues/725)) -
-      [@Patrik](https://github.com/zepatrik)
 - [x] Check valid relation-tuple characters on insert
       ([keto#661](https://github.com/ory/keto/issues/661))
 - [x] Keto version API does not work in REST API and CLI.
@@ -34,6 +31,9 @@ Something is not working.
       [@Patrik](https://github.com/zepatrik)
 - [x] Change REST API to not work with encoded subjects
       ([keto#708](https://github.com/ory/keto/issues/708))
+- [x] Docker files and docker-compose.yml do not work on master
+      ([keto#725](https://github.com/ory/keto/issues/725)) -
+      [@Patrik](https://github.com/zepatrik)
 
 ### [Feat](https://github.com/ory/keto/labels/feat)
 
@@ -46,7 +46,7 @@ New feature or request.
       [@hackerman](https://github.com/aeneasr),
       [@Patrik](https://github.com/zepatrik),
       [@Robin Brämer](https://github.com/robinbraemer)
-- [ ] Single table migration: run as one big transaction
+- [x] Single table migration: run as one big transaction
       ([keto#734](https://github.com/ory/keto/issues/734)) -
       [@Patrik](https://github.com/zepatrik)
 
@@ -91,6 +91,6 @@ Blocks milestones or other issues or pulls.
 - [ ] Config schema: replace `ory://*` references with something actually
       resolvable ([keto#719](https://github.com/ory/keto/issues/719)) -
       [@Patrik](https://github.com/zepatrik)
-- [ ] Docker files and docker-compose.yml do not work on master
+- [x] Docker files and docker-compose.yml do not work on master
       ([keto#725](https://github.com/ory/keto/issues/725)) -
       [@Patrik](https://github.com/zepatrik)
