@@ -331,6 +331,9 @@ func (r *RegistryDefault) unaryInterceptors() []grpc.UnaryServerInterceptor {
 	if r.Tracer().IsLoaded() {
 		is = append(is, otgrpc.OpenTracingServerInterceptor(r.Tracer().Tracer()))
 	}
+	if r.sqaService != nil {
+		is = append(is, r.sqaService.UnaryInterceptor)
+	}
 	return is
 }
 
@@ -343,6 +346,9 @@ func (r *RegistryDefault) streamInterceptors() []grpc.StreamServerInterceptor {
 	}
 	if r.Tracer().IsLoaded() {
 		is = append(is, otgrpc.OpenTracingStreamServerInterceptor(r.Tracer().Tracer()))
+	}
+	if r.sqaService != nil {
+		is = append(is, r.sqaService.StreamInterceptor)
 	}
 	return is
 }
