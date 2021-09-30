@@ -26,6 +26,7 @@ builds:
       - CXX=o64-clang++
     goarch:
       - amd64
+      - arm64
     goos:
       - darwin
 
