@@ -41,7 +41,7 @@ New feature or request.
 
 #### Issues
 
-- [ ] Ensure telemetry is running for GRPC
+- [x] Ensure telemetry is running for GRPC
       ([keto#298](https://github.com/ory/keto/issues/298)) -
       [@hackerman](https://github.com/aeneasr),
       [@Patrik](https://github.com/zepatrik),
@@ -83,14 +83,14 @@ Blocks milestones or other issues or pulls.
 
 #### Issues
 
-- [ ] Ensure telemetry is running for GRPC
+- [ ] Config schema: replace `ory://*` references with something actually
+      resolvable ([keto#719](https://github.com/ory/keto/issues/719)) -
+      [@Patrik](https://github.com/zepatrik)
+- [x] Ensure telemetry is running for GRPC
       ([keto#298](https://github.com/ory/keto/issues/298)) -
       [@hackerman](https://github.com/aeneasr),
       [@Patrik](https://github.com/zepatrik),
       [@Robin Brämer](https://github.com/robinbraemer)
-- [ ] Config schema: replace `ory://*` references with something actually
-      resolvable ([keto#719](https://github.com/ory/keto/issues/719)) -
-      [@Patrik](https://github.com/zepatrik)
 - [x] Docker files and docker-compose.yml do not work on master
       ([keto#725](https://github.com/ory/keto/issues/725)) -
       [@Patrik](https://github.com/zepatrik)
