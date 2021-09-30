@@ -1,1 +1,312 @@
-../internal/driver/config/config.schema.json
+{
+  "$id": "https://raw.githubusercontent.com/ory/keto/master/.schema/config.schema.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ORY Keto Configuration",
+  "type": "object",
+  "definitions": {
+    "namespace": {
+      "type": "object",
+      "properties": {
+        "$schema": {
+          "type": "string",
+          "format": "uri-reference",
+          "description": "Add this to allow defining the schema, useful for IDE integration"
+        },
+        "name": {
+          "type": "string",
+          "title": "The name of the namespace.",
+          "examples": [
+            "videos",
+            "groups",
+            "files"
+          ]
+        },
+        "id": {
+          "type": "integer",
+          "title": "The unique ID of the namespace. Can not be changed once set.",
+          "minimum": 0
+        },
+        "config": {
+          "type": "object",
+          "title": "The configuration of the namespace.",
+          "description": "To be defined."
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "id"
+      ]
+    },
+    "tlsxSource": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "title": "Path to PEM-encoded Fle",
+          "type": "string",
+          "examples": [
+            "path/to/file.pem"
+          ]
+        },
+        "base64": {
+          "title": "Base64 Encoded Inline",
+          "description": "The base64 string of the PEM-encoded file content. Can be generated using for example `base64 -i path/to/file.pem`.",
+          "type": "string",
+          "examples": [
+            "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tXG5NSUlEWlRDQ0FrMmdBd0lCQWdJRVY1eE90REFOQmdr..."
+          ]
+        }
+      }
+    },
+    "tlsx": {
+      "title": "HTTPS",
+      "description": "Configure HTTP over TLS (HTTPS). All options can also be set using environment variables by replacing dots (`.`) with underscores (`_`) and uppercasing the key. For example, `some.prefix.tls.key.path` becomes `export SOME_PREFIX_TLS_KEY_PATH`. If all keys are left undefined, TLS will be disabled.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "key": {
+          "title": "Private Key (PEM)",
+          "allOf": [
+            {
+              "$ref": "#/definitions/tlsxSource"
+            }
+          ]
+        },
+        "cert": {
+          "title": "TLS Certificate (PEM)",
+          "allOf": [
+            {
+              "$ref": "#/definitions/tlsxSource"
+            }
+          ]
+        }
+      }
+    },
+    "cors": {
+      "title": "Cross Origin Resource Sharing (CORS)",
+      "description": "Configure [Cross Origin Resource Sharing (CORS)](http://www.w3.org/TR/cors/) using the following options.",
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": false,
+          "title": "Enable CORS",
+          "description": "If set to true, CORS will be enabled and preflight-requests (OPTION) will be answered."
+        },
+        "allowed_origins": {
+          "title": "Allowed Origins",
+          "description": "A list of origins a cross-domain request can be executed from. If the special * value is present in the list, all origins will be allowed. An origin may contain a wildcard (*) to replace 0 or more characters (i.e.: http://*.domain.com). Usage of wildcards implies a small performance penality. Only one wildcard can be used per origin.",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "default": [
+            "*"
+          ],
+          "uniqueItems": true,
+          "examples": [
+            [
+              "https://example.com",
+              "https://*.example.com",
+              "https://*.foo.example.com"
+            ]
+          ]
+        },
+        "allowed_methods": {
+          "type": "array",
+          "title": "Allowed HTTP Methods",
+          "description": "A list of methods the client is allowed to use with cross-domain requests.",
+          "items": {
+            "type": "string",
+            "enum": [
+              "GET",
+              "HEAD",
+              "POST",
+              "PUT",
+              "DELETE",
+              "CONNECT",
+              "TRACE",
+              "PATCH"
+            ]
+          },
+          "uniqueItems": true,
+          "default": [
+            "GET",
+            "POST",
+            "PUT",
+            "PATCH",
+            "DELETE"
+          ]
+        },
+        "allowed_headers": {
+          "description": "A list of non simple headers the client is allowed to use with cross-domain requests.",
+          "title": "Allowed Request HTTP Headers",
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minLength": 1,
+          "uniqueItems": true,
+          "default": [
+            "Authorization",
+            "Content-Type"
+          ]
+        },
+        "exposed_headers": {
+          "description": "Indicates which headers are safe to expose to the API of a CORS API specification",
+          "title": "Allowed Response HTTP Headers",
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minLength": 1,
+          "uniqueItems": true,
+          "default": [
+            "Content-Type"
+          ]
+        },
+        "allow_credentials": {
+          "type": "boolean",
+          "title": "Allow HTTP Credentials",
+          "default": false,
+          "description": "Indicates whether the request can include user credentials like cookies, HTTP authentication or client side SSL certificates."
+        },
+        "max_age": {
+          "type": "integer",
+          "default": 0,
+          "title": "Maximum Age",
+          "description": "Indicates how long (in seconds) the results of a preflight request can be cached. The default is 0 which stands for no max age."
+        },
+        "debug": {
+          "type": "boolean",
+          "default": false,
+          "title": "Enable Debugging",
+          "description": "Set to true to debug server side CORS issues."
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "properties": {
+    "dsn": {
+      "title": "Data Source Name",
+      "type": "string",
+      "description": "Sets the data source name. This configures the backend where ORY Keto persists data. If dsn is \"memory\", data will be written to memory and is lost when you restart this instance. ORY Hydra supports popular SQL databases. For more detailed configuration information go to: https://www.ory.sh/docs/hydra/dependencies-environment#sql",
+      "examples": [
+        "postgres://user:password@host:123/database",
+        "mysql://user:password@tcp(host:123)/database",
+        "memory"
+      ]
+    },
+    "serve": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "read": {
+          "type": "object",
+          "title": "Read API (http and gRPC)",
+          "additionalProperties": false,
+          "properties": {
+            "port": {
+              "type": "integer",
+              "default": 4466,
+              "title": "Port",
+              "description": "The port to listen on.",
+              "minimum": 0,
+              "maximum": 65535
+            },
+            "host": {
+              "type": "string",
+              "default": "",
+              "examples": [
+                "localhost",
+                "127.0.0.1"
+              ],
+              "title": "Host",
+              "description": "The network interface to listen on."
+            },
+            "cors": {
+              "$ref": "#/definitions/cors"
+            },
+            "tls": {
+              "$ref": "#/definitions/tlsx"
+            }
+          }
+        },
+        "write": {
+          "type": "object",
+          "title": "Write API (http and gRPC)",
+          "additionalProperties": false,
+          "properties": {
+            "port": {
+              "type": "integer",
+              "default": 4467,
+              "title": "Port",
+              "description": "The port to listen on.",
+              "minimum": 0,
+              "maximum": 65535
+            },
+            "host": {
+              "type": "string",
+              "default": "",
+              "examples": [
+                "localhost",
+                "127.0.0.1"
+              ],
+              "title": "Host",
+              "description": "The network interface to listen on."
+            },
+            "cors": {
+              "$ref": "#/definitions/cors"
+            },
+            "tls": {
+              "$ref": "#/definitions/tlsx"
+            }
+          }
+        }
+      }
+    },
+    "profiling": {
+      "title": "Profiling",
+      "description": "Enables CPU or memory profiling if set. For more details on profiling Go programs read [Profiling Go Programs](https://blog.golang.org/profiling-go-programs).",
+      "type": "string",
+      "enum": [
+        "cpu",
+        "mem",
+        ""
+      ]
+    },
+    "log": {
+      "$ref": "https://raw.githubusercontent.com/ory/x/v0.0.287/logrusx/config.schema.json"
+    },
+    "tracing": {
+      "$ref": "https://raw.githubusercontent.com/ory/x/v0.0.287/tracing/config.schema.json"
+    },
+    "namespaces": {
+      "description": "Namespace configuration or it's location.",
+      "default": "file://./keto_namespaces",
+      "oneOf": [
+        {
+          "title": "Namespace Repo URI",
+          "description": "URI that points to a directory of namespace files, a single file with all namespaces, or a websocket connection that provides former via `github.com/ory/x/watcherx.WatchAndServeWS`",
+          "type": "string",
+          "format": "uri"
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/namespace"
+          }
+        }
+      ]
+    },
+    "version": {
+      "type": "string",
+      "title": "The Keto version this config is written for.",
+      "description": "SemVer according to https://semver.org/ prefixed with `v` as in our releases.",
+      "pattern": "^v(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$"
+    }
+  }
+}
