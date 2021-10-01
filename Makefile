@@ -11,7 +11,8 @@ GO_DEPENDENCIES = github.com/go-swagger/go-swagger/cmd/swagger \
 				  google.golang.org/protobuf/cmd/protoc-gen-go \
 				  google.golang.org/grpc/cmd/protoc-gen-go-grpc \
 				  github.com/goreleaser/godownloader \
-				  github.com/pseudomuto/protoc-gen-doc/cmd/protoc-gen-doc
+				  github.com/pseudomuto/protoc-gen-doc/cmd/protoc-gen-doc \
+				  github.com/ory/cli
 
 define make-go-dependency
   # go install is responsible for not re-building when the code hasn't changed

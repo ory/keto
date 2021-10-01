@@ -3,7 +3,7 @@
 
 **Table of Contents**
 
-- [0.0.0 (2021-09-29)](#000-2021-09-29)
+- [0.0.0 (2021-10-01)](#000-2021-10-01)
   - [Breaking Changes](#breaking-changes)
     - [Bug Fixes](#bug-fixes)
     - [Chores](#chores)
@@ -99,7 +99,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.6.0-alpha.3...v0.0.0) (2021-09-29)
+# [0.0.0](https://github.com/ory/keto/compare/v0.6.0-alpha.3...v0.0.0) (2021-10-01)
 
 ## Breaking Changes
 
@@ -159,6 +159,9 @@ be returned if `subject` is still used.
 - Patch REST API input validation and SDK generation
   ([#717](https://github.com/ory/keto/issues/717))
   ([d49e098](https://github.com/ory/keto/commit/d49e098b77bc238276a91bc61f3c8c7f9f7357a9))
+- Run a whole namespace migration as one transaction
+  ([#739](https://github.com/ory/keto/issues/739))
+  ([142bd47](https://github.com/ory/keto/commit/142bd47603c976708e56351571d1680b24115ac7))
 - Set version during release build and register version handler
   ([#714](https://github.com/ory/keto/issues/714))
   ([8091475](https://github.com/ory/keto/commit/80914752d56fa5729857e26f9d853c091aa888d2))
@@ -208,6 +211,9 @@ be returned if `subject` is still used.
 - Update NPM links due to organisation move
   ([#616](https://github.com/ory/keto/issues/616))
   ([6355bea](https://github.com/ory/keto/commit/6355beae5b5b28c3eee19fdee85b9875cbc165c3))
+- Update reference to Zanzibar in README
+  ([#746](https://github.com/ory/keto/issues/746))
+  ([a0d8caf](https://github.com/ory/keto/commit/a0d8caf0349aa143cb7cf20b461661cd202bb55d))
 
 ### Features
 

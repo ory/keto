@@ -1,0 +1,76 @@
+---
+title: Performance
+---
+
+import Mermaid from '@theme/Mermaid'
+
+This document explains the time complexity of Ory Keto. Main memory complexity
+will be analyzed and added at a later point. We only examine the evaluation
+engines (check- and expand-API) as all other parts are mainly determined by
+dependencies like your database of choice, or the de-/encoding of messages.
+Examples given omit the namespace for clarity.
+
+## Check Engine
+
+In essence, the check-engine assumes that the relation tuples and their
+indirections assemble an acyclic directed graph, known as
+[the graph of relations](concepts/graph-of-relations).
+
+Consider the following example:
+
+```keto-relation-tuples
+file#access@(file#owner)       // probably defined via subjectset rewrites
+file#access@user1              // access was granted directly
+file#owner@user2               // file owner record; indirectly gets access
+```
+
+This is interpreted as the following graph:
+
+<Mermaid
+  chart={`
+graph TD
+    A[file] -->|access| B{{file#owner}}
+    A -->|owner| C([user2])
+    A -->|access| D([user1])
+    B -. file#access .-> C
+`}
+/>
+
+A check request of the form `object#relation@user` will be evaluated by
+searching the graph starting at `object` going through `relation` trying to
+reach `user`. The request is allowed iff there is such a path.
+
+The algorithm used in Ory Keto for this graph traversal is breadth-first search.
+In the worst case it has a time complexity of `O(n+e)` where `n` is the number
+of nodes reachable from the node `object#relation` through `e` edges. Space
+complexity is `O(n)`. Rearranged, both space and time complexity are `O(b^d)`
+where `b` is the maximum breadth and `d` the maximum depth in the graph, seen
+from the search root. [[1]](#references)
+
+This means that the complexity heavily depends on the structure of the graph. If
+it contains deeply nested indirections, it will require many recursive calls to
+resolve those indirections. Analogously, if there are widely nested
+indirections, Ory Keto has to possibly resolve all of them. The goal is to
+design the ACL tuples in a way such that there are only view indirections to
+resolve. Learn more in our
+[best practices around ACL design](./guides/access-control-list-design-best-practices.mdx).
+
+Because of this we decided that generic benchmarks will not yield any meaningful
+result. We will therefore add a comparison with other similar projects later on.
+
+## Expand Engine
+
+Similar to how the check-engine traverses the graph of relationtuples, the
+expand-engine builds the tree of all set operations it encounters. It resolves
+all indirections starting at the requested subjectset up to the specified depth.
+Because it also uses breadth-first search, time and space complexity linearly
+depend on the nodes reachable from the requested subjectset. The same
+performance considerations apply here, while it is important to note that
+requesting a low depth will further limit the complexity of the operation. The
+returned tree can also exceed reasonable size limits quickly if the
+relationtuples are deeply and/or widely nested.
+
+## References
+
+[[1] Breadth-first search](https://en.wikipedia.org/wiki/Breadth-first_search)
+on Wikipedia

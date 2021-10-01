@@ -1,0 +1,89 @@
+---
+title: API Overview
+---
+
+This page gives an overview over all APIs Ory Keto offers, including common use
+cases.
+
+The APIs are separated based on privileges into a `read` and `write` endpoint.
+Each endpoint is exposed on a different port, so
+[you can decide how to restrict access](../secure.md). gRPC and REST connections
+are multiplexed on the same port.
+
+All APIs are available to gRPC and REST clients, although feature parity is not
+always given. Because we follow gRPC and REST best practices and design
+guidelines, the APIs offer slightly different interfaces and capabilities.
+
+## Read APIs
+
+The read-APIs are per default exposed on the TCP port `4466`.
+
+### List Relation Tuples
+
+This API allows you to query [relation tuples](./relation-tuples.mdx) by
+providing a partial relation tuple. It can be used to:
+
+- [list objects a user has access to](../guides/list-api-display-objects.mdx#listing-objects)
+- [list users who have a specific role](../guides/list-api-display-objects.mdx#listing-subjects)
+- list users who are members of a specific group
+- audit permissions in the system
+
+For more details, head over to the
+[gRPC API reference](../reference/proto-api.mdx#readservice) or
+[REST API reference](../reference/rest-api.mdx#query-relation-tuples).
+
+### Check Relation Tuple
+
+The check-API allows you to check whether a subject has a relation on an object.
+This API resolves [subject sets](./subjects.mdx#subject-sets) and
+[subject set rewrites](https://github.com/ory/keto/issues/263).
+
+This API is primarily used to
+[check permissions to restrict actions](../guides/simple-access-check-guide.mdx).
+
+For more details, head over to the
+[gRPC API reference](../reference/proto-api.mdx#checkservice) or
+[REST API reference](../reference/rest-api.mdx#check-a-relation-tuple).
+
+### Expand Subject Sets
+
+The expand-API recursively expands a [subject set](./subjects.mdx#subject-sets)
+into a tree of subjects. For each subject, the tree assembles the relation
+tuples including the operands as defined in the
+[namespace configuration](./namespaces.mdx). It can be used to:
+
+- [list who has access to an object](../guides/expand-api-display-who-has-access.mdx)
+- determine why someone has access to an object
+- audit permissions in the system
+
+An expand-request has to include the maximum depth of the tree to be returned.
+This is required to ensure low latency and limit the resource usage per request.
+To find out more about Ory Keto's performance, head over to the
+[performance considerations](../performance.mdx).
+
+For more details, head over to the
+[gRPC API reference](../reference/proto-api.mdx#expandservice) or
+[REST API reference](../reference/rest-api.mdx#getexpand).
+
+## Write APIs
+
+The write-APIs are per default exposed on the TCP port `4467`.
+
+### Change Relation Tuples
+
+The write-APIs offer multiple ways to insert and delete relation tuples. Please
+head over to the [gRPC API reference](../reference/proto-api.mdx#writeservice)
+or [REST API reference](../reference/rest-api.mdx#write) to read more about the
+available methods for each client type.
+
+In general, it is preferred to use the transaction based methods over repeatedly
+calling simple methods for bulk updates. This is not only because they provide
+stronger consistency guarantees, but also because the database usually handles a
+single transaction with a lot of data faster than a lot of small transactions.
+
+The main use cases for the write-APIs are:
+
+- setting up permissions for a new object
+- sharing an object with another user
+- revoking access to an object
+- transferring relations to an object to another user
