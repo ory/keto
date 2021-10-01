@@ -10,4 +10,4 @@ s!ory://logging-config!https://raw.githubusercontent.com/ory/x/$ory_x_version/lo
 git add .schema/config.schema.json
 git commit -m "autogen: render config schema"
 
-git push origin
+git push
