@@ -1,0 +1,79 @@
+---
+title: Namespaces
+---
+
+Ory Keto knows the concept of namespaces to organize
+[relation tuples](./relation-tuples.mdx). Namespaces have a configuration that
+defines the relations, and some other important values
+([see reference](./reference/configuration.md)). Unlike other applications, Ory
+Keto does **not** isolate namespaces. Especially, [subject sets](./subjects.mdx)
+can cross-reference from one namespace to another. The namespaces' purpose is to
+split up the data into coherent partitions, each with its corresponding
+configuration. Internally each namespace has its own table in the database to
+allow setting individual
+[storage specific options](https://github.com/ory/keto/issues/303).
+
+## Scoping of Objects
+
+The application can also use namespaces to scope [objects](./objects.mdx)
+because Ory Keto only compares objects within a namespace. For example, if Ory
+Keto knows the following relation tuples
+
+```keto-relation-tuples
+// user1 has acces to the directory foo
+directories:foo#access@user1
+// user2 has access to the file foo
+files:foo#access@user2
+```
+
+both of the following [check](./api-overview.mdx#check-relation-tuples) requests
+
+```keto-relation-tuples
+// Does user2 have access to the directory foo?
+directories:foo#access@user2
+// Does user1 have access to the file foo?
+files:foo#access@user1
+```
+
+will evaluate to false (a.k.a. rejected).
+
+Vice versa, all relation tuples containing an object have to be in the same
+namespace to reference the same object.
+
+## Migrations
+
+Because namespaces each come with an individual configuration that can even
+modify some storage specific options, it is required to manually review and run
+migrations on namespace configuration updates. Please refer to the
+[namespace migration CLI reference](../cli/keto-namespace-migrate.md) and
+[running in production guide](../guides/production.md) to learn more about that
+process.
+
+## Naming Conventions
+
+Namespaces should be named after the plural of the type of objects they describe
+(e.g. `files`, `chats`, `organizations`). Relations within a namespace should be
+a word that describes what relation a subject has towards an object. As a rule
+of thumb, every relation tuple should translate to an english sentence like so:
+
+> **Subject** has **relation** on **object** which is one of the **namespace**.
+
+Examples:
+
+```keto-relation-tuples
+// good examples
+
+
+files:8f427c01-c295-44f3-b43d-49c3a1042f35#write@02a3c847-c903-446a-a34f-dae74b4fab86
+groups:43784684-103e-44c0-9d6c-db9fb265f617#member@b8d00059-b803-4123-9d3d-b3613bfe7c1b
+directories:803a87e9-0da0-486e-bc08-ef559dd8e034#child@(files:11488ab9-4ede-479f-add4-f1379da4ae43#_)
+files:11488ab9-4ede-479f-add4-f1379da4ae43#parent@(directories:803a87e9-0da0-486e-bc08-ef559dd8e034#_)
+
+// bad examples
+
+
+// namespace is not describing homogenous type of objects
+tenant-1-objects:62237c27-19c3-4bb1-9cbc-a5a67372569b#access@7a012165-7b21-495b-b84b-cf4e1a21b484
+// relation describes a relation of the object towards the subject
+directories:803a87e9-0da0-486e-bc08-ef559dd8e034#parent@(files:11488ab9-4ede-479f-add4-f1379da4ae43#_)
+```

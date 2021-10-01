@@ -1,7 +1,7 @@
 ---
-id: keto-migrate-up
-title: keto migrate up
-description: keto migrate up Migrate the database up
+id: keto-migrate-down
+title: keto migrate down
+description: keto migrate down Migrate the database down
 ---
 
 <!--
@@ -10,32 +10,24 @@ This file is auto-generated.
 To improve this file please make your change against the appropriate "./cmd/*.go" file.
 -->
 
-## keto migrate up
+## keto migrate down
 
-Migrate the database up
+Migrate the database down
 
 ### Synopsis
 
-Run this command on a fresh SQL installation and when you upgrade Ory Keto from
-version v0.7.0-alpha.0.pre.0 and later.
-
-It is recommended to run this command close to the SQL instance (e.g. same
-subnet) instead of over the public internet. This decreases risk of failure and
-decreases time required.
-
-### WARNING
-
-Before running this command on an existing database, create a back up!
+Migrate the database down a specific amount of steps. Pass 0 steps to fully
+migrate down.
 
 ```
-keto migrate up [flags]
+keto migrate down &lt;steps&gt; [flags]
 ```
 
 ### Options
 
 ```
   -f, --format string   Set the output format. One of table, json, and json-pretty. (default &#34;default&#34;)
-  -h, --help            help for up
+  -h, --help            help for down
   -q, --quiet           Be quiet with output printing.
   -y, --yes             yes to all questions, no user input required
 ```
