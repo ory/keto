@@ -2,14 +2,11 @@ package migratest
 
 import (
 	"context"
+	"os"
+	"testing"
+
 	"github.com/gobuffalo/pop/v5"
 	"github.com/gofrs/uuid"
-	"github.com/ory/keto/internal/driver"
-	"github.com/ory/keto/internal/driver/config"
-	"github.com/ory/keto/internal/namespace"
-	"github.com/ory/keto/internal/persistence/sql"
-	"github.com/ory/keto/internal/relationtuple"
-	"github.com/ory/keto/internal/x/dbx"
 	"github.com/ory/x/fsx"
 	"github.com/ory/x/logrusx"
 	"github.com/ory/x/networkx"
@@ -18,8 +15,13 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"os"
-	"testing"
+
+	"github.com/ory/keto/internal/driver"
+	"github.com/ory/keto/internal/driver/config"
+	"github.com/ory/keto/internal/namespace"
+	"github.com/ory/keto/internal/persistence/sql"
+	"github.com/ory/keto/internal/relationtuple"
+	"github.com/ory/keto/internal/x/dbx"
 )
 
 func TestMigrations(t *testing.T) {
