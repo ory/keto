@@ -3,7 +3,7 @@
 
 **Table of Contents**
 
-- [0.0.0 (2021-09-30)](#000-2021-09-30)
+- [0.0.0 (2021-10-01)](#000-2021-10-01)
   - [Breaking Changes](#breaking-changes)
     - [Bug Fixes](#bug-fixes)
     - [Chores](#chores)
@@ -99,7 +99,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.6.0-alpha.3...v0.0.0) (2021-09-30)
+# [0.0.0](https://github.com/ory/keto/compare/v0.6.0-alpha.3...v0.0.0) (2021-10-01)
 
 ## Breaking Changes
 
@@ -211,6 +211,9 @@ be returned if `subject` is still used.
 - Update NPM links due to organisation move
   ([#616](https://github.com/ory/keto/issues/616))
   ([6355bea](https://github.com/ory/keto/commit/6355beae5b5b28c3eee19fdee85b9875cbc165c3))
+- Update reference to Zanzibar in README
+  ([#746](https://github.com/ory/keto/issues/746))
+  ([a0d8caf](https://github.com/ory/keto/commit/a0d8caf0349aa143cb7cf20b461661cd202bb55d))
 
 ### Features
 
