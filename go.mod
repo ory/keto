@@ -16,6 +16,8 @@ replace github.com/gobuffalo/pop/v5 => github.com/gobuffalo/pop/v5 v5.3.4-0.2021
 
 replace github.com/dgrijalva/jwt-go => github.com/golang-jwt/jwt/v4 v4.0.0
 
+replace github.com/ory/x => github.com/ory/x v0.0.289-0.20211001134443-5386a420dd32
+
 require (
 	github.com/cenkalti/backoff/v3 v3.0.0
 	github.com/ghodss/yaml v1.0.0
@@ -36,7 +38,7 @@ require (
 	github.com/ory/herodot v0.9.6
 	github.com/ory/jsonschema/v3 v3.0.3
 	github.com/ory/keto/proto v0.0.0-00010101000000-000000000000
-	github.com/ory/x v0.0.287
+	github.com/ory/x v0.0.288
 	github.com/pelletier/go-toml v1.8.1
 	github.com/phayes/freeport v0.0.0-20180830031419-95f893ade6f2
 	github.com/pkg/errors v0.9.1
@@ -65,6 +67,7 @@ require (
 	github.com/PuerkitoBio/urlesc v0.0.0-20170810143723-de5bf2ad4578 // indirect
 	github.com/armon/go-radix v1.0.0 // indirect
 	github.com/asaskevich/govalidator v0.0.0-20200907205600-7a23bdc65eef // indirect
+	github.com/bmizerany/assert v0.0.0-20160611221934-b7ed37b82869 // indirect
 	github.com/cenkalti/backoff/v4 v4.1.0 // indirect
 	github.com/cespare/xxhash/v2 v2.1.1 // indirect
 	github.com/cockroachdb/cockroach-go/v2 v2.1.1 // indirect
@@ -143,6 +146,7 @@ require (
 	github.com/mitchellh/mapstructure v1.4.1 // indirect
 	github.com/mitchellh/reflectwalk v1.0.2 // indirect
 	github.com/moby/term v0.0.0-20201216013528-df9cb8a40635 // indirect
+	github.com/morikuni/aec v1.0.0 // indirect
 	github.com/opencontainers/go-digest v1.0.0-rc1 // indirect
 	github.com/opencontainers/image-spec v1.0.1 // indirect
 	github.com/opencontainers/runc v1.0.0-rc9 // indirect
@@ -203,6 +207,7 @@ require (
 	gopkg.in/ini.v1 v1.62.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
+	gotest.tools v2.2.0+incompatible // indirect
 	howett.net/plist v0.0.0-20181124034731-591f970eefbb // indirect
 )
 
