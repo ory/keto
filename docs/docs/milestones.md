@@ -15,12 +15,6 @@ Something is not working.
 
 #### Issues
 
-- [ ] Doc and implement do not match for delete tuple REST API.
-      ([keto#695](https://github.com/ory/keto/issues/695)) -
-      [@Patrik](https://github.com/zepatrik)
-- [ ] Config schema: replace `ory://*` references with something actually
-      resolvable ([keto#719](https://github.com/ory/keto/issues/719)) -
-      [@Patrik](https://github.com/zepatrik)
 - [x] Check valid relation-tuple characters on insert
       ([keto#661](https://github.com/ory/keto/issues/661))
 - [x] Keto version API does not work in REST API and CLI.
@@ -31,6 +25,9 @@ Something is not working.
       [@Patrik](https://github.com/zepatrik)
 - [x] Change REST API to not work with encoded subjects
       ([keto#708](https://github.com/ory/keto/issues/708))
+- [x] Config schema: replace `ory://*` references with something actually
+      resolvable ([keto#719](https://github.com/ory/keto/issues/719)) -
+      [@Patrik](https://github.com/zepatrik)
 - [x] Docker files and docker-compose.yml do not work on master
       ([keto#725](https://github.com/ory/keto/issues/725)) -
       [@Patrik](https://github.com/zepatrik)
@@ -68,13 +65,13 @@ Affects Continuous Integration (CI).
 
 #### Issues
 
-- [ ] Config schema: replace `ory://*` references with something actually
-      resolvable ([keto#719](https://github.com/ory/keto/issues/719)) -
-      [@Patrik](https://github.com/zepatrik)
 - [x] Document and improve go gRPC client import
       ([keto#635](https://github.com/ory/keto/issues/635))
 - [x] Keto version API does not work in REST API and CLI.
       ([keto#696](https://github.com/ory/keto/issues/696)) -
+      [@Patrik](https://github.com/zepatrik)
+- [x] Config schema: replace `ory://*` references with something actually
+      resolvable ([keto#719](https://github.com/ory/keto/issues/719)) -
       [@Patrik](https://github.com/zepatrik)
 
 ### [Blocking](https://github.com/ory/keto/labels/blocking)
@@ -83,14 +80,14 @@ Blocks milestones or other issues or pulls.
 
 #### Issues
 
-- [ ] Config schema: replace `ory://*` references with something actually
-      resolvable ([keto#719](https://github.com/ory/keto/issues/719)) -
-      [@Patrik](https://github.com/zepatrik)
 - [x] Ensure telemetry is running for GRPC
       ([keto#298](https://github.com/ory/keto/issues/298)) -
       [@hackerman](https://github.com/aeneasr),
       [@Patrik](https://github.com/zepatrik),
       [@Robin Brämer](https://github.com/robinbraemer)
+- [x] Config schema: replace `ory://*` references with something actually
+      resolvable ([keto#719](https://github.com/ory/keto/issues/719)) -
+      [@Patrik](https://github.com/zepatrik)
 - [x] Docker files and docker-compose.yml do not work on master
       ([keto#725](https://github.com/ory/keto/issues/725)) -
       [@Patrik](https://github.com/zepatrik)
