@@ -18,8 +18,6 @@ replace github.com/ory/kratos/corp => github.com/ory/kratos/corp v0.0.0-20210118
 
 replace github.com/oleiade/reflections => github.com/oleiade/reflections v1.0.1
 
-replace github.com/ory/cli => ../../cli
-
 require (
 	github.com/Azure/go-autorest/autorest/azure/auth v0.5.8 // indirect
 	github.com/Azure/go-autorest/autorest/to v0.4.0 // indirect
@@ -28,7 +26,7 @@ require (
 	github.com/go-swagger/go-swagger v0.26.1
 	github.com/goreleaser/godownloader v0.1.1-0.20200426152203-fd8ad8f7dd78
 	github.com/mattn/goveralls v0.0.7
-	github.com/ory/cli v0.0.54
+	github.com/ory/cli v0.0.73-0.20211001113806-d0cbcdc5d8d3
 	github.com/ory/go-acc v0.2.6
 	github.com/pseudomuto/protoc-gen-doc v1.4.1
 	golang.org/x/tools v0.1.2
@@ -59,7 +57,7 @@ require (
 	github.com/Masterminds/semver v1.5.0 // indirect
 	github.com/Masterminds/semver/v3 v3.1.1 // indirect
 	github.com/Masterminds/sprig v2.22.0+incompatible // indirect
-	github.com/Masterminds/sprig/v3 v3.0.0 // indirect
+	github.com/Masterminds/sprig/v3 v3.1.0 // indirect
 	github.com/Microsoft/go-winio v0.4.17 // indirect
 	github.com/Nvveen/Gotty v0.0.0-20120604004816-cd527374f1e5 // indirect
 	github.com/OpenPeeDeeP/depguard v1.0.1 // indirect
