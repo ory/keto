@@ -17,4 +17,6 @@ import (
 	_ "github.com/pseudomuto/protoc-gen-doc/cmd/protoc-gen-doc"
 
 	_ "github.com/goreleaser/godownloader"
+
+	_ "github.com/ory/cli"
 )
