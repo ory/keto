@@ -20,7 +20,7 @@
     <a href="#backers" alt="sponsors on Open Collective"><img src="https://opencollective.com/ory/backers/badge.svg" /></a> <a href="#sponsors" alt="Sponsors on Open Collective"><img src="https://opencollective.com/ory/sponsors/badge.svg" /></a>
     <a href="https://github.com/ory/keto/blob/master/CODE_OF_CONDUCT.md" alt="Ory Code of Conduct"><img src="https://img.shields.io/badge/ory-code%20of%20conduct-green" /></a>
 </p>
-Ory Keto is the first and only open source implementation of "Zanzibar: Google's
+Ory Keto is the first open source implementation of "Zanzibar: Google's
 Consistent, Global Authorization System":
 
 > Determining whether online users are authorized to access digital objects is
