@@ -105,7 +105,7 @@ jobs:
           command: "bash <(curl -s https://raw.githubusercontent.com/ory/ci/master/src/scripts/docs/cli.sh)"
   release:
     docker:
-      - image: cimg/go:1.17
+      - image: cimg/go:1.17-node
     parameters:
       gitauthtoken:
         description: A GitHub API Token
