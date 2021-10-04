@@ -17,7 +17,7 @@ Migrate the database up
 ### Synopsis
 
 Run this command on a fresh SQL installation and when you upgrade Ory Keto from
-version v0.7.0-alpha.0.pre.1 and later.
+version v0.7.0-alpha.0.pre.2 and later.
 
 It is recommended to run this command close to the SQL instance (e.g. same
 subnet) instead of over the public internet. This decreases risk of failure and
