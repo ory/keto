@@ -3,7 +3,7 @@ id: milestones
 title: Milestones and Roadmap
 ---
 
-## [v0.7.0-alpha.0.pre.3](https://github.com/ory/keto/milestone/5)
+## [v0.7.0-alpha.0.pre.4](https://github.com/ory/keto/milestone/5)
 
 The biggest change for the next release will be the new SQL table structure
 (https://github.com/ory/keto/pull/638). The main goal is to improve the QoS, big
