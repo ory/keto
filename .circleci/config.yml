@@ -103,6 +103,34 @@ jobs:
       - run:
           name: Build and push CLI docs
           command: "bash <(curl -s https://raw.githubusercontent.com/ory/ci/master/src/scripts/docs/cli.sh)"
+  release:
+    docker:
+      - image: cimg/go:1.17
+    parameters:
+      gitauthtoken:
+        description: A GitHub API Token
+        type: env_var_name
+        default: GITHUB_TOKEN
+      dockeruser:
+        description: The Docker Hub Username
+        type: env_var_name
+        default: DOCKER_USERNAME
+      dockerkey:
+        description: The Docker Hub Access Token
+        type: env_var_name
+        default: DOCKER_TOKEN
+      docker-org:
+        description: The Docker Organization Name
+        type: string
+        default: oryd
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run: docker login --username "${<<parameters.dockeruser>>}" --password "${<<parameters.dockerkey>>}"
+      - run:
+          name: Build and publish the release
+          command: "bash <(curl -s https://raw.githubusercontent.com/ory/ci/master/src/scripts/releaser/release.sh)"
+          no_output_timeout: 30m
 
 workflows:
   version: 2
@@ -147,8 +175,7 @@ workflows:
               only: /v.*/
             branches:
               only: master
-      -
-        sdk/generate:
+      - sdk/generate:
           appname: Ory_Keto
           specignorepgks: internal/httpclient proto/ory/keto docker
           swagpath: spec/api.json
@@ -163,7 +190,7 @@ workflows:
             - test
             - test-race
             - validate
-            - goreleaser/release
+            - release
           filters:
             tags:
               # We have two types of tags: v0.0.0-foo.0 and proto/v0.0.0-foo.0
@@ -171,7 +198,7 @@ workflows:
               only: /v.*/
             branches:
               ignore: /.*/
-      - goreleaser/release:
+      - release:
           requires:
             - test
             - test-race
@@ -185,7 +212,7 @@ workflows:
               only: /v.*/
       - goreleaser/render-version-schema:
           requires:
-            - goreleaser/release
+            - release
           schema-path: .schema/config.schema.json
           filters:
             tags:
@@ -196,7 +223,7 @@ workflows:
           chimp-list: f605a41b53
           chimp-segment: 6479489
           requires:
-            - goreleaser/release
+            - release
           filters:
             tags:
               # We have two types of tags: v0.0.0-foo.0 and proto/v0.0.0-foo.0
