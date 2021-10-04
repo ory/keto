@@ -4,8 +4,13 @@ import (
 	"context"
 	"os"
 	"testing"
+	"time"
 
 	"github.com/gobuffalo/pop/v5"
+
+	"github.com/ory/keto/internal/driver/config"
+	"github.com/ory/keto/internal/namespace"
+
 	"github.com/gofrs/uuid"
 	"github.com/ory/x/fsx"
 	"github.com/ory/x/logrusx"
@@ -17,8 +22,6 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/ory/keto/internal/driver"
-	"github.com/ory/keto/internal/driver/config"
-	"github.com/ory/keto/internal/namespace"
 	"github.com/ory/keto/internal/persistence/sql"
 	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/internal/x/dbx"
@@ -29,13 +32,24 @@ func TestMigrations(t *testing.T) {
 
 	for _, db := range dbx.GetDSNs(t, debugOnDisk) {
 		t.Run("dsn="+db.Name, func(t *testing.T) {
+			db.MigrateUp, db.MigrateDown = false, false
+
 			ctx := context.Background()
 			l := logrusx.New("", "", logrusx.ForceLevel(logrus.DebugLevel))
-			c, err := pop.NewConnection(&pop.ConnectionDetails{URL: db.Conn})
-			require.NoError(t, err)
-			require.NoError(t, c.Open())
 
-			db.MigrateUp, db.MigrateDown = false, false
+			var c *pop.Connection
+			var err error
+			for i := 0; i < 120; i++ {
+				c, err = pop.NewConnection(&pop.ConnectionDetails{URL: db.Conn})
+				require.NoError(t, err)
+				require.NoError(t, c.Open())
+				if err := c.Store.(interface{ Ping() error }).Ping(); err == nil {
+					break
+				}
+				time.Sleep(time.Second)
+			}
+			require.NoError(t, c.Store.(interface{ Ping() error }).Ping())
+
 			tm := popx.NewTestMigrator(t, c, fsx.Merge(networkx.Migrations, os.DirFS("../sql")), os.DirFS("./testdata"), l)
 
 			t.Run("suite=up", func(t *testing.T) {
@@ -84,6 +98,9 @@ func TestMigrations(t *testing.T) {
 			})
 
 			t.Run("suite=down", func(t *testing.T) {
+				if debugOnDisk && db.Name == "sqlite" {
+					t.SkipNow()
+				}
 				require.NoError(t, tm.Down(ctx, -1))
 			})
 		})
