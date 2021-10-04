@@ -51,6 +51,8 @@ func TestMigrations(t *testing.T) {
 			require.NoError(t, c.Store.(interface{ Ping() error }).Ping())
 
 			tm := popx.NewTestMigrator(t, c, fsx.Merge(networkx.Migrations, os.DirFS("../sql")), os.DirFS("./testdata"), l)
+			// cleanup first
+			require.NoError(t, tm.Down(ctx, -1))
 
 			t.Run("suite=up", func(t *testing.T) {
 				require.NoError(t, tm.Up(ctx))
