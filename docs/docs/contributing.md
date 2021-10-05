@@ -184,7 +184,7 @@ Pull requests eligible for review
 5. have signed our
    [Contributor License Agreement](https://cla-assistant.io/ory/keto);
 6. include a proper git commit message following the
-   [Conventional Commit Specification](https://www.conventionalcommits.org/en/v0.7.0-alpha.0.pre.0/).
+   [Conventional Commit Specification](https://www.conventionalcommits.org/en/v0.7.0-alpha.0.pre.5/).
 
 If all of these items are checked, the pull request is ready to be reviewed and
 you should change the status to "Ready for review" and

@@ -26,7 +26,7 @@ require (
 	github.com/go-swagger/go-swagger v0.26.1
 	github.com/goreleaser/godownloader v0.1.1-0.20200426152203-fd8ad8f7dd78
 	github.com/mattn/goveralls v0.0.7
-	github.com/ory/cli v0.0.73-0.20211001113806-d0cbcdc5d8d3
+	github.com/ory/cli v0.0.73-0.20211004105147-f05df3ecf673
 	github.com/ory/go-acc v0.2.6
 	github.com/pseudomuto/protoc-gen-doc v1.4.1
 	golang.org/x/tools v0.1.2

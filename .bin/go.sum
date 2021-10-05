@@ -1682,8 +1682,8 @@ github.com/openzipkin/zipkin-go v0.2.2/go.mod h1:NaW6tEwdmWMaCDZzg8sh+IBNOxHMPnh
 github.com/ory/analytics-go/v4 v4.0.0/go.mod h1:FMx9cLRD9xN+XevPvZ5FDMfignpmcqPP6FUKnJ9/MmE=
 github.com/ory/cli v0.0.49/go.mod h1:IH1juqUjTWCVFM3PzINym92O0AACtSqQ6p/jgqaxvec=
 github.com/ory/cli v0.0.54/go.mod h1:0Z12AJnfLwfTtLEeSbr175OY4B6c0UxoG/XrdfrchtU=
-github.com/ory/cli v0.0.73-0.20211001113806-d0cbcdc5d8d3 h1:2CIKW3lJ2nQTyLW7gxSaniC4CmO0+KR8uXI9RuAE+Fg=
-github.com/ory/cli v0.0.73-0.20211001113806-d0cbcdc5d8d3/go.mod h1:QyBcsMgKb1Sg8dPf6bao+oa1Tlg46+doXOQsrW9hiZY=
+github.com/ory/cli v0.0.73-0.20211004105147-f05df3ecf673 h1:Z9xMCi9ZOoSEIHQodWLp1+6Zm9yEe3ywjYJ2A34Pk2M=
+github.com/ory/cli v0.0.73-0.20211004105147-f05df3ecf673/go.mod h1:QyBcsMgKb1Sg8dPf6bao+oa1Tlg46+doXOQsrW9hiZY=
 github.com/ory/dockertest v3.3.5+incompatible h1:iLLK6SQwIhcbrG783Dghaaa3WPzGc+4Emza6EbVUUGA=
 github.com/ory/dockertest v3.3.5+incompatible/go.mod h1:1vX4m9wsvi00u5bseYwXaSnhNrne+V0E6LAcBILJdPs=
 github.com/ory/dockertest/v3 v3.5.4/go.mod h1:J8ZUbNB2FOhm1cFZW9xBpDsODqsSWcyYgtJYVPcnF70=

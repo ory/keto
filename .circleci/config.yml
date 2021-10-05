@@ -147,8 +147,7 @@ workflows:
               only: /v.*/
             branches:
               only: master
-      -
-        sdk/generate:
+      - sdk/generate:
           appname: Ory_Keto
           specignorepgks: internal/httpclient proto/ory/keto docker
           swagpath: spec/api.json
