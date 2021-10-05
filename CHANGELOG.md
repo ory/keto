@@ -193,6 +193,8 @@ be returned if `subject` is still used.
 
 ### Documentation
 
+- Add migration guide to v0.7 ([#758](https://github.com/ory/keto/issues/758))
+  ([3335a4b](https://github.com/ory/keto/commit/3335a4b397481eb57a726469437e7c499d9b9a24))
 - Add new redoc docsc ([#651](https://github.com/ory/keto/issues/651))
   ([435ae00](https://github.com/ory/keto/commit/435ae0048135902c99875d947b793288404cb532))
 - Change npm org scope from [@oryd](https://github.com/oryd) to
