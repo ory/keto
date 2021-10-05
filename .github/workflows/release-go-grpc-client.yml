@@ -29,7 +29,7 @@ jobs:
         run: |
           git config --local user.email "zepatrik@users.noreply.github.com"
           git config --local user.name "zepatrik"
-          RELEASE_VERSION="sed 's#^refs/tags/##' <(echo $RELEASE_REF)"
+          RELEASE_VERSION="$(sed 's#^refs/tags/##' <(echo $RELEASE_REF))"
           git tag -a "proto/$RELEASE_VERSION" -m "Release $RELEASE_VERSION of the go gRPC Client. See CHANGELOG.md for more info."
           git push origin "proto/$RELEASE_VERSION"
         env:
