@@ -1,3 +1,57 @@
 ---
 title: Migrating to Keto v0.7
 ---
+
+Ory Keto v0.6 used the table-separated namespaces database schema described in
+the [Google Zanzibar paper](https://research.google/pubs/pub48190/). However, we
+found for various reasons outlined in
+[#613](https://github.com/ory/keto/issues/613) that this is not ideal for Keto.
+
+Because the database schema changed significantly, and it is not possible to
+have SQL-only migrations, there is a special migration procedure needed to
+upgrade Ory Keto v0.6.
+
+## Preparations
+
+:::danger
+
+As always with database migrations, please make a backup of your data and try
+the migration process first on a non-production copy of the database.
+
+:::
+
+This migration has to download all the data from the database, transform them,
+and then write them back to the database. Make sure that you run it as close to
+the database as possible to reduce the latency and failure rate. In case of a
+failure, just restart the process. It is run as one big SQL transaction.
+
+## Recommended Procedure
+
+:::caution
+
+This is the **recommended** procedure. Please adjust to your setup and **test**
+before applying to a production system. You might want to create a migration
+script that applies all these steps and handles errors.
+
+:::
+
+This procedure is zero-downtime only for read API requests. The write API will
+not be available during migration.
+
+1. Create a new database user (from now on `keto_new`) with the same privileges
+   as the one used until now (let's say it was `keto`).
+2. Start a server instance of Keto v0.7 next to the already running Keto v0.6.
+   It should have the same settings, but use `keto_new` for accessing the
+   database.
+3. Change the privileges of `keto` to be read-only on all tables.
+4. Still route all traffic to the old Keto. Write API requests will fail from
+   now on, but the Read API will be zero-downtime.
+5. Run `keto namespace migrate legacy --yes` considering the points raised in
+   [#Preparations].
+6. In case of failure, re-run the command until it succeeds.
+7. In case of log statements stating
+   `Skipping relation tuple, it seems to be in a broken state. Please recreate it manually.`
+   note down the logged data somewhere and recreate the relation tuples in
+   question once the migration is done using the API.
+8. After the migration is successfully done, route all traffic to Keto v0.7 and
+   shut down Keto v0.6. At this point the API is fully operational again.

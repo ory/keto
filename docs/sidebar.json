@@ -27,6 +27,7 @@
       "guides/list-api-display-objects",
       "guides/expand-api-display-who-has-access",
       "guides/production",
+      "guides/v0.7-migration",
       "guides/rbac",
       "guides/access-control-inheritance",
       "guides/access-control-list-design-best-practices"
