@@ -3,7 +3,7 @@ id: milestones
 title: Milestones and Roadmap
 ---
 
-## [v0.7.0-alpha.0.pre.5](https://github.com/ory/keto/milestone/5)
+## [v0.7.0-alpha.0](https://github.com/ory/keto/milestone/5)
 
 The biggest change for the next release will be the new SQL table structure
 (https://github.com/ory/keto/pull/638). The main goal is to improve the QoS, big
@@ -53,11 +53,11 @@ Affects documentation.
 
 #### Issues
 
-- [ ] Guide for data migration to new single table schema
-      ([keto#733](https://github.com/ory/keto/issues/733)) -
-      [@Patrik](https://github.com/zepatrik)
 - [x] Document and improve go gRPC client import
       ([keto#635](https://github.com/ory/keto/issues/635))
+- [x] Guide for data migration to new single table schema
+      ([keto#733](https://github.com/ory/keto/issues/733)) -
+      [@Patrik](https://github.com/zepatrik)
 
 ### [Ci](https://github.com/ory/keto/labels/ci)
 

@@ -252,9 +252,19 @@
           "href": "https://www.ory.sh/docs/ecosystem/configuring"
         },
         {
+          "label": "Deployment Fundamentals and Requirements",
+          "type": "link",
+          "href": "https://www.ory.sh/docs/ecosystem/deployment"
+        },
+        {
           "label": "Software Updates",
           "type": "link",
           "href": "https://www.ory.sh/docs/ecosystem/upgrading"
+        },
+        {
+          "label": "Logs and Audit Trails",
+          "type": "link",
+          "href": "https://www.ory.sh/docs/ecosystem/logging"
         },
         {
           "label": "Contributing",
@@ -886,6 +896,10 @@
             {
               "type": "doc",
               "id": "version-v0.7/guides/production"
+            },
+            {
+              "type": "doc",
+              "id": "version-v0.7/guides/v0.7-migration"
             },
             {
               "type": "doc",
