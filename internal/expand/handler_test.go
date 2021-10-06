@@ -42,7 +42,7 @@ func TestRESTHandler(t *testing.T) {
 		assert.Equal(t, http.StatusBadRequest, resp.StatusCode)
 		body, err := io.ReadAll(resp.Body)
 		require.NoError(t, err)
-		assert.Contains(t, string(body), "required query parameter max-depth")
+		assert.Contains(t, string(body), "required query parameter 'max-depth'")
 	})
 
 	t.Run("case=returns bad request on malformed int", func(t *testing.T) {
