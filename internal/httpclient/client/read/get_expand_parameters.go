@@ -63,7 +63,7 @@ type GetExpandParams struct {
 	// MaxDepth.
 	//
 	// Format: int64
-	MaxDepth *int64
+	MaxDepth int64
 
 	/* Namespace.
 
@@ -137,13 +137,13 @@ func (o *GetExpandParams) SetHTTPClient(client *http.Client) {
 }
 
 // WithMaxDepth adds the maxDepth to the get expand params
-func (o *GetExpandParams) WithMaxDepth(maxDepth *int64) *GetExpandParams {
+func (o *GetExpandParams) WithMaxDepth(maxDepth int64) *GetExpandParams {
 	o.SetMaxDepth(maxDepth)
 	return o
 }
 
 // SetMaxDepth adds the maxDepth to the get expand params
-func (o *GetExpandParams) SetMaxDepth(maxDepth *int64) {
+func (o *GetExpandParams) SetMaxDepth(maxDepth int64) {
 	o.MaxDepth = maxDepth
 }
 
@@ -188,20 +188,13 @@ func (o *GetExpandParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Reg
 	}
 	var res []error
 
-	if o.MaxDepth != nil {
+	// query param max-depth
+	qrMaxDepth := o.MaxDepth
+	qMaxDepth := swag.FormatInt64(qrMaxDepth)
+	if qMaxDepth != "" {
 
-		// query param max-depth
-		var qrMaxDepth int64
-
-		if o.MaxDepth != nil {
-			qrMaxDepth = *o.MaxDepth
-		}
-		qMaxDepth := swag.FormatInt64(qrMaxDepth)
-		if qMaxDepth != "" {
-
-			if err := r.SetQueryParam("max-depth", qMaxDepth); err != nil {
-				return err
-			}
+		if err := r.SetQueryParam("max-depth", qMaxDepth); err != nil {
+			return err
 		}
 	}
 

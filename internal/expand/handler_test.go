@@ -35,6 +35,16 @@ func TestRESTHandler(t *testing.T) {
 	ts := httptest.NewServer(r)
 	defer ts.Close()
 
+	t.Run("case=returns required query parameter max-depth is missing is missing", func(t *testing.T) {
+		resp, err := ts.Client().Get(ts.URL + expand.RouteBase)
+		require.NoError(t, err)
+
+		assert.Equal(t, http.StatusBadRequest, resp.StatusCode)
+		body, err := io.ReadAll(resp.Body)
+		require.NoError(t, err)
+		assert.Contains(t, string(body), "required query parameter max-depth")
+	})
+
 	t.Run("case=returns bad request on malformed int", func(t *testing.T) {
 		resp, err := ts.Client().Get(ts.URL + expand.RouteBase + "?max-depth=foo")
 		require.NoError(t, err)
