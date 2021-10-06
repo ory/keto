@@ -47,7 +47,7 @@ not be available during migration.
 4. Still route all traffic to the old Keto. Write API requests will fail from
    now on, but the Read API will be zero-downtime.
 5. Run `keto namespace migrate legacy --yes` considering the points raised in
-   [#Preparations].
+   [preparations](#preparations).
 6. In case of failure, re-run the command until it succeeds.
 7. In case of log statements stating
    `Skipping relation tuple, it seems to be in a broken state. Please recreate it manually.`
