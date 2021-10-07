@@ -70,7 +70,7 @@ type GetRelationTuplesParams struct {
 
 	   Object of the Relation Tuple
 	*/
-	Object string
+	Object *string
 
 	// PageSize.
 	//
@@ -84,7 +84,7 @@ type GetRelationTuplesParams struct {
 
 	   Relation of the Relation Tuple
 	*/
-	Relation string
+	Relation *string
 
 	/* SubjectID.
 
@@ -175,13 +175,13 @@ func (o *GetRelationTuplesParams) SetNamespace(namespace string) {
 }
 
 // WithObject adds the object to the get relation tuples params
-func (o *GetRelationTuplesParams) WithObject(object string) *GetRelationTuplesParams {
+func (o *GetRelationTuplesParams) WithObject(object *string) *GetRelationTuplesParams {
 	o.SetObject(object)
 	return o
 }
 
 // SetObject adds the object to the get relation tuples params
-func (o *GetRelationTuplesParams) SetObject(object string) {
+func (o *GetRelationTuplesParams) SetObject(object *string) {
 	o.Object = object
 }
 
@@ -208,13 +208,13 @@ func (o *GetRelationTuplesParams) SetPageToken(pageToken *string) {
 }
 
 // WithRelation adds the relation to the get relation tuples params
-func (o *GetRelationTuplesParams) WithRelation(relation string) *GetRelationTuplesParams {
+func (o *GetRelationTuplesParams) WithRelation(relation *string) *GetRelationTuplesParams {
 	o.SetRelation(relation)
 	return o
 }
 
 // SetRelation adds the relation to the get relation tuples params
-func (o *GetRelationTuplesParams) SetRelation(relation string) {
+func (o *GetRelationTuplesParams) SetRelation(relation *string) {
 	o.Relation = relation
 }
 
@@ -280,13 +280,20 @@ func (o *GetRelationTuplesParams) WriteToRequest(r runtime.ClientRequest, reg st
 		}
 	}
 
-	// query param object
-	qrObject := o.Object
-	qObject := qrObject
-	if qObject != "" {
+	if o.Object != nil {
 
-		if err := r.SetQueryParam("object", qObject); err != nil {
-			return err
+		// query param object
+		var qrObject string
+
+		if o.Object != nil {
+			qrObject = *o.Object
+		}
+		qObject := qrObject
+		if qObject != "" {
+
+			if err := r.SetQueryParam("object", qObject); err != nil {
+				return err
+			}
 		}
 	}
 
@@ -324,13 +331,20 @@ func (o *GetRelationTuplesParams) WriteToRequest(r runtime.ClientRequest, reg st
 		}
 	}
 
-	// query param relation
-	qrRelation := o.Relation
-	qRelation := qrRelation
-	if qRelation != "" {
+	if o.Relation != nil {
 
-		if err := r.SetQueryParam("relation", qRelation); err != nil {
-			return err
+		// query param relation
+		var qrRelation string
+
+		if o.Relation != nil {
+			qrRelation = *o.Relation
+		}
+		qRelation := qrRelation
+		if qRelation != "" {
+
+			if err := r.SetQueryParam("relation", qRelation); err != nil {
+				return err
+			}
 		}
 	}
 
