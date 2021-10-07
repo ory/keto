@@ -97,10 +97,10 @@ func (c *sdkClient) deleteTuple(t require.TestingT, r *relationtuple.InternalRel
 func compileParams(q *relationtuple.RelationQuery, opts []x.PaginationOptionSetter) *read.GetRelationTuplesParams {
 	params := read.NewGetRelationTuplesParams().WithNamespace(q.Namespace)
 	if q.Relation != "" {
-		params = params.WithRelation(q.Relation)
+		params = params.WithRelation(&q.Relation)
 	}
 	if q.Object != "" {
-		params = params.WithObject(q.Object)
+		params = params.WithObject(&q.Object)
 	}
 	if q.SubjectID != nil {
 		params = params.WithSubjectID(q.SubjectID)
