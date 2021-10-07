@@ -3,27 +3,30 @@
 
 **Table of Contents**
 
-- [0.0.0 (2021-10-05)](#000-2021-10-05)
+- [0.0.0 (2021-10-07)](#000-2021-10-07)
+  - [Documentation](#documentation)
+- [0.7.0-alpha.0 (2021-10-06)](#070-alpha0-2021-10-06)
   - [Breaking Changes](#breaking-changes)
     - [Bug Fixes](#bug-fixes)
     - [Chores](#chores)
+    - [Code Generation](#code-generation)
     - [Code Refactoring](#code-refactoring)
-    - [Documentation](#documentation)
+    - [Documentation](#documentation-1)
     - [Features](#features)
     - [Tests](#tests)
 - [0.6.0-alpha.3 (2021-04-29)](#060-alpha3-2021-04-29)
-  - [Code Generation](#code-generation)
+  - [Code Generation](#code-generation-1)
 - [0.6.0-alpha.2 (2021-04-29)](#060-alpha2-2021-04-29)
   - [Bug Fixes](#bug-fixes-1)
-  - [Code Generation](#code-generation-1)
-  - [Documentation](#documentation-1)
+  - [Code Generation](#code-generation-2)
+  - [Documentation](#documentation-2)
   - [Features](#features-1)
 - [0.6.0-alpha.1 (2021-04-07)](#060-alpha1-2021-04-07)
   - [Bug Fixes](#bug-fixes-2)
   - [Build System](#build-system)
-  - [Code Generation](#code-generation-2)
+  - [Code Generation](#code-generation-3)
   - [Code Refactoring](#code-refactoring-1)
-  - [Documentation](#documentation-2)
+  - [Documentation](#documentation-3)
   - [Features](#features-2)
   - [Tests](#tests-1)
 - [0.5.6-alpha.1 (2020-05-28)](#056-alpha1-2020-05-28)
@@ -32,26 +35,26 @@
 - [0.5.5-alpha.1 (2020-05-28)](#055-alpha1-2020-05-28)
   - [Bug Fixes](#bug-fixes-4)
   - [Chores](#chores-2)
-  - [Documentation](#documentation-3)
+  - [Documentation](#documentation-4)
 - [0.5.4-alpha.1 (2020-04-07)](#054-alpha1-2020-04-07)
   - [Bug Fixes](#bug-fixes-5)
 - [0.5.3-alpha.3 (2020-04-06)](#053-alpha3-2020-04-06)
-  - [Code Generation](#code-generation-3)
+  - [Code Generation](#code-generation-4)
   - [Code Refactoring](#code-refactoring-2)
-  - [Documentation](#documentation-4)
+  - [Documentation](#documentation-5)
 - [0.5.3-alpha.1 (2020-04-03)](#053-alpha1-2020-04-03)
   - [Chores](#chores-3)
 - [0.5.2 (2020-04-02)](#052-2020-04-02)
-  - [Documentation](#documentation-5)
+  - [Documentation](#documentation-6)
 - [0.5.0 (2020-04-02)](#050-2020-04-02)
   - [Bug Fixes](#bug-fixes-6)
-  - [Documentation](#documentation-6)
+  - [Documentation](#documentation-7)
 - [0.4.5-alpha.1 (2020-02-29)](#045-alpha1-2020-02-29)
   - [Bug Fixes](#bug-fixes-7)
-  - [Documentation](#documentation-7)
+  - [Documentation](#documentation-8)
 - [0.4.4-alpha.1 (2020-02-14)](#044-alpha1-2020-02-14)
   - [Bug Fixes](#bug-fixes-8)
-  - [Documentation](#documentation-8)
+  - [Documentation](#documentation-9)
   - [Features](#features-3)
   - [Unclassified](#unclassified)
 - [0.4.3-alpha.2 (2020-01-31)](#043-alpha2-2020-01-31)
@@ -71,35 +74,63 @@
 - [0.3.6-sandbox (2019-10-16)](#036-sandbox-2019-10-16)
   - [Unclassified](#unclassified-8)
 - [0.3.5-sandbox (2019-08-21)](#035-sandbox-2019-08-21)
-  - [Documentation](#documentation-9)
+  - [Documentation](#documentation-10)
   - [Unclassified](#unclassified-9)
 - [0.3.3-sandbox (2019-05-18)](#033-sandbox-2019-05-18)
   - [Continuous Integration](#continuous-integration)
-  - [Documentation](#documentation-10)
+  - [Documentation](#documentation-11)
 - [0.3.1-sandbox (2019-04-29)](#031-sandbox-2019-04-29)
   - [Continuous Integration](#continuous-integration-1)
-  - [Documentation](#documentation-11)
+  - [Documentation](#documentation-12)
   - [Unclassified](#unclassified-10)
 - [0.3.0-sandbox (2019-04-29)](#030-sandbox-2019-04-29)
-  - [Documentation](#documentation-12)
+  - [Documentation](#documentation-13)
   - [Unclassified](#unclassified-11)
 - [0.2.3-sandbox+oryOS.10 (2019-02-05)](#023-sandboxoryos10-2019-02-05)
-  - [Documentation](#documentation-13)
+  - [Documentation](#documentation-14)
   - [Unclassified](#unclassified-12)
 - [0.2.2-sandbox+oryOS.10 (2018-12-13)](#022-sandboxoryos10-2018-12-13)
   - [Continuous Integration](#continuous-integration-2)
 - [0.2.1-sandbox+oryOS.10 (2018-12-13)](#021-sandboxoryos10-2018-12-13)
   - [Continuous Integration](#continuous-integration-3)
 - [0.2.0-sandbox+oryOS.10 (2018-12-13)](#020-sandboxoryos10-2018-12-13)
-  - [Documentation](#documentation-14)
+  - [Documentation](#documentation-15)
   - [Unclassified](#unclassified-13)
 - [0.0.1 (2018-05-20)](#001-2018-05-20)
-  - [Documentation](#documentation-15)
+  - [Documentation](#documentation-16)
   - [Unclassified](#unclassified-14)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.6.0-alpha.3...v0.0.0) (2021-10-05)
+# [0.0.0](https://github.com/ory/keto/compare/v0.7.0-alpha.0...v0.0.0) (2021-10-07)
+
+### Documentation
+
+- Make `max-depth` expand parameter required
+  ([#755](https://github.com/ory/keto/issues/755))
+  ([6d51422](https://github.com/ory/keto/commit/6d51422fd329d579cdec1fcda17011af76f449aa))
+
+# [0.7.0-alpha.0](https://github.com/ory/keto/compare/v0.6.0-alpha.3...v0.7.0-alpha.0) (2021-10-06)
+
+We are proud to present you a new release of Ory Keto! It has been a while, but
+we have been working hard not only on code, but also concepts and discussing
+many upcoming features. To join us on this exciting journey, watch :eyes: and
+start :star: the [repository](https://github.com/ory/keto).
+
+At a first glance the release might not look too exciting from the outside, but
+we had 376 changed files with 47,578 additions and 25,418 deletions. In total,
+12 contributors worked on the 192 commits. The most changes were bug fixes,
+internal refactoring, and improving API consistency. Expect a more reliable
+Keto, that is also prepared to receive
+[many new exciting features](https://www.ory.sh/keto/docs/implemented-planned-features).
+
+Because the database schema changed significantly, and it is not possible to
+have SQL-only migrations, there is a special migration procedure needed to
+upgrade from Ory Keto v0.6. Please follow the
+[migration guide](https://www.ory.sh/keto/docs/guides/v0.7-migration/) and, as
+always, read
+[the changelog](https://github.com/ory/keto/blob/master/CHANGELOG.md) before
+upgrading.
 
 ## Breaking Changes
 
@@ -175,6 +206,11 @@ be returned if `subject` is still used.
 - Update repository templates
   ([f53d3eb](https://github.com/ory/keto/commit/f53d3eb70b3e18f0d6ccc8c7cc399f366f5c79b9))
 
+### Code Generation
+
+- Pin v0.7.0-alpha.0 release commit
+  ([7962e77](https://github.com/ory/keto/commit/7962e7756b92a92d1bd3f1cad736ce1fcdc6589e))
+
 ### Code Refactoring
 
 - Ensure namespace manager reload is resource contained
@@ -208,6 +244,8 @@ be returned if `subject` is still used.
 - Fix example not following best practice
   ([#582](https://github.com/ory/keto/issues/582))
   ([a015818](https://github.com/ory/keto/commit/a0158182c5f87cfd4767824e1c5d6cbb8094a4e6))
+- Fix link in migration guide
+  ([e995829](https://github.com/ory/keto/commit/e9958298feb8729b1547df5c48300593c01e07b6))
 - Fix REST API reference ([#718](https://github.com/ory/keto/issues/718))
   ([f989b39](https://github.com/ory/keto/commit/f989b3978f34ec484900e6bff3543a39d2d7636c))
 - Update NPM links due to organisation move
