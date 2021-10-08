@@ -50,8 +50,46 @@ func (h *handler) ListRelationTuples(ctx context.Context, req *acl.ListRelationT
 // swagger:parameters getRelationTuples
 // nolint:deadcode,unused
 type getRelationsParams struct {
-	// swagger:allOf
-	queryRelationTuple
+	// Namespace of the Relation Tuple
+	//
+	// in: query
+	// required: true
+	Namespace string `json:"namespace"`
+
+	// Object of the Relation Tuple
+	//
+	// in: query
+	Object string `json:"object"`
+
+	// Relation of the Relation Tuple
+	//
+	// in: query
+	Relation string `json:"relation"`
+
+	// SubjectID of the Relation Tuple
+	//
+	// in: query
+	// Either subject_set.* or subject_id are required.
+	SubjectID string `json:"subject_id"`
+
+	// Namespace of the Subject Set
+	//
+	// in: query
+	// Either subject_set.* or subject_id are required.
+	SNamespace string `json:"subject_set.namespace"`
+
+	// Object of the Subject Set
+	//
+	// in: query
+	// Either subject_set.* or subject_id are required.
+	SObject string `json:"subject_set.object"`
+
+	// Relation of the Subject Set
+	//
+	// in: query
+	// Either subject_set.* or subject_id are required.
+	SRelation string `json:"subject_set.relation"`
+
 	// swagger:allOf
 	x.PaginationOptions
 }
