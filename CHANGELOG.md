@@ -3,7 +3,7 @@
 
 **Table of Contents**
 
-- [0.0.0 (2021-10-07)](#000-2021-10-07)
+- [0.0.0 (2021-10-08)](#000-2021-10-08)
   - [Documentation](#documentation)
 - [0.7.0-alpha.0 (2021-10-06)](#070-alpha0-2021-10-06)
   - [Breaking Changes](#breaking-changes)
@@ -102,10 +102,13 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.7.0-alpha.0...v0.0.0) (2021-10-07)
+# [0.0.0](https://github.com/ory/keto/compare/v0.7.0-alpha.0...v0.0.0) (2021-10-08)
 
 ### Documentation
 
+- Correct `required` annotation for List API parameters
+  ([#760](https://github.com/ory/keto/issues/760))
+  ([ba1bec9](https://github.com/ory/keto/commit/ba1bec9fb431331835bfb7655596b363ae9edc74))
 - Make `max-depth` expand parameter required
   ([#755](https://github.com/ory/keto/issues/755))
   ([6d51422](https://github.com/ory/keto/commit/6d51422fd329d579cdec1fcda17011af76f449aa))
