@@ -106,6 +106,9 @@
 
 ### Documentation
 
+- Adjust details missed for v0.7
+  ([#762](https://github.com/ory/keto/issues/762))
+  ([caa18c0](https://github.com/ory/keto/commit/caa18c03454d3d805ae448c2f45fcf0ed9f625f5))
 - Correct `required` annotation for List API parameters
   ([#760](https://github.com/ory/keto/issues/760))
   ([ba1bec9](https://github.com/ory/keto/commit/ba1bec9fb431331835bfb7655596b363ae9edc74))
