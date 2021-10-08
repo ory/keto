@@ -40,15 +40,6 @@ will evaluate to false (a.k.a. rejected).
 Vice versa, all relation tuples containing an object have to be in the same
 namespace to reference the same object.
 
-## Migrations
-
-Because namespaces each come with an individual configuration that can even
-modify some storage specific options, it is required to manually review and run
-migrations on namespace configuration updates. Please refer to the
-[namespace migration CLI reference](../cli/keto-namespace-migrate.md) and
-[running in production guide](../guides/production.md) to learn more about that
-process.
-
 ## Naming Conventions
 
 Namespaces should be named after the plural of the type of objects they describe

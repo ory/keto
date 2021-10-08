@@ -46,12 +46,25 @@ not be available during migration.
 3. Change the privileges of `keto` to be read-only on all tables.
 4. Still route all traffic to the old Keto. Write API requests will fail from
    now on, but the Read API will be zero-downtime.
-5. Run `keto namespace migrate legacy --yes` considering the points raised in
-   [preparations](#preparations).
-6. In case of failure, re-run the command until it succeeds.
-7. In case of log statements stating
+5. Run `keto migrate up --yes` considering the points raised in
+   [preparations](#preparations). This command will apply SQL schema changes,
+   but not yet migrate data.
+6. Run `keto namespace migrate legacy --yes` considering the points raised in
+   [preparations](#preparations). This command will migrate **all** namespaces
+   **and** delete the old tables on success.
+7. In case of failure, re-run the command until it succeeds.
+8. In case of log statements stating
    `Skipping relation tuple, it seems to be in a broken state. Please recreate it manually.`
    note down the logged data somewhere and recreate the relation tuples in
    question once the migration is done using the API.
-8. After the migration is successfully done, route all traffic to Keto v0.7 and
+9. After the migration is successfully done, route all traffic to Keto v0.7 and
    shut down Keto v0.6. At this point the API is fully operational again.
+
+## Options for Adjusting the Migration Process
+
+The `keto namespace migrate legacy` command supports multiple options:
+
+- interactive mode with manual approval by not specifying `--yes`
+- migrate single namespace by specifying its name as an argument
+- only delete old tables by specifying `--down-only`; useful if you did not
+  approve the down migration previously
