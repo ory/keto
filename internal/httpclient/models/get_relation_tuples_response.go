@@ -56,6 +56,8 @@ func (m *GetRelationTuplesResponse) validateRelationTuples(formats strfmt.Regist
 			if err := m.RelationTuples[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("relation_tuples" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("relation_tuples" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -88,6 +90,8 @@ func (m *GetRelationTuplesResponse) contextValidateRelationTuples(ctx context.Co
 			if err := m.RelationTuples[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("relation_tuples" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("relation_tuples" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
