@@ -3,7 +3,7 @@
 
 **Table of Contents**
 
-- [0.0.0 (2021-10-08)](#000-2021-10-08)
+- [0.0.0 (2021-10-14)](#000-2021-10-14)
   - [Documentation](#documentation)
 - [0.7.0-alpha.0 (2021-10-06)](#070-alpha0-2021-10-06)
   - [Breaking Changes](#breaking-changes)
@@ -102,7 +102,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.7.0-alpha.0...v0.0.0) (2021-10-08)
+# [0.0.0](https://github.com/ory/keto/compare/v0.7.0-alpha.0...v0.0.0) (2021-10-14)
 
 ### Documentation
 
