@@ -42,7 +42,15 @@ module.exports = {
       replacer: ({ content, next }) =>
         content.replace('version="master"', `version="${next}"`),
       dir: 'docs/docs'
-    })
+    }),
+    {
+      replacer: ({ content, next }) =>
+        content.replace(
+          /oryd\/keto:v[0-9a-zA-Z.-]*-sqlite/g,
+          `oryd/keto:${next}-sqlite`
+        ),
+      files: ['contrib/cat-videos-example/docker-compose.yml']
+    }
   ],
   updateConfig: {
     src: '../.schema/config.schema.json',
