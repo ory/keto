@@ -349,9 +349,19 @@
               "href": "https://www.ory.sh/kratos/docs/next/concepts/terminology"
             },
             {
-              "label": "User Interface",
+              "label": "Ory Session Token / Ory Session Cookie",
+              "type": "link",
+              "href": "https://www.ory.sh/kratos/docs/next/concepts/session"
+            },
+            {
+              "label": "Customize User Interface",
               "type": "link",
               "href": "https://www.ory.sh/kratos/docs/next/concepts/ui-user-interface"
+            },
+            {
+              "label": "Administrative User / Management Interface",
+              "type": "link",
+              "href": "https://www.ory.sh/kratos/docs/next/concepts/management-ui"
             },
             {
               "label": "Identity Schema",
@@ -376,6 +386,21 @@
                   "label": "Social Sign In, OpenID Connect, and OAuth2",
                   "type": "link",
                   "href": "https://www.ory.sh/kratos/docs/next/concepts/credentials/openid-connect-oidc-oauth2"
+                },
+                {
+                  "label": "2FA Look-up Secrets and Recovery Codes",
+                  "type": "link",
+                  "href": "https://www.ory.sh/kratos/docs/next/concepts/credentials/lookup-secrets"
+                },
+                {
+                  "label": "2FA TOTP (Google Authenticator)",
+                  "type": "link",
+                  "href": "https://www.ory.sh/kratos/docs/next/concepts/credentials/totp"
+                },
+                {
+                  "label": "2FA FIDO2 & U2F (WebAuthn)",
+                  "type": "link",
+                  "href": "https://www.ory.sh/kratos/docs/next/concepts/credentials/webauthn"
                 }
               ],
               "collapsible": true,
@@ -486,6 +511,11 @@
           "label": "Guides",
           "items": [
             {
+              "label": "Add Two Factor Authentication (2FA) to your App",
+              "type": "link",
+              "href": "https://www.ory.sh/kratos/docs/next//two-factor-authentication-2fa-mfa"
+            },
+            {
               "label": "Sign in with GitHub, GitLab, Google, Facebook, LinkedIn, Microsoft ...",
               "type": "link",
               "href": "https://www.ory.sh/kratos/docs/next/guides/sign-in-with-github-google-facebook-linkedin"
@@ -534,6 +564,26 @@
               "label": "Secret and Key Rotation",
               "type": "link",
               "href": "https://www.ory.sh/kratos/docs/next/guides/secret-key-rotation"
+            },
+            {
+              "label": "Get Access, Refresh, ID Tokens from Social Sign In Providers",
+              "type": "link",
+              "href": "https://www.ory.sh/kratos/docs/next/guides/retrieve-social-sign-in-access-refresh-id-token"
+            },
+            {
+              "label": "Setting up Noop Cipher algorithm",
+              "type": "link",
+              "href": "https://www.ory.sh/kratos/docs/next/guides/setting-up-noop-cipher-parameters"
+            },
+            {
+              "label": "Setting up XChaCha20 Poly1305 Cipher algorithm",
+              "type": "link",
+              "href": "https://www.ory.sh/kratos/docs/next/guides/setting-up-xchacha-cipher-parameters"
+            },
+            {
+              "label": "Setting up AES Cipher algorithm",
+              "type": "link",
+              "href": "https://www.ory.sh/kratos/docs/next/guides/setting-up-aes-cipher-parameters"
             },
             {
               "label": "High Availability",
@@ -747,7 +797,7 @@
             {
               "label": "Debugging Ory Kratos in Docker with Delve",
               "type": "link",
-              "href": "https://www.ory.sh/kratos/docs/next/debug/debugging_in_docker"
+              "href": "https://www.ory.sh/kratos/docs/next/debug/debug-docker-delve-ory-kratos"
             }
           ]
         },
