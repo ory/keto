@@ -81,7 +81,7 @@ jobs:
       - nancy/install
       - run: |
           export PATH=$HOME/.bin:$PATH
-          go list -m all | grep -v github.com/ory/keto/proto | nancy sleuth -q
+          go list -json -deps | nancy sleuth
 
       - goreleaser/install
       - goreleaser/check
