@@ -3,43 +3,46 @@
 
 **Table of Contents**
 
-- [0.0.0 (2021-10-15)](#000-2021-10-15)
+- [0.0.0 (2021-10-25)](#000-2021-10-25)
+  - [Bug Fixes](#bug-fixes)
+- [0.7.0-alpha.1 (2021-10-19)](#070-alpha1-2021-10-19)
+  - [Code Generation](#code-generation)
   - [Documentation](#documentation)
 - [0.7.0-alpha.0 (2021-10-06)](#070-alpha0-2021-10-06)
   - [Breaking Changes](#breaking-changes)
-    - [Bug Fixes](#bug-fixes)
+    - [Bug Fixes](#bug-fixes-1)
     - [Chores](#chores)
-    - [Code Generation](#code-generation)
+    - [Code Generation](#code-generation-1)
     - [Code Refactoring](#code-refactoring)
     - [Documentation](#documentation-1)
     - [Features](#features)
     - [Tests](#tests)
 - [0.6.0-alpha.3 (2021-04-29)](#060-alpha3-2021-04-29)
-  - [Code Generation](#code-generation-1)
-- [0.6.0-alpha.2 (2021-04-29)](#060-alpha2-2021-04-29)
-  - [Bug Fixes](#bug-fixes-1)
   - [Code Generation](#code-generation-2)
+- [0.6.0-alpha.2 (2021-04-29)](#060-alpha2-2021-04-29)
+  - [Bug Fixes](#bug-fixes-2)
+  - [Code Generation](#code-generation-3)
   - [Documentation](#documentation-2)
   - [Features](#features-1)
 - [0.6.0-alpha.1 (2021-04-07)](#060-alpha1-2021-04-07)
-  - [Bug Fixes](#bug-fixes-2)
+  - [Bug Fixes](#bug-fixes-3)
   - [Build System](#build-system)
-  - [Code Generation](#code-generation-3)
+  - [Code Generation](#code-generation-4)
   - [Code Refactoring](#code-refactoring-1)
   - [Documentation](#documentation-3)
   - [Features](#features-2)
   - [Tests](#tests-1)
 - [0.5.6-alpha.1 (2020-05-28)](#056-alpha1-2020-05-28)
-  - [Bug Fixes](#bug-fixes-3)
+  - [Bug Fixes](#bug-fixes-4)
   - [Chores](#chores-1)
 - [0.5.5-alpha.1 (2020-05-28)](#055-alpha1-2020-05-28)
-  - [Bug Fixes](#bug-fixes-4)
+  - [Bug Fixes](#bug-fixes-5)
   - [Chores](#chores-2)
   - [Documentation](#documentation-4)
 - [0.5.4-alpha.1 (2020-04-07)](#054-alpha1-2020-04-07)
-  - [Bug Fixes](#bug-fixes-5)
+  - [Bug Fixes](#bug-fixes-6)
 - [0.5.3-alpha.3 (2020-04-06)](#053-alpha3-2020-04-06)
-  - [Code Generation](#code-generation-4)
+  - [Code Generation](#code-generation-5)
   - [Code Refactoring](#code-refactoring-2)
   - [Documentation](#documentation-5)
 - [0.5.3-alpha.1 (2020-04-03)](#053-alpha1-2020-04-03)
@@ -47,13 +50,13 @@
 - [0.5.2 (2020-04-02)](#052-2020-04-02)
   - [Documentation](#documentation-6)
 - [0.5.0 (2020-04-02)](#050-2020-04-02)
-  - [Bug Fixes](#bug-fixes-6)
+  - [Bug Fixes](#bug-fixes-7)
   - [Documentation](#documentation-7)
 - [0.4.5-alpha.1 (2020-02-29)](#045-alpha1-2020-02-29)
-  - [Bug Fixes](#bug-fixes-7)
+  - [Bug Fixes](#bug-fixes-8)
   - [Documentation](#documentation-8)
 - [0.4.4-alpha.1 (2020-02-14)](#044-alpha1-2020-02-14)
-  - [Bug Fixes](#bug-fixes-8)
+  - [Bug Fixes](#bug-fixes-9)
   - [Documentation](#documentation-9)
   - [Features](#features-3)
   - [Unclassified](#unclassified)
@@ -102,7 +105,36 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.7.0-alpha.0...v0.0.0) (2021-10-15)
+# [0.0.0](https://github.com/ory/keto/compare/v0.7.0-alpha.1...v0.0.0) (2021-10-25)
+
+### Bug Fixes
+
+- Panic on macOS
+  ([059a6f9](https://github.com/ory/keto/commit/059a6f9241798b7dcffc03910f9bd319488a479a))
+- Slow keto start up time
+  ([b7c620c](https://github.com/ory/keto/commit/b7c620c83edc24c68027bc48fb45ef0439498ebe)):
+
+  Found a deeply nested dependency which was importing
+  `https://github.com/markbates/pkger`, causing unreasonable CPU consumption and
+  significant delay at start up time. With this patch, start up time was reduced
+  from almost 1.7s to 0.02s.
+
+  ```
+  $ time keto
+  keto  1.65s user 2.02s system 734% cpu 0.499 total
+
+  $ time ./keto-patch
+  ./keto-patch  0.02s user 0.01s system 6% cpu 0.425 total
+  ```
+
+# [0.7.0-alpha.1](https://github.com/ory/keto/compare/v0.7.0-alpha.0...v0.7.0-alpha.1) (2021-10-19)
+
+This release provides small docs fixes especially for SDK clients.
+
+### Code Generation
+
+- Pin v0.7.0-alpha.1 release commit
+  ([0d1e33a](https://github.com/ory/keto/commit/0d1e33a58f46d5edc125d34611826ee2eede4d69))
 
 ### Documentation
 
