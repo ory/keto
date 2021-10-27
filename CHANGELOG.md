@@ -126,6 +126,7 @@
   $ time ./keto-patch
   ./keto-patch  0.02s user 0.01s system 6% cpu 0.425 total
   ```
+
 - Bugfix docker-compose-postgres.yml bug with Migrations were not applied problem
   ([bf09c33](https://github.com/ory/keto/commit/bf09c33194aed71e9800ff38bfc4449be24dcf7a))
 
