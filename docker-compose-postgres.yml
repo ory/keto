@@ -14,10 +14,11 @@ services:
       - LOG_LEVEL=debug
       - DSN=postgres://dbuser:secret@postgresd:5432/accesscontroldb?sslmode=disable
     command:
-      migrate up --yes
+      migrate sql postgres://dbuser:secret@postgresd:5432/accesscontroldb?sslmode=disable
+    restart: on-failure
 
   keto:
-    image: oryd/keto:v0.6.0-alpha.1
+    image: oryd/keto:v0.7.0-alpha.0
     links:
       - postgresd:postgresd
     depends_on:
