@@ -74,6 +74,8 @@ func (m *RelationQuery) validateSubjectSet(formats strfmt.Registry) error {
 		if err := m.SubjectSet.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("subject_set")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("subject_set")
 			}
 			return err
 		}
@@ -102,6 +104,8 @@ func (m *RelationQuery) contextValidateSubjectSet(ctx context.Context, formats s
 		if err := m.SubjectSet.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("subject_set")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("subject_set")
 			}
 			return err
 		}
