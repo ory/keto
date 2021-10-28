@@ -27,14 +27,11 @@ jobs:
           cat <<< $(jq '.version = (env.RELEASE_VERSION | sub("(^refs/tags/v)|(^v)"; ""))' package.json) > package.json
         env:
           RELEASE_VERSION: ${{ github.event.inputs.version || github.ref }}
-      - uses: EndBug/add-and-commit@v7
-        with:
-          branch: master
-          add: package.json
-          author_name: zepatrik
-          author_email: zepatrik@users.noreply.github.com
-          cwd: proto
-          message: 'autogen: bump node gRPC client version'
+      - run: |-
+          git config --local user.email "zepatrik@users.noreply.github.com"
+          git config --local user.name "zepatrik"
+          git add proto/package.json
+          git commit -m "autogen: bump node gRPC client version"
       - run: |-
           cd proto
           npm publish --access public
