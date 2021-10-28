@@ -29,6 +29,7 @@ jobs:
           RELEASE_VERSION: ${{ github.event.inputs.version || github.ref }}
       - uses: EndBug/add-and-commit@v7
         with:
+          branch: master
           add: package.json
           author_name: zepatrik
           author_email: zepatrik@users.noreply.github.com
