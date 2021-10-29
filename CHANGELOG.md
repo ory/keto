@@ -127,6 +127,9 @@
   ./keto-patch  0.02s user 0.01s system 6% cpu 0.425 total
   ```
 
+- Bugfix docker-compose-postgres.yml bug with Migrations were not applied
+  ([bf09c33](https://github.com/ory/keto/commit/bf09c33194aed71e9800ff38bfc4449be24dcf7a))
+
 # [0.7.0-alpha.1](https://github.com/ory/keto/compare/v0.7.0-alpha.0...v0.7.0-alpha.1) (2021-10-19)
 
 This release provides small docs fixes especially for SDK clients.
