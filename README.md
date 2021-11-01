@@ -80,7 +80,7 @@ at
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-## Who's using it?
+## Who's Using It?
 
 <!--BEGIN ADOPTERS-->
 
@@ -285,7 +285,7 @@ to perform a certain action on a resource.
 
 ## Security
 
-### Disclosing vulnerabilities
+### Disclosing Vulnerabilities
 
 If you think you found a security vulnerability, please refrain from posting it
 publicly on the forums, the chat, or GitHub and send us an email to
@@ -300,7 +300,7 @@ off. Click [here](https://www.ory.sh/docs/ecosystem/sqa) to learn more.
 
 The Guide is available [here](https://www.ory.sh/docs/next/keto/).
 
-### HTTP API documentation
+### HTTP API Documentation
 
 The HTTP API is documented [here](https://www.ory.sh/docs/next/keto/sdk/api).
 
@@ -310,7 +310,7 @@ New releases might introduce breaking changes. To help you identify and
 incorporate those changes, we document these changes in
 [UPGRADE.md](./UPGRADE.md) and [CHANGELOG.md](./CHANGELOG.md).
 
-### Command line documentation
+### Command Line Documentation
 
 Run `keto -h` or `keto help`.
 
@@ -330,7 +330,7 @@ You need Go 1.16+ and (for the test suites):
 It is possible to develop ORY Keto on Windows, but please be aware that all
 guides assume a Unix shell like bash or zsh.
 
-#### Install from source
+#### Install From Source
 
 <pre type="make/command">
 make install
