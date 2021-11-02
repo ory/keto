@@ -21,7 +21,7 @@ This reference configuration documents all keys, also deprecated ones! It is a
 reference for all possible configuration values.
 
 If you are looking for an example configuration, it is better to try out the
-quickstart.
+[quickstart](../quickstart.mdx).
 
 :::
 
