@@ -6,6 +6,7 @@ import (
 	"sync"
 
 	"github.com/ory/x/networkx"
+	"github.com/rs/cors"
 
 	"github.com/gobuffalo/pop/v5"
 	"github.com/ory/x/popx"
@@ -293,7 +294,13 @@ func (r *RegistryDefault) ReadRouter() http.Handler {
 		n.Use(r.sqaService)
 	}
 
-	return n
+	var handler http.Handler = n
+	options, enabled := r.Config().CORS()
+	if enabled {
+		handler = cors.New(options).Handler(handler)
+	}
+
+	return handler
 }
 
 func (r *RegistryDefault) WriteRouter() http.Handler {
@@ -318,7 +325,13 @@ func (r *RegistryDefault) WriteRouter() http.Handler {
 		n.Use(r.sqaService)
 	}
 
-	return n
+	var handler http.Handler = n
+	options, enabled := r.Config().CORS()
+	if enabled {
+		handler = cors.New(options).Handler(handler)
+	}
+
+	return handler
 }
 
 func (r *RegistryDefault) unaryInterceptors() []grpc.UnaryServerInterceptor {
