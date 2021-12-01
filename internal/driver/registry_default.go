@@ -295,7 +295,7 @@ func (r *RegistryDefault) ReadRouter() http.Handler {
 	}
 
 	var handler http.Handler = n
-	options, enabled := r.Config().CORS()
+	options, enabled := r.Config().CORS("read")
 	if enabled {
 		handler = cors.New(options).Handler(handler)
 	}
@@ -326,7 +326,7 @@ func (r *RegistryDefault) WriteRouter() http.Handler {
 	}
 
 	var handler http.Handler = n
-	options, enabled := r.Config().CORS()
+	options, enabled := r.Config().CORS("write")
 	if enabled {
 		handler = cors.New(options).Handler(handler)
 	}

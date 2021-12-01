@@ -91,6 +91,9 @@ func GetSqlite(t testing.TB, mode sqliteMode) *DsnT {
 	case SQLiteMemory:
 		dsn.Name = "memory"
 		dsn.Conn = fmt.Sprintf("sqlite://file:%s?_fk=true&cache=shared&mode=memory", t.Name())
+		t.Cleanup(func() {
+			_ = os.Remove(t.Name())
+		})
 	case SQLiteFile:
 		t.Cleanup(func() {
 			_ = os.Remove("TestDB.sqlite")

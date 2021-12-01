@@ -26,7 +26,7 @@ import (
 	"github.com/ory/keto/internal/driver"
 )
 
-func newInitializedReg(t testing.TB, dsn *dbx.DsnT) (context.Context, driver.Registry, func(*testing.T, ...*namespace.Namespace)) {
+func newInitializedReg(t testing.TB, dsn *dbx.DsnT, cfgOverwrites map[string]interface{}) (context.Context, driver.Registry, func(*testing.T, ...*namespace.Namespace)) {
 	ctx, cancel := context.WithCancel(context.Background())
 	t.Cleanup(func() {
 		cancel()
@@ -38,7 +38,7 @@ func newInitializedReg(t testing.TB, dsn *dbx.DsnT) (context.Context, driver.Reg
 	flags := pflag.NewFlagSet("", pflag.ContinueOnError)
 	configx.RegisterConfigFlag(flags, nil)
 
-	cf := dbx.ConfigFile(t, map[string]interface{}{
+	cfgValues := map[string]interface{}{
 		config.KeyDSN:               dsn.Conn,
 		"log.level":                 "debug",
 		"log.leak_sensitive_values": true,
@@ -46,7 +46,12 @@ func newInitializedReg(t testing.TB, dsn *dbx.DsnT) (context.Context, driver.Reg
 		config.KeyReadAPIPort:       ports[0],
 		config.KeyWriteAPIHost:      "127.0.0.1",
 		config.KeyWriteAPIPort:      ports[1],
-	})
+	}
+	for k, v := range cfgOverwrites {
+		cfgValues[k] = v
+	}
+
+	cf := dbx.ConfigFile(t, cfgValues)
 	require.NoError(t, flags.Parse([]string{"--" + configx.FlagConfig, cf}))
 
 	reg, err := driver.NewDefaultRegistry(ctx, flags, true)
