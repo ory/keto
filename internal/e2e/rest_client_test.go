@@ -149,18 +149,19 @@ func (rc *restClient) expand(t require.TestingT, r *relationtuple.SubjectSet, de
 	return tree
 }
 
-func (rc *restClient) waitUntilLive(t require.TestingT) {
-	var healthReady = func() bool {
-		req, err := http.NewRequest("GET", rc.readURL+healthx.ReadyCheckPath, nil)
-		require.NoError(t, err)
-		resp, err := http.DefaultClient.Do(req)
-		if err != nil {
-			return false
-		}
-		return resp.StatusCode == http.StatusOK
+func healthReady(t require.TestingT, readURL string) bool {
+	req, err := http.NewRequest("GET", readURL+healthx.ReadyCheckPath, nil)
+	require.NoError(t, err)
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return false
 	}
+	return resp.StatusCode == http.StatusOK
+}
+
+func (rc *restClient) waitUntilLive(t require.TestingT) {
 	// wait for /health/ready
-	for !healthReady() {
+	for !healthReady(t, rc.readURL) {
 		time.Sleep(10 * time.Millisecond)
 	}
 }

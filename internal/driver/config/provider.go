@@ -146,8 +146,14 @@ func (k *Config) WriteAPIListenOn() string {
 	)
 }
 
-func (k *Config) CORS() (cors.Options, bool) {
-	return k.p.CORS("serve", cors.Options{
+func (k *Config) CORS(iface string) (cors.Options, bool) {
+	switch iface {
+	case "read", "write":
+	default:
+		panic("expected interface 'read' or 'write', but got unknown interface " + iface)
+	}
+
+	return k.p.CORS("serve."+iface, cors.Options{
 		AllowedMethods:   []string{"GET", "POST", "PUT", "PATCH", "DELETE"},
 		AllowedHeaders:   []string{"Authorization", "Content-Type"},
 		ExposedHeaders:   []string{"Content-Type"},

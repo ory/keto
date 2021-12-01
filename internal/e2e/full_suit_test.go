@@ -2,7 +2,11 @@ package e2e
 
 import (
 	"fmt"
+	"net/http"
 	"testing"
+	"time"
+
+	"github.com/stretchr/testify/assert"
 
 	"github.com/ory/keto/internal/x/dbx"
 
@@ -40,7 +44,7 @@ type (
 func Test(t *testing.T) {
 	for _, dsn := range dbx.GetDSNs(t, false) {
 		t.Run(fmt.Sprintf("dsn=%s", dsn.Name), func(t *testing.T) {
-			ctx, reg, addNamespace := newInitializedReg(t, dsn)
+			ctx, reg, addNamespace := newInitializedReg(t, dsn, nil)
 
 			closeServer := startServer(ctx, t, reg)
 			defer closeServer()
@@ -75,4 +79,29 @@ func Test(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestServeConfig(t *testing.T) {
+	ctx, reg, _ := newInitializedReg(t, dbx.GetSqlite(t, dbx.SQLiteMemory), map[string]interface{}{
+		"serve.read.cors.enabled":         true,
+		"serve.read.cors.debug":           true,
+		"serve.read.cors.allowed_methods": []string{http.MethodGet},
+		"serve.read.cors.allowed_origins": []string{"https://ory.sh"},
+	})
+
+	closeServer := startServer(ctx, t, reg)
+	defer closeServer()
+
+	for !healthReady(t, "http://"+reg.Config().ReadAPIListenOn()) {
+		t.Log("Waiting for health check to be ready")
+		time.Sleep(10 * time.Millisecond)
+	}
+
+	req, err := http.NewRequest(http.MethodOptions, "http://"+reg.Config().ReadAPIListenOn()+relationtuple.RouteBase, nil)
+	require.NoError(t, err)
+	req.Header.Set("Origin", "https://ory.sh")
+	resp, err := http.DefaultClient.Do(req)
+	require.NoError(t, err)
+	require.Equal(t, http.StatusOK, resp.StatusCode)
+	assert.Equal(t, "https://ory.sh", resp.Header.Get("Access-Control-Allow-Origin"), "%+v", resp.Header)
 }
