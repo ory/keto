@@ -23,7 +23,7 @@ $(foreach dep, $(GO_DEPENDENCIES), $(eval $(call make-go-dependency, $(dep))))
 $(call make-lint-dependency)
 
 .bin/ory: Makefile
-		bash <(curl https://raw.githubusercontent.com/ory/cli/master/install.sh) -b .bin v0.0.72
+		bash <(curl https://raw.githubusercontent.com/ory/meta/master/install.sh) -d -b .bin ory v0.1.0
 		touch -a -m .bin/ory
 
 node_modules: package.json package-lock.json Makefile
