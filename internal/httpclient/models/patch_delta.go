@@ -97,8 +97,6 @@ func (m *PatchDelta) validateRelationTuple(formats strfmt.Registry) error {
 		if err := m.RelationTuple.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("relation_tuple")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("relation_tuple")
 			}
 			return err
 		}
@@ -127,8 +125,6 @@ func (m *PatchDelta) contextValidateRelationTuple(ctx context.Context, formats s
 		if err := m.RelationTuple.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("relation_tuple")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("relation_tuple")
 			}
 			return err
 		}
