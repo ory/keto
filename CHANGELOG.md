@@ -110,6 +110,9 @@
 
 ### Bug Fixes
 
+- CORS config values are ignored
+  ([#789](https://github.com/ory/keto/issues/789))
+  ([ffeb5e3](https://github.com/ory/keto/commit/ffeb5e318877d4e320828f47be26e916a0019deb))
 - Docker-compose-postgres.yml SQL migration service
   ([#779](https://github.com/ory/keto/issues/779))
   ([8f041bc](https://github.com/ory/keto/commit/8f041bc726253834a61e20cbb87ea80ad425a271))
