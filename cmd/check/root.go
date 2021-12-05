@@ -22,6 +22,8 @@ func (o *checkOutput) String() string {
 	return "Denied\n"
 }
 
+const FlagMaxDepth = "max-depth"
+
 func newCheckCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "check <subject> <relation> <namespace> <object>",
@@ -35,6 +37,11 @@ func newCheckCmd() *cobra.Command {
 			}
 			defer conn.Close()
 
+			maxDepth, err := cmd.Flags().GetInt32(FlagMaxDepth)
+			if err != nil {
+				return err
+			}
+
 			cl := acl.NewCheckServiceClient(conn)
 			resp, err := cl.Check(cmd.Context(), &acl.CheckRequest{
 				Subject: &acl.Subject{
@@ -43,6 +50,7 @@ func newCheckCmd() *cobra.Command {
 				Relation:  args[1],
 				Namespace: args[2],
 				Object:    args[3],
+				MaxDepth: maxDepth,
 			})
 			if err != nil {
 				_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not make request: %s\n", err)
@@ -56,6 +64,7 @@ func newCheckCmd() *cobra.Command {
 
 	client.RegisterRemoteURLFlags(cmd.Flags())
 	cmdx.RegisterFormatFlags(cmd.Flags())
+	cmd.Flags().Int32P(FlagMaxDepth, "d", 100, "maximum depth of the tree")
 
 	return cmd
 }

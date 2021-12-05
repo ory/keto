@@ -41,6 +41,11 @@ This API resolves [subject sets](./subjects.mdx#subject-sets) and
 This API is primarily used to
 [check permissions to restrict actions](../guides/simple-access-check-guide.mdx).
 
+A check-request has to include the maximum depth of the tree to be returned.
+This is required to ensure low latency and limit the resource usage per request.
+To find out more about Ory Keto's performance, head over to the
+[performance considerations](../performance.mdx).
+
 For more details, head over to the
 [gRPC API reference](../reference/proto-api.mdx#checkservice) or
 [REST API reference](../reference/rest-api.mdx#check-a-relation-tuple).

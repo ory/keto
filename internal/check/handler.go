@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"strconv"
 
 	"github.com/ory/herodot"
 	"github.com/pkg/errors"
@@ -63,6 +64,14 @@ type RESTResponse struct {
 	Allowed bool `json:"allowed"`
 }
 
+// swagger:parameters getCheckRequest
+// nolint:deadcode,unused
+type getCheckRequest struct {
+	// in:query
+	// required: true
+	MaxDepth int `json:"max-depth"`
+}
+
 // swagger:route GET /check read getCheck
 //
 // Check a relation tuple
@@ -83,6 +92,11 @@ type RESTResponse struct {
 //       403: getCheckResponse
 //       500: genericError
 func (h *Handler) getCheck(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	maxDepth, ok := h.ensureDepthQueryParam(w, r)
+	if !ok {
+		return
+	}
+
 	tuple, err := (&relationtuple.InternalRelationTuple{}).FromURLQuery(r.URL.Query())
 	if errors.Is(err, relationtuple.ErrNilSubject) {
 		h.d.Writer().WriteError(w, r, herodot.ErrBadRequest.WithReason("Subject has to be specified."))
@@ -92,7 +106,7 @@ func (h *Handler) getCheck(w http.ResponseWriter, r *http.Request, _ httprouter.
 		return
 	}
 
-	allowed, err := h.d.PermissionEngine().SubjectIsAllowed(r.Context(), tuple)
+	allowed, err := h.d.PermissionEngine().SubjectIsAllowed(r.Context(), tuple, maxDepth)
 	if err != nil {
 		h.d.Writer().WriteError(w, r, err)
 		return
@@ -104,6 +118,20 @@ func (h *Handler) getCheck(w http.ResponseWriter, r *http.Request, _ httprouter.
 	}
 
 	h.d.Writer().WriteCode(w, r, http.StatusForbidden, &RESTResponse{Allowed: false})
+}
+
+func (h *Handler) ensureDepthQueryParam(w http.ResponseWriter, r *http.Request) (int, bool)  {
+	if !r.URL.Query().Has("max-depth") {
+		h.d.Writer().WriteError(w, r, herodot.ErrBadRequest.WithError("required query parameter 'max-depth' is missing"))
+		return 0, false
+	}
+	depth, err := strconv.ParseInt(r.URL.Query().Get("max-depth"), 0, 0)
+	if err != nil {
+		h.d.Writer().WriteError(w, r, herodot.ErrBadRequest.WithError(err.Error()))
+		return 0, false
+	}
+
+	return int(depth), true
 }
 
 // swagger:route POST /check read postCheck
@@ -126,12 +154,17 @@ func (h *Handler) getCheck(w http.ResponseWriter, r *http.Request, _ httprouter.
 //       403: getCheckResponse
 //       500: genericError
 func (h *Handler) postCheck(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	maxDepth, ok := h.ensureDepthQueryParam(w, r)
+	if !ok {
+		return
+	}
+
 	var tuple relationtuple.InternalRelationTuple
 	if err := json.NewDecoder(r.Body).Decode(&tuple); err != nil {
 		h.d.Writer().WriteError(w, r, errors.WithStack(herodot.ErrBadRequest.WithReasonf("Unable to decode JSON payload: %s", err)))
 	}
 
-	allowed, err := h.d.PermissionEngine().SubjectIsAllowed(r.Context(), &tuple)
+	allowed, err := h.d.PermissionEngine().SubjectIsAllowed(r.Context(), &tuple, maxDepth)
 	if err != nil {
 		h.d.Writer().WriteError(w, r, err)
 		return
@@ -151,7 +184,7 @@ func (h *Handler) Check(ctx context.Context, req *acl.CheckRequest) (*acl.CheckR
 		return nil, err
 	}
 
-	allowed, err := h.d.PermissionEngine().SubjectIsAllowed(ctx, tuple)
+	allowed, err := h.d.PermissionEngine().SubjectIsAllowed(ctx, tuple, int(req.MaxDepth))
 	// TODO add content change handling
 	if err != nil {
 		return nil, err
