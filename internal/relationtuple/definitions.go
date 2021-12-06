@@ -18,12 +18,14 @@ import (
 
 	"github.com/pkg/errors"
 
+	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/x"
 )
 
 type (
 	ManagerProvider interface {
 		RelationTupleManager() Manager
+		Config() *config.Config
 	}
 	Manager interface {
 		GetRelationTuples(ctx context.Context, query *RelationQuery, options ...x.PaginationOptionSetter) ([]*InternalRelationTuple, string, error)
@@ -658,6 +660,10 @@ func NewManagerWrapper(_ *testing.T, reg ManagerProvider, options ...x.Paginatio
 		Reg:      reg,
 		PageOpts: options,
 	}
+}
+
+func (t *ManagerWrapper) Config() *config.Config {
+	return t.Reg.Config()
 }
 
 func (t *ManagerWrapper) GetRelationTuples(ctx context.Context, query *RelationQuery, options ...x.PaginationOptionSetter) ([]*InternalRelationTuple, string, error) {

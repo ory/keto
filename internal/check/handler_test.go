@@ -51,16 +51,6 @@ func TestRESTHandler(t *testing.T) {
 	ts := httptest.NewServer(r)
 	defer ts.Close()
 
-	t.Run("case=returns required query parameter max-depth is missing", func(t *testing.T) {
-		resp, err := ts.Client().Get(ts.URL + check.RouteBase)
-		require.NoError(t, err)
-
-		assert.Equal(t, http.StatusBadRequest, resp.StatusCode)
-		body, err := io.ReadAll(resp.Body)
-		require.NoError(t, err)
-		assert.Contains(t, string(body), "required query parameter 'max-depth'")
-	})
-
 	t.Run("case=returns bad request on malformed int", func(t *testing.T) {
 		resp, err := ts.Client().Get(ts.URL + check.RouteBase + "?max-depth=foo")
 		require.NoError(t, err)
@@ -74,7 +64,6 @@ func TestRESTHandler(t *testing.T) {
 
 	t.Run("case=returns bad request on malformed input", func(t *testing.T) {
 		resp, err := ts.Client().Get(ts.URL + check.RouteBase + "?" + url.Values{
-			"max-depth": {"10"},
 			"subject": {"not#a valid userset rewrite"},
 		}.Encode())
 		require.NoError(t, err)
@@ -83,9 +72,7 @@ func TestRESTHandler(t *testing.T) {
 	})
 
 	t.Run("case=returns bad request on missing subject", func(t *testing.T) {
-		resp, err := ts.Client().Get(ts.URL + check.RouteBase + "?" + url.Values{
-			"max-depth": {"10"},
-		}.Encode())
+		resp, err := ts.Client().Get(ts.URL + check.RouteBase)
 		require.NoError(t, err)
 
 		assert.Equal(t, http.StatusBadRequest, resp.StatusCode)
@@ -96,7 +83,6 @@ func TestRESTHandler(t *testing.T) {
 
 	t.Run("case=returns denied on unknown namespace", func(t *testing.T) {
 		resp, err := ts.Client().Get(ts.URL + check.RouteBase + "?" + url.Values{
-			"max-depth": {"10"},
 			"namespace":  {"not " + nspaces[0].Name},
 			"subject_id": {"foo"},
 		}.Encode())
@@ -116,7 +102,6 @@ func TestRESTHandler(t *testing.T) {
 
 		q, err := rt.ToURLQuery()
 		require.NoError(t, err)
-		q.Add("max-depth", "10")
 		resp, err := ts.Client().Get(ts.URL + check.RouteBase + "?" + q.Encode())
 		require.NoError(t, err)
 
@@ -127,7 +112,6 @@ func TestRESTHandler(t *testing.T) {
 		resp, err := ts.Client().Get(ts.URL + check.RouteBase + "?" + url.Values{
 			"namespace":  {nspaces[0].Name},
 			"subject_id": {"foo"},
-			"max-depth": {"10"},
 		}.Encode())
 		require.NoError(t, err)
 

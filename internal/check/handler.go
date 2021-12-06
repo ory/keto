@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
-	"strconv"
 
 	"github.com/ory/herodot"
 	"github.com/pkg/errors"
@@ -92,8 +91,9 @@ type getCheckRequest struct {
 //       403: getCheckResponse
 //       500: genericError
 func (h *Handler) getCheck(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	maxDepth, ok := h.ensureDepthQueryParam(w, r)
-	if !ok {
+	maxDepth, err := x.GetMaxDepthFromQuery(r.URL.Query(), false)
+	if err != nil {
+		h.d.Writer().WriteError(w, r, herodot.ErrBadRequest.WithError(err.Error()))
 		return
 	}
 
@@ -120,20 +120,6 @@ func (h *Handler) getCheck(w http.ResponseWriter, r *http.Request, _ httprouter.
 	h.d.Writer().WriteCode(w, r, http.StatusForbidden, &RESTResponse{Allowed: false})
 }
 
-func (h *Handler) ensureDepthQueryParam(w http.ResponseWriter, r *http.Request) (int, bool)  {
-	if !r.URL.Query().Has("max-depth") {
-		h.d.Writer().WriteError(w, r, herodot.ErrBadRequest.WithError("required query parameter 'max-depth' is missing"))
-		return 0, false
-	}
-	depth, err := strconv.ParseInt(r.URL.Query().Get("max-depth"), 0, 0)
-	if err != nil {
-		h.d.Writer().WriteError(w, r, herodot.ErrBadRequest.WithError(err.Error()))
-		return 0, false
-	}
-
-	return int(depth), true
-}
-
 // swagger:route POST /check read postCheck
 //
 // Check a relation tuple
@@ -154,14 +140,16 @@ func (h *Handler) ensureDepthQueryParam(w http.ResponseWriter, r *http.Request) 
 //       403: getCheckResponse
 //       500: genericError
 func (h *Handler) postCheck(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	maxDepth, ok := h.ensureDepthQueryParam(w, r)
-	if !ok {
+	maxDepth, err := x.GetMaxDepthFromQuery(r.URL.Query(), false)
+	if err != nil {
+		h.d.Writer().WriteError(w, r, herodot.ErrBadRequest.WithError(err.Error()))
 		return
 	}
 
 	var tuple relationtuple.InternalRelationTuple
 	if err := json.NewDecoder(r.Body).Decode(&tuple); err != nil {
 		h.d.Writer().WriteError(w, r, errors.WithStack(herodot.ErrBadRequest.WithReasonf("Unable to decode JSON payload: %s", err)))
+		return
 	}
 
 	allowed, err := h.d.PermissionEngine().SubjectIsAllowed(r.Context(), &tuple, maxDepth)

@@ -3,8 +3,8 @@ package check
 import (
 	"context"
 	"errors"
-	"fmt"
 
+	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/x/graph"
 
 	"github.com/ory/herodot"
@@ -22,6 +22,7 @@ type (
 	}
 	EngineDependencies interface {
 		relationtuple.ManagerProvider
+		config.Provider
 	}
 )
 
@@ -83,10 +84,8 @@ func (e *Engine) checkOneIndirectionFurther(
 	expandQuery *relationtuple.RelationQuery,
 	restDepth int,
 ) (bool, error) {
-	// TODO: Clarify the semantics of restDepth. To me it means the number of recursive calls of checkOneIndirectionFurther, without counting the first
 	if restDepth <= 0 {
-		// TODO: Figure out how to decorate this error
-		return false, fmt.Errorf("max-depth exhausted")
+		return false, nil
 	}
 
 	// an empty page token denotes the first page (as tokens are opaque)
@@ -113,5 +112,10 @@ func (e *Engine) checkOneIndirectionFurther(
 }
 
 func (e *Engine) SubjectIsAllowed(ctx context.Context, r *relationtuple.InternalRelationTuple, restDepth int) (bool, error) {
+	// global max-depth takes precedence when it is the lesser or if the request max-depth is less than or equal to 0
+	if globalMaxDepth := e.d.Config().ReadAPIMaxDepth(); restDepth <= 0 || globalMaxDepth < restDepth {
+		restDepth = globalMaxDepth
+	}
+
 	return e.checkOneIndirectionFurther(ctx, r, &relationtuple.RelationQuery{Object: r.Object, Relation: r.Relation, Namespace: r.Namespace}, restDepth)
 }

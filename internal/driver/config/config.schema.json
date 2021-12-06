@@ -232,6 +232,14 @@
             },
             "tls": {
               "$ref": "#/definitions/tlsx"
+            },
+            "max-depth": {
+              "type": "integer",
+              "default": 100,
+              "title": "Maximum depth",
+              "description": "The maximum depth on all read operations.",
+              "minimum": 1,
+              "maximum": 65535
             }
           }
         },

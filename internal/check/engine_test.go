@@ -69,15 +69,22 @@ func TestEngine(t *testing.T) {
 
 		e := check.NewEngine(reg)
 
-		res, err := e.SubjectIsAllowed(context.Background(), &relationtuple.InternalRelationTuple{
+		userHasAccess := &relationtuple.InternalRelationTuple{
 			Relation:  "access",
 			Object:    object,
 			Namespace: ns,
 			Subject:   user,
-		}, 2)
-		require.Error(t, err)
-		assert.Contains(t, err.Error(), "max-depth exhausted")
+		}
+
+		// max-depth=2 is not enough
+		res, err := e.SubjectIsAllowed(context.Background(), userHasAccess, 2)
+		require.NoError(t, err)
 		assert.False(t, res)
+
+		// max-depth=3 is enough
+		res, err = e.SubjectIsAllowed(context.Background(), userHasAccess, 3)
+		require.NoError(t, err)
+		assert.True(t, res)
 	})
 
 	t.Run("direct inclusion", func(t *testing.T) {

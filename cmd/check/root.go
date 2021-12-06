@@ -64,7 +64,7 @@ func newCheckCmd() *cobra.Command {
 
 	client.RegisterRemoteURLFlags(cmd.Flags())
 	cmdx.RegisterFormatFlags(cmd.Flags())
-	cmd.Flags().Int32P(FlagMaxDepth, "d", 100, "maximum depth of the tree")
+	cmd.Flags().Int32P(FlagMaxDepth, "d", 0, "maximum depth of the search tree")
 
 	return cmd
 }
