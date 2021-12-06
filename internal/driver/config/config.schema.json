@@ -235,7 +235,7 @@
             },
             "max-depth": {
               "type": "integer",
-              "default": 100,
+              "default": 10,
               "title": "Maximum depth",
               "description": "The maximum depth on all read operations.",
               "minimum": 1,
