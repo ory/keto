@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/gobuffalo/pop/v5"
+	"github.com/gobuffalo/pop/v6"
 	"github.com/gofrs/uuid"
 	"github.com/ory/x/popx"
 	"github.com/ory/x/sqlcon"
