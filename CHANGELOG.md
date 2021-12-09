@@ -3,7 +3,7 @@
 
 **Table of Contents**
 
-- [0.0.0 (2021-12-01)](#000-2021-12-01)
+- [0.0.0 (2021-12-09)](#000-2021-12-09)
   - [Bug Fixes](#bug-fixes)
   - [Documentation](#documentation)
 - [0.7.0-alpha.1 (2021-10-19)](#070-alpha1-2021-10-19)
@@ -106,7 +106,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.7.0-alpha.1...v0.0.0) (2021-12-01)
+# [0.0.0](https://github.com/ory/keto/compare/v0.7.0-alpha.1...v0.0.0) (2021-12-09)
 
 ### Bug Fixes
 
@@ -133,6 +133,11 @@
   $ time ./keto-patch
   ./keto-patch  0.02s user 0.01s system 6% cpu 0.425 total
   ```
+
+- Update golang.org/x/sys to fix macOS binary execution
+  ([#794](https://github.com/ory/keto/issues/794))
+  ([ad8df58](https://github.com/ory/keto/commit/ad8df58064b83ad6cddc1151bc851046d20b18b4)),
+  closes [#793](https://github.com/ory/keto/issues/793)
 
 ### Documentation
 
