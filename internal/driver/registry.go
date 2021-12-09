@@ -4,7 +4,7 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/gobuffalo/pop/v5"
+	"github.com/gobuffalo/pop/v6"
 
 	"github.com/ory/keto/internal/driver/config"
 

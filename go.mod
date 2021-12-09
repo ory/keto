@@ -24,7 +24,7 @@ require (
 	github.com/go-openapi/strfmt v0.20.3
 	github.com/go-openapi/swag v0.19.15
 	github.com/go-openapi/validate v0.20.3
-	github.com/gobuffalo/pop/v5 v5.3.4
+	github.com/gobuffalo/pop/v6 v6.0.1
 	github.com/gofrs/uuid v4.1.0+incompatible
 	github.com/grpc-ecosystem/go-grpc-middleware v1.0.1-0.20190118093823-f849b5445de4
 	github.com/grpc-ecosystem/grpc-opentracing v0.0.0-20180507213350-8e809c8a8645
@@ -36,7 +36,7 @@ require (
 	github.com/ory/herodot v0.9.12
 	github.com/ory/jsonschema/v3 v3.0.4
 	github.com/ory/keto/proto v0.0.0-00010101000000-000000000000
-	github.com/ory/x v0.0.300
+	github.com/ory/x v0.0.319
 	github.com/pelletier/go-toml v1.9.4
 	github.com/phayes/freeport v0.0.0-20180830031419-95f893ade6f2
 	github.com/pkg/errors v0.9.1
@@ -94,16 +94,15 @@ require (
 	github.com/go-openapi/spec v0.20.3 // indirect
 	github.com/go-sql-driver/mysql v1.6.0 // indirect
 	github.com/go-stack/stack v1.8.1 // indirect
-	github.com/gobuffalo/envy v1.9.0 // indirect
-	github.com/gobuffalo/fizz v1.13.1-0.20201104174146-3416f0e6618f // indirect
-	github.com/gobuffalo/flect v0.2.3 // indirect
+	github.com/gobuffalo/envy v1.10.1 // indirect
+	github.com/gobuffalo/fizz v1.14.0 // indirect
+	github.com/gobuffalo/flect v0.2.4 // indirect
 	github.com/gobuffalo/github_flavored_markdown v1.1.1 // indirect
-	github.com/gobuffalo/helpers v0.6.2 // indirect
-	github.com/gobuffalo/nulls v0.4.0 // indirect
-	github.com/gobuffalo/packd v1.0.0 // indirect
-	github.com/gobuffalo/plush/v4 v4.1.6 // indirect
-	github.com/gobuffalo/tags/v3 v3.1.0 // indirect
-	github.com/gobuffalo/validate/v3 v3.3.0 // indirect
+	github.com/gobuffalo/helpers v0.6.4 // indirect
+	github.com/gobuffalo/nulls v0.4.1 // indirect
+	github.com/gobuffalo/plush/v4 v4.1.9 // indirect
+	github.com/gobuffalo/tags/v3 v3.1.2 // indirect
+	github.com/gobuffalo/validate/v3 v3.3.1 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/glog v1.0.0 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
@@ -119,7 +118,7 @@ require (
 	github.com/inhies/go-bytesize v0.0.0-20210819104631-275770b98743 // indirect
 	github.com/instana/go-sensor v1.34.0 // indirect
 	github.com/jackc/chunkreader/v2 v2.0.1 // indirect
-	github.com/jackc/pgconn v1.10.1-0.20211002123621-290ee79d1e8d // indirect
+	github.com/jackc/pgconn v1.10.1 // indirect
 	github.com/jackc/pgio v1.0.0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgproto3/v2 v2.1.1 // indirect
@@ -134,7 +133,7 @@ require (
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51 // indirect
 	github.com/knadh/koanf v1.3.0 // indirect
-	github.com/lib/pq v1.10.3 // indirect
+	github.com/lib/pq v1.10.4 // indirect
 	github.com/looplab/fsm v0.3.0 // indirect
 	github.com/magiconair/properties v1.8.5 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect

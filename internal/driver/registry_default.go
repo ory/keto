@@ -8,7 +8,7 @@ import (
 	"github.com/ory/x/networkx"
 	"github.com/rs/cors"
 
-	"github.com/gobuffalo/pop/v5"
+	"github.com/gobuffalo/pop/v6"
 	"github.com/ory/x/popx"
 	"github.com/pkg/errors"
 

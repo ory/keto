@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/gobuffalo/pop/v5"
+	"github.com/gobuffalo/pop/v6"
 
 	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/namespace"
