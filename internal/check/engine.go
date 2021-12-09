@@ -23,6 +23,7 @@ type (
 	EngineDependencies interface {
 		relationtuple.ManagerProvider
 		config.Provider
+		x.LoggerProvider
 	}
 )
 
@@ -85,6 +86,7 @@ func (e *Engine) checkOneIndirectionFurther(
 	restDepth int,
 ) (bool, error) {
 	if restDepth <= 0 {
+		e.d.Logger().WithFields(requested.ToLoggerFields()).Debug("reached max-depth, therefore this query will not be further expanded")
 		return false, nil
 	}
 

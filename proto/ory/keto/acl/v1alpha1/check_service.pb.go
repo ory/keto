@@ -78,6 +78,9 @@ type CheckRequest struct {
 	// -->
 	Snaptoken string `protobuf:"bytes,6,opt,name=snaptoken,proto3" json:"snaptoken,omitempty"`
 	// The maximum depth to search for a relation.
+	//
+	// If the value is less than 1 or greater than the global
+	// max-depth then the global max-depth will be used instead.
 	MaxDepth int32 `protobuf:"varint,7,opt,name=max_depth,json=maxDepth,proto3" json:"max_depth,omitempty"`
 }
 

@@ -20,10 +20,25 @@ import (
 	"github.com/ory/keto/internal/driver"
 )
 
-func newDepsProvider(t *testing.T, namespaces []*namespace.Namespace, pageOpts ...x.PaginationOptionSetter) *relationtuple.ManagerWrapper {
+type configProvider = config.Provider
+type loggerProvider = x.LoggerProvider
+// deps is defined to capture engine dependencies in a single struct
+type deps struct {
+	*relationtuple.ManagerWrapper // managerProvider
+	configProvider
+	loggerProvider
+}
+
+func newDepsProvider(t *testing.T, namespaces []*namespace.Namespace, pageOpts ...x.PaginationOptionSetter) *deps {
 	reg := driver.NewSqliteTestRegistry(t, false)
 	require.NoError(t, reg.Config().Set(config.KeyNamespaces, namespaces))
-	return relationtuple.NewManagerWrapper(t, reg, pageOpts...)
+	mr := relationtuple.NewManagerWrapper(t, reg, pageOpts...)
+
+	return &deps{
+		ManagerWrapper: mr,
+		configProvider: reg,
+		loggerProvider: reg,
+	}
 }
 
 func TestEngine(t *testing.T) {

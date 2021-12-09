@@ -3,6 +3,7 @@ package expand
 import (
 	"context"
 
+	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/x"
 	"github.com/ory/keto/internal/x/graph"
 
@@ -12,6 +13,8 @@ import (
 type (
 	EngineDependencies interface {
 		relationtuple.ManagerProvider
+		config.Provider
+		x.LoggerProvider
 	}
 	Engine struct {
 		d EngineDependencies

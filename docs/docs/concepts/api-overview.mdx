@@ -41,8 +41,10 @@ This API resolves [subject sets](./subjects.mdx#subject-sets) and
 This API is primarily used to
 [check permissions to restrict actions](../guides/simple-access-check-guide.mdx).
 
-A check-request has to include the maximum depth of the search tree.
-This is required to ensure low latency and limit the resource usage per request.
+A check-request can include the maximum depth of the search tree. If the value is
+less than 1 or greater than the global max-depth then the global max-depth will
+be used instead.
+This is to ensure low latency and limit the resource usage per request.
 To find out more about Ory Keto's performance, head over to the
 [performance considerations](../performance.mdx).
 
@@ -61,7 +63,9 @@ tuples including the operands as defined in the
 - determine why someone has access to an object
 - audit permissions in the system
 
-An expand-request has to include the maximum depth of the tree to be returned.
+An expand-request can include the maximum depth of the tree to be returned. If the value is
+less than 1 or greater than the global max-depth then the global max-depth will
+be used instead.
 This is required to ensure low latency and limit the resource usage per request.
 To find out more about Ory Keto's performance, head over to the
 [performance considerations](../performance.mdx).

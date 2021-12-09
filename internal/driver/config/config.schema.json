@@ -235,9 +235,9 @@
             },
             "max-depth": {
               "type": "integer",
-              "default": 10,
-              "title": "Maximum depth",
-              "description": "The maximum depth on all read operations.",
+              "default": 5,
+              "title": "Global maximum depth",
+              "description": "The global maximum depth on all read operations. This can be decreased for a request by a value specified on the request, this applies only if the request-specific value is greater than 1 and less than the global maximum depth.",
               "minimum": 1,
               "maximum": 65535
             }

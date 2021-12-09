@@ -63,11 +63,10 @@ type RESTResponse struct {
 	Allowed bool `json:"allowed"`
 }
 
-// swagger:parameters getCheckRequest
+// swagger:parameters getCheck postCheck
 // nolint:deadcode,unused
 type getCheckRequest struct {
 	// in:query
-	// required: true
 	MaxDepth int `json:"max-depth"`
 }
 
@@ -91,7 +90,7 @@ type getCheckRequest struct {
 //       403: getCheckResponse
 //       500: genericError
 func (h *Handler) getCheck(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	maxDepth, err := x.GetMaxDepthFromQuery(r.URL.Query(), false)
+	maxDepth, err := x.GetMaxDepthFromQuery(r.URL.Query())
 	if err != nil {
 		h.d.Writer().WriteError(w, r, herodot.ErrBadRequest.WithError(err.Error()))
 		return
@@ -140,7 +139,7 @@ func (h *Handler) getCheck(w http.ResponseWriter, r *http.Request, _ httprouter.
 //       403: getCheckResponse
 //       500: genericError
 func (h *Handler) postCheck(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	maxDepth, err := x.GetMaxDepthFromQuery(r.URL.Query(), false)
+	maxDepth, err := x.GetMaxDepthFromQuery(r.URL.Query())
 	if err != nil {
 		h.d.Writer().WriteError(w, r, herodot.ErrBadRequest.WithError(err.Error()))
 		return

@@ -6,11 +6,8 @@ import (
 	"strconv"
 )
 
-func GetMaxDepthFromQuery(q url.Values, required bool) (int, error) {
+func GetMaxDepthFromQuery(q url.Values) (int, error) {
 	if !q.Has("max-depth") {
-		if required {
-			return 0, fmt.Errorf("required query parameter 'max-depth' is missing")
-		}
 		return 0, nil
 	}
 

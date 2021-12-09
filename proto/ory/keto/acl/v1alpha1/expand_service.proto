@@ -26,6 +26,10 @@ message ExpandRequest {
   // The subject to expand.
   Subject subject = 1;
   // The maximum depth of tree to build.
+  //
+  // If the value is less than 1 or greater than the global
+  // max-depth then the global max-depth will be used instead.
+  //
   // It is important to set this parameter to a meaningful
   // value. Ponder how deep you really want to display this.
   int32 max_depth = 2;
