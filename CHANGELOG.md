@@ -3,9 +3,10 @@
 
 **Table of Contents**
 
-- [0.0.0 (2021-12-09)](#000-2021-12-09)
+- [0.0.0 (2021-12-10)](#000-2021-12-10)
   - [Bug Fixes](#bug-fixes)
   - [Documentation](#documentation)
+  - [Features](#features)
 - [0.7.0-alpha.1 (2021-10-19)](#070-alpha1-2021-10-19)
   - [Code Generation](#code-generation)
   - [Documentation](#documentation-1)
@@ -16,7 +17,7 @@
     - [Code Generation](#code-generation-1)
     - [Code Refactoring](#code-refactoring)
     - [Documentation](#documentation-2)
-    - [Features](#features)
+    - [Features](#features-1)
     - [Tests](#tests)
 - [0.6.0-alpha.3 (2021-04-29)](#060-alpha3-2021-04-29)
   - [Code Generation](#code-generation-2)
@@ -24,14 +25,14 @@
   - [Bug Fixes](#bug-fixes-2)
   - [Code Generation](#code-generation-3)
   - [Documentation](#documentation-3)
-  - [Features](#features-1)
+  - [Features](#features-2)
 - [0.6.0-alpha.1 (2021-04-07)](#060-alpha1-2021-04-07)
   - [Bug Fixes](#bug-fixes-3)
   - [Build System](#build-system)
   - [Code Generation](#code-generation-4)
   - [Code Refactoring](#code-refactoring-1)
   - [Documentation](#documentation-4)
-  - [Features](#features-2)
+  - [Features](#features-3)
   - [Tests](#tests-1)
 - [0.5.6-alpha.1 (2020-05-28)](#056-alpha1-2020-05-28)
   - [Bug Fixes](#bug-fixes-4)
@@ -59,7 +60,7 @@
 - [0.4.4-alpha.1 (2020-02-14)](#044-alpha1-2020-02-14)
   - [Bug Fixes](#bug-fixes-9)
   - [Documentation](#documentation-10)
-  - [Features](#features-3)
+  - [Features](#features-4)
   - [Unclassified](#unclassified)
 - [0.4.3-alpha.2 (2020-01-31)](#043-alpha2-2020-01-31)
   - [Unclassified](#unclassified-1)
@@ -106,7 +107,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.7.0-alpha.1...v0.0.0) (2021-12-09)
+# [0.0.0](https://github.com/ory/keto/compare/v0.7.0-alpha.1...v0.0.0) (2021-12-10)
 
 ### Bug Fixes
 
@@ -146,6 +147,20 @@
   ([25bc579](https://github.com/ory/keto/commit/25bc579ed0980f45f2cca79e043de6f43620f3d5))
 - Heading caseing ([#785](https://github.com/ory/keto/issues/785))
   ([563087d](https://github.com/ory/keto/commit/563087db9709ed54abd035f2eac6e16c695f1b4c))
+
+### Features
+
+- Add max-depth parameter for check and global max-depth
+  ([#791](https://github.com/ory/keto/issues/791))
+  ([1e3b63f](https://github.com/ory/keto/commit/1e3b63f33a50a0cebf7f1ddf9001846d730b0303)):
+
+  The parameter `max-depth` for the check command limits the depth of the
+  search, a safeguard against particularly expensive queries. This allows users
+  more fine-grain control.
+
+  Furthermore, there is now a global max-depth configuration value that limits
+  the overall max-depth of check and expand operations. It defaults to `5`,
+  which is considered a very safe value.
 
 # [0.7.0-alpha.1](https://github.com/ory/keto/compare/v0.7.0-alpha.0...v0.7.0-alpha.1) (2021-10-19)
 
