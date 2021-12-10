@@ -3,7 +3,6 @@ package expand
 import (
 	"context"
 	"net/http"
-	"strconv"
 
 	"github.com/ory/herodot"
 
@@ -53,7 +52,6 @@ func (h *handler) RegisterWriteGRPC(s *grpc.Server) {}
 // nolint:deadcode,unused
 type getExpandRequest struct {
 	// in:query
-	// required: true
 	MaxDepth int `json:"max-depth"`
 }
 
@@ -77,17 +75,13 @@ type getExpandRequest struct {
 //       404: genericError
 //       500: genericError
 func (h *handler) getExpand(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	if !r.URL.Query().Has("max-depth") {
-		h.d.Writer().WriteError(w, r, herodot.ErrBadRequest.WithError("required query parameter 'max-depth' is missing"))
-		return
-	}
-	depth, err := strconv.ParseInt(r.URL.Query().Get("max-depth"), 0, 0)
+	maxDepth, err := x.GetMaxDepthFromQuery(r.URL.Query())
 	if err != nil {
 		h.d.Writer().WriteError(w, r, herodot.ErrBadRequest.WithError(err.Error()))
 		return
 	}
 
-	res, err := h.d.ExpandEngine().BuildTree(r.Context(), (&relationtuple.SubjectSet{}).FromURLQuery(r.URL.Query()), int(depth))
+	res, err := h.d.ExpandEngine().BuildTree(r.Context(), (&relationtuple.SubjectSet{}).FromURLQuery(r.URL.Query()), maxDepth)
 	if err != nil {
 		h.d.Writer().WriteError(w, r, err)
 		return

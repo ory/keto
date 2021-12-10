@@ -20,13 +20,104 @@ import (
 	"github.com/ory/keto/internal/driver"
 )
 
-func newDepsProvider(t *testing.T, namespaces []*namespace.Namespace, pageOpts ...x.PaginationOptionSetter) *relationtuple.ManagerWrapper {
+type configProvider = config.Provider
+type loggerProvider = x.LoggerProvider
+
+// deps is defined to capture engine dependencies in a single struct
+type deps struct {
+	*relationtuple.ManagerWrapper // managerProvider
+	configProvider
+	loggerProvider
+}
+
+func newDepsProvider(t *testing.T, namespaces []*namespace.Namespace, pageOpts ...x.PaginationOptionSetter) *deps {
 	reg := driver.NewSqliteTestRegistry(t, false)
 	require.NoError(t, reg.Config().Set(config.KeyNamespaces, namespaces))
-	return relationtuple.NewManagerWrapper(t, reg, pageOpts...)
+	mr := relationtuple.NewManagerWrapper(t, reg, pageOpts...)
+
+	return &deps{
+		ManagerWrapper: mr,
+		configProvider: reg,
+		loggerProvider: reg,
+	}
 }
 
 func TestEngine(t *testing.T) {
+	t.Run("respects max depth", func(t *testing.T) {
+		// "user" has relation "access" through being an "owner" through being an "admin"
+		// which requires at least 2 units of depth. If max-depth is 2 then we hit max-depth
+		ns := "test"
+		user := &relationtuple.SubjectID{ID: "user"}
+		object := "object"
+
+		adminRel := relationtuple.InternalRelationTuple{
+			Relation:  "admin",
+			Object:    object,
+			Namespace: ns,
+			Subject:   user,
+		}
+
+		adminIsOwnerRel := relationtuple.InternalRelationTuple{
+			Relation:  "owner",
+			Object:    object,
+			Namespace: ns,
+			Subject: &relationtuple.SubjectSet{
+				Relation:  "admin",
+				Object:    object,
+				Namespace: ns,
+			},
+		}
+
+		accessRel := relationtuple.InternalRelationTuple{
+			Relation:  "access",
+			Object:    object,
+			Namespace: ns,
+			Subject: &relationtuple.SubjectSet{
+				Relation:  "owner",
+				Object:    object,
+				Namespace: ns,
+			},
+		}
+		reg := newDepsProvider(t, []*namespace.Namespace{
+			{Name: ns, ID: 1},
+		})
+		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), &adminRel, &adminIsOwnerRel, &accessRel))
+
+		e := check.NewEngine(reg)
+
+		userHasAccess := &relationtuple.InternalRelationTuple{
+			Relation:  "access",
+			Object:    object,
+			Namespace: ns,
+			Subject:   user,
+		}
+
+		// global max-depth defaults to 5
+		assert.Equal(t, reg.Config().ReadAPIMaxDepth(), 5)
+
+		// req max-depth takes precedence, max-depth=2 is not enough
+		res, err := e.SubjectIsAllowed(context.Background(), userHasAccess, 2)
+		require.NoError(t, err)
+		assert.False(t, res)
+
+		// req max-depth takes precedence, max-depth=3 is enough
+		res, err = e.SubjectIsAllowed(context.Background(), userHasAccess, 3)
+		require.NoError(t, err)
+		assert.True(t, res)
+
+		// global max-depth takes precedence and max-depth=2 is not enough
+		require.NoError(t, reg.Config().Set(config.KeyReadMaxDepth, 2))
+		res, err = e.SubjectIsAllowed(context.Background(), userHasAccess, 3)
+		require.NoError(t, err)
+		assert.False(t, res)
+
+		// global max-depth takes precedence and max-depth=3 is enough
+		require.NoError(t, reg.Config().Set(config.KeyReadMaxDepth, 3))
+		res, err = e.SubjectIsAllowed(context.Background(), userHasAccess, 0)
+		require.NoError(t, err)
+		assert.True(t, res)
+	})
+
 	t.Run("direct inclusion", func(t *testing.T) {
 		rel := relationtuple.InternalRelationTuple{
 			Relation:  "access",
@@ -42,7 +133,7 @@ func TestEngine(t *testing.T) {
 
 		e := check.NewEngine(reg)
 
-		res, err := e.SubjectIsAllowed(context.Background(), &rel)
+		res, err := e.SubjectIsAllowed(context.Background(), &rel, 0)
 		require.NoError(t, err)
 		assert.True(t, res)
 	})
@@ -83,7 +174,7 @@ func TestEngine(t *testing.T) {
 			Object:    dust,
 			Subject:   &mark,
 			Namespace: sofaNamespace,
-		})
+		}, 0)
 		require.NoError(t, err)
 		assert.True(t, res)
 	})
@@ -111,7 +202,7 @@ func TestEngine(t *testing.T) {
 			Object:    rel.Object,
 			Namespace: rel.Namespace,
 			Subject:   &relationtuple.SubjectID{ID: "not " + user.ID},
-		})
+		}, 0)
 		require.NoError(t, err)
 		assert.False(t, res)
 	})
@@ -143,7 +234,7 @@ func TestEngine(t *testing.T) {
 			Relation: access.Relation,
 			Object:   object,
 			Subject:  user.Subject,
-		})
+		}, 0)
 		require.NoError(t, err)
 		assert.False(t, res)
 	})
@@ -181,7 +272,7 @@ func TestEngine(t *testing.T) {
 			Object:    diaryEntry,
 			Namespace: diaryNamespace,
 			Subject:   user.Subject,
-		})
+		}, 0)
 		require.NoError(t, err)
 		assert.False(t, res)
 	})
@@ -239,7 +330,7 @@ func TestEngine(t *testing.T) {
 			Relation:  writeRel.Relation,
 			Object:    object,
 			Subject:   &user,
-		})
+		}, 0)
 		require.NoError(t, err)
 		assert.True(t, res)
 
@@ -249,7 +340,7 @@ func TestEngine(t *testing.T) {
 			Relation:  orgMembers.Relation,
 			Object:    organization,
 			Subject:   &user,
-		})
+		}, 0)
 		require.NoError(t, err)
 		assert.True(t, res)
 	})
@@ -289,7 +380,7 @@ func TestEngine(t *testing.T) {
 			Relation: directoryAccess.Relation,
 			Object:   file,
 			Subject:  &user,
-		})
+		}, 0)
 		require.NoError(t, err)
 		assert.False(t, res)
 	})
@@ -333,7 +424,7 @@ func TestEngine(t *testing.T) {
 			Object:    obj,
 			Relation:  ownerRel,
 			Subject:   &relationtuple.SubjectID{ID: directOwner},
-		})
+		}, 0)
 		require.NoError(t, err)
 		assert.True(t, res)
 
@@ -342,7 +433,7 @@ func TestEngine(t *testing.T) {
 			Object:    obj,
 			Relation:  ownerRel,
 			Subject:   &relationtuple.SubjectID{ID: indirectOwner},
-		})
+		}, 0)
 		require.NoError(t, err)
 		assert.True(t, res)
 	})
@@ -375,7 +466,7 @@ func TestEngine(t *testing.T) {
 					Object:    obj,
 					Relation:  access,
 					Subject:   &relationtuple.SubjectID{ID: user},
-				})
+				}, 0)
 				require.NoError(t, err)
 				assert.True(t, allowed)
 
@@ -429,7 +520,7 @@ func TestEngine(t *testing.T) {
 				Relation:  access,
 				Subject:   &relationtuple.SubjectID{ID: user},
 			}
-			allowed, err := e.SubjectIsAllowed(context.Background(), req)
+			allowed, err := e.SubjectIsAllowed(context.Background(), req, 0)
 			require.NoError(t, err)
 			assert.True(t, allowed, req.String())
 		}
@@ -483,7 +574,7 @@ func TestEngine(t *testing.T) {
 			Subject: &relationtuple.SubjectID{
 				ID: stations[2],
 			},
-		})
+		}, 0)
 		require.NoError(t, err)
 		assert.False(t, res)
 	})

@@ -23,6 +23,8 @@ export class CheckRequest extends jspb.Message {
     setLatest(value: boolean): CheckRequest;
     getSnaptoken(): string;
     setSnaptoken(value: string): CheckRequest;
+    getMaxDepth(): number;
+    setMaxDepth(value: number): CheckRequest;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): CheckRequest.AsObject;
@@ -42,6 +44,7 @@ export namespace CheckRequest {
         subject?: ory_keto_acl_v1alpha1_acl_pb.Subject.AsObject,
         latest: boolean,
         snaptoken: string,
+        maxDepth: number,
     }
 }
 

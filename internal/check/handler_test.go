@@ -51,6 +51,16 @@ func TestRESTHandler(t *testing.T) {
 	ts := httptest.NewServer(r)
 	defer ts.Close()
 
+	t.Run("case=returns bad request on malformed int", func(t *testing.T) {
+		resp, err := ts.Client().Get(ts.URL + check.RouteBase + "?max-depth=foo")
+		require.NoError(t, err)
+
+		assert.Equal(t, http.StatusBadRequest, resp.StatusCode)
+		body, err := io.ReadAll(resp.Body)
+		require.NoError(t, err)
+		assert.Contains(t, string(body), "invalid syntax")
+	})
+
 	t.Run("case=returns bad request on malformed input", func(t *testing.T) {
 		resp, err := ts.Client().Get(ts.URL + check.RouteBase + "?" + url.Values{
 			"subject": {"not#a valid userset rewrite"},

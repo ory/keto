@@ -29,8 +29,9 @@ var Schema []byte
 const (
 	KeyDSN = "dsn"
 
-	KeyReadAPIHost = "serve.read.host"
-	KeyReadAPIPort = "serve.read.port"
+	KeyReadMaxDepth = "serve.read.max-depth"
+	KeyReadAPIHost  = "serve.read.host"
+	KeyReadAPIPort  = "serve.read.port"
 
 	KeyWriteAPIHost = "serve.write.host"
 	KeyWriteAPIPort = "serve.write.port"
@@ -136,6 +137,10 @@ func (k *Config) ReadAPIListenOn() string {
 		k.p.StringF(KeyReadAPIHost, ""),
 		k.p.IntF(KeyReadAPIPort, 4466),
 	)
+}
+
+func (k *Config) ReadAPIMaxDepth() int {
+	return k.p.Int(KeyReadMaxDepth)
 }
 
 func (k *Config) WriteAPIListenOn() string {

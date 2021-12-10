@@ -90,6 +90,10 @@ type ExpandRequest struct {
 	// The subject to expand.
 	Subject *Subject `protobuf:"bytes,1,opt,name=subject,proto3" json:"subject,omitempty"`
 	// The maximum depth of tree to build.
+	//
+	// If the value is less than 1 or greater than the global
+	// max-depth then the global max-depth will be used instead.
+	//
 	// It is important to set this parameter to a meaningful
 	// value. Ponder how deep you really want to display this.
 	MaxDepth int32 `protobuf:"varint,2,opt,name=max_depth,json=maxDepth,proto3" json:"max_depth,omitempty"`

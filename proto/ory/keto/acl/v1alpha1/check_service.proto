@@ -73,6 +73,11 @@ message CheckRequest {
   // ACLs had already been replicated to all availability zones.
   // -->
   string snaptoken = 6;
+  // The maximum depth to search for a relation.
+  //
+  // If the value is less than 1 or greater than the global
+  // max-depth then the global max-depth will be used instead.
+  int32 max_depth = 7;
 }
 
 // The response for a CheckService.Check rpc.

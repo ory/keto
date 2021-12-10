@@ -3,6 +3,7 @@ package expand
 import (
 	"context"
 
+	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/x"
 	"github.com/ory/keto/internal/x/graph"
 
@@ -12,6 +13,8 @@ import (
 type (
 	EngineDependencies interface {
 		relationtuple.ManagerProvider
+		config.Provider
+		x.LoggerProvider
 	}
 	Engine struct {
 		d EngineDependencies
@@ -28,8 +31,9 @@ func NewEngine(d EngineDependencies) *Engine {
 }
 
 func (e *Engine) BuildTree(ctx context.Context, subject relationtuple.Subject, restDepth int) (*Tree, error) {
-	if restDepth <= 0 {
-		return nil, nil
+	// global max-depth takes precedence when it is the lesser or if the request max-depth is less than or equal to 0
+	if globalMaxDepth := e.d.Config().ReadAPIMaxDepth(); restDepth <= 0 || globalMaxDepth < restDepth {
+		restDepth = globalMaxDepth
 	}
 
 	if us, isUserSet := subject.(*relationtuple.SubjectSet); isUserSet {
