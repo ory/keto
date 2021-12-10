@@ -28,7 +28,7 @@ keto check &lt;subject&gt; &lt;relation&gt; &lt;namespace&gt; &lt;object&gt; [fl
 ```
   -f, --format string         Set the output format. One of table, json, and json-pretty. (default &#34;default&#34;)
   -h, --help                  help for check
-  -d, --max-depth int32       Maximum depth of the search tree. If the value is less than 1 or greater than the global max-depth then the global max-depth will be used instead. (default 0)
+  -d, --max-depth int32       Maximum depth of the search tree. If the value is less than 1 or greater than the global max-depth then the global max-depth will be used instead.
   -q, --quiet                 Be quiet with output printing.
       --read-remote string    Remote URL of the read API endpoint. (default &#34;127.0.0.1:4466&#34;)
       --write-remote string   Remote URL of the write API endpoint. (default &#34;127.0.0.1:4467&#34;)
