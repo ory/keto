@@ -30,8 +30,8 @@ const (
 	KeyDSN = "dsn"
 
 	KeyReadMaxDepth = "serve.read.max-depth"
-	KeyReadAPIHost = "serve.read.host"
-	KeyReadAPIPort = "serve.read.port"
+	KeyReadAPIHost  = "serve.read.host"
+	KeyReadAPIPort  = "serve.read.port"
 
 	KeyWriteAPIHost = "serve.write.host"
 	KeyWriteAPIPort = "serve.write.port"

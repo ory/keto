@@ -22,6 +22,7 @@ import (
 
 type configProvider = config.Provider
 type loggerProvider = x.LoggerProvider
+
 // deps is defined to capture engine dependencies in a single struct
 type deps struct {
 	*relationtuple.ManagerWrapper // managerProvider

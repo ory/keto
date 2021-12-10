@@ -50,7 +50,7 @@ func newCheckCmd() *cobra.Command {
 				Relation:  args[1],
 				Namespace: args[2],
 				Object:    args[3],
-				MaxDepth: maxDepth,
+				MaxDepth:  maxDepth,
 			})
 			if err != nil {
 				_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not make request: %s\n", err)

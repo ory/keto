@@ -61,7 +61,6 @@ func TestRESTHandler(t *testing.T) {
 		assert.Contains(t, string(body), "invalid syntax")
 	})
 
-
 	t.Run("case=returns bad request on malformed input", func(t *testing.T) {
 		resp, err := ts.Client().Get(ts.URL + check.RouteBase + "?" + url.Values{
 			"subject": {"not#a valid userset rewrite"},
