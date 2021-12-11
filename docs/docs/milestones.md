@@ -3,11 +3,9 @@ id: milestones
 title: Milestones and Roadmap
 ---
 
-## [v0.7.0](https://github.com/ory/keto/milestone/5)
+## [v0.8.0](https://github.com/ory/keto/milestone/6)
 
-The biggest change for the next release will be the new SQL table structure
-(https://github.com/ory/keto/pull/638). The main goal is to improve the QoS, big
-features are planned for the next release.
+_This milestone does not have a description._
 
 ### [Bug](https://github.com/ory/keto/labels/bug)
 
@@ -15,22 +13,16 @@ Something is not working.
 
 #### Issues
 
-- [x] Check valid relation-tuple characters on insert
-      ([keto#661](https://github.com/ory/keto/issues/661))
-- [x] Keto version API does not work in REST API and CLI.
-      ([keto#696](https://github.com/ory/keto/issues/696)) -
+- [ ] Query relation tuples API returns 500 when no subject parameter present
+      ([keto#601](https://github.com/ory/keto/issues/601))
+- [ ] Expand API behaves weirdly when no object is specified
+      ([keto#608](https://github.com/ory/keto/issues/608)) -
       [@Patrik](https://github.com/zepatrik)
-- [x] Keto patch relation tuple REST API panic rather than return bad request
-      for wrong input. ([keto#706](https://github.com/ory/keto/issues/706)) -
+- [ ] Doc and implement do not match for delete tuple REST API.
+      ([keto#695](https://github.com/ory/keto/issues/695)) -
       [@Patrik](https://github.com/zepatrik)
-- [x] Change REST API to not work with encoded subjects
-      ([keto#708](https://github.com/ory/keto/issues/708))
-- [x] Config schema: replace `ory://*` references with something actually
-      resolvable ([keto#719](https://github.com/ory/keto/issues/719)) -
-      [@Patrik](https://github.com/zepatrik)
-- [x] Docker files and docker-compose.yml do not work on master
-      ([keto#725](https://github.com/ory/keto/issues/725)) -
-      [@Patrik](https://github.com/zepatrik)
+- [ ] docker compose files using invalid migrate syntax
+      ([keto#773](https://github.com/ory/keto/issues/773))
 
 ### [Feat](https://github.com/ory/keto/labels/feat)
 
@@ -38,14 +30,10 @@ New feature or request.
 
 #### Issues
 
-- [x] Ensure telemetry is running for GRPC
-      ([keto#298](https://github.com/ory/keto/issues/298)) -
-      [@hackerman](https://github.com/aeneasr),
-      [@Patrik](https://github.com/zepatrik),
-      [@Robin Brämer](https://github.com/robinbraemer)
-- [x] Single table migration: run as one big transaction
-      ([keto#734](https://github.com/ory/keto/issues/734)) -
-      [@Patrik](https://github.com/zepatrik)
+- [ ] Bulk deletion of relation tuples
+      ([keto#599](https://github.com/ory/keto/issues/599))
+- [ ] Automatic Subject/Object encoding
+      ([keto#792](https://github.com/ory/keto/issues/792))
 
 ### [Docs](https://github.com/ory/keto/labels/docs)
 
@@ -53,41 +41,23 @@ Affects documentation.
 
 #### Issues
 
-- [x] Document and improve go gRPC client import
-      ([keto#635](https://github.com/ory/keto/issues/635))
-- [x] Guide for data migration to new single table schema
-      ([keto#733](https://github.com/ory/keto/issues/733)) -
+- [ ] Next steps after quickstart
+      ([keto#585](https://github.com/ory/keto/issues/585))
+- [ ] Module found (v0.5.2), but does not contain package
+      ([keto#693](https://github.com/ory/keto/issues/693)) -
       [@Patrik](https://github.com/zepatrik)
+- [ ] Document best practices on how to check permissions for inserting/creating
+      an object ([keto#728](https://github.com/ory/keto/issues/728))
+- [ ] List API: namespace should not be required anymore
+      ([keto#761](https://github.com/ory/keto/issues/761))
 
-### [Ci](https://github.com/ory/keto/labels/ci)
+### [Rfc](https://github.com/ory/keto/labels/rfc)
 
-Affects Continuous Integration (CI).
+A request for comments to discuss and share ideas.
 
 #### Issues
 
-- [x] Document and improve go gRPC client import
-      ([keto#635](https://github.com/ory/keto/issues/635))
-- [x] Keto version API does not work in REST API and CLI.
-      ([keto#696](https://github.com/ory/keto/issues/696)) -
-      [@Patrik](https://github.com/zepatrik)
-- [x] Config schema: replace `ory://*` references with something actually
-      resolvable ([keto#719](https://github.com/ory/keto/issues/719)) -
-      [@Patrik](https://github.com/zepatrik)
-
-### [Blocking](https://github.com/ory/keto/labels/blocking)
-
-Blocks milestones or other issues or pulls.
-
-#### Issues
-
-- [x] Ensure telemetry is running for GRPC
-      ([keto#298](https://github.com/ory/keto/issues/298)) -
-      [@hackerman](https://github.com/aeneasr),
-      [@Patrik](https://github.com/zepatrik),
-      [@Robin Brämer](https://github.com/robinbraemer)
-- [x] Config schema: replace `ory://*` references with something actually
-      resolvable ([keto#719](https://github.com/ory/keto/issues/719)) -
-      [@Patrik](https://github.com/zepatrik)
-- [x] Docker files and docker-compose.yml do not work on master
-      ([keto#725](https://github.com/ory/keto/issues/725)) -
-      [@Patrik](https://github.com/zepatrik)
+- [ ] Bulk deletion of relation tuples
+      ([keto#599](https://github.com/ory/keto/issues/599))
+- [ ] Document best practices on how to check permissions for inserting/creating
+      an object ([keto#728](https://github.com/ory/keto/issues/728))
