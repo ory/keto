@@ -91,6 +91,32 @@ func TestReadHandlers(t *testing.T) {
 			assert.Equal(t, "", respMsg.NextPageToken)
 		})
 
+		t.Run("case=return tuples without namespace", func(t *testing.T) {
+			obj := t.Name()
+
+			rts := []*relationtuple.InternalRelationTuple{
+				{
+					Namespace: nspace.Name,
+					Object:    obj,
+					Relation:  "r1",
+					Subject:   &relationtuple.SubjectID{ID: "s1"},
+				},
+			}
+
+			require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), rts...))
+
+			resp, err := ts.Client().Get(ts.URL + relationtuple.RouteBase + "?" + url.Values{
+				"object": {obj},
+			}.Encode())
+			require.NoError(t, err)
+			assert.Equal(t, resp.StatusCode, http.StatusOK)
+
+			var respMsg relationtuple.GetResponse
+			require.NoError(t, json.NewDecoder(resp.Body).Decode(&respMsg))
+			assert.Equal(t, 1, len(respMsg.RelationTuples))
+			assert.Equal(t, "", respMsg.NextPageToken)
+		})
+
 		t.Run("case=returns bad request on malformed subject", func(t *testing.T) {
 			resp, err := ts.Client().Get(ts.URL + relationtuple.RouteBase + "?" + url.Values{
 				"subject": {"not#a valid subject"},

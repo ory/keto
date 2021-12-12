@@ -102,8 +102,6 @@ func (m *InternalRelationTuple) validateSubjectSet(formats strfmt.Registry) erro
 		if err := m.SubjectSet.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("subject_set")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("subject_set")
 			}
 			return err
 		}
@@ -132,8 +130,6 @@ func (m *InternalRelationTuple) contextValidateSubjectSet(ctx context.Context, f
 		if err := m.SubjectSet.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("subject_set")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("subject_set")
 			}
 			return err
 		}

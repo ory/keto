@@ -53,7 +53,6 @@ type getRelationsParams struct {
 	// Namespace of the Relation Tuple
 	//
 	// in: query
-	// required: true
 	Namespace string `json:"namespace"`
 
 	// Object of the Relation Tuple

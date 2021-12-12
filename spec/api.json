@@ -89,6 +89,12 @@
             "description": "Relation of the Subject Set",
             "name": "subject_set.relation",
             "in": "query"
+          },
+          {
+            "type": "integer",
+            "format": "int64",
+            "name": "max-depth",
+            "in": "query"
           }
         ],
         "responses": {
@@ -192,6 +198,12 @@
             "schema": {
               "$ref": "#/definitions/RelationQuery"
             }
+          },
+          {
+            "type": "integer",
+            "format": "int64",
+            "name": "max-depth",
+            "in": "query"
           }
         ],
         "responses": {
@@ -316,8 +328,7 @@
             "type": "integer",
             "format": "int64",
             "name": "max-depth",
-            "in": "query",
-            "required": true
+            "in": "query"
           }
         ],
         "responses": {
@@ -536,8 +547,7 @@
             "type": "string",
             "description": "Namespace of the Relation Tuple",
             "name": "namespace",
-            "in": "query",
-            "required": true
+            "in": "query"
           },
           {
             "type": "string",
@@ -1065,8 +1075,7 @@
           "enum": [
             "insert",
             "delete"
-          ],
-          "x-go-enum-desc": "insert ActionInsert\ndelete ActionDelete"
+          ]
         },
         "relation_tuple": {
           "$ref": "#/definitions/InternalRelationTuple"
@@ -1141,15 +1150,13 @@
           "$ref": "#/definitions/SubjectSet"
         },
         "type": {
-          "description": "\nunion Union\nexclusion Exclusion\nintersection Intersection\nleaf Leaf",
           "type": "string",
           "enum": [
             "union",
             "exclusion",
             "intersection",
             "leaf"
-          ],
-          "x-go-enum-desc": "union Union\nexclusion Exclusion\nintersection Intersection\nleaf Leaf"
+          ]
         }
       }
     },

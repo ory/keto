@@ -64,7 +64,7 @@ type GetRelationTuplesParams struct {
 
 	   Namespace of the Relation Tuple
 	*/
-	Namespace string
+	Namespace *string
 
 	/* Object.
 
@@ -164,13 +164,13 @@ func (o *GetRelationTuplesParams) SetHTTPClient(client *http.Client) {
 }
 
 // WithNamespace adds the namespace to the get relation tuples params
-func (o *GetRelationTuplesParams) WithNamespace(namespace string) *GetRelationTuplesParams {
+func (o *GetRelationTuplesParams) WithNamespace(namespace *string) *GetRelationTuplesParams {
 	o.SetNamespace(namespace)
 	return o
 }
 
 // SetNamespace adds the namespace to the get relation tuples params
-func (o *GetRelationTuplesParams) SetNamespace(namespace string) {
+func (o *GetRelationTuplesParams) SetNamespace(namespace *string) {
 	o.Namespace = namespace
 }
 
@@ -270,13 +270,20 @@ func (o *GetRelationTuplesParams) WriteToRequest(r runtime.ClientRequest, reg st
 	}
 	var res []error
 
-	// query param namespace
-	qrNamespace := o.Namespace
-	qNamespace := qrNamespace
-	if qNamespace != "" {
+	if o.Namespace != nil {
 
-		if err := r.SetQueryParam("namespace", qNamespace); err != nil {
-			return err
+		// query param namespace
+		var qrNamespace string
+
+		if o.Namespace != nil {
+			qrNamespace = *o.Namespace
+		}
+		qNamespace := qrNamespace
+		if qNamespace != "" {
+
+			if err := r.SetQueryParam("namespace", qNamespace); err != nil {
+				return err
+			}
 		}
 	}
 

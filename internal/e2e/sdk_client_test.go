@@ -95,7 +95,7 @@ func (c *sdkClient) deleteTuple(t require.TestingT, r *relationtuple.InternalRel
 }
 
 func compileParams(q *relationtuple.RelationQuery, opts []x.PaginationOptionSetter) *read.GetRelationTuplesParams {
-	params := read.NewGetRelationTuplesParams().WithNamespace(q.Namespace)
+	params := read.NewGetRelationTuplesParams().WithNamespace(&q.Namespace)
 	if q.Relation != "" {
 		params = params.WithRelation(&q.Relation)
 	}
@@ -213,7 +213,9 @@ func (c *sdkClient) expand(t require.TestingT, r *relationtuple.SubjectSet, dept
 			WithNamespace(r.Namespace).
 			WithObject(r.Object).
 			WithRelation(r.Relation).
-			WithMaxDepth(int64(depth)),
+			WithMaxDepth(func(n int64) *int64 {
+				return &n
+			}(int64(depth))),
 	)
 	require.NoError(t, err)
 	return buildTree(t, resp.Payload)
