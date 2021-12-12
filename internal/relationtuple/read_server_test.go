@@ -114,6 +114,7 @@ func TestReadHandlers(t *testing.T) {
 			var respMsg relationtuple.GetResponse
 			require.NoError(t, json.NewDecoder(resp.Body).Decode(&respMsg))
 			assert.Equal(t, 1, len(respMsg.RelationTuples))
+			assert.Contains(t, rts, respMsg.RelationTuples[0])
 			assert.Equal(t, "", respMsg.NextPageToken)
 		})
 
