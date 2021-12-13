@@ -213,9 +213,7 @@ func (c *sdkClient) expand(t require.TestingT, r *relationtuple.SubjectSet, dept
 			WithNamespace(r.Namespace).
 			WithObject(r.Object).
 			WithRelation(r.Relation).
-			WithMaxDepth(func(n int64) *int64 {
-				return &n
-			}(int64(depth))),
+			WithMaxDepth(pointerx.Int64(int64(depth))),
 	)
 	require.NoError(t, err)
 	return buildTree(t, resp.Payload)
