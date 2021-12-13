@@ -3,7 +3,7 @@
 
 **Table of Contents**
 
-- [0.0.0 (2021-12-10)](#000-2021-12-10)
+- [0.0.0 (2021-12-13)](#000-2021-12-13)
   - [Bug Fixes](#bug-fixes)
   - [Documentation](#documentation)
   - [Features](#features)
@@ -107,7 +107,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.7.0-alpha.1...v0.0.0) (2021-12-10)
+# [0.0.0](https://github.com/ory/keto/compare/v0.7.0-alpha.1...v0.0.0) (2021-12-13)
 
 ### Bug Fixes
 
@@ -117,6 +117,12 @@
 - Docker-compose-postgres.yml SQL migration service
   ([#779](https://github.com/ory/keto/issues/779))
   ([8f041bc](https://github.com/ory/keto/commit/8f041bc726253834a61e20cbb87ea80ad425a271))
+- Namespace should not be required in List API
+  ([#796](https://github.com/ory/keto/issues/796))
+  ([07be82e](https://github.com/ory/keto/commit/07be82eb7f01425b8e9dc8cdcbc4e835ef53a46c)):
+
+  The `namespace` parameter is now not required anymore in the list REST API.
+
 - Panic on macOS
   ([059a6f9](https://github.com/ory/keto/commit/059a6f9241798b7dcffc03910f9bd319488a479a))
 - Slow keto start up time
