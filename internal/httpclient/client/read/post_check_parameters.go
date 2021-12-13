@@ -14,6 +14,7 @@ import (
 	"github.com/go-openapi/runtime"
 	cr "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
+	"github.com/go-openapi/swag"
 
 	"github.com/ory/keto/internal/httpclient/models"
 )
@@ -63,6 +64,11 @@ type PostCheckParams struct {
 
 	// Payload.
 	Payload *models.RelationQuery
+
+	// MaxDepth.
+	//
+	// Format: int64
+	MaxDepth *int64
 
 	timeout    time.Duration
 	Context    context.Context
@@ -128,6 +134,17 @@ func (o *PostCheckParams) SetPayload(payload *models.RelationQuery) {
 	o.Payload = payload
 }
 
+// WithMaxDepth adds the maxDepth to the post check params
+func (o *PostCheckParams) WithMaxDepth(maxDepth *int64) *PostCheckParams {
+	o.SetMaxDepth(maxDepth)
+	return o
+}
+
+// SetMaxDepth adds the maxDepth to the post check params
+func (o *PostCheckParams) SetMaxDepth(maxDepth *int64) {
+	o.MaxDepth = maxDepth
+}
+
 // WriteToRequest writes these params to a swagger request
 func (o *PostCheckParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Registry) error {
 
@@ -138,6 +155,23 @@ func (o *PostCheckParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Reg
 	if o.Payload != nil {
 		if err := r.SetBodyParam(o.Payload); err != nil {
 			return err
+		}
+	}
+
+	if o.MaxDepth != nil {
+
+		// query param max-depth
+		var qrMaxDepth int64
+
+		if o.MaxDepth != nil {
+			qrMaxDepth = *o.MaxDepth
+		}
+		qMaxDepth := swag.FormatInt64(qrMaxDepth)
+		if qMaxDepth != "" {
+
+			if err := r.SetQueryParam("max-depth", qMaxDepth); err != nil {
+				return err
+			}
 		}
 	}
 

@@ -14,6 +14,7 @@ import (
 	"github.com/go-openapi/runtime"
 	cr "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
+	"github.com/go-openapi/swag"
 )
 
 // NewGetCheckParams creates a new GetCheckParams object,
@@ -58,6 +59,11 @@ func NewGetCheckParamsWithHTTPClient(client *http.Client) *GetCheckParams {
    Typically these are written to a http.Request.
 */
 type GetCheckParams struct {
+
+	// MaxDepth.
+	//
+	// Format: int64
+	MaxDepth *int64
 
 	/* Namespace.
 
@@ -154,6 +160,17 @@ func (o *GetCheckParams) SetHTTPClient(client *http.Client) {
 	o.HTTPClient = client
 }
 
+// WithMaxDepth adds the maxDepth to the get check params
+func (o *GetCheckParams) WithMaxDepth(maxDepth *int64) *GetCheckParams {
+	o.SetMaxDepth(maxDepth)
+	return o
+}
+
+// SetMaxDepth adds the maxDepth to the get check params
+func (o *GetCheckParams) SetMaxDepth(maxDepth *int64) {
+	o.MaxDepth = maxDepth
+}
+
 // WithNamespace adds the namespace to the get check params
 func (o *GetCheckParams) WithNamespace(namespace string) *GetCheckParams {
 	o.SetNamespace(namespace)
@@ -238,6 +255,23 @@ func (o *GetCheckParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Regi
 		return err
 	}
 	var res []error
+
+	if o.MaxDepth != nil {
+
+		// query param max-depth
+		var qrMaxDepth int64
+
+		if o.MaxDepth != nil {
+			qrMaxDepth = *o.MaxDepth
+		}
+		qMaxDepth := swag.FormatInt64(qrMaxDepth)
+		if qMaxDepth != "" {
+
+			if err := r.SetQueryParam("max-depth", qMaxDepth); err != nil {
+				return err
+			}
+		}
+	}
 
 	// query param namespace
 	qrNamespace := o.Namespace
