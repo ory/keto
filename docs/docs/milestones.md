@@ -48,7 +48,7 @@ Affects documentation.
       [@Patrik](https://github.com/zepatrik)
 - [ ] Document best practices on how to check permissions for inserting/creating
       an object ([keto#728](https://github.com/ory/keto/issues/728))
-- [ ] List API: namespace should not be required anymore
+- [x] List API: namespace should not be required anymore
       ([keto#761](https://github.com/ory/keto/issues/761))
 
 ### [Rfc](https://github.com/ory/keto/labels/rfc)
