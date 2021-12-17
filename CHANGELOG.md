@@ -3,7 +3,7 @@
 
 **Table of Contents**
 
-- [0.0.0 (2021-12-13)](#000-2021-12-13)
+- [0.0.0 (2021-12-17)](#000-2021-12-17)
   - [Bug Fixes](#bug-fixes)
   - [Documentation](#documentation)
   - [Features](#features)
@@ -107,10 +107,12 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.7.0-alpha.1...v0.0.0) (2021-12-13)
+# [0.0.0](https://github.com/ory/keto/compare/v0.7.0-alpha.1...v0.0.0) (2021-12-17)
 
 ### Bug Fixes
 
+- Add hiring notice to README ([#798](https://github.com/ory/keto/issues/798))
+  ([2a6ddae](https://github.com/ory/keto/commit/2a6ddaeeb604a7123527855e6f9947423e284f65))
 - CORS config values are ignored
   ([#789](https://github.com/ory/keto/issues/789))
   ([ffeb5e3](https://github.com/ory/keto/commit/ffeb5e318877d4e320828f47be26e916a0019deb))
