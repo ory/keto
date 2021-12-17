@@ -7,7 +7,8 @@
     <a href="https://www.ory.sh/docs/keto/">Guide</a> |
     <a href="https://www.ory.sh/docs/keto/sdk/api">API Docs</a> |
     <a href="https://godoc.org/github.com/ory/keto">Code Docs</a><br/><br/>
-    <a href="https://opencollective.com/ory">Support this project!</a>
+    <a href="https://opencollective.com/ory">Support this project!</a><br/><br/>
+    <a href="https://www.ory.sh/jobs/">Work in Open Source, Ory is hiring!</a>
 </h4>
 
 ---
