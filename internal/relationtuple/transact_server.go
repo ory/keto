@@ -167,7 +167,7 @@ func (h *handler) createRelation(w http.ResponseWriter, r *http.Request, _ httpr
 //       204: emptyResponse
 //       400: genericError
 //       500: genericError
-func (h *handler) deleteRelation(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+func (h *handler) deleteRelations(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	q := r.URL.Query()
 	query, err := (&RelationQuery{}).FromURLQuery(q)
 	if err != nil {
