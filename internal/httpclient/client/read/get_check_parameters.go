@@ -69,19 +69,19 @@ type GetCheckParams struct {
 
 	   Namespace of the Relation Tuple
 	*/
-	Namespace string
+	Namespace *string
 
 	/* Object.
 
 	   Object of the Relation Tuple
 	*/
-	Object string
+	Object *string
 
 	/* Relation.
 
 	   Relation of the Relation Tuple
 	*/
-	Relation string
+	Relation *string
 
 	/* SubjectID.
 
@@ -172,35 +172,35 @@ func (o *GetCheckParams) SetMaxDepth(maxDepth *int64) {
 }
 
 // WithNamespace adds the namespace to the get check params
-func (o *GetCheckParams) WithNamespace(namespace string) *GetCheckParams {
+func (o *GetCheckParams) WithNamespace(namespace *string) *GetCheckParams {
 	o.SetNamespace(namespace)
 	return o
 }
 
 // SetNamespace adds the namespace to the get check params
-func (o *GetCheckParams) SetNamespace(namespace string) {
+func (o *GetCheckParams) SetNamespace(namespace *string) {
 	o.Namespace = namespace
 }
 
 // WithObject adds the object to the get check params
-func (o *GetCheckParams) WithObject(object string) *GetCheckParams {
+func (o *GetCheckParams) WithObject(object *string) *GetCheckParams {
 	o.SetObject(object)
 	return o
 }
 
 // SetObject adds the object to the get check params
-func (o *GetCheckParams) SetObject(object string) {
+func (o *GetCheckParams) SetObject(object *string) {
 	o.Object = object
 }
 
 // WithRelation adds the relation to the get check params
-func (o *GetCheckParams) WithRelation(relation string) *GetCheckParams {
+func (o *GetCheckParams) WithRelation(relation *string) *GetCheckParams {
 	o.SetRelation(relation)
 	return o
 }
 
 // SetRelation adds the relation to the get check params
-func (o *GetCheckParams) SetRelation(relation string) {
+func (o *GetCheckParams) SetRelation(relation *string) {
 	o.Relation = relation
 }
 
@@ -273,33 +273,54 @@ func (o *GetCheckParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Regi
 		}
 	}
 
-	// query param namespace
-	qrNamespace := o.Namespace
-	qNamespace := qrNamespace
-	if qNamespace != "" {
+	if o.Namespace != nil {
 
-		if err := r.SetQueryParam("namespace", qNamespace); err != nil {
-			return err
+		// query param namespace
+		var qrNamespace string
+
+		if o.Namespace != nil {
+			qrNamespace = *o.Namespace
+		}
+		qNamespace := qrNamespace
+		if qNamespace != "" {
+
+			if err := r.SetQueryParam("namespace", qNamespace); err != nil {
+				return err
+			}
 		}
 	}
 
-	// query param object
-	qrObject := o.Object
-	qObject := qrObject
-	if qObject != "" {
+	if o.Object != nil {
 
-		if err := r.SetQueryParam("object", qObject); err != nil {
-			return err
+		// query param object
+		var qrObject string
+
+		if o.Object != nil {
+			qrObject = *o.Object
+		}
+		qObject := qrObject
+		if qObject != "" {
+
+			if err := r.SetQueryParam("object", qObject); err != nil {
+				return err
+			}
 		}
 	}
 
-	// query param relation
-	qrRelation := o.Relation
-	qRelation := qrRelation
-	if qRelation != "" {
+	if o.Relation != nil {
 
-		if err := r.SetQueryParam("relation", qRelation); err != nil {
-			return err
+		// query param relation
+		var qrRelation string
+
+		if o.Relation != nil {
+			qrRelation = *o.Relation
+		}
+		qRelation := qrRelation
+		if qRelation != "" {
+
+			if err := r.SetQueryParam("relation", qRelation); err != nil {
+				return err
+			}
 		}
 	}
 

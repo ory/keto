@@ -77,9 +77,9 @@ func (c *sdkClient) createTuple(t require.TestingT, r *relationtuple.InternalRel
 
 func (c *sdkClient) deleteTuple(t require.TestingT, r *relationtuple.InternalRelationTuple) {
 	params := write.NewDeleteRelationTupleParamsWithTimeout(time.Second).
-		WithNamespace(r.Namespace).
-		WithObject(r.Object).
-		WithRelation(r.Relation)
+		WithNamespace(&r.Namespace).
+		WithObject(&r.Object).
+		WithRelation(&r.Relation)
 	switch s := r.Subject.(type) {
 	case *relationtuple.SubjectID:
 		params = params.WithSubjectID(&s.ID)
@@ -167,9 +167,9 @@ func (c *sdkClient) queryTupleErr(t require.TestingT, expected herodot.DefaultEr
 
 func (c *sdkClient) check(t require.TestingT, r *relationtuple.InternalRelationTuple) bool {
 	params := read.NewGetCheckParamsWithTimeout(time.Second).
-		WithNamespace(r.Namespace).
-		WithObject(r.Object).
-		WithRelation(r.Relation)
+		WithNamespace(&r.Namespace).
+		WithObject(&r.Object).
+		WithRelation(&r.Relation)
 	switch s := r.Subject.(type) {
 	case *relationtuple.SubjectID:
 		params = params.WithSubjectID(&s.ID)

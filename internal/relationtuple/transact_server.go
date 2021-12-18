@@ -69,19 +69,16 @@ type queryRelationTuple struct {
 	// Namespace of the Relation Tuple
 	//
 	// in: query
-	// required: true
 	Namespace string `json:"namespace"`
 
 	// Object of the Relation Tuple
 	//
 	// in: query
-	// required: true
 	Object string `json:"object"`
 
 	// Relation of the Relation Tuple
 	//
 	// in: query
-	// required: true
 	Relation string `json:"relation"`
 
 	// SubjectID of the Relation Tuple
@@ -171,14 +168,27 @@ func (h *handler) createRelation(w http.ResponseWriter, r *http.Request, _ httpr
 //       400: genericError
 //       500: genericError
 func (h *handler) deleteRelation(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	rel, err := (&InternalRelationTuple{}).FromURLQuery(r.URL.Query())
+	q := r.URL.Query()
+	query, err := (&RelationQuery{}).FromURLQuery(q)
 	if err != nil {
 		h.d.Writer().WriteError(w, r, herodot.ErrBadRequest.WithError(err.Error()))
 		return
 	}
 
-	if err := h.d.RelationTupleManager().DeleteRelationTuples(r.Context(), rel); err != nil {
-		h.d.Logger().WithError(err).WithFields(rel.ToLoggerFields()).Errorf("got an error while deleting the relation tuple")
+	l := h.d.Logger()
+	for k := range q {
+		l = l.WithField(k, q.Get(k))
+	}
+	l.Debug("deleting relation tuples")
+
+	rels, _, err := h.d.RelationTupleManager().GetRelationTuples(r.Context(), query)
+	if err != nil {
+		h.d.Writer().WriteError(w, r, err)
+		return
+	}
+
+	if err := h.d.RelationTupleManager().DeleteRelationTuples(r.Context(), rels...); err != nil {
+		l.WithError(err).Errorf("got an error while deleting relation tuples")
 		h.d.Writer().WriteError(w, r, herodot.ErrInternalServerError.WithError(err.Error()))
 		return
 	}
