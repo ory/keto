@@ -191,8 +191,9 @@ func TestWriteHandlers(t *testing.T) {
 			require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), rts...))
 
 			q := url.Values{
-				"object":   {"deleted obj"},
-				"relation": {"deleted rel"},
+				"namespace": {nspace.Name},
+				"object":    {"deleted obj"},
+				"relation":  {"deleted rel"},
 			}
 			req, err := http.NewRequest(http.MethodDelete, ts.URL+relationtuple.RouteBase+"?"+q.Encode(), nil)
 			require.NoError(t, err)
