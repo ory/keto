@@ -151,9 +151,9 @@ func (h *handler) createRelation(w http.ResponseWriter, r *http.Request, _ httpr
 
 // swagger:route DELETE /relation-tuples write deleteRelationTuples
 //
-// Delete a Relation Tuples
+// Delete Relation Tuples
 //
-// Use this endpoint to delete a relation tuples
+// Use this endpoint to delete relation tuples
 //
 //     Consumes:
 //     -  application/x-www-form-urlencoded
