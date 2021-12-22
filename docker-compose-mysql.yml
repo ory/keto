@@ -9,8 +9,7 @@ services:
     environment:
       - LOG_LEVEL=debug
       - DSN=mysql://root:secret@tcp(mysqld:3306)/mysql&max_conns=20&max_idle_conns=4
-    command:
-      migrate sql -e
+    command: ["migrate", "up", "-y"]
     restart: on-failure
 
   keto:

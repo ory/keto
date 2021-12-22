@@ -13,8 +13,7 @@ services:
     environment:
       - LOG_LEVEL=debug
       - DSN=postgres://dbuser:secret@postgresd:5432/accesscontroldb?sslmode=disable
-    command:
-      migrate sql postgres://dbuser:secret@postgresd:5432/accesscontroldb?sslmode=disable
+    command: ["migrate", "up", "-y"]
     restart: on-failure
 
   keto:
