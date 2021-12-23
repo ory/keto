@@ -181,13 +181,7 @@ func (h *handler) deleteRelations(w http.ResponseWriter, r *http.Request, _ http
 	}
 	l.Debug("deleting relation tuples")
 
-	rels, _, err := h.d.RelationTupleManager().GetRelationTuples(r.Context(), query)
-	if err != nil {
-		h.d.Writer().WriteError(w, r, err)
-		return
-	}
-
-	if err := h.d.RelationTupleManager().DeleteRelationTuples(r.Context(), rels...); err != nil {
+	if err := h.d.RelationTupleManager().DeleteAllRelationTuples(r.Context(), query); err != nil {
 		l.WithError(err).Errorf("got an error while deleting relation tuples")
 		h.d.Writer().WriteError(w, r, herodot.ErrInternalServerError.WithError(err.Error()))
 		return

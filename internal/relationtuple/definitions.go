@@ -29,6 +29,7 @@ type (
 		GetRelationTuples(ctx context.Context, query *RelationQuery, options ...x.PaginationOptionSetter) ([]*InternalRelationTuple, string, error)
 		WriteRelationTuples(ctx context.Context, rs ...*InternalRelationTuple) error
 		DeleteRelationTuples(ctx context.Context, rs ...*InternalRelationTuple) error
+		DeleteAllRelationTuples(ctx context.Context, query *RelationQuery) error
 		TransactRelationTuples(ctx context.Context, insert []*InternalRelationTuple, delete []*InternalRelationTuple) error
 	}
 
@@ -672,6 +673,10 @@ func (t *ManagerWrapper) WriteRelationTuples(ctx context.Context, rs ...*Interna
 
 func (t *ManagerWrapper) DeleteRelationTuples(ctx context.Context, rs ...*InternalRelationTuple) error {
 	return t.Reg.RelationTupleManager().DeleteRelationTuples(ctx, rs...)
+}
+
+func (t *ManagerWrapper) DeleteAllRelationTuples(ctx context.Context, query *RelationQuery) error {
+	return t.Reg.RelationTupleManager().DeleteAllRelationTuples(ctx, query)
 }
 
 func (t *ManagerWrapper) TransactRelationTuples(ctx context.Context, insert []*InternalRelationTuple, delete []*InternalRelationTuple) error {
