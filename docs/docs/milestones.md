@@ -21,7 +21,7 @@ Something is not working.
 - [ ] Doc and implement do not match for delete tuple REST API.
       ([keto#695](https://github.com/ory/keto/issues/695)) -
       [@Patrik](https://github.com/zepatrik)
-- [ ] docker compose files using invalid migrate syntax
+- [x] docker compose files using invalid migrate syntax
       ([keto#773](https://github.com/ory/keto/issues/773))
 
 ### [Feat](https://github.com/ory/keto/labels/feat)
