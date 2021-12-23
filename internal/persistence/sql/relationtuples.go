@@ -202,37 +202,28 @@ func (p *Persister) DeleteRelationTuples(ctx context.Context, rs ...*relationtup
 
 func (p *Persister) DeleteAllRelationTuples(ctx context.Context, query *relationtuple.RelationQuery) error {
 	return p.Transaction(ctx, func(ctx context.Context, c *pop.Connection) error {
-		sqlRawQuery := "DELETE FROM keto_relation_tuples WHERE"
-		args := []interface{}{}
+		sqlQuery := p.QueryWithNetwork(ctx)
 		if query.Namespace != "" {
 			n, err := p.GetNamespaceByName(ctx, query.Namespace)
 			if err != nil {
 				return err
 			}
-			sqlRawQuery += " namespace_id = ?"
-			args = append(args, n.ID)
+			sqlQuery.Where("namespace_id = ?", n.ID)
 		}
 		if query.Object != "" {
-			sqlRawQuery += " AND object = ?"
-			args = append(args, query.Object)
+			sqlQuery.Where("object = ?", query.Object)
 		}
 		if query.Relation != "" {
-			sqlRawQuery += " AND relation = ?"
-			args = append(args, query.Relation)
+			sqlQuery.Where("relation = ?", query.Relation)
 		}
-
-		sqlQuery := p.QueryWithNetwork(ctx).RawQuery(sqlRawQuery, args...)
 		if s := query.Subject(); s != nil {
 			if err := p.whereSubject(ctx, sqlQuery, s); err != nil {
 				return err
 			}
 		}
 
-		if err := sqlQuery.Exec(); err != nil {
-			return err
-		}
-
-		return nil
+		var res relationTuples
+		return sqlQuery.Delete(&res)
 	})
 }
 
