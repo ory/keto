@@ -52,6 +52,23 @@ func (h *handler) TransactRelationTuples(ctx context.Context, req *acl.TransactR
 	}, nil
 }
 
+func (h *handler) DeleteRelationTuples(ctx context.Context, req *acl.DeleteRelationTuplesRequest) (*acl.DeleteRelationTuplesResponse, error) {
+	if req.Query == nil {
+		return nil, errors.New("invalid request")
+	}
+
+	q, err := (&RelationQuery{}).FromProto((*acl.ListRelationTuplesRequest_Query)(req.Query))
+	if err != nil {
+		return nil, err
+	}
+
+	if err := h.d.RelationTupleManager().DeleteAllRelationTuples(ctx, q); err != nil {
+		return nil, err
+	}
+
+	return &acl.DeleteRelationTuplesResponse{}, nil
+}
+
 // The basic ACL relation tuple
 //
 // swagger:parameters postCheck createRelationTuple

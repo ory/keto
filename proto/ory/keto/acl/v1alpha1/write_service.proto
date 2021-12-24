@@ -17,6 +17,8 @@ option php_namespace = "Ory\\Keto\\Acl\\V1alpha1";
 service WriteService {
   // Writes one or more relation tuples in a single transaction.
   rpc TransactRelationTuples(TransactRelationTuplesRequest) returns (TransactRelationTuplesResponse);
+  // Deletes relation tuples based on relation query
+  rpc DeleteRelationTuples(DeleteRelationTuplesRequest) returns (DeleteRelationTuplesResponse);
 }
 
 // The request of a WriteService.TransactRelationTuples RPC.
@@ -60,4 +62,24 @@ message TransactRelationTuplesResponse {
   // the snaptoken is empty at the same index.
   // -->
   repeated string snaptokens = 1;
+}
+
+message DeleteRelationTuplesRequest {
+  // The query for deleting relation tuples
+  message Query {
+    // Optional. The namespace to query.
+    string namespace = 1;
+    // Optional. The object to query for.
+    string object = 2;
+    // Optional. The relation to query for.
+    string relation = 3;
+    // Optional. The subject to query for.
+    Subject subject = 4;
+  }
+
+  Query query = 1;
+}
+
+message DeleteRelationTuplesResponse {
+
 }

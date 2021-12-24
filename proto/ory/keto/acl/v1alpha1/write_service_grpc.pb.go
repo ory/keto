@@ -20,6 +20,8 @@ const _ = grpc.SupportPackageIsVersion7
 type WriteServiceClient interface {
 	// Writes one or more relation tuples in a single transaction.
 	TransactRelationTuples(ctx context.Context, in *TransactRelationTuplesRequest, opts ...grpc.CallOption) (*TransactRelationTuplesResponse, error)
+	// Deletes relation tuples based on relation query
+	DeleteRelationTuples(ctx context.Context, in *DeleteRelationTuplesRequest, opts ...grpc.CallOption) (*DeleteRelationTuplesResponse, error)
 }
 
 type writeServiceClient struct {
@@ -39,20 +41,34 @@ func (c *writeServiceClient) TransactRelationTuples(ctx context.Context, in *Tra
 	return out, nil
 }
 
+func (c *writeServiceClient) DeleteRelationTuples(ctx context.Context, in *DeleteRelationTuplesRequest, opts ...grpc.CallOption) (*DeleteRelationTuplesResponse, error) {
+	out := new(DeleteRelationTuplesResponse)
+	err := c.cc.Invoke(ctx, "/ory.keto.acl.v1alpha1.WriteService/DeleteRelationTuples", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // WriteServiceServer is the server API for WriteService service.
-// All implementations should embed UnimplementedWriteServiceServer
+// All implementations must embed UnimplementedWriteServiceServer
 // for forward compatibility
 type WriteServiceServer interface {
 	// Writes one or more relation tuples in a single transaction.
 	TransactRelationTuples(context.Context, *TransactRelationTuplesRequest) (*TransactRelationTuplesResponse, error)
+	// Deletes relation tuples based on relation query
+	DeleteRelationTuples(context.Context, *DeleteRelationTuplesRequest) (*DeleteRelationTuplesResponse, error)
 }
 
-// UnimplementedWriteServiceServer should be embedded to have forward compatible implementations.
+// UnimplementedWriteServiceServer must be embedded to have forward compatible implementations.
 type UnimplementedWriteServiceServer struct {
 }
 
 func (UnimplementedWriteServiceServer) TransactRelationTuples(context.Context, *TransactRelationTuplesRequest) (*TransactRelationTuplesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TransactRelationTuples not implemented")
+}
+func (UnimplementedWriteServiceServer) DeleteRelationTuples(context.Context, *DeleteRelationTuplesRequest) (*DeleteRelationTuplesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteRelationTuples not implemented")
 }
 
 // UnsafeWriteServiceServer may be embedded to opt out of forward compatibility for this service.
@@ -84,6 +100,24 @@ func _WriteService_TransactRelationTuples_Handler(srv interface{}, ctx context.C
 	return interceptor(ctx, in, info, handler)
 }
 
+func _WriteService_DeleteRelationTuples_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteRelationTuplesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(WriteServiceServer).DeleteRelationTuples(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/ory.keto.acl.v1alpha1.WriteService/DeleteRelationTuples",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(WriteServiceServer).DeleteRelationTuples(ctx, req.(*DeleteRelationTuplesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // WriteService_ServiceDesc is the grpc.ServiceDesc for WriteService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -94,6 +128,10 @@ var WriteService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "TransactRelationTuples",
 			Handler:    _WriteService_TransactRelationTuples_Handler,
+		},
+		{
+			MethodName: "DeleteRelationTuples",
+			Handler:    _WriteService_DeleteRelationTuples_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
