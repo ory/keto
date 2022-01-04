@@ -175,6 +175,28 @@ func (p *Persister) whereSubject(ctx context.Context, q *pop.Query, sub relation
 	return nil
 }
 
+func (p *Persister) whereQuery(ctx context.Context, q *pop.Query, rq *relationtuple.RelationQuery) error {
+	if rq.Namespace != "" {
+		n, err := p.GetNamespaceByName(ctx, rq.Namespace)
+		if err != nil {
+			return err
+		}
+		q.Where("namespace_id = ?", n.ID)
+	}
+	if rq.Object != "" {
+		q.Where("object = ?", rq.Object)
+	}
+	if rq.Relation != "" {
+		q.Where("relation = ?", rq.Relation)
+	}
+	if s := rq.Subject(); s != nil {
+		if err := p.whereSubject(ctx, q, s); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 func (p *Persister) DeleteRelationTuples(ctx context.Context, rs ...*relationtuple.InternalRelationTuple) error {
 	return p.Transaction(ctx, func(ctx context.Context, c *pop.Connection) error {
 		for _, r := range rs {
@@ -203,23 +225,9 @@ func (p *Persister) DeleteRelationTuples(ctx context.Context, rs ...*relationtup
 func (p *Persister) DeleteAllRelationTuples(ctx context.Context, query *relationtuple.RelationQuery) error {
 	return p.Transaction(ctx, func(ctx context.Context, c *pop.Connection) error {
 		sqlQuery := p.QueryWithNetwork(ctx)
-		if query.Namespace != "" {
-			n, err := p.GetNamespaceByName(ctx, query.Namespace)
-			if err != nil {
-				return err
-			}
-			sqlQuery.Where("namespace_id = ?", n.ID)
-		}
-		if query.Object != "" {
-			sqlQuery.Where("object = ?", query.Object)
-		}
-		if query.Relation != "" {
-			sqlQuery.Where("relation = ?", query.Relation)
-		}
-		if s := query.Subject(); s != nil {
-			if err := p.whereSubject(ctx, sqlQuery, s); err != nil {
-				return err
-			}
+		err := p.whereQuery(ctx, sqlQuery, query)
+		if err != nil {
+			return err
 		}
 
 		var res relationTuples
@@ -242,26 +250,10 @@ func (p *Persister) GetRelationTuples(ctx context.Context, query *relationtuple.
 		Order("nid, namespace_id, object, relation, subject_id, subject_set_namespace_id, subject_set_object, subject_set_relation, commit_time").
 		Paginate(pagination.Page, pagination.PerPage)
 
-	if query.Relation != "" {
-		sqlQuery.Where("relation = ?", query.Relation)
+	err = p.whereQuery(ctx, sqlQuery, query)
+	if err != nil {
+		return nil, "", err
 	}
-	if query.Object != "" {
-		sqlQuery.Where("object = ?", query.Object)
-	}
-	if s := query.Subject(); s != nil {
-		if err := p.whereSubject(ctx, sqlQuery, s); err != nil {
-			return nil, "", err
-		}
-	}
-
-	if query.Namespace != "" {
-		n, err := p.GetNamespaceByName(ctx, query.Namespace)
-		if err != nil {
-			return nil, "", err
-		}
-		sqlQuery.Where("namespace_id = ?", n.ID)
-	}
-
 	var res relationTuples
 	if err := sqlQuery.All(&res); err != nil {
 		return nil, "", sqlcon.HandleError(err)

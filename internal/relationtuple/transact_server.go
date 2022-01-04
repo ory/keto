@@ -57,13 +57,13 @@ func (h *handler) DeleteRelationTuples(ctx context.Context, req *acl.DeleteRelat
 		return nil, errors.WithStack(herodot.ErrBadRequest.WithReason("invalid request"))
 	}
 
-	q, err := (&RelationQuery{}).FromProto((*acl.ListRelationTuplesRequest_Query)(req.Query))
+	q, err := (&RelationQuery{}).FromProto(req.Query)
 	if err != nil {
 		return nil, errors.WithStack(herodot.ErrBadRequest.WithError(err.Error()))
 	}
 
 	if err := h.d.RelationTupleManager().DeleteAllRelationTuples(ctx, q); err != nil {
-		return nil, errors.WithStack(herodot.ErrBadRequest.WithError(err.Error()))
+		return nil, errors.WithStack(herodot.ErrInternalServerError.WithError(err.Error()))
 	}
 
 	return &acl.DeleteRelationTuplesResponse{}, nil

@@ -423,16 +423,16 @@ func (r *InternalRelationTuple) ToLoggerFields() logrus.Fields {
 	}
 }
 
-func (q *RelationQuery) FromProto(query *acl.ListRelationTuplesRequest_Query) (*RelationQuery, error) {
-	q.Namespace = query.Namespace
-	q.Object = query.Object
-	q.Relation = query.Relation
+func (q *RelationQuery) FromProto(query TupleData) (*RelationQuery, error) {
+	q.Namespace = query.GetNamespace()
+	q.Object = query.GetObject()
+	q.Relation = query.GetRelation()
 	// reset subject
 	q.SubjectID = nil
 	q.SubjectSet = nil
 
-	if query.Subject != nil {
-		switch s := query.Subject.Ref.(type) {
+	if query.GetSubject() != nil {
+		switch s := query.GetSubject().Ref.(type) {
 		case *acl.Subject_Id:
 			q.SubjectID = &s.Id
 		case *acl.Subject_Set:
