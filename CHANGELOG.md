@@ -3,7 +3,7 @@
 
 **Table of Contents**
 
-- [0.0.0 (2021-12-17)](#000-2021-12-17)
+- [0.0.0 (2022-01-06)](#000-2022-01-06)
   - [Bug Fixes](#bug-fixes)
   - [Documentation](#documentation)
   - [Features](#features)
@@ -107,7 +107,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.7.0-alpha.1...v0.0.0) (2021-12-17)
+# [0.0.0](https://github.com/ory/keto/compare/v0.7.0-alpha.1...v0.0.0) (2022-01-06)
 
 ### Bug Fixes
 
@@ -116,6 +116,8 @@
 - CORS config values are ignored
   ([#789](https://github.com/ory/keto/issues/789))
   ([ffeb5e3](https://github.com/ory/keto/commit/ffeb5e318877d4e320828f47be26e916a0019deb))
+- Docker compose migrate ([#800](https://github.com/ory/keto/issues/800))
+  ([f1599a4](https://github.com/ory/keto/commit/f1599a4c3e226ced0811312487cef3ea32a002c9))
 - Docker-compose-postgres.yml SQL migration service
   ([#779](https://github.com/ory/keto/issues/779))
   ([8f041bc](https://github.com/ory/keto/commit/8f041bc726253834a61e20cbb87ea80ad425a271))
