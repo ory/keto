@@ -35,22 +35,6 @@ New feature or request.
 - [ ] Automatic Subject/Object encoding
       ([keto#792](https://github.com/ory/keto/issues/792))
 
-### [Docs](https://github.com/ory/keto/labels/docs)
-
-Affects documentation.
-
-#### Issues
-
-- [ ] Next steps after quickstart
-      ([keto#585](https://github.com/ory/keto/issues/585))
-- [ ] Module found (v0.5.2), but does not contain package
-      ([keto#693](https://github.com/ory/keto/issues/693)) -
-      [@Patrik](https://github.com/zepatrik)
-- [ ] Document best practices on how to check permissions for inserting/creating
-      an object ([keto#728](https://github.com/ory/keto/issues/728))
-- [x] List API: namespace should not be required anymore
-      ([keto#761](https://github.com/ory/keto/issues/761))
-
 ### [Rfc](https://github.com/ory/keto/labels/rfc)
 
 A request for comments to discuss and share ideas.
