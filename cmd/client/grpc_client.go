@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/ory/x/flagx"
@@ -25,7 +26,13 @@ const (
 	ContextKeyTimeout contextKeys = "timeout"
 )
 
-func getRemote(cmd *cobra.Command, flagRemote, envRemote string) string {
+func getRemote(cmd *cobra.Command, flagRemote, envRemote string) (remote string) {
+	defer (func() {
+		if strings.HasPrefix(remote, "http://") || strings.HasPrefix(remote, "https://") {
+			_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "remote \"%s\" seems to be an http URL instead of a remote address\n", remote)
+		}
+	})()
+
 	if cmd.Flags().Changed(flagRemote) {
 		return flagx.MustGetString(cmd, flagRemote)
 	} else if remote, isSet := os.LookupEnv(envRemote); isSet {
@@ -33,7 +40,7 @@ func getRemote(cmd *cobra.Command, flagRemote, envRemote string) string {
 	}
 
 	// no value is set, use fallback from the flag and warn about that
-	remote := flagx.MustGetString(cmd, flagRemote)
+	remote = flagx.MustGetString(cmd, flagRemote)
 	_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "neither flag --%s nor env var %s are set, falling back to %s\n", flagRemote, envRemote, remote)
 	return remote
 }
@@ -58,6 +65,6 @@ func Conn(ctx context.Context, remote string) (*grpc.ClientConn, error) {
 }
 
 func RegisterRemoteURLFlags(flags *pflag.FlagSet) {
-	flags.String(FlagReadRemote, "127.0.0.1:4466", "Remote URL of the read API endpoint.")
-	flags.String(FlagWriteRemote, "127.0.0.1:4467", "Remote URL of the write API endpoint.")
+	flags.String(FlagReadRemote, "127.0.0.1:4466", "Remote address of the read API endpoint.")
+	flags.String(FlagWriteRemote, "127.0.0.1:4467", "Remote address of the write API endpoint.")
 }

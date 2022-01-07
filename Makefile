@@ -29,6 +29,7 @@ $(call make-lint-dependency)
 node_modules: package.json package-lock.json Makefile
 		npm ci
 
+.PHONY: .bin/clidoc
 .bin/clidoc:
 		go build -o .bin/clidoc ./cmd/clidoc/.
 
