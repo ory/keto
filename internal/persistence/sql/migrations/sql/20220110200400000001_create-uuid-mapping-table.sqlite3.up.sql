@@ -1,0 +1,2 @@
+
+CREATE INDEX keto_uuid_mappings_subject_ids_idx ON keto_uuid_mappings (string_representation);
