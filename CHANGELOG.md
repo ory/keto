@@ -3,7 +3,7 @@
 
 **Table of Contents**
 
-- [0.0.0 (2022-01-06)](#000-2022-01-06)
+- [0.0.0 (2022-01-10)](#000-2022-01-10)
   - [Bug Fixes](#bug-fixes)
   - [Documentation](#documentation)
   - [Features](#features)
@@ -107,7 +107,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.7.0-alpha.1...v0.0.0) (2022-01-06)
+# [0.0.0](https://github.com/ory/keto/compare/v0.7.0-alpha.1...v0.0.0) (2022-01-10)
 
 ### Bug Fixes
 
@@ -155,6 +155,9 @@
 - Add link to quickstart in config reference docs
   ([#775](https://github.com/ory/keto/issues/775))
   ([25bc579](https://github.com/ory/keto/commit/25bc579ed0980f45f2cca79e043de6f43620f3d5))
+- Clarify that CLI remotes should be addresses and not URIs
+  ([#808](https://github.com/ory/keto/issues/808))
+  ([7ce7973](https://github.com/ory/keto/commit/7ce7973bcb910f53e10bf17165ca5f79d2df8146))
 - Heading caseing ([#785](https://github.com/ory/keto/issues/785))
   ([563087d](https://github.com/ory/keto/commit/563087db9709ed54abd035f2eac6e16c695f1b4c))
 
