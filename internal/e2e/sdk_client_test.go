@@ -94,6 +94,28 @@ func (c *sdkClient) deleteTuple(t require.TestingT, r *relationtuple.InternalRel
 	require.NoError(t, err)
 }
 
+func (c *sdkClient) deleteAllTuples(t require.TestingT, q *relationtuple.RelationQuery) {
+	params := write.NewDeleteRelationTupleParamsWithTimeout(time.Second).
+		WithNamespace(&q.Namespace).
+		WithObject(&q.Object).
+		WithRelation(&q.Relation)
+
+	if s := q.Subject(); s != nil {
+		switch s.(type) {
+		case *relationtuple.SubjectID:
+			params = params.WithSubjectID(q.SubjectID)
+		case *relationtuple.SubjectSet:
+			params = params.
+				WithSubjectSetNamespace(&s.SubjectSet().Namespace).
+				WithObject(&s.SubjectSet().Object).
+				WithRelation(&s.SubjectSet().Relation)
+		}
+	}
+
+	_, err := c.getWriteClient().Write.DeleteRelationTuple(params)
+	require.NoError(t, err)
+}
+
 func compileParams(q *relationtuple.RelationQuery, opts []x.PaginationOptionSetter) *read.GetRelationTuplesParams {
 	params := read.NewGetRelationTuplesParams().WithNamespace(&q.Namespace)
 	if q.Relation != "" {

@@ -124,3 +124,25 @@ func (g *cliClient) deleteTuple(t require.TestingT, r *relationtuple.InternalRel
 	require.NoError(t, err, "stdout: %s\nstderr: %s", stdout, stderr)
 	assert.Len(t, stderr, 0, stdout)
 }
+
+func (g *cliClient) deleteAllTuples(t require.TestingT, q *relationtuple.RelationQuery) {
+	args := []string{}
+	if q.Namespace != "" {
+		args = append(args, "--"+clirelationtuple.FlagNamespace, q.Namespace)
+	}
+	if q.Object != "" {
+		args = append(args, "--"+clirelationtuple.FlagObject, q.Object)
+	}
+	if q.Relation != "" {
+		args = append(args, "--"+clirelationtuple.FlagRelation, q.Relation)
+	}
+	require.False(t, q.SubjectID != nil && q.SubjectSet != nil)
+	if q.SubjectID != nil {
+		args = append(args, "--"+clirelationtuple.FlagSubjectID, *q.SubjectID)
+	}
+	if q.SubjectSet != nil {
+		args = append(args, "--"+clirelationtuple.FlagSubjectSet, q.SubjectSet.String())
+	}
+	args = append(args, "relation-tuple", "delete")
+	_ = g.c.ExecNoErr(t, args...)
+}

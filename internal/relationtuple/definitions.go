@@ -44,8 +44,6 @@ type (
 
 type RelationQuery struct {
 	// Namespace of the Relation Tuple
-	//
-	// required: true
 	Namespace string `json:"namespace"`
 
 	// Object of the Relation Tuple

@@ -69,6 +69,11 @@ func (rc *restClient) deleteTuple(t require.TestingT, r *relationtuple.InternalR
 	require.Equal(t, http.StatusNoContent, code, body)
 }
 
+func (rc restClient) deleteAllTuples(t require.TestingT, q *relationtuple.RelationQuery) {
+	body, code := rc.makeRequest(t, http.MethodDelete, relationtuple.RouteBase+"?"+q.ToURLQuery().Encode(), "", true)
+	require.Equal(t, http.StatusNoContent, code, body)
+}
+
 func (rc *restClient) queryTuple(t require.TestingT, q *relationtuple.RelationQuery, opts ...x.PaginationOptionSetter) *relationtuple.GetResponse {
 	urlQuery := q.ToURLQuery()
 
