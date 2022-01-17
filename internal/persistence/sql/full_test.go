@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/ory/keto/internal/uuidmapping"
+
 	"github.com/gofrs/uuid"
 
 	"github.com/ory/keto/internal/x/dbx"
@@ -65,6 +67,11 @@ func TestPersister(t *testing.T) {
 
 				// same registry, but different persisters only differing in the network ID
 				relationtuple.IsolationTest(t, p0, p1, addNamespace(r, nspaces))
+			})
+
+			t.Run("uuidmapping.ManagerTest", func(t *testing.T) {
+				p, _, _ := setup(t, dsn)
+				uuidmapping.ManagerTest(t, p)
 			})
 		})
 	}

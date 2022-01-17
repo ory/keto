@@ -5,7 +5,6 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/gofrs/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
@@ -95,15 +94,6 @@ func TestToSingleTableMigrator(t *testing.T) {
 				require.Len(t, rts, 2)
 				assert.Equal(t, sID, rts[0])
 				assert.Equal(t, sSet, rts[1])
-			})
-
-			t.Run("case=uuid mapping", func(t *testing.T) {
-				id := uuid.Must(uuid.NewV4())
-				rep1 := "foo"
-				require.NoError(t, r.UUIDMappingManager().AddUUIDMapping(ctx, id, rep1))
-				rep2, err := r.UUIDMappingManager().LookupUUID(ctx, id)
-				assert.NoError(t, err)
-				assert.Equal(t, rep1, rep2)
 			})
 
 			t.Run("case=paginates", func(t *testing.T) {
