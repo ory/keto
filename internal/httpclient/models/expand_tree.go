@@ -30,7 +30,11 @@ type ExpandTree struct {
 	// subject set
 	SubjectSet *SubjectSet `json:"subject_set,omitempty"`
 
-	// type
+	//
+	// union Union
+	// exclusion Exclusion
+	// intersection Intersection
+	// leaf Leaf
 	// Required: true
 	// Enum: [union exclusion intersection leaf]
 	Type *string `json:"type"`
@@ -72,6 +76,8 @@ func (m *ExpandTree) validateChildren(formats strfmt.Registry) error {
 			if err := m.Children[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("children" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("children" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -91,6 +97,8 @@ func (m *ExpandTree) validateSubjectSet(formats strfmt.Registry) error {
 		if err := m.SubjectSet.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("subject_set")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("subject_set")
 			}
 			return err
 		}
@@ -174,6 +182,8 @@ func (m *ExpandTree) contextValidateChildren(ctx context.Context, formats strfmt
 			if err := m.Children[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("children" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("children" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -190,6 +200,8 @@ func (m *ExpandTree) contextValidateSubjectSet(ctx context.Context, formats strf
 		if err := m.SubjectSet.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("subject_set")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("subject_set")
 			}
 			return err
 		}
