@@ -32,7 +32,7 @@ type deps struct {
 
 func newTestEngine(t *testing.T, namespaces []*namespace.Namespace, paginationOpts ...x.PaginationOptionSetter) (*relationtuple.ManagerWrapper, *expand.Engine) {
 	innerReg := driver.NewSqliteTestRegistry(t, false)
-	require.NoError(t, innerReg.Config().Set(config.KeyNamespaces, namespaces))
+	require.NoError(t, innerReg.Config(context.Background()).Set(config.KeyNamespaces, namespaces))
 	reg := relationtuple.NewManagerWrapper(t, innerReg, paginationOpts...)
 	e := expand.NewEngine(&deps{
 		ManagerWrapper: reg,

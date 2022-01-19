@@ -30,9 +30,9 @@ func NewDefaultRegistry(ctx context.Context, flags *pflag.FlagSet, withoutNetwor
 		opts = append(opts, logrusx.WithHook(hook))
 	}
 
-	l := logrusx.New("ORY Keto", config.Version, opts...)
+	l := logrusx.New("Ory Keto", config.Version, opts...)
 
-	c, err := config.New(ctx, flags, l)
+	c, err := config.NewDefault(ctx, flags, l)
 	if err != nil {
 		return nil, errors.Wrap(err, "unable to initialize config provider")
 	}
@@ -62,11 +62,11 @@ func NewSqliteTestRegistry(t *testing.T, debugOnDisk bool) *RegistryDefault {
 }
 
 func NewTestRegistry(t *testing.T, dsn *dbx.DsnT) *RegistryDefault {
-	l := logrusx.New("ORY Keto", "testing")
+	l := logrusx.New("Ory Keto", "testing")
 	ctx, cancel := context.WithCancel(context.Background())
 	t.Cleanup(cancel)
 
-	c, err := config.New(ctx, nil, l)
+	c, err := config.NewDefault(ctx, nil, l)
 	require.NoError(t, err)
 
 	require.NoError(t, c.Set(config.KeyDSN, dsn.Conn))

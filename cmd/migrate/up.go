@@ -41,7 +41,7 @@ Before running this command on an existing database, create a back up!
 				return err
 			}
 
-			mb, err := reg.MigrationBox()
+			mb, err := reg.MigrationBox(ctx)
 			if err != nil {
 				return err
 			}

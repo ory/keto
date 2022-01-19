@@ -1,6 +1,7 @@
 package sql_test
 
 import (
+	"context"
 	stdSql "database/sql"
 	"strings"
 	"testing"
@@ -39,7 +40,7 @@ func TestRelationTupleSubjectTypeCheck(t *testing.T) {
 	for _, dsn := range dbx.GetDSNs(t, false) {
 		t.Run("dsn="+dsn.Name, func(t *testing.T) {
 			reg := driver.NewTestRegistry(t, dsn)
-			c, err := reg.PopConnection()
+			c, err := reg.PopConnection(context.Background())
 			require.NoError(t, err)
 
 			for _, tc := range []struct {

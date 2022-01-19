@@ -33,7 +33,7 @@ func newDownCmd() *cobra.Command {
 				return err
 			}
 
-			mb, err := reg.MigrationBox()
+			mb, err := reg.MigrationBox(cmd.Context())
 			if err != nil {
 				return err
 			}

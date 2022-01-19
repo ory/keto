@@ -37,7 +37,7 @@ func TestWriteHandlers(t *testing.T) {
 		}
 		nspaces = append(nspaces, n)
 
-		require.NoError(t, reg.Config().Set(config.KeyNamespaces, nspaces))
+		require.NoError(t, reg.Config(context.Background()).Set(config.KeyNamespaces, nspaces))
 
 		return n
 	}

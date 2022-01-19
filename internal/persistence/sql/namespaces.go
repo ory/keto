@@ -7,7 +7,7 @@ import (
 )
 
 func (p *Persister) GetNamespaceByName(ctx context.Context, name string) (*namespace.Namespace, error) {
-	nm, err := p.d.Config().NamespaceManager()
+	nm, err := p.d.Config(ctx).NamespaceManager()
 	if err != nil {
 		return nil, err
 	}
@@ -15,7 +15,7 @@ func (p *Persister) GetNamespaceByName(ctx context.Context, name string) (*names
 }
 
 func (p *Persister) GetNamespaceByID(ctx context.Context, id int32) (*namespace.Namespace, error) {
-	nm, err := p.d.Config().NamespaceManager()
+	nm, err := p.d.Config(ctx).NamespaceManager()
 	if err != nil {
 		return nil, err
 	}

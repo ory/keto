@@ -5,6 +5,10 @@ import (
 	"net/http"
 	"sync"
 
+	"github.com/ory/x/configx"
+
+	"github.com/ory/keto/ketoctx"
+
 	prometheus "github.com/ory/x/prometheusx"
 
 	"github.com/ory/x/networkx"
@@ -83,20 +87,17 @@ type (
 	}
 )
 
-func (r *RegistryDefault) BuildVersion() string {
-	return config.Version
+func (r *RegistryDefault) ContextualizeConfig(_ context.Context) *configx.Provider {
+	return nil
 }
 
-func (r *RegistryDefault) BuildDate() string {
-	return config.Date
-}
+func (r *RegistryDefault) Config(ctx context.Context) *config.Config {
+	provider := ketoctx.ContextualizeConfig(ketoctx.WithConfigContextualizer(ctx, r))
+	if provider == nil {
+		return r.c
+	}
 
-func (r *RegistryDefault) BuildHash() string {
-	return config.Commit
-}
-
-func (r *RegistryDefault) Config() *config.Config {
-	return r.c
+	return config.New(ctx, r.Logger(), provider)
 }
 
 func (r *RegistryDefault) HealthHandler() *healthx.Handler {
@@ -119,10 +120,10 @@ func (r *RegistryDefault) GetVersion(_ context.Context, _ *acl.GetVersionRequest
 	return &acl.GetVersionResponse{Version: config.Version}, nil
 }
 
-func (r *RegistryDefault) Tracer() *tracing.Tracer {
+func (r *RegistryDefault) Tracer(ctx context.Context) *tracing.Tracer {
 	if r.tracer == nil {
 		// Tracing is initialized only once so it can not be hot reloaded or context-aware.
-		t, err := tracing.New(r.Logger(), r.Config().TracingConfig())
+		t, err := tracing.New(r.Logger(), r.Config(ctx).TracingConfig())
 		if err != nil {
 			r.Logger().WithError(err).Fatalf("Unable to initialize Tracer.")
 		}
@@ -188,13 +189,13 @@ func (r *RegistryDefault) ExpandEngine() *expand.Engine {
 	return r.ee
 }
 
-func (r *RegistryDefault) MigrationBox() (*popx.MigrationBox, error) {
+func (r *RegistryDefault) MigrationBox(ctx context.Context) (*popx.MigrationBox, error) {
 	if r.mb == nil {
-		c, err := r.PopConnection()
+		c, err := r.PopConnection(ctx)
 		if err != nil {
 			return nil, err
 		}
-		mb, err := sql.NewMigrationBox(c, r.Logger(), r.Tracer())
+		mb, err := sql.NewMigrationBox(c, r.Logger(), r.Tracer(ctx))
 		if err != nil {
 			return nil, err
 		}
@@ -204,7 +205,7 @@ func (r *RegistryDefault) MigrationBox() (*popx.MigrationBox, error) {
 }
 
 func (r *RegistryDefault) MigrateUp(ctx context.Context) error {
-	mb, err := r.MigrationBox()
+	mb, err := r.MigrationBox(ctx)
 	if err != nil {
 		return err
 	}
@@ -215,7 +216,7 @@ func (r *RegistryDefault) MigrateUp(ctx context.Context) error {
 }
 
 func (r *RegistryDefault) MigrateDown(ctx context.Context) error {
-	mb, err := r.MigrationBox()
+	mb, err := r.MigrationBox(ctx)
 	if err != nil {
 		return err
 	}
@@ -223,11 +224,11 @@ func (r *RegistryDefault) MigrateDown(ctx context.Context) error {
 }
 
 func (r *RegistryDefault) determineNetwork(ctx context.Context) (*networkx.Network, error) {
-	c, err := r.PopConnection()
+	c, err := r.PopConnection(ctx)
 	if err != nil {
 		return nil, err
 	}
-	mb, err := popx.NewMigrationBox(networkx.Migrations, popx.NewMigrator(c, r.Logger(), r.Tracer(), 0))
+	mb, err := popx.NewMigrationBox(networkx.Migrations, popx.NewMigrator(c, r.Logger(), r.Tracer(ctx), 0))
 	if err != nil {
 		return nil, err
 	}
@@ -239,12 +240,12 @@ func (r *RegistryDefault) determineNetwork(ctx context.Context) (*networkx.Netwo
 		return nil, errors.WithStack(persistence.ErrNetworkMigrationsMissing)
 	}
 
-	return networkx.NewManager(c, r.Logger(), r.Tracer()).Determine(ctx)
+	return networkx.NewManager(c, r.Logger(), r.Tracer(ctx)).Determine(ctx)
 }
 
 func (r *RegistryDefault) InitWithoutNetworkID(ctx context.Context) error {
-	if dbal.IsMemorySQLite(r.c.DSN()) {
-		mb, err := r.MigrationBox()
+	if dbal.IsMemorySQLite(r.Config(ctx).DSN()) {
+		mb, err := r.MigrationBox(ctx)
 		if err != nil {
 			return err
 		}
@@ -268,7 +269,7 @@ func (r *RegistryDefault) Init(ctx context.Context) (err error) {
 				return err
 			}
 
-			r.p, err = sql.NewPersister(r, network.ID)
+			r.p, err = sql.NewPersister(ctx, r, network.ID)
 			if err != nil {
 				return err
 			}
@@ -290,7 +291,7 @@ func (r *RegistryDefault) allHandlers() []Handler {
 	return r.handlers
 }
 
-func (r *RegistryDefault) ReadRouter() http.Handler {
+func (r *RegistryDefault) ReadRouter(ctx context.Context) http.Handler {
 	n := negroni.New(reqlog.NewMiddlewareFromLogger(r.l, "read#Ory Keto").ExcludePaths(healthx.AliveCheckPath, healthx.ReadyCheckPath))
 
 	br := &x.ReadRouter{Router: httprouter.New()}
@@ -304,7 +305,7 @@ func (r *RegistryDefault) ReadRouter() http.Handler {
 
 	n.UseHandler(br)
 
-	if t := r.Tracer(); t.IsLoaded() {
+	if t := r.Tracer(ctx); t.IsLoaded() {
 		n.Use(t)
 	}
 
@@ -313,7 +314,7 @@ func (r *RegistryDefault) ReadRouter() http.Handler {
 	}
 
 	var handler http.Handler = n
-	options, enabled := r.Config().CORS("read")
+	options, enabled := r.Config(ctx).CORS("read")
 	if enabled {
 		handler = cors.New(options).Handler(handler)
 	}
@@ -321,7 +322,7 @@ func (r *RegistryDefault) ReadRouter() http.Handler {
 	return handler
 }
 
-func (r *RegistryDefault) WriteRouter() http.Handler {
+func (r *RegistryDefault) WriteRouter(ctx context.Context) http.Handler {
 	n := negroni.New(reqlog.NewMiddlewareFromLogger(r.l, "write#Ory Keto").ExcludePaths(healthx.AliveCheckPath, healthx.ReadyCheckPath))
 
 	pr := &x.WriteRouter{Router: httprouter.New()}
@@ -335,7 +336,7 @@ func (r *RegistryDefault) WriteRouter() http.Handler {
 
 	n.UseHandler(pr)
 
-	if t := r.Tracer(); t.IsLoaded() {
+	if t := r.Tracer(ctx); t.IsLoaded() {
 		n.Use(t)
 	}
 
@@ -344,7 +345,7 @@ func (r *RegistryDefault) WriteRouter() http.Handler {
 	}
 
 	var handler http.Handler = n
-	options, enabled := r.Config().CORS("write")
+	options, enabled := r.Config(ctx).CORS("write")
 	if enabled {
 		handler = cors.New(options).Handler(handler)
 	}
@@ -369,15 +370,15 @@ func (r *RegistryDefault) MetricsRouter() http.Handler {
 	return handler
 }
 
-func (r *RegistryDefault) unaryInterceptors() []grpc.UnaryServerInterceptor {
+func (r *RegistryDefault) unaryInterceptors(ctx context.Context) []grpc.UnaryServerInterceptor {
 	is := []grpc.UnaryServerInterceptor{
 		herodot.UnaryErrorUnwrapInterceptor,
 		grpcMiddleware.ChainUnaryServer(
 			grpc_logrus.UnaryServerInterceptor(r.l.Entry),
 		),
 	}
-	if r.Tracer().IsLoaded() {
-		is = append(is, otgrpc.OpenTracingServerInterceptor(r.Tracer().Tracer()))
+	if r.Tracer(ctx).IsLoaded() {
+		is = append(is, otgrpc.OpenTracingServerInterceptor(r.Tracer(ctx).Tracer()))
 	}
 	if r.sqaService != nil {
 		is = append(is, r.sqaService.UnaryInterceptor)
@@ -385,15 +386,15 @@ func (r *RegistryDefault) unaryInterceptors() []grpc.UnaryServerInterceptor {
 	return is
 }
 
-func (r *RegistryDefault) streamInterceptors() []grpc.StreamServerInterceptor {
+func (r *RegistryDefault) streamInterceptors(ctx context.Context) []grpc.StreamServerInterceptor {
 	is := []grpc.StreamServerInterceptor{
 		herodot.StreamErrorUnwrapInterceptor,
 		grpcMiddleware.ChainStreamServer(
 			grpc_logrus.StreamServerInterceptor(r.l.Entry),
 		),
 	}
-	if r.Tracer().IsLoaded() {
-		is = append(is, otgrpc.OpenTracingStreamServerInterceptor(r.Tracer().Tracer()))
+	if r.Tracer(ctx).IsLoaded() {
+		is = append(is, otgrpc.OpenTracingStreamServerInterceptor(r.Tracer(ctx).Tracer()))
 	}
 	if r.sqaService != nil {
 		is = append(is, r.sqaService.StreamInterceptor)
@@ -401,10 +402,10 @@ func (r *RegistryDefault) streamInterceptors() []grpc.StreamServerInterceptor {
 	return is
 }
 
-func (r *RegistryDefault) ReadGRPCServer() *grpc.Server {
+func (r *RegistryDefault) ReadGRPCServer(ctx context.Context) *grpc.Server {
 	s := grpc.NewServer(
-		grpc.ChainStreamInterceptor(r.streamInterceptors()...),
-		grpc.ChainUnaryInterceptor(r.unaryInterceptors()...),
+		grpc.ChainStreamInterceptor(r.streamInterceptors(ctx)...),
+		grpc.ChainUnaryInterceptor(r.unaryInterceptors(ctx)...),
 	)
 
 	grpcHealthV1.RegisterHealthServer(s, r.HealthServer())
@@ -418,10 +419,10 @@ func (r *RegistryDefault) ReadGRPCServer() *grpc.Server {
 	return s
 }
 
-func (r *RegistryDefault) WriteGRPCServer() *grpc.Server {
+func (r *RegistryDefault) WriteGRPCServer(ctx context.Context) *grpc.Server {
 	s := grpc.NewServer(
-		grpc.ChainStreamInterceptor(r.streamInterceptors()...),
-		grpc.ChainUnaryInterceptor(r.unaryInterceptors()...),
+		grpc.ChainStreamInterceptor(r.streamInterceptors(ctx)...),
+		grpc.ChainUnaryInterceptor(r.unaryInterceptors(ctx)...),
 	)
 
 	grpcHealthV1.RegisterHealthServer(s, r.HealthServer())

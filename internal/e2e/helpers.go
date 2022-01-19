@@ -69,7 +69,7 @@ func newInitializedReg(t testing.TB, dsn *dbx.DsnT, cfgOverwrites map[string]int
 			nspaces = append(nspaces, n)
 		}
 
-		require.NoError(t, reg.Config().Set(config.KeyNamespaces, nspaces))
+		require.NoError(t, reg.Config(ctx).Set(config.KeyNamespaces, nspaces))
 
 		t.Cleanup(func() {
 			for _, n := range nn {
@@ -91,7 +91,7 @@ func newInitializedReg(t testing.TB, dsn *dbx.DsnT, cfgOverwrites map[string]int
 }
 
 func assertMigrated(ctx context.Context, t testing.TB, r driver.Registry) {
-	mb, err := r.MigrationBox()
+	mb, err := r.MigrationBox(ctx)
 	require.NoError(t, err)
 	s, err := mb.Status(ctx)
 	require.NoError(t, err)

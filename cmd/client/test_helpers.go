@@ -1,6 +1,7 @@
 package client
 
 import (
+	"context"
 	"net"
 	"testing"
 
@@ -23,7 +24,7 @@ type (
 		Addr, FlagRemote string
 		Cmd              *cmdx.CommandExecuter
 		Server           *grpc.Server
-		NewServer        func() *grpc.Server
+		NewServer        func(ctx context.Context) *grpc.Server
 
 		errG *errgroup.Group
 	}
@@ -36,10 +37,11 @@ const (
 )
 
 func NewTestServer(t *testing.T, rw ServerType, nspaces []*namespace.Namespace, newCmd func() *cobra.Command) *TestServer {
+	ctx := context.Background()
 	ts := &TestServer{
 		Reg: driver.NewSqliteTestRegistry(t, false),
 	}
-	require.NoError(t, ts.Reg.Config().Set(config.KeyNamespaces, nspaces))
+	require.NoError(t, ts.Reg.Config(ctx).Set(config.KeyNamespaces, nspaces))
 
 	switch rw {
 	case ReadServer:
@@ -53,7 +55,7 @@ func NewTestServer(t *testing.T, rw ServerType, nspaces []*namespace.Namespace, 
 		t.FailNow()
 	}
 
-	ts.Server = ts.NewServer()
+	ts.Server = ts.NewServer(ctx)
 
 	l, err := net.Listen("tcp", "127.0.0.1:0")
 	require.NoError(t, err)
@@ -67,6 +69,7 @@ func NewTestServer(t *testing.T, rw ServerType, nspaces []*namespace.Namespace, 
 	ts.Cmd = &cmdx.CommandExecuter{
 		New:            newCmd,
 		PersistentArgs: []string{"--" + ts.FlagRemote, ts.Addr},
+		Ctx:            ctx,
 	}
 
 	return ts

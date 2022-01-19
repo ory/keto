@@ -68,9 +68,9 @@ func TestMigrations(t *testing.T) {
 				t.Run("table=relation tuples", func(t *testing.T) {
 					reg := driver.NewTestRegistry(t, db)
 					require.NoError(t,
-						reg.Config().Set(config.KeyNamespaces, []*namespace.Namespace{{ID: 1, Name: "foo"}}))
+						reg.Config(ctx).Set(config.KeyNamespaces, []*namespace.Namespace{{ID: 1, Name: "foo"}}))
 
-					p, err := sql.NewPersister(reg, uuid.Must(uuid.FromString("77fdc5e0-2260-49da-8aae-c36ba255d05b")))
+					p, err := sql.NewPersister(ctx, reg, uuid.Must(uuid.FromString("77fdc5e0-2260-49da-8aae-c36ba255d05b")))
 					require.NoError(t, err)
 					rts, next, err := p.GetRelationTuples(context.Background(), &relationtuple.RelationQuery{Namespace: "foo"})
 					require.NoError(t, err)

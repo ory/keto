@@ -34,7 +34,7 @@ func TestToSingleTableMigrator(t *testing.T) {
 
 				nn = append(nn, n)
 
-				mb, err := m.namespaceMigrationBox(n)
+				mb, err := m.namespaceMigrationBox(ctx, n)
 				require.NoError(t, err)
 				require.NoError(t, mb.Up(ctx))
 
@@ -45,7 +45,7 @@ func TestToSingleTableMigrator(t *testing.T) {
 					require.NoError(t, mb.Down(ctx, -1))
 				})
 
-				require.NoError(t, r.Config().Set(config.KeyNamespaces, nn))
+				require.NoError(t, r.Config(ctx).Set(config.KeyNamespaces, nn))
 
 				return n
 			}
@@ -174,7 +174,7 @@ func TestToSingleTableMigrator_HasLegacyTable(t *testing.T) {
 					ID:   3,
 					Name: "foo",
 				}}
-				require.NoError(t, reg.Config().Set(config.KeyNamespaces, nspaces))
+				require.NoError(t, reg.Config(ctx).Set(config.KeyNamespaces, nspaces))
 
 				// expect to not report legacy table
 				legacyNamespaces, err := m.LegacyNamespaces(ctx)
@@ -182,7 +182,7 @@ func TestToSingleTableMigrator_HasLegacyTable(t *testing.T) {
 				assert.Len(t, legacyNamespaces, 0)
 
 				// migrate legacy table up
-				mb, err := m.namespaceMigrationBox(nspaces[0])
+				mb, err := m.namespaceMigrationBox(ctx, nspaces[0])
 				require.NoError(t, err)
 				require.NoError(t, mb.Up(ctx))
 
@@ -215,11 +215,11 @@ func TestToSingleTableMigrator_HasLegacyTable(t *testing.T) {
 					ID:   2,
 					Name: "c",
 				}}
-				require.NoError(t, reg.Config().Set(config.KeyNamespaces, nspaces))
+				require.NoError(t, reg.Config(ctx).Set(config.KeyNamespaces, nspaces))
 
 				for _, n := range nspaces {
 					// migrate legacy table up
-					mb, err := m.namespaceMigrationBox(n)
+					mb, err := m.namespaceMigrationBox(ctx, n)
 					require.NoError(t, err)
 					require.NoError(t, mb.Up(ctx))
 				}

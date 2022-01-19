@@ -7,22 +7,19 @@ import (
 	"reflect"
 	"strconv"
 
+	"github.com/gobuffalo/pop/v6"
 	"github.com/gofrs/uuid"
 	"github.com/ory/x/fsx"
 	"github.com/ory/x/logrusx"
 	"github.com/ory/x/networkx"
-
-	"github.com/ory/keto/internal/driver/config"
-
-	"github.com/ory/x/tracing"
-
 	"github.com/ory/x/popx"
-
-	"github.com/gobuffalo/pop/v6"
+	"github.com/ory/x/tracing"
 	"github.com/pkg/errors"
 
+	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/persistence"
 	"github.com/ory/keto/internal/x"
+	"github.com/ory/keto/ketoctx"
 )
 
 type (
@@ -38,7 +35,7 @@ type (
 		config.Provider
 		x.LoggerProvider
 
-		PopConnection() (*pop.Connection, error)
+		PopConnection(ctx context.Context) (*pop.Connection, error)
 	}
 )
 
@@ -53,8 +50,8 @@ var (
 	_ persistence.Persister = &Persister{}
 )
 
-func NewPersister(reg dependencies, nid uuid.UUID) (*Persister, error) {
-	conn, err := reg.PopConnection()
+func NewPersister(ctx context.Context, reg dependencies, nid uuid.UUID) (*Persister, error) {
+	conn, err := reg.PopConnection(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -99,8 +96,12 @@ func (p *Persister) Transaction(ctx context.Context, f func(ctx context.Context,
 	return popx.Transaction(ctx, p.conn.WithContext(ctx), f)
 }
 
-func (p *Persister) NetworkID(_ context.Context) uuid.UUID {
+func (p *Persister) ContextualizeNetwork(_ context.Context) uuid.UUID {
 	return p.nid
+}
+
+func (p *Persister) NetworkID(ctx context.Context) uuid.UUID {
+	return ketoctx.ContextualizeNetwork(ketoctx.WithNetworkContextualizer(ctx, p))
 }
 
 func internalPaginationFromOptions(opts ...x.PaginationOptionSetter) (*internalPagination, error) {

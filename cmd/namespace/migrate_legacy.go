@@ -39,7 +39,7 @@ func NewMigrateLegacyCmd() *cobra.Command {
 
 			var nn []*namespace.Namespace
 			if len(args) == 1 {
-				nm, err := reg.Config().NamespaceManager()
+				nm, err := reg.Config(cmd.Context()).NamespaceManager()
 				if err != nil {
 					_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "There seems to be a problem with the config: %s\n", err.Error())
 					return cmdx.FailSilently(cmd)

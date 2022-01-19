@@ -25,7 +25,7 @@ func newStatusCmd() *cobra.Command {
 				return err
 			}
 
-			mb, err := reg.MigrationBox()
+			mb, err := reg.MigrationBox(ctx)
 			if err != nil {
 				return err
 			}
