@@ -11,6 +11,21 @@ import (
 
 	"github.com/ory/x/logrusx"
 
+	grpcMiddleware "github.com/grpc-ecosystem/go-grpc-middleware"
+	grpc_logrus "github.com/grpc-ecosystem/go-grpc-middleware/logging/logrus"
+	"github.com/grpc-ecosystem/grpc-opentracing/go/otgrpc"
+	"github.com/julienschmidt/httprouter"
+	"github.com/ory/herodot"
+	"github.com/ory/x/reqlog"
+	"github.com/rs/cors"
+	"github.com/urfave/negroni"
+	grpcHealthV1 "google.golang.org/grpc/health/grpc_health_v1"
+	"google.golang.org/grpc/reflection"
+
+	"github.com/ory/keto/internal/x"
+	"github.com/ory/keto/ketoctx"
+	acl "github.com/ory/keto/proto/ory/keto/acl/v1alpha1"
+
 	"github.com/ory/keto/internal/check"
 	"github.com/ory/keto/internal/expand"
 	"github.com/ory/keto/internal/relationtuple"
@@ -245,4 +260,161 @@ func multiplexPort(ctx context.Context, log *logrusx.Logger, addr string, router
 	})
 
 	return eg.Wait()
+}
+
+func (r *RegistryDefault) allHandlers() []Handler {
+	if len(r.handlers) == 0 {
+		r.handlers = []Handler{
+			relationtuple.NewHandler(r),
+			check.NewHandler(r),
+			expand.NewHandler(r),
+		}
+	}
+	return r.handlers
+}
+
+func (r *RegistryDefault) ReadRouter(ctx context.Context) http.Handler {
+	n := negroni.New()
+	n.UseFunc(ketoctx.ContextualizeMiddleware(ketoctx.WithMiddlewareContextualizer(ctx, r)).ContextualizeHTTPMiddleware)
+	n.Use(reqlog.NewMiddlewareFromLogger(r.l, "read#Ory Keto").ExcludePaths(healthx.AliveCheckPath, healthx.ReadyCheckPath))
+
+	br := &x.ReadRouter{Router: httprouter.New()}
+
+	r.HealthHandler().SetHealthRoutes(br.Router, false)
+	r.HealthHandler().SetVersionRoutes(br.Router)
+
+	for _, h := range r.allHandlers() {
+		h.RegisterReadRoutes(br)
+	}
+
+	n.UseHandler(br)
+
+	if t := r.Tracer(ctx); t.IsLoaded() {
+		n.Use(t)
+	}
+
+	if r.sqaService != nil {
+		n.Use(r.sqaService)
+	}
+
+	var handler http.Handler = n
+	options, enabled := r.Config(ctx).CORS("read")
+	if enabled {
+		handler = cors.New(options).Handler(handler)
+	}
+
+	return handler
+}
+
+func (r *RegistryDefault) WriteRouter(ctx context.Context) http.Handler {
+	n := negroni.New()
+	n.UseFunc(ketoctx.ContextualizeMiddleware(ketoctx.WithMiddlewareContextualizer(ctx, r)).ContextualizeHTTPMiddleware)
+	n.Use(reqlog.NewMiddlewareFromLogger(r.l, "write#Ory Keto").ExcludePaths(healthx.AliveCheckPath, healthx.ReadyCheckPath))
+
+	pr := &x.WriteRouter{Router: httprouter.New()}
+
+	r.HealthHandler().SetHealthRoutes(pr.Router, false)
+	r.HealthHandler().SetVersionRoutes(pr.Router)
+
+	for _, h := range r.allHandlers() {
+		h.RegisterWriteRoutes(pr)
+	}
+
+	n.UseHandler(pr)
+
+	if t := r.Tracer(ctx); t.IsLoaded() {
+		n.Use(t)
+	}
+
+	if r.sqaService != nil {
+		n.Use(r.sqaService)
+	}
+
+	var handler http.Handler = n
+	options, enabled := r.Config(ctx).CORS("write")
+	if enabled {
+		handler = cors.New(options).Handler(handler)
+	}
+
+	return handler
+}
+
+func (r *RegistryDefault) unaryInterceptors(ctx context.Context) []grpc.UnaryServerInterceptor {
+	is := []grpc.UnaryServerInterceptor{
+		ketoctx.ContextualizeMiddleware(ketoctx.WithMiddlewareContextualizer(ctx, r)).ContextualizeGRPCUnaryMiddleware,
+		herodot.UnaryErrorUnwrapInterceptor,
+		grpcMiddleware.ChainUnaryServer(
+			grpc_logrus.UnaryServerInterceptor(r.l.Entry),
+		),
+	}
+	if r.Tracer(ctx).IsLoaded() {
+		is = append(is, otgrpc.OpenTracingServerInterceptor(r.Tracer(ctx).Tracer()))
+	}
+	if r.sqaService != nil {
+		is = append(is, r.sqaService.UnaryInterceptor)
+	}
+	return is
+}
+
+func (r *RegistryDefault) streamInterceptors(ctx context.Context) []grpc.StreamServerInterceptor {
+	is := []grpc.StreamServerInterceptor{
+		ketoctx.ContextualizeMiddleware(ketoctx.WithMiddlewareContextualizer(ctx, r)).ContextualizeGRPCStreamMiddleware,
+		herodot.StreamErrorUnwrapInterceptor,
+		grpcMiddleware.ChainStreamServer(
+			grpc_logrus.StreamServerInterceptor(r.l.Entry),
+		),
+	}
+	if r.Tracer(ctx).IsLoaded() {
+		is = append(is, otgrpc.OpenTracingStreamServerInterceptor(r.Tracer(ctx).Tracer()))
+	}
+	if r.sqaService != nil {
+		is = append(is, r.sqaService.StreamInterceptor)
+	}
+	return is
+}
+
+func (r *RegistryDefault) ReadGRPCServer(ctx context.Context) *grpc.Server {
+	s := grpc.NewServer(
+		grpc.ChainStreamInterceptor(r.streamInterceptors(ctx)...),
+		grpc.ChainUnaryInterceptor(r.unaryInterceptors(ctx)...),
+	)
+
+	grpcHealthV1.RegisterHealthServer(s, r.HealthServer())
+	acl.RegisterVersionServiceServer(s, r)
+	reflection.Register(s)
+
+	for _, h := range r.allHandlers() {
+		h.RegisterReadGRPC(s)
+	}
+
+	return s
+}
+
+func (r *RegistryDefault) WriteGRPCServer(ctx context.Context) *grpc.Server {
+	s := grpc.NewServer(
+		grpc.ChainStreamInterceptor(r.streamInterceptors(ctx)...),
+		grpc.ChainUnaryInterceptor(r.unaryInterceptors(ctx)...),
+	)
+
+	grpcHealthV1.RegisterHealthServer(s, r.HealthServer())
+	acl.RegisterVersionServiceServer(s, r)
+	reflection.Register(s)
+
+	for _, h := range r.allHandlers() {
+		h.RegisterWriteGRPC(s)
+	}
+
+	return s
+}
+
+func (*RegistryDefault) ContextualizeHTTPMiddleware(w http.ResponseWriter, req *http.Request, next http.HandlerFunc) {
+	next(w, req)
+}
+
+func (*RegistryDefault) ContextualizeGRPCUnaryMiddleware(ctx context.Context, req interface{}, _ *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
+	return handler(ctx, req)
+}
+
+func (*RegistryDefault) ContextualizeGRPCStreamMiddleware(srv interface{}, stream grpc.ServerStream, _ *grpc.StreamServerInfo, handler grpc.StreamHandler) error {
+	return handler(srv, stream)
 }

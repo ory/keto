@@ -2,6 +2,9 @@ package ketoctx
 
 import (
 	"context"
+	"net/http"
+
+	"google.golang.org/grpc"
 
 	"github.com/ory/x/configx"
 
@@ -15,12 +18,18 @@ type (
 	ConfigContextualizer interface {
 		ContextualizeConfig(ctx context.Context) *configx.Provider
 	}
+	MiddlewareContextualizer interface {
+		ContextualizeHTTPMiddleware(w http.ResponseWriter, r *http.Request, next http.HandlerFunc)
+		ContextualizeGRPCUnaryMiddleware(ctx context.Context, req interface{}, serverInfo *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error)
+		ContextualizeGRPCStreamMiddleware(srv interface{}, stream grpc.ServerStream, serverInfo *grpc.StreamServerInfo, handler grpc.StreamHandler) error
+	}
 	contextKey string
 )
 
 const (
-	NetworkContextualizerKey contextKey = "network contextualizer"
-	ConfigContextualizerKey  contextKey = "config contextualizer"
+	NetworkContextualizerKey    contextKey = "network contextualizer"
+	ConfigContextualizerKey     contextKey = "config contextualizer"
+	MiddlewareContextualizerKey contextKey = "middleware"
 )
 
 func ContextualizeNetwork(ctx context.Context) uuid.UUID {
@@ -45,6 +54,17 @@ func ContextualizeConfig(ctx context.Context) *configx.Provider {
 	return contextualizer.ContextualizeConfig(ctx)
 }
 
+func ContextualizeMiddleware(ctx context.Context) MiddlewareContextualizer {
+	if ctx == nil {
+		panic("got unexpected nil context")
+	}
+	contextualizer, ok := ctx.Value(MiddlewareContextualizerKey).(MiddlewareContextualizer)
+	if contextualizer == nil || !ok {
+		panic("no middleware contextualizer found in context")
+	}
+	return contextualizer
+}
+
 func WithNetworkContextualizer(ctx context.Context, contextualizer NetworkContextualizer) context.Context {
 	if ctx.Value(NetworkContextualizerKey) != nil {
 		return ctx
@@ -57,4 +77,11 @@ func WithConfigContextualizer(ctx context.Context, contextualizer ConfigContextu
 		return ctx
 	}
 	return context.WithValue(ctx, ConfigContextualizerKey, contextualizer)
+}
+
+func WithMiddlewareContextualizer(ctx context.Context, contextualizer MiddlewareContextualizer) context.Context {
+	if ctx.Value(MiddlewareContextualizerKey) != nil {
+		return ctx
+	}
+	return context.WithValue(ctx, MiddlewareContextualizerKey, contextualizer)
 }
