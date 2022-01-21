@@ -35,17 +35,17 @@ keto relation-tuple delete-all [flags]
       --namespace string      Set the requested namespace
       --object string         Set the requested object
   -q, --quiet                 Be quiet with output printing.
-      --read-remote string    Remote URL of the read API endpoint. (default &#34;127.0.0.1:4466&#34;)
+      --read-remote string    Remote address of the read API endpoint. (default &#34;127.0.0.1:4466&#34;)
       --relation string       Set the requested relation
       --subject-id string     Set the requested subject ID
       --subject-set string    Set the requested subject set; format: &#34;namespace:object#relation&#34;
-      --write-remote string   Remote URL of the write API endpoint. (default &#34;127.0.0.1:4467&#34;)
+      --write-remote string   Remote address of the write API endpoint. (default &#34;127.0.0.1:4467&#34;)
 ```
 
 ### Options inherited from parent commands
 
 ```
-  -c, --config strings   Config files to load, overwriting in the order specified. (default [/home/patrik/keto.yml])
+  -c, --config strings   Config files to load, overwriting in the order specified. (default [/home/circleci/keto.yml])
 ```
 
 ### SEE ALSO

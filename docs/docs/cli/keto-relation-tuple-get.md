@@ -19,7 +19,7 @@ Get relation tuples
 Get relation tuples matching the given partial tuple. Returns paginated results.
 
 ```
-keto relation-tuple get &lt;namespace&gt; [flags]
+keto relation-tuple get [flags]
 ```
 
 ### Options
@@ -27,6 +27,7 @@ keto relation-tuple get &lt;namespace&gt; [flags]
 ```
   -f, --format string         Set the output format. One of table, json, and json-pretty. (default &#34;default&#34;)
   -h, --help                  help for get
+      --namespace string      Set the requested namespace
       --object string         Set the requested object
       --page-size int32       maximum number of items to return (default 100)
       --page-token string     page token acquired from a previous response

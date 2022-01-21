@@ -33,6 +33,8 @@ Read and manipulate relation tuples
   tuples from JSON files
 - [keto relation-tuple delete](keto-relation-tuple-delete) - Delete relation
   tuples defined in JSON files
+- [keto relation-tuple delete-all](keto-relation-tuple-delete-all) - Delete ALL
+  relation tuples matching the relation query.
 - [keto relation-tuple get](keto-relation-tuple-get) - Get relation tuples
 - [keto relation-tuple parse](keto-relation-tuple-parse) - Parse human readable
   relation tuples
