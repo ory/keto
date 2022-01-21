@@ -10,6 +10,7 @@ import * as ory_keto_acl_v1alpha1_acl_pb from "../../../../ory/keto/acl/v1alpha1
 
 interface IWriteServiceService extends grpc.ServiceDefinition<grpc.UntypedServiceImplementation> {
     transactRelationTuples: IWriteServiceService_ITransactRelationTuples;
+    deleteRelationTuples: IWriteServiceService_IDeleteRelationTuples;
 }
 
 interface IWriteServiceService_ITransactRelationTuples extends grpc.MethodDefinition<ory_keto_acl_v1alpha1_write_service_pb.TransactRelationTuplesRequest, ory_keto_acl_v1alpha1_write_service_pb.TransactRelationTuplesResponse> {
@@ -21,17 +22,30 @@ interface IWriteServiceService_ITransactRelationTuples extends grpc.MethodDefini
     responseSerialize: grpc.serialize<ory_keto_acl_v1alpha1_write_service_pb.TransactRelationTuplesResponse>;
     responseDeserialize: grpc.deserialize<ory_keto_acl_v1alpha1_write_service_pb.TransactRelationTuplesResponse>;
 }
+interface IWriteServiceService_IDeleteRelationTuples extends grpc.MethodDefinition<ory_keto_acl_v1alpha1_write_service_pb.DeleteRelationTuplesRequest, ory_keto_acl_v1alpha1_write_service_pb.DeleteRelationTuplesResponse> {
+    path: "/ory.keto.acl.v1alpha1.WriteService/DeleteRelationTuples";
+    requestStream: false;
+    responseStream: false;
+    requestSerialize: grpc.serialize<ory_keto_acl_v1alpha1_write_service_pb.DeleteRelationTuplesRequest>;
+    requestDeserialize: grpc.deserialize<ory_keto_acl_v1alpha1_write_service_pb.DeleteRelationTuplesRequest>;
+    responseSerialize: grpc.serialize<ory_keto_acl_v1alpha1_write_service_pb.DeleteRelationTuplesResponse>;
+    responseDeserialize: grpc.deserialize<ory_keto_acl_v1alpha1_write_service_pb.DeleteRelationTuplesResponse>;
+}
 
 export const WriteServiceService: IWriteServiceService;
 
 export interface IWriteServiceServer {
     transactRelationTuples: grpc.handleUnaryCall<ory_keto_acl_v1alpha1_write_service_pb.TransactRelationTuplesRequest, ory_keto_acl_v1alpha1_write_service_pb.TransactRelationTuplesResponse>;
+    deleteRelationTuples: grpc.handleUnaryCall<ory_keto_acl_v1alpha1_write_service_pb.DeleteRelationTuplesRequest, ory_keto_acl_v1alpha1_write_service_pb.DeleteRelationTuplesResponse>;
 }
 
 export interface IWriteServiceClient {
     transactRelationTuples(request: ory_keto_acl_v1alpha1_write_service_pb.TransactRelationTuplesRequest, callback: (error: grpc.ServiceError | null, response: ory_keto_acl_v1alpha1_write_service_pb.TransactRelationTuplesResponse) => void): grpc.ClientUnaryCall;
     transactRelationTuples(request: ory_keto_acl_v1alpha1_write_service_pb.TransactRelationTuplesRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: ory_keto_acl_v1alpha1_write_service_pb.TransactRelationTuplesResponse) => void): grpc.ClientUnaryCall;
     transactRelationTuples(request: ory_keto_acl_v1alpha1_write_service_pb.TransactRelationTuplesRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: ory_keto_acl_v1alpha1_write_service_pb.TransactRelationTuplesResponse) => void): grpc.ClientUnaryCall;
+    deleteRelationTuples(request: ory_keto_acl_v1alpha1_write_service_pb.DeleteRelationTuplesRequest, callback: (error: grpc.ServiceError | null, response: ory_keto_acl_v1alpha1_write_service_pb.DeleteRelationTuplesResponse) => void): grpc.ClientUnaryCall;
+    deleteRelationTuples(request: ory_keto_acl_v1alpha1_write_service_pb.DeleteRelationTuplesRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: ory_keto_acl_v1alpha1_write_service_pb.DeleteRelationTuplesResponse) => void): grpc.ClientUnaryCall;
+    deleteRelationTuples(request: ory_keto_acl_v1alpha1_write_service_pb.DeleteRelationTuplesRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: ory_keto_acl_v1alpha1_write_service_pb.DeleteRelationTuplesResponse) => void): grpc.ClientUnaryCall;
 }
 
 export class WriteServiceClient extends grpc.Client implements IWriteServiceClient {
@@ -39,4 +53,7 @@ export class WriteServiceClient extends grpc.Client implements IWriteServiceClie
     public transactRelationTuples(request: ory_keto_acl_v1alpha1_write_service_pb.TransactRelationTuplesRequest, callback: (error: grpc.ServiceError | null, response: ory_keto_acl_v1alpha1_write_service_pb.TransactRelationTuplesResponse) => void): grpc.ClientUnaryCall;
     public transactRelationTuples(request: ory_keto_acl_v1alpha1_write_service_pb.TransactRelationTuplesRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: ory_keto_acl_v1alpha1_write_service_pb.TransactRelationTuplesResponse) => void): grpc.ClientUnaryCall;
     public transactRelationTuples(request: ory_keto_acl_v1alpha1_write_service_pb.TransactRelationTuplesRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: ory_keto_acl_v1alpha1_write_service_pb.TransactRelationTuplesResponse) => void): grpc.ClientUnaryCall;
+    public deleteRelationTuples(request: ory_keto_acl_v1alpha1_write_service_pb.DeleteRelationTuplesRequest, callback: (error: grpc.ServiceError | null, response: ory_keto_acl_v1alpha1_write_service_pb.DeleteRelationTuplesResponse) => void): grpc.ClientUnaryCall;
+    public deleteRelationTuples(request: ory_keto_acl_v1alpha1_write_service_pb.DeleteRelationTuplesRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: ory_keto_acl_v1alpha1_write_service_pb.DeleteRelationTuplesResponse) => void): grpc.ClientUnaryCall;
+    public deleteRelationTuples(request: ory_keto_acl_v1alpha1_write_service_pb.DeleteRelationTuplesRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: ory_keto_acl_v1alpha1_write_service_pb.DeleteRelationTuplesResponse) => void): grpc.ClientUnaryCall;
 }

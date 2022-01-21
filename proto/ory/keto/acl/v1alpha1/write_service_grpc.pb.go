@@ -51,7 +51,7 @@ func (c *writeServiceClient) DeleteRelationTuples(ctx context.Context, in *Delet
 }
 
 // WriteServiceServer is the server API for WriteService service.
-// All implementations must embed UnimplementedWriteServiceServer
+// All implementations should embed UnimplementedWriteServiceServer
 // for forward compatibility
 type WriteServiceServer interface {
 	// Writes one or more relation tuples in a single transaction.
@@ -60,7 +60,7 @@ type WriteServiceServer interface {
 	DeleteRelationTuples(context.Context, *DeleteRelationTuplesRequest) (*DeleteRelationTuplesResponse, error)
 }
 
-// UnimplementedWriteServiceServer must be embedded to have forward compatible implementations.
+// UnimplementedWriteServiceServer should be embedded to have forward compatible implementations.
 type UnimplementedWriteServiceServer struct {
 }
 
