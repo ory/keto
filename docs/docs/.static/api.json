@@ -699,6 +699,50 @@
         "tags": ["write"],
         "summary": "Delete Relation Tuples",
         "operationId": "deleteRelationTuples",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Namespace of the Relation Tuple",
+            "name": "namespace",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Object of the Relation Tuple",
+            "name": "object",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Relation of the Relation Tuple",
+            "name": "relation",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "SubjectID of the Relation Tuple",
+            "name": "subject_id",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Namespace of the Subject Set",
+            "name": "subject_set.namespace",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Object of the Subject Set",
+            "name": "subject_set.object",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Relation of the Subject Set",
+            "name": "subject_set.relation",
+            "in": "query"
+          }
+        ],
         "responses": {
           "204": {
             "description": "Empty responses are sent when, for example, resources are deleted. The HTTP status code for empty responses is typically 201."
