@@ -1069,7 +1069,8 @@
           "enum": [
             "insert",
             "delete"
-          ]
+          ],
+          "x-go-enum-desc": "insert ActionInsert\ndelete ActionDelete"
         },
         "relation_tuple": {
           "$ref": "#/definitions/InternalRelationTuple"
@@ -1141,13 +1142,15 @@
           "$ref": "#/definitions/SubjectSet"
         },
         "type": {
+          "description": "\nunion Union\nexclusion Exclusion\nintersection Intersection\nleaf Leaf",
           "type": "string",
           "enum": [
             "union",
             "exclusion",
             "intersection",
             "leaf"
-          ]
+          ],
+          "x-go-enum-desc": "union Union\nexclusion Exclusion\nintersection Intersection\nleaf Leaf"
         }
       }
     },
