@@ -221,6 +221,26 @@ This service is part of the
 | Method Name            | Request Type                                                                          | Response Type                                                                           | Description                                                 |
 | ---------------------- | ------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
 | TransactRelationTuples | [TransactRelationTuplesRequest](#ory.keto.acl.v1alpha1.TransactRelationTuplesRequest) | [TransactRelationTuplesResponse](#ory.keto.acl.v1alpha1.TransactRelationTuplesResponse) | Writes one or more relation tuples in a single transaction. |
+| DeleteRelationTuples   | [DeleteRelationTuplesRequest](#ory.keto.acl.v1alpha1.DeleteRelationTuplesRequest)     | [DeleteRelationTuplesResponse](#ory.keto.acl.v1alpha1.DeleteRelationTuplesResponse)     | Deletes relation tuples based on relation query             |
+
+### DeleteRelationTuplesRequest
+
+| Field | Type                                                                                          | Label | Description |
+| ----- | --------------------------------------------------------------------------------------------- | ----- | ----------- |
+| query | [DeleteRelationTuplesRequest.Query](#ory.keto.acl.v1alpha1.DeleteRelationTuplesRequest.Query) |       |             |
+
+### DeleteRelationTuplesRequest.Query
+
+The query for deleting relation tuples
+
+| Field     | Type                                      | Label | Description                          |
+| --------- | ----------------------------------------- | ----- | ------------------------------------ |
+| namespace | [string](#string)                         |       | Optional. The namespace to query.    |
+| object    | [string](#string)                         |       | Optional. The object to query for.   |
+| relation  | [string](#string)                         |       | Optional. The relation to query for. |
+| subject   | [Subject](#ory.keto.acl.v1alpha1.Subject) |       | Optional. The subject to query for.  |
+
+### DeleteRelationTuplesResponse
 
 ### RelationTupleDelta
 
