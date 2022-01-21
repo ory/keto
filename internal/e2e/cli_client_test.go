@@ -47,6 +47,9 @@ func (g *cliClient) createTuple(t require.TestingT, r *relationtuple.InternalRel
 
 func (g *cliClient) assembleQueryFlags(q *relationtuple.RelationQuery, opts []x.PaginationOptionSetter) []string {
 	var flags []string
+	if q.Namespace != "" {
+		flags = append(flags, "--"+clirelationtuple.FlagNamespace, q.Namespace)
+	}
 	if q.SubjectID != nil {
 		flags = append(flags, "--"+clirelationtuple.FlagSubjectID, *q.SubjectID)
 	}
@@ -70,7 +73,7 @@ func (g *cliClient) assembleQueryFlags(q *relationtuple.RelationQuery, opts []x.
 }
 
 func (g *cliClient) queryTuple(t require.TestingT, q *relationtuple.RelationQuery, opts ...x.PaginationOptionSetter) *relationtuple.GetResponse {
-	out := g.c.ExecNoErr(t, append(g.assembleQueryFlags(q, opts), "relation-tuple", "get", q.Namespace)...)
+	out := g.c.ExecNoErr(t, append(g.assembleQueryFlags(q, opts), "relation-tuple", "get")...)
 
 	var resp relationtuple.GetResponse
 	require.NoError(t, json.Unmarshal([]byte(out), &resp), "%s", out)
@@ -79,7 +82,7 @@ func (g *cliClient) queryTuple(t require.TestingT, q *relationtuple.RelationQuer
 }
 
 func (g *cliClient) queryTupleErr(t require.TestingT, expected herodot.DefaultError, q *relationtuple.RelationQuery, opts ...x.PaginationOptionSetter) {
-	stdErr := g.c.ExecExpectedErr(t, append(g.assembleQueryFlags(q, opts), "relation-tuple", "get", q.Namespace)...)
+	stdErr := g.c.ExecExpectedErr(t, append(g.assembleQueryFlags(q, opts), "relation-tuple", "get")...)
 	assert.Contains(t, stdErr, expected.GRPCCodeField.String())
 	assert.Contains(t, stdErr, expected.Error())
 }
@@ -123,4 +126,8 @@ func (g *cliClient) deleteTuple(t require.TestingT, r *relationtuple.InternalRel
 	stdout, stderr, err := g.c.Exec(bytes.NewBuffer(tupleEnc), "relation-tuple", "delete", "-")
 	require.NoError(t, err, "stdout: %s\nstderr: %s", stdout, stderr)
 	assert.Len(t, stderr, 0, stdout)
+}
+
+func (g *cliClient) deleteAllTuples(t require.TestingT, q *relationtuple.RelationQuery) {
+	_ = g.c.ExecNoErr(t, append(g.assembleQueryFlags(q, nil), "relation-tuple", "delete-all", "--force")...)
 }

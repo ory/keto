@@ -63,19 +63,19 @@ type DeleteRelationTupleParams struct {
 
 	   Namespace of the Relation Tuple
 	*/
-	Namespace string
+	Namespace *string
 
 	/* Object.
 
 	   Object of the Relation Tuple
 	*/
-	Object string
+	Object *string
 
 	/* Relation.
 
 	   Relation of the Relation Tuple
 	*/
-	Relation string
+	Relation *string
 
 	/* SubjectID.
 
@@ -155,35 +155,35 @@ func (o *DeleteRelationTupleParams) SetHTTPClient(client *http.Client) {
 }
 
 // WithNamespace adds the namespace to the delete relation tuple params
-func (o *DeleteRelationTupleParams) WithNamespace(namespace string) *DeleteRelationTupleParams {
+func (o *DeleteRelationTupleParams) WithNamespace(namespace *string) *DeleteRelationTupleParams {
 	o.SetNamespace(namespace)
 	return o
 }
 
 // SetNamespace adds the namespace to the delete relation tuple params
-func (o *DeleteRelationTupleParams) SetNamespace(namespace string) {
+func (o *DeleteRelationTupleParams) SetNamespace(namespace *string) {
 	o.Namespace = namespace
 }
 
 // WithObject adds the object to the delete relation tuple params
-func (o *DeleteRelationTupleParams) WithObject(object string) *DeleteRelationTupleParams {
+func (o *DeleteRelationTupleParams) WithObject(object *string) *DeleteRelationTupleParams {
 	o.SetObject(object)
 	return o
 }
 
 // SetObject adds the object to the delete relation tuple params
-func (o *DeleteRelationTupleParams) SetObject(object string) {
+func (o *DeleteRelationTupleParams) SetObject(object *string) {
 	o.Object = object
 }
 
 // WithRelation adds the relation to the delete relation tuple params
-func (o *DeleteRelationTupleParams) WithRelation(relation string) *DeleteRelationTupleParams {
+func (o *DeleteRelationTupleParams) WithRelation(relation *string) *DeleteRelationTupleParams {
 	o.SetRelation(relation)
 	return o
 }
 
 // SetRelation adds the relation to the delete relation tuple params
-func (o *DeleteRelationTupleParams) SetRelation(relation string) {
+func (o *DeleteRelationTupleParams) SetRelation(relation *string) {
 	o.Relation = relation
 }
 
@@ -239,33 +239,54 @@ func (o *DeleteRelationTupleParams) WriteToRequest(r runtime.ClientRequest, reg 
 	}
 	var res []error
 
-	// query param namespace
-	qrNamespace := o.Namespace
-	qNamespace := qrNamespace
-	if qNamespace != "" {
+	if o.Namespace != nil {
 
-		if err := r.SetQueryParam("namespace", qNamespace); err != nil {
-			return err
+		// query param namespace
+		var qrNamespace string
+
+		if o.Namespace != nil {
+			qrNamespace = *o.Namespace
+		}
+		qNamespace := qrNamespace
+		if qNamespace != "" {
+
+			if err := r.SetQueryParam("namespace", qNamespace); err != nil {
+				return err
+			}
 		}
 	}
 
-	// query param object
-	qrObject := o.Object
-	qObject := qrObject
-	if qObject != "" {
+	if o.Object != nil {
 
-		if err := r.SetQueryParam("object", qObject); err != nil {
-			return err
+		// query param object
+		var qrObject string
+
+		if o.Object != nil {
+			qrObject = *o.Object
+		}
+		qObject := qrObject
+		if qObject != "" {
+
+			if err := r.SetQueryParam("object", qObject); err != nil {
+				return err
+			}
 		}
 	}
 
-	// query param relation
-	qrRelation := o.Relation
-	qRelation := qrRelation
-	if qRelation != "" {
+	if o.Relation != nil {
 
-		if err := r.SetQueryParam("relation", qRelation); err != nil {
-			return err
+		// query param relation
+		var qrRelation string
+
+		if o.Relation != nil {
+			qrRelation = *o.Relation
+		}
+		qRelation := qrRelation
+		if qRelation != "" {
+
+			if err := r.SetQueryParam("relation", qRelation); err != nil {
+				return err
+			}
 		}
 	}
 

@@ -49,22 +49,19 @@
             "type": "string",
             "description": "Namespace of the Relation Tuple",
             "name": "namespace",
-            "in": "query",
-            "required": true
+            "in": "query"
           },
           {
             "type": "string",
             "description": "Object of the Relation Tuple",
             "name": "object",
-            "in": "query",
-            "required": true
+            "in": "query"
           },
           {
             "type": "string",
             "description": "Relation of the Relation Tuple",
             "name": "relation",
-            "in": "query",
-            "required": true
+            "in": "query"
           },
           {
             "type": "string",
@@ -776,22 +773,19 @@
             "type": "string",
             "description": "Namespace of the Relation Tuple",
             "name": "namespace",
-            "in": "query",
-            "required": true
+            "in": "query"
           },
           {
             "type": "string",
             "description": "Object of the Relation Tuple",
             "name": "object",
-            "in": "query",
-            "required": true
+            "in": "query"
           },
           {
             "type": "string",
             "description": "Relation of the Relation Tuple",
             "name": "relation",
-            "in": "query",
-            "required": true
+            "in": "query"
           },
           {
             "type": "string",

@@ -161,6 +161,40 @@ func runCases(c client, addNamespace func(*testing.T, ...*namespace.Namespace)) 
 			}
 		})
 
+		t.Run("case=deletes tuples based on relation query", func(t *testing.T) {
+			n := &namespace.Namespace{Name: t.Name()}
+			addNamespace(t, n)
+
+			rts := []*relationtuple.InternalRelationTuple{
+				{
+					Namespace: n.Name,
+					Object:    "o1",
+					Relation:  "rel",
+					Subject:   &relationtuple.SubjectID{ID: "s1"},
+				},
+				{
+					Namespace: n.Name,
+					Object:    "o2",
+					Relation:  "rel",
+					Subject:   &relationtuple.SubjectID{ID: "s2"},
+				},
+			}
+			for i := 0; i < len(rts); i++ {
+				c.createTuple(t, rts[i])
+			}
+
+			q := &relationtuple.RelationQuery{
+				Namespace: n.Name,
+				Relation:  "rel",
+			}
+			resp := c.queryTuple(t, q)
+			require.Equal(t, resp.RelationTuples, rts)
+
+			c.deleteAllTuples(t, q)
+			resp = c.queryTuple(t, q)
+			assert.Equal(t, len(resp.RelationTuples), 0)
+		})
+
 		t.Run("case=returns error with status code on unknown namespace", func(t *testing.T) {
 			c.queryTupleErr(t, herodot.ErrNotFound, &relationtuple.RelationQuery{Namespace: "unknown namespace"})
 		})

@@ -169,6 +169,22 @@ func (g *grpcClient) deleteTuple(t require.TestingT, r *relationtuple.InternalRe
 	g.transactTuples(t, nil, []*relationtuple.InternalRelationTuple{r})
 }
 
+func (g *grpcClient) deleteAllTuples(t require.TestingT, q *relationtuple.RelationQuery) {
+	c := acl.NewWriteServiceClient(g.writeConn(t))
+	query := &acl.DeleteRelationTuplesRequest_Query{
+		Namespace: q.Namespace,
+		Object:    q.Object,
+		Relation:  q.Relation,
+	}
+	if s := q.Subject(); s != nil {
+		query.Subject = s.ToProto()
+	}
+	_, err := c.DeleteRelationTuples(g.ctx, &acl.DeleteRelationTuplesRequest{
+		Query: query,
+	})
+	require.NoError(t, err)
+}
+
 func (g *grpcClient) transactTuples(t require.TestingT, ins []*relationtuple.InternalRelationTuple, del []*relationtuple.InternalRelationTuple) {
 	c := acl.NewWriteServiceClient(g.writeConn(t))
 

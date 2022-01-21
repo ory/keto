@@ -33,6 +33,7 @@ type (
 	client interface {
 		createTuple(t require.TestingT, r *relationtuple.InternalRelationTuple)
 		deleteTuple(t require.TestingT, r *relationtuple.InternalRelationTuple)
+		deleteAllTuples(t require.TestingT, q *relationtuple.RelationQuery)
 		queryTuple(t require.TestingT, q *relationtuple.RelationQuery, opts ...x.PaginationOptionSetter) *relationtuple.GetResponse
 		queryTupleErr(t require.TestingT, expected herodot.DefaultError, q *relationtuple.RelationQuery, opts ...x.PaginationOptionSetter)
 		check(t require.TestingT, r *relationtuple.InternalRelationTuple) bool

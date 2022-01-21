@@ -52,6 +52,23 @@ func (h *handler) TransactRelationTuples(ctx context.Context, req *acl.TransactR
 	}, nil
 }
 
+func (h *handler) DeleteRelationTuples(ctx context.Context, req *acl.DeleteRelationTuplesRequest) (*acl.DeleteRelationTuplesResponse, error) {
+	if req.Query == nil {
+		return nil, errors.WithStack(herodot.ErrBadRequest.WithReason("invalid request"))
+	}
+
+	q, err := (&RelationQuery{}).FromProto(req.Query)
+	if err != nil {
+		return nil, errors.WithStack(herodot.ErrBadRequest.WithError(err.Error()))
+	}
+
+	if err := h.d.RelationTupleManager().DeleteAllRelationTuples(ctx, q); err != nil {
+		return nil, errors.WithStack(herodot.ErrInternalServerError.WithError(err.Error()))
+	}
+
+	return &acl.DeleteRelationTuplesResponse{}, nil
+}
+
 // The basic ACL relation tuple
 //
 // swagger:parameters postCheck createRelationTuple
@@ -69,19 +86,16 @@ type queryRelationTuple struct {
 	// Namespace of the Relation Tuple
 	//
 	// in: query
-	// required: true
 	Namespace string `json:"namespace"`
 
 	// Object of the Relation Tuple
 	//
 	// in: query
-	// required: true
 	Object string `json:"object"`
 
 	// Relation of the Relation Tuple
 	//
 	// in: query
-	// required: true
 	Relation string `json:"relation"`
 
 	// SubjectID of the Relation Tuple
@@ -152,11 +166,11 @@ func (h *handler) createRelation(w http.ResponseWriter, r *http.Request, _ httpr
 	h.d.Writer().WriteCreated(w, r, RouteBase+"?"+q.Encode(), &rel)
 }
 
-// swagger:route DELETE /relation-tuples write deleteRelationTuple
+// swagger:route DELETE /relation-tuples write deleteRelationTuples
 //
-// Delete a Relation Tuple
+// Delete Relation Tuples
 //
-// Use this endpoint to delete a relation tuple.
+// Use this endpoint to delete relation tuples
 //
 //     Consumes:
 //     -  application/x-www-form-urlencoded
@@ -170,15 +184,22 @@ func (h *handler) createRelation(w http.ResponseWriter, r *http.Request, _ httpr
 //       204: emptyResponse
 //       400: genericError
 //       500: genericError
-func (h *handler) deleteRelation(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	rel, err := (&InternalRelationTuple{}).FromURLQuery(r.URL.Query())
+func (h *handler) deleteRelations(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	q := r.URL.Query()
+	query, err := (&RelationQuery{}).FromURLQuery(q)
 	if err != nil {
 		h.d.Writer().WriteError(w, r, herodot.ErrBadRequest.WithError(err.Error()))
 		return
 	}
 
-	if err := h.d.RelationTupleManager().DeleteRelationTuples(r.Context(), rel); err != nil {
-		h.d.Logger().WithError(err).WithFields(rel.ToLoggerFields()).Errorf("got an error while deleting the relation tuple")
+	l := h.d.Logger()
+	for k := range q {
+		l = l.WithField(k, q.Get(k))
+	}
+	l.Debug("deleting relation tuples")
+
+	if err := h.d.RelationTupleManager().DeleteAllRelationTuples(r.Context(), query); err != nil {
+		l.WithError(err).Errorf("got an error while deleting relation tuples")
 		h.d.Writer().WriteError(w, r, herodot.ErrInternalServerError.WithError(err.Error()))
 		return
 	}

@@ -20,6 +20,7 @@ import (
 )
 
 const (
+	FlagNamespace  = "namespace"
 	FlagSubject    = "subject"
 	FlagSubjectID  = "subject-id"
 	FlagSubjectSet = "subject-set"
@@ -30,6 +31,7 @@ const (
 )
 
 func registerRelationTupleFlags(flags *pflag.FlagSet) {
+	flags.String(FlagNamespace, "", "Set the requested namespace")
 	flags.String(FlagSubjectID, "", "Set the requested subject ID")
 	flags.String(FlagSubjectSet, "", `Set the requested subject set; format: "namespace:object#relation"`)
 	flags.String(FlagRelation, "", "Set the requested relation")
@@ -41,9 +43,9 @@ func registerRelationTupleFlags(flags *pflag.FlagSet) {
 	}
 }
 
-func readQueryFromFlags(cmd *cobra.Command, namespace string) (*acl.ListRelationTuplesRequest_Query, error) {
+func readQueryFromFlags(cmd *cobra.Command) (*acl.ListRelationTuplesRequest_Query, error) {
 	query := &acl.ListRelationTuplesRequest_Query{
-		Namespace: namespace,
+		Namespace: flagx.MustGetString(cmd, FlagNamespace),
 		Object:    flagx.MustGetString(cmd, FlagObject),
 		Relation:  flagx.MustGetString(cmd, FlagRelation),
 	}
@@ -71,45 +73,12 @@ func newGetCmd() *cobra.Command {
 	)
 
 	cmd := &cobra.Command{
-		Use:   "get <namespace>",
+		Use:   "get",
 		Short: "Get relation tuples",
 		Long: "Get relation tuples matching the given partial tuple.\n" +
 			"Returns paginated results.",
-		Args: cobra.ExactArgs(1),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			if cmd.Flags().Changed(FlagSubject) {
-				return fmt.Errorf("usage of --%s is not supported anymore, use --%s or --%s respectively", FlagSubject, FlagSubjectID, FlagSubjectSet)
-			}
-
-			conn, err := client.GetReadConn(cmd)
-			if err != nil {
-				return err
-			}
-			defer conn.Close()
-
-			cl := acl.NewReadServiceClient(conn)
-			query, err := readQueryFromFlags(cmd, args[0])
-			if err != nil {
-				return err
-			}
-
-			resp, err := cl.ListRelationTuples(cmd.Context(), &acl.ListRelationTuplesRequest{
-				Query:     query,
-				PageSize:  pageSize,
-				PageToken: pageToken,
-			})
-			if err != nil {
-				_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not make request: %s\n", err)
-				return cmdx.FailSilently(cmd)
-			}
-
-			cmdx.PrintTable(cmd, &responseOutput{
-				RelationTuples: relationtuple.NewProtoRelationCollection(resp.RelationTuples),
-				IsLastPage:     resp.NextPageToken == "",
-				NextPageToken:  resp.NextPageToken,
-			})
-			return nil
-		},
+		Args: cobra.ExactArgs(0),
+		RunE: getTuples(&pageSize, &pageToken),
 	}
 
 	cmd.Flags().AddFlagSet(packageFlags)
@@ -119,6 +88,43 @@ func newGetCmd() *cobra.Command {
 	cmd.Flags().Int32Var(&pageSize, FlagPageSize, 100, "maximum number of items to return")
 
 	return cmd
+}
+
+func getTuples(pageSize *int32, pageToken *string) func(cmd *cobra.Command, _ []string) error {
+	return func(cmd *cobra.Command, args []string) error {
+		if cmd.Flags().Changed(FlagSubject) {
+			return fmt.Errorf("usage of --%s is not supported anymore, use --%s or --%s respectively", FlagSubject, FlagSubjectID, FlagSubjectSet)
+		}
+
+		conn, err := client.GetReadConn(cmd)
+		if err != nil {
+			return err
+		}
+		defer conn.Close()
+
+		cl := acl.NewReadServiceClient(conn)
+		query, err := readQueryFromFlags(cmd)
+		if err != nil {
+			return err
+		}
+
+		resp, err := cl.ListRelationTuples(cmd.Context(), &acl.ListRelationTuplesRequest{
+			Query:     query,
+			PageSize:  *pageSize,
+			PageToken: *pageToken,
+		})
+		if err != nil {
+			_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not make request: %s\n", err)
+			return cmdx.FailSilently(cmd)
+		}
+
+		cmdx.PrintTable(cmd, &responseOutput{
+			RelationTuples: relationtuple.NewProtoRelationCollection(resp.RelationTuples),
+			IsLastPage:     resp.NextPageToken == "",
+			NextPageToken:  resp.NextPageToken,
+		})
+		return nil
+	}
 }
 
 type responseOutput struct {

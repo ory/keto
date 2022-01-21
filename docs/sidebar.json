@@ -57,6 +57,7 @@
           "cli/keto-relation-tuple",
           "cli/keto-relation-tuple-create",
           "cli/keto-relation-tuple-delete",
+          "cli/keto-relation-tuple-delete-all",
           "cli/keto-relation-tuple-get",
           "cli/keto-relation-tuple-parse",
           "cli/keto-serve",

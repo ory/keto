@@ -29,6 +29,7 @@ type (
 		GetRelationTuples(ctx context.Context, query *RelationQuery, options ...x.PaginationOptionSetter) ([]*InternalRelationTuple, string, error)
 		WriteRelationTuples(ctx context.Context, rs ...*InternalRelationTuple) error
 		DeleteRelationTuples(ctx context.Context, rs ...*InternalRelationTuple) error
+		DeleteAllRelationTuples(ctx context.Context, query *RelationQuery) error
 		TransactRelationTuples(ctx context.Context, insert []*InternalRelationTuple, delete []*InternalRelationTuple) error
 	}
 
@@ -43,8 +44,6 @@ type (
 
 type RelationQuery struct {
 	// Namespace of the Relation Tuple
-	//
-	// required: true
 	Namespace string `json:"namespace"`
 
 	// Object of the Relation Tuple
@@ -422,16 +421,16 @@ func (r *InternalRelationTuple) ToLoggerFields() logrus.Fields {
 	}
 }
 
-func (q *RelationQuery) FromProto(query *acl.ListRelationTuplesRequest_Query) (*RelationQuery, error) {
-	q.Namespace = query.Namespace
-	q.Object = query.Object
-	q.Relation = query.Relation
+func (q *RelationQuery) FromProto(query TupleData) (*RelationQuery, error) {
+	q.Namespace = query.GetNamespace()
+	q.Object = query.GetObject()
+	q.Relation = query.GetRelation()
 	// reset subject
 	q.SubjectID = nil
 	q.SubjectSet = nil
 
-	if query.Subject != nil {
-		switch s := query.Subject.Ref.(type) {
+	if query.GetSubject() != nil {
+		switch s := query.GetSubject().Ref.(type) {
 		case *acl.Subject_Id:
 			q.SubjectID = &s.Id
 		case *acl.Subject_Set:
@@ -672,6 +671,10 @@ func (t *ManagerWrapper) WriteRelationTuples(ctx context.Context, rs ...*Interna
 
 func (t *ManagerWrapper) DeleteRelationTuples(ctx context.Context, rs ...*InternalRelationTuple) error {
 	return t.Reg.RelationTupleManager().DeleteRelationTuples(ctx, rs...)
+}
+
+func (t *ManagerWrapper) DeleteAllRelationTuples(ctx context.Context, query *RelationQuery) error {
+	return t.Reg.RelationTupleManager().DeleteAllRelationTuples(ctx, query)
 }
 
 func (t *ManagerWrapper) TransactRelationTuples(ctx context.Context, insert []*InternalRelationTuple, delete []*InternalRelationTuple) error {

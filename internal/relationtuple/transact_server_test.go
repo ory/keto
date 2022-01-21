@@ -7,6 +7,7 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"testing"
 
 	"github.com/ory/keto/internal/driver/config"
@@ -165,6 +166,45 @@ func TestWriteHandlers(t *testing.T) {
 
 			// set a size > 1 just to make sure it gets all
 			actualRTs, _, err := reg.RelationTupleManager().GetRelationTuples(context.Background(), rt.ToQuery(), x.WithSize(10))
+			require.NoError(t, err)
+			assert.Equal(t, []*relationtuple.InternalRelationTuple{}, actualRTs)
+		})
+
+		t.Run("case=deletes multiple tuples", func(t *testing.T) {
+			nspace := addNamespace(t)
+
+			rts := []*relationtuple.InternalRelationTuple{
+				{
+					Namespace: nspace.Name,
+					Object:    "deleted obj",
+					Relation:  "deleted rel",
+					Subject:   &relationtuple.SubjectID{ID: "deleted subj 1"},
+				},
+				{
+					Namespace: nspace.Name,
+					Object:    "deleted obj",
+					Relation:  "deleted rel",
+					Subject:   &relationtuple.SubjectID{ID: "deleted subj 2"},
+				},
+			}
+
+			require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), rts...))
+
+			q := url.Values{
+				"namespace": {nspace.Name},
+				"object":    {"deleted obj"},
+				"relation":  {"deleted rel"},
+			}
+			req, err := http.NewRequest(http.MethodDelete, ts.URL+relationtuple.RouteBase+"?"+q.Encode(), nil)
+			require.NoError(t, err)
+			resp, err := ts.Client().Do(req)
+			require.NoError(t, err)
+			assert.Equal(t, http.StatusNoContent, resp.StatusCode)
+
+			query, err := (&relationtuple.RelationQuery{}).FromURLQuery(q)
+			require.NoError(t, err)
+
+			actualRTs, _, err := reg.RelationTupleManager().GetRelationTuples(context.Background(), query, x.WithSize(10))
 			require.NoError(t, err)
 			assert.Equal(t, []*relationtuple.InternalRelationTuple{}, actualRTs)
 		})
