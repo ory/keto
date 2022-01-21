@@ -752,7 +752,7 @@
         }
       },
       "delete": {
-        "description": "Use this endpoint to delete a relation tuple.",
+        "description": "Use this endpoint to delete relation tuples",
         "consumes": [
           "application/x-www-form-urlencoded"
         ],
@@ -766,52 +766,8 @@
         "tags": [
           "write"
         ],
-        "summary": "Delete a Relation Tuple",
-        "operationId": "deleteRelationTuple",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "Namespace of the Relation Tuple",
-            "name": "namespace",
-            "in": "query"
-          },
-          {
-            "type": "string",
-            "description": "Object of the Relation Tuple",
-            "name": "object",
-            "in": "query"
-          },
-          {
-            "type": "string",
-            "description": "Relation of the Relation Tuple",
-            "name": "relation",
-            "in": "query"
-          },
-          {
-            "type": "string",
-            "description": "SubjectID of the Relation Tuple",
-            "name": "subject_id",
-            "in": "query"
-          },
-          {
-            "type": "string",
-            "description": "Namespace of the Subject Set",
-            "name": "subject_set.namespace",
-            "in": "query"
-          },
-          {
-            "type": "string",
-            "description": "Object of the Subject Set",
-            "name": "subject_set.object",
-            "in": "query"
-          },
-          {
-            "type": "string",
-            "description": "Relation of the Subject Set",
-            "name": "subject_set.relation",
-            "in": "query"
-          }
-        ],
+        "summary": "Delete Relation Tuples",
+        "operationId": "deleteRelationTuples",
         "responses": {
           "204": {
             "description": "Empty responses are sent when, for example, resources are deleted. The HTTP status code for empty responses is typically 201."
@@ -1069,8 +1025,7 @@
           "enum": [
             "insert",
             "delete"
-          ],
-          "x-go-enum-desc": "insert ActionInsert\ndelete ActionDelete"
+          ]
         },
         "relation_tuple": {
           "$ref": "#/definitions/InternalRelationTuple"
@@ -1079,9 +1034,6 @@
     },
     "RelationQuery": {
       "type": "object",
-      "required": [
-        "namespace"
-      ],
       "properties": {
         "namespace": {
           "description": "Namespace of the Relation Tuple",
@@ -1145,15 +1097,13 @@
           "$ref": "#/definitions/SubjectSet"
         },
         "type": {
-          "description": "\nunion Union\nexclusion Exclusion\nintersection Intersection\nleaf Leaf",
           "type": "string",
           "enum": [
             "union",
             "exclusion",
             "intersection",
             "leaf"
-          ],
-          "x-go-enum-desc": "union Union\nexclusion Exclusion\nintersection Intersection\nleaf Leaf"
+          ]
         }
       }
     },

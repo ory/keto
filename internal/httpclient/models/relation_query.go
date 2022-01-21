@@ -11,7 +11,6 @@ import (
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
-	"github.com/go-openapi/validate"
 )
 
 // RelationQuery relation query
@@ -20,8 +19,7 @@ import (
 type RelationQuery struct {
 
 	// Namespace of the Relation Tuple
-	// Required: true
-	Namespace *string `json:"namespace"`
+	Namespace string `json:"namespace,omitempty"`
 
 	// Object of the Relation Tuple
 	Object string `json:"object,omitempty"`
@@ -42,10 +40,6 @@ type RelationQuery struct {
 func (m *RelationQuery) Validate(formats strfmt.Registry) error {
 	var res []error
 
-	if err := m.validateNamespace(formats); err != nil {
-		res = append(res, err)
-	}
-
 	if err := m.validateSubjectSet(formats); err != nil {
 		res = append(res, err)
 	}
@@ -53,15 +47,6 @@ func (m *RelationQuery) Validate(formats strfmt.Registry) error {
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
-	return nil
-}
-
-func (m *RelationQuery) validateNamespace(formats strfmt.Registry) error {
-
-	if err := validate.Required("namespace", "body", m.Namespace); err != nil {
-		return err
-	}
-
 	return nil
 }
 
@@ -74,8 +59,6 @@ func (m *RelationQuery) validateSubjectSet(formats strfmt.Registry) error {
 		if err := m.SubjectSet.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("subject_set")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("subject_set")
 			}
 			return err
 		}
@@ -104,8 +87,6 @@ func (m *RelationQuery) contextValidateSubjectSet(ctx context.Context, formats s
 		if err := m.SubjectSet.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("subject_set")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("subject_set")
 			}
 			return err
 		}

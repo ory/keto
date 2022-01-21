@@ -32,7 +32,7 @@ type ClientOption func(*runtime.ClientOperation)
 type ClientService interface {
 	CreateRelationTuple(params *CreateRelationTupleParams, opts ...ClientOption) (*CreateRelationTupleCreated, error)
 
-	DeleteRelationTuple(params *DeleteRelationTupleParams, opts ...ClientOption) (*DeleteRelationTupleNoContent, error)
+	DeleteRelationTuples(params *DeleteRelationTuplesParams, opts ...ClientOption) (*DeleteRelationTuplesNoContent, error)
 
 	PatchRelationTuples(params *PatchRelationTuplesParams, opts ...ClientOption) (*PatchRelationTuplesNoContent, error)
 
@@ -80,24 +80,24 @@ func (a *Client) CreateRelationTuple(params *CreateRelationTupleParams, opts ...
 }
 
 /*
-  DeleteRelationTuple deletes a relation tuple
+  DeleteRelationTuples deletes relation tuples
 
-  Use this endpoint to delete a relation tuple.
+  Use this endpoint to delete relation tuples
 */
-func (a *Client) DeleteRelationTuple(params *DeleteRelationTupleParams, opts ...ClientOption) (*DeleteRelationTupleNoContent, error) {
+func (a *Client) DeleteRelationTuples(params *DeleteRelationTuplesParams, opts ...ClientOption) (*DeleteRelationTuplesNoContent, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewDeleteRelationTupleParams()
+		params = NewDeleteRelationTuplesParams()
 	}
 	op := &runtime.ClientOperation{
-		ID:                 "deleteRelationTuple",
+		ID:                 "deleteRelationTuples",
 		Method:             "DELETE",
 		PathPattern:        "/relation-tuples",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/x-www-form-urlencoded"},
 		Schemes:            []string{"http", "https"},
 		Params:             params,
-		Reader:             &DeleteRelationTupleReader{formats: a.formats},
+		Reader:             &DeleteRelationTuplesReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
 	}
@@ -109,13 +109,13 @@ func (a *Client) DeleteRelationTuple(params *DeleteRelationTupleParams, opts ...
 	if err != nil {
 		return nil, err
 	}
-	success, ok := result.(*DeleteRelationTupleNoContent)
+	success, ok := result.(*DeleteRelationTuplesNoContent)
 	if ok {
 		return success, nil
 	}
 	// unexpected success response
 	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for deleteRelationTuple: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	msg := fmt.Sprintf("unexpected success response for deleteRelationTuples: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 
