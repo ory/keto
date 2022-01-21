@@ -3,7 +3,7 @@
 
 **Table of Contents**
 
-- [0.0.0 (2022-01-10)](#000-2022-01-10)
+- [0.0.0 (2022-01-21)](#000-2022-01-21)
   - [Bug Fixes](#bug-fixes)
   - [Documentation](#documentation)
   - [Features](#features)
@@ -107,7 +107,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.7.0-alpha.1...v0.0.0) (2022-01-10)
+# [0.0.0](https://github.com/ory/keto/compare/v0.7.0-alpha.1...v0.0.0) (2022-01-21)
 
 ### Bug Fixes
 
@@ -127,6 +127,8 @@
 
   The `namespace` parameter is now not required anymore in the list REST API.
 
+- Openapi spec and internal SDK ([#819](https://github.com/ory/keto/issues/819))
+  ([a1b20c7](https://github.com/ory/keto/commit/a1b20c7b5ba0e1ad986a1788900e4fece5d44792))
 - Panic on macOS
   ([059a6f9](https://github.com/ory/keto/commit/059a6f9241798b7dcffc03910f9bd319488a479a))
 - Slow keto start up time
@@ -174,6 +176,10 @@
   Furthermore, there is now a global max-depth configuration value that limits
   the overall max-depth of check and expand operations. It defaults to `5`,
   which is considered a very safe value.
+
+- Bulk deletion of relation tuples
+  ([#799](https://github.com/ory/keto/issues/799))
+  ([c1e8546](https://github.com/ory/keto/commit/c1e854635c0e3a9c7b75c65f1ffa1f4e0f976dbc))
 
 # [0.7.0-alpha.1](https://github.com/ory/keto/compare/v0.7.0-alpha.0...v0.7.0-alpha.1) (2021-10-19)
 
