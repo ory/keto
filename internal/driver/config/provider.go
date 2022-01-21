@@ -63,6 +63,7 @@ func New(ctx context.Context, flags *pflag.FlagSet, l *logrusx.Logger) (*Config,
 
 	var err error
 	kp.p, err = configx.New(
+		ctx,
 		Schema,
 		configx.WithFlags(flags),
 		configx.WithStderrValidationReporter(),
