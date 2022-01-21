@@ -12,9 +12,11 @@ replace github.com/gobuffalo/packr => github.com/gobuffalo/packr v1.30.1
 
 replace github.com/ory/keto/proto => ./proto
 
-replace github.com/gobuffalo/pop/v5 => github.com/gobuffalo/pop/v5 v5.3.4-0.20210716080118-0ecad2589ac4
-
 replace github.com/dgrijalva/jwt-go => github.com/golang-jwt/jwt/v4 v4.0.0
+
+replace github.com/containerd/containerd => github.com/containerd/containerd v1.5.9
+
+replace github.com/opencontainers/runc => github.com/opencontainers/runc v1.0.3
 
 require (
 	github.com/cenkalti/backoff/v3 v3.0.0
