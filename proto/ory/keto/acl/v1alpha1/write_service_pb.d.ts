@@ -83,3 +83,77 @@ export namespace TransactRelationTuplesResponse {
         snaptokensList: Array<string>,
     }
 }
+
+export class DeleteRelationTuplesRequest extends jspb.Message { 
+
+    hasQuery(): boolean;
+    clearQuery(): void;
+    getQuery(): DeleteRelationTuplesRequest.Query | undefined;
+    setQuery(value?: DeleteRelationTuplesRequest.Query): DeleteRelationTuplesRequest;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): DeleteRelationTuplesRequest.AsObject;
+    static toObject(includeInstance: boolean, msg: DeleteRelationTuplesRequest): DeleteRelationTuplesRequest.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: DeleteRelationTuplesRequest, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): DeleteRelationTuplesRequest;
+    static deserializeBinaryFromReader(message: DeleteRelationTuplesRequest, reader: jspb.BinaryReader): DeleteRelationTuplesRequest;
+}
+
+export namespace DeleteRelationTuplesRequest {
+    export type AsObject = {
+        query?: DeleteRelationTuplesRequest.Query.AsObject,
+    }
+
+
+    export class Query extends jspb.Message { 
+        getNamespace(): string;
+        setNamespace(value: string): Query;
+        getObject(): string;
+        setObject(value: string): Query;
+        getRelation(): string;
+        setRelation(value: string): Query;
+
+        hasSubject(): boolean;
+        clearSubject(): void;
+        getSubject(): ory_keto_acl_v1alpha1_acl_pb.Subject | undefined;
+        setSubject(value?: ory_keto_acl_v1alpha1_acl_pb.Subject): Query;
+
+        serializeBinary(): Uint8Array;
+        toObject(includeInstance?: boolean): Query.AsObject;
+        static toObject(includeInstance: boolean, msg: Query): Query.AsObject;
+        static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+        static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+        static serializeBinaryToWriter(message: Query, writer: jspb.BinaryWriter): void;
+        static deserializeBinary(bytes: Uint8Array): Query;
+        static deserializeBinaryFromReader(message: Query, reader: jspb.BinaryReader): Query;
+    }
+
+    export namespace Query {
+        export type AsObject = {
+            namespace: string,
+            object: string,
+            relation: string,
+            subject?: ory_keto_acl_v1alpha1_acl_pb.Subject.AsObject,
+        }
+    }
+
+}
+
+export class DeleteRelationTuplesResponse extends jspb.Message { 
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): DeleteRelationTuplesResponse.AsObject;
+    static toObject(includeInstance: boolean, msg: DeleteRelationTuplesResponse): DeleteRelationTuplesResponse.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: DeleteRelationTuplesResponse, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): DeleteRelationTuplesResponse;
+    static deserializeBinaryFromReader(message: DeleteRelationTuplesResponse, reader: jspb.BinaryReader): DeleteRelationTuplesResponse;
+}
+
+export namespace DeleteRelationTuplesResponse {
+    export type AsObject = {
+    }
+}

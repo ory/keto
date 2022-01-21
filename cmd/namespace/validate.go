@@ -70,7 +70,7 @@ func getSchema(cmd *cobra.Command) (*jsonschema.Schema, error) {
 		}
 
 		var err error
-		configSchema, err = c.Compile(schemaPath + "#/definitions/namespace")
+		configSchema, err = c.Compile(cmd.Context(), schemaPath+"#/definitions/namespace")
 		if err != nil {
 			_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not compile the config schema file. This is an internal error that should be reported. Thanks ;)\n%+v\n", err)
 			return nil, cmdx.FailSilently(cmd)

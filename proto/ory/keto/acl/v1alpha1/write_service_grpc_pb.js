@@ -5,6 +5,28 @@ var grpc = require('@grpc/grpc-js');
 var ory_keto_acl_v1alpha1_write_service_pb = require('../../../../ory/keto/acl/v1alpha1/write_service_pb.js');
 var ory_keto_acl_v1alpha1_acl_pb = require('../../../../ory/keto/acl/v1alpha1/acl_pb.js');
 
+function serialize_ory_keto_acl_v1alpha1_DeleteRelationTuplesRequest(arg) {
+  if (!(arg instanceof ory_keto_acl_v1alpha1_write_service_pb.DeleteRelationTuplesRequest)) {
+    throw new Error('Expected argument of type ory.keto.acl.v1alpha1.DeleteRelationTuplesRequest');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_ory_keto_acl_v1alpha1_DeleteRelationTuplesRequest(buffer_arg) {
+  return ory_keto_acl_v1alpha1_write_service_pb.DeleteRelationTuplesRequest.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_ory_keto_acl_v1alpha1_DeleteRelationTuplesResponse(arg) {
+  if (!(arg instanceof ory_keto_acl_v1alpha1_write_service_pb.DeleteRelationTuplesResponse)) {
+    throw new Error('Expected argument of type ory.keto.acl.v1alpha1.DeleteRelationTuplesResponse');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_ory_keto_acl_v1alpha1_DeleteRelationTuplesResponse(buffer_arg) {
+  return ory_keto_acl_v1alpha1_write_service_pb.DeleteRelationTuplesResponse.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
 function serialize_ory_keto_acl_v1alpha1_TransactRelationTuplesRequest(arg) {
   if (!(arg instanceof ory_keto_acl_v1alpha1_write_service_pb.TransactRelationTuplesRequest)) {
     throw new Error('Expected argument of type ory.keto.acl.v1alpha1.TransactRelationTuplesRequest');
@@ -43,6 +65,18 @@ transactRelationTuples: {
     requestDeserialize: deserialize_ory_keto_acl_v1alpha1_TransactRelationTuplesRequest,
     responseSerialize: serialize_ory_keto_acl_v1alpha1_TransactRelationTuplesResponse,
     responseDeserialize: deserialize_ory_keto_acl_v1alpha1_TransactRelationTuplesResponse,
+  },
+  // Deletes relation tuples based on relation query
+deleteRelationTuples: {
+    path: '/ory.keto.acl.v1alpha1.WriteService/DeleteRelationTuples',
+    requestStream: false,
+    responseStream: false,
+    requestType: ory_keto_acl_v1alpha1_write_service_pb.DeleteRelationTuplesRequest,
+    responseType: ory_keto_acl_v1alpha1_write_service_pb.DeleteRelationTuplesResponse,
+    requestSerialize: serialize_ory_keto_acl_v1alpha1_DeleteRelationTuplesRequest,
+    requestDeserialize: deserialize_ory_keto_acl_v1alpha1_DeleteRelationTuplesRequest,
+    responseSerialize: serialize_ory_keto_acl_v1alpha1_DeleteRelationTuplesResponse,
+    responseDeserialize: deserialize_ory_keto_acl_v1alpha1_DeleteRelationTuplesResponse,
   },
 };
 
