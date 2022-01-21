@@ -53,7 +53,7 @@ func (c *sdkClient) getWriteClient() *httpclient.OryKeto {
 
 func (c *sdkClient) createTuple(t require.TestingT, r *relationtuple.InternalRelationTuple) {
 	payload := &models.RelationQuery{
-		Namespace: &r.Namespace,
+		Namespace: r.Namespace,
 		Object:    r.Object,
 		Relation:  r.Relation,
 	}
@@ -76,7 +76,7 @@ func (c *sdkClient) createTuple(t require.TestingT, r *relationtuple.InternalRel
 }
 
 func (c *sdkClient) deleteTuple(t require.TestingT, r *relationtuple.InternalRelationTuple) {
-	params := write.NewDeleteRelationTupleParamsWithTimeout(time.Second).
+	params := write.NewDeleteRelationTuplesParamsWithTimeout(time.Second).
 		WithNamespace(&r.Namespace).
 		WithObject(&r.Object).
 		WithRelation(&r.Relation)
@@ -90,12 +90,12 @@ func (c *sdkClient) deleteTuple(t require.TestingT, r *relationtuple.InternalRel
 			WithSubjectSetRelation(&s.Relation)
 	}
 
-	_, err := c.getWriteClient().Write.DeleteRelationTuple(params)
+	_, err := c.getWriteClient().Write.DeleteRelationTuples(params)
 	require.NoError(t, err)
 }
 
 func (c *sdkClient) deleteAllTuples(t require.TestingT, q *relationtuple.RelationQuery) {
-	params := write.NewDeleteRelationTupleParamsWithTimeout(time.Second).
+	params := write.NewDeleteRelationTuplesParamsWithTimeout(time.Second).
 		WithNamespace(&q.Namespace).
 		WithObject(&q.Object).
 		WithRelation(&q.Relation)
@@ -112,7 +112,7 @@ func (c *sdkClient) deleteAllTuples(t require.TestingT, q *relationtuple.Relatio
 		}
 	}
 
-	_, err := c.getWriteClient().Write.DeleteRelationTuple(params)
+	_, err := c.getWriteClient().Write.DeleteRelationTuples(params)
 	require.NoError(t, err)
 }
 

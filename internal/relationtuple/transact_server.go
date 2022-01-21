@@ -80,7 +80,7 @@ type bodyRelationTuple struct {
 
 // The basic ACL relation tuple
 //
-// swagger:parameters getCheck deleteRelationTuple
+// swagger:parameters getCheck deleteRelationTuples
 // nolint:deadcode,unused
 type queryRelationTuple struct {
 	// Namespace of the Relation Tuple
