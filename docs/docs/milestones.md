@@ -30,10 +30,10 @@ New feature or request.
 
 #### Issues
 
-- [ ] Bulk deletion of relation tuples
-      ([keto#599](https://github.com/ory/keto/issues/599))
 - [ ] Automatic Subject/Object encoding
       ([keto#792](https://github.com/ory/keto/issues/792))
+- [x] Bulk deletion of relation tuples
+      ([keto#599](https://github.com/ory/keto/issues/599))
 
 ### [Rfc](https://github.com/ory/keto/labels/rfc)
 
@@ -41,10 +41,10 @@ A request for comments to discuss and share ideas.
 
 #### Issues
 
-- [ ] Bulk deletion of relation tuples
-      ([keto#599](https://github.com/ory/keto/issues/599))
 - [ ] Document best practices on how to check permissions for inserting/creating
       an object ([keto#728](https://github.com/ory/keto/issues/728))
+- [x] Bulk deletion of relation tuples
+      ([keto#599](https://github.com/ory/keto/issues/599))
 
 ## [v0.7.0](https://github.com/ory/keto/milestone/5)
 
