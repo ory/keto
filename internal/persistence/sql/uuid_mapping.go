@@ -2,6 +2,7 @@ package sql
 
 import (
 	"context"
+	"errors"
 
 	"github.com/gofrs/uuid"
 	"github.com/ory/x/sqlcon"
@@ -42,4 +43,19 @@ func (p *Persister) LookupUUID(ctx context.Context, id uuid.UUID) (rep string, e
 	}
 
 	return m.StringRepresentation, nil
+}
+
+func (p *Persister) MappedUUID(ctx context.Context, representation string) (uuid.UUID, error) {
+	p.d.Logger().Trace("looking up mapped UUID")
+
+	m := &UUIDMapping{}
+	if err := sqlcon.HandleError(p.Connection(ctx).Where("string_representation = ?", representation).First(m)); err != nil {
+		if errors.Is(err, sqlcon.ErrNoRows) {
+			id := uuid.Must(uuid.NewV4())
+			return id, p.AddUUIDMapping(ctx, id, representation)
+		}
+		return uuid.Nil, err
+	}
+
+	return m.ID, nil
 }

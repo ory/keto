@@ -6,6 +6,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/gobuffalo/pop/v6"
 	"github.com/gofrs/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -34,7 +35,8 @@ func TestToUUIDMappingMigrator(t *testing.T) {
 				name: "with string subject",
 				rt: &sql.RelationTuple{
 					ID:         uuid.Must(uuid.NewV4()),
-					SubjectID:  dbsql.NullString{String: "a", Valid: true},
+					Object:     "object",
+					SubjectID:  dbsql.NullString{String: "subject", Valid: true},
 					CommitTime: time.Now(),
 				},
 				expectMapping: true,
@@ -44,11 +46,12 @@ func TestToUUIDMappingMigrator(t *testing.T) {
 					ID:                    uuid.Must(uuid.NewV4()),
 					SubjectID:             dbsql.NullString{String: "", Valid: false},
 					SubjectSetNamespaceID: dbsql.NullInt32{Int32: 0, Valid: true},
-					SubjectSetObject:      dbsql.NullString{String: "obj", Valid: true},
-					SubjectSetRelation:    dbsql.NullString{String: "rel", Valid: true},
+					SubjectSetObject:      dbsql.NullString{String: "object", Valid: true},
+					SubjectSetRelation:    dbsql.NullString{String: "subject_set_relation", Valid: true},
+					Object:                "object",
 					CommitTime:            time.Now(),
 				},
-				expectMapping: false,
+				expectMapping: true,
 			}, {
 				name: "with UUID subject",
 				rt: &sql.RelationTuple{
@@ -68,11 +71,15 @@ func TestToUUIDMappingMigrator(t *testing.T) {
 					require.NoError(t, conn.Find(newRt, tc.rt.ID))
 
 					if tc.expectMapping {
-						// Check that a mapping was created
-						mapping := &sql.UUIDMapping{}
-						require.NoError(t, conn.Find(mapping, newRt.SubjectID))
-						assert.NotEqual(t, tc.rt.SubjectID, newRt.SubjectID)
-						assert.Equal(t, tc.rt.SubjectID.String, mapping.StringRepresentation)
+						// Check subject mapping
+						if tc.rt.SubjectID.Valid {
+							assertHasMapping(t, conn, tc.rt.SubjectID.String, newRt.SubjectID.String)
+						} else {
+							assertHasMapping(t, conn, tc.rt.SubjectSetObject.String, newRt.SubjectSetObject.String)
+							// check that both "OBJECT" strings are mapped to same UUID.
+							assert.Equal(t, newRt.Object, newRt.SubjectSetObject.String)
+						}
+						assertHasMapping(t, conn, tc.rt.Object, newRt.Object)
 					} else {
 						// Nothing should have changed (ignoring commit time)
 						newRt.CommitTime = tc.rt.CommitTime
@@ -82,4 +89,14 @@ func TestToUUIDMappingMigrator(t *testing.T) {
 			}
 		})
 	}
+}
+
+// assertHasMapping checks that there is a mapping from the given string (value)
+// to the given UUID (uid).
+func assertHasMapping(t *testing.T, conn *pop.Connection, value, uid string) {
+	t.Helper()
+	mapping := &sql.UUIDMapping{}
+	require.NoError(t, conn.Find(mapping, uid), "Could not find mapping for %q", uid)
+	assert.NotEqual(t, value, uid, "value was not replaced by UUID")
+	assert.Equal(t, value, mapping.StringRepresentation)
 }
