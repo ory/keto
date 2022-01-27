@@ -343,7 +343,7 @@ func (r *RegistryDefault) WriteRouter(ctx context.Context) http.Handler {
 }
 
 func (r *RegistryDefault) unaryInterceptors(ctx context.Context) []grpc.UnaryServerInterceptor {
-	is := make([]grpc.UnaryServerInterceptor, 0, len(r.defaultUnaryInterceptors)+2)
+	is := make([]grpc.UnaryServerInterceptor, len(r.defaultUnaryInterceptors), len(r.defaultUnaryInterceptors)+2)
 	copy(is, r.defaultUnaryInterceptors)
 	is = append(is,
 		herodot.UnaryErrorUnwrapInterceptor,
@@ -361,7 +361,7 @@ func (r *RegistryDefault) unaryInterceptors(ctx context.Context) []grpc.UnarySer
 }
 
 func (r *RegistryDefault) streamInterceptors(ctx context.Context) []grpc.StreamServerInterceptor {
-	is := make([]grpc.StreamServerInterceptor, 0, len(r.defaultStreamInterceptors)+2)
+	is := make([]grpc.StreamServerInterceptor, len(r.defaultStreamInterceptors), len(r.defaultStreamInterceptors)+2)
 	copy(is, r.defaultStreamInterceptors)
 	is = append(is,
 		herodot.StreamErrorUnwrapInterceptor,
