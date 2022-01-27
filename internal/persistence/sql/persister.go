@@ -34,6 +34,7 @@ type (
 	dependencies interface {
 		config.Provider
 		x.LoggerProvider
+		ketoctx.ContextualizerProvider
 
 		PopConnection(ctx context.Context) (*pop.Connection, error)
 	}
@@ -96,12 +97,8 @@ func (p *Persister) Transaction(ctx context.Context, f func(ctx context.Context,
 	return popx.Transaction(ctx, p.conn.WithContext(ctx), f)
 }
 
-func (p *Persister) ContextualizeNetwork(_ context.Context) uuid.UUID {
-	return p.nid
-}
-
 func (p *Persister) NetworkID(ctx context.Context) uuid.UUID {
-	return ketoctx.ContextualizeNetwork(ketoctx.WithNetworkContextualizer(ctx, p))
+	return p.d.Contextualizer().Network(ctx, p.nid)
 }
 
 func internalPaginationFromOptions(opts ...x.PaginationOptionSetter) (*internalPagination, error) {

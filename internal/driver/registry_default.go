@@ -2,9 +2,8 @@ package driver
 
 import (
 	"context"
+	"net/http"
 	"sync"
-
-	"github.com/ory/x/configx"
 
 	"github.com/ory/keto/ketoctx"
 
@@ -43,23 +42,25 @@ import (
 )
 
 var (
-	_ relationtuple.ManagerProvider = (*RegistryDefault)(nil)
-	_ x.WriterProvider              = (*RegistryDefault)(nil)
-	_ x.LoggerProvider              = (*RegistryDefault)(nil)
-	_ Registry                      = (*RegistryDefault)(nil)
-	_ acl.VersionServiceServer      = (*RegistryDefault)(nil)
+	_ relationtuple.ManagerProvider  = (*RegistryDefault)(nil)
+	_ x.WriterProvider               = (*RegistryDefault)(nil)
+	_ x.LoggerProvider               = (*RegistryDefault)(nil)
+	_ Registry                       = (*RegistryDefault)(nil)
+	_ acl.VersionServiceServer       = (*RegistryDefault)(nil)
+	_ ketoctx.ContextualizerProvider = (*RegistryDefault)(nil)
 )
 
 type (
 	RegistryDefault struct {
-		p    persistence.Persister
-		mb   *popx.MigrationBox
-		l    *logrusx.Logger
-		w    herodot.Writer
-		ce   *check.Engine
-		ee   *expand.Engine
-		c    *config.Config
-		conn *pop.Connection
+		p     persistence.Persister
+		mb    *popx.MigrationBox
+		l     *logrusx.Logger
+		w     herodot.Writer
+		ce    *check.Engine
+		ee    *expand.Engine
+		c     *config.Config
+		conn  *pop.Connection
+		ctxer ketoctx.Contextualizer
 
 		initialized    sync.Once
 		healthH        *healthx.Handler
@@ -69,6 +70,10 @@ type (
 		tracer         *tracing.Tracer
 		pmm            *prometheus.MetricsManager
 		metricsHandler *prometheus.Handler
+
+		defaultUnaryInterceptors  []grpc.UnaryServerInterceptor
+		defaultStreamInterceptors []grpc.StreamServerInterceptor
+		defaultHttpMiddlewares    []func(rw http.ResponseWriter, r *http.Request, next http.HandlerFunc)
 	}
 	Handler interface {
 		RegisterReadRoutes(r *x.ReadRouter)
@@ -78,17 +83,15 @@ type (
 	}
 )
 
-func (r *RegistryDefault) ContextualizeConfig(_ context.Context) *configx.Provider {
-	return nil
+func (r *RegistryDefault) Contextualizer() ketoctx.Contextualizer {
+	return r.ctxer
 }
 
 func (r *RegistryDefault) Config(ctx context.Context) *config.Config {
-	provider := ketoctx.ContextualizeConfig(ketoctx.WithConfigContextualizer(ctx, r))
-	if provider == nil {
-		return r.c
+	if provider := r.ctxer.Config(ctx, nil); provider != nil {
+		return config.New(ctx, r.Logger(), provider)
 	}
-
-	return config.New(ctx, r.Logger(), provider)
+	return r.c
 }
 
 func (r *RegistryDefault) HealthHandler() *healthx.Handler {

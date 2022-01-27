@@ -3,6 +3,8 @@ package namespace
 import (
 	"fmt"
 
+	"github.com/ory/keto/ketoctx"
+
 	"github.com/ory/x/cmdx"
 	"github.com/ory/x/flagx"
 	"github.com/pkg/errors"
@@ -15,7 +17,7 @@ import (
 	"github.com/ory/keto/internal/persistence/sql/migrations"
 )
 
-func NewMigrateLegacyCmd() *cobra.Command {
+func NewMigrateLegacyCmd(opts []ketoctx.Option) *cobra.Command {
 	downOnly := false
 
 	cmd := &cobra.Command{
@@ -27,7 +29,7 @@ func NewMigrateLegacyCmd() *cobra.Command {
 			"Please ensure that namespace IDs did not change in the config file and you have a backup in case something goes wrong!",
 		Args: cobra.MaximumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			reg, err := driver.NewDefaultRegistry(cmd.Context(), cmd.Flags(), false)
+			reg, err := driver.NewDefaultRegistry(cmd.Context(), cmd.Flags(), false, opts...)
 			if errors.Is(err, persistence.ErrNetworkMigrationsMissing) {
 				_, _ = fmt.Fprintln(cmd.ErrOrStderr(), "Migrations were not applied yet, please apply them first using `keto migrate up`.")
 				return cmdx.FailSilently(cmd)

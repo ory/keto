@@ -4,6 +4,8 @@ import (
 	"context"
 	"testing"
 
+	"github.com/ory/keto/ketoctx"
+
 	"github.com/ory/keto/internal/x/dbx"
 
 	"github.com/sirupsen/logrus"
@@ -17,20 +19,18 @@ import (
 	"github.com/ory/keto/internal/driver/config"
 )
 
-func NewDefaultRegistry(ctx context.Context, flags *pflag.FlagSet, withoutNetwork bool) (Registry, error) {
+func NewDefaultRegistry(ctx context.Context, flags *pflag.FlagSet, withoutNetwork bool, opts ...ketoctx.Option) (Registry, error) {
 	reg, ok := ctx.Value(RegistryContextKey).(Registry)
 	if ok {
 		return reg, nil
 	}
 
-	hook, ok := ctx.Value(LogrusHookContextKey).(logrus.Hook)
+	options := ketoctx.Options(opts...)
 
-	var opts []logrusx.Option
-	if ok {
-		opts = append(opts, logrusx.WithHook(hook))
+	l := options.Logger()
+	if l == nil {
+		l = newLogger(ctx)
 	}
-
-	l := logrusx.New("Ory Keto", config.Version, opts...)
 
 	c, err := config.NewDefault(ctx, flags, l)
 	if err != nil {
@@ -38,8 +38,12 @@ func NewDefaultRegistry(ctx context.Context, flags *pflag.FlagSet, withoutNetwor
 	}
 
 	r := &RegistryDefault{
-		c: c,
-		l: l,
+		c:                         c,
+		l:                         l,
+		ctxer:                     options.Contextualizer(),
+		defaultUnaryInterceptors:  options.GRPCUnaryInterceptors(),
+		defaultStreamInterceptors: options.GRPCStreamInterceptors(),
+		defaultHttpMiddlewares:    options.HTTPMiddlewares(),
 	}
 
 	init := r.Init
@@ -73,8 +77,9 @@ func NewTestRegistry(t *testing.T, dsn *dbx.DsnT) *RegistryDefault {
 	require.NoError(t, c.Set("log.level", "debug"))
 
 	r := &RegistryDefault{
-		c: c,
-		l: l,
+		c:     c,
+		l:     l,
+		ctxer: &ketoctx.DefaultContextualizer{},
 	}
 
 	if dsn.MigrateUp {
@@ -92,4 +97,15 @@ func NewTestRegistry(t *testing.T, dsn *dbx.DsnT) *RegistryDefault {
 	})
 
 	return r
+}
+
+func newLogger(ctx context.Context) *logrusx.Logger {
+	hook, ok := ctx.Value(LogrusHookContextKey).(logrus.Hook)
+
+	var opts []logrusx.Option
+	if ok {
+		opts = append(opts, logrusx.WithHook(hook))
+	}
+
+	return logrusx.New("Ory Keto", config.Version, opts...)
 }

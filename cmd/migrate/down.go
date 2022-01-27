@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/ory/keto/ketoctx"
+
 	"github.com/ory/x/popx"
 
 	"github.com/ory/x/flagx"
@@ -14,7 +16,7 @@ import (
 	"github.com/ory/keto/internal/driver"
 )
 
-func newDownCmd() *cobra.Command {
+func newDownCmd(opts []ketoctx.Option) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "down <steps>",
 		Short: "Migrate the database down",
@@ -28,7 +30,7 @@ func newDownCmd() *cobra.Command {
 				return fmt.Errorf("malformed argument %s for <steps>: %+v", args[0], err)
 			}
 
-			reg, err := driver.NewDefaultRegistry(cmd.Context(), cmd.Flags(), true)
+			reg, err := driver.NewDefaultRegistry(cmd.Context(), cmd.Flags(), true, opts...)
 			if err != nil {
 				return err
 			}

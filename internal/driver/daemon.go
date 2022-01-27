@@ -23,7 +23,6 @@ import (
 	"google.golang.org/grpc/reflection"
 
 	"github.com/ory/keto/internal/x"
-	"github.com/ory/keto/ketoctx"
 	acl "github.com/ory/keto/proto/ory/keto/acl/v1alpha1"
 
 	"github.com/ory/keto/internal/check"
@@ -275,7 +274,9 @@ func (r *RegistryDefault) allHandlers() []Handler {
 
 func (r *RegistryDefault) ReadRouter(ctx context.Context) http.Handler {
 	n := negroni.New()
-	n.UseFunc(ketoctx.ContextualizeMiddleware(ketoctx.WithMiddlewareContextualizer(ctx, r)).ContextualizeHTTPMiddleware)
+	for _, f := range r.defaultHttpMiddlewares {
+		n.UseFunc(f)
+	}
 	n.Use(reqlog.NewMiddlewareFromLogger(r.l, "read#Ory Keto").ExcludePaths(healthx.AliveCheckPath, healthx.ReadyCheckPath))
 
 	br := &x.ReadRouter{Router: httprouter.New()}
@@ -308,7 +309,9 @@ func (r *RegistryDefault) ReadRouter(ctx context.Context) http.Handler {
 
 func (r *RegistryDefault) WriteRouter(ctx context.Context) http.Handler {
 	n := negroni.New()
-	n.UseFunc(ketoctx.ContextualizeMiddleware(ketoctx.WithMiddlewareContextualizer(ctx, r)).ContextualizeHTTPMiddleware)
+	for _, f := range r.defaultHttpMiddlewares {
+		n.UseFunc(f)
+	}
 	n.Use(reqlog.NewMiddlewareFromLogger(r.l, "write#Ory Keto").ExcludePaths(healthx.AliveCheckPath, healthx.ReadyCheckPath))
 
 	pr := &x.WriteRouter{Router: httprouter.New()}
@@ -340,13 +343,14 @@ func (r *RegistryDefault) WriteRouter(ctx context.Context) http.Handler {
 }
 
 func (r *RegistryDefault) unaryInterceptors(ctx context.Context) []grpc.UnaryServerInterceptor {
-	is := []grpc.UnaryServerInterceptor{
-		ketoctx.ContextualizeMiddleware(ketoctx.WithMiddlewareContextualizer(ctx, r)).ContextualizeGRPCUnaryMiddleware,
+	is := make([]grpc.UnaryServerInterceptor, 0, len(r.defaultUnaryInterceptors)+2)
+	copy(is, r.defaultUnaryInterceptors)
+	is = append(is,
 		herodot.UnaryErrorUnwrapInterceptor,
 		grpcMiddleware.ChainUnaryServer(
 			grpc_logrus.UnaryServerInterceptor(r.l.Entry),
 		),
-	}
+	)
 	if r.Tracer(ctx).IsLoaded() {
 		is = append(is, otgrpc.OpenTracingServerInterceptor(r.Tracer(ctx).Tracer()))
 	}
@@ -357,13 +361,14 @@ func (r *RegistryDefault) unaryInterceptors(ctx context.Context) []grpc.UnarySer
 }
 
 func (r *RegistryDefault) streamInterceptors(ctx context.Context) []grpc.StreamServerInterceptor {
-	is := []grpc.StreamServerInterceptor{
-		ketoctx.ContextualizeMiddleware(ketoctx.WithMiddlewareContextualizer(ctx, r)).ContextualizeGRPCStreamMiddleware,
+	is := make([]grpc.StreamServerInterceptor, 0, len(r.defaultStreamInterceptors)+2)
+	copy(is, r.defaultStreamInterceptors)
+	is = append(is,
 		herodot.StreamErrorUnwrapInterceptor,
 		grpcMiddleware.ChainStreamServer(
 			grpc_logrus.StreamServerInterceptor(r.l.Entry),
 		),
-	}
+	)
 	if r.Tracer(ctx).IsLoaded() {
 		is = append(is, otgrpc.OpenTracingStreamServerInterceptor(r.Tracer(ctx).Tracer()))
 	}
