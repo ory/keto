@@ -2,7 +2,6 @@ package sql
 
 import (
 	"context"
-	"errors"
 
 	"github.com/gofrs/uuid"
 	"github.com/ory/x/sqlcon"
@@ -24,17 +23,32 @@ func (UUIDMapping) TableName() string {
 	return "keto_uuid_mappings"
 }
 
-func (p *Persister) AddUUIDMapping(ctx context.Context, id uuid.UUID, representation string) error {
-	m := &UUIDMapping{
-		ID:                   id,
-		StringRepresentation: representation,
-	}
+func (p *Persister) ToUUID(ctx context.Context, text string) (uuid.UUID, error) {
+	id := uuid.NewV5(p.NetworkID(ctx), text)
 	p.d.Logger().Trace("adding UUID mapping")
 
-	return sqlcon.HandleError(p.Connection(ctx).Create(m))
+	// We need to write manual SQL here because the INSERT should not fail if
+	// the UUID already exists, but we still want to return an error if anything
+	// else goes wrong.
+	var query string
+	switch d := p.Connection(ctx).Dialect.Name(); d {
+	case "mysql":
+		query = `
+			INSERT IGNORE INTO keto_uuid_mappings (id, string_representation)
+			VALUES (?, ?)`
+	default:
+		query = `
+			INSERT INTO keto_uuid_mappings (id, string_representation)
+			VALUES (?, ?)
+			ON CONFLICT (id) DO NOTHING`
+	}
+
+	return id, sqlcon.HandleError(
+		p.Connection(ctx).RawQuery(query, id, text).Exec(),
+	)
 }
 
-func (p *Persister) LookupUUID(ctx context.Context, id uuid.UUID) (rep string, err error) {
+func (p *Persister) FromUUID(ctx context.Context, id uuid.UUID) (rep string, err error) {
 	p.d.Logger().Trace("looking up UUID")
 
 	m := &UUIDMapping{}
@@ -43,19 +57,4 @@ func (p *Persister) LookupUUID(ctx context.Context, id uuid.UUID) (rep string, e
 	}
 
 	return m.StringRepresentation, nil
-}
-
-func (p *Persister) MappedUUID(ctx context.Context, representation string) (uuid.UUID, error) {
-	p.d.Logger().Trace("looking up mapped UUID")
-
-	m := &UUIDMapping{}
-	if err := sqlcon.HandleError(p.Connection(ctx).Where("string_representation = ?", representation).First(m)); err != nil {
-		if errors.Is(err, sqlcon.ErrNoRows) {
-			id := uuid.Must(uuid.NewV4())
-			return id, p.AddUUIDMapping(ctx, id, representation)
-		}
-		return uuid.Nil, err
-	}
-
-	return m.ID, nil
 }

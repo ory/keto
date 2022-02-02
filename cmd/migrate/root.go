@@ -13,6 +13,7 @@ func newMigrateCmd() *cobra.Command {
 		newStatusCmd(),
 		newUpCmd(),
 		newDownCmd(),
+		newMigrateUUIDMappingCmd(),
 	)
 	return cmd
 }

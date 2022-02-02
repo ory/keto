@@ -15,37 +15,34 @@ type (
 		UUIDMappingManager() Manager
 	}
 	Manager interface {
-		// MappedUUID returns the mapped UUID for the given string
-		// representation. If the string representation is not mapped, a new
-		// UUID will be created automatically.
-		MappedUUID(ctx context.Context, representation string) (uuid.UUID, error)
+		// ToUUID returns the mapped UUID for the given string representation.
+		// If the string representation is not mapped, a new UUID will be
+		// created automatically.
+		ToUUID(ctx context.Context, representation string) (uuid.UUID, error)
 
-		// AddUUIDMapping adds a new mapping between a UUID and a string.
-		AddUUIDMapping(ctx context.Context, id uuid.UUID, representation string) error
-
-		// LookupUUID returns the string representation for the given UUID.
-		LookupUUID(ctx context.Context, id uuid.UUID) (rep string, err error)
+		// FromUUID returns the text representation for the given UUID.
+		FromUUID(ctx context.Context, id uuid.UUID) (text string, err error)
 	}
 )
 
 func ManagerTest(t *testing.T, m Manager) {
 	ctx := context.Background()
 
-	t.Run("case=add_lookup", func(t *testing.T) {
-		id := uuid.Must(uuid.NewV4())
+	t.Run("case=ToUUID_FromUUID", func(t *testing.T) {
 		rep1 := "foo"
-		require.NoError(t, m.AddUUIDMapping(ctx, id, rep1))
+		id, err := m.ToUUID(ctx, rep1)
+		require.NoError(t, err)
 
-		rep2, err := m.LookupUUID(ctx, id)
+		rep2, err := m.FromUUID(ctx, id)
 		assert.NoError(t, err)
 		assert.Equal(t, rep1, rep2)
 	})
 
-	t.Run("case=MappedUUID", func(t *testing.T) {
-		id1, err := m.MappedUUID(ctx, "string")
-		require.NoError(t, err)
-		id2, err := m.MappedUUID(ctx, "string")
-		require.NoError(t, err)
+	t.Run("case=FromUUID", func(t *testing.T) {
+		id1, err := m.ToUUID(ctx, "string")
+		assert.NoError(t, err)
+		id2, err := m.ToUUID(ctx, "string")
+		assert.NoError(t, err)
 		assert.Equal(t, id1, id2)
 	})
 }

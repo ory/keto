@@ -5,7 +5,6 @@ import (
 
 	"github.com/gobuffalo/pop/v6"
 	"github.com/gofrs/uuid"
-
 	"github.com/ory/x/sqlcon"
 
 	"github.com/ory/keto/internal/persistence/sql"
@@ -96,7 +95,7 @@ func (m *toUUIDMappingMigrator) migrateObject(ctx context.Context, rt *sql.Relat
 }
 
 func (m *toUUIDMappingMigrator) addUUIDMapping(ctx context.Context, value string) (id string, err error) {
-	uid, err := m.d.Persister().MappedUUID(ctx, value)
+	uid, err := m.d.Persister().ToUUID(ctx, value)
 	return uid.String(), err
 }
 
