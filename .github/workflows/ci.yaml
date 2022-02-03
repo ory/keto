@@ -144,7 +144,6 @@ jobs:
       - test
       - test-race
       - validate
-      - docs-build
     steps:
       - uses: ory/ci/sdk/generate@master
         with:
