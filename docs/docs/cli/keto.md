@@ -17,7 +17,7 @@ Global and consistent permission and authorization server
 ### Options
 
 ```
-  -c, --config strings   Config files to load, overwriting in the order specified. (default [/home/circleci/keto.yml])
+  -c, --config strings   Config files to load, overwriting in the order specified. (default [/home/runner/keto.yml])
   -h, --help             help for keto
 ```
 

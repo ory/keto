@@ -37,7 +37,7 @@ keto relation-tuple create &lt;relation-tuple.json&gt; [&lt;relation-tuple-dir&g
 ### Options inherited from parent commands
 
 ```
-  -c, --config strings   Config files to load, overwriting in the order specified. (default [/home/circleci/keto.yml])
+  -c, --config strings   Config files to load, overwriting in the order specified. (default [/home/runner/keto.yml])
 ```
 
 ### SEE ALSO
