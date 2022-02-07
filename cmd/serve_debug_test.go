@@ -10,6 +10,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/spf13/cobra"
+
 	"github.com/ory/x/cmdx"
 	"github.com/ory/x/configx"
 	"github.com/sirupsen/logrus"
@@ -84,7 +86,9 @@ dsn: memory`)
 	require.NoError(b, os.Setenv(client.EnvWriteRemote, "127.0.0.1:4467"))
 
 	c := cmdx.CommandExecuter{
-		New: NewRootCmd,
+		New: func() *cobra.Command {
+			return NewRootCmd(nil)
+		},
 		Ctx: context.WithValue(rCtx, driver.RegistryContextKey, reg),
 	}
 	stdOut, stdErr := &bytes.Buffer{}, &bytes.Buffer{}

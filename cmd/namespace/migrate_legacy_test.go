@@ -7,6 +7,8 @@ import (
 	"path"
 	"testing"
 
+	"github.com/spf13/cobra"
+
 	"github.com/ory/keto/internal/relationtuple"
 
 	"github.com/ory/x/cmdx"
@@ -50,7 +52,9 @@ func TestMigrateLegacy(t *testing.T) {
 		require.NoError(t, reg.Config(context.Background()).Set(config.KeyNamespaces, nspaces))
 
 		c := &cmdx.CommandExecuter{
-			New: NewMigrateLegacyCmd,
+			New: func() *cobra.Command {
+				return NewMigrateLegacyCmd(nil)
+			},
 			Ctx: context.WithValue(context.Background(), driver.RegistryContextKey, reg),
 		}
 

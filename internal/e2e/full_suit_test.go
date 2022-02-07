@@ -9,6 +9,11 @@ import (
 
 	prometheus "github.com/ory/x/prometheusx"
 
+	"github.com/spf13/cobra"
+
+	"github.com/ory/keto/cmd"
+	cliclient "github.com/ory/keto/cmd/client"
+
 	"github.com/stretchr/testify/assert"
 
 	"github.com/ory/keto/internal/x/dbx"
@@ -20,6 +25,8 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/ory/keto/internal/expand"
+
+	"github.com/ory/x/cmdx"
 
 	"github.com/ory/keto/internal/relationtuple"
 )
@@ -66,7 +73,9 @@ func Test(t *testing.T) {
 					writeURL: "http://" + reg.Config(ctx).WriteAPIListenOn(),
 				},
 				&cliClient{c: &cmdx.CommandExecuter{
-					New:            cmd.NewRootCmd,
+					New: func() *cobra.Command {
+						return cmd.NewRootCmd(nil)
+					},
 					Ctx:            ctx,
 					PersistentArgs: []string{"--" + cliclient.FlagReadRemote, reg.Config(ctx).ReadAPIListenOn(), "--" + cliclient.FlagWriteRemote, reg.Config(ctx).WriteAPIListenOn(), "--" + cmdx.FlagFormat, string(cmdx.FormatJSON)},
 				}},
