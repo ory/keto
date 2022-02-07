@@ -3,4 +3,9 @@ scripts/
 contrib/
 .bin/
 .github/
-.circleci/
+*.yaml
+*.yml
+*.json
+*.md
+*ignore
+Makefile
