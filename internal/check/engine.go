@@ -115,7 +115,7 @@ func (e *Engine) checkOneIndirectionFurther(
 
 func (e *Engine) SubjectIsAllowed(ctx context.Context, r *relationtuple.InternalRelationTuple, restDepth int) (bool, error) {
 	// global max-depth takes precedence when it is the lesser or if the request max-depth is less than or equal to 0
-	if globalMaxDepth := e.d.Config().ReadAPIMaxDepth(); restDepth <= 0 || globalMaxDepth < restDepth {
+	if globalMaxDepth := e.d.Config().MaxReadDepth(); restDepth <= 0 || globalMaxDepth < restDepth {
 		restDepth = globalMaxDepth
 	}
 

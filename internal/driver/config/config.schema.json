@@ -232,14 +232,6 @@
             },
             "tls": {
               "$ref": "#/definitions/tlsx"
-            },
-            "max-depth": {
-              "type": "integer",
-              "default": 5,
-              "title": "Global maximum depth",
-              "description": "The global maximum depth on all read operations. This can be decreased for a request by a value specified on the request, this applies only if the request-specific value is greater than 1 and less than the global maximum depth.",
-              "minimum": 1,
-              "maximum": 65535
             }
           }
         },
@@ -309,6 +301,22 @@
           }
         }
       ]
+    },
+    "limit": {
+      "type": "object",
+      "title": "Limits",
+      "description": "Limits aiming to control the resource consumption. These limits are not a sufficient replacement for rate-limiting.",
+      "properties": {
+        "max_read_depth": {
+          "type": "integer",
+          "default": 5,
+          "title": "Global maximum read depth",
+          "description": "The global maximum depth on all read operations. Note that this does not affect how deeply nested the tuples can be. This value can be decreased for a request by a value specified on the request, only if the request-specific value is greater than 1 and less than the global maximum depth.",
+          "minimum": 1,
+          "maximum": 65535
+        }
+      },
+      "additionalProperties": false
     },
     "version": {
       "type": "string",
