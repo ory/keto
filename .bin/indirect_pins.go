@@ -1,3 +1,4 @@
+//go:build go_mod_indirect_pins
 // +build go_mod_indirect_pins
 
 package _bin
@@ -19,4 +20,6 @@ import (
 	_ "github.com/goreleaser/godownloader"
 
 	_ "github.com/ory/cli"
+
+	_ "github.com/anchore/grype"
 )

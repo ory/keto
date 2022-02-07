@@ -12,7 +12,8 @@ GO_DEPENDENCIES = github.com/go-swagger/go-swagger/cmd/swagger \
 				  google.golang.org/grpc/cmd/protoc-gen-go-grpc \
 				  github.com/goreleaser/godownloader \
 				  github.com/pseudomuto/protoc-gen-doc/cmd/protoc-gen-doc \
-				  github.com/ory/cli
+				  github.com/ory/cli \
+				  github.com/anchore/grype
 
 define make-go-dependency
   # go install is responsible for not re-building when the code hasn't changed
@@ -108,3 +109,7 @@ migrations-render: .bin/ory
 .PHONY: migrations-render-replace
 migrations-render-replace: .bin/ory
 		ory dev pop migration render -r internal/persistence/sql/migrations/templates internal/persistence/sql/migrations/sql
+
+.PHONY:
+cve-scan: docker .bin/grype
+		grype oryd/keto:latest
