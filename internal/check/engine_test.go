@@ -93,7 +93,7 @@ func TestEngine(t *testing.T) {
 		}
 
 		// global max-depth defaults to 5
-		assert.Equal(t, reg.Config().ReadAPIMaxDepth(), 5)
+		assert.Equal(t, reg.Config().MaxReadDepth(), 5)
 
 		// req max-depth takes precedence, max-depth=2 is not enough
 		res, err := e.SubjectIsAllowed(context.Background(), userHasAccess, 2)
@@ -106,13 +106,13 @@ func TestEngine(t *testing.T) {
 		assert.True(t, res)
 
 		// global max-depth takes precedence and max-depth=2 is not enough
-		require.NoError(t, reg.Config().Set(config.KeyReadMaxDepth, 2))
+		require.NoError(t, reg.Config().Set(config.KeyLimitMaxReadDepth, 2))
 		res, err = e.SubjectIsAllowed(context.Background(), userHasAccess, 3)
 		require.NoError(t, err)
 		assert.False(t, res)
 
 		// global max-depth takes precedence and max-depth=3 is enough
-		require.NoError(t, reg.Config().Set(config.KeyReadMaxDepth, 3))
+		require.NoError(t, reg.Config().Set(config.KeyLimitMaxReadDepth, 3))
 		res, err = e.SubjectIsAllowed(context.Background(), userHasAccess, 0)
 		require.NoError(t, err)
 		assert.True(t, res)
