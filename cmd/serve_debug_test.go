@@ -133,7 +133,7 @@ namespaces:
 		for _, n := range nn {
 			require.NoError(b, os.WriteFile(n, []byte(`
 id: 0
-name: foo`), 0666))
+name: foo`), 0600))
 		}
 
 		for i := 0; i < b.N; i++ {
