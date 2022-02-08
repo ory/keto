@@ -157,7 +157,7 @@ func (k *Config) WriteAPIListenOn() string {
 
 func (k *Config) CORS(iface string) (cors.Options, bool) {
 	switch iface {
-	case "read", "write":
+	case "read", "write", "metrics":
 	default:
 		panic("expected interface 'read' or 'write', but got unknown interface " + iface)
 	}

@@ -86,12 +86,19 @@ func Test(t *testing.T) {
 				}
 
 				t.Run("case=metrics is served", func(t *testing.T) {
-					resp, err := http.Get(fmt.Sprintf("http://%s%s", reg.Config().MetricsListenOn(), prometheus.MetricsPrometheusPath))
-					require.NoError(t, err)
-					require.Equal(t, resp.StatusCode, http.StatusOK)
-					body, err := ioutil.ReadAll(resp.Body)
-					require.NoError(t, err)
-					require.Contains(t, string(body), promLogLine)
+					t.Run("case=are served on "+prometheus.MetricsPrometheusPath, func(t *testing.T) {
+						resp, err := http.Get(fmt.Sprintf("http://%s%s", reg.Config().MetricsListenOn(), prometheus.MetricsPrometheusPath))
+						require.NoError(t, err)
+						require.Equal(t, resp.StatusCode, http.StatusOK)
+						body, err := ioutil.ReadAll(resp.Body)
+						require.NoError(t, err)
+						require.Contains(t, string(body), promLogLine)
+					})
+					t.Run("case=are not served on /", func(t *testing.T) {
+						resp, err := http.Get(fmt.Sprintf("http://%s", reg.Config().MetricsListenOn()))
+						require.NoError(t, err)
+						require.Equal(t, resp.StatusCode, http.StatusNotFound)
+					})
 				})
 			}
 		})
