@@ -100,29 +100,16 @@ func (r *RegistryDefault) ServeMetrics(ctx context.Context) func() error {
 		})
 
 		eg.Go(func() error {
-			if err := s.Serve(l); !errors.Is(err, http.ErrServerClosed) {
-				// unexpected error
-				return errors.WithStack(err)
-			}
-			return nil
+			retrun graceful.Graceful(s.ListenAndServe, s.Shutdown)
 		})
-		eg.Go(func() error {
-			err := s.Serve(l)
-			if err != nil && !strings.Contains(err.Error(), "use of closed network connection") {
-				// unexpected error
-				return errors.WithStack(err)
-			}
-			// trigger further shutdown
-			cancel()
-			return nil
-		})
-
 		eg.Go(func() error {
 			<-ctx.Done()
 			ctx, cancel := context.WithTimeout(context.Background(), graceful.DefaultReadTimeout)
 			defer cancel()
 			return s.Shutdown(ctx)
 		})
+		
+		return eg.Wait()
 		return nil
 	}
 }
