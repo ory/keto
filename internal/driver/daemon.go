@@ -2,10 +2,6 @@ package driver
 
 import (
 	"context"
-	"github.com/julienschmidt/httprouter"
-	prometheus "github.com/ory/x/prometheusx"
-	"github.com/ory/x/reqlog"
-	"github.com/urfave/negroni"
 	"net"
 	"net/http"
 	"strings"
@@ -88,32 +84,42 @@ func (r *RegistryDefault) ServeWrite(ctx context.Context) func() error {
 	}
 }
 
+func (r *RegistryDefault) ServeMetrics(ctx context.Context) func() error {
+	rt := r.MetricsRouter()
+
+	return func() error {
+		return multiplexPortNoGRPC(ctx, r.Config().MetricsListenOn(), rt)
+	}
+}
+
 func multiplexPort(ctx context.Context, addr string, router http.Handler, grpcS *grpc.Server) error {
 	l, err := net.Listen("tcp", addr)
 	if err != nil {
 		return err
 	}
 
+	eg := &errgroup.Group{}
+	ctx, cancel := context.WithCancel(ctx)
+	c := 1
 	m := cmux.New(l)
 	m.SetReadTimeout(graceful.DefaultReadTimeout)
 
-	grpcL := m.MatchWithWriters(cmux.HTTP2MatchHeaderFieldSendSettings("content-type", "application/grpc"))
-	httpL := m.Match(cmux.HTTP1())
+	if grpcS != nil {
+		grpcL := m.MatchWithWriters(cmux.HTTP2MatchHeaderFieldSendSettings("content-type", "application/grpc"))
+		serversDone := make(chan struct{}, c+1)
+		eg.Go(func() error {
+			defer func() {
+				serversDone <- struct{}{}
+			}()
+			return errors.WithStack(grpcS.Serve(grpcL))
+		})
+	}
 
+	httpL := m.Match(cmux.HTTP1())
 	restS := graceful.WithDefaults(&http.Server{
 		Handler: router,
 	})
-
-	eg := &errgroup.Group{}
-	ctx, cancel := context.WithCancel(ctx)
-	serversDone := make(chan struct{}, 2)
-
-	eg.Go(func() error {
-		defer func() {
-			serversDone <- struct{}{}
-		}()
-		return errors.WithStack(grpcS.Serve(grpcL))
-	})
+	serversDone := make(chan struct{}, c)
 
 	eg.Go(func() error {
 		defer func() {
@@ -141,13 +147,13 @@ func multiplexPort(ctx context.Context, addr string, router http.Handler, grpcS 
 		<-ctx.Done()
 
 		m.Close()
-		for i := 0; i < 2; i++ {
+		for i := 0; i < c; i++ {
 			<-serversDone
 		}
-
-		// we have to stop the servers as well as they might still be running (for whatever reason I could not figure out)
-		grpcS.GracefulStop()
-
+		if grpcS != nil {
+			// we have to stop the servers as well as they might still be running (for whatever reason I could not figure out)
+			grpcS.GracefulStop()
+		}
 		ctx, cancel := context.WithTimeout(context.Background(), graceful.DefaultReadTimeout)
 		defer cancel()
 		return restS.Shutdown(ctx)
@@ -163,83 +169,5 @@ func multiplexPort(ctx context.Context, addr string, router http.Handler, grpcS 
 }
 
 func multiplexPortNoGRPC(ctx context.Context, addr string, router http.Handler) error {
-	l, err := net.Listen("tcp", addr)
-	if err != nil {
-		return err
-	}
-
-	m := cmux.New(l)
-	m.SetReadTimeout(graceful.DefaultReadTimeout)
-
-	httpL := m.Match(cmux.HTTP1())
-
-	restS := graceful.WithDefaults(&http.Server{
-		Handler: router,
-	})
-
-	eg := &errgroup.Group{}
-	ctx, cancel := context.WithCancel(ctx)
-	serversDone := make(chan struct{}, 1)
-
-	eg.Go(func() error {
-		defer func() {
-			serversDone <- struct{}{}
-		}()
-		if err := restS.Serve(httpL); !errors.Is(err, http.ErrServerClosed) {
-			// unexpected error
-			return errors.WithStack(err)
-		}
-		return nil
-	})
-
-	eg.Go(func() error {
-		err := m.Serve()
-		if err != nil && !strings.Contains(err.Error(), "use of closed network connection") {
-			// unexpected error
-			return errors.WithStack(err)
-		}
-		// trigger further shutdown
-		cancel()
-		return nil
-	})
-
-	eg.Go(func() error {
-		<-ctx.Done()
-
-		m.Close()
-		for i := 0; i < 1; i++ {
-			<-serversDone
-		}
-
-		ctx, cancel := context.WithTimeout(context.Background(), graceful.DefaultReadTimeout)
-		defer cancel()
-		return restS.Shutdown(ctx)
-	})
-
-	if err := eg.Wait(); !errors.Is(err, cmux.ErrServerClosed) &&
-		!errors.Is(err, cmux.ErrListenerClosed) &&
-		(err != nil && !strings.Contains(err.Error(), "use of closed network connection")) {
-		// unexpected error
-		return err
-	}
-	return nil
-}
-
-func newMetricsHandler(r Registry) http.Handler {
-	router := httprouter.New()
-	r.PrometheusManager().RegisterRouter(router)
-	r.MetricsHandler().SetRoutes(router)
-	middleware := negroni.New(reqlog.NewMiddlewareFromLogger(r.Logger(), "keto").ExcludePaths(prometheus.MetricsPrometheusPath))
-	middleware.UseHandler(router)
-	middleware.Use(r.PrometheusManager())
-
-	return middleware
-}
-
-func (r *RegistryDefault) ServeMetrics(ctx context.Context) func() error {
-	rt := newMetricsHandler(r)
-
-	return func() error {
-		return multiplexPortNoGRPC(ctx, r.Config().MetricsListenOn(), rt)
-	}
+	return multiplexPort(ctx, addr, router, nil)
 }

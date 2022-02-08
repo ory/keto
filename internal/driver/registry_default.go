@@ -353,6 +353,18 @@ func (r *RegistryDefault) WriteRouter() http.Handler {
 	return handler
 }
 
+func (r *RegistryDefault) MetricsRouter() http.Handler {
+	n := negroni.New(reqlog.NewMiddlewareFromLogger(r.Logger(), "keto").ExcludePaths(prometheus.MetricsPrometheusPath))
+	router := &x.MetricsRouter{Router: httprouter.New()}
+
+	r.PrometheusManager().RegisterRouter(router.Router)
+	r.MetricsHandler().SetRoutes(router.Router)
+	n.UseHandler(router)
+	n.Use(r.PrometheusManager())
+
+	return n
+}
+
 func (r *RegistryDefault) unaryInterceptors() []grpc.UnaryServerInterceptor {
 	is := []grpc.UnaryServerInterceptor{
 		herodot.UnaryErrorUnwrapInterceptor,

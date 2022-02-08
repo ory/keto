@@ -11,4 +11,7 @@ type (
 	WriteRouter struct {
 		*httprouter.Router
 	}
+	MetricsRouter struct {
+		*httprouter.Router
+	}
 )

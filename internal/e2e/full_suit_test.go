@@ -2,11 +2,12 @@ package e2e
 
 import (
 	"fmt"
-	prometheus "github.com/ory/x/prometheusx"
 	"io/ioutil"
 	"net/http"
 	"testing"
 	"time"
+
+	prometheus "github.com/ory/x/prometheusx"
 
 	"github.com/stretchr/testify/assert"
 
