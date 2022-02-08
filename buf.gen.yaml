@@ -18,5 +18,5 @@ plugins:
     opt: ts_out=proto
     path: node_modules/.bin/protoc-gen-ts
   - name: doc
-    out: docs/docs/reference
-    opt: docs/contrib/protoc-gen-doc-mdx.tmpl,docs/docs/reference/proto-api.mdx
+    out: docs/.generated
+    opt: docs/contrib/protoc-gen-doc-mdx.tmpl,docs/.generated/proto-api.mdx
