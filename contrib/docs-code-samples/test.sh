@@ -1,10 +1,10 @@
 #!/bin/bash
-set -euxo pipefail
+set -euo pipefail
 
 (cd ../..; go install -tags sqlite .)
 
 function teardown() {
-    kill -9 "$keto_server_pid" || true
+    kill "$keto_server_pid" || true
 }
 trap teardown EXIT
 
@@ -43,7 +43,7 @@ for suite in */ ; do
         diff -U 100000 <("$tc" 2>&1) "$(dirname "$tc")/expected_output.txt"
     done
 
-    kill -9 "$keto_server_pid"
+    kill "$keto_server_pid"
 done
 
 echo

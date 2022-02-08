@@ -5,7 +5,6 @@ services:
     build:
       context: "."
       dockerfile: ".docker/Dockerfile-build"
-    image: oryd/keto:latest-dev
     ports:
       - "4466:4466"
       - "4467:4467"

@@ -87,22 +87,32 @@ func (r *RegistryDefault) ServeWrite(ctx context.Context) func() error {
 func (r *RegistryDefault) ServeMetrics(ctx context.Context) func() error {
 	return func() error {
 		eg := &errgroup.Group{}
-
+		done := make(chan struct{})
 		s := graceful.WithDefaults(&http.Server{
 			Handler: r.MetricsRouter(),
 			Addr:    r.Config().MetricsListenOn(),
 		})
 
 		eg.Go(func() error {
-			return graceful.Graceful(s.ListenAndServe, s.Shutdown)
+			defer func() {
+				done <- struct{}{}
+			}()
+			if err := s.ListenAndServe(); !errors.Is(err, http.ErrServerClosed) {
+				// unexpected error
+				return errors.WithStack(err)
+			}
+			return nil
 		})
+
 		eg.Go(func() error {
+			defer func() {
+				done <- struct{}{}
+			}()
 			<-ctx.Done()
 			ctx, cancel := context.WithTimeout(context.Background(), graceful.DefaultReadTimeout)
 			defer cancel()
 			return s.Shutdown(ctx)
 		})
-
 		return nil
 	}
 }
