@@ -85,7 +85,7 @@ func Test(t *testing.T) {
 					t.Run(fmt.Sprintf("transactClient=%T", cl), runTransactionCases(tc, addNamespace))
 				}
 
-				t.Run("case=metrics is served", func(t *testing.T) {
+				t.Run("case=metrics are served", func(t *testing.T) {
 					t.Run("case=are served on "+prometheus.MetricsPrometheusPath, func(t *testing.T) {
 						resp, err := http.Get(fmt.Sprintf("http://%s%s", reg.Config().MetricsListenOn(), prometheus.MetricsPrometheusPath))
 						require.NoError(t, err)

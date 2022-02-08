@@ -86,13 +86,7 @@ func (r *RegistryDefault) ServeWrite(ctx context.Context) func() error {
 
 func (r *RegistryDefault) ServeMetrics(ctx context.Context) func() error {
 	return func() error {
-		l, err := net.Listen("tcp", r.Config().MetricsListenOn())
-		if err != nil {
-			return err
-		}
-
 		eg := &errgroup.Group{}
-		ctx, cancel := context.WithCancel(ctx)
 
 		s := graceful.WithDefaults(&http.Server{
 			Handler: r.MetricsRouter(),
@@ -100,7 +94,7 @@ func (r *RegistryDefault) ServeMetrics(ctx context.Context) func() error {
 		})
 
 		eg.Go(func() error {
-			retrun graceful.Graceful(s.ListenAndServe, s.Shutdown)
+			return graceful.Graceful(s.ListenAndServe, s.Shutdown)
 		})
 		eg.Go(func() error {
 			<-ctx.Done()
@@ -108,8 +102,7 @@ func (r *RegistryDefault) ServeMetrics(ctx context.Context) func() error {
 			defer cancel()
 			return s.Shutdown(ctx)
 		})
-		
-		return eg.Wait()
+
 		return nil
 	}
 }
