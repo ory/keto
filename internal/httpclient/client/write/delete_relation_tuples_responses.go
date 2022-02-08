@@ -6,13 +6,13 @@ package write
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"context"
 	"fmt"
 	"io"
 
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/strfmt"
-	"github.com/go-openapi/swag"
+
+	"github.com/ory/keto/internal/httpclient/models"
 )
 
 // DeleteRelationTuplesReader is a Reader for the DeleteRelationTuples structure.
@@ -74,22 +74,22 @@ func NewDeleteRelationTuplesBadRequest() *DeleteRelationTuplesBadRequest {
 
 /* DeleteRelationTuplesBadRequest describes a response with status code 400, with default header values.
 
-The standard error format
+genericError
 */
 type DeleteRelationTuplesBadRequest struct {
-	Payload *DeleteRelationTuplesBadRequestBody
+	Payload *models.GenericError
 }
 
 func (o *DeleteRelationTuplesBadRequest) Error() string {
 	return fmt.Sprintf("[DELETE /relation-tuples][%d] deleteRelationTuplesBadRequest  %+v", 400, o.Payload)
 }
-func (o *DeleteRelationTuplesBadRequest) GetPayload() *DeleteRelationTuplesBadRequestBody {
+func (o *DeleteRelationTuplesBadRequest) GetPayload() *models.GenericError {
 	return o.Payload
 }
 
 func (o *DeleteRelationTuplesBadRequest) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(DeleteRelationTuplesBadRequestBody)
+	o.Payload = new(models.GenericError)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
@@ -106,131 +106,27 @@ func NewDeleteRelationTuplesInternalServerError() *DeleteRelationTuplesInternalS
 
 /* DeleteRelationTuplesInternalServerError describes a response with status code 500, with default header values.
 
-The standard error format
+genericError
 */
 type DeleteRelationTuplesInternalServerError struct {
-	Payload *DeleteRelationTuplesInternalServerErrorBody
+	Payload *models.GenericError
 }
 
 func (o *DeleteRelationTuplesInternalServerError) Error() string {
 	return fmt.Sprintf("[DELETE /relation-tuples][%d] deleteRelationTuplesInternalServerError  %+v", 500, o.Payload)
 }
-func (o *DeleteRelationTuplesInternalServerError) GetPayload() *DeleteRelationTuplesInternalServerErrorBody {
+func (o *DeleteRelationTuplesInternalServerError) GetPayload() *models.GenericError {
 	return o.Payload
 }
 
 func (o *DeleteRelationTuplesInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(DeleteRelationTuplesInternalServerErrorBody)
+	o.Payload = new(models.GenericError)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
 		return err
 	}
 
-	return nil
-}
-
-/*DeleteRelationTuplesBadRequestBody delete relation tuples bad request body
-swagger:model DeleteRelationTuplesBadRequestBody
-*/
-type DeleteRelationTuplesBadRequestBody struct {
-
-	// code
-	Code int64 `json:"code,omitempty"`
-
-	// details
-	Details []interface{} `json:"details"`
-
-	// message
-	Message string `json:"message,omitempty"`
-
-	// reason
-	Reason string `json:"reason,omitempty"`
-
-	// request
-	Request string `json:"request,omitempty"`
-
-	// status
-	Status string `json:"status,omitempty"`
-}
-
-// Validate validates this delete relation tuples bad request body
-func (o *DeleteRelationTuplesBadRequestBody) Validate(formats strfmt.Registry) error {
-	return nil
-}
-
-// ContextValidate validates this delete relation tuples bad request body based on context it is used
-func (o *DeleteRelationTuplesBadRequestBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
-	return nil
-}
-
-// MarshalBinary interface implementation
-func (o *DeleteRelationTuplesBadRequestBody) MarshalBinary() ([]byte, error) {
-	if o == nil {
-		return nil, nil
-	}
-	return swag.WriteJSON(o)
-}
-
-// UnmarshalBinary interface implementation
-func (o *DeleteRelationTuplesBadRequestBody) UnmarshalBinary(b []byte) error {
-	var res DeleteRelationTuplesBadRequestBody
-	if err := swag.ReadJSON(b, &res); err != nil {
-		return err
-	}
-	*o = res
-	return nil
-}
-
-/*DeleteRelationTuplesInternalServerErrorBody delete relation tuples internal server error body
-swagger:model DeleteRelationTuplesInternalServerErrorBody
-*/
-type DeleteRelationTuplesInternalServerErrorBody struct {
-
-	// code
-	Code int64 `json:"code,omitempty"`
-
-	// details
-	Details []interface{} `json:"details"`
-
-	// message
-	Message string `json:"message,omitempty"`
-
-	// reason
-	Reason string `json:"reason,omitempty"`
-
-	// request
-	Request string `json:"request,omitempty"`
-
-	// status
-	Status string `json:"status,omitempty"`
-}
-
-// Validate validates this delete relation tuples internal server error body
-func (o *DeleteRelationTuplesInternalServerErrorBody) Validate(formats strfmt.Registry) error {
-	return nil
-}
-
-// ContextValidate validates this delete relation tuples internal server error body based on context it is used
-func (o *DeleteRelationTuplesInternalServerErrorBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
-	return nil
-}
-
-// MarshalBinary interface implementation
-func (o *DeleteRelationTuplesInternalServerErrorBody) MarshalBinary() ([]byte, error) {
-	if o == nil {
-		return nil, nil
-	}
-	return swag.WriteJSON(o)
-}
-
-// UnmarshalBinary interface implementation
-func (o *DeleteRelationTuplesInternalServerErrorBody) UnmarshalBinary(b []byte) error {
-	var res DeleteRelationTuplesInternalServerErrorBody
-	if err := swag.ReadJSON(b, &res); err != nil {
-		return err
-	}
-	*o = res
 	return nil
 }

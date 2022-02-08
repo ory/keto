@@ -6,13 +6,11 @@ package read
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"context"
 	"fmt"
 	"io"
 
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/strfmt"
-	"github.com/go-openapi/swag"
 
 	"github.com/ory/keto/internal/httpclient/models"
 )
@@ -93,22 +91,22 @@ func NewGetExpandBadRequest() *GetExpandBadRequest {
 
 /* GetExpandBadRequest describes a response with status code 400, with default header values.
 
-The standard error format
+genericError
 */
 type GetExpandBadRequest struct {
-	Payload *GetExpandBadRequestBody
+	Payload *models.GenericError
 }
 
 func (o *GetExpandBadRequest) Error() string {
 	return fmt.Sprintf("[GET /expand][%d] getExpandBadRequest  %+v", 400, o.Payload)
 }
-func (o *GetExpandBadRequest) GetPayload() *GetExpandBadRequestBody {
+func (o *GetExpandBadRequest) GetPayload() *models.GenericError {
 	return o.Payload
 }
 
 func (o *GetExpandBadRequest) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(GetExpandBadRequestBody)
+	o.Payload = new(models.GenericError)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
@@ -125,22 +123,22 @@ func NewGetExpandNotFound() *GetExpandNotFound {
 
 /* GetExpandNotFound describes a response with status code 404, with default header values.
 
-The standard error format
+genericError
 */
 type GetExpandNotFound struct {
-	Payload *GetExpandNotFoundBody
+	Payload *models.GenericError
 }
 
 func (o *GetExpandNotFound) Error() string {
 	return fmt.Sprintf("[GET /expand][%d] getExpandNotFound  %+v", 404, o.Payload)
 }
-func (o *GetExpandNotFound) GetPayload() *GetExpandNotFoundBody {
+func (o *GetExpandNotFound) GetPayload() *models.GenericError {
 	return o.Payload
 }
 
 func (o *GetExpandNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(GetExpandNotFoundBody)
+	o.Payload = new(models.GenericError)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
@@ -157,183 +155,27 @@ func NewGetExpandInternalServerError() *GetExpandInternalServerError {
 
 /* GetExpandInternalServerError describes a response with status code 500, with default header values.
 
-The standard error format
+genericError
 */
 type GetExpandInternalServerError struct {
-	Payload *GetExpandInternalServerErrorBody
+	Payload *models.GenericError
 }
 
 func (o *GetExpandInternalServerError) Error() string {
 	return fmt.Sprintf("[GET /expand][%d] getExpandInternalServerError  %+v", 500, o.Payload)
 }
-func (o *GetExpandInternalServerError) GetPayload() *GetExpandInternalServerErrorBody {
+func (o *GetExpandInternalServerError) GetPayload() *models.GenericError {
 	return o.Payload
 }
 
 func (o *GetExpandInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(GetExpandInternalServerErrorBody)
+	o.Payload = new(models.GenericError)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
 		return err
 	}
 
-	return nil
-}
-
-/*GetExpandBadRequestBody get expand bad request body
-swagger:model GetExpandBadRequestBody
-*/
-type GetExpandBadRequestBody struct {
-
-	// code
-	Code int64 `json:"code,omitempty"`
-
-	// details
-	Details []interface{} `json:"details"`
-
-	// message
-	Message string `json:"message,omitempty"`
-
-	// reason
-	Reason string `json:"reason,omitempty"`
-
-	// request
-	Request string `json:"request,omitempty"`
-
-	// status
-	Status string `json:"status,omitempty"`
-}
-
-// Validate validates this get expand bad request body
-func (o *GetExpandBadRequestBody) Validate(formats strfmt.Registry) error {
-	return nil
-}
-
-// ContextValidate validates this get expand bad request body based on context it is used
-func (o *GetExpandBadRequestBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
-	return nil
-}
-
-// MarshalBinary interface implementation
-func (o *GetExpandBadRequestBody) MarshalBinary() ([]byte, error) {
-	if o == nil {
-		return nil, nil
-	}
-	return swag.WriteJSON(o)
-}
-
-// UnmarshalBinary interface implementation
-func (o *GetExpandBadRequestBody) UnmarshalBinary(b []byte) error {
-	var res GetExpandBadRequestBody
-	if err := swag.ReadJSON(b, &res); err != nil {
-		return err
-	}
-	*o = res
-	return nil
-}
-
-/*GetExpandInternalServerErrorBody get expand internal server error body
-swagger:model GetExpandInternalServerErrorBody
-*/
-type GetExpandInternalServerErrorBody struct {
-
-	// code
-	Code int64 `json:"code,omitempty"`
-
-	// details
-	Details []interface{} `json:"details"`
-
-	// message
-	Message string `json:"message,omitempty"`
-
-	// reason
-	Reason string `json:"reason,omitempty"`
-
-	// request
-	Request string `json:"request,omitempty"`
-
-	// status
-	Status string `json:"status,omitempty"`
-}
-
-// Validate validates this get expand internal server error body
-func (o *GetExpandInternalServerErrorBody) Validate(formats strfmt.Registry) error {
-	return nil
-}
-
-// ContextValidate validates this get expand internal server error body based on context it is used
-func (o *GetExpandInternalServerErrorBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
-	return nil
-}
-
-// MarshalBinary interface implementation
-func (o *GetExpandInternalServerErrorBody) MarshalBinary() ([]byte, error) {
-	if o == nil {
-		return nil, nil
-	}
-	return swag.WriteJSON(o)
-}
-
-// UnmarshalBinary interface implementation
-func (o *GetExpandInternalServerErrorBody) UnmarshalBinary(b []byte) error {
-	var res GetExpandInternalServerErrorBody
-	if err := swag.ReadJSON(b, &res); err != nil {
-		return err
-	}
-	*o = res
-	return nil
-}
-
-/*GetExpandNotFoundBody get expand not found body
-swagger:model GetExpandNotFoundBody
-*/
-type GetExpandNotFoundBody struct {
-
-	// code
-	Code int64 `json:"code,omitempty"`
-
-	// details
-	Details []interface{} `json:"details"`
-
-	// message
-	Message string `json:"message,omitempty"`
-
-	// reason
-	Reason string `json:"reason,omitempty"`
-
-	// request
-	Request string `json:"request,omitempty"`
-
-	// status
-	Status string `json:"status,omitempty"`
-}
-
-// Validate validates this get expand not found body
-func (o *GetExpandNotFoundBody) Validate(formats strfmt.Registry) error {
-	return nil
-}
-
-// ContextValidate validates this get expand not found body based on context it is used
-func (o *GetExpandNotFoundBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
-	return nil
-}
-
-// MarshalBinary interface implementation
-func (o *GetExpandNotFoundBody) MarshalBinary() ([]byte, error) {
-	if o == nil {
-		return nil, nil
-	}
-	return swag.WriteJSON(o)
-}
-
-// UnmarshalBinary interface implementation
-func (o *GetExpandNotFoundBody) UnmarshalBinary(b []byte) error {
-	var res GetExpandNotFoundBody
-	if err := swag.ReadJSON(b, &res); err != nil {
-		return err
-	}
-	*o = res
 	return nil
 }

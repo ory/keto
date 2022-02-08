@@ -53,13 +53,32 @@ docker:
 # Generates the SDKs
 .PHONY: sdk
 sdk: .bin/swagger .bin/ory
-		swagger generate spec -m -o ./spec/api.json -x internal/httpclient -x proto/ory/keto -x docker
-		ory dev swagger sanitize ./spec/api.json
-		swagger flatten --with-flatten=remove-unused -o ./spec/api.json ./spec/api.json
-		swagger validate ./spec/api.json
-		rm -rf internal/httpclient
-		mkdir -p internal/httpclient
-		swagger generate client -f ./spec/api.json -t internal/httpclient -A Ory_Keto
+		swagger generate spec -m -o spec/swagger.json \
+			-c github.com/ory/keto \
+			-c github.com/ory/x/healthx \
+			-x internal/httpclient
+		ory dev swagger sanitize ./spec/swagger.json
+		swagger validate ./spec/swagger.json
+		CIRCLE_PROJECT_USERNAME=ory CIRCLE_PROJECT_REPONAME=keto \
+				ory dev openapi migrate \
+					--health-path-tags metadata \
+					-p https://raw.githubusercontent.com/ory/x/master/healthx/openapi/patch.yaml \
+					-p file://.schema/openapi/patches/meta.yaml \
+					spec/swagger.json spec/api.json
+
+		rm -rf internal/httpclient internal/httpclient-next
+		mkdir -p internal/httpclient internal/httpclient-next
+		swagger generate client -f ./spec/swagger.json -t internal/httpclient -A Ory_Keto
+
+		npx openapi-generator-cli -- generate -i "spec/api.json" \
+				-g go \
+				-o "internal/httpclient-next" \
+				--git-user-id ory \
+				--git-repo-id keto-client-go \
+				--git-host github.com \
+				-t .schema/openapi/templates/go \
+				-c .schema/openapi/gen.go.yml
+
 		make format
 
 .PHONY: build

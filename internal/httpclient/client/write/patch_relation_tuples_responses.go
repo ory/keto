@@ -6,13 +6,13 @@ package write
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"context"
 	"fmt"
 	"io"
 
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/strfmt"
-	"github.com/go-openapi/swag"
+
+	"github.com/ory/keto/internal/httpclient/models"
 )
 
 // PatchRelationTuplesReader is a Reader for the PatchRelationTuples structure.
@@ -80,22 +80,22 @@ func NewPatchRelationTuplesBadRequest() *PatchRelationTuplesBadRequest {
 
 /* PatchRelationTuplesBadRequest describes a response with status code 400, with default header values.
 
-The standard error format
+genericError
 */
 type PatchRelationTuplesBadRequest struct {
-	Payload *PatchRelationTuplesBadRequestBody
+	Payload *models.GenericError
 }
 
 func (o *PatchRelationTuplesBadRequest) Error() string {
 	return fmt.Sprintf("[PATCH /relation-tuples][%d] patchRelationTuplesBadRequest  %+v", 400, o.Payload)
 }
-func (o *PatchRelationTuplesBadRequest) GetPayload() *PatchRelationTuplesBadRequestBody {
+func (o *PatchRelationTuplesBadRequest) GetPayload() *models.GenericError {
 	return o.Payload
 }
 
 func (o *PatchRelationTuplesBadRequest) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(PatchRelationTuplesBadRequestBody)
+	o.Payload = new(models.GenericError)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
@@ -112,22 +112,22 @@ func NewPatchRelationTuplesNotFound() *PatchRelationTuplesNotFound {
 
 /* PatchRelationTuplesNotFound describes a response with status code 404, with default header values.
 
-The standard error format
+genericError
 */
 type PatchRelationTuplesNotFound struct {
-	Payload *PatchRelationTuplesNotFoundBody
+	Payload *models.GenericError
 }
 
 func (o *PatchRelationTuplesNotFound) Error() string {
 	return fmt.Sprintf("[PATCH /relation-tuples][%d] patchRelationTuplesNotFound  %+v", 404, o.Payload)
 }
-func (o *PatchRelationTuplesNotFound) GetPayload() *PatchRelationTuplesNotFoundBody {
+func (o *PatchRelationTuplesNotFound) GetPayload() *models.GenericError {
 	return o.Payload
 }
 
 func (o *PatchRelationTuplesNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(PatchRelationTuplesNotFoundBody)
+	o.Payload = new(models.GenericError)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
@@ -144,183 +144,27 @@ func NewPatchRelationTuplesInternalServerError() *PatchRelationTuplesInternalSer
 
 /* PatchRelationTuplesInternalServerError describes a response with status code 500, with default header values.
 
-The standard error format
+genericError
 */
 type PatchRelationTuplesInternalServerError struct {
-	Payload *PatchRelationTuplesInternalServerErrorBody
+	Payload *models.GenericError
 }
 
 func (o *PatchRelationTuplesInternalServerError) Error() string {
 	return fmt.Sprintf("[PATCH /relation-tuples][%d] patchRelationTuplesInternalServerError  %+v", 500, o.Payload)
 }
-func (o *PatchRelationTuplesInternalServerError) GetPayload() *PatchRelationTuplesInternalServerErrorBody {
+func (o *PatchRelationTuplesInternalServerError) GetPayload() *models.GenericError {
 	return o.Payload
 }
 
 func (o *PatchRelationTuplesInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(PatchRelationTuplesInternalServerErrorBody)
+	o.Payload = new(models.GenericError)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
 		return err
 	}
 
-	return nil
-}
-
-/*PatchRelationTuplesBadRequestBody patch relation tuples bad request body
-swagger:model PatchRelationTuplesBadRequestBody
-*/
-type PatchRelationTuplesBadRequestBody struct {
-
-	// code
-	Code int64 `json:"code,omitempty"`
-
-	// details
-	Details []interface{} `json:"details"`
-
-	// message
-	Message string `json:"message,omitempty"`
-
-	// reason
-	Reason string `json:"reason,omitempty"`
-
-	// request
-	Request string `json:"request,omitempty"`
-
-	// status
-	Status string `json:"status,omitempty"`
-}
-
-// Validate validates this patch relation tuples bad request body
-func (o *PatchRelationTuplesBadRequestBody) Validate(formats strfmt.Registry) error {
-	return nil
-}
-
-// ContextValidate validates this patch relation tuples bad request body based on context it is used
-func (o *PatchRelationTuplesBadRequestBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
-	return nil
-}
-
-// MarshalBinary interface implementation
-func (o *PatchRelationTuplesBadRequestBody) MarshalBinary() ([]byte, error) {
-	if o == nil {
-		return nil, nil
-	}
-	return swag.WriteJSON(o)
-}
-
-// UnmarshalBinary interface implementation
-func (o *PatchRelationTuplesBadRequestBody) UnmarshalBinary(b []byte) error {
-	var res PatchRelationTuplesBadRequestBody
-	if err := swag.ReadJSON(b, &res); err != nil {
-		return err
-	}
-	*o = res
-	return nil
-}
-
-/*PatchRelationTuplesInternalServerErrorBody patch relation tuples internal server error body
-swagger:model PatchRelationTuplesInternalServerErrorBody
-*/
-type PatchRelationTuplesInternalServerErrorBody struct {
-
-	// code
-	Code int64 `json:"code,omitempty"`
-
-	// details
-	Details []interface{} `json:"details"`
-
-	// message
-	Message string `json:"message,omitempty"`
-
-	// reason
-	Reason string `json:"reason,omitempty"`
-
-	// request
-	Request string `json:"request,omitempty"`
-
-	// status
-	Status string `json:"status,omitempty"`
-}
-
-// Validate validates this patch relation tuples internal server error body
-func (o *PatchRelationTuplesInternalServerErrorBody) Validate(formats strfmt.Registry) error {
-	return nil
-}
-
-// ContextValidate validates this patch relation tuples internal server error body based on context it is used
-func (o *PatchRelationTuplesInternalServerErrorBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
-	return nil
-}
-
-// MarshalBinary interface implementation
-func (o *PatchRelationTuplesInternalServerErrorBody) MarshalBinary() ([]byte, error) {
-	if o == nil {
-		return nil, nil
-	}
-	return swag.WriteJSON(o)
-}
-
-// UnmarshalBinary interface implementation
-func (o *PatchRelationTuplesInternalServerErrorBody) UnmarshalBinary(b []byte) error {
-	var res PatchRelationTuplesInternalServerErrorBody
-	if err := swag.ReadJSON(b, &res); err != nil {
-		return err
-	}
-	*o = res
-	return nil
-}
-
-/*PatchRelationTuplesNotFoundBody patch relation tuples not found body
-swagger:model PatchRelationTuplesNotFoundBody
-*/
-type PatchRelationTuplesNotFoundBody struct {
-
-	// code
-	Code int64 `json:"code,omitempty"`
-
-	// details
-	Details []interface{} `json:"details"`
-
-	// message
-	Message string `json:"message,omitempty"`
-
-	// reason
-	Reason string `json:"reason,omitempty"`
-
-	// request
-	Request string `json:"request,omitempty"`
-
-	// status
-	Status string `json:"status,omitempty"`
-}
-
-// Validate validates this patch relation tuples not found body
-func (o *PatchRelationTuplesNotFoundBody) Validate(formats strfmt.Registry) error {
-	return nil
-}
-
-// ContextValidate validates this patch relation tuples not found body based on context it is used
-func (o *PatchRelationTuplesNotFoundBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
-	return nil
-}
-
-// MarshalBinary interface implementation
-func (o *PatchRelationTuplesNotFoundBody) MarshalBinary() ([]byte, error) {
-	if o == nil {
-		return nil, nil
-	}
-	return swag.WriteJSON(o)
-}
-
-// UnmarshalBinary interface implementation
-func (o *PatchRelationTuplesNotFoundBody) UnmarshalBinary(b []byte) error {
-	var res PatchRelationTuplesNotFoundBody
-	if err := swag.ReadJSON(b, &res); err != nil {
-		return err
-	}
-	*o = res
 	return nil
 }

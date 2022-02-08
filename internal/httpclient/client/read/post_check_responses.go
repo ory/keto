@@ -6,13 +6,11 @@ package read
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"context"
 	"fmt"
 	"io"
 
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/strfmt"
-	"github.com/go-openapi/swag"
 
 	"github.com/ory/keto/internal/httpclient/models"
 )
@@ -93,22 +91,22 @@ func NewPostCheckBadRequest() *PostCheckBadRequest {
 
 /* PostCheckBadRequest describes a response with status code 400, with default header values.
 
-The standard error format
+genericError
 */
 type PostCheckBadRequest struct {
-	Payload *PostCheckBadRequestBody
+	Payload *models.GenericError
 }
 
 func (o *PostCheckBadRequest) Error() string {
 	return fmt.Sprintf("[POST /check][%d] postCheckBadRequest  %+v", 400, o.Payload)
 }
-func (o *PostCheckBadRequest) GetPayload() *PostCheckBadRequestBody {
+func (o *PostCheckBadRequest) GetPayload() *models.GenericError {
 	return o.Payload
 }
 
 func (o *PostCheckBadRequest) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(PostCheckBadRequestBody)
+	o.Payload = new(models.GenericError)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
@@ -157,131 +155,27 @@ func NewPostCheckInternalServerError() *PostCheckInternalServerError {
 
 /* PostCheckInternalServerError describes a response with status code 500, with default header values.
 
-The standard error format
+genericError
 */
 type PostCheckInternalServerError struct {
-	Payload *PostCheckInternalServerErrorBody
+	Payload *models.GenericError
 }
 
 func (o *PostCheckInternalServerError) Error() string {
 	return fmt.Sprintf("[POST /check][%d] postCheckInternalServerError  %+v", 500, o.Payload)
 }
-func (o *PostCheckInternalServerError) GetPayload() *PostCheckInternalServerErrorBody {
+func (o *PostCheckInternalServerError) GetPayload() *models.GenericError {
 	return o.Payload
 }
 
 func (o *PostCheckInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(PostCheckInternalServerErrorBody)
+	o.Payload = new(models.GenericError)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
 		return err
 	}
 
-	return nil
-}
-
-/*PostCheckBadRequestBody post check bad request body
-swagger:model PostCheckBadRequestBody
-*/
-type PostCheckBadRequestBody struct {
-
-	// code
-	Code int64 `json:"code,omitempty"`
-
-	// details
-	Details []interface{} `json:"details"`
-
-	// message
-	Message string `json:"message,omitempty"`
-
-	// reason
-	Reason string `json:"reason,omitempty"`
-
-	// request
-	Request string `json:"request,omitempty"`
-
-	// status
-	Status string `json:"status,omitempty"`
-}
-
-// Validate validates this post check bad request body
-func (o *PostCheckBadRequestBody) Validate(formats strfmt.Registry) error {
-	return nil
-}
-
-// ContextValidate validates this post check bad request body based on context it is used
-func (o *PostCheckBadRequestBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
-	return nil
-}
-
-// MarshalBinary interface implementation
-func (o *PostCheckBadRequestBody) MarshalBinary() ([]byte, error) {
-	if o == nil {
-		return nil, nil
-	}
-	return swag.WriteJSON(o)
-}
-
-// UnmarshalBinary interface implementation
-func (o *PostCheckBadRequestBody) UnmarshalBinary(b []byte) error {
-	var res PostCheckBadRequestBody
-	if err := swag.ReadJSON(b, &res); err != nil {
-		return err
-	}
-	*o = res
-	return nil
-}
-
-/*PostCheckInternalServerErrorBody post check internal server error body
-swagger:model PostCheckInternalServerErrorBody
-*/
-type PostCheckInternalServerErrorBody struct {
-
-	// code
-	Code int64 `json:"code,omitempty"`
-
-	// details
-	Details []interface{} `json:"details"`
-
-	// message
-	Message string `json:"message,omitempty"`
-
-	// reason
-	Reason string `json:"reason,omitempty"`
-
-	// request
-	Request string `json:"request,omitempty"`
-
-	// status
-	Status string `json:"status,omitempty"`
-}
-
-// Validate validates this post check internal server error body
-func (o *PostCheckInternalServerErrorBody) Validate(formats strfmt.Registry) error {
-	return nil
-}
-
-// ContextValidate validates this post check internal server error body based on context it is used
-func (o *PostCheckInternalServerErrorBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
-	return nil
-}
-
-// MarshalBinary interface implementation
-func (o *PostCheckInternalServerErrorBody) MarshalBinary() ([]byte, error) {
-	if o == nil {
-		return nil, nil
-	}
-	return swag.WriteJSON(o)
-}
-
-// UnmarshalBinary interface implementation
-func (o *PostCheckInternalServerErrorBody) UnmarshalBinary(b []byte) error {
-	var res PostCheckInternalServerErrorBody
-	if err := swag.ReadJSON(b, &res); err != nil {
-		return err
-	}
-	*o = res
 	return nil
 }
