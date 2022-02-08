@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"sync"
 
+	prometheus "github.com/ory/x/prometheusx"
+
 	"github.com/ory/x/networkx"
 	"github.com/rs/cors"
 
@@ -64,12 +66,14 @@ type (
 		c    *config.Config
 		conn *pop.Connection
 
-		initialized  sync.Once
-		healthH      *healthx.Handler
-		healthServer *health.Server
-		handlers     []Handler
-		sqaService   *metricsx.Service
-		tracer       *tracing.Tracer
+		initialized    sync.Once
+		healthH        *healthx.Handler
+		healthServer   *health.Server
+		handlers       []Handler
+		sqaService     *metricsx.Service
+		tracer         *tracing.Tracer
+		pmm            *prometheus.MetricsManager
+		metricsHandler *prometheus.Handler
 	}
 	Handler interface {
 		RegisterReadRoutes(r *x.ReadRouter)
@@ -126,6 +130,21 @@ func (r *RegistryDefault) Tracer() *tracing.Tracer {
 	}
 
 	return r.tracer
+}
+
+func (r *RegistryDefault) MetricsHandler() *prometheus.Handler {
+	if r.metricsHandler == nil {
+
+		r.metricsHandler = prometheus.NewHandler(r.Writer(), config.Version)
+	}
+	return r.metricsHandler
+}
+
+func (r *RegistryDefault) PrometheusManager() *prometheus.MetricsManager {
+	if r.pmm == nil {
+		r.pmm = prometheus.NewMetricsManager("keto", config.Version, config.Commit, config.Date)
+	}
+	return r.pmm
 }
 
 func (r *RegistryDefault) Logger() *logrusx.Logger {

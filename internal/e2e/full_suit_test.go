@@ -2,6 +2,8 @@ package e2e
 
 import (
 	"fmt"
+	prometheus "github.com/ory/x/prometheusx"
+	"io/ioutil"
 	"net/http"
 	"testing"
 	"time"
@@ -42,6 +44,10 @@ type (
 	}
 )
 
+const (
+	promLogLine = "promhttp_metric_handler_requests_total"
+)
+
 func Test(t *testing.T) {
 	for _, dsn := range dbx.GetDSNs(t, false) {
 		t.Run(fmt.Sprintf("dsn=%s", dsn.Name), func(t *testing.T) {
@@ -77,6 +83,14 @@ func Test(t *testing.T) {
 				if tc, ok := cl.(transactClient); ok {
 					t.Run(fmt.Sprintf("transactClient=%T", cl), runTransactionCases(tc, addNamespace))
 				}
+				t.Run("case=metrics", func(t *testing.T) {
+					resp, err := http.Get(fmt.Sprintf("http://%s%s", reg.Config().MetricsListenOn(), prometheus.MetricsPrometheusPath))
+					require.NoError(t, err)
+					require.Equal(t, resp.StatusCode, http.StatusOK)
+					body, err := ioutil.ReadAll(resp.Body)
+					require.NoError(t, err)
+					require.Contains(t, string(body), promLogLine)
+				})
 			}
 		})
 	}
