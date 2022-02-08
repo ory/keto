@@ -366,8 +366,7 @@ func (r *RegistryDefault) MetricsRouter() http.Handler {
 	if enabled {
 		handler = cors.New(options).Handler(handler)
 	}
-
-	return n
+	return handler
 }
 
 func (r *RegistryDefault) unaryInterceptors() []grpc.UnaryServerInterceptor {
