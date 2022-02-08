@@ -46,7 +46,7 @@ func newInitializedReg(t testing.TB, dsn *dbx.DsnT, cfgOverwrites map[string]int
 		config.KeyReadAPIPort:       ports[0],
 		config.KeyWriteAPIHost:      "127.0.0.1",
 		config.KeyWriteAPIPort:      ports[1],
-		config.KeyMetricsHost:       "127.0.01",
+		config.KeyMetricsHost:       "127.0.0.1",
 		config.KeyMetricsPort:       ports[2],
 	}
 	for k, v := range cfgOverwrites {

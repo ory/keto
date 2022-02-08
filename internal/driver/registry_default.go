@@ -134,7 +134,6 @@ func (r *RegistryDefault) Tracer() *tracing.Tracer {
 
 func (r *RegistryDefault) MetricsHandler() *prometheus.Handler {
 	if r.metricsHandler == nil {
-
 		r.metricsHandler = prometheus.NewHandler(r.Writer(), config.Version)
 	}
 	return r.metricsHandler
@@ -355,12 +354,18 @@ func (r *RegistryDefault) WriteRouter() http.Handler {
 
 func (r *RegistryDefault) MetricsRouter() http.Handler {
 	n := negroni.New(reqlog.NewMiddlewareFromLogger(r.Logger(), "keto").ExcludePaths(prometheus.MetricsPrometheusPath))
-	router := &x.MetricsRouter{Router: httprouter.New()}
+	router := httprouter.New()
 
-	r.PrometheusManager().RegisterRouter(router.Router)
-	r.MetricsHandler().SetRoutes(router.Router)
+	r.PrometheusManager().RegisterRouter(router)
+	r.MetricsHandler().SetRoutes(router)
 	n.UseHandler(router)
 	n.Use(r.PrometheusManager())
+
+	var handler http.Handler = n
+	options, enabled := r.Config().CORS("metrics")
+	if enabled {
+		handler = cors.New(options).Handler(handler)
+	}
 
 	return n
 }

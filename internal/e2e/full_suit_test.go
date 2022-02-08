@@ -84,7 +84,8 @@ func Test(t *testing.T) {
 				if tc, ok := cl.(transactClient); ok {
 					t.Run(fmt.Sprintf("transactClient=%T", cl), runTransactionCases(tc, addNamespace))
 				}
-				t.Run("case=metrics", func(t *testing.T) {
+
+				t.Run("case=metrics is served", func(t *testing.T) {
 					resp, err := http.Get(fmt.Sprintf("http://%s%s", reg.Config().MetricsListenOn(), prometheus.MetricsPrometheusPath))
 					require.NoError(t, err)
 					require.Equal(t, resp.StatusCode, http.StatusOK)

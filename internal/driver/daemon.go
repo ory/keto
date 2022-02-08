@@ -85,10 +85,11 @@ func (r *RegistryDefault) ServeWrite(ctx context.Context) func() error {
 }
 
 func (r *RegistryDefault) ServeMetrics(ctx context.Context) func() error {
-	rt := r.MetricsRouter()
-
 	return func() error {
-		return multiplexPortNoGRPC(ctx, r.Config().MetricsListenOn(), rt)
+		graceful.WithDefaults(&http.Server{
+			Handler: r.MetricsRouter(),
+			Addr:    r.Config().MetricsListenOn(),
+		})
 	}
 }
 
