@@ -22,18 +22,28 @@
     <a href="https://github.com/ory/keto/blob/master/CODE_OF_CONDUCT.md" alt="Ory Code of Conduct"><img src="https://img.shields.io/badge/ory-code%20of%20conduct-green" /></a>
 </p>
 
-Ory Keto is the first and most popular open source implementation of "Zanzibar: Google's
-Consistent, Global Authorization System"!
+Ory Keto is the first and most popular open source implementation of "Zanzibar:
+Google's Consistent, Global Authorization System"!
 
 ## Ory Cloud
 
-The easiest way to get started with Ory Software is in Ory Cloud! It is [**free for developers**](https://console.ory.sh/registration?utm_source=github&utm_medium=banner&utm_campaign=keto-readme), forever, no credit card required!
+The easiest way to get started with Ory Software is in Ory Cloud! It is
+[**free for developers**](https://console.ory.sh/registration?utm_source=github&utm_medium=banner&utm_campaign=keto-readme),
+forever, no credit card required!
 
-Ory Cloud has easy examples, administrative user interfaces, hosted pages (e.g. for login or registration), support for custom domains, collaborative features for your colleagues, and much more!
+Ory Cloud has easy examples, administrative user interfaces, hosted pages (e.g.
+for login or registration), support for custom domains, collaborative features
+for your colleagues, and much more!
 
 ### :mega: Community gets Ory Cloud for Free! :mega:
 
-Ory community members get the Ory Cloud Start Up plan **free for a year**, with all quality-of-life features available, such as custom domains and giving your team members access. [Sign up with your GitHub account](https://console.ory.sh/registration?preferred_plan=start-up&utm_source=github&utm_medium=banner&utm_campaign=keto-readme-first900) and use the coupon code **`FIRST900`** on the *"Start-Up Plan"* checkout page to calim your free project now! Make sure to be signed up to the [Ory Community Slack](https://slack.ory.sh) when using the code!
+Ory community members get the Ory Cloud Start Up plan **free for a year**, with
+all quality-of-life features available, such as custom domains and giving your
+team members access.
+[Sign up with your GitHub account](https://console.ory.sh/registration?preferred_plan=start-up&utm_source=github&utm_medium=banner&utm_campaign=keto-readme-first900)
+and use the coupon code **`FIRST900`** on the _"Start-Up Plan"_ checkout page to
+calim your free project now! Make sure to be signed up to the
+[Ory Community Slack](https://slack.ory.sh) when using the code!
 
 ### Google's Zanzibar
 
