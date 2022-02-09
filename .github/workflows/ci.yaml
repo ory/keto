@@ -107,16 +107,6 @@ jobs:
           token: ${{ secrets.ORY_BOT_PAT }}
           api-spec-location: spec/api.json
           config-spec-location: .schema/config.schema.json
-      - env:
-          GITHUB_TOKEN: ${{ inputs.token }}
-        run: |
-          cp "current-repo/docs/.generated/proto-api.mdx" "docs/docs/keto/reference/proto-api.mdx"
-          cd docs
-          git add -A
-          git commit -a -m "autogen(docs): generate and bump docs for $repo" || true
-          git pull origin master --rebase || true
-          git push origin HEAD:master || true
-        shell: bash
 
   docs-cli:
     runs-on: ubuntu-latest
@@ -285,13 +275,6 @@ jobs:
           git add proto
           git commit -a -m "autogen: build buf" && git push "https://${GITHUB_ACTOR}:${{ secrets.ORY_BOT_PAT }}@github.com/${GITHUB_REPOSITORY}.git" HEAD:${GITHUB_REF#"refs/heads/"} || true
         working-directory: current-repo
-      - name: Push docs to master
-        run: |
-          git config --local user.email "60093411+ory-bot@users.noreply.github.com"
-          git config --local user.name "ory-bot"
-          git add proto
-          git commit -a -m "autogen: build buf" && git push "https://${GITHUB_ACTOR}:${{ secrets.ORY_BOT_PAT }}@github.com/${GITHUB_REPOSITORY}.git" HEAD:${GITHUB_REF#"refs/heads/"} || true
-        working-directory: current-repo
       - if: ${{ github.ref_name == 'master' || github.ref_type == 'tag' }}
         uses: actions/checkout@v2
         with:
@@ -304,6 +287,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.ORY_BOT_PAT }}
         run: |
+          cp "current-repo/docs/.generated/proto-api.mdx" "docs/docs/keto/reference/proto-api.mdx"
           cd docs
           git stash || true
           git pull --rebase origin master || true
