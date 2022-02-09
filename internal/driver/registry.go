@@ -57,8 +57,6 @@ type (
 
 		ServeAll(ctx context.Context) error
 		ServeAllSQA(cmd *cobra.Command) error
-		ServeRead(ctx context.Context) func() error
-		ServeWrite(ctx context.Context) func() error
 	}
 
 	contextKeys string

@@ -19,12 +19,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	cliclient "github.com/ory/keto/cmd/client"
 	"github.com/ory/keto/internal/expand"
 
-	"github.com/ory/x/cmdx"
-
-	"github.com/ory/keto/cmd"
 	"github.com/ory/keto/internal/relationtuple"
 )
 
@@ -52,55 +48,62 @@ const (
 func Test(t *testing.T) {
 	for _, dsn := range dbx.GetDSNs(t, false) {
 		t.Run(fmt.Sprintf("dsn=%s", dsn.Name), func(t *testing.T) {
-			ctx, reg, addNamespace := newInitializedReg(t, dsn, nil)
+			ctx, reg, _ := newInitializedReg(t, dsn, nil)
 
 			closeServer := startServer(ctx, t, reg)
 			defer closeServer()
 
-			// The test cases start here
-			// We execute every test with all clients available
-			for _, cl := range []client{
-				&grpcClient{
+			//// The test cases start here
+			//// We execute every test with all clients available
+			//for _, cl := range []client{
+			//	&grpcClient{
+			//		readRemote:  reg.Config().ReadAPIListenOn(),
+			//		writeRemote: reg.Config().WriteAPIListenOn(),
+			//		ctx:         ctx,
+			//	},
+			//	&restClient{
+			//		readURL:  "http://" + reg.Config().ReadAPIListenOn(),
+			//		writeURL: "http://" + reg.Config().WriteAPIListenOn(),
+			//	},
+			//	&cliClient{c: &cmdx.CommandExecuter{
+			//		New:            cmd.NewRootCmd,
+			//		Ctx:            ctx,
+			//		PersistentArgs: []string{"--" + cliclient.FlagReadRemote, reg.Config().ReadAPIListenOn(), "--" + cliclient.FlagWriteRemote, reg.Config().WriteAPIListenOn(), "--" + cmdx.FlagFormat, string(cmdx.FormatJSON)},
+			//	}},
+			//	&sdkClient{
+			//		readRemote:  reg.Config().ReadAPIListenOn(),
+			//		writeRemote: reg.Config().WriteAPIListenOn(),
+			//	},
+			//} {
+			//	t.Run(fmt.Sprintf("client=%T", cl), runCases(cl, addNamespace))
+			//
+			//	if tc, ok := cl.(transactClient); ok {
+			//		t.Run(fmt.Sprintf("transactClient=%T", cl), runTransactionCases(tc, addNamespace))
+			//	}
+			//}
+
+			t.Run("case=metrics are served", func(t *testing.T) {
+				(&grpcClient{
 					readRemote:  reg.Config().ReadAPIListenOn(),
 					writeRemote: reg.Config().WriteAPIListenOn(),
 					ctx:         ctx,
-				},
-				&restClient{
-					readURL:  "http://" + reg.Config().ReadAPIListenOn(),
-					writeURL: "http://" + reg.Config().WriteAPIListenOn(),
-				},
-				&cliClient{c: &cmdx.CommandExecuter{
-					New:            cmd.NewRootCmd,
-					Ctx:            ctx,
-					PersistentArgs: []string{"--" + cliclient.FlagReadRemote, reg.Config().ReadAPIListenOn(), "--" + cliclient.FlagWriteRemote, reg.Config().WriteAPIListenOn(), "--" + cmdx.FlagFormat, string(cmdx.FormatJSON)},
-				}},
-				&sdkClient{
-					readRemote:  reg.Config().ReadAPIListenOn(),
-					writeRemote: reg.Config().WriteAPIListenOn(),
-				},
-			} {
-				t.Run(fmt.Sprintf("client=%T", cl), runCases(cl, addNamespace))
+				}).waitUntilLive(t)
 
-				if tc, ok := cl.(transactClient); ok {
-					t.Run(fmt.Sprintf("transactClient=%T", cl), runTransactionCases(tc, addNamespace))
-				}
-
-				t.Run("case=metrics are served", func(t *testing.T) {
-					t.Run("case=on "+prometheus.MetricsPrometheusPath, func(t *testing.T) {
-						resp, err := http.Get(fmt.Sprintf("http://%s%s", reg.Config().MetricsListenOn(), prometheus.MetricsPrometheusPath))
-						require.NoError(t, err)
-						require.Equal(t, resp.StatusCode, http.StatusOK)
-						body, err := ioutil.ReadAll(resp.Body)
-						require.NoError(t, err)
-						require.Contains(t, string(body), promLogLine)
-					})
-					t.Run("case=not on /", func(t *testing.T) {
-						resp, err := http.Get(fmt.Sprintf("http://%s", reg.Config().MetricsListenOn()))
-						require.NoError(t, err)
-						require.Equal(t, resp.StatusCode, http.StatusNotFound)
-					})
+				t.Run("case=on "+prometheus.MetricsPrometheusPath, func(t *testing.T) {
+					resp, err := http.Get(fmt.Sprintf("http://%s%s", reg.Config().MetricsListenOn(), prometheus.MetricsPrometheusPath))
+					require.NoError(t, err)
+					require.Equal(t, resp.StatusCode, http.StatusOK)
+					body, err := ioutil.ReadAll(resp.Body)
+					require.NoError(t, err)
+					require.Contains(t, string(body), promLogLine)
 				})
-			}
+
+				t.Run("case=not on /", func(t *testing.T) {
+					resp, err := http.Get(fmt.Sprintf("http://%s", reg.Config().MetricsListenOn()))
+					require.NoError(t, err)
+					require.Equal(t, resp.StatusCode, http.StatusNotFound)
+				})
+			})
 		})
 	}
 }

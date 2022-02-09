@@ -4,7 +4,12 @@ import (
 	"context"
 	"net"
 	"net/http"
+	"os"
+	"os/signal"
 	"strings"
+	"syscall"
+
+	"github.com/ory/x/logrusx"
 
 	"github.com/ory/keto/internal/check"
 	"github.com/ory/keto/internal/expand"
@@ -60,65 +65,102 @@ func (r *RegistryDefault) ServeAllSQA(cmd *cobra.Command) error {
 }
 
 func (r *RegistryDefault) ServeAll(ctx context.Context) error {
+	innerCtx, cancel := context.WithCancel(ctx)
+	defer cancel()
+
+	doneShutdown := make(chan struct{}, 3)
+
+	go func() {
+		osSignals := make(chan os.Signal, 1)
+		signal.Notify(osSignals, os.Interrupt, syscall.SIGTERM)
+
+		select {
+		case <-osSignals:
+			cancel()
+		case <-innerCtx.Done():
+		}
+
+		ctx, cancel := context.WithTimeout(context.Background(), graceful.DefaultShutdownTimeout)
+		defer cancel()
+
+		nWaitingForShutdown := cap(doneShutdown)
+		select {
+		case <-ctx.Done():
+			return
+		case <-doneShutdown:
+			nWaitingForShutdown--
+			if nWaitingForShutdown == 0 {
+				// graceful shutdown done
+				return
+			}
+		}
+	}()
+
 	eg := &errgroup.Group{}
 
-	eg.Go(r.ServeRead(ctx))
-	eg.Go(r.ServeWrite(ctx))
-	eg.Go(r.ServeMetrics(ctx))
+	eg.Go(r.serveRead(innerCtx, doneShutdown))
+	eg.Go(r.serveWrite(innerCtx, doneShutdown))
+	eg.Go(r.serveMetrics(innerCtx, doneShutdown))
+
 	return eg.Wait()
 }
 
-func (r *RegistryDefault) ServeRead(ctx context.Context) func() error {
+func (r *RegistryDefault) serveRead(ctx context.Context, done chan<- struct{}) func() error {
 	rt, s := r.ReadRouter(), r.ReadGRPCServer()
 
 	return func() error {
-		return multiplexPort(ctx, r.Config().ReadAPIListenOn(), rt, s)
+		return multiplexPort(ctx, r.Logger().WithField("endpoint", "read"), r.Config().ReadAPIListenOn(), rt, s, done)
 	}
 }
 
-func (r *RegistryDefault) ServeWrite(ctx context.Context) func() error {
+func (r *RegistryDefault) serveWrite(ctx context.Context, done chan<- struct{}) func() error {
 	rt, s := r.WriteRouter(), r.WriteGRPCServer()
 
 	return func() error {
-		return multiplexPort(ctx, r.Config().WriteAPIListenOn(), rt, s)
+		return multiplexPort(ctx, r.Logger().WithField("endpoint", "write"), r.Config().WriteAPIListenOn(), rt, s, done)
 	}
 }
 
-func (r *RegistryDefault) ServeMetrics(ctx context.Context) func() error {
+func (r *RegistryDefault) serveMetrics(ctx context.Context, done chan<- struct{}) func() error {
 	return func() error {
+		ctx, cancel := context.WithCancel(ctx)
+		defer cancel()
+
 		eg := &errgroup.Group{}
-		done := make(chan struct{})
 		s := graceful.WithDefaults(&http.Server{
 			Handler: r.MetricsRouter(),
 			Addr:    r.Config().MetricsListenOn(),
 		})
 
 		eg.Go(func() error {
-			defer func() {
-				done <- struct{}{}
-			}()
 			if err := s.ListenAndServe(); !errors.Is(err, http.ErrServerClosed) {
-				// unexpected error
 				return errors.WithStack(err)
 			}
 			return nil
 		})
-
-		eg.Go(func() error {
+		eg.Go(func() (err error) {
 			defer func() {
+				l := r.Logger().WithField("endpoint", "metrics")
+				if err != nil {
+					l.WithError(err).Error("graceful shutdown failed")
+				} else {
+					l.Info("gracefully shutdown server")
+				}
 				done <- struct{}{}
 			}()
+
 			<-ctx.Done()
-			ctx, cancel := context.WithTimeout(context.Background(), graceful.DefaultReadTimeout)
+			ctx, cancel := context.WithTimeout(context.Background(), graceful.DefaultShutdownTimeout)
 			defer cancel()
 			return s.Shutdown(ctx)
 		})
-		return nil
+
+		return eg.Wait()
 	}
 }
 
-func multiplexPort(ctx context.Context, addr string, router http.Handler, grpcS *grpc.Server) error {
-	l, err := net.Listen("tcp", addr)
+func multiplexPort(ctx context.Context, log *logrusx.Logger, addr string, router http.Handler, grpcS *grpc.Server, done chan<- struct{}) error {
+	l, err := (&net.ListenConfig{}).Listen(ctx, "tcp", addr)
 	if err != nil {
 		return err
 	}
@@ -134,22 +176,16 @@ func multiplexPort(ctx context.Context, addr string, router http.Handler, grpcS 
 	})
 
 	eg := &errgroup.Group{}
-	ctx, cancel := context.WithCancel(ctx)
-	serversDone := make(chan struct{}, 2)
 
 	eg.Go(func() error {
-		defer func() {
-			serversDone <- struct{}{}
-		}()
-		return errors.WithStack(grpcS.Serve(grpcL))
+		if err := grpcS.Serve(grpcL); !errors.Is(err, cmux.ErrServerClosed) {
+			return errors.WithStack(err)
+		}
+		return nil
 	})
 
 	eg.Go(func() error {
-		defer func() {
-			serversDone <- struct{}{}
-		}()
-		if err := restS.Serve(httpL); !errors.Is(err, http.ErrServerClosed) {
-			// unexpected error
+		if err := restS.Serve(httpL); !errors.Is(err, http.ErrServerClosed) && !errors.Is(err, cmux.ErrServerClosed) {
 			return errors.WithStack(err)
 		}
 		return nil
@@ -157,36 +193,54 @@ func multiplexPort(ctx context.Context, addr string, router http.Handler, grpcS 
 
 	eg.Go(func() error {
 		err := m.Serve()
-		if err != nil && !strings.Contains(err.Error(), "use of closed network connection") {
+		if err != nil && !errors.Is(err, net.ErrClosed) {
 			// unexpected error
 			return errors.WithStack(err)
 		}
-		// trigger further shutdown
-		cancel()
 		return nil
 	})
 
-	eg.Go(func() error {
+	eg.Go(func() (err error) {
+		defer func() {
+			if err != nil {
+				log.WithError(err).Error("graceful shutdown failed")
+			} else {
+				log.Info("gracefully shutdown server")
+			}
+			done <- struct{}{}
+		}()
+
 		<-ctx.Done()
 
-		m.Close()
-		for i := 0; i < 2; i++ {
-			<-serversDone
-		}
-
-		// we have to stop the servers as well as they might still be running (for whatever reason I could not figure out)
-		grpcS.GracefulStop()
-
-		ctx, cancel := context.WithTimeout(context.Background(), graceful.DefaultReadTimeout)
+		ctx, cancel := context.WithTimeout(context.Background(), graceful.DefaultShutdownTimeout)
 		defer cancel()
-		return restS.Shutdown(ctx)
+
+		shutdownEg := errgroup.Group{}
+		shutdownEg.Go(func() error {
+			// we ignore net.ErrClosed, because a cmux listener's close func is actually the one of the root listener (which is closed in a racy fashion)
+			if err := restS.Shutdown(ctx); !(err == nil || errors.Is(err, http.ErrServerClosed) || errors.Is(err, net.ErrClosed)) {
+				// unexpected error
+				return errors.WithStack(err)
+			}
+			return nil
+		})
+		shutdownEg.Go(func() error {
+			gracefulDone := make(chan struct{})
+			go func() {
+				grpcS.GracefulStop()
+				close(gracefulDone)
+			}()
+			select {
+			case <-gracefulDone:
+				return nil
+			case <-ctx.Done():
+				grpcS.Stop()
+				return errors.New("graceful stop of gRPC server canceled, had to force it")
+			}
+		})
+
+		return shutdownEg.Wait()
 	})
 
-	if err := eg.Wait(); !errors.Is(err, cmux.ErrServerClosed) &&
-		!errors.Is(err, cmux.ErrListenerClosed) &&
-		(err != nil && !strings.Contains(err.Error(), "use of closed network connection")) {
-		// unexpected error
-		return err
-	}
-	return nil
+	return eg.Wait()
 }

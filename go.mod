@@ -34,7 +34,7 @@ require (
 	github.com/luna-duclos/instrumentedsql v1.1.3
 	github.com/luna-duclos/instrumentedsql/opentracing v0.0.0-20201103091713-40d03108b6f4
 	github.com/ory/analytics-go/v4 v4.0.2
-	github.com/ory/graceful v0.1.1
+	github.com/ory/graceful v0.1.2
 	github.com/ory/herodot v0.9.12
 	github.com/ory/jsonschema/v3 v3.0.6
 	github.com/ory/keto/proto v0.0.0-00010101000000-000000000000

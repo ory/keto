@@ -1153,8 +1153,8 @@ github.com/ory/go-acc v0.2.6/go.mod h1:4Kb/UnPcT8qRAk3IAxta+hvVapdxTLWtrr7bFLlEg
 github.com/ory/go-convenience v0.1.0/go.mod h1:uEY/a60PL5c12nYz4V5cHY03IBmwIAEm8TWB0yn9KNs=
 github.com/ory/gojsonreference v0.0.0-20190720135523-6b606c2d8ee8/go.mod h1:wsH1C4nIeeQClDtD5AH7kF1uTS6zWyqfjVDTmB0Em7A=
 github.com/ory/gojsonschema v1.1.1-0.20190919112458-f254ca73d5e9/go.mod h1:BNZpdJgB74KOLSsWFvzw6roXg1I6O51WO8roMmW+T7Y=
-github.com/ory/graceful v0.1.1 h1:zx+8tDObLPrG+7Tc8jKYlXsqWnLtOQA1IZ/FAAKHMXU=
-github.com/ory/graceful v0.1.1/go.mod h1:zqu70l95WrKHF4AZ6tXHvAqAvpY6M7g6ttaAVcMm7KU=
+github.com/ory/graceful v0.1.2 h1:ErCFGuO0T6IHMQ9Fu9GKjIaRbNCrKDX/WdHDwM/mAlY=
+github.com/ory/graceful v0.1.2/go.mod h1:4zFz687IAF7oNHHiB586U4iL+/4aV09o/PYLE34t2bA=
 github.com/ory/herodot v0.6.2/go.mod h1:3BOneqcyBsVybCPAJoi92KN2BpJHcmDqAMcAAaJiJow=
 github.com/ory/herodot v0.7.0/go.mod h1:YXKOfAXYdQojDP5sD8m0ajowq3+QXNdtxA+QiUXBwn0=
 github.com/ory/herodot v0.8.3/go.mod h1:rvLjxOAlU5omtmgjCfazQX2N82EpMfl3BytBWc1jjsk=
