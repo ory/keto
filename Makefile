@@ -70,7 +70,7 @@ sdk: .bin/swagger .bin/ory
 		mkdir -p internal/httpclient internal/httpclient-next
 		swagger generate client -f ./spec/swagger.json -t internal/httpclient -A Ory_Keto
 
-		npx openapi-generator-cli -- generate -i "spec/api.json" \
+		npm run openapi-generator-cli -- generate -i "spec/api.json" \
 				-g go \
 				-o "internal/httpclient-next" \
 				--git-user-id ory \
