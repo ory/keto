@@ -4,6 +4,8 @@ import (
 	"context"
 	"net/http"
 
+	prometheus "github.com/ory/x/prometheusx"
+
 	"github.com/gobuffalo/pop/v6"
 
 	"github.com/ory/keto/internal/driver/config"
@@ -44,6 +46,8 @@ type (
 
 		HealthHandler() *healthx.Handler
 		Tracer() *tracing.Tracer
+		MetricsHandler() *prometheus.Handler
+		PrometheusManager() *prometheus.MetricsManager
 
 		ReadRouter() http.Handler
 		WriteRouter() http.Handler
@@ -53,8 +57,6 @@ type (
 
 		ServeAll(ctx context.Context) error
 		ServeAllSQA(cmd *cobra.Command) error
-		ServeRead(ctx context.Context) func() error
-		ServeWrite(ctx context.Context) func() error
 	}
 
 	contextKeys string

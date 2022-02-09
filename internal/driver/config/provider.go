@@ -36,6 +36,9 @@ const (
 	KeyWriteAPIHost = "serve.write.host"
 	KeyWriteAPIPort = "serve.write.port"
 
+	KeyMetricsHost = "serve.metrics.host"
+	KeyMetricsPort = "serve.metrics.port"
+
 	KeyNamespaces = "namespaces"
 
 	DSNMemory = "sqlite://file::memory:?_fk=true&cache=shared"
@@ -154,7 +157,7 @@ func (k *Config) WriteAPIListenOn() string {
 
 func (k *Config) CORS(iface string) (cors.Options, bool) {
 	switch iface {
-	case "read", "write":
+	case "read", "write", "metrics":
 	default:
 		panic("expected interface 'read' or 'write', but got unknown interface " + iface)
 	}
@@ -240,4 +243,12 @@ func (k *Config) getNamespaces() (interface{}, error) {
 	default:
 		return nil, errors.WithStack(herodot.ErrInternalServerError.WithReasonf("could not infer namespaces for type %T", nTyped))
 	}
+}
+
+func (k *Config) MetricsListenOn() string {
+	return fmt.Sprintf(
+		"%s:%d",
+		k.p.StringF(KeyMetricsHost, ""),
+		k.p.IntF(KeyMetricsPort, 4468),
+	)
 }
