@@ -6,13 +6,11 @@ package read
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"context"
 	"fmt"
 	"io"
 
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/strfmt"
-	"github.com/go-openapi/swag"
 
 	"github.com/ory/keto/internal/httpclient/models"
 )
@@ -87,22 +85,22 @@ func NewGetRelationTuplesNotFound() *GetRelationTuplesNotFound {
 
 /* GetRelationTuplesNotFound describes a response with status code 404, with default header values.
 
-The standard error format
+genericError
 */
 type GetRelationTuplesNotFound struct {
-	Payload *GetRelationTuplesNotFoundBody
+	Payload *models.GenericError
 }
 
 func (o *GetRelationTuplesNotFound) Error() string {
 	return fmt.Sprintf("[GET /relation-tuples][%d] getRelationTuplesNotFound  %+v", 404, o.Payload)
 }
-func (o *GetRelationTuplesNotFound) GetPayload() *GetRelationTuplesNotFoundBody {
+func (o *GetRelationTuplesNotFound) GetPayload() *models.GenericError {
 	return o.Payload
 }
 
 func (o *GetRelationTuplesNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(GetRelationTuplesNotFoundBody)
+	o.Payload = new(models.GenericError)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
@@ -119,131 +117,27 @@ func NewGetRelationTuplesInternalServerError() *GetRelationTuplesInternalServerE
 
 /* GetRelationTuplesInternalServerError describes a response with status code 500, with default header values.
 
-The standard error format
+genericError
 */
 type GetRelationTuplesInternalServerError struct {
-	Payload *GetRelationTuplesInternalServerErrorBody
+	Payload *models.GenericError
 }
 
 func (o *GetRelationTuplesInternalServerError) Error() string {
 	return fmt.Sprintf("[GET /relation-tuples][%d] getRelationTuplesInternalServerError  %+v", 500, o.Payload)
 }
-func (o *GetRelationTuplesInternalServerError) GetPayload() *GetRelationTuplesInternalServerErrorBody {
+func (o *GetRelationTuplesInternalServerError) GetPayload() *models.GenericError {
 	return o.Payload
 }
 
 func (o *GetRelationTuplesInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(GetRelationTuplesInternalServerErrorBody)
+	o.Payload = new(models.GenericError)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
 		return err
 	}
 
-	return nil
-}
-
-/*GetRelationTuplesInternalServerErrorBody get relation tuples internal server error body
-swagger:model GetRelationTuplesInternalServerErrorBody
-*/
-type GetRelationTuplesInternalServerErrorBody struct {
-
-	// code
-	Code int64 `json:"code,omitempty"`
-
-	// details
-	Details []interface{} `json:"details"`
-
-	// message
-	Message string `json:"message,omitempty"`
-
-	// reason
-	Reason string `json:"reason,omitempty"`
-
-	// request
-	Request string `json:"request,omitempty"`
-
-	// status
-	Status string `json:"status,omitempty"`
-}
-
-// Validate validates this get relation tuples internal server error body
-func (o *GetRelationTuplesInternalServerErrorBody) Validate(formats strfmt.Registry) error {
-	return nil
-}
-
-// ContextValidate validates this get relation tuples internal server error body based on context it is used
-func (o *GetRelationTuplesInternalServerErrorBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
-	return nil
-}
-
-// MarshalBinary interface implementation
-func (o *GetRelationTuplesInternalServerErrorBody) MarshalBinary() ([]byte, error) {
-	if o == nil {
-		return nil, nil
-	}
-	return swag.WriteJSON(o)
-}
-
-// UnmarshalBinary interface implementation
-func (o *GetRelationTuplesInternalServerErrorBody) UnmarshalBinary(b []byte) error {
-	var res GetRelationTuplesInternalServerErrorBody
-	if err := swag.ReadJSON(b, &res); err != nil {
-		return err
-	}
-	*o = res
-	return nil
-}
-
-/*GetRelationTuplesNotFoundBody get relation tuples not found body
-swagger:model GetRelationTuplesNotFoundBody
-*/
-type GetRelationTuplesNotFoundBody struct {
-
-	// code
-	Code int64 `json:"code,omitempty"`
-
-	// details
-	Details []interface{} `json:"details"`
-
-	// message
-	Message string `json:"message,omitempty"`
-
-	// reason
-	Reason string `json:"reason,omitempty"`
-
-	// request
-	Request string `json:"request,omitempty"`
-
-	// status
-	Status string `json:"status,omitempty"`
-}
-
-// Validate validates this get relation tuples not found body
-func (o *GetRelationTuplesNotFoundBody) Validate(formats strfmt.Registry) error {
-	return nil
-}
-
-// ContextValidate validates this get relation tuples not found body based on context it is used
-func (o *GetRelationTuplesNotFoundBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
-	return nil
-}
-
-// MarshalBinary interface implementation
-func (o *GetRelationTuplesNotFoundBody) MarshalBinary() ([]byte, error) {
-	if o == nil {
-		return nil, nil
-	}
-	return swag.WriteJSON(o)
-}
-
-// UnmarshalBinary interface implementation
-func (o *GetRelationTuplesNotFoundBody) UnmarshalBinary(b []byte) error {
-	var res GetRelationTuplesNotFoundBody
-	if err := swag.ReadJSON(b, &res); err != nil {
-		return err
-	}
-	*o = res
 	return nil
 }

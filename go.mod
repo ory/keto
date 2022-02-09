@@ -38,7 +38,7 @@ require (
 	github.com/ory/herodot v0.9.12
 	github.com/ory/jsonschema/v3 v3.0.6
 	github.com/ory/keto/proto v0.0.0-00010101000000-000000000000
-	github.com/ory/x v0.0.337
+	github.com/ory/x v0.0.344
 	github.com/pelletier/go-toml v1.9.4
 	github.com/phayes/freeport v0.0.0-20180830031419-95f893ade6f2
 	github.com/pkg/errors v0.9.1
@@ -72,7 +72,7 @@ require (
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/cenkalti/backoff/v4 v4.1.2 // indirect
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
-	github.com/cockroachdb/cockroach-go/v2 v2.2.1 // indirect
+	github.com/cockroachdb/cockroach-go/v2 v2.2.7 // indirect
 	github.com/containerd/containerd v1.5.7 // indirect
 	github.com/containerd/continuity v0.2.1 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.1 // indirect

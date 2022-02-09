@@ -6,13 +6,11 @@ package read
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"context"
 	"fmt"
 	"io"
 
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/strfmt"
-	"github.com/go-openapi/swag"
 
 	"github.com/ory/keto/internal/httpclient/models"
 )
@@ -93,22 +91,22 @@ func NewGetCheckBadRequest() *GetCheckBadRequest {
 
 /* GetCheckBadRequest describes a response with status code 400, with default header values.
 
-The standard error format
+genericError
 */
 type GetCheckBadRequest struct {
-	Payload *GetCheckBadRequestBody
+	Payload *models.GenericError
 }
 
 func (o *GetCheckBadRequest) Error() string {
 	return fmt.Sprintf("[GET /check][%d] getCheckBadRequest  %+v", 400, o.Payload)
 }
-func (o *GetCheckBadRequest) GetPayload() *GetCheckBadRequestBody {
+func (o *GetCheckBadRequest) GetPayload() *models.GenericError {
 	return o.Payload
 }
 
 func (o *GetCheckBadRequest) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(GetCheckBadRequestBody)
+	o.Payload = new(models.GenericError)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
@@ -157,131 +155,27 @@ func NewGetCheckInternalServerError() *GetCheckInternalServerError {
 
 /* GetCheckInternalServerError describes a response with status code 500, with default header values.
 
-The standard error format
+genericError
 */
 type GetCheckInternalServerError struct {
-	Payload *GetCheckInternalServerErrorBody
+	Payload *models.GenericError
 }
 
 func (o *GetCheckInternalServerError) Error() string {
 	return fmt.Sprintf("[GET /check][%d] getCheckInternalServerError  %+v", 500, o.Payload)
 }
-func (o *GetCheckInternalServerError) GetPayload() *GetCheckInternalServerErrorBody {
+func (o *GetCheckInternalServerError) GetPayload() *models.GenericError {
 	return o.Payload
 }
 
 func (o *GetCheckInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(GetCheckInternalServerErrorBody)
+	o.Payload = new(models.GenericError)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
 		return err
 	}
 
-	return nil
-}
-
-/*GetCheckBadRequestBody get check bad request body
-swagger:model GetCheckBadRequestBody
-*/
-type GetCheckBadRequestBody struct {
-
-	// code
-	Code int64 `json:"code,omitempty"`
-
-	// details
-	Details []interface{} `json:"details"`
-
-	// message
-	Message string `json:"message,omitempty"`
-
-	// reason
-	Reason string `json:"reason,omitempty"`
-
-	// request
-	Request string `json:"request,omitempty"`
-
-	// status
-	Status string `json:"status,omitempty"`
-}
-
-// Validate validates this get check bad request body
-func (o *GetCheckBadRequestBody) Validate(formats strfmt.Registry) error {
-	return nil
-}
-
-// ContextValidate validates this get check bad request body based on context it is used
-func (o *GetCheckBadRequestBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
-	return nil
-}
-
-// MarshalBinary interface implementation
-func (o *GetCheckBadRequestBody) MarshalBinary() ([]byte, error) {
-	if o == nil {
-		return nil, nil
-	}
-	return swag.WriteJSON(o)
-}
-
-// UnmarshalBinary interface implementation
-func (o *GetCheckBadRequestBody) UnmarshalBinary(b []byte) error {
-	var res GetCheckBadRequestBody
-	if err := swag.ReadJSON(b, &res); err != nil {
-		return err
-	}
-	*o = res
-	return nil
-}
-
-/*GetCheckInternalServerErrorBody get check internal server error body
-swagger:model GetCheckInternalServerErrorBody
-*/
-type GetCheckInternalServerErrorBody struct {
-
-	// code
-	Code int64 `json:"code,omitempty"`
-
-	// details
-	Details []interface{} `json:"details"`
-
-	// message
-	Message string `json:"message,omitempty"`
-
-	// reason
-	Reason string `json:"reason,omitempty"`
-
-	// request
-	Request string `json:"request,omitempty"`
-
-	// status
-	Status string `json:"status,omitempty"`
-}
-
-// Validate validates this get check internal server error body
-func (o *GetCheckInternalServerErrorBody) Validate(formats strfmt.Registry) error {
-	return nil
-}
-
-// ContextValidate validates this get check internal server error body based on context it is used
-func (o *GetCheckInternalServerErrorBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
-	return nil
-}
-
-// MarshalBinary interface implementation
-func (o *GetCheckInternalServerErrorBody) MarshalBinary() ([]byte, error) {
-	if o == nil {
-		return nil, nil
-	}
-	return swag.WriteJSON(o)
-}
-
-// UnmarshalBinary interface implementation
-func (o *GetCheckInternalServerErrorBody) UnmarshalBinary(b []byte) error {
-	var res GetCheckInternalServerErrorBody
-	if err := swag.ReadJSON(b, &res); err != nil {
-		return err
-	}
-	*o = res
 	return nil
 }

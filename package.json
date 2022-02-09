@@ -22,12 +22,14 @@
     "logo": "https://opencollective.com/ory/logo.txt"
   },
   "dependencies": {
+    "@openapitools/openapi-generator-cli": "^2.1.18",
     "grpc_tools_node_protoc_ts": "^5.3.2",
     "grpc-tools": "^1.11.2"
   },
   "scripts": {
     "doctoc": "doctoc README.md",
     "format": "prettier --write ${npm_package_config_prettierTarget}",
-    "format:check": "prettier --check ${npm_package_config_prettierTarget}"
+    "format:check": "prettier --check ${npm_package_config_prettierTarget}",
+    "openapi-generator-cli": "openapi-generator-cli"
   }
 }

@@ -6,13 +6,11 @@ package write
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"context"
 	"fmt"
 	"io"
 
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/strfmt"
-	"github.com/go-openapi/swag"
 
 	"github.com/ory/keto/internal/httpclient/models"
 )
@@ -87,22 +85,22 @@ func NewCreateRelationTupleBadRequest() *CreateRelationTupleBadRequest {
 
 /* CreateRelationTupleBadRequest describes a response with status code 400, with default header values.
 
-The standard error format
+genericError
 */
 type CreateRelationTupleBadRequest struct {
-	Payload *CreateRelationTupleBadRequestBody
+	Payload *models.GenericError
 }
 
 func (o *CreateRelationTupleBadRequest) Error() string {
 	return fmt.Sprintf("[PUT /relation-tuples][%d] createRelationTupleBadRequest  %+v", 400, o.Payload)
 }
-func (o *CreateRelationTupleBadRequest) GetPayload() *CreateRelationTupleBadRequestBody {
+func (o *CreateRelationTupleBadRequest) GetPayload() *models.GenericError {
 	return o.Payload
 }
 
 func (o *CreateRelationTupleBadRequest) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(CreateRelationTupleBadRequestBody)
+	o.Payload = new(models.GenericError)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
@@ -119,131 +117,27 @@ func NewCreateRelationTupleInternalServerError() *CreateRelationTupleInternalSer
 
 /* CreateRelationTupleInternalServerError describes a response with status code 500, with default header values.
 
-The standard error format
+genericError
 */
 type CreateRelationTupleInternalServerError struct {
-	Payload *CreateRelationTupleInternalServerErrorBody
+	Payload *models.GenericError
 }
 
 func (o *CreateRelationTupleInternalServerError) Error() string {
 	return fmt.Sprintf("[PUT /relation-tuples][%d] createRelationTupleInternalServerError  %+v", 500, o.Payload)
 }
-func (o *CreateRelationTupleInternalServerError) GetPayload() *CreateRelationTupleInternalServerErrorBody {
+func (o *CreateRelationTupleInternalServerError) GetPayload() *models.GenericError {
 	return o.Payload
 }
 
 func (o *CreateRelationTupleInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(CreateRelationTupleInternalServerErrorBody)
+	o.Payload = new(models.GenericError)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
 		return err
 	}
 
-	return nil
-}
-
-/*CreateRelationTupleBadRequestBody create relation tuple bad request body
-swagger:model CreateRelationTupleBadRequestBody
-*/
-type CreateRelationTupleBadRequestBody struct {
-
-	// code
-	Code int64 `json:"code,omitempty"`
-
-	// details
-	Details []interface{} `json:"details"`
-
-	// message
-	Message string `json:"message,omitempty"`
-
-	// reason
-	Reason string `json:"reason,omitempty"`
-
-	// request
-	Request string `json:"request,omitempty"`
-
-	// status
-	Status string `json:"status,omitempty"`
-}
-
-// Validate validates this create relation tuple bad request body
-func (o *CreateRelationTupleBadRequestBody) Validate(formats strfmt.Registry) error {
-	return nil
-}
-
-// ContextValidate validates this create relation tuple bad request body based on context it is used
-func (o *CreateRelationTupleBadRequestBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
-	return nil
-}
-
-// MarshalBinary interface implementation
-func (o *CreateRelationTupleBadRequestBody) MarshalBinary() ([]byte, error) {
-	if o == nil {
-		return nil, nil
-	}
-	return swag.WriteJSON(o)
-}
-
-// UnmarshalBinary interface implementation
-func (o *CreateRelationTupleBadRequestBody) UnmarshalBinary(b []byte) error {
-	var res CreateRelationTupleBadRequestBody
-	if err := swag.ReadJSON(b, &res); err != nil {
-		return err
-	}
-	*o = res
-	return nil
-}
-
-/*CreateRelationTupleInternalServerErrorBody create relation tuple internal server error body
-swagger:model CreateRelationTupleInternalServerErrorBody
-*/
-type CreateRelationTupleInternalServerErrorBody struct {
-
-	// code
-	Code int64 `json:"code,omitempty"`
-
-	// details
-	Details []interface{} `json:"details"`
-
-	// message
-	Message string `json:"message,omitempty"`
-
-	// reason
-	Reason string `json:"reason,omitempty"`
-
-	// request
-	Request string `json:"request,omitempty"`
-
-	// status
-	Status string `json:"status,omitempty"`
-}
-
-// Validate validates this create relation tuple internal server error body
-func (o *CreateRelationTupleInternalServerErrorBody) Validate(formats strfmt.Registry) error {
-	return nil
-}
-
-// ContextValidate validates this create relation tuple internal server error body based on context it is used
-func (o *CreateRelationTupleInternalServerErrorBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
-	return nil
-}
-
-// MarshalBinary interface implementation
-func (o *CreateRelationTupleInternalServerErrorBody) MarshalBinary() ([]byte, error) {
-	if o == nil {
-		return nil, nil
-	}
-	return swag.WriteJSON(o)
-}
-
-// UnmarshalBinary interface implementation
-func (o *CreateRelationTupleInternalServerErrorBody) UnmarshalBinary(b []byte) error {
-	var res CreateRelationTupleInternalServerErrorBody
-	if err := swag.ReadJSON(b, &res); err != nil {
-		return err
-	}
-	*o = res
 	return nil
 }

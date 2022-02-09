@@ -6,13 +6,11 @@ package health
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"context"
 	"fmt"
 	"io"
 
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/strfmt"
-	"github.com/go-openapi/swag"
 
 	"github.com/ory/keto/internal/httpclient/models"
 )
@@ -81,79 +79,27 @@ func NewIsInstanceAliveInternalServerError() *IsInstanceAliveInternalServerError
 
 /* IsInstanceAliveInternalServerError describes a response with status code 500, with default header values.
 
-The standard error format
+genericError
 */
 type IsInstanceAliveInternalServerError struct {
-	Payload *IsInstanceAliveInternalServerErrorBody
+	Payload *models.GenericError
 }
 
 func (o *IsInstanceAliveInternalServerError) Error() string {
 	return fmt.Sprintf("[GET /health/alive][%d] isInstanceAliveInternalServerError  %+v", 500, o.Payload)
 }
-func (o *IsInstanceAliveInternalServerError) GetPayload() *IsInstanceAliveInternalServerErrorBody {
+func (o *IsInstanceAliveInternalServerError) GetPayload() *models.GenericError {
 	return o.Payload
 }
 
 func (o *IsInstanceAliveInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(IsInstanceAliveInternalServerErrorBody)
+	o.Payload = new(models.GenericError)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
 		return err
 	}
 
-	return nil
-}
-
-/*IsInstanceAliveInternalServerErrorBody is instance alive internal server error body
-swagger:model IsInstanceAliveInternalServerErrorBody
-*/
-type IsInstanceAliveInternalServerErrorBody struct {
-
-	// code
-	Code int64 `json:"code,omitempty"`
-
-	// details
-	Details []interface{} `json:"details"`
-
-	// message
-	Message string `json:"message,omitempty"`
-
-	// reason
-	Reason string `json:"reason,omitempty"`
-
-	// request
-	Request string `json:"request,omitempty"`
-
-	// status
-	Status string `json:"status,omitempty"`
-}
-
-// Validate validates this is instance alive internal server error body
-func (o *IsInstanceAliveInternalServerErrorBody) Validate(formats strfmt.Registry) error {
-	return nil
-}
-
-// ContextValidate validates this is instance alive internal server error body based on context it is used
-func (o *IsInstanceAliveInternalServerErrorBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
-	return nil
-}
-
-// MarshalBinary interface implementation
-func (o *IsInstanceAliveInternalServerErrorBody) MarshalBinary() ([]byte, error) {
-	if o == nil {
-		return nil, nil
-	}
-	return swag.WriteJSON(o)
-}
-
-// UnmarshalBinary interface implementation
-func (o *IsInstanceAliveInternalServerErrorBody) UnmarshalBinary(b []byte) error {
-	var res IsInstanceAliveInternalServerErrorBody
-	if err := swag.ReadJSON(b, &res); err != nil {
-		return err
-	}
-	*o = res
 	return nil
 }
