@@ -298,7 +298,7 @@ jobs:
           repository: ory/docs
           path: docs
           fetch-depth: 0
-          token: ${{ inputs.token }}
+          token: ${{ secrets.ORY_BOT_PAT }}
       - if: ${{ github.ref_name == 'master' || github.ref_type == 'tag' }}
         name: Push generated files to ory/docs
         env:
