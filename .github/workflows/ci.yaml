@@ -283,23 +283,30 @@ jobs:
           git config --local user.email "60093411+ory-bot@users.noreply.github.com"
           git config --local user.name "ory-bot"
           git add proto
-          git commit -a -m "autogen: build buf" && git push "https://${GITHUB_ACTOR}:${ORY_BOT_PAT}@github.com/${GITHUB_REPOSITORY}.git" HEAD:${GITHUB_REF#"refs/heads/"} || true
+          git commit -a -m "autogen: build buf" && git push "https://${GITHUB_ACTOR}:${{ secrets.ORY_BOT_PAT }}@github.com/${GITHUB_REPOSITORY}.git" HEAD:${GITHUB_REF#"refs/heads/"} || true
         working-directory: current-repo
       - name: Push docs to master
         run: |
           git config --local user.email "60093411+ory-bot@users.noreply.github.com"
           git config --local user.name "ory-bot"
           git add proto
-          git commit -a -m "autogen: build buf" && git push "https://${GITHUB_ACTOR}:${ORY_BOT_PAT}@github.com/${GITHUB_REPOSITORY}.git" HEAD:${GITHUB_REF#"refs/heads/"} || true
+          git commit -a -m "autogen: build buf" && git push "https://${GITHUB_ACTOR}:${{ secrets.ORY_BOT_PAT }}@github.com/${GITHUB_REPOSITORY}.git" HEAD:${GITHUB_REF#"refs/heads/"} || true
         working-directory: current-repo
       - if: ${{ github.ref_name == 'master' || github.ref_type == 'tag' }}
-        name: Push build to docs
+        uses: actions/checkout@v2
+        with:
+          repository: ory/docs
+          path: docs
+          fetch-depth: 0
+          token: ${{ inputs.token }}
+      - if: ${{ github.ref_name == 'master' || github.ref_type == 'tag' }}
+        name: Push generated files to ory/docs
         env:
-          GITHUB_TOKEN: ${{ inputs.token || github.token }}
+          GITHUB_TOKEN: ${{ secrets.ORY_BOT_PAT }}
         run: |
           cd docs
           git stash || true
-          git pull --rebase origin ${{ inputs.docs-branch }} || true
+          git pull --rebase origin master || true
           git stash apply || true
-          git push origin HEAD:${{ inputs.docs-branch }} || true
+          git push origin HEAD:master || true
         shell: bash
