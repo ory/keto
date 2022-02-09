@@ -22,10 +22,6 @@ jobs:
       - run: go list -json > go.list
       - name: Run nancy
         uses: sonatype-nexus-community/nancy-github-action@v1.0.2
-      - name: Run prettier
-        uses: ory/ci/prettier@master
-        with:
-          dir: docs
       - name: Run golangci-lint
         uses: golangci/golangci-lint-action@v2
         env:
@@ -102,10 +98,11 @@ jobs:
       - test-race
       - validate
     steps:
-      - uses: ory/ci/docs/build@master
+      - uses: ory/ci/docs/sync@master
         with:
           token: ${{ secrets.ORY_BOT_PAT }}
-          swag-spec-location: spec/api.json
+          api-spec-location: spec/api.json
+          config-spec-location: .schema/config.schema.json
 
   docs-cli:
     runs-on: ubuntu-latest
