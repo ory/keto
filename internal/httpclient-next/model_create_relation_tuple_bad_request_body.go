@@ -15,7 +15,7 @@ import (
 	"encoding/json"
 )
 
-// CreateRelationTupleBadRequestBody CreateRelationTupleBadRequestBody create relation tuple bad request body
+// CreateRelationTupleBadRequestBody CreateRelationTupleBadRequestBody CreateRelationTupleBadRequestBody create relation tuple bad request body
 type CreateRelationTupleBadRequestBody struct {
 	// code
 	Code *int64 `json:"code,omitempty"`

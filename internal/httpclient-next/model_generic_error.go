@@ -17,12 +17,18 @@ import (
 
 // GenericError The standard error format
 type GenericError struct {
-	Code    *int64                              `json:"code,omitempty"`
+	// code
+	Code *int64 `json:"code,omitempty"`
+	// details
 	Details []map[string]map[string]interface{} `json:"details,omitempty"`
-	Message *string                             `json:"message,omitempty"`
-	Reason  *string                             `json:"reason,omitempty"`
-	Request *string                             `json:"request,omitempty"`
-	Status  *string                             `json:"status,omitempty"`
+	// message
+	Message *string `json:"message,omitempty"`
+	// reason
+	Reason *string `json:"reason,omitempty"`
+	// request
+	Request *string `json:"request,omitempty"`
+	// status
+	Status *string `json:"status,omitempty"`
 }
 
 // NewGenericError instantiates a new GenericError object

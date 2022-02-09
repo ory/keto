@@ -12,7 +12,7 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// PostCheckInternalServerErrorBody PostCheckInternalServerErrorBody post check internal server error body
+// PostCheckInternalServerErrorBody PostCheckInternalServerErrorBody PostCheckInternalServerErrorBody post check internal server error body
 //
 // swagger:model PostCheckInternalServerErrorBody
 type PostCheckInternalServerErrorBody struct {

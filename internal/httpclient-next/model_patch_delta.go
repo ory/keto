@@ -15,7 +15,7 @@ import (
 	"encoding/json"
 )
 
-// PatchDelta PatchDelta PatchDelta PatchDelta PatchDelta PatchDelta patch delta
+// PatchDelta PatchDelta PatchDelta PatchDelta PatchDelta PatchDelta PatchDelta patch delta
 type PatchDelta struct {
 	// action
 	Action        *string                `json:"action,omitempty"`

@@ -15,13 +15,13 @@ import (
 	"github.com/go-openapi/validate"
 )
 
-// PatchDelta PatchDelta PatchDelta PatchDelta PatchDelta PatchDelta patch delta
+// PatchDelta PatchDelta PatchDelta PatchDelta PatchDelta PatchDelta PatchDelta patch delta
 //
 // swagger:model PatchDelta
 type PatchDelta struct {
 
 	// action
-	// Enum: [[[[[[insert delete]]]]]]
+	// Enum: [[[[[[[insert delete]]]]]]]
 	Action string `json:"action,omitempty"`
 
 	// relation tuple
@@ -50,7 +50,7 @@ var patchDeltaTypeActionPropEnum []interface{}
 
 func init() {
 	var res []string
-	if err := json.Unmarshal([]byte(`["[[[[[insert delete]]]]]"]`), &res); err != nil {
+	if err := json.Unmarshal([]byte(`["[[[[[[insert delete]]]]]]"]`), &res); err != nil {
 		panic(err)
 	}
 	for _, v := range res {
@@ -60,8 +60,8 @@ func init() {
 
 const (
 
-	// PatchDeltaActionInsertDelete captures enum value "[[[[[insert delete]]]]]"
-	PatchDeltaActionInsertDelete string = "[[[[[insert delete]]]]]"
+	// PatchDeltaActionInsertDelete captures enum value "[[[[[[insert delete]]]]]]"
+	PatchDeltaActionInsertDelete string = "[[[[[[insert delete]]]]]]"
 )
 
 // prop value enum

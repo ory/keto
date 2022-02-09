@@ -7,7 +7,7 @@ Name | Type | Description | Notes
 **Children** | Pointer to [**[]ExpandTree**](ExpandTree.md) | children | [optional] 
 **SubjectId** | Pointer to **string** | subject id | [optional] 
 **SubjectSet** | Pointer to [**SubjectSet**](SubjectSet.md) |  | [optional] 
-**Type** | **string** | type | 
+**Type** | **string** |  | 
 
 ## Methods
 

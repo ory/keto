@@ -15,15 +15,14 @@ import (
 	"encoding/json"
 )
 
-// ExpandTree ExpandTree ExpandTree ExpandTree ExpandTree ExpandTree expand tree
+// ExpandTree struct for ExpandTree
 type ExpandTree struct {
 	// children
 	Children []ExpandTree `json:"children,omitempty"`
 	// subject id
 	SubjectId  *string     `json:"subject_id,omitempty"`
 	SubjectSet *SubjectSet `json:"subject_set,omitempty"`
-	// type
-	Type string `json:"type"`
+	Type       string      `json:"type"`
 }
 
 // NewExpandTree instantiates a new ExpandTree object
