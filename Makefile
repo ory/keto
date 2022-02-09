@@ -52,7 +52,7 @@ docker:
 
 # Generates the SDKs
 .PHONY: sdk
-sdk: .bin/swagger .bin/ory
+sdk: .bin/swagger .bin/ory node_modules
 		swagger generate spec -m -o spec/swagger.json \
 			-c github.com/ory/keto \
 			-c github.com/ory/x/healthx \
