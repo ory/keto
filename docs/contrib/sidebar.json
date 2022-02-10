@@ -1,0 +1,22 @@
+[
+  {
+    "Open Source Ory Kratos": {
+      "$slug": "kratos"
+    }
+  },
+  {
+    "Open Source Ory Keto": {
+      "$slug": "keto"
+    }
+  },
+  {
+    "Open Source Ory Hydra": {
+      "$slug": "hydra"
+    }
+  },
+  {
+    "Open Source Ory Oathkeeper": {
+      "$slug": "oathkeeper"
+    }
+  }
+]
