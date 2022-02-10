@@ -67,12 +67,14 @@ func New(ctx context.Context, l *logrusx.Logger, p *configx.Provider) *Config {
 	}
 }
 
-func NewDefault(ctx context.Context, flags *pflag.FlagSet, l *logrusx.Logger) (c *Config, err error) {
-	c = New(ctx, l, nil)
-	c.p, err = NewProvider(ctx, flags, c)
+func NewDefault(ctx context.Context, flags *pflag.FlagSet, l *logrusx.Logger) (*Config, error) {
+	c := New(ctx, l, nil)
+	cp, err := NewProvider(ctx, flags, c)
 	if err != nil {
 		return nil, err
 	}
+	c.WithSource(cp)
+
 	return c, nil
 }
 
@@ -91,7 +93,6 @@ func NewProvider(ctx context.Context, flags *pflag.FlagSet, config *Config) (*co
 	if err != nil {
 		return nil, err
 	}
-	config.l.UseConfig(p)
 
 	return p, nil
 }
@@ -102,6 +103,7 @@ func (k *Config) Source() *configx.Provider {
 
 func (k *Config) WithSource(p *configx.Provider) {
 	k.p = p
+	k.l.UseConfig(p)
 }
 
 func (k *Config) watcher(_ watcherx.Event, err error) {
