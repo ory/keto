@@ -133,11 +133,11 @@ migrations-render: .bin/ory
 migrations-render-replace: .bin/ory
 		ory dev pop migration render -r internal/persistence/sql/migrations/templates internal/persistence/sql/migrations/sql
 
-.PHONY:
+.PHONY: cve-scan
 cve-scan: docker .bin/grype
 		grype oryd/keto:latest
 
-.PHONY:
+.PHONY: post-release
 post-release: .bin/yq
 		cat docker-compose.yml | yq '.services.keto.image = "oryd/keto:'$$DOCKER_TAG'"' | sponge docker-compose.yml
 		cat docker-compose-mysql.yml | yq '.services.keto-migrate.image = "oryd/keto:'$$DOCKER_TAG'"' | sponge docker-compose-mysql.yml
