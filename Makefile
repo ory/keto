@@ -34,6 +34,10 @@ node_modules: package.json package-lock.json Makefile
 .bin/clidoc:
 		go build -o .bin/clidoc ./cmd/clidoc/.
 
+.PHONY: .bin/yq
+.bin/yq:
+		go build -o .bin/yq github.com/mikefarah/yq/v4
+
 docs/cli: .bin/clidoc
 		clidoc .
 
@@ -132,3 +136,9 @@ migrations-render-replace: .bin/ory
 .PHONY:
 cve-scan: docker .bin/grype
 		grype oryd/keto:latest
+
+.PHONY:
+post-release: .bin/yq
+		cat docker-compose.yml | yq '.services.keto.image = "oryd/keto:'$$DOCKER_TAG'"' | sponge docker-compose.yml
+		cat docker-compose-mysql.yml | yq '.services.keto-migrate.image = "oryd/keto:'$$DOCKER_TAG'"' | sponge docker-compose-mysql.yml
+		cat docker-compose-postgres.yml | yq '.services.keto-migrate.image = "oryd/keto:'$$DOCKER_TAG'"' | sponge docker-compose-postgres.yml
