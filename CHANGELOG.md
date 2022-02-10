@@ -6,8 +6,9 @@
 **Table of Contents**
 
 - [0.0.0 (2022-02-10)](#000-2022-02-10)
-- [0.8.0-alpha.0 (2022-02-10)](#080-alpha0-2022-02-10)
   - [Bug Fixes](#bug-fixes)
+- [0.8.0-alpha.0 (2022-02-10)](#080-alpha0-2022-02-10)
+  - [Bug Fixes](#bug-fixes-1)
   - [Code Generation](#code-generation)
   - [Code Refactoring](#code-refactoring)
   - [Documentation](#documentation)
@@ -17,7 +18,7 @@
   - [Documentation](#documentation-1)
 - [0.7.0-alpha.0 (2021-10-06)](#070-alpha0-2021-10-06)
   - [Breaking Changes](#breaking-changes)
-    - [Bug Fixes](#bug-fixes-1)
+    - [Bug Fixes](#bug-fixes-2)
     - [Chores](#chores)
     - [Code Generation](#code-generation-2)
     - [Code Refactoring](#code-refactoring-1)
@@ -27,12 +28,12 @@
 - [0.6.0-alpha.3 (2021-04-29)](#060-alpha3-2021-04-29)
   - [Code Generation](#code-generation-3)
 - [0.6.0-alpha.2 (2021-04-29)](#060-alpha2-2021-04-29)
-  - [Bug Fixes](#bug-fixes-2)
+  - [Bug Fixes](#bug-fixes-3)
   - [Code Generation](#code-generation-4)
   - [Documentation](#documentation-3)
   - [Features](#features-2)
 - [0.6.0-alpha.1 (2021-04-07)](#060-alpha1-2021-04-07)
-  - [Bug Fixes](#bug-fixes-3)
+  - [Bug Fixes](#bug-fixes-4)
   - [Build System](#build-system)
   - [Code Generation](#code-generation-5)
   - [Code Refactoring](#code-refactoring-2)
@@ -40,14 +41,14 @@
   - [Features](#features-3)
   - [Tests](#tests-1)
 - [0.5.6-alpha.1 (2020-05-28)](#056-alpha1-2020-05-28)
-  - [Bug Fixes](#bug-fixes-4)
+  - [Bug Fixes](#bug-fixes-5)
   - [Chores](#chores-1)
 - [0.5.5-alpha.1 (2020-05-28)](#055-alpha1-2020-05-28)
-  - [Bug Fixes](#bug-fixes-5)
+  - [Bug Fixes](#bug-fixes-6)
   - [Chores](#chores-2)
   - [Documentation](#documentation-5)
 - [0.5.4-alpha.1 (2020-04-07)](#054-alpha1-2020-04-07)
-  - [Bug Fixes](#bug-fixes-6)
+  - [Bug Fixes](#bug-fixes-7)
 - [0.5.3-alpha.3 (2020-04-06)](#053-alpha3-2020-04-06)
   - [Code Generation](#code-generation-6)
   - [Code Refactoring](#code-refactoring-3)
@@ -57,13 +58,13 @@
 - [0.5.2 (2020-04-02)](#052-2020-04-02)
   - [Documentation](#documentation-7)
 - [0.5.0 (2020-04-02)](#050-2020-04-02)
-  - [Bug Fixes](#bug-fixes-7)
+  - [Bug Fixes](#bug-fixes-8)
   - [Documentation](#documentation-8)
 - [0.4.5-alpha.1 (2020-02-29)](#045-alpha1-2020-02-29)
-  - [Bug Fixes](#bug-fixes-8)
+  - [Bug Fixes](#bug-fixes-9)
   - [Documentation](#documentation-9)
 - [0.4.4-alpha.1 (2020-02-14)](#044-alpha1-2020-02-14)
-  - [Bug Fixes](#bug-fixes-9)
+  - [Bug Fixes](#bug-fixes-10)
   - [Documentation](#documentation-10)
   - [Features](#features-4)
   - [Unclassified](#unclassified)
@@ -114,9 +115,34 @@
 
 # [0.0.0](https://github.com/ory/keto/compare/v0.8.0-alpha.0...v0.0.0) (2022-02-10)
 
+### Bug Fixes
+
+- Phony
+  ([9f5d0aa](https://github.com/ory/keto/commit/9f5d0aa52f2162c9412dae04f7b60261b2798db8))
+- Resolve post-release steps ([#838](https://github.com/ory/keto/issues/838))
+  ([d478567](https://github.com/ory/keto/commit/d478567d829ac7a708e01b3808f242eb5afdee96))
+
 # [0.8.0-alpha.0](https://github.com/ory/keto/compare/v0.7.0-alpha.1...v0.8.0-alpha.0) (2022-02-10)
 
-autogen: pin v0.8.0-alpha.0 release commit
+Ory Keto v0.8.0-alpha.0 mainly ships internal improvements next to one bigger,
+**possibly breaking** feature. With
+[PR #799](https://github.com/ory/keto/pull/799) Keto now supports bulk deletion
+of relation-tuples. For gRPC clients we added a new rpc, while in the REST world
+we had to change the behavior of the existing delete handler.
+
+**IT NOW DELETES ALL MATCHING TUPLES.**
+
+Example:
+
+```bash
+curl -X DELETE "https://keto.local/relation-tuples?subject_id=foo"
+```
+
+will delete **all** relation tuples that have the subject ID `foo`, even across
+namespaces. Passing empty strings is equivalent to not setting a value. Please
+test your integrations on a copy of your database before rolling out the update.
+
+If you don't use that REST endpoint, you are on the safe side.
 
 ### Bug Fixes
 
