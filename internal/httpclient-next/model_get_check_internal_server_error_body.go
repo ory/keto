@@ -15,7 +15,7 @@ import (
 	"encoding/json"
 )
 
-// GetCheckInternalServerErrorBody GetCheckInternalServerErrorBody GetCheckInternalServerErrorBody GetCheckInternalServerErrorBody GetCheckInternalServerErrorBody get check internal server error body
+// GetCheckInternalServerErrorBody GetCheckInternalServerErrorBody GetCheckInternalServerErrorBody GetCheckInternalServerErrorBody GetCheckInternalServerErrorBody GetCheckInternalServerErrorBody get check internal server error body
 type GetCheckInternalServerErrorBody struct {
 	// code
 	Code *int64 `json:"code,omitempty"`

@@ -12,7 +12,7 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// CreateRelationTupleInternalServerErrorBody CreateRelationTupleInternalServerErrorBody CreateRelationTupleInternalServerErrorBody CreateRelationTupleInternalServerErrorBody create relation tuple internal server error body
+// CreateRelationTupleInternalServerErrorBody CreateRelationTupleInternalServerErrorBody CreateRelationTupleInternalServerErrorBody CreateRelationTupleInternalServerErrorBody CreateRelationTupleInternalServerErrorBody create relation tuple internal server error body
 //
 // swagger:model CreateRelationTupleInternalServerErrorBody
 type CreateRelationTupleInternalServerErrorBody struct {

@@ -15,7 +15,7 @@ import (
 	"encoding/json"
 )
 
-// PostCheckInternalServerErrorBody PostCheckInternalServerErrorBody PostCheckInternalServerErrorBody PostCheckInternalServerErrorBody post check internal server error body
+// PostCheckInternalServerErrorBody PostCheckInternalServerErrorBody PostCheckInternalServerErrorBody PostCheckInternalServerErrorBody PostCheckInternalServerErrorBody post check internal server error body
 type PostCheckInternalServerErrorBody struct {
 	// code
 	Code *int64 `json:"code,omitempty"`

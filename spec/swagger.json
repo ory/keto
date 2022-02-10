@@ -608,7 +608,7 @@
   },
   "definitions": {
     "CreateRelationTupleBadRequestBody": {
-      "description": "CreateRelationTupleBadRequestBody CreateRelationTupleBadRequestBody CreateRelationTupleBadRequestBody create relation tuple bad request body",
+      "description": "CreateRelationTupleBadRequestBody CreateRelationTupleBadRequestBody CreateRelationTupleBadRequestBody CreateRelationTupleBadRequestBody create relation tuple bad request body",
       "type": "object",
       "properties": {
         "code": {
@@ -642,7 +642,7 @@
       }
     },
     "CreateRelationTupleInternalServerErrorBody": {
-      "description": "CreateRelationTupleInternalServerErrorBody CreateRelationTupleInternalServerErrorBody CreateRelationTupleInternalServerErrorBody create relation tuple internal server error body",
+      "description": "CreateRelationTupleInternalServerErrorBody CreateRelationTupleInternalServerErrorBody CreateRelationTupleInternalServerErrorBody CreateRelationTupleInternalServerErrorBody create relation tuple internal server error body",
       "type": "object",
       "properties": {
         "code": {
@@ -676,7 +676,7 @@
       }
     },
     "DeleteRelationTuplesBadRequestBody": {
-      "description": "DeleteRelationTuplesBadRequestBody DeleteRelationTuplesBadRequestBody DeleteRelationTuplesBadRequestBody DeleteRelationTuplesBadRequestBody DeleteRelationTuplesBadRequestBody DeleteRelationTuplesBadRequestBody delete relation tuples bad request body",
+      "description": "DeleteRelationTuplesBadRequestBody DeleteRelationTuplesBadRequestBody DeleteRelationTuplesBadRequestBody DeleteRelationTuplesBadRequestBody DeleteRelationTuplesBadRequestBody DeleteRelationTuplesBadRequestBody DeleteRelationTuplesBadRequestBody delete relation tuples bad request body",
       "type": "object",
       "properties": {
         "code": {
@@ -710,7 +710,7 @@
       }
     },
     "DeleteRelationTuplesInternalServerErrorBody": {
-      "description": "DeleteRelationTuplesInternalServerErrorBody DeleteRelationTuplesInternalServerErrorBody DeleteRelationTuplesInternalServerErrorBody delete relation tuples internal server error body",
+      "description": "DeleteRelationTuplesInternalServerErrorBody DeleteRelationTuplesInternalServerErrorBody DeleteRelationTuplesInternalServerErrorBody DeleteRelationTuplesInternalServerErrorBody delete relation tuples internal server error body",
       "type": "object",
       "properties": {
         "code": {
@@ -744,7 +744,7 @@
       }
     },
     "GetCheckBadRequestBody": {
-      "description": "GetCheckBadRequestBody GetCheckBadRequestBody GetCheckBadRequestBody GetCheckBadRequestBody GetCheckBadRequestBody GetCheckBadRequestBody get check bad request body",
+      "description": "GetCheckBadRequestBody GetCheckBadRequestBody GetCheckBadRequestBody GetCheckBadRequestBody GetCheckBadRequestBody GetCheckBadRequestBody GetCheckBadRequestBody get check bad request body",
       "type": "object",
       "properties": {
         "code": {
@@ -778,7 +778,7 @@
       }
     },
     "GetCheckInternalServerErrorBody": {
-      "description": "GetCheckInternalServerErrorBody GetCheckInternalServerErrorBody GetCheckInternalServerErrorBody GetCheckInternalServerErrorBody get check internal server error body",
+      "description": "GetCheckInternalServerErrorBody GetCheckInternalServerErrorBody GetCheckInternalServerErrorBody GetCheckInternalServerErrorBody GetCheckInternalServerErrorBody get check internal server error body",
       "type": "object",
       "properties": {
         "code": {
@@ -812,7 +812,7 @@
       }
     },
     "GetExpandBadRequestBody": {
-      "description": "GetExpandBadRequestBody GetExpandBadRequestBody GetExpandBadRequestBody GetExpandBadRequestBody GetExpandBadRequestBody get expand bad request body",
+      "description": "GetExpandBadRequestBody GetExpandBadRequestBody GetExpandBadRequestBody GetExpandBadRequestBody GetExpandBadRequestBody GetExpandBadRequestBody get expand bad request body",
       "type": "object",
       "properties": {
         "code": {
@@ -846,7 +846,7 @@
       }
     },
     "GetExpandInternalServerErrorBody": {
-      "description": "GetExpandInternalServerErrorBody GetExpandInternalServerErrorBody GetExpandInternalServerErrorBody get expand internal server error body",
+      "description": "GetExpandInternalServerErrorBody GetExpandInternalServerErrorBody GetExpandInternalServerErrorBody GetExpandInternalServerErrorBody get expand internal server error body",
       "type": "object",
       "properties": {
         "code": {
@@ -880,7 +880,7 @@
       }
     },
     "GetExpandNotFoundBody": {
-      "description": "GetExpandNotFoundBody GetExpandNotFoundBody GetExpandNotFoundBody GetExpandNotFoundBody GetExpandNotFoundBody get expand not found body",
+      "description": "GetExpandNotFoundBody GetExpandNotFoundBody GetExpandNotFoundBody GetExpandNotFoundBody GetExpandNotFoundBody GetExpandNotFoundBody get expand not found body",
       "type": "object",
       "properties": {
         "code": {
@@ -914,7 +914,7 @@
       }
     },
     "GetRelationTuplesInternalServerErrorBody": {
-      "description": "GetRelationTuplesInternalServerErrorBody GetRelationTuplesInternalServerErrorBody GetRelationTuplesInternalServerErrorBody get relation tuples internal server error body",
+      "description": "GetRelationTuplesInternalServerErrorBody GetRelationTuplesInternalServerErrorBody GetRelationTuplesInternalServerErrorBody GetRelationTuplesInternalServerErrorBody get relation tuples internal server error body",
       "type": "object",
       "properties": {
         "code": {
@@ -948,7 +948,7 @@
       }
     },
     "GetRelationTuplesNotFoundBody": {
-      "description": "GetRelationTuplesNotFoundBody GetRelationTuplesNotFoundBody GetRelationTuplesNotFoundBody get relation tuples not found body",
+      "description": "GetRelationTuplesNotFoundBody GetRelationTuplesNotFoundBody GetRelationTuplesNotFoundBody GetRelationTuplesNotFoundBody get relation tuples not found body",
       "type": "object",
       "properties": {
         "code": {
@@ -1011,7 +1011,7 @@
       }
     },
     "IsInstanceAliveInternalServerErrorBody": {
-      "description": "IsInstanceAliveInternalServerErrorBody IsInstanceAliveInternalServerErrorBody IsInstanceAliveInternalServerErrorBody IsInstanceAliveInternalServerErrorBody IsInstanceAliveInternalServerErrorBody is instance alive internal server error body",
+      "description": "IsInstanceAliveInternalServerErrorBody IsInstanceAliveInternalServerErrorBody IsInstanceAliveInternalServerErrorBody IsInstanceAliveInternalServerErrorBody IsInstanceAliveInternalServerErrorBody IsInstanceAliveInternalServerErrorBody is instance alive internal server error body",
       "type": "object",
       "properties": {
         "code": {
@@ -1045,14 +1045,14 @@
       }
     },
     "PatchDelta": {
-      "description": "PatchDelta PatchDelta PatchDelta PatchDelta PatchDelta PatchDelta PatchDelta patch delta",
+      "description": "PatchDelta PatchDelta PatchDelta PatchDelta PatchDelta PatchDelta PatchDelta PatchDelta patch delta",
       "type": "object",
       "properties": {
         "action": {
           "description": "action",
           "type": "string",
           "enum": [
-            "[[[[[[[insert delete]]]]]]]"
+            "[[[[[[[[insert delete]]]]]]]]"
           ]
         },
         "relation_tuple": {
@@ -1061,7 +1061,7 @@
       }
     },
     "PatchRelationTuplesBadRequestBody": {
-      "description": "PatchRelationTuplesBadRequestBody PatchRelationTuplesBadRequestBody PatchRelationTuplesBadRequestBody patch relation tuples bad request body",
+      "description": "PatchRelationTuplesBadRequestBody PatchRelationTuplesBadRequestBody PatchRelationTuplesBadRequestBody PatchRelationTuplesBadRequestBody patch relation tuples bad request body",
       "type": "object",
       "properties": {
         "code": {
@@ -1095,7 +1095,7 @@
       }
     },
     "PatchRelationTuplesInternalServerErrorBody": {
-      "description": "PatchRelationTuplesInternalServerErrorBody PatchRelationTuplesInternalServerErrorBody PatchRelationTuplesInternalServerErrorBody patch relation tuples internal server error body",
+      "description": "PatchRelationTuplesInternalServerErrorBody PatchRelationTuplesInternalServerErrorBody PatchRelationTuplesInternalServerErrorBody PatchRelationTuplesInternalServerErrorBody patch relation tuples internal server error body",
       "type": "object",
       "properties": {
         "code": {
@@ -1129,7 +1129,7 @@
       }
     },
     "PatchRelationTuplesNotFoundBody": {
-      "description": "PatchRelationTuplesNotFoundBody PatchRelationTuplesNotFoundBody PatchRelationTuplesNotFoundBody patch relation tuples not found body",
+      "description": "PatchRelationTuplesNotFoundBody PatchRelationTuplesNotFoundBody PatchRelationTuplesNotFoundBody PatchRelationTuplesNotFoundBody patch relation tuples not found body",
       "type": "object",
       "properties": {
         "code": {
@@ -1163,7 +1163,7 @@
       }
     },
     "PostCheckBadRequestBody": {
-      "description": "PostCheckBadRequestBody PostCheckBadRequestBody PostCheckBadRequestBody PostCheckBadRequestBody PostCheckBadRequestBody PostCheckBadRequestBody PostCheckBadRequestBody post check bad request body",
+      "description": "PostCheckBadRequestBody PostCheckBadRequestBody PostCheckBadRequestBody PostCheckBadRequestBody PostCheckBadRequestBody PostCheckBadRequestBody PostCheckBadRequestBody PostCheckBadRequestBody post check bad request body",
       "type": "object",
       "properties": {
         "code": {
@@ -1197,7 +1197,7 @@
       }
     },
     "PostCheckInternalServerErrorBody": {
-      "description": "PostCheckInternalServerErrorBody PostCheckInternalServerErrorBody PostCheckInternalServerErrorBody post check internal server error body",
+      "description": "PostCheckInternalServerErrorBody PostCheckInternalServerErrorBody PostCheckInternalServerErrorBody PostCheckInternalServerErrorBody post check internal server error body",
       "type": "object",
       "properties": {
         "code": {
@@ -1231,7 +1231,7 @@
       }
     },
     "RelationQuery": {
-      "description": "RelationQuery RelationQuery RelationQuery RelationQuery RelationQuery RelationQuery RelationQuery relation query",
+      "description": "RelationQuery RelationQuery RelationQuery RelationQuery RelationQuery RelationQuery RelationQuery RelationQuery relation query",
       "type": "object",
       "properties": {
         "namespace": {
@@ -1279,6 +1279,7 @@
     },
     "UUID": {"type": "string", "format": "uuid4"},
     "expandTree": {
+      "description": "ExpandTree expand tree",
       "type": "object",
       "required": [
         "type"
@@ -1299,12 +1300,10 @@
           "$ref": "#/definitions/SubjectSet"
         },
         "type": {
+          "description": "type",
           "type": "string",
           "enum": [
-            "union",
-            "exclusion",
-            "intersection",
-            "leaf"
+            "[union exclusion intersection leaf]"
           ]
         }
       }
@@ -1359,7 +1358,6 @@
       }
     },
     "getRelationTuplesResponse": {
-      "description": "GetRelationTuplesResponse GetRelationTuplesResponse GetRelationTuplesResponse GetRelationTuplesResponse GetRelationTuplesResponse GetRelationTuplesResponse get relation tuples response",
       "type": "object",
       "properties": {
         "next_page_token": {
@@ -1376,7 +1374,6 @@
       }
     },
     "healthNotReadyStatus": {
-      "description": "HealthNotReadyStatus health not ready status",
       "type": "object",
       "properties": {
         "errors": {
@@ -1389,6 +1386,7 @@
       }
     },
     "healthStatus": {
+      "description": "HealthStatus health status",
       "type": "object",
       "properties": {
         "status": {
@@ -1398,11 +1396,9 @@
       }
     },
     "subject": {
-      "description": "Subject Subject Subject Subject subject",
       "type": "object"
     },
     "version": {
-      "description": "Version version",
       "type": "object",
       "properties": {
         "version": {

@@ -15,7 +15,7 @@ import (
 	"encoding/json"
 )
 
-// PatchRelationTuplesBadRequestBody PatchRelationTuplesBadRequestBody PatchRelationTuplesBadRequestBody PatchRelationTuplesBadRequestBody patch relation tuples bad request body
+// PatchRelationTuplesBadRequestBody PatchRelationTuplesBadRequestBody PatchRelationTuplesBadRequestBody PatchRelationTuplesBadRequestBody PatchRelationTuplesBadRequestBody patch relation tuples bad request body
 type PatchRelationTuplesBadRequestBody struct {
 	// code
 	Code *int64 `json:"code,omitempty"`

@@ -15,7 +15,7 @@ import (
 	"encoding/json"
 )
 
-// RelationQuery RelationQuery RelationQuery RelationQuery RelationQuery RelationQuery RelationQuery RelationQuery relation query
+// RelationQuery RelationQuery RelationQuery RelationQuery RelationQuery RelationQuery RelationQuery RelationQuery RelationQuery relation query
 type RelationQuery struct {
 	// Namespace of the Relation Tuple
 	Namespace *string `json:"namespace,omitempty"`
