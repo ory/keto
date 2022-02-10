@@ -1,8 +1,7 @@
 version: '3'
-
 services:
   keto:
-    image: oryd/keto:v0.6.0-alpha.1
+    image: oryd/keto:v0.8.0-alpha.0
     ports:
       - "4466:4466"
       - "4467:4467"
