@@ -1,36 +1,41 @@
+# Changelog
+
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
 **Table of Contents**
 
-- [0.0.0 (2022-01-21)](#000-2022-01-21)
+- [0.0.0 (2022-02-10)](#000-2022-02-10)
+- [0.8.0-alpha.0.pre.0 (2022-02-10)](#080-alpha0pre0-2022-02-10)
   - [Bug Fixes](#bug-fixes)
+  - [Code Generation](#code-generation)
+  - [Code Refactoring](#code-refactoring)
   - [Documentation](#documentation)
   - [Features](#features)
 - [0.7.0-alpha.1 (2021-10-19)](#070-alpha1-2021-10-19)
-  - [Code Generation](#code-generation)
+  - [Code Generation](#code-generation-1)
   - [Documentation](#documentation-1)
 - [0.7.0-alpha.0 (2021-10-06)](#070-alpha0-2021-10-06)
   - [Breaking Changes](#breaking-changes)
     - [Bug Fixes](#bug-fixes-1)
     - [Chores](#chores)
-    - [Code Generation](#code-generation-1)
-    - [Code Refactoring](#code-refactoring)
+    - [Code Generation](#code-generation-2)
+    - [Code Refactoring](#code-refactoring-1)
     - [Documentation](#documentation-2)
     - [Features](#features-1)
     - [Tests](#tests)
 - [0.6.0-alpha.3 (2021-04-29)](#060-alpha3-2021-04-29)
-  - [Code Generation](#code-generation-2)
+  - [Code Generation](#code-generation-3)
 - [0.6.0-alpha.2 (2021-04-29)](#060-alpha2-2021-04-29)
   - [Bug Fixes](#bug-fixes-2)
-  - [Code Generation](#code-generation-3)
+  - [Code Generation](#code-generation-4)
   - [Documentation](#documentation-3)
   - [Features](#features-2)
 - [0.6.0-alpha.1 (2021-04-07)](#060-alpha1-2021-04-07)
   - [Bug Fixes](#bug-fixes-3)
   - [Build System](#build-system)
-  - [Code Generation](#code-generation-4)
-  - [Code Refactoring](#code-refactoring-1)
+  - [Code Generation](#code-generation-5)
+  - [Code Refactoring](#code-refactoring-2)
   - [Documentation](#documentation-4)
   - [Features](#features-3)
   - [Tests](#tests-1)
@@ -44,8 +49,8 @@
 - [0.5.4-alpha.1 (2020-04-07)](#054-alpha1-2020-04-07)
   - [Bug Fixes](#bug-fixes-6)
 - [0.5.3-alpha.3 (2020-04-06)](#053-alpha3-2020-04-06)
-  - [Code Generation](#code-generation-5)
-  - [Code Refactoring](#code-refactoring-2)
+  - [Code Generation](#code-generation-6)
+  - [Code Refactoring](#code-refactoring-3)
   - [Documentation](#documentation-6)
 - [0.5.3-alpha.1 (2020-04-03)](#053-alpha1-2020-04-03)
   - [Chores](#chores-3)
@@ -107,10 +112,16 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.7.0-alpha.1...v0.0.0) (2022-01-21)
+# [0.0.0](https://github.com/ory/keto/compare/v0.8.0-alpha.0.pre.0...v0.0.0) (2022-02-10)
+
+# [0.8.0-alpha.0.pre.0](https://github.com/ory/keto/compare/v0.7.0-alpha.1...v0.8.0-alpha.0.pre.0) (2022-02-10)
+
+autogen: pin v0.8.0-alpha.0.pre.0 release commit
 
 ### Bug Fixes
 
+- Add dummy sidebar
+  ([555ffca](https://github.com/ory/keto/commit/555ffcae43cb087f405d299249c6a7f432f688ac))
 - Add hiring notice to README ([#798](https://github.com/ory/keto/issues/798))
   ([2a6ddae](https://github.com/ory/keto/commit/2a6ddaeeb604a7123527855e6f9947423e284f65))
 - CORS config values are ignored
@@ -152,8 +163,23 @@
   ([ad8df58](https://github.com/ory/keto/commit/ad8df58064b83ad6cddc1151bc851046d20b18b4)),
   closes [#793](https://github.com/ory/keto/issues/793)
 
+### Code Generation
+
+- Pin v0.8.0-alpha.0.pre.0 release commit
+  ([a6e34b2](https://github.com/ory/keto/commit/a6e34b2d49723a80aea9f50016f3778a42cafaf2))
+
+### Code Refactoring
+
+- Configuration structure for limits
+  ([ffa99ec](https://github.com/ory/keto/commit/ffa99ecc0161021b9ed5a8f39df77a02fb97c409))
+- Move documentation to ory/docs and move to OAS3.0 generator
+  ([#833](https://github.com/ory/keto/issues/833))
+  ([55d9d4e](https://github.com/ory/keto/commit/55d9d4e2e95f55c7cfdb282b8680613c0b96c63c))
+
 ### Documentation
 
+- Add cloud
+  ([5c66087](https://github.com/ory/keto/commit/5c66087bb9b3d38247d72534657a4050a5f62384))
 - Add link to quickstart in config reference docs
   ([#775](https://github.com/ory/keto/issues/775))
   ([25bc579](https://github.com/ory/keto/commit/25bc579ed0980f45f2cca79e043de6f43620f3d5))
@@ -162,6 +188,8 @@
   ([7ce7973](https://github.com/ory/keto/commit/7ce7973bcb910f53e10bf17165ca5f79d2df8146))
 - Heading caseing ([#785](https://github.com/ory/keto/issues/785))
   ([563087d](https://github.com/ory/keto/commit/563087db9709ed54abd035f2eac6e16c695f1b4c))
+- Update readme
+  ([d9397cc](https://github.com/ory/keto/commit/d9397ccc01608ec76fe934ab171925ff525b5eae))
 
 ### Features
 
@@ -177,6 +205,9 @@
   the overall max-depth of check and expand operations. It defaults to `5`,
   which is considered a very safe value.
 
+- Add new metrics server to keto
+  ([#832](https://github.com/ory/keto/issues/832))
+  ([8beba60](https://github.com/ory/keto/commit/8beba60f3cb602ef0d5f704dcf90eb5d52a97820))
 - Bulk deletion of relation tuples
   ([#799](https://github.com/ory/keto/issues/799))
   ([c1e8546](https://github.com/ory/keto/commit/c1e854635c0e3a9c7b75c65f1ffa1f4e0f976dbc))
