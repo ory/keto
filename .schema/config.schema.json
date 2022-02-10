@@ -265,6 +265,37 @@
               "$ref": "#/definitions/tlsx"
             }
           }
+        },
+        "metrics": {
+          "type": "object",
+          "title": "Metrics API (http only)",
+          "additionalProperties": false,
+          "properties": {
+            "port": {
+              "type": "integer",
+              "default": 4468,
+              "title": "Port",
+              "description": "The port to listen on.",
+              "minimum": 0,
+              "maximum": 65535
+            },
+            "host": {
+              "type": "string",
+              "default": "",
+              "examples": [
+                "localhost",
+                "127.0.0.1"
+              ],
+              "title": "Host",
+              "description": "The network interface to listen on."
+            },
+            "cors": {
+              "$ref": "#/definitions/cors"
+            },
+            "tls": {
+              "$ref": "#/definitions/tlsx"
+            }
+          }
         }
       }
     },
@@ -279,10 +310,10 @@
       ]
     },
     "log": {
-      "$ref": "https://raw.githubusercontent.com/ory/x/v0.0.289/logrusx/config.schema.json"
+      "$ref": "https://raw.githubusercontent.com/ory/x/v0.0.344/logrusx/config.schema.json"
     },
     "tracing": {
-      "$ref": "https://raw.githubusercontent.com/ory/x/v0.0.289/tracing/config.schema.json"
+      "$ref": "https://raw.githubusercontent.com/ory/x/v0.0.344/tracing/config.schema.json"
     },
     "namespaces": {
       "description": "Namespace configuration or it's location.",
@@ -301,6 +332,22 @@
           }
         }
       ]
+    },
+    "limit": {
+      "type": "object",
+      "title": "Limits",
+      "description": "Limits aiming to control the resource consumption. These limits are not a sufficient replacement for rate-limiting.",
+      "properties": {
+        "max_read_depth": {
+          "type": "integer",
+          "default": 5,
+          "title": "Global maximum read depth",
+          "description": "The global maximum depth on all read operations. Note that this does not affect how deeply nested the tuples can be. This value can be decreased for a request by a value specified on the request, only if the request-specific value is greater than 1 and less than the global maximum depth.",
+          "minimum": 1,
+          "maximum": 65535
+        }
+      },
+      "additionalProperties": false
     },
     "version": {
       "type": "string",
