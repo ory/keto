@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"testing"
 
+	"github.com/ory/x/configx"
+
 	"github.com/ory/x/logrusx"
 	"github.com/sirupsen/logrus/hooks/test"
 	"github.com/spf13/pflag"
@@ -116,5 +118,15 @@ func TestKoanfNamespaceManager(t *testing.T) {
 		require.NoError(t, err)
 		_, ok := nm.(*NamespaceWatcher)
 		assert.True(t, ok)
+	})
+
+	t.Run("case=uses passed configx provider", func(t *testing.T) {
+		ctx := context.Background()
+		cp, err := configx.New(ctx, Schema, configx.WithValue(KeyDSN, "foobar"))
+		require.NoError(t, err)
+
+		p := New(ctx, logrusx.New("test", "today"), cp)
+		assert.Equal(t, "foobar", p.DSN())
+		assert.Same(t, cp, p.p)
 	})
 }

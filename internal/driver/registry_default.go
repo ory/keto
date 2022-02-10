@@ -77,7 +77,7 @@ func (r *RegistryDefault) Contextualizer() ketoctx.Contextualizer {
 }
 
 func (r *RegistryDefault) Config(ctx context.Context) *config.Config {
-	if provider := r.ctxer.Config(ctx, nil); provider != nil {
+	if provider := r.ctxer.Config(ctx, r.c.Source()); provider != r.c.Source() {
 		return config.New(ctx, r.Logger(), provider)
 	}
 	return r.c
