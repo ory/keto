@@ -76,6 +76,10 @@ func Test(t *testing.T) {
 				},
 			} {
 				t.Run(fmt.Sprintf("client=%T", cl), runCases(cl, addNamespace))
+
+				if tc, ok := cl.(transactClient); ok {
+					t.Run(fmt.Sprintf("transactClient=%T", cl), runTransactionCases(tc, addNamespace))
+				}
 			}
 
 			t.Run("case=metrics are served", func(t *testing.T) {
