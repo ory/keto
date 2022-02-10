@@ -15,7 +15,7 @@ import (
 	"encoding/json"
 )
 
-// GetRelationTuplesResponse GetRelationTuplesResponse GetRelationTuplesResponse GetRelationTuplesResponse GetRelationTuplesResponse GetRelationTuplesResponse get relation tuples response
+// GetRelationTuplesResponse GetRelationTuplesResponse GetRelationTuplesResponse GetRelationTuplesResponse GetRelationTuplesResponse GetRelationTuplesResponse GetRelationTuplesResponse get relation tuples response
 type GetRelationTuplesResponse struct {
 	// The opaque token to provide in a subsequent request to get the next page. It is the empty string iff this is the last page.
 	NextPageToken *string `json:"next_page_token,omitempty"`

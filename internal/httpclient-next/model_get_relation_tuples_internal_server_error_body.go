@@ -15,7 +15,7 @@ import (
 	"encoding/json"
 )
 
-// GetRelationTuplesInternalServerErrorBody GetRelationTuplesInternalServerErrorBody GetRelationTuplesInternalServerErrorBody get relation tuples internal server error body
+// GetRelationTuplesInternalServerErrorBody GetRelationTuplesInternalServerErrorBody GetRelationTuplesInternalServerErrorBody GetRelationTuplesInternalServerErrorBody get relation tuples internal server error body
 type GetRelationTuplesInternalServerErrorBody struct {
 	// code
 	Code *int64 `json:"code,omitempty"`

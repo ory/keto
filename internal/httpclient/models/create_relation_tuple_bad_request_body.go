@@ -12,7 +12,7 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// CreateRelationTupleBadRequestBody CreateRelationTupleBadRequestBody CreateRelationTupleBadRequestBody create relation tuple bad request body
+// CreateRelationTupleBadRequestBody CreateRelationTupleBadRequestBody CreateRelationTupleBadRequestBody CreateRelationTupleBadRequestBody create relation tuple bad request body
 //
 // swagger:model CreateRelationTupleBadRequestBody
 type CreateRelationTupleBadRequestBody struct {

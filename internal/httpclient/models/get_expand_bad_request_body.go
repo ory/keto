@@ -12,7 +12,7 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// GetExpandBadRequestBody GetExpandBadRequestBody GetExpandBadRequestBody GetExpandBadRequestBody GetExpandBadRequestBody get expand bad request body
+// GetExpandBadRequestBody GetExpandBadRequestBody GetExpandBadRequestBody GetExpandBadRequestBody GetExpandBadRequestBody GetExpandBadRequestBody get expand bad request body
 //
 // swagger:model GetExpandBadRequestBody
 type GetExpandBadRequestBody struct {

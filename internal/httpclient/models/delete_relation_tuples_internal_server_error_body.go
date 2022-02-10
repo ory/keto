@@ -12,7 +12,7 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// DeleteRelationTuplesInternalServerErrorBody DeleteRelationTuplesInternalServerErrorBody DeleteRelationTuplesInternalServerErrorBody delete relation tuples internal server error body
+// DeleteRelationTuplesInternalServerErrorBody DeleteRelationTuplesInternalServerErrorBody DeleteRelationTuplesInternalServerErrorBody DeleteRelationTuplesInternalServerErrorBody delete relation tuples internal server error body
 //
 // swagger:model DeleteRelationTuplesInternalServerErrorBody
 type DeleteRelationTuplesInternalServerErrorBody struct {
