@@ -32,10 +32,12 @@ func NewDefaultRegistry(ctx context.Context, flags *pflag.FlagSet, withoutNetwor
 		l = newLogger(ctx)
 	}
 
-	c, err := config.NewDefault(ctx, flags, l)
+	c := config.New(ctx, l, nil)
+	cp, err := config.NewProvider(ctx, flags, c)
 	if err != nil {
 		return nil, errors.Wrap(err, "unable to initialize config provider")
 	}
+	c.WithSource(options.Contextualizer().Config(ctx, cp))
 
 	r := &RegistryDefault{
 		c:                         c,
