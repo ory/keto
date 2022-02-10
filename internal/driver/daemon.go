@@ -9,6 +9,8 @@ import (
 	"strings"
 	"syscall"
 
+	prometheus "github.com/ory/x/prometheusx"
+
 	"github.com/ory/x/logrusx"
 
 	grpcMiddleware "github.com/grpc-ecosystem/go-grpc-middleware"
@@ -144,7 +146,7 @@ func (r *RegistryDefault) serveMetrics(ctx context.Context, done chan<- struct{}
 
 		eg := &errgroup.Group{}
 		s := graceful.WithDefaults(&http.Server{
-			Handler: r.MetricsRouter(),
+			Handler: r.metricsRouter(ctx),
 			Addr:    r.Config(ctx).MetricsListenOn(),
 		})
 
@@ -412,14 +414,19 @@ func (r *RegistryDefault) WriteGRPCServer(ctx context.Context) *grpc.Server {
 	return s
 }
 
-func (*RegistryDefault) ContextualizeHTTPMiddleware(w http.ResponseWriter, req *http.Request, next http.HandlerFunc) {
-	next(w, req)
-}
+func (r *RegistryDefault) metricsRouter(ctx context.Context) http.Handler {
+	n := negroni.New(reqlog.NewMiddlewareFromLogger(r.Logger(), "keto").ExcludePaths(prometheus.MetricsPrometheusPath))
+	router := httprouter.New()
 
-func (*RegistryDefault) ContextualizeGRPCUnaryMiddleware(ctx context.Context, req interface{}, _ *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
-	return handler(ctx, req)
-}
+	r.PrometheusManager().RegisterRouter(router)
+	r.MetricsHandler().SetRoutes(router)
+	n.UseHandler(router)
+	n.Use(r.PrometheusManager())
 
-func (*RegistryDefault) ContextualizeGRPCStreamMiddleware(srv interface{}, stream grpc.ServerStream, _ *grpc.StreamServerInfo, handler grpc.StreamHandler) error {
-	return handler(srv, stream)
+	var handler http.Handler = n
+	options, enabled := r.Config(ctx).CORS("metrics")
+	if enabled {
+		handler = cors.New(options).Handler(handler)
+	}
+	return handler
 }

@@ -5,40 +5,29 @@ import (
 	"net/http"
 	"sync"
 
-	"github.com/ory/keto/ketoctx"
-
-	prometheus "github.com/ory/x/prometheusx"
-
-	"github.com/ory/x/networkx"
-	"github.com/rs/cors"
-
 	"github.com/gobuffalo/pop/v6"
+	"github.com/ory/herodot"
+	"github.com/ory/x/dbal"
+	"github.com/ory/x/healthx"
+	"github.com/ory/x/logrusx"
+	"github.com/ory/x/metricsx"
 	"github.com/ory/x/networkx"
 	"github.com/ory/x/popx"
+	prometheus "github.com/ory/x/prometheusx"
+	"github.com/ory/x/tracing"
 	"github.com/pkg/errors"
-
-	"github.com/ory/x/dbal"
-
-	"github.com/ory/x/metricsx"
-
-	acl "github.com/ory/keto/proto/ory/keto/acl/v1alpha1"
-
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/health"
 
-	"github.com/ory/keto/internal/driver/config"
-
-	"github.com/ory/herodot"
-	"github.com/ory/x/healthx"
-	"github.com/ory/x/logrusx"
-	"github.com/ory/x/tracing"
-
 	"github.com/ory/keto/internal/check"
+	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/expand"
 	"github.com/ory/keto/internal/persistence"
 	"github.com/ory/keto/internal/persistence/sql"
 	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/internal/x"
+	"github.com/ory/keto/ketoctx"
+	acl "github.com/ory/keto/proto/ory/keto/acl/v1alpha1"
 )
 
 var (
@@ -272,21 +261,4 @@ func (r *RegistryDefault) Init(ctx context.Context) (err error) {
 		}()
 	})
 	return
-}
-
-func (r *RegistryDefault) MetricsRouter() http.Handler {
-	n := negroni.New(reqlog.NewMiddlewareFromLogger(r.Logger(), "keto").ExcludePaths(prometheus.MetricsPrometheusPath))
-	router := httprouter.New()
-
-	r.PrometheusManager().RegisterRouter(router)
-	r.MetricsHandler().SetRoutes(router)
-	n.UseHandler(router)
-	n.Use(r.PrometheusManager())
-
-	var handler http.Handler = n
-	options, enabled := r.Config().CORS("metrics")
-	if enabled {
-		handler = cors.New(options).Handler(handler)
-	}
-	return handler
 }

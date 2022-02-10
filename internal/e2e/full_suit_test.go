@@ -7,28 +7,19 @@ import (
 	"testing"
 	"time"
 
+	"github.com/ory/herodot"
+	"github.com/ory/x/cmdx"
 	prometheus "github.com/ory/x/prometheusx"
-
 	"github.com/spf13/cobra"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/ory/keto/cmd"
 	cliclient "github.com/ory/keto/cmd/client"
-
-	"github.com/stretchr/testify/assert"
-
-	"github.com/ory/keto/internal/x/dbx"
-
-	"github.com/ory/herodot"
-
-	"github.com/ory/keto/internal/x"
-
-	"github.com/stretchr/testify/require"
-
 	"github.com/ory/keto/internal/expand"
-
-	"github.com/ory/x/cmdx"
-
 	"github.com/ory/keto/internal/relationtuple"
+	"github.com/ory/keto/internal/x"
+	"github.com/ory/keto/internal/x/dbx"
 )
 
 type (
@@ -85,28 +76,28 @@ func Test(t *testing.T) {
 				},
 			} {
 				t.Run(fmt.Sprintf("client=%T", cl), runCases(cl, addNamespace))
+			}
 
-				t.Run("case=metrics are served", func(t *testing.T) {
-					(&grpcClient{
-						readRemote:  reg.Config().ReadAPIListenOn(),
-						writeRemote: reg.Config().WriteAPIListenOn(),
-						ctx:         ctx,
-					}).waitUntilLive(t)
+			t.Run("case=metrics are served", func(t *testing.T) {
+				(&grpcClient{
+					readRemote:  reg.Config(ctx).ReadAPIListenOn(),
+					writeRemote: reg.Config(ctx).WriteAPIListenOn(),
+					ctx:         ctx,
+				}).waitUntilLive(t)
 
-					t.Run("case=on "+prometheus.MetricsPrometheusPath, func(t *testing.T) {
-						resp, err := http.Get(fmt.Sprintf("http://%s%s", reg.Config().MetricsListenOn(), prometheus.MetricsPrometheusPath))
-						require.NoError(t, err)
-						require.Equal(t, resp.StatusCode, http.StatusOK)
-						body, err := ioutil.ReadAll(resp.Body)
-						require.NoError(t, err)
-						require.Contains(t, string(body), promLogLine)
-					})
+				t.Run("case=on "+prometheus.MetricsPrometheusPath, func(t *testing.T) {
+					resp, err := http.Get(fmt.Sprintf("http://%s%s", reg.Config(ctx).MetricsListenOn(), prometheus.MetricsPrometheusPath))
+					require.NoError(t, err)
+					require.Equal(t, resp.StatusCode, http.StatusOK)
+					body, err := ioutil.ReadAll(resp.Body)
+					require.NoError(t, err)
+					require.Contains(t, string(body), promLogLine)
+				})
 
-					t.Run("case=not on /", func(t *testing.T) {
-						resp, err := http.Get(fmt.Sprintf("http://%s", reg.Config().MetricsListenOn()))
-						require.NoError(t, err)
-						require.Equal(t, resp.StatusCode, http.StatusNotFound)
-					})
+				t.Run("case=not on /", func(t *testing.T) {
+					resp, err := http.Get(fmt.Sprintf("http://%s", reg.Config(ctx).MetricsListenOn()))
+					require.NoError(t, err)
+					require.Equal(t, resp.StatusCode, http.StatusNotFound)
 				})
 			})
 		})
