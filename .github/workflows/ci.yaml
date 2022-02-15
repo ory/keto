@@ -17,7 +17,7 @@ jobs:
     name: Run lints and checks
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: ory/ci/checkout@master
       - uses: actions/setup-go@v2
         with:
           go-version: ^1.17
@@ -65,7 +65,7 @@ jobs:
             cockroachdb/cockroach:v20.2.5 start-single-node --insecure
           docker start cockroach
         name: Start CockroachDB
-      - uses: actions/checkout@v2
+      - uses: ory/ci/checkout@master
       - uses: actions/setup-go@v2
         with:
           go-version: ^1.17
@@ -86,7 +86,7 @@ jobs:
     name: Run race tests
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: ory/ci/checkout@master
       - uses: actions/setup-go@v2
         with:
           go-version: ^1.17
@@ -115,7 +115,7 @@ jobs:
       - test-race
       - validate
     steps:
-      - uses: actions/checkout@v2
+      - uses: ory/ci/checkout@master
         with:
           fetch-depth: 0
       - uses: ory/ci/changelog@master
@@ -231,7 +231,7 @@ jobs:
     name: Run buf actions
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: ory/ci/checkout@master
         with:
           path: current-repo
       - uses: actions/setup-go@v2
@@ -258,7 +258,7 @@ jobs:
           git commit -a -m "autogen: build buf" && git push "https://${GITHUB_ACTOR}:${{ secrets.ORY_BOT_PAT }}@github.com/${GITHUB_REPOSITORY}.git" HEAD:${GITHUB_REF#"refs/heads/"} || true
         working-directory: current-repo
       - if: ${{ github.ref_name == 'master' || github.ref_type == 'tag' }}
-        uses: actions/checkout@v2
+        uses: ory/ci/checkout@master
         with:
           repository: ory/docs
           path: docs
