@@ -12,8 +12,9 @@ import (
 
 type (
 	toUUIDMappingMigrator struct {
-		d       dependencies
-		perPage int
+		d              dependencies
+		perPage        int
+		requestedPages int // track the number of pages we requested for testing.
 	}
 )
 
@@ -31,7 +32,9 @@ func (m *toUUIDMappingMigrator) MigrateUUIDMappings(ctx context.Context) error {
 	}
 
 	return p.Transaction(ctx, func(ctx context.Context, c *pop.Connection) error {
+		m.requestedPages = 0
 		for page := 1; ; page++ {
+			m.requestedPages++
 			relationTuples, hasNext, err := m.getRelationTuples(ctx, page)
 			if err != nil {
 				return err

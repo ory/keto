@@ -91,6 +91,32 @@ func TestToUUIDMappingMigrator(t *testing.T) {
 	}
 }
 
+func TestToUUIDMappingMigrator_paginates(t *testing.T) {
+	numTuples := 10
+	perPage := 2
+
+	dsn := dbx.GetSqlite(t, dbx.SQLiteMemory)
+	ctx := context.Background()
+	r := driver.NewTestRegistry(t, dsn)
+	m := &toUUIDMappingMigrator{d: r, perPage: perPage}
+	p := m.d.Persister().(*sql.Persister)
+	conn := p.Connection(ctx)
+
+	// Create a bunch of relation tuples
+	for i := 0; i < numTuples; i++ {
+		rt := &sql.RelationTuple{
+			ID:         uuid.Must(uuid.NewV4()),
+			Object:     "object",
+			SubjectID:  dbsql.NullString{String: "subject", Valid: true},
+			CommitTime: time.Now(),
+		}
+		require.NoError(t, conn.Create(rt))
+	}
+
+	require.NoError(t, m.MigrateUUIDMappings(ctx))
+	assert.Equal(t, numTuples/perPage, m.requestedPages)
+}
+
 // assertHasMapping checks that there is a mapping from the given string (value)
 // to the given UUID (uid).
 func assertHasMapping(t *testing.T, conn *pop.Connection, value, uid string) {
