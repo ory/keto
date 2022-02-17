@@ -61,7 +61,8 @@ func TestMigrate(t *testing.T) {
 			t.Run("dsn=memory", func(t *testing.T) {
 				t.Run("case=auto migrates", func(t *testing.T) {
 					hook := &test.Hook{}
-					ctx := context.WithValue(context.Background(), driver.LogrusHookContextKey, hook)
+					ctx, cancel := context.WithCancel(context.WithValue(context.Background(), driver.LogrusHookContextKey, hook))
+					t.Cleanup(cancel)
 
 					cf := dbx.ConfigFile(t, map[string]interface{}{
 						config.KeyDSN:        dsn.Conn,
@@ -78,7 +79,8 @@ func TestMigrate(t *testing.T) {
 		} else {
 			t.Run("dsn="+dsn.Name, func(t *testing.T) {
 				hook := &test.Hook{}
-				ctx := context.WithValue(context.Background(), driver.LogrusHookContextKey, hook)
+				ctx, cancel := context.WithCancel(context.WithValue(context.Background(), driver.LogrusHookContextKey, hook))
+				t.Cleanup(cancel)
 
 				cf := dbx.ConfigFile(t, map[string]interface{}{
 					config.KeyDSN:        dsn.Conn,
@@ -129,5 +131,27 @@ func TestMigrate(t *testing.T) {
 				})
 			})
 		}
+	}
+}
+
+func TestUpAndDown(t *testing.T) {
+	const debugOnDisk = false
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	cmd := &cmdx.CommandExecuter{
+		New: func() *cobra.Command {
+			cmd := newMigrateCmd()
+			configx.RegisterFlags(cmd.PersistentFlags())
+			return cmd
+		},
+		Ctx: ctx,
+	}
+	for _, dsn := range dbx.GetDSNs(t, debugOnDisk) {
+		cf := dbx.ConfigFile(t, map[string]interface{}{config.KeyDSN: dsn.Conn})
+
+		t.Log(cmd.ExecNoErr(t, "up", "-c", cf, "--"+FlagYes))
+		t.Log(cmd.ExecNoErr(t, "down", "0", "-c", cf, "--"+FlagYes))
 	}
 }

@@ -125,14 +125,6 @@ test-docs-samples:
 		&& \
 		npm test
 
-.PHONY: migrations-render
-migrations-render: .bin/ory
-		ory dev pop migration render internal/persistence/sql/migrations/templates internal/persistence/sql/migrations/sql
-
-.PHONY: migrations-render-replace
-migrations-render-replace: .bin/ory
-		ory dev pop migration render -r internal/persistence/sql/migrations/templates internal/persistence/sql/migrations/sql
-
 .PHONY: cve-scan
 cve-scan: docker .bin/grype
 		grype oryd/keto:latest
