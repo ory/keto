@@ -226,7 +226,7 @@ func TestToSingleTableMigrator_HasLegacyTable(t *testing.T) {
 
 				ln, err := m.LegacyNamespaces(ctx)
 				require.NoError(t, err)
-				assert.Equal(t, nspaces, ln)
+				assert.ElementsMatch(t, nspaces, ln)
 			})
 		})
 	}

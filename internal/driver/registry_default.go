@@ -5,8 +5,6 @@ import (
 	"net/http"
 	"sync"
 
-	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
-
 	"github.com/gobuffalo/pop/v6"
 	"github.com/ory/herodot"
 	"github.com/ory/x/dbal"
@@ -27,8 +25,10 @@ import (
 	"github.com/ory/keto/internal/persistence"
 	"github.com/ory/keto/internal/persistence/sql"
 	"github.com/ory/keto/internal/relationtuple"
+	"github.com/ory/keto/internal/uuidmapping"
 	"github.com/ory/keto/internal/x"
 	"github.com/ory/keto/ketoctx"
+	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 )
 
 var (
@@ -146,6 +146,13 @@ func (r *RegistryDefault) Writer() herodot.Writer {
 }
 
 func (r *RegistryDefault) RelationTupleManager() relationtuple.Manager {
+	if r.p == nil {
+		panic("no relation tuple manager, but expected to have one")
+	}
+	return r.p
+}
+
+func (r *RegistryDefault) UUIDMappingManager() uuidmapping.Manager {
 	if r.p == nil {
 		panic("no relation tuple manager, but expected to have one")
 	}

@@ -6,18 +6,16 @@ import (
 	"testing"
 
 	"github.com/ory/x/networkx"
-
-	"github.com/ory/keto/internal/x/dbx"
-
-	"github.com/ory/keto/internal/driver"
-	"github.com/ory/keto/internal/persistence/sql"
-
 	"github.com/sirupsen/logrus/hooks/test"
 	"github.com/stretchr/testify/require"
 
+	"github.com/ory/keto/internal/driver"
 	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/namespace"
+	"github.com/ory/keto/internal/persistence/sql"
 	"github.com/ory/keto/internal/relationtuple"
+	"github.com/ory/keto/internal/uuidmapping"
+	"github.com/ory/keto/internal/x/dbx"
 )
 
 func TestPersister(t *testing.T) {
@@ -69,6 +67,11 @@ func TestPersister(t *testing.T) {
 
 				// same registry, but different persisters only differing in the network ID
 				relationtuple.IsolationTest(t, p0, p1, addNamespace(r, nspaces))
+			})
+
+			t.Run("uuidmapping.ManagerTest", func(t *testing.T) {
+				p, _, _ := setup(t, dsn)
+				uuidmapping.ManagerTest(t, p)
 			})
 		})
 	}

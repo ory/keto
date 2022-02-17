@@ -17,6 +17,7 @@ func newMigrateCmd(opts []ketoctx.Option) *cobra.Command {
 		newStatusCmd(opts),
 		newUpCmd(opts),
 		newDownCmd(opts),
+		newMigrateUUIDMappingCmd(),
 	)
 	return cmd
 }
