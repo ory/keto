@@ -61,7 +61,7 @@ func TestPersister(t *testing.T) {
 				var nspaces []*namespace.Namespace
 				p0, r, _ := setup(t, dsn)
 				n1 := networkx.NewNetwork()
-				conn, err := r.PopConnection()
+				conn, err := r.PopConnection(context.Background())
 				require.NoError(t, err)
 				require.NoError(t, conn.Create(n1))
 				p1, err := sql.NewPersister(context.Background(), r, n1.ID)

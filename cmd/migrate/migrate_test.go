@@ -142,7 +142,7 @@ func TestUpAndDown(t *testing.T) {
 
 	cmd := &cmdx.CommandExecuter{
 		New: func() *cobra.Command {
-			cmd := newMigrateCmd()
+			cmd := newMigrateCmd(nil)
 			configx.RegisterFlags(cmd.PersistentFlags())
 			return cmd
 		},

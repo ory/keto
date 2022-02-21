@@ -16,6 +16,7 @@ package main
 
 // The standard error format
 // swagger:model genericError
+// nolint:deadcode,unused
 type genericError struct {
 	Code int `json:"code,omitempty"`
 
