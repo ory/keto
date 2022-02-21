@@ -91,10 +91,12 @@ func NewTestRegistry(t *testing.T, dsn *dbx.DsnT) *RegistryDefault {
 	require.NoError(t, r.Init(ctx))
 
 	t.Cleanup(func() {
-		if dsn.MigrateDown {
+		if !dsn.MigrateDown {
+			t.Log("Skipping down migration")
 			return
 		}
 
+		t.Log("Migrating down")
 		require.NoError(t, r.MigrateDown(ctx))
 	})
 

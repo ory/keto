@@ -203,10 +203,10 @@ func (r *RegistryDefault) MigrateDown(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
-	return mb.Up(ctx)
+	return mb.Down(ctx, -1)
 }
 
-func (r *RegistryDefault) determineNetwork(ctx context.Context) (*networkx.Network, error) {
+func (r *RegistryDefault) DetermineNetwork(ctx context.Context) (*networkx.Network, error) {
 	c, err := r.PopConnection(ctx)
 	if err != nil {
 		return nil, err
@@ -247,7 +247,7 @@ func (r *RegistryDefault) Init(ctx context.Context) (err error) {
 				return err
 			}
 
-			network, err := r.determineNetwork(ctx)
+			network, err := r.DetermineNetwork(ctx)
 			if err != nil {
 				return err
 			}

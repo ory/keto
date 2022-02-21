@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/gofrs/uuid"
+	"github.com/ory/x/networkx"
 
 	"github.com/ory/keto/internal/x/dbx"
 
@@ -24,8 +24,8 @@ func TestPersister(t *testing.T) {
 	setup := func(t *testing.T, dsn *dbx.DsnT) (p *sql.Persister, r *driver.RegistryDefault, hook *test.Hook) {
 		r = driver.NewTestRegistry(t, dsn)
 
-		p, err := sql.NewPersister(context.Background(), r, uuid.Must(uuid.NewV4()))
-		require.NoError(t, err)
+		p, ok := r.Persister().(*sql.Persister)
+		require.True(t, ok)
 
 		require.NoError(t, r.MigrateUp(context.Background()))
 
@@ -60,7 +60,11 @@ func TestPersister(t *testing.T) {
 			t.Run("relationtuple.IsolationTest", func(t *testing.T) {
 				var nspaces []*namespace.Namespace
 				p0, r, _ := setup(t, dsn)
-				p1, err := sql.NewPersister(context.Background(), r, uuid.Must(uuid.NewV4()))
+				n1 := networkx.NewNetwork()
+				conn, err := r.PopConnection()
+				require.NoError(t, err)
+				require.NoError(t, conn.Create(n1))
+				p1, err := sql.NewPersister(context.Background(), r, n1.ID)
 				require.NoError(t, err)
 
 				// same registry, but different persisters only differing in the network ID

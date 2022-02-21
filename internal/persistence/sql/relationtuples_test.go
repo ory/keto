@@ -7,6 +7,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/ory/x/networkx"
+
 	"github.com/gofrs/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -16,10 +18,10 @@ import (
 	"github.com/ory/keto/internal/x/dbx"
 )
 
-func rt(setSID, setNID, setO, setR bool) *sql.RelationTuple {
+func rt(nw *networkx.Network, setSID, setNID, setO, setR bool) *sql.RelationTuple {
 	return &sql.RelationTuple{
 		ID:        uuid.Must(uuid.NewV4()),
-		NetworkID: uuid.Must(uuid.NewV4()),
+		NetworkID: nw.ID,
 		SubjectID: stdSql.NullString{
 			Valid: setSID,
 		},
@@ -39,8 +41,11 @@ func rt(setSID, setNID, setO, setR bool) *sql.RelationTuple {
 func TestRelationTupleSubjectTypeCheck(t *testing.T) {
 	for _, dsn := range dbx.GetDSNs(t, false) {
 		t.Run("dsn="+dsn.Name, func(t *testing.T) {
+			ctx := context.Background()
 			reg := driver.NewTestRegistry(t, dsn)
 			c, err := reg.PopConnection(context.Background())
+			require.NoError(t, err)
+			nw, err := reg.DetermineNetwork(ctx)
 			require.NoError(t, err)
 
 			for _, tc := range []struct {
@@ -89,7 +94,7 @@ func TestRelationTupleSubjectTypeCheck(t *testing.T) {
 				},
 			} {
 				t.Run("case="+tc.desc, func(t *testing.T) {
-					err = c.Create(rt(tc.setSID, tc.setNID, tc.setO, tc.setR))
+					err = c.Create(rt(nw, tc.setSID, tc.setNID, tc.setO, tc.setR))
 
 					if tc.success {
 						assert.NoError(t, err)
