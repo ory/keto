@@ -241,7 +241,7 @@ func (p *Persister) GetRelationTuples(ctx context.Context, query *relationtuple.
 		return nil, "", err
 	}
 
-	nm, err := p.d.Config().NamespaceManager()
+	nm, err := p.d.Config(ctx).NamespaceManager()
 	if err != nil {
 		return nil, "", err
 	}

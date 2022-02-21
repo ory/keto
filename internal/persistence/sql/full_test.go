@@ -24,7 +24,7 @@ func TestPersister(t *testing.T) {
 	setup := func(t *testing.T, dsn *dbx.DsnT) (p *sql.Persister, r *driver.RegistryDefault, hook *test.Hook) {
 		r = driver.NewTestRegistry(t, dsn)
 
-		p, err := sql.NewPersister(r, uuid.Must(uuid.NewV4()))
+		p, err := sql.NewPersister(context.Background(), r, uuid.Must(uuid.NewV4()))
 		require.NoError(t, err)
 
 		require.NoError(t, r.MigrateUp(context.Background()))
@@ -44,7 +44,7 @@ func TestPersister(t *testing.T) {
 			}
 			nspaces = append(nspaces, n)
 
-			require.NoError(t, r.Config().Set(config.KeyNamespaces, nspaces))
+			require.NoError(t, r.Config(ctx).Set(config.KeyNamespaces, nspaces))
 		}
 	}
 
@@ -60,7 +60,7 @@ func TestPersister(t *testing.T) {
 			t.Run("relationtuple.IsolationTest", func(t *testing.T) {
 				var nspaces []*namespace.Namespace
 				p0, r, _ := setup(t, dsn)
-				p1, err := sql.NewPersister(r, uuid.Must(uuid.NewV4()))
+				p1, err := sql.NewPersister(context.Background(), r, uuid.Must(uuid.NewV4()))
 				require.NoError(t, err)
 
 				// same registry, but different persisters only differing in the network ID

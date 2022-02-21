@@ -5,66 +5,51 @@ import (
 	"net/http"
 	"sync"
 
-	prometheus "github.com/ory/x/prometheusx"
-
-	"github.com/ory/x/networkx"
-	"github.com/rs/cors"
-
 	"github.com/gobuffalo/pop/v6"
-	"github.com/ory/x/popx"
-	"github.com/pkg/errors"
-
-	"github.com/ory/x/dbal"
-
-	"github.com/ory/x/metricsx"
-
-	acl "github.com/ory/keto/proto/ory/keto/acl/v1alpha1"
-
-	grpc_logrus "github.com/grpc-ecosystem/go-grpc-middleware/logging/logrus"
-	"github.com/grpc-ecosystem/grpc-opentracing/go/otgrpc"
-	"github.com/ory/x/reqlog"
-	"github.com/urfave/negroni"
-	"google.golang.org/grpc/reflection"
-
-	grpcMiddleware "github.com/grpc-ecosystem/go-grpc-middleware"
-	"github.com/julienschmidt/httprouter"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/health"
-	grpcHealthV1 "google.golang.org/grpc/health/grpc_health_v1"
-
-	"github.com/ory/keto/internal/driver/config"
-
 	"github.com/ory/herodot"
+	"github.com/ory/x/dbal"
 	"github.com/ory/x/healthx"
 	"github.com/ory/x/logrusx"
+	"github.com/ory/x/metricsx"
+	"github.com/ory/x/networkx"
+	"github.com/ory/x/popx"
+	prometheus "github.com/ory/x/prometheusx"
 	"github.com/ory/x/tracing"
+	"github.com/pkg/errors"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/health"
 
 	"github.com/ory/keto/internal/check"
+	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/expand"
 	"github.com/ory/keto/internal/persistence"
 	"github.com/ory/keto/internal/persistence/sql"
 	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/internal/x"
+	"github.com/ory/keto/ketoctx"
+	acl "github.com/ory/keto/proto/ory/keto/acl/v1alpha1"
 )
 
 var (
-	_ relationtuple.ManagerProvider = (*RegistryDefault)(nil)
-	_ x.WriterProvider              = (*RegistryDefault)(nil)
-	_ x.LoggerProvider              = (*RegistryDefault)(nil)
-	_ Registry                      = (*RegistryDefault)(nil)
-	_ acl.VersionServiceServer      = (*RegistryDefault)(nil)
+	_ relationtuple.ManagerProvider  = (*RegistryDefault)(nil)
+	_ x.WriterProvider               = (*RegistryDefault)(nil)
+	_ x.LoggerProvider               = (*RegistryDefault)(nil)
+	_ Registry                       = (*RegistryDefault)(nil)
+	_ acl.VersionServiceServer       = (*RegistryDefault)(nil)
+	_ ketoctx.ContextualizerProvider = (*RegistryDefault)(nil)
 )
 
 type (
 	RegistryDefault struct {
-		p    persistence.Persister
-		mb   *popx.MigrationBox
-		l    *logrusx.Logger
-		w    herodot.Writer
-		ce   *check.Engine
-		ee   *expand.Engine
-		c    *config.Config
-		conn *pop.Connection
+		p     persistence.Persister
+		mb    *popx.MigrationBox
+		l     *logrusx.Logger
+		w     herodot.Writer
+		ce    *check.Engine
+		ee    *expand.Engine
+		c     *config.Config
+		conn  *pop.Connection
+		ctxer ketoctx.Contextualizer
 
 		initialized    sync.Once
 		healthH        *healthx.Handler
@@ -74,6 +59,10 @@ type (
 		tracer         *tracing.Tracer
 		pmm            *prometheus.MetricsManager
 		metricsHandler *prometheus.Handler
+
+		defaultUnaryInterceptors  []grpc.UnaryServerInterceptor
+		defaultStreamInterceptors []grpc.StreamServerInterceptor
+		defaultHttpMiddlewares    []func(rw http.ResponseWriter, r *http.Request, next http.HandlerFunc)
 	}
 	Handler interface {
 		RegisterReadRoutes(r *x.ReadRouter)
@@ -83,19 +72,14 @@ type (
 	}
 )
 
-func (r *RegistryDefault) BuildVersion() string {
-	return config.Version
+func (r *RegistryDefault) Contextualizer() ketoctx.Contextualizer {
+	return r.ctxer
 }
 
-func (r *RegistryDefault) BuildDate() string {
-	return config.Date
-}
-
-func (r *RegistryDefault) BuildHash() string {
-	return config.Commit
-}
-
-func (r *RegistryDefault) Config() *config.Config {
+func (r *RegistryDefault) Config(ctx context.Context) *config.Config {
+	if provider := r.ctxer.Config(ctx, r.c.Source()); provider != r.c.Source() {
+		return config.New(ctx, r.Logger(), provider)
+	}
 	return r.c
 }
 
@@ -119,10 +103,10 @@ func (r *RegistryDefault) GetVersion(_ context.Context, _ *acl.GetVersionRequest
 	return &acl.GetVersionResponse{Version: config.Version}, nil
 }
 
-func (r *RegistryDefault) Tracer() *tracing.Tracer {
+func (r *RegistryDefault) Tracer(ctx context.Context) *tracing.Tracer {
 	if r.tracer == nil {
 		// Tracing is initialized only once so it can not be hot reloaded or context-aware.
-		t, err := tracing.New(r.Logger(), r.Config().TracingConfig())
+		t, err := tracing.New(r.Logger(), r.Config(ctx).TracingConfig())
 		if err != nil {
 			r.Logger().WithError(err).Fatalf("Unable to initialize Tracer.")
 		}
@@ -188,13 +172,13 @@ func (r *RegistryDefault) ExpandEngine() *expand.Engine {
 	return r.ee
 }
 
-func (r *RegistryDefault) MigrationBox() (*popx.MigrationBox, error) {
+func (r *RegistryDefault) MigrationBox(ctx context.Context) (*popx.MigrationBox, error) {
 	if r.mb == nil {
-		c, err := r.PopConnection()
+		c, err := r.PopConnection(ctx)
 		if err != nil {
 			return nil, err
 		}
-		mb, err := sql.NewMigrationBox(c, r.Logger(), r.Tracer())
+		mb, err := sql.NewMigrationBox(c, r.Logger(), r.Tracer(ctx))
 		if err != nil {
 			return nil, err
 		}
@@ -204,7 +188,7 @@ func (r *RegistryDefault) MigrationBox() (*popx.MigrationBox, error) {
 }
 
 func (r *RegistryDefault) MigrateUp(ctx context.Context) error {
-	mb, err := r.MigrationBox()
+	mb, err := r.MigrationBox(ctx)
 	if err != nil {
 		return err
 	}
@@ -215,7 +199,7 @@ func (r *RegistryDefault) MigrateUp(ctx context.Context) error {
 }
 
 func (r *RegistryDefault) MigrateDown(ctx context.Context) error {
-	mb, err := r.MigrationBox()
+	mb, err := r.MigrationBox(ctx)
 	if err != nil {
 		return err
 	}
@@ -223,11 +207,11 @@ func (r *RegistryDefault) MigrateDown(ctx context.Context) error {
 }
 
 func (r *RegistryDefault) determineNetwork(ctx context.Context) (*networkx.Network, error) {
-	c, err := r.PopConnection()
+	c, err := r.PopConnection(ctx)
 	if err != nil {
 		return nil, err
 	}
-	mb, err := popx.NewMigrationBox(networkx.Migrations, popx.NewMigrator(c, r.Logger(), r.Tracer(), 0))
+	mb, err := popx.NewMigrationBox(networkx.Migrations, popx.NewMigrator(c, r.Logger(), r.Tracer(ctx), 0))
 	if err != nil {
 		return nil, err
 	}
@@ -239,12 +223,12 @@ func (r *RegistryDefault) determineNetwork(ctx context.Context) (*networkx.Netwo
 		return nil, errors.WithStack(persistence.ErrNetworkMigrationsMissing)
 	}
 
-	return networkx.NewManager(c, r.Logger(), r.Tracer()).Determine(ctx)
+	return networkx.NewManager(c, r.Logger(), r.Tracer(ctx)).Determine(ctx)
 }
 
 func (r *RegistryDefault) InitWithoutNetworkID(ctx context.Context) error {
-	if dbal.IsMemorySQLite(r.c.DSN()) {
-		mb, err := r.MigrationBox()
+	if dbal.IsMemorySQLite(r.Config(ctx).DSN()) {
+		mb, err := r.MigrationBox(ctx)
 		if err != nil {
 			return err
 		}
@@ -268,7 +252,7 @@ func (r *RegistryDefault) Init(ctx context.Context) (err error) {
 				return err
 			}
 
-			r.p, err = sql.NewPersister(r, network.ID)
+			r.p, err = sql.NewPersister(ctx, r, network.ID)
 			if err != nil {
 				return err
 			}
@@ -277,160 +261,4 @@ func (r *RegistryDefault) Init(ctx context.Context) (err error) {
 		}()
 	})
 	return
-}
-
-func (r *RegistryDefault) allHandlers() []Handler {
-	if len(r.handlers) == 0 {
-		r.handlers = []Handler{
-			relationtuple.NewHandler(r),
-			check.NewHandler(r),
-			expand.NewHandler(r),
-		}
-	}
-	return r.handlers
-}
-
-func (r *RegistryDefault) ReadRouter() http.Handler {
-	n := negroni.New(reqlog.NewMiddlewareFromLogger(r.l, "read#Ory Keto").ExcludePaths(healthx.AliveCheckPath, healthx.ReadyCheckPath))
-
-	br := &x.ReadRouter{Router: httprouter.New()}
-
-	r.HealthHandler().SetHealthRoutes(br.Router, false)
-	r.HealthHandler().SetVersionRoutes(br.Router)
-
-	for _, h := range r.allHandlers() {
-		h.RegisterReadRoutes(br)
-	}
-
-	n.UseHandler(br)
-
-	if t := r.Tracer(); t.IsLoaded() {
-		n.Use(t)
-	}
-
-	if r.sqaService != nil {
-		n.Use(r.sqaService)
-	}
-
-	var handler http.Handler = n
-	options, enabled := r.Config().CORS("read")
-	if enabled {
-		handler = cors.New(options).Handler(handler)
-	}
-
-	return handler
-}
-
-func (r *RegistryDefault) WriteRouter() http.Handler {
-	n := negroni.New(reqlog.NewMiddlewareFromLogger(r.l, "write#Ory Keto").ExcludePaths(healthx.AliveCheckPath, healthx.ReadyCheckPath))
-
-	pr := &x.WriteRouter{Router: httprouter.New()}
-
-	r.HealthHandler().SetHealthRoutes(pr.Router, false)
-	r.HealthHandler().SetVersionRoutes(pr.Router)
-
-	for _, h := range r.allHandlers() {
-		h.RegisterWriteRoutes(pr)
-	}
-
-	n.UseHandler(pr)
-
-	if t := r.Tracer(); t.IsLoaded() {
-		n.Use(t)
-	}
-
-	if r.sqaService != nil {
-		n.Use(r.sqaService)
-	}
-
-	var handler http.Handler = n
-	options, enabled := r.Config().CORS("write")
-	if enabled {
-		handler = cors.New(options).Handler(handler)
-	}
-
-	return handler
-}
-
-func (r *RegistryDefault) MetricsRouter() http.Handler {
-	n := negroni.New(reqlog.NewMiddlewareFromLogger(r.Logger(), "keto").ExcludePaths(prometheus.MetricsPrometheusPath))
-	router := httprouter.New()
-
-	r.PrometheusManager().RegisterRouter(router)
-	r.MetricsHandler().SetRoutes(router)
-	n.UseHandler(router)
-	n.Use(r.PrometheusManager())
-
-	var handler http.Handler = n
-	options, enabled := r.Config().CORS("metrics")
-	if enabled {
-		handler = cors.New(options).Handler(handler)
-	}
-	return handler
-}
-
-func (r *RegistryDefault) unaryInterceptors() []grpc.UnaryServerInterceptor {
-	is := []grpc.UnaryServerInterceptor{
-		herodot.UnaryErrorUnwrapInterceptor,
-		grpcMiddleware.ChainUnaryServer(
-			grpc_logrus.UnaryServerInterceptor(r.l.Entry),
-		),
-	}
-	if r.Tracer().IsLoaded() {
-		is = append(is, otgrpc.OpenTracingServerInterceptor(r.Tracer().Tracer()))
-	}
-	if r.sqaService != nil {
-		is = append(is, r.sqaService.UnaryInterceptor)
-	}
-	return is
-}
-
-func (r *RegistryDefault) streamInterceptors() []grpc.StreamServerInterceptor {
-	is := []grpc.StreamServerInterceptor{
-		herodot.StreamErrorUnwrapInterceptor,
-		grpcMiddleware.ChainStreamServer(
-			grpc_logrus.StreamServerInterceptor(r.l.Entry),
-		),
-	}
-	if r.Tracer().IsLoaded() {
-		is = append(is, otgrpc.OpenTracingStreamServerInterceptor(r.Tracer().Tracer()))
-	}
-	if r.sqaService != nil {
-		is = append(is, r.sqaService.StreamInterceptor)
-	}
-	return is
-}
-
-func (r *RegistryDefault) ReadGRPCServer() *grpc.Server {
-	s := grpc.NewServer(
-		grpc.ChainStreamInterceptor(r.streamInterceptors()...),
-		grpc.ChainUnaryInterceptor(r.unaryInterceptors()...),
-	)
-
-	grpcHealthV1.RegisterHealthServer(s, r.HealthServer())
-	acl.RegisterVersionServiceServer(s, r)
-	reflection.Register(s)
-
-	for _, h := range r.allHandlers() {
-		h.RegisterReadGRPC(s)
-	}
-
-	return s
-}
-
-func (r *RegistryDefault) WriteGRPCServer() *grpc.Server {
-	s := grpc.NewServer(
-		grpc.ChainStreamInterceptor(r.streamInterceptors()...),
-		grpc.ChainUnaryInterceptor(r.unaryInterceptors()...),
-	)
-
-	grpcHealthV1.RegisterHealthServer(s, r.HealthServer())
-	acl.RegisterVersionServiceServer(s, r)
-	reflection.Register(s)
-
-	for _, h := range r.allHandlers() {
-		h.RegisterWriteGRPC(s)
-	}
-
-	return s
 }

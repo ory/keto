@@ -3,6 +3,8 @@ package migrate
 import (
 	"fmt"
 
+	"github.com/ory/keto/ketoctx"
+
 	"github.com/ory/x/popx"
 
 	"github.com/ory/x/cmdx"
@@ -11,7 +13,7 @@ import (
 	"github.com/ory/keto/internal/driver"
 )
 
-func newStatusCmd() *cobra.Command {
+func newStatusCmd(opts []ketoctx.Option) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "status",
 		Short: "Get the current migration status",
@@ -20,12 +22,12 @@ func newStatusCmd() *cobra.Command {
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			ctx := cmd.Context()
 
-			reg, err := driver.NewDefaultRegistry(ctx, cmd.Flags(), true)
+			reg, err := driver.NewDefaultRegistry(ctx, cmd.Flags(), true, opts...)
 			if err != nil {
 				return err
 			}
 
-			mb, err := reg.MigrationBox()
+			mb, err := reg.MigrationBox(ctx)
 			if err != nil {
 				return err
 			}

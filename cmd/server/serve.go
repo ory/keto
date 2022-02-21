@@ -19,6 +19,8 @@ import (
 	"os"
 	"strconv"
 
+	"github.com/ory/keto/ketoctx"
+
 	"github.com/ory/x/cmdx"
 	"github.com/pkg/errors"
 
@@ -30,7 +32,7 @@ import (
 )
 
 // serveCmd represents the serve command
-func newServe() *cobra.Command {
+func newServe(opts []ketoctx.Option) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "serve",
 		Short: "Starts the server and serves the HTTP REST and gRPC APIs",
@@ -43,7 +45,7 @@ on configuration options, open the configuration documentation:
 
 >> https://www.ory.sh/keto/docs/reference/configuration <<`,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			reg, err := driver.NewDefaultRegistry(cmd.Context(), cmd.Flags(), false)
+			reg, err := driver.NewDefaultRegistry(cmd.Context(), cmd.Flags(), false, opts...)
 			if errors.Is(err, persistence.ErrNetworkMigrationsMissing) {
 				_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Migrations were not applied yet, please apply them first.")
 				return cmdx.FailSilently(cmd)
@@ -69,6 +71,6 @@ on configuration options, open the configuration documentation:
 	return cmd
 }
 
-func RegisterCommandsRecursive(parent *cobra.Command) {
-	parent.AddCommand(newServe())
+func RegisterCommandsRecursive(parent *cobra.Command, opts []ketoctx.Option) {
+	parent.AddCommand(newServe(opts))
 }

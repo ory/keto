@@ -27,9 +27,6 @@ import (
 type (
 	Registry interface {
 		Init(context.Context) error
-		BuildVersion() string
-		BuildDate() string
-		BuildHash() string
 
 		config.Provider
 		x.LoggerProvider
@@ -41,19 +38,19 @@ type (
 		persistence.Migrator
 		persistence.Provider
 
-		PopConnection() (*pop.Connection, error)
-		PopConnectionWithOpts(f ...func(*pop.ConnectionDetails)) (*pop.Connection, error)
+		PopConnection(ctx context.Context) (*pop.Connection, error)
+		PopConnectionWithOpts(ctx context.Context, f ...func(*pop.ConnectionDetails)) (*pop.Connection, error)
 
 		HealthHandler() *healthx.Handler
-		Tracer() *tracing.Tracer
+		Tracer(ctx context.Context) *tracing.Tracer
 		MetricsHandler() *prometheus.Handler
 		PrometheusManager() *prometheus.MetricsManager
 
-		ReadRouter() http.Handler
-		WriteRouter() http.Handler
+		ReadRouter(ctx context.Context) http.Handler
+		WriteRouter(ctx context.Context) http.Handler
 
-		ReadGRPCServer() *grpc.Server
-		WriteGRPCServer() *grpc.Server
+		ReadGRPCServer(ctx context.Context) *grpc.Server
+		WriteGRPCServer(ctx context.Context) *grpc.Server
 
 		ServeAll(ctx context.Context) error
 		ServeAllSQA(cmd *cobra.Command) error

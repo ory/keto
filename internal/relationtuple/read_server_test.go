@@ -27,7 +27,7 @@ func TestReadHandlers(t *testing.T) {
 	r := &x.ReadRouter{Router: httprouter.New()}
 	nspace := &namespace.Namespace{Name: "relation tuple read test"}
 	reg := driver.NewSqliteTestRegistry(t, false)
-	require.NoError(t, reg.Config().Set(config.KeyNamespaces, []*namespace.Namespace{nspace}))
+	require.NoError(t, reg.Config(context.Background()).Set(config.KeyNamespaces, []*namespace.Namespace{nspace}))
 	h := relationtuple.NewHandler(reg)
 	h.RegisterReadRoutes(r)
 	ts := httptest.NewServer(r)

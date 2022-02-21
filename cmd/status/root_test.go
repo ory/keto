@@ -39,9 +39,11 @@ func TestStatusCmd(t *testing.T) {
 			})
 
 			t.Run("case=block", func(t *testing.T) {
+				ctx := context.WithValue(context.Background(), client.ContextKeyTimeout, time.Millisecond)
+
 				l, err := net.Listen("tcp", "127.0.0.1:0")
 				require.NoError(t, err)
-				s := ts.NewServer()
+				s := ts.NewServer(ctx)
 
 				startServe := make(chan struct{})
 
@@ -51,8 +53,6 @@ func TestStatusCmd(t *testing.T) {
 					<-startServe
 					return s.Serve(l)
 				})
-
-				ctx := context.WithValue(context.Background(), client.ContextKeyTimeout, time.Millisecond)
 
 				stdIn, stdErr := &bytes.Buffer{}, &bytes.Buffer{}
 				stdOut := &cmdx.CallbackWriter{

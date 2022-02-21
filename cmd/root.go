@@ -22,6 +22,8 @@ import (
 	"path/filepath"
 	"runtime"
 
+	"github.com/ory/keto/ketoctx"
+
 	"github.com/ory/keto/cmd/status"
 
 	"github.com/ory/keto/cmd/expand"
@@ -42,7 +44,7 @@ import (
 )
 
 // RootCmd represents the base command when called without any subcommands
-func NewRootCmd() *cobra.Command {
+func NewRootCmd(opts ...ketoctx.Option) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "keto",
 		Short: "Global and consistent permission and authorization server",
@@ -51,9 +53,9 @@ func NewRootCmd() *cobra.Command {
 	configx.RegisterConfigFlag(cmd.PersistentFlags(), []string{filepath.Join(userHomeDir(), "keto.yml")})
 
 	relationtuple.RegisterCommandsRecursive(cmd)
-	namespace.RegisterCommandsRecursive(cmd)
-	migrate.RegisterCommandsRecursive(cmd)
-	server.RegisterCommandsRecursive(cmd)
+	namespace.RegisterCommandsRecursive(cmd, opts)
+	migrate.RegisterCommandsRecursive(cmd, opts)
+	server.RegisterCommandsRecursive(cmd, opts)
 	check.RegisterCommandsRecursive(cmd)
 	expand.RegisterCommandsRecursive(cmd)
 	status.RegisterCommandRecursive(cmd)

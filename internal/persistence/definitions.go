@@ -18,7 +18,7 @@ type (
 		Connection(ctx context.Context) *pop.Connection
 	}
 	Migrator interface {
-		MigrationBox() (*popx.MigrationBox, error)
+		MigrationBox(ctx context.Context) (*popx.MigrationBox, error)
 		MigrateUp(ctx context.Context) error
 		MigrateDown(ctx context.Context) error
 	}

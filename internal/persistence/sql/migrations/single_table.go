@@ -30,8 +30,8 @@ type (
 		x.LoggerProvider
 		config.Provider
 
-		PopConnection() (*pop.Connection, error)
-		PopConnectionWithOpts(...func(*pop.ConnectionDetails)) (*pop.Connection, error)
+		PopConnection(ctx context.Context) (*pop.Connection, error)
+		PopConnectionWithOpts(ctx context.Context, dets ...func(*pop.ConnectionDetails)) (*pop.Connection, error)
 	}
 	toSingleTableMigrator struct {
 		d       dependencies
@@ -130,8 +130,8 @@ func NewToSingleTableMigrator(d dependencies) *toSingleTableMigrator {
 	}
 }
 
-func (m *toSingleTableMigrator) namespaceMigrationBox(n *namespace.Namespace) (*popx.MigrationBox, error) {
-	c, err := m.d.PopConnectionWithOpts(func(d *pop.ConnectionDetails) {
+func (m *toSingleTableMigrator) namespaceMigrationBox(ctx context.Context, n *namespace.Namespace) (*popx.MigrationBox, error) {
+	c, err := m.d.PopConnectionWithOpts(ctx, func(d *pop.ConnectionDetails) {
 		d.Options = map[string]string{
 			"migration_table_name": migrationTableFromNamespace(n),
 		}
@@ -241,7 +241,7 @@ func (m *toSingleTableMigrator) MigrateNamespace(ctx context.Context, n *namespa
 }
 
 func (m *toSingleTableMigrator) LegacyNamespaces(ctx context.Context) ([]*namespace.Namespace, error) {
-	c, err := m.d.PopConnection()
+	c, err := m.d.PopConnection(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -263,7 +263,7 @@ func (m *toSingleTableMigrator) LegacyNamespaces(ctx context.Context) ([]*namesp
 		return nil, err
 	}
 
-	nm, err := m.d.Config().NamespaceManager()
+	nm, err := m.d.Config(ctx).NamespaceManager()
 	if err != nil {
 		return nil, err
 	}
@@ -284,7 +284,7 @@ func (m *toSingleTableMigrator) LegacyNamespaces(ctx context.Context) ([]*namesp
 }
 
 func (m *toSingleTableMigrator) MigrateDown(ctx context.Context, n *namespace.Namespace) error {
-	mb, err := m.namespaceMigrationBox(n)
+	mb, err := m.namespaceMigrationBox(ctx, n)
 	if err != nil {
 		return err
 	}

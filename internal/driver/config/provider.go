@@ -46,68 +46,84 @@ const (
 
 type (
 	Config struct {
-		p                      *configx.Provider
-		l                      *logrusx.Logger
-		ctx                    context.Context
+		p   *configx.Provider
+		l   *logrusx.Logger
+		ctx context.Context
+
 		nm                     namespace.Manager
 		cancelNamespaceManager context.CancelFunc
 		nmLock                 sync.Mutex
 	}
 	Provider interface {
-		Config() *Config
+		Config(ctx context.Context) *Config
 	}
 )
 
-func New(ctx context.Context, flags *pflag.FlagSet, l *logrusx.Logger) (*Config, error) {
-	kp := &Config{
+func New(ctx context.Context, l *logrusx.Logger, p *configx.Provider) *Config {
+	return &Config{
+		p:   p,
 		l:   l,
 		ctx: ctx,
 	}
+}
 
-	var err error
-	kp.p, err = configx.New(
+func NewDefault(ctx context.Context, flags *pflag.FlagSet, l *logrusx.Logger) (*Config, error) {
+	c := New(ctx, l, nil)
+	cp, err := NewProvider(ctx, flags, c)
+	if err != nil {
+		return nil, err
+	}
+	c.WithSource(cp)
+
+	return c, nil
+}
+
+func NewProvider(ctx context.Context, flags *pflag.FlagSet, config *Config) (*configx.Provider, error) {
+	p, err := configx.New(
 		ctx,
 		Schema,
 		configx.WithFlags(flags),
 		configx.WithStderrValidationReporter(),
 		configx.WithImmutables(KeyDSN, "serve"),
 		configx.OmitKeysFromTracing(KeyDSN),
-		configx.WithLogrusWatcher(kp.l),
+		configx.WithLogrusWatcher(config.l),
 		configx.WithContext(ctx),
-		configx.AttachWatcher(func(watcherx.Event, error) {
-			// TODO this can be optimized to run only on changes related to namespace config
-			kp.resetNamespaceManager()
-		}),
-		configx.AttachWatcher(func(watcherx.Event, error) {
-			if err != nil {
-				return
-			}
-			nm, err := kp.NamespaceManager()
-			if err != nil {
-				l.WithError(err).Error("got internal error in config watcher: could not get namespace manager")
-				return
-			}
-
-			nn, err := kp.getNamespaces()
-			if err != nil {
-				l.WithError(err).Error("could not get namespaces from config")
-				return
-			}
-			if nm.ShouldReload(nn) {
-				kp.resetNamespaceManager()
-			}
-		}),
+		configx.AttachWatcher(config.watcher),
 	)
 	if err != nil {
 		return nil, err
 	}
-	l.UseConfig(kp.p)
 
-	return kp, nil
+	return p, nil
 }
 
 func (k *Config) Source() *configx.Provider {
 	return k.p
+}
+
+func (k *Config) WithSource(p *configx.Provider) {
+	k.p = p
+	k.l.UseConfig(p)
+}
+
+func (k *Config) watcher(_ watcherx.Event, err error) {
+	if err != nil {
+		return
+	}
+	nm, err := k.NamespaceManager()
+	if err != nil {
+		k.l.WithError(err).Error("got internal error in config watcher: could not get namespace manager")
+		return
+	}
+
+	nn, err := k.getNamespaces()
+	if err != nil {
+		k.l.WithError(err).Error("could not get namespaces from config")
+		return
+	}
+	if nm.ShouldReload(nn) {
+		k.resetNamespaceManager()
+	}
 }
 
 func (k *Config) resetNamespaceManager() {

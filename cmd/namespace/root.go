@@ -5,6 +5,8 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 
+	"github.com/ory/keto/ketoctx"
+
 	"github.com/ory/keto/cmd/client"
 )
 
@@ -22,10 +24,10 @@ func NewMigrateCmd() *cobra.Command {
 	}
 }
 
-func RegisterCommandsRecursive(parent *cobra.Command) {
+func RegisterCommandsRecursive(parent *cobra.Command, opts []ketoctx.Option) {
 	rootCmd := NewNamespaceCmd()
 	migrateCmd := NewMigrateCmd()
-	migrateCmd.AddCommand(NewMigrateUpCmd(), NewMigrateDownCmd(), NewMigrateStatusCmd(), NewMigrateLegacyCmd())
+	migrateCmd.AddCommand(NewMigrateUpCmd(), NewMigrateDownCmd(), NewMigrateStatusCmd(), NewMigrateLegacyCmd(opts))
 
 	rootCmd.AddCommand(migrateCmd, NewValidateCmd())
 

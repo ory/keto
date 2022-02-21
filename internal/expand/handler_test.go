@@ -28,7 +28,7 @@ func TestRESTHandler(t *testing.T) {
 	}
 
 	reg := driver.NewSqliteTestRegistry(t, false)
-	require.NoError(t, reg.Config().Set(config.KeyNamespaces, []*namespace.Namespace{nspace}))
+	require.NoError(t, reg.Config(context.Background()).Set(config.KeyNamespaces, []*namespace.Namespace{nspace}))
 	h := expand.NewHandler(reg)
 	r := httprouter.New()
 	h.RegisterReadRoutes(&x.ReadRouter{Router: r})

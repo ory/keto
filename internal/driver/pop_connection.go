@@ -1,6 +1,7 @@
 package driver
 
 import (
+	"context"
 	"time"
 
 	"github.com/cenkalti/backoff/v3"
@@ -11,8 +12,8 @@ import (
 	"github.com/pkg/errors"
 )
 
-func (r *RegistryDefault) PopConnectionWithOpts(popOpts ...func(*pop.ConnectionDetails)) (*pop.Connection, error) {
-	tracer := r.Tracer()
+func (r *RegistryDefault) PopConnectionWithOpts(ctx context.Context, popOpts ...func(*pop.ConnectionDetails)) (*pop.Connection, error) {
+	tracer := r.Tracer(ctx)
 
 	var opts []instrumentedsql.Opt
 	if tracer.IsLoaded() {
@@ -21,7 +22,7 @@ func (r *RegistryDefault) PopConnectionWithOpts(popOpts ...func(*pop.ConnectionD
 			instrumentedsql.WithOmitArgs(),
 		}
 	}
-	pool, idlePool, connMaxLifetime, connMaxIdleTime, cleanedDSN := sqlcon.ParseConnectionOptions(r.Logger(), r.Config().DSN())
+	pool, idlePool, connMaxLifetime, connMaxIdleTime, cleanedDSN := sqlcon.ParseConnectionOptions(r.Logger(), r.Config(ctx).DSN())
 	connDetails := &pop.ConnectionDetails{
 		URL:                       sqlcon.FinalizeDSN(r.Logger(), cleanedDSN),
 		IdlePool:                  idlePool,
@@ -62,14 +63,14 @@ func (r *RegistryDefault) PopConnectionWithOpts(popOpts ...func(*pop.ConnectionD
 		return nil, errors.WithStack(err)
 	}
 
-	return conn, nil
+	return conn.WithContext(ctx), nil
 }
 
 // PopConnection returns the standard connection that is kept for the whole time.
-func (r *RegistryDefault) PopConnection() (*pop.Connection, error) {
+func (r *RegistryDefault) PopConnection(ctx context.Context) (*pop.Connection, error) {
 	if r.conn == nil {
 		var err error
-		r.conn, err = r.PopConnectionWithOpts()
+		r.conn, err = r.PopConnectionWithOpts(ctx)
 		return r.conn, err
 	}
 	return r.conn, nil

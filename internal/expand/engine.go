@@ -32,7 +32,7 @@ func NewEngine(d EngineDependencies) *Engine {
 
 func (e *Engine) BuildTree(ctx context.Context, subject relationtuple.Subject, restDepth int) (*Tree, error) {
 	// global max-depth takes precedence when it is the lesser or if the request max-depth is less than or equal to 0
-	if globalMaxDepth := e.d.Config().MaxReadDepth(); restDepth <= 0 || globalMaxDepth < restDepth {
+	if globalMaxDepth := e.d.Config(ctx).MaxReadDepth(); restDepth <= 0 || globalMaxDepth < restDepth {
 		restDepth = globalMaxDepth
 	}
 

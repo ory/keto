@@ -7,21 +7,19 @@ import (
 	"testing"
 	"time"
 
-	prometheus "github.com/ory/x/prometheusx"
-
-	"github.com/stretchr/testify/assert"
-
-	"github.com/ory/keto/internal/x/dbx"
-
 	"github.com/ory/herodot"
-
-	"github.com/ory/keto/internal/x"
-
+	"github.com/ory/x/cmdx"
+	prometheus "github.com/ory/x/prometheusx"
+	"github.com/spf13/cobra"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
+	"github.com/ory/keto/cmd"
+	cliclient "github.com/ory/keto/cmd/client"
 	"github.com/ory/keto/internal/expand"
-
 	"github.com/ory/keto/internal/relationtuple"
+	"github.com/ory/keto/internal/x"
+	"github.com/ory/keto/internal/x/dbx"
 )
 
 type (
@@ -48,49 +46,51 @@ const (
 func Test(t *testing.T) {
 	for _, dsn := range dbx.GetDSNs(t, false) {
 		t.Run(fmt.Sprintf("dsn=%s", dsn.Name), func(t *testing.T) {
-			ctx, reg, _ := newInitializedReg(t, dsn, nil)
+			ctx, reg, addNamespace := newInitializedReg(t, dsn, nil)
 
 			closeServer := startServer(ctx, t, reg)
 			defer closeServer()
 
-			//// The test cases start here
-			//// We execute every test with all clients available
-			//for _, cl := range []client{
-			//	&grpcClient{
-			//		readRemote:  reg.Config().ReadAPIListenOn(),
-			//		writeRemote: reg.Config().WriteAPIListenOn(),
-			//		ctx:         ctx,
-			//	},
-			//	&restClient{
-			//		readURL:  "http://" + reg.Config().ReadAPIListenOn(),
-			//		writeURL: "http://" + reg.Config().WriteAPIListenOn(),
-			//	},
-			//	&cliClient{c: &cmdx.CommandExecuter{
-			//		New:            cmd.NewRootCmd,
-			//		Ctx:            ctx,
-			//		PersistentArgs: []string{"--" + cliclient.FlagReadRemote, reg.Config().ReadAPIListenOn(), "--" + cliclient.FlagWriteRemote, reg.Config().WriteAPIListenOn(), "--" + cmdx.FlagFormat, string(cmdx.FormatJSON)},
-			//	}},
-			//	&sdkClient{
-			//		readRemote:  reg.Config().ReadAPIListenOn(),
-			//		writeRemote: reg.Config().WriteAPIListenOn(),
-			//	},
-			//} {
-			//	t.Run(fmt.Sprintf("client=%T", cl), runCases(cl, addNamespace))
-			//
-			//	if tc, ok := cl.(transactClient); ok {
-			//		t.Run(fmt.Sprintf("transactClient=%T", cl), runTransactionCases(tc, addNamespace))
-			//	}
-			//}
+			// The test cases start here
+			// We execute every test with all clients available
+			for _, cl := range []client{
+				&grpcClient{
+					readRemote:  reg.Config(ctx).ReadAPIListenOn(),
+					writeRemote: reg.Config(ctx).WriteAPIListenOn(),
+					ctx:         ctx,
+				},
+				&restClient{
+					readURL:  "http://" + reg.Config(ctx).ReadAPIListenOn(),
+					writeURL: "http://" + reg.Config(ctx).WriteAPIListenOn(),
+				},
+				&cliClient{c: &cmdx.CommandExecuter{
+					New: func() *cobra.Command {
+						return cmd.NewRootCmd(nil)
+					},
+					Ctx:            ctx,
+					PersistentArgs: []string{"--" + cliclient.FlagReadRemote, reg.Config(ctx).ReadAPIListenOn(), "--" + cliclient.FlagWriteRemote, reg.Config(ctx).WriteAPIListenOn(), "--" + cmdx.FlagFormat, string(cmdx.FormatJSON)},
+				}},
+				&sdkClient{
+					readRemote:  reg.Config(ctx).ReadAPIListenOn(),
+					writeRemote: reg.Config(ctx).WriteAPIListenOn(),
+				},
+			} {
+				t.Run(fmt.Sprintf("client=%T", cl), runCases(cl, addNamespace))
+
+				if tc, ok := cl.(transactClient); ok {
+					t.Run(fmt.Sprintf("transactClient=%T", cl), runTransactionCases(tc, addNamespace))
+				}
+			}
 
 			t.Run("case=metrics are served", func(t *testing.T) {
 				(&grpcClient{
-					readRemote:  reg.Config().ReadAPIListenOn(),
-					writeRemote: reg.Config().WriteAPIListenOn(),
+					readRemote:  reg.Config(ctx).ReadAPIListenOn(),
+					writeRemote: reg.Config(ctx).WriteAPIListenOn(),
 					ctx:         ctx,
 				}).waitUntilLive(t)
 
 				t.Run("case=on "+prometheus.MetricsPrometheusPath, func(t *testing.T) {
-					resp, err := http.Get(fmt.Sprintf("http://%s%s", reg.Config().MetricsListenOn(), prometheus.MetricsPrometheusPath))
+					resp, err := http.Get(fmt.Sprintf("http://%s%s", reg.Config(ctx).MetricsListenOn(), prometheus.MetricsPrometheusPath))
 					require.NoError(t, err)
 					require.Equal(t, resp.StatusCode, http.StatusOK)
 					body, err := ioutil.ReadAll(resp.Body)
@@ -99,7 +99,7 @@ func Test(t *testing.T) {
 				})
 
 				t.Run("case=not on /", func(t *testing.T) {
-					resp, err := http.Get(fmt.Sprintf("http://%s", reg.Config().MetricsListenOn()))
+					resp, err := http.Get(fmt.Sprintf("http://%s", reg.Config(ctx).MetricsListenOn()))
 					require.NoError(t, err)
 					require.Equal(t, resp.StatusCode, http.StatusNotFound)
 				})
@@ -119,12 +119,12 @@ func TestServeConfig(t *testing.T) {
 	closeServer := startServer(ctx, t, reg)
 	defer closeServer()
 
-	for !healthReady(t, "http://"+reg.Config().ReadAPIListenOn()) {
+	for !healthReady(t, "http://"+reg.Config(ctx).ReadAPIListenOn()) {
 		t.Log("Waiting for health check to be ready")
 		time.Sleep(10 * time.Millisecond)
 	}
 
-	req, err := http.NewRequest(http.MethodOptions, "http://"+reg.Config().ReadAPIListenOn()+relationtuple.RouteBase, nil)
+	req, err := http.NewRequest(http.MethodOptions, "http://"+reg.Config(ctx).ReadAPIListenOn()+relationtuple.RouteBase, nil)
 	require.NoError(t, err)
 	req.Header.Set("Origin", "https://ory.sh")
 	resp, err := http.DefaultClient.Do(req)

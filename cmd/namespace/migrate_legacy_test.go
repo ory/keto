@@ -7,6 +7,8 @@ import (
 	"path"
 	"testing"
 
+	"github.com/spf13/cobra"
+
 	"github.com/ory/keto/internal/relationtuple"
 
 	"github.com/ory/x/cmdx"
@@ -47,10 +49,12 @@ func TestMigrateLegacy(t *testing.T) {
 				Name: "b",
 			},
 		}
-		require.NoError(t, reg.Config().Set(config.KeyNamespaces, nspaces))
+		require.NoError(t, reg.Config(context.Background()).Set(config.KeyNamespaces, nspaces))
 
 		c := &cmdx.CommandExecuter{
-			New: NewMigrateLegacyCmd,
+			New: func() *cobra.Command {
+				return NewMigrateLegacyCmd(nil)
+			},
 			Ctx: context.WithValue(context.Background(), driver.RegistryContextKey, reg),
 		}
 
@@ -60,7 +64,7 @@ func TestMigrateLegacy(t *testing.T) {
 	t.Run("case=invalid subject", func(t *testing.T) {
 		c, reg := setup(t)
 
-		conn, err := reg.PopConnection()
+		conn, err := reg.PopConnection(context.Background())
 		require.NoError(t, err)
 		require.NoError(t, conn.RawQuery("insert into keto_0000000000_relation_tuples (shard_id, object, relation, subject, commit_time) values ('foo', 'obj', 'rel', 'invalid#subject', 'now')").Exec())
 
@@ -74,7 +78,7 @@ func TestMigrateLegacy(t *testing.T) {
 	t.Run("case=migrates down only", func(t *testing.T) {
 		c, reg := setup(t)
 
-		conn, err := reg.PopConnection()
+		conn, err := reg.PopConnection(context.Background())
 		require.NoError(t, err)
 		require.NoError(t, conn.RawQuery("insert into keto_0000000000_relation_tuples (shard_id, object, relation, subject, commit_time) values ('foo', 'obj', 'rel', 'sub', 'now')").Exec())
 
