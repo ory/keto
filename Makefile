@@ -17,11 +17,13 @@ GO_DEPENDENCIES = github.com/go-swagger/go-swagger/cmd/swagger \
 
 define make-go-dependency
   # go install is responsible for not re-building when the code hasn't changed
-  .bin/$(notdir $1): .bin/go.mod .bin/go.sum Makefile
+  .bin/$2: .bin/go.mod .bin/go.sum Makefile
 		cd .bin; GOBIN=$(PWD)/.bin/ go install $1
 endef
-$(foreach dep, $(GO_DEPENDENCIES), $(eval $(call make-go-dependency, $(dep))))
-$(call make-lint-dependency)
+$(foreach dep, $(GO_DEPENDENCIES), $(eval $(call make-go-dependency,$(dep),$(notdir $(dep)))))
+
+# versioned package paths
+$(eval $(call make-go-dependency,github.com/mikefarah/yq/v4,yq))
 
 .bin/ory: Makefile
 		bash <(curl https://raw.githubusercontent.com/ory/meta/master/install.sh) -d -b .bin ory v0.1.0
@@ -33,10 +35,6 @@ node_modules: package.json package-lock.json Makefile
 .PHONY: .bin/clidoc
 .bin/clidoc:
 		go build -o .bin/clidoc ./cmd/clidoc/.
-
-.PHONY: .bin/yq
-.bin/yq:
-		go build -o .bin/yq github.com/mikefarah/yq/v4
 
 docs/cli: .bin/clidoc
 		clidoc .

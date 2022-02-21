@@ -22,4 +22,6 @@ import (
 	_ "github.com/ory/cli"
 
 	_ "github.com/anchore/grype"
+
+	_ "github.com/mikefarah/yq/v4"
 )
