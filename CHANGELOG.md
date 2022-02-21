@@ -7,6 +7,7 @@
 
 - [0.0.0 (2022-02-21)](#000-2022-02-21)
   - [Bug Fixes](#bug-fixes)
+  - [Tests](#tests)
 - [0.8.0-alpha.0 (2022-02-10)](#080-alpha0-2022-02-10)
   - [Bug Fixes](#bug-fixes-1)
   - [Code Generation](#code-generation)
@@ -24,7 +25,7 @@
     - [Code Refactoring](#code-refactoring-1)
     - [Documentation](#documentation-2)
     - [Features](#features-1)
-    - [Tests](#tests)
+    - [Tests](#tests-1)
 - [0.6.0-alpha.3 (2021-04-29)](#060-alpha3-2021-04-29)
   - [Code Generation](#code-generation-3)
 - [0.6.0-alpha.2 (2021-04-29)](#060-alpha2-2021-04-29)
@@ -39,7 +40,7 @@
   - [Code Refactoring](#code-refactoring-2)
   - [Documentation](#documentation-4)
   - [Features](#features-3)
-  - [Tests](#tests-1)
+  - [Tests](#tests-2)
 - [0.5.6-alpha.1 (2020-05-28)](#056-alpha1-2020-05-28)
   - [Bug Fixes](#bug-fixes-5)
   - [Chores](#chores-1)
@@ -117,10 +118,17 @@
 
 ### Bug Fixes
 
+- Add foreign key constraint for network ID
+  ([e815cb0](https://github.com/ory/keto/commit/e815cb055ca1dfaff1f7bb9e56329be65563afb2))
 - Phony
   ([9f5d0aa](https://github.com/ory/keto/commit/9f5d0aa52f2162c9412dae04f7b60261b2798db8))
 - Resolve post-release steps ([#838](https://github.com/ory/keto/issues/838))
   ([d478567](https://github.com/ory/keto/commit/d478567d829ac7a708e01b3808f242eb5afdee96))
+
+### Tests
+
+- Fix inconsistencies
+  ([dab1b1d](https://github.com/ory/keto/commit/dab1b1d4ba1216526d81503b78f25bca95c6951d))
 
 # [0.8.0-alpha.0](https://github.com/ory/keto/compare/v0.7.0-alpha.1...v0.8.0-alpha.0) (2022-02-10)
 
