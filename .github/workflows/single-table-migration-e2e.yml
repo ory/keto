@@ -1,4 +1,6 @@
-name: Run full e2e test of the migration to single table persister (see https://github.com/ory/keto/issues/628)
+name:
+  Run full e2e test of the migration to single table persister (see
+  https://github.com/ory/keto/issues/628)
 
 on:
   workflow_dispatch:

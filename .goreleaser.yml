@@ -6,8 +6,8 @@ includes:
 
 variables:
   brew_name: keto
-  brew_description: "The Ory Authorization Server (Ory Keto)"
-  buildinfo_hash: "github.com/ory/keto/internal/driver/config.Commit"
-  buildinfo_tag: "github.com/ory/keto/internal/driver/config.Version"
-  buildinfo_date: "github.com/ory/keto/internal/driver/config.Date"
-  dockerfile: ".docker/Dockerfile-alpine"
+  brew_description: 'The Ory Authorization Server (Ory Keto)'
+  buildinfo_hash: 'github.com/ory/keto/internal/driver/config.Commit'
+  buildinfo_tag: 'github.com/ory/keto/internal/driver/config.Version'
+  buildinfo_date: 'github.com/ory/keto/internal/driver/config.Date'
+  dockerfile: '.docker/Dockerfile-alpine'

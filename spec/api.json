@@ -6,380 +6,6 @@
       }
     },
     "schemas": {
-      "CreateRelationTupleBadRequestBody": {
-        "description": "CreateRelationTupleBadRequestBody CreateRelationTupleBadRequestBody CreateRelationTupleBadRequestBody CreateRelationTupleBadRequestBody CreateRelationTupleBadRequestBody CreateRelationTupleBadRequestBody create relation tuple bad request body",
-        "properties": {
-          "code": {
-            "description": "code",
-            "format": "int64",
-            "type": "integer"
-          },
-          "details": {
-            "description": "details",
-            "items": {
-              "type": "object"
-            },
-            "type": "array"
-          },
-          "message": {
-            "description": "message",
-            "type": "string"
-          },
-          "reason": {
-            "description": "reason",
-            "type": "string"
-          },
-          "request": {
-            "description": "request",
-            "type": "string"
-          },
-          "status": {
-            "description": "status",
-            "type": "string"
-          }
-        },
-        "type": "object"
-      },
-      "CreateRelationTupleInternalServerErrorBody": {
-        "description": "CreateRelationTupleInternalServerErrorBody CreateRelationTupleInternalServerErrorBody CreateRelationTupleInternalServerErrorBody CreateRelationTupleInternalServerErrorBody CreateRelationTupleInternalServerErrorBody CreateRelationTupleInternalServerErrorBody create relation tuple internal server error body",
-        "properties": {
-          "code": {
-            "description": "code",
-            "format": "int64",
-            "type": "integer"
-          },
-          "details": {
-            "description": "details",
-            "items": {
-              "type": "object"
-            },
-            "type": "array"
-          },
-          "message": {
-            "description": "message",
-            "type": "string"
-          },
-          "reason": {
-            "description": "reason",
-            "type": "string"
-          },
-          "request": {
-            "description": "request",
-            "type": "string"
-          },
-          "status": {
-            "description": "status",
-            "type": "string"
-          }
-        },
-        "type": "object"
-      },
-      "DeleteRelationTuplesBadRequestBody": {
-        "description": "DeleteRelationTuplesBadRequestBody DeleteRelationTuplesBadRequestBody DeleteRelationTuplesBadRequestBody DeleteRelationTuplesBadRequestBody DeleteRelationTuplesBadRequestBody DeleteRelationTuplesBadRequestBody DeleteRelationTuplesBadRequestBody DeleteRelationTuplesBadRequestBody DeleteRelationTuplesBadRequestBody delete relation tuples bad request body",
-        "properties": {
-          "code": {
-            "description": "code",
-            "format": "int64",
-            "type": "integer"
-          },
-          "details": {
-            "description": "details",
-            "items": {
-              "type": "object"
-            },
-            "type": "array"
-          },
-          "message": {
-            "description": "message",
-            "type": "string"
-          },
-          "reason": {
-            "description": "reason",
-            "type": "string"
-          },
-          "request": {
-            "description": "request",
-            "type": "string"
-          },
-          "status": {
-            "description": "status",
-            "type": "string"
-          }
-        },
-        "type": "object"
-      },
-      "DeleteRelationTuplesInternalServerErrorBody": {
-        "description": "DeleteRelationTuplesInternalServerErrorBody DeleteRelationTuplesInternalServerErrorBody DeleteRelationTuplesInternalServerErrorBody DeleteRelationTuplesInternalServerErrorBody DeleteRelationTuplesInternalServerErrorBody DeleteRelationTuplesInternalServerErrorBody delete relation tuples internal server error body",
-        "properties": {
-          "code": {
-            "description": "code",
-            "format": "int64",
-            "type": "integer"
-          },
-          "details": {
-            "description": "details",
-            "items": {
-              "type": "object"
-            },
-            "type": "array"
-          },
-          "message": {
-            "description": "message",
-            "type": "string"
-          },
-          "reason": {
-            "description": "reason",
-            "type": "string"
-          },
-          "request": {
-            "description": "request",
-            "type": "string"
-          },
-          "status": {
-            "description": "status",
-            "type": "string"
-          }
-        },
-        "type": "object"
-      },
-      "GetCheckBadRequestBody": {
-        "description": "GetCheckBadRequestBody GetCheckBadRequestBody GetCheckBadRequestBody GetCheckBadRequestBody GetCheckBadRequestBody GetCheckBadRequestBody GetCheckBadRequestBody GetCheckBadRequestBody GetCheckBadRequestBody get check bad request body",
-        "properties": {
-          "code": {
-            "description": "code",
-            "format": "int64",
-            "type": "integer"
-          },
-          "details": {
-            "description": "details",
-            "items": {
-              "type": "object"
-            },
-            "type": "array"
-          },
-          "message": {
-            "description": "message",
-            "type": "string"
-          },
-          "reason": {
-            "description": "reason",
-            "type": "string"
-          },
-          "request": {
-            "description": "request",
-            "type": "string"
-          },
-          "status": {
-            "description": "status",
-            "type": "string"
-          }
-        },
-        "type": "object"
-      },
-      "GetCheckInternalServerErrorBody": {
-        "description": "GetCheckInternalServerErrorBody GetCheckInternalServerErrorBody GetCheckInternalServerErrorBody GetCheckInternalServerErrorBody GetCheckInternalServerErrorBody GetCheckInternalServerErrorBody GetCheckInternalServerErrorBody get check internal server error body",
-        "properties": {
-          "code": {
-            "description": "code",
-            "format": "int64",
-            "type": "integer"
-          },
-          "details": {
-            "description": "details",
-            "items": {
-              "type": "object"
-            },
-            "type": "array"
-          },
-          "message": {
-            "description": "message",
-            "type": "string"
-          },
-          "reason": {
-            "description": "reason",
-            "type": "string"
-          },
-          "request": {
-            "description": "request",
-            "type": "string"
-          },
-          "status": {
-            "description": "status",
-            "type": "string"
-          }
-        },
-        "type": "object"
-      },
-      "GetExpandBadRequestBody": {
-        "description": "GetExpandBadRequestBody GetExpandBadRequestBody GetExpandBadRequestBody GetExpandBadRequestBody GetExpandBadRequestBody GetExpandBadRequestBody GetExpandBadRequestBody GetExpandBadRequestBody get expand bad request body",
-        "properties": {
-          "code": {
-            "description": "code",
-            "format": "int64",
-            "type": "integer"
-          },
-          "details": {
-            "description": "details",
-            "items": {
-              "type": "object"
-            },
-            "type": "array"
-          },
-          "message": {
-            "description": "message",
-            "type": "string"
-          },
-          "reason": {
-            "description": "reason",
-            "type": "string"
-          },
-          "request": {
-            "description": "request",
-            "type": "string"
-          },
-          "status": {
-            "description": "status",
-            "type": "string"
-          }
-        },
-        "type": "object"
-      },
-      "GetExpandInternalServerErrorBody": {
-        "description": "GetExpandInternalServerErrorBody GetExpandInternalServerErrorBody GetExpandInternalServerErrorBody GetExpandInternalServerErrorBody GetExpandInternalServerErrorBody GetExpandInternalServerErrorBody get expand internal server error body",
-        "properties": {
-          "code": {
-            "description": "code",
-            "format": "int64",
-            "type": "integer"
-          },
-          "details": {
-            "description": "details",
-            "items": {
-              "type": "object"
-            },
-            "type": "array"
-          },
-          "message": {
-            "description": "message",
-            "type": "string"
-          },
-          "reason": {
-            "description": "reason",
-            "type": "string"
-          },
-          "request": {
-            "description": "request",
-            "type": "string"
-          },
-          "status": {
-            "description": "status",
-            "type": "string"
-          }
-        },
-        "type": "object"
-      },
-      "GetExpandNotFoundBody": {
-        "description": "GetExpandNotFoundBody GetExpandNotFoundBody GetExpandNotFoundBody GetExpandNotFoundBody GetExpandNotFoundBody GetExpandNotFoundBody GetExpandNotFoundBody GetExpandNotFoundBody get expand not found body",
-        "properties": {
-          "code": {
-            "description": "code",
-            "format": "int64",
-            "type": "integer"
-          },
-          "details": {
-            "description": "details",
-            "items": {
-              "type": "object"
-            },
-            "type": "array"
-          },
-          "message": {
-            "description": "message",
-            "type": "string"
-          },
-          "reason": {
-            "description": "reason",
-            "type": "string"
-          },
-          "request": {
-            "description": "request",
-            "type": "string"
-          },
-          "status": {
-            "description": "status",
-            "type": "string"
-          }
-        },
-        "type": "object"
-      },
-      "GetRelationTuplesInternalServerErrorBody": {
-        "description": "GetRelationTuplesInternalServerErrorBody GetRelationTuplesInternalServerErrorBody GetRelationTuplesInternalServerErrorBody GetRelationTuplesInternalServerErrorBody GetRelationTuplesInternalServerErrorBody GetRelationTuplesInternalServerErrorBody get relation tuples internal server error body",
-        "properties": {
-          "code": {
-            "description": "code",
-            "format": "int64",
-            "type": "integer"
-          },
-          "details": {
-            "description": "details",
-            "items": {
-              "type": "object"
-            },
-            "type": "array"
-          },
-          "message": {
-            "description": "message",
-            "type": "string"
-          },
-          "reason": {
-            "description": "reason",
-            "type": "string"
-          },
-          "request": {
-            "description": "request",
-            "type": "string"
-          },
-          "status": {
-            "description": "status",
-            "type": "string"
-          }
-        },
-        "type": "object"
-      },
-      "GetRelationTuplesNotFoundBody": {
-        "description": "GetRelationTuplesNotFoundBody GetRelationTuplesNotFoundBody GetRelationTuplesNotFoundBody GetRelationTuplesNotFoundBody GetRelationTuplesNotFoundBody GetRelationTuplesNotFoundBody get relation tuples not found body",
-        "properties": {
-          "code": {
-            "description": "code",
-            "format": "int64",
-            "type": "integer"
-          },
-          "details": {
-            "description": "details",
-            "items": {
-              "type": "object"
-            },
-            "type": "array"
-          },
-          "message": {
-            "description": "message",
-            "type": "string"
-          },
-          "reason": {
-            "description": "reason",
-            "type": "string"
-          },
-          "request": {
-            "description": "request",
-            "type": "string"
-          },
-          "status": {
-            "description": "status",
-            "type": "string"
-          }
-        },
-        "type": "object"
-      },
       "InternalRelationTuple": {
         "properties": {
           "namespace": {
@@ -402,55 +28,13 @@
             "$ref": "#/components/schemas/SubjectSet"
           }
         },
-        "required": [
-          "namespace",
-          "object",
-          "relation"
-        ],
-        "type": "object"
-      },
-      "IsInstanceAliveInternalServerErrorBody": {
-        "description": "IsInstanceAliveInternalServerErrorBody IsInstanceAliveInternalServerErrorBody IsInstanceAliveInternalServerErrorBody IsInstanceAliveInternalServerErrorBody IsInstanceAliveInternalServerErrorBody IsInstanceAliveInternalServerErrorBody IsInstanceAliveInternalServerErrorBody IsInstanceAliveInternalServerErrorBody is instance alive internal server error body",
-        "properties": {
-          "code": {
-            "description": "code",
-            "format": "int64",
-            "type": "integer"
-          },
-          "details": {
-            "description": "details",
-            "items": {
-              "type": "object"
-            },
-            "type": "array"
-          },
-          "message": {
-            "description": "message",
-            "type": "string"
-          },
-          "reason": {
-            "description": "reason",
-            "type": "string"
-          },
-          "request": {
-            "description": "request",
-            "type": "string"
-          },
-          "status": {
-            "description": "status",
-            "type": "string"
-          }
-        },
+        "required": ["namespace", "object", "relation"],
         "type": "object"
       },
       "PatchDelta": {
-        "description": "PatchDelta PatchDelta PatchDelta PatchDelta PatchDelta PatchDelta PatchDelta PatchDelta PatchDelta PatchDelta patch delta",
         "properties": {
           "action": {
-            "description": "action",
-            "enum": [
-              "[[[[[[[[[[insert delete]]]]]]]]]]"
-            ],
+            "enum": ["insert", "delete"],
             "type": "string"
           },
           "relation_tuple": {
@@ -459,178 +43,7 @@
         },
         "type": "object"
       },
-      "PatchRelationTuplesBadRequestBody": {
-        "description": "PatchRelationTuplesBadRequestBody PatchRelationTuplesBadRequestBody PatchRelationTuplesBadRequestBody PatchRelationTuplesBadRequestBody PatchRelationTuplesBadRequestBody PatchRelationTuplesBadRequestBody patch relation tuples bad request body",
-        "properties": {
-          "code": {
-            "description": "code",
-            "format": "int64",
-            "type": "integer"
-          },
-          "details": {
-            "description": "details",
-            "items": {
-              "type": "object"
-            },
-            "type": "array"
-          },
-          "message": {
-            "description": "message",
-            "type": "string"
-          },
-          "reason": {
-            "description": "reason",
-            "type": "string"
-          },
-          "request": {
-            "description": "request",
-            "type": "string"
-          },
-          "status": {
-            "description": "status",
-            "type": "string"
-          }
-        },
-        "type": "object"
-      },
-      "PatchRelationTuplesInternalServerErrorBody": {
-        "description": "PatchRelationTuplesInternalServerErrorBody PatchRelationTuplesInternalServerErrorBody PatchRelationTuplesInternalServerErrorBody PatchRelationTuplesInternalServerErrorBody PatchRelationTuplesInternalServerErrorBody PatchRelationTuplesInternalServerErrorBody patch relation tuples internal server error body",
-        "properties": {
-          "code": {
-            "description": "code",
-            "format": "int64",
-            "type": "integer"
-          },
-          "details": {
-            "description": "details",
-            "items": {
-              "type": "object"
-            },
-            "type": "array"
-          },
-          "message": {
-            "description": "message",
-            "type": "string"
-          },
-          "reason": {
-            "description": "reason",
-            "type": "string"
-          },
-          "request": {
-            "description": "request",
-            "type": "string"
-          },
-          "status": {
-            "description": "status",
-            "type": "string"
-          }
-        },
-        "type": "object"
-      },
-      "PatchRelationTuplesNotFoundBody": {
-        "description": "PatchRelationTuplesNotFoundBody PatchRelationTuplesNotFoundBody PatchRelationTuplesNotFoundBody PatchRelationTuplesNotFoundBody PatchRelationTuplesNotFoundBody PatchRelationTuplesNotFoundBody patch relation tuples not found body",
-        "properties": {
-          "code": {
-            "description": "code",
-            "format": "int64",
-            "type": "integer"
-          },
-          "details": {
-            "description": "details",
-            "items": {
-              "type": "object"
-            },
-            "type": "array"
-          },
-          "message": {
-            "description": "message",
-            "type": "string"
-          },
-          "reason": {
-            "description": "reason",
-            "type": "string"
-          },
-          "request": {
-            "description": "request",
-            "type": "string"
-          },
-          "status": {
-            "description": "status",
-            "type": "string"
-          }
-        },
-        "type": "object"
-      },
-      "PostCheckBadRequestBody": {
-        "description": "PostCheckBadRequestBody PostCheckBadRequestBody PostCheckBadRequestBody PostCheckBadRequestBody PostCheckBadRequestBody PostCheckBadRequestBody PostCheckBadRequestBody PostCheckBadRequestBody PostCheckBadRequestBody PostCheckBadRequestBody post check bad request body",
-        "properties": {
-          "code": {
-            "description": "code",
-            "format": "int64",
-            "type": "integer"
-          },
-          "details": {
-            "description": "details",
-            "items": {
-              "type": "object"
-            },
-            "type": "array"
-          },
-          "message": {
-            "description": "message",
-            "type": "string"
-          },
-          "reason": {
-            "description": "reason",
-            "type": "string"
-          },
-          "request": {
-            "description": "request",
-            "type": "string"
-          },
-          "status": {
-            "description": "status",
-            "type": "string"
-          }
-        },
-        "type": "object"
-      },
-      "PostCheckInternalServerErrorBody": {
-        "description": "PostCheckInternalServerErrorBody PostCheckInternalServerErrorBody PostCheckInternalServerErrorBody PostCheckInternalServerErrorBody PostCheckInternalServerErrorBody PostCheckInternalServerErrorBody post check internal server error body",
-        "properties": {
-          "code": {
-            "description": "code",
-            "format": "int64",
-            "type": "integer"
-          },
-          "details": {
-            "description": "details",
-            "items": {
-              "type": "object"
-            },
-            "type": "array"
-          },
-          "message": {
-            "description": "message",
-            "type": "string"
-          },
-          "reason": {
-            "description": "reason",
-            "type": "string"
-          },
-          "request": {
-            "description": "request",
-            "type": "string"
-          },
-          "status": {
-            "description": "status",
-            "type": "string"
-          }
-        },
-        "type": "object"
-      },
       "RelationQuery": {
-        "description": "RelationQuery RelationQuery RelationQuery RelationQuery RelationQuery RelationQuery RelationQuery RelationQuery RelationQuery RelationQuery relation query",
         "properties": {
           "namespace": {
             "description": "Namespace of the Relation Tuple",
@@ -669,11 +82,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "namespace",
-          "object",
-          "relation"
-        ],
+        "required": ["namespace", "object", "relation"],
         "type": "object"
       },
       "UUID": {
@@ -683,44 +92,33 @@
       "expandTree": {
         "properties": {
           "children": {
-            "description": "children",
             "items": {
               "$ref": "#/components/schemas/expandTree"
             },
             "type": "array"
           },
           "subject_id": {
-            "description": "subject id",
             "type": "string"
           },
           "subject_set": {
             "$ref": "#/components/schemas/SubjectSet"
           },
           "type": {
-            "enum": [
-              "union",
-              "exclusion",
-              "intersection",
-              "leaf"
-            ],
+            "enum": ["union", "exclusion", "intersection", "leaf"],
             "type": "string"
           }
         },
-        "required": [
-          "type"
-        ],
+        "required": ["type"],
         "type": "object"
       },
       "genericError": {
         "description": "The standard error format",
         "properties": {
           "code": {
-            "description": "code",
             "format": "int64",
             "type": "integer"
           },
           "details": {
-            "description": "details",
             "items": {
               "additionalProperties": true,
               "type": "object"
@@ -728,19 +126,15 @@
             "type": "array"
           },
           "message": {
-            "description": "message",
             "type": "string"
           },
           "reason": {
-            "description": "reason",
             "type": "string"
           },
           "request": {
-            "description": "request",
             "type": "string"
           },
           "status": {
-            "description": "status",
             "type": "string"
           }
         },
@@ -754,21 +148,17 @@
             "type": "boolean"
           }
         },
-        "required": [
-          "allowed"
-        ],
+        "required": ["allowed"],
         "title": "Represents the response for a check request.",
         "type": "object"
       },
       "getRelationTuplesResponse": {
-        "description": "GetRelationTuplesResponse GetRelationTuplesResponse get relation tuples response",
         "properties": {
           "next_page_token": {
             "description": "The opaque token to provide in a subsequent request\nto get the next page. It is the empty string iff this is\nthe last page.",
             "type": "string"
           },
           "relation_tuples": {
-            "description": "relation tuples",
             "items": {
               "$ref": "#/components/schemas/InternalRelationTuple"
             },
@@ -778,7 +168,6 @@
         "type": "object"
       },
       "healthNotReadyStatus": {
-        "description": "HealthNotReadyStatus health not ready status",
         "properties": {
           "errors": {
             "additionalProperties": {
@@ -800,11 +189,9 @@
         "type": "object"
       },
       "subject": {
-        "description": "Subject Subject subject",
         "type": "object"
       },
       "version": {
-        "description": "Version Version version",
         "properties": {
           "version": {
             "description": "Version is the service's version.",
@@ -819,11 +206,11 @@
     "contact": {
       "email": "hi@ory.sh"
     },
-    "description": "Documentation for all of Ory Oathkeeper's APIs.\n",
+    "description": "Documentation for all of Ory Keto's REST APIs. gRPC is documented separately.\n",
     "license": {
       "name": "Apache 2.0"
     },
-    "title": "Ory Oathkeeper API",
+    "title": "Ory Keto API",
     "version": ""
   },
   "openapi": "3.0.3",
@@ -941,9 +328,7 @@
           }
         },
         "summary": "Check a relation tuple",
-        "tags": [
-          "read"
-        ]
+        "tags": ["read"]
       },
       "post": {
         "description": "To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).",
@@ -1011,9 +396,7 @@
           }
         },
         "summary": "Check a relation tuple",
-        "tags": [
-          "read"
-        ]
+        "tags": ["read"]
       }
     },
     "/expand": {
@@ -1100,9 +483,7 @@
           }
         },
         "summary": "Expand a Relation Tuple",
-        "tags": [
-          "read"
-        ]
+        "tags": ["read"]
       }
     },
     "/health/alive": {
@@ -1120,9 +501,7 @@
                       "type": "string"
                     }
                   },
-                  "required": [
-                    "status"
-                  ],
+                  "required": ["status"],
                   "type": "object"
                 }
               }
@@ -1141,9 +520,7 @@
           }
         },
         "summary": "Check HTTP Server Status",
-        "tags": [
-          "metadata"
-        ]
+        "tags": ["metadata"]
       }
     },
     "/health/ready": {
@@ -1161,9 +538,7 @@
                       "type": "string"
                     }
                   },
-                  "required": [
-                    "status"
-                  ],
+                  "required": ["status"],
                   "type": "object"
                 }
               }
@@ -1183,9 +558,7 @@
                       "type": "object"
                     }
                   },
-                  "required": [
-                    "errors"
-                  ],
+                  "required": ["errors"],
                   "type": "object"
                 }
               }
@@ -1194,9 +567,7 @@
           }
         },
         "summary": "Check HTTP Server and Database Status",
-        "tags": [
-          "metadata"
-        ]
+        "tags": ["metadata"]
       }
     },
     "/relation-tuples": {
@@ -1287,9 +658,7 @@
           }
         },
         "summary": "Delete Relation Tuples",
-        "tags": [
-          "write"
-        ]
+        "tags": ["write"]
       },
       "get": {
         "description": "Get all relation tuples that match the query. Only the namespace field is required.",
@@ -1400,9 +769,7 @@
           }
         },
         "summary": "Query relation tuples",
-        "tags": [
-          "read"
-        ]
+        "tags": ["read"]
       },
       "patch": {
         "description": "Use this endpoint to patch one or more relation tuples.",
@@ -1456,9 +823,7 @@
           }
         },
         "summary": "Patch Multiple Relation Tuples",
-        "tags": [
-          "write"
-        ]
+        "tags": ["write"]
       },
       "put": {
         "description": "Use this endpoint to create a relation tuple.",
@@ -1506,9 +871,7 @@
           }
         },
         "summary": "Create a Relation Tuple",
-        "tags": [
-          "write"
-        ]
+        "tags": ["write"]
       }
     },
     "/version": {
@@ -1526,9 +889,7 @@
                       "type": "string"
                     }
                   },
-                  "required": [
-                    "version"
-                  ],
+                  "required": ["version"],
                   "type": "object"
                 }
               }
@@ -1537,9 +898,7 @@
           }
         },
         "summary": "Return Running Software Version.",
-        "tags": [
-          "metadata"
-        ]
+        "tags": ["metadata"]
       }
     }
   }

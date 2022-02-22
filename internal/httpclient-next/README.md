@@ -1,6 +1,6 @@
 # Go API client for client
 
-Documentation for all of Ory Oathkeeper's APIs.
+Documentation for all of Ory Keto's REST APIs. gRPC is documented separately.
 
 
 ## Overview
@@ -93,20 +93,9 @@ Class | Method | HTTP request | Description
 
 ## Documentation For Models
 
- - [CreateRelationTupleBadRequestBody](docs/CreateRelationTupleBadRequestBody.md)
- - [CreateRelationTupleInternalServerErrorBody](docs/CreateRelationTupleInternalServerErrorBody.md)
- - [DeleteRelationTuplesBadRequestBody](docs/DeleteRelationTuplesBadRequestBody.md)
- - [DeleteRelationTuplesInternalServerErrorBody](docs/DeleteRelationTuplesInternalServerErrorBody.md)
  - [ExpandTree](docs/ExpandTree.md)
  - [GenericError](docs/GenericError.md)
- - [GetCheckBadRequestBody](docs/GetCheckBadRequestBody.md)
- - [GetCheckInternalServerErrorBody](docs/GetCheckInternalServerErrorBody.md)
  - [GetCheckResponse](docs/GetCheckResponse.md)
- - [GetExpandBadRequestBody](docs/GetExpandBadRequestBody.md)
- - [GetExpandInternalServerErrorBody](docs/GetExpandInternalServerErrorBody.md)
- - [GetExpandNotFoundBody](docs/GetExpandNotFoundBody.md)
- - [GetRelationTuplesInternalServerErrorBody](docs/GetRelationTuplesInternalServerErrorBody.md)
- - [GetRelationTuplesNotFoundBody](docs/GetRelationTuplesNotFoundBody.md)
  - [GetRelationTuplesResponse](docs/GetRelationTuplesResponse.md)
  - [HealthNotReadyStatus](docs/HealthNotReadyStatus.md)
  - [HealthStatus](docs/HealthStatus.md)
@@ -114,13 +103,7 @@ Class | Method | HTTP request | Description
  - [InlineResponse2001](docs/InlineResponse2001.md)
  - [InlineResponse503](docs/InlineResponse503.md)
  - [InternalRelationTuple](docs/InternalRelationTuple.md)
- - [IsInstanceAliveInternalServerErrorBody](docs/IsInstanceAliveInternalServerErrorBody.md)
  - [PatchDelta](docs/PatchDelta.md)
- - [PatchRelationTuplesBadRequestBody](docs/PatchRelationTuplesBadRequestBody.md)
- - [PatchRelationTuplesInternalServerErrorBody](docs/PatchRelationTuplesInternalServerErrorBody.md)
- - [PatchRelationTuplesNotFoundBody](docs/PatchRelationTuplesNotFoundBody.md)
- - [PostCheckBadRequestBody](docs/PostCheckBadRequestBody.md)
- - [PostCheckInternalServerErrorBody](docs/PostCheckInternalServerErrorBody.md)
  - [RelationQuery](docs/RelationQuery.md)
  - [SubjectSet](docs/SubjectSet.md)
  - [Version](docs/Version.md)

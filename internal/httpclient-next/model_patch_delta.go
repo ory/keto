@@ -1,7 +1,7 @@
 /*
- * Ory Oathkeeper API
+ * Ory Keto API
  *
- * Documentation for all of Ory Oathkeeper's APIs.
+ * Documentation for all of Ory Keto's REST APIs. gRPC is documented separately.
  *
  * API version: 1.0.0
  * Contact: hi@ory.sh
@@ -15,9 +15,8 @@ import (
 	"encoding/json"
 )
 
-// PatchDelta PatchDelta PatchDelta PatchDelta PatchDelta PatchDelta PatchDelta PatchDelta PatchDelta PatchDelta PatchDelta patch delta
+// PatchDelta struct for PatchDelta
 type PatchDelta struct {
-	// action
 	Action        *string                `json:"action,omitempty"`
 	RelationTuple *InternalRelationTuple `json:"relation_tuple,omitempty"`
 }

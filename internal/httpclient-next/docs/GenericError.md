@@ -4,12 +4,12 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Code** | Pointer to **int64** | code | [optional] 
-**Details** | Pointer to **[]map[string]map[string]interface{}** | details | [optional] 
-**Message** | Pointer to **string** | message | [optional] 
-**Reason** | Pointer to **string** | reason | [optional] 
-**Request** | Pointer to **string** | request | [optional] 
-**Status** | Pointer to **string** | status | [optional] 
+**Code** | Pointer to **int64** |  | [optional] 
+**Details** | Pointer to **[]map[string]map[string]interface{}** |  | [optional] 
+**Message** | Pointer to **string** |  | [optional] 
+**Reason** | Pointer to **string** |  | [optional] 
+**Request** | Pointer to **string** |  | [optional] 
+**Status** | Pointer to **string** |  | [optional] 
 
 ## Methods
 

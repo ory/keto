@@ -1,7 +1,7 @@
 /*
- * Ory Oathkeeper API
+ * Ory Keto API
  *
- * Documentation for all of Ory Oathkeeper's APIs.
+ * Documentation for all of Ory Keto's REST APIs. gRPC is documented separately.
  *
  * API version: 1.0.0
  * Contact: hi@ory.sh
@@ -15,7 +15,7 @@ import (
 	"encoding/json"
 )
 
-// HealthNotReadyStatus HealthNotReadyStatus health not ready status
+// HealthNotReadyStatus struct for HealthNotReadyStatus
 type HealthNotReadyStatus struct {
 	// Errors contains a list of errors that caused the not ready status.
 	Errors *map[string]string `json:"errors,omitempty"`

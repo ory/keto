@@ -13,7 +13,7 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// RelationQuery RelationQuery RelationQuery RelationQuery RelationQuery RelationQuery RelationQuery RelationQuery RelationQuery RelationQuery RelationQuery relation query
+// RelationQuery relation query
 //
 // swagger:model RelationQuery
 type RelationQuery struct {

@@ -1,7 +1,7 @@
 /*
- * Ory Oathkeeper API
+ * Ory Keto API
  *
- * Documentation for all of Ory Oathkeeper's APIs.
+ * Documentation for all of Ory Keto's REST APIs. gRPC is documented separately.
  *
  * API version: 1.0.0
  * Contact: hi@ory.sh
@@ -17,12 +17,10 @@ import (
 
 // ExpandTree struct for ExpandTree
 type ExpandTree struct {
-	// children
-	Children []ExpandTree `json:"children,omitempty"`
-	// subject id
-	SubjectId  *string     `json:"subject_id,omitempty"`
-	SubjectSet *SubjectSet `json:"subject_set,omitempty"`
-	Type       string      `json:"type"`
+	Children   []ExpandTree `json:"children,omitempty"`
+	SubjectId  *string      `json:"subject_id,omitempty"`
+	SubjectSet *SubjectSet  `json:"subject_set,omitempty"`
+	Type       string       `json:"type"`
 }
 
 // NewExpandTree instantiates a new ExpandTree object

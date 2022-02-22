@@ -15,11 +15,7 @@
         "name": {
           "type": "string",
           "title": "The name of the namespace.",
-          "examples": [
-            "videos",
-            "groups",
-            "files"
-          ]
+          "examples": ["videos", "groups", "files"]
         },
         "id": {
           "type": "integer",
@@ -33,10 +29,7 @@
         }
       },
       "additionalProperties": false,
-      "required": [
-        "name",
-        "id"
-      ]
+      "required": ["name", "id"]
     },
     "tlsxSource": {
       "type": "object",
@@ -45,9 +38,7 @@
         "path": {
           "title": "Path to PEM-encoded Fle",
           "type": "string",
-          "examples": [
-            "path/to/file.pem"
-          ]
+          "examples": ["path/to/file.pem"]
         },
         "base64": {
           "title": "Base64 Encoded Inline",
@@ -102,9 +93,7 @@
             "type": "string",
             "minLength": 1
           },
-          "default": [
-            "*"
-          ],
+          "default": ["*"],
           "uniqueItems": true,
           "examples": [
             [
@@ -132,13 +121,7 @@
             ]
           },
           "uniqueItems": true,
-          "default": [
-            "GET",
-            "POST",
-            "PUT",
-            "PATCH",
-            "DELETE"
-          ]
+          "default": ["GET", "POST", "PUT", "PATCH", "DELETE"]
         },
         "allowed_headers": {
           "description": "A list of non simple headers the client is allowed to use with cross-domain requests.",
@@ -149,10 +132,7 @@
           },
           "minLength": 1,
           "uniqueItems": true,
-          "default": [
-            "Authorization",
-            "Content-Type"
-          ]
+          "default": ["Authorization", "Content-Type"]
         },
         "exposed_headers": {
           "description": "Indicates which headers are safe to expose to the API of a CORS API specification",
@@ -163,9 +143,7 @@
           },
           "minLength": 1,
           "uniqueItems": true,
-          "default": [
-            "Content-Type"
-          ]
+          "default": ["Content-Type"]
         },
         "allow_credentials": {
           "type": "boolean",
@@ -220,10 +198,7 @@
             "host": {
               "type": "string",
               "default": "",
-              "examples": [
-                "localhost",
-                "127.0.0.1"
-              ],
+              "examples": ["localhost", "127.0.0.1"],
               "title": "Host",
               "description": "The network interface to listen on."
             },
@@ -251,10 +226,7 @@
             "host": {
               "type": "string",
               "default": "",
-              "examples": [
-                "localhost",
-                "127.0.0.1"
-              ],
+              "examples": ["localhost", "127.0.0.1"],
               "title": "Host",
               "description": "The network interface to listen on."
             },
@@ -282,10 +254,7 @@
             "host": {
               "type": "string",
               "default": "",
-              "examples": [
-                "localhost",
-                "127.0.0.1"
-              ],
+              "examples": ["localhost", "127.0.0.1"],
               "title": "Host",
               "description": "The network interface to listen on."
             },
@@ -303,11 +272,7 @@
       "title": "Profiling",
       "description": "Enables CPU or memory profiling if set. For more details on profiling Go programs read [Profiling Go Programs](https://blog.golang.org/profiling-go-programs).",
       "type": "string",
-      "enum": [
-        "cpu",
-        "mem",
-        ""
-      ]
+      "enum": ["cpu", "mem", ""]
     },
     "log": {
       "$ref": "https://raw.githubusercontent.com/ory/x/v0.0.344/logrusx/config.schema.json"

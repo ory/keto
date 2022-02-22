@@ -55,10 +55,12 @@ docker:
 # Generates the SDKs
 .PHONY: sdk
 sdk: .bin/swagger .bin/ory node_modules
+		rm -rf internal/httpclient internal/httpclient-next
 		swagger generate spec -m -o spec/swagger.json \
 			-c github.com/ory/keto \
 			-c github.com/ory/x/healthx \
-			-x internal/httpclient
+			-x internal/httpclient \
+			-x internal/e2e
 		ory dev swagger sanitize ./spec/swagger.json
 		swagger validate ./spec/swagger.json
 		CIRCLE_PROJECT_USERNAME=ory CIRCLE_PROJECT_REPONAME=keto \
@@ -68,7 +70,6 @@ sdk: .bin/swagger .bin/ory node_modules
 					-p file://.schema/openapi/patches/meta.yaml \
 					spec/swagger.json spec/api.json
 
-		rm -rf internal/httpclient internal/httpclient-next
 		mkdir -p internal/httpclient internal/httpclient-next
 		swagger generate client -f ./spec/swagger.json -t internal/httpclient -A Ory_Keto
 

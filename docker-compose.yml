@@ -3,8 +3,8 @@ services:
   keto:
     image: oryd/keto:v0.8.0-alpha.1
     ports:
-      - "4466:4466"
-      - "4467:4467"
+      - '4466:4466'
+      - '4467:4467'
     command: serve
     environment:
       - LOG_LEVEL=debug

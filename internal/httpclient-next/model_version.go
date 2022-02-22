@@ -1,7 +1,7 @@
 /*
- * Ory Oathkeeper API
+ * Ory Keto API
  *
- * Documentation for all of Ory Oathkeeper's APIs.
+ * Documentation for all of Ory Keto's REST APIs. gRPC is documented separately.
  *
  * API version: 1.0.0
  * Contact: hi@ory.sh
@@ -15,7 +15,7 @@ import (
 	"encoding/json"
 )
 
-// Version Version Version version
+// Version struct for Version
 type Version struct {
 	// Version is the service's version.
 	Version *string `json:"version,omitempty"`

@@ -4,11 +4,7 @@
   "additionalProperties": false,
   "allOf": [
     {
-      "required": [
-        "namespace",
-        "relation",
-        "object"
-      ],
+      "required": ["namespace", "relation", "object"],
       "properties": {
         "$schema": {
           "type": "string",
@@ -32,9 +28,7 @@
     {
       "oneOf": [
         {
-          "required": [
-            "subject_id"
-          ],
+          "required": ["subject_id"],
           "properties": {
             "subject_id": {
               "type": "string",
@@ -43,9 +37,7 @@
           }
         },
         {
-          "required": [
-            "subject_set"
-          ],
+          "required": ["subject_set"],
           "properties": {
             "subject_set": {
               "type": "object",
@@ -65,11 +57,7 @@
                 }
               },
               "additionalProperties": false,
-              "required": [
-                "namespace",
-                "relation",
-                "object"
-              ]
+              "required": ["namespace", "relation", "object"]
             }
           }
         }

@@ -3,10 +3,10 @@ info:
   contact:
     email: hi@ory.sh
   description: |
-    Documentation for all of Ory Oathkeeper's APIs.
+    Documentation for all of Ory Keto's REST APIs. gRPC is documented separately.
   license:
     name: Apache 2.0
-  title: Ory Oathkeeper API
+  title: Ory Keto API
 servers:
 - url: /
 paths:
@@ -548,308 +548,6 @@ components:
       description: Empty responses are sent when, for example, resources are deleted.
         The HTTP status code for empty responses is typically 201.
   schemas:
-    CreateRelationTupleBadRequestBody:
-      description: CreateRelationTupleBadRequestBody CreateRelationTupleBadRequestBody
-        CreateRelationTupleBadRequestBody CreateRelationTupleBadRequestBody CreateRelationTupleBadRequestBody
-        CreateRelationTupleBadRequestBody create relation tuple bad request body
-      properties:
-        code:
-          description: code
-          format: int64
-          type: integer
-        details:
-          description: details
-          items:
-            type: object
-          type: array
-        message:
-          description: message
-          type: string
-        reason:
-          description: reason
-          type: string
-        request:
-          description: request
-          type: string
-        status:
-          description: status
-          type: string
-      type: object
-    CreateRelationTupleInternalServerErrorBody:
-      description: CreateRelationTupleInternalServerErrorBody CreateRelationTupleInternalServerErrorBody
-        CreateRelationTupleInternalServerErrorBody CreateRelationTupleInternalServerErrorBody
-        CreateRelationTupleInternalServerErrorBody CreateRelationTupleInternalServerErrorBody
-        create relation tuple internal server error body
-      properties:
-        code:
-          description: code
-          format: int64
-          type: integer
-        details:
-          description: details
-          items:
-            type: object
-          type: array
-        message:
-          description: message
-          type: string
-        reason:
-          description: reason
-          type: string
-        request:
-          description: request
-          type: string
-        status:
-          description: status
-          type: string
-      type: object
-    DeleteRelationTuplesBadRequestBody:
-      description: DeleteRelationTuplesBadRequestBody DeleteRelationTuplesBadRequestBody
-        DeleteRelationTuplesBadRequestBody DeleteRelationTuplesBadRequestBody DeleteRelationTuplesBadRequestBody
-        DeleteRelationTuplesBadRequestBody DeleteRelationTuplesBadRequestBody DeleteRelationTuplesBadRequestBody
-        DeleteRelationTuplesBadRequestBody delete relation tuples bad request body
-      properties:
-        code:
-          description: code
-          format: int64
-          type: integer
-        details:
-          description: details
-          items:
-            type: object
-          type: array
-        message:
-          description: message
-          type: string
-        reason:
-          description: reason
-          type: string
-        request:
-          description: request
-          type: string
-        status:
-          description: status
-          type: string
-      type: object
-    DeleteRelationTuplesInternalServerErrorBody:
-      description: DeleteRelationTuplesInternalServerErrorBody DeleteRelationTuplesInternalServerErrorBody
-        DeleteRelationTuplesInternalServerErrorBody DeleteRelationTuplesInternalServerErrorBody
-        DeleteRelationTuplesInternalServerErrorBody DeleteRelationTuplesInternalServerErrorBody
-        delete relation tuples internal server error body
-      properties:
-        code:
-          description: code
-          format: int64
-          type: integer
-        details:
-          description: details
-          items:
-            type: object
-          type: array
-        message:
-          description: message
-          type: string
-        reason:
-          description: reason
-          type: string
-        request:
-          description: request
-          type: string
-        status:
-          description: status
-          type: string
-      type: object
-    GetCheckBadRequestBody:
-      description: GetCheckBadRequestBody GetCheckBadRequestBody GetCheckBadRequestBody
-        GetCheckBadRequestBody GetCheckBadRequestBody GetCheckBadRequestBody GetCheckBadRequestBody
-        GetCheckBadRequestBody GetCheckBadRequestBody get check bad request body
-      properties:
-        code:
-          description: code
-          format: int64
-          type: integer
-        details:
-          description: details
-          items:
-            type: object
-          type: array
-        message:
-          description: message
-          type: string
-        reason:
-          description: reason
-          type: string
-        request:
-          description: request
-          type: string
-        status:
-          description: status
-          type: string
-      type: object
-    GetCheckInternalServerErrorBody:
-      description: GetCheckInternalServerErrorBody GetCheckInternalServerErrorBody
-        GetCheckInternalServerErrorBody GetCheckInternalServerErrorBody GetCheckInternalServerErrorBody
-        GetCheckInternalServerErrorBody GetCheckInternalServerErrorBody get check
-        internal server error body
-      properties:
-        code:
-          description: code
-          format: int64
-          type: integer
-        details:
-          description: details
-          items:
-            type: object
-          type: array
-        message:
-          description: message
-          type: string
-        reason:
-          description: reason
-          type: string
-        request:
-          description: request
-          type: string
-        status:
-          description: status
-          type: string
-      type: object
-    GetExpandBadRequestBody:
-      description: GetExpandBadRequestBody GetExpandBadRequestBody GetExpandBadRequestBody
-        GetExpandBadRequestBody GetExpandBadRequestBody GetExpandBadRequestBody GetExpandBadRequestBody
-        GetExpandBadRequestBody get expand bad request body
-      properties:
-        code:
-          description: code
-          format: int64
-          type: integer
-        details:
-          description: details
-          items:
-            type: object
-          type: array
-        message:
-          description: message
-          type: string
-        reason:
-          description: reason
-          type: string
-        request:
-          description: request
-          type: string
-        status:
-          description: status
-          type: string
-      type: object
-    GetExpandInternalServerErrorBody:
-      description: GetExpandInternalServerErrorBody GetExpandInternalServerErrorBody
-        GetExpandInternalServerErrorBody GetExpandInternalServerErrorBody GetExpandInternalServerErrorBody
-        GetExpandInternalServerErrorBody get expand internal server error body
-      properties:
-        code:
-          description: code
-          format: int64
-          type: integer
-        details:
-          description: details
-          items:
-            type: object
-          type: array
-        message:
-          description: message
-          type: string
-        reason:
-          description: reason
-          type: string
-        request:
-          description: request
-          type: string
-        status:
-          description: status
-          type: string
-      type: object
-    GetExpandNotFoundBody:
-      description: GetExpandNotFoundBody GetExpandNotFoundBody GetExpandNotFoundBody
-        GetExpandNotFoundBody GetExpandNotFoundBody GetExpandNotFoundBody GetExpandNotFoundBody
-        GetExpandNotFoundBody get expand not found body
-      properties:
-        code:
-          description: code
-          format: int64
-          type: integer
-        details:
-          description: details
-          items:
-            type: object
-          type: array
-        message:
-          description: message
-          type: string
-        reason:
-          description: reason
-          type: string
-        request:
-          description: request
-          type: string
-        status:
-          description: status
-          type: string
-      type: object
-    GetRelationTuplesInternalServerErrorBody:
-      description: GetRelationTuplesInternalServerErrorBody GetRelationTuplesInternalServerErrorBody
-        GetRelationTuplesInternalServerErrorBody GetRelationTuplesInternalServerErrorBody
-        GetRelationTuplesInternalServerErrorBody GetRelationTuplesInternalServerErrorBody
-        get relation tuples internal server error body
-      properties:
-        code:
-          description: code
-          format: int64
-          type: integer
-        details:
-          description: details
-          items:
-            type: object
-          type: array
-        message:
-          description: message
-          type: string
-        reason:
-          description: reason
-          type: string
-        request:
-          description: request
-          type: string
-        status:
-          description: status
-          type: string
-      type: object
-    GetRelationTuplesNotFoundBody:
-      description: GetRelationTuplesNotFoundBody GetRelationTuplesNotFoundBody GetRelationTuplesNotFoundBody
-        GetRelationTuplesNotFoundBody GetRelationTuplesNotFoundBody GetRelationTuplesNotFoundBody
-        get relation tuples not found body
-      properties:
-        code:
-          description: code
-          format: int64
-          type: integer
-        details:
-          description: details
-          items:
-            type: object
-          type: array
-        message:
-          description: message
-          type: string
-        reason:
-          description: reason
-          type: string
-        request:
-          description: request
-          type: string
-        status:
-          description: status
-          type: string
-      type: object
     InternalRelationTuple:
       example:
         subject_id: subject_id
@@ -883,38 +581,7 @@ components:
       - object
       - relation
       type: object
-    IsInstanceAliveInternalServerErrorBody:
-      description: IsInstanceAliveInternalServerErrorBody IsInstanceAliveInternalServerErrorBody
-        IsInstanceAliveInternalServerErrorBody IsInstanceAliveInternalServerErrorBody
-        IsInstanceAliveInternalServerErrorBody IsInstanceAliveInternalServerErrorBody
-        IsInstanceAliveInternalServerErrorBody IsInstanceAliveInternalServerErrorBody
-        is instance alive internal server error body
-      properties:
-        code:
-          description: code
-          format: int64
-          type: integer
-        details:
-          description: details
-          items:
-            type: object
-          type: array
-        message:
-          description: message
-          type: string
-        reason:
-          description: reason
-          type: string
-        request:
-          description: request
-          type: string
-        status:
-          description: status
-          type: string
-      type: object
     PatchDelta:
-      description: PatchDelta PatchDelta PatchDelta PatchDelta PatchDelta PatchDelta
-        PatchDelta PatchDelta PatchDelta PatchDelta patch delta
       example:
         relation_tuple:
           subject_id: subject_id
@@ -925,157 +592,17 @@ components:
             namespace: namespace
             object: object
             relation: relation
-        action: '[[[[[[[[[[insert delete]]]]]]]]]]'
+        action: insert
       properties:
         action:
-          description: action
           enum:
-          - '[[[[[[[[[[insert delete]]]]]]]]]]'
+          - insert
+          - delete
           type: string
         relation_tuple:
           $ref: '#/components/schemas/InternalRelationTuple'
       type: object
-    PatchRelationTuplesBadRequestBody:
-      description: PatchRelationTuplesBadRequestBody PatchRelationTuplesBadRequestBody
-        PatchRelationTuplesBadRequestBody PatchRelationTuplesBadRequestBody PatchRelationTuplesBadRequestBody
-        PatchRelationTuplesBadRequestBody patch relation tuples bad request body
-      properties:
-        code:
-          description: code
-          format: int64
-          type: integer
-        details:
-          description: details
-          items:
-            type: object
-          type: array
-        message:
-          description: message
-          type: string
-        reason:
-          description: reason
-          type: string
-        request:
-          description: request
-          type: string
-        status:
-          description: status
-          type: string
-      type: object
-    PatchRelationTuplesInternalServerErrorBody:
-      description: PatchRelationTuplesInternalServerErrorBody PatchRelationTuplesInternalServerErrorBody
-        PatchRelationTuplesInternalServerErrorBody PatchRelationTuplesInternalServerErrorBody
-        PatchRelationTuplesInternalServerErrorBody PatchRelationTuplesInternalServerErrorBody
-        patch relation tuples internal server error body
-      properties:
-        code:
-          description: code
-          format: int64
-          type: integer
-        details:
-          description: details
-          items:
-            type: object
-          type: array
-        message:
-          description: message
-          type: string
-        reason:
-          description: reason
-          type: string
-        request:
-          description: request
-          type: string
-        status:
-          description: status
-          type: string
-      type: object
-    PatchRelationTuplesNotFoundBody:
-      description: PatchRelationTuplesNotFoundBody PatchRelationTuplesNotFoundBody
-        PatchRelationTuplesNotFoundBody PatchRelationTuplesNotFoundBody PatchRelationTuplesNotFoundBody
-        PatchRelationTuplesNotFoundBody patch relation tuples not found body
-      properties:
-        code:
-          description: code
-          format: int64
-          type: integer
-        details:
-          description: details
-          items:
-            type: object
-          type: array
-        message:
-          description: message
-          type: string
-        reason:
-          description: reason
-          type: string
-        request:
-          description: request
-          type: string
-        status:
-          description: status
-          type: string
-      type: object
-    PostCheckBadRequestBody:
-      description: PostCheckBadRequestBody PostCheckBadRequestBody PostCheckBadRequestBody
-        PostCheckBadRequestBody PostCheckBadRequestBody PostCheckBadRequestBody PostCheckBadRequestBody
-        PostCheckBadRequestBody PostCheckBadRequestBody PostCheckBadRequestBody post
-        check bad request body
-      properties:
-        code:
-          description: code
-          format: int64
-          type: integer
-        details:
-          description: details
-          items:
-            type: object
-          type: array
-        message:
-          description: message
-          type: string
-        reason:
-          description: reason
-          type: string
-        request:
-          description: request
-          type: string
-        status:
-          description: status
-          type: string
-      type: object
-    PostCheckInternalServerErrorBody:
-      description: PostCheckInternalServerErrorBody PostCheckInternalServerErrorBody
-        PostCheckInternalServerErrorBody PostCheckInternalServerErrorBody PostCheckInternalServerErrorBody
-        PostCheckInternalServerErrorBody post check internal server error body
-      properties:
-        code:
-          description: code
-          format: int64
-          type: integer
-        details:
-          description: details
-          items:
-            type: object
-          type: array
-        message:
-          description: message
-          type: string
-        reason:
-          description: reason
-          type: string
-        request:
-          description: request
-          type: string
-        status:
-          description: status
-          type: string
-      type: object
     RelationQuery:
-      description: RelationQuery RelationQuery RelationQuery RelationQuery RelationQuery
-        RelationQuery RelationQuery RelationQuery RelationQuery RelationQuery relation
-        query
       example:
         subject_id: subject_id
         namespace: namespace
@@ -1140,12 +667,10 @@ components:
           relation: relation
       properties:
         children:
-          description: children
           items:
             $ref: '#/components/schemas/expandTree'
           type: array
         subject_id:
-          description: subject id
           type: string
         subject_set:
           $ref: '#/components/schemas/SubjectSet'
@@ -1163,26 +688,20 @@ components:
       description: The standard error format
       properties:
         code:
-          description: code
           format: int64
           type: integer
         details:
-          description: details
           items:
             additionalProperties: true
             type: object
           type: array
         message:
-          description: message
           type: string
         reason:
-          description: reason
           type: string
         request:
-          description: request
           type: string
         status:
-          description: status
           type: string
       type: object
     getCheckResponse:
@@ -1199,8 +718,6 @@ components:
       title: Represents the response for a check request.
       type: object
     getRelationTuplesResponse:
-      description: GetRelationTuplesResponse GetRelationTuplesResponse get relation
-        tuples response
       example:
         next_page_token: next_page_token
         relation_tuples:
@@ -1228,13 +745,11 @@ components:
             the last page.
           type: string
         relation_tuples:
-          description: relation tuples
           items:
             $ref: '#/components/schemas/InternalRelationTuple'
           type: array
       type: object
     healthNotReadyStatus:
-      description: HealthNotReadyStatus health not ready status
       properties:
         errors:
           additionalProperties:
@@ -1250,10 +765,8 @@ components:
           type: string
       type: object
     subject:
-      description: Subject Subject subject
       type: object
     version:
-      description: Version Version version
       properties:
         version:
           description: Version is the service's version.

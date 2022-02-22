@@ -109,7 +109,9 @@ jobs:
   changelog:
     name: Generate changelog
     runs-on: ubuntu-latest
-    if: ${{ startsWith(github.ref, 'refs/tags/v') || github.ref_name == 'master' }}
+    if:
+      ${{ startsWith(github.ref, 'refs/tags/v') || github.ref_name == 'master'
+      }}
     needs:
       - test
       - test-race
@@ -125,7 +127,9 @@ jobs:
   sdk-generate:
     name: Generate SDKs
     runs-on: ubuntu-latest
-    if: ${{ github.ref_type == 'tag' || github.ref_name != 'master' || github.event_name == 'pull_request' }}
+    if:
+      ${{ github.ref_type == 'tag' || github.ref_name != 'master' ||
+      github.event_name == 'pull_request' }}
     needs:
       - test
       - test-race

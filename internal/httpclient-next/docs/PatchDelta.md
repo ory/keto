@@ -4,7 +4,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Action** | Pointer to **string** | action | [optional] 
+**Action** | Pointer to **string** |  | [optional] 
 **RelationTuple** | Pointer to [**InternalRelationTuple**](InternalRelationTuple.md) |  | [optional] 
 
 ## Methods

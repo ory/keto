@@ -8,7 +8,7 @@
   },
   "prettier": "ory-prettier-styles",
   "config": {
-    "prettierTarget": "(contrib/**/*.{js,md,json,yml})|*.md"
+    "prettierTarget": "."
   },
   "devDependencies": {
     "doctoc": "^2.0.1",

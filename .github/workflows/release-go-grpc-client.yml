@@ -4,7 +4,8 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: The version to release. Should be a patch of the latest Keto release.
+        description:
+          The version to release. Should be a patch of the latest Keto release.
         required: true
   release:
     types:

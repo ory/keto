@@ -1,7 +1,7 @@
 /*
- * Ory Oathkeeper API
+ * Ory Keto API
  *
- * Documentation for all of Ory Oathkeeper's APIs.
+ * Documentation for all of Ory Keto's REST APIs. gRPC is documented separately.
  *
  * API version: 1.0.0
  * Contact: hi@ory.sh
@@ -15,11 +15,10 @@ import (
 	"encoding/json"
 )
 
-// GetRelationTuplesResponse GetRelationTuplesResponse GetRelationTuplesResponse get relation tuples response
+// GetRelationTuplesResponse struct for GetRelationTuplesResponse
 type GetRelationTuplesResponse struct {
 	// The opaque token to provide in a subsequent request to get the next page. It is the empty string iff this is the last page.
-	NextPageToken *string `json:"next_page_token,omitempty"`
-	// relation tuples
+	NextPageToken  *string                 `json:"next_page_token,omitempty"`
 	RelationTuples []InternalRelationTuple `json:"relation_tuples,omitempty"`
 }
 

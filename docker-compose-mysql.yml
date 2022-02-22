@@ -11,7 +11,7 @@ services:
     environment:
       - LOG_LEVEL=debug
       - DSN=mysql://root:secret@mysqld:3306/mysql&max_conns=20&max_idle_conns=4
-    command: ["migrate", "up", "-y"]
+    command: ['migrate', 'up', '-y']
     restart: on-failure
   keto:
     links:
@@ -30,6 +30,6 @@ services:
   mysqld:
     image: mysql:5.7
     ports:
-      - "3306:3306"
+      - '3306:3306'
     environment:
       - MYSQL_ROOT_PASSWORD=secret

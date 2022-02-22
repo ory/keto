@@ -5,7 +5,7 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **NextPageToken** | Pointer to **string** | The opaque token to provide in a subsequent request to get the next page. It is the empty string iff this is the last page. | [optional] 
-**RelationTuples** | Pointer to [**[]InternalRelationTuple**](InternalRelationTuple.md) | relation tuples | [optional] 
+**RelationTuples** | Pointer to [**[]InternalRelationTuple**](InternalRelationTuple.md) |  | [optional] 
 
 ## Methods
 
