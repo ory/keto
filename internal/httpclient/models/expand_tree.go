@@ -16,7 +16,7 @@ import (
 	"github.com/go-openapi/validate"
 )
 
-// ExpandTree ExpandTree expand tree
+// ExpandTree ExpandTree ExpandTree expand tree
 //
 // swagger:model expandTree
 type ExpandTree struct {
@@ -32,7 +32,7 @@ type ExpandTree struct {
 
 	// type
 	// Required: true
-	// Enum: [[union exclusion intersection leaf]]
+	// Enum: [[[union exclusion intersection leaf]]]
 	Type *string `json:"type"`
 }
 
@@ -103,7 +103,7 @@ var expandTreeTypeTypePropEnum []interface{}
 
 func init() {
 	var res []string
-	if err := json.Unmarshal([]byte(`["[union exclusion intersection leaf]"]`), &res); err != nil {
+	if err := json.Unmarshal([]byte(`["[[union exclusion intersection leaf]]"]`), &res); err != nil {
 		panic(err)
 	}
 	for _, v := range res {
@@ -113,8 +113,8 @@ func init() {
 
 const (
 
-	// ExpandTreeTypeUnionExclusionIntersectionLeaf captures enum value "[union exclusion intersection leaf]"
-	ExpandTreeTypeUnionExclusionIntersectionLeaf string = "[union exclusion intersection leaf]"
+	// ExpandTreeTypeUnionExclusionIntersectionLeaf captures enum value "[[union exclusion intersection leaf]]"
+	ExpandTreeTypeUnionExclusionIntersectionLeaf string = "[[union exclusion intersection leaf]]"
 )
 
 // prop value enum

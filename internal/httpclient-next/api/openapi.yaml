@@ -550,8 +550,8 @@ components:
   schemas:
     CreateRelationTupleBadRequestBody:
       description: CreateRelationTupleBadRequestBody CreateRelationTupleBadRequestBody
-        CreateRelationTupleBadRequestBody CreateRelationTupleBadRequestBody create
-        relation tuple bad request body
+        CreateRelationTupleBadRequestBody CreateRelationTupleBadRequestBody CreateRelationTupleBadRequestBody
+        create relation tuple bad request body
       properties:
         code:
           description: code
@@ -578,7 +578,8 @@ components:
     CreateRelationTupleInternalServerErrorBody:
       description: CreateRelationTupleInternalServerErrorBody CreateRelationTupleInternalServerErrorBody
         CreateRelationTupleInternalServerErrorBody CreateRelationTupleInternalServerErrorBody
-        create relation tuple internal server error body
+        CreateRelationTupleInternalServerErrorBody create relation tuple internal
+        server error body
       properties:
         code:
           description: code
@@ -605,8 +606,8 @@ components:
     DeleteRelationTuplesBadRequestBody:
       description: DeleteRelationTuplesBadRequestBody DeleteRelationTuplesBadRequestBody
         DeleteRelationTuplesBadRequestBody DeleteRelationTuplesBadRequestBody DeleteRelationTuplesBadRequestBody
-        DeleteRelationTuplesBadRequestBody DeleteRelationTuplesBadRequestBody delete
-        relation tuples bad request body
+        DeleteRelationTuplesBadRequestBody DeleteRelationTuplesBadRequestBody DeleteRelationTuplesBadRequestBody
+        delete relation tuples bad request body
       properties:
         code:
           description: code
@@ -633,7 +634,8 @@ components:
     DeleteRelationTuplesInternalServerErrorBody:
       description: DeleteRelationTuplesInternalServerErrorBody DeleteRelationTuplesInternalServerErrorBody
         DeleteRelationTuplesInternalServerErrorBody DeleteRelationTuplesInternalServerErrorBody
-        delete relation tuples internal server error body
+        DeleteRelationTuplesInternalServerErrorBody delete relation tuples internal
+        server error body
       properties:
         code:
           description: code
@@ -660,7 +662,7 @@ components:
     GetCheckBadRequestBody:
       description: GetCheckBadRequestBody GetCheckBadRequestBody GetCheckBadRequestBody
         GetCheckBadRequestBody GetCheckBadRequestBody GetCheckBadRequestBody GetCheckBadRequestBody
-        get check bad request body
+        GetCheckBadRequestBody get check bad request body
       properties:
         code:
           description: code
@@ -687,7 +689,7 @@ components:
     GetCheckInternalServerErrorBody:
       description: GetCheckInternalServerErrorBody GetCheckInternalServerErrorBody
         GetCheckInternalServerErrorBody GetCheckInternalServerErrorBody GetCheckInternalServerErrorBody
-        get check internal server error body
+        GetCheckInternalServerErrorBody get check internal server error body
       properties:
         code:
           description: code
@@ -713,8 +715,8 @@ components:
       type: object
     GetExpandBadRequestBody:
       description: GetExpandBadRequestBody GetExpandBadRequestBody GetExpandBadRequestBody
-        GetExpandBadRequestBody GetExpandBadRequestBody GetExpandBadRequestBody get
-        expand bad request body
+        GetExpandBadRequestBody GetExpandBadRequestBody GetExpandBadRequestBody GetExpandBadRequestBody
+        get expand bad request body
       properties:
         code:
           description: code
@@ -740,8 +742,8 @@ components:
       type: object
     GetExpandInternalServerErrorBody:
       description: GetExpandInternalServerErrorBody GetExpandInternalServerErrorBody
-        GetExpandInternalServerErrorBody GetExpandInternalServerErrorBody get expand
-        internal server error body
+        GetExpandInternalServerErrorBody GetExpandInternalServerErrorBody GetExpandInternalServerErrorBody
+        get expand internal server error body
       properties:
         code:
           description: code
@@ -767,8 +769,8 @@ components:
       type: object
     GetExpandNotFoundBody:
       description: GetExpandNotFoundBody GetExpandNotFoundBody GetExpandNotFoundBody
-        GetExpandNotFoundBody GetExpandNotFoundBody GetExpandNotFoundBody get expand
-        not found body
+        GetExpandNotFoundBody GetExpandNotFoundBody GetExpandNotFoundBody GetExpandNotFoundBody
+        get expand not found body
       properties:
         code:
           description: code
@@ -795,7 +797,8 @@ components:
     GetRelationTuplesInternalServerErrorBody:
       description: GetRelationTuplesInternalServerErrorBody GetRelationTuplesInternalServerErrorBody
         GetRelationTuplesInternalServerErrorBody GetRelationTuplesInternalServerErrorBody
-        get relation tuples internal server error body
+        GetRelationTuplesInternalServerErrorBody get relation tuples internal server
+        error body
       properties:
         code:
           description: code
@@ -821,7 +824,8 @@ components:
       type: object
     GetRelationTuplesNotFoundBody:
       description: GetRelationTuplesNotFoundBody GetRelationTuplesNotFoundBody GetRelationTuplesNotFoundBody
-        GetRelationTuplesNotFoundBody get relation tuples not found body
+        GetRelationTuplesNotFoundBody GetRelationTuplesNotFoundBody get relation tuples
+        not found body
       properties:
         code:
           description: code
@@ -882,7 +886,8 @@ components:
       description: IsInstanceAliveInternalServerErrorBody IsInstanceAliveInternalServerErrorBody
         IsInstanceAliveInternalServerErrorBody IsInstanceAliveInternalServerErrorBody
         IsInstanceAliveInternalServerErrorBody IsInstanceAliveInternalServerErrorBody
-        is instance alive internal server error body
+        IsInstanceAliveInternalServerErrorBody is instance alive internal server error
+        body
       properties:
         code:
           description: code
@@ -908,7 +913,7 @@ components:
       type: object
     PatchDelta:
       description: PatchDelta PatchDelta PatchDelta PatchDelta PatchDelta PatchDelta
-        PatchDelta PatchDelta patch delta
+        PatchDelta PatchDelta PatchDelta patch delta
       example:
         relation_tuple:
           subject_id: subject_id
@@ -919,20 +924,20 @@ components:
             namespace: namespace
             object: object
             relation: relation
-        action: '[[[[[[[[insert delete]]]]]]]]'
+        action: '[[[[[[[[[insert delete]]]]]]]]]'
       properties:
         action:
           description: action
           enum:
-          - '[[[[[[[[insert delete]]]]]]]]'
+          - '[[[[[[[[[insert delete]]]]]]]]]'
           type: string
         relation_tuple:
           $ref: '#/components/schemas/InternalRelationTuple'
       type: object
     PatchRelationTuplesBadRequestBody:
       description: PatchRelationTuplesBadRequestBody PatchRelationTuplesBadRequestBody
-        PatchRelationTuplesBadRequestBody PatchRelationTuplesBadRequestBody patch
-        relation tuples bad request body
+        PatchRelationTuplesBadRequestBody PatchRelationTuplesBadRequestBody PatchRelationTuplesBadRequestBody
+        patch relation tuples bad request body
       properties:
         code:
           description: code
@@ -959,7 +964,8 @@ components:
     PatchRelationTuplesInternalServerErrorBody:
       description: PatchRelationTuplesInternalServerErrorBody PatchRelationTuplesInternalServerErrorBody
         PatchRelationTuplesInternalServerErrorBody PatchRelationTuplesInternalServerErrorBody
-        patch relation tuples internal server error body
+        PatchRelationTuplesInternalServerErrorBody patch relation tuples internal
+        server error body
       properties:
         code:
           description: code
@@ -985,8 +991,8 @@ components:
       type: object
     PatchRelationTuplesNotFoundBody:
       description: PatchRelationTuplesNotFoundBody PatchRelationTuplesNotFoundBody
-        PatchRelationTuplesNotFoundBody PatchRelationTuplesNotFoundBody patch relation
-        tuples not found body
+        PatchRelationTuplesNotFoundBody PatchRelationTuplesNotFoundBody PatchRelationTuplesNotFoundBody
+        patch relation tuples not found body
       properties:
         code:
           description: code
@@ -1013,7 +1019,7 @@ components:
     PostCheckBadRequestBody:
       description: PostCheckBadRequestBody PostCheckBadRequestBody PostCheckBadRequestBody
         PostCheckBadRequestBody PostCheckBadRequestBody PostCheckBadRequestBody PostCheckBadRequestBody
-        PostCheckBadRequestBody post check bad request body
+        PostCheckBadRequestBody PostCheckBadRequestBody post check bad request body
       properties:
         code:
           description: code
@@ -1039,8 +1045,8 @@ components:
       type: object
     PostCheckInternalServerErrorBody:
       description: PostCheckInternalServerErrorBody PostCheckInternalServerErrorBody
-        PostCheckInternalServerErrorBody PostCheckInternalServerErrorBody post check
-        internal server error body
+        PostCheckInternalServerErrorBody PostCheckInternalServerErrorBody PostCheckInternalServerErrorBody
+        post check internal server error body
       properties:
         code:
           description: code
@@ -1066,7 +1072,7 @@ components:
       type: object
     RelationQuery:
       description: RelationQuery RelationQuery RelationQuery RelationQuery RelationQuery
-        RelationQuery RelationQuery RelationQuery relation query
+        RelationQuery RelationQuery RelationQuery RelationQuery relation query
       example:
         subject_id: subject_id
         namespace: namespace
@@ -1119,13 +1125,13 @@ components:
       format: uuid4
       type: string
     expandTree:
-      description: ExpandTree expand tree
+      description: ExpandTree ExpandTree expand tree
       example:
         subject_id: subject_id
         children:
         - null
         - null
-        type: '[union exclusion intersection leaf]'
+        type: '[[union exclusion intersection leaf]]'
         subject_set:
           namespace: namespace
           object: object
@@ -1144,7 +1150,7 @@ components:
         type:
           description: type
           enum:
-          - '[union exclusion intersection leaf]'
+          - '[[union exclusion intersection leaf]]'
           type: string
       required:
       - type
@@ -1189,6 +1195,7 @@ components:
       title: Represents the response for a check request.
       type: object
     getRelationTuplesResponse:
+      description: GetRelationTuplesResponse get relation tuples response
       example:
         next_page_token: next_page_token
         relation_tuples:
@@ -1231,15 +1238,16 @@ components:
           type: object
       type: object
     healthStatus:
-      description: HealthStatus health status
       properties:
         status:
           description: Status always contains "ok".
           type: string
       type: object
     subject:
+      description: Subject subject
       type: object
     version:
+      description: Version version
       properties:
         version:
           description: Version is the service's version.

@@ -12,7 +12,7 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// PatchRelationTuplesNotFoundBody PatchRelationTuplesNotFoundBody PatchRelationTuplesNotFoundBody PatchRelationTuplesNotFoundBody PatchRelationTuplesNotFoundBody patch relation tuples not found body
+// PatchRelationTuplesNotFoundBody PatchRelationTuplesNotFoundBody PatchRelationTuplesNotFoundBody PatchRelationTuplesNotFoundBody PatchRelationTuplesNotFoundBody PatchRelationTuplesNotFoundBody patch relation tuples not found body
 //
 // swagger:model PatchRelationTuplesNotFoundBody
 type PatchRelationTuplesNotFoundBody struct {

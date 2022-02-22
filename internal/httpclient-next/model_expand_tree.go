@@ -15,7 +15,7 @@ import (
 	"encoding/json"
 )
 
-// ExpandTree ExpandTree expand tree
+// ExpandTree ExpandTree ExpandTree expand tree
 type ExpandTree struct {
 	// children
 	Children []ExpandTree `json:"children,omitempty"`

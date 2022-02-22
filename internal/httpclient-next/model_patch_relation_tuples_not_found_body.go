@@ -15,7 +15,7 @@ import (
 	"encoding/json"
 )
 
-// PatchRelationTuplesNotFoundBody PatchRelationTuplesNotFoundBody PatchRelationTuplesNotFoundBody PatchRelationTuplesNotFoundBody PatchRelationTuplesNotFoundBody patch relation tuples not found body
+// PatchRelationTuplesNotFoundBody PatchRelationTuplesNotFoundBody PatchRelationTuplesNotFoundBody PatchRelationTuplesNotFoundBody PatchRelationTuplesNotFoundBody PatchRelationTuplesNotFoundBody patch relation tuples not found body
 type PatchRelationTuplesNotFoundBody struct {
 	// code
 	Code *int64 `json:"code,omitempty"`

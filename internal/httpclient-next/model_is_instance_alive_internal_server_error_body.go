@@ -15,7 +15,7 @@ import (
 	"encoding/json"
 )
 
-// IsInstanceAliveInternalServerErrorBody IsInstanceAliveInternalServerErrorBody IsInstanceAliveInternalServerErrorBody IsInstanceAliveInternalServerErrorBody IsInstanceAliveInternalServerErrorBody IsInstanceAliveInternalServerErrorBody IsInstanceAliveInternalServerErrorBody is instance alive internal server error body
+// IsInstanceAliveInternalServerErrorBody IsInstanceAliveInternalServerErrorBody IsInstanceAliveInternalServerErrorBody IsInstanceAliveInternalServerErrorBody IsInstanceAliveInternalServerErrorBody IsInstanceAliveInternalServerErrorBody IsInstanceAliveInternalServerErrorBody IsInstanceAliveInternalServerErrorBody is instance alive internal server error body
 type IsInstanceAliveInternalServerErrorBody struct {
 	// code
 	Code *int64 `json:"code,omitempty"`

@@ -15,7 +15,7 @@ import (
 	"encoding/json"
 )
 
-// PatchRelationTuplesInternalServerErrorBody PatchRelationTuplesInternalServerErrorBody PatchRelationTuplesInternalServerErrorBody PatchRelationTuplesInternalServerErrorBody PatchRelationTuplesInternalServerErrorBody patch relation tuples internal server error body
+// PatchRelationTuplesInternalServerErrorBody PatchRelationTuplesInternalServerErrorBody PatchRelationTuplesInternalServerErrorBody PatchRelationTuplesInternalServerErrorBody PatchRelationTuplesInternalServerErrorBody PatchRelationTuplesInternalServerErrorBody patch relation tuples internal server error body
 type PatchRelationTuplesInternalServerErrorBody struct {
 	// code
 	Code *int64 `json:"code,omitempty"`

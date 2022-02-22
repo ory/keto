@@ -15,7 +15,7 @@ import (
 	"encoding/json"
 )
 
-// GetRelationTuplesNotFoundBody GetRelationTuplesNotFoundBody GetRelationTuplesNotFoundBody GetRelationTuplesNotFoundBody GetRelationTuplesNotFoundBody get relation tuples not found body
+// GetRelationTuplesNotFoundBody GetRelationTuplesNotFoundBody GetRelationTuplesNotFoundBody GetRelationTuplesNotFoundBody GetRelationTuplesNotFoundBody GetRelationTuplesNotFoundBody get relation tuples not found body
 type GetRelationTuplesNotFoundBody struct {
 	// code
 	Code *int64 `json:"code,omitempty"`

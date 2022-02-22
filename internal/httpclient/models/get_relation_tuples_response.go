@@ -14,7 +14,7 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// GetRelationTuplesResponse get relation tuples response
+// GetRelationTuplesResponse GetRelationTuplesResponse get relation tuples response
 //
 // swagger:model getRelationTuplesResponse
 type GetRelationTuplesResponse struct {
