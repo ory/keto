@@ -6,6 +6,7 @@
 **Table of Contents**
 
 - [0.0.0 (2022-02-22)](#000-2022-02-22)
+  - [Documentation](#documentation)
 - [0.8.0-alpha.1 (2022-02-22)](#080-alpha1-2022-02-22)
   - [Bug Fixes](#bug-fixes)
   - [Code Generation](#code-generation)
@@ -14,18 +15,18 @@
   - [Bug Fixes](#bug-fixes-1)
   - [Code Generation](#code-generation-1)
   - [Code Refactoring](#code-refactoring)
-  - [Documentation](#documentation)
+  - [Documentation](#documentation-1)
   - [Features](#features)
 - [0.7.0-alpha.1 (2021-10-19)](#070-alpha1-2021-10-19)
   - [Code Generation](#code-generation-2)
-  - [Documentation](#documentation-1)
+  - [Documentation](#documentation-2)
 - [0.7.0-alpha.0 (2021-10-06)](#070-alpha0-2021-10-06)
   - [Breaking Changes](#breaking-changes)
     - [Bug Fixes](#bug-fixes-2)
     - [Chores](#chores)
     - [Code Generation](#code-generation-3)
     - [Code Refactoring](#code-refactoring-1)
-    - [Documentation](#documentation-2)
+    - [Documentation](#documentation-3)
     - [Features](#features-1)
     - [Tests](#tests-1)
 - [0.6.0-alpha.3 (2021-04-29)](#060-alpha3-2021-04-29)
@@ -33,14 +34,14 @@
 - [0.6.0-alpha.2 (2021-04-29)](#060-alpha2-2021-04-29)
   - [Bug Fixes](#bug-fixes-3)
   - [Code Generation](#code-generation-5)
-  - [Documentation](#documentation-3)
+  - [Documentation](#documentation-4)
   - [Features](#features-2)
 - [0.6.0-alpha.1 (2021-04-07)](#060-alpha1-2021-04-07)
   - [Bug Fixes](#bug-fixes-4)
   - [Build System](#build-system)
   - [Code Generation](#code-generation-6)
   - [Code Refactoring](#code-refactoring-2)
-  - [Documentation](#documentation-4)
+  - [Documentation](#documentation-5)
   - [Features](#features-3)
   - [Tests](#tests-2)
 - [0.5.6-alpha.1 (2020-05-28)](#056-alpha1-2020-05-28)
@@ -49,26 +50,26 @@
 - [0.5.5-alpha.1 (2020-05-28)](#055-alpha1-2020-05-28)
   - [Bug Fixes](#bug-fixes-6)
   - [Chores](#chores-2)
-  - [Documentation](#documentation-5)
+  - [Documentation](#documentation-6)
 - [0.5.4-alpha.1 (2020-04-07)](#054-alpha1-2020-04-07)
   - [Bug Fixes](#bug-fixes-7)
 - [0.5.3-alpha.3 (2020-04-06)](#053-alpha3-2020-04-06)
   - [Code Generation](#code-generation-7)
   - [Code Refactoring](#code-refactoring-3)
-  - [Documentation](#documentation-6)
+  - [Documentation](#documentation-7)
 - [0.5.3-alpha.1 (2020-04-03)](#053-alpha1-2020-04-03)
   - [Chores](#chores-3)
 - [0.5.2 (2020-04-02)](#052-2020-04-02)
-  - [Documentation](#documentation-7)
+  - [Documentation](#documentation-8)
 - [0.5.0 (2020-04-02)](#050-2020-04-02)
   - [Bug Fixes](#bug-fixes-8)
-  - [Documentation](#documentation-8)
+  - [Documentation](#documentation-9)
 - [0.4.5-alpha.1 (2020-02-29)](#045-alpha1-2020-02-29)
   - [Bug Fixes](#bug-fixes-9)
-  - [Documentation](#documentation-9)
+  - [Documentation](#documentation-10)
 - [0.4.4-alpha.1 (2020-02-14)](#044-alpha1-2020-02-14)
   - [Bug Fixes](#bug-fixes-10)
-  - [Documentation](#documentation-10)
+  - [Documentation](#documentation-11)
   - [Features](#features-4)
   - [Unclassified](#unclassified)
 - [0.4.3-alpha.2 (2020-01-31)](#043-alpha2-2020-01-31)
@@ -88,39 +89,59 @@
 - [0.3.6-sandbox (2019-10-16)](#036-sandbox-2019-10-16)
   - [Unclassified](#unclassified-8)
 - [0.3.5-sandbox (2019-08-21)](#035-sandbox-2019-08-21)
-  - [Documentation](#documentation-11)
+  - [Documentation](#documentation-12)
   - [Unclassified](#unclassified-9)
 - [0.3.3-sandbox (2019-05-18)](#033-sandbox-2019-05-18)
   - [Continuous Integration](#continuous-integration)
-  - [Documentation](#documentation-12)
+  - [Documentation](#documentation-13)
 - [0.3.1-sandbox (2019-04-29)](#031-sandbox-2019-04-29)
   - [Continuous Integration](#continuous-integration-1)
-  - [Documentation](#documentation-13)
+  - [Documentation](#documentation-14)
   - [Unclassified](#unclassified-10)
 - [0.3.0-sandbox (2019-04-29)](#030-sandbox-2019-04-29)
-  - [Documentation](#documentation-14)
+  - [Documentation](#documentation-15)
   - [Unclassified](#unclassified-11)
 - [0.2.3-sandbox+oryOS.10 (2019-02-05)](#023-sandboxoryos10-2019-02-05)
-  - [Documentation](#documentation-15)
+  - [Documentation](#documentation-16)
   - [Unclassified](#unclassified-12)
 - [0.2.2-sandbox+oryOS.10 (2018-12-13)](#022-sandboxoryos10-2018-12-13)
   - [Continuous Integration](#continuous-integration-2)
 - [0.2.1-sandbox+oryOS.10 (2018-12-13)](#021-sandboxoryos10-2018-12-13)
   - [Continuous Integration](#continuous-integration-3)
 - [0.2.0-sandbox+oryOS.10 (2018-12-13)](#020-sandboxoryos10-2018-12-13)
-  - [Documentation](#documentation-16)
+  - [Documentation](#documentation-17)
   - [Unclassified](#unclassified-13)
 - [0.0.1 (2018-05-20)](#001-2018-05-20)
-  - [Documentation](#documentation-17)
+  - [Documentation](#documentation-18)
   - [Unclassified](#unclassified-14)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 # [0.0.0](https://github.com/ory/keto/compare/v0.8.0-alpha.1...v0.0.0) (2022-02-22)
 
+### Documentation
+
+- Change oathkeeper to keto in openapi meta
+  ([9cb0b98](https://github.com/ory/keto/commit/9cb0b98bf33204f1be09ef4f87d149f86f639dc8))
+
 # [0.8.0-alpha.1](https://github.com/ory/keto/compare/v0.8.0-alpha.0...v0.8.0-alpha.1) (2022-02-22)
 
-autogen: pin v0.8.0-alpha.1 release commit
+This is merly a cleanup release to fix automation issues. -----BEGIN PGP
+SIGNATURE-----
+
+iQIzBAABCAAdFiEEOUSiKQaNvqKU3zBeFuPFWKhz730FAmIU40UACgkQFuPFWKhz
+731AxA//erLcYZN5wkTg9+N4AeXzyQ0UxkbwPwDGR1s443yaANjn21CQ8ivM4YwI
+o83uk33D8C027xPtEnfSTKsKcgpT4z6bBZTHpL4TwJgFsun2ItafCEEHtuMmadgx
+BsDVYZilxjQsXr1E9koM8t3kHMfXiUWGzToA6DV8s5UN2gMMftFi0171KNnkexWn
+CkqDQLvkyX86J6S1yUCBpOoDEh2RuR0VYf+6BMxCOp+6UdSEat07Kmc+TKniBbdL
+PU8EzD6smjR/nB3TEYQPBmjufLzKg4yVqY2wXDkaVhIRZvijTdWfBQ06ei/ReXZe
+58W6BBYilLHf0Me6Zk8YZu4V89mW0W7feMEDvvbeqtYijpqel7IRKWEHaG+bK9XK
+vmw0Z04+EP8rFqmi3RN1ShUKTaT17T1HuEC/OmCoXOxiYcaq55RHkgXLj+R56V2M
+pH2aVhhyyOMAVDOZsh86YtDYh9uxRxJWhpt7WOCHzlWA2FvEo/EATC9kqzS3gDLE
+L8vt/XivazArLN/b50QABaGDxe8eGvRfrgeDbksNvS93KeOhqvB3/FsWSGSsdx7c
+m0eVNX07i9Ag+0g4814ECRXRhtC8BeC4OGm5zUnYKOS8b4l2FfB+ggwkxXpp8gsX
+5kcS/++sxgk6xg+G8RXN1wiqYnCbss6Knf09nUsmDzg4XOba3r0= =h0W2 -----END PGP
+SIGNATURE-----
 
 ### Bug Fixes
 
