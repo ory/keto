@@ -120,7 +120,7 @@
 
 # [0.8.0-alpha.1](https://github.com/ory/keto/compare/v0.8.0-alpha.0...v0.8.0-alpha.1) (2022-02-22)
 
-This release is merly a cleanup release to fix CI issues.
+autogen: pin v0.8.0-alpha.1 release commit
 
 ### Bug Fixes
 
@@ -134,7 +134,7 @@ This release is merly a cleanup release to fix CI issues.
 ### Code Generation
 
 - Pin v0.8.0-alpha.1 release commit
-  ([35b9dcf](https://github.com/ory/keto/commit/35b9dcf6bbc61a5bbebc99aab554348bff18c6c0))
+  ([6daf88b](https://github.com/ory/keto/commit/6daf88ba39e85f463f38f7148861a7f447031a52))
 
 ### Tests
 
