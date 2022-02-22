@@ -1,1 +1,5 @@
-sdk/* linguist-vendored
+internal/httpclient/**/* linguist-generated=true
+internal/httpclient-next/**/* linguist-generated=true
+proto/**/*.pb.go linguist-generated=true
+proto/**/*_pb.js linguist-generated=true
+proto/**/*_pb.d.ts linguist-generated=true
