@@ -15,7 +15,7 @@ import (
 	"encoding/json"
 )
 
-// GetExpandInternalServerErrorBody GetExpandInternalServerErrorBody GetExpandInternalServerErrorBody GetExpandInternalServerErrorBody GetExpandInternalServerErrorBody GetExpandInternalServerErrorBody get expand internal server error body
+// GetExpandInternalServerErrorBody GetExpandInternalServerErrorBody GetExpandInternalServerErrorBody GetExpandInternalServerErrorBody GetExpandInternalServerErrorBody GetExpandInternalServerErrorBody GetExpandInternalServerErrorBody get expand internal server error body
 type GetExpandInternalServerErrorBody struct {
 	// code
 	Code *int64 `json:"code,omitempty"`

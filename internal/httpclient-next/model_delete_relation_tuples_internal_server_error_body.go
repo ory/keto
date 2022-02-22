@@ -15,7 +15,7 @@ import (
 	"encoding/json"
 )
 
-// DeleteRelationTuplesInternalServerErrorBody DeleteRelationTuplesInternalServerErrorBody DeleteRelationTuplesInternalServerErrorBody DeleteRelationTuplesInternalServerErrorBody DeleteRelationTuplesInternalServerErrorBody DeleteRelationTuplesInternalServerErrorBody delete relation tuples internal server error body
+// DeleteRelationTuplesInternalServerErrorBody DeleteRelationTuplesInternalServerErrorBody DeleteRelationTuplesInternalServerErrorBody DeleteRelationTuplesInternalServerErrorBody DeleteRelationTuplesInternalServerErrorBody DeleteRelationTuplesInternalServerErrorBody DeleteRelationTuplesInternalServerErrorBody delete relation tuples internal server error body
 type DeleteRelationTuplesInternalServerErrorBody struct {
 	// code
 	Code *int64 `json:"code,omitempty"`

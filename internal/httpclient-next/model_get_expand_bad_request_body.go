@@ -15,7 +15,7 @@ import (
 	"encoding/json"
 )
 
-// GetExpandBadRequestBody GetExpandBadRequestBody GetExpandBadRequestBody GetExpandBadRequestBody GetExpandBadRequestBody GetExpandBadRequestBody GetExpandBadRequestBody GetExpandBadRequestBody get expand bad request body
+// GetExpandBadRequestBody GetExpandBadRequestBody GetExpandBadRequestBody GetExpandBadRequestBody GetExpandBadRequestBody GetExpandBadRequestBody GetExpandBadRequestBody GetExpandBadRequestBody GetExpandBadRequestBody get expand bad request body
 type GetExpandBadRequestBody struct {
 	// code
 	Code *int64 `json:"code,omitempty"`

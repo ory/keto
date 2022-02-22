@@ -12,7 +12,7 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// PostCheckBadRequestBody PostCheckBadRequestBody PostCheckBadRequestBody PostCheckBadRequestBody PostCheckBadRequestBody PostCheckBadRequestBody PostCheckBadRequestBody PostCheckBadRequestBody PostCheckBadRequestBody PostCheckBadRequestBody post check bad request body
+// PostCheckBadRequestBody PostCheckBadRequestBody PostCheckBadRequestBody PostCheckBadRequestBody PostCheckBadRequestBody PostCheckBadRequestBody PostCheckBadRequestBody PostCheckBadRequestBody PostCheckBadRequestBody PostCheckBadRequestBody PostCheckBadRequestBody post check bad request body
 //
 // swagger:model PostCheckBadRequestBody
 type PostCheckBadRequestBody struct {

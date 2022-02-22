@@ -12,7 +12,7 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// GetExpandNotFoundBody GetExpandNotFoundBody GetExpandNotFoundBody GetExpandNotFoundBody GetExpandNotFoundBody GetExpandNotFoundBody GetExpandNotFoundBody GetExpandNotFoundBody get expand not found body
+// GetExpandNotFoundBody GetExpandNotFoundBody GetExpandNotFoundBody GetExpandNotFoundBody GetExpandNotFoundBody GetExpandNotFoundBody GetExpandNotFoundBody GetExpandNotFoundBody GetExpandNotFoundBody get expand not found body
 //
 // swagger:model GetExpandNotFoundBody
 type GetExpandNotFoundBody struct {

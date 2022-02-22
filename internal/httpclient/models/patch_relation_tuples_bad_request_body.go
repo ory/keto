@@ -12,7 +12,7 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// PatchRelationTuplesBadRequestBody PatchRelationTuplesBadRequestBody PatchRelationTuplesBadRequestBody PatchRelationTuplesBadRequestBody PatchRelationTuplesBadRequestBody PatchRelationTuplesBadRequestBody patch relation tuples bad request body
+// PatchRelationTuplesBadRequestBody PatchRelationTuplesBadRequestBody PatchRelationTuplesBadRequestBody PatchRelationTuplesBadRequestBody PatchRelationTuplesBadRequestBody PatchRelationTuplesBadRequestBody PatchRelationTuplesBadRequestBody patch relation tuples bad request body
 //
 // swagger:model PatchRelationTuplesBadRequestBody
 type PatchRelationTuplesBadRequestBody struct {
