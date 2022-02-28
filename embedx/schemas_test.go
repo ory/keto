@@ -2,9 +2,10 @@ package embedx
 
 import (
 	"context"
+	"testing"
+
 	"github.com/ory/jsonschema/v3"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 func TestConfigSchema(t *testing.T) {

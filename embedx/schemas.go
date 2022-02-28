@@ -3,12 +3,13 @@ package embedx
 import (
 	"bytes"
 	_ "embed"
+	"io"
+
 	"github.com/gofrs/uuid"
 	"github.com/ory/x/logrusx"
 	"github.com/ory/x/tracing"
 	"github.com/pkg/errors"
 	"github.com/tidwall/gjson"
-	"io"
 )
 
 //go:embed config.schema.json
