@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"io/ioutil"
 
+	"github.com/ory/keto/embedx"
+
 	"github.com/ory/jsonschema/v3"
 	"github.com/ory/x/cmdx"
 	"github.com/ory/x/configx"
@@ -64,7 +66,7 @@ const schemaPath = "github.com/ory/keto/.schema/config.schema.json"
 func getSchema(cmd *cobra.Command) (*jsonschema.Schema, error) {
 	if configSchema == nil {
 		c := jsonschema.NewCompiler()
-		if err := c.AddResource(schemaPath, bytes.NewBuffer(config.Schema)); err != nil {
+		if err := c.AddResource(schemaPath, bytes.NewBuffer(embedx.ConfigSchema)); err != nil {
 			_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not add the config schema file to the compiler. This is an internal error that should be reported. Thanks ;)\n%+v\n", err)
 			return nil, cmdx.FailSilently(cmd)
 		}
@@ -109,7 +111,7 @@ func validateNamespaceBytes(cmd *cobra.Command, name string, b []byte, parser co
 
 	if err := schema.ValidateInterface(val); err != nil {
 		fmt.Fprintf(cmd.ErrOrStderr(), "File %s was not a valid namespace file. Reasons:\n", name)
-		jsonschemax.FormatValidationErrorForCLI(cmd.ErrOrStderr(), config.Schema, err)
+		jsonschemax.FormatValidationErrorForCLI(cmd.ErrOrStderr(), embedx.ConfigSchema, err)
 		return nil, cmdx.FailSilently(cmd)
 	}
 

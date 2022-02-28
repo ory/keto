@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"testing"
 
+	"github.com/ory/keto/embedx"
+
 	"github.com/ory/x/configx"
 
 	"github.com/ory/x/logrusx"
@@ -122,7 +124,7 @@ func TestKoanfNamespaceManager(t *testing.T) {
 
 	t.Run("case=uses passed configx provider", func(t *testing.T) {
 		ctx := context.Background()
-		cp, err := configx.New(ctx, Schema, configx.WithValue(KeyDSN, "foobar"))
+		cp, err := configx.New(ctx, embedx.ConfigSchema, configx.WithValue(KeyDSN, "foobar"))
 		require.NoError(t, err)
 
 		p := New(ctx, logrusx.New("test", "today"), cp)

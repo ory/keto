@@ -7,6 +7,8 @@ import (
 	"fmt"
 	"sync"
 
+	"github.com/ory/keto/embedx"
+
 	"github.com/ory/herodot"
 
 	"github.com/ory/x/watcherx"
@@ -22,9 +24,6 @@ import (
 	"github.com/ory/x/logrusx"
 	"github.com/ory/x/tracing"
 )
-
-//go:embed config.schema.json
-var Schema []byte
 
 const (
 	KeyDSN = "dsn"
@@ -81,7 +80,7 @@ func NewDefault(ctx context.Context, flags *pflag.FlagSet, l *logrusx.Logger) (*
 func NewProvider(ctx context.Context, flags *pflag.FlagSet, config *Config) (*configx.Provider, error) {
 	p, err := configx.New(
 		ctx,
-		Schema,
+		embedx.ConfigSchema,
 		configx.WithFlags(flags),
 		configx.WithStderrValidationReporter(),
 		configx.WithImmutables(KeyDSN, "serve"),
