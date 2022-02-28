@@ -188,7 +188,7 @@ jobs:
       - uses: ory/ci/releaser/render-version-schema@master
         with:
           token: ${{ secrets.ORY_BOT_PAT }}
-          schema-path: spec/config.json
+          schema-path: .schema/config.schema.json
 
   newsletter-draft:
     name: Draft newsletter
