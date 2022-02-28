@@ -5,7 +5,7 @@
 
 **Table of Contents**
 
-- [0.0.0 (2022-02-24)](#000-2022-02-24)
+- [0.0.0 (2022-02-28)](#000-2022-02-28)
   - [Documentation](#documentation)
 - [0.8.0-alpha.1 (2022-02-22)](#080-alpha1-2022-02-22)
   - [Bug Fixes](#bug-fixes)
@@ -117,7 +117,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.8.0-alpha.1...v0.0.0) (2022-02-24)
+# [0.0.0](https://github.com/ory/keto/compare/v0.8.0-alpha.1...v0.0.0) (2022-02-28)
 
 ### Documentation
 
@@ -126,22 +126,7 @@
 
 # [0.8.0-alpha.1](https://github.com/ory/keto/compare/v0.8.0-alpha.0...v0.8.0-alpha.1) (2022-02-22)
 
-This is merly a cleanup release to fix automation issues. -----BEGIN PGP
-SIGNATURE-----
-
-iQIzBAABCAAdFiEEOUSiKQaNvqKU3zBeFuPFWKhz730FAmIU40UACgkQFuPFWKhz
-731AxA//erLcYZN5wkTg9+N4AeXzyQ0UxkbwPwDGR1s443yaANjn21CQ8ivM4YwI
-o83uk33D8C027xPtEnfSTKsKcgpT4z6bBZTHpL4TwJgFsun2ItafCEEHtuMmadgx
-BsDVYZilxjQsXr1E9koM8t3kHMfXiUWGzToA6DV8s5UN2gMMftFi0171KNnkexWn
-CkqDQLvkyX86J6S1yUCBpOoDEh2RuR0VYf+6BMxCOp+6UdSEat07Kmc+TKniBbdL
-PU8EzD6smjR/nB3TEYQPBmjufLzKg4yVqY2wXDkaVhIRZvijTdWfBQ06ei/ReXZe
-58W6BBYilLHf0Me6Zk8YZu4V89mW0W7feMEDvvbeqtYijpqel7IRKWEHaG+bK9XK
-vmw0Z04+EP8rFqmi3RN1ShUKTaT17T1HuEC/OmCoXOxiYcaq55RHkgXLj+R56V2M
-pH2aVhhyyOMAVDOZsh86YtDYh9uxRxJWhpt7WOCHzlWA2FvEo/EATC9kqzS3gDLE
-L8vt/XivazArLN/b50QABaGDxe8eGvRfrgeDbksNvS93KeOhqvB3/FsWSGSsdx7c
-m0eVNX07i9Ag+0g4814ECRXRhtC8BeC4OGm5zUnYKOS8b4l2FfB+ggwkxXpp8gsX
-5kcS/++sxgk6xg+G8RXN1wiqYnCbss6Knf09nUsmDzg4XOba3r0= =h0W2 -----END PGP
-SIGNATURE-----
+This is merly a cleanup release to fix automation issues.
 
 ### Bug Fixes
 
