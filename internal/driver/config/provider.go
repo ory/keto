@@ -7,6 +7,9 @@ import (
 	"fmt"
 	"sync"
 
+	"github.com/ory/jsonschema/v3"
+	"github.com/ory/x/cmdx"
+
 	"github.com/ory/keto/embedx"
 
 	"github.com/ory/herodot"
@@ -89,7 +92,10 @@ func NewProvider(ctx context.Context, flags *pflag.FlagSet, config *Config) (*co
 		configx.WithContext(ctx),
 		configx.AttachWatcher(config.watcher),
 	)
-	if err != nil {
+	if validationErr := new(jsonschema.ValidationError); errors.As(err, &validationErr) {
+		// the configx provider already printed the validation error
+		return nil, cmdx.ErrNoPrintButFail
+	} else if err != nil {
 		return nil, err
 	}
 

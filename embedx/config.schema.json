@@ -167,6 +167,8 @@
       "additionalProperties": false
     }
   },
+  "required": ["dsn"],
+  "additionalProperties": false,
   "properties": {
     "dsn": {
       "title": "Data Source Name",
