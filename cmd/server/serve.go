@@ -49,6 +49,8 @@ on configuration options, open the configuration documentation:
 			if errors.Is(err, persistence.ErrNetworkMigrationsMissing) {
 				_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Migrations were not applied yet, please apply them first.")
 				return cmdx.FailSilently(cmd)
+			} else if errors.Is(err, cmdx.ErrNoPrintButFail) {
+				return cmdx.FailSilently(cmd)
 			} else if err != nil {
 				return err
 			}
