@@ -2,6 +2,7 @@ package driver
 
 import (
 	"context"
+	"github.com/ory/x/configx"
 	"testing"
 
 	"github.com/ory/keto/ketoctx"
@@ -72,11 +73,12 @@ func NewTestRegistry(t *testing.T, dsn *dbx.DsnT) *RegistryDefault {
 	ctx, cancel := context.WithCancel(context.Background())
 	t.Cleanup(cancel)
 
+	ctx = configx.ContextWithConfigOptions(ctx, configx.WithValues(map[string]interface{}{
+		config.KeyDSN: dsn.Conn,
+		"log.level":   "debug",
+	}))
 	c, err := config.NewDefault(ctx, nil, l)
 	require.NoError(t, err)
-
-	require.NoError(t, c.Set(config.KeyDSN, dsn.Conn))
-	require.NoError(t, c.Set("log.level", "debug"))
 
 	r := &RegistryDefault{
 		c:     c,
