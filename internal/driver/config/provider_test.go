@@ -26,7 +26,7 @@ func TestKoanfNamespaceManager(t *testing.T) {
 		ctx, cancel := context.WithCancel(context.Background())
 		t.Cleanup(cancel)
 
-		p, err := NewDefault(ctx, pflag.NewFlagSet("test", pflag.ContinueOnError), l)
+		p, err := NewDefault(ctx, pflag.NewFlagSet("test", pflag.ContinueOnError), l, configx.SkipValidation())
 		require.NoError(t, err)
 
 		return &hook, p

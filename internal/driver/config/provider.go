@@ -69,9 +69,9 @@ func New(ctx context.Context, l *logrusx.Logger, p *configx.Provider) *Config {
 	}
 }
 
-func NewDefault(ctx context.Context, flags *pflag.FlagSet, l *logrusx.Logger) (*Config, error) {
+func NewDefault(ctx context.Context, flags *pflag.FlagSet, l *logrusx.Logger, opts ...configx.OptionModifier) (*Config, error) {
 	c := New(ctx, l, nil)
-	cp, err := NewProvider(ctx, flags, c)
+	cp, err := NewProvider(ctx, flags, c, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -80,17 +80,19 @@ func NewDefault(ctx context.Context, flags *pflag.FlagSet, l *logrusx.Logger) (*
 	return c, nil
 }
 
-func NewProvider(ctx context.Context, flags *pflag.FlagSet, config *Config) (*configx.Provider, error) {
+func NewProvider(ctx context.Context, flags *pflag.FlagSet, config *Config, opts ...configx.OptionModifier) (*configx.Provider, error) {
 	p, err := configx.New(
 		ctx,
 		embedx.ConfigSchema,
-		configx.WithFlags(flags),
-		configx.WithStderrValidationReporter(),
-		configx.WithImmutables(KeyDSN, "serve"),
-		configx.OmitKeysFromTracing(KeyDSN),
-		configx.WithLogrusWatcher(config.l),
-		configx.WithContext(ctx),
-		configx.AttachWatcher(config.watcher),
+		append(opts,
+			configx.WithFlags(flags),
+			configx.WithStderrValidationReporter(),
+			configx.WithImmutables(KeyDSN, "serve"),
+			configx.OmitKeysFromTracing(KeyDSN),
+			configx.WithLogrusWatcher(config.l),
+			configx.WithContext(ctx),
+			configx.AttachWatcher(config.watcher),
+		)...,
 	)
 	if validationErr := new(jsonschema.ValidationError); errors.As(err, &validationErr) {
 		// the configx provider already printed the validation error

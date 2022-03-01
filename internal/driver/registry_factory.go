@@ -2,8 +2,9 @@ package driver
 
 import (
 	"context"
-	"github.com/ory/x/configx"
 	"testing"
+
+	"github.com/ory/x/configx"
 
 	"github.com/ory/keto/ketoctx"
 
