@@ -15,20 +15,13 @@
 package server
 
 import (
-	"fmt"
 	"os"
 	"strconv"
 
-	"github.com/ory/keto/ketoctx"
-
-	"github.com/ory/x/cmdx"
-	"github.com/pkg/errors"
-
-	"github.com/ory/keto/internal/persistence"
-
 	"github.com/spf13/cobra"
 
-	"github.com/ory/keto/internal/driver"
+	"github.com/ory/keto/cmd/helpers"
+	"github.com/ory/keto/ketoctx"
 )
 
 // serveCmd represents the serve command
@@ -45,13 +38,8 @@ on configuration options, open the configuration documentation:
 
 >> https://www.ory.sh/keto/docs/reference/configuration <<`,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			reg, err := driver.NewDefaultRegistry(cmd.Context(), cmd.Flags(), false, opts...)
-			if errors.Is(err, persistence.ErrNetworkMigrationsMissing) {
-				_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Migrations were not applied yet, please apply them first.")
-				return cmdx.FailSilently(cmd)
-			} else if errors.Is(err, cmdx.ErrNoPrintButFail) {
-				return cmdx.FailSilently(cmd)
-			} else if err != nil {
+			reg, err := helpers.NewRegistry(cmd, opts)
+			if err != nil {
 				return err
 			}
 
