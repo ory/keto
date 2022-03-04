@@ -5,42 +5,44 @@
 
 **Table of Contents**
 
-- [0.0.0 (2022-03-01)](#000-2022-03-01)
+- [0.0.0 (2022-03-04)](#000-2022-03-04)
+- [0.8.0-alpha.2 (2022-03-04)](#080-alpha2-2022-03-04)
   - [Bug Fixes](#bug-fixes)
+  - [Code Generation](#code-generation)
   - [Documentation](#documentation)
 - [0.8.0-alpha.1 (2022-02-22)](#080-alpha1-2022-02-22)
   - [Bug Fixes](#bug-fixes-1)
-  - [Code Generation](#code-generation)
+  - [Code Generation](#code-generation-1)
   - [Tests](#tests)
 - [0.8.0-alpha.0 (2022-02-10)](#080-alpha0-2022-02-10)
   - [Bug Fixes](#bug-fixes-2)
-  - [Code Generation](#code-generation-1)
+  - [Code Generation](#code-generation-2)
   - [Code Refactoring](#code-refactoring)
   - [Documentation](#documentation-1)
   - [Features](#features)
 - [0.7.0-alpha.1 (2021-10-19)](#070-alpha1-2021-10-19)
-  - [Code Generation](#code-generation-2)
+  - [Code Generation](#code-generation-3)
   - [Documentation](#documentation-2)
 - [0.7.0-alpha.0 (2021-10-06)](#070-alpha0-2021-10-06)
   - [Breaking Changes](#breaking-changes)
     - [Bug Fixes](#bug-fixes-3)
     - [Chores](#chores)
-    - [Code Generation](#code-generation-3)
+    - [Code Generation](#code-generation-4)
     - [Code Refactoring](#code-refactoring-1)
     - [Documentation](#documentation-3)
     - [Features](#features-1)
     - [Tests](#tests-1)
 - [0.6.0-alpha.3 (2021-04-29)](#060-alpha3-2021-04-29)
-  - [Code Generation](#code-generation-4)
+  - [Code Generation](#code-generation-5)
 - [0.6.0-alpha.2 (2021-04-29)](#060-alpha2-2021-04-29)
   - [Bug Fixes](#bug-fixes-4)
-  - [Code Generation](#code-generation-5)
+  - [Code Generation](#code-generation-6)
   - [Documentation](#documentation-4)
   - [Features](#features-2)
 - [0.6.0-alpha.1 (2021-04-07)](#060-alpha1-2021-04-07)
   - [Bug Fixes](#bug-fixes-5)
   - [Build System](#build-system)
-  - [Code Generation](#code-generation-6)
+  - [Code Generation](#code-generation-7)
   - [Code Refactoring](#code-refactoring-2)
   - [Documentation](#documentation-5)
   - [Features](#features-3)
@@ -55,7 +57,7 @@
 - [0.5.4-alpha.1 (2020-04-07)](#054-alpha1-2020-04-07)
   - [Bug Fixes](#bug-fixes-8)
 - [0.5.3-alpha.3 (2020-04-06)](#053-alpha3-2020-04-06)
-  - [Code Generation](#code-generation-7)
+  - [Code Generation](#code-generation-8)
   - [Code Refactoring](#code-refactoring-3)
   - [Documentation](#documentation-7)
 - [0.5.3-alpha.1 (2020-04-03)](#053-alpha1-2020-04-03)
@@ -118,13 +120,22 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.8.0-alpha.1...v0.0.0) (2022-03-01)
+# [0.0.0](https://github.com/ory/keto/compare/v0.8.0-alpha.2...v0.0.0) (2022-03-04)
+
+# [0.8.0-alpha.2](https://github.com/ory/keto/compare/v0.8.0-alpha.1...v0.8.0-alpha.2) (2022-03-04)
+
+Mainly fixes the SDKs.
 
 ### Bug Fixes
 
 - Config schema required and additional properties
   ([#848](https://github.com/ory/keto/issues/848))
   ([6230227](https://github.com/ory/keto/commit/6230227fda11c6f621767d8e821757171225b732))
+
+### Code Generation
+
+- Pin v0.8.0-alpha.2 release commit
+  ([be5cffd](https://github.com/ory/keto/commit/be5cffdba342c189d002db03edff650d72a2c73b))
 
 ### Documentation
 
