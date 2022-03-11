@@ -77,7 +77,7 @@ func TestRESTHandler(t *testing.T) {
 		assert.Equal(t, http.StatusBadRequest, resp.StatusCode)
 		body, err := io.ReadAll(resp.Body)
 		require.NoError(t, err)
-		assert.Contains(t, string(body), "Subject has to be specified")
+		assert.Contains(t, string(body), "Please provide a subject")
 	})
 
 	t.Run("case=returns denied on unknown namespace", func(t *testing.T) {
