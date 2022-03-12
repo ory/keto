@@ -1,19 +1,16 @@
 module github.com/ory/keto
 
 replace (
-	//github.com/gobuffalo/packr => github.com/gobuffalo/packr v1.30.1
 	github.com/gogo/protobuf => github.com/gogo/protobuf v1.3.2
 	github.com/oleiade/reflections => github.com/oleiade/reflections v1.0.1
 	github.com/ory/keto/proto => ./proto
 	github.com/soheilhy/cmux => github.com/soheilhy/cmux v0.1.5-0.20210114230657-cdd3331e3e7c
-//google.golang.org/protobuf v1.25.1-0.20201020201750-d3470999428b => google.golang.org/protobuf v1.25.0
 )
 
 // vulnerable dependencies
 replace (
 	github.com/containerd/containerd => github.com/containerd/containerd v1.5.10
 	github.com/dgrijalva/jwt-go => github.com/golang-jwt/jwt/v4 v4.0.0
-	github.com/docker/distribution v2.7.1+incompatible => github.com/distribution/distribution v2.8.1+incompatible
 	github.com/opencontainers/runc => github.com/opencontainers/runc v1.0.3
 )
 
