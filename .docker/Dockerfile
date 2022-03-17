@@ -1,10 +1,10 @@
-FROM alpine:3.14.3
+FROM alpine:3.15.1
 
 RUN addgroup -S ory; \
     adduser -S ory -G ory -D  -h /home/ory -s /bin/nologin; \
     chown -R ory:ory /home/ory
 
-RUN apk add -U --no-cache ca-certificates
+RUN apk --no-cache --update-cache --upgrade --latest add ca-certificates
 
 COPY keto /usr/bin/keto
 
