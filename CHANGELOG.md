@@ -5,7 +5,8 @@
 
 **Table of Contents**
 
-- [0.0.0 (2022-03-17)](#000-2022-03-17)
+- [0.0.0 (2022-03-21)](#000-2022-03-21)
+  - [Features](#features)
 - [0.8.0-alpha.2 (2022-03-04)](#080-alpha2-2022-03-04)
   - [Bug Fixes](#bug-fixes)
   - [Code Generation](#code-generation)
@@ -19,7 +20,7 @@
   - [Code Generation](#code-generation-2)
   - [Code Refactoring](#code-refactoring)
   - [Documentation](#documentation-1)
-  - [Features](#features)
+  - [Features](#features-1)
 - [0.7.0-alpha.1 (2021-10-19)](#070-alpha1-2021-10-19)
   - [Code Generation](#code-generation-3)
   - [Documentation](#documentation-2)
@@ -30,7 +31,7 @@
     - [Code Generation](#code-generation-4)
     - [Code Refactoring](#code-refactoring-1)
     - [Documentation](#documentation-3)
-    - [Features](#features-1)
+    - [Features](#features-2)
     - [Tests](#tests-1)
 - [0.6.0-alpha.3 (2021-04-29)](#060-alpha3-2021-04-29)
   - [Code Generation](#code-generation-5)
@@ -38,14 +39,14 @@
   - [Bug Fixes](#bug-fixes-4)
   - [Code Generation](#code-generation-6)
   - [Documentation](#documentation-4)
-  - [Features](#features-2)
+  - [Features](#features-3)
 - [0.6.0-alpha.1 (2021-04-07)](#060-alpha1-2021-04-07)
   - [Bug Fixes](#bug-fixes-5)
   - [Build System](#build-system)
   - [Code Generation](#code-generation-7)
   - [Code Refactoring](#code-refactoring-2)
   - [Documentation](#documentation-5)
-  - [Features](#features-3)
+  - [Features](#features-4)
   - [Tests](#tests-2)
 - [0.5.6-alpha.1 (2020-05-28)](#056-alpha1-2020-05-28)
   - [Bug Fixes](#bug-fixes-6)
@@ -73,7 +74,7 @@
 - [0.4.4-alpha.1 (2020-02-14)](#044-alpha1-2020-02-14)
   - [Bug Fixes](#bug-fixes-11)
   - [Documentation](#documentation-11)
-  - [Features](#features-4)
+  - [Features](#features-5)
   - [Unclassified](#unclassified)
 - [0.4.3-alpha.2 (2020-01-31)](#043-alpha2-2020-01-31)
   - [Unclassified](#unclassified-1)
@@ -120,7 +121,13 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.8.0-alpha.2...v0.0.0) (2022-03-17)
+# [0.0.0](https://github.com/ory/keto/compare/v0.8.0-alpha.2...v0.0.0) (2022-03-21)
+
+### Features
+
+- Make sensitive log value redaction text configurable
+  ([#860](https://github.com/ory/keto/issues/860))
+  ([b8b1d81](https://github.com/ory/keto/commit/b8b1d81ee1574fdfd8bdac01ec2f9957f03df879))
 
 # [0.8.0-alpha.2](https://github.com/ory/keto/compare/v0.8.0-alpha.1...v0.8.0-alpha.2) (2022-03-04)
 
