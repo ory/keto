@@ -34,12 +34,12 @@ require (
 	github.com/luna-duclos/instrumentedsql v1.1.3
 	github.com/luna-duclos/instrumentedsql/opentracing v0.0.0-20201103091713-40d03108b6f4
 	github.com/mikefarah/yq/v4 v4.19.1
-	github.com/ory/analytics-go/v4 v4.0.2
+	github.com/ory/analytics-go/v4 v4.0.3
 	github.com/ory/graceful v0.1.2
-	github.com/ory/herodot v0.9.12
-	github.com/ory/jsonschema/v3 v3.0.6
+	github.com/ory/herodot v0.9.13
+	github.com/ory/jsonschema/v3 v3.0.7
 	github.com/ory/keto/proto v0.0.0-00010101000000-000000000000
-	github.com/ory/x v0.0.352
+	github.com/ory/x v0.0.358
 	github.com/pelletier/go-toml v1.9.4
 	github.com/phayes/freeport v0.0.0-20180830031419-95f893ade6f2
 	github.com/pkg/errors v0.9.1
@@ -81,7 +81,7 @@ require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dgraph-io/ristretto v0.1.0 // indirect
 	github.com/docker/cli v20.10.11+incompatible // indirect
-	github.com/docker/distribution v2.7.1+incompatible // indirect
+	github.com/docker/distribution v2.8.1+incompatible // indirect
 	github.com/docker/docker v20.10.9+incompatible // indirect
 	github.com/docker/go-connections v0.4.0 // indirect
 	github.com/docker/go-units v0.4.0 // indirect
@@ -190,7 +190,6 @@ require (
 	github.com/spf13/afero v1.6.0 // indirect
 	github.com/spf13/cast v1.4.1 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
-	github.com/sqs/goreturns v0.0.0-20181028201513-538ac6014518 // indirect
 	github.com/subosito/gotenv v1.2.0 // indirect
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.0 // indirect
