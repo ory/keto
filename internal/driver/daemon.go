@@ -12,12 +12,14 @@ import (
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 
 	prometheus "github.com/ory/x/prometheusx"
+	grpcOtel "go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
+	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
+	"go.opentelemetry.io/otel"
 
 	"github.com/ory/x/logrusx"
 
 	grpcMiddleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_logrus "github.com/grpc-ecosystem/go-grpc-middleware/logging/logrus"
-	"github.com/grpc-ecosystem/grpc-opentracing/go/otgrpc"
 	"github.com/julienschmidt/httprouter"
 	"github.com/ory/herodot"
 	"github.com/ory/x/reqlog"
@@ -126,6 +128,10 @@ func (r *RegistryDefault) ServeAll(ctx context.Context) error {
 func (r *RegistryDefault) serveRead(ctx context.Context, done chan<- struct{}) func() error {
 	rt, s := r.ReadRouter(ctx), r.ReadGRPCServer(ctx)
 
+	if tracer := r.Tracer(ctx); tracer.IsLoaded() {
+		rt = otelhttp.NewHandler(rt, "serve_read")
+	}
+
 	return func() error {
 		return multiplexPort(ctx, r.Logger().WithField("endpoint", "read"), r.Config(ctx).ReadAPIListenOn(), rt, s, done)
 	}
@@ -133,6 +139,10 @@ func (r *RegistryDefault) serveRead(ctx context.Context, done chan<- struct{}) f
 
 func (r *RegistryDefault) serveWrite(ctx context.Context, done chan<- struct{}) func() error {
 	rt, s := r.WriteRouter(ctx), r.WriteGRPCServer(ctx)
+
+	if tracer := r.Tracer(ctx); tracer.IsLoaded() {
+		rt = otelhttp.NewHandler(rt, "serve_write")
+	}
 
 	return func() error {
 		return multiplexPort(ctx, r.Logger().WithField("endpoint", "write"), r.Config(ctx).WriteAPIListenOn(), rt, s, done)
@@ -292,10 +302,6 @@ func (r *RegistryDefault) ReadRouter(ctx context.Context) http.Handler {
 
 	n.UseHandler(br)
 
-	if t := r.Tracer(ctx); t.IsLoaded() {
-		n.Use(t)
-	}
-
 	if r.sqaService != nil {
 		n.Use(r.sqaService)
 	}
@@ -327,10 +333,6 @@ func (r *RegistryDefault) WriteRouter(ctx context.Context) http.Handler {
 
 	n.UseHandler(pr)
 
-	if t := r.Tracer(ctx); t.IsLoaded() {
-		n.Use(t)
-	}
-
 	if r.sqaService != nil {
 		n.Use(r.sqaService)
 	}
@@ -354,7 +356,7 @@ func (r *RegistryDefault) unaryInterceptors(ctx context.Context) []grpc.UnarySer
 		),
 	)
 	if r.Tracer(ctx).IsLoaded() {
-		is = append(is, otgrpc.OpenTracingServerInterceptor(r.Tracer(ctx).Tracer()))
+		is = append(is, grpcOtel.UnaryServerInterceptor(grpcOtel.WithTracerProvider(otel.GetTracerProvider())))
 	}
 	if r.sqaService != nil {
 		is = append(is, r.sqaService.UnaryInterceptor)
@@ -372,7 +374,7 @@ func (r *RegistryDefault) streamInterceptors(ctx context.Context) []grpc.StreamS
 		),
 	)
 	if r.Tracer(ctx).IsLoaded() {
-		is = append(is, otgrpc.OpenTracingStreamServerInterceptor(r.Tracer(ctx).Tracer()))
+		is = append(is, grpcOtel.StreamServerInterceptor(grpcOtel.WithTracerProvider(otel.GetTracerProvider())))
 	}
 	if r.sqaService != nil {
 		is = append(is, r.sqaService.StreamInterceptor)

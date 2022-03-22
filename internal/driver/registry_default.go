@@ -14,9 +14,9 @@ import (
 	"github.com/ory/x/logrusx"
 	"github.com/ory/x/metricsx"
 	"github.com/ory/x/networkx"
+	"github.com/ory/x/otelx"
 	"github.com/ory/x/popx"
 	prometheus "github.com/ory/x/prometheusx"
-	"github.com/ory/x/tracing"
 	"github.com/pkg/errors"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/health"
@@ -57,7 +57,7 @@ type (
 		healthServer   *health.Server
 		handlers       []Handler
 		sqaService     *metricsx.Service
-		tracer         *tracing.Tracer
+		tracer         *otelx.Tracer
 		pmm            *prometheus.MetricsManager
 		metricsHandler *prometheus.Handler
 
@@ -104,10 +104,10 @@ func (r *RegistryDefault) GetVersion(_ context.Context, _ *rts.GetVersionRequest
 	return &rts.GetVersionResponse{Version: config.Version}, nil
 }
 
-func (r *RegistryDefault) Tracer(ctx context.Context) *tracing.Tracer {
+func (r *RegistryDefault) Tracer(ctx context.Context) *otelx.Tracer {
 	if r.tracer == nil {
 		// Tracing is initialized only once so it can not be hot reloaded or context-aware.
-		t, err := tracing.New(r.Logger(), r.Config(ctx).TracingConfig())
+		t, err := otelx.New("Ory Keto", r.Logger(), r.Config(ctx).TracingConfig())
 		if err != nil {
 			r.Logger().WithError(err).Fatalf("Unable to initialize Tracer.")
 		}

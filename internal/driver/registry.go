@@ -4,6 +4,7 @@ import (
 	"context"
 	"net/http"
 
+	"github.com/ory/x/otelx"
 	prometheus "github.com/ory/x/prometheusx"
 
 	"github.com/gobuffalo/pop/v6"
@@ -15,7 +16,6 @@ import (
 	"google.golang.org/grpc"
 
 	"github.com/ory/x/healthx"
-	"github.com/ory/x/tracing"
 
 	"github.com/ory/keto/internal/check"
 	"github.com/ory/keto/internal/expand"
@@ -42,7 +42,7 @@ type (
 		PopConnectionWithOpts(ctx context.Context, f ...func(*pop.ConnectionDetails)) (*pop.Connection, error)
 
 		HealthHandler() *healthx.Handler
-		Tracer(ctx context.Context) *tracing.Tracer
+		Tracer(ctx context.Context) *otelx.Tracer
 		MetricsHandler() *prometheus.Handler
 		PrometheusManager() *prometheus.MetricsManager
 

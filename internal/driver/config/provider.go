@@ -9,6 +9,7 @@ import (
 
 	"github.com/ory/jsonschema/v3"
 	"github.com/ory/x/cmdx"
+	"github.com/ory/x/otelx"
 
 	"github.com/ory/keto/embedx"
 
@@ -25,7 +26,6 @@ import (
 	"github.com/spf13/pflag"
 
 	"github.com/ory/x/logrusx"
-	"github.com/ory/x/tracing"
 )
 
 const (
@@ -202,15 +202,15 @@ func (k *Config) DSN() string {
 }
 
 func (k *Config) TracingServiceName() string {
-	return k.p.StringF("tracing.service_name", "ORY Keto")
+	return k.p.StringF("tracing.service_name", "Ory Keto")
 }
 
 func (k *Config) TracingProvider() string {
 	return k.p.StringF("tracing.provider", "")
 }
 
-func (k *Config) TracingConfig() *tracing.Config {
-	return k.p.TracingConfig("ORY Keto")
+func (k *Config) TracingConfig() *otelx.Config {
+	return k.p.TracingConfigOtel("Ory Keto")
 }
 
 func (k *Config) NamespaceManager() (namespace.Manager, error) {
