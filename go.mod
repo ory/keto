@@ -6,7 +6,7 @@ replace github.com/soheilhy/cmux => github.com/soheilhy/cmux v0.1.5-0.2021011423
 
 replace github.com/gogo/protobuf => github.com/gogo/protobuf v1.3.2
 
-replace github.com/ory/x => github.com/icyphox/x v0.0.355-0.20220322051225-59a3fff415dd
+replace github.com/ory/x => github.com/icyphox/x v0.0.355-0.20220323063932-d9e6e6e87dad
 
 replace github.com/oleiade/reflections => github.com/oleiade/reflections v1.0.1
 
@@ -31,7 +31,6 @@ require (
 	github.com/gobuffalo/pop/v6 v6.0.1
 	github.com/gofrs/uuid v4.1.0+incompatible
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
-	github.com/grpc-ecosystem/grpc-opentracing v0.0.0-20180507213350-8e809c8a8645
 	github.com/julienschmidt/httprouter v1.3.0
 	github.com/luna-duclos/instrumentedsql v1.1.3
 	github.com/luna-duclos/instrumentedsql/opentracing v0.0.0-20201103091713-40d03108b6f4
