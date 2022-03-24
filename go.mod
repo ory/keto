@@ -6,7 +6,7 @@ replace github.com/soheilhy/cmux => github.com/soheilhy/cmux v0.1.5-0.2021011423
 
 replace github.com/gogo/protobuf => github.com/gogo/protobuf v1.3.2
 
-replace github.com/ory/x => github.com/icyphox/x v0.0.355-0.20220323063932-d9e6e6e87dad
+replace github.com/ory/x => github.com/icyphox/x v0.0.355-0.20220324030026-bae4718643f7
 
 replace github.com/oleiade/reflections => github.com/oleiade/reflections v1.0.1
 
