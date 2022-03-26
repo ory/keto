@@ -4,9 +4,9 @@ All URIs are relative to *http://localhost*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**CreateRelationTuple**](WriteApi.md#CreateRelationTuple) | **Put** /relation-tuples | Create a Relation Tuple
-[**DeleteRelationTuples**](WriteApi.md#DeleteRelationTuples) | **Delete** /relation-tuples | Delete Relation Tuples
-[**PatchRelationTuples**](WriteApi.md#PatchRelationTuples) | **Patch** /relation-tuples | Patch Multiple Relation Tuples
+[**CreateRelationTuple**](WriteApi.md#CreateRelationTuple) | **Put** /admin/relation-tuples | Create a Relation Tuple
+[**DeleteRelationTuples**](WriteApi.md#DeleteRelationTuples) | **Delete** /admin/relation-tuples | Delete Relation Tuples
+[**PatchRelationTuples**](WriteApi.md#PatchRelationTuples) | **Patch** /admin/relation-tuples | Patch Multiple Relation Tuples
 
 
 

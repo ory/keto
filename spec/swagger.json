@@ -19,7 +19,7 @@
   },
   "basePath": "/",
   "paths": {
-    "/check": {
+    "/acl/check": {
       "get": {
         "description": "To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).",
         "consumes": ["application/x-www-form-urlencoded"],
@@ -156,7 +156,7 @@
         }
       }
     },
-    "/expand": {
+    "/acl/expand": {
       "get": {
         "description": "Use this endpoint to expand a relation tuple.",
         "consumes": ["application/x-www-form-urlencoded"],
@@ -200,6 +200,160 @@
             "schema": {
               "$ref": "#/definitions/expandTree"
             }
+          },
+          "400": {
+            "description": "genericError",
+            "schema": {
+              "$ref": "#/definitions/genericError"
+            }
+          },
+          "404": {
+            "description": "genericError",
+            "schema": {
+              "$ref": "#/definitions/genericError"
+            }
+          },
+          "500": {
+            "description": "genericError",
+            "schema": {
+              "$ref": "#/definitions/genericError"
+            }
+          }
+        }
+      }
+    },
+    "/admin/relation-tuples": {
+      "put": {
+        "description": "Use this endpoint to create a relation tuple.",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "schemes": ["http", "https"],
+        "tags": ["write"],
+        "summary": "Create a Relation Tuple",
+        "operationId": "createRelationTuple",
+        "parameters": [
+          {
+            "name": "Payload",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/RelationQuery"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "RelationQuery",
+            "schema": {
+              "$ref": "#/definitions/RelationQuery"
+            }
+          },
+          "400": {
+            "description": "genericError",
+            "schema": {
+              "$ref": "#/definitions/genericError"
+            }
+          },
+          "500": {
+            "description": "genericError",
+            "schema": {
+              "$ref": "#/definitions/genericError"
+            }
+          }
+        }
+      },
+      "delete": {
+        "description": "Use this endpoint to delete relation tuples",
+        "consumes": ["application/x-www-form-urlencoded"],
+        "produces": ["application/json"],
+        "schemes": ["http", "https"],
+        "tags": ["write"],
+        "summary": "Delete Relation Tuples",
+        "operationId": "deleteRelationTuples",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Namespace of the Relation Tuple",
+            "name": "namespace",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Object of the Relation Tuple",
+            "name": "object",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Relation of the Relation Tuple",
+            "name": "relation",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "SubjectID of the Relation Tuple",
+            "name": "subject_id",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Namespace of the Subject Set",
+            "name": "subject_set.namespace",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Object of the Subject Set",
+            "name": "subject_set.object",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Relation of the Subject Set",
+            "name": "subject_set.relation",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "204": {
+            "$ref": "#/responses/emptyResponse"
+          },
+          "400": {
+            "description": "genericError",
+            "schema": {
+              "$ref": "#/definitions/genericError"
+            }
+          },
+          "500": {
+            "description": "genericError",
+            "schema": {
+              "$ref": "#/definitions/genericError"
+            }
+          }
+        }
+      },
+      "patch": {
+        "description": "Use this endpoint to patch one or more relation tuples.",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "schemes": ["http", "https"],
+        "tags": ["write"],
+        "summary": "Patch Multiple Relation Tuples",
+        "operationId": "patchRelationTuples",
+        "parameters": [
+          {
+            "name": "Payload",
+            "in": "body",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/PatchDelta"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "$ref": "#/responses/emptyResponse"
           },
           "400": {
             "description": "genericError",
@@ -337,158 +491,6 @@
             "description": "getRelationTuplesResponse",
             "schema": {
               "$ref": "#/definitions/getRelationTuplesResponse"
-            }
-          },
-          "404": {
-            "description": "genericError",
-            "schema": {
-              "$ref": "#/definitions/genericError"
-            }
-          },
-          "500": {
-            "description": "genericError",
-            "schema": {
-              "$ref": "#/definitions/genericError"
-            }
-          }
-        }
-      },
-      "put": {
-        "description": "Use this endpoint to create a relation tuple.",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "schemes": ["http", "https"],
-        "tags": ["write"],
-        "summary": "Create a Relation Tuple",
-        "operationId": "createRelationTuple",
-        "parameters": [
-          {
-            "name": "Payload",
-            "in": "body",
-            "schema": {
-              "$ref": "#/definitions/RelationQuery"
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "RelationQuery",
-            "schema": {
-              "$ref": "#/definitions/RelationQuery"
-            }
-          },
-          "400": {
-            "description": "genericError",
-            "schema": {
-              "$ref": "#/definitions/genericError"
-            }
-          },
-          "500": {
-            "description": "genericError",
-            "schema": {
-              "$ref": "#/definitions/genericError"
-            }
-          }
-        }
-      },
-      "delete": {
-        "description": "Use this endpoint to delete relation tuples",
-        "consumes": ["application/x-www-form-urlencoded"],
-        "produces": ["application/json"],
-        "schemes": ["http", "https"],
-        "tags": ["write"],
-        "summary": "Delete Relation Tuples",
-        "operationId": "deleteRelationTuples",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "Namespace of the Relation Tuple",
-            "name": "namespace",
-            "in": "query"
-          },
-          {
-            "type": "string",
-            "description": "Object of the Relation Tuple",
-            "name": "object",
-            "in": "query"
-          },
-          {
-            "type": "string",
-            "description": "Relation of the Relation Tuple",
-            "name": "relation",
-            "in": "query"
-          },
-          {
-            "type": "string",
-            "description": "SubjectID of the Relation Tuple",
-            "name": "subject_id",
-            "in": "query"
-          },
-          {
-            "type": "string",
-            "description": "Namespace of the Subject Set",
-            "name": "subject_set.namespace",
-            "in": "query"
-          },
-          {
-            "type": "string",
-            "description": "Object of the Subject Set",
-            "name": "subject_set.object",
-            "in": "query"
-          },
-          {
-            "type": "string",
-            "description": "Relation of the Subject Set",
-            "name": "subject_set.relation",
-            "in": "query"
-          }
-        ],
-        "responses": {
-          "204": {
-            "$ref": "#/responses/emptyResponse"
-          },
-          "400": {
-            "description": "genericError",
-            "schema": {
-              "$ref": "#/definitions/genericError"
-            }
-          },
-          "500": {
-            "description": "genericError",
-            "schema": {
-              "$ref": "#/definitions/genericError"
-            }
-          }
-        }
-      },
-      "patch": {
-        "description": "Use this endpoint to patch one or more relation tuples.",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "schemes": ["http", "https"],
-        "tags": ["write"],
-        "summary": "Patch Multiple Relation Tuples",
-        "operationId": "patchRelationTuples",
-        "parameters": [
-          {
-            "name": "Payload",
-            "in": "body",
-            "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/PatchDelta"
-              }
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "$ref": "#/responses/emptyResponse"
-          },
-          "400": {
-            "description": "genericError",
-            "schema": {
-              "$ref": "#/definitions/genericError"
             }
           },
           "404": {

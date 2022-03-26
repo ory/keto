@@ -117,7 +117,7 @@ func (a *WriteApiService) CreateRelationTupleExecute(r WriteApiApiCreateRelation
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/relation-tuples"
+	localVarPath := localBasePath + "/admin/relation-tuples"
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -273,7 +273,7 @@ func (a *WriteApiService) DeleteRelationTuplesExecute(r WriteApiApiDeleteRelatio
 		return nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/relation-tuples"
+	localVarPath := localBasePath + "/admin/relation-tuples"
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -409,7 +409,7 @@ func (a *WriteApiService) PatchRelationTuplesExecute(r WriteApiApiPatchRelationT
 		return nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/relation-tuples"
+	localVarPath := localBasePath + "/admin/relation-tuples"
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}

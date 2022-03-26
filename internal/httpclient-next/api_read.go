@@ -168,7 +168,7 @@ func (a *ReadApiService) GetCheckExecute(r ReadApiApiGetCheckRequest) (*GetCheck
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/check"
+	localVarPath := localBasePath + "/acl/check"
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -343,7 +343,7 @@ func (a *ReadApiService) GetExpandExecute(r ReadApiApiGetExpandRequest) (*Expand
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/expand"
+	localVarPath := localBasePath + "/acl/expand"
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -692,7 +692,7 @@ func (a *ReadApiService) PostCheckExecute(r ReadApiApiPostCheckRequest) (*GetChe
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/check"
+	localVarPath := localBasePath + "/acl/check"
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}

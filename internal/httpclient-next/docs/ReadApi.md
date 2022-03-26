@@ -4,10 +4,10 @@ All URIs are relative to *http://localhost*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**GetCheck**](ReadApi.md#GetCheck) | **Get** /check | Check a relation tuple
-[**GetExpand**](ReadApi.md#GetExpand) | **Get** /expand | Expand a Relation Tuple
+[**GetCheck**](ReadApi.md#GetCheck) | **Get** /acl/check | Check a relation tuple
+[**GetExpand**](ReadApi.md#GetExpand) | **Get** /acl/expand | Expand a Relation Tuple
 [**GetRelationTuples**](ReadApi.md#GetRelationTuples) | **Get** /relation-tuples | Query relation tuples
-[**PostCheck**](ReadApi.md#PostCheck) | **Post** /check | Check a relation tuple
+[**PostCheck**](ReadApi.md#PostCheck) | **Post** /acl/check | Check a relation tuple
 
 
 

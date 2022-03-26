@@ -29,7 +29,8 @@ type GetResponse struct {
 }
 
 const (
-	RouteBase = "/relation-tuples"
+	ReadRouteBase  = "/relation-tuples"
+	WriteRouteBase = "/admin/relation-tuples"
 )
 
 func NewHandler(d handlerDeps) *handler {
@@ -39,13 +40,13 @@ func NewHandler(d handlerDeps) *handler {
 }
 
 func (h *handler) RegisterReadRoutes(r *x.ReadRouter) {
-	r.GET(RouteBase, h.getRelations)
+	r.GET(ReadRouteBase, h.getRelations)
 }
 
 func (h *handler) RegisterWriteRoutes(r *x.WriteRouter) {
-	r.PUT(RouteBase, h.createRelation)
-	r.DELETE(RouteBase, h.deleteRelations)
-	r.PATCH(RouteBase, h.patchRelations)
+	r.PUT(WriteRouteBase, h.createRelation)
+	r.DELETE(WriteRouteBase, h.deleteRelations)
+	r.PATCH(WriteRouteBase, h.patchRelations)
 }
 
 func (h *handler) RegisterReadGRPC(s *grpc.Server) {

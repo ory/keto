@@ -52,7 +52,7 @@ func (a *Client) CreateRelationTuple(params *CreateRelationTupleParams, opts ...
 	op := &runtime.ClientOperation{
 		ID:                 "createRelationTuple",
 		Method:             "PUT",
-		PathPattern:        "/relation-tuples",
+		PathPattern:        "/admin/relation-tuples",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"http", "https"},
@@ -92,7 +92,7 @@ func (a *Client) DeleteRelationTuples(params *DeleteRelationTuplesParams, opts .
 	op := &runtime.ClientOperation{
 		ID:                 "deleteRelationTuples",
 		Method:             "DELETE",
-		PathPattern:        "/relation-tuples",
+		PathPattern:        "/admin/relation-tuples",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/x-www-form-urlencoded"},
 		Schemes:            []string{"http", "https"},
@@ -132,7 +132,7 @@ func (a *Client) PatchRelationTuples(params *PatchRelationTuplesParams, opts ...
 	op := &runtime.ClientOperation{
 		ID:                 "patchRelationTuples",
 		Method:             "PATCH",
-		PathPattern:        "/relation-tuples",
+		PathPattern:        "/admin/relation-tuples",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"http", "https"},

@@ -30,7 +30,7 @@ type (
 
 var _ acl.ExpandServiceServer = (*handler)(nil)
 
-const RouteBase = "/expand"
+const RouteBase = "/acl/expand"
 
 func NewHandler(d handlerDependencies) *handler {
 	return &handler{d: d}
@@ -55,7 +55,7 @@ type getExpandRequest struct {
 	MaxDepth int `json:"max-depth"`
 }
 
-// swagger:route GET /expand read getExpand
+// swagger:route GET /acl/expand read getExpand
 //
 // Expand a Relation Tuple
 //

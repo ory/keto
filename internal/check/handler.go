@@ -36,7 +36,7 @@ func NewHandler(d handlerDependencies) *Handler {
 	return &Handler{d: d}
 }
 
-const RouteBase = "/check"
+const RouteBase = "/acl/check"
 
 func (h *Handler) RegisterReadRoutes(r *x.ReadRouter) {
 	r.GET(RouteBase, h.getCheck)
@@ -70,7 +70,7 @@ type getCheckRequest struct {
 	MaxDepth int `json:"max-depth"`
 }
 
-// swagger:route GET /check read getCheck
+// swagger:route GET /acl/check read getCheck
 //
 // Check a relation tuple
 //
@@ -119,7 +119,7 @@ func (h *Handler) getCheck(w http.ResponseWriter, r *http.Request, _ httprouter.
 	h.d.Writer().WriteCode(w, r, http.StatusForbidden, &RESTResponse{Allowed: false})
 }
 
-// swagger:route POST /check read postCheck
+// swagger:route POST /acl/check read postCheck
 //
 // Check a relation tuple
 //

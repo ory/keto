@@ -123,7 +123,7 @@ type queryRelationTuple struct {
 	SRelation string `json:"subject_set.relation"`
 }
 
-// swagger:route PUT /relation-tuples write createRelationTuple
+// swagger:route PUT /admin/relation-tuples write createRelationTuple
 //
 // Create a Relation Tuple
 //
@@ -163,10 +163,10 @@ func (h *handler) createRelation(w http.ResponseWriter, r *http.Request, _ httpr
 		return
 	}
 
-	h.d.Writer().WriteCreated(w, r, RouteBase+"?"+q.Encode(), &rel)
+	h.d.Writer().WriteCreated(w, r, ReadRouteBase+"?"+q.Encode(), &rel)
 }
 
-// swagger:route DELETE /relation-tuples write deleteRelationTuples
+// swagger:route DELETE /admin/relation-tuples write deleteRelationTuples
 //
 // Delete Relation Tuples
 //
@@ -216,7 +216,7 @@ func internalTuplesWithAction(deltas []*PatchDelta, action patchAction) (filtere
 	return
 }
 
-// swagger:route PATCH /relation-tuples write patchRelationTuples
+// swagger:route PATCH /admin/relation-tuples write patchRelationTuples
 //
 // Patch Multiple Relation Tuples
 //

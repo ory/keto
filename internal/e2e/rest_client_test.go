@@ -58,19 +58,19 @@ func (rc *restClient) createTuple(t require.TestingT, r *relationtuple.InternalR
 	tEnc, err := json.Marshal(r)
 	require.NoError(t, err)
 
-	body, code := rc.makeRequest(t, http.MethodPut, relationtuple.RouteBase, string(tEnc), true)
+	body, code := rc.makeRequest(t, http.MethodPut, relationtuple.WriteRouteBase, string(tEnc), true)
 	assert.Equal(t, http.StatusCreated, code, body)
 }
 
 func (rc *restClient) deleteTuple(t require.TestingT, r *relationtuple.InternalRelationTuple) {
 	q, err := r.ToURLQuery()
 	require.NoError(t, err)
-	body, code := rc.makeRequest(t, http.MethodDelete, relationtuple.RouteBase+"?"+q.Encode(), "", true)
+	body, code := rc.makeRequest(t, http.MethodDelete, relationtuple.WriteRouteBase+"?"+q.Encode(), "", true)
 	require.Equal(t, http.StatusNoContent, code, body)
 }
 
 func (rc restClient) deleteAllTuples(t require.TestingT, q *relationtuple.RelationQuery) {
-	body, code := rc.makeRequest(t, http.MethodDelete, relationtuple.RouteBase+"?"+q.ToURLQuery().Encode(), "", true)
+	body, code := rc.makeRequest(t, http.MethodDelete, relationtuple.WriteRouteBase+"?"+q.ToURLQuery().Encode(), "", true)
 	require.Equal(t, http.StatusNoContent, code, body)
 }
 
@@ -85,7 +85,7 @@ func (rc *restClient) queryTuple(t require.TestingT, q *relationtuple.RelationQu
 		urlQuery.Set("page_token", pagination.Token)
 	}
 
-	body, code := rc.makeRequest(t, http.MethodGet, fmt.Sprintf("%s?%s", relationtuple.RouteBase, urlQuery.Encode()), "", false)
+	body, code := rc.makeRequest(t, http.MethodGet, fmt.Sprintf("%s?%s", relationtuple.ReadRouteBase, urlQuery.Encode()), "", false)
 	require.Equal(t, http.StatusOK, code, body)
 
 	var dec relationtuple.GetResponse
@@ -105,7 +105,7 @@ func (rc *restClient) queryTupleErr(t require.TestingT, expected herodot.Default
 		urlQuery.Set("page_token", pagination.Token)
 	}
 
-	body, code := rc.makeRequest(t, http.MethodGet, fmt.Sprintf("%s?%s", relationtuple.RouteBase, urlQuery.Encode()), "", false)
+	body, code := rc.makeRequest(t, http.MethodGet, fmt.Sprintf("%s?%s", relationtuple.ReadRouteBase, urlQuery.Encode()), "", false)
 
 	assert.Equal(t, expected.CodeField, code)
 	assert.Equal(t, int64(expected.StatusCode()), gjson.Get(body, "error.code").Int())

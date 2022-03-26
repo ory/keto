@@ -63,7 +63,7 @@ func (r *RegistryDefault) enableSqa(cmd *cobra.Command) {
 				healthx.ReadyCheckPath,
 				healthx.VersionPath,
 
-				relationtuple.RouteBase,
+				relationtuple.ReadRouteBase,
 				check.RouteBase,
 				expand.RouteBase,
 			},

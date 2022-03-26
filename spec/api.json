@@ -215,7 +215,7 @@
   },
   "openapi": "3.0.3",
   "paths": {
-    "/check": {
+    "/acl/check": {
       "get": {
         "description": "To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).",
         "operationId": "getCheck",
@@ -399,7 +399,7 @@
         "tags": ["read"]
       }
     },
-    "/expand": {
+    "/acl/expand": {
       "get": {
         "description": "Use this endpoint to expand a relation tuple.",
         "operationId": "getExpand",
@@ -486,91 +486,7 @@
         "tags": ["read"]
       }
     },
-    "/health/alive": {
-      "get": {
-        "description": "This endpoint returns a HTTP 200 status code when Ory Keto is accepting incoming\nHTTP requests. This status does currently not include checks whether the database connection is working.\n\nIf the service supports TLS Edge Termination, this endpoint does not require the\n`X-Forwarded-Proto` header to be set.\n\nBe aware that if you are running multiple nodes of this service, the health status will never\nrefer to the cluster state, only to a single instance.",
-        "operationId": "isAlive",
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "properties": {
-                    "status": {
-                      "description": "Always \"ok\".",
-                      "type": "string"
-                    }
-                  },
-                  "required": ["status"],
-                  "type": "object"
-                }
-              }
-            },
-            "description": "Ory Keto is ready to accept connections."
-          },
-          "500": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/genericError"
-                }
-              }
-            },
-            "description": "genericError"
-          }
-        },
-        "summary": "Check HTTP Server Status",
-        "tags": ["metadata"]
-      }
-    },
-    "/health/ready": {
-      "get": {
-        "description": "This endpoint returns a HTTP 200 status code when Ory Keto is up running and the environment dependencies (e.g.\nthe database) are responsive as well.\n\nIf the service supports TLS Edge Termination, this endpoint does not require the\n`X-Forwarded-Proto` header to be set.\n\nBe aware that if you are running multiple nodes of Ory Keto, the health status will never\nrefer to the cluster state, only to a single instance.",
-        "operationId": "isReady",
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "properties": {
-                    "status": {
-                      "description": "Always \"ok\".",
-                      "type": "string"
-                    }
-                  },
-                  "required": ["status"],
-                  "type": "object"
-                }
-              }
-            },
-            "description": "Ory Keto is ready to accept requests."
-          },
-          "503": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "properties": {
-                    "errors": {
-                      "additionalProperties": {
-                        "type": "string"
-                      },
-                      "description": "Errors contains a list of errors that caused the not ready status.",
-                      "type": "object"
-                    }
-                  },
-                  "required": ["errors"],
-                  "type": "object"
-                }
-              }
-            },
-            "description": "Ory Kratos is not yet ready to accept requests."
-          }
-        },
-        "summary": "Check HTTP Server and Database Status",
-        "tags": ["metadata"]
-      }
-    },
-    "/relation-tuples": {
+    "/admin/relation-tuples": {
       "delete": {
         "description": "Use this endpoint to delete relation tuples",
         "operationId": "deleteRelationTuples",
@@ -660,6 +576,194 @@
         "summary": "Delete Relation Tuples",
         "tags": ["write"]
       },
+      "patch": {
+        "description": "Use this endpoint to patch one or more relation tuples.",
+        "operationId": "patchRelationTuples",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "items": {
+                  "$ref": "#/components/schemas/PatchDelta"
+                },
+                "type": "array"
+              }
+            }
+          },
+          "x-originalParamName": "Payload"
+        },
+        "responses": {
+          "204": {
+            "$ref": "#/components/responses/emptyResponse"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/genericError"
+                }
+              }
+            },
+            "description": "genericError"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/genericError"
+                }
+              }
+            },
+            "description": "genericError"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/genericError"
+                }
+              }
+            },
+            "description": "genericError"
+          }
+        },
+        "summary": "Patch Multiple Relation Tuples",
+        "tags": ["write"]
+      },
+      "put": {
+        "description": "Use this endpoint to create a relation tuple.",
+        "operationId": "createRelationTuple",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RelationQuery"
+              }
+            }
+          },
+          "x-originalParamName": "Payload"
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RelationQuery"
+                }
+              }
+            },
+            "description": "RelationQuery"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/genericError"
+                }
+              }
+            },
+            "description": "genericError"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/genericError"
+                }
+              }
+            },
+            "description": "genericError"
+          }
+        },
+        "summary": "Create a Relation Tuple",
+        "tags": ["write"]
+      }
+    },
+    "/health/alive": {
+      "get": {
+        "description": "This endpoint returns a HTTP 200 status code when Ory Keto is accepting incoming\nHTTP requests. This status does currently not include checks whether the database connection is working.\n\nIf the service supports TLS Edge Termination, this endpoint does not require the\n`X-Forwarded-Proto` header to be set.\n\nBe aware that if you are running multiple nodes of this service, the health status will never\nrefer to the cluster state, only to a single instance.",
+        "operationId": "isAlive",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "status": {
+                      "description": "Always \"ok\".",
+                      "type": "string"
+                    }
+                  },
+                  "required": ["status"],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Ory Keto is ready to accept connections."
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/genericError"
+                }
+              }
+            },
+            "description": "genericError"
+          }
+        },
+        "summary": "Check HTTP Server Status",
+        "tags": ["metadata"]
+      }
+    },
+    "/health/ready": {
+      "get": {
+        "description": "This endpoint returns a HTTP 200 status code when Ory Keto is up running and the environment dependencies (e.g.\nthe database) are responsive as well.\n\nIf the service supports TLS Edge Termination, this endpoint does not require the\n`X-Forwarded-Proto` header to be set.\n\nBe aware that if you are running multiple nodes of Ory Keto, the health status will never\nrefer to the cluster state, only to a single instance.",
+        "operationId": "isReady",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "status": {
+                      "description": "Always \"ok\".",
+                      "type": "string"
+                    }
+                  },
+                  "required": ["status"],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Ory Keto is ready to accept requests."
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "errors": {
+                      "additionalProperties": {
+                        "type": "string"
+                      },
+                      "description": "Errors contains a list of errors that caused the not ready status.",
+                      "type": "object"
+                    }
+                  },
+                  "required": ["errors"],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Ory Kratos is not yet ready to accept requests."
+          }
+        },
+        "summary": "Check HTTP Server and Database Status",
+        "tags": ["metadata"]
+      }
+    },
+    "/relation-tuples": {
       "get": {
         "description": "Get all relation tuples that match the query. Only the namespace field is required.",
         "operationId": "getRelationTuples",
@@ -770,108 +874,6 @@
         },
         "summary": "Query relation tuples",
         "tags": ["read"]
-      },
-      "patch": {
-        "description": "Use this endpoint to patch one or more relation tuples.",
-        "operationId": "patchRelationTuples",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "items": {
-                  "$ref": "#/components/schemas/PatchDelta"
-                },
-                "type": "array"
-              }
-            }
-          },
-          "x-originalParamName": "Payload"
-        },
-        "responses": {
-          "204": {
-            "$ref": "#/components/responses/emptyResponse"
-          },
-          "400": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/genericError"
-                }
-              }
-            },
-            "description": "genericError"
-          },
-          "404": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/genericError"
-                }
-              }
-            },
-            "description": "genericError"
-          },
-          "500": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/genericError"
-                }
-              }
-            },
-            "description": "genericError"
-          }
-        },
-        "summary": "Patch Multiple Relation Tuples",
-        "tags": ["write"]
-      },
-      "put": {
-        "description": "Use this endpoint to create a relation tuple.",
-        "operationId": "createRelationTuple",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RelationQuery"
-              }
-            }
-          },
-          "x-originalParamName": "Payload"
-        },
-        "responses": {
-          "201": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RelationQuery"
-                }
-              }
-            },
-            "description": "RelationQuery"
-          },
-          "400": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/genericError"
-                }
-              }
-            },
-            "description": "genericError"
-          },
-          "500": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/genericError"
-                }
-              }
-            },
-            "description": "genericError"
-          }
-        },
-        "summary": "Create a Relation Tuple",
-        "tags": ["write"]
       }
     },
     "/version": {

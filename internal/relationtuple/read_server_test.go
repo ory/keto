@@ -35,7 +35,7 @@ func TestReadHandlers(t *testing.T) {
 
 	t.Run("method=get", func(t *testing.T) {
 		t.Run("case=empty response is not nil", func(t *testing.T) {
-			resp, err := ts.Client().Get(ts.URL + relationtuple.RouteBase + "?" + url.Values{
+			resp, err := ts.Client().Get(ts.URL + relationtuple.ReadRouteBase + "?" + url.Values{
 				"namespace": {nspace.Name},
 			}.Encode())
 			require.NoError(t, err)
@@ -77,7 +77,7 @@ func TestReadHandlers(t *testing.T) {
 
 			require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), rts...))
 
-			resp, err := ts.Client().Get(ts.URL + relationtuple.RouteBase + "?" + url.Values{
+			resp, err := ts.Client().Get(ts.URL + relationtuple.ReadRouteBase + "?" + url.Values{
 				"namespace": {nspace.Name},
 			}.Encode())
 			require.NoError(t, err)
@@ -105,7 +105,7 @@ func TestReadHandlers(t *testing.T) {
 
 			require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), rts...))
 
-			resp, err := ts.Client().Get(ts.URL + relationtuple.RouteBase + "?" + url.Values{
+			resp, err := ts.Client().Get(ts.URL + relationtuple.ReadRouteBase + "?" + url.Values{
 				"object": {obj},
 			}.Encode())
 			require.NoError(t, err)
@@ -119,7 +119,7 @@ func TestReadHandlers(t *testing.T) {
 		})
 
 		t.Run("case=returns bad request on malformed subject", func(t *testing.T) {
-			resp, err := ts.Client().Get(ts.URL + relationtuple.RouteBase + "?" + url.Values{
+			resp, err := ts.Client().Get(ts.URL + relationtuple.ReadRouteBase + "?" + url.Values{
 				"subject": {"not#a valid subject"},
 			}.Encode())
 			require.NoError(t, err)
@@ -149,7 +149,7 @@ func TestReadHandlers(t *testing.T) {
 
 			var firstResp relationtuple.GetResponse
 			t.Run("case=first page", func(t *testing.T) {
-				resp, err := ts.Client().Get(ts.URL + relationtuple.RouteBase + "?" + url.Values{
+				resp, err := ts.Client().Get(ts.URL + relationtuple.ReadRouteBase + "?" + url.Values{
 					"namespace": {nspace.Name},
 					"object":    {obj},
 					"page_size": {"1"},
@@ -164,7 +164,7 @@ func TestReadHandlers(t *testing.T) {
 			})
 
 			t.Run("case=second page", func(t *testing.T) {
-				resp, err := ts.Client().Get(ts.URL + relationtuple.RouteBase + "?" + url.Values{
+				resp, err := ts.Client().Get(ts.URL + relationtuple.ReadRouteBase + "?" + url.Values{
 					"namespace":  {nspace.Name},
 					"object":     {obj},
 					"page_size":  {"1"},
@@ -184,7 +184,7 @@ func TestReadHandlers(t *testing.T) {
 		})
 
 		t.Run("case=returs bad request on invalid page size", func(t *testing.T) {
-			resp, err := ts.Client().Get(ts.URL + relationtuple.RouteBase + "?" + url.Values{
+			resp, err := ts.Client().Get(ts.URL + relationtuple.ReadRouteBase + "?" + url.Values{
 				"page_size": {"foo"},
 			}.Encode())
 			require.NoError(t, err)

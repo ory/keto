@@ -66,7 +66,7 @@ type GetExpandOK struct {
 }
 
 func (o *GetExpandOK) Error() string {
-	return fmt.Sprintf("[GET /expand][%d] getExpandOK  %+v", 200, o.Payload)
+	return fmt.Sprintf("[GET /acl/expand][%d] getExpandOK  %+v", 200, o.Payload)
 }
 func (o *GetExpandOK) GetPayload() *models.ExpandTree {
 	return o.Payload
@@ -98,7 +98,7 @@ type GetExpandBadRequest struct {
 }
 
 func (o *GetExpandBadRequest) Error() string {
-	return fmt.Sprintf("[GET /expand][%d] getExpandBadRequest  %+v", 400, o.Payload)
+	return fmt.Sprintf("[GET /acl/expand][%d] getExpandBadRequest  %+v", 400, o.Payload)
 }
 func (o *GetExpandBadRequest) GetPayload() *models.GenericError {
 	return o.Payload
@@ -130,7 +130,7 @@ type GetExpandNotFound struct {
 }
 
 func (o *GetExpandNotFound) Error() string {
-	return fmt.Sprintf("[GET /expand][%d] getExpandNotFound  %+v", 404, o.Payload)
+	return fmt.Sprintf("[GET /acl/expand][%d] getExpandNotFound  %+v", 404, o.Payload)
 }
 func (o *GetExpandNotFound) GetPayload() *models.GenericError {
 	return o.Payload
@@ -162,7 +162,7 @@ type GetExpandInternalServerError struct {
 }
 
 func (o *GetExpandInternalServerError) Error() string {
-	return fmt.Sprintf("[GET /expand][%d] getExpandInternalServerError  %+v", 500, o.Payload)
+	return fmt.Sprintf("[GET /acl/expand][%d] getExpandInternalServerError  %+v", 500, o.Payload)
 }
 func (o *GetExpandInternalServerError) GetPayload() *models.GenericError {
 	return o.Payload
