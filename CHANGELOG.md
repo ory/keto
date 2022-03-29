@@ -5,8 +5,10 @@
 
 **Table of Contents**
 
-- [0.0.0 (2022-03-21)](#000-2022-03-21)
-  - [Features](#features)
+- [0.0.0 (2022-03-29)](#000-2022-03-29)
+  - [Breaking Changes](#breaking-changes)
+    - [Code Refactoring](#code-refactoring)
+    - [Features](#features)
 - [0.8.0-alpha.2 (2022-03-04)](#080-alpha2-2022-03-04)
   - [Bug Fixes](#bug-fixes)
   - [Code Generation](#code-generation)
@@ -18,18 +20,18 @@
 - [0.8.0-alpha.0 (2022-02-10)](#080-alpha0-2022-02-10)
   - [Bug Fixes](#bug-fixes-2)
   - [Code Generation](#code-generation-2)
-  - [Code Refactoring](#code-refactoring)
+  - [Code Refactoring](#code-refactoring-1)
   - [Documentation](#documentation-1)
   - [Features](#features-1)
 - [0.7.0-alpha.1 (2021-10-19)](#070-alpha1-2021-10-19)
   - [Code Generation](#code-generation-3)
   - [Documentation](#documentation-2)
 - [0.7.0-alpha.0 (2021-10-06)](#070-alpha0-2021-10-06)
-  - [Breaking Changes](#breaking-changes)
+  - [Breaking Changes](#breaking-changes-1)
     - [Bug Fixes](#bug-fixes-3)
     - [Chores](#chores)
     - [Code Generation](#code-generation-4)
-    - [Code Refactoring](#code-refactoring-1)
+    - [Code Refactoring](#code-refactoring-2)
     - [Documentation](#documentation-3)
     - [Features](#features-2)
     - [Tests](#tests-1)
@@ -44,7 +46,7 @@
   - [Bug Fixes](#bug-fixes-5)
   - [Build System](#build-system)
   - [Code Generation](#code-generation-7)
-  - [Code Refactoring](#code-refactoring-2)
+  - [Code Refactoring](#code-refactoring-3)
   - [Documentation](#documentation-5)
   - [Features](#features-4)
   - [Tests](#tests-2)
@@ -59,7 +61,7 @@
   - [Bug Fixes](#bug-fixes-8)
 - [0.5.3-alpha.3 (2020-04-06)](#053-alpha3-2020-04-06)
   - [Code Generation](#code-generation-8)
-  - [Code Refactoring](#code-refactoring-3)
+  - [Code Refactoring](#code-refactoring-4)
   - [Documentation](#documentation-7)
 - [0.5.3-alpha.1 (2020-04-03)](#053-alpha1-2020-04-03)
   - [Chores](#chores-3)
@@ -121,7 +123,29 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.8.0-alpha.2...v0.0.0) (2022-03-21)
+# [0.0.0](https://github.com/ory/keto/compare/v0.8.0-alpha.2...v0.0.0) (2022-03-29)
+
+## Breaking Changes
+
+`/check` is now `/relation-tupes/check`
+
+`/expand` is now `/relation-tuples/expand`
+
+`/relation-tuples` is now `/admin/relation-tuples` for write APIs
+
+gRPC package is now called `ory.keto.relation_tuples.v1alpha2`
+
+gRPC relation-tuple-delta action enum names are prefixed with `ACTION_`
+
+### Code Refactoring
+
+- API paths ([#862](https://github.com/ory/keto/issues/862))
+  ([d29d42c](https://github.com/ory/keto/commit/d29d42c7e90d400bf861e415b2c934e428018ea0)):
+
+  This change refactors the API paths to be consistent with the rest of the Ory
+  ecosystem. This step is required for the unified Ory SDK. Additionally, as we
+  plan to add high level APIs, e.g. for RBAC. The check and expand API paths
+  changed to allow adding those.
 
 ### Features
 
