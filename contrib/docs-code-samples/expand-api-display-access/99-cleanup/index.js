@@ -23,7 +23,7 @@ const purgeNamespace = (namespace) => {
 
     resp.getRelationTuplesList().forEach((tuple) => {
       const tupleDelta = new write.RelationTupleDelta()
-      tupleDelta.setAction(write.RelationTupleDelta.Action.DELETE)
+      tupleDelta.setAction(write.RelationTupleDelta.Action.ACTION_DELETE)
       tupleDelta.setRelationTuple(tuple)
       writeRequest.addRelationTupleDeltas(tupleDelta)
     })

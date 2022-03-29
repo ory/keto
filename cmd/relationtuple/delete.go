@@ -3,12 +3,13 @@ package relationtuple
 import (
 	"fmt"
 
+	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
+
 	"github.com/ory/x/cmdx"
 	"github.com/spf13/cobra"
 
 	"github.com/ory/keto/cmd/client"
 	"github.com/ory/keto/internal/relationtuple"
-	acl "github.com/ory/keto/proto/ory/keto/acl/v1alpha1"
 )
 
 func newDeleteCmd() *cobra.Command {
@@ -19,14 +20,14 @@ func newDeleteCmd() *cobra.Command {
 			"A directory will be traversed and all relation tuples will be deleted.\n" +
 			"Pass the special filename `-` to read from STD_IN.",
 		Args: cobra.MinimumNArgs(1),
-		RunE: transactRelationTuples(acl.RelationTupleDelta_DELETE),
+		RunE: transactRelationTuples(rts.RelationTupleDelta_ACTION_DELETE),
 	}
 	cmd.Flags().AddFlagSet(packageFlags)
 
 	return cmd
 }
 
-func transactRelationTuples(action acl.RelationTupleDelta_Action) func(*cobra.Command, []string) error {
+func transactRelationTuples(action rts.RelationTupleDelta_Action) func(*cobra.Command, []string) error {
 	return func(cmd *cobra.Command, args []string) error {
 		conn, err := client.GetWriteConn(cmd)
 		if err != nil {
@@ -34,7 +35,7 @@ func transactRelationTuples(action acl.RelationTupleDelta_Action) func(*cobra.Co
 		}
 
 		var tuples []*relationtuple.InternalRelationTuple
-		var deltas []*acl.RelationTupleDelta
+		var deltas []*rts.RelationTupleDelta
 		for _, fn := range args {
 			tuple, err := readTuplesFromArg(cmd, fn)
 			if err != nil {
@@ -42,16 +43,16 @@ func transactRelationTuples(action acl.RelationTupleDelta_Action) func(*cobra.Co
 			}
 			for _, t := range tuple {
 				tuples = append(tuples, t)
-				deltas = append(deltas, &acl.RelationTupleDelta{
+				deltas = append(deltas, &rts.RelationTupleDelta{
 					Action:        action,
 					RelationTuple: t.ToProto(),
 				})
 			}
 		}
 
-		cl := acl.NewWriteServiceClient(conn)
+		cl := rts.NewWriteServiceClient(conn)
 
-		_, err = cl.TransactRelationTuples(cmd.Context(), &acl.TransactRelationTuplesRequest{
+		_, err = cl.TransactRelationTuples(cmd.Context(), &rts.TransactRelationTuplesRequest{
 			RelationTupleDeltas: deltas,
 		})
 		if err != nil {

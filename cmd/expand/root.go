@@ -3,6 +3,8 @@ package expand
 import (
 	"fmt"
 
+	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
+
 	"github.com/ory/x/flagx"
 
 	"github.com/ory/x/cmdx"
@@ -10,7 +12,6 @@ import (
 
 	"github.com/ory/keto/cmd/client"
 	"github.com/ory/keto/internal/expand"
-	acl "github.com/ory/keto/proto/ory/keto/acl/v1alpha1"
 )
 
 const FlagMaxDepth = "max-depth"
@@ -33,17 +34,9 @@ func NewExpandCmd() *cobra.Command {
 				return err
 			}
 
-			cl := acl.NewExpandServiceClient(conn)
-			resp, err := cl.Expand(cmd.Context(), &acl.ExpandRequest{
-				Subject: &acl.Subject{
-					Ref: &acl.Subject_Set{
-						Set: &acl.SubjectSet{
-							Relation:  args[0],
-							Namespace: args[1],
-							Object:    args[2],
-						},
-					},
-				},
+			cl := rts.NewExpandServiceClient(conn)
+			resp, err := cl.Expand(cmd.Context(), &rts.ExpandRequest{
+				Subject:  rts.NewSubjectSet(args[1], args[2], args[0]),
 				MaxDepth: maxDepth,
 			})
 			if err != nil {

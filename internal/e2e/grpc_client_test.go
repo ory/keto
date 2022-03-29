@@ -4,6 +4,8 @@ import (
 	"context"
 	"time"
 
+	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
+
 	"github.com/ory/herodot"
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/grpc/status"
@@ -15,7 +17,6 @@ import (
 	"github.com/ory/keto/internal/expand"
 	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/internal/x"
-	acl "github.com/ory/keto/proto/ory/keto/acl/v1alpha1"
 )
 
 type grpcClient struct {
@@ -55,9 +56,9 @@ func (g *grpcClient) createTuple(t require.TestingT, r *relationtuple.InternalRe
 }
 
 func (g *grpcClient) queryTuple(t require.TestingT, q *relationtuple.RelationQuery, opts ...x.PaginationOptionSetter) *relationtuple.GetResponse {
-	c := acl.NewReadServiceClient(g.readConn(t))
+	c := rts.NewReadServiceClient(g.readConn(t))
 
-	query := &acl.ListRelationTuplesRequest_Query{
+	query := &rts.ListRelationTuplesRequest_Query{
 		Namespace: q.Namespace,
 		Object:    q.Object,
 		Relation:  q.Relation,
@@ -68,7 +69,7 @@ func (g *grpcClient) queryTuple(t require.TestingT, q *relationtuple.RelationQue
 
 	pagination := x.GetPaginationOptions(opts...)
 
-	resp, err := c.ListRelationTuples(g.ctx, &acl.ListRelationTuplesRequest{
+	resp, err := c.ListRelationTuples(g.ctx, &rts.ListRelationTuplesRequest{
 		Query:     query,
 		PageToken: pagination.Token,
 		PageSize:  int32(pagination.Size),
@@ -88,9 +89,9 @@ func (g *grpcClient) queryTuple(t require.TestingT, q *relationtuple.RelationQue
 }
 
 func (g *grpcClient) queryTupleErr(t require.TestingT, expected herodot.DefaultError, q *relationtuple.RelationQuery, opts ...x.PaginationOptionSetter) {
-	c := acl.NewReadServiceClient(g.readConn(t))
+	c := rts.NewReadServiceClient(g.readConn(t))
 
-	query := &acl.ListRelationTuplesRequest_Query{
+	query := &rts.ListRelationTuplesRequest_Query{
 		Namespace: q.Namespace,
 		Object:    q.Object,
 		Relation:  q.Relation,
@@ -101,7 +102,7 @@ func (g *grpcClient) queryTupleErr(t require.TestingT, expected herodot.DefaultE
 
 	pagination := x.GetPaginationOptions(opts...)
 
-	_, err := c.ListRelationTuples(g.ctx, &acl.ListRelationTuplesRequest{
+	_, err := c.ListRelationTuples(g.ctx, &rts.ListRelationTuplesRequest{
 		Query:     query,
 		PageToken: pagination.Token,
 		PageSize:  int32(pagination.Size),
@@ -113,9 +114,9 @@ func (g *grpcClient) queryTupleErr(t require.TestingT, expected herodot.DefaultE
 }
 
 func (g *grpcClient) check(t require.TestingT, r *relationtuple.InternalRelationTuple) bool {
-	c := acl.NewCheckServiceClient(g.readConn(t))
+	c := rts.NewCheckServiceClient(g.readConn(t))
 
-	resp, err := c.Check(g.ctx, &acl.CheckRequest{
+	resp, err := c.Check(g.ctx, &rts.CheckRequest{
 		Namespace: r.Namespace,
 		Object:    r.Object,
 		Relation:  r.Relation,
@@ -127,9 +128,9 @@ func (g *grpcClient) check(t require.TestingT, r *relationtuple.InternalRelation
 }
 
 func (g *grpcClient) expand(t require.TestingT, r *relationtuple.SubjectSet, depth int) *expand.Tree {
-	c := acl.NewExpandServiceClient(g.readConn(t))
+	c := rts.NewExpandServiceClient(g.readConn(t))
 
-	resp, err := c.Expand(g.ctx, &acl.ExpandRequest{
+	resp, err := c.Expand(g.ctx, &rts.ExpandRequest{
 		Subject:  r.ToProto(),
 		MaxDepth: int32(depth),
 	})
@@ -170,8 +171,8 @@ func (g *grpcClient) deleteTuple(t require.TestingT, r *relationtuple.InternalRe
 }
 
 func (g *grpcClient) deleteAllTuples(t require.TestingT, q *relationtuple.RelationQuery) {
-	c := acl.NewWriteServiceClient(g.writeConn(t))
-	query := &acl.DeleteRelationTuplesRequest_Query{
+	c := rts.NewWriteServiceClient(g.writeConn(t))
+	query := &rts.DeleteRelationTuplesRequest_Query{
 		Namespace: q.Namespace,
 		Object:    q.Object,
 		Relation:  q.Relation,
@@ -179,30 +180,30 @@ func (g *grpcClient) deleteAllTuples(t require.TestingT, q *relationtuple.Relati
 	if s := q.Subject(); s != nil {
 		query.Subject = s.ToProto()
 	}
-	_, err := c.DeleteRelationTuples(g.ctx, &acl.DeleteRelationTuplesRequest{
+	_, err := c.DeleteRelationTuples(g.ctx, &rts.DeleteRelationTuplesRequest{
 		Query: query,
 	})
 	require.NoError(t, err)
 }
 
 func (g *grpcClient) transactTuples(t require.TestingT, ins []*relationtuple.InternalRelationTuple, del []*relationtuple.InternalRelationTuple) {
-	c := acl.NewWriteServiceClient(g.writeConn(t))
+	c := rts.NewWriteServiceClient(g.writeConn(t))
 
-	deltas := make([]*acl.RelationTupleDelta, len(ins)+len(del))
+	deltas := make([]*rts.RelationTupleDelta, len(ins)+len(del))
 	for i := range ins {
-		deltas[i] = &acl.RelationTupleDelta{
+		deltas[i] = &rts.RelationTupleDelta{
 			RelationTuple: ins[i].ToProto(),
-			Action:        acl.RelationTupleDelta_INSERT,
+			Action:        rts.RelationTupleDelta_ACTION_INSERT,
 		}
 	}
 	for i := range del {
-		deltas[len(ins)+i] = &acl.RelationTupleDelta{
+		deltas[len(ins)+i] = &rts.RelationTupleDelta{
 			RelationTuple: del[i].ToProto(),
-			Action:        acl.RelationTupleDelta_DELETE,
+			Action:        rts.RelationTupleDelta_ACTION_DELETE,
 		}
 	}
 
-	_, err := c.TransactRelationTuples(g.ctx, &acl.TransactRelationTuplesRequest{
+	_, err := c.TransactRelationTuples(g.ctx, &rts.TransactRelationTuplesRequest{
 		RelationTupleDeltas: deltas,
 	})
 

@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 
-	"google.golang.org/grpc"
+	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 
-	acl "github.com/ory/keto/proto/ory/keto/acl/v1alpha1"
+	"google.golang.org/grpc"
 )
 
 func main() {
@@ -15,10 +15,10 @@ func main() {
 		panic(err.Error())
 	}
 
-	client := acl.NewReadServiceClient(conn)
+	client := rts.NewReadServiceClient(conn)
 
-	res, err := client.ListRelationTuples(context.Background(), &acl.ListRelationTuplesRequest{
-		Query: &acl.ListRelationTuplesRequest_Query{
+	res, err := client.ListRelationTuples(context.Background(), &rts.ListRelationTuplesRequest{
+		Query: &rts.ListRelationTuplesRequest_Query{
 			Namespace: "chats",
 			Object:    "coffee-break",
 			Relation:  "member",
@@ -29,6 +29,6 @@ func main() {
 	}
 
 	for _, rt := range res.RelationTuples {
-		fmt.Println(rt.Subject.Ref.(*acl.Subject_Id).Id)
+		fmt.Println(rt.Subject.Ref.(*rts.Subject_Id).Id)
 	}
 }

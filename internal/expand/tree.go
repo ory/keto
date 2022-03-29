@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	acl "github.com/ory/keto/proto/ory/keto/acl/v1alpha1"
+	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 
 	"github.com/pkg/errors"
 
@@ -53,29 +53,29 @@ func (t *NodeType) UnmarshalJSON(v []byte) error {
 	return nil
 }
 
-func (t NodeType) ToProto() acl.NodeType {
+func (t NodeType) ToProto() rts.NodeType {
 	switch t {
 	case Leaf:
-		return acl.NodeType_NODE_TYPE_LEAF
+		return rts.NodeType_NODE_TYPE_LEAF
 	case Union:
-		return acl.NodeType_NODE_TYPE_UNION
+		return rts.NodeType_NODE_TYPE_UNION
 	case Exclusion:
-		return acl.NodeType_NODE_TYPE_EXCLUSION
+		return rts.NodeType_NODE_TYPE_EXCLUSION
 	case Intersection:
-		return acl.NodeType_NODE_TYPE_INTERSECTION
+		return rts.NodeType_NODE_TYPE_INTERSECTION
 	}
-	return acl.NodeType_NODE_TYPE_UNSPECIFIED
+	return rts.NodeType_NODE_TYPE_UNSPECIFIED
 }
 
-func NodeTypeFromProto(t acl.NodeType) NodeType {
+func NodeTypeFromProto(t rts.NodeType) NodeType {
 	switch t {
-	case acl.NodeType_NODE_TYPE_LEAF:
+	case rts.NodeType_NODE_TYPE_LEAF:
 		return Leaf
-	case acl.NodeType_NODE_TYPE_UNION:
+	case rts.NodeType_NODE_TYPE_UNION:
 		return Union
-	case acl.NodeType_NODE_TYPE_EXCLUSION:
+	case rts.NodeType_NODE_TYPE_EXCLUSION:
 		return Exclusion
-	case acl.NodeType_NODE_TYPE_INTERSECTION:
+	case rts.NodeType_NODE_TYPE_INTERSECTION:
 		return Intersection
 	}
 	return Leaf
@@ -162,24 +162,24 @@ func (t *Tree) MarshalJSON() ([]byte, error) {
 }
 
 // swagger:ignore
-func (t *Tree) ToProto() *acl.SubjectTree {
+func (t *Tree) ToProto() *rts.SubjectTree {
 	if t == nil {
 		return nil
 	}
 
 	if t.Type == Leaf {
-		return &acl.SubjectTree{
-			NodeType: acl.NodeType_NODE_TYPE_LEAF,
+		return &rts.SubjectTree{
+			NodeType: rts.NodeType_NODE_TYPE_LEAF,
 			Subject:  t.Subject.ToProto(),
 		}
 	}
 
-	children := make([]*acl.SubjectTree, len(t.Children))
+	children := make([]*rts.SubjectTree, len(t.Children))
 	for i, c := range t.Children {
 		children[i] = c.ToProto()
 	}
 
-	return &acl.SubjectTree{
+	return &rts.SubjectTree{
 		NodeType: t.Type.ToProto(),
 		Subject:  t.Subject.ToProto(),
 		Children: children,
@@ -187,7 +187,7 @@ func (t *Tree) ToProto() *acl.SubjectTree {
 }
 
 // swagger:ignore
-func TreeFromProto(t *acl.SubjectTree) (*Tree, error) {
+func TreeFromProto(t *rts.SubjectTree) (*Tree, error) {
 	if t == nil {
 		return nil, nil
 	}
@@ -201,7 +201,7 @@ func TreeFromProto(t *acl.SubjectTree) (*Tree, error) {
 		Subject: sub,
 	}
 
-	if t.NodeType != acl.NodeType_NODE_TYPE_LEAF {
+	if t.NodeType != rts.NodeType_NODE_TYPE_LEAF {
 		self.Children = make([]*Tree, len(t.Children))
 		for i, c := range t.Children {
 			var err error

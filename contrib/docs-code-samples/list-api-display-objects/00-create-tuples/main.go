@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 
-	"google.golang.org/grpc"
+	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 
-	acl "github.com/ory/keto/proto/ory/keto/acl/v1alpha1"
+	"google.golang.org/grpc"
 )
 
 func main() {
@@ -15,39 +15,39 @@ func main() {
 		panic("Encountered error: " + err.Error())
 	}
 
-	client := acl.NewWriteServiceClient(conn)
+	client := rts.NewWriteServiceClient(conn)
 
-	var tuples []*acl.RelationTuple
+	var tuples []*rts.RelationTuple
 	// memes
 	for _, user := range []string{"PM", "Vincent", "Julia"} {
-		tuples = append(tuples, &acl.RelationTuple{
+		tuples = append(tuples, &rts.RelationTuple{
 			Namespace: "chats",
 			Object:    "memes",
 			Relation:  "member",
-			Subject:   acl.NewSubjectID(user),
+			Subject:   rts.NewSubjectID(user),
 		})
 	}
 	// cars
 	for _, user := range []string{"PM", "Julia"} {
-		tuples = append(tuples, &acl.RelationTuple{
+		tuples = append(tuples, &rts.RelationTuple{
 			Namespace: "chats",
 			Object:    "cars",
 			Relation:  "member",
-			Subject:   acl.NewSubjectID(user),
+			Subject:   rts.NewSubjectID(user),
 		})
 	}
 	// coffee-break
 	for _, user := range []string{"PM", "Vincent", "Julia", "Patrik"} {
-		tuples = append(tuples, &acl.RelationTuple{
+		tuples = append(tuples, &rts.RelationTuple{
 			Namespace: "chats",
 			Object:    "coffee-break",
 			Relation:  "member",
-			Subject:   acl.NewSubjectID(user),
+			Subject:   rts.NewSubjectID(user),
 		})
 	}
 
-	_, err = client.TransactRelationTuples(context.Background(), &acl.TransactRelationTuplesRequest{
-		RelationTupleDeltas: acl.RelationTupleToDeltas(tuples, acl.RelationTupleDelta_INSERT),
+	_, err = client.TransactRelationTuples(context.Background(), &rts.TransactRelationTuplesRequest{
+		RelationTupleDeltas: rts.RelationTupleToDeltas(tuples, rts.RelationTupleDelta_ACTION_INSERT),
 	})
 	if err != nil {
 		panic("Encountered error: " + err.Error())

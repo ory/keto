@@ -19,209 +19,6 @@
   },
   "basePath": "/",
   "paths": {
-    "/acl/check": {
-      "get": {
-        "description": "To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).",
-        "consumes": ["application/x-www-form-urlencoded"],
-        "produces": ["application/json"],
-        "schemes": ["http", "https"],
-        "tags": ["read"],
-        "summary": "Check a relation tuple",
-        "operationId": "getCheck",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "Namespace of the Relation Tuple",
-            "name": "namespace",
-            "in": "query"
-          },
-          {
-            "type": "string",
-            "description": "Object of the Relation Tuple",
-            "name": "object",
-            "in": "query"
-          },
-          {
-            "type": "string",
-            "description": "Relation of the Relation Tuple",
-            "name": "relation",
-            "in": "query"
-          },
-          {
-            "type": "string",
-            "description": "SubjectID of the Relation Tuple",
-            "name": "subject_id",
-            "in": "query"
-          },
-          {
-            "type": "string",
-            "description": "Namespace of the Subject Set",
-            "name": "subject_set.namespace",
-            "in": "query"
-          },
-          {
-            "type": "string",
-            "description": "Object of the Subject Set",
-            "name": "subject_set.object",
-            "in": "query"
-          },
-          {
-            "type": "string",
-            "description": "Relation of the Subject Set",
-            "name": "subject_set.relation",
-            "in": "query"
-          },
-          {
-            "type": "integer",
-            "format": "int64",
-            "name": "max-depth",
-            "in": "query"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "getCheckResponse",
-            "schema": {
-              "$ref": "#/definitions/getCheckResponse"
-            }
-          },
-          "400": {
-            "description": "genericError",
-            "schema": {
-              "$ref": "#/definitions/genericError"
-            }
-          },
-          "403": {
-            "description": "getCheckResponse",
-            "schema": {
-              "$ref": "#/definitions/getCheckResponse"
-            }
-          },
-          "500": {
-            "description": "genericError",
-            "schema": {
-              "$ref": "#/definitions/genericError"
-            }
-          }
-        }
-      },
-      "post": {
-        "description": "To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "schemes": ["http", "https"],
-        "tags": ["read"],
-        "summary": "Check a relation tuple",
-        "operationId": "postCheck",
-        "parameters": [
-          {
-            "name": "Payload",
-            "in": "body",
-            "schema": {
-              "$ref": "#/definitions/RelationQuery"
-            }
-          },
-          {
-            "type": "integer",
-            "format": "int64",
-            "name": "max-depth",
-            "in": "query"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "getCheckResponse",
-            "schema": {
-              "$ref": "#/definitions/getCheckResponse"
-            }
-          },
-          "400": {
-            "description": "genericError",
-            "schema": {
-              "$ref": "#/definitions/genericError"
-            }
-          },
-          "403": {
-            "description": "getCheckResponse",
-            "schema": {
-              "$ref": "#/definitions/getCheckResponse"
-            }
-          },
-          "500": {
-            "description": "genericError",
-            "schema": {
-              "$ref": "#/definitions/genericError"
-            }
-          }
-        }
-      }
-    },
-    "/acl/expand": {
-      "get": {
-        "description": "Use this endpoint to expand a relation tuple.",
-        "consumes": ["application/x-www-form-urlencoded"],
-        "produces": ["application/json"],
-        "schemes": ["http", "https"],
-        "tags": ["read"],
-        "summary": "Expand a Relation Tuple",
-        "operationId": "getExpand",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "Namespace of the Subject Set",
-            "name": "namespace",
-            "in": "query",
-            "required": true
-          },
-          {
-            "type": "string",
-            "description": "Object of the Subject Set",
-            "name": "object",
-            "in": "query",
-            "required": true
-          },
-          {
-            "type": "string",
-            "description": "Relation of the Subject Set",
-            "name": "relation",
-            "in": "query",
-            "required": true
-          },
-          {
-            "type": "integer",
-            "format": "int64",
-            "name": "max-depth",
-            "in": "query"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "expandTree",
-            "schema": {
-              "$ref": "#/definitions/expandTree"
-            }
-          },
-          "400": {
-            "description": "genericError",
-            "schema": {
-              "$ref": "#/definitions/genericError"
-            }
-          },
-          "404": {
-            "description": "genericError",
-            "schema": {
-              "$ref": "#/definitions/genericError"
-            }
-          },
-          "500": {
-            "description": "genericError",
-            "schema": {
-              "$ref": "#/definitions/genericError"
-            }
-          }
-        }
-      }
-    },
     "/admin/relation-tuples": {
       "put": {
         "description": "Use this endpoint to create a relation tuple.",
@@ -508,6 +305,209 @@
         }
       }
     },
+    "/relation-tuples/check": {
+      "get": {
+        "description": "To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).",
+        "consumes": ["application/x-www-form-urlencoded"],
+        "produces": ["application/json"],
+        "schemes": ["http", "https"],
+        "tags": ["read"],
+        "summary": "Check a relation tuple",
+        "operationId": "getCheck",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Namespace of the Relation Tuple",
+            "name": "namespace",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Object of the Relation Tuple",
+            "name": "object",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Relation of the Relation Tuple",
+            "name": "relation",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "SubjectID of the Relation Tuple",
+            "name": "subject_id",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Namespace of the Subject Set",
+            "name": "subject_set.namespace",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Object of the Subject Set",
+            "name": "subject_set.object",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Relation of the Subject Set",
+            "name": "subject_set.relation",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "format": "int64",
+            "name": "max-depth",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "getCheckResponse",
+            "schema": {
+              "$ref": "#/definitions/getCheckResponse"
+            }
+          },
+          "400": {
+            "description": "genericError",
+            "schema": {
+              "$ref": "#/definitions/genericError"
+            }
+          },
+          "403": {
+            "description": "getCheckResponse",
+            "schema": {
+              "$ref": "#/definitions/getCheckResponse"
+            }
+          },
+          "500": {
+            "description": "genericError",
+            "schema": {
+              "$ref": "#/definitions/genericError"
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "schemes": ["http", "https"],
+        "tags": ["read"],
+        "summary": "Check a relation tuple",
+        "operationId": "postCheck",
+        "parameters": [
+          {
+            "name": "Payload",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/RelationQuery"
+            }
+          },
+          {
+            "type": "integer",
+            "format": "int64",
+            "name": "max-depth",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "getCheckResponse",
+            "schema": {
+              "$ref": "#/definitions/getCheckResponse"
+            }
+          },
+          "400": {
+            "description": "genericError",
+            "schema": {
+              "$ref": "#/definitions/genericError"
+            }
+          },
+          "403": {
+            "description": "getCheckResponse",
+            "schema": {
+              "$ref": "#/definitions/getCheckResponse"
+            }
+          },
+          "500": {
+            "description": "genericError",
+            "schema": {
+              "$ref": "#/definitions/genericError"
+            }
+          }
+        }
+      }
+    },
+    "/relation-tuples/expand": {
+      "get": {
+        "description": "Use this endpoint to expand a relation tuple.",
+        "consumes": ["application/x-www-form-urlencoded"],
+        "produces": ["application/json"],
+        "schemes": ["http", "https"],
+        "tags": ["read"],
+        "summary": "Expand a Relation Tuple",
+        "operationId": "getExpand",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Namespace of the Subject Set",
+            "name": "namespace",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Object of the Subject Set",
+            "name": "object",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Relation of the Subject Set",
+            "name": "relation",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "integer",
+            "format": "int64",
+            "name": "max-depth",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "expandTree",
+            "schema": {
+              "$ref": "#/definitions/expandTree"
+            }
+          },
+          "400": {
+            "description": "genericError",
+            "schema": {
+              "$ref": "#/definitions/genericError"
+            }
+          },
+          "404": {
+            "description": "genericError",
+            "schema": {
+              "$ref": "#/definitions/genericError"
+            }
+          },
+          "500": {
+            "description": "genericError",
+            "schema": {
+              "$ref": "#/definitions/genericError"
+            }
+          }
+        }
+      }
+    },
     "/version": {
       "get": {
         "description": "This endpoint returns the service version typically notated using semantic versioning.\n\nIf the service supports TLS Edge Termination, this endpoint does not require the\n`X-Forwarded-Proto` header to be set.\n\nBe aware that if you are running multiple nodes of this service, the health status will never\nrefer to the cluster state, only to a single instance.",
@@ -660,7 +660,7 @@
     "getCheckResponse": {
       "description": "The content of the allowed field is mirrored in the HTTP status code.",
       "type": "object",
-      "title": "Represents the response for a check request.",
+      "title": "RESTResponse is the response for a check request.",
       "required": ["allowed"],
       "properties": {
         "allowed": {

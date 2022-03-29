@@ -66,7 +66,7 @@ type PostCheckOK struct {
 }
 
 func (o *PostCheckOK) Error() string {
-	return fmt.Sprintf("[POST /acl/check][%d] postCheckOK  %+v", 200, o.Payload)
+	return fmt.Sprintf("[POST /relation-tuples/check][%d] postCheckOK  %+v", 200, o.Payload)
 }
 func (o *PostCheckOK) GetPayload() *models.GetCheckResponse {
 	return o.Payload
@@ -98,7 +98,7 @@ type PostCheckBadRequest struct {
 }
 
 func (o *PostCheckBadRequest) Error() string {
-	return fmt.Sprintf("[POST /acl/check][%d] postCheckBadRequest  %+v", 400, o.Payload)
+	return fmt.Sprintf("[POST /relation-tuples/check][%d] postCheckBadRequest  %+v", 400, o.Payload)
 }
 func (o *PostCheckBadRequest) GetPayload() *models.GenericError {
 	return o.Payload
@@ -130,7 +130,7 @@ type PostCheckForbidden struct {
 }
 
 func (o *PostCheckForbidden) Error() string {
-	return fmt.Sprintf("[POST /acl/check][%d] postCheckForbidden  %+v", 403, o.Payload)
+	return fmt.Sprintf("[POST /relation-tuples/check][%d] postCheckForbidden  %+v", 403, o.Payload)
 }
 func (o *PostCheckForbidden) GetPayload() *models.GetCheckResponse {
 	return o.Payload
@@ -162,7 +162,7 @@ type PostCheckInternalServerError struct {
 }
 
 func (o *PostCheckInternalServerError) Error() string {
-	return fmt.Sprintf("[POST /acl/check][%d] postCheckInternalServerError  %+v", 500, o.Payload)
+	return fmt.Sprintf("[POST /relation-tuples/check][%d] postCheckInternalServerError  %+v", 500, o.Payload)
 }
 func (o *PostCheckInternalServerError) GetPayload() *models.GenericError {
 	return o.Payload

@@ -5,11 +5,11 @@ import (
 	"encoding/json"
 	"os"
 
+	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
+
 	"github.com/ory/keto/internal/expand"
 
 	"google.golang.org/grpc"
-
-	acl "github.com/ory/keto/proto/ory/keto/acl/v1alpha1"
 )
 
 func main() {
@@ -18,10 +18,10 @@ func main() {
 		panic(err)
 	}
 
-	client := acl.NewExpandServiceClient(conn)
+	client := rts.NewExpandServiceClient(conn)
 
-	res, err := client.Expand(context.Background(), &acl.ExpandRequest{
-		Subject:  acl.NewSubjectSet("files", "/photos/beach.jpg", "access"),
+	res, err := client.Expand(context.Background(), &rts.ExpandRequest{
+		Subject:  rts.NewSubjectSet("files", "/photos/beach.jpg", "access"),
 		MaxDepth: 3,
 	})
 	if err != nil {

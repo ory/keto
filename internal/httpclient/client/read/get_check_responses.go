@@ -66,7 +66,7 @@ type GetCheckOK struct {
 }
 
 func (o *GetCheckOK) Error() string {
-	return fmt.Sprintf("[GET /acl/check][%d] getCheckOK  %+v", 200, o.Payload)
+	return fmt.Sprintf("[GET /relation-tuples/check][%d] getCheckOK  %+v", 200, o.Payload)
 }
 func (o *GetCheckOK) GetPayload() *models.GetCheckResponse {
 	return o.Payload
@@ -98,7 +98,7 @@ type GetCheckBadRequest struct {
 }
 
 func (o *GetCheckBadRequest) Error() string {
-	return fmt.Sprintf("[GET /acl/check][%d] getCheckBadRequest  %+v", 400, o.Payload)
+	return fmt.Sprintf("[GET /relation-tuples/check][%d] getCheckBadRequest  %+v", 400, o.Payload)
 }
 func (o *GetCheckBadRequest) GetPayload() *models.GenericError {
 	return o.Payload
@@ -130,7 +130,7 @@ type GetCheckForbidden struct {
 }
 
 func (o *GetCheckForbidden) Error() string {
-	return fmt.Sprintf("[GET /acl/check][%d] getCheckForbidden  %+v", 403, o.Payload)
+	return fmt.Sprintf("[GET /relation-tuples/check][%d] getCheckForbidden  %+v", 403, o.Payload)
 }
 func (o *GetCheckForbidden) GetPayload() *models.GetCheckResponse {
 	return o.Payload
@@ -162,7 +162,7 @@ type GetCheckInternalServerError struct {
 }
 
 func (o *GetCheckInternalServerError) Error() string {
-	return fmt.Sprintf("[GET /acl/check][%d] getCheckInternalServerError  %+v", 500, o.Payload)
+	return fmt.Sprintf("[GET /relation-tuples/check][%d] getCheckInternalServerError  %+v", 500, o.Payload)
 }
 func (o *GetCheckInternalServerError) GetPayload() *models.GenericError {
 	return o.Payload

@@ -6,10 +6,10 @@ package main
 import (
 	"context"
 
+	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
+
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/proto"
-
-	acl "github.com/ory/keto/proto/ory/keto/acl/v1alpha1"
 )
 
 func main() {
@@ -19,9 +19,9 @@ func main() {
 	}
 	defer rc.Close()
 
-	rClient := acl.NewReadServiceClient(rc)
-	resp, err := rClient.ListRelationTuples(context.Background(), &acl.ListRelationTuplesRequest{
-		Query: &acl.ListRelationTuplesRequest_Query{
+	rClient := rts.NewReadServiceClient(rc)
+	resp, err := rClient.ListRelationTuples(context.Background(), &rts.ListRelationTuplesRequest{
+		Query: &rts.ListRelationTuplesRequest_Query{
 			Namespace: "chats",
 		},
 	})
@@ -35,16 +35,16 @@ func main() {
 	}
 	defer wc.Close()
 
-	deltas := make([]*acl.RelationTupleDelta, len(resp.RelationTuples))
+	deltas := make([]*rts.RelationTupleDelta, len(resp.RelationTuples))
 	for i, rt := range resp.RelationTuples {
-		deltas[i] = &acl.RelationTupleDelta{
-			Action:        acl.RelationTupleDelta_DELETE,
-			RelationTuple: proto.Clone(rt).(*acl.RelationTuple),
+		deltas[i] = &rts.RelationTupleDelta{
+			Action:        rts.RelationTupleDelta_ACTION_DELETE,
+			RelationTuple: proto.Clone(rt).(*rts.RelationTuple),
 		}
 	}
 
-	wClient := acl.NewWriteServiceClient(wc)
-	_, err = wClient.TransactRelationTuples(context.Background(), &acl.TransactRelationTuplesRequest{
+	wClient := rts.NewWriteServiceClient(wc)
+	_, err = wClient.TransactRelationTuples(context.Background(), &rts.TransactRelationTuplesRequest{
 		RelationTupleDeltas: deltas,
 	})
 	if err != nil {

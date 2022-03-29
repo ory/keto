@@ -9,6 +9,8 @@ import (
 	"strings"
 	"syscall"
 
+	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
+
 	prometheus "github.com/ory/x/prometheusx"
 
 	"github.com/ory/x/logrusx"
@@ -24,12 +26,10 @@ import (
 	grpcHealthV1 "google.golang.org/grpc/health/grpc_health_v1"
 	"google.golang.org/grpc/reflection"
 
-	"github.com/ory/keto/internal/x"
-	acl "github.com/ory/keto/proto/ory/keto/acl/v1alpha1"
-
 	"github.com/ory/keto/internal/check"
 	"github.com/ory/keto/internal/expand"
 	"github.com/ory/keto/internal/relationtuple"
+	"github.com/ory/keto/internal/x"
 
 	"github.com/ory/analytics-go/v4"
 	"github.com/ory/x/healthx"
@@ -387,7 +387,7 @@ func (r *RegistryDefault) ReadGRPCServer(ctx context.Context) *grpc.Server {
 	)
 
 	grpcHealthV1.RegisterHealthServer(s, r.HealthServer())
-	acl.RegisterVersionServiceServer(s, r)
+	rts.RegisterVersionServiceServer(s, r)
 	reflection.Register(s)
 
 	for _, h := range r.allHandlers() {
@@ -404,7 +404,7 @@ func (r *RegistryDefault) WriteGRPCServer(ctx context.Context) *grpc.Server {
 	)
 
 	grpcHealthV1.RegisterHealthServer(s, r.HealthServer())
-	acl.RegisterVersionServiceServer(s, r)
+	rts.RegisterVersionServiceServer(s, r)
 	reflection.Register(s)
 
 	for _, h := range r.allHandlers() {

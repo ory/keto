@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 
-	"google.golang.org/grpc"
+	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 
-	acl "github.com/ory/keto/proto/ory/keto/acl/v1alpha1"
+	"google.golang.org/grpc"
 )
 
 func main() {
@@ -15,7 +15,7 @@ func main() {
 		panic("Encountered error: " + err.Error())
 	}
 
-	client := acl.NewWriteServiceClient(conn)
+	client := rts.NewWriteServiceClient(conn)
 
 	//directories:/photos#owner@maureen
 	//files:/photos/beach.jpg#owner@maureen
@@ -27,32 +27,32 @@ func main() {
 	//files:/photos/mountains.jpg#access@(files:/photos/mountains.jpg#owner)
 	//files:/photos/mountains.jpg#access@(directories:/photos#access)
 
-	tuples := []*acl.RelationTuple{
+	tuples := []*rts.RelationTuple{
 		// ownership
 		{
 			Namespace: "directories",
 			Object:    "/photos",
 			Relation:  "owner",
-			Subject:   acl.NewSubjectID("maureen"),
+			Subject:   rts.NewSubjectID("maureen"),
 		},
 		{
 			Namespace: "files",
 			Object:    "/photos/beach.jpg",
 			Relation:  "owner",
-			Subject:   acl.NewSubjectID("maureen"),
+			Subject:   rts.NewSubjectID("maureen"),
 		},
 		{
 			Namespace: "files",
 			Object:    "/photos/mountains.jpg",
 			Relation:  "owner",
-			Subject:   acl.NewSubjectID("laura"),
+			Subject:   rts.NewSubjectID("laura"),
 		},
 		// granted access
 		{
 			Namespace: "directories",
 			Object:    "/photos",
 			Relation:  "access",
-			Subject:   acl.NewSubjectID("laura"),
+			Subject:   rts.NewSubjectID("laura"),
 		},
 	}
 	// should be subject set rewrite
@@ -62,26 +62,26 @@ func main() {
 		{"files", "/photos/mountains.jpg"},
 		{"directories", "/photos"},
 	} {
-		tuples = append(tuples, &acl.RelationTuple{
+		tuples = append(tuples, &rts.RelationTuple{
 			Namespace: o.n,
 			Object:    o.o,
 			Relation:  "access",
-			Subject:   acl.NewSubjectSet(o.n, o.o, "owner"),
+			Subject:   rts.NewSubjectSet(o.n, o.o, "owner"),
 		})
 	}
 	// should be subject set rewrite
 	// access on parent means access on child
 	for _, obj := range []string{"/photos/beach.jpg", "/photos/mountains.jpg"} {
-		tuples = append(tuples, &acl.RelationTuple{
+		tuples = append(tuples, &rts.RelationTuple{
 			Namespace: "files",
 			Object:    obj,
 			Relation:  "access",
-			Subject:   acl.NewSubjectSet("directories", "/photos", "access"),
+			Subject:   rts.NewSubjectSet("directories", "/photos", "access"),
 		})
 	}
 
-	_, err = client.TransactRelationTuples(context.Background(), &acl.TransactRelationTuplesRequest{
-		RelationTupleDeltas: acl.RelationTupleToDeltas(tuples, acl.RelationTupleDelta_INSERT),
+	_, err = client.TransactRelationTuples(context.Background(), &rts.TransactRelationTuplesRequest{
+		RelationTupleDeltas: rts.RelationTupleToDeltas(tuples, rts.RelationTupleDelta_ACTION_INSERT),
 	})
 	if err != nil {
 		panic("Encountered error: " + err.Error())

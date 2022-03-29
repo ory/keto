@@ -1,17 +1,17 @@
 import grpc from '@ory/keto-grpc-client/node_modules/@grpc/grpc-js/build/src/index.js'
-import { acl, expand, expandService } from '@ory/keto-grpc-client'
+import { relationTuples, expand, expandService } from '@ory/keto-grpc-client'
 
 const expandClient = new expandService.ExpandServiceClient(
   '127.0.0.1:4466',
   grpc.credentials.createInsecure()
 )
 
-const subjectSet = new acl.SubjectSet()
+const subjectSet = new relationTuples.SubjectSet()
 subjectSet.setNamespace('files')
 subjectSet.setRelation('access')
 subjectSet.setObject('/photos/beach.jpg')
 
-const sub = new acl.Subject()
+const sub = new relationTuples.Subject()
 sub.setSet(subjectSet)
 
 const expandRequest = new expand.ExpandRequest()

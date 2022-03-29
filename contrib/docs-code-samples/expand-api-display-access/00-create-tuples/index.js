@@ -1,5 +1,5 @@
 import grpc from '@ory/keto-grpc-client/node_modules/@grpc/grpc-js/build/src/index.js'
-import { acl, write, writeService } from '@ory/keto-grpc-client'
+import { relationTuples, write, writeService } from '@ory/keto-grpc-client'
 
 const writeClient = new writeService.WriteServiceClient(
   '127.0.0.1:4467',
@@ -10,19 +10,19 @@ const writeRequest = new write.TransactRelationTuplesRequest()
 
 const insert = (tuple) => {
   const tupleDelta = new write.RelationTupleDelta()
-  tupleDelta.setAction(write.RelationTupleDelta.Action.INSERT)
+  tupleDelta.setAction(write.RelationTupleDelta.Action.ACTION_INSERT)
   tupleDelta.setRelationTuple(tuple)
 
   writeRequest.addRelationTupleDeltas(tupleDelta)
 }
 
 const addSimpleTuple = (namespace, object, relation, user) => {
-  const relationTuple = new acl.RelationTuple()
+  const relationTuple = new relationTuples.RelationTuple()
   relationTuple.setNamespace(namespace)
   relationTuple.setObject(object)
   relationTuple.setRelation(relation)
 
-  const sub = new acl.Subject()
+  const sub = new relationTuples.Subject()
   sub.setId(user)
   relationTuple.setSubject(sub)
 
@@ -43,17 +43,17 @@ addSimpleTuple('directories', '/photos', 'access', 'laura')
   ['files', '/photos/mountains.jpg'],
   ['directories', '/photos']
 ].forEach(([namespace, object]) => {
-  const relationTuple = new acl.RelationTuple()
+  const relationTuple = new relationTuples.RelationTuple()
   relationTuple.setNamespace(namespace)
   relationTuple.setObject(object)
   relationTuple.setRelation('access')
 
-  const subjectSet = new acl.SubjectSet()
+  const subjectSet = new relationTuples.SubjectSet()
   subjectSet.setNamespace(namespace)
   subjectSet.setObject(object)
   subjectSet.setRelation('owner')
 
-  const sub = new acl.Subject()
+  const sub = new relationTuples.Subject()
   sub.setSet(subjectSet)
   relationTuple.setSubject(sub)
 
@@ -63,17 +63,17 @@ addSimpleTuple('directories', '/photos', 'access', 'laura')
 // should be subject set rewrite
 // access on parent means access on child
 ;['/photos/beach.jpg', '/photos/mountains.jpg'].forEach((file) => {
-  const relationTuple = new acl.RelationTuple()
+  const relationTuple = new relationTuples.RelationTuple()
   relationTuple.setNamespace('files')
   relationTuple.setObject(file)
   relationTuple.setRelation('access')
 
-  const subjectSet = new acl.SubjectSet()
+  const subjectSet = new relationTuples.SubjectSet()
   subjectSet.setNamespace('directories')
   subjectSet.setObject('/photos')
   subjectSet.setRelation('access')
 
-  const sub = new acl.Subject()
+  const sub = new relationTuples.Subject()
   sub.setSet(subjectSet)
   relationTuple.setSubject(sub)
 

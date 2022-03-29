@@ -149,7 +149,7 @@
           }
         },
         "required": ["allowed"],
-        "title": "Represents the response for a check request.",
+        "title": "RESTResponse is the response for a check request.",
         "type": "object"
       },
       "getRelationTuplesResponse": {
@@ -215,277 +215,6 @@
   },
   "openapi": "3.0.3",
   "paths": {
-    "/acl/check": {
-      "get": {
-        "description": "To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).",
-        "operationId": "getCheck",
-        "parameters": [
-          {
-            "description": "Namespace of the Relation Tuple",
-            "in": "query",
-            "name": "namespace",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "description": "Object of the Relation Tuple",
-            "in": "query",
-            "name": "object",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "description": "Relation of the Relation Tuple",
-            "in": "query",
-            "name": "relation",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "description": "SubjectID of the Relation Tuple",
-            "in": "query",
-            "name": "subject_id",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "description": "Namespace of the Subject Set",
-            "in": "query",
-            "name": "subject_set.namespace",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "description": "Object of the Subject Set",
-            "in": "query",
-            "name": "subject_set.object",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "description": "Relation of the Subject Set",
-            "in": "query",
-            "name": "subject_set.relation",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "in": "query",
-            "name": "max-depth",
-            "schema": {
-              "format": "int64",
-              "type": "integer"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/getCheckResponse"
-                }
-              }
-            },
-            "description": "getCheckResponse"
-          },
-          "400": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/genericError"
-                }
-              }
-            },
-            "description": "genericError"
-          },
-          "403": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/getCheckResponse"
-                }
-              }
-            },
-            "description": "getCheckResponse"
-          },
-          "500": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/genericError"
-                }
-              }
-            },
-            "description": "genericError"
-          }
-        },
-        "summary": "Check a relation tuple",
-        "tags": ["read"]
-      },
-      "post": {
-        "description": "To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).",
-        "operationId": "postCheck",
-        "parameters": [
-          {
-            "in": "query",
-            "name": "max-depth",
-            "schema": {
-              "format": "int64",
-              "type": "integer"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RelationQuery"
-              }
-            }
-          },
-          "x-originalParamName": "Payload"
-        },
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/getCheckResponse"
-                }
-              }
-            },
-            "description": "getCheckResponse"
-          },
-          "400": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/genericError"
-                }
-              }
-            },
-            "description": "genericError"
-          },
-          "403": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/getCheckResponse"
-                }
-              }
-            },
-            "description": "getCheckResponse"
-          },
-          "500": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/genericError"
-                }
-              }
-            },
-            "description": "genericError"
-          }
-        },
-        "summary": "Check a relation tuple",
-        "tags": ["read"]
-      }
-    },
-    "/acl/expand": {
-      "get": {
-        "description": "Use this endpoint to expand a relation tuple.",
-        "operationId": "getExpand",
-        "parameters": [
-          {
-            "description": "Namespace of the Subject Set",
-            "in": "query",
-            "name": "namespace",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "description": "Object of the Subject Set",
-            "in": "query",
-            "name": "object",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "description": "Relation of the Subject Set",
-            "in": "query",
-            "name": "relation",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "in": "query",
-            "name": "max-depth",
-            "schema": {
-              "format": "int64",
-              "type": "integer"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/expandTree"
-                }
-              }
-            },
-            "description": "expandTree"
-          },
-          "400": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/genericError"
-                }
-              }
-            },
-            "description": "genericError"
-          },
-          "404": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/genericError"
-                }
-              }
-            },
-            "description": "genericError"
-          },
-          "500": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/genericError"
-                }
-              }
-            },
-            "description": "genericError"
-          }
-        },
-        "summary": "Expand a Relation Tuple",
-        "tags": ["read"]
-      }
-    },
     "/admin/relation-tuples": {
       "delete": {
         "description": "Use this endpoint to delete relation tuples",
@@ -873,6 +602,277 @@
           }
         },
         "summary": "Query relation tuples",
+        "tags": ["read"]
+      }
+    },
+    "/relation-tuples/check": {
+      "get": {
+        "description": "To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).",
+        "operationId": "getCheck",
+        "parameters": [
+          {
+            "description": "Namespace of the Relation Tuple",
+            "in": "query",
+            "name": "namespace",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Object of the Relation Tuple",
+            "in": "query",
+            "name": "object",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Relation of the Relation Tuple",
+            "in": "query",
+            "name": "relation",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "SubjectID of the Relation Tuple",
+            "in": "query",
+            "name": "subject_id",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Namespace of the Subject Set",
+            "in": "query",
+            "name": "subject_set.namespace",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Object of the Subject Set",
+            "in": "query",
+            "name": "subject_set.object",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Relation of the Subject Set",
+            "in": "query",
+            "name": "subject_set.relation",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "max-depth",
+            "schema": {
+              "format": "int64",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/getCheckResponse"
+                }
+              }
+            },
+            "description": "getCheckResponse"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/genericError"
+                }
+              }
+            },
+            "description": "genericError"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/getCheckResponse"
+                }
+              }
+            },
+            "description": "getCheckResponse"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/genericError"
+                }
+              }
+            },
+            "description": "genericError"
+          }
+        },
+        "summary": "Check a relation tuple",
+        "tags": ["read"]
+      },
+      "post": {
+        "description": "To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).",
+        "operationId": "postCheck",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "max-depth",
+            "schema": {
+              "format": "int64",
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RelationQuery"
+              }
+            }
+          },
+          "x-originalParamName": "Payload"
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/getCheckResponse"
+                }
+              }
+            },
+            "description": "getCheckResponse"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/genericError"
+                }
+              }
+            },
+            "description": "genericError"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/getCheckResponse"
+                }
+              }
+            },
+            "description": "getCheckResponse"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/genericError"
+                }
+              }
+            },
+            "description": "genericError"
+          }
+        },
+        "summary": "Check a relation tuple",
+        "tags": ["read"]
+      }
+    },
+    "/relation-tuples/expand": {
+      "get": {
+        "description": "Use this endpoint to expand a relation tuple.",
+        "operationId": "getExpand",
+        "parameters": [
+          {
+            "description": "Namespace of the Subject Set",
+            "in": "query",
+            "name": "namespace",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Object of the Subject Set",
+            "in": "query",
+            "name": "object",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Relation of the Subject Set",
+            "in": "query",
+            "name": "relation",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "max-depth",
+            "schema": {
+              "format": "int64",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/expandTree"
+                }
+              }
+            },
+            "description": "expandTree"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/genericError"
+                }
+              }
+            },
+            "description": "genericError"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/genericError"
+                }
+              }
+            },
+            "description": "genericError"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/genericError"
+                }
+              }
+            },
+            "description": "genericError"
+          }
+        },
+        "summary": "Expand a Relation Tuple",
         "tags": ["read"]
       }
     },

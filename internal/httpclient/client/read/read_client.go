@@ -54,7 +54,7 @@ func (a *Client) GetCheck(params *GetCheckParams, opts ...ClientOption) (*GetChe
 	op := &runtime.ClientOperation{
 		ID:                 "getCheck",
 		Method:             "GET",
-		PathPattern:        "/acl/check",
+		PathPattern:        "/relation-tuples/check",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/x-www-form-urlencoded"},
 		Schemes:            []string{"http", "https"},
@@ -94,7 +94,7 @@ func (a *Client) GetExpand(params *GetExpandParams, opts ...ClientOption) (*GetE
 	op := &runtime.ClientOperation{
 		ID:                 "getExpand",
 		Method:             "GET",
-		PathPattern:        "/acl/expand",
+		PathPattern:        "/relation-tuples/expand",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/x-www-form-urlencoded"},
 		Schemes:            []string{"http", "https"},
@@ -174,7 +174,7 @@ func (a *Client) PostCheck(params *PostCheckParams, opts ...ClientOption) (*Post
 	op := &runtime.ClientOperation{
 		ID:                 "postCheck",
 		Method:             "POST",
-		PathPattern:        "/acl/check",
+		PathPattern:        "/relation-tuples/check",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"http", "https"},

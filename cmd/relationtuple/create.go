@@ -8,7 +8,7 @@ import (
 	"os"
 	"path/filepath"
 
-	acl "github.com/ory/keto/proto/ory/keto/acl/v1alpha1"
+	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 
 	"github.com/ory/keto/internal/relationtuple"
 
@@ -25,7 +25,7 @@ func newCreateCmd() *cobra.Command {
 			"A directory will be traversed and all relation tuples will be created.\n" +
 			"Pass the special filename `-` to read from STD_IN.",
 		Args: cobra.MinimumNArgs(1),
-		RunE: transactRelationTuples(acl.RelationTupleDelta_INSERT),
+		RunE: transactRelationTuples(rts.RelationTupleDelta_ACTION_INSERT),
 	}
 	cmd.Flags().AddFlagSet(packageFlags)
 

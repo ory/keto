@@ -8,7 +8,7 @@ import (
 	"github.com/ory/herodot"
 	"github.com/pkg/errors"
 
-	acl "github.com/ory/keto/proto/ory/keto/acl/v1alpha1"
+	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 
 	"google.golang.org/grpc"
 
@@ -30,13 +30,13 @@ type (
 	}
 )
 
-var _ acl.CheckServiceServer = (*Handler)(nil)
+var _ rts.CheckServiceServer = (*Handler)(nil)
 
 func NewHandler(d handlerDependencies) *Handler {
 	return &Handler{d: d}
 }
 
-const RouteBase = "/acl/check"
+const RouteBase = "/relation-tuples/check"
 
 func (h *Handler) RegisterReadRoutes(r *x.ReadRouter) {
 	r.GET(RouteBase, h.getCheck)
@@ -46,12 +46,12 @@ func (h *Handler) RegisterReadRoutes(r *x.ReadRouter) {
 func (h *Handler) RegisterWriteRoutes(_ *x.WriteRouter) {}
 
 func (h *Handler) RegisterReadGRPC(s *grpc.Server) {
-	acl.RegisterCheckServiceServer(s, h)
+	rts.RegisterCheckServiceServer(s, h)
 }
 
 func (h *Handler) RegisterWriteGRPC(_ *grpc.Server) {}
 
-// Represents the response for a check request.
+// RESTResponse is the response for a check request.
 //
 // The content of the allowed field is mirrored in the HTTP status code.
 //
@@ -70,7 +70,7 @@ type getCheckRequest struct {
 	MaxDepth int `json:"max-depth"`
 }
 
-// swagger:route GET /acl/check read getCheck
+// swagger:route GET /relation-tuples/check read getCheck
 //
 // Check a relation tuple
 //
@@ -119,7 +119,7 @@ func (h *Handler) getCheck(w http.ResponseWriter, r *http.Request, _ httprouter.
 	h.d.Writer().WriteCode(w, r, http.StatusForbidden, &RESTResponse{Allowed: false})
 }
 
-// swagger:route POST /acl/check read postCheck
+// swagger:route POST /relation-tuples/check read postCheck
 //
 // Check a relation tuple
 //
@@ -165,7 +165,7 @@ func (h *Handler) postCheck(w http.ResponseWriter, r *http.Request, _ httprouter
 	h.d.Writer().WriteCode(w, r, http.StatusForbidden, &RESTResponse{Allowed: false})
 }
 
-func (h *Handler) Check(ctx context.Context, req *acl.CheckRequest) (*acl.CheckResponse, error) {
+func (h *Handler) Check(ctx context.Context, req *rts.CheckRequest) (*rts.CheckResponse, error) {
 	tuple, err := (&relationtuple.InternalRelationTuple{}).FromDataProvider(req)
 	if err != nil {
 		return nil, err
@@ -177,7 +177,7 @@ func (h *Handler) Check(ctx context.Context, req *acl.CheckRequest) (*acl.CheckR
 		return nil, err
 	}
 
-	return &acl.CheckResponse{
+	return &rts.CheckResponse{
 		Allowed:   allowed,
 		Snaptoken: "not yet implemented",
 	}, nil

@@ -5,16 +5,16 @@ import (
 	"encoding/json"
 	"net/http"
 
-	acl "github.com/ory/keto/proto/ory/keto/acl/v1alpha1"
+	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 
 	"github.com/julienschmidt/httprouter"
 	"github.com/ory/herodot"
 	"github.com/pkg/errors"
 )
 
-var _ acl.WriteServiceServer = (*handler)(nil)
+var _ rts.WriteServiceServer = (*handler)(nil)
 
-func protoTuplesWithAction(deltas []*acl.RelationTupleDelta, action acl.RelationTupleDelta_Action) (filtered []*InternalRelationTuple, err error) {
+func protoTuplesWithAction(deltas []*rts.RelationTupleDelta, action rts.RelationTupleDelta_Action) (filtered []*InternalRelationTuple, err error) {
 	for _, d := range deltas {
 		if d.Action == action {
 			it, err := (&InternalRelationTuple{}).FromDataProvider(d.RelationTuple)
@@ -27,13 +27,13 @@ func protoTuplesWithAction(deltas []*acl.RelationTupleDelta, action acl.Relation
 	return
 }
 
-func (h *handler) TransactRelationTuples(ctx context.Context, req *acl.TransactRelationTuplesRequest) (*acl.TransactRelationTuplesResponse, error) {
-	insertTuples, err := protoTuplesWithAction(req.RelationTupleDeltas, acl.RelationTupleDelta_INSERT)
+func (h *handler) TransactRelationTuples(ctx context.Context, req *rts.TransactRelationTuplesRequest) (*rts.TransactRelationTuplesResponse, error) {
+	insertTuples, err := protoTuplesWithAction(req.RelationTupleDeltas, rts.RelationTupleDelta_ACTION_INSERT)
 	if err != nil {
 		return nil, err
 	}
 
-	deleteTuples, err := protoTuplesWithAction(req.RelationTupleDeltas, acl.RelationTupleDelta_DELETE)
+	deleteTuples, err := protoTuplesWithAction(req.RelationTupleDeltas, rts.RelationTupleDelta_ACTION_DELETE)
 	if err != nil {
 		return nil, err
 	}
@@ -47,12 +47,12 @@ func (h *handler) TransactRelationTuples(ctx context.Context, req *acl.TransactR
 	for i := range insertTuples {
 		snaptokens[i] = "not yet implemented"
 	}
-	return &acl.TransactRelationTuplesResponse{
+	return &rts.TransactRelationTuplesResponse{
 		Snaptokens: snaptokens,
 	}, nil
 }
 
-func (h *handler) DeleteRelationTuples(ctx context.Context, req *acl.DeleteRelationTuplesRequest) (*acl.DeleteRelationTuplesResponse, error) {
+func (h *handler) DeleteRelationTuples(ctx context.Context, req *rts.DeleteRelationTuplesRequest) (*rts.DeleteRelationTuplesResponse, error) {
 	if req.Query == nil {
 		return nil, errors.WithStack(herodot.ErrBadRequest.WithReason("invalid request"))
 	}
@@ -66,7 +66,7 @@ func (h *handler) DeleteRelationTuples(ctx context.Context, req *acl.DeleteRelat
 		return nil, errors.WithStack(herodot.ErrInternalServerError.WithError(err.Error()))
 	}
 
-	return &acl.DeleteRelationTuplesResponse{}, nil
+	return &rts.DeleteRelationTuplesResponse{}, nil
 }
 
 // The basic ACL relation tuple

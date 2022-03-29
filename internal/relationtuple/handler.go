@@ -3,7 +3,7 @@ package relationtuple
 import (
 	"google.golang.org/grpc"
 
-	acl "github.com/ory/keto/proto/ory/keto/acl/v1alpha1"
+	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 
 	"github.com/ory/keto/internal/x"
 )
@@ -50,9 +50,9 @@ func (h *handler) RegisterWriteRoutes(r *x.WriteRouter) {
 }
 
 func (h *handler) RegisterReadGRPC(s *grpc.Server) {
-	acl.RegisterReadServiceServer(s, h)
+	rts.RegisterReadServiceServer(s, h)
 }
 
 func (h *handler) RegisterWriteGRPC(s *grpc.Server) {
-	acl.RegisterWriteServiceServer(s, h)
+	rts.RegisterWriteServiceServer(s, h)
 }
