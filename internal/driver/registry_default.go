@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"sync"
 
+	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
+
 	"github.com/gobuffalo/pop/v6"
 	"github.com/ory/herodot"
 	"github.com/ory/x/dbal"
@@ -27,7 +29,6 @@ import (
 	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/internal/x"
 	"github.com/ory/keto/ketoctx"
-	acl "github.com/ory/keto/proto/ory/keto/acl/v1alpha1"
 )
 
 var (
@@ -35,7 +36,7 @@ var (
 	_ x.WriterProvider               = (*RegistryDefault)(nil)
 	_ x.LoggerProvider               = (*RegistryDefault)(nil)
 	_ Registry                       = (*RegistryDefault)(nil)
-	_ acl.VersionServiceServer       = (*RegistryDefault)(nil)
+	_ rts.VersionServiceServer       = (*RegistryDefault)(nil)
 	_ ketoctx.ContextualizerProvider = (*RegistryDefault)(nil)
 )
 
@@ -99,8 +100,8 @@ func (r *RegistryDefault) HealthServer() *health.Server {
 	return r.healthServer
 }
 
-func (r *RegistryDefault) GetVersion(_ context.Context, _ *acl.GetVersionRequest) (*acl.GetVersionResponse, error) {
-	return &acl.GetVersionResponse{Version: config.Version}, nil
+func (r *RegistryDefault) GetVersion(_ context.Context, _ *rts.GetVersionRequest) (*rts.GetVersionResponse, error) {
+	return &rts.GetVersionResponse{Version: config.Version}, nil
 }
 
 func (r *RegistryDefault) Tracer(ctx context.Context) *tracing.Tracer {

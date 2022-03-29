@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 
-	"google.golang.org/grpc"
+	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 
-	acl "github.com/ory/keto/proto/ory/keto/acl/v1alpha1"
+	"google.golang.org/grpc"
 )
 
 func main() {
@@ -15,13 +15,13 @@ func main() {
 		panic(err.Error())
 	}
 
-	client := acl.NewCheckServiceClient(conn)
+	client := rts.NewCheckServiceClient(conn)
 
-	res, err := client.Check(context.Background(), &acl.CheckRequest{
+	res, err := client.Check(context.Background(), &rts.CheckRequest{
 		Namespace: "messages",
 		Object:    "02y_15_4w350m3",
 		Relation:  "decypher",
-		Subject:   acl.NewSubjectID("john"),
+		Subject:   rts.NewSubjectID("john"),
 	})
 	if err != nil {
 		panic(err.Error())

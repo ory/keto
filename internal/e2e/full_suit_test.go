@@ -124,7 +124,7 @@ func TestServeConfig(t *testing.T) {
 		time.Sleep(10 * time.Millisecond)
 	}
 
-	req, err := http.NewRequest(http.MethodOptions, "http://"+reg.Config(ctx).ReadAPIListenOn()+relationtuple.RouteBase, nil)
+	req, err := http.NewRequest(http.MethodOptions, "http://"+reg.Config(ctx).ReadAPIListenOn()+relationtuple.ReadRouteBase, nil)
 	require.NoError(t, err)
 	req.Header.Set("Origin", "https://ory.sh")
 	resp, err := http.DefaultClient.Do(req)

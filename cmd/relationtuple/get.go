@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strconv"
 
-	acl "github.com/ory/keto/proto/ory/keto/acl/v1alpha1"
+	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 
 	"github.com/ory/x/flagx"
 
@@ -43,8 +43,8 @@ func registerRelationTupleFlags(flags *pflag.FlagSet) {
 	}
 }
 
-func readQueryFromFlags(cmd *cobra.Command) (*acl.ListRelationTuplesRequest_Query, error) {
-	query := &acl.ListRelationTuplesRequest_Query{
+func readQueryFromFlags(cmd *cobra.Command) (*rts.ListRelationTuplesRequest_Query, error) {
+	query := &rts.ListRelationTuplesRequest_Query{
 		Namespace: flagx.MustGetString(cmd, FlagNamespace),
 		Object:    flagx.MustGetString(cmd, FlagObject),
 		Relation:  flagx.MustGetString(cmd, FlagRelation),
@@ -102,13 +102,13 @@ func getTuples(pageSize *int32, pageToken *string) func(cmd *cobra.Command, _ []
 		}
 		defer conn.Close()
 
-		cl := acl.NewReadServiceClient(conn)
+		cl := rts.NewReadServiceClient(conn)
 		query, err := readQueryFromFlags(cmd)
 		if err != nil {
 			return err
 		}
 
-		resp, err := cl.ListRelationTuples(cmd.Context(), &acl.ListRelationTuplesRequest{
+		resp, err := cl.ListRelationTuples(cmd.Context(), &rts.ListRelationTuplesRequest{
 			Query:     query,
 			PageSize:  *pageSize,
 			PageToken: *pageToken,

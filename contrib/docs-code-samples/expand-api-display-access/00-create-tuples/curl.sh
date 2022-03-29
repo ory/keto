@@ -19,6 +19,6 @@ files:/photos/mountains.jpg#access@(directories:/photos#access)' | \
     jq "[ .[] | { relation_tuple: . , action: \"insert\" } ]" -c | \
       curl -X PATCH --silent --fail \
         --data @- \
-        http://127.0.0.1:4467/relation-tuples
+        http://127.0.0.1:4467/admin/relation-tuples
 
 echo "Successfully created tuples"

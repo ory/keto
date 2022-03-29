@@ -8,14 +8,14 @@ import (
 	"strconv"
 	"testing"
 
+	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
+
 	"github.com/ory/x/pointerx"
 
 	"github.com/pkg/errors"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-
-	acl "github.com/ory/keto/proto/ory/keto/acl/v1alpha1"
 )
 
 func TestSubject(t *testing.T) {
@@ -74,13 +74,13 @@ func TestSubject(t *testing.T) {
 
 	t.Run("case=proto decoding", func(t *testing.T) {
 		for i, tc := range []struct {
-			proto    *acl.Subject
+			proto    *rts.Subject
 			expected Subject
 			err      error
 		}{
 			{
-				proto: &acl.Subject{
-					Ref: &acl.Subject_Id{Id: "foo"},
+				proto: &rts.Subject{
+					Ref: &rts.Subject_Id{Id: "foo"},
 				},
 				expected: &SubjectID{ID: "foo"},
 			},
@@ -89,9 +89,9 @@ func TestSubject(t *testing.T) {
 				err:   ErrNilSubject,
 			},
 			{
-				proto: &acl.Subject{
-					Ref: &acl.Subject_Set{
-						Set: &acl.SubjectSet{
+				proto: &rts.Subject{
+					Ref: &rts.Subject_Set{
+						Set: &rts.SubjectSet{
 							Namespace: "n",
 							Object:    "o",
 							Relation:  "r",
@@ -410,7 +410,7 @@ func TestInternalRelationTuple(t *testing.T) {
 			err      error
 		}{
 			{
-				proto: &acl.RelationTuple{
+				proto: &rts.RelationTuple{
 					Namespace: "n",
 					Object:    "o",
 					Relation:  "r",
@@ -419,13 +419,13 @@ func TestInternalRelationTuple(t *testing.T) {
 				err: ErrNilSubject,
 			},
 			{
-				proto: &acl.RelationTuple{
+				proto: &rts.RelationTuple{
 					Namespace: "n",
 					Object:    "o",
 					Relation:  "r",
-					Subject: &acl.Subject{
-						Ref: &acl.Subject_Set{
-							Set: &acl.SubjectSet{
+					Subject: &rts.Subject{
+						Ref: &rts.Subject_Set{
+							Set: &rts.SubjectSet{
 								Namespace: "n",
 								Object:    "o",
 								Relation:  "r",
@@ -445,12 +445,12 @@ func TestInternalRelationTuple(t *testing.T) {
 				},
 			},
 			{
-				proto: &acl.RelationTuple{
+				proto: &rts.RelationTuple{
 					Namespace: "n",
 					Object:    "o",
 					Relation:  "r",
-					Subject: &acl.Subject{
-						Ref: &acl.Subject_Id{
+					Subject: &rts.Subject{
+						Ref: &rts.Subject_Id{
 							Id: "user",
 						},
 					},
@@ -615,9 +615,9 @@ func TestRelationCollection(t *testing.T) {
 			Relation:  "sr",
 		}
 
-		proto := make([]*acl.RelationTuple, 3)
+		proto := make([]*rts.RelationTuple, 3)
 		for i := range expected {
-			proto[i] = &acl.RelationTuple{
+			proto[i] = &rts.RelationTuple{
 				Namespace: "n" + strconv.Itoa(i),
 				Object:    "o" + strconv.Itoa(i),
 				Relation:  "r" + strconv.Itoa(i),
@@ -631,7 +631,7 @@ func TestRelationCollection(t *testing.T) {
 		}).ToProto()
 
 		NewRelationCollection([]*InternalRelationTuple{})
-		NewProtoRelationCollection([]*acl.RelationTuple{})
+		NewProtoRelationCollection([]*rts.RelationTuple{})
 
 		for i, c := range []*RelationCollection{
 			NewRelationCollection(expected),
@@ -674,7 +674,7 @@ func TestRelationCollection(t *testing.T) {
 			err        error
 		}{
 			{
-				collection: NewProtoRelationCollection([]*acl.RelationTuple{{
+				collection: NewProtoRelationCollection([]*rts.RelationTuple{{
 					Namespace: "n",
 					Object:    "o",
 					Relation:  "r",
@@ -688,7 +688,7 @@ func TestRelationCollection(t *testing.T) {
 				}},
 			},
 			{
-				collection: NewProtoRelationCollection([]*acl.RelationTuple{{ /*subject is nil*/ }}),
+				collection: NewProtoRelationCollection([]*rts.RelationTuple{{ /*subject is nil*/ }}),
 				err:        ErrNilSubject,
 			},
 		} {

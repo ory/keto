@@ -60,7 +60,7 @@ type CreateRelationTupleCreated struct {
 }
 
 func (o *CreateRelationTupleCreated) Error() string {
-	return fmt.Sprintf("[PUT /relation-tuples][%d] createRelationTupleCreated  %+v", 201, o.Payload)
+	return fmt.Sprintf("[PUT /admin/relation-tuples][%d] createRelationTupleCreated  %+v", 201, o.Payload)
 }
 func (o *CreateRelationTupleCreated) GetPayload() *models.RelationQuery {
 	return o.Payload
@@ -92,7 +92,7 @@ type CreateRelationTupleBadRequest struct {
 }
 
 func (o *CreateRelationTupleBadRequest) Error() string {
-	return fmt.Sprintf("[PUT /relation-tuples][%d] createRelationTupleBadRequest  %+v", 400, o.Payload)
+	return fmt.Sprintf("[PUT /admin/relation-tuples][%d] createRelationTupleBadRequest  %+v", 400, o.Payload)
 }
 func (o *CreateRelationTupleBadRequest) GetPayload() *models.GenericError {
 	return o.Payload
@@ -124,7 +124,7 @@ type CreateRelationTupleInternalServerError struct {
 }
 
 func (o *CreateRelationTupleInternalServerError) Error() string {
-	return fmt.Sprintf("[PUT /relation-tuples][%d] createRelationTupleInternalServerError  %+v", 500, o.Payload)
+	return fmt.Sprintf("[PUT /admin/relation-tuples][%d] createRelationTupleInternalServerError  %+v", 500, o.Payload)
 }
 func (o *CreateRelationTupleInternalServerError) GetPayload() *models.GenericError {
 	return o.Payload

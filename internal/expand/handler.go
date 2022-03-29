@@ -6,7 +6,7 @@ import (
 
 	"github.com/ory/herodot"
 
-	acl "github.com/ory/keto/proto/ory/keto/acl/v1alpha1"
+	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 
 	"google.golang.org/grpc"
 
@@ -28,9 +28,9 @@ type (
 	}
 )
 
-var _ acl.ExpandServiceServer = (*handler)(nil)
+var _ rts.ExpandServiceServer = (*handler)(nil)
 
-const RouteBase = "/expand"
+const RouteBase = "/relation-tuples/expand"
 
 func NewHandler(d handlerDependencies) *handler {
 	return &handler{d: d}
@@ -43,7 +43,7 @@ func (h *handler) RegisterReadRoutes(r *x.ReadRouter) {
 func (h *handler) RegisterWriteRoutes(_ *x.WriteRouter) {}
 
 func (h *handler) RegisterReadGRPC(s *grpc.Server) {
-	acl.RegisterExpandServiceServer(s, h)
+	rts.RegisterExpandServiceServer(s, h)
 }
 
 func (h *handler) RegisterWriteGRPC(s *grpc.Server) {}
@@ -55,7 +55,7 @@ type getExpandRequest struct {
 	MaxDepth int `json:"max-depth"`
 }
 
-// swagger:route GET /expand read getExpand
+// swagger:route GET /relation-tuples/expand read getExpand
 //
 // Expand a Relation Tuple
 //
@@ -90,7 +90,7 @@ func (h *handler) getExpand(w http.ResponseWriter, r *http.Request, _ httprouter
 	h.d.Writer().Write(w, r, res)
 }
 
-func (h *handler) Expand(ctx context.Context, req *acl.ExpandRequest) (*acl.ExpandResponse, error) {
+func (h *handler) Expand(ctx context.Context, req *rts.ExpandRequest) (*rts.ExpandResponse, error) {
 	sub, err := relationtuple.SubjectFromProto(req.Subject)
 	if err != nil {
 		return nil, err
@@ -100,5 +100,5 @@ func (h *handler) Expand(ctx context.Context, req *acl.ExpandRequest) (*acl.Expa
 		return nil, err
 	}
 
-	return &acl.ExpandResponse{Tree: tree.ToProto()}, nil
+	return &rts.ExpandResponse{Tree: tree.ToProto()}, nil
 }

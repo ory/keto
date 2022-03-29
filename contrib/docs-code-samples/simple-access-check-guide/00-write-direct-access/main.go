@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 
-	"google.golang.org/grpc"
+	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 
-	acl "github.com/ory/keto/proto/ory/keto/acl/v1alpha1"
+	"google.golang.org/grpc"
 )
 
 func main() {
@@ -15,17 +15,17 @@ func main() {
 		panic("Encountered error: " + err.Error())
 	}
 
-	client := acl.NewWriteServiceClient(conn)
+	client := rts.NewWriteServiceClient(conn)
 
-	_, err = client.TransactRelationTuples(context.Background(), &acl.TransactRelationTuplesRequest{
-		RelationTupleDeltas: []*acl.RelationTupleDelta{
+	_, err = client.TransactRelationTuples(context.Background(), &rts.TransactRelationTuplesRequest{
+		RelationTupleDeltas: []*rts.RelationTupleDelta{
 			{
-				Action: acl.RelationTupleDelta_INSERT,
-				RelationTuple: &acl.RelationTuple{
+				Action: rts.RelationTupleDelta_ACTION_INSERT,
+				RelationTuple: &rts.RelationTuple{
 					Namespace: "messages",
 					Object:    "02y_15_4w350m3",
 					Relation:  "decypher",
-					Subject:   acl.NewSubjectID("john"),
+					Subject:   rts.NewSubjectID("john"),
 				},
 			},
 		},

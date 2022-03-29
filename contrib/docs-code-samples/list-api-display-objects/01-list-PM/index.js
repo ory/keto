@@ -1,5 +1,5 @@
 import grpc from '@ory/keto-grpc-client/node_modules/@grpc/grpc-js/build/src/index.js'
-import { acl, read, readService } from '@ory/keto-grpc-client'
+import { relationTuples, read, readService } from '@ory/keto-grpc-client'
 
 const readClient = new readService.ReadServiceClient(
   '127.0.0.1:4466',
@@ -11,7 +11,7 @@ const query = new read.ListRelationTuplesRequest.Query()
 query.setNamespace('chats')
 query.setRelation('member')
 
-const sub = new acl.Subject()
+const sub = new relationTuples.Subject()
 sub.setId('PM')
 query.setSubject(sub)
 

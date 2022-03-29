@@ -8,13 +8,13 @@ import (
 	"strings"
 	"testing"
 
+	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
+
 	"github.com/ory/x/pointerx"
 
 	"github.com/ory/herodot"
 
 	"github.com/sirupsen/logrus"
-
-	acl "github.com/ory/keto/proto/ory/keto/acl/v1alpha1"
 
 	"github.com/pkg/errors"
 
@@ -34,7 +34,7 @@ type (
 	}
 
 	RelationCollection struct {
-		protoRelations    []*acl.RelationTuple
+		protoRelations    []*rts.RelationTuple
 		internalRelations []*InternalRelationTuple
 	}
 	SubjectID struct {
@@ -67,7 +67,7 @@ type RelationQuery struct {
 // swagger:ignore
 type TupleData interface {
 	// swagger:ignore
-	GetSubject() *acl.Subject
+	GetSubject() *rts.Subject
 	GetObject() string
 	GetNamespace() string
 	GetRelation() string
@@ -87,7 +87,7 @@ type Subject interface {
 	SubjectSet() *SubjectSet
 
 	// swagger:ignore
-	ToProto() *acl.Subject
+	ToProto() *rts.Subject
 }
 
 // swagger:ignore
@@ -142,15 +142,15 @@ func SubjectFromString(s string) (Subject, error) {
 }
 
 // swagger:ignore
-func SubjectFromProto(gs *acl.Subject) (Subject, error) {
+func SubjectFromProto(gs *rts.Subject) (Subject, error) {
 	switch s := gs.GetRef().(type) {
 	case nil:
 		return nil, errors.WithStack(ErrNilSubject)
-	case *acl.Subject_Id:
+	case *rts.Subject_Id:
 		return &SubjectID{
 			ID: s.Id,
 		}, nil
-	case *acl.Subject_Set:
+	case *rts.Subject_Set:
 		return &SubjectSet{
 			Namespace: s.Set.Namespace,
 			Object:    s.Set.Object,
@@ -228,19 +228,19 @@ func (s *SubjectID) SubjectSet() *SubjectSet {
 }
 
 // swagger:ignore
-func (s *SubjectID) ToProto() *acl.Subject {
-	return &acl.Subject{
-		Ref: &acl.Subject_Id{
+func (s *SubjectID) ToProto() *rts.Subject {
+	return &rts.Subject{
+		Ref: &rts.Subject_Id{
 			Id: s.ID,
 		},
 	}
 }
 
 // swagger:ignore
-func (s *SubjectSet) ToProto() *acl.Subject {
-	return &acl.Subject{
-		Ref: &acl.Subject_Set{
-			Set: &acl.SubjectSet{
+func (s *SubjectSet) ToProto() *rts.Subject {
+	return &rts.Subject{
+		Ref: &rts.Subject_Set{
+			Set: &rts.SubjectSet{
 				Namespace: s.Namespace,
 				Object:    s.Object,
 				Relation:  s.Relation,
@@ -355,8 +355,8 @@ func (r *InternalRelationTuple) FromDataProvider(d TupleData) (*InternalRelation
 	return r, nil
 }
 
-func (r *InternalRelationTuple) ToProto() *acl.RelationTuple {
-	return &acl.RelationTuple{
+func (r *InternalRelationTuple) ToProto() *rts.RelationTuple {
+	return &rts.RelationTuple{
 		Namespace: r.Namespace,
 		Object:    r.Object,
 		Relation:  r.Relation,
@@ -431,9 +431,9 @@ func (q *RelationQuery) FromProto(query TupleData) (*RelationQuery, error) {
 
 	if query.GetSubject() != nil {
 		switch s := query.GetSubject().Ref.(type) {
-		case *acl.Subject_Id:
+		case *rts.Subject_Id:
 			q.SubjectID = &s.Id
-		case *acl.Subject_Set:
+		case *rts.Subject_Set:
 			q.SubjectSet = &SubjectSet{
 				Namespace: s.Set.Namespace,
 				Object:    s.Set.Object,
@@ -552,7 +552,7 @@ func (r *InternalRelationTuple) Interface() interface{} {
 	return r
 }
 
-func NewProtoRelationCollection(rels []*acl.RelationTuple) *RelationCollection {
+func NewProtoRelationCollection(rels []*rts.RelationTuple) *RelationCollection {
 	return &RelationCollection{
 		protoRelations: rels,
 	}

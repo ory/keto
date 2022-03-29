@@ -3,9 +3,9 @@ package check
 import (
 	"fmt"
 
-	"github.com/ory/keto/internal/check"
+	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 
-	acl "github.com/ory/keto/proto/ory/keto/acl/v1alpha1"
+	"github.com/ory/keto/internal/check"
 
 	"github.com/ory/x/cmdx"
 	"github.com/spf13/cobra"
@@ -42,11 +42,9 @@ func newCheckCmd() *cobra.Command {
 				return err
 			}
 
-			cl := acl.NewCheckServiceClient(conn)
-			resp, err := cl.Check(cmd.Context(), &acl.CheckRequest{
-				Subject: &acl.Subject{
-					Ref: &acl.Subject_Id{Id: args[0]},
-				},
+			cl := rts.NewCheckServiceClient(conn)
+			resp, err := cl.Check(cmd.Context(), &rts.CheckRequest{
+				Subject:   rts.NewSubjectID(args[0]),
 				Relation:  args[1],
 				Namespace: args[2],
 				Object:    args[3],

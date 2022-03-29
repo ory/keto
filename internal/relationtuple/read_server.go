@@ -5,20 +5,20 @@ import (
 	"net/http"
 	"strconv"
 
+	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
+
 	"github.com/ory/herodot"
 
 	"github.com/pkg/errors"
-
-	acl "github.com/ory/keto/proto/ory/keto/acl/v1alpha1"
 
 	"github.com/julienschmidt/httprouter"
 
 	"github.com/ory/keto/internal/x"
 )
 
-var _ acl.ReadServiceServer = (*handler)(nil)
+var _ rts.ReadServiceServer = (*handler)(nil)
 
-func (h *handler) ListRelationTuples(ctx context.Context, req *acl.ListRelationTuplesRequest) (*acl.ListRelationTuplesResponse, error) {
+func (h *handler) ListRelationTuples(ctx context.Context, req *rts.ListRelationTuplesRequest) (*rts.ListRelationTuplesResponse, error) {
 	if req.Query == nil {
 		return nil, errors.New("invalid request")
 	}
@@ -36,8 +36,8 @@ func (h *handler) ListRelationTuples(ctx context.Context, req *acl.ListRelationT
 		return nil, err
 	}
 
-	resp := &acl.ListRelationTuplesResponse{
-		RelationTuples: make([]*acl.RelationTuple, len(rels)),
+	resp := &rts.ListRelationTuplesResponse{
+		RelationTuples: make([]*rts.RelationTuple, len(rels)),
 		NextPageToken:  nextPage,
 	}
 	for i, r := range rels {

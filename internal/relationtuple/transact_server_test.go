@@ -50,7 +50,7 @@ func TestWriteHandlers(t *testing.T) {
 
 	t.Run("method=create", func(t *testing.T) {
 		doCreate := func(raw []byte) *http.Response {
-			req, err := http.NewRequest(http.MethodPut, ts.URL+relationtuple.RouteBase, bytes.NewBuffer(raw))
+			req, err := http.NewRequest(http.MethodPut, ts.URL+relationtuple.WriteRouteBase, bytes.NewBuffer(raw))
 			require.NoError(t, err)
 			resp, err := ts.Client().Do(req)
 			require.NoError(t, err)
@@ -158,7 +158,7 @@ func TestWriteHandlers(t *testing.T) {
 
 			q, err := rt.ToURLQuery()
 			require.NoError(t, err)
-			req, err := http.NewRequest(http.MethodDelete, ts.URL+relationtuple.RouteBase+"?"+q.Encode(), nil)
+			req, err := http.NewRequest(http.MethodDelete, ts.URL+relationtuple.WriteRouteBase+"?"+q.Encode(), nil)
 			require.NoError(t, err)
 			resp, err := ts.Client().Do(req)
 			require.NoError(t, err)
@@ -195,7 +195,7 @@ func TestWriteHandlers(t *testing.T) {
 				"object":    {"deleted obj"},
 				"relation":  {"deleted rel"},
 			}
-			req, err := http.NewRequest(http.MethodDelete, ts.URL+relationtuple.RouteBase+"?"+q.Encode(), nil)
+			req, err := http.NewRequest(http.MethodDelete, ts.URL+relationtuple.WriteRouteBase+"?"+q.Encode(), nil)
 			require.NoError(t, err)
 			resp, err := ts.Client().Do(req)
 			require.NoError(t, err)
@@ -238,7 +238,7 @@ func TestWriteHandlers(t *testing.T) {
 
 			body, err := json.Marshal(deltas)
 			require.NoError(t, err)
-			req, err := http.NewRequest(http.MethodPatch, ts.URL+relationtuple.RouteBase, bytes.NewBuffer(body))
+			req, err := http.NewRequest(http.MethodPatch, ts.URL+relationtuple.WriteRouteBase, bytes.NewBuffer(body))
 			require.NoError(t, err)
 			resp, err := ts.Client().Do(req)
 			require.NoError(t, err)
@@ -278,7 +278,7 @@ func TestWriteHandlers(t *testing.T) {
 
 			body, err := json.Marshal(deltas)
 			require.NoError(t, err)
-			req, err := http.NewRequest(http.MethodPatch, ts.URL+relationtuple.RouteBase, bytes.NewBuffer(body))
+			req, err := http.NewRequest(http.MethodPatch, ts.URL+relationtuple.WriteRouteBase, bytes.NewBuffer(body))
 			require.NoError(t, err)
 			resp, err := ts.Client().Do(req)
 			require.NoError(t, err)
@@ -307,7 +307,7 @@ func TestWriteHandlers(t *testing.T) {
 
 			body, err := json.Marshal(deltas)
 			require.NoError(t, err)
-			req, err := http.NewRequest(http.MethodPatch, ts.URL+relationtuple.RouteBase, bytes.NewBuffer(body))
+			req, err := http.NewRequest(http.MethodPatch, ts.URL+relationtuple.WriteRouteBase, bytes.NewBuffer(body))
 			require.NoError(t, err)
 			resp, err := ts.Client().Do(req)
 			require.NoError(t, err)
@@ -337,7 +337,7 @@ func TestWriteHandlers(t *testing.T) {
 
 			body, err := json.Marshal(deltas)
 			require.NoError(t, err)
-			req, err := http.NewRequest(http.MethodPatch, ts.URL+relationtuple.RouteBase, bytes.NewBuffer(body))
+			req, err := http.NewRequest(http.MethodPatch, ts.URL+relationtuple.WriteRouteBase, bytes.NewBuffer(body))
 			require.NoError(t, err)
 			resp, err := ts.Client().Do(req)
 			require.NoError(t, err)
@@ -361,7 +361,7 @@ func TestWriteHandlers(t *testing.T) {
         "subject":"role:company-admin"
     }
 ]`
-			req, err := http.NewRequest(http.MethodPatch, ts.URL+relationtuple.RouteBase, bytes.NewBufferString(rawJSON))
+			req, err := http.NewRequest(http.MethodPatch, ts.URL+relationtuple.WriteRouteBase, bytes.NewBufferString(rawJSON))
 			require.NoError(t, err)
 			resp, err := ts.Client().Do(req)
 			require.NoError(t, err)
@@ -386,7 +386,7 @@ func TestWriteHandlers(t *testing.T) {
 		}
 	}
 ]`
-			req, err := http.NewRequest(http.MethodPatch, ts.URL+relationtuple.RouteBase, bytes.NewBufferString(rawJSON))
+			req, err := http.NewRequest(http.MethodPatch, ts.URL+relationtuple.WriteRouteBase, bytes.NewBufferString(rawJSON))
 			require.NoError(t, err)
 			resp, err := ts.Client().Do(req)
 			require.NoError(t, err)

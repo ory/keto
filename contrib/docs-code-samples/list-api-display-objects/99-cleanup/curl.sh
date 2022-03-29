@@ -10,4 +10,4 @@ curl -G --silent \
   jq "[ .relation_tuples[] | { relation_tuple: . , action: \"delete\" } ]" -c | \
     curl -X PATCH --silent --fail \
       --data @- \
-      http://127.0.0.1:4467/relation-tuples
+      http://127.0.0.1:4467/admin/relation-tuples

@@ -1,1 +1,1 @@
-module.exports = require('./ory/keto/acl/v1alpha1')
+module.exports = require('./ory/keto/relation_tuples/v1alpha2')
