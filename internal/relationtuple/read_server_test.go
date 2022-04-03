@@ -55,6 +55,26 @@ func TestReadHandlers(t *testing.T) {
 			}, respMsg)
 		})
 
+		t.Run("case=no records count is not nil", func(t *testing.T) {
+			resp, err := ts.Client().Get(ts.URL + relationtuple.ReadRouteBase + "/count?" + url.Values{
+				"namespace": {nspace.Name},
+			}.Encode())
+			require.NoError(t, err)
+			require.Equal(t, http.StatusOK, resp.StatusCode)
+
+			body, err := io.ReadAll(resp.Body)
+			require.NoError(t, err)
+
+			assert.Equal(t, "0", gjson.GetBytes(body, "count").Raw)
+
+			var respMsg relationtuple.GetCountResponse
+			require.NoError(t, json.Unmarshal(body, &respMsg))
+
+			assert.Equal(t, relationtuple.GetCountResponse{
+				Count: 0,
+			}, respMsg)
+		})
+
 		t.Run("case=returns tuples", func(t *testing.T) {
 			rts := []*relationtuple.InternalRelationTuple{
 				{
