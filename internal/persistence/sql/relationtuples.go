@@ -276,6 +276,24 @@ func (p *Persister) GetRelationTuples(ctx context.Context, query *relationtuple.
 	return internalRes, nextPageToken, nil
 }
 
+func (p *Persister) GetRelationTuplesCount(ctx context.Context, query *relationtuple.RelationQuery) (*int, error) {
+	sqlQuery := p.QueryWithNetwork(ctx)
+
+	err := p.whereQuery(ctx, sqlQuery, query)
+	if err != nil {
+		return nil, err
+	}
+
+	var res relationTuples
+
+	count, err := sqlQuery.Count(&res)
+	if err != nil {
+		return nil, sqlcon.HandleError(err)
+	}
+
+	return &count, nil
+}
+
 func (p *Persister) WriteRelationTuples(ctx context.Context, rs ...*relationtuple.InternalRelationTuple) error {
 	return p.Transaction(ctx, func(ctx context.Context, _ *pop.Connection) error {
 		for _, r := range rs {

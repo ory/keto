@@ -28,6 +28,11 @@ type GetResponse struct {
 	NextPageToken string `json:"next_page_token"`
 }
 
+// swagger:model getRelationTuplesCountResponse
+type GetCountResponse struct {
+	Count int `json:"count"`
+}
+
 const (
 	ReadRouteBase  = "/relation-tuples"
 	WriteRouteBase = "/admin/relation-tuples"
@@ -41,6 +46,7 @@ func NewHandler(d handlerDeps) *handler {
 
 func (h *handler) RegisterReadRoutes(r *x.ReadRouter) {
 	r.GET(ReadRouteBase, h.getRelations)
+	r.GET(ReadRouteBase+"/count", h.getRelationsCount)
 }
 
 func (h *handler) RegisterWriteRoutes(r *x.WriteRouter) {

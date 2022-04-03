@@ -152,3 +152,48 @@ func (h *handler) getRelations(w http.ResponseWriter, r *http.Request, _ httprou
 
 	h.d.Writer().Write(w, r, resp)
 }
+
+// swagger:route GET /relation-tuples/count read getRelationTuplesCount
+//
+// Query relation tuples
+//
+// Get the count of relation tuples that match the query. Only the namespace field is required.
+//
+//     Consumes:
+//     -  application/x-www-form-urlencoded
+//
+//     Produces:
+//     - application/json
+//
+//     Schemes: http, https
+//
+//     Responses:
+//       200: getRelationTuplesCountResponse
+//       404: genericError
+//       500: genericError
+func (h *handler) getRelationsCount(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	q := r.URL.Query()
+	query, err := (&RelationQuery{}).FromURLQuery(q)
+	if err != nil {
+		h.d.Writer().WriteError(w, r, herodot.ErrBadRequest.WithError(err.Error()))
+		return
+	}
+
+	l := h.d.Logger()
+	for k := range q {
+		l = l.WithField(k, q.Get(k))
+	}
+	l.Debug("querying relation tuples count")
+
+	relCount, err := h.d.RelationTupleManager().GetRelationTuplesCount(r.Context(), query)
+	if err != nil {
+		h.d.Writer().WriteError(w, r, err)
+		return
+	}
+
+	resp := &GetCountResponse{
+		Count: *relCount,
+	}
+
+	h.d.Writer().Write(w, r, resp)
+}

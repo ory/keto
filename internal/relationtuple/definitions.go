@@ -27,6 +27,7 @@ type (
 	}
 	Manager interface {
 		GetRelationTuples(ctx context.Context, query *RelationQuery, options ...x.PaginationOptionSetter) ([]*InternalRelationTuple, string, error)
+		GetRelationTuplesCount(ctx context.Context, query *RelationQuery) (*int, error)
 		WriteRelationTuples(ctx context.Context, rs ...*InternalRelationTuple) error
 		DeleteRelationTuples(ctx context.Context, rs ...*InternalRelationTuple) error
 		DeleteAllRelationTuples(ctx context.Context, query *RelationQuery) error
@@ -663,6 +664,10 @@ func (t *ManagerWrapper) GetRelationTuples(ctx context.Context, query *RelationQ
 	opts := x.GetPaginationOptions(options...)
 	t.RequestedPages = append(t.RequestedPages, opts.Token)
 	return t.Reg.RelationTupleManager().GetRelationTuples(ctx, query, append(t.PageOpts, options...)...)
+}
+
+func (t *ManagerWrapper) GetRelationTuplesCount(ctx context.Context, query *RelationQuery) (*int, error) {
+	return t.Reg.RelationTupleManager().GetRelationTuplesCount(ctx, query)
 }
 
 func (t *ManagerWrapper) WriteRelationTuples(ctx context.Context, rs ...*InternalRelationTuple) error {
