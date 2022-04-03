@@ -111,6 +111,41 @@ func TestReadHandlers(t *testing.T) {
 			assert.Equal(t, "", respMsg.NextPageToken)
 		})
 
+		t.Run("case=returns count for matches", func(t *testing.T) {
+			rts := []*relationtuple.InternalRelationTuple{
+				{
+					Namespace: nspace.Name,
+					Object:    "oc1",
+					Relation:  "rc1",
+					Subject:   &relationtuple.SubjectID{ID: "sc1"},
+				},
+				{
+					Namespace: nspace.Name,
+					Object:    "oc2",
+					Relation:  "rc2",
+					Subject: &relationtuple.SubjectSet{
+						Namespace: nspace.Name,
+						Object:    "oc1",
+						Relation:  "rc1",
+					},
+				},
+			}
+
+			require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), rts...))
+
+			queryParameters := url.Values{}
+			queryParameters.Set("namespace", nspace.Name)
+			queryParameters.Add("relation", rts[0].Relation)
+
+			resp, err := ts.Client().Get(ts.URL + relationtuple.ReadRouteBase + "/count?" + queryParameters.Encode())
+			require.NoError(t, err)
+
+			var respMsg relationtuple.GetCountResponse
+			require.NoError(t, json.NewDecoder(resp.Body).Decode(&respMsg))
+
+			assert.Equal(t, 1, respMsg.Count)
+		})
+
 		t.Run("case=return tuples without namespace", func(t *testing.T) {
 			obj := t.Name()
 
