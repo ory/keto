@@ -210,7 +210,7 @@ func (k *Config) TracingProvider() string {
 }
 
 func (k *Config) TracingConfig() *otelx.Config {
-	return k.p.TracingConfigOtel("Ory Keto")
+	return k.p.TracingConfig("Ory Keto")
 }
 
 func (k *Config) NamespaceManager() (namespace.Manager, error) {
