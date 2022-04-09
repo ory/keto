@@ -1,0 +1,7 @@
+{
+  "$schema": "../../../.schema/relation_tuple.schema.json",
+  "namespace": "roles",
+  "object": "viewer",
+  "relation": "recipient",
+  "subject_id": "user-2"
+}

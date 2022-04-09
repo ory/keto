@@ -19,6 +19,7 @@ export KETO_READ_REMOTE=\"127.0.0.1:4466\"
 keto relation-tuple get --namespace docs
 keto check user-1 view docs readme
 keto expand view docs readme
+keto expand recipient roles viewer
 "
 
 # sleep 10h; has to be defined like this because OSX does not know units https://www.unix.com/man-page/osx/1/sleep/
