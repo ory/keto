@@ -1,0 +1,11 @@
+{
+  "$schema": "../../../.schema/relation_tuple.schema.json",
+  "namespace": "roles",
+  "object": "viewer",
+  "relation": "recipient",
+  "subject_set": {
+    "namespace": "groups",
+    "object": "eng",
+    "relation": "member"
+  }
+}

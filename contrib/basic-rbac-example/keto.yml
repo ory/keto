@@ -1,0 +1,22 @@
+version: v0.6.0-alpha.1
+
+log:
+  level: debug
+
+namespaces:
+  - id: 0
+    name: docs
+  - id: 1
+    name: roles
+  - id: 2
+    name: groups
+
+dsn: memory
+
+serve:
+  read:
+    host: 0.0.0.0
+    port: 4466
+  write:
+    host: 0.0.0.0
+    port: 4467
