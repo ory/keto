@@ -17,7 +17,7 @@ echo "
 Created all relation tuples. Now you can use the Keto CLI client to play around:
 export KETO_READ_REMOTE=\"127.0.0.1:4466\"
 keto relation-tuple get --namespace docs
-keto check user-1 view docs readme
+keto check users:1 view docs readme
 keto expand view docs readme
 keto expand recipient roles viewer
 "
