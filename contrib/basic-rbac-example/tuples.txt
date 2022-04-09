@@ -1,0 +1,12 @@
+docs:readme#view@scopes:viewDocs#contain
+docs:readme#edit@scopes:editDocs#contain
+docs:readme#share@scopes:shareDocs#contain
+scopes:viewDocs#contain@roles:viewer#recipient
+scopes:viewDocs#contain@roles:editor#recipient
+scopes:editDocs#contain@roles:editor#recipient
+scopes:viewDocs#contain@roles:owner#recipient
+scopes:editDocs#contain@roles:owner#recipient
+scopes:shareDocs#contain@roles:owner#recipient
+roles:viewer#recipient@users:1
+roles:editor#recipient@users:2
+roles:owner#recipient@users:3

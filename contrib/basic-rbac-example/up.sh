@@ -11,7 +11,7 @@ trap teardown EXIT
 
 export KETO_WRITE_REMOTE="127.0.0.1:4467"
 
-keto relation-tuple create contrib/basic-rbac-example/relation-tuples
+keto relation-tuple parse contrib/basic-rbac-example/tuples.txt --format json | keto relation-tuple create -
 
 echo "
 Created all relation tuples. Now you can use the Keto CLI client to play around:

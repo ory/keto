@@ -1,7 +1,0 @@
-{
-  "$schema": "../../../.schema/relation_tuple.schema.json",
-  "namespace": "groups",
-  "object": "eng",
-  "relation": "member",
-  "subject_id": "user-1"
-}
