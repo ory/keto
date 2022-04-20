@@ -11,9 +11,9 @@ import (
 
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 
+	"github.com/ory/x/otelx"
 	prometheus "github.com/ory/x/prometheusx"
 	grpcOtel "go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
-	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 	"go.opentelemetry.io/otel"
 
 	"github.com/ory/x/logrusx"
@@ -129,7 +129,7 @@ func (r *RegistryDefault) serveRead(ctx context.Context, done chan<- struct{}) f
 	rt, s := r.ReadRouter(ctx), r.ReadGRPCServer(ctx)
 
 	if tracer := r.Tracer(ctx); tracer.IsLoaded() {
-		rt = otelhttp.NewHandler(rt, "serve_read")
+		rt = otelx.NewHandler(rt, "internal.driver.serveRead")
 	}
 
 	return func() error {
@@ -141,7 +141,7 @@ func (r *RegistryDefault) serveWrite(ctx context.Context, done chan<- struct{}) 
 	rt, s := r.WriteRouter(ctx), r.WriteGRPCServer(ctx)
 
 	if tracer := r.Tracer(ctx); tracer.IsLoaded() {
-		rt = otelhttp.NewHandler(rt, "serve_write")
+		rt = otelx.NewHandler(rt, "internal.driver.serveWrite")
 	}
 
 	return func() error {
