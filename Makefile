@@ -86,7 +86,7 @@ sdk: .bin/swagger .bin/ory node_modules
 
 .PHONY: build
 build:
-		go build -tags sqlite
+		go build -tags postgres
 
 #
 # Generate APIs and client stubs from the definitions
