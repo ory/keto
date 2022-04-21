@@ -12,6 +12,7 @@ CREATE TABLE keto_relation_tuples
     subject_set_object       VARCHAR(64) NULL,
     subject_set_relation     VARCHAR(64) NULL,
     commit_time              TIMESTAMP   NOT NULL,
+    hlc_timestamp            VARCHAR(64) NULL,
 
     PRIMARY KEY (shard_id, nid),
 
