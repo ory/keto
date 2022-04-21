@@ -88,7 +88,6 @@ services:
       - postgresd1:postgresd1
     depends_on:
       - keto-migrate1
-    restart: on-failure
 
   keto2:
     build:
@@ -113,7 +112,6 @@ services:
       - postgresd2:postgresd2
     depends_on:
       - keto-migrate2
-    restart: on-failure
 
   keto3:
     build:
@@ -138,7 +136,6 @@ services:
       - postgresd3:postgresd3
     depends_on:
       - keto-migrate3
-    restart: on-failure
 
   keto4:
     build:
@@ -163,7 +160,6 @@ services:
       - postgresd2:postgresd2
     depends_on:
       - keto-migrate4
-    restart: on-failure
 
 
 ## database containers
@@ -217,7 +213,7 @@ services:
 ## after changing code
 # 1. make docker          this recompiles with the new code a creates a new local keto docker immage
 # 2. docker-compose -f docker-compose-stack.yml down            ensure the previous stack that was deploy is fully down
-# 3. docker-compose -f docker-compe-stack-combined.yml up --remove-orphans    deploy the setup that results with the whole infrastructure up and running
+# 3. docker-compose -f docker-compose-stack.yml up --remove-orphans    deploy the setup that results with the whole infrastructure up and running
 
 
 ## information

@@ -28,6 +28,7 @@ type (
 		SubjectSetObject      sql.NullString `db:"subject_set_object"`
 		SubjectSetRelation    sql.NullString `db:"subject_set_relation"`
 		CommitTime            time.Time      `db:"commit_time"`
+		HlcTimestamp          string         `db:"hlc_timestamp"`
 	}
 	relationTuples []*RelationTuple
 )
