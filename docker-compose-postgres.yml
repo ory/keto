@@ -30,6 +30,8 @@ services:
     restart: on-failure
   postgresd:
     image: postgres:9.6
+    ports:
+      - '5431:5432'
     environment:
       - POSTGRES_USER=dbuser
       - POSTGRES_PASSWORD=secret

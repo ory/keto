@@ -3,6 +3,10 @@ version: v0.7.0-alpha.1
 log:
   level: debug
 
+namespaces:
+  - id: 0
+    name: files
+
 serve:
   read:
     host: 0.0.0.0

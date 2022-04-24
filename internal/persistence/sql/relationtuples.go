@@ -13,6 +13,7 @@ import (
 	"github.com/ory/keto/internal/namespace"
 	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/internal/x"
+	"github.com/ory/keto/internal/x/hlc"
 )
 
 type (
@@ -134,8 +135,9 @@ func (p *Persister) InsertRelationTuple(ctx context.Context, rel *relationtuple.
 	p.d.Logger().WithFields(rel.ToLoggerFields()).Trace("creating in database")
 
 	rt := &RelationTuple{
-		ID:         uuid.Must(uuid.NewV4()),
-		CommitTime: time.Now(),
+		ID:           uuid.Must(uuid.NewV4()),
+		CommitTime:   time.Now(),
+		HlcTimestamp: hlc.NewWithPT(hlc.PT{Seconds: true}).Now().String(),
 	}
 	if err := rt.FromInternal(ctx, p, rel); err != nil {
 		return err
