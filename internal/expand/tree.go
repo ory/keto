@@ -217,7 +217,7 @@ func TreeFromProto(t *rts.SubjectTree) (*Tree, error) {
 
 func (t *Tree) String() string {
 	if t == nil {
-		return ""
+		return "(nil)"
 	}
 
 	sub := t.Subject.String()
@@ -232,4 +232,17 @@ func (t *Tree) String() string {
 	}
 
 	return fmt.Sprintf("∪ %s\n├─ %s", sub, strings.Join(children, "\n├─ "))
+}
+
+func (t *Tree) UUIDMappableFields() (res []*string) {
+	if t == nil {
+		return
+	}
+	if t.Subject != nil {
+		res = append(res, t.Subject.UUIDMappableFields()...)
+	}
+	for _, c := range t.Children {
+		res = append(res, c.UUIDMappableFields()...)
+	}
+	return
 }

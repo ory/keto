@@ -12,7 +12,11 @@ import (
 	"github.com/pkg/errors"
 )
 
-var _ rts.WriteServiceServer = (*handler)(nil)
+var (
+	_ rts.WriteServiceServer = (*handler)(nil)
+	_                        = (*bodyRelationTuple)(nil)
+	_                        = (*queryRelationTuple)(nil)
+)
 
 func protoTuplesWithAction(deltas []*rts.RelationTupleDelta, action rts.RelationTupleDelta_Action) (filtered []*InternalRelationTuple, err error) {
 	for _, d := range deltas {
@@ -38,6 +42,9 @@ func (h *handler) TransactRelationTuples(ctx context.Context, req *rts.TransactR
 		return nil, err
 	}
 
+	if err = h.d.UUIDMappingManager().MapFieldsToUUID(ctx, InternalRelationTuples(append(insertTuples, deleteTuples...))); err != nil {
+		return nil, err
+	}
 	err = h.d.RelationTupleManager().TransactRelationTuples(ctx, insertTuples, deleteTuples)
 	if err != nil {
 		return nil, err
@@ -62,6 +69,9 @@ func (h *handler) DeleteRelationTuples(ctx context.Context, req *rts.DeleteRelat
 		return nil, errors.WithStack(herodot.ErrBadRequest.WithError(err.Error()))
 	}
 
+	if err := h.d.UUIDMappingManager().MapFieldsToUUID(ctx, q); err != nil {
+		return nil, err
+	}
 	if err := h.d.RelationTupleManager().DeleteAllRelationTuples(ctx, q); err != nil {
 		return nil, errors.WithStack(herodot.ErrInternalServerError.WithError(err.Error()))
 	}
@@ -72,7 +82,6 @@ func (h *handler) DeleteRelationTuples(ctx context.Context, req *rts.DeleteRelat
 // The basic ACL relation tuple
 //
 // swagger:parameters postCheck createRelationTuple
-// nolint:deadcode,unused
 type bodyRelationTuple struct {
 	// in: body
 	Payload RelationQuery
@@ -81,7 +90,6 @@ type bodyRelationTuple struct {
 // The basic ACL relation tuple
 //
 // swagger:parameters getCheck deleteRelationTuples
-// nolint:deadcode,unused
 type queryRelationTuple struct {
 	// Namespace of the Relation Tuple
 	//
@@ -151,8 +159,18 @@ func (h *handler) createRelation(w http.ResponseWriter, r *http.Request, _ httpr
 
 	h.d.Logger().WithFields(rel.ToLoggerFields()).Debug("creating relation tuple")
 
+	if err := h.d.UUIDMappingManager().MapFieldsToUUID(r.Context(), &rel); err != nil {
+		h.d.Logger().WithError(err).WithFields(rel.ToLoggerFields()).Errorf("got an error while mapping fields to UUID")
+		h.d.Writer().WriteError(w, r, err)
+		return
+	}
 	if err := h.d.RelationTupleManager().WriteRelationTuples(r.Context(), &rel); err != nil {
 		h.d.Logger().WithError(err).WithFields(rel.ToLoggerFields()).Errorf("got an error while creating the relation tuple")
+		h.d.Writer().WriteError(w, r, err)
+		return
+	}
+	if err := h.d.UUIDMappingManager().MapFieldsFromUUID(r.Context(), &rel); err != nil {
+		h.d.Logger().WithError(err).WithFields(rel.ToLoggerFields()).Errorf("got an error while mapping fields from UUID")
 		h.d.Writer().WriteError(w, r, err)
 		return
 	}
@@ -198,6 +216,11 @@ func (h *handler) deleteRelations(w http.ResponseWriter, r *http.Request, _ http
 	}
 	l.Debug("deleting relation tuples")
 
+	if err := h.d.UUIDMappingManager().MapFieldsToUUID(r.Context(), query); err != nil {
+		h.d.Logger().WithError(err).Errorf("got an error while mapping fields to UUID")
+		h.d.Writer().WriteError(w, r, err)
+		return
+	}
 	if err := h.d.RelationTupleManager().DeleteAllRelationTuples(r.Context(), query); err != nil {
 		l.WithError(err).Errorf("got an error while deleting relation tuples")
 		h.d.Writer().WriteError(w, r, herodot.ErrInternalServerError.WithError(err.Error()))
@@ -254,7 +277,17 @@ func (h *handler) patchRelations(w http.ResponseWriter, r *http.Request, _ httpr
 		}
 	}
 
-	if err := h.d.RelationTupleManager().TransactRelationTuples(r.Context(), internalTuplesWithAction(deltas, ActionInsert), internalTuplesWithAction(deltas, ActionDelete)); err != nil {
+	if err := h.d.UUIDMappingManager().MapFieldsToUUID(r.Context(), PatchDeltas(deltas)); err != nil {
+		h.d.Logger().WithError(err).Errorf("got an error while mapping fields to UUID")
+		h.d.Writer().WriteError(w, r, err)
+		return
+	}
+	if err := h.d.RelationTupleManager().
+		TransactRelationTuples(
+			r.Context(),
+			internalTuplesWithAction(deltas, ActionInsert),
+			internalTuplesWithAction(deltas, ActionDelete)); err != nil {
+
 		h.d.Writer().WriteError(w, r, err)
 		return
 	}

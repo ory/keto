@@ -5,17 +5,14 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/stretchr/testify/require"
-
 	"github.com/ory/herodot"
-
-	"github.com/ory/keto/internal/x"
-
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/ory/keto/internal/expand"
 	"github.com/ory/keto/internal/namespace"
 	"github.com/ory/keto/internal/relationtuple"
+	"github.com/ory/keto/internal/x"
 )
 
 func runCases(c client, addNamespace func(*testing.T, ...*namespace.Namespace)) func(*testing.T) {
@@ -188,7 +185,7 @@ func runCases(c client, addNamespace func(*testing.T, ...*namespace.Namespace)) 
 				Relation:  "rel",
 			}
 			resp := c.queryTuple(t, q)
-			require.Equal(t, resp.RelationTuples, rts)
+			require.ElementsMatch(t, resp.RelationTuples, rts)
 
 			c.deleteAllTuples(t, q)
 			resp = c.queryTuple(t, q)

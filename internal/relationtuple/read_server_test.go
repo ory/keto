@@ -75,7 +75,7 @@ func TestReadHandlers(t *testing.T) {
 				},
 			}
 
-			require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), rts...))
+			relationtuple.MapAndWriteTuples(t, reg, rts...)
 
 			resp, err := ts.Client().Get(ts.URL + relationtuple.ReadRouteBase + "?" + url.Values{
 				"namespace": {nspace.Name},
@@ -103,7 +103,7 @@ func TestReadHandlers(t *testing.T) {
 				},
 			}
 
-			require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), rts...))
+			relationtuple.MapAndWriteTuples(t, reg, rts...)
 
 			resp, err := ts.Client().Get(ts.URL + relationtuple.ReadRouteBase + "?" + url.Values{
 				"object": {obj},
@@ -114,7 +114,7 @@ func TestReadHandlers(t *testing.T) {
 			var respMsg relationtuple.GetResponse
 			require.NoError(t, json.NewDecoder(resp.Body).Decode(&respMsg))
 			assert.Equal(t, 1, len(respMsg.RelationTuples))
-			assert.Contains(t, rts, respMsg.RelationTuples[0])
+			assert.Containsf(t, rts, respMsg.RelationTuples[0], "expected to find %q in %q", respMsg.RelationTuples[0].String(), rts)
 			assert.Equal(t, "", respMsg.NextPageToken)
 		})
 
@@ -145,7 +145,7 @@ func TestReadHandlers(t *testing.T) {
 					Subject:   &relationtuple.SubjectID{ID: "s2"},
 				},
 			}
-			require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), rts...))
+			relationtuple.MapAndWriteTuples(t, reg, rts...)
 
 			var firstResp relationtuple.GetResponse
 			t.Run("case=first page", func(t *testing.T) {

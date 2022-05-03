@@ -79,20 +79,20 @@ func TestRESTHandler(t *testing.T) {
 			},
 		}
 
-		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), []*relationtuple.InternalRelationTuple{
-			{
+		relationtuple.MapAndWriteTuples(t, reg,
+			&relationtuple.InternalRelationTuple{
 				Namespace: nspace.Name,
 				Object:    rootSub.Object,
 				Relation:  rootSub.Relation,
 				Subject:   expectedTree.Children[0].Subject,
 			},
-			{
+			&relationtuple.InternalRelationTuple{
 				Namespace: nspace.Name,
 				Object:    rootSub.Object,
 				Relation:  rootSub.Relation,
 				Subject:   expectedTree.Children[1].Subject,
 			},
-		}...))
+		)
 
 		qs := rootSub.ToURLQuery()
 		qs.Set("max-depth", "2")
@@ -103,6 +103,44 @@ func TestRESTHandler(t *testing.T) {
 
 		actualTree := expand.Tree{}
 		require.NoError(t, json.NewDecoder(resp.Body).Decode(&actualTree))
-		assert.Equal(t, expectedTree, &actualTree)
+		assertEqualTrees(t, expectedTree, &actualTree)
 	})
+}
+
+func assertEqualTrees(t *testing.T, expected, actual *expand.Tree) {
+	t.Helper()
+	assert.Truef(t, treesAreEqual(t, expected, actual),
+		"expected:\n%s\n\nactual:\n%s", expected.String(), actual.String())
+}
+
+func treesAreEqual(t *testing.T, expected, actual *expand.Tree) bool {
+	if expected == nil || actual == nil {
+		return expected == actual
+	}
+
+	if expected.Type != actual.Type {
+		t.Logf("expected type %q, actual type %q", expected.Type, actual.Type)
+		return false
+	}
+	if expected.Subject.String() != actual.Subject.String() {
+		t.Logf("expected subject: %q, actual subject: %q", expected.Subject.String(), actual.Subject.String())
+		return false
+	}
+	if len(expected.Children) != len(actual.Children) {
+		t.Logf("expected len(children)=%d, actual len(children)=%d", len(expected.Children), len(actual.Children))
+		return false
+	}
+
+	// For children, we check for equality disregarding the order
+outer:
+	for _, expectedChild := range expected.Children {
+		for _, actualChild := range actual.Children {
+			if treesAreEqual(t, expectedChild, actualChild) {
+				continue outer
+			}
+		}
+		t.Logf("expected child:\n%s\n\nactual child:\n%s", expectedChild.String(), actual.String())
+		return false
+	}
+	return true
 }

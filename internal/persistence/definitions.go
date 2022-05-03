@@ -9,13 +9,12 @@ import (
 	"github.com/gobuffalo/pop/v6"
 
 	"github.com/ory/keto/internal/relationtuple"
-	"github.com/ory/keto/internal/uuidmapping"
 )
 
 type (
 	Persister interface {
 		relationtuple.Manager
-		uuidmapping.Manager
+		relationtuple.UUIDMappingManager
 
 		Connection(ctx context.Context) *pop.Connection
 	}

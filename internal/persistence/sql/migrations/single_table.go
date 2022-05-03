@@ -35,7 +35,7 @@ type (
 	}
 	toSingleTableMigrator struct {
 		d       dependencies
-		perPage int
+		PerPage int
 	}
 
 	relationTuple struct {
@@ -126,11 +126,11 @@ func (relationTuple) TableName(ctx context.Context) string {
 func NewToSingleTableMigrator(d dependencies) *toSingleTableMigrator {
 	return &toSingleTableMigrator{
 		d:       d,
-		perPage: 100,
+		PerPage: 100,
 	}
 }
 
-func (m *toSingleTableMigrator) namespaceMigrationBox(ctx context.Context, n *namespace.Namespace) (*popx.MigrationBox, error) {
+func (m *toSingleTableMigrator) NamespaceMigrationBox(ctx context.Context, n *namespace.Namespace) (*popx.MigrationBox, error) {
 	c, err := m.d.PopConnectionWithOpts(ctx, func(d *pop.ConnectionDetails) {
 		d.Options = map[string]string{
 			"migration_table_name": migrationTableFromNamespace(n),
@@ -149,7 +149,7 @@ func (m *toSingleTableMigrator) namespaceMigrationBox(ctx context.Context, n *na
 	)
 }
 
-func (m *toSingleTableMigrator) getOldRelationTuples(ctx context.Context, n *namespace.Namespace, page, perPage int) (relationTuples, bool, error) {
+func (m *toSingleTableMigrator) GetOldRelationTuples(ctx context.Context, n *namespace.Namespace, page, perPage int) (relationTuples, bool, error) {
 	q := m.d.Persister().Connection(ctx).
 		WithContext(context.WithValue(ctx, namespaceCtxKey, n)).
 		Order("object, relation, subject, commit_time").
@@ -165,7 +165,7 @@ func (m *toSingleTableMigrator) getOldRelationTuples(ctx context.Context, n *nam
 	return res, q.Paginator.Page < q.Paginator.TotalPages, nil
 }
 
-func (m *toSingleTableMigrator) insertOldRelationTuples(ctx context.Context, n *namespace.Namespace, rs ...*relationtuple.InternalRelationTuple) error {
+func (m *toSingleTableMigrator) InsertOldRelationTuples(ctx context.Context, n *namespace.Namespace, rs ...*relationtuple.InternalRelationTuple) error {
 	for _, r := range rs {
 		if r.Subject == nil {
 			return errors.New("subject is not allowed to be nil")
@@ -196,7 +196,7 @@ func (m *toSingleTableMigrator) MigrateNamespace(ctx context.Context, n *namespa
 
 	if err := p.Transaction(ctx, func(ctx context.Context, _ *pop.Connection) error {
 		for page := 1; ; page++ {
-			rs, hasNext, err := m.getOldRelationTuples(ctx, n, page, m.perPage)
+			rs, hasNext, err := m.GetOldRelationTuples(ctx, n, page, m.PerPage)
 			if err != nil {
 				return err
 			}
@@ -252,8 +252,10 @@ func (m *toSingleTableMigrator) LegacyNamespaces(ctx context.Context) ([]*namesp
 		query = c.RawQuery("SELECT name FROM sqlite_master WHERE type='table' AND name LIKE 'keto_%_relation_tuples'")
 	case "postgres":
 		query = c.RawQuery("SELECT tablename FROM pg_catalog.pg_tables WHERE tablename LIKE 'keto_%_relation_tuples'")
-	case "cockroach", "mysql":
+	case "cockroach":
 		query = c.RawQuery("SELECT table_name FROM information_schema.tables WHERE table_name LIKE 'keto_%_relation_tuples'")
+	case "mysql":
+		query = c.RawQuery("SELECT table_name FROM information_schema.tables WHERE table_name LIKE 'keto_%_relation_tuples' AND table_schema = DATABASE()")
 	default:
 		panic("got unknown database dialect " + d)
 	}
@@ -262,6 +264,7 @@ func (m *toSingleTableMigrator) LegacyNamespaces(ctx context.Context) ([]*namesp
 	if err := sqlcon.HandleError(query.All(&tableNames)); err != nil {
 		return nil, err
 	}
+	m.d.Logger().Debugf("Found tables %v", tableNames)
 
 	nm, err := m.d.Config(ctx).NamespaceManager()
 	if err != nil {
@@ -284,7 +287,7 @@ func (m *toSingleTableMigrator) LegacyNamespaces(ctx context.Context) ([]*namesp
 }
 
 func (m *toSingleTableMigrator) MigrateDown(ctx context.Context, n *namespace.Namespace) error {
-	mb, err := m.namespaceMigrationBox(ctx, n)
+	mb, err := m.NamespaceMigrationBox(ctx, n)
 	if err != nil {
 		return err
 	}

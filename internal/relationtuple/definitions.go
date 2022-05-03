@@ -24,6 +24,7 @@ import (
 type (
 	ManagerProvider interface {
 		RelationTupleManager() Manager
+		UUIDMappingManager() UUIDMappingManager
 	}
 	Manager interface {
 		GetRelationTuples(ctx context.Context, query *RelationQuery, options ...x.PaginationOptionSetter) ([]*InternalRelationTuple, string, error)
@@ -88,6 +89,9 @@ type Subject interface {
 
 	// swagger:ignore
 	ToProto() *rts.Subject
+
+	// swagger:ignore
+	UUIDMappable
 }
 
 // swagger:ignore
@@ -96,6 +100,18 @@ type InternalRelationTuple struct {
 	Object    string  `json:"object"`
 	Relation  string  `json:"relation"`
 	Subject   Subject `json:"subject"`
+}
+type InternalRelationTuples []*InternalRelationTuple
+
+func (rt *InternalRelationTuple) UUIDMappableFields() []*string {
+	return append([]*string{&rt.Object}, rt.Subject.UUIDMappableFields()...)
+}
+
+func (rtt InternalRelationTuples) UUIDMappableFields() (fields []*string) {
+	for _, rt := range rtt {
+		fields = append(fields, rt.UUIDMappableFields()...)
+	}
+	return fields
 }
 
 // swagger:parameters getExpand
@@ -139,6 +155,16 @@ func SubjectFromString(s string) (Subject, error) {
 		return (&SubjectSet{}).FromString(s)
 	}
 	return (&SubjectID{}).FromString(s)
+}
+
+// swagger:ignore
+func (s *SubjectID) UUIDMappableFields() []*string {
+	return []*string{&s.ID}
+}
+
+// swagger:ignore
+func (s *SubjectSet) UUIDMappableFields() []*string {
+	return []*string{&s.Object}
 }
 
 // swagger:ignore
@@ -447,6 +473,17 @@ func (q *RelationQuery) FromProto(query TupleData) (*RelationQuery, error) {
 	return q, nil
 }
 
+func (q *RelationQuery) UUIDMappableFields() []*string {
+	res := []*string{&q.Object}
+	if q.SubjectID != nil {
+		res = append(res, q.SubjectID)
+	}
+	if q.SubjectSet != nil {
+		res = append(res, q.SubjectSet.UUIDMappableFields()...)
+	}
+	return res
+}
+
 const (
 	subjectIDKey           = "subject_id"
 	subjectSetNamespaceKey = "subject_set.namespace"
@@ -683,4 +720,8 @@ func (t *ManagerWrapper) TransactRelationTuples(ctx context.Context, insert []*I
 
 func (t *ManagerWrapper) RelationTupleManager() Manager {
 	return t
+}
+
+func (t *ManagerWrapper) UUIDMappingManager() UUIDMappingManager {
+	return t.Reg.UUIDMappingManager()
 }

@@ -63,6 +63,12 @@ func (r *RegistryDefault) PopConnectionWithOpts(ctx context.Context, popOpts ...
 		return nil, errors.WithStack(err)
 	}
 
+	// Close this connection when the context is closed.
+	go func() {
+		<-ctx.Done()
+		conn.Close()
+	}()
+
 	return conn.WithContext(ctx), nil
 }
 

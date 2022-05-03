@@ -5,18 +5,14 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/julienschmidt/httprouter"
 	"github.com/ory/herodot"
 	"github.com/pkg/errors"
-
-	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
-
 	"google.golang.org/grpc"
 
 	"github.com/ory/keto/internal/relationtuple"
-
-	"github.com/julienschmidt/httprouter"
-
 	"github.com/ory/keto/internal/x"
+	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 )
 
 type (
@@ -30,7 +26,10 @@ type (
 	}
 )
 
-var _ rts.CheckServiceServer = (*Handler)(nil)
+var (
+	_ rts.CheckServiceServer = (*Handler)(nil)
+	_ *getCheckRequest       = nil
+)
 
 func NewHandler(d handlerDependencies) *Handler {
 	return &Handler{d: d}
@@ -64,7 +63,6 @@ type RESTResponse struct {
 }
 
 // swagger:parameters getCheck postCheck
-// nolint:deadcode,unused
 type getCheckRequest struct {
 	// in:query
 	MaxDepth int `json:"max-depth"`
@@ -105,6 +103,10 @@ func (h *Handler) getCheck(w http.ResponseWriter, r *http.Request, _ httprouter.
 		return
 	}
 
+	if err := h.d.PermissionEngine().d.UUIDMappingManager().MapFieldsToUUID(r.Context(), tuple); err != nil {
+		h.d.Writer().WriteError(w, r, err)
+		return
+	}
 	allowed, err := h.d.PermissionEngine().SubjectIsAllowed(r.Context(), tuple, maxDepth)
 	if err != nil {
 		h.d.Writer().WriteError(w, r, err)
@@ -151,6 +153,10 @@ func (h *Handler) postCheck(w http.ResponseWriter, r *http.Request, _ httprouter
 		return
 	}
 
+	if err := h.d.PermissionEngine().d.UUIDMappingManager().MapFieldsToUUID(r.Context(), &tuple); err != nil {
+		h.d.Writer().WriteError(w, r, err)
+		return
+	}
 	allowed, err := h.d.PermissionEngine().SubjectIsAllowed(r.Context(), &tuple, maxDepth)
 	if err != nil {
 		h.d.Writer().WriteError(w, r, err)
@@ -171,6 +177,9 @@ func (h *Handler) Check(ctx context.Context, req *rts.CheckRequest) (*rts.CheckR
 		return nil, err
 	}
 
+	if err := h.d.PermissionEngine().d.UUIDMappingManager().MapFieldsToUUID(ctx, tuple); err != nil {
+		return nil, err
+	}
 	allowed, err := h.d.PermissionEngine().SubjectIsAllowed(ctx, tuple, int(req.MaxDepth))
 	// TODO add content change handling
 	if err != nil {

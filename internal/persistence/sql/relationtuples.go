@@ -198,7 +198,7 @@ func (p *Persister) whereQuery(ctx context.Context, q *pop.Query, rq *relationtu
 }
 
 func (p *Persister) DeleteRelationTuples(ctx context.Context, rs ...*relationtuple.InternalRelationTuple) error {
-	return p.Transaction(ctx, func(ctx context.Context, c *pop.Connection) error {
+	return p.Transaction(ctx, func(ctx context.Context, _ *pop.Connection) error {
 		for _, r := range rs {
 			n, err := p.GetNamespaceByName(ctx, r.Namespace)
 			if err != nil {
@@ -223,7 +223,7 @@ func (p *Persister) DeleteRelationTuples(ctx context.Context, rs ...*relationtup
 }
 
 func (p *Persister) DeleteAllRelationTuples(ctx context.Context, query *relationtuple.RelationQuery) error {
-	return p.Transaction(ctx, func(ctx context.Context, c *pop.Connection) error {
+	return p.Transaction(ctx, func(ctx context.Context, _ *pop.Connection) error {
 		sqlQuery := p.QueryWithNetwork(ctx)
 		err := p.whereQuery(ctx, sqlQuery, query)
 		if err != nil {

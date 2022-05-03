@@ -1,22 +1,73 @@
 package dbx
 
 import (
+	"crypto/rand"
 	"fmt"
 	"io/ioutil"
+	"net/url"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
+	"github.com/go-sql-driver/mysql"
+	"github.com/gobuffalo/pop/v6"
+	"github.com/ory/x/sqlcon/dockertest"
 	"github.com/stretchr/testify/require"
 	"github.com/tidwall/sjson"
-
-	"github.com/ory/x/sqlcon/dockertest"
 )
 
 type DsnT struct {
 	Name                   string
 	Conn                   string
 	MigrateUp, MigrateDown bool
+}
+
+const mySQLSchema = "mysql://"
+
+func mySQLWithDbName(dsn string, db string) string {
+	cfg, err := mysql.ParseDSN(strings.TrimPrefix(dsn, mySQLSchema))
+	if err != nil {
+		return ""
+	}
+	cfg.DBName = db
+	return mySQLSchema + cfg.FormatDSN()
+}
+
+func withDbName(dsn string, db string) string {
+	// Special case for mysql, because their URLs are not parsable.
+	if strings.HasPrefix(dsn, mySQLSchema) {
+		return mySQLWithDbName(dsn, db)
+	}
+
+	u, err := url.Parse(dsn)
+	if err != nil {
+		return ""
+	}
+	u.Path = db
+
+	return u.String()
+}
+
+// dbName returns a name for the database based on the test name.
+func dbName(_ string) string {
+	var buf [20]byte
+	rand.Read(buf[:])
+	return fmt.Sprintf("testdb_%x", buf)
+}
+
+func createDB(t testing.TB, dsn string) (err error) {
+	var conn *pop.Connection
+
+	if conn, err = pop.NewConnection(&pop.ConnectionDetails{URL: dsn}); err != nil {
+		return fmt.Errorf("failed to connect to %q: %w", dsn, err)
+	}
+	if err = pop.CreateDB(conn); err != nil {
+		return fmt.Errorf("failed to create db in %q: %w", dsn, err)
+	}
+	t.Cleanup(func() { pop.DropDB(conn) })
+
+	return
 }
 
 func GetDSNs(t testing.TB, debugSqliteOnDisk bool) []*DsnT {
@@ -33,16 +84,26 @@ func GetDSNs(t testing.TB, debugSqliteOnDisk bool) []*DsnT {
 
 	if !testing.Short() {
 		var mysql, postgres, cockroach string
+		db := dbName(t.Name())
 
 		dockertest.Parallel([]func(){
 			func() {
-				mysql = dockertest.RunTestMySQL(t)
+				mysql = withDbName(dockertest.RunTestMySQL(t), db)
+				if err := createDB(t, mysql); err != nil {
+					t.Fatal(err)
+				}
 			},
 			func() {
-				postgres = dockertest.RunTestPostgreSQL(t)
+				postgres = withDbName(dockertest.RunTestPostgreSQL(t), db)
+				if err := createDB(t, postgres); err != nil {
+					t.Fatal(err)
+				}
 			},
 			func() {
-				cockroach = dockertest.RunTestCockroachDB(t)
+				cockroach = withDbName(dockertest.RunTestCockroachDB(t), db)
+				if err := createDB(t, cockroach); err != nil {
+					t.Fatal(err)
+				}
 			},
 		})
 

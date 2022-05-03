@@ -16,7 +16,10 @@ import (
 	"github.com/ory/keto/internal/x"
 )
 
-var _ rts.ReadServiceServer = (*handler)(nil)
+var (
+	_ rts.ReadServiceServer = (*handler)(nil)
+	_                       = (*getRelationsParams)(nil)
+)
 
 func (h *handler) ListRelationTuples(ctx context.Context, req *rts.ListRelationTuplesRequest) (*rts.ListRelationTuplesResponse, error) {
 	if req.Query == nil {
@@ -28,11 +31,17 @@ func (h *handler) ListRelationTuples(ctx context.Context, req *rts.ListRelationT
 		return nil, err
 	}
 
+	if err := h.d.UUIDMappingManager().MapFieldsToUUID(ctx, q); err != nil {
+		return nil, err
+	}
 	rels, nextPage, err := h.d.RelationTupleManager().GetRelationTuples(ctx, q,
 		x.WithSize(int(req.PageSize)),
 		x.WithToken(req.PageToken),
 	)
 	if err != nil {
+		return nil, err
+	}
+	if err := h.d.UUIDMappingManager().MapFieldsFromUUID(ctx, InternalRelationTuples(rels)); err != nil {
 		return nil, err
 	}
 
@@ -48,7 +57,6 @@ func (h *handler) ListRelationTuples(ctx context.Context, req *rts.ListRelationT
 }
 
 // swagger:parameters getRelationTuples
-// nolint:deadcode,unused
 type getRelationsParams struct {
 	// Namespace of the Relation Tuple
 	//
@@ -139,8 +147,16 @@ func (h *handler) getRelations(w http.ResponseWriter, r *http.Request, _ httprou
 		paginationOpts = append(paginationOpts, x.WithSize(int(s)))
 	}
 
+	if err := h.d.UUIDMappingManager().MapFieldsToUUID(r.Context(), query); err != nil {
+		h.d.Writer().WriteError(w, r, err)
+		return
+	}
 	rels, nextPage, err := h.d.RelationTupleManager().GetRelationTuples(r.Context(), query, paginationOpts...)
 	if err != nil {
+		h.d.Writer().WriteError(w, r, err)
+		return
+	}
+	if err := h.d.UUIDMappingManager().MapFieldsFromUUID(r.Context(), InternalRelationTuples(rels)); err != nil {
 		h.d.Writer().WriteError(w, r, err)
 		return
 	}

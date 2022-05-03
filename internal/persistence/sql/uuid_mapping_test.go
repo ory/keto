@@ -2,8 +2,11 @@ package sql_test
 
 import (
 	"context"
+	"fmt"
+	"strings"
 	"testing"
 
+	"github.com/gofrs/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
@@ -12,6 +15,19 @@ import (
 	"github.com/ory/keto/internal/x/dbx"
 )
 
+func assertCheckErr(t assert.TestingT, err error, msgAndArgs ...interface{}) bool {
+	t.(*testing.T).Helper()
+	if err == nil {
+		return assert.Fail(t, "Did not receive an error", msgAndArgs...)
+	}
+
+	if strings.Contains(err.Error(), "keto_uuid_mappings") || // <- normal databases
+		strings.Contains(err.Error(), "SQLSTATE 23514") { // <- mysql
+		return true
+	}
+	return assert.Fail(t, fmt.Sprintf("Did not receive check error, got:\n%+v", err), msgAndArgs...)
+}
+
 func TestUUIDMapping(t *testing.T) {
 	for _, dsn := range dbx.GetDSNs(t, false) {
 		t.Run("dsn="+dsn.Name, func(t *testing.T) {
@@ -19,33 +35,42 @@ func TestUUIDMapping(t *testing.T) {
 			c, err := reg.PopConnection(context.Background())
 			require.NoError(t, err)
 
+			testUUID := uuid.Must(uuid.NewV4())
+
 			for _, tc := range []struct {
 				desc      string
 				mappings  interface{}
-				shouldErr bool
+				assertErr assert.ErrorAssertionFunc
 			}{{
 				desc:      "empty should fail on constraint",
 				mappings:  &sql.UUIDMapping{},
-				shouldErr: true,
+				assertErr: assertCheckErr,
+			}, {
+				desc:      "empty strings should fail on constraint",
+				mappings:  &sql.UUIDMapping{uuid.Nil, ""},
+				assertErr: assertCheckErr,
 			}, {
 				desc:      "single with string rep should succeed",
 				mappings:  &sql.UUIDMapping{StringRepresentation: "foo"},
-				shouldErr: false,
+				assertErr: assert.NoError,
 			}, {
-				desc: "two with same rep should fail on constraint",
-				mappings: sql.UUIDMappings{
-					&sql.UUIDMapping{StringRepresentation: "bar"},
-					&sql.UUIDMapping{StringRepresentation: "bar"},
+				desc: "two with same uuid should fail on constraint",
+				mappings: &[]sql.UUIDMapping{
+					{ID: testUUID, StringRepresentation: "foo"},
+					{ID: testUUID, StringRepresentation: "bar"},
 				},
-				shouldErr: true,
+				assertErr: assertCheckErr,
+			}, {
+				desc: "two with same rep should succeed",
+				mappings: &[]sql.UUIDMapping{
+					{ID: uuid.Must(uuid.NewV4()), StringRepresentation: "bar"},
+					{ID: uuid.Must(uuid.NewV4()), StringRepresentation: "bar"},
+				},
+				assertErr: assert.NoError,
 			}} {
 				t.Run("case="+tc.desc, func(t *testing.T) {
-					err = c.Create(tc.mappings)
-					if tc.shouldErr {
-						assert.Error(t, err)
-					} else {
-						assert.NoError(t, err)
-					}
+					err := c.Create(tc.mappings)
+					tc.assertErr(t, err)
 				})
 			}
 		})

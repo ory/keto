@@ -23,6 +23,8 @@ import (
 )
 
 func assertAllowed(t *testing.T, resp *http.Response) {
+	t.Helper()
+
 	body, err := io.ReadAll(resp.Body)
 	require.NoError(t, err)
 
@@ -97,7 +99,7 @@ func TestRESTHandler(t *testing.T) {
 			Relation:  "r",
 			Subject:   &relationtuple.SubjectID{ID: "s"},
 		}
-		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), rt))
+		relationtuple.MapAndWriteTuples(t, reg, rt)
 
 		q, err := rt.ToURLQuery()
 		require.NoError(t, err)

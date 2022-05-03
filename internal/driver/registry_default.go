@@ -8,6 +8,7 @@ import (
 	"github.com/gobuffalo/pop/v6"
 	"github.com/ory/herodot"
 	"github.com/ory/x/dbal"
+	"github.com/ory/x/fsx"
 	"github.com/ory/x/healthx"
 	"github.com/ory/x/logrusx"
 	"github.com/ory/x/metricsx"
@@ -24,8 +25,9 @@ import (
 	"github.com/ory/keto/internal/expand"
 	"github.com/ory/keto/internal/persistence"
 	"github.com/ory/keto/internal/persistence/sql"
+	_ "github.com/ory/keto/internal/persistence/sql/migrations"
+	"github.com/ory/keto/internal/persistence/sql/migrations/uuidmapping"
 	"github.com/ory/keto/internal/relationtuple"
-	"github.com/ory/keto/internal/uuidmapping"
 	"github.com/ory/keto/internal/x"
 	"github.com/ory/keto/ketoctx"
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
@@ -152,7 +154,7 @@ func (r *RegistryDefault) RelationTupleManager() relationtuple.Manager {
 	return r.p
 }
 
-func (r *RegistryDefault) UUIDMappingManager() uuidmapping.Manager {
+func (r *RegistryDefault) UUIDMappingManager() relationtuple.UUIDMappingManager {
 	if r.p == nil {
 		panic("no relation tuple manager, but expected to have one")
 	}
@@ -186,10 +188,16 @@ func (r *RegistryDefault) MigrationBox(ctx context.Context) (*popx.MigrationBox,
 		if err != nil {
 			return nil, err
 		}
-		mb, err := sql.NewMigrationBox(c, r.Logger(), r.Tracer(ctx))
+
+		mb, err := popx.NewMigrationBox(
+			fsx.Merge(sql.Migrations, networkx.Migrations),
+			popx.NewMigrator(c, r.Logger(), r.Tracer(ctx), 0),
+			popx.WithGoMigrations(uuidmapping.Migrations),
+		)
 		if err != nil {
 			return nil, err
 		}
+
 		r.mb = mb
 	}
 	return r.mb, nil

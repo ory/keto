@@ -14,7 +14,6 @@ import (
 	"github.com/ory/keto/internal/namespace"
 	"github.com/ory/keto/internal/persistence/sql"
 	"github.com/ory/keto/internal/relationtuple"
-	"github.com/ory/keto/internal/uuidmapping"
 	"github.com/ory/keto/internal/x/dbx"
 )
 
@@ -69,9 +68,9 @@ func TestPersister(t *testing.T) {
 				relationtuple.IsolationTest(t, p0, p1, addNamespace(r, nspaces))
 			})
 
-			t.Run("uuidmapping.ManagerTest", func(t *testing.T) {
+			t.Run("relationtuple.UUIDMappingManagerTest", func(t *testing.T) {
 				p, _, _ := setup(t, dsn)
-				uuidmapping.ManagerTest(t, p)
+				relationtuple.UUIDMappingManagerTest(t, p)
 			})
 		})
 	}

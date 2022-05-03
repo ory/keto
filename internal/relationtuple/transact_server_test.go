@@ -80,10 +80,14 @@ func TestWriteHandlers(t *testing.T) {
 			assert.JSONEq(t, string(payload), string(body))
 
 			t.Run("check=is contained in the manager", func(t *testing.T) {
+				query := rt.ToQuery()
+				require.NoError(t, reg.UUIDMappingManager().MapFieldsToUUID(context.Background(), query))
 				// set a size > 1 just to make sure it gets all
-				actualRTs, _, err := reg.RelationTupleManager().GetRelationTuples(context.Background(), rt.ToQuery(), x.WithSize(10))
+				actualRTs, _, err := reg.RelationTupleManager().GetRelationTuples(context.Background(), query, x.WithSize(10))
 				require.NoError(t, err)
-				assert.Equal(t, []*relationtuple.InternalRelationTuple{rt}, actualRTs)
+				require.NoError(t, reg.UUIDMappingManager().MapFieldsFromUUID(context.Background(), relationtuple.InternalRelationTuples(actualRTs)))
+				require.NoError(t, reg.UUIDMappingManager().MapFieldsFromUUID(context.Background(), query))
+				assert.Equalf(t, []*relationtuple.InternalRelationTuple{rt}, actualRTs, "want: %s\ngot:  %s", rt.String(), actualRTs[0].String())
 			})
 
 			t.Run("check=is gettable with the returned URL", func(t *testing.T) {
@@ -136,6 +140,7 @@ func TestWriteHandlers(t *testing.T) {
 				Namespace: nspace.Name,
 			})
 			require.NoError(t, err)
+			require.NoError(t, reg.UUIDMappingManager().MapFieldsFromUUID(context.Background(), relationtuple.InternalRelationTuples(actual)))
 			assert.Equal(t, "", next)
 			assert.Len(t, actual, 2)
 			for _, rt := range rts {
@@ -154,7 +159,7 @@ func TestWriteHandlers(t *testing.T) {
 				Relation:  "deleted rel",
 				Subject:   &relationtuple.SubjectID{ID: "deleted subj"},
 			}
-			require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), rt))
+			relationtuple.MapAndWriteTuples(t, reg, rt)
 
 			q, err := rt.ToURLQuery()
 			require.NoError(t, err)
@@ -167,6 +172,7 @@ func TestWriteHandlers(t *testing.T) {
 			// set a size > 1 just to make sure it gets all
 			actualRTs, _, err := reg.RelationTupleManager().GetRelationTuples(context.Background(), rt.ToQuery(), x.WithSize(10))
 			require.NoError(t, err)
+			require.NoError(t, reg.UUIDMappingManager().MapFieldsFromUUID(context.Background(), relationtuple.InternalRelationTuples(actualRTs)))
 			assert.Equal(t, []*relationtuple.InternalRelationTuple{}, actualRTs)
 		})
 
@@ -188,7 +194,7 @@ func TestWriteHandlers(t *testing.T) {
 				},
 			}
 
-			require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), rts...))
+			relationtuple.MapAndWriteTuples(t, reg, rts...)
 
 			q := url.Values{
 				"namespace": {nspace.Name},
@@ -206,6 +212,7 @@ func TestWriteHandlers(t *testing.T) {
 
 			actualRTs, _, err := reg.RelationTupleManager().GetRelationTuples(context.Background(), query, x.WithSize(10))
 			require.NoError(t, err)
+			require.NoError(t, reg.UUIDMappingManager().MapFieldsFromUUID(context.Background(), relationtuple.InternalRelationTuples(actualRTs)))
 			assert.Equal(t, []*relationtuple.InternalRelationTuple{}, actualRTs)
 		})
 	})
@@ -234,7 +241,7 @@ func TestWriteHandlers(t *testing.T) {
 					},
 				},
 			}
-			require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), deltas[1].RelationTuple))
+			relationtuple.MapAndWriteTuples(t, reg, deltas[1].RelationTuple)
 
 			body, err := json.Marshal(deltas)
 			require.NoError(t, err)
@@ -248,6 +255,8 @@ func TestWriteHandlers(t *testing.T) {
 				Namespace: nspace.Name,
 				Relation:  t.Name(),
 			})
+			require.NoError(t, err)
+			err = reg.UUIDMappingManager().MapFieldsFromUUID(context.Background(), relationtuple.InternalRelationTuples(actualRTs))
 			require.NoError(t, err)
 			assert.Equal(t, []*relationtuple.InternalRelationTuple{deltas[0].RelationTuple}, actualRTs)
 		})
@@ -316,6 +325,7 @@ func TestWriteHandlers(t *testing.T) {
 			actualRTs, _, err := reg.RelationTupleManager().GetRelationTuples(context.Background(), &relationtuple.RelationQuery{
 				Namespace: nspace.Name,
 			})
+			require.NoError(t, reg.UUIDMappingManager().MapFieldsFromUUID(context.Background(), relationtuple.InternalRelationTuples(actualRTs)))
 			require.NoError(t, err)
 			assert.Equal(t, []*relationtuple.InternalRelationTuple{deltas[0].RelationTuple}, actualRTs)
 		})
