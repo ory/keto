@@ -6,12 +6,8 @@ services:
       - '4466:4466'
       - '4467:4467'
     command: serve -c /home/ory/keto.yml
-    environment:
-      - LOG_LEVEL=debug
-      - PORT=4466
-      - DSN=memory
     restart: on-failure
     volumes:
       - type: bind
-        source: './contrib/keto'
-        target: '/home/ory'
+        source: config/keto.yml
+        target: /home/ory/keto.yml
