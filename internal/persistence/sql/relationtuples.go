@@ -136,8 +136,6 @@ func (p *Persister) InsertRelationTuple(ctx context.Context, rel *relationtuple.
 		return errors.WithStack(relationtuple.ErrNilSubject)
 	}
 
-	p.d.Logger().WithFields(rel.ToLoggerFields()).Trace("creating in database")
-
 	rt := &RelationTuple{
 		ID:         uuid.Must(uuid.NewV4()),
 		CommitTime: time.Now(),
