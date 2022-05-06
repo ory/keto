@@ -119,5 +119,6 @@ func (e *Engine) SubjectIsAllowed(ctx context.Context, r *relationtuple.Internal
 		restDepth = globalMaxDepth
 	}
 
+	e.d.Logger().WithFields(r.ToLoggerFields()).Trace("checking relation tuple")
 	return e.checkOneIndirectionFurther(ctx, r, &relationtuple.RelationQuery{Object: r.Object, Relation: r.Relation, Namespace: r.Namespace}, restDepth)
 }
