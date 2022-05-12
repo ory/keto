@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"sort"
 
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 
@@ -28,7 +29,12 @@ func main() {
 		panic(err.Error())
 	}
 
+	ids := []string{}
 	for _, rt := range res.RelationTuples {
-		fmt.Println(rt.Subject.Ref.(*rts.Subject_Id).Id)
+		ids = append(ids, rt.Subject.Ref.(*rts.Subject_Id).Id)
+	}
+	sort.Strings(ids)
+	for _, id := range ids {
+		fmt.Println(id)
 	}
 }
