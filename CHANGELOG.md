@@ -5,7 +5,7 @@
 
 **Table of Contents**
 
-- [0.0.0 (2022-05-05)](#000-2022-05-05)
+- [0.0.0 (2022-05-12)](#000-2022-05-12)
   - [Breaking Changes](#breaking-changes)
     - [Code Refactoring](#code-refactoring)
     - [Documentation](#documentation)
@@ -124,7 +124,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.8.0-alpha.2...v0.0.0) (2022-05-05)
+# [0.0.0](https://github.com/ory/keto/compare/v0.8.0-alpha.2...v0.0.0) (2022-05-12)
 
 ## Breaking Changes
 
@@ -160,6 +160,8 @@ gRPC relation-tuple-delta action enum names are prefixed with `ACTION_`
 
 ### Features
 
+- Add reverse lookup indices ([#875](https://github.com/ory/keto/issues/875))
+  ([25af263](https://github.com/ory/keto/commit/25af263827a16c4c4ed080644cd7b08a2851124a))
 - Make sensitive log value redaction text configurable
   ([#860](https://github.com/ory/keto/issues/860))
   ([b8b1d81](https://github.com/ory/keto/commit/b8b1d81ee1574fdfd8bdac01ec2f9957f03df879))
