@@ -22,7 +22,7 @@ readClient.listRelationTuples(readRequest, (error, resp) => {
       resp
         .getRelationTuplesList()
         .map((tuple) => tuple.getSubject().getId())
-        .sort((a, b) => a < b ? -1 : 1)
+        .sort((a, b) => (a < b ? -1 : 1))
         .join('\n')
     )
   }
