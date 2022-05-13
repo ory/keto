@@ -150,9 +150,6 @@ func TestMigrations(t *testing.T) {
 			// cleanup first
 			require.NoError(t, tm.Down(ctx, -1))
 
-			t.Log("before migration")
-			logMigrationStatus(t, tm)
-
 			t.Run("suite=up", func(t *testing.T) {
 				if err := tm.Up(ctx); err != nil {
 					t.Log("migrations failed:", err)
@@ -161,12 +158,15 @@ func TestMigrations(t *testing.T) {
 				logMigrationStatus(t, tm)
 			})
 
+			reg := driver.NewTestRegistry(t, db)
+			require.NoError(t,
+				reg.Config(ctx).Set(config.KeyNamespaces, []*namespace.Namespace{
+					{ID: 1, Name: "foo"},
+					{ID: 2, Name: "uuid_test"},
+				}))
+			p, err := sql.NewPersister(ctx, reg, uuid.Must(uuid.FromString("77fdc5e0-2260-49da-8aae-c36ba255d05b")))
+
 			t.Run("suite=fixtures", func(t *testing.T) {
-				reg := driver.NewTestRegistry(t, db)
-				require.NoError(t,
-					reg.Config(ctx).Set(config.KeyNamespaces, []*namespace.Namespace{
-						{ID: 1, Name: "foo"}}))
-				p, err := sql.NewPersister(ctx, reg, uuid.Must(uuid.FromString("77fdc5e0-2260-49da-8aae-c36ba255d05b")))
 
 				t.Run("table=legacy namespaces", func(t *testing.T) {
 					// as they are legacy, we expect them to be actually dropped
@@ -211,6 +211,32 @@ func TestMigrations(t *testing.T) {
 				})
 			})
 
+			t.Run("suite=uuid_migrations", func(t *testing.T) {
+				require.NoError(t, tm.Down(ctx, -1))
+
+				// Migrate up to (including) "migrate-strings-to-uuids"
+				migrateTo(t, tm, "migrate-strings-to-uuids")
+				t.Log("status after up migration")
+				logMigrationStatus(t, tm)
+
+				// Assert that relationtuples have UUIDs
+				tuples, _, err := p.GetRelationTuples(ctx, &relationtuple.RelationQuery{Namespace: "uuid_test"})
+				require.NoError(t, err)
+				assertIsUUID(t, *tuples[0].Subject.SubjectID())
+				assertIsUUID(t, tuples[0].Object)
+
+				// Migrate down to before "migrate-strings-to-uuids"
+				require.NoError(t, tm.Down(ctx, 1))
+				t.Log("status after down migration")
+				logMigrationStatus(t, tm)
+
+				// Assert that relationtuples have strings
+				tuples, _, err = p.GetRelationTuples(ctx, &relationtuple.RelationQuery{Namespace: "uuid_test"})
+				require.NoError(t, err)
+				assert.Equal(t, "user", *tuples[0].Subject.SubjectID())
+				assert.Equal(t, "object", tuples[0].Object)
+			})
+
 			t.Run("suite=down", func(t *testing.T) {
 				if debugOnDisk && db.Name == "sqlite" {
 					t.SkipNow()
@@ -221,7 +247,30 @@ func TestMigrations(t *testing.T) {
 	}
 }
 
+func migrateTo(t *testing.T, tm *popx.MigrationBox, name string) {
+	statuses, err := tm.Status(context.Background())
+	require.NoError(t, err)
+
+	for i, status := range statuses {
+		if status.Name == name {
+			_, err = tm.UpTo(context.Background(), i+1)
+			require.NoError(t, err)
+			return
+		}
+	}
+	t.Fatal("could not find ", name)
+}
+
+func assertIsUUID(t *testing.T, id string) {
+	t.Helper()
+	if _, err := uuid.FromString(id); err != nil {
+		t.Errorf("expected %q to be a UUID", id)
+	}
+}
+
 func logMigrationStatus(t *testing.T, m *popx.MigrationBox) {
+	t.Helper()
+
 	status, err := m.Status(context.Background())
 	require.NoError(t, err)
 	s := strings.Builder{}

@@ -43,6 +43,8 @@ var (
 	name       = "migrate-strings-to-uuids"
 	version    = "20220513210000000000"
 	Migrations = popx.Migrations{
+		// The "up" migration will add the UUID mappings to the database and
+		// replace the strings with UUIDs.
 		{
 			Version:   version,
 			Name:      name,
@@ -58,6 +60,7 @@ var (
 					}
 
 					for _, rt := range relationTuples {
+						rt := rt
 						if err = migrateSubjectID(conn, &rt); err != nil {
 							return fmt.Errorf("could not migrate subject ID: %w", err)
 						}
@@ -80,8 +83,8 @@ var (
 				return nil
 			},
 		},
-		// We have to specify the "down" migration even if it is a no-op, since
-		// the migrator will still manipulate the version table in the database.
+		// The "down" migration will replace all UUIDs with strings from the
+		// mapping table.
 		{
 			Version:   version,
 			Name:      name,
@@ -89,7 +92,35 @@ var (
 			Direction: "down",
 			DBType:    "all",
 			Type:      "go",
-			Runner: func(_ popx.Migration, _ *pop.Connection, _ *pop.Tx) error {
+			Runner: func(_ popx.Migration, conn *pop.Connection, _ *pop.Tx) error {
+				for page := 1; ; page++ {
+					relationTuples, hasNext, err := getRelationTuples(conn, page)
+					if err != nil {
+						return fmt.Errorf("could not get relation tuples: %w", err)
+					}
+
+					for _, rt := range relationTuples {
+						rt := rt
+						fields := []*string{&rt.Object}
+						if rt.SubjectID.Valid {
+							fields = append(fields, &rt.SubjectID.String)
+						}
+						if rt.SubjectSetObject.Valid {
+							fields = append(fields, &rt.SubjectSetObject.String)
+						}
+						if err := batchReplaceUUIDs(conn, fields); err != nil {
+							return fmt.Errorf("could not replace UUIDs: %w", err)
+						}
+						if err = conn.Update(&rt); err != nil {
+							return fmt.Errorf("failed to update relation tuple: %w", err)
+						}
+					}
+
+					if !hasNext {
+						break
+					}
+				}
+
 				return nil
 			},
 		},
@@ -187,4 +218,51 @@ func getRelationTuples(conn *pop.Connection, page int) (
 		return nil, false, sqlcon.HandleError(err)
 	}
 	return res, q.Paginator.Page < q.Paginator.TotalPages, nil
+}
+
+func removeNonUUIDs(fields []*string) []*string {
+	var res []*string
+	for _, f := range fields {
+		if f == nil || *f == "" {
+			continue
+		}
+		if _, err := uuid.FromString(*f); err != nil {
+			continue
+		}
+		res = append(res, f)
+	}
+	return res
+}
+
+func batchReplaceUUIDs(conn *pop.Connection, ids []*string) (err error) {
+	ids = removeNonUUIDs(ids)
+
+	if len(ids) == 0 {
+		return
+	}
+
+	// Build a map from UUID -> target
+	uuidToTargets := make(map[string][]*string)
+	for _, id := range ids {
+		if ids, ok := uuidToTargets[*id]; ok {
+			uuidToTargets[*id] = append(ids, id)
+		} else {
+			uuidToTargets[*id] = []*string{id}
+		}
+	}
+
+	mappings := &[]UUIDMapping{}
+	query := conn.Where("id in (?)", ids)
+	if err := sqlcon.HandleError(query.All(mappings)); err != nil {
+		return err
+	}
+
+	// Write the representation to the correct index.
+	for _, m := range *mappings {
+		for _, target := range uuidToTargets[m.ID.String()] {
+			*target = m.StringRepresentation
+		}
+	}
+
+	return
 }

@@ -22,6 +22,7 @@ func assertCheckErr(t assert.TestingT, err error, msgAndArgs ...interface{}) boo
 	}
 
 	if strings.Contains(err.Error(), "keto_uuid_mappings") || // <- normal databases
+		strings.Contains(err.Error(), "SQLSTATE 23505") || // <- cockroach
 		strings.Contains(err.Error(), "SQLSTATE 23514") { // <- mysql
 		return true
 	}
