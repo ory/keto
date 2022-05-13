@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/gobuffalo/pop/v6"
 	"github.com/gofrs/uuid"
 	"github.com/ory/x/sqlcon"
 
@@ -109,16 +110,18 @@ func (p *Persister) replaceWithUUID(ctx context.Context, s *string) error {
 }
 
 func (p *Persister) MapFieldsToUUID(ctx context.Context, m relationtuple.UUIDMappable) error {
-	for _, s := range m.UUIDMappableFields() {
-		if s == nil || *s == "" {
-			continue
+	return p.Transaction(ctx, func(ctx context.Context, _ *pop.Connection) error {
+		for _, s := range m.UUIDMappableFields() {
+			if s == nil || *s == "" {
+				continue
+			}
+			if err := p.replaceWithUUID(ctx, s); err != nil {
+				p.d.Logger().WithError(err).WithField("string", s).Error("got an error while mapping string to UUID")
+				return err
+			}
 		}
-		if err := p.replaceWithUUID(ctx, s); err != nil {
-			p.d.Logger().WithError(err).WithField("string", s).Error("got an error while mapping string to UUID")
-			return err
-		}
-	}
-	return nil
+		return nil
+	})
 }
 
 func (p *Persister) MapFieldsFromUUID(ctx context.Context, m relationtuple.UUIDMappable) error {
