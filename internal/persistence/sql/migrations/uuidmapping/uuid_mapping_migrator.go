@@ -3,6 +3,7 @@ package uuidmapping
 import (
 	"database/sql"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/gobuffalo/pop/v6"
@@ -61,14 +62,15 @@ var (
 
 					for _, rt := range relationTuples {
 						rt := rt
-						if err = migrateSubjectID(conn, &rt); err != nil {
-							return fmt.Errorf("could not migrate subject ID: %w", err)
+						fields := []*string{&rt.Object}
+						if rt.SubjectID.Valid {
+							fields = append(fields, &rt.SubjectID.String)
 						}
-						if err = migrateSubjectSetObject(conn, &rt); err != nil {
-							return fmt.Errorf("could not migrate subject set object: %w", err)
+						if rt.SubjectSetObject.Valid {
+							fields = append(fields, &rt.SubjectSetObject.String)
 						}
-						if err = migrateObject(conn, &rt); err != nil {
-							return fmt.Errorf("could not migrate object: %w", err)
+						if err := batchReplaceStrings(conn, &rt, fields); err != nil {
+							return fmt.Errorf("could not replace UUIDs: %w", err)
 						}
 						if err = conn.Update(&rt); err != nil {
 							return fmt.Errorf("failed to update relation tuple: %w", err)
@@ -127,88 +129,6 @@ var (
 	}
 )
 
-func hasMapping(conn *pop.Connection, id string) (bool, error) {
-	found, err := conn.Where("id = ?", id).Exists(&UUIDMapping{})
-	if err != nil {
-		return false, nil
-	}
-	return found, nil
-}
-
-func migrateSubjectID(conn *pop.Connection, rt *RelationTuple) error {
-	if !rt.SubjectID.Valid || rt.SubjectID.String == "" {
-		return nil
-	}
-	skip, err := hasMapping(conn, rt.SubjectID.String)
-	if err != nil {
-		return err
-	}
-	if skip {
-		return nil
-	}
-
-	rt.SubjectID.String, err = addUUIDMapping(conn, rt.NetworkID, rt.SubjectID.String)
-	return err
-}
-
-func migrateSubjectSetObject(conn *pop.Connection, rt *RelationTuple) error {
-	if !rt.SubjectSetObject.Valid || rt.SubjectSetObject.String == "" {
-		return nil
-	}
-	skip, err := hasMapping(conn, rt.SubjectSetObject.String)
-	if err != nil {
-		return err
-	}
-	if skip {
-		return nil
-	}
-
-	rt.SubjectSetObject.String, err = addUUIDMapping(conn, rt.NetworkID, rt.SubjectSetObject.String)
-	return err
-}
-
-func migrateObject(conn *pop.Connection, rt *RelationTuple) error {
-	if rt.Object == "" {
-		return nil
-	}
-	skip, err := hasMapping(conn, rt.Object)
-	if err != nil {
-		return err
-	}
-	if skip {
-		return nil
-	}
-
-	rt.Object, err = addUUIDMapping(conn, rt.NetworkID, rt.Object)
-	return err
-}
-
-func addUUIDMapping(conn *pop.Connection, networkID uuid.UUID, value string) (uid string, err error) {
-	uid = uuid.NewV5(networkID, value).String()
-
-	// We need to write manual SQL here because the INSERT should not fail if
-	// the UUID already exists, but we still want to return an error if anything
-	// else goes wrong.
-	var query string
-	switch d := conn.Dialect.Name(); d {
-	case "mysql":
-		query = `
-			INSERT IGNORE INTO keto_uuid_mappings (id, string_representation)
-			VALUES (?, ?)`
-	default:
-		query = `
-			INSERT INTO keto_uuid_mappings (id, string_representation)
-			VALUES (?, ?)
-			ON CONFLICT (id) DO NOTHING`
-	}
-
-	err = sqlcon.HandleError(conn.RawQuery(query, uid, value).Exec())
-	if err != nil {
-		return "", fmt.Errorf("failed to add UUID mapping: %w", err)
-	}
-	return
-}
-
 func getRelationTuples(conn *pop.Connection, page int) (
 	res []RelationTuple, hasNext bool, err error,
 ) {
@@ -232,6 +152,62 @@ func removeNonUUIDs(fields []*string) []*string {
 		res = append(res, f)
 	}
 	return res
+}
+
+func removeEmpty(fields []*string) []*string {
+	var res []*string
+	for _, f := range fields {
+		if f == nil || *f == "" {
+			continue
+		}
+		res = append(res, f)
+	}
+	return res
+}
+
+func batchReplaceStrings(conn *pop.Connection, rt *RelationTuple, fields []*string) (err error) {
+	fields = removeEmpty(fields)
+	if len(fields) == 0 {
+		return
+	}
+	values := make([]string, len(fields))
+	for i, field := range fields {
+		values[i] = *field
+	}
+
+	uuids := make([]uuid.UUID, len(values))
+	placeholderArray := make([]string, len(values))
+	args := make([]interface{}, 0, len(values)*2)
+	for i, val := range values {
+		uuids[i] = uuid.NewV5(rt.NetworkID, val)
+		placeholderArray[i] = "(?, ?)"
+		args = append(args, uuids[i].String(), val)
+	}
+	placeholders := strings.Join(placeholderArray, ", ")
+
+	// We need to write manual SQL here because the INSERT should not fail if
+	// the UUID already exists, but we still want to return an error if anything
+	// else goes wrong.
+	var query string
+	switch d := conn.Dialect.Name(); d {
+	case "mysql":
+		query = `
+			INSERT IGNORE INTO keto_uuid_mappings (id, string_representation) VALUES ` + placeholders
+	default:
+		query = `
+			INSERT INTO keto_uuid_mappings (id, string_representation)
+			VALUES ` + placeholders + `
+			ON CONFLICT (id) DO NOTHING`
+	}
+
+	if err = sqlcon.HandleError(conn.RawQuery(query, args...).Exec()); err != nil {
+		return err
+	}
+
+	for i, field := range fields {
+		*field = uuids[i].String()
+	}
+	return nil
 }
 
 func batchReplaceUUIDs(conn *pop.Connection, ids []*string) (err error) {

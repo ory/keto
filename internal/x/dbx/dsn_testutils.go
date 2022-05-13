@@ -52,7 +52,7 @@ func withDbName(dsn string, db string) string {
 // dbName returns a name for the database based on the test name.
 func dbName(_ string) string {
 	var buf [20]byte
-	rand.Read(buf[:])
+	_, _ = rand.Read(buf[:])
 	return fmt.Sprintf("testdb_%x", buf)
 }
 
@@ -65,7 +65,11 @@ func createDB(t testing.TB, dsn string) (err error) {
 	if err = pop.CreateDB(conn); err != nil {
 		return fmt.Errorf("failed to create db in %q: %w", dsn, err)
 	}
-	t.Cleanup(func() { pop.DropDB(conn) })
+	t.Cleanup(func() {
+		if err = pop.DropDB(conn); err != nil {
+			t.Log(err)
+		}
+	})
 
 	return
 }

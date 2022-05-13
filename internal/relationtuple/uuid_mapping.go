@@ -7,8 +7,6 @@ import (
 	"github.com/gofrs/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-
-	"github.com/ory/keto/internal/x"
 )
 
 type (
@@ -17,24 +15,12 @@ type (
 	UUIDMappable interface{ UUIDMappableFields() []*string }
 
 	UUIDMappingManager interface {
-		// ToUUID returns the mapped UUID for the given string representation.
-		// If the string representation is not mapped, a new UUID will be
-		// created automatically.
-		ToUUID(ctx context.Context, representation string) (uuid.UUID, error)
-
-		// MapFields maps all fields of the given object to UUIDs.
+		// MapFieldsToUUID maps all fields of the given object to UUIDs.
 		MapFieldsToUUID(ctx context.Context, m UUIDMappable) error
 
 		// MapFieldsFromUUID maps all fields of the given object from UUIDs to
 		// their string value.
 		MapFieldsFromUUID(ctx context.Context, m UUIDMappable) error
-
-		// FromUUID returns the text representations for the given UUIDs, such
-		// that ids[i] is mapped to reps[i].
-		//
-		// Of the pagination options, only the page size is considered and used
-		// as a batch size.
-		FromUUID(ctx context.Context, ids []uuid.UUID, opts ...x.PaginationOptionSetter) (reps []string, err error)
 	}
 )
 
@@ -42,37 +28,42 @@ func UUIDMappingManagerTest(t *testing.T, m UUIDMappingManager) {
 	ctx := context.Background()
 
 	t.Run("case=ToUUID_FromUUID", func(t *testing.T) {
-		rep1 := "foo"
-		id, err := m.ToUUID(ctx, rep1)
+		s1 := SubjectID{"rep1"}
+		err := m.MapFieldsToUUID(ctx, &s1)
 		require.NoError(t, err)
 
-		rep2, err := m.FromUUID(ctx, []uuid.UUID{id})
+		s2 := SubjectID{s1.ID}
+		err = m.MapFieldsFromUUID(ctx, &s2)
 		assert.NoError(t, err)
-		assert.Equal(t, rep1, rep2[0])
+		assert.Equal(t, "rep1", s2.ID)
 	})
 
 	t.Run("case=Idempotent_ToUUID", func(t *testing.T) {
-		id1, err := m.ToUUID(ctx, "string")
-		assert.NoError(t, err)
-		id2, err := m.ToUUID(ctx, "string")
-		assert.NoError(t, err)
-		assert.Equal(t, id1, id2)
+		s1 := SubjectID{"string"}
+		s2 := SubjectID{"string"}
+		assert.NoError(t, m.MapFieldsToUUID(ctx, &s1))
+		assert.NoError(t, m.MapFieldsToUUID(ctx, &s2))
+		assert.Equal(t, s1.ID, s2.ID)
+		assert.NotEqual(t, "string", s1.ID)
 	})
 
-	// Test that the batch mapping preserves ordering, i.e. id[i] is mapped to
-	// rep[i].
-	t.Run("case=Batch_ToUUID_Paginates", func(t *testing.T) {
-		expected := []string{"foo", "foo", "bar", "baz"}
-		ids := make([]uuid.UUID, len(expected))
-		for i, s := range expected {
-			var err error
-			ids[i], err = m.ToUUID(ctx, s)
-			assert.NoError(t, err)
-		}
-
-		actual, err := m.FromUUID(ctx, ids, x.WithSize(1))
+	t.Run("case=batch to UUID", func(t *testing.T) {
+		rt := InternalRelationTuple{Object: "object", Subject: &SubjectID{"subject"}}
+		assert.NoError(t, m.MapFieldsToUUID(ctx, &rt))
+		objectUUID, err := uuid.FromString(rt.Object)
 		assert.NoError(t, err)
-		assert.Equal(t, expected, actual)
+		subjectUUID, err := uuid.FromString(rt.Subject.String())
+		assert.NoError(t, err)
+
+		rt2 := InternalRelationTuple{Object: "object", Subject: &SubjectID{"another subject"}}
+		assert.NoError(t, m.MapFieldsToUUID(ctx, &rt2))
+		assert.Equal(t, objectUUID, uuid.Must(uuid.FromString(rt2.Object)))
+		assert.NotEqual(t, subjectUUID, uuid.Must(uuid.FromString(rt2.Subject.String())))
+
+		rt3 := InternalRelationTuple{Object: "another object", Subject: &SubjectID{"subject"}}
+		assert.NoError(t, m.MapFieldsToUUID(ctx, &rt3))
+		assert.NotEqual(t, objectUUID, uuid.Must(uuid.FromString(rt3.Object)))
+		assert.Equal(t, subjectUUID, uuid.Must(uuid.FromString(rt3.Subject.String())))
 	})
 
 	t.Run("case=IdempotentMapFieldsToAndFromUUIDs", func(t *testing.T) {

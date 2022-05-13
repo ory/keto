@@ -3,8 +3,8 @@ package sql
 import (
 	"context"
 	"fmt"
+	"strings"
 
-	"github.com/gobuffalo/pop/v6"
 	"github.com/gofrs/uuid"
 	"github.com/ory/x/sqlcon"
 
@@ -28,9 +28,22 @@ func (UUIDMapping) TableName() string {
 	return "keto_uuid_mappings"
 }
 
-func (p *Persister) ToUUID(ctx context.Context, text string) (uuid.UUID, error) {
-	id := uuid.NewV5(p.NetworkID(ctx), text)
-	p.d.Logger().Trace("adding UUID mapping")
+func (p *Persister) batchToUUIDs(ctx context.Context, values []string) (uuids []uuid.UUID, err error) {
+	if len(values) == 0 {
+		return
+	}
+
+	uuids = make([]uuid.UUID, len(values))
+	placeholderArray := make([]string, len(values))
+	args := make([]interface{}, 0, len(values)*2)
+	for i, val := range values {
+		uuids[i] = uuid.NewV5(p.NetworkID(ctx), val)
+		placeholderArray[i] = "(?, ?)"
+		args = append(args, uuids[i].String(), val)
+	}
+	placeholders := strings.Join(placeholderArray, ", ")
+
+	p.d.Logger().WithField("values", values).WithField("UUIDs", uuids).Trace("adding UUID mappings")
 
 	// We need to write manual SQL here because the INSERT should not fail if
 	// the UUID already exists, but we still want to return an error if anything
@@ -39,21 +52,24 @@ func (p *Persister) ToUUID(ctx context.Context, text string) (uuid.UUID, error) 
 	switch d := p.Connection(ctx).Dialect.Name(); d {
 	case "mysql":
 		query = `
-			INSERT IGNORE INTO keto_uuid_mappings (id, string_representation)
-			VALUES (?, ?)`
+			INSERT IGNORE INTO keto_uuid_mappings (id, string_representation) VALUES ` + placeholders
 	default:
 		query = `
 			INSERT INTO keto_uuid_mappings (id, string_representation)
-			VALUES (?, ?)
+			VALUES ` + placeholders + `
 			ON CONFLICT (id) DO NOTHING`
 	}
 
-	return id, sqlcon.HandleError(
-		p.Connection(ctx).RawQuery(query, id, text).Exec(),
+	return uuids, sqlcon.HandleError(
+		p.Connection(ctx).RawQuery(query, args...).Exec(),
 	)
 }
 
-func (p *Persister) FromUUID(ctx context.Context, ids []uuid.UUID, opts ...x.PaginationOptionSetter) (res []string, err error) {
+func (p *Persister) batchFromUUIDs(ctx context.Context, ids []uuid.UUID, opts ...x.PaginationOptionSetter) (res []string, err error) {
+	if len(ids) == 0 {
+		return
+	}
+
 	p.d.Logger().Trace("looking up UUIDs")
 
 	// We need to paginate on the ids, because we want to get the exact chunk of
@@ -96,40 +112,38 @@ func (p *Persister) FromUUID(ctx context.Context, ids []uuid.UUID, opts ...x.Pag
 	return
 }
 
-func (p *Persister) replaceWithUUID(ctx context.Context, s *string) error {
-	if s == nil {
-		return nil
+func filterFields(fields []*string) []*string {
+	res := make([]*string, 0, len(fields))
+	for _, field := range fields {
+		if field != nil && *field != "" {
+			res = append(res, field)
+		}
 	}
-	uuid, err := p.ToUUID(ctx, *s)
-	if err != nil {
-		return err
-	}
-	*s = uuid.String()
-
-	return nil
+	return res
 }
 
 func (p *Persister) MapFieldsToUUID(ctx context.Context, m relationtuple.UUIDMappable) error {
-	return p.Transaction(ctx, func(ctx context.Context, _ *pop.Connection) error {
-		for _, s := range m.UUIDMappableFields() {
-			if s == nil || *s == "" {
-				continue
-			}
-			if err := p.replaceWithUUID(ctx, s); err != nil {
-				p.d.Logger().WithError(err).WithField("string", s).Error("got an error while mapping string to UUID")
-				return err
-			}
-		}
-		return nil
-	})
+	fields := filterFields(m.UUIDMappableFields())
+	values := make([]string, len(fields))
+
+	for i, field := range fields {
+		values[i] = *field
+	}
+	ids, err := p.batchToUUIDs(ctx, values)
+	if err != nil {
+		p.d.Logger().WithError(err).WithField("values", values).Error("could insert UUID mappings")
+		return err
+	}
+	for i, field := range fields {
+		*field = ids[i].String()
+	}
+	return nil
 }
 
 func (p *Persister) MapFieldsFromUUID(ctx context.Context, m relationtuple.UUIDMappable) error {
-	ids := make([]uuid.UUID, len(m.UUIDMappableFields()))
-	for i, field := range m.UUIDMappableFields() {
-		if field == nil {
-			continue
-		}
+	fields := filterFields(m.UUIDMappableFields())
+	ids := make([]uuid.UUID, len(fields))
+	for i, field := range fields {
 		id, err := uuid.FromString(*field)
 		if err != nil {
 			p.d.Logger().WithError(err).WithField("UUID", *field).Error("could not parse as UUID")
@@ -137,15 +151,12 @@ func (p *Persister) MapFieldsFromUUID(ctx context.Context, m relationtuple.UUIDM
 		}
 		ids[i] = id
 	}
-	reps, err := p.FromUUID(ctx, ids)
+	reps, err := p.batchFromUUIDs(ctx, ids)
 	if err != nil {
 		p.d.Logger().WithError(err).WithField("UUIDs", ids).Error("could fetch string mappings from DB")
 		return err
 	}
-	for i, field := range m.UUIDMappableFields() {
-		if field == nil {
-			continue
-		}
+	for i, field := range fields {
 		if reps[i] == "" {
 			p.d.Logger().WithError(err).WithField("string", reps[i]).Error("could not find the corresponding UUID")
 			return fmt.Errorf("failed to map %s", ids[i])

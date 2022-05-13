@@ -48,7 +48,7 @@ func TestUUIDMapping(t *testing.T) {
 				assertErr: assertCheckErr,
 			}, {
 				desc:      "empty strings should fail on constraint",
-				mappings:  &sql.UUIDMapping{uuid.Nil, ""},
+				mappings:  &sql.UUIDMapping{ID: uuid.Nil},
 				assertErr: assertCheckErr,
 			}, {
 				desc:      "single with string rep should succeed",
