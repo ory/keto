@@ -18,8 +18,6 @@ services:
       - TRACING_PROVIDER=jaeger
       - TRACING_PROVIDER_JAEGER_SAMPLING_SERVER_URL=http://jaeger:5778/sampling
       - TRACING_PROVIDER_JAEGER_LOCAL_AGENT_ADDRESS=jaeger:6831
-      - TRACING_PROVIDER_JAEGER_SAMPLING_TYPE=const
-      - TRACING_PROVIDER_JAEGER_SAMPLING_VALUE=1
 
   jaeger:
     image: jaegertracing/all-in-one:1.7.0
