@@ -113,23 +113,23 @@ func TestMigrations(t *testing.T) {
 			ctx := context.Background()
 			l := logrusx.New("", "", logrusx.ForceLevel(logrus.DebugLevel))
 
-			var c *pop.Connection
+			var conn *pop.Connection
 			var err error
-			c, err = pop.NewConnection(&pop.ConnectionDetails{URL: db.Conn})
+			conn, err = pop.NewConnection(&pop.ConnectionDetails{URL: db.Conn})
 			require.NoError(t, err)
-			require.NoError(t, c.Open())
-			t.Cleanup(func() { c.Close() })
 			for i := 0; i < 120; i++ {
-				if err := c.Store.(interface{ Ping() error }).Ping(); err == nil {
+				require.NoError(t, conn.Open())
+				if err := dbx.Ping(conn); err == nil {
+					t.Cleanup(func() { conn.Close() })
 					break
 				}
 				time.Sleep(time.Second)
 			}
-			require.NoError(t, c.Store.(interface{ Ping() error }).Ping())
+			require.NoError(t, dbx.Ping(conn))
 
 			tm, err := popx.NewMigrationBox(
 				fsx.Merge(sql.Migrations, networkx.Migrations),
-				popx.NewMigrator(c, l, nil, 1*time.Minute),
+				popx.NewMigrator(conn, l, nil, 1*time.Minute),
 				popx.WithGoMigrations(uuidmapping.Migrations),
 				withTestdata(t, os.DirFS("./testdata")),
 			)
@@ -170,7 +170,7 @@ func TestMigrations(t *testing.T) {
 
 				t.Run("table=legacy namespaces", func(t *testing.T) {
 					// as they are legacy, we expect them to be actually dropped
-					assert.ErrorIs(t, sqlcon.HandleError(c.RawQuery(
+					assert.ErrorIs(t, sqlcon.HandleError(conn.RawQuery(
 						"SELECT * FROM keto_namespace",
 					).Exec()), sqlcon.ErrNoSuchTable)
 				})

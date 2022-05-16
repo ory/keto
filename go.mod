@@ -26,9 +26,12 @@ require (
 	github.com/go-openapi/strfmt v0.20.3
 	github.com/go-openapi/swag v0.19.15
 	github.com/go-openapi/validate v0.20.3
+	github.com/go-sql-driver/mysql v1.6.0
 	github.com/gobuffalo/pop/v6 v6.0.1
 	github.com/gofrs/uuid v4.1.0+incompatible
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
+	github.com/grpc-ecosystem/grpc-opentracing v0.0.0-20180507213350-8e809c8a8645
+	github.com/instana/testify v1.6.2-0.20200721153833-94b1851f4d65
 	github.com/julienschmidt/httprouter v1.3.0
 	github.com/luna-duclos/instrumentedsql v1.1.3
 	github.com/mikefarah/yq/v4 v4.19.1
@@ -96,7 +99,6 @@ require (
 	github.com/go-openapi/jsonreference v0.19.5 // indirect
 	github.com/go-openapi/loads v0.20.2 // indirect
 	github.com/go-openapi/spec v0.20.3 // indirect
-	github.com/go-sql-driver/mysql v1.6.0 // indirect
 	github.com/go-stack/stack v1.8.1 // indirect
 	github.com/gobuffalo/envy v1.10.1 // indirect
 	github.com/gobuffalo/fizz v1.14.0 // indirect

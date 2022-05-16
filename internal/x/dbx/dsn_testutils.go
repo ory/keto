@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/go-sql-driver/mysql"
 	"github.com/gobuffalo/pop/v6"
@@ -56,22 +57,48 @@ func dbName(_ string) string {
 	return fmt.Sprintf("testdb_%x", buf)
 }
 
-func createDB(t testing.TB, dsn string) (err error) {
+func openAndPing(url string) (conn *pop.Connection, err error) {
+	if conn, err = pop.NewConnection(&pop.ConnectionDetails{URL: url}); err != nil {
+		return nil, fmt.Errorf("failed to connect to %q: %w", url, err)
+	}
+	for i := 0; i < 120; i++ {
+		fmt.Println("trying to open connection to", url)
+		if err := conn.Open(); err != nil {
+			// return nil, fmt.Errorf("failed to open connection: %w", err)
+			time.Sleep(1 * time.Second)
+			continue
+		}
+		if err := Ping(conn); err == nil {
+			break
+		}
+		time.Sleep(1 * time.Second)
+	}
+	if err := Ping(conn); err != nil {
+		return nil, fmt.Errorf("failed to ping: %w", err)
+	}
+	return conn, nil
+}
+
+func createDB(t testing.TB, url string, dbName string) (err error) {
 	var conn *pop.Connection
 
-	if conn, err = pop.NewConnection(&pop.ConnectionDetails{URL: dsn}); err != nil {
-		return fmt.Errorf("failed to connect to %q: %w", dsn, err)
+	if conn, err = openAndPing(url); err != nil {
+		return fmt.Errorf("failed to connect to %q: %w", url, err)
 	}
-	if err = pop.CreateDB(conn); err != nil {
-		return fmt.Errorf("failed to create db in %q: %w", dsn, err)
+
+	if err := conn.RawQuery("CREATE DATABASE " + dbName).Exec(); err != nil {
+		return fmt.Errorf("failed to create db %q in %q: %w", dbName, url, err)
 	}
+
 	t.Cleanup(func() {
-		if err = pop.DropDB(conn); err != nil {
-			t.Log(err)
+		if err := conn.RawQuery("DROP DATABASE " + dbName).Exec(); err != nil {
+			t.Logf("could not drop database %q in %q: %v", dbName, url, err)
 		}
+		conn.Close()
 	})
 
 	return
+
 }
 
 func GetDSNs(t testing.TB, debugSqliteOnDisk bool) []*DsnT {
@@ -88,26 +115,31 @@ func GetDSNs(t testing.TB, debugSqliteOnDisk bool) []*DsnT {
 
 	if !testing.Short() {
 		var mysql, postgres, cockroach string
-		db := dbName(t.Name())
+		testDB := dbName(t.Name())
 
 		dockertest.Parallel([]func(){
 			func() {
-				mysql = withDbName(dockertest.RunTestMySQL(t), db)
-				if err := createDB(t, mysql); err != nil {
+				url := dockertest.RunTestMySQL(t)
+				time.Sleep(1 * time.Second)
+				if err := createDB(t, url, testDB); err != nil {
 					t.Fatal(err)
 				}
+				mysql = withDbName(url, testDB)
 			},
 			func() {
-				postgres = withDbName(dockertest.RunTestPostgreSQL(t), db)
-				if err := createDB(t, postgres); err != nil {
+				url := dockertest.RunTestPostgreSQL(t)
+				if err := createDB(t, url, testDB); err != nil {
 					t.Fatal(err)
 				}
+				postgres = withDbName(url, testDB)
 			},
 			func() {
-				cockroach = withDbName(dockertest.RunTestCockroachDB(t), db)
-				if err := createDB(t, cockroach); err != nil {
+				url := dockertest.RunTestCockroachDB(t)
+				// time.Sleep(1 * time.Second)
+				if err := createDB(t, url, testDB); err != nil {
 					t.Fatal(err)
 				}
+				cockroach = withDbName(url, testDB)
 			},
 		})
 
@@ -187,3 +219,7 @@ func ConfigFile(t testing.TB, values map[string]interface{}) string {
 
 	return fn
 }
+
+type pinger interface{ Ping() error }
+
+func Ping(conn *pop.Connection) error { return conn.Store.(pinger).Ping() }
