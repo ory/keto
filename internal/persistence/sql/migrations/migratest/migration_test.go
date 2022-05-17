@@ -2,10 +2,7 @@ package migratest
 
 import (
 	"context"
-	"fmt"
-	"io/fs"
 	"os"
-	"regexp"
 	"strings"
 	"testing"
 	"time"
@@ -30,58 +27,6 @@ import (
 	"github.com/ory/keto/internal/x/dbx"
 )
 
-// TODO(hperl): move to ory/x
-func withTestdata(t *testing.T, testdata fs.FS) func(*popx.MigrationBox) *popx.MigrationBox {
-	return func(m *popx.MigrationBox) *popx.MigrationBox {
-		err := fs.WalkDir(testdata, ".", func(path string, info fs.DirEntry, err error) error {
-			if err != nil {
-				return err
-			}
-			if info.IsDir() {
-				return nil
-			}
-			if m, _ := regexp.MatchString(`\d+_testdata.sql`, info.Name()); !m {
-				return nil
-			}
-			version := strings.TrimSuffix(info.Name(), "_testdata.sql")
-			m.Migrations["up"] = append(m.Migrations["up"], popx.Migration{
-				Version:   version + "9", // run testdata after version
-				Path:      path,
-				Name:      "testdata",
-				DBType:    "all",
-				Direction: "up",
-				Type:      "sql",
-				Runner: func(m popx.Migration, _ *pop.Connection, tx *pop.Tx) error {
-					b, err := fs.ReadFile(testdata, m.Path)
-					if err != nil {
-						return err
-					}
-					_, err = tx.Exec(string(b))
-					return err
-				},
-			})
-			m.Migrations["down"] = append(m.Migrations["down"], popx.Migration{
-				Version:   version + "9", // run testdata after version
-				Path:      path,
-				Name:      "testdata",
-				DBType:    "all",
-				Direction: "down",
-				Type:      "sql",
-				Runner: func(m popx.Migration, _ *pop.Connection, tx *pop.Tx) error {
-					return nil
-				},
-			})
-
-			return nil
-		})
-		if err != nil {
-			t.Fatalf("could not add all testdata migrations: %v", err)
-		}
-
-		return m
-	}
-}
-
 func hasDownMigrationWithVersion(mb *popx.MigrationBox, version string) bool {
 	for _, down := range mb.Migrations["down"] {
 		if version == down.Version {
@@ -89,18 +34,6 @@ func hasDownMigrationWithVersion(mb *popx.MigrationBox, version string) bool {
 		}
 	}
 	return false
-}
-
-// check that every "up" migration has a corresponding "down" migration in
-// reverse order.
-// TODO(hperl): move to ory/x
-func check(mb *popx.MigrationBox) error {
-	for _, up := range mb.Migrations["up"] {
-		if !hasDownMigrationWithVersion(mb, up.Version) {
-			return fmt.Errorf("migration %s has no corresponding down migration", up.Version)
-		}
-	}
-	return nil
 }
 
 func TestMigrations(t *testing.T) {
@@ -131,21 +64,9 @@ func TestMigrations(t *testing.T) {
 				fsx.Merge(sql.Migrations, networkx.Migrations),
 				popx.NewMigrator(conn, l, nil, 1*time.Minute),
 				popx.WithGoMigrations(uuidmapping.Migrations),
-				withTestdata(t, os.DirFS("./testdata")),
+				popx.WithTestdata(t, os.DirFS("./testdata")),
 			)
 			require.NoError(t, err)
-			if err := check(tm); err != nil {
-				t.Log(err)
-				t.Log("up migrations:")
-				for _, m := range tm.Migrations["up"] {
-					t.Logf("\t%s\t%s\t%s\n", m.Name, m.Version, m.DBType)
-				}
-				t.Log("down migrations:")
-				for _, m := range tm.Migrations["down"] {
-					t.Logf("\t%s\t%s\t%s\n", m.Name, m.Version, m.DBType)
-				}
-				t.FailNow()
-			}
 
 			// cleanup first
 			require.NoError(t, tm.Down(ctx, -1))
