@@ -104,10 +104,14 @@ func check(mb *popx.MigrationBox) error {
 }
 
 func TestMigrations(t *testing.T) {
+	t.Parallel()
 	const debugOnDisk = false
 
 	for _, db := range dbx.GetDSNs(t, debugOnDisk) {
+		db := db
 		t.Run("dsn="+db.Name, func(t *testing.T) {
+			t.Parallel()
+
 			db.MigrateUp, db.MigrateDown = false, false
 
 			ctx := context.Background()

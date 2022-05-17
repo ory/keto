@@ -193,12 +193,12 @@ func GetSqlite(t testing.TB, mode sqliteMode) *DsnT {
 		})
 	case SQLiteFile:
 		t.Cleanup(func() {
-			_ = os.Remove("TestDB.sqlite")
+			_ = os.Remove(fmt.Sprintf("TestDB_%s.sqlite", t.Name()))
 		})
 		fallthrough
 	case SQLiteDebug:
 		dsn.Name = "sqlite"
-		dsn.Conn = "sqlite://file:TestDB.sqlite?_fk=true"
+		dsn.Conn = fmt.Sprintf("sqlite://file:TestDB_%s.sqlite?_fk=true", t.Name())
 	}
 
 	return dsn

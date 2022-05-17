@@ -18,6 +18,8 @@ import (
 )
 
 func TestPersister(t *testing.T) {
+	t.Parallel()
+
 	setup := func(t *testing.T, dsn *dbx.DsnT) (p *sql.Persister, r *driver.RegistryDefault, hook *test.Hook) {
 		r = driver.NewTestRegistry(t, dsn)
 
@@ -46,7 +48,10 @@ func TestPersister(t *testing.T) {
 	}
 
 	for _, dsn := range dbx.GetDSNs(t, false) {
+		dsn := dsn
 		t.Run(fmt.Sprintf("dsn=%s", dsn.Name), func(t *testing.T) {
+			t.Parallel()
+
 			t.Run("relationtuple.ManagerTest", func(t *testing.T) {
 				var nspaces []*namespace.Namespace
 				p, r, _ := setup(t, dsn)

@@ -30,8 +30,12 @@ func assertCheckErr(t assert.TestingT, err error, msgAndArgs ...interface{}) boo
 }
 
 func TestUUIDMapping(t *testing.T) {
+	t.Parallel()
+
 	for _, dsn := range dbx.GetDSNs(t, false) {
+		dsn := dsn
 		t.Run("dsn="+dsn.Name, func(t *testing.T) {
+			t.Parallel()
 			reg := driver.NewTestRegistry(t, dsn)
 			c, err := reg.PopConnection(context.Background())
 			require.NoError(t, err)
@@ -69,7 +73,9 @@ func TestUUIDMapping(t *testing.T) {
 				},
 				assertErr: assert.NoError,
 			}} {
+				tc := tc
 				t.Run("case="+tc.desc, func(t *testing.T) {
+					t.Parallel()
 					err := c.Create(tc.mappings)
 					tc.assertErr(t, err)
 				})
