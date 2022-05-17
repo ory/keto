@@ -50,7 +50,9 @@ func Test_withDbName(t *testing.T) {
 
 func Test_GetDSNs_can_connect_to_each_db(t *testing.T) {
 	for _, db := range GetDSNs(t, false) {
+		db := db
 		t.Run("dsn="+db.Name, func(t *testing.T) {
+			t.Parallel()
 			conn, err := pop.NewConnection(&pop.ConnectionDetails{URL: db.Conn})
 			require.NoError(t, err)
 			assert.NoError(t, conn.Open())

@@ -11,6 +11,7 @@ import (
 
 func runTransactionCases(c transactClient, addNamespace func(*testing.T, ...*namespace.Namespace)) func(*testing.T) {
 	return func(t *testing.T) {
+		t.Parallel()
 		t.Run("case=create and delete", func(t *testing.T) {
 			n := &namespace.Namespace{Name: t.Name()}
 			addNamespace(t, n)

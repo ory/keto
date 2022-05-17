@@ -33,6 +33,8 @@ func assertNoneApplied(t *testing.T, status string) {
 }
 
 func TestMigrate(t *testing.T) {
+	t.Parallel()
+
 	nspaces := []*namespace.Namespace{
 		{
 			Name: "default",
@@ -57,8 +59,11 @@ func TestMigrate(t *testing.T) {
 	}
 
 	for _, dsn := range dbx.GetDSNs(t, false) {
+		dsn := dsn
 		if dbal.IsMemorySQLite(dsn.Conn) {
 			t.Run("dsn=memory", func(t *testing.T) {
+				t.Parallel()
+
 				t.Run("case=auto migrates", func(t *testing.T) {
 					hook := &test.Hook{}
 					ctx, cancel := context.WithCancel(context.WithValue(context.Background(), driver.LogrusHookContextKey, hook))
@@ -78,6 +83,8 @@ func TestMigrate(t *testing.T) {
 			})
 		} else {
 			t.Run("dsn="+dsn.Name, func(t *testing.T) {
+				t.Parallel()
+
 				hook := &test.Hook{}
 				ctx, cancel := context.WithCancel(context.WithValue(context.Background(), driver.LogrusHookContextKey, hook))
 				t.Cleanup(cancel)
@@ -135,6 +142,8 @@ func TestMigrate(t *testing.T) {
 }
 
 func TestUpAndDown(t *testing.T) {
+	t.Parallel()
+
 	const debugOnDisk = false
 
 	ctx, cancel := context.WithCancel(context.Background())
@@ -149,9 +158,12 @@ func TestUpAndDown(t *testing.T) {
 		Ctx: ctx,
 	}
 	for _, dsn := range dbx.GetDSNs(t, debugOnDisk) {
-		cf := dbx.ConfigFile(t, map[string]interface{}{config.KeyDSN: dsn.Conn})
+		dsn := dsn
+		t.Run("dsn="+dsn.Name, func(t *testing.T) {
+			cf := dbx.ConfigFile(t, map[string]interface{}{config.KeyDSN: dsn.Conn})
 
-		t.Log(cmd.ExecNoErr(t, "up", "-c", cf, "--"+FlagYes))
-		t.Log(cmd.ExecNoErr(t, "down", "0", "-c", cf, "--"+FlagYes))
+			t.Log(cmd.ExecNoErr(t, "up", "-c", cf, "--"+FlagYes))
+			t.Log(cmd.ExecNoErr(t, "down", "0", "-c", cf, "--"+FlagYes))
+		})
 	}
 }
