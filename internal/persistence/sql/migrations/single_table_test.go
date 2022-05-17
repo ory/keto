@@ -18,10 +18,14 @@ import (
 )
 
 func TestToSingleTableMigrator(t *testing.T) {
+	t.Parallel()
 	const debugOnDisk = false
 
 	for _, dsn := range dbx.GetDSNs(t, debugOnDisk) {
+		dsn := dsn
 		t.Run("db="+dsn.Name, func(t *testing.T) {
+			t.Parallel()
+
 			r := driver.NewTestRegistry(t, dsn)
 			ctx := context.Background()
 			var nn []*namespace.Namespace
@@ -162,10 +166,14 @@ func TestToSingleTableMigrator(t *testing.T) {
 }
 
 func TestToSingleTableMigrator_HasLegacyTable(t *testing.T) {
+	t.Parallel()
 	const debugOnDisk = false
 
 	for _, dsn := range dbx.GetDSNs(t, debugOnDisk) {
+		dsn := dsn
 		t.Run("db="+dsn.Name, func(t *testing.T) {
+			t.Parallel()
+
 			t.Run("case=simple detection", func(t *testing.T) {
 				ctx := context.Background()
 				reg := driver.NewTestRegistry(t, dsn)
