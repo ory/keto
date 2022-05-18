@@ -40,6 +40,10 @@ func (RelationTuple) TableName() string { return "keto_relation_tuples" }
 func (UUIDMappings) TableName() string  { return "keto_uuid_mappings" }
 func (UUIDMapping) TableName() string   { return "keto_uuid_mappings" }
 
+func (rt *RelationTuple) ToUUID(s string) uuid.UUID {
+	return uuid.NewV5(rt.NetworkID, s)
+}
+
 var (
 	name       = "migrate-strings-to-uuids"
 	version    = "20220513210000000000"
@@ -55,27 +59,39 @@ var (
 			Type:      "go",
 			Runner: func(_ popx.Migration, conn *pop.Connection, _ *pop.Tx) error {
 				for page := 1; ; page++ {
+					dbWrites := []dbWrite{}
 					relationTuples, hasNext, err := getRelationTuples(conn, page)
 					if err != nil {
 						return fmt.Errorf("could not get relation tuples: %w", err)
 					}
 
-					for _, rt := range relationTuples {
+					for i, rt := range relationTuples {
 						rt := rt
 						fields := []*string{&rt.Object}
-						if rt.SubjectID.Valid {
+						if rt.SubjectID.Valid && rt.SubjectID.String != "" {
 							fields = append(fields, &rt.SubjectID.String)
 						}
-						if rt.SubjectSetObject.Valid {
+						if rt.SubjectSetObject.Valid && rt.SubjectSetObject.String != "" {
 							fields = append(fields, &rt.SubjectSetObject.String)
 						}
-						if err := batchReplaceStrings(conn, &rt, fields); err != nil {
-							return fmt.Errorf("could not replace UUIDs: %w", err)
+
+						for _, f := range fields {
+							id := rt.ToUUID(*f)
+							dbWrites = append(dbWrites, dbWrite{id: id, value: *f})
+							*f = id.String()
 						}
-						if err = conn.Update(&rt); err != nil {
-							return fmt.Errorf("failed to update relation tuple: %w", err)
-						}
+						relationTuples[i] = rt
 					}
+
+					pop.Debug = true
+					if err := batchWriteToDB(conn, dbWrites); err != nil {
+						return fmt.Errorf("could not replace UUIDs: %w", err)
+					}
+
+					if err = conn.Update(relationTuples); err != nil {
+						return fmt.Errorf("failed to update relation tuple: %w", err)
+					}
+					pop.Debug = false
 
 					if !hasNext {
 						break
@@ -154,10 +170,9 @@ func removeNonUUIDs(fields []*string) []*string {
 	return res
 }
 
-func removeEmpty(fields []*string) []*string {
-	var res []*string
+func removeEmpty(fields []fieldWithNetworkID) (res []fieldWithNetworkID) {
 	for _, f := range fields {
-		if f == nil || *f == "" {
+		if f.field == nil || *f.field == "" {
 			continue
 		}
 		res = append(res, f)
@@ -165,23 +180,36 @@ func removeEmpty(fields []*string) []*string {
 	return res
 }
 
-func batchReplaceStrings(conn *pop.Connection, rt *RelationTuple, fields []*string) (err error) {
-	fields = removeEmpty(fields)
-	if len(fields) == 0 {
-		return
-	}
-	values := make([]string, len(fields))
-	for i, field := range fields {
-		values[i] = *field
-	}
+type fieldWithNetworkID struct {
+	field     *string
+	networkID uuid.UUID
+}
 
-	uuids := make([]uuid.UUID, len(values))
-	placeholderArray := make([]string, len(values))
-	args := make([]interface{}, 0, len(values)*2)
-	for i, val := range values {
-		uuids[i] = uuid.NewV5(rt.NetworkID, val)
+type dbWrite struct {
+	id    uuid.UUID
+	value string
+}
+
+func batchWriteToDB(conn *pop.Connection, writes []dbWrite) (err error) {
+	// fields = removeEmpty(fields)
+	// if len(fields) == 0 {
+	// 	return
+	// }
+	// uuids := make([]uuid.UUID, len(fields))
+	// placeholderArray := make([]string, len(fields))
+	// args := make([]interface{}, 0, len(fields)*2)
+	// for i, f := range fields {
+	// 	uuids[i] = uuid.NewV5(f.networkID, *f.field)
+	// 	placeholderArray[i] = "(?, ?)"
+	// 	args = append(args, uuids[i].String(), *f.field)
+	// }
+	// placeholders := strings.Join(placeholderArray, ", ")
+
+	placeholderArray := make([]string, len(writes))
+	args := make([]interface{}, 0, len(writes)*2)
+	for i, write := range writes {
 		placeholderArray[i] = "(?, ?)"
-		args = append(args, uuids[i].String(), val)
+		args = append(args, write.id.String(), write.value)
 	}
 	placeholders := strings.Join(placeholderArray, ", ")
 
@@ -204,10 +232,17 @@ func batchReplaceStrings(conn *pop.Connection, rt *RelationTuple, fields []*stri
 		return err
 	}
 
-	for i, field := range fields {
-		*field = uuids[i].String()
-	}
 	return nil
+}
+
+func batchReplaceStrings(fields []fieldWithNetworkID) {
+	fields = removeEmpty(fields)
+	if len(fields) == 0 {
+		return
+	}
+	for _, f := range fields {
+		*f.field = uuid.NewV5(f.networkID, *f.field).String()
+	}
 }
 
 func batchReplaceUUIDs(conn *pop.Connection, ids []*string) (err error) {
