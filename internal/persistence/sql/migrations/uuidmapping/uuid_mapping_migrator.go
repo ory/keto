@@ -170,21 +170,6 @@ func removeNonUUIDs(fields []*string) []*string {
 	return res
 }
 
-func removeEmpty(fields []fieldWithNetworkID) (res []fieldWithNetworkID) {
-	for _, f := range fields {
-		if f.field == nil || *f.field == "" {
-			continue
-		}
-		res = append(res, f)
-	}
-	return res
-}
-
-type fieldWithNetworkID struct {
-	field     *string
-	networkID uuid.UUID
-}
-
 type dbWrite struct {
 	id    uuid.UUID
 	value string
@@ -233,16 +218,6 @@ func batchWriteToDB(conn *pop.Connection, writes []dbWrite) (err error) {
 	}
 
 	return nil
-}
-
-func batchReplaceStrings(fields []fieldWithNetworkID) {
-	fields = removeEmpty(fields)
-	if len(fields) == 0 {
-		return
-	}
-	for _, f := range fields {
-		*f.field = uuid.NewV5(f.networkID, *f.field).String()
-	}
 }
 
 func batchReplaceUUIDs(conn *pop.Connection, ids []*string) (err error) {
