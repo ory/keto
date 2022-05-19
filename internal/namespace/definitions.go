@@ -3,6 +3,8 @@ package namespace
 import (
 	"context"
 	"encoding/json"
+
+	"github.com/ory/keto/internal/namespace/ast"
 )
 
 type (
@@ -12,6 +14,8 @@ type (
 		// The unique name of the namespace.
 		Name   string          `json:"name" db:"-" toml:"name"`
 		Config json.RawMessage `json:"config,omitempty" db:"-" toml:"config,omitempty"`
+
+		Relations []ast.Relation `json:"-" db:"-"`
 	}
 	Manager interface {
 		GetNamespaceByName(ctx context.Context, name string) (*Namespace, error)
