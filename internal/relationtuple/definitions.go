@@ -270,6 +270,9 @@ func (s SubjectID) MarshalJSON() ([]byte, error) {
 }
 
 func (r *InternalRelationTuple) String() string {
+	if r == nil {
+		return "(nil)"
+	}
 	return fmt.Sprintf("%s:%s#%s@%s", r.Namespace, r.Object, r.Relation, r.Subject)
 }
 
@@ -302,6 +305,10 @@ func (r *InternalRelationTuple) FromString(s string) (*InternalRelationTuple, er
 	}
 
 	return r, nil
+}
+
+func InternalFromString(s string) (*InternalRelationTuple, error) {
+	return (&InternalRelationTuple{}).FromString(s)
 }
 
 func (r *InternalRelationTuple) DeriveSubject() *SubjectSet {

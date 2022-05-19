@@ -112,5 +112,17 @@ func IsolationTest(t *testing.T, m0, m1 Manager, addNamespace func(context.Conte
 				assert.Equal(t, rts[1:], r1)
 			})
 		})
+
+		t.Run("case=cancelled", func(t *testing.T) {
+			reset(t, m0, m1)
+			ctx, cancel := context.WithCancel(ctx)
+
+			require.NoError(t, m0.WriteRelationTuples(ctx, rts...))
+
+			cancel()
+
+			_, _, err := m0.GetRelationTuples(ctx, &RelationQuery{Namespace: nspace})
+			assert.ErrorIs(t, err, context.Canceled)
+		})
 	})
 }
