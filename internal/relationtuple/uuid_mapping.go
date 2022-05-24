@@ -2,6 +2,7 @@ package relationtuple
 
 import (
 	"context"
+	"github.com/ory/keto/ketoapi"
 	"testing"
 
 	"github.com/gofrs/uuid"
@@ -15,6 +16,8 @@ type (
 	UUIDMappable interface{ UUIDMappableFields() []*string }
 
 	UUIDMappingManager interface {
+		MapStringsToUUIDs(ctx context.Context, s ...string) ([]uuid.UUID, error)
+
 		// MapFieldsToUUID maps all fields of the given object to UUIDs.
 		MapFieldsToUUID(ctx context.Context, m UUIDMappable) error
 
@@ -23,6 +26,43 @@ type (
 		MapFieldsFromUUID(ctx context.Context, m UUIDMappable) error
 	}
 )
+
+func preferNil[V any, PtrV interface{ *V }, F any](v PtrV, fallback F) (res F) {
+	if v == nil {
+		return
+	}
+	return fallback
+}
+
+func InternalRelationQuery(ctx context.Context, m UUIDMappingManager, q *ketoapi.RelationQuery) (*RelationQuery, error) {
+	iq := &RelationQuery{
+		Namespace: q.Namespace,
+		Relation:  q.Relation,
+	}
+
+	if q.SubjectID != nil {
+		mappings, err := m.MapStringsToUUIDs(ctx, q.Object, *q.SubjectID)
+		if err != nil {
+			return nil, err
+		}
+		iq.Object = mappings[0]
+		iq.SubjectID = &mappings[1]
+	}
+	if q.SubjectSet != nil {
+		mappings, err := m.MapStringsToUUIDs(ctx, q.Object, q.SubjectSet.Object)
+		if err != nil {
+			return nil, err
+		}
+		iq.Object = mappings[0]
+		iq.SubjectSet = &SubjectSet{
+			Namespace: q.SubjectSet.Namespace,
+			Object:    mappings[1],
+			Relation:  q.SubjectSet.Relation,
+		}
+	}
+
+	return iq, nil
+}
 
 func UUIDMappingManagerTest(t *testing.T, m UUIDMappingManager) {
 	ctx := context.Background()

@@ -11,4 +11,8 @@ serve:
     host: 0.0.0.0
     port: 4467
 
-dsn: memory
+dsn: cockroach://root@localhost:26257/defaultdb?sslmode=disable
+
+namespaces:
+  - name: default
+    id: 1

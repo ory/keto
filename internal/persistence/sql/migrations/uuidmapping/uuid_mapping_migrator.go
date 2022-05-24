@@ -10,11 +10,12 @@ import (
 	"github.com/gofrs/uuid"
 	"github.com/ory/x/popx"
 	"github.com/ory/x/sqlcon"
+	"golang.org/x/exp/maps"
 )
 
+// We copy the definitions of RelationTuple and UUIDMapping here so that the
+// migration will always work on the same definitions.
 type (
-	// We copy the definitions of RelationTuple and UUIDMapping here so that the
-	// migration will always work on the same definitions.
 	RelationTuple struct {
 		// An ID field is required to make pop happy. The actual ID is a
 		// composite primary key.
@@ -29,6 +30,18 @@ type (
 		SubjectSetRelation    sql.NullString `db:"subject_set_relation"`
 		CommitTime            time.Time      `db:"commit_time"`
 	}
+	NewRelationTuple struct {
+		ID                    uuid.UUID      `db:"shard_id"`
+		NetworkID             uuid.UUID      `db:"nid"`
+		NamespaceID           int32          `db:"namespace_id"`
+		Object                uuid.UUID      `db:"object"`
+		Relation              string         `db:"relation"`
+		SubjectID             uuid.NullUUID  `db:"subject_id"`
+		SubjectSetNamespaceID sql.NullInt32  `db:"subject_set_namespace_id"`
+		SubjectSetObject      uuid.NullUUID  `db:"subject_set_object"`
+		SubjectSetRelation    sql.NullString `db:"subject_set_relation"`
+		CommitTime            time.Time      `db:"commit_time"`
+	}
 	UUIDMapping struct {
 		ID                   uuid.UUID `db:"id"`
 		StringRepresentation string    `db:"string_representation"`
@@ -36,66 +49,115 @@ type (
 	UUIDMappings []*UUIDMapping
 )
 
-func (RelationTuple) TableName() string { return "keto_relation_tuples" }
-func (UUIDMappings) TableName() string  { return "keto_uuid_mappings" }
-func (UUIDMapping) TableName() string   { return "keto_uuid_mappings" }
+const (
+	RelationTupleTableName     = "keto_relation_tuples"
+	RelationTupleUUIDTableName = "keto_relation_tuples_uuid"
+	UUIDMappingTableName       = "keto_uuid_mappings"
+	MigrationVersion           = "20220513200500000000"
+)
+
+func (RelationTuple) TableName() string    { return RelationTupleTableName }
+func (NewRelationTuple) TableName() string { return RelationTupleUUIDTableName }
+
+func (rt *RelationTuple) dbCols() []any {
+	// shard_id, nid, namespace_id, object, relation, subject_id, subject_set_namespace_id, subject_set_object, subject_set_relation, commit_time
+	return []any{rt.ID, rt.NetworkID, rt.NamespaceID, rt.Object, rt.Relation, rt.SubjectID, rt.SubjectSetNamespaceID, rt.SubjectSetObject, rt.SubjectSetRelation, rt.CommitTime}
+}
+
+func (rt *NewRelationTuple) dbCols() []any {
+	return []any{rt.ID, rt.NetworkID, rt.NamespaceID, rt.Object, rt.Relation, rt.SubjectID, rt.SubjectSetNamespaceID, rt.SubjectSetObject, rt.SubjectSetRelation, rt.CommitTime}
+}
+
+func (UUIDMappings) TableName() string { return UUIDMappingTableName }
+func (UUIDMapping) TableName() string  { return UUIDMappingTableName }
+
+func (m *UUIDMapping) dbCols() []any {
+	return []any{m.ID, m.StringRepresentation}
+}
 
 func (rt *RelationTuple) ToUUID(s string) uuid.UUID {
 	return uuid.NewV5(rt.NetworkID, s)
 }
 
+func (rt *RelationTuple) ToNew() (newRT *NewRelationTuple, objectMapping *UUIDMapping, subjectMapping *UUIDMapping) {
+	newRT = &NewRelationTuple{
+		ID:          rt.ID,
+		NetworkID:   rt.NetworkID,
+		NamespaceID: rt.NamespaceID,
+		Object:      uuid.NewV5(rt.NetworkID, rt.Object),
+		Relation:    rt.Relation,
+		SubjectID: uuid.NullUUID{
+			Valid: rt.SubjectID.Valid,
+			UUID:  uuid.NewV5(rt.NetworkID, rt.SubjectID.String),
+		},
+		SubjectSetNamespaceID: rt.SubjectSetNamespaceID,
+		SubjectSetObject: uuid.NullUUID{
+			Valid: rt.SubjectSetObject.Valid,
+			UUID:  uuid.NewV5(rt.NetworkID, rt.SubjectSetObject.String),
+		},
+		SubjectSetRelation: rt.SubjectSetRelation,
+		CommitTime:         rt.CommitTime,
+	}
+	objectMapping = &UUIDMapping{
+		ID:                   newRT.Object,
+		StringRepresentation: rt.Object,
+	}
+	switch {
+	case rt.SubjectID.Valid:
+		subjectMapping = &UUIDMapping{
+			ID:                   newRT.SubjectID.UUID,
+			StringRepresentation: rt.SubjectID.String,
+		}
+	case rt.SubjectSetObject.Valid:
+		subjectMapping = &UUIDMapping{
+			ID:                   newRT.SubjectSetObject.UUID,
+			StringRepresentation: rt.SubjectSetObject.String,
+		}
+	}
+	return
+}
+
 var (
 	name       = "migrate-strings-to-uuids"
-	version    = "20220513210000000000"
 	Migrations = popx.Migrations{
 		// The "up" migration will add the UUID mappings to the database and
 		// replace the strings with UUIDs.
 		{
-			Version:   version,
+			Version:   MigrationVersion,
 			Name:      name,
 			Path:      name,
 			Direction: "up",
 			DBType:    "all",
 			Type:      "go",
 			Runner: func(_ popx.Migration, conn *pop.Connection, _ *pop.Tx) error {
-				for page := 1; ; page++ {
-					dbWrites := []dbWrite{}
-					relationTuples, hasNext, err := getRelationTuples(conn, page)
+				pop.Debug = true
+				//pop.SetLogger(func(_ logging.Level, s string, args ...interface{}) {
+				//	fmt.Printf("[%s] %s\n", time.Now().Round(time.Millisecond), fmt.Sprintf(s, args...))
+				//})
+				for lastID := uuid.Nil; ; {
+					relationTuples, hasNext, err := getRelationTuples[RelationTuple](conn, lastID)
 					if err != nil {
 						return fmt.Errorf("could not get relation tuples: %w", err)
 					}
 
-					for i, rt := range relationTuples {
-						rt := rt
-						fields := []*string{&rt.Object}
-						if rt.SubjectID.Valid && rt.SubjectID.String != "" {
-							fields = append(fields, &rt.SubjectID.String)
-						}
-						if rt.SubjectSetObject.Valid && rt.SubjectSetObject.String != "" {
-							fields = append(fields, &rt.SubjectSetObject.String)
-						}
-
-						for _, f := range fields {
-							id := rt.ToUUID(*f)
-							dbWrites = append(dbWrites, dbWrite{id: id, value: *f})
-							*f = id.String()
-						}
-						relationTuples[i] = rt
+					mappings := make([]*UUIDMapping, len(relationTuples)*2)
+					newTuples := make([]*NewRelationTuple, len(relationTuples))
+					for i := range relationTuples {
+						newTuples[i], mappings[i*2], mappings[i*2+1] = relationTuples[i].ToNew()
 					}
 
-					pop.Debug = true
-					if err := batchWriteToDB(conn, dbWrites); err != nil {
+					if err := batchWriteMappings(conn, mappings); err != nil {
 						return fmt.Errorf("could not replace UUIDs: %w", err)
 					}
 
-					if err = conn.Update(relationTuples); err != nil {
-						return fmt.Errorf("failed to update relation tuple: %w", err)
+					if err := batchInsertTuples(conn, newTuples); err != nil {
+						return fmt.Errorf("could not insert new tuples: %w", err)
 					}
-					pop.Debug = false
 
 					if !hasNext {
 						break
 					}
+					lastID = relationTuples[len(relationTuples)-1].ID
 				}
 
 				return nil
@@ -104,39 +166,58 @@ var (
 		// The "down" migration will replace all UUIDs with strings from the
 		// mapping table.
 		{
-			Version:   version,
+			Version:   MigrationVersion,
 			Name:      name,
 			Path:      name,
 			Direction: "down",
 			DBType:    "all",
 			Type:      "go",
 			Runner: func(_ popx.Migration, conn *pop.Connection, _ *pop.Tx) error {
-				for page := 1; ; page++ {
-					relationTuples, hasNext, err := getRelationTuples(conn, page)
+				for lastID := uuid.Nil; ; {
+					relationTuples, hasNext, err := getRelationTuples[NewRelationTuple](conn, lastID)
 					if err != nil {
 						return fmt.Errorf("could not get relation tuples: %w", err)
 					}
 
-					for _, rt := range relationTuples {
-						rt := rt
-						fields := []*string{&rt.Object}
-						if rt.SubjectID.Valid {
-							fields = append(fields, &rt.SubjectID.String)
+					mappings := make(map[uuid.UUID][]*string, len(relationTuples)*2)
+					oldTuples := make([]*RelationTuple, len(relationTuples))
+					for i, rt := range relationTuples {
+						ot := &RelationTuple{
+							ID:          rt.ID,
+							NetworkID:   rt.NetworkID,
+							NamespaceID: rt.NamespaceID,
+							Relation:    rt.Relation,
+							SubjectID: sql.NullString{
+								Valid: rt.SubjectID.Valid,
+							},
+							SubjectSetNamespaceID: rt.SubjectSetNamespaceID,
+							SubjectSetObject: sql.NullString{
+								Valid: rt.SubjectSetObject.Valid,
+							},
+							SubjectSetRelation: rt.SubjectSetRelation,
+							CommitTime:         rt.CommitTime,
 						}
-						if rt.SubjectSetObject.Valid {
-							fields = append(fields, &rt.SubjectSetObject.String)
+						mappings[rt.Object] = append(mappings[rt.Object], &ot.Object)
+						switch {
+						case rt.SubjectID.Valid:
+							mappings[rt.SubjectID.UUID] = append(mappings[rt.SubjectID.UUID], &ot.SubjectID.String)
+						case rt.SubjectSetObject.Valid:
+							mappings[rt.SubjectSetObject.UUID] = append(mappings[rt.SubjectSetObject.UUID], &ot.SubjectSetObject.String)
 						}
-						if err := batchReplaceUUIDs(conn, fields); err != nil {
+						if err := batchReplaceUUIDs(conn, mappings); err != nil {
 							return fmt.Errorf("could not replace UUIDs: %w", err)
 						}
-						if err = conn.Update(&rt); err != nil {
-							return fmt.Errorf("failed to update relation tuple: %w", err)
-						}
+						oldTuples[i] = ot
+					}
+
+					if err := batchInsertTuples(conn, oldTuples); err != nil {
+						return fmt.Errorf("could not insert old tuples: %w", err)
 					}
 
 					if !hasNext {
 						break
 					}
+					lastID = relationTuples[len(relationTuples)-1].ID
 				}
 
 				return nil
@@ -145,58 +226,45 @@ var (
 	}
 )
 
-func getRelationTuples(conn *pop.Connection, page int) (
-	res []RelationTuple, hasNext bool, err error,
+type columnProvider interface{ dbCols() []any }
+
+func constructArgs[T columnProvider](nCols int, items []T) (string, []interface{}) {
+	placeholderRow := "(" + strings.Repeat("?,", nCols-1) + "?)"
+
+	q := &strings.Builder{}
+	q.Grow(len(items) * (len(placeholderRow) + 1))
+
+	args := make([]interface{}, 0, len(items)*nCols)
+
+	q.WriteString(placeholderRow)
+	args = append(args, items[0].dbCols()...)
+
+	for _, item := range items[1:] {
+		q.WriteRune(',')
+		q.WriteString(placeholderRow)
+		args = append(args, item.dbCols()...)
+	}
+
+	return q.String(), args
+}
+
+func getRelationTuples[RT pop.TableNameAble](conn *pop.Connection, lastID uuid.UUID) (
+	res []RT, hasNext bool, err error,
 ) {
-	q := conn.Order("nid, shard_id").Paginate(page, 100)
+	const pageSize = 500
+	q := conn.Where("shard_id > ?", lastID).Order("shard_id").Limit(pageSize + 1)
 
 	if err := q.All(&res); err != nil {
 		return nil, false, sqlcon.HandleError(err)
 	}
-	return res, q.Paginator.Page < q.Paginator.TotalPages, nil
-}
-
-func removeNonUUIDs(fields []*string) []*string {
-	var res []*string
-	for _, f := range fields {
-		if f == nil || *f == "" {
-			continue
-		}
-		if _, err := uuid.FromString(*f); err != nil {
-			continue
-		}
-		res = append(res, f)
+	if len(res) > pageSize {
+		return res[:pageSize], true, nil
 	}
-	return res
+	return res, false, nil
 }
 
-type dbWrite struct {
-	id    uuid.UUID
-	value string
-}
-
-func batchWriteToDB(conn *pop.Connection, writes []dbWrite) (err error) {
-	// fields = removeEmpty(fields)
-	// if len(fields) == 0 {
-	// 	return
-	// }
-	// uuids := make([]uuid.UUID, len(fields))
-	// placeholderArray := make([]string, len(fields))
-	// args := make([]interface{}, 0, len(fields)*2)
-	// for i, f := range fields {
-	// 	uuids[i] = uuid.NewV5(f.networkID, *f.field)
-	// 	placeholderArray[i] = "(?, ?)"
-	// 	args = append(args, uuids[i].String(), *f.field)
-	// }
-	// placeholders := strings.Join(placeholderArray, ", ")
-
-	placeholderArray := make([]string, len(writes))
-	args := make([]interface{}, 0, len(writes)*2)
-	for i, write := range writes {
-		placeholderArray[i] = "(?, ?)"
-		args = append(args, write.id.String(), write.value)
-	}
-	placeholders := strings.Join(placeholderArray, ", ")
+func batchWriteMappings(conn *pop.Connection, mappings []*UUIDMapping) (err error) {
+	placeholders, args := constructArgs(2, mappings)
 
 	// We need to write manual SQL here because the INSERT should not fail if
 	// the UUID already exists, but we still want to return an error if anything
@@ -204,8 +272,10 @@ func batchWriteToDB(conn *pop.Connection, writes []dbWrite) (err error) {
 	var query string
 	switch d := conn.Dialect.Name(); d {
 	case "mysql":
+		query = `INSERT IGNORE INTO keto_uuid_mappings (id, string_representation) VALUES ` + placeholders
+	case "cockroach", "postgres":
 		query = `
-			INSERT IGNORE INTO keto_uuid_mappings (id, string_representation) VALUES ` + placeholders
+			UPSERT INTO keto_uuid_mappings (id, string_representation) VALUES ` + placeholders
 	default:
 		query = `
 			INSERT INTO keto_uuid_mappings (id, string_representation)
@@ -220,22 +290,8 @@ func batchWriteToDB(conn *pop.Connection, writes []dbWrite) (err error) {
 	return nil
 }
 
-func batchReplaceUUIDs(conn *pop.Connection, ids []*string) (err error) {
-	ids = removeNonUUIDs(ids)
-
-	if len(ids) == 0 {
-		return
-	}
-
-	// Build a map from UUID -> target
-	uuidToTargets := make(map[string][]*string)
-	for _, id := range ids {
-		if ids, ok := uuidToTargets[*id]; ok {
-			uuidToTargets[*id] = append(ids, id)
-		} else {
-			uuidToTargets[*id] = []*string{id}
-		}
-	}
+func batchReplaceUUIDs(conn *pop.Connection, uuidToTargets map[uuid.UUID][]*string) error {
+	ids := maps.Keys(uuidToTargets)
 
 	mappings := &[]UUIDMapping{}
 	query := conn.Where("id in (?)", ids)
@@ -243,12 +299,22 @@ func batchReplaceUUIDs(conn *pop.Connection, ids []*string) (err error) {
 		return err
 	}
 
-	// Write the representation to the correct index.
+	// Write the representation to the correct pointer(s).
 	for _, m := range *mappings {
-		for _, target := range uuidToTargets[m.ID.String()] {
+		for _, target := range uuidToTargets[m.ID] {
 			*target = m.StringRepresentation
 		}
 	}
 
-	return
+	return nil
+}
+
+func batchInsertTuples[RT interface {
+	pop.TableNameAble
+	columnProvider
+}](conn *pop.Connection, rts []RT) error {
+	placeholders, args := constructArgs(10, rts)
+	query := fmt.Sprintf("INSERT INTO %s (shard_id, nid, namespace_id, object, relation, subject_id, subject_set_namespace_id, subject_set_object, subject_set_relation, commit_time) VALUES %s", rts[0].TableName(), placeholders)
+
+	return sqlcon.HandleError(conn.RawQuery(query, args...).Exec())
 }

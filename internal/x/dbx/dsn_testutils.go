@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/url"
-	"os"
 	"path/filepath"
 	"strings"
 	"testing"
@@ -102,16 +101,7 @@ func createDB(t testing.TB, url string, dbName string) (err error) {
 }
 
 func GetDSNs(t testing.TB, debugSqliteOnDisk bool) []*DsnT {
-	sqliteMode := SQLiteFile
-	if debugSqliteOnDisk {
-		sqliteMode = SQLiteDebug
-	}
-
-	// we use a slice of structs here to always have the same execution order
-	dsns := []*DsnT{
-		GetSqlite(t, sqliteMode),
-		GetSqlite(t, SQLiteMemory),
-	}
+	dsns := allSqlite(t, debugSqliteOnDisk)
 
 	if !testing.Short() {
 		var mysql, postgres, cockroach string
@@ -119,54 +109,45 @@ func GetDSNs(t testing.TB, debugSqliteOnDisk bool) []*DsnT {
 
 		dockertest.Parallel([]func(){
 			func() {
-				url := dockertest.RunTestMySQL(t)
-				time.Sleep(1 * time.Second)
-				if err := createDB(t, url, testDB); err != nil {
-					t.Fatal(err)
-				}
-				mysql = withDbName(url, testDB)
+				mysql = RunMySQL(t, testDB)
 			},
 			func() {
-				url := dockertest.RunTestPostgreSQL(t)
-				if err := createDB(t, url, testDB); err != nil {
-					t.Fatal(err)
-				}
-				postgres = withDbName(url, testDB)
+				postgres = RunPostgres(t, testDB)
 			},
 			func() {
-				url := dockertest.RunTestCockroachDB(t)
-				// time.Sleep(1 * time.Second)
-				if err := createDB(t, url, testDB); err != nil {
-					t.Fatal(err)
-				}
-				cockroach = withDbName(url, testDB)
+				cockroach = RunCockroach(t, testDB)
 			},
 		})
 
-		dsns = append(dsns,
-			&DsnT{
+		if mysql != "" {
+			dsns = append(dsns, &DsnT{
 				Name:        "mysql",
 				Conn:        mysql,
 				MigrateUp:   true,
 				MigrateDown: true,
-			},
-			&DsnT{
+			})
+		}
+		if postgres != "" {
+			dsns = append(dsns, &DsnT{
 				Name:        "postgres",
 				Conn:        postgres,
 				MigrateUp:   true,
 				MigrateDown: true,
-			},
-			&DsnT{
+			})
+		}
+		if cockroach != "" {
+			dsns = append(dsns, &DsnT{
 				Name:        "cockroach",
 				Conn:        cockroach,
 				MigrateUp:   true,
 				MigrateDown: true,
-			},
-		)
+			})
+		}
 
 		t.Cleanup(dockertest.KillAllTestDatabases)
 	}
 
+	require.NotZero(t, len(dsns), "expected to run against at least one database")
 	return dsns
 }
 
@@ -177,32 +158,6 @@ const (
 	SQLiteFile
 	SQLiteDebug
 )
-
-func GetSqlite(t testing.TB, mode sqliteMode) *DsnT {
-	dsn := &DsnT{
-		MigrateUp:   true,
-		MigrateDown: false,
-	}
-
-	switch mode {
-	case SQLiteMemory:
-		dsn.Name = "memory"
-		dsn.Conn = fmt.Sprintf("sqlite://file:%s?_fk=true&cache=shared&mode=memory", t.Name())
-		t.Cleanup(func() {
-			_ = os.Remove(t.Name())
-		})
-	case SQLiteFile:
-		t.Cleanup(func() {
-			_ = os.Remove(fmt.Sprintf("TestDB_%s.sqlite", t.Name()))
-		})
-		fallthrough
-	case SQLiteDebug:
-		dsn.Name = "sqlite"
-		dsn.Conn = fmt.Sprintf("sqlite://file:TestDB_%s.sqlite?_fk=true", t.Name())
-	}
-
-	return dsn
-}
 
 func ConfigFile(t testing.TB, values map[string]interface{}) string {
 	dir := t.TempDir()

@@ -2,6 +2,11 @@ package migratest
 
 import (
 	"context"
+	"github.com/ory/keto/internal/persistence/sql/migrations/uuidmapping"
+	"github.com/ory/x/fsx"
+	"github.com/ory/x/logrusx"
+	"github.com/ory/x/networkx"
+	"github.com/sirupsen/logrus"
 	"os"
 	"strings"
 	"testing"
@@ -9,12 +14,8 @@ import (
 
 	"github.com/gobuffalo/pop/v6"
 	"github.com/gofrs/uuid"
-	"github.com/ory/x/fsx"
-	"github.com/ory/x/logrusx"
-	"github.com/ory/x/networkx"
 	"github.com/ory/x/popx"
 	"github.com/ory/x/sqlcon"
-	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
@@ -22,19 +23,9 @@ import (
 	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/namespace"
 	"github.com/ory/keto/internal/persistence/sql"
-	"github.com/ory/keto/internal/persistence/sql/migrations/uuidmapping"
 	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/internal/x/dbx"
 )
-
-func hasDownMigrationWithVersion(mb *popx.MigrationBox, version string) bool {
-	for _, down := range mb.Migrations["down"] {
-		if version == down.Version {
-			return true
-		}
-	}
-	return false
-}
 
 func TestMigrations(t *testing.T) {
 	t.Parallel()
@@ -48,7 +39,6 @@ func TestMigrations(t *testing.T) {
 			db.MigrateUp, db.MigrateDown = false, false
 
 			ctx := context.Background()
-			l := logrusx.New("", "", logrusx.ForceLevel(logrus.DebugLevel))
 
 			var conn *pop.Connection
 			var err error
@@ -57,16 +47,16 @@ func TestMigrations(t *testing.T) {
 			for i := 0; i < 120; i++ {
 				require.NoError(t, conn.Open())
 				if err := dbx.Ping(conn); err == nil {
-					t.Cleanup(func() { conn.Close() })
 					break
 				}
 				time.Sleep(time.Second)
 			}
 			require.NoError(t, dbx.Ping(conn))
+			t.Cleanup(func() { conn.Close() })
 
 			tm, err := popx.NewMigrationBox(
 				fsx.Merge(sql.Migrations, networkx.Migrations),
-				popx.NewMigrator(conn, l, nil, 1*time.Minute),
+				popx.NewMigrator(conn, logrusx.New("", "", logrusx.ForceLevel(logrus.DebugLevel)), nil, 1*time.Minute),
 				popx.WithGoMigrations(uuidmapping.Migrations),
 				popx.WithTestdata(t, os.DirFS("./testdata")),
 			)
@@ -78,9 +68,9 @@ func TestMigrations(t *testing.T) {
 			t.Run("suite=up", func(t *testing.T) {
 				if err := tm.Up(ctx); err != nil {
 					t.Log("migrations failed:", err)
-					t.Fail()
+					logMigrationStatus(t, tm)
+					t.FailNow()
 				}
-				logMigrationStatus(t, tm)
 			})
 
 			reg := driver.NewTestRegistry(t, db)
@@ -92,7 +82,6 @@ func TestMigrations(t *testing.T) {
 			p, err := sql.NewPersister(ctx, reg, uuid.Must(uuid.FromString("77fdc5e0-2260-49da-8aae-c36ba255d05b")))
 
 			t.Run("suite=fixtures", func(t *testing.T) {
-
 				t.Run("table=legacy namespaces", func(t *testing.T) {
 					// as they are legacy, we expect them to be actually dropped
 					assert.ErrorIs(t, sqlcon.HandleError(conn.RawQuery(
@@ -137,6 +126,8 @@ func TestMigrations(t *testing.T) {
 			})
 
 			t.Run("suite=uuid_migrations", func(t *testing.T) {
+				ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
+				defer cancel()
 				require.NoError(t, tm.Down(ctx, -1))
 
 				// Migrate up to (including) "migrate-strings-to-uuids"

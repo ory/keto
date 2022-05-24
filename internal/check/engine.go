@@ -35,7 +35,7 @@ func NewEngine(d EngineDependencies) *Engine {
 
 func (e *Engine) subjectIsAllowed(
 	ctx context.Context,
-	requested *relationtuple.InternalRelationTuple,
+	requested *relationtuple.RelationQuery,
 	rels []*relationtuple.InternalRelationTuple,
 	restDepth int,
 ) (bool, error) {
@@ -51,7 +51,7 @@ func (e *Engine) subjectIsAllowed(
 		}
 
 		// we only have to check Subject here as we know that sr was reached from requested.ObjectID, requested.Relation through 0...n indirections
-		if requested.Subject.Equals(sr.Subject) {
+		if requested.Subject().Equals(sr.Subject) {
 			// found the requested relation
 			return true, nil
 		}
@@ -81,12 +81,12 @@ func (e *Engine) subjectIsAllowed(
 
 func (e *Engine) checkOneIndirectionFurther(
 	ctx context.Context,
-	requested *relationtuple.InternalRelationTuple,
+	requested *relationtuple.RelationQuery,
 	expandQuery *relationtuple.RelationQuery,
 	restDepth int,
 ) (bool, error) {
 	if restDepth <= 0 {
-		e.d.Logger().WithFields(requested.ToLoggerFields()).Debug("reached max-depth, therefore this query will not be further expanded")
+		e.d.Logger().Debug("reached max-depth, therefore this query will not be further expanded")
 		return false, nil
 	}
 
@@ -113,7 +113,7 @@ func (e *Engine) checkOneIndirectionFurther(
 	}
 }
 
-func (e *Engine) SubjectIsAllowed(ctx context.Context, r *relationtuple.InternalRelationTuple, restDepth int) (bool, error) {
+func (e *Engine) SubjectIsAllowed(ctx context.Context, r *relationtuple.RelationQuery, restDepth int) (bool, error) {
 	// global max-depth takes precedence when it is the lesser or if the request max-depth is less than or equal to 0
 	if globalMaxDepth := e.d.Config(ctx).MaxReadDepth(); restDepth <= 0 || globalMaxDepth < restDepth {
 		restDepth = globalMaxDepth

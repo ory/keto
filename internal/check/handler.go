@@ -3,6 +3,7 @@ package check
 import (
 	"context"
 	"encoding/json"
+	"github.com/ory/keto/ketoapi"
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
@@ -18,6 +19,7 @@ import (
 type (
 	handlerDependencies interface {
 		EngineProvider
+		relationtuple.ManagerProvider
 		x.LoggerProvider
 		x.WriterProvider
 	}
@@ -94,7 +96,7 @@ func (h *Handler) getCheck(w http.ResponseWriter, r *http.Request, _ httprouter.
 		return
 	}
 
-	tuple, err := (&relationtuple.InternalRelationTuple{}).FromURLQuery(r.URL.Query())
+	query, err := (&ketoapi.RelationQuery{}).FromURLQuery(r.URL.Query())
 	if errors.Is(err, relationtuple.ErrNilSubject) {
 		h.d.Writer().WriteError(w, r, herodot.ErrBadRequest.WithReason("Subject has to be specified."))
 		return
@@ -103,11 +105,12 @@ func (h *Handler) getCheck(w http.ResponseWriter, r *http.Request, _ httprouter.
 		return
 	}
 
-	if err := h.d.PermissionEngine().d.UUIDMappingManager().MapFieldsToUUID(r.Context(), tuple); err != nil {
+	internalQuery, err := relationtuple.InternalRelationQuery(r.Context(), h.d.UUIDMappingManager(), query)
+	if err != nil {
 		h.d.Writer().WriteError(w, r, err)
 		return
 	}
-	allowed, err := h.d.PermissionEngine().SubjectIsAllowed(r.Context(), tuple, maxDepth)
+	allowed, err := h.d.PermissionEngine().SubjectIsAllowed(r.Context(), internalQuery, maxDepth)
 	if err != nil {
 		h.d.Writer().WriteError(w, r, err)
 		return
@@ -147,12 +150,13 @@ func (h *Handler) postCheck(w http.ResponseWriter, r *http.Request, _ httprouter
 		return
 	}
 
-	var tuple relationtuple.InternalRelationTuple
+	var tuple ketoapi.RelationTuple
 	if err := json.NewDecoder(r.Body).Decode(&tuple); err != nil {
 		h.d.Writer().WriteError(w, r, errors.WithStack(herodot.ErrBadRequest.WithReasonf("Unable to decode JSON payload: %s", err)))
 		return
 	}
 
+	internalQuery, err := relationtuple.InternalRelationQuery(r.Context(), h.d.UUIDMappingManager(), query)
 	if err := h.d.PermissionEngine().d.UUIDMappingManager().MapFieldsToUUID(r.Context(), &tuple); err != nil {
 		h.d.Writer().WriteError(w, r, err)
 		return

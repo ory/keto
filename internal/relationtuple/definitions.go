@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/gofrs/uuid"
 	"net/url"
 	"strings"
 	"testing"
@@ -39,97 +40,47 @@ type (
 		internalRelations []*InternalRelationTuple
 	}
 	SubjectID struct {
-		ID string `json:"id"`
+		ID uuid.UUID `json:"id"`
 	}
 )
 
 type RelationQuery struct {
-	// Namespace of the Relation Tuple
-	Namespace string `json:"namespace"`
-
-	// Object of the Relation Tuple
-	Object string `json:"object"`
-
-	// Relation of the Relation Tuple
-	Relation string `json:"relation"`
-
-	// SubjectID of the Relation Tuple
-	//
-	// Either SubjectSet or SubjectID can be provided.
-	SubjectID *string `json:"subject_id,omitempty"`
-	// SubjectSet of the Relation Tuple
-	//
-	// Either SubjectSet or SubjectID can be provided.
-	//
-	// swagger:allOf
+	Namespace  string      `json:"namespace"`
+	Object     uuid.UUID   `json:"object"`
+	Relation   string      `json:"relation"`
+	SubjectID  *uuid.UUID  `json:"subject_id,omitempty"`
 	SubjectSet *SubjectSet `json:"subject_set,omitempty"`
 }
 
-// swagger:ignore
 type TupleData interface {
-	// swagger:ignore
 	GetSubject() *rts.Subject
 	GetObject() string
 	GetNamespace() string
 	GetRelation() string
 }
 
-// swagger:model subject
 type Subject interface {
-	// swagger:ignore
 	String() string
-	// swagger:ignore
 	FromString(string) (Subject, error)
-	// swagger:ignore
 	Equals(interface{}) bool
-	// swagger:ignore
 	SubjectID() *string
-	// swagger:ignore
 	SubjectSet() *SubjectSet
 
-	// swagger:ignore
 	ToProto() *rts.Subject
-
-	// swagger:ignore
-	UUIDMappable
 }
 
-// swagger:ignore
 type InternalRelationTuple struct {
-	Namespace string  `json:"namespace"`
-	Object    string  `json:"object"`
-	Relation  string  `json:"relation"`
-	Subject   Subject `json:"subject"`
+	Namespace string    `json:"namespace"`
+	Object    uuid.UUID `json:"object"`
+	Relation  string    `json:"relation"`
+	Subject   Subject   `json:"subject"`
 }
 type InternalRelationTuples []*InternalRelationTuple
 
-func (rt *InternalRelationTuple) UUIDMappableFields() []*string {
-	return append([]*string{&rt.Object}, rt.Subject.UUIDMappableFields()...)
-}
-
-func (rtt InternalRelationTuples) UUIDMappableFields() (fields []*string) {
-	for _, rt := range rtt {
-		fields = append(fields, rt.UUIDMappableFields()...)
-	}
-	return fields
-}
-
-// swagger:parameters getExpand
 type SubjectSet struct {
-	// Namespace of the Subject Set
-	//
-	// required: true
-	Namespace string `json:"namespace"`
-
-	// Object of the Subject Set
-	//
-	// required: true
-	Object string `json:"object"`
-
-	// Relation of the Subject Set
-	//
-	// required: true
-	Relation string `json:"relation"`
+	Namespace string    `json:"namespace"`
+	Object    uuid.UUID `json:"object"`
+	Relation  string    `json:"relation"`
 }
 
 var (
@@ -157,17 +108,6 @@ func SubjectFromString(s string) (Subject, error) {
 	return (&SubjectID{}).FromString(s)
 }
 
-// swagger:ignore
-func (s *SubjectID) UUIDMappableFields() []*string {
-	return []*string{&s.ID}
-}
-
-// swagger:ignore
-func (s *SubjectSet) UUIDMappableFields() []*string {
-	return []*string{&s.Object}
-}
-
-// swagger:ignore
 func SubjectFromProto(gs *rts.Subject) (Subject, error) {
 	switch s := gs.GetRef().(type) {
 	case nil:

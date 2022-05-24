@@ -21,11 +21,11 @@ type (
 		ID                    uuid.UUID      `db:"shard_id"`
 		NetworkID             uuid.UUID      `db:"nid"`
 		NamespaceID           int32          `db:"namespace_id"`
-		Object                string         `db:"object"`
+		Object                uuid.UUID      `db:"object"`
 		Relation              string         `db:"relation"`
-		SubjectID             sql.NullString `db:"subject_id"`
+		SubjectID             uuid.NullUUID  `db:"subject_id"`
 		SubjectSetNamespaceID sql.NullInt32  `db:"subject_set_namespace_id"`
-		SubjectSetObject      sql.NullString `db:"subject_set_object"`
+		SubjectSetObject      uuid.NullUUID  `db:"subject_set_object"`
 		SubjectSetRelation    sql.NullString `db:"subject_set_relation"`
 		CommitTime            time.Time      `db:"commit_time"`
 	}
