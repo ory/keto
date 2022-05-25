@@ -3,10 +3,10 @@ package check
 import (
 	"context"
 	"errors"
-	"time"
 
 	"github.com/ory/herodot"
 
+	"github.com/ory/keto/internal/check/checkgroup"
 	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/namespace"
 	"github.com/ory/keto/internal/namespace/ast"
@@ -44,13 +44,13 @@ func (e *Engine) checkDirect(
 	requested *RelationTuple,
 	rels []*RelationTuple,
 	restDepth int,
-) checkFn {
+) checkgroup.Func {
 	// This is the same as the graph problem "can requested.Subject be reached from requested.Object through the first outgoing edge requested.Relation"
 	//
 	// We implement recursive depth-first search here.
 	// TODO replace by more performant algorithm: https://github.com/ory/keto/issues/483
 
-	var indirectChecks []checkFn
+	var indirectChecks []checkgroup.Func
 
 	for _, sr := range rels {
 		ctx, wasAlreadyVisited := graph.CheckAndAddVisited(ctx, sr.Subject)
@@ -61,7 +61,7 @@ func (e *Engine) checkDirect(
 		// we only have to check Subject here as we know that sr was reached from requested.ObjectID, requested.Relation through 0...n indirections
 		if requested.Subject.Equals(sr.Subject) {
 			// found the requested relation
-			return isMemberCheckFn
+			return checkgroup.IsMemberFunc
 		}
 
 		sub, isSubjectSet := sr.Subject.(*relationtuple.SubjectSet)
@@ -87,8 +87,8 @@ func (e *Engine) checkOneIndirectionFurther(
 	requested *RelationTuple,
 	expandQuery *Query,
 	restDepth int,
-) checkFn {
-	return func(ctx context.Context, resultCh chan<- checkResult) {
+) checkgroup.Func {
+	return func(ctx context.Context, resultCh chan<- checkgroup.Result) {
 		e.d.Logger().
 			WithField("request", requested.String()).
 			WithField("query", expandQuery.String()).
@@ -96,88 +96,38 @@ func (e *Engine) checkOneIndirectionFurther(
 
 		if restDepth < 0 {
 			e.d.Logger().WithFields(requested.ToLoggerFields()).Debug("reached max-depth, therefore this query will not be further expanded")
-			resultCh <- ResultNotMember
+			resultCh <- checkgroup.ResultNotMember
 			return
 		}
 
 		// an empty page token denotes the first page (as tokens are opaque)
 		var prevPage string
 
-		subcheckCh := make(chan checkResult)
+		g := checkgroup.New(ctx)
 
-		// used to report to the number of subchecks (which we only know after all pages)
-		totalNumOfSubchecksCh := make(chan int)
-		consumer := func() {
-			subCheckCount := 0
-			totalNumOfSubchecks := 0
-			for {
-				select {
-				case result := <-subcheckCh:
-					subCheckCount++
-					if result.Err != nil || result.Membership == IsMember || totalNumOfSubchecks == subCheckCount {
-						resultCh <- result
-						return
-					}
-				case totalNumOfSubchecks = <-totalNumOfSubchecksCh:
-					if totalNumOfSubchecks == subCheckCount {
-						resultCh <- ResultNotMember
-						return
-					}
-
-				case <-ctx.Done():
-					resultCh <- checkResult{Err: context.Canceled}
-					return
-				}
-			}
-		}
-		go consumer()
-
-		totalNumOfSubchecks := 0
 		for {
-			totalNumOfSubchecks++
 			nextRels, nextPage, err := e.d.RelationTupleManager().GetRelationTuples(ctx, expandQuery, x.WithToken(prevPage))
 			// herodot.ErrNotFound occurs when the namespace is unknown
 			if errors.Is(err, herodot.ErrNotFound) {
-				subcheckCh <- ResultNotMember
+				g.Add(checkgroup.NotMemberFunc)
 				break
 			} else if err != nil {
-				subcheckCh <- checkResult{Err: err}
+				g.Add(checkgroup.ErrorFunc(err))
 				break
 			}
 
-			check := e.checkDirect(ctx, requested, nextRels, restDepth-1)
-			go check(ctx, subcheckCh)
+			g.Add(e.checkDirect(ctx, requested, nextRels, restDepth-1))
 
 			// loop through pages until either allowed, end of pages, or an error occurred
-			if nextPage == "" {
+			if nextPage == "" || g.Done() {
 				break
 			}
 			prevPage = nextPage
 		}
-		// Now that we know the total amount of subchecks we need to once report it.
-		totalNumOfSubchecksCh <- totalNumOfSubchecks
+
+		resultCh <- g.Result()
 	}
 }
-
-type membership int
-
-const (
-	MembershipUnknown membership = iota
-	IsMember
-	NotMember
-)
-
-type checkResult struct {
-	Membership membership
-	Err        error
-}
-
-var (
-	ResultIsMember  = checkResult{Membership: IsMember}
-	ResultNotMember = checkResult{Membership: NotMember}
-)
-
-type checkFn func(ctx context.Context, resultCh chan<- checkResult)
 
 func (e *Engine) SubjectIsAllowed(ctx context.Context, r *RelationTuple, restDepth int) (bool, error) {
 	// global max-depth takes precedence when it is the lesser or if the request
@@ -185,22 +135,12 @@ func (e *Engine) SubjectIsAllowed(ctx context.Context, r *RelationTuple, restDep
 	if globalMaxDepth := e.d.Config(ctx).MaxReadDepth(); restDepth <= 0 || globalMaxDepth < restDepth {
 		restDepth = globalMaxDepth
 	}
-	result := union(ctx, []checkFn{e.checkIsAllowed(ctx, r, restDepth+1)})
+	result := union(ctx, []checkgroup.Func{e.checkIsAllowed(ctx, r, restDepth+1)})
 
-	return result.Membership == IsMember, result.Err
+	return result.Membership == checkgroup.IsMember, result.Err
 }
 
-func errorCheckFn(err error) checkFn {
-	return func(_ context.Context, resultCh chan<- checkResult) {
-		resultCh <- checkResult{Err: err}
-	}
-}
-
-var isMemberCheckFn checkFn = func(_ context.Context, resultCh chan<- checkResult) {
-	resultCh <- checkResult{Membership: IsMember}
-}
-
-func (e *Engine) checkIsAllowed(ctx context.Context, r *RelationTuple, restDepth int) checkFn {
+func (e *Engine) checkIsAllowed(ctx context.Context, r *RelationTuple, restDepth int) checkgroup.Func {
 	e.d.Logger().
 		WithField("request", r.String()).
 		Trace("check is allowed")
@@ -212,7 +152,7 @@ func (e *Engine) checkIsAllowed(ctx context.Context, r *RelationTuple, restDepth
 			Namespace: r.Namespace,
 		}, restDepth)
 
-	checks := []checkFn{directFn}
+	checks := []checkgroup.Func{directFn}
 
 	relation, err := e.astRelationFor(ctx, r)
 	if err == nil && relation.UsersetRewrite != nil {
@@ -222,26 +162,26 @@ func (e *Engine) checkIsAllowed(ctx context.Context, r *RelationTuple, restDepth
 	return unionCheckFn(ctx, checks)
 }
 
-func unionCheckFn(ctx context.Context, checks []checkFn) checkFn {
-	return func(ctx context.Context, resultCh chan<- checkResult) {
+func unionCheckFn(ctx context.Context, checks []checkgroup.Func) checkgroup.Func {
+	return func(ctx context.Context, resultCh chan<- checkgroup.Result) {
 		resultCh <- union(ctx, checks)
 	}
 }
 
-func checkNotImplemented(_ context.Context, resultCh chan<- checkResult) {
-	resultCh <- checkResult{Err: errors.New("not implemented")}
+func checkNotImplemented(_ context.Context, resultCh chan<- checkgroup.Result) {
+	resultCh <- checkgroup.Result{Err: errors.New("not implemented")}
 }
 
-type setOperation func(ctx context.Context, checks []checkFn) checkResult
+type setOperation func(ctx context.Context, checks []checkgroup.Func) checkgroup.Result
 
-func (e *Engine) checkUsersetRewrite(ctx context.Context, r *RelationTuple, rewrite *ast.UsersetRewrite) checkFn {
+func (e *Engine) checkUsersetRewrite(ctx context.Context, r *RelationTuple, rewrite *ast.UsersetRewrite) checkgroup.Func {
 	e.d.Logger().
 		WithField("request", r.String()).
 		Trace("check userset rewrite")
 
 	var (
 		op     setOperation
-		checks []checkFn
+		checks []checkgroup.Func
 	)
 	switch rewrite.Operation {
 	case ast.SetOperationUnion:
@@ -263,12 +203,12 @@ func (e *Engine) checkUsersetRewrite(ctx context.Context, r *RelationTuple, rewr
 		checks = append(checks, e.checkTupleToUserset(ctx, r, &c))
 	}
 
-	return func(ctx context.Context, resultCh chan<- checkResult) {
+	return func(ctx context.Context, resultCh chan<- checkgroup.Result) {
 		resultCh <- op(ctx, checks)
 	}
 }
 
-func (e *Engine) checkComputedUserset(ctx context.Context, r *RelationTuple, userset *ast.ComputedUserset) checkFn {
+func (e *Engine) checkComputedUserset(ctx context.Context, r *RelationTuple, userset *ast.ComputedUserset) checkgroup.Func {
 	e.d.Logger().
 		WithField("request", r.String()).
 		WithField("computed userset relation", userset.Relation).
@@ -286,51 +226,51 @@ func (e *Engine) checkComputedUserset(ctx context.Context, r *RelationTuple, use
 	)
 }
 
-func (e *Engine) checkTupleToUserset(ctx context.Context, r *RelationTuple, userset *ast.TupleToUserset) checkFn {
+func (e *Engine) checkTupleToUserset(ctx context.Context, r *RelationTuple, userset *ast.TupleToUserset) checkgroup.Func {
 	e.d.Logger().
 		WithField("request", r.String()).
 		WithField("tuple to userset relation", userset.Relation).
 		WithField("tuple to userset computed", userset.ComputedUsersetRelation).
 		Trace("check tuple to userset")
 
-	return func(ctx context.Context, resultCh chan<- checkResult) {
+	return func(ctx context.Context, resultCh chan<- checkgroup.Result) {
 		var (
 			prevPage, nextPage string
-			rts, rtsPage       []*RelationTuple
+			rts                []*RelationTuple
 			err                error
 		)
-		for nextPage = "x"; nextPage != ""; prevPage = nextPage {
-			rtsPage, nextPage, err = e.d.RelationTupleManager().GetRelationTuples(
+		g := checkgroup.New(ctx)
+		for nextPage = "x"; nextPage != "" && !g.Done(); prevPage = nextPage {
+			rts, nextPage, err = e.d.RelationTupleManager().GetRelationTuples(
 				ctx,
 				&Query{
 					Namespace: r.Namespace,
 					Object:    r.Object,
 					Relation:  userset.Relation,
 				},
-				x.WithToken(prevPage)) // TODO pagination
+				x.WithToken(prevPage))
 			if err != nil {
-				resultCh <- checkResult{Err: err}
+				g.Add(checkgroup.ErrorFunc(err))
 				return
 			}
-			rts = append(rts, rtsPage...)
-		}
-		checks := []checkFn{}
-		for _, rt := range rts {
-			if rt.Subject.SubjectSet() == nil {
-				continue
+
+			for _, rt := range rts {
+				if rt.Subject.SubjectSet() == nil {
+					continue
+				}
+				g.Add(e.checkIsAllowed(
+					ctx,
+					&RelationTuple{
+						Namespace: rt.Subject.SubjectSet().Namespace,
+						Object:    rt.Subject.SubjectSet().Object,
+						Relation:  userset.ComputedUsersetRelation,
+						Subject:   r.Subject,
+					},
+					100,
+				))
 			}
-			checks = append(checks, e.checkIsAllowed(
-				ctx,
-				&RelationTuple{
-					Namespace: rt.Subject.SubjectSet().Namespace,
-					Object:    rt.Subject.SubjectSet().Object,
-					Relation:  userset.ComputedUsersetRelation,
-					Subject:   r.Subject,
-				},
-				100,
-			))
 		}
-		resultCh <- union(ctx, checks)
+		resultCh <- g.Result()
 	}
 }
 
@@ -359,13 +299,13 @@ func (e *Engine) namespaceFor(ctx context.Context, r *RelationTuple) (*namespace
 	return ns, nil
 }
 
-func union(ctx context.Context, checks []checkFn) checkResult {
+func union(ctx context.Context, checks []checkgroup.Func) checkgroup.Result {
 	if len(checks) == 0 {
-		return ResultNotMember
+		return checkgroup.ResultNotMember
 	}
 
-	resultCh := make(chan checkResult, len(checks))
-	childCtx, cancelFn := context.WithTimeout(ctx, 1*time.Second)
+	resultCh := make(chan checkgroup.Result, len(checks))
+	childCtx, cancelFn := context.WithCancel(ctx)
 	defer cancelFn()
 
 	for _, check := range checks {
@@ -376,13 +316,13 @@ func union(ctx context.Context, checks []checkFn) checkResult {
 		select {
 		case result := <-resultCh:
 			// We return either the first error or the first success.
-			if result.Err != nil || result.Membership == IsMember {
+			if result.Err != nil || result.Membership == checkgroup.IsMember {
 				return result
 			}
 		case <-ctx.Done():
-			return checkResult{Err: context.Canceled}
+			return checkgroup.Result{Err: context.Canceled}
 		}
 	}
 
-	return ResultNotMember
+	return checkgroup.ResultNotMember
 }
