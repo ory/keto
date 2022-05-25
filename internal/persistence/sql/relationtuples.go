@@ -41,6 +41,9 @@ func (RelationTuple) TableName(_ context.Context) string {
 }
 
 func (r *RelationTuple) toInternal(ctx context.Context, nm namespace.Manager, p *Persister) (*relationtuple.InternalRelationTuple, error) {
+	ctx, span := p.d.Tracer(ctx).Tracer().Start(ctx, "persistence.sql.toInternal")
+	defer span.End()
+
 	if r == nil {
 		return nil, nil
 	}
@@ -80,6 +83,9 @@ func (r *RelationTuple) toInternal(ctx context.Context, nm namespace.Manager, p 
 }
 
 func (r *RelationTuple) insertSubject(ctx context.Context, p *Persister, s relationtuple.Subject) error {
+	ctx, span := p.d.Tracer(ctx).Tracer().Start(ctx, "persistence.sql.insertSubject")
+	defer span.End()
+
 	switch st := s.(type) {
 	case *relationtuple.SubjectID:
 		r.SubjectID = sql.NullString{
@@ -113,6 +119,9 @@ func (r *RelationTuple) insertSubject(ctx context.Context, p *Persister, s relat
 }
 
 func (r *RelationTuple) FromInternal(ctx context.Context, p *Persister, rt *relationtuple.InternalRelationTuple) error {
+	ctx, span := p.d.Tracer(ctx).Tracer().Start(ctx, "persistence.sql.FromInternal")
+	defer span.End()
+
 	n, err := p.GetNamespaceByName(ctx, rt.Namespace)
 	if err != nil {
 		return err
@@ -126,6 +135,9 @@ func (r *RelationTuple) FromInternal(ctx context.Context, p *Persister, rt *rela
 }
 
 func (p *Persister) InsertRelationTuple(ctx context.Context, rel *relationtuple.InternalRelationTuple) error {
+	ctx, span := p.d.Tracer(ctx).Tracer().Start(ctx, "persistence.sql.InsertRelationTuple")
+	defer span.End()
+
 	if rel.Subject == nil {
 		return errors.WithStack(relationtuple.ErrNilSubject)
 	}
@@ -149,6 +161,9 @@ func (p *Persister) InsertRelationTuple(ctx context.Context, rel *relationtuple.
 }
 
 func (p *Persister) whereSubject(ctx context.Context, q *pop.Query, sub relationtuple.Subject) error {
+	ctx, span := p.d.Tracer(ctx).Tracer().Start(ctx, "persistence.sql.whereSubject")
+	defer span.End()
+
 	switch s := sub.(type) {
 	case *relationtuple.SubjectID:
 		q.
@@ -176,6 +191,9 @@ func (p *Persister) whereSubject(ctx context.Context, q *pop.Query, sub relation
 }
 
 func (p *Persister) whereQuery(ctx context.Context, q *pop.Query, rq *relationtuple.RelationQuery) error {
+	ctx, span := p.d.Tracer(ctx).Tracer().Start(ctx, "persistence.sql.whereQuery")
+	defer span.End()
+
 	if rq.Namespace != "" {
 		n, err := p.GetNamespaceByName(ctx, rq.Namespace)
 		if err != nil {
@@ -198,6 +216,9 @@ func (p *Persister) whereQuery(ctx context.Context, q *pop.Query, rq *relationtu
 }
 
 func (p *Persister) DeleteRelationTuples(ctx context.Context, rs ...*relationtuple.InternalRelationTuple) error {
+	ctx, span := p.d.Tracer(ctx).Tracer().Start(ctx, "persistence.sql.DeleteRelationTuples")
+	defer span.End()
+
 	return p.Transaction(ctx, func(ctx context.Context, _ *pop.Connection) error {
 		for _, r := range rs {
 			n, err := p.GetNamespaceByName(ctx, r.Namespace)
@@ -223,6 +244,9 @@ func (p *Persister) DeleteRelationTuples(ctx context.Context, rs ...*relationtup
 }
 
 func (p *Persister) DeleteAllRelationTuples(ctx context.Context, query *relationtuple.RelationQuery) error {
+	ctx, span := p.d.Tracer(ctx).Tracer().Start(ctx, "persistence.sql.DeleteAllRelationTuples")
+	defer span.End()
+
 	return p.Transaction(ctx, func(ctx context.Context, _ *pop.Connection) error {
 		sqlQuery := p.QueryWithNetwork(ctx)
 		err := p.whereQuery(ctx, sqlQuery, query)
@@ -236,6 +260,9 @@ func (p *Persister) DeleteAllRelationTuples(ctx context.Context, query *relation
 }
 
 func (p *Persister) GetRelationTuples(ctx context.Context, query *relationtuple.RelationQuery, options ...x.PaginationOptionSetter) ([]*relationtuple.InternalRelationTuple, string, error) {
+	ctx, span := p.d.Tracer(ctx).Tracer().Start(ctx, "persistence.sql.GetRelationTuples")
+	defer span.End()
+
 	pagination, err := internalPaginationFromOptions(options...)
 	if err != nil {
 		return nil, "", err
@@ -277,6 +304,9 @@ func (p *Persister) GetRelationTuples(ctx context.Context, query *relationtuple.
 }
 
 func (p *Persister) WriteRelationTuples(ctx context.Context, rs ...*relationtuple.InternalRelationTuple) error {
+	ctx, span := p.d.Tracer(ctx).Tracer().Start(ctx, "persistence.sql.WriteRelationTuples")
+	defer span.End()
+
 	return p.Transaction(ctx, func(ctx context.Context, _ *pop.Connection) error {
 		for _, r := range rs {
 			if err := p.InsertRelationTuple(ctx, r); err != nil {
@@ -288,6 +318,9 @@ func (p *Persister) WriteRelationTuples(ctx context.Context, rs ...*relationtupl
 }
 
 func (p *Persister) TransactRelationTuples(ctx context.Context, ins []*relationtuple.InternalRelationTuple, del []*relationtuple.InternalRelationTuple) error {
+	ctx, span := p.d.Tracer(ctx).Tracer().Start(ctx, "persistence.sql.TransactRelationTuples")
+	defer span.End()
+
 	return p.Transaction(ctx, func(ctx context.Context, _ *pop.Connection) error {
 		if err := p.WriteRelationTuples(ctx, ins...); err != nil {
 			return err

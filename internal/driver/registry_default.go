@@ -114,6 +114,10 @@ func (r *RegistryDefault) Tracer(ctx context.Context) *otelx.Tracer {
 		r.tracer = t
 	}
 
+	if r.tracer.Tracer() == nil {
+		r.tracer = otelx.NewNoop(r.l, r.Config(ctx).TracingConfig())
+	}
+
 	return r.tracer
 }
 
