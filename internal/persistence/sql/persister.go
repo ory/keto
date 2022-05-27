@@ -46,7 +46,7 @@ const (
 
 var (
 	//go:embed migrations/sql/*.sql
-	migrations embed.FS
+	Migrations embed.FS
 
 	_ persistence.Persister = &Persister{}
 )
@@ -67,7 +67,7 @@ func NewPersister(ctx context.Context, reg dependencies, nid uuid.UUID) (*Persis
 }
 
 func NewMigrationBox(c *pop.Connection, logger *logrusx.Logger, tracer *otelx.Tracer) (*popx.MigrationBox, error) {
-	return popx.NewMigrationBox(fsx.Merge(migrations, networkx.Migrations), popx.NewMigrator(c, logger, tracer, 0))
+	return popx.NewMigrationBox(fsx.Merge(Migrations, networkx.Migrations), popx.NewMigrator(c, logger, tracer, 0))
 }
 
 func (p *Persister) Connection(ctx context.Context) *pop.Connection {

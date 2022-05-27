@@ -12,6 +12,8 @@ import (
 )
 
 func TestPaginationToken(t *testing.T) {
+	t.Parallel()
+
 	for i, tc := range []struct {
 		size            int
 		token           string

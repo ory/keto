@@ -44,12 +44,16 @@ const (
 )
 
 func Test(t *testing.T) {
+	t.Parallel()
 	for _, dsn := range dbx.GetDSNs(t, false) {
+		dsn := dsn
 		t.Run(fmt.Sprintf("dsn=%s", dsn.Name), func(t *testing.T) {
+			t.Parallel()
+
 			ctx, reg, addNamespace := newInitializedReg(t, dsn, nil)
 
 			closeServer := startServer(ctx, t, reg)
-			defer closeServer()
+			t.Cleanup(closeServer)
 
 			// The test cases start here
 			// We execute every test with all clients available
@@ -83,6 +87,7 @@ func Test(t *testing.T) {
 			}
 
 			t.Run("case=metrics are served", func(t *testing.T) {
+				t.Parallel()
 				(&grpcClient{
 					readRemote:  reg.Config(ctx).ReadAPIListenOn(),
 					writeRemote: reg.Config(ctx).WriteAPIListenOn(),
@@ -90,6 +95,7 @@ func Test(t *testing.T) {
 				}).waitUntilLive(t)
 
 				t.Run("case=on "+prometheus.MetricsPrometheusPath, func(t *testing.T) {
+					t.Parallel()
 					resp, err := http.Get(fmt.Sprintf("http://%s%s", reg.Config(ctx).MetricsListenOn(), prometheus.MetricsPrometheusPath))
 					require.NoError(t, err)
 					require.Equal(t, resp.StatusCode, http.StatusOK)
@@ -99,6 +105,7 @@ func Test(t *testing.T) {
 				})
 
 				t.Run("case=not on /", func(t *testing.T) {
+					t.Parallel()
 					resp, err := http.Get(fmt.Sprintf("http://%s", reg.Config(ctx).MetricsListenOn()))
 					require.NoError(t, err)
 					require.Equal(t, resp.StatusCode, http.StatusNotFound)
@@ -109,6 +116,8 @@ func Test(t *testing.T) {
 }
 
 func TestServeConfig(t *testing.T) {
+	t.Parallel()
+
 	ctx, reg, _ := newInitializedReg(t, dbx.GetSqlite(t, dbx.SQLiteMemory), map[string]interface{}{
 		"serve.read.cors.enabled":         true,
 		"serve.read.cors.debug":           true,
@@ -117,7 +126,7 @@ func TestServeConfig(t *testing.T) {
 	})
 
 	closeServer := startServer(ctx, t, reg)
-	defer closeServer()
+	t.Cleanup(closeServer)
 
 	for !healthReady(t, "http://"+reg.Config(ctx).ReadAPIListenOn()) {
 		t.Log("Waiting for health check to be ready")

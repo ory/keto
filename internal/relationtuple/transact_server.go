@@ -12,7 +12,11 @@ import (
 	"github.com/pkg/errors"
 )
 
-var _ rts.WriteServiceServer = (*handler)(nil)
+var (
+	_ rts.WriteServiceServer = (*handler)(nil)
+	_                        = (*bodyRelationTuple)(nil)
+	_                        = (*queryRelationTuple)(nil)
+)
 
 func protoTuplesWithAction(deltas []*rts.RelationTupleDelta, action rts.RelationTupleDelta_Action) (filtered []*InternalRelationTuple, err error) {
 	for _, d := range deltas {
@@ -72,7 +76,6 @@ func (h *handler) DeleteRelationTuples(ctx context.Context, req *rts.DeleteRelat
 // The basic ACL relation tuple
 //
 // swagger:parameters postCheck createRelationTuple
-// nolint:deadcode,unused
 type bodyRelationTuple struct {
 	// in: body
 	Payload RelationQuery
@@ -81,7 +84,6 @@ type bodyRelationTuple struct {
 // The basic ACL relation tuple
 //
 // swagger:parameters getCheck deleteRelationTuples
-// nolint:deadcode,unused
 type queryRelationTuple struct {
 	// Namespace of the Relation Tuple
 	//

@@ -39,8 +39,12 @@ func rt(nw *networkx.Network, setSID, setNID, setO, setR bool) *sql.RelationTupl
 }
 
 func TestRelationTupleSubjectTypeCheck(t *testing.T) {
+	t.Parallel()
+
 	for _, dsn := range dbx.GetDSNs(t, false) {
+		dsn := dsn
 		t.Run("dsn="+dsn.Name, func(t *testing.T) {
+			t.Parallel()
 			ctx := context.Background()
 			reg := driver.NewTestRegistry(t, dsn)
 			c, err := reg.PopConnection(context.Background())
@@ -93,6 +97,7 @@ func TestRelationTupleSubjectTypeCheck(t *testing.T) {
 					success: false,
 				},
 			} {
+				tc := tc
 				t.Run("case="+tc.desc, func(t *testing.T) {
 					err = c.Create(rt(nw, tc.setSID, tc.setNID, tc.setO, tc.setR))
 

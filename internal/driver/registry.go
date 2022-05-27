@@ -4,20 +4,15 @@ import (
 	"context"
 	"net/http"
 
+	"github.com/gobuffalo/pop/v6"
+	"github.com/ory/x/healthx"
 	"github.com/ory/x/otelx"
 	prometheus "github.com/ory/x/prometheusx"
-
-	"github.com/gobuffalo/pop/v6"
-
-	"github.com/ory/keto/internal/driver/config"
-
 	"github.com/spf13/cobra"
-
 	"google.golang.org/grpc"
 
-	"github.com/ory/x/healthx"
-
 	"github.com/ory/keto/internal/check"
+	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/expand"
 	"github.com/ory/keto/internal/persistence"
 	"github.com/ory/keto/internal/relationtuple"

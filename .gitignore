@@ -3,4 +3,5 @@ node_modules/
 coverage.txt
 dist/
 **/*.sqlite
+**/*.sqlite-journal
 .vscode/

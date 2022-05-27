@@ -6,21 +6,20 @@ import (
 	"testing"
 
 	"github.com/ory/x/networkx"
-
-	"github.com/ory/keto/internal/x/dbx"
-
-	"github.com/ory/keto/internal/driver"
-	"github.com/ory/keto/internal/persistence/sql"
-
 	"github.com/sirupsen/logrus/hooks/test"
 	"github.com/stretchr/testify/require"
 
+	"github.com/ory/keto/internal/driver"
 	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/namespace"
+	"github.com/ory/keto/internal/persistence/sql"
 	"github.com/ory/keto/internal/relationtuple"
+	"github.com/ory/keto/internal/x/dbx"
 )
 
 func TestPersister(t *testing.T) {
+	t.Parallel()
+
 	setup := func(t *testing.T, dsn *dbx.DsnT) (p *sql.Persister, r *driver.RegistryDefault, hook *test.Hook) {
 		r = driver.NewTestRegistry(t, dsn)
 
@@ -49,7 +48,10 @@ func TestPersister(t *testing.T) {
 	}
 
 	for _, dsn := range dbx.GetDSNs(t, false) {
+		dsn := dsn
 		t.Run(fmt.Sprintf("dsn=%s", dsn.Name), func(t *testing.T) {
+			t.Parallel()
+
 			t.Run("relationtuple.ManagerTest", func(t *testing.T) {
 				var nspaces []*namespace.Namespace
 				p, r, _ := setup(t, dsn)

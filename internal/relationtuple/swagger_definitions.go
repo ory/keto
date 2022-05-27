@@ -1,7 +1,11 @@
 package relationtuple
 
+var (
+	_ = (*relationTupleWithRequired)(nil)
+	_ = (*patchPayload)(nil)
+)
+
 // swagger:model InternalRelationTuple
-// nolint:deadcode,unused
 type relationTupleWithRequired struct {
 	// Namespace of the Relation Tuple
 	//
@@ -31,7 +35,6 @@ type relationTupleWithRequired struct {
 // The patch request payload
 //
 // swagger:parameters patchRelationTuples
-// nolint:deadcode,unused
 type patchPayload struct {
 	// in:body
 	Payload []*PatchDelta

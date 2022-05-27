@@ -1,4 +1,4 @@
-package migrations
+package migrations_test
 
 import (
 	"context"
@@ -11,20 +11,25 @@ import (
 	"github.com/ory/keto/internal/driver"
 	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/namespace"
+	"github.com/ory/keto/internal/persistence/sql/migrations"
 	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/internal/x"
 	"github.com/ory/keto/internal/x/dbx"
 )
 
 func TestToSingleTableMigrator(t *testing.T) {
+	t.Parallel()
 	const debugOnDisk = false
 
 	for _, dsn := range dbx.GetDSNs(t, debugOnDisk) {
+		dsn := dsn
 		t.Run("db="+dsn.Name, func(t *testing.T) {
+			t.Parallel()
+
 			r := driver.NewTestRegistry(t, dsn)
 			ctx := context.Background()
 			var nn []*namespace.Namespace
-			m := NewToSingleTableMigrator(r)
+			m := migrations.NewToSingleTableMigrator(r)
 
 			setup := func(t *testing.T) *namespace.Namespace {
 				n := &namespace.Namespace{
@@ -34,7 +39,7 @@ func TestToSingleTableMigrator(t *testing.T) {
 
 				nn = append(nn, n)
 
-				mb, err := m.namespaceMigrationBox(ctx, n)
+				mb, err := m.NamespaceMigrationBox(ctx, n)
 				require.NoError(t, err)
 				require.NoError(t, mb.Up(ctx))
 
@@ -70,10 +75,10 @@ func TestToSingleTableMigrator(t *testing.T) {
 						Relation:  "b",
 					},
 				}
-				require.NoError(t, m.insertOldRelationTuples(ctx, n, sID, sSet))
+				require.NoError(t, m.InsertOldRelationTuples(ctx, n, sID, sSet))
 
 				// get the tuple from the old table
-				oldRts, next, err := m.getOldRelationTuples(ctx, n, 0, 100)
+				oldRts, next, err := m.GetOldRelationTuples(ctx, n, 0, 100)
 				require.NoError(t, err)
 				assert.False(t, next)
 				require.Len(t, oldRts, 2)
@@ -100,9 +105,9 @@ func TestToSingleTableMigrator(t *testing.T) {
 				n := setup(t)
 
 				defer func(old int) {
-					m.perPage = old
-				}(m.perPage)
-				m.perPage = 1
+					m.PerPage = old
+				}(m.PerPage)
+				m.PerPage = 1
 
 				rts := make([]*relationtuple.InternalRelationTuple, 10)
 				for i := range rts {
@@ -114,13 +119,13 @@ func TestToSingleTableMigrator(t *testing.T) {
 					}
 				}
 
-				require.NoError(t, m.insertOldRelationTuples(ctx, n, rts...))
+				require.NoError(t, m.InsertOldRelationTuples(ctx, n, rts...))
 				require.NoError(t, m.MigrateNamespace(ctx, n))
 
 				migrated, nextToken, err := r.RelationTupleManager().GetRelationTuples(ctx, &relationtuple.RelationQuery{Namespace: n.Name}, x.WithSize(len(rts)))
 				require.NoError(t, err)
 				assert.Equal(t, "", nextToken)
-				assert.Equal(t, rts, migrated)
+				assert.ElementsMatch(t, rts, migrated)
 			})
 
 			t.Run("case=non-deserializable tuple", func(t *testing.T) {
@@ -132,7 +137,7 @@ func TestToSingleTableMigrator(t *testing.T) {
 					Relation:  "r",
 					Subject:   &relationtuple.SubjectID{ID: "s"},
 				}
-				require.NoError(t, m.insertOldRelationTuples(ctx, n, &relationtuple.InternalRelationTuple{
+				require.NoError(t, m.InsertOldRelationTuples(ctx, n, &relationtuple.InternalRelationTuple{
 					Namespace: n.Name,
 					Object:    "o0",
 					Relation:  "r",
@@ -145,7 +150,7 @@ func TestToSingleTableMigrator(t *testing.T) {
 				}, valid))
 				err := m.MigrateNamespace(ctx, n)
 				require.Error(t, err)
-				invalid, ok := err.(ErrInvalidTuples)
+				invalid, ok := err.(migrations.ErrInvalidTuples)
 				require.True(t, ok)
 				assert.Len(t, invalid, 2)
 
@@ -161,14 +166,18 @@ func TestToSingleTableMigrator(t *testing.T) {
 }
 
 func TestToSingleTableMigrator_HasLegacyTable(t *testing.T) {
+	t.Parallel()
 	const debugOnDisk = false
 
 	for _, dsn := range dbx.GetDSNs(t, debugOnDisk) {
+		dsn := dsn
 		t.Run("db="+dsn.Name, func(t *testing.T) {
+			t.Parallel()
+
 			t.Run("case=simple detection", func(t *testing.T) {
 				ctx := context.Background()
 				reg := driver.NewTestRegistry(t, dsn)
-				m := NewToSingleTableMigrator(reg)
+				m := migrations.NewToSingleTableMigrator(reg)
 
 				nspaces := []*namespace.Namespace{{
 					ID:   3,
@@ -182,7 +191,7 @@ func TestToSingleTableMigrator_HasLegacyTable(t *testing.T) {
 				assert.Len(t, legacyNamespaces, 0)
 
 				// migrate legacy table up
-				mb, err := m.namespaceMigrationBox(ctx, nspaces[0])
+				mb, err := m.NamespaceMigrationBox(ctx, nspaces[0])
 				require.NoError(t, err)
 				require.NoError(t, mb.Up(ctx))
 
@@ -203,7 +212,7 @@ func TestToSingleTableMigrator_HasLegacyTable(t *testing.T) {
 			t.Run("case=multiple namespaces", func(t *testing.T) {
 				ctx := context.Background()
 				reg := driver.NewTestRegistry(t, dsn)
-				m := NewToSingleTableMigrator(reg)
+				m := migrations.NewToSingleTableMigrator(reg)
 
 				nspaces := []*namespace.Namespace{{
 					ID:   0,
@@ -219,14 +228,14 @@ func TestToSingleTableMigrator_HasLegacyTable(t *testing.T) {
 
 				for _, n := range nspaces {
 					// migrate legacy table up
-					mb, err := m.namespaceMigrationBox(ctx, n)
+					mb, err := m.NamespaceMigrationBox(ctx, n)
 					require.NoError(t, err)
 					require.NoError(t, mb.Up(ctx))
 				}
 
 				ln, err := m.LegacyNamespaces(ctx)
 				require.NoError(t, err)
-				assert.Equal(t, nspaces, ln)
+				assert.ElementsMatch(t, nspaces, ln)
 			})
 		})
 	}

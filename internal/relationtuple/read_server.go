@@ -16,7 +16,10 @@ import (
 	"github.com/ory/keto/internal/x"
 )
 
-var _ rts.ReadServiceServer = (*handler)(nil)
+var (
+	_ rts.ReadServiceServer = (*handler)(nil)
+	_                       = (*getRelationsParams)(nil)
+)
 
 func (h *handler) ListRelationTuples(ctx context.Context, req *rts.ListRelationTuplesRequest) (*rts.ListRelationTuplesResponse, error) {
 	if req.Query == nil {
@@ -48,7 +51,6 @@ func (h *handler) ListRelationTuples(ctx context.Context, req *rts.ListRelationT
 }
 
 // swagger:parameters getRelationTuples
-// nolint:deadcode,unused
 type getRelationsParams struct {
 	// Namespace of the Relation Tuple
 	//

@@ -3,14 +3,13 @@ package migrate
 import (
 	"fmt"
 
-	"github.com/ory/keto/internal/driver"
-
 	"github.com/ory/x/cmdx"
 	"github.com/ory/x/flagx"
 	"github.com/ory/x/popx"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 
+	"github.com/ory/keto/internal/driver"
 	"github.com/ory/keto/ketoctx"
 )
 
@@ -35,7 +34,7 @@ Before running this command on an existing database, create a back up!
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			ctx := cmd.Context()
 
-			reg, err := driver.NewDefaultRegistry(cmd.Context(), cmd.Flags(), true, opts...)
+			reg, err := driver.NewDefaultRegistry(ctx, cmd.Flags(), true, opts...)
 			if err != nil {
 				return err
 			}

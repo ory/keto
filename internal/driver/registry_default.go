@@ -5,11 +5,10 @@ import (
 	"net/http"
 	"sync"
 
-	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
-
 	"github.com/gobuffalo/pop/v6"
 	"github.com/ory/herodot"
 	"github.com/ory/x/dbal"
+	"github.com/ory/x/fsx"
 	"github.com/ory/x/healthx"
 	"github.com/ory/x/logrusx"
 	"github.com/ory/x/metricsx"
@@ -29,6 +28,7 @@ import (
 	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/internal/x"
 	"github.com/ory/keto/ketoctx"
+	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 )
 
 var (
@@ -179,7 +179,11 @@ func (r *RegistryDefault) MigrationBox(ctx context.Context) (*popx.MigrationBox,
 		if err != nil {
 			return nil, err
 		}
-		mb, err := sql.NewMigrationBox(c, r.Logger(), r.Tracer(ctx))
+
+		mb, err := popx.NewMigrationBox(
+			fsx.Merge(sql.Migrations, networkx.Migrations),
+			popx.NewMigrator(c, r.Logger(), r.Tracer(ctx), 0),
+		)
 		if err != nil {
 			return nil, err
 		}
