@@ -148,7 +148,7 @@ func (e *Engine) SubjectIsAllowed(ctx context.Context, r *RelationTuple, restDep
 	if globalMaxDepth := e.d.Config(ctx).MaxReadDepth(); restDepth <= 0 || globalMaxDepth < restDepth {
 		restDepth = globalMaxDepth
 	}
-	result := union(ctx, []checkgroup.Func{e.checkIsAllowed(ctx, r, restDepth)})
+	result := or(ctx, []checkgroup.Func{e.checkIsAllowed(ctx, r, restDepth)})
 
 	return result.Membership == checkgroup.IsMember, result.Err
 }
@@ -215,22 +215,22 @@ func (e *Engine) checkUsersetRewrite(
 	)
 	switch rewrite.Operation {
 	case ast.SetOperationUnion:
-		op = union
-	case ast.SetOperationExclusion:
-		return checkNotImplemented
+		op = or
+	case ast.SetOperationDifference:
+		op = butNot
 	case ast.SetOperationIntersection:
-		return checkNotImplemented
+		op = and
 	default:
 		return checkNotImplemented
 	}
 
-	for _, c := range rewrite.Children.ComputedUsersets {
-		c := c
-		checks = append(checks, e.checkComputedUserset(ctx, r, &c, restDepth))
-	}
-	for _, c := range rewrite.Children.TupleToUsersets {
-		c := c
-		checks = append(checks, e.checkTupleToUserset(ctx, r, &c, restDepth))
+	for _, child := range rewrite.Children {
+		switch c := child.(type) {
+		case ast.TupleToUserset:
+			checks = append(checks, e.checkTupleToUserset(ctx, r, &c, restDepth))
+		case ast.ComputedUserset:
+			checks = append(checks, e.checkComputedUserset(ctx, r, &c, restDepth))
+		}
 	}
 
 	return func(ctx context.Context, resultCh chan<- checkgroup.Result) {
@@ -364,7 +364,7 @@ func (e *Engine) namespaceFor(ctx context.Context, r *RelationTuple) (*namespace
 	return ns, nil
 }
 
-func union(ctx context.Context, checks []checkgroup.Func) checkgroup.Result {
+func or(ctx context.Context, checks []checkgroup.Func) checkgroup.Result {
 	if len(checks) == 0 {
 		return checkgroup.ResultNotMember
 	}
@@ -390,4 +390,70 @@ func union(ctx context.Context, checks []checkgroup.Func) checkgroup.Result {
 	}
 
 	return checkgroup.ResultNotMember
+}
+
+func and(ctx context.Context, checks []checkgroup.Func) checkgroup.Result {
+	if len(checks) == 0 {
+		return checkgroup.ResultNotMember
+	}
+
+	resultCh := make(chan checkgroup.Result, len(checks))
+	childCtx, cancelFn := context.WithCancel(ctx)
+	defer cancelFn()
+
+	for _, check := range checks {
+		go check(childCtx, resultCh)
+	}
+
+	for i := 0; i < len(checks); i++ {
+		select {
+		case result := <-resultCh:
+			// We return fast on either an error or if a subcheck returns "not a
+			// member".
+			if result.Err != nil || result.Membership == checkgroup.NotMember {
+				return result
+			}
+		case <-ctx.Done():
+			return checkgroup.Result{Err: context.Canceled}
+		}
+	}
+
+	return checkgroup.ResultIsMember
+}
+
+// butNot returns "is member" if and only if the first check returns "is member"
+// and all subsequent checks return "not member".
+func butNot(ctx context.Context, checks []checkgroup.Func) checkgroup.Result {
+	if len(checks) < 2 {
+		return checkgroup.ResultNotMember
+	}
+
+	expectMemberCh := make(chan checkgroup.Result, 1)
+	expectNotMemberCh := make(chan checkgroup.Result, len(checks)-1)
+	childCtx, cancelFn := context.WithCancel(ctx)
+	defer cancelFn()
+
+	go checks[0](childCtx, expectMemberCh)
+	for _, check := range checks[1:] {
+		go check(childCtx, expectNotMemberCh)
+	}
+
+	for i := 0; i < len(checks); i++ {
+		select {
+		case result := <-expectMemberCh:
+			if result.Err != nil || result.Membership == checkgroup.NotMember {
+				return checkgroup.Result{Err: result.Err, Membership: checkgroup.NotMember}
+			}
+		case result := <-expectNotMemberCh:
+			// We return fast on either an error or if a subcheck returns "not a
+			// member".
+			if result.Err != nil || result.Membership == checkgroup.IsMember {
+				return checkgroup.Result{Err: result.Err, Membership: checkgroup.NotMember}
+			}
+		case <-ctx.Done():
+			return checkgroup.Result{Err: context.Canceled}
+		}
+	}
+
+	return checkgroup.ResultIsMember
 }

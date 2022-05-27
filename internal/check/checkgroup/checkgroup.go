@@ -97,7 +97,7 @@ func (g *Checkgroup) Result() Result {
 	g.startConsumer()
 	if g.noChecksAdded() {
 		g.cancel()
-		return Result{Membership: MembershipUnknown}
+		return Result{Membership: NotMember}
 	}
 	if g.allCheckFinished() {
 		// Cancel the consumer to catch the case where all checks were already

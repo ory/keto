@@ -79,7 +79,5 @@ func TestCheckgroup_returns_immediately_if_nothing_to_check(t *testing.T) {
 	defer cancel()
 
 	g := checkgroup.New(ctx)
-	assert.Equal(t,
-		checkgroup.Result{Membership: checkgroup.MembershipUnknown},
-		g.Result())
+	assert.Equal(t, checkgroup.ResultNotMember, g.Result())
 }
