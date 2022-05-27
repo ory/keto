@@ -41,9 +41,6 @@ func (RelationTuple) TableName(_ context.Context) string {
 }
 
 func (r *RelationTuple) toInternal(ctx context.Context, nm namespace.Manager, p *Persister) (*relationtuple.InternalRelationTuple, error) {
-	ctx, span := p.d.Tracer(ctx).Tracer().Start(ctx, "persistence.sql.toInternal")
-	defer span.End()
-
 	if r == nil {
 		return nil, nil
 	}
@@ -83,9 +80,6 @@ func (r *RelationTuple) toInternal(ctx context.Context, nm namespace.Manager, p 
 }
 
 func (r *RelationTuple) insertSubject(ctx context.Context, p *Persister, s relationtuple.Subject) error {
-	ctx, span := p.d.Tracer(ctx).Tracer().Start(ctx, "persistence.sql.insertSubject")
-	defer span.End()
-
 	switch st := s.(type) {
 	case *relationtuple.SubjectID:
 		r.SubjectID = sql.NullString{
@@ -161,9 +155,6 @@ func (p *Persister) InsertRelationTuple(ctx context.Context, rel *relationtuple.
 }
 
 func (p *Persister) whereSubject(ctx context.Context, q *pop.Query, sub relationtuple.Subject) error {
-	ctx, span := p.d.Tracer(ctx).Tracer().Start(ctx, "persistence.sql.whereSubject")
-	defer span.End()
-
 	switch s := sub.(type) {
 	case *relationtuple.SubjectID:
 		q.
@@ -191,9 +182,6 @@ func (p *Persister) whereSubject(ctx context.Context, q *pop.Query, sub relation
 }
 
 func (p *Persister) whereQuery(ctx context.Context, q *pop.Query, rq *relationtuple.RelationQuery) error {
-	ctx, span := p.d.Tracer(ctx).Tracer().Start(ctx, "persistence.sql.whereQuery")
-	defer span.End()
-
 	if rq.Namespace != "" {
 		n, err := p.GetNamespaceByName(ctx, rq.Namespace)
 		if err != nil {
