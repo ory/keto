@@ -83,6 +83,11 @@ func (g *Checkgroup) Add(check Func) {
 	go check(g.Ctx, g.subcheckCh)
 }
 
+// SetIsMember makes the checkgroup emit "IsMember" directly.
+func (g *Checkgroup) SetIsMember() {
+	g.Add(IsMemberFunc)
+}
+
 func (g *Checkgroup) noChecksAdded() bool {
 	return g.counts.totalChecks == 0
 }
@@ -101,4 +106,11 @@ func (g *Checkgroup) Result() Result {
 	}
 
 	return <-g.resultCh
+}
+
+// CheckFunc returns a `Func` that writes the result to the result channel.
+func (g *Checkgroup) CheckFunc() Func {
+	return func(_ context.Context, resultCh chan<- Result) {
+		resultCh <- g.Result()
+	}
 }

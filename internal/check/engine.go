@@ -45,12 +45,22 @@ func (e *Engine) checkDirect(
 	rels []*RelationTuple,
 	restDepth int,
 ) checkgroup.Func {
-	// This is the same as the graph problem "can requested.Subject be reached from requested.Object through the first outgoing edge requested.Relation"
+	if restDepth < 0 {
+		e.d.Logger().
+			Debug("reached max-depth, therefore this query will not be further expanded")
+		return func(_ context.Context, resultCh chan<- checkgroup.Result) {
+			resultCh <- checkgroup.Result{Membership: checkgroup.MembershipUnknown}
+		}
+	}
+
+	// This is the same as the graph problem "can requested.Subject be reached
+	// from requested.Object through the first outgoing edge requested.Relation"
 	//
 	// We implement recursive depth-first search here.
-	// TODO replace by more performant algorithm: https://github.com/ory/keto/issues/483
+	// TODO replace by more performant algorithm:
+	// https://github.com/ory/keto/issues/483
 
-	var indirectChecks []checkgroup.Func
+	g := checkgroup.New(ctx)
 
 	for _, sr := range rels {
 		ctx, wasAlreadyVisited := graph.CheckAndAddVisited(ctx, sr.Subject)
@@ -58,10 +68,13 @@ func (e *Engine) checkDirect(
 			continue
 		}
 
-		// we only have to check Subject here as we know that sr was reached from requested.ObjectID, requested.Relation through 0...n indirections
+		// we only have to check Subject here as we know that sr was reached
+		// from requested.ObjectID, requested.Relation through 0...n
+		// indirections
 		if requested.Subject.Equals(sr.Subject) {
 			// found the requested relation
-			return checkgroup.IsMemberFunc
+			g.SetIsMember()
+			break
 		}
 
 		sub, isSubjectSet := sr.Subject.(*relationtuple.SubjectSet)
@@ -69,17 +82,14 @@ func (e *Engine) checkDirect(
 			continue
 		}
 
-		// expand the set by one indirection; paginated
-
-		// TODO(hperl): Convert everything to concurrent request.
-		indirectChecks = append(indirectChecks, e.checkOneIndirectionFurther(
+		g.Add(e.checkOneIndirectionFurther(
 			ctx,
 			requested,
 			&Query{Object: sub.Object, Relation: sub.Relation, Namespace: sub.Namespace},
-			restDepth-1,
+			restDepth,
 		))
 	}
-	return unionCheckFn(ctx, indirectChecks)
+	return g.CheckFunc()
 }
 
 func (e *Engine) checkOneIndirectionFurther(
@@ -88,17 +98,20 @@ func (e *Engine) checkOneIndirectionFurther(
 	expandQuery *Query,
 	restDepth int,
 ) checkgroup.Func {
+	if restDepth < 0 {
+		e.d.Logger().
+			WithFields(requested.ToLoggerFields()).
+			Debug("reached max-depth, therefore this query will not be further expanded")
+		return func(_ context.Context, resultCh chan<- checkgroup.Result) {
+			resultCh <- checkgroup.Result{Membership: checkgroup.MembershipUnknown}
+		}
+	}
+
 	return func(ctx context.Context, resultCh chan<- checkgroup.Result) {
 		e.d.Logger().
 			WithField("request", requested.String()).
 			WithField("query", expandQuery.String()).
 			Trace("check one direction further")
-
-		if restDepth < 0 {
-			e.d.Logger().WithFields(requested.ToLoggerFields()).Debug("reached max-depth, therefore this query will not be further expanded")
-			resultCh <- checkgroup.ResultNotMember
-			return
-		}
 
 		// an empty page token denotes the first page (as tokens are opaque)
 		var prevPage string
@@ -135,37 +148,41 @@ func (e *Engine) SubjectIsAllowed(ctx context.Context, r *RelationTuple, restDep
 	if globalMaxDepth := e.d.Config(ctx).MaxReadDepth(); restDepth <= 0 || globalMaxDepth < restDepth {
 		restDepth = globalMaxDepth
 	}
-	result := union(ctx, []checkgroup.Func{e.checkIsAllowed(ctx, r, restDepth+1)})
+	result := union(ctx, []checkgroup.Func{e.checkIsAllowed(ctx, r, restDepth)})
 
 	return result.Membership == checkgroup.IsMember, result.Err
 }
 
 func (e *Engine) checkIsAllowed(ctx context.Context, r *RelationTuple, restDepth int) checkgroup.Func {
+	if restDepth < 0 {
+		e.d.Logger().
+			Debug("reached max-depth, therefore this query will not be further expanded")
+		return func(_ context.Context, resultCh chan<- checkgroup.Result) {
+			resultCh <- checkgroup.Result{Membership: checkgroup.MembershipUnknown}
+		}
+	}
+
 	e.d.Logger().
 		WithField("request", r.String()).
 		Trace("check is allowed")
 
-	directFn := e.checkOneIndirectionFurther(ctx, r,
+	g := checkgroup.New(ctx)
+	g.Add(e.checkOneIndirectionFurther(ctx, r,
 		&Query{
 			Object:    r.Object,
 			Relation:  r.Relation,
 			Namespace: r.Namespace,
-		}, restDepth)
-
-	checks := []checkgroup.Func{directFn}
+		}, restDepth),
+	)
 
 	relation, err := e.astRelationFor(ctx, r)
-	if err == nil && relation.UsersetRewrite != nil {
-		checks = append(checks, e.checkUsersetRewrite(ctx, r, relation.UsersetRewrite))
+	if err != nil {
+		g.Add(checkgroup.ErrorFunc(err))
+	} else if relation != nil && relation.UsersetRewrite != nil {
+		g.Add(e.checkUsersetRewrite(ctx, r, relation.UsersetRewrite, restDepth))
 	}
 
-	return unionCheckFn(ctx, checks)
-}
-
-func unionCheckFn(ctx context.Context, checks []checkgroup.Func) checkgroup.Func {
-	return func(ctx context.Context, resultCh chan<- checkgroup.Result) {
-		resultCh <- union(ctx, checks)
-	}
+	return g.CheckFunc()
 }
 
 func checkNotImplemented(_ context.Context, resultCh chan<- checkgroup.Result) {
@@ -174,7 +191,20 @@ func checkNotImplemented(_ context.Context, resultCh chan<- checkgroup.Result) {
 
 type setOperation func(ctx context.Context, checks []checkgroup.Func) checkgroup.Result
 
-func (e *Engine) checkUsersetRewrite(ctx context.Context, r *RelationTuple, rewrite *ast.UsersetRewrite) checkgroup.Func {
+func (e *Engine) checkUsersetRewrite(
+	ctx context.Context,
+	r *RelationTuple,
+	rewrite *ast.UsersetRewrite,
+	restDepth int,
+) checkgroup.Func {
+	if restDepth < 0 {
+		e.d.Logger().
+			Debug("reached max-depth, therefore this query will not be further expanded")
+		return func(_ context.Context, resultCh chan<- checkgroup.Result) {
+			resultCh <- checkgroup.Result{Membership: checkgroup.MembershipUnknown}
+		}
+	}
+
 	e.d.Logger().
 		WithField("request", r.String()).
 		Trace("check userset rewrite")
@@ -196,11 +226,11 @@ func (e *Engine) checkUsersetRewrite(ctx context.Context, r *RelationTuple, rewr
 
 	for _, c := range rewrite.Children.ComputedUsersets {
 		c := c
-		checks = append(checks, e.checkComputedUserset(ctx, r, &c))
+		checks = append(checks, e.checkComputedUserset(ctx, r, &c, restDepth))
 	}
 	for _, c := range rewrite.Children.TupleToUsersets {
 		c := c
-		checks = append(checks, e.checkTupleToUserset(ctx, r, &c))
+		checks = append(checks, e.checkTupleToUserset(ctx, r, &c, restDepth))
 	}
 
 	return func(ctx context.Context, resultCh chan<- checkgroup.Result) {
@@ -208,7 +238,20 @@ func (e *Engine) checkUsersetRewrite(ctx context.Context, r *RelationTuple, rewr
 	}
 }
 
-func (e *Engine) checkComputedUserset(ctx context.Context, r *RelationTuple, userset *ast.ComputedUserset) checkgroup.Func {
+func (e *Engine) checkComputedUserset(
+	ctx context.Context,
+	r *RelationTuple,
+	userset *ast.ComputedUserset,
+	restDepth int,
+) checkgroup.Func {
+	if restDepth < 0 {
+		e.d.Logger().
+			Debug("reached max-depth, therefore this query will not be further expanded")
+		return func(_ context.Context, resultCh chan<- checkgroup.Result) {
+			resultCh <- checkgroup.Result{Membership: checkgroup.MembershipUnknown}
+		}
+	}
+
 	e.d.Logger().
 		WithField("request", r.String()).
 		WithField("computed userset relation", userset.Relation).
@@ -222,11 +265,24 @@ func (e *Engine) checkComputedUserset(ctx context.Context, r *RelationTuple, use
 			Relation:  userset.Relation,
 			Subject:   r.Subject,
 		},
-		100,
+		restDepth,
 	)
 }
 
-func (e *Engine) checkTupleToUserset(ctx context.Context, r *RelationTuple, userset *ast.TupleToUserset) checkgroup.Func {
+func (e *Engine) checkTupleToUserset(
+	ctx context.Context,
+	r *RelationTuple,
+	userset *ast.TupleToUserset,
+	restDepth int,
+) checkgroup.Func {
+	if restDepth < 0 {
+		e.d.Logger().
+			Debug("reached max-depth, therefore this query will not be further expanded")
+		return func(_ context.Context, resultCh chan<- checkgroup.Result) {
+			resultCh <- checkgroup.Result{Membership: checkgroup.MembershipUnknown}
+		}
+	}
+
 	e.d.Logger().
 		WithField("request", r.String()).
 		WithField("tuple to userset relation", userset.Relation).
@@ -266,7 +322,7 @@ func (e *Engine) checkTupleToUserset(ctx context.Context, r *RelationTuple, user
 						Relation:  userset.ComputedUsersetRelation,
 						Subject:   r.Subject,
 					},
-					100,
+					restDepth-1,
 				))
 			}
 		}
@@ -277,8 +333,17 @@ func (e *Engine) checkTupleToUserset(ctx context.Context, r *RelationTuple, user
 func (e *Engine) astRelationFor(ctx context.Context, r *RelationTuple) (*ast.Relation, error) {
 	ns, err := e.namespaceFor(ctx, r)
 	if err != nil {
-		return nil, err
+		// On an unknown namespace the answer should be "not allowed", not "not
+		// found". Therefore we don't return the error here.
+		return nil, nil
 	}
+
+	// Special case: If Relations is empty, then there is no namespace
+	// configuration, and it is not an error that the relation was not found.
+	if len(ns.Relations) == 0 {
+		return nil, nil
+	}
+
 	for _, rel := range ns.Relations {
 		if rel.Name == r.Relation {
 			return &rel, nil
