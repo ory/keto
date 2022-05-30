@@ -35,6 +35,7 @@ import (
 	"github.com/ory/analytics-go/v4"
 	"github.com/ory/x/healthx"
 	"github.com/ory/x/metricsx"
+	"github.com/ory/x/otelx"
 	"github.com/spf13/cobra"
 
 	"github.com/ory/keto/internal/driver/config"
@@ -128,7 +129,7 @@ func (r *RegistryDefault) serveRead(ctx context.Context, done chan<- struct{}) f
 	rt, s := r.ReadRouter(ctx), r.ReadGRPCServer(ctx)
 
 	if tracer := r.Tracer(ctx); tracer.IsLoaded() {
-		rt = x.TraceHandler(rt)
+		rt = otelx.TraceHandler(rt)
 	}
 
 	return func() error {
@@ -140,7 +141,7 @@ func (r *RegistryDefault) serveWrite(ctx context.Context, done chan<- struct{}) 
 	rt, s := r.WriteRouter(ctx), r.WriteGRPCServer(ctx)
 
 	if tracer := r.Tracer(ctx); tracer.IsLoaded() {
-		rt = x.TraceHandler(rt)
+		rt = otelx.TraceHandler(rt)
 	}
 
 	return func() error {
