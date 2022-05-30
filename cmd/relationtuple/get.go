@@ -81,7 +81,7 @@ func newGetCmd() *cobra.Command {
 		RunE: getTuples(&pageSize, &pageToken),
 	}
 
-	cmd.Flags().AddFlagSet(packageFlags)
+	registerPackageFlags(cmd.Flags())
 	registerRelationTupleFlags(cmd.Flags())
 
 	cmd.Flags().StringVar(&pageToken, FlagPageToken, "", "page token acquired from a previous response")

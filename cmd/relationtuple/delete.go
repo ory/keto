@@ -22,7 +22,7 @@ func newDeleteCmd() *cobra.Command {
 		Args: cobra.MinimumNArgs(1),
 		RunE: transactRelationTuples(rts.RelationTupleDelta_ACTION_DELETE),
 	}
-	cmd.Flags().AddFlagSet(packageFlags)
+	registerPackageFlags(cmd.Flags())
 
 	return cmd
 }

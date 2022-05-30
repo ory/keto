@@ -27,7 +27,7 @@ func newCreateCmd() *cobra.Command {
 		Args: cobra.MinimumNArgs(1),
 		RunE: transactRelationTuples(rts.RelationTupleDelta_ACTION_INSERT),
 	}
-	cmd.Flags().AddFlagSet(packageFlags)
+	registerPackageFlags(cmd.Flags())
 
 	return cmd
 }
