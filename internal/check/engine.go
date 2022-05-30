@@ -148,9 +148,16 @@ func (e *Engine) SubjectIsAllowed(ctx context.Context, r *RelationTuple, restDep
 	if globalMaxDepth := e.d.Config(ctx).MaxReadDepth(); restDepth <= 0 || globalMaxDepth < restDepth {
 		restDepth = globalMaxDepth
 	}
-	result := or(ctx, []checkgroup.Func{e.checkIsAllowed(ctx, r, restDepth)})
 
-	return result.Membership == checkgroup.IsMember, result.Err
+	resultCh := make(chan checkgroup.Result)
+	go e.checkIsAllowed(ctx, r, restDepth)(ctx, resultCh)
+	select {
+	case result := <-resultCh:
+		return result.Membership == checkgroup.IsMember, result.Err
+	case <-ctx.Done():
+		return false, context.Canceled
+	}
+
 }
 
 func (e *Engine) checkIsAllowed(ctx context.Context, r *RelationTuple, restDepth int) checkgroup.Func {
