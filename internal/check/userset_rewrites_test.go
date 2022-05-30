@@ -179,6 +179,9 @@ func TestUsersetRewrites(t *testing.T) {
 		query:   "resource:topsecret#update@mike",
 		allowed: true, // mike owns the resource
 	}, {
+		query:   "level:superadmin#member@mike",
+		allowed: false, // mike does not have correct level
+	}, {
 		query:   "resource:topsecret#delete@mike",
 		allowed: false, // mike does not have correct level
 	}, {

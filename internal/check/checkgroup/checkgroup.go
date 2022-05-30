@@ -99,18 +99,25 @@ func (g *Checkgroup) Result() Result {
 		g.cancel()
 		return Result{Membership: NotMember}
 	}
-	if g.allCheckFinished() {
-		// Cancel the consumer to catch the case where all checks were already
-		// done by the time Result() is called.
-		g.cancel()
-	}
 
 	return <-g.resultCh
 }
 
 // CheckFunc returns a `Func` that writes the result to the result channel.
 func (g *Checkgroup) CheckFunc() Func {
-	return func(_ context.Context, resultCh chan<- Result) {
-		resultCh <- g.Result()
+	g.startConsumer()
+	if g.noChecksAdded() {
+		g.cancel()
+		return NotMemberFunc
+	}
+
+	return func(ctx context.Context, resultCh chan<- Result) {
+		select {
+		case result := <-g.resultCh:
+			resultCh <- result
+		case <-ctx.Done():
+			resultCh <- Result{Err: context.Canceled}
+			g.cancel()
+		}
 	}
 }
