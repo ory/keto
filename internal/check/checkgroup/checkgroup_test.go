@@ -50,6 +50,7 @@ func TestCheckgroup_cancels_all_other_subchecks(t *testing.T) {
 	g.Add(checkgroup.IsMemberFunc)
 	g.Add(mockCheckFn)
 	g.Result()
+
 	assert.True(t, <-wasCancelled)
 	assert.NotNil(t, <-g.Ctx.Done())
 	assert.True(t, g.Done())
@@ -66,7 +67,10 @@ func TestCheckgroup_returns_first_successful_is_member(t *testing.T) {
 	g.Add(checkgroup.NotMemberFunc)
 	time.Sleep(1 * time.Millisecond)
 	assert.False(t, g.Done())
-	g.Add(checkgroup.IsMemberFunc)
+	g.Add(func(_ context.Context, resultCh chan<- checkgroup.Result) {
+		time.Sleep(10 * time.Millisecond)
+		resultCh <- checkgroup.ResultIsMember
+	})
 
 	assert.Equal(t, checkgroup.Result{Membership: checkgroup.IsMember}, g.Result())
 	assert.NotNil(t, <-g.Ctx.Done())
@@ -80,4 +84,29 @@ func TestCheckgroup_returns_immediately_if_nothing_to_check(t *testing.T) {
 
 	g := checkgroup.New(ctx)
 	assert.Equal(t, checkgroup.ResultNotMember, g.Result())
+}
+
+func TestCheckgroup_propagates_not_member_results(t *testing.T) {
+	t.Parallel()
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	g := checkgroup.New(ctx)
+	for i := 0; i < 100; i++ {
+		i := i
+		g.Add(func(ctx context.Context, resultCh chan<- checkgroup.Result) {
+			select {
+			case <-time.After(time.Duration(i) * time.Millisecond):
+				resultCh <- checkgroup.ResultNotMember
+			case <-ctx.Done():
+				resultCh <- checkgroup.Result{Err: context.Canceled}
+			}
+		})
+	}
+
+	resultCh := make(chan checkgroup.Result)
+	go g.CheckFunc()(ctx, resultCh)
+	result := <-resultCh
+
+	assert.Equal(t, checkgroup.ResultNotMember, result)
 }

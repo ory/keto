@@ -111,7 +111,7 @@ func (e *Engine) checkOneIndirectionFurther(
 		e.d.Logger().
 			WithField("request", requested.String()).
 			WithField("query", expandQuery.String()).
-			Trace("check one direction further")
+			Trace("check one indirection further")
 
 		// an empty page token denotes the first page (as tokens are opaque)
 		var prevPage string
@@ -410,8 +410,8 @@ func and(ctx context.Context, checks []checkgroup.Func) checkgroup.Result {
 		case result := <-resultCh:
 			// We return fast on either an error or if a subcheck returns "not a
 			// member".
-			if result.Err != nil || result.Membership == checkgroup.NotMember {
-				return result
+			if result.Err != nil || result.Membership != checkgroup.IsMember {
+				return checkgroup.Result{Err: result.Err, Membership: checkgroup.NotMember}
 			}
 		case <-ctx.Done():
 			return checkgroup.Result{Err: context.Canceled}

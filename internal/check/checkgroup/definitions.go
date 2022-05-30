@@ -35,3 +35,7 @@ var IsMemberFunc Func = func(_ context.Context, resultCh chan<- Result) {
 var NotMemberFunc Func = func(_ context.Context, resultCh chan<- Result) {
 	resultCh <- Result{Membership: NotMember}
 }
+
+var UnknownMemberFunc Func = func(_ context.Context, resultCh chan<- Result) {
+	resultCh <- Result{Membership: MembershipUnknown}
+}
