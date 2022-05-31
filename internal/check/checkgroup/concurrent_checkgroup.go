@@ -5,9 +5,9 @@ import (
 	"sync"
 )
 
-// A Checkgroup is a collection of goroutines performing checks.
-type Checkgroup struct {
-	Ctx context.Context
+// A concurrentCheckgroup is a collection of goroutines performing checks.
+type concurrentCheckgroup struct {
+	ctx context.Context
 
 	cancel     context.CancelFunc
 	resultCh   chan Result
@@ -20,32 +20,32 @@ type Checkgroup struct {
 	}
 }
 
-func New(ctx context.Context) *Checkgroup {
-	return &Checkgroup{Ctx: ctx}
+func NewConcurrent(ctx context.Context) Checkgroup {
+	return &concurrentCheckgroup{ctx: ctx}
 }
 
-func (g *Checkgroup) incrementRunningCheckCount() {
+func (g *concurrentCheckgroup) incrementRunningCheckCount() {
 	g.counts.Lock()
 	defer g.counts.Unlock()
 	g.counts.totalChecks++
 }
-func (g *Checkgroup) incrementFinishedCheckCount() {
+func (g *concurrentCheckgroup) incrementFinishedCheckCount() {
 	g.counts.Lock()
 	defer g.counts.Unlock()
 	g.counts.finishedChecks++
 }
 
-func (g *Checkgroup) allCheckFinished() bool {
+func (g *concurrentCheckgroup) allCheckFinished() bool {
 	g.counts.RLock()
 	defer g.counts.RUnlock()
 	return g.counts.totalChecks == g.counts.finishedChecks
 }
 
-func (g *Checkgroup) startConsumer() {
+func (g *concurrentCheckgroup) startConsumer() {
 	g.once.Do(func() {
 		g.subcheckCh = make(chan Result)
 		g.resultCh = make(chan Result)
-		g.Ctx, g.cancel = context.WithCancel(g.Ctx)
+		g.ctx, g.cancel = context.WithCancel(g.ctx)
 		go func() {
 			for {
 				select {
@@ -57,7 +57,7 @@ func (g *Checkgroup) startConsumer() {
 						return
 					}
 
-				case <-g.Ctx.Done():
+				case <-g.ctx.Done():
 					g.resultCh <- Result{Err: context.Canceled}
 					g.cancel()
 					return
@@ -67,9 +67,9 @@ func (g *Checkgroup) startConsumer() {
 	})
 }
 
-func (g *Checkgroup) Done() bool {
+func (g *concurrentCheckgroup) Done() bool {
 	select {
-	case <-g.Ctx.Done():
+	case <-g.ctx.Done():
 		return true
 	default:
 		return false
@@ -77,23 +77,23 @@ func (g *Checkgroup) Done() bool {
 }
 
 // Add adds the Func to the checkgroup and starts running it.
-func (g *Checkgroup) Add(check Func) {
+func (g *concurrentCheckgroup) Add(check Func) {
 	g.startConsumer()
 	g.incrementRunningCheckCount()
-	go check(g.Ctx, g.subcheckCh)
+	go check(g.ctx, g.subcheckCh)
 }
 
 // SetIsMember makes the checkgroup emit "IsMember" directly.
-func (g *Checkgroup) SetIsMember() {
+func (g *concurrentCheckgroup) SetIsMember() {
 	g.Add(IsMemberFunc)
 }
 
-func (g *Checkgroup) noChecksAdded() bool {
+func (g *concurrentCheckgroup) noChecksAdded() bool {
 	return g.counts.totalChecks == 0
 }
 
 // Result returns the Result, possibly blocking.
-func (g *Checkgroup) Result() Result {
+func (g *concurrentCheckgroup) Result() Result {
 	g.startConsumer()
 	if g.noChecksAdded() {
 		g.cancel()
@@ -104,7 +104,7 @@ func (g *Checkgroup) Result() Result {
 }
 
 // CheckFunc returns a `Func` that writes the result to the result channel.
-func (g *Checkgroup) CheckFunc() Func {
+func (g *concurrentCheckgroup) CheckFunc() Func {
 	g.startConsumer()
 	if g.noChecksAdded() {
 		g.cancel()

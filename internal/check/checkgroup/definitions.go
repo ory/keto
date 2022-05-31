@@ -2,14 +2,25 @@ package checkgroup
 
 import "context"
 
-type Func func(ctx context.Context, resultCh chan<- Result)
+type (
+	Checkgroup interface {
+		Done() bool
+		Add(check Func)
+		SetIsMember()
+		Result() Result
+		CheckFunc() Func
+	}
 
-type Result struct {
-	Membership Membership
-	Err        error
-}
+	Factory func(ctx context.Context) Checkgroup
 
-type Membership int
+	Func   func(ctx context.Context, resultCh chan<- Result)
+	Result struct {
+		Membership Membership
+		Err        error
+	}
+
+	Membership int
+)
 
 const (
 	MembershipUnknown Membership = iota
@@ -21,6 +32,12 @@ var (
 	ResultIsMember  = Result{Membership: IsMember}
 	ResultNotMember = Result{Membership: NotMember}
 )
+
+var DefaultFactory Factory = NewSequential
+
+func New(ctx context.Context) Checkgroup {
+	return DefaultFactory(ctx)
+}
 
 func ErrorFunc(err error) Func {
 	return func(_ context.Context, resultCh chan<- Result) {
