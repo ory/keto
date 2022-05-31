@@ -16,8 +16,6 @@ func newRelationCmd() *cobra.Command {
 	}
 }
 
-var packageFlags = pflag.NewFlagSet("relation package flags", pflag.ContinueOnError)
-
 func RegisterCommandsRecursive(parent *cobra.Command) {
 	relationCmd := newRelationCmd()
 
@@ -26,7 +24,7 @@ func RegisterCommandsRecursive(parent *cobra.Command) {
 	relationCmd.AddCommand(newGetCmd(), newCreateCmd(), newDeleteCmd(), newDeleteAllCmd(), newParseCmd())
 }
 
-func init() {
-	client.RegisterRemoteURLFlags(packageFlags)
-	cmdx.RegisterFormatFlags(packageFlags)
+func registerPackageFlags(flags *pflag.FlagSet) {
+	client.RegisterRemoteURLFlags(flags)
+	cmdx.RegisterFormatFlags(flags)
 }

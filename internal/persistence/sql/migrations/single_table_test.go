@@ -125,7 +125,7 @@ func TestToSingleTableMigrator(t *testing.T) {
 				migrated, nextToken, err := r.RelationTupleManager().GetRelationTuples(ctx, &relationtuple.RelationQuery{Namespace: n.Name}, x.WithSize(len(rts)))
 				require.NoError(t, err)
 				assert.Equal(t, "", nextToken)
-				assert.Equal(t, rts, migrated)
+				assert.ElementsMatch(t, rts, migrated)
 			})
 
 			t.Run("case=non-deserializable tuple", func(t *testing.T) {

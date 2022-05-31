@@ -143,8 +143,6 @@ func GetDSNs(t testing.TB, debugSqliteOnDisk bool) []*DsnT {
 				MigrateDown: true,
 			})
 		}
-
-		t.Cleanup(dockertest.KillAllTestDatabases)
 	}
 
 	require.NotZero(t, len(dsns), "expected to run against at least one database")

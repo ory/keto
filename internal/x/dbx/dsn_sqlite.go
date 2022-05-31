@@ -4,6 +4,7 @@ package dbx
 
 import (
 	"fmt"
+	"math/rand"
 	"os"
 	"testing"
 )
@@ -14,21 +15,25 @@ func GetSqlite(t testing.TB, mode sqliteMode) *DsnT {
 		MigrateDown: false,
 	}
 
+	fn := fmt.Sprintf("TestDB_%s_%d.sqlite", t.Name(), rand.Int31())
+	// init switch
 	switch mode {
 	case SQLiteMemory:
 		dsn.Name = "memory"
-		dsn.Conn = fmt.Sprintf("sqlite://file:%s?_fk=true&cache=shared&mode=memory", t.Name())
+		dsn.Conn = fmt.Sprintf("sqlite://file:%s?_fk=true&cache=shared&mode=memory", fn)
 		t.Cleanup(func() {
-			_ = os.Remove(t.Name())
+			_ = os.Remove(fn)
 		})
-	case SQLiteFile:
-		t.Cleanup(func() {
-			_ = os.Remove(fmt.Sprintf("TestDB_%s.sqlite", t.Name()))
-		})
-		fallthrough
-	case SQLiteDebug:
+	case SQLiteFile, SQLiteDebug:
 		dsn.Name = "sqlite"
-		dsn.Conn = fmt.Sprintf("sqlite://file:TestDB_%s.sqlite?_fk=true", t.Name())
+		dsn.Conn = fmt.Sprintf("sqlite://file:%s?_fk=true", fn)
+	}
+	// cleanup switch
+	switch mode {
+	case SQLiteMemory, SQLiteFile:
+		t.Cleanup(func() {
+			_ = os.Remove(fn)
+		})
 	}
 
 	return dsn

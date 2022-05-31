@@ -3,18 +3,16 @@ package namespace
 import (
 	"fmt"
 
-	"github.com/ory/keto/ketoctx"
-
 	"github.com/ory/x/cmdx"
 	"github.com/ory/x/flagx"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 
+	"github.com/ory/keto/cmd/helpers"
 	"github.com/ory/keto/cmd/migrate"
-	"github.com/ory/keto/internal/driver"
 	"github.com/ory/keto/internal/namespace"
-	"github.com/ory/keto/internal/persistence"
 	"github.com/ory/keto/internal/persistence/sql/migrations"
+	"github.com/ory/keto/ketoctx"
 )
 
 func NewMigrateLegacyCmd(opts []ketoctx.Option) *cobra.Command {
@@ -29,11 +27,8 @@ func NewMigrateLegacyCmd(opts []ketoctx.Option) *cobra.Command {
 			"Please ensure that namespace IDs did not change in the config file and you have a backup in case something goes wrong!",
 		Args: cobra.MaximumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			reg, err := driver.NewDefaultRegistry(cmd.Context(), cmd.Flags(), false, opts...)
-			if errors.Is(err, persistence.ErrNetworkMigrationsMissing) {
-				_, _ = fmt.Fprintln(cmd.ErrOrStderr(), "Migrations were not applied yet, please apply them first using `keto migrate up`.")
-				return cmdx.FailSilently(cmd)
-			} else if err != nil {
+			reg, err := helpers.NewRegistry(cmd, opts)
+			if err != nil {
 				return err
 			}
 

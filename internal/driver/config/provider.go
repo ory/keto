@@ -7,25 +7,19 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/ory/jsonschema/v3"
-	"github.com/ory/x/cmdx"
-	"github.com/ory/x/otelx"
-
 	"github.com/ory/keto/embedx"
 
 	"github.com/ory/herodot"
-
-	"github.com/ory/x/watcherx"
-
-	"github.com/ory/keto/internal/namespace"
-
 	_ "github.com/ory/jsonschema/v3/httploader"
 	"github.com/ory/x/configx"
+	"github.com/ory/x/logrusx"
+	"github.com/ory/x/otelx"
+	"github.com/ory/x/watcherx"
 	"github.com/pkg/errors"
 	"github.com/rs/cors"
 	"github.com/spf13/pflag"
 
-	"github.com/ory/x/logrusx"
+	"github.com/ory/keto/internal/namespace"
 )
 
 const (
@@ -94,10 +88,7 @@ func NewProvider(ctx context.Context, flags *pflag.FlagSet, config *Config, opts
 			configx.AttachWatcher(config.watcher),
 		)...,
 	)
-	if validationErr := new(jsonschema.ValidationError); errors.As(err, &validationErr) {
-		// the configx provider already printed the validation error
-		return nil, cmdx.ErrNoPrintButFail
-	} else if err != nil {
+	if err != nil {
 		return nil, err
 	}
 

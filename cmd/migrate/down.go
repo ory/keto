@@ -4,16 +4,13 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/ory/keto/ketoctx"
-
-	"github.com/ory/x/popx"
-
-	"github.com/ory/x/flagx"
-
 	"github.com/ory/x/cmdx"
+	"github.com/ory/x/flagx"
+	"github.com/ory/x/popx"
 	"github.com/spf13/cobra"
 
 	"github.com/ory/keto/internal/driver"
+	"github.com/ory/keto/ketoctx"
 )
 
 func newDownCmd(opts []ketoctx.Option) *cobra.Command {

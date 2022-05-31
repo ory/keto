@@ -27,7 +27,7 @@ func newDeleteAllCmd() *cobra.Command {
 		Args: cobra.ExactArgs(0),
 		RunE: deleteRelationTuplesFromQuery,
 	}
-	cmd.Flags().AddFlagSet(packageFlags)
+	registerPackageFlags(cmd.Flags())
 	registerRelationTupleFlags(cmd.Flags())
 	cmd.Flags().Bool(FlagForce, false, "Force the deletion of relation tuples")
 

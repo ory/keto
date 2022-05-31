@@ -3,9 +3,10 @@
 package dbx
 
 import (
-	"github.com/ory/x/sqlcon/dockertest"
 	"testing"
 	"time"
+
+	"github.com/ory/x/sqlcon/dockertest"
 )
 
 func RunMySQL(t testing.TB, testDB string) string {

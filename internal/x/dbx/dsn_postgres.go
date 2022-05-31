@@ -3,8 +3,9 @@
 package dbx
 
 import (
-	"github.com/ory/x/sqlcon/dockertest"
 	"testing"
+
+	"github.com/ory/x/sqlcon/dockertest"
 )
 
 func RunPostgres(t testing.TB, testDB string) string {
