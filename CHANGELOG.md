@@ -5,7 +5,7 @@
 
 **Table of Contents**
 
-- [0.0.0 (2022-05-30)](#000-2022-05-30)
+- [0.0.0 (2022-05-31)](#000-2022-05-31)
   - [Breaking Changes](#breaking-changes)
     - [Bug Fixes](#bug-fixes)
     - [Code Refactoring](#code-refactoring)
@@ -126,7 +126,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.8.0-alpha.2...v0.0.0) (2022-05-30)
+# [0.0.0](https://github.com/ory/keto/compare/v0.8.0-alpha.2...v0.0.0) (2022-05-31)
 
 ## Breaking Changes
 
@@ -168,6 +168,8 @@ gRPC relation-tuple-delta action enum names are prefixed with `ACTION_`
   ([25af263](https://github.com/ory/keto/commit/25af263827a16c4c4ed080644cd7b08a2851124a))
 - Make sensitive log value redaction text configurable ([#860](https://github.com/ory/keto/issues/860))
   ([b8b1d81](https://github.com/ory/keto/commit/b8b1d81ee1574fdfd8bdac01ec2f9957f03df879))
+- **tracing:** Improved tracing for persisters and requests ([#878](https://github.com/ory/keto/issues/878))
+  ([eb62c50](https://github.com/ory/keto/commit/eb62c507853288b25467de6e9974d4bb8232538e))
 - **tracing:** Switch to opentelemetry ([#861](https://github.com/ory/keto/issues/861))
   ([31f38ed](https://github.com/ory/keto/commit/31f38edc22c45a8e4a1ce8435c06021f598a97f2))
 
