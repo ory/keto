@@ -34,6 +34,7 @@ type (
 	dependencies interface {
 		config.Provider
 		x.LoggerProvider
+		x.TracingProvider
 		ketoctx.ContextualizerProvider
 
 		PopConnection(ctx context.Context) (*pop.Connection, error)
@@ -75,6 +76,9 @@ func (p *Persister) Connection(ctx context.Context) *pop.Connection {
 }
 
 func (p *Persister) CreateWithNetwork(ctx context.Context, v interface{}) error {
+	ctx, span := p.d.Tracer(ctx).Tracer().Start(ctx, "persistence.sql.CreateWithNetwork")
+	defer span.End()
+
 	rv := reflect.ValueOf(v)
 
 	if rv.Kind() != reflect.Ptr && rv.Elem().Kind() != reflect.Struct {
