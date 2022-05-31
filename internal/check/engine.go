@@ -89,7 +89,10 @@ func (e *Engine) checkDirect(
 			restDepth,
 		))
 	}
-	return g.CheckFunc()
+	return checkgroup.WithEdge(checkgroup.Edge{
+		Tuple:          *requested,
+		Transformation: checkgroup.TransformationDirect,
+	}, g.CheckFunc())
 }
 
 func (e *Engine) checkOneIndirectionFurther(
@@ -143,6 +146,11 @@ func (e *Engine) checkOneIndirectionFurther(
 }
 
 func (e *Engine) SubjectIsAllowed(ctx context.Context, r *RelationTuple, restDepth int) (bool, error) {
+	result := e.Check(ctx, r, restDepth)
+	return result.Membership == checkgroup.IsMember, result.Err
+}
+
+func (e *Engine) Check(ctx context.Context, r *RelationTuple, restDepth int) checkgroup.Result {
 	// global max-depth takes precedence when it is the lesser or if the request
 	// max-depth is less than or equal to 0
 	if globalMaxDepth := e.d.Config(ctx).MaxReadDepth(); restDepth <= 0 || globalMaxDepth < restDepth {
@@ -153,11 +161,10 @@ func (e *Engine) SubjectIsAllowed(ctx context.Context, r *RelationTuple, restDep
 	go e.checkIsAllowed(ctx, r, restDepth)(ctx, resultCh)
 	select {
 	case result := <-resultCh:
-		return result.Membership == checkgroup.IsMember, result.Err
+		return result
 	case <-ctx.Done():
-		return false, context.Canceled
+		return checkgroup.Result{Err: context.Canceled}
 	}
-
 }
 
 func (e *Engine) checkIsAllowed(ctx context.Context, r *RelationTuple, restDepth int) checkgroup.Func {
@@ -234,9 +241,15 @@ func (e *Engine) checkUsersetRewrite(
 	for _, child := range rewrite.Children {
 		switch c := child.(type) {
 		case ast.TupleToUserset:
-			checks = append(checks, e.checkTupleToUserset(ctx, r, &c, restDepth))
+			checks = append(checks, checkgroup.WithEdge(checkgroup.Edge{
+				Tuple:          *r,
+				Transformation: checkgroup.TransformationTupleToUserset,
+			}, e.checkTupleToUserset(ctx, r, &c, restDepth)))
 		case ast.ComputedUserset:
-			checks = append(checks, e.checkComputedUserset(ctx, r, &c, restDepth))
+			checks = append(checks, checkgroup.WithEdge(checkgroup.Edge{
+				Tuple:          *r,
+				Transformation: checkgroup.TransformationComputedUserset,
+			}, e.checkComputedUserset(ctx, r, &c, restDepth)))
 		}
 	}
 
