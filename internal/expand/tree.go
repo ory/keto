@@ -16,17 +16,27 @@ import (
 type NodeType string
 
 const (
-	Union        NodeType = "union"
-	Exclusion    NodeType = "exclusion"
-	Intersection NodeType = "intersection"
-	Leaf         NodeType = "leaf"
+	Union           NodeType = "union"
+	Exclusion       NodeType = "exclusion"
+	Intersection    NodeType = "intersection"
+	TupeToUserset   NodeType = "tuple_to_userset"
+	ComputedUserset NodeType = "computed_userset"
+	Leaf            NodeType = "leaf"
 )
 
 // swagger:ignore
 type Tree struct {
-	Type     NodeType              `json:"type"`
-	Subject  relationtuple.Subject `json:"subject"`
-	Children []*Tree               `json:"children,omitempty"`
+	Type     NodeType
+	Subject  relationtuple.Subject
+	Tuple    *relationtuple.InternalRelationTuple
+	Children []*Tree
+}
+
+func (t *Tree) GetSubject() relationtuple.Subject {
+	if t.Subject != nil {
+		return t.Subject
+	}
+	return t.Tuple.Subject
 }
 
 var (
@@ -122,8 +132,8 @@ func (n *node) toTree() (*Tree, error) {
 
 func (n *node) fromTree(t *Tree) error {
 	n.Type = t.Type
-	n.SubjectID = t.Subject.SubjectID()
-	n.SubjectSet = t.Subject.SubjectSet()
+	n.SubjectID = t.GetSubject().SubjectID()
+	n.SubjectSet = t.GetSubject().SubjectSet()
 
 	if t.Children != nil {
 		n.Children = make([]*node, len(t.Children))
@@ -170,7 +180,7 @@ func (t *Tree) ToProto() *rts.SubjectTree {
 	if t.Type == Leaf {
 		return &rts.SubjectTree{
 			NodeType: rts.NodeType_NODE_TYPE_LEAF,
-			Subject:  t.Subject.ToProto(),
+			Subject:  t.GetSubject().ToProto(),
 		}
 	}
 
@@ -181,7 +191,7 @@ func (t *Tree) ToProto() *rts.SubjectTree {
 
 	return &rts.SubjectTree{
 		NodeType: t.Type.ToProto(),
-		Subject:  t.Subject.ToProto(),
+		Subject:  t.GetSubject().ToProto(),
 		Children: children,
 	}
 }
@@ -215,21 +225,54 @@ func TreeFromProto(t *rts.SubjectTree) (*Tree, error) {
 	return self, nil
 }
 
+func (t *Tree) Label() string {
+	if t == nil {
+		return ""
+	}
+
+	if t.Subject != nil {
+		return t.Subject.String()
+	} else if t.Tuple != nil {
+		return t.Tuple.String()
+	}
+	return ""
+}
+
 func (t *Tree) String() string {
 	if t == nil {
 		return ""
 	}
 
-	sub := t.Subject.String()
+	nodeLabel := t.Label()
 
 	if t.Type == Leaf {
-		return fmt.Sprintf("☘ %s️", sub)
+		return fmt.Sprintf("∋ %s️", nodeLabel)
 	}
 
 	children := make([]string, len(t.Children))
 	for i, c := range t.Children {
-		children[i] = strings.Join(strings.Split(c.String(), "\n"), "\n│  ")
+		var indent string
+		if i == len(t.Children)-1 {
+			indent = "   "
+		} else {
+			indent = "│  "
+		}
+		children[i] = strings.Join(strings.Split(c.String(), "\n"), "\n"+indent)
 	}
 
-	return fmt.Sprintf("∪ %s\n├─ %s", sub, strings.Join(children, "\n├─ "))
+	setOperation := ""
+	switch t.Type {
+	case Intersection:
+		setOperation = "⋂"
+	case Union:
+		setOperation = "⋃"
+	case Exclusion:
+		setOperation = `\`
+	}
+
+	boxSymbol := "├"
+	if len(children) == 1 {
+		boxSymbol = "└"
+	}
+	return fmt.Sprintf("%s %s\n%s─ %s", setOperation, nodeLabel, boxSymbol, strings.Join(children, "\n└─ "))
 }

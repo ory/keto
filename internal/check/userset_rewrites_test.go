@@ -2,7 +2,6 @@ package check_test
 
 import (
 	"context"
-	"strings"
 	"testing"
 
 	"github.com/sirupsen/logrus"
@@ -11,6 +10,7 @@ import (
 
 	"github.com/ory/keto/internal/check"
 	"github.com/ory/keto/internal/check/checkgroup"
+	"github.com/ory/keto/internal/expand"
 	"github.com/ory/keto/internal/namespace"
 	"github.com/ory/keto/internal/namespace/ast"
 	"github.com/ory/keto/internal/relationtuple"
@@ -99,28 +99,7 @@ func insertFixtures(t *testing.T, m relationtuple.Manager, tuples []string) {
 	require.NoError(t, m.WriteRelationTuples(context.Background(), relationTuples...))
 }
 
-func pathFromString(t *testing.T, s string) (path checkgroup.Path) {
-	for _, el := range strings.Split(s, "->") {
-		tuple, trans, found := strings.Cut(el, " as ")
-		if !found {
-			t.Fatalf("could not parse path from %q", s)
-			return
-		}
-		tuple = strings.TrimSpace(tuple)
-		trans = strings.TrimSpace(trans)
-		rt, err := relationtuple.InternalFromString(tuple)
-		if err != nil {
-			t.Fatalf("could not parse tuple from string %q: %v", s, err)
-			return
-		}
-		path.Edges = append(path.Edges, checkgroup.Edge{
-			Tuple:          *rt,
-			Transformation: checkgroup.TransformationFromString(trans),
-		})
-	}
-
-	return
-}
+type path []string
 
 func TestUsersetRewrites(t *testing.T) {
 	ctx := context.Background()
@@ -156,28 +135,26 @@ func TestUsersetRewrites(t *testing.T) {
 	e := check.NewEngine(reg)
 
 	testCases := []struct {
-		query    string
-		expected checkgroup.Result
+		query         string
+		expected      checkgroup.Result
+		expectedPaths []path
 	}{{
 		// direct
 		query: "doc:document#owner@user",
 		expected: checkgroup.Result{
 			Membership: checkgroup.IsMember,
-			Path:       pathFromString(t, "doc:document#owner@user as direct"),
 		},
 	}, {
 		// userset rewrite
 		query: "doc:document#editor@user",
 		expected: checkgroup.Result{
 			Membership: checkgroup.IsMember,
-			Path:       pathFromString(t, "doc:document#editor@user as computed-userset -> doc:document#owner@user as direct"),
 		},
 	}, {
 		// transitive userset rewrite
 		query: "doc:document#viewer@user",
 		expected: checkgroup.Result{
 			Membership: checkgroup.IsMember,
-			Path:       pathFromString(t, "doc:document#viewer@user as computed-userset -> doc:document#editor@user as computed-userset -> doc:document#owner@user as direct"),
 		},
 	}, {
 		query:    "doc:document#editor@nobody",
@@ -186,18 +163,12 @@ func TestUsersetRewrites(t *testing.T) {
 		query: "doc:folder#viewer@user",
 		expected: checkgroup.Result{
 			Membership: checkgroup.IsMember,
-			Path:       pathFromString(t, "doc:folder#viewer@user as computed-userset -> doc:folder#editor@user as computed-userset -> doc:folder#owner@user as direct"),
 		},
 	}, {
 		// tuple to userset
 		query: "doc:doc_in_folder#viewer@user",
 		expected: checkgroup.Result{
 			Membership: checkgroup.IsMember,
-			Path: pathFromString(t, `
-			doc:doc_in_folder#viewer@user as tuple-to-userset ->
-			doc:folder#viewer@user as computed-userset -> 
-			doc:folder#editor@user as computed-userset -> 
-			doc:folder#owner@user as direct`),
 		},
 	}, {
 		// tuple to userset
@@ -208,17 +179,8 @@ func TestUsersetRewrites(t *testing.T) {
 		query:    "doc:another_doc#viewer@user",
 		expected: checkgroup.ResultNotMember,
 	}, {
-		query: "doc:file#viewer@user",
-		expected: checkgroup.Result{
-			Membership: checkgroup.IsMember,
-			Path: pathFromString(t, `
-			doc:file#viewer@user as tuple-to-userset ->
-			doc:folder_c#viewer@user as tuple-to-userset -> 
-			doc:folder_b#viewer@user as tuple-to-userset -> 
-			doc:folder_a#viewer@user as computed-userset -> 
-			doc:folder_a#editor@user as computed-userset -> 
-			doc:folder_a#owner@user as direct`),
-		},
+		query:    "doc:file#viewer@user",
+		expected: checkgroup.ResultIsMember,
 	}, {
 		query:    "level:superadmin#member@mark",
 		expected: checkgroup.ResultIsMember, // mark is both editor and has correct level
@@ -228,6 +190,10 @@ func TestUsersetRewrites(t *testing.T) {
 	}, {
 		query:    "resource:topsecret#delete@mark",
 		expected: checkgroup.ResultIsMember, // mark is both editor and has correct level
+		expectedPaths: []path{
+			{"*", "resource:topsecret#delete@mark", "level:superadmin#member@mark"},
+			{"*", "resource:topsecret#delete@mark", "resource:topsecret#owner@mark", "group:editors#member@mark"},
+		},
 	}, {
 		query:    "resource:topsecret#update@mike",
 		expected: checkgroup.ResultIsMember, // mike owns the resource
@@ -241,8 +207,9 @@ func TestUsersetRewrites(t *testing.T) {
 		query:    "resource:topsecret#delete@sandy",
 		expected: checkgroup.ResultNotMember, // sandy is not in the editor group
 	}, {
-		query:    "acl:document#access@alice",
-		expected: checkgroup.ResultIsMember,
+		query:         "acl:document#access@alice",
+		expected:      checkgroup.ResultIsMember,
+		expectedPaths: []path{{"*", "acl:document#access@alice", "acl:document#allow@alice"}},
 	}, {
 		query:    "acl:document#access@bob",
 		expected: checkgroup.ResultIsMember,
@@ -261,10 +228,41 @@ func TestUsersetRewrites(t *testing.T) {
 
 			res := e.Check(ctx, rt, 100)
 			assert.Equal(t, tc.expected.Err, res.Err)
+			t.Logf("tree:\n%s", res.Tree)
 			assert.Equal(t, tc.expected.Membership, res.Membership)
-			if len(tc.expected.Path.Edges) > 0 {
-				assert.Equalf(t, tc.expected.Path, res.Path, "\nwant: %s\ngot:  %s\n", &tc.expected.Path, &res.Path)
+
+			if len(tc.expectedPaths) > 0 {
+				for _, path := range tc.expectedPaths {
+					assertPath(t, path, res.Tree)
+				}
 			}
 		})
 	}
+}
+
+// assertPath asserts that the given path can be found in the tree.
+func assertPath(t *testing.T, path path, tree *expand.Tree) {
+	require.NotNil(t, tree)
+	assert.True(t, hasPath(path, tree), "could not find path %s in tree:\n%s", path, tree)
+}
+
+func hasPath(path path, tree *expand.Tree) bool {
+	if len(path) == 0 {
+		return true
+	}
+	treeLabel := tree.Label()
+	if path[0] != "*" && path[0] != treeLabel {
+		return false
+	}
+
+	if len(path) == 1 {
+		return true
+	}
+
+	for _, child := range tree.Children {
+		if hasPath(path[1:], child) {
+			return true
+		}
+	}
+	return false
 }
