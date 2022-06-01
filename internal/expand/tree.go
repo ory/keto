@@ -268,11 +268,15 @@ func (t *Tree) String() string {
 		setOperation = "⋃"
 	case Exclusion:
 		setOperation = `\`
+	case TupeToUserset:
+		setOperation = "┐ tuple to userset"
+	case ComputedUserset:
+		setOperation = "┐ computed userset"
 	}
 
 	boxSymbol := "├"
 	if len(children) == 1 {
 		boxSymbol = "└"
 	}
-	return fmt.Sprintf("%s %s\n%s─ %s", setOperation, nodeLabel, boxSymbol, strings.Join(children, "\n└─ "))
+	return fmt.Sprintf("%s %s\n%s──%s", setOperation, nodeLabel, boxSymbol, strings.Join(children, "\n└──"))
 }
