@@ -39,17 +39,19 @@ type (
 	Membership int
 )
 
+//go:generate stringer -type Membership
 const (
 	MembershipUnknown Membership = iota
 	IsMember
 	NotMember
 )
 
+//go:generate stringer -type Transformation -linecomment
 const (
-	TransformationUnknown Transformation = iota
-	TransformationDirect
-	TransformationTupleToUserset
-	TransformationComputedUserset
+	TransformationUnknown         Transformation = iota // unknown
+	TransformationDirect                                // direct
+	TransformationTupleToUserset                        // tuple-to-userset
+	TransformationComputedUserset                       //computed-userset
 )
 
 func TransformationFromString(s string) Transformation {
@@ -62,19 +64,6 @@ func TransformationFromString(s string) Transformation {
 		return TransformationComputedUserset
 	default:
 		return TransformationUnknown
-	}
-}
-
-func (t Transformation) String() string {
-	switch t {
-	case TransformationDirect:
-		return "direct"
-	case TransformationTupleToUserset:
-		return "tuple-to-userset"
-	case TransformationComputedUserset:
-		return "computed-userset"
-	default:
-		return "unknown"
 	}
 }
 

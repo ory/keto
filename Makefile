@@ -13,7 +13,8 @@ GO_DEPENDENCIES = github.com/go-swagger/go-swagger/cmd/swagger \
 				  github.com/goreleaser/godownloader \
 				  github.com/pseudomuto/protoc-gen-doc/cmd/protoc-gen-doc \
 				  github.com/ory/cli \
-				  github.com/anchore/grype
+				  github.com/anchore/grype \
+				  golang.org/x/tools/cmd/stringer
 
 define make-go-dependency
   # go install is responsible for not re-building when the code hasn't changed
@@ -133,3 +134,7 @@ post-release: .bin/yq
 		cat docker-compose.yml | yq '.services.keto.image = "oryd/keto:'$$DOCKER_TAG'"' | sponge docker-compose.yml
 		cat docker-compose-mysql.yml | yq '.services.keto-migrate.image = "oryd/keto:'$$DOCKER_TAG'"' | sponge docker-compose-mysql.yml
 		cat docker-compose-postgres.yml | yq '.services.keto-migrate.image = "oryd/keto:'$$DOCKER_TAG'"' | sponge docker-compose-postgres.yml
+
+.PHONY: generate
+generate: .bin/swagger .bin/stringer
+		PATH=$(PWD)/.bin:${PATH} go generate ./...
