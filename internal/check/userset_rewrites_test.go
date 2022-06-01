@@ -229,7 +229,7 @@ func TestUsersetRewrites(t *testing.T) {
 			res := e.Check(ctx, rt, 100)
 			assert.Equal(t, tc.expected.Err, res.Err)
 			t.Logf("tree:\n%s", res.Tree)
-			assert.Equal(t, tc.expected.Membership, res.Membership)
+			assert.Equal(t, tc.expected.Membership.String(), res.Membership.String())
 
 			if len(tc.expectedPaths) > 0 {
 				for _, path := range tc.expectedPaths {

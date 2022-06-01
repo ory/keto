@@ -47,7 +47,7 @@ var (
 	ResultNotMember = Result{Membership: NotMember}
 )
 
-var DefaultFactory Factory = NewSequential
+var DefaultFactory Factory = NewConcurrent
 
 func New(ctx context.Context) Checkgroup {
 	return DefaultFactory(ctx)
