@@ -15,8 +15,9 @@ type concurrentCheckgroup struct {
 	once       sync.Once
 	counts     struct {
 		sync.RWMutex
-		totalChecks    int
-		finishedChecks int
+		totalChecks     int
+		finishedChecks  int
+		resultRequested bool
 	}
 }
 
@@ -38,7 +39,26 @@ func (g *concurrentCheckgroup) incrementFinishedCheckCount() {
 func (g *concurrentCheckgroup) allCheckFinished() bool {
 	g.counts.RLock()
 	defer g.counts.RUnlock()
-	return g.counts.totalChecks == g.counts.finishedChecks
+	return g.counts.resultRequested && g.counts.totalChecks == g.counts.finishedChecks
+}
+
+func (g *concurrentCheckgroup) noChecksAdded() bool {
+	g.counts.RLock()
+	defer g.counts.RUnlock()
+	return g.counts.totalChecks == 0
+}
+
+// If freeze is called, no more checks can be added.
+func (g *concurrentCheckgroup) freeze() {
+	g.counts.Lock()
+	defer g.counts.Unlock()
+	g.counts.resultRequested = true
+}
+
+func (g *concurrentCheckgroup) frozen() bool {
+	g.counts.RLock()
+	defer g.counts.RUnlock()
+	return g.counts.resultRequested
 }
 
 func (g *concurrentCheckgroup) startConsumer() {
@@ -78,6 +98,12 @@ func (g *concurrentCheckgroup) Done() bool {
 
 // Add adds the Func to the checkgroup and starts running it.
 func (g *concurrentCheckgroup) Add(check Func) {
+	if g.frozen() {
+		panic("Trying to Add(), but result was already requested.")
+	}
+	if g.Done() {
+		return
+	}
 	g.startConsumer()
 	g.incrementRunningCheckCount()
 	go check(g.ctx, g.subcheckCh)
@@ -88,13 +114,10 @@ func (g *concurrentCheckgroup) SetIsMember() {
 	g.Add(IsMemberFunc)
 }
 
-func (g *concurrentCheckgroup) noChecksAdded() bool {
-	return g.counts.totalChecks == 0
-}
-
 // Result returns the Result, possibly blocking.
 func (g *concurrentCheckgroup) Result() Result {
 	g.startConsumer()
+	g.freeze()
 	if g.noChecksAdded() {
 		g.cancel()
 		return Result{Membership: NotMember}
@@ -106,6 +129,7 @@ func (g *concurrentCheckgroup) Result() Result {
 // CheckFunc returns a `Func` that writes the result to the result channel.
 func (g *concurrentCheckgroup) CheckFunc() Func {
 	g.startConsumer()
+	g.freeze()
 	if g.noChecksAdded() {
 		g.cancel()
 		return NotMemberFunc

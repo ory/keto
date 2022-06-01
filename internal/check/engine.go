@@ -120,6 +120,18 @@ func (e *Engine) checkOneIndirectionFurther(
 		// an empty page token denotes the first page (as tokens are opaque)
 		var prevPage string
 
+		// Special case: check if we can find the subject id directly
+		if rels, _, err := e.d.RelationTupleManager().GetRelationTuples(ctx, requested.ToQuery()); err == nil && len(rels) > 0 {
+			resultCh <- checkgroup.Result{
+				Membership: checkgroup.IsMember,
+				Tree: &expand.Tree{
+					Type:  expand.Leaf,
+					Tuple: requested,
+				},
+			}
+			return
+		}
+
 		g := checkgroup.New(ctx)
 
 		for {
