@@ -8,6 +8,7 @@ import (
 
 	"github.com/ory/keto/internal/check/checkgroup"
 	"github.com/ory/keto/internal/driver/config"
+	"github.com/ory/keto/internal/expand"
 	"github.com/ory/keto/internal/namespace"
 	"github.com/ory/keto/internal/namespace/ast"
 	"github.com/ory/keto/internal/relationtuple"
@@ -90,8 +91,8 @@ func (e *Engine) checkDirect(
 		))
 	}
 	return checkgroup.WithEdge(checkgroup.Edge{
-		Tuple:          *requested,
-		Transformation: checkgroup.TransformationDirect,
+		Tuple: *requested,
+		Type:  expand.Union,
 	}, g.CheckFunc())
 }
 
@@ -242,13 +243,13 @@ func (e *Engine) checkUsersetRewrite(
 		switch c := child.(type) {
 		case ast.TupleToUserset:
 			checks = append(checks, checkgroup.WithEdge(checkgroup.Edge{
-				Tuple:          *r,
-				Transformation: checkgroup.TransformationTupleToUserset,
+				Tuple: *r,
+				Type:  expand.TupeToUserset,
 			}, e.checkTupleToUserset(ctx, r, &c, restDepth)))
 		case ast.ComputedUserset:
 			checks = append(checks, checkgroup.WithEdge(checkgroup.Edge{
-				Tuple:          *r,
-				Transformation: checkgroup.TransformationComputedUserset,
+				Tuple: *r,
+				Type:  expand.ComputedUserset,
 			}, e.checkComputedUserset(ctx, r, &c, restDepth)))
 		}
 	}
@@ -425,6 +426,11 @@ func and(ctx context.Context, checks []checkgroup.Func) checkgroup.Result {
 		go check(childCtx, resultCh)
 	}
 
+	tree := &expand.Tree{
+		Type:     expand.Intersection,
+		Children: []*expand.Tree{},
+	}
+
 	for i := 0; i < len(checks); i++ {
 		select {
 		case result := <-resultCh:
@@ -432,13 +438,18 @@ func and(ctx context.Context, checks []checkgroup.Func) checkgroup.Result {
 			// member".
 			if result.Err != nil || result.Membership != checkgroup.IsMember {
 				return checkgroup.Result{Err: result.Err, Membership: checkgroup.NotMember}
+			} else {
+				tree.Children = append(tree.Children, result.Tree)
 			}
 		case <-ctx.Done():
 			return checkgroup.Result{Err: context.Canceled}
 		}
 	}
 
-	return checkgroup.ResultIsMember
+	return checkgroup.Result{
+		Membership: checkgroup.IsMember,
+		Tree:       tree,
+	}
 }
 
 // butNot returns "is member" if and only if the first check returns "is member"
@@ -458,22 +469,34 @@ func butNot(ctx context.Context, checks []checkgroup.Func) checkgroup.Result {
 		go check(childCtx, expectNotMemberCh)
 	}
 
+	tree := &expand.Tree{
+		Type:     expand.Exclusion,
+		Children: []*expand.Tree{},
+	}
+
 	for i := 0; i < len(checks); i++ {
 		select {
 		case result := <-expectMemberCh:
 			if result.Err != nil || result.Membership == checkgroup.NotMember {
 				return checkgroup.Result{Err: result.Err, Membership: checkgroup.NotMember}
+			} else {
+				tree.Children = append(tree.Children, result.Tree)
 			}
 		case result := <-expectNotMemberCh:
 			// We return fast on either an error or if a subcheck returns "not a
 			// member".
 			if result.Err != nil || result.Membership == checkgroup.IsMember {
 				return checkgroup.Result{Err: result.Err, Membership: checkgroup.NotMember}
+			} else {
+				tree.Children = append(tree.Children, result.Tree)
 			}
 		case <-ctx.Done():
 			return checkgroup.Result{Err: context.Canceled}
 		}
 	}
 
-	return checkgroup.ResultIsMember
+	return checkgroup.Result{
+		Membership: checkgroup.IsMember,
+		Tree:       tree,
+	}
 }

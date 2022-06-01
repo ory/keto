@@ -2,9 +2,8 @@ package checkgroup
 
 import (
 	"context"
-	"fmt"
-	"strings"
 
+	"github.com/ory/keto/internal/expand"
 	"github.com/ory/keto/internal/relationtuple"
 )
 
@@ -22,16 +21,13 @@ type (
 	Func   func(ctx context.Context, resultCh chan<- Result)
 	Result struct {
 		Membership Membership
-		Path       Path
+		Tree       *expand.Tree
 		Err        error
-	}
-	Path struct {
-		Edges []Edge
 	}
 
 	Edge struct {
-		Tuple          relationtuple.InternalRelationTuple
-		Transformation Transformation
+		Tuple relationtuple.InternalRelationTuple
+		Type  expand.NodeType
 	}
 
 	Transformation int
@@ -45,35 +41,6 @@ const (
 	IsMember
 	NotMember
 )
-
-//go:generate stringer -type Transformation -linecomment
-const (
-	TransformationUnknown         Transformation = iota // unknown
-	TransformationDirect                                // direct
-	TransformationTupleToUserset                        // tuple-to-userset
-	TransformationComputedUserset                       //computed-userset
-)
-
-func TransformationFromString(s string) Transformation {
-	switch s {
-	case "direct":
-		return TransformationDirect
-	case "tuple-to-userset":
-		return TransformationTupleToUserset
-	case "computed-userset":
-		return TransformationComputedUserset
-	default:
-		return TransformationUnknown
-	}
-}
-
-func (p *Path) String() string {
-	parts := []string{}
-	for _, edge := range p.Edges {
-		parts = append(parts, fmt.Sprintf("%s as %s", edge.Tuple.String(), edge.Transformation))
-	}
-	return strings.Join(parts, " -> ")
-}
 
 var (
 	ResultIsMember  = Result{Membership: IsMember}
@@ -111,7 +78,18 @@ func WithEdge(e Edge, f Func) Func {
 		go f(ctx, childCh)
 		select {
 		case result := <-childCh:
-			result.Path.Edges = append([]Edge{e}, result.Path.Edges...)
+			if result.Tree == nil {
+				result.Tree = &expand.Tree{
+					Type:  expand.Leaf,
+					Tuple: &e.Tuple,
+				}
+			} else {
+				result.Tree = &expand.Tree{
+					Type:     e.Type,
+					Tuple:    &e.Tuple,
+					Children: []*expand.Tree{result.Tree},
+				}
+			}
 			resultCh <- result
 		case <-ctx.Done():
 			resultCh <- Result{Err: ctx.Err()}
