@@ -40,6 +40,10 @@ func TestCheckgroup_cancels(t *testing.T) {
 		ctx, cancel := context.WithCancel(context.Background())
 		g := new(ctx)
 		g.Add(neverFinishesCheckFn)
+		g.Add(neverFinishesCheckFn)
+		g.Add(neverFinishesCheckFn)
+		g.Add(neverFinishesCheckFn)
+		g.Add(neverFinishesCheckFn)
 		cancel()
 		assert.Equal(t, checkgroup.Result{Err: context.Canceled}, g.Result())
 	})
@@ -71,11 +75,12 @@ func TestCheckgroup_cancels_all_other_subchecks(t *testing.T) {
 	ctx := context.Background()
 
 	g := checkgroup.NewConcurrent(ctx)
+	g.Add(mockCheckFn)
 	g.Add(neverFinishesCheckFn)
 	g.Add(checkgroup.IsMemberFunc)
-	g.Add(mockCheckFn)
-	g.Result()
+	result := g.Result()
 
+	assert.Equal(t, checkgroup.ResultIsMember, result)
 	assert.True(t, <-wasCancelled)
 	assert.True(t, g.Done())
 }
@@ -98,6 +103,7 @@ func TestCheckgroup_returns_first_successful_is_member(t *testing.T) {
 		})
 
 		assert.Equal(t, checkgroup.Result{Membership: checkgroup.IsMember}, g.Result())
+		// assert.Equal(t, checkgroup.Result{Membership: checkgroup.IsMember}, g.Result())
 		assert.True(t, g.Done())
 	})
 }
