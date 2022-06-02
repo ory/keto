@@ -31,6 +31,8 @@ type sdkClient struct {
 
 var _ client = (*sdkClient)(nil)
 
+var requestTimeout = 5 * time.Second
+
 func (c *sdkClient) getReadClient() *httpclient.OryKeto {
 	if c.rc == nil {
 		c.rc = httpclient.NewHTTPClientWithConfig(nil, &httpclient.TransportConfig{
@@ -69,14 +71,14 @@ func (c *sdkClient) createTuple(t require.TestingT, r *relationtuple.InternalRel
 	}
 
 	_, err := c.getWriteClient().Write.CreateRelationTuple(
-		write.NewCreateRelationTupleParamsWithTimeout(time.Second).
+		write.NewCreateRelationTupleParamsWithTimeout(requestTimeout).
 			WithPayload(payload),
 	)
 	require.NoError(t, err)
 }
 
 func (c *sdkClient) deleteTuple(t require.TestingT, r *relationtuple.InternalRelationTuple) {
-	params := write.NewDeleteRelationTuplesParamsWithTimeout(time.Second).
+	params := write.NewDeleteRelationTuplesParamsWithTimeout(requestTimeout).
 		WithNamespace(&r.Namespace).
 		WithObject(&r.Object).
 		WithRelation(&r.Relation)
@@ -95,7 +97,7 @@ func (c *sdkClient) deleteTuple(t require.TestingT, r *relationtuple.InternalRel
 }
 
 func (c *sdkClient) deleteAllTuples(t require.TestingT, q *relationtuple.RelationQuery) {
-	params := write.NewDeleteRelationTuplesParamsWithTimeout(time.Second).
+	params := write.NewDeleteRelationTuplesParamsWithTimeout(requestTimeout).
 		WithNamespace(&q.Namespace).
 		WithObject(&q.Object).
 		WithRelation(&q.Relation)
@@ -146,7 +148,7 @@ func compileParams(q *relationtuple.RelationQuery, opts []x.PaginationOptionSett
 }
 
 func (c *sdkClient) queryTuple(t require.TestingT, q *relationtuple.RelationQuery, opts ...x.PaginationOptionSetter) *relationtuple.GetResponse {
-	resp, err := c.getReadClient().Read.GetRelationTuples(compileParams(q, opts).WithTimeout(time.Second))
+	resp, err := c.getReadClient().Read.GetRelationTuples(compileParams(q, opts).WithTimeout(requestTimeout))
 	require.NoError(t, err)
 
 	getResp := &relationtuple.GetResponse{
@@ -175,7 +177,7 @@ func (c *sdkClient) queryTuple(t require.TestingT, q *relationtuple.RelationQuer
 }
 
 func (c *sdkClient) queryTupleErr(t require.TestingT, expected herodot.DefaultError, q *relationtuple.RelationQuery, opts ...x.PaginationOptionSetter) {
-	_, err := c.getReadClient().Read.GetRelationTuples(compileParams(q, opts).WithTimeout(time.Second))
+	_, err := c.getReadClient().Read.GetRelationTuples(compileParams(q, opts).WithTimeout(requestTimeout))
 
 	switch err.(type) {
 	case nil:
@@ -188,7 +190,7 @@ func (c *sdkClient) queryTupleErr(t require.TestingT, expected herodot.DefaultEr
 }
 
 func (c *sdkClient) check(t require.TestingT, r *relationtuple.InternalRelationTuple) bool {
-	params := read.NewGetCheckParamsWithTimeout(time.Second).
+	params := read.NewGetCheckParamsWithTimeout(requestTimeout).
 		WithNamespace(&r.Namespace).
 		WithObject(&r.Object).
 		WithRelation(&r.Relation)
@@ -231,7 +233,7 @@ func buildTree(t require.TestingT, mt *models.ExpandTree) *expand.Tree {
 
 func (c *sdkClient) expand(t require.TestingT, r *relationtuple.SubjectSet, depth int) *expand.Tree {
 	resp, err := c.getReadClient().Read.GetExpand(
-		read.NewGetExpandParamsWithTimeout(time.Second).
+		read.NewGetExpandParamsWithTimeout(requestTimeout).
 			WithNamespace(r.Namespace).
 			WithObject(r.Object).
 			WithRelation(r.Relation).
@@ -242,15 +244,15 @@ func (c *sdkClient) expand(t require.TestingT, r *relationtuple.SubjectSet, dept
 }
 
 func (c *sdkClient) waitUntilLive(t require.TestingT) {
-	resp, err := c.getReadClient().Health.IsInstanceAlive(health.NewIsInstanceAliveParams().WithTimeout(time.Second))
+	resp, err := c.getReadClient().Health.IsInstanceAlive(health.NewIsInstanceAliveParams().WithTimeout(requestTimeout))
 	for err != nil {
-		resp, err = c.getReadClient().Health.IsInstanceAlive(health.NewIsInstanceAliveParams().WithTimeout(time.Second))
+		resp, err = c.getReadClient().Health.IsInstanceAlive(health.NewIsInstanceAliveParams().WithTimeout(requestTimeout))
 	}
 	require.Equal(t, "ok", resp.Payload.Status)
 
-	resp, err = c.getWriteClient().Health.IsInstanceAlive(health.NewIsInstanceAliveParams().WithTimeout(time.Second))
+	resp, err = c.getWriteClient().Health.IsInstanceAlive(health.NewIsInstanceAliveParams().WithTimeout(requestTimeout))
 	for err != nil {
-		resp, err = c.getWriteClient().Health.IsInstanceAlive(health.NewIsInstanceAliveParams().WithTimeout(time.Second))
+		resp, err = c.getWriteClient().Health.IsInstanceAlive(health.NewIsInstanceAliveParams().WithTimeout(requestTimeout))
 	}
 	require.Equal(t, "ok", resp.Payload.Status)
 }
