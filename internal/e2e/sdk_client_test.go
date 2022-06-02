@@ -30,6 +30,8 @@ type sdkClient struct {
 
 var _ client = (*sdkClient)(nil)
 
+var requestTimeout = 5 * time.Second
+
 func (c *sdkClient) getReadClient() *httpclient.OryKeto {
 	if c.rc == nil {
 		c.rc = httpclient.NewHTTPClientWithConfig(nil, &httpclient.TransportConfig{
@@ -67,7 +69,7 @@ func (c *sdkClient) createTuple(t require.TestingT, r *ketoapi.RelationTuple) {
 	}
 
 	_, err := c.getWriteClient().Write.CreateRelationTuple(
-		write.NewCreateRelationTupleParamsWithTimeout(time.Second).
+		write.NewCreateRelationTupleParamsWithTimeout(requestTimeout).
 			WithPayload(payload),
 	)
 	require.NoError(t, err)
@@ -222,7 +224,7 @@ func buildTree(t require.TestingT, mt *models.ExpandTree) *ketoapi.ExpandTree {
 
 func (c *sdkClient) expand(t require.TestingT, r *ketoapi.SubjectSet, depth int) *ketoapi.ExpandTree {
 	resp, err := c.getReadClient().Read.GetExpand(
-		read.NewGetExpandParamsWithTimeout(time.Second).
+		read.NewGetExpandParamsWithTimeout(requestTimeout).
 			WithNamespace(r.Namespace).
 			WithObject(r.Object).
 			WithRelation(r.Relation).
@@ -233,15 +235,15 @@ func (c *sdkClient) expand(t require.TestingT, r *ketoapi.SubjectSet, depth int)
 }
 
 func (c *sdkClient) waitUntilLive(t require.TestingT) {
-	resp, err := c.getReadClient().Health.IsInstanceAlive(health.NewIsInstanceAliveParams().WithTimeout(time.Second))
+	resp, err := c.getReadClient().Health.IsInstanceAlive(health.NewIsInstanceAliveParams().WithTimeout(requestTimeout))
 	for err != nil {
-		resp, err = c.getReadClient().Health.IsInstanceAlive(health.NewIsInstanceAliveParams().WithTimeout(time.Second))
+		resp, err = c.getReadClient().Health.IsInstanceAlive(health.NewIsInstanceAliveParams().WithTimeout(requestTimeout))
 	}
 	require.Equal(t, "ok", resp.Payload.Status)
 
-	resp, err = c.getWriteClient().Health.IsInstanceAlive(health.NewIsInstanceAliveParams().WithTimeout(time.Second))
+	resp, err = c.getWriteClient().Health.IsInstanceAlive(health.NewIsInstanceAliveParams().WithTimeout(requestTimeout))
 	for err != nil {
-		resp, err = c.getWriteClient().Health.IsInstanceAlive(health.NewIsInstanceAliveParams().WithTimeout(time.Second))
+		resp, err = c.getWriteClient().Health.IsInstanceAlive(health.NewIsInstanceAliveParams().WithTimeout(requestTimeout))
 	}
 	require.Equal(t, "ok", resp.Payload.Status)
 }
