@@ -3,6 +3,8 @@ package checkgroup
 import (
 	"context"
 
+	"github.com/pkg/errors"
+
 	"github.com/ory/keto/internal/expand"
 	"github.com/ory/keto/internal/relationtuple"
 )
@@ -55,7 +57,7 @@ func New(ctx context.Context) Checkgroup {
 
 func ErrorFunc(err error) Func {
 	return func(_ context.Context, resultCh chan<- Result) {
-		resultCh <- Result{Err: err}
+		resultCh <- Result{Err: errors.WithStack(err)}
 	}
 }
 

@@ -2,9 +2,9 @@ package check
 
 import (
 	"context"
-	"errors"
 
 	"github.com/ory/herodot"
+	"github.com/pkg/errors"
 
 	"github.com/ory/keto/internal/check/checkgroup"
 	"github.com/ory/keto/internal/driver/config"
@@ -160,7 +160,10 @@ func (e *Engine) checkOneIndirectionFurther(
 
 func (e *Engine) SubjectIsAllowed(ctx context.Context, r *RelationTuple, restDepth int) (bool, error) {
 	result := e.Check(ctx, r, restDepth)
-	return result.Membership == checkgroup.IsMember, result.Err
+	if result.Err != nil {
+		return false, result.Err
+	}
+	return result.Membership == checkgroup.IsMember, nil
 }
 
 func (e *Engine) Check(ctx context.Context, r *RelationTuple, restDepth int) checkgroup.Result {
@@ -176,7 +179,7 @@ func (e *Engine) Check(ctx context.Context, r *RelationTuple, restDepth int) che
 	case result := <-resultCh:
 		return result
 	case <-ctx.Done():
-		return checkgroup.Result{Err: context.Canceled}
+		return checkgroup.Result{Err: errors.WithStack(ctx.Err())}
 	}
 }
 
@@ -213,7 +216,7 @@ func (e *Engine) checkIsAllowed(ctx context.Context, r *RelationTuple, restDepth
 }
 
 func checkNotImplemented(_ context.Context, resultCh chan<- checkgroup.Result) {
-	resultCh <- checkgroup.Result{Err: errors.New("not implemented")}
+	resultCh <- checkgroup.Result{Err: errors.WithStack(errors.New("not implemented"))}
 }
 
 type setOperation func(ctx context.Context, checks []checkgroup.Func) checkgroup.Result
@@ -418,7 +421,7 @@ func or(ctx context.Context, checks []checkgroup.Func) checkgroup.Result {
 				return result
 			}
 		case <-ctx.Done():
-			return checkgroup.Result{Err: context.Canceled}
+			return checkgroup.Result{Err: errors.WithStack(ctx.Err())}
 		}
 	}
 
@@ -454,7 +457,7 @@ func and(ctx context.Context, checks []checkgroup.Func) checkgroup.Result {
 				tree.Children = append(tree.Children, result.Tree)
 			}
 		case <-ctx.Done():
-			return checkgroup.Result{Err: context.Canceled}
+			return checkgroup.Result{Err: errors.WithStack(ctx.Err())}
 		}
 	}
 
@@ -503,7 +506,7 @@ func butNot(ctx context.Context, checks []checkgroup.Func) checkgroup.Result {
 				tree.Children = append(tree.Children, result.Tree)
 			}
 		case <-ctx.Done():
-			return checkgroup.Result{Err: context.Canceled}
+			return checkgroup.Result{Err: errors.WithStack(ctx.Err())}
 		}
 	}
 
