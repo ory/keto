@@ -92,18 +92,23 @@ func TestCheckgroup_returns_first_successful_is_member(t *testing.T) {
 		ctx := context.Background()
 
 		g := new(ctx)
-		g.Add(neverFinishesCheckFn)
 		g.Add(checkgroup.NotMemberFunc)
 		g.Add(checkgroup.NotMemberFunc)
 		time.Sleep(1 * time.Millisecond)
+
 		assert.False(t, g.Done())
+
 		g.Add(func(_ context.Context, resultCh chan<- checkgroup.Result) {
-			time.Sleep(10 * time.Millisecond)
 			resultCh <- checkgroup.ResultIsMember
 		})
 
-		assert.Equal(t, checkgroup.Result{Membership: checkgroup.IsMember}, g.Result())
-		// assert.Equal(t, checkgroup.Result{Membership: checkgroup.IsMember}, g.Result())
+		resultCh := make(chan checkgroup.Result)
+		go g.CheckFunc()(ctx, resultCh)
+
+		assert.Equal(t, checkgroup.ResultIsMember, g.Result())
+		assert.Equal(t, checkgroup.ResultIsMember, g.Result())
+		assert.Equal(t, checkgroup.ResultIsMember, g.Result())
+		assert.Equal(t, checkgroup.ResultIsMember, <-resultCh)
 		assert.True(t, g.Done())
 	})
 }
