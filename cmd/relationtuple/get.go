@@ -2,13 +2,13 @@ package relationtuple
 
 import (
 	"fmt"
+	"github.com/ory/keto/internal/x"
+	"github.com/ory/keto/ketoapi"
 	"strconv"
 
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 
 	"github.com/ory/x/flagx"
-
-	"github.com/ory/keto/internal/relationtuple"
 
 	"github.com/spf13/pflag"
 
@@ -43,27 +43,29 @@ func registerRelationTupleFlags(flags *pflag.FlagSet) {
 	}
 }
 
-func readQueryFromFlags(cmd *cobra.Command) (*rts.ListRelationTuplesRequest_Query, error) {
-	query := &rts.ListRelationTuplesRequest_Query{
-		Namespace: flagx.MustGetString(cmd, FlagNamespace),
-		Object:    flagx.MustGetString(cmd, FlagObject),
-		Relation:  flagx.MustGetString(cmd, FlagRelation),
+func readQueryFromFlags(cmd *cobra.Command) (*rts.RelationQuery, error) {
+	getStringPtr := func(flagName string) *string {
+		if f := cmd.Flags().Lookup(flagName); f.Changed {
+			return x.Ptr(f.Value.String())
+		}
+		return nil
 	}
 
-	switch flags := cmd.Flags(); {
-	case flags.Changed(FlagSubjectID) && flags.Changed(FlagSubjectSet):
-		return nil, relationtuple.ErrDuplicateSubject
-	case flags.Changed(FlagSubjectID):
-		query.Subject = (&relationtuple.SubjectID{ID: flagx.MustGetString(cmd, FlagSubjectID)}).ToProto()
-	case flags.Changed(FlagSubjectSet):
-		s, err := (&relationtuple.SubjectSet{}).FromString(flagx.MustGetString(cmd, FlagSubjectSet))
+	query := &ketoapi.RelationQuery{
+		Namespace: getStringPtr(FlagNamespace),
+		Object:    getStringPtr(FlagObject),
+		Relation:  getStringPtr(FlagRelation),
+		SubjectID: getStringPtr(FlagSubjectID),
+	}
+	if f := cmd.Flags().Lookup(FlagSubjectSet); f.Changed {
+		s, err := (&ketoapi.SubjectSet{}).FromString(flagx.MustGetString(cmd, FlagSubjectSet))
 		if err != nil {
 			return nil, err
 		}
-		query.Subject = s.ToProto()
+		query.SubjectSet = s
 	}
 
-	return query, nil
+	return query.ToProto(), nil
 }
 
 func newGetCmd() *cobra.Command {
@@ -109,9 +111,9 @@ func getTuples(pageSize *int32, pageToken *string) func(cmd *cobra.Command, _ []
 		}
 
 		resp, err := cl.ListRelationTuples(cmd.Context(), &rts.ListRelationTuplesRequest{
-			Query:     query,
-			PageSize:  *pageSize,
-			PageToken: *pageToken,
+			RelationQuery: query,
+			PageSize:      *pageSize,
+			PageToken:     *pageToken,
 		})
 		if err != nil {
 			_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not make request: %s\n", err)
@@ -119,7 +121,7 @@ func getTuples(pageSize *int32, pageToken *string) func(cmd *cobra.Command, _ []
 		}
 
 		cmdx.PrintTable(cmd, &responseOutput{
-			RelationTuples: relationtuple.NewProtoRelationCollection(resp.RelationTuples),
+			RelationTuples: NewProtoCollection(resp.RelationTuples),
 			IsLastPage:     resp.NextPageToken == "",
 			NextPageToken:  resp.NextPageToken,
 		})
@@ -128,9 +130,9 @@ func getTuples(pageSize *int32, pageToken *string) func(cmd *cobra.Command, _ []
 }
 
 type responseOutput struct {
-	RelationTuples *relationtuple.RelationCollection `json:"relation_tuples"`
-	IsLastPage     bool                              `json:"is_last_page"`
-	NextPageToken  string                            `json:"next_page_token"`
+	RelationTuples *Collection `json:"relation_tuples"`
+	IsLastPage     bool        `json:"is_last_page"`
+	NextPageToken  string      `json:"next_page_token"`
 }
 
 func (r *responseOutput) Header() []string {

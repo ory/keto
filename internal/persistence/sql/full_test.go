@@ -10,8 +10,6 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/ory/keto/internal/driver"
-	"github.com/ory/keto/internal/driver/config"
-	"github.com/ory/keto/internal/namespace"
 	"github.com/ory/keto/internal/persistence/sql"
 	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/internal/x/dbx"
@@ -35,32 +33,18 @@ func TestPersister(t *testing.T) {
 		return
 	}
 
-	addNamespace := func(r driver.Registry, nspaces []*namespace.Namespace) func(context.Context, *testing.T, string) {
-		return func(ctx context.Context, t *testing.T, name string) {
-			n := &namespace.Namespace{
-				Name: name,
-				ID:   int32(len(nspaces)),
-			}
-			nspaces = append(nspaces, n)
-
-			require.NoError(t, r.Config(ctx).Set(config.KeyNamespaces, nspaces))
-		}
-	}
-
 	for _, dsn := range dbx.GetDSNs(t, false) {
 		dsn := dsn
 		t.Run(fmt.Sprintf("dsn=%s", dsn.Name), func(t *testing.T) {
 			t.Parallel()
 
 			t.Run("relationtuple.ManagerTest", func(t *testing.T) {
-				var nspaces []*namespace.Namespace
-				p, r, _ := setup(t, dsn)
+				p, _, _ := setup(t, dsn)
 
-				relationtuple.ManagerTest(t, p, addNamespace(r, nspaces))
+				relationtuple.ManagerTest(t, p)
 			})
 
 			t.Run("relationtuple.IsolationTest", func(t *testing.T) {
-				var nspaces []*namespace.Namespace
 				p0, r, _ := setup(t, dsn)
 				n1 := networkx.NewNetwork()
 				conn, err := r.PopConnection(context.Background())
@@ -70,7 +54,7 @@ func TestPersister(t *testing.T) {
 				require.NoError(t, err)
 
 				// same registry, but different persisters only differing in the network ID
-				relationtuple.IsolationTest(t, p0, p1, addNamespace(r, nspaces))
+				relationtuple.IsolationTest(t, p0, p1)
 			})
 
 			t.Run("relationtuple.UUIDMappingManagerTest", func(t *testing.T) {

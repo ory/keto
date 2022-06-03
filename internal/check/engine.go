@@ -35,7 +35,7 @@ func NewEngine(d EngineDependencies) *Engine {
 
 func (e *Engine) subjectIsAllowed(
 	ctx context.Context,
-	requested *relationtuple.RelationQuery,
+	requested relationtuple.Subject,
 	rels []*relationtuple.InternalRelationTuple,
 	restDepth int,
 ) (bool, error) {
@@ -51,7 +51,7 @@ func (e *Engine) subjectIsAllowed(
 		}
 
 		// we only have to check Subject here as we know that sr was reached from requested.ObjectID, requested.Relation through 0...n indirections
-		if requested.Subject().Equals(sr.Subject) {
+		if requested.Equals(sr.Subject) {
 			// found the requested relation
 			return true, nil
 		}
@@ -65,7 +65,7 @@ func (e *Engine) subjectIsAllowed(
 		allowed, err := e.checkOneIndirectionFurther(
 			ctx,
 			requested,
-			&relationtuple.RelationQuery{Object: sub.Object, Relation: sub.Relation, Namespace: sub.Namespace},
+			&relationtuple.InternalRelationTuple{Object: sub.Object, Relation: sub.Relation, Namespace: sub.Namespace},
 			restDepth-1,
 		)
 		if err != nil {
@@ -81,8 +81,8 @@ func (e *Engine) subjectIsAllowed(
 
 func (e *Engine) checkOneIndirectionFurther(
 	ctx context.Context,
-	requested *relationtuple.RelationQuery,
-	expandQuery *relationtuple.RelationQuery,
+	requested relationtuple.Subject,
+	expandQuery *relationtuple.InternalRelationTuple,
 	restDepth int,
 ) (bool, error) {
 	if restDepth <= 0 {
@@ -94,7 +94,11 @@ func (e *Engine) checkOneIndirectionFurther(
 	var prevPage string
 
 	for {
-		nextRels, nextPage, err := e.d.RelationTupleManager().GetRelationTuples(ctx, expandQuery, x.WithToken(prevPage))
+		nextRels, nextPage, err := e.d.RelationTupleManager().GetRelationTuples(ctx, &relationtuple.RelationQuery{
+			Namespace: x.Ptr(expandQuery.Namespace),
+			Object:    x.Ptr(expandQuery.Object),
+			Relation:  x.Ptr(expandQuery.Relation),
+		}, x.WithToken(prevPage))
 		// herodot.ErrNotFound occurs when the namespace is unknown
 		if errors.Is(err, herodot.ErrNotFound) {
 			return false, nil
@@ -113,11 +117,11 @@ func (e *Engine) checkOneIndirectionFurther(
 	}
 }
 
-func (e *Engine) SubjectIsAllowed(ctx context.Context, r *relationtuple.RelationQuery, restDepth int) (bool, error) {
+func (e *Engine) SubjectIsAllowed(ctx context.Context, r *relationtuple.InternalRelationTuple, restDepth int) (bool, error) {
 	// global max-depth takes precedence when it is the lesser or if the request max-depth is less than or equal to 0
 	if globalMaxDepth := e.d.Config(ctx).MaxReadDepth(); restDepth <= 0 || globalMaxDepth < restDepth {
 		restDepth = globalMaxDepth
 	}
 
-	return e.checkOneIndirectionFurther(ctx, r, &relationtuple.RelationQuery{Object: r.Object, Relation: r.Relation, Namespace: r.Namespace}, restDepth)
+	return e.checkOneIndirectionFurther(ctx, r.Subject, &relationtuple.InternalRelationTuple{Object: r.Object, Relation: r.Relation, Namespace: r.Namespace}, restDepth)
 }

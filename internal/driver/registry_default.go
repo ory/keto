@@ -25,7 +25,6 @@ import (
 	"github.com/ory/keto/internal/expand"
 	"github.com/ory/keto/internal/persistence"
 	"github.com/ory/keto/internal/persistence/sql"
-	_ "github.com/ory/keto/internal/persistence/sql/migrations"
 	"github.com/ory/keto/internal/persistence/sql/migrations/uuidmapping"
 	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/internal/x"

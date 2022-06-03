@@ -2,6 +2,9 @@ package relationtuple
 
 import (
 	"context"
+	"github.com/ory/keto/internal/expand"
+	"github.com/ory/keto/internal/namespace"
+	"github.com/ory/keto/internal/x"
 	"github.com/ory/keto/ketoapi"
 	"testing"
 
@@ -17,117 +20,372 @@ type (
 
 	UUIDMappingManager interface {
 		MapStringsToUUIDs(ctx context.Context, s ...string) ([]uuid.UUID, error)
+		MapUUIDsToStrings(ctx context.Context, u ...uuid.UUID) ([]string, error)
+	}
 
-		// MapFieldsToUUID maps all fields of the given object to UUIDs.
-		MapFieldsToUUID(ctx context.Context, m UUIDMappable) error
-
-		// MapFieldsFromUUID maps all fields of the given object from UUIDs to
-		// their string value.
-		MapFieldsFromUUID(ctx context.Context, m UUIDMappable) error
+	mapperDependencies interface {
+		MappingManagerProvider
+		namespace.ManagerProvider
+	}
+	MappingManagerProvider interface {
+		UUIDMappingManager() MappingManager
+	}
+	MappingManager interface {
+		MapStringsToUUIDs(ctx context.Context, s ...string) ([]uuid.UUID, error)
+		MapUUIDsToStrings(ctx context.Context, u ...uuid.UUID) ([]string, error)
+	}
+	MapperProvider interface {
+		UUIDMapper() *Mapper
+	}
+	Mapper struct {
+		d mapperDependencies
 	}
 )
 
-func preferNil[V any, PtrV interface{ *V }, F any](v PtrV, fallback F) (res F) {
-	if v == nil {
-		return
-	}
-	return fallback
+type success struct {
+	fs  []func()
+	err *error
 }
 
-func InternalRelationQuery(ctx context.Context, m UUIDMappingManager, q *ketoapi.RelationQuery) (*RelationQuery, error) {
-	iq := &RelationQuery{
-		Namespace: q.Namespace,
-		Relation:  q.Relation,
+func newSuccess(err *error) *success {
+	return &success{
+		err: err,
+	}
+}
+
+func (c *success) do(f func()) {
+	c.fs = append(c.fs, f)
+}
+
+func (c *success) cleanup() {
+	if *c.err != nil {
+		return
+	}
+	for _, f := range c.fs {
+		f()
+	}
+}
+
+func (m *Mapper) FromQuery(ctx context.Context, q *ketoapi.RelationQuery) (res *RelationQuery, err error) {
+	onSuccess := newSuccess(&err)
+	defer onSuccess.cleanup()
+
+	var s []string
+	var u []uuid.UUID
+	res = new(RelationQuery)
+
+	nm, err := m.d.NamespaceManager()
+	if err != nil {
+		return nil, err
 	}
 
-	if q.SubjectID != nil {
-		mappings, err := m.MapStringsToUUIDs(ctx, q.Object, *q.SubjectID)
+	if q.Namespace != nil {
+		n, err := nm.GetNamespaceByName(ctx, *q.Namespace)
 		if err != nil {
 			return nil, err
 		}
-		iq.Object = mappings[0]
-		iq.SubjectID = &mappings[1]
+		res.Namespace = x.Ptr(n.ID)
+	}
+	if q.Object != nil {
+		s = append(s, *q.Object)
+		onSuccess.do(func() {
+			res.Object = x.Ptr(u[0])
+		})
+	}
+	if q.SubjectID != nil {
+		s = append(s, *q.SubjectID)
+		onSuccess.do(func() {
+			res.SubjectID = x.Ptr(u[1])
+		})
 	}
 	if q.SubjectSet != nil {
-		mappings, err := m.MapStringsToUUIDs(ctx, q.Object, q.SubjectSet.Object)
+		s = append(s, q.SubjectSet.Object)
+		n, err := nm.GetNamespaceByName(ctx, q.SubjectSet.Namespace)
 		if err != nil {
 			return nil, err
 		}
-		iq.Object = mappings[0]
-		iq.SubjectSet = &SubjectSet{
-			Namespace: q.SubjectSet.Namespace,
-			Object:    mappings[1],
-			Relation:  q.SubjectSet.Relation,
+		onSuccess.do(func() {
+			res.SubjectSet = &SubjectSet{
+				Namespace: n.ID,
+				Object:    u[1],
+				Relation:  q.SubjectSet.Relation,
+			}
+		})
+	}
+
+	u, err = m.d.UUIDMappingManager().MapStringsToUUIDs(ctx, s...)
+	if err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+func (m *Mapper) ToQuery(ctx context.Context, q *RelationQuery) (res *ketoapi.RelationQuery, err error) {
+	onSuccess := newSuccess(&err)
+	defer onSuccess.cleanup()
+
+	var s []string
+	var u []uuid.UUID
+	res = new(ketoapi.RelationQuery)
+
+	nm, err := m.d.NamespaceManager()
+	if err != nil {
+		return nil, err
+	}
+
+	if q.Namespace != nil {
+		n, err := nm.GetNamespaceByConfigID(ctx, *q.Namespace)
+		if err != nil {
+			return nil, err
+		}
+		res.Namespace = x.Ptr(n.Name)
+	}
+	if q.Object != nil {
+		u = append(u, *q.Object)
+		onSuccess.do(func() {
+			res.Object = x.Ptr(s[0])
+		})
+	}
+	if q.SubjectID != nil {
+		u = append(u, *q.SubjectID)
+		onSuccess.do(func() {
+			res.SubjectID = x.Ptr(s[1])
+		})
+	}
+	if q.SubjectSet != nil {
+		u = append(u, q.SubjectSet.Object)
+		n, err := nm.GetNamespaceByConfigID(ctx, q.SubjectSet.Namespace)
+		if err != nil {
+			return nil, err
+		}
+		onSuccess.do(func() {
+			res.SubjectSet = &ketoapi.SubjectSet{
+				Namespace: n.Name,
+				Object:    s[1],
+				Relation:  q.SubjectSet.Relation,
+			}
+		})
+	}
+
+	s, err = m.d.UUIDMappingManager().MapUUIDsToStrings(ctx, u...)
+	if err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+func (m *Mapper) FromTuple(ctx context.Context, ts ...*ketoapi.RelationTuple) (res []*InternalRelationTuple, err error) {
+	onSuccess := newSuccess(&err)
+	defer onSuccess.cleanup()
+
+	res = make([]*InternalRelationTuple, len(ts))
+	s := make([]string, 2)
+	u := make([]uuid.UUID, 2)
+
+	nm, err := m.d.NamespaceManager()
+	if err != nil {
+		return nil, err
+	}
+
+	for i, t := range ts {
+		i := i
+		n, err := nm.GetNamespaceByName(ctx, t.Namespace)
+		if err != nil {
+			return nil, err
+		}
+		res[i] = &InternalRelationTuple{
+			Namespace: n.ID,
+		}
+		s[0] = t.Object
+		onSuccess.do(func() {
+			res[i].Object = u[0]
+		})
+		if t.SubjectID != nil {
+			s[1] = *t.SubjectID
+			onSuccess.do(func() {
+				res[i].Subject = &SubjectID{u[1]}
+			})
+		} else if t.SubjectSet != nil {
+			s[1] = t.SubjectSet.Object
+			n, err := nm.GetNamespaceByName(ctx, t.SubjectSet.Namespace)
+			if err != nil {
+				return nil, err
+			}
+			onSuccess.do(func() {
+				res[i].Subject = &SubjectSet{
+					Namespace: n.ID,
+					Object:    u[1],
+					Relation:  t.SubjectSet.Relation,
+				}
+			})
 		}
 	}
 
-	return iq, nil
+	u, err = m.d.UUIDMappingManager().MapStringsToUUIDs(ctx, s...)
+	if err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+func (m *Mapper) ToTuple(ctx context.Context, ts ...*ketoapi.RelationTuple) (res []*InternalRelationTuple, err error) {
+	onSuccess := newSuccess(&err)
+	defer onSuccess.cleanup()
+
+	res = make([]*InternalRelationTuple, len(ts))
+	s := make([]string, len(ts)*2)
+	u := make([]uuid.UUID, 0, len(ts)*2)
+
+	nm, err := m.d.NamespaceManager()
+	if err != nil {
+		return nil, err
+	}
+
+	for i, t := range ts {
+		i := i
+		n, err := nm.GetNamespaceByName(ctx, t.Namespace)
+		if err != nil {
+			return nil, err
+		}
+		res[i] = &InternalRelationTuple{
+			Namespace: n.ID,
+		}
+		s[2*i] = t.Object
+		onSuccess.do(func() {
+			res[i].Object = u[2*i]
+		})
+		if t.SubjectID != nil {
+			s[2*i+1] = *t.SubjectID
+			onSuccess.do(func() {
+				res[i].Subject = &SubjectID{u[2*i+1]}
+			})
+		} else if t.SubjectSet != nil {
+			s[2*i+1] = t.SubjectSet.Object
+			n, err := nm.GetNamespaceByName(ctx, t.SubjectSet.Namespace)
+			if err != nil {
+				return nil, err
+			}
+			onSuccess.do(func() {
+				res[i].Subject = &SubjectSet{
+					Namespace: n.ID,
+					Object:    u[2*i+1],
+					Relation:  t.SubjectSet.Relation,
+				}
+			})
+		}
+	}
+
+	u, err = m.d.UUIDMappingManager().MapStringsToUUIDs(ctx, s...)
+	if err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+func (m *Mapper) ToSubjectSet(ctx context.Context, set *ketoapi.SubjectSet) (*SubjectSet, error) {
+	nm, err := m.d.NamespaceManager()
+	if err != nil {
+		return nil, err
+	}
+	n, err := nm.GetNamespaceByName(ctx, set.Namespace)
+	if err != nil {
+		return nil, err
+	}
+	u, err := m.d.UUIDMappingManager().MapStringsToUUIDs(ctx, set.Object)
+	if err != nil {
+		return nil, err
+	}
+	return &SubjectSet{
+		Namespace: n.ID,
+		Object:    u[0],
+		Relation:  set.Relation,
+	}, nil
+}
+
+func (m *Mapper) FromTree(ctx context.Context, tree *expand.Tree) (res *ketoapi.ExpandTree, err error) {
+	onSuccess := newSuccess(&err)
+	defer onSuccess.cleanup()
+
+	var s []string
+	var u []uuid.UUID
+	res = &ketoapi.ExpandTree{
+		Type: tree.Type,
+	}
+
+	nm, err := m.d.NamespaceManager()
+	if err != nil {
+		return nil, err
+	}
+
+	switch sub := tree.Subject.(type) {
+	case *SubjectSet:
+		u = append(u, sub.Object)
+		n, err := nm.GetNamespaceByConfigID(ctx, sub.Namespace)
+		if err != nil {
+			return nil, err
+		}
+		onSuccess.do(func() {
+			res.SubjectSet = &ketoapi.SubjectSet{
+				Namespace: n.Name,
+				Object:    s[0],
+				Relation:  sub.Relation,
+			}
+		})
+	case *SubjectID:
+		u = append(u, sub.ID)
+	}
+	for _, c := range tree.Children {
+		mc, err := m.FromTree(ctx, c)
+		if err != nil {
+			return nil, err
+		}
+		res.Children = append(res.Children, mc)
+	}
+	s, err = m.d.UUIDMappingManager().MapUUIDsToStrings(ctx, u...)
+	if err != nil {
+		return nil, err
+	}
+
+	return res, nil
 }
 
 func UUIDMappingManagerTest(t *testing.T, m UUIDMappingManager) {
 	ctx := context.Background()
 
-	t.Run("case=ToUUID_FromUUID", func(t *testing.T) {
-		s1 := SubjectID{"rep1"}
-		err := m.MapFieldsToUUID(ctx, &s1)
+	t.Run("case=str -> uuid -> str", func(t *testing.T) {
+		const s = "rep1"
+		u, err := m.MapStringsToUUIDs(ctx, s)
 		require.NoError(t, err)
 
-		s2 := SubjectID{s1.ID}
-		err = m.MapFieldsFromUUID(ctx, &s2)
-		assert.NoError(t, err)
-		assert.Equal(t, "rep1", s2.ID)
+		actual, err := m.MapUUIDsToStrings(ctx, u[0])
+		require.NoError(t, err)
+		require.Len(t, actual, 1)
+		assert.Equal(t, s, actual[0])
+
+		t.Run("case=batch", func(t *testing.T) {
+			s := []string{"rep1", "rep2", "rep3"}
+
+			u, err := m.MapStringsToUUIDs(ctx, s...)
+			require.NoError(t, err)
+			require.Len(t, u, len(s))
+
+			assert.NotContains(t, u, uuid.Nil)
+
+			actual, err := m.MapUUIDsToStrings(ctx, u...)
+			require.NoError(t, err)
+			require.Len(t, actual, len(s))
+			assert.Equal(t, s, actual)
+		})
 	})
 
-	t.Run("case=Idempotent_ToUUID", func(t *testing.T) {
-		s1 := SubjectID{"string"}
-		s2 := SubjectID{"string"}
-		assert.NoError(t, m.MapFieldsToUUID(ctx, &s1))
-		assert.NoError(t, m.MapFieldsToUUID(ctx, &s2))
-		assert.Equal(t, s1.ID, s2.ID)
-		assert.NotEqual(t, "string", s1.ID)
-	})
+	t.Run("case=deterministic MapStringsToUUIDs", func(t *testing.T) {
+		const s = "some string"
 
-	t.Run("case=batch to UUID", func(t *testing.T) {
-		rt := InternalRelationTuple{Object: "object", Subject: &SubjectID{"subject"}}
-		assert.NoError(t, m.MapFieldsToUUID(ctx, &rt))
-		objectUUID, err := uuid.FromString(rt.Object)
-		assert.NoError(t, err)
-		subjectUUID, err := uuid.FromString(rt.Subject.String())
-		assert.NoError(t, err)
+		u0, err := m.MapStringsToUUIDs(ctx, s)
+		require.NoError(t, err)
+		u1, err := m.MapStringsToUUIDs(ctx, s)
+		require.NoError(t, err)
 
-		rt2 := InternalRelationTuple{Object: "object", Subject: &SubjectID{"another subject"}}
-		assert.NoError(t, m.MapFieldsToUUID(ctx, &rt2))
-		assert.Equal(t, objectUUID, uuid.Must(uuid.FromString(rt2.Object)))
-		assert.NotEqual(t, subjectUUID, uuid.Must(uuid.FromString(rt2.Subject.String())))
-
-		rt3 := InternalRelationTuple{Object: "another object", Subject: &SubjectID{"subject"}}
-		assert.NoError(t, m.MapFieldsToUUID(ctx, &rt3))
-		assert.NotEqual(t, objectUUID, uuid.Must(uuid.FromString(rt3.Object)))
-		assert.Equal(t, subjectUUID, uuid.Must(uuid.FromString(rt3.Subject.String())))
-	})
-
-	t.Run("case=IdempotentMapFieldsToAndFromUUIDs", func(t *testing.T) {
-		tc := []struct {
-			name string
-			obj  UUIDMappable
-			copy UUIDMappable
-		}{
-			{
-				name: "RelationTuple",
-				obj:  &InternalRelationTuple{Namespace: "n", Relation: "r", Object: "Object", Subject: &SubjectID{ID: "Subject"}},
-				copy: &InternalRelationTuple{Namespace: "n", Relation: "r", Object: "Object", Subject: &SubjectID{ID: "Subject"}},
-			}, {
-				name: "SubjectID",
-				obj:  &SubjectID{ID: "sub"},
-				copy: &SubjectID{ID: "sub"},
-			},
-		}
-		for _, tt := range tc {
-			t.Run("type="+tt.name, func(t *testing.T) {
-				assert.NoError(t, m.MapFieldsToUUID(ctx, tt.obj))
-				assert.NoError(t, m.MapFieldsFromUUID(ctx, tt.obj))
-				assert.Equal(t, tt.copy, tt.obj)
-			})
-		}
+		assert.Equal(t, u0, u1)
 	})
 }

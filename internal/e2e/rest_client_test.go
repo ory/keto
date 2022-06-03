@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/ory/keto/ketoapi"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -54,7 +55,7 @@ func (rc *restClient) makeRequest(t require.TestingT, method, path, body string,
 	return string(respBody), resp.StatusCode
 }
 
-func (rc *restClient) createTuple(t require.TestingT, r *relationtuple.InternalRelationTuple) {
+func (rc *restClient) createTuple(t require.TestingT, r *ketoapi.RelationTuple) {
 	tEnc, err := json.Marshal(r)
 	require.NoError(t, err)
 
@@ -62,19 +63,17 @@ func (rc *restClient) createTuple(t require.TestingT, r *relationtuple.InternalR
 	assert.Equal(t, http.StatusCreated, code, body)
 }
 
-func (rc *restClient) deleteTuple(t require.TestingT, r *relationtuple.InternalRelationTuple) {
-	q, err := r.ToURLQuery()
-	require.NoError(t, err)
-	body, code := rc.makeRequest(t, http.MethodDelete, relationtuple.WriteRouteBase+"?"+q.Encode(), "", true)
+func (rc *restClient) deleteTuple(t require.TestingT, r *ketoapi.RelationTuple) {
+	body, code := rc.makeRequest(t, http.MethodDelete, relationtuple.WriteRouteBase+"?"+r.ToURLQuery().Encode(), "", true)
 	require.Equal(t, http.StatusNoContent, code, body)
 }
 
-func (rc restClient) deleteAllTuples(t require.TestingT, q *relationtuple.RelationQuery) {
+func (rc restClient) deleteAllTuples(t require.TestingT, q *ketoapi.RelationQuery) {
 	body, code := rc.makeRequest(t, http.MethodDelete, relationtuple.WriteRouteBase+"?"+q.ToURLQuery().Encode(), "", true)
 	require.Equal(t, http.StatusNoContent, code, body)
 }
 
-func (rc *restClient) queryTuple(t require.TestingT, q *relationtuple.RelationQuery, opts ...x.PaginationOptionSetter) *relationtuple.GetResponse {
+func (rc *restClient) queryTuple(t require.TestingT, q *ketoapi.RelationQuery, opts ...x.PaginationOptionSetter) *ketoapi.GetResponse {
 	urlQuery := q.ToURLQuery()
 
 	pagination := x.GetPaginationOptions(opts...)
@@ -88,13 +87,13 @@ func (rc *restClient) queryTuple(t require.TestingT, q *relationtuple.RelationQu
 	body, code := rc.makeRequest(t, http.MethodGet, fmt.Sprintf("%s?%s", relationtuple.ReadRouteBase, urlQuery.Encode()), "", false)
 	require.Equal(t, http.StatusOK, code, body)
 
-	var dec relationtuple.GetResponse
+	var dec ketoapi.GetResponse
 	require.NoError(t, json.Unmarshal([]byte(body), &dec))
 
 	return &dec
 }
 
-func (rc *restClient) queryTupleErr(t require.TestingT, expected herodot.DefaultError, q *relationtuple.RelationQuery, opts ...x.PaginationOptionSetter) {
+func (rc *restClient) queryTupleErr(t require.TestingT, expected herodot.DefaultError, q *ketoapi.RelationQuery, opts ...x.PaginationOptionSetter) {
 	urlQuery := q.ToURLQuery()
 
 	pagination := x.GetPaginationOptions(opts...)
@@ -113,9 +112,8 @@ func (rc *restClient) queryTupleErr(t require.TestingT, expected herodot.Default
 	assert.Equal(t, expected.Error(), gjson.Get(body, "error.message").String(), body)
 }
 
-func (rc *restClient) check(t require.TestingT, r *relationtuple.InternalRelationTuple) bool {
-	q, err := r.ToURLQuery()
-	require.NoError(t, err)
+func (rc *restClient) check(t require.TestingT, r *ketoapi.RelationTuple) bool {
+	q := r.ToURLQuery()
 	bodyGet, codeGet := rc.makeRequest(t, http.MethodGet, fmt.Sprintf("%s?%s", check.RouteBase, q.Encode()), "", false)
 
 	var respGet check.RESTResponse
@@ -141,7 +139,7 @@ func (rc *restClient) check(t require.TestingT, r *relationtuple.InternalRelatio
 	return false
 }
 
-func (rc *restClient) expand(t require.TestingT, r *relationtuple.SubjectSet, depth int) *expand.Tree {
+func (rc *restClient) expand(t require.TestingT, r *ketoapi.SubjectSet, depth int) *expand.Tree {
 	query := r.ToURLQuery()
 	query.Set("max-depth", fmt.Sprintf("%d", depth))
 

@@ -19,15 +19,6 @@ type (
 	}
 )
 
-// swagger:model getRelationTuplesResponse
-type GetResponse struct {
-	RelationTuples []*InternalRelationTuple `json:"relation_tuples"`
-	// The opaque token to provide in a subsequent request
-	// to get the next page. It is the empty string iff this is
-	// the last page.
-	NextPageToken string `json:"next_page_token"`
-}
-
 const (
 	ReadRouteBase  = "/relation-tuples"
 	WriteRouteBase = "/admin/relation-tuples"

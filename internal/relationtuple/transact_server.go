@@ -3,6 +3,7 @@ package relationtuple
 import (
 	"context"
 	"encoding/json"
+	"github.com/ory/keto/ketoapi"
 	"net/http"
 
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
@@ -150,14 +151,14 @@ type queryRelationTuple struct {
 //       400: genericError
 //       500: genericError
 func (h *handler) createRelation(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	var rel InternalRelationTuple
+	var rt ketoapi.RelationTuple
 
-	if err := json.NewDecoder(r.Body).Decode(&rel); err != nil {
+	if err := json.NewDecoder(r.Body).Decode(&rt); err != nil {
 		h.d.Writer().WriteError(w, r, errors.WithStack(herodot.ErrBadRequest.WithError(err.Error())))
 		return
 	}
 
-	h.d.Logger().WithFields(rel.ToLoggerFields()).Debug("creating relation tuple")
+	h.d.Logger().WithFields(rt.ToLoggerFields()).Debug("creating relation tuple")
 
 	if err := h.d.UUIDMappingManager().MapFieldsToUUID(r.Context(), &rel); err != nil {
 		h.d.Logger().WithError(err).WithFields(rel.ToLoggerFields()).Errorf("got an error while mapping fields to UUID")
@@ -204,7 +205,7 @@ func (h *handler) createRelation(w http.ResponseWriter, r *http.Request, _ httpr
 //       500: genericError
 func (h *handler) deleteRelations(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	q := r.URL.Query()
-	query, err := (&RelationQuery{}).FromURLQuery(q)
+	query, err := (&ketoapi.RelationQuery{}).FromURLQuery(q)
 	if err != nil {
 		h.d.Writer().WriteError(w, r, herodot.ErrBadRequest.WithError(err.Error()))
 		return
@@ -270,7 +271,7 @@ func (h *handler) patchRelations(w http.ResponseWriter, r *http.Request, _ httpr
 			return
 		}
 		switch d.Action {
-		case ActionDelete, ActionInsert:
+		case ketoapi.ActionInsert, ketoapi.ActionDelete:
 		default:
 			h.d.Writer().WriteError(w, r, herodot.ErrBadRequest.WithError("unknown action "+string(d.Action)))
 			return

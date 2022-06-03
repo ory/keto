@@ -19,6 +19,11 @@ export class CheckRequest extends jspb.Message {
     clearSubject(): void;
     getSubject(): ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.Subject | undefined;
     setSubject(value?: ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.Subject): CheckRequest;
+
+    hasQuery(): boolean;
+    clearQuery(): void;
+    getQuery(): ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationQuery | undefined;
+    setQuery(value?: ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationQuery): CheckRequest;
     getLatest(): boolean;
     setLatest(value: boolean): CheckRequest;
     getSnaptoken(): string;
@@ -42,6 +47,7 @@ export namespace CheckRequest {
         object: string,
         relation: string,
         subject?: ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.Subject.AsObject,
+        query?: ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationQuery.AsObject,
         latest: boolean,
         snaptoken: string,
         maxDepth: number,

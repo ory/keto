@@ -38,6 +38,47 @@ export namespace RelationTuple {
     }
 }
 
+export class RelationQuery extends jspb.Message { 
+
+    hasNamespace(): boolean;
+    clearNamespace(): void;
+    getNamespace(): string | undefined;
+    setNamespace(value: string): RelationQuery;
+
+    hasObject(): boolean;
+    clearObject(): void;
+    getObject(): string | undefined;
+    setObject(value: string): RelationQuery;
+
+    hasRelation(): boolean;
+    clearRelation(): void;
+    getRelation(): string | undefined;
+    setRelation(value: string): RelationQuery;
+
+    hasSubject(): boolean;
+    clearSubject(): void;
+    getSubject(): Subject | undefined;
+    setSubject(value?: Subject): RelationQuery;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): RelationQuery.AsObject;
+    static toObject(includeInstance: boolean, msg: RelationQuery): RelationQuery.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: RelationQuery, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): RelationQuery;
+    static deserializeBinaryFromReader(message: RelationQuery, reader: jspb.BinaryReader): RelationQuery;
+}
+
+export namespace RelationQuery {
+    export type AsObject = {
+        namespace?: string,
+        object?: string,
+        relation?: string,
+        subject?: Subject.AsObject,
+    }
+}
+
 export class Subject extends jspb.Message { 
 
     hasId(): boolean;

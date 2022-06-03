@@ -2,6 +2,7 @@ package relationtuple
 
 import (
 	"fmt"
+	"github.com/ory/keto/internal/x"
 
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 
@@ -37,7 +38,7 @@ func newDeleteAllCmd() *cobra.Command {
 func deleteRelationTuplesFromQuery(cmd *cobra.Command, args []string) error {
 	if !flagx.MustGetBool(cmd, FlagForce) {
 		_, _ = fmt.Fprintf(cmd.OutOrStdout(), "WARNING: This operation is not reversible. Please use the `--%s` flag to proceed.\nThese tuples would be deleted:\n\n", FlagForce)
-		return getTuples(pointerx.Int32(100), pointerx.String(""))(cmd, args)
+		return getTuples(x.Ptr(int32(100)), pointerx.String(""))(cmd, args)
 	}
 
 	if cmd.Flags().Changed(FlagSubject) {

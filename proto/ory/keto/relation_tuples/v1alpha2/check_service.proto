@@ -29,13 +29,16 @@ message CheckRequest {
   // evaluates a RelationTuple specifying a SubjectSet as
   // subject or due to a rewrite rule in a namespace config
   // this check request may involve other namespaces automatically.
-  string namespace = 1;
+  string namespace = 1 [deprecated = true];
   // The related object in this check.
-  string object = 2;
+  string object = 2 [deprecated = true];
   // The relation between the Object and the Subject.
-  string relation = 3;
+  string relation = 3 [deprecated = true];
   // The related subject in this check.
-  Subject subject = 4;
+  Subject subject = 4 [deprecated = true];
+
+  RelationQuery query = 8;
+
   // This field is not implemented yet and has no effect.
   // <!--
   // Set this field to `true` in case your application

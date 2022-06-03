@@ -10,7 +10,6 @@ import (
 	"github.com/ory/x/sqlcon"
 	"github.com/pkg/errors"
 
-	"github.com/ory/keto/internal/namespace"
 	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/internal/x"
 )
@@ -32,46 +31,33 @@ type (
 	relationTuples []*RelationTuple
 )
 
-func (relationTuples) TableName(_ context.Context) string {
+func (relationTuples) TableName() string {
 	return "keto_relation_tuples"
 }
 
-func (RelationTuple) TableName(_ context.Context) string {
+func (RelationTuple) TableName() string {
 	return "keto_relation_tuples"
 }
 
-func (r *RelationTuple) toInternal(ctx context.Context, nm namespace.Manager, p *Persister) (*relationtuple.InternalRelationTuple, error) {
+func (r *RelationTuple) toInternal() (*relationtuple.InternalRelationTuple, error) {
 	if r == nil {
 		return nil, nil
-	}
-
-	n, err := p.GetNamespaceByID(ctx, r.NamespaceID)
-	if err != nil {
-		return nil, err
 	}
 
 	rt := &relationtuple.InternalRelationTuple{
 		Relation:  r.Relation,
 		Object:    r.Object,
-		Namespace: n.Name,
+		Namespace: r.NamespaceID,
 	}
 
 	if r.SubjectID.Valid {
 		rt.Subject = &relationtuple.SubjectID{
-			ID: r.SubjectID.String,
+			ID: r.SubjectID.UUID,
 		}
 	} else {
-		n, err := p.GetNamespaceByID(ctx, r.SubjectSetNamespaceID.Int32)
-		if err != nil {
-			return nil, err
-		}
-		sn, err := nm.GetNamespaceByConfigID(ctx, n.ID)
-		if err != nil {
-			return nil, err
-		}
 		rt.Subject = &relationtuple.SubjectSet{
-			Namespace: sn.Name,
-			Object:    r.SubjectSetObject.String,
+			Namespace: r.SubjectSetNamespaceID.Int32,
+			Object:    r.SubjectSetObject.UUID,
 			Relation:  r.SubjectSetRelation.String,
 		}
 	}
@@ -79,30 +65,25 @@ func (r *RelationTuple) toInternal(ctx context.Context, nm namespace.Manager, p 
 	return rt, nil
 }
 
-func (r *RelationTuple) insertSubject(ctx context.Context, p *Persister, s relationtuple.Subject) error {
+func (r *RelationTuple) insertSubject(_ context.Context, s relationtuple.Subject) error {
 	switch st := s.(type) {
 	case *relationtuple.SubjectID:
-		r.SubjectID = sql.NullString{
-			String: st.ID,
-			Valid:  true,
-		}
-		r.SubjectSetNamespaceID = sql.NullInt32{}
-		r.SubjectSetObject = sql.NullString{}
-		r.SubjectSetRelation = sql.NullString{}
-	case *relationtuple.SubjectSet:
-		n, err := p.GetNamespaceByName(ctx, st.Namespace)
-		if err != nil {
-			return err
-		}
-
-		r.SubjectID = sql.NullString{}
-		r.SubjectSetNamespaceID = sql.NullInt32{
-			Int32: n.ID,
+		r.SubjectID = uuid.NullUUID{
+			UUID:  st.ID,
 			Valid: true,
 		}
-		r.SubjectSetObject = sql.NullString{
-			String: st.Object,
-			Valid:  true,
+		r.SubjectSetNamespaceID = sql.NullInt32{}
+		r.SubjectSetObject = uuid.NullUUID{}
+		r.SubjectSetRelation = sql.NullString{}
+	case *relationtuple.SubjectSet:
+		r.SubjectID = uuid.NullUUID{}
+		r.SubjectSetNamespaceID = sql.NullInt32{
+			Int32: st.Namespace,
+			Valid: true,
+		}
+		r.SubjectSetObject = uuid.NullUUID{
+			UUID:  st.Object,
+			Valid: true,
 		}
 		r.SubjectSetRelation = sql.NullString{
 			String: st.Relation,
@@ -116,16 +97,11 @@ func (r *RelationTuple) FromInternal(ctx context.Context, p *Persister, rt *rela
 	ctx, span := p.d.Tracer(ctx).Tracer().Start(ctx, "persistence.sql.FromInternal")
 	defer span.End()
 
-	n, err := p.GetNamespaceByName(ctx, rt.Namespace)
-	if err != nil {
-		return err
-	}
-
-	r.NamespaceID = n.ID
+	r.NamespaceID = rt.Namespace
 	r.Object = rt.Object
 	r.Relation = rt.Relation
 
-	return r.insertSubject(ctx, p, rt.Subject)
+	return r.insertSubject(ctx, rt.Subject)
 }
 
 func (p *Persister) InsertRelationTuple(ctx context.Context, rel *relationtuple.InternalRelationTuple) error {
@@ -136,7 +112,7 @@ func (p *Persister) InsertRelationTuple(ctx context.Context, rel *relationtuple.
 		return errors.WithStack(relationtuple.ErrNilSubject)
 	}
 
-	p.d.Logger().WithFields(rel.ToLoggerFields()).Trace("creating in database")
+	p.d.Logger().Trace("creating tuples in database")
 
 	rt := &RelationTuple{
 		ID:         uuid.Must(uuid.NewV4()),
@@ -154,7 +130,7 @@ func (p *Persister) InsertRelationTuple(ctx context.Context, rel *relationtuple.
 	return nil
 }
 
-func (p *Persister) whereSubject(ctx context.Context, q *pop.Query, sub relationtuple.Subject) error {
+func (p *Persister) whereSubject(_ context.Context, q *pop.Query, sub relationtuple.Subject) error {
 	switch s := sub.(type) {
 	case *relationtuple.SubjectID:
 		q.
@@ -164,13 +140,8 @@ func (p *Persister) whereSubject(ctx context.Context, q *pop.Query, sub relation
 			Where("subject_set_object IS NULL").
 			Where("subject_set_relation IS NULL")
 	case *relationtuple.SubjectSet:
-		n, err := p.GetNamespaceByName(ctx, s.Namespace)
-		if err != nil {
-			return err
-		}
-
 		q.
-			Where("subject_set_namespace_id = ?", n.ID).
+			Where("subject_set_namespace_id = ?", s.Namespace).
 			Where("subject_set_object = ?", s.Object).
 			Where("subject_set_relation = ?", s.Relation).
 			// NULL checks to leverage partial indexes
@@ -182,17 +153,13 @@ func (p *Persister) whereSubject(ctx context.Context, q *pop.Query, sub relation
 }
 
 func (p *Persister) whereQuery(ctx context.Context, q *pop.Query, rq *relationtuple.RelationQuery) error {
-	if rq.Namespace != "" {
-		n, err := p.GetNamespaceByName(ctx, rq.Namespace)
-		if err != nil {
-			return err
-		}
-		q.Where("namespace_id = ?", n.ID)
+	if rq.Namespace != nil {
+		q.Where("namespace_id = ?", rq.Namespace)
 	}
-	if rq.Object != "" {
+	if rq.Object != nil {
 		q.Where("object = ?", rq.Object)
 	}
-	if rq.Relation != "" {
+	if rq.Relation != nil {
 		q.Where("relation = ?", rq.Relation)
 	}
 	if s := rq.Subject(); s != nil {
@@ -209,13 +176,8 @@ func (p *Persister) DeleteRelationTuples(ctx context.Context, rs ...*relationtup
 
 	return p.Transaction(ctx, func(ctx context.Context, _ *pop.Connection) error {
 		for _, r := range rs {
-			n, err := p.GetNamespaceByName(ctx, r.Namespace)
-			if err != nil {
-				return err
-			}
-
 			q := p.QueryWithNetwork(ctx).
-				Where("namespace_id = ?", n.ID).
+				Where("namespace_id = ?", r.Namespace).
 				Where("object = ?", r.Object).
 				Where("relation = ?", r.Relation)
 			if err := p.whereSubject(ctx, q, r.Subject); err != nil {
@@ -256,11 +218,6 @@ func (p *Persister) GetRelationTuples(ctx context.Context, query *relationtuple.
 		return nil, "", err
 	}
 
-	nm, err := p.d.Config(ctx).NamespaceManager()
-	if err != nil {
-		return nil, "", err
-	}
-
 	sqlQuery := p.QueryWithNetwork(ctx).
 		Order("nid, namespace_id, object, relation, subject_id, subject_set_namespace_id, subject_set_object, subject_set_relation, commit_time").
 		Paginate(pagination.Page, pagination.PerPage)
@@ -282,7 +239,7 @@ func (p *Persister) GetRelationTuples(ctx context.Context, query *relationtuple.
 	internalRes := make([]*relationtuple.InternalRelationTuple, len(res))
 	for i, r := range res {
 		var err error
-		internalRes[i], err = r.toInternal(ctx, nm, p)
+		internalRes[i], err = r.toInternal()
 		if err != nil {
 			return nil, "", err
 		}

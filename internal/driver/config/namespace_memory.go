@@ -27,6 +27,17 @@ func NewMemoryNamespaceManager(nn ...*namespace.Namespace) *memoryNamespaceManag
 	return &nm
 }
 
+func GetNamespace[ID string | int32](ctx context.Context, nm namespace.Manager, id ID) (*namespace.Namespace, error) {
+	switch i := id.(type) {
+	case int32:
+		return nm.GetNamespaceByConfigID(ctx, i)
+	case string:
+		return nm.GetNamespaceByName(ctx, i)
+	default:
+		panic("Unsupported type")
+	}
+}
+
 func (s *memoryNamespaceManager) GetNamespaceByName(_ context.Context, name string) (*namespace.Namespace, error) {
 	for _, n := range *s {
 		if n.Name == name {

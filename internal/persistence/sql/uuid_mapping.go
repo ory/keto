@@ -126,6 +126,10 @@ func (p *Persister) MapStringsToUUIDs(ctx context.Context, s ...string) ([]uuid.
 	return p.batchToUUIDs(ctx, s)
 }
 
+func (p *Persister) MapUUIDsToStrings(ctx context.Context, u ...uuid.UUID) ([]string, error) {
+	return p.batchFromUUIDs(ctx, u)
+}
+
 func (p *Persister) MapFieldsToUUID(ctx context.Context, m relationtuple.UUIDMappable) error {
 	fields := filterFields(m.UUIDMappableFields())
 	values := make([]string, len(fields))

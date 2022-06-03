@@ -99,6 +99,94 @@ func (x *RelationTuple) GetSubject() *Subject {
 	return nil
 }
 
+// The query for listing relation tuples.
+// Clients can specify any optional field to
+// partially filter for specific relation tuples.
+//
+// Example use cases (namespace is always required):
+//  - object only: display a list of all permissions referring to a specific object
+//  - relation only: get all groups that have members; get all directories that have content
+//  - object & relation: display all subjects that have a specific permission relation
+//  - subject & relation: display all groups a subject belongs to; display all objects a subject has access to
+//  - object & relation & subject: check whether the relation tuple already exists
+type RelationQuery struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// The namespace this relation tuple lives in.
+	Namespace *string `protobuf:"bytes,1,opt,name=namespace,proto3,oneof" json:"namespace,omitempty"`
+	// The object related by this tuple.
+	// It is an object in the namespace of the tuple.
+	Object *string `protobuf:"bytes,2,opt,name=object,proto3,oneof" json:"object,omitempty"`
+	// The relation between an Object and a Subject.
+	Relation *string `protobuf:"bytes,3,opt,name=relation,proto3,oneof" json:"relation,omitempty"`
+	// The subject related by this tuple.
+	// A Subject either represents a concrete subject id or
+	// a `SubjectSet` that expands to more Subjects.
+	Subject *Subject `protobuf:"bytes,4,opt,name=subject,proto3,oneof" json:"subject,omitempty"`
+}
+
+func (x *RelationQuery) Reset() {
+	*x = RelationQuery{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_ory_keto_relation_tuples_v1alpha2_relation_tuples_proto_msgTypes[1]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *RelationQuery) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RelationQuery) ProtoMessage() {}
+
+func (x *RelationQuery) ProtoReflect() protoreflect.Message {
+	mi := &file_ory_keto_relation_tuples_v1alpha2_relation_tuples_proto_msgTypes[1]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RelationQuery.ProtoReflect.Descriptor instead.
+func (*RelationQuery) Descriptor() ([]byte, []int) {
+	return file_ory_keto_relation_tuples_v1alpha2_relation_tuples_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *RelationQuery) GetNamespace() string {
+	if x != nil && x.Namespace != nil {
+		return *x.Namespace
+	}
+	return ""
+}
+
+func (x *RelationQuery) GetObject() string {
+	if x != nil && x.Object != nil {
+		return *x.Object
+	}
+	return ""
+}
+
+func (x *RelationQuery) GetRelation() string {
+	if x != nil && x.Relation != nil {
+		return *x.Relation
+	}
+	return ""
+}
+
+func (x *RelationQuery) GetSubject() *Subject {
+	if x != nil {
+		return x.Subject
+	}
+	return nil
+}
+
 // Subject is either a concrete subject id or
 // a `SubjectSet` expanding to more Subjects.
 type Subject struct {
@@ -117,7 +205,7 @@ type Subject struct {
 func (x *Subject) Reset() {
 	*x = Subject{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_ory_keto_relation_tuples_v1alpha2_relation_tuples_proto_msgTypes[1]
+		mi := &file_ory_keto_relation_tuples_v1alpha2_relation_tuples_proto_msgTypes[2]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -130,7 +218,7 @@ func (x *Subject) String() string {
 func (*Subject) ProtoMessage() {}
 
 func (x *Subject) ProtoReflect() protoreflect.Message {
-	mi := &file_ory_keto_relation_tuples_v1alpha2_relation_tuples_proto_msgTypes[1]
+	mi := &file_ory_keto_relation_tuples_v1alpha2_relation_tuples_proto_msgTypes[2]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -143,7 +231,7 @@ func (x *Subject) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Subject.ProtoReflect.Descriptor instead.
 func (*Subject) Descriptor() ([]byte, []int) {
-	return file_ory_keto_relation_tuples_v1alpha2_relation_tuples_proto_rawDescGZIP(), []int{1}
+	return file_ory_keto_relation_tuples_v1alpha2_relation_tuples_proto_rawDescGZIP(), []int{2}
 }
 
 func (m *Subject) GetRef() isSubject_Ref {
@@ -205,7 +293,7 @@ type SubjectSet struct {
 func (x *SubjectSet) Reset() {
 	*x = SubjectSet{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_ory_keto_relation_tuples_v1alpha2_relation_tuples_proto_msgTypes[2]
+		mi := &file_ory_keto_relation_tuples_v1alpha2_relation_tuples_proto_msgTypes[3]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -218,7 +306,7 @@ func (x *SubjectSet) String() string {
 func (*SubjectSet) ProtoMessage() {}
 
 func (x *SubjectSet) ProtoReflect() protoreflect.Message {
-	mi := &file_ory_keto_relation_tuples_v1alpha2_relation_tuples_proto_msgTypes[2]
+	mi := &file_ory_keto_relation_tuples_v1alpha2_relation_tuples_proto_msgTypes[3]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -231,7 +319,7 @@ func (x *SubjectSet) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SubjectSet.ProtoReflect.Descriptor instead.
 func (*SubjectSet) Descriptor() ([]byte, []int) {
-	return file_ory_keto_relation_tuples_v1alpha2_relation_tuples_proto_rawDescGZIP(), []int{2}
+	return file_ory_keto_relation_tuples_v1alpha2_relation_tuples_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *SubjectSet) GetNamespace() string {
@@ -274,6 +362,21 @@ var file_ory_keto_relation_tuples_v1alpha2_relation_tuples_proto_rawDesc = []byt
 	0x0b, 0x32, 0x2a, 0x2e, 0x6f, 0x72, 0x79, 0x2e, 0x6b, 0x65, 0x74, 0x6f, 0x2e, 0x72, 0x65, 0x6c,
 	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x74, 0x75, 0x70, 0x6c, 0x65, 0x73, 0x2e, 0x76, 0x31, 0x61,
 	0x6c, 0x70, 0x68, 0x61, 0x32, 0x2e, 0x53, 0x75, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x52, 0x07, 0x73,
+	0x75, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x22, 0xed, 0x01, 0x0a, 0x0d, 0x52, 0x65, 0x6c, 0x61, 0x74,
+	0x69, 0x6f, 0x6e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x12, 0x21, 0x0a, 0x09, 0x6e, 0x61, 0x6d, 0x65,
+	0x73, 0x70, 0x61, 0x63, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x48, 0x00, 0x52, 0x09, 0x6e,
+	0x61, 0x6d, 0x65, 0x73, 0x70, 0x61, 0x63, 0x65, 0x88, 0x01, 0x01, 0x12, 0x1b, 0x0a, 0x06, 0x6f,
+	0x62, 0x6a, 0x65, 0x63, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x48, 0x01, 0x52, 0x06, 0x6f,
+	0x62, 0x6a, 0x65, 0x63, 0x74, 0x88, 0x01, 0x01, 0x12, 0x1f, 0x0a, 0x08, 0x72, 0x65, 0x6c, 0x61,
+	0x74, 0x69, 0x6f, 0x6e, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x48, 0x02, 0x52, 0x08, 0x72, 0x65,
+	0x6c, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x88, 0x01, 0x01, 0x12, 0x49, 0x0a, 0x07, 0x73, 0x75, 0x62,
+	0x6a, 0x65, 0x63, 0x74, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x2a, 0x2e, 0x6f, 0x72, 0x79,
+	0x2e, 0x6b, 0x65, 0x74, 0x6f, 0x2e, 0x72, 0x65, 0x6c, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x74,
+	0x75, 0x70, 0x6c, 0x65, 0x73, 0x2e, 0x76, 0x31, 0x61, 0x6c, 0x70, 0x68, 0x61, 0x32, 0x2e, 0x53,
+	0x75, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x48, 0x03, 0x52, 0x07, 0x73, 0x75, 0x62, 0x6a, 0x65, 0x63,
+	0x74, 0x88, 0x01, 0x01, 0x42, 0x0c, 0x0a, 0x0a, 0x5f, 0x6e, 0x61, 0x6d, 0x65, 0x73, 0x70, 0x61,
+	0x63, 0x65, 0x42, 0x09, 0x0a, 0x07, 0x5f, 0x6f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x42, 0x0b, 0x0a,
+	0x09, 0x5f, 0x72, 0x65, 0x6c, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x42, 0x0a, 0x0a, 0x08, 0x5f, 0x73,
 	0x75, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x22, 0x65, 0x0a, 0x07, 0x53, 0x75, 0x62, 0x6a, 0x65, 0x63,
 	0x74, 0x12, 0x10, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x48, 0x00, 0x52,
 	0x02, 0x69, 0x64, 0x12, 0x41, 0x0a, 0x03, 0x73, 0x65, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b,
@@ -314,20 +417,22 @@ func file_ory_keto_relation_tuples_v1alpha2_relation_tuples_proto_rawDescGZIP() 
 	return file_ory_keto_relation_tuples_v1alpha2_relation_tuples_proto_rawDescData
 }
 
-var file_ory_keto_relation_tuples_v1alpha2_relation_tuples_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_ory_keto_relation_tuples_v1alpha2_relation_tuples_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_ory_keto_relation_tuples_v1alpha2_relation_tuples_proto_goTypes = []interface{}{
 	(*RelationTuple)(nil), // 0: ory.keto.relation_tuples.v1alpha2.RelationTuple
-	(*Subject)(nil),       // 1: ory.keto.relation_tuples.v1alpha2.Subject
-	(*SubjectSet)(nil),    // 2: ory.keto.relation_tuples.v1alpha2.SubjectSet
+	(*RelationQuery)(nil), // 1: ory.keto.relation_tuples.v1alpha2.RelationQuery
+	(*Subject)(nil),       // 2: ory.keto.relation_tuples.v1alpha2.Subject
+	(*SubjectSet)(nil),    // 3: ory.keto.relation_tuples.v1alpha2.SubjectSet
 }
 var file_ory_keto_relation_tuples_v1alpha2_relation_tuples_proto_depIdxs = []int32{
-	1, // 0: ory.keto.relation_tuples.v1alpha2.RelationTuple.subject:type_name -> ory.keto.relation_tuples.v1alpha2.Subject
-	2, // 1: ory.keto.relation_tuples.v1alpha2.Subject.set:type_name -> ory.keto.relation_tuples.v1alpha2.SubjectSet
-	2, // [2:2] is the sub-list for method output_type
-	2, // [2:2] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	2, // 0: ory.keto.relation_tuples.v1alpha2.RelationTuple.subject:type_name -> ory.keto.relation_tuples.v1alpha2.Subject
+	2, // 1: ory.keto.relation_tuples.v1alpha2.RelationQuery.subject:type_name -> ory.keto.relation_tuples.v1alpha2.Subject
+	3, // 2: ory.keto.relation_tuples.v1alpha2.Subject.set:type_name -> ory.keto.relation_tuples.v1alpha2.SubjectSet
+	3, // [3:3] is the sub-list for method output_type
+	3, // [3:3] is the sub-list for method input_type
+	3, // [3:3] is the sub-list for extension type_name
+	3, // [3:3] is the sub-list for extension extendee
+	0, // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_ory_keto_relation_tuples_v1alpha2_relation_tuples_proto_init() }
@@ -349,7 +454,7 @@ func file_ory_keto_relation_tuples_v1alpha2_relation_tuples_proto_init() {
 			}
 		}
 		file_ory_keto_relation_tuples_v1alpha2_relation_tuples_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Subject); i {
+			switch v := v.(*RelationQuery); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -361,6 +466,18 @@ func file_ory_keto_relation_tuples_v1alpha2_relation_tuples_proto_init() {
 			}
 		}
 		file_ory_keto_relation_tuples_v1alpha2_relation_tuples_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Subject); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_ory_keto_relation_tuples_v1alpha2_relation_tuples_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*SubjectSet); i {
 			case 0:
 				return &v.state
@@ -373,7 +490,8 @@ func file_ory_keto_relation_tuples_v1alpha2_relation_tuples_proto_init() {
 			}
 		}
 	}
-	file_ory_keto_relation_tuples_v1alpha2_relation_tuples_proto_msgTypes[1].OneofWrappers = []interface{}{
+	file_ory_keto_relation_tuples_v1alpha2_relation_tuples_proto_msgTypes[1].OneofWrappers = []interface{}{}
+	file_ory_keto_relation_tuples_v1alpha2_relation_tuples_proto_msgTypes[2].OneofWrappers = []interface{}{
 		(*Subject_Id)(nil),
 		(*Subject_Set)(nil),
 	}
@@ -383,7 +501,7 @@ func file_ory_keto_relation_tuples_v1alpha2_relation_tuples_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_ory_keto_relation_tuples_v1alpha2_relation_tuples_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   3,
+			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

@@ -2,6 +2,7 @@ package relationtuple
 
 import (
 	"fmt"
+	"github.com/ory/keto/ketoapi"
 
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 
@@ -9,7 +10,6 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/ory/keto/cmd/client"
-	"github.com/ory/keto/internal/relationtuple"
 )
 
 func newDeleteCmd() *cobra.Command {
@@ -34,7 +34,7 @@ func transactRelationTuples(action rts.RelationTupleDelta_Action) func(*cobra.Co
 			return err
 		}
 
-		var tuples []*relationtuple.InternalRelationTuple
+		var tuples []*ketoapi.RelationTuple
 		var deltas []*rts.RelationTupleDelta
 		for _, fn := range args {
 			tuple, err := readTuplesFromArg(cmd, fn)
@@ -60,7 +60,7 @@ func transactRelationTuples(action rts.RelationTupleDelta_Action) func(*cobra.Co
 			return cmdx.FailSilently(cmd)
 		}
 
-		cmdx.PrintTable(cmd, relationtuple.NewRelationCollection(tuples))
+		cmdx.PrintTable(cmd, NewAPICollection(tuples))
 		return nil
 	}
 }

@@ -91,6 +91,11 @@ export class DeleteRelationTuplesRequest extends jspb.Message {
     getQuery(): DeleteRelationTuplesRequest.Query | undefined;
     setQuery(value?: DeleteRelationTuplesRequest.Query): DeleteRelationTuplesRequest;
 
+    hasRelationQuery(): boolean;
+    clearRelationQuery(): void;
+    getRelationQuery(): ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationQuery | undefined;
+    setRelationQuery(value?: ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationQuery): DeleteRelationTuplesRequest;
+
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): DeleteRelationTuplesRequest.AsObject;
     static toObject(includeInstance: boolean, msg: DeleteRelationTuplesRequest): DeleteRelationTuplesRequest.AsObject;
@@ -104,6 +109,7 @@ export class DeleteRelationTuplesRequest extends jspb.Message {
 export namespace DeleteRelationTuplesRequest {
     export type AsObject = {
         query?: DeleteRelationTuplesRequest.Query.AsObject,
+        relationQuery?: ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationQuery.AsObject,
     }
 
 

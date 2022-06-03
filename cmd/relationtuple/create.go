@@ -3,14 +3,13 @@ package relationtuple
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/ory/keto/ketoapi"
 	"io"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
-
-	"github.com/ory/keto/internal/relationtuple"
 
 	"github.com/spf13/cobra"
 
@@ -32,7 +31,7 @@ func newCreateCmd() *cobra.Command {
 	return cmd
 }
 
-func readTuplesFromArg(cmd *cobra.Command, arg string) ([]*relationtuple.InternalRelationTuple, error) {
+func readTuplesFromArg(cmd *cobra.Command, arg string) ([]*ketoapi.RelationTuple, error) {
 	var f io.Reader
 	if arg == "-" {
 		f = cmd.InOrStdin()
@@ -49,7 +48,7 @@ func readTuplesFromArg(cmd *cobra.Command, arg string) ([]*relationtuple.Interna
 				return nil, err
 			}
 
-			var tuples []*relationtuple.InternalRelationTuple
+			var tuples []*ketoapi.RelationTuple
 			for _, child := range fi {
 				t, err := readTuplesFromArg(cmd, filepath.Join(arg, child.Name()))
 				if err != nil {
@@ -75,19 +74,19 @@ func readTuplesFromArg(cmd *cobra.Command, arg string) ([]*relationtuple.Interna
 
 	// it is ok to not validate beforehand because json.Unmarshal will report errors
 	if fc[0] == '[' {
-		var rts []*relationtuple.InternalRelationTuple
-		if err := json.Unmarshal(fc, &rts); err != nil {
+		var ts []*ketoapi.RelationTuple
+		if err := json.Unmarshal(fc, &ts); err != nil {
 			_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not decode: %s\n", err)
 			return nil, cmdx.FailSilently(cmd)
 		}
-		return rts, nil
+		return ts, nil
 	}
 
-	var r relationtuple.InternalRelationTuple
+	var r ketoapi.RelationTuple
 	if err := json.Unmarshal(fc, &r); err != nil {
 		_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not decode: %s\n", err)
 		return nil, cmdx.FailSilently(cmd)
 	}
 
-	return []*relationtuple.InternalRelationTuple{&r}, nil
+	return []*ketoapi.RelationTuple{&r}, nil
 }

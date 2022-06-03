@@ -13,13 +13,7 @@
 
 var jspb = require('google-protobuf');
 var goog = jspb;
-var global = (function() {
-  if (this) { return this; }
-  if (typeof window !== 'undefined') { return window; }
-  if (typeof global !== 'undefined') { return global; }
-  if (typeof self !== 'undefined') { return self; }
-  return Function('return this')();
-}.call(null));
+var global = (function() { return this || window || global || self || Function('return this')(); }).call(null);
 
 var ory_keto_relation_tuples_v1alpha2_relation_tuples_pb = require('../../../../ory/keto/relation_tuples/v1alpha2/relation_tuples_pb.js');
 goog.object.extend(proto, ory_keto_relation_tuples_v1alpha2_relation_tuples_pb);
@@ -103,6 +97,7 @@ proto.ory.keto.relation_tuples.v1alpha2.CheckRequest.toObject = function(include
     object: jspb.Message.getFieldWithDefault(msg, 2, ""),
     relation: jspb.Message.getFieldWithDefault(msg, 3, ""),
     subject: (f = msg.getSubject()) && ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.Subject.toObject(includeInstance, f),
+    query: (f = msg.getQuery()) && ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationQuery.toObject(includeInstance, f),
     latest: jspb.Message.getBooleanFieldWithDefault(msg, 5, false),
     snaptoken: jspb.Message.getFieldWithDefault(msg, 6, ""),
     maxDepth: jspb.Message.getFieldWithDefault(msg, 7, 0)
@@ -158,6 +153,11 @@ proto.ory.keto.relation_tuples.v1alpha2.CheckRequest.deserializeBinaryFromReader
       var value = new ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.Subject;
       reader.readMessage(value,ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.Subject.deserializeBinaryFromReader);
       msg.setSubject(value);
+      break;
+    case 8:
+      var value = new ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationQuery;
+      reader.readMessage(value,ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationQuery.deserializeBinaryFromReader);
+      msg.setQuery(value);
       break;
     case 5:
       var value = /** @type {boolean} */ (reader.readBool());
@@ -227,6 +227,14 @@ proto.ory.keto.relation_tuples.v1alpha2.CheckRequest.serializeBinaryToWriter = f
       4,
       f,
       ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.Subject.serializeBinaryToWriter
+    );
+  }
+  f = message.getQuery();
+  if (f != null) {
+    writer.writeMessage(
+      8,
+      f,
+      ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationQuery.serializeBinaryToWriter
     );
   }
   f = message.getLatest();
@@ -341,6 +349,43 @@ proto.ory.keto.relation_tuples.v1alpha2.CheckRequest.prototype.clearSubject = fu
  */
 proto.ory.keto.relation_tuples.v1alpha2.CheckRequest.prototype.hasSubject = function() {
   return jspb.Message.getField(this, 4) != null;
+};
+
+
+/**
+ * optional RelationQuery query = 8;
+ * @return {?proto.ory.keto.relation_tuples.v1alpha2.RelationQuery}
+ */
+proto.ory.keto.relation_tuples.v1alpha2.CheckRequest.prototype.getQuery = function() {
+  return /** @type{?proto.ory.keto.relation_tuples.v1alpha2.RelationQuery} */ (
+    jspb.Message.getWrapperField(this, ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationQuery, 8));
+};
+
+
+/**
+ * @param {?proto.ory.keto.relation_tuples.v1alpha2.RelationQuery|undefined} value
+ * @return {!proto.ory.keto.relation_tuples.v1alpha2.CheckRequest} returns this
+*/
+proto.ory.keto.relation_tuples.v1alpha2.CheckRequest.prototype.setQuery = function(value) {
+  return jspb.Message.setWrapperField(this, 8, value);
+};
+
+
+/**
+ * Clears the message field making it undefined.
+ * @return {!proto.ory.keto.relation_tuples.v1alpha2.CheckRequest} returns this
+ */
+proto.ory.keto.relation_tuples.v1alpha2.CheckRequest.prototype.clearQuery = function() {
+  return this.setQuery(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.ory.keto.relation_tuples.v1alpha2.CheckRequest.prototype.hasQuery = function() {
+  return jspb.Message.getField(this, 8) != null;
 };
 
 

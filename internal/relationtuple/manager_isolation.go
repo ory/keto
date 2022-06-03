@@ -2,6 +2,8 @@ package relationtuple
 
 import (
 	"context"
+	"github.com/gofrs/uuid"
+	"math/rand"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -36,30 +38,29 @@ func reset(t *testing.T, ms ...Manager) {
 	}
 }
 
-func IsolationTest(t *testing.T, m0, m1 Manager, addNamespace func(context.Context, *testing.T, string)) {
+func IsolationTest(t *testing.T, m0, m1 Manager) {
 	ctx := context.Background()
 	run := twice(t, m0, m1)
 
 	run("suite=lifecycle", func(t *testing.T, m0, m1 Manager) {
-		nspace := t.Name()
-		addNamespace(ctx, t, nspace)
+		nspace := rand.Int31()
 
 		rts := []*InternalRelationTuple{
 			{
 				Namespace: nspace,
-				Object:    "a",
+				Object:    uuid.Must(uuid.NewV4()),
 				Relation:  "r",
 				Subject: &SubjectSet{
 					Namespace: nspace,
-					Object:    "o",
+					Object:    uuid.Must(uuid.NewV4()),
 					Relation:  "r",
 				},
 			},
 			{
 				Namespace: nspace,
-				Object:    "b",
+				Object:    uuid.Must(uuid.NewV4()),
 				Relation:  "r",
-				Subject:   &SubjectID{ID: "s"},
+				Subject:   &SubjectID{ID: uuid.Must(uuid.NewV4())},
 			},
 		}
 
@@ -68,11 +69,11 @@ func IsolationTest(t *testing.T, m0, m1 Manager, addNamespace func(context.Conte
 
 			require.NoError(t, m0.WriteRelationTuples(ctx, rts...))
 
-			other, _, err := m1.GetRelationTuples(ctx, &RelationQuery{Namespace: nspace})
+			other, _, err := m1.GetRelationTuples(ctx, &RelationQuery{Namespace: &nspace})
 			require.NoError(t, err)
 			assert.Len(t, other, 0)
 
-			actual, _, err := m0.GetRelationTuples(ctx, &RelationQuery{Namespace: nspace})
+			actual, _, err := m0.GetRelationTuples(ctx, &RelationQuery{Namespace: &nspace})
 			require.NoError(t, err)
 			assert.Equal(t, rts, actual)
 		})
@@ -84,11 +85,11 @@ func IsolationTest(t *testing.T, m0, m1 Manager, addNamespace func(context.Conte
 
 			require.NoError(t, m0.DeleteRelationTuples(ctx, rts...))
 
-			deleted, _, err := m0.GetRelationTuples(ctx, &RelationQuery{Namespace: nspace})
+			deleted, _, err := m0.GetRelationTuples(ctx, &RelationQuery{Namespace: &nspace})
 			require.NoError(t, err)
 			assert.Len(t, deleted, 0)
 
-			actual, _, err := m1.GetRelationTuples(ctx, &RelationQuery{Namespace: nspace})
+			actual, _, err := m1.GetRelationTuples(ctx, &RelationQuery{Namespace: &nspace})
 			require.NoError(t, err)
 			assert.Equal(t, rts, actual)
 		})
@@ -102,10 +103,10 @@ func IsolationTest(t *testing.T, m0, m1 Manager, addNamespace func(context.Conte
 
 				require.NoError(t, m1.TransactRelationTuples(ctx, []*InternalRelationTuple{rts[1]}, []*InternalRelationTuple{rts[0]}))
 
-				r0, _, err := m0.GetRelationTuples(ctx, &RelationQuery{Namespace: nspace})
+				r0, _, err := m0.GetRelationTuples(ctx, &RelationQuery{Namespace: &nspace})
 				require.NoError(t, err)
 
-				r1, _, err := m1.GetRelationTuples(ctx, &RelationQuery{Namespace: nspace})
+				r1, _, err := m1.GetRelationTuples(ctx, &RelationQuery{Namespace: &nspace})
 				require.NoError(t, err)
 
 				assert.Equal(t, rts[:1], r0)

@@ -20,6 +20,7 @@ type (
 	handlerDependencies interface {
 		EngineProvider
 		relationtuple.ManagerProvider
+		relationtuple.MapperProvider
 		x.LoggerProvider
 		x.WriterProvider
 	}
@@ -96,8 +97,8 @@ func (h *Handler) getCheck(w http.ResponseWriter, r *http.Request, _ httprouter.
 		return
 	}
 
-	query, err := (&ketoapi.RelationQuery{}).FromURLQuery(r.URL.Query())
-	if errors.Is(err, relationtuple.ErrNilSubject) {
+	tuple, err := (&ketoapi.RelationTuple{}).FromURLQuery(r.URL.Query())
+	if errors.Is(err, ketoapi.ErrNilSubject) {
 		h.d.Writer().WriteError(w, r, herodot.ErrBadRequest.WithReason("Subject has to be specified."))
 		return
 	} else if err != nil {
@@ -105,12 +106,12 @@ func (h *Handler) getCheck(w http.ResponseWriter, r *http.Request, _ httprouter.
 		return
 	}
 
-	internalQuery, err := relationtuple.InternalRelationQuery(r.Context(), h.d.UUIDMappingManager(), query)
+	internalTuple, err := h.d.UUIDMapper().FromTuple(r.Context(), tuple)
 	if err != nil {
 		h.d.Writer().WriteError(w, r, err)
 		return
 	}
-	allowed, err := h.d.PermissionEngine().SubjectIsAllowed(r.Context(), internalQuery, maxDepth)
+	allowed, err := h.d.PermissionEngine().SubjectIsAllowed(r.Context(), internalTuple[0], maxDepth)
 	if err != nil {
 		h.d.Writer().WriteError(w, r, err)
 		return
@@ -156,12 +157,12 @@ func (h *Handler) postCheck(w http.ResponseWriter, r *http.Request, _ httprouter
 		return
 	}
 
-	internalQuery, err := relationtuple.InternalRelationQuery(r.Context(), h.d.UUIDMappingManager(), query)
-	if err := h.d.PermissionEngine().d.UUIDMappingManager().MapFieldsToUUID(r.Context(), &tuple); err != nil {
+	internalTuple, err := h.d.UUIDMapper().FromTuple(r.Context(), &tuple)
+	if err != nil {
 		h.d.Writer().WriteError(w, r, err)
 		return
 	}
-	allowed, err := h.d.PermissionEngine().SubjectIsAllowed(r.Context(), &tuple, maxDepth)
+	allowed, err := h.d.PermissionEngine().SubjectIsAllowed(r.Context(), internalTuple[0], maxDepth)
 	if err != nil {
 		h.d.Writer().WriteError(w, r, err)
 		return
@@ -176,15 +177,13 @@ func (h *Handler) postCheck(w http.ResponseWriter, r *http.Request, _ httprouter
 }
 
 func (h *Handler) Check(ctx context.Context, req *rts.CheckRequest) (*rts.CheckResponse, error) {
-	tuple, err := (&relationtuple.InternalRelationTuple{}).FromDataProvider(req)
+	tuple := (&ketoapi.RelationTuple{}).FromDataProvider(req)
+
+	internalTuple, err := h.d.UUIDMapper().FromTuple(ctx, tuple)
 	if err != nil {
 		return nil, err
 	}
-
-	if err := h.d.PermissionEngine().d.UUIDMappingManager().MapFieldsToUUID(ctx, tuple); err != nil {
-		return nil, err
-	}
-	allowed, err := h.d.PermissionEngine().SubjectIsAllowed(ctx, tuple, int(req.MaxDepth))
+	allowed, err := h.d.PermissionEngine().SubjectIsAllowed(ctx, internalTuple[0], int(req.MaxDepth))
 	// TODO add content change handling
 	if err != nil {
 		return nil, err

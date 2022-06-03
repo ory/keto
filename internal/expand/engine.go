@@ -57,9 +57,9 @@ func (e *Engine) BuildTree(ctx context.Context, subject relationtuple.Subject, r
 			rels, nextPage, err = e.d.RelationTupleManager().GetRelationTuples(
 				ctx,
 				&relationtuple.RelationQuery{
-					Relation:  us.Relation,
-					Object:    us.Object,
-					Namespace: us.Namespace,
+					Relation:  &us.Relation,
+					Object:    &us.Object,
+					Namespace: &us.Namespace,
 				},
 				x.WithToken(nextPage),
 			)

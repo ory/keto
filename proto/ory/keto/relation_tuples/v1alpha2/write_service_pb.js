@@ -13,13 +13,7 @@
 
 var jspb = require('google-protobuf');
 var goog = jspb;
-var global = (function() {
-  if (this) { return this; }
-  if (typeof window !== 'undefined') { return window; }
-  if (typeof global !== 'undefined') { return global; }
-  if (typeof self !== 'undefined') { return self; }
-  return Function('return this')();
-}.call(null));
+var global = (function() { return this || window || global || self || Function('return this')(); }).call(null);
 
 var ory_keto_relation_tuples_v1alpha2_relation_tuples_pb = require('../../../../ory/keto/relation_tuples/v1alpha2/relation_tuples_pb.js');
 goog.object.extend(proto, ory_keto_relation_tuples_v1alpha2_relation_tuples_pb);
@@ -694,7 +688,8 @@ proto.ory.keto.relation_tuples.v1alpha2.DeleteRelationTuplesRequest.prototype.to
  */
 proto.ory.keto.relation_tuples.v1alpha2.DeleteRelationTuplesRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
-    query: (f = msg.getQuery()) && proto.ory.keto.relation_tuples.v1alpha2.DeleteRelationTuplesRequest.Query.toObject(includeInstance, f)
+    query: (f = msg.getQuery()) && proto.ory.keto.relation_tuples.v1alpha2.DeleteRelationTuplesRequest.Query.toObject(includeInstance, f),
+    relationQuery: (f = msg.getRelationQuery()) && ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationQuery.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -736,6 +731,11 @@ proto.ory.keto.relation_tuples.v1alpha2.DeleteRelationTuplesRequest.deserializeB
       reader.readMessage(value,proto.ory.keto.relation_tuples.v1alpha2.DeleteRelationTuplesRequest.Query.deserializeBinaryFromReader);
       msg.setQuery(value);
       break;
+    case 2:
+      var value = new ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationQuery;
+      reader.readMessage(value,ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationQuery.deserializeBinaryFromReader);
+      msg.setRelationQuery(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -771,6 +771,14 @@ proto.ory.keto.relation_tuples.v1alpha2.DeleteRelationTuplesRequest.serializeBin
       1,
       f,
       proto.ory.keto.relation_tuples.v1alpha2.DeleteRelationTuplesRequest.Query.serializeBinaryToWriter
+    );
+  }
+  f = message.getRelationQuery();
+  if (f != null) {
+    writer.writeMessage(
+      2,
+      f,
+      ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationQuery.serializeBinaryToWriter
     );
   }
 };
@@ -1051,6 +1059,43 @@ proto.ory.keto.relation_tuples.v1alpha2.DeleteRelationTuplesRequest.prototype.cl
  */
 proto.ory.keto.relation_tuples.v1alpha2.DeleteRelationTuplesRequest.prototype.hasQuery = function() {
   return jspb.Message.getField(this, 1) != null;
+};
+
+
+/**
+ * optional RelationQuery relation_query = 2;
+ * @return {?proto.ory.keto.relation_tuples.v1alpha2.RelationQuery}
+ */
+proto.ory.keto.relation_tuples.v1alpha2.DeleteRelationTuplesRequest.prototype.getRelationQuery = function() {
+  return /** @type{?proto.ory.keto.relation_tuples.v1alpha2.RelationQuery} */ (
+    jspb.Message.getWrapperField(this, ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationQuery, 2));
+};
+
+
+/**
+ * @param {?proto.ory.keto.relation_tuples.v1alpha2.RelationQuery|undefined} value
+ * @return {!proto.ory.keto.relation_tuples.v1alpha2.DeleteRelationTuplesRequest} returns this
+*/
+proto.ory.keto.relation_tuples.v1alpha2.DeleteRelationTuplesRequest.prototype.setRelationQuery = function(value) {
+  return jspb.Message.setWrapperField(this, 2, value);
+};
+
+
+/**
+ * Clears the message field making it undefined.
+ * @return {!proto.ory.keto.relation_tuples.v1alpha2.DeleteRelationTuplesRequest} returns this
+ */
+proto.ory.keto.relation_tuples.v1alpha2.DeleteRelationTuplesRequest.prototype.clearRelationQuery = function() {
+  return this.setRelationQuery(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.ory.keto.relation_tuples.v1alpha2.DeleteRelationTuplesRequest.prototype.hasRelationQuery = function() {
+  return jspb.Message.getField(this, 2) != null;
 };
 
 

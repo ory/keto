@@ -1,5 +1,7 @@
 package relationtuple
 
+import "github.com/ory/keto/ketoapi"
+
 var (
 	_ = (*relationTupleWithRequired)(nil)
 	_ = (*patchPayload)(nil)
@@ -37,22 +39,5 @@ type relationTupleWithRequired struct {
 // swagger:parameters patchRelationTuples
 type patchPayload struct {
 	// in:body
-	Payload []*PatchDelta
-}
-
-type PatchDelta struct {
-	Action        patchAction            `json:"action"`
-	RelationTuple *InternalRelationTuple `json:"relation_tuple"`
-}
-
-// swagger:ignore
-type PatchDeltas []*PatchDelta
-
-func (p PatchDeltas) UUIDMappableFields() (res []*string) {
-	for _, pd := range p {
-		if pd.RelationTuple != nil {
-			res = append(res, pd.RelationTuple.UUIDMappableFields()...)
-		}
-	}
-	return
+	Payload []*ketoapi.PatchDelta
 }
