@@ -63,7 +63,8 @@ func (g *sequentialCheckgroup) Result() Result {
 				return result
 			}
 		case <-g.ctx.Done():
-			return Result{Err: context.Canceled}
+			go receiveRemaining(resultCh, 1)
+			return Result{Err: g.ctx.Err()}
 		}
 	}
 

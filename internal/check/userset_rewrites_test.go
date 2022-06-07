@@ -7,6 +7,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"go.uber.org/goleak"
 
 	"github.com/ory/keto/internal/check"
 	"github.com/ory/keto/internal/check/checkgroup"
@@ -223,6 +224,8 @@ func TestUsersetRewrites(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.query, func(t *testing.T) {
+			defer goleak.VerifyNone(t, goleak.IgnoreCurrent())
+
 			rt, err := relationtuple.InternalFromString(tc.query)
 			require.NoError(t, err)
 
