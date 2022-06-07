@@ -47,11 +47,8 @@ func (e *Engine) checkDirect(
 	restDepth int,
 ) checkgroup.Func {
 	if restDepth < 0 {
-		e.d.Logger().
-			Debug("reached max-depth, therefore this query will not be further expanded")
-		return func(_ context.Context, resultCh chan<- checkgroup.Result) {
-			resultCh <- checkgroup.Result{Membership: checkgroup.MembershipUnknown}
-		}
+		e.d.Logger().Debug("reached max-depth, therefore this query will not be further expanded")
+		return checkgroup.UnknownMemberFunc
 	}
 
 	// This is the same as the graph problem "can requested.Subject be reached
@@ -106,9 +103,7 @@ func (e *Engine) checkOneIndirectionFurther(
 		e.d.Logger().
 			WithFields(requested.ToLoggerFields()).
 			Debug("reached max-depth, therefore this query will not be further expanded")
-		return func(_ context.Context, resultCh chan<- checkgroup.Result) {
-			resultCh <- checkgroup.Result{Membership: checkgroup.MembershipUnknown}
-		}
+		return checkgroup.UnknownMemberFunc
 	}
 
 	return func(ctx context.Context, resultCh chan<- checkgroup.Result) {
@@ -185,11 +180,8 @@ func (e *Engine) Check(ctx context.Context, r *RelationTuple, restDepth int) che
 
 func (e *Engine) checkIsAllowed(ctx context.Context, r *RelationTuple, restDepth int) checkgroup.Func {
 	if restDepth < 0 {
-		e.d.Logger().
-			Debug("reached max-depth, therefore this query will not be further expanded")
-		return func(_ context.Context, resultCh chan<- checkgroup.Result) {
-			resultCh <- checkgroup.Result{Membership: checkgroup.MembershipUnknown}
-		}
+		e.d.Logger().Debug("reached max-depth, therefore this query will not be further expanded")
+		return checkgroup.UnknownMemberFunc
 	}
 
 	e.d.Logger().
@@ -228,11 +220,8 @@ func (e *Engine) checkUsersetRewrite(
 	restDepth int,
 ) checkgroup.Func {
 	if restDepth < 0 {
-		e.d.Logger().
-			Debug("reached max-depth, therefore this query will not be further expanded")
-		return func(_ context.Context, resultCh chan<- checkgroup.Result) {
-			resultCh <- checkgroup.Result{Membership: checkgroup.MembershipUnknown}
-		}
+		e.d.Logger().Debug("reached max-depth, therefore this query will not be further expanded")
+		return checkgroup.UnknownMemberFunc
 	}
 
 	e.d.Logger().
@@ -281,11 +270,8 @@ func (e *Engine) checkComputedUserset(
 	restDepth int,
 ) checkgroup.Func {
 	if restDepth < 0 {
-		e.d.Logger().
-			Debug("reached max-depth, therefore this query will not be further expanded")
-		return func(_ context.Context, resultCh chan<- checkgroup.Result) {
-			resultCh <- checkgroup.Result{Membership: checkgroup.MembershipUnknown}
-		}
+		e.d.Logger().Debug("reached max-depth, therefore this query will not be further expanded")
+		return checkgroup.UnknownMemberFunc
 	}
 
 	e.d.Logger().
@@ -312,11 +298,8 @@ func (e *Engine) checkTupleToUserset(
 	restDepth int,
 ) checkgroup.Func {
 	if restDepth < 0 {
-		e.d.Logger().
-			Debug("reached max-depth, therefore this query will not be further expanded")
-		return func(_ context.Context, resultCh chan<- checkgroup.Result) {
-			resultCh <- checkgroup.Result{Membership: checkgroup.MembershipUnknown}
-		}
+		e.d.Logger().Debug("reached max-depth, therefore this query will not be further expanded")
+		return checkgroup.UnknownMemberFunc
 	}
 
 	e.d.Logger().

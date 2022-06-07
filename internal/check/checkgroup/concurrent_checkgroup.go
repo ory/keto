@@ -73,7 +73,9 @@ func (g *concurrentCheckgroup) startConsumer() {
 			// We don't care about the subcheck results (most will be
 			// `context.Canceled`), but we still want to receive these results
 			// so that there are no dangling goroutines.
-			defer receiveRemaining(subcheckCh, totalChecks-finishedChecks)
+			defer func() {
+				go receiveRemaining(subcheckCh, totalChecks-finishedChecks)
+			}()
 
 			for {
 				select {

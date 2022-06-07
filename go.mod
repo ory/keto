@@ -46,6 +46,7 @@ require (
 	github.com/urfave/negroni v1.0.0
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.30.0
 	go.opentelemetry.io/otel v1.7.0
+	go.uber.org/goleak v1.1.12
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
 	google.golang.org/grpc v1.45.0
 	google.golang.org/protobuf v1.28.0

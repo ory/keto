@@ -76,7 +76,7 @@ var UnknownMemberFunc Func = func(_ context.Context, resultCh chan<- Result) {
 // WithEdge adds the edge e to the result of the function.
 func WithEdge(e Edge, f Func) Func {
 	return func(ctx context.Context, resultCh chan<- Result) {
-		childCh := make(chan Result)
+		childCh := make(chan Result, 1)
 		go f(ctx, childCh)
 		select {
 		case result := <-childCh:
