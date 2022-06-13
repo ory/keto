@@ -149,7 +149,7 @@
           }
         },
         "required": ["allowed"],
-        "title": "RESTResponse is the response for a check request.",
+        "title": "RESTResponse represents the response for a check request.",
         "type": "object"
       },
       "getRelationTuplesResponse": {
@@ -605,7 +605,7 @@
         "tags": ["read"]
       }
     },
-    "/relation-tuples/check": {
+    "/relation-tuples/check/openapi": {
       "get": {
         "description": "To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).",
         "operationId": "getCheck",

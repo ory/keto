@@ -37,13 +37,16 @@ func NewHandler(d handlerDependencies) *Handler {
 	return &Handler{d: d}
 }
 
-const RouteBase = "/relation-tuples/check"
+const (
+	RouteBase        = "/relation-tuples/check"
+	OpenAPIRouteBase = "/relation-tuples/check/openapi"
+)
 
 func (h *Handler) RegisterReadRoutes(r *x.ReadRouter) {
 	r.GET(RouteBase, h.getCheckMirrorStatus)
-	r.GET(RouteBase+"-sdk", h.getCheckNoStatus)
+	r.GET(OpenAPIRouteBase, h.getCheckNoStatus)
 	r.POST(RouteBase, h.postCheckMirrorStatus)
-	r.POST(RouteBase+"-sdk", h.postCheckNoStatus)
+	r.POST(OpenAPIRouteBase, h.postCheckNoStatus)
 }
 
 func (h *Handler) RegisterWriteRoutes(_ *x.WriteRouter) {}
@@ -73,7 +76,7 @@ type getCheckRequest struct {
 	MaxDepth int `json:"max-depth"`
 }
 
-// swagger:route GET /relation-tuples/check read getCheckInlineResponse2001
+// swagger:route GET /relation-tuples/check/openapi read getCheck
 //
 // Check a relation tuple
 //
@@ -116,7 +119,21 @@ func (h *Handler) getCheckMirrorStatus(w http.ResponseWriter, r *http.Request, _
 	h.d.Writer().WriteCode(w, r, http.StatusForbidden, &RESTResponse{Allowed: allowed})
 }
 
-// swagger:route POST /relation-tuples/check read postCheck
+func (h *Handler) getCheck(ctx context.Context, q url.Values) (bool, error) {
+	maxDepth, err := x.GetMaxDepthFromQuery(q)
+	if err != nil {
+		return false, err
+	}
+
+	tuple, err := (&relationtuple.InternalRelationTuple{}).FromURLQuery(q)
+	if err != nil {
+		return false, err
+	}
+
+	return h.d.PermissionEngine().SubjectIsAllowed(ctx, tuple, maxDepth)
+}
+
+// swagger:route POST /relation-tuples/check/openapi read postCheck
 //
 // Check a relation tuple
 //
