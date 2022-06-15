@@ -4,10 +4,11 @@ import (
 	"context"
 	"encoding/json"
 	"github.com/ory/keto/ketoapi"
+	"io"
 	"net/http"
+	"net/url"
 
 	"github.com/julienschmidt/httprouter"
-	"github.com/ory/herodot"
 	"github.com/pkg/errors"
 	"google.golang.org/grpc"
 
@@ -38,11 +39,16 @@ func NewHandler(d handlerDependencies) *Handler {
 	return &Handler{d: d}
 }
 
-const RouteBase = "/relation-tuples/check"
+const (
+	RouteBase        = "/relation-tuples/check"
+	OpenAPIRouteBase = RouteBase + "/openapi"
+)
 
 func (h *Handler) RegisterReadRoutes(r *x.ReadRouter) {
-	r.GET(RouteBase, h.getCheck)
-	r.POST(RouteBase, h.postCheck)
+	r.GET(RouteBase, h.getCheckMirrorStatus)
+	r.GET(OpenAPIRouteBase, h.getCheckNoStatus)
+	r.POST(RouteBase, h.postCheckMirrorStatus)
+	r.POST(OpenAPIRouteBase, h.postCheckNoStatus)
 }
 
 func (h *Handler) RegisterWriteRoutes(_ *x.WriteRouter) {}
@@ -53,7 +59,7 @@ func (h *Handler) RegisterReadGRPC(s *grpc.Server) {
 
 func (h *Handler) RegisterWriteGRPC(_ *grpc.Server) {}
 
-// RESTResponse is the response for a check request.
+// RESTResponse represents the response for a check request.
 //
 // The content of the allowed field is mirrored in the HTTP status code.
 //
@@ -71,7 +77,34 @@ type getCheckRequest struct {
 	MaxDepth int `json:"max-depth"`
 }
 
-// swagger:route GET /relation-tuples/check read getCheck
+// swagger:route GET /relation-tuples/check/openapi read getCheck
+//
+// Check a relation tuple
+//
+// To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).
+//
+//     Consumes:
+//     -  application/x-www-form-urlencoded
+//
+//     Produces:
+//     - application/json
+//
+//     Schemes: http, https
+//
+//     Responses:
+//       200: getCheckResponse
+//       400: genericError
+//       500: genericError
+func (h *Handler) getCheckNoStatus(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	allowed, err := h.getCheck(r.Context(), r.URL.Query())
+	if err != nil {
+		h.d.Writer().WriteError(w, r, err)
+		return
+	}
+	h.d.Writer().Write(w, r, &RESTResponse{Allowed: allowed})
+}
+
+// swagger:route GET /relation-tuples/check read getCheckMirrorStatus
 //
 // Check a relation tuple
 //
@@ -90,42 +123,63 @@ type getCheckRequest struct {
 //       400: genericError
 //       403: getCheckResponse
 //       500: genericError
-func (h *Handler) getCheck(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	maxDepth, err := x.GetMaxDepthFromQuery(r.URL.Query())
-	if err != nil {
-		h.d.Writer().WriteError(w, r, herodot.ErrBadRequest.WithError(err.Error()))
-		return
-	}
-
-	tuple, err := (&ketoapi.RelationTuple{}).FromURLQuery(r.URL.Query())
-	if errors.Is(err, ketoapi.ErrNilSubject) {
-		h.d.Writer().WriteError(w, r, herodot.ErrBadRequest.WithReason("Subject has to be specified."))
-		return
-	} else if err != nil {
-		h.d.Writer().WriteError(w, r, herodot.ErrBadRequest.WithError(err.Error()))
-		return
-	}
-
-	internalTuple, err := h.d.UUIDMapper().FromTuple(r.Context(), tuple)
-	if err != nil {
-		h.d.Writer().WriteError(w, r, err)
-		return
-	}
-	allowed, err := h.d.PermissionEngine().SubjectIsAllowed(r.Context(), internalTuple[0], maxDepth)
+func (h *Handler) getCheckMirrorStatus(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	allowed, err := h.getCheck(r.Context(), r.URL.Query())
 	if err != nil {
 		h.d.Writer().WriteError(w, r, err)
 		return
 	}
 
 	if allowed {
-		h.d.Writer().WriteCode(w, r, http.StatusOK, &RESTResponse{Allowed: true})
+		h.d.Writer().Write(w, r, &RESTResponse{Allowed: allowed})
 		return
 	}
 
-	h.d.Writer().WriteCode(w, r, http.StatusForbidden, &RESTResponse{Allowed: false})
+	h.d.Writer().WriteCode(w, r, http.StatusForbidden, &RESTResponse{Allowed: allowed})
 }
 
-// swagger:route POST /relation-tuples/check read postCheck
+func (h *Handler) getCheck(ctx context.Context, q url.Values) (bool, error) {
+	maxDepth, err := x.GetMaxDepthFromQuery(q)
+	if err != nil {
+		return false, err
+	}
+
+	tuple, err := (&relationtuple.InternalRelationTuple{}).FromURLQuery(q)
+	if err != nil {
+		return false, err
+	}
+
+	return h.d.PermissionEngine().SubjectIsAllowed(ctx, tuple, maxDepth)
+}
+
+// swagger:route POST /relation-tuples/check/openapi read postCheck
+//
+// Check a relation tuple
+//
+// To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).
+//
+//     Consumes:
+//     -  application/json
+//
+//     Produces:
+//     - application/json
+//
+//     Schemes: http, https
+//
+//     Responses:
+//       200: getCheckResponse
+//       400: genericError
+//       500: genericError
+func (h *Handler) postCheckNoStatus(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	allowed, err := h.postCheck(r.Context(), r.Body, r.URL.Query())
+	if err != nil {
+		h.d.Writer().WriteError(w, r, err)
+		return
+	}
+	h.d.Writer().Write(w, r, &RESTResponse{Allowed: allowed})
+}
+
+// swagger:route POST /relation-tuples/check read postCheckMirrorStatus
 //
 // Check a relation tuple
 //
@@ -144,36 +198,33 @@ func (h *Handler) getCheck(w http.ResponseWriter, r *http.Request, _ httprouter.
 //       400: genericError
 //       403: getCheckResponse
 //       500: genericError
-func (h *Handler) postCheck(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	maxDepth, err := x.GetMaxDepthFromQuery(r.URL.Query())
-	if err != nil {
-		h.d.Writer().WriteError(w, r, herodot.ErrBadRequest.WithError(err.Error()))
-		return
-	}
-
-	var tuple ketoapi.RelationTuple
-	if err := json.NewDecoder(r.Body).Decode(&tuple); err != nil {
-		h.d.Writer().WriteError(w, r, errors.WithStack(herodot.ErrBadRequest.WithReasonf("Unable to decode JSON payload: %s", err)))
-		return
-	}
-
-	internalTuple, err := h.d.UUIDMapper().FromTuple(r.Context(), &tuple)
-	if err != nil {
-		h.d.Writer().WriteError(w, r, err)
-		return
-	}
-	allowed, err := h.d.PermissionEngine().SubjectIsAllowed(r.Context(), internalTuple[0], maxDepth)
+func (h *Handler) postCheckMirrorStatus(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	allowed, err := h.postCheck(r.Context(), r.Body, r.URL.Query())
 	if err != nil {
 		h.d.Writer().WriteError(w, r, err)
 		return
 	}
 
 	if allowed {
-		h.d.Writer().WriteCode(w, r, http.StatusOK, &RESTResponse{Allowed: true})
+		h.d.Writer().Write(w, r, &RESTResponse{Allowed: allowed})
 		return
 	}
 
-	h.d.Writer().WriteCode(w, r, http.StatusForbidden, &RESTResponse{Allowed: false})
+	h.d.Writer().WriteCode(w, r, http.StatusForbidden, &RESTResponse{Allowed: allowed})
+}
+
+func (h *Handler) postCheck(ctx context.Context, body io.Reader, query url.Values) (bool, error) {
+	maxDepth, err := x.GetMaxDepthFromQuery(query)
+	if err != nil {
+		return false, err
+	}
+
+	var tuple relationtuple.InternalRelationTuple
+	if err := json.NewDecoder(body).Decode(&tuple); err != nil {
+		return false, errors.WithStack(err)
+	}
+
+	return h.d.PermissionEngine().SubjectIsAllowed(ctx, &tuple, maxDepth)
 }
 
 func (h *Handler) Check(ctx context.Context, req *rts.CheckRequest) (*rts.CheckResponse, error) {

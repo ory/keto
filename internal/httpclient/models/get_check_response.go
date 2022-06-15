@@ -14,7 +14,7 @@ import (
 	"github.com/go-openapi/validate"
 )
 
-// GetCheckResponse RESTResponse is the response for a check request.
+// GetCheckResponse RESTResponse represents the response for a check request.
 //
 // The content of the allowed field is mirrored in the HTTP status code.
 //

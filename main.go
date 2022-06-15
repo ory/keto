@@ -1,4 +1,4 @@
-//go:generate swagger generate spec
+//go:generate .bin/swagger generate spec
 // Copyright © 2017 Aeneas Rekkas <aeneas+oss@aeneas.io>
 //
 // Licensed under the Apache License, Version 2.0 (the "License");

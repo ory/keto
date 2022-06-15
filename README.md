@@ -22,8 +22,7 @@
     <a href="https://github.com/ory/keto/blob/master/CODE_OF_CONDUCT.md" alt="Ory Code of Conduct"><img src="https://img.shields.io/badge/ory-code%20of%20conduct-green" /></a>
 </p>
 
-Ory Keto is the first and most popular open source implementation of "Zanzibar:
-Google's Consistent, Global Authorization System"!
+Ory Keto is the first and most popular open source implementation of "Zanzibar: Google's Consistent, Global Authorization System"!
 
 ## Ory Cloud
 
@@ -31,46 +30,35 @@ The easiest way to get started with Ory Software is in Ory Cloud! It is
 [**free for developers**](https://console.ory.sh/registration?utm_source=github&utm_medium=banner&utm_campaign=keto-readme),
 forever, no credit card required!
 
-Ory Cloud has easy examples, administrative user interfaces, hosted pages (e.g.
-for login or registration), support for custom domains, collaborative features
-for your colleagues, and much more!
+Ory Cloud has easy examples, administrative user interfaces, hosted pages (e.g. for login or registration), support for custom
+domains, collaborative features for your colleagues, and much more!
 
 ### :mega: Community gets Ory Cloud for Free! :mega:
 
-Ory community members get the Ory Cloud Start Up plan **free for six months**,
-with all quality-of-life features available, such as custom domains and giving
-your team members access.
+Ory community members get the Ory Cloud Start Up plan **free for six months**, with all quality-of-life features available, such
+as custom domains and giving your team members access.
 [Sign up with your GitHub account](https://console.ory.sh/registration?preferred_plan=start-up&utm_source=github&utm_medium=banner&utm_campaign=keto-readme-first900)
-and use the coupon code **`FIRST900`** on the _"Start-Up Plan"_ checkout page to
-claim your free project now! Make sure to be signed up to the
-[Ory Community Slack](https://slack.ory.sh) when using the code!
+and use the coupon code **`FIRST900`** on the _"Start-Up Plan"_ checkout page to claim your free project now! Make sure to be
+signed up to the [Ory Community Slack](https://slack.ory.sh) when using the code!
 
 ### Google's Zanzibar
 
-> Determining whether online users are authorized to access digital objects is
-> central to preserving privacy. This paper presents the design, implementation,
-> and deployment of Zanzibar, a global system for storing and evaluating access
-> control lists. Zanzibar provides a uniform data model and configuration
-> language for expressing a wide range of access control policies from hundreds
-> of client services at Google, including Calendar, Cloud, Drive, Maps, Photos,
-> and YouTube. Its authorization decisions respect causal ordering of user
-> actions and thus provide external consistency amid changes to access control
-> lists and object contents. Zanzibar scales to trillions of access control
-> lists and millions of authorization requests per second to support services
-> used by billions of people. It has maintained 95th-percentile latency of less
-> than 10 milliseconds and availability of greater than 99.999% over 3 years of
-> production use.
+> Determining whether online users are authorized to access digital objects is central to preserving privacy. This paper presents
+> the design, implementation, and deployment of Zanzibar, a global system for storing and evaluating access control lists.
+> Zanzibar provides a uniform data model and configuration language for expressing a wide range of access control policies from
+> hundreds of client services at Google, including Calendar, Cloud, Drive, Maps, Photos, and YouTube. Its authorization decisions
+> respect causal ordering of user actions and thus provide external consistency amid changes to access control lists and object
+> contents. Zanzibar scales to trillions of access control lists and millions of authorization requests per second to support
+> services used by billions of people. It has maintained 95th-percentile latency of less than 10 milliseconds and availability of
+> greater than 99.999% over 3 years of production use.
 >
 > [Source](https://research.google/pubs/pub48190/)
 
-If you need to know if a user (or robot, car, service) is allowed to do
-something - Ory Keto is the right fit for you.
+If you need to know if a user (or robot, car, service) is allowed to do something - Ory Keto is the right fit for you.
 
-Currently, Ory Keto implements the basic API contracts for managing and checking
-relations ("permissions") with HTTP and gRPC APIs. Future versions will include
-features such as userset rewrites (e.g. RBAC-style role-permission models),
-Zookies, and more. An overview of what is implemented and upcoming can be found
-at
+Currently, Ory Keto implements the basic API contracts for managing and checking relations ("permissions") with HTTP and gRPC
+APIs. Future versions will include features such as userset rewrites (e.g. RBAC-style role-permission models), Zookies, and more.
+An overview of what is implemented and upcoming can be found at
 [Implemented and Planned Features](https://www.ory.sh/keto/docs/next/implemented-planned-features).
 
 ---
@@ -108,21 +96,17 @@ at
 
 <!--BEGIN ADOPTERS-->
 
-The Ory community stands on the shoulders of individuals, companies, and
-maintainers. We thank everyone involved - from submitting bug reports and
-feature requests, to contributing patches, to sponsoring our work. Our community
-is 1000+ strong and growing rapidly. The Ory stack protects 16.000.000.000+ API
-requests every month with over 250.000+ active service nodes. We would have
+The Ory community stands on the shoulders of individuals, companies, and maintainers. We thank everyone involved - from submitting
+bug reports and feature requests, to contributing patches, to sponsoring our work. Our community is 1000+ strong and growing
+rapidly. The Ory stack protects 16.000.000.000+ API requests every month with over 250.000+ active service nodes. We would have
 never been able to achieve this without each and everyone of you!
 
-The following list represents companies that have accompanied us along the way
-and that have made outstanding contributions to our ecosystem. _If you think
-that your company deserves a spot here, reach out to
+The following list represents companies that have accompanied us along the way and that have made outstanding contributions to our
+ecosystem. _If you think that your company deserves a spot here, reach out to
 <a href="mailto:office-muc@ory.sh">office-muc@ory.sh</a> now_!
 
-**Please consider giving back by becoming a sponsor of our open source work on
-<a href="https://www.patreon.com/_ory">Patreon</a> or
-<a href="https://opencollective.com/ory">Open Collective</a>.**
+**Please consider giving back by becoming a sponsor of our open source work on <a href="https://www.patreon.com/_ory">Patreon</a>
+or <a href="https://opencollective.com/ory">Open Collective</a>.**
 
 <table>
     <thead>
@@ -289,10 +273,8 @@ as well as all of our backers
 
 <a href="https://opencollective.com/ory#backers" target="_blank"><img src="https://opencollective.com/ory/backers.svg?width=890"></a>
 
-and past & current supporters (in alphabetical order) on
-[Patreon](https://www.patreon.com/_ory): Alexander Alimovs, Billy, Chancy
-Kennedy, Drozzy, Edwin Trejos, Howard Edidin, Ken Adler Oz Haven, Stefan Hans,
-TheCrealm.
+and past & current supporters (in alphabetical order) on [Patreon](https://www.patreon.com/_ory): Alexander Alimovs, Billy, Chancy
+Kennedy, Drozzy, Edwin Trejos, Howard Edidin, Ken Adler Oz Haven, Stefan Hans, TheCrealm.
 
 <em>\* Uses one of Ory's major projects in production.</em>
 
@@ -300,58 +282,48 @@ TheCrealm.
 
 ### Installation
 
-Head over to the documentation to learn about ways of
-[installing ORY Keto](https://www.ory.sh/docs/next/keto/install).
+Head over to the documentation to learn about ways of [installing ORY Keto](https://www.ory.sh/docs/next/keto/install).
 
 ## Ecosystem
 
 <!--BEGIN ECOSYSTEM-->
 
-We build Ory on several guiding principles when it comes to our architecture
-design:
+We build Ory on several guiding principles when it comes to our architecture design:
 
 - Minimal dependencies
 - Runs everywhere
 - Scales without effort
 - Minimize room for human and network errors
 
-Ory's architecture is designed to run best on a Container Orchestration system
-such as Kubernetes, CloudFoundry, OpenShift, and similar projects. Binaries are
-small (5-15MB) and available for all popular processor types (ARM, AMD64, i386)
-and operating systems (FreeBSD, Linux, macOS, Windows) without system
-dependencies (Java, Node, Ruby, libxml, ...).
+Ory's architecture is designed to run best on a Container Orchestration system such as Kubernetes, CloudFoundry, OpenShift, and
+similar projects. Binaries are small (5-15MB) and available for all popular processor types (ARM, AMD64, i386) and operating
+systems (FreeBSD, Linux, macOS, Windows) without system dependencies (Java, Node, Ruby, libxml, ...).
 
 ### Ory Kratos: Identity and User Infrastructure and Management
 
-[Ory Kratos](https://github.com/ory/kratos) is an API-first Identity and User
-Management system that is built according to
-[cloud architecture best practices](https://www.ory.sh/docs/next/ecosystem/software-architecture-philosophy).
-It implements core use cases that almost every software application needs to
-deal with: Self-service Login and Registration, Multi-Factor Authentication
-(MFA/2FA), Account Recovery and Verification, Profile, and Account Management.
+[Ory Kratos](https://github.com/ory/kratos) is an API-first Identity and User Management system that is built according to
+[cloud architecture best practices](https://www.ory.sh/docs/next/ecosystem/software-architecture-philosophy). It implements core
+use cases that almost every software application needs to deal with: Self-service Login and Registration, Multi-Factor
+Authentication (MFA/2FA), Account Recovery and Verification, Profile, and Account Management.
 
 ### Ory Hydra: OAuth2 & OpenID Connect Server
 
-[Ory Hydra](https://github.com/ory/hydra) is an OpenID Certified™ OAuth2 and
-OpenID Connect Provider which easily connects to any existing identity system by
-writing a tiny "bridge" application. Gives absolute control over user interface
-and user experience flows.
+[Ory Hydra](https://github.com/ory/hydra) is an OpenID Certified™ OAuth2 and OpenID Connect Provider which easily connects to any
+existing identity system by writing a tiny "bridge" application. Gives absolute control over user interface and user experience
+flows.
 
 ### Ory Oathkeeper: Identity & Access Proxy
 
-[Ory Oathkeeper](https://github.com/ory/oathkeeper) is a BeyondCorp/Zero Trust
-Identity & Access Proxy (IAP) with configurable authentication, authorization,
-and request mutation rules for your web services: Authenticate JWT, Access
-Tokens, API Keys, mTLS; Check if the contained subject is allowed to perform the
-request; Encode resulting content into custom headers (`X-User-ID`), JSON Web
-Tokens and more!
+[Ory Oathkeeper](https://github.com/ory/oathkeeper) is a BeyondCorp/Zero Trust Identity & Access Proxy (IAP) with configurable
+authentication, authorization, and request mutation rules for your web services: Authenticate JWT, Access Tokens, API Keys, mTLS;
+Check if the contained subject is allowed to perform the request; Encode resulting content into custom headers (`X-User-ID`), JSON
+Web Tokens and more!
 
 ### Ory Keto: Access Control Policies as a Server
 
-[Ory Keto](https://github.com/ory/keto) is a policy decision point. It uses a
-set of access control policies, similar to AWS IAM Policies, in order to
-determine whether a subject (user, application, service, car, ...) is authorized
-to perform a certain action on a resource.
+[Ory Keto](https://github.com/ory/keto) is a policy decision point. It uses a set of access control policies, similar to AWS IAM
+Policies, in order to determine whether a subject (user, application, service, car, ...) is authorized to perform a certain action
+on a resource.
 
 <!--END ECOSYSTEM-->
 
@@ -359,14 +331,13 @@ to perform a certain action on a resource.
 
 ### Disclosing Vulnerabilities
 
-If you think you found a security vulnerability, please refrain from posting it
-publicly on the forums, the chat, or GitHub and send us an email to
-[hi@ory.am](mailto:hi@ory.am) instead.
+If you think you found a security vulnerability, please refrain from posting it publicly on the forums, the chat, or GitHub and
+send us an email to [hi@ory.am](mailto:hi@ory.am) instead.
 
 ## Telemetry
 
-Our services collect summarized, anonymized data which can optionally be turned
-off. Click [here](https://www.ory.sh/docs/ecosystem/sqa) to learn more.
+Our services collect summarized, anonymized data which can optionally be turned off. Click
+[here](https://www.ory.sh/docs/ecosystem/sqa) to learn more.
 
 ### Guide
 
@@ -378,8 +349,7 @@ The HTTP API is documented [here](https://www.ory.sh/docs/next/keto/sdk/api).
 
 ### Upgrading and Changelog
 
-New releases might introduce breaking changes. To help you identify and
-incorporate those changes, we document these changes in
+New releases might introduce breaking changes. To help you identify and incorporate those changes, we document these changes in
 [UPGRADE.md](./UPGRADE.md) and [CHANGELOG.md](./CHANGELOG.md).
 
 ### Command Line Documentation
@@ -388,8 +358,7 @@ Run `keto -h` or `keto help`.
 
 ### Develop
 
-We encourage all contributions and encourage you to read our
-[contribution guidelines](./CONTRIBUTING.md)
+We encourage all contributions and recommend you read our [contribution guidelines](./CONTRIBUTING.md).
 
 #### Dependencies
 
@@ -399,8 +368,7 @@ You need Go 1.16+ and (for the test suites):
 - GNU Make 4.3
 - NodeJS / npm@v7
 
-It is possible to develop ORY Keto on Windows, but please be aware that all
-guides assume a Unix shell like bash or zsh.
+It is possible to develop ORY Keto on Windows, but please be aware that all guides assume a Unix shell like bash or zsh.
 
 #### Install From Source
 
@@ -410,8 +378,7 @@ make install
 
 #### Formatting Code
 
-You can format all code using <code type="make/command">make format</code>. Our
-CI checks if your code is properly formatted.
+You can format all code using <code type="make/command">make format</code>. Our CI checks if your code is properly formatted.
 
 #### Running Tests
 
@@ -422,7 +389,7 @@ There are two types of tests you can run:
 
 ##### Short Tests
 
-Short tests run fairly quickly. You can either test all of the code at once
+Short tests run fairly quickly. You can either test all of the code at once:
 
 ```shell script
 go test -short -tags sqlite ./...
@@ -436,11 +403,9 @@ go test -tags sqlite -short ./internal/check/...
 
 ##### Regular Tests
 
-Regular tests require a database set up. Our test suite is able to work with
-docker directly (using [ory/dockertest](https://github.com/ory/dockertest)) but
-we encourage to use the script instead. Using dockertest can bloat the number of
-Docker Images on your system and starting them on each run is quite slow.
-Instead we recommend doing:
+Regular tests require a database set up. Our test suite is able to work with docker directly (using
+[ory/dockertest](https://github.com/ory/dockertest)) but we encourage to use the script instead. Using dockertest can bloat the
+number of Docker Images on your system and starting them on each run is quite slow. Instead we recommend doing:
 
 ```shell
 source ./scripts/test-resetdb.sh
@@ -449,7 +414,7 @@ go test -tags sqlite ./...
 
 ##### End-to-End Tests
 
-The e2e tests are part of the normal `go test`. To only run the e2e test, use
+The e2e tests are part of the normal `go test`. To only run the e2e test, use:
 
 ```shell
 source ./scripts/test-resetdb.sh

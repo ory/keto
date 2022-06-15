@@ -35,12 +35,6 @@ func (o *PostCheckReader) ReadResponse(response runtime.ClientResponse, consumer
 			return nil, err
 		}
 		return nil, result
-	case 403:
-		result := NewPostCheckForbidden()
-		if err := result.readResponse(response, consumer, o.formats); err != nil {
-			return nil, err
-		}
-		return nil, result
 	case 500:
 		result := NewPostCheckInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -66,7 +60,7 @@ type PostCheckOK struct {
 }
 
 func (o *PostCheckOK) Error() string {
-	return fmt.Sprintf("[POST /relation-tuples/check][%d] postCheckOK  %+v", 200, o.Payload)
+	return fmt.Sprintf("[POST /relation-tuples/check/openapi][%d] postCheckOK  %+v", 200, o.Payload)
 }
 func (o *PostCheckOK) GetPayload() *models.GetCheckResponse {
 	return o.Payload
@@ -98,7 +92,7 @@ type PostCheckBadRequest struct {
 }
 
 func (o *PostCheckBadRequest) Error() string {
-	return fmt.Sprintf("[POST /relation-tuples/check][%d] postCheckBadRequest  %+v", 400, o.Payload)
+	return fmt.Sprintf("[POST /relation-tuples/check/openapi][%d] postCheckBadRequest  %+v", 400, o.Payload)
 }
 func (o *PostCheckBadRequest) GetPayload() *models.GenericError {
 	return o.Payload
@@ -107,38 +101,6 @@ func (o *PostCheckBadRequest) GetPayload() *models.GenericError {
 func (o *PostCheckBadRequest) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.GenericError)
-
-	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
-		return err
-	}
-
-	return nil
-}
-
-// NewPostCheckForbidden creates a PostCheckForbidden with default headers values
-func NewPostCheckForbidden() *PostCheckForbidden {
-	return &PostCheckForbidden{}
-}
-
-/* PostCheckForbidden describes a response with status code 403, with default header values.
-
-getCheckResponse
-*/
-type PostCheckForbidden struct {
-	Payload *models.GetCheckResponse
-}
-
-func (o *PostCheckForbidden) Error() string {
-	return fmt.Sprintf("[POST /relation-tuples/check][%d] postCheckForbidden  %+v", 403, o.Payload)
-}
-func (o *PostCheckForbidden) GetPayload() *models.GetCheckResponse {
-	return o.Payload
-}
-
-func (o *PostCheckForbidden) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
-
-	o.Payload = new(models.GetCheckResponse)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
@@ -162,7 +124,7 @@ type PostCheckInternalServerError struct {
 }
 
 func (o *PostCheckInternalServerError) Error() string {
-	return fmt.Sprintf("[POST /relation-tuples/check][%d] postCheckInternalServerError  %+v", 500, o.Payload)
+	return fmt.Sprintf("[POST /relation-tuples/check/openapi][%d] postCheckInternalServerError  %+v", 500, o.Payload)
 }
 func (o *PostCheckInternalServerError) GetPayload() *models.GenericError {
 	return o.Payload

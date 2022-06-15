@@ -61,7 +61,7 @@ var (
 	_, _ Subject = &SubjectID{}, &SubjectSet{}
 
 	ErrMalformedInput    = herodot.ErrBadRequest.WithError("malformed string input")
-	ErrNilSubject        = herodot.ErrBadRequest.WithError("subject is not allowed to be nil")
+	ErrNilSubject        = herodot.ErrBadRequest.WithError("subject is not allowed to be nil").WithDebug("Please provide a subject.")
 	ErrDuplicateSubject  = herodot.ErrBadRequest.WithError("exactly one of subject_set or subject_id has to be provided")
 	ErrDroppedSubjectKey = herodot.ErrBadRequest.WithDebug(`provide "subject_id" or "subject_set.*"; support for "subject" was dropped`)
 	ErrIncompleteSubject = herodot.ErrBadRequest.WithError(`incomplete subject, provide "subject_id" or a complete "subject_set.*"`)
