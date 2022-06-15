@@ -373,8 +373,8 @@ Run `keto -h` or `keto help`.
 
 ### Develop
 
-We encourage all contributions and encourage you to read our
-[contribution guidelines](./CONTRIBUTING.md)
+We encourage all contributions and recommend you read our
+[contribution guidelines](./CONTRIBUTING.md).
 
 #### Dependencies
 
@@ -407,7 +407,7 @@ There are two types of tests you can run:
 
 ##### Short Tests
 
-Short tests run fairly quickly. You can either test all of the code at once
+Short tests run fairly quickly. You can either test all of the code at once:
 
 ```shell script
 go test -short -tags sqlite ./...
@@ -434,7 +434,7 @@ go test -tags sqlite ./...
 
 ##### End-to-End Tests
 
-The e2e tests are part of the normal `go test`. To only run the e2e test, use
+The e2e tests are part of the normal `go test`. To only run the e2e test, use:
 
 ```shell
 source ./scripts/test-resetdb.sh
