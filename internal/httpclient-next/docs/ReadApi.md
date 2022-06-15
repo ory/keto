@@ -4,10 +4,12 @@ All URIs are relative to *http://localhost*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**GetCheck**](ReadApi.md#GetCheck) | **Get** /relation-tuples/check | Check a relation tuple
+[**GetCheck**](ReadApi.md#GetCheck) | **Get** /relation-tuples/check/openapi | Check a relation tuple
+[**GetCheckMirrorStatus**](ReadApi.md#GetCheckMirrorStatus) | **Get** /relation-tuples/check | Check a relation tuple
 [**GetExpand**](ReadApi.md#GetExpand) | **Get** /relation-tuples/expand | Expand a Relation Tuple
 [**GetRelationTuples**](ReadApi.md#GetRelationTuples) | **Get** /relation-tuples | Query relation tuples
-[**PostCheck**](ReadApi.md#PostCheck) | **Post** /relation-tuples/check | Check a relation tuple
+[**PostCheck**](ReadApi.md#PostCheck) | **Post** /relation-tuples/check/openapi | Check a relation tuple
+[**PostCheckMirrorStatus**](ReadApi.md#PostCheckMirrorStatus) | **Post** /relation-tuples/check | Check a relation tuple
 
 
 
@@ -72,6 +74,67 @@ Name | Type | Description  | Notes
  **subjectSetObject** | **string** | Object of the Subject Set | 
  **subjectSetRelation** | **string** | Relation of the Subject Set | 
  **maxDepth** | **int64** |  | 
+
+### Return type
+
+[**GetCheckResponse**](GetCheckResponse.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
+[[Back to Model list]](../README.md#documentation-for-models)
+[[Back to README]](../README.md)
+
+
+## GetCheckMirrorStatus
+
+> GetCheckResponse GetCheckMirrorStatus(ctx).Execute()
+
+Check a relation tuple
+
+
+
+### Example
+
+```go
+package main
+
+import (
+    "context"
+    "fmt"
+    "os"
+    openapiclient "./openapi"
+)
+
+func main() {
+
+    configuration := openapiclient.NewConfiguration()
+    apiClient := openapiclient.NewAPIClient(configuration)
+    resp, r, err := apiClient.ReadApi.GetCheckMirrorStatus(context.Background()).Execute()
+    if err != nil {
+        fmt.Fprintf(os.Stderr, "Error when calling `ReadApi.GetCheckMirrorStatus``: %v\n", err)
+        fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+    }
+    // response from `GetCheckMirrorStatus`: GetCheckResponse
+    fmt.Fprintf(os.Stdout, "Response from `ReadApi.GetCheckMirrorStatus`: %v\n", resp)
+}
+```
+
+### Path Parameters
+
+This endpoint does not need any parameter.
+
+### Other Parameters
+
+Other parameters are passed through a pointer to a apiGetCheckMirrorStatusRequest struct via the builder pattern
+
 
 ### Return type
 
@@ -306,6 +369,67 @@ No authorization required
 ### HTTP request headers
 
 - **Content-Type**: application/json
+- **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
+[[Back to Model list]](../README.md#documentation-for-models)
+[[Back to README]](../README.md)
+
+
+## PostCheckMirrorStatus
+
+> GetCheckResponse PostCheckMirrorStatus(ctx).Execute()
+
+Check a relation tuple
+
+
+
+### Example
+
+```go
+package main
+
+import (
+    "context"
+    "fmt"
+    "os"
+    openapiclient "./openapi"
+)
+
+func main() {
+
+    configuration := openapiclient.NewConfiguration()
+    apiClient := openapiclient.NewAPIClient(configuration)
+    resp, r, err := apiClient.ReadApi.PostCheckMirrorStatus(context.Background()).Execute()
+    if err != nil {
+        fmt.Fprintf(os.Stderr, "Error when calling `ReadApi.PostCheckMirrorStatus``: %v\n", err)
+        fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+    }
+    // response from `PostCheckMirrorStatus`: GetCheckResponse
+    fmt.Fprintf(os.Stdout, "Response from `ReadApi.PostCheckMirrorStatus`: %v\n", resp)
+}
+```
+
+### Path Parameters
+
+This endpoint does not need any parameter.
+
+### Other Parameters
+
+Other parameters are passed through a pointer to a apiPostCheckMirrorStatusRequest struct via the builder pattern
+
+
+### Return type
+
+[**GetCheckResponse**](GetCheckResponse.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
 - **Accept**: application/json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
