@@ -7,13 +7,10 @@
     "fs": false
   },
   "prettier": "ory-prettier-styles",
-  "config": {
-    "prettierTarget": "."
-  },
   "devDependencies": {
     "doctoc": "^2.0.1",
     "opencollective": "^1.0.3",
-    "ory-prettier-styles": "^1.1.2",
+    "ory-prettier-styles": "^1.2.0",
     "prettier": "2.5.1"
   },
   "collective": {
@@ -28,8 +25,8 @@
   },
   "scripts": {
     "doctoc": "doctoc README.md",
-    "format": "prettier --write ${npm_package_config_prettierTarget}",
-    "format:check": "prettier --check ${npm_package_config_prettierTarget}",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "openapi-generator-cli": "openapi-generator-cli"
   }
 }
