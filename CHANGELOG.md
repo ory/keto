@@ -166,6 +166,8 @@ gRPC relation-tuple-delta action enum names are prefixed with `ACTION_`
 
 ### Features
 
+- Add check endpoints that do not mirror status code ([#853](https://github.com/ory/keto/issues/853))
+  ([07d0fbd](https://github.com/ory/keto/commit/07d0fbdacdf5442cd791d14089e5142071e92c6a))
 - Add reverse lookup indices ([#875](https://github.com/ory/keto/issues/875))
   ([25af263](https://github.com/ory/keto/commit/25af263827a16c4c4ed080644cd7b08a2851124a))
 - Make sensitive log value redaction text configurable ([#860](https://github.com/ory/keto/issues/860))
