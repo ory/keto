@@ -605,6 +605,104 @@
         "tags": ["read"]
       }
     },
+    "/relation-tuples/check": {
+      "get": {
+        "description": "To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).",
+        "operationId": "getCheckMirrorStatus",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/getCheckResponse"
+                }
+              }
+            },
+            "description": "getCheckResponse"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/genericError"
+                }
+              }
+            },
+            "description": "genericError"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/getCheckResponse"
+                }
+              }
+            },
+            "description": "getCheckResponse"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/genericError"
+                }
+              }
+            },
+            "description": "genericError"
+          }
+        },
+        "summary": "Check a relation tuple",
+        "tags": ["read"]
+      },
+      "post": {
+        "description": "To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).",
+        "operationId": "postCheckMirrorStatus",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/getCheckResponse"
+                }
+              }
+            },
+            "description": "getCheckResponse"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/genericError"
+                }
+              }
+            },
+            "description": "genericError"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/getCheckResponse"
+                }
+              }
+            },
+            "description": "getCheckResponse"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/genericError"
+                }
+              }
+            },
+            "description": "genericError"
+          }
+        },
+        "summary": "Check a relation tuple",
+        "tags": ["read"]
+      }
+    },
     "/relation-tuples/check/openapi": {
       "get": {
         "description": "To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).",
@@ -696,16 +794,6 @@
             },
             "description": "genericError"
           },
-          "403": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/getCheckResponse"
-                }
-              }
-            },
-            "description": "getCheckResponse"
-          },
           "500": {
             "content": {
               "application/json": {
@@ -763,16 +851,6 @@
               }
             },
             "description": "genericError"
-          },
-          "403": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/getCheckResponse"
-                }
-              }
-            },
-            "description": "getCheckResponse"
           },
           "500": {
             "content": {

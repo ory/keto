@@ -32,11 +32,15 @@ type ClientOption func(*runtime.ClientOperation)
 type ClientService interface {
 	GetCheck(params *GetCheckParams, opts ...ClientOption) (*GetCheckOK, error)
 
+	GetCheckMirrorStatus(params *GetCheckMirrorStatusParams, opts ...ClientOption) (*GetCheckMirrorStatusOK, error)
+
 	GetExpand(params *GetExpandParams, opts ...ClientOption) (*GetExpandOK, error)
 
 	GetRelationTuples(params *GetRelationTuplesParams, opts ...ClientOption) (*GetRelationTuplesOK, error)
 
 	PostCheck(params *PostCheckParams, opts ...ClientOption) (*PostCheckOK, error)
+
+	PostCheckMirrorStatus(params *PostCheckMirrorStatusParams, opts ...ClientOption) (*PostCheckMirrorStatusOK, error)
 
 	SetTransport(transport runtime.ClientTransport)
 }
@@ -78,6 +82,46 @@ func (a *Client) GetCheck(params *GetCheckParams, opts ...ClientOption) (*GetChe
 	// unexpected success response
 	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for getCheck: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+  GetCheckMirrorStatus checks a relation tuple
+
+  To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).
+*/
+func (a *Client) GetCheckMirrorStatus(params *GetCheckMirrorStatusParams, opts ...ClientOption) (*GetCheckMirrorStatusOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewGetCheckMirrorStatusParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "getCheckMirrorStatus",
+		Method:             "GET",
+		PathPattern:        "/relation-tuples/check",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/x-www-form-urlencoded"},
+		Schemes:            []string{"http", "https"},
+		Params:             params,
+		Reader:             &GetCheckMirrorStatusReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*GetCheckMirrorStatusOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for getCheckMirrorStatus: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 
@@ -198,6 +242,46 @@ func (a *Client) PostCheck(params *PostCheckParams, opts ...ClientOption) (*Post
 	// unexpected success response
 	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for postCheck: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+  PostCheckMirrorStatus checks a relation tuple
+
+  To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).
+*/
+func (a *Client) PostCheckMirrorStatus(params *PostCheckMirrorStatusParams, opts ...ClientOption) (*PostCheckMirrorStatusOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewPostCheckMirrorStatusParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "postCheckMirrorStatus",
+		Method:             "POST",
+		PathPattern:        "/relation-tuples/check",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http", "https"},
+		Params:             params,
+		Reader:             &PostCheckMirrorStatusReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*PostCheckMirrorStatusOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for postCheckMirrorStatus: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 

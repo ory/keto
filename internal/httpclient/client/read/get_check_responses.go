@@ -35,12 +35,6 @@ func (o *GetCheckReader) ReadResponse(response runtime.ClientResponse, consumer 
 			return nil, err
 		}
 		return nil, result
-	case 403:
-		result := NewGetCheckForbidden()
-		if err := result.readResponse(response, consumer, o.formats); err != nil {
-			return nil, err
-		}
-		return nil, result
 	case 500:
 		result := NewGetCheckInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -107,38 +101,6 @@ func (o *GetCheckBadRequest) GetPayload() *models.GenericError {
 func (o *GetCheckBadRequest) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.GenericError)
-
-	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
-		return err
-	}
-
-	return nil
-}
-
-// NewGetCheckForbidden creates a GetCheckForbidden with default headers values
-func NewGetCheckForbidden() *GetCheckForbidden {
-	return &GetCheckForbidden{}
-}
-
-/* GetCheckForbidden describes a response with status code 403, with default header values.
-
-getCheckResponse
-*/
-type GetCheckForbidden struct {
-	Payload *models.GetCheckResponse
-}
-
-func (o *GetCheckForbidden) Error() string {
-	return fmt.Sprintf("[GET /relation-tuples/check/openapi][%d] getCheckForbidden  %+v", 403, o.Payload)
-}
-func (o *GetCheckForbidden) GetPayload() *models.GetCheckResponse {
-	return o.Payload
-}
-
-func (o *GetCheckForbidden) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
-
-	o.Payload = new(models.GetCheckResponse)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {

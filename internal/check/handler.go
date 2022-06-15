@@ -39,7 +39,7 @@ func NewHandler(d handlerDependencies) *Handler {
 
 const (
 	RouteBase        = "/relation-tuples/check"
-	OpenAPIRouteBase = "/relation-tuples/check/openapi"
+	OpenAPIRouteBase = RouteBase + "/openapi"
 )
 
 func (h *Handler) RegisterReadRoutes(r *x.ReadRouter) {
@@ -93,7 +93,6 @@ type getCheckRequest struct {
 //     Responses:
 //       200: getCheckResponse
 //       400: genericError
-//       403: getCheckResponse
 //       500: genericError
 func (h *Handler) getCheckNoStatus(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	allowed, err := h.getCheck(r.Context(), r.URL.Query())
@@ -104,6 +103,25 @@ func (h *Handler) getCheckNoStatus(w http.ResponseWriter, r *http.Request, _ htt
 	h.d.Writer().Write(w, r, &RESTResponse{Allowed: allowed})
 }
 
+// swagger:route GET /relation-tuples/check read getCheckMirrorStatus
+//
+// Check a relation tuple
+//
+// To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).
+//
+//     Consumes:
+//     -  application/x-www-form-urlencoded
+//
+//     Produces:
+//     - application/json
+//
+//     Schemes: http, https
+//
+//     Responses:
+//       200: getCheckResponse
+//       400: genericError
+//       403: getCheckResponse
+//       500: genericError
 func (h *Handler) getCheckMirrorStatus(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	allowed, err := h.getCheck(r.Context(), r.URL.Query())
 	if err != nil {
@@ -150,7 +168,6 @@ func (h *Handler) getCheck(ctx context.Context, q url.Values) (bool, error) {
 //     Responses:
 //       200: getCheckResponse
 //       400: genericError
-//       403: getCheckResponse
 //       500: genericError
 func (h *Handler) postCheckNoStatus(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	allowed, err := h.postCheck(r.Context(), r.Body, r.URL.Query())
@@ -161,6 +178,25 @@ func (h *Handler) postCheckNoStatus(w http.ResponseWriter, r *http.Request, _ ht
 	h.d.Writer().Write(w, r, &RESTResponse{Allowed: allowed})
 }
 
+// swagger:route POST /relation-tuples/check read postCheckMirrorStatus
+//
+// Check a relation tuple
+//
+// To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).
+//
+//     Consumes:
+//     -  application/json
+//
+//     Produces:
+//     - application/json
+//
+//     Schemes: http, https
+//
+//     Responses:
+//       200: getCheckResponse
+//       400: genericError
+//       403: getCheckResponse
+//       500: genericError
 func (h *Handler) postCheckMirrorStatus(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	allowed, err := h.postCheck(r.Context(), r.Body, r.URL.Query())
 	if err != nil {

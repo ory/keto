@@ -305,6 +305,78 @@
         }
       }
     },
+    "/relation-tuples/check": {
+      "get": {
+        "description": "To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).",
+        "consumes": ["application/x-www-form-urlencoded"],
+        "produces": ["application/json"],
+        "schemes": ["http", "https"],
+        "tags": ["read"],
+        "summary": "Check a relation tuple",
+        "operationId": "getCheckMirrorStatus",
+        "responses": {
+          "200": {
+            "description": "getCheckResponse",
+            "schema": {
+              "$ref": "#/definitions/getCheckResponse"
+            }
+          },
+          "400": {
+            "description": "genericError",
+            "schema": {
+              "$ref": "#/definitions/genericError"
+            }
+          },
+          "403": {
+            "description": "getCheckResponse",
+            "schema": {
+              "$ref": "#/definitions/getCheckResponse"
+            }
+          },
+          "500": {
+            "description": "genericError",
+            "schema": {
+              "$ref": "#/definitions/genericError"
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "schemes": ["http", "https"],
+        "tags": ["read"],
+        "summary": "Check a relation tuple",
+        "operationId": "postCheckMirrorStatus",
+        "responses": {
+          "200": {
+            "description": "getCheckResponse",
+            "schema": {
+              "$ref": "#/definitions/getCheckResponse"
+            }
+          },
+          "400": {
+            "description": "genericError",
+            "schema": {
+              "$ref": "#/definitions/genericError"
+            }
+          },
+          "403": {
+            "description": "getCheckResponse",
+            "schema": {
+              "$ref": "#/definitions/getCheckResponse"
+            }
+          },
+          "500": {
+            "description": "genericError",
+            "schema": {
+              "$ref": "#/definitions/genericError"
+            }
+          }
+        }
+      }
+    },
     "/relation-tuples/check/openapi": {
       "get": {
         "description": "To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).",
@@ -377,12 +449,6 @@
               "$ref": "#/definitions/genericError"
             }
           },
-          "403": {
-            "description": "getCheckResponse",
-            "schema": {
-              "$ref": "#/definitions/getCheckResponse"
-            }
-          },
           "500": {
             "description": "genericError",
             "schema": {
@@ -425,12 +491,6 @@
             "description": "genericError",
             "schema": {
               "$ref": "#/definitions/genericError"
-            }
-          },
-          "403": {
-            "description": "getCheckResponse",
-            "schema": {
-              "$ref": "#/definitions/getCheckResponse"
             }
           },
           "500": {
