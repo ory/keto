@@ -4,40 +4,42 @@ import (
 	"context"
 	"testing"
 
+	"github.com/gofrs/uuid"
+
 	"github.com/ory/keto/internal/relationtuple"
 
 	"github.com/stretchr/testify/assert"
 )
 
 func TestEngineUtilsProvider_CheckVisited(t *testing.T) {
+	a, b, c, d, e := uuid.Must(uuid.NewV4()), uuid.Must(uuid.NewV4()), uuid.Must(uuid.NewV4()), uuid.Must(uuid.NewV4()), uuid.Must(uuid.NewV4())
 	t.Run("case=finds cycle", func(t *testing.T) {
-
 		linkedList := []relationtuple.SubjectSet{{
-			Namespace: "default",
-			Object:    "A",
+			Namespace: 1,
+			Object:    a,
 			Relation:  "connected",
 		}, {
-			Namespace: "default",
-			Object:    "B",
+			Namespace: 1,
+			Object:    b,
 			Relation:  "connected",
 		}, {
-			Namespace: "default",
-			Object:    "C",
+			Namespace: 1,
+			Object:    c,
 			Relation:  "connected",
 		}, {
-			Namespace: "default",
-			Object:    "B",
+			Namespace: 1,
+			Object:    b,
 			Relation:  "connected",
 		}, {
-			Namespace: "default",
-			Object:    "D",
+			Namespace: 1,
+			Object:    d,
 			Relation:  "connected",
 		}}
 
 		ctx := context.Background()
 		var isThereACycle bool
 		for i := range linkedList {
-			ctx, isThereACycle = CheckAndAddVisited(ctx, &linkedList[i])
+			ctx, isThereACycle = CheckAndAddVisited(ctx, linkedList[i].Hash())
 			if isThereACycle {
 				break
 			}
@@ -47,33 +49,32 @@ func TestEngineUtilsProvider_CheckVisited(t *testing.T) {
 	})
 
 	t.Run("case=ignores if no cycle", func(t *testing.T) {
-
 		list := []relationtuple.SubjectSet{{
-			Namespace: "default",
-			Object:    "A",
+			Namespace: 1,
+			Object:    a,
 			Relation:  "connected",
 		}, {
-			Namespace: "default",
-			Object:    "B",
+			Namespace: 1,
+			Object:    b,
 			Relation:  "connected",
 		}, {
-			Namespace: "default",
-			Object:    "C",
+			Namespace: 1,
+			Object:    c,
 			Relation:  "connected",
 		}, {
-			Namespace: "default",
-			Object:    "D",
+			Namespace: 1,
+			Object:    d,
 			Relation:  "connected",
 		}, {
-			Namespace: "default",
-			Object:    "E",
+			Namespace: 1,
+			Object:    e,
 			Relation:  "connected",
 		}}
 
 		ctx := context.Background()
 		var isThereACycle bool
 		for i := range list {
-			ctx, isThereACycle = CheckAndAddVisited(ctx, &list[i])
+			ctx, isThereACycle = CheckAndAddVisited(ctx, list[i].Hash())
 			if isThereACycle {
 				break
 			}

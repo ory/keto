@@ -3,10 +3,13 @@ package check
 import (
 	"context"
 	"encoding/json"
-	"github.com/ory/keto/ketoapi"
 	"io"
 	"net/http"
 	"net/url"
+
+	"github.com/ory/herodot"
+
+	"github.com/ory/keto/ketoapi"
 
 	"github.com/julienschmidt/httprouter"
 	"github.com/pkg/errors"
@@ -144,12 +147,20 @@ func (h *Handler) getCheck(ctx context.Context, q url.Values) (bool, error) {
 		return false, err
 	}
 
-	tuple, err := (&relationtuple.InternalRelationTuple{}).FromURLQuery(q)
+	tuple, err := (&ketoapi.RelationTuple{}).FromURLQuery(q)
 	if err != nil {
 		return false, err
 	}
 
-	return h.d.PermissionEngine().SubjectIsAllowed(ctx, tuple, maxDepth)
+	it, err := h.d.Mapper().FromTuple(ctx, tuple)
+	// herodot.ErrNotFound occurs when the namespace is unknown
+	if errors.Is(err, herodot.ErrNotFound) {
+		return false, nil
+	} else if err != nil {
+		return false, err
+	}
+
+	return h.d.PermissionEngine().SubjectIsAllowed(ctx, it[0], maxDepth)
 }
 
 // swagger:route POST /relation-tuples/check/openapi read postCheck
@@ -219,18 +230,28 @@ func (h *Handler) postCheck(ctx context.Context, body io.Reader, query url.Value
 		return false, err
 	}
 
-	var tuple relationtuple.InternalRelationTuple
+	var tuple ketoapi.RelationTuple
 	if err := json.NewDecoder(body).Decode(&tuple); err != nil {
-		return false, errors.WithStack(err)
+		return false, herodot.ErrBadRequest.WithErrorf("could not unmarshal json: %s", err.Error())
+	}
+	t, err := h.d.Mapper().FromTuple(ctx, &tuple)
+	// herodot.ErrNotFound occurs when the namespace is unknown
+	if errors.Is(err, herodot.ErrNotFound) {
+		return false, nil
+	} else if err != nil {
+		return false, err
 	}
 
-	return h.d.PermissionEngine().SubjectIsAllowed(ctx, &tuple, maxDepth)
+	return h.d.PermissionEngine().SubjectIsAllowed(ctx, t[0], maxDepth)
 }
 
 func (h *Handler) Check(ctx context.Context, req *rts.CheckRequest) (*rts.CheckResponse, error) {
-	tuple := (&ketoapi.RelationTuple{}).FromDataProvider(req)
+	tuple, err := (&ketoapi.RelationTuple{}).FromDataProvider(req)
+	if err != nil {
+		return nil, err
+	}
 
-	internalTuple, err := h.d.UUIDMapper().FromTuple(ctx, tuple)
+	internalTuple, err := h.d.Mapper().FromTuple(ctx, tuple)
 	if err != nil {
 		return nil, err
 	}

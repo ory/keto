@@ -162,7 +162,7 @@ func (p *Persister) whereQuery(ctx context.Context, q *pop.Query, rq *relationtu
 	if rq.Relation != nil {
 		q.Where("relation = ?", rq.Relation)
 	}
-	if s := rq.Subject(); s != nil {
+	if s := rq.Subject; s != nil {
 		if err := p.whereSubject(ctx, q, s); err != nil {
 			return err
 		}

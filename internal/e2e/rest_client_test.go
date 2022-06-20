@@ -4,12 +4,13 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/ory/keto/ketoapi"
 	"io"
 	"io/ioutil"
 	"net/http"
 	"strconv"
 	"time"
+
+	"github.com/ory/keto/ketoapi"
 
 	"github.com/ory/herodot"
 	"github.com/tidwall/gjson"
@@ -132,21 +133,21 @@ func (rc *restClient) check(t require.TestingT, r *ketoapi.RelationTuple) bool {
 		return true
 	}
 
-	assert.Equal(t, http.StatusForbidden, codeGet)
-	assert.Equal(t, http.StatusForbidden, codePost)
+	assert.Equal(t, http.StatusForbidden, codeGet, bodyGet)
+	assert.Equal(t, http.StatusForbidden, codePost, bodyPost)
 	assert.Equal(t, false, respGet.Allowed)
 	assert.Equal(t, false, respPost.Allowed)
 	return false
 }
 
-func (rc *restClient) expand(t require.TestingT, r *ketoapi.SubjectSet, depth int) *expand.Tree {
+func (rc *restClient) expand(t require.TestingT, r *ketoapi.SubjectSet, depth int) *ketoapi.ExpandTree {
 	query := r.ToURLQuery()
 	query.Set("max-depth", fmt.Sprintf("%d", depth))
 
 	body, code := rc.makeRequest(t, http.MethodGet, fmt.Sprintf("%s?%s", expand.RouteBase, query.Encode()), "", false)
 	require.Equal(t, http.StatusOK, code, body)
 
-	tree := &expand.Tree{}
+	tree := &ketoapi.ExpandTree{}
 	require.NoError(t, json.Unmarshal([]byte(body), tree))
 
 	return tree

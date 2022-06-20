@@ -14,7 +14,7 @@ import (
 type (
 	Persister interface {
 		relationtuple.Manager
-		relationtuple.UUIDMappingManager
+		relationtuple.MappingManager
 
 		Connection(ctx context.Context) *pop.Connection
 	}

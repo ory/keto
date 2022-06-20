@@ -2,11 +2,12 @@ package e2e
 
 import (
 	"fmt"
-	"github.com/ory/keto/ketoapi"
 	"io/ioutil"
 	"net/http"
 	"testing"
 	"time"
+
+	"github.com/ory/keto/ketoapi"
 
 	"github.com/ory/herodot"
 	"github.com/ory/x/cmdx"
@@ -17,7 +18,6 @@ import (
 
 	"github.com/ory/keto/cmd"
 	cliclient "github.com/ory/keto/cmd/client"
-	"github.com/ory/keto/internal/expand"
 	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/internal/x"
 	"github.com/ory/keto/internal/x/dbx"
@@ -35,7 +35,7 @@ type (
 		queryTuple(t require.TestingT, q *ketoapi.RelationQuery, opts ...x.PaginationOptionSetter) *ketoapi.GetResponse
 		queryTupleErr(t require.TestingT, expected herodot.DefaultError, q *ketoapi.RelationQuery, opts ...x.PaginationOptionSetter)
 		check(t require.TestingT, r *ketoapi.RelationTuple) bool
-		expand(t require.TestingT, r *ketoapi.SubjectSet, depth int) *expand.Tree
+		expand(t require.TestingT, r *ketoapi.SubjectSet, depth int) *ketoapi.ExpandTree
 		waitUntilLive(t require.TestingT)
 	}
 )
@@ -49,6 +49,7 @@ func Test(t *testing.T) {
 	for _, dsn := range dbx.GetDSNs(t, false) {
 		dsn := dsn
 		t.Run(fmt.Sprintf("dsn=%s", dsn.Name), func(t *testing.T) {
+			dsn := dsn
 			t.Parallel()
 
 			ctx, reg, addNamespace := newInitializedReg(t, dsn, nil)

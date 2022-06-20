@@ -130,10 +130,6 @@ var (
 			DBType:    "all",
 			Type:      "go",
 			Runner: func(_ popx.Migration, conn *pop.Connection, _ *pop.Tx) error {
-				pop.Debug = true
-				//pop.SetLogger(func(_ logging.Level, s string, args ...interface{}) {
-				//	fmt.Printf("[%s] %s\n", time.Now().Round(time.Millisecond), fmt.Sprintf(s, args...))
-				//})
 				for lastID := uuid.Nil; ; {
 					relationTuples, hasNext, err := getRelationTuples[RelationTuple](conn, lastID)
 					if err != nil {
@@ -147,7 +143,7 @@ var (
 					}
 
 					if err := batchWriteMappings(conn, mappings); err != nil {
-						return fmt.Errorf("could not replace UUIDs: %w", err)
+						return fmt.Errorf("could not write mappings: %w", err)
 					}
 
 					if err := batchInsertTuples(conn, newTuples); err != nil {
@@ -204,10 +200,10 @@ var (
 						case rt.SubjectSetObject.Valid:
 							mappings[rt.SubjectSetObject.UUID] = append(mappings[rt.SubjectSetObject.UUID], &ot.SubjectSetObject.String)
 						}
-						if err := batchReplaceUUIDs(conn, mappings); err != nil {
-							return fmt.Errorf("could not replace UUIDs: %w", err)
-						}
 						oldTuples[i] = ot
+					}
+					if err := batchReplaceUUIDs(conn, mappings); err != nil {
+						return fmt.Errorf("could not replace UUIDs: %w", err)
 					}
 
 					if err := batchInsertTuples(conn, oldTuples); err != nil {
@@ -264,6 +260,11 @@ func getRelationTuples[RT pop.TableNameAble](conn *pop.Connection, lastID uuid.U
 }
 
 func batchWriteMappings(conn *pop.Connection, mappings []*UUIDMapping) (err error) {
+	if len(mappings) == 0 {
+		// Nothing to do.
+		return nil
+	}
+
 	placeholders, args := constructArgs(2, mappings)
 
 	// We need to write manual SQL here because the INSERT should not fail if
@@ -273,7 +274,7 @@ func batchWriteMappings(conn *pop.Connection, mappings []*UUIDMapping) (err erro
 	switch d := conn.Dialect.Name(); d {
 	case "mysql":
 		query = `INSERT IGNORE INTO keto_uuid_mappings (id, string_representation) VALUES ` + placeholders
-	case "cockroach", "postgres":
+	case "cockroach":
 		query = `
 			UPSERT INTO keto_uuid_mappings (id, string_representation) VALUES ` + placeholders
 	default:
@@ -291,6 +292,10 @@ func batchWriteMappings(conn *pop.Connection, mappings []*UUIDMapping) (err erro
 }
 
 func batchReplaceUUIDs(conn *pop.Connection, uuidToTargets map[uuid.UUID][]*string) error {
+	if len(uuidToTargets) == 0 {
+		return nil
+	}
+
 	ids := maps.Keys(uuidToTargets)
 
 	mappings := &[]UUIDMapping{}
@@ -313,6 +318,10 @@ func batchInsertTuples[RT interface {
 	pop.TableNameAble
 	columnProvider
 }](conn *pop.Connection, rts []RT) error {
+	if len(rts) == 0 {
+		return nil
+	}
+
 	placeholders, args := constructArgs(10, rts)
 	query := fmt.Sprintf("INSERT INTO %s (shard_id, nid, namespace_id, object, relation, subject_id, subject_set_namespace_id, subject_set_object, subject_set_relation, commit_time) VALUES %s", rts[0].TableName(), placeholders)
 

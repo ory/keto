@@ -1,6 +1,7 @@
 package expand_test
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"io"
@@ -8,6 +9,8 @@ import (
 	"net/http/httptest"
 	"net/url"
 	"testing"
+
+	"github.com/ory/keto/ketoapi"
 
 	"github.com/ory/keto/internal/driver/config"
 
@@ -59,38 +62,38 @@ func TestRESTHandler(t *testing.T) {
 	})
 
 	t.Run("case=returns expand tree", func(t *testing.T) {
-		rootSub := &relationtuple.SubjectSet{
+		rootSub := &ketoapi.SubjectSet{
 			Namespace: nspace.Name,
 			Object:    "root",
 			Relation:  "parent of",
 		}
-		expectedTree := &expand.Tree{
-			Type:    expand.Union,
-			Subject: rootSub,
-			Children: []*expand.Tree{
+		expectedTree := &ketoapi.ExpandTree{
+			Type:       ketoapi.Union,
+			SubjectSet: rootSub,
+			Children: []*ketoapi.ExpandTree{
 				{
-					Type:    expand.Leaf,
-					Subject: &relationtuple.SubjectID{ID: "child0"},
+					Type:      ketoapi.Leaf,
+					SubjectID: x.Ptr("child0"),
 				},
 				{
-					Type:    expand.Leaf,
-					Subject: &relationtuple.SubjectID{ID: "child1"},
+					Type:      ketoapi.Leaf,
+					SubjectID: x.Ptr("child1"),
 				},
 			},
 		}
 
 		relationtuple.MapAndWriteTuples(t, reg,
-			&relationtuple.InternalRelationTuple{
+			&ketoapi.RelationTuple{
 				Namespace: nspace.Name,
 				Object:    rootSub.Object,
 				Relation:  rootSub.Relation,
-				Subject:   expectedTree.Children[0].Subject,
+				SubjectID: expectedTree.Children[0].SubjectID,
 			},
-			&relationtuple.InternalRelationTuple{
+			&ketoapi.RelationTuple{
 				Namespace: nspace.Name,
 				Object:    rootSub.Object,
 				Relation:  rootSub.Relation,
-				Subject:   expectedTree.Children[1].Subject,
+				SubjectID: expectedTree.Children[1].SubjectID,
 			},
 		)
 
@@ -101,46 +104,11 @@ func TestRESTHandler(t *testing.T) {
 
 		require.Equal(t, http.StatusOK, resp.StatusCode)
 
-		actualTree := expand.Tree{}
-		require.NoError(t, json.NewDecoder(resp.Body).Decode(&actualTree))
-		assertEqualTrees(t, expectedTree, &actualTree)
+		actualTree := ketoapi.ExpandTree{}
+		body, err := io.ReadAll(resp.Body)
+		require.NoError(t, err)
+		t.Logf("body: %s", string(body))
+		require.NoError(t, json.NewDecoder(bytes.NewBuffer(body)).Decode(&actualTree))
+		expand.AssertExternalTreesAreEqual(t, expectedTree, &actualTree)
 	})
-}
-
-func assertEqualTrees(t *testing.T, expected, actual *expand.Tree) {
-	t.Helper()
-	assert.Truef(t, treesAreEqual(t, expected, actual),
-		"expected:\n%s\n\nactual:\n%s", expected.String(), actual.String())
-}
-
-func treesAreEqual(t *testing.T, expected, actual *expand.Tree) bool {
-	if expected == nil || actual == nil {
-		return expected == actual
-	}
-
-	if expected.Type != actual.Type {
-		t.Logf("expected type %q, actual type %q", expected.Type, actual.Type)
-		return false
-	}
-	if expected.Subject.String() != actual.Subject.String() {
-		t.Logf("expected subject: %q, actual subject: %q", expected.Subject.String(), actual.Subject.String())
-		return false
-	}
-	if len(expected.Children) != len(actual.Children) {
-		t.Logf("expected len(children)=%d, actual len(children)=%d", len(expected.Children), len(actual.Children))
-		return false
-	}
-
-	// For children, we check for equality disregarding the order
-outer:
-	for _, expectedChild := range expected.Children {
-		for _, actualChild := range actual.Children {
-			if treesAreEqual(t, expectedChild, actualChild) {
-				continue outer
-			}
-		}
-		t.Logf("expected child:\n%s\n\nactual child:\n%s", expectedChild.String(), actual.String())
-		return false
-	}
-	return true
 }

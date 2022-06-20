@@ -3,10 +3,11 @@ package relationtuple
 import (
 	"context"
 	"fmt"
-	"github.com/gofrs/uuid"
 	"math/rand"
 	"strconv"
 	"testing"
+
+	"github.com/gofrs/uuid"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -56,10 +57,7 @@ func ManagerTest(t *testing.T, m Manager) {
 			nspace := rand.Int31()
 
 			tuples := make([]*InternalRelationTuple, 10)
-			ids := make([]uuid.UUID, len(tuples))
-			for i := range ids {
-				ids[i] = uuid.Must(uuid.NewV4())
-			}
+			ids := x.UUIDs(len(tuples))
 
 			for i := range tuples {
 				tuples[i] = &InternalRelationTuple{
@@ -121,7 +119,7 @@ func ManagerTest(t *testing.T, m Manager) {
 				{
 					query: &RelationQuery{
 						Namespace: &nspace,
-						SubjectID: &ids[0],
+						Subject:   &SubjectID{ids[0]},
 					},
 					expected: []*InternalRelationTuple{
 						tuples[0],
@@ -131,7 +129,7 @@ func ManagerTest(t *testing.T, m Manager) {
 					query: &RelationQuery{
 						Namespace: &nspace,
 						Object:    &ids[0],
-						SubjectID: &ids[0],
+						Subject:   &SubjectID{ids[0]},
 					},
 					expected: []*InternalRelationTuple{
 						tuples[0],
@@ -141,7 +139,7 @@ func ManagerTest(t *testing.T, m Manager) {
 					query: &RelationQuery{
 						Namespace: &nspace,
 						Relation:  x.Ptr("r 0"),
-						SubjectID: &ids[0],
+						Subject:   &SubjectID{ids[0]},
 					},
 					expected: []*InternalRelationTuple{
 						tuples[0],
@@ -152,7 +150,7 @@ func ManagerTest(t *testing.T, m Manager) {
 						Namespace: &nspace,
 						Object:    &ids[0],
 						Relation:  x.Ptr("r 0"),
-						SubjectID: &ids[0],
+						Subject:   &SubjectID{ids[0]},
 					},
 					expected: []*InternalRelationTuple{
 						tuples[0],
@@ -317,7 +315,7 @@ func ManagerTest(t *testing.T, m Manager) {
 				Namespace: &nspace,
 			})
 			require.NoError(t, err)
-			assert.Equal(t, []*InternalRelationTuple{rs[1], rs[3]}, res)
+			assert.ElementsMatch(t, []*InternalRelationTuple{rs[1], rs[3]}, res)
 		})
 
 		t.Run("case=tuple and subject namespace differ", func(t *testing.T) {
@@ -375,7 +373,7 @@ func ManagerTest(t *testing.T, m Manager) {
 				Namespace: &nspace,
 			})
 			require.NoError(t, err)
-			assert.Equal(t, []*InternalRelationTuple{rs[0], rs[1]}, res)
+			assert.ElementsMatch(t, []*InternalRelationTuple{rs[0], rs[1]}, res)
 
 			require.NoError(t, m.TransactRelationTuples(ctx, []*InternalRelationTuple{rs[2], rs[3]}, []*InternalRelationTuple{rs[0]}))
 

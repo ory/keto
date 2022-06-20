@@ -2,7 +2,10 @@ package check_test
 
 import (
 	"context"
+	"sort"
 	"testing"
+
+	"github.com/gofrs/uuid"
 
 	"github.com/ory/keto/internal/driver/config"
 
@@ -48,9 +51,9 @@ func TestEngine(t *testing.T) {
 	t.Run("respects max depth", func(t *testing.T) {
 		// "user" has relation "access" through being an "owner" through being an "admin"
 		// which requires at least 2 units of depth. If max-depth is 2 then we hit max-depth
-		ns := "test"
-		user := &relationtuple.SubjectID{ID: "user"}
-		object := "object"
+		ns := int32(2345)
+		user := &relationtuple.SubjectID{ID: uuid.Must(uuid.NewV4())}
+		object := uuid.Must(uuid.NewV4())
 
 		adminRel := relationtuple.InternalRelationTuple{
 			Relation:  "admin",
@@ -81,7 +84,7 @@ func TestEngine(t *testing.T) {
 			},
 		}
 		reg := newDepsProvider(t, []*namespace.Namespace{
-			{Name: ns, ID: 1},
+			{Name: "", ID: ns},
 		})
 		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(ctx, &adminRel, &adminIsOwnerRel, &accessRel))
 
@@ -123,13 +126,13 @@ func TestEngine(t *testing.T) {
 	t.Run("direct inclusion", func(t *testing.T) {
 		rel := relationtuple.InternalRelationTuple{
 			Relation:  "access",
-			Object:    "object",
-			Namespace: "test",
-			Subject:   &relationtuple.SubjectID{ID: "user"},
+			Object:    uuid.Must(uuid.NewV4()),
+			Namespace: int32(8694),
+			Subject:   &relationtuple.SubjectID{ID: uuid.Must(uuid.NewV4())},
 		}
 
 		reg := newDepsProvider(t, []*namespace.Namespace{
-			{Name: rel.Namespace, ID: 1},
+			{ID: rel.Namespace},
 		})
 		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(ctx, &rel))
 
@@ -142,11 +145,9 @@ func TestEngine(t *testing.T) {
 
 	t.Run("indirect inclusion level 1", func(t *testing.T) {
 		// the set of users that are produces of "dust" have to remove it
-		dust := "dust"
-		sofaNamespace := "under the sofa"
-		mark := relationtuple.SubjectID{
-			ID: "Mark",
-		}
+		dust := uuid.Must(uuid.NewV4())
+		sofaNamespace := int32(9237)
+		mark := relationtuple.SubjectID{ID: uuid.Must(uuid.NewV4())}
 		cleaningRelation := relationtuple.InternalRelationTuple{
 			Namespace: sofaNamespace,
 			Relation:  "have to remove",
@@ -165,7 +166,7 @@ func TestEngine(t *testing.T) {
 		}
 
 		reg := newDepsProvider(t, []*namespace.Namespace{
-			{Name: sofaNamespace, ID: 1},
+			{ID: sofaNamespace},
 		})
 		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(ctx, &cleaningRelation, &markProducesDust))
 
@@ -182,18 +183,16 @@ func TestEngine(t *testing.T) {
 	})
 
 	t.Run("direct exclusion", func(t *testing.T) {
-		user := &relationtuple.SubjectID{
-			ID: "user-id",
-		}
+		user := &relationtuple.SubjectID{ID: uuid.Must(uuid.NewV4())}
 		rel := relationtuple.InternalRelationTuple{
 			Relation:  "relation",
-			Object:    "object-id",
-			Namespace: "object-namespace",
+			Object:    uuid.Must(uuid.NewV4()),
+			Namespace: int32(9854),
 			Subject:   user,
 		}
 
 		reg := newDepsProvider(t, []*namespace.Namespace{
-			{Name: rel.Namespace, ID: 10},
+			{ID: rel.Namespace},
 		})
 		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(ctx, &rel))
 
@@ -203,14 +202,14 @@ func TestEngine(t *testing.T) {
 			Relation:  rel.Relation,
 			Object:    rel.Object,
 			Namespace: rel.Namespace,
-			Subject:   &relationtuple.SubjectID{ID: "not " + user.ID},
+			Subject:   &relationtuple.SubjectID{ID: uuid.Must(uuid.NewV4())},
 		}, 0)
 		require.NoError(t, err)
 		assert.False(t, res)
 	})
 
 	t.Run("wrong object ID", func(t *testing.T) {
-		object := "object"
+		object := uuid.Must(uuid.NewV4())
 		access := relationtuple.InternalRelationTuple{
 			Relation: "access",
 			Object:   object,
@@ -221,8 +220,8 @@ func TestEngine(t *testing.T) {
 		}
 		user := relationtuple.InternalRelationTuple{
 			Relation: "owner",
-			Object:   "not " + object,
-			Subject:  &relationtuple.SubjectID{ID: "user"},
+			Object:   uuid.Must(uuid.NewV4()),
+			Subject:  &relationtuple.SubjectID{ID: uuid.Must(uuid.NewV4())},
 		}
 
 		reg := newDepsProvider(t, []*namespace.Namespace{
@@ -242,9 +241,9 @@ func TestEngine(t *testing.T) {
 	})
 
 	t.Run("wrong relation name", func(t *testing.T) {
-		diaryEntry := "entry for 6. Nov 2020"
-		diaryNamespace := "diary"
-		// this would be a userset rewrite
+		diaryEntry := uuid.Must(uuid.NewV4())
+		diaryNamespace := int32(2093)
+		// this would be a user-set rewrite
 		readDiary := relationtuple.InternalRelationTuple{
 			Namespace: diaryNamespace,
 			Relation:  "read",
@@ -259,11 +258,11 @@ func TestEngine(t *testing.T) {
 			Namespace: diaryNamespace,
 			Relation:  "not author",
 			Object:    diaryEntry,
-			Subject:   &relationtuple.SubjectID{ID: "your mother"},
+			Subject:   &relationtuple.SubjectID{ID: uuid.Must(uuid.NewV4())},
 		}
 
 		reg := newDepsProvider(t, []*namespace.Namespace{
-			{Name: diaryNamespace, ID: 1},
+			{ID: diaryNamespace},
 		})
 		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(ctx, &readDiary, &user))
 
@@ -280,13 +279,11 @@ func TestEngine(t *testing.T) {
 	})
 
 	t.Run("indirect inclusion level 2", func(t *testing.T) {
-		object := "some object"
-		someNamespace := "some namespace"
-		user := relationtuple.SubjectID{
-			ID: "some user",
-		}
-		organization := "some organization"
-		orgNamespace := "all organizations"
+		object := uuid.Must(uuid.NewV4())
+		someNamespace := int32(3491)
+		user := relationtuple.SubjectID{ID: uuid.Must(uuid.NewV4())}
+		organization := uuid.Must(uuid.NewV4())
+		orgNamespace := int32(30293)
 
 		ownerUserSet := relationtuple.SubjectSet{
 			Namespace: someNamespace,
@@ -319,8 +316,8 @@ func TestEngine(t *testing.T) {
 		}
 
 		reg := newDepsProvider(t, []*namespace.Namespace{
-			{Name: someNamespace, ID: 1},
-			{Name: orgNamespace, ID: 2},
+			{ID: someNamespace},
+			{ID: orgNamespace},
 		})
 		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(ctx, &writeRel, &orgOwnerRel, &userMembershipRel))
 
@@ -354,9 +351,9 @@ func TestEngine(t *testing.T) {
 		// as we don't know how to interpret the "parent" relation, there would have to be a userset rewrite to allow access
 		// to files when you have access to the parent
 
-		file := "file"
-		directory := "directory"
-		user := relationtuple.SubjectID{ID: "user"}
+		file := uuid.Must(uuid.NewV4())
+		directory := uuid.Must(uuid.NewV4())
+		user := relationtuple.SubjectID{ID: uuid.Must(uuid.NewV4())}
 
 		parent := relationtuple.InternalRelationTuple{
 			Relation: "parent",
@@ -388,10 +385,10 @@ func TestEngine(t *testing.T) {
 	})
 
 	t.Run("case=subject id next to subject set", func(t *testing.T) {
-		namesp, obj, org, directOwner, indirectOwner, ownerRel, memberRel := "namesp", "obj", "org", "u1", "u2", "owner", "member"
+		namesp, obj, org, directOwner, indirectOwner, ownerRel, memberRel := int32(39231), uuid.Must(uuid.NewV4()), uuid.Must(uuid.NewV4()), uuid.Must(uuid.NewV4()), uuid.Must(uuid.NewV4()), "owner", "member"
 
 		reg := newDepsProvider(t, []*namespace.Namespace{
-			{Name: namesp, ID: 1},
+			{ID: namesp},
 		})
 		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(
 			ctx,
@@ -441,12 +438,16 @@ func TestEngine(t *testing.T) {
 	})
 
 	t.Run("case=paginates", func(t *testing.T) {
-		namesp, obj, access, users := "namesp", "obj", "access", []string{"u1", "u2", "u3", "u4"}
+		namesp, obj, access, users := int32(2934), uuid.Must(uuid.NewV4()), "access", x.UUIDs(4)
 		pageSize := 2
+		// sort users because we later assert on the pagination
+		sort.Slice(users, func(i, j int) bool {
+			return string(users[i][:]) < string(users[j][:])
+		})
 
 		reg := newDepsProvider(
 			t,
-			[]*namespace.Namespace{{Name: namesp, ID: 1}},
+			[]*namespace.Namespace{{ID: namesp}},
 			x.WithSize(pageSize),
 		)
 
@@ -462,7 +463,7 @@ func TestEngine(t *testing.T) {
 		e := check.NewEngine(reg)
 
 		for i, user := range users {
-			t.Run("user="+user, func(t *testing.T) {
+			t.Run("user="+user.String(), func(t *testing.T) {
 				allowed, err := e.SubjectIsAllowed(ctx, &relationtuple.InternalRelationTuple{
 					Namespace: namesp,
 					Object:    obj,
@@ -487,9 +488,9 @@ func TestEngine(t *testing.T) {
 	})
 
 	t.Run("case=wide tuple graph", func(t *testing.T) {
-		namesp, obj, access, member, users, orgs := "namesp", "obj", "access", "member", []string{"u1", "u2", "u3", "u4"}, []string{"o1", "o2"}
+		namesp, obj, access, member, users, orgs := int32(9234), uuid.Must(uuid.NewV4()), "access", "member", x.UUIDs(4), x.UUIDs(2)
 
-		reg := newDepsProvider(t, []*namespace.Namespace{{Name: namesp, ID: 1}})
+		reg := newDepsProvider(t, []*namespace.Namespace{{ID: namesp}})
 
 		for _, org := range orgs {
 			require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(ctx, &relationtuple.InternalRelationTuple{
@@ -524,14 +525,14 @@ func TestEngine(t *testing.T) {
 			}
 			allowed, err := e.SubjectIsAllowed(ctx, req, 0)
 			require.NoError(t, err)
-			assert.True(t, allowed, req.String())
+			assert.Truef(t, allowed, "%+v", req)
 		}
 	})
 
 	t.Run("case=circular tuples", func(t *testing.T) {
-		sendlingerTor, odeonsplatz, centralStation, connected, namesp := "Sendlinger Tor", "Odeonsplatz", "Central Station", "connected", "munich transport"
+		sendlingerTor, odeonsplatz, centralStation, connected, namesp := uuid.NewV5(uuid.Nil, "Sendlinger Tor"), uuid.NewV5(uuid.Nil, "Odeonsplatz"), uuid.NewV5(uuid.Nil, "Central Station"), "connected", int32(7743)
 
-		reg := newDepsProvider(t, []*namespace.Namespace{{Name: namesp}})
+		reg := newDepsProvider(t, []*namespace.Namespace{{ID: namesp}})
 
 		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(ctx, []*relationtuple.InternalRelationTuple{
 			{
@@ -568,7 +569,7 @@ func TestEngine(t *testing.T) {
 
 		e := check.NewEngine(reg)
 
-		stations := []string{sendlingerTor, odeonsplatz, centralStation}
+		stations := []uuid.UUID{sendlingerTor, odeonsplatz, centralStation}
 		res, err := e.SubjectIsAllowed(ctx, &relationtuple.InternalRelationTuple{
 			Namespace: namesp,
 			Object:    stations[0],

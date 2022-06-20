@@ -89,3 +89,28 @@ func (s *SubjectSet) FromString(str string) (*SubjectSet, error) {
 		Relation:  parts[1],
 	}, nil
 }
+
+func (t *ExpandTree) String() string {
+	if t == nil {
+		return ""
+	}
+
+	sub := "<!--no subject-->"
+	switch {
+	case t.SubjectID != nil:
+		sub = *t.SubjectID
+	case t.SubjectSet != nil:
+		sub = t.SubjectSet.String()
+	}
+
+	if t.Type == Leaf {
+		return fmt.Sprintf("☘ %s️", sub)
+	}
+
+	children := make([]string, len(t.Children))
+	for i, c := range t.Children {
+		children[i] = strings.Join(strings.Split(c.String(), "\n"), "\n│  ")
+	}
+
+	return fmt.Sprintf("∪ %s\n├─ %s", sub, strings.Join(children, "\n├─ "))
+}

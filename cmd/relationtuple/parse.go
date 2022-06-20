@@ -2,15 +2,14 @@ package relationtuple
 
 import (
 	"fmt"
-	"github.com/ory/keto/ketoapi"
 	"io"
 	"os"
 	"strings"
 
+	"github.com/ory/keto/ketoapi"
+
 	"github.com/ory/x/cmdx"
 	"github.com/spf13/cobra"
-
-	"github.com/ory/keto/internal/relationtuple"
 )
 
 func newParseCmd() *cobra.Command {
@@ -68,7 +67,7 @@ func parseFile(cmd *cobra.Command, fn string) ([]*ketoapi.RelationTuple, error) 
 	}
 
 	parts := strings.Split(string(fc), "\n")
-	rts := make([]*relationtuple.InternalRelationTuple, 0, len(parts))
+	rts := make([]*ketoapi.RelationTuple, 0, len(parts))
 	for i, row := range parts {
 		row = strings.TrimSpace(row)
 		// ignore comments and empty lines

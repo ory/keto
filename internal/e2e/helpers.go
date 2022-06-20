@@ -2,7 +2,6 @@ package e2e
 
 import (
 	"context"
-	"errors"
 	"testing"
 
 	"github.com/ory/keto/internal/x/dbx"
@@ -10,8 +9,6 @@ import (
 	"github.com/ory/keto/internal/relationtuple"
 
 	"github.com/stretchr/testify/assert"
-
-	"github.com/ory/keto/internal/x"
 
 	"github.com/ory/x/configx"
 	"github.com/phayes/freeport"
@@ -73,16 +70,9 @@ func newInitializedReg(t testing.TB, dsn *dbx.DsnT, cfgOverwrites map[string]int
 
 		t.Cleanup(func() {
 			for _, n := range nn {
-				err := errors.New("not nil")
-				var pt string
-				var ts []*relationtuple.InternalRelationTuple
-				for pt != "" || err != nil {
-					ts, pt, err = reg.RelationTupleManager().GetRelationTuples(ctx, &relationtuple.RelationQuery{
-						Namespace: n.Name,
-					}, x.WithToken(pt))
-					require.NoError(t, err)
-					require.NoError(t, reg.RelationTupleManager().DeleteRelationTuples(ctx, ts...))
-				}
+				require.NoError(t, reg.RelationTupleManager().DeleteAllRelationTuples(ctx, &relationtuple.RelationQuery{
+					Namespace: &n.ID,
+				}))
 			}
 		})
 	}

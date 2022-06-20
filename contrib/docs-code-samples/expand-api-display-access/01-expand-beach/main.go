@@ -5,9 +5,9 @@ import (
 	"encoding/json"
 	"os"
 
-	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
+	"github.com/ory/keto/ketoapi"
 
-	"github.com/ory/keto/internal/expand"
+	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 
 	"google.golang.org/grpc"
 )
@@ -28,10 +28,7 @@ func main() {
 		panic(err)
 	}
 
-	tree, err := expand.TreeFromProto(res.Tree)
-	if err != nil {
-		panic(err)
-	}
+	tree := (&ketoapi.ExpandTree{}).FromProto(res.Tree)
 
 	enc := json.NewEncoder(os.Stdout)
 	enc.SetIndent("", "  ")

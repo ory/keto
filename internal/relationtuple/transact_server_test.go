@@ -10,6 +10,8 @@ import (
 	"net/url"
 	"testing"
 
+	"github.com/ory/keto/ketoapi"
+
 	"github.com/ory/keto/internal/driver/config"
 
 	"github.com/stretchr/testify/assert"
@@ -24,6 +26,7 @@ import (
 )
 
 func TestWriteHandlers(t *testing.T) {
+	ctx := context.Background()
 	r := httprouter.New()
 	wr := &x.WriteRouter{Router: r}
 	rr := &x.ReadRouter{Router: r}
@@ -37,7 +40,7 @@ func TestWriteHandlers(t *testing.T) {
 		}
 		nspaces = append(nspaces, n)
 
-		require.NoError(t, reg.Config(context.Background()).Set(config.KeyNamespaces, nspaces))
+		require.NoError(t, reg.Config(ctx).Set(config.KeyNamespaces, nspaces))
 
 		return n
 	}
@@ -61,11 +64,11 @@ func TestWriteHandlers(t *testing.T) {
 		t.Run("case=creates tuple", func(t *testing.T) {
 			nspace := addNamespace(t)
 
-			rt := &relationtuple.InternalRelationTuple{
+			rt := &ketoapi.RelationTuple{
 				Namespace: nspace.Name,
 				Object:    "obj",
 				Relation:  "rel",
-				Subject:   &relationtuple.SubjectID{ID: "subj"},
+				SubjectID: x.Ptr("subj"),
 			}
 			payload, err := json.Marshal(rt)
 			require.NoError(t, err)
@@ -80,14 +83,14 @@ func TestWriteHandlers(t *testing.T) {
 			assert.JSONEq(t, string(payload), string(body))
 
 			t.Run("check=is contained in the manager", func(t *testing.T) {
-				query := rt.ToQuery()
-				require.NoError(t, reg.UUIDMappingManager().MapFieldsToUUID(context.Background(), query))
-				// set a size > 1 just to make sure it gets all
-				actualRTs, _, err := reg.RelationTupleManager().GetRelationTuples(context.Background(), query, x.WithSize(10))
+				mapped, err := reg.Mapper().FromTuple(ctx, rt)
 				require.NoError(t, err)
-				require.NoError(t, reg.UUIDMappingManager().MapFieldsFromUUID(context.Background(), relationtuple.InternalRelationTuples(actualRTs)))
-				require.NoError(t, reg.UUIDMappingManager().MapFieldsFromUUID(context.Background(), query))
-				assert.Equalf(t, []*relationtuple.InternalRelationTuple{rt}, actualRTs, "want: %s\ngot:  %s", rt.String(), actualRTs[0].String())
+				// set a size > 1 just to make sure it gets all
+				actualRTs, _, err := reg.RelationTupleManager().GetRelationTuples(ctx, mapped[0].ToQuery(), x.WithSize(10))
+				require.NoError(t, err)
+				actual, err := reg.Mapper().ToTuple(ctx, actualRTs...)
+				require.NoError(t, err)
+				assert.Equalf(t, []*ketoapi.RelationTuple{rt}, actual, "want: %s\ngot:  %s", rt.String(), actual[0].String())
 			})
 
 			t.Run("check=is gettable with the returned URL", func(t *testing.T) {
@@ -95,9 +98,9 @@ func TestWriteHandlers(t *testing.T) {
 				require.NoError(t, err)
 				require.Equal(t, http.StatusOK, resp.StatusCode)
 
-				respDec := relationtuple.GetResponse{}
+				respDec := ketoapi.GetResponse{}
 				require.NoError(t, json.NewDecoder(resp.Body).Decode(&respDec))
-				assert.Equal(t, []*relationtuple.InternalRelationTuple{rt}, respDec.RelationTuples)
+				assert.Equal(t, []*ketoapi.RelationTuple{rt}, respDec.RelationTuples)
 			})
 		})
 
@@ -109,12 +112,12 @@ func TestWriteHandlers(t *testing.T) {
 		t.Run("case=special chars", func(t *testing.T) {
 			nspace := addNamespace(t)
 
-			rts := []*relationtuple.InternalRelationTuple{
+			rts := []*ketoapi.RelationTuple{
 				{
 					Namespace: nspace.Name,
 					Object:    "group:B",
 					Relation:  "member",
-					Subject: &relationtuple.SubjectSet{
+					SubjectSet: &ketoapi.SubjectSet{
 						Namespace: nspace.Name,
 						Object:    "group:A",
 						Relation:  "member",
@@ -124,7 +127,7 @@ func TestWriteHandlers(t *testing.T) {
 					Namespace: nspace.Name,
 					Object:    "@all",
 					Relation:  "member",
-					Subject:   &relationtuple.SubjectID{ID: "this:could#be interpreted:as a@subject set"},
+					SubjectID: x.Ptr("this:could#be interpreted:as a@subject set"),
 				},
 			}
 
@@ -136,16 +139,14 @@ func TestWriteHandlers(t *testing.T) {
 				assert.Equal(t, http.StatusCreated, resp.StatusCode)
 			}
 
-			actual, next, err := reg.RelationTupleManager().GetRelationTuples(context.Background(), &relationtuple.RelationQuery{
-				Namespace: nspace.Name,
+			actual, next, err := reg.RelationTupleManager().GetRelationTuples(ctx, &relationtuple.RelationQuery{
+				Namespace: &nspace.ID,
 			})
 			require.NoError(t, err)
-			require.NoError(t, reg.UUIDMappingManager().MapFieldsFromUUID(context.Background(), relationtuple.InternalRelationTuples(actual)))
+			actualMapped, err := reg.Mapper().ToTuple(ctx, actual...)
+			require.NoError(t, err)
 			assert.Equal(t, "", next)
-			assert.Len(t, actual, 2)
-			for _, rt := range rts {
-				assert.Contains(t, actual, rt)
-			}
+			assert.ElementsMatch(t, rts, actualMapped)
 		})
 	})
 
@@ -153,44 +154,41 @@ func TestWriteHandlers(t *testing.T) {
 		t.Run("case=deletes a tuple", func(t *testing.T) {
 			nspace := addNamespace(t)
 
-			rt := &relationtuple.InternalRelationTuple{
+			rt := &ketoapi.RelationTuple{
 				Namespace: nspace.Name,
 				Object:    "deleted obj",
 				Relation:  "deleted rel",
-				Subject:   &relationtuple.SubjectID{ID: "deleted subj"},
+				SubjectID: x.Ptr("deleted subj"),
 			}
 			relationtuple.MapAndWriteTuples(t, reg, rt)
 
-			q, err := rt.ToURLQuery()
-			require.NoError(t, err)
-			req, err := http.NewRequest(http.MethodDelete, ts.URL+relationtuple.WriteRouteBase+"?"+q.Encode(), nil)
+			req, err := http.NewRequest(http.MethodDelete, ts.URL+relationtuple.WriteRouteBase+"?"+rt.ToURLQuery().Encode(), nil)
 			require.NoError(t, err)
 			resp, err := ts.Client().Do(req)
 			require.NoError(t, err)
 			assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 
 			// set a size > 1 just to make sure it gets all
-			actualRTs, _, err := reg.RelationTupleManager().GetRelationTuples(context.Background(), rt.ToQuery(), x.WithSize(10))
+			actualRTs, _, err := reg.RelationTupleManager().GetRelationTuples(ctx, &relationtuple.RelationQuery{Namespace: &nspace.ID}, x.WithSize(10))
 			require.NoError(t, err)
-			require.NoError(t, reg.UUIDMappingManager().MapFieldsFromUUID(context.Background(), relationtuple.InternalRelationTuples(actualRTs)))
 			assert.Equal(t, []*relationtuple.InternalRelationTuple{}, actualRTs)
 		})
 
 		t.Run("case=deletes multiple tuples", func(t *testing.T) {
 			nspace := addNamespace(t)
 
-			rts := []*relationtuple.InternalRelationTuple{
+			rts := []*ketoapi.RelationTuple{
 				{
 					Namespace: nspace.Name,
 					Object:    "deleted obj",
 					Relation:  "deleted rel",
-					Subject:   &relationtuple.SubjectID{ID: "deleted subj 1"},
+					SubjectID: x.Ptr("deleted subj 1"),
 				},
 				{
 					Namespace: nspace.Name,
 					Object:    "deleted obj",
 					Relation:  "deleted rel",
-					Subject:   &relationtuple.SubjectID{ID: "deleted subj 2"},
+					SubjectID: x.Ptr("deleted subj 2"),
 				},
 			}
 
@@ -207,12 +205,13 @@ func TestWriteHandlers(t *testing.T) {
 			require.NoError(t, err)
 			assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 
-			query, err := (&relationtuple.RelationQuery{}).FromURLQuery(q)
+			query, err := (&ketoapi.RelationQuery{}).FromURLQuery(q)
+			require.NoError(t, err)
+			mappedQuery, err := reg.Mapper().FromQuery(ctx, query)
 			require.NoError(t, err)
 
-			actualRTs, _, err := reg.RelationTupleManager().GetRelationTuples(context.Background(), query, x.WithSize(10))
+			actualRTs, _, err := reg.RelationTupleManager().GetRelationTuples(ctx, mappedQuery, x.WithSize(10))
 			require.NoError(t, err)
-			require.NoError(t, reg.UUIDMappingManager().MapFieldsFromUUID(context.Background(), relationtuple.InternalRelationTuples(actualRTs)))
 			assert.Equal(t, []*relationtuple.InternalRelationTuple{}, actualRTs)
 		})
 	})
@@ -220,24 +219,25 @@ func TestWriteHandlers(t *testing.T) {
 	t.Run("method=patch", func(t *testing.T) {
 		t.Run("case=create and delete", func(t *testing.T) {
 			nspace := addNamespace(t)
+			relation := t.Name()
 
-			deltas := []*relationtuple.PatchDelta{
+			deltas := []*ketoapi.PatchDelta{
 				{
-					Action: relationtuple.ActionInsert,
-					RelationTuple: &relationtuple.InternalRelationTuple{
+					Action: ketoapi.ActionInsert,
+					RelationTuple: &ketoapi.RelationTuple{
 						Namespace: nspace.Name,
 						Object:    "create obj",
-						Relation:  t.Name(),
-						Subject:   &relationtuple.SubjectID{ID: "create sub"},
+						Relation:  relation,
+						SubjectID: x.Ptr("create sub"),
 					},
 				},
 				{
-					Action: relationtuple.ActionDelete,
-					RelationTuple: &relationtuple.InternalRelationTuple{
+					Action: ketoapi.ActionDelete,
+					RelationTuple: &ketoapi.RelationTuple{
 						Namespace: nspace.Name,
 						Object:    "delete obj",
-						Relation:  t.Name(),
-						Subject:   &relationtuple.SubjectID{ID: "delete sub"},
+						Relation:  relation,
+						SubjectID: x.Ptr("delete sub"),
 					},
 				},
 			}
@@ -251,36 +251,36 @@ func TestWriteHandlers(t *testing.T) {
 			require.NoError(t, err)
 			assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 
-			actualRTs, _, err := reg.RelationTupleManager().GetRelationTuples(context.Background(), &relationtuple.RelationQuery{
-				Namespace: nspace.Name,
-				Relation:  t.Name(),
+			actualRTs, _, err := reg.RelationTupleManager().GetRelationTuples(ctx, &relationtuple.RelationQuery{
+				Namespace: &nspace.ID,
+				Relation:  &relation,
 			})
 			require.NoError(t, err)
-			err = reg.UUIDMappingManager().MapFieldsFromUUID(context.Background(), relationtuple.InternalRelationTuples(actualRTs))
+			mapped, err := reg.Mapper().ToTuple(ctx, actualRTs...)
 			require.NoError(t, err)
-			assert.Equal(t, []*relationtuple.InternalRelationTuple{deltas[0].RelationTuple}, actualRTs)
+			assert.Equal(t, []*ketoapi.RelationTuple{deltas[0].RelationTuple}, mapped)
 		})
 
 		t.Run("case=ignores rest on err", func(t *testing.T) {
 			nspace := addNamespace(t)
 
-			deltas := []*relationtuple.PatchDelta{
+			deltas := []*ketoapi.PatchDelta{
 				{
-					Action: relationtuple.ActionInsert,
-					RelationTuple: &relationtuple.InternalRelationTuple{
+					Action: ketoapi.ActionInsert,
+					RelationTuple: &ketoapi.RelationTuple{
 						Namespace: nspace.Name,
 						Object:    "create obj",
 						Relation:  t.Name(),
-						Subject:   &relationtuple.SubjectID{ID: "create sub"},
+						SubjectID: x.Ptr("create sub"),
 					},
 				},
 				{
-					Action: relationtuple.ActionDelete,
-					RelationTuple: &relationtuple.InternalRelationTuple{
+					Action: ketoapi.ActionDelete,
+					RelationTuple: &ketoapi.RelationTuple{
 						Namespace: "not " + nspace.Name,
 						Object:    "o",
 						Relation:  "r",
-						Subject:   &relationtuple.SubjectID{ID: "s"},
+						SubjectID: x.Ptr("s"),
 					},
 				},
 			}
@@ -294,7 +294,7 @@ func TestWriteHandlers(t *testing.T) {
 			assert.Equal(t, http.StatusNotFound, resp.StatusCode)
 
 			// set a size > 1 just to make sure it gets all
-			actualRTs, _, err := reg.RelationTupleManager().GetRelationTuples(context.Background(), deltas[0].RelationTuple.ToQuery(), x.WithSize(10))
+			actualRTs, _, err := reg.RelationTupleManager().GetRelationTuples(ctx, &relationtuple.RelationQuery{Namespace: &nspace.ID}, x.WithSize(10))
 			require.NoError(t, err)
 			assert.Len(t, actualRTs, 0)
 		})
@@ -302,14 +302,14 @@ func TestWriteHandlers(t *testing.T) {
 		t.Run("case=only create", func(t *testing.T) {
 			nspace := addNamespace(t)
 
-			deltas := []*relationtuple.PatchDelta{
+			deltas := []*ketoapi.PatchDelta{
 				{
-					Action: relationtuple.ActionInsert,
-					RelationTuple: &relationtuple.InternalRelationTuple{
+					Action: ketoapi.ActionInsert,
+					RelationTuple: &ketoapi.RelationTuple{
 						Namespace: nspace.Name,
 						Object:    "create obj",
 						Relation:  "rel",
-						Subject:   &relationtuple.SubjectID{ID: "create sub"},
+						SubjectID: x.Ptr("create sub"),
 					},
 				},
 			}
@@ -322,25 +322,26 @@ func TestWriteHandlers(t *testing.T) {
 			require.NoError(t, err)
 			assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 
-			actualRTs, _, err := reg.RelationTupleManager().GetRelationTuples(context.Background(), &relationtuple.RelationQuery{
-				Namespace: nspace.Name,
+			actualRTs, _, err := reg.RelationTupleManager().GetRelationTuples(ctx, &relationtuple.RelationQuery{
+				Namespace: &nspace.ID,
 			})
-			require.NoError(t, reg.UUIDMappingManager().MapFieldsFromUUID(context.Background(), relationtuple.InternalRelationTuples(actualRTs)))
 			require.NoError(t, err)
-			assert.Equal(t, []*relationtuple.InternalRelationTuple{deltas[0].RelationTuple}, actualRTs)
+			mapped, err := reg.Mapper().ToTuple(ctx, actualRTs...)
+			require.NoError(t, err)
+			assert.Equal(t, []*ketoapi.RelationTuple{deltas[0].RelationTuple}, mapped)
 		})
 
 		t.Run("case=only delete", func(t *testing.T) {
 			nspace := addNamespace(t)
 
-			deltas := []*relationtuple.PatchDelta{
+			deltas := []*ketoapi.PatchDelta{
 				{
-					Action: relationtuple.ActionDelete,
-					RelationTuple: &relationtuple.InternalRelationTuple{
+					Action: ketoapi.ActionDelete,
+					RelationTuple: &ketoapi.RelationTuple{
 						Namespace: nspace.Name,
 						Object:    "delete obj",
 						Relation:  "rel",
-						Subject:   &relationtuple.SubjectID{ID: "delete sub"},
+						SubjectID: x.Ptr("delete sub"),
 					},
 				},
 			}
@@ -353,8 +354,8 @@ func TestWriteHandlers(t *testing.T) {
 			require.NoError(t, err)
 			assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 
-			actualRTs, _, err := reg.RelationTupleManager().GetRelationTuples(context.Background(), &relationtuple.RelationQuery{
-				Namespace: nspace.Name,
+			actualRTs, _, err := reg.RelationTupleManager().GetRelationTuples(ctx, &relationtuple.RelationQuery{
+				Namespace: &nspace.ID,
 			})
 			require.NoError(t, err)
 			assert.Equal(t, []*relationtuple.InternalRelationTuple{}, actualRTs)

@@ -23,8 +23,8 @@ func (q *RelationQuery) FromURLQuery(query url.Values) (*RelationQuery, error) {
 	switch {
 	case !query.Has(SubjectIDKey) && !query.Has(SubjectSetNamespaceKey) && !query.Has(SubjectSetObjectKey) && !query.Has(SubjectSetRelationKey):
 		// was not queried for the subject
-	case query.Has(SubjectIDKey) && query.Has(SubjectSetNamespaceKey) && query.Has(SubjectSetObjectKey) && query.Has(SubjectSetRelationKey):
-		return nil, ErrDuplicateSubject
+	case query.Has(SubjectIDKey) && (query.Has(SubjectSetNamespaceKey) || query.Has(SubjectSetObjectKey) || query.Has(SubjectSetRelationKey)):
+		return nil, ErrDuplicateSubject.WithDebugf("please provide either %s or all of %s, %s, and %s", SubjectIDKey, SubjectSetNamespaceKey, SubjectSetObjectKey, SubjectSetRelationKey)
 	case query.Has(SubjectIDKey):
 		q.SubjectID = pointerx.String(query.Get(SubjectIDKey))
 	case query.Has(SubjectSetNamespaceKey) && query.Has(SubjectSetObjectKey) && query.Has(SubjectSetRelationKey):
@@ -82,7 +82,7 @@ func (r *RelationTuple) FromURLQuery(query url.Values) (*RelationTuple, error) {
 		return nil, errors.WithStack(ErrNilSubject)
 	}
 	if q.Namespace == nil || q.Object == nil || q.Relation == nil {
-		return nil, errors.WithStack(ErrIncompleteSubject)
+		return nil, errors.WithStack(ErrIncompleteTuple)
 	}
 
 	r.Namespace = *q.Namespace

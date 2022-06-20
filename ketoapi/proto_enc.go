@@ -75,7 +75,6 @@ func (q *RelationQuery) FromDataProvider(d queryData) *RelationQuery {
 			}
 		}
 	}
-
 	return q
 }
 
@@ -87,7 +86,7 @@ func (q *RelationQuery) ToProto() *rts.RelationQuery {
 	}
 	if q.SubjectID != nil {
 		res.Subject = rts.NewSubjectID(*q.SubjectID)
-	} else {
+	} else if q.SubjectSet != nil {
 		res.Subject = rts.NewSubjectSet(q.SubjectSet.Namespace, q.SubjectSet.Object, q.SubjectSet.Relation)
 	}
 	return res
@@ -107,4 +106,26 @@ func (t *ExpandTree) ToProto() *rts.SubjectTree {
 		res.Children[i] = t.Children[i].ToProto()
 	}
 	return res
+}
+
+func (t *ExpandTree) FromProto(pt *rts.SubjectTree) *ExpandTree {
+	t.Type = ExpandNodeType("").FromProto(pt.NodeType)
+
+	switch sub := pt.Subject.Ref.(type) {
+	case *rts.Subject_Id:
+		t.SubjectID = x.Ptr(sub.Id)
+	case *rts.Subject_Set:
+		t.SubjectSet = &SubjectSet{
+			Namespace: sub.Set.Namespace,
+			Object:    sub.Set.Object,
+			Relation:  sub.Set.Relation,
+		}
+	}
+
+	t.Children = make([]*ExpandTree, len(pt.Children))
+	for i := range pt.Children {
+		t.Children[i] = (&ExpandTree{}).FromProto(pt.Children[i])
+	}
+
+	return t
 }

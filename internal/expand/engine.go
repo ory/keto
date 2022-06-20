@@ -3,6 +3,8 @@ package expand
 import (
 	"context"
 
+	"github.com/ory/keto/ketoapi"
+
 	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/x"
 	"github.com/ory/keto/internal/x/graph"
@@ -30,20 +32,20 @@ func NewEngine(d EngineDependencies) *Engine {
 	}
 }
 
-func (e *Engine) BuildTree(ctx context.Context, subject relationtuple.Subject, restDepth int) (*Tree, error) {
+func (e *Engine) BuildTree(ctx context.Context, subject relationtuple.Subject, restDepth int) (*relationtuple.Tree, error) {
 	// global max-depth takes precedence when it is the lesser or if the request max-depth is less than or equal to 0
 	if globalMaxDepth := e.d.Config(ctx).MaxReadDepth(); restDepth <= 0 || globalMaxDepth < restDepth {
 		restDepth = globalMaxDepth
 	}
 
 	if us, isUserSet := subject.(*relationtuple.SubjectSet); isUserSet {
-		ctx, wasAlreadyVisited := graph.CheckAndAddVisited(ctx, subject)
+		ctx, wasAlreadyVisited := graph.CheckAndAddVisited(ctx, subject.Hash())
 		if wasAlreadyVisited {
 			return nil, nil
 		}
 
-		subTree := &Tree{
-			Type:    Union,
+		subTree := &relationtuple.Tree{
+			Type:    ketoapi.Union,
 			Subject: subject,
 		}
 
@@ -70,19 +72,19 @@ func (e *Engine) BuildTree(ctx context.Context, subject relationtuple.Subject, r
 			}
 
 			if restDepth <= 1 {
-				subTree.Type = Leaf
+				subTree.Type = ketoapi.Leaf
 				return subTree, nil
 			}
 
-			children := make([]*Tree, len(rels))
+			children := make([]*relationtuple.Tree, len(rels))
 			for ri, r := range rels {
 				child, err := e.BuildTree(ctx, r.Subject, restDepth-1)
 				if err != nil {
 					return nil, err
 				}
 				if child == nil {
-					child = &Tree{
-						Type:    Leaf,
+					child = &relationtuple.Tree{
+						Type:    ketoapi.Leaf,
 						Subject: r.Subject,
 					}
 				}
@@ -95,8 +97,8 @@ func (e *Engine) BuildTree(ctx context.Context, subject relationtuple.Subject, r
 	}
 
 	// is SubjectID
-	return &Tree{
-		Type:    Leaf,
+	return &relationtuple.Tree{
+		Type:    ketoapi.Leaf,
 		Subject: subject,
 	}, nil
 }

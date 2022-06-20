@@ -2,9 +2,10 @@ package relationtuple
 
 import (
 	"context"
-	"github.com/gofrs/uuid"
 	"math/rand"
 	"testing"
+
+	"github.com/gofrs/uuid"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -75,7 +76,7 @@ func IsolationTest(t *testing.T, m0, m1 Manager) {
 
 			actual, _, err := m0.GetRelationTuples(ctx, &RelationQuery{Namespace: &nspace})
 			require.NoError(t, err)
-			assert.Equal(t, rts, actual)
+			assert.ElementsMatch(t, rts, actual)
 		})
 
 		t.Run("case=delete", func(t *testing.T) {
@@ -91,7 +92,7 @@ func IsolationTest(t *testing.T, m0, m1 Manager) {
 
 			actual, _, err := m1.GetRelationTuples(ctx, &RelationQuery{Namespace: &nspace})
 			require.NoError(t, err)
-			assert.Equal(t, rts, actual)
+			assert.ElementsMatch(t, rts, actual)
 		})
 
 		t.Run("case=transact", func(t *testing.T) {

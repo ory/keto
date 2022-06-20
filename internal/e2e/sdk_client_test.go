@@ -1,9 +1,10 @@
 package e2e
 
 import (
-	"github.com/ory/keto/ketoapi"
 	"net/http"
 	"time"
+
+	"github.com/ory/keto/ketoapi"
 
 	"github.com/ory/herodot"
 	"github.com/stretchr/testify/assert"
@@ -75,6 +76,8 @@ func (c *sdkClient) createTuple(t require.TestingT, r *ketoapi.RelationTuple) {
 func withSubject[P interface {
 	WithSubjectID(*string) P
 	WithSubjectSetNamespace(*string) P
+	WithSubjectSetObject(*string) P
+	WithSubjectSetRelation(*string) P
 	WithObject(*string) P
 	WithRelation(*string) P
 }](params P, subID *string, subSet *ketoapi.SubjectSet) P {
@@ -84,8 +87,8 @@ func withSubject[P interface {
 	if subSet != nil {
 		return params.
 			WithSubjectSetNamespace(&subSet.Namespace).
-			WithObject(&subSet.Object).
-			WithRelation(&subSet.Relation)
+			WithSubjectSetObject(&subSet.Object).
+			WithSubjectSetRelation(&subSet.Relation)
 	}
 	return params
 }

@@ -2,9 +2,10 @@ package relationtuple
 
 import (
 	"context"
-	"github.com/ory/keto/ketoapi"
 	"net/http"
 	"strconv"
+
+	"github.com/ory/keto/ketoapi"
 
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 
@@ -20,32 +21,72 @@ var (
 	_                       = (*getRelationsParams)(nil)
 )
 
+type (
+	queryWrapper struct {
+		*rts.RelationQuery
+	}
+	deprecatedQueryWrapper struct {
+		*rts.ListRelationTuplesRequest_Query
+	}
+)
+
+func (q *queryWrapper) GetObject() *string {
+	return q.Object
+}
+
+func (q *queryWrapper) GetNamespace() *string {
+	return q.Namespace
+}
+
+func (q *queryWrapper) GetRelation() *string {
+	return q.Relation
+}
+
+func (q *deprecatedQueryWrapper) GetObject() *string {
+	return x.Ptr(q.Object)
+}
+
+func (q *deprecatedQueryWrapper) GetNamespace() *string {
+	return x.Ptr(q.Namespace)
+}
+
+func (q *deprecatedQueryWrapper) GetRelation() *string {
+	return x.Ptr(q.Relation)
+}
+
 func (h *handler) ListRelationTuples(ctx context.Context, req *rts.ListRelationTuplesRequest) (*rts.ListRelationTuplesResponse, error) {
-	if req.Query == nil && req.RelationQuery == nil {
+	var q ketoapi.RelationQuery
+
+	switch {
+	case req.RelationQuery != nil:
+		q.FromDataProvider(&queryWrapper{req.RelationQuery})
+	case req.Query != nil:
+		q.FromDataProvider(&deprecatedQueryWrapper{req.Query})
+	default:
 		return nil, herodot.ErrBadRequest.WithError("you must provide a query")
 	}
 
-	q := (&ketoapi.RelationQuery{}).FromDataProvider(req.Query)
-
-	if err := h.d.UUIDMappingManager().MapFieldsToUUID(ctx, q); err != nil {
+	iq, err := h.d.Mapper().FromQuery(ctx, &q)
+	if err != nil {
 		return nil, err
 	}
-	rels, nextPage, err := h.d.RelationTupleManager().GetRelationTuples(ctx, q,
+	ir, nextPage, err := h.d.RelationTupleManager().GetRelationTuples(ctx, iq,
 		x.WithSize(int(req.PageSize)),
 		x.WithToken(req.PageToken),
 	)
 	if err != nil {
 		return nil, err
 	}
-	if err := h.d.UUIDMappingManager().MapFieldsFromUUID(ctx, InternalRelationTuples(rels)); err != nil {
+	relations, err := h.d.Mapper().ToTuple(ctx, ir...)
+	if err != nil {
 		return nil, err
 	}
 
 	resp := &rts.ListRelationTuplesResponse{
-		RelationTuples: make([]*rts.RelationTuple, len(rels)),
+		RelationTuples: make([]*rts.RelationTuple, len(ir)),
 		NextPageToken:  nextPage,
 	}
-	for i, r := range rels {
+	for i, r := range relations {
 		resp.RelationTuples[i] = r.ToProto()
 	}
 
@@ -116,6 +157,8 @@ type getRelationsParams struct {
 //       404: genericError
 //       500: genericError
 func (h *handler) getRelations(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	ctx := r.Context()
+
 	q := r.URL.Query()
 	query, err := (&ketoapi.RelationQuery{}).FromURLQuery(q)
 	if err != nil {
@@ -143,22 +186,25 @@ func (h *handler) getRelations(w http.ResponseWriter, r *http.Request, _ httprou
 		paginationOpts = append(paginationOpts, x.WithSize(int(s)))
 	}
 
-	if err := h.d.UUIDMappingManager().MapFieldsToUUID(r.Context(), query); err != nil {
-		h.d.Writer().WriteError(w, r, err)
-		return
-	}
-	rels, nextPage, err := h.d.RelationTupleManager().GetRelationTuples(r.Context(), query, paginationOpts...)
+	iq, err := h.d.Mapper().FromQuery(ctx, query)
 	if err != nil {
 		h.d.Writer().WriteError(w, r, err)
 		return
 	}
-	if err := h.d.UUIDMappingManager().MapFieldsFromUUID(r.Context(), InternalRelationTuples(rels)); err != nil {
+	ir, nextPage, err := h.d.RelationTupleManager().GetRelationTuples(ctx, iq, paginationOpts...)
+	if err != nil {
 		h.d.Writer().WriteError(w, r, err)
 		return
 	}
 
-	resp := &GetResponse{
-		RelationTuples: rels,
+	relations, err := h.d.Mapper().ToTuple(ctx, ir...)
+	if err != nil {
+		h.d.Writer().WriteError(w, r, err)
+		return
+	}
+
+	resp := &ketoapi.GetResponse{
+		RelationTuples: relations,
 		NextPageToken:  nextPage,
 	}
 

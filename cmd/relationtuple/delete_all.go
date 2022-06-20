@@ -2,6 +2,7 @@ package relationtuple
 
 import (
 	"fmt"
+
 	"github.com/ory/keto/internal/x"
 
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
@@ -57,7 +58,7 @@ func deleteRelationTuplesFromQuery(cmd *cobra.Command, args []string) error {
 	defer conn.Close()
 	cl := rts.NewWriteServiceClient(conn)
 	_, err = cl.DeleteRelationTuples(cmd.Context(), &rts.DeleteRelationTuplesRequest{
-		Query: (*rts.DeleteRelationTuplesRequest_Query)(query),
+		RelationQuery: query,
 	})
 	if err != nil {
 		_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not make request: %s\n", err)

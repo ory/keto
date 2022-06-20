@@ -11,6 +11,7 @@ import (
 type (
 	handlerDeps interface {
 		ManagerProvider
+		MapperProvider
 		x.LoggerProvider
 		x.WriterProvider
 	}

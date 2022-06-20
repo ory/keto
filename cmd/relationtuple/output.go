@@ -3,6 +3,7 @@ package relationtuple
 import (
 	"encoding/json"
 	"fmt"
+
 	"github.com/ory/keto/ketoapi"
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 )

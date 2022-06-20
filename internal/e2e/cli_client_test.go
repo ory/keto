@@ -5,9 +5,10 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/ory/keto/ketoapi"
 	"strconv"
 	"time"
+
+	"github.com/ory/keto/ketoapi"
 
 	"github.com/ory/herodot"
 
@@ -26,8 +27,6 @@ import (
 	clirelationtuple "github.com/ory/keto/cmd/relationtuple"
 
 	"github.com/ory/x/cmdx"
-
-	"github.com/ory/keto/internal/expand"
 )
 
 type cliClient struct {
@@ -100,9 +99,9 @@ func (g *cliClient) check(t require.TestingT, r *ketoapi.RelationTuple) bool {
 	return res.Allowed
 }
 
-func (g *cliClient) expand(t require.TestingT, r *ketoapi.SubjectSet, depth int) *expand.Tree {
+func (g *cliClient) expand(t require.TestingT, r *ketoapi.SubjectSet, depth int) *ketoapi.ExpandTree {
 	out := g.c.ExecNoErr(t, "expand", r.Relation, r.Namespace, r.Object, "--"+cliexpand.FlagMaxDepth, fmt.Sprintf("%d", depth), "--"+cmdx.FlagFormat, string(cmdx.FormatJSON))
-	res := expand.Tree{}
+	res := ketoapi.ExpandTree{}
 	require.NoError(t, json.Unmarshal([]byte(out), &res))
 	return &res
 }

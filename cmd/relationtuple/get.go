@@ -2,9 +2,10 @@ package relationtuple
 
 import (
 	"fmt"
+	"strconv"
+
 	"github.com/ory/keto/internal/x"
 	"github.com/ory/keto/ketoapi"
-	"strconv"
 
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 

@@ -2,14 +2,16 @@ package relationtuple
 
 import (
 	"fmt"
-	"github.com/ory/keto/internal/x"
-	"github.com/ory/keto/ketoapi"
-	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 	"reflect"
 	"strconv"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
+	"github.com/ory/keto/internal/x"
+	"github.com/ory/keto/ketoapi"
+	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 )
 
 func TestRelationCollection(t *testing.T) {
@@ -60,15 +62,18 @@ func TestRelationCollection(t *testing.T) {
 
 					for f := 0; f < et.NumField(); f++ {
 						v := ev.Index(el).Elem().Field(f)
-						// private field
-						if !v.CanSet() {
+						// private field or nil
+						if !v.CanSet() || (v.Kind() == reflect.Pointer && v.IsNil()) {
 							continue
 						}
 
-						switch v.Kind() {
-						case reflect.String:
+						switch k := v.Kind(); {
+						case k == reflect.String:
 							assert.Contains(t, vals, v.String())
+						case k == reflect.Ptr && v.Elem().Kind() == reflect.String:
+							assert.Contains(t, vals, v.Elem().String())
 						default:
+							t.Logf("unhandled kind %s %T", v.Kind(), v.Interface())
 							str := v.MethodByName("String").Call(nil)[0].String()
 							assert.Contains(t, vals, str)
 						}

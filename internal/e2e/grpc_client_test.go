@@ -2,9 +2,11 @@ package e2e
 
 import (
 	"context"
-	"github.com/ory/keto/ketoapi"
-	"google.golang.org/grpc/credentials/insecure"
 	"time"
+
+	"google.golang.org/grpc/credentials/insecure"
+
+	"github.com/ory/keto/ketoapi"
 
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 
@@ -16,7 +18,6 @@ import (
 	"google.golang.org/grpc"
 	grpcHealthV1 "google.golang.org/grpc/health/grpc_health_v1"
 
-	"github.com/ory/keto/internal/expand"
 	"github.com/ory/keto/internal/x"
 )
 
@@ -56,26 +57,28 @@ func (g *grpcClient) createTuple(t require.TestingT, r *ketoapi.RelationTuple) {
 	g.transactTuples(t, []*ketoapi.RelationTuple{r}, nil)
 }
 
-func (g *grpcClient) queryTuple(t require.TestingT, q *ketoapi.RelationQuery, opts ...x.PaginationOptionSetter) *ketoapi.GetResponse {
-	c := rts.NewReadServiceClient(g.readConn(t))
-
-	query := &rts.ListRelationTuplesRequest_Query{
+func (*grpcClient) createQuery(q *ketoapi.RelationQuery) *rts.RelationQuery {
+	query := &rts.RelationQuery{
 		Namespace: q.Namespace,
 		Object:    q.Object,
 		Relation:  q.Relation,
 	}
 	if q.SubjectID != nil {
 		query.Subject = rts.NewSubjectID(*q.SubjectID)
-	} else {
+	} else if q.SubjectSet != nil {
 		query.Subject = rts.NewSubjectSet(q.SubjectSet.Namespace, q.SubjectSet.Object, q.SubjectSet.Relation)
 	}
+	return query
+}
 
+func (g *grpcClient) queryTuple(t require.TestingT, q *ketoapi.RelationQuery, opts ...x.PaginationOptionSetter) *ketoapi.GetResponse {
+	c := rts.NewReadServiceClient(g.readConn(t))
 	pagination := x.GetPaginationOptions(opts...)
 
 	resp, err := c.ListRelationTuples(g.ctx, &rts.ListRelationTuplesRequest{
-		Query:     query,
-		PageToken: pagination.Token,
-		PageSize:  int32(pagination.Size),
+		RelationQuery: g.createQuery(q),
+		PageToken:     pagination.Token,
+		PageSize:      int32(pagination.Size),
 	})
 	require.NoError(t, err)
 
@@ -93,24 +96,12 @@ func (g *grpcClient) queryTuple(t require.TestingT, q *ketoapi.RelationQuery, op
 
 func (g *grpcClient) queryTupleErr(t require.TestingT, expected herodot.DefaultError, q *ketoapi.RelationQuery, opts ...x.PaginationOptionSetter) {
 	c := rts.NewReadServiceClient(g.readConn(t))
-
-	query := &rts.ListRelationTuplesRequest_Query{
-		Namespace: q.Namespace,
-		Object:    q.Object,
-		Relation:  q.Relation,
-	}
-	if q.SubjectID != nil {
-		query.Subject = rts.NewSubjectID(*q.SubjectID)
-	} else {
-		query.Subject = rts.NewSubjectSet(q.SubjectSet.Namespace, q.SubjectSet.Object, q.SubjectSet.Relation)
-	}
-
 	pagination := x.GetPaginationOptions(opts...)
 
 	_, err := c.ListRelationTuples(g.ctx, &rts.ListRelationTuplesRequest{
-		Query:     query,
-		PageToken: pagination.Token,
-		PageSize:  int32(pagination.Size),
+		RelationQuery: g.createQuery(q),
+		PageToken:     pagination.Token,
+		PageSize:      int32(pagination.Size),
 	})
 	require.Error(t, err)
 	s, ok := status.FromError(err)
@@ -137,7 +128,7 @@ func (g *grpcClient) check(t require.TestingT, r *ketoapi.RelationTuple) bool {
 	return resp.Allowed
 }
 
-func (g *grpcClient) expand(t require.TestingT, r *ketoapi.SubjectSet, depth int) *expand.Tree {
+func (g *grpcClient) expand(t require.TestingT, r *ketoapi.SubjectSet, depth int) *ketoapi.ExpandTree {
 	c := rts.NewExpandServiceClient(g.readConn(t))
 
 	resp, err := c.Expand(g.ctx, &rts.ExpandRequest{
@@ -146,9 +137,7 @@ func (g *grpcClient) expand(t require.TestingT, r *ketoapi.SubjectSet, depth int
 	})
 	require.NoError(t, err)
 
-	tree, err := expand.TreeFromProto(resp.Tree)
-	require.NoError(t, err)
-	return tree
+	return (&ketoapi.ExpandTree{}).FromProto(resp.Tree)
 }
 
 func (g *grpcClient) waitUntilLive(t require.TestingT) {
@@ -182,7 +171,7 @@ func (g *grpcClient) deleteTuple(t require.TestingT, r *ketoapi.RelationTuple) {
 
 func (g *grpcClient) deleteAllTuples(t require.TestingT, q *ketoapi.RelationQuery) {
 	c := rts.NewWriteServiceClient(g.writeConn(t))
-	query := &rts.DeleteRelationTuplesRequest_Query{
+	query := &rts.RelationQuery{
 		Namespace: q.Namespace,
 		Object:    q.Object,
 		Relation:  q.Relation,
@@ -194,7 +183,7 @@ func (g *grpcClient) deleteAllTuples(t require.TestingT, q *ketoapi.RelationQuer
 		query.Subject = rts.NewSubjectSet(q.SubjectSet.Namespace, q.SubjectSet.Object, q.SubjectSet.Relation)
 	}
 	_, err := c.DeleteRelationTuples(g.ctx, &rts.DeleteRelationTuplesRequest{
-		Query: query,
+		RelationQuery: query,
 	})
 	require.NoError(t, err)
 }

@@ -6,27 +6,28 @@ import (
 	"path/filepath"
 	"testing"
 
+	"github.com/ory/keto/internal/x"
+	"github.com/ory/keto/ketoapi"
+
 	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-
-	"github.com/ory/keto/internal/relationtuple"
 )
 
 // the command delegates most of the functionality to the parseFile helper, so we test that
 func TestParseCmdParseFile(t *testing.T) {
 	for _, tc := range []struct {
 		input, name string
-		expected    []*relationtuple.InternalRelationTuple
+		expected    []*ketoapi.RelationTuple
 	}{
 		{
 			name:  "single basic tuple",
 			input: "nspace:obj#rel@sub\n",
-			expected: []*relationtuple.InternalRelationTuple{{
+			expected: []*ketoapi.RelationTuple{{
 				Namespace: "nspace",
 				Object:    "obj",
 				Relation:  "rel",
-				Subject:   &relationtuple.SubjectID{ID: "sub"},
+				SubjectID: x.Ptr("sub"),
 			}},
 		},
 		{
@@ -34,24 +35,24 @@ func TestParseCmdParseFile(t *testing.T) {
 			input: `nspace:obj1#rel@sub1
 nspace:obj2#rel@sub2
 nspace:obj2#rel@(nspace:obj2#rel)`,
-			expected: []*relationtuple.InternalRelationTuple{
+			expected: []*ketoapi.RelationTuple{
 				{
 					Namespace: "nspace",
 					Object:    "obj1",
 					Relation:  "rel",
-					Subject:   &relationtuple.SubjectID{ID: "sub1"},
+					SubjectID: x.Ptr("sub1"),
 				},
 				{
 					Namespace: "nspace",
 					Object:    "obj2",
 					Relation:  "rel",
-					Subject:   &relationtuple.SubjectID{ID: "sub2"},
+					SubjectID: x.Ptr("sub2"),
 				},
 				{
 					Namespace: "nspace",
 					Object:    "obj2",
 					Relation:  "rel",
-					Subject: &relationtuple.SubjectSet{
+					SubjectSet: &ketoapi.SubjectSet{
 						Namespace: "nspace",
 						Object:    "obj2",
 						Relation:  "rel",
@@ -66,18 +67,18 @@ nspace:obj#rel@sub
 
   // also indentation and trailing spaces
      nspace:indent#rel@sub  `,
-			expected: []*relationtuple.InternalRelationTuple{
+			expected: []*ketoapi.RelationTuple{
 				{
 					Namespace: "nspace",
 					Object:    "obj",
 					Relation:  "rel",
-					Subject:   &relationtuple.SubjectID{ID: "sub"},
+					SubjectID: x.Ptr("sub"),
 				},
 				{
 					Namespace: "nspace",
 					Object:    "indent",
 					Relation:  "rel",
-					Subject:   &relationtuple.SubjectID{ID: "sub"},
+					SubjectID: x.Ptr("sub"),
 				},
 			},
 		},
@@ -102,18 +103,18 @@ nspace:obj2#rel@sub2`), 0600))
 
 		actual, err := parseFile(&cobra.Command{}, fn)
 		require.NoError(t, err)
-		assert.Equal(t, []*relationtuple.InternalRelationTuple{
+		assert.Equal(t, []*ketoapi.RelationTuple{
 			{
 				Namespace: "nspace",
 				Object:    "obj1",
 				Relation:  "rel",
-				Subject:   &relationtuple.SubjectID{ID: "sub1"},
+				SubjectID: x.Ptr("sub1"),
 			},
 			{
 				Namespace: "nspace",
 				Object:    "obj2",
 				Relation:  "rel",
-				Subject:   &relationtuple.SubjectID{ID: "sub2"},
+				SubjectID: x.Ptr("sub2"),
 			},
 		}, actual)
 	})

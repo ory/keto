@@ -2,8 +2,9 @@ package expand
 
 import (
 	"context"
-	"github.com/ory/keto/ketoapi"
 	"net/http"
+
+	"github.com/ory/keto/ketoapi"
 
 	"github.com/julienschmidt/httprouter"
 	"github.com/ory/herodot"
@@ -83,7 +84,7 @@ func (h *handler) getExpand(w http.ResponseWriter, r *http.Request, _ httprouter
 	}
 
 	subSet := (&ketoapi.SubjectSet{}).FromURLQuery(r.URL.Query())
-	internal, err := h.d.UUIDMapper().ToSubjectSet(r.Context(), subSet)
+	internal, err := h.d.Mapper().ToSubjectSet(r.Context(), subSet)
 	if err != nil {
 		h.d.Writer().WriteError(w, r, err)
 		return
@@ -94,7 +95,7 @@ func (h *handler) getExpand(w http.ResponseWriter, r *http.Request, _ httprouter
 		h.d.Writer().WriteError(w, r, err)
 		return
 	}
-	tree, err := h.d.UUIDMapper().FromTree(r.Context(), res)
+	tree, err := h.d.Mapper().FromTree(r.Context(), res)
 	if err != nil {
 		h.d.Writer().WriteError(w, r, err)
 		return
@@ -122,7 +123,7 @@ func (h *handler) Expand(ctx context.Context, req *rts.ExpandRequest) (*rts.Expa
 		}
 	}
 
-	internal, err := h.d.UUIDMapper().ToSubjectSet(ctx, subSet)
+	internal, err := h.d.Mapper().ToSubjectSet(ctx, subSet)
 	if err != nil {
 		return nil, err
 	}
@@ -130,7 +131,11 @@ func (h *handler) Expand(ctx context.Context, req *rts.ExpandRequest) (*rts.Expa
 	if err != nil {
 		return nil, err
 	}
-	tree, err := h.d.UUIDMapper().FromTree(ctx, res)
+	if res == nil {
+		return &rts.ExpandResponse{}, nil
+	}
+
+	tree, err := h.d.Mapper().FromTree(ctx, res)
 	if err != nil {
 		return nil, err
 	}

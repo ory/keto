@@ -59,7 +59,7 @@ func TestPersister(t *testing.T) {
 
 			t.Run("relationtuple.UUIDMappingManagerTest", func(t *testing.T) {
 				p, _, _ := setup(t, dsn)
-				relationtuple.UUIDMappingManagerTest(t, p)
+				relationtuple.MappingManagerTest(t, p)
 			})
 		})
 	}

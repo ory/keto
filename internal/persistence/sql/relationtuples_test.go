@@ -22,13 +22,13 @@ func rt(nw *networkx.Network, setSID, setNID, setO, setR bool) *sql.RelationTupl
 	return &sql.RelationTuple{
 		ID:        uuid.Must(uuid.NewV4()),
 		NetworkID: nw.ID,
-		SubjectID: stdSql.NullString{
+		SubjectID: uuid.NullUUID{
 			Valid: setSID,
 		},
 		SubjectSetNamespaceID: stdSql.NullInt32{
 			Valid: setNID,
 		},
-		SubjectSetObject: stdSql.NullString{
+		SubjectSetObject: uuid.NullUUID{
 			Valid: setO,
 		},
 		SubjectSetRelation: stdSql.NullString{
@@ -108,6 +108,7 @@ func TestRelationTupleSubjectTypeCheck(t *testing.T) {
 						require.Error(t, err)
 						assert.True(t,
 							strings.Contains(err.Error(), "chk_keto_rt_subject_type") || // <- normal databases
+								strings.Contains(err.Error(), "chk_keto_rt_uuid_subject_type") || // <- normal databases
 								strings.Contains(err.Error(), "SQLSTATE 23514")) // <- mysql
 					}
 				})

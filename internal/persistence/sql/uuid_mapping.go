@@ -2,13 +2,11 @@ package sql
 
 import (
 	"context"
-	"fmt"
 	"strings"
 
 	"github.com/gofrs/uuid"
 	"github.com/ory/x/sqlcon"
 
-	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/internal/x"
 )
 
@@ -112,64 +110,10 @@ func (p *Persister) batchFromUUIDs(ctx context.Context, ids []uuid.UUID, opts ..
 	return
 }
 
-func filterFields(fields []*string) []*string {
-	res := make([]*string, 0, len(fields))
-	for _, field := range fields {
-		if field != nil && *field != "" {
-			res = append(res, field)
-		}
-	}
-	return res
-}
-
 func (p *Persister) MapStringsToUUIDs(ctx context.Context, s ...string) ([]uuid.UUID, error) {
 	return p.batchToUUIDs(ctx, s)
 }
 
 func (p *Persister) MapUUIDsToStrings(ctx context.Context, u ...uuid.UUID) ([]string, error) {
 	return p.batchFromUUIDs(ctx, u)
-}
-
-func (p *Persister) MapFieldsToUUID(ctx context.Context, m relationtuple.UUIDMappable) error {
-	fields := filterFields(m.UUIDMappableFields())
-	values := make([]string, len(fields))
-
-	for i, field := range fields {
-		values[i] = *field
-	}
-	ids, err := p.batchToUUIDs(ctx, values)
-	if err != nil {
-		p.d.Logger().WithError(err).WithField("values", values).Error("could insert UUID mappings")
-		return err
-	}
-	for i, field := range fields {
-		*field = ids[i].String()
-	}
-	return nil
-}
-
-func (p *Persister) MapFieldsFromUUID(ctx context.Context, m relationtuple.UUIDMappable) error {
-	fields := filterFields(m.UUIDMappableFields())
-	ids := make([]uuid.UUID, len(fields))
-	for i, field := range fields {
-		id, err := uuid.FromString(*field)
-		if err != nil {
-			p.d.Logger().WithError(err).WithField("UUID", *field).Error("could not parse as UUID")
-			return err
-		}
-		ids[i] = id
-	}
-	reps, err := p.batchFromUUIDs(ctx, ids)
-	if err != nil {
-		p.d.Logger().WithError(err).WithField("UUIDs", ids).Error("could fetch string mappings from DB")
-		return err
-	}
-	for i, field := range fields {
-		if reps[i] == "" {
-			p.d.Logger().WithError(err).WithField("string", reps[i]).Error("could not find the corresponding UUID")
-			return fmt.Errorf("failed to map %s", ids[i])
-		}
-		*field = reps[i]
-	}
-	return nil
 }

@@ -5,14 +5,13 @@ import (
 	"github.com/ory/herodot"
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 	"github.com/sirupsen/logrus"
-	"time"
 )
 
 var (
 	ErrDroppedSubjectKey = herodot.ErrBadRequest.WithDebug(`provide "subject_id" or "subject_set.*"; support for "subject" was dropped`)
 	ErrDuplicateSubject  = herodot.ErrBadRequest.WithError("exactly one of subject_set or subject_id has to be provided")
 	ErrIncompleteSubject = herodot.ErrBadRequest.WithError(`incomplete subject, provide "subject_id" or a complete "subject_set.*"`)
-	ErrNilSubject        = herodot.ErrBadRequest.WithError("subject is not allowed to be nil")
+	ErrNilSubject        = herodot.ErrBadRequest.WithError("subject is not allowed to be nil").WithDebug("Please provide a subject.")
 	ErrIncompleteTuple   = herodot.ErrBadRequest.WithError(`incomplete tuple, provide "namespace", "object", "relation", and a subject`)
 	ErrUnknownNodeType   = errors.New("unknown node type")
 )
@@ -37,8 +36,6 @@ type RelationTuple struct {
 	//
 	// swagger:allOf
 	SubjectSet *SubjectSet `json:"subject_set,omitempty"`
-
-	CommitTime time.Time `json:"commit_time"`
 }
 
 // swagger:parameters getExpand
@@ -130,6 +127,7 @@ const (
 	Exclusion    ExpandNodeType = "exclusion"
 	Intersection ExpandNodeType = "intersection"
 	Leaf         ExpandNodeType = "leaf"
+	Unspecified  ExpandNodeType = "unspecified"
 )
 
 // swagger:model ExpandTree
@@ -172,4 +170,18 @@ func (t ExpandNodeType) ToProto() rts.NodeType {
 		return rts.NodeType_NODE_TYPE_INTERSECTION
 	}
 	return rts.NodeType_NODE_TYPE_UNSPECIFIED
+}
+
+func (ExpandNodeType) FromProto(pt rts.NodeType) ExpandNodeType {
+	switch pt {
+	case rts.NodeType_NODE_TYPE_LEAF:
+		return Leaf
+	case rts.NodeType_NODE_TYPE_UNION:
+		return Union
+	case rts.NodeType_NODE_TYPE_EXCLUSION:
+		return Exclusion
+	case rts.NodeType_NODE_TYPE_INTERSECTION:
+		return Intersection
+	}
+	return Unspecified
 }

@@ -2,8 +2,9 @@ package relationtuple
 
 import (
 	"fmt"
-	"github.com/gofrs/uuid"
 	"testing"
+
+	"github.com/gofrs/uuid"
 
 	"github.com/stretchr/testify/assert"
 )

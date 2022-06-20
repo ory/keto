@@ -2,9 +2,12 @@ package relationtuple
 
 import (
 	"context"
-	"github.com/gofrs/uuid"
-	"github.com/ory/keto/ketoapi"
+	"strconv"
 	"testing"
+
+	"github.com/gofrs/uuid"
+
+	"github.com/ory/keto/ketoapi"
 
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 
@@ -28,11 +31,10 @@ type (
 		ID uuid.UUID `json:"id"`
 	}
 	RelationQuery struct {
-		Namespace  *int32      `json:"namespace"`
-		Object     *uuid.UUID  `json:"object"`
-		Relation   *string     `json:"relation"`
-		SubjectID  *uuid.UUID  `json:"subject_id,omitempty"`
-		SubjectSet *SubjectSet `json:"subject_set,omitempty"`
+		Namespace *int32     `json:"namespace"`
+		Object    *uuid.UUID `json:"object"`
+		Relation  *string    `json:"relation"`
+		Subject   Subject    `json:"subject_id,omitempty"`
 	}
 	TupleData interface {
 		GetSubject() *rts.Subject
@@ -42,6 +44,7 @@ type (
 	}
 	Subject interface {
 		Equals(Subject) bool
+		Hash() uuid.UUID
 	}
 	InternalRelationTuple struct {
 		Namespace int32     `json:"namespace"`
@@ -67,29 +70,37 @@ var (
 	ErrIncompleteSubject = herodot.ErrBadRequest.WithError(`incomplete subject, provide "subject_id" or a complete "subject_set.*"`)
 )
 
-func (s *SubjectID) Equals(v interface{}) bool {
-	uv, ok := v.(*SubjectID)
+func (s *SubjectID) Equals(other Subject) bool {
+	uv, ok := other.(*SubjectID)
 	if !ok {
 		return false
 	}
 	return uv.ID == s.ID
 }
 
-func (s *SubjectSet) Equals(v interface{}) bool {
-	uv, ok := v.(*SubjectSet)
+func (s *SubjectID) Hash() uuid.UUID {
+	return s.ID
+}
+
+func (s *SubjectSet) Equals(other Subject) bool {
+	uv, ok := other.(*SubjectSet)
 	if !ok {
 		return false
 	}
 	return uv.Relation == s.Relation && uv.Object == s.Object && uv.Namespace == s.Namespace
 }
 
-func (q *RelationQuery) Subject() Subject {
-	if q.SubjectID != nil {
-		return &SubjectID{ID: *q.SubjectID}
-	} else if q.SubjectSet != nil {
-		return q.SubjectSet
+func (s *SubjectSet) Hash() uuid.UUID {
+	return uuid.NewV5(s.Object, strconv.Itoa(int(s.Namespace))+"-"+s.Relation)
+}
+
+func (t *InternalRelationTuple) ToQuery() *RelationQuery {
+	return &RelationQuery{
+		Namespace: &t.Namespace,
+		Object:    &t.Object,
+		Relation:  &t.Relation,
+		Subject:   t.Subject,
 	}
-	return nil
 }
 
 type ManagerWrapper struct {

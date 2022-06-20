@@ -2,12 +2,9 @@ package check
 
 import (
 	"context"
-	"errors"
 
 	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/x/graph"
-
-	"github.com/ory/herodot"
 
 	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/internal/x"
@@ -45,7 +42,7 @@ func (e *Engine) subjectIsAllowed(
 	// TODO replace by more performant algorithm: https://github.com/ory/keto/issues/483
 
 	for _, sr := range rels {
-		ctx, wasAlreadyVisited := graph.CheckAndAddVisited(ctx, sr.Subject)
+		ctx, wasAlreadyVisited := graph.CheckAndAddVisited(ctx, sr.Subject.Hash())
 		if wasAlreadyVisited {
 			continue
 		}
@@ -99,10 +96,7 @@ func (e *Engine) checkOneIndirectionFurther(
 			Object:    x.Ptr(expandQuery.Object),
 			Relation:  x.Ptr(expandQuery.Relation),
 		}, x.WithToken(prevPage))
-		// herodot.ErrNotFound occurs when the namespace is unknown
-		if errors.Is(err, herodot.ErrNotFound) {
-			return false, nil
-		} else if err != nil {
+		if err != nil {
 			return false, err
 		}
 

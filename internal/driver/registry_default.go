@@ -3,6 +3,7 @@ package driver
 import (
 	"context"
 	"net/http"
+	"os"
 	"sync"
 
 	"github.com/gobuffalo/pop/v6"
@@ -33,25 +34,28 @@ import (
 )
 
 var (
-	_ relationtuple.ManagerProvider  = (*RegistryDefault)(nil)
-	_ x.WriterProvider               = (*RegistryDefault)(nil)
-	_ x.LoggerProvider               = (*RegistryDefault)(nil)
-	_ Registry                       = (*RegistryDefault)(nil)
-	_ rts.VersionServiceServer       = (*RegistryDefault)(nil)
-	_ ketoctx.ContextualizerProvider = (*RegistryDefault)(nil)
+	_ relationtuple.ManagerProvider        = (*RegistryDefault)(nil)
+	_ relationtuple.MapperProvider         = (*RegistryDefault)(nil)
+	_ relationtuple.MappingManagerProvider = (*RegistryDefault)(nil)
+	_ x.WriterProvider                     = (*RegistryDefault)(nil)
+	_ x.LoggerProvider                     = (*RegistryDefault)(nil)
+	_ Registry                             = (*RegistryDefault)(nil)
+	_ rts.VersionServiceServer             = (*RegistryDefault)(nil)
+	_ ketoctx.ContextualizerProvider       = (*RegistryDefault)(nil)
 )
 
 type (
 	RegistryDefault struct {
-		p     persistence.Persister
-		mb    *popx.MigrationBox
-		l     *logrusx.Logger
-		w     herodot.Writer
-		ce    *check.Engine
-		ee    *expand.Engine
-		c     *config.Config
-		conn  *pop.Connection
-		ctxer ketoctx.Contextualizer
+		p      persistence.Persister
+		mb     *popx.MigrationBox
+		l      *logrusx.Logger
+		w      herodot.Writer
+		ce     *check.Engine
+		ee     *expand.Engine
+		c      *config.Config
+		conn   *pop.Connection
+		ctxer  ketoctx.Contextualizer
+		mapper *relationtuple.Mapper
 
 		initialized    sync.Once
 		healthH        *healthx.Handler
@@ -73,6 +77,13 @@ type (
 		RegisterWriteGRPC(s *grpc.Server)
 	}
 )
+
+func (r *RegistryDefault) Mapper() *relationtuple.Mapper {
+	if r.mapper == nil {
+		r.mapper = &relationtuple.Mapper{D: r}
+	}
+	return r.mapper
+}
 
 func (r *RegistryDefault) Contextualizer() ketoctx.Contextualizer {
 	return r.ctxer
@@ -153,7 +164,7 @@ func (r *RegistryDefault) RelationTupleManager() relationtuple.Manager {
 	return r.p
 }
 
-func (r *RegistryDefault) UUIDMappingManager() relationtuple.UUIDMappingManager {
+func (r *RegistryDefault) MappingManager() relationtuple.MappingManager {
 	if r.p == nil {
 		panic("no relation tuple manager, but expected to have one")
 	}
@@ -235,6 +246,7 @@ func (r *RegistryDefault) DetermineNetwork(ctx context.Context) (*networkx.Netwo
 		return nil, err
 	}
 	if s.HasPending() {
+		s.Write(os.Stdout)
 		return nil, errors.WithStack(persistence.ErrNetworkMigrationsMissing)
 	}
 

@@ -2,15 +2,20 @@ package migratest
 
 import (
 	"context"
-	"github.com/ory/keto/internal/persistence/sql/migrations/uuidmapping"
-	"github.com/ory/x/fsx"
-	"github.com/ory/x/logrusx"
-	"github.com/ory/x/networkx"
-	"github.com/sirupsen/logrus"
+	stdSql "database/sql"
 	"os"
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/ory/x/fsx"
+	"github.com/ory/x/logrusx"
+	"github.com/ory/x/networkx"
+	"github.com/sirupsen/logrus"
+
+	"github.com/ory/keto/internal/persistence/sql/migrations/uuidmapping"
+	"github.com/ory/keto/internal/x"
+	"github.com/ory/keto/ketoapi"
 
 	"github.com/gobuffalo/pop/v6"
 	"github.com/gofrs/uuid"
@@ -34,6 +39,7 @@ func TestMigrations(t *testing.T) {
 	for _, db := range dbx.GetDSNs(t, debugOnDisk) {
 		db := db
 		t.Run("dsn="+db.Name, func(t *testing.T) {
+			db := db
 			t.Parallel()
 
 			db.MigrateUp, db.MigrateDown = false, false
@@ -73,12 +79,13 @@ func TestMigrations(t *testing.T) {
 				}
 			})
 
+			namespaces := []*namespace.Namespace{
+				{ID: 1, Name: "foo"},
+				{ID: 2, Name: "uuid_test"},
+			}
 			reg := driver.NewTestRegistry(t, db)
 			require.NoError(t,
-				reg.Config(ctx).Set(config.KeyNamespaces, []*namespace.Namespace{
-					{ID: 1, Name: "foo"},
-					{ID: 2, Name: "uuid_test"},
-				}))
+				reg.Config(ctx).Set(config.KeyNamespaces, namespaces))
 			p, err := sql.NewPersister(ctx, reg, uuid.Must(uuid.FromString("77fdc5e0-2260-49da-8aae-c36ba255d05b")))
 
 			t.Run("suite=fixtures", func(t *testing.T) {
@@ -91,24 +98,24 @@ func TestMigrations(t *testing.T) {
 
 				t.Run("table=relation tuples", func(t *testing.T) {
 					require.NoError(t, err)
-					actualRts, next, err := p.GetRelationTuples(ctx, &relationtuple.RelationQuery{Namespace: "foo"})
+					actualRts, next, err := p.GetRelationTuples(ctx, &relationtuple.RelationQuery{Namespace: &namespaces[0].ID})
 
 					require.NoError(t, err)
 					assert.Equal(t, "", next)
 					t.Log("actual rts:", actualRts)
 
-					expectedRts := []*relationtuple.InternalRelationTuple{
+					expectedRts := []*ketoapi.RelationTuple{
 						{
 							Namespace: "foo",
 							Object:    "object",
 							Relation:  "relation",
-							Subject:   &relationtuple.SubjectID{ID: "user"},
+							SubjectID: x.Ptr("user"),
 						},
 						{
 							Namespace: "foo",
 							Object:    "object",
 							Relation:  "relation",
-							Subject: &relationtuple.SubjectSet{
+							SubjectSet: &ketoapi.SubjectSet{
 								Namespace: "foo",
 								Object:    "s_object",
 								Relation:  "s_relation",
@@ -118,9 +125,9 @@ func TestMigrations(t *testing.T) {
 
 					// The relationship tuples in the db have a UUID mapping, so
 					// we need to convert our expectations to that.
-					assert.NoError(t, p.MapFieldsToUUID(
-						ctx, relationtuple.InternalRelationTuples(expectedRts)))
-					assert.ElementsMatch(t, expectedRts, actualRts)
+					expectedUUID, err := reg.Mapper().FromTuple(ctx, expectedRts...)
+					require.NoError(t, err)
+					assert.ElementsMatch(t, expectedUUID, actualRts)
 					logMigrationStatus(t, tm)
 				})
 			})
@@ -130,27 +137,27 @@ func TestMigrations(t *testing.T) {
 				defer cancel()
 				require.NoError(t, tm.Down(ctx, -1))
 
-				// Migrate up to (including) "migrate-strings-to-uuids"
-				migrateTo(t, tm, "migrate-strings-to-uuids")
+				// Migrate up to (including) "drop old non-uuid table"
+				migrateUpTo(t, tm, "20220513200600000001")
 				t.Log("status after up migration")
 				logMigrationStatus(t, tm)
 
 				// Assert that relationtuples have UUIDs
-				tuples, _, err := p.GetRelationTuples(ctx, &relationtuple.RelationQuery{Namespace: "uuid_test"})
+				tuples, _, err := p.GetRelationTuples(ctx, &relationtuple.RelationQuery{Namespace: &namespaces[1].ID})
 				require.NoError(t, err)
-				assertIsUUID(t, *tuples[0].Subject.SubjectID())
-				assertIsUUID(t, tuples[0].Object)
+				assert.NotZero(t, tuples[0].Subject.(*relationtuple.SubjectID).ID)
+				assert.NotZero(t, tuples[0].Object)
 
 				// Migrate down to before "migrate-strings-to-uuids"
-				require.NoError(t, tm.Down(ctx, 1))
+				migrateDownTo(t, tm, "20220513200300000000")
 				t.Log("status after down migration")
 				logMigrationStatus(t, tm)
 
 				// Assert that relationtuples have strings
-				tuples, _, err = p.GetRelationTuples(ctx, &relationtuple.RelationQuery{Namespace: "uuid_test"})
-				require.NoError(t, err)
-				assert.Equal(t, "user", *tuples[0].Subject.SubjectID())
-				assert.Equal(t, "object", tuples[0].Object)
+				var oldRTs []*tuplesBeforeUUID
+				require.NoError(t, p.Connection(ctx).Where("namespace_id = ?", namespaces[1].ID).All(&oldRTs))
+				assert.Equalf(t, "user", oldRTs[0].SubjectID.String, "%+v", oldRTs[0])
+				assert.Equal(t, "object", oldRTs[0].Object)
 			})
 
 			t.Run("suite=down", func(t *testing.T) {
@@ -163,25 +170,33 @@ func TestMigrations(t *testing.T) {
 	}
 }
 
-func migrateTo(t *testing.T, tm *popx.MigrationBox, name string) {
+// migrateUpTo migrates up to the specified version (inclusive)
+func migrateUpTo(t *testing.T, tm *popx.MigrationBox, version string) {
 	statuses, err := tm.Status(context.Background())
 	require.NoError(t, err)
 
 	for i, status := range statuses {
-		if status.Name == name {
+		if status.Version == version {
 			_, err = tm.UpTo(context.Background(), i+1)
 			require.NoError(t, err)
 			return
 		}
 	}
-	t.Fatal("could not find ", name)
+	t.Fatal("could not find ", version)
 }
 
-func assertIsUUID(t *testing.T, id string) {
-	t.Helper()
-	if _, err := uuid.FromString(id); err != nil {
-		t.Errorf("expected %q to be a UUID", id)
+// migrateDownTo migrates down to the specified version (exclusive)
+func migrateDownTo(t *testing.T, tm *popx.MigrationBox, version string) {
+	statuses, err := tm.Status(context.Background())
+	require.NoError(t, err)
+
+	for i, status := range statuses {
+		if status.Version == version {
+			require.NoError(t, tm.Down(context.Background(), len(statuses)-i))
+			return
+		}
 	}
+	t.Fatal("could not find ", version)
 }
 
 func logMigrationStatus(t *testing.T, m *popx.MigrationBox) {
@@ -192,4 +207,21 @@ func logMigrationStatus(t *testing.T, m *popx.MigrationBox) {
 	s := strings.Builder{}
 	_ = status.Write(&s)
 	t.Log("Migration status:\n", s.String())
+}
+
+type tuplesBeforeUUID struct {
+	ID                    uuid.UUID         `db:"shard_id"`
+	NetworkID             uuid.UUID         `db:"nid"`
+	NamespaceID           int32             `db:"namespace_id"`
+	Object                string            `db:"object"`
+	Relation              string            `db:"relation"`
+	SubjectID             stdSql.NullString `db:"subject_id"`
+	SubjectSetNamespaceID stdSql.NullInt32  `db:"subject_set_namespace_id"`
+	SubjectSetObject      stdSql.NullString `db:"subject_set_object"`
+	SubjectSetRelation    stdSql.NullString `db:"subject_set_relation"`
+	CommitTime            time.Time         `db:"commit_time"`
+}
+
+func (tuplesBeforeUUID) TableName(_ context.Context) string {
+	return "keto_relation_tuples"
 }
