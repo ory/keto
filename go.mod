@@ -8,11 +8,7 @@ replace (
 )
 
 // vulnerable dependencies
-replace (
-	github.com/containerd/containerd => github.com/containerd/containerd v1.5.10
-	github.com/dgrijalva/jwt-go => github.com/golang-jwt/jwt/v4 v4.0.0
-	github.com/opencontainers/runc => github.com/opencontainers/runc v1.0.3
-)
+replace github.com/dgrijalva/jwt-go => github.com/golang-jwt/jwt/v4 v4.0.0
 
 require (
 	github.com/cenkalti/backoff/v3 v3.0.0
@@ -70,7 +66,7 @@ require (
 	github.com/cenkalti/backoff/v4 v4.1.3 // indirect
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
 	github.com/cockroachdb/cockroach-go/v2 v2.2.10 // indirect
-	github.com/containerd/containerd v1.5.8 // indirect
+	github.com/containerd/containerd v1.5.10 // indirect
 	github.com/containerd/continuity v0.3.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dgraph-io/ristretto v0.1.0 // indirect
@@ -151,7 +147,7 @@ require (
 	github.com/oklog/ulid v1.3.1 // indirect
 	github.com/opencontainers/go-digest v1.0.0 // indirect
 	github.com/opencontainers/image-spec v1.0.2 // indirect
-	github.com/opencontainers/runc v1.1.1 // indirect
+	github.com/opencontainers/runc v1.1.3 // indirect
 	github.com/opentracing/opentracing-go v1.2.0 // indirect
 	github.com/openzipkin/zipkin-go v0.4.0 // indirect
 	github.com/ory/dockertest/v3 v3.9.0 // indirect
