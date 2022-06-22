@@ -19,7 +19,7 @@
     "logo": "https://opencollective.com/ory/logo.txt"
   },
   "dependencies": {
-    "@openapitools/openapi-generator-cli": "^2.1.18",
+    "@openapitools/openapi-generator-cli": "^2.5.1",
     "grpc_tools_node_protoc_ts": "^5.3.2",
     "grpc-tools": "^1.11.2"
   },
