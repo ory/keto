@@ -1,18 +1,18 @@
 version: 2
 updates:
-  - package-ecosystem: "gomod"
-    directory: "/"
+  - package-ecosystem: 'gomod'
+    directory: '/'
     schedule:
-      interval: "daily"
-  - package-ecosystem: "gomod"
-    directory: "/proto"
+      interval: 'daily'
+  - package-ecosystem: 'gomod'
+    directory: '/proto'
     schedule:
-      interval: "daily"
-  - package-ecosystem: "npm"
-    directory: "/"
+      interval: 'daily'
+  - package-ecosystem: 'npm'
+    directory: '/'
     schedule:
-      interval: "daily"
-  - package-ecosystem: "npm"
-    directory: "/proto"
+      interval: 'daily'
+  - package-ecosystem: 'npm'
+    directory: '/proto'
     schedule:
-      interval: "daily"
+      interval: 'daily'
