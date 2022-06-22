@@ -11,7 +11,7 @@
     "doctoc": "^2.0.1",
     "opencollective": "^1.0.3",
     "ory-prettier-styles": "^1.2.0",
-    "prettier": "2.5.1"
+    "prettier": "2.7.1"
   },
   "collective": {
     "type": "opencollective",
