@@ -79,7 +79,7 @@ jobs:
           go mod tidy
           go test ./...
       - name: Test Keto
-        run: .bin/go-acc -o coverage.txt ./... -- -tags sqlite
+        run: .bin/go-acc --ignore "internal/httpclient,internal/httpclient-next" -o coverage.txt ./... -- -tags sqlite
       - run: |
           .bin/goveralls -service=github -coverprofile=coverage.txt
         env:
