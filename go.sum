@@ -1316,8 +1316,8 @@ github.com/ory/jsonschema/v3 v3.0.7 h1:GQ9qfZDiJqs4l2d3p56dozCChvejQFZyLKGHYzDzO
 github.com/ory/jsonschema/v3 v3.0.7/go.mod h1:g8c8YOtN4TrR2wYeMdT02GDmzJDI0fEW2nI26BECafY=
 github.com/ory/viper v1.7.5 h1:+xVdq7SU3e1vNaCsk/ixsfxE4zylk1TJUiJrY647jUE=
 github.com/ory/viper v1.7.5/go.mod h1:ypOuyJmEUb3oENywQZRgeAMwqgOyDqwboO1tj3DjTaM=
-github.com/ory/x v0.0.422 h1:Dms7TkQ8Ney0EpKU20aVyyK2NFFqpMHX4J01vHYmEu8=
-github.com/ory/x v0.0.422/go.mod h1:+CZc3VvpVc34WyDRMcvm9hZ9MV36FVdbRFzRQou8Bo8=
+github.com/ory/x v0.0.423 h1:H2bZjDHAF4UuBzeYxfHUQpy1D5Mcungm9QElgRe9Yc4=
+github.com/ory/x v0.0.423/go.mod h1:+CZc3VvpVc34WyDRMcvm9hZ9MV36FVdbRFzRQou8Bo8=
 github.com/pascaldekloe/goe v0.0.0-20180627143212-57f6aae5913c/go.mod h1:lzWF7FIEvWOWxwDKqyGYQf6ZUaNfKdP144TG7ZOy1lc=
 github.com/pascaldekloe/goe v0.1.0/go.mod h1:lzWF7FIEvWOWxwDKqyGYQf6ZUaNfKdP144TG7ZOy1lc=
 github.com/pborman/uuid v1.2.0/go.mod h1:X/NO0urCmaxf9VXbdlT7C2Yzkj2IKimNn4k+gtPdI/k=
