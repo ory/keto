@@ -141,9 +141,6 @@ jobs:
       - uses: ory/ci/sdk/generate@master
         with:
           token: ${{ secrets.ORY_BOT_PAT }}
-          app-name: Ory_keto
-          swag-spec-ignore: internal/httpclient proto/ory/keto docker
-          swag-spec-location: spec/api.json
 
   sdk-release:
     name: Release SDKs
@@ -159,8 +156,6 @@ jobs:
       - uses: ory/ci/sdk/release@master
         with:
           token: ${{ secrets.ORY_BOT_PAT }}
-          app-name: Ory_keto
-          swag-spec-ignore: internal/httpclient proto/ory/keto docker
           swag-spec-location: spec/api.json
 
   release:
