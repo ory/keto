@@ -7,13 +7,14 @@ import (
 	"context"
 
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/protobuf/proto"
 
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 )
 
 func purgeNamespace(nspace string) {
-	rc, err := grpc.Dial("127.0.0.1:4466", grpc.WithInsecure())
+	rc, err := grpc.Dial("127.0.0.1:4466", grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		panic(err)
 	}
@@ -29,7 +30,7 @@ func purgeNamespace(nspace string) {
 		panic(err)
 	}
 
-	wc, err := grpc.Dial("127.0.0.1:4467", grpc.WithInsecure())
+	wc, err := grpc.Dial("127.0.0.1:4467", grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		panic(err)
 	}
