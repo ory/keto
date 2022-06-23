@@ -23,7 +23,7 @@ require (
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
 	github.com/julienschmidt/httprouter v1.3.0
 	github.com/luna-duclos/instrumentedsql v1.1.3
-	github.com/mikefarah/yq/v4 v4.25.2
+	github.com/mikefarah/yq/v4 v4.25.3
 	github.com/ory/analytics-go/v4 v4.0.3
 	github.com/ory/graceful v0.1.2
 	github.com/ory/herodot v0.9.13
