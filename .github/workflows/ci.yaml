@@ -27,7 +27,7 @@ jobs:
       - name: Run nancy
         uses: sonatype-nexus-community/nancy-github-action@v1.0.2
       - name: Run golangci-lint
-        uses: golangci/golangci-lint-action@v2
+        uses: golangci/golangci-lint-action@v3
         env:
           GOGC: 100
         with:
