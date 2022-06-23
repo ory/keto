@@ -8,6 +8,7 @@ import (
 
 	"github.com/ory/herodot"
 	"github.com/stretchr/testify/assert"
+	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/status"
 
 	"github.com/stretchr/testify/require"
@@ -31,7 +32,7 @@ func (g *grpcClient) conn(t require.TestingT, remote string) *grpc.ClientConn {
 	ctx, cancel := context.WithTimeout(g.ctx, 3*time.Second)
 	defer cancel()
 
-	conn, err := grpc.DialContext(ctx, remote, grpc.WithInsecure(), grpc.WithBlock(), grpc.WithDisableHealthCheck())
+	conn, err := grpc.DialContext(ctx, remote, grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithBlock(), grpc.WithDisableHealthCheck())
 	require.NoError(t, err)
 
 	return conn
