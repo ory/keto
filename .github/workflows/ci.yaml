@@ -20,7 +20,7 @@ jobs:
       - uses: ory/ci/checkout@master
       - uses: actions/setup-go@v2
         with:
-          go-version: ^1.17
+          go-version: 1.18
       - name: Lint buf
         run: make buf-lint
       - run: go list -json > go.list
@@ -68,7 +68,7 @@ jobs:
       - uses: ory/ci/checkout@master
       - uses: actions/setup-go@v2
         with:
-          go-version: ^1.17
+          go-version: 1.18
       - name: Prepare Dependencies
         run: |
           make .bin/goveralls
@@ -92,7 +92,7 @@ jobs:
       - uses: ory/ci/checkout@master
       - uses: actions/setup-go@v2
         with:
-          go-version: ^1.17
+          go-version: 1.18
       - run: |
           go test -tags sqlite -race -short ./...
 
@@ -244,7 +244,7 @@ jobs:
           path: current-repo
       - uses: actions/setup-go@v2
         with:
-          go-version: '1.17'
+          go-version: 1.18
       - uses: actions/setup-node@v2
         with:
           node-version: '15'
