@@ -19,7 +19,7 @@ jobs:
           go-version: '1.16'
       - name: Run test script
         run: ./scripts/single-table-migration-e2e.sh
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         if: failure()
         with:
           name: sqlite-db
