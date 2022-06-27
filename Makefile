@@ -93,18 +93,16 @@ build:
 #
 .PHONY: buf-gen
 buf-gen: .bin/buf .bin/protoc-gen-go .bin/protoc-gen-go-grpc .bin/protoc-gen-doc node_modules
-		buf generate \
-		&& \
-		echo "All code was generated successfully!"
+		buf generate
+		@echo "All code was generated successfully!"
 
 #
 # Lint API definitions
 #
 .PHONY: buf-lint
 buf-lint: .bin/buf
-		buf check lint \
-		&& \
-		echo "All lint checks passed successfully!"
+		buf lint
+		@echo "All lint checks passed successfully!"
 
 #
 # Generate after linting succeeded
