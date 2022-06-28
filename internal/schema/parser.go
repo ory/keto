@@ -24,6 +24,11 @@ type (
 	}
 )
 
+var (
+	empty = ""
+	any   = &empty // helper to use in match() when we don't care which identifier.
+)
+
 func Parse(input string) ([]namespace, []error) {
 	p := &parser{
 		lexer: Lex("input", input),
@@ -54,29 +59,42 @@ func (p *parser) addFatal(err error) {
 func (p *parser) addErr(err error) {
 	p.errors = append(p.errors, err)
 }
-func (p *parser) expect(typs ...itemType) (value string) {
-	for _, typ := range typs {
-		if p.fatal {
-			return
-		}
+func (p *parser) expect(typ itemType) (value string) {
+	if p.fatal {
+		return
+	}
+	item := p.lexer.nextItem()
+	if item.Typ != typ {
+		p.addFatal(fmt.Errorf("expected %d, got %d(%q)", typ, item.Typ, item.Val))
+		return
+	}
+	return item.Val
+}
+func (p *parser) match(tokens ...interface{}) (matches map[string]string) {
+	matches = make(map[string]string)
+	for _, token := range tokens {
 		item := p.lexer.nextItem()
-		if item.Typ != typ {
-			p.addFatal(fmt.Errorf("expected %d, got %d(%q)", typ, item.Typ, item.Val))
-			return
+		switch token := token.(type) {
+		case string:
+			if item.Val != token {
+				p.addFatal(fmt.Errorf("expected %q, got %q", token, item.Val))
+				return
+			}
+		case *string:
+			if item.Typ != itemIdentifier && item.Typ != itemStringLiteral {
+				p.addFatal(fmt.Errorf("expected identifier, got %d", item.Typ))
+				return
+			}
+			*token = item.Val
 		}
-		value = item.Val
 	}
 	return
 }
 
 // parseClass parses a class. The "class" token was already consumed.
 func (p *parser) parseClass() {
-	name := p.expect(itemIdentifier)
-	p.expect(itemKeywordImplements)
-	if iface := p.expect(itemIdentifier); iface != "Namespace" {
-		p.addErr(fmt.Errorf("unexpected 'implements' interface: %s", iface))
-	}
-	p.expect(itemBraceLeft)
+	var name string
+	p.match(&name, "implements", "Namespace", "{")
 	p.namespace = namespace{ns: ns{Name: name}}
 
 	for {
@@ -98,12 +116,8 @@ func (p *parser) parseClass() {
 }
 
 func (p *parser) parseMetadata() {
-	p.expect(itemOperatorAssign)
-	p.expect(itemBraceLeft)
-	p.expect(itemKeywordID)
-	p.expect(itemOperatorColon)
-	id := p.expect(itemStringLiteral)
-	p.expect(itemBraceRight)
+	var id string
+	p.match("=", "{", "id", ":", &id, "}")
 	if parsed, err := strconv.ParseUint(id, 10, 32); err != nil {
 		p.addErr(fmt.Errorf("invalid ID: %w", err))
 	} else {
@@ -112,18 +126,14 @@ func (p *parser) parseMetadata() {
 }
 
 func (p *parser) parseRelated() {
-	p.expect(itemOperatorColon)
-	p.expect(itemBraceLeft)
+	p.match(":", "{")
 	for {
 		switch item := p.lexer.nextItem(); item.Typ {
 		case itemBraceRight:
 			return
 		case itemIdentifier:
 			relation := item.Val
-			p.expect(itemOperatorColon)
-			p.expect(itemIdentifier)
-			p.expect(itemBracketLeft)
-			p.expect(itemBracketRight)
+			p.match(":", any, "[", "]")
 			p.namespace.Relations = append(p.namespace.Relations, ast.Relation{
 				Name: relation,
 			})
@@ -135,8 +145,7 @@ func (p *parser) parseRelated() {
 }
 
 func (p *parser) parsePermits() {
-	p.expect(itemOperatorAssign)
-	p.expect(itemBraceLeft)
+	p.match("=", "{")
 	for {
 		switch item := p.lexer.nextItem(); item.Typ {
 
@@ -145,17 +154,12 @@ func (p *parser) parsePermits() {
 
 		case itemIdentifier:
 			permission := item.Val
-			p.expect(itemOperatorColon)
-			p.expect(itemParenLeft)
-			p.expect(itemKeywordCtx)
+			p.match(":", "(", "ctx")
 
 			// parse optional type annotation of 'ctx' argument
 			switch item := p.lexer.nextItem(); item.Typ {
 			case itemOperatorColon:
-				if t := p.expect(itemIdentifier); t != "Context" {
-					p.addErr(fmt.Errorf("unexpected type annotation: %s", t))
-				}
-				p.expect(itemParenRight)
+				p.match("Context", ")")
 			case itemParenRight:
 			default:
 				p.addFatal(fmt.Errorf("expected ':' or ')', got %q", item.Val))
@@ -164,10 +168,7 @@ func (p *parser) parsePermits() {
 			// parse optional return type annotation
 			switch item := p.lexer.nextItem(); item.Typ {
 			case itemOperatorColon:
-				if t := p.expect(itemIdentifier); t != "boolean" {
-					p.addErr(fmt.Errorf("unexpected type annotation: %s", t))
-				}
-				p.expect(itemOperatorArrow)
+				p.match("boolean", "=>")
 			case itemOperatorArrow:
 			default:
 				p.addFatal(fmt.Errorf("expected ':' or '=>', got %q", item.Val))
@@ -180,30 +181,19 @@ func (p *parser) parsePermits() {
 
 		permissionLoop:
 			for {
-				p.expect(itemKeywordThis)
-				p.expect(itemOperatorDot)
-				p.expect(itemKeywordRelated)
-				p.expect(itemOperatorDot)
-				relationName := p.expect(itemIdentifier)
-				p.expect(itemOperatorDot)
+				var relationName string
+				p.match("this", ".", "related", ".", &relationName, ".")
 
 				switch p.expect(itemIdentifier) {
 				case "some": // tuple to userset
-					p.expect(itemParenLeft)
-					arg := p.expect(itemIdentifier)
-					p.expect(itemOperatorArrow)
-					obj := p.expect(itemIdentifier)
+					var arg, obj, computedUsersetRel string
+					p.match(
+						"(", &arg, "=>",
+						&obj, ".", "permits", ".", &computedUsersetRel,
+						"(", "ctx", ")", ")")
 					if arg != obj {
 						p.addErr(fmt.Errorf("unexpected object: %s", obj))
 					}
-					p.expect(itemOperatorDot)
-					p.expect(itemKeywordPermits)
-					p.expect(itemOperatorDot)
-					computedUsersetRel := p.expect(itemIdentifier)
-					p.expect(itemParenLeft)
-					p.expect(itemKeywordCtx)
-					p.expect(itemParenRight)
-					p.expect(itemParenRight)
 					addRewrite(&relation,
 						ast.TupleToUserset{
 							Relation:                relationName,
@@ -211,13 +201,7 @@ func (p *parser) parsePermits() {
 						},
 					)
 				case "includes": // computed userset
-					p.expect(itemParenLeft)
-					p.expect(itemKeywordCtx)
-					p.expect(itemOperatorDot)
-					if s := p.expect(itemIdentifier); s != "subject" {
-						p.addErr(fmt.Errorf("expected subject, got: %s", s))
-					}
-					p.expect(itemParenRight)
+					p.match("(", "ctx", ".", "subject", ")")
 					addRewrite(&relation,
 						ast.ComputedUserset{
 							Relation: relationName,
