@@ -13,7 +13,7 @@ type (
 		Name   string          `json:"name" db:"-" toml:"name"`
 		Config json.RawMessage `json:"config,omitempty" db:"-" toml:"config,omitempty"`
 
-		Relations []ast.Relation `json:"-" db:"-"`
+		Relations []ast.Relation `json:"relations,omitempty" db:"-"`
 	}
 	Manager interface {
 		GetNamespaceByName(ctx context.Context, name string) (*Namespace, error)
