@@ -2,13 +2,13 @@ package ast
 
 type (
 	Relation struct {
-		Name           string
-		UsersetRewrite *UsersetRewrite
+		Name           string          `json:"name"`
+		UsersetRewrite *UsersetRewrite `json:"rewrite,omitempty"`
 	}
 
 	UsersetRewrite struct {
-		Operation SetOperation
-		Children  []Child
+		Operation SetOperation `json:"set_operation"`
+		Children  []Child      `json:"children"`
 	}
 
 	Children = []Child
@@ -18,13 +18,13 @@ type (
 	child struct{}
 
 	ComputedUserset struct {
-		Relation string
+		Relation string `json:"relation"`
 		child
 	}
 
 	TupleToUserset struct {
-		Relation                string
-		ComputedUsersetRelation string
+		Relation                string `json:"relation"`
+		ComputedUsersetRelation string `json:"computed_userset_relation"`
 		child
 	}
 )

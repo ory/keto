@@ -6,7 +6,6 @@ package schema
 import (
 	"fmt"
 	"strings"
-	"unicode"
 	"unicode/utf8"
 )
 
@@ -71,6 +70,7 @@ const (
 
 // string classes
 const (
+	spaces  = "\t\n\v\f\r "
 	digits  = "0123456789"
 	letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_"
 )
@@ -191,6 +191,18 @@ func (l *lexer) scanIdentifier() bool {
 	return true
 }
 
+func (l *lexer) scanCommentBegin() (bool, stateFn) {
+	if strings.HasPrefix(l.input[l.pos:], "//") {
+		l.pos += 2
+		return true, lexLineComment
+	}
+	if strings.HasPrefix(l.input[l.pos:], "/*") {
+		l.pos += 2
+		return true, lexBlockComment
+	}
+	return false, nil
+}
+
 var oneRuneTokens = map[rune]itemType{
 	':': itemOperatorColon,
 	'.': itemOperatorDot,
@@ -222,18 +234,13 @@ var keywords = map[string]itemType{
 }
 
 func lexCode(l *lexer) stateFn {
-loop:
-	for {
-		switch r := l.next(); {
-		case unicode.IsSpace(r):
-			l.ignore()
-		case r == eof:
-			l.emit(itemEOF)
-			return nil
-		default:
-			l.backup()
-			break loop
-		}
+	l.acceptRun(spaces)
+	l.ignore()
+
+	r := l.peek()
+	if r == eof {
+		l.emit(itemEOF)
+		return nil
 	}
 
 	// Two-rune tokens must be matched first
@@ -245,25 +252,19 @@ loop:
 		}
 	}
 
-	if strings.HasPrefix(l.input[l.pos:], "//") {
-		l.pos += 2
-		return lexLineComment
-	}
-	if strings.HasPrefix(l.input[l.pos:], "/*") {
-		l.pos += 2
-		return lexBlockComment
+	if found, lexComment := l.scanCommentBegin(); found {
+		return lexComment
 	}
 
-	r := l.next()
 	if itemType, found := oneRuneTokens[r]; found {
+		l.next()
 		l.emit(itemType)
 		return lexCode
 	}
+
 	if strings.ContainsRune(`'"`, r) {
-		l.backup()
 		return lexStringLiteral
 	}
-	l.backup()
 
 	if l.scanIdentifier() {
 		if kwType, found := keywords[l.input[l.start:l.pos]]; found {
@@ -274,7 +275,7 @@ loop:
 		return lexCode
 	}
 
-	return l.errorf("unexpected token %c", l.next())
+	return l.errorf("unexpected token %c", r)
 }
 
 func lexLineComment(l *lexer) stateFn {
