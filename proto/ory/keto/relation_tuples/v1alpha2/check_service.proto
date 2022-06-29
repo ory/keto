@@ -37,7 +37,7 @@ message CheckRequest {
   // The related subject in this check.
   Subject subject = 4 [deprecated = true];
 
-  RelationQuery query = 8;
+  RelationTuple tuple = 8;
 
   // This field is not implemented yet and has no effect.
   // <!--

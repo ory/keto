@@ -4,8 +4,6 @@ import (
 	"context"
 	"time"
 
-	"google.golang.org/grpc/credentials/insecure"
-
 	"github.com/ory/keto/ketoapi"
 
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
@@ -114,14 +112,16 @@ func (g *grpcClient) check(t require.TestingT, r *ketoapi.RelationTuple) bool {
 	c := rts.NewCheckServiceClient(g.readConn(t))
 
 	req := &rts.CheckRequest{
-		Namespace: r.Namespace,
-		Object:    r.Object,
-		Relation:  r.Relation,
+		Query: &rts.RelationQuery{
+			Namespace: &r.Namespace,
+			Object:    &r.Object,
+			Relation:  &r.Relation,
+		},
 	}
 	if r.SubjectID != nil {
-		req.Subject = rts.NewSubjectID(*r.SubjectID)
+		req.Query.Subject = rts.NewSubjectID(*r.SubjectID)
 	} else {
-		req.Subject = rts.NewSubjectSet(r.SubjectSet.Namespace, r.SubjectSet.Object, r.SubjectSet.Relation)
+		req.Query.Subject = rts.NewSubjectSet(r.SubjectSet.Namespace, r.SubjectSet.Object, r.SubjectSet.Relation)
 	}
 	resp, err := c.Check(g.ctx, req)
 	require.NoError(t, err)
