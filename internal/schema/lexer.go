@@ -11,8 +11,9 @@ import (
 
 type (
 	item struct {
-		Typ itemType // Type of item.
-		Val string   // Value of item.
+		Typ        itemType // Type of item.
+		Val        string   // Value of item.
+		Start, End int      // Start and end position of item.
 	}
 	itemType int
 
@@ -32,23 +33,25 @@ type (
 	}
 )
 
+//go:generate stringer -type=itemType -trimprefix item -linecomment
 const (
-	itemError itemType = iota // error occurred; value is text of error
-	itemEOF                   // end of input
+	// error occurred; value is text of error
+	itemError itemType = iota
+	// end of input
+	itemEOF
 
-	itemIdentifier    // identifier; value is string
-	itemComment       // comment; value is string
-	itemStringLiteral // string literal; value is string
+	// identifier; value is string
+	itemIdentifier
+	// comment; value is string
+	itemComment
+	// string literal; value is string
+	itemStringLiteral
 
 	// keywords
 	itemKeywordClass
 	itemKeywordImplements
-	itemKeywordMetadata
-	itemKeywordRelated
-	itemKeywordPermits
 	itemKeywordThis
 	itemKeywordCtx
-	itemKeywordID
 
 	// operators
 	itemOperatorAnd    // "&&"
@@ -58,6 +61,7 @@ const (
 	itemOperatorDot    // "."
 	itemOperatorColon  // ":"
 	itemOperatorComma  // ","
+	itemTypeUnion      // "|"
 
 	// brackets
 	itemParenLeft    // "("
@@ -66,6 +70,8 @@ const (
 	itemBraceRight   // "}"
 	itemBracketLeft  // "["
 	itemBracketRight // "]"
+	itemAngledLeft   // "<"
+	itemAngledRight  // ">"
 )
 
 // string classes
@@ -128,7 +134,7 @@ func (l *lexer) backup() {
 
 // emit passes an item back to the client.
 func (l *lexer) emit(t itemType) {
-	l.items <- item{t, l.input[l.start:l.pos]}
+	l.items <- item{t, l.input[l.start:l.pos], l.start, l.pos}
 	l.start = l.pos
 }
 
@@ -153,17 +159,11 @@ func (l *lexer) acceptRun(valid string) {
 	l.backup()
 }
 
-// lineNumber reports which line we're on. Doing it this way
-// means we don't have to worry about peek double counting.
-func (l *lexer) lineNumber() int {
-	return 1 + strings.Count(l.input[:l.pos], "\n")
-}
-
 // error returns an error token and terminates the scan by passing
 // back a nil pointer that will be the next state, terminating l.run.
 func (l *lexer) errorf(format string, args ...interface{}) stateFn {
 	location := fmt.Sprintf("at %q: ", l.input[l.pos:])
-	l.items <- item{itemError, location + fmt.Sprintf(format, args...)}
+	l.items <- item{itemError, location + fmt.Sprintf(format, args...), l.start, l.pos}
 	return nil
 }
 
@@ -175,7 +175,7 @@ func (l *lexer) nextItem() item {
 			return item
 		default:
 			if l.state == nil {
-				return item{itemError, "broken state"}
+				return item{itemError, "broken state", 0, 0}
 			}
 			l.state = l.state(l)
 		}
@@ -212,8 +212,11 @@ var oneRuneTokens = map[rune]itemType{
 	']': itemBracketRight,
 	'{': itemBraceLeft,
 	'}': itemBraceRight,
+	'<': itemAngledLeft,
+	'>': itemAngledRight,
 	'=': itemOperatorAssign,
 	',': itemOperatorComma,
+	'|': itemTypeUnion,
 }
 
 var multiRuneTokens = map[string]itemType{
@@ -225,12 +228,8 @@ var multiRuneTokens = map[string]itemType{
 var keywords = map[string]itemType{
 	"class":      itemKeywordClass,
 	"implements": itemKeywordImplements,
-	"metadata":   itemKeywordMetadata,
-	"related":    itemKeywordRelated,
-	"permits":    itemKeywordPermits,
 	"this":       itemKeywordThis,
 	"ctx":        itemKeywordCtx,
-	"id":         itemKeywordID,
 }
 
 func lexCode(l *lexer) stateFn {

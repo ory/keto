@@ -33,16 +33,9 @@ class name implements Namespace {
 }
 `},
 			{"two classes", `
-class user implements Namespace {
-	metadata = {
-		id: "1"
-	}
-}
+class user implements Namespace { }
 
 class document implements Namespace {
-	metadata = {
-		id: "2"
-	}
 
 	related: {
 		owners: user[]
@@ -54,10 +47,6 @@ class document implements Namespace {
 `},
 			{"full class", `
 class File implements Namespace {
-	metadata = {
-		id: "2"
-	}
-  
 	related: {
 	  parents: File[]
 	  viewers: User[]
@@ -74,6 +63,13 @@ class File implements Namespace {
 	  edit: (ctx: Context) => this.related.owners.includes(ctx.subject),
   
 	  rename: (ctx: Context) => this.related.siblings.some(s => s.permits.edit(ctx))
+	}
+}
+`},
+			{"subject sets", `
+class X implements Namespace {
+	related: {
+		relation: SubjectSet<R, "someProp">[]
 	}
 }
 `},
