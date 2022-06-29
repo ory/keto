@@ -138,7 +138,7 @@ func (r *RegistryDefault) MetricsHandler() *prometheus.Handler {
 
 func (r *RegistryDefault) PrometheusManager() *prometheus.MetricsManager {
 	if r.pmm == nil {
-		r.pmm = prometheus.NewMetricsManager("keto", config.Version, config.Commit, config.Date)
+		r.pmm = prometheus.NewMetricsManagerWithPrefix("keto", prometheus.HTTPMetrics, config.Version, config.Commit, config.Date)
 	}
 	return r.pmm
 }

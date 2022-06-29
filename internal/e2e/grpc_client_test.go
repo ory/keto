@@ -12,6 +12,7 @@ import (
 
 	"github.com/ory/herodot"
 	"github.com/stretchr/testify/assert"
+	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/status"
 
 	"github.com/stretchr/testify/require"

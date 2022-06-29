@@ -5,13 +5,14 @@ import (
 	"fmt"
 	"sort"
 
-	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
-
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
+
+	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 )
 
 func main() {
-	conn, err := grpc.Dial("127.0.0.1:4466", grpc.WithInsecure())
+	conn, err := grpc.Dial("127.0.0.1:4466", grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		panic(err.Error())
 	}
