@@ -1,9 +1,9 @@
-import grpc from '@ory/keto-grpc-client/node_modules/@grpc/grpc-js/build/src/index.js'
-import { write, writeService, read, readService } from '@ory/keto-grpc-client'
+import grpc from "@ory/keto-grpc-client/node_modules/@grpc/grpc-js/build/src/index.js"
+import { write, writeService, read, readService } from "@ory/keto-grpc-client"
 
 const readClient = new readService.ReadServiceClient(
-  '127.0.0.1:4466',
-  grpc.credentials.createInsecure()
+  "127.0.0.1:4466",
+  grpc.credentials.createInsecure(),
 )
 
 const purgeNamespace = (namespace) => {
@@ -15,8 +15,8 @@ const purgeNamespace = (namespace) => {
 
   readClient.listRelationTuples(readRequest, (err, resp) => {
     const writeClient = new writeService.WriteServiceClient(
-      '127.0.0.1:4467',
-      grpc.credentials.createInsecure()
+      "127.0.0.1:4467",
+      grpc.credentials.createInsecure(),
     )
 
     const writeRequest = new write.TransactRelationTuplesRequest()
@@ -30,12 +30,12 @@ const purgeNamespace = (namespace) => {
 
     writeClient.transactRelationTuples(writeRequest, (err) => {
       if (err) {
-        console.log('Unexpected err', err)
+        console.log("Unexpected err", err)
         return 1
       }
     })
   })
 }
 
-purgeNamespace('files')
-purgeNamespace('directories')
+purgeNamespace("files")
+purgeNamespace("directories")

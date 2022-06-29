@@ -1,10 +1,10 @@
-version: '3'
+version: "3"
 services:
   keto:
     image: oryd/keto:v0.8.0-alpha.2
     ports:
-      - '4466:4466'
-      - '4467:4467'
+      - "4466:4466"
+      - "4467:4467"
     command: serve -c /home/ory/keto.yml
     restart: on-failure
     volumes:

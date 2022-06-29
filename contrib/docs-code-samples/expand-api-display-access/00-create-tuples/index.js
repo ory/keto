@@ -1,9 +1,9 @@
-import grpc from '@ory/keto-grpc-client/node_modules/@grpc/grpc-js/build/src/index.js'
-import { relationTuples, write, writeService } from '@ory/keto-grpc-client'
+import grpc from "@ory/keto-grpc-client/node_modules/@grpc/grpc-js/build/src/index.js"
+import { relationTuples, write, writeService } from "@ory/keto-grpc-client"
 
 const writeClient = new writeService.WriteServiceClient(
-  '127.0.0.1:4467',
-  grpc.credentials.createInsecure()
+  "127.0.0.1:4467",
+  grpc.credentials.createInsecure(),
 )
 
 const writeRequest = new write.TransactRelationTuplesRequest()
@@ -30,28 +30,28 @@ const addSimpleTuple = (namespace, object, relation, user) => {
 }
 
 // ownership
-addSimpleTuple('directories', '/photos', 'owner', 'maureen')
-addSimpleTuple('files', '/photos/beach.jpg', 'owner', 'maureen')
-addSimpleTuple('files', '/photos/mountains.jpg', 'owner', 'laura')
+addSimpleTuple("directories", "/photos", "owner", "maureen")
+addSimpleTuple("files", "/photos/beach.jpg", "owner", "maureen")
+addSimpleTuple("files", "/photos/mountains.jpg", "owner", "laura")
 // granted access
-addSimpleTuple('directories', '/photos', 'access', 'laura')
+addSimpleTuple("directories", "/photos", "access", "laura")
 
 // should be subject set rewrite
 // owners have access
 ;[
-  ['files', '/photos/beach.jpg'],
-  ['files', '/photos/mountains.jpg'],
-  ['directories', '/photos']
+  ["files", "/photos/beach.jpg"],
+  ["files", "/photos/mountains.jpg"],
+  ["directories", "/photos"],
 ].forEach(([namespace, object]) => {
   const relationTuple = new relationTuples.RelationTuple()
   relationTuple.setNamespace(namespace)
   relationTuple.setObject(object)
-  relationTuple.setRelation('access')
+  relationTuple.setRelation("access")
 
   const subjectSet = new relationTuples.SubjectSet()
   subjectSet.setNamespace(namespace)
   subjectSet.setObject(object)
-  subjectSet.setRelation('owner')
+  subjectSet.setRelation("owner")
 
   const sub = new relationTuples.Subject()
   sub.setSet(subjectSet)
@@ -62,16 +62,16 @@ addSimpleTuple('directories', '/photos', 'access', 'laura')
 
 // should be subject set rewrite
 // access on parent means access on child
-;['/photos/beach.jpg', '/photos/mountains.jpg'].forEach((file) => {
+;["/photos/beach.jpg", "/photos/mountains.jpg"].forEach((file) => {
   const relationTuple = new relationTuples.RelationTuple()
-  relationTuple.setNamespace('files')
+  relationTuple.setNamespace("files")
   relationTuple.setObject(file)
-  relationTuple.setRelation('access')
+  relationTuple.setRelation("access")
 
   const subjectSet = new relationTuples.SubjectSet()
-  subjectSet.setNamespace('directories')
-  subjectSet.setObject('/photos')
-  subjectSet.setRelation('access')
+  subjectSet.setNamespace("directories")
+  subjectSet.setObject("/photos")
+  subjectSet.setRelation("access")
 
   const sub = new relationTuples.Subject()
   sub.setSet(subjectSet)
@@ -82,8 +82,8 @@ addSimpleTuple('directories', '/photos', 'access', 'laura')
 
 writeClient.transactRelationTuples(writeRequest, (error) => {
   if (error) {
-    console.log('Encountered error', error)
+    console.log("Encountered error", error)
   } else {
-    console.log('Successfully created tuples')
+    console.log("Successfully created tuples")
   }
 })

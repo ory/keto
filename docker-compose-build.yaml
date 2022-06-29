@@ -1,20 +1,20 @@
-version: '3'
+version: "3"
 
 services:
   keto:
     build:
-      context: '.'
-      dockerfile: '.docker/Dockerfile-build'
+      context: "."
+      dockerfile: ".docker/Dockerfile-build"
     ports:
-      - '4466:4466'
-      - '4467:4467'
-      - '4468:4468'
+      - "4466:4466"
+      - "4467:4467"
+      - "4468:4468"
     command: serve -c /home/ory/keto.yml
     restart: on-failure
     volumes:
       - type: bind
-        source: './config'
-        target: '/home/ory'
+        source: "./config"
+        target: "/home/ory"
     environment:
       - LOG_LEVEL=debug
       - PORT=4466

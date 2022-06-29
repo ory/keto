@@ -4,7 +4,7 @@ on:
     branches:
       - master
     tags:
-      - '*'
+      - "*"
   pull_request:
 
 # Cancel in-progress runs in current workflow.
@@ -79,7 +79,9 @@ jobs:
           go mod tidy
           go test ./...
       - name: Test Keto
-        run: .bin/go-acc --ignore "internal/httpclient,internal/httpclient-next" -o coverage.txt ./... -- -tags sqlite
+        run:
+          .bin/go-acc --ignore "internal/httpclient,internal/httpclient-next" -o
+          coverage.txt ./... -- -tags sqlite
       - run: |
           .bin/goveralls -service=github -coverprofile=coverage.txt
         env:
@@ -200,7 +202,7 @@ jobs:
           mailchimp_list_id: f605a41b53
           mailchmip_segment_id: 6479489
           mailchimp_api_key: ${{ secrets.MAILCHIMP_API_KEY }}
-          draft: 'true'
+          draft: "true"
           ssh_key: ${{ secrets.ORY_BOT_SSH_KEY }}
 
   slack-approval-notification:
@@ -227,7 +229,7 @@ jobs:
           mailchimp_list_id: f605a41b53
           mailchmip_segment_id: 6479489
           mailchimp_api_key: ${{ secrets.MAILCHIMP_API_KEY }}
-          draft: 'false'
+          draft: "false"
           ssh_key: ${{ secrets.ORY_BOT_SSH_KEY }}
 
   buf:
@@ -242,10 +244,10 @@ jobs:
           go-version: 1.18
       - uses: actions/setup-node@v2
         with:
-          node-version: '15'
+          node-version: "15"
       - uses: arduino/setup-protoc@v1
         with:
-          version: '3.12.x'
+          version: "3.12.x"
       - name: Lint and Build
         run: make buf
         working-directory: current-repo
