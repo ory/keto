@@ -19,4 +19,8 @@ updates:
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: 'daily'
+  - package-ecosystem: 'docker'
+    directory: '/.docker'
+    schedule:
+      interval: 'daily'
