@@ -10,7 +10,7 @@
   "implements",
   "'Namespace'",
   "{",
-  "related",
+  "'related'",
   ":",
   "{",
   "'owners'",

@@ -20,6 +20,7 @@ type (
 		namespace  namespace   // current namespace
 		errors     []error     // errors encountered during parsing
 		fatal      bool        // parser encountered a fatal error
+		lookahead  *item       // lookahead token
 	}
 )
 
@@ -35,10 +36,29 @@ func Parse(input string) ([]namespace, []error) {
 	return p.parse()
 }
 
+func (p *parser) next() (item item) {
+	if p.lookahead != nil {
+		item = *p.lookahead
+		p.lookahead = nil
+	} else {
+		item = p.lexer.nextItem()
+	}
+	return
+}
+
+func (p *parser) peek() item {
+	if p.lookahead == nil {
+		i := p.lexer.nextItem()
+		p.lookahead = &i
+		return i
+	}
+	return *p.lookahead
+}
+
 func (p *parser) parse() ([]namespace, []error) {
 loop:
 	for !p.fatal {
-		switch item := p.lexer.nextItem(); item.Typ {
+		switch item := p.next(); item.Typ {
 		case itemEOF:
 			break loop
 		case itemError:
@@ -67,20 +87,25 @@ func (p *parser) expect(typ itemType) (value string) {
 	if p.fatal {
 		return
 	}
-	item := p.lexer.nextItem()
+	item := p.next()
 	if item.Typ != typ {
 		p.addFatal(item, "expected %d, got %d(%q)", typ, item.Typ, item.Val)
 		return
 	}
 	return item.Val
 }
+
+// match matches for the next tokens in the input. For string arguments, the
+// input token must match the given string exactly. For *string arguments, the
+// input token must be an identifier, and the value of the identifier will be
+// written to the *string.
 func (p *parser) match(tokens ...interface{}) (ok bool) {
 	if p.fatal {
 		return false
 	}
 
 	for _, token := range tokens {
-		item := p.lexer.nextItem()
+		item := p.next()
 		switch token := token.(type) {
 		case string:
 			if item.Val != token {
@@ -98,6 +123,30 @@ func (p *parser) match(tokens ...interface{}) (ok bool) {
 	return true
 }
 
+type itemPredicate func(item) bool
+
+func is(typ itemType) itemPredicate {
+	return func(item item) bool {
+		return item.Typ == typ
+	}
+}
+func hasValue(val string) itemPredicate {
+	return func(item item) bool {
+		return item.Val == val
+	}
+}
+
+// matchIf matches the tokens iff. the predicate is true.
+func (p *parser) matchIf(predicate itemPredicate, tokens ...interface{}) (ok bool) {
+	if p.fatal {
+		return false
+	}
+	if !predicate(p.peek()) {
+		return true
+	}
+	return p.match(tokens...)
+}
+
 // parseClass parses a class. The "class" token was already consumed.
 func (p *parser) parseClass() {
 	var name string
@@ -105,7 +154,7 @@ func (p *parser) parseClass() {
 	p.namespace = namespace{ns: ns{Name: name}}
 
 	for !p.fatal {
-		switch item := p.lexer.nextItem(); {
+		switch item := p.next(); {
 		case item.Typ == itemBraceRight:
 			p.namespaces = append(p.namespaces, p.namespace)
 			return
@@ -123,13 +172,13 @@ func (p *parser) parseClass() {
 func (p *parser) parseRelated() {
 	p.match(":", "{")
 	for !p.fatal {
-		switch item := p.lexer.nextItem(); item.Typ {
+		switch item := p.next(); item.Typ {
 		case itemBraceRight:
 			return
 		case itemIdentifier:
 			relation := item.Val
 			p.match(":")
-			switch item := p.lexer.nextItem(); item.Typ {
+			switch item := p.next(); item.Typ {
 			case itemIdentifier:
 			case itemParenLeft:
 				p.parseTypeUnion()
@@ -152,7 +201,7 @@ func (p *parser) parseTypeUnion() {
 		if identifier == "SubjectSet" {
 			p.match("<", any, ",", any, ">")
 		}
-		switch item := p.lexer.nextItem(); item.Typ {
+		switch item := p.next(); item.Typ {
 		case itemParenRight:
 			return
 		case itemTypeUnion:
@@ -165,7 +214,7 @@ func (p *parser) parseTypeUnion() {
 func (p *parser) parsePermits() {
 	p.match("=", "{")
 	for !p.fatal {
-		switch item := p.lexer.nextItem(); item.Typ {
+		switch item := p.next(); item.Typ {
 
 		case itemBraceRight:
 			return
@@ -173,24 +222,10 @@ func (p *parser) parsePermits() {
 		case itemIdentifier:
 			permission := item.Val
 			p.match(":", "(", "ctx")
-
-			// parse optional type annotation of 'ctx' argument
-			switch item := p.lexer.nextItem(); item.Typ {
-			case itemOperatorColon:
-				p.match("Context", ")")
-			case itemParenRight:
-			default:
-				p.addFatal(item, "expected ':' or ')', got %q", item.Val)
-			}
-
-			// parse optional return type annotation
-			switch item := p.lexer.nextItem(); item.Typ {
-			case itemOperatorColon:
-				p.match("boolean", "=>")
-			case itemOperatorArrow:
-			default:
-				p.addFatal(item, "expected ':' or '=>', got %q", item.Val)
-			}
+			p.matchIf(is(itemOperatorColon), ":", "Context")
+			p.match(")")
+			p.matchIf(is(itemOperatorColon), ":", "boolean")
+			p.match("=>")
 
 			relation := ast.Relation{Name: permission}
 			defer func() {
@@ -237,7 +272,7 @@ func (p *parser) parsePermits() {
 					)
 				}
 
-				switch item := p.lexer.nextItem(); item.Typ {
+				switch item := p.next(); item.Typ {
 				case itemOperatorOr:
 					continue permissionLoop
 
