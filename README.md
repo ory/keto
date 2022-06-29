@@ -14,7 +14,7 @@
 ---
 
 <p align="left">
-    <a href="https://circleci.com/gh/ory/keto/tree/master"><img src="https://circleci.com/gh/ory/keto.svg?style=shield" alt="Build Status"></a>
+    <a href="https://github.com/ory/keto/actions/workflows/ci.yaml"><img src="https://github.com/ory/keto/actions/workflows/ci.yaml/badge.svg?branch=master&event=push" alt="CI Tasks for Ory keto"></a>
     <a href="https://coveralls.io/github/ory/keto?branch=master"> <img src="https://coveralls.io/repos/ory/keto/badge.svg?branch=master&service=github" alt="Coverage Status"></a>
     <a href="https://goreportcard.com/report/github.com/ory/keto"><img src="https://goreportcard.com/badge/github.com/ory/keto" alt="Go Report Card"></a>
     <a href="https://pkg.go.dev/github.com/ory/keto"><img src="https://pkg.go.dev/badge/www.github.com/ory/keto" alt="PkgGoDev"></a>
