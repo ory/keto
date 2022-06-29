@@ -174,6 +174,11 @@ gRPC relation-tuple-delta action enum names are prefixed with `ACTION_`
   ([07d0fbd](https://github.com/ory/keto/commit/07d0fbdacdf5442cd791d14089e5142071e92c6a))
 - Add reverse lookup indices ([#875](https://github.com/ory/keto/issues/875))
   ([25af263](https://github.com/ory/keto/commit/25af263827a16c4c4ed080644cd7b08a2851124a))
+- Add spec for namespace configs
+  ([3d61b1c](https://github.com/ory/keto/commit/3d61b1c8c15ab0dded6fff4e3fcddd9e7da54c43)):
+
+  Co-authored-by: hackerman <3372410+aeneasr@users.noreply.github.com>
+
 - Make sensitive log value redaction text configurable
   ([#860](https://github.com/ory/keto/issues/860))
   ([b8b1d81](https://github.com/ory/keto/commit/b8b1d81ee1574fdfd8bdac01ec2f9957f03df879))
