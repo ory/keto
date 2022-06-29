@@ -1,16 +1,16 @@
 {
-  "Document": [
+  "File": [
     {
-      "name": "owners"
-    },
-    {
-      "name": "editors"
+      "name": "parents"
     },
     {
       "name": "viewers"
     },
     {
-      "name": "parent"
+      "name": "owners"
+    },
+    {
+      "name": "siblings"
     },
     {
       "name": "rename",
@@ -42,6 +42,10 @@
         "children": [
           {
             "relation": "parents",
+            "computed_userset_relation": "viewers"
+          },
+          {
+            "relation": "parents",
             "computed_userset_relation": "view"
           },
           {
@@ -54,5 +58,33 @@
       }
     }
   ],
-  "User": null
+  "Folder": [
+    {
+      "name": "parents"
+    },
+    {
+      "name": "viewers"
+    },
+    {
+      "name": "view",
+      "rewrite": {
+        "set_operation": 0,
+        "children": [
+          {
+            "relation": "viewers"
+          }
+        ]
+      }
+    }
+  ],
+  "Group": [
+    {
+      "name": "members"
+    }
+  ],
+  "User": [
+    {
+      "name": "manager"
+    }
+  ]
 }

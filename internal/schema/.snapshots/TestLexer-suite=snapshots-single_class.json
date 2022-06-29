@@ -4,7 +4,7 @@
   "implements",
   "'Namespace'",
   "{",
-  "metadata",
+  "'metadata'",
   "=",
   "{",
   "id",

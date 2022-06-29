@@ -4,6 +4,8 @@ import (
 	"testing"
 
 	"github.com/ory/x/snapshotx"
+
+	"github.com/ory/keto/internal/namespace/ast"
 )
 
 func TestParser(t *testing.T) {
@@ -11,35 +13,53 @@ func TestParser(t *testing.T) {
 		cases := []struct {
 			name, input string
 		}{
-			{"full namespace", `
-class User implements Namespace {
-	metadata = {
-		id: "1"
-	}
-}
-class Document implements Namespace {
-	metadata = {
-		id: "2"
-	}
-
+			{"full example", `
+  class User implements Namespace {
 	related: {
-		owners: User[]
-		editors: User[]
-		viewers: User[]
-		parent: Document[]
+	  manager: User[]
 	}
-
+  }
+  
+  class Group implements Namespace {
+	related: {
+	  members: (User | Group)[]
+	}
+  }
+  
+  class Folder implements Namespace {
+	related: {
+	  parents: File[]
+	  viewers: (User | SubjectSet<Group, "members">)[]
+	}
+  
+	permits = {
+	  view: (ctx: Context): boolean => this.related.viewers.includes(ctx.subject),
+	}
+  }
+  
+  class File implements Namespace {
+	related: {
+	  parents: (File | Folder)[]
+	  viewers: (User | SubjectSet<Group, "members">)[]
+	  owners: (User | SubjectSet<Group, "members">)[]
+	  siblings: File[]
+	}
+  
 	permits = {
 	  view: (ctx: Context): boolean =>
-		this.related.parents.some(p => p.permits.view(ctx)) ||
-		  this.related.viewers.includes(ctx.subject) ||
-		  this.related.owners.includes(ctx.subject),
+		this.related.parents.traverse(p =>
+		  p.related.viewers.includes(ctx.subject)
+		) ||
+		this.related.parents.traverse(p => p.permits.view(ctx)) ||
+		this.related.viewers.includes(ctx.subject) ||
+		this.related.owners.includes(ctx.subject),
   
 	  edit: (ctx: Context) => this.related.owners.includes(ctx.subject),
   
-	  rename: (ctx: Context) => this.related.siblings.some(s => s.permits.edit(ctx))
+	  rename: (ctx: Context) =>
+		this.related.siblings.traverse(s => s.permits.edit(ctx)),
 	}
-}
+  }
 `},
 		}
 
@@ -52,7 +72,11 @@ class Document implements Namespace {
 					}
 				}
 				t.Logf("namespaces:\n%+v", ns)
-				snapshotx.SnapshotT(t, ns)
+				nsMap := make(map[string][]ast.Relation)
+				for _, n := range ns {
+					nsMap[n.Name] = n.Relations
+				}
+				snapshotx.SnapshotT(t, nsMap)
 			})
 		}
 	})

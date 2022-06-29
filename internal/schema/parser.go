@@ -2,7 +2,6 @@ package schema
 
 import (
 	"fmt"
-	"strconv"
 
 	internalNamespace "github.com/ory/keto/internal/namespace"
 	"github.com/ory/keto/internal/namespace/ast"
@@ -43,7 +42,7 @@ loop:
 		case itemEOF:
 			break loop
 		case itemError:
-			p.addFatal(fmt.Errorf("fatal: %s", item.Val))
+			p.addFatal(item, "fatal: %s", item.Val)
 		case itemKeywordClass:
 			p.parseClass()
 		}
@@ -52,11 +51,16 @@ loop:
 	return p.namespaces, p.errors
 }
 
-func (p *parser) addFatal(err error) {
-	p.errors = append(p.errors, err)
+func (p *parser) addFatal(item item, format string, a ...interface{}) {
+	p.addErr(item, format, a...)
 	p.fatal = true
 }
-func (p *parser) addErr(err error) {
+func (p *parser) addErr(item item, format string, a ...interface{}) {
+	err := &ParseError{
+		msg:  fmt.Sprintf(format, a...),
+		item: item,
+		p:    p,
+	}
 	p.errors = append(p.errors, err)
 }
 func (p *parser) expect(typ itemType) (value string) {
@@ -65,30 +69,33 @@ func (p *parser) expect(typ itemType) (value string) {
 	}
 	item := p.lexer.nextItem()
 	if item.Typ != typ {
-		p.addFatal(fmt.Errorf("expected %d, got %d(%q)", typ, item.Typ, item.Val))
+		p.addFatal(item, "expected %d, got %d(%q)", typ, item.Typ, item.Val)
 		return
 	}
 	return item.Val
 }
-func (p *parser) match(tokens ...interface{}) (matches map[string]string) {
-	matches = make(map[string]string)
+func (p *parser) match(tokens ...interface{}) (ok bool) {
+	if p.fatal {
+		return false
+	}
+
 	for _, token := range tokens {
 		item := p.lexer.nextItem()
 		switch token := token.(type) {
 		case string:
 			if item.Val != token {
-				p.addFatal(fmt.Errorf("expected %q, got %q", token, item.Val))
-				return
+				p.addFatal(item, "expected %q, got %q", token, item.Val)
+				return false
 			}
 		case *string:
 			if item.Typ != itemIdentifier && item.Typ != itemStringLiteral {
-				p.addFatal(fmt.Errorf("expected identifier, got %d", item.Typ))
-				return
+				p.addFatal(item, "expected identifier, got %s", item.Typ)
+				return false
 			}
 			*token = item.Val
 		}
 	}
-	return
+	return true
 }
 
 // parseClass parses a class. The "class" token was already consumed.
@@ -97,56 +104,67 @@ func (p *parser) parseClass() {
 	p.match(&name, "implements", "Namespace", "{")
 	p.namespace = namespace{ns: ns{Name: name}}
 
-	for {
-		switch item := p.lexer.nextItem(); item.Typ {
-		case itemBraceRight:
+	for !p.fatal {
+		switch item := p.lexer.nextItem(); {
+		case item.Typ == itemBraceRight:
 			p.namespaces = append(p.namespaces, p.namespace)
 			return
-		case itemKeywordMetadata:
-			p.parseMetadata()
-		case itemKeywordRelated:
+		case item.Val == "related":
 			p.parseRelated()
-		case itemKeywordPermits:
+		case item.Val == "permits":
 			p.parsePermits()
 		default:
-			p.addFatal(fmt.Errorf("expected 'metadata', 'permits' or 'related', got %q", item.Val))
+			p.addFatal(item, "expected 'permits' or 'related', got %q", item.Val)
 			return
 		}
 	}
 }
 
-func (p *parser) parseMetadata() {
-	var id string
-	p.match("=", "{", "id", ":", &id, "}")
-	if parsed, err := strconv.ParseUint(id, 10, 32); err != nil {
-		p.addErr(fmt.Errorf("invalid ID: %w", err))
-	} else {
-		p.namespace.ID = int32(parsed)
-	}
-}
-
 func (p *parser) parseRelated() {
 	p.match(":", "{")
-	for {
+	for !p.fatal {
 		switch item := p.lexer.nextItem(); item.Typ {
 		case itemBraceRight:
 			return
 		case itemIdentifier:
 			relation := item.Val
-			p.match(":", any, "[", "]")
+			p.match(":")
+			switch item := p.lexer.nextItem(); item.Typ {
+			case itemIdentifier:
+			case itemParenLeft:
+				p.parseTypeUnion()
+			}
 			p.namespace.Relations = append(p.namespace.Relations, ast.Relation{
 				Name: relation,
 			})
+			p.match("[", "]")
 		default:
-			p.addFatal(fmt.Errorf("expected identifier or '}', got %q", item.Val))
+			p.addFatal(item, "expected identifier or '}', got %q", item.Val)
 			return
+		}
+	}
+}
+
+func (p *parser) parseTypeUnion() {
+	for !p.fatal {
+		var identifier string
+		p.match(&identifier)
+		if identifier == "SubjectSet" {
+			p.match("<", any, ",", any, ">")
+		}
+		switch item := p.lexer.nextItem(); item.Typ {
+		case itemParenRight:
+			return
+		case itemTypeUnion:
+		default:
+			p.addFatal(item, "expected '|', got %q", item.Val)
 		}
 	}
 }
 
 func (p *parser) parsePermits() {
 	p.match("=", "{")
-	for {
+	for !p.fatal {
 		switch item := p.lexer.nextItem(); item.Typ {
 
 		case itemBraceRight:
@@ -162,7 +180,7 @@ func (p *parser) parsePermits() {
 				p.match("Context", ")")
 			case itemParenRight:
 			default:
-				p.addFatal(fmt.Errorf("expected ':' or ')', got %q", item.Val))
+				p.addFatal(item, "expected ':' or ')', got %q", item.Val)
 			}
 
 			// parse optional return type annotation
@@ -171,7 +189,7 @@ func (p *parser) parsePermits() {
 				p.match("boolean", "=>")
 			case itemOperatorArrow:
 			default:
-				p.addFatal(fmt.Errorf("expected ':' or '=>', got %q", item.Val))
+				p.addFatal(item, "expected ':' or '=>', got %q", item.Val)
 			}
 
 			relation := ast.Relation{Name: permission}
@@ -180,19 +198,27 @@ func (p *parser) parsePermits() {
 			}()
 
 		permissionLoop:
-			for {
+			for !p.fatal {
 				var relationName string
 				p.match("this", ".", "related", ".", &relationName, ".")
 
 				switch p.expect(itemIdentifier) {
-				case "some": // tuple to userset
-					var arg, obj, computedUsersetRel string
-					p.match(
-						"(", &arg, "=>",
-						&obj, ".", "permits", ".", &computedUsersetRel,
-						"(", "ctx", ")", ")")
+				case "traverse": // tuple to userset
+					var arg, obj, computedUsersetRel, verb string
+					if !p.match("(", &arg, "=>", &obj, ".", &verb) {
+						return
+					}
 					if arg != obj {
-						p.addErr(fmt.Errorf("unexpected object: %s", obj))
+						p.addErr(item, "unexpected object: %s", obj)
+					}
+					switch verb {
+					case "related":
+						p.match(".", &computedUsersetRel, ".", "includes", "(", "ctx", ".", "subject", ")", ")")
+					case "permits":
+						p.match(".", &computedUsersetRel, "(", "ctx", ")", ")")
+					default:
+						p.addFatal(item, "expected 'related' or 'permits', got %q", verb)
+						return
 					}
 					addRewrite(&relation,
 						ast.TupleToUserset{
@@ -201,7 +227,9 @@ func (p *parser) parsePermits() {
 						},
 					)
 				case "includes": // computed userset
-					p.match("(", "ctx", ".", "subject", ")")
+					if !p.match("(", "ctx", ".", "subject", ")") {
+						return
+					}
 					addRewrite(&relation,
 						ast.ComputedUserset{
 							Relation: relationName,
@@ -220,13 +248,13 @@ func (p *parser) parsePermits() {
 					return
 
 				default:
-					p.addFatal(fmt.Errorf("expected ',' or '||', got %q", item.Val))
+					p.addFatal(item, "expected ',' or '||', got %q", item.Val)
 					return
 				}
 			}
 
 		default:
-			p.addFatal(fmt.Errorf("expected identifier or '}', got %q", item.Val))
+			p.addFatal(item, "expected identifier or '}', got %q", item.Val)
 			return
 		}
 	}
