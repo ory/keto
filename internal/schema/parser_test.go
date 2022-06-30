@@ -47,8 +47,8 @@ func TestParser(t *testing.T) {
   
 	permits = {
 	  view: (ctx: Context): boolean =>
-		this.related.parents.traverse(p =>
-		  p.related.viewers.includes(ctx.subject)
+		this.related.parents.traverse((p) =>
+		  p.related.viewers.includes(ctx.subject),
 		) ||
 		this.related.parents.traverse(p => p.permits.view(ctx)) ||
 		this.related.viewers.includes(ctx.subject) ||
