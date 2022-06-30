@@ -199,6 +199,9 @@ func (p *parser) parseRelated() {
 			p.match(":")
 			switch item := p.next(); item.Typ {
 			case itemIdentifier:
+				if item.Val == "SubjectSet" {
+					p.matchSubjectSet()
+				}
 			case itemParenLeft:
 				p.parseTypeUnion()
 			}
@@ -213,12 +216,16 @@ func (p *parser) parseRelated() {
 	}
 }
 
+func (p *parser) matchSubjectSet() {
+	p.match("<", any, ",", any, ">")
+}
+
 func (p *parser) parseTypeUnion() {
 	for !p.fatal {
 		var identifier string
 		p.match(&identifier)
 		if identifier == "SubjectSet" {
-			p.match("<", any, ",", any, ">")
+			p.matchSubjectSet()
 		}
 		switch item := p.next(); item.Typ {
 		case itemParenRight:

@@ -7,18 +7,16 @@ import (
 	"github.com/ory/x/snapshotx"
 )
 
-func TestLexer(t *testing.T) {
-	t.Run("suite=snapshots", func(t *testing.T) {
-		cases := []struct{ name, input string }{
-			{"empty", ""},
-			{"single class", `
+var lexerTestCases = []struct{ name, input string }{
+	{"empty", ""},
+	{"single class", `
 class name implements Namespace {
 	metadata = {
 		id: "123"
 	}
 }
 `},
-			{"comments", `
+	{"comments", `
 /**/
 
 /** doc comment
@@ -32,7 +30,7 @@ class name implements Namespace {
 	*/
 }
 `},
-			{"two classes", `
+	{"two classes", `
 class user implements Namespace { }
 
 class document implements Namespace {
@@ -45,7 +43,7 @@ class document implements Namespace {
 	}
 }
 `},
-			{"full class", `
+	{"full class", `
 class File implements Namespace {
 	related: {
 	  parents: File[]
@@ -66,16 +64,18 @@ class File implements Namespace {
 	}
 }
 `},
-			{"subject sets", `
+	{"subject sets", `
 class X implements Namespace {
 	related: {
 		relation: SubjectSet<R, "someProp">[]
 	}
 }
 `},
-		}
+}
 
-		for _, tc := range cases {
+func TestLexer(t *testing.T) {
+	t.Run("suite=snapshots", func(t *testing.T) {
+		for _, tc := range lexerTestCases {
 			t.Run(tc.name, func(t *testing.T) {
 				l := Lex(tc.name, tc.input)
 				var items []string
