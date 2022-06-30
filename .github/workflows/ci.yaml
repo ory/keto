@@ -23,6 +23,8 @@ jobs:
           go-version: 1.18
       - name: Lint buf
         run: make buf-lint
+      - name: check prettier format
+        run: npm ci && npm run format:check
       - run: go list -json > go.list
       - name: Run nancy
         uses: sonatype-nexus-community/nancy-github-action@v1.0.2
