@@ -1,10 +1,9 @@
 //go:build go_mod_indirect_pins
 // +build go_mod_indirect_pins
 
-package _bin
+package main
 
 import (
-	_ "github.com/go-swagger/go-swagger/cmd/swagger"
 	_ "github.com/mattn/goveralls"
 	_ "golang.org/x/tools/cmd/goimports"
 
@@ -16,12 +15,4 @@ import (
 	_ "google.golang.org/protobuf/cmd/protoc-gen-go"
 
 	_ "github.com/pseudomuto/protoc-gen-doc/cmd/protoc-gen-doc"
-
-	_ "github.com/goreleaser/godownloader"
-
-	_ "github.com/ory/cli"
-
-	_ "github.com/anchore/grype"
-
-	_ "github.com/mikefarah/yq/v4"
 )
