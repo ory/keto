@@ -95,29 +95,64 @@ func (p *parser) expect(typ itemType) (value string) {
 	return item.Val
 }
 
-// match matches for the next tokens in the input. For string arguments, the
-// input token must match the given string exactly. For *string arguments, the
-// input token must be an identifier, and the value of the identifier will be
-// written to the *string.
-func (p *parser) match(tokens ...interface{}) (ok bool) {
+type matcher func(p *parser) (matched bool)
+
+// optional optionally matches the first argument of tokens in the input. If
+// matched, the tokens are consumed. If the first token matched, all other
+// tokens must match as well.
+func optional(tokens ...string) matcher {
+	return func(p *parser) bool {
+		if len(tokens) == 0 {
+			return true
+		}
+		first := tokens[0]
+		if p.peek().Val == first {
+			p.next()
+			for _, token := range tokens[1:] {
+				i := p.next()
+				if i.Val != token {
+					p.addFatal(i, "expected %q, got %q", token, i.Val)
+					return false
+				}
+			}
+		}
+		return true
+	}
+}
+
+// match matches for the next tokens in the input.
+//
+// A token is matched depending on the type:
+// For string arguments, the input token must match the given string exactly.
+// For *string arguments, the input token must be an identifier, and the value
+// of the identifier will be written to the *string.
+// For *item arguments, the input token will be written to the pointer.
+func (p *parser) match(tokens ...interface{}) (matched bool) {
 	if p.fatal {
 		return false
 	}
 
 	for _, token := range tokens {
-		item := p.next()
 		switch token := token.(type) {
 		case string:
-			if item.Val != token {
-				p.addFatal(item, "expected %q, got %q", token, item.Val)
+			i := p.next()
+			if i.Val != token {
+				p.addFatal(i, "expected %q, got %q", token, i.Val)
 				return false
 			}
 		case *string:
-			if item.Typ != itemIdentifier && item.Typ != itemStringLiteral {
-				p.addFatal(item, "expected identifier, got %s", item.Typ)
+			i := p.next()
+			if i.Typ != itemIdentifier && i.Typ != itemStringLiteral {
+				p.addFatal(i, "expected identifier, got %s", i.Typ)
 				return false
 			}
-			*token = item.Val
+			*token = i.Val
+		case *item:
+			*token = p.next()
+		case matcher:
+			if !token(p) {
+				return false
+			}
 		}
 	}
 	return true
@@ -130,19 +165,14 @@ func is(typ itemType) itemPredicate {
 		return item.Typ == typ
 	}
 }
-func hasValue(val string) itemPredicate {
-	return func(item item) bool {
-		return item.Val == val
-	}
-}
 
 // matchIf matches the tokens iff. the predicate is true.
-func (p *parser) matchIf(predicate itemPredicate, tokens ...interface{}) (ok bool) {
+func (p *parser) matchIf(predicate itemPredicate, tokens ...interface{}) (matched bool) {
 	if p.fatal {
 		return false
 	}
 	if !predicate(p.peek()) {
-		return true
+		return false
 	}
 	return p.match(tokens...)
 }
@@ -221,11 +251,10 @@ func (p *parser) parsePermits() {
 
 		case itemIdentifier:
 			permission := item.Val
-			p.match(":", "(", "ctx")
-			p.matchIf(is(itemOperatorColon), ":", "Context")
-			p.match(")")
-			p.matchIf(is(itemOperatorColon), ":", "boolean")
-			p.match("=>")
+			p.match(
+				":", "(", "ctx", optional(":", "Context"), ")",
+				optional(":", "boolean"), "=>",
+			)
 
 			relation := ast.Relation{Name: permission}
 			defer func() {
@@ -234,43 +263,26 @@ func (p *parser) parsePermits() {
 
 		permissionLoop:
 			for !p.fatal {
-				var relationName string
-				p.match("this", ".", "related", ".", &relationName, ".")
+				var (
+					name string
+					r    ast.Child
+					ok   bool
+				)
+				p.match("this", ".", "related", ".", &name, ".")
 
-				switch p.expect(itemIdentifier) {
-				case "traverse": // tuple to userset
-					var arg, obj, computedUsersetRel, verb string
-					if !p.match("(", &arg, "=>", &obj, ".", &verb) {
-						return
-					}
-					if arg != obj {
-						p.addErr(item, "unexpected object: %s", obj)
-					}
-					switch verb {
-					case "related":
-						p.match(".", &computedUsersetRel, ".", "includes", "(", "ctx", ".", "subject", ")", ")")
-					case "permits":
-						p.match(".", &computedUsersetRel, "(", "ctx", ")", ")")
-					default:
-						p.addFatal(item, "expected 'related' or 'permits', got %q", verb)
-						return
-					}
-					addRewrite(&relation,
-						ast.TupleToUserset{
-							Relation:                relationName,
-							ComputedUsersetRelation: computedUsersetRel,
-						},
-					)
-				case "includes": // computed userset
-					if !p.match("(", "ctx", ".", "subject", ")") {
-						return
-					}
-					addRewrite(&relation,
-						ast.ComputedUserset{
-							Relation: relationName,
-						},
-					)
+				switch item := p.next(); item.Val {
+				case "traverse":
+					ok, r = p.parseTupleToUserset(name)
+				case "includes":
+					ok, r = p.parseComputedUserset(name)
+				default:
+					p.addFatal(item, "expected 'traverse' or 'includes', got %q", item.Val)
+					return
 				}
+				if !ok {
+					return
+				}
+				addRewrite(&relation, r)
 
 				switch item := p.next(); item.Typ {
 				case itemOperatorOr:
@@ -293,6 +305,48 @@ func (p *parser) parsePermits() {
 			return
 		}
 	}
+}
+
+func (p *parser) parseTupleToUserset(relation string) (ok bool, rewrite ast.Child) {
+	var (
+		usersetRel string
+		arg, verb  item
+	)
+	if !p.match("(") {
+		return false, nil
+	}
+
+	switch {
+	case p.matchIf(is(itemParenLeft), "(", &arg, ")"):
+	case p.match(&arg):
+	default:
+		return false, nil
+	}
+	p.match("=>", arg.Val, ".", &verb)
+
+	switch verb.Val {
+	case "related":
+		p.match(
+			".", &usersetRel, ".", "includes", "(", "ctx", ".", "subject",
+			optional(","), ")", optional(","), ")",
+		)
+	case "permits":
+		p.match(".", &usersetRel, "(", "ctx", ")", ")")
+	default:
+		p.addFatal(verb, "expected 'related' or 'permits', got %q", verb)
+		return false, nil
+	}
+	return true, ast.TupleToUserset{
+		Relation:                relation,
+		ComputedUsersetRelation: usersetRel,
+	}
+}
+
+func (p *parser) parseComputedUserset(relation string) (ok bool, rewrite ast.Child) {
+	if !p.match("(", "ctx", ".", "subject", ")") {
+		return false, nil
+	}
+	return true, ast.ComputedUserset{Relation: relation}
 }
 
 func addRewrite(r *ast.Relation, child ast.Child) {
