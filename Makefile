@@ -60,7 +60,7 @@ docker:
 
 # Generates the SDKs
 .PHONY: sdk
-sdk: tools/go-swagger tools/ory node_modules
+sdk: tools/go-swagger tools/cli node_modules
 		rm -rf internal/httpclient internal/httpclient-next
 		swagger generate spec -m -o spec/swagger.json \
 			-c github.com/ory/keto \
