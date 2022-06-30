@@ -37,9 +37,10 @@ node_modules: package.json package-lock.json Makefile
 tools/brew:
 		./scripts/install-brew.sh
 
-.PHONY: tools/clidoc
-tools/clidoc:
-		go build -o .bin/gobin/clidoc ./cmd/clidoc/.
+# this is not using the tools/* prefix, as a github action has hardcoded paths for this
+.PHONY: .bin/clidoc
+.bin/clidoc:
+		go build -o .bin/clidoc ./cmd/clidoc/.
 
 docs/cli: tools/clidoc
 		clidoc .
