@@ -14,7 +14,8 @@ GO_DEPENDENCIES = github.com/go-swagger/go-swagger/cmd/swagger \
 				  github.com/pseudomuto/protoc-gen-doc/cmd/protoc-gen-doc \
 				  github.com/ory/cli \
 				  github.com/anchore/grype \
-				  golang.org/x/tools/cmd/stringer
+				  golang.org/x/tools/cmd/stringer \
+				  github.com/mdempsky/go114-fuzz-build
 
 define make-go-dependency
   # go install is responsible for not re-building when the code hasn't changed
@@ -93,7 +94,7 @@ build:
 # Generate APIs and client stubs from the definitions
 #
 .PHONY: buf-gen
-buf-gen: .bin/buf .bin/protoc-gen-go .bin/protoc-gen-go-grpc .bin/protoc-gen-doc node_modules
+buf-gen: .bin/buf .bin/protoc-gen-go .bin/protoc-gen-go-grpc .bin/protoc-gen-doc node_modules		
 		buf generate \
 		&& \
 		echo "All code was generated successfully!"
@@ -127,8 +128,14 @@ test-docs-samples:
 
 .PHONY: fuzz-test
 fuzz-test:
-		go test -tags=sqlite -fuzz=FuzzParser -fuzztime=30s ./internal/schema
+		go test -tags=sqlite -fuzz=FuzzParser -fuzztime=10s ./internal/schema
 
+.PHONY: libfuzzer-fuzz-test
+libfuzzer-fuzz-test: .bin/go114-fuzz-build
+		mkdir -p .fuzzer
+		.bin/go114-fuzz-build -o ./.fuzzer/parser.a ./internal/schema
+		clang -fsanitize=fuzzer ./.fuzzer/parser.a -o ./.fuzzer/parser
+		./.fuzzer/parser -timeout=1 -max_total_time=10 -use_value_profile
 
 .PHONY: cve-scan
 cve-scan: docker .bin/grype
