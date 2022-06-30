@@ -250,7 +250,10 @@ jobs:
         with:
           version: "3.12.x"
       - name: Lint and Build
-        run: make buf
+        run: |
+          make tools/buf tools/protoc-gen-go tools/protoc-gen-go-grpc tools/protoc-gen-doc node_modules
+          buf lint
+          buf generate
         working-directory: current-repo
       - name: Format Docs (required because buf generates the proto docs)
         run: |
