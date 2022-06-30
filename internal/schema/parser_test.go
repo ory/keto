@@ -8,12 +8,10 @@ import (
 	"github.com/ory/keto/internal/namespace/ast"
 )
 
-func TestParser(t *testing.T) {
-	t.Run("suite=snapshots", func(t *testing.T) {
-		cases := []struct {
-			name, input string
-		}{
-			{"full example", `
+var parserTestCases = []struct {
+	name, input string
+}{
+	{"full example", `
   class User implements Namespace {
 	related: {
 	  manager: User[]
@@ -29,7 +27,7 @@ func TestParser(t *testing.T) {
   class Folder implements Namespace {
 	related: {
 	  parents: File[]
-	  viewers: (User | SubjectSet<Group, "members">)[]
+	  viewers: SubjectSet<Group, "members">[]
 	}
   
 	permits = {
@@ -61,9 +59,11 @@ func TestParser(t *testing.T) {
 	}
   }
 `},
-		}
+}
 
-		for _, tc := range cases {
+func TestParser(t *testing.T) {
+	t.Run("suite=snapshots", func(t *testing.T) {
+		for _, tc := range parserTestCases {
 			t.Run(tc.name, func(t *testing.T) {
 				ns, errs := Parse(tc.input)
 				if len(errs) > 0 {
@@ -79,5 +79,18 @@ func TestParser(t *testing.T) {
 				snapshotx.SnapshotT(t, nsMap)
 			})
 		}
+	})
+}
+
+func FuzzParser(f *testing.F) {
+	for _, tc := range lexerTestCases {
+		f.Add(tc.input)
+	}
+	for _, tc := range parserTestCases {
+		f.Add(tc.input)
+	}
+
+	f.Fuzz(func(_ *testing.T, input string) {
+		Parse(input)
 	})
 }
