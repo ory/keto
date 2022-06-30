@@ -1,4 +1,5 @@
-*
-!go.mod
-!go.sum
-!indirect_pins.go
+brew
+gobin/*
+!gobin/go.mod
+!gobin/go.sum
+!gobin/indirect_pins.go
