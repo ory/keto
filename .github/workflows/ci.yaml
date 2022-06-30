@@ -73,8 +73,8 @@ jobs:
           go-version: 1.18
       - name: Prepare Dependencies
         run: |
-          make .bin/goveralls
-          make .bin/go-acc
+          make tools/goveralls
+          make tools/go-acc
       - name: Test proto package
         run: |
           cd proto
@@ -82,10 +82,10 @@ jobs:
           go test ./...
       - name: Test Keto
         run:
-          .bin/go-acc --ignore "internal/httpclient,internal/httpclient-next" -o
+          .bin/gobin/go-acc --ignore "internal/httpclient,internal/httpclient-next" -o
           coverage.txt ./... -- -tags sqlite
       - run: |
-          .bin/goveralls -service=github -coverprofile=coverage.txt
+          .bin/gobin/goveralls -service=github -coverprofile=coverage.txt
         env:
           COVERALLS_TOKEN: ${{ github.token }}
 
