@@ -83,17 +83,6 @@ func (p *parser) addErr(item item, format string, a ...interface{}) {
 	}
 	p.errors = append(p.errors, err)
 }
-func (p *parser) expect(typ itemType) (value string) {
-	if p.fatal {
-		return
-	}
-	item := p.next()
-	if item.Typ != typ {
-		p.addFatal(item, "expected %d, got %d(%q)", typ, item.Typ, item.Val)
-		return
-	}
-	return item.Val
-}
 
 type matcher func(p *parser) (matched bool)
 
