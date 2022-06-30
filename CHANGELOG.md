@@ -5,7 +5,7 @@
 
 **Table of Contents**
 
-- [0.0.0 (2022-06-29)](#000-2022-06-29)
+- [0.0.0 (2022-06-30)](#000-2022-06-30)
   - [Breaking Changes](#breaking-changes)
     - [Bug Fixes](#bug-fixes)
     - [Code Refactoring](#code-refactoring)
@@ -126,7 +126,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.8.0-alpha.2...v0.0.0) (2022-06-29)
+# [0.0.0](https://github.com/ory/keto/compare/v0.8.0-alpha.2...v0.0.0) (2022-06-30)
 
 ## Breaking Changes
 
@@ -163,6 +163,8 @@ gRPC relation-tuple-delta action enum names are prefixed with `ACTION_`
   ([e89fbb0](https://github.com/ory/keto/commit/e89fbb0c2a243e7da85d3bc5cfa64059cde39249))
 - Improve wording in README ([#881](https://github.com/ory/keto/issues/881))
   ([fd6af60](https://github.com/ory/keto/commit/fd6af604daab42968d0fe6fa75c50273983394b4))
+- Shorten CI status badge ([#928](https://github.com/ory/keto/issues/928))
+  ([81d880d](https://github.com/ory/keto/commit/81d880d460a98787dd41b0e2950c35cc1924d95c))
 - **version schema:** Require version or fall back to latest
   ([#863](https://github.com/ory/keto/issues/863))
   ([5306c93](https://github.com/ory/keto/commit/5306c93e513daf6aa61490fb590140a53c293d97))
