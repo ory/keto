@@ -12,9 +12,9 @@ GO_DEPENDENCIES = golang.org/x/tools/cmd/goimports \
 				  github.com/pseudomuto/protoc-gen-doc/cmd/protoc-gen-doc
 
 BREW_DEPENDENCIES = protobuf@3.19 \
-					go-swagger/go-swagger/go-swagger \
-					anchore/grype/grype \
-					ory/tap/cli \
+					go-swagger@0.29.0 \
+					grype@0.40.1 \
+					cli@0.1.35 \
 					yq@4
 
 define make-go-dependency
@@ -26,7 +26,7 @@ $(foreach dep, $(GO_DEPENDENCIES), $(eval $(call make-go-dependency,$(dep),$(not
 
 define make-brew-dependency
   tools/$(firstword $(subst @, ,$(notdir $1))): tools/brew Makefile
-		brew install $1
+		HOMEBREW_NO_AUTO_UPDATE=1 brew install keto/tools/$1
 endef
 $(foreach dep, $(BREW_DEPENDENCIES), $(eval $(call make-brew-dependency,$(dep))))
 
