@@ -3,3 +3,4 @@ gobin/*
 !gobin/go.mod
 !gobin/go.sum
 !gobin/indirect_pins.go
+clidoc
