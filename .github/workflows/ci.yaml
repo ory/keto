@@ -1,4 +1,4 @@
-name: CI Tasks for Ory Keto
+name: CI
 on:
   push:
     branches:
