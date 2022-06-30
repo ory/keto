@@ -259,26 +259,10 @@ func (p *parser) parsePermits() {
 
 		permissionLoop:
 			for !p.fatal {
-				var (
-					name string
-					r    ast.Child
-					ok   bool
-				)
-				p.match("this", ".", "related", ".", &name, ".")
-
-				switch item := p.next(); item.Val {
-				case "traverse":
-					ok, r = p.parseTupleToUserset(name)
-				case "includes":
-					ok, r = p.parseComputedUserset(name)
-				default:
-					p.addFatal(item, "expected 'traverse' or 'includes', got %q", item.Val)
+				p.parsePermissionExpression(&relation)
+				if p.fatal {
 					return
 				}
-				if !ok {
-					return
-				}
-				addRewrite(&relation, r)
 
 				switch item := p.next(); item.Typ {
 				case itemOperatorOr:
@@ -301,6 +285,31 @@ func (p *parser) parsePermits() {
 			return
 		}
 	}
+}
+
+func (p *parser) parsePermissionExpression(relation *ast.Relation) {
+	var (
+		name string
+		r    ast.Child
+		ok   bool
+	)
+	if !p.match("this", ".", "related", ".", &name, ".") {
+		return
+	}
+
+	switch item := p.next(); item.Val {
+	case "traverse":
+		ok, r = p.parseTupleToUserset(name)
+	case "includes":
+		ok, r = p.parseComputedUserset(name)
+	default:
+		p.addFatal(item, "expected 'traverse' or 'includes', got %q", item.Val)
+		return
+	}
+	if !ok {
+		return
+	}
+	addRewrite(relation, r)
 }
 
 func (p *parser) parseTupleToUserset(relation string) (ok bool, rewrite ast.Child) {
