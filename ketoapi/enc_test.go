@@ -156,7 +156,7 @@ func TestRelationTuple(t *testing.T) {
 
 	t.Run("case=proto decoding", func(t *testing.T) {
 		for i, tc := range []struct {
-			proto    tupleData
+			proto    TupleData
 			expected *RelationTuple
 			err      error
 		}{

@@ -7,7 +7,7 @@ import (
 )
 
 type (
-	tupleData interface {
+	TupleData interface {
 		GetSubject() *rts.Subject
 		GetObject() string
 		GetNamespace() string
@@ -21,7 +21,7 @@ type (
 	}
 )
 
-func (r *RelationTuple) FromDataProvider(d tupleData) (*RelationTuple, error) {
+func (r *RelationTuple) FromDataProvider(d TupleData) (*RelationTuple, error) {
 	switch s := d.GetSubject().GetRef().(type) {
 	case nil:
 		return nil, errors.WithStack(ErrNilSubject)

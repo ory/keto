@@ -11,8 +11,7 @@ GO_DEPENDENCIES = golang.org/x/tools/cmd/goimports \
 				  google.golang.org/grpc/cmd/protoc-gen-go-grpc \
 				  github.com/pseudomuto/protoc-gen-doc/cmd/protoc-gen-doc
 
-BREW_DEPENDENCIES = protobuf@3.19 \
-					go-swagger@0.29.0 \
+BREW_DEPENDENCIES = go-swagger@0.29.0 \
 					grype@0.40.1 \
 					cli@0.1.35 \
 					yq@4
@@ -29,6 +28,9 @@ define make-brew-dependency
 		HOMEBREW_NO_AUTO_UPDATE=1 brew install keto/tools/$1
 endef
 $(foreach dep, $(BREW_DEPENDENCIES), $(eval $(call make-brew-dependency,$(dep))))
+
+tools/protobuf: tools/brew Makefile
+		HOMEBREW_NO_AUTO_UPDATE=1 brew install protobuf@3.19
 
 node_modules: package.json package-lock.json Makefile
 		npm ci

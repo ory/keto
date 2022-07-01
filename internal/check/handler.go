@@ -246,7 +246,14 @@ func (h *Handler) postCheck(ctx context.Context, body io.Reader, query url.Value
 }
 
 func (h *Handler) Check(ctx context.Context, req *rts.CheckRequest) (*rts.CheckResponse, error) {
-	tuple, err := (&ketoapi.RelationTuple{}).FromDataProvider(req)
+	var src ketoapi.TupleData
+	if req.Tuple != nil {
+		src = req.Tuple
+	} else {
+		src = req
+	}
+
+	tuple, err := (&ketoapi.RelationTuple{}).FromDataProvider(src)
 	if err != nil {
 		return nil, err
 	}

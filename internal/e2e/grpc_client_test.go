@@ -112,16 +112,16 @@ func (g *grpcClient) check(t require.TestingT, r *ketoapi.RelationTuple) bool {
 	c := rts.NewCheckServiceClient(g.readConn(t))
 
 	req := &rts.CheckRequest{
-		Query: &rts.RelationQuery{
-			Namespace: &r.Namespace,
-			Object:    &r.Object,
-			Relation:  &r.Relation,
+		Tuple: &rts.RelationTuple{
+			Namespace: r.Namespace,
+			Object:    r.Object,
+			Relation:  r.Relation,
 		},
 	}
 	if r.SubjectID != nil {
-		req.Query.Subject = rts.NewSubjectID(*r.SubjectID)
+		req.Tuple.Subject = rts.NewSubjectID(*r.SubjectID)
 	} else {
-		req.Query.Subject = rts.NewSubjectSet(r.SubjectSet.Namespace, r.SubjectSet.Object, r.SubjectSet.Relation)
+		req.Tuple.Subject = rts.NewSubjectSet(r.SubjectSet.Namespace, r.SubjectSet.Object, r.SubjectSet.Relation)
 	}
 	resp, err := c.Check(g.ctx, req)
 	require.NoError(t, err)
