@@ -44,7 +44,9 @@ func (p *parser) next() (item item) {
 		item = *p.lookahead
 		p.lookahead = nil
 	} else {
-		item = p.lexer.nextItem()
+		// Get next non-comment token.
+		for item = p.lexer.nextItem(); item.Typ == itemComment; item = p.lexer.nextItem() {
+		}
 	}
 	return
 }
