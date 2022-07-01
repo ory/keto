@@ -26,15 +26,15 @@ var namespaces = []*namespace.Namespace{
 			{
 				Name: "editor",
 				UsersetRewrite: &ast.UsersetRewrite{
-					Children: ast.Children{ast.ComputedUserset{
+					Children: ast.Children{&ast.ComputedUserset{
 						Relation: "owner"}}}},
 			{
 				Name: "viewer",
 				UsersetRewrite: &ast.UsersetRewrite{
 					Children: ast.Children{
-						ast.ComputedUserset{
+						&ast.ComputedUserset{
 							Relation: "editor"},
-						ast.TupleToUserset{
+						&ast.TupleToUserset{
 							Relation:                "parent",
 							ComputedUsersetRelation: "viewer"}}}},
 		}},
@@ -53,26 +53,26 @@ var namespaces = []*namespace.Namespace{
 			{Name: "viewer",
 				UsersetRewrite: &ast.UsersetRewrite{
 					Children: ast.Children{
-						ast.TupleToUserset{Relation: "owner", ComputedUsersetRelation: "member"}}}},
+						&ast.TupleToUserset{Relation: "owner", ComputedUsersetRelation: "member"}}}},
 			{Name: "owner",
 				UsersetRewrite: &ast.UsersetRewrite{
 					Children: ast.Children{
-						ast.TupleToUserset{Relation: "owner", ComputedUsersetRelation: "member"}}}},
+						&ast.TupleToUserset{Relation: "owner", ComputedUsersetRelation: "member"}}}},
 			{Name: "read",
 				UsersetRewrite: &ast.UsersetRewrite{
 					Children: ast.Children{
-						ast.ComputedUserset{Relation: "viewer"},
-						ast.ComputedUserset{Relation: "owner"}}}},
+						&ast.ComputedUserset{Relation: "viewer"},
+						&ast.ComputedUserset{Relation: "owner"}}}},
 			{Name: "update",
 				UsersetRewrite: &ast.UsersetRewrite{
 					Children: ast.Children{
-						ast.ComputedUserset{Relation: "owner"}}}},
+						&ast.ComputedUserset{Relation: "owner"}}}},
 			{Name: "delete",
 				UsersetRewrite: &ast.UsersetRewrite{
 					Operation: ast.SetOperationIntersection,
 					Children: ast.Children{
-						ast.ComputedUserset{Relation: "owner"},
-						ast.TupleToUserset{
+						&ast.ComputedUserset{Relation: "owner"},
+						&ast.TupleToUserset{
 							Relation:                "level",
 							ComputedUsersetRelation: "member"}}}},
 		}},
@@ -85,8 +85,8 @@ var namespaces = []*namespace.Namespace{
 				UsersetRewrite: &ast.UsersetRewrite{
 					Operation: ast.SetOperationDifference,
 					Children: ast.Children{
-						ast.ComputedUserset{Relation: "allow"},
-						ast.ComputedUserset{Relation: "deny"}}}}}},
+						&ast.ComputedUserset{Relation: "allow"},
+						&ast.ComputedUserset{Relation: "deny"}}}}}},
 }
 
 func insertFixtures(t *testing.T, m relationtuple.Manager, tuples []string) {
