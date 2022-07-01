@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/ory/x/snapshotx"
+	"github.com/stretchr/testify/assert"
 
 	"github.com/ory/keto/internal/namespace/ast"
 )
@@ -96,4 +97,51 @@ func FuzzParser(f *testing.F) {
 	f.Fuzz(func(_ *testing.T, input string) {
 		Parse(input)
 	})
+}
+
+func Test_simplify(t *testing.T) {
+	testCases := []struct {
+		name            string
+		input, expected *ast.UsersetRewrite
+	}{
+		{"empty", nil, nil},
+		{
+			name: "merge all unions",
+			input: &ast.UsersetRewrite{
+				Operation: ast.SetOperationUnion,
+				Children: ast.Children{
+					&ast.ComputedUserset{Relation: "A"},
+					&ast.UsersetRewrite{
+						Children: ast.Children{
+							&ast.ComputedUserset{Relation: "B"},
+							&ast.UsersetRewrite{
+								Children: ast.Children{
+									&ast.ComputedUserset{Relation: "C"},
+									&ast.UsersetRewrite{
+										Children: ast.Children{
+											&ast.ComputedUserset{Relation: "D"},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			expected: &ast.UsersetRewrite{
+				Children: ast.Children{
+					&ast.ComputedUserset{Relation: "A"},
+					&ast.ComputedUserset{Relation: "B"},
+					&ast.ComputedUserset{Relation: "C"},
+					&ast.ComputedUserset{Relation: "D"},
+				},
+			},
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			assert.Equal(t, tc.expected, simplifyExpression(tc.input))
+		})
+	}
 }
