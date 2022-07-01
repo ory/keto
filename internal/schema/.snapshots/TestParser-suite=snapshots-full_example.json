@@ -13,13 +13,39 @@
       "name": "siblings"
     },
     {
-      "name": "rename",
+      "name": "view",
       "rewrite": {
         "set_operation": 0,
         "children": [
           {
-            "relation": "siblings",
-            "computed_userset_relation": "edit"
+            "set_operation": 1,
+            "children": [
+              {
+                "set_operation": 0,
+                "children": [
+                  {
+                    "relation": "parents",
+                    "computed_userset_relation": "viewers"
+                  }
+                ]
+              },
+              {
+                "relation": "parents",
+                "computed_userset_relation": "view"
+              }
+            ]
+          },
+          {
+            "relation": "viewers"
+          },
+          {
+            "relation": "viewers"
+          },
+          {
+            "relation": "viewers"
+          },
+          {
+            "relation": "owners"
           }
         ]
       }
@@ -36,23 +62,13 @@
       }
     },
     {
-      "name": "view",
+      "name": "rename",
       "rewrite": {
         "set_operation": 0,
         "children": [
           {
-            "relation": "parents",
-            "computed_userset_relation": "viewers"
-          },
-          {
-            "relation": "parents",
-            "computed_userset_relation": "view"
-          },
-          {
-            "relation": "viewers"
-          },
-          {
-            "relation": "owners"
+            "relation": "siblings",
+            "computed_userset_relation": "edit"
           }
         ]
       }
