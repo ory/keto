@@ -245,16 +245,16 @@ func (e *Engine) checkUsersetRewrite(
 
 	for _, child := range rewrite.Children {
 		switch c := child.(type) {
-		case ast.TupleToUserset:
+		case *ast.TupleToUserset:
 			checks = append(checks, checkgroup.WithEdge(checkgroup.Edge{
 				Tuple: *r,
 				Type:  expand.TupeToUserset,
-			}, e.checkTupleToUserset(ctx, r, &c, restDepth)))
-		case ast.ComputedUserset:
+			}, e.checkTupleToUserset(ctx, r, c, restDepth)))
+		case *ast.ComputedUserset:
 			checks = append(checks, checkgroup.WithEdge(checkgroup.Edge{
 				Tuple: *r,
 				Type:  expand.ComputedUserset,
-			}, e.checkComputedUserset(ctx, r, &c, restDepth)))
+			}, e.checkComputedUserset(ctx, r, c, restDepth)))
 		}
 	}
 

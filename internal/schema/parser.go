@@ -21,8 +21,11 @@ type (
 		errors     []error     // errors encountered during parsing
 		fatal      bool        // parser encountered a fatal error
 		lookahead  *item       // lookahead token
+		checks     []typeCheck // checks to perform on the namespace
 	}
 )
+
+type typeCheck func() error
 
 var (
 	empty = ""
@@ -39,12 +42,22 @@ func Parse(input string) ([]namespace, []error) {
 	return p.parse()
 }
 
+func (p *parser) typeCheck() {
+	for _, check := range p.checks {
+		if err := check(); err != nil {
+			p.errors = append(p.errors, err)
+		}
+	}
+}
+
 func (p *parser) next() (item item) {
 	if p.lookahead != nil {
 		item = *p.lookahead
 		p.lookahead = nil
 	} else {
-		item = p.lexer.nextItem()
+		// Get next non-comment token.
+		for item = p.lexer.nextItem(); item.Typ == itemComment; item = p.lexer.nextItem() {
+		}
 	}
 	return
 }
@@ -70,6 +83,8 @@ loop:
 			p.parseClass()
 		}
 	}
+
+	p.typeCheck()
 
 	return p.namespaces, p.errors
 }

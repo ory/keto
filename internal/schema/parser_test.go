@@ -44,6 +44,7 @@ var parserTestCases = []struct {
 	  siblings: File[]
 	}
   
+	// Some comment
 	permits = {
 	  view: (ctx: Context): boolean =>
 	    (
