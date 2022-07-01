@@ -82,9 +82,11 @@ jobs:
           go test ./...
       - name: Test Keto
         run: |
-          .bin/gobin/go-acc --ignore "internal/httpclient,internal/httpclient-next" -o coverage.txt ./... -- -tags sqlite
+          source scripts/local-dependencies.sh
+          go-acc --ignore "internal/httpclient,internal/httpclient-next" -o coverage.txt ./... -- -tags sqlite
       - run: |
-          .bin/gobin/goveralls -service=github -coverprofile=coverage.txt
+          source scripts/local-dependencies.sh
+          goveralls -service=github -coverprofile=coverage.txt
         env:
           COVERALLS_TOKEN: ${{ github.token }}
 
@@ -248,10 +250,11 @@ jobs:
           node-version: "15"
       - uses: arduino/setup-protoc@v1
         with:
-          version: "3.12.x"
+          version: "3.19.x"
       - name: Lint and Build
         run: |
           make tools/buf tools/protoc-gen-go tools/protoc-gen-go-grpc tools/protoc-gen-doc node_modules
+          source scripts/local-dependencies.sh
           buf lint
           buf generate
         working-directory: current-repo
