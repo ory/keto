@@ -1,0 +1,12 @@
+[
+  {
+    "name": "dependencies",
+    "color": "0366d6",
+    "description": "Pull requests that update a dependency file"
+  },
+  {
+    "name": "docker",
+    "color": "21ceff",
+    "description": "Pull requests that update Docker code"
+  }
+]

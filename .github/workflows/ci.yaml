@@ -1,10 +1,10 @@
-name: CI Tasks for Ory Keto
+name: CI
 on:
   push:
     branches:
       - master
     tags:
-      - '*'
+      - "*"
   pull_request:
 
 # Cancel in-progress runs in current workflow.
@@ -23,6 +23,8 @@ jobs:
           go-version: 1.18
       - name: Lint buf
         run: make buf-lint
+      - name: check prettier format
+        run: npm ci && npm run format:check
       - run: go list -json > go.list
       - name: Run nancy
         uses: sonatype-nexus-community/nancy-github-action@v1.0.2
@@ -71,17 +73,20 @@ jobs:
           go-version: 1.18
       - name: Prepare Dependencies
         run: |
-          make .bin/goveralls
-          make .bin/go-acc
+          make tools/goveralls
+          make tools/go-acc
       - name: Test proto package
         run: |
           cd proto
           go mod tidy
           go test ./...
       - name: Test Keto
-        run: .bin/go-acc --ignore "internal/httpclient,internal/httpclient-next" -o coverage.txt ./... -- -tags sqlite
+        run: |
+          source scripts/local-dependencies.sh
+          go-acc --ignore "internal/httpclient,internal/httpclient-next" -o coverage.txt ./... -- -tags sqlite
       - run: |
-          .bin/goveralls -service=github -coverprofile=coverage.txt
+          source scripts/local-dependencies.sh
+          goveralls -service=github -coverprofile=coverage.txt
         env:
           COVERALLS_TOKEN: ${{ github.token }}
 
@@ -200,7 +205,7 @@ jobs:
           mailchimp_list_id: f605a41b53
           mailchmip_segment_id: 6479489
           mailchimp_api_key: ${{ secrets.MAILCHIMP_API_KEY }}
-          draft: 'true'
+          draft: "true"
           ssh_key: ${{ secrets.ORY_BOT_SSH_KEY }}
 
   slack-approval-notification:
@@ -227,7 +232,7 @@ jobs:
           mailchimp_list_id: f605a41b53
           mailchmip_segment_id: 6479489
           mailchimp_api_key: ${{ secrets.MAILCHIMP_API_KEY }}
-          draft: 'false'
+          draft: "false"
           ssh_key: ${{ secrets.ORY_BOT_SSH_KEY }}
 
   buf:
@@ -242,12 +247,16 @@ jobs:
           go-version: 1.18
       - uses: actions/setup-node@v2
         with:
-          node-version: '15'
+          node-version: "15"
       - uses: arduino/setup-protoc@v1
         with:
-          version: '3.12.x'
+          version: "3.19.x"
       - name: Lint and Build
-        run: make buf
+        run: |
+          make tools/buf tools/protoc-gen-go tools/protoc-gen-go-grpc tools/protoc-gen-doc node_modules
+          source scripts/local-dependencies.sh
+          buf lint
+          buf generate
         working-directory: current-repo
       - name: Format Docs (required because buf generates the proto docs)
         run: |

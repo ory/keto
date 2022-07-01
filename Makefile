@@ -1,46 +1,52 @@
 SHELL=/bin/bash -o pipefail
 
-export PATH := .bin:${PATH}
+export PATH := .bin/gobin:.bin/brew/bin:.bin/brew/sbin:${PATH}
 export PWD := $(shell pwd)
 
-GO_DEPENDENCIES = github.com/go-swagger/go-swagger/cmd/swagger \
-				  golang.org/x/tools/cmd/goimports \
+GO_DEPENDENCIES = golang.org/x/tools/cmd/goimports \
 				  github.com/mattn/goveralls \
 				  github.com/ory/go-acc \
 				  github.com/bufbuild/buf/cmd/buf \
 				  google.golang.org/protobuf/cmd/protoc-gen-go \
 				  google.golang.org/grpc/cmd/protoc-gen-go-grpc \
-				  github.com/goreleaser/godownloader \
-				  github.com/pseudomuto/protoc-gen-doc/cmd/protoc-gen-doc \
-				  github.com/ory/cli \
-				  github.com/anchore/grype
+				  github.com/pseudomuto/protoc-gen-doc/cmd/protoc-gen-doc
+
+BREW_DEPENDENCIES = protobuf@3.19 \
+					go-swagger@0.29.0 \
+					grype@0.40.1 \
+					cli@0.1.35 \
+					yq@4
 
 define make-go-dependency
   # go install is responsible for not re-building when the code hasn't changed
-  .bin/$2: .bin/go.mod .bin/go.sum Makefile
-		cd .bin; GOBIN=$(PWD)/.bin/ go install $1
+  tools/$2: .bin/gobin/go.mod .bin/gobin/go.sum Makefile
+		cd .bin/gobin; GOBIN=$(PWD)/.bin/gobin go install $1
 endef
 $(foreach dep, $(GO_DEPENDENCIES), $(eval $(call make-go-dependency,$(dep),$(notdir $(dep)))))
 
-# versioned package paths
-$(eval $(call make-go-dependency,github.com/mikefarah/yq/v4,yq))
-
-.bin/ory: Makefile
-		bash <(curl https://raw.githubusercontent.com/ory/meta/master/install.sh) -d -b .bin ory v0.1.0
-		touch -a -m .bin/ory
+define make-brew-dependency
+  tools/$(firstword $(subst @, ,$(notdir $1))): tools/brew Makefile
+		HOMEBREW_NO_AUTO_UPDATE=1 brew install keto/tools/$1
+endef
+$(foreach dep, $(BREW_DEPENDENCIES), $(eval $(call make-brew-dependency,$(dep))))
 
 node_modules: package.json package-lock.json Makefile
 		npm ci
 
+.PHONY: tools/brew
+tools/brew:
+		./scripts/install-brew.sh
+
+# this is not using the tools/* prefix, as a github action has hardcoded paths for this
 .PHONY: .bin/clidoc
 .bin/clidoc:
 		go build -o .bin/clidoc ./cmd/clidoc/.
 
-docs/cli: .bin/clidoc
+docs/cli: tools/clidoc
 		clidoc .
 
 .PHONY: format
-format: .bin/goimports node_modules
+format: tools/goimports node_modules
 		goimports -w -local github.com/ory/keto *.go internal cmd contrib ketoctx embedx
 		npm run format
 
@@ -54,7 +60,7 @@ docker:
 
 # Generates the SDKs
 .PHONY: sdk
-sdk: .bin/swagger .bin/ory node_modules
+sdk: tools/go-swagger tools/cli node_modules
 		rm -rf internal/httpclient internal/httpclient-next
 		swagger generate spec -m -o spec/swagger.json \
 			-c github.com/ory/keto \
@@ -92,7 +98,7 @@ build:
 # Generate APIs and client stubs from the definitions
 #
 .PHONY: buf-gen
-buf-gen: .bin/buf .bin/protoc-gen-go .bin/protoc-gen-go-grpc .bin/protoc-gen-doc node_modules
+buf-gen: tools/buf tools/protobuf tools/protoc-gen-go tools/protoc-gen-go-grpc tools/protoc-gen-doc node_modules
 		buf generate
 		@echo "All code was generated successfully!"
 
@@ -100,7 +106,7 @@ buf-gen: .bin/buf .bin/protoc-gen-go .bin/protoc-gen-go-grpc .bin/protoc-gen-doc
 # Lint API definitions
 #
 .PHONY: buf-lint
-buf-lint: .bin/buf
+buf-lint: tools/buf
 		buf lint
 		@echo "All lint checks passed successfully!"
 
@@ -123,11 +129,11 @@ test-docs-samples:
 		npm test
 
 .PHONY: cve-scan
-cve-scan: docker .bin/grype
+cve-scan: docker tools/grype
 		grype oryd/keto:latest
 
 .PHONY: post-release
-post-release: .bin/yq
+post-release: tools/yq
 		cat docker-compose.yml | yq '.services.keto.image = "oryd/keto:'$$DOCKER_TAG'"' | sponge docker-compose.yml
 		cat docker-compose-mysql.yml | yq '.services.keto-migrate.image = "oryd/keto:'$$DOCKER_TAG'"' | sponge docker-compose-mysql.yml
 		cat docker-compose-postgres.yml | yq '.services.keto-migrate.image = "oryd/keto:'$$DOCKER_TAG'"' | sponge docker-compose-postgres.yml

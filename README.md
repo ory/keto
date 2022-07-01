@@ -22,7 +22,8 @@
     <a href="https://github.com/ory/keto/blob/master/CODE_OF_CONDUCT.md" alt="Ory Code of Conduct"><img src="https://img.shields.io/badge/ory-code%20of%20conduct-green" /></a>
 </p>
 
-Ory Keto is the first and most popular open source implementation of "Zanzibar: Google's Consistent, Global Authorization System"!
+Ory Keto is the first and most popular open source implementation of "Zanzibar:
+Google's Consistent, Global Authorization System"!
 
 ## Ory Cloud
 
@@ -30,35 +31,46 @@ The easiest way to get started with Ory Software is in Ory Cloud! It is
 [**free for developers**](https://console.ory.sh/registration?utm_source=github&utm_medium=banner&utm_campaign=keto-readme),
 forever, no credit card required!
 
-Ory Cloud has easy examples, administrative user interfaces, hosted pages (e.g. for login or registration), support for custom
-domains, collaborative features for your colleagues, and much more!
+Ory Cloud has easy examples, administrative user interfaces, hosted pages (e.g.
+for login or registration), support for custom domains, collaborative features
+for your colleagues, and much more!
 
 ### :mega: Community gets Ory Cloud for Free! :mega:
 
-Ory community members get the Ory Cloud Start Up plan **free for six months**, with all quality-of-life features available, such
-as custom domains and giving your team members access.
+Ory community members get the Ory Cloud Start Up plan **free for six months**,
+with all quality-of-life features available, such as custom domains and giving
+your team members access.
 [Sign up with your GitHub account](https://console.ory.sh/registration?preferred_plan=start-up&utm_source=github&utm_medium=banner&utm_campaign=keto-readme-first900)
-and use the coupon code **`FIRST900`** on the _"Start-Up Plan"_ checkout page to claim your free project now! Make sure to be
-signed up to the [Ory Community Slack](https://slack.ory.sh) when using the code!
+and use the coupon code **`FIRST900`** on the _"Start-Up Plan"_ checkout page to
+claim your free project now! Make sure to be signed up to the
+[Ory Community Slack](https://slack.ory.sh) when using the code!
 
 ### Google's Zanzibar
 
-> Determining whether online users are authorized to access digital objects is central to preserving privacy. This paper presents
-> the design, implementation, and deployment of Zanzibar, a global system for storing and evaluating access control lists.
-> Zanzibar provides a uniform data model and configuration language for expressing a wide range of access control policies from
-> hundreds of client services at Google, including Calendar, Cloud, Drive, Maps, Photos, and YouTube. Its authorization decisions
-> respect causal ordering of user actions and thus provide external consistency amid changes to access control lists and object
-> contents. Zanzibar scales to trillions of access control lists and millions of authorization requests per second to support
-> services used by billions of people. It has maintained 95th-percentile latency of less than 10 milliseconds and availability of
-> greater than 99.999% over 3 years of production use.
+> Determining whether online users are authorized to access digital objects is
+> central to preserving privacy. This paper presents the design, implementation,
+> and deployment of Zanzibar, a global system for storing and evaluating access
+> control lists. Zanzibar provides a uniform data model and configuration
+> language for expressing a wide range of access control policies from hundreds
+> of client services at Google, including Calendar, Cloud, Drive, Maps, Photos,
+> and YouTube. Its authorization decisions respect causal ordering of user
+> actions and thus provide external consistency amid changes to access control
+> lists and object contents. Zanzibar scales to trillions of access control
+> lists and millions of authorization requests per second to support services
+> used by billions of people. It has maintained 95th-percentile latency of less
+> than 10 milliseconds and availability of greater than 99.999% over 3 years of
+> production use.
 >
 > [Source](https://research.google/pubs/pub48190/)
 
-If you need to know if a user (or robot, car, service) is allowed to do something - Ory Keto is the right fit for you.
+If you need to know if a user (or robot, car, service) is allowed to do
+something - Ory Keto is the right fit for you.
 
-Currently, Ory Keto implements the basic API contracts for managing and checking relations ("permissions") with HTTP and gRPC
-APIs. Future versions will include features such as userset rewrites (e.g. RBAC-style role-permission models), Zookies, and more.
-An overview of what is implemented and upcoming can be found at
+Currently, Ory Keto implements the basic API contracts for managing and checking
+relations ("permissions") with HTTP and gRPC APIs. Future versions will include
+features such as userset rewrites (e.g. RBAC-style role-permission models),
+Zookies, and more. An overview of what is implemented and upcoming can be found
+at
 [Implemented and Planned Features](https://www.ory.sh/keto/docs/next/implemented-planned-features).
 
 ---
@@ -288,7 +300,8 @@ TheCrealm.
 
 ### Installation
 
-Head over to the documentation to learn about ways of [installing ORY Keto](https://www.ory.sh/docs/next/keto/install).
+Head over to the documentation to learn about ways of
+[installing ORY Keto](https://www.ory.sh/docs/next/keto/install).
 
 ## Ecosystem
 
@@ -346,13 +359,14 @@ to perform a certain action on a resource.
 
 ### Disclosing Vulnerabilities
 
-If you think you found a security vulnerability, please refrain from posting it publicly on the forums, the chat, or GitHub and
-send us an email to [hi@ory.am](mailto:hi@ory.am) instead.
+If you think you found a security vulnerability, please refrain from posting it
+publicly on the forums, the chat, or GitHub and send us an email to
+[hi@ory.am](mailto:hi@ory.am) instead.
 
 ## Telemetry
 
-Our services collect summarized, anonymized data which can optionally be turned off. Click
-[here](https://www.ory.sh/docs/ecosystem/sqa) to learn more.
+Our services collect summarized, anonymized data which can optionally be turned
+off. Click [here](https://www.ory.sh/docs/ecosystem/sqa) to learn more.
 
 ### Guide
 
@@ -364,7 +378,8 @@ The HTTP API is documented [here](https://www.ory.sh/docs/next/keto/sdk/api).
 
 ### Upgrading and Changelog
 
-New releases might introduce breaking changes. To help you identify and incorporate those changes, we document these changes in
+New releases might introduce breaking changes. To help you identify and
+incorporate those changes, we document these changes in
 [UPGRADE.md](./UPGRADE.md) and [CHANGELOG.md](./CHANGELOG.md).
 
 ### Command Line Documentation
@@ -373,7 +388,8 @@ Run `keto -h` or `keto help`.
 
 ### Develop
 
-We encourage all contributions and recommend you read our [contribution guidelines](./CONTRIBUTING.md).
+We encourage all contributions and recommend you read our
+[contribution guidelines](./CONTRIBUTING.md).
 
 #### Dependencies
 
@@ -383,7 +399,8 @@ You need Go 1.16+ and (for the test suites):
 - GNU Make 4.3
 - NodeJS / npm@v7
 
-It is possible to develop ORY Keto on Windows, but please be aware that all guides assume a Unix shell like bash or zsh.
+It is possible to develop ORY Keto on Windows, but please be aware that all
+guides assume a Unix shell like bash or zsh.
 
 #### Install From Source
 
@@ -393,7 +410,8 @@ make install
 
 #### Formatting Code
 
-You can format all code using <code type="make/command">make format</code>. Our CI checks if your code is properly formatted.
+You can format all code using <code type="make/command">make format</code>. Our
+CI checks if your code is properly formatted.
 
 #### Running Tests
 
@@ -418,9 +436,11 @@ go test -tags sqlite -short ./internal/check/...
 
 ##### Regular Tests
 
-Regular tests require a database set up. Our test suite is able to work with docker directly (using
-[ory/dockertest](https://github.com/ory/dockertest)) but we encourage to use the script instead. Using dockertest can bloat the
-number of Docker Images on your system and starting them on each run is quite slow. Instead we recommend doing:
+Regular tests require a database set up. Our test suite is able to work with
+docker directly (using [ory/dockertest](https://github.com/ory/dockertest)) but
+we encourage to use the script instead. Using dockertest can bloat the number of
+Docker Images on your system and starting them on each run is quite slow.
+Instead we recommend doing:
 
 ```shell
 source ./scripts/test-resetdb.sh

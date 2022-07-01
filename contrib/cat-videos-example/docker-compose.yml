@@ -1,11 +1,11 @@
-version: '3.2'
+version: "3.2"
 
 services:
   keto:
     image: oryd/keto:v0.7.0-alpha.1-sqlite
     ports:
-      - '4466:4466'
-      - '4467:4467'
+      - "4466:4466"
+      - "4467:4467"
     command: serve -c /home/ory/keto.yml
     restart: on-failure
     volumes:

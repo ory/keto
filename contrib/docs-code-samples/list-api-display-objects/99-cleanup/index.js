@@ -1,21 +1,21 @@
-import grpc from '@ory/keto-grpc-client/node_modules/@grpc/grpc-js/build/src/index.js'
-import { write, writeService, read, readService } from '@ory/keto-grpc-client'
+import grpc from "@ory/keto-grpc-client/node_modules/@grpc/grpc-js/build/src/index.js"
+import { write, writeService, read, readService } from "@ory/keto-grpc-client"
 
 const readClient = new readService.ReadServiceClient(
-  '127.0.0.1:4466',
-  grpc.credentials.createInsecure()
+  "127.0.0.1:4466",
+  grpc.credentials.createInsecure(),
 )
 
 const query = new read.ListRelationTuplesRequest.Query()
-query.setNamespace('chats')
+query.setNamespace("chats")
 
 const readRequest = new read.ListRelationTuplesRequest()
 readRequest.setQuery(query)
 
 readClient.listRelationTuples(readRequest, (err, resp) => {
   const writeClient = new writeService.WriteServiceClient(
-    '127.0.0.1:4467',
-    grpc.credentials.createInsecure()
+    "127.0.0.1:4467",
+    grpc.credentials.createInsecure(),
   )
 
   const writeRequest = new write.TransactRelationTuplesRequest()
@@ -29,7 +29,7 @@ readClient.listRelationTuples(readRequest, (err, resp) => {
 
   writeClient.transactRelationTuples(writeRequest, (err) => {
     if (err) {
-      console.log('Unexpected err', err)
+      console.log("Unexpected err", err)
     }
   })
 })

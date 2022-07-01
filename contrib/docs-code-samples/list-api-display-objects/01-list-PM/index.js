@@ -1,32 +1,32 @@
-import grpc from '@ory/keto-grpc-client/node_modules/@grpc/grpc-js/build/src/index.js'
-import { relationTuples, read, readService } from '@ory/keto-grpc-client'
+import grpc from "@ory/keto-grpc-client/node_modules/@grpc/grpc-js/build/src/index.js"
+import { relationTuples, read, readService } from "@ory/keto-grpc-client"
 
 const readClient = new readService.ReadServiceClient(
-  '127.0.0.1:4466',
-  grpc.credentials.createInsecure()
+  "127.0.0.1:4466",
+  grpc.credentials.createInsecure(),
 )
 
 const readRequest = new read.ListRelationTuplesRequest()
 const query = new read.ListRelationTuplesRequest.Query()
-query.setNamespace('chats')
-query.setRelation('member')
+query.setNamespace("chats")
+query.setRelation("member")
 
 const sub = new relationTuples.Subject()
-sub.setId('PM')
+sub.setId("PM")
 query.setSubject(sub)
 
 readRequest.setQuery(query)
 
 readClient.listRelationTuples(readRequest, (error, resp) => {
   if (error) {
-    console.log('Encountered error:', error)
+    console.log("Encountered error:", error)
   } else {
     console.log(
       resp
         .getRelationTuplesList()
         .map((tuple) => tuple.getObject())
         .sort((a, b) => (a < b ? -1 : 1))
-        .join('\n')
+        .join("\n"),
     )
   }
 })

@@ -1,4 +1,4 @@
-version: '3.2'
+version: "3.2"
 services:
   keto-migrate:
     image: oryd/keto:v0.8.0-alpha.2
@@ -11,7 +11,7 @@ services:
     environment:
       - LOG_LEVEL=debug
       - DSN=postgres://dbuser:secret@postgresd:5432/accesscontroldb?sslmode=disable
-    command: ['migrate', 'up', '-y']
+    command: ["migrate", "up", "-y"]
     restart: on-failure
   keto:
     links:
@@ -21,8 +21,8 @@ services:
         source: ./config
         target: /home/ory
     ports:
-      - '4466:4466'
-      - '4467:4467'
+      - "4466:4466"
+      - "4467:4467"
     depends_on:
       - keto-migrate
     environment:
