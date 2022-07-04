@@ -255,11 +255,29 @@ func (e *Engine) checkUsersetRewrite(
 				Tuple: *r,
 				Type:  expand.ComputedUserset,
 			}, e.checkComputedUserset(ctx, r, c, restDepth)))
+		case *ast.UsersetRewrite:
+			checks = append(checks, checkgroup.WithEdge(checkgroup.Edge{
+				Tuple: *r,
+				Type:  toExpandNodeType(c.Operation),
+			}, e.checkUsersetRewrite(ctx, r, c, restDepth)))
 		}
 	}
 
 	return func(ctx context.Context, resultCh chan<- checkgroup.Result) {
 		resultCh <- op(ctx, checks)
+	}
+}
+
+func toExpandNodeType(op ast.SetOperation) expand.NodeType {
+	switch op {
+	case ast.SetOperationUnion:
+		return expand.Union
+	case ast.SetOperationDifference:
+		return expand.Exclusion
+	case ast.SetOperationIntersection:
+		return expand.Intersection
+	default:
+		return expand.Union
 	}
 }
 
