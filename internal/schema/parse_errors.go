@@ -15,13 +15,28 @@ type sourcePosition struct {
 	line, col int
 }
 
+func max(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
+}
+func min(a, b int) int {
+	if a < b {
+		return a
+	}
+	return b
+}
+
 func (e *ParseError) Error() string {
 	var s strings.Builder
 	start := e.toSrcPos(e.item.Start)
 	end := e.toSrcPos(e.item.End)
 	rows := e.rows()
+	startLineIdx := max(start.line-2, 0)
+	errorLineIdx := max(start.line-1, 0)
 
-	s.WriteString(fmt.Sprintf("parse error from %d:%d to %d:%d: %s\n\n",
+	s.WriteString(fmt.Sprintf("error from %d:%d to %d:%d: %s\n\n",
 		start.line, start.col,
 		end.line, end.col,
 		e.msg))
@@ -31,11 +46,11 @@ func (e *ParseError) Error() string {
 		return s.String()
 	}
 
-	for line := start.line - 1; line < start.line+1; line++ {
-		s.WriteString(fmt.Sprintf("%4d | %s\n", line, rows[line-1]))
+	for line := startLineIdx; line <= errorLineIdx; line++ {
+		s.WriteString(fmt.Sprintf("%4d | %s\n", line, rows[line]))
 	}
 	s.WriteString("       ")
-	for i, r := range rows[start.line-1] {
+	for i, r := range rows[errorLineIdx] {
 		switch {
 		case start.col == i:
 			s.WriteRune('^')
@@ -49,9 +64,10 @@ func (e *ParseError) Error() string {
 	}
 	s.WriteRune('\n')
 
-	s.WriteString(fmt.Sprintf("%4d | %s\n", start.line+1, rows[start.line]))
-
-	s.WriteRune('\n')
+	if errorLineIdx+1 < len(rows) {
+		s.WriteString(fmt.Sprintf("%4d | %s\n", errorLineIdx, rows[errorLineIdx+1]))
+		s.WriteRune('\n')
+	}
 
 	return s.String()
 }

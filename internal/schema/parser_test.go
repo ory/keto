@@ -9,6 +9,10 @@ import (
 	"github.com/ory/keto/internal/namespace/ast"
 )
 
+var parserErrorTestCases = []struct{ name, input string }{
+	{"lexer error", "/* unclosed coment"},
+}
+
 var parserTestCases = []struct {
 	name, input string
 }{
@@ -85,10 +89,21 @@ func TestParser(t *testing.T) {
 			})
 		}
 	})
+
+	t.Run("suite=errors", func(t *testing.T) {
+		for _, tc := range parserErrorTestCases {
+			t.Run(tc.name, func(t *testing.T) {
+				_, errs := Parse(tc.input)
+				if len(errs) == 0 {
+					t.Error("expected error, but got none")
+				}
+			})
+		}
+	})
 }
 
 func FuzzParser(f *testing.F) {
-	for _, tc := range lexerTestCases {
+	for _, tc := range lexableTestCases {
 		f.Add(tc.input)
 	}
 	for _, tc := range parserTestCases {
