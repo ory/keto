@@ -3,7 +3,13 @@ package ast
 type (
 	Relation struct {
 		Name           string          `json:"name"`
+		Types          []RelationType  `json:"types,omitempty"`
 		UsersetRewrite *UsersetRewrite `json:"rewrite,omitempty"`
+	}
+
+	RelationType struct {
+		Namespace string `json:"namespace"`
+		Relation  string `json:"relation,omitempty"` // optional
 	}
 
 	UsersetRewrite struct {

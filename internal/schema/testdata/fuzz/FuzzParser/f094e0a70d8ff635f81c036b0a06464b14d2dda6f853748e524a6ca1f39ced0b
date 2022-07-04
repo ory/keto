@@ -1,0 +1,2 @@
+go test fuzz v1
+string("class A implements Namespace{permits={A:(ctx)=>this.related.A.traverse(p=>p.permits")

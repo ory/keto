@@ -8,11 +8,7 @@ import (
 )
 
 type (
-	ns = internalNamespace.Namespace
-
-	namespace struct {
-		ns
-	}
+	namespace = internalNamespace.Namespace
 
 	parser struct {
 		lexer      *lexer      // lexer to get tokens from
@@ -25,29 +21,11 @@ type (
 	}
 )
 
-type typeCheck func() error
-
-var (
-	empty = ""
-	any   = &empty // helper to use in match() when we don't care which identifier.
-)
-
-// maxExprNestingDepth is the maximum number of nested '(' in a single 'permits'.
-const maxExprNestingDepth = 10
-
 func Parse(input string) ([]namespace, []error) {
 	p := &parser{
 		lexer: Lex("input", input),
 	}
 	return p.parse()
-}
-
-func (p *parser) typeCheck() {
-	for _, check := range p.checks {
-		if err := check(); err != nil {
-			p.errors = append(p.errors, err)
-		}
-	}
 }
 
 func (p *parser) next() (item item) {
@@ -188,7 +166,7 @@ func (p *parser) matchIf(predicate itemPredicate, tokens ...interface{}) (matche
 func (p *parser) parseClass() {
 	var name string
 	p.match(&name, "implements", "Namespace", "{")
-	p.namespace = namespace{ns: ns{Name: name}}
+	p.namespace = namespace{Name: name}
 
 	for !p.fatal {
 		switch item := p.next(); {
@@ -214,19 +192,24 @@ func (p *parser) parseRelated() {
 			return
 		case itemIdentifier:
 			relation := item.Val
+			types := []ast.RelationType{}
 			p.match(":")
 			switch item := p.next(); item.Typ {
 			case itemIdentifier:
 				if item.Val == "SubjectSet" {
-					p.matchSubjectSet()
+					types = append(types, p.matchSubjectSet())
+				} else {
+					types = append(types, ast.RelationType{Namespace: item.Val})
+					p.addCheck(checkNamespaceExists(item))
 				}
 			case itemParenLeft:
-				p.parseTypeUnion()
+				types = append(types, p.parseTypeUnion()...)
 			}
-			p.namespace.Relations = append(p.namespace.Relations, ast.Relation{
-				Name: relation,
-			})
 			p.match("[", "]")
+			p.namespace.Relations = append(p.namespace.Relations, ast.Relation{
+				Name:  relation,
+				Types: types,
+			})
 		default:
 			p.addFatal(item, "expected identifier or '}', got %q", item.Val)
 			return
@@ -234,16 +217,22 @@ func (p *parser) parseRelated() {
 	}
 }
 
-func (p *parser) matchSubjectSet() {
-	p.match("<", any, ",", any, ">")
+func (p *parser) matchSubjectSet() ast.RelationType {
+	var namespace, relation item
+	p.match("<", &namespace, ",", &relation, ">")
+	p.addCheck(checkNamespaceHasRelation(namespace, relation))
+	return ast.RelationType{Namespace: namespace.Val, Relation: relation.Val}
 }
 
-func (p *parser) parseTypeUnion() {
+func (p *parser) parseTypeUnion() (types []ast.RelationType) {
 	for !p.fatal {
-		var identifier string
+		var identifier item
 		p.match(&identifier)
-		if identifier == "SubjectSet" {
-			p.matchSubjectSet()
+		if identifier.Val == "SubjectSet" {
+			types = append(types, p.matchSubjectSet())
+		} else {
+			types = append(types, ast.RelationType{Namespace: identifier.Val})
+			p.addCheck(checkNamespaceExists(identifier))
 		}
 		switch item := p.next(); item.Typ {
 		case itemParenRight:
@@ -253,6 +242,7 @@ func (p *parser) parseTypeUnion() {
 			p.addFatal(item, "expected '|', got %q", item.Val)
 		}
 	}
+	return
 }
 
 func (p *parser) parsePermits() {
@@ -270,7 +260,7 @@ func (p *parser) parsePermits() {
 				optional(":", "boolean"), "=>",
 			)
 
-			rewrite := simplifyExpression(p.parsePermissionExpressions(itemOperatorComma, maxExprNestingDepth))
+			rewrite := simplifyExpression(p.parsePermissionExpressions(itemOperatorComma, expressionNestingMaxDepth))
 			if rewrite == nil {
 				return
 			}
@@ -296,7 +286,7 @@ func (p *parser) parsePermissionExpressions(finalToken itemType, depth int) *ast
 		case item.Typ == itemParenLeft:
 			p.next() // consume paren
 			if depth <= 0 {
-				p.addFatal(item, "expression nested too deeply; maximal nesting depth is %d", maxExprNestingDepth)
+				p.addFatal(item, "expression nested too deeply; maximal nesting depth is %d", expressionNestingMaxDepth)
 				return nil
 			}
 			child := p.parsePermissionExpressions(itemParenRight, depth-1)
@@ -359,12 +349,11 @@ func setOperation(typ itemType) ast.SetOperation {
 }
 
 func (p *parser) parsePermissionExpression() (child ast.Child) {
-	var name string
+	var name item
 
 	if !p.match("this", ".", "related", ".", &name, ".") {
 		return
 	}
-
 	switch item := p.next(); item.Val {
 	case "traverse":
 		child = p.parseTupleToUserset(name)
@@ -373,10 +362,11 @@ func (p *parser) parsePermissionExpression() (child ast.Child) {
 	default:
 		p.addFatal(item, "expected 'traverse' or 'includes', got %q", item.Val)
 	}
+
 	return
 }
 
-func (p *parser) parseTupleToUserset(relation string) (rewrite ast.Child) {
+func (p *parser) parseTupleToUserset(relation item) (rewrite ast.Child) {
 	var (
 		usersetRel string
 		arg, verb  item
@@ -399,23 +389,31 @@ func (p *parser) parseTupleToUserset(relation string) (rewrite ast.Child) {
 			".", &usersetRel, ".", "includes", "(", "ctx", ".", "subject",
 			optional(","), ")", optional(","), ")",
 		)
+		p.addCheck(checkAllRelationsTypesHaveRelation(
+			&p.namespace, relation, usersetRel,
+		))
 	case "permits":
 		p.match(".", &usersetRel, "(", "ctx", ")", ")")
+		p.addCheck(checkAllRelationsTypesHaveRelation(
+			&p.namespace, relation, usersetRel,
+		))
 	default:
 		p.addFatal(verb, "expected 'related' or 'permits', got %q", verb)
 		return nil
 	}
+	p.addCheck(checkCurrentNamespaceHasRelation(&p.namespace, relation))
 	return &ast.TupleToUserset{
-		Relation:                relation,
+		Relation:                relation.Val,
 		ComputedUsersetRelation: usersetRel,
 	}
 }
 
-func (p *parser) parseComputedUserset(relation string) (rewrite ast.Child) {
+func (p *parser) parseComputedUserset(relation item) (rewrite ast.Child) {
 	if !p.match("(", "ctx", ".", "subject", ")") {
 		return nil
 	}
-	return &ast.ComputedUserset{Relation: relation}
+	p.addCheck(checkCurrentNamespaceHasRelation(&p.namespace, relation))
+	return &ast.ComputedUserset{Relation: relation.Val}
 }
 
 // simplifyExpression rewrites the expression to use n-ary set operations

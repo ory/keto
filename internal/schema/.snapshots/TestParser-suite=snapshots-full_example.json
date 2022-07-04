@@ -1,16 +1,47 @@
 {
   "File": [
     {
-      "name": "parents"
+      "name": "parents",
+      "types": [
+        {
+          "namespace": "File"
+        },
+        {
+          "namespace": "Folder"
+        }
+      ]
     },
     {
-      "name": "viewers"
+      "name": "viewers",
+      "types": [
+        {
+          "namespace": "User"
+        },
+        {
+          "namespace": "Group",
+          "relation": "members"
+        }
+      ]
     },
     {
-      "name": "owners"
+      "name": "owners",
+      "types": [
+        {
+          "namespace": "User"
+        },
+        {
+          "namespace": "Group",
+          "relation": "members"
+        }
+      ]
     },
     {
-      "name": "siblings"
+      "name": "siblings",
+      "types": [
+        {
+          "namespace": "File"
+        }
+      ]
     },
     {
       "name": "view",
@@ -76,10 +107,21 @@
   ],
   "Folder": [
     {
-      "name": "parents"
+      "name": "parents",
+      "types": [
+        {
+          "namespace": "File"
+        }
+      ]
     },
     {
-      "name": "viewers"
+      "name": "viewers",
+      "types": [
+        {
+          "namespace": "Group",
+          "relation": "members"
+        }
+      ]
     },
     {
       "name": "view",
@@ -95,12 +137,25 @@
   ],
   "Group": [
     {
-      "name": "members"
+      "name": "members",
+      "types": [
+        {
+          "namespace": "User"
+        },
+        {
+          "namespace": "Group"
+        }
+      ]
     }
   ],
   "User": [
     {
-      "name": "manager"
+      "name": "manager",
+      "types": [
+        {
+          "namespace": "User"
+        }
+      ]
     }
   ]
 }

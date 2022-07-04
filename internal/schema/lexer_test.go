@@ -7,7 +7,13 @@ import (
 	"github.com/ory/x/snapshotx"
 )
 
-var lexerTestCases = []struct{ name, input string }{
+var lexingErrorTestCases = []struct{ name, input string }{
+	{"open comment", "/*"},
+	{"open string literal", "'"},
+	{"non-token", "ü"},
+}
+
+var lexableTestCases = []struct{ name, input string }{
 	{"empty", ""},
 	{"single class", `
 class name implements Namespace {
@@ -75,7 +81,7 @@ class X implements Namespace {
 
 func TestLexer(t *testing.T) {
 	t.Run("suite=snapshots", func(t *testing.T) {
-		for _, tc := range lexerTestCases {
+		for _, tc := range lexableTestCases {
 			t.Run(tc.name, func(t *testing.T) {
 				l := Lex(tc.name, tc.input)
 				var items []string
@@ -95,5 +101,29 @@ func TestLexer(t *testing.T) {
 				snapshotx.SnapshotT(t, items)
 			})
 		}
+	})
+
+	t.Run("suite=errors", func(t *testing.T) {
+		for _, tc := range lexingErrorTestCases {
+			t.Run(tc.name, func(t *testing.T) {
+				l := Lex(tc.name, tc.input)
+				var items []string
+				for {
+					item := l.nextItem()
+					items = append(items, item.String())
+
+					if item.Typ == itemError {
+						break
+					}
+					if item.Typ == itemEOF {
+						t.Fatal("reached EOF, but expected error")
+						break
+					}
+				}
+				l.next()
+				t.Logf("Tokens:\n%s", strings.Join(items, "\n"))
+			})
+		}
+
 	})
 }
