@@ -43,14 +43,23 @@ func (q *queryWrapper) GetRelation() *string {
 }
 
 func (q *deprecatedQueryWrapper) GetObject() *string {
+	if q.Object == "" {
+		return nil
+	}
 	return x.Ptr(q.Object)
 }
 
 func (q *deprecatedQueryWrapper) GetNamespace() *string {
+	if q.Namespace == "" {
+		return nil
+	}
 	return x.Ptr(q.Namespace)
 }
 
 func (q *deprecatedQueryWrapper) GetRelation() *string {
+	if q.Relation == "" {
+		return nil
+	}
 	return x.Ptr(q.Relation)
 }
 

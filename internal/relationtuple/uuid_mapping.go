@@ -79,15 +79,19 @@ func (m *Mapper) FromQuery(ctx context.Context, q *ketoapi.RelationQuery) (res *
 	}
 	if q.Object != nil {
 		s = append(s, *q.Object)
-		onSuccess.do(func() {
-			res.Object = x.Ptr(u[0])
-		})
+		onSuccess.do(func(i int) func() {
+			return func() {
+				res.Object = x.Ptr(u[i])
+			}
+		}(len(s) - 1))
 	}
 	if q.SubjectID != nil {
 		s = append(s, *q.SubjectID)
-		onSuccess.do(func() {
-			res.Subject = &SubjectID{u[1]}
-		})
+		onSuccess.do(func(i int) func() {
+			return func() {
+				res.Subject = &SubjectID{u[i]}
+			}
+		}(len(s) - 1))
 	}
 	if q.SubjectSet != nil {
 		s = append(s, q.SubjectSet.Object)
@@ -95,13 +99,15 @@ func (m *Mapper) FromQuery(ctx context.Context, q *ketoapi.RelationQuery) (res *
 		if err != nil {
 			return nil, err
 		}
-		onSuccess.do(func() {
-			res.Subject = &SubjectSet{
-				Namespace: n.ID,
-				Object:    u[1],
-				Relation:  q.SubjectSet.Relation,
+		onSuccess.do(func(i int) func() {
+			return func() {
+				res.Subject = &SubjectSet{
+					Namespace: n.ID,
+					Object:    u[i],
+					Relation:  q.SubjectSet.Relation,
+				}
 			}
-		})
+		}(len(s) - 1))
 	}
 
 	u, err = m.D.MappingManager().MapStringsToUUIDs(ctx, s...)
