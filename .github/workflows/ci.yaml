@@ -34,7 +34,6 @@ jobs:
           GOGC: 100
         with:
           args: --timeout 10m0s --issues-exit-code=0
-          skip-go-installation: true
           skip-pkg-cache: true
       - name: Test documentation examples
         run: make test-docs-samples
