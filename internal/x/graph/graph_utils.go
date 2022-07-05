@@ -21,41 +21,23 @@ func newStringSet() *stringSet {
 	return &stringSet{m: make(map[string]struct{})}
 }
 
-func (s *stringSet) contains(el fmt.Stringer) (found bool) {
+func (s *stringSet) addNoDuplicate(el fmt.Stringer) bool {
 	s.l.Lock()
 	defer s.l.Unlock()
-	_, found = s.m[el.String()]
-	return
-}
 
-func (s *stringSet) add(el fmt.Stringer) {
-	s.l.Lock()
-	defer s.l.Unlock()
+	if _, found := s.m[el.String()]; found {
+		return true
+	}
 	s.m[el.String()] = struct{}{}
-}
-
-func stringSetFromContext(ctx context.Context) (set *stringSet, ok bool) {
-	set, ok = ctx.Value(visitedMapKey).(*stringSet)
-	return
-}
-
-func contextWithStringSet(ctx context.Context) (context.Context, *stringSet) {
-	set := newStringSet()
-	return context.WithValue(ctx, visitedMapKey, set), set
+	return false
 }
 
 func CheckAndAddVisited(ctx context.Context, current relationtuple.Subject) (context.Context, bool) {
-	set, ok := stringSetFromContext(ctx)
+	set, ok := ctx.Value(visitedMapKey).(*stringSet)
 	if !ok {
-		ctx, set := contextWithStringSet(ctx)
-		set.add(current.UniqueID())
-		return ctx, false
+		set = newStringSet()
+		ctx = context.WithValue(ctx, visitedMapKey, set)
 	}
 
-	if set.contains(current.UniqueID()) {
-		return ctx, true
-	}
-	set.add(current.UniqueID())
-
-	return ctx, false
+	return ctx, set.addNoDuplicate(current.UniqueID())
 }
