@@ -15,9 +15,6 @@
 package server
 
 import (
-	"os"
-	"strconv"
-
 	"github.com/spf13/cobra"
 
 	"github.com/ory/keto/cmd/helpers"
@@ -46,17 +43,8 @@ on configuration options, open the configuration documentation:
 			return reg.ServeAllSQA(cmd)
 		},
 	}
-	disableTelemetry, err := strconv.ParseBool(os.Getenv("DISABLE_TELEMETRY"))
-	if err != nil {
-		disableTelemetry = true
-	}
-	sqaOptOut, err := strconv.ParseBool(os.Getenv("SQA_OPT_OUT"))
-	if err != nil {
-		sqaOptOut = true
-	}
 
-	cmd.Flags().Bool("disable-telemetry", disableTelemetry, "Disable anonymized telemetry reports - for more information please visit https://www.ory.sh/docs/ecosystem/sqa")
-	cmd.Flags().Bool("sqa-opt-out", sqaOptOut, "Disable anonymized telemetry reports - for more information please visit https://www.ory.sh/docs/ecosystem/sqa")
+	cmd.Flags().Bool("sqa-opt-out", false, "Disable anonymized telemetry reports - for more information please visit https://www.ory.sh/docs/ecosystem/sqa")
 
 	return cmd
 }
