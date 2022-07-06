@@ -42,9 +42,6 @@ tools/brew:
 .bin/clidoc:
 		go build -o .bin/clidoc ./cmd/clidoc/.
 
-docs/cli: tools/clidoc
-		clidoc .
-
 .PHONY: format
 format: tools/goimports node_modules
 		goimports -w -local github.com/ory/keto *.go internal cmd contrib ketoctx embedx
