@@ -244,7 +244,7 @@ jobs:
       - uses: actions/setup-go@v3
         with:
           go-version: 1.18
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
           node-version: "15"
       - uses: arduino/setup-protoc@v1
