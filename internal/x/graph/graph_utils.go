@@ -32,6 +32,13 @@ func (s *stringSet) addNoDuplicate(el fmt.Stringer) bool {
 	return false
 }
 
+func InitVisited(ctx context.Context) context.Context {
+	if _, ok := ctx.Value(visitedMapKey).(*stringSet); !ok {
+		ctx = context.WithValue(ctx, visitedMapKey, newStringSet())
+	}
+	return ctx
+}
+
 func CheckAndAddVisited(ctx context.Context, current relationtuple.Subject) (context.Context, bool) {
 	set, ok := ctx.Value(visitedMapKey).(*stringSet)
 	if !ok {

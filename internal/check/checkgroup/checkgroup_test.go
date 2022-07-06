@@ -11,7 +11,7 @@ import (
 	"github.com/ory/keto/internal/check/checkgroup"
 )
 
-var neverFinishesCheckFunc checkgroup.Func = func(ctx context.Context, resultCh chan<- checkgroup.Result) {
+var neverFinishesCheckFunc = func(ctx context.Context, resultCh chan<- checkgroup.Result) {
 	<-ctx.Done()
 	resultCh <- checkgroup.Result{Err: ctx.Err()}
 }
@@ -90,7 +90,7 @@ func TestCheckgroup_cancels_all_other_subchecks(t *testing.T) {
 	t.Parallel()
 
 	wasCancelled := make(chan bool)
-	var mockCheckFn checkgroup.Func = func(ctx context.Context, resultCh chan<- checkgroup.Result) {
+	var mockCheckFn = func(ctx context.Context, resultCh chan<- checkgroup.Result) {
 		<-ctx.Done()
 		wasCancelled <- true
 		resultCh <- checkgroup.Result{Err: ctx.Err()}

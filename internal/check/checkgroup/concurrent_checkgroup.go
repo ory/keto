@@ -87,6 +87,11 @@ func (g *concurrentCheckgroup) startConsumer() {
 					go f(g.subcheckCtx, subcheckCh)
 
 				case <-g.freezeCh:
+					if frozen {
+						// we're already frozen
+						// we don't want to accidentally set the result to ResultNotMember on a second freeze request
+						continue
+					}
 					frozen = true
 					if finishedChecks == totalChecks {
 						g.result = ResultNotMember
@@ -138,7 +143,7 @@ func (g *concurrentCheckgroup) SetIsMember() {
 
 // tryFreeze tries to freeze the group, i.e, signal the consumer that the result
 // was requested and that no more checks will be added. If the consumer is
-// already done, freezing is not neccessary any more. This should never block.
+// already done, freezing is not necessary anymore. This should never block.
 func (g *concurrentCheckgroup) tryFreeze() {
 	select {
 	case g.freezeCh <- struct{}{}:

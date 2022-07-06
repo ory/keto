@@ -20,7 +20,7 @@ type (
 
 	Factory func(ctx context.Context) Checkgroup
 
-	Func   func(ctx context.Context, resultCh chan<- Result)
+	Func   = func(ctx context.Context, resultCh chan<- Result)
 	Result struct {
 		Membership Membership
 		Tree       *expand.Tree
@@ -61,15 +61,15 @@ func ErrorFunc(err error) Func {
 	}
 }
 
-var IsMemberFunc Func = func(_ context.Context, resultCh chan<- Result) {
+var IsMemberFunc = func(_ context.Context, resultCh chan<- Result) {
 	resultCh <- Result{Membership: IsMember}
 }
 
-var NotMemberFunc Func = func(_ context.Context, resultCh chan<- Result) {
+var NotMemberFunc = func(_ context.Context, resultCh chan<- Result) {
 	resultCh <- Result{Membership: NotMember}
 }
 
-var UnknownMemberFunc Func = func(_ context.Context, resultCh chan<- Result) {
+var UnknownMemberFunc = func(_ context.Context, resultCh chan<- Result) {
 	resultCh <- Result{Membership: MembershipUnknown}
 }
 

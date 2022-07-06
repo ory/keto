@@ -62,7 +62,7 @@ func (g *sequentialCheckgroup) Result() Result {
 			if result.Err != nil || result.Membership == IsMember {
 				return result
 			}
-		case <-g.ctx.Done():
+		case <-childCtx.Done():
 			go receiveRemaining(resultCh, 1)
 			return Result{Err: g.ctx.Err()}
 		}
