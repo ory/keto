@@ -229,7 +229,7 @@ func TestUsersetRewrites(t *testing.T) {
 			rt, err := relationtuple.InternalFromString(tc.query)
 			require.NoError(t, err)
 
-			res := e.Check(ctx, rt, 100)
+			res := e.CheckRelationTuple(ctx, rt, 100)
 			assert.Equal(t, tc.expected.Err, res.Err)
 			t.Logf("tree:\n%s", res.Tree)
 			assert.Equal(t, tc.expected.Membership.String(), res.Membership.String())

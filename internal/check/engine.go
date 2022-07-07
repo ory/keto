@@ -40,12 +40,12 @@ func NewEngine(d EngineDependencies) *Engine {
 	}
 }
 
-func (e *Engine) checkDirect(
+func (e *Engine) isIncluded(
 	ctx context.Context,
 	requested *RelationTuple,
 	rels []*RelationTuple,
 	restDepth int,
-) checkgroup.Func {
+) checkgroup.CheckFunc {
 	if restDepth < 0 {
 		e.d.Logger().Debug("reached max-depth, therefore this query will not be further expanded")
 		return checkgroup.UnknownMemberFunc
@@ -82,7 +82,7 @@ func (e *Engine) checkDirect(
 			continue
 		}
 
-		g.Add(e.checkOneIndirectionFurther(
+		g.Add(e.subQuery(
 			requested,
 			&Query{Object: sub.Object, Relation: sub.Relation, Namespace: sub.Namespace},
 			restDepth,
@@ -94,11 +94,11 @@ func (e *Engine) checkDirect(
 	}, g.CheckFunc())
 }
 
-func (e *Engine) checkOneIndirectionFurther(
+func (e *Engine) subQuery(
 	requested *RelationTuple,
-	expandQuery *Query,
+	query *Query,
 	restDepth int,
-) checkgroup.Func {
+) checkgroup.CheckFunc {
 	if restDepth < 0 {
 		e.d.Logger().
 			WithFields(requested.ToLoggerFields()).
@@ -109,7 +109,7 @@ func (e *Engine) checkOneIndirectionFurther(
 	return func(ctx context.Context, resultCh chan<- checkgroup.Result) {
 		e.d.Logger().
 			WithField("request", requested.String()).
-			WithField("query", expandQuery.String()).
+			WithField("query", query.String()).
 			Trace("check one indirection further")
 
 		// an empty page token denotes the first page (as tokens are opaque)
@@ -130,7 +130,7 @@ func (e *Engine) checkOneIndirectionFurther(
 		g := checkgroup.New(ctx)
 
 		for {
-			nextRels, nextPage, err := e.d.RelationTupleManager().GetRelationTuples(ctx, expandQuery, x.WithToken(prevPage))
+			nextRels, nextPage, err := e.d.RelationTupleManager().GetRelationTuples(ctx, query, x.WithToken(prevPage))
 			// herodot.ErrNotFound occurs when the namespace is unknown
 			if errors.Is(err, herodot.ErrNotFound) {
 				g.Add(checkgroup.NotMemberFunc)
@@ -140,7 +140,7 @@ func (e *Engine) checkOneIndirectionFurther(
 				break
 			}
 
-			g.Add(e.checkDirect(ctx, requested, nextRels, restDepth-1))
+			g.Add(e.isIncluded(ctx, requested, nextRels, restDepth-1))
 
 			// loop through pages until either allowed, end of pages, or an error occurred
 			if nextPage == "" || g.Done() {
@@ -153,15 +153,15 @@ func (e *Engine) checkOneIndirectionFurther(
 	}
 }
 
-func (e *Engine) SubjectIsAllowed(ctx context.Context, r *RelationTuple, restDepth int) (bool, error) {
-	result := e.Check(ctx, r, restDepth)
+func (e *Engine) CheckIsMember(ctx context.Context, r *RelationTuple, restDepth int) (bool, error) {
+	result := e.CheckRelationTuple(ctx, r, restDepth)
 	if result.Err != nil {
 		return false, result.Err
 	}
 	return result.Membership == checkgroup.IsMember, nil
 }
 
-func (e *Engine) Check(ctx context.Context, r *RelationTuple, restDepth int) checkgroup.Result {
+func (e *Engine) CheckRelationTuple(ctx context.Context, r *RelationTuple, restDepth int) checkgroup.Result {
 	// global max-depth takes precedence when it is the lesser or if the request
 	// max-depth is less than or equal to 0
 	if globalMaxDepth := e.d.Config(ctx).MaxReadDepth(); restDepth <= 0 || globalMaxDepth < restDepth {
@@ -178,7 +178,7 @@ func (e *Engine) Check(ctx context.Context, r *RelationTuple, restDepth int) che
 	}
 }
 
-func (e *Engine) checkIsAllowed(ctx context.Context, r *RelationTuple, restDepth int) checkgroup.Func {
+func (e *Engine) checkIsAllowed(ctx context.Context, r *RelationTuple, restDepth int) checkgroup.CheckFunc {
 	if restDepth < 0 {
 		e.d.Logger().Debug("reached max-depth, therefore this query will not be further expanded")
 		return checkgroup.UnknownMemberFunc
@@ -189,7 +189,7 @@ func (e *Engine) checkIsAllowed(ctx context.Context, r *RelationTuple, restDepth
 		Trace("check is allowed")
 
 	g := checkgroup.New(ctx)
-	g.Add(e.checkOneIndirectionFurther(r,
+	g.Add(e.subQuery(r,
 		&Query{
 			Object:    r.Object,
 			Relation:  r.Relation,
@@ -205,165 +205,6 @@ func (e *Engine) checkIsAllowed(ctx context.Context, r *RelationTuple, restDepth
 	}
 
 	return g.CheckFunc()
-}
-
-func checkNotImplemented(_ context.Context, resultCh chan<- checkgroup.Result) {
-	resultCh <- checkgroup.Result{Err: errors.WithStack(errors.New("not implemented"))}
-}
-
-type setOperation func(ctx context.Context, checks []checkgroup.Func) checkgroup.Result
-
-func (e *Engine) checkUsersetRewrite(
-	ctx context.Context,
-	r *RelationTuple,
-	rewrite *ast.UsersetRewrite,
-	restDepth int,
-) checkgroup.Func {
-	if restDepth < 0 {
-		e.d.Logger().Debug("reached max-depth, therefore this query will not be further expanded")
-		return checkgroup.UnknownMemberFunc
-	}
-
-	e.d.Logger().
-		WithField("request", r.String()).
-		Trace("check userset rewrite")
-
-	var (
-		op     setOperation
-		checks []checkgroup.Func
-	)
-	switch rewrite.Operation {
-	case ast.SetOperationUnion:
-		op = or
-	case ast.SetOperationDifference:
-		op = butNot
-	case ast.SetOperationIntersection:
-		op = and
-	default:
-		return checkNotImplemented
-	}
-
-	for _, child := range rewrite.Children {
-		switch c := child.(type) {
-		case *ast.TupleToUserset:
-			checks = append(checks, checkgroup.WithEdge(checkgroup.Edge{
-				Tuple: *r,
-				Type:  expand.TupeToUserset,
-			}, e.checkTupleToUserset(r, c, restDepth)))
-		case *ast.ComputedUserset:
-			checks = append(checks, checkgroup.WithEdge(checkgroup.Edge{
-				Tuple: *r,
-				Type:  expand.ComputedUserset,
-			}, e.checkComputedUserset(ctx, r, c, restDepth)))
-		case *ast.UsersetRewrite:
-			checks = append(checks, checkgroup.WithEdge(checkgroup.Edge{
-				Tuple: *r,
-				Type:  toExpandNodeType(c.Operation),
-			}, e.checkUsersetRewrite(ctx, r, c, restDepth)))
-		}
-	}
-
-	return func(ctx context.Context, resultCh chan<- checkgroup.Result) {
-		resultCh <- op(ctx, checks)
-	}
-}
-
-func toExpandNodeType(op ast.SetOperation) expand.NodeType {
-	switch op {
-	case ast.SetOperationUnion:
-		return expand.Union
-	case ast.SetOperationDifference:
-		return expand.Exclusion
-	case ast.SetOperationIntersection:
-		return expand.Intersection
-	default:
-		return expand.Union
-	}
-}
-
-func (e *Engine) checkComputedUserset(
-	ctx context.Context,
-	r *RelationTuple,
-	userset *ast.ComputedUserset,
-	restDepth int,
-) checkgroup.Func {
-	if restDepth < 0 {
-		e.d.Logger().Debug("reached max-depth, therefore this query will not be further expanded")
-		return checkgroup.UnknownMemberFunc
-	}
-
-	e.d.Logger().
-		WithField("request", r.String()).
-		WithField("computed userset relation", userset.Relation).
-		Trace("check computed userset")
-
-	return e.checkIsAllowed(
-		ctx,
-		&RelationTuple{
-			Namespace: r.Namespace,
-			Object:    r.Object,
-			Relation:  userset.Relation,
-			Subject:   r.Subject,
-		},
-		restDepth,
-	)
-}
-
-func (e *Engine) checkTupleToUserset(
-	r *RelationTuple,
-	userset *ast.TupleToUserset,
-	restDepth int,
-) checkgroup.Func {
-	if restDepth < 0 {
-		e.d.Logger().Debug("reached max-depth, therefore this query will not be further expanded")
-		return checkgroup.UnknownMemberFunc
-	}
-
-	e.d.Logger().
-		WithField("request", r.String()).
-		WithField("tuple to userset relation", userset.Relation).
-		WithField("tuple to userset computed", userset.ComputedUsersetRelation).
-		Trace("check tuple to userset")
-
-	return func(ctx context.Context, resultCh chan<- checkgroup.Result) {
-		var (
-			prevPage, nextPage string
-			rts                []*RelationTuple
-			err                error
-		)
-		g := checkgroup.New(ctx)
-		for nextPage = "x"; nextPage != "" && !g.Done(); prevPage = nextPage {
-			rts, nextPage, err = e.d.RelationTupleManager().GetRelationTuples(
-				ctx,
-				&Query{
-					Namespace: r.Namespace,
-					Object:    r.Object,
-					Relation:  userset.Relation,
-				},
-				x.WithToken(prevPage))
-			if err != nil {
-				g.Add(checkgroup.ErrorFunc(err))
-				return
-			}
-
-			for _, rt := range rts {
-				if rt.Subject.SubjectSet() == nil {
-					continue
-				}
-				g.Add(e.checkIsAllowed(
-					ctx,
-					&RelationTuple{
-						Namespace: rt.Subject.SubjectSet().Namespace,
-						Object:    rt.Subject.SubjectSet().Object,
-						Relation:  userset.ComputedUsersetRelation,
-						Subject:   r.Subject,
-					},
-					restDepth-1,
-				))
-			}
-		}
-		resultCh <- g.Result()
-	}
 }
 
 func (e *Engine) astRelationFor(ctx context.Context, r *RelationTuple) (*ast.Relation, error) {
@@ -398,120 +239,4 @@ func (e *Engine) namespaceFor(ctx context.Context, r *RelationTuple) (*namespace
 		return nil, err
 	}
 	return ns, nil
-}
-
-func or(ctx context.Context, checks []checkgroup.Func) checkgroup.Result {
-	if len(checks) == 0 {
-		return checkgroup.ResultNotMember
-	}
-
-	resultCh := make(chan checkgroup.Result, len(checks))
-	childCtx, cancelFn := context.WithCancel(ctx)
-	defer cancelFn()
-
-	for _, check := range checks {
-		go check(childCtx, resultCh)
-	}
-
-	for i := 0; i < len(checks); i++ {
-		select {
-		case result := <-resultCh:
-			// We return either the first error or the first success.
-			if result.Err != nil || result.Membership == checkgroup.IsMember {
-				return result
-			}
-		case <-ctx.Done():
-			return checkgroup.Result{Err: errors.WithStack(ctx.Err())}
-		}
-	}
-
-	return checkgroup.ResultNotMember
-}
-
-func and(ctx context.Context, checks []checkgroup.Func) checkgroup.Result {
-	if len(checks) == 0 {
-		return checkgroup.ResultNotMember
-	}
-
-	resultCh := make(chan checkgroup.Result, len(checks))
-	childCtx, cancelFn := context.WithCancel(ctx)
-	defer cancelFn()
-
-	for _, check := range checks {
-		go check(childCtx, resultCh)
-	}
-
-	tree := &expand.Tree{
-		Type:     expand.Intersection,
-		Children: []*expand.Tree{},
-	}
-
-	for i := 0; i < len(checks); i++ {
-		select {
-		case result := <-resultCh:
-			// We return fast on either an error or if a subcheck returns "not a
-			// member".
-			if result.Err != nil || result.Membership != checkgroup.IsMember {
-				return checkgroup.Result{Err: result.Err, Membership: checkgroup.NotMember}
-			} else {
-				tree.Children = append(tree.Children, result.Tree)
-			}
-		case <-ctx.Done():
-			return checkgroup.Result{Err: errors.WithStack(ctx.Err())}
-		}
-	}
-
-	return checkgroup.Result{
-		Membership: checkgroup.IsMember,
-		Tree:       tree,
-	}
-}
-
-// butNot returns "is member" if and only if the first check returns "is member"
-// and all subsequent checks return "not member".
-func butNot(ctx context.Context, checks []checkgroup.Func) checkgroup.Result {
-	if len(checks) < 2 {
-		return checkgroup.ResultNotMember
-	}
-
-	expectMemberCh := make(chan checkgroup.Result, 1)
-	expectNotMemberCh := make(chan checkgroup.Result, len(checks)-1)
-	childCtx, cancelFn := context.WithCancel(ctx)
-	defer cancelFn()
-
-	go checks[0](childCtx, expectMemberCh)
-	for _, check := range checks[1:] {
-		go check(childCtx, expectNotMemberCh)
-	}
-
-	tree := &expand.Tree{
-		Type:     expand.Exclusion,
-		Children: []*expand.Tree{},
-	}
-
-	for i := 0; i < len(checks); i++ {
-		select {
-		case result := <-expectMemberCh:
-			if result.Err != nil || result.Membership == checkgroup.NotMember {
-				return checkgroup.Result{Err: result.Err, Membership: checkgroup.NotMember}
-			} else {
-				tree.Children = append(tree.Children, result.Tree)
-			}
-		case result := <-expectNotMemberCh:
-			// We return fast on either an error or if a subcheck returns "not a
-			// member".
-			if result.Err != nil || result.Membership == checkgroup.IsMember {
-				return checkgroup.Result{Err: result.Err, Membership: checkgroup.NotMember}
-			} else {
-				tree.Children = append(tree.Children, result.Tree)
-			}
-		case <-ctx.Done():
-			return checkgroup.Result{Err: errors.WithStack(ctx.Err())}
-		}
-	}
-
-	return checkgroup.Result{
-		Membership: checkgroup.IsMember,
-		Tree:       tree,
-	}
 }

@@ -12,16 +12,16 @@ import (
 type (
 	Checkgroup interface {
 		Done() bool
-		Add(check Func)
+		Add(check CheckFunc)
 		SetIsMember()
 		Result() Result
-		CheckFunc() Func
+		CheckFunc() CheckFunc
 	}
 
-	Factory func(ctx context.Context) Checkgroup
+	Factory = func(ctx context.Context) Checkgroup
 
-	Func   = func(ctx context.Context, resultCh chan<- Result)
-	Result struct {
+	CheckFunc = func(ctx context.Context, resultCh chan<- Result)
+	Result    struct {
 		Membership Membership
 		Tree       *expand.Tree
 		Err        error
@@ -49,13 +49,13 @@ var (
 	ResultNotMember = Result{Membership: NotMember}
 )
 
-var DefaultFactory Factory = NewConcurrent
+var DefaultFactory = NewConcurrent
 
 func New(ctx context.Context) Checkgroup {
 	return DefaultFactory(ctx)
 }
 
-func ErrorFunc(err error) Func {
+func ErrorFunc(err error) CheckFunc {
 	return func(_ context.Context, resultCh chan<- Result) {
 		resultCh <- Result{Err: errors.WithStack(err)}
 	}
@@ -74,7 +74,7 @@ var UnknownMemberFunc = func(_ context.Context, resultCh chan<- Result) {
 }
 
 // WithEdge adds the edge e to the result of the function.
-func WithEdge(e Edge, f Func) Func {
+func WithEdge(e Edge, f CheckFunc) CheckFunc {
 	return func(ctx context.Context, resultCh chan<- Result) {
 		childCh := make(chan Result, 1)
 		go f(ctx, childCh)

@@ -15,7 +15,6 @@ type (
 	UsersetRewrite struct {
 		Operation SetOperation `json:"set_operation"`
 		Children  []Child      `json:"children"`
-		child
 	}
 
 	Children = []Child
@@ -23,21 +22,17 @@ type (
 	// Define interface to restrict the child types of userset rewrites.
 	Child interface {
 		// AsRewrite returns the child as a userset rewrite, as relations
-		// require a top-level rewrite, even if there just one child was parsed.
+		// require a top-level rewrite, even if just one child was parsed.
 		AsRewrite() *UsersetRewrite
-		onlyComputedUserSetOrTupleToUserset()
 	}
-	child struct{}
 
 	ComputedUserset struct {
 		Relation string `json:"relation"`
-		child
 	}
 
 	TupleToUserset struct {
 		Relation                string `json:"relation"`
 		ComputedUsersetRelation string `json:"computed_userset_relation"`
-		child
 	}
 )
 
@@ -49,8 +44,6 @@ const (
 	SetOperationIntersection
 	SetOperationDifference
 )
-
-func (child) onlyComputedUserSetOrTupleToUserset() {}
 
 func (r *UsersetRewrite) AsRewrite() *UsersetRewrite  { return r }
 func (c *ComputedUserset) AsRewrite() *UsersetRewrite { return &UsersetRewrite{Children: []Child{c}} }

@@ -10,7 +10,7 @@ import (
 type sequentialCheckgroup struct {
 	ctx    context.Context
 	lock   sync.Mutex
-	checks []Func
+	checks []CheckFunc
 	done   bool
 }
 
@@ -24,7 +24,7 @@ func (g *sequentialCheckgroup) Done() bool {
 	return g.done
 }
 
-func (g *sequentialCheckgroup) Add(check Func) {
+func (g *sequentialCheckgroup) Add(check CheckFunc) {
 	g.lock.Lock()
 	defer g.lock.Unlock()
 	if g.done {
@@ -71,7 +71,7 @@ func (g *sequentialCheckgroup) Result() Result {
 	return ResultNotMember
 }
 
-func (g *sequentialCheckgroup) CheckFunc() Func {
+func (g *sequentialCheckgroup) CheckFunc() CheckFunc {
 	g.lock.Lock()
 	defer g.lock.Unlock()
 

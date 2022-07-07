@@ -160,7 +160,7 @@ func (h *Handler) getCheck(ctx context.Context, q url.Values) (bool, error) {
 		return false, err
 	}
 
-	return h.d.PermissionEngine().SubjectIsAllowed(ctx, it[0], maxDepth)
+	return h.d.PermissionEngine().CheckIsMember(ctx, it[0], maxDepth)
 }
 
 // swagger:route POST /relation-tuples/check/openapi read postCheck
@@ -242,7 +242,7 @@ func (h *Handler) postCheck(ctx context.Context, body io.Reader, query url.Value
 		return false, err
 	}
 
-	return h.d.PermissionEngine().SubjectIsAllowed(ctx, t[0], maxDepth)
+	return h.d.PermissionEngine().CheckIsMember(ctx, t[0], maxDepth)
 }
 
 func (h *Handler) Check(ctx context.Context, req *rts.CheckRequest) (*rts.CheckResponse, error) {
@@ -262,7 +262,7 @@ func (h *Handler) Check(ctx context.Context, req *rts.CheckRequest) (*rts.CheckR
 	if err != nil {
 		return nil, err
 	}
-	allowed, err := h.d.PermissionEngine().SubjectIsAllowed(ctx, internalTuple[0], int(req.MaxDepth))
+	allowed, err := h.d.PermissionEngine().CheckIsMember(ctx, internalTuple[0], int(req.MaxDepth))
 	// TODO add content change handling
 	if err != nil {
 		return nil, err

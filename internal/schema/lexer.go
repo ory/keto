@@ -81,7 +81,7 @@ const (
 	letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_"
 )
 
-const eof = -1 // rune indicating end of file
+const eof rune = -1 // rune indicating end of file
 
 func (i item) String() string {
 	switch i.Typ {
@@ -110,21 +110,21 @@ func Lex(name, input string) *lexer {
 }
 
 // next returns the next rune in the input.
-func (l *lexer) next() (rune rune) {
+func (l *lexer) next() (r rune) {
 	if l.pos >= len(l.input) {
 		l.width = 0
 		return eof
 	}
-	rune, l.width = utf8.DecodeRuneInString(l.input[l.pos:])
+	r, l.width = utf8.DecodeRuneInString(l.input[l.pos:])
 	l.pos += l.width
-	return rune
+	return r
 }
 
 // peek returns but does not consume the next rune in the input.
 func (l *lexer) peek() rune {
-	rune := l.next()
+	r := l.next()
 	l.backup()
-	return rune
+	return r
 }
 
 // backup steps back one rune. Can only be called once per call of next.

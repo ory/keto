@@ -23,10 +23,10 @@ type concurrentCheckgroup struct {
 	startConsumerOnce sync.Once
 
 	// addCheckCh is used to add a check to the consumer.
-	addCheckCh chan Func
+	addCheckCh chan CheckFunc
 
-	// freezeCh is used to signal that a result was requested.
-	freezeCh chan struct{}
+	// finalizeCh is used to signal that a result was requested.
+	finalizeCh chan struct{}
 
 	// doneCh is closed by the consumer if a result is ready. Methods that want
 	// to retrieve the result need to wait for the doneCh to be closed first.
@@ -40,9 +40,9 @@ type concurrentCheckgroup struct {
 func NewConcurrent(ctx context.Context) Checkgroup {
 	g := &concurrentCheckgroup{
 		ctx:        ctx,
-		freezeCh:   make(chan struct{}),
+		finalizeCh: make(chan struct{}),
 		doneCh:     make(chan struct{}),
-		addCheckCh: make(chan Func),
+		addCheckCh: make(chan CheckFunc),
 	}
 	g.subcheckCtx, g.cancel = context.WithCancel(g.ctx)
 	g.startConsumer()
@@ -62,7 +62,7 @@ func (g *concurrentCheckgroup) startConsumer() {
 				subcheckCh     = make(chan Result, 1)
 				totalChecks    = 0
 				finishedChecks = 0
-				frozen         = false
+				finalizing     = false
 			)
 
 			defer g.cancel()
@@ -80,19 +80,19 @@ func (g *concurrentCheckgroup) startConsumer() {
 			for {
 				select {
 				case f := <-g.addCheckCh:
-					if frozen {
+					if finalizing {
 						continue
 					}
 					totalChecks++
 					go f(g.subcheckCtx, subcheckCh)
 
-				case <-g.freezeCh:
-					if frozen {
-						// we're already frozen
-						// we don't want to accidentally set the result to ResultNotMember on a second freeze request
+				case <-g.finalizeCh:
+					if finalizing {
+						// we're already finalizing
+						// we don't want to accidentally set the result to ResultNotMember on a second finalize request
 						continue
 					}
-					frozen = true
+					finalizing = true
 					if finishedChecks == totalChecks {
 						g.result = ResultNotMember
 						return
@@ -105,7 +105,7 @@ func (g *concurrentCheckgroup) startConsumer() {
 						return
 					}
 
-					if frozen && finishedChecks == totalChecks {
+					if finalizing && finishedChecks == totalChecks {
 						g.result = ResultNotMember
 						return
 					}
@@ -128,8 +128,8 @@ func (g *concurrentCheckgroup) Done() bool {
 	}
 }
 
-// Add adds the Func to the checkgroup and starts running it.
-func (g *concurrentCheckgroup) Add(check Func) {
+// Add adds the CheckFunc to the checkgroup and starts running it.
+func (g *concurrentCheckgroup) Add(check CheckFunc) {
 	select {
 	case g.addCheckCh <- check:
 	case <-g.subcheckCtx.Done():
@@ -141,27 +141,27 @@ func (g *concurrentCheckgroup) SetIsMember() {
 	g.Add(IsMemberFunc)
 }
 
-// tryFreeze tries to freeze the group, i.e, signal the consumer that the result
+// tryFinalize tries to set the group state to finalize, i.e, signal the consumer that the result
 // was requested and that no more checks will be added. If the consumer is
-// already done, freezing is not necessary anymore. This should never block.
-func (g *concurrentCheckgroup) tryFreeze() {
+// already done, finalizing is not necessary anymore. This should never block.
+func (g *concurrentCheckgroup) tryFinalize() {
 	select {
-	case g.freezeCh <- struct{}{}:
+	case g.finalizeCh <- struct{}{}:
 	case <-g.doneCh:
 	}
 }
 
 // Result returns the Result, possibly blocking.
 func (g *concurrentCheckgroup) Result() Result {
-	g.tryFreeze()
+	g.tryFinalize()
 	<-g.doneCh
 	return g.result
 }
 
-// CheckFunc returns a `Func` that writes the result to the result channel.
-func (g *concurrentCheckgroup) CheckFunc() Func {
+// CheckFunc returns a CheckFunc that writes the result to the result channel.
+func (g *concurrentCheckgroup) CheckFunc() CheckFunc {
 	return func(ctx context.Context, resultCh chan<- Result) {
-		g.tryFreeze()
+		g.tryFinalize()
 
 		select {
 		case <-g.doneCh:

@@ -16,7 +16,7 @@ var neverFinishesCheckFunc = func(ctx context.Context, resultCh chan<- checkgrou
 	resultCh <- checkgroup.Result{Err: ctx.Err()}
 }
 
-func isMemberAfterDelayFunc(delay time.Duration) checkgroup.Func {
+func isMemberAfterDelayFunc(delay time.Duration) checkgroup.CheckFunc {
 	return func(ctx context.Context, resultCh chan<- checkgroup.Result) {
 		select {
 		case <-time.After(delay):
@@ -27,7 +27,7 @@ func isMemberAfterDelayFunc(delay time.Duration) checkgroup.Func {
 	}
 }
 
-func notMemberAfterDelayFunc(delay time.Duration) checkgroup.Func {
+func notMemberAfterDelayFunc(delay time.Duration) checkgroup.CheckFunc {
 	return func(ctx context.Context, resultCh chan<- checkgroup.Result) {
 		select {
 		case <-time.After(delay):
@@ -152,12 +152,12 @@ func TestCheckgroup_returns_immediately_if_nothing_to_check(t *testing.T) {
 func TestCheckgroup_has_no_leaks(t *testing.T) {
 	testCases := []struct {
 		name     string
-		checks   []checkgroup.Func
+		checks   []checkgroup.CheckFunc
 		expected checkgroup.Result
 	}{
 		{
 			name: "is member after delay",
-			checks: []checkgroup.Func{
+			checks: []checkgroup.CheckFunc{
 				checkgroup.UnknownMemberFunc,
 				isMemberAfterDelayFunc(5 * time.Millisecond),
 				notMemberAfterDelayFunc(1 * time.Millisecond),
@@ -169,7 +169,7 @@ func TestCheckgroup_has_no_leaks(t *testing.T) {
 		},
 		{
 			name: "is member immediately",
-			checks: []checkgroup.Func{
+			checks: []checkgroup.CheckFunc{
 				checkgroup.IsMemberFunc,
 				checkgroup.IsMemberFunc,
 				checkgroup.IsMemberFunc,
@@ -184,7 +184,7 @@ func TestCheckgroup_has_no_leaks(t *testing.T) {
 		},
 		{
 			name: "is not member immediately",
-			checks: []checkgroup.Func{
+			checks: []checkgroup.CheckFunc{
 				checkgroup.NotMemberFunc,
 				checkgroup.NotMemberFunc,
 				checkgroup.NotMemberFunc,
@@ -194,7 +194,7 @@ func TestCheckgroup_has_no_leaks(t *testing.T) {
 		},
 		{
 			name: "is not member after delay",
-			checks: []checkgroup.Func{
+			checks: []checkgroup.CheckFunc{
 				checkgroup.NotMemberFunc,
 				checkgroup.NotMemberFunc,
 				checkgroup.NotMemberFunc,
@@ -206,7 +206,7 @@ func TestCheckgroup_has_no_leaks(t *testing.T) {
 		},
 		{
 			name: "never finishes",
-			checks: []checkgroup.Func{
+			checks: []checkgroup.CheckFunc{
 				neverFinishesCheckFunc,
 				neverFinishesCheckFunc,
 				checkgroup.UnknownMemberFunc,
