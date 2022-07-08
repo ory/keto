@@ -18,7 +18,7 @@ require (
 	github.com/go-openapi/swag v0.21.1
 	github.com/go-openapi/validate v0.22.0
 	github.com/go-sql-driver/mysql v1.6.0
-	github.com/gobuffalo/pop/v6 v6.0.4-0.20220524160009-195240e4a669
+	github.com/gobuffalo/pop/v6 v6.0.4-0.20220707121509-feb0eed33d86
 	github.com/gofrs/uuid v4.2.0+incompatible
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
 	github.com/julienschmidt/httprouter v1.3.0
@@ -29,7 +29,7 @@ require (
 	github.com/ory/herodot v0.9.13
 	github.com/ory/jsonschema/v3 v3.0.7
 	github.com/ory/keto/proto v0.8.0-alpha.2
-	github.com/ory/x v0.0.422
+	github.com/ory/x v0.0.437-0.20220708143911-e1f84a5f5139
 	github.com/pelletier/go-toml v1.9.5
 	github.com/phayes/freeport v0.0.0-20220201140144-74d24b5ae9f5
 	github.com/pkg/errors v0.9.1

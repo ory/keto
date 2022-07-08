@@ -142,18 +142,21 @@ var (
 						newTuples[i], mappings[i*2], mappings[i*2+1] = relationTuples[i].ToNew()
 					}
 
+					start := time.Now()
 					if err := batchWriteMappings(conn, mappings); err != nil {
 						return fmt.Errorf("could not write mappings: %w", err)
 					}
-
+					fmt.Printf("Wrote %d mappings in %s\n", len(mappings), time.Since(start))
+					start = time.Now()
 					if err := batchInsertTuples(conn, newTuples); err != nil {
 						return fmt.Errorf("could not insert new tuples: %w", err)
 					}
-
+					fmt.Printf("Inserted %d new tuples in %s\n", len(newTuples), time.Since(start))
 					if !hasNext {
 						break
 					}
 					lastID = relationTuples[len(relationTuples)-1].ID
+					fmt.Printf("Last ID: %s\n", lastID)
 				}
 
 				return nil
