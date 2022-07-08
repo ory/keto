@@ -38,7 +38,7 @@ func (h *handler) RegisterReadRoutes(r *x.ReadRouter) {
 func (h *handler) RegisterWriteRoutes(r *x.WriteRouter) {
 	r.PUT(WriteRouteBase, h.createRelation)
 	r.DELETE(WriteRouteBase, h.deleteRelations)
-	r.PATCH(WriteRouteBase, h.patchRelations)
+	r.PATCH(WriteRouteBase, h.patchRelationTuples)
 }
 
 func (h *handler) RegisterReadGRPC(s *grpc.Server) {

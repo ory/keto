@@ -13,21 +13,21 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// RelationQuery relation query
+// RelationTuple relation tuple
 //
-// swagger:model relationQuery
-type RelationQuery struct {
+// swagger:model relationTuple
+type RelationTuple struct {
 
-	// Namespace to query
+	// Namespace of the Relation Tuple
 	Namespace string `json:"namespace,omitempty"`
 
-	// Object to query
+	// Object of the Relation Tuple
 	Object string `json:"object,omitempty"`
 
-	// Relation to query
+	// Relation of the Relation Tuple
 	Relation string `json:"relation,omitempty"`
 
-	// SubjectID to query
+	// SubjectID of the Relation Tuple
 	//
 	// Either SubjectSet or SubjectID can be provided.
 	SubjectID string `json:"subject_id,omitempty"`
@@ -36,8 +36,8 @@ type RelationQuery struct {
 	SubjectSet *SubjectSet `json:"subject_set,omitempty"`
 }
 
-// Validate validates this relation query
-func (m *RelationQuery) Validate(formats strfmt.Registry) error {
+// Validate validates this relation tuple
+func (m *RelationTuple) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateSubjectSet(formats); err != nil {
@@ -50,7 +50,7 @@ func (m *RelationQuery) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *RelationQuery) validateSubjectSet(formats strfmt.Registry) error {
+func (m *RelationTuple) validateSubjectSet(formats strfmt.Registry) error {
 	if swag.IsZero(m.SubjectSet) { // not required
 		return nil
 	}
@@ -69,8 +69,8 @@ func (m *RelationQuery) validateSubjectSet(formats strfmt.Registry) error {
 	return nil
 }
 
-// ContextValidate validate this relation query based on the context it is used
-func (m *RelationQuery) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+// ContextValidate validate this relation tuple based on the context it is used
+func (m *RelationTuple) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.contextValidateSubjectSet(ctx, formats); err != nil {
@@ -83,7 +83,7 @@ func (m *RelationQuery) ContextValidate(ctx context.Context, formats strfmt.Regi
 	return nil
 }
 
-func (m *RelationQuery) contextValidateSubjectSet(ctx context.Context, formats strfmt.Registry) error {
+func (m *RelationTuple) contextValidateSubjectSet(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.SubjectSet != nil {
 		if err := m.SubjectSet.ContextValidate(ctx, formats); err != nil {
@@ -100,7 +100,7 @@ func (m *RelationQuery) contextValidateSubjectSet(ctx context.Context, formats s
 }
 
 // MarshalBinary interface implementation
-func (m *RelationQuery) MarshalBinary() ([]byte, error) {
+func (m *RelationTuple) MarshalBinary() ([]byte, error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -108,8 +108,8 @@ func (m *RelationQuery) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (m *RelationQuery) UnmarshalBinary(b []byte) error {
-	var res RelationQuery
+func (m *RelationTuple) UnmarshalBinary(b []byte) error {
+	var res RelationTuple
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

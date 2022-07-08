@@ -173,11 +173,11 @@ func (m *Mapper) ToQuery(ctx context.Context, q *RelationQuery) (res *ketoapi.Re
 	return res, nil
 }
 
-func (m *Mapper) FromTuple(ctx context.Context, ts ...*ketoapi.RelationTuple) (res []*InternalRelationTuple, err error) {
+func (m *Mapper) FromTuple(ctx context.Context, ts ...*ketoapi.RelationTuple) (res []*RelationTuple, err error) {
 	onSuccess := newSuccess(&err)
 	defer onSuccess.cleanup()
 
-	res = make([]*InternalRelationTuple, len(ts))
+	res = make([]*RelationTuple, len(ts))
 	s := make([]string, len(ts)*2)
 	u := make([]uuid.UUID, len(ts)*2)
 
@@ -192,7 +192,7 @@ func (m *Mapper) FromTuple(ctx context.Context, ts ...*ketoapi.RelationTuple) (r
 		if err != nil {
 			return nil, err
 		}
-		res[i] = &InternalRelationTuple{
+		res[i] = &RelationTuple{
 			Namespace: n.ID,
 			Relation:  t.Relation,
 		}
@@ -228,7 +228,7 @@ func (m *Mapper) FromTuple(ctx context.Context, ts ...*ketoapi.RelationTuple) (r
 	return res, nil
 }
 
-func (m *Mapper) ToTuple(ctx context.Context, ts ...*InternalRelationTuple) (res []*ketoapi.RelationTuple, err error) {
+func (m *Mapper) ToTuple(ctx context.Context, ts ...*RelationTuple) (res []*ketoapi.RelationTuple, err error) {
 	onSuccess := newSuccess(&err)
 	defer onSuccess.cleanup()
 

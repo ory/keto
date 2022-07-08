@@ -16,6 +16,7 @@ var (
 	ErrUnknownNodeType   = errors.New("unknown node type")
 )
 
+// swagger:model relationTuple
 type RelationTuple struct {
 	// Namespace of the Relation Tuple
 	Namespace string `json:"namespace"`
@@ -38,7 +39,7 @@ type RelationTuple struct {
 	SubjectSet *SubjectSet `json:"subject_set,omitempty"`
 }
 
-// swagger:parameters getExpand
+// swagger:model subjectSet
 type SubjectSet struct {
 	// Namespace of the Subject Set
 	//
@@ -56,6 +57,7 @@ type SubjectSet struct {
 	Relation string `json:"relation"`
 }
 
+// swagger:model relationQuery
 type RelationQuery struct {
 	// Namespace to query
 	Namespace *string `json:"namespace"`
@@ -78,13 +80,11 @@ type RelationQuery struct {
 	SubjectSet *SubjectSet `json:"subject_set,omitempty"`
 }
 
+// swagger:model patchDelta
 type PatchDelta struct {
 	Action        PatchAction    `json:"action"`
 	RelationTuple *RelationTuple `json:"relation_tuple"`
 }
-
-// swagger:model PatchDeltas
-type PatchDeltas []*PatchDelta
 
 // swagger:enum PatchAction
 type PatchAction string
@@ -130,7 +130,7 @@ const (
 	Unspecified  ExpandNodeType = "unspecified"
 )
 
-// swagger:model ExpandTree
+// swagger:model expandTree
 type ExpandTree struct {
 	Type       ExpandNodeType `json:"type"`
 	Children   []*ExpandTree  `json:"children,omitempty"`

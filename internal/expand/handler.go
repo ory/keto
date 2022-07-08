@@ -55,6 +55,8 @@ func (h *handler) RegisterWriteGRPC(s *grpc.Server) {}
 type getExpandRequest struct {
 	// in:query
 	MaxDepth int `json:"max-depth"`
+	// in:query
+	ketoapi.SubjectSet
 }
 
 // swagger:route GET /relation-tuples/expand read getExpand

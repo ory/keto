@@ -4,10 +4,10 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Namespace** | Pointer to **string** | Namespace of the Relation Tuple | [optional] 
-**Object** | Pointer to **string** | Object of the Relation Tuple | [optional] 
-**Relation** | Pointer to **string** | Relation of the Relation Tuple | [optional] 
-**SubjectId** | Pointer to **string** | SubjectID of the Relation Tuple  Either SubjectSet or SubjectID can be provided. | [optional] 
+**Namespace** | Pointer to **string** | Namespace to query | [optional] 
+**Object** | Pointer to **string** | Object to query | [optional] 
+**Relation** | Pointer to **string** | Relation to query | [optional] 
+**SubjectId** | Pointer to **string** | SubjectID to query  Either SubjectSet or SubjectID can be provided. | [optional] 
 **SubjectSet** | Pointer to [**SubjectSet**](SubjectSet.md) |  | [optional] 
 
 ## Methods

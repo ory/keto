@@ -94,7 +94,7 @@ func TestEngine(t *testing.T) {
 			Relation: "member",
 			Object:   boulderGroup,
 		}
-		boulderers := []*relationtuple.InternalRelationTuple{
+		boulderers := []*relationtuple.RelationTuple{
 			{
 				Relation: bouldererUserSet.Relation,
 				Object:   boulderGroup,
@@ -184,7 +184,7 @@ func TestEngine(t *testing.T) {
 		reg, e := newTestEngine(t, []*namespace.Namespace{{}})
 
 		for _, group := range expectedTree.Children {
-			require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), &relationtuple.InternalRelationTuple{
+			require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), &relationtuple.RelationTuple{
 				Object:   expectedTree.Subject.(*relationtuple.SubjectSet).Object,
 				Relation: "transitive member",
 				Subject: &relationtuple.SubjectSet{
@@ -194,7 +194,7 @@ func TestEngine(t *testing.T) {
 			}))
 
 			for _, user := range group.Children {
-				require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), &relationtuple.InternalRelationTuple{
+				require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), &relationtuple.RelationTuple{
 					Object:   group.Subject.(*relationtuple.SubjectSet).Object,
 					Relation: "member",
 					Subject:  user.Subject.(*relationtuple.SubjectID),
@@ -212,7 +212,7 @@ func TestEngine(t *testing.T) {
 
 		ids := x.UUIDs(5)
 		for i := 1; i < len(ids); i++ {
-			require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), &relationtuple.InternalRelationTuple{
+			require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), &relationtuple.RelationTuple{
 				Object:   ids[i-1],
 				Relation: "child",
 				Subject: &relationtuple.SubjectSet{
@@ -274,7 +274,7 @@ func TestEngine(t *testing.T) {
 		}
 
 		for _, user := range users {
-			require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), &relationtuple.InternalRelationTuple{
+			require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), &relationtuple.RelationTuple{
 				Object:   root,
 				Relation: "access",
 				Subject:  &relationtuple.SubjectID{ID: user},
@@ -315,7 +315,7 @@ func TestEngine(t *testing.T) {
 			},
 		}
 
-		require.NoError(t, reg.WriteRelationTuples(context.Background(), &relationtuple.InternalRelationTuple{
+		require.NoError(t, reg.WriteRelationTuples(context.Background(), &relationtuple.RelationTuple{
 			Object:   expectedTree.Subject.(*relationtuple.SubjectSet).Object,
 			Relation: expectedTree.Subject.(*relationtuple.SubjectSet).Relation,
 			Subject:  expectedTree.Children[0].Subject,
@@ -369,7 +369,7 @@ func TestEngine(t *testing.T) {
 			},
 		}
 
-		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), []*relationtuple.InternalRelationTuple{
+		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), []*relationtuple.RelationTuple{
 			{
 				Namespace: namesp,
 				Object:    sendlingerTor,

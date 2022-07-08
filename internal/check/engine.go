@@ -33,7 +33,7 @@ func NewEngine(d EngineDependencies) *Engine {
 func (e *Engine) subjectIsAllowed(
 	ctx context.Context,
 	requested relationtuple.Subject,
-	rels []*relationtuple.InternalRelationTuple,
+	rels []*relationtuple.RelationTuple,
 	restDepth int,
 ) (bool, error) {
 	// This is the same as the graph problem "can requested.Subject be reached from requested.Object through the first outgoing edge requested.Relation"
@@ -62,7 +62,7 @@ func (e *Engine) subjectIsAllowed(
 		allowed, err := e.checkOneIndirectionFurther(
 			ctx,
 			requested,
-			&relationtuple.InternalRelationTuple{Object: sub.Object, Relation: sub.Relation, Namespace: sub.Namespace},
+			&relationtuple.RelationTuple{Object: sub.Object, Relation: sub.Relation, Namespace: sub.Namespace},
 			restDepth-1,
 		)
 		if err != nil {
@@ -79,7 +79,7 @@ func (e *Engine) subjectIsAllowed(
 func (e *Engine) checkOneIndirectionFurther(
 	ctx context.Context,
 	requested relationtuple.Subject,
-	expandQuery *relationtuple.InternalRelationTuple,
+	expandQuery *relationtuple.RelationTuple,
 	restDepth int,
 ) (bool, error) {
 	if restDepth <= 0 {
@@ -111,11 +111,11 @@ func (e *Engine) checkOneIndirectionFurther(
 	}
 }
 
-func (e *Engine) SubjectIsAllowed(ctx context.Context, r *relationtuple.InternalRelationTuple, restDepth int) (bool, error) {
+func (e *Engine) SubjectIsAllowed(ctx context.Context, r *relationtuple.RelationTuple, restDepth int) (bool, error) {
 	// global max-depth takes precedence when it is the lesser or if the request max-depth is less than or equal to 0
 	if globalMaxDepth := e.d.Config(ctx).MaxReadDepth(); restDepth <= 0 || globalMaxDepth < restDepth {
 		restDepth = globalMaxDepth
 	}
 
-	return e.checkOneIndirectionFurther(ctx, r.Subject, &relationtuple.InternalRelationTuple{Object: r.Object, Relation: r.Relation, Namespace: r.Namespace}, restDepth)
+	return e.checkOneIndirectionFurther(ctx, r.Subject, &relationtuple.RelationTuple{Object: r.Object, Relation: r.Relation, Namespace: r.Namespace}, restDepth)
 }

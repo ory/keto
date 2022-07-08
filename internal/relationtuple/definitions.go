@@ -5,13 +5,11 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/gofrs/uuid"
-
 	"github.com/ory/keto/ketoapi"
 
-	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
+	"github.com/gofrs/uuid"
 
-	"github.com/ory/herodot"
+	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 
 	"github.com/ory/keto/internal/x"
 )
@@ -21,11 +19,11 @@ type (
 		RelationTupleManager() Manager
 	}
 	Manager interface {
-		GetRelationTuples(ctx context.Context, query *RelationQuery, options ...x.PaginationOptionSetter) ([]*InternalRelationTuple, string, error)
-		WriteRelationTuples(ctx context.Context, rs ...*InternalRelationTuple) error
-		DeleteRelationTuples(ctx context.Context, rs ...*InternalRelationTuple) error
+		GetRelationTuples(ctx context.Context, query *RelationQuery, options ...x.PaginationOptionSetter) ([]*RelationTuple, string, error)
+		WriteRelationTuples(ctx context.Context, rs ...*RelationTuple) error
+		DeleteRelationTuples(ctx context.Context, rs ...*RelationTuple) error
 		DeleteAllRelationTuples(ctx context.Context, query *RelationQuery) error
-		TransactRelationTuples(ctx context.Context, insert []*InternalRelationTuple, delete []*InternalRelationTuple) error
+		TransactRelationTuples(ctx context.Context, insert []*RelationTuple, delete []*RelationTuple) error
 	}
 	SubjectID struct {
 		ID uuid.UUID `json:"id"`
@@ -46,28 +44,27 @@ type (
 		Equals(Subject) bool
 		Hash() uuid.UUID
 	}
-	InternalRelationTuple struct {
+	RelationTuple struct {
 		Namespace int32     `json:"namespace"`
 		Object    uuid.UUID `json:"object"`
 		Relation  string    `json:"relation"`
 		Subject   Subject   `json:"subject"`
 	}
-	InternalRelationTuples []*InternalRelationTuple
+	InternalRelationTuples []*RelationTuple
 	SubjectSet             struct {
 		Namespace int32     `json:"namespace"`
 		Object    uuid.UUID `json:"object"`
 		Relation  string    `json:"relation"`
 	}
+	Tree struct {
+		Type     ketoapi.ExpandNodeType `json:"type"`
+		Subject  Subject                `json:"subject"`
+		Children []*Tree                `json:"children,omitempty"`
+	}
 )
 
 var (
-	_, _ Subject = &SubjectID{}, &SubjectSet{}
-
-	ErrMalformedInput    = herodot.ErrBadRequest.WithError("malformed string input")
-	ErrNilSubject        = herodot.ErrBadRequest.WithError("subject is not allowed to be nil").WithDebug("Please provide a subject.")
-	ErrDuplicateSubject  = herodot.ErrBadRequest.WithError("exactly one of subject_set or subject_id has to be provided")
-	ErrDroppedSubjectKey = herodot.ErrBadRequest.WithDebug(`provide "subject_id" or "subject_set.*"; support for "subject" was dropped`)
-	ErrIncompleteSubject = herodot.ErrBadRequest.WithError(`incomplete subject, provide "subject_id" or a complete "subject_set.*"`)
+	_, _ Subject = (*SubjectID)(nil), (*SubjectSet)(nil)
 )
 
 func (s *SubjectID) Equals(other Subject) bool {
@@ -94,7 +91,7 @@ func (s *SubjectSet) Hash() uuid.UUID {
 	return uuid.NewV5(s.Object, strconv.Itoa(int(s.Namespace))+"-"+s.Relation)
 }
 
-func (t *InternalRelationTuple) ToQuery() *RelationQuery {
+func (t *RelationTuple) ToQuery() *RelationQuery {
 	return &RelationQuery{
 		Namespace: &t.Namespace,
 		Object:    &t.Object,
@@ -121,17 +118,17 @@ func NewManagerWrapper(_ *testing.T, reg ManagerProvider, options ...x.Paginatio
 	}
 }
 
-func (t *ManagerWrapper) GetRelationTuples(ctx context.Context, query *RelationQuery, options ...x.PaginationOptionSetter) ([]*InternalRelationTuple, string, error) {
+func (t *ManagerWrapper) GetRelationTuples(ctx context.Context, query *RelationQuery, options ...x.PaginationOptionSetter) ([]*RelationTuple, string, error) {
 	opts := x.GetPaginationOptions(options...)
 	t.RequestedPages = append(t.RequestedPages, opts.Token)
 	return t.Reg.RelationTupleManager().GetRelationTuples(ctx, query, append(t.PageOpts, options...)...)
 }
 
-func (t *ManagerWrapper) WriteRelationTuples(ctx context.Context, rs ...*InternalRelationTuple) error {
+func (t *ManagerWrapper) WriteRelationTuples(ctx context.Context, rs ...*RelationTuple) error {
 	return t.Reg.RelationTupleManager().WriteRelationTuples(ctx, rs...)
 }
 
-func (t *ManagerWrapper) DeleteRelationTuples(ctx context.Context, rs ...*InternalRelationTuple) error {
+func (t *ManagerWrapper) DeleteRelationTuples(ctx context.Context, rs ...*RelationTuple) error {
 	return t.Reg.RelationTupleManager().DeleteRelationTuples(ctx, rs...)
 }
 
@@ -139,16 +136,10 @@ func (t *ManagerWrapper) DeleteAllRelationTuples(ctx context.Context, query *Rel
 	return t.Reg.RelationTupleManager().DeleteAllRelationTuples(ctx, query)
 }
 
-func (t *ManagerWrapper) TransactRelationTuples(ctx context.Context, insert []*InternalRelationTuple, delete []*InternalRelationTuple) error {
+func (t *ManagerWrapper) TransactRelationTuples(ctx context.Context, insert []*RelationTuple, delete []*RelationTuple) error {
 	return t.Reg.RelationTupleManager().TransactRelationTuples(ctx, insert, delete)
 }
 
 func (t *ManagerWrapper) RelationTupleManager() Manager {
 	return t
-}
-
-type Tree struct {
-	Type     ketoapi.ExpandNodeType `json:"type"`
-	Subject  Subject                `json:"subject"`
-	Children []*Tree                `json:"children,omitempty"`
 }

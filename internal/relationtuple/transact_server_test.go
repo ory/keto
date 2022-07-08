@@ -171,7 +171,7 @@ func TestWriteHandlers(t *testing.T) {
 			// set a size > 1 just to make sure it gets all
 			actualRTs, _, err := reg.RelationTupleManager().GetRelationTuples(ctx, &relationtuple.RelationQuery{Namespace: &nspace.ID}, x.WithSize(10))
 			require.NoError(t, err)
-			assert.Equal(t, []*relationtuple.InternalRelationTuple{}, actualRTs)
+			assert.Equal(t, []*relationtuple.RelationTuple{}, actualRTs)
 		})
 
 		t.Run("case=deletes multiple tuples", func(t *testing.T) {
@@ -212,7 +212,7 @@ func TestWriteHandlers(t *testing.T) {
 
 			actualRTs, _, err := reg.RelationTupleManager().GetRelationTuples(ctx, mappedQuery, x.WithSize(10))
 			require.NoError(t, err)
-			assert.Equal(t, []*relationtuple.InternalRelationTuple{}, actualRTs)
+			assert.Equal(t, []*relationtuple.RelationTuple{}, actualRTs)
 		})
 	})
 
@@ -358,7 +358,7 @@ func TestWriteHandlers(t *testing.T) {
 				Namespace: &nspace.ID,
 			})
 			require.NoError(t, err)
-			assert.Equal(t, []*relationtuple.InternalRelationTuple{}, actualRTs)
+			assert.Equal(t, []*relationtuple.RelationTuple{}, actualRTs)
 		})
 
 		t.Run("case=valid JSON, invalid content", func(t *testing.T) {

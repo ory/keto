@@ -31,9 +31,8 @@ type ExpandTree struct {
 	SubjectSet *SubjectSet `json:"subject_set,omitempty"`
 
 	// type
-	// Required: true
-	// Enum: [union exclusion intersection leaf]
-	Type *string `json:"type"`
+	// Enum: [union exclusion intersection leaf unspecified]
+	Type string `json:"type,omitempty"`
 }
 
 // Validate validates this expand tree
@@ -72,6 +71,8 @@ func (m *ExpandTree) validateChildren(formats strfmt.Registry) error {
 			if err := m.Children[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("children" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("children" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -91,6 +92,8 @@ func (m *ExpandTree) validateSubjectSet(formats strfmt.Registry) error {
 		if err := m.SubjectSet.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("subject_set")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("subject_set")
 			}
 			return err
 		}
@@ -103,7 +106,7 @@ var expandTreeTypeTypePropEnum []interface{}
 
 func init() {
 	var res []string
-	if err := json.Unmarshal([]byte(`["union","exclusion","intersection","leaf"]`), &res); err != nil {
+	if err := json.Unmarshal([]byte(`["union","exclusion","intersection","leaf","unspecified"]`), &res); err != nil {
 		panic(err)
 	}
 	for _, v := range res {
@@ -124,6 +127,9 @@ const (
 
 	// ExpandTreeTypeLeaf captures enum value "leaf"
 	ExpandTreeTypeLeaf string = "leaf"
+
+	// ExpandTreeTypeUnspecified captures enum value "unspecified"
+	ExpandTreeTypeUnspecified string = "unspecified"
 )
 
 // prop value enum
@@ -135,13 +141,12 @@ func (m *ExpandTree) validateTypeEnum(path, location string, value string) error
 }
 
 func (m *ExpandTree) validateType(formats strfmt.Registry) error {
-
-	if err := validate.Required("type", "body", m.Type); err != nil {
-		return err
+	if swag.IsZero(m.Type) { // not required
+		return nil
 	}
 
 	// value enum
-	if err := m.validateTypeEnum("type", "body", *m.Type); err != nil {
+	if err := m.validateTypeEnum("type", "body", m.Type); err != nil {
 		return err
 	}
 
@@ -174,6 +179,8 @@ func (m *ExpandTree) contextValidateChildren(ctx context.Context, formats strfmt
 			if err := m.Children[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("children" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("children" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -190,6 +197,8 @@ func (m *ExpandTree) contextValidateSubjectSet(ctx context.Context, formats strf
 		if err := m.SubjectSet.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("subject_set")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("subject_set")
 			}
 			return err
 		}

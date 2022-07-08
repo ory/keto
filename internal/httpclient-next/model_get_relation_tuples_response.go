@@ -18,8 +18,8 @@ import (
 // GetRelationTuplesResponse struct for GetRelationTuplesResponse
 type GetRelationTuplesResponse struct {
 	// The opaque token to provide in a subsequent request to get the next page. It is the empty string iff this is the last page.
-	NextPageToken  *string                 `json:"next_page_token,omitempty"`
-	RelationTuples []InternalRelationTuple `json:"relation_tuples,omitempty"`
+	NextPageToken  *string         `json:"next_page_token,omitempty"`
+	RelationTuples []RelationTuple `json:"relation_tuples,omitempty"`
 }
 
 // NewGetRelationTuplesResponse instantiates a new GetRelationTuplesResponse object
@@ -72,9 +72,9 @@ func (o *GetRelationTuplesResponse) SetNextPageToken(v string) {
 }
 
 // GetRelationTuples returns the RelationTuples field value if set, zero value otherwise.
-func (o *GetRelationTuplesResponse) GetRelationTuples() []InternalRelationTuple {
+func (o *GetRelationTuplesResponse) GetRelationTuples() []RelationTuple {
 	if o == nil || o.RelationTuples == nil {
-		var ret []InternalRelationTuple
+		var ret []RelationTuple
 		return ret
 	}
 	return o.RelationTuples
@@ -82,7 +82,7 @@ func (o *GetRelationTuplesResponse) GetRelationTuples() []InternalRelationTuple 
 
 // GetRelationTuplesOk returns a tuple with the RelationTuples field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *GetRelationTuplesResponse) GetRelationTuplesOk() ([]InternalRelationTuple, bool) {
+func (o *GetRelationTuplesResponse) GetRelationTuplesOk() ([]RelationTuple, bool) {
 	if o == nil || o.RelationTuples == nil {
 		return nil, false
 	}
@@ -98,8 +98,8 @@ func (o *GetRelationTuplesResponse) HasRelationTuples() bool {
 	return false
 }
 
-// SetRelationTuples gets a reference to the given []InternalRelationTuple and assigns it to the RelationTuples field.
-func (o *GetRelationTuplesResponse) SetRelationTuples(v []InternalRelationTuple) {
+// SetRelationTuples gets a reference to the given []RelationTuple and assigns it to the RelationTuples field.
+func (o *GetRelationTuplesResponse) SetRelationTuples(v []RelationTuple) {
 	o.RelationTuples = v
 }
 

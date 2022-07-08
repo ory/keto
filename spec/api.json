@@ -6,85 +6,6 @@
       }
     },
     "schemas": {
-      "InternalRelationTuple": {
-        "properties": {
-          "namespace": {
-            "description": "Namespace of the Relation Tuple",
-            "type": "string"
-          },
-          "object": {
-            "description": "Object of the Relation Tuple",
-            "type": "string"
-          },
-          "relation": {
-            "description": "Relation of the Relation Tuple",
-            "type": "string"
-          },
-          "subject_id": {
-            "description": "SubjectID of the Relation Tuple\n\nEither SubjectSet or SubjectID are required.",
-            "type": "string"
-          },
-          "subject_set": {
-            "$ref": "#/components/schemas/SubjectSet"
-          }
-        },
-        "required": ["namespace", "object", "relation"],
-        "type": "object"
-      },
-      "PatchDelta": {
-        "properties": {
-          "action": {
-            "enum": ["insert", "delete"],
-            "type": "string"
-          },
-          "relation_tuple": {
-            "$ref": "#/components/schemas/InternalRelationTuple"
-          }
-        },
-        "type": "object"
-      },
-      "RelationQuery": {
-        "properties": {
-          "namespace": {
-            "description": "Namespace of the Relation Tuple",
-            "type": "string"
-          },
-          "object": {
-            "description": "Object of the Relation Tuple",
-            "type": "string"
-          },
-          "relation": {
-            "description": "Relation of the Relation Tuple",
-            "type": "string"
-          },
-          "subject_id": {
-            "description": "SubjectID of the Relation Tuple\n\nEither SubjectSet or SubjectID can be provided.",
-            "type": "string"
-          },
-          "subject_set": {
-            "$ref": "#/components/schemas/SubjectSet"
-          }
-        },
-        "type": "object"
-      },
-      "SubjectSet": {
-        "properties": {
-          "namespace": {
-            "description": "Namespace of the Subject Set",
-            "type": "string"
-          },
-          "object": {
-            "description": "Object of the Subject Set",
-            "type": "string"
-          },
-          "relation": {
-            "description": "Relation of the Subject Set",
-            "type": "string"
-          }
-        },
-        "required": ["namespace", "object", "relation"],
-        "type": "object"
-      },
       "UUID": {
         "format": "uuid4",
         "type": "string"
@@ -101,14 +22,20 @@
             "type": "string"
           },
           "subject_set": {
-            "$ref": "#/components/schemas/SubjectSet"
+            "$ref": "#/components/schemas/subjectSet"
           },
           "type": {
-            "enum": ["union", "exclusion", "intersection", "leaf"],
-            "type": "string"
+            "enum": [
+              "union",
+              "exclusion",
+              "intersection",
+              "leaf",
+              "unspecified"
+            ],
+            "type": "string",
+            "x-go-enum-desc": "union Union\nexclusion Exclusion\nintersection Intersection\nleaf Leaf\nunspecified Unspecified"
           }
         },
-        "required": ["type"],
         "type": "object"
       },
       "genericError": {
@@ -160,7 +87,7 @@
           },
           "relation_tuples": {
             "items": {
-              "$ref": "#/components/schemas/InternalRelationTuple"
+              "$ref": "#/components/schemas/relationTuple"
             },
             "type": "array"
           }
@@ -188,7 +115,83 @@
         },
         "type": "object"
       },
-      "subject": {
+      "patchDelta": {
+        "properties": {
+          "action": {
+            "enum": ["insert", "delete"],
+            "type": "string",
+            "x-go-enum-desc": "insert ActionInsert\ndelete ActionDelete"
+          },
+          "relation_tuple": {
+            "$ref": "#/components/schemas/relationTuple"
+          }
+        },
+        "type": "object"
+      },
+      "relationQuery": {
+        "properties": {
+          "namespace": {
+            "description": "Namespace to query",
+            "type": "string"
+          },
+          "object": {
+            "description": "Object to query",
+            "type": "string"
+          },
+          "relation": {
+            "description": "Relation to query",
+            "type": "string"
+          },
+          "subject_id": {
+            "description": "SubjectID to query\n\nEither SubjectSet or SubjectID can be provided.",
+            "type": "string"
+          },
+          "subject_set": {
+            "$ref": "#/components/schemas/subjectSet"
+          }
+        },
+        "type": "object"
+      },
+      "relationTuple": {
+        "properties": {
+          "namespace": {
+            "description": "Namespace of the Relation Tuple",
+            "type": "string"
+          },
+          "object": {
+            "description": "Object of the Relation Tuple",
+            "type": "string"
+          },
+          "relation": {
+            "description": "Relation of the Relation Tuple",
+            "type": "string"
+          },
+          "subject_id": {
+            "description": "SubjectID of the Relation Tuple\n\nEither SubjectSet or SubjectID can be provided.",
+            "type": "string"
+          },
+          "subject_set": {
+            "$ref": "#/components/schemas/subjectSet"
+          }
+        },
+        "type": "object"
+      },
+      "subjectSet": {
+        "properties": {
+          "namespace": {
+            "description": "Namespace of the Subject Set",
+            "type": "string"
+          },
+          "object": {
+            "description": "Object of the Subject Set",
+            "type": "string"
+          },
+          "relation": {
+            "description": "Relation of the Subject Set",
+            "type": "string"
+          }
+        },
+        "required": ["namespace", "object", "relation"],
         "type": "object"
       },
       "version": {
@@ -313,7 +316,7 @@
             "application/json": {
               "schema": {
                 "items": {
-                  "$ref": "#/components/schemas/PatchDelta"
+                  "$ref": "#/components/schemas/patchDelta"
                 },
                 "type": "array"
               }
@@ -366,7 +369,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/RelationQuery"
+                "$ref": "#/components/schemas/relationQuery"
               }
             }
           },
@@ -377,11 +380,11 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/RelationQuery"
+                  "$ref": "#/components/schemas/relationQuery"
                 }
               }
             },
-            "description": "RelationQuery"
+            "description": "relationQuery"
           },
           "400": {
             "content": {
@@ -825,7 +828,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/RelationQuery"
+                "$ref": "#/components/schemas/relationQuery"
               }
             }
           },

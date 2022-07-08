@@ -7,13 +7,13 @@ Name | Type | Description | Notes
 **Children** | Pointer to [**[]ExpandTree**](ExpandTree.md) |  | [optional] 
 **SubjectId** | Pointer to **string** |  | [optional] 
 **SubjectSet** | Pointer to [**SubjectSet**](SubjectSet.md) |  | [optional] 
-**Type** | **string** |  | 
+**Type** | Pointer to **string** |  | [optional] 
 
 ## Methods
 
 ### NewExpandTree
 
-`func NewExpandTree(type_ string, ) *ExpandTree`
+`func NewExpandTree() *ExpandTree`
 
 NewExpandTree instantiates a new ExpandTree object
 This constructor will assign default values to properties that have it defined,
@@ -122,6 +122,11 @@ and a boolean to check if the value has been set.
 
 SetType sets Type field to given value.
 
+### HasType
+
+`func (o *ExpandTree) HasType() bool`
+
+HasType returns a boolean if a field has been set.
 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

@@ -25,7 +25,7 @@ type GetRelationTuplesResponse struct {
 	NextPageToken string `json:"next_page_token,omitempty"`
 
 	// relation tuples
-	RelationTuples []*InternalRelationTuple `json:"relation_tuples"`
+	RelationTuples []*RelationTuple `json:"relation_tuples"`
 }
 
 // Validate validates this get relation tuples response
@@ -56,6 +56,8 @@ func (m *GetRelationTuplesResponse) validateRelationTuples(formats strfmt.Regist
 			if err := m.RelationTuples[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("relation_tuples" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("relation_tuples" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -88,6 +90,8 @@ func (m *GetRelationTuplesResponse) contextValidateRelationTuples(ctx context.Co
 			if err := m.RelationTuples[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("relation_tuples" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("relation_tuples" + "." + strconv.Itoa(i))
 				}
 				return err
 			}

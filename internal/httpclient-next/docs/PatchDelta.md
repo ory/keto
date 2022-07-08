@@ -5,7 +5,7 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Action** | Pointer to **string** |  | [optional] 
-**RelationTuple** | Pointer to [**InternalRelationTuple**](InternalRelationTuple.md) |  | [optional] 
+**RelationTuple** | Pointer to [**RelationTuple**](RelationTuple.md) |  | [optional] 
 
 ## Methods
 
@@ -53,20 +53,20 @@ HasAction returns a boolean if a field has been set.
 
 ### GetRelationTuple
 
-`func (o *PatchDelta) GetRelationTuple() InternalRelationTuple`
+`func (o *PatchDelta) GetRelationTuple() RelationTuple`
 
 GetRelationTuple returns the RelationTuple field if non-nil, zero value otherwise.
 
 ### GetRelationTupleOk
 
-`func (o *PatchDelta) GetRelationTupleOk() (*InternalRelationTuple, bool)`
+`func (o *PatchDelta) GetRelationTupleOk() (*RelationTuple, bool)`
 
 GetRelationTupleOk returns a tuple with the RelationTuple field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetRelationTuple
 
-`func (o *PatchDelta) SetRelationTuple(v InternalRelationTuple)`
+`func (o *PatchDelta) SetRelationTuple(v RelationTuple)`
 
 SetRelationTuple sets RelationTuple field to given value.
 

@@ -7,6 +7,8 @@ import (
 	"strconv"
 	"testing"
 
+	"github.com/ory/keto/ketoapi"
+
 	"github.com/gofrs/uuid"
 
 	"github.com/stretchr/testify/assert"
@@ -22,7 +24,7 @@ func ManagerTest(t *testing.T, m Manager) {
 		t.Run("case=success", func(t *testing.T) {
 			nspace := rand.Int31()
 
-			tuples := []*InternalRelationTuple{
+			tuples := []*RelationTuple{
 				{
 					Namespace: nspace,
 					Object:    uuid.Must(uuid.NewV4()),
@@ -56,11 +58,11 @@ func ManagerTest(t *testing.T, m Manager) {
 		t.Run("case=queries", func(t *testing.T) {
 			nspace := rand.Int31()
 
-			tuples := make([]*InternalRelationTuple, 10)
+			tuples := make([]*RelationTuple, 10)
 			ids := x.UUIDs(len(tuples))
 
 			for i := range tuples {
-				tuples[i] = &InternalRelationTuple{
+				tuples[i] = &RelationTuple{
 					Namespace: nspace,
 					Object:    ids[i%2],
 					Relation:  fmt.Sprintf("r %d", i%4),
@@ -72,7 +74,7 @@ func ManagerTest(t *testing.T, m Manager) {
 
 			for i, tc := range []struct {
 				query    *RelationQuery
-				expected []*InternalRelationTuple
+				expected []*RelationTuple
 			}{
 				{
 					query: &RelationQuery{
@@ -85,7 +87,7 @@ func ManagerTest(t *testing.T, m Manager) {
 						Namespace: &nspace,
 						Object:    &ids[0],
 					},
-					expected: []*InternalRelationTuple{
+					expected: []*RelationTuple{
 						tuples[0],
 						tuples[2],
 						tuples[4],
@@ -98,7 +100,7 @@ func ManagerTest(t *testing.T, m Manager) {
 						Namespace: &nspace,
 						Relation:  x.Ptr("r 0"),
 					},
-					expected: []*InternalRelationTuple{
+					expected: []*RelationTuple{
 						tuples[0],
 						tuples[4],
 						tuples[8],
@@ -110,7 +112,7 @@ func ManagerTest(t *testing.T, m Manager) {
 						Object:    &ids[0],
 						Relation:  x.Ptr("r 0"),
 					},
-					expected: []*InternalRelationTuple{
+					expected: []*RelationTuple{
 						tuples[0],
 						tuples[4],
 						tuples[8],
@@ -121,7 +123,7 @@ func ManagerTest(t *testing.T, m Manager) {
 						Namespace: &nspace,
 						Subject:   &SubjectID{ids[0]},
 					},
-					expected: []*InternalRelationTuple{
+					expected: []*RelationTuple{
 						tuples[0],
 					},
 				},
@@ -131,7 +133,7 @@ func ManagerTest(t *testing.T, m Manager) {
 						Object:    &ids[0],
 						Subject:   &SubjectID{ids[0]},
 					},
-					expected: []*InternalRelationTuple{
+					expected: []*RelationTuple{
 						tuples[0],
 					},
 				},
@@ -141,7 +143,7 @@ func ManagerTest(t *testing.T, m Manager) {
 						Relation:  x.Ptr("r 0"),
 						Subject:   &SubjectID{ids[0]},
 					},
-					expected: []*InternalRelationTuple{
+					expected: []*RelationTuple{
 						tuples[0],
 					},
 				},
@@ -152,7 +154,7 @@ func ManagerTest(t *testing.T, m Manager) {
 						Relation:  x.Ptr("r 0"),
 						Subject:   &SubjectID{ids[0]},
 					},
-					expected: []*InternalRelationTuple{
+					expected: []*RelationTuple{
 						tuples[0],
 					},
 				},
@@ -169,10 +171,10 @@ func ManagerTest(t *testing.T, m Manager) {
 		t.Run("case=pagination", func(t *testing.T) {
 			nspace := rand.Int31()
 
-			tuples := make([]*InternalRelationTuple, 20)
+			tuples := make([]*RelationTuple, 20)
 			oID := uuid.Must(uuid.NewV4())
 			for i := range tuples {
-				tuples[i] = &InternalRelationTuple{
+				tuples[i] = &RelationTuple{
 					Namespace: nspace,
 					Object:    oID,
 					Relation:  "r",
@@ -182,13 +184,13 @@ func ManagerTest(t *testing.T, m Manager) {
 
 			require.NoError(t, m.WriteRelationTuples(ctx, tuples...))
 
-			notEncounteredTuples := make([]*InternalRelationTuple, len(tuples))
+			notEncounteredTuples := make([]*RelationTuple, len(tuples))
 			copy(notEncounteredTuples, tuples)
 
 			var nextPage string
 			for range tuples[:len(tuples)-1] {
 				var (
-					res []*InternalRelationTuple
+					res []*RelationTuple
 					err error
 				)
 
@@ -232,7 +234,7 @@ func ManagerTest(t *testing.T, m Manager) {
 			})
 
 			assert.NoError(t, err)
-			assert.Equal(t, []*InternalRelationTuple{}, res)
+			assert.Equal(t, []*RelationTuple{}, res)
 			assert.Equal(t, "", nextPage)
 		})
 	})
@@ -243,7 +245,7 @@ func ManagerTest(t *testing.T, m Manager) {
 			oID := uuid.Must(uuid.NewV4())
 			sID := uuid.Must(uuid.NewV4())
 
-			for _, rt := range []*InternalRelationTuple{
+			for _, rt := range []*RelationTuple{
 				{
 					Namespace: nspace,
 					Object:    oID,
@@ -268,7 +270,7 @@ func ManagerTest(t *testing.T, m Manager) {
 						Namespace: x.Ptr(nspace),
 					})
 					require.NoError(t, err)
-					assert.Equal(t, []*InternalRelationTuple{rt}, res)
+					assert.Equal(t, []*RelationTuple{rt}, res)
 
 					require.NoError(t, m.DeleteRelationTuples(ctx, rt))
 
@@ -284,7 +286,7 @@ func ManagerTest(t *testing.T, m Manager) {
 		t.Run("case=deletes only one tuple", func(t *testing.T) {
 			nspace := rand.Int31()
 
-			rs := make([]*InternalRelationTuple, 4)
+			rs := make([]*RelationTuple, 4)
 			oIDs, sIDs := make([]uuid.UUID, len(rs)), make([]uuid.UUID, len(rs))
 			for i := range oIDs {
 				oIDs[i] = uuid.Must(uuid.NewV4())
@@ -292,7 +294,7 @@ func ManagerTest(t *testing.T, m Manager) {
 			}
 
 			for i := range rs {
-				rs[i] = &InternalRelationTuple{
+				rs[i] = &RelationTuple{
 					Namespace: nspace,
 					Object:    oIDs[i],
 					Relation:  "r" + strconv.Itoa(i),
@@ -315,7 +317,7 @@ func ManagerTest(t *testing.T, m Manager) {
 				Namespace: &nspace,
 			})
 			require.NoError(t, err)
-			assert.ElementsMatch(t, []*InternalRelationTuple{rs[1], rs[3]}, res)
+			assert.ElementsMatch(t, []*RelationTuple{rs[1], rs[3]}, res)
 		})
 
 		t.Run("case=tuple and subject namespace differ", func(t *testing.T) {
@@ -324,7 +326,7 @@ func ManagerTest(t *testing.T, m Manager) {
 			n0, n1 := rand.Int31(), rand.Int31()
 			oID := uuid.Must(uuid.NewV4())
 
-			rt := &InternalRelationTuple{
+			rt := &RelationTuple{
 				Namespace: n0,
 				Object:    oID,
 				Relation:  "r",
@@ -338,7 +340,7 @@ func ManagerTest(t *testing.T, m Manager) {
 
 			actual, _, err := m.GetRelationTuples(ctx, &RelationQuery{Namespace: &n0})
 			require.NoError(t, err)
-			assert.Equal(t, []*InternalRelationTuple{rt}, actual)
+			assert.Equal(t, []*RelationTuple{rt}, actual)
 
 			require.NoError(t, m.DeleteRelationTuples(ctx, rt))
 
@@ -352,7 +354,7 @@ func ManagerTest(t *testing.T, m Manager) {
 		t.Run("case=success", func(t *testing.T) {
 			nspace := rand.Int31()
 
-			rs := make([]*InternalRelationTuple, 4)
+			rs := make([]*RelationTuple, 4)
 			oIDs, sIDs := make([]uuid.UUID, len(rs)), make([]uuid.UUID, len(rs))
 			for i := range oIDs {
 				oIDs[i] = uuid.Must(uuid.NewV4())
@@ -360,7 +362,7 @@ func ManagerTest(t *testing.T, m Manager) {
 			}
 
 			for i := range rs {
-				rs[i] = &InternalRelationTuple{
+				rs[i] = &RelationTuple{
 					Namespace: nspace,
 					Object:    oIDs[i],
 					Relation:  "r" + strconv.Itoa(i),
@@ -373,16 +375,16 @@ func ManagerTest(t *testing.T, m Manager) {
 				Namespace: &nspace,
 			})
 			require.NoError(t, err)
-			assert.ElementsMatch(t, []*InternalRelationTuple{rs[0], rs[1]}, res)
+			assert.ElementsMatch(t, []*RelationTuple{rs[0], rs[1]}, res)
 
-			require.NoError(t, m.TransactRelationTuples(ctx, []*InternalRelationTuple{rs[2], rs[3]}, []*InternalRelationTuple{rs[0]}))
+			require.NoError(t, m.TransactRelationTuples(ctx, []*RelationTuple{rs[2], rs[3]}, []*RelationTuple{rs[0]}))
 
 			res, _, err = m.GetRelationTuples(ctx, &RelationQuery{
 				Namespace: &nspace,
 			})
 			require.NoError(t, err)
 
-			for _, rt := range []*InternalRelationTuple{rs[1], rs[2], rs[3]} {
+			for _, rt := range []*RelationTuple{rs[1], rs[2], rs[3]} {
 				assert.Contains(t, res, rt)
 			}
 		})
@@ -390,21 +392,21 @@ func ManagerTest(t *testing.T, m Manager) {
 		t.Run("case=err rolls back all", func(t *testing.T) {
 			nspace := rand.Int31()
 
-			rs := make([]*InternalRelationTuple, 2)
+			rs := make([]*RelationTuple, 2)
 			oIDs, sIDs := make([]uuid.UUID, len(rs)), make([]uuid.UUID, len(rs))
 			for i := range oIDs {
 				oIDs[i] = uuid.Must(uuid.NewV4())
 				sIDs[i] = uuid.Must(uuid.NewV4())
 			}
 			for i := range rs {
-				rs[i] = &InternalRelationTuple{
+				rs[i] = &RelationTuple{
 					Namespace: nspace,
 					Object:    oIDs[i],
 					Relation:  "r" + strconv.Itoa(i),
 					Subject:   &SubjectID{ID: sIDs[i]},
 				}
 			}
-			invalidRt := &InternalRelationTuple{
+			invalidRt := &RelationTuple{
 				Namespace: nspace,
 				Object:    oIDs[0],
 				Relation:  "r0",
@@ -416,27 +418,27 @@ func ManagerTest(t *testing.T, m Manager) {
 				Namespace: &nspace,
 			})
 			require.NoError(t, err)
-			assert.Equal(t, []*InternalRelationTuple{rs[0]}, res)
+			assert.Equal(t, []*RelationTuple{rs[0]}, res)
 
 			t.Run("invalid=insert", func(t *testing.T) {
-				assert.ErrorIs(t, m.TransactRelationTuples(ctx, []*InternalRelationTuple{invalidRt}, []*InternalRelationTuple{rs[0]}), ErrNilSubject)
+				assert.ErrorIs(t, m.TransactRelationTuples(ctx, []*RelationTuple{invalidRt}, []*RelationTuple{rs[0]}), ketoapi.ErrNilSubject)
 			})
 
 			res, _, err = m.GetRelationTuples(ctx, &RelationQuery{
 				Namespace: &nspace,
 			})
 			require.NoError(t, err)
-			assert.Equal(t, []*InternalRelationTuple{rs[0]}, res)
+			assert.Equal(t, []*RelationTuple{rs[0]}, res)
 
 			t.Run("invalid=delete", func(t *testing.T) {
-				assert.ErrorIs(t, m.TransactRelationTuples(ctx, []*InternalRelationTuple{rs[1]}, []*InternalRelationTuple{invalidRt}), ErrNilSubject)
+				assert.ErrorIs(t, m.TransactRelationTuples(ctx, []*RelationTuple{rs[1]}, []*RelationTuple{invalidRt}), ketoapi.ErrNilSubject)
 			})
 
 			res, _, err = m.GetRelationTuples(ctx, &RelationQuery{
 				Namespace: &nspace,
 			})
 			require.NoError(t, err)
-			assert.Equal(t, []*InternalRelationTuple{rs[0]}, res)
+			assert.Equal(t, []*RelationTuple{rs[0]}, res)
 		})
 	})
 }

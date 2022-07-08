@@ -17,8 +17,8 @@ import (
 
 // PatchDelta struct for PatchDelta
 type PatchDelta struct {
-	Action        *string                `json:"action,omitempty"`
-	RelationTuple *InternalRelationTuple `json:"relation_tuple,omitempty"`
+	Action        *string        `json:"action,omitempty"`
+	RelationTuple *RelationTuple `json:"relation_tuple,omitempty"`
 }
 
 // NewPatchDelta instantiates a new PatchDelta object
@@ -71,9 +71,9 @@ func (o *PatchDelta) SetAction(v string) {
 }
 
 // GetRelationTuple returns the RelationTuple field value if set, zero value otherwise.
-func (o *PatchDelta) GetRelationTuple() InternalRelationTuple {
+func (o *PatchDelta) GetRelationTuple() RelationTuple {
 	if o == nil || o.RelationTuple == nil {
-		var ret InternalRelationTuple
+		var ret RelationTuple
 		return ret
 	}
 	return *o.RelationTuple
@@ -81,7 +81,7 @@ func (o *PatchDelta) GetRelationTuple() InternalRelationTuple {
 
 // GetRelationTupleOk returns a tuple with the RelationTuple field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchDelta) GetRelationTupleOk() (*InternalRelationTuple, bool) {
+func (o *PatchDelta) GetRelationTupleOk() (*RelationTuple, bool) {
 	if o == nil || o.RelationTuple == nil {
 		return nil, false
 	}
@@ -97,8 +97,8 @@ func (o *PatchDelta) HasRelationTuple() bool {
 	return false
 }
 
-// SetRelationTuple gets a reference to the given InternalRelationTuple and assigns it to the RelationTuple field.
-func (o *PatchDelta) SetRelationTuple(v InternalRelationTuple) {
+// SetRelationTuple gets a reference to the given RelationTuple and assigns it to the RelationTuple field.
+func (o *PatchDelta) SetRelationTuple(v RelationTuple) {
 	o.RelationTuple = &v
 }
 

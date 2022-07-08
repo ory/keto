@@ -104,9 +104,9 @@ Class | Method | HTTP request | Description
  - [InlineResponse200](docs/InlineResponse200.md)
  - [InlineResponse2001](docs/InlineResponse2001.md)
  - [InlineResponse503](docs/InlineResponse503.md)
- - [InternalRelationTuple](docs/InternalRelationTuple.md)
  - [PatchDelta](docs/PatchDelta.md)
  - [RelationQuery](docs/RelationQuery.md)
+ - [RelationTuple](docs/RelationTuple.md)
  - [SubjectSet](docs/SubjectSet.md)
  - [Version](docs/Version.md)
 

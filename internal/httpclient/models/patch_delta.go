@@ -17,7 +17,7 @@ import (
 
 // PatchDelta patch delta
 //
-// swagger:model PatchDelta
+// swagger:model patchDelta
 type PatchDelta struct {
 
 	// action
@@ -25,7 +25,7 @@ type PatchDelta struct {
 	Action string `json:"action,omitempty"`
 
 	// relation tuple
-	RelationTuple *InternalRelationTuple `json:"relation_tuple,omitempty"`
+	RelationTuple *RelationTuple `json:"relation_tuple,omitempty"`
 }
 
 // Validate validates this patch delta
@@ -97,6 +97,8 @@ func (m *PatchDelta) validateRelationTuple(formats strfmt.Registry) error {
 		if err := m.RelationTuple.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("relation_tuple")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("relation_tuple")
 			}
 			return err
 		}
@@ -125,6 +127,8 @@ func (m *PatchDelta) contextValidateRelationTuple(ctx context.Context, formats s
 		if err := m.RelationTuple.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("relation_tuple")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("relation_tuple")
 			}
 			return err
 		}

@@ -5,7 +5,7 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **NextPageToken** | Pointer to **string** | The opaque token to provide in a subsequent request to get the next page. It is the empty string iff this is the last page. | [optional] 
-**RelationTuples** | Pointer to [**[]InternalRelationTuple**](InternalRelationTuple.md) |  | [optional] 
+**RelationTuples** | Pointer to [**[]RelationTuple**](RelationTuple.md) |  | [optional] 
 
 ## Methods
 
@@ -53,20 +53,20 @@ HasNextPageToken returns a boolean if a field has been set.
 
 ### GetRelationTuples
 
-`func (o *GetRelationTuplesResponse) GetRelationTuples() []InternalRelationTuple`
+`func (o *GetRelationTuplesResponse) GetRelationTuples() []RelationTuple`
 
 GetRelationTuples returns the RelationTuples field if non-nil, zero value otherwise.
 
 ### GetRelationTuplesOk
 
-`func (o *GetRelationTuplesResponse) GetRelationTuplesOk() (*[]InternalRelationTuple, bool)`
+`func (o *GetRelationTuplesResponse) GetRelationTuplesOk() (*[]RelationTuple, bool)`
 
 GetRelationTuplesOk returns a tuple with the RelationTuples field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetRelationTuples
 
-`func (o *GetRelationTuplesResponse) SetRelationTuples(v []InternalRelationTuple)`
+`func (o *GetRelationTuplesResponse) SetRelationTuples(v []RelationTuple)`
 
 SetRelationTuples sets RelationTuples field to given value.
 

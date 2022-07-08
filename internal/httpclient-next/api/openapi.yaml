@@ -98,7 +98,7 @@ paths:
           application/json:
             schema:
               items:
-                $ref: '#/components/schemas/PatchDelta'
+                $ref: '#/components/schemas/patchDelta'
               type: array
         x-originalParamName: Payload
       responses:
@@ -133,15 +133,15 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RelationQuery'
+              $ref: '#/components/schemas/relationQuery'
         x-originalParamName: Payload
       responses:
         "201":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RelationQuery'
-          description: RelationQuery
+                $ref: '#/components/schemas/relationQuery'
+          description: relationQuery
         "400":
           content:
             application/json:
@@ -486,7 +486,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RelationQuery'
+              $ref: '#/components/schemas/relationQuery'
         x-originalParamName: Payload
       responses:
         "200":
@@ -602,109 +602,6 @@ components:
       description: Empty responses are sent when, for example, resources are deleted.
         The HTTP status code for empty responses is typically 201.
   schemas:
-    InternalRelationTuple:
-      example:
-        subject_id: subject_id
-        namespace: namespace
-        object: object
-        relation: relation
-        subject_set:
-          namespace: namespace
-          object: object
-          relation: relation
-      properties:
-        namespace:
-          description: Namespace of the Relation Tuple
-          type: string
-        object:
-          description: Object of the Relation Tuple
-          type: string
-        relation:
-          description: Relation of the Relation Tuple
-          type: string
-        subject_id:
-          description: |-
-            SubjectID of the Relation Tuple
-
-            Either SubjectSet or SubjectID are required.
-          type: string
-        subject_set:
-          $ref: '#/components/schemas/SubjectSet'
-      required:
-      - namespace
-      - object
-      - relation
-      type: object
-    PatchDelta:
-      example:
-        relation_tuple:
-          subject_id: subject_id
-          namespace: namespace
-          object: object
-          relation: relation
-          subject_set:
-            namespace: namespace
-            object: object
-            relation: relation
-        action: insert
-      properties:
-        action:
-          enum:
-          - insert
-          - delete
-          type: string
-        relation_tuple:
-          $ref: '#/components/schemas/InternalRelationTuple'
-      type: object
-    RelationQuery:
-      example:
-        subject_id: subject_id
-        namespace: namespace
-        object: object
-        relation: relation
-        subject_set:
-          namespace: namespace
-          object: object
-          relation: relation
-      properties:
-        namespace:
-          description: Namespace of the Relation Tuple
-          type: string
-        object:
-          description: Object of the Relation Tuple
-          type: string
-        relation:
-          description: Relation of the Relation Tuple
-          type: string
-        subject_id:
-          description: |-
-            SubjectID of the Relation Tuple
-
-            Either SubjectSet or SubjectID can be provided.
-          type: string
-        subject_set:
-          $ref: '#/components/schemas/SubjectSet'
-      type: object
-    SubjectSet:
-      example:
-        namespace: namespace
-        object: object
-        relation: relation
-      properties:
-        namespace:
-          description: Namespace of the Subject Set
-          type: string
-        object:
-          description: Object of the Subject Set
-          type: string
-        relation:
-          description: Relation of the Subject Set
-          type: string
-      required:
-      - namespace
-      - object
-      - relation
-      type: object
     UUID:
       format: uuid4
       type: string
@@ -727,16 +624,21 @@ components:
         subject_id:
           type: string
         subject_set:
-          $ref: '#/components/schemas/SubjectSet'
+          $ref: '#/components/schemas/subjectSet'
         type:
           enum:
           - union
           - exclusion
           - intersection
           - leaf
+          - unspecified
           type: string
-      required:
-      - type
+          x-go-enum-desc: |-
+            union Union
+            exclusion Exclusion
+            intersection Intersection
+            leaf Leaf
+            unspecified Unspecified
       type: object
     genericError:
       description: The standard error format
@@ -800,7 +702,7 @@ components:
           type: string
         relation_tuples:
           items:
-            $ref: '#/components/schemas/InternalRelationTuple'
+            $ref: '#/components/schemas/relationTuple'
           type: array
       type: object
     healthNotReadyStatus:
@@ -818,7 +720,96 @@ components:
           description: Status always contains "ok".
           type: string
       type: object
-    subject:
+    patchDelta:
+      properties:
+        action:
+          enum:
+          - insert
+          - delete
+          type: string
+          x-go-enum-desc: |-
+            insert ActionInsert
+            delete ActionDelete
+        relation_tuple:
+          $ref: '#/components/schemas/relationTuple'
+      type: object
+    relationQuery:
+      example:
+        subject_id: subject_id
+        namespace: namespace
+        object: object
+        relation: relation
+        subject_set:
+          namespace: namespace
+          object: object
+          relation: relation
+      properties:
+        namespace:
+          description: Namespace to query
+          type: string
+        object:
+          description: Object to query
+          type: string
+        relation:
+          description: Relation to query
+          type: string
+        subject_id:
+          description: |-
+            SubjectID to query
+
+            Either SubjectSet or SubjectID can be provided.
+          type: string
+        subject_set:
+          $ref: '#/components/schemas/subjectSet'
+      type: object
+    relationTuple:
+      example:
+        subject_id: subject_id
+        namespace: namespace
+        object: object
+        relation: relation
+        subject_set:
+          namespace: namespace
+          object: object
+          relation: relation
+      properties:
+        namespace:
+          description: Namespace of the Relation Tuple
+          type: string
+        object:
+          description: Object of the Relation Tuple
+          type: string
+        relation:
+          description: Relation of the Relation Tuple
+          type: string
+        subject_id:
+          description: |-
+            SubjectID of the Relation Tuple
+
+            Either SubjectSet or SubjectID can be provided.
+          type: string
+        subject_set:
+          $ref: '#/components/schemas/subjectSet'
+      type: object
+    subjectSet:
+      example:
+        namespace: namespace
+        object: object
+        relation: relation
+      properties:
+        namespace:
+          description: Namespace of the Subject Set
+          type: string
+        object:
+          description: Object of the Subject Set
+          type: string
+        relation:
+          description: Relation of the Subject Set
+          type: string
+      required:
+      - namespace
+      - object
+      - relation
       type: object
     version:
       properties:

@@ -46,7 +46,7 @@ func IsolationTest(t *testing.T, m0, m1 Manager) {
 	run("suite=lifecycle", func(t *testing.T, m0, m1 Manager) {
 		nspace := rand.Int31()
 
-		rts := []*InternalRelationTuple{
+		rts := []*RelationTuple{
 			{
 				Namespace: nspace,
 				Object:    uuid.Must(uuid.NewV4()),
@@ -100,9 +100,9 @@ func IsolationTest(t *testing.T, m0, m1 Manager) {
 
 			// note that the reset is outside this subtest, so in the second run we actually delete what we had before
 			twice(t, m0, m1)("insert and delete", func(t *testing.T, m0, m1 Manager) {
-				require.NoError(t, m0.TransactRelationTuples(ctx, []*InternalRelationTuple{rts[0]}, []*InternalRelationTuple{rts[1]}))
+				require.NoError(t, m0.TransactRelationTuples(ctx, []*RelationTuple{rts[0]}, []*RelationTuple{rts[1]}))
 
-				require.NoError(t, m1.TransactRelationTuples(ctx, []*InternalRelationTuple{rts[1]}, []*InternalRelationTuple{rts[0]}))
+				require.NoError(t, m1.TransactRelationTuples(ctx, []*RelationTuple{rts[1]}, []*RelationTuple{rts[0]}))
 
 				r0, _, err := m0.GetRelationTuples(ctx, &RelationQuery{Namespace: &nspace})
 				require.NoError(t, err)

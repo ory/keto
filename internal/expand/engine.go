@@ -50,7 +50,7 @@ func (e *Engine) BuildTree(ctx context.Context, subject relationtuple.Subject, r
 		}
 
 		var (
-			rels     []*relationtuple.InternalRelationTuple
+			rels     []*relationtuple.RelationTuple
 			nextPage string
 		)
 		// do ... while nextPage != ""
