@@ -17,18 +17,22 @@ import (
 
 // ExpandTree struct for ExpandTree
 type ExpandTree struct {
-	Children   []ExpandTree `json:"children,omitempty"`
-	SubjectId  *string      `json:"subject_id,omitempty"`
-	SubjectSet *SubjectSet  `json:"subject_set,omitempty"`
-	Type       *string      `json:"type,omitempty"`
+	// The children of the node, possibly none.
+	Children []ExpandTree `json:"children,omitempty"`
+	// The subject ID the node represents. Either this field, or SubjectSet are set.
+	SubjectId  *string     `json:"subject_id,omitempty"`
+	SubjectSet *SubjectSet `json:"subject_set,omitempty"`
+	// The type of the node. union Union exclusion Exclusion intersection Intersection leaf Leaf unspecified Unspecified
+	Type string `json:"type"`
 }
 
 // NewExpandTree instantiates a new ExpandTree object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewExpandTree() *ExpandTree {
+func NewExpandTree(type_ string) *ExpandTree {
 	this := ExpandTree{}
+	this.Type = type_
 	return &this
 }
 
@@ -136,36 +140,28 @@ func (o *ExpandTree) SetSubjectSet(v SubjectSet) {
 	o.SubjectSet = &v
 }
 
-// GetType returns the Type field value if set, zero value otherwise.
+// GetType returns the Type field value
 func (o *ExpandTree) GetType() string {
-	if o == nil || o.Type == nil {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.Type
+
+	return o.Type
 }
 
-// GetTypeOk returns a tuple with the Type field value if set, nil otherwise
+// GetTypeOk returns a tuple with the Type field value
 // and a boolean to check if the value has been set.
 func (o *ExpandTree) GetTypeOk() (*string, bool) {
-	if o == nil || o.Type == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.Type, true
+	return &o.Type, true
 }
 
-// HasType returns a boolean if a field has been set.
-func (o *ExpandTree) HasType() bool {
-	if o != nil && o.Type != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetType gets a reference to the given string and assigns it to the Type field.
+// SetType sets field value
 func (o *ExpandTree) SetType(v string) {
-	o.Type = &v
+	o.Type = v
 }
 
 func (o ExpandTree) MarshalJSON() ([]byte, error) {
@@ -179,7 +175,7 @@ func (o ExpandTree) MarshalJSON() ([]byte, error) {
 	if o.SubjectSet != nil {
 		toSerialize["subject_set"] = o.SubjectSet
 	}
-	if o.Type != nil {
+	if true {
 		toSerialize["type"] = o.Type
 	}
 	return json.Marshal(toSerialize)

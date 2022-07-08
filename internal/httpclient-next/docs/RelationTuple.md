@@ -4,9 +4,9 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Namespace** | Pointer to **string** | Namespace of the Relation Tuple | [optional] 
-**Object** | Pointer to **string** | Object of the Relation Tuple | [optional] 
-**Relation** | Pointer to **string** | Relation of the Relation Tuple | [optional] 
+**Namespace** | **string** | Namespace of the Relation Tuple | 
+**Object** | **string** | Object of the Relation Tuple | 
+**Relation** | **string** | Relation of the Relation Tuple | 
 **SubjectId** | Pointer to **string** | SubjectID of the Relation Tuple  Either SubjectSet or SubjectID can be provided. | [optional] 
 **SubjectSet** | Pointer to [**SubjectSet**](SubjectSet.md) |  | [optional] 
 
@@ -14,7 +14,7 @@ Name | Type | Description | Notes
 
 ### NewRelationTuple
 
-`func NewRelationTuple() *RelationTuple`
+`func NewRelationTuple(namespace string, object string, relation string, ) *RelationTuple`
 
 NewRelationTuple instantiates a new RelationTuple object
 This constructor will assign default values to properties that have it defined,
@@ -48,11 +48,6 @@ and a boolean to check if the value has been set.
 
 SetNamespace sets Namespace field to given value.
 
-### HasNamespace
-
-`func (o *RelationTuple) HasNamespace() bool`
-
-HasNamespace returns a boolean if a field has been set.
 
 ### GetObject
 
@@ -73,11 +68,6 @@ and a boolean to check if the value has been set.
 
 SetObject sets Object field to given value.
 
-### HasObject
-
-`func (o *RelationTuple) HasObject() bool`
-
-HasObject returns a boolean if a field has been set.
 
 ### GetRelation
 
@@ -98,11 +88,6 @@ and a boolean to check if the value has been set.
 
 SetRelation sets Relation field to given value.
 
-### HasRelation
-
-`func (o *RelationTuple) HasRelation() bool`
-
-HasRelation returns a boolean if a field has been set.
 
 ### GetSubjectId
 

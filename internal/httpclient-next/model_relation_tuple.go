@@ -18,11 +18,11 @@ import (
 // RelationTuple struct for RelationTuple
 type RelationTuple struct {
 	// Namespace of the Relation Tuple
-	Namespace *string `json:"namespace,omitempty"`
+	Namespace string `json:"namespace"`
 	// Object of the Relation Tuple
-	Object *string `json:"object,omitempty"`
+	Object string `json:"object"`
 	// Relation of the Relation Tuple
-	Relation *string `json:"relation,omitempty"`
+	Relation string `json:"relation"`
 	// SubjectID of the Relation Tuple  Either SubjectSet or SubjectID can be provided.
 	SubjectId  *string     `json:"subject_id,omitempty"`
 	SubjectSet *SubjectSet `json:"subject_set,omitempty"`
@@ -32,8 +32,11 @@ type RelationTuple struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewRelationTuple() *RelationTuple {
+func NewRelationTuple(namespace string, object string, relation string) *RelationTuple {
 	this := RelationTuple{}
+	this.Namespace = namespace
+	this.Object = object
+	this.Relation = relation
 	return &this
 }
 
@@ -45,100 +48,76 @@ func NewRelationTupleWithDefaults() *RelationTuple {
 	return &this
 }
 
-// GetNamespace returns the Namespace field value if set, zero value otherwise.
+// GetNamespace returns the Namespace field value
 func (o *RelationTuple) GetNamespace() string {
-	if o == nil || o.Namespace == nil {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.Namespace
+
+	return o.Namespace
 }
 
-// GetNamespaceOk returns a tuple with the Namespace field value if set, nil otherwise
+// GetNamespaceOk returns a tuple with the Namespace field value
 // and a boolean to check if the value has been set.
 func (o *RelationTuple) GetNamespaceOk() (*string, bool) {
-	if o == nil || o.Namespace == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.Namespace, true
+	return &o.Namespace, true
 }
 
-// HasNamespace returns a boolean if a field has been set.
-func (o *RelationTuple) HasNamespace() bool {
-	if o != nil && o.Namespace != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetNamespace gets a reference to the given string and assigns it to the Namespace field.
+// SetNamespace sets field value
 func (o *RelationTuple) SetNamespace(v string) {
-	o.Namespace = &v
+	o.Namespace = v
 }
 
-// GetObject returns the Object field value if set, zero value otherwise.
+// GetObject returns the Object field value
 func (o *RelationTuple) GetObject() string {
-	if o == nil || o.Object == nil {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.Object
+
+	return o.Object
 }
 
-// GetObjectOk returns a tuple with the Object field value if set, nil otherwise
+// GetObjectOk returns a tuple with the Object field value
 // and a boolean to check if the value has been set.
 func (o *RelationTuple) GetObjectOk() (*string, bool) {
-	if o == nil || o.Object == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.Object, true
+	return &o.Object, true
 }
 
-// HasObject returns a boolean if a field has been set.
-func (o *RelationTuple) HasObject() bool {
-	if o != nil && o.Object != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetObject gets a reference to the given string and assigns it to the Object field.
+// SetObject sets field value
 func (o *RelationTuple) SetObject(v string) {
-	o.Object = &v
+	o.Object = v
 }
 
-// GetRelation returns the Relation field value if set, zero value otherwise.
+// GetRelation returns the Relation field value
 func (o *RelationTuple) GetRelation() string {
-	if o == nil || o.Relation == nil {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.Relation
+
+	return o.Relation
 }
 
-// GetRelationOk returns a tuple with the Relation field value if set, nil otherwise
+// GetRelationOk returns a tuple with the Relation field value
 // and a boolean to check if the value has been set.
 func (o *RelationTuple) GetRelationOk() (*string, bool) {
-	if o == nil || o.Relation == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.Relation, true
+	return &o.Relation, true
 }
 
-// HasRelation returns a boolean if a field has been set.
-func (o *RelationTuple) HasRelation() bool {
-	if o != nil && o.Relation != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetRelation gets a reference to the given string and assigns it to the Relation field.
+// SetRelation sets field value
 func (o *RelationTuple) SetRelation(v string) {
-	o.Relation = &v
+	o.Relation = v
 }
 
 // GetSubjectId returns the SubjectId field value if set, zero value otherwise.
@@ -207,13 +186,13 @@ func (o *RelationTuple) SetSubjectSet(v SubjectSet) {
 
 func (o RelationTuple) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
-	if o.Namespace != nil {
+	if true {
 		toSerialize["namespace"] = o.Namespace
 	}
-	if o.Object != nil {
+	if true {
 		toSerialize["object"] = o.Object
 	}
-	if o.Relation != nil {
+	if true {
 		toSerialize["relation"] = o.Relation
 	}
 	if o.SubjectId != nil {

@@ -11,6 +11,7 @@ import (
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
+	"github.com/go-openapi/validate"
 )
 
 // RelationTuple relation tuple
@@ -19,13 +20,16 @@ import (
 type RelationTuple struct {
 
 	// Namespace of the Relation Tuple
-	Namespace string `json:"namespace,omitempty"`
+	// Required: true
+	Namespace *string `json:"namespace"`
 
 	// Object of the Relation Tuple
-	Object string `json:"object,omitempty"`
+	// Required: true
+	Object *string `json:"object"`
 
 	// Relation of the Relation Tuple
-	Relation string `json:"relation,omitempty"`
+	// Required: true
+	Relation *string `json:"relation"`
 
 	// SubjectID of the Relation Tuple
 	//
@@ -40,6 +44,18 @@ type RelationTuple struct {
 func (m *RelationTuple) Validate(formats strfmt.Registry) error {
 	var res []error
 
+	if err := m.validateNamespace(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateObject(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateRelation(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.validateSubjectSet(formats); err != nil {
 		res = append(res, err)
 	}
@@ -47,6 +63,33 @@ func (m *RelationTuple) Validate(formats strfmt.Registry) error {
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (m *RelationTuple) validateNamespace(formats strfmt.Registry) error {
+
+	if err := validate.Required("namespace", "body", m.Namespace); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *RelationTuple) validateObject(formats strfmt.Registry) error {
+
+	if err := validate.Required("object", "body", m.Object); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *RelationTuple) validateRelation(formats strfmt.Registry) error {
+
+	if err := validate.Required("relation", "body", m.Relation); err != nil {
+		return err
+	}
+
 	return nil
 }
 

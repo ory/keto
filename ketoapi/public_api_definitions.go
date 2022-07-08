@@ -19,12 +19,18 @@ var (
 // swagger:model relationTuple
 type RelationTuple struct {
 	// Namespace of the Relation Tuple
+	//
+	// required: true
 	Namespace string `json:"namespace"`
 
 	// Object of the Relation Tuple
+	//
+	// required: true
 	Object string `json:"object"`
 
 	// Relation of the Relation Tuple
+	//
+	// required: true
 	Relation string `json:"relation"`
 
 	// SubjectID of the Relation Tuple
@@ -132,10 +138,16 @@ const (
 
 // swagger:model expandTree
 type ExpandTree struct {
-	Type       ExpandNodeType `json:"type"`
-	Children   []*ExpandTree  `json:"children,omitempty"`
-	SubjectSet *SubjectSet    `json:"subject_set,omitempty"`
-	SubjectID  *string        `json:"subject_id,omitempty"`
+	// The type of the node.
+	//
+	// required: true
+	Type ExpandNodeType `json:"type"`
+	// The children of the node, possibly none.
+	Children []*ExpandTree `json:"children,omitempty"`
+	// The subject set the node represents. Either this field, or SubjectID are set.
+	SubjectSet *SubjectSet `json:"subject_set,omitempty"`
+	// The subject ID the node represents. Either this field, or SubjectSet are set.
+	SubjectID *string `json:"subject_id,omitempty"`
 }
 
 func (t ExpandNodeType) String() string {

@@ -4,16 +4,16 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Children** | Pointer to [**[]ExpandTree**](ExpandTree.md) |  | [optional] 
-**SubjectId** | Pointer to **string** |  | [optional] 
+**Children** | Pointer to [**[]ExpandTree**](ExpandTree.md) | The children of the node, possibly none. | [optional] 
+**SubjectId** | Pointer to **string** | The subject ID the node represents. Either this field, or SubjectSet are set. | [optional] 
 **SubjectSet** | Pointer to [**SubjectSet**](SubjectSet.md) |  | [optional] 
-**Type** | Pointer to **string** |  | [optional] 
+**Type** | **string** | The type of the node. union Union exclusion Exclusion intersection Intersection leaf Leaf unspecified Unspecified | 
 
 ## Methods
 
 ### NewExpandTree
 
-`func NewExpandTree() *ExpandTree`
+`func NewExpandTree(type_ string, ) *ExpandTree`
 
 NewExpandTree instantiates a new ExpandTree object
 This constructor will assign default values to properties that have it defined,
@@ -122,11 +122,6 @@ and a boolean to check if the value has been set.
 
 SetType sets Type field to given value.
 
-### HasType
-
-`func (o *ExpandTree) HasType() bool`
-
-HasType returns a boolean if a field has been set.
 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

@@ -21,18 +21,24 @@ import (
 // swagger:model expandTree
 type ExpandTree struct {
 
-	// children
+	// The children of the node, possibly none.
 	Children []*ExpandTree `json:"children"`
 
-	// subject id
+	// The subject ID the node represents. Either this field, or SubjectSet are set.
 	SubjectID string `json:"subject_id,omitempty"`
 
 	// subject set
 	SubjectSet *SubjectSet `json:"subject_set,omitempty"`
 
-	// type
+	// The type of the node.
+	// union Union
+	// exclusion Exclusion
+	// intersection Intersection
+	// leaf Leaf
+	// unspecified Unspecified
+	// Required: true
 	// Enum: [union exclusion intersection leaf unspecified]
-	Type string `json:"type,omitempty"`
+	Type *string `json:"type"`
 }
 
 // Validate validates this expand tree
@@ -141,12 +147,13 @@ func (m *ExpandTree) validateTypeEnum(path, location string, value string) error
 }
 
 func (m *ExpandTree) validateType(formats strfmt.Registry) error {
-	if swag.IsZero(m.Type) { // not required
-		return nil
+
+	if err := validate.Required("type", "body", m.Type); err != nil {
+		return err
 	}
 
 	// value enum
-	if err := m.validateTypeEnum("type", "body", m.Type); err != nil {
+	if err := m.validateTypeEnum("type", "body", *m.Type); err != nil {
 		return err
 	}
 

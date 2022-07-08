@@ -1,7 +1,14 @@
 {
-  "consumes": ["application/json"],
-  "produces": ["application/json"],
-  "schemes": ["http", "https"],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "schemes": [
+    "http",
+    "https"
+  ],
   "swagger": "2.0",
   "info": {
     "description": "Ory Keto is a cloud native access control server providing best-practice patterns (RBAC, ABAC, ACL, AWS IAM Policies, Kubernetes Roles, ...) via REST APIs.",
@@ -22,10 +29,19 @@
     "/admin/relation-tuples": {
       "put": {
         "description": "Use this endpoint to create a relation tuple.",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "schemes": ["http", "https"],
-        "tags": ["write"],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "http",
+          "https"
+        ],
+        "tags": [
+          "write"
+        ],
         "summary": "Create a Relation Tuple",
         "operationId": "createRelationTuple",
         "parameters": [
@@ -60,10 +76,19 @@
       },
       "delete": {
         "description": "Use this endpoint to delete relation tuples",
-        "consumes": ["application/x-www-form-urlencoded"],
-        "produces": ["application/json"],
-        "schemes": ["http", "https"],
-        "tags": ["write"],
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "http",
+          "https"
+        ],
+        "tags": [
+          "write"
+        ],
         "summary": "Delete Relation Tuples",
         "operationId": "deleteRelationTuples",
         "parameters": [
@@ -130,10 +155,19 @@
       },
       "patch": {
         "description": "Use this endpoint to patch one or more relation tuples.",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "schemes": ["http", "https"],
-        "tags": ["write"],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "http",
+          "https"
+        ],
+        "tags": [
+          "write"
+        ],
         "summary": "Patch Multiple Relation Tuples",
         "operationId": "patchRelationTuples",
         "parameters": [
@@ -176,8 +210,12 @@
     "/health/alive": {
       "get": {
         "description": "This endpoint returns a 200 status code when the HTTP server is up running.\nThis status does currently not include checks whether the database connection is working.\n\nIf the service supports TLS Edge Termination, this endpoint does not require the\n`X-Forwarded-Proto` header to be set.\n\nBe aware that if you are running multiple nodes of this service, the health status will never\nrefer to the cluster state, only to a single instance.",
-        "produces": ["application/json"],
-        "tags": ["health"],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "health"
+        ],
         "summary": "Check alive status",
         "operationId": "isInstanceAlive",
         "responses": {
@@ -199,8 +237,12 @@
     "/health/ready": {
       "get": {
         "description": "This endpoint returns a 200 status code when the HTTP server is up running and the environment dependencies (e.g.\nthe database) are responsive as well.\n\nIf the service supports TLS Edge Termination, this endpoint does not require the\n`X-Forwarded-Proto` header to be set.\n\nBe aware that if you are running multiple nodes of this service, the health status will never\nrefer to the cluster state, only to a single instance.",
-        "produces": ["application/json"],
-        "tags": ["health"],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "health"
+        ],
         "summary": "Check readiness status",
         "operationId": "isInstanceReady",
         "responses": {
@@ -222,10 +264,19 @@
     "/relation-tuples": {
       "get": {
         "description": "Get all relation tuples that match the query. Only the namespace field is required.",
-        "consumes": ["application/x-www-form-urlencoded"],
-        "produces": ["application/json"],
-        "schemes": ["http", "https"],
-        "tags": ["read"],
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "http",
+          "https"
+        ],
+        "tags": [
+          "read"
+        ],
         "summary": "Query relation tuples",
         "operationId": "getRelationTuples",
         "parameters": [
@@ -308,10 +359,19 @@
     "/relation-tuples/check": {
       "get": {
         "description": "To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).",
-        "consumes": ["application/x-www-form-urlencoded"],
-        "produces": ["application/json"],
-        "schemes": ["http", "https"],
-        "tags": ["read"],
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "http",
+          "https"
+        ],
+        "tags": [
+          "read"
+        ],
         "summary": "Check a relation tuple",
         "operationId": "getCheckMirrorStatus",
         "responses": {
@@ -343,10 +403,19 @@
       },
       "post": {
         "description": "To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "schemes": ["http", "https"],
-        "tags": ["read"],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "http",
+          "https"
+        ],
+        "tags": [
+          "read"
+        ],
         "summary": "Check a relation tuple",
         "operationId": "postCheckMirrorStatus",
         "responses": {
@@ -380,10 +449,19 @@
     "/relation-tuples/check/openapi": {
       "get": {
         "description": "To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).",
-        "consumes": ["application/x-www-form-urlencoded"],
-        "produces": ["application/json"],
-        "schemes": ["http", "https"],
-        "tags": ["read"],
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "http",
+          "https"
+        ],
+        "tags": [
+          "read"
+        ],
         "summary": "Check a relation tuple",
         "operationId": "getCheck",
         "parameters": [
@@ -459,10 +537,19 @@
       },
       "post": {
         "description": "To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "schemes": ["http", "https"],
-        "tags": ["read"],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "http",
+          "https"
+        ],
+        "tags": [
+          "read"
+        ],
         "summary": "Check a relation tuple",
         "operationId": "postCheck",
         "parameters": [
@@ -505,10 +592,19 @@
     "/relation-tuples/expand": {
       "get": {
         "description": "Use this endpoint to expand a relation tuple.",
-        "consumes": ["application/x-www-form-urlencoded"],
-        "produces": ["application/json"],
-        "schemes": ["http", "https"],
-        "tags": ["read"],
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "http",
+          "https"
+        ],
+        "tags": [
+          "read"
+        ],
         "summary": "Expand a Relation Tuple",
         "operationId": "getExpand",
         "parameters": [
@@ -571,8 +667,12 @@
     "/version": {
       "get": {
         "description": "This endpoint returns the service version typically notated using semantic versioning.\n\nIf the service supports TLS Edge Termination, this endpoint does not require the\n`X-Forwarded-Proto` header to be set.\n\nBe aware that if you are running multiple nodes of this service, the health status will never\nrefer to the cluster state, only to a single instance.",
-        "produces": ["application/json"],
-        "tags": ["version"],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "version"
+        ],
         "summary": "Get service version",
         "operationId": "getVersion",
         "responses": {
@@ -589,22 +689,34 @@
   "definitions": {
     "expandTree": {
       "type": "object",
+      "required": [
+        "type"
+      ],
       "properties": {
         "children": {
+          "description": "The children of the node, possibly none.",
           "type": "array",
           "items": {
             "$ref": "#/definitions/expandTree"
           }
         },
         "subject_id": {
+          "description": "The subject ID the node represents. Either this field, or SubjectSet are set.",
           "type": "string"
         },
         "subject_set": {
           "$ref": "#/definitions/subjectSet"
         },
         "type": {
+          "description": "The type of the node.\nunion Union\nexclusion Exclusion\nintersection Intersection\nleaf Leaf\nunspecified Unspecified",
           "type": "string",
-          "enum": ["union", "exclusion", "intersection", "leaf", "unspecified"],
+          "enum": [
+            "union",
+            "exclusion",
+            "intersection",
+            "leaf",
+            "unspecified"
+          ],
           "x-go-enum-desc": "union Union\nexclusion Exclusion\nintersection Intersection\nleaf Leaf\nunspecified Unspecified"
         }
       }
@@ -642,7 +754,9 @@
       "description": "The content of the allowed field is mirrored in the HTTP status code.",
       "type": "object",
       "title": "RESTResponse represents the response for a check request.",
-      "required": ["allowed"],
+      "required": [
+        "allowed"
+      ],
       "properties": {
         "allowed": {
           "description": "whether the relation tuple is allowed",
@@ -691,7 +805,10 @@
       "properties": {
         "action": {
           "type": "string",
-          "enum": ["insert", "delete"],
+          "enum": [
+            "insert",
+            "delete"
+          ],
           "x-go-enum-desc": "insert ActionInsert\ndelete ActionDelete"
         },
         "relation_tuple": {
@@ -725,6 +842,11 @@
     },
     "relationTuple": {
       "type": "object",
+      "required": [
+        "namespace",
+        "object",
+        "relation"
+      ],
       "properties": {
         "namespace": {
           "description": "Namespace of the Relation Tuple",
@@ -749,7 +871,11 @@
     },
     "subjectSet": {
       "type": "object",
-      "required": ["namespace", "object", "relation"],
+      "required": [
+        "namespace",
+        "object",
+        "relation"
+      ],
       "properties": {
         "namespace": {
           "description": "Namespace of the Subject Set",
@@ -773,12 +899,11 @@
           "type": "string"
         }
       }
-    },
-    "UUID": { "type": "string", "format": "uuid4" }
-  },
+    }
+  ,"UUID":{"type": "string", "format": "uuid4"}},
   "responses": {
     "emptyResponse": {
-      "description": "Empty responses are sent when, for example, resources are deleted. The HTTP status code for empty responses is typically 201."
+      "description": "An empty response"
     }
   }
 }
