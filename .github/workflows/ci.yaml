@@ -34,7 +34,6 @@ jobs:
           GOGC: 100
         with:
           args: --timeout 10m0s --issues-exit-code=0
-          skip-go-installation: true
           skip-pkg-cache: true
       - name: Test documentation examples
         run: make test-docs-samples
@@ -245,7 +244,7 @@ jobs:
       - uses: actions/setup-go@v3
         with:
           go-version: 1.18
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
           node-version: "15"
       - uses: arduino/setup-protoc@v1

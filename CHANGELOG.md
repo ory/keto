@@ -5,7 +5,7 @@
 
 **Table of Contents**
 
-- [0.0.0 (2022-07-01)](#000-2022-07-01)
+- [0.0.0 (2022-07-06)](#000-2022-07-06)
   - [Breaking Changes](#breaking-changes)
     - [Bug Fixes](#bug-fixes)
     - [Code Refactoring](#code-refactoring)
@@ -126,7 +126,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.8.0-alpha.2...v0.0.0) (2022-07-01)
+# [0.0.0](https://github.com/ory/keto/compare/v0.8.0-alpha.2...v0.0.0) (2022-07-06)
 
 ## Breaking Changes
 
@@ -144,6 +144,8 @@ gRPC relation-tuple-delta action enum names are prefixed with `ACTION_`
 
 - **cli:** Make flag registration non-racy
   ([8415ced](https://github.com/ory/keto/commit/8415cedbeb3cf80b90596e0803d691639bb51849))
+- Enable telemetry by default
+  ([9dc8c7c](https://github.com/ory/keto/commit/9dc8c7cd190bbbff80a10103378d1ee81a8d4654))
 
 ### Code Refactoring
 
