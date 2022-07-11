@@ -46,7 +46,8 @@ type (
 		ID                   uuid.UUID `db:"id"`
 		StringRepresentation string    `db:"string_representation"`
 	}
-	UUIDMappings []*UUIDMapping
+	UUIDMappings   []*UUIDMapping
+	ColumnProvider interface{ dbCols() []any }
 )
 
 const (
@@ -60,7 +61,6 @@ func (RelationTuple) TableName() string    { return RelationTupleTableName }
 func (NewRelationTuple) TableName() string { return RelationTupleUUIDTableName }
 
 func (rt *RelationTuple) dbCols() []any {
-	// shard_id, nid, namespace_id, object, relation, subject_id, subject_set_namespace_id, subject_set_object, subject_set_relation, commit_time
 	return []any{rt.ID, rt.NetworkID, rt.NamespaceID, rt.Object, rt.Relation, rt.SubjectID, rt.SubjectSetNamespaceID, rt.SubjectSetObject, rt.SubjectSetRelation, rt.CommitTime}
 }
 
@@ -131,7 +131,7 @@ var (
 			Type:      "go",
 			Runner: func(_ popx.Migration, conn *pop.Connection, _ *pop.Tx) error {
 				for lastID := uuid.Nil; ; {
-					relationTuples, hasNext, err := getRelationTuples[RelationTuple](conn, lastID)
+					relationTuples, hasNext, err := GetRelationTuples[RelationTuple](conn, lastID)
 					if err != nil {
 						return fmt.Errorf("could not get relation tuples: %w", err)
 					}
@@ -142,10 +142,10 @@ var (
 						newTuples[i], mappings[i*2], mappings[i*2+1] = relationTuples[i].ToNew()
 					}
 
-					if err := batchWriteMappings(conn, mappings); err != nil {
+					if err := BatchWriteMappings(conn, mappings); err != nil {
 						return fmt.Errorf("could not write mappings: %w", err)
 					}
-					if err := batchInsertTuples(conn, newTuples); err != nil {
+					if err := BatchInsertTuples(conn, newTuples); err != nil {
 						return fmt.Errorf("could not insert new tuples: %w", err)
 					}
 					if !hasNext {
@@ -168,7 +168,7 @@ var (
 			Type:      "go",
 			Runner: func(_ popx.Migration, conn *pop.Connection, _ *pop.Tx) error {
 				for lastID := uuid.Nil; ; {
-					relationTuples, hasNext, err := getRelationTuples[NewRelationTuple](conn, lastID)
+					relationTuples, hasNext, err := GetRelationTuples[NewRelationTuple](conn, lastID)
 					if err != nil {
 						return fmt.Errorf("could not get relation tuples: %w", err)
 					}
@@ -200,11 +200,11 @@ var (
 						}
 						oldTuples[i] = ot
 					}
-					if err := batchReplaceUUIDs(conn, mappings); err != nil {
+					if err := BatchReplaceUUIDs(conn, mappings); err != nil {
 						return fmt.Errorf("could not replace UUIDs: %w", err)
 					}
 
-					if err := batchInsertTuples(conn, oldTuples); err != nil {
+					if err := BatchInsertTuples(conn, oldTuples); err != nil {
 						return fmt.Errorf("could not insert old tuples: %w", err)
 					}
 
@@ -220,9 +220,7 @@ var (
 	}
 )
 
-type columnProvider interface{ dbCols() []any }
-
-func constructArgs[T columnProvider](nCols int, items []T) (string, []interface{}) {
+func ConstructArgs[T ColumnProvider](nCols int, items []T) (string, []interface{}) {
 	placeholderRow := "(" + strings.Repeat("?,", nCols-1) + "?)"
 
 	q := &strings.Builder{}
@@ -242,7 +240,7 @@ func constructArgs[T columnProvider](nCols int, items []T) (string, []interface{
 	return q.String(), args
 }
 
-func getRelationTuples[RT pop.TableNameAble](conn *pop.Connection, lastID uuid.UUID) (
+func GetRelationTuples[RT pop.TableNameAble](conn *pop.Connection, lastID uuid.UUID) (
 	res []RT, hasNext bool, err error,
 ) {
 	const pageSize = 500
@@ -257,13 +255,13 @@ func getRelationTuples[RT pop.TableNameAble](conn *pop.Connection, lastID uuid.U
 	return res, false, nil
 }
 
-func batchWriteMappings(conn *pop.Connection, mappings []*UUIDMapping) (err error) {
+func BatchWriteMappings(conn *pop.Connection, mappings []*UUIDMapping) (err error) {
 	if len(mappings) == 0 {
 		// Nothing to do.
 		return nil
 	}
 
-	placeholders, args := constructArgs(2, mappings)
+	placeholders, args := ConstructArgs(2, mappings)
 
 	// We need to write manual SQL here because the INSERT should not fail if
 	// the UUID already exists, but we still want to return an error if anything
@@ -286,7 +284,7 @@ func batchWriteMappings(conn *pop.Connection, mappings []*UUIDMapping) (err erro
 	return nil
 }
 
-func batchReplaceUUIDs(conn *pop.Connection, uuidToTargets map[uuid.UUID][]*string) error {
+func BatchReplaceUUIDs(conn *pop.Connection, uuidToTargets map[uuid.UUID][]*string) error {
 	if len(uuidToTargets) == 0 {
 		return nil
 	}
@@ -309,15 +307,15 @@ func batchReplaceUUIDs(conn *pop.Connection, uuidToTargets map[uuid.UUID][]*stri
 	return nil
 }
 
-func batchInsertTuples[RT interface {
+func BatchInsertTuples[RT interface {
 	pop.TableNameAble
-	columnProvider
+	ColumnProvider
 }](conn *pop.Connection, rts []RT) error {
 	if len(rts) == 0 {
 		return nil
 	}
 
-	placeholders, args := constructArgs(10, rts)
+	placeholders, args := ConstructArgs(10, rts)
 	query := fmt.Sprintf("INSERT INTO %s (shard_id, nid, namespace_id, object, relation, subject_id, subject_set_namespace_id, subject_set_object, subject_set_relation, commit_time) VALUES %s", rts[0].TableName(), placeholders)
 
 	return sqlcon.HandleError(conn.RawQuery(query, args...).Exec())
