@@ -87,6 +87,7 @@ func TestMigrations(t *testing.T) {
 			require.NoError(t,
 				reg.Config(ctx).Set(config.KeyNamespaces, namespaces))
 			p, err := sql.NewPersister(ctx, reg, uuid.Must(uuid.FromString("77fdc5e0-2260-49da-8aae-c36ba255d05b")))
+			require.NoError(t, err)
 
 			t.Run("suite=fixtures", func(t *testing.T) {
 				t.Run("table=legacy namespaces", func(t *testing.T) {
@@ -97,9 +98,7 @@ func TestMigrations(t *testing.T) {
 				})
 
 				t.Run("table=relation tuples", func(t *testing.T) {
-					require.NoError(t, err)
 					actualRts, next, err := p.GetRelationTuples(ctx, &relationtuple.RelationQuery{Namespace: &namespaces[0].ID})
-
 					require.NoError(t, err)
 					assert.Equal(t, "", next)
 					t.Log("actual rts:", actualRts)
