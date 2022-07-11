@@ -1,11 +1,13 @@
 package uuidmapping_test
 
 import (
-	"github.com/gofrs/uuid"
-	"github.com/ory/keto/internal/persistence/sql/migrations/uuidmapping"
-	"github.com/stretchr/testify/assert"
 	"strings"
 	"testing"
+
+	"github.com/gofrs/uuid"
+	"github.com/stretchr/testify/assert"
+
+	"github.com/ory/keto/internal/persistence/sql/migrations/uuidmapping"
 )
 
 func TestConstructArgs(t *testing.T) {

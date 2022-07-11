@@ -39,9 +39,7 @@
             "x-go-enum-desc": "union Union\nexclusion Exclusion\nintersection Intersection\nleaf Leaf\nunspecified Unspecified"
           }
         },
-        "required": [
-          "type"
-        ],
+        "required": ["type"],
         "type": "object"
       },
       "genericError": {
@@ -81,9 +79,7 @@
             "type": "boolean"
           }
         },
-        "required": [
-          "allowed"
-        ],
+        "required": ["allowed"],
         "title": "RESTResponse represents the response for a check request.",
         "type": "object"
       },
@@ -126,10 +122,7 @@
       "patchDelta": {
         "properties": {
           "action": {
-            "enum": [
-              "insert",
-              "delete"
-            ],
+            "enum": ["insert", "delete"],
             "type": "string",
             "x-go-enum-desc": "insert ActionInsert\ndelete ActionDelete"
           },
@@ -185,11 +178,7 @@
             "$ref": "#/components/schemas/subjectSet"
           }
         },
-        "required": [
-          "namespace",
-          "object",
-          "relation"
-        ],
+        "required": ["namespace", "object", "relation"],
         "type": "object"
       },
       "subjectSet": {
@@ -207,11 +196,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "namespace",
-          "object",
-          "relation"
-        ],
+        "required": ["namespace", "object", "relation"],
         "type": "object"
       },
       "version": {
@@ -326,9 +311,7 @@
           }
         },
         "summary": "Delete Relation Tuples",
-        "tags": [
-          "write"
-        ]
+        "tags": ["write"]
       },
       "patch": {
         "description": "Use this endpoint to patch one or more relation tuples.",
@@ -382,9 +365,7 @@
           }
         },
         "summary": "Patch Multiple Relation Tuples",
-        "tags": [
-          "write"
-        ]
+        "tags": ["write"]
       },
       "put": {
         "description": "Use this endpoint to create a relation tuple.",
@@ -432,9 +413,7 @@
           }
         },
         "summary": "Create a Relation Tuple",
-        "tags": [
-          "write"
-        ]
+        "tags": ["write"]
       }
     },
     "/health/alive": {
@@ -452,9 +431,7 @@
                       "type": "string"
                     }
                   },
-                  "required": [
-                    "status"
-                  ],
+                  "required": ["status"],
                   "type": "object"
                 }
               }
@@ -473,9 +450,7 @@
           }
         },
         "summary": "Check HTTP Server Status",
-        "tags": [
-          "metadata"
-        ]
+        "tags": ["metadata"]
       }
     },
     "/health/ready": {
@@ -493,9 +468,7 @@
                       "type": "string"
                     }
                   },
-                  "required": [
-                    "status"
-                  ],
+                  "required": ["status"],
                   "type": "object"
                 }
               }
@@ -515,9 +488,7 @@
                       "type": "object"
                     }
                   },
-                  "required": [
-                    "errors"
-                  ],
+                  "required": ["errors"],
                   "type": "object"
                 }
               }
@@ -526,9 +497,7 @@
           }
         },
         "summary": "Check HTTP Server and Database Status",
-        "tags": [
-          "metadata"
-        ]
+        "tags": ["metadata"]
       }
     },
     "/relation-tuples": {
@@ -641,9 +610,7 @@
           }
         },
         "summary": "Query relation tuples",
-        "tags": [
-          "read"
-        ]
+        "tags": ["read"]
       }
     },
     "/relation-tuples/check": {
@@ -693,9 +660,7 @@
           }
         },
         "summary": "Check a relation tuple",
-        "tags": [
-          "read"
-        ]
+        "tags": ["read"]
       },
       "post": {
         "description": "To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).",
@@ -743,9 +708,7 @@
           }
         },
         "summary": "Check a relation tuple",
-        "tags": [
-          "read"
-        ]
+        "tags": ["read"]
       }
     },
     "/relation-tuples/check/openapi": {
@@ -851,9 +814,7 @@
           }
         },
         "summary": "Check a relation tuple",
-        "tags": [
-          "read"
-        ]
+        "tags": ["read"]
       },
       "post": {
         "description": "To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).",
@@ -911,9 +872,7 @@
           }
         },
         "summary": "Check a relation tuple",
-        "tags": [
-          "read"
-        ]
+        "tags": ["read"]
       }
     },
     "/relation-tuples/expand": {
@@ -1000,9 +959,7 @@
           }
         },
         "summary": "Expand a Relation Tuple",
-        "tags": [
-          "read"
-        ]
+        "tags": ["read"]
       }
     },
     "/version": {
@@ -1020,9 +977,7 @@
                       "type": "string"
                     }
                   },
-                  "required": [
-                    "version"
-                  ],
+                  "required": ["version"],
                   "type": "object"
                 }
               }
@@ -1031,9 +986,7 @@
           }
         },
         "summary": "Return Running Software Version.",
-        "tags": [
-          "metadata"
-        ]
+        "tags": ["metadata"]
       }
     }
   }
