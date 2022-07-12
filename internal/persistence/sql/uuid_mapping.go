@@ -2,6 +2,7 @@ package sql
 
 import (
 	"context"
+	"golang.org/x/exp/maps"
 	"strings"
 
 	"github.com/gofrs/uuid"
@@ -84,15 +85,16 @@ func (p *Persister) batchFromUUIDs(ctx context.Context, ids []uuid.UUID, opts ..
 			idIdx[id] = []int{i}
 		}
 	}
+	uniqueIDs := maps.Keys(idIdx)
 
 	res = make([]string, len(ids))
 
-	for i := 0; i < len(ids); i += pageSize {
+	for i := 0; i < len(uniqueIDs); i += pageSize {
 		end := i + pageSize
-		if end > len(ids) {
-			end = len(ids)
+		if end > len(uniqueIDs) {
+			end = len(uniqueIDs)
 		}
-		idsToLookup := ids[i:end]
+		idsToLookup := uniqueIDs[i:end]
 		mappings := &[]UUIDMapping{}
 		query := p.Connection(ctx).Where("id in (?)", idsToLookup)
 		if err := sqlcon.HandleError(query.All(mappings)); err != nil {

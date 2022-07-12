@@ -1,6 +1,7 @@
 package relationtuple
 
 import (
+	"encoding/json"
 	"fmt"
 	"reflect"
 	"strconv"
@@ -83,7 +84,7 @@ func TestRelationCollection(t *testing.T) {
 		}
 	})
 
-	t.Run("func=toInternal", func(t *testing.T) {
+	t.Run("func=normalize", func(t *testing.T) {
 		for i, tc := range []struct {
 			collection *Collection
 			expected   []*ketoapi.RelationTuple
@@ -114,5 +115,33 @@ func TestRelationCollection(t *testing.T) {
 				assert.Equal(t, tc.expected, actual)
 			})
 		}
+	})
+
+	t.Run("func=json", func(t *testing.T) {
+		ts := []*ketoapi.RelationTuple{
+			{
+				Namespace: "n",
+				Object:    "o",
+				Relation:  "r",
+				SubjectID: x.Ptr("s"),
+			},
+			{
+				Namespace: "n",
+				Object:    "o",
+				Relation:  "r",
+				SubjectSet: &ketoapi.SubjectSet{
+					Namespace: "sn",
+					Object:    "so",
+					Relation:  "sr",
+				},
+			},
+		}
+		expected, err := json.Marshal(ts)
+		require.NoError(t, err)
+
+		collection := NewAPICollection(ts)
+		actual, err := json.Marshal(collection)
+		require.NoError(t, err)
+		assert.Equal(t, string(expected), string(actual))
 	})
 }

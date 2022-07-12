@@ -63,7 +63,9 @@ func (m *Mapper) FromQuery(ctx context.Context, q *ketoapi.RelationQuery) (res *
 
 	var s []string
 	var u []uuid.UUID
-	res = new(RelationQuery)
+	res = &RelationQuery{
+		Relation: q.Relation,
+	}
 
 	nm, err := m.D.Config(ctx).NamespaceManager()
 	if err != nil {
@@ -123,7 +125,9 @@ func (m *Mapper) ToQuery(ctx context.Context, q *RelationQuery) (res *ketoapi.Re
 
 	var s []string
 	var u []uuid.UUID
-	res = new(ketoapi.RelationQuery)
+	res = &ketoapi.RelationQuery{
+		Relation: q.Relation,
+	}
 
 	nm, err := m.D.Config(ctx).NamespaceManager()
 	if err != nil {
@@ -148,7 +152,7 @@ func (m *Mapper) ToQuery(ctx context.Context, q *RelationQuery) (res *ketoapi.Re
 		case *SubjectID:
 			u = append(u, sub.ID)
 			onSuccess.do(func() {
-				res.SubjectID = x.Ptr(s[1])
+				res.SubjectID = x.Ptr(s[len(s)-1])
 			})
 		case *SubjectSet:
 			u = append(u, sub.Object)
@@ -159,7 +163,7 @@ func (m *Mapper) ToQuery(ctx context.Context, q *RelationQuery) (res *ketoapi.Re
 			onSuccess.do(func() {
 				res.SubjectSet = &ketoapi.SubjectSet{
 					Namespace: n.Name,
-					Object:    s[1],
+					Object:    s[len(s)-1],
 					Relation:  sub.Relation,
 				}
 			})
@@ -179,7 +183,7 @@ func (m *Mapper) FromTuple(ctx context.Context, ts ...*ketoapi.RelationTuple) (r
 
 	res = make([]*RelationTuple, len(ts))
 	s := make([]string, len(ts)*2)
-	u := make([]uuid.UUID, len(ts)*2)
+	var u []uuid.UUID
 
 	nm, err := m.D.Config(ctx).NamespaceManager()
 	if err != nil {
@@ -233,8 +237,8 @@ func (m *Mapper) ToTuple(ctx context.Context, ts ...*RelationTuple) (res []*keto
 	defer onSuccess.cleanup()
 
 	res = make([]*ketoapi.RelationTuple, len(ts))
-	s := make([]string, 0, len(ts)*2)
 	u := make([]uuid.UUID, len(ts)*2)
+	var s []string
 
 	nm, err := m.D.Config(ctx).NamespaceManager()
 	if err != nil {
@@ -284,7 +288,7 @@ func (m *Mapper) ToTuple(ctx context.Context, ts ...*RelationTuple) (res []*keto
 	return res, nil
 }
 
-func (m *Mapper) ToSubjectSet(ctx context.Context, set *ketoapi.SubjectSet) (*SubjectSet, error) {
+func (m *Mapper) FromSubjectSet(ctx context.Context, set *ketoapi.SubjectSet) (*SubjectSet, error) {
 	nm, err := m.D.Config(ctx).NamespaceManager()
 	if err != nil {
 		return nil, err
@@ -304,7 +308,7 @@ func (m *Mapper) ToSubjectSet(ctx context.Context, set *ketoapi.SubjectSet) (*Su
 	}, nil
 }
 
-func (m *Mapper) FromTree(ctx context.Context, tree *Tree) (res *ketoapi.ExpandTree, err error) {
+func (m *Mapper) ToTree(ctx context.Context, tree *Tree) (res *ketoapi.ExpandTree, err error) {
 	onSuccess := newSuccess(&err)
 	defer onSuccess.cleanup()
 
@@ -340,7 +344,7 @@ func (m *Mapper) FromTree(ctx context.Context, tree *Tree) (res *ketoapi.ExpandT
 		})
 	}
 	for _, c := range tree.Children {
-		mc, err := m.FromTree(ctx, c)
+		mc, err := m.ToTree(ctx, c)
 		if err != nil {
 			return nil, err
 		}

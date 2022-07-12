@@ -3,7 +3,6 @@ package driver
 import (
 	"context"
 	"net/http"
-	"os"
 	"sync"
 
 	"github.com/gobuffalo/pop/v6"
@@ -246,7 +245,6 @@ func (r *RegistryDefault) DetermineNetwork(ctx context.Context) (*networkx.Netwo
 		return nil, err
 	}
 	if s.HasPending() {
-		s.Write(os.Stdout)
 		return nil, errors.WithStack(persistence.ErrNetworkMigrationsMissing)
 	}
 

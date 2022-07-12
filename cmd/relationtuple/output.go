@@ -10,8 +10,8 @@ import (
 
 type (
 	Collection struct {
-		protoRelations    []*rts.RelationTuple
-		internalRelations []*ketoapi.RelationTuple
+		protoRelations []*rts.RelationTuple
+		apiRelations   []*ketoapi.RelationTuple
 	}
 	OutputTuple struct {
 		*ketoapi.RelationTuple
@@ -26,7 +26,7 @@ func NewProtoCollection(rels []*rts.RelationTuple) *Collection {
 
 func NewAPICollection(rels []*ketoapi.RelationTuple) *Collection {
 	return &Collection{
-		internalRelations: rels,
+		apiRelations: rels,
 	}
 }
 
@@ -61,17 +61,17 @@ func (r *Collection) Table() [][]string {
 }
 
 func (r *Collection) Normalize() ([]*ketoapi.RelationTuple, error) {
-	if r.internalRelations == nil {
-		r.internalRelations = make([]*ketoapi.RelationTuple, len(r.protoRelations))
+	if r.apiRelations == nil {
+		r.apiRelations = make([]*ketoapi.RelationTuple, len(r.protoRelations))
 		for i, rel := range r.protoRelations {
-			ir, err := (&ketoapi.RelationTuple{}).FromDataProvider(rel)
+			var err error
+			r.apiRelations[i], err = (&ketoapi.RelationTuple{}).FromDataProvider(rel)
 			if err != nil {
 				return nil, err
 			}
-			r.internalRelations[i] = ir
 		}
 	}
-	return r.internalRelations, nil
+	return r.apiRelations, nil
 }
 
 func (r *Collection) Interface() interface{} {
@@ -91,11 +91,11 @@ func (r *Collection) MarshalJSON() ([]byte, error) {
 }
 
 func (r *Collection) UnmarshalJSON(raw []byte) error {
-	return json.Unmarshal(raw, &r.internalRelations)
+	return json.Unmarshal(raw, &r.apiRelations)
 }
 
 func (r *Collection) Len() int {
-	if ir := len(r.internalRelations); ir > 0 {
+	if ir := len(r.apiRelations); ir > 0 {
 		return ir
 	}
 	return len(r.protoRelations)
