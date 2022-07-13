@@ -42,7 +42,7 @@ type (
 	}
 	Subject interface {
 		Equals(Subject) bool
-		Hash() uuid.UUID
+		UniqueID() uuid.UUID
 	}
 	RelationTuple struct {
 		Namespace int32     `json:"namespace"`
@@ -75,7 +75,7 @@ func (s *SubjectID) Equals(other Subject) bool {
 	return uv.ID == s.ID
 }
 
-func (s *SubjectID) Hash() uuid.UUID {
+func (s *SubjectID) UniqueID() uuid.UUID {
 	return s.ID
 }
 
@@ -87,7 +87,7 @@ func (s *SubjectSet) Equals(other Subject) bool {
 	return uv.Relation == s.Relation && uv.Object == s.Object && uv.Namespace == s.Namespace
 }
 
-func (s *SubjectSet) Hash() uuid.UUID {
+func (s *SubjectSet) UniqueID() uuid.UUID {
 	return uuid.NewV5(s.Object, strconv.Itoa(int(s.Namespace))+"-"+s.Relation)
 }
 

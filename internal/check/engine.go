@@ -42,7 +42,7 @@ func (e *Engine) subjectIsAllowed(
 	// TODO replace by more performant algorithm: https://github.com/ory/keto/issues/483
 
 	for _, sr := range rels {
-		ctx, wasAlreadyVisited := graph.CheckAndAddVisited(ctx, sr.Subject.Hash())
+		ctx, wasAlreadyVisited := graph.CheckAndAddVisited(ctx, sr.Subject.UniqueID())
 		if wasAlreadyVisited {
 			continue
 		}

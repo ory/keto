@@ -39,7 +39,7 @@ func (e *Engine) BuildTree(ctx context.Context, subject relationtuple.Subject, r
 	}
 
 	if us, isUserSet := subject.(*relationtuple.SubjectSet); isUserSet {
-		ctx, wasAlreadyVisited := graph.CheckAndAddVisited(ctx, subject.Hash())
+		ctx, wasAlreadyVisited := graph.CheckAndAddVisited(ctx, subject.UniqueID())
 		if wasAlreadyVisited {
 			return nil, nil
 		}

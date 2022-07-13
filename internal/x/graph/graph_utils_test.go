@@ -39,7 +39,7 @@ func TestEngineUtilsProvider_CheckVisited(t *testing.T) {
 		ctx := context.Background()
 		var isThereACycle bool
 		for i := range linkedList {
-			ctx, isThereACycle = CheckAndAddVisited(ctx, linkedList[i].Hash())
+			ctx, isThereACycle = CheckAndAddVisited(ctx, linkedList[i].UniqueID())
 			if isThereACycle {
 				break
 			}
@@ -74,7 +74,7 @@ func TestEngineUtilsProvider_CheckVisited(t *testing.T) {
 		ctx := context.Background()
 		var isThereACycle bool
 		for i := range list {
-			ctx, isThereACycle = CheckAndAddVisited(ctx, list[i].Hash())
+			ctx, isThereACycle = CheckAndAddVisited(ctx, list[i].UniqueID())
 			if isThereACycle {
 				break
 			}
