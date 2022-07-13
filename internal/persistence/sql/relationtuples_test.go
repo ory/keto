@@ -100,7 +100,7 @@ func TestRelationTupleSubjectTypeCheck(t *testing.T) {
 				tc := tc
 				t.Run("case="+tc.desc, func(t *testing.T) {
 					t.Parallel()
-					err = c.Create(rt(nw, tc.setSID, tc.setNID, tc.setO, tc.setR))
+					err := c.Create(rt(nw, tc.setSID, tc.setNID, tc.setO, tc.setR))
 
 					if tc.success {
 						assert.NoError(t, err)
