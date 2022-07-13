@@ -5,7 +5,7 @@
 
 **Table of Contents**
 
-- [0.0.0 (2022-07-12)](#000-2022-07-12)
+- [0.0.0 (2022-07-13)](#000-2022-07-13)
   - [Breaking Changes](#breaking-changes)
     - [Bug Fixes](#bug-fixes)
     - [Code Refactoring](#code-refactoring)
@@ -126,7 +126,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.8.0-alpha.2...v0.0.0) (2022-07-12)
+# [0.0.0](https://github.com/ory/keto/compare/v0.8.0-alpha.2...v0.0.0) (2022-07-13)
 
 ## Breaking Changes
 
