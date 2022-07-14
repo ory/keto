@@ -10,7 +10,6 @@ import (
 	"github.com/ory/x/sqlcon"
 	"github.com/pkg/errors"
 
-	"github.com/ory/keto/internal/namespace"
 	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/internal/x"
 )
@@ -40,7 +39,7 @@ func (RelationTuple) TableName(_ context.Context) string {
 	return "keto_relation_tuples"
 }
 
-func (r *RelationTuple) toInternal(ctx context.Context, nm namespace.Manager, p *Persister) (*relationtuple.InternalRelationTuple, error) {
+func (r *RelationTuple) toInternal(ctx context.Context, p *Persister) (*relationtuple.InternalRelationTuple, error) {
 	if r == nil {
 		return nil, nil
 	}
@@ -65,7 +64,7 @@ func (r *RelationTuple) toInternal(ctx context.Context, nm namespace.Manager, p 
 		if err != nil {
 			return nil, err
 		}
-		sn, err := nm.GetNamespaceByConfigID(ctx, n.ID)
+		sn, err := p.GetNamespaceByID(ctx, n.ID)
 		if err != nil {
 			return nil, err
 		}
@@ -254,11 +253,6 @@ func (p *Persister) GetRelationTuples(ctx context.Context, query *relationtuple.
 		return nil, "", err
 	}
 
-	nm, err := p.d.Config(ctx).NamespaceManager()
-	if err != nil {
-		return nil, "", err
-	}
-
 	sqlQuery := p.QueryWithNetwork(ctx).
 		Order("nid, namespace_id, object, relation, subject_id, subject_set_namespace_id, subject_set_object, subject_set_relation, commit_time").
 		Paginate(pagination.Page, pagination.PerPage)
@@ -277,12 +271,11 @@ func (p *Persister) GetRelationTuples(ctx context.Context, query *relationtuple.
 		nextPageToken = ""
 	}
 
-	internalRes := make([]*relationtuple.InternalRelationTuple, len(res))
-	for i, r := range res {
-		var err error
-		internalRes[i], err = r.toInternal(ctx, nm, p)
-		if err != nil {
-			return nil, "", err
+	internalRes := make([]*relationtuple.InternalRelationTuple, 0, len(res))
+	for _, r := range res {
+		if rt, err := r.toInternal(ctx, p); err == nil {
+			// Ignore error here, which stems from a deleted namespace.
+			internalRes = append(internalRes, rt)
 		}
 	}
 

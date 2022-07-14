@@ -16,7 +16,9 @@ import (
 	"github.com/ory/keto/internal/x"
 )
 
-func ManagerTest(t *testing.T, m Manager, addNamespace func(context.Context, *testing.T, string)) {
+func ManagerTest(t *testing.T, m Manager,
+	addNamespace func(context.Context, *testing.T, string),
+	removeAllNamespaces func(context.Context, *testing.T)) {
 	t.Run("method=Write", func(t *testing.T) {
 		t.Run("case=success", func(t *testing.T) {
 			nspace := t.Name()
@@ -256,6 +258,24 @@ func ManagerTest(t *testing.T, m Manager, addNamespace func(context.Context, *te
 
 			assert.NoError(t, err)
 			assert.Equal(t, []*InternalRelationTuple{}, res)
+			assert.Equal(t, "", nextPage)
+		})
+
+		t.Run("case=deleted namespace", func(t *testing.T) {
+			nspace := t.Name()
+			addNamespace(context.Background(), t, nspace)
+			require.NoError(t, m.WriteRelationTuples(context.Background(), &InternalRelationTuple{
+				Namespace: nspace,
+				Object:    "o",
+				Relation:  "r",
+				Subject:   &SubjectID{ID: "s"},
+			}))
+
+			removeAllNamespaces(context.Background(), t)
+			res, nextPage, err := m.GetRelationTuples(context.Background(), &RelationQuery{})
+
+			assert.NoError(t, err)
+			assert.Empty(t, res)
 			assert.Equal(t, "", nextPage)
 		})
 	})

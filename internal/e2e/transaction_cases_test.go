@@ -9,12 +9,12 @@ import (
 	"github.com/ory/keto/internal/relationtuple"
 )
 
-func runTransactionCases(c transactClient, addNamespace func(*testing.T, ...*namespace.Namespace)) func(*testing.T) {
+func runTransactionCases(c transactClient, m *namespaceTestManager) func(*testing.T) {
 	return func(t *testing.T) {
 		t.Parallel()
 		t.Run("case=create and delete", func(t *testing.T) {
 			n := &namespace.Namespace{Name: t.Name()}
-			addNamespace(t, n)
+			m.add(t, n)
 
 			tuples := []*relationtuple.InternalRelationTuple{
 				{
@@ -55,7 +55,7 @@ func runTransactionCases(c transactClient, addNamespace func(*testing.T, ...*nam
 		t.Run("case=expand-api-display-access docs code sample", func(t *testing.T) {
 			files := &namespace.Namespace{Name: t.Name() + "files"}
 			directories := &namespace.Namespace{Name: t.Name() + "directories"}
-			addNamespace(t, files, directories)
+			m.add(t, files, directories)
 
 			tuples := []*relationtuple.InternalRelationTuple{
 				{

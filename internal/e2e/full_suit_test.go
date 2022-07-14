@@ -50,7 +50,7 @@ func Test(t *testing.T) {
 		t.Run(fmt.Sprintf("dsn=%s", dsn.Name), func(t *testing.T) {
 			t.Parallel()
 
-			ctx, reg, addNamespace := newInitializedReg(t, dsn, nil)
+			ctx, reg, namespaceTestMgr := newInitializedReg(t, dsn, nil)
 
 			closeServer := startServer(ctx, t, reg)
 			t.Cleanup(closeServer)
@@ -79,10 +79,10 @@ func Test(t *testing.T) {
 					writeRemote: reg.Config(ctx).WriteAPIListenOn(),
 				},
 			} {
-				t.Run(fmt.Sprintf("client=%T", cl), runCases(cl, addNamespace))
+				t.Run(fmt.Sprintf("client=%T", cl), runCases(cl, namespaceTestMgr))
 
 				if tc, ok := cl.(transactClient); ok {
-					t.Run(fmt.Sprintf("transactClient=%T", cl), runTransactionCases(tc, addNamespace))
+					t.Run(fmt.Sprintf("transactClient=%T", cl), runTransactionCases(tc, namespaceTestMgr))
 				}
 			}
 

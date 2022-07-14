@@ -46,6 +46,11 @@ func TestPersister(t *testing.T) {
 			require.NoError(t, r.Config(ctx).Set(config.KeyNamespaces, nspaces))
 		}
 	}
+	removeAllNamespaces := func(r driver.Registry, nspaces []*namespace.Namespace) func(context.Context, *testing.T) {
+		return func(ctx context.Context, t *testing.T) {
+			require.NoError(t, r.Config(ctx).Set(config.KeyNamespaces, []*namespace.Namespace{}))
+		}
+	}
 
 	for _, dsn := range dbx.GetDSNs(t, false) {
 		dsn := dsn
@@ -56,7 +61,7 @@ func TestPersister(t *testing.T) {
 				var nspaces []*namespace.Namespace
 				p, r, _ := setup(t, dsn)
 
-				relationtuple.ManagerTest(t, p, addNamespace(r, nspaces))
+				relationtuple.ManagerTest(t, p, addNamespace(r, nspaces), removeAllNamespaces(r, nspaces))
 			})
 
 			t.Run("relationtuple.IsolationTest", func(t *testing.T) {
