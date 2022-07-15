@@ -2,7 +2,7 @@ FROM alpine:3.16.0
 
 RUN addgroup -S ory; \
     adduser -S ory -G ory -D -H -s /bin/nologin
-RUN apk --no-cache --update-cache --upgrade --latest add ca-certificates
+RUN apk --no-cache --update-cache --upgrade --latest add ca-certificates libssl1.1
 
 COPY keto /usr/bin/keto
 

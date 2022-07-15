@@ -4,7 +4,7 @@ RUN addgroup -S ory; \
     adduser -S ory -G ory -D  -h /home/ory -s /bin/nologin; \
     chown -R ory:ory /home/ory
 
-RUN apk --no-cache --update-cache --upgrade --latest add ca-certificates
+RUN apk --no-cache --update-cache --upgrade --latest add ca-certificates libssl1.1
 
 COPY keto /usr/bin/keto
 
