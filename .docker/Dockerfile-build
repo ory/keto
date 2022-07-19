@@ -1,4 +1,4 @@
-FROM golang:1.18.2-alpine3.14 AS builder
+FROM golang:1.18-alpine3.16 AS builder
 
 RUN apk -U --no-cache add build-base git gcc bash
 
@@ -18,13 +18,14 @@ ADD . .
 
 RUN go build -tags sqlite -o /usr/bin/keto .
 
-FROM alpine:3.16.0
+FROM alpine:3.16
 
 RUN addgroup -S ory; \
     adduser -S ory -G ory -D  -h /home/ory -s /bin/nologin; \
     chown -R ory:ory /home/ory
 
-RUN apk --no-cache --update-cache --upgrade --latest add ca-certificates libssl1.1
+RUN apk --no-cache --latest upgrade
+RUN apk --no-cache --upgrade --latest add ca-certificates
 
 COPY --from=builder /usr/bin/keto /usr/bin/keto
 
