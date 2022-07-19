@@ -23,7 +23,43 @@ import (
 	"github.com/ory/keto/internal/driver"
 )
 
-func newInitializedReg(t testing.TB, dsn *dbx.DsnT, cfgOverwrites map[string]interface{}) (context.Context, driver.Registry, func(*testing.T, ...*namespace.Namespace)) {
+type namespaceTestManager struct {
+	reg     driver.Registry
+	ctx     context.Context
+	nspaces []*namespace.Namespace
+	nextID  int32
+}
+
+func (m *namespaceTestManager) add(t *testing.T, nn ...*namespace.Namespace) {
+	for _, n := range nn {
+		n.ID = m.nextID
+		m.nextID++
+		m.nspaces = append(m.nspaces, n)
+	}
+
+	require.NoError(t, m.reg.Config(m.ctx).Set(config.KeyNamespaces, m.nspaces))
+
+	t.Cleanup(func() {
+		for _, n := range nn {
+			require.NoError(t, m.reg.RelationTupleManager().DeleteAllRelationTuples(m.ctx, &relationtuple.RelationQuery{
+				Namespace: n.Name,
+			}))
+		}
+	})
+}
+
+func (m *namespaceTestManager) remove(t *testing.T, id int32) {
+	newNamespaces := make([]*namespace.Namespace, 0, len(m.nspaces))
+	for _, n := range m.nspaces {
+		if n.ID != id {
+			newNamespaces = append(newNamespaces, n)
+		}
+	}
+	m.nspaces = newNamespaces
+	require.NoError(t, m.reg.Config(m.ctx).Set(config.KeyNamespaces, m.nspaces))
+}
+
+func newInitializedReg(t testing.TB, dsn *dbx.DsnT, cfgOverwrites map[string]interface{}) (context.Context, driver.Registry, *namespaceTestManager) {
 	ctx, cancel := context.WithCancel(context.Background())
 	t.Cleanup(func() {
 		cancel()
@@ -59,25 +95,11 @@ func newInitializedReg(t testing.TB, dsn *dbx.DsnT, cfgOverwrites map[string]int
 	require.NoError(t, reg.MigrateUp(ctx))
 	assertMigrated(ctx, t, reg)
 
-	nspaces := make([]*namespace.Namespace, 0)
-	addNamespaces := func(t *testing.T, nn ...*namespace.Namespace) {
-		for _, n := range nn {
-			n.ID = int32(len(nspaces))
-			nspaces = append(nspaces, n)
-		}
-
-		require.NoError(t, reg.Config(ctx).Set(config.KeyNamespaces, nspaces))
-
-		t.Cleanup(func() {
-			for _, n := range nn {
-				require.NoError(t, reg.RelationTupleManager().DeleteAllRelationTuples(ctx, &relationtuple.RelationQuery{
-					Namespace: &n.ID,
-				}))
-			}
-		})
+	return ctx, reg, &namespaceTestManager{
+		reg:     reg,
+		ctx:     ctx,
+		nspaces: []*namespace.Namespace{},
 	}
-
-	return ctx, reg, addNamespaces
 }
 
 func assertMigrated(ctx context.Context, t testing.TB, r driver.Registry) {

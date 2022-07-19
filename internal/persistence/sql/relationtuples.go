@@ -236,12 +236,11 @@ func (p *Persister) GetRelationTuples(ctx context.Context, query *relationtuple.
 		nextPageToken = ""
 	}
 
-	internalRes := make([]*relationtuple.RelationTuple, len(res))
-	for i, r := range res {
-		var err error
-		internalRes[i], err = r.toInternal()
-		if err != nil {
-			return nil, "", err
+	internalRes := make([]*relationtuple.RelationTuple, 0, len(res))
+	for _, r := range res {
+		if rt, err := r.toInternal(); err == nil {
+			// Ignore error here, which stems from a deleted namespace.
+			internalRes = append(internalRes, rt)
 		}
 	}
 

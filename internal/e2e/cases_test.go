@@ -16,13 +16,13 @@ import (
 	"github.com/ory/keto/internal/x"
 )
 
-func runCases(c client, addNamespace func(*testing.T, ...*namespace.Namespace)) func(*testing.T) {
+func runCases(c client, m *namespaceTestManager) func(*testing.T) {
 	return func(t *testing.T) {
 		c.waitUntilLive(t)
 
 		t.Run("case=gets empty namespace", func(t *testing.T) {
 			n := &namespace.Namespace{Name: t.Name()}
-			addNamespace(t, n)
+			m.add(t, n)
 
 			resp := c.queryTuple(t, &ketoapi.RelationQuery{Namespace: &n.Name})
 			assert.Len(t, resp.RelationTuples, 0)
@@ -30,7 +30,7 @@ func runCases(c client, addNamespace func(*testing.T, ...*namespace.Namespace)) 
 
 		t.Run("case=creates tuple and uses it then", func(t *testing.T) {
 			n := &namespace.Namespace{Name: t.Name()}
-			addNamespace(t, n)
+			m.add(t, n)
 
 			tuple := &ketoapi.RelationTuple{
 				Namespace: n.Name,
@@ -51,7 +51,7 @@ func runCases(c client, addNamespace func(*testing.T, ...*namespace.Namespace)) 
 
 		t.Run("case=expand API", func(t *testing.T) {
 			n := &namespace.Namespace{Name: t.Name()}
-			addNamespace(t, n)
+			m.add(t, n)
 
 			obj := fmt.Sprintf("tree for client %T", c)
 			rel := "expand"
@@ -93,7 +93,7 @@ func runCases(c client, addNamespace func(*testing.T, ...*namespace.Namespace)) 
 		t.Run("case=gets result paginated", func(t *testing.T) {
 			const nTuples = 10
 			n := &namespace.Namespace{Name: t.Name()}
-			addNamespace(t, n)
+			m.add(t, n)
 
 			rel := fmt.Sprintf("some unique relation %T", c)
 			for i := 0; i < nTuples; i++ {
@@ -128,7 +128,7 @@ func runCases(c client, addNamespace func(*testing.T, ...*namespace.Namespace)) 
 
 		t.Run("case=deletes tuple", func(t *testing.T) {
 			n := &namespace.Namespace{Name: t.Name()}
-			addNamespace(t, n)
+			m.add(t, n)
 
 			for _, rt := range []*ketoapi.RelationTuple{
 				{
@@ -161,7 +161,7 @@ func runCases(c client, addNamespace func(*testing.T, ...*namespace.Namespace)) 
 
 		t.Run("case=deletes tuples based on relation query", func(t *testing.T) {
 			n := &namespace.Namespace{Name: t.Name()}
-			addNamespace(t, n)
+			m.add(t, n)
 
 			rts := []*ketoapi.RelationTuple{
 				{
@@ -195,6 +195,26 @@ func runCases(c client, addNamespace func(*testing.T, ...*namespace.Namespace)) 
 
 		t.Run("case=returns error with status code on unknown namespace", func(t *testing.T) {
 			c.queryTupleErr(t, herodot.ErrNotFound, &ketoapi.RelationQuery{Namespace: x.Ptr("unknown namespace")})
+		})
+
+		t.Run("case=hides tuples from deleted namespace", func(t *testing.T) {
+			n := &namespace.Namespace{Name: t.Name()}
+			m.add(t, n)
+
+			c.createTuple(t, &relationtuple.InternalRelationTuple{
+				Namespace: n.Name,
+				Object:    "o",
+				Relation:  "rel",
+				Subject:   &relationtuple.SubjectID{ID: "s"},
+			})
+
+			m.remove(t, n.ID)
+
+			resp := c.queryTuple(t, &relationtuple.RelationQuery{})
+			assert.Equal(t, len(resp.RelationTuples), 0)
+
+			// Add the namespace again here, so that we can clean up properly.
+			m.add(t, n)
 		})
 	}
 }

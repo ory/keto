@@ -14,7 +14,8 @@ GO_DEPENDENCIES = golang.org/x/tools/cmd/goimports \
 BREW_DEPENDENCIES = go-swagger@0.29.0 \
 					grype@0.40.1 \
 					cli@0.1.35 \
-					yq@4
+					yq@4 \
+					trivy@0.29.2
 
 define make-go-dependency
   # go install is responsible for not re-building when the code hasn't changed
