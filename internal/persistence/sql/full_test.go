@@ -39,7 +39,7 @@ func TestPersister(t *testing.T) {
 			t.Parallel()
 
 			t.Run("relationtuple.ManagerTest", func(t *testing.T) {
-				p, r, _ := setup(t, dsn)
+				p, _, _ := setup(t, dsn)
 
 				relationtuple.ManagerTest(t, p)
 			})

@@ -181,8 +181,8 @@ func (m *Mapper) FromTuple(ctx context.Context, ts ...*ketoapi.RelationTuple) (r
 	onSuccess := newSuccess(&err)
 	defer onSuccess.cleanup()
 
-	res = make([]*RelationTuple, len(ts))
-	s := make([]string, len(ts)*2)
+	res = make([]*RelationTuple, 0, len(ts))
+	s := make([]string, 0, len(ts)*2)
 	var u []uuid.UUID
 
 	nm, err := m.D.Config(ctx).NamespaceManager()
@@ -190,39 +190,46 @@ func (m *Mapper) FromTuple(ctx context.Context, ts ...*ketoapi.RelationTuple) (r
 		return nil, err
 	}
 
-	for i, t := range ts {
-		i, t := i, t
+	for _, t := range ts {
+		t := t
 		n, err := nm.GetNamespaceByName(ctx, t.Namespace)
 		if err != nil {
-			return nil, err
+			// in case of an unknown namespace, we just drop the tuple
+			continue
 		}
-		res[i] = &RelationTuple{
+		mt := RelationTuple{
 			Namespace: n.ID,
 			Relation:  t.Relation,
 		}
-		s[i*2] = t.Object
-		onSuccess.do(func() {
-			res[i].Object = u[i*2]
-		})
+		i := len(res)
+
 		if t.SubjectID != nil {
-			s[i*2+1] = *t.SubjectID
+			s = append(s, *t.SubjectID)
 			onSuccess.do(func() {
-				res[i].Subject = &SubjectID{u[i*2+1]}
+				mt.Subject = &SubjectID{u[i*2]}
 			})
 		} else if t.SubjectSet != nil {
-			s[i*2+1] = t.SubjectSet.Object
 			n, err := nm.GetNamespaceByName(ctx, t.SubjectSet.Namespace)
 			if err != nil {
-				return nil, err
+				// in case of an unknown namespace, we just drop the tuple
+				continue
 			}
+			s = append(s, t.SubjectSet.Object)
 			onSuccess.do(func() {
-				res[i].Subject = &SubjectSet{
+				mt.Subject = &SubjectSet{
 					Namespace: n.ID,
-					Object:    u[i*2+1],
+					Object:    u[i*2],
 					Relation:  t.SubjectSet.Relation,
 				}
 			})
 		}
+
+		s = append(s, t.Object)
+		onSuccess.do(func() {
+			mt.Object = u[i*2+1]
+		})
+
+		res = append(res, &mt)
 	}
 
 	u, err = m.D.MappingManager().MapStringsToUUIDs(ctx, s...)
@@ -236,8 +243,8 @@ func (m *Mapper) ToTuple(ctx context.Context, ts ...*RelationTuple) (res []*keto
 	onSuccess := newSuccess(&err)
 	defer onSuccess.cleanup()
 
-	res = make([]*ketoapi.RelationTuple, len(ts))
-	u := make([]uuid.UUID, len(ts)*2)
+	res = make([]*ketoapi.RelationTuple, 0, len(ts))
+	u := make([]uuid.UUID, 0, len(ts)*2)
 	var s []string
 
 	nm, err := m.D.Config(ctx).NamespaceManager()
@@ -245,40 +252,46 @@ func (m *Mapper) ToTuple(ctx context.Context, ts ...*RelationTuple) (res []*keto
 		return nil, err
 	}
 
-	for i, t := range ts {
-		i := i
+	for _, t := range ts {
 		n, err := nm.GetNamespaceByConfigID(ctx, t.Namespace)
 		if err != nil {
-			return nil, err
+			// in case of an unknown namespace, we just drop the tuple
+			continue
 		}
-		res[i] = &ketoapi.RelationTuple{
+		mt := ketoapi.RelationTuple{
 			Namespace: n.Name,
 			Relation:  t.Relation,
 		}
-		u[2*i] = t.Object
-		onSuccess.do(func() {
-			res[i].Object = s[2*i]
-		})
+		i := len(res)
+
 		switch sub := t.Subject.(type) {
 		case *SubjectID:
-			u[2*i+1] = sub.ID
+			u = append(u, sub.ID)
 			onSuccess.do(func() {
-				res[i].SubjectID = x.Ptr(s[2*i+1])
+				mt.SubjectID = x.Ptr(s[2*i])
 			})
 		case *SubjectSet:
-			u[2*i+1] = sub.Object
+			u = append(u, sub.Object)
 			n, err := nm.GetNamespaceByConfigID(ctx, sub.Namespace)
 			if err != nil {
-				return nil, err
+				// in case of an unknown namespace, we just drop the tuple
+				continue
 			}
 			onSuccess.do(func() {
-				res[i].SubjectSet = &ketoapi.SubjectSet{
+				mt.SubjectSet = &ketoapi.SubjectSet{
 					Namespace: n.Name,
-					Object:    s[2*i+1],
+					Object:    s[2*i],
 					Relation:  sub.Relation,
 				}
 			})
 		}
+
+		u = append(u, t.Object)
+		onSuccess.do(func() {
+			mt.Object = s[2*i+1]
+		})
+
+		res = append(res, &mt)
 	}
 
 	s, err = m.D.MappingManager().MapUUIDsToStrings(ctx, u...)

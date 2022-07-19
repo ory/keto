@@ -2,8 +2,9 @@ package sql
 
 import (
 	"context"
-	"golang.org/x/exp/maps"
 	"strings"
+
+	"golang.org/x/exp/maps"
 
 	"github.com/gofrs/uuid"
 	"github.com/ory/x/sqlcon"

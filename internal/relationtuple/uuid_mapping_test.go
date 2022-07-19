@@ -3,17 +3,19 @@ package relationtuple_test
 import (
 	"context"
 	"fmt"
+	"testing"
+
 	"github.com/ory/herodot"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+	"golang.org/x/exp/slices"
+
 	"github.com/ory/keto/internal/driver"
 	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/namespace"
 	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/internal/x"
 	"github.com/ory/keto/ketoapi"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
-	"golang.org/x/exp/slices"
-	"testing"
 )
 
 func TestMapper(t *testing.T) {
@@ -60,18 +62,6 @@ func TestMapper(t *testing.T) {
 					}
 					return rts
 				}(),
-			},
-			{
-				name: "unknown namespace",
-				rts: []*ketoapi.RelationTuple{
-					{
-						Namespace: "unknown",
-						Object:    "object",
-						Relation:  "relation",
-						SubjectID: x.Ptr("subject"),
-					},
-				},
-				err: herodot.ErrNotFound,
 			},
 		} {
 			t.Run(tc.name, func(t *testing.T) {
@@ -296,5 +286,95 @@ func TestMapper(t *testing.T) {
 				checkTree(mapped, tc.tree)
 			})
 		}
+	})
+
+	t.Run("case=unknown namespace", func(t *testing.T) {
+		t.Run("direction=from tuple", func(t *testing.T) {
+			rts := make([]*ketoapi.RelationTuple, 20)
+			var expected []*ketoapi.RelationTuple
+			for i := 0; i < len(rts); i = i + 3 {
+				rts[i] = &ketoapi.RelationTuple{
+					Namespace: nspace.Name,
+					Object:    "o",
+					Relation:  "r",
+					SubjectID: x.Ptr("s"),
+				}
+				expected = append(expected, rts[i])
+			}
+			for i := 1; i < len(rts); i = i + 3 {
+				rts[i] = &ketoapi.RelationTuple{
+					Namespace: "unknown",
+					Object:    "o",
+					Relation:  "r",
+					SubjectID: x.Ptr("s"),
+				}
+			}
+			for i := 2; i < len(rts); i = i + 3 {
+				rts[i] = &ketoapi.RelationTuple{
+					Namespace: nspace.Name,
+					Object:    "o",
+					Relation:  "r",
+					SubjectSet: &ketoapi.SubjectSet{
+						Namespace: "unknown",
+						Object:    "o",
+						Relation:  "r",
+					},
+				}
+			}
+
+			actual, err := reg.Mapper().FromTuple(ctx, rts...)
+			require.NoError(t, err)
+
+			expectedMapped, err := reg.Mapper().FromTuple(ctx, expected...)
+			require.NoError(t, err)
+			require.Len(t, expectedMapped, len(expected))
+			assert.ElementsMatch(t, expectedMapped, actual)
+		})
+	})
+
+	t.Run("direction=to tuple", func(t *testing.T) {
+		ids, err := reg.MappingManager().MapStringsToUUIDs(ctx, "s")
+		require.NoError(t, err)
+		id := ids[0]
+
+		rts := make([]*relationtuple.RelationTuple, 20)
+		var expected []*relationtuple.RelationTuple
+		for i := 0; i < len(rts); i = i + 3 {
+			rts[i] = &relationtuple.RelationTuple{
+				Namespace: nspace.ID,
+				Object:    id,
+				Relation:  "r",
+				Subject:   &relationtuple.SubjectID{ID: id},
+			}
+			expected = append(expected, rts[i])
+		}
+		for i := 1; i < len(rts); i = i + 3 {
+			rts[i] = &relationtuple.RelationTuple{
+				Namespace: nspace.ID + 1,
+				Object:    id,
+				Relation:  "r",
+				Subject:   &relationtuple.SubjectID{ID: id},
+			}
+		}
+		for i := 2; i < len(rts); i = i + 3 {
+			rts[i] = &relationtuple.RelationTuple{
+				Namespace: nspace.ID,
+				Object:    id,
+				Relation:  "r",
+				Subject: &relationtuple.SubjectSet{
+					Namespace: nspace.ID + 1,
+					Object:    id,
+					Relation:  "r",
+				},
+			}
+		}
+
+		actual, err := reg.Mapper().ToTuple(ctx, rts...)
+		require.NoError(t, err)
+
+		expectedMapped, err := reg.Mapper().ToTuple(ctx, expected...)
+		require.NoError(t, err)
+		require.Len(t, expectedMapped, len(expected))
+		assert.ElementsMatch(t, expectedMapped, actual)
 	})
 }

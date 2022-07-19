@@ -237,24 +237,6 @@ func ManagerTest(t *testing.T, m Manager) {
 			assert.Equal(t, []*RelationTuple{}, res)
 			assert.Equal(t, "", nextPage)
 		})
-
-		t.Run("case=deleted namespace", func(t *testing.T) {
-			nspace := t.Name()
-			addNamespace(context.Background(), t, nspace)
-			require.NoError(t, m.WriteRelationTuples(context.Background(), &InternalRelationTuple{
-				Namespace: nspace,
-				Object:    "o",
-				Relation:  "r",
-				Subject:   &SubjectID{ID: "s"},
-			}))
-
-			removeAllNamespaces(context.Background(), t)
-			res, nextPage, err := m.GetRelationTuples(context.Background(), &RelationQuery{})
-
-			assert.NoError(t, err)
-			assert.Empty(t, res)
-			assert.Equal(t, "", nextPage)
-		})
 	})
 
 	t.Run("method=Delete", func(t *testing.T) {
