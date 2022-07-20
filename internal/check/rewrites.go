@@ -15,13 +15,11 @@ func checkNotImplemented(_ context.Context, resultCh chan<- checkgroup.Result) {
 	resultCh <- checkgroup.Result{Err: errors.WithStack(errors.New("not implemented"))}
 }
 
-func toExpandNodeType(op ast.SetOperation) expand.NodeType {
+func toExpandNodeType(op ast.Operator) expand.NodeType {
 	switch op {
-	case ast.SetOperationUnion:
+	case ast.OperatorOr:
 		return expand.Union
-	case ast.SetOperationDifference:
-		return expand.Exclusion
-	case ast.SetOperationIntersection:
+	case ast.OperatorAnd:
 		return expand.Intersection
 	default:
 		return expand.Union
@@ -48,11 +46,9 @@ func (e *Engine) checkUsersetRewrite(
 		checks []checkgroup.CheckFunc
 	)
 	switch rewrite.Operation {
-	case ast.SetOperationUnion:
+	case ast.OperatorOr:
 		op = or
-	case ast.SetOperationDifference:
-		op = butNot
-	case ast.SetOperationIntersection:
+	case ast.OperatorAnd:
 		op = and
 	default:
 		return checkNotImplemented

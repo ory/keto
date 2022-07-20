@@ -338,12 +338,12 @@ func addChild(root *ast.UsersetRewrite, child ast.Child) *ast.UsersetRewrite {
 	}
 }
 
-func setOperation(typ itemType) ast.SetOperation {
+func setOperation(typ itemType) ast.Operator {
 	switch typ {
 	case itemOperatorAnd:
-		return ast.SetOperationIntersection
+		return ast.OperatorAnd
 	case itemOperatorOr:
-		return ast.SetOperationUnion
+		return ast.OperatorOr
 	}
 	panic("not reached")
 }

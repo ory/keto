@@ -13,8 +13,8 @@ type (
 	}
 
 	UsersetRewrite struct {
-		Operation SetOperation `json:"set_operation"`
-		Children  []Child      `json:"children"`
+		Operation Operator `json:"set_operation"`
+		Children  []Child  `json:"children"`
 	}
 
 	Children = []Child
@@ -36,13 +36,13 @@ type (
 	}
 )
 
-type SetOperation int
+type Operator int
 
-//go:generate stringer -type=SetOperation -trimprefix=SetOperation
+//go:generate stringer -type=Operator -trimprefix=Operator
 const (
-	SetOperationUnion SetOperation = iota
-	SetOperationIntersection
-	SetOperationDifference
+	OperatorOr Operator = iota
+	OperatorAnd
+	OperatorNot
 )
 
 func (r *UsersetRewrite) AsRewrite() *UsersetRewrite  { return r }

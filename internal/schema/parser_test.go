@@ -124,7 +124,7 @@ func Test_simplify(t *testing.T) {
 		{
 			name: "merge all unions",
 			input: &ast.UsersetRewrite{
-				Operation: ast.SetOperationUnion,
+				Operation: ast.OperatorOr,
 				Children: ast.Children{
 					&ast.ComputedUserset{Relation: "A"},
 					&ast.UsersetRewrite{
