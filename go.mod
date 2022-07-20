@@ -25,7 +25,7 @@ require (
 	github.com/luna-duclos/instrumentedsql v1.1.3
 	github.com/mikefarah/yq/v4 v4.26.1
 	github.com/ory/analytics-go/v4 v4.0.3
-	github.com/ory/graceful v0.1.2
+	github.com/ory/graceful v0.1.3
 	github.com/ory/herodot v0.9.13
 	github.com/ory/jsonschema/v3 v3.0.7
 	github.com/ory/keto/proto v0.8.0-alpha.2
