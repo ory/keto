@@ -38,52 +38,30 @@ func notMemberAfterDelayFunc(delay time.Duration) checkgroup.CheckFunc {
 	}
 }
 
-var checkgroups = []struct {
-	name string
-	new  checkgroup.Factory
-}{
-	{name: "sequential", new: checkgroup.NewSequential},
-	{name: "concurrent", new: checkgroup.NewConcurrent},
-}
-
-func runWithCheckgroup(t *testing.T, test func(t *testing.T, new checkgroup.Factory)) {
-	for _, group := range checkgroups {
-		group := group
-		t.Run(group.name, func(t *testing.T) {
-			test(t, group.new)
-		})
-	}
-}
-
 func TestCheckgroup_cancels(t *testing.T) {
 	t.Parallel()
 
-	runWithCheckgroup(t, func(t *testing.T, new checkgroup.Factory) {
-		ctx, cancel := context.WithCancel(context.Background())
-		g := new(ctx)
-		g.Add(neverFinishesCheckFunc)
-		g.Add(neverFinishesCheckFunc)
-		g.Add(neverFinishesCheckFunc)
-		g.Add(neverFinishesCheckFunc)
-		g.Add(neverFinishesCheckFunc)
-		cancel()
-		assert.Equal(t, checkgroup.Result{Err: context.Canceled}, g.Result())
-	})
+	ctx, cancel := context.WithCancel(context.Background())
+	g := checkgroup.New(ctx)
+	g.Add(neverFinishesCheckFunc)
+	g.Add(neverFinishesCheckFunc)
+	g.Add(neverFinishesCheckFunc)
+	g.Add(neverFinishesCheckFunc)
+	g.Add(neverFinishesCheckFunc)
+	cancel()
+	assert.Equal(t, checkgroup.Result{Err: context.Canceled}, g.Result())
 }
 
 func TestCheckgroup_reports_first_result(t *testing.T) {
 	t.Parallel()
 
-	runWithCheckgroup(t, func(t *testing.T, new checkgroup.Factory) {
-		t.Parallel()
-		ctx, cancel := context.WithCancel(context.Background())
-		defer cancel()
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
 
-		g := new(ctx)
-		g.Add(neverFinishesCheckFunc)
-		g.Add(checkgroup.IsMemberFunc)
-		assert.Equal(t, checkgroup.Result{Membership: checkgroup.IsMember}, g.Result())
-	})
+	g := checkgroup.New(ctx)
+	g.Add(neverFinishesCheckFunc)
+	g.Add(checkgroup.IsMemberFunc)
+	assert.Equal(t, checkgroup.Result{Membership: checkgroup.IsMember}, g.Result())
 }
 
 func TestCheckgroup_cancels_all_other_subchecks(t *testing.T) {
@@ -98,7 +76,7 @@ func TestCheckgroup_cancels_all_other_subchecks(t *testing.T) {
 
 	ctx := context.Background()
 
-	g := checkgroup.NewConcurrent(ctx)
+	g := checkgroup.New(ctx)
 	g.Add(mockCheckFn)
 	g.Add(neverFinishesCheckFunc)
 	g.Add(checkgroup.IsMemberFunc)
@@ -112,41 +90,36 @@ func TestCheckgroup_cancels_all_other_subchecks(t *testing.T) {
 func TestCheckgroup_returns_first_successful_is_member(t *testing.T) {
 	t.Parallel()
 
-	runWithCheckgroup(t, func(t *testing.T, new checkgroup.Factory) {
-		t.Parallel()
-		ctx := context.Background()
+	ctx := context.Background()
 
-		g := new(ctx)
-		g.Add(checkgroup.NotMemberFunc)
-		g.Add(checkgroup.NotMemberFunc)
-		time.Sleep(1 * time.Millisecond)
+	g := checkgroup.New(ctx)
+	g.Add(checkgroup.NotMemberFunc)
+	g.Add(checkgroup.NotMemberFunc)
+	time.Sleep(1 * time.Millisecond)
 
-		assert.False(t, g.Done())
+	assert.False(t, g.Done())
 
-		g.Add(func(_ context.Context, resultCh chan<- checkgroup.Result) {
-			resultCh <- checkgroup.ResultIsMember
-		})
-
-		resultCh := make(chan checkgroup.Result)
-		go g.CheckFunc()(ctx, resultCh)
-
-		assert.Equal(t, checkgroup.ResultIsMember, g.Result())
-		assert.Equal(t, checkgroup.ResultIsMember, g.Result())
-		assert.Equal(t, checkgroup.ResultIsMember, g.Result())
-		assert.Equal(t, checkgroup.ResultIsMember, <-resultCh)
-		assert.True(t, g.Done())
+	g.Add(func(_ context.Context, resultCh chan<- checkgroup.Result) {
+		resultCh <- checkgroup.ResultIsMember
 	})
+
+	resultCh := make(chan checkgroup.Result)
+	go g.CheckFunc()(ctx, resultCh)
+
+	assert.Equal(t, checkgroup.ResultIsMember, g.Result())
+	assert.Equal(t, checkgroup.ResultIsMember, g.Result())
+	assert.Equal(t, checkgroup.ResultIsMember, g.Result())
+	assert.Equal(t, checkgroup.ResultIsMember, <-resultCh)
+	assert.True(t, g.Done())
 }
 
 func TestCheckgroup_returns_immediately_if_nothing_to_check(t *testing.T) {
 	t.Parallel()
-	runWithCheckgroup(t, func(t *testing.T, new checkgroup.Factory) {
-		ctx, cancel := context.WithCancel(context.Background())
-		defer cancel()
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
 
-		g := new(ctx)
-		assert.Equal(t, checkgroup.ResultNotMember, g.Result())
-	})
+	g := checkgroup.New(ctx)
+	assert.Equal(t, checkgroup.ResultNotMember, g.Result())
 }
 
 func TestCheckgroup_has_no_leaks(t *testing.T) {
@@ -216,25 +189,23 @@ func TestCheckgroup_has_no_leaks(t *testing.T) {
 		},
 	}
 
-	runWithCheckgroup(t, func(t *testing.T, new checkgroup.Factory) {
-		for _, tc := range testCases {
-			t.Run("tc="+tc.name, func(t *testing.T) {
-				defer goleak.VerifyNone(t, goleak.IgnoreCurrent())
+	for _, tc := range testCases {
+		t.Run("tc="+tc.name, func(t *testing.T) {
+			defer goleak.VerifyNone(t, goleak.IgnoreCurrent())
 
-				ctx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
-				defer cancel()
+			ctx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
+			defer cancel()
 
-				g := new(ctx)
-				for _, check := range tc.checks {
-					g.Add(check)
-				}
+			g := checkgroup.New(ctx)
+			for _, check := range tc.checks {
+				g.Add(check)
+			}
 
-				resultCh := make(chan checkgroup.Result)
-				go g.CheckFunc()(ctx, resultCh)
-				result := <-resultCh
+			resultCh := make(chan checkgroup.Result)
+			go g.CheckFunc()(ctx, resultCh)
+			result := <-resultCh
 
-				assert.Equal(t, tc.expected, result)
-			})
-		}
-	})
+			assert.Equal(t, tc.expected, result)
+		})
+	}
 }
