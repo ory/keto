@@ -62,7 +62,7 @@ class File implements Namespace {
 	  view: (ctx: Context): boolean =>
 		this.related.parents.some(p => p.permits.view(ctx)) ||
 		  this.related.viewers.includes(ctx.subject) ||
-		  this.related.owners.includes(ctx.subject),
+		  !this.related.owners.includes(ctx.subject),
   
 	  edit: (ctx: Context) => this.related.owners.includes(ctx.subject),
   

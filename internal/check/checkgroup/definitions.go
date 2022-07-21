@@ -21,7 +21,8 @@ type (
 	Factory = func(ctx context.Context) Checkgroup
 
 	CheckFunc = func(ctx context.Context, resultCh chan<- Result)
-	Result    struct {
+
+	Result struct {
 		Membership Membership
 		Tree       *expand.Tree
 		Err        error

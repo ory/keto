@@ -19,25 +19,26 @@ func _() {
 	_ = x[itemKeywordCtx-8]
 	_ = x[itemOperatorAnd-9]
 	_ = x[itemOperatorOr-10]
-	_ = x[itemOperatorAssign-11]
-	_ = x[itemOperatorArrow-12]
-	_ = x[itemOperatorDot-13]
-	_ = x[itemOperatorColon-14]
-	_ = x[itemOperatorComma-15]
-	_ = x[itemTypeUnion-16]
-	_ = x[itemParenLeft-17]
-	_ = x[itemParenRight-18]
-	_ = x[itemBraceLeft-19]
-	_ = x[itemBraceRight-20]
-	_ = x[itemBracketLeft-21]
-	_ = x[itemBracketRight-22]
-	_ = x[itemAngledLeft-23]
-	_ = x[itemAngledRight-24]
+	_ = x[itemOperatorNot-11]
+	_ = x[itemOperatorAssign-12]
+	_ = x[itemOperatorArrow-13]
+	_ = x[itemOperatorDot-14]
+	_ = x[itemOperatorColon-15]
+	_ = x[itemOperatorComma-16]
+	_ = x[itemTypeUnion-17]
+	_ = x[itemParenLeft-18]
+	_ = x[itemParenRight-19]
+	_ = x[itemBraceLeft-20]
+	_ = x[itemBraceRight-21]
+	_ = x[itemBracketLeft-22]
+	_ = x[itemBracketRight-23]
+	_ = x[itemAngledLeft-24]
+	_ = x[itemAngledRight-25]
 }
 
-const _itemType_name = "ErrorEOFIdentifierCommentStringLiteralKeywordClassKeywordImplementsKeywordThisKeywordCtx\"&&\"\"||\"\"=\"\"=>\"\".\"\":\"\",\"\"|\"\"(\"\")\"\"{\"\"}\"\"[\"\"]\"\"<\"\">\""
+const _itemType_name = "ErrorEOFIdentifierCommentStringLiteralKeywordClassKeywordImplementsKeywordThisKeywordCtx\"&&\"\"||\"\"!\"\"=\"\"=>\"\".\"\":\"\",\"\"|\"\"(\"\")\"\"{\"\"}\"\"[\"\"]\"\"<\"\">\""
 
-var _itemType_index = [...]uint8{0, 5, 8, 18, 25, 38, 50, 67, 78, 88, 92, 96, 99, 103, 106, 109, 112, 115, 118, 121, 124, 127, 130, 133, 136, 139}
+var _itemType_index = [...]uint8{0, 5, 8, 18, 25, 38, 50, 67, 78, 88, 92, 96, 99, 102, 106, 109, 112, 115, 118, 121, 124, 127, 130, 133, 136, 139, 142}
 
 func (i itemType) String() string {
 	if i < 0 || i >= itemType(len(_itemType_index)-1) {

@@ -76,17 +76,18 @@ var namespaces = []*namespace.Namespace{
 							Relation:                "level",
 							ComputedUsersetRelation: "member"}}}},
 		}},
-	// {Name: "acl",
-	// 	ID: 5,
-	// 	Relations: []ast.Relation{
-	// 		{Name: "allow"},
-	// 		{Name: "deny"},
-	// 		{Name: "access",
-	// 			UsersetRewrite: &ast.UsersetRewrite{
-	// 				Operation: ast.SetOperationDifference,
-	// 				Children: ast.Children{
-	// 					&ast.ComputedUserset{Relation: "allow"},
-	// 					&ast.ComputedUserset{Relation: "deny"}}}}}},
+	{Name: "acl",
+		ID: 5,
+		Relations: []ast.Relation{
+			{Name: "allow"},
+			{Name: "deny"},
+			{Name: "access",
+				UsersetRewrite: &ast.UsersetRewrite{
+					Operation: ast.OperatorAnd,
+					Children: ast.Children{
+						&ast.ComputedUserset{Relation: "allow"},
+						&ast.InvertResult{
+							Child: &ast.ComputedUserset{Relation: "deny"}}}}}}},
 }
 
 func insertFixtures(t *testing.T, m relationtuple.Manager, tuples []string) {
@@ -127,10 +128,10 @@ func TestUsersetRewrites(t *testing.T) {
 		"resource:topsecret#level@level:superadmin#...",
 		"resource:topsecret#owner@mike",
 
-		// "acl:document#allow@alice",
-		// "acl:document#allow@bob",
-		// "acl:document#allow@mallory",
-		// "acl:document#deny@mallory",
+		"acl:document#allow@alice",
+		"acl:document#allow@bob",
+		"acl:document#allow@mallory",
+		"acl:document#deny@mallory",
 	})
 
 	e := check.NewEngine(reg)
@@ -207,19 +208,19 @@ func TestUsersetRewrites(t *testing.T) {
 	}, {
 		query:    "resource:topsecret#delete@sandy",
 		expected: checkgroup.ResultNotMember, // sandy is not in the editor group
-		// }, {
-		// 	query:         "acl:document#access@alice",
-		// 	expected:      checkgroup.ResultIsMember,
-		// 	expectedPaths: []path{{"*", "acl:document#access@alice", "acl:document#allow@alice"}},
-		// }, {
-		// 	query:    "acl:document#access@bob",
-		// 	expected: checkgroup.ResultIsMember,
-		// }, {
-		// 	query:    "acl:document#allow@mallory",
-		// 	expected: checkgroup.ResultIsMember,
-		// }, {
-		// 	query:    "acl:document#access@mallory",
-		// 	expected: checkgroup.ResultNotMember, // mallory is also on deny-list
+	}, {
+		query:         "acl:document#access@alice",
+		expected:      checkgroup.ResultIsMember,
+		expectedPaths: []path{{"*", "acl:document#access@alice", "acl:document#allow@alice"}},
+	}, {
+		query:    "acl:document#access@bob",
+		expected: checkgroup.ResultIsMember,
+	}, {
+		query:    "acl:document#allow@mallory",
+		expected: checkgroup.ResultIsMember,
+	}, {
+		query:    "acl:document#access@mallory",
+		expected: checkgroup.ResultNotMember, // mallory is also on deny-list
 	}}
 
 	for _, tc := range testCases {
@@ -230,7 +231,7 @@ func TestUsersetRewrites(t *testing.T) {
 			require.NoError(t, err)
 
 			res := e.CheckRelationTuple(ctx, rt, 100)
-			assert.Equal(t, tc.expected.Err, res.Err)
+			require.NoError(t, res.Err)
 			t.Logf("tree:\n%s", res.Tree)
 			assert.Equal(t, tc.expected.Membership.String(), res.Membership.String())
 

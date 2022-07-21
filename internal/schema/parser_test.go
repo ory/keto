@@ -62,6 +62,8 @@ var parserTestCases = []struct {
 		this.related.owners.includes(ctx.subject),
   
 	  edit: (ctx: Context) => this.related.owners.includes(ctx.subject),
+
+	  not: (ctx: Context) => !this.related.owners.includes(ctx.subject),
   
 	  rename: (ctx: Context) =>
 		this.related.siblings.traverse(s => s.permits.edit(ctx)),

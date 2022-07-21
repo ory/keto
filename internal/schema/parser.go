@@ -278,23 +278,32 @@ func (p *parser) parsePermits() {
 }
 
 func (p *parser) parsePermissionExpressions(finalToken itemType, depth int) *ast.UsersetRewrite {
+	if depth <= 0 {
+		p.addFatal(p.peek(),
+			"expression nested too deeply; maximal nesting depth is %d",
+			expressionNestingMaxDepth)
+		return nil
+	}
 	var root *ast.UsersetRewrite
-	lastParsedAnExpression := false
+
+	// We only expect an expression in the beginning and after a binary
+	// operator.
+	expectExpression := true
+
+	// TODO(hperl): Split this into two state machines: One that parses an
+	// expression or expression group; and one that parses a binary operator.
 	for !p.fatal {
 		switch item := p.peek(); {
 
+		// A "(" starts a new expression group that is parsed recursively.
 		case item.Typ == itemParenLeft:
 			p.next() // consume paren
-			if depth <= 0 {
-				p.addFatal(item, "expression nested too deeply; maximal nesting depth is %d", expressionNestingMaxDepth)
-				return nil
-			}
 			child := p.parsePermissionExpressions(itemParenRight, depth-1)
 			if child == nil {
 				return nil
 			}
 			root = addChild(root, child)
-			lastParsedAnExpression = false
+			expectExpression = false
 
 		case item.Typ == finalToken:
 			p.next() // consume final token
@@ -312,21 +321,56 @@ func (p *parser) parsePermissionExpressions(finalToken itemType, depth int) *ast
 				Children:  []ast.Child{root},
 			}
 			root = newRoot
-			lastParsedAnExpression = false
+			expectExpression = true
 
-		case lastParsedAnExpression:
-			p.addFatal(item, "did not expect another expression")
+		// A "not" creates an AST node where the children are either a
+		// single expression, or a list of expressions grouped by "()".
+		case item.Typ == itemOperatorNot:
+			p.next() // consume operator
+			child := p.parseNotExpression(depth - 1)
+			if child == nil {
+				return nil
+			}
+			root = addChild(root, child)
+			expectExpression = false
 
 		default:
+			if !expectExpression {
+				// Two expresssions can't follow each other directly, they must
+				// be separated by a binary operator.
+				p.addFatal(item, "did not expect another expression")
+				return nil
+			}
 			child := p.parsePermissionExpression()
 			if child == nil {
 				return nil
 			}
 			root = addChild(root, child)
-			lastParsedAnExpression = true
+			expectExpression = true
 		}
 	}
 	return nil
+}
+
+func (p *parser) parseNotExpression(depth int) ast.Child {
+	if depth <= 0 {
+		p.addFatal(p.peek(),
+			"expression nested too deeply; maximal nesting depth is %d",
+			expressionNestingMaxDepth)
+		return nil
+	}
+
+	var child ast.Child
+	if item := p.peek(); item.Typ == itemParenLeft {
+		p.next() // consume paren
+		child = p.parsePermissionExpressions(itemParenRight, depth-1)
+	} else {
+		child = p.parsePermissionExpression()
+	}
+	if child == nil {
+		return nil
+	}
+	return &ast.InvertResult{Child: child}
 }
 
 func addChild(root *ast.UsersetRewrite, child ast.Child) *ast.UsersetRewrite {

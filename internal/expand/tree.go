@@ -22,6 +22,7 @@ const (
 	TupeToUserset   NodeType = "tuple_to_userset"
 	ComputedUserset NodeType = "computed_userset"
 	Leaf            NodeType = "leaf"
+	Not             NodeType = "not"
 )
 
 // swagger:ignore

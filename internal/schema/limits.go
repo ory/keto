@@ -5,7 +5,7 @@ const (
 	// for looking up the types of SubjectSet<Namespace, "relation">.
 	tupleToUsersetTypeCheckMaxDepth = 10
 
-	// expressionNestingMaxDepth is the maximum number of nested '(' in a single
-	// 'permits'.
+	// expressionNestingMaxDepth is the maximum number of nested '(' and '!' in
+	// a single 'permits'.
 	expressionNestingMaxDepth = 10
 )

@@ -56,6 +56,7 @@ const (
 	// operators
 	itemOperatorAnd    // "&&"
 	itemOperatorOr     // "||"
+	itemOperatorNot    // "!"
 	itemOperatorAssign // "="
 	itemOperatorArrow  // "=>"
 	itemOperatorDot    // "."
@@ -217,6 +218,7 @@ var oneRuneTokens = map[rune]itemType{
 	'=': itemOperatorAssign,
 	',': itemOperatorComma,
 	'|': itemTypeUnion,
+	'!': itemOperatorNot,
 }
 
 var multiRuneTokens = map[string]itemType{

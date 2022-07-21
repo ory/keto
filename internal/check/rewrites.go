@@ -28,7 +28,7 @@ func toExpandNodeType(op ast.Operator) expand.NodeType {
 
 func (e *Engine) checkUsersetRewrite(
 	ctx context.Context,
-	r *RelationTuple,
+	tuple *RelationTuple,
 	rewrite *ast.UsersetRewrite,
 	restDepth int,
 ) checkgroup.CheckFunc {
@@ -38,7 +38,7 @@ func (e *Engine) checkUsersetRewrite(
 	}
 
 	e.d.Logger().
-		WithField("request", r.String()).
+		WithField("request", tuple.String()).
 		Trace("check userset rewrite")
 
 	var (
@@ -56,26 +56,104 @@ func (e *Engine) checkUsersetRewrite(
 
 	for _, child := range rewrite.Children {
 		switch c := child.(type) {
+
 		case *ast.TupleToUserset:
 			checks = append(checks, checkgroup.WithEdge(checkgroup.Edge{
-				Tuple: *r,
+				Tuple: *tuple,
 				Type:  expand.TupeToUserset,
-			}, e.checkTupleToUserset(r, c, restDepth)))
+			}, e.checkTupleToUserset(tuple, c, restDepth)))
+
 		case *ast.ComputedUserset:
 			checks = append(checks, checkgroup.WithEdge(checkgroup.Edge{
-				Tuple: *r,
+				Tuple: *tuple,
 				Type:  expand.ComputedUserset,
-			}, e.checkComputedUserset(ctx, r, c, restDepth)))
+			}, e.checkComputedUserset(ctx, tuple, c, restDepth)))
+
 		case *ast.UsersetRewrite:
 			checks = append(checks, checkgroup.WithEdge(checkgroup.Edge{
-				Tuple: *r,
+				Tuple: *tuple,
 				Type:  toExpandNodeType(c.Operation),
-			}, e.checkUsersetRewrite(ctx, r, c, restDepth)))
+			}, e.checkUsersetRewrite(ctx, tuple, c, restDepth)))
+
+		case *ast.InvertResult:
+			checks = append(checks, checkgroup.WithEdge(checkgroup.Edge{
+				Tuple: *tuple,
+				Type:  expand.Not,
+			}, e.checkInverted(ctx, tuple, c, restDepth)))
+
+		default:
+			return checkNotImplemented
 		}
 	}
 
 	return func(ctx context.Context, resultCh chan<- checkgroup.Result) {
 		resultCh <- op(ctx, checks)
+	}
+}
+
+func (e *Engine) checkInverted(
+	ctx context.Context,
+	tuple *RelationTuple,
+	inverted *ast.InvertResult,
+	restDepth int,
+) checkgroup.CheckFunc {
+	if restDepth < 0 {
+		e.d.Logger().Debug("reached max-depth, therefore this query will not be further expanded")
+		return checkgroup.UnknownMemberFunc
+	}
+
+	e.d.Logger().
+		WithField("request", tuple.String()).
+		Trace("invert check")
+
+	var check checkgroup.CheckFunc
+
+	switch c := inverted.Child.(type) {
+
+	case *ast.TupleToUserset:
+		check = checkgroup.WithEdge(checkgroup.Edge{
+			Tuple: *tuple,
+			Type:  expand.TupeToUserset,
+		}, e.checkTupleToUserset(tuple, c, restDepth))
+
+	case *ast.ComputedUserset:
+		check = checkgroup.WithEdge(checkgroup.Edge{
+			Tuple: *tuple,
+			Type:  expand.ComputedUserset,
+		}, e.checkComputedUserset(ctx, tuple, c, restDepth))
+
+	case *ast.UsersetRewrite:
+		check = checkgroup.WithEdge(checkgroup.Edge{
+			Tuple: *tuple,
+			Type:  toExpandNodeType(c.Operation),
+		}, e.checkUsersetRewrite(ctx, tuple, c, restDepth))
+
+	case *ast.InvertResult:
+		check = checkgroup.WithEdge(checkgroup.Edge{
+			Tuple: *tuple,
+			Type:  expand.Not,
+		}, e.checkInverted(ctx, tuple, c, restDepth))
+
+	default:
+		return checkNotImplemented
+	}
+
+	return func(ctx context.Context, resultCh chan<- checkgroup.Result) {
+		innerCh := make(chan checkgroup.Result)
+		go check(ctx, innerCh)
+		select {
+		case result := <-innerCh:
+			// invert result here
+			switch result.Membership {
+			case checkgroup.IsMember:
+				result.Membership = checkgroup.NotMember
+			case checkgroup.NotMember:
+				result.Membership = checkgroup.IsMember
+			}
+			resultCh <- result
+		case <-ctx.Done():
+			resultCh <- checkgroup.Result{Err: errors.WithStack(ctx.Err())}
+		}
 	}
 }
 

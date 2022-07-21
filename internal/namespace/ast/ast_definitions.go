@@ -1,5 +1,7 @@
 package ast
 
+import "encoding/json"
+
 type (
 	Relation struct {
 		Name           string          `json:"name"`
@@ -13,7 +15,7 @@ type (
 	}
 
 	UsersetRewrite struct {
-		Operation Operator `json:"set_operation"`
+		Operation Operator `json:"operator"`
 		Children  []Child  `json:"children"`
 	}
 
@@ -34,17 +36,27 @@ type (
 		Relation                string `json:"relation"`
 		ComputedUsersetRelation string `json:"computed_userset_relation"`
 	}
+
+	// InvertResult inverts the check result of the child.
+	InvertResult struct {
+		Child Child `json:"inverted"`
+	}
 )
 
 type Operator int
 
-//go:generate stringer -type=Operator -trimprefix=Operator
+//go:generate stringer -type=Operator -linecomment
 const (
-	OperatorOr Operator = iota
-	OperatorAnd
-	OperatorNot
+	OperatorOr  Operator = iota // or
+	OperatorAnd                 // and
 )
+
+func (o Operator) MarshalJSON() ([]byte, error) {
+	return json.Marshal(o.String())
+
+}
 
 func (r *UsersetRewrite) AsRewrite() *UsersetRewrite  { return r }
 func (c *ComputedUserset) AsRewrite() *UsersetRewrite { return &UsersetRewrite{Children: []Child{c}} }
 func (t *TupleToUserset) AsRewrite() *UsersetRewrite  { return &UsersetRewrite{Children: []Child{t}} }
+func (i *InvertResult) AsRewrite() *UsersetRewrite    { return &UsersetRewrite{Children: []Child{i}} }
