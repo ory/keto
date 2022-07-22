@@ -194,8 +194,7 @@ func (m *Mapper) FromTuple(ctx context.Context, ts ...*ketoapi.RelationTuple) (r
 		t := t
 		n, err := nm.GetNamespaceByName(ctx, t.Namespace)
 		if err != nil {
-			// in case of an unknown namespace, we just drop the tuple
-			continue
+			return nil, err
 		}
 		mt := RelationTuple{
 			Namespace: n.ID,
@@ -211,8 +210,7 @@ func (m *Mapper) FromTuple(ctx context.Context, ts ...*ketoapi.RelationTuple) (r
 		} else if t.SubjectSet != nil {
 			n, err := nm.GetNamespaceByName(ctx, t.SubjectSet.Namespace)
 			if err != nil {
-				// in case of an unknown namespace, we just drop the tuple
-				continue
+				return nil, err
 			}
 			s = append(s, t.SubjectSet.Object)
 			onSuccess.do(func() {
@@ -255,8 +253,7 @@ func (m *Mapper) ToTuple(ctx context.Context, ts ...*RelationTuple) (res []*keto
 	for _, t := range ts {
 		n, err := nm.GetNamespaceByConfigID(ctx, t.Namespace)
 		if err != nil {
-			// in case of an unknown namespace, we just drop the tuple
-			continue
+			return nil, err
 		}
 		mt := ketoapi.RelationTuple{
 			Namespace: n.Name,
@@ -274,8 +271,7 @@ func (m *Mapper) ToTuple(ctx context.Context, ts ...*RelationTuple) (res []*keto
 			u = append(u, sub.Object)
 			n, err := nm.GetNamespaceByConfigID(ctx, sub.Namespace)
 			if err != nil {
-				// in case of an unknown namespace, we just drop the tuple
-				continue
+				return nil, err
 			}
 			onSuccess.do(func() {
 				mt.SubjectSet = &ketoapi.SubjectSet{

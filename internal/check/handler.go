@@ -3,6 +3,7 @@ package check
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"io"
 	"net/http"
 	"net/url"
@@ -12,7 +13,6 @@ import (
 	"github.com/ory/keto/ketoapi"
 
 	"github.com/julienschmidt/httprouter"
-	"github.com/pkg/errors"
 	"google.golang.org/grpc"
 
 	"github.com/ory/keto/internal/relationtuple"

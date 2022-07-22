@@ -42,7 +42,7 @@ func (m *namespaceTestManager) add(t *testing.T, nn ...*namespace.Namespace) {
 	t.Cleanup(func() {
 		for _, n := range nn {
 			require.NoError(t, m.reg.RelationTupleManager().DeleteAllRelationTuples(m.ctx, &relationtuple.RelationQuery{
-				Namespace: n.Name,
+				Namespace: &n.ID,
 			}))
 		}
 	})
