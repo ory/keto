@@ -39,7 +39,6 @@ func TestMigrations(t *testing.T) {
 	for _, db := range dbx.GetDSNs(t, debugOnDisk) {
 		db := db
 		t.Run("dsn="+db.Name, func(t *testing.T) {
-			db := db
 			t.Parallel()
 
 			db.MigrateUp, db.MigrateDown = false, false

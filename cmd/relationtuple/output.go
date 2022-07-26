@@ -2,7 +2,6 @@ package relationtuple
 
 import (
 	"encoding/json"
-	"fmt"
 
 	"github.com/ory/keto/ketoapi"
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
@@ -10,24 +9,35 @@ import (
 
 type (
 	Collection struct {
-		protoRelations []*rts.RelationTuple
-		apiRelations   []*ketoapi.RelationTuple
+		apiRelations []*ketoapi.RelationTuple
 	}
 	OutputTuple struct {
 		*ketoapi.RelationTuple
 	}
 )
 
-func NewProtoCollection(rels []*rts.RelationTuple) *Collection {
-	return &Collection{
-		protoRelations: rels,
+func NewProtoCollection(rels []*rts.RelationTuple) (*Collection, error) {
+	r := &Collection{apiRelations: make([]*ketoapi.RelationTuple, len(rels))}
+	for i, rel := range rels {
+		var err error
+		r.apiRelations[i], err = (&ketoapi.RelationTuple{}).FromDataProvider(rel)
+		if err != nil {
+			return nil, err
+		}
 	}
+	return r, nil
+}
+
+func MustNewProtoCollection(rels []*rts.RelationTuple) *Collection {
+	c, err := NewProtoCollection(rels)
+	if err != nil {
+		panic(err)
+	}
+	return c
 }
 
 func NewAPICollection(rels []*ketoapi.RelationTuple) *Collection {
-	return &Collection{
-		apiRelations: rels,
-	}
+	return &Collection{apiRelations: rels}
 }
 
 func (r *Collection) Header() []string {
@@ -40,10 +50,7 @@ func (r *Collection) Header() []string {
 }
 
 func (r *Collection) Table() [][]string {
-	ir, err := r.Normalize()
-	if err != nil {
-		return [][]string{{fmt.Sprintf("%+v", err)}}
-	}
+	ir := r.apiRelations
 
 	data := make([][]string, len(ir))
 	for i, rel := range ir {
@@ -60,33 +67,12 @@ func (r *Collection) Table() [][]string {
 	return data
 }
 
-func (r *Collection) Normalize() ([]*ketoapi.RelationTuple, error) {
-	if r.apiRelations == nil {
-		r.apiRelations = make([]*ketoapi.RelationTuple, len(r.protoRelations))
-		for i, rel := range r.protoRelations {
-			var err error
-			r.apiRelations[i], err = (&ketoapi.RelationTuple{}).FromDataProvider(rel)
-			if err != nil {
-				return nil, err
-			}
-		}
-	}
-	return r.apiRelations, nil
-}
-
 func (r *Collection) Interface() interface{} {
-	ir, err := r.Normalize()
-	if err != nil {
-		return err
-	}
-	return ir
+	return r.apiRelations
 }
 
 func (r *Collection) MarshalJSON() ([]byte, error) {
-	ir, err := r.Normalize()
-	if err != nil {
-		return nil, err
-	}
+	ir := r.apiRelations
 	return json.Marshal(ir)
 }
 
@@ -95,18 +81,11 @@ func (r *Collection) UnmarshalJSON(raw []byte) error {
 }
 
 func (r *Collection) Len() int {
-	if ir := len(r.apiRelations); ir > 0 {
-		return ir
-	}
-	return len(r.protoRelations)
+	return len(r.apiRelations)
 }
 
 func (r *Collection) IDs() []string {
-	ts, err := r.Normalize()
-	if err != nil {
-		// fmt.Sprintf to include the stacktrace
-		return []string{fmt.Sprintf("%+v", err)}
-	}
+	ts := r.apiRelations
 	ids := make([]string, len(ts))
 	for i, rt := range ts {
 		ids[i] = rt.String()

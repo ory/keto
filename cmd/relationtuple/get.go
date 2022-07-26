@@ -94,7 +94,7 @@ func newGetCmd() *cobra.Command {
 }
 
 func getTuples(pageSize *int32, pageToken *string) func(cmd *cobra.Command, _ []string) error {
-	return func(cmd *cobra.Command, args []string) error {
+	return func(cmd *cobra.Command, _ []string) error {
 		if cmd.Flags().Changed(FlagSubject) {
 			return fmt.Errorf("usage of --%s is not supported anymore, use --%s or --%s respectively", FlagSubject, FlagSubjectID, FlagSubjectSet)
 		}
@@ -121,8 +121,12 @@ func getTuples(pageSize *int32, pageToken *string) func(cmd *cobra.Command, _ []
 			return cmdx.FailSilently(cmd)
 		}
 
+		relationTuples, err := NewProtoCollection(resp.RelationTuples)
+		if err != nil {
+			return err
+		}
 		cmdx.PrintTable(cmd, &responseOutput{
-			RelationTuples: NewProtoCollection(resp.RelationTuples),
+			RelationTuples: relationTuples,
 			IsLastPage:     resp.NextPageToken == "",
 			NextPageToken:  resp.NextPageToken,
 		})

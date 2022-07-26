@@ -45,11 +45,11 @@ func TestRelationCollection(t *testing.T) {
 		proto[2].Subject = rts.NewSubjectSet("sn", "so", "sr")
 
 		NewAPICollection([]*ketoapi.RelationTuple{})
-		NewProtoCollection([]*rts.RelationTuple{})
+		MustNewProtoCollection([]*rts.RelationTuple{})
 
 		for i, c := range []*Collection{
 			NewAPICollection(expected),
-			NewProtoCollection(proto),
+			MustNewProtoCollection(proto),
 		} {
 			t.Run(fmt.Sprintf("case=%d", i), func(t *testing.T) {
 				var vals []string
@@ -84,37 +84,9 @@ func TestRelationCollection(t *testing.T) {
 		}
 	})
 
-	t.Run("func=normalize", func(t *testing.T) {
-		for i, tc := range []struct {
-			collection *Collection
-			expected   []*ketoapi.RelationTuple
-			err        error
-		}{
-			{
-				collection: NewProtoCollection([]*rts.RelationTuple{{
-					Namespace: "n",
-					Object:    "o",
-					Relation:  "r",
-					Subject:   rts.NewSubjectID("s"),
-				}}),
-				expected: []*ketoapi.RelationTuple{{
-					Namespace: "n",
-					Object:    "o",
-					Relation:  "r",
-					SubjectID: x.Ptr("s"),
-				}},
-			},
-			{
-				collection: NewProtoCollection([]*rts.RelationTuple{{ /*subject is nil*/ }}),
-				err:        ketoapi.ErrNilSubject,
-			},
-		} {
-			t.Run(fmt.Sprintf("case=%d", i), func(t *testing.T) {
-				actual, err := tc.collection.Normalize()
-				require.ErrorIs(t, err, tc.err)
-				assert.Equal(t, tc.expected, actual)
-			})
-		}
+	t.Run("func=NewProtoCollection", func(t *testing.T) {
+		_, err := NewProtoCollection([]*rts.RelationTuple{{ /*subject is nil*/ }})
+		require.ErrorIs(t, err, ketoapi.ErrNilSubject)
 	})
 
 	t.Run("func=json", func(t *testing.T) {

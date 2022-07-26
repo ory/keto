@@ -2,9 +2,10 @@ package ketoapi
 
 import (
 	"fmt"
+	"strings"
+
 	"github.com/ory/herodot"
 	"github.com/pkg/errors"
-	"strings"
 )
 
 var ErrMalformedInput = herodot.ErrBadRequest.WithError("malformed string input")
@@ -35,34 +36,34 @@ func (r *RelationTuple) String() string {
 }
 
 func (r *RelationTuple) FromString(s string) (*RelationTuple, error) {
-	parts := strings.SplitN(s, ":", 2)
-	if len(parts) != 2 {
+	var (
+		objectAndRelationAndSubject string
+		relationAndSubject          string
+		subject                     string
+		ok                          bool
+	)
+	if r.Namespace, objectAndRelationAndSubject, ok = strings.Cut(s, ":"); !ok {
 		return nil, errors.WithStack(ErrMalformedInput.WithDebug("expected input to contain ':'"))
 	}
-	r.Namespace = parts[0]
 
-	parts = strings.SplitN(parts[1], "#", 2)
-	if len(parts) != 2 {
+	if r.Object, relationAndSubject, ok = strings.Cut(objectAndRelationAndSubject, "#"); !ok {
 		return nil, errors.WithStack(ErrMalformedInput.WithDebug("expected input to contain '#'"))
 	}
-	r.Object = parts[0]
 
-	parts = strings.SplitN(parts[1], "@", 2)
-	if len(parts) != 2 {
+	if r.Relation, subject, ok = strings.Cut(relationAndSubject, "@"); !ok {
 		return nil, errors.WithStack(ErrMalformedInput.WithDebug("expected input to contain '@'"))
 	}
-	r.Relation = parts[0]
 
 	// remove optional brackets around the subject set
-	sub := strings.Trim(parts[1], "()")
-	if strings.Contains(sub, "#") {
-		subSet, err := (&SubjectSet{}).FromString(sub)
+	subject = strings.Trim(subject, "()")
+	if strings.Contains(subject, "#") {
+		subSet, err := (&SubjectSet{}).FromString(subject)
 		if err != nil {
 			return nil, err
 		}
 		r.SubjectSet = subSet
 	} else {
-		r.SubjectID = &sub
+		r.SubjectID = &subject
 	}
 
 	return r, nil
@@ -73,20 +74,20 @@ func (s *SubjectSet) String() string {
 }
 
 func (s *SubjectSet) FromString(str string) (*SubjectSet, error) {
-	parts := strings.Split(str, "#")
-	if len(parts) != 2 {
+	namespaceAndObject, relation, ok := strings.Cut(str, "#")
+	if !ok {
 		return nil, errors.WithStack(ErrMalformedInput.WithDebug("expected subject set to contain '#'"))
 	}
 
-	innerParts := strings.Split(parts[0], ":")
-	if len(innerParts) != 2 {
+	namespace, object, ok := strings.Cut(namespaceAndObject, ":")
+	if !ok {
 		return nil, errors.WithStack(ErrMalformedInput.WithDebug("expected subject set to contain ':'"))
 	}
 
 	return &SubjectSet{
-		Namespace: innerParts[0],
-		Object:    innerParts[1],
-		Relation:  parts[1],
+		Namespace: namespace,
+		Object:    object,
+		Relation:  relation,
 	}, nil
 }
 

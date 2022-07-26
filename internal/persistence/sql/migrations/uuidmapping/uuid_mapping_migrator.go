@@ -337,12 +337,7 @@ func GetRelationTuples[RT interface {
 		q  string
 	)
 
-	switch conn.Dialect.Name() {
-	case "postgres", "cockroach":
-		q = "SELECT %s FROM %s ORDER BY shard_id LIMIT $1 OFFSET $2"
-	default:
-		q = "SELECT %s FROM %s ORDER BY shard_id LIMIT ? OFFSET ?"
-	}
+	q = conn.TX.Rebind("SELECT %s FROM %s ORDER BY shard_id LIMIT ? OFFSET ?")
 
 	err = conn.Store.Select(
 		&res, fmt.Sprintf(q, strings.Join(rt.columns(), ", "),

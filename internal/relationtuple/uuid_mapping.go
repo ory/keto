@@ -48,7 +48,7 @@ func (c *success) do(f func()) {
 	c.fs = append(c.fs, f)
 }
 
-func (c *success) cleanup() {
+func (c *success) apply() {
 	if *c.err != nil {
 		return
 	}
@@ -59,7 +59,7 @@ func (c *success) cleanup() {
 
 func (m *Mapper) FromQuery(ctx context.Context, apiQuery *ketoapi.RelationQuery) (res *RelationQuery, err error) {
 	onSuccess := newSuccess(&err)
-	defer onSuccess.cleanup()
+	defer onSuccess.apply()
 
 	var s []string
 	var u []uuid.UUID
@@ -121,7 +121,7 @@ func (m *Mapper) FromQuery(ctx context.Context, apiQuery *ketoapi.RelationQuery)
 
 func (m *Mapper) ToQuery(ctx context.Context, q *RelationQuery) (res *ketoapi.RelationQuery, err error) {
 	onSuccess := newSuccess(&err)
-	defer onSuccess.cleanup()
+	defer onSuccess.apply()
 
 	var s []string
 	var u []uuid.UUID
@@ -179,7 +179,7 @@ func (m *Mapper) ToQuery(ctx context.Context, q *RelationQuery) (res *ketoapi.Re
 
 func (m *Mapper) FromTuple(ctx context.Context, ts ...*ketoapi.RelationTuple) (res []*RelationTuple, err error) {
 	onSuccess := newSuccess(&err)
-	defer onSuccess.cleanup()
+	defer onSuccess.apply()
 
 	res = make([]*RelationTuple, 0, len(ts))
 	s := make([]string, 0, len(ts)*2)
@@ -239,7 +239,7 @@ func (m *Mapper) FromTuple(ctx context.Context, ts ...*ketoapi.RelationTuple) (r
 
 func (m *Mapper) ToTuple(ctx context.Context, ts ...*RelationTuple) (res []*ketoapi.RelationTuple, err error) {
 	onSuccess := newSuccess(&err)
-	defer onSuccess.cleanup()
+	defer onSuccess.apply()
 
 	res = make([]*ketoapi.RelationTuple, 0, len(ts))
 	u := make([]uuid.UUID, 0, len(ts)*2)
@@ -306,7 +306,7 @@ func (m *Mapper) FromSubjectSet(ctx context.Context, set *ketoapi.SubjectSet) (*
 
 func (m *Mapper) ToTree(ctx context.Context, tree *Tree) (res *ketoapi.ExpandTree, err error) {
 	onSuccess := newSuccess(&err)
-	defer onSuccess.cleanup()
+	defer onSuccess.apply()
 
 	var s []string
 	var u []uuid.UUID
