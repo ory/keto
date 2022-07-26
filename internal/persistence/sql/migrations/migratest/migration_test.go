@@ -60,10 +60,15 @@ func TestMigrations(t *testing.T) {
 			require.NoError(t, dbx.Ping(conn))
 			t.Cleanup(func() { conn.Close() })
 
+			namespaces := []*namespace.Namespace{
+				{ID: 1, Name: "foo"},
+				{ID: 2, Name: "uuid_test"},
+			}
+			nm := config.NewMemoryNamespaceManager(namespaces...)
 			tm, err := popx.NewMigrationBox(
 				fsx.Merge(sql.Migrations, networkx.Migrations),
 				popx.NewMigrator(conn, logrusx.New("", "", logrusx.ForceLevel(logrus.DebugLevel)), nil, 1*time.Minute),
-				popx.WithGoMigrations(uuidmapping.Migrations),
+				popx.WithGoMigrations(uuidmapping.Migrations(nm)),
 				popx.WithTestdata(t, os.DirFS("./testdata")),
 			)
 			require.NoError(t, err)
@@ -79,13 +84,7 @@ func TestMigrations(t *testing.T) {
 				}
 			})
 
-			namespaces := []*namespace.Namespace{
-				{ID: 1, Name: "foo"},
-				{ID: 2, Name: "uuid_test"},
-			}
-			reg := driver.NewTestRegistry(t, db)
-			require.NoError(t,
-				reg.Config(ctx).Set(config.KeyNamespaces, namespaces))
+			reg := driver.NewTestRegistry(t, db, driver.WithNamespaces(namespaces))
 			p, err := sql.NewPersister(ctx, reg, uuid.Must(uuid.FromString("77fdc5e0-2260-49da-8aae-c36ba255d05b")))
 			require.NoError(t, err)
 
@@ -98,7 +97,7 @@ func TestMigrations(t *testing.T) {
 				})
 
 				t.Run("table=relation tuples", func(t *testing.T) {
-					actualRts, next, err := p.GetRelationTuples(ctx, &relationtuple.RelationQuery{Namespace: &namespaces[0].ID})
+					actualRts, next, err := p.GetRelationTuples(ctx, &relationtuple.RelationQuery{Namespace: &namespaces[0].Name})
 					require.NoError(t, err)
 					assert.Equal(t, "", next)
 					t.Log("actual rts:", actualRts)
@@ -142,7 +141,7 @@ func TestMigrations(t *testing.T) {
 				logMigrationStatus(t, tm)
 
 				// Assert that relationtuples have UUIDs
-				tuples, _, err := p.GetRelationTuples(ctx, &relationtuple.RelationQuery{Namespace: &namespaces[1].ID})
+				tuples, _, err := p.GetRelationTuples(ctx, &relationtuple.RelationQuery{Namespace: &namespaces[1].Name})
 				require.NoError(t, err)
 				assert.NotZero(t, tuples[0].Subject.(*relationtuple.SubjectID).ID)
 				assert.NotZero(t, tuples[0].Object)
@@ -154,7 +153,10 @@ func TestMigrations(t *testing.T) {
 
 				// Assert that relationtuples have strings
 				var oldRTs []*tuplesBeforeUUID
-				require.NoError(t, p.Connection(ctx).Where("namespace_id = ?", namespaces[1].ID).All(&oldRTs))
+				require.NoError(t, p.Connection(ctx).
+					Select("subject_id", "object").
+					Where("namespace_id = ?", namespaces[1].ID).
+					All(&oldRTs))
 				assert.Equalf(t, "user", oldRTs[0].SubjectID.String, "%+v", oldRTs[0])
 				assert.Equal(t, "object", oldRTs[0].Object)
 			})

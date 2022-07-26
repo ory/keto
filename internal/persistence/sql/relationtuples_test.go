@@ -20,21 +20,13 @@ import (
 
 func rt(nw *networkx.Network, setSID, setNID, setO, setR bool) *sql.RelationTuple {
 	return &sql.RelationTuple{
-		ID:        uuid.Must(uuid.NewV4()),
-		NetworkID: nw.ID,
-		SubjectID: uuid.NullUUID{
-			Valid: setSID,
-		},
-		SubjectSetNamespaceID: stdSql.NullInt32{
-			Valid: setNID,
-		},
-		SubjectSetObject: uuid.NullUUID{
-			Valid: setO,
-		},
-		SubjectSetRelation: stdSql.NullString{
-			Valid: setR,
-		},
-		CommitTime: time.Now(),
+		ID:                  uuid.Must(uuid.NewV4()),
+		NetworkID:           nw.ID,
+		SubjectID:           uuid.NullUUID{Valid: setSID},
+		SubjectSetNamespace: stdSql.NullString{Valid: setNID},
+		SubjectSetObject:    uuid.NullUUID{Valid: setO},
+		SubjectSetRelation:  stdSql.NullString{Valid: setR},
+		CommitTime:          time.Now(),
 	}
 }
 

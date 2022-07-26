@@ -19,16 +19,16 @@ import (
 type (
 	RelationTuple struct {
 		// An ID field is required to make pop happy. The actual ID is a composite primary key.
-		ID                    uuid.UUID      `db:"shard_id"`
-		NetworkID             uuid.UUID      `db:"nid"`
-		NamespaceID           int32          `db:"namespace_id"`
-		Object                uuid.UUID      `db:"object"`
-		Relation              string         `db:"relation"`
-		SubjectID             uuid.NullUUID  `db:"subject_id"`
-		SubjectSetNamespaceID sql.NullInt32  `db:"subject_set_namespace_id"`
-		SubjectSetObject      uuid.NullUUID  `db:"subject_set_object"`
-		SubjectSetRelation    sql.NullString `db:"subject_set_relation"`
-		CommitTime            time.Time      `db:"commit_time"`
+		ID                  uuid.UUID      `db:"shard_id"`
+		NetworkID           uuid.UUID      `db:"nid"`
+		Namespace           string         `db:"namespace"`
+		Object              uuid.UUID      `db:"object"`
+		Relation            string         `db:"relation"`
+		SubjectID           uuid.NullUUID  `db:"subject_id"`
+		SubjectSetNamespace sql.NullString `db:"subject_set_namespace"`
+		SubjectSetObject    uuid.NullUUID  `db:"subject_set_object"`
+		SubjectSetRelation  sql.NullString `db:"subject_set_relation"`
+		CommitTime          time.Time      `db:"commit_time"`
 	}
 	relationTuples []*RelationTuple
 )
@@ -49,7 +49,7 @@ func (r *RelationTuple) toInternal() (*relationtuple.RelationTuple, error) {
 	rt := &relationtuple.RelationTuple{
 		Relation:  r.Relation,
 		Object:    r.Object,
-		Namespace: r.NamespaceID,
+		Namespace: r.Namespace,
 	}
 
 	if r.SubjectID.Valid {
@@ -58,7 +58,7 @@ func (r *RelationTuple) toInternal() (*relationtuple.RelationTuple, error) {
 		}
 	} else {
 		rt.Subject = &relationtuple.SubjectSet{
-			Namespace: r.SubjectSetNamespaceID.Int32,
+			Namespace: r.SubjectSetNamespace.String,
 			Object:    r.SubjectSetObject.UUID,
 			Relation:  r.SubjectSetRelation.String,
 		}
@@ -74,23 +74,14 @@ func (r *RelationTuple) insertSubject(_ context.Context, s relationtuple.Subject
 			UUID:  st.ID,
 			Valid: true,
 		}
-		r.SubjectSetNamespaceID = sql.NullInt32{}
+		r.SubjectSetNamespace = sql.NullString{}
 		r.SubjectSetObject = uuid.NullUUID{}
 		r.SubjectSetRelation = sql.NullString{}
 	case *relationtuple.SubjectSet:
 		r.SubjectID = uuid.NullUUID{}
-		r.SubjectSetNamespaceID = sql.NullInt32{
-			Int32: st.Namespace,
-			Valid: true,
-		}
-		r.SubjectSetObject = uuid.NullUUID{
-			UUID:  st.Object,
-			Valid: true,
-		}
-		r.SubjectSetRelation = sql.NullString{
-			String: st.Relation,
-			Valid:  true,
-		}
+		r.SubjectSetNamespace.Scan(st.Namespace)
+		r.SubjectSetObject.Scan(st.Object)
+		r.SubjectSetRelation.Scan(st.Relation)
 	}
 	return nil
 }
@@ -99,7 +90,7 @@ func (r *RelationTuple) FromInternal(ctx context.Context, p *Persister, rt *rela
 	ctx, span := p.d.Tracer(ctx).Tracer().Start(ctx, "persistence.sql.FromInternal")
 	defer span.End()
 
-	r.NamespaceID = rt.Namespace
+	r.Namespace = rt.Namespace
 	r.Object = rt.Object
 	r.Relation = rt.Relation
 
@@ -136,12 +127,12 @@ func (p *Persister) whereSubject(_ context.Context, q *pop.Query, sub relationtu
 		q.
 			Where("subject_id = ?", s.ID).
 			// NULL checks to leverage partial indexes
-			Where("subject_set_namespace_id IS NULL").
+			Where("subject_set_namespace IS NULL").
 			Where("subject_set_object IS NULL").
 			Where("subject_set_relation IS NULL")
 	case *relationtuple.SubjectSet:
 		q.
-			Where("subject_set_namespace_id = ?", s.Namespace).
+			Where("subject_set_namespace = ?", s.Namespace).
 			Where("subject_set_object = ?", s.Object).
 			Where("subject_set_relation = ?", s.Relation).
 			// NULL checks to leverage partial indexes
@@ -154,7 +145,7 @@ func (p *Persister) whereSubject(_ context.Context, q *pop.Query, sub relationtu
 
 func (p *Persister) whereQuery(ctx context.Context, q *pop.Query, rq *relationtuple.RelationQuery) error {
 	if rq.Namespace != nil {
-		q.Where("namespace_id = ?", rq.Namespace)
+		q.Where("namespace = ?", rq.Namespace)
 	}
 	if rq.Object != nil {
 		q.Where("object = ?", rq.Object)
@@ -177,7 +168,7 @@ func (p *Persister) DeleteRelationTuples(ctx context.Context, rs ...*relationtup
 	return p.Transaction(ctx, func(ctx context.Context, _ *pop.Connection) error {
 		for _, r := range rs {
 			q := p.QueryWithNetwork(ctx).
-				Where("namespace_id = ?", r.Namespace).
+				Where("namespace = ?", r.Namespace).
 				Where("object = ?", r.Object).
 				Where("relation = ?", r.Relation)
 			if err := p.whereSubject(ctx, q, r.Subject); err != nil {
@@ -219,7 +210,7 @@ func (p *Persister) GetRelationTuples(ctx context.Context, query *relationtuple.
 	}
 
 	sqlQuery := p.QueryWithNetwork(ctx).
-		Order("nid, namespace_id, object, relation, subject_id, subject_set_namespace_id, subject_set_object, subject_set_relation, commit_time").
+		Order("nid, namespace, object, relation, subject_id, subject_set_namespace, subject_set_object, subject_set_relation, commit_time").
 		Paginate(pagination.Page, pagination.PerPage)
 
 	err = p.whereQuery(ctx, sqlQuery, query)

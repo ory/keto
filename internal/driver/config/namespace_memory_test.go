@@ -10,13 +10,13 @@ import (
 
 func TestNamespaceMemoryManager(t *testing.T) {
 	t.Run("method=should reload", func(t *testing.T) {
-		n := &namespace.Namespace{ID: 2}
+		n := &namespace.Namespace{Name: "2"}
 		nm := NewMemoryNamespaceManager(n)
 
 		assert.False(t, nm.ShouldReload([]*namespace.Namespace{n}))
-		assert.False(t, nm.ShouldReload([]*namespace.Namespace{{ID: 2}}))
+		assert.False(t, nm.ShouldReload([]*namespace.Namespace{{Name: "2"}}))
 
-		assert.True(t, nm.ShouldReload([]*namespace.Namespace{{ID: 3}}))
+		assert.True(t, nm.ShouldReload([]*namespace.Namespace{{Name: "3"}}))
 		assert.True(t, nm.ShouldReload("foo"))
 	})
 }

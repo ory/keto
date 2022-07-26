@@ -57,14 +57,14 @@ func (c *success) cleanup() {
 	}
 }
 
-func (m *Mapper) FromQuery(ctx context.Context, q *ketoapi.RelationQuery) (res *RelationQuery, err error) {
+func (m *Mapper) FromQuery(ctx context.Context, apiQuery *ketoapi.RelationQuery) (res *RelationQuery, err error) {
 	onSuccess := newSuccess(&err)
 	defer onSuccess.cleanup()
 
 	var s []string
 	var u []uuid.UUID
 	res = &RelationQuery{
-		Relation: q.Relation,
+		Relation: apiQuery.Relation,
 	}
 
 	nm, err := m.D.Config(ctx).NamespaceManager()
@@ -72,41 +72,41 @@ func (m *Mapper) FromQuery(ctx context.Context, q *ketoapi.RelationQuery) (res *
 		return nil, err
 	}
 
-	if q.Namespace != nil {
-		n, err := nm.GetNamespaceByName(ctx, *q.Namespace)
+	if apiQuery.Namespace != nil {
+		n, err := nm.GetNamespaceByName(ctx, *apiQuery.Namespace)
 		if err != nil {
 			return nil, err
 		}
-		res.Namespace = x.Ptr(n.ID)
+		res.Namespace = x.Ptr(n.Name)
 	}
-	if q.Object != nil {
-		s = append(s, *q.Object)
+	if apiQuery.Object != nil {
+		s = append(s, *apiQuery.Object)
 		onSuccess.do(func(i int) func() {
 			return func() {
 				res.Object = x.Ptr(u[i])
 			}
 		}(len(s) - 1))
 	}
-	if q.SubjectID != nil {
-		s = append(s, *q.SubjectID)
+	if apiQuery.SubjectID != nil {
+		s = append(s, *apiQuery.SubjectID)
 		onSuccess.do(func(i int) func() {
 			return func() {
 				res.Subject = &SubjectID{u[i]}
 			}
 		}(len(s) - 1))
 	}
-	if q.SubjectSet != nil {
-		s = append(s, q.SubjectSet.Object)
-		n, err := nm.GetNamespaceByName(ctx, q.SubjectSet.Namespace)
+	if apiQuery.SubjectSet != nil {
+		s = append(s, apiQuery.SubjectSet.Object)
+		n, err := nm.GetNamespaceByName(ctx, apiQuery.SubjectSet.Namespace)
 		if err != nil {
 			return nil, err
 		}
 		onSuccess.do(func(i int) func() {
 			return func() {
 				res.Subject = &SubjectSet{
-					Namespace: n.ID,
+					Namespace: n.Name,
 					Object:    u[i],
-					Relation:  q.SubjectSet.Relation,
+					Relation:  apiQuery.SubjectSet.Relation,
 				}
 			}
 		}(len(s) - 1))
@@ -135,7 +135,7 @@ func (m *Mapper) ToQuery(ctx context.Context, q *RelationQuery) (res *ketoapi.Re
 	}
 
 	if q.Namespace != nil {
-		n, err := nm.GetNamespaceByConfigID(ctx, *q.Namespace)
+		n, err := nm.GetNamespaceByName(ctx, *q.Namespace)
 		if err != nil {
 			return nil, err
 		}
@@ -156,7 +156,7 @@ func (m *Mapper) ToQuery(ctx context.Context, q *RelationQuery) (res *ketoapi.Re
 			})
 		case *SubjectSet:
 			u = append(u, sub.Object)
-			n, err := nm.GetNamespaceByConfigID(ctx, sub.Namespace)
+			n, err := nm.GetNamespaceByName(ctx, sub.Namespace)
 			if err != nil {
 				return nil, err
 			}
@@ -197,7 +197,7 @@ func (m *Mapper) FromTuple(ctx context.Context, ts ...*ketoapi.RelationTuple) (r
 			return nil, err
 		}
 		mt := RelationTuple{
-			Namespace: n.ID,
+			Namespace: n.Name,
 			Relation:  t.Relation,
 		}
 		i := len(res)
@@ -215,7 +215,7 @@ func (m *Mapper) FromTuple(ctx context.Context, ts ...*ketoapi.RelationTuple) (r
 			s = append(s, t.SubjectSet.Object)
 			onSuccess.do(func() {
 				mt.Subject = &SubjectSet{
-					Namespace: n.ID,
+					Namespace: n.Name,
 					Object:    u[i*2],
 					Relation:  t.SubjectSet.Relation,
 				}
@@ -245,18 +245,9 @@ func (m *Mapper) ToTuple(ctx context.Context, ts ...*RelationTuple) (res []*keto
 	u := make([]uuid.UUID, 0, len(ts)*2)
 	var s []string
 
-	nm, err := m.D.Config(ctx).NamespaceManager()
-	if err != nil {
-		return nil, err
-	}
-
 	for _, t := range ts {
-		n, err := nm.GetNamespaceByConfigID(ctx, t.Namespace)
-		if err != nil {
-			return nil, err
-		}
 		mt := ketoapi.RelationTuple{
-			Namespace: n.Name,
+			Namespace: t.Namespace,
 			Relation:  t.Relation,
 		}
 		i := len(res)
@@ -269,13 +260,9 @@ func (m *Mapper) ToTuple(ctx context.Context, ts ...*RelationTuple) (res []*keto
 			})
 		case *SubjectSet:
 			u = append(u, sub.Object)
-			n, err := nm.GetNamespaceByConfigID(ctx, sub.Namespace)
-			if err != nil {
-				return nil, err
-			}
 			onSuccess.do(func() {
 				mt.SubjectSet = &ketoapi.SubjectSet{
-					Namespace: n.Name,
+					Namespace: sub.Namespace,
 					Object:    s[2*i],
 					Relation:  sub.Relation,
 				}
@@ -311,7 +298,7 @@ func (m *Mapper) FromSubjectSet(ctx context.Context, set *ketoapi.SubjectSet) (*
 		return nil, err
 	}
 	return &SubjectSet{
-		Namespace: n.ID,
+		Namespace: n.Name,
 		Object:    u[0],
 		Relation:  set.Relation,
 	}, nil
@@ -335,7 +322,7 @@ func (m *Mapper) ToTree(ctx context.Context, tree *Tree) (res *ketoapi.ExpandTre
 	switch sub := tree.Subject.(type) {
 	case *SubjectSet:
 		u = append(u, sub.Object)
-		n, err := nm.GetNamespaceByConfigID(ctx, sub.Namespace)
+		n, err := nm.GetNamespaceByName(ctx, sub.Namespace)
 		if err != nil {
 			return nil, err
 		}

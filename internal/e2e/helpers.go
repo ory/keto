@@ -32,8 +32,6 @@ type namespaceTestManager struct {
 
 func (m *namespaceTestManager) add(t *testing.T, nn ...*namespace.Namespace) {
 	for _, n := range nn {
-		n.ID = m.nextID
-		m.nextID++
 		m.nspaces = append(m.nspaces, n)
 	}
 
@@ -42,16 +40,16 @@ func (m *namespaceTestManager) add(t *testing.T, nn ...*namespace.Namespace) {
 	t.Cleanup(func() {
 		for _, n := range nn {
 			require.NoError(t, m.reg.RelationTupleManager().DeleteAllRelationTuples(m.ctx, &relationtuple.RelationQuery{
-				Namespace: &n.ID,
+				Namespace: &n.Name,
 			}))
 		}
 	})
 }
 
-func (m *namespaceTestManager) remove(t *testing.T, id int32) {
+func (m *namespaceTestManager) remove(t *testing.T, name string) {
 	newNamespaces := make([]*namespace.Namespace, 0, len(m.nspaces))
 	for _, n := range m.nspaces {
-		if n.ID != id {
+		if n.Name != name {
 			newNamespaces = append(newNamespaces, n)
 		}
 	}
@@ -81,6 +79,7 @@ func newInitializedReg(t testing.TB, dsn *dbx.DsnT, cfgOverwrites map[string]int
 		config.KeyWriteAPIPort:      ports[1],
 		config.KeyMetricsHost:       "127.0.0.1",
 		config.KeyMetricsPort:       ports[2],
+		config.KeyNamespaces:        []*namespace.Namespace{},
 	}
 	for k, v := range cfgOverwrites {
 		cfgValues[k] = v

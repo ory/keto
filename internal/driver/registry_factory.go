@@ -8,6 +8,7 @@ import (
 
 	"github.com/ory/keto/ketoctx"
 
+	"github.com/ory/keto/internal/namespace"
 	"github.com/ory/keto/internal/x/dbx"
 
 	"github.com/sirupsen/logrus"
@@ -69,14 +70,23 @@ func NewSqliteTestRegistry(t *testing.T, debugOnDisk bool) *RegistryDefault {
 	return NewTestRegistry(t, dbx.GetSqlite(t, mode))
 }
 
-func NewTestRegistry(t *testing.T, dsn *dbx.DsnT) *RegistryDefault {
+type newRegistryOption func(t *testing.T, r *RegistryDefault)
+
+func WithNamespaces(namespaces []*namespace.Namespace) newRegistryOption {
+	return func(t *testing.T, r *RegistryDefault) {
+		require.NoError(t, r.c.Set(config.KeyNamespaces, namespaces))
+	}
+}
+
+func NewTestRegistry(t *testing.T, dsn *dbx.DsnT, opts ...newRegistryOption) *RegistryDefault {
 	l := logrusx.New("Ory Keto", "testing")
 	ctx, cancel := context.WithCancel(context.Background())
 	t.Cleanup(cancel)
 
 	ctx = configx.ContextWithConfigOptions(ctx, configx.WithValues(map[string]interface{}{
-		config.KeyDSN: dsn.Conn,
-		"log.level":   "debug",
+		config.KeyDSN:        dsn.Conn,
+		"log.level":          "debug",
+		config.KeyNamespaces: []*namespace.Namespace{},
 	}))
 	c, err := config.NewDefault(ctx, nil, l)
 	require.NoError(t, err)
@@ -87,21 +97,15 @@ func NewTestRegistry(t *testing.T, dsn *dbx.DsnT) *RegistryDefault {
 		ctxer: &ketoctx.DefaultContextualizer{},
 	}
 
+	for _, opt := range opts {
+		opt(t, r)
+	}
+
 	if dsn.MigrateUp {
 		require.NoError(t, r.MigrateUp(ctx))
 	}
 
 	require.NoError(t, r.Init(ctx))
-
-	t.Cleanup(func() {
-		if !dsn.MigrateDown {
-			t.Log("Skipping down migration")
-			return
-		}
-
-		t.Log("Migrating down")
-		require.NoError(t, r.MigrateDown(ctx))
-	})
 
 	return r
 }

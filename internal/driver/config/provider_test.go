@@ -64,15 +64,12 @@ func TestKoanfNamespaceManager(t *testing.T) {
 
 		nn := []*namespace.Namespace{
 			{
-				ID:   0,
 				Name: "n0",
 			},
 			{
-				ID:   1,
 				Name: "n1",
 			},
 			{
-				ID:   2,
 				Name: "n2",
 			},
 		}
@@ -96,11 +93,9 @@ func TestKoanfNamespaceManager(t *testing.T) {
 		_, p := setup(t)
 
 		n0 := &namespace.Namespace{
-			ID:   0,
 			Name: "n0",
 		}
 		n1 := &namespace.Namespace{
-			ID:   1,
 			Name: "n1",
 		}
 
