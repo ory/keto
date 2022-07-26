@@ -6,20 +6,6 @@
       "children": [
         {
           "type": "leaf",
-          "subject_id": "maureen"
-        }
-      ],
-      "subject_set": {
-        "namespace": "files",
-        "object": "/photos/beach.jpg",
-        "relation": "owner"
-      }
-    },
-    {
-      "type": "union",
-      "children": [
-        {
-          "type": "leaf",
           "subject_set": {
             "namespace": "directories",
             "object": "/photos",
@@ -35,6 +21,20 @@
         "namespace": "directories",
         "object": "/photos",
         "relation": "access"
+      }
+    },
+    {
+      "type": "union",
+      "children": [
+        {
+          "type": "leaf",
+          "subject_id": "maureen"
+        }
+      ],
+      "subject_set": {
+        "namespace": "files",
+        "object": "/photos/beach.jpg",
+        "relation": "owner"
       }
     }
   ],
