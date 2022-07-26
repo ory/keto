@@ -45,7 +45,7 @@ func TestReadHandlers(t *testing.T) {
 	{
 		nspaces := 0
 		newNamespace = func(t *testing.T) *namespace.Namespace {
-			n := &namespace.Namespace{Name: fmt.Sprintf("relation tuple read test %d", nspaces), ID: int32(nspaces)}
+			n := &namespace.Namespace{Name: fmt.Sprintf("relation tuple read test %d", nspaces)}
 			nspaces++
 			require.NoError(t, reg.Config(ctx).Set(config.KeyNamespaces, []*namespace.Namespace{n}))
 			return n

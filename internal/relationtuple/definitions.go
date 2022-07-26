@@ -2,7 +2,6 @@ package relationtuple
 
 import (
 	"context"
-	"strconv"
 	"testing"
 
 	"github.com/ory/keto/ketoapi"
@@ -29,7 +28,7 @@ type (
 		ID uuid.UUID `json:"id"`
 	}
 	RelationQuery struct {
-		Namespace *int32     `json:"namespace"`
+		Namespace *string    `json:"namespace"`
 		Object    *uuid.UUID `json:"object"`
 		Relation  *string    `json:"relation"`
 		Subject   Subject    `json:"subject_id,omitempty"`
@@ -45,14 +44,14 @@ type (
 		UniqueID() uuid.UUID
 	}
 	RelationTuple struct {
-		Namespace int32     `json:"namespace"`
+		Namespace string    `json:"namespace"`
 		Object    uuid.UUID `json:"object"`
 		Relation  string    `json:"relation"`
 		Subject   Subject   `json:"subject"`
 	}
 	InternalRelationTuples []*RelationTuple
 	SubjectSet             struct {
-		Namespace int32     `json:"namespace"`
+		Namespace string    `json:"namespace"`
 		Object    uuid.UUID `json:"object"`
 		Relation  string    `json:"relation"`
 	}
@@ -88,7 +87,7 @@ func (s *SubjectSet) Equals(other Subject) bool {
 }
 
 func (s *SubjectSet) UniqueID() uuid.UUID {
-	return uuid.NewV5(s.Object, strconv.Itoa(int(s.Namespace))+"-"+s.Relation)
+	return uuid.NewV5(s.Object, s.Namespace+"-"+s.Relation)
 }
 
 func (t *RelationTuple) ToQuery() *RelationQuery {

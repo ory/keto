@@ -51,7 +51,7 @@ func TestEngine(t *testing.T) {
 	t.Run("respects max depth", func(t *testing.T) {
 		// "user" has relation "access" through being an "owner" through being an "admin"
 		// which requires at least 2 units of depth. If max-depth is 2 then we hit max-depth
-		ns := int32(2345)
+		ns := "namespace"
 		user := &relationtuple.SubjectID{ID: uuid.Must(uuid.NewV4())}
 		object := uuid.Must(uuid.NewV4())
 
@@ -84,7 +84,7 @@ func TestEngine(t *testing.T) {
 			},
 		}
 		reg := newDepsProvider(t, []*namespace.Namespace{
-			{Name: "", ID: ns},
+			{Name: ns},
 		})
 		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(ctx, &adminRel, &adminIsOwnerRel, &accessRel))
 
@@ -127,13 +127,11 @@ func TestEngine(t *testing.T) {
 		rel := relationtuple.RelationTuple{
 			Relation:  "access",
 			Object:    uuid.Must(uuid.NewV4()),
-			Namespace: int32(8694),
+			Namespace: t.Name(),
 			Subject:   &relationtuple.SubjectID{ID: uuid.Must(uuid.NewV4())},
 		}
 
-		reg := newDepsProvider(t, []*namespace.Namespace{
-			{ID: rel.Namespace},
-		})
+		reg := newDepsProvider(t, []*namespace.Namespace{{Name: rel.Namespace}})
 		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(ctx, &rel))
 
 		e := check.NewEngine(reg)
@@ -146,7 +144,7 @@ func TestEngine(t *testing.T) {
 	t.Run("indirect inclusion level 1", func(t *testing.T) {
 		// the set of users that are produces of "dust" have to remove it
 		dust := uuid.Must(uuid.NewV4())
-		sofaNamespace := int32(9237)
+		sofaNamespace := "sofa"
 		mark := relationtuple.SubjectID{ID: uuid.Must(uuid.NewV4())}
 		cleaningRelation := relationtuple.RelationTuple{
 			Namespace: sofaNamespace,
@@ -166,7 +164,7 @@ func TestEngine(t *testing.T) {
 		}
 
 		reg := newDepsProvider(t, []*namespace.Namespace{
-			{ID: sofaNamespace},
+			{Name: sofaNamespace},
 		})
 		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(ctx, &cleaningRelation, &markProducesDust))
 
@@ -187,13 +185,11 @@ func TestEngine(t *testing.T) {
 		rel := relationtuple.RelationTuple{
 			Relation:  "relation",
 			Object:    uuid.Must(uuid.NewV4()),
-			Namespace: int32(9854),
+			Namespace: t.Name(),
 			Subject:   user,
 		}
 
-		reg := newDepsProvider(t, []*namespace.Namespace{
-			{ID: rel.Namespace},
-		})
+		reg := newDepsProvider(t, []*namespace.Namespace{{Name: rel.Namespace}})
 		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(ctx, &rel))
 
 		e := check.NewEngine(reg)
@@ -224,9 +220,7 @@ func TestEngine(t *testing.T) {
 			Subject:  &relationtuple.SubjectID{ID: uuid.Must(uuid.NewV4())},
 		}
 
-		reg := newDepsProvider(t, []*namespace.Namespace{
-			{Name: "", ID: 1},
-		})
+		reg := newDepsProvider(t, []*namespace.Namespace{{Name: ""}})
 		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(ctx, &access, &user))
 
 		e := check.NewEngine(reg)
@@ -242,7 +236,7 @@ func TestEngine(t *testing.T) {
 
 	t.Run("wrong relation name", func(t *testing.T) {
 		diaryEntry := uuid.Must(uuid.NewV4())
-		diaryNamespace := int32(2093)
+		diaryNamespace := "diaries"
 		// this would be a user-set rewrite
 		readDiary := relationtuple.RelationTuple{
 			Namespace: diaryNamespace,
@@ -262,7 +256,7 @@ func TestEngine(t *testing.T) {
 		}
 
 		reg := newDepsProvider(t, []*namespace.Namespace{
-			{ID: diaryNamespace},
+			{Name: diaryNamespace},
 		})
 		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(ctx, &readDiary, &user))
 
@@ -280,10 +274,10 @@ func TestEngine(t *testing.T) {
 
 	t.Run("indirect inclusion level 2", func(t *testing.T) {
 		object := uuid.Must(uuid.NewV4())
-		someNamespace := int32(3491)
+		someNamespace := "some_namespaces"
 		user := relationtuple.SubjectID{ID: uuid.Must(uuid.NewV4())}
 		organization := uuid.Must(uuid.NewV4())
-		orgNamespace := int32(30293)
+		orgNamespace := "organizations"
 
 		ownerUserSet := relationtuple.SubjectSet{
 			Namespace: someNamespace,
@@ -316,8 +310,8 @@ func TestEngine(t *testing.T) {
 		}
 
 		reg := newDepsProvider(t, []*namespace.Namespace{
-			{ID: someNamespace},
-			{ID: orgNamespace},
+			{Name: someNamespace},
+			{Name: orgNamespace},
 		})
 		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(ctx, &writeRel, &orgOwnerRel, &userMembershipRel))
 
@@ -369,7 +363,7 @@ func TestEngine(t *testing.T) {
 		}
 
 		reg := newDepsProvider(t, []*namespace.Namespace{
-			{Name: "", ID: 2},
+			{Name: "2"},
 		})
 		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(ctx, &parent, &directoryAccess))
 
@@ -385,10 +379,10 @@ func TestEngine(t *testing.T) {
 	})
 
 	t.Run("case=subject id next to subject set", func(t *testing.T) {
-		namesp, obj, org, directOwner, indirectOwner, ownerRel, memberRel := int32(39231), uuid.Must(uuid.NewV4()), uuid.Must(uuid.NewV4()), uuid.Must(uuid.NewV4()), uuid.Must(uuid.NewV4()), "owner", "member"
+		namesp, obj, org, directOwner, indirectOwner, ownerRel, memberRel := "39231", uuid.Must(uuid.NewV4()), uuid.Must(uuid.NewV4()), uuid.Must(uuid.NewV4()), uuid.Must(uuid.NewV4()), "owner", "member"
 
 		reg := newDepsProvider(t, []*namespace.Namespace{
-			{ID: namesp},
+			{Name: namesp},
 		})
 		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(
 			ctx,
@@ -438,7 +432,7 @@ func TestEngine(t *testing.T) {
 	})
 
 	t.Run("case=paginates", func(t *testing.T) {
-		namesp, obj, access, users := int32(2934), uuid.Must(uuid.NewV4()), "access", x.UUIDs(4)
+		namesp, obj, access, users := "2934", uuid.Must(uuid.NewV4()), "access", x.UUIDs(4)
 		pageSize := 2
 		// sort users because we later assert on the pagination
 		sort.Slice(users, func(i, j int) bool {
@@ -447,7 +441,7 @@ func TestEngine(t *testing.T) {
 
 		reg := newDepsProvider(
 			t,
-			[]*namespace.Namespace{{ID: namesp}},
+			[]*namespace.Namespace{{Name: namesp}},
 			x.WithSize(pageSize),
 		)
 
@@ -488,9 +482,9 @@ func TestEngine(t *testing.T) {
 	})
 
 	t.Run("case=wide tuple graph", func(t *testing.T) {
-		namesp, obj, access, member, users, orgs := int32(9234), uuid.Must(uuid.NewV4()), "access", "member", x.UUIDs(4), x.UUIDs(2)
+		namesp, obj, access, member, users, orgs := "9234", uuid.Must(uuid.NewV4()), "access", "member", x.UUIDs(4), x.UUIDs(2)
 
-		reg := newDepsProvider(t, []*namespace.Namespace{{ID: namesp}})
+		reg := newDepsProvider(t, []*namespace.Namespace{{Name: namesp}})
 
 		for _, org := range orgs {
 			require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(ctx, &relationtuple.RelationTuple{
@@ -530,9 +524,9 @@ func TestEngine(t *testing.T) {
 	})
 
 	t.Run("case=circular tuples", func(t *testing.T) {
-		sendlingerTor, odeonsplatz, centralStation, connected, namesp := uuid.NewV5(uuid.Nil, "Sendlinger Tor"), uuid.NewV5(uuid.Nil, "Odeonsplatz"), uuid.NewV5(uuid.Nil, "Central Station"), "connected", int32(7743)
+		sendlingerTor, odeonsplatz, centralStation, connected, namesp := uuid.NewV5(uuid.Nil, "Sendlinger Tor"), uuid.NewV5(uuid.Nil, "Odeonsplatz"), uuid.NewV5(uuid.Nil, "Central Station"), "connected", "7743"
 
-		reg := newDepsProvider(t, []*namespace.Namespace{{ID: namesp}})
+		reg := newDepsProvider(t, []*namespace.Namespace{{Name: namesp}})
 
 		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(ctx, []*relationtuple.RelationTuple{
 			{

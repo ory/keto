@@ -327,7 +327,7 @@ func TestEngine(t *testing.T) {
 	})
 
 	t.Run("case=circular tuples", func(t *testing.T) {
-		sendlingerTor, odeonsplatz, centralStation, connected, namesp := uuid.NewV5(uuid.Nil, "Sendlinger Tor"), uuid.NewV5(uuid.Nil, "Odeonsplatz"), uuid.NewV5(uuid.Nil, "Central Station"), "connected", int32(92384)
+		sendlingerTor, odeonsplatz, centralStation, connected, namesp := uuid.NewV5(uuid.Nil, "Sendlinger Tor"), uuid.NewV5(uuid.Nil, "Odeonsplatz"), uuid.NewV5(uuid.Nil, "Central Station"), "connected", "92384"
 
 		sendlingerTorSS, odeonsplatzSS, centralStationSS := &relationtuple.SubjectSet{
 			Namespace: namesp,
@@ -343,7 +343,7 @@ func TestEngine(t *testing.T) {
 			Relation:  connected,
 		}
 
-		reg, e := newTestEngine(t, []*namespace.Namespace{{ID: namesp}})
+		reg, e := newTestEngine(t, []*namespace.Namespace{{Name: namesp}})
 
 		expectedTree := &relationtuple.Tree{
 			Type:    ketoapi.Union,

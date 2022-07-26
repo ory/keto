@@ -34,12 +34,12 @@ func TestSubject(t *testing.T) {
 			},
 			{
 				a: &SubjectSet{
-					Namespace: 1,
+					Namespace: "1",
 					Object:    a,
 					Relation:  "R",
 				},
 				b: &SubjectSet{
-					Namespace: 1,
+					Namespace: "1",
 					Object:    a,
 					Relation:  "R",
 				},
@@ -51,7 +51,7 @@ func TestSubject(t *testing.T) {
 					Relation: "R",
 				},
 				b: &SubjectSet{
-					Namespace: 1,
+					Namespace: "1",
 					Object:    a,
 					Relation:  "R",
 				},
@@ -59,11 +59,11 @@ func TestSubject(t *testing.T) {
 			},
 			{
 				a: &SubjectSet{
-					Namespace: 1,
+					Namespace: "1",
 					Relation:  "R",
 				},
 				b: &SubjectSet{
-					Namespace: 1,
+					Namespace: "1",
 					Object:    a,
 					Relation:  "R",
 				},
@@ -71,11 +71,11 @@ func TestSubject(t *testing.T) {
 			},
 			{
 				a: &SubjectSet{
-					Namespace: 1,
+					Namespace: "1",
 					Object:    a,
 				},
 				b: &SubjectSet{
-					Namespace: 1,
+					Namespace: "1",
 					Object:    a,
 					Relation:  "R",
 				},

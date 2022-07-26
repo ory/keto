@@ -22,7 +22,6 @@ func TestMapper(t *testing.T) {
 	ctx := context.Background()
 	reg := driver.NewSqliteTestRegistry(t, false)
 	nspace := namespace.Namespace{
-		ID:   1,
 		Name: "test",
 	}
 	require.NoError(t, reg.Config(ctx).Set(config.KeyNamespaces, []*namespace.Namespace{&nspace}))
@@ -189,7 +188,7 @@ func TestMapper(t *testing.T) {
 					return
 				}
 				assert.NotZero(t, mapped.Object)
-				assert.Equal(t, nspace.ID, mapped.Namespace)
+				assert.Equal(t, nspace.Name, mapped.Namespace)
 				assert.Equal(t, tc.set.Relation, mapped.Relation)
 			})
 		}
@@ -220,7 +219,7 @@ func TestMapper(t *testing.T) {
 				tree: &relationtuple.Tree{
 					Type: ketoapi.Union,
 					Subject: &relationtuple.SubjectSet{
-						Namespace: nspace.ID,
+						Namespace: nspace.Name,
 						Object:    uuids[0],
 						Relation:  "members",
 					},
@@ -241,7 +240,7 @@ func TestMapper(t *testing.T) {
 				tree: &relationtuple.Tree{
 					Type: ketoapi.Union,
 					Subject: &relationtuple.SubjectSet{
-						Namespace: nspace.ID,
+						Namespace: nspace.Name,
 						Object:    uuids[0],
 						Relation:  "members",
 					},
@@ -249,7 +248,7 @@ func TestMapper(t *testing.T) {
 						{
 							Type: ketoapi.Union,
 							Subject: &relationtuple.SubjectSet{
-								Namespace: nspace.ID,
+								Namespace: nspace.Name,
 								Object:    uuids[1],
 								Relation:  "members",
 							},

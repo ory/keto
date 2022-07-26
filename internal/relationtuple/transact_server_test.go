@@ -35,7 +35,6 @@ func TestWriteHandlers(t *testing.T) {
 	var nspaces []*namespace.Namespace
 	addNamespace := func(t *testing.T) *namespace.Namespace {
 		n := &namespace.Namespace{
-			ID:   int32(len(nspaces)),
 			Name: t.Name(),
 		}
 		nspaces = append(nspaces, n)
@@ -140,7 +139,7 @@ func TestWriteHandlers(t *testing.T) {
 			}
 
 			actual, next, err := reg.RelationTupleManager().GetRelationTuples(ctx, &relationtuple.RelationQuery{
-				Namespace: &nspace.ID,
+				Namespace: &nspace.Name,
 			})
 			require.NoError(t, err)
 			actualMapped, err := reg.Mapper().ToTuple(ctx, actual...)
@@ -169,7 +168,7 @@ func TestWriteHandlers(t *testing.T) {
 			assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 
 			// set a size > 1 just to make sure it gets all
-			actualRTs, _, err := reg.RelationTupleManager().GetRelationTuples(ctx, &relationtuple.RelationQuery{Namespace: &nspace.ID}, x.WithSize(10))
+			actualRTs, _, err := reg.RelationTupleManager().GetRelationTuples(ctx, &relationtuple.RelationQuery{Namespace: &nspace.Name}, x.WithSize(10))
 			require.NoError(t, err)
 			assert.Equal(t, []*relationtuple.RelationTuple{}, actualRTs)
 		})
@@ -252,7 +251,7 @@ func TestWriteHandlers(t *testing.T) {
 			assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 
 			actualRTs, _, err := reg.RelationTupleManager().GetRelationTuples(ctx, &relationtuple.RelationQuery{
-				Namespace: &nspace.ID,
+				Namespace: &nspace.Name,
 				Relation:  &relation,
 			})
 			require.NoError(t, err)
@@ -294,7 +293,7 @@ func TestWriteHandlers(t *testing.T) {
 			assert.Equal(t, http.StatusNotFound, resp.StatusCode)
 
 			// set a size > 1 just to make sure it gets all
-			actualRTs, _, err := reg.RelationTupleManager().GetRelationTuples(ctx, &relationtuple.RelationQuery{Namespace: &nspace.ID}, x.WithSize(10))
+			actualRTs, _, err := reg.RelationTupleManager().GetRelationTuples(ctx, &relationtuple.RelationQuery{Namespace: &nspace.Name}, x.WithSize(10))
 			require.NoError(t, err)
 			assert.Len(t, actualRTs, 0)
 		})
@@ -323,7 +322,7 @@ func TestWriteHandlers(t *testing.T) {
 			assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 
 			actualRTs, _, err := reg.RelationTupleManager().GetRelationTuples(ctx, &relationtuple.RelationQuery{
-				Namespace: &nspace.ID,
+				Namespace: &nspace.Name,
 			})
 			require.NoError(t, err)
 			mapped, err := reg.Mapper().ToTuple(ctx, actualRTs...)
@@ -355,7 +354,7 @@ func TestWriteHandlers(t *testing.T) {
 			assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 
 			actualRTs, _, err := reg.RelationTupleManager().GetRelationTuples(ctx, &relationtuple.RelationQuery{
-				Namespace: &nspace.ID,
+				Namespace: &nspace.Name,
 			})
 			require.NoError(t, err)
 			assert.Equal(t, []*relationtuple.RelationTuple{}, actualRTs)

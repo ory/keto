@@ -2,7 +2,6 @@ package relationtuple
 
 import (
 	"context"
-	"math/rand"
 	"testing"
 
 	"github.com/gofrs/uuid"
@@ -44,7 +43,7 @@ func IsolationTest(t *testing.T, m0, m1 Manager) {
 	run := twice(t, m0, m1)
 
 	run("suite=lifecycle", func(t *testing.T, m0, m1 Manager) {
-		nspace := rand.Int31()
+		nspace := t.Name()
 
 		rts := []*RelationTuple{
 			{

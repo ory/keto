@@ -197,23 +197,22 @@ func runCases(c client, m *namespaceTestManager) func(*testing.T) {
 			c.queryTupleErr(t, herodot.ErrNotFound, &ketoapi.RelationQuery{Namespace: x.Ptr("unknown namespace")})
 		})
 
-		t.Run("case=hides tuples from deleted namespace", func(t *testing.T) {
-			t.Skip("TODO for @hperl ;)")
-
+		t.Run("case=still serves tuples from deleted namespace", func(t *testing.T) {
 			n := &namespace.Namespace{Name: t.Name()}
 			m.add(t, n)
 
-			c.createTuple(t, &ketoapi.RelationTuple{
+			tuple := &ketoapi.RelationTuple{
 				Namespace: n.Name,
 				Object:    "o",
 				Relation:  "rel",
 				SubjectID: x.Ptr("s"),
-			})
+			}
+			c.createTuple(t, tuple)
 
-			m.remove(t, n.ID)
+			m.remove(t, n.Name)
 
 			resp := c.queryTuple(t, &ketoapi.RelationQuery{})
-			assert.Equal(t, len(resp.RelationTuples), 0)
+			assert.Equal(t, []*ketoapi.RelationTuple{tuple}, resp.RelationTuples)
 
 			// Add the namespace again here, so that we can clean up properly.
 			m.add(t, n)

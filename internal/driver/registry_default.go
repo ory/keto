@@ -197,11 +197,15 @@ func (r *RegistryDefault) MigrationBox(ctx context.Context) (*popx.MigrationBox,
 		if err != nil {
 			return nil, err
 		}
+		namespaces, err := r.Config(ctx).NamespaceManager()
+		if err != nil {
+			return nil, err
+		}
 
 		mb, err := popx.NewMigrationBox(
 			fsx.Merge(sql.Migrations, networkx.Migrations),
 			popx.NewMigrator(c, r.Logger(), r.Tracer(ctx), 0),
-			popx.WithGoMigrations(uuidmapping.Migrations),
+			popx.WithGoMigrations(uuidmapping.Migrations(namespaces)),
 		)
 		if err != nil {
 			return nil, err

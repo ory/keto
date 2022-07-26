@@ -20,16 +20,9 @@ func TestPersister(t *testing.T) {
 
 	setup := func(t *testing.T, dsn *dbx.DsnT) (p *sql.Persister, r *driver.RegistryDefault, hook *test.Hook) {
 		r = driver.NewTestRegistry(t, dsn)
-
 		p, ok := r.Persister().(*sql.Persister)
 		require.True(t, ok)
-
 		require.NoError(t, r.MigrateUp(context.Background()))
-
-		t.Cleanup(func() {
-			require.NoError(t, r.MigrateDown(context.Background()))
-		})
-
 		return
 	}
 

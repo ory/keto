@@ -38,11 +38,9 @@ func TestMigrate(t *testing.T) {
 	nspaces := []*namespace.Namespace{
 		{
 			Name: "default",
-			ID:   0,
 		},
 		{
 			Name: "other",
-			ID:   1,
 		},
 	}
 
@@ -160,7 +158,10 @@ func TestUpAndDown(t *testing.T) {
 	for _, dsn := range dbx.GetDSNs(t, debugOnDisk) {
 		dsn := dsn
 		t.Run("dsn="+dsn.Name, func(t *testing.T) {
-			cf := dbx.ConfigFile(t, map[string]interface{}{config.KeyDSN: dsn.Conn})
+			cf := dbx.ConfigFile(t, map[string]interface{}{
+				config.KeyDSN:        dsn.Conn,
+				config.KeyNamespaces: []*namespace.Namespace{},
+			})
 
 			t.Log(cmd.ExecNoErr(t, "up", "-c", cf, "--"+FlagYes))
 			t.Log(cmd.ExecNoErr(t, "down", "0", "-c", cf, "--"+FlagYes))
