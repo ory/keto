@@ -46,33 +46,6 @@ func newTestEngine(t *testing.T, namespaces []*namespace.Namespace, paginationOp
 	return reg, e
 }
 
-func assertTreesAreEqual(t *testing.T, expected, actual *relationtuple.Tree) bool {
-	if !assert.ObjectsAreEqual(expected.Type, actual.Type) {
-		t.Logf("expected type %+v, but got %+v", expected.Type, actual.Type)
-		return false
-	}
-	if !assert.ObjectsAreEqual(expected.Subject, actual.Subject) {
-		t.Logf("expected subject %+v, but got %+v", expected.Subject, actual.Subject)
-		return false
-	}
-	if len(expected.Children) != len(actual.Children) {
-		t.Logf("expected %d children, but got %d", len(expected.Children), len(actual.Children))
-		return false
-	}
-
-outer:
-	for _, child := range expected.Children {
-		for _, actualChild := range actual.Children {
-			if assertTreesAreEqual(t, child, actualChild) {
-				continue outer
-			}
-		}
-		assert.Truef(t, false, "could not find %+v", child)
-		return false
-	}
-	return true
-}
-
 func TestEngine(t *testing.T) {
 	t.Run("case=returns SubjectID on expand", func(t *testing.T) {
 		user := &relationtuple.SubjectID{ID: uuid.Must(uuid.NewV4())}
@@ -81,7 +54,7 @@ func TestEngine(t *testing.T) {
 		tree, err := e.BuildTree(context.Background(), user, 100)
 		require.NoError(t, err)
 		assert.Equal(t, &relationtuple.Tree{
-			Type:    ketoapi.Leaf,
+			Type:    ketoapi.ExpandNodeLeaf,
 			Subject: user,
 		}, tree)
 	})
@@ -112,16 +85,16 @@ func TestEngine(t *testing.T) {
 
 		tree, err := e.BuildTree(context.Background(), bouldererUserSet, 100)
 		require.NoError(t, err)
-		assertTreesAreEqual(t, &relationtuple.Tree{
-			Type:    ketoapi.Union,
+		expand.AssertInternalTreesAreEqual(t, &relationtuple.Tree{
+			Type:    ketoapi.ExpandNodeUnion,
 			Subject: bouldererUserSet,
 			Children: []*relationtuple.Tree{
 				{
-					Type:    ketoapi.Leaf,
+					Type:    ketoapi.ExpandNodeLeaf,
 					Subject: paul,
 				},
 				{
-					Type:    ketoapi.Leaf,
+					Type:    ketoapi.ExpandNodeLeaf,
 					Subject: tommy,
 				},
 			},
@@ -130,50 +103,50 @@ func TestEngine(t *testing.T) {
 
 	t.Run("case=expands two levels", func(t *testing.T) {
 		expectedTree := &relationtuple.Tree{
-			Type: ketoapi.Union,
+			Type: ketoapi.ExpandNodeUnion,
 			Subject: &relationtuple.SubjectSet{
 				Object:   uuid.Must(uuid.NewV4()),
 				Relation: "transitive member",
 			},
 			Children: []*relationtuple.Tree{
 				{
-					Type: ketoapi.Union,
+					Type: ketoapi.ExpandNodeUnion,
 					Subject: &relationtuple.SubjectSet{
 						Object:   uuid.Must(uuid.NewV4()),
 						Relation: "member",
 					},
 					Children: []*relationtuple.Tree{
 						{
-							Type:    ketoapi.Leaf,
+							Type:    ketoapi.ExpandNodeLeaf,
 							Subject: &relationtuple.SubjectID{ID: uuid.Must(uuid.NewV4())},
 						},
 						{
-							Type:    ketoapi.Leaf,
+							Type:    ketoapi.ExpandNodeLeaf,
 							Subject: &relationtuple.SubjectID{ID: uuid.Must(uuid.NewV4())},
 						},
 						{
-							Type:    ketoapi.Leaf,
+							Type:    ketoapi.ExpandNodeLeaf,
 							Subject: &relationtuple.SubjectID{ID: uuid.Must(uuid.NewV4())},
 						},
 					},
 				},
 				{
-					Type: ketoapi.Union,
+					Type: ketoapi.ExpandNodeUnion,
 					Subject: &relationtuple.SubjectSet{
 						Object:   uuid.Must(uuid.NewV4()),
 						Relation: "member",
 					},
 					Children: []*relationtuple.Tree{
 						{
-							Type:    ketoapi.Leaf,
+							Type:    ketoapi.ExpandNodeLeaf,
 							Subject: &relationtuple.SubjectID{ID: uuid.Must(uuid.NewV4())},
 						},
 						{
-							Type:    ketoapi.Leaf,
+							Type:    ketoapi.ExpandNodeLeaf,
 							Subject: &relationtuple.SubjectID{ID: uuid.Must(uuid.NewV4())},
 						},
 						{
-							Type:    ketoapi.Leaf,
+							Type:    ketoapi.ExpandNodeLeaf,
 							Subject: &relationtuple.SubjectID{ID: uuid.Must(uuid.NewV4())},
 						},
 					},
@@ -204,7 +177,7 @@ func TestEngine(t *testing.T) {
 
 		actualTree, err := e.BuildTree(context.Background(), expectedTree.Subject, 100)
 		require.NoError(t, err)
-		assertTreesAreEqual(t, expectedTree, actualTree)
+		expand.AssertInternalTreesAreEqual(t, expectedTree, actualTree)
 	})
 
 	t.Run("case=respects max depth", func(t *testing.T) {
@@ -223,28 +196,28 @@ func TestEngine(t *testing.T) {
 		}
 
 		expectedTree := &relationtuple.Tree{
-			Type: ketoapi.Union,
+			Type: ketoapi.ExpandNodeUnion,
 			Subject: &relationtuple.SubjectSet{
 				Object:   ids[0],
 				Relation: "child",
 			},
 			Children: []*relationtuple.Tree{
 				{
-					Type: ketoapi.Union,
+					Type: ketoapi.ExpandNodeUnion,
 					Subject: &relationtuple.SubjectSet{
 						Object:   ids[1],
 						Relation: "child",
 					},
 					Children: []*relationtuple.Tree{
 						{
-							Type: ketoapi.Union,
+							Type: ketoapi.ExpandNodeUnion,
 							Subject: &relationtuple.SubjectSet{
 								Object:   ids[2],
 								Relation: "child",
 							},
 							Children: []*relationtuple.Tree{
 								{
-									Type: ketoapi.Leaf,
+									Type: ketoapi.ExpandNodeLeaf,
 									Subject: &relationtuple.SubjectSet{
 										Object:   ids[3],
 										Relation: "child",
@@ -269,7 +242,7 @@ func TestEngine(t *testing.T) {
 		root := uuid.Must(uuid.NewV4())
 		users := x.UUIDs(4)
 		expectedTree := &relationtuple.Tree{
-			Type:    ketoapi.Union,
+			Type:    ketoapi.ExpandNodeUnion,
 			Subject: &relationtuple.SubjectSet{Object: root, Relation: "access"},
 		}
 
@@ -280,7 +253,7 @@ func TestEngine(t *testing.T) {
 				Subject:  &relationtuple.SubjectID{ID: user},
 			}))
 			expectedTree.Children = append(expectedTree.Children, &relationtuple.Tree{
-				Type:    ketoapi.Leaf,
+				Type:    ketoapi.ExpandNodeLeaf,
 				Subject: &relationtuple.SubjectID{ID: user},
 			})
 		}
@@ -291,7 +264,7 @@ func TestEngine(t *testing.T) {
 		}, 10)
 		require.NoError(t, err)
 
-		assertTreesAreEqual(t, expectedTree, tree)
+		expand.AssertInternalTreesAreEqual(t, expectedTree, tree)
 		assert.Len(t, reg.RequestedPages, 2)
 	})
 
@@ -299,14 +272,14 @@ func TestEngine(t *testing.T) {
 		reg, e := newTestEngine(t, []*namespace.Namespace{{}})
 
 		expectedTree := &relationtuple.Tree{
-			Type: ketoapi.Union,
+			Type: ketoapi.ExpandNodeUnion,
 			Subject: &relationtuple.SubjectSet{
 				Object:   uuid.Must(uuid.NewV4()),
 				Relation: "rel",
 			},
 			Children: []*relationtuple.Tree{
 				{
-					Type: ketoapi.Leaf,
+					Type: ketoapi.ExpandNodeLeaf,
 					Subject: &relationtuple.SubjectSet{
 						Object:   uuid.Must(uuid.NewV4()),
 						Relation: "sr",
@@ -346,19 +319,19 @@ func TestEngine(t *testing.T) {
 		reg, e := newTestEngine(t, []*namespace.Namespace{{Name: namesp}})
 
 		expectedTree := &relationtuple.Tree{
-			Type:    ketoapi.Union,
+			Type:    ketoapi.ExpandNodeUnion,
 			Subject: sendlingerTorSS,
 			Children: []*relationtuple.Tree{
 				{
-					Type:    ketoapi.Union,
+					Type:    ketoapi.ExpandNodeUnion,
 					Subject: odeonsplatzSS,
 					Children: []*relationtuple.Tree{
 						{
-							Type:    ketoapi.Union,
+							Type:    ketoapi.ExpandNodeUnion,
 							Subject: centralStationSS,
 							Children: []*relationtuple.Tree{
 								{
-									Type:     ketoapi.Leaf,
+									Type:     ketoapi.ExpandNodeLeaf,
 									Subject:  sendlingerTorSS,
 									Children: nil,
 								},

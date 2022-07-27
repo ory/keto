@@ -49,7 +49,6 @@ func Test(t *testing.T) {
 	for _, dsn := range dbx.GetDSNs(t, false) {
 		dsn := dsn
 		t.Run(fmt.Sprintf("dsn=%s", dsn.Name), func(t *testing.T) {
-			dsn := dsn
 			t.Parallel()
 
 			ctx, reg, namespaceTestMgr := newInitializedReg(t, dsn, nil)

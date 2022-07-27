@@ -12,7 +12,3 @@ serve:
     port: 4467
 
 dsn: memory
-
-namespaces:
-  - name: default
-    id: 1

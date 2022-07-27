@@ -9,8 +9,6 @@ replace (
 	github.com/soheilhy/cmux => github.com/soheilhy/cmux v0.1.5-0.20210114230657-cdd3331e3e7c
 )
 
-replace github.com/gobuffalo/pop/v6 => github.com/zepatrik/pop/v6 v6.0.0-20220713083805-58adbcc67909
-
 require (
 	github.com/cenkalti/backoff/v3 v3.2.2
 	github.com/ghodss/yaml v1.0.0
@@ -20,7 +18,7 @@ require (
 	github.com/go-openapi/swag v0.21.1
 	github.com/go-openapi/validate v0.22.0
 	github.com/go-sql-driver/mysql v1.6.0
-	github.com/gobuffalo/pop/v6 v6.0.4-0.20220707121509-feb0eed33d86
+	github.com/gobuffalo/pop/v6 v6.0.7-0.20220726152515-770e0c458f7b
 	github.com/gofrs/uuid v4.2.0+incompatible
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
 	github.com/julienschmidt/httprouter v1.3.0
@@ -96,7 +94,7 @@ require (
 	github.com/gobuffalo/github_flavored_markdown v1.1.1 // indirect
 	github.com/gobuffalo/helpers v0.6.5 // indirect
 	github.com/gobuffalo/nulls v0.4.1 // indirect
-	github.com/gobuffalo/plush/v4 v4.1.13 // indirect
+	github.com/gobuffalo/plush/v4 v4.1.14 // indirect
 	github.com/gobuffalo/tags/v3 v3.1.3 // indirect
 	github.com/gobuffalo/validate/v3 v3.3.2 // indirect
 	github.com/goccy/go-yaml v1.9.5 // indirect

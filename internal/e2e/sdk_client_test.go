@@ -211,7 +211,7 @@ func buildTree(t require.TestingT, mt *models.ExpandTree) *ketoapi.ExpandTree {
 		et.SubjectID = &mt.SubjectID
 	}
 
-	if et.Type != ketoapi.Leaf && len(mt.Children) != 0 {
+	if et.Type != ketoapi.ExpandNodeLeaf && len(mt.Children) != 0 {
 		et.Children = make([]*ketoapi.ExpandTree, len(mt.Children))
 		for i, c := range mt.Children {
 			et.Children[i] = buildTree(t, c)

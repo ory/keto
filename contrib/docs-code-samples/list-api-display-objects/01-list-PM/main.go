@@ -8,6 +8,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
+	"github.com/ory/keto/internal/x"
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 )
 
@@ -20,9 +21,9 @@ func main() {
 	client := rts.NewReadServiceClient(conn)
 
 	res, err := client.ListRelationTuples(context.Background(), &rts.ListRelationTuplesRequest{
-		Query: &rts.ListRelationTuplesRequest_Query{
-			Namespace: "chats",
-			Relation:  "member",
+		RelationQuery: &rts.RelationQuery{
+			Namespace: x.Ptr("chats"),
+			Relation:  x.Ptr("member"),
 			Subject:   rts.NewSubjectID("PM"),
 		},
 	})
@@ -30,9 +31,9 @@ func main() {
 		panic(err.Error())
 	}
 
-	objects := []string{}
-	for _, rt := range res.RelationTuples {
-		objects = append(objects, rt.Object)
+	objects := make([]string, len(res.RelationTuples))
+	for i, rt := range res.RelationTuples {
+		objects[i] = rt.Object
 	}
 	sort.Strings(objects)
 	for _, o := range objects {

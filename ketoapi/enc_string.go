@@ -104,7 +104,7 @@ func (t *ExpandTree) String() string {
 		sub = t.SubjectSet.String()
 	}
 
-	if t.Type == Leaf {
+	if t.Type == ExpandNodeLeaf {
 		return fmt.Sprintf("☘ %s️", sub)
 	}
 

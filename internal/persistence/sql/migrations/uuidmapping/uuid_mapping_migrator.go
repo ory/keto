@@ -54,7 +54,6 @@ type (
 	ColumnProvider interface {
 		dbFields() []any
 	}
-
 	ColumnNameAble interface {
 		columns() []string
 	}
@@ -191,12 +190,17 @@ var (
 						relationTuples []OldRelationTuple
 						offset         int
 						err            error
+						lastID         uuid.UUID
 					)
 					for {
-						relationTuples, offset, err = GetRelationTuples[OldRelationTuple](conn, offset)
+						relationTuples, err = GetRelationTuples[OldRelationTuple](conn, lastID)
 						if err != nil {
 							return fmt.Errorf("could not get old relation tuples: %w", err)
 						}
+						if len(relationTuples) == 0 {
+							break
+						}
+						lastID = relationTuples[len(relationTuples)-1].ID
 
 						mappings := make([]*UUIDMapping, len(relationTuples)*2)
 						newTuples := make([]*NewRelationTuple, len(relationTuples))
@@ -233,14 +237,18 @@ var (
 				Runner: func(_ popx.Migration, conn *pop.Connection, _ *pop.Tx) error {
 					var (
 						relationTuples []NewRelationTuple
-						offset         int
 						err            error
+						lastID         uuid.UUID
 					)
 					for {
-						relationTuples, offset, err = GetRelationTuples[NewRelationTuple](conn, offset)
+						relationTuples, err = GetRelationTuples[NewRelationTuple](conn, lastID)
 						if err != nil {
 							return fmt.Errorf("could not get new relation tuples: %w", err)
 						}
+						if len(relationTuples) == 0 {
+							break
+						}
+						lastID = relationTuples[len(relationTuples)-1].ID
 
 						mappings := make(map[uuid.UUID][]*string, len(relationTuples)*2)
 						oldTuples := make([]*OldRelationTuple, len(relationTuples))
@@ -292,10 +300,6 @@ var (
 						if err := BatchInsertTuples(conn, oldTuples); err != nil {
 							return fmt.Errorf("could not insert old tuples: %w", err)
 						}
-
-						if offset == 0 {
-							break
-						}
 					}
 
 					return nil
@@ -328,28 +332,20 @@ func ConstructArgs[T ColumnProvider](nCols int, items []T) (string, []interface{
 func GetRelationTuples[RT interface {
 	ColumnNameAble
 	pop.TableNameAble
-}](conn *pop.Connection, offset int) (
-	res []RT, newOffset int, err error,
+}](conn *pop.Connection, lastID uuid.UUID) (
+	res []RT, err error,
 ) {
 	const pageSize = 500
-	var (
-		rt RT
-		q  string
-	)
+	var rt RT
 
-	q = conn.TX.Rebind("SELECT %s FROM %s ORDER BY shard_id LIMIT ? OFFSET ?")
+	q := conn.TX.Rebind("SELECT * FROM %s WHERE shard_id > ? ORDER BY shard_id LIMIT ?")
 
 	err = conn.Store.Select(
-		&res, fmt.Sprintf(q, strings.Join(rt.columns(), ", "),
-			rt.TableName()), pageSize+1, offset)
+		&res, fmt.Sprintf(q, rt.TableName()), lastID, pageSize)
 	if err != nil {
-		return nil, 0, sqlcon.HandleError(err)
+		return nil, sqlcon.HandleError(err)
 	}
-
-	if len(res) > pageSize {
-		return res, offset + len(res), nil
-	}
-	return res, 0, nil
+	return res, nil
 }
 
 func BatchWriteMappings(conn *pop.Connection, mappings []*UUIDMapping) (err error) {
@@ -407,15 +403,15 @@ func BatchReplaceUUIDs(conn *pop.Connection, uuidToTargets map[uuid.UUID][]*stri
 func BatchInsertTuples[RT interface {
 	pop.TableNameAble
 	ColumnProvider
-	columns() []string
+	ColumnNameAble
 }](conn *pop.Connection, rts []RT) error {
 	if len(rts) == 0 {
 		return nil
 	}
 
-	columns := strings.Join(rts[0].columns(), ", ")
-	placeholders, args := ConstructArgs(10, rts)
-	query := fmt.Sprintf("INSERT INTO %s (%s) VALUES %s", rts[0].TableName(), columns, placeholders)
+	cols := rts[0].columns()
+	placeholders, args := ConstructArgs(len(cols), rts)
+	query := fmt.Sprintf("INSERT INTO %s (%s) VALUES %s", rts[0].TableName(), strings.Join(cols, ", "), placeholders)
 
 	return sqlcon.HandleError(conn.RawQuery(query, args...).Exec())
 }

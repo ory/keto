@@ -323,8 +323,11 @@ github.com/gobuffalo/packd v0.1.0/go.mod h1:M2Juc+hhDXf/PnmBANFCqx4DM3wRbgDvnVWe
 github.com/gobuffalo/packd v1.0.1/go.mod h1:PP2POP3p3RXGz7Jh6eYEf93S7vA2za6xM7QT85L4+VY=
 github.com/gobuffalo/packr/v2 v2.0.9/go.mod h1:emmyGweYTm6Kdper+iywB6YK5YzuKchGtJQZ0Odn4pQ=
 github.com/gobuffalo/packr/v2 v2.2.0/go.mod h1:CaAwI0GPIAv+5wKLtv8Afwl+Cm78K/I/VCm/3ptBN+0=
-github.com/gobuffalo/plush/v4 v4.1.13 h1:tru7S39kYaefzM+dk+W1bib65ZVkS1nV+6ARB7yPWn0=
 github.com/gobuffalo/plush/v4 v4.1.13/go.mod h1:s3hUyj/JlwEiJ039OBJevojq9xT40D1pgekw0o88CVU=
+github.com/gobuffalo/plush/v4 v4.1.14 h1:F3IRVRHVBVJZA4g//zbq0lyF+QBjNtZIGC6e/2k86L8=
+github.com/gobuffalo/plush/v4 v4.1.14/go.mod h1:s3hUyj/JlwEiJ039OBJevojq9xT40D1pgekw0o88CVU=
+github.com/gobuffalo/pop/v6 v6.0.7-0.20220726152515-770e0c458f7b h1:1aVFXHtEEo3Mcfvzl4GVH2a4q+VGVea8w2VbsidCy7c=
+github.com/gobuffalo/pop/v6 v6.0.7-0.20220726152515-770e0c458f7b/go.mod h1:3TSU2CqHeEnRAhhXirHcYb1gLw04RFHBaB/+WXDRoHE=
 github.com/gobuffalo/syncx v0.0.0-20190224160051-33c29581e754/go.mod h1:HhnNqWY95UYwwW3uSASeV7vtgYkT2t16hJgV3AEPUpw=
 github.com/gobuffalo/tags/v3 v3.1.3 h1:yhq9gudiEngYtPzH1KtMUknxffQBqwNfkHKP6i4l4NE=
 github.com/gobuffalo/tags/v3 v3.1.3/go.mod h1:WAAjKdskZUmdi6EkNjP2SXBwBwRovHsjJsPJbBiPlKc=
@@ -947,8 +950,6 @@ github.com/yuin/goldmark v1.3.5/go.mod h1:mwnBkeHKe2W/ZEtQ+71ViKU8L12m81fl3OWwC1
 github.com/yuin/goldmark v1.4.0/go.mod h1:mwnBkeHKe2W/ZEtQ+71ViKU8L12m81fl3OWwC1Zlc8k=
 github.com/yuin/goldmark v1.4.1/go.mod h1:mwnBkeHKe2W/ZEtQ+71ViKU8L12m81fl3OWwC1Zlc8k=
 github.com/zenazn/goji v0.9.0/go.mod h1:7S9M489iMyHBNxwZnk9/EHS098H4/F6TATF2mIxtB1Q=
-github.com/zepatrik/pop/v6 v6.0.0-20220713083805-58adbcc67909 h1:zESmEdUcKbnbckixisggl0s+3HvzwetTdXlKW5uRoks=
-github.com/zepatrik/pop/v6 v6.0.0-20220713083805-58adbcc67909/go.mod h1:toTxNJnsSuSlyK6w0yGb4YXSNIHsi2chQYC2CjBF9Ac=
 go.etcd.io/bbolt v1.3.2/go.mod h1:IbVyRI1SCnLcuJnV2u8VeU0CEYM7e686BmAb1XKL+uU=
 go.mongodb.org/mongo-driver v1.7.3/go.mod h1:NqaYOwnXWr5Pm7AOpO5QFxKJ503nbMse/R79oO62zWg=
 go.mongodb.org/mongo-driver v1.7.5/go.mod h1:VXEWRZ6URJIkUq2SCAyapmhH0ZLRBP+FT4xhp5Zvxng=

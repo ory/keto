@@ -39,7 +39,7 @@ func (p *Persister) batchToUUIDs(ctx context.Context, values []string) (uuids []
 	for i, val := range values {
 		uuids[i] = uuid.NewV5(p.NetworkID(ctx), val)
 		placeholderArray[i] = "(?, ?)"
-		args = append(args, uuids[i].String(), val)
+		args = append(args, uuids[i], val)
 	}
 	placeholders := strings.Join(placeholderArray, ", ")
 
@@ -96,14 +96,14 @@ func (p *Persister) batchFromUUIDs(ctx context.Context, ids []uuid.UUID, opts ..
 			end = len(uniqueIDs)
 		}
 		idsToLookup := uniqueIDs[i:end]
-		mappings := &[]UUIDMapping{}
+		var mappings []UUIDMapping
 		query := p.Connection(ctx).Where("id in (?)", idsToLookup)
-		if err := sqlcon.HandleError(query.All(mappings)); err != nil {
+		if err := sqlcon.HandleError(query.All(&mappings)); err != nil {
 			return []string{}, err
 		}
 
 		// Write the representation to the correct index.
-		for _, m := range *mappings {
+		for _, m := range mappings {
 			for _, idx := range idIdx[m.ID] {
 				res[idx] = m.StringRepresentation
 			}

@@ -210,14 +210,14 @@ func TestMapper(t *testing.T) {
 			{
 				name: "basic tree",
 				tree: &relationtuple.Tree{
-					Type:    ketoapi.Leaf,
+					Type:    ketoapi.ExpandNodeLeaf,
 					Subject: &relationtuple.SubjectID{ID: uuids[0]},
 				},
 			},
 			{
 				name: "basic tree with children",
 				tree: &relationtuple.Tree{
-					Type: ketoapi.Union,
+					Type: ketoapi.ExpandNodeUnion,
 					Subject: &relationtuple.SubjectSet{
 						Namespace: nspace.Name,
 						Object:    uuids[0],
@@ -225,11 +225,11 @@ func TestMapper(t *testing.T) {
 					},
 					Children: []*relationtuple.Tree{
 						{
-							Type:    ketoapi.Leaf,
+							Type:    ketoapi.ExpandNodeLeaf,
 							Subject: &relationtuple.SubjectID{ID: uuids[1]},
 						},
 						{
-							Type:    ketoapi.Leaf,
+							Type:    ketoapi.ExpandNodeLeaf,
 							Subject: &relationtuple.SubjectID{ID: uuids[2]},
 						},
 					},
@@ -238,7 +238,7 @@ func TestMapper(t *testing.T) {
 			{
 				name: "deeply nested tree",
 				tree: &relationtuple.Tree{
-					Type: ketoapi.Union,
+					Type: ketoapi.ExpandNodeUnion,
 					Subject: &relationtuple.SubjectSet{
 						Namespace: nspace.Name,
 						Object:    uuids[0],
@@ -246,7 +246,7 @@ func TestMapper(t *testing.T) {
 					},
 					Children: []*relationtuple.Tree{
 						{
-							Type: ketoapi.Union,
+							Type: ketoapi.ExpandNodeUnion,
 							Subject: &relationtuple.SubjectSet{
 								Namespace: nspace.Name,
 								Object:    uuids[1],
@@ -254,7 +254,7 @@ func TestMapper(t *testing.T) {
 							},
 							Children: []*relationtuple.Tree{
 								{
-									Type:    ketoapi.Leaf,
+									Type:    ketoapi.ExpandNodeLeaf,
 									Subject: &relationtuple.SubjectID{ID: uuids[2]},
 								},
 							},

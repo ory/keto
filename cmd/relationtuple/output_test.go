@@ -44,9 +44,6 @@ func TestRelationCollection(t *testing.T) {
 		}
 		proto[2].Subject = rts.NewSubjectSet("sn", "so", "sr")
 
-		NewAPICollection([]*ketoapi.RelationTuple{})
-		MustNewProtoCollection([]*rts.RelationTuple{})
-
 		for i, c := range []*Collection{
 			NewAPICollection(expected),
 			MustNewProtoCollection(proto),

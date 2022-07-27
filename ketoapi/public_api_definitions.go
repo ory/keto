@@ -129,11 +129,11 @@ func (r *RelationTuple) ToLoggerFields() logrus.Fields {
 type ExpandNodeType string
 
 const (
-	Union        ExpandNodeType = "union"
-	Exclusion    ExpandNodeType = "exclusion"
-	Intersection ExpandNodeType = "intersection"
-	Leaf         ExpandNodeType = "leaf"
-	Unspecified  ExpandNodeType = "unspecified"
+	ExpandNodeUnion        ExpandNodeType = "union"
+	ExpandNodeExclusion    ExpandNodeType = "exclusion"
+	ExpandNodeIntersection ExpandNodeType = "intersection"
+	ExpandNodeLeaf         ExpandNodeType = "leaf"
+	ExpandNodeUnspecified  ExpandNodeType = "unspecified"
 )
 
 // swagger:model expandTree
@@ -157,13 +157,13 @@ func (t ExpandNodeType) String() string {
 func (t *ExpandNodeType) UnmarshalJSON(v []byte) error {
 	switch string(v) {
 	case `"union"`:
-		*t = Union
+		*t = ExpandNodeUnion
 	case `"exclusion"`:
-		*t = Exclusion
+		*t = ExpandNodeExclusion
 	case `"intersection"`:
-		*t = Intersection
+		*t = ExpandNodeIntersection
 	case `"leaf"`:
-		*t = Leaf
+		*t = ExpandNodeLeaf
 	default:
 		return ErrUnknownNodeType
 	}
@@ -172,13 +172,13 @@ func (t *ExpandNodeType) UnmarshalJSON(v []byte) error {
 
 func (t ExpandNodeType) ToProto() rts.NodeType {
 	switch t {
-	case Leaf:
+	case ExpandNodeLeaf:
 		return rts.NodeType_NODE_TYPE_LEAF
-	case Union:
+	case ExpandNodeUnion:
 		return rts.NodeType_NODE_TYPE_UNION
-	case Exclusion:
+	case ExpandNodeExclusion:
 		return rts.NodeType_NODE_TYPE_EXCLUSION
-	case Intersection:
+	case ExpandNodeIntersection:
 		return rts.NodeType_NODE_TYPE_INTERSECTION
 	}
 	return rts.NodeType_NODE_TYPE_UNSPECIFIED
@@ -187,13 +187,13 @@ func (t ExpandNodeType) ToProto() rts.NodeType {
 func (ExpandNodeType) FromProto(pt rts.NodeType) ExpandNodeType {
 	switch pt {
 	case rts.NodeType_NODE_TYPE_LEAF:
-		return Leaf
+		return ExpandNodeLeaf
 	case rts.NodeType_NODE_TYPE_UNION:
-		return Union
+		return ExpandNodeUnion
 	case rts.NodeType_NODE_TYPE_EXCLUSION:
-		return Exclusion
+		return ExpandNodeExclusion
 	case rts.NodeType_NODE_TYPE_INTERSECTION:
-		return Intersection
+		return ExpandNodeIntersection
 	}
-	return Unspecified
+	return ExpandNodeUnspecified
 }

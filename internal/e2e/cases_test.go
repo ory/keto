@@ -58,7 +58,7 @@ func runCases(c client, m *namespaceTestManager) func(*testing.T) {
 
 			subjects := []string{"s1", "s2"}
 			expectedTree := &ketoapi.ExpandTree{
-				Type: ketoapi.Union,
+				Type: ketoapi.ExpandNodeUnion,
 				SubjectSet: &ketoapi.SubjectSet{
 					Namespace: n.Name,
 					Object:    obj,
@@ -75,7 +75,7 @@ func runCases(c client, m *namespaceTestManager) func(*testing.T) {
 					SubjectID: &subjectID,
 				})
 				expectedTree.Children[i] = &ketoapi.ExpandTree{
-					Type:      ketoapi.Leaf,
+					Type:      ketoapi.ExpandNodeLeaf,
 					SubjectID: &subjectID,
 				}
 			}

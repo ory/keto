@@ -68,15 +68,15 @@ func TestRESTHandler(t *testing.T) {
 			Relation:  "parent of",
 		}
 		expectedTree := &ketoapi.ExpandTree{
-			Type:       ketoapi.Union,
+			Type:       ketoapi.ExpandNodeUnion,
 			SubjectSet: rootSub,
 			Children: []*ketoapi.ExpandTree{
 				{
-					Type:      ketoapi.Leaf,
+					Type:      ketoapi.ExpandNodeLeaf,
 					SubjectID: x.Ptr("child0"),
 				},
 				{
-					Type:      ketoapi.Leaf,
+					Type:      ketoapi.ExpandNodeLeaf,
 					SubjectID: x.Ptr("child1"),
 				},
 			},

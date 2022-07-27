@@ -3,6 +3,8 @@ package expand
 import (
 	"testing"
 
+	"github.com/ory/keto/internal/relationtuple"
+
 	"github.com/stretchr/testify/assert"
 
 	"github.com/ory/keto/ketoapi"
@@ -41,6 +43,33 @@ outer:
 			}
 		}
 		t.Logf("expected child:\n%+v\n\nactual child:\n%+v", expectedChild, actual)
+		return false
+	}
+	return true
+}
+
+func AssertInternalTreesAreEqual(t *testing.T, expected, actual *relationtuple.Tree) bool {
+	if !assert.ObjectsAreEqual(expected.Type, actual.Type) {
+		t.Logf("expected type %+v, but got %+v", expected.Type, actual.Type)
+		return false
+	}
+	if !assert.ObjectsAreEqual(expected.Subject, actual.Subject) {
+		t.Logf("expected subject %+v, but got %+v", expected.Subject, actual.Subject)
+		return false
+	}
+	if len(expected.Children) != len(actual.Children) {
+		t.Logf("expected %d children, but got %d", len(expected.Children), len(actual.Children))
+		return false
+	}
+
+outer:
+	for _, child := range expected.Children {
+		for _, actualChild := range actual.Children {
+			if AssertInternalTreesAreEqual(t, child, actualChild) {
+				continue outer
+			}
+		}
+		assert.Truef(t, false, "could not find %+v", child)
 		return false
 	}
 	return true

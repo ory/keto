@@ -45,7 +45,7 @@ func (e *Engine) BuildTree(ctx context.Context, subject relationtuple.Subject, r
 		}
 
 		subTree := &relationtuple.Tree{
-			Type:    ketoapi.Union,
+			Type:    ketoapi.ExpandNodeUnion,
 			Subject: subject,
 		}
 
@@ -72,7 +72,7 @@ func (e *Engine) BuildTree(ctx context.Context, subject relationtuple.Subject, r
 			}
 
 			if restDepth <= 1 {
-				subTree.Type = ketoapi.Leaf
+				subTree.Type = ketoapi.ExpandNodeLeaf
 				return subTree, nil
 			}
 
@@ -84,7 +84,7 @@ func (e *Engine) BuildTree(ctx context.Context, subject relationtuple.Subject, r
 				}
 				if child == nil {
 					child = &relationtuple.Tree{
-						Type:    ketoapi.Leaf,
+						Type:    ketoapi.ExpandNodeLeaf,
 						Subject: r.Subject,
 					}
 				}
@@ -98,7 +98,7 @@ func (e *Engine) BuildTree(ctx context.Context, subject relationtuple.Subject, r
 
 	// is SubjectID
 	return &relationtuple.Tree{
-		Type:    ketoapi.Leaf,
+		Type:    ketoapi.ExpandNodeLeaf,
 		Subject: subject,
 	}, nil
 }
