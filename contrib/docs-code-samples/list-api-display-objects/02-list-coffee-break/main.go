@@ -3,6 +3,9 @@ package main
 import (
 	"context"
 	"fmt"
+	"sort"
+
+	"github.com/ory/keto/internal/x"
 
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 
@@ -19,17 +22,22 @@ func main() {
 	client := rts.NewReadServiceClient(conn)
 
 	res, err := client.ListRelationTuples(context.Background(), &rts.ListRelationTuplesRequest{
-		Query: &rts.ListRelationTuplesRequest_Query{
-			Namespace: "chats",
-			Object:    "coffee-break",
-			Relation:  "member",
+		RelationQuery: &rts.RelationQuery{
+			Namespace: x.Ptr("chats"),
+			Object:    x.Ptr("coffee-break"),
+			Relation:  x.Ptr("member"),
 		},
 	})
 	if err != nil {
 		panic(err.Error())
 	}
 
-	for _, rt := range res.RelationTuples {
-		fmt.Println(rt.Subject.Ref.(*rts.Subject_Id).Id)
+	ids := make([]string, len(res.RelationTuples))
+	for i, rt := range res.RelationTuples {
+		ids[i] = rt.Subject.Ref.(*rts.Subject_Id).Id
+	}
+	sort.Strings(ids)
+	for _, id := range ids {
+		fmt.Println(id)
 	}
 }

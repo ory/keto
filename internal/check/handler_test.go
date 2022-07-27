@@ -8,6 +8,8 @@ import (
 	"net/url"
 	"testing"
 
+	"github.com/ory/keto/ketoapi"
+
 	"github.com/ory/keto/internal/driver/config"
 
 	"github.com/julienschmidt/httprouter"
@@ -23,6 +25,8 @@ import (
 )
 
 func assertAllowed(t *testing.T, resp *http.Response) {
+	t.Helper()
+
 	body, err := io.ReadAll(resp.Body)
 	require.NoError(t, err)
 
@@ -40,8 +44,8 @@ func baseAssertDenied(t *testing.T, resp *http.Response) {
 	assert.False(t, gjson.GetBytes(body, "allowed").Bool())
 }
 
-// For OpenAPI clients, we want to always regurn a 200 status code even if the
-// check returned "denied".
+// For OpenAPI clients, we want to always return a 200 status code even if the
+// check returned "denied" to not cause exceptions etc. in the generated clients.
 func openAPIAssertDenied(t *testing.T, resp *http.Response) {
 	body, err := io.ReadAll(resp.Body)
 	require.NoError(t, err)
@@ -104,26 +108,27 @@ func TestRESTHandler(t *testing.T) {
 			})
 
 			t.Run("case=returns denied on unknown namespace", func(t *testing.T) {
-				resp, err := ts.Client().Get(ts.URL + suite.base + "?" + url.Values{
-					"namespace":  {"not " + nspaces[0].Name},
-					"subject_id": {"foo"},
-				}.Encode())
+				resp, err := ts.Client().Get(ts.URL + suite.base + "?" + (&ketoapi.RelationTuple{
+					Namespace: "not" + nspaces[0].Name,
+					Object:    "o",
+					Relation:  "r",
+					SubjectID: x.Ptr("s"),
+				}).ToURLQuery().Encode())
 				require.NoError(t, err)
 
 				assertDenied(t, resp)
 			})
 
 			t.Run("case=returns allowed", func(t *testing.T) {
-				rt := &relationtuple.InternalRelationTuple{
+				rt := &ketoapi.RelationTuple{
 					Namespace: nspaces[0].Name,
 					Object:    "o",
 					Relation:  "r",
-					Subject:   &relationtuple.SubjectID{ID: "s"},
+					SubjectID: x.Ptr("s"),
 				}
-				require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), rt))
+				relationtuple.MapAndWriteTuples(t, reg, rt)
 
-				q, err := rt.ToURLQuery()
-				require.NoError(t, err)
+				q := rt.ToURLQuery()
 				resp, err := ts.Client().Get(ts.URL + suite.base + "?" + q.Encode())
 				require.NoError(t, err)
 
@@ -131,10 +136,12 @@ func TestRESTHandler(t *testing.T) {
 			})
 
 			t.Run("case=returns denied", func(t *testing.T) {
-				resp, err := ts.Client().Get(ts.URL + suite.base + "?" + url.Values{
-					"namespace":  {nspaces[0].Name},
-					"subject_id": {"foo"},
-				}.Encode())
+				resp, err := ts.Client().Get(ts.URL + suite.base + "?" + (&ketoapi.RelationTuple{
+					Namespace: nspaces[0].Name,
+					Object:    "foo",
+					Relation:  "r",
+					SubjectID: x.Ptr("s"),
+				}).ToURLQuery().Encode())
 				require.NoError(t, err)
 
 				assertDenied(t, resp)

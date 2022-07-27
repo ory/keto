@@ -3,6 +3,8 @@ package expand
 import (
 	"fmt"
 
+	"github.com/ory/keto/ketoapi"
+
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 
 	"github.com/ory/x/flagx"
@@ -11,7 +13,6 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/ory/keto/cmd/client"
-	"github.com/ory/keto/internal/expand"
 )
 
 const FlagMaxDepth = "max-depth"
@@ -44,10 +45,9 @@ func NewExpandCmd() *cobra.Command {
 				return cmdx.FailSilently(cmd)
 			}
 
-			tree, err := expand.TreeFromProto(resp.Tree)
-			if err != nil {
-				_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Error building the tree: %s\n", err.Error())
-				return cmdx.FailSilently(cmd)
+			var tree *ketoapi.ExpandTree
+			if resp.Tree != nil {
+				tree = (&ketoapi.ExpandTree{}).FromProto(resp.Tree)
 			}
 
 			cmdx.PrintJSONAble(cmd, tree)

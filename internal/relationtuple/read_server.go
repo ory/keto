@@ -5,11 +5,11 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/ory/keto/ketoapi"
+
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 
 	"github.com/ory/herodot"
-
-	"github.com/pkg/errors"
 
 	"github.com/julienschmidt/httprouter"
 
@@ -18,81 +18,87 @@ import (
 
 var (
 	_ rts.ReadServiceServer = (*handler)(nil)
-	_                       = (*getRelationsParams)(nil)
 )
 
+type (
+	queryWrapper struct {
+		*rts.RelationQuery
+	}
+	deprecatedQueryWrapper struct {
+		*rts.ListRelationTuplesRequest_Query
+	}
+)
+
+func (q *queryWrapper) GetObject() *string {
+	return q.Object
+}
+
+func (q *queryWrapper) GetNamespace() *string {
+	return q.Namespace
+}
+
+func (q *queryWrapper) GetRelation() *string {
+	return q.Relation
+}
+
+func (q *deprecatedQueryWrapper) GetObject() *string {
+	if q.Object == "" {
+		return nil
+	}
+	return x.Ptr(q.Object)
+}
+
+func (q *deprecatedQueryWrapper) GetNamespace() *string {
+	if q.Namespace == "" {
+		return nil
+	}
+	return x.Ptr(q.Namespace)
+}
+
+func (q *deprecatedQueryWrapper) GetRelation() *string {
+	if q.Relation == "" {
+		return nil
+	}
+	return x.Ptr(q.Relation)
+}
+
 func (h *handler) ListRelationTuples(ctx context.Context, req *rts.ListRelationTuplesRequest) (*rts.ListRelationTuplesResponse, error) {
-	if req.Query == nil {
-		return nil, errors.New("invalid request")
+	var q ketoapi.RelationQuery
+
+	switch {
+	case req.RelationQuery != nil:
+		q.FromDataProvider(&queryWrapper{req.RelationQuery})
+	case req.Query != nil:
+		q.FromDataProvider(&deprecatedQueryWrapper{req.Query})
+	default:
+		return nil, herodot.ErrBadRequest.WithError("you must provide a query")
 	}
 
-	q, err := (&RelationQuery{}).FromProto(req.Query)
+	iq, err := h.d.Mapper().FromQuery(ctx, &q)
 	if err != nil {
 		return nil, err
 	}
-
-	rels, nextPage, err := h.d.RelationTupleManager().GetRelationTuples(ctx, q,
+	ir, nextPage, err := h.d.RelationTupleManager().GetRelationTuples(ctx, iq,
 		x.WithSize(int(req.PageSize)),
 		x.WithToken(req.PageToken),
 	)
 	if err != nil {
 		return nil, err
 	}
+	relations, err := h.d.Mapper().ToTuple(ctx, ir...)
+	if err != nil {
+		return nil, err
+	}
 
 	resp := &rts.ListRelationTuplesResponse{
-		RelationTuples: make([]*rts.RelationTuple, len(rels)),
+		RelationTuples: make([]*rts.RelationTuple, len(ir)),
 		NextPageToken:  nextPage,
 	}
-	for i, r := range rels {
+	for i, r := range relations {
 		resp.RelationTuples[i] = r.ToProto()
 	}
 
 	return resp, nil
-}
-
-// swagger:parameters getRelationTuples
-type getRelationsParams struct {
-	// Namespace of the Relation Tuple
-	//
-	// in: query
-	Namespace string `json:"namespace"`
-
-	// Object of the Relation Tuple
-	//
-	// in: query
-	Object string `json:"object"`
-
-	// Relation of the Relation Tuple
-	//
-	// in: query
-	Relation string `json:"relation"`
-
-	// SubjectID of the Relation Tuple
-	//
-	// in: query
-	// Either subject_set.* or subject_id are required.
-	SubjectID string `json:"subject_id"`
-
-	// Namespace of the Subject Set
-	//
-	// in: query
-	// Either subject_set.* or subject_id are required.
-	SNamespace string `json:"subject_set.namespace"`
-
-	// Object of the Subject Set
-	//
-	// in: query
-	// Either subject_set.* or subject_id are required.
-	SObject string `json:"subject_set.object"`
-
-	// Relation of the Subject Set
-	//
-	// in: query
-	// Either subject_set.* or subject_id are required.
-	SRelation string `json:"subject_set.relation"`
-
-	// swagger:allOf
-	x.PaginationOptions
 }
 
 // swagger:route GET /relation-tuples read getRelationTuples
@@ -114,8 +120,10 @@ type getRelationsParams struct {
 //       404: genericError
 //       500: genericError
 func (h *handler) getRelations(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	ctx := r.Context()
+
 	q := r.URL.Query()
-	query, err := (&RelationQuery{}).FromURLQuery(q)
+	query, err := (&ketoapi.RelationQuery{}).FromURLQuery(q)
 	if err != nil {
 		h.d.Writer().WriteError(w, r, herodot.ErrBadRequest.WithError(err.Error()))
 		return
@@ -141,14 +149,25 @@ func (h *handler) getRelations(w http.ResponseWriter, r *http.Request, _ httprou
 		paginationOpts = append(paginationOpts, x.WithSize(int(s)))
 	}
 
-	rels, nextPage, err := h.d.RelationTupleManager().GetRelationTuples(r.Context(), query, paginationOpts...)
+	iq, err := h.d.Mapper().FromQuery(ctx, query)
+	if err != nil {
+		h.d.Writer().WriteError(w, r, err)
+		return
+	}
+	ir, nextPage, err := h.d.RelationTupleManager().GetRelationTuples(ctx, iq, paginationOpts...)
 	if err != nil {
 		h.d.Writer().WriteError(w, r, err)
 		return
 	}
 
-	resp := &GetResponse{
-		RelationTuples: rels,
+	relations, err := h.d.Mapper().ToTuple(ctx, ir...)
+	if err != nil {
+		h.d.Writer().WriteError(w, r, err)
+		return
+	}
+
+	resp := &ketoapi.GetResponse{
+		RelationTuples: relations,
 		NextPageToken:  nextPage,
 	}
 

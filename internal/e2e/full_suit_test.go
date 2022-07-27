@@ -7,6 +7,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/ory/keto/ketoapi"
+
 	"github.com/ory/herodot"
 	"github.com/ory/x/cmdx"
 	prometheus "github.com/ory/x/prometheusx"
@@ -16,7 +18,6 @@ import (
 
 	"github.com/ory/keto/cmd"
 	cliclient "github.com/ory/keto/cmd/client"
-	"github.com/ory/keto/internal/expand"
 	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/internal/x"
 	"github.com/ory/keto/internal/x/dbx"
@@ -25,16 +26,16 @@ import (
 type (
 	transactClient interface {
 		client
-		transactTuples(t require.TestingT, ins []*relationtuple.InternalRelationTuple, del []*relationtuple.InternalRelationTuple)
+		transactTuples(t require.TestingT, ins []*ketoapi.RelationTuple, del []*ketoapi.RelationTuple)
 	}
 	client interface {
-		createTuple(t require.TestingT, r *relationtuple.InternalRelationTuple)
-		deleteTuple(t require.TestingT, r *relationtuple.InternalRelationTuple)
-		deleteAllTuples(t require.TestingT, q *relationtuple.RelationQuery)
-		queryTuple(t require.TestingT, q *relationtuple.RelationQuery, opts ...x.PaginationOptionSetter) *relationtuple.GetResponse
-		queryTupleErr(t require.TestingT, expected herodot.DefaultError, q *relationtuple.RelationQuery, opts ...x.PaginationOptionSetter)
-		check(t require.TestingT, r *relationtuple.InternalRelationTuple) bool
-		expand(t require.TestingT, r *relationtuple.SubjectSet, depth int) *expand.Tree
+		createTuple(t require.TestingT, r *ketoapi.RelationTuple)
+		deleteTuple(t require.TestingT, r *ketoapi.RelationTuple)
+		deleteAllTuples(t require.TestingT, q *ketoapi.RelationQuery)
+		queryTuple(t require.TestingT, q *ketoapi.RelationQuery, opts ...x.PaginationOptionSetter) *ketoapi.GetResponse
+		queryTupleErr(t require.TestingT, expected herodot.DefaultError, q *ketoapi.RelationQuery, opts ...x.PaginationOptionSetter)
+		check(t require.TestingT, r *ketoapi.RelationTuple) bool
+		expand(t require.TestingT, r *ketoapi.SubjectSet, depth int) *ketoapi.ExpandTree
 		waitUntilLive(t require.TestingT)
 	}
 )

@@ -49,7 +49,9 @@ message ListRelationTuplesRequest {
   //
   // The RelationTuple list from ListRelationTuplesResponse
   // is ordered from the newest RelationTuple to the oldest.
-  Query query = 1;
+  Query query = 1 [deprecated = true];
+
+  RelationQuery relation_query = 6;
   // This field is not implemented yet and has no effect.
   // <!--
   // Optional. The list of fields to be expanded

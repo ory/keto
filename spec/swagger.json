@@ -33,15 +33,15 @@
             "name": "Payload",
             "in": "body",
             "schema": {
-              "$ref": "#/definitions/RelationQuery"
+              "$ref": "#/definitions/relationQuery"
             }
           }
         ],
         "responses": {
           "201": {
-            "description": "RelationQuery",
+            "description": "relationQuery",
             "schema": {
-              "$ref": "#/definitions/RelationQuery"
+              "$ref": "#/definitions/relationQuery"
             }
           },
           "400": {
@@ -143,7 +143,7 @@
             "schema": {
               "type": "array",
               "items": {
-                "$ref": "#/definitions/PatchDelta"
+                "$ref": "#/definitions/patchDelta"
               }
             }
           }
@@ -470,7 +470,7 @@
             "name": "Payload",
             "in": "body",
             "schema": {
-              "$ref": "#/definitions/RelationQuery"
+              "$ref": "#/definitions/relationQuery"
             }
           },
           {
@@ -587,104 +587,29 @@
     }
   },
   "definitions": {
-    "InternalRelationTuple": {
-      "type": "object",
-      "required": ["namespace", "object", "relation"],
-      "properties": {
-        "namespace": {
-          "description": "Namespace of the Relation Tuple",
-          "type": "string"
-        },
-        "object": {
-          "description": "Object of the Relation Tuple",
-          "type": "string"
-        },
-        "relation": {
-          "description": "Relation of the Relation Tuple",
-          "type": "string"
-        },
-        "subject_id": {
-          "description": "SubjectID of the Relation Tuple\n\nEither SubjectSet or SubjectID are required.",
-          "type": "string"
-        },
-        "subject_set": {
-          "$ref": "#/definitions/SubjectSet"
-        }
-      }
-    },
-    "PatchDelta": {
-      "type": "object",
-      "properties": {
-        "action": {
-          "type": "string",
-          "enum": ["insert", "delete"]
-        },
-        "relation_tuple": {
-          "$ref": "#/definitions/InternalRelationTuple"
-        }
-      }
-    },
-    "RelationQuery": {
-      "type": "object",
-      "properties": {
-        "namespace": {
-          "description": "Namespace of the Relation Tuple",
-          "type": "string"
-        },
-        "object": {
-          "description": "Object of the Relation Tuple",
-          "type": "string"
-        },
-        "relation": {
-          "description": "Relation of the Relation Tuple",
-          "type": "string"
-        },
-        "subject_id": {
-          "description": "SubjectID of the Relation Tuple\n\nEither SubjectSet or SubjectID can be provided.",
-          "type": "string"
-        },
-        "subject_set": {
-          "$ref": "#/definitions/SubjectSet"
-        }
-      }
-    },
-    "SubjectSet": {
-      "type": "object",
-      "required": ["namespace", "object", "relation"],
-      "properties": {
-        "namespace": {
-          "description": "Namespace of the Subject Set",
-          "type": "string"
-        },
-        "object": {
-          "description": "Object of the Subject Set",
-          "type": "string"
-        },
-        "relation": {
-          "description": "Relation of the Subject Set",
-          "type": "string"
-        }
-      }
-    },
     "expandTree": {
       "type": "object",
       "required": ["type"],
       "properties": {
         "children": {
+          "description": "The children of the node, possibly none.",
           "type": "array",
           "items": {
             "$ref": "#/definitions/expandTree"
           }
         },
         "subject_id": {
+          "description": "The subject ID the node represents. Either this field, or SubjectSet are set.",
           "type": "string"
         },
         "subject_set": {
-          "$ref": "#/definitions/SubjectSet"
+          "$ref": "#/definitions/subjectSet"
         },
         "type": {
+          "description": "The type of the node.\nunion Union\nexclusion Exclusion\nintersection Intersection\nleaf Leaf\nunspecified Unspecified",
           "type": "string",
-          "enum": ["union", "exclusion", "intersection", "leaf"]
+          "enum": ["union", "exclusion", "intersection", "leaf", "unspecified"],
+          "x-go-enum-desc": "union Union\nexclusion Exclusion\nintersection Intersection\nleaf Leaf\nunspecified Unspecified"
         }
       }
     },
@@ -739,7 +664,7 @@
         "relation_tuples": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/InternalRelationTuple"
+            "$ref": "#/definitions/relationTuple"
           }
         }
       }
@@ -765,8 +690,85 @@
         }
       }
     },
-    "subject": {
-      "type": "object"
+    "patchDelta": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": ["insert", "delete"],
+          "x-go-enum-desc": "insert ActionInsert\ndelete ActionDelete"
+        },
+        "relation_tuple": {
+          "$ref": "#/definitions/relationTuple"
+        }
+      }
+    },
+    "relationQuery": {
+      "type": "object",
+      "properties": {
+        "namespace": {
+          "description": "Namespace to query",
+          "type": "string"
+        },
+        "object": {
+          "description": "Object to query",
+          "type": "string"
+        },
+        "relation": {
+          "description": "Relation to query",
+          "type": "string"
+        },
+        "subject_id": {
+          "description": "SubjectID to query\n\nEither SubjectSet or SubjectID can be provided.",
+          "type": "string"
+        },
+        "subject_set": {
+          "$ref": "#/definitions/subjectSet"
+        }
+      }
+    },
+    "relationTuple": {
+      "type": "object",
+      "required": ["namespace", "object", "relation"],
+      "properties": {
+        "namespace": {
+          "description": "Namespace of the Relation Tuple",
+          "type": "string"
+        },
+        "object": {
+          "description": "Object of the Relation Tuple",
+          "type": "string"
+        },
+        "relation": {
+          "description": "Relation of the Relation Tuple",
+          "type": "string"
+        },
+        "subject_id": {
+          "description": "SubjectID of the Relation Tuple\n\nEither SubjectSet or SubjectID can be provided.",
+          "type": "string"
+        },
+        "subject_set": {
+          "$ref": "#/definitions/subjectSet"
+        }
+      }
+    },
+    "subjectSet": {
+      "type": "object",
+      "required": ["namespace", "object", "relation"],
+      "properties": {
+        "namespace": {
+          "description": "Namespace of the Subject Set",
+          "type": "string"
+        },
+        "object": {
+          "description": "Object of the Subject Set",
+          "type": "string"
+        },
+        "relation": {
+          "description": "Relation of the Subject Set",
+          "type": "string"
+        }
+      }
     },
     "version": {
       "type": "object",
@@ -781,7 +783,7 @@
   },
   "responses": {
     "emptyResponse": {
-      "description": "Empty responses are sent when, for example, resources are deleted. The HTTP status code for empty responses is typically 201."
+      "description": "An empty response"
     }
   }
 }

@@ -1,6 +1,7 @@
 package expand_test
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"io"
@@ -8,6 +9,8 @@ import (
 	"net/http/httptest"
 	"net/url"
 	"testing"
+
+	"github.com/ory/keto/ketoapi"
 
 	"github.com/ory/keto/internal/driver/config"
 
@@ -59,40 +62,40 @@ func TestRESTHandler(t *testing.T) {
 	})
 
 	t.Run("case=returns expand tree", func(t *testing.T) {
-		rootSub := &relationtuple.SubjectSet{
+		rootSub := &ketoapi.SubjectSet{
 			Namespace: nspace.Name,
 			Object:    "root",
 			Relation:  "parent of",
 		}
-		expectedTree := &expand.Tree{
-			Type:    expand.Union,
-			Subject: rootSub,
-			Children: []*expand.Tree{
+		expectedTree := &ketoapi.ExpandTree{
+			Type:       ketoapi.ExpandNodeUnion,
+			SubjectSet: rootSub,
+			Children: []*ketoapi.ExpandTree{
 				{
-					Type:    expand.Leaf,
-					Subject: &relationtuple.SubjectID{ID: "child0"},
+					Type:      ketoapi.ExpandNodeLeaf,
+					SubjectID: x.Ptr("child0"),
 				},
 				{
-					Type:    expand.Leaf,
-					Subject: &relationtuple.SubjectID{ID: "child1"},
+					Type:      ketoapi.ExpandNodeLeaf,
+					SubjectID: x.Ptr("child1"),
 				},
 			},
 		}
 
-		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), []*relationtuple.InternalRelationTuple{
-			{
+		relationtuple.MapAndWriteTuples(t, reg,
+			&ketoapi.RelationTuple{
 				Namespace: nspace.Name,
 				Object:    rootSub.Object,
 				Relation:  rootSub.Relation,
-				Subject:   expectedTree.Children[0].Subject,
+				SubjectID: expectedTree.Children[0].SubjectID,
 			},
-			{
+			&ketoapi.RelationTuple{
 				Namespace: nspace.Name,
 				Object:    rootSub.Object,
 				Relation:  rootSub.Relation,
-				Subject:   expectedTree.Children[1].Subject,
+				SubjectID: expectedTree.Children[1].SubjectID,
 			},
-		}...))
+		)
 
 		qs := rootSub.ToURLQuery()
 		qs.Set("max-depth", "2")
@@ -101,8 +104,11 @@ func TestRESTHandler(t *testing.T) {
 
 		require.Equal(t, http.StatusOK, resp.StatusCode)
 
-		actualTree := expand.Tree{}
-		require.NoError(t, json.NewDecoder(resp.Body).Decode(&actualTree))
-		assert.Equal(t, expectedTree, &actualTree)
+		actualTree := ketoapi.ExpandTree{}
+		body, err := io.ReadAll(resp.Body)
+		require.NoError(t, err)
+		t.Logf("body: %s", string(body))
+		require.NoError(t, json.NewDecoder(bytes.NewBuffer(body)).Decode(&actualTree))
+		expand.AssertExternalTreesAreEqual(t, expectedTree, &actualTree)
 	})
 }

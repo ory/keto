@@ -3,26 +3,28 @@ package check
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"io"
 	"net/http"
 	"net/url"
 
-	"github.com/pkg/errors"
+	"github.com/ory/herodot"
 
-	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
+	"github.com/ory/keto/ketoapi"
 
+	"github.com/julienschmidt/httprouter"
 	"google.golang.org/grpc"
 
 	"github.com/ory/keto/internal/relationtuple"
-
-	"github.com/julienschmidt/httprouter"
-
 	"github.com/ory/keto/internal/x"
+	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 )
 
 type (
 	handlerDependencies interface {
 		EngineProvider
+		relationtuple.ManagerProvider
+		relationtuple.MapperProvider
 		x.LoggerProvider
 		x.WriterProvider
 	}
@@ -31,7 +33,10 @@ type (
 	}
 )
 
-var _ rts.CheckServiceServer = (*Handler)(nil)
+var (
+	_ rts.CheckServiceServer = (*Handler)(nil)
+	_ *getCheckRequest       = nil
+)
 
 func NewHandler(d handlerDependencies) *Handler {
 	return &Handler{d: d}
@@ -70,7 +75,6 @@ type RESTResponse struct {
 }
 
 // swagger:parameters getCheck postCheck
-// nolint:deadcode,unused
 type getCheckRequest struct {
 	// in:query
 	MaxDepth int `json:"max-depth"`
@@ -143,12 +147,20 @@ func (h *Handler) getCheck(ctx context.Context, q url.Values) (bool, error) {
 		return false, err
 	}
 
-	tuple, err := (&relationtuple.InternalRelationTuple{}).FromURLQuery(q)
+	tuple, err := (&ketoapi.RelationTuple{}).FromURLQuery(q)
 	if err != nil {
 		return false, err
 	}
 
-	return h.d.PermissionEngine().SubjectIsAllowed(ctx, tuple, maxDepth)
+	it, err := h.d.Mapper().FromTuple(ctx, tuple)
+	// herodot.ErrNotFound occurs when the namespace is unknown
+	if errors.Is(err, herodot.ErrNotFound) {
+		return false, nil
+	} else if err != nil {
+		return false, err
+	}
+
+	return h.d.PermissionEngine().SubjectIsAllowed(ctx, it[0], maxDepth)
 }
 
 // swagger:route POST /relation-tuples/check/openapi read postCheck
@@ -218,21 +230,39 @@ func (h *Handler) postCheck(ctx context.Context, body io.Reader, query url.Value
 		return false, err
 	}
 
-	var tuple relationtuple.InternalRelationTuple
+	var tuple ketoapi.RelationTuple
 	if err := json.NewDecoder(body).Decode(&tuple); err != nil {
-		return false, errors.WithStack(err)
+		return false, herodot.ErrBadRequest.WithErrorf("could not unmarshal json: %s", err.Error())
+	}
+	t, err := h.d.Mapper().FromTuple(ctx, &tuple)
+	// herodot.ErrNotFound occurs when the namespace is unknown
+	if errors.Is(err, herodot.ErrNotFound) {
+		return false, nil
+	} else if err != nil {
+		return false, err
 	}
 
-	return h.d.PermissionEngine().SubjectIsAllowed(ctx, &tuple, maxDepth)
+	return h.d.PermissionEngine().SubjectIsAllowed(ctx, t[0], maxDepth)
 }
 
 func (h *Handler) Check(ctx context.Context, req *rts.CheckRequest) (*rts.CheckResponse, error) {
-	tuple, err := (&relationtuple.InternalRelationTuple{}).FromDataProvider(req)
+	var src ketoapi.TupleData
+	if req.Tuple != nil {
+		src = req.Tuple
+	} else {
+		src = req
+	}
+
+	tuple, err := (&ketoapi.RelationTuple{}).FromDataProvider(src)
 	if err != nil {
 		return nil, err
 	}
 
-	allowed, err := h.d.PermissionEngine().SubjectIsAllowed(ctx, tuple, int(req.MaxDepth))
+	internalTuple, err := h.d.Mapper().FromTuple(ctx, tuple)
+	if err != nil {
+		return nil, err
+	}
+	allowed, err := h.d.PermissionEngine().SubjectIsAllowed(ctx, internalTuple[0], int(req.MaxDepth))
 	// TODO add content change handling
 	if err != nil {
 		return nil, err

@@ -24,6 +24,30 @@ message RelationTuple {
   Subject subject = 4;
 }
 
+// The query for listing relation tuples.
+// Clients can specify any optional field to
+// partially filter for specific relation tuples.
+//
+// Example use cases (namespace is always required):
+//  - object only: display a list of all permissions referring to a specific object
+//  - relation only: get all groups that have members; get all directories that have content
+//  - object & relation: display all subjects that have a specific permission relation
+//  - subject & relation: display all groups a subject belongs to; display all objects a subject has access to
+//  - object & relation & subject: check whether the relation tuple already exists
+message RelationQuery {
+  // The namespace this relation tuple lives in.
+  optional string namespace = 1;
+  // The object related by this tuple.
+  // It is an object in the namespace of the tuple.
+  optional string object = 2;
+  // The relation between an Object and a Subject.
+  optional string relation = 3;
+  // The subject related by this tuple.
+  // A Subject either represents a concrete subject id or
+  // a `SubjectSet` that expands to more Subjects.
+  optional Subject subject = 4;
+}
+
 // Subject is either a concrete subject id or
 // a `SubjectSet` expanding to more Subjects.
 message Subject {

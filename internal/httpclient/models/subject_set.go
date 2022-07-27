@@ -16,7 +16,7 @@ import (
 
 // SubjectSet subject set
 //
-// swagger:model SubjectSet
+// swagger:model subjectSet
 type SubjectSet struct {
 
 	// Namespace of the Subject Set

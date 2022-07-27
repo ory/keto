@@ -15,19 +15,19 @@ import (
 
 // RelationQuery relation query
 //
-// swagger:model RelationQuery
+// swagger:model relationQuery
 type RelationQuery struct {
 
-	// Namespace of the Relation Tuple
+	// Namespace to query
 	Namespace string `json:"namespace,omitempty"`
 
-	// Object of the Relation Tuple
+	// Object to query
 	Object string `json:"object,omitempty"`
 
-	// Relation of the Relation Tuple
+	// Relation to query
 	Relation string `json:"relation,omitempty"`
 
-	// SubjectID of the Relation Tuple
+	// SubjectID to query
 	//
 	// Either SubjectSet or SubjectID can be provided.
 	SubjectID string `json:"subject_id,omitempty"`
@@ -59,6 +59,8 @@ func (m *RelationQuery) validateSubjectSet(formats strfmt.Registry) error {
 		if err := m.SubjectSet.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("subject_set")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("subject_set")
 			}
 			return err
 		}
@@ -87,6 +89,8 @@ func (m *RelationQuery) contextValidateSubjectSet(ctx context.Context, formats s
 		if err := m.SubjectSet.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("subject_set")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("subject_set")
 			}
 			return err
 		}

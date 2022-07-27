@@ -21,18 +21,23 @@ import (
 // swagger:model expandTree
 type ExpandTree struct {
 
-	// children
+	// The children of the node, possibly none.
 	Children []*ExpandTree `json:"children"`
 
-	// subject id
+	// The subject ID the node represents. Either this field, or SubjectSet are set.
 	SubjectID string `json:"subject_id,omitempty"`
 
 	// subject set
 	SubjectSet *SubjectSet `json:"subject_set,omitempty"`
 
-	// type
+	// The type of the node.
+	// union Union
+	// exclusion Exclusion
+	// intersection Intersection
+	// leaf Leaf
+	// unspecified Unspecified
 	// Required: true
-	// Enum: [union exclusion intersection leaf]
+	// Enum: [union exclusion intersection leaf unspecified]
 	Type *string `json:"type"`
 }
 
@@ -72,6 +77,8 @@ func (m *ExpandTree) validateChildren(formats strfmt.Registry) error {
 			if err := m.Children[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("children" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("children" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -91,6 +98,8 @@ func (m *ExpandTree) validateSubjectSet(formats strfmt.Registry) error {
 		if err := m.SubjectSet.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("subject_set")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("subject_set")
 			}
 			return err
 		}
@@ -103,7 +112,7 @@ var expandTreeTypeTypePropEnum []interface{}
 
 func init() {
 	var res []string
-	if err := json.Unmarshal([]byte(`["union","exclusion","intersection","leaf"]`), &res); err != nil {
+	if err := json.Unmarshal([]byte(`["union","exclusion","intersection","leaf","unspecified"]`), &res); err != nil {
 		panic(err)
 	}
 	for _, v := range res {
@@ -124,6 +133,9 @@ const (
 
 	// ExpandTreeTypeLeaf captures enum value "leaf"
 	ExpandTreeTypeLeaf string = "leaf"
+
+	// ExpandTreeTypeUnspecified captures enum value "unspecified"
+	ExpandTreeTypeUnspecified string = "unspecified"
 )
 
 // prop value enum
@@ -174,6 +186,8 @@ func (m *ExpandTree) contextValidateChildren(ctx context.Context, formats strfmt
 			if err := m.Children[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("children" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("children" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -190,6 +204,8 @@ func (m *ExpandTree) contextValidateSubjectSet(ctx context.Context, formats strf
 		if err := m.SubjectSet.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("subject_set")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("subject_set")
 			}
 			return err
 		}

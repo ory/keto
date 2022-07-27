@@ -124,6 +124,7 @@ proto.ory.keto.relation_tuples.v1alpha2.ListRelationTuplesRequest.prototype.toOb
 proto.ory.keto.relation_tuples.v1alpha2.ListRelationTuplesRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
     query: (f = msg.getQuery()) && proto.ory.keto.relation_tuples.v1alpha2.ListRelationTuplesRequest.Query.toObject(includeInstance, f),
+    relationQuery: (f = msg.getRelationQuery()) && ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationQuery.toObject(includeInstance, f),
     expandMask: (f = msg.getExpandMask()) && google_protobuf_field_mask_pb.FieldMask.toObject(includeInstance, f),
     snaptoken: jspb.Message.getFieldWithDefault(msg, 3, ""),
     pageSize: jspb.Message.getFieldWithDefault(msg, 4, 0),
@@ -168,6 +169,11 @@ proto.ory.keto.relation_tuples.v1alpha2.ListRelationTuplesRequest.deserializeBin
       var value = new proto.ory.keto.relation_tuples.v1alpha2.ListRelationTuplesRequest.Query;
       reader.readMessage(value,proto.ory.keto.relation_tuples.v1alpha2.ListRelationTuplesRequest.Query.deserializeBinaryFromReader);
       msg.setQuery(value);
+      break;
+    case 6:
+      var value = new ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationQuery;
+      reader.readMessage(value,ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationQuery.deserializeBinaryFromReader);
+      msg.setRelationQuery(value);
       break;
     case 2:
       var value = new google_protobuf_field_mask_pb.FieldMask;
@@ -221,6 +227,14 @@ proto.ory.keto.relation_tuples.v1alpha2.ListRelationTuplesRequest.serializeBinar
       1,
       f,
       proto.ory.keto.relation_tuples.v1alpha2.ListRelationTuplesRequest.Query.serializeBinaryToWriter
+    );
+  }
+  f = message.getRelationQuery();
+  if (f != null) {
+    writer.writeMessage(
+      6,
+      f,
+      ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationQuery.serializeBinaryToWriter
     );
   }
   f = message.getExpandMask();
@@ -530,6 +544,43 @@ proto.ory.keto.relation_tuples.v1alpha2.ListRelationTuplesRequest.prototype.clea
  */
 proto.ory.keto.relation_tuples.v1alpha2.ListRelationTuplesRequest.prototype.hasQuery = function() {
   return jspb.Message.getField(this, 1) != null;
+};
+
+
+/**
+ * optional RelationQuery relation_query = 6;
+ * @return {?proto.ory.keto.relation_tuples.v1alpha2.RelationQuery}
+ */
+proto.ory.keto.relation_tuples.v1alpha2.ListRelationTuplesRequest.prototype.getRelationQuery = function() {
+  return /** @type{?proto.ory.keto.relation_tuples.v1alpha2.RelationQuery} */ (
+    jspb.Message.getWrapperField(this, ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationQuery, 6));
+};
+
+
+/**
+ * @param {?proto.ory.keto.relation_tuples.v1alpha2.RelationQuery|undefined} value
+ * @return {!proto.ory.keto.relation_tuples.v1alpha2.ListRelationTuplesRequest} returns this
+*/
+proto.ory.keto.relation_tuples.v1alpha2.ListRelationTuplesRequest.prototype.setRelationQuery = function(value) {
+  return jspb.Message.setWrapperField(this, 6, value);
+};
+
+
+/**
+ * Clears the message field making it undefined.
+ * @return {!proto.ory.keto.relation_tuples.v1alpha2.ListRelationTuplesRequest} returns this
+ */
+proto.ory.keto.relation_tuples.v1alpha2.ListRelationTuplesRequest.prototype.clearRelationQuery = function() {
+  return this.setRelationQuery(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.ory.keto.relation_tuples.v1alpha2.ListRelationTuplesRequest.prototype.hasRelationQuery = function() {
+  return jspb.Message.getField(this, 6) != null;
 };
 
 

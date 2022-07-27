@@ -9,14 +9,9 @@ import (
 
 	"github.com/gobuffalo/pop/v6"
 	"github.com/gofrs/uuid"
-	"github.com/ory/x/fsx"
-	"github.com/ory/x/logrusx"
-	"github.com/ory/x/networkx"
-	"github.com/ory/x/otelx"
 	"github.com/ory/x/popx"
 	"github.com/pkg/errors"
 
-	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/persistence"
 	"github.com/ory/keto/internal/x"
 	"github.com/ory/keto/ketoctx"
@@ -32,7 +27,6 @@ type (
 		Page, PerPage int
 	}
 	dependencies interface {
-		config.Provider
 		x.LoggerProvider
 		x.TracingProvider
 		ketoctx.ContextualizerProvider
@@ -65,10 +59,6 @@ func NewPersister(ctx context.Context, reg dependencies, nid uuid.UUID) (*Persis
 	}
 
 	return p, nil
-}
-
-func NewMigrationBox(c *pop.Connection, logger *logrusx.Logger, tracer *otelx.Tracer) (*popx.MigrationBox, error) {
-	return popx.NewMigrationBox(fsx.Merge(Migrations, networkx.Migrations), popx.NewMigrator(c, logger, tracer, 0))
 }
 
 func (p *Persister) Connection(ctx context.Context) *pop.Connection {

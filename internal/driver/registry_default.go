@@ -25,6 +25,7 @@ import (
 	"github.com/ory/keto/internal/expand"
 	"github.com/ory/keto/internal/persistence"
 	"github.com/ory/keto/internal/persistence/sql"
+	"github.com/ory/keto/internal/persistence/sql/migrations/uuidmapping"
 	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/internal/x"
 	"github.com/ory/keto/ketoctx"
@@ -32,25 +33,28 @@ import (
 )
 
 var (
-	_ relationtuple.ManagerProvider  = (*RegistryDefault)(nil)
-	_ x.WriterProvider               = (*RegistryDefault)(nil)
-	_ x.LoggerProvider               = (*RegistryDefault)(nil)
-	_ Registry                       = (*RegistryDefault)(nil)
-	_ rts.VersionServiceServer       = (*RegistryDefault)(nil)
-	_ ketoctx.ContextualizerProvider = (*RegistryDefault)(nil)
+	_ relationtuple.ManagerProvider        = (*RegistryDefault)(nil)
+	_ relationtuple.MapperProvider         = (*RegistryDefault)(nil)
+	_ relationtuple.MappingManagerProvider = (*RegistryDefault)(nil)
+	_ x.WriterProvider                     = (*RegistryDefault)(nil)
+	_ x.LoggerProvider                     = (*RegistryDefault)(nil)
+	_ Registry                             = (*RegistryDefault)(nil)
+	_ rts.VersionServiceServer             = (*RegistryDefault)(nil)
+	_ ketoctx.ContextualizerProvider       = (*RegistryDefault)(nil)
 )
 
 type (
 	RegistryDefault struct {
-		p     persistence.Persister
-		mb    *popx.MigrationBox
-		l     *logrusx.Logger
-		w     herodot.Writer
-		ce    *check.Engine
-		ee    *expand.Engine
-		c     *config.Config
-		conn  *pop.Connection
-		ctxer ketoctx.Contextualizer
+		p      persistence.Persister
+		mb     *popx.MigrationBox
+		l      *logrusx.Logger
+		w      herodot.Writer
+		ce     *check.Engine
+		ee     *expand.Engine
+		c      *config.Config
+		conn   *pop.Connection
+		ctxer  ketoctx.Contextualizer
+		mapper *relationtuple.Mapper
 
 		initialized    sync.Once
 		healthH        *healthx.Handler
@@ -72,6 +76,13 @@ type (
 		RegisterWriteGRPC(s *grpc.Server)
 	}
 )
+
+func (r *RegistryDefault) Mapper() *relationtuple.Mapper {
+	if r.mapper == nil {
+		r.mapper = &relationtuple.Mapper{D: r}
+	}
+	return r.mapper
+}
 
 func (r *RegistryDefault) Contextualizer() ketoctx.Contextualizer {
 	return r.ctxer
@@ -152,6 +163,13 @@ func (r *RegistryDefault) RelationTupleManager() relationtuple.Manager {
 	return r.p
 }
 
+func (r *RegistryDefault) MappingManager() relationtuple.MappingManager {
+	if r.p == nil {
+		panic("no relation tuple manager, but expected to have one")
+	}
+	return r.p
+}
+
 func (r *RegistryDefault) Persister() persistence.Persister {
 	if r.p == nil {
 		panic("no persister, but expected to have one")
@@ -179,14 +197,20 @@ func (r *RegistryDefault) MigrationBox(ctx context.Context) (*popx.MigrationBox,
 		if err != nil {
 			return nil, err
 		}
+		namespaces, err := r.Config(ctx).NamespaceManager()
+		if err != nil {
+			return nil, err
+		}
 
 		mb, err := popx.NewMigrationBox(
 			fsx.Merge(sql.Migrations, networkx.Migrations),
 			popx.NewMigrator(c, r.Logger(), r.Tracer(ctx), 0),
+			popx.WithGoMigrations(uuidmapping.Migrations(namespaces)),
 		)
 		if err != nil {
 			return nil, err
 		}
+
 		r.mb = mb
 	}
 	return r.mb, nil

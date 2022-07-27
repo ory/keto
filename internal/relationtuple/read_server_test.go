@@ -3,11 +3,20 @@ package relationtuple_test
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"io"
+	"net"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
 	"testing"
+
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
+
+	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
+
+	"github.com/ory/keto/ketoapi"
 
 	"github.com/ory/keto/internal/driver/config"
 
@@ -24,17 +33,28 @@ import (
 )
 
 func TestReadHandlers(t *testing.T) {
+	ctx := context.Background()
 	r := &x.ReadRouter{Router: httprouter.New()}
-	nspace := &namespace.Namespace{Name: "relation tuple read test"}
 	reg := driver.NewSqliteTestRegistry(t, false)
-	require.NoError(t, reg.Config(context.Background()).Set(config.KeyNamespaces, []*namespace.Namespace{nspace}))
 	h := relationtuple.NewHandler(reg)
 	h.RegisterReadRoutes(r)
 	ts := httptest.NewServer(r)
 	t.Cleanup(ts.Close)
 
+	var newNamespace func(*testing.T) *namespace.Namespace
+	{
+		nspaces := 0
+		newNamespace = func(t *testing.T) *namespace.Namespace {
+			n := &namespace.Namespace{Name: fmt.Sprintf("relation tuple read test %d", nspaces)}
+			nspaces++
+			require.NoError(t, reg.Config(ctx).Set(config.KeyNamespaces, []*namespace.Namespace{n}))
+			return n
+		}
+	}
+
 	t.Run("method=get", func(t *testing.T) {
 		t.Run("case=empty response is not nil", func(t *testing.T) {
+			nspace := newNamespace(t)
 			resp, err := ts.Client().Get(ts.URL + relationtuple.ReadRouteBase + "?" + url.Values{
 				"namespace": {nspace.Name},
 			}.Encode())
@@ -46,28 +66,29 @@ func TestReadHandlers(t *testing.T) {
 
 			assert.Equal(t, "[]", gjson.GetBytes(body, "relation_tuples").Raw)
 
-			var respMsg relationtuple.GetResponse
+			var respMsg ketoapi.GetResponse
 			require.NoError(t, json.Unmarshal(body, &respMsg))
 
-			assert.Equal(t, relationtuple.GetResponse{
-				RelationTuples: []*relationtuple.InternalRelationTuple{},
+			assert.Equal(t, ketoapi.GetResponse{
+				RelationTuples: []*ketoapi.RelationTuple{},
 				NextPageToken:  "",
 			}, respMsg)
 		})
 
 		t.Run("case=returns tuples", func(t *testing.T) {
-			rts := []*relationtuple.InternalRelationTuple{
+			nspace := newNamespace(t)
+			tuples := []*ketoapi.RelationTuple{
 				{
 					Namespace: nspace.Name,
 					Object:    "o1",
 					Relation:  "r1",
-					Subject:   &relationtuple.SubjectID{ID: "s1"},
+					SubjectID: x.Ptr("s1"),
 				},
 				{
 					Namespace: nspace.Name,
 					Object:    "o2",
 					Relation:  "r2",
-					Subject: &relationtuple.SubjectSet{
+					SubjectSet: &ketoapi.SubjectSet{
 						Namespace: nspace.Name,
 						Object:    "o1",
 						Relation:  "r1",
@@ -75,46 +96,44 @@ func TestReadHandlers(t *testing.T) {
 				},
 			}
 
-			require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), rts...))
+			relationtuple.MapAndWriteTuples(t, reg, tuples...)
 
 			resp, err := ts.Client().Get(ts.URL + relationtuple.ReadRouteBase + "?" + url.Values{
 				"namespace": {nspace.Name},
 			}.Encode())
 			require.NoError(t, err)
 
-			var respMsg relationtuple.GetResponse
+			var respMsg ketoapi.GetResponse
 			require.NoError(t, json.NewDecoder(resp.Body).Decode(&respMsg))
 
-			for i := range rts {
-				assert.Contains(t, respMsg.RelationTuples, rts[i])
-			}
+			assert.ElementsMatch(t, tuples, respMsg.RelationTuples)
 			assert.Equal(t, "", respMsg.NextPageToken)
 		})
 
 		t.Run("case=return tuples without namespace", func(t *testing.T) {
-			obj := t.Name()
+			nspace := newNamespace(t)
 
-			rts := []*relationtuple.InternalRelationTuple{
+			tuples := []*ketoapi.RelationTuple{
 				{
 					Namespace: nspace.Name,
-					Object:    obj,
+					Object:    "obj",
 					Relation:  "r1",
-					Subject:   &relationtuple.SubjectID{ID: "s1"},
+					SubjectID: x.Ptr("s1"),
 				},
 			}
 
-			require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), rts...))
+			relationtuple.MapAndWriteTuples(t, reg, tuples...)
 
 			resp, err := ts.Client().Get(ts.URL + relationtuple.ReadRouteBase + "?" + url.Values{
-				"object": {obj},
+				"object": {"obj"},
 			}.Encode())
 			require.NoError(t, err)
 			assert.Equal(t, resp.StatusCode, http.StatusOK)
 
-			var respMsg relationtuple.GetResponse
+			var respMsg ketoapi.GetResponse
 			require.NoError(t, json.NewDecoder(resp.Body).Decode(&respMsg))
 			assert.Equal(t, 1, len(respMsg.RelationTuples))
-			assert.Contains(t, rts, respMsg.RelationTuples[0])
+			assert.Containsf(t, tuples, respMsg.RelationTuples[0], "expected to find %q in %q", respMsg.RelationTuples[0].String(), tuples)
 			assert.Equal(t, "", respMsg.NextPageToken)
 		})
 
@@ -128,30 +147,28 @@ func TestReadHandlers(t *testing.T) {
 		})
 
 		t.Run("case=paginates", func(t *testing.T) {
-			// this obj is used to filter out tuples from other cases
-			obj := t.Name()
+			nspace := newNamespace(t)
 
-			rts := []*relationtuple.InternalRelationTuple{
+			tuples := []*ketoapi.RelationTuple{
 				{
 					Namespace: nspace.Name,
-					Object:    obj,
+					Object:    "o1",
 					Relation:  "r1",
-					Subject:   &relationtuple.SubjectID{ID: "s1"},
+					SubjectID: x.Ptr("s1"),
 				},
 				{
 					Namespace: nspace.Name,
-					Object:    obj,
+					Object:    "o2",
 					Relation:  "r2",
-					Subject:   &relationtuple.SubjectID{ID: "s2"},
+					SubjectID: x.Ptr("s2"),
 				},
 			}
-			require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), rts...))
+			relationtuple.MapAndWriteTuples(t, reg, tuples...)
 
-			var firstResp relationtuple.GetResponse
+			var firstResp ketoapi.GetResponse
 			t.Run("case=first page", func(t *testing.T) {
 				resp, err := ts.Client().Get(ts.URL + relationtuple.ReadRouteBase + "?" + url.Values{
 					"namespace": {nspace.Name},
-					"object":    {obj},
 					"page_size": {"1"},
 				}.Encode())
 				require.NoError(t, err)
@@ -159,26 +176,25 @@ func TestReadHandlers(t *testing.T) {
 
 				require.NoError(t, json.NewDecoder(resp.Body).Decode(&firstResp))
 				require.Len(t, firstResp.RelationTuples, 1)
-				assert.Contains(t, rts, firstResp.RelationTuples[0])
+				assert.Contains(t, tuples, firstResp.RelationTuples[0])
 				assert.NotEqual(t, "", firstResp.NextPageToken)
 			})
 
 			t.Run("case=second page", func(t *testing.T) {
 				resp, err := ts.Client().Get(ts.URL + relationtuple.ReadRouteBase + "?" + url.Values{
 					"namespace":  {nspace.Name},
-					"object":     {obj},
 					"page_size":  {"1"},
 					"page_token": {firstResp.NextPageToken},
 				}.Encode())
 				require.NoError(t, err)
 				require.Equal(t, http.StatusOK, resp.StatusCode)
 
-				secondResp := relationtuple.GetResponse{}
+				secondResp := ketoapi.GetResponse{}
 				require.NoError(t, json.NewDecoder(resp.Body).Decode(&secondResp))
 				require.Len(t, secondResp.RelationTuples, 1)
 
 				assert.NotEqual(t, firstResp.RelationTuples, secondResp.RelationTuples)
-				assert.Contains(t, rts, secondResp.RelationTuples[0])
+				assert.Contains(t, tuples, secondResp.RelationTuples[0])
 				assert.Equal(t, "", secondResp.NextPageToken)
 			})
 		})
@@ -193,6 +209,148 @@ func TestReadHandlers(t *testing.T) {
 			require.NoError(t, err)
 			assert.Equal(t, http.StatusBadRequest, resp.StatusCode)
 			assert.Contains(t, string(body), "invalid syntax")
+		})
+	})
+
+	t.Run("method=grpc", func(t *testing.T) {
+		type requestEnhancer = func(req *rts.ListRelationTuplesRequest, query *ketoapi.RelationQuery)
+		withRelationQuery := func(req *rts.ListRelationTuplesRequest, query *ketoapi.RelationQuery) {
+			req.RelationQuery = query.ToProto()
+		}
+		withDeprecatedQuery := func(req *rts.ListRelationTuplesRequest, query *ketoapi.RelationQuery) {
+			pq := query.ToProto()
+			req.Query = &rts.ListRelationTuplesRequest_Query{
+				Subject: pq.Subject,
+			}
+			if pq.Namespace != nil {
+				req.Query.Namespace = *pq.Namespace
+			}
+			if pq.Object != nil {
+				req.Query.Object = *pq.Object
+			}
+			if pq.Relation != nil {
+				req.Query.Relation = *pq.Relation
+			}
+		}
+		apiTuplesFromProto := func(t *testing.T, pts ...*rts.RelationTuple) []*ketoapi.RelationTuple {
+			actual := make([]*ketoapi.RelationTuple, len(pts))
+			for i, rt := range pts {
+				var err error
+				actual[i], err = (&ketoapi.RelationTuple{}).FromDataProvider(rt)
+				require.NoError(t, err)
+			}
+			return actual
+		}
+		soc, err := net.Listen("tcp", ":0")
+		require.NoError(t, err)
+		srv := grpc.NewServer()
+		h.RegisterReadGRPC(srv)
+		go srv.Serve(soc)
+		t.Cleanup(srv.Stop)
+
+		con, err := grpc.Dial(soc.Addr().String(), grpc.WithTransportCredentials(insecure.NewCredentials()))
+		require.NoError(t, err)
+
+		t.Run("method=list", func(t *testing.T) {
+			client := rts.NewReadServiceClient(con)
+
+			for key, enhancer := range map[string]requestEnhancer{"relation query": withRelationQuery, "deprecated query": withDeprecatedQuery} {
+				t.Run("enhancer="+key, func(t *testing.T) {
+					t.Run("case=returns empty list on no tuples", func(t *testing.T) {
+						nspace := newNamespace(t)
+						req := &rts.ListRelationTuplesRequest{}
+						enhancer(req, &ketoapi.RelationQuery{
+							Namespace: &nspace.Name,
+						})
+						resp, err := client.ListRelationTuples(ctx, req)
+						require.NoError(t, err)
+						assert.Len(t, resp.RelationTuples, 0)
+					})
+
+					t.Run("case=gets tuples", func(t *testing.T) {
+						nspace := newNamespace(t)
+						tuples := []*ketoapi.RelationTuple{
+							{
+								Namespace: nspace.Name,
+								Object:    "o1",
+								Relation:  "rel",
+								SubjectID: x.Ptr("s1"),
+							},
+							{
+								Namespace: nspace.Name,
+								Object:    "o2",
+								Relation:  "rel",
+								SubjectSet: &ketoapi.SubjectSet{
+									Namespace: nspace.Name,
+									Object:    "o1",
+									Relation:  "r1",
+								},
+							},
+						}
+						relationtuple.MapAndWriteTuples(t, reg, tuples...)
+
+						req := &rts.ListRelationTuplesRequest{}
+						enhancer(req, &ketoapi.RelationQuery{
+							Namespace: &nspace.Name,
+						})
+
+						resp, err := client.ListRelationTuples(ctx, req)
+						require.NoError(t, err)
+						assert.Len(t, resp.RelationTuples, 2)
+
+						assert.ElementsMatch(t, tuples, apiTuplesFromProto(t, resp.RelationTuples...))
+					})
+
+					t.Run("case=paginates", func(t *testing.T) {
+						nspace := newNamespace(t)
+						tuples := []*ketoapi.RelationTuple{
+							{
+								Namespace: nspace.Name,
+								Object:    "o1",
+								Relation:  "rel",
+								SubjectID: x.Ptr("s1"),
+							},
+							{
+								Namespace: nspace.Name,
+								Object:    "o2",
+								Relation:  "rel",
+								SubjectID: x.Ptr("s2"),
+							},
+							{
+								Namespace: nspace.Name,
+								Object:    "o3",
+								Relation:  "rel",
+								SubjectID: x.Ptr("s3"),
+							},
+						}
+						relationtuple.MapAndWriteTuples(t, reg, tuples...)
+
+						query := &ketoapi.RelationQuery{
+							Namespace: &nspace.Name,
+						}
+						firstReq := &rts.ListRelationTuplesRequest{}
+						enhancer(firstReq, query)
+						firstReq.PageSize = int32(2)
+
+						firstResp, err := client.ListRelationTuples(ctx, firstReq)
+						require.NoError(t, err)
+
+						secondReq := &rts.ListRelationTuplesRequest{}
+						enhancer(secondReq, query)
+						secondReq.PageSize = int32(2)
+						secondReq.PageToken = firstResp.NextPageToken
+
+						secondResp, err := client.ListRelationTuples(ctx, secondReq)
+						require.NoError(t, err)
+
+						assert.Len(t, firstResp.RelationTuples, 2)
+						assert.Len(t, secondResp.RelationTuples, 1)
+						assert.Zero(t, secondResp.NextPageToken)
+
+						assert.ElementsMatch(t, tuples, apiTuplesFromProto(t, append(firstResp.RelationTuples, secondResp.RelationTuples...)...))
+					})
+				})
+			}
 		})
 	})
 }

@@ -53,7 +53,7 @@ func NewCreateRelationTupleCreated() *CreateRelationTupleCreated {
 
 /* CreateRelationTupleCreated describes a response with status code 201, with default header values.
 
-RelationQuery
+relationQuery
 */
 type CreateRelationTupleCreated struct {
 	Payload *models.RelationQuery

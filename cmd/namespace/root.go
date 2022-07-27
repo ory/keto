@@ -24,10 +24,10 @@ func NewMigrateCmd() *cobra.Command {
 	}
 }
 
-func RegisterCommandsRecursive(parent *cobra.Command, opts []ketoctx.Option) {
+func RegisterCommandsRecursive(parent *cobra.Command, _ []ketoctx.Option) {
 	rootCmd := NewNamespaceCmd()
 	migrateCmd := NewMigrateCmd()
-	migrateCmd.AddCommand(NewMigrateUpCmd(), NewMigrateDownCmd(), NewMigrateStatusCmd(), NewMigrateLegacyCmd(opts))
+	migrateCmd.AddCommand(NewMigrateUpCmd(), NewMigrateDownCmd(), NewMigrateStatusCmd())
 
 	rootCmd.AddCommand(migrateCmd, NewValidateCmd())
 

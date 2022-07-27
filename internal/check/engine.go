@@ -2,12 +2,9 @@ package check
 
 import (
 	"context"
-	"errors"
 
 	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/x/graph"
-
-	"github.com/ory/herodot"
 
 	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/internal/x"
@@ -35,8 +32,8 @@ func NewEngine(d EngineDependencies) *Engine {
 
 func (e *Engine) subjectIsAllowed(
 	ctx context.Context,
-	requested *relationtuple.InternalRelationTuple,
-	rels []*relationtuple.InternalRelationTuple,
+	requested relationtuple.Subject,
+	rels []*relationtuple.RelationTuple,
 	restDepth int,
 ) (bool, error) {
 	// This is the same as the graph problem "can requested.Subject be reached from requested.Object through the first outgoing edge requested.Relation"
@@ -45,13 +42,13 @@ func (e *Engine) subjectIsAllowed(
 	// TODO replace by more performant algorithm: https://github.com/ory/keto/issues/483
 
 	for _, sr := range rels {
-		ctx, wasAlreadyVisited := graph.CheckAndAddVisited(ctx, sr.Subject)
+		ctx, wasAlreadyVisited := graph.CheckAndAddVisited(ctx, sr.Subject.UniqueID())
 		if wasAlreadyVisited {
 			continue
 		}
 
 		// we only have to check Subject here as we know that sr was reached from requested.ObjectID, requested.Relation through 0...n indirections
-		if requested.Subject.Equals(sr.Subject) {
+		if requested.Equals(sr.Subject) {
 			// found the requested relation
 			return true, nil
 		}
@@ -65,7 +62,7 @@ func (e *Engine) subjectIsAllowed(
 		allowed, err := e.checkOneIndirectionFurther(
 			ctx,
 			requested,
-			&relationtuple.RelationQuery{Object: sub.Object, Relation: sub.Relation, Namespace: sub.Namespace},
+			&relationtuple.RelationTuple{Object: sub.Object, Relation: sub.Relation, Namespace: sub.Namespace},
 			restDepth-1,
 		)
 		if err != nil {
@@ -81,12 +78,12 @@ func (e *Engine) subjectIsAllowed(
 
 func (e *Engine) checkOneIndirectionFurther(
 	ctx context.Context,
-	requested *relationtuple.InternalRelationTuple,
-	expandQuery *relationtuple.RelationQuery,
+	requested relationtuple.Subject,
+	expandQuery *relationtuple.RelationTuple,
 	restDepth int,
 ) (bool, error) {
 	if restDepth <= 0 {
-		e.d.Logger().WithFields(requested.ToLoggerFields()).Debug("reached max-depth, therefore this query will not be further expanded")
+		e.d.Logger().Debug("reached max-depth, therefore this query will not be further expanded")
 		return false, nil
 	}
 
@@ -94,11 +91,12 @@ func (e *Engine) checkOneIndirectionFurther(
 	var prevPage string
 
 	for {
-		nextRels, nextPage, err := e.d.RelationTupleManager().GetRelationTuples(ctx, expandQuery, x.WithToken(prevPage))
-		// herodot.ErrNotFound occurs when the namespace is unknown
-		if errors.Is(err, herodot.ErrNotFound) {
-			return false, nil
-		} else if err != nil {
+		nextRels, nextPage, err := e.d.RelationTupleManager().GetRelationTuples(ctx, &relationtuple.RelationQuery{
+			Namespace: x.Ptr(expandQuery.Namespace),
+			Object:    x.Ptr(expandQuery.Object),
+			Relation:  x.Ptr(expandQuery.Relation),
+		}, x.WithToken(prevPage))
+		if err != nil {
 			return false, err
 		}
 
@@ -113,12 +111,11 @@ func (e *Engine) checkOneIndirectionFurther(
 	}
 }
 
-func (e *Engine) SubjectIsAllowed(ctx context.Context, r *relationtuple.InternalRelationTuple, restDepth int) (bool, error) {
+func (e *Engine) SubjectIsAllowed(ctx context.Context, r *relationtuple.RelationTuple, restDepth int) (bool, error) {
 	// global max-depth takes precedence when it is the lesser or if the request max-depth is less than or equal to 0
 	if globalMaxDepth := e.d.Config(ctx).MaxReadDepth(); restDepth <= 0 || globalMaxDepth < restDepth {
 		restDepth = globalMaxDepth
 	}
 
-	e.d.Logger().WithFields(r.ToLoggerFields()).Trace("checking relation tuple")
-	return e.checkOneIndirectionFurther(ctx, r, &relationtuple.RelationQuery{Object: r.Object, Relation: r.Relation, Namespace: r.Namespace}, restDepth)
+	return e.checkOneIndirectionFurther(ctx, r.Subject, &relationtuple.RelationTuple{Object: r.Object, Relation: r.Relation, Namespace: r.Namespace}, restDepth)
 }

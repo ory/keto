@@ -30,7 +30,6 @@ readClient.listRelationTuples(readRequest, (err, resp) => {
   writeClient.transactRelationTuples(writeRequest, (err) => {
     if (err) {
       console.log("Unexpected err", err)
-      return 1
     }
   })
 })

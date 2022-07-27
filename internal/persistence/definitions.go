@@ -14,6 +14,7 @@ import (
 type (
 	Persister interface {
 		relationtuple.Manager
+		relationtuple.MappingManager
 
 		Connection(ctx context.Context) *pop.Connection
 	}
@@ -28,7 +29,6 @@ type (
 )
 
 var (
-	ErrNamespaceUnknown         = errors.New("namespace unknown")
 	ErrMalformedPageToken       = errors.New("malformed page token")
 	ErrNetworkMigrationsMissing = errors.New("networkx migrations are not yet applied")
 )

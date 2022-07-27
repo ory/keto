@@ -6,10 +6,10 @@ import (
 	"os"
 	"strings"
 
+	"github.com/ory/keto/ketoapi"
+
 	"github.com/ory/x/cmdx"
 	"github.com/spf13/cobra"
-
-	"github.com/ory/keto/internal/relationtuple"
 )
 
 func newParseCmd() *cobra.Command {
@@ -21,7 +21,7 @@ func newParseCmd() *cobra.Command {
 			"Ignores comments (starting with `//`) and blank lines.",
 		Args: cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			var rts []*relationtuple.InternalRelationTuple
+			var rts []*ketoapi.RelationTuple
 			for _, fn := range args {
 				rtss, err := parseFile(cmd, fn)
 				if err != nil {
@@ -34,7 +34,7 @@ func newParseCmd() *cobra.Command {
 				cmdx.PrintRow(cmd, rts[0])
 				return nil
 			}
-			cmdx.PrintTable(cmd, relationtuple.NewRelationCollection(rts))
+			cmdx.PrintTable(cmd, NewAPICollection(rts))
 			return nil
 		},
 	}
@@ -44,7 +44,7 @@ func newParseCmd() *cobra.Command {
 	return cmd
 }
 
-func parseFile(cmd *cobra.Command, fn string) ([]*relationtuple.InternalRelationTuple, error) {
+func parseFile(cmd *cobra.Command, fn string) ([]*ketoapi.RelationTuple, error) {
 	var f io.Reader
 	if fn == "-" {
 		// set human readable filename here for debug and error messages
@@ -67,7 +67,7 @@ func parseFile(cmd *cobra.Command, fn string) ([]*relationtuple.InternalRelation
 	}
 
 	parts := strings.Split(string(fc), "\n")
-	rts := make([]*relationtuple.InternalRelationTuple, 0, len(parts))
+	rts := make([]*ketoapi.RelationTuple, 0, len(parts))
 	for i, row := range parts {
 		row = strings.TrimSpace(row)
 		// ignore comments and empty lines
@@ -75,7 +75,7 @@ func parseFile(cmd *cobra.Command, fn string) ([]*relationtuple.InternalRelation
 			continue
 		}
 
-		rt, err := (&relationtuple.InternalRelationTuple{}).FromString(row)
+		rt, err := (&ketoapi.RelationTuple{}).FromString(row)
 		if err != nil {
 			_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not decode %s:%d\n  %s\n\n%v\n", fn, i+1, row, err)
 			return nil, cmdx.FailSilently(cmd)

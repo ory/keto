@@ -5,6 +5,8 @@ import (
 	"database/sql"
 	"time"
 
+	"github.com/ory/keto/ketoapi"
+
 	"github.com/gobuffalo/pop/v6"
 	"github.com/gofrs/uuid"
 	"github.com/ory/x/sqlcon"
@@ -17,60 +19,47 @@ import (
 type (
 	RelationTuple struct {
 		// An ID field is required to make pop happy. The actual ID is a composite primary key.
-		ID                    uuid.UUID      `db:"shard_id"`
-		NetworkID             uuid.UUID      `db:"nid"`
-		NamespaceID           int32          `db:"namespace_id"`
-		Object                string         `db:"object"`
-		Relation              string         `db:"relation"`
-		SubjectID             sql.NullString `db:"subject_id"`
-		SubjectSetNamespaceID sql.NullInt32  `db:"subject_set_namespace_id"`
-		SubjectSetObject      sql.NullString `db:"subject_set_object"`
-		SubjectSetRelation    sql.NullString `db:"subject_set_relation"`
-		CommitTime            time.Time      `db:"commit_time"`
+		ID                  uuid.UUID      `db:"shard_id"`
+		NetworkID           uuid.UUID      `db:"nid"`
+		Namespace           string         `db:"namespace"`
+		Object              uuid.UUID      `db:"object"`
+		Relation            string         `db:"relation"`
+		SubjectID           uuid.NullUUID  `db:"subject_id"`
+		SubjectSetNamespace sql.NullString `db:"subject_set_namespace"`
+		SubjectSetObject    uuid.NullUUID  `db:"subject_set_object"`
+		SubjectSetRelation  sql.NullString `db:"subject_set_relation"`
+		CommitTime          time.Time      `db:"commit_time"`
 	}
 	relationTuples []*RelationTuple
 )
 
-func (relationTuples) TableName(_ context.Context) string {
+func (relationTuples) TableName() string {
 	return "keto_relation_tuples"
 }
 
-func (RelationTuple) TableName(_ context.Context) string {
+func (RelationTuple) TableName() string {
 	return "keto_relation_tuples"
 }
 
-func (r *RelationTuple) toInternal(ctx context.Context, p *Persister) (*relationtuple.InternalRelationTuple, error) {
+func (r *RelationTuple) toInternal() (*relationtuple.RelationTuple, error) {
 	if r == nil {
 		return nil, nil
 	}
 
-	n, err := p.GetNamespaceByID(ctx, r.NamespaceID)
-	if err != nil {
-		return nil, err
-	}
-
-	rt := &relationtuple.InternalRelationTuple{
+	rt := &relationtuple.RelationTuple{
 		Relation:  r.Relation,
 		Object:    r.Object,
-		Namespace: n.Name,
+		Namespace: r.Namespace,
 	}
 
 	if r.SubjectID.Valid {
 		rt.Subject = &relationtuple.SubjectID{
-			ID: r.SubjectID.String,
+			ID: r.SubjectID.UUID,
 		}
 	} else {
-		n, err := p.GetNamespaceByID(ctx, r.SubjectSetNamespaceID.Int32)
-		if err != nil {
-			return nil, err
-		}
-		sn, err := p.GetNamespaceByID(ctx, n.ID)
-		if err != nil {
-			return nil, err
-		}
 		rt.Subject = &relationtuple.SubjectSet{
-			Namespace: sn.Name,
-			Object:    r.SubjectSetObject.String,
+			Namespace: r.SubjectSetNamespace.String,
+			Object:    r.SubjectSetObject.UUID,
 			Relation:  r.SubjectSetRelation.String,
 		}
 	}
@@ -78,61 +67,42 @@ func (r *RelationTuple) toInternal(ctx context.Context, p *Persister) (*relation
 	return rt, nil
 }
 
-func (r *RelationTuple) insertSubject(ctx context.Context, p *Persister, s relationtuple.Subject) error {
+func (r *RelationTuple) insertSubject(_ context.Context, s relationtuple.Subject) error {
 	switch st := s.(type) {
 	case *relationtuple.SubjectID:
-		r.SubjectID = sql.NullString{
-			String: st.ID,
-			Valid:  true,
-		}
-		r.SubjectSetNamespaceID = sql.NullInt32{}
-		r.SubjectSetObject = sql.NullString{}
-		r.SubjectSetRelation = sql.NullString{}
-	case *relationtuple.SubjectSet:
-		n, err := p.GetNamespaceByName(ctx, st.Namespace)
-		if err != nil {
-			return err
-		}
-
-		r.SubjectID = sql.NullString{}
-		r.SubjectSetNamespaceID = sql.NullInt32{
-			Int32: n.ID,
+		r.SubjectID = uuid.NullUUID{
+			UUID:  st.ID,
 			Valid: true,
 		}
-		r.SubjectSetObject = sql.NullString{
-			String: st.Object,
-			Valid:  true,
-		}
-		r.SubjectSetRelation = sql.NullString{
-			String: st.Relation,
-			Valid:  true,
-		}
+		r.SubjectSetNamespace = sql.NullString{}
+		r.SubjectSetObject = uuid.NullUUID{}
+		r.SubjectSetRelation = sql.NullString{}
+	case *relationtuple.SubjectSet:
+		r.SubjectID = uuid.NullUUID{}
+		r.SubjectSetNamespace.Scan(st.Namespace)
+		r.SubjectSetObject.Scan(st.Object)
+		r.SubjectSetRelation.Scan(st.Relation)
 	}
 	return nil
 }
 
-func (r *RelationTuple) FromInternal(ctx context.Context, p *Persister, rt *relationtuple.InternalRelationTuple) error {
+func (r *RelationTuple) FromInternal(ctx context.Context, p *Persister, rt *relationtuple.RelationTuple) error {
 	ctx, span := p.d.Tracer(ctx).Tracer().Start(ctx, "persistence.sql.FromInternal")
 	defer span.End()
 
-	n, err := p.GetNamespaceByName(ctx, rt.Namespace)
-	if err != nil {
-		return err
-	}
-
-	r.NamespaceID = n.ID
+	r.Namespace = rt.Namespace
 	r.Object = rt.Object
 	r.Relation = rt.Relation
 
-	return r.insertSubject(ctx, p, rt.Subject)
+	return r.insertSubject(ctx, rt.Subject)
 }
 
-func (p *Persister) InsertRelationTuple(ctx context.Context, rel *relationtuple.InternalRelationTuple) error {
+func (p *Persister) InsertRelationTuple(ctx context.Context, rel *relationtuple.RelationTuple) error {
 	ctx, span := p.d.Tracer(ctx).Tracer().Start(ctx, "persistence.sql.InsertRelationTuple")
 	defer span.End()
 
 	if rel.Subject == nil {
-		return errors.WithStack(relationtuple.ErrNilSubject)
+		return errors.WithStack(ketoapi.ErrNilSubject)
 	}
 
 	rt := &RelationTuple{
@@ -151,48 +121,39 @@ func (p *Persister) InsertRelationTuple(ctx context.Context, rel *relationtuple.
 	return nil
 }
 
-func (p *Persister) whereSubject(ctx context.Context, q *pop.Query, sub relationtuple.Subject) error {
+func (p *Persister) whereSubject(_ context.Context, q *pop.Query, sub relationtuple.Subject) error {
 	switch s := sub.(type) {
 	case *relationtuple.SubjectID:
 		q.
 			Where("subject_id = ?", s.ID).
 			// NULL checks to leverage partial indexes
-			Where("subject_set_namespace_id IS NULL").
+			Where("subject_set_namespace IS NULL").
 			Where("subject_set_object IS NULL").
 			Where("subject_set_relation IS NULL")
 	case *relationtuple.SubjectSet:
-		n, err := p.GetNamespaceByName(ctx, s.Namespace)
-		if err != nil {
-			return err
-		}
-
 		q.
-			Where("subject_set_namespace_id = ?", n.ID).
+			Where("subject_set_namespace = ?", s.Namespace).
 			Where("subject_set_object = ?", s.Object).
 			Where("subject_set_relation = ?", s.Relation).
 			// NULL checks to leverage partial indexes
 			Where("subject_id IS NULL")
 	case nil:
-		return errors.WithStack(relationtuple.ErrNilSubject)
+		return errors.WithStack(ketoapi.ErrNilSubject)
 	}
 	return nil
 }
 
 func (p *Persister) whereQuery(ctx context.Context, q *pop.Query, rq *relationtuple.RelationQuery) error {
-	if rq.Namespace != "" {
-		n, err := p.GetNamespaceByName(ctx, rq.Namespace)
-		if err != nil {
-			return err
-		}
-		q.Where("namespace_id = ?", n.ID)
+	if rq.Namespace != nil {
+		q.Where("namespace = ?", rq.Namespace)
 	}
-	if rq.Object != "" {
+	if rq.Object != nil {
 		q.Where("object = ?", rq.Object)
 	}
-	if rq.Relation != "" {
+	if rq.Relation != nil {
 		q.Where("relation = ?", rq.Relation)
 	}
-	if s := rq.Subject(); s != nil {
+	if s := rq.Subject; s != nil {
 		if err := p.whereSubject(ctx, q, s); err != nil {
 			return err
 		}
@@ -200,19 +161,14 @@ func (p *Persister) whereQuery(ctx context.Context, q *pop.Query, rq *relationtu
 	return nil
 }
 
-func (p *Persister) DeleteRelationTuples(ctx context.Context, rs ...*relationtuple.InternalRelationTuple) error {
+func (p *Persister) DeleteRelationTuples(ctx context.Context, rs ...*relationtuple.RelationTuple) error {
 	ctx, span := p.d.Tracer(ctx).Tracer().Start(ctx, "persistence.sql.DeleteRelationTuples")
 	defer span.End()
 
 	return p.Transaction(ctx, func(ctx context.Context, _ *pop.Connection) error {
 		for _, r := range rs {
-			n, err := p.GetNamespaceByName(ctx, r.Namespace)
-			if err != nil {
-				return err
-			}
-
 			q := p.QueryWithNetwork(ctx).
-				Where("namespace_id = ?", n.ID).
+				Where("namespace = ?", r.Namespace).
 				Where("object = ?", r.Object).
 				Where("relation = ?", r.Relation)
 			if err := p.whereSubject(ctx, q, r.Subject); err != nil {
@@ -244,7 +200,7 @@ func (p *Persister) DeleteAllRelationTuples(ctx context.Context, query *relation
 	})
 }
 
-func (p *Persister) GetRelationTuples(ctx context.Context, query *relationtuple.RelationQuery, options ...x.PaginationOptionSetter) ([]*relationtuple.InternalRelationTuple, string, error) {
+func (p *Persister) GetRelationTuples(ctx context.Context, query *relationtuple.RelationQuery, options ...x.PaginationOptionSetter) ([]*relationtuple.RelationTuple, string, error) {
 	ctx, span := p.d.Tracer(ctx).Tracer().Start(ctx, "persistence.sql.GetRelationTuples")
 	defer span.End()
 
@@ -254,7 +210,7 @@ func (p *Persister) GetRelationTuples(ctx context.Context, query *relationtuple.
 	}
 
 	sqlQuery := p.QueryWithNetwork(ctx).
-		Order("nid, namespace_id, object, relation, subject_id, subject_set_namespace_id, subject_set_object, subject_set_relation, commit_time").
+		Order("nid, namespace, object, relation, subject_id, subject_set_namespace, subject_set_object, subject_set_relation, commit_time").
 		Paginate(pagination.Page, pagination.PerPage)
 
 	err = p.whereQuery(ctx, sqlQuery, query)
@@ -271,9 +227,9 @@ func (p *Persister) GetRelationTuples(ctx context.Context, query *relationtuple.
 		nextPageToken = ""
 	}
 
-	internalRes := make([]*relationtuple.InternalRelationTuple, 0, len(res))
+	internalRes := make([]*relationtuple.RelationTuple, 0, len(res))
 	for _, r := range res {
-		if rt, err := r.toInternal(ctx, p); err == nil {
+		if rt, err := r.toInternal(); err == nil {
 			// Ignore error here, which stems from a deleted namespace.
 			internalRes = append(internalRes, rt)
 		}
@@ -282,7 +238,7 @@ func (p *Persister) GetRelationTuples(ctx context.Context, query *relationtuple.
 	return internalRes, nextPageToken, nil
 }
 
-func (p *Persister) WriteRelationTuples(ctx context.Context, rs ...*relationtuple.InternalRelationTuple) error {
+func (p *Persister) WriteRelationTuples(ctx context.Context, rs ...*relationtuple.RelationTuple) error {
 	ctx, span := p.d.Tracer(ctx).Tracer().Start(ctx, "persistence.sql.WriteRelationTuples")
 	defer span.End()
 
@@ -296,7 +252,7 @@ func (p *Persister) WriteRelationTuples(ctx context.Context, rs ...*relationtupl
 	})
 }
 
-func (p *Persister) TransactRelationTuples(ctx context.Context, ins []*relationtuple.InternalRelationTuple, del []*relationtuple.InternalRelationTuple) error {
+func (p *Persister) TransactRelationTuples(ctx context.Context, ins []*relationtuple.RelationTuple, del []*relationtuple.RelationTuple) error {
 	ctx, span := p.d.Tracer(ctx).Tracer().Start(ctx, "persistence.sql.TransactRelationTuples")
 	defer span.End()
 

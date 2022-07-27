@@ -17,10 +17,13 @@ import (
 
 // ExpandTree struct for ExpandTree
 type ExpandTree struct {
-	Children   []ExpandTree `json:"children,omitempty"`
-	SubjectId  *string      `json:"subject_id,omitempty"`
-	SubjectSet *SubjectSet  `json:"subject_set,omitempty"`
-	Type       string       `json:"type"`
+	// The children of the node, possibly none.
+	Children []ExpandTree `json:"children,omitempty"`
+	// The subject ID the node represents. Either this field, or SubjectSet are set.
+	SubjectId  *string     `json:"subject_id,omitempty"`
+	SubjectSet *SubjectSet `json:"subject_set,omitempty"`
+	// The type of the node. union Union exclusion Exclusion intersection Intersection leaf Leaf unspecified Unspecified
+	Type string `json:"type"`
 }
 
 // NewExpandTree instantiates a new ExpandTree object

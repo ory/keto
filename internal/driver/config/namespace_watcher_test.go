@@ -74,7 +74,6 @@ func TestNamespaceProvider(t *testing.T) {
 	writeJsonNamespace := func(t *testing.T) (string, *namespace.Namespace) {
 		dir := t.TempDir()
 		n := &namespace.Namespace{
-			ID:   0,
 			Name: "test namespace 1",
 		}
 		fn := filepath.Join(dir, "n.json")
@@ -99,15 +98,12 @@ func TestNamespaceProvider(t *testing.T) {
 		dir := t.TempDir()
 		files := map[string]interface{}{
 			"b.yml": &namespace.Namespace{
-				ID:   0,
 				Name: "b",
 			},
 			"a.toml": &namespace.Namespace{
-				ID:   1,
 				Name: "a",
 			},
 			"c.json": &namespace.Namespace{
-				ID:   2,
 				Name: "c",
 			},
 		}
@@ -135,7 +131,6 @@ func TestNamespaceProvider(t *testing.T) {
 		dir := t.TempDir()
 
 		n := &namespace.Namespace{
-			ID:   2,
 			Name: "some name",
 		}
 		nJson, err := json.Marshal(n)
@@ -164,7 +159,6 @@ func TestNamespaceProvider(t *testing.T) {
 		dir := t.TempDir()
 
 		n := &namespace.Namespace{
-			ID:   21,
 			Name: "some name",
 		}
 		nJson, err := json.Marshal(n)

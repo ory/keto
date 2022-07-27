@@ -4,22 +4,22 @@ import (
 	"context"
 	"net/http"
 
+	"github.com/ory/keto/ketoapi"
+
+	"github.com/julienschmidt/httprouter"
 	"github.com/ory/herodot"
-
-	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
-
 	"google.golang.org/grpc"
 
 	"github.com/ory/keto/internal/relationtuple"
-
-	"github.com/julienschmidt/httprouter"
-
 	"github.com/ory/keto/internal/x"
+	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 )
 
 type (
 	handlerDependencies interface {
 		EngineProvider
+		relationtuple.ManagerProvider
+		relationtuple.MapperProvider
 		x.LoggerProvider
 		x.WriterProvider
 	}
@@ -28,7 +28,10 @@ type (
 	}
 )
 
-var _ rts.ExpandServiceServer = (*handler)(nil)
+var (
+	_ rts.ExpandServiceServer = (*handler)(nil)
+	_ *getExpandRequest       = nil
+)
 
 const RouteBase = "/relation-tuples/expand"
 
@@ -49,10 +52,11 @@ func (h *handler) RegisterReadGRPC(s *grpc.Server) {
 func (h *handler) RegisterWriteGRPC(s *grpc.Server) {}
 
 // swagger:parameters getExpand
-// nolint:deadcode,unused
 type getExpandRequest struct {
 	// in:query
 	MaxDepth int `json:"max-depth"`
+	// in:query
+	ketoapi.SubjectSet
 }
 
 // swagger:route GET /relation-tuples/expand read getExpand
@@ -81,21 +85,59 @@ func (h *handler) getExpand(w http.ResponseWriter, r *http.Request, _ httprouter
 		return
 	}
 
-	res, err := h.d.ExpandEngine().BuildTree(r.Context(), (&relationtuple.SubjectSet{}).FromURLQuery(r.URL.Query()), maxDepth)
+	subSet := (&ketoapi.SubjectSet{}).FromURLQuery(r.URL.Query())
+	internal, err := h.d.Mapper().FromSubjectSet(r.Context(), subSet)
 	if err != nil {
 		h.d.Writer().WriteError(w, r, err)
 		return
 	}
 
-	h.d.Writer().Write(w, r, res)
+	res, err := h.d.ExpandEngine().BuildTree(r.Context(), internal, maxDepth)
+	if err != nil {
+		h.d.Writer().WriteError(w, r, err)
+		return
+	}
+	tree, err := h.d.Mapper().ToTree(r.Context(), res)
+	if err != nil {
+		h.d.Writer().WriteError(w, r, err)
+		return
+	}
+
+	h.d.Writer().Write(w, r, tree)
 }
 
 func (h *handler) Expand(ctx context.Context, req *rts.ExpandRequest) (*rts.ExpandResponse, error) {
-	sub, err := relationtuple.SubjectFromProto(req.Subject)
+	var subSet *ketoapi.SubjectSet
+
+	switch sub := req.Subject.Ref.(type) {
+	case *rts.Subject_Id:
+		return &rts.ExpandResponse{
+			Tree: &rts.SubjectTree{
+				NodeType: rts.NodeType_NODE_TYPE_LEAF,
+				Subject:  rts.NewSubjectID(sub.Id),
+			},
+		}, nil
+	case *rts.Subject_Set:
+		subSet = &ketoapi.SubjectSet{
+			Namespace: sub.Set.Namespace,
+			Object:    sub.Set.Object,
+			Relation:  sub.Set.Relation,
+		}
+	}
+
+	internal, err := h.d.Mapper().FromSubjectSet(ctx, subSet)
 	if err != nil {
 		return nil, err
 	}
-	tree, err := h.d.ExpandEngine().BuildTree(ctx, sub, int(req.MaxDepth))
+	res, err := h.d.ExpandEngine().BuildTree(ctx, internal, int(req.MaxDepth))
+	if err != nil {
+		return nil, err
+	}
+	if res == nil {
+		return &rts.ExpandResponse{}, nil
+	}
+
+	tree, err := h.d.Mapper().ToTree(ctx, res)
 	if err != nil {
 		return nil, err
 	}

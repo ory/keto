@@ -11,6 +11,7 @@ import (
 type (
 	handlerDeps interface {
 		ManagerProvider
+		MapperProvider
 		x.LoggerProvider
 		x.WriterProvider
 	}
@@ -18,15 +19,6 @@ type (
 		d handlerDeps
 	}
 )
-
-// swagger:model getRelationTuplesResponse
-type GetResponse struct {
-	RelationTuples []*InternalRelationTuple `json:"relation_tuples"`
-	// The opaque token to provide in a subsequent request
-	// to get the next page. It is the empty string iff this is
-	// the last page.
-	NextPageToken string `json:"next_page_token"`
-}
 
 const (
 	ReadRouteBase  = "/relation-tuples"
@@ -46,7 +38,7 @@ func (h *handler) RegisterReadRoutes(r *x.ReadRouter) {
 func (h *handler) RegisterWriteRoutes(r *x.WriteRouter) {
 	r.PUT(WriteRouteBase, h.createRelation)
 	r.DELETE(WriteRouteBase, h.deleteRelations)
-	r.PATCH(WriteRouteBase, h.patchRelations)
+	r.PATCH(WriteRouteBase, h.patchRelationTuples)
 }
 
 func (h *handler) RegisterReadGRPC(s *grpc.Server) {

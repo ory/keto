@@ -15,6 +15,11 @@ export class ListRelationTuplesRequest extends jspb.Message {
     getQuery(): ListRelationTuplesRequest.Query | undefined;
     setQuery(value?: ListRelationTuplesRequest.Query): ListRelationTuplesRequest;
 
+    hasRelationQuery(): boolean;
+    clearRelationQuery(): void;
+    getRelationQuery(): ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationQuery | undefined;
+    setRelationQuery(value?: ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationQuery): ListRelationTuplesRequest;
+
     hasExpandMask(): boolean;
     clearExpandMask(): void;
     getExpandMask(): google_protobuf_field_mask_pb.FieldMask | undefined;
@@ -39,6 +44,7 @@ export class ListRelationTuplesRequest extends jspb.Message {
 export namespace ListRelationTuplesRequest {
     export type AsObject = {
         query?: ListRelationTuplesRequest.Query.AsObject,
+        relationQuery?: ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationQuery.AsObject,
         expandMask?: google_protobuf_field_mask_pb.FieldMask.AsObject,
         snaptoken: string,
         pageSize: number,

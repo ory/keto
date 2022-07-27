@@ -20,21 +20,13 @@ import (
 
 func rt(nw *networkx.Network, setSID, setNID, setO, setR bool) *sql.RelationTuple {
 	return &sql.RelationTuple{
-		ID:        uuid.Must(uuid.NewV4()),
-		NetworkID: nw.ID,
-		SubjectID: stdSql.NullString{
-			Valid: setSID,
-		},
-		SubjectSetNamespaceID: stdSql.NullInt32{
-			Valid: setNID,
-		},
-		SubjectSetObject: stdSql.NullString{
-			Valid: setO,
-		},
-		SubjectSetRelation: stdSql.NullString{
-			Valid: setR,
-		},
-		CommitTime: time.Now(),
+		ID:                  uuid.Must(uuid.NewV4()),
+		NetworkID:           nw.ID,
+		SubjectID:           uuid.NullUUID{Valid: setSID},
+		SubjectSetNamespace: stdSql.NullString{Valid: setNID},
+		SubjectSetObject:    uuid.NullUUID{Valid: setO},
+		SubjectSetRelation:  stdSql.NullString{Valid: setR},
+		CommitTime:          time.Now(),
 	}
 }
 
@@ -99,7 +91,8 @@ func TestRelationTupleSubjectTypeCheck(t *testing.T) {
 			} {
 				tc := tc
 				t.Run("case="+tc.desc, func(t *testing.T) {
-					err = c.Create(rt(nw, tc.setSID, tc.setNID, tc.setO, tc.setR))
+					t.Parallel()
+					err := c.Create(rt(nw, tc.setSID, tc.setNID, tc.setO, tc.setR))
 
 					if tc.success {
 						assert.NoError(t, err)
@@ -107,6 +100,7 @@ func TestRelationTupleSubjectTypeCheck(t *testing.T) {
 						require.Error(t, err)
 						assert.True(t,
 							strings.Contains(err.Error(), "chk_keto_rt_subject_type") || // <- normal databases
+								strings.Contains(err.Error(), "chk_keto_rt_uuid_subject_type") || // <- normal databases
 								strings.Contains(err.Error(), "SQLSTATE 23514")) // <- mysql
 					}
 				})

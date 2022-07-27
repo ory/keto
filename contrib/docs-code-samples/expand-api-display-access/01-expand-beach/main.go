@@ -8,7 +8,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
-	"github.com/ory/keto/internal/expand"
+	"github.com/ory/keto/ketoapi"
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 )
 
@@ -28,10 +28,7 @@ func main() {
 		panic(err)
 	}
 
-	tree, err := expand.TreeFromProto(res.Tree)
-	if err != nil {
-		panic(err)
-	}
+	tree := (&ketoapi.ExpandTree{}).FromProto(res.Tree)
 
 	enc := json.NewEncoder(os.Stdout)
 	enc.SetIndent("", "  ")
