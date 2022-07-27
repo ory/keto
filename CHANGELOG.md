@@ -5,7 +5,7 @@
 
 **Table of Contents**
 
-- [0.0.0 (2022-07-22)](#000-2022-07-22)
+- [0.0.0 (2022-07-27)](#000-2022-07-27)
   - [Breaking Changes](#breaking-changes)
     - [Bug Fixes](#bug-fixes)
     - [Code Refactoring](#code-refactoring)
@@ -126,9 +126,22 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.8.0-alpha.2...v0.0.0) (2022-07-22)
+# [0.0.0](https://github.com/ory/keto/compare/v0.8.0-alpha.2...v0.0.0) (2022-07-27)
 
 ## Breaking Changes
+
+`keto namespace migrate ...` commands were removed. To migrate from
+v0.6.0-alpha.1, please first migrate the legacy namespaces using v0.8.0-alpha.2
+
+The protobuf API was bumped to `v1alpha2`. Please upgrade your client dependency
+to that version. `v1alpha1` is still supported for now, but might be dropped
+soon.
+
+Some payload keys are now (not) required anymore. The generated SDKs will likely
+have breaking changes.
+
+Co-authored-by: Patrik <zepatrik@users.noreply.github.com> Co-authored-by: hperl
+<34397+hperl@users.noreply.github.com>
 
 `/check` is now `/relation-tupes/check`
 
@@ -188,6 +201,16 @@ gRPC relation-tuple-delta action enum names are prefixed with `ACTION_`
 - Make sensitive log value redaction text configurable
   ([#860](https://github.com/ory/keto/issues/860))
   ([b8b1d81](https://github.com/ory/keto/commit/b8b1d81ee1574fdfd8bdac01ec2f9957f03df879))
+- Map strings to UUIDs ([#809](https://github.com/ory/keto/issues/809))
+  ([#840](https://github.com/ory/keto/issues/840))
+  ([add6577](https://github.com/ory/keto/commit/add6577874a4e7761443715d633cc8594e81a8c4)):
+
+  With this change Keto now maps strings to UUIDv5 on the storage layer. This
+  change allows unlimited strings to be used while maintaining good performance.
+  Further, it reduces the likeliness of database hot-spots. The migration that
+  applies this mapping might take some time, so please confirm that your
+  migration strategy works for you.
+
 - Metric names same as for Kratos
   ([315ff41](https://github.com/ory/keto/commit/315ff41765aa9e34366c450d6dd0a9cc964f1b9c))
 - **tracing:** Improved tracing for persisters and requests
