@@ -157,6 +157,12 @@ func (e *Engine) checkInverted(
 	}
 }
 
+// checkComputedUserset rewrites the relation tuple to use the userset relation
+// instead of the the relation from the tuple.
+//
+// A relation tuple n:obj#original_rel@user is rewritten to
+// n:obj#userset@user, where the 'userset' relation is taken from the
+// userset.Relation.
 func (e *Engine) checkComputedUserset(
 	ctx context.Context,
 	r *RelationTuple,
@@ -185,8 +191,18 @@ func (e *Engine) checkComputedUserset(
 	)
 }
 
+// checkTupleToUserset rewrites the relation tuple to use the userset relation.
+//
+// Given a relation tuple like docs:readme#editor@user, and a tuple-to-userset
+// rewrite with the relation "parent" and the computed userset relation
+// "owner", the following checks will be performed:
+//
+// * query for all tuples like docs:readme#parent@??? to get a list of subjects
+//   that have the parent relation on docs:readme
+//
+// * For each matching subject, then check if subject#owner@user.
 func (e *Engine) checkTupleToUserset(
-	r *RelationTuple,
+	tuple *RelationTuple,
 	userset *ast.TupleToUserset,
 	restDepth int,
 ) checkgroup.CheckFunc {
@@ -196,7 +212,7 @@ func (e *Engine) checkTupleToUserset(
 	}
 
 	e.d.Logger().
-		WithField("request", r.String()).
+		WithField("request", tuple.String()).
 		WithField("tuple to userset relation", userset.Relation).
 		WithField("tuple to userset computed", userset.ComputedUsersetRelation).
 		Trace("check tuple to userset")
@@ -204,16 +220,16 @@ func (e *Engine) checkTupleToUserset(
 	return func(ctx context.Context, resultCh chan<- checkgroup.Result) {
 		var (
 			prevPage, nextPage string
-			rts                []*RelationTuple
+			tuples             []*RelationTuple
 			err                error
 		)
 		g := checkgroup.New(ctx)
 		for nextPage = "x"; nextPage != "" && !g.Done(); prevPage = nextPage {
-			rts, nextPage, err = e.d.RelationTupleManager().GetRelationTuples(
+			tuples, nextPage, err = e.d.RelationTupleManager().GetRelationTuples(
 				ctx,
 				&Query{
-					Namespace: r.Namespace,
-					Object:    r.Object,
+					Namespace: tuple.Namespace,
+					Object:    tuple.Object,
 					Relation:  userset.Relation,
 				},
 				x.WithToken(prevPage))
@@ -222,17 +238,17 @@ func (e *Engine) checkTupleToUserset(
 				return
 			}
 
-			for _, rt := range rts {
-				if rt.Subject.SubjectSet() == nil {
+			for _, t := range tuples {
+				if t.Subject.SubjectSet() == nil {
 					continue
 				}
 				g.Add(e.checkIsAllowed(
 					ctx,
 					&RelationTuple{
-						Namespace: rt.Subject.SubjectSet().Namespace,
-						Object:    rt.Subject.SubjectSet().Object,
+						Namespace: t.Subject.SubjectSet().Namespace,
+						Object:    t.Subject.SubjectSet().Object,
 						Relation:  userset.ComputedUsersetRelation,
-						Subject:   r.Subject,
+						Subject:   tuple.Subject,
 					},
 					restDepth-1,
 				))
