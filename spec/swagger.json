@@ -588,6 +588,7 @@
   },
   "definitions": {
     "expandTree": {
+      "description": "IMPORTANT: We need a manual instantiation of the generic Tree[T] for the\nOpenAPI spec, since go-swagger does not understand generics :(.\nThis can be fixed by using grpc-gateway.",
       "type": "object",
       "required": ["type"],
       "properties": {
@@ -598,18 +599,23 @@
             "$ref": "#/definitions/expandTree"
           }
         },
-        "subject_id": {
-          "description": "The subject ID the node represents. Either this field, or SubjectSet are set.",
-          "type": "string"
-        },
-        "subject_set": {
-          "$ref": "#/definitions/subjectSet"
+        "tuple": {
+          "$ref": "#/definitions/relationTuple"
         },
         "type": {
-          "description": "The type of the node.\nunion ExpandNodeUnion\nexclusion ExpandNodeExclusion\nintersection ExpandNodeIntersection\nleaf ExpandNodeLeaf\nunspecified ExpandNodeUnspecified",
+          "description": "The type of the node.\nunion TreeNodeUnion\nexclusion TreeNodeExclusion\nintersection TreeNodeIntersection\nleaf TreeNodeLeaf\ntuple_to_userset TreeNodeTupeToUserset\ncomputed_userset TreeNodeComputedUserset\nnot TreeNodeNot\nunspecified TreeNodeUnspecified",
           "type": "string",
-          "enum": ["union", "exclusion", "intersection", "leaf", "unspecified"],
-          "x-go-enum-desc": "union ExpandNodeUnion\nexclusion ExpandNodeExclusion\nintersection ExpandNodeIntersection\nleaf ExpandNodeLeaf\nunspecified ExpandNodeUnspecified"
+          "enum": [
+            "union",
+            "exclusion",
+            "intersection",
+            "leaf",
+            "tuple_to_userset",
+            "computed_userset",
+            "not",
+            "unspecified"
+          ],
+          "x-go-enum-desc": "union TreeNodeUnion\nexclusion TreeNodeExclusion\nintersection TreeNodeIntersection\nleaf TreeNodeLeaf\ntuple_to_userset TreeNodeTupeToUserset\ncomputed_userset TreeNodeComputedUserset\nnot TreeNodeNot\nunspecified TreeNodeUnspecified"
         }
       }
     },

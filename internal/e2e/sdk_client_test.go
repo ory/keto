@@ -199,30 +199,34 @@ func (c *sdkClient) check(t require.TestingT, r *ketoapi.RelationTuple) bool {
 	return *resp.Payload.Allowed
 }
 
-func buildTree(t require.TestingT, mt *models.ExpandTree) *ketoapi.ExpandTree {
-	et := &ketoapi.ExpandTree{
-		Type: ketoapi.ExpandNodeType(*mt.Type),
+func buildTree(t require.TestingT, mt *models.ExpandTree) *ketoapi.Tree[*ketoapi.RelationTuple] {
+	result := &ketoapi.Tree[*ketoapi.RelationTuple]{
+		Type: ketoapi.TreeNodeType(*mt.Type),
 	}
-	if mt.SubjectSet != nil {
-		et.SubjectSet = &ketoapi.SubjectSet{
-			Namespace: *mt.SubjectSet.Namespace,
-			Object:    *mt.SubjectSet.Object,
-			Relation:  *mt.SubjectSet.Relation,
+	if mt.Tuple.SubjectSet != nil {
+		result.Tuple = &ketoapi.RelationTuple{
+			SubjectSet: &ketoapi.SubjectSet{
+				Namespace: *mt.Tuple.SubjectSet.Namespace,
+				Object:    *mt.Tuple.SubjectSet.Object,
+				Relation:  *mt.Tuple.SubjectSet.Relation,
+			},
 		}
 	} else {
-		et.SubjectID = &mt.SubjectID
-	}
-
-	if et.Type != ketoapi.ExpandNodeLeaf && len(mt.Children) != 0 {
-		et.Children = make([]*ketoapi.ExpandTree, len(mt.Children))
-		for i, c := range mt.Children {
-			et.Children[i] = buildTree(t, c)
+		result.Tuple = &ketoapi.RelationTuple{
+			SubjectID: &mt.Tuple.SubjectID,
 		}
 	}
-	return et
+
+	if result.Type != ketoapi.TreeNodeLeaf && len(mt.Children) != 0 {
+		result.Children = make([]*ketoapi.Tree[*ketoapi.RelationTuple], len(mt.Children))
+		for i, c := range mt.Children {
+			result.Children[i] = buildTree(t, c)
+		}
+	}
+	return result
 }
 
-func (c *sdkClient) expand(t require.TestingT, r *ketoapi.SubjectSet, depth int) *ketoapi.ExpandTree {
+func (c *sdkClient) expand(t require.TestingT, r *ketoapi.SubjectSet, depth int) *ketoapi.Tree[*ketoapi.RelationTuple] {
 	resp, err := c.getReadClient().Read.GetExpand(
 		read.NewGetExpandParamsWithTimeout(requestTimeout).
 			WithNamespace(r.Namespace).

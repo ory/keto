@@ -210,14 +210,14 @@ func TestMapper(t *testing.T) {
 			{
 				name: "basic tree",
 				tree: &relationtuple.Tree{
-					Type:    ketoapi.ExpandNodeLeaf,
+					Type:    ketoapi.TreeNodeLeaf,
 					Subject: &relationtuple.SubjectID{ID: uuids[0]},
 				},
 			},
 			{
 				name: "basic tree with children",
 				tree: &relationtuple.Tree{
-					Type: ketoapi.ExpandNodeUnion,
+					Type: ketoapi.TreeNodeUnion,
 					Subject: &relationtuple.SubjectSet{
 						Namespace: nspace.Name,
 						Object:    uuids[0],
@@ -225,11 +225,11 @@ func TestMapper(t *testing.T) {
 					},
 					Children: []*relationtuple.Tree{
 						{
-							Type:    ketoapi.ExpandNodeLeaf,
+							Type:    ketoapi.TreeNodeLeaf,
 							Subject: &relationtuple.SubjectID{ID: uuids[1]},
 						},
 						{
-							Type:    ketoapi.ExpandNodeLeaf,
+							Type:    ketoapi.TreeNodeLeaf,
 							Subject: &relationtuple.SubjectID{ID: uuids[2]},
 						},
 					},
@@ -238,7 +238,7 @@ func TestMapper(t *testing.T) {
 			{
 				name: "deeply nested tree",
 				tree: &relationtuple.Tree{
-					Type: ketoapi.ExpandNodeUnion,
+					Type: ketoapi.TreeNodeUnion,
 					Subject: &relationtuple.SubjectSet{
 						Namespace: nspace.Name,
 						Object:    uuids[0],
@@ -246,7 +246,7 @@ func TestMapper(t *testing.T) {
 					},
 					Children: []*relationtuple.Tree{
 						{
-							Type: ketoapi.ExpandNodeUnion,
+							Type: ketoapi.TreeNodeUnion,
 							Subject: &relationtuple.SubjectSet{
 								Namespace: nspace.Name,
 								Object:    uuids[1],
@@ -254,7 +254,7 @@ func TestMapper(t *testing.T) {
 							},
 							Children: []*relationtuple.Tree{
 								{
-									Type:    ketoapi.ExpandNodeLeaf,
+									Type:    ketoapi.TreeNodeLeaf,
 									Subject: &relationtuple.SubjectID{ID: uuids[2]},
 								},
 							},
@@ -271,19 +271,19 @@ func TestMapper(t *testing.T) {
 					return
 				}
 
-				var checkTree func(*ketoapi.ExpandTree, *relationtuple.Tree)
-				checkTree = func(mapped *ketoapi.ExpandTree, original *relationtuple.Tree) {
+				var checkTree func(*ketoapi.Tree[*ketoapi.RelationTuple], *relationtuple.Tree)
+				checkTree = func(mapped *ketoapi.Tree[*ketoapi.RelationTuple], original *relationtuple.Tree) {
 					switch s := original.Subject.(type) {
 					case *relationtuple.SubjectID:
-						require.NotNil(t, mapped.SubjectID)
-						assert.Nil(t, mapped.SubjectSet)
-						assert.Equal(t, strs[slices.Index(uuids, s.ID)], *mapped.SubjectID)
+						require.NotNil(t, mapped.Tuple.SubjectID)
+						assert.Nil(t, mapped.Tuple.SubjectSet)
+						assert.Equal(t, strs[slices.Index(uuids, s.ID)], *mapped.Tuple.SubjectID)
 					case *relationtuple.SubjectSet:
-						require.NotNil(t, mapped.SubjectSet)
-						assert.Nil(t, mapped.SubjectID)
-						assert.Equal(t, nspace.Name, mapped.SubjectSet.Namespace)
-						assert.Equal(t, strs[slices.Index(uuids, s.Object)], mapped.SubjectSet.Object)
-						assert.Equal(t, s.Relation, mapped.SubjectSet.Relation)
+						require.NotNil(t, mapped.Tuple.SubjectSet)
+						assert.Nil(t, mapped.Tuple.SubjectID)
+						assert.Equal(t, nspace.Name, mapped.Tuple.SubjectSet.Namespace)
+						assert.Equal(t, strs[slices.Index(uuids, s.Object)], mapped.Tuple.SubjectSet.Object)
+						assert.Equal(t, s.Relation, mapped.Tuple.SubjectSet.Relation)
 					default:
 						t.Fatalf("expected subject to be set: %+v", mapped)
 					}

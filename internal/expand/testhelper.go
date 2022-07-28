@@ -10,13 +10,14 @@ import (
 	"github.com/ory/keto/ketoapi"
 )
 
-func AssertExternalTreesAreEqual(t *testing.T, expected, actual *ketoapi.ExpandTree) {
+func AssertExternalTreesAreEqual(t *testing.T, expected, actual *ketoapi.Tree[*ketoapi.RelationTuple]) {
 	t.Helper()
 	assert.Truef(t, treesAreEqual(t, expected, actual),
 		"expected:\n%+v\n\nactual:\n%+v", expected, actual)
 }
 
-func treesAreEqual(t *testing.T, expected, actual *ketoapi.ExpandTree) bool {
+// TODO(hperl): Refactor to generic tree equality helper.
+func treesAreEqual(t *testing.T, expected, actual *ketoapi.Tree[*ketoapi.RelationTuple]) bool {
 	if expected == nil || actual == nil {
 		return expected == actual
 	}
@@ -25,8 +26,8 @@ func treesAreEqual(t *testing.T, expected, actual *ketoapi.ExpandTree) bool {
 		t.Logf("expected type %q, actual type %q", expected.Type, actual.Type)
 		return false
 	}
-	if !assert.ObjectsAreEqual(expected.SubjectID, actual.SubjectID) || !assert.ObjectsAreEqual(expected.SubjectSet, actual.SubjectSet) {
-		t.Logf("expected subject: %+v %+v, actual subject: %+v %+v", expected.SubjectID, expected.SubjectSet, actual.SubjectID, actual.SubjectSet)
+	if !assert.ObjectsAreEqual(expected.Tuple.SubjectID, actual.Tuple.SubjectID) || !assert.ObjectsAreEqual(expected.Tuple.SubjectSet, actual.Tuple.SubjectSet) {
+		t.Logf("expected subject: %+v %+v, actual subject: %+v %+v", expected.Tuple.SubjectID, expected.Tuple.SubjectSet, actual.Tuple.SubjectID, actual.Tuple.SubjectSet)
 		return false
 	}
 	if len(expected.Children) != len(actual.Children) {

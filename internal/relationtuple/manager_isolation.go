@@ -122,7 +122,7 @@ func IsolationTest(t *testing.T, m0, m1 Manager) {
 
 			cancel()
 
-			_, _, err := m0.GetRelationTuples(ctx, &RelationQuery{Namespace: nspace})
+			_, _, err := m0.GetRelationTuples(ctx, &RelationQuery{Namespace: &nspace})
 			assert.ErrorIs(t, err, context.Canceled)
 		})
 	})

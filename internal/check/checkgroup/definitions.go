@@ -5,8 +5,8 @@ import (
 
 	"github.com/pkg/errors"
 
-	"github.com/ory/keto/internal/expand"
 	"github.com/ory/keto/internal/relationtuple"
+	"github.com/ory/keto/ketoapi"
 )
 
 type (
@@ -24,18 +24,20 @@ type (
 
 	Result struct {
 		Membership Membership
-		Tree       *expand.Tree
+		Tree       *ketoapi.Tree[*relationtuple.RelationTuple]
 		Err        error
 	}
 
 	Edge struct {
-		Tuple relationtuple.InternalRelationTuple
-		Type  expand.NodeType
+		Tuple relationtuple.RelationTuple
+		Type  ketoapi.TreeNodeType
 	}
 
 	Transformation int
 
 	Membership int
+
+	tree = ketoapi.Tree[*relationtuple.RelationTuple]
 )
 
 //go:generate stringer -type Membership
@@ -82,15 +84,15 @@ func WithEdge(e Edge, f CheckFunc) CheckFunc {
 		select {
 		case result := <-childCh:
 			if result.Tree == nil {
-				result.Tree = &expand.Tree{
-					Type:  expand.Leaf,
+				result.Tree = &ketoapi.Tree[*relationtuple.RelationTuple]{
+					Type:  ketoapi.TreeNodeLeaf,
 					Tuple: &e.Tuple,
 				}
 			} else {
-				result.Tree = &expand.Tree{
+				result.Tree = &ketoapi.Tree[*relationtuple.RelationTuple]{
 					Type:     e.Type,
 					Tuple:    &e.Tuple,
-					Children: []*expand.Tree{result.Tree},
+					Children: []*tree{result.Tree},
 				}
 			}
 			resultCh <- result

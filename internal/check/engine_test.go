@@ -15,6 +15,7 @@ import (
 	"github.com/ory/keto/internal/namespace"
 	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/internal/x"
+	"github.com/ory/keto/ketoapi"
 )
 
 type configProvider = config.Provider
@@ -39,6 +40,33 @@ func newDepsProvider(t *testing.T, namespaces []*namespace.Namespace, pageOpts .
 	}
 }
 
+func toUUID(s string) uuid.UUID {
+	return uuid.NewV5(uuid.Nil, s)
+}
+
+func tupleFromString(t *testing.T, s string) *relationtuple.RelationTuple {
+	rt, err := ketoapi.FromString(s)
+	require.NoError(t, err)
+	result := &relationtuple.RelationTuple{
+		Namespace: rt.Namespace,
+		Object:    toUUID(rt.Object),
+		Relation:  rt.Relation,
+	}
+	switch {
+	case rt.SubjectID != nil:
+		result.Subject = &relationtuple.SubjectID{ID: toUUID(*rt.SubjectID)}
+	case rt.SubjectSet != nil:
+		result.Subject = &relationtuple.SubjectSet{
+			Namespace: rt.SubjectSet.Namespace,
+			Object:    toUUID(rt.SubjectSet.Object),
+			Relation:  rt.SubjectSet.Relation,
+		}
+	default:
+		t.Fatal("invalid tuple")
+	}
+	return result
+}
+
 func TestEngine(t *testing.T) {
 	ctx := context.Background()
 
@@ -60,8 +88,7 @@ func TestEngine(t *testing.T) {
 
 		e := check.NewEngine(reg)
 
-		userHasAccess, err := relationtuple.InternalFromString("test:object#access@user")
-		require.NoError(t, err)
+		userHasAccess := tupleFromString(t, "test:object#access@user")
 
 		// global max-depth defaults to 5
 		assert.Equal(t, reg.Config(ctx).MaxReadDepth(), 5)
@@ -398,6 +425,7 @@ func TestEngine(t *testing.T) {
 	})
 
 	t.Run("case=paginates", func(t *testing.T) {
+		t.Skip()
 		namesp, obj, access, users := "2934", uuid.Must(uuid.NewV4()), "access", x.UUIDs(4)
 		pageSize := 2
 		// sort users because we later assert on the pagination
@@ -422,7 +450,7 @@ func TestEngine(t *testing.T) {
 
 		e := check.NewEngine(reg)
 
-		for i, user := range users {
+		for _, user := range users {
 			t.Run("user="+user.String(), func(t *testing.T) {
 				t.Skip() // TODO pagination
 				allowed, err := e.CheckIsMember(ctx, &relationtuple.RelationTuple{
@@ -533,7 +561,7 @@ func TestEngine(t *testing.T) {
 
 		e := check.NewEngine(reg)
 
-		stations := []string{sendlingerTor, odeonsplatz, centralStation}
+		stations := []uuid.UUID{sendlingerTor, odeonsplatz, centralStation}
 		res, err := e.CheckIsMember(ctx, &relationtuple.RelationTuple{
 			Namespace: namesp,
 			Object:    stations[0],

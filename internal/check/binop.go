@@ -6,7 +6,8 @@ import (
 	"github.com/pkg/errors"
 
 	"github.com/ory/keto/internal/check/checkgroup"
-	"github.com/ory/keto/internal/expand"
+	"github.com/ory/keto/internal/relationtuple"
+	"github.com/ory/keto/ketoapi"
 )
 
 type binaryOperator = func(ctx context.Context, checks []checkgroup.CheckFunc) checkgroup.Result
@@ -52,9 +53,9 @@ func and(ctx context.Context, checks []checkgroup.CheckFunc) checkgroup.Result {
 		go check(childCtx, resultCh)
 	}
 
-	tree := &expand.Tree{
-		Type:     expand.Intersection,
-		Children: []*expand.Tree{},
+	tree := &ketoapi.Tree[*relationtuple.RelationTuple]{
+		Type:     ketoapi.TreeNodeIntersection,
+		Children: []*ketoapi.Tree[*relationtuple.RelationTuple]{},
 	}
 
 	for i := 0; i < len(checks); i++ {

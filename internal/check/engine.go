@@ -8,12 +8,12 @@ import (
 
 	"github.com/ory/keto/internal/check/checkgroup"
 	"github.com/ory/keto/internal/driver/config"
-	"github.com/ory/keto/internal/expand"
 	"github.com/ory/keto/internal/namespace"
 	"github.com/ory/keto/internal/namespace/ast"
 	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/internal/x"
 	"github.com/ory/keto/internal/x/graph"
+	"github.com/ory/keto/ketoapi"
 )
 
 type (
@@ -81,7 +81,7 @@ func (e *Engine) CheckRelationTuple(ctx context.Context, r *RelationTuple, restD
 func (e *Engine) checkExpandSubject(ctx context.Context, r *RelationTuple, restDepth int) checkgroup.CheckFunc {
 	if restDepth < 0 {
 		e.d.Logger().
-			WithFields(r.ToLoggerFields()).
+			WithField("request", r.String()).
 			Debug("reached max-depth, therefore this query will not be further expanded")
 		return checkgroup.UnknownMemberFunc
 	}
@@ -98,7 +98,7 @@ func (e *Engine) checkExpandSubject(ctx context.Context, r *RelationTuple, restD
 			err       error
 			visited   bool
 			innerCtx  = graph.InitVisited(ctx)
-			query     = &Query{Namespace: r.Namespace, Object: r.Object, Relation: r.Relation}
+			query     = &Query{Namespace: &r.Namespace, Object: &r.Object, Relation: &r.Relation}
 		)
 		for {
 			subjects, pageToken, err = e.d.RelationTupleManager().GetRelationTuples(innerCtx, query, x.WithToken(pageToken))
@@ -114,15 +114,16 @@ func (e *Engine) checkExpandSubject(ctx context.Context, r *RelationTuple, restD
 				if visited {
 					continue
 				}
-				if s.Subject.SubjectSet() == nil || s.Subject.SubjectSet().Relation == WildcardRelation {
+				subjectSet, ok := s.Subject.(*relationtuple.SubjectSet)
+				if !ok || subjectSet.Relation == WildcardRelation {
 					continue
 				}
 				g.Add(e.checkIsAllowed(
 					innerCtx,
 					&RelationTuple{
-						Namespace: s.Subject.SubjectSet().Namespace,
-						Object:    s.Subject.SubjectSet().Object,
-						Relation:  s.Subject.SubjectSet().Relation,
+						Namespace: subjectSet.Namespace,
+						Object:    subjectSet.Object,
+						Relation:  subjectSet.Relation,
 						Subject:   r.Subject,
 					},
 					restDepth-1,
@@ -152,8 +153,8 @@ func (e *Engine) checkDirect(ctx context.Context, r *RelationTuple, restDepth in
 		if rels, _, err := e.d.RelationTupleManager().GetRelationTuples(ctx, r.ToQuery()); err == nil && len(rels) > 0 {
 			resultCh <- checkgroup.Result{
 				Membership: checkgroup.IsMember,
-				Tree: &expand.Tree{
-					Type:  expand.Leaf,
+				Tree: &ketoapi.Tree[*relationtuple.RelationTuple]{
+					Type:  ketoapi.TreeNodeLeaf,
 					Tuple: r,
 				},
 			}

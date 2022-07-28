@@ -57,36 +57,40 @@ func runCases(c client, m *namespaceTestManager) func(*testing.T) {
 			rel := "expand"
 
 			subjects := []string{"s1", "s2"}
-			expectedTree := &ketoapi.ExpandTree{
-				Type: ketoapi.ExpandNodeUnion,
-				SubjectSet: &ketoapi.SubjectSet{
-					Namespace: n.Name,
-					Object:    obj,
-					Relation:  rel,
+			expectedTree := &ketoapi.Tree[*ketoapi.RelationTuple]{
+				Type: ketoapi.TreeNodeUnion,
+				Tuple: &ketoapi.RelationTuple{
+					SubjectSet: &ketoapi.SubjectSet{
+						Namespace: n.Name,
+						Object:    obj,
+						Relation:  rel,
+					},
 				},
-				Children: make([]*ketoapi.ExpandTree, len(subjects)),
+				Children: make([]*ketoapi.Tree[*ketoapi.RelationTuple], len(subjects)),
 			}
 
 			for i, subjectID := range subjects {
+				subjectID := subjectID
 				c.createTuple(t, &ketoapi.RelationTuple{
 					Namespace: n.Name,
 					Object:    obj,
 					Relation:  rel,
 					SubjectID: &subjectID,
 				})
-				expectedTree.Children[i] = &ketoapi.ExpandTree{
-					Type:      ketoapi.ExpandNodeLeaf,
-					SubjectID: &subjectID,
+				expectedTree.Children[i] = &ketoapi.Tree[*ketoapi.RelationTuple]{
+					Type: ketoapi.TreeNodeLeaf,
+					Tuple: &ketoapi.RelationTuple{
+						SubjectID: &subjectID,
+					},
 				}
 			}
 
-			actualTree := c.expand(t, expectedTree.SubjectSet, 100)
+			actualTree := c.expand(t, expectedTree.Tuple.SubjectSet, 100)
 
 			assert.Equal(t, expectedTree.Type, actualTree.Type)
-			assert.Equal(t, expectedTree.SubjectSet, actualTree.SubjectSet)
-			assert.Equal(t, expectedTree.SubjectID, actualTree.SubjectID)
+			assert.Equalf(t, expectedTree.Tuple, actualTree.Tuple,
+				"want:\t%s\ngot:\t%s", expectedTree.Tuple, actualTree.Tuple)
 			assert.Equal(t, len(expectedTree.Children), len(actualTree.Children), "expected: %+v; actual: %+v", expectedTree.Children, actualTree.Children)
-
 			expand.AssertExternalTreesAreEqual(t, expectedTree, actualTree)
 		})
 

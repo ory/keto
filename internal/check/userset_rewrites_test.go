@@ -11,10 +11,10 @@ import (
 
 	"github.com/ory/keto/internal/check"
 	"github.com/ory/keto/internal/check/checkgroup"
-	"github.com/ory/keto/internal/expand"
 	"github.com/ory/keto/internal/namespace"
 	"github.com/ory/keto/internal/namespace/ast"
 	"github.com/ory/keto/internal/relationtuple"
+	"github.com/ory/keto/ketoapi"
 )
 
 var namespaces = []*namespace.Namespace{
@@ -92,10 +92,10 @@ var namespaces = []*namespace.Namespace{
 
 func insertFixtures(t *testing.T, m relationtuple.Manager, tuples []string) {
 	t.Helper()
-	relationTuples := make([]*relationtuple.InternalRelationTuple, len(tuples))
+	relationTuples := make([]*relationtuple.RelationTuple, len(tuples))
 	var err error
 	for i, tuple := range tuples {
-		relationTuples[i], err = relationtuple.InternalFromString(tuple)
+		relationTuples[i] = tupleFromString(t, tuple)
 		require.NoError(t, err)
 	}
 	require.NoError(t, m.WriteRelationTuples(context.Background(), relationTuples...))
@@ -227,8 +227,7 @@ func TestUsersetRewrites(t *testing.T) {
 		t.Run(tc.query, func(t *testing.T) {
 			defer goleak.VerifyNone(t, goleak.IgnoreCurrent())
 
-			rt, err := relationtuple.InternalFromString(tc.query)
-			require.NoError(t, err)
+			rt := tupleFromString(t, tc.query)
 
 			res := e.CheckRelationTuple(ctx, rt, 100)
 			require.NoError(t, res.Err)
@@ -245,18 +244,22 @@ func TestUsersetRewrites(t *testing.T) {
 }
 
 // assertPath asserts that the given path can be found in the tree.
-func assertPath(t *testing.T, path path, tree *expand.Tree) {
+func assertPath(t *testing.T, path path, tree *ketoapi.Tree[*relationtuple.RelationTuple]) {
 	require.NotNil(t, tree)
-	assert.True(t, hasPath(path, tree), "could not find path %s in tree:\n%s", path, tree)
+	assert.True(t, hasPath(t, path, tree), "could not find path %s in tree:\n%s", path, tree)
 }
 
-func hasPath(path path, tree *expand.Tree) bool {
+func hasPath(t *testing.T, path path, tree *ketoapi.Tree[*relationtuple.RelationTuple]) bool {
 	if len(path) == 0 {
 		return true
 	}
 	treeLabel := tree.Label()
-	if path[0] != "*" && path[0] != treeLabel {
-		return false
+	if path[0] != "*" {
+		// use tupleFromString to compare against paths with UUIDs.
+		tuple := tupleFromString(t, path[0])
+		if tuple.String() != treeLabel {
+			return false
+		}
 	}
 
 	if len(path) == 1 {
@@ -264,7 +267,7 @@ func hasPath(path path, tree *expand.Tree) bool {
 	}
 
 	for _, child := range tree.Children {
-		if hasPath(path[1:], child) {
+		if hasPath(t, path[1:], child) {
 			return true
 		}
 	}

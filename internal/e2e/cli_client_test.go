@@ -99,9 +99,9 @@ func (g *cliClient) check(t require.TestingT, r *ketoapi.RelationTuple) bool {
 	return res.Allowed
 }
 
-func (g *cliClient) expand(t require.TestingT, r *ketoapi.SubjectSet, depth int) *ketoapi.ExpandTree {
+func (g *cliClient) expand(t require.TestingT, r *ketoapi.SubjectSet, depth int) *ketoapi.Tree[*ketoapi.RelationTuple] {
 	out := g.c.ExecNoErr(t, "expand", r.Relation, r.Namespace, r.Object, "--"+cliexpand.FlagMaxDepth, fmt.Sprintf("%d", depth), "--"+cmdx.FlagFormat, string(cmdx.FormatJSON))
-	res := ketoapi.ExpandTree{}
+	res := ketoapi.Tree[*ketoapi.RelationTuple]{}
 	require.NoError(t, json.Unmarshal([]byte(out), &res))
 	return &res
 }

@@ -129,7 +129,7 @@ func (g *grpcClient) check(t require.TestingT, r *ketoapi.RelationTuple) bool {
 	return resp.Allowed
 }
 
-func (g *grpcClient) expand(t require.TestingT, r *ketoapi.SubjectSet, depth int) *ketoapi.ExpandTree {
+func (g *grpcClient) expand(t require.TestingT, r *ketoapi.SubjectSet, depth int) *ketoapi.Tree[*ketoapi.RelationTuple] {
 	c := rts.NewExpandServiceClient(g.readConn(t))
 
 	resp, err := c.Expand(g.ctx, &rts.ExpandRequest{
@@ -138,7 +138,7 @@ func (g *grpcClient) expand(t require.TestingT, r *ketoapi.SubjectSet, depth int
 	})
 	require.NoError(t, err)
 
-	return (&ketoapi.ExpandTree{}).FromProto(resp.Tree)
+	return ketoapi.TreeFromProto[*ketoapi.RelationTuple](resp.Tree)
 }
 
 func (g *grpcClient) waitUntilLive(t require.TestingT) {

@@ -67,6 +67,11 @@ export class SubjectTree extends jspb.Message {
     clearSubject(): void;
     getSubject(): ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.Subject | undefined;
     setSubject(value?: ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.Subject): SubjectTree;
+
+    hasTuple(): boolean;
+    clearTuple(): void;
+    getTuple(): ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationTuple | undefined;
+    setTuple(value?: ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationTuple): SubjectTree;
     clearChildrenList(): void;
     getChildrenList(): Array<SubjectTree>;
     setChildrenList(value: Array<SubjectTree>): SubjectTree;
@@ -86,6 +91,7 @@ export namespace SubjectTree {
     export type AsObject = {
         nodeType: NodeType,
         subject?: ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.Subject.AsObject,
+        tuple?: ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationTuple.AsObject,
         childrenList: Array<SubjectTree.AsObject>,
     }
 }

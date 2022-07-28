@@ -11,6 +11,9 @@ import (
 var ErrMalformedInput = herodot.ErrBadRequest.WithError("malformed string input")
 
 func (r *RelationTuple) String() string {
+	if r == nil {
+		return ""
+	}
 	sb := strings.Builder{}
 	sb.WriteString(r.Namespace)
 	sb.WriteRune(':')
@@ -33,6 +36,10 @@ func (r *RelationTuple) String() string {
 		sb.WriteString("<ERROR: no subject>")
 	}
 	return sb.String()
+}
+
+func FromString(s string) (*RelationTuple, error) {
+	return (&RelationTuple{}).FromString(s)
 }
 
 func (r *RelationTuple) FromString(s string) (*RelationTuple, error) {
@@ -89,29 +96,4 @@ func (s *SubjectSet) FromString(str string) (*SubjectSet, error) {
 		Object:    object,
 		Relation:  relation,
 	}, nil
-}
-
-func (t *ExpandTree) String() string {
-	if t == nil {
-		return ""
-	}
-
-	sub := "<!--no subject-->"
-	switch {
-	case t.SubjectID != nil:
-		sub = *t.SubjectID
-	case t.SubjectSet != nil:
-		sub = t.SubjectSet.String()
-	}
-
-	if t.Type == ExpandNodeLeaf {
-		return fmt.Sprintf("☘ %s️", sub)
-	}
-
-	children := make([]string, len(t.Children))
-	for i, c := range t.Children {
-		children[i] = strings.Join(strings.Split(c.String(), "\n"), "\n│  ")
-	}
-
-	return fmt.Sprintf("∪ %s\n├─ %s", sub, strings.Join(children, "\n├─ "))
 }

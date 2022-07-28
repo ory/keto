@@ -67,8 +67,8 @@ func (h *handler) DeleteRelationTuples(ctx context.Context, req *rts.DeleteRelat
 	switch {
 	case req.RelationQuery != nil:
 		q.FromDataProvider(&queryWrapper{req.RelationQuery})
-	case req.Query != nil:
-		q.FromDataProvider(&deprecatedQueryWrapper{(*rts.ListRelationTuplesRequest_Query)(req.Query)})
+	case req.Query != nil: // nolint
+		q.FromDataProvider(&deprecatedQueryWrapper{(*rts.ListRelationTuplesRequest_Query)(req.Query)}) // nolint
 	default:
 		return nil, errors.WithStack(herodot.ErrBadRequest.WithReason("invalid request"))
 	}

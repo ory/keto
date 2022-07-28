@@ -140,14 +140,14 @@ func (rc *restClient) check(t require.TestingT, r *ketoapi.RelationTuple) bool {
 	return false
 }
 
-func (rc *restClient) expand(t require.TestingT, r *ketoapi.SubjectSet, depth int) *ketoapi.ExpandTree {
+func (rc *restClient) expand(t require.TestingT, r *ketoapi.SubjectSet, depth int) *ketoapi.Tree[*ketoapi.RelationTuple] {
 	query := r.ToURLQuery()
 	query.Set("max-depth", fmt.Sprintf("%d", depth))
 
 	body, code := rc.makeRequest(t, http.MethodGet, fmt.Sprintf("%s?%s", expand.RouteBase, query.Encode()), "", false)
 	require.Equal(t, http.StatusOK, code, body)
 
-	tree := &ketoapi.ExpandTree{}
+	tree := &ketoapi.Tree[*ketoapi.RelationTuple]{}
 	require.NoError(t, json.Unmarshal([]byte(body), tree))
 
 	return tree

@@ -40,7 +40,7 @@ func TestEngineUtilsProvider_CheckVisited(t *testing.T) {
 		ctx := context.Background()
 		var isThereACycle bool
 		for i := range linkedList {
-			ctx, isThereACycle = CheckAndAddVisited(ctx, linkedList[i].UniqueID())
+			ctx, isThereACycle = CheckAndAddVisited(ctx, &linkedList[i])
 			if isThereACycle {
 				break
 			}
@@ -75,7 +75,7 @@ func TestEngineUtilsProvider_CheckVisited(t *testing.T) {
 		ctx := context.Background()
 		var isThereACycle bool
 		for i := range list {
-			ctx, isThereACycle = CheckAndAddVisited(ctx, list[i].UniqueID())
+			ctx, isThereACycle = CheckAndAddVisited(ctx, &list[i])
 			if isThereACycle {
 				break
 			}
@@ -85,16 +85,21 @@ func TestEngineUtilsProvider_CheckVisited(t *testing.T) {
 	})
 
 	t.Run("case=no race condition during adding", func(t *testing.T) {
+		racyObj := uuid.Must(uuid.NewV4())
+		otherObj := uuid.Must(uuid.NewV4())
 		// we repeat this test a few times to ensure we don't have a race condition
 		// the race detector alone was not able to catch it
 		for i := 0; i < 500; i++ {
 			subject := &relationtuple.SubjectSet{
 				Namespace: "default",
-				Object:    "racy",
+				Object:    racyObj,
 				Relation:  "connected",
 			}
 
-			ctx, _ := CheckAndAddVisited(context.Background(), &relationtuple.SubjectSet{Object: "just to setup the context"})
+			ctx, _ := CheckAndAddVisited(
+				context.Background(),
+				&relationtuple.SubjectSet{Object: otherObj},
+			)
 			var wg sync.WaitGroup
 			var aCycle, bCycle bool
 			var aCtx, bCtx context.Context

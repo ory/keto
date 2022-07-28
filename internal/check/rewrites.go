@@ -6,23 +6,24 @@ import (
 	"github.com/pkg/errors"
 
 	"github.com/ory/keto/internal/check/checkgroup"
-	"github.com/ory/keto/internal/expand"
 	"github.com/ory/keto/internal/namespace/ast"
+	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/internal/x"
+	"github.com/ory/keto/ketoapi"
 )
 
 func checkNotImplemented(_ context.Context, resultCh chan<- checkgroup.Result) {
 	resultCh <- checkgroup.Result{Err: errors.WithStack(errors.New("not implemented"))}
 }
 
-func toExpandNodeType(op ast.Operator) expand.NodeType {
+func toTreeNodeType(op ast.Operator) ketoapi.TreeNodeType {
 	switch op {
 	case ast.OperatorOr:
-		return expand.Union
+		return ketoapi.TreeNodeUnion
 	case ast.OperatorAnd:
-		return expand.Intersection
+		return ketoapi.TreeNodeIntersection
 	default:
-		return expand.Union
+		return ketoapi.TreeNodeUnion
 	}
 }
 
@@ -60,25 +61,25 @@ func (e *Engine) checkUsersetRewrite(
 		case *ast.TupleToUserset:
 			checks = append(checks, checkgroup.WithEdge(checkgroup.Edge{
 				Tuple: *tuple,
-				Type:  expand.TupeToUserset,
+				Type:  ketoapi.TreeNodeTupeToUserset,
 			}, e.checkTupleToUserset(tuple, c, restDepth)))
 
 		case *ast.ComputedUserset:
 			checks = append(checks, checkgroup.WithEdge(checkgroup.Edge{
 				Tuple: *tuple,
-				Type:  expand.ComputedUserset,
+				Type:  ketoapi.TreeNodeComputedUserset,
 			}, e.checkComputedUserset(ctx, tuple, c, restDepth)))
 
 		case *ast.UsersetRewrite:
 			checks = append(checks, checkgroup.WithEdge(checkgroup.Edge{
 				Tuple: *tuple,
-				Type:  toExpandNodeType(c.Operation),
+				Type:  toTreeNodeType(c.Operation),
 			}, e.checkUsersetRewrite(ctx, tuple, c, restDepth)))
 
 		case *ast.InvertResult:
 			checks = append(checks, checkgroup.WithEdge(checkgroup.Edge{
 				Tuple: *tuple,
-				Type:  expand.Not,
+				Type:  ketoapi.TreeNodeNot,
 			}, e.checkInverted(ctx, tuple, c, restDepth)))
 
 		default:
@@ -113,25 +114,25 @@ func (e *Engine) checkInverted(
 	case *ast.TupleToUserset:
 		check = checkgroup.WithEdge(checkgroup.Edge{
 			Tuple: *tuple,
-			Type:  expand.TupeToUserset,
+			Type:  ketoapi.TreeNodeTupeToUserset,
 		}, e.checkTupleToUserset(tuple, c, restDepth))
 
 	case *ast.ComputedUserset:
 		check = checkgroup.WithEdge(checkgroup.Edge{
 			Tuple: *tuple,
-			Type:  expand.ComputedUserset,
+			Type:  ketoapi.TreeNodeComputedUserset,
 		}, e.checkComputedUserset(ctx, tuple, c, restDepth))
 
 	case *ast.UsersetRewrite:
 		check = checkgroup.WithEdge(checkgroup.Edge{
 			Tuple: *tuple,
-			Type:  toExpandNodeType(c.Operation),
+			Type:  toTreeNodeType(c.Operation),
 		}, e.checkUsersetRewrite(ctx, tuple, c, restDepth))
 
 	case *ast.InvertResult:
 		check = checkgroup.WithEdge(checkgroup.Edge{
 			Tuple: *tuple,
-			Type:  expand.Not,
+			Type:  ketoapi.TreeNodeNot,
 		}, e.checkInverted(ctx, tuple, c, restDepth))
 
 	default:
@@ -228,9 +229,9 @@ func (e *Engine) checkTupleToUserset(
 			tuples, nextPage, err = e.d.RelationTupleManager().GetRelationTuples(
 				ctx,
 				&Query{
-					Namespace: tuple.Namespace,
-					Object:    tuple.Object,
-					Relation:  userset.Relation,
+					Namespace: &tuple.Namespace,
+					Object:    &tuple.Object,
+					Relation:  &userset.Relation,
 				},
 				x.WithToken(prevPage))
 			if err != nil {
@@ -239,19 +240,19 @@ func (e *Engine) checkTupleToUserset(
 			}
 
 			for _, t := range tuples {
-				if t.Subject.SubjectSet() == nil {
-					continue
+				if subjectSet, ok := t.Subject.(*relationtuple.SubjectSet); ok {
+					g.Add(e.checkIsAllowed(
+						ctx,
+						&RelationTuple{
+							Namespace: subjectSet.Namespace,
+							Object:    subjectSet.Object,
+							Relation:  userset.ComputedUsersetRelation,
+							Subject:   tuple.Subject,
+						},
+						restDepth-1,
+					))
+
 				}
-				g.Add(e.checkIsAllowed(
-					ctx,
-					&RelationTuple{
-						Namespace: t.Subject.SubjectSet().Namespace,
-						Object:    t.Subject.SubjectSet().Object,
-						Relation:  userset.ComputedUsersetRelation,
-						Subject:   tuple.Subject,
-					},
-					restDepth-1,
-				))
 			}
 		}
 		resultCh <- g.Result()

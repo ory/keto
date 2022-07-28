@@ -606,49 +606,62 @@ components:
       format: uuid4
       type: string
     expandTree:
+      description: |-
+        IMPORTANT: We need a manual instantiation of the generic Tree[T] for the
+        OpenAPI spec, since go-swagger does not understand generics :(.
+        This can be fixed by using grpc-gateway.
       example:
-        subject_id: subject_id
+        tuple:
+          subject_id: subject_id
+          namespace: namespace
+          object: object
+          relation: relation
+          subject_set:
+            namespace: namespace
+            object: object
+            relation: relation
         children:
         - null
         - null
         type: union
-        subject_set:
-          namespace: namespace
-          object: object
-          relation: relation
       properties:
         children:
           description: The children of the node, possibly none.
           items:
             $ref: '#/components/schemas/expandTree'
           type: array
-        subject_id:
-          description: The subject ID the node represents. Either this field, or SubjectSet
-            are set.
-          type: string
-        subject_set:
-          $ref: '#/components/schemas/subjectSet'
+        tuple:
+          $ref: '#/components/schemas/relationTuple'
         type:
           description: |-
             The type of the node.
-            union ExpandNodeUnion
-            exclusion ExpandNodeExclusion
-            intersection ExpandNodeIntersection
-            leaf ExpandNodeLeaf
-            unspecified ExpandNodeUnspecified
+            union TreeNodeUnion
+            exclusion TreeNodeExclusion
+            intersection TreeNodeIntersection
+            leaf TreeNodeLeaf
+            tuple_to_userset TreeNodeTupeToUserset
+            computed_userset TreeNodeComputedUserset
+            not TreeNodeNot
+            unspecified TreeNodeUnspecified
           enum:
           - union
           - exclusion
           - intersection
           - leaf
+          - tuple_to_userset
+          - computed_userset
+          - not
           - unspecified
           type: string
           x-go-enum-desc: |-
-            union ExpandNodeUnion
-            exclusion ExpandNodeExclusion
-            intersection ExpandNodeIntersection
-            leaf ExpandNodeLeaf
-            unspecified ExpandNodeUnspecified
+            union TreeNodeUnion
+            exclusion TreeNodeExclusion
+            intersection TreeNodeIntersection
+            leaf TreeNodeLeaf
+            tuple_to_userset TreeNodeTupeToUserset
+            computed_userset TreeNodeComputedUserset
+            not TreeNodeNot
+            unspecified TreeNodeUnspecified
       required:
       - type
       type: object

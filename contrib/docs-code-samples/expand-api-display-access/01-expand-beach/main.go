@@ -28,7 +28,7 @@ func main() {
 		panic(err)
 	}
 
-	tree := (&ketoapi.ExpandTree{}).FromProto(res.Tree)
+	tree := ketoapi.TreeFromProto[*ketoapi.RelationTuple](res.Tree)
 
 	enc := json.NewEncoder(os.Stdout)
 	enc.SetIndent("", "  ")

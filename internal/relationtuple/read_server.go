@@ -68,8 +68,8 @@ func (h *handler) ListRelationTuples(ctx context.Context, req *rts.ListRelationT
 	switch {
 	case req.RelationQuery != nil:
 		q.FromDataProvider(&queryWrapper{req.RelationQuery})
-	case req.Query != nil:
-		q.FromDataProvider(&deprecatedQueryWrapper{req.Query})
+	case req.Query != nil: // nolint
+		q.FromDataProvider(&deprecatedQueryWrapper{req.Query}) // nolint
 	default:
 		return nil, herodot.ErrBadRequest.WithError("you must provide a query")
 	}
