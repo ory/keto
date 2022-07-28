@@ -9,7 +9,9 @@ GO_DEPENDENCIES = golang.org/x/tools/cmd/goimports \
 				  github.com/bufbuild/buf/cmd/buf \
 				  google.golang.org/protobuf/cmd/protoc-gen-go \
 				  google.golang.org/grpc/cmd/protoc-gen-go-grpc \
-				  github.com/pseudomuto/protoc-gen-doc/cmd/protoc-gen-doc
+				  github.com/pseudomuto/protoc-gen-doc/cmd/protoc-gen-doc \
+				  github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway \
+				  github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2
 
 BREW_DEPENDENCIES = go-swagger@0.29.0 \
 					grype@0.40.1 \
@@ -98,7 +100,7 @@ build:
 # Generate APIs and client stubs from the definitions
 #
 .PHONY: buf-gen
-buf-gen: tools/buf tools/protobuf tools/protoc-gen-go tools/protoc-gen-go-grpc tools/protoc-gen-doc node_modules
+buf-gen: tools/buf tools/protobuf tools/protoc-gen-go tools/protoc-gen-go-grpc tools/protoc-gen-doc tools/protoc-gen-grpc-gateway tools/protoc-gen-openapiv2 node_modules
 		buf generate
 		@echo "All code was generated successfully!"
 

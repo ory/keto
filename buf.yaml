@@ -13,3 +13,6 @@ lint:
 breaking:
   use:
     - PACKAGE
+deps:
+  - buf.build/googleapis/googleapis
+  - buf.build/grpc-ecosystem/grpc-gateway
