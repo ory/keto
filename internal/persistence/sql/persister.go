@@ -3,9 +3,7 @@ package sql
 import (
 	"context"
 	"embed"
-	"fmt"
 	"reflect"
-	"strconv"
 
 	"github.com/gobuffalo/pop/v6"
 	"github.com/gofrs/uuid"
@@ -24,7 +22,8 @@ type (
 		nid  uuid.UUID
 	}
 	internalPagination struct {
-		Page, PerPage int
+		PerPage int
+		LastID  uuid.UUID
 	}
 	dependencies interface {
 		x.LoggerProvider
@@ -108,19 +107,19 @@ func internalPaginationFromOptions(opts ...x.PaginationOptionSetter) (*internalP
 
 func (p *internalPagination) parsePageToken(t string) error {
 	if t == "" {
-		p.Page = 1
+		p.LastID = uuid.Nil
 		return nil
 	}
 
-	i, err := strconv.ParseUint(t, 10, 32)
+	i, err := uuid.FromString(t)
 	if err != nil {
 		return errors.WithStack(persistence.ErrMalformedPageToken)
 	}
 
-	p.Page = int(i)
+	p.LastID = i
 	return nil
 }
 
-func (p *internalPagination) encodeNextPageToken() string {
-	return fmt.Sprintf("%d", p.Page+1)
+func (p *internalPagination) encodeNextPageToken(lastID uuid.UUID) string {
+	return lastID.String()
 }

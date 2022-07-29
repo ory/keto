@@ -130,7 +130,7 @@ func TestMigrations(t *testing.T) {
 			})
 
 			t.Run("suite=uuid_migrations", func(t *testing.T) {
-				ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
+				ctx, cancel := context.WithTimeout(ctx, 20*time.Second)
 				defer cancel()
 				require.NoError(t, tm.Down(ctx, -1))
 

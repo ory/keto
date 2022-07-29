@@ -166,37 +166,34 @@ func TestReadHandlers(t *testing.T) {
 			relationtuple.MapAndWriteTuples(t, reg, tuples...)
 
 			var firstResp ketoapi.GetResponse
-			t.Run("case=first page", func(t *testing.T) {
-				resp, err := ts.Client().Get(ts.URL + relationtuple.ReadRouteBase + "?" + url.Values{
-					"namespace": {nspace.Name},
-					"page_size": {"1"},
-				}.Encode())
-				require.NoError(t, err)
-				require.Equal(t, http.StatusOK, resp.StatusCode)
+			resp, err := ts.Client().Get(ts.URL + relationtuple.ReadRouteBase + "?" + url.Values{
+				"namespace": {nspace.Name},
+				"page_size": {"1"},
+			}.Encode())
+			require.NoError(t, err)
+			require.Equal(t, http.StatusOK, resp.StatusCode)
 
-				require.NoError(t, json.NewDecoder(resp.Body).Decode(&firstResp))
-				require.Len(t, firstResp.RelationTuples, 1)
-				assert.Contains(t, tuples, firstResp.RelationTuples[0])
-				assert.NotEqual(t, "", firstResp.NextPageToken)
-			})
+			require.NoError(t, json.NewDecoder(resp.Body).Decode(&firstResp))
+			require.Len(t, firstResp.RelationTuples, 1)
+			assert.Contains(t, tuples, firstResp.RelationTuples[0])
+			assert.NotEqual(t, "", firstResp.NextPageToken)
 
-			t.Run("case=second page", func(t *testing.T) {
-				resp, err := ts.Client().Get(ts.URL + relationtuple.ReadRouteBase + "?" + url.Values{
-					"namespace":  {nspace.Name},
-					"page_size":  {"1"},
-					"page_token": {firstResp.NextPageToken},
-				}.Encode())
-				require.NoError(t, err)
-				require.Equal(t, http.StatusOK, resp.StatusCode)
+			// second page
+			resp, err = ts.Client().Get(ts.URL + relationtuple.ReadRouteBase + "?" + url.Values{
+				"namespace":  {nspace.Name},
+				"page_size":  {"1"},
+				"page_token": {firstResp.NextPageToken},
+			}.Encode())
+			require.NoError(t, err)
+			require.Equal(t, http.StatusOK, resp.StatusCode)
 
-				secondResp := ketoapi.GetResponse{}
-				require.NoError(t, json.NewDecoder(resp.Body).Decode(&secondResp))
-				require.Len(t, secondResp.RelationTuples, 1)
+			secondResp := ketoapi.GetResponse{}
+			require.NoError(t, json.NewDecoder(resp.Body).Decode(&secondResp))
+			require.Len(t, secondResp.RelationTuples, 1)
 
-				assert.NotEqual(t, firstResp.RelationTuples, secondResp.RelationTuples)
-				assert.Contains(t, tuples, secondResp.RelationTuples[0])
-				assert.Equal(t, "", secondResp.NextPageToken)
-			})
+			assert.NotEqual(t, firstResp.RelationTuples, secondResp.RelationTuples)
+			assert.Contains(t, tuples, secondResp.RelationTuples[0])
+			assert.Equal(t, "", secondResp.NextPageToken)
 		})
 
 		t.Run("case=returs bad request on invalid page size", func(t *testing.T) {

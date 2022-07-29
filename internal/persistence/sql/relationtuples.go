@@ -210,8 +210,9 @@ func (p *Persister) GetRelationTuples(ctx context.Context, query *relationtuple.
 	}
 
 	sqlQuery := p.QueryWithNetwork(ctx).
-		Order("nid, namespace, object, relation, subject_id, subject_set_namespace, subject_set_object, subject_set_relation, commit_time").
-		Paginate(pagination.Page, pagination.PerPage)
+		Order("shard_id, nid").
+		Where("shard_id > ?", pagination.LastID).
+		Limit(pagination.PerPage + 1)
 
 	err = p.whereQuery(ctx, sqlQuery, query)
 	if err != nil {
@@ -221,10 +222,14 @@ func (p *Persister) GetRelationTuples(ctx context.Context, query *relationtuple.
 	if err := sqlQuery.All(&res); err != nil {
 		return nil, "", sqlcon.HandleError(err)
 	}
+	if len(res) == 0 {
+		return make([]*relationtuple.RelationTuple, 0, 0), "", nil
+	}
 
-	nextPageToken := pagination.encodeNextPageToken()
-	if sqlQuery.Paginator.Page >= sqlQuery.Paginator.TotalPages {
-		nextPageToken = ""
+	var nextPageToken string
+	if len(res) > pagination.PerPage {
+		res = res[:len(res)-1]
+		nextPageToken = pagination.encodeNextPageToken(res[len(res)-1].ID)
 	}
 
 	internalRes := make([]*relationtuple.RelationTuple, 0, len(res))

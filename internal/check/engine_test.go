@@ -456,7 +456,7 @@ func TestEngine(t *testing.T) {
 
 		e := check.NewEngine(reg)
 
-		for i, user := range users {
+		for _, user := range users {
 			t.Run("user="+user.String(), func(t *testing.T) {
 				allowed, err := e.SubjectIsAllowed(ctx, &relationtuple.RelationTuple{
 					Namespace: namesp,
@@ -466,19 +466,22 @@ func TestEngine(t *testing.T) {
 				}, 0)
 				require.NoError(t, err)
 				assert.True(t, allowed)
-
-				// pagination assertions
-				if i >= pageSize {
-					assert.Len(t, reg.RequestedPages, 2)
-					// reset requested pages for next iteration
-					reg.RequestedPages = nil
-				} else {
-					assert.Len(t, reg.RequestedPages, 1)
-					// reset requested pages for next iteration
-					reg.RequestedPages = nil
-				}
 			})
 		}
+
+		require.Len(t, reg.RequestedPages, 6)
+		var firstPage int
+		otherPages := make([]string, 0, 2)
+		for _, page := range reg.RequestedPages {
+			if page == "" {
+				firstPage++
+			} else {
+				otherPages = append(otherPages, page)
+			}
+		}
+		assert.Equal(t, 4, firstPage)
+		require.Len(t, otherPages, 2)
+		assert.Equal(t, otherPages[0], otherPages[1])
 	})
 
 	t.Run("case=wide tuple graph", func(t *testing.T) {
