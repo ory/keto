@@ -16,10 +16,6 @@ updates:
     directory: "/proto"
     schedule:
       interval: "daily"
-  - package-ecosystem: "github-actions"
-    directory: "/"
-    schedule:
-      interval: "daily"
   - package-ecosystem: "docker"
     directory: "/.docker"
     schedule:
