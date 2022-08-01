@@ -4,10 +4,10 @@
 package main
 
 import (
+	_ "github.com/josephburnett/jd"
 	_ "github.com/mattn/goveralls"
-	_ "golang.org/x/tools/cmd/goimports"
-
 	_ "github.com/ory/go-acc"
+	_ "golang.org/x/tools/cmd/goimports"
 
 	// Protobuf and gRPC related tools
 	_ "github.com/bufbuild/buf/cmd/buf"

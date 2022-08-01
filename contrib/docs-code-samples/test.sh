@@ -2,11 +2,23 @@
 set -euo pipefail
 
 (cd ../..; go install -tags sqlite .)
+PATH="../../.bin/gobin:../../.bin/brew/bin:../../.bin/brew/sbin:$PATH"
 
 function teardown() {
     kill "$keto_server_pid" || true
 }
 trap teardown EXIT
+
+function compare() {
+    local actual="$1"
+    local expected="$2/expected_output.json"
+    local d="jd -set"
+    if [[ ! -f "$expected" ]]; then
+        expected="$2/expected_output.txt"
+        d="diff -U 100000"
+    fi
+    $d "$actual" "$expected"
+}
 
 for suite in */ ; do
     suite=$(basename "$suite")
@@ -25,22 +37,22 @@ for suite in */ ; do
 
     for main in "$suite"/*/main.go; do
         echo "Running $main"
-        diff -U 100000 <(go run -tags docscodesamples "./$main" 2>&1) "$(dirname "$main")/expected_output.txt"
+        compare <(go run -tags docscodesamples "./$main" 2>&1) "$(dirname "$main")"
     done
 
     for index in "$suite"/*/index.js; do
         echo "Running $index"
-        diff -U 100000 <(node "$index" 2>&1) "$(dirname "$index")/expected_output.txt"
+        compare <(node "$index" 2>&1) "$(dirname "$index")"
     done
 
     for tc in "$suite"/*/curl.sh; do
         echo "Running $tc"
-        diff -U 100000 <("$tc" 2>&1) "$(dirname "$tc")/expected_output.txt"
+        compare <("$tc" 2>&1) "$(dirname "$tc")"
     done
 
     for tc in "$suite"/*/cli.sh; do
         echo "Running $tc"
-        diff -U 100000 <("$tc" 2>&1) "$(dirname "$tc")/expected_output.txt"
+        compare <("$tc" 2>&1) "$(dirname "$tc")"
     done
 
     kill "$keto_server_pid"

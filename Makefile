@@ -9,7 +9,8 @@ GO_DEPENDENCIES = golang.org/x/tools/cmd/goimports \
 				  github.com/bufbuild/buf/cmd/buf \
 				  google.golang.org/protobuf/cmd/protoc-gen-go \
 				  google.golang.org/grpc/cmd/protoc-gen-go-grpc \
-				  github.com/pseudomuto/protoc-gen-doc/cmd/protoc-gen-doc
+				  github.com/pseudomuto/protoc-gen-doc/cmd/protoc-gen-doc \
+				  github.com/josephburnett/jd
 
 BREW_DEPENDENCIES = go-swagger@0.29.0 \
 					grype@0.40.1 \
@@ -121,7 +122,7 @@ test-e2e:
 		go test -tags sqlite -failfast -v ./internal/e2e
 
 .PHONY: test-docs-samples
-test-docs-samples:
+test-docs-samples: tools/jd
 		cd ./contrib/docs-code-samples \
 		&& \
 		npm i \
