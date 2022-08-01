@@ -172,6 +172,14 @@ gRPC relation-tuple-delta action enum names are prefixed with `ACTION_`
   plan to add high level APIs, e.g. for RBAC. The check and expand API paths
   changed to allow adding those.
 
+- Change pagination to use keyset pagination
+  ([7b861c9](https://github.com/ory/keto/commit/7b861c99d6c4f113adb0384b6a0ec5b94b9cb624)):
+
+  The page token now is the last ID of the previous page. This enables faster
+  queries and more stable pagination. NOTE: in case an integration modified page
+  tokens to control pagination, this change will break the integration. Page
+  tokens are opaque strings and should never be messed with.
+
 ### Documentation
 
 - Expose embedded OpenAPI spec
