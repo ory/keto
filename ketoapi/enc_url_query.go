@@ -1,10 +1,12 @@
 package ketoapi
 
 import (
-	"github.com/ory/keto/internal/x"
+	"net/url"
+
 	"github.com/ory/x/pointerx"
 	"github.com/pkg/errors"
-	"net/url"
+
+	"github.com/ory/keto/internal/x"
 )
 
 func (q *RelationQuery) FromURLQuery(query url.Values) (*RelationQuery, error) {

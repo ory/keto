@@ -1,9 +1,10 @@
 package ketoapi
 
 import (
+	"github.com/pkg/errors"
+
 	"github.com/ory/keto/internal/x"
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
-	"github.com/pkg/errors"
 )
 
 type (

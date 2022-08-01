@@ -4,12 +4,14 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/ory/keto/internal/x"
-	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 	"net/url"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
+	"github.com/ory/keto/internal/x"
+	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 )
 
 func TestRelationTuple(t *testing.T) {

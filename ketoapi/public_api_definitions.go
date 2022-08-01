@@ -2,9 +2,11 @@ package ketoapi
 
 import (
 	"errors"
+
 	"github.com/ory/herodot"
-	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 	"github.com/sirupsen/logrus"
+
+	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 )
 
 var (

@@ -48,7 +48,7 @@ tools/brew:
 
 .PHONY: format
 format: tools/goimports node_modules
-		goimports -w -local github.com/ory/keto *.go internal cmd contrib ketoctx embedx
+		goimports -w -local github.com/ory/keto *.go internal cmd contrib ketoctx ketoapi embedx
 		npm run format
 
 .PHONY: install
