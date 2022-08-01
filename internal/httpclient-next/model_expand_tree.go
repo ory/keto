@@ -22,7 +22,7 @@ type ExpandTree struct {
 	// The subject ID the node represents. Either this field, or SubjectSet are set.
 	SubjectId  *string     `json:"subject_id,omitempty"`
 	SubjectSet *SubjectSet `json:"subject_set,omitempty"`
-	// The type of the node. union Union exclusion Exclusion intersection Intersection leaf Leaf unspecified Unspecified
+	// The type of the node. union ExpandNodeUnion exclusion ExpandNodeExclusion intersection ExpandNodeIntersection leaf ExpandNodeLeaf unspecified ExpandNodeUnspecified
 	Type string `json:"type"`
 }
 

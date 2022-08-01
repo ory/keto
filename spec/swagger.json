@@ -606,10 +606,10 @@
           "$ref": "#/definitions/subjectSet"
         },
         "type": {
-          "description": "The type of the node.\nunion Union\nexclusion Exclusion\nintersection Intersection\nleaf Leaf\nunspecified Unspecified",
+          "description": "The type of the node.\nunion ExpandNodeUnion\nexclusion ExpandNodeExclusion\nintersection ExpandNodeIntersection\nleaf ExpandNodeLeaf\nunspecified ExpandNodeUnspecified",
           "type": "string",
           "enum": ["union", "exclusion", "intersection", "leaf", "unspecified"],
-          "x-go-enum-desc": "union Union\nexclusion Exclusion\nintersection Intersection\nleaf Leaf\nunspecified Unspecified"
+          "x-go-enum-desc": "union ExpandNodeUnion\nexclusion ExpandNodeExclusion\nintersection ExpandNodeIntersection\nleaf ExpandNodeLeaf\nunspecified ExpandNodeUnspecified"
         }
       }
     },
@@ -783,7 +783,7 @@
   },
   "responses": {
     "emptyResponse": {
-      "description": "An empty response"
+      "description": "Empty responses are sent when, for example, resources are deleted. The HTTP status code for empty responses is typically 201."
     }
   }
 }

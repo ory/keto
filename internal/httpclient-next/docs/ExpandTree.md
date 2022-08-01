@@ -7,7 +7,7 @@ Name | Type | Description | Notes
 **Children** | Pointer to [**[]ExpandTree**](ExpandTree.md) | The children of the node, possibly none. | [optional] 
 **SubjectId** | Pointer to **string** | The subject ID the node represents. Either this field, or SubjectSet are set. | [optional] 
 **SubjectSet** | Pointer to [**SubjectSet**](SubjectSet.md) |  | [optional] 
-**Type** | **string** | The type of the node. union Union exclusion Exclusion intersection Intersection leaf Leaf unspecified Unspecified | 
+**Type** | **string** | The type of the node. union ExpandNodeUnion exclusion ExpandNodeExclusion intersection ExpandNodeIntersection leaf ExpandNodeLeaf unspecified ExpandNodeUnspecified | 
 
 ## Methods
 

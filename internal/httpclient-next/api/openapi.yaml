@@ -73,7 +73,8 @@ paths:
         style: form
       responses:
         "204":
-          description: An empty response
+          description: Empty responses are sent when, for example, resources are deleted.
+            The HTTP status code for empty responses is typically 201.
         "400":
           content:
             application/json:
@@ -102,7 +103,8 @@ paths:
         x-originalParamName: Payload
       responses:
         "204":
-          description: An empty response
+          description: Empty responses are sent when, for example, resources are deleted.
+            The HTTP status code for empty responses is typically 201.
         "400":
           content:
             application/json:
@@ -597,7 +599,8 @@ paths:
 components:
   responses:
     emptyResponse:
-      description: An empty response
+      description: Empty responses are sent when, for example, resources are deleted.
+        The HTTP status code for empty responses is typically 201.
   schemas:
     UUID:
       format: uuid4
@@ -628,11 +631,11 @@ components:
         type:
           description: |-
             The type of the node.
-            union Union
-            exclusion Exclusion
-            intersection Intersection
-            leaf Leaf
-            unspecified Unspecified
+            union ExpandNodeUnion
+            exclusion ExpandNodeExclusion
+            intersection ExpandNodeIntersection
+            leaf ExpandNodeLeaf
+            unspecified ExpandNodeUnspecified
           enum:
           - union
           - exclusion
@@ -641,11 +644,11 @@ components:
           - unspecified
           type: string
           x-go-enum-desc: |-
-            union Union
-            exclusion Exclusion
-            intersection Intersection
-            leaf Leaf
-            unspecified Unspecified
+            union ExpandNodeUnion
+            exclusion ExpandNodeExclusion
+            intersection ExpandNodeIntersection
+            leaf ExpandNodeLeaf
+            unspecified ExpandNodeUnspecified
       required:
       - type
       type: object
