@@ -6,6 +6,7 @@ package main
 import (
 	_ "github.com/josephburnett/jd"
 	_ "github.com/mattn/goveralls"
+	_ "github.com/mikefarah/yq/v4"
 	_ "github.com/ory/go-acc"
 	_ "golang.org/x/tools/cmd/goimports"
 

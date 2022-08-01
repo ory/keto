@@ -10,12 +10,12 @@ GO_DEPENDENCIES = golang.org/x/tools/cmd/goimports \
 				  google.golang.org/protobuf/cmd/protoc-gen-go \
 				  google.golang.org/grpc/cmd/protoc-gen-go-grpc \
 				  github.com/pseudomuto/protoc-gen-doc/cmd/protoc-gen-doc \
-				  github.com/josephburnett/jd
+				  github.com/josephburnett/jd \
+				  github.com/mikefarah/yq/v4
 
 BREW_DEPENDENCIES = go-swagger@0.29.0 \
 					grype@0.40.1 \
 					cli@0.1.35 \
-					yq@4 \
 					trivy@0.29.2
 
 define make-go-dependency
@@ -24,6 +24,9 @@ define make-go-dependency
 		cd .bin/gobin; GOBIN=$(PWD)/.bin/gobin go install $1
 endef
 $(foreach dep, $(GO_DEPENDENCIES), $(eval $(call make-go-dependency,$(dep),$(notdir $(dep)))))
+
+tools/yq: .bin/gobin/go.mod .bin/gobin/go.sum Makefile
+		cd .bin/gobin; GOBIN=$(PWD)/.bin/gobin go install github.com/mikefarah/yq/v4
 
 define make-brew-dependency
   tools/$(firstword $(subst @, ,$(notdir $1))): tools/brew Makefile
