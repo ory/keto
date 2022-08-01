@@ -6,51 +6,53 @@
 **Table of Contents**
 
 - [0.0.0 (2022-08-01)](#000-2022-08-01)
+- [0.9.0-alpha.0 (2022-08-01)](#090-alpha0-2022-08-01)
+  - [Code Generation](#code-generation)
 - [0.9.0-alpha.0.pre.0 (2022-08-01)](#090-alpha0pre0-2022-08-01)
   - [Breaking Changes](#breaking-changes)
     - [Bug Fixes](#bug-fixes)
-    - [Code Generation](#code-generation)
+    - [Code Generation](#code-generation-1)
     - [Code Refactoring](#code-refactoring)
     - [Documentation](#documentation)
     - [Features](#features)
     - [Tests](#tests)
 - [0.8.0-alpha.2 (2022-03-04)](#080-alpha2-2022-03-04)
   - [Bug Fixes](#bug-fixes-1)
-  - [Code Generation](#code-generation-1)
+  - [Code Generation](#code-generation-2)
   - [Documentation](#documentation-1)
 - [0.8.0-alpha.1 (2022-02-22)](#080-alpha1-2022-02-22)
   - [Bug Fixes](#bug-fixes-2)
-  - [Code Generation](#code-generation-2)
+  - [Code Generation](#code-generation-3)
   - [Tests](#tests-1)
 - [0.8.0-alpha.0 (2022-02-10)](#080-alpha0-2022-02-10)
   - [Bug Fixes](#bug-fixes-3)
-  - [Code Generation](#code-generation-3)
+  - [Code Generation](#code-generation-4)
   - [Code Refactoring](#code-refactoring-1)
   - [Documentation](#documentation-2)
   - [Features](#features-1)
 - [0.7.0-alpha.1 (2021-10-19)](#070-alpha1-2021-10-19)
-  - [Code Generation](#code-generation-4)
+  - [Code Generation](#code-generation-5)
   - [Documentation](#documentation-3)
 - [0.7.0-alpha.0 (2021-10-06)](#070-alpha0-2021-10-06)
   - [Breaking Changes](#breaking-changes-1)
     - [Bug Fixes](#bug-fixes-4)
     - [Chores](#chores)
-    - [Code Generation](#code-generation-5)
+    - [Code Generation](#code-generation-6)
     - [Code Refactoring](#code-refactoring-2)
     - [Documentation](#documentation-4)
     - [Features](#features-2)
     - [Tests](#tests-2)
 - [0.6.0-alpha.3 (2021-04-29)](#060-alpha3-2021-04-29)
-  - [Code Generation](#code-generation-6)
+  - [Code Generation](#code-generation-7)
 - [0.6.0-alpha.2 (2021-04-29)](#060-alpha2-2021-04-29)
   - [Bug Fixes](#bug-fixes-5)
-  - [Code Generation](#code-generation-7)
+  - [Code Generation](#code-generation-8)
   - [Documentation](#documentation-5)
   - [Features](#features-3)
 - [0.6.0-alpha.1 (2021-04-07)](#060-alpha1-2021-04-07)
   - [Bug Fixes](#bug-fixes-6)
   - [Build System](#build-system)
-  - [Code Generation](#code-generation-8)
+  - [Code Generation](#code-generation-9)
   - [Code Refactoring](#code-refactoring-3)
   - [Documentation](#documentation-6)
   - [Features](#features-4)
@@ -65,7 +67,7 @@
 - [0.5.4-alpha.1 (2020-04-07)](#054-alpha1-2020-04-07)
   - [Bug Fixes](#bug-fixes-9)
 - [0.5.3-alpha.3 (2020-04-06)](#053-alpha3-2020-04-06)
-  - [Code Generation](#code-generation-9)
+  - [Code Generation](#code-generation-10)
   - [Code Refactoring](#code-refactoring-4)
   - [Documentation](#documentation-8)
 - [0.5.3-alpha.1 (2020-04-03)](#053-alpha1-2020-04-03)
@@ -128,7 +130,27 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.9.0-alpha.0.pre.0...v0.0.0) (2022-08-01)
+# [0.0.0](https://github.com/ory/keto/compare/v0.9.0-alpha.0...v0.0.0) (2022-08-01)
+
+# [0.9.0-alpha.0](https://github.com/ory/keto/compare/v0.9.0-alpha.0.pre.0...v0.9.0-alpha.0) (2022-08-01)
+
+This release ships a few changes in the API paths. Requests and responses were
+not changed. However, we did A LOT of internal refactoring and improvements on
+the persistence layer. Some naming in the SDKs changed, it is a lot cleaner now.
+One important change is that we removed the single table migrator. From now on
+to migrate from v0.6.0-alpha.1, please first migrate the legacy namespaces using
+v0.8.0-alpha.2 We also overhauled the whole persistence structure to ensure high
+scalability. This means that the migration might take a bit longer than usual,
+so please test the process first on a backup or staging environment. For all the
+details, check out the
+[full changelog](https://github.com/ory/keto/blob/master/CHANGELOG.md).
+
+### Code Generation
+
+- Pin v0.9.0-alpha.0 release commit
+  ([490cce8](https://github.com/ory/keto/commit/490cce8da9f50fc11513825a90ba2bd82fcf6c99)):
+
+  Bumps from v0.9.0-alpha.0.pre.0
 
 # [0.9.0-alpha.0.pre.0](https://github.com/ory/keto/compare/v0.8.0-alpha.2...v0.9.0-alpha.0.pre.0) (2022-08-01)
 
