@@ -23,7 +23,7 @@ require (
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
 	github.com/julienschmidt/httprouter v1.3.0
 	github.com/luna-duclos/instrumentedsql v1.1.3
-	github.com/mikefarah/yq/v4 v4.26.1
+	github.com/mikefarah/yq/v4 v4.27.2
 	github.com/ory/analytics-go/v4 v4.0.3
 	github.com/ory/graceful v0.1.3
 	github.com/ory/herodot v0.9.13
@@ -97,6 +97,7 @@ require (
 	github.com/gobuffalo/plush/v4 v4.1.14 // indirect
 	github.com/gobuffalo/tags/v3 v3.1.3 // indirect
 	github.com/gobuffalo/validate/v3 v3.3.2 // indirect
+	github.com/goccy/go-json v0.9.10 // indirect
 	github.com/goccy/go-yaml v1.9.5 // indirect
 	github.com/gofrs/flock v0.8.1 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
