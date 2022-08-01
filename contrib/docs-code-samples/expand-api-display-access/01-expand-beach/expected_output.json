@@ -1,46 +1,76 @@
 {
-  "type": "union",
   "children": [
     {
-      "type": "union",
       "children": [
         {
-          "type": "leaf",
-          "subject_set": {
-            "namespace": "directories",
-            "object": "/photos",
-            "relation": "owner"
-          }
-        },
-        {
-          "type": "leaf",
-          "subject_id": "laura"
+          "tuple": {
+            "namespace": "",
+            "object": "",
+            "relation": "",
+            "subject_id": "maureen"
+          },
+          "type": "leaf"
         }
       ],
-      "subject_set": {
-        "namespace": "directories",
-        "object": "/photos",
-        "relation": "access"
-      }
+      "tuple": {
+        "namespace": "",
+        "object": "",
+        "relation": "",
+        "subject_set": {
+          "namespace": "files",
+          "object": "/photos/beach.jpg",
+          "relation": "owner"
+        }
+      },
+      "type": "union"
     },
     {
-      "type": "union",
       "children": [
         {
-          "type": "leaf",
-          "subject_id": "maureen"
+          "tuple": {
+            "namespace": "",
+            "object": "",
+            "relation": "",
+            "subject_id": "laura"
+          },
+          "type": "leaf"
+        },
+        {
+          "tuple": {
+            "namespace": "",
+            "object": "",
+            "relation": "",
+            "subject_set": {
+              "namespace": "directories",
+              "object": "/photos",
+              "relation": "owner"
+            }
+          },
+          "type": "leaf"
         }
       ],
-      "subject_set": {
-        "namespace": "files",
-        "object": "/photos/beach.jpg",
-        "relation": "owner"
-      }
+      "tuple": {
+        "namespace": "",
+        "object": "",
+        "relation": "",
+        "subject_set": {
+          "namespace": "directories",
+          "object": "/photos",
+          "relation": "access"
+        }
+      },
+      "type": "union"
     }
   ],
-  "subject_set": {
-    "namespace": "files",
-    "object": "/photos/beach.jpg",
-    "relation": "access"
-  }
+  "tuple": {
+    "namespace": "",
+    "object": "",
+    "relation": "",
+    "subject_set": {
+      "namespace": "files",
+      "object": "/photos/beach.jpg",
+      "relation": "access"
+    }
+  },
+  "type": "union"
 }

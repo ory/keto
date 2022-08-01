@@ -2,7 +2,6 @@ package check_test
 
 import (
 	"context"
-	"sort"
 	"testing"
 
 	"github.com/gofrs/uuid"
@@ -422,61 +421,6 @@ func TestEngine(t *testing.T) {
 		}, 0)
 		require.NoError(t, err)
 		assert.True(t, res)
-	})
-
-	t.Run("case=paginates", func(t *testing.T) {
-		t.Skip()
-		namesp, obj, access, users := "2934", uuid.Must(uuid.NewV4()), "access", x.UUIDs(4)
-		pageSize := 2
-		// sort users because we later assert on the pagination
-		sort.Slice(users, func(i, j int) bool {
-			return string(users[i][:]) < string(users[j][:])
-		})
-
-		reg := newDepsProvider(
-			t,
-			[]*namespace.Namespace{{Name: namesp}},
-			x.WithSize(pageSize),
-		)
-
-		for _, user := range users {
-			require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(ctx, &relationtuple.RelationTuple{
-				Namespace: namesp,
-				Object:    obj,
-				Relation:  access,
-				Subject:   &relationtuple.SubjectID{ID: user},
-			}))
-		}
-
-		e := check.NewEngine(reg)
-
-		for _, user := range users {
-			t.Run("user="+user.String(), func(t *testing.T) {
-				t.Skip() // TODO pagination
-				allowed, err := e.CheckIsMember(ctx, &relationtuple.RelationTuple{
-					Namespace: namesp,
-					Object:    obj,
-					Relation:  access,
-					Subject:   &relationtuple.SubjectID{ID: user},
-				}, 0)
-				require.NoError(t, err)
-				assert.True(t, allowed)
-			})
-		}
-
-		require.Len(t, reg.RequestedPages, 6)
-		var firstPage int
-		otherPages := make([]string, 0, 2)
-		for _, page := range reg.RequestedPages {
-			if page == "" {
-				firstPage++
-			} else {
-				otherPages = append(otherPages, page)
-			}
-		}
-		assert.Equal(t, 4, firstPage)
-		require.Len(t, otherPages, 2)
-		assert.Equal(t, otherPages[0], otherPages[1])
 	})
 
 	t.Run("case=wide tuple graph", func(t *testing.T) {

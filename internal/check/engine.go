@@ -150,7 +150,11 @@ func (e *Engine) checkDirect(ctx context.Context, r *RelationTuple, restDepth in
 		e.d.Logger().
 			WithField("request", r.String()).
 			Trace("check direct")
-		if rels, _, err := e.d.RelationTupleManager().GetRelationTuples(ctx, r.ToQuery()); err == nil && len(rels) > 0 {
+		if rels, _, err := e.d.RelationTupleManager().GetRelationTuples(
+			ctx,
+			r.ToQuery(),
+			x.WithSize(1),
+		); err == nil && len(rels) > 0 {
 			resultCh <- checkgroup.Result{
 				Membership: checkgroup.IsMember,
 				Tree: &ketoapi.Tree[*relationtuple.RelationTuple]{
