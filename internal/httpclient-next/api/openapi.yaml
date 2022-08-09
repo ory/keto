@@ -639,8 +639,8 @@ components:
             exclusion TreeNodeExclusion
             intersection TreeNodeIntersection
             leaf TreeNodeLeaf
-            tuple_to_userset TreeNodeTupeToUserset
-            computed_userset TreeNodeComputedUserset
+            tuple_to_subject_set TreeNodeTupleToSubjectSet
+            computed_subject_set TreeNodeComputedSubjectSet
             not TreeNodeNot
             unspecified TreeNodeUnspecified
           enum:
@@ -648,8 +648,8 @@ components:
           - exclusion
           - intersection
           - leaf
-          - tuple_to_userset
-          - computed_userset
+          - tuple_to_subject_set
+          - computed_subject_set
           - not
           - unspecified
           type: string
@@ -658,8 +658,8 @@ components:
             exclusion TreeNodeExclusion
             intersection TreeNodeIntersection
             leaf TreeNodeLeaf
-            tuple_to_userset TreeNodeTupeToUserset
-            computed_userset TreeNodeComputedUserset
+            tuple_to_subject_set TreeNodeTupleToSubjectSet
+            computed_subject_set TreeNodeComputedSubjectSet
             not TreeNodeNot
             unspecified TreeNodeUnspecified
       required:

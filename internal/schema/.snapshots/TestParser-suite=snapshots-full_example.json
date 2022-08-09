@@ -56,13 +56,13 @@
                 "children": [
                   {
                     "relation": "parents",
-                    "computed_userset_relation": "viewers"
+                    "computed_subject_set_relation": "viewers"
                   }
                 ]
               },
               {
                 "relation": "parents",
-                "computed_userset_relation": "view"
+                "computed_subject_set_relation": "view"
               }
             ]
           },
@@ -112,7 +112,7 @@
         "children": [
           {
             "relation": "siblings",
-            "computed_userset_relation": "edit"
+            "computed_subject_set_relation": "edit"
           }
         ]
       }

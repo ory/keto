@@ -105,7 +105,7 @@ func optional(tokens ...string) matcher {
 	}
 }
 
-// match matches for the next tokens in the input.
+// match for the next tokens in the input.
 //
 // A token is matched depending on the type:
 // For string arguments, the input token must match the given string exactly.
@@ -192,7 +192,7 @@ func (p *parser) parseRelated() {
 			return
 		case itemIdentifier:
 			relation := item.Val
-			types := []ast.RelationType{}
+			var types []ast.RelationType
 			p.match(":")
 			switch item := p.next(); item.Typ {
 			case itemIdentifier:
@@ -266,8 +266,8 @@ func (p *parser) parsePermits() {
 			}
 			p.namespace.Relations = append(p.namespace.Relations,
 				ast.Relation{
-					Name:           permission,
-					UsersetRewrite: rewrite,
+					Name:              permission,
+					SubjectSetRewrite: rewrite,
 				})
 
 		default:
@@ -277,14 +277,14 @@ func (p *parser) parsePermits() {
 	}
 }
 
-func (p *parser) parsePermissionExpressions(finalToken itemType, depth int) *ast.UsersetRewrite {
+func (p *parser) parsePermissionExpressions(finalToken itemType, depth int) *ast.SubjectSetRewrite {
 	if depth <= 0 {
 		p.addFatal(p.peek(),
 			"expression nested too deeply; maximal nesting depth is %d",
 			expressionNestingMaxDepth)
 		return nil
 	}
-	var root *ast.UsersetRewrite
+	var root *ast.SubjectSetRewrite
 
 	// We only expect an expression in the beginning and after a binary
 	// operator.
@@ -316,7 +316,7 @@ func (p *parser) parsePermissionExpressions(finalToken itemType, depth int) *ast
 
 		case item.Typ == itemOperatorAnd, item.Typ == itemOperatorOr:
 			p.next() // consume operator
-			newRoot := &ast.UsersetRewrite{
+			newRoot := &ast.SubjectSetRewrite{
 				Operation: setOperation(item.Typ),
 				Children:  []ast.Child{root},
 			}
@@ -336,7 +336,7 @@ func (p *parser) parsePermissionExpressions(finalToken itemType, depth int) *ast
 
 		default:
 			if !expectExpression {
-				// Two expresssions can't follow each other directly, they must
+				// Two expressions can't follow each other directly, they must
 				// be separated by a binary operator.
 				p.addFatal(item, "did not expect another expression")
 				return nil
@@ -373,7 +373,7 @@ func (p *parser) parseNotExpression(depth int) ast.Child {
 	return &ast.InvertResult{Child: child}
 }
 
-func addChild(root *ast.UsersetRewrite, child ast.Child) *ast.UsersetRewrite {
+func addChild(root *ast.SubjectSetRewrite, child ast.Child) *ast.SubjectSetRewrite {
 	if root == nil {
 		return child.AsRewrite()
 	} else {
@@ -400,9 +400,9 @@ func (p *parser) parsePermissionExpression() (child ast.Child) {
 	}
 	switch item := p.next(); item.Val {
 	case "traverse":
-		child = p.parseTupleToUserset(name)
+		child = p.parseTupleToSubjectSet(name)
 	case "includes":
-		child = p.parseComputedUserset(name)
+		child = p.parseComputedSubjectSet(name)
 	default:
 		p.addFatal(item, "expected 'traverse' or 'includes', got %q", item.Val)
 	}
@@ -410,10 +410,10 @@ func (p *parser) parsePermissionExpression() (child ast.Child) {
 	return
 }
 
-func (p *parser) parseTupleToUserset(relation item) (rewrite ast.Child) {
+func (p *parser) parseTupleToSubjectSet(relation item) (rewrite ast.Child) {
 	var (
-		usersetRel string
-		arg, verb  item
+		subjectSetRel string
+		arg, verb     item
 	)
 	if !p.match("(") {
 		return nil
@@ -430,45 +430,45 @@ func (p *parser) parseTupleToUserset(relation item) (rewrite ast.Child) {
 	switch verb.Val {
 	case "related":
 		p.match(
-			".", &usersetRel, ".", "includes", "(", "ctx", ".", "subject",
+			".", &subjectSetRel, ".", "includes", "(", "ctx", ".", "subject",
 			optional(","), ")", optional(","), ")",
 		)
 		p.addCheck(checkAllRelationsTypesHaveRelation(
-			&p.namespace, relation, usersetRel,
+			&p.namespace, relation, subjectSetRel,
 		))
 	case "permits":
-		p.match(".", &usersetRel, "(", "ctx", ")", ")")
+		p.match(".", &subjectSetRel, "(", "ctx", ")", ")")
 		p.addCheck(checkAllRelationsTypesHaveRelation(
-			&p.namespace, relation, usersetRel,
+			&p.namespace, relation, subjectSetRel,
 		))
 	default:
 		p.addFatal(verb, "expected 'related' or 'permits', got %q", verb)
 		return nil
 	}
 	p.addCheck(checkCurrentNamespaceHasRelation(&p.namespace, relation))
-	return &ast.TupleToUserset{
-		Relation:                relation.Val,
-		ComputedUsersetRelation: usersetRel,
+	return &ast.TupleToSubjectSet{
+		Relation:                   relation.Val,
+		ComputedSubjectSetRelation: subjectSetRel,
 	}
 }
 
-func (p *parser) parseComputedUserset(relation item) (rewrite ast.Child) {
+func (p *parser) parseComputedSubjectSet(relation item) (rewrite ast.Child) {
 	if !p.match("(", "ctx", ".", "subject", ")") {
 		return nil
 	}
 	p.addCheck(checkCurrentNamespaceHasRelation(&p.namespace, relation))
-	return &ast.ComputedUserset{Relation: relation.Val}
+	return &ast.ComputedSubjectSet{Relation: relation.Val}
 }
 
 // simplifyExpression rewrites the expression to use n-ary set operations
 // instead of binary ones.
-func simplifyExpression(root *ast.UsersetRewrite) *ast.UsersetRewrite {
+func simplifyExpression(root *ast.SubjectSetRewrite) *ast.SubjectSetRewrite {
 	if root == nil {
 		return nil
 	}
 	var newChildren []ast.Child
 	for _, child := range root.Children {
-		if ch, ok := child.(*ast.UsersetRewrite); ok && ch.Operation == root.Operation {
+		if ch, ok := child.(*ast.SubjectSetRewrite); ok && ch.Operation == root.Operation {
 			// merge child and root
 			simplifyExpression(ch)
 			newChildren = append(newChildren, ch.Children...)

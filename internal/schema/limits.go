@@ -1,9 +1,9 @@
 package schema
 
 const (
-	// tupleToUsersetTypeCheckMaxDepth Controls the maximum number of recursions
+	// tupleToSubjectSetTypeCheckMaxDepth controls the maximum number of recursions
 	// for looking up the types of SubjectSet<Namespace, "relation">.
-	tupleToUsersetTypeCheckMaxDepth = 10
+	tupleToSubjectSetTypeCheckMaxDepth = 10
 
 	// expressionNestingMaxDepth is the maximum number of nested '(' and '!' in
 	// a single 'permits'.

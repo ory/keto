@@ -38,7 +38,7 @@ func (e *Engine) BuildTree(ctx context.Context, subject relationtuple.Subject, r
 		restDepth = globalMaxDepth
 	}
 
-	if us, isUserSet := subject.(*relationtuple.SubjectSet); isUserSet {
+	if subSet, isSubjectSet := subject.(*relationtuple.SubjectSet); isSubjectSet {
 		ctx, wasAlreadyVisited := graph.CheckAndAddVisited(ctx, subject)
 		if wasAlreadyVisited {
 			return nil, nil
@@ -59,9 +59,9 @@ func (e *Engine) BuildTree(ctx context.Context, subject relationtuple.Subject, r
 			rels, nextPage, err = e.d.RelationTupleManager().GetRelationTuples(
 				ctx,
 				&relationtuple.RelationQuery{
-					Relation:  &us.Relation,
-					Object:    &us.Object,
-					Namespace: &us.Namespace,
+					Relation:  &subSet.Relation,
+					Object:    &subSet.Object,
+					Namespace: &subSet.Namespace,
 				},
 				x.WithToken(nextPage),
 			)

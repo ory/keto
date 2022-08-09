@@ -9,7 +9,7 @@ type (
 )
 
 func (p *parser) query() namespaceQuery {
-	return namespaceQuery(p.namespaces)
+	return p.namespaces
 }
 
 func (ns namespaceQuery) find(name string) (*namespace, bool) {
@@ -96,7 +96,7 @@ func checkCurrentNamespaceHasRelation(current *namespace, relation item) typeChe
 func checkAllRelationsTypesHaveRelation(current *namespace, relationType item, relation string) typeCheck {
 	namespace := current.Name
 	return func(p *parser) {
-		recursiveCheckAllRelationsTypesHaveRelation(p, relationType, namespace, relationType.Val, relation, tupleToUsersetTypeCheckMaxDepth)
+		recursiveCheckAllRelationsTypesHaveRelation(p, relationType, namespace, relationType.Val, relation, tupleToSubjectSetTypeCheckMaxDepth)
 	}
 }
 

@@ -11,14 +11,14 @@ import (
 type TreeNodeType string
 
 const (
-	TreeNodeUnion           TreeNodeType = "union"
-	TreeNodeExclusion       TreeNodeType = "exclusion"
-	TreeNodeIntersection    TreeNodeType = "intersection"
-	TreeNodeLeaf            TreeNodeType = "leaf"
-	TreeNodeTupeToUserset   TreeNodeType = "tuple_to_userset"
-	TreeNodeComputedUserset TreeNodeType = "computed_userset"
-	TreeNodeNot             TreeNodeType = "not"
-	TreeNodeUnspecified     TreeNodeType = "unspecified"
+	TreeNodeUnion              TreeNodeType = "union"
+	TreeNodeExclusion          TreeNodeType = "exclusion"
+	TreeNodeIntersection       TreeNodeType = "intersection"
+	TreeNodeLeaf               TreeNodeType = "leaf"
+	TreeNodeTupleToSubjectSet  TreeNodeType = "tuple_to_subject_set"
+	TreeNodeComputedSubjectSet TreeNodeType = "computed_subject_set"
+	TreeNodeNot                TreeNodeType = "not"
+	TreeNodeUnspecified        TreeNodeType = "unspecified"
 )
 
 type Tuple[T any] interface {
@@ -77,9 +77,9 @@ func (t *TreeNodeType) UnmarshalJSON(v []byte) error {
 	case `"leaf"`:
 		*t = TreeNodeLeaf
 	case `"tuple_to_userset"`:
-		*t = TreeNodeTupeToUserset
+		*t = TreeNodeTupleToSubjectSet
 	case `"computed_userset"`:
-		*t = TreeNodeComputedUserset
+		*t = TreeNodeComputedSubjectSet
 	case `"not"`:
 		*t = TreeNodeNot
 	case `"unspecified"`:
@@ -158,9 +158,9 @@ func (t *Tree[NodeT]) String() string {
 		setOperation = `\`
 	case TreeNodeNot:
 		setOperation = `not`
-	case TreeNodeTupeToUserset:
+	case TreeNodeTupleToSubjectSet:
 		setOperation = "┐ tuple to userset"
-	case TreeNodeComputedUserset:
+	case TreeNodeComputedSubjectSet:
 		setOperation = "┐ computed userset"
 	}
 

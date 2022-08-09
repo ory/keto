@@ -34,12 +34,12 @@ type ExpandTree struct {
 	// exclusion TreeNodeExclusion
 	// intersection TreeNodeIntersection
 	// leaf TreeNodeLeaf
-	// tuple_to_userset TreeNodeTupeToUserset
-	// computed_userset TreeNodeComputedUserset
+	// tuple_to_subject_set TreeNodeTupleToSubjectSet
+	// computed_subject_set TreeNodeComputedSubjectSet
 	// not TreeNodeNot
 	// unspecified TreeNodeUnspecified
 	// Required: true
-	// Enum: [union exclusion intersection leaf tuple_to_userset computed_userset not unspecified]
+	// Enum: [union exclusion intersection leaf tuple_to_subject_set computed_subject_set not unspecified]
 	Type *string `json:"type"`
 }
 
@@ -114,7 +114,7 @@ var expandTreeTypeTypePropEnum []interface{}
 
 func init() {
 	var res []string
-	if err := json.Unmarshal([]byte(`["union","exclusion","intersection","leaf","tuple_to_userset","computed_userset","not","unspecified"]`), &res); err != nil {
+	if err := json.Unmarshal([]byte(`["union","exclusion","intersection","leaf","tuple_to_subject_set","computed_subject_set","not","unspecified"]`), &res); err != nil {
 		panic(err)
 	}
 	for _, v := range res {
@@ -136,11 +136,11 @@ const (
 	// ExpandTreeTypeLeaf captures enum value "leaf"
 	ExpandTreeTypeLeaf string = "leaf"
 
-	// ExpandTreeTypeTupleToUserset captures enum value "tuple_to_userset"
-	ExpandTreeTypeTupleToUserset string = "tuple_to_userset"
+	// ExpandTreeTypeTupleToSubjectSet captures enum value "tuple_to_subject_set"
+	ExpandTreeTypeTupleToSubjectSet string = "tuple_to_subject_set"
 
-	// ExpandTreeTypeComputedUserset captures enum value "computed_userset"
-	ExpandTreeTypeComputedUserset string = "computed_userset"
+	// ExpandTreeTypeComputedSubjectSet captures enum value "computed_subject_set"
+	ExpandTreeTypeComputedSubjectSet string = "computed_subject_set"
 
 	// ExpandTreeTypeNot captures enum value "not"
 	ExpandTreeTypeNot string = "not"

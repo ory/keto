@@ -30,8 +30,8 @@ type (
 	}
 
 	// Type aliases for shorter signatures
-	RelationTuple = relationtuple.RelationTuple
-	Query         = relationtuple.RelationQuery
+	relationTuple = relationtuple.RelationTuple
+	query         = relationtuple.RelationQuery
 )
 
 const WildcardRelation = "..."
@@ -45,7 +45,7 @@ func NewEngine(d EngineDependencies) *Engine {
 // CheckIsMember checks if the relation tuple's subject has the relation on the
 // object in the namespace either directly or indirectly and returns a boolean
 // result.
-func (e *Engine) CheckIsMember(ctx context.Context, r *RelationTuple, restDepth int) (bool, error) {
+func (e *Engine) CheckIsMember(ctx context.Context, r *relationTuple, restDepth int) (bool, error) {
 	result := e.CheckRelationTuple(ctx, r, restDepth)
 	if result.Err != nil {
 		return false, result.Err
@@ -56,7 +56,7 @@ func (e *Engine) CheckIsMember(ctx context.Context, r *RelationTuple, restDepth 
 // CheckRelationTuple checks if the relation tuple's subject has the relation on
 // the object in the namespace either directly or indirectly and returns a check
 // result.
-func (e *Engine) CheckRelationTuple(ctx context.Context, r *RelationTuple, restDepth int) checkgroup.Result {
+func (e *Engine) CheckRelationTuple(ctx context.Context, r *relationTuple, restDepth int) checkgroup.Result {
 	// global max-depth takes precedence when it is the lesser or if the request
 	// max-depth is less than or equal to 0
 	if globalMaxDepth := e.d.Config(ctx).MaxReadDepth(); restDepth <= 0 || globalMaxDepth < restDepth {
@@ -76,9 +76,9 @@ func (e *Engine) CheckRelationTuple(ctx context.Context, r *RelationTuple, restD
 // checkExpandSubject checks the expansions of the subject set of the tuple.
 //
 // For a relation tuple n:obj#rel@user, checkExpandSubject first queries for all
-// subjects that match n:obj#rel@* (arbirary subjects), and then for each
-// subject checks subject@user.
-func (e *Engine) checkExpandSubject(ctx context.Context, r *RelationTuple, restDepth int) checkgroup.CheckFunc {
+// subjects that match n:obj#rel@* (arbitrary subjects), and then for each
+// subject set checks subject@user.
+func (e *Engine) checkExpandSubject(r *relationTuple, restDepth int) checkgroup.CheckFunc {
 	if restDepth < 0 {
 		e.d.Logger().
 			WithField("request", r.String()).
@@ -93,12 +93,12 @@ func (e *Engine) checkExpandSubject(ctx context.Context, r *RelationTuple, restD
 		g := checkgroup.New(ctx)
 
 		var (
-			subjects  []*RelationTuple
+			subjects  []*relationTuple
 			pageToken string
 			err       error
 			visited   bool
 			innerCtx  = graph.InitVisited(ctx)
-			query     = &Query{Namespace: &r.Namespace, Object: &r.Object, Relation: &r.Relation}
+			query     = &query{Namespace: &r.Namespace, Object: &r.Object, Relation: &r.Relation}
 		)
 		for {
 			subjects, pageToken, err = e.d.RelationTupleManager().GetRelationTuples(innerCtx, query, x.WithToken(pageToken))
@@ -120,7 +120,7 @@ func (e *Engine) checkExpandSubject(ctx context.Context, r *RelationTuple, restD
 				}
 				g.Add(e.checkIsAllowed(
 					innerCtx,
-					&RelationTuple{
+					&relationTuple{
 						Namespace: subjectSet.Namespace,
 						Object:    subjectSet.Object,
 						Relation:  subjectSet.Relation,
@@ -139,7 +139,7 @@ func (e *Engine) checkExpandSubject(ctx context.Context, r *RelationTuple, restD
 }
 
 // checkDirect checks if the relation tuple is in the database directly.
-func (e *Engine) checkDirect(ctx context.Context, r *RelationTuple, restDepth int) checkgroup.CheckFunc {
+func (e *Engine) checkDirect(r *relationTuple, restDepth int) checkgroup.CheckFunc {
 	if restDepth < 0 {
 		e.d.Logger().
 			WithField("method", "checkDirect").
@@ -174,7 +174,7 @@ func (e *Engine) checkDirect(ctx context.Context, r *RelationTuple, restDepth in
 // the relation tuple subject to the namespace, object and relation) either
 // directly (in the database), or through subject-set expansions, or through
 // user-set rewrites.
-func (e *Engine) checkIsAllowed(ctx context.Context, r *RelationTuple, restDepth int) checkgroup.CheckFunc {
+func (e *Engine) checkIsAllowed(ctx context.Context, r *relationTuple, restDepth int) checkgroup.CheckFunc {
 	if restDepth < 0 {
 		e.d.Logger().
 			WithField("method", "checkIsAllowed").
@@ -187,20 +187,20 @@ func (e *Engine) checkIsAllowed(ctx context.Context, r *RelationTuple, restDepth
 		Trace("check is allowed")
 
 	g := checkgroup.New(ctx)
-	g.Add(e.checkDirect(ctx, r, restDepth-1))
-	g.Add(e.checkExpandSubject(ctx, r, restDepth))
+	g.Add(e.checkDirect(r, restDepth-1))
+	g.Add(e.checkExpandSubject(r, restDepth))
 
 	relation, err := e.astRelationFor(ctx, r)
 	if err != nil {
 		g.Add(checkgroup.ErrorFunc(err))
-	} else if relation != nil && relation.UsersetRewrite != nil {
-		g.Add(e.checkUsersetRewrite(ctx, r, relation.UsersetRewrite, restDepth))
+	} else if relation != nil && relation.SubjectSetRewrite != nil {
+		g.Add(e.checkSubjectSetRewrite(ctx, r, relation.SubjectSetRewrite, restDepth))
 	}
 
 	return g.CheckFunc()
 }
 
-func (e *Engine) astRelationFor(ctx context.Context, r *RelationTuple) (*ast.Relation, error) {
+func (e *Engine) astRelationFor(ctx context.Context, r *relationTuple) (*ast.Relation, error) {
 	ns, err := e.namespaceFor(ctx, r)
 	if err != nil {
 		// On an unknown namespace the answer should be "not allowed", not "not
@@ -222,7 +222,7 @@ func (e *Engine) astRelationFor(ctx context.Context, r *RelationTuple) (*ast.Rel
 	return nil, errors.New("relation not found")
 }
 
-func (e *Engine) namespaceFor(ctx context.Context, r *RelationTuple) (*namespace.Namespace, error) {
+func (e *Engine) namespaceFor(ctx context.Context, r *relationTuple) (*namespace.Namespace, error) {
 	namespaceManager, err := e.d.Config(ctx).NamespaceManager()
 	if err != nil {
 		return nil, err

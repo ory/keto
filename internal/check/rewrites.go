@@ -27,10 +27,10 @@ func toTreeNodeType(op ast.Operator) ketoapi.TreeNodeType {
 	}
 }
 
-func (e *Engine) checkUsersetRewrite(
+func (e *Engine) checkSubjectSetRewrite(
 	ctx context.Context,
-	tuple *RelationTuple,
-	rewrite *ast.UsersetRewrite,
+	tuple *relationTuple,
+	rewrite *ast.SubjectSetRewrite,
 	restDepth int,
 ) checkgroup.CheckFunc {
 	if restDepth < 0 {
@@ -40,7 +40,7 @@ func (e *Engine) checkUsersetRewrite(
 
 	e.d.Logger().
 		WithField("request", tuple.String()).
-		Trace("check userset rewrite")
+		Trace("check subject-set rewrite")
 
 	var (
 		op     binaryOperator
@@ -58,23 +58,23 @@ func (e *Engine) checkUsersetRewrite(
 	for _, child := range rewrite.Children {
 		switch c := child.(type) {
 
-		case *ast.TupleToUserset:
+		case *ast.TupleToSubjectSet:
 			checks = append(checks, checkgroup.WithEdge(checkgroup.Edge{
 				Tuple: *tuple,
-				Type:  ketoapi.TreeNodeTupeToUserset,
-			}, e.checkTupleToUserset(tuple, c, restDepth)))
+				Type:  ketoapi.TreeNodeTupleToSubjectSet,
+			}, e.checkTupleToSubjectSet(tuple, c, restDepth)))
 
-		case *ast.ComputedUserset:
+		case *ast.ComputedSubjectSet:
 			checks = append(checks, checkgroup.WithEdge(checkgroup.Edge{
 				Tuple: *tuple,
-				Type:  ketoapi.TreeNodeComputedUserset,
-			}, e.checkComputedUserset(ctx, tuple, c, restDepth)))
+				Type:  ketoapi.TreeNodeComputedSubjectSet,
+			}, e.checkComputedSubjectSet(ctx, tuple, c, restDepth)))
 
-		case *ast.UsersetRewrite:
+		case *ast.SubjectSetRewrite:
 			checks = append(checks, checkgroup.WithEdge(checkgroup.Edge{
 				Tuple: *tuple,
 				Type:  toTreeNodeType(c.Operation),
-			}, e.checkUsersetRewrite(ctx, tuple, c, restDepth)))
+			}, e.checkSubjectSetRewrite(ctx, tuple, c, restDepth)))
 
 		case *ast.InvertResult:
 			checks = append(checks, checkgroup.WithEdge(checkgroup.Edge{
@@ -94,7 +94,7 @@ func (e *Engine) checkUsersetRewrite(
 
 func (e *Engine) checkInverted(
 	ctx context.Context,
-	tuple *RelationTuple,
+	tuple *relationTuple,
 	inverted *ast.InvertResult,
 	restDepth int,
 ) checkgroup.CheckFunc {
@@ -111,23 +111,23 @@ func (e *Engine) checkInverted(
 
 	switch c := inverted.Child.(type) {
 
-	case *ast.TupleToUserset:
+	case *ast.TupleToSubjectSet:
 		check = checkgroup.WithEdge(checkgroup.Edge{
 			Tuple: *tuple,
-			Type:  ketoapi.TreeNodeTupeToUserset,
-		}, e.checkTupleToUserset(tuple, c, restDepth))
+			Type:  ketoapi.TreeNodeTupleToSubjectSet,
+		}, e.checkTupleToSubjectSet(tuple, c, restDepth))
 
-	case *ast.ComputedUserset:
+	case *ast.ComputedSubjectSet:
 		check = checkgroup.WithEdge(checkgroup.Edge{
 			Tuple: *tuple,
-			Type:  ketoapi.TreeNodeComputedUserset,
-		}, e.checkComputedUserset(ctx, tuple, c, restDepth))
+			Type:  ketoapi.TreeNodeComputedSubjectSet,
+		}, e.checkComputedSubjectSet(ctx, tuple, c, restDepth))
 
-	case *ast.UsersetRewrite:
+	case *ast.SubjectSetRewrite:
 		check = checkgroup.WithEdge(checkgroup.Edge{
 			Tuple: *tuple,
 			Type:  toTreeNodeType(c.Operation),
-		}, e.checkUsersetRewrite(ctx, tuple, c, restDepth))
+		}, e.checkSubjectSetRewrite(ctx, tuple, c, restDepth))
 
 	case *ast.InvertResult:
 		check = checkgroup.WithEdge(checkgroup.Edge{
@@ -158,16 +158,16 @@ func (e *Engine) checkInverted(
 	}
 }
 
-// checkComputedUserset rewrites the relation tuple to use the userset relation
-// instead of the the relation from the tuple.
+// checkComputedSubjectSet rewrites the relation tuple to use the subject-set relation
+// instead of the relation from the tuple.
 //
 // A relation tuple n:obj#original_rel@user is rewritten to
-// n:obj#userset@user, where the 'userset' relation is taken from the
-// userset.Relation.
-func (e *Engine) checkComputedUserset(
+// n:obj#subject-set@user, where the 'subject-set' relation is taken from the
+// subjectSet.Relation.
+func (e *Engine) checkComputedSubjectSet(
 	ctx context.Context,
-	r *RelationTuple,
-	userset *ast.ComputedUserset,
+	r *relationTuple,
+	subjectSet *ast.ComputedSubjectSet,
 	restDepth int,
 ) checkgroup.CheckFunc {
 	if restDepth < 0 {
@@ -177,34 +177,34 @@ func (e *Engine) checkComputedUserset(
 
 	e.d.Logger().
 		WithField("request", r.String()).
-		WithField("computed userset relation", userset.Relation).
-		Trace("check computed userset")
+		WithField("computed subjectSet relation", subjectSet.Relation).
+		Trace("check computed subjectSet")
 
 	return e.checkIsAllowed(
 		ctx,
-		&RelationTuple{
+		&relationTuple{
 			Namespace: r.Namespace,
 			Object:    r.Object,
-			Relation:  userset.Relation,
+			Relation:  subjectSet.Relation,
 			Subject:   r.Subject,
 		},
 		restDepth,
 	)
 }
 
-// checkTupleToUserset rewrites the relation tuple to use the userset relation.
+// checkTupleToSubjectSet rewrites the relation tuple to use the subject-set relation.
 //
-// Given a relation tuple like docs:readme#editor@user, and a tuple-to-userset
-// rewrite with the relation "parent" and the computed userset relation
+// Given a relation tuple like docs:readme#editor@user, and a tuple-to-subject-set
+// rewrite with the relation "parent" and the computed subject-set relation
 // "owner", the following checks will be performed:
 //
 // * query for all tuples like docs:readme#parent@??? to get a list of subjects
 //   that have the parent relation on docs:readme
 //
 // * For each matching subject, then check if subject#owner@user.
-func (e *Engine) checkTupleToUserset(
-	tuple *RelationTuple,
-	userset *ast.TupleToUserset,
+func (e *Engine) checkTupleToSubjectSet(
+	tuple *relationTuple,
+	subjectSet *ast.TupleToSubjectSet,
 	restDepth int,
 ) checkgroup.CheckFunc {
 	if restDepth < 0 {
@@ -214,24 +214,24 @@ func (e *Engine) checkTupleToUserset(
 
 	e.d.Logger().
 		WithField("request", tuple.String()).
-		WithField("tuple to userset relation", userset.Relation).
-		WithField("tuple to userset computed", userset.ComputedUsersetRelation).
-		Trace("check tuple to userset")
+		WithField("tuple to subject-set relation", subjectSet.Relation).
+		WithField("tuple to subject-set computed", subjectSet.ComputedSubjectSetRelation).
+		Trace("check tuple to subjectSet")
 
 	return func(ctx context.Context, resultCh chan<- checkgroup.Result) {
 		var (
 			prevPage, nextPage string
-			tuples             []*RelationTuple
+			tuples             []*relationTuple
 			err                error
 		)
 		g := checkgroup.New(ctx)
 		for nextPage = "x"; nextPage != "" && !g.Done(); prevPage = nextPage {
 			tuples, nextPage, err = e.d.RelationTupleManager().GetRelationTuples(
 				ctx,
-				&Query{
+				&query{
 					Namespace: &tuple.Namespace,
 					Object:    &tuple.Object,
-					Relation:  &userset.Relation,
+					Relation:  &subjectSet.Relation,
 				},
 				x.WithToken(prevPage))
 			if err != nil {
@@ -240,13 +240,13 @@ func (e *Engine) checkTupleToUserset(
 			}
 
 			for _, t := range tuples {
-				if subjectSet, ok := t.Subject.(*relationtuple.SubjectSet); ok {
+				if subSet, ok := t.Subject.(*relationtuple.SubjectSet); ok {
 					g.Add(e.checkIsAllowed(
 						ctx,
-						&RelationTuple{
-							Namespace: subjectSet.Namespace,
-							Object:    subjectSet.Object,
-							Relation:  userset.ComputedUsersetRelation,
+						&relationTuple{
+							Namespace: subSet.Namespace,
+							Object:    subSet.Object,
+							Relation:  subjectSet.ComputedSubjectSetRelation,
 							Subject:   tuple.Subject,
 						},
 						restDepth-1,

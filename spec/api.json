@@ -24,19 +24,19 @@
             "$ref": "#/components/schemas/relationTuple"
           },
           "type": {
-            "description": "The type of the node.\nunion TreeNodeUnion\nexclusion TreeNodeExclusion\nintersection TreeNodeIntersection\nleaf TreeNodeLeaf\ntuple_to_userset TreeNodeTupeToUserset\ncomputed_userset TreeNodeComputedUserset\nnot TreeNodeNot\nunspecified TreeNodeUnspecified",
+            "description": "The type of the node.\nunion TreeNodeUnion\nexclusion TreeNodeExclusion\nintersection TreeNodeIntersection\nleaf TreeNodeLeaf\ntuple_to_subject_set TreeNodeTupleToSubjectSet\ncomputed_subject_set TreeNodeComputedSubjectSet\nnot TreeNodeNot\nunspecified TreeNodeUnspecified",
             "enum": [
               "union",
               "exclusion",
               "intersection",
               "leaf",
-              "tuple_to_userset",
-              "computed_userset",
+              "tuple_to_subject_set",
+              "computed_subject_set",
               "not",
               "unspecified"
             ],
             "type": "string",
-            "x-go-enum-desc": "union TreeNodeUnion\nexclusion TreeNodeExclusion\nintersection TreeNodeIntersection\nleaf TreeNodeLeaf\ntuple_to_userset TreeNodeTupeToUserset\ncomputed_userset TreeNodeComputedUserset\nnot TreeNodeNot\nunspecified TreeNodeUnspecified"
+            "x-go-enum-desc": "union TreeNodeUnion\nexclusion TreeNodeExclusion\nintersection TreeNodeIntersection\nleaf TreeNodeLeaf\ntuple_to_subject_set TreeNodeTupleToSubjectSet\ncomputed_subject_set TreeNodeComputedSubjectSet\nnot TreeNodeNot\nunspecified TreeNodeUnspecified"
           }
         },
         "required": ["type"],

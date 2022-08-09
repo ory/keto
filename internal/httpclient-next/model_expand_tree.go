@@ -20,7 +20,7 @@ type ExpandTree struct {
 	// The children of the node, possibly none.
 	Children []ExpandTree   `json:"children,omitempty"`
 	Tuple    *RelationTuple `json:"tuple,omitempty"`
-	// The type of the node. union TreeNodeUnion exclusion TreeNodeExclusion intersection TreeNodeIntersection leaf TreeNodeLeaf tuple_to_userset TreeNodeTupeToUserset computed_userset TreeNodeComputedUserset not TreeNodeNot unspecified TreeNodeUnspecified
+	// The type of the node. union TreeNodeUnion exclusion TreeNodeExclusion intersection TreeNodeIntersection leaf TreeNodeLeaf tuple_to_subject_set TreeNodeTupleToSubjectSet computed_subject_set TreeNodeComputedSubjectSet not TreeNodeNot unspecified TreeNodeUnspecified
 	Type string `json:"type"`
 }
 

@@ -4,9 +4,9 @@ import "encoding/json"
 
 type (
 	Relation struct {
-		Name           string          `json:"name"`
-		Types          []RelationType  `json:"types,omitempty"`
-		UsersetRewrite *UsersetRewrite `json:"rewrite,omitempty"`
+		Name              string             `json:"name"`
+		Types             []RelationType     `json:"types,omitempty"`
+		SubjectSetRewrite *SubjectSetRewrite `json:"rewrite,omitempty"`
 	}
 
 	RelationType struct {
@@ -14,27 +14,27 @@ type (
 		Relation  string `json:"relation,omitempty"` // optional
 	}
 
-	UsersetRewrite struct {
+	SubjectSetRewrite struct {
 		Operation Operator `json:"operator"`
-		Children  []Child  `json:"children"`
+		Children  Children `json:"children"`
 	}
 
 	Children = []Child
 
-	// Define interface to restrict the child types of userset rewrites.
+	// Child are all possible types of subject-set rewrites.
 	Child interface {
-		// AsRewrite returns the child as a userset rewrite, as relations
+		// AsRewrite returns the child as a subject-set rewrite, as relations
 		// require a top-level rewrite, even if just one child was parsed.
-		AsRewrite() *UsersetRewrite
+		AsRewrite() *SubjectSetRewrite
 	}
 
-	ComputedUserset struct {
+	ComputedSubjectSet struct {
 		Relation string `json:"relation"`
 	}
 
-	TupleToUserset struct {
-		Relation                string `json:"relation"`
-		ComputedUsersetRelation string `json:"computed_userset_relation"`
+	TupleToSubjectSet struct {
+		Relation                   string `json:"relation"`
+		ComputedSubjectSetRelation string `json:"computed_subject_set_relation"`
 	}
 
 	// InvertResult inverts the check result of the child.
@@ -51,12 +51,18 @@ const (
 	OperatorAnd                 // and
 )
 
-func (o Operator) MarshalJSON() ([]byte, error) {
-	return json.Marshal(o.String())
+func (i Operator) MarshalJSON() ([]byte, error) {
+	return json.Marshal(i.String())
 
 }
 
-func (r *UsersetRewrite) AsRewrite() *UsersetRewrite  { return r }
-func (c *ComputedUserset) AsRewrite() *UsersetRewrite { return &UsersetRewrite{Children: []Child{c}} }
-func (t *TupleToUserset) AsRewrite() *UsersetRewrite  { return &UsersetRewrite{Children: []Child{t}} }
-func (i *InvertResult) AsRewrite() *UsersetRewrite    { return &UsersetRewrite{Children: []Child{i}} }
+func (r *SubjectSetRewrite) AsRewrite() *SubjectSetRewrite { return r }
+func (c *ComputedSubjectSet) AsRewrite() *SubjectSetRewrite {
+	return &SubjectSetRewrite{Children: []Child{c}}
+}
+func (t *TupleToSubjectSet) AsRewrite() *SubjectSetRewrite {
+	return &SubjectSetRewrite{Children: []Child{t}}
+}
+func (i *InvertResult) AsRewrite() *SubjectSetRewrite {
+	return &SubjectSetRewrite{Children: []Child{i}}
+}

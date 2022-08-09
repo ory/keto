@@ -64,15 +64,15 @@ func ErrorFunc(err error) CheckFunc {
 	}
 }
 
-var IsMemberFunc = func(_ context.Context, resultCh chan<- Result) {
+func IsMemberFunc(_ context.Context, resultCh chan<- Result) {
 	resultCh <- Result{Membership: IsMember}
 }
 
-var NotMemberFunc = func(_ context.Context, resultCh chan<- Result) {
+func NotMemberFunc(_ context.Context, resultCh chan<- Result) {
 	resultCh <- Result{Membership: NotMember}
 }
 
-var UnknownMemberFunc = func(_ context.Context, resultCh chan<- Result) {
+func UnknownMemberFunc(_ context.Context, resultCh chan<- Result) {
 	resultCh <- Result{Membership: MembershipUnknown}
 }
 
@@ -84,12 +84,12 @@ func WithEdge(e Edge, f CheckFunc) CheckFunc {
 		select {
 		case result := <-childCh:
 			if result.Tree == nil {
-				result.Tree = &ketoapi.Tree[*relationtuple.RelationTuple]{
+				result.Tree = &tree{
 					Type:  ketoapi.TreeNodeLeaf,
 					Tuple: &e.Tuple,
 				}
 			} else {
-				result.Tree = &ketoapi.Tree[*relationtuple.RelationTuple]{
+				result.Tree = &tree{
 					Type:     e.Type,
 					Tuple:    &e.Tuple,
 					Children: []*tree{result.Tree},

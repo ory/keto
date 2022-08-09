@@ -19,75 +19,70 @@ import (
 
 var namespaces = []*namespace.Namespace{
 	{Name: "doc",
-		ID: 1,
 		Relations: []ast.Relation{
 			{
 				Name: "owner"},
 			{
 				Name: "editor",
-				UsersetRewrite: &ast.UsersetRewrite{
-					Children: ast.Children{&ast.ComputedUserset{
+				SubjectSetRewrite: &ast.SubjectSetRewrite{
+					Children: ast.Children{&ast.ComputedSubjectSet{
 						Relation: "owner"}}}},
 			{
 				Name: "viewer",
-				UsersetRewrite: &ast.UsersetRewrite{
+				SubjectSetRewrite: &ast.SubjectSetRewrite{
 					Children: ast.Children{
-						&ast.ComputedUserset{
+						&ast.ComputedSubjectSet{
 							Relation: "editor"},
-						&ast.TupleToUserset{
-							Relation:                "parent",
-							ComputedUsersetRelation: "viewer"}}}},
+						&ast.TupleToSubjectSet{
+							Relation:                   "parent",
+							ComputedSubjectSetRelation: "viewer"}}}},
 		}},
 	{Name: "group",
-		ID:        2,
 		Relations: []ast.Relation{{Name: "member"}},
 	},
 	{Name: "level",
-		ID:        3,
 		Relations: []ast.Relation{{Name: "member"}},
 	},
 	{Name: "resource",
-		ID: 4,
 		Relations: []ast.Relation{
 			{Name: "level"},
 			{Name: "viewer",
-				UsersetRewrite: &ast.UsersetRewrite{
+				SubjectSetRewrite: &ast.SubjectSetRewrite{
 					Children: ast.Children{
-						&ast.TupleToUserset{Relation: "owner", ComputedUsersetRelation: "member"}}}},
+						&ast.TupleToSubjectSet{Relation: "owner", ComputedSubjectSetRelation: "member"}}}},
 			{Name: "owner",
-				UsersetRewrite: &ast.UsersetRewrite{
+				SubjectSetRewrite: &ast.SubjectSetRewrite{
 					Children: ast.Children{
-						&ast.TupleToUserset{Relation: "owner", ComputedUsersetRelation: "member"}}}},
+						&ast.TupleToSubjectSet{Relation: "owner", ComputedSubjectSetRelation: "member"}}}},
 			{Name: "read",
-				UsersetRewrite: &ast.UsersetRewrite{
+				SubjectSetRewrite: &ast.SubjectSetRewrite{
 					Children: ast.Children{
-						&ast.ComputedUserset{Relation: "viewer"},
-						&ast.ComputedUserset{Relation: "owner"}}}},
+						&ast.ComputedSubjectSet{Relation: "viewer"},
+						&ast.ComputedSubjectSet{Relation: "owner"}}}},
 			{Name: "update",
-				UsersetRewrite: &ast.UsersetRewrite{
+				SubjectSetRewrite: &ast.SubjectSetRewrite{
 					Children: ast.Children{
-						&ast.ComputedUserset{Relation: "owner"}}}},
+						&ast.ComputedSubjectSet{Relation: "owner"}}}},
 			{Name: "delete",
-				UsersetRewrite: &ast.UsersetRewrite{
+				SubjectSetRewrite: &ast.SubjectSetRewrite{
 					Operation: ast.OperatorAnd,
 					Children: ast.Children{
-						&ast.ComputedUserset{Relation: "owner"},
-						&ast.TupleToUserset{
-							Relation:                "level",
-							ComputedUsersetRelation: "member"}}}},
+						&ast.ComputedSubjectSet{Relation: "owner"},
+						&ast.TupleToSubjectSet{
+							Relation:                   "level",
+							ComputedSubjectSetRelation: "member"}}}},
 		}},
 	{Name: "acl",
-		ID: 5,
 		Relations: []ast.Relation{
 			{Name: "allow"},
 			{Name: "deny"},
 			{Name: "access",
-				UsersetRewrite: &ast.UsersetRewrite{
+				SubjectSetRewrite: &ast.SubjectSetRewrite{
 					Operation: ast.OperatorAnd,
 					Children: ast.Children{
-						&ast.ComputedUserset{Relation: "allow"},
+						&ast.ComputedSubjectSet{Relation: "allow"},
 						&ast.InvertResult{
-							Child: &ast.ComputedUserset{Relation: "deny"}}}}}}},
+							Child: &ast.ComputedSubjectSet{Relation: "deny"}}}}}}},
 }
 
 func insertFixtures(t *testing.T, m relationtuple.Manager, tuples []string) {

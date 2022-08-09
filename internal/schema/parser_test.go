@@ -10,7 +10,7 @@ import (
 )
 
 var parserErrorTestCases = []struct{ name, input string }{
-	{"lexer error", "/* unclosed coment"},
+	{"lexer error", "/* unclosed comment"},
 }
 
 var parserTestCases = []struct {
@@ -120,24 +120,24 @@ func FuzzParser(f *testing.F) {
 func Test_simplify(t *testing.T) {
 	testCases := []struct {
 		name            string
-		input, expected *ast.UsersetRewrite
+		input, expected *ast.SubjectSetRewrite
 	}{
 		{"empty", nil, nil},
 		{
 			name: "merge all unions",
-			input: &ast.UsersetRewrite{
+			input: &ast.SubjectSetRewrite{
 				Operation: ast.OperatorOr,
 				Children: ast.Children{
-					&ast.ComputedUserset{Relation: "A"},
-					&ast.UsersetRewrite{
+					&ast.ComputedSubjectSet{Relation: "A"},
+					&ast.SubjectSetRewrite{
 						Children: ast.Children{
-							&ast.ComputedUserset{Relation: "B"},
-							&ast.UsersetRewrite{
+							&ast.ComputedSubjectSet{Relation: "B"},
+							&ast.SubjectSetRewrite{
 								Children: ast.Children{
-									&ast.ComputedUserset{Relation: "C"},
-									&ast.UsersetRewrite{
+									&ast.ComputedSubjectSet{Relation: "C"},
+									&ast.SubjectSetRewrite{
 										Children: ast.Children{
-											&ast.ComputedUserset{Relation: "D"},
+											&ast.ComputedSubjectSet{Relation: "D"},
 										},
 									},
 								},
@@ -146,12 +146,12 @@ func Test_simplify(t *testing.T) {
 					},
 				},
 			},
-			expected: &ast.UsersetRewrite{
+			expected: &ast.SubjectSetRewrite{
 				Children: ast.Children{
-					&ast.ComputedUserset{Relation: "A"},
-					&ast.ComputedUserset{Relation: "B"},
-					&ast.ComputedUserset{Relation: "C"},
-					&ast.ComputedUserset{Relation: "D"},
+					&ast.ComputedSubjectSet{Relation: "A"},
+					&ast.ComputedSubjectSet{Relation: "B"},
+					&ast.ComputedSubjectSet{Relation: "C"},
+					&ast.ComputedSubjectSet{Relation: "D"},
 				},
 			},
 		},
