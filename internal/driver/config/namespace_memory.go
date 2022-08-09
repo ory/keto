@@ -3,6 +3,7 @@ package config
 import (
 	"context"
 	"reflect"
+	"sync"
 
 	"github.com/ory/herodot"
 	"github.com/pkg/errors"
@@ -11,35 +12,37 @@ import (
 )
 
 type (
-	memoryNamespaceManager []*namespace.Namespace
+	memoryNamespaceManager struct {
+		byName map[string]*namespace.Namespace
+		sync.RWMutex
+	}
 )
 
 var _ namespace.Manager = &memoryNamespaceManager{}
 
 func NewMemoryNamespaceManager(nn ...*namespace.Namespace) *memoryNamespaceManager {
-	nm := make(memoryNamespaceManager, len(nn))
-
-	for i, np := range nn {
-		n := *np
-		nm[i] = &n
-	}
-
-	return &nm
+	s := &memoryNamespaceManager{}
+	s.set(nn)
+	return s
 }
 
 func (s *memoryNamespaceManager) GetNamespaceByName(_ context.Context, name string) (*namespace.Namespace, error) {
-	for _, n := range *s {
-		if n.Name == name {
-			return n, nil
-		}
+	s.RLock()
+	defer s.RUnlock()
+
+	if n, ok := s.byName[name]; ok {
+		return n, nil
 	}
 
 	return nil, errors.WithStack(herodot.ErrNotFound.WithReasonf("Unknown namespace with name %q.", name))
 }
 
 func (s *memoryNamespaceManager) GetNamespaceByConfigID(_ context.Context, id int32) (*namespace.Namespace, error) {
-	for _, n := range *s {
-		if n.ID == id {
+	s.RLock()
+	defer s.RUnlock()
+
+	for _, n := range s.byName {
+		if n.ID == id { // nolint ignore deprecated method
 			return n, nil
 		}
 	}
@@ -48,16 +51,32 @@ func (s *memoryNamespaceManager) GetNamespaceByConfigID(_ context.Context, id in
 }
 
 func (s *memoryNamespaceManager) Namespaces(_ context.Context) ([]*namespace.Namespace, error) {
-	nn := make([]*namespace.Namespace, 0, len(*s))
+	s.RLock()
+	defer s.RUnlock()
 
-	for _, n := range *s {
-		nc := *n
-		nn = append(nn, &nc)
+	nn := make([]*namespace.Namespace, 0, len(s.byName))
+	for _, n := range s.byName {
+		nn = append(nn, n)
 	}
 
 	return nn, nil
 }
 
 func (s *memoryNamespaceManager) ShouldReload(newValue interface{}) bool {
-	return !reflect.DeepEqual(newValue, []*namespace.Namespace(*s))
+	s.RLock()
+	defer s.RUnlock()
+
+	nn, _ := s.Namespaces(context.Background())
+
+	return !reflect.DeepEqual(newValue, nn)
+}
+
+func (s *memoryNamespaceManager) set(nn []*namespace.Namespace) {
+	s.Lock()
+	defer s.Unlock()
+
+	s.byName = make(map[string]*namespace.Namespace, len(nn))
+	for _, n := range nn {
+		s.byName[n.Name] = n
+	}
 }

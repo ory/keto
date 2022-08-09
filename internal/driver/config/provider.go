@@ -114,12 +114,12 @@ func (k *Config) watcher(_ watcherx.Event, err error) {
 		return
 	}
 
-	nn, err := k.getNamespaces()
+	nnCfg, err := k.namespaceConfig()
 	if err != nil {
 		k.l.WithError(err).Error("could not get namespaces from config")
 		return
 	}
-	if nm.ShouldReload(nn) {
+	if nm.ShouldReload(nnCfg.value()) {
 		k.resetNamespaceManager()
 	}
 }
@@ -138,7 +138,7 @@ func (k *Config) resetNamespaceManager() {
 	k.nm, k.cancelNamespaceManager = nil, nil
 }
 
-func (k *Config) Set(key string, v interface{}) error {
+func (k *Config) Set(key string, v any) error {
 	if err := k.p.Set(key, v); err != nil {
 		return err
 	}
@@ -212,36 +212,83 @@ func (k *Config) NamespaceManager() (namespace.Manager, error) {
 		var ctx context.Context
 		ctx, k.cancelNamespaceManager = context.WithCancel(k.ctx)
 
-		nn, err := k.getNamespaces()
+		nnCfg, err := k.namespaceConfig()
 		if err != nil {
 			return nil, err
 		}
 
-		switch nTyped := nn.(type) {
-		case string:
-			var err error
-			k.nm, err = NewNamespaceWatcher(ctx, k.l, nTyped)
-			if err != nil {
-				return nil, err
-			}
-		case []*namespace.Namespace:
-			k.nm = NewMemoryNamespaceManager(nTyped...)
-		default:
-			return nil, errors.WithStack(herodot.ErrInternalServerError.WithReasonf("got unexpected namespaces type %T", nn))
+		k.nm, err = nnCfg.newManager()(ctx, k.l)
+		if err != nil {
+			return nil, err
 		}
 	}
 
 	return k.nm, nil
 }
 
-// getNamespaces returns string or []*namespace.Namespace
-func (k *Config) getNamespaces() (interface{}, error) {
+type (
+	buildNamespaceFn func(context.Context, *logrusx.Logger) (namespace.Manager, error)
+
+	namespaceConfig interface {
+		// newManager builds a new namespace manager.
+		newManager() buildNamespaceFn
+		// value returns the wrapped value (for comparing if we should reload)
+		value() any
+	}
+
+	legacyURINamespaceConfig string
+	literalNamespaceConfig   []*namespace.Namespace
+	oplNamespaceConfig       map[string]any
+)
+
+func (uri legacyURINamespaceConfig) newManager() buildNamespaceFn {
+	return func(ctx context.Context, l *logrusx.Logger) (namespace.Manager, error) {
+		return NewNamespaceWatcher(ctx, l, string(uri))
+	}
+}
+func (uri legacyURINamespaceConfig) value() any {
+	return string(uri)
+}
+
+func (namespaces literalNamespaceConfig) newManager() buildNamespaceFn {
+	return func(ctx context.Context, l *logrusx.Logger) (namespace.Manager, error) {
+		return NewMemoryNamespaceManager(namespaces...), nil
+	}
+}
+func (namespaces literalNamespaceConfig) value() any {
+	return []*namespace.Namespace(namespaces)
+}
+
+func (oplConfig oplNamespaceConfig) newManager() buildNamespaceFn {
+	return func(ctx context.Context, l *logrusx.Logger) (namespace.Manager, error) {
+		entry, ok := oplConfig["location"]
+		if !ok {
+			return nil, errors.New("location key not found")
+		}
+		target, ok := entry.(string)
+		if !ok {
+			return nil, fmt.Errorf("config value must be string, was %T", entry)
+		}
+		return newOPLConfigWatcher(ctx, l, target)
+	}
+}
+func (oplConfig oplNamespaceConfig) value() any {
+	return map[string]any(oplConfig)
+}
+
+// namespaceConfig returns a namespace config, which can be either a URI (in
+// which case we want to watch that URI), or a literal list of namespaces (in
+// which case we just load them into memory), or a list of URIs referencing OPL
+// definitions (in which case we want to watch each URI and parse the content).
+func (k *Config) namespaceConfig() (namespaceConfig, error) {
 	switch nTyped := k.p.GetF(KeyNamespaces, "file://./keto_namespaces").(type) {
 	case string:
-		return nTyped, nil
+		return legacyURINamespaceConfig(nTyped), nil
+
 	case []*namespace.Namespace:
-		return nTyped, nil
-	case []interface{}:
+		return literalNamespaceConfig(nTyped), nil
+
+	case []any:
 		nEnc, err := json.Marshal(nTyped)
 		if err != nil {
 			return nil, errors.WithStack(err)
@@ -252,8 +299,11 @@ func (k *Config) getNamespaces() (interface{}, error) {
 		if err := json.Unmarshal(nEnc, &nn); err != nil {
 			return nil, errors.WithStack(err)
 		}
+		return literalNamespaceConfig(nn), nil
 
-		return nn, nil
+	case map[string]any:
+		return oplNamespaceConfig(nTyped), nil
+
 	default:
 		return nil, errors.WithStack(herodot.ErrInternalServerError.WithReasonf("could not infer namespaces for type %T", nTyped))
 	}

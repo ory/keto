@@ -29,7 +29,7 @@
         }
       },
       "additionalProperties": false,
-      "required": ["name", "id"]
+      "required": ["name"]
     },
     "tlsxSource": {
       "type": "object",
@@ -287,16 +287,35 @@
       "default": "file://./keto_namespaces",
       "oneOf": [
         {
-          "title": "Namespace Repo URI",
-          "description": "URI that points to a directory of namespace files, a single file with all namespaces, or a websocket connection that provides former via `github.com/ory/x/watcherx.WatchAndServeWS`",
+          "title": "Legacy namespace Repo URI",
+          "description": "A URI that points to a directory of namespace files, a single file with all namespaces, or a websocket connection that provides former via `github.com/ory/x/watcherx.WatchAndServeWS`",
           "type": "string",
           "format": "uri"
         },
         {
           "type": "array",
+          "title": "Legacy namespace configuration",
           "items": {
             "$ref": "#/definitions/namespace"
           }
+        },
+        {
+          "type": "object",
+          "title": "Namespace configuration",
+          "properties": {
+            "location": {
+              "type": "string",
+              "title": "Ory Permission Language config file URI",
+              "description": "A URI that points to a directory of namespace files, a single file with all namespaces, or a websocket connection that provides former via `github.com/ory/x/watcherx.WatchAndServeWS`",
+              "format": "uri",
+              "examples": [
+                "file://./keto_namespaces.ts",
+                "file:///etc/configs/keto_namespaces.ts",
+                "ws://my.websocket.server/keto_namespaces.ts"
+              ]
+            }
+          },
+          "required": ["location"]
         }
       ]
     },

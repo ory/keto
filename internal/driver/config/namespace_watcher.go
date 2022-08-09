@@ -36,129 +36,172 @@ type (
 	NamespaceWatcher struct {
 		sync.RWMutex
 		namespaces map[string]*NamespaceFile
-		ec         watcherx.EventChannel
-		l          *logrusx.Logger
+		logger     *logrusx.Logger
 		target     string
-		w          watcherx.Watcher
+	}
+
+	eventHandler interface {
+		handleRemove(*watcherx.RemoveEvent)
+		handleChange(*watcherx.ChangeEvent)
+		handleError(*watcherx.ErrorEvent)
 	}
 )
 
 var _ namespace.Manager = (*NamespaceWatcher)(nil)
 
 func NewNamespaceWatcher(ctx context.Context, l *logrusx.Logger, target string) (*NamespaceWatcher, error) {
-	u, err := urlx.Parse(target)
-	if err != nil {
-		return nil, errors.WithStack(err)
-	}
-
 	nw := NamespaceWatcher{
-		ec:         make(watcherx.EventChannel),
-		l:          l,
+		logger:     l,
 		target:     target,
 		namespaces: make(map[string]*NamespaceFile),
 	}
 
-	info, err := os.Stat(u.Path)
-	if err != nil {
-		return nil, errors.WithStack(err)
-	}
+	return &nw, watchTarget(ctx, target, &nw, l)
+}
 
-	if info.IsDir() {
-		nw.w, err = watcherx.WatchDirectory(ctx, u.Path, nw.ec)
+func (nw *NamespaceWatcher) handleRemove(e *watcherx.RemoveEvent) {
+	nw.Lock()
+	defer nw.Unlock()
+
+	delete(nw.namespaces, e.Source())
+}
+
+func (nw *NamespaceWatcher) handleChange(e *watcherx.ChangeEvent) {
+	// the lock is acquired before parsing to ensure that the getters are
+	// waiting for the updated values
+	nw.Lock()
+	defer nw.Unlock()
+
+	n := nw.readNamespaceFile(e.Reader(), e.Source())
+	if n == nil {
+		return
+	} else if n.namespace == nil {
+		// parse failed, rolling back to previous working version
+		if existing, ok := nw.namespaces[e.Source()]; ok {
+			existing.Contents = n.Contents
+		} else {
+			nw.namespaces[e.Source()] = n
+		}
 	} else {
-		nw.w, err = watcherx.Watch(ctx, u, nw.ec)
+		nw.namespaces[e.Source()] = n
+	}
+}
+
+func (nw *NamespaceWatcher) handleError(e *watcherx.ErrorEvent) {
+	nw.logger.
+		WithError(e).
+		Errorf("Received error while watching namespace files at target %s.", nw.target)
+}
+
+func watchTarget(ctx context.Context, target string, handler eventHandler, log *logrusx.Logger) error {
+	var (
+		eventCh = make(watcherx.EventChannel)
+		watcher watcherx.Watcher
+	)
+
+	targetUrl, err := urlx.Parse(target)
+	if err != nil {
+		return errors.WithStack(err)
+	}
+	info, err := os.Stat(targetUrl.Path)
+	if err != nil {
+		return errors.WithStack(err)
+	}
+	if info.IsDir() {
+		watcher, err = watcherx.WatchDirectory(ctx, targetUrl.Path, eventCh)
+	} else {
+		watcher, err = watcherx.Watch(ctx, targetUrl, eventCh)
 	}
 	// this handles the watcher init error
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	// trigger initial load
-	done, err := nw.w.DispatchNow()
+	done, err := watcher.DispatchNow()
 	if err != nil {
-		return nil, errors.WithStack(err)
+		return errors.WithStack(err)
 	}
 
 	initialEventsProcessed := make(chan struct{})
-	go eventHandler(ctx, &nw, done, initialEventsProcessed)
+	go startEventHandler(ctx, eventCh, handler, done, initialEventsProcessed, log)
 
 	// wait for initial load to be done
 	<-initialEventsProcessed
 
-	return &nw, nil
+	return nil
 }
 
-func eventHandler(ctx context.Context, nw *NamespaceWatcher, done <-chan int, initialEventsProcessed chan<- struct{}) {
+func startEventHandler(ctx context.Context,
+	eventCh watcherx.EventChannel,
+	handler eventHandler,
+	done <-chan int,
+	initialEventsProcessed chan<- struct{},
+	log *logrusx.Logger) {
+
 	initalDone := false
 	for {
 		select {
-		// because we use an unbuffered chan we can be sure that at least all initial events are handled
+		// because we use an unbuffered chan we can be sure that at least all
+		// initial events are handled
 		case <-done:
 			initalDone = true
 			close(initialEventsProcessed)
+
 		case <-ctx.Done():
 			return
-		case e, open := <-nw.ec:
+
+		case e, open := <-eventCh:
 			if !open {
 				return
 			}
 
 			if initalDone {
-				nw.l.WithField("file", e.Source()).WithField("event_type", fmt.Sprintf("%T", e)).Info("A change to a namespace file was detected.")
+				log.
+					WithField("file", e.Source()).
+					WithField("event_type", fmt.Sprintf("%T", e)).
+					Info("A change to a namespace file was detected.")
 			}
 
-			switch etyped := e.(type) {
+			switch e := e.(type) {
 			case *watcherx.RemoveEvent:
-				func() {
-					nw.Lock()
-					defer nw.Unlock()
-
-					delete(nw.namespaces, e.Source())
-				}()
+				handler.handleRemove(e)
 			case *watcherx.ChangeEvent:
-				// the lock is acquired before parsing to ensure that the getters are waiting for the updated values
-				func() {
-					nw.Lock()
-					defer nw.Unlock()
-
-					n := readNamespaceFile(nw.l, e.Reader(), e.Source())
-					if n == nil {
-						return
-					} else if n.namespace == nil {
-						// parse failed, rolling back to previous working version
-						if existing, ok := nw.namespaces[e.Source()]; ok {
-							existing.Contents = n.Contents
-						} else {
-							nw.namespaces[e.Source()] = n
-						}
-					} else {
-						nw.namespaces[e.Source()] = n
-					}
-				}()
+				handler.handleChange(e)
 			case *watcherx.ErrorEvent:
-				nw.l.WithError(etyped).Errorf("Received error while watching namespace files at target %s.", nw.target)
+				handler.handleError(e)
+			default:
+				log.Warnf("Ignored unknown event %T", e)
 			}
 		}
 	}
 }
 
-func readNamespaceFile(l *logrusx.Logger, r io.Reader, source string) *NamespaceFile {
-	var parse Parser
+func (nw *NamespaceWatcher) readNamespaceFile(r io.Reader, source string) *NamespaceFile {
 	parse, err := GetParser(source)
 	if err != nil {
-		l.WithError(err).WithField("file_name", source).Warn("could not infer format from file extension")
+		nw.logger.
+			WithError(err).
+			WithField("file_name", source).
+			Warn("could not infer format from file extension")
 		return nil
 	}
 
 	raw, err := ioutil.ReadAll(r)
 	if err != nil {
-		l.WithError(errors.WithStack(err)).WithField("file_name", source).Error("could not read namespace file")
+		nw.logger.
+			WithError(errors.WithStack(err)).
+			WithField("file_name", source).
+			Error("could not read namespace file")
 		return nil
 	}
 
 	n := namespace.Namespace{}
 	if err := parse(raw, &n); err != nil {
-		l.WithError(errors.WithStack(err)).WithField("file_name", source).Error("could not parse namespace file")
+		nw.logger.
+			WithError(errors.WithStack(err)).
+			WithField("file_name", source).
+			Error("could not parse namespace file")
 		return &NamespaceFile{Name: source, Contents: raw, Parser: parse}
 	}
 
@@ -175,7 +218,8 @@ func (n *NamespaceWatcher) GetNamespaceByName(_ context.Context, name string) (*
 		}
 	}
 
-	return nil, errors.WithStack(herodot.ErrNotFound.WithErrorf("Unknown namespace with name %s", name))
+	return nil, errors.WithStack(herodot.ErrNotFound.WithErrorf(
+		"Unknown namespace with name %s", name))
 }
 
 func (n *NamespaceWatcher) GetNamespaceByConfigID(_ context.Context, id int32) (*namespace.Namespace, error) {
@@ -183,12 +227,13 @@ func (n *NamespaceWatcher) GetNamespaceByConfigID(_ context.Context, id int32) (
 	defer n.RUnlock()
 
 	for _, nspace := range n.namespaces {
-		if nspace.namespace.ID == id {
+		if nspace.namespace.ID == id { // nolint ignore deprecated ID
 			return nspace.namespace, nil
 		}
 	}
 
-	return nil, errors.WithStack(herodot.ErrNotFound.WithErrorf("Unknown namespace with ID %d", id))
+	return nil, errors.WithStack(herodot.ErrNotFound.WithErrorf(
+		"Unknown namespace with ID %d", id))
 }
 
 func (n *NamespaceWatcher) Namespaces(_ context.Context) ([]*namespace.Namespace, error) {
