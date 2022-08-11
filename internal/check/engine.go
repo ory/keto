@@ -121,7 +121,7 @@ func (e *Engine) checkExpandSubject(r *relationTuple, restDepth int) checkgroup.
 					continue
 				}
 				subjectSet, ok := s.Subject.(*relationtuple.SubjectSet)
-				if !ok || subjectSet.Relation == WildcardRelation || subjectSet.Relation == "" {
+				if !ok || subjectSet.Relation == "" {
 					continue
 				}
 				g.Add(e.checkIsAllowed(
@@ -209,7 +209,7 @@ func (e *Engine) checkIsAllowed(ctx context.Context, r *relationTuple, restDepth
 func (e *Engine) astRelationFor(ctx context.Context, r *relationTuple) (*ast.Relation, error) {
 	// Special case: If the relationTuple's relation is empty, then it is not an
 	// error that the relation was not found.
-	if r.Relation == WildcardRelation || r.Relation == "" {
+	if r.Relation == "" {
 		return nil, nil
 	}
 

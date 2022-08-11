@@ -2,7 +2,9 @@ package check
 
 import (
 	"fmt"
+	"strings"
 
+	"github.com/ory/keto/ketoapi"
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 
 	"github.com/ory/keto/internal/check"
@@ -43,12 +45,20 @@ func newCheckCmd() *cobra.Command {
 			}
 
 			cl := rts.NewCheckServiceClient(conn)
+
+			sub, err := parseSubject(args[0])
+			if err != nil {
+				_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not parse subject %q: %s\n", args[0], err)
+				return err
+			}
 			resp, err := cl.Check(cmd.Context(), &rts.CheckRequest{
-				Subject:   rts.NewSubjectID(args[0]),
-				Relation:  args[1],
-				Namespace: args[2],
-				Object:    args[3],
-				MaxDepth:  maxDepth,
+				Tuple: &rts.RelationTuple{
+					Namespace: args[2],
+					Object:    args[3],
+					Relation:  args[1],
+					Subject:   sub,
+				},
+				MaxDepth: maxDepth,
 			})
 			if err != nil {
 				_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not make request: %s\n", err)
@@ -69,4 +79,16 @@ func newCheckCmd() *cobra.Command {
 
 func RegisterCommandsRecursive(parent *cobra.Command) {
 	parent.AddCommand(newCheckCmd())
+}
+
+func parseSubject(s string) (*rts.Subject, error) {
+	if strings.Contains(s, ":") {
+		su, err := (&ketoapi.SubjectSet{}).FromString(s)
+		if err != nil {
+			return nil, err
+		}
+
+		return rts.NewSubjectSet(su.Namespace, su.Object, su.Relation), nil
+	}
+	return rts.NewSubjectID(s), nil
 }

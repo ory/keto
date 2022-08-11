@@ -116,21 +116,37 @@ func TestEngine(t *testing.T) {
 	})
 
 	t.Run("direct inclusion", func(t *testing.T) {
-		rel := relationtuple.RelationTuple{
-			Relation:  "access",
-			Object:    uuid.Must(uuid.NewV4()),
-			Namespace: t.Name(),
-			Subject:   &relationtuple.SubjectID{ID: uuid.Must(uuid.NewV4())},
+		reg := newDepsProvider(t, []*namespace.Namespace{{Name: "n"}, {Name: "u"}})
+		tuples := []string{
+			`n:o#r@subject_id`,
+			`n:o#r@u:with_relation#r`,
+			`n:o#r@u:empty_relation#`,
+			`n:o#r@u:missing_relation`,
 		}
 
-		reg := newDepsProvider(t, []*namespace.Namespace{{Name: rel.Namespace}})
-		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(ctx, &rel))
-
+		insertFixtures(t, reg.RelationTupleManager(), tuples)
 		e := check.NewEngine(reg)
 
-		res, err := e.CheckIsMember(ctx, &rel, 0)
-		require.NoError(t, err)
-		assert.True(t, res)
+		cases := []struct {
+			tuple string
+		}{
+			{tuple: "n:o#r@subject_id"},
+			{tuple: "n:o#r@u:with_relation#r"},
+
+			{tuple: "n:o#r@u:empty_relation"},
+			{tuple: "n:o#r@u:empty_relation#"},
+
+			{tuple: "n:o#r@u:missing_relation"},
+			{tuple: "n:o#r@u:missing_relation#"},
+		}
+
+		for _, tc := range cases {
+			t.Run("case="+tc.tuple, func(t *testing.T) {
+				res, err := e.CheckIsMember(ctx, tupleFromString(t, tc.tuple), 0)
+				require.NoError(t, err)
+				assert.True(t, res)
+			})
+		}
 	})
 
 	t.Run("indirect inclusion level 1", func(t *testing.T) {

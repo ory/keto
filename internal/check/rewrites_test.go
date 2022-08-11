@@ -104,15 +104,17 @@ func TestUsersetRewrites(t *testing.T) {
 	reg.Logger().Logger.SetLevel(logrus.TraceLevel)
 
 	insertFixtures(t, reg.RelationTupleManager(), []string{
-		"doc:document#owner@users:user#...",       // user owns doc
-		"doc:doc_in_folder#parent@doc:folder#...", // doc_in_folder is in folder
-		"doc:folder#owner@users:user#...",         // user owns folder
+		"doc:document#owner@plain_user",       // user owns doc
+		"doc:document#owner@users:user",       // user owns doc
+		"doc:doc_in_folder#parent@doc:folder", // doc_in_folder is in folder
+		"doc:folder#owner@plain_user",         // user owns folder
+		"doc:folder#owner@users:user",         // user owns folder
 
 		// Folder hierarchy folder_a -> folder_b -> folder_c -> file
 		// and folder_a is owned by user. Then user should have access to file.
-		"doc:file#parent@doc:folder_c#",
-		"doc:folder_c#parent@doc:folder_b#",
-		"doc:folder_b#parent@doc:folder_a#",
+		"doc:file#parent@doc:folder_c",
+		"doc:folder_c#parent@doc:folder_b",
+		"doc:folder_b#parent@doc:folder_a",
 		"doc:folder_a#owner@user",
 
 		"group:editors#member@mark",
@@ -140,31 +142,32 @@ func TestUsersetRewrites(t *testing.T) {
 		},
 	}, {
 		// userset rewrite
-		query: "doc:document#editor@users:user#...",
+		query: "doc:document#editor@users:user",
 		expected: checkgroup.Result{
 			Membership: checkgroup.IsMember,
 		},
 	}, {
+		// userset rewrite
+		query:    "doc:document#editor@plain_user",
+		expected: checkgroup.ResultIsMember,
+	}, {
 		// transitive userset rewrite
-		query: "doc:document#viewer@users:user#",
-		// expected: checkgroup.ResultIsMember,
-		expected: checkgroup.Result{
-			Membership: checkgroup.IsMember,
-		},
+		query:    "doc:document#viewer@users:user",
+		expected: checkgroup.ResultIsMember,
 	}, {
 		query:    "doc:document#editor@nobody",
 		expected: checkgroup.ResultNotMember,
 	}, {
-		query: "doc:folder#viewer@user",
-		expected: checkgroup.Result{
-			Membership: checkgroup.IsMember,
-		},
+		query:    "doc:folder#viewer@users:user",
+		expected: checkgroup.ResultIsMember,
 	}, {
 		// tuple to userset
-		query: "doc:doc_in_folder#viewer@user",
-		expected: checkgroup.Result{
-			Membership: checkgroup.IsMember,
-		},
+		query:    "doc:doc_in_folder#viewer@users:user",
+		expected: checkgroup.ResultIsMember,
+	}, {
+		// tuple to userset
+		query:    "doc:doc_in_folder#viewer@plain_user",
+		expected: checkgroup.ResultIsMember,
 	}, {
 		// tuple to userset
 		query:    "doc:doc_in_folder#viewer@nobody",
