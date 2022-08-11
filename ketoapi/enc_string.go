@@ -25,13 +25,7 @@ func (r *RelationTuple) String() string {
 	if r.SubjectID != nil {
 		sb.WriteString(*r.SubjectID)
 	} else if r.SubjectSet != nil {
-		sb.WriteRune('(')
-		sb.WriteString(r.SubjectSet.Namespace)
-		sb.WriteRune(':')
-		sb.WriteString(r.SubjectSet.Object)
-		sb.WriteRune('#')
-		sb.WriteString(r.SubjectSet.Relation)
-		sb.WriteRune(')')
+		sb.WriteString(r.SubjectSet.String())
 	} else {
 		sb.WriteString("<ERROR: no subject>")
 	}
@@ -59,7 +53,7 @@ func (r *RelationTuple) FromString(s string) (*RelationTuple, error) {
 
 	// remove optional brackets around the subject set
 	subject = strings.Trim(subject, "()")
-	if strings.Contains(subject, "#") {
+	if strings.Contains(subject, ":") {
 		subSet, err := (&SubjectSet{}).FromString(subject)
 		if err != nil {
 			return nil, err
@@ -73,14 +67,16 @@ func (r *RelationTuple) FromString(s string) (*RelationTuple, error) {
 }
 
 func (s *SubjectSet) String() string {
+	if s.Relation == "" {
+		return fmt.Sprintf("%s:%s", s.Namespace, s.Object)
+	}
 	return fmt.Sprintf("%s:%s#%s", s.Namespace, s.Object, s.Relation)
 }
 
 func (s *SubjectSet) FromString(str string) (*SubjectSet, error) {
-	namespaceAndObject, relation, ok := strings.Cut(str, "#")
-	if !ok {
-		return nil, errors.WithStack(ErrMalformedInput.WithDebug("expected subject set to contain '#'"))
-	}
+	// If there is no '#' we have a subject set without a relation, such as
+	// Users:Bob, which just means that the relation is empty.
+	namespaceAndObject, relation, _ := strings.Cut(str, "#")
 
 	namespace, object, ok := strings.Cut(namespaceAndObject, ":")
 	if !ok {

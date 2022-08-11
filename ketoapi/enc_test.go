@@ -16,16 +16,40 @@ import (
 
 func TestRelationTuple(t *testing.T) {
 	t.Run("method=string encoding", func(t *testing.T) {
-		assert.Equal(t, "n:o#r@s", (&RelationTuple{
-			Namespace: "n",
-			Object:    "o",
-			Relation:  "r",
-			SubjectID: x.Ptr("s"),
-		}).String())
+		for _, tc := range []struct {
+			tuple    *RelationTuple
+			expected string
+		}{
+			{ // full tuple
+				tuple: &RelationTuple{
+					Namespace: "n",
+					Object:    "o",
+					Relation:  "r",
+					SubjectID: x.Ptr("s"),
+				},
+				expected: "n:o#r@s",
+			},
+			{ // skip '#' in subject set when relation is empty
+				tuple: &RelationTuple{
+					Namespace: "groups",
+					Object:    "dev",
+					Relation:  "member",
+					SubjectSet: &SubjectSet{
+						Namespace: "users",
+						Object:    "user",
+					},
+				},
+				expected: "groups:dev#member@users:user",
+			},
+		} {
+			t.Run("case="+tc.expected, func(t *testing.T) {
+				assert.Equal(t, tc.expected, tc.tuple.String())
+			})
+		}
 	})
 
 	t.Run("method=string decoding", func(t *testing.T) {
-		for i, tc := range []struct {
+		for _, tc := range []struct {
 			enc      string
 			err      error
 			expected *RelationTuple
@@ -49,6 +73,43 @@ func TestRelationTuple(t *testing.T) {
 						Namespace: "n",
 						Object:    "o",
 						Relation:  "r",
+					},
+				},
+			},
+			{
+				enc: "n:o#r@n:o#...",
+				expected: &RelationTuple{
+					Namespace: "n",
+					Object:    "o",
+					Relation:  "r",
+					SubjectSet: &SubjectSet{
+						Namespace: "n",
+						Object:    "o",
+						Relation:  "...",
+					},
+				},
+			},
+			{
+				enc: "n:o#r@n:o#",
+				expected: &RelationTuple{
+					Namespace: "n",
+					Object:    "o",
+					Relation:  "r",
+					SubjectSet: &SubjectSet{
+						Namespace: "n",
+						Object:    "o",
+					},
+				},
+			},
+			{
+				enc: "n:o#r@n:o",
+				expected: &RelationTuple{
+					Namespace: "n",
+					Object:    "o",
+					Relation:  "r",
+					SubjectSet: &SubjectSet{
+						Namespace: "n",
+						Object:    "o",
 					},
 				},
 			},
@@ -91,7 +152,7 @@ func TestRelationTuple(t *testing.T) {
 				err: ErrMalformedInput,
 			},
 		} {
-			t.Run(fmt.Sprintf("case=%d", i), func(t *testing.T) {
+			t.Run(fmt.Sprintf("string=%s", tc.enc), func(t *testing.T) {
 				actual, err := (&RelationTuple{}).FromString(tc.enc)
 				assert.True(t, errors.Is(err, tc.err), "%+v", err)
 				assert.Equal(t, tc.expected, actual)
