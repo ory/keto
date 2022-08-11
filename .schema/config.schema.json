@@ -312,6 +312,14 @@
           "description": "The global maximum depth on all read operations. Note that this does not affect how deeply nested the tuples can be. This value can be decreased for a request by a value specified on the request, only if the request-specific value is greater than 1 and less than the global maximum depth.",
           "minimum": 1,
           "maximum": 65535
+        },
+        "max_parallel_checks": {
+          "type": "integer",
+          "default": 100,
+          "title": "Global maximum number of parallel checks",
+          "description": "This is the maximum number of checks that can be in flight in parallel.",
+          "minimum": 1,
+          "maximum": 65535
         }
       },
       "additionalProperties": false

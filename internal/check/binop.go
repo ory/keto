@@ -21,8 +21,10 @@ func or(ctx context.Context, checks []checkgroup.CheckFunc) checkgroup.Result {
 	childCtx, cancelFn := context.WithCancel(ctx)
 	defer cancelFn()
 
+	pool := checkgroup.PoolFromContext(ctx)
 	for _, check := range checks {
-		go check(childCtx, resultCh)
+		check := check
+		pool.Add(func() { check(childCtx, resultCh) })
 	}
 
 	for i := 0; i < len(checks); i++ {
@@ -49,8 +51,10 @@ func and(ctx context.Context, checks []checkgroup.CheckFunc) checkgroup.Result {
 	childCtx, cancelFn := context.WithCancel(ctx)
 	defer cancelFn()
 
+	pool := checkgroup.PoolFromContext(ctx)
 	for _, check := range checks {
-		go check(childCtx, resultCh)
+		check := check
+		pool.Add(func() { check(childCtx, resultCh) })
 	}
 
 	tree := &ketoapi.Tree[*relationtuple.RelationTuple]{

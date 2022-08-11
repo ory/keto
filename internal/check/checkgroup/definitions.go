@@ -11,12 +11,37 @@ import (
 
 type (
 	Checkgroup interface {
+		// Done returns true if a result is available.
 		Done() bool
+
+		// Add adds the CheckFunc to the checkgroup and starts running it.
 		Add(check CheckFunc)
+
+		// SetIsMember makes the checkgroup emit "IsMember" directly.
 		SetIsMember()
+
+		// Result returns the result, possibly blocking.
 		Result() Result
+
+		// CheckFunc returns a CheckFunc that writes the result to the result
+		// channel.
 		CheckFunc() CheckFunc
 	}
+
+	Pool interface {
+		// Add adds the function to the pool and schedules it. The function will
+		// only be run if there is a free worker available in the pool, thus
+		// limiting the concurrent workloads in flight.
+		Add(check func())
+	}
+
+	workerPool struct {
+		ctx        context.Context
+		numWorkers int
+		jobs       chan func()
+	}
+
+	limitlessPool struct{}
 
 	Factory = func(ctx context.Context) Checkgroup
 

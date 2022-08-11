@@ -12,6 +12,10 @@ type concurrentCheckgroup struct {
 	// ctx.Err()}.
 	ctx context.Context
 
+	// pool is the worker pool (or nil if we want unbounded parallel checks),
+	// derived from the context.
+	pool Pool
+
 	// subcheckCtx is the context used for the subchecks.
 	subcheckCtx context.Context
 
@@ -40,6 +44,7 @@ type concurrentCheckgroup struct {
 func NewConcurrent(ctx context.Context) Checkgroup {
 	g := &concurrentCheckgroup{
 		ctx:        ctx,
+		pool:       PoolFromContext(ctx),
 		finalizeCh: make(chan struct{}),
 		doneCh:     make(chan struct{}),
 		addCheckCh: make(chan CheckFunc),
@@ -84,7 +89,7 @@ func (g *concurrentCheckgroup) startConsumer() {
 						continue
 					}
 					totalChecks++
-					go f(g.subcheckCtx, subcheckCh)
+					g.pool.Add(func() { f(g.subcheckCtx, subcheckCh) })
 
 				case <-g.finalizeCh:
 					if finalizing {

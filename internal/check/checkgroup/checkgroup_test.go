@@ -2,6 +2,7 @@ package checkgroup_test
 
 import (
 	"context"
+	"fmt"
 	"testing"
 	"time"
 
@@ -90,27 +91,35 @@ func TestCheckgroup_cancels_all_other_subchecks(t *testing.T) {
 func TestCheckgroup_returns_first_successful_is_member(t *testing.T) {
 	t.Parallel()
 
-	ctx := context.Background()
+	for i := 1; i < 5; i++ {
+		t.Run(fmt.Sprintf("workers=%d", i), func(t *testing.T) {
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+			ctx = checkgroup.WithPool(ctx, checkgroup.NewPool(
+				checkgroup.WithWorkers(i),
+				checkgroup.WithContext(ctx)))
 
-	g := checkgroup.New(ctx)
-	g.Add(checkgroup.NotMemberFunc)
-	g.Add(checkgroup.NotMemberFunc)
-	time.Sleep(1 * time.Millisecond)
+			g := checkgroup.New(ctx)
+			g.Add(checkgroup.NotMemberFunc)
+			g.Add(checkgroup.NotMemberFunc)
+			time.Sleep(1 * time.Millisecond)
 
-	assert.False(t, g.Done())
+			assert.False(t, g.Done())
 
-	g.Add(func(_ context.Context, resultCh chan<- checkgroup.Result) {
-		resultCh <- checkgroup.ResultIsMember
-	})
+			g.Add(func(_ context.Context, resultCh chan<- checkgroup.Result) {
+				resultCh <- checkgroup.ResultIsMember
+			})
 
-	resultCh := make(chan checkgroup.Result)
-	go g.CheckFunc()(ctx, resultCh)
+			resultCh := make(chan checkgroup.Result)
+			go g.CheckFunc()(ctx, resultCh)
 
-	assert.Equal(t, checkgroup.ResultIsMember, g.Result())
-	assert.Equal(t, checkgroup.ResultIsMember, g.Result())
-	assert.Equal(t, checkgroup.ResultIsMember, g.Result())
-	assert.Equal(t, checkgroup.ResultIsMember, <-resultCh)
-	assert.True(t, g.Done())
+			assert.Equal(t, checkgroup.ResultIsMember, g.Result())
+			assert.Equal(t, checkgroup.ResultIsMember, g.Result())
+			assert.Equal(t, checkgroup.ResultIsMember, g.Result())
+			assert.Equal(t, checkgroup.ResultIsMember, <-resultCh)
+			assert.True(t, g.Done())
+		})
+	}
 }
 
 func TestCheckgroup_returns_immediately_if_nothing_to_check(t *testing.T) {

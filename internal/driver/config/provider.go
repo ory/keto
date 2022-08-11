@@ -25,9 +25,10 @@ import (
 const (
 	KeyDSN = "dsn"
 
-	KeyLimitMaxReadDepth = "limit.max_read_depth"
-	KeyReadAPIHost       = "serve.read.host"
-	KeyReadAPIPort       = "serve.read.port"
+	KeyLimitMaxReadDepth      = "limit.max_read_depth"
+	KeyLimitMaxParallelChecks = "limit.max_parallel_checks"
+	KeyReadAPIHost            = "serve.read.host"
+	KeyReadAPIPort            = "serve.read.port"
 
 	KeyWriteAPIHost = "serve.write.host"
 	KeyWriteAPIPort = "serve.write.port"
@@ -159,6 +160,10 @@ func (k *Config) ReadAPIListenOn() string {
 
 func (k *Config) MaxReadDepth() int {
 	return k.p.Int(KeyLimitMaxReadDepth)
+}
+
+func (k *Config) MaxParallelChecks() int {
+	return k.p.Int(KeyLimitMaxParallelChecks)
 }
 
 func (k *Config) WriteAPIListenOn() string {
