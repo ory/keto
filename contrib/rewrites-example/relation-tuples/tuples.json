@@ -1,0 +1,72 @@
+[
+  {
+    "namespace": "Group",
+    "object": "developer",
+    "relation": "members",
+    "subject_id": "patrik"
+  },
+  {
+    "namespace": "Group",
+    "object": "developer",
+    "relation": "members",
+    "subject_set": {
+      "namespace": "User",
+      "object": "Patrik"
+    }
+  },
+  {
+    "namespace": "Group",
+    "object": "developer",
+    "relation": "members",
+    "subject_set": {
+      "namespace": "User",
+      "object": "Henning"
+    }
+  },
+  {
+    "namespace": "Folder",
+    "object": "keto/",
+    "relation": "viewers",
+    "subject_set": {
+      "namespace": "Group",
+      "object": "developer",
+      "relation": "members"
+    }
+  },
+  {
+    "namespace": "File",
+    "object": "keto/README.md",
+    "relation": "parents",
+    "subject_set": {
+      "namespace": "Folder",
+      "object": "keto/"
+    }
+  },
+  {
+    "namespace": "Folder",
+    "object": "keto/src/",
+    "relation": "parents",
+    "subject_set": {
+      "namespace": "Folder",
+      "object": "keto/"
+    }
+  },
+  {
+    "namespace": "File",
+    "object": "keto/src/main.go",
+    "relation": "parents",
+    "subject_set": {
+      "namespace": "Folder",
+      "object": "keto/src/"
+    }
+  },
+  {
+    "namespace": "File",
+    "object": "private",
+    "relation": "owners",
+    "subject_set": {
+      "namespace": "User",
+      "object": "Henning"
+    }
+  }
+]

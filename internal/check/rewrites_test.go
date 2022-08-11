@@ -103,22 +103,22 @@ func TestUsersetRewrites(t *testing.T) {
 	reg.Logger().Logger.SetLevel(logrus.TraceLevel)
 
 	insertFixtures(t, reg.RelationTupleManager(), []string{
-		"doc:document#owner@user",                 // user owns doc
-		"doc:doc_in_folder#parent@doc:folder#...", // doc_in_folder is in folder
-		"doc:folder#owner@user",                   // user owns folder
+		"doc:document#owner@user",              // user owns doc
+		"doc:doc_in_folder#parent@doc:folder#", // doc_in_folder is in folder
+		"doc:folder#owner@user",                // user owns folder
 
 		// Folder hierarchy folder_a -> folder_b -> folder_c -> file
 		// and folder_a is owned by user. Then user should have access to file.
-		"doc:file#parent@doc:folder_c#...",
-		"doc:folder_c#parent@doc:folder_b#...",
-		"doc:folder_b#parent@doc:folder_a#...",
+		"doc:file#parent@doc:folder_c#",
+		"doc:folder_c#parent@doc:folder_b#",
+		"doc:folder_b#parent@doc:folder_a#",
 		"doc:folder_a#owner@user",
 
 		"group:editors#member@mark",
 		"level:superadmin#member@mark",
 		"level:superadmin#member@sandy",
-		"resource:topsecret#owner@group:editors#...",
-		"resource:topsecret#level@level:superadmin#...",
+		"resource:topsecret#owner@group:editors#",
+		"resource:topsecret#level@level:superadmin#",
 		"resource:topsecret#owner@mike",
 
 		"acl:document#allow@alice",
