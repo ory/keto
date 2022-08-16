@@ -62,7 +62,7 @@ func NewDefaultRegistry(ctx context.Context, flags *pflag.FlagSet, withoutNetwor
 	return r, nil
 }
 
-func NewSqliteTestRegistry(t *testing.T, debugOnDisk bool) *RegistryDefault {
+func NewSqliteTestRegistry(t testing.TB, debugOnDisk bool) *RegistryDefault {
 	mode := dbx.SQLiteMemory
 	if debugOnDisk {
 		mode = dbx.SQLiteDebug
@@ -70,15 +70,15 @@ func NewSqliteTestRegistry(t *testing.T, debugOnDisk bool) *RegistryDefault {
 	return NewTestRegistry(t, dbx.GetSqlite(t, mode))
 }
 
-type newRegistryOption func(t *testing.T, r *RegistryDefault)
+type newRegistryOption func(t testing.TB, r *RegistryDefault)
 
 func WithNamespaces(namespaces []*namespace.Namespace) newRegistryOption {
-	return func(t *testing.T, r *RegistryDefault) {
+	return func(t testing.TB, r *RegistryDefault) {
 		require.NoError(t, r.c.Set(config.KeyNamespaces, namespaces))
 	}
 }
 
-func NewTestRegistry(t *testing.T, dsn *dbx.DsnT, opts ...newRegistryOption) *RegistryDefault {
+func NewTestRegistry(t testing.TB, dsn *dbx.DsnT, opts ...newRegistryOption) *RegistryDefault {
 	l := logrusx.New("Ory Keto", "testing")
 	ctx, cancel := context.WithCancel(context.Background())
 	t.Cleanup(cancel)

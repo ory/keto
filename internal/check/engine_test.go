@@ -27,7 +27,7 @@ type deps struct {
 	loggerProvider
 }
 
-func newDepsProvider(t *testing.T, namespaces []*namespace.Namespace, pageOpts ...x.PaginationOptionSetter) *deps {
+func newDepsProvider(t testing.TB, namespaces []*namespace.Namespace, pageOpts ...x.PaginationOptionSetter) *deps {
 	reg := driver.NewSqliteTestRegistry(t, false)
 	require.NoError(t, reg.Config(context.Background()).Set(config.KeyNamespaces, namespaces))
 	mr := relationtuple.NewManagerWrapper(t, reg, pageOpts...)
@@ -43,7 +43,7 @@ func toUUID(s string) uuid.UUID {
 	return uuid.NewV5(uuid.Nil, s)
 }
 
-func tupleFromString(t *testing.T, s string) *relationtuple.RelationTuple {
+func tupleFromString(t testing.TB, s string) *relationtuple.RelationTuple {
 	rt, err := ketoapi.FromString(s)
 	require.NoError(t, err)
 	result := &relationtuple.RelationTuple{

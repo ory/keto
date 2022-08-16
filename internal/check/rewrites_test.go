@@ -85,7 +85,7 @@ var namespaces = []*namespace.Namespace{
 							Child: &ast.ComputedSubjectSet{Relation: "deny"}}}}}}},
 }
 
-func insertFixtures(t *testing.T, m relationtuple.Manager, tuples []string) {
+func insertFixtures(t testing.TB, m relationtuple.Manager, tuples []string) {
 	t.Helper()
 	relationTuples := make([]*relationtuple.RelationTuple, len(tuples))
 	var err error
@@ -99,8 +99,6 @@ func insertFixtures(t *testing.T, m relationtuple.Manager, tuples []string) {
 type path []string
 
 func TestUsersetRewrites(t *testing.T) {
-	ctx := context.Background()
-
 	reg := newDepsProvider(t, namespaces)
 	reg.Logger().Logger.SetLevel(logrus.TraceLevel)
 
@@ -128,8 +126,6 @@ func TestUsersetRewrites(t *testing.T) {
 		"acl:document#allow@mallory",
 		"acl:document#deny@mallory",
 	})
-
-	e := check.NewEngine(reg)
 
 	testCases := []struct {
 		query         string
@@ -218,24 +214,44 @@ func TestUsersetRewrites(t *testing.T) {
 		expected: checkgroup.ResultNotMember, // mallory is also on deny-list
 	}}
 
-	for _, tc := range testCases {
-		t.Run(tc.query, func(t *testing.T) {
-			defer goleak.VerifyNone(t, goleak.IgnoreCurrent())
+	t.Run("suite=testcases", func(t *testing.T) {
+		ctx := context.Background()
+		e := check.NewEngine(reg)
+		defer goleak.VerifyNone(t, goleak.IgnoreCurrent())
 
-			rt := tupleFromString(t, tc.query)
+		for _, tc := range testCases {
+			t.Run("case="+tc.query, func(t *testing.T) {
+				rt := tupleFromString(t, tc.query)
 
-			res := e.CheckRelationTuple(ctx, rt, 100)
-			require.NoError(t, res.Err)
-			t.Logf("tree:\n%s", res.Tree)
-			assert.Equal(t, tc.expected.Membership.String(), res.Membership.String())
+				res := e.CheckRelationTuple(ctx, rt, 100)
+				require.NoError(t, res.Err)
+				t.Logf("tree:\n%s", res.Tree)
+				assert.Equal(t, tc.expected.Membership, res.Membership)
 
-			if len(tc.expectedPaths) > 0 {
-				for _, path := range tc.expectedPaths {
-					assertPath(t, path, res.Tree)
+				if len(tc.expectedPaths) > 0 {
+					for _, path := range tc.expectedPaths {
+						assertPath(t, path, res.Tree)
+					}
 				}
-			}
-		})
-	}
+			})
+		}
+	})
+
+	t.Run("suite=one worker", func(t *testing.T) {
+		ctx, cancel := context.WithCancel(context.Background())
+		defer cancel()
+
+		e := check.NewEngine(reg, check.WithPool(
+			checkgroup.NewPool(
+				checkgroup.WithContext(ctx),
+				checkgroup.WithWorkers(1),
+			)))
+
+		rt := tupleFromString(t, "doc:file#viewer@user")
+		res := e.CheckRelationTuple(ctx, rt, 100)
+		require.NoError(t, res.Err)
+		assert.Equal(t, checkgroup.ResultIsMember.Membership, res.Membership)
+	})
 }
 
 // assertPath asserts that the given path can be found in the tree.

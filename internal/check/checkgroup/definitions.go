@@ -33,6 +33,10 @@ type (
 		// only be run if there is a free worker available in the pool, thus
 		// limiting the concurrent workloads in flight.
 		Add(check func())
+
+		// TryAdd tries to add the check function if the pool has capacity.
+		// Otherwise, it returns false and does not add the check.
+		TryAdd(check func()) bool
 	}
 
 	workerPool struct {

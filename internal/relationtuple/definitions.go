@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"sync"
-	"testing"
 
 	"github.com/gofrs/uuid"
 
@@ -134,7 +133,7 @@ var (
 	_ ManagerProvider = (*ManagerWrapper)(nil)
 )
 
-func NewManagerWrapper(_ *testing.T, reg ManagerProvider, options ...x.PaginationOptionSetter) *ManagerWrapper {
+func NewManagerWrapper(_ any, reg ManagerProvider, options ...x.PaginationOptionSetter) *ManagerWrapper {
 	return &ManagerWrapper{
 		Reg:      reg,
 		PageOpts: options,

@@ -12,10 +12,6 @@ type concurrentCheckgroup struct {
 	// ctx.Err()}.
 	ctx context.Context
 
-	// pool is the worker pool (or nil if we want unbounded parallel checks),
-	// derived from the context.
-	pool Pool
-
 	// subcheckCtx is the context used for the subchecks.
 	subcheckCtx context.Context
 
@@ -39,15 +35,19 @@ type concurrentCheckgroup struct {
 	// result is only written once by the consumer, and  can only be read after
 	// the doneCh channel is closed.
 	result Result
+
+	// reading from reserveCheckCh reserves the right to create a concurrent
+	// check.
+	reserveCheckCh chan struct{}
 }
 
 func NewConcurrent(ctx context.Context) Checkgroup {
 	g := &concurrentCheckgroup{
-		ctx:        ctx,
-		pool:       PoolFromContext(ctx),
-		finalizeCh: make(chan struct{}),
-		doneCh:     make(chan struct{}),
-		addCheckCh: make(chan CheckFunc),
+		ctx:            ctx,
+		finalizeCh:     make(chan struct{}),
+		doneCh:         make(chan struct{}),
+		addCheckCh:     make(chan CheckFunc),
+		reserveCheckCh: make(chan struct{}, 1),
 	}
 	g.subcheckCtx, g.cancel = context.WithCancel(g.ctx)
 	g.startConsumer()
@@ -64,7 +64,7 @@ func (g *concurrentCheckgroup) startConsumer() {
 	g.startConsumerOnce.Do(func() {
 		go func() {
 			var (
-				subcheckCh     = make(chan Result, 1)
+				resultCh       = make(chan Result, 1)
 				totalChecks    = 0
 				finishedChecks = 0
 				finalizing     = false
@@ -79,22 +79,26 @@ func (g *concurrentCheckgroup) startConsumer() {
 			// `context.Canceled`), but we still want to receive these results
 			// so that there are no dangling goroutines.
 			defer func() {
-				go receiveRemaining(subcheckCh, totalChecks-finishedChecks)
+				go receiveRemaining(resultCh, totalChecks-finishedChecks)
 			}()
+
+			// Start with one reservation available.
+			g.reserveCheckCh <- struct{}{}
 
 			for {
 				select {
-				case f := <-g.addCheckCh:
+				case check := <-g.addCheckCh:
 					if finalizing {
 						continue
 					}
 					totalChecks++
-					g.pool.Add(func() { f(g.subcheckCtx, subcheckCh) })
+					go check(g.subcheckCtx, resultCh)
 
 				case <-g.finalizeCh:
 					if finalizing {
-						// we're already finalizing
-						// we don't want to accidentally set the result to ResultNotMember on a second finalize request
+						// we're already finalizing, so we don't want to
+						// accidentally set the result to ResultNotMember on a
+						// second finalize request
 						continue
 					}
 					finalizing = true
@@ -103,7 +107,7 @@ func (g *concurrentCheckgroup) startConsumer() {
 						return
 					}
 
-				case result := <-subcheckCh:
+				case result := <-resultCh:
 					finishedChecks++
 					if result.Err != nil || result.Membership == IsMember {
 						g.result = result
@@ -113,6 +117,12 @@ func (g *concurrentCheckgroup) startConsumer() {
 					if finalizing && finishedChecks == totalChecks {
 						g.result = ResultNotMember
 						return
+					}
+
+					// ready for a new check
+					select {
+					case g.reserveCheckCh <- struct{}{}:
+					default:
 					}
 
 				case <-g.subcheckCtx.Done():
@@ -136,7 +146,11 @@ func (g *concurrentCheckgroup) Done() bool {
 // Add adds the CheckFunc to the checkgroup and starts running it.
 func (g *concurrentCheckgroup) Add(check CheckFunc) {
 	select {
-	case g.addCheckCh <- check:
+	case <-g.reserveCheckCh:
+		select {
+		case g.addCheckCh <- check:
+		case <-g.subcheckCtx.Done():
+		}
 	case <-g.subcheckCtx.Done():
 	}
 }
@@ -146,9 +160,10 @@ func (g *concurrentCheckgroup) SetIsMember() {
 	g.Add(IsMemberFunc)
 }
 
-// tryFinalize tries to set the group state to finalize, i.e, signal the consumer that the result
-// was requested and that no more checks will be added. If the consumer is
-// already done, finalizing is not necessary anymore. This should never block.
+// tryFinalize tries to set the group state to finalize, i.e, signal the
+// consumer that the result was requested and that no more checks will be added.
+// If the consumer is already done, finalizing is not necessary anymore. This
+// should never block.
 func (g *concurrentCheckgroup) tryFinalize() {
 	select {
 	case g.finalizeCh <- struct{}{}:

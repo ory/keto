@@ -2,6 +2,7 @@ package check
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/ory/herodot"
 	"github.com/pkg/errors"
@@ -30,6 +31,8 @@ type (
 		x.LoggerProvider
 	}
 
+	EngineOpt func(*Engine)
+
 	// Type aliases for shorter signatures
 	relationTuple = relationtuple.RelationTuple
 	query         = relationtuple.RelationQuery
@@ -37,13 +40,17 @@ type (
 
 const WildcardRelation = "..."
 
-func NewEngine(d EngineDependencies) *Engine {
-	return &Engine{
-		d: d,
-		pool: checkgroup.NewPool(
-			checkgroup.WithWorkers(d.Config(context.Background()).MaxParallelChecks()),
-		),
+func WithPool(p checkgroup.Pool) EngineOpt {
+	return func(e *Engine) { e.pool = p }
+}
+
+func NewEngine(d EngineDependencies, opts ...EngineOpt) *Engine {
+	e := &Engine{d: d}
+	for _, opt := range opts {
+		opt(e)
 	}
+
+	return e
 }
 
 // CheckIsMember checks if the relation tuple's subject has the relation on the
@@ -225,7 +232,7 @@ func (e *Engine) astRelationFor(ctx context.Context, r *relationTuple) (*ast.Rel
 			return &rel, nil
 		}
 	}
-	return nil, errors.New("relation not found")
+	return nil, fmt.Errorf("relation %q not found", r.Relation)
 }
 
 func (e *Engine) namespaceFor(ctx context.Context, r *relationTuple) (*namespace.Namespace, error) {

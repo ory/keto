@@ -45,10 +45,10 @@ func TestCheckgroup_cancels(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	g := checkgroup.New(ctx)
 	g.Add(neverFinishesCheckFunc)
-	g.Add(neverFinishesCheckFunc)
-	g.Add(neverFinishesCheckFunc)
-	g.Add(neverFinishesCheckFunc)
-	g.Add(neverFinishesCheckFunc)
+	go g.Add(neverFinishesCheckFunc)
+	go g.Add(neverFinishesCheckFunc)
+	go g.Add(neverFinishesCheckFunc)
+	go g.Add(neverFinishesCheckFunc)
 	cancel()
 	assert.Equal(t, checkgroup.Result{Err: context.Canceled}, g.Result())
 }
@@ -60,7 +60,7 @@ func TestCheckgroup_reports_first_result(t *testing.T) {
 	defer cancel()
 
 	g := checkgroup.New(ctx)
-	g.Add(neverFinishesCheckFunc)
+	g.Add(notMemberAfterDelayFunc(1 * time.Microsecond))
 	g.Add(checkgroup.IsMemberFunc)
 	assert.Equal(t, checkgroup.Result{Membership: checkgroup.IsMember}, g.Result())
 }
@@ -68,23 +68,27 @@ func TestCheckgroup_reports_first_result(t *testing.T) {
 func TestCheckgroup_cancels_all_other_subchecks(t *testing.T) {
 	t.Parallel()
 
-	wasCancelled := make(chan bool)
+	wasCalled := false
+	wasCancelled := false
 	var mockCheckFn = func(ctx context.Context, resultCh chan<- checkgroup.Result) {
+		wasCalled = true
 		<-ctx.Done()
-		wasCancelled <- true
+		wasCancelled = true
 		resultCh <- checkgroup.Result{Err: ctx.Err()}
 	}
 
 	ctx := context.Background()
 
 	g := checkgroup.New(ctx)
-	g.Add(mockCheckFn)
-	g.Add(neverFinishesCheckFunc)
+	g.Add(notMemberAfterDelayFunc(1 * time.Microsecond))
 	g.Add(checkgroup.IsMemberFunc)
+	go g.Add(mockCheckFn)
 	result := g.Result()
 
 	assert.Equal(t, checkgroup.ResultIsMember, result)
-	assert.True(t, <-wasCancelled)
+	if wasCalled {
+		assert.True(t, wasCancelled)
+	}
 	assert.True(t, g.Done())
 }
 
@@ -143,9 +147,6 @@ func TestCheckgroup_has_no_leaks(t *testing.T) {
 				checkgroup.UnknownMemberFunc,
 				isMemberAfterDelayFunc(5 * time.Millisecond),
 				notMemberAfterDelayFunc(1 * time.Millisecond),
-				neverFinishesCheckFunc,
-				neverFinishesCheckFunc,
-				neverFinishesCheckFunc,
 			},
 			expected: checkgroup.ResultIsMember,
 		},
@@ -158,9 +159,6 @@ func TestCheckgroup_has_no_leaks(t *testing.T) {
 				checkgroup.UnknownMemberFunc,
 				isMemberAfterDelayFunc(5 * time.Millisecond),
 				notMemberAfterDelayFunc(1 * time.Millisecond),
-				neverFinishesCheckFunc,
-				neverFinishesCheckFunc,
-				neverFinishesCheckFunc,
 			},
 			expected: checkgroup.ResultIsMember,
 		},

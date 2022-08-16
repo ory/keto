@@ -9,7 +9,8 @@ type (
 
 const poolCtxKey ctxKey = "pool"
 
-// WithPool returns a new context that contains the pool. The pool will be used by the checkgroup and the binary operators (or, and) when spawning subchecks.
+// WithPool returns a new context that contains the pool. The pool will be used
+// by the checkgroup and the binary operators (or, and) when spawning subchecks.
 func WithPool(ctx context.Context, pool Pool) context.Context {
 	return context.WithValue(ctx, poolCtxKey, pool)
 }
@@ -70,7 +71,21 @@ func (p *workerPool) Add(check func()) {
 	p.jobs <- check
 }
 
+func (p *workerPool) TryAdd(check func()) bool {
+	select {
+	case p.jobs <- check:
+		return true
+	default:
+		return false
+	}
+}
+
 // Add on a limitless pool just runs the function in a go routine.
 func (p *limitlessPool) Add(check func()) {
 	go check()
+}
+
+func (p *limitlessPool) TryAdd(check func()) bool {
+	p.Add(check)
+	return true
 }
