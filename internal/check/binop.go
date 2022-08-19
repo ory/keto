@@ -17,15 +17,10 @@ func or(ctx context.Context, checks []checkgroup.CheckFunc) checkgroup.Result {
 		return checkgroup.ResultNotMember
 	}
 
-	resultCh := make(chan checkgroup.Result, len(checks))
-	childCtx, cancelFn := context.WithCancel(ctx)
-	defer cancelFn()
+	resultCh := make(chan checkgroup.Result, 1)
 
 	for _, check := range checks {
-		go check(childCtx, resultCh)
-	}
-
-	for i := 0; i < len(checks); i++ {
+		check(ctx, resultCh)
 		select {
 		case result := <-resultCh:
 			// We return either the first error or the first success.
@@ -45,20 +40,15 @@ func and(ctx context.Context, checks []checkgroup.CheckFunc) checkgroup.Result {
 		return checkgroup.ResultNotMember
 	}
 
-	resultCh := make(chan checkgroup.Result, len(checks))
-	childCtx, cancelFn := context.WithCancel(ctx)
-	defer cancelFn()
-
-	for _, check := range checks {
-		go check(childCtx, resultCh)
-	}
+	resultCh := make(chan checkgroup.Result, 1)
 
 	tree := &ketoapi.Tree[*relationtuple.RelationTuple]{
 		Type:     ketoapi.TreeNodeIntersection,
 		Children: []*ketoapi.Tree[*relationtuple.RelationTuple]{},
 	}
 
-	for i := 0; i < len(checks); i++ {
+	for _, check := range checks {
+		check(ctx, resultCh)
 		select {
 		case result := <-resultCh:
 			// We return fast on either an error or if a subcheck returns "not a

@@ -22,8 +22,7 @@ type (
 		PermissionEngine() *Engine
 	}
 	Engine struct {
-		d    EngineDependencies
-		pool checkgroup.Pool
+		d EngineDependencies
 	}
 	EngineDependencies interface {
 		relationtuple.ManagerProvider
@@ -39,10 +38,6 @@ type (
 )
 
 const WildcardRelation = "..."
-
-func WithPool(p checkgroup.Pool) EngineOpt {
-	return func(e *Engine) { e.pool = p }
-}
 
 func NewEngine(d EngineDependencies, opts ...EngineOpt) *Engine {
 	e := &Engine{d: d}
@@ -73,8 +68,6 @@ func (e *Engine) CheckRelationTuple(ctx context.Context, r *relationTuple, restD
 	if globalMaxDepth := e.d.Config(ctx).MaxReadDepth(); restDepth <= 0 || globalMaxDepth < restDepth {
 		restDepth = globalMaxDepth
 	}
-
-	ctx = checkgroup.WithPool(ctx, e.pool)
 
 	resultCh := make(chan checkgroup.Result)
 	go e.checkIsAllowed(ctx, r, restDepth)(ctx, resultCh)

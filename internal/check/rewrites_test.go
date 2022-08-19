@@ -241,11 +241,13 @@ func TestUsersetRewrites(t *testing.T) {
 		ctx, cancel := context.WithCancel(context.Background())
 		defer cancel()
 
-		e := check.NewEngine(reg, check.WithPool(
-			checkgroup.NewPool(
-				checkgroup.WithContext(ctx),
-				checkgroup.WithWorkers(1),
-			)))
+		e := check.NewEngine(reg)
+		// Currently we always only use one worker.
+		//check.WithPool(
+		//checkgroup.NewPool(
+		//	checkgroup.WithContext(ctx),
+		//	checkgroup.WithWorkers(1),
+		//)),
 
 		rt := tupleFromString(t, "doc:file#viewer@user")
 		res := e.CheckRelationTuple(ctx, rt, 100)

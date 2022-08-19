@@ -94,14 +94,15 @@ func TestCheckgroup_cancels_all_other_subchecks(t *testing.T) {
 
 func TestCheckgroup_returns_first_successful_is_member(t *testing.T) {
 	t.Parallel()
+	t.Skip("there is always just one worker right now")
 
 	for i := 1; i < 5; i++ {
 		t.Run(fmt.Sprintf("workers=%d", i), func(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
-			ctx = checkgroup.WithPool(ctx, checkgroup.NewPool(
-				checkgroup.WithWorkers(i),
-				checkgroup.WithContext(ctx)))
+			//ctx = checkgroup.WithPool(ctx, checkgroup.NewPool(
+			//	checkgroup.WithWorkers(i),
+			//	checkgroup.WithContext(ctx)))
 
 			g := checkgroup.New(ctx)
 			g.Add(checkgroup.NotMemberFunc)

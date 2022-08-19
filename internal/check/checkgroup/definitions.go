@@ -39,14 +39,6 @@ type (
 		TryAdd(check func()) bool
 	}
 
-	workerPool struct {
-		ctx        context.Context
-		numWorkers int
-		jobs       chan func()
-	}
-
-	limitlessPool struct{}
-
 	Factory = func(ctx context.Context) Checkgroup
 
 	CheckFunc = func(ctx context.Context, resultCh chan<- Result)
