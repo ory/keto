@@ -1,7 +1,7 @@
 SHELL=/bin/bash -o pipefail
 
-export PATH := .bin/gobin:.bin/brew/bin:.bin/brew/sbin:${PATH}
 export PWD := $(shell pwd)
+export PATH := ${PWD}/.bin/gobin:${PWD}/.bin/brew/bin:${PWD}/.bin/brew/sbin:${PATH}
 
 GO_DEPENDENCIES = golang.org/x/tools/cmd/goimports \
 				  github.com/mattn/goveralls \
@@ -12,8 +12,6 @@ GO_DEPENDENCIES = golang.org/x/tools/cmd/goimports \
 				  github.com/pseudomuto/protoc-gen-doc/cmd/protoc-gen-doc \
 				  github.com/josephburnett/jd \
 				  github.com/mikefarah/yq/v4 \
-				  github.com/ory/cli \
-				  github.com/anchore/grype \
 				  golang.org/x/tools/cmd/stringer \
 				  github.com/mdempsky/go114-fuzz-build
 
@@ -158,5 +156,5 @@ post-release: tools/yq
 		cat docker-compose-postgres.yml | yq '.services.keto-migrate.image = "oryd/keto:'$$DOCKER_TAG'"' | sponge docker-compose-postgres.yml
 
 .PHONY: generate
-generate: .bin/swagger .bin/stringer
-		PATH=$(PWD)/.bin:${PATH} go generate ./...
+generate: tools/stringer
+		go generate ./...
