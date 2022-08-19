@@ -3,6 +3,7 @@ package client
 import (
 	"context"
 	"fmt"
+	"net"
 	"os"
 	"strings"
 	"time"
@@ -12,6 +13,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/credentials/insecure"
 )
 
@@ -62,7 +64,20 @@ func Conn(ctx context.Context, remote string) (*grpc.ClientConn, error) {
 
 	ctx, cancel := context.WithTimeout(ctx, timeout)
 	defer cancel()
-	return grpc.DialContext(ctx, remote, grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithBlock(), grpc.WithDisableHealthCheck())
+	return grpc.DialContext(ctx, remote,
+		grpc.WithTransportCredentials(transportCredentials(remote)),
+		grpc.WithBlock(),
+		grpc.WithDisableHealthCheck())
+}
+
+func transportCredentials(remote string) credentials.TransportCredentials {
+	host, _, err := net.SplitHostPort(remote)
+	if err == nil && (host == "127.0.0.1" || host == "localhost") {
+		return insecure.NewCredentials()
+	}
+
+	// Defaults to the default host root CA bundle
+	return credentials.NewTLS(nil)
 }
 
 func RegisterRemoteURLFlags(flags *pflag.FlagSet) {
