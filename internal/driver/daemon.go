@@ -384,11 +384,19 @@ func (r *RegistryDefault) streamInterceptors(ctx context.Context) []grpc.StreamS
 	return is
 }
 
-func (r *RegistryDefault) ReadGRPCServer(ctx context.Context) *grpc.Server {
-	s := grpc.NewServer(
+func (r *RegistryDefault) newGrpcServer(ctx context.Context) *grpc.Server {
+	opts := []grpc.ServerOption{
 		grpc.ChainStreamInterceptor(r.streamInterceptors(ctx)...),
 		grpc.ChainUnaryInterceptor(r.unaryInterceptors(ctx)...),
-	)
+	}
+	if r.grpcTransportCredentials != nil {
+		opts = append(opts, grpc.Creds(r.grpcTransportCredentials))
+	}
+	return grpc.NewServer(opts...)
+}
+
+func (r *RegistryDefault) ReadGRPCServer(ctx context.Context) *grpc.Server {
+	s := r.newGrpcServer(ctx)
 
 	grpcHealthV1.RegisterHealthServer(s, r.HealthServer())
 	rts.RegisterVersionServiceServer(s, r)
@@ -402,10 +410,7 @@ func (r *RegistryDefault) ReadGRPCServer(ctx context.Context) *grpc.Server {
 }
 
 func (r *RegistryDefault) WriteGRPCServer(ctx context.Context) *grpc.Server {
-	s := grpc.NewServer(
-		grpc.ChainStreamInterceptor(r.streamInterceptors(ctx)...),
-		grpc.ChainUnaryInterceptor(r.unaryInterceptors(ctx)...),
-	)
+	s := r.newGrpcServer(ctx)
 
 	grpcHealthV1.RegisterHealthServer(s, r.HealthServer())
 	rts.RegisterVersionServiceServer(s, r)

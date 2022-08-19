@@ -18,6 +18,7 @@ import (
 	prometheus "github.com/ory/x/prometheusx"
 	"github.com/pkg/errors"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/health"
 
 	"github.com/ory/keto/internal/check"
@@ -68,6 +69,7 @@ type (
 		defaultUnaryInterceptors  []grpc.UnaryServerInterceptor
 		defaultStreamInterceptors []grpc.StreamServerInterceptor
 		defaultHttpMiddlewares    []func(rw http.ResponseWriter, r *http.Request, next http.HandlerFunc)
+		grpcTransportCredentials  credentials.TransportCredentials
 		defaultMigrationOptions   []popx.MigrationBoxOption
 	}
 	Handler interface {

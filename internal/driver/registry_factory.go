@@ -2,9 +2,15 @@ package driver
 
 import (
 	"context"
+	"crypto/ecdsa"
+	"crypto/elliptic"
+	"crypto/rand"
 	"testing"
 
 	"github.com/ory/x/configx"
+	"github.com/ory/x/tlsx"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 
 	"github.com/ory/keto/ketoctx"
 
@@ -63,23 +69,45 @@ func NewDefaultRegistry(ctx context.Context, flags *pflag.FlagSet, withoutNetwor
 	return r, nil
 }
 
-func NewSqliteTestRegistry(t testing.TB, debugOnDisk bool) *RegistryDefault {
+func NewSqliteTestRegistry(t testing.TB, debugOnDisk bool, opts ...TestRegistryOption) *RegistryDefault {
 	mode := dbx.SQLiteMemory
 	if debugOnDisk {
 		mode = dbx.SQLiteDebug
 	}
-	return NewTestRegistry(t, dbx.GetSqlite(t, mode))
+	return NewTestRegistry(t, dbx.GetSqlite(t, mode), opts...)
 }
 
-type newRegistryOption func(t testing.TB, r *RegistryDefault)
+type TestRegistryOption func(t testing.TB, r *RegistryDefault)
 
-func WithNamespaces(namespaces []*namespace.Namespace) newRegistryOption {
+func WithNamespaces(namespaces []*namespace.Namespace) TestRegistryOption {
 	return func(t testing.TB, r *RegistryDefault) {
 		require.NoError(t, r.c.Set(config.KeyNamespaces, namespaces))
 	}
 }
+func WithGRPCUnaryInterceptors(i ...grpc.UnaryServerInterceptor) TestRegistryOption {
+	return func(_ testing.TB, r *RegistryDefault) {
+		r.defaultUnaryInterceptors = i
+	}
+}
+func WithSelfsignedTransportCredentials() TestRegistryOption {
+	return func(t testing.TB, r *RegistryDefault) {
+		key, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader)
+		if err != nil {
+			t.Errorf("could not create key: %v", err)
+			return
+		}
 
-func NewTestRegistry(t testing.TB, dsn *dbx.DsnT, opts ...newRegistryOption) *RegistryDefault {
+		tlsCert, err := tlsx.CreateSelfSignedTLSCertificate(key)
+		if err != nil {
+			t.Errorf("could not create TLS certificate: %v", err)
+			return
+		}
+
+		r.grpcTransportCredentials = credentials.NewServerTLSFromCert(tlsCert)
+	}
+}
+
+func NewTestRegistry(t testing.TB, dsn *dbx.DsnT, opts ...TestRegistryOption) *RegistryDefault {
 	l := logrusx.New("Ory Keto", "testing")
 	ctx, cancel := context.WithCancel(context.Background())
 	t.Cleanup(cancel)

@@ -4,10 +4,10 @@ set -euo pipefail
 export KETO_READ_REMOTE="127.0.0.1:4466"
 export KETO_WRITE_REMOTE="127.0.0.1:4467"
 
-keto relation-tuple get --namespace files --format json | \
+keto relation-tuple get --namespace files --format json --insecure | \
   jq ".relation_tuples" | \
-    keto relation-tuple delete - -q > /dev/null
+    keto relation-tuple delete --insecure - -q > /dev/null
 
-keto relation-tuple get --namespace directories --format json | \
+keto relation-tuple get --namespace directories --format json --insecure | \
   jq ".relation_tuples" | \
-    keto relation-tuple delete - -q > /dev/null
+    keto relation-tuple delete --insecure - -q > /dev/null

@@ -72,8 +72,13 @@ func Test(t *testing.T) {
 					New: func() *cobra.Command {
 						return cmd.NewRootCmd(nil)
 					},
-					Ctx:            ctx,
-					PersistentArgs: []string{"--" + cliclient.FlagReadRemote, reg.Config(ctx).ReadAPIListenOn(), "--" + cliclient.FlagWriteRemote, reg.Config(ctx).WriteAPIListenOn(), "--" + cmdx.FlagFormat, string(cmdx.FormatJSON)},
+					Ctx: ctx,
+					PersistentArgs: []string{
+						"--" + cliclient.FlagReadRemote, reg.Config(ctx).ReadAPIListenOn(),
+						"--" + cliclient.FlagWriteRemote, reg.Config(ctx).WriteAPIListenOn(),
+						"--insecure=true",
+						"--" + cmdx.FlagFormat, string(cmdx.FormatJSON),
+					},
 				}},
 				&sdkClient{
 					readRemote:  reg.Config(ctx).ReadAPIListenOn(),

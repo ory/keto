@@ -15,6 +15,6 @@ chats:coffee-break#member@Vincent
 chats:coffee-break#member@Julia
 chats:coffee-break#member@Patrik' | \
   keto relation-tuple parse - --format json | \
-    keto relation-tuple create - >/dev/null \
+    keto relation-tuple create - >/dev/null --insecure \
     && echo "Successfully created tuples" \
     || echo "Encountered error"
