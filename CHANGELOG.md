@@ -7,13 +7,15 @@
 
 - [0.0.0 (2022-08-19)](#000-2022-08-19)
   - [Bug Fixes](#bug-fixes)
+  - [Code Refactoring](#code-refactoring)
+  - [Features](#features)
 - [0.9.0-alpha.0 (2022-08-01)](#090-alpha0-2022-08-01)
   - [Breaking Changes](#breaking-changes)
     - [Bug Fixes](#bug-fixes-1)
     - [Code Generation](#code-generation)
-    - [Code Refactoring](#code-refactoring)
+    - [Code Refactoring](#code-refactoring-1)
     - [Documentation](#documentation)
-    - [Features](#features)
+    - [Features](#features-1)
     - [Tests](#tests)
 - [0.8.0-alpha.2 (2022-03-04)](#080-alpha2-2022-03-04)
   - [Bug Fixes](#bug-fixes-2)
@@ -26,9 +28,9 @@
 - [0.8.0-alpha.0 (2022-02-10)](#080-alpha0-2022-02-10)
   - [Bug Fixes](#bug-fixes-4)
   - [Code Generation](#code-generation-3)
-  - [Code Refactoring](#code-refactoring-1)
+  - [Code Refactoring](#code-refactoring-2)
   - [Documentation](#documentation-2)
-  - [Features](#features-1)
+  - [Features](#features-2)
 - [0.7.0-alpha.1 (2021-10-19)](#070-alpha1-2021-10-19)
   - [Code Generation](#code-generation-4)
   - [Documentation](#documentation-3)
@@ -37,9 +39,9 @@
     - [Bug Fixes](#bug-fixes-5)
     - [Chores](#chores)
     - [Code Generation](#code-generation-5)
-    - [Code Refactoring](#code-refactoring-2)
+    - [Code Refactoring](#code-refactoring-3)
     - [Documentation](#documentation-4)
-    - [Features](#features-2)
+    - [Features](#features-3)
     - [Tests](#tests-2)
 - [0.6.0-alpha.3 (2021-04-29)](#060-alpha3-2021-04-29)
   - [Code Generation](#code-generation-6)
@@ -47,14 +49,14 @@
   - [Bug Fixes](#bug-fixes-6)
   - [Code Generation](#code-generation-7)
   - [Documentation](#documentation-5)
-  - [Features](#features-3)
+  - [Features](#features-4)
 - [0.6.0-alpha.1 (2021-04-07)](#060-alpha1-2021-04-07)
   - [Bug Fixes](#bug-fixes-7)
   - [Build System](#build-system)
   - [Code Generation](#code-generation-8)
-  - [Code Refactoring](#code-refactoring-3)
+  - [Code Refactoring](#code-refactoring-4)
   - [Documentation](#documentation-6)
-  - [Features](#features-4)
+  - [Features](#features-5)
   - [Tests](#tests-3)
 - [0.5.6-alpha.1 (2020-05-28)](#056-alpha1-2020-05-28)
   - [Bug Fixes](#bug-fixes-8)
@@ -67,7 +69,7 @@
   - [Bug Fixes](#bug-fixes-10)
 - [0.5.3-alpha.3 (2020-04-06)](#053-alpha3-2020-04-06)
   - [Code Generation](#code-generation-9)
-  - [Code Refactoring](#code-refactoring-4)
+  - [Code Refactoring](#code-refactoring-5)
   - [Documentation](#documentation-8)
 - [0.5.3-alpha.1 (2020-04-03)](#053-alpha1-2020-04-03)
   - [Chores](#chores-3)
@@ -82,7 +84,7 @@
 - [0.4.4-alpha.1 (2020-02-14)](#044-alpha1-2020-02-14)
   - [Bug Fixes](#bug-fixes-13)
   - [Documentation](#documentation-12)
-  - [Features](#features-5)
+  - [Features](#features-6)
   - [Unclassified](#unclassified)
 - [0.4.3-alpha.2 (2020-01-31)](#043-alpha2-2020-01-31)
   - [Unclassified](#unclassified-1)
@@ -133,11 +135,26 @@
 
 ### Bug Fixes
 
+- Concurrency-safe graph utils
+  ([ea9dda9](https://github.com/ory/keto/commit/ea9dda922c07b800cc9ad0186fc5f56e7dd23fec))
 - Use TLS in gRPC client ([#988](https://github.com/ory/keto/issues/988))
   ([b1ffd6b](https://github.com/ory/keto/commit/b1ffd6bff7f725eec799a3592be2335e9f69d619)):
 
   Enable TLS and certificate checking in the gRPC client when communicating with
   remote hosts.
+
+### Code Refactoring
+
+- Generalize tree structure
+  ([6a0b2fe](https://github.com/ory/keto/commit/6a0b2fe21e8dfdbe1bc04bfdba7e6f4db36b0b5c)):
+
+  This will allow reusing the tree to provide debug info on how a check decision
+  was reached.
+
+### Features
+
+- Subject-set rewrites
+  ([6f61af8](https://github.com/ory/keto/commit/6f61af8a8862439fa07066e11d204333e80c8ddd))
 
 # [0.9.0-alpha.0](https://github.com/ory/keto/compare/v0.8.0-alpha.2...v0.9.0-alpha.0) (2022-08-01)
 
