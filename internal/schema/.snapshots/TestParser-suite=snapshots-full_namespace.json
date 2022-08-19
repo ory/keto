@@ -1,0 +1,58 @@
+{
+  "Document": [
+    {
+      "name": "owners"
+    },
+    {
+      "name": "editors"
+    },
+    {
+      "name": "viewers"
+    },
+    {
+      "name": "parent"
+    },
+    {
+      "name": "rename",
+      "rewrite": {
+        "set_operation": 0,
+        "children": [
+          {
+            "relation": "siblings",
+            "computed_userset_relation": "edit"
+          }
+        ]
+      }
+    },
+    {
+      "name": "edit",
+      "rewrite": {
+        "set_operation": 0,
+        "children": [
+          {
+            "relation": "owners"
+          }
+        ]
+      }
+    },
+    {
+      "name": "view",
+      "rewrite": {
+        "set_operation": 0,
+        "children": [
+          {
+            "relation": "parents",
+            "computed_userset_relation": "view"
+          },
+          {
+            "relation": "viewers"
+          },
+          {
+            "relation": "owners"
+          }
+        ]
+      }
+    }
+  ],
+  "User": null
+}

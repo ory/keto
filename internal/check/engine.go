@@ -2,12 +2,19 @@ package check
 
 import (
 	"context"
+	"fmt"
 
+	"github.com/ory/herodot"
+	"github.com/pkg/errors"
+
+	"github.com/ory/keto/internal/check/checkgroup"
 	"github.com/ory/keto/internal/driver/config"
-	"github.com/ory/keto/internal/x/graph"
-
+	"github.com/ory/keto/internal/namespace"
+	"github.com/ory/keto/internal/namespace/ast"
 	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/internal/x"
+	"github.com/ory/keto/internal/x/graph"
+	"github.com/ory/keto/ketoapi"
 )
 
 type (
@@ -22,100 +29,213 @@ type (
 		config.Provider
 		x.LoggerProvider
 	}
+
+	EngineOpt func(*Engine)
+
+	// Type aliases for shorter signatures
+	relationTuple = relationtuple.RelationTuple
+	query         = relationtuple.RelationQuery
 )
 
-func NewEngine(d EngineDependencies) *Engine {
-	return &Engine{
-		d: d,
+const WildcardRelation = "..."
+
+func NewEngine(d EngineDependencies, opts ...EngineOpt) *Engine {
+	e := &Engine{d: d}
+	for _, opt := range opts {
+		opt(e)
 	}
+
+	return e
 }
 
-func (e *Engine) subjectIsAllowed(
-	ctx context.Context,
-	requested relationtuple.Subject,
-	rels []*relationtuple.RelationTuple,
-	restDepth int,
-) (bool, error) {
-	// This is the same as the graph problem "can requested.Subject be reached from requested.Object through the first outgoing edge requested.Relation"
-	//
-	// We implement recursive depth-first search here.
-	// TODO replace by more performant algorithm: https://github.com/ory/keto/issues/483
-
-	for _, sr := range rels {
-		ctx, wasAlreadyVisited := graph.CheckAndAddVisited(ctx, sr.Subject.UniqueID())
-		if wasAlreadyVisited {
-			continue
-		}
-
-		// we only have to check Subject here as we know that sr was reached from requested.ObjectID, requested.Relation through 0...n indirections
-		if requested.Equals(sr.Subject) {
-			// found the requested relation
-			return true, nil
-		}
-
-		sub, isSubjectSet := sr.Subject.(*relationtuple.SubjectSet)
-		if !isSubjectSet {
-			continue
-		}
-
-		// expand the set by one indirection; paginated
-		allowed, err := e.checkOneIndirectionFurther(
-			ctx,
-			requested,
-			&relationtuple.RelationTuple{Object: sub.Object, Relation: sub.Relation, Namespace: sub.Namespace},
-			restDepth-1,
-		)
-		if err != nil {
-			return false, err
-		}
-		if allowed {
-			return true, nil
-		}
+// CheckIsMember checks if the relation tuple's subject has the relation on the
+// object in the namespace either directly or indirectly and returns a boolean
+// result.
+func (e *Engine) CheckIsMember(ctx context.Context, r *relationTuple, restDepth int) (bool, error) {
+	result := e.CheckRelationTuple(ctx, r, restDepth)
+	if result.Err != nil {
+		return false, result.Err
 	}
-
-	return false, nil
+	return result.Membership == checkgroup.IsMember, nil
 }
 
-func (e *Engine) checkOneIndirectionFurther(
-	ctx context.Context,
-	requested relationtuple.Subject,
-	expandQuery *relationtuple.RelationTuple,
-	restDepth int,
-) (bool, error) {
-	if restDepth <= 0 {
-		e.d.Logger().Debug("reached max-depth, therefore this query will not be further expanded")
-		return false, nil
-	}
-
-	// an empty page token denotes the first page (as tokens are opaque)
-	var prevPage string
-
-	for {
-		nextRels, nextPage, err := e.d.RelationTupleManager().GetRelationTuples(ctx, &relationtuple.RelationQuery{
-			Namespace: x.Ptr(expandQuery.Namespace),
-			Object:    x.Ptr(expandQuery.Object),
-			Relation:  x.Ptr(expandQuery.Relation),
-		}, x.WithToken(prevPage))
-		if err != nil {
-			return false, err
-		}
-
-		allowed, err := e.subjectIsAllowed(ctx, requested, nextRels, restDepth)
-
-		// loop through pages until either allowed, end of pages, or an error occurred
-		if allowed || nextPage == "" || err != nil {
-			return allowed, err
-		}
-
-		prevPage = nextPage
-	}
-}
-
-func (e *Engine) SubjectIsAllowed(ctx context.Context, r *relationtuple.RelationTuple, restDepth int) (bool, error) {
-	// global max-depth takes precedence when it is the lesser or if the request max-depth is less than or equal to 0
+// CheckRelationTuple checks if the relation tuple's subject has the relation on
+// the object in the namespace either directly or indirectly and returns a check
+// result.
+func (e *Engine) CheckRelationTuple(ctx context.Context, r *relationTuple, restDepth int) checkgroup.Result {
+	// global max-depth takes precedence when it is the lesser or if the request
+	// max-depth is less than or equal to 0
 	if globalMaxDepth := e.d.Config(ctx).MaxReadDepth(); restDepth <= 0 || globalMaxDepth < restDepth {
 		restDepth = globalMaxDepth
 	}
 
-	return e.checkOneIndirectionFurther(ctx, r.Subject, &relationtuple.RelationTuple{Object: r.Object, Relation: r.Relation, Namespace: r.Namespace}, restDepth)
+	resultCh := make(chan checkgroup.Result)
+	go e.checkIsAllowed(ctx, r, restDepth)(ctx, resultCh)
+	select {
+	case result := <-resultCh:
+		return result
+	case <-ctx.Done():
+		return checkgroup.Result{Err: errors.WithStack(ctx.Err())}
+	}
+}
+
+// checkExpandSubject checks the expansions of the subject set of the tuple.
+//
+// For a relation tuple n:obj#rel@user, checkExpandSubject first queries for all
+// subjects that match n:obj#rel@* (arbitrary subjects), and then for each
+// subject set checks subject@user.
+func (e *Engine) checkExpandSubject(r *relationTuple, restDepth int) checkgroup.CheckFunc {
+	if restDepth < 0 {
+		e.d.Logger().
+			WithField("request", r.String()).
+			Debug("reached max-depth, therefore this query will not be further expanded")
+		return checkgroup.UnknownMemberFunc
+	}
+	return func(ctx context.Context, resultCh chan<- checkgroup.Result) {
+		e.d.Logger().
+			WithField("request", r.String()).
+			Trace("check expand subject")
+
+		g := checkgroup.New(ctx)
+
+		var (
+			subjects  []*relationTuple
+			pageToken string
+			err       error
+			visited   bool
+			innerCtx  = graph.InitVisited(ctx)
+			query     = &query{Namespace: &r.Namespace, Object: &r.Object, Relation: &r.Relation}
+		)
+		for {
+			subjects, pageToken, err = e.d.RelationTupleManager().GetRelationTuples(innerCtx, query, x.WithToken(pageToken))
+			if errors.Is(err, herodot.ErrNotFound) {
+				g.Add(checkgroup.NotMemberFunc)
+				break
+			} else if err != nil {
+				g.Add(checkgroup.ErrorFunc(err))
+				break
+			}
+			for _, s := range subjects {
+				innerCtx, visited = graph.CheckAndAddVisited(innerCtx, s.Subject)
+				if visited {
+					continue
+				}
+				subjectSet, ok := s.Subject.(*relationtuple.SubjectSet)
+				if !ok || subjectSet.Relation == WildcardRelation {
+					continue
+				}
+				g.Add(e.checkIsAllowed(
+					innerCtx,
+					&relationTuple{
+						Namespace: subjectSet.Namespace,
+						Object:    subjectSet.Object,
+						Relation:  subjectSet.Relation,
+						Subject:   r.Subject,
+					},
+					restDepth-1,
+				))
+			}
+			if pageToken == "" || g.Done() {
+				break
+			}
+		}
+
+		resultCh <- g.Result()
+	}
+}
+
+// checkDirect checks if the relation tuple is in the database directly.
+func (e *Engine) checkDirect(r *relationTuple, restDepth int) checkgroup.CheckFunc {
+	if restDepth < 0 {
+		e.d.Logger().
+			WithField("method", "checkDirect").
+			Debug("reached max-depth, therefore this query will not be further expanded")
+		return checkgroup.UnknownMemberFunc
+	}
+	return func(ctx context.Context, resultCh chan<- checkgroup.Result) {
+		e.d.Logger().
+			WithField("request", r.String()).
+			Trace("check direct")
+		if rels, _, err := e.d.RelationTupleManager().GetRelationTuples(
+			ctx,
+			r.ToQuery(),
+			x.WithSize(1),
+		); err == nil && len(rels) > 0 {
+			resultCh <- checkgroup.Result{
+				Membership: checkgroup.IsMember,
+				Tree: &ketoapi.Tree[*relationtuple.RelationTuple]{
+					Type:  ketoapi.TreeNodeLeaf,
+					Tuple: r,
+				},
+			}
+		} else {
+			resultCh <- checkgroup.Result{
+				Membership: checkgroup.NotMember,
+			}
+		}
+	}
+}
+
+// checkIsAllowed checks if the relation tuple is allowed (there is a path from
+// the relation tuple subject to the namespace, object and relation) either
+// directly (in the database), or through subject-set expansions, or through
+// user-set rewrites.
+func (e *Engine) checkIsAllowed(ctx context.Context, r *relationTuple, restDepth int) checkgroup.CheckFunc {
+	if restDepth < 0 {
+		e.d.Logger().
+			WithField("method", "checkIsAllowed").
+			Debug("reached max-depth, therefore this query will not be further expanded")
+		return checkgroup.UnknownMemberFunc
+	}
+
+	e.d.Logger().
+		WithField("request", r.String()).
+		Trace("check is allowed")
+
+	g := checkgroup.New(ctx)
+	g.Add(e.checkDirect(r, restDepth-1))
+	g.Add(e.checkExpandSubject(r, restDepth))
+
+	relation, err := e.astRelationFor(ctx, r)
+	if err != nil {
+		g.Add(checkgroup.ErrorFunc(err))
+	} else if relation != nil && relation.SubjectSetRewrite != nil {
+		g.Add(e.checkSubjectSetRewrite(ctx, r, relation.SubjectSetRewrite, restDepth))
+	}
+
+	return g.CheckFunc()
+}
+
+func (e *Engine) astRelationFor(ctx context.Context, r *relationTuple) (*ast.Relation, error) {
+	ns, err := e.namespaceFor(ctx, r)
+	if err != nil {
+		// On an unknown namespace the answer should be "not allowed", not "not
+		// found". Therefore we don't return the error here.
+		return nil, nil
+	}
+
+	// Special case: If Relations is empty, then there is no namespace
+	// configuration, and it is not an error that the relation was not found.
+	if len(ns.Relations) == 0 {
+		return nil, nil
+	}
+
+	for _, rel := range ns.Relations {
+		if rel.Name == r.Relation {
+			return &rel, nil
+		}
+	}
+	return nil, fmt.Errorf("relation %q not found", r.Relation)
+}
+
+func (e *Engine) namespaceFor(ctx context.Context, r *relationTuple) (*namespace.Namespace, error) {
+	namespaceManager, err := e.d.Config(ctx).NamespaceManager()
+	if err != nil {
+		return nil, err
+	}
+	ns, err := namespaceManager.GetNamespaceByName(ctx, r.Namespace)
+	if err != nil {
+		return nil, err
+	}
+	return ns, nil
 }

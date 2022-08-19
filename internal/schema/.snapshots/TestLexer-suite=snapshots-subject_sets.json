@@ -1,0 +1,23 @@
+[
+  "class",
+  "'X'",
+  "implements",
+  "'Namespace'",
+  "{",
+  "'related'",
+  ":",
+  "{",
+  "'relation'",
+  ":",
+  "'SubjectSet'",
+  "\u003c",
+  "'R'",
+  ",",
+  "'someProp'",
+  "\u003e",
+  "[",
+  "]",
+  "}",
+  "}",
+  "EOF"
+]

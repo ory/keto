@@ -1,0 +1,13 @@
+[
+  "/**/",
+  "/** doc comment\n * content\n * more content\n */",
+  "class",
+  "'name'",
+  "implements",
+  "'Namespace'",
+  "{",
+  "// Block comment",
+  "/*\n\täny ünicöde characterß???\n\t*/",
+  "}",
+  "EOF"
+]

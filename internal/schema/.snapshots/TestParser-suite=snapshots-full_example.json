@@ -1,0 +1,174 @@
+{
+  "File": [
+    {
+      "name": "parents",
+      "types": [
+        {
+          "namespace": "File"
+        },
+        {
+          "namespace": "Folder"
+        }
+      ]
+    },
+    {
+      "name": "viewers",
+      "types": [
+        {
+          "namespace": "User"
+        },
+        {
+          "namespace": "Group",
+          "relation": "members"
+        }
+      ]
+    },
+    {
+      "name": "owners",
+      "types": [
+        {
+          "namespace": "User"
+        },
+        {
+          "namespace": "Group",
+          "relation": "members"
+        }
+      ]
+    },
+    {
+      "name": "siblings",
+      "types": [
+        {
+          "namespace": "File"
+        }
+      ]
+    },
+    {
+      "name": "view",
+      "rewrite": {
+        "operator": "or",
+        "children": [
+          {
+            "operator": "and",
+            "children": [
+              {
+                "operator": "or",
+                "children": [
+                  {
+                    "relation": "parents",
+                    "computed_subject_set_relation": "viewers"
+                  }
+                ]
+              },
+              {
+                "relation": "parents",
+                "computed_subject_set_relation": "view"
+              }
+            ]
+          },
+          {
+            "relation": "viewers"
+          },
+          {
+            "relation": "viewers"
+          },
+          {
+            "relation": "viewers"
+          },
+          {
+            "relation": "owners"
+          }
+        ]
+      }
+    },
+    {
+      "name": "edit",
+      "rewrite": {
+        "operator": "or",
+        "children": [
+          {
+            "relation": "owners"
+          }
+        ]
+      }
+    },
+    {
+      "name": "not",
+      "rewrite": {
+        "operator": "or",
+        "children": [
+          {
+            "inverted": {
+              "relation": "owners"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "rename",
+      "rewrite": {
+        "operator": "or",
+        "children": [
+          {
+            "relation": "siblings",
+            "computed_subject_set_relation": "edit"
+          }
+        ]
+      }
+    }
+  ],
+  "Folder": [
+    {
+      "name": "parents",
+      "types": [
+        {
+          "namespace": "File"
+        }
+      ]
+    },
+    {
+      "name": "viewers",
+      "types": [
+        {
+          "namespace": "Group",
+          "relation": "members"
+        }
+      ]
+    },
+    {
+      "name": "view",
+      "rewrite": {
+        "operator": "or",
+        "children": [
+          {
+            "relation": "viewers"
+          }
+        ]
+      }
+    }
+  ],
+  "Group": [
+    {
+      "name": "members",
+      "types": [
+        {
+          "namespace": "User"
+        },
+        {
+          "namespace": "Group"
+        }
+      ]
+    }
+  ],
+  "User": [
+    {
+      "name": "manager",
+      "types": [
+        {
+          "namespace": "User"
+        }
+      ]
+    }
+  ]
+}

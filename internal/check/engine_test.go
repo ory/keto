@@ -2,25 +2,19 @@ package check_test
 
 import (
 	"context"
-	"sort"
 	"testing"
 
 	"github.com/gofrs/uuid"
-
-	"github.com/ory/keto/internal/driver/config"
-
-	"github.com/ory/keto/internal/x"
-
-	"github.com/ory/keto/internal/namespace"
-
-	"github.com/ory/keto/internal/relationtuple"
-
-	"github.com/ory/keto/internal/check"
-
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
+	"github.com/ory/keto/internal/check"
 	"github.com/ory/keto/internal/driver"
+	"github.com/ory/keto/internal/driver/config"
+	"github.com/ory/keto/internal/namespace"
+	"github.com/ory/keto/internal/relationtuple"
+	"github.com/ory/keto/internal/x"
+	"github.com/ory/keto/ketoapi"
 )
 
 type configProvider = config.Provider
@@ -33,7 +27,7 @@ type deps struct {
 	loggerProvider
 }
 
-func newDepsProvider(t *testing.T, namespaces []*namespace.Namespace, pageOpts ...x.PaginationOptionSetter) *deps {
+func newDepsProvider(t testing.TB, namespaces []*namespace.Namespace, pageOpts ...x.PaginationOptionSetter) *deps {
 	reg := driver.NewSqliteTestRegistry(t, false)
 	require.NoError(t, reg.Config(context.Background()).Set(config.KeyNamespaces, namespaces))
 	mr := relationtuple.NewManagerWrapper(t, reg, pageOpts...)
@@ -45,80 +39,78 @@ func newDepsProvider(t *testing.T, namespaces []*namespace.Namespace, pageOpts .
 	}
 }
 
+func toUUID(s string) uuid.UUID {
+	return uuid.NewV5(uuid.Nil, s)
+}
+
+func tupleFromString(t testing.TB, s string) *relationtuple.RelationTuple {
+	rt, err := (&ketoapi.RelationTuple{}).FromString(s)
+	require.NoError(t, err)
+	result := &relationtuple.RelationTuple{
+		Namespace: rt.Namespace,
+		Object:    toUUID(rt.Object),
+		Relation:  rt.Relation,
+	}
+	switch {
+	case rt.SubjectID != nil:
+		result.Subject = &relationtuple.SubjectID{ID: toUUID(*rt.SubjectID)}
+	case rt.SubjectSet != nil:
+		result.Subject = &relationtuple.SubjectSet{
+			Namespace: rt.SubjectSet.Namespace,
+			Object:    toUUID(rt.SubjectSet.Object),
+			Relation:  rt.SubjectSet.Relation,
+		}
+	default:
+		t.Fatal("invalid tuple")
+	}
+	return result
+}
+
 func TestEngine(t *testing.T) {
 	ctx := context.Background()
 
 	t.Run("respects max depth", func(t *testing.T) {
 		// "user" has relation "access" through being an "owner" through being an "admin"
 		// which requires at least 2 units of depth. If max-depth is 2 then we hit max-depth
-		ns := "namespace"
-		user := &relationtuple.SubjectID{ID: uuid.Must(uuid.NewV4())}
-		object := uuid.Must(uuid.NewV4())
-
-		adminRel := relationtuple.RelationTuple{
-			Relation:  "admin",
-			Object:    object,
-			Namespace: ns,
-			Subject:   user,
-		}
-
-		adminIsOwnerRel := relationtuple.RelationTuple{
-			Relation:  "owner",
-			Object:    object,
-			Namespace: ns,
-			Subject: &relationtuple.SubjectSet{
-				Relation:  "admin",
-				Object:    object,
-				Namespace: ns,
-			},
-		}
-
-		accessRel := relationtuple.RelationTuple{
-			Relation:  "access",
-			Object:    object,
-			Namespace: ns,
-			Subject: &relationtuple.SubjectSet{
-				Relation:  "owner",
-				Object:    object,
-				Namespace: ns,
-			},
-		}
 		reg := newDepsProvider(t, []*namespace.Namespace{
-			{Name: ns},
+			{Name: "test"},
 		})
-		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(ctx, &adminRel, &adminIsOwnerRel, &accessRel))
+
+		// "user" has relation "access" through being an "owner" through being
+		// an "admin" which requires at least 2 units of depth. If max-depth is
+		// 2 then we hit max-depth
+		insertFixtures(t, reg.RelationTupleManager(), []string{
+			"test:object#admin@user",
+			"test:object#owner@test:object#admin",
+			"test:object#access@test:object#owner",
+		})
 
 		e := check.NewEngine(reg)
 
-		userHasAccess := &relationtuple.RelationTuple{
-			Relation:  "access",
-			Object:    object,
-			Namespace: ns,
-			Subject:   user,
-		}
+		userHasAccess := tupleFromString(t, "test:object#access@user")
 
 		// global max-depth defaults to 5
 		assert.Equal(t, reg.Config(ctx).MaxReadDepth(), 5)
 
 		// req max-depth takes precedence, max-depth=2 is not enough
-		res, err := e.SubjectIsAllowed(ctx, userHasAccess, 2)
+		res, err := e.CheckIsMember(ctx, userHasAccess, 2)
 		require.NoError(t, err)
 		assert.False(t, res)
 
 		// req max-depth takes precedence, max-depth=3 is enough
-		res, err = e.SubjectIsAllowed(ctx, userHasAccess, 3)
+		res, err = e.CheckIsMember(ctx, userHasAccess, 3)
 		require.NoError(t, err)
 		assert.True(t, res)
 
 		// global max-depth takes precedence and max-depth=2 is not enough
 		require.NoError(t, reg.Config(ctx).Set(config.KeyLimitMaxReadDepth, 2))
-		res, err = e.SubjectIsAllowed(ctx, userHasAccess, 3)
+		res, err = e.CheckIsMember(ctx, userHasAccess, 3)
 		require.NoError(t, err)
 		assert.False(t, res)
 
 		// global max-depth takes precedence and max-depth=3 is enough
 		require.NoError(t, reg.Config(ctx).Set(config.KeyLimitMaxReadDepth, 3))
-		res, err = e.SubjectIsAllowed(ctx, userHasAccess, 0)
+		res, err = e.CheckIsMember(ctx, userHasAccess, 0)
 		require.NoError(t, err)
 		assert.True(t, res)
 	})
@@ -136,7 +128,7 @@ func TestEngine(t *testing.T) {
 
 		e := check.NewEngine(reg)
 
-		res, err := e.SubjectIsAllowed(ctx, &rel, 0)
+		res, err := e.CheckIsMember(ctx, &rel, 0)
 		require.NoError(t, err)
 		assert.True(t, res)
 	})
@@ -170,7 +162,7 @@ func TestEngine(t *testing.T) {
 
 		e := check.NewEngine(reg)
 
-		res, err := e.SubjectIsAllowed(ctx, &relationtuple.RelationTuple{
+		res, err := e.CheckIsMember(ctx, &relationtuple.RelationTuple{
 			Relation:  cleaningRelation.Relation,
 			Object:    dust,
 			Subject:   &mark,
@@ -194,7 +186,7 @@ func TestEngine(t *testing.T) {
 
 		e := check.NewEngine(reg)
 
-		res, err := e.SubjectIsAllowed(ctx, &relationtuple.RelationTuple{
+		res, err := e.CheckIsMember(ctx, &relationtuple.RelationTuple{
 			Relation:  rel.Relation,
 			Object:    rel.Object,
 			Namespace: rel.Namespace,
@@ -225,7 +217,7 @@ func TestEngine(t *testing.T) {
 
 		e := check.NewEngine(reg)
 
-		res, err := e.SubjectIsAllowed(ctx, &relationtuple.RelationTuple{
+		res, err := e.CheckIsMember(ctx, &relationtuple.RelationTuple{
 			Relation: access.Relation,
 			Object:   object,
 			Subject:  user.Subject,
@@ -262,7 +254,7 @@ func TestEngine(t *testing.T) {
 
 		e := check.NewEngine(reg)
 
-		res, err := e.SubjectIsAllowed(ctx, &relationtuple.RelationTuple{
+		res, err := e.CheckIsMember(ctx, &relationtuple.RelationTuple{
 			Relation:  readDiary.Relation,
 			Object:    diaryEntry,
 			Namespace: diaryNamespace,
@@ -318,7 +310,7 @@ func TestEngine(t *testing.T) {
 		e := check.NewEngine(reg)
 
 		// user can write object
-		res, err := e.SubjectIsAllowed(ctx, &relationtuple.RelationTuple{
+		res, err := e.CheckIsMember(ctx, &relationtuple.RelationTuple{
 			Namespace: someNamespace,
 			Relation:  writeRel.Relation,
 			Object:    object,
@@ -328,7 +320,7 @@ func TestEngine(t *testing.T) {
 		assert.True(t, res)
 
 		// user is member of the organization
-		res, err = e.SubjectIsAllowed(ctx, &relationtuple.RelationTuple{
+		res, err = e.CheckIsMember(ctx, &relationtuple.RelationTuple{
 			Namespace: orgNamespace,
 			Relation:  orgMembers.Relation,
 			Object:    organization,
@@ -369,7 +361,7 @@ func TestEngine(t *testing.T) {
 
 		e := check.NewEngine(reg)
 
-		res, err := e.SubjectIsAllowed(ctx, &relationtuple.RelationTuple{
+		res, err := e.CheckIsMember(ctx, &relationtuple.RelationTuple{
 			Relation: directoryAccess.Relation,
 			Object:   file,
 			Subject:  &user,
@@ -412,7 +404,7 @@ func TestEngine(t *testing.T) {
 
 		e := check.NewEngine(reg)
 
-		res, err := e.SubjectIsAllowed(ctx, &relationtuple.RelationTuple{
+		res, err := e.CheckIsMember(ctx, &relationtuple.RelationTuple{
 			Namespace: namesp,
 			Object:    obj,
 			Relation:  ownerRel,
@@ -421,7 +413,7 @@ func TestEngine(t *testing.T) {
 		require.NoError(t, err)
 		assert.True(t, res)
 
-		res, err = e.SubjectIsAllowed(ctx, &relationtuple.RelationTuple{
+		res, err = e.CheckIsMember(ctx, &relationtuple.RelationTuple{
 			Namespace: namesp,
 			Object:    obj,
 			Relation:  ownerRel,
@@ -429,59 +421,6 @@ func TestEngine(t *testing.T) {
 		}, 0)
 		require.NoError(t, err)
 		assert.True(t, res)
-	})
-
-	t.Run("case=paginates", func(t *testing.T) {
-		namesp, obj, access, users := "2934", uuid.Must(uuid.NewV4()), "access", x.UUIDs(4)
-		pageSize := 2
-		// sort users because we later assert on the pagination
-		sort.Slice(users, func(i, j int) bool {
-			return string(users[i][:]) < string(users[j][:])
-		})
-
-		reg := newDepsProvider(
-			t,
-			[]*namespace.Namespace{{Name: namesp}},
-			x.WithSize(pageSize),
-		)
-
-		for _, user := range users {
-			require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(ctx, &relationtuple.RelationTuple{
-				Namespace: namesp,
-				Object:    obj,
-				Relation:  access,
-				Subject:   &relationtuple.SubjectID{ID: user},
-			}))
-		}
-
-		e := check.NewEngine(reg)
-
-		for _, user := range users {
-			t.Run("user="+user.String(), func(t *testing.T) {
-				allowed, err := e.SubjectIsAllowed(ctx, &relationtuple.RelationTuple{
-					Namespace: namesp,
-					Object:    obj,
-					Relation:  access,
-					Subject:   &relationtuple.SubjectID{ID: user},
-				}, 0)
-				require.NoError(t, err)
-				assert.True(t, allowed)
-			})
-		}
-
-		require.Len(t, reg.RequestedPages, 6)
-		var firstPage int
-		otherPages := make([]string, 0, 2)
-		for _, page := range reg.RequestedPages {
-			if page == "" {
-				firstPage++
-			} else {
-				otherPages = append(otherPages, page)
-			}
-		}
-		assert.Equal(t, 4, firstPage)
-		require.Len(t, otherPages, 2)
-		assert.Equal(t, otherPages[0], otherPages[1])
 	})
 
 	t.Run("case=wide tuple graph", func(t *testing.T) {
@@ -520,7 +459,7 @@ func TestEngine(t *testing.T) {
 				Relation:  access,
 				Subject:   &relationtuple.SubjectID{ID: user},
 			}
-			allowed, err := e.SubjectIsAllowed(ctx, req, 0)
+			allowed, err := e.CheckIsMember(ctx, req, 0)
 			require.NoError(t, err)
 			assert.Truef(t, allowed, "%+v", req)
 		}
@@ -567,7 +506,7 @@ func TestEngine(t *testing.T) {
 		e := check.NewEngine(reg)
 
 		stations := []uuid.UUID{sendlingerTor, odeonsplatz, centralStation}
-		res, err := e.SubjectIsAllowed(ctx, &relationtuple.RelationTuple{
+		res, err := e.CheckIsMember(ctx, &relationtuple.RelationTuple{
 			Namespace: namesp,
 			Object:    stations[0],
 			Relation:  connected,

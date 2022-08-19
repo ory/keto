@@ -82,22 +82,22 @@ type getCheckRequest struct {
 
 // swagger:route GET /relation-tuples/check/openapi read getCheck
 //
-// Check a relation tuple
+// # Check a relation tuple
 //
 // To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).
 //
-//     Consumes:
-//     -  application/x-www-form-urlencoded
+//	Consumes:
+//	-  application/x-www-form-urlencoded
 //
-//     Produces:
-//     - application/json
+//	Produces:
+//	- application/json
 //
-//     Schemes: http, https
+//	Schemes: http, https
 //
-//     Responses:
-//       200: getCheckResponse
-//       400: genericError
-//       500: genericError
+//	Responses:
+//	  200: getCheckResponse
+//	  400: genericError
+//	  500: genericError
 func (h *Handler) getCheckNoStatus(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	allowed, err := h.getCheck(r.Context(), r.URL.Query())
 	if err != nil {
@@ -109,23 +109,23 @@ func (h *Handler) getCheckNoStatus(w http.ResponseWriter, r *http.Request, _ htt
 
 // swagger:route GET /relation-tuples/check read getCheckMirrorStatus
 //
-// Check a relation tuple
+// # Check a relation tuple
 //
 // To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).
 //
-//     Consumes:
-//     -  application/x-www-form-urlencoded
+//	Consumes:
+//	-  application/x-www-form-urlencoded
 //
-//     Produces:
-//     - application/json
+//	Produces:
+//	- application/json
 //
-//     Schemes: http, https
+//	Schemes: http, https
 //
-//     Responses:
-//       200: getCheckResponse
-//       400: genericError
-//       403: getCheckResponse
-//       500: genericError
+//	Responses:
+//	  200: getCheckResponse
+//	  400: genericError
+//	  403: getCheckResponse
+//	  500: genericError
 func (h *Handler) getCheckMirrorStatus(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	allowed, err := h.getCheck(r.Context(), r.URL.Query())
 	if err != nil {
@@ -160,27 +160,27 @@ func (h *Handler) getCheck(ctx context.Context, q url.Values) (bool, error) {
 		return false, err
 	}
 
-	return h.d.PermissionEngine().SubjectIsAllowed(ctx, it[0], maxDepth)
+	return h.d.PermissionEngine().CheckIsMember(ctx, it[0], maxDepth)
 }
 
 // swagger:route POST /relation-tuples/check/openapi read postCheck
 //
-// Check a relation tuple
+// # Check a relation tuple
 //
 // To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).
 //
-//     Consumes:
-//     -  application/json
+//	Consumes:
+//	-  application/json
 //
-//     Produces:
-//     - application/json
+//	Produces:
+//	- application/json
 //
-//     Schemes: http, https
+//	Schemes: http, https
 //
-//     Responses:
-//       200: getCheckResponse
-//       400: genericError
-//       500: genericError
+//	Responses:
+//	  200: getCheckResponse
+//	  400: genericError
+//	  500: genericError
 func (h *Handler) postCheckNoStatus(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	allowed, err := h.postCheck(r.Context(), r.Body, r.URL.Query())
 	if err != nil {
@@ -192,23 +192,23 @@ func (h *Handler) postCheckNoStatus(w http.ResponseWriter, r *http.Request, _ ht
 
 // swagger:route POST /relation-tuples/check read postCheckMirrorStatus
 //
-// Check a relation tuple
+// # Check a relation tuple
 //
 // To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).
 //
-//     Consumes:
-//     -  application/json
+//	Consumes:
+//	-  application/json
 //
-//     Produces:
-//     - application/json
+//	Produces:
+//	- application/json
 //
-//     Schemes: http, https
+//	Schemes: http, https
 //
-//     Responses:
-//       200: getCheckResponse
-//       400: genericError
-//       403: getCheckResponse
-//       500: genericError
+//	Responses:
+//	  200: getCheckResponse
+//	  400: genericError
+//	  403: getCheckResponse
+//	  500: genericError
 func (h *Handler) postCheckMirrorStatus(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	allowed, err := h.postCheck(r.Context(), r.Body, r.URL.Query())
 	if err != nil {
@@ -242,7 +242,7 @@ func (h *Handler) postCheck(ctx context.Context, body io.Reader, query url.Value
 		return false, err
 	}
 
-	return h.d.PermissionEngine().SubjectIsAllowed(ctx, t[0], maxDepth)
+	return h.d.PermissionEngine().CheckIsMember(ctx, t[0], maxDepth)
 }
 
 func (h *Handler) Check(ctx context.Context, req *rts.CheckRequest) (*rts.CheckResponse, error) {
@@ -262,7 +262,7 @@ func (h *Handler) Check(ctx context.Context, req *rts.CheckRequest) (*rts.CheckR
 	if err != nil {
 		return nil, err
 	}
-	allowed, err := h.d.PermissionEngine().SubjectIsAllowed(ctx, internalTuple[0], int(req.MaxDepth))
+	allowed, err := h.d.PermissionEngine().CheckIsMember(ctx, internalTuple[0], int(req.MaxDepth))
 	// TODO add content change handling
 	if err != nil {
 		return nil, err
