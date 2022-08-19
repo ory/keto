@@ -5,25 +5,26 @@
 
 **Table of Contents**
 
-- [0.0.0 (2022-08-01)](#000-2022-08-01)
+- [0.0.0 (2022-08-19)](#000-2022-08-19)
+  - [Bug Fixes](#bug-fixes)
 - [0.9.0-alpha.0 (2022-08-01)](#090-alpha0-2022-08-01)
   - [Breaking Changes](#breaking-changes)
-    - [Bug Fixes](#bug-fixes)
+    - [Bug Fixes](#bug-fixes-1)
     - [Code Generation](#code-generation)
     - [Code Refactoring](#code-refactoring)
     - [Documentation](#documentation)
     - [Features](#features)
     - [Tests](#tests)
 - [0.8.0-alpha.2 (2022-03-04)](#080-alpha2-2022-03-04)
-  - [Bug Fixes](#bug-fixes-1)
+  - [Bug Fixes](#bug-fixes-2)
   - [Code Generation](#code-generation-1)
   - [Documentation](#documentation-1)
 - [0.8.0-alpha.1 (2022-02-22)](#080-alpha1-2022-02-22)
-  - [Bug Fixes](#bug-fixes-2)
+  - [Bug Fixes](#bug-fixes-3)
   - [Code Generation](#code-generation-2)
   - [Tests](#tests-1)
 - [0.8.0-alpha.0 (2022-02-10)](#080-alpha0-2022-02-10)
-  - [Bug Fixes](#bug-fixes-3)
+  - [Bug Fixes](#bug-fixes-4)
   - [Code Generation](#code-generation-3)
   - [Code Refactoring](#code-refactoring-1)
   - [Documentation](#documentation-2)
@@ -33,7 +34,7 @@
   - [Documentation](#documentation-3)
 - [0.7.0-alpha.0 (2021-10-06)](#070-alpha0-2021-10-06)
   - [Breaking Changes](#breaking-changes-1)
-    - [Bug Fixes](#bug-fixes-4)
+    - [Bug Fixes](#bug-fixes-5)
     - [Chores](#chores)
     - [Code Generation](#code-generation-5)
     - [Code Refactoring](#code-refactoring-2)
@@ -43,12 +44,12 @@
 - [0.6.0-alpha.3 (2021-04-29)](#060-alpha3-2021-04-29)
   - [Code Generation](#code-generation-6)
 - [0.6.0-alpha.2 (2021-04-29)](#060-alpha2-2021-04-29)
-  - [Bug Fixes](#bug-fixes-5)
+  - [Bug Fixes](#bug-fixes-6)
   - [Code Generation](#code-generation-7)
   - [Documentation](#documentation-5)
   - [Features](#features-3)
 - [0.6.0-alpha.1 (2021-04-07)](#060-alpha1-2021-04-07)
-  - [Bug Fixes](#bug-fixes-6)
+  - [Bug Fixes](#bug-fixes-7)
   - [Build System](#build-system)
   - [Code Generation](#code-generation-8)
   - [Code Refactoring](#code-refactoring-3)
@@ -56,14 +57,14 @@
   - [Features](#features-4)
   - [Tests](#tests-3)
 - [0.5.6-alpha.1 (2020-05-28)](#056-alpha1-2020-05-28)
-  - [Bug Fixes](#bug-fixes-7)
+  - [Bug Fixes](#bug-fixes-8)
   - [Chores](#chores-1)
 - [0.5.5-alpha.1 (2020-05-28)](#055-alpha1-2020-05-28)
-  - [Bug Fixes](#bug-fixes-8)
+  - [Bug Fixes](#bug-fixes-9)
   - [Chores](#chores-2)
   - [Documentation](#documentation-7)
 - [0.5.4-alpha.1 (2020-04-07)](#054-alpha1-2020-04-07)
-  - [Bug Fixes](#bug-fixes-9)
+  - [Bug Fixes](#bug-fixes-10)
 - [0.5.3-alpha.3 (2020-04-06)](#053-alpha3-2020-04-06)
   - [Code Generation](#code-generation-9)
   - [Code Refactoring](#code-refactoring-4)
@@ -73,13 +74,13 @@
 - [0.5.2 (2020-04-02)](#052-2020-04-02)
   - [Documentation](#documentation-9)
 - [0.5.0 (2020-04-02)](#050-2020-04-02)
-  - [Bug Fixes](#bug-fixes-10)
+  - [Bug Fixes](#bug-fixes-11)
   - [Documentation](#documentation-10)
 - [0.4.5-alpha.1 (2020-02-29)](#045-alpha1-2020-02-29)
-  - [Bug Fixes](#bug-fixes-11)
+  - [Bug Fixes](#bug-fixes-12)
   - [Documentation](#documentation-11)
 - [0.4.4-alpha.1 (2020-02-14)](#044-alpha1-2020-02-14)
-  - [Bug Fixes](#bug-fixes-12)
+  - [Bug Fixes](#bug-fixes-13)
   - [Documentation](#documentation-12)
   - [Features](#features-5)
   - [Unclassified](#unclassified)
@@ -128,7 +129,15 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.9.0-alpha.0...v0.0.0) (2022-08-01)
+# [0.0.0](https://github.com/ory/keto/compare/v0.9.0-alpha.0...v0.0.0) (2022-08-19)
+
+### Bug Fixes
+
+- Use TLS in gRPC client ([#988](https://github.com/ory/keto/issues/988))
+  ([b1ffd6b](https://github.com/ory/keto/commit/b1ffd6bff7f725eec799a3592be2335e9f69d619)):
+
+  Enable TLS and certificate checking in the gRPC client when communicating with
+  remote hosts.
 
 # [0.9.0-alpha.0](https://github.com/ory/keto/compare/v0.8.0-alpha.2...v0.9.0-alpha.0) (2022-08-01)
 
