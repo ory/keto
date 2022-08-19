@@ -45,9 +45,9 @@ func NewExpandCmd() *cobra.Command {
 				return cmdx.FailSilently(cmd)
 			}
 
-			var tree *ketoapi.ExpandTree
+			var tree *ketoapi.Tree[*ketoapi.RelationTuple]
 			if resp.Tree != nil {
-				tree = (&ketoapi.ExpandTree{}).FromProto(resp.Tree)
+				tree = ketoapi.TreeFromProto[*ketoapi.RelationTuple](resp.Tree)
 			}
 
 			cmdx.PrintJSONAble(cmd, tree)

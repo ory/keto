@@ -57,6 +57,26 @@ func (r *RelationTuple) ToProto() *rts.RelationTuple {
 	return res
 }
 
+func (r *RelationTuple) FromProto(proto *rts.RelationTuple) *RelationTuple {
+	r = &RelationTuple{
+		Namespace: proto.Namespace,
+		Object:    proto.Object,
+		Relation:  proto.Relation,
+	}
+	switch subject := proto.Subject.Ref.(type) {
+	case *rts.Subject_Id:
+		r.SubjectID = x.Ptr(subject.Id)
+	case *rts.Subject_Set:
+		r.SubjectSet = &SubjectSet{
+			Namespace: subject.Set.Namespace,
+			Object:    subject.Set.Object,
+			Relation:  subject.Set.Relation,
+		}
+	}
+
+	return r
+}
+
 func (q *RelationQuery) FromDataProvider(d queryData) *RelationQuery {
 	q.Namespace = d.GetNamespace()
 	q.Object = d.GetObject()
@@ -93,40 +113,73 @@ func (q *RelationQuery) ToProto() *rts.RelationQuery {
 	return res
 }
 
-func (t *ExpandTree) ToProto() *rts.SubjectTree {
+func (t *Tree[NodeT]) ToProto() *rts.SubjectTree {
 	res := &rts.SubjectTree{
 		NodeType: t.Type.ToProto(),
 		Children: make([]*rts.SubjectTree, len(t.Children)),
 	}
-	if t.SubjectID != nil {
-		res.Subject = rts.NewSubjectID(*t.SubjectID)
-	} else {
-		res.Subject = rts.NewSubjectSet(t.SubjectSet.Namespace, t.SubjectSet.Object, t.SubjectSet.Relation)
-	}
+	res.Tuple = t.Tuple.ToProto()
+	// nolint - fill deprecated field
+	res.Subject = res.Tuple.Subject
 	for i := range t.Children {
 		res.Children[i] = t.Children[i].ToProto()
 	}
 	return res
 }
 
-func (t *ExpandTree) FromProto(pt *rts.SubjectTree) *ExpandTree {
-	t.Type = ExpandNodeType("").FromProto(pt.NodeType)
+func TreeFromProto[T tuple[T]](pt *rts.SubjectTree) *Tree[T] {
+	t := new(Tree[T])
+	t.Type = TreeNodeType("").FromProto(pt.NodeType)
 
-	switch sub := pt.Subject.Ref.(type) {
-	case *rts.Subject_Id:
-		t.SubjectID = x.Ptr(sub.Id)
-	case *rts.Subject_Set:
-		t.SubjectSet = &SubjectSet{
-			Namespace: sub.Set.Namespace,
-			Object:    sub.Set.Object,
-			Relation:  sub.Set.Relation,
+	var tuple T
+	if pt.Tuple == nil {
+		// legacy case: fetch from deprecated fields
+		// nolint
+		switch sub := pt.Subject.Ref.(type) {
+		case *rts.Subject_Id:
+			pt.Tuple.Subject = rts.NewSubjectID(sub.Id)
+		case *rts.Subject_Set:
+			pt.Tuple.Subject = rts.NewSubjectSet(
+				sub.Set.Namespace,
+				sub.Set.Object,
+				sub.Set.Relation,
+			)
 		}
 	}
+	t.Tuple = tuple.FromProto(pt.Tuple)
 
-	t.Children = make([]*ExpandTree, len(pt.Children))
+	t.Children = make([]*Tree[T], len(pt.Children))
 	for i := range pt.Children {
-		t.Children[i] = (&ExpandTree{}).FromProto(pt.Children[i])
+		t.Children[i] = TreeFromProto[T](pt.Children[i])
 	}
 
 	return t
+}
+
+func (t TreeNodeType) ToProto() rts.NodeType {
+	switch t {
+	case TreeNodeLeaf:
+		return rts.NodeType_NODE_TYPE_LEAF
+	case TreeNodeUnion:
+		return rts.NodeType_NODE_TYPE_UNION
+	case TreeNodeExclusion:
+		return rts.NodeType_NODE_TYPE_EXCLUSION
+	case TreeNodeIntersection:
+		return rts.NodeType_NODE_TYPE_INTERSECTION
+	}
+	return rts.NodeType_NODE_TYPE_UNSPECIFIED
+}
+
+func (TreeNodeType) FromProto(pt rts.NodeType) TreeNodeType {
+	switch pt {
+	case rts.NodeType_NODE_TYPE_LEAF:
+		return TreeNodeLeaf
+	case rts.NodeType_NODE_TYPE_UNION:
+		return TreeNodeUnion
+	case rts.NodeType_NODE_TYPE_EXCLUSION:
+		return TreeNodeExclusion
+	case rts.NodeType_NODE_TYPE_INTERSECTION:
+		return TreeNodeIntersection
+	}
+	return TreeNodeUnspecified
 }

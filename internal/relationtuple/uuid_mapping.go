@@ -304,14 +304,15 @@ func (m *Mapper) FromSubjectSet(ctx context.Context, set *ketoapi.SubjectSet) (*
 	}, nil
 }
 
-func (m *Mapper) ToTree(ctx context.Context, tree *Tree) (res *ketoapi.ExpandTree, err error) {
+func (m *Mapper) ToTree(ctx context.Context, tree *Tree) (res *ketoapi.Tree[*ketoapi.RelationTuple], err error) {
 	onSuccess := newSuccess(&err)
 	defer onSuccess.apply()
 
 	var s []string
 	var u []uuid.UUID
-	res = &ketoapi.ExpandTree{
-		Type: tree.Type,
+	res = &ketoapi.Tree[*ketoapi.RelationTuple]{
+		Type:  tree.Type,
+		Tuple: &ketoapi.RelationTuple{},
 	}
 
 	nm, err := m.D.Config(ctx).NamespaceManager()
@@ -327,7 +328,7 @@ func (m *Mapper) ToTree(ctx context.Context, tree *Tree) (res *ketoapi.ExpandTre
 			return nil, err
 		}
 		onSuccess.do(func() {
-			res.SubjectSet = &ketoapi.SubjectSet{
+			res.Tuple.SubjectSet = &ketoapi.SubjectSet{
 				Namespace: n.Name,
 				Object:    s[0],
 				Relation:  sub.Relation,
@@ -336,7 +337,7 @@ func (m *Mapper) ToTree(ctx context.Context, tree *Tree) (res *ketoapi.ExpandTre
 	case *SubjectID:
 		u = append(u, sub.ID)
 		onSuccess.do(func() {
-			res.SubjectID = x.Ptr(s[0])
+			res.Tuple.SubjectID = x.Ptr(s[0])
 		})
 	}
 	for _, c := range tree.Children {

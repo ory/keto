@@ -1,12 +1,14 @@
 package ketoapi
 
 import (
+	"encoding/json"
 	"errors"
+	"fmt"
+
+	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 
 	"github.com/ory/herodot"
 	"github.com/sirupsen/logrus"
-
-	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 )
 
 var (
@@ -128,74 +130,72 @@ func (r *RelationTuple) ToLoggerFields() logrus.Fields {
 }
 
 // swagger:enum ExpandNodeType
-type ExpandNodeType string
+type ExpandNodeType TreeNodeType
+
+// swagger:enum TreeNodeType
+type TreeNodeType string
 
 const (
-	ExpandNodeUnion        ExpandNodeType = "union"
-	ExpandNodeExclusion    ExpandNodeType = "exclusion"
-	ExpandNodeIntersection ExpandNodeType = "intersection"
-	ExpandNodeLeaf         ExpandNodeType = "leaf"
-	ExpandNodeUnspecified  ExpandNodeType = "unspecified"
+	TreeNodeUnion              TreeNodeType = "union"
+	TreeNodeExclusion          TreeNodeType = "exclusion"
+	TreeNodeIntersection       TreeNodeType = "intersection"
+	TreeNodeLeaf               TreeNodeType = "leaf"
+	TreeNodeTupleToSubjectSet  TreeNodeType = "tuple_to_subject_set"
+	TreeNodeComputedSubjectSet TreeNodeType = "computed_subject_set"
+	TreeNodeNot                TreeNodeType = "not"
+	TreeNodeUnspecified        TreeNodeType = "unspecified"
 )
 
-// swagger:model expandTree
-type ExpandTree struct {
-	// The type of the node.
-	//
-	// required: true
-	Type ExpandNodeType `json:"type"`
-	// The children of the node, possibly none.
-	Children []*ExpandTree `json:"children,omitempty"`
-	// The subject set the node represents. Either this field, or SubjectID are set.
-	SubjectSet *SubjectSet `json:"subject_set,omitempty"`
-	// The subject ID the node represents. Either this field, or SubjectSet are set.
-	SubjectID *string `json:"subject_id,omitempty"`
-}
-
-func (t ExpandNodeType) String() string {
-	return string(t)
-}
-
-func (t *ExpandNodeType) UnmarshalJSON(v []byte) error {
-	switch string(v) {
-	case `"union"`:
-		*t = ExpandNodeUnion
-	case `"exclusion"`:
-		*t = ExpandNodeExclusion
-	case `"intersection"`:
-		*t = ExpandNodeIntersection
-	case `"leaf"`:
-		*t = ExpandNodeLeaf
+func (t *TreeNodeType) UnmarshalJSON(v []byte) error {
+	var s string
+	if err := json.Unmarshal(v, &s); err != nil {
+		return err
+	}
+	switch nt := TreeNodeType(s); nt {
+	case TreeNodeUnion, TreeNodeExclusion, TreeNodeIntersection, TreeNodeLeaf, TreeNodeTupleToSubjectSet, TreeNodeComputedSubjectSet, TreeNodeNot, TreeNodeUnspecified:
+		*t = nt
 	default:
 		return ErrUnknownNodeType
 	}
 	return nil
 }
 
-func (t ExpandNodeType) ToProto() rts.NodeType {
-	switch t {
-	case ExpandNodeLeaf:
-		return rts.NodeType_NODE_TYPE_LEAF
-	case ExpandNodeUnion:
-		return rts.NodeType_NODE_TYPE_UNION
-	case ExpandNodeExclusion:
-		return rts.NodeType_NODE_TYPE_EXCLUSION
-	case ExpandNodeIntersection:
-		return rts.NodeType_NODE_TYPE_INTERSECTION
-	}
-	return rts.NodeType_NODE_TYPE_UNSPECIFIED
+type tuple[T any] interface {
+	fmt.Stringer
+	ToProto() *rts.RelationTuple
+	FromProto(*rts.RelationTuple) T
 }
 
-func (ExpandNodeType) FromProto(pt rts.NodeType) ExpandNodeType {
-	switch pt {
-	case rts.NodeType_NODE_TYPE_LEAF:
-		return ExpandNodeLeaf
-	case rts.NodeType_NODE_TYPE_UNION:
-		return ExpandNodeUnion
-	case rts.NodeType_NODE_TYPE_EXCLUSION:
-		return ExpandNodeExclusion
-	case rts.NodeType_NODE_TYPE_INTERSECTION:
-		return ExpandNodeIntersection
-	}
-	return ExpandNodeUnspecified
+// Tree is a generic tree of either internal relation tuples (with UUIDs for
+// objects, etc.) or API relation tuples (with strings for objects, etc.).
+type Tree[T tuple[T]] struct {
+	// Propagate all struct changes to `swaggerOnlyExpandTree` as well.
+	// The type of the node.
+	//
+	// required: true
+	Type TreeNodeType `json:"type"`
+
+	// The children of the node, possibly none.
+	Children []*Tree[T] `json:"children,omitempty"`
+
+	// The relation tuple the node represents.
+	Tuple T `json:"tuple"`
+}
+
+// IMPORTANT: We need a manual instantiation of the generic Tree[T] for the
+// OpenAPI spec, since go-swagger does not understand generics :(.
+// This can be fixed by using grpc-gateway.
+
+// swagger:model expandTree
+type swaggerOnlyExpandTree struct { // nolint
+	// The type of the node.
+	//
+	// required: true
+	Type TreeNodeType `json:"type"`
+
+	// The children of the node, possibly none.
+	Children []*swaggerOnlyExpandTree `json:"children,omitempty"`
+
+	// The relation tuple the node represents.
+	Tuple *RelationTuple `json:"tuple"`
 }

@@ -67,17 +67,23 @@ func TestRESTHandler(t *testing.T) {
 			Object:    "root",
 			Relation:  "parent of",
 		}
-		expectedTree := &ketoapi.ExpandTree{
-			Type:       ketoapi.ExpandNodeUnion,
-			SubjectSet: rootSub,
-			Children: []*ketoapi.ExpandTree{
+		expectedTree := &ketoapi.Tree[*ketoapi.RelationTuple]{
+			Type: ketoapi.TreeNodeUnion,
+			Tuple: &ketoapi.RelationTuple{
+				SubjectSet: rootSub,
+			},
+			Children: []*ketoapi.Tree[*ketoapi.RelationTuple]{
 				{
-					Type:      ketoapi.ExpandNodeLeaf,
-					SubjectID: x.Ptr("child0"),
+					Type: ketoapi.TreeNodeLeaf,
+					Tuple: &ketoapi.RelationTuple{
+						SubjectID: x.Ptr("child0"),
+					},
 				},
 				{
-					Type:      ketoapi.ExpandNodeLeaf,
-					SubjectID: x.Ptr("child1"),
+					Type: ketoapi.TreeNodeLeaf,
+					Tuple: &ketoapi.RelationTuple{
+						SubjectID: x.Ptr("child1"),
+					},
 				},
 			},
 		}
@@ -87,13 +93,13 @@ func TestRESTHandler(t *testing.T) {
 				Namespace: nspace.Name,
 				Object:    rootSub.Object,
 				Relation:  rootSub.Relation,
-				SubjectID: expectedTree.Children[0].SubjectID,
+				SubjectID: expectedTree.Children[0].Tuple.SubjectID,
 			},
 			&ketoapi.RelationTuple{
 				Namespace: nspace.Name,
 				Object:    rootSub.Object,
 				Relation:  rootSub.Relation,
-				SubjectID: expectedTree.Children[1].SubjectID,
+				SubjectID: expectedTree.Children[1].Tuple.SubjectID,
 			},
 		)
 
@@ -104,7 +110,7 @@ func TestRESTHandler(t *testing.T) {
 
 		require.Equal(t, http.StatusOK, resp.StatusCode)
 
-		actualTree := ketoapi.ExpandTree{}
+		actualTree := ketoapi.Tree[*ketoapi.RelationTuple]{}
 		body, err := io.ReadAll(resp.Body)
 		require.NoError(t, err)
 		t.Logf("body: %s", string(body))

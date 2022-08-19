@@ -2,15 +2,14 @@ package relationtuple
 
 import (
 	"context"
-	"testing"
-
-	"github.com/ory/keto/ketoapi"
+	"fmt"
+	"sync"
 
 	"github.com/gofrs/uuid"
 
-	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
-
 	"github.com/ory/keto/internal/x"
+	"github.com/ory/keto/ketoapi"
+	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 )
 
 type (
@@ -42,6 +41,7 @@ type (
 	Subject interface {
 		Equals(Subject) bool
 		UniqueID() uuid.UUID
+		String() string
 	}
 	RelationTuple struct {
 		Namespace string    `json:"namespace"`
@@ -55,10 +55,12 @@ type (
 		Object    uuid.UUID `json:"object"`
 		Relation  string    `json:"relation"`
 	}
+
+	// TODO(hperl): Also use a ketoapi.Tree here.
 	Tree struct {
-		Type     ketoapi.ExpandNodeType `json:"type"`
-		Subject  Subject                `json:"subject"`
-		Children []*Tree                `json:"children,omitempty"`
+		Type     ketoapi.TreeNodeType `json:"type"`
+		Subject  Subject              `json:"subject"`
+		Children []*Tree              `json:"children,omitempty"`
 	}
 )
 
@@ -74,9 +76,8 @@ func (s *SubjectID) Equals(other Subject) bool {
 	return uv.ID == s.ID
 }
 
-func (s *SubjectID) UniqueID() uuid.UUID {
-	return s.ID
-}
+func (s *SubjectID) UniqueID() uuid.UUID { return s.ID }
+func (s *SubjectID) String() string      { return s.ID.String() }
 
 func (s *SubjectSet) Equals(other Subject) bool {
 	uv, ok := other.(*SubjectSet)
@@ -90,6 +91,10 @@ func (s *SubjectSet) UniqueID() uuid.UUID {
 	return uuid.NewV5(s.Object, s.Namespace+"-"+s.Relation)
 }
 
+func (s *SubjectSet) String() string {
+	return fmt.Sprintf("%s:%s#%s", s.Namespace, s.Object, s.Relation)
+}
+
 func (t *RelationTuple) ToQuery() *RelationQuery {
 	return &RelationQuery{
 		Namespace: &t.Namespace,
@@ -99,10 +104,28 @@ func (t *RelationTuple) ToQuery() *RelationQuery {
 	}
 }
 
+func (t *RelationTuple) String() string {
+	if t == nil {
+		return ""
+	}
+	return fmt.Sprintf("%s:%s#%s@%s", t.Namespace, t.Object, t.Relation, t.Subject)
+}
+
+func (t *RelationTuple) FromProto(proto *rts.RelationTuple) *RelationTuple {
+	// TODO(hperl)
+	return t
+}
+func (t *RelationTuple) ToProto() *rts.RelationTuple {
+	// TODO(hperl)
+	return &rts.RelationTuple{}
+}
+
 type ManagerWrapper struct {
 	Reg            ManagerProvider
 	PageOpts       []x.PaginationOptionSetter
 	RequestedPages []string
+	// lock is necessary so that GetRelationTuples() is safe for concurrency.
+	requestedPagesLock sync.Mutex
 }
 
 var (
@@ -110,7 +133,7 @@ var (
 	_ ManagerProvider = (*ManagerWrapper)(nil)
 )
 
-func NewManagerWrapper(_ *testing.T, reg ManagerProvider, options ...x.PaginationOptionSetter) *ManagerWrapper {
+func NewManagerWrapper(_ any, reg ManagerProvider, options ...x.PaginationOptionSetter) *ManagerWrapper {
 	return &ManagerWrapper{
 		Reg:      reg,
 		PageOpts: options,
@@ -119,6 +142,8 @@ func NewManagerWrapper(_ *testing.T, reg ManagerProvider, options ...x.Paginatio
 
 func (t *ManagerWrapper) GetRelationTuples(ctx context.Context, query *RelationQuery, options ...x.PaginationOptionSetter) ([]*RelationTuple, string, error) {
 	opts := x.GetPaginationOptions(options...)
+	t.requestedPagesLock.Lock()
+	defer t.requestedPagesLock.Unlock()
 	t.RequestedPages = append(t.RequestedPages, opts.Token)
 	return t.Reg.RelationTupleManager().GetRelationTuples(ctx, query, append(t.PageOpts, options...)...)
 }

@@ -493,6 +493,7 @@ proto.ory.keto.relation_tuples.v1alpha2.SubjectTree.toObject = function(includeI
   var f, obj = {
     nodeType: jspb.Message.getFieldWithDefault(msg, 1, 0),
     subject: (f = msg.getSubject()) && ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.Subject.toObject(includeInstance, f),
+    tuple: (f = msg.getTuple()) && ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationTuple.toObject(includeInstance, f),
     childrenList: jspb.Message.toObjectList(msg.getChildrenList(),
     proto.ory.keto.relation_tuples.v1alpha2.SubjectTree.toObject, includeInstance)
   };
@@ -539,6 +540,11 @@ proto.ory.keto.relation_tuples.v1alpha2.SubjectTree.deserializeBinaryFromReader 
       var value = new ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.Subject;
       reader.readMessage(value,ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.Subject.deserializeBinaryFromReader);
       msg.setSubject(value);
+      break;
+    case 4:
+      var value = new ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationTuple;
+      reader.readMessage(value,ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationTuple.deserializeBinaryFromReader);
+      msg.setTuple(value);
       break;
     case 3:
       var value = new proto.ory.keto.relation_tuples.v1alpha2.SubjectTree;
@@ -587,6 +593,14 @@ proto.ory.keto.relation_tuples.v1alpha2.SubjectTree.serializeBinaryToWriter = fu
       2,
       f,
       ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.Subject.serializeBinaryToWriter
+    );
+  }
+  f = message.getTuple();
+  if (f != null) {
+    writer.writeMessage(
+      4,
+      f,
+      ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationTuple.serializeBinaryToWriter
     );
   }
   f = message.getChildrenList();
@@ -652,6 +666,43 @@ proto.ory.keto.relation_tuples.v1alpha2.SubjectTree.prototype.clearSubject = fun
  */
 proto.ory.keto.relation_tuples.v1alpha2.SubjectTree.prototype.hasSubject = function() {
   return jspb.Message.getField(this, 2) != null;
+};
+
+
+/**
+ * optional RelationTuple tuple = 4;
+ * @return {?proto.ory.keto.relation_tuples.v1alpha2.RelationTuple}
+ */
+proto.ory.keto.relation_tuples.v1alpha2.SubjectTree.prototype.getTuple = function() {
+  return /** @type{?proto.ory.keto.relation_tuples.v1alpha2.RelationTuple} */ (
+    jspb.Message.getWrapperField(this, ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationTuple, 4));
+};
+
+
+/**
+ * @param {?proto.ory.keto.relation_tuples.v1alpha2.RelationTuple|undefined} value
+ * @return {!proto.ory.keto.relation_tuples.v1alpha2.SubjectTree} returns this
+*/
+proto.ory.keto.relation_tuples.v1alpha2.SubjectTree.prototype.setTuple = function(value) {
+  return jspb.Message.setWrapperField(this, 4, value);
+};
+
+
+/**
+ * Clears the message field making it undefined.
+ * @return {!proto.ory.keto.relation_tuples.v1alpha2.SubjectTree} returns this
+ */
+proto.ory.keto.relation_tuples.v1alpha2.SubjectTree.prototype.clearTuple = function() {
+  return this.setTuple(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.ory.keto.relation_tuples.v1alpha2.SubjectTree.prototype.hasTuple = function() {
+  return jspb.Message.getField(this, 4) != null;
 };
 
 

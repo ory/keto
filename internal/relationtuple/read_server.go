@@ -68,8 +68,8 @@ func (h *handler) ListRelationTuples(ctx context.Context, req *rts.ListRelationT
 	switch {
 	case req.RelationQuery != nil:
 		q.FromDataProvider(&queryWrapper{req.RelationQuery})
-	case req.Query != nil:
-		q.FromDataProvider(&deprecatedQueryWrapper{req.Query})
+	case req.Query != nil: // nolint
+		q.FromDataProvider(&deprecatedQueryWrapper{req.Query}) // nolint
 	default:
 		return nil, herodot.ErrBadRequest.WithError("you must provide a query")
 	}
@@ -103,22 +103,22 @@ func (h *handler) ListRelationTuples(ctx context.Context, req *rts.ListRelationT
 
 // swagger:route GET /relation-tuples read getRelationTuples
 //
-// Query relation tuples
+// # Query relation tuples
 //
 // Get all relation tuples that match the query. Only the namespace field is required.
 //
-//     Consumes:
-//     -  application/x-www-form-urlencoded
+//	Consumes:
+//	-  application/x-www-form-urlencoded
 //
-//     Produces:
-//     - application/json
+//	Produces:
+//	- application/json
 //
-//     Schemes: http, https
+//	Schemes: http, https
 //
-//     Responses:
-//       200: getRelationTuplesResponse
-//       404: genericError
-//       500: genericError
+//	Responses:
+//	  200: getRelationTuplesResponse
+//	  404: genericError
+//	  500: genericError
 func (h *handler) getRelations(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	ctx := r.Context()
 

@@ -216,17 +216,17 @@ func TestReadHandlers(t *testing.T) {
 		}
 		withDeprecatedQuery := func(req *rts.ListRelationTuplesRequest, query *ketoapi.RelationQuery) {
 			pq := query.ToProto()
-			req.Query = &rts.ListRelationTuplesRequest_Query{
+			req.Query = &rts.ListRelationTuplesRequest_Query{ // nolint
 				Subject: pq.Subject,
 			}
 			if pq.Namespace != nil {
-				req.Query.Namespace = *pq.Namespace
+				req.Query.Namespace = *pq.Namespace // nolint
 			}
 			if pq.Object != nil {
-				req.Query.Object = *pq.Object
+				req.Query.Object = *pq.Object // nolint
 			}
 			if pq.Relation != nil {
-				req.Query.Relation = *pq.Relation
+				req.Query.Relation = *pq.Relation // nolint
 			}
 		}
 		apiTuplesFromProto := func(t *testing.T, pts ...*rts.RelationTuple) []*ketoapi.RelationTuple {
@@ -238,11 +238,11 @@ func TestReadHandlers(t *testing.T) {
 			}
 			return actual
 		}
-		soc, err := net.Listen("tcp", ":0")
+		soc, err := net.Listen("tcp", ":0") // nolint
 		require.NoError(t, err)
 		srv := grpc.NewServer()
 		h.RegisterReadGRPC(srv)
-		go srv.Serve(soc)
+		go srv.Serve(soc) // nolint
 		t.Cleanup(srv.Stop)
 
 		con, err := grpc.Dial(soc.Addr().String(), grpc.WithTransportCredentials(insecure.NewCredentials()))

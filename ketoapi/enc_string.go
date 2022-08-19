@@ -11,6 +11,9 @@ import (
 var ErrMalformedInput = herodot.ErrBadRequest.WithError("malformed string input")
 
 func (r *RelationTuple) String() string {
+	if r == nil {
+		return ""
+	}
 	sb := strings.Builder{}
 	sb.WriteString(r.Namespace)
 	sb.WriteRune(':')
@@ -91,27 +94,59 @@ func (s *SubjectSet) FromString(str string) (*SubjectSet, error) {
 	}, nil
 }
 
-func (t *ExpandTree) String() string {
+func (t TreeNodeType) String() string {
+	return string(t)
+}
+
+func (t *Tree[NodeT]) Label() string {
 	if t == nil {
 		return ""
 	}
 
-	sub := "<!--no subject-->"
-	switch {
-	case t.SubjectID != nil:
-		sub = *t.SubjectID
-	case t.SubjectSet != nil:
-		sub = t.SubjectSet.String()
+	return t.Tuple.String()
+}
+
+func (t *Tree[NodeT]) String() string {
+	if t == nil {
+		return ""
 	}
 
-	if t.Type == ExpandNodeLeaf {
-		return fmt.Sprintf("☘ %s️", sub)
+	nodeLabel := t.Label()
+
+	if t.Type == TreeNodeLeaf {
+		return fmt.Sprintf("∋ %s️", nodeLabel)
 	}
 
 	children := make([]string, len(t.Children))
 	for i, c := range t.Children {
-		children[i] = strings.Join(strings.Split(c.String(), "\n"), "\n│  ")
+		var indent string
+		if i == len(t.Children)-1 {
+			indent = "   "
+		} else {
+			indent = "│  "
+		}
+		children[i] = strings.Join(strings.Split(c.String(), "\n"), "\n"+indent)
 	}
 
-	return fmt.Sprintf("∪ %s\n├─ %s", sub, strings.Join(children, "\n├─ "))
+	setOperation := ""
+	switch t.Type {
+	case TreeNodeIntersection:
+		setOperation = "and"
+	case TreeNodeUnion:
+		setOperation = "or"
+	case TreeNodeExclusion:
+		setOperation = `\`
+	case TreeNodeNot:
+		setOperation = `not`
+	case TreeNodeTupleToSubjectSet:
+		setOperation = "┐ tuple to userset"
+	case TreeNodeComputedSubjectSet:
+		setOperation = "┐ computed userset"
+	}
+
+	boxSymbol := "├"
+	if len(children) == 1 {
+		boxSymbol = "└"
+	}
+	return fmt.Sprintf("%s %s\n%s──%s", setOperation, nodeLabel, boxSymbol, strings.Join(children, "\n└──"))
 }

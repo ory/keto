@@ -35,7 +35,7 @@ type (
 		queryTuple(t require.TestingT, q *ketoapi.RelationQuery, opts ...x.PaginationOptionSetter) *ketoapi.GetResponse
 		queryTupleErr(t require.TestingT, expected herodot.DefaultError, q *ketoapi.RelationQuery, opts ...x.PaginationOptionSetter)
 		check(t require.TestingT, r *ketoapi.RelationTuple) bool
-		expand(t require.TestingT, r *ketoapi.SubjectSet, depth int) *ketoapi.ExpandTree
+		expand(t require.TestingT, r *ketoapi.SubjectSet, depth int) *ketoapi.Tree[*ketoapi.RelationTuple]
 		waitUntilLive(t require.TestingT)
 	}
 )

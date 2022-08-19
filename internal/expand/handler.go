@@ -61,23 +61,23 @@ type getExpandRequest struct {
 
 // swagger:route GET /relation-tuples/expand read getExpand
 //
-// Expand a Relation Tuple
+// # Expand a Relation Tuple
 //
 // Use this endpoint to expand a relation tuple.
 //
-//     Consumes:
-//     -  application/x-www-form-urlencoded
+//	Consumes:
+//	-  application/x-www-form-urlencoded
 //
-//     Produces:
-//     - application/json
+//	Produces:
+//	- application/json
 //
-//     Schemes: http, https
+//	Schemes: http, https
 //
-//     Responses:
-//       200: expandTree
-//       400: genericError
-//       404: genericError
-//       500: genericError
+//	Responses:
+//	  200: expandTree
+//	  400: genericError
+//	  404: genericError
+//	  500: genericError
 func (h *handler) getExpand(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	maxDepth, err := x.GetMaxDepthFromQuery(r.URL.Query())
 	if err != nil {

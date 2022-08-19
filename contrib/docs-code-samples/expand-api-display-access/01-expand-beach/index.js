@@ -35,16 +35,23 @@ const subjectJSON = (subject) => {
 
 // helper to get a nice result
 const prettyTree = (tree) => {
-  const [nodeType, subject, children] = [
+  const [nodeType, tuple, children] = [
     tree.getNodeType(),
-    subjectJSON(tree.getSubject()),
+    {
+      tuple: {
+        namespace: "",
+        object: "",
+        relation: "",
+        ...subjectJSON(tree.getSubject()),
+      },
+    },
     tree.getChildrenList(),
   ]
   switch (nodeType) {
     case expand.NodeType.NODE_TYPE_LEAF:
-      return { type: "leaf", ...subject }
+      return { type: "leaf", ...tuple }
     case expand.NodeType.NODE_TYPE_UNION:
-      return { type: "union", children: children.map(prettyTree), ...subject }
+      return { type: "union", children: children.map(prettyTree), ...tuple }
   }
 }
 

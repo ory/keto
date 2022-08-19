@@ -77,8 +77,14 @@ enum NodeType {
 message SubjectTree {
   // The type of the node.
   NodeType node_type = 1;
+
   // The subject this node represents.
-  Subject subject = 2;
+  // Deprecated: More information is now available in the tuple field.
+  Subject subject = 2 [deprecated = true];
+
+  // The relation tuple this node represents.
+  RelationTuple tuple = 4;
+
   // The children of this node.
   //
   // This is never set if `node_type` == `NODE_TYPE_LEAF`.

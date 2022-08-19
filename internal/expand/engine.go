@@ -38,14 +38,14 @@ func (e *Engine) BuildTree(ctx context.Context, subject relationtuple.Subject, r
 		restDepth = globalMaxDepth
 	}
 
-	if us, isUserSet := subject.(*relationtuple.SubjectSet); isUserSet {
-		ctx, wasAlreadyVisited := graph.CheckAndAddVisited(ctx, subject.UniqueID())
+	if subSet, isSubjectSet := subject.(*relationtuple.SubjectSet); isSubjectSet {
+		ctx, wasAlreadyVisited := graph.CheckAndAddVisited(ctx, subject)
 		if wasAlreadyVisited {
 			return nil, nil
 		}
 
 		subTree := &relationtuple.Tree{
-			Type:    ketoapi.ExpandNodeUnion,
+			Type:    ketoapi.TreeNodeUnion,
 			Subject: subject,
 		}
 
@@ -59,9 +59,9 @@ func (e *Engine) BuildTree(ctx context.Context, subject relationtuple.Subject, r
 			rels, nextPage, err = e.d.RelationTupleManager().GetRelationTuples(
 				ctx,
 				&relationtuple.RelationQuery{
-					Relation:  &us.Relation,
-					Object:    &us.Object,
-					Namespace: &us.Namespace,
+					Relation:  &subSet.Relation,
+					Object:    &subSet.Object,
+					Namespace: &subSet.Namespace,
 				},
 				x.WithToken(nextPage),
 			)
@@ -72,7 +72,7 @@ func (e *Engine) BuildTree(ctx context.Context, subject relationtuple.Subject, r
 			}
 
 			if restDepth <= 1 {
-				subTree.Type = ketoapi.ExpandNodeLeaf
+				subTree.Type = ketoapi.TreeNodeLeaf
 				return subTree, nil
 			}
 
@@ -84,7 +84,7 @@ func (e *Engine) BuildTree(ctx context.Context, subject relationtuple.Subject, r
 				}
 				if child == nil {
 					child = &relationtuple.Tree{
-						Type:    ketoapi.ExpandNodeLeaf,
+						Type:    ketoapi.TreeNodeLeaf,
 						Subject: r.Subject,
 					}
 				}
@@ -98,7 +98,7 @@ func (e *Engine) BuildTree(ctx context.Context, subject relationtuple.Subject, r
 
 	// is SubjectID
 	return &relationtuple.Tree{
-		Type:    ketoapi.ExpandNodeLeaf,
+		Type:    ketoapi.TreeNodeLeaf,
 		Subject: subject,
 	}, nil
 }
