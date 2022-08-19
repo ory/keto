@@ -1,7 +1,7 @@
 SHELL=/bin/bash -o pipefail
 
-export PATH := .bin/gobin:.bin/brew/bin:.bin/brew/sbin:${PATH}
 export PWD := $(shell pwd)
+export PATH := ${PWD}/.bin/gobin:${PWD}/.bin/brew/bin:${PWD}/.bin/brew/sbin:${PATH}
 
 GO_DEPENDENCIES = golang.org/x/tools/cmd/goimports \
 				  github.com/mattn/goveralls \
@@ -11,7 +11,9 @@ GO_DEPENDENCIES = golang.org/x/tools/cmd/goimports \
 				  google.golang.org/grpc/cmd/protoc-gen-go-grpc \
 				  github.com/pseudomuto/protoc-gen-doc/cmd/protoc-gen-doc \
 				  github.com/josephburnett/jd \
-				  github.com/mikefarah/yq/v4
+				  github.com/mikefarah/yq/v4 \
+				  golang.org/x/tools/cmd/stringer \
+				  github.com/mdempsky/go114-fuzz-build
 
 BREW_DEPENDENCIES = go-swagger@0.29.0 \
 					grype@0.40.1 \
@@ -132,6 +134,17 @@ test-docs-samples: tools/jd
 		&& \
 		npm test
 
+.PHONY: fuzz-test
+fuzz-test:
+		go test -tags=sqlite -fuzz=FuzzParser -fuzztime=10s ./internal/schema
+
+.PHONY: libfuzzer-fuzz-test
+libfuzzer-fuzz-test: .bin/go114-fuzz-build
+		mkdir -p .fuzzer
+		.bin/go114-fuzz-build -o ./.fuzzer/parser.a ./internal/schema
+		clang -fsanitize=fuzzer ./.fuzzer/parser.a -o ./.fuzzer/parser
+		./.fuzzer/parser -timeout=1 -max_total_time=10 -use_value_profile
+
 .PHONY: cve-scan
 cve-scan: docker tools/grype
 		grype oryd/keto:latest
@@ -141,3 +154,7 @@ post-release: tools/yq
 		cat docker-compose.yml | yq '.services.keto.image = "oryd/keto:'$$DOCKER_TAG'"' | sponge docker-compose.yml
 		cat docker-compose-mysql.yml | yq '.services.keto-migrate.image = "oryd/keto:'$$DOCKER_TAG'"' | sponge docker-compose-mysql.yml
 		cat docker-compose-postgres.yml | yq '.services.keto-migrate.image = "oryd/keto:'$$DOCKER_TAG'"' | sponge docker-compose-postgres.yml
+
+.PHONY: generate
+generate: tools/stringer
+		go generate ./...

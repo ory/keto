@@ -45,12 +45,13 @@ func Test_DebugOnly(t *testing.T) {
 // This benchmark is intended for profiling specific operations
 //
 // Summary namespace manager reload:
-//   Memory manager:
-//     Mem: 4.35% of all while github.com/ory/x/configx.(*Provider).reload takes 93.56%
-//     CPU: 1.86% of all while github.com/ory/x/configx.(*Provider).reload takes 67.28%
-//   File manager:
-//     Mem: 0.83% of all while github.com/ory/x/configx.(*Provider).reload takes 96.34%
-//     CPU: 3.84% of all while github.com/ory/x/configx.(*Provider).reload takes 61.53%
+//
+//	Memory manager:
+//	  Mem: 4.35% of all while github.com/ory/x/configx.(*Provider).reload takes 93.56%
+//	  CPU: 1.86% of all while github.com/ory/x/configx.(*Provider).reload takes 67.28%
+//	File manager:
+//	  Mem: 0.83% of all while github.com/ory/x/configx.(*Provider).reload takes 96.34%
+//	  CPU: 3.84% of all while github.com/ory/x/configx.(*Provider).reload takes 61.53%
 func BenchmarkServe(b *testing.B) {
 	b.SkipNow()
 

@@ -22,7 +22,7 @@ func ManagerTest(t *testing.T, m Manager) {
 
 	t.Run("method=Write", func(t *testing.T) {
 		t.Run("case=success", func(t *testing.T) {
-			nspace := strconv.Itoa(rand.Int())
+			nspace := strconv.Itoa(rand.Int()) // nolint
 
 			tuples := []*RelationTuple{
 				{
@@ -56,7 +56,7 @@ func ManagerTest(t *testing.T, m Manager) {
 
 	t.Run("method=Get", func(t *testing.T) {
 		t.Run("case=queries", func(t *testing.T) {
-			nspace := strconv.Itoa(rand.Int())
+			nspace := strconv.Itoa(rand.Int()) // nolint
 
 			tuples := make([]*RelationTuple, 10)
 			ids := x.UUIDs(len(tuples))
@@ -169,7 +169,7 @@ func ManagerTest(t *testing.T, m Manager) {
 		})
 
 		t.Run("case=pagination", func(t *testing.T) {
-			nspace := strconv.Itoa(rand.Int())
+			nspace := strconv.Itoa(rand.Int()) // nolint
 
 			tuples := make([]*RelationTuple, 20)
 			oID := uuid.Must(uuid.NewV4())
@@ -241,7 +241,7 @@ func ManagerTest(t *testing.T, m Manager) {
 
 	t.Run("method=Delete", func(t *testing.T) {
 		t.Run("case=deletes tuple", func(t *testing.T) {
-			nspace := strconv.Itoa(rand.Int())
+			nspace := strconv.Itoa(rand.Int()) // nolint
 			oID := uuid.Must(uuid.NewV4())
 			sID := uuid.Must(uuid.NewV4())
 
@@ -284,7 +284,7 @@ func ManagerTest(t *testing.T, m Manager) {
 		})
 
 		t.Run("case=deletes only one tuple", func(t *testing.T) {
-			nspace := strconv.Itoa(rand.Int())
+			nspace := strconv.Itoa(rand.Int()) // nolint
 
 			rs := make([]*RelationTuple, 4)
 			oIDs, sIDs := make([]uuid.UUID, len(rs)), make([]uuid.UUID, len(rs))
@@ -352,7 +352,7 @@ func ManagerTest(t *testing.T, m Manager) {
 
 	t.Run("method=Transact", func(t *testing.T) {
 		t.Run("case=success", func(t *testing.T) {
-			nspace := strconv.Itoa(rand.Int())
+			nspace := strconv.Itoa(rand.Int()) // nolint
 
 			rs := make([]*RelationTuple, 4)
 			oIDs, sIDs := make([]uuid.UUID, len(rs)), make([]uuid.UUID, len(rs))
@@ -390,7 +390,7 @@ func ManagerTest(t *testing.T, m Manager) {
 		})
 
 		t.Run("case=err rolls back all", func(t *testing.T) {
-			nspace := strconv.Itoa(rand.Int())
+			nspace := strconv.Itoa(rand.Int()) // nolint
 
 			rs := make([]*RelationTuple, 2)
 			oIDs, sIDs := make([]uuid.UUID, len(rs)), make([]uuid.UUID, len(rs))

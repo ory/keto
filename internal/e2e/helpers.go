@@ -27,13 +27,10 @@ type namespaceTestManager struct {
 	reg     driver.Registry
 	ctx     context.Context
 	nspaces []*namespace.Namespace
-	nextID  int32
 }
 
 func (m *namespaceTestManager) add(t *testing.T, nn ...*namespace.Namespace) {
-	for _, n := range nn {
-		m.nspaces = append(m.nspaces, n)
-	}
+	m.nspaces = append(m.nspaces, nn...)
 
 	require.NoError(t, m.reg.Config(m.ctx).Set(config.KeyNamespaces, m.nspaces))
 
