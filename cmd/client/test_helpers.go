@@ -36,10 +36,14 @@ const (
 	ReadServer  ServerType = "read"
 )
 
-func NewTestServer(t *testing.T, rw ServerType, nspaces []*namespace.Namespace, newCmd func() *cobra.Command) *TestServer {
+func NewTestServer(t *testing.T,
+	rw ServerType, nspaces []*namespace.Namespace, newCmd func() *cobra.Command,
+	registryOpts ...driver.TestRegistryOption,
+) *TestServer {
 	ctx := context.Background()
 	ts := &TestServer{
-		Reg: driver.NewSqliteTestRegistry(t, false),
+		Reg: driver.NewSqliteTestRegistry(t, false,
+			append(registryOpts, driver.WithSelfsignedTransportCredentials())...),
 	}
 	require.NoError(t, ts.Reg.Config(ctx).Set(config.KeyNamespaces, nspaces))
 

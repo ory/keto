@@ -11,4 +11,4 @@ relationtuple='
   "subject_id": "john"
 }'
 
-keto relation-tuple delete <(echo "$relationtuple") -q > /dev/null
+keto relation-tuple delete <(echo "$relationtuple") -q > /dev/null --insecure

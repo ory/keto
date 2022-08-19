@@ -2,6 +2,7 @@ package client
 
 import (
 	"context"
+	"crypto/tls"
 	"fmt"
 	"net"
 	"os"
@@ -9,22 +10,26 @@ import (
 	"time"
 
 	"github.com/ory/x/flagx"
+	"golang.org/x/oauth2"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/credentials/oauth"
 )
 
 type contextKeys string
 
 const (
-	FlagReadRemote  = "read-remote"
-	FlagWriteRemote = "write-remote"
+	FlagReadRemote        = "read-remote"
+	FlagWriteRemote       = "write-remote"
+	FlagInsecureTransport = "insecure"
 
 	EnvReadRemote  = "KETO_READ_REMOTE"
 	EnvWriteRemote = "KETO_WRITE_REMOTE"
+	EnvAuthToken   = "ORY_PAT"
 
 	ContextKeyTimeout contextKeys = "timeout"
 )
@@ -48,15 +53,27 @@ func getRemote(cmd *cobra.Command, flagRemote, envRemote string) (remote string)
 	return remote
 }
 
+func getToken(cmd *cobra.Command) (token string) {
+	return os.Getenv(EnvAuthToken)
+}
+
 func GetReadConn(cmd *cobra.Command) (*grpc.ClientConn, error) {
-	return Conn(cmd.Context(), getRemote(cmd, FlagReadRemote, EnvReadRemote))
+	return Conn(cmd.Context(),
+		getRemote(cmd, FlagReadRemote, EnvReadRemote),
+		getToken(cmd),
+		flagx.MustGetBool(cmd, FlagInsecureTransport),
+	)
 }
 
 func GetWriteConn(cmd *cobra.Command) (*grpc.ClientConn, error) {
-	return Conn(cmd.Context(), getRemote(cmd, FlagWriteRemote, EnvWriteRemote))
+	return Conn(cmd.Context(),
+		getRemote(cmd, FlagWriteRemote, EnvWriteRemote),
+		getToken(cmd),
+		flagx.MustGetBool(cmd, FlagInsecureTransport),
+	)
 }
 
-func Conn(ctx context.Context, remote string) (*grpc.ClientConn, error) {
+func Conn(ctx context.Context, remote, token string, insecureTransport bool) (*grpc.ClientConn, error) {
 	timeout := 3 * time.Second
 	if d, ok := ctx.Value(ContextKeyTimeout).(time.Duration); ok {
 		timeout = d
@@ -64,23 +81,40 @@ func Conn(ctx context.Context, remote string) (*grpc.ClientConn, error) {
 
 	ctx, cancel := context.WithTimeout(ctx, timeout)
 	defer cancel()
-	return grpc.DialContext(ctx, remote,
-		grpc.WithTransportCredentials(transportCredentials(remote)),
+
+	dialOpts := []grpc.DialOption{
 		grpc.WithBlock(),
-		grpc.WithDisableHealthCheck())
+		grpc.WithDisableHealthCheck(),
+	}
+	dialOpts = append(dialOpts, transportCredentials(remote, insecureTransport))
+	if token != "" {
+		dialOpts = append(dialOpts,
+			grpc.WithPerRPCCredentials(
+				oauth.NewOauthAccess(&oauth2.Token{AccessToken: token})))
+	}
+
+	return grpc.DialContext(ctx, remote, dialOpts...)
 }
 
-func transportCredentials(remote string) credentials.TransportCredentials {
+func transportCredentials(remote string, insecureTransport bool) grpc.DialOption {
+	if insecureTransport {
+		return grpc.WithTransportCredentials(insecure.NewCredentials())
+	}
+
 	host, _, err := net.SplitHostPort(remote)
 	if err == nil && (host == "127.0.0.1" || host == "localhost") {
-		return insecure.NewCredentials()
+		return grpc.WithTransportCredentials(credentials.NewTLS(&tls.Config{
+			// nolint only set for local domain.
+			InsecureSkipVerify: true,
+		}))
 	}
 
 	// Defaults to the default host root CA bundle
-	return credentials.NewTLS(nil)
+	return grpc.WithTransportCredentials(credentials.NewTLS(nil))
 }
 
 func RegisterRemoteURLFlags(flags *pflag.FlagSet) {
 	flags.String(FlagReadRemote, "127.0.0.1:4466", "Remote address of the read API endpoint.")
 	flags.String(FlagWriteRemote, "127.0.0.1:4467", "Remote address of the write API endpoint.")
+	flags.Bool(FlagInsecureTransport, false, "Do not use transport encryption.")
 }

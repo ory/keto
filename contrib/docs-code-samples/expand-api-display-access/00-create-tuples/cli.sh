@@ -18,6 +18,6 @@ files:/photos/beach.jpg#access@(directories:/photos#access)
 files:/photos/mountains.jpg#access@(files:/photos/mountains.jpg#owner)
 files:/photos/mountains.jpg#access@(directories:/photos#access)' | \
   keto relation-tuple parse - --format json | \
-    keto relation-tuple create - >/dev/null \
+    keto relation-tuple create --insecure - >/dev/null \
     && echo "Successfully created tuples" \
     || echo "Encountered error"
