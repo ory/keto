@@ -2,34 +2,49 @@ package graph
 
 import (
 	"context"
+	"fmt"
+	"sync"
 
-	"github.com/gofrs/uuid"
+	"github.com/ory/keto/internal/relationtuple"
 )
 
 type contextKey string
 
 const visitedMapKey = contextKey("visitedMap")
 
-func CheckAndAddVisited(ctx context.Context, current uuid.UUID) (context.Context, bool) {
-	visitedMap, ok := ctx.Value(visitedMapKey).(map[uuid.UUID]struct{})
+type stringSet struct {
+	m map[string]struct{}
+	l sync.Mutex
+}
+
+func newStringSet() *stringSet {
+	return &stringSet{m: make(map[string]struct{})}
+}
+
+func (s *stringSet) addNoDuplicate(el fmt.Stringer) bool {
+	s.l.Lock()
+	defer s.l.Unlock()
+
+	if _, found := s.m[el.String()]; found {
+		return true
+	}
+	s.m[el.String()] = struct{}{}
+	return false
+}
+
+func InitVisited(ctx context.Context) context.Context {
+	if _, ok := ctx.Value(visitedMapKey).(*stringSet); !ok {
+		ctx = context.WithValue(ctx, visitedMapKey, newStringSet())
+	}
+	return ctx
+}
+
+func CheckAndAddVisited(ctx context.Context, current relationtuple.Subject) (context.Context, bool) {
+	set, ok := ctx.Value(visitedMapKey).(*stringSet)
 	if !ok {
-		// for the first time initialize the map
-		visitedMap = make(map[uuid.UUID]struct{})
-		visitedMap[current] = struct{}{}
-		return context.WithValue(ctx, visitedMapKey, visitedMap), false
+		set = newStringSet()
+		ctx = context.WithValue(ctx, visitedMapKey, set)
 	}
 
-	// check if current node was already visited
-	if _, ok := visitedMap[current]; ok {
-		return ctx, true
-	}
-
-	// set current entry to visited
-	visitedMap[current] = struct{}{}
-
-	return context.WithValue(
-		ctx,
-		visitedMapKey,
-		visitedMap,
-	), false
+	return ctx, set.addNoDuplicate(current.UniqueID())
 }
