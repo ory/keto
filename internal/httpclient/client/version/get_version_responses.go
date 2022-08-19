@@ -39,7 +39,8 @@ func NewGetVersionOK() *GetVersionOK {
 	return &GetVersionOK{}
 }
 
-/* GetVersionOK describes a response with status code 200, with default header values.
+/*
+	GetVersionOK describes a response with status code 200, with default header values.
 
 version
 */

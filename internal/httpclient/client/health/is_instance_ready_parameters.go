@@ -52,10 +52,12 @@ func NewIsInstanceReadyParamsWithHTTPClient(client *http.Client) *IsInstanceRead
 	}
 }
 
-/* IsInstanceReadyParams contains all the parameters to send to the API endpoint
-   for the is instance ready operation.
+/*
+IsInstanceReadyParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the is instance ready operation.
+
+	Typically these are written to a http.Request.
 */
 type IsInstanceReadyParams struct {
 	timeout    time.Duration

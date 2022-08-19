@@ -51,7 +51,8 @@ func NewCreateRelationTupleCreated() *CreateRelationTupleCreated {
 	return &CreateRelationTupleCreated{}
 }
 
-/* CreateRelationTupleCreated describes a response with status code 201, with default header values.
+/*
+	CreateRelationTupleCreated describes a response with status code 201, with default header values.
 
 relationQuery
 */
@@ -83,7 +84,8 @@ func NewCreateRelationTupleBadRequest() *CreateRelationTupleBadRequest {
 	return &CreateRelationTupleBadRequest{}
 }
 
-/* CreateRelationTupleBadRequest describes a response with status code 400, with default header values.
+/*
+	CreateRelationTupleBadRequest describes a response with status code 400, with default header values.
 
 genericError
 */
@@ -115,7 +117,8 @@ func NewCreateRelationTupleInternalServerError() *CreateRelationTupleInternalSer
 	return &CreateRelationTupleInternalServerError{}
 }
 
-/* CreateRelationTupleInternalServerError describes a response with status code 500, with default header values.
+/*
+	CreateRelationTupleInternalServerError describes a response with status code 500, with default header values.
 
 genericError
 */

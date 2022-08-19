@@ -51,7 +51,8 @@ func NewDeleteRelationTuplesNoContent() *DeleteRelationTuplesNoContent {
 	return &DeleteRelationTuplesNoContent{}
 }
 
-/* DeleteRelationTuplesNoContent describes a response with status code 204, with default header values.
+/*
+	DeleteRelationTuplesNoContent describes a response with status code 204, with default header values.
 
 Empty responses are sent when, for example, resources are deleted. The HTTP status code for empty responses is typically 201.
 */
@@ -72,7 +73,8 @@ func NewDeleteRelationTuplesBadRequest() *DeleteRelationTuplesBadRequest {
 	return &DeleteRelationTuplesBadRequest{}
 }
 
-/* DeleteRelationTuplesBadRequest describes a response with status code 400, with default header values.
+/*
+	DeleteRelationTuplesBadRequest describes a response with status code 400, with default header values.
 
 genericError
 */
@@ -104,7 +106,8 @@ func NewDeleteRelationTuplesInternalServerError() *DeleteRelationTuplesInternalS
 	return &DeleteRelationTuplesInternalServerError{}
 }
 
-/* DeleteRelationTuplesInternalServerError describes a response with status code 500, with default header values.
+/*
+	DeleteRelationTuplesInternalServerError describes a response with status code 500, with default header values.
 
 genericError
 */

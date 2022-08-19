@@ -36,9 +36,9 @@ type ClientService interface {
 }
 
 /*
-  GetVersion gets service version
+	GetVersion gets service version
 
-  This endpoint returns the service version typically notated using semantic versioning.
+	This endpoint returns the service version typically notated using semantic versioning.
 
 If the service supports TLS Edge Termination, this endpoint does not require the
 `X-Forwarded-Proto` header to be set.

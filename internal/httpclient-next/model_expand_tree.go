@@ -18,11 +18,9 @@ import (
 // ExpandTree struct for ExpandTree
 type ExpandTree struct {
 	// The children of the node, possibly none.
-	Children []ExpandTree `json:"children,omitempty"`
-	// The subject ID the node represents. Either this field, or SubjectSet are set.
-	SubjectId  *string     `json:"subject_id,omitempty"`
-	SubjectSet *SubjectSet `json:"subject_set,omitempty"`
-	// The type of the node. union ExpandNodeUnion exclusion ExpandNodeExclusion intersection ExpandNodeIntersection leaf ExpandNodeLeaf unspecified ExpandNodeUnspecified
+	Children []ExpandTree   `json:"children,omitempty"`
+	Tuple    *RelationTuple `json:"tuple,omitempty"`
+	// The type of the node. union TreeNodeUnion exclusion TreeNodeExclusion intersection TreeNodeIntersection leaf TreeNodeLeaf tuple_to_subject_set TreeNodeTupleToSubjectSet computed_subject_set TreeNodeComputedSubjectSet not TreeNodeNot unspecified TreeNodeUnspecified
 	Type string `json:"type"`
 }
 
@@ -76,68 +74,36 @@ func (o *ExpandTree) SetChildren(v []ExpandTree) {
 	o.Children = v
 }
 
-// GetSubjectId returns the SubjectId field value if set, zero value otherwise.
-func (o *ExpandTree) GetSubjectId() string {
-	if o == nil || o.SubjectId == nil {
-		var ret string
+// GetTuple returns the Tuple field value if set, zero value otherwise.
+func (o *ExpandTree) GetTuple() RelationTuple {
+	if o == nil || o.Tuple == nil {
+		var ret RelationTuple
 		return ret
 	}
-	return *o.SubjectId
+	return *o.Tuple
 }
 
-// GetSubjectIdOk returns a tuple with the SubjectId field value if set, nil otherwise
+// GetTupleOk returns a tuple with the Tuple field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ExpandTree) GetSubjectIdOk() (*string, bool) {
-	if o == nil || o.SubjectId == nil {
+func (o *ExpandTree) GetTupleOk() (*RelationTuple, bool) {
+	if o == nil || o.Tuple == nil {
 		return nil, false
 	}
-	return o.SubjectId, true
+	return o.Tuple, true
 }
 
-// HasSubjectId returns a boolean if a field has been set.
-func (o *ExpandTree) HasSubjectId() bool {
-	if o != nil && o.SubjectId != nil {
+// HasTuple returns a boolean if a field has been set.
+func (o *ExpandTree) HasTuple() bool {
+	if o != nil && o.Tuple != nil {
 		return true
 	}
 
 	return false
 }
 
-// SetSubjectId gets a reference to the given string and assigns it to the SubjectId field.
-func (o *ExpandTree) SetSubjectId(v string) {
-	o.SubjectId = &v
-}
-
-// GetSubjectSet returns the SubjectSet field value if set, zero value otherwise.
-func (o *ExpandTree) GetSubjectSet() SubjectSet {
-	if o == nil || o.SubjectSet == nil {
-		var ret SubjectSet
-		return ret
-	}
-	return *o.SubjectSet
-}
-
-// GetSubjectSetOk returns a tuple with the SubjectSet field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ExpandTree) GetSubjectSetOk() (*SubjectSet, bool) {
-	if o == nil || o.SubjectSet == nil {
-		return nil, false
-	}
-	return o.SubjectSet, true
-}
-
-// HasSubjectSet returns a boolean if a field has been set.
-func (o *ExpandTree) HasSubjectSet() bool {
-	if o != nil && o.SubjectSet != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetSubjectSet gets a reference to the given SubjectSet and assigns it to the SubjectSet field.
-func (o *ExpandTree) SetSubjectSet(v SubjectSet) {
-	o.SubjectSet = &v
+// SetTuple gets a reference to the given RelationTuple and assigns it to the Tuple field.
+func (o *ExpandTree) SetTuple(v RelationTuple) {
+	o.Tuple = &v
 }
 
 // GetType returns the Type field value
@@ -169,11 +135,8 @@ func (o ExpandTree) MarshalJSON() ([]byte, error) {
 	if o.Children != nil {
 		toSerialize["children"] = o.Children
 	}
-	if o.SubjectId != nil {
-		toSerialize["subject_id"] = o.SubjectId
-	}
-	if o.SubjectSet != nil {
-		toSerialize["subject_set"] = o.SubjectSet
+	if o.Tuple != nil {
+		toSerialize["tuple"] = o.Tuple
 	}
 	if true {
 		toSerialize["type"] = o.Type

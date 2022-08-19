@@ -57,7 +57,8 @@ func NewPostCheckMirrorStatusOK() *PostCheckMirrorStatusOK {
 	return &PostCheckMirrorStatusOK{}
 }
 
-/* PostCheckMirrorStatusOK describes a response with status code 200, with default header values.
+/*
+	PostCheckMirrorStatusOK describes a response with status code 200, with default header values.
 
 getCheckResponse
 */
@@ -89,7 +90,8 @@ func NewPostCheckMirrorStatusBadRequest() *PostCheckMirrorStatusBadRequest {
 	return &PostCheckMirrorStatusBadRequest{}
 }
 
-/* PostCheckMirrorStatusBadRequest describes a response with status code 400, with default header values.
+/*
+	PostCheckMirrorStatusBadRequest describes a response with status code 400, with default header values.
 
 genericError
 */
@@ -121,7 +123,8 @@ func NewPostCheckMirrorStatusForbidden() *PostCheckMirrorStatusForbidden {
 	return &PostCheckMirrorStatusForbidden{}
 }
 
-/* PostCheckMirrorStatusForbidden describes a response with status code 403, with default header values.
+/*
+	PostCheckMirrorStatusForbidden describes a response with status code 403, with default header values.
 
 getCheckResponse
 */
@@ -153,7 +156,8 @@ func NewPostCheckMirrorStatusInternalServerError() *PostCheckMirrorStatusInterna
 	return &PostCheckMirrorStatusInternalServerError{}
 }
 
-/* PostCheckMirrorStatusInternalServerError describes a response with status code 500, with default header values.
+/*
+	PostCheckMirrorStatusInternalServerError describes a response with status code 500, with default header values.
 
 genericError
 */

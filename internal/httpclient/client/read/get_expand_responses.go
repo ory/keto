@@ -57,7 +57,8 @@ func NewGetExpandOK() *GetExpandOK {
 	return &GetExpandOK{}
 }
 
-/* GetExpandOK describes a response with status code 200, with default header values.
+/*
+	GetExpandOK describes a response with status code 200, with default header values.
 
 expandTree
 */
@@ -89,7 +90,8 @@ func NewGetExpandBadRequest() *GetExpandBadRequest {
 	return &GetExpandBadRequest{}
 }
 
-/* GetExpandBadRequest describes a response with status code 400, with default header values.
+/*
+	GetExpandBadRequest describes a response with status code 400, with default header values.
 
 genericError
 */
@@ -121,7 +123,8 @@ func NewGetExpandNotFound() *GetExpandNotFound {
 	return &GetExpandNotFound{}
 }
 
-/* GetExpandNotFound describes a response with status code 404, with default header values.
+/*
+	GetExpandNotFound describes a response with status code 404, with default header values.
 
 genericError
 */
@@ -153,7 +156,8 @@ func NewGetExpandInternalServerError() *GetExpandInternalServerError {
 	return &GetExpandInternalServerError{}
 }
 
-/* GetExpandInternalServerError describes a response with status code 500, with default header values.
+/*
+	GetExpandInternalServerError describes a response with status code 500, with default header values.
 
 genericError
 */

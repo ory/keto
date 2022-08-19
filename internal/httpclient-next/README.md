@@ -82,15 +82,15 @@ Class | Method | HTTP request | Description
 *MetadataApi* | [**GetVersion**](docs/MetadataApi.md#getversion) | **Get** /version | Return Running Software Version.
 *MetadataApi* | [**IsAlive**](docs/MetadataApi.md#isalive) | **Get** /health/alive | Check HTTP Server Status
 *MetadataApi* | [**IsReady**](docs/MetadataApi.md#isready) | **Get** /health/ready | Check HTTP Server and Database Status
-*ReadApi* | [**GetCheck**](docs/ReadApi.md#getcheck) | **Get** /relation-tuples/check/openapi | Check a relation tuple
-*ReadApi* | [**GetCheckMirrorStatus**](docs/ReadApi.md#getcheckmirrorstatus) | **Get** /relation-tuples/check | Check a relation tuple
-*ReadApi* | [**GetExpand**](docs/ReadApi.md#getexpand) | **Get** /relation-tuples/expand | Expand a Relation Tuple
-*ReadApi* | [**GetRelationTuples**](docs/ReadApi.md#getrelationtuples) | **Get** /relation-tuples | Query relation tuples
-*ReadApi* | [**PostCheck**](docs/ReadApi.md#postcheck) | **Post** /relation-tuples/check/openapi | Check a relation tuple
-*ReadApi* | [**PostCheckMirrorStatus**](docs/ReadApi.md#postcheckmirrorstatus) | **Post** /relation-tuples/check | Check a relation tuple
-*WriteApi* | [**CreateRelationTuple**](docs/WriteApi.md#createrelationtuple) | **Put** /admin/relation-tuples | Create a Relation Tuple
-*WriteApi* | [**DeleteRelationTuples**](docs/WriteApi.md#deleterelationtuples) | **Delete** /admin/relation-tuples | Delete Relation Tuples
-*WriteApi* | [**PatchRelationTuples**](docs/WriteApi.md#patchrelationtuples) | **Patch** /admin/relation-tuples | Patch Multiple Relation Tuples
+*ReadApi* | [**GetCheck**](docs/ReadApi.md#getcheck) | **Get** /relation-tuples/check/openapi | # Check a relation tuple
+*ReadApi* | [**GetCheckMirrorStatus**](docs/ReadApi.md#getcheckmirrorstatus) | **Get** /relation-tuples/check | # Check a relation tuple
+*ReadApi* | [**GetExpand**](docs/ReadApi.md#getexpand) | **Get** /relation-tuples/expand | # Expand a Relation Tuple
+*ReadApi* | [**GetRelationTuples**](docs/ReadApi.md#getrelationtuples) | **Get** /relation-tuples | # Query relation tuples
+*ReadApi* | [**PostCheck**](docs/ReadApi.md#postcheck) | **Post** /relation-tuples/check/openapi | # Check a relation tuple
+*ReadApi* | [**PostCheckMirrorStatus**](docs/ReadApi.md#postcheckmirrorstatus) | **Post** /relation-tuples/check | # Check a relation tuple
+*WriteApi* | [**CreateRelationTuple**](docs/WriteApi.md#createrelationtuple) | **Put** /admin/relation-tuples | # Create a Relation Tuple
+*WriteApi* | [**DeleteRelationTuples**](docs/WriteApi.md#deleterelationtuples) | **Delete** /admin/relation-tuples | # Delete Relation Tuples
+*WriteApi* | [**PatchRelationTuples**](docs/WriteApi.md#patchrelationtuples) | **Patch** /admin/relation-tuples | # Patch Multiple Relation Tuples
 
 
 ## Documentation For Models

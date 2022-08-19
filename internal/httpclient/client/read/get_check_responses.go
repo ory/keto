@@ -51,7 +51,8 @@ func NewGetCheckOK() *GetCheckOK {
 	return &GetCheckOK{}
 }
 
-/* GetCheckOK describes a response with status code 200, with default header values.
+/*
+	GetCheckOK describes a response with status code 200, with default header values.
 
 getCheckResponse
 */
@@ -83,7 +84,8 @@ func NewGetCheckBadRequest() *GetCheckBadRequest {
 	return &GetCheckBadRequest{}
 }
 
-/* GetCheckBadRequest describes a response with status code 400, with default header values.
+/*
+	GetCheckBadRequest describes a response with status code 400, with default header values.
 
 genericError
 */
@@ -115,7 +117,8 @@ func NewGetCheckInternalServerError() *GetCheckInternalServerError {
 	return &GetCheckInternalServerError{}
 }
 
-/* GetCheckInternalServerError describes a response with status code 500, with default header values.
+/*
+	GetCheckInternalServerError describes a response with status code 500, with default header values.
 
 genericError
 */

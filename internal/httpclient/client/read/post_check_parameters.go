@@ -55,10 +55,12 @@ func NewPostCheckParamsWithHTTPClient(client *http.Client) *PostCheckParams {
 	}
 }
 
-/* PostCheckParams contains all the parameters to send to the API endpoint
-   for the post check operation.
+/*
+PostCheckParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the post check operation.
+
+	Typically these are written to a http.Request.
 */
 type PostCheckParams struct {
 

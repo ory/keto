@@ -46,9 +46,9 @@ type ClientService interface {
 }
 
 /*
-  GetCheck checks a relation tuple
+GetCheck checks a relation tuple
 
-  To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).
+To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).
 */
 func (a *Client) GetCheck(params *GetCheckParams, opts ...ClientOption) (*GetCheckOK, error) {
 	// TODO: Validate the params before sending
@@ -86,9 +86,9 @@ func (a *Client) GetCheck(params *GetCheckParams, opts ...ClientOption) (*GetChe
 }
 
 /*
-  GetCheckMirrorStatus checks a relation tuple
+GetCheckMirrorStatus checks a relation tuple
 
-  To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).
+To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).
 */
 func (a *Client) GetCheckMirrorStatus(params *GetCheckMirrorStatusParams, opts ...ClientOption) (*GetCheckMirrorStatusOK, error) {
 	// TODO: Validate the params before sending
@@ -126,9 +126,9 @@ func (a *Client) GetCheckMirrorStatus(params *GetCheckMirrorStatusParams, opts .
 }
 
 /*
-  GetExpand expands a relation tuple
+GetExpand expands a relation tuple
 
-  Use this endpoint to expand a relation tuple.
+Use this endpoint to expand a relation tuple.
 */
 func (a *Client) GetExpand(params *GetExpandParams, opts ...ClientOption) (*GetExpandOK, error) {
 	// TODO: Validate the params before sending
@@ -166,9 +166,9 @@ func (a *Client) GetExpand(params *GetExpandParams, opts ...ClientOption) (*GetE
 }
 
 /*
-  GetRelationTuples queries relation tuples
+GetRelationTuples queries relation tuples
 
-  Get all relation tuples that match the query. Only the namespace field is required.
+Get all relation tuples that match the query. Only the namespace field is required.
 */
 func (a *Client) GetRelationTuples(params *GetRelationTuplesParams, opts ...ClientOption) (*GetRelationTuplesOK, error) {
 	// TODO: Validate the params before sending
@@ -206,9 +206,9 @@ func (a *Client) GetRelationTuples(params *GetRelationTuplesParams, opts ...Clie
 }
 
 /*
-  PostCheck checks a relation tuple
+PostCheck checks a relation tuple
 
-  To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).
+To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).
 */
 func (a *Client) PostCheck(params *PostCheckParams, opts ...ClientOption) (*PostCheckOK, error) {
 	// TODO: Validate the params before sending
@@ -246,9 +246,9 @@ func (a *Client) PostCheck(params *PostCheckParams, opts ...ClientOption) (*Post
 }
 
 /*
-  PostCheckMirrorStatus checks a relation tuple
+PostCheckMirrorStatus checks a relation tuple
 
-  To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).
+To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).
 */
 func (a *Client) PostCheckMirrorStatus(params *PostCheckMirrorStatusParams, opts ...ClientOption) (*PostCheckMirrorStatusOK, error) {
 	// TODO: Validate the params before sending

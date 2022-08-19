@@ -26,7 +26,7 @@
         "produces": ["application/json"],
         "schemes": ["http", "https"],
         "tags": ["write"],
-        "summary": "Create a Relation Tuple",
+        "summary": "# Create a Relation Tuple",
         "operationId": "createRelationTuple",
         "parameters": [
           {
@@ -64,7 +64,7 @@
         "produces": ["application/json"],
         "schemes": ["http", "https"],
         "tags": ["write"],
-        "summary": "Delete Relation Tuples",
+        "summary": "# Delete Relation Tuples",
         "operationId": "deleteRelationTuples",
         "parameters": [
           {
@@ -134,7 +134,7 @@
         "produces": ["application/json"],
         "schemes": ["http", "https"],
         "tags": ["write"],
-        "summary": "Patch Multiple Relation Tuples",
+        "summary": "# Patch Multiple Relation Tuples",
         "operationId": "patchRelationTuples",
         "parameters": [
           {
@@ -226,7 +226,7 @@
         "produces": ["application/json"],
         "schemes": ["http", "https"],
         "tags": ["read"],
-        "summary": "Query relation tuples",
+        "summary": "# Query relation tuples",
         "operationId": "getRelationTuples",
         "parameters": [
           {
@@ -312,7 +312,7 @@
         "produces": ["application/json"],
         "schemes": ["http", "https"],
         "tags": ["read"],
-        "summary": "Check a relation tuple",
+        "summary": "# Check a relation tuple",
         "operationId": "getCheckMirrorStatus",
         "responses": {
           "200": {
@@ -347,7 +347,7 @@
         "produces": ["application/json"],
         "schemes": ["http", "https"],
         "tags": ["read"],
-        "summary": "Check a relation tuple",
+        "summary": "# Check a relation tuple",
         "operationId": "postCheckMirrorStatus",
         "responses": {
           "200": {
@@ -384,7 +384,7 @@
         "produces": ["application/json"],
         "schemes": ["http", "https"],
         "tags": ["read"],
-        "summary": "Check a relation tuple",
+        "summary": "# Check a relation tuple",
         "operationId": "getCheck",
         "parameters": [
           {
@@ -463,7 +463,7 @@
         "produces": ["application/json"],
         "schemes": ["http", "https"],
         "tags": ["read"],
-        "summary": "Check a relation tuple",
+        "summary": "# Check a relation tuple",
         "operationId": "postCheck",
         "parameters": [
           {
@@ -509,7 +509,7 @@
         "produces": ["application/json"],
         "schemes": ["http", "https"],
         "tags": ["read"],
-        "summary": "Expand a Relation Tuple",
+        "summary": "# Expand a Relation Tuple",
         "operationId": "getExpand",
         "parameters": [
           {
@@ -598,18 +598,23 @@
             "$ref": "#/definitions/expandTree"
           }
         },
-        "subject_id": {
-          "description": "The subject ID the node represents. Either this field, or SubjectSet are set.",
-          "type": "string"
-        },
-        "subject_set": {
-          "$ref": "#/definitions/subjectSet"
+        "tuple": {
+          "$ref": "#/definitions/relationTuple"
         },
         "type": {
-          "description": "The type of the node.\nunion ExpandNodeUnion\nexclusion ExpandNodeExclusion\nintersection ExpandNodeIntersection\nleaf ExpandNodeLeaf\nunspecified ExpandNodeUnspecified",
+          "description": "The type of the node.\nunion TreeNodeUnion\nexclusion TreeNodeExclusion\nintersection TreeNodeIntersection\nleaf TreeNodeLeaf\ntuple_to_subject_set TreeNodeTupleToSubjectSet\ncomputed_subject_set TreeNodeComputedSubjectSet\nnot TreeNodeNot\nunspecified TreeNodeUnspecified",
           "type": "string",
-          "enum": ["union", "exclusion", "intersection", "leaf", "unspecified"],
-          "x-go-enum-desc": "union ExpandNodeUnion\nexclusion ExpandNodeExclusion\nintersection ExpandNodeIntersection\nleaf ExpandNodeLeaf\nunspecified ExpandNodeUnspecified"
+          "enum": [
+            "union",
+            "exclusion",
+            "intersection",
+            "leaf",
+            "tuple_to_subject_set",
+            "computed_subject_set",
+            "not",
+            "unspecified"
+          ],
+          "x-go-enum-desc": "union TreeNodeUnion\nexclusion TreeNodeExclusion\nintersection TreeNodeIntersection\nleaf TreeNodeLeaf\ntuple_to_subject_set TreeNodeTupleToSubjectSet\ncomputed_subject_set TreeNodeComputedSubjectSet\nnot TreeNodeNot\nunspecified TreeNodeUnspecified"
         }
       }
     },

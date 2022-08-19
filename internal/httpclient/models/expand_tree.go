@@ -24,20 +24,20 @@ type ExpandTree struct {
 	// The children of the node, possibly none.
 	Children []*ExpandTree `json:"children"`
 
-	// The subject ID the node represents. Either this field, or SubjectSet are set.
-	SubjectID string `json:"subject_id,omitempty"`
-
-	// subject set
-	SubjectSet *SubjectSet `json:"subject_set,omitempty"`
+	// tuple
+	Tuple *RelationTuple `json:"tuple,omitempty"`
 
 	// The type of the node.
-	// union ExpandNodeUnion
-	// exclusion ExpandNodeExclusion
-	// intersection ExpandNodeIntersection
-	// leaf ExpandNodeLeaf
-	// unspecified ExpandNodeUnspecified
+	// union TreeNodeUnion
+	// exclusion TreeNodeExclusion
+	// intersection TreeNodeIntersection
+	// leaf TreeNodeLeaf
+	// tuple_to_subject_set TreeNodeTupleToSubjectSet
+	// computed_subject_set TreeNodeComputedSubjectSet
+	// not TreeNodeNot
+	// unspecified TreeNodeUnspecified
 	// Required: true
-	// Enum: [union exclusion intersection leaf unspecified]
+	// Enum: [union exclusion intersection leaf tuple_to_subject_set computed_subject_set not unspecified]
 	Type *string `json:"type"`
 }
 
@@ -49,7 +49,7 @@ func (m *ExpandTree) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
-	if err := m.validateSubjectSet(formats); err != nil {
+	if err := m.validateTuple(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -89,17 +89,17 @@ func (m *ExpandTree) validateChildren(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *ExpandTree) validateSubjectSet(formats strfmt.Registry) error {
-	if swag.IsZero(m.SubjectSet) { // not required
+func (m *ExpandTree) validateTuple(formats strfmt.Registry) error {
+	if swag.IsZero(m.Tuple) { // not required
 		return nil
 	}
 
-	if m.SubjectSet != nil {
-		if err := m.SubjectSet.Validate(formats); err != nil {
+	if m.Tuple != nil {
+		if err := m.Tuple.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("subject_set")
+				return ve.ValidateName("tuple")
 			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("subject_set")
+				return ce.ValidateName("tuple")
 			}
 			return err
 		}
@@ -112,7 +112,7 @@ var expandTreeTypeTypePropEnum []interface{}
 
 func init() {
 	var res []string
-	if err := json.Unmarshal([]byte(`["union","exclusion","intersection","leaf","unspecified"]`), &res); err != nil {
+	if err := json.Unmarshal([]byte(`["union","exclusion","intersection","leaf","tuple_to_subject_set","computed_subject_set","not","unspecified"]`), &res); err != nil {
 		panic(err)
 	}
 	for _, v := range res {
@@ -133,6 +133,15 @@ const (
 
 	// ExpandTreeTypeLeaf captures enum value "leaf"
 	ExpandTreeTypeLeaf string = "leaf"
+
+	// ExpandTreeTypeTupleToSubjectSet captures enum value "tuple_to_subject_set"
+	ExpandTreeTypeTupleToSubjectSet string = "tuple_to_subject_set"
+
+	// ExpandTreeTypeComputedSubjectSet captures enum value "computed_subject_set"
+	ExpandTreeTypeComputedSubjectSet string = "computed_subject_set"
+
+	// ExpandTreeTypeNot captures enum value "not"
+	ExpandTreeTypeNot string = "not"
 
 	// ExpandTreeTypeUnspecified captures enum value "unspecified"
 	ExpandTreeTypeUnspecified string = "unspecified"
@@ -168,7 +177,7 @@ func (m *ExpandTree) ContextValidate(ctx context.Context, formats strfmt.Registr
 		res = append(res, err)
 	}
 
-	if err := m.contextValidateSubjectSet(ctx, formats); err != nil {
+	if err := m.contextValidateTuple(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -198,14 +207,14 @@ func (m *ExpandTree) contextValidateChildren(ctx context.Context, formats strfmt
 	return nil
 }
 
-func (m *ExpandTree) contextValidateSubjectSet(ctx context.Context, formats strfmt.Registry) error {
+func (m *ExpandTree) contextValidateTuple(ctx context.Context, formats strfmt.Registry) error {
 
-	if m.SubjectSet != nil {
-		if err := m.SubjectSet.ContextValidate(ctx, formats); err != nil {
+	if m.Tuple != nil {
+		if err := m.Tuple.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("subject_set")
+				return ve.ValidateName("tuple")
 			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("subject_set")
+				return ce.ValidateName("tuple")
 			}
 			return err
 		}

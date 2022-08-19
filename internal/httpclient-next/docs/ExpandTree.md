@@ -5,9 +5,8 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Children** | Pointer to [**[]ExpandTree**](ExpandTree.md) | The children of the node, possibly none. | [optional] 
-**SubjectId** | Pointer to **string** | The subject ID the node represents. Either this field, or SubjectSet are set. | [optional] 
-**SubjectSet** | Pointer to [**SubjectSet**](SubjectSet.md) |  | [optional] 
-**Type** | **string** | The type of the node. union ExpandNodeUnion exclusion ExpandNodeExclusion intersection ExpandNodeIntersection leaf ExpandNodeLeaf unspecified ExpandNodeUnspecified | 
+**Tuple** | Pointer to [**RelationTuple**](RelationTuple.md) |  | [optional] 
+**Type** | **string** | The type of the node. union TreeNodeUnion exclusion TreeNodeExclusion intersection TreeNodeIntersection leaf TreeNodeLeaf tuple_to_subject_set TreeNodeTupleToSubjectSet computed_subject_set TreeNodeComputedSubjectSet not TreeNodeNot unspecified TreeNodeUnspecified | 
 
 ## Methods
 
@@ -53,55 +52,30 @@ SetChildren sets Children field to given value.
 
 HasChildren returns a boolean if a field has been set.
 
-### GetSubjectId
+### GetTuple
 
-`func (o *ExpandTree) GetSubjectId() string`
+`func (o *ExpandTree) GetTuple() RelationTuple`
 
-GetSubjectId returns the SubjectId field if non-nil, zero value otherwise.
+GetTuple returns the Tuple field if non-nil, zero value otherwise.
 
-### GetSubjectIdOk
+### GetTupleOk
 
-`func (o *ExpandTree) GetSubjectIdOk() (*string, bool)`
+`func (o *ExpandTree) GetTupleOk() (*RelationTuple, bool)`
 
-GetSubjectIdOk returns a tuple with the SubjectId field if it's non-nil, zero value otherwise
+GetTupleOk returns a tuple with the Tuple field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
-### SetSubjectId
+### SetTuple
 
-`func (o *ExpandTree) SetSubjectId(v string)`
+`func (o *ExpandTree) SetTuple(v RelationTuple)`
 
-SetSubjectId sets SubjectId field to given value.
+SetTuple sets Tuple field to given value.
 
-### HasSubjectId
+### HasTuple
 
-`func (o *ExpandTree) HasSubjectId() bool`
+`func (o *ExpandTree) HasTuple() bool`
 
-HasSubjectId returns a boolean if a field has been set.
-
-### GetSubjectSet
-
-`func (o *ExpandTree) GetSubjectSet() SubjectSet`
-
-GetSubjectSet returns the SubjectSet field if non-nil, zero value otherwise.
-
-### GetSubjectSetOk
-
-`func (o *ExpandTree) GetSubjectSetOk() (*SubjectSet, bool)`
-
-GetSubjectSetOk returns a tuple with the SubjectSet field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetSubjectSet
-
-`func (o *ExpandTree) SetSubjectSet(v SubjectSet)`
-
-SetSubjectSet sets SubjectSet field to given value.
-
-### HasSubjectSet
-
-`func (o *ExpandTree) HasSubjectSet() bool`
-
-HasSubjectSet returns a boolean if a field has been set.
+HasTuple returns a boolean if a field has been set.
 
 ### GetType
 

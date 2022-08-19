@@ -19,24 +19,23 @@
             },
             "type": "array"
           },
-          "subject_id": {
-            "description": "The subject ID the node represents. Either this field, or SubjectSet are set.",
-            "type": "string"
-          },
-          "subject_set": {
-            "$ref": "#/components/schemas/subjectSet"
+          "tuple": {
+            "$ref": "#/components/schemas/relationTuple"
           },
           "type": {
-            "description": "The type of the node.\nunion ExpandNodeUnion\nexclusion ExpandNodeExclusion\nintersection ExpandNodeIntersection\nleaf ExpandNodeLeaf\nunspecified ExpandNodeUnspecified",
+            "description": "The type of the node.\nunion TreeNodeUnion\nexclusion TreeNodeExclusion\nintersection TreeNodeIntersection\nleaf TreeNodeLeaf\ntuple_to_subject_set TreeNodeTupleToSubjectSet\ncomputed_subject_set TreeNodeComputedSubjectSet\nnot TreeNodeNot\nunspecified TreeNodeUnspecified",
             "enum": [
               "union",
               "exclusion",
               "intersection",
               "leaf",
+              "tuple_to_subject_set",
+              "computed_subject_set",
+              "not",
               "unspecified"
             ],
             "type": "string",
-            "x-go-enum-desc": "union ExpandNodeUnion\nexclusion ExpandNodeExclusion\nintersection ExpandNodeIntersection\nleaf ExpandNodeLeaf\nunspecified ExpandNodeUnspecified"
+            "x-go-enum-desc": "union TreeNodeUnion\nexclusion TreeNodeExclusion\nintersection TreeNodeIntersection\nleaf TreeNodeLeaf\ntuple_to_subject_set TreeNodeTupleToSubjectSet\ncomputed_subject_set TreeNodeComputedSubjectSet\nnot TreeNodeNot\nunspecified TreeNodeUnspecified"
           }
         },
         "required": ["type"],
@@ -310,7 +309,7 @@
             "description": "genericError"
           }
         },
-        "summary": "Delete Relation Tuples",
+        "summary": "# Delete Relation Tuples",
         "tags": ["write"]
       },
       "patch": {
@@ -364,7 +363,7 @@
             "description": "genericError"
           }
         },
-        "summary": "Patch Multiple Relation Tuples",
+        "summary": "# Patch Multiple Relation Tuples",
         "tags": ["write"]
       },
       "put": {
@@ -412,7 +411,7 @@
             "description": "genericError"
           }
         },
-        "summary": "Create a Relation Tuple",
+        "summary": "# Create a Relation Tuple",
         "tags": ["write"]
       }
     },
@@ -609,7 +608,7 @@
             "description": "genericError"
           }
         },
-        "summary": "Query relation tuples",
+        "summary": "# Query relation tuples",
         "tags": ["read"]
       }
     },
@@ -659,7 +658,7 @@
             "description": "genericError"
           }
         },
-        "summary": "Check a relation tuple",
+        "summary": "# Check a relation tuple",
         "tags": ["read"]
       },
       "post": {
@@ -707,7 +706,7 @@
             "description": "genericError"
           }
         },
-        "summary": "Check a relation tuple",
+        "summary": "# Check a relation tuple",
         "tags": ["read"]
       }
     },
@@ -813,7 +812,7 @@
             "description": "genericError"
           }
         },
-        "summary": "Check a relation tuple",
+        "summary": "# Check a relation tuple",
         "tags": ["read"]
       },
       "post": {
@@ -871,7 +870,7 @@
             "description": "genericError"
           }
         },
-        "summary": "Check a relation tuple",
+        "summary": "# Check a relation tuple",
         "tags": ["read"]
       }
     },
@@ -958,7 +957,7 @@
             "description": "genericError"
           }
         },
-        "summary": "Expand a Relation Tuple",
+        "summary": "# Expand a Relation Tuple",
         "tags": ["read"]
       }
     },

@@ -54,10 +54,12 @@ func NewPatchRelationTuplesParamsWithHTTPClient(client *http.Client) *PatchRelat
 	}
 }
 
-/* PatchRelationTuplesParams contains all the parameters to send to the API endpoint
-   for the patch relation tuples operation.
+/*
+PatchRelationTuplesParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the patch relation tuples operation.
+
+	Typically these are written to a http.Request.
 */
 type PatchRelationTuplesParams struct {
 

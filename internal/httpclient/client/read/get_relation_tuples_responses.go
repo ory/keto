@@ -51,7 +51,8 @@ func NewGetRelationTuplesOK() *GetRelationTuplesOK {
 	return &GetRelationTuplesOK{}
 }
 
-/* GetRelationTuplesOK describes a response with status code 200, with default header values.
+/*
+	GetRelationTuplesOK describes a response with status code 200, with default header values.
 
 getRelationTuplesResponse
 */
@@ -83,7 +84,8 @@ func NewGetRelationTuplesNotFound() *GetRelationTuplesNotFound {
 	return &GetRelationTuplesNotFound{}
 }
 
-/* GetRelationTuplesNotFound describes a response with status code 404, with default header values.
+/*
+	GetRelationTuplesNotFound describes a response with status code 404, with default header values.
 
 genericError
 */
@@ -115,7 +117,8 @@ func NewGetRelationTuplesInternalServerError() *GetRelationTuplesInternalServerE
 	return &GetRelationTuplesInternalServerError{}
 }
 
-/* GetRelationTuplesInternalServerError describes a response with status code 500, with default header values.
+/*
+	GetRelationTuplesInternalServerError describes a response with status code 500, with default header values.
 
 genericError
 */

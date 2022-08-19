@@ -38,9 +38,10 @@ type ClientService interface {
 }
 
 /*
-  IsInstanceAlive checks alive status
+	IsInstanceAlive checks alive status
 
-  This endpoint returns a 200 status code when the HTTP server is up running.
+	This endpoint returns a 200 status code when the HTTP server is up running.
+
 This status does currently not include checks whether the database connection is working.
 
 If the service supports TLS Edge Termination, this endpoint does not require the
@@ -85,9 +86,10 @@ func (a *Client) IsInstanceAlive(params *IsInstanceAliveParams, opts ...ClientOp
 }
 
 /*
-  IsInstanceReady checks readiness status
+	IsInstanceReady checks readiness status
 
-  This endpoint returns a 200 status code when the HTTP server is up running and the environment dependencies (e.g.
+	This endpoint returns a 200 status code when the HTTP server is up running and the environment dependencies (e.g.
+
 the database) are responsive as well.
 
 If the service supports TLS Edge Termination, this endpoint does not require the

@@ -87,7 +87,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/genericError'
           description: genericError
-      summary: Delete Relation Tuples
+      summary: '# Delete Relation Tuples'
       tags:
       - write
     patch:
@@ -123,7 +123,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/genericError'
           description: genericError
-      summary: Patch Multiple Relation Tuples
+      summary: '# Patch Multiple Relation Tuples'
       tags:
       - write
     put:
@@ -154,7 +154,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/genericError'
           description: genericError
-      summary: Create a Relation Tuple
+      summary: '# Create a Relation Tuple'
       tags:
       - write
   /health/alive:
@@ -309,7 +309,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/genericError'
           description: genericError
-      summary: Query relation tuples
+      summary: '# Query relation tuples'
       tags:
       - read
   /relation-tuples/check:
@@ -342,7 +342,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/genericError'
           description: genericError
-      summary: Check a relation tuple
+      summary: '# Check a relation tuple'
       tags:
       - read
     post:
@@ -374,7 +374,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/genericError'
           description: genericError
-      summary: Check a relation tuple
+      summary: '# Check a relation tuple'
       tags:
       - read
   /relation-tuples/check/openapi:
@@ -466,7 +466,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/genericError'
           description: genericError
-      summary: Check a relation tuple
+      summary: '# Check a relation tuple'
       tags:
       - read
     post:
@@ -507,7 +507,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/genericError'
           description: genericError
-      summary: Check a relation tuple
+      summary: '# Check a relation tuple'
       tags:
       - read
   /relation-tuples/expand:
@@ -572,7 +572,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/genericError'
           description: genericError
-      summary: Expand a Relation Tuple
+      summary: '# Expand a Relation Tuple'
       tags:
       - read
   /version:
@@ -607,48 +607,57 @@ components:
       type: string
     expandTree:
       example:
-        subject_id: subject_id
+        tuple:
+          subject_id: subject_id
+          namespace: namespace
+          object: object
+          relation: relation
+          subject_set:
+            namespace: namespace
+            object: object
+            relation: relation
         children:
         - null
         - null
         type: union
-        subject_set:
-          namespace: namespace
-          object: object
-          relation: relation
       properties:
         children:
           description: The children of the node, possibly none.
           items:
             $ref: '#/components/schemas/expandTree'
           type: array
-        subject_id:
-          description: The subject ID the node represents. Either this field, or SubjectSet
-            are set.
-          type: string
-        subject_set:
-          $ref: '#/components/schemas/subjectSet'
+        tuple:
+          $ref: '#/components/schemas/relationTuple'
         type:
           description: |-
             The type of the node.
-            union ExpandNodeUnion
-            exclusion ExpandNodeExclusion
-            intersection ExpandNodeIntersection
-            leaf ExpandNodeLeaf
-            unspecified ExpandNodeUnspecified
+            union TreeNodeUnion
+            exclusion TreeNodeExclusion
+            intersection TreeNodeIntersection
+            leaf TreeNodeLeaf
+            tuple_to_subject_set TreeNodeTupleToSubjectSet
+            computed_subject_set TreeNodeComputedSubjectSet
+            not TreeNodeNot
+            unspecified TreeNodeUnspecified
           enum:
           - union
           - exclusion
           - intersection
           - leaf
+          - tuple_to_subject_set
+          - computed_subject_set
+          - not
           - unspecified
           type: string
           x-go-enum-desc: |-
-            union ExpandNodeUnion
-            exclusion ExpandNodeExclusion
-            intersection ExpandNodeIntersection
-            leaf ExpandNodeLeaf
-            unspecified ExpandNodeUnspecified
+            union TreeNodeUnion
+            exclusion TreeNodeExclusion
+            intersection TreeNodeIntersection
+            leaf TreeNodeLeaf
+            tuple_to_subject_set TreeNodeTupleToSubjectSet
+            computed_subject_set TreeNodeComputedSubjectSet
+            not TreeNodeNot
+            unspecified TreeNodeUnspecified
       required:
       - type
       type: object

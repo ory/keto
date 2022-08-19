@@ -52,10 +52,12 @@ func NewGetCheckMirrorStatusParamsWithHTTPClient(client *http.Client) *GetCheckM
 	}
 }
 
-/* GetCheckMirrorStatusParams contains all the parameters to send to the API endpoint
-   for the get check mirror status operation.
+/*
+GetCheckMirrorStatusParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the get check mirror status operation.
+
+	Typically these are written to a http.Request.
 */
 type GetCheckMirrorStatusParams struct {
 	timeout    time.Duration

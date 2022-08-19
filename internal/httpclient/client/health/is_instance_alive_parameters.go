@@ -52,10 +52,12 @@ func NewIsInstanceAliveParamsWithHTTPClient(client *http.Client) *IsInstanceAliv
 	}
 }
 
-/* IsInstanceAliveParams contains all the parameters to send to the API endpoint
-   for the is instance alive operation.
+/*
+IsInstanceAliveParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the is instance alive operation.
+
+	Typically these are written to a http.Request.
 */
 type IsInstanceAliveParams struct {
 	timeout    time.Duration

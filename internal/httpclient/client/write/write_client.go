@@ -40,9 +40,9 @@ type ClientService interface {
 }
 
 /*
-  CreateRelationTuple creates a relation tuple
+CreateRelationTuple creates a relation tuple
 
-  Use this endpoint to create a relation tuple.
+Use this endpoint to create a relation tuple.
 */
 func (a *Client) CreateRelationTuple(params *CreateRelationTupleParams, opts ...ClientOption) (*CreateRelationTupleCreated, error) {
 	// TODO: Validate the params before sending
@@ -80,9 +80,9 @@ func (a *Client) CreateRelationTuple(params *CreateRelationTupleParams, opts ...
 }
 
 /*
-  DeleteRelationTuples deletes relation tuples
+DeleteRelationTuples deletes relation tuples
 
-  Use this endpoint to delete relation tuples
+Use this endpoint to delete relation tuples
 */
 func (a *Client) DeleteRelationTuples(params *DeleteRelationTuplesParams, opts ...ClientOption) (*DeleteRelationTuplesNoContent, error) {
 	// TODO: Validate the params before sending
@@ -120,9 +120,9 @@ func (a *Client) DeleteRelationTuples(params *DeleteRelationTuplesParams, opts .
 }
 
 /*
-  PatchRelationTuples patches multiple relation tuples
+PatchRelationTuples patches multiple relation tuples
 
-  Use this endpoint to patch one or more relation tuples.
+Use this endpoint to patch one or more relation tuples.
 */
 func (a *Client) PatchRelationTuples(params *PatchRelationTuplesParams, opts ...ClientOption) (*PatchRelationTuplesNoContent, error) {
 	// TODO: Validate the params before sending

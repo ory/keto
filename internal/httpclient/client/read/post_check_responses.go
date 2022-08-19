@@ -51,7 +51,8 @@ func NewPostCheckOK() *PostCheckOK {
 	return &PostCheckOK{}
 }
 
-/* PostCheckOK describes a response with status code 200, with default header values.
+/*
+	PostCheckOK describes a response with status code 200, with default header values.
 
 getCheckResponse
 */
@@ -83,7 +84,8 @@ func NewPostCheckBadRequest() *PostCheckBadRequest {
 	return &PostCheckBadRequest{}
 }
 
-/* PostCheckBadRequest describes a response with status code 400, with default header values.
+/*
+	PostCheckBadRequest describes a response with status code 400, with default header values.
 
 genericError
 */
@@ -115,7 +117,8 @@ func NewPostCheckInternalServerError() *PostCheckInternalServerError {
 	return &PostCheckInternalServerError{}
 }
 
-/* PostCheckInternalServerError describes a response with status code 500, with default header values.
+/*
+	PostCheckInternalServerError describes a response with status code 500, with default header values.
 
 genericError
 */

@@ -52,10 +52,12 @@ func NewPostCheckMirrorStatusParamsWithHTTPClient(client *http.Client) *PostChec
 	}
 }
 
-/* PostCheckMirrorStatusParams contains all the parameters to send to the API endpoint
-   for the post check mirror status operation.
+/*
+PostCheckMirrorStatusParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the post check mirror status operation.
+
+	Typically these are written to a http.Request.
 */
 type PostCheckMirrorStatusParams struct {
 	timeout    time.Duration

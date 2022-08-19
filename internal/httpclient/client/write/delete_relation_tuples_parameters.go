@@ -52,10 +52,12 @@ func NewDeleteRelationTuplesParamsWithHTTPClient(client *http.Client) *DeleteRel
 	}
 }
 
-/* DeleteRelationTuplesParams contains all the parameters to send to the API endpoint
-   for the delete relation tuples operation.
+/*
+DeleteRelationTuplesParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the delete relation tuples operation.
+
+	Typically these are written to a http.Request.
 */
 type DeleteRelationTuplesParams struct {
 

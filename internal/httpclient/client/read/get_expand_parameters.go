@@ -53,10 +53,12 @@ func NewGetExpandParamsWithHTTPClient(client *http.Client) *GetExpandParams {
 	}
 }
 
-/* GetExpandParams contains all the parameters to send to the API endpoint
-   for the get expand operation.
+/*
+GetExpandParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the get expand operation.
+
+	Typically these are written to a http.Request.
 */
 type GetExpandParams struct {
 

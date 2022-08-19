@@ -27,7 +27,7 @@ var (
 type WriteApi interface {
 
 	/*
-	 * CreateRelationTuple Create a Relation Tuple
+	 * CreateRelationTuple # Create a Relation Tuple
 	 * Use this endpoint to create a relation tuple.
 	 * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	 * @return WriteApiApiCreateRelationTupleRequest
@@ -41,7 +41,7 @@ type WriteApi interface {
 	CreateRelationTupleExecute(r WriteApiApiCreateRelationTupleRequest) (*RelationQuery, *http.Response, error)
 
 	/*
-	 * DeleteRelationTuples Delete Relation Tuples
+	 * DeleteRelationTuples # Delete Relation Tuples
 	 * Use this endpoint to delete relation tuples
 	 * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	 * @return WriteApiApiDeleteRelationTuplesRequest
@@ -54,7 +54,7 @@ type WriteApi interface {
 	DeleteRelationTuplesExecute(r WriteApiApiDeleteRelationTuplesRequest) (*http.Response, error)
 
 	/*
-	 * PatchRelationTuples Patch Multiple Relation Tuples
+	 * PatchRelationTuples # Patch Multiple Relation Tuples
 	 * Use this endpoint to patch one or more relation tuples.
 	 * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	 * @return WriteApiApiPatchRelationTuplesRequest
@@ -86,7 +86,7 @@ func (r WriteApiApiCreateRelationTupleRequest) Execute() (*RelationQuery, *http.
 }
 
 /*
- * CreateRelationTuple Create a Relation Tuple
+ * CreateRelationTuple # Create a Relation Tuple
  * Use this endpoint to create a relation tuple.
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @return WriteApiApiCreateRelationTupleRequest
@@ -244,7 +244,7 @@ func (r WriteApiApiDeleteRelationTuplesRequest) Execute() (*http.Response, error
 }
 
 /*
- * DeleteRelationTuples Delete Relation Tuples
+ * DeleteRelationTuples # Delete Relation Tuples
  * Use this endpoint to delete relation tuples
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @return WriteApiApiDeleteRelationTuplesRequest
@@ -380,7 +380,7 @@ func (r WriteApiApiPatchRelationTuplesRequest) Execute() (*http.Response, error)
 }
 
 /*
- * PatchRelationTuples Patch Multiple Relation Tuples
+ * PatchRelationTuples # Patch Multiple Relation Tuples
  * Use this endpoint to patch one or more relation tuples.
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @return WriteApiApiPatchRelationTuplesRequest

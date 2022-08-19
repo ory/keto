@@ -57,7 +57,8 @@ func NewPatchRelationTuplesNoContent() *PatchRelationTuplesNoContent {
 	return &PatchRelationTuplesNoContent{}
 }
 
-/* PatchRelationTuplesNoContent describes a response with status code 204, with default header values.
+/*
+	PatchRelationTuplesNoContent describes a response with status code 204, with default header values.
 
 Empty responses are sent when, for example, resources are deleted. The HTTP status code for empty responses is typically 201.
 */
@@ -78,7 +79,8 @@ func NewPatchRelationTuplesBadRequest() *PatchRelationTuplesBadRequest {
 	return &PatchRelationTuplesBadRequest{}
 }
 
-/* PatchRelationTuplesBadRequest describes a response with status code 400, with default header values.
+/*
+	PatchRelationTuplesBadRequest describes a response with status code 400, with default header values.
 
 genericError
 */
@@ -110,7 +112,8 @@ func NewPatchRelationTuplesNotFound() *PatchRelationTuplesNotFound {
 	return &PatchRelationTuplesNotFound{}
 }
 
-/* PatchRelationTuplesNotFound describes a response with status code 404, with default header values.
+/*
+	PatchRelationTuplesNotFound describes a response with status code 404, with default header values.
 
 genericError
 */
@@ -142,7 +145,8 @@ func NewPatchRelationTuplesInternalServerError() *PatchRelationTuplesInternalSer
 	return &PatchRelationTuplesInternalServerError{}
 }
 
-/* PatchRelationTuplesInternalServerError describes a response with status code 500, with default header values.
+/*
+	PatchRelationTuplesInternalServerError describes a response with status code 500, with default header values.
 
 genericError
 */

@@ -27,7 +27,7 @@ var (
 type ReadApi interface {
 
 	/*
-	 * GetCheck Check a relation tuple
+	 * GetCheck # Check a relation tuple
 	 * To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).
 	 * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	 * @return ReadApiApiGetCheckRequest
@@ -41,7 +41,7 @@ type ReadApi interface {
 	GetCheckExecute(r ReadApiApiGetCheckRequest) (*GetCheckResponse, *http.Response, error)
 
 	/*
-	 * GetCheckMirrorStatus Check a relation tuple
+	 * GetCheckMirrorStatus # Check a relation tuple
 	 * To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).
 	 * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	 * @return ReadApiApiGetCheckMirrorStatusRequest
@@ -55,7 +55,7 @@ type ReadApi interface {
 	GetCheckMirrorStatusExecute(r ReadApiApiGetCheckMirrorStatusRequest) (*GetCheckResponse, *http.Response, error)
 
 	/*
-	 * GetExpand Expand a Relation Tuple
+	 * GetExpand # Expand a Relation Tuple
 	 * Use this endpoint to expand a relation tuple.
 	 * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	 * @return ReadApiApiGetExpandRequest
@@ -69,7 +69,7 @@ type ReadApi interface {
 	GetExpandExecute(r ReadApiApiGetExpandRequest) (*ExpandTree, *http.Response, error)
 
 	/*
-	 * GetRelationTuples Query relation tuples
+	 * GetRelationTuples # Query relation tuples
 	 * Get all relation tuples that match the query. Only the namespace field is required.
 	 * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	 * @return ReadApiApiGetRelationTuplesRequest
@@ -83,7 +83,7 @@ type ReadApi interface {
 	GetRelationTuplesExecute(r ReadApiApiGetRelationTuplesRequest) (*GetRelationTuplesResponse, *http.Response, error)
 
 	/*
-	 * PostCheck Check a relation tuple
+	 * PostCheck # Check a relation tuple
 	 * To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).
 	 * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	 * @return ReadApiApiPostCheckRequest
@@ -97,7 +97,7 @@ type ReadApi interface {
 	PostCheckExecute(r ReadApiApiPostCheckRequest) (*GetCheckResponse, *http.Response, error)
 
 	/*
-	 * PostCheckMirrorStatus Check a relation tuple
+	 * PostCheckMirrorStatus # Check a relation tuple
 	 * To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).
 	 * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	 * @return ReadApiApiPostCheckMirrorStatusRequest
@@ -165,7 +165,7 @@ func (r ReadApiApiGetCheckRequest) Execute() (*GetCheckResponse, *http.Response,
 }
 
 /*
- * GetCheck Check a relation tuple
+ * GetCheck # Check a relation tuple
  * To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @return ReadApiApiGetCheckRequest
@@ -309,7 +309,7 @@ func (r ReadApiApiGetCheckMirrorStatusRequest) Execute() (*GetCheckResponse, *ht
 }
 
 /*
- * GetCheckMirrorStatus Check a relation tuple
+ * GetCheckMirrorStatus # Check a relation tuple
  * To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @return ReadApiApiGetCheckMirrorStatusRequest
@@ -460,7 +460,7 @@ func (r ReadApiApiGetExpandRequest) Execute() (*ExpandTree, *http.Response, erro
 }
 
 /*
- * GetExpand Expand a Relation Tuple
+ * GetExpand # Expand a Relation Tuple
  * Use this endpoint to expand a relation tuple.
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @return ReadApiApiGetExpandRequest
@@ -651,7 +651,7 @@ func (r ReadApiApiGetRelationTuplesRequest) Execute() (*GetRelationTuplesRespons
 }
 
 /*
- * GetRelationTuples Query relation tuples
+ * GetRelationTuples # Query relation tuples
  * Get all relation tuples that match the query. Only the namespace field is required.
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @return ReadApiApiGetRelationTuplesRequest
@@ -809,7 +809,7 @@ func (r ReadApiApiPostCheckRequest) Execute() (*GetCheckResponse, *http.Response
 }
 
 /*
- * PostCheck Check a relation tuple
+ * PostCheck # Check a relation tuple
  * To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @return ReadApiApiPostCheckRequest
@@ -934,7 +934,7 @@ func (r ReadApiApiPostCheckMirrorStatusRequest) Execute() (*GetCheckResponse, *h
 }
 
 /*
- * PostCheckMirrorStatus Check a relation tuple
+ * PostCheckMirrorStatus # Check a relation tuple
  * To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @return ReadApiApiPostCheckMirrorStatusRequest
