@@ -14,6 +14,8 @@ func TestCheckCommand(t *testing.T) {
 	ts := client.NewTestServer(t, client.ReadServer, []*namespace.Namespace{nspace}, newCheckCmd)
 	defer ts.Shutdown(t)
 
-	stdOut := ts.Cmd.ExecNoErr(t, "subject", "access", nspace.Name, "object")
+	stdOut := ts.Cmd.ExecNoErr(t, "subject", "access", nspace.Name, "object",
+		"--insecure-skip-hostname-verification=true",
+	)
 	assert.Equal(t, "Denied\n", stdOut)
 }
