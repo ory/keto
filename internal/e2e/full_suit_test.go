@@ -76,7 +76,7 @@ func Test(t *testing.T) {
 					PersistentArgs: []string{
 						"--" + cliclient.FlagReadRemote, reg.Config(ctx).ReadAPIListenOn(),
 						"--" + cliclient.FlagWriteRemote, reg.Config(ctx).WriteAPIListenOn(),
-						"--insecure=true",
+						"--insecure-disable-transport-security=true",
 						"--" + cmdx.FlagFormat, string(cmdx.FormatJSON),
 					},
 				}},

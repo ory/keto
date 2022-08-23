@@ -76,14 +76,11 @@ func TestStatusCmd(t *testing.T) {
 					},
 				}
 
-				// TODO remove
-				// close(startServe)
-
 				require.NoError(t,
 					cmdx.ExecBackgroundCtx(ctx, newStatusCmd(), &stdIn, &stdOut, &stdErr,
 						"--"+FlagEndpoint, string(serverType),
 						"--"+ts.FlagRemote, l.Addr().String(),
-						// TODO uncomment
+						"--insecure-skip-hostname-verification=true",
 						"--"+FlagBlock,
 					).Wait(),
 				)

@@ -5,6 +5,9 @@ import (
 	"crypto/ecdsa"
 	"crypto/elliptic"
 	"crypto/rand"
+	"crypto/tls"
+	"fmt"
+	"sync"
 	"testing"
 
 	"github.com/ory/x/configx"
@@ -89,21 +92,39 @@ func WithGRPCUnaryInterceptors(i ...grpc.UnaryServerInterceptor) TestRegistryOpt
 		r.defaultUnaryInterceptors = i
 	}
 }
-func WithSelfsignedTransportCredentials() TestRegistryOption {
-	return func(t testing.TB, r *RegistryDefault) {
+
+type selfSignedCert struct {
+	once sync.Once
+	cert *tls.Certificate
+	err  error
+}
+
+var sharedTestCert selfSignedCert
+
+func (s *selfSignedCert) generate() {
+	s.once.Do(func() {
 		key, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader)
 		if err != nil {
-			t.Errorf("could not create key: %v", err)
+			s.err = fmt.Errorf("could not create key: %v", err)
 			return
 		}
 
-		tlsCert, err := tlsx.CreateSelfSignedTLSCertificate(key)
+		s.cert, err = tlsx.CreateSelfSignedTLSCertificate(key)
 		if err != nil {
-			t.Errorf("could not create TLS certificate: %v", err)
+			s.err = fmt.Errorf("could not create TLS certificate: %v", err)
+		}
+	})
+}
+
+func WithSelfsignedTransportCredentials() TestRegistryOption {
+	return func(t testing.TB, r *RegistryDefault) {
+		sharedTestCert.generate()
+		if sharedTestCert.err != nil {
+			t.Error(sharedTestCert.err)
 			return
 		}
 
-		r.grpcTransportCredentials = credentials.NewServerTLSFromCert(tlsCert)
+		r.grpcTransportCredentials = credentials.NewServerTLSFromCert(sharedTestCert.cert)
 	}
 }
 

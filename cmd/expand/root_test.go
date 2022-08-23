@@ -18,15 +18,19 @@ func TestExpandCommand(t *testing.T) {
 	t.Run("case=unknown tuple", func(t *testing.T) {
 		t.Run("format=JSON", func(t *testing.T) {
 			stdOut := ts.Cmd.ExecNoErr(t,
-				"access", nspace.Name,
-				"object", "--"+cmdx.FlagFormat, string(cmdx.FormatJSON))
+				"access", nspace.Name, "object",
+				"--"+cmdx.FlagFormat, string(cmdx.FormatJSON),
+				"--insecure-skip-hostname-verification=true",
+			)
 			assert.Equal(t, "null\n", stdOut)
 		})
 
 		t.Run("format=default", func(t *testing.T) {
 			stdOut := ts.Cmd.ExecNoErr(t,
 				"access", nspace.Name,
-				"object", "--"+cmdx.FlagFormat, string(cmdx.FormatDefault))
+				"object", "--"+cmdx.FlagFormat, string(cmdx.FormatDefault),
+				"--insecure-skip-hostname-verification=true",
+			)
 			assert.Contains(t, stdOut, "empty tree")
 		})
 	})

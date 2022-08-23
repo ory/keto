@@ -4,7 +4,6 @@ import (
 	"context"
 	"crypto/tls"
 	"fmt"
-	"net"
 	"os"
 	"strings"
 	"time"
@@ -23,9 +22,11 @@ import (
 type contextKeys string
 
 const (
-	FlagReadRemote        = "read-remote"
-	FlagWriteRemote       = "write-remote"
-	FlagInsecureTransport = "insecure"
+	FlagReadRemote  = "read-remote"
+	FlagWriteRemote = "write-remote"
+
+	FlagInsecureNoTransportSecurity  = "insecure-disable-transport-security"
+	FlagInsecureSkipHostVerification = "insecure-skip-hostname-verification"
 
 	EnvReadRemote  = "KETO_READ_REMOTE"
 	EnvWriteRemote = "KETO_WRITE_REMOTE"
@@ -33,6 +34,28 @@ const (
 
 	ContextKeyTimeout contextKeys = "timeout"
 )
+
+type securityFlags struct {
+	skipHostVerification bool
+	noTransportSecurity  bool
+}
+
+func (sf *securityFlags) transportCredentials() grpc.DialOption {
+	switch {
+	case sf.noTransportSecurity:
+		return grpc.WithTransportCredentials(insecure.NewCredentials())
+
+	case sf.skipHostVerification:
+		return grpc.WithTransportCredentials(credentials.NewTLS(&tls.Config{
+			// nolint explicity set through scary flag
+			InsecureSkipVerify: true,
+		}))
+
+	default:
+		// Defaults to the default host root CA bundle
+		return grpc.WithTransportCredentials(credentials.NewTLS(nil))
+	}
+}
 
 func getRemote(cmd *cobra.Command, flagRemote, envRemote string) (remote string) {
 	defer (func() {
@@ -57,11 +80,18 @@ func getToken(cmd *cobra.Command) (token string) {
 	return os.Getenv(EnvAuthToken)
 }
 
+func getSecurityFlags(cmd *cobra.Command) securityFlags {
+	return securityFlags{
+		skipHostVerification: flagx.MustGetBool(cmd, FlagInsecureSkipHostVerification),
+		noTransportSecurity:  flagx.MustGetBool(cmd, FlagInsecureNoTransportSecurity),
+	}
+}
+
 func GetReadConn(cmd *cobra.Command) (*grpc.ClientConn, error) {
 	return Conn(cmd.Context(),
 		getRemote(cmd, FlagReadRemote, EnvReadRemote),
 		getToken(cmd),
-		flagx.MustGetBool(cmd, FlagInsecureTransport),
+		getSecurityFlags(cmd),
 	)
 }
 
@@ -69,11 +99,11 @@ func GetWriteConn(cmd *cobra.Command) (*grpc.ClientConn, error) {
 	return Conn(cmd.Context(),
 		getRemote(cmd, FlagWriteRemote, EnvWriteRemote),
 		getToken(cmd),
-		flagx.MustGetBool(cmd, FlagInsecureTransport),
+		getSecurityFlags(cmd),
 	)
 }
 
-func Conn(ctx context.Context, remote, token string, insecureTransport bool) (*grpc.ClientConn, error) {
+func Conn(ctx context.Context, remote, token string, security securityFlags) (*grpc.ClientConn, error) {
 	timeout := 3 * time.Second
 	if d, ok := ctx.Value(ContextKeyTimeout).(time.Duration); ok {
 		timeout = d
@@ -86,7 +116,7 @@ func Conn(ctx context.Context, remote, token string, insecureTransport bool) (*g
 		grpc.WithBlock(),
 		grpc.WithDisableHealthCheck(),
 	}
-	dialOpts = append(dialOpts, transportCredentials(remote, insecureTransport))
+	dialOpts = append(dialOpts, security.transportCredentials())
 	if token != "" {
 		dialOpts = append(dialOpts,
 			grpc.WithPerRPCCredentials(
@@ -96,25 +126,9 @@ func Conn(ctx context.Context, remote, token string, insecureTransport bool) (*g
 	return grpc.DialContext(ctx, remote, dialOpts...)
 }
 
-func transportCredentials(remote string, insecureTransport bool) grpc.DialOption {
-	if insecureTransport {
-		return grpc.WithTransportCredentials(insecure.NewCredentials())
-	}
-
-	host, _, err := net.SplitHostPort(remote)
-	if err == nil && (host == "127.0.0.1" || host == "localhost") {
-		return grpc.WithTransportCredentials(credentials.NewTLS(&tls.Config{
-			// nolint only set for local domain.
-			InsecureSkipVerify: true,
-		}))
-	}
-
-	// Defaults to the default host root CA bundle
-	return grpc.WithTransportCredentials(credentials.NewTLS(nil))
-}
-
 func RegisterRemoteURLFlags(flags *pflag.FlagSet) {
 	flags.String(FlagReadRemote, "127.0.0.1:4466", "Remote address of the read API endpoint.")
 	flags.String(FlagWriteRemote, "127.0.0.1:4467", "Remote address of the write API endpoint.")
-	flags.Bool(FlagInsecureTransport, false, "Do not use transport encryption.")
+	flags.Bool(FlagInsecureNoTransportSecurity, false, "Disables transport security. Do not use this in production.")
+	flags.Bool(FlagInsecureSkipHostVerification, false, "Disables hostname verification. Do not use this in production.")
 }

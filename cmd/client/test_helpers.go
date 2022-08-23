@@ -71,9 +71,12 @@ func NewTestServer(t *testing.T,
 	})
 
 	ts.Cmd = &cmdx.CommandExecuter{
-		New:            newCmd,
-		PersistentArgs: []string{"--" + ts.FlagRemote, ts.Addr},
-		Ctx:            ctx,
+		New: newCmd,
+		PersistentArgs: []string{
+			"--" + ts.FlagRemote, ts.Addr,
+			"--insecure-skip-hostname-verification=true",
+		},
+		Ctx: ctx,
 	}
 
 	return ts

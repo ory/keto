@@ -16,7 +16,7 @@ func TestDeleteAllCmd(t *testing.T) {
 
 		cmd := newDeleteAllCmd()
 		// we will get an error here because there is no server running, but we really only care about the execution path
-		stdout, _, _ := cmdx.ExecCtx(ctx, cmd, nil)
+		stdout, _, _ := cmdx.ExecCtx(ctx, cmd, nil, "--insecure-skip-hostname-verification=true")
 		assert.Contains(t, stdout, "WARNING: This operation is not reversible.")
 	})
 }
