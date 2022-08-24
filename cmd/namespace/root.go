@@ -1,13 +1,8 @@
 package namespace
 
 import (
-	"github.com/ory/x/cmdx"
-	"github.com/spf13/cobra"
-	"github.com/spf13/pflag"
-
 	"github.com/ory/keto/ketoctx"
-
-	"github.com/ory/keto/cmd/client"
+	"github.com/spf13/cobra"
 )
 
 func NewNamespaceCmd() *cobra.Command {
@@ -17,24 +12,9 @@ func NewNamespaceCmd() *cobra.Command {
 	}
 }
 
-func NewMigrateCmd() *cobra.Command {
-	return &cobra.Command{
-		Use:   "migrate",
-		Short: "Migrate a namespace",
-	}
-}
-
 func RegisterCommandsRecursive(parent *cobra.Command, _ []ketoctx.Option) {
 	rootCmd := NewNamespaceCmd()
-	migrateCmd := NewMigrateCmd()
-	migrateCmd.AddCommand(NewMigrateUpCmd(), NewMigrateDownCmd(), NewMigrateStatusCmd())
-
-	rootCmd.AddCommand(migrateCmd, NewValidateCmd())
+	rootCmd.AddCommand(NewValidateCmd())
 
 	parent.AddCommand(rootCmd)
-}
-
-func registerPackageFlags(flags *pflag.FlagSet) {
-	client.RegisterRemoteURLFlags(flags)
-	cmdx.RegisterFormatFlags(flags)
 }
