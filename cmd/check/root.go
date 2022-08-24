@@ -24,7 +24,10 @@ func (o *checkOutput) String() string {
 	return "Denied\n"
 }
 
-const FlagMaxDepth = "max-depth"
+const (
+	FlagSubjectSet = "subject-set"
+	FlagMaxDepth   = "max-depth"
+)
 
 func newCheckCmd() *cobra.Command {
 	cmd := &cobra.Command{
@@ -44,19 +47,32 @@ func newCheckCmd() *cobra.Command {
 				return err
 			}
 
-			cl := rts.NewCheckServiceClient(conn)
-
-			sub, err := parseSubject(args[0])
+			isSubjectSet, err := cmd.Flags().GetBool(FlagSubjectSet)
 			if err != nil {
-				_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not parse subject %q: %s\n", args[0], err)
 				return err
 			}
+
+			cl := rts.NewCheckServiceClient(conn)
+
+			var subject *rts.Subject
+
+			if isSubjectSet {
+				su, err := (&ketoapi.SubjectSet{}).FromString(args[0])
+				if err != nil {
+					return err
+				}
+
+				subject = rts.NewSubjectSet(su.Namespace, su.Object, su.Relation)
+			} else {
+				subject = rts.NewSubjectID(args[0])
+			}
+
 			resp, err := cl.Check(cmd.Context(), &rts.CheckRequest{
 				Tuple: &rts.RelationTuple{
 					Namespace: args[2],
 					Object:    args[3],
 					Relation:  args[1],
-					Subject:   sub,
+					Subject:   subject,
 				},
 				MaxDepth: maxDepth,
 			})
@@ -73,6 +89,7 @@ func newCheckCmd() *cobra.Command {
 	client.RegisterRemoteURLFlags(cmd.Flags())
 	cmdx.RegisterFormatFlags(cmd.Flags())
 	cmd.Flags().Int32P(FlagMaxDepth, "d", 0, "Maximum depth of the search tree. If the value is less than 1 or greater than the global max-depth then the global max-depth will be used instead.")
+	cmd.Flags().BoolP(FlagSubjectSet, "s", false, "If set to true the provided subject is interpreted as a SubjectSet else as SubjectID")
 
 	return cmd
 }
