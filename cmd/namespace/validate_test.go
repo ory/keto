@@ -61,7 +61,7 @@ func TestValidateConfigNamespaces(t *testing.T) {
 		require.NoError(t, os.WriteFile(fntoml, []byte(configEmbeddedToml), fileMode))
 
 		stdOut := cmd.ExecNoErr(t, "validate", "-c", fnyaml+","+fnjson+","+fntoml)
-		assert.Equal(t, "Congrats, all files are valid!\n", stdOut)
+		assert.Contains(t, stdOut, "Congrats, all files are valid!\n")
 	})
 
 	t.Run("case=supports 3 namespace file formats", func(t *testing.T) {
@@ -83,8 +83,9 @@ func TestValidateConfigNamespaces(t *testing.T) {
 		fn := filepath.Join(t.TempDir(), "ns.txt")
 		require.NoError(t, os.WriteFile(fn, []byte("name: ns\nid: 0"), fileMode))
 
-		stdOut := cmd.ExecExpectedErr(t, "validate", fn)
-		assert.Contains(t, stdOut, "Unable to infer file type")
+		_, stdErr, err := cmd.Exec(nil, "validate", fn)
+		require.ErrorIs(t, err, cmdx.ErrNoPrintButFail)
+		assert.Contains(t, stdErr, "Unable to infer file type")
 	})
 
 	t.Run("case=config passed as varg fails", func(t *testing.T) {
@@ -92,17 +93,19 @@ func TestValidateConfigNamespaces(t *testing.T) {
 		require.NoError(t, os.WriteFile(fn, []byte(configEmbeddedYaml), fileMode))
 
 		// interprets config file as namespace file when `-c` flag is not passed
-		stdOut := cmd.ExecExpectedErr(t, "validate", fn)
-		assert.Regexp(t, "additionalProperties ((\"namespaces\", \"dsn\")|(\"dsn\", \"namespaces\")) not allowed", stdOut)
+		_, stdErr, err := cmd.Exec(nil, "validate", fn)
+		require.ErrorIs(t, err, cmdx.ErrNoPrintButFail)
+		assert.Regexp(t, "additionalProperties ((\"namespaces\", \"dsn\")|(\"dsn\", \"namespaces\")) not allowed", stdErr)
 	})
 
 	t.Run("case=read config with invalid embedded namespace", func(t *testing.T) {
 		fn := filepath.Join(t.TempDir(), "keto.yaml")
 		require.NoError(t, os.WriteFile(fn, []byte(`{"namespaces":[{"id":"x","name":"x"}]}`), fileMode))
 
-		stdOut := cmd.ExecExpectedErr(t, "validate", "--config", fn)
-		assert.Contains(t, stdOut, "not a valid namespace file")
-		assert.Contains(t, stdOut, "id:")
+		_, stdErr, err := cmd.Exec(nil, "validate", "--config", fn)
+		require.ErrorIs(t, err, cmdx.ErrNoPrintButFail)
+		assert.Contains(t, stdErr, "not a valid namespace file")
+		assert.Contains(t, stdErr, "id:")
 	})
 
 	t.Run("case=read config with namespace as dir reference", func(t *testing.T) {
@@ -114,10 +117,10 @@ func TestValidateConfigNamespaces(t *testing.T) {
 
 		cmd.PersistentArgs = []string{}
 		stdOut := cmd.ExecNoErr(t, "validate", "-c", fn)
-		assert.Equal(t, "Congrats, all files are valid!\n", stdOut)
+		assert.Contains(t, stdOut, "Congrats, all files are valid!\n")
 
 		stdOut = cmd.ExecNoErr(t, "validate", "-c", fmt.Sprintf("%s,%s", fn, fn))
-		assert.Equal(t, "Congrats, all files are valid!\n", stdOut)
+		assert.Contains(t, stdOut, "Congrats, all files are valid!\n")
 	})
 
 	t.Run("case=read config with dir reference bad namespaces", func(t *testing.T) {
@@ -127,8 +130,9 @@ func TestValidateConfigNamespaces(t *testing.T) {
 		require.NoError(t, os.WriteFile(fn, []byte(fmt.Sprintf(configReference, nsdir)), fileMode))
 
 		cmd.PersistentArgs = []string{}
-		stdOut := cmd.ExecExpectedErr(t, "validate", "-c", fn)
-		assert.Contains(t, stdOut, "contains values or keys which are invalid")
+		_, stdErr, err := cmd.Exec(nil, "validate", "-c", fn)
+		require.ErrorIs(t, err, cmdx.ErrNoPrintButFail)
+		assert.Contains(t, stdErr, "contains values or keys which are invalid")
 	})
 }
 

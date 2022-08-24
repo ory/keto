@@ -21,9 +21,11 @@ import (
 
 func NewValidateCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "validate <namespace.yml> [<namespace2.yml> ...] | validate -c <config.yaml>",
-		Short: "Validate namespace definitions",
-		Long: `validate
+		Deprecated: "The legacy namespaces are deprecated. Please use the new Ory Permission Language instead.",
+		Aliases:    []string{"validate"},
+		Use:        "validate-legacy <namespace.yml> [<namespace2.yml> ...] | validate -c <config.yaml>",
+		Short:      "Validate legacy namespace definitions",
+		Long: `validate-legacy
 Validates namespace definitions. Parses namespace yaml files or configuration
 files passed via the configuration flag. Returns human readable errors. Useful for
 debugging.`,
