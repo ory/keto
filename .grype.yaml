@@ -1,4 +1,7 @@
 only-fixed: true
 ignore:
+  # see https://github.com/anchore/grype/issues/558
   - vulnerability: CVE-2015-5237
-  - vulnerability: CVE-2022-30065
+  - vulnerability: CVE-2021-22570
+
+  - vulnerability: CVE-2022-30065 # alpine does not yet provide a fixed version (and the default docker image does not use or expose `awk` when running the server)
