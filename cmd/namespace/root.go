@@ -14,7 +14,7 @@ func NewNamespaceCmd() *cobra.Command {
 
 func RegisterCommandsRecursive(parent *cobra.Command, _ []ketoctx.Option) {
 	rootCmd := NewNamespaceCmd()
-	rootCmd.AddCommand(NewValidateCmd())
+	rootCmd.AddCommand(NewValidateCmd(), NewInitCmd())
 
 	parent.AddCommand(rootCmd)
 }
