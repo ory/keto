@@ -10,3 +10,5 @@ require (
 	google.golang.org/grpc v1.48.0
 	google.golang.org/protobuf v1.28.1
 )
+
+retract v0.9.0-alpha.0.pre.0
