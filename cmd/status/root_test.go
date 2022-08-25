@@ -30,7 +30,6 @@ func TestStatusCmd(t *testing.T) {
 			ts.Cmd.PersistentArgs = append(ts.Cmd.PersistentArgs, "--"+cmdx.FlagQuiet, "--"+FlagEndpoint, string(serverType))
 
 			t.Run("case=timeout,noblock", func(t *testing.T) {
-				t.Skip()
 				ctx, cancel := context.WithTimeout(context.Background(), time.Millisecond)
 				defer cancel()
 
@@ -39,7 +38,6 @@ func TestStatusCmd(t *testing.T) {
 			})
 
 			t.Run("case=noblock", func(t *testing.T) {
-				t.Skip()
 				stdOut := ts.Cmd.ExecNoErr(t)
 				assert.Equal(t, grpcHealthV1.HealthCheckResponse_SERVING.String()+"\n", stdOut)
 			})
@@ -123,7 +121,7 @@ func TestAuthorizedRequest(t *testing.T) {
 	})
 
 	t.Run("case=authorized", func(t *testing.T) {
-		t.Setenv("ORY_PAT", "secret")
+		t.Setenv("KETO_BEARER_TOKEN", "secret")
 		out := ts.Cmd.ExecNoErr(t)
 		assert.Contains(t, out, "SERVING")
 	})
