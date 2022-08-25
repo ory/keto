@@ -3,8 +3,8 @@ package dbx
 import (
 	"crypto/rand"
 	"fmt"
-	"io/ioutil"
 	"net/url"
+	"os"
 	"path/filepath"
 	"strings"
 	"testing"
@@ -168,7 +168,7 @@ func ConfigFile(t testing.TB, values map[string]interface{}) string {
 		require.NoError(t, err)
 	}
 
-	require.NoError(t, ioutil.WriteFile(fn, c, 0600))
+	require.NoError(t, os.WriteFile(fn, c, 0600))
 
 	return fn
 }

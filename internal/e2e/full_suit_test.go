@@ -2,7 +2,7 @@ package e2e
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"testing"
 	"time"
@@ -105,7 +105,7 @@ func Test(t *testing.T) {
 					resp, err := http.Get(fmt.Sprintf("http://%s%s", reg.Config(ctx).MetricsListenOn(), prometheus.MetricsPrometheusPath))
 					require.NoError(t, err)
 					require.Equal(t, resp.StatusCode, http.StatusOK)
-					body, err := ioutil.ReadAll(resp.Body)
+					body, err := io.ReadAll(resp.Body)
 					require.NoError(t, err)
 					require.Contains(t, string(body), promLogLine)
 				})

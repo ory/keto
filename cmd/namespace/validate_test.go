@@ -2,7 +2,7 @@ package namespace
 
 import (
 	"fmt"
-	"io/ioutil"
+	"os"
 	"path/filepath"
 	"testing"
 
@@ -52,13 +52,13 @@ func TestValidateConfigNamespaces(t *testing.T) {
 	t.Run("case=read valid config with embedded namespaces", func(t *testing.T) {
 		dir := t.TempDir()
 		fnyaml := filepath.Join(dir, "keto.yaml")
-		require.NoError(t, ioutil.WriteFile(fnyaml, []byte(configEmbeddedYaml), fileMode))
+		require.NoError(t, os.WriteFile(fnyaml, []byte(configEmbeddedYaml), fileMode))
 
 		fnjson := filepath.Join(dir, "keto.json")
-		require.NoError(t, ioutil.WriteFile(fnjson, []byte(configEmbeddedJson), fileMode))
+		require.NoError(t, os.WriteFile(fnjson, []byte(configEmbeddedJson), fileMode))
 
 		fntoml := filepath.Join(dir, "keto.toml")
-		require.NoError(t, ioutil.WriteFile(fntoml, []byte(configEmbeddedToml), fileMode))
+		require.NoError(t, os.WriteFile(fntoml, []byte(configEmbeddedToml), fileMode))
 
 		stdOut := cmd.ExecNoErr(t, "validate", "-c", fnyaml+","+fnjson+","+fntoml)
 		assert.Equal(t, "Congrats, all files are valid!\n", stdOut)
@@ -72,7 +72,7 @@ func TestValidateConfigNamespaces(t *testing.T) {
 			filepath.Join(dir, "ns.toml"): "name = \"testns0\"\nid = 0",
 		}
 		for fn, contents := range nsfiles {
-			require.NoError(t, ioutil.WriteFile(fn, []byte(contents), fileMode))
+			require.NoError(t, os.WriteFile(fn, []byte(contents), fileMode))
 		}
 
 		params := append([]string{"validate"}, keys(nsfiles)...)
@@ -81,7 +81,7 @@ func TestValidateConfigNamespaces(t *testing.T) {
 
 	t.Run("case=unknown namespace format gives error", func(t *testing.T) {
 		fn := filepath.Join(t.TempDir(), "ns.txt")
-		require.NoError(t, ioutil.WriteFile(fn, []byte("name: ns\nid: 0"), fileMode))
+		require.NoError(t, os.WriteFile(fn, []byte("name: ns\nid: 0"), fileMode))
 
 		stdOut := cmd.ExecExpectedErr(t, "validate", fn)
 		assert.Contains(t, stdOut, "Unable to infer file type")
@@ -89,7 +89,7 @@ func TestValidateConfigNamespaces(t *testing.T) {
 
 	t.Run("case=config passed as varg fails", func(t *testing.T) {
 		fn := filepath.Join(t.TempDir(), "keto.yaml")
-		require.NoError(t, ioutil.WriteFile(fn, []byte(configEmbeddedYaml), fileMode))
+		require.NoError(t, os.WriteFile(fn, []byte(configEmbeddedYaml), fileMode))
 
 		// interprets config file as namespace file when `-c` flag is not passed
 		stdOut := cmd.ExecExpectedErr(t, "validate", fn)
@@ -98,7 +98,7 @@ func TestValidateConfigNamespaces(t *testing.T) {
 
 	t.Run("case=read config with invalid embedded namespace", func(t *testing.T) {
 		fn := filepath.Join(t.TempDir(), "keto.yaml")
-		require.NoError(t, ioutil.WriteFile(fn, []byte(`{"namespaces":[{"id":"x","name":"x"}]}`), fileMode))
+		require.NoError(t, os.WriteFile(fn, []byte(`{"namespaces":[{"id":"x","name":"x"}]}`), fileMode))
 
 		stdOut := cmd.ExecExpectedErr(t, "validate", "--config", fn)
 		assert.Contains(t, stdOut, "not a valid namespace file")
@@ -108,9 +108,9 @@ func TestValidateConfigNamespaces(t *testing.T) {
 	t.Run("case=read config with namespace as dir reference", func(t *testing.T) {
 		nsdir := t.TempDir()
 		fn := filepath.Join(t.TempDir(), "config.yaml")
-		require.NoError(t, ioutil.WriteFile(filepath.Join(nsdir, "ns0.yaml"), []byte(nsyaml), fileMode))
-		require.NoError(t, ioutil.WriteFile(filepath.Join(nsdir, "ns1.json"), []byte(nsjson), fileMode))
-		require.NoError(t, ioutil.WriteFile(fn, []byte(fmt.Sprintf(configReference, nsdir)), fileMode))
+		require.NoError(t, os.WriteFile(filepath.Join(nsdir, "ns0.yaml"), []byte(nsyaml), fileMode))
+		require.NoError(t, os.WriteFile(filepath.Join(nsdir, "ns1.json"), []byte(nsjson), fileMode))
+		require.NoError(t, os.WriteFile(fn, []byte(fmt.Sprintf(configReference, nsdir)), fileMode))
 
 		cmd.PersistentArgs = []string{}
 		stdOut := cmd.ExecNoErr(t, "validate", "-c", fn)
@@ -123,8 +123,8 @@ func TestValidateConfigNamespaces(t *testing.T) {
 	t.Run("case=read config with dir reference bad namespaces", func(t *testing.T) {
 		nsdir := t.TempDir()
 		fn := filepath.Join(t.TempDir(), "config.yaml")
-		require.NoError(t, ioutil.WriteFile(filepath.Join(nsdir, "ns0.yaml"), []byte("name: badId\nid: foo"), fileMode))
-		require.NoError(t, ioutil.WriteFile(fn, []byte(fmt.Sprintf(configReference, nsdir)), fileMode))
+		require.NoError(t, os.WriteFile(filepath.Join(nsdir, "ns0.yaml"), []byte("name: badId\nid: foo"), fileMode))
+		require.NoError(t, os.WriteFile(fn, []byte(fmt.Sprintf(configReference, nsdir)), fileMode))
 
 		cmd.PersistentArgs = []string{}
 		stdOut := cmd.ExecExpectedErr(t, "validate", "-c", fn)

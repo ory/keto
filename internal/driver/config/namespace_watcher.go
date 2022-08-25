@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"sync"
@@ -187,7 +186,7 @@ func (nw *NamespaceWatcher) readNamespaceFile(r io.Reader, source string) *Names
 		return nil
 	}
 
-	raw, err := ioutil.ReadAll(r)
+	raw, err := io.ReadAll(r)
 	if err != nil {
 		nw.logger.
 			WithError(errors.WithStack(err)).

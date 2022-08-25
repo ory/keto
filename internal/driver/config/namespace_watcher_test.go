@@ -3,7 +3,6 @@ package config
 import (
 	"context"
 	"encoding/json"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -48,7 +47,7 @@ func TestNamespaceProvider(t *testing.T) {
 		}
 		nEnc, err := marshal(n)
 		require.NoError(t, err)
-		require.NoError(t, ioutil.WriteFile(fn, nEnc, 0600))
+		require.NoError(t, os.WriteFile(fn, nEnc, 0600))
 	}
 
 	writeDir := func(t *testing.T, dir string, files map[string]interface{}) {
@@ -67,7 +66,7 @@ func TestNamespaceProvider(t *testing.T) {
 				t.FailNow()
 			}
 
-			require.NoError(t, ioutil.WriteFile(fp, []byte(s), 0600))
+			require.NoError(t, os.WriteFile(fp, []byte(s), 0600))
 		}
 	}
 

@@ -3,7 +3,7 @@ package namespace
 import (
 	"bytes"
 	"fmt"
-	"io/ioutil"
+	"os"
 
 	"github.com/ory/keto/embedx"
 
@@ -82,7 +82,7 @@ func getSchema(cmd *cobra.Command) (*jsonschema.Schema, error) {
 }
 
 func validateNamespaceFile(cmd *cobra.Command, fn string) (*namespace.Namespace, error) {
-	fc, err := ioutil.ReadFile(fn)
+	fc, err := os.ReadFile(fn)
 	if err != nil {
 		_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not read file \"%s\": %+v\n", fn, err)
 		return nil, cmdx.FailSilently(cmd)
@@ -125,7 +125,7 @@ func validateNamespaceBytes(cmd *cobra.Command, name string, b []byte, parser co
 }
 
 func validateConfigFile(cmd *cobra.Command, fn string) error {
-	fc, err := ioutil.ReadFile(fn)
+	fc, err := os.ReadFile(fn)
 	if err != nil {
 		_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not read file \"%s\": %+v\n", fn, err)
 		return cmdx.FailSilently(cmd)
