@@ -15,7 +15,7 @@ func TestCheckCommand(t *testing.T) {
 	defer ts.Shutdown(t)
 
 	stdOut := ts.Cmd.ExecNoErr(t, "subject", "access", nspace.Name, "object",
-		"--insecure-skip-hostname-verification=true",
+		"--insecure-skip-hostname-verification",
 	)
 	assert.Equal(t, "Denied\n", stdOut)
 }

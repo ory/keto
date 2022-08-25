@@ -30,7 +30,7 @@ const (
 
 	EnvReadRemote  = "KETO_READ_REMOTE"
 	EnvWriteRemote = "KETO_WRITE_REMOTE"
-	EnvAuthToken   = "ORY_PAT"
+	EnvAuthToken   = "KETO_BEARER_TOKEN"
 
 	ContextKeyTimeout contextKeys = "timeout"
 )

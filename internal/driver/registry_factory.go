@@ -103,7 +103,7 @@ var sharedTestCert selfSignedCert
 
 func (s *selfSignedCert) generate() {
 	s.once.Do(func() {
-		key, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader)
+		key, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
 		if err != nil {
 			s.err = fmt.Errorf("could not create key: %v", err)
 			return
