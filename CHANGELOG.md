@@ -5,8 +5,9 @@
 
 **Table of Contents**
 
-- [0.0.0 (2022-08-24)](#000-2022-08-24)
+- [0.0.0 (2022-08-25)](#000-2022-08-25)
   - [Bug Fixes](#bug-fixes)
+  - [Build System](#build-system)
   - [Code Refactoring](#code-refactoring)
   - [Documentation](#documentation)
   - [Features](#features)
@@ -53,7 +54,7 @@
   - [Features](#features-4)
 - [0.6.0-alpha.1 (2021-04-07)](#060-alpha1-2021-04-07)
   - [Bug Fixes](#bug-fixes-7)
-  - [Build System](#build-system)
+  - [Build System](#build-system-1)
   - [Code Generation](#code-generation-8)
   - [Code Refactoring](#code-refactoring-4)
   - [Documentation](#documentation-7)
@@ -132,7 +133,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.9.0-alpha.0...v0.0.0) (2022-08-24)
+# [0.0.0](https://github.com/ory/keto/compare/v0.9.0-alpha.0...v0.0.0) (2022-08-25)
 
 ### Bug Fixes
 
@@ -143,6 +144,11 @@
 
   Enable TLS and certificate checking in the gRPC client when communicating with
   remote hosts.
+
+### Build System
+
+- Do not include VCS info ([#990](https://github.com/ory/keto/issues/990))
+  ([97f638d](https://github.com/ory/keto/commit/97f638df4e5a205d74bf7bcac2343edeec830b8a))
 
 ### Code Refactoring
 
