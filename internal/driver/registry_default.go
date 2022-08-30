@@ -68,6 +68,7 @@ type (
 		defaultUnaryInterceptors  []grpc.UnaryServerInterceptor
 		defaultStreamInterceptors []grpc.StreamServerInterceptor
 		defaultHttpMiddlewares    []func(rw http.ResponseWriter, r *http.Request, next http.HandlerFunc)
+		defaultMigrationOptions   []popx.MigrationBoxOption
 	}
 	Handler interface {
 		RegisterReadRoutes(r *x.ReadRouter)
@@ -205,7 +206,10 @@ func (r *RegistryDefault) MigrationBox(ctx context.Context) (*popx.MigrationBox,
 		mb, err := popx.NewMigrationBox(
 			fsx.Merge(sql.Migrations, networkx.Migrations),
 			popx.NewMigrator(c, r.Logger(), r.Tracer(ctx), 0),
-			popx.WithGoMigrations(uuidmapping.Migrations(namespaces)),
+			append(
+				[]popx.MigrationBoxOption{popx.WithGoMigrations(uuidmapping.Migrations(namespaces))},
+				r.defaultMigrationOptions...,
+			)...,
 		)
 		if err != nil {
 			return nil, err

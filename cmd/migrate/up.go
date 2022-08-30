@@ -34,7 +34,7 @@ Before running this command on an existing database, create a back up!
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			ctx := cmd.Context()
 
-			reg, err := driver.NewDefaultRegistry(ctx, cmd.Flags(), true, opts...)
+			reg, err := driver.NewDefaultRegistry(ctx, cmd.Flags(), true, opts)
 			if err != nil {
 				return err
 			}

@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/ory/x/logrusx"
+	"github.com/ory/x/popx"
 	"google.golang.org/grpc"
 )
 
@@ -14,6 +15,7 @@ type (
 		httpMiddlewares        []func(rw http.ResponseWriter, r *http.Request, next http.HandlerFunc)
 		grpcUnaryInterceptors  []grpc.UnaryServerInterceptor
 		grpcStreamInterceptors []grpc.StreamServerInterceptor
+		migrationOpts          []popx.MigrationBoxOption
 	}
 	Option func(o *opts)
 )
@@ -48,6 +50,12 @@ func WithGRPCStreamInterceptors(i ...grpc.StreamServerInterceptor) Option {
 	}
 }
 
+func WithMigrationOptions(o ...popx.MigrationBoxOption) Option {
+	return func(opts *opts) {
+		opts.migrationOpts = o
+	}
+}
+
 func (o *opts) Logger() *logrusx.Logger {
 	return o.logger
 }
@@ -66,6 +74,10 @@ func (o *opts) GRPCUnaryInterceptors() []grpc.UnaryServerInterceptor {
 
 func (o *opts) GRPCStreamInterceptors() []grpc.StreamServerInterceptor {
 	return o.grpcStreamInterceptors
+}
+
+func (o *opts) MigrationOptions() []popx.MigrationBoxOption {
+	return o.migrationOpts
 }
 
 func Options(options ...Option) *opts {
