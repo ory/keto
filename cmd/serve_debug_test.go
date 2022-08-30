@@ -80,7 +80,7 @@ dsn: memory`)
 	configx.RegisterFlags(flags)
 	require.NoError(b, flags.Set(configx.FlagConfig, f.Name()))
 
-	reg, err := driver.NewDefaultRegistry(rCtx, flags, false)
+	reg, err := driver.NewDefaultRegistry(rCtx, flags, false, nil)
 
 	// setting env vars instead of flags bc flags are not defined on every command
 	require.NoError(b, os.Setenv(client.EnvReadRemote, "127.0.0.1:4466"))

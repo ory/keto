@@ -85,7 +85,7 @@ func newInitializedReg(t testing.TB, dsn *dbx.DsnT, cfgOverwrites map[string]int
 	cf := dbx.ConfigFile(t, cfgValues)
 	require.NoError(t, flags.Parse([]string{"--" + configx.FlagConfig, cf}))
 
-	reg, err := driver.NewDefaultRegistry(ctx, flags, true)
+	reg, err := driver.NewDefaultRegistry(ctx, flags, true, nil)
 	require.NoError(t, err)
 
 	require.NoError(t, reg.MigrateUp(ctx))

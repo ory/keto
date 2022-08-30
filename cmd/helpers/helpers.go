@@ -14,7 +14,7 @@ import (
 )
 
 func NewRegistry(cmd *cobra.Command, opts []ketoctx.Option) (driver.Registry, error) {
-	reg, err := driver.NewDefaultRegistry(cmd.Context(), cmd.Flags(), false, opts...)
+	reg, err := driver.NewDefaultRegistry(cmd.Context(), cmd.Flags(), false, opts)
 	if errors.Is(err, persistence.ErrNetworkMigrationsMissing) {
 		_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Migrations were not applied yet, please apply them first.")
 		return nil, cmdx.FailSilently(cmd)

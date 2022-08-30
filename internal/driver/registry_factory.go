@@ -22,7 +22,7 @@ import (
 	"github.com/ory/keto/internal/driver/config"
 )
 
-func NewDefaultRegistry(ctx context.Context, flags *pflag.FlagSet, withoutNetwork bool, opts ...ketoctx.Option) (Registry, error) {
+func NewDefaultRegistry(ctx context.Context, flags *pflag.FlagSet, withoutNetwork bool, opts []ketoctx.Option) (Registry, error) {
 	reg, ok := ctx.Value(RegistryContextKey).(Registry)
 	if ok {
 		return reg, nil
@@ -49,6 +49,7 @@ func NewDefaultRegistry(ctx context.Context, flags *pflag.FlagSet, withoutNetwor
 		defaultUnaryInterceptors:  options.GRPCUnaryInterceptors(),
 		defaultStreamInterceptors: options.GRPCStreamInterceptors(),
 		defaultHttpMiddlewares:    options.HTTPMiddlewares(),
+		defaultMigrationOptions:   options.MigrationOptions(),
 	}
 
 	init := r.Init

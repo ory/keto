@@ -27,7 +27,7 @@ func newDownCmd(opts []ketoctx.Option) *cobra.Command {
 				return fmt.Errorf("malformed argument %s for <steps>: %+v", args[0], err)
 			}
 
-			reg, err := driver.NewDefaultRegistry(cmd.Context(), cmd.Flags(), true, opts...)
+			reg, err := driver.NewDefaultRegistry(cmd.Context(), cmd.Flags(), true, opts)
 			if err != nil {
 				return err
 			}
