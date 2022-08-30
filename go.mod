@@ -43,7 +43,7 @@ require (
 	github.com/tidwall/gjson v1.14.1
 	github.com/tidwall/sjson v1.2.4
 	github.com/urfave/negroni v1.0.0
-	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.33.0
+	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.34.0
 	go.opentelemetry.io/otel v1.9.0
 	go.uber.org/goleak v1.1.12
 	golang.org/x/exp v0.0.0-20220518171630-0b5c67f07fdf
