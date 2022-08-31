@@ -188,7 +188,6 @@ var (
 				Runner: func(_ popx.Migration, conn *pop.Connection, _ *pop.Tx) error {
 					var (
 						relationTuples []OldRelationTuple
-						offset         int
 						err            error
 						lastID         uuid.UUID
 					)
@@ -216,9 +215,6 @@ var (
 						}
 						if err := BatchInsertTuples(conn, newTuples); err != nil {
 							return fmt.Errorf("could not insert new tuples: %w", err)
-						}
-						if offset == 0 {
-							break
 						}
 					}
 

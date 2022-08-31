@@ -4,6 +4,7 @@ import (
 	"context"
 	stdSql "database/sql"
 	"os"
+	"strconv"
 	"strings"
 	"testing"
 	"time"
@@ -130,34 +131,75 @@ func TestMigrations(t *testing.T) {
 			})
 
 			t.Run("suite=uuid_migrations", func(t *testing.T) {
-				ctx, cancel := context.WithTimeout(ctx, 20*time.Second)
-				defer cancel()
-				require.NoError(t, tm.Down(ctx, -1))
+				t.Run("correct types", func(t *testing.T) {
+					ctx, cancel := context.WithTimeout(ctx, 20*time.Second)
+					defer cancel()
+					require.NoError(t, tm.Down(ctx, -1))
 
-				// Migrate up to (including) "drop old non-uuid table"
-				migrateUpTo(t, tm, "20220513200600000001")
-				t.Log("status after up migration")
-				logMigrationStatus(t, tm)
+					// Migrate up to (including) "drop old non-uuid table"
+					migrateUpTo(t, tm, "20220513200600000001")
+					t.Log("status after up migration")
+					logMigrationStatus(t, tm)
 
-				// Assert that relationtuples have UUIDs
-				tuples, _, err := p.GetRelationTuples(ctx, &relationtuple.RelationQuery{Namespace: &namespaces[1].Name})
-				require.NoError(t, err)
-				assert.NotZero(t, tuples[0].Subject.(*relationtuple.SubjectID).ID)
-				assert.NotZero(t, tuples[0].Object)
+					// Assert that relationtuples have UUIDs
+					tuples, _, err := p.GetRelationTuples(ctx, &relationtuple.RelationQuery{Namespace: &namespaces[1].Name})
+					require.NoError(t, err)
+					assert.NotZero(t, tuples[0].Subject.(*relationtuple.SubjectID).ID)
+					assert.NotZero(t, tuples[0].Object)
 
-				// Migrate down to before "migrate-strings-to-uuids"
-				migrateDownTo(t, tm, "20220513200300000000")
-				t.Log("status after down migration")
-				logMigrationStatus(t, tm)
+					// Migrate down to before "migrate-strings-to-uuids"
+					migrateDownTo(t, tm, "20220513200300000000")
+					t.Log("status after down migration")
+					logMigrationStatus(t, tm)
 
-				// Assert that relationtuples have strings
-				var oldRTs []*tuplesBeforeUUID
-				require.NoError(t, p.Connection(ctx).
-					Select("subject_id", "object").
-					Where("namespace_id = ?", namespaces[1].ID).
-					All(&oldRTs))
-				assert.Equalf(t, "user", oldRTs[0].SubjectID.String, "%+v", oldRTs[0])
-				assert.Equal(t, "object", oldRTs[0].Object)
+					// Assert that relationtuples have strings
+					var oldRTs []*tuplesBeforeUUID
+					require.NoError(t, p.Connection(ctx).
+						Select("subject_id", "object").
+						Where("namespace_id = ?", namespaces[1].ID).
+						All(&oldRTs))
+					assert.Equalf(t, "user", oldRTs[0].SubjectID.String, "%+v", oldRTs[0])
+					assert.Equal(t, "object", oldRTs[0].Object)
+				})
+
+				t.Run("paginates", func(t *testing.T) {
+					ctx, cancel := context.WithTimeout(ctx, 2*time.Minute)
+					defer cancel()
+					require.NoError(t, tm.Down(ctx, -1))
+
+					// migrate up to before all UUID migrations
+					migrateUpTo(t, tm, "20220512151000000000")
+					t.Log("status after up migration")
+					logMigrationStatus(t, tm)
+
+					oldRTs := make([]tuplesBeforeUUID, 2000)
+					expected := make([]*ketoapi.RelationTuple, len(oldRTs))
+					for i := 0; i < len(oldRTs); i++ {
+						oldRTs[i] = tuplesBeforeUUID{
+							NetworkID:   p.NetworkID(ctx),
+							NamespaceID: namespaces[1].ID,
+							Object:      "object-" + strconv.Itoa(i),
+							Relation:    "pagination-works",
+							SubjectID:   stdSql.NullString{String: "subject-" + strconv.Itoa(i), Valid: true},
+							CommitTime:  time.Now(),
+						}
+						expected[i] = &ketoapi.RelationTuple{
+							Namespace: namespaces[1].Name,
+							Object:    oldRTs[i].Object,
+							Relation:  "pagination-works",
+							SubjectID: x.Ptr(oldRTs[i].SubjectID.String),
+						}
+					}
+					require.NoError(t, p.Connection(ctx).Create(oldRTs))
+					require.NoError(t, tm.Up(ctx))
+
+					newRTs, _, err := p.GetRelationTuples(ctx, &relationtuple.RelationQuery{Relation: x.Ptr("pagination-works")}, x.WithSize(len(oldRTs)))
+					require.NoError(t, err)
+					assert.Len(t, newRTs, len(oldRTs))
+					actual, err := reg.Mapper().ToTuple(ctx, newRTs...)
+					require.NoError(t, err)
+					assert.ElementsMatch(t, expected, actual)
+				})
 			})
 
 			t.Run("suite=down", func(t *testing.T) {
