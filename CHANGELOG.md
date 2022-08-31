@@ -5,7 +5,7 @@
 
 **Table of Contents**
 
-- [0.0.0 (2022-08-30)](#000-2022-08-30)
+- [0.0.0 (2022-08-31)](#000-2022-08-31)
   - [Bug Fixes](#bug-fixes)
   - [Build System](#build-system)
   - [Code Refactoring](#code-refactoring)
@@ -133,7 +133,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.9.0-alpha.0...v0.0.0) (2022-08-30)
+# [0.0.0](https://github.com/ory/keto/compare/v0.9.0-alpha.0...v0.0.0) (2022-08-31)
 
 ### Bug Fixes
 
@@ -144,6 +144,9 @@
 
   Enable TLS and certificate checking in the gRPC client when communicating with
   remote hosts.
+
+- Uuid mapping migration paginates
+  ([3a5fb2c](https://github.com/ory/keto/commit/3a5fb2c06e436b5712058d8845cb92f94f3787b9))
 
 ### Build System
 
