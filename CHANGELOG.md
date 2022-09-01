@@ -5,7 +5,7 @@
 
 **Table of Contents**
 
-- [0.0.0 (2022-08-31)](#000-2022-08-31)
+- [0.0.0 (2022-09-01)](#000-2022-09-01)
   - [Bug Fixes](#bug-fixes)
   - [Build System](#build-system)
   - [Code Refactoring](#code-refactoring)
@@ -133,7 +133,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.9.0-alpha.0...v0.0.0) (2022-08-31)
+# [0.0.0](https://github.com/ory/keto/compare/v0.9.0-alpha.0...v0.0.0) (2022-09-01)
 
 ### Bug Fixes
 
@@ -168,6 +168,8 @@
 
 ### Features
 
+- Add bearer token auth
+  ([5110f63](https://github.com/ory/keto/commit/5110f63cdde53f10bd1621da36215389ec4909d0))
 - Configure subject-set rewrites
   ([0ce1519](https://github.com/ory/keto/commit/0ce15197848d1f3b79d10c78a472a8cafdc491cd)):
 
@@ -181,6 +183,18 @@
       [...]
 
   The <location> can be any valid file, directory or URI.
+
+- Fine-grained control over transport security
+  ([5f056b7](https://github.com/ory/keto/commit/5f056b78aaeb40f85e70fb62623d3ba55fb23553)):
+
+  This adds two new flags to the Keto CLI:
+
+  - --insecure-disable-transport-security: Use plaintext instead of TLS
+  - --insecure-skip-hostname-verification: Use TLS, but do not verify the
+    certificate
+
+  By default, the Keto CLI now connects to the remote via TLS and verifies the
+  hostname.
 
 - Simpler notation for subjects w/o relation
   ([ec979df](https://github.com/ory/keto/commit/ec979dfd3bbf018f2041d9a0195d15f26e04383f))
