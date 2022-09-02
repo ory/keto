@@ -1,28 +1,28 @@
-class GoSwaggerAT0290 < Formula
+class GoSwaggerAT0300 < Formula
   desc "Toolkit to work with swagger for golang"
   homepage "https://github.com/go-swagger/go-swagger"
-  version "0.29.0"
+  version "0.30.0"
   @@filename = nil
   if OS.mac?
     if Hardware::CPU.arm?
       @@filename = "swagger_darwin_arm64"
       url "https://github.com/go-swagger/go-swagger/releases/download/v#{version}/#{@@filename}"
-      sha256 "babf863e2a54c6e173cf7104db63269d5c01105f6fd00b04c2ace0409278a7de"
+      sha256 "757ce974b8da0eb024c948d521191d9f80db5007ec47c9a95a89f3d7f39a922b"
     else
       @@filename = "swagger_darwin_amd64"
       url "https://github.com/go-swagger/go-swagger/releases/download/v#{version}/#{@@filename}"
-      sha256 "90438d5fc13cc0586d64187da1879ae5e01f0de23718225c2fc1fbee1a1be59f"
+      sha256 "bed597232c8a82d2fc7e341774890f0b000e27d9c657eca16da098da823c9ab0"
     end
   elsif OS.linux?
     case RbConfig::CONFIG["host_cpu"]
     when "aarch64"
       @@filename = "swagger_linux_arm64"
       url "https://github.com/go-swagger/go-swagger/releases/download/v#{version}/#{@@filename}"
-      sha256 "eeb8f3444c4f3622207e8dca31188bb889e7dda10f0c5ad76779f13f24e945e7"
+      sha256 "12dd702a75ed4ca47cabf8c0dc03a5b58dc28f89091afdc1f82ea90b58fda134"
     when "x86_64"
       @@filename = "swagger_linux_amd64"
       url "https://github.com/go-swagger/go-swagger/releases/download/v#{version}/#{@@filename}"
-      sha256 "0666361b45e11862e3d6487693da9f498710e395660ed0fcbea835a9e8c7272d"
+      sha256 "1ed5bf204c45e9f8614c7d65b6bee5cf10087db267d5f50a6185302cb8484bd6"
     else
       ohdie "Architecture not supported by this formula"
     end

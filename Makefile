@@ -15,7 +15,7 @@ GO_DEPENDENCIES = golang.org/x/tools/cmd/goimports \
 				  golang.org/x/tools/cmd/stringer \
 				  github.com/mdempsky/go114-fuzz-build
 
-BREW_DEPENDENCIES = go-swagger@0.29.0 \
+BREW_DEPENDENCIES = go-swagger@0.30.0 \
 					grype@0.40.1 \
 					cli@0.1.35 \
 					trivy@0.29.2
