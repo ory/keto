@@ -9,6 +9,21 @@
         {
           "properties": {
             "version": {
+              "const": "v0.9.0-alpha.0"
+            }
+          },
+          "required": ["version"]
+        },
+        {
+          "$ref": "https://raw.githubusercontent.com/ory/keto/v0.9.0-alpha.0/.schema/config.schema.json"
+        }
+      ]
+    },
+    {
+      "allOf": [
+        {
+          "properties": {
+            "version": {
               "const": "v0.8.0-alpha.2"
             }
           },
@@ -95,7 +110,6 @@
       ]
     },
     {
-      "description": "This is the fallback to the latest version (the first one in this schema) in case no version is specified.",
       "allOf": [
         {
           "oneOf": [
