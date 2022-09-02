@@ -49,6 +49,28 @@ func runCases(c client, m *namespaceTestManager) func(*testing.T) {
 			assert.True(t, c.check(t, tuple))
 		})
 
+		t.Run("case=check subjectSet relations", func(t *testing.T) {
+			n := &namespace.Namespace{Name: t.Name()}
+			m.add(t, n)
+
+			obj := fmt.Sprintf("obj for client %T", c)
+			rel := "check"
+
+			rt := &ketoapi.RelationTuple{
+				Namespace: n.Name,
+				Object:    obj,
+				Relation:  rel,
+				SubjectSet: &ketoapi.SubjectSet{
+					Namespace: n.Name,
+					Object:    obj,
+					Relation:  rel,
+				},
+			}
+			c.createTuple(t, rt)
+
+			assert.True(t, c.check(t, rt))
+		})
+
 		t.Run("case=expand API", func(t *testing.T) {
 			n := &namespace.Namespace{Name: t.Name()}
 			m.add(t, n)
