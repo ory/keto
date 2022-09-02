@@ -11,6 +11,7 @@
   - [Code Refactoring](#code-refactoring)
   - [Documentation](#documentation)
   - [Features](#features)
+  - [Tests](#tests)
 - [0.9.0-alpha.0 (2022-08-01)](#090-alpha0-2022-08-01)
   - [Breaking Changes](#breaking-changes)
     - [Bug Fixes](#bug-fixes-1)
@@ -18,7 +19,7 @@
     - [Code Refactoring](#code-refactoring-1)
     - [Documentation](#documentation-1)
     - [Features](#features-1)
-    - [Tests](#tests)
+    - [Tests](#tests-1)
 - [0.8.0-alpha.2 (2022-03-04)](#080-alpha2-2022-03-04)
   - [Bug Fixes](#bug-fixes-2)
   - [Code Generation](#code-generation-1)
@@ -26,7 +27,7 @@
 - [0.8.0-alpha.1 (2022-02-22)](#080-alpha1-2022-02-22)
   - [Bug Fixes](#bug-fixes-3)
   - [Code Generation](#code-generation-2)
-  - [Tests](#tests-1)
+  - [Tests](#tests-2)
 - [0.8.0-alpha.0 (2022-02-10)](#080-alpha0-2022-02-10)
   - [Bug Fixes](#bug-fixes-4)
   - [Code Generation](#code-generation-3)
@@ -44,7 +45,7 @@
     - [Code Refactoring](#code-refactoring-3)
     - [Documentation](#documentation-5)
     - [Features](#features-3)
-    - [Tests](#tests-2)
+    - [Tests](#tests-3)
 - [0.6.0-alpha.3 (2021-04-29)](#060-alpha3-2021-04-29)
   - [Code Generation](#code-generation-6)
 - [0.6.0-alpha.2 (2021-04-29)](#060-alpha2-2021-04-29)
@@ -59,7 +60,7 @@
   - [Code Refactoring](#code-refactoring-4)
   - [Documentation](#documentation-7)
   - [Features](#features-5)
-  - [Tests](#tests-3)
+  - [Tests](#tests-4)
 - [0.5.6-alpha.1 (2020-05-28)](#056-alpha1-2020-05-28)
   - [Bug Fixes](#bug-fixes-8)
   - [Chores](#chores-1)
@@ -165,6 +166,8 @@
 
 - Add initial documentation example for rewrites
   ([065ce46](https://github.com/ory/keto/commit/065ce464aa246cdcdaa3ba9a984070cba7198d45))
+- Fix version meta schema
+  ([b054b24](https://github.com/ory/keto/commit/b054b24afc2be0d7cd25f355b3054bbeafc7a423))
 
 ### Features
 
@@ -202,6 +205,12 @@
   ([6f61af8](https://github.com/ory/keto/commit/6f61af8a8862439fa07066e11d204333e80c8ddd))
 - Support subject sets in check
   ([1760459](https://github.com/ory/keto/commit/1760459c88bde3aafc1a2ad13819f0797dbf7e24))
+
+### Tests
+
+- Add cases for checking subject sets
+  ([93aee83](https://github.com/ory/keto/commit/93aee83363083f5f2e757755da6a26d662fd8f22)),
+  closes [#985](https://github.com/ory/keto/issues/985)
 
 # [0.9.0-alpha.0](https://github.com/ory/keto/compare/v0.8.0-alpha.2...v0.9.0-alpha.0) (2022-08-01)
 
