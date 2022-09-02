@@ -79,9 +79,9 @@ func (r *RelationTuple) insertSubject(_ context.Context, s relationtuple.Subject
 		r.SubjectSetRelation = sql.NullString{}
 	case *relationtuple.SubjectSet:
 		r.SubjectID = uuid.NullUUID{}
-		r.SubjectSetNamespace.Scan(st.Namespace)
-		r.SubjectSetObject.Scan(st.Object)
-		r.SubjectSetRelation.Scan(st.Relation)
+		_ = r.SubjectSetNamespace.Scan(st.Namespace)
+		_ = r.SubjectSetObject.Scan(st.Object)
+		_ = r.SubjectSetRelation.Scan(st.Relation)
 	}
 	return nil
 }
@@ -223,7 +223,7 @@ func (p *Persister) GetRelationTuples(ctx context.Context, query *relationtuple.
 		return nil, "", sqlcon.HandleError(err)
 	}
 	if len(res) == 0 {
-		return make([]*relationtuple.RelationTuple, 0, 0), "", nil
+		return make([]*relationtuple.RelationTuple, 0), "", nil
 	}
 
 	var nextPageToken string

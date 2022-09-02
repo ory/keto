@@ -30,7 +30,7 @@ const (
 
 	EnvReadRemote  = "KETO_READ_REMOTE"
 	EnvWriteRemote = "KETO_WRITE_REMOTE"
-	EnvAuthToken   = "KETO_BEARER_TOKEN"
+	EnvAuthToken   = "KETO_BEARER_TOKEN" // nosec G101 -- just the key, not the value
 
 	ContextKeyTimeout contextKeys = "timeout"
 )

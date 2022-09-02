@@ -17,6 +17,8 @@ import (
 	"github.com/ory/keto/internal/namespace"
 )
 
+// lint:file-ignore SA1019 as we migrate legacy stuff
+
 // We copy the definitions of OldRelationTuple and UUIDMapping here so that the
 // migration will always work on the same definitions.
 type (

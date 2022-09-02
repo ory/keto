@@ -156,6 +156,7 @@ func TestMigrations(t *testing.T) {
 					var oldRTs []*tuplesBeforeUUID
 					require.NoError(t, p.Connection(ctx).
 						Select("subject_id", "object").
+						// lint:ignore SA1019
 						Where("namespace_id = ?", namespaces[1].ID).
 						All(&oldRTs))
 					assert.Equalf(t, "user", oldRTs[0].SubjectID.String, "%+v", oldRTs[0])
@@ -176,7 +177,8 @@ func TestMigrations(t *testing.T) {
 					expected := make([]*ketoapi.RelationTuple, len(oldRTs))
 					for i := 0; i < len(oldRTs); i++ {
 						oldRTs[i] = tuplesBeforeUUID{
-							NetworkID:   p.NetworkID(ctx),
+							NetworkID: p.NetworkID(ctx),
+							// lint:ignore SA1019
 							NamespaceID: namespaces[1].ID,
 							Object:      "object-" + strconv.Itoa(i),
 							Relation:    "pagination-works",
