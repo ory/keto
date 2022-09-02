@@ -20,7 +20,7 @@ jobs:
       - uses: ory/ci/checkout@master
       - uses: actions/setup-go@v3
         with:
-          go-version: 1.18
+          go-version: 1.19
       - name: Lint buf
         run: make buf-lint
       - name: check prettier format
@@ -69,7 +69,7 @@ jobs:
       - uses: ory/ci/checkout@master
       - uses: actions/setup-go@v3
         with:
-          go-version: 1.18
+          go-version: 1.19
       - name: Prepare Dependencies
         run: |
           make tools/goveralls
@@ -96,7 +96,7 @@ jobs:
       - uses: ory/ci/checkout@master
       - uses: actions/setup-go@v3
         with:
-          go-version: 1.18
+          go-version: 1.19
       - run: |
           go test -tags sqlite -race -short ./...
 
@@ -243,7 +243,7 @@ jobs:
           path: current-repo
       - uses: actions/setup-go@v3
         with:
-          go-version: 1.18
+          go-version: 1.19
       - uses: actions/setup-node@v3
         with:
           node-version: "15"
