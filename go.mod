@@ -12,7 +12,7 @@ replace (
 require (
 	github.com/cenkalti/backoff/v3 v3.2.2
 	github.com/ghodss/yaml v1.0.0
-	github.com/go-openapi/errors v0.20.2
+	github.com/go-openapi/errors v0.20.3
 	github.com/go-openapi/runtime v0.24.1
 	github.com/go-openapi/strfmt v0.21.3
 	github.com/go-openapi/swag v0.21.1
