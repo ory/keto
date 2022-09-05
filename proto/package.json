@@ -4,9 +4,9 @@
   "description": "gRPC client for Ory Keto",
   "homepage": "https://www.ory.sh/keto",
   "bugs": "https://github.com/ory/keto/issues",
+  "main": "./index.js",
   "dependencies": {
     "@grpc/grpc-js": "^1.2.6",
     "google-protobuf": "^3.15.0-rc.1"
-  },
-  "main": "./index.js"
+  }
 }
