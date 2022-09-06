@@ -295,6 +295,7 @@ func (r *RegistryDefault) ReadRouter(ctx context.Context) http.Handler {
 
 	br := &x.ReadRouter{Router: httprouter.New()}
 	r.PrometheusManager().RegisterRouter(br.Router)
+	r.MetricsHandler().SetRoutes(br.Router)
 
 	r.HealthHandler().SetHealthRoutes(br.Router, false)
 	r.HealthHandler().SetVersionRoutes(br.Router)
@@ -327,6 +328,7 @@ func (r *RegistryDefault) WriteRouter(ctx context.Context) http.Handler {
 
 	pr := &x.WriteRouter{Router: httprouter.New()}
 	r.PrometheusManager().RegisterRouter(pr.Router)
+	r.MetricsHandler().SetRoutes(pr.Router)
 
 	r.HealthHandler().SetHealthRoutes(pr.Router, false)
 	r.HealthHandler().SetVersionRoutes(pr.Router)
