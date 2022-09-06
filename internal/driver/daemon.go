@@ -305,6 +305,7 @@ func (r *RegistryDefault) ReadRouter(ctx context.Context) http.Handler {
 	}
 
 	n.UseHandler(br)
+	n.Use(r.PrometheusManager())
 
 	if r.sqaService != nil {
 		n.Use(r.sqaService)
@@ -338,6 +339,7 @@ func (r *RegistryDefault) WriteRouter(ctx context.Context) http.Handler {
 	}
 
 	n.UseHandler(pr)
+	n.Use(r.PrometheusManager())
 
 	if r.sqaService != nil {
 		n.Use(r.sqaService)
