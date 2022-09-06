@@ -294,6 +294,7 @@ func (r *RegistryDefault) ReadRouter(ctx context.Context) http.Handler {
 	n.Use(reqlog.NewMiddlewareFromLogger(r.l, "read#Ory Keto").ExcludePaths(healthx.AliveCheckPath, healthx.ReadyCheckPath))
 
 	br := &x.ReadRouter{Router: httprouter.New()}
+	r.PrometheusManager().RegisterRouter(br.Router)
 
 	r.HealthHandler().SetHealthRoutes(br.Router, false)
 	r.HealthHandler().SetVersionRoutes(br.Router)
@@ -325,6 +326,7 @@ func (r *RegistryDefault) WriteRouter(ctx context.Context) http.Handler {
 	n.Use(reqlog.NewMiddlewareFromLogger(r.l, "write#Ory Keto").ExcludePaths(healthx.AliveCheckPath, healthx.ReadyCheckPath))
 
 	pr := &x.WriteRouter{Router: httprouter.New()}
+	r.PrometheusManager().RegisterRouter(pr.Router)
 
 	r.HealthHandler().SetHealthRoutes(pr.Router, false)
 	r.HealthHandler().SetVersionRoutes(pr.Router)
