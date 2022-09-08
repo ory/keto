@@ -49,6 +49,36 @@ func runCases(c client, m *namespaceTestManager) func(*testing.T) {
 			assert.True(t, c.check(t, tuple))
 		})
 
+		t.Run("case=creates tuple with empty IDs", func(t *testing.T) {
+			n := &namespace.Namespace{Name: t.Name()}
+			m.add(t, n)
+
+			tuples := []*ketoapi.RelationTuple{{
+				Namespace: n.Name,
+				Object:    "",
+				Relation:  "access",
+				SubjectID: x.Ptr(""),
+			}, {
+				Namespace: n.Name,
+				Object:    "",
+				Relation:  "access",
+				SubjectSet: &ketoapi.SubjectSet{
+					Namespace: n.Name,
+					Object:    "",
+					Relation:  "access",
+				},
+			}}
+
+			for _, tp := range tuples {
+				c.createTuple(t, tp)
+				// try the check API to see whether the tuple is interpreted correctly
+				assert.True(t, c.check(t, tp))
+			}
+
+			resp := c.queryTuple(t, &ketoapi.RelationQuery{Namespace: &n.Name})
+			assert.ElementsMatch(t, tuples, resp.RelationTuples)
+		})
+
 		t.Run("case=check subjectSet relations", func(t *testing.T) {
 			n := &namespace.Namespace{Name: t.Name()}
 			m.add(t, n)

@@ -40,7 +40,7 @@ type RelationTuple struct {
 	// SubjectID of the Relation Tuple
 	//
 	// Either SubjectSet or SubjectID can be provided.
-	SubjectID *string `json:"subject_id,omitempty"`
+	SubjectID *string `json:"subject_id"`
 	// SubjectSet of the Relation Tuple
 	//
 	// Either SubjectSet or SubjectID can be provided.
