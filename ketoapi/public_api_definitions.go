@@ -129,6 +129,13 @@ func (r *RelationTuple) ToLoggerFields() logrus.Fields {
 	return fields
 }
 
+func (r *RelationTuple) Validate() error {
+	if r.SubjectSet == nil && r.SubjectID == nil {
+		return ErrNilSubject
+	}
+	return nil
+}
+
 // swagger:enum ExpandNodeType
 type ExpandNodeType TreeNodeType
 
