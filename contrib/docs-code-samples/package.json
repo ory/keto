@@ -1,11 +1,11 @@
 {
   "private": true,
-  "dependencies": {
-    "@grpc/grpc-js": "^1.2.6",
-    "@ory/keto-grpc-client": "file:../../proto"
-  },
+  "type": "module",
   "scripts": {
     "test": "(cd ../../proto && npm i) && ./test.sh"
   },
-  "type": "module"
+  "dependencies": {
+    "@grpc/grpc-js": "^1.2.6",
+    "@ory/keto-grpc-client": "file:../../proto"
+  }
 }
