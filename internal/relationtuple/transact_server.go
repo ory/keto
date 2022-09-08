@@ -111,6 +111,11 @@ func (h *handler) createRelation(w http.ResponseWriter, r *http.Request, _ httpr
 		return
 	}
 
+	if err := rt.Validate(); err != nil {
+		h.d.Writer().WriteError(w, r, errors.WithStack(herodot.ErrBadRequest.WithError(err.Error())))
+		return
+	}
+
 	h.d.Logger().WithFields(rt.ToLoggerFields()).Debug("creating relation tuple")
 
 	it, err := h.d.Mapper().FromTuple(ctx, &rt)
@@ -221,6 +226,11 @@ func (h *handler) patchRelationTuples(w http.ResponseWriter, r *http.Request, _ 
 			h.d.Writer().WriteError(w, r, herodot.ErrBadRequest.WithError("relation_tuple is missing"))
 			return
 		}
+		if err := d.RelationTuple.Validate(); err != nil {
+			h.d.Writer().WriteError(w, r, errors.WithStack(herodot.ErrBadRequest.WithError(err.Error())))
+			return
+		}
+
 		switch d.Action {
 		case ketoapi.ActionInsert, ketoapi.ActionDelete:
 		default:
