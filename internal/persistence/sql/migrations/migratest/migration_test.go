@@ -9,19 +9,14 @@ import (
 	"testing"
 	"time"
 
+	"github.com/gobuffalo/pop/v6"
+	"github.com/gofrs/uuid"
 	"github.com/ory/x/fsx"
 	"github.com/ory/x/logrusx"
 	"github.com/ory/x/networkx"
-	"github.com/sirupsen/logrus"
-
-	"github.com/ory/keto/internal/persistence/sql/migrations/uuidmapping"
-	"github.com/ory/keto/internal/x"
-	"github.com/ory/keto/ketoapi"
-
-	"github.com/gobuffalo/pop/v6"
-	"github.com/gofrs/uuid"
 	"github.com/ory/x/popx"
 	"github.com/ory/x/sqlcon"
+	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
@@ -29,8 +24,11 @@ import (
 	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/namespace"
 	"github.com/ory/keto/internal/persistence/sql"
+	"github.com/ory/keto/internal/persistence/sql/migrations/uuidmapping"
 	"github.com/ory/keto/internal/relationtuple"
+	"github.com/ory/keto/internal/x"
 	"github.com/ory/keto/internal/x/dbx"
+	"github.com/ory/keto/ketoapi"
 )
 
 func TestMigrations(t *testing.T) {
