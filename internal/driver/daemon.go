@@ -404,7 +404,6 @@ func (r *RegistryDefault) newGrpcServer(ctx context.Context) *grpc.Server {
 func (r *RegistryDefault) ReadGRPCServer(ctx context.Context) *grpc.Server {
 	s := r.newGrpcServer(ctx)
 
-	r.PrometheusManager().RegisterServer(s)
 	grpcHealthV1.RegisterHealthServer(s, r.HealthServer())
 	rts.RegisterVersionServiceServer(s, r)
 	reflection.Register(s)
@@ -419,7 +418,6 @@ func (r *RegistryDefault) ReadGRPCServer(ctx context.Context) *grpc.Server {
 func (r *RegistryDefault) WriteGRPCServer(ctx context.Context) *grpc.Server {
 	s := r.newGrpcServer(ctx)
 
-	r.PrometheusManager().RegisterServer(s)
 	grpcHealthV1.RegisterHealthServer(s, r.HealthServer())
 	rts.RegisterVersionServiceServer(s, r)
 	reflection.Register(s)
