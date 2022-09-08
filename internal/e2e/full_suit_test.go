@@ -7,8 +7,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ory/keto/ketoapi"
-
 	"github.com/ory/herodot"
 	"github.com/ory/x/cmdx"
 	prometheus "github.com/ory/x/prometheusx"
@@ -21,6 +19,7 @@ import (
 	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/internal/x"
 	"github.com/ory/keto/internal/x/dbx"
+	"github.com/ory/keto/ketoapi"
 )
 
 type (

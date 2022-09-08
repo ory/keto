@@ -5,6 +5,7 @@ replace (
 	github.com/gogo/protobuf => github.com/gogo/protobuf v1.3.2
 	github.com/mattn/go-sqlite3 => github.com/mattn/go-sqlite3 v1.14.10
 	github.com/oleiade/reflections => github.com/oleiade/reflections v1.0.1
+	github.com/ory/keto/internal/httpclient-next => ./internal/httpclient-next
 	github.com/ory/keto/proto => ./proto
 	github.com/soheilhy/cmux => github.com/soheilhy/cmux v0.1.5-0.20210114230657-cdd3331e3e7c
 )
@@ -27,6 +28,7 @@ require (
 	github.com/ory/graceful v0.1.3
 	github.com/ory/herodot v0.9.13
 	github.com/ory/jsonschema/v3 v3.0.7
+	github.com/ory/keto/internal/httpclient-next v0.0.0-00010101000000-000000000000
 	github.com/ory/keto/proto v0.0.0-00010101000000-000000000000
 	github.com/ory/x v0.0.463
 	github.com/pelletier/go-toml v1.9.5

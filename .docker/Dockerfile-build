@@ -10,6 +10,9 @@ ADD go.sum go.sum
 ADD proto/go.mod proto/go.mod
 ADD proto/go.sum proto/go.sum
 
+ADD internal/httpclient-next/go.mod internal/httpclient-next/go.mod
+ADD internal/httpclient-next/go.sum internal/httpclient-next/go.sum
+
 ENV CGO_ENABLED 1
 
 RUN go mod download
