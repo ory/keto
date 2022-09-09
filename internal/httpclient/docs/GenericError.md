@@ -5,7 +5,7 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Code** | Pointer to **int64** |  | [optional] 
-**Details** | Pointer to **[]map[string]map[string]interface{}** |  | [optional] 
+**Details** | Pointer to **[]map[string]interface{}** |  | [optional] 
 **Message** | Pointer to **string** |  | [optional] 
 **Reason** | Pointer to **string** |  | [optional] 
 **Request** | Pointer to **string** |  | [optional] 
@@ -57,20 +57,20 @@ HasCode returns a boolean if a field has been set.
 
 ### GetDetails
 
-`func (o *GenericError) GetDetails() []map[string]map[string]interface{}`
+`func (o *GenericError) GetDetails() []map[string]interface{}`
 
 GetDetails returns the Details field if non-nil, zero value otherwise.
 
 ### GetDetailsOk
 
-`func (o *GenericError) GetDetailsOk() (*[]map[string]map[string]interface{}, bool)`
+`func (o *GenericError) GetDetailsOk() (*[]map[string]interface{}, bool)`
 
 GetDetailsOk returns a tuple with the Details field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetDetails
 
-`func (o *GenericError) SetDetails(v []map[string]map[string]interface{})`
+`func (o *GenericError) SetDetails(v []map[string]interface{})`
 
 SetDetails sets Details field to given value.
 

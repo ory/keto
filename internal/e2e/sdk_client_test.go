@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	httpclient "github.com/ory/keto/internal/httpclient-next"
+	httpclient "github.com/ory/keto/internal/httpclient"
 	"github.com/ory/keto/internal/x"
 	"github.com/ory/keto/ketoapi"
 )

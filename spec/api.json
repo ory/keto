@@ -50,7 +50,7 @@
           },
           "details": {
             "items": {
-              "additionalProperties": true,
+              "additionalProperties": {},
               "type": "object"
             },
             "type": "array"
@@ -309,7 +309,7 @@
             "description": "genericError"
           }
         },
-        "summary": "# Delete Relation Tuples",
+        "summary": "Delete Relation Tuples",
         "tags": ["write"]
       },
       "patch": {
@@ -363,7 +363,7 @@
             "description": "genericError"
           }
         },
-        "summary": "# Patch Multiple Relation Tuples",
+        "summary": "Patch Multiple Relation Tuples",
         "tags": ["write"]
       },
       "put": {
@@ -411,7 +411,7 @@
             "description": "genericError"
           }
         },
-        "summary": "# Create a Relation Tuple",
+        "summary": "Create a Relation Tuple",
         "tags": ["write"]
       }
     },
@@ -608,7 +608,7 @@
             "description": "genericError"
           }
         },
-        "summary": "# Query relation tuples",
+        "summary": "Query relation tuples",
         "tags": ["read"]
       }
     },
@@ -658,7 +658,7 @@
             "description": "genericError"
           }
         },
-        "summary": "# Check a relation tuple",
+        "summary": "Check a relation tuple",
         "tags": ["read"]
       },
       "post": {
@@ -706,7 +706,7 @@
             "description": "genericError"
           }
         },
-        "summary": "# Check a relation tuple",
+        "summary": "Check a relation tuple",
         "tags": ["read"]
       }
     },
@@ -812,7 +812,7 @@
             "description": "genericError"
           }
         },
-        "summary": "# Check a relation tuple",
+        "summary": "Check a relation tuple",
         "tags": ["read"]
       },
       "post": {
@@ -870,7 +870,7 @@
             "description": "genericError"
           }
         },
-        "summary": "# Check a relation tuple",
+        "summary": "Check a relation tuple",
         "tags": ["read"]
       }
     },
@@ -957,7 +957,7 @@
             "description": "genericError"
           }
         },
-        "summary": "# Expand a Relation Tuple",
+        "summary": "Expand a Relation Tuple",
         "tags": ["read"]
       }
     },

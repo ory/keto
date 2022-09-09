@@ -4,12 +4,12 @@ All URIs are relative to *http://localhost*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**GetCheck**](ReadApi.md#GetCheck) | **Get** /relation-tuples/check/openapi | # Check a relation tuple
-[**GetCheckMirrorStatus**](ReadApi.md#GetCheckMirrorStatus) | **Get** /relation-tuples/check | # Check a relation tuple
-[**GetExpand**](ReadApi.md#GetExpand) | **Get** /relation-tuples/expand | # Expand a Relation Tuple
-[**GetRelationTuples**](ReadApi.md#GetRelationTuples) | **Get** /relation-tuples | # Query relation tuples
-[**PostCheck**](ReadApi.md#PostCheck) | **Post** /relation-tuples/check/openapi | # Check a relation tuple
-[**PostCheckMirrorStatus**](ReadApi.md#PostCheckMirrorStatus) | **Post** /relation-tuples/check | # Check a relation tuple
+[**GetCheck**](ReadApi.md#GetCheck) | **Get** /relation-tuples/check/openapi | Check a relation tuple
+[**GetCheckMirrorStatus**](ReadApi.md#GetCheckMirrorStatus) | **Get** /relation-tuples/check | Check a relation tuple
+[**GetExpand**](ReadApi.md#GetExpand) | **Get** /relation-tuples/expand | Expand a Relation Tuple
+[**GetRelationTuples**](ReadApi.md#GetRelationTuples) | **Get** /relation-tuples | Query relation tuples
+[**PostCheck**](ReadApi.md#PostCheck) | **Post** /relation-tuples/check/openapi | Check a relation tuple
+[**PostCheckMirrorStatus**](ReadApi.md#PostCheckMirrorStatus) | **Post** /relation-tuples/check | Check a relation tuple
 
 
 
@@ -17,7 +17,7 @@ Method | HTTP request | Description
 
 > GetCheckResponse GetCheck(ctx).Namespace(namespace).Object(object).Relation(relation).SubjectId(subjectId).SubjectSetNamespace(subjectSetNamespace).SubjectSetObject(subjectSetObject).SubjectSetRelation(subjectSetRelation).MaxDepth(maxDepth).Execute()
 
-# Check a relation tuple
+Check a relation tuple
 
 
 
@@ -97,7 +97,7 @@ No authorization required
 
 > GetCheckResponse GetCheckMirrorStatus(ctx).Execute()
 
-# Check a relation tuple
+Check a relation tuple
 
 
 
@@ -158,7 +158,7 @@ No authorization required
 
 > ExpandTree GetExpand(ctx).Namespace(namespace).Object(object).Relation(relation).MaxDepth(maxDepth).Execute()
 
-# Expand a Relation Tuple
+Expand a Relation Tuple
 
 
 
@@ -230,7 +230,7 @@ No authorization required
 
 > GetRelationTuplesResponse GetRelationTuples(ctx).PageToken(pageToken).PageSize(pageSize).Namespace(namespace).Object(object).Relation(relation).SubjectId(subjectId).SubjectSetNamespace(subjectSetNamespace).SubjectSetObject(subjectSetObject).SubjectSetRelation(subjectSetRelation).Execute()
 
-# Query relation tuples
+Query relation tuples
 
 
 
@@ -312,7 +312,7 @@ No authorization required
 
 > GetCheckResponse PostCheck(ctx).MaxDepth(maxDepth).RelationQuery(relationQuery).Execute()
 
-# Check a relation tuple
+Check a relation tuple
 
 
 
@@ -380,7 +380,7 @@ No authorization required
 
 > GetCheckResponse PostCheckMirrorStatus(ctx).Execute()
 
-# Check a relation tuple
+Check a relation tuple
 
 
 

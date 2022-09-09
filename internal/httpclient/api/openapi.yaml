@@ -87,7 +87,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/genericError'
           description: genericError
-      summary: '# Delete Relation Tuples'
+      summary: Delete Relation Tuples
       tags:
       - write
     patch:
@@ -123,7 +123,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/genericError'
           description: genericError
-      summary: '# Patch Multiple Relation Tuples'
+      summary: Patch Multiple Relation Tuples
       tags:
       - write
     put:
@@ -154,7 +154,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/genericError'
           description: genericError
-      summary: '# Create a Relation Tuple'
+      summary: Create a Relation Tuple
       tags:
       - write
   /health/alive:
@@ -309,7 +309,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/genericError'
           description: genericError
-      summary: '# Query relation tuples'
+      summary: Query relation tuples
       tags:
       - read
   /relation-tuples/check:
@@ -342,7 +342,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/genericError'
           description: genericError
-      summary: '# Check a relation tuple'
+      summary: Check a relation tuple
       tags:
       - read
     post:
@@ -374,7 +374,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/genericError'
           description: genericError
-      summary: '# Check a relation tuple'
+      summary: Check a relation tuple
       tags:
       - read
   /relation-tuples/check/openapi:
@@ -466,7 +466,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/genericError'
           description: genericError
-      summary: '# Check a relation tuple'
+      summary: Check a relation tuple
       tags:
       - read
     post:
@@ -507,7 +507,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/genericError'
           description: genericError
-      summary: '# Check a relation tuple'
+      summary: Check a relation tuple
       tags:
       - read
   /relation-tuples/expand:
@@ -572,7 +572,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/genericError'
           description: genericError
-      summary: '# Expand a Relation Tuple'
+      summary: Expand a Relation Tuple
       tags:
       - read
   /version:
@@ -669,7 +669,7 @@ components:
           type: integer
         details:
           items:
-            additionalProperties: true
+            additionalProperties: {}
             type: object
           type: array
         message:

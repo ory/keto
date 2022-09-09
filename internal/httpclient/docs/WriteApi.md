@@ -4,9 +4,9 @@ All URIs are relative to *http://localhost*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**CreateRelationTuple**](WriteApi.md#CreateRelationTuple) | **Put** /admin/relation-tuples | # Create a Relation Tuple
-[**DeleteRelationTuples**](WriteApi.md#DeleteRelationTuples) | **Delete** /admin/relation-tuples | # Delete Relation Tuples
-[**PatchRelationTuples**](WriteApi.md#PatchRelationTuples) | **Patch** /admin/relation-tuples | # Patch Multiple Relation Tuples
+[**CreateRelationTuple**](WriteApi.md#CreateRelationTuple) | **Put** /admin/relation-tuples | Create a Relation Tuple
+[**DeleteRelationTuples**](WriteApi.md#DeleteRelationTuples) | **Delete** /admin/relation-tuples | Delete Relation Tuples
+[**PatchRelationTuples**](WriteApi.md#PatchRelationTuples) | **Patch** /admin/relation-tuples | Patch Multiple Relation Tuples
 
 
 
@@ -14,7 +14,7 @@ Method | HTTP request | Description
 
 > RelationQuery CreateRelationTuple(ctx).RelationQuery(relationQuery).Execute()
 
-# Create a Relation Tuple
+Create a Relation Tuple
 
 
 
@@ -80,7 +80,7 @@ No authorization required
 
 > DeleteRelationTuples(ctx).Namespace(namespace).Object(object).Relation(relation).SubjectId(subjectId).SubjectSetNamespace(subjectSetNamespace).SubjectSetObject(subjectSetObject).SubjectSetRelation(subjectSetRelation).Execute()
 
-# Delete Relation Tuples
+Delete Relation Tuples
 
 
 
@@ -156,7 +156,7 @@ No authorization required
 
 > PatchRelationTuples(ctx).PatchDelta(patchDelta).Execute()
 
-# Patch Multiple Relation Tuples
+Patch Multiple Relation Tuples
 
 
 
