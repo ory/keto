@@ -32,7 +32,7 @@ tools/yq: .bin/gobin/go.mod .bin/gobin/go.sum Makefile
 
 define make-brew-dependency
   tools/$(firstword $(subst @, ,$(notdir $1))): tools/brew Makefile
-		HOMEBREW_NO_AUTO_UPDATE=1 brew install keto/tools/$1
+		HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK=true HOMEBREW_NO_AUTO_UPDATE=1 brew install keto/tools/$1
 endef
 $(foreach dep, $(BREW_DEPENDENCIES), $(eval $(call make-brew-dependency,$(dep))))
 
@@ -67,7 +67,7 @@ docker:
 # Generates the SDKs
 .PHONY: sdk
 sdk: tools/go-swagger tools/cli node_modules
-		rm -rf internal/httpclient internal/httpclient-next
+		rm -rf internal/httpclient
 		swagger generate spec -m -o spec/swagger.json \
 			-c github.com/ory/keto \
 			-c github.com/ory/x/healthx \
@@ -82,17 +82,18 @@ sdk: tools/go-swagger tools/cli node_modules
 					-p file://.schema/openapi/patches/meta.yaml \
 					spec/swagger.json spec/api.json
 
-		mkdir -p internal/httpclient internal/httpclient-next
-		swagger generate client -f ./spec/swagger.json -t internal/httpclient -A Ory_Keto
+		mkdir -p internal/httpclient
 
 		npm run openapi-generator-cli -- generate -i "spec/api.json" \
 				-g go \
-				-o "internal/httpclient-next" \
+				-o "internal/httpclient" \
 				--git-user-id ory \
 				--git-repo-id keto-client-go \
 				--git-host github.com \
 				-t .schema/openapi/templates/go \
 				-c .schema/openapi/gen.go.yml
+
+		rm internal/httpclient/go.{mod,sum}
 
 		make format
 

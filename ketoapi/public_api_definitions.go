@@ -2,13 +2,13 @@ package ketoapi
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 
-	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
-
 	"github.com/ory/herodot"
+	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
+
+	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 )
 
 var (
@@ -131,7 +131,7 @@ func (r *RelationTuple) ToLoggerFields() logrus.Fields {
 
 func (r *RelationTuple) Validate() error {
 	if r.SubjectSet == nil && r.SubjectID == nil {
-		return ErrNilSubject
+		return errors.WithStack(ErrNilSubject)
 	}
 	return nil
 }

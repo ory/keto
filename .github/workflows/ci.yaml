@@ -82,7 +82,7 @@ jobs:
       - name: Test Keto
         run: |
           source scripts/local-dependencies.sh
-          go-acc --ignore "internal/httpclient,internal/httpclient-next" -o coverage.txt ./... -- -tags sqlite
+          go-acc --ignore "internal/httpclient" -o coverage.txt ./... -- -tags sqlite
       - run: |
           source scripts/local-dependencies.sh
           goveralls -service=github -coverprofile=coverage.txt

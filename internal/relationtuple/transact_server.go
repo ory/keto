@@ -112,7 +112,7 @@ func (h *handler) createRelation(w http.ResponseWriter, r *http.Request, _ httpr
 	}
 
 	if err := rt.Validate(); err != nil {
-		h.d.Writer().WriteError(w, r, errors.WithStack(herodot.ErrBadRequest.WithError(err.Error())))
+		h.d.Writer().WriteError(w, r, err)
 		return
 	}
 
@@ -227,7 +227,7 @@ func (h *handler) patchRelationTuples(w http.ResponseWriter, r *http.Request, _ 
 			return
 		}
 		if err := d.RelationTuple.Validate(); err != nil {
-			h.d.Writer().WriteError(w, r, errors.WithStack(herodot.ErrBadRequest.WithError(err.Error())))
+			h.d.Writer().WriteError(w, r, err)
 			return
 		}
 
