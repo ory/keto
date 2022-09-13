@@ -207,12 +207,11 @@ func (x *ListRelationTuplesResponse) GetNextPageToken() string {
 // partially filter for specific relation tuples.
 //
 // Example use cases (namespace is always required):
-//  - object only: display a list of all permissions referring to a specific object
-//  - relation only: get all groups that have members; get all directories that have content
-//  - object & relation: display all subjects that have a specific permission relation
-//  - subject & relation: display all groups a subject belongs to; display all objects a subject has access to
-//  - object & relation & subject: check whether the relation tuple already exists
-//
+//   - object only: display a list of all permissions referring to a specific object
+//   - relation only: get all groups that have members; get all directories that have content
+//   - object & relation: display all subjects that have a specific permission relation
+//   - subject & relation: display all groups a subject belongs to; display all objects a subject has access to
+//   - object & relation & subject: check whether the relation tuple already exists
 type ListRelationTuplesRequest_Query struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
