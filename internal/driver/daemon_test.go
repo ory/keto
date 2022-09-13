@@ -1,7 +1,7 @@
 package driver
 
 import (
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -29,7 +29,7 @@ func TestMetricsHandler(t *testing.T) {
 		require.NoError(t, err)
 		require.Equal(t, resp.StatusCode, http.StatusOK)
 
-		body, err := ioutil.ReadAll(resp.Body)
+		body, err := io.ReadAll(resp.Body)
 		require.NoError(t, err)
 		require.Contains(t, string(body), promLogLine)
 	}
