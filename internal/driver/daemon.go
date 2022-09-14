@@ -150,16 +150,18 @@ func (r *RegistryDefault) serveWrite(ctx context.Context, done chan<- struct{}) 
 }
 
 func (r *RegistryDefault) serveMetrics(ctx context.Context, done chan<- struct{}) func() error {
+	ctx, cancel := context.WithCancel(ctx)
+
+	// nolint: gosec,G112 graceful.WithDefaults already sets a timeout
+	s := graceful.WithDefaults(&http.Server{
+		Handler: r.metricsRouter(ctx),
+		Addr:    r.Config(ctx).MetricsListenOn(),
+	})
+
 	return func() error {
-		ctx, cancel := context.WithCancel(ctx)
 		defer cancel()
 
 		eg := &errgroup.Group{}
-		// nolint: gosec,G112 graceful.WithDefaults already sets a timeout
-		s := graceful.WithDefaults(&http.Server{
-			Handler: r.metricsRouter(ctx),
-			Addr:    r.Config(ctx).MetricsListenOn(),
-		})
 
 		eg.Go(func() error {
 			if err := s.ListenAndServe(); !errors.Is(err, http.ErrServerClosed) {
