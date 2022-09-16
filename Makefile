@@ -39,7 +39,7 @@ $(foreach dep, $(BREW_DEPENDENCIES), $(eval $(call make-brew-dependency,$(dep)))
 tools/protobuf: tools/brew Makefile
 		HOMEBREW_NO_AUTO_UPDATE=1 brew install protobuf@3.19
 
-node_modules: package.json package-lock.json Makefile
+node_modules: package-lock.json
 		npm ci
 		touch node_modules
 
