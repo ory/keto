@@ -41,6 +41,7 @@ tools/protobuf: tools/brew Makefile
 
 node_modules: package.json package-lock.json Makefile
 		npm ci
+		touch node_modules
 
 .PHONY: tools/brew
 tools/brew:
@@ -54,7 +55,7 @@ tools/brew:
 .PHONY: format
 format: tools/goimports node_modules
 		goimports -w -local github.com/ory/keto *.go internal cmd contrib ketoctx ketoapi embedx
-		npm run format
+		npm exec -- prettier --write .
 
 .PHONY: install
 install:
