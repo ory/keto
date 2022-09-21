@@ -1,4 +1,4 @@
-name: Publish gRPC client to npm
+name: Publish OPL typelib to npm
 
 on:
   release:
@@ -23,17 +23,17 @@ jobs:
       - run: sudo npm i -g npm@7
       - name: Bump version
         run: |-
-          cd proto
+          cd contrib/namespace-type-lib
           cat <<< $(jq '.version = (env.RELEASE_VERSION | sub("(^refs/tags/v)|(^v)"; ""))' package.json) > package.json
         env:
           RELEASE_VERSION: ${{ github.event.inputs.version || github.ref }}
       - run: |-
           git config --global user.email "60093411+ory-bot@users.noreply.github.com"
           git config --global user.name "ory-bot"
-          git add proto/package.json
-          git commit -m "autogen: bump node gRPC client version"
+          git add contrib/namespace-type-lib/package.json
+          git commit -m "autogen: bump OPL typelib"
       - run: |-
-          cd proto
+          cd contrib/namespace-type-lib
           npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN_AENEASR }}

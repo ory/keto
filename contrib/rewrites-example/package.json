@@ -1,0 +1,7 @@
+{
+  "private": true,
+  "devDependencies": {
+    "@ory/keto-namespace-types": "file:../namespace-type-lib",
+    "typescript": "latest"
+  }
+}
