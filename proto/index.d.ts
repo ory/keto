@@ -1,5 +1,5 @@
-import * as v1apha2 from './ory/keto/relation_tuples/v1alpha2'
+import * as v1alpha2 from './ory/keto/relation_tuples/v1alpha2'
 
 declare module '@ory/keto-grpc-client' {
-  export default v1apha2
+  export default v1alpha2
 }
