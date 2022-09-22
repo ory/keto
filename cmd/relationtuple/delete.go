@@ -13,7 +13,7 @@ import (
 	"github.com/ory/keto/cmd/client"
 )
 
-func newDeleteCmd() *cobra.Command {
+func NewDeleteCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "delete <relation-tuple.json> [<relation-tuple-dir>]",
 		Short: "Delete relation tuples defined in JSON files",
