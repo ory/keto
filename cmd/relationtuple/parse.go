@@ -12,7 +12,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func newParseCmd() *cobra.Command {
+func NewParseCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "parse",
 		Short: "Parse human readable relation tuples",
