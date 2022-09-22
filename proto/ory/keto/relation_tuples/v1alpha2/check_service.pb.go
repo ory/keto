@@ -63,10 +63,11 @@ type CheckRequest struct {
 	// of the same content version.
 	//
 	// Example use case:
-	//  - You need to authorize a user to modify/delete some resource
-	//    and it is unacceptable that if the permission to do that had
-	//    just been revoked some seconds ago so that the change had not
-	//    yet been fully replicated to all availability zones.
+	//   - You need to authorize a user to modify/delete some resource
+	//     and it is unacceptable that if the permission to do that had
+	//     just been revoked some seconds ago so that the change had not
+	//     yet been fully replicated to all availability zones.
+	//
 	// -->
 	Latest bool `protobuf:"varint,5,opt,name=latest,proto3" json:"latest,omitempty"`
 	// This field is not implemented yet and has no effect.

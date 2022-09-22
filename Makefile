@@ -39,8 +39,9 @@ $(foreach dep, $(BREW_DEPENDENCIES), $(eval $(call make-brew-dependency,$(dep)))
 tools/protobuf: tools/brew Makefile
 		HOMEBREW_NO_AUTO_UPDATE=1 brew install protobuf@3.19
 
-node_modules: package.json package-lock.json Makefile
+node_modules: package-lock.json
 		npm ci
+		touch node_modules
 
 .PHONY: tools/brew
 tools/brew:
@@ -54,7 +55,7 @@ tools/brew:
 .PHONY: format
 format: tools/goimports node_modules
 		goimports -w -local github.com/ory/keto *.go internal cmd contrib ketoctx ketoapi embedx
-		npm run format
+		npm exec -- prettier --write .
 
 .PHONY: install
 install:
