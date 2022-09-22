@@ -35,6 +35,8 @@ jobs:
           skip-pkg-cache: true
       - name: Test documentation examples
         run: make test-docs-samples
+      - name: Test OPL typelib
+        run: cd contrib/namespace-type-lib && npm ci && npm test
 
   test:
     name: Run tests
