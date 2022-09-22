@@ -21,7 +21,7 @@ func RegisterCommandsRecursive(parent *cobra.Command) {
 
 	parent.AddCommand(relationCmd)
 
-	relationCmd.AddCommand(newGetCmd(), newCreateCmd(), newDeleteCmd(), newDeleteAllCmd(), newParseCmd())
+	relationCmd.AddCommand(NewGetCmd(), NewCreateCmd(), newDeleteCmd(), NewDeleteAllCmd(), newParseCmd())
 }
 
 func registerPackageFlags(flags *pflag.FlagSet) {

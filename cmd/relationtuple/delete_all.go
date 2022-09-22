@@ -20,7 +20,7 @@ const (
 	FlagForce = "force"
 )
 
-func newDeleteAllCmd() *cobra.Command {
+func NewDeleteAllCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "delete-all",
 		Short: "Delete ALL relation tuples matching the relation query.",

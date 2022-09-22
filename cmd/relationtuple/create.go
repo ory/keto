@@ -16,7 +16,7 @@ import (
 	"github.com/ory/x/cmdx"
 )
 
-func newCreateCmd() *cobra.Command {
+func NewCreateCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "create <relation-tuple.json> [<relation-tuple-dir>]",
 		Short: "Create relation tuples from JSON files",

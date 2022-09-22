@@ -69,7 +69,7 @@ func readQueryFromFlags(cmd *cobra.Command) (*rts.RelationQuery, error) {
 	return query.ToProto(), nil
 }
 
-func newGetCmd() *cobra.Command {
+func NewGetCmd() *cobra.Command {
 	var (
 		pageSize  int32
 		pageToken string
