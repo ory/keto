@@ -5,7 +5,7 @@
 
 **Table of Contents**
 
-- [0.0.0 (2022-09-08)](#000-2022-09-08)
+- [0.0.0 (2022-09-22)](#000-2022-09-22)
   - [Bug Fixes](#bug-fixes)
   - [Build System](#build-system)
   - [Code Refactoring](#code-refactoring)
@@ -134,12 +134,57 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.9.0-alpha.0...v0.0.0) (2022-09-08)
+# [0.0.0](https://github.com/ory/keto/compare/v0.9.0-alpha.0...v0.0.0) (2022-09-22)
 
 ### Bug Fixes
 
 - Concurrency-safe graph utils
   ([ea9dda9](https://github.com/ory/keto/commit/ea9dda922c07b800cc9ad0186fc5f56e7dd23fec))
+- Correct paths in TypeScript SDK
+  ([#1025](https://github.com/ory/keto/issues/1025))
+  ([8b30508](https://github.com/ory/keto/commit/8b30508e4021318e8a7afd9cb29c07749757d278))
+- Race in serve metrics init
+  ([5f4c19b](https://github.com/ory/keto/commit/5f4c19bc92d8e28b7bcd50f49b274066aeab0d8c))
+- Remove check constraint
+  ([54c00c3](https://github.com/ory/keto/commit/54c00c38fdd70ea031c72b22b8570004a65ca472)):
+
+  Tests now use the new httpclient to properly handle empty strings vs <nil>
+  strings (where the value is omitted in the JSON request).
+
+- Request metrics ([#1007](https://github.com/ory/keto/issues/1007))
+  ([96ff767](https://github.com/ory/keto/commit/96ff76722574206d805fc388d68daa8b17bac723)):
+
+  http*request*\* metrics contain data related only to /metrics/prometheus
+  endpoint. This commit adds endpoints from non-monitoring routers.
+
+  - fix: register read and write routers with PrometheusManager
+
+  - fix: register read and write routers with PrometheusManager p2
+
+  - fix: register read and write routers with PrometheusManager p3
+
+  - feat: grpc request metrics
+
+  - chore: add test
+
+  - chore: revert gRPC metric test
+
+  - chore: re-trigger ci
+
+  - chore: re-trigger ci
+
+  - chore: re-trigger ci
+
+  - fix: lint
+
+  - fix: cve
+
+- Sdk generation
+  ([acc1546](https://github.com/ory/keto/commit/acc1546e6be8d5fa42c25904189b2aa688934ade)):
+
+  - fix: better error handling
+  - chore: remove old httpclient
+
 - Use TLS in gRPC client ([#988](https://github.com/ory/keto/issues/988))
   ([b1ffd6b](https://github.com/ory/keto/commit/b1ffd6bff7f725eec799a3592be2335e9f69d619)):
 
@@ -148,6 +193,8 @@
 
 - Uuid mapping migration paginates
   ([3a5fb2c](https://github.com/ory/keto/commit/3a5fb2c06e436b5712058d8845cb92f94f3787b9))
+- Validate tuples for non-nil subject
+  ([a22dd19](https://github.com/ory/keto/commit/a22dd1934041e1f997fd0843081c74bc4bcdbc9f))
 
 ### Build System
 
