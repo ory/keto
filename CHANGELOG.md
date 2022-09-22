@@ -246,6 +246,8 @@
   By default, the Keto CLI now connects to the remote via TLS and verifies the
   hostname.
 
+- OPL typescript library on npm
+  ([446fe7d](https://github.com/ory/keto/commit/446fe7d98e50277e3ea6941709d2b9373c0e8517))
 - Simpler notation for subjects w/o relation
   ([ec979df](https://github.com/ory/keto/commit/ec979dfd3bbf018f2041d9a0195d15f26e04383f))
 - Subject-set rewrites
