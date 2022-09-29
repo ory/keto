@@ -307,9 +307,16 @@ func lexBlockComment(l *lexer) stateFn {
 func lexStringLiteral(l *lexer) stateFn {
 	r := l.next()
 	l.ignore()
-	l.acceptRun(digits + letters)
-	if l.peek() != r {
-		return l.errorf("unclosed string literal")
+
+loop:
+	for {
+		switch l.next() {
+		case eof:
+			return l.errorf("unclosed string literal")
+		case r:
+			l.backup()
+			break loop
+		}
 	}
 	l.emit(itemStringLiteral)
 	l.next()

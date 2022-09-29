@@ -11,10 +11,12 @@ var lexingErrorTestCases = []struct{ name, input string }{
 	{"open comment", "/*"},
 	{"open string literal", "'"},
 	{"non-token", "ü"},
+	{"mixed quotes", `"invalid_literal'`},
 }
 
 var lexableTestCases = []struct{ name, input string }{
 	{"empty", ""},
+	{"import statement", "import { Foo, Bar, Baz } from '@ory/keto-namespace-types'"},
 	{"single class", `
 class name implements Namespace {
 	metadata = {
@@ -117,7 +119,6 @@ func TestLexer(t *testing.T) {
 					}
 					if item.Typ == itemEOF {
 						t.Fatal("reached EOF, but expected error")
-						break
 					}
 				}
 				l.next()
