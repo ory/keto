@@ -202,6 +202,9 @@ func (m *Mapper) FromTuple(ctx context.Context, ts ...*ketoapi.RelationTuple) (r
 		}
 		i := len(res)
 
+		if err := t.Validate(); err != nil {
+			return nil, err
+		}
 		if t.SubjectID != nil {
 			s = append(s, *t.SubjectID)
 			onSuccess.do(func() {

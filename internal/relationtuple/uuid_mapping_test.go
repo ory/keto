@@ -48,6 +48,17 @@ func TestMapper(t *testing.T) {
 				},
 			},
 			{
+				name: "relation tuple without subject",
+				rts: []*ketoapi.RelationTuple{
+					{
+						Namespace: nspace.Name,
+						Object:    "object",
+						Relation:  "relation",
+					},
+				},
+				err: ketoapi.ErrNilSubject,
+			},
+			{
 				name: "many relation tuples",
 				rts: func() []*ketoapi.RelationTuple {
 					rts := make([]*ketoapi.RelationTuple, 10)
