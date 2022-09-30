@@ -4,9 +4,11 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"net/http"
 	"os"
 	"testing"
 
+	"github.com/gobuffalo/httptest"
 	"github.com/ory/x/configx"
 	"github.com/ory/x/logrusx"
 	"github.com/sirupsen/logrus/hooks/test"
@@ -28,7 +30,7 @@ func createFile(t *testing.T, content string) (path string) {
 		t.Fatal(err)
 	}
 
-	t.Cleanup(func() { os.Remove(f.Name()) })
+	t.Cleanup(func() { _ = os.Remove(f.Name()) })
 
 	n, err := f.WriteString(content)
 	if err != nil {
@@ -163,8 +165,7 @@ namespaces: file://%s`,
 // Test that the namespaces can be configured through the Ory Permission
 // Language.
 func TestRewritesNamespaceConfig(t *testing.T) {
-	t.Run("case=one file", func(t *testing.T) {
-		oplConfig := createFile(t, `
+	oplContent := `
 class User implements Namespace {
   related: {
     manager: User[]
@@ -175,23 +176,47 @@ class Group implements Namespace {
   related: {
     members: (User | Group)[]
   }
-}
-		`)
-		config := createFileF(t, `
+}`
+
+	oplConfigFile := createFile(t, oplContent)
+
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		_, err := w.Write([]byte(oplContent))
+		if err != nil {
+			t.Fatal(err)
+		}
+	}))
+	t.Cleanup(func() { srv.Close() })
+
+	cases := []struct {
+		name     string
+		location string
+	}{{
+		name:     "local file",
+		location: "file://" + oplConfigFile,
+	}, {
+		name:     "HTTP url",
+		location: srv.URL,
+	}}
+
+	for _, tc := range cases {
+		t.Run("case="+tc.name, func(t *testing.T) {
+			config := createFileF(t, `
 dsn: memory
 namespaces:
-  location: file://%s`, oplConfig)
+  location: %s`, tc.location)
 
-		_, p := setup(t, config)
-		nm, err := p.NamespaceManager()
-		require.NoError(t, err)
-		namespaces, err := nm.Namespaces(context.Background())
-		require.NoError(t, err)
-		require.Len(t, namespaces, 2)
+			_, p := setup(t, config)
+			nm, err := p.NamespaceManager()
+			require.NoError(t, err)
+			namespaces, err := nm.Namespaces(context.Background())
+			require.NoError(t, err)
+			require.Len(t, namespaces, 2)
 
-		names, relationNames := []string{namespaces[0].Name, namespaces[1].Name}, []string{namespaces[0].Relations[0].Name, namespaces[1].Relations[0].Name}
+			names, relationNames := []string{namespaces[0].Name, namespaces[1].Name}, []string{namespaces[0].Relations[0].Name, namespaces[1].Relations[0].Name}
 
-		assert.ElementsMatch(t, names, []string{"User", "Group"})
-		assert.ElementsMatch(t, relationNames, []string{"manager", "members"})
-	})
+			assert.ElementsMatch(t, names, []string{"User", "Group"})
+			assert.ElementsMatch(t, relationNames, []string{"manager", "members"})
+		})
+	}
 }

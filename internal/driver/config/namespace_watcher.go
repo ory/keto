@@ -207,11 +207,11 @@ func (nw *NamespaceWatcher) readNamespaceFile(r io.Reader, source string) *Names
 	return &NamespaceFile{Name: source, Contents: raw, Parser: parse, namespace: &n}
 }
 
-func (n *NamespaceWatcher) GetNamespaceByName(_ context.Context, name string) (*namespace.Namespace, error) {
-	n.RLock()
-	defer n.RUnlock()
+func (nw *NamespaceWatcher) GetNamespaceByName(_ context.Context, name string) (*namespace.Namespace, error) {
+	nw.RLock()
+	defer nw.RUnlock()
 
-	for _, nsf := range n.namespaces {
+	for _, nsf := range nw.namespaces {
 		if nsf.namespace != nil && nsf.namespace.Name == name {
 			return nsf.namespace, nil
 		}
@@ -221,11 +221,11 @@ func (n *NamespaceWatcher) GetNamespaceByName(_ context.Context, name string) (*
 		"Unknown namespace with name %s", name))
 }
 
-func (n *NamespaceWatcher) GetNamespaceByConfigID(_ context.Context, id int32) (*namespace.Namespace, error) {
-	n.RLock()
-	defer n.RUnlock()
+func (nw *NamespaceWatcher) GetNamespaceByConfigID(_ context.Context, id int32) (*namespace.Namespace, error) {
+	nw.RLock()
+	defer nw.RUnlock()
 
-	for _, nspace := range n.namespaces {
+	for _, nspace := range nw.namespaces {
 		if nspace.namespace.ID == id { // nolint ignore deprecated ID
 			return nspace.namespace, nil
 		}
@@ -235,12 +235,12 @@ func (n *NamespaceWatcher) GetNamespaceByConfigID(_ context.Context, id int32) (
 		"Unknown namespace with ID %d", id))
 }
 
-func (n *NamespaceWatcher) Namespaces(_ context.Context) ([]*namespace.Namespace, error) {
-	n.RLock()
-	defer n.RUnlock()
+func (nw *NamespaceWatcher) Namespaces(_ context.Context) ([]*namespace.Namespace, error) {
+	nw.RLock()
+	defer nw.RUnlock()
 
-	nspaces := make([]*namespace.Namespace, 0, len(n.namespaces))
-	for _, nsf := range n.namespaces {
+	nspaces := make([]*namespace.Namespace, 0, len(nw.namespaces))
+	for _, nsf := range nw.namespaces {
 		if nsf.namespace != nil {
 			nspaces = append(nspaces, nsf.namespace)
 		}
@@ -248,25 +248,25 @@ func (n *NamespaceWatcher) Namespaces(_ context.Context) ([]*namespace.Namespace
 	return nspaces, nil
 }
 
-func (n *NamespaceWatcher) NamespaceFiles() []*NamespaceFile {
-	n.RLock()
-	defer n.RUnlock()
+func (nw *NamespaceWatcher) NamespaceFiles() []*NamespaceFile {
+	nw.RLock()
+	defer nw.RUnlock()
 
-	nsfs := make([]*NamespaceFile, 0, len(n.namespaces))
-	for _, nsf := range n.namespaces {
+	nsfs := make([]*NamespaceFile, 0, len(nw.namespaces))
+	for _, nsf := range nw.namespaces {
 		nsfs = append(nsfs, nsf)
 	}
 	return nsfs
 }
 
-func (n *NamespaceWatcher) ShouldReload(newValue interface{}) bool {
+func (nw *NamespaceWatcher) ShouldReload(newValue interface{}) bool {
 	v, ok := newValue.(string)
 	if !ok {
 		// the manager type changed
 		return true
 	}
 	// reload if target changed
-	return v != n.target
+	return v != nw.target
 }
 
 func GetParser(fn string) (Parser, error) {
