@@ -17,6 +17,8 @@ var parserTestCases = []struct {
 	name, input string
 }{
 	{"full example", `
+  import { Namespace, SubjectSet, FooBar, Anything } from '@ory/keto-namespace-types'
+
   class User implements Namespace {
 	related: {
 	  manager: User[]
