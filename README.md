@@ -1,4 +1,4 @@
-<h1 align="center"><img src="https://raw.githubusercontent.com/ory/meta/master/static/banners/keto.svg" alt="ORY Keto - Open Source & Cloud Native Access Control Server"></h1>
+<h1 align="center"><img src="https://raw.githubusercontent.com/ory/meta/master/static/banners/keto.svg" alt="Ory Keto - Open Source & Cloud Native Access Control Server"></h1>
 
 <h4 align="center">    
     <a href="https://www.ory.sh/chat">Chat</a> |
@@ -57,11 +57,10 @@ If you need to know if a user (or robot, car, service) is allowed to do
 something - Ory Keto is the right fit for you.
 
 Currently, Ory Keto implements the basic API contracts for managing and checking
-relations ("permissions") with HTTP and gRPC APIs. Future versions will include
-features such as userset rewrites (e.g. RBAC-style role-permission models),
-Zookies, and more. An overview of what is implemented and upcoming can be found
-at
-[Implemented and Planned Features](https://www.ory.sh/keto/docs/next/implemented-planned-features).
+relations ("permissions") with HTTP and gRPC APIs, as well as global rules
+defined through the Ory Permission Language ("userset rewrites"). Future
+versions will include features such as Zookies, reverse permission lookups, and
+more.
 
 ---
 
@@ -71,10 +70,10 @@ at
 - [Who's using it?](#whos-using-it)
   - [Installation](#installation)
 - [Ecosystem](#ecosystem)
-  - [ORY Kratos: Identity and User Infrastructure and Management](#ory-kratos-identity-and-user-infrastructure-and-management)
-  - [ORY Hydra: OAuth2 & OpenID Connect Server](#ory-hydra-oauth2--openid-connect-server)
-  - [ORY Oathkeeper: Identity & Access Proxy](#ory-oathkeeper-identity--access-proxy)
-  - [ORY Keto: Access Control Policies as a Server](#ory-keto-access-control-policies-as-a-server)
+  - [Ory Kratos: Identity and User Infrastructure and Management](#ory-kratos-identity-and-user-infrastructure-and-management)
+  - [Ory Hydra: OAuth2 & OpenID Connect Server](#ory-hydra-oauth2--openid-connect-server)
+  - [Ory Oathkeeper: Identity & Access Proxy](#ory-oathkeeper-identity--access-proxy)
+  - [Ory Keto: Access Control Policies as a Server](#ory-keto-access-control-policies-as-a-server)
 - [Security](#security)
   - [Disclosing vulnerabilities](#disclosing-vulnerabilities)
 - [Telemetry](#telemetry)
@@ -477,7 +476,7 @@ TheCrealm.
 ### Installation
 
 Head over to the documentation to learn about ways of
-[installing ORY Keto](https://www.ory.sh/docs/next/keto/install).
+[installing Ory Keto](https://www.ory.sh/docs/keto/install).
 
 ## Ecosystem
 
@@ -536,8 +535,9 @@ to perform a certain action on a resource.
 ### Disclosing Vulnerabilities
 
 If you think you found a security vulnerability, please refrain from posting it
-publicly on the forums, the chat, or GitHub and send us an email to
-[hi@ory.am](mailto:hi@ory.am) instead.
+publicly on the forums, the chat, or GitHub. You can find all info for
+responsible disclosure in our
+[security.txt](https://www.ory.sh/.well-known/security.txt).
 
 ## Telemetry
 
@@ -546,11 +546,11 @@ off. Click [here](https://www.ory.sh/docs/ecosystem/sqa) to learn more.
 
 ### Guide
 
-The Guide is available [here](https://www.ory.sh/docs/next/keto/).
+The Guide is available [here](https://www.ory.sh/docs/keto/).
 
 ### HTTP API Documentation
 
-The HTTP API is documented [here](https://www.ory.sh/docs/next/keto/sdk/api).
+The HTTP API is documented [here](https://www.ory.sh/docs/keto/sdk/api).
 
 ### Upgrading and Changelog
 
@@ -569,13 +569,13 @@ We encourage all contributions and recommend you read our
 
 #### Dependencies
 
-You need Go 1.16+ and (for the test suites):
+You need Go 1.19+ and (for the test suites):
 
 - Docker and Docker Compose
 - GNU Make 4.3
-- NodeJS / npm@v7
+- NodeJS / npm >= v7
 
-It is possible to develop ORY Keto on Windows, but please be aware that all
+It is possible to develop Ory Keto on Windows, but please be aware that all
 guides assume a Unix shell like bash or zsh.
 
 #### Install From Source
