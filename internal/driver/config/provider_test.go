@@ -189,13 +189,20 @@ class Group implements Namespace {
 	t.Cleanup(func() { srv.Close() })
 
 	cases := []struct {
-		name     string
-		location string
+		name                    string
+		location                string
+		disallowPrivateIPRanges bool
+		expectErr               bool
 	}{{
 		name:     "local file",
 		location: "file://" + oplConfigFile,
 	}, {
-		name:     "HTTP url",
+		name:                    "HTTP url forbidden",
+		location:                srv.URL,
+		disallowPrivateIPRanges: true,
+		expectErr:               true,
+	}, {
+		name:     "HTTP url allowed",
 		location: srv.URL,
 	}}
 
@@ -203,11 +210,18 @@ class Group implements Namespace {
 		t.Run("case="+tc.name, func(t *testing.T) {
 			config := createFileF(t, `
 dsn: memory
+clients:
+  http:
+    disallow_private_ip_ranges: %v
 namespaces:
-  location: %s`, tc.location)
+  location: %s`, tc.disallowPrivateIPRanges, tc.location)
 
 			_, p := setup(t, config)
 			nm, err := p.NamespaceManager()
+			if tc.expectErr {
+				assert.Error(t, err)
+				return
+			}
 			require.NoError(t, err)
 			namespaces, err := nm.Namespaces(context.Background())
 			require.NoError(t, err)
