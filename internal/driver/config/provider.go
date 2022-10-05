@@ -7,6 +7,9 @@ import (
 	"fmt"
 	"sync"
 
+	"github.com/ory/x/fetcher"
+	"github.com/ory/x/httpx"
+
 	"github.com/ory/keto/embedx"
 
 	"github.com/ory/herodot"
@@ -192,6 +195,16 @@ func (k *Config) DSN() string {
 	return dsn
 }
 
+func (k *Config) Fetcher() *fetcher.Fetcher {
+	var opts []httpx.ResilientOptions
+	if k.p.Bool("clients.http.disallow_private_ip_ranges") {
+		opts = append(opts, httpx.ResilientClientDisallowInternalIPs())
+	}
+	return fetcher.NewFetcher(
+		fetcher.WithClient(httpx.NewResilientClient(opts...)),
+	)
+}
+
 func (k *Config) TracingServiceName() string {
 	return k.p.StringF("tracing.service_name", "Ory Keto")
 }
@@ -217,7 +230,7 @@ func (k *Config) NamespaceManager() (namespace.Manager, error) {
 			return nil, err
 		}
 
-		k.nm, err = nnCfg.newManager()(ctx, k.l)
+		k.nm, err = nnCfg.newManager()(ctx, k)
 		if err != nil {
 			return nil, err
 		}
@@ -227,7 +240,7 @@ func (k *Config) NamespaceManager() (namespace.Manager, error) {
 }
 
 type (
-	buildNamespaceFn func(context.Context, *logrusx.Logger) (namespace.Manager, error)
+	buildNamespaceFn func(context.Context, *Config) (namespace.Manager, error)
 
 	namespaceConfig interface {
 		// newManager builds a new namespace manager.
@@ -242,8 +255,8 @@ type (
 )
 
 func (uri legacyURINamespaceConfig) newManager() buildNamespaceFn {
-	return func(ctx context.Context, l *logrusx.Logger) (namespace.Manager, error) {
-		return NewNamespaceWatcher(ctx, l, string(uri))
+	return func(ctx context.Context, c *Config) (namespace.Manager, error) {
+		return NewNamespaceWatcher(ctx, c.l, string(uri))
 	}
 }
 func (uri legacyURINamespaceConfig) value() any {
@@ -251,7 +264,7 @@ func (uri legacyURINamespaceConfig) value() any {
 }
 
 func (namespaces literalNamespaceConfig) newManager() buildNamespaceFn {
-	return func(ctx context.Context, l *logrusx.Logger) (namespace.Manager, error) {
+	return func(ctx context.Context, _ *Config) (namespace.Manager, error) {
 		return NewMemoryNamespaceManager(namespaces...), nil
 	}
 }
@@ -260,7 +273,7 @@ func (namespaces literalNamespaceConfig) value() any {
 }
 
 func (oplConfig oplNamespaceConfig) newManager() buildNamespaceFn {
-	return func(ctx context.Context, l *logrusx.Logger) (namespace.Manager, error) {
+	return func(ctx context.Context, c *Config) (namespace.Manager, error) {
 		entry, ok := oplConfig["location"]
 		if !ok {
 			return nil, errors.New("location key not found")
@@ -269,7 +282,7 @@ func (oplConfig oplNamespaceConfig) newManager() buildNamespaceFn {
 		if !ok {
 			return nil, fmt.Errorf("config value must be string, was %T", entry)
 		}
-		return newOPLConfigWatcher(ctx, l, target)
+		return newOPLConfigWatcher(ctx, c, target)
 	}
 }
 func (oplConfig oplNamespaceConfig) value() any {

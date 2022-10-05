@@ -4,8 +4,6 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"net/http"
-	"net/url"
 	"sync"
 
 	"github.com/ory/x/logrusx"
@@ -34,9 +32,9 @@ type (
 
 var _ namespace.Manager = (*oplConfigWatcher)(nil)
 
-func newOPLConfigWatcher(ctx context.Context, l *logrusx.Logger, target string) (*oplConfigWatcher, error) {
+func newOPLConfigWatcher(ctx context.Context, c *Config, target string) (*oplConfigWatcher, error) {
 	nw := &oplConfigWatcher{
-		logger:                 l,
+		logger:                 c.l,
 		target:                 target,
 		files:                  configFiles{byPath: make(map[string]io.Reader)},
 		memoryNamespaceManager: *NewMemoryNamespaceManager(),
@@ -49,31 +47,18 @@ func newOPLConfigWatcher(ctx context.Context, l *logrusx.Logger, target string) 
 
 	switch targetUrl.Scheme {
 	case "file":
-		return nw, watchTarget(ctx, target, nw, l)
+		return nw, watchTarget(ctx, target, nw, c.l)
 	case "http", "https":
-		file, err := download(ctx, targetUrl)
+		file, err := c.Fetcher().Fetch(target)
 		if err != nil {
 			return nil, err
 		}
-		defer file.Close()
 		nw.files.byPath[targetUrl.String()] = file
 		nw.parseFiles()
 		return nw, err
 	default:
 		return nil, fmt.Errorf("unexpected url scheme: %q", targetUrl.Scheme)
 	}
-}
-
-func download(ctx context.Context, url *url.URL) (io.ReadCloser, error) {
-	req, err := http.NewRequestWithContext(ctx, "GET", url.String(), nil)
-	if err != nil {
-		return nil, errors.WithStack(err)
-	}
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return nil, errors.WithStack(err)
-	}
-	return resp.Body, nil
 }
 
 func (nw *oplConfigWatcher) handleChange(e *watcherx.ChangeEvent) {
