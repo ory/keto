@@ -1,7 +1,3 @@
 {
-  "compilerOptions": {
-    "noLib": true,
-    "noEmit": true,
-    "types": []
-  }
+  "extends": "@ory/keto-namespace-types/tsconfig.json"
 }
