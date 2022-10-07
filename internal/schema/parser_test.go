@@ -71,6 +71,49 @@ var parserTestCases = []struct {
 		this.related.siblings.traverse(s => s.permits.edit(ctx)),
 	}
   }
+`}, {"advanced typescript syntax",
+		`
+import { Namespace, SubjectSet, Context } from '@ory/keto-namespace-types';
+
+class Role implements Namespace {
+  related: {
+    member: Role[]
+  }
+}
+
+class Resource implements Namespace {
+  related: {
+    admins: SubjectSet<Role, 'member'>[],
+    supervisors: SubjectSet<Role, 'member'>[],
+    annotators: SubjectSet<Role, 'member'>[],
+    medicalAnnotators: SubjectSet<Role, 'member'>[],
+  };
+
+  permits = {
+    read: (ctx: Context) => this.related.admins.traverse((role) => role.related.member.includes(ctx.subject)) ||
+      this.related.annotators.traverse((role) => role.related.member.includes(ctx.subject)) ||
+      this.related.medicalAnnotators.traverse((role) => role.related.member.includes(ctx.subject)) ||
+      this.related.supervisors.traverse((role) => role.related.member.includes(ctx.subject)),
+
+	// TODO: support referencing permits.
+    // comment: (ctx: Context) => this.permits.read(ctx),
+
+    update: (ctx: Context) => this.related.admins.traverse((role) => role.related.member.includes(ctx.subject)) ||
+      this.related.annotators.traverse((role) => role.related.member.includes(ctx.subject)) ||
+      this.related.medicalAnnotators.traverse((role) => role.related.member.includes(ctx.subject)) ||
+      this.related.supervisors.traverse((role) => role.related.member.includes(ctx.subject)),
+
+    create: (ctx: Context) => this.related.admins.traverse((role) => role.related.member.includes(ctx.subject)) ||
+      this.related.annotators.traverse((role) => role.related.member.includes(ctx.subject)) ||
+      this.related.supervisors.traverse((role) => role.related.member.includes(ctx.subject)),
+
+    approve: (ctx: Context) => this.related.admins.traverse((role) => role.related.member.includes(ctx.subject)) ||
+      this.related.supervisors.traverse((role) => role.related.member.includes(ctx.subject)),
+
+    delete: (ctx: Context) => this.related.admins.traverse((role) => role.related.member.includes(ctx.subject)) ||
+      this.related.supervisors.traverse((role) => role.related.member.includes(ctx.subject)),
+  };
+}
 `},
 }
 
