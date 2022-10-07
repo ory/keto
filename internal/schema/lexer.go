@@ -1,3 +1,5 @@
+// Copyright © 2022 Ory Corp
+
 // The lexer is inspired by Rob Pike's talk at
 // https://www.youtube.com/watch?v=HxaD_trXwRE.
 

@@ -1,3 +1,5 @@
+// Copyright © 2022 Ory Corp
+
 package schema
 
 import "github.com/ory/keto/internal/namespace/ast"

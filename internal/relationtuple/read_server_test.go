@@ -1,3 +1,5 @@
+// Copyright © 2022 Ory Corp
+
 package relationtuple_test
 
 import (

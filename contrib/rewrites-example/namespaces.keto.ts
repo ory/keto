@@ -1,3 +1,5 @@
+// Copyright © 2022 Ory Corp
+
 import { Namespace, SubjectSet, Context } from "@ory/keto-namespace-types"
 
 class User implements Namespace {

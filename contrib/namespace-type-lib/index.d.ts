@@ -1,3 +1,5 @@
+// Copyright © 2022 Ory Corp
+
 /// <reference no-default-lib="true"/>
 
 declare interface Boolean {}

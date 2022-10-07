@@ -53,7 +53,8 @@ tools/brew:
 	go build -o .bin/clidoc ./cmd/clidoc/.
 
 .PHONY: format
-format: tools/goimports node_modules
+format: .bin/ory tools/goimports node_modules
+	.bin/ory dev headers license --exclude=.bin --exclude=internal/httpclient --exclude=proto
 	goimports -w -local github.com/ory/keto *.go internal cmd contrib ketoctx ketoapi embedx
 	npm exec -- prettier --write .
 
@@ -160,3 +161,7 @@ post-release: tools/yq
 .PHONY: generate
 generate: tools/stringer
 	go generate ./...
+
+.bin/ory: Makefile
+	curl https://raw.githubusercontent.com/ory/meta/master/install.sh | bash -s -- -b .bin ory v0.1.43
+	touch .bin/ory

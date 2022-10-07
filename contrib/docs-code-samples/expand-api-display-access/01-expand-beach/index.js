@@ -1,3 +1,5 @@
+// Copyright © 2022 Ory Corp
+
 import grpc from "@ory/keto-grpc-client/node_modules/@grpc/grpc-js/build/src/index.js"
 import { relationTuples, expand, expandService } from "@ory/keto-grpc-client"
 

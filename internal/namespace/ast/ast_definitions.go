@@ -1,3 +1,5 @@
+// Copyright © 2022 Ory Corp
+
 package ast
 
 import "encoding/json"
