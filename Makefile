@@ -161,6 +161,7 @@ post-release: tools/yq
 .PHONY: generate
 generate: tools/stringer
 	go generate ./...
+	.bin/ory dev headers license --exclude=.bin --exclude=internal/httpclient --exclude=proto
 
 .bin/ory: Makefile
 	curl https://raw.githubusercontent.com/ory/meta/master/install.sh | bash -s -- -b .bin ory v0.1.43
