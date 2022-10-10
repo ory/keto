@@ -43,7 +43,7 @@ func (e *ParseError) Error() string {
 	for line := startLineIdx; line <= errorLineIdx; line++ {
 		s.WriteString(fmt.Sprintf("%4d | %s\n", line, rows[line]))
 	}
-	s.WriteString("       ")
+	s.WriteString("     | ")
 	for i, r := range rows[errorLineIdx] {
 		switch {
 		case start.col == i:
@@ -59,7 +59,7 @@ func (e *ParseError) Error() string {
 	s.WriteRune('\n')
 
 	if errorLineIdx+1 < len(rows) {
-		s.WriteString(fmt.Sprintf("%4d | %s\n", errorLineIdx, rows[errorLineIdx+1]))
+		s.WriteString(fmt.Sprintf("%4d | %s\n", errorLineIdx+1, rows[errorLineIdx+1]))
 		s.WriteRune('\n')
 	}
 
