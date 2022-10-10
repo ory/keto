@@ -25,20 +25,21 @@ func _() {
 	_ = x[itemOperatorDot-14]
 	_ = x[itemOperatorColon-15]
 	_ = x[itemOperatorComma-16]
-	_ = x[itemTypeUnion-17]
-	_ = x[itemParenLeft-18]
-	_ = x[itemParenRight-19]
-	_ = x[itemBraceLeft-20]
-	_ = x[itemBraceRight-21]
-	_ = x[itemBracketLeft-22]
-	_ = x[itemBracketRight-23]
-	_ = x[itemAngledLeft-24]
-	_ = x[itemAngledRight-25]
+	_ = x[itemOperatorSemicolon-17]
+	_ = x[itemTypeUnion-18]
+	_ = x[itemParenLeft-19]
+	_ = x[itemParenRight-20]
+	_ = x[itemBraceLeft-21]
+	_ = x[itemBraceRight-22]
+	_ = x[itemBracketLeft-23]
+	_ = x[itemBracketRight-24]
+	_ = x[itemAngledLeft-25]
+	_ = x[itemAngledRight-26]
 }
 
-const _itemType_name = "ErrorEOFIdentifierCommentStringLiteralKeywordClassKeywordImplementsKeywordThisKeywordCtx\"&&\"\"||\"\"!\"\"=\"\"=>\"\".\"\":\"\",\"\"|\"\"(\"\")\"\"{\"\"}\"\"[\"\"]\"\"<\"\">\""
+const _itemType_name = "ErrorEOFIdentifierCommentStringLiteralKeywordClassKeywordImplementsKeywordThisKeywordCtx\"&&\"\"||\"\"!\"\"=\"\"=>\"\".\"\":\"\",\"\";\"\"|\"\"(\"\")\"\"{\"\"}\"\"[\"\"]\"\"<\"\">\""
 
-var _itemType_index = [...]uint8{0, 5, 8, 18, 25, 38, 50, 67, 78, 88, 92, 96, 99, 102, 106, 109, 112, 115, 118, 121, 124, 127, 130, 133, 136, 139, 142}
+var _itemType_index = [...]uint8{0, 5, 8, 18, 25, 38, 50, 67, 78, 88, 92, 96, 99, 102, 106, 109, 112, 115, 118, 121, 124, 127, 130, 133, 136, 139, 142, 145}
 
 func (i itemType) String() string {
 	if i < 0 || i >= itemType(len(_itemType_index)-1) {

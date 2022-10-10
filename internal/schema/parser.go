@@ -177,6 +177,8 @@ func (p *parser) parseClass() {
 			p.parseRelated()
 		case item.Val == "permits":
 			p.parsePermits()
+		case item.Typ == itemOperatorSemicolon:
+			continue
 		default:
 			p.addFatal(item, "expected 'permits' or 'related', got %q", item.Val)
 			return
@@ -205,7 +207,7 @@ func (p *parser) parseRelated() {
 			case itemParenLeft:
 				types = append(types, p.parseTypeUnion()...)
 			}
-			p.match("[", "]")
+			p.match("[", "]", optional(","))
 			p.namespace.Relations = append(p.namespace.Relations, ast.Relation{
 				Name:  relation,
 				Types: types,
