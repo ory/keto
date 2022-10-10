@@ -395,18 +395,36 @@ func setOperation(typ itemType) ast.Operator {
 }
 
 func (p *parser) parsePermissionExpression() (child ast.Child) {
-	var name item
+	var name, verb item
 
-	if !p.match("this", ".", "related", ".", &name, ".") {
+	if !p.match("this", ".", &verb, ".", &name) {
 		return
 	}
-	switch item := p.next(); item.Val {
-	case "traverse":
-		child = p.parseTupleToSubjectSet(name)
-	case "includes":
-		child = p.parseComputedSubjectSet(name)
+
+	switch verb.Val {
+	case "related":
+		if !p.match(".") {
+			return
+		}
+		switch item := p.next(); item.Val {
+		case "traverse":
+			child = p.parseTupleToSubjectSet(name)
+		case "includes":
+			child = p.parseComputedSubjectSet(name)
+		default:
+			p.addFatal(item, "expected 'traverse' or 'includes', got %q", item.Val)
+		}
+
+	case "permits":
+		if !p.match("(", "ctx", ")") {
+			return
+		}
+		p.addCheck(checkCurrentNamespaceHasRelation(&p.namespace, name))
+		return &ast.ComputedSubjectSet{Relation: name.Val}
+
 	default:
-		p.addFatal(item, "expected 'traverse' or 'includes', got %q", item.Val)
+		p.addFatal(verb, "expected 'related' or 'permits', got %q", verb.Val)
+
 	}
 
 	return

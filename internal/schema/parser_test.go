@@ -95,8 +95,7 @@ class Resource implements Namespace {
       this.related.medicalAnnotators.traverse((role) => role.related.member.includes(ctx.subject)) ||
       this.related.supervisors.traverse((role) => role.related.member.includes(ctx.subject)),
 
-	// TODO: support referencing permits.
-    // comment: (ctx: Context) => this.permits.read(ctx),
+    comment: (ctx: Context) => this.permits.read(ctx),
 
     update: (ctx: Context) => this.related.admins.traverse((role) => role.related.member.includes(ctx.subject)) ||
       this.related.annotators.traverse((role) => role.related.member.includes(ctx.subject)) ||

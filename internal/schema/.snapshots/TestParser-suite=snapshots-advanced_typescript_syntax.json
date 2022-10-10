@@ -61,6 +61,17 @@
       }
     },
     {
+      "name": "comment",
+      "rewrite": {
+        "operator": "or",
+        "children": [
+          {
+            "relation": "read"
+          }
+        ]
+      }
+    },
+    {
       "name": "update",
       "rewrite": {
         "operator": "or",
