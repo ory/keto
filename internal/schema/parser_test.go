@@ -11,6 +11,40 @@ import (
 
 var parserErrorTestCases = []struct{ name, input string }{
 	{"lexer error", "/* unclosed comment"},
+	{"syntax and type errors",
+		`
+  class File implements Namespace {
+	related: {
+	  parents: (File | Folder)[]
+	  viewers: (User | SubjectSet<Group, "members">)[]
+	  owners: (User | SubjectSet<Group, "members">)[]
+	  siblings: File[]
+	}
+
+	SYNTAX ERROR
+  
+	// Some comment
+	permits = {
+	  view: (ctx: Context): boolean =>
+	    (
+		this.related.parents.traverse((p) =>
+		  p.related.viewers.includes(ctx.subject),
+		) &&
+		this.related.parents.traverse(p => p.permits.view(ctx)) ) ||
+		(this.related.viewers.includes(ctx.subject) ||
+		this.related.viewers.includes(ctx.subject) ||
+		this.related.viewers.includes(ctx.subject) ) ||
+		this.related.owners.includes(ctx.subject),
+  
+	  edit: (ctx: Context) => this.related.owners.includes(ctx.subject),
+
+	  not: (ctx: Context) => !this.related.owners.includes(ctx.subject),
+  
+	  rename: (ctx: Context) =>
+		this.related.siblings.traverse(s => s.permits.edit(ctx)),
+	}
+  }
+`},
 }
 
 var parserTestCases = []struct {
@@ -140,9 +174,7 @@ func TestParser(t *testing.T) {
 		for _, tc := range parserErrorTestCases {
 			t.Run(tc.name, func(t *testing.T) {
 				_, errs := Parse(tc.input)
-				if len(errs) == 0 {
-					t.Error("expected error, but got none")
-				}
+				assert.Len(t, errs, 1)
 			})
 		}
 	})
