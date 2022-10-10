@@ -62,7 +62,9 @@ loop:
 		}
 	}
 
-	p.typeCheck()
+	if len(p.errors) == 0 {
+		p.typeCheck()
+	}
 
 	return p.namespaces, p.errors
 }
