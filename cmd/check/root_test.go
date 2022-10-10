@@ -15,7 +15,7 @@ import (
 
 func TestCheckCommand(t *testing.T) {
 	nspace := &namespace.Namespace{Name: t.Name()}
-	ts := client.NewTestServer(t, client.ReadServer, []*namespace.Namespace{nspace}, newCheckCmd)
+	ts := client.NewTestServer(t, client.ReadServer, []*namespace.Namespace{nspace}, NewCheckCmd)
 	defer ts.Shutdown(t)
 
 	stdOut := ts.Cmd.ExecNoErr(t, "subject", "access", nspace.Name, "object",
