@@ -53,6 +53,8 @@ type APIClient struct {
 
 	ReadApi ReadApi
 
+	SyntaxApi SyntaxApi
+
 	WriteApi WriteApi
 }
 
@@ -74,6 +76,7 @@ func NewAPIClient(cfg *Configuration) *APIClient {
 	// API Services
 	c.MetadataApi = (*MetadataApiService)(&c.common)
 	c.ReadApi = (*ReadApiService)(&c.common)
+	c.SyntaxApi = (*SyntaxApiService)(&c.common)
 	c.WriteApi = (*WriteApiService)(&c.common)
 
 	return c

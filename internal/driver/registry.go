@@ -46,6 +46,7 @@ type (
 
 		ReadGRPCServer(ctx context.Context) *grpc.Server
 		WriteGRPCServer(ctx context.Context) *grpc.Server
+		OplGRPCServer(ctx context.Context) *grpc.Server
 
 		ServeAll(ctx context.Context) error
 		ServeAllSQA(cmd *cobra.Command) error

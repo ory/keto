@@ -11,17 +11,17 @@ type (
 	namespace = internalNamespace.Namespace
 
 	parser struct {
-		lexer      *lexer      // lexer to get tokens from
-		namespaces []namespace // list of parsed namespaces
-		namespace  namespace   // current namespace
-		errors     []error     // errors encountered during parsing
-		fatal      bool        // parser encountered a fatal error
-		lookahead  *item       // lookahead token
-		checks     []typeCheck // checks to perform on the namespace
+		lexer      *lexer        // lexer to get tokens from
+		namespaces []namespace   // list of parsed namespaces
+		namespace  namespace     // current namespace
+		errors     []*ParseError // errors encountered during parsing
+		fatal      bool          // parser encountered a fatal error
+		lookahead  *item         // lookahead token
+		checks     []typeCheck   // checks to perform on the namespace
 	}
 )
 
-func Parse(input string) ([]namespace, []error) {
+func Parse(input string) ([]namespace, []*ParseError) {
 	p := &parser{
 		lexer: Lex("input", input),
 	}
@@ -49,7 +49,7 @@ func (p *parser) peek() item {
 	return *p.lookahead
 }
 
-func (p *parser) parse() ([]namespace, []error) {
+func (p *parser) parse() ([]namespace, []*ParseError) {
 loop:
 	for !p.fatal {
 		switch item := p.next(); item.Typ {

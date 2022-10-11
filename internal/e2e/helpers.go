@@ -60,7 +60,7 @@ func newInitializedReg(t testing.TB, dsn *dbx.DsnT, cfgOverwrites map[string]int
 		cancel()
 	})
 
-	ports, err := freeport.GetFreePorts(3)
+	ports, err := freeport.GetFreePorts(4)
 	require.NoError(t, err)
 
 	flags := pflag.NewFlagSet("", pflag.ContinueOnError)
@@ -74,8 +74,10 @@ func newInitializedReg(t testing.TB, dsn *dbx.DsnT, cfgOverwrites map[string]int
 		config.KeyReadAPIPort:       ports[0],
 		config.KeyWriteAPIHost:      "127.0.0.1",
 		config.KeyWriteAPIPort:      ports[1],
+		config.KeyOPLSyntaxAPIHost:  "127.0.0.1",
+		config.KeyOPLSyntaxAPIPort:  ports[2],
 		config.KeyMetricsHost:       "127.0.0.1",
-		config.KeyMetricsPort:       ports[2],
+		config.KeyMetricsPort:       ports[3],
 		config.KeyNamespaces:        []*namespace.Namespace{},
 	}
 	for k, v := range cfgOverwrites {

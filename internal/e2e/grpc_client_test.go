@@ -2,9 +2,11 @@ package e2e
 
 import (
 	"context"
+	"encoding/json"
 	"time"
 
 	"github.com/ory/keto/ketoapi"
+	opl "github.com/ory/keto/proto/ory/keto/opl/v1alpha1"
 
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 
@@ -21,9 +23,9 @@ import (
 )
 
 type grpcClient struct {
-	readRemote, writeRemote string
-	wc, rc                  *grpc.ClientConn
-	ctx                     context.Context
+	readRemote, writeRemote, oplSyntaxRemote string
+	wc, rc, oc                               *grpc.ClientConn
+	ctx                                      context.Context
 }
 
 var _ transactClient = (*grpcClient)(nil)
@@ -50,6 +52,13 @@ func (g *grpcClient) writeConn(t require.TestingT) *grpc.ClientConn {
 		g.wc = g.conn(t, g.writeRemote)
 	}
 	return g.wc
+}
+
+func (g *grpcClient) oplSyntaxConn(t require.TestingT) *grpc.ClientConn {
+	if g.oc == nil {
+		g.oc = g.conn(t, g.oplSyntaxRemote)
+	}
+	return g.oc
 }
 
 func (g *grpcClient) createTuple(t require.TestingT, r *ketoapi.RelationTuple) {
@@ -211,4 +220,18 @@ func (g *grpcClient) transactTuples(t require.TestingT, ins []*ketoapi.RelationT
 	})
 
 	require.NoError(t, err)
+}
+
+func (g *grpcClient) oplCheckSyntax(t require.TestingT, content []byte) (parseErrors []*ketoapi.ParseError) {
+	c := opl.NewSyntaxServiceClient(g.oplSyntaxConn(t))
+
+	res, err := c.Check(g.ctx, &opl.CheckRequest{Content: content})
+	require.NoError(t, err)
+
+	raw, err := json.Marshal(res.ParseErrors)
+	require.NoError(t, err)
+	err = json.Unmarshal(raw, &parseErrors)
+	require.NoError(t, err)
+
+	return
 }

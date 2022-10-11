@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"strconv"
+	"testing"
 	"time"
 
 	"github.com/ory/keto/ketoapi"
@@ -34,6 +35,13 @@ type cliClient struct {
 }
 
 var _ client = (*cliClient)(nil)
+
+func (g *cliClient) oplCheckSyntax(t require.TestingT, _ []byte) []*ketoapi.ParseError {
+	if t, ok := t.(*testing.T); ok {
+		t.Skip("not implemented as a command yet")
+	}
+	return []*ketoapi.ParseError{}
+}
 
 func (g *cliClient) createTuple(t require.TestingT, r *ketoapi.RelationTuple) {
 	tupleEnc, err := json.Marshal(r)

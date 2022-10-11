@@ -2,6 +2,7 @@ package e2e
 
 import (
 	"context"
+	"encoding/json"
 	"net/http"
 	"time"
 
@@ -18,8 +19,9 @@ type sdkClient struct {
 	rc httpclient.ReadApi
 	wc httpclient.WriteApi
 	mc httpclient.MetadataApi
-	readRemote,
-	writeRemote string
+	sc httpclient.SyntaxApi
+
+	readRemote, writeRemote, syntaxRemote string
 }
 
 var _ client = (*sdkClient)(nil)
@@ -29,6 +31,21 @@ var requestTimeout = 5 * time.Second
 func (c *sdkClient) requestCtx() context.Context {
 	ctx, _ := context.WithTimeout(context.Background(), requestTimeout)
 	return ctx
+}
+
+func (c *sdkClient) oplCheckSyntax(t require.TestingT, content []byte) (parseErrors []*ketoapi.ParseError) {
+	res, _, err := c.getOPLSyntaxClient().
+		PostCheckOplSyntax(c.requestCtx()).
+		Body(string(content)).
+		Execute()
+	require.NoError(t, err)
+
+	raw, err := json.Marshal(res.Errors)
+	require.NoError(t, err)
+	err = json.Unmarshal(raw, &parseErrors)
+	require.NoError(t, err)
+
+	return
 }
 
 func (c *sdkClient) getReadClient() httpclient.ReadApi {
@@ -59,6 +76,16 @@ func (c *sdkClient) getWriteClient() httpclient.WriteApi {
 		c.wc = httpclient.NewAPIClient(cfg).WriteApi
 	}
 	return c.wc
+}
+
+func (c *sdkClient) getOPLSyntaxClient() httpclient.SyntaxApi {
+	if c.sc == nil {
+		cfg := httpclient.NewConfiguration()
+		cfg.Host = c.syntaxRemote
+		cfg.Scheme = "http"
+		c.sc = httpclient.NewAPIClient(cfg).SyntaxApi
+	}
+	return c.sc
 }
 
 func (c *sdkClient) createTuple(t require.TestingT, r *ketoapi.RelationTuple) {

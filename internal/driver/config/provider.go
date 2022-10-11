@@ -29,14 +29,15 @@ const (
 	KeyDSN = "dsn"
 
 	KeyLimitMaxReadDepth = "limit.max_read_depth"
-	KeyReadAPIHost       = "serve.read.host"
-	KeyReadAPIPort       = "serve.read.port"
 
-	KeyWriteAPIHost = "serve.write.host"
-	KeyWriteAPIPort = "serve.write.port"
-
-	KeyMetricsHost = "serve.metrics.host"
-	KeyMetricsPort = "serve.metrics.port"
+	KeyReadAPIHost      = "serve.read.host"
+	KeyReadAPIPort      = "serve.read.port"
+	KeyWriteAPIHost     = "serve.write.host"
+	KeyWriteAPIPort     = "serve.write.port"
+	KeyOPLSyntaxAPIHost = "serve.opl.host"
+	KeyOPLSyntaxAPIPort = "serve.opl.port"
+	KeyMetricsHost      = "serve.metrics.host"
+	KeyMetricsPort      = "serve.metrics.port"
 
 	KeyNamespaces = "namespaces"
 
@@ -155,21 +156,37 @@ func (k *Config) Set(key string, v any) error {
 func (k *Config) ReadAPIListenOn() string {
 	return fmt.Sprintf(
 		"%s:%d",
-		k.p.StringF(KeyReadAPIHost, ""),
-		k.p.IntF(KeyReadAPIPort, 4466),
+		k.p.String(KeyReadAPIHost),
+		k.p.Int(KeyReadAPIPort),
 	)
-}
-
-func (k *Config) MaxReadDepth() int {
-	return k.p.Int(KeyLimitMaxReadDepth)
 }
 
 func (k *Config) WriteAPIListenOn() string {
 	return fmt.Sprintf(
 		"%s:%d",
-		k.p.StringF(KeyWriteAPIHost, ""),
-		k.p.IntF(KeyWriteAPIPort, 4467),
+		k.p.String(KeyWriteAPIHost),
+		k.p.Int(KeyWriteAPIPort),
 	)
+}
+
+func (k *Config) MetricsListenOn() string {
+	return fmt.Sprintf(
+		"%s:%d",
+		k.p.String(KeyMetricsHost),
+		k.p.Int(KeyMetricsPort),
+	)
+}
+
+func (k *Config) OPLSyntaxAPIListenOn() string {
+	return fmt.Sprintf(
+		"%s:%d",
+		k.p.String(KeyOPLSyntaxAPIHost),
+		k.p.Int(KeyOPLSyntaxAPIPort),
+	)
+}
+
+func (k *Config) MaxReadDepth() int {
+	return k.p.Int(KeyLimitMaxReadDepth)
 }
 
 func (k *Config) CORS(iface string) (cors.Options, bool) {
@@ -320,12 +337,4 @@ func (k *Config) namespaceConfig() (namespaceConfig, error) {
 	default:
 		return nil, errors.WithStack(herodot.ErrInternalServerError.WithReasonf("could not infer namespaces for type %T", nTyped))
 	}
-}
-
-func (k *Config) MetricsListenOn() string {
-	return fmt.Sprintf(
-		"%s:%d",
-		k.p.StringF(KeyMetricsHost, ""),
-		k.p.IntF(KeyMetricsPort, 4468),
-	)
 }

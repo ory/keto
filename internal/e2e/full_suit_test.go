@@ -35,6 +35,7 @@ type (
 		queryTupleErr(t require.TestingT, expected herodot.DefaultError, q *ketoapi.RelationQuery, opts ...x.PaginationOptionSetter)
 		check(t require.TestingT, r *ketoapi.RelationTuple) bool
 		expand(t require.TestingT, r *ketoapi.SubjectSet, depth int) *ketoapi.Tree[*ketoapi.RelationTuple]
+		oplCheckSyntax(t require.TestingT, content []byte) []*ketoapi.ParseError
 		waitUntilLive(t require.TestingT)
 	}
 )
@@ -59,13 +60,15 @@ func Test(t *testing.T) {
 			// We execute every test with all clients available
 			for _, cl := range []client{
 				&grpcClient{
-					readRemote:  reg.Config(ctx).ReadAPIListenOn(),
-					writeRemote: reg.Config(ctx).WriteAPIListenOn(),
-					ctx:         ctx,
+					readRemote:      reg.Config(ctx).ReadAPIListenOn(),
+					writeRemote:     reg.Config(ctx).WriteAPIListenOn(),
+					oplSyntaxRemote: reg.Config(ctx).OPLSyntaxAPIListenOn(),
+					ctx:             ctx,
 				},
 				&restClient{
-					readURL:  "http://" + reg.Config(ctx).ReadAPIListenOn(),
-					writeURL: "http://" + reg.Config(ctx).WriteAPIListenOn(),
+					readURL:      "http://" + reg.Config(ctx).ReadAPIListenOn(),
+					writeURL:     "http://" + reg.Config(ctx).WriteAPIListenOn(),
+					oplSyntaxURL: "http://" + reg.Config(ctx).OPLSyntaxAPIListenOn(),
 				},
 				&cliClient{c: &cmdx.CommandExecuter{
 					New: func() *cobra.Command {
@@ -80,8 +83,9 @@ func Test(t *testing.T) {
 					},
 				}},
 				&sdkClient{
-					readRemote:  reg.Config(ctx).ReadAPIListenOn(),
-					writeRemote: reg.Config(ctx).WriteAPIListenOn(),
+					readRemote:   reg.Config(ctx).ReadAPIListenOn(),
+					writeRemote:  reg.Config(ctx).WriteAPIListenOn(),
+					syntaxRemote: reg.Config(ctx).OPLSyntaxAPIListenOn(),
 				},
 			} {
 				t.Run(fmt.Sprintf("client=%T", cl), runCases(cl, namespaceTestMgr))
