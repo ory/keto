@@ -213,6 +213,41 @@ paths:
       summary: Check HTTP Server and Database Status
       tags:
       - metadata
+  /opl/syntax/check:
+    post:
+      description: The OPL file is expected in the body of the request.
+      operationId: postCheckOplSyntax
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              description: the OPL content to check
+              type: string
+        description: the OPL content to check
+        required: true
+        x-originalParamName: content
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/postCheckOplSyntaxResponse'
+          description: postCheckOplSyntaxResponse
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/genericError'
+          description: genericError
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/genericError'
+          description: genericError
+      summary: Check the syntax of an OPL file
+      tags:
+      - syntax
   /relation-tuples:
     get:
       description: Get all relation tuples that match the query. Only the namespace
@@ -602,6 +637,35 @@ components:
       description: Empty responses are sent when, for example, resources are deleted.
         The HTTP status code for empty responses is typically 201.
   schemas:
+    ParseError:
+      example:
+        start:
+          Line: 0
+          column: 6
+        end:
+          Line: 0
+          column: 6
+        message: message
+      properties:
+        end:
+          $ref: '#/components/schemas/SourcePosition'
+        message:
+          type: string
+        start:
+          $ref: '#/components/schemas/SourcePosition'
+      type: object
+    SourcePosition:
+      example:
+        Line: 0
+        column: 6
+      properties:
+        Line:
+          format: int64
+          type: integer
+        column:
+          format: int64
+          type: integer
+      type: object
     UUID:
       format: uuid4
       type: string
@@ -753,6 +817,32 @@ components:
             delete ActionDelete
         relation_tuple:
           $ref: '#/components/schemas/relationTuple'
+      type: object
+    postCheckOplSyntaxResponse:
+      example:
+        errors:
+        - start:
+            Line: 0
+            column: 6
+          end:
+            Line: 0
+            column: 6
+          message: message
+        - start:
+            Line: 0
+            column: 6
+          end:
+            Line: 0
+            column: 6
+          message: message
+      properties:
+        errors:
+          description: The list of syntax errors
+          items:
+            $ref: '#/components/schemas/ParseError'
+          type: array
+      title: CheckOPLSyntaxResponse represents the response for an OPL syntax check
+        request.
       type: object
     relationQuery:
       example:

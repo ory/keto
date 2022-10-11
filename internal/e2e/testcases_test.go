@@ -273,5 +273,11 @@ func runCases(c client, m *namespaceTestManager) func(*testing.T) {
 			// Add the namespace again here, so that we can clean up properly.
 			m.add(t, n)
 		})
+
+		t.Run("case=OPL syntax check", func(t *testing.T) {
+			parseErrors := c.oplCheckSyntax(t, []byte("/* unclosed comment"))
+			require.Len(t, parseErrors, 1)
+			assert.Contains(t, parseErrors[0].Message, "unclosed comment")
+		})
 	}
 }

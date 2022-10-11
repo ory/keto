@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package ory.keto.opl.v1alpha1;
+
+option go_package = "github.com/ory/keto/proto/ory/keto/opl/v1alpha1;opl";
+option csharp_namespace = "Ory.Keto.Opl.v1alpha1";
+option java_multiple_files = true;
+option java_outer_classname = "SyntaxServiceProto";
+option java_package = "sh.ory.keto.opl.v1alpha1";
+option php_namespace = "Ory\\Keto\\Opl\\v1alpha1";
+
+// The service that checks the syntax of an OPL file.
+service SyntaxService {
+  // Performs a syntax check request.
+  rpc Check(CheckRequest) returns (CheckResponse);
+}
+
+message CheckRequest {
+  bytes content = 1;
+}
+
+message CheckResponse {
+  repeated ParseError parse_errors = 1;
+}
+
+message ParseError {
+  string message = 1;
+  SourcePosition start = 2;
+  SourcePosition end = 3;
+}
+
+message SourcePosition {
+  uint32 line = 1;
+  uint32 column = 2;
+}

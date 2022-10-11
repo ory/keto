@@ -9,6 +9,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/ory/keto/internal/schema"
 	"github.com/ory/keto/ketoapi"
 
 	"github.com/ory/herodot"
@@ -29,18 +30,22 @@ import (
 var _ client = &restClient{}
 
 type restClient struct {
-	readURL, writeURL string
+	readURL, writeURL, oplSyntaxURL string
 }
 
-func (rc *restClient) makeRequest(t require.TestingT, method, path, body string, write bool) (string, int) {
+func (rc *restClient) oplCheckSyntax(t require.TestingT, content []byte) []*ketoapi.ParseError {
+	body, code := rc.makeRequest(t, http.MethodPost, schema.RouteBase, string(content), rc.oplSyntaxURL)
+	assert.Equal(t, http.StatusOK, code, body)
+	var response ketoapi.CheckOPLSyntaxResponse
+	require.NoError(t, json.Unmarshal([]byte(body), &response))
+
+	return response.Errors
+}
+
+func (rc *restClient) makeRequest(t require.TestingT, method, path, body string, baseURL string) (string, int) {
 	var b io.Reader
 	if body != "" {
 		b = bytes.NewBufferString(body)
-	}
-
-	baseURL := rc.readURL
-	if write {
-		baseURL = rc.writeURL
 	}
 
 	// t.Logf("Requesting %s %s%s with body %#v", method, baseURL, path, body)
@@ -59,17 +64,17 @@ func (rc *restClient) createTuple(t require.TestingT, r *ketoapi.RelationTuple) 
 	tEnc, err := json.Marshal(r)
 	require.NoError(t, err)
 
-	body, code := rc.makeRequest(t, http.MethodPut, relationtuple.WriteRouteBase, string(tEnc), true)
+	body, code := rc.makeRequest(t, http.MethodPut, relationtuple.WriteRouteBase, string(tEnc), rc.writeURL)
 	assert.Equal(t, http.StatusCreated, code, body)
 }
 
 func (rc *restClient) deleteTuple(t require.TestingT, r *ketoapi.RelationTuple) {
-	body, code := rc.makeRequest(t, http.MethodDelete, relationtuple.WriteRouteBase+"?"+r.ToURLQuery().Encode(), "", true)
+	body, code := rc.makeRequest(t, http.MethodDelete, relationtuple.WriteRouteBase+"?"+r.ToURLQuery().Encode(), "", rc.writeURL)
 	require.Equal(t, http.StatusNoContent, code, body)
 }
 
-func (rc restClient) deleteAllTuples(t require.TestingT, q *ketoapi.RelationQuery) {
-	body, code := rc.makeRequest(t, http.MethodDelete, relationtuple.WriteRouteBase+"?"+q.ToURLQuery().Encode(), "", true)
+func (rc *restClient) deleteAllTuples(t require.TestingT, q *ketoapi.RelationQuery) {
+	body, code := rc.makeRequest(t, http.MethodDelete, relationtuple.WriteRouteBase+"?"+q.ToURLQuery().Encode(), "", rc.writeURL)
 	require.Equal(t, http.StatusNoContent, code, body)
 }
 
@@ -84,7 +89,7 @@ func (rc *restClient) queryTuple(t require.TestingT, q *ketoapi.RelationQuery, o
 		urlQuery.Set("page_token", pagination.Token)
 	}
 
-	body, code := rc.makeRequest(t, http.MethodGet, fmt.Sprintf("%s?%s", relationtuple.ReadRouteBase, urlQuery.Encode()), "", false)
+	body, code := rc.makeRequest(t, http.MethodGet, fmt.Sprintf("%s?%s", relationtuple.ReadRouteBase, urlQuery.Encode()), "", rc.readURL)
 	require.Equal(t, http.StatusOK, code, body)
 
 	var dec ketoapi.GetResponse
@@ -104,7 +109,7 @@ func (rc *restClient) queryTupleErr(t require.TestingT, expected herodot.Default
 		urlQuery.Set("page_token", pagination.Token)
 	}
 
-	body, code := rc.makeRequest(t, http.MethodGet, fmt.Sprintf("%s?%s", relationtuple.ReadRouteBase, urlQuery.Encode()), "", false)
+	body, code := rc.makeRequest(t, http.MethodGet, fmt.Sprintf("%s?%s", relationtuple.ReadRouteBase, urlQuery.Encode()), "", rc.readURL)
 
 	assert.Equal(t, expected.CodeField, code)
 	assert.Equal(t, int64(expected.StatusCode()), gjson.Get(body, "error.code").Int())
@@ -114,14 +119,14 @@ func (rc *restClient) queryTupleErr(t require.TestingT, expected herodot.Default
 
 func (rc *restClient) check(t require.TestingT, r *ketoapi.RelationTuple) bool {
 	q := r.ToURLQuery()
-	bodyGet, codeGet := rc.makeRequest(t, http.MethodGet, fmt.Sprintf("%s?%s", check.RouteBase, q.Encode()), "", false)
+	bodyGet, codeGet := rc.makeRequest(t, http.MethodGet, fmt.Sprintf("%s?%s", check.RouteBase, q.Encode()), "", rc.readURL)
 
 	var respGet check.RESTResponse
 	require.NoError(t, json.Unmarshal([]byte(bodyGet), &respGet))
 
 	j, err := json.Marshal(r)
 	require.NoError(t, err)
-	bodyPost, codePost := rc.makeRequest(t, http.MethodPost, check.RouteBase, string(j), false)
+	bodyPost, codePost := rc.makeRequest(t, http.MethodPost, check.RouteBase, string(j), rc.readURL)
 
 	var respPost check.RESTResponse
 	require.NoError(t, json.Unmarshal([]byte(bodyPost), &respPost))
@@ -143,7 +148,7 @@ func (rc *restClient) expand(t require.TestingT, r *ketoapi.SubjectSet, depth in
 	query := r.ToURLQuery()
 	query.Set("max-depth", fmt.Sprintf("%d", depth))
 
-	body, code := rc.makeRequest(t, http.MethodGet, fmt.Sprintf("%s?%s", expand.RouteBase, query.Encode()), "", false)
+	body, code := rc.makeRequest(t, http.MethodGet, fmt.Sprintf("%s?%s", expand.RouteBase, query.Encode()), "", rc.readURL)
 	require.Equal(t, http.StatusOK, code, body)
 
 	tree := &ketoapi.Tree[*ketoapi.RelationTuple]{}

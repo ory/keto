@@ -267,6 +267,34 @@
               "$ref": "#/definitions/tlsx"
             }
           }
+        },
+        "opl": {
+          "type": "object",
+          "title": "Ory Permission Language Syntax API (http and gRPC)",
+          "additionalProperties": false,
+          "properties": {
+            "port": {
+              "type": "integer",
+              "default": 4469,
+              "title": "Port",
+              "description": "The port to listen on.",
+              "minimum": 0,
+              "maximum": 65535
+            },
+            "host": {
+              "type": "string",
+              "default": "",
+              "examples": ["localhost", "127.0.0.1"],
+              "title": "Host",
+              "description": "The network interface to listen on."
+            },
+            "cors": {
+              "$ref": "#/definitions/cors"
+            },
+            "tls": {
+              "$ref": "#/definitions/tlsx"
+            }
+          }
         }
       }
     },
