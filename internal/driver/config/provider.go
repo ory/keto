@@ -25,19 +25,26 @@ import (
 	"github.com/ory/keto/internal/namespace"
 )
 
+type EndpointType string
+
 const (
+	EndpointRead      EndpointType = "read"
+	EndpointWrite     EndpointType = "write"
+	EndpointMetrics   EndpointType = "metrics"
+	EndpointOPLSyntax EndpointType = "opl"
+
 	KeyDSN = "dsn"
 
 	KeyLimitMaxReadDepth = "limit.max_read_depth"
 
-	KeyReadAPIHost      = "serve.read.host"
-	KeyReadAPIPort      = "serve.read.port"
-	KeyWriteAPIHost     = "serve.write.host"
-	KeyWriteAPIPort     = "serve.write.port"
-	KeyOPLSyntaxAPIHost = "serve.opl.host"
-	KeyOPLSyntaxAPIPort = "serve.opl.port"
-	KeyMetricsHost      = "serve.metrics.host"
-	KeyMetricsPort      = "serve.metrics.port"
+	KeyReadAPIHost      = "serve." + string(EndpointRead) + ".host"
+	KeyReadAPIPort      = "serve." + string(EndpointRead) + ".port"
+	KeyWriteAPIHost     = "serve." + string(EndpointWrite) + ".host"
+	KeyWriteAPIPort     = "serve." + string(EndpointWrite) + ".port"
+	KeyOPLSyntaxAPIHost = "serve." + string(EndpointOPLSyntax) + ".host"
+	KeyOPLSyntaxAPIPort = "serve." + string(EndpointOPLSyntax) + ".port"
+	KeyMetricsHost      = "serve." + string(EndpointMetrics) + ".host"
+	KeyMetricsPort      = "serve." + string(EndpointMetrics) + ".port"
 
 	KeyNamespaces = "namespaces"
 
@@ -153,37 +160,18 @@ func (k *Config) Set(key string, v any) error {
 	return nil
 }
 
-func (k *Config) ReadAPIListenOn() string {
+func (k *Config) addressFor(endpoint EndpointType) string {
 	return fmt.Sprintf(
 		"%s:%d",
-		k.p.String(KeyReadAPIHost),
-		k.p.Int(KeyReadAPIPort),
+		k.p.String("serve."+string(endpoint)+".host"),
+		k.p.Int("serve."+string(endpoint)+".port"),
 	)
 }
 
-func (k *Config) WriteAPIListenOn() string {
-	return fmt.Sprintf(
-		"%s:%d",
-		k.p.String(KeyWriteAPIHost),
-		k.p.Int(KeyWriteAPIPort),
-	)
-}
-
-func (k *Config) MetricsListenOn() string {
-	return fmt.Sprintf(
-		"%s:%d",
-		k.p.String(KeyMetricsHost),
-		k.p.Int(KeyMetricsPort),
-	)
-}
-
-func (k *Config) OPLSyntaxAPIListenOn() string {
-	return fmt.Sprintf(
-		"%s:%d",
-		k.p.String(KeyOPLSyntaxAPIHost),
-		k.p.Int(KeyOPLSyntaxAPIPort),
-	)
-}
+func (k *Config) ReadAPIListenOn() string      { return k.addressFor(EndpointRead) }
+func (k *Config) WriteAPIListenOn() string     { return k.addressFor(EndpointWrite) }
+func (k *Config) MetricsListenOn() string      { return k.addressFor(EndpointMetrics) }
+func (k *Config) OPLSyntaxAPIListenOn() string { return k.addressFor(EndpointOPLSyntax) }
 
 func (k *Config) MaxReadDepth() int {
 	return k.p.Int(KeyLimitMaxReadDepth)

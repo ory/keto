@@ -4,13 +4,13 @@ All URIs are relative to *http://localhost*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**PostCheckOplSyntax**](SyntaxApi.md#PostCheckOplSyntax) | **Post** /opl/syntax/check | Check the syntax of an OPL file
+[**CheckOplSyntax**](SyntaxApi.md#CheckOplSyntax) | **Post** /opl/syntax/check | Check the syntax of an OPL file
 
 
 
-## PostCheckOplSyntax
+## CheckOplSyntax
 
-> PostCheckOplSyntaxResponse PostCheckOplSyntax(ctx).Body(body).Execute()
+> PostCheckOplSyntaxResponse CheckOplSyntax(ctx).Body(body).Execute()
 
 Check the syntax of an OPL file
 
@@ -33,13 +33,13 @@ func main() {
 
     configuration := openapiclient.NewConfiguration()
     apiClient := openapiclient.NewAPIClient(configuration)
-    resp, r, err := apiClient.SyntaxApi.PostCheckOplSyntax(context.Background()).Body(body).Execute()
+    resp, r, err := apiClient.SyntaxApi.CheckOplSyntax(context.Background()).Body(body).Execute()
     if err != nil {
-        fmt.Fprintf(os.Stderr, "Error when calling `SyntaxApi.PostCheckOplSyntax``: %v\n", err)
+        fmt.Fprintf(os.Stderr, "Error when calling `SyntaxApi.CheckOplSyntax``: %v\n", err)
         fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
     }
-    // response from `PostCheckOplSyntax`: PostCheckOplSyntaxResponse
-    fmt.Fprintf(os.Stdout, "Response from `SyntaxApi.PostCheckOplSyntax`: %v\n", resp)
+    // response from `CheckOplSyntax`: PostCheckOplSyntaxResponse
+    fmt.Fprintf(os.Stdout, "Response from `SyntaxApi.CheckOplSyntax`: %v\n", resp)
 }
 ```
 
@@ -49,7 +49,7 @@ func main() {
 
 ### Other Parameters
 
-Other parameters are passed through a pointer to a apiPostCheckOplSyntaxRequest struct via the builder pattern
+Other parameters are passed through a pointer to a apiCheckOplSyntaxRequest struct via the builder pattern
 
 
 Name | Type | Description  | Notes

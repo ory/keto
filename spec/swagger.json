@@ -227,7 +227,7 @@
         "schemes": ["http", "https"],
         "tags": ["syntax"],
         "summary": "Check the syntax of an OPL file",
-        "operationId": "postCheckOplSyntax",
+        "operationId": "checkOplSyntax",
         "parameters": [
           {
             "description": "the OPL content to check",

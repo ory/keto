@@ -27,46 +27,46 @@ var (
 type SyntaxApi interface {
 
 	/*
-	 * PostCheckOplSyntax Check the syntax of an OPL file
+	 * CheckOplSyntax Check the syntax of an OPL file
 	 * The OPL file is expected in the body of the request.
 	 * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	 * @return SyntaxApiApiPostCheckOplSyntaxRequest
+	 * @return SyntaxApiApiCheckOplSyntaxRequest
 	 */
-	PostCheckOplSyntax(ctx context.Context) SyntaxApiApiPostCheckOplSyntaxRequest
+	CheckOplSyntax(ctx context.Context) SyntaxApiApiCheckOplSyntaxRequest
 
 	/*
-	 * PostCheckOplSyntaxExecute executes the request
+	 * CheckOplSyntaxExecute executes the request
 	 * @return PostCheckOplSyntaxResponse
 	 */
-	PostCheckOplSyntaxExecute(r SyntaxApiApiPostCheckOplSyntaxRequest) (*PostCheckOplSyntaxResponse, *http.Response, error)
+	CheckOplSyntaxExecute(r SyntaxApiApiCheckOplSyntaxRequest) (*PostCheckOplSyntaxResponse, *http.Response, error)
 }
 
 // SyntaxApiService SyntaxApi service
 type SyntaxApiService service
 
-type SyntaxApiApiPostCheckOplSyntaxRequest struct {
+type SyntaxApiApiCheckOplSyntaxRequest struct {
 	ctx        context.Context
 	ApiService SyntaxApi
 	body       *string
 }
 
-func (r SyntaxApiApiPostCheckOplSyntaxRequest) Body(body string) SyntaxApiApiPostCheckOplSyntaxRequest {
+func (r SyntaxApiApiCheckOplSyntaxRequest) Body(body string) SyntaxApiApiCheckOplSyntaxRequest {
 	r.body = &body
 	return r
 }
 
-func (r SyntaxApiApiPostCheckOplSyntaxRequest) Execute() (*PostCheckOplSyntaxResponse, *http.Response, error) {
-	return r.ApiService.PostCheckOplSyntaxExecute(r)
+func (r SyntaxApiApiCheckOplSyntaxRequest) Execute() (*PostCheckOplSyntaxResponse, *http.Response, error) {
+	return r.ApiService.CheckOplSyntaxExecute(r)
 }
 
 /*
- * PostCheckOplSyntax Check the syntax of an OPL file
+ * CheckOplSyntax Check the syntax of an OPL file
  * The OPL file is expected in the body of the request.
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @return SyntaxApiApiPostCheckOplSyntaxRequest
+ * @return SyntaxApiApiCheckOplSyntaxRequest
  */
-func (a *SyntaxApiService) PostCheckOplSyntax(ctx context.Context) SyntaxApiApiPostCheckOplSyntaxRequest {
-	return SyntaxApiApiPostCheckOplSyntaxRequest{
+func (a *SyntaxApiService) CheckOplSyntax(ctx context.Context) SyntaxApiApiCheckOplSyntaxRequest {
+	return SyntaxApiApiCheckOplSyntaxRequest{
 		ApiService: a,
 		ctx:        ctx,
 	}
@@ -76,7 +76,7 @@ func (a *SyntaxApiService) PostCheckOplSyntax(ctx context.Context) SyntaxApiApiP
  * Execute executes the request
  * @return PostCheckOplSyntaxResponse
  */
-func (a *SyntaxApiService) PostCheckOplSyntaxExecute(r SyntaxApiApiPostCheckOplSyntaxRequest) (*PostCheckOplSyntaxResponse, *http.Response, error) {
+func (a *SyntaxApiService) CheckOplSyntaxExecute(r SyntaxApiApiCheckOplSyntaxRequest) (*PostCheckOplSyntaxResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodPost
 		localVarPostBody     interface{}
@@ -86,7 +86,7 @@ func (a *SyntaxApiService) PostCheckOplSyntaxExecute(r SyntaxApiApiPostCheckOplS
 		localVarReturnValue  *PostCheckOplSyntaxResponse
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SyntaxApiService.PostCheckOplSyntax")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SyntaxApiService.CheckOplSyntax")
 	if err != nil {
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}

@@ -216,7 +216,7 @@ paths:
   /opl/syntax/check:
     post:
       description: The OPL file is expected in the body of the request.
-      operationId: postCheckOplSyntax
+      operationId: checkOplSyntax
       requestBody:
         content:
           text/plain:
