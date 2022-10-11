@@ -35,7 +35,7 @@ func (c *sdkClient) requestCtx() context.Context {
 
 func (c *sdkClient) oplCheckSyntax(t require.TestingT, content []byte) (parseErrors []*ketoapi.ParseError) {
 	res, _, err := c.getOPLSyntaxClient().
-		PostCheckOplSyntax(c.requestCtx()).
+		CheckOplSyntax(c.requestCtx()).
 		Body(string(content)).
 		Execute()
 	require.NoError(t, err)

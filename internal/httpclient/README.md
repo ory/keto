@@ -88,7 +88,7 @@ Class | Method | HTTP request | Description
 *ReadApi* | [**GetRelationTuples**](docs/ReadApi.md#getrelationtuples) | **Get** /relation-tuples | Query relation tuples
 *ReadApi* | [**PostCheck**](docs/ReadApi.md#postcheck) | **Post** /relation-tuples/check/openapi | Check a relation tuple
 *ReadApi* | [**PostCheckMirrorStatus**](docs/ReadApi.md#postcheckmirrorstatus) | **Post** /relation-tuples/check | Check a relation tuple
-*SyntaxApi* | [**PostCheckOplSyntax**](docs/SyntaxApi.md#postcheckoplsyntax) | **Post** /opl/syntax/check | Check the syntax of an OPL file
+*SyntaxApi* | [**CheckOplSyntax**](docs/SyntaxApi.md#checkoplsyntax) | **Post** /opl/syntax/check | Check the syntax of an OPL file
 *WriteApi* | [**CreateRelationTuple**](docs/WriteApi.md#createrelationtuple) | **Put** /admin/relation-tuples | Create a Relation Tuple
 *WriteApi* | [**DeleteRelationTuples**](docs/WriteApi.md#deleterelationtuples) | **Delete** /admin/relation-tuples | Delete Relation Tuples
 *WriteApi* | [**PatchRelationTuples**](docs/WriteApi.md#patchrelationtuples) | **Patch** /admin/relation-tuples | Patch Multiple Relation Tuples
