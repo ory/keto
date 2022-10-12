@@ -2,6 +2,7 @@ package e2e
 
 import (
 	"context"
+	"encoding/json"
 	"testing"
 
 	"github.com/ory/keto/internal/x/dbx"
@@ -123,4 +124,14 @@ func startServer(ctx context.Context, t testing.TB, reg driver.Registry) func() 
 		// wait for it to stop
 		require.NoError(t, <-serverErr)
 	}
+}
+
+// convert the struct in `from` to the pointer in `to` using JSON mashal and unmarshal. from and toPtr must have the
+// same json field tags.
+func convert(from, toPtr any) error {
+	raw, err := json.Marshal(from)
+	if err != nil {
+		return err
+	}
+	return json.Unmarshal(raw, toPtr)
 }

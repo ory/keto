@@ -9,6 +9,7 @@ import (
 	"strings"
 	"syscall"
 
+	"github.com/ory/keto/internal/namespace/namespacehandler"
 	"github.com/ory/keto/internal/schema"
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 
@@ -297,6 +298,7 @@ func (r *RegistryDefault) allHandlers() []Handler {
 			relationtuple.NewHandler(r),
 			check.NewHandler(r),
 			expand.NewHandler(r),
+			namespacehandler.New(r),
 			schema.NewHandler(r),
 		}
 	}

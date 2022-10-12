@@ -219,6 +219,30 @@
         }
       }
     },
+    "/namespaces": {
+      "get": {
+        "description": "Get all namespaces",
+        "produces": ["application/json"],
+        "schemes": ["http", "https"],
+        "tags": ["namespaces"],
+        "summary": "Query namespaces",
+        "operationId": "getNamespaces",
+        "responses": {
+          "200": {
+            "description": "getNamespacesResponse",
+            "schema": {
+              "$ref": "#/definitions/getNamespacesResponse"
+            }
+          },
+          "500": {
+            "description": "genericError",
+            "schema": {
+              "$ref": "#/definitions/genericError"
+            }
+          }
+        }
+      }
+    },
     "/opl/syntax/check": {
       "post": {
         "description": "The OPL file is expected in the body of the request.",
@@ -729,6 +753,17 @@
         }
       }
     },
+    "getNamespacesResponse": {
+      "type": "object",
+      "properties": {
+        "namespaces": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/namespace"
+          }
+        }
+      }
+    },
     "getRelationTuplesResponse": {
       "type": "object",
       "properties": {
@@ -761,6 +796,15 @@
       "properties": {
         "status": {
           "description": "Status always contains \"ok\".",
+          "type": "string"
+        }
+      }
+    },
+    "namespace": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "description": "Name of the namespace.",
           "type": "string"
         }
       }

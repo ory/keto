@@ -20,6 +20,12 @@ var (
 	ErrUnknownNodeType   = errors.New("unknown node type")
 )
 
+// swagger:model namespace
+type Namespace struct {
+	// Name of the namespace.
+	Name string `json:"name"`
+}
+
 // swagger:model relationTuple
 type RelationTuple struct {
 	// Namespace of the Relation Tuple
@@ -118,6 +124,11 @@ type GetResponse struct {
 	// to get the next page. It is the empty string iff this is
 	// the last page.
 	NextPageToken string `json:"next_page_token"`
+}
+
+// swagger:model getNamespacesResponse
+type GetNamespacesResponse struct {
+	Namespaces []Namespace `json:"namespaces"`
 }
 
 func (r *RelationTuple) ToLoggerFields() logrus.Fields {

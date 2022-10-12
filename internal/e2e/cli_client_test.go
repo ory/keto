@@ -34,6 +34,13 @@ type cliClient struct {
 	c *cmdx.CommandExecuter
 }
 
+func (g *cliClient) queryNamespaces(t require.TestingT) (res ketoapi.GetNamespacesResponse) {
+	if t, ok := t.(*testing.T); ok {
+		t.Skip("not implemented for the CLI")
+	}
+	return
+}
+
 var _ client = (*cliClient)(nil)
 
 func (g *cliClient) oplCheckSyntax(t require.TestingT, _ []byte) []*ketoapi.ParseError {

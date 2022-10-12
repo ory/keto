@@ -109,6 +109,17 @@
         "title": "RESTResponse represents the response for a check request.",
         "type": "object"
       },
+      "getNamespacesResponse": {
+        "properties": {
+          "namespaces": {
+            "items": {
+              "$ref": "#/components/schemas/namespace"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
       "getRelationTuplesResponse": {
         "properties": {
           "next_page_token": {
@@ -140,6 +151,15 @@
         "properties": {
           "status": {
             "description": "Status always contains \"ok\".",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "namespace": {
+        "properties": {
+          "name": {
+            "description": "Name of the namespace.",
             "type": "string"
           }
         },
@@ -537,6 +557,36 @@
         },
         "summary": "Check HTTP Server and Database Status",
         "tags": ["metadata"]
+      }
+    },
+    "/namespaces": {
+      "get": {
+        "description": "Get all namespaces",
+        "operationId": "getNamespaces",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/getNamespacesResponse"
+                }
+              }
+            },
+            "description": "getNamespacesResponse"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/genericError"
+                }
+              }
+            },
+            "description": "genericError"
+          }
+        },
+        "summary": "Query namespaces",
+        "tags": ["namespaces"]
       }
     },
     "/opl/syntax/check": {
