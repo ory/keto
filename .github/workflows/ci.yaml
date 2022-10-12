@@ -72,8 +72,7 @@ jobs:
           go-version: 1.19
       - name: Prepare Dependencies
         run: |
-          make tools/goveralls
-          make tools/go-acc
+          make .bin/goveralls .bin/go-acc
       - name: Test proto package
         run: |
           cd proto
@@ -252,10 +251,7 @@ jobs:
           version: "3.19.x"
       - name: Lint and Build
         run: |
-          make tools/buf tools/protoc-gen-go tools/protoc-gen-go-grpc tools/protoc-gen-doc node_modules
-          source scripts/local-dependencies.sh
-          buf lint
-          buf generate
+          make buf
         working-directory: current-repo
       - name: Format Docs (required because buf generates the proto docs)
         run: |

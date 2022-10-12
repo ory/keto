@@ -1,7 +1,7 @@
 SHELL=/bin/bash -o pipefail
 
 export PWD := $(shell pwd)
-export PATH := ${PWD}/.bin/gobin:${PWD}/.bin/brew/bin:${PWD}/.bin/brew/sbin:${PATH}
+export PATH := ${PWD}/.bin:${PATH}
 
 GO_DEPENDENCIES = golang.org/x/tools/cmd/goimports \
 				  github.com/mattn/goveralls \
@@ -15,45 +15,40 @@ GO_DEPENDENCIES = golang.org/x/tools/cmd/goimports \
 				  golang.org/x/tools/cmd/stringer \
 				  github.com/mdempsky/go114-fuzz-build
 
-BREW_DEPENDENCIES = go-swagger@0.30.0 \
-					grype@0.40.1 \
-					cli@0.1.35 \
-					trivy@0.29.2
+SCRIPT_DEPENDENCIES = swagger \
+					protoc \
+					grype \
+					trivy \
+					ory
 
 define make-go-dependency
   # go install is responsible for not re-building when the code hasn't changed
-  tools/$2: .bin/gobin/go.mod .bin/gobin/go.sum Makefile
-		cd .bin/gobin; GOBIN=$(PWD)/.bin/gobin go install $1
+  .bin/$2: .bin/go.mod .bin/go.sum
+		cd .bin; GOBIN=$(PWD)/.bin go install $1
 endef
 $(foreach dep, $(GO_DEPENDENCIES), $(eval $(call make-go-dependency,$(dep),$(notdir $(dep)))))
 
-tools/yq: .bin/gobin/go.mod .bin/gobin/go.sum Makefile
-	cd .bin/gobin; GOBIN=$(PWD)/.bin/gobin go install github.com/mikefarah/yq/v4
-
-define make-brew-dependency
-  tools/$(firstword $(subst @, ,$(notdir $1))): tools/brew Makefile
-		HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK=true HOMEBREW_NO_AUTO_UPDATE=1 brew install keto/tools/$1
+define make-script-dependency
+  # each script is responsible to figure out whether it should re-install
+  .PHONY: .bin/$1
+  .bin/$1:
+		./scripts/install-$1.sh
 endef
-$(foreach dep, $(BREW_DEPENDENCIES), $(eval $(call make-brew-dependency,$(dep))))
+$(foreach dep, $(SCRIPT_DEPENDENCIES), $(eval $(call make-script-dependency,$(dep))))
 
-tools/protobuf: tools/brew Makefile
-	HOMEBREW_NO_AUTO_UPDATE=1 brew install protobuf@3.19
+.bin/yq: .bin/go.mod .bin/go.sum
+	cd .bin; GOBIN=$(PWD)/.bin go install github.com/mikefarah/yq/v4
 
 node_modules: package-lock.json
 	npm ci
 	touch node_modules
 
-.PHONY: tools/brew
-tools/brew:
-	./scripts/install-brew.sh
-
-# this is not using the tools/* prefix, as a github action has hardcoded paths for this
 .PHONY: .bin/clidoc
 .bin/clidoc:
 	go build -o .bin/clidoc ./cmd/clidoc/.
 
 .PHONY: format
-format: tools/goimports node_modules
+format: .bin/goimports node_modules
 	goimports -w -local github.com/ory/keto *.go internal cmd contrib ketoctx ketoapi embedx
 	npm exec -- prettier --write .
 
@@ -67,7 +62,7 @@ docker:
 
 # Generates the SDKs
 .PHONY: sdk
-sdk: tools/go-swagger tools/cli node_modules
+sdk: .bin/swagger .bin/ory node_modules
 	rm -rf internal/httpclient
 	swagger generate spec -m -o spec/swagger.json \
 		-c github.com/ory/keto \
@@ -106,7 +101,7 @@ build:
 # Generate APIs and client stubs from the definitions
 #
 .PHONY: buf-gen
-buf-gen: tools/buf tools/protobuf tools/protoc-gen-go tools/protoc-gen-go-grpc tools/protoc-gen-doc node_modules
+buf-gen: .bin/buf .bin/protoc .bin/protoc-gen-go .bin/protoc-gen-go-grpc .bin/protoc-gen-doc node_modules
 	buf generate
 	@echo "All code was generated successfully!"
 
@@ -114,7 +109,7 @@ buf-gen: tools/buf tools/protobuf tools/protoc-gen-go tools/protoc-gen-go-grpc t
 # Lint API definitions
 #
 .PHONY: buf-lint
-buf-lint: tools/buf
+buf-lint: .bin/buf
 	buf lint
 	@echo "All lint checks passed successfully!"
 
@@ -129,7 +124,7 @@ test-e2e:
 	go test -tags sqlite -failfast -v ./internal/e2e
 
 .PHONY: test-docs-samples
-test-docs-samples: tools/jd
+test-docs-samples: .bin/jd
 	cd ./contrib/docs-code-samples \
 	&& \
 	npm i \
@@ -148,15 +143,15 @@ libfuzzer-fuzz-test: .bin/go114-fuzz-build
 	./.fuzzer/parser -timeout=1 -max_total_time=10 -use_value_profile
 
 .PHONY: cve-scan
-cve-scan: docker tools/grype
+cve-scan: docker .bin/grype
 	grype oryd/keto:latest
 
 .PHONY: post-release
-post-release: tools/yq
+post-release: .bin/yq
 	cat docker-compose.yml | yq '.services.keto.image = "oryd/keto:'$$DOCKER_TAG'"' | sponge docker-compose.yml
 	cat docker-compose-mysql.yml | yq '.services.keto-migrate.image = "oryd/keto:'$$DOCKER_TAG'"' | sponge docker-compose-mysql.yml
 	cat docker-compose-postgres.yml | yq '.services.keto-migrate.image = "oryd/keto:'$$DOCKER_TAG'"' | sponge docker-compose-postgres.yml
 
 .PHONY: generate
-generate: tools/stringer
+generate: .bin/stringer
 	go generate ./...
