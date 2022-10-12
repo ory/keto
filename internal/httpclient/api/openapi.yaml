@@ -370,7 +370,7 @@ paths:
   /relation-tuples/check:
     get:
       description: To learn how relation tuples and the check works, head over to
-        [the documentation](../concepts/relation-tuples.mdx).
+        [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
       operationId: getCheckMirrorStatus
       responses:
         "200":
@@ -402,7 +402,7 @@ paths:
       - read
     post:
       description: To learn how relation tuples and the check works, head over to
-        [the documentation](../concepts/relation-tuples.mdx).
+        [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
       operationId: postCheckMirrorStatus
       responses:
         "200":
@@ -435,7 +435,7 @@ paths:
   /relation-tuples/check/openapi:
     get:
       description: To learn how relation tuples and the check works, head over to
-        [the documentation](../concepts/relation-tuples.mdx).
+        [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
       operationId: getCheck
       parameters:
       - description: Namespace of the Relation Tuple
@@ -526,7 +526,7 @@ paths:
       - read
     post:
       description: To learn how relation tuples and the check works, head over to
-        [the documentation](../concepts/relation-tuples.mdx).
+        [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
       operationId: postCheck
       parameters:
       - explode: true

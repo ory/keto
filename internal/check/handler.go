@@ -80,7 +80,7 @@ type getCheckRequest struct {
 //
 // # Check a relation tuple
 //
-// To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).
+// To learn how relation tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
 //
 //	Consumes:
 //	-  application/x-www-form-urlencoded
@@ -107,7 +107,7 @@ func (h *Handler) getCheckNoStatus(w http.ResponseWriter, r *http.Request, _ htt
 //
 // # Check a relation tuple
 //
-// To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).
+// To learn how relation tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
 //
 //	Consumes:
 //	-  application/x-www-form-urlencoded
@@ -163,7 +163,7 @@ func (h *Handler) getCheck(ctx context.Context, q url.Values) (bool, error) {
 //
 // # Check a relation tuple
 //
-// To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).
+// To learn how relation tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
 //
 //	Consumes:
 //	-  application/json
@@ -190,7 +190,7 @@ func (h *Handler) postCheckNoStatus(w http.ResponseWriter, r *http.Request, _ ht
 //
 // # Check a relation tuple
 //
-// To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).
+// To learn how relation tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
 //
 //	Consumes:
 //	-  application/json
