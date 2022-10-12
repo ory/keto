@@ -82,6 +82,7 @@ Class | Method | HTTP request | Description
 *MetadataApi* | [**GetVersion**](docs/MetadataApi.md#getversion) | **Get** /version | Return Running Software Version.
 *MetadataApi* | [**IsAlive**](docs/MetadataApi.md#isalive) | **Get** /health/alive | Check HTTP Server Status
 *MetadataApi* | [**IsReady**](docs/MetadataApi.md#isready) | **Get** /health/ready | Check HTTP Server and Database Status
+*NamespacesApi* | [**GetNamespaces**](docs/NamespacesApi.md#getnamespaces) | **Get** /namespaces | Query namespaces
 *ReadApi* | [**GetCheck**](docs/ReadApi.md#getcheck) | **Get** /relation-tuples/check/openapi | Check a relation tuple
 *ReadApi* | [**GetCheckMirrorStatus**](docs/ReadApi.md#getcheckmirrorstatus) | **Get** /relation-tuples/check | Check a relation tuple
 *ReadApi* | [**GetExpand**](docs/ReadApi.md#getexpand) | **Get** /relation-tuples/expand | Expand a Relation Tuple
@@ -99,12 +100,14 @@ Class | Method | HTTP request | Description
  - [ExpandTree](docs/ExpandTree.md)
  - [GenericError](docs/GenericError.md)
  - [GetCheckResponse](docs/GetCheckResponse.md)
+ - [GetNamespacesResponse](docs/GetNamespacesResponse.md)
  - [GetRelationTuplesResponse](docs/GetRelationTuplesResponse.md)
  - [HealthNotReadyStatus](docs/HealthNotReadyStatus.md)
  - [HealthStatus](docs/HealthStatus.md)
  - [InlineResponse200](docs/InlineResponse200.md)
  - [InlineResponse2001](docs/InlineResponse2001.md)
  - [InlineResponse503](docs/InlineResponse503.md)
+ - [Namespace](docs/Namespace.md)
  - [ParseError](docs/ParseError.md)
  - [PatchDelta](docs/PatchDelta.md)
  - [PostCheckOplSyntaxResponse](docs/PostCheckOplSyntaxResponse.md)

@@ -4,6 +4,7 @@
 README.md
 api/openapi.yaml
 api_metadata.go
+api_namespaces.go
 api_read.go
 api_syntax.go
 api_write.go
@@ -12,6 +13,7 @@ configuration.go
 docs/ExpandTree.md
 docs/GenericError.md
 docs/GetCheckResponse.md
+docs/GetNamespacesResponse.md
 docs/GetRelationTuplesResponse.md
 docs/HealthNotReadyStatus.md
 docs/HealthStatus.md
@@ -19,6 +21,8 @@ docs/InlineResponse200.md
 docs/InlineResponse2001.md
 docs/InlineResponse503.md
 docs/MetadataApi.md
+docs/Namespace.md
+docs/NamespacesApi.md
 docs/ParseError.md
 docs/PatchDelta.md
 docs/PostCheckOplSyntaxResponse.md
@@ -36,12 +40,14 @@ go.sum
 model_expand_tree.go
 model_generic_error.go
 model_get_check_response.go
+model_get_namespaces_response.go
 model_get_relation_tuples_response.go
 model_health_not_ready_status.go
 model_health_status.go
 model_inline_response_200.go
 model_inline_response_200_1.go
 model_inline_response_503.go
+model_namespace.go
 model_parse_error.go
 model_patch_delta.go
 model_post_check_opl_syntax_response.go

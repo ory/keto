@@ -37,6 +37,7 @@ type (
 		expand(t require.TestingT, r *ketoapi.SubjectSet, depth int) *ketoapi.Tree[*ketoapi.RelationTuple]
 		oplCheckSyntax(t require.TestingT, content []byte) []*ketoapi.ParseError
 		waitUntilLive(t require.TestingT)
+		queryNamespaces(t require.TestingT) ketoapi.GetNamespacesResponse
 	}
 )
 
@@ -88,6 +89,7 @@ func Test(t *testing.T) {
 					syntaxRemote: reg.Config(ctx).OPLSyntaxAPIListenOn(),
 				},
 			} {
+				cl := cl
 				t.Run(fmt.Sprintf("client=%T", cl), runCases(cl, namespaceTestMgr))
 
 				if tc, ok := cl.(transactClient); ok {

@@ -213,6 +213,26 @@ paths:
       summary: Check HTTP Server and Database Status
       tags:
       - metadata
+  /namespaces:
+    get:
+      description: Get all namespaces
+      operationId: getNamespaces
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getNamespacesResponse'
+          description: getNamespacesResponse
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/genericError'
+          description: genericError
+      summary: Query namespaces
+      tags:
+      - namespaces
   /opl/syntax/check:
     post:
       description: The OPL file is expected in the body of the request.
@@ -758,6 +778,17 @@ components:
       - allowed
       title: RESTResponse represents the response for a check request.
       type: object
+    getNamespacesResponse:
+      example:
+        namespaces:
+        - name: name
+        - name: name
+      properties:
+        namespaces:
+          items:
+            $ref: '#/components/schemas/namespace'
+          type: array
+      type: object
     getRelationTuplesResponse:
       example:
         next_page_token: next_page_token
@@ -803,6 +834,14 @@ components:
       properties:
         status:
           description: Status always contains "ok".
+          type: string
+      type: object
+    namespace:
+      example:
+        name: name
+      properties:
+        name:
+          description: Name of the namespace.
           type: string
       type: object
     patchDelta:

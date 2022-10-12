@@ -20,6 +20,7 @@ type sdkClient struct {
 	wc httpclient.WriteApi
 	mc httpclient.MetadataApi
 	sc httpclient.SyntaxApi
+	nc httpclient.NamespacesApi
 
 	readRemote, writeRemote, syntaxRemote string
 }
@@ -76,6 +77,16 @@ func (c *sdkClient) getWriteClient() httpclient.WriteApi {
 		c.wc = httpclient.NewAPIClient(cfg).WriteApi
 	}
 	return c.wc
+}
+
+func (c *sdkClient) getNamespacesClient() httpclient.NamespacesApi {
+	if c.nc == nil {
+		cfg := httpclient.NewConfiguration()
+		cfg.Host = c.readRemote
+		cfg.Scheme = "http"
+		c.nc = httpclient.NewAPIClient(cfg).NamespacesApi
+	}
+	return c.nc
 }
 
 func (c *sdkClient) getOPLSyntaxClient() httpclient.SyntaxApi {
@@ -294,4 +305,12 @@ func (c *sdkClient) waitUntilLive(t require.TestingT) {
 		resp, _, err = c.getMetadataClient().IsReady(c.requestCtx()).Execute()
 	}
 	require.Equal(t, "ok", resp.Status)
+}
+
+func (c *sdkClient) queryNamespaces(t require.TestingT) (response ketoapi.GetNamespacesResponse) {
+	res, _, err := c.getNamespacesClient().GetNamespaces(c.requestCtx()).Execute()
+	require.NoError(t, err)
+	require.NoError(t, convert(res, &response))
+
+	return
 }

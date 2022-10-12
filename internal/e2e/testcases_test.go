@@ -20,6 +20,15 @@ func runCases(c client, m *namespaceTestManager) func(*testing.T) {
 	return func(t *testing.T) {
 		c.waitUntilLive(t)
 
+		t.Run("case=list namespaces", func(t *testing.T) {
+			first := namespace.Namespace{Name: "my namespace"}
+			second := namespace.Namespace{Name: "my other namespace"}
+			m.add(t, &first, &second)
+
+			resp := c.queryNamespaces(t)
+			assert.GreaterOrEqual(t, len(resp.Namespaces), 2)
+		})
+
 		t.Run("case=gets empty namespace", func(t *testing.T) {
 			n := &namespace.Namespace{Name: t.Name()}
 			m.add(t, n)
