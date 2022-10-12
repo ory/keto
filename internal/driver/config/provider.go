@@ -27,18 +27,26 @@ import (
 	"github.com/ory/keto/internal/namespace"
 )
 
+type EndpointType string
+
 const (
+	EndpointRead      EndpointType = "read"
+	EndpointWrite     EndpointType = "write"
+	EndpointMetrics   EndpointType = "metrics"
+	EndpointOPLSyntax EndpointType = "opl"
+
 	KeyDSN = "dsn"
 
 	KeyLimitMaxReadDepth = "limit.max_read_depth"
-	KeyReadAPIHost       = "serve.read.host"
-	KeyReadAPIPort       = "serve.read.port"
 
-	KeyWriteAPIHost = "serve.write.host"
-	KeyWriteAPIPort = "serve.write.port"
-
-	KeyMetricsHost = "serve.metrics.host"
-	KeyMetricsPort = "serve.metrics.port"
+	KeyReadAPIHost      = "serve." + string(EndpointRead) + ".host"
+	KeyReadAPIPort      = "serve." + string(EndpointRead) + ".port"
+	KeyWriteAPIHost     = "serve." + string(EndpointWrite) + ".host"
+	KeyWriteAPIPort     = "serve." + string(EndpointWrite) + ".port"
+	KeyOPLSyntaxAPIHost = "serve." + string(EndpointOPLSyntax) + ".host"
+	KeyOPLSyntaxAPIPort = "serve." + string(EndpointOPLSyntax) + ".port"
+	KeyMetricsHost      = "serve." + string(EndpointMetrics) + ".host"
+	KeyMetricsPort      = "serve." + string(EndpointMetrics) + ".port"
 
 	KeyNamespaces = "namespaces"
 
@@ -154,24 +162,21 @@ func (k *Config) Set(key string, v any) error {
 	return nil
 }
 
-func (k *Config) ReadAPIListenOn() string {
+func (k *Config) addressFor(endpoint EndpointType) string {
 	return fmt.Sprintf(
 		"%s:%d",
-		k.p.StringF(KeyReadAPIHost, ""),
-		k.p.IntF(KeyReadAPIPort, 4466),
+		k.p.String("serve."+string(endpoint)+".host"),
+		k.p.Int("serve."+string(endpoint)+".port"),
 	)
 }
+
+func (k *Config) ReadAPIListenOn() string      { return k.addressFor(EndpointRead) }
+func (k *Config) WriteAPIListenOn() string     { return k.addressFor(EndpointWrite) }
+func (k *Config) MetricsListenOn() string      { return k.addressFor(EndpointMetrics) }
+func (k *Config) OPLSyntaxAPIListenOn() string { return k.addressFor(EndpointOPLSyntax) }
 
 func (k *Config) MaxReadDepth() int {
 	return k.p.Int(KeyLimitMaxReadDepth)
-}
-
-func (k *Config) WriteAPIListenOn() string {
-	return fmt.Sprintf(
-		"%s:%d",
-		k.p.StringF(KeyWriteAPIHost, ""),
-		k.p.IntF(KeyWriteAPIPort, 4467),
-	)
 }
 
 func (k *Config) CORS(iface string) (cors.Options, bool) {
@@ -322,12 +327,4 @@ func (k *Config) namespaceConfig() (namespaceConfig, error) {
 	default:
 		return nil, errors.WithStack(herodot.ErrInternalServerError.WithReasonf("could not infer namespaces for type %T", nTyped))
 	}
-}
-
-func (k *Config) MetricsListenOn() string {
-	return fmt.Sprintf(
-		"%s:%d",
-		k.p.StringF(KeyMetricsHost, ""),
-		k.p.IntF(KeyMetricsPort, 4468),
-	)
 }

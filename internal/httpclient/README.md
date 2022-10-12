@@ -88,6 +88,7 @@ Class | Method | HTTP request | Description
 *ReadApi* | [**GetRelationTuples**](docs/ReadApi.md#getrelationtuples) | **Get** /relation-tuples | Query relation tuples
 *ReadApi* | [**PostCheck**](docs/ReadApi.md#postcheck) | **Post** /relation-tuples/check/openapi | Check a relation tuple
 *ReadApi* | [**PostCheckMirrorStatus**](docs/ReadApi.md#postcheckmirrorstatus) | **Post** /relation-tuples/check | Check a relation tuple
+*SyntaxApi* | [**CheckOplSyntax**](docs/SyntaxApi.md#checkoplsyntax) | **Post** /opl/syntax/check | Check the syntax of an OPL file
 *WriteApi* | [**CreateRelationTuple**](docs/WriteApi.md#createrelationtuple) | **Put** /admin/relation-tuples | Create a Relation Tuple
 *WriteApi* | [**DeleteRelationTuples**](docs/WriteApi.md#deleterelationtuples) | **Delete** /admin/relation-tuples | Delete Relation Tuples
 *WriteApi* | [**PatchRelationTuples**](docs/WriteApi.md#patchrelationtuples) | **Patch** /admin/relation-tuples | Patch Multiple Relation Tuples
@@ -104,9 +105,12 @@ Class | Method | HTTP request | Description
  - [InlineResponse200](docs/InlineResponse200.md)
  - [InlineResponse2001](docs/InlineResponse2001.md)
  - [InlineResponse503](docs/InlineResponse503.md)
+ - [ParseError](docs/ParseError.md)
  - [PatchDelta](docs/PatchDelta.md)
+ - [PostCheckOplSyntaxResponse](docs/PostCheckOplSyntaxResponse.md)
  - [RelationQuery](docs/RelationQuery.md)
  - [RelationTuple](docs/RelationTuple.md)
+ - [SourcePosition](docs/SourcePosition.md)
  - [SubjectSet](docs/SubjectSet.md)
  - [Version](docs/Version.md)
 

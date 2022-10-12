@@ -74,12 +74,19 @@ type (
 		grpcTransportCredentials  credentials.TransportCredentials
 		defaultMigrationOptions   []popx.MigrationBoxOption
 	}
-	Handler interface {
+	ReadHandler interface {
 		RegisterReadRoutes(r *x.ReadRouter)
-		RegisterWriteRoutes(r *x.WriteRouter)
 		RegisterReadGRPC(s *grpc.Server)
+	}
+	WriteHandler interface {
+		RegisterWriteRoutes(r *x.WriteRouter)
 		RegisterWriteGRPC(s *grpc.Server)
 	}
+	OPLSyntaxHandler interface {
+		RegisterSyntaxRoutes(r *x.OPLSyntaxRouter)
+		RegisterSyntaxGRPC(s *grpc.Server)
+	}
+	Handler interface{}
 )
 
 func (r *RegistryDefault) Mapper() *relationtuple.Mapper {
@@ -122,7 +129,7 @@ func (r *RegistryDefault) GetVersion(_ context.Context, _ *rts.GetVersionRequest
 
 func (r *RegistryDefault) Tracer(ctx context.Context) *otelx.Tracer {
 	if r.tracer == nil {
-		// Tracing is initialized only once so it can not be hot reloaded or context-aware.
+		// Tracing is initialized only once, so it can not be hot reloaded or context-aware.
 		t, err := otelx.New("Ory Keto", r.Logger(), r.Config(ctx).TracingConfig())
 		if err != nil {
 			r.Logger().WithError(err).Fatalf("Unable to initialize Tracer.")

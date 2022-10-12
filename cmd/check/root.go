@@ -28,7 +28,7 @@ func (o *checkOutput) String() string {
 
 const FlagMaxDepth = "max-depth"
 
-func newCheckCmd() *cobra.Command {
+func NewCheckCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "check <subject> <relation> <namespace> <object>",
 		Short: "Check whether a subject has a relation on an object",
@@ -80,7 +80,7 @@ func newCheckCmd() *cobra.Command {
 }
 
 func RegisterCommandsRecursive(parent *cobra.Command) {
-	parent.AddCommand(newCheckCmd())
+	parent.AddCommand(NewCheckCmd())
 }
 
 func parseSubject(s string) (*rts.Subject, error) {

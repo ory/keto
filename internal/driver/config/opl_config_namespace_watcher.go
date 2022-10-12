@@ -102,7 +102,9 @@ func (nw *oplConfigWatcher) parseFiles() {
 			continue
 		}
 		nn, ee := schema.Parse(string(content))
-		errs = append(errs, ee...)
+		for _, e := range ee {
+			errs = append(errs, e)
+		}
 		for _, n := range nn {
 			n := n // alias because we want a reference
 			namespaces = append(namespaces, &n)

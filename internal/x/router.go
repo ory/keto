@@ -7,10 +7,7 @@ import (
 )
 
 type (
-	ReadRouter struct {
-		*httprouter.Router
-	}
-	WriteRouter struct {
-		*httprouter.Router
-	}
+	ReadRouter      struct{ *httprouter.Router }
+	WriteRouter     struct{ *httprouter.Router }
+	OPLSyntaxRouter struct{ *httprouter.Router }
 )

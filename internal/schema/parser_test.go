@@ -13,6 +13,40 @@ import (
 
 var parserErrorTestCases = []struct{ name, input string }{
 	{"lexer error", "/* unclosed comment"},
+	{"syntax and type errors",
+		`
+  class File implements Namespace {
+	related: {
+	  parents: (File | Folder)[]
+	  viewers: (User | SubjectSet<Group, "members">)[]
+	  owners: (User | SubjectSet<Group, "members">)[]
+	  siblings: File[]
+	}
+
+	SYNTAX ERROR
+  
+	// Some comment
+	permits = {
+	  view: (ctx: Context): boolean =>
+	    (
+		this.related.parents.traverse((p) =>
+		  p.related.viewers.includes(ctx.subject),
+		) &&
+		this.related.parents.traverse(p => p.permits.view(ctx)) ) ||
+		(this.related.viewers.includes(ctx.subject) ||
+		this.related.viewers.includes(ctx.subject) ||
+		this.related.viewers.includes(ctx.subject) ) ||
+		this.related.owners.includes(ctx.subject),
+  
+	  edit: (ctx: Context) => this.related.owners.includes(ctx.subject),
+
+	  not: (ctx: Context) => !this.related.owners.includes(ctx.subject),
+  
+	  rename: (ctx: Context) =>
+		this.related.siblings.traverse(s => s.permits.edit(ctx)),
+	}
+  }
+`},
 }
 
 var parserTestCases = []struct {
@@ -73,6 +107,48 @@ var parserTestCases = []struct {
 		this.related.siblings.traverse(s => s.permits.edit(ctx)),
 	}
   }
+`}, {"advanced typescript syntax",
+		`
+import { Namespace, SubjectSet, Context } from '@ory/keto-namespace-types';
+
+class Role implements Namespace {
+  related: {
+    member: Role[]
+  }
+}
+
+class Resource implements Namespace {
+  related: {
+    admins: SubjectSet<Role, 'member'>[],
+    supervisors: SubjectSet<Role, 'member'>[],
+    annotators: SubjectSet<Role, 'member'>[],
+    medicalAnnotators: SubjectSet<Role, 'member'>[],
+  };
+
+  permits = {
+    read: (ctx: Context) => this.related.admins.traverse((role) => role.related.member.includes(ctx.subject)) ||
+      this.related.annotators.traverse((role) => role.related.member.includes(ctx.subject)) ||
+      this.related.medicalAnnotators.traverse((role) => role.related.member.includes(ctx.subject)) ||
+      this.related.supervisors.traverse((role) => role.related.member.includes(ctx.subject)),
+
+    comment: (ctx: Context) => this.permits.read(ctx),
+
+    update: (ctx: Context) => this.related.admins.traverse((role) => role.related.member.includes(ctx.subject)) ||
+      this.related.annotators.traverse((role) => role.related.member.includes(ctx.subject)) ||
+      this.related.medicalAnnotators.traverse((role) => role.related.member.includes(ctx.subject)) ||
+      this.related.supervisors.traverse((role) => role.related.member.includes(ctx.subject)),
+
+    create: (ctx: Context) => this.related.admins.traverse((role) => role.related.member.includes(ctx.subject)) ||
+      this.related.annotators.traverse((role) => role.related.member.includes(ctx.subject)) ||
+      this.related.supervisors.traverse((role) => role.related.member.includes(ctx.subject)),
+
+    approve: (ctx: Context) => this.related.admins.traverse((role) => role.related.member.includes(ctx.subject)) ||
+      this.related.supervisors.traverse((role) => role.related.member.includes(ctx.subject)),
+
+    delete: (ctx: Context) => this.related.admins.traverse((role) => role.related.member.includes(ctx.subject)) ||
+      this.related.supervisors.traverse((role) => role.related.member.includes(ctx.subject)),
+  };
+}
 `},
 }
 
@@ -100,9 +176,7 @@ func TestParser(t *testing.T) {
 		for _, tc := range parserErrorTestCases {
 			t.Run(tc.name, func(t *testing.T) {
 				_, errs := Parse(tc.input)
-				if len(errs) == 0 {
-					t.Error("expected error, but got none")
-				}
+				assert.Len(t, errs, 1)
 			})
 		}
 	})

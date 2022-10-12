@@ -1,0 +1,1 @@
+"import { Namespace, SubjectSet, Context } from '@ory/keto-namespace-types'\n\n// Declare new namespaces as classes that implement `Namespace`"

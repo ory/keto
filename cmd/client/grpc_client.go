@@ -26,6 +26,7 @@ type contextKeys string
 const (
 	FlagReadRemote  = "read-remote"
 	FlagWriteRemote = "write-remote"
+	FlagOplRemote   = "syntax-remote"
 
 	FlagInsecureNoTransportSecurity  = "insecure-disable-transport-security"
 	FlagInsecureSkipHostVerification = "insecure-skip-hostname-verification"

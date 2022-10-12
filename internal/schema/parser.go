@@ -13,17 +13,17 @@ type (
 	namespace = internalNamespace.Namespace
 
 	parser struct {
-		lexer      *lexer      // lexer to get tokens from
-		namespaces []namespace // list of parsed namespaces
-		namespace  namespace   // current namespace
-		errors     []error     // errors encountered during parsing
-		fatal      bool        // parser encountered a fatal error
-		lookahead  *item       // lookahead token
-		checks     []typeCheck // checks to perform on the namespace
+		lexer      *lexer        // lexer to get tokens from
+		namespaces []namespace   // list of parsed namespaces
+		namespace  namespace     // current namespace
+		errors     []*ParseError // errors encountered during parsing
+		fatal      bool          // parser encountered a fatal error
+		lookahead  *item         // lookahead token
+		checks     []typeCheck   // checks to perform on the namespace
 	}
 )
 
-func Parse(input string) ([]namespace, []error) {
+func Parse(input string) ([]namespace, []*ParseError) {
 	p := &parser{
 		lexer: Lex("input", input),
 	}
@@ -51,7 +51,7 @@ func (p *parser) peek() item {
 	return *p.lookahead
 }
 
-func (p *parser) parse() ([]namespace, []error) {
+func (p *parser) parse() ([]namespace, []*ParseError) {
 loop:
 	for !p.fatal {
 		switch item := p.next(); item.Typ {
@@ -64,7 +64,9 @@ loop:
 		}
 	}
 
-	p.typeCheck()
+	if len(p.errors) == 0 {
+		p.typeCheck()
+	}
 
 	return p.namespaces, p.errors
 }
@@ -179,6 +181,8 @@ func (p *parser) parseClass() {
 			p.parseRelated()
 		case item.Val == "permits":
 			p.parsePermits()
+		case item.Typ == itemOperatorSemicolon:
+			continue
 		default:
 			p.addFatal(item, "expected 'permits' or 'related', got %q", item.Val)
 			return
@@ -207,7 +211,7 @@ func (p *parser) parseRelated() {
 			case itemParenLeft:
 				types = append(types, p.parseTypeUnion()...)
 			}
-			p.match("[", "]")
+			p.match("[", "]", optional(","))
 			p.namespace.Relations = append(p.namespace.Relations, ast.Relation{
 				Name:  relation,
 				Types: types,
@@ -395,18 +399,36 @@ func setOperation(typ itemType) ast.Operator {
 }
 
 func (p *parser) parsePermissionExpression() (child ast.Child) {
-	var name item
+	var name, verb item
 
-	if !p.match("this", ".", "related", ".", &name, ".") {
+	if !p.match("this", ".", &verb, ".", &name) {
 		return
 	}
-	switch item := p.next(); item.Val {
-	case "traverse":
-		child = p.parseTupleToSubjectSet(name)
-	case "includes":
-		child = p.parseComputedSubjectSet(name)
+
+	switch verb.Val {
+	case "related":
+		if !p.match(".") {
+			return
+		}
+		switch item := p.next(); item.Val {
+		case "traverse":
+			child = p.parseTupleToSubjectSet(name)
+		case "includes":
+			child = p.parseComputedSubjectSet(name)
+		default:
+			p.addFatal(item, "expected 'traverse' or 'includes', got %q", item.Val)
+		}
+
+	case "permits":
+		if !p.match("(", "ctx", ")") {
+			return
+		}
+		p.addCheck(checkCurrentNamespaceHasRelation(&p.namespace, name))
+		return &ast.ComputedSubjectSet{Relation: name.Val}
+
 	default:
-		p.addFatal(item, "expected 'traverse' or 'includes', got %q", item.Val)
+		p.addFatal(verb, "expected 'related' or 'permits', got %q", verb.Val)
+
 	}
 
 	return

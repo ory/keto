@@ -56,13 +56,9 @@ func (h *Handler) RegisterReadRoutes(r *x.ReadRouter) {
 	r.POST(OpenAPIRouteBase, h.postCheckNoStatus)
 }
 
-func (h *Handler) RegisterWriteRoutes(_ *x.WriteRouter) {}
-
 func (h *Handler) RegisterReadGRPC(s *grpc.Server) {
 	rts.RegisterCheckServiceServer(s, h)
 }
-
-func (h *Handler) RegisterWriteGRPC(_ *grpc.Server) {}
 
 // RESTResponse represents the response for a check request.
 //

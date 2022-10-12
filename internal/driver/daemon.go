@@ -11,6 +11,7 @@ import (
 	"strings"
 	"syscall"
 
+	"github.com/ory/keto/internal/schema"
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 
 	prometheus "github.com/ory/x/prometheusx"
@@ -20,7 +21,7 @@ import (
 	"github.com/ory/x/logrusx"
 
 	grpcMiddleware "github.com/grpc-ecosystem/go-grpc-middleware"
-	grpc_logrus "github.com/grpc-ecosystem/go-grpc-middleware/logging/logrus"
+	grpcLogrus "github.com/grpc-ecosystem/go-grpc-middleware/logging/logrus"
 	"github.com/julienschmidt/httprouter"
 	"github.com/ory/herodot"
 	"github.com/ory/x/reqlog"
@@ -122,6 +123,7 @@ func (r *RegistryDefault) ServeAll(ctx context.Context) error {
 
 	eg.Go(r.serveRead(innerCtx, doneShutdown))
 	eg.Go(r.serveWrite(innerCtx, doneShutdown))
+	eg.Go(r.serveOPLSyntax(innerCtx, doneShutdown))
 	eg.Go(r.serveMetrics(innerCtx, doneShutdown))
 
 	return eg.Wait()
@@ -148,6 +150,18 @@ func (r *RegistryDefault) serveWrite(ctx context.Context, done chan<- struct{}) 
 
 	return func() error {
 		return multiplexPort(ctx, r.Logger().WithField("endpoint", "write"), r.Config(ctx).WriteAPIListenOn(), rt, s, done)
+	}
+}
+
+func (r *RegistryDefault) serveOPLSyntax(ctx context.Context, done chan<- struct{}) func() error {
+	rt, s := r.OPLSyntaxRouter(ctx), r.OplGRPCServer(ctx)
+
+	if tracer := r.Tracer(ctx); tracer.IsLoaded() {
+		rt = otelx.TraceHandler(rt)
+	}
+
+	return func() error {
+		return multiplexPort(ctx, r.Logger().WithField("endpoint", "opl"), r.Config(ctx).OPLSyntaxAPIListenOn(), rt, s, done)
 	}
 }
 
@@ -285,6 +299,7 @@ func (r *RegistryDefault) allHandlers() []Handler {
 			relationtuple.NewHandler(r),
 			check.NewHandler(r),
 			expand.NewHandler(r),
+			schema.NewHandler(r),
 		}
 	}
 	return r.handlers
@@ -305,7 +320,9 @@ func (r *RegistryDefault) ReadRouter(ctx context.Context) http.Handler {
 	r.HealthHandler().SetVersionRoutes(br.Router)
 
 	for _, h := range r.allHandlers() {
-		h.RegisterReadRoutes(br)
+		if h, ok := h.(ReadHandler); ok {
+			h.RegisterReadRoutes(br)
+		}
 	}
 
 	n.UseHandler(br)
@@ -339,7 +356,45 @@ func (r *RegistryDefault) WriteRouter(ctx context.Context) http.Handler {
 	r.HealthHandler().SetVersionRoutes(pr.Router)
 
 	for _, h := range r.allHandlers() {
-		h.RegisterWriteRoutes(pr)
+		if h, ok := h.(WriteHandler); ok {
+			h.RegisterWriteRoutes(pr)
+		}
+	}
+
+	n.UseHandler(pr)
+	n.Use(r.PrometheusManager())
+
+	if r.sqaService != nil {
+		n.Use(r.sqaService)
+	}
+
+	var handler http.Handler = n
+	options, enabled := r.Config(ctx).CORS("write")
+	if enabled {
+		handler = cors.New(options).Handler(handler)
+	}
+
+	return handler
+}
+
+func (r *RegistryDefault) OPLSyntaxRouter(ctx context.Context) http.Handler {
+	n := negroni.New()
+	for _, f := range r.defaultHttpMiddlewares {
+		n.UseFunc(f)
+	}
+	n.Use(reqlog.NewMiddlewareFromLogger(r.l, "syntax#Ory Keto").ExcludePaths(healthx.AliveCheckPath, healthx.ReadyCheckPath))
+
+	pr := &x.OPLSyntaxRouter{Router: httprouter.New()}
+	r.PrometheusManager().RegisterRouter(pr.Router)
+	r.MetricsHandler().SetRoutes(pr.Router)
+
+	r.HealthHandler().SetHealthRoutes(pr.Router, false)
+	r.HealthHandler().SetVersionRoutes(pr.Router)
+
+	for _, h := range r.allHandlers() {
+		if h, ok := h.(OPLSyntaxHandler); ok {
+			h.RegisterSyntaxRoutes(pr)
+		}
 	}
 
 	n.UseHandler(pr)
@@ -364,7 +419,7 @@ func (r *RegistryDefault) unaryInterceptors(ctx context.Context) []grpc.UnarySer
 	is = append(is,
 		herodot.UnaryErrorUnwrapInterceptor,
 		grpcMiddleware.ChainUnaryServer(
-			grpc_logrus.UnaryServerInterceptor(r.l.Entry),
+			grpcLogrus.UnaryServerInterceptor(r.l.Entry),
 		),
 	)
 	if r.Tracer(ctx).IsLoaded() {
@@ -382,7 +437,7 @@ func (r *RegistryDefault) streamInterceptors(ctx context.Context) []grpc.StreamS
 	is = append(is,
 		herodot.StreamErrorUnwrapInterceptor,
 		grpcMiddleware.ChainStreamServer(
-			grpc_logrus.StreamServerInterceptor(r.l.Entry),
+			grpcLogrus.StreamServerInterceptor(r.l.Entry),
 		),
 	)
 	if r.Tracer(ctx).IsLoaded() {
@@ -413,7 +468,9 @@ func (r *RegistryDefault) ReadGRPCServer(ctx context.Context) *grpc.Server {
 	reflection.Register(s)
 
 	for _, h := range r.allHandlers() {
-		h.RegisterReadGRPC(s)
+		if h, ok := h.(ReadHandler); ok {
+			h.RegisterReadGRPC(s)
+		}
 	}
 
 	return s
@@ -427,7 +484,25 @@ func (r *RegistryDefault) WriteGRPCServer(ctx context.Context) *grpc.Server {
 	reflection.Register(s)
 
 	for _, h := range r.allHandlers() {
-		h.RegisterWriteGRPC(s)
+		if h, ok := h.(WriteHandler); ok {
+			h.RegisterWriteGRPC(s)
+		}
+	}
+
+	return s
+}
+
+func (r *RegistryDefault) OplGRPCServer(ctx context.Context) *grpc.Server {
+	s := r.newGrpcServer(ctx)
+
+	grpcHealthV1.RegisterHealthServer(s, r.HealthServer())
+	rts.RegisterVersionServiceServer(s, r)
+	reflection.Register(s)
+
+	for _, h := range r.allHandlers() {
+		if h, ok := h.(OPLSyntaxHandler); ok {
+			h.RegisterSyntaxGRPC(s)
+		}
 	}
 
 	return s

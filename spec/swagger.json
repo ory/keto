@@ -219,6 +219,49 @@
         }
       }
     },
+    "/opl/syntax/check": {
+      "post": {
+        "description": "The OPL file is expected in the body of the request.",
+        "consumes": ["text/plain"],
+        "produces": ["application/json"],
+        "schemes": ["http", "https"],
+        "tags": ["syntax"],
+        "summary": "Check the syntax of an OPL file",
+        "operationId": "checkOplSyntax",
+        "parameters": [
+          {
+            "description": "the OPL content to check",
+            "name": "content",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "description": "the OPL content to check",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "postCheckOplSyntaxResponse",
+            "schema": {
+              "$ref": "#/definitions/postCheckOplSyntaxResponse"
+            }
+          },
+          "400": {
+            "description": "genericError",
+            "schema": {
+              "$ref": "#/definitions/genericError"
+            }
+          },
+          "500": {
+            "description": "genericError",
+            "schema": {
+              "$ref": "#/definitions/genericError"
+            }
+          }
+        }
+      }
+    },
     "/relation-tuples": {
       "get": {
         "description": "Get all relation tuples that match the query. Only the namespace field is required.",
@@ -587,6 +630,33 @@
     }
   },
   "definitions": {
+    "ParseError": {
+      "type": "object",
+      "properties": {
+        "end": {
+          "$ref": "#/definitions/SourcePosition"
+        },
+        "message": {
+          "type": "string"
+        },
+        "start": {
+          "$ref": "#/definitions/SourcePosition"
+        }
+      }
+    },
+    "SourcePosition": {
+      "type": "object",
+      "properties": {
+        "Line": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "column": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
     "expandTree": {
       "type": "object",
       "required": ["type"],
@@ -705,6 +775,19 @@
         },
         "relation_tuple": {
           "$ref": "#/definitions/relationTuple"
+        }
+      }
+    },
+    "postCheckOplSyntaxResponse": {
+      "type": "object",
+      "title": "CheckOPLSyntaxResponse represents the response for an OPL syntax check request.",
+      "properties": {
+        "errors": {
+          "description": "The list of syntax errors",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ParseError"
+          }
         }
       }
     },

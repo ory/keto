@@ -36,6 +36,7 @@ type (
 const (
 	WriteServer ServerType = "write"
 	ReadServer  ServerType = "read"
+	OplServer   ServerType = "opl"
 )
 
 func NewTestServer(t *testing.T,
@@ -56,6 +57,9 @@ func NewTestServer(t *testing.T,
 	case WriteServer:
 		ts.NewServer = ts.Reg.WriteGRPCServer
 		ts.FlagRemote = FlagWriteRemote
+	case OplServer:
+		ts.NewServer = ts.Reg.OplGRPCServer
+		ts.FlagRemote = FlagOplRemote
 	default:
 		t.Logf("Got unknown server type %s", rw)
 		t.FailNow()

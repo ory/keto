@@ -208,3 +208,23 @@ type swaggerOnlyExpandTree struct { // nolint
 	// The relation tuple the node represents.
 	Tuple *RelationTuple `json:"tuple"`
 }
+
+type ParseError struct {
+	Message string         `json:"message"`
+	Start   SourcePosition `json:"start"`
+	End     SourcePosition `json:"end"`
+}
+type SourcePosition struct {
+	Line int `json:"Line"`
+	Col  int `json:"column"`
+}
+
+// CheckOPLSyntaxResponse represents the response for an OPL syntax check request.
+//
+// swagger:model postCheckOplSyntaxResponse
+type CheckOPLSyntaxResponse struct {
+	// The list of syntax errors
+	//
+	// required: false
+	Errors []*ParseError `json:"errors,omitempty"`
+}

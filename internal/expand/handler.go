@@ -45,13 +45,9 @@ func (h *handler) RegisterReadRoutes(r *x.ReadRouter) {
 	r.GET(RouteBase, h.getExpand)
 }
 
-func (h *handler) RegisterWriteRoutes(_ *x.WriteRouter) {}
-
 func (h *handler) RegisterReadGRPC(s *grpc.Server) {
 	rts.RegisterExpandServiceServer(s, h)
 }
-
-func (h *handler) RegisterWriteGRPC(s *grpc.Server) {}
 
 // swagger:parameters getExpand
 type getExpandRequest struct {

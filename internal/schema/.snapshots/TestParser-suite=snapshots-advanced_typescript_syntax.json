@@ -1,0 +1,161 @@
+{
+  "Resource": [
+    {
+      "name": "admins",
+      "types": [
+        {
+          "namespace": "Role",
+          "relation": "member"
+        }
+      ]
+    },
+    {
+      "name": "supervisors",
+      "types": [
+        {
+          "namespace": "Role",
+          "relation": "member"
+        }
+      ]
+    },
+    {
+      "name": "annotators",
+      "types": [
+        {
+          "namespace": "Role",
+          "relation": "member"
+        }
+      ]
+    },
+    {
+      "name": "medicalAnnotators",
+      "types": [
+        {
+          "namespace": "Role",
+          "relation": "member"
+        }
+      ]
+    },
+    {
+      "name": "read",
+      "rewrite": {
+        "operator": "or",
+        "children": [
+          {
+            "relation": "admins",
+            "computed_subject_set_relation": "member"
+          },
+          {
+            "relation": "annotators",
+            "computed_subject_set_relation": "member"
+          },
+          {
+            "relation": "medicalAnnotators",
+            "computed_subject_set_relation": "member"
+          },
+          {
+            "relation": "supervisors",
+            "computed_subject_set_relation": "member"
+          }
+        ]
+      }
+    },
+    {
+      "name": "comment",
+      "rewrite": {
+        "operator": "or",
+        "children": [
+          {
+            "relation": "read"
+          }
+        ]
+      }
+    },
+    {
+      "name": "update",
+      "rewrite": {
+        "operator": "or",
+        "children": [
+          {
+            "relation": "admins",
+            "computed_subject_set_relation": "member"
+          },
+          {
+            "relation": "annotators",
+            "computed_subject_set_relation": "member"
+          },
+          {
+            "relation": "medicalAnnotators",
+            "computed_subject_set_relation": "member"
+          },
+          {
+            "relation": "supervisors",
+            "computed_subject_set_relation": "member"
+          }
+        ]
+      }
+    },
+    {
+      "name": "create",
+      "rewrite": {
+        "operator": "or",
+        "children": [
+          {
+            "relation": "admins",
+            "computed_subject_set_relation": "member"
+          },
+          {
+            "relation": "annotators",
+            "computed_subject_set_relation": "member"
+          },
+          {
+            "relation": "supervisors",
+            "computed_subject_set_relation": "member"
+          }
+        ]
+      }
+    },
+    {
+      "name": "approve",
+      "rewrite": {
+        "operator": "or",
+        "children": [
+          {
+            "relation": "admins",
+            "computed_subject_set_relation": "member"
+          },
+          {
+            "relation": "supervisors",
+            "computed_subject_set_relation": "member"
+          }
+        ]
+      }
+    },
+    {
+      "name": "delete",
+      "rewrite": {
+        "operator": "or",
+        "children": [
+          {
+            "relation": "admins",
+            "computed_subject_set_relation": "member"
+          },
+          {
+            "relation": "supervisors",
+            "computed_subject_set_relation": "member"
+          }
+        ]
+      }
+    }
+  ],
+  "Role": [
+    {
+      "name": "member",
+      "types": [
+        {
+          "namespace": "Role"
+        }
+      ]
+    }
+  ]
+}

@@ -56,15 +56,16 @@ const (
 	itemKeywordCtx
 
 	// operators
-	itemOperatorAnd    // "&&"
-	itemOperatorOr     // "||"
-	itemOperatorNot    // "!"
-	itemOperatorAssign // "="
-	itemOperatorArrow  // "=>"
-	itemOperatorDot    // "."
-	itemOperatorColon  // ":"
-	itemOperatorComma  // ","
-	itemTypeUnion      // "|"
+	itemOperatorAnd       // "&&"
+	itemOperatorOr        // "||"
+	itemOperatorNot       // "!"
+	itemOperatorAssign    // "="
+	itemOperatorArrow     // "=>"
+	itemOperatorDot       // "."
+	itemOperatorColon     // ":"
+	itemOperatorComma     // ","
+	itemOperatorSemicolon // ";"
+	itemTypeUnion         // "|"
 
 	// brackets
 	itemParenLeft    // "("
@@ -219,6 +220,7 @@ var oneRuneTokens = map[rune]itemType{
 	'>': itemAngledRight,
 	'=': itemOperatorAssign,
 	',': itemOperatorComma,
+	';': itemOperatorSemicolon,
 	'|': itemTypeUnion,
 	'!': itemOperatorNot,
 }
