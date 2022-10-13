@@ -15,15 +15,12 @@ import (
 	"github.com/ory/keto/ketoapi"
 )
 
-type sdkClient struct {
-	rc httpclient.ReadApi
-	wc httpclient.WriteApi
-	mc httpclient.MetadataApi
-	sc httpclient.SyntaxApi
-	nc httpclient.NamespacesApi
-
-	readRemote, writeRemote, syntaxRemote string
-}
+type (
+	sdkClient struct {
+		rc, wc, sc                            *httpclient.APIClient
+		readRemote, writeRemote, syntaxRemote string
+	}
+)
 
 var _ client = (*sdkClient)(nil)
 
@@ -36,6 +33,7 @@ func (c *sdkClient) requestCtx() context.Context {
 
 func (c *sdkClient) oplCheckSyntax(t require.TestingT, content []byte) (parseErrors []*ketoapi.ParseError) {
 	res, _, err := c.getOPLSyntaxClient().
+		SyntaxApi.
 		CheckOplSyntax(c.requestCtx()).
 		Body(string(content)).
 		Execute()
@@ -49,52 +47,32 @@ func (c *sdkClient) oplCheckSyntax(t require.TestingT, content []byte) (parseErr
 	return
 }
 
-func (c *sdkClient) getReadClient() httpclient.ReadApi {
+func (c *sdkClient) getReadClient() *httpclient.APIClient {
 	if c.rc == nil {
 		cfg := httpclient.NewConfiguration()
 		cfg.Host = c.readRemote
 		cfg.Scheme = "http"
-		c.rc = httpclient.NewAPIClient(cfg).ReadApi
+		c.rc = httpclient.NewAPIClient(cfg)
 	}
 	return c.rc
 }
 
-func (c *sdkClient) getMetadataClient() httpclient.MetadataApi {
-	if c.mc == nil {
-		cfg := httpclient.NewConfiguration()
-		cfg.Host = c.writeRemote
-		cfg.Scheme = "http"
-		c.mc = httpclient.NewAPIClient(cfg).MetadataApi
-	}
-	return c.mc
-}
-
-func (c *sdkClient) getWriteClient() httpclient.WriteApi {
+func (c *sdkClient) getWriteClient() *httpclient.APIClient {
 	if c.wc == nil {
 		cfg := httpclient.NewConfiguration()
 		cfg.Host = c.writeRemote
 		cfg.Scheme = "http"
-		c.wc = httpclient.NewAPIClient(cfg).WriteApi
+		c.wc = httpclient.NewAPIClient(cfg)
 	}
 	return c.wc
 }
 
-func (c *sdkClient) getNamespacesClient() httpclient.NamespacesApi {
-	if c.nc == nil {
-		cfg := httpclient.NewConfiguration()
-		cfg.Host = c.readRemote
-		cfg.Scheme = "http"
-		c.nc = httpclient.NewAPIClient(cfg).NamespacesApi
-	}
-	return c.nc
-}
-
-func (c *sdkClient) getOPLSyntaxClient() httpclient.SyntaxApi {
+func (c *sdkClient) getOPLSyntaxClient() *httpclient.APIClient {
 	if c.sc == nil {
 		cfg := httpclient.NewConfiguration()
 		cfg.Host = c.syntaxRemote
 		cfg.Scheme = "http"
-		c.sc = httpclient.NewAPIClient(cfg).SyntaxApi
+		c.sc = httpclient.NewAPIClient(cfg)
 	}
 	return c.sc
 }
@@ -114,7 +92,7 @@ func (c *sdkClient) createTuple(t require.TestingT, r *ketoapi.RelationTuple) {
 		}
 	}
 
-	_, _, err := c.getWriteClient().
+	_, _, err := c.getWriteClient().WriteApi.
 		CreateRelationTuple(c.requestCtx()).
 		RelationQuery(payload).
 		Execute()
@@ -140,7 +118,7 @@ func withSubject[P interface {
 }
 
 func (c *sdkClient) deleteTuple(t require.TestingT, r *ketoapi.RelationTuple) {
-	request := c.getWriteClient().
+	request := c.getWriteClient().WriteApi.
 		DeleteRelationTuples(c.requestCtx()).
 		Namespace(r.Namespace).
 		Object(r.Object).
@@ -152,7 +130,7 @@ func (c *sdkClient) deleteTuple(t require.TestingT, r *ketoapi.RelationTuple) {
 }
 
 func (c *sdkClient) deleteAllTuples(t require.TestingT, q *ketoapi.RelationQuery) {
-	request := c.getWriteClient().DeleteRelationTuples(c.requestCtx())
+	request := c.getWriteClient().WriteApi.DeleteRelationTuples(c.requestCtx())
 	if q.Namespace != nil {
 		request = request.Namespace(*q.Namespace)
 	}
@@ -199,7 +177,7 @@ func compileParams(req httpclient.ReadApiApiGetRelationTuplesRequest, q *ketoapi
 }
 
 func (c *sdkClient) queryTuple(t require.TestingT, q *ketoapi.RelationQuery, opts ...x.PaginationOptionSetter) *ketoapi.GetResponse {
-	request := c.getReadClient().GetRelationTuples(c.requestCtx())
+	request := c.getReadClient().ReadApi.GetRelationTuples(c.requestCtx())
 	request = compileParams(request, q, opts)
 
 	resp, _, err := request.Execute()
@@ -231,7 +209,7 @@ func (c *sdkClient) queryTuple(t require.TestingT, q *ketoapi.RelationQuery, opt
 }
 
 func (c *sdkClient) queryTupleErr(t require.TestingT, expected herodot.DefaultError, q *ketoapi.RelationQuery, opts ...x.PaginationOptionSetter) {
-	request := c.getReadClient().GetRelationTuples(c.requestCtx())
+	request := c.getReadClient().ReadApi.GetRelationTuples(c.requestCtx())
 	request = compileParams(request, q, opts)
 	_, _, err := request.Execute()
 
@@ -246,7 +224,7 @@ func (c *sdkClient) queryTupleErr(t require.TestingT, expected herodot.DefaultEr
 }
 
 func (c *sdkClient) check(t require.TestingT, r *ketoapi.RelationTuple) bool {
-	request := c.getReadClient().GetCheck(c.requestCtx()).
+	request := c.getReadClient().ReadApi.GetCheck(c.requestCtx()).
 		Namespace(r.Namespace).
 		Object(r.Object).
 		Relation(r.Relation)
@@ -287,7 +265,7 @@ func buildTree(t require.TestingT, mt *httpclient.ExpandTree) *ketoapi.Tree[*ket
 }
 
 func (c *sdkClient) expand(t require.TestingT, r *ketoapi.SubjectSet, depth int) *ketoapi.Tree[*ketoapi.RelationTuple] {
-	request := c.getReadClient().GetExpand(c.requestCtx()).
+	request := c.getReadClient().ReadApi.GetExpand(c.requestCtx()).
 		Namespace(r.Namespace).
 		Object(r.Object).
 		Relation(r.Relation).
@@ -300,15 +278,15 @@ func (c *sdkClient) expand(t require.TestingT, r *ketoapi.SubjectSet, depth int)
 }
 
 func (c *sdkClient) waitUntilLive(t require.TestingT) {
-	resp, _, err := c.getMetadataClient().IsReady(c.requestCtx()).Execute()
+	resp, _, err := c.getReadClient().MetadataApi.IsReady(c.requestCtx()).Execute()
 	for err != nil {
-		resp, _, err = c.getMetadataClient().IsReady(c.requestCtx()).Execute()
+		resp, _, err = c.getReadClient().MetadataApi.IsReady(c.requestCtx()).Execute()
 	}
 	require.Equal(t, "ok", resp.Status)
 }
 
 func (c *sdkClient) queryNamespaces(t require.TestingT) (response ketoapi.GetNamespacesResponse) {
-	res, _, err := c.getNamespacesClient().GetNamespaces(c.requestCtx()).Execute()
+	res, _, err := c.getReadClient().NamespacesApi.GetNamespaces(c.requestCtx()).Execute()
 	require.NoError(t, err)
 	require.NoError(t, convert(res, &response))
 
