@@ -18,8 +18,7 @@ GO_DEPENDENCIES = golang.org/x/tools/cmd/goimports \
 SCRIPT_DEPENDENCIES = swagger \
 					protoc \
 					grype \
-					trivy \
-					ory
+					trivy
 
 define make-go-dependency
   # go install is responsible for not re-building when the code hasn't changed
@@ -70,10 +69,10 @@ sdk: .bin/swagger .bin/ory node_modules
 		-c github.com/ory/x/healthx \
 		-x internal/httpclient \
 		-x internal/e2e
-	ory dev swagger sanitize ./spec/swagger.json
+	.bin/ory dev swagger sanitize ./spec/swagger.json
 	swagger validate ./spec/swagger.json
 	CIRCLE_PROJECT_USERNAME=ory CIRCLE_PROJECT_REPONAME=keto \
-		ory dev openapi migrate \
+		.bin/ory dev openapi migrate \
 			--health-path-tags metadata \
 			-p https://raw.githubusercontent.com/ory/x/master/healthx/openapi/patch.yaml \
 			-p file://.schema/openapi/patches/meta.yaml \
