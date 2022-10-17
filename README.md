@@ -29,7 +29,7 @@ Google's Consistent, Global Authorization System"!
 
 The [Ory Network](https://www.ory.sh/cloud) is the fastest, most secure and
 worry-free way to use Ory's Services. **Ory Permissions** is powered by the Ory
-Keto open source identity server, and it's fully API-compatible.
+Keto open source permission server, and it's fully API-compatible.
 
 - Fully managed, highly available, maintenance-free services
 - GDPR-compliant secure storage with data regionality
