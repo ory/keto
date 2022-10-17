@@ -28,7 +28,7 @@ type ReadApi interface {
 
 	/*
 	 * GetCheck Check a relation tuple
-	 * To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).
+	 * To learn how relation tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
 	 * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	 * @return ReadApiApiGetCheckRequest
 	 */
@@ -42,7 +42,7 @@ type ReadApi interface {
 
 	/*
 	 * GetCheckMirrorStatus Check a relation tuple
-	 * To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).
+	 * To learn how relation tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
 	 * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	 * @return ReadApiApiGetCheckMirrorStatusRequest
 	 */
@@ -84,7 +84,7 @@ type ReadApi interface {
 
 	/*
 	 * PostCheck Check a relation tuple
-	 * To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).
+	 * To learn how relation tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
 	 * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	 * @return ReadApiApiPostCheckRequest
 	 */
@@ -98,7 +98,7 @@ type ReadApi interface {
 
 	/*
 	 * PostCheckMirrorStatus Check a relation tuple
-	 * To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).
+	 * To learn how relation tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
 	 * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	 * @return ReadApiApiPostCheckMirrorStatusRequest
 	 */
@@ -166,7 +166,7 @@ func (r ReadApiApiGetCheckRequest) Execute() (*GetCheckResponse, *http.Response,
 
 /*
  * GetCheck Check a relation tuple
- * To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).
+ * To learn how relation tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @return ReadApiApiGetCheckRequest
  */
@@ -310,7 +310,7 @@ func (r ReadApiApiGetCheckMirrorStatusRequest) Execute() (*GetCheckResponse, *ht
 
 /*
  * GetCheckMirrorStatus Check a relation tuple
- * To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).
+ * To learn how relation tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @return ReadApiApiGetCheckMirrorStatusRequest
  */
@@ -810,7 +810,7 @@ func (r ReadApiApiPostCheckRequest) Execute() (*GetCheckResponse, *http.Response
 
 /*
  * PostCheck Check a relation tuple
- * To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).
+ * To learn how relation tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @return ReadApiApiPostCheckRequest
  */
@@ -935,7 +935,7 @@ func (r ReadApiApiPostCheckMirrorStatusRequest) Execute() (*GetCheckResponse, *h
 
 /*
  * PostCheckMirrorStatus Check a relation tuple
- * To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).
+ * To learn how relation tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @return ReadApiApiPostCheckMirrorStatusRequest
  */

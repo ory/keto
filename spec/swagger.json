@@ -374,7 +374,7 @@
     },
     "/relation-tuples/check": {
       "get": {
-        "description": "To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).",
+        "description": "To learn how relation tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).",
         "consumes": ["application/x-www-form-urlencoded"],
         "produces": ["application/json"],
         "schemes": ["http", "https"],
@@ -409,7 +409,7 @@
         }
       },
       "post": {
-        "description": "To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).",
+        "description": "To learn how relation tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).",
         "consumes": ["application/json"],
         "produces": ["application/json"],
         "schemes": ["http", "https"],
@@ -446,7 +446,7 @@
     },
     "/relation-tuples/check/openapi": {
       "get": {
-        "description": "To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).",
+        "description": "To learn how relation tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).",
         "consumes": ["application/x-www-form-urlencoded"],
         "produces": ["application/json"],
         "schemes": ["http", "https"],
@@ -525,7 +525,7 @@
         }
       },
       "post": {
-        "description": "To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).",
+        "description": "To learn how relation tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).",
         "consumes": ["application/json"],
         "produces": ["application/json"],
         "schemes": ["http", "https"],
