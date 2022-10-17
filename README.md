@@ -27,17 +27,23 @@ Google's Consistent, Global Authorization System"!
 
 ### Ory Keto on the Ory Network
 
-The [Ory Network](https://www.ory.sh/cloud) is the fastest, most secure and worry-free way to use Ory's Services. **Ory Permissions** is powered by the Ory Keto open source identity server, and it's fully API-compatible.
+The [Ory Network](https://www.ory.sh/cloud) is the fastest, most secure and
+worry-free way to use Ory's Services. **Ory Permissions** is powered by the Ory
+Keto open source identity server, and it's fully API-compatible.
 
-* Fully managed, highly available, maintenance-free services 
-* GDPR-compliant secure storage with data regionality 
-* Cloud-native APIs, compatible with Ory's Open Source servers
-* Low-latency permission checks based on Google's Zanzibar model and with built-in support for the Ory Permission Language
-* Comprehensive admin tools with the web-based Ory Console and the Ory Command Line Interface (CLI)
-* Fair, usage-based [pricing](https://www.ory.sh/pricing)
-* Extensive documentation, straighforward examples and easy-to-follow guides
+- Fully managed, highly available, maintenance-free services
+- GDPR-compliant secure storage with data regionality
+- Cloud-native APIs, compatible with Ory's Open Source servers
+- Low-latency permission checks based on Google's Zanzibar model and with
+  built-in support for the Ory Permission Language
+- Comprehensive admin tools with the web-based Ory Console and the Ory Command
+  Line Interface (CLI)
+- Fair, usage-based [pricing](https://www.ory.sh/pricing)
+- Extensive documentation, straighforward examples and easy-to-follow guides
 
-Sign up for a [**free developer account**](https://console.ory.sh/registration?utm_source=github&utm_medium=banner&utm_campaign=org-readme) today!
+Sign up for a
+[**free developer account**](https://console.ory.sh/registration?utm_source=github&utm_medium=banner&utm_campaign=org-readme)
+today!
 
 ## Ory Permissions, Keto and the Google's Zanzibar model
 
@@ -60,7 +66,8 @@ Sign up for a [**free developer account**](https://console.ory.sh/registration?u
 If you need to know if a user (or robot, car, service) is allowed to do
 something - Ory Permissions and Ory Keto are the right fit for you.
 
-Currently, Ory Permissions [on the Ory Network] and the open-source Ory Keto permission server implement the API contracts for managing and checking
+Currently, Ory Permissions [on the Ory Network] and the open-source Ory Keto
+permission server implement the API contracts for managing and checking
 relations ("permissions") with HTTP and gRPC APIs, as well as global rules
 defined through the Ory Permission Language ("userset rewrites"). Future
 versions will include features such as Zookies, reverse permission lookups, and
