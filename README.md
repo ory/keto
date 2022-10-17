@@ -34,10 +34,13 @@ Keto open source permission server, and it's fully API-compatible.
 The Ory Network provides the infrastructure for modern end-to-end security:
 
 - Identity & credential management scaling to billions of users and devices
-- Registration, Login and Account management flows for passkey, biometric, social, SSO and multi-factor authentication
+- Registration, Login and Account management flows for passkey, biometric,
+  social, SSO and multi-factor authentication
 - Pre-built login, registration and account management pages and components
-- OAuth2 and OpenID provider for single sign on, API access and machine-to-machine authorization
-- **Low-latency permission checks based on Google's Zanzibar model and with built-in support for the Ory Permission Language**
+- OAuth2 and OpenID provider for single sign on, API access and
+  machine-to-machine authorization
+- **Low-latency permission checks based on Google's Zanzibar model and with
+  built-in support for the Ory Permission Language**
 
 It's fully managed, highly available, developer & compliance-friendly!
 
@@ -49,7 +52,7 @@ It's fully managed, highly available, developer & compliance-friendly!
 - Fair, usage-based [pricing](https://www.ory.sh/pricing)
 
 Sign up for a
-[**free developer account**](https://console.ory.sh/registration?utm_source=github&utm_medium=banner&utm_campaign=org-readme)
+[**free developer account**](https://console.ory.sh/registration?utm_source=github&utm_medium=banner&utm_campaign=keto-readme)
 today!
 
 ## Ory Permissions, Keto and the Google's Zanzibar model
