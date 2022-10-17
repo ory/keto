@@ -757,7 +757,7 @@
     },
     "/relation-tuples/check": {
       "get": {
-        "description": "To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).",
+        "description": "To learn how relation tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).",
         "operationId": "getCheckMirrorStatus",
         "responses": {
           "200": {
@@ -805,7 +805,7 @@
         "tags": ["read"]
       },
       "post": {
-        "description": "To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).",
+        "description": "To learn how relation tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).",
         "operationId": "postCheckMirrorStatus",
         "responses": {
           "200": {
@@ -855,7 +855,7 @@
     },
     "/relation-tuples/check/openapi": {
       "get": {
-        "description": "To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).",
+        "description": "To learn how relation tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).",
         "operationId": "getCheck",
         "parameters": [
           {
@@ -959,7 +959,7 @@
         "tags": ["read"]
       },
       "post": {
-        "description": "To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).",
+        "description": "To learn how relation tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).",
         "operationId": "postCheck",
         "parameters": [
           {
