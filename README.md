@@ -25,17 +25,37 @@
 Ory Keto is the first and most popular open source implementation of "Zanzibar:
 Google's Consistent, Global Authorization System"!
 
-## Ory Cloud
+### Ory Keto on the Ory Network
 
-The easiest way to get started with Ory Software is in Ory Cloud! It is
-[**free for developers**](https://console.ory.sh/registration?utm_source=github&utm_medium=banner&utm_campaign=keto-readme),
-forever, no credit card required!
+The [Ory Network](https://www.ory.sh/cloud) is the fastest, most secure and
+worry-free way to use Ory's Services. **Ory Permissions** is powered by the Ory
+Keto open source permission server, and it's fully API-compatible.
 
-Ory Cloud has easy examples, administrative user interfaces, hosted pages (e.g.
-for login or registration), support for custom domains, collaborative features
-for your colleagues, and much more!
+The Ory Network provides the infrastructure for modern end-to-end security:
 
-### Google's Zanzibar
+- Identity & credential management scaling to billions of users and devices
+- Registration, Login and Account management flows for passkey, biometric,
+  social, SSO and multi-factor authentication
+- Pre-built login, registration and account management pages and components
+- OAuth2 and OpenID provider for single sign on, API access and
+  machine-to-machine authorization
+- **Low-latency permission checks based on Google's Zanzibar model and with
+  built-in support for the Ory Permission Language**
+
+It's fully managed, highly available, developer & compliance-friendly!
+
+- GDPR-friendly secure storage with data locality
+- Cloud-native APIs, compatible with Ory's Open Source servers
+- Comprehensive admin tools with the web-based Ory Console and the Ory Command
+  Line Interface (CLI)
+- Extensive documentation, straightforward examples and easy-to-follow guides
+- Fair, usage-based [pricing](https://www.ory.sh/pricing)
+
+Sign up for a
+[**free developer account**](https://console.ory.sh/registration?utm_source=github&utm_medium=banner&utm_campaign=keto-readme)
+today!
+
+## Ory Permissions, Keto and the Google's Zanzibar model
 
 > Determining whether online users are authorized to access digital objects is
 > central to preserving privacy. This paper presents the design, implementation,
@@ -54,9 +74,10 @@ for your colleagues, and much more!
 > [Source](https://research.google/pubs/pub48190/)
 
 If you need to know if a user (or robot, car, service) is allowed to do
-something - Ory Keto is the right fit for you.
+something - Ory Permissions and Ory Keto are the right fit for you.
 
-Currently, Ory Keto implements the basic API contracts for managing and checking
+Currently, Ory Permissions [on the Ory Network] and the open-source Ory Keto
+permission server implement the API contracts for managing and checking
 relations ("permissions") with HTTP and gRPC APIs, as well as global rules
 defined through the Ory Permission Language ("userset rewrites"). Future
 versions will include features such as Zookies, reverse permission lookups, and
@@ -67,7 +88,8 @@ more.
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
-- [Who's using it?](#whos-using-it)
+- [Ory Permissions, Keto and the Google's Zanzibar model](#ory-permissions-keto-and-the-googles-zanzibar-model)
+- [Who's Using It?](#whos-using-it)
   - [Installation](#installation)
 - [Ecosystem](#ecosystem)
   - [Ory Kratos: Identity and User Infrastructure and Management](#ory-kratos-identity-and-user-infrastructure-and-management)
@@ -75,15 +97,15 @@ more.
   - [Ory Oathkeeper: Identity & Access Proxy](#ory-oathkeeper-identity--access-proxy)
   - [Ory Keto: Access Control Policies as a Server](#ory-keto-access-control-policies-as-a-server)
 - [Security](#security)
-  - [Disclosing vulnerabilities](#disclosing-vulnerabilities)
+  - [Disclosing Vulnerabilities](#disclosing-vulnerabilities)
 - [Telemetry](#telemetry)
   - [Guide](#guide)
-  - [HTTP API documentation](#http-api-documentation)
+  - [HTTP API Documentation](#http-api-documentation)
   - [Upgrading and Changelog](#upgrading-and-changelog)
-  - [Command line documentation](#command-line-documentation)
+  - [Command Line Documentation](#command-line-documentation)
   - [Develop](#develop)
     - [Dependencies](#dependencies)
-    - [Install from source](#install-from-source)
+    - [Install From Source](#install-from-source)
     - [Formatting Code](#formatting-code)
     - [Running Tests](#running-tests)
       - [Short Tests](#short-tests)
