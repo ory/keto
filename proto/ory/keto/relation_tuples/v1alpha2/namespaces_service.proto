@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package ory.keto.relation_tuples.v1alpha2;
+
+option go_package = "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2;rts";
+option csharp_namespace = "Ory.Keto.RelationTuples.v1alpha2";
+option java_multiple_files = true;
+option java_outer_classname = "NamespacesServiceProto";
+option java_package = "sh.ory.keto.relation_tuples.v1alpha2";
+option php_namespace = "Ory\\Keto\\RelationTuples\\v1alpha2";
+
+// The service to query namespaces.
+//
+// This service is part of the [read-APIs](../concepts/api-overview.mdx#read-apis).
+service NamespacesService {
+  // Lists Namespaces
+  rpc ListNamespaces(ListNamespacesRequest) returns (ListNamespacesResponse);
+}
+
+// Request for ReadService.ListNamespaces RPC.
+message ListNamespacesRequest { }
+
+message ListNamespacesResponse {
+  repeated Namespace namespaces = 1;
+}
+
+message Namespace {
+  string name = 1;
+}

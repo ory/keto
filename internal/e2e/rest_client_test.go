@@ -35,6 +35,14 @@ type restClient struct {
 	readURL, writeURL, oplSyntaxURL string
 }
 
+func (rc *restClient) queryNamespaces(t require.TestingT) (res ketoapi.GetNamespacesResponse) {
+	body, code := rc.makeRequest(t, http.MethodGet, "/namespaces", "", rc.readURL)
+	assert.Equal(t, http.StatusOK, code, body)
+	require.NoError(t, json.Unmarshal([]byte(body), &res))
+
+	return
+}
+
 func (rc *restClient) oplCheckSyntax(t require.TestingT, content []byte) []*ketoapi.ParseError {
 	body, code := rc.makeRequest(t, http.MethodPost, schema.RouteBase, string(content), rc.oplSyntaxURL)
 	assert.Equal(t, http.StatusOK, code, body)

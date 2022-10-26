@@ -30,6 +30,15 @@ type grpcClient struct {
 	ctx                                      context.Context
 }
 
+func (g *grpcClient) queryNamespaces(t require.TestingT) (apiResponse ketoapi.GetNamespacesResponse) {
+	client := rts.NewNamespacesServiceClient(g.readConn(t))
+	res, err := client.ListNamespaces(g.ctx, &rts.ListNamespacesRequest{})
+	require.NoError(t, err)
+	require.NoError(t, convert(res, &apiResponse))
+
+	return
+}
+
 var _ transactClient = (*grpcClient)(nil)
 
 func (g *grpcClient) conn(t require.TestingT, remote string) *grpc.ClientConn {

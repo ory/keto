@@ -109,6 +109,17 @@
         "title": "RESTResponse represents the response for a check request.",
         "type": "object"
       },
+      "getNamespacesResponse": {
+        "properties": {
+          "namespaces": {
+            "items": {
+              "$ref": "#/components/schemas/namespace"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
       "getRelationTuplesResponse": {
         "properties": {
           "next_page_token": {
@@ -140,6 +151,15 @@
         "properties": {
           "status": {
             "description": "Status always contains \"ok\".",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "namespace": {
+        "properties": {
+          "name": {
+            "description": "Name of the namespace.",
             "type": "string"
           }
         },
@@ -539,6 +559,36 @@
         "tags": ["metadata"]
       }
     },
+    "/namespaces": {
+      "get": {
+        "description": "Get all namespaces",
+        "operationId": "getNamespaces",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/getNamespacesResponse"
+                }
+              }
+            },
+            "description": "getNamespacesResponse"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/genericError"
+                }
+              }
+            },
+            "description": "genericError"
+          }
+        },
+        "summary": "Query namespaces",
+        "tags": ["namespaces"]
+      }
+    },
     "/opl/syntax/check": {
       "post": {
         "description": "The OPL file is expected in the body of the request.",
@@ -707,7 +757,7 @@
     },
     "/relation-tuples/check": {
       "get": {
-        "description": "To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).",
+        "description": "To learn how relation tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).",
         "operationId": "getCheckMirrorStatus",
         "responses": {
           "200": {
@@ -755,7 +805,7 @@
         "tags": ["read"]
       },
       "post": {
-        "description": "To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).",
+        "description": "To learn how relation tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).",
         "operationId": "postCheckMirrorStatus",
         "responses": {
           "200": {
@@ -805,7 +855,7 @@
     },
     "/relation-tuples/check/openapi": {
       "get": {
-        "description": "To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).",
+        "description": "To learn how relation tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).",
         "operationId": "getCheck",
         "parameters": [
           {
@@ -909,7 +959,7 @@
         "tags": ["read"]
       },
       "post": {
-        "description": "To learn how relation tuples and the check works, head over to [the documentation](../concepts/relation-tuples.mdx).",
+        "description": "To learn how relation tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).",
         "operationId": "postCheck",
         "parameters": [
           {

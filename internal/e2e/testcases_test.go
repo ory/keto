@@ -22,6 +22,17 @@ func runCases(c client, m *namespaceTestManager) func(*testing.T) {
 	return func(t *testing.T) {
 		c.waitUntilLive(t)
 
+		t.Run("case=list namespaces", func(t *testing.T) {
+			first := namespace.Namespace{Name: "my namespace"}
+			second := namespace.Namespace{Name: "my other namespace"}
+			m.add(t, &first, &second)
+
+			resp := c.queryNamespaces(t)
+			assert.GreaterOrEqual(t, len(resp.Namespaces), 2)
+			assertNamespacesContains(t, resp.Namespaces, "my namespace")
+			assertNamespacesContains(t, resp.Namespaces, "my other namespace")
+		})
+
 		t.Run("case=gets empty namespace", func(t *testing.T) {
 			n := &namespace.Namespace{Name: t.Name()}
 			m.add(t, n)
@@ -282,4 +293,14 @@ func runCases(c client, m *namespaceTestManager) func(*testing.T) {
 			assert.Contains(t, parseErrors[0].Message, "unclosed comment")
 		})
 	}
+}
+
+func assertNamespacesContains(t *testing.T, list []ketoapi.Namespace, name string) {
+	t.Helper()
+	for _, n := range list {
+		if n.Name == name {
+			return
+		}
+	}
+	t.Errorf("Could not find %q in %+v", name, list)
 }
