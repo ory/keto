@@ -5,89 +5,94 @@
 
 **Table of Contents**
 
-- [0.0.0 (2022-09-22)](#000-2022-09-22)
+- [0.0.0 (2022-10-27)](#000-2022-10-27)
   - [Bug Fixes](#bug-fixes)
-  - [Build System](#build-system)
-  - [Code Refactoring](#code-refactoring)
   - [Documentation](#documentation)
   - [Features](#features)
+- [0.10.0-alpha.0 (2022-09-27)](#0100-alpha0-2022-09-27)
+  - [Bug Fixes](#bug-fixes-1)
+  - [Build System](#build-system)
+  - [Code Generation](#code-generation)
+  - [Code Refactoring](#code-refactoring)
+  - [Documentation](#documentation-1)
+  - [Features](#features-1)
   - [Tests](#tests)
 - [0.9.0-alpha.0 (2022-08-01)](#090-alpha0-2022-08-01)
   - [Breaking Changes](#breaking-changes)
-    - [Bug Fixes](#bug-fixes-1)
-    - [Code Generation](#code-generation)
+    - [Bug Fixes](#bug-fixes-2)
+    - [Code Generation](#code-generation-1)
     - [Code Refactoring](#code-refactoring-1)
-    - [Documentation](#documentation-1)
-    - [Features](#features-1)
+    - [Documentation](#documentation-2)
+    - [Features](#features-2)
     - [Tests](#tests-1)
 - [0.8.0-alpha.2 (2022-03-04)](#080-alpha2-2022-03-04)
-  - [Bug Fixes](#bug-fixes-2)
-  - [Code Generation](#code-generation-1)
-  - [Documentation](#documentation-2)
-- [0.8.0-alpha.1 (2022-02-22)](#080-alpha1-2022-02-22)
   - [Bug Fixes](#bug-fixes-3)
   - [Code Generation](#code-generation-2)
-  - [Tests](#tests-2)
-- [0.8.0-alpha.0 (2022-02-10)](#080-alpha0-2022-02-10)
+  - [Documentation](#documentation-3)
+- [0.8.0-alpha.1 (2022-02-22)](#080-alpha1-2022-02-22)
   - [Bug Fixes](#bug-fixes-4)
   - [Code Generation](#code-generation-3)
-  - [Code Refactoring](#code-refactoring-2)
-  - [Documentation](#documentation-3)
-  - [Features](#features-2)
-- [0.7.0-alpha.1 (2021-10-19)](#070-alpha1-2021-10-19)
+  - [Tests](#tests-2)
+- [0.8.0-alpha.0 (2022-02-10)](#080-alpha0-2022-02-10)
+  - [Bug Fixes](#bug-fixes-5)
   - [Code Generation](#code-generation-4)
+  - [Code Refactoring](#code-refactoring-2)
   - [Documentation](#documentation-4)
+  - [Features](#features-3)
+- [0.7.0-alpha.1 (2021-10-19)](#070-alpha1-2021-10-19)
+  - [Code Generation](#code-generation-5)
+  - [Documentation](#documentation-5)
 - [0.7.0-alpha.0 (2021-10-06)](#070-alpha0-2021-10-06)
   - [Breaking Changes](#breaking-changes-1)
-    - [Bug Fixes](#bug-fixes-5)
+    - [Bug Fixes](#bug-fixes-6)
     - [Chores](#chores)
-    - [Code Generation](#code-generation-5)
+    - [Code Generation](#code-generation-6)
     - [Code Refactoring](#code-refactoring-3)
-    - [Documentation](#documentation-5)
-    - [Features](#features-3)
+    - [Documentation](#documentation-6)
+    - [Features](#features-4)
     - [Tests](#tests-3)
 - [0.6.0-alpha.3 (2021-04-29)](#060-alpha3-2021-04-29)
-  - [Code Generation](#code-generation-6)
-- [0.6.0-alpha.2 (2021-04-29)](#060-alpha2-2021-04-29)
-  - [Bug Fixes](#bug-fixes-6)
   - [Code Generation](#code-generation-7)
-  - [Documentation](#documentation-6)
-  - [Features](#features-4)
-- [0.6.0-alpha.1 (2021-04-07)](#060-alpha1-2021-04-07)
+- [0.6.0-alpha.2 (2021-04-29)](#060-alpha2-2021-04-29)
   - [Bug Fixes](#bug-fixes-7)
-  - [Build System](#build-system-1)
   - [Code Generation](#code-generation-8)
-  - [Code Refactoring](#code-refactoring-4)
   - [Documentation](#documentation-7)
   - [Features](#features-5)
+- [0.6.0-alpha.1 (2021-04-07)](#060-alpha1-2021-04-07)
+  - [Bug Fixes](#bug-fixes-8)
+  - [Build System](#build-system-1)
+  - [Code Generation](#code-generation-9)
+  - [Code Refactoring](#code-refactoring-4)
+  - [Documentation](#documentation-8)
+  - [Features](#features-6)
   - [Tests](#tests-4)
 - [0.5.6-alpha.1 (2020-05-28)](#056-alpha1-2020-05-28)
-  - [Bug Fixes](#bug-fixes-8)
+  - [Bug Fixes](#bug-fixes-9)
   - [Chores](#chores-1)
 - [0.5.5-alpha.1 (2020-05-28)](#055-alpha1-2020-05-28)
-  - [Bug Fixes](#bug-fixes-9)
-  - [Chores](#chores-2)
-  - [Documentation](#documentation-8)
-- [0.5.4-alpha.1 (2020-04-07)](#054-alpha1-2020-04-07)
   - [Bug Fixes](#bug-fixes-10)
-- [0.5.3-alpha.3 (2020-04-06)](#053-alpha3-2020-04-06)
-  - [Code Generation](#code-generation-9)
-  - [Code Refactoring](#code-refactoring-5)
+  - [Chores](#chores-2)
   - [Documentation](#documentation-9)
+- [0.5.4-alpha.1 (2020-04-07)](#054-alpha1-2020-04-07)
+  - [Bug Fixes](#bug-fixes-11)
+- [0.5.3-alpha.3 (2020-04-06)](#053-alpha3-2020-04-06)
+  - [Code Generation](#code-generation-10)
+  - [Code Refactoring](#code-refactoring-5)
+  - [Documentation](#documentation-10)
 - [0.5.3-alpha.1 (2020-04-03)](#053-alpha1-2020-04-03)
   - [Chores](#chores-3)
 - [0.5.2 (2020-04-02)](#052-2020-04-02)
-  - [Documentation](#documentation-10)
-- [0.5.0 (2020-04-02)](#050-2020-04-02)
-  - [Bug Fixes](#bug-fixes-11)
   - [Documentation](#documentation-11)
-- [0.4.5-alpha.1 (2020-02-29)](#045-alpha1-2020-02-29)
+- [0.5.0 (2020-04-02)](#050-2020-04-02)
   - [Bug Fixes](#bug-fixes-12)
   - [Documentation](#documentation-12)
-- [0.4.4-alpha.1 (2020-02-14)](#044-alpha1-2020-02-14)
+- [0.4.5-alpha.1 (2020-02-29)](#045-alpha1-2020-02-29)
   - [Bug Fixes](#bug-fixes-13)
   - [Documentation](#documentation-13)
-  - [Features](#features-6)
+- [0.4.4-alpha.1 (2020-02-14)](#044-alpha1-2020-02-14)
+  - [Bug Fixes](#bug-fixes-14)
+  - [Documentation](#documentation-14)
+  - [Features](#features-7)
   - [Unclassified](#unclassified)
 - [0.4.3-alpha.2 (2020-01-31)](#043-alpha2-2020-01-31)
   - [Unclassified](#unclassified-1)
@@ -106,35 +111,111 @@
 - [0.3.6-sandbox (2019-10-16)](#036-sandbox-2019-10-16)
   - [Unclassified](#unclassified-8)
 - [0.3.5-sandbox (2019-08-21)](#035-sandbox-2019-08-21)
-  - [Documentation](#documentation-14)
+  - [Documentation](#documentation-15)
   - [Unclassified](#unclassified-9)
 - [0.3.3-sandbox (2019-05-18)](#033-sandbox-2019-05-18)
   - [Continuous Integration](#continuous-integration)
-  - [Documentation](#documentation-15)
+  - [Documentation](#documentation-16)
 - [0.3.1-sandbox (2019-04-29)](#031-sandbox-2019-04-29)
   - [Continuous Integration](#continuous-integration-1)
-  - [Documentation](#documentation-16)
+  - [Documentation](#documentation-17)
   - [Unclassified](#unclassified-10)
 - [0.3.0-sandbox (2019-04-29)](#030-sandbox-2019-04-29)
-  - [Documentation](#documentation-17)
+  - [Documentation](#documentation-18)
   - [Unclassified](#unclassified-11)
 - [0.2.3-sandbox+oryOS.10 (2019-02-05)](#023-sandboxoryos10-2019-02-05)
-  - [Documentation](#documentation-18)
+  - [Documentation](#documentation-19)
   - [Unclassified](#unclassified-12)
 - [0.2.2-sandbox+oryOS.10 (2018-12-13)](#022-sandboxoryos10-2018-12-13)
   - [Continuous Integration](#continuous-integration-2)
 - [0.2.1-sandbox+oryOS.10 (2018-12-13)](#021-sandboxoryos10-2018-12-13)
   - [Continuous Integration](#continuous-integration-3)
 - [0.2.0-sandbox+oryOS.10 (2018-12-13)](#020-sandboxoryos10-2018-12-13)
-  - [Documentation](#documentation-19)
+  - [Documentation](#documentation-20)
   - [Unclassified](#unclassified-13)
 - [0.0.1 (2018-05-20)](#001-2018-05-20)
-  - [Documentation](#documentation-20)
+  - [Documentation](#documentation-21)
   - [Unclassified](#unclassified-14)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.9.0-alpha.0...v0.0.0) (2022-09-22)
+# [0.0.0](https://github.com/ory/keto/compare/v0.10.0-alpha.0...v0.0.0) (2022-10-27)
+
+### Bug Fixes
+
+- Only type-check if there are no parser errors
+  ([b4bef07](https://github.com/ory/keto/commit/b4bef07ca91b7585a52d536ee8c0c38ec1d66b9d)):
+
+  Type checks are not particularly useful on partially parsed input.
+
+- Properly lex imports in OPL ([#1041](https://github.com/ory/keto/issues/1041))
+  ([26944e9](https://github.com/ory/keto/commit/26944e9e2f5d851aec63e46b3777d2d1ebaca3f8))
+- Relax OPL parsing ([#1059](https://github.com/ory/keto/issues/1059))
+  ([a15c5ad](https://github.com/ory/keto/commit/a15c5ad8704458a5e8bdcfaa80f80b45f9696418)):
+
+  - Allow semicolons in more places
+  - Allow commas in more places
+
+- Tune error message
+  ([b51d215](https://github.com/ory/keto/commit/b51d2151873ce247deb33d9b50924c8fdacdae47))
+- Use resilient HTTP client
+  ([e431978](https://github.com/ory/keto/commit/e431978238cbab86723ae3f57104b3e62242d8a0))
+- Validate subjects before mapping
+  ([#1039](https://github.com/ory/keto/issues/1039))
+  ([71b30c4](https://github.com/ory/keto/commit/71b30c42be240ed1ea8a3d85aec5b30664c6d68f))
+
+### Documentation
+
+- Allow $schema key in config.schema.json
+  ([#1083](https://github.com/ory/keto/issues/1083))
+  ([333af27](https://github.com/ory/keto/commit/333af27a3cf3975f5c879433b4a3f44951691392))
+- Fix invalid link ([#1072](https://github.com/ory/keto/issues/1072))
+  ([2686e98](https://github.com/ory/keto/commit/2686e982772507c9423373405cc406dd47ebaad2))
+- Improve rewrites example
+  ([d809c76](https://github.com/ory/keto/commit/d809c76c8359093bb9e73b1fc386b09da3e6b88e))
+- Update README content and links
+  ([#1043](https://github.com/ory/keto/issues/1043))
+  ([7aacf0d](https://github.com/ory/keto/commit/7aacf0df571c6bdfb21b4289d53b11a46ccde580))
+
+### Features
+
+- Add API to list namespaces
+  ([a8d8767](https://github.com/ory/keto/commit/a8d8767f02695932ed63b5139dd52534e8c4922f))
+- Allow permits referencing permits
+  ([c4d84f6](https://github.com/ory/keto/commit/c4d84f6209deea8b5993409a66208b5dd35f5807)):
+
+  You can now use `this.permits.<permission>(ctx)` to reference another
+  permission in a permission declaration.
+
+  Example:
+
+      comment: (ctx: Context) => this.permits.read(ctx)
+
+- Expose function to generate OPL
+  ([#1057](https://github.com/ory/keto/issues/1057))
+  ([b80a230](https://github.com/ory/keto/commit/b80a230493eabf5056111ce59959c7d0238465fd))
+- Expose OPL syntax check API
+  ([57ff639](https://github.com/ory/keto/commit/57ff639db7a783023e5c47074e485b09874e9aae))
+- Handle HTTP config locations
+  ([6571bae](https://github.com/ory/keto/commit/6571bae5d10f3218573de3e5a60877bec71a2029))
+- Rename to Ory Network ([#1081](https://github.com/ory/keto/issues/1081))
+  ([3fe1d68](https://github.com/ory/keto/commit/3fe1d68bd1c363c9fee8490332477f68dac8b547))
+
+# [0.10.0-alpha.0](https://github.com/ory/keto/compare/v0.9.0-alpha.0...v0.10.0-alpha.0) (2022-09-27)
+
+This release ships the long-awaited Ory Permission Language (a.k.a.
+userset-rewrites) 🎉. You can now define global 🌍 rules for permissions, like
+"every user who is an owner also has read access", and many more. Best of all,
+you don't have to learn a new language to express these rules, but instead just
+use a subset of TypeScript. Therefore syntax highlighting, formatting tools,
+linters, unit test frameworks, ... work out of the box 📦! We will give a talk
+🗣️ about how we ended up with this solution at the Ory Summit, so make sure to
+[sign up](https://summit.ory.sh/) or watch the recoding on
+[YouTube](https://www.youtube.com/c/ORYAcadamy) later. Start exploring the Ory
+Permission Language
+[by following our guide 📖](https://www.ory.sh/docs/keto/guides/userset-rewrites).
+This is only the most shiny ✨ feature we packed into this release, see the full
+changelog for all the other fixes and features we included.
 
 ### Bug Fixes
 
@@ -143,6 +224,12 @@
 - Correct paths in TypeScript SDK
   ([#1025](https://github.com/ory/keto/issues/1025))
   ([8b30508](https://github.com/ory/keto/commit/8b30508e4021318e8a7afd9cb29c07749757d278))
+- Do not setup /etc/nsswitch.conf on alpine
+  ([1f9fa96](https://github.com/ory/keto/commit/1f9fa9620b110c951d0e57527ab79a1254610a3a)):
+
+  Go fixed the initial issue and does not rely on that file anymore, see
+  https://github.com/golang/go/issues/35305
+
 - Race in serve metrics init
   ([5f4c19b](https://github.com/ory/keto/commit/5f4c19bc92d8e28b7bcd50f49b274066aeab0d8c))
 - Remove check constraint
@@ -200,6 +287,13 @@
 
 - Do not include VCS info ([#990](https://github.com/ory/keto/issues/990))
   ([97f638d](https://github.com/ory/keto/commit/97f638df4e5a205d74bf7bcac2343edeec830b8a))
+
+### Code Generation
+
+- Pin v0.10.0-alpha.0 release commit
+  ([52259a3](https://github.com/ory/keto/commit/52259a30d0be0257f1bb7ef591ae769808450230)):
+
+  Bumps from v0.10.0-alpha.0.pre.0
 
 ### Code Refactoring
 

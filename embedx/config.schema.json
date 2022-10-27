@@ -4,13 +4,16 @@
   "title": "ORY Keto Configuration",
   "type": "object",
   "definitions": {
+    "$schema": {
+      "type": "string",
+      "format": "uri-reference",
+      "description": "Add this to allow defining the schema, useful for IDE integration"
+    },
     "namespace": {
       "type": "object",
       "properties": {
         "$schema": {
-          "type": "string",
-          "format": "uri-reference",
-          "description": "Add this to allow defining the schema, useful for IDE integration"
+          "$ref": "#/definitions/$schema"
         },
         "name": {
           "type": "string",
@@ -170,6 +173,9 @@
   "required": ["dsn"],
   "additionalProperties": false,
   "properties": {
+    "$schema": {
+      "$ref": "#/definitions/$schema"
+    },
     "dsn": {
       "title": "Data Source Name",
       "type": "string",
