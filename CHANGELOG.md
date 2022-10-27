@@ -166,6 +166,9 @@
 
 ### Documentation
 
+- Allow $schema key in config.schema.json
+  ([#1083](https://github.com/ory/keto/issues/1083))
+  ([333af27](https://github.com/ory/keto/commit/333af27a3cf3975f5c879433b4a3f44951691392))
 - Fix invalid link ([#1072](https://github.com/ory/keto/issues/1072))
   ([2686e98](https://github.com/ory/keto/commit/2686e982772507c9423373405cc406dd47ebaad2))
 - Improve rewrites example
