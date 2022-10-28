@@ -25,6 +25,58 @@
 Ory Keto is the first and most popular open source implementation of "Zanzibar:
 Google's Consistent, Global Authorization System"!
 
+## Get Started
+
+You can use
+[Docker to run Ory Keto locally](https://www.ory.sh/docs/keto/install) or use
+the Ory CLI to try out Ory Keto:
+
+```sh
+# This example works best in Bash
+bash <(curl https://raw.githubusercontent.com/ory/meta/master/install.sh) -b . ory
+sudo mv ./ory /usr/local/bin/
+
+# Or with Homebrew installed
+brew install ory/tap/cli
+```
+
+create a new project (you may also use
+[Docker](https://www.ory.sh/docs/keto/install))
+
+```sh
+ory create project --name "Ory Keto Example"
+export project_id="{set to the id from output}"
+```
+
+and follow the quick & easy steps below.
+
+## Create a namespace with the Ory Permission Language
+
+```sh
+# Write a simple configuration with one namespace
+echo "class Document implements Namespace {}" > config.ts
+
+# Apply that configuration
+ory patch opl --project $project_id -f file://./config.ts
+
+# Create a relationship that grants tom access to a document
+echo "Document:secret#read@tom" \
+  | ory parse relation-tuples --project=$project_id --format=json - \
+  | ory create relation-tuples --project=$project_id -
+
+# List all relationships
+ory list relation-tuples --project=$project_id
+# Output:
+#   NAMESPACE	OBJECT	RELATION NAME	SUBJECT
+#   Document	secret	read		tom
+#
+#   NEXT PAGE TOKEN
+#   IS LAST PAGE	true
+```
+
+Now, check out your project on the [Ory Network](https://console.ory.sh/) or
+continue with a [more in-depth guide](https://www.ory.sh/docs/keto/quickstart).
+
 ### Ory Keto on the Ory Network
 
 The [Ory Network](https://www.ory.sh/cloud) is the fastest, most secure and
@@ -507,7 +559,7 @@ TheCrealm.
 
 <!--END ADOPTERS-->
 
-### Installation
+## Installation
 
 Head over to the documentation to learn about ways of
 [installing Ory Keto](https://www.ory.sh/docs/keto/install).
