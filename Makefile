@@ -24,7 +24,7 @@ SCRIPT_DEPENDENCIES = swagger \
 
 define make-go-dependency
   # go install is responsible for not re-building when the code hasn't changed
-  .bin/$2: .bin/go.mod .bin/go.sum
+  .bin/$2: .bin/go.sum
 		cd .bin; GOBIN=$(PWD)/.bin go install $1
 endef
 $(foreach dep, $(GO_DEPENDENCIES), $(eval $(call make-go-dependency,$(dep),$(notdir $(dep)))))
@@ -102,8 +102,9 @@ build:
 # Generate APIs and client stubs from the definitions
 #
 .PHONY: buf-gen
-buf-gen: .bin/buf .bin/protoc .bin/protoc-gen-go .bin/protoc-gen-go-grpc .bin/protoc-gen-doc node_modules
-	buf generate
+buf-gen: .bin/buf .bin/protoc .bin/protoc-gen-go .bin/protoc-gen-go-grpc .bin/protoc-gen-js .bin/protoc-gen-doc node_modules
+	buf generate proto
+	make format
 	@echo "All code was generated successfully!"
 
 #
@@ -111,7 +112,7 @@ buf-gen: .bin/buf .bin/protoc .bin/protoc-gen-go .bin/protoc-gen-go-grpc .bin/pr
 #
 .PHONY: buf-lint
 buf-lint: .bin/buf
-	buf lint
+	cd proto; buf lint
 	@echo "All lint checks passed successfully!"
 
 #

@@ -2,4 +2,3 @@
 !go.mod
 !go.sum
 !indirect_pins.go
-!dependencies.sha256.lock

@@ -56,11 +56,11 @@ if [ "${OS}" = "windows" ]; then
     BINNAME="protoc-gen-js.exe"
 fi
 
-if check_binary_lock "$BINDIR" "$BINNAME"; then
+if check_binary_version "$BINDIR" "$BINNAME" "$PROTOBUF_JS_VERSION"; then
     echo "protoc-gen-js ${PROTOBUF_JS_VERSION} already installed"
     exit 0
 fi
 
 execute
 
-regenerate_lockfile "$BINDIR"
+update_binary_version "$BINDIR" "$BINNAME" "$PROTOBUF_JS_VERSION"

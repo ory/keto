@@ -77,18 +77,17 @@ http_download() {
 	echo "http_download unable to find wget or curl"
 	return 1
 }
-regenerate_lockfile() {
-  bindir=$1
-  echo "generating lockfile"
-  sha256sum "$bindir"/* > "$bindir/dependencies.sha256.lock"
-}
-check_binary_lock() {
+update_binary_version() {
   bindir=$1
   binname=$2
-  echo "checking binary"
-  if grep "$bindir/$binname$" "$bindir/dependencies.sha256.lock" | sha256sum -c -; then
-    echo "$binname already installed"
-    return 0
-  fi
-  return 1
+  version=$3
+  echo "updating binary version to ${version}"
+  echo "${version}" > "${bindir}/.${binname}.version"
+}
+check_binary_version() {
+  bindir=$1
+  binname=$2
+  version=$3
+  echo "checking binary version"
+  [ "$(cat "${bindir}/.${binname}.version")" = "${version}" ]
 }

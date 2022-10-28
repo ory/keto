@@ -3,7 +3,7 @@ set -euo pipefail
 
 source ./scripts/install-helpers.sh
 
-PROTOBUF_VERSION=3.20.3
+PROTOBUF_VERSION=21.9
 
 usage() {
 	cat <<EOF
@@ -55,11 +55,9 @@ if [ "${OS}" = "windows" ]; then
     BINNAME="protoc.exe"
 fi
 
-if check_binary_lock "$BINDIR" "$BINNAME"; then
+if [ "$($BINDIR/$BINNAME --version)" = "libprotoc ${PROTOBUF_VERSION}" ]; then
     echo "protoc ${PROTOBUF_VERSION} already installed"
     exit 0
 fi
 
 execute
-
-regenerate_lockfile "$BINDIR"
