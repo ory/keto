@@ -19,7 +19,8 @@ SCRIPT_DEPENDENCIES = swagger \
 					protoc \
 					grype \
 					trivy \
-					ory
+					ory \
+					protoc-gen-js
 
 define make-go-dependency
   # go install is responsible for not re-building when the code hasn't changed

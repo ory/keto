@@ -12,9 +12,11 @@ if [ "${OS}" = "windows" ]; then
     BINNAME="trivy.exe"
 fi
 
-if [[ "$("$BINDIR/$BINNAME" version)" == *"$TRIVY_VERSION"* ]]; then
+if check_binary_lock "$BINDIR" "$BINNAME"; then
     echo "trivy ${TRIVY_VERSION} already installed"
     exit 0
 fi
 
 curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | bash -s -- -b "$BINDIR" "v$TRIVY_VERSION"
+
+regenerate_lockfile "$BINDIR"

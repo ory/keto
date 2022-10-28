@@ -12,9 +12,11 @@ if [ "${OS}" = "windows" ]; then
     BINNAME="ory.exe"
 fi
 
-if [[ "$("$BINDIR/$BINNAME" version)" == *"$ORY_VERSION"* ]]; then
+if check_binary_lock "$BINDIR" "$BINNAME"; then
     echo "ory ${ORY_VERSION} already installed"
     exit 0
 fi
 
 curl -sSfL https://raw.githubusercontent.com/ory/meta/master/install.sh | bash -s -- -b "$BINDIR" ory "v$ORY_VERSION"
+
+regenerate_lockfile "$BINDIR"

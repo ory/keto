@@ -40,9 +40,11 @@ if [ "${OS}" = "windows" ]; then
     BINNAME="swagger.exe"
 fi
 
-if [[ "$("$BINDIR/$BINNAME" version)" == *"$SWAGGER_VERSION"* ]]; then
+if check_binary_lock "$BINDIR" "$BINNAME"; then
     echo "swagger ${SWAGGER_VERSION} already installed"
     exit 0
 fi
 
 execute
+
+regenerate_lockfile "$BINDIR"
