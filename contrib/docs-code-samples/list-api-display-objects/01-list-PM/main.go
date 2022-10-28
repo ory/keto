@@ -8,7 +8,8 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
-	"github.com/ory/keto/internal/x"
+	"github.com/ory/x/pointerx"
+
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 )
 
@@ -22,8 +23,8 @@ func main() {
 
 	res, err := client.ListRelationTuples(context.Background(), &rts.ListRelationTuplesRequest{
 		RelationQuery: &rts.RelationQuery{
-			Namespace: x.Ptr("chats"),
-			Relation:  x.Ptr("member"),
+			Namespace: pointerx.Ptr("chats"),
+			Relation:  pointerx.Ptr("member"),
 			Subject:   rts.NewSubjectID("PM"),
 		},
 	})

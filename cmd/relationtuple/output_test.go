@@ -10,7 +10,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/ory/keto/internal/x"
+	"github.com/ory/x/pointerx"
+
 	"github.com/ory/keto/ketoapi"
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 )
@@ -23,7 +24,7 @@ func TestRelationCollection(t *testing.T) {
 				Namespace: "n" + strconv.Itoa(i),
 				Object:    "o" + strconv.Itoa(i),
 				Relation:  "r" + strconv.Itoa(i),
-				SubjectID: x.Ptr("s" + strconv.Itoa(i)),
+				SubjectID: pointerx.Ptr("s" + strconv.Itoa(i)),
 			}
 		}
 		expected[2].SubjectSet = &ketoapi.SubjectSet{
@@ -92,7 +93,7 @@ func TestRelationCollection(t *testing.T) {
 				Namespace: "n",
 				Object:    "o",
 				Relation:  "r",
-				SubjectID: x.Ptr("s"),
+				SubjectID: pointerx.Ptr("s"),
 			},
 			{
 				Namespace: "n",

@@ -3,7 +3,8 @@ package e2e
 import (
 	"testing"
 
-	"github.com/ory/keto/internal/x"
+	"github.com/ory/x/pointerx"
+
 	"github.com/ory/keto/ketoapi"
 
 	"github.com/stretchr/testify/assert"
@@ -33,7 +34,7 @@ func runTransactionCases(c transactClient, m *namespaceTestManager) func(*testin
 					Namespace: n.Name,
 					Object:    "o",
 					Relation:  "rel",
-					SubjectID: x.Ptr("sid"),
+					SubjectID: pointerx.Ptr("sid"),
 				},
 			}
 
@@ -64,25 +65,25 @@ func runTransactionCases(c transactClient, m *namespaceTestManager) func(*testin
 					Namespace: directories.Name,
 					Object:    "/photos",
 					Relation:  "owner",
-					SubjectID: x.Ptr("maureen"),
+					SubjectID: pointerx.Ptr("maureen"),
 				},
 				{
 					Namespace: files.Name,
 					Object:    "/photos/beach.jpg",
 					Relation:  "owner",
-					SubjectID: x.Ptr("maureen"),
+					SubjectID: pointerx.Ptr("maureen"),
 				},
 				{
 					Namespace: files.Name,
 					Object:    "/photos/mountains.jpg",
 					Relation:  "owner",
-					SubjectID: x.Ptr("laura"),
+					SubjectID: pointerx.Ptr("laura"),
 				},
 				{
 					Namespace: directories.Name,
 					Object:    "/photos",
 					Relation:  "access",
-					SubjectID: x.Ptr("laura"),
+					SubjectID: pointerx.Ptr("laura"),
 				},
 			}
 			for _, o := range []struct{ n, o string }{

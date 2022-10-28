@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"sort"
 
-	"github.com/ory/keto/internal/x"
+	"github.com/ory/x/pointerx"
 
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 
@@ -23,9 +23,9 @@ func main() {
 
 	res, err := client.ListRelationTuples(context.Background(), &rts.ListRelationTuplesRequest{
 		RelationQuery: &rts.RelationQuery{
-			Namespace: x.Ptr("chats"),
-			Object:    x.Ptr("coffee-break"),
-			Relation:  x.Ptr("member"),
+			Namespace: pointerx.Ptr("chats"),
+			Object:    pointerx.Ptr("coffee-break"),
+			Relation:  pointerx.Ptr("member"),
 		},
 	})
 	if err != nil {
