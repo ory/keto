@@ -129,14 +129,14 @@ func (r *RegistryDefault) ServeAll(ctx context.Context) error {
 }
 
 func (r *RegistryDefault) serveRead(ctx context.Context, done chan<- struct{}) func() error {
-	rt, s := r.ReadRouter(ctx), r.ReadGRPCServer(ctx)
+	restServer, grpcServer := r.ReadRouter(ctx), r.ReadGRPCServer(ctx)
 
 	if tracer := r.Tracer(ctx); tracer.IsLoaded() {
-		rt = otelx.TraceHandler(rt)
+		restServer = otelx.TraceHandler(restServer)
 	}
 
 	return func() error {
-		return multiplexPort(ctx, r.Logger().WithField("endpoint", "read"), r.Config(ctx).ReadAPIListenOn(), rt, s, done)
+		return multiplexPort(ctx, r.Logger().WithField("endpoint", "read"), r.Config(ctx).ReadAPIListenOn(), restServer, grpcServer, done)
 	}
 }
 
@@ -216,6 +216,12 @@ func multiplexPort(ctx context.Context, log *logrusx.Logger, addr string, router
 
 	grpcL := m.MatchWithWriters(cmux.HTTP2MatchHeaderFieldSendSettings("content-type", "application/grpc"))
 	httpL := m.Match(cmux.HTTP1())
+	connectL := m.Match(
+		cmux.HTTP1HeaderField("content-type", "application/proto"),
+		cmux.HTTP1HeaderField("content-type", "application/connect+proto"),
+		cmux.HTTP2HeaderField("content-type", "application/proto"),
+		cmux.HTTP2HeaderField("content-type", "application/connect+proto"),
+	)
 
 	// nolint: gosec,G112 graceful.WithDefaults already sets a timeout
 	restS := graceful.WithDefaults(&http.Server{

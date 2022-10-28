@@ -6,6 +6,9 @@ plugins:
   - name: go-grpc
     out: proto
     opt: paths=source_relative,require_unimplemented_servers=false
+  - name: connect-go
+    out: proto
+    opt: paths=source_relative
   - name: js
     out: proto
     opt: import_style=commonjs,binary

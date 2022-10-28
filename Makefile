@@ -9,6 +9,7 @@ GO_DEPENDENCIES = golang.org/x/tools/cmd/goimports \
 				  github.com/bufbuild/buf/cmd/buf \
 				  google.golang.org/protobuf/cmd/protoc-gen-go \
 				  google.golang.org/grpc/cmd/protoc-gen-go-grpc \
+				  github.com/bufbuild/connect-go/cmd/protoc-gen-connect-go \
 				  github.com/pseudomuto/protoc-gen-doc/cmd/protoc-gen-doc \
 				  github.com/josephburnett/jd \
 				  github.com/mikefarah/yq/v4 \
@@ -101,7 +102,7 @@ build:
 # Generate APIs and client stubs from the definitions
 #
 .PHONY: buf-gen
-buf-gen: .bin/buf .bin/protoc .bin/protoc-gen-go .bin/protoc-gen-go-grpc .bin/protoc-gen-doc node_modules
+buf-gen: .bin/buf .bin/protoc .bin/protoc-gen-go .bin/protoc-gen-go-grpc .bin/protoc-gen-connect-go .bin/protoc-gen-doc node_modules
 	buf generate
 	@echo "All code was generated successfully!"
 
