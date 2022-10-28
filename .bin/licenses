@@ -1,0 +1,21 @@
+#!/bin/sh
+set -e
+
+# check Node licenses
+if [ -f package.json ]; then
+	{ echo "Checking Node licenses ..."; } 2>/dev/null
+	npm exec -- license-checker --csv --production --excludePrivatePackages --customPath .bin/license-template-node.json | .bin/license-engine.sh
+	{ echo; } 2>/dev/null
+fi
+
+# check Go licenses
+if [ -f go.mod ]; then
+	{ echo "Checking Go licenses ..."; } 2>/dev/null
+	module_name=$(grep "^module" go.mod | awk '{print $2}')
+	if [ -z "$module_name" ]; then
+		echo "Cannot determine the Go module name"
+		exit 1
+	fi
+	.bin/go-licenses report "$module_name" --template .bin/license-template-go.tpl 2>/dev/null | .bin/license-engine.sh
+	{ echo; } 2>/dev/null
+fi
