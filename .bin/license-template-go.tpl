@@ -1,3 +1,0 @@
-{{ range . }}
-"{{.Name}}","{{.LicenseName}}"
-{{- end }}
