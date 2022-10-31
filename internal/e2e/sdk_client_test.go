@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/ory/herodot"
+	"github.com/ory/x/pointerx"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
@@ -79,9 +80,9 @@ func (c *sdkClient) getOPLSyntaxClient() *httpclient.APIClient {
 
 func (c *sdkClient) createTuple(t require.TestingT, r *ketoapi.RelationTuple) {
 	payload := httpclient.RelationQuery{
-		Namespace: x.Ptr(r.Namespace),
-		Object:    x.Ptr(r.Object),
-		Relation:  x.Ptr(r.Relation),
+		Namespace: pointerx.Ptr(r.Namespace),
+		Object:    pointerx.Ptr(r.Object),
+		Relation:  pointerx.Ptr(r.Relation),
 		SubjectId: r.SubjectID,
 	}
 	if r.SubjectID == nil {

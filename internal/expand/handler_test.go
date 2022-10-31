@@ -10,6 +10,8 @@ import (
 	"net/url"
 	"testing"
 
+	"github.com/ory/x/pointerx"
+
 	"github.com/ory/keto/ketoapi"
 
 	"github.com/ory/keto/internal/driver/config"
@@ -76,13 +78,13 @@ func TestRESTHandler(t *testing.T) {
 				{
 					Type: ketoapi.TreeNodeLeaf,
 					Tuple: &ketoapi.RelationTuple{
-						SubjectID: x.Ptr("child0"),
+						SubjectID: pointerx.Ptr("child0"),
 					},
 				},
 				{
 					Type: ketoapi.TreeNodeLeaf,
 					Tuple: &ketoapi.RelationTuple{
-						SubjectID: x.Ptr("child1"),
+						SubjectID: pointerx.Ptr("child1"),
 					},
 				},
 			},

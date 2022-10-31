@@ -10,6 +10,8 @@ import (
 	"net/url"
 	"testing"
 
+	"github.com/ory/x/pointerx"
+
 	"github.com/ory/keto/ketoapi"
 
 	"github.com/ory/keto/internal/driver/config"
@@ -67,7 +69,7 @@ func TestWriteHandlers(t *testing.T) {
 				Namespace: nspace.Name,
 				Object:    "obj",
 				Relation:  "rel",
-				SubjectID: x.Ptr("subj"),
+				SubjectID: pointerx.Ptr("subj"),
 			}
 			payload, err := json.Marshal(rt)
 			require.NoError(t, err)
@@ -126,7 +128,7 @@ func TestWriteHandlers(t *testing.T) {
 					Namespace: nspace.Name,
 					Object:    "@all",
 					Relation:  "member",
-					SubjectID: x.Ptr("this:could#be interpreted:as a@subject set"),
+					SubjectID: pointerx.Ptr("this:could#be interpreted:as a@subject set"),
 				},
 			}
 
@@ -157,7 +159,7 @@ func TestWriteHandlers(t *testing.T) {
 				Namespace: nspace.Name,
 				Object:    "deleted obj",
 				Relation:  "deleted rel",
-				SubjectID: x.Ptr("deleted subj"),
+				SubjectID: pointerx.Ptr("deleted subj"),
 			}
 			relationtuple.MapAndWriteTuples(t, reg, rt)
 
@@ -181,13 +183,13 @@ func TestWriteHandlers(t *testing.T) {
 					Namespace: nspace.Name,
 					Object:    "deleted obj",
 					Relation:  "deleted rel",
-					SubjectID: x.Ptr("deleted subj 1"),
+					SubjectID: pointerx.Ptr("deleted subj 1"),
 				},
 				{
 					Namespace: nspace.Name,
 					Object:    "deleted obj",
 					Relation:  "deleted rel",
-					SubjectID: x.Ptr("deleted subj 2"),
+					SubjectID: pointerx.Ptr("deleted subj 2"),
 				},
 			}
 
@@ -227,7 +229,7 @@ func TestWriteHandlers(t *testing.T) {
 						Namespace: nspace.Name,
 						Object:    "create obj",
 						Relation:  relation,
-						SubjectID: x.Ptr("create sub"),
+						SubjectID: pointerx.Ptr("create sub"),
 					},
 				},
 				{
@@ -236,7 +238,7 @@ func TestWriteHandlers(t *testing.T) {
 						Namespace: nspace.Name,
 						Object:    "delete obj",
 						Relation:  relation,
-						SubjectID: x.Ptr("delete sub"),
+						SubjectID: pointerx.Ptr("delete sub"),
 					},
 				},
 			}
@@ -270,7 +272,7 @@ func TestWriteHandlers(t *testing.T) {
 						Namespace: nspace.Name,
 						Object:    "create obj",
 						Relation:  t.Name(),
-						SubjectID: x.Ptr("create sub"),
+						SubjectID: pointerx.Ptr("create sub"),
 					},
 				},
 				{
@@ -279,7 +281,7 @@ func TestWriteHandlers(t *testing.T) {
 						Namespace: "not " + nspace.Name,
 						Object:    "o",
 						Relation:  "r",
-						SubjectID: x.Ptr("s"),
+						SubjectID: pointerx.Ptr("s"),
 					},
 				},
 			}
@@ -308,7 +310,7 @@ func TestWriteHandlers(t *testing.T) {
 						Namespace: nspace.Name,
 						Object:    "create obj",
 						Relation:  "rel",
-						SubjectID: x.Ptr("create sub"),
+						SubjectID: pointerx.Ptr("create sub"),
 					},
 				},
 			}
@@ -340,7 +342,7 @@ func TestWriteHandlers(t *testing.T) {
 						Namespace: nspace.Name,
 						Object:    "delete obj",
 						Relation:  "rel",
-						SubjectID: x.Ptr("delete sub"),
+						SubjectID: pointerx.Ptr("delete sub"),
 					},
 				},
 			}

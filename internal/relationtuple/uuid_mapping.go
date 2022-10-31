@@ -4,8 +4,9 @@ import (
 	"context"
 	"testing"
 
+	"github.com/ory/x/pointerx"
+
 	"github.com/ory/keto/internal/driver/config"
-	"github.com/ory/keto/internal/x"
 	"github.com/ory/keto/ketoapi"
 
 	"github.com/gofrs/uuid"
@@ -77,13 +78,13 @@ func (m *Mapper) FromQuery(ctx context.Context, apiQuery *ketoapi.RelationQuery)
 		if err != nil {
 			return nil, err
 		}
-		res.Namespace = x.Ptr(n.Name)
+		res.Namespace = pointerx.Ptr(n.Name)
 	}
 	if apiQuery.Object != nil {
 		s = append(s, *apiQuery.Object)
 		onSuccess.do(func(i int) func() {
 			return func() {
-				res.Object = x.Ptr(u[i])
+				res.Object = pointerx.Ptr(u[i])
 			}
 		}(len(s) - 1))
 	}
@@ -139,12 +140,12 @@ func (m *Mapper) ToQuery(ctx context.Context, q *RelationQuery) (res *ketoapi.Re
 		if err != nil {
 			return nil, err
 		}
-		res.Namespace = x.Ptr(n.Name)
+		res.Namespace = pointerx.Ptr(n.Name)
 	}
 	if q.Object != nil {
 		u = append(u, *q.Object)
 		onSuccess.do(func() {
-			res.Object = x.Ptr(s[0])
+			res.Object = pointerx.Ptr(s[0])
 		})
 	}
 	if q.Subject != nil {
@@ -152,7 +153,7 @@ func (m *Mapper) ToQuery(ctx context.Context, q *RelationQuery) (res *ketoapi.Re
 		case *SubjectID:
 			u = append(u, sub.ID)
 			onSuccess.do(func() {
-				res.SubjectID = x.Ptr(s[len(s)-1])
+				res.SubjectID = pointerx.Ptr(s[len(s)-1])
 			})
 		case *SubjectSet:
 			u = append(u, sub.Object)
@@ -259,7 +260,7 @@ func (m *Mapper) ToTuple(ctx context.Context, ts ...*RelationTuple) (res []*keto
 		case *SubjectID:
 			u = append(u, sub.ID)
 			onSuccess.do(func() {
-				mt.SubjectID = x.Ptr(s[2*i])
+				mt.SubjectID = pointerx.Ptr(s[2*i])
 			})
 		case *SubjectSet:
 			u = append(u, sub.Object)
@@ -340,7 +341,7 @@ func (m *Mapper) ToTree(ctx context.Context, tree *Tree) (res *ketoapi.Tree[*ket
 	case *SubjectID:
 		u = append(u, sub.ID)
 		onSuccess.do(func() {
-			res.Tuple.SubjectID = x.Ptr(s[0])
+			res.Tuple.SubjectID = pointerx.Ptr(s[0])
 		})
 	}
 	for _, c := range tree.Children {

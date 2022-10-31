@@ -5,7 +5,7 @@
 
 **Table of Contents**
 
-- [0.0.0 (2022-10-27)](#000-2022-10-27)
+- [0.0.0 (2022-10-28)](#000-2022-10-28)
   - [Bug Fixes](#bug-fixes)
   - [Documentation](#documentation)
   - [Features](#features)
@@ -139,7 +139,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.10.0-alpha.0...v0.0.0) (2022-10-27)
+# [0.0.0](https://github.com/ory/keto/compare/v0.10.0-alpha.0...v0.0.0) (2022-10-28)
 
 ### Bug Fixes
 
@@ -191,6 +191,8 @@
 
       comment: (ctx: Context) => this.permits.read(ctx)
 
+- Allow setting the authority header in the CLI
+  ([17f10ef](https://github.com/ory/keto/commit/17f10effbcc5f45b82093d2c8ec7b2962a3659bf))
 - Expose function to generate OPL
   ([#1057](https://github.com/ory/keto/issues/1057))
   ([b80a230](https://github.com/ory/keto/commit/b80a230493eabf5056111ce59959c7d0238465fd))

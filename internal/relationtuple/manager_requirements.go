@@ -7,6 +7,8 @@ import (
 	"strconv"
 	"testing"
 
+	"github.com/ory/x/pointerx"
+
 	"github.com/ory/keto/ketoapi"
 
 	"github.com/gofrs/uuid"
@@ -46,7 +48,7 @@ func ManagerTest(t *testing.T, m Manager) {
 			require.NoError(t, m.WriteRelationTuples(ctx, tuples...))
 
 			resp, nextPage, err := m.GetRelationTuples(ctx, &RelationQuery{
-				Namespace: x.Ptr(nspace),
+				Namespace: pointerx.Ptr(nspace),
 			})
 			require.NoError(t, err)
 			assert.Equal(t, "", nextPage)
@@ -98,7 +100,7 @@ func ManagerTest(t *testing.T, m Manager) {
 				{
 					query: &RelationQuery{
 						Namespace: &nspace,
-						Relation:  x.Ptr("r 0"),
+						Relation:  pointerx.Ptr("r 0"),
 					},
 					expected: []*RelationTuple{
 						tuples[0],
@@ -110,7 +112,7 @@ func ManagerTest(t *testing.T, m Manager) {
 					query: &RelationQuery{
 						Namespace: &nspace,
 						Object:    &ids[0],
-						Relation:  x.Ptr("r 0"),
+						Relation:  pointerx.Ptr("r 0"),
 					},
 					expected: []*RelationTuple{
 						tuples[0],
@@ -140,7 +142,7 @@ func ManagerTest(t *testing.T, m Manager) {
 				{
 					query: &RelationQuery{
 						Namespace: &nspace,
-						Relation:  x.Ptr("r 0"),
+						Relation:  pointerx.Ptr("r 0"),
 						Subject:   &SubjectID{ids[0]},
 					},
 					expected: []*RelationTuple{
@@ -151,7 +153,7 @@ func ManagerTest(t *testing.T, m Manager) {
 					query: &RelationQuery{
 						Namespace: &nspace,
 						Object:    &ids[0],
-						Relation:  x.Ptr("r 0"),
+						Relation:  pointerx.Ptr("r 0"),
 						Subject:   &SubjectID{ids[0]},
 					},
 					expected: []*RelationTuple{
@@ -195,9 +197,9 @@ func ManagerTest(t *testing.T, m Manager) {
 				)
 
 				res, nextPage, err = m.GetRelationTuples(ctx, &RelationQuery{
-					Namespace: x.Ptr(nspace),
+					Namespace: pointerx.Ptr(nspace),
 					Object:    &oID,
-					Relation:  x.Ptr("r"),
+					Relation:  pointerx.Ptr("r"),
 				}, x.WithSize(1), x.WithToken(nextPage))
 				require.NoError(t, err)
 				assert.NotEqual(t, "", nextPage)
@@ -216,9 +218,9 @@ func ManagerTest(t *testing.T, m Manager) {
 			}
 
 			res, nextPage, err := m.GetRelationTuples(ctx, &RelationQuery{
-				Namespace: x.Ptr(nspace),
+				Namespace: pointerx.Ptr(nspace),
 				Object:    &oID,
-				Relation:  x.Ptr("r"),
+				Relation:  pointerx.Ptr("r"),
 			}, x.WithSize(1), x.WithToken(nextPage))
 			require.NoError(t, err)
 			assert.Equal(t, "", nextPage)
@@ -267,7 +269,7 @@ func ManagerTest(t *testing.T, m Manager) {
 					require.NoError(t, m.WriteRelationTuples(ctx, rt))
 
 					res, _, err := m.GetRelationTuples(ctx, &RelationQuery{
-						Namespace: x.Ptr(nspace),
+						Namespace: pointerx.Ptr(nspace),
 					})
 					require.NoError(t, err)
 					assert.Equal(t, []*RelationTuple{rt}, res)
@@ -275,7 +277,7 @@ func ManagerTest(t *testing.T, m Manager) {
 					require.NoError(t, m.DeleteRelationTuples(ctx, rt))
 
 					res, _, err = m.GetRelationTuples(ctx, &RelationQuery{
-						Namespace: x.Ptr(nspace),
+						Namespace: pointerx.Ptr(nspace),
 					})
 					require.NoError(t, err)
 					assert.Len(t, res, 0)

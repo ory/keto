@@ -5,8 +5,6 @@ import (
 
 	"github.com/ory/x/pointerx"
 	"github.com/pkg/errors"
-
-	"github.com/ory/keto/internal/x"
 )
 
 func (q *RelationQuery) FromURLQuery(query url.Values) (*RelationQuery, error) {
@@ -28,7 +26,7 @@ func (q *RelationQuery) FromURLQuery(query url.Values) (*RelationQuery, error) {
 	case query.Has(SubjectIDKey) && (query.Has(SubjectSetNamespaceKey) || query.Has(SubjectSetObjectKey) || query.Has(SubjectSetRelationKey)):
 		return nil, ErrDuplicateSubject.WithDebugf("please provide either %s or all of %s, %s, and %s", SubjectIDKey, SubjectSetNamespaceKey, SubjectSetObjectKey, SubjectSetRelationKey)
 	case query.Has(SubjectIDKey):
-		q.SubjectID = pointerx.String(query.Get(SubjectIDKey))
+		q.SubjectID = pointerx.Ptr(query.Get(SubjectIDKey))
 	case query.Has(SubjectSetNamespaceKey) && query.Has(SubjectSetObjectKey) && query.Has(SubjectSetRelationKey):
 		q.SubjectSet = &SubjectSet{
 			Namespace: query.Get(SubjectSetNamespaceKey),
@@ -40,13 +38,13 @@ func (q *RelationQuery) FromURLQuery(query url.Values) (*RelationQuery, error) {
 	}
 
 	if query.Has("namespace") {
-		q.Namespace = x.Ptr(query.Get("namespace"))
+		q.Namespace = pointerx.Ptr(query.Get("namespace"))
 	}
 	if query.Has("object") {
-		q.Object = x.Ptr(query.Get("object"))
+		q.Object = pointerx.Ptr(query.Get("object"))
 	}
 	if query.Has("relation") {
-		q.Relation = x.Ptr(query.Get("relation"))
+		q.Relation = pointerx.Ptr(query.Get("relation"))
 	}
 
 	return q, nil

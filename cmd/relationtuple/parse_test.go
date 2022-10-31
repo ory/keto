@@ -6,7 +6,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/ory/keto/internal/x"
+	"github.com/ory/x/pointerx"
+
 	"github.com/ory/keto/ketoapi"
 
 	"github.com/spf13/cobra"
@@ -27,7 +28,7 @@ func TestParseCmdParseFile(t *testing.T) {
 				Namespace: "nspace",
 				Object:    "obj",
 				Relation:  "rel",
-				SubjectID: x.Ptr("sub"),
+				SubjectID: pointerx.Ptr("sub"),
 			}},
 		},
 		{
@@ -40,13 +41,13 @@ nspace:obj2#rel@(nspace:obj2#rel)`,
 					Namespace: "nspace",
 					Object:    "obj1",
 					Relation:  "rel",
-					SubjectID: x.Ptr("sub1"),
+					SubjectID: pointerx.Ptr("sub1"),
 				},
 				{
 					Namespace: "nspace",
 					Object:    "obj2",
 					Relation:  "rel",
-					SubjectID: x.Ptr("sub2"),
+					SubjectID: pointerx.Ptr("sub2"),
 				},
 				{
 					Namespace: "nspace",
@@ -72,13 +73,13 @@ nspace:obj#rel@sub
 					Namespace: "nspace",
 					Object:    "obj",
 					Relation:  "rel",
-					SubjectID: x.Ptr("sub"),
+					SubjectID: pointerx.Ptr("sub"),
 				},
 				{
 					Namespace: "nspace",
 					Object:    "indent",
 					Relation:  "rel",
-					SubjectID: x.Ptr("sub"),
+					SubjectID: pointerx.Ptr("sub"),
 				},
 			},
 		},
@@ -108,13 +109,13 @@ nspace:obj2#rel@sub2`), 0600))
 				Namespace: "nspace",
 				Object:    "obj1",
 				Relation:  "rel",
-				SubjectID: x.Ptr("sub1"),
+				SubjectID: pointerx.Ptr("sub1"),
 			},
 			{
 				Namespace: "nspace",
 				Object:    "obj2",
 				Relation:  "rel",
-				SubjectID: x.Ptr("sub2"),
+				SubjectID: pointerx.Ptr("sub2"),
 			},
 		}, actual)
 	})

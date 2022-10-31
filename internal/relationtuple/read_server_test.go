@@ -14,6 +14,8 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
+	"github.com/ory/x/pointerx"
+
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 
 	"github.com/ory/keto/ketoapi"
@@ -82,7 +84,7 @@ func TestReadHandlers(t *testing.T) {
 					Namespace: nspace.Name,
 					Object:    "o1",
 					Relation:  "r1",
-					SubjectID: x.Ptr("s1"),
+					SubjectID: pointerx.Ptr("s1"),
 				},
 				{
 					Namespace: nspace.Name,
@@ -118,7 +120,7 @@ func TestReadHandlers(t *testing.T) {
 					Namespace: nspace.Name,
 					Object:    "obj",
 					Relation:  "r1",
-					SubjectID: x.Ptr("s1"),
+					SubjectID: pointerx.Ptr("s1"),
 				},
 			}
 
@@ -154,13 +156,13 @@ func TestReadHandlers(t *testing.T) {
 					Namespace: nspace.Name,
 					Object:    "o1",
 					Relation:  "r1",
-					SubjectID: x.Ptr("s1"),
+					SubjectID: pointerx.Ptr("s1"),
 				},
 				{
 					Namespace: nspace.Name,
 					Object:    "o2",
 					Relation:  "r2",
-					SubjectID: x.Ptr("s2"),
+					SubjectID: pointerx.Ptr("s2"),
 				},
 			}
 			relationtuple.MapAndWriteTuples(t, reg, tuples...)
@@ -271,7 +273,7 @@ func TestReadHandlers(t *testing.T) {
 								Namespace: nspace.Name,
 								Object:    "o1",
 								Relation:  "rel",
-								SubjectID: x.Ptr("s1"),
+								SubjectID: pointerx.Ptr("s1"),
 							},
 							{
 								Namespace: nspace.Name,
@@ -305,19 +307,19 @@ func TestReadHandlers(t *testing.T) {
 								Namespace: nspace.Name,
 								Object:    "o1",
 								Relation:  "rel",
-								SubjectID: x.Ptr("s1"),
+								SubjectID: pointerx.Ptr("s1"),
 							},
 							{
 								Namespace: nspace.Name,
 								Object:    "o2",
 								Relation:  "rel",
-								SubjectID: x.Ptr("s2"),
+								SubjectID: pointerx.Ptr("s2"),
 							},
 							{
 								Namespace: nspace.Name,
 								Object:    "o3",
 								Relation:  "rel",
-								SubjectID: x.Ptr("s3"),
+								SubjectID: pointerx.Ptr("s3"),
 							},
 						}
 						relationtuple.MapAndWriteTuples(t, reg, tuples...)

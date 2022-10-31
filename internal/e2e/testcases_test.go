@@ -5,6 +5,8 @@ import (
 	"strconv"
 	"testing"
 
+	"github.com/ory/x/pointerx"
+
 	"github.com/ory/keto/internal/expand"
 	"github.com/ory/keto/ketoapi"
 
@@ -47,7 +49,7 @@ func runCases(c client, m *namespaceTestManager) func(*testing.T) {
 				Namespace: n.Name,
 				Object:    fmt.Sprintf("object for client %T", c),
 				Relation:  "access",
-				SubjectID: x.Ptr("client"),
+				SubjectID: pointerx.Ptr("client"),
 			}
 
 			c.createTuple(t, tuple)
@@ -68,7 +70,7 @@ func runCases(c client, m *namespaceTestManager) func(*testing.T) {
 				Namespace: n.Name,
 				Object:    "",
 				Relation:  "access",
-				SubjectID: x.Ptr(""),
+				SubjectID: pointerx.Ptr(""),
 			}, {
 				Namespace: n.Name,
 				Object:    "",
@@ -168,7 +170,7 @@ func runCases(c client, m *namespaceTestManager) func(*testing.T) {
 					Namespace: n.Name,
 					Object:    "o" + strconv.Itoa(i),
 					Relation:  rel,
-					SubjectID: x.Ptr("s" + strconv.Itoa(i)),
+					SubjectID: pointerx.Ptr("s" + strconv.Itoa(i)),
 				})
 			}
 
@@ -199,7 +201,7 @@ func runCases(c client, m *namespaceTestManager) func(*testing.T) {
 
 			for _, rt := range []*ketoapi.RelationTuple{
 				{
-					SubjectID: x.Ptr("s"),
+					SubjectID: pointerx.Ptr("s"),
 				},
 				{
 					SubjectSet: &ketoapi.SubjectSet{
@@ -235,13 +237,13 @@ func runCases(c client, m *namespaceTestManager) func(*testing.T) {
 					Namespace: n.Name,
 					Object:    "o1",
 					Relation:  "rel",
-					SubjectID: x.Ptr("s1"),
+					SubjectID: pointerx.Ptr("s1"),
 				},
 				{
 					Namespace: n.Name,
 					Object:    "o2",
 					Relation:  "rel",
-					SubjectID: x.Ptr("s2"),
+					SubjectID: pointerx.Ptr("s2"),
 				},
 			}
 			for i := 0; i < len(rts); i++ {
@@ -250,7 +252,7 @@ func runCases(c client, m *namespaceTestManager) func(*testing.T) {
 
 			q := &ketoapi.RelationQuery{
 				Namespace: &n.Name,
-				Relation:  x.Ptr("rel"),
+				Relation:  pointerx.Ptr("rel"),
 			}
 			resp := c.queryTuple(t, q)
 			require.ElementsMatch(t, resp.RelationTuples, rts)
@@ -261,7 +263,7 @@ func runCases(c client, m *namespaceTestManager) func(*testing.T) {
 		})
 
 		t.Run("case=returns error with status code on unknown namespace", func(t *testing.T) {
-			c.queryTupleErr(t, herodot.ErrNotFound, &ketoapi.RelationQuery{Namespace: x.Ptr("unknown namespace")})
+			c.queryTupleErr(t, herodot.ErrNotFound, &ketoapi.RelationQuery{Namespace: pointerx.Ptr("unknown namespace")})
 		})
 
 		t.Run("case=still serves tuples from deleted namespace", func(t *testing.T) {
@@ -272,7 +274,7 @@ func runCases(c client, m *namespaceTestManager) func(*testing.T) {
 				Namespace: n.Name,
 				Object:    "o",
 				Relation:  "rel",
-				SubjectID: x.Ptr("s"),
+				SubjectID: pointerx.Ptr("s"),
 			}
 			c.createTuple(t, tuple)
 
