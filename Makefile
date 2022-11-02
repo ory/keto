@@ -21,7 +21,6 @@ SCRIPT_DEPENDENCIES = swagger \
 					trivy \
 					ory \
 					protoc-gen-js
->>>>>>> master
 
 define make-go-dependency
   # go install is responsible for not re-building when the code hasn't changed
