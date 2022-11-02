@@ -6,6 +6,7 @@
   },
   "dependencies": {
     "@grpc/grpc-js": "^1.2.6",
-    "@ory/keto-grpc-client": "file:../../proto"
+    "@ory/keto-grpc-client": "file:../../proto",
+    "google-protobuf": "^3.21.2"
   }
 }
