@@ -9,10 +9,11 @@ import (
 	"net/url"
 	"testing"
 
+	"github.com/ory/x/pointerx"
+
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/ory/keto/internal/x"
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 )
 
@@ -27,7 +28,7 @@ func TestRelationTuple(t *testing.T) {
 					Namespace: "n",
 					Object:    "o",
 					Relation:  "r",
-					SubjectID: x.Ptr("s"),
+					SubjectID: pointerx.Ptr("s"),
 				},
 				expected: "n:o#r@s",
 			},
@@ -62,7 +63,7 @@ func TestRelationTuple(t *testing.T) {
 					Namespace: "n",
 					Object:    "o",
 					Relation:  "r",
-					SubjectID: x.Ptr("s"),
+					SubjectID: pointerx.Ptr("s"),
 				},
 			},
 			{
@@ -168,7 +169,7 @@ func TestRelationTuple(t *testing.T) {
 				Namespace: "n",
 				Object:    "o",
 				Relation:  "r",
-				SubjectID: x.Ptr("s"),
+				SubjectID: pointerx.Ptr("s"),
 			},
 			{
 				Namespace: "n",
@@ -181,7 +182,7 @@ func TestRelationTuple(t *testing.T) {
 				},
 			},
 			{
-				SubjectID: x.Ptr(""),
+				SubjectID: pointerx.Ptr(""),
 			},
 		} {
 			t.Run(fmt.Sprintf("case=%d", i), func(t *testing.T) {
@@ -275,7 +276,7 @@ func TestRelationTuple(t *testing.T) {
 					Namespace: "n",
 					Object:    "o",
 					Relation:  "r",
-					SubjectID: x.Ptr("user"),
+					SubjectID: pointerx.Ptr("user"),
 				},
 			},
 		} {
@@ -300,7 +301,7 @@ func TestRelationTuple(t *testing.T) {
 						Namespace: "n",
 						Object:    "o",
 						Relation:  "r",
-						SubjectID: x.Ptr("s"),
+						SubjectID: pointerx.Ptr("s"),
 					},
 					expected: `
 {
@@ -363,10 +364,10 @@ func TestRelationQuery(t *testing.T) {
 					"subject_id": []string{"foo"},
 				},
 				r: &RelationQuery{
-					Namespace: x.Ptr("n"),
-					Object:    x.Ptr("o"),
-					Relation:  x.Ptr("r"),
-					SubjectID: x.Ptr("foo"),
+					Namespace: pointerx.Ptr("n"),
+					Object:    pointerx.Ptr("o"),
+					Relation:  pointerx.Ptr("r"),
+					SubjectID: pointerx.Ptr("foo"),
 				},
 			},
 			{
@@ -379,9 +380,9 @@ func TestRelationQuery(t *testing.T) {
 					"subject_set.relation":  []string{"sr"},
 				},
 				r: &RelationQuery{
-					Namespace: x.Ptr("n"),
-					Object:    x.Ptr("o"),
-					Relation:  x.Ptr("r"),
+					Namespace: pointerx.Ptr("n"),
+					Object:    pointerx.Ptr("o"),
+					Relation:  pointerx.Ptr("r"),
 					SubjectSet: &SubjectSet{
 						Namespace: "sn",
 						Object:    "so",
@@ -395,8 +396,8 @@ func TestRelationQuery(t *testing.T) {
 					"relation":  []string{"r"},
 				},
 				r: &RelationQuery{
-					Namespace: x.Ptr("n"),
-					Relation:  x.Ptr("r"),
+					Namespace: pointerx.Ptr("n"),
+					Relation:  pointerx.Ptr("r"),
 				},
 			},
 		} {

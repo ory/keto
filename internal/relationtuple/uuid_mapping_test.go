@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/ory/herodot"
+	"github.com/ory/x/pointerx"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"golang.org/x/exp/slices"
@@ -16,7 +17,6 @@ import (
 	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/namespace"
 	"github.com/ory/keto/internal/relationtuple"
-	"github.com/ory/keto/internal/x"
 	"github.com/ory/keto/ketoapi"
 )
 
@@ -45,7 +45,7 @@ func TestMapper(t *testing.T) {
 						Namespace: nspace.Name,
 						Object:    "object",
 						Relation:  "relation",
-						SubjectID: x.Ptr("subject"),
+						SubjectID: pointerx.Ptr("subject"),
 					},
 				},
 			},
@@ -69,7 +69,7 @@ func TestMapper(t *testing.T) {
 							Namespace: nspace.Name,
 							Object:    fmt.Sprintf("object %d", i),
 							Relation:  "relation",
-							SubjectID: x.Ptr("subject"),
+							SubjectID: pointerx.Ptr("subject"),
 						}
 					}
 					return rts
@@ -82,7 +82,7 @@ func TestMapper(t *testing.T) {
 						Namespace: "unknown",
 						Object:    "object",
 						Relation:  "relation",
-						SubjectID: x.Ptr("subject"),
+						SubjectID: pointerx.Ptr("subject"),
 					},
 				},
 				err: herodot.ErrNotFound,
@@ -118,10 +118,10 @@ func TestMapper(t *testing.T) {
 			{
 				name: "all fields set",
 				query: &ketoapi.RelationQuery{
-					Namespace: x.Ptr(nspace.Name),
-					Object:    x.Ptr("object"),
-					Relation:  x.Ptr("relation"),
-					SubjectID: x.Ptr("subject"),
+					Namespace: pointerx.Ptr(nspace.Name),
+					Object:    pointerx.Ptr("object"),
+					Relation:  pointerx.Ptr("relation"),
+					SubjectID: pointerx.Ptr("subject"),
 				},
 			},
 			{
@@ -137,7 +137,7 @@ func TestMapper(t *testing.T) {
 			{
 				name: "non-mapped fields",
 				query: &ketoapi.RelationQuery{
-					Relation: x.Ptr("relation"),
+					Relation: pointerx.Ptr("relation"),
 					SubjectSet: &ketoapi.SubjectSet{
 						Namespace: nspace.Name,
 						Relation:  "relation",
@@ -148,7 +148,7 @@ func TestMapper(t *testing.T) {
 			{
 				name: "unknown namespace",
 				query: &ketoapi.RelationQuery{
-					Namespace: x.Ptr("unknown"),
+					Namespace: pointerx.Ptr("unknown"),
 				},
 				err: herodot.ErrNotFound,
 			},

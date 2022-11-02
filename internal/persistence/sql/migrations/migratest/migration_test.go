@@ -16,6 +16,7 @@ import (
 	"github.com/ory/x/fsx"
 	"github.com/ory/x/logrusx"
 	"github.com/ory/x/networkx"
+	"github.com/ory/x/pointerx"
 	"github.com/ory/x/popx"
 	"github.com/ory/x/sqlcon"
 	"github.com/sirupsen/logrus"
@@ -107,7 +108,7 @@ func TestMigrations(t *testing.T) {
 							Namespace: "foo",
 							Object:    "object",
 							Relation:  "relation",
-							SubjectID: x.Ptr("user"),
+							SubjectID: pointerx.Ptr("user"),
 						},
 						{
 							Namespace: "foo",
@@ -189,13 +190,13 @@ func TestMigrations(t *testing.T) {
 							Namespace: namespaces[1].Name,
 							Object:    oldRTs[i].Object,
 							Relation:  "pagination-works",
-							SubjectID: x.Ptr(oldRTs[i].SubjectID.String),
+							SubjectID: pointerx.Ptr(oldRTs[i].SubjectID.String),
 						}
 					}
 					require.NoError(t, p.Connection(ctx).Create(oldRTs))
 					require.NoError(t, tm.Up(ctx))
 
-					newRTs, _, err := p.GetRelationTuples(ctx, &relationtuple.RelationQuery{Relation: x.Ptr("pagination-works")}, x.WithSize(len(oldRTs)))
+					newRTs, _, err := p.GetRelationTuples(ctx, &relationtuple.RelationQuery{Relation: pointerx.Ptr("pagination-works")}, x.WithSize(len(oldRTs)))
 					require.NoError(t, err)
 					assert.Len(t, newRTs, len(oldRTs))
 					actual, err := reg.Mapper().ToTuple(ctx, newRTs...)

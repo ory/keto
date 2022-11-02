@@ -77,3 +77,17 @@ http_download() {
 	echo "http_download unable to find wget or curl"
 	return 1
 }
+update_binary_version() {
+  bindir=$1
+  binname=$2
+  version=$3
+  echo "updating binary version to ${version}"
+  echo "${version}" > "${bindir}/.${binname}.version"
+}
+check_binary_version() {
+  bindir=$1
+  binname=$2
+  version=$3
+  echo "checking binary version"
+  [ "$(cat "${bindir}/.${binname}.version")" = "${version}" ]
+}

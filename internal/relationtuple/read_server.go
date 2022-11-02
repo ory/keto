@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/ory/x/pointerx"
+
 	"github.com/ory/keto/ketoapi"
 
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
@@ -47,21 +49,21 @@ func (q *deprecatedQueryWrapper) GetObject() *string {
 	if q.Object == "" {
 		return nil
 	}
-	return x.Ptr(q.Object)
+	return pointerx.Ptr(q.Object)
 }
 
 func (q *deprecatedQueryWrapper) GetNamespace() *string {
 	if q.Namespace == "" {
 		return nil
 	}
-	return x.Ptr(q.Namespace)
+	return pointerx.Ptr(q.Namespace)
 }
 
 func (q *deprecatedQueryWrapper) GetRelation() *string {
 	if q.Relation == "" {
 		return nil
 	}
-	return x.Ptr(q.Relation)
+	return pointerx.Ptr(q.Relation)
 }
 
 func (h *handler) ListRelationTuples(ctx context.Context, req *rts.ListRelationTuplesRequest) (*rts.ListRelationTuplesResponse, error) {

@@ -45,7 +45,7 @@ func TestStatusCmd(t *testing.T) {
 			})
 
 			t.Run("case=block", func(t *testing.T) {
-				ctx := context.WithValue(context.Background(), client.ContextKeyTimeout, time.Second)
+				ctx := context.WithValue(context.Background(), client.ContextKeyTimeout, time.Millisecond)
 
 				l, err := net.Listen("tcp", "127.0.0.1:0")
 				require.NoError(t, err)
@@ -95,25 +95,27 @@ func TestStatusCmd(t *testing.T) {
 	}
 }
 
-func authInterceptor(ctx context.Context, req any, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp any, err error) {
-	md, ok := metadata.FromIncomingContext(ctx)
-	if !ok {
-		return nil, errors.New("not authorized, no metadata")
+func authInterceptor(header, validValue string) func(ctx context.Context, req any, _ *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp any, err error) {
+	return func(ctx context.Context, req any, _ *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp any, err error) {
+		md, ok := metadata.FromIncomingContext(ctx)
+		if !ok {
+			return nil, errors.New("not authorized, no metadata")
+		}
+		vals := md.Get(header)
+		if len(vals) != 1 {
+			return nil, errors.New("not authorized, no header values")
+		}
+		if vals[0] != validValue {
+			return nil, errors.New("not authorized, incorrect value")
+		}
+		return handler(ctx, req)
 	}
-	vals := md.Get("authorization")
-	if len(vals) != 1 {
-		return nil, errors.New("not authorized, no authorization header")
-	}
-	if vals[0] != "Bearer secret" {
-		return nil, errors.New("not authorized")
-	}
-	return handler(ctx, req)
 }
 
 func TestAuthorizedRequest(t *testing.T) {
 	ts := client.NewTestServer(
 		t, "read", []*namespace.Namespace{{Name: t.Name()}}, newStatusCmd,
-		driver.WithGRPCUnaryInterceptors(authInterceptor),
+		driver.WithGRPCUnaryInterceptors(authInterceptor("authorization", "Bearer secret")),
 	)
 	defer ts.Shutdown(t)
 
@@ -125,6 +127,30 @@ func TestAuthorizedRequest(t *testing.T) {
 	t.Run("case=authorized", func(t *testing.T) {
 		t.Setenv("KETO_BEARER_TOKEN", "secret")
 		out := ts.Cmd.ExecNoErr(t)
+		assert.Contains(t, out, "SERVING")
+	})
+}
+
+func TestAuthorityRequest(t *testing.T) {
+	ts := client.NewTestServer(
+		t, "read", []*namespace.Namespace{{Name: t.Name()}}, newStatusCmd,
+		driver.WithGRPCUnaryInterceptors(authInterceptor(":authority", "example.com")),
+	)
+	defer ts.Shutdown(t)
+
+	t.Run("case=no authority", func(t *testing.T) {
+		out := ts.Cmd.ExecExpectedErr(t)
+		assert.Contains(t, out, "not authorized")
+	})
+
+	t.Run("case=env authority", func(t *testing.T) {
+		t.Setenv("KETO_AUTHORITY", "example.com")
+		out := ts.Cmd.ExecNoErr(t)
+		assert.Contains(t, out, "SERVING")
+	})
+
+	t.Run("case=flag authority", func(t *testing.T) {
+		out := ts.Cmd.ExecNoErr(t, "--"+client.FlagAuthority, "example.com")
 		assert.Contains(t, out, "SERVING")
 	})
 }

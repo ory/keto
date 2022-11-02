@@ -10,6 +10,8 @@ import (
 	"net/url"
 	"testing"
 
+	"github.com/ory/x/pointerx"
+
 	"github.com/ory/keto/ketoapi"
 
 	"github.com/ory/keto/internal/driver/config"
@@ -116,7 +118,7 @@ func TestRESTHandler(t *testing.T) {
 					Namespace: "not" + nspaces[0].Name,
 					Object:    "o",
 					Relation:  "r",
-					SubjectID: x.Ptr("s"),
+					SubjectID: pointerx.Ptr("s"),
 				}).ToURLQuery().Encode())
 				require.NoError(t, err)
 
@@ -128,7 +130,7 @@ func TestRESTHandler(t *testing.T) {
 					Namespace: nspaces[0].Name,
 					Object:    "o",
 					Relation:  "r",
-					SubjectID: x.Ptr("s"),
+					SubjectID: pointerx.Ptr("s"),
 				}
 				relationtuple.MapAndWriteTuples(t, reg, rt)
 
@@ -144,7 +146,7 @@ func TestRESTHandler(t *testing.T) {
 					Namespace: nspaces[0].Name,
 					Object:    "foo",
 					Relation:  "r",
-					SubjectID: x.Ptr("s"),
+					SubjectID: pointerx.Ptr("s"),
 				}).ToURLQuery().Encode())
 				require.NoError(t, err)
 

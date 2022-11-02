@@ -25,6 +25,58 @@
 Ory Keto is the first and most popular open source implementation of "Zanzibar:
 Google's Consistent, Global Authorization System"!
 
+## Get Started
+
+You can use
+[Docker to run Ory Keto locally](https://www.ory.sh/docs/keto/install) or use
+the Ory CLI to try out Ory Keto:
+
+```sh
+# This example works best in Bash
+bash <(curl https://raw.githubusercontent.com/ory/meta/master/install.sh) -b . ory
+sudo mv ./ory /usr/local/bin/
+
+# Or with Homebrew installed
+brew install ory/tap/cli
+```
+
+create a new project (you may also use
+[Docker](https://www.ory.sh/docs/keto/install))
+
+```sh
+ory create project --name "Ory Keto Example"
+export project_id="{set to the id from output}"
+```
+
+and follow the quick & easy steps below.
+
+## Create a namespace with the Ory Permission Language
+
+```sh
+# Write a simple configuration with one namespace
+echo "class Document implements Namespace {}" > config.ts
+
+# Apply that configuration
+ory patch opl --project $project_id -f file://./config.ts
+
+# Create a relationship that grants tom access to a document
+echo "Document:secret#read@tom" \
+  | ory parse relation-tuples --project=$project_id --format=json - \
+  | ory create relation-tuples --project=$project_id -
+
+# List all relationships
+ory list relation-tuples --project=$project_id
+# Output:
+#   NAMESPACE	OBJECT	RELATION NAME	SUBJECT
+#   Document	secret	read		tom
+#
+#   NEXT PAGE TOKEN
+#   IS LAST PAGE	true
+```
+
+Now, check out your project on the [Ory Network](https://console.ory.sh/) or
+continue with a [more in-depth guide](https://www.ory.sh/docs/keto/quickstart).
+
 ### Ory Keto on the Ory Network
 
 The [Ory Network](https://www.ory.sh/cloud) is the fastest, most secure and
@@ -232,7 +284,7 @@ that your company deserves a spot here, reach out to
                 </picture>
             </td>
             <td><a href="https://unifiedglobalarchiving.com/data-detect/">unifiedglobalarchiving.com/data-detect/</a></td>
-        </tr>        
+        </tr>
         <tr>
             <td>Adopter *</td>
             <td>Sainsbury's</td>
@@ -265,7 +317,7 @@ that your company deserves a spot here, reach out to
                 </picture>
             </td>
             <td><a href="https://reyah.eu/">reyah.eu</a></td>
-        </tr>        
+        </tr>
         <tr>
             <td>Adopter *</td>
             <td>Zero</td>
@@ -276,7 +328,7 @@ that your company deserves a spot here, reach out to
                 </picture>
             </td>
             <td><a href="https://getzero.dev/">getzero.dev</a></td>
-        </tr>        
+        </tr>
         <tr>
             <td>Adopter *</td>
             <td>Padis</td>
@@ -309,7 +361,7 @@ that your company deserves a spot here, reach out to
                 </picture>
             </td>
             <td><a href="https://securityonionsolutions.com/">securityonionsolutions.com</a></td>
-        </tr>        
+        </tr>
         <tr>
             <td>Adopter *</td>
             <td>Factly</td>
@@ -353,7 +405,7 @@ that your company deserves a spot here, reach out to
                 </picture>
             </td>
             <td><a href="https://spiri.bo/">spiri.bo</a></td>
-        </tr>        
+        </tr>
         <tr>
             <td>Sponsor</td>
             <td>Strivacity</td>
@@ -464,7 +516,7 @@ that your company deserves a spot here, reach out to
             </td>
             <td><a href="https://www.lunasec.io/">lunasec.io</a></td>
         </tr>
-                <tr>
+            <tr>
             <td>Adopter *</td>
             <td>Serlo</td>
             <td align="center">
@@ -474,6 +526,18 @@ that your company deserves a spot here, reach out to
                 </picture>
             </td>
             <td><a href="https://serlo.org/">serlo.org</a></td>
+        </tr>
+        </tr>
+            <tr>
+            <td>Adopter *</td>
+            <td>dyrector.io</td>
+            <td align="center">
+                <picture>
+                    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/ory/meta/master/static/adopters/light/dyrector_io.svg" />
+                    <img height="32px" src="https://raw.githubusercontent.com/ory/meta/master/static/adopters/dark/dyrector_io.svg" alt="dyrector.io">
+                </picture>
+            </td>
+            <td><a href="https://dyrector.io/">dyrector.io</a></td>
         </tr>
     </tbody>
 </table>
@@ -495,7 +559,7 @@ TheCrealm.
 
 <!--END ADOPTERS-->
 
-### Installation
+## Installation
 
 Head over to the documentation to learn about ways of
 [installing Ory Keto](https://www.ory.sh/docs/keto/install).

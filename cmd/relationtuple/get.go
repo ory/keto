@@ -6,12 +6,12 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/ory/keto/internal/x"
 	"github.com/ory/keto/ketoapi"
 
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 
 	"github.com/ory/x/flagx"
+	"github.com/ory/x/pointerx"
 
 	"github.com/spf13/pflag"
 
@@ -49,7 +49,7 @@ func registerRelationTupleFlags(flags *pflag.FlagSet) {
 func readQueryFromFlags(cmd *cobra.Command) (*rts.RelationQuery, error) {
 	getStringPtr := func(flagName string) *string {
 		if f := cmd.Flags().Lookup(flagName); f.Changed {
-			return x.Ptr(f.Value.String())
+			return pointerx.Ptr(f.Value.String())
 		}
 		return nil
 	}

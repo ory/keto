@@ -18,11 +18,14 @@ GO_DEPENDENCIES = golang.org/x/tools/cmd/goimports \
 SCRIPT_DEPENDENCIES = swagger \
 					protoc \
 					grype \
-					trivy
+					trivy \
+					ory \
+					protoc-gen-js
+>>>>>>> master
 
 define make-go-dependency
   # go install is responsible for not re-building when the code hasn't changed
-  .bin/$2: .bin/go.mod .bin/go.sum
+  .bin/$2: .bin/go.sum
 		cd .bin; GOBIN=$(PWD)/.bin go install $1
 endef
 $(foreach dep, $(GO_DEPENDENCIES), $(eval $(call make-go-dependency,$(dep),$(notdir $(dep)))))
@@ -101,8 +104,9 @@ build:
 # Generate APIs and client stubs from the definitions
 #
 .PHONY: buf-gen
-buf-gen: .bin/buf .bin/protoc .bin/protoc-gen-go .bin/protoc-gen-go-grpc .bin/protoc-gen-doc node_modules
-	buf generate
+buf-gen: .bin/buf .bin/protoc .bin/protoc-gen-go .bin/protoc-gen-go-grpc .bin/protoc-gen-js .bin/protoc-gen-doc node_modules
+	buf generate proto
+	make format
 	@echo "All code was generated successfully!"
 
 #
@@ -110,7 +114,7 @@ buf-gen: .bin/buf .bin/protoc .bin/protoc-gen-go .bin/protoc-gen-go-grpc .bin/pr
 #
 .PHONY: buf-lint
 buf-lint: .bin/buf
-	buf lint
+	cd proto; buf lint
 	@echo "All lint checks passed successfully!"
 
 #
@@ -157,6 +161,16 @@ generate: .bin/stringer
 	go generate ./...
 	make format
 
+licenses: .bin/licenses node_modules  # checks open-source licenses
+	.bin/licenses
+
+.bin/licenses: Makefile
+	curl https://raw.githubusercontent.com/ory/ci/master/licenses/install | sh
+
 .bin/ory: Makefile
 	curl https://raw.githubusercontent.com/ory/meta/master/install.sh | bash -s -- -b .bin ory v0.1.44
 	touch .bin/ory
+
+node_modules: package-lock.json
+	npm ci
+	touch node_modules

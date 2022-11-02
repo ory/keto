@@ -3,11 +3,12 @@ set -euo pipefail
 
 source ./scripts/install-helpers.sh
 
-PROTOBUF_VERSION=21.9
+PROTOBUF_JS_VERSION=3.21.2
+CHECKSUM=''
 
 usage() {
 	cat <<EOF
-Install protoc $PROTOBUF_VERSION from the official release page.
+Install protoc $PROTOBUF_JS_VERSION from the official release page.
 
 Env Vars:
   BINDIR  - The directory to install the binary to. Defaults to ./.bin
@@ -30,7 +31,7 @@ execute() {
 }
 
 OWNER=protocolbuffers
-REPO=protobuf
+REPO=protobuf-javascript
 
 OS=$(uname_os)
 ARCH=$(uname_arch)
@@ -46,18 +47,20 @@ esac
 
 GITHUB_DOWNLOAD=https://github.com/${OWNER}/${REPO}/releases/download
 BINDIR=${BINDIR:-./.bin}
-NAME="protoc-${PROTOBUF_VERSION}-${OS}-${ARCH}"
+NAME="protobuf-javascript-${PROTOBUF_JS_VERSION}-${OS}-${ARCH}"
 TARBALL="${NAME}.zip"
-TARBALL_URL=${GITHUB_DOWNLOAD}/v${PROTOBUF_VERSION}/${TARBALL}
+TARBALL_URL=${GITHUB_DOWNLOAD}/v${PROTOBUF_JS_VERSION}/${TARBALL}
 
-BINNAME="protoc"
+BINNAME="protoc-gen-js"
 if [ "${OS}" = "windows" ]; then
-    BINNAME="protoc.exe"
+    BINNAME="protoc-gen-js.exe"
 fi
 
-if [ "$($BINDIR/$BINNAME --version)" = "libprotoc ${PROTOBUF_VERSION}" ]; then
-    echo "protoc ${PROTOBUF_VERSION} already installed"
+if check_binary_version "$BINDIR" "$BINNAME" "$PROTOBUF_JS_VERSION"; then
+    echo "protoc-gen-js ${PROTOBUF_JS_VERSION} already installed"
     exit 0
 fi
 
 execute
+
+update_binary_version "$BINDIR" "$BINNAME" "$PROTOBUF_JS_VERSION"
