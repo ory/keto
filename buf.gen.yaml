@@ -1,4 +1,4 @@
-version: v1beta1
+version: v1
 plugins:
   - name: go
     out: proto
@@ -18,5 +18,6 @@ plugins:
     opt: ts_out=proto
     path: node_modules/.bin/protoc-gen-ts
   - name: doc
-    out: docs/.generated
-    opt: docs/contrib/protoc-gen-doc-mdx.tmpl,docs/.generated/proto-api.mdx
+    out: proto
+    opt: markdown,proto/buf.md
+    strategy: all

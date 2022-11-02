@@ -1,0 +1,10 @@
+version: v1
+build:
+  excludes:
+    - node_modules
+lint:
+  use:
+    - DEFAULT
+breaking:
+  use:
+    - FILE

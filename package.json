@@ -13,7 +13,7 @@
   "prettier": "ory-prettier-styles",
   "dependencies": {
     "@openapitools/openapi-generator-cli": "^2.1.18",
-    "grpc-tools": "^1.11.2",
+    "grpc-tools": "^1.11.3",
     "grpc_tools_node_protoc_ts": "^5.3.2"
   },
   "devDependencies": {
@@ -23,10 +23,5 @@
     "ory-prettier-styles": "^1.2.0",
     "prettier": "2.7.1",
     "prettier-plugin-packagejson": "^2.2.18"
-  },
-  "collective": {
-    "type": "opencollective",
-    "url": "https://opencollective.com/ory",
-    "logo": "https://opencollective.com/ory/logo.txt"
   }
 }
