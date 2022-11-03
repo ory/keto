@@ -178,6 +178,8 @@
   ([2686e98](https://github.com/ory/keto/commit/2686e982772507c9423373405cc406dd47ebaad2))
 - Improve rewrites example
   ([d809c76](https://github.com/ory/keto/commit/d809c76c8359093bb9e73b1fc386b09da3e6b88e))
+- Standardize license headers ([#1061](https://github.com/ory/keto/issues/1061))
+  ([6c0e1ba](https://github.com/ory/keto/commit/6c0e1ba87f4d3a355cebd0ea77f28319be2dd606))
 - Update README content and links
   ([#1043](https://github.com/ory/keto/issues/1043))
   ([7aacf0d](https://github.com/ory/keto/commit/7aacf0df571c6bdfb21b4289d53b11a46ccde580))
