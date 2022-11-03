@@ -8,6 +8,8 @@ import (
 	"net/http"
 	"net/url"
 
+	"github.com/bufbuild/connect-go"
+
 	"github.com/ory/herodot"
 
 	"github.com/ory/keto/ketoapi"
@@ -268,4 +270,15 @@ func (h *Handler) Check(ctx context.Context, req *rts.CheckRequest) (*rts.CheckR
 		Allowed:   allowed,
 		Snaptoken: "not yet implemented",
 	}, nil
+}
+
+type ConnectHandler Handler
+
+func (h *ConnectHandler) Check(ctx context.Context, req *connect.Request[rts.CheckRequest]) (*connect.Response[rts.CheckResponse], error) {
+	res, err := (*Handler)(h).Check(ctx, req.Msg)
+	if err != nil {
+		return nil, err
+	}
+	cRes := connect.NewResponse(res)
+	cRes.Header().Set()
 }

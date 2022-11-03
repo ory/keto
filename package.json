@@ -12,11 +12,15 @@
   },
   "prettier": "ory-prettier-styles",
   "dependencies": {
+    "@bufbuild/connect-web": "^0.3.1",
+    "@bufbuild/protobuf": "^0.2.1",
     "@openapitools/openapi-generator-cli": "^2.1.18",
-    "grpc-tools": "^1.11.2",
-    "grpc_tools_node_protoc_ts": "^5.3.2"
+    "grpc_tools_node_protoc_ts": "^5.3.2",
+    "grpc-tools": "^1.11.2"
   },
   "devDependencies": {
+    "@bufbuild/protoc-gen-connect-web": "^0.3.1",
+    "@bufbuild/protoc-gen-es": "^0.2.1",
     "doctoc": "^2.0.1",
     "opencollective": "^1.0.3",
     "ory-prettier-styles": "^1.2.0",

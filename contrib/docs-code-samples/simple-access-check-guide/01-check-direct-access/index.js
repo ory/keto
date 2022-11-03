@@ -1,24 +1,17 @@
-import grpc from "@ory/keto-grpc-client/node_modules/@grpc/grpc-js/build/src/index.js"
-import { relationTuples, check, checkService } from "@ory/keto-grpc-client"
+import { CheckService } from "@ory/keto-grpc-client/ory/keto/v1beta/check_service_connectweb"
+import {
+  createConnectTransport,
+  createPromiseClient,
+} from "@bufbuild/connect-web";
 
-const checkClient = new checkService.CheckServiceClient(
-  "127.0.0.1:4466",
-  grpc.credentials.createInsecure(),
-)
+const transport = createConnectTransport({
+  baseUrl: "127.0.0.1:4466",
+});
+const checkClient = createPromiseClient(CheckService, transport);
 
-const checkRequest = new check.CheckRequest()
-checkRequest.setNamespace("messages")
-checkRequest.setObject("02y_15_4w350m3")
-checkRequest.setRelation("decypher")
-
-const sub = new relationTuples.Subject()
-sub.setId("john")
-checkRequest.setSubject(sub)
-
-checkClient.check(checkRequest, (error, resp) => {
-  if (error) {
-    console.log("Encountered error:", error)
-  } else {
-    console.log(resp.getAllowed() ? "Allowed" : "Denied")
-  }
-})
+try {
+  const response = await checkClient.check({namespace: "messages", object: "02y_15_4w350m3", relation: "decypher"})
+  console.log(response.allowed ? "Allowed" : "Denied")
+} catch (error) {
+  console.log("Encountered error:", error)
+}

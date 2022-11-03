@@ -23,3 +23,13 @@ plugins:
   - name: doc
     out: docs/.generated
     opt: docs/contrib/protoc-gen-doc-mdx.tmpl,docs/.generated/proto-api.mdx
+  - name: es
+    out: proto
+    # With target=ts, we generate TypeScript files.
+    # Use target=js+dts to generate JavaScript and TypeScript declaration files
+    # like remote generation does.
+    opt: target=ts
+  - name: connect-web
+    out: proto
+    # With target=ts, we generate TypeScript files.
+    opt: target=ts
