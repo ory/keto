@@ -120,10 +120,16 @@ func (r *RegistryDefault) ServeAll(ctx context.Context) error {
 
 	eg := &errgroup.Group{}
 
-	eg.Go(r.serveRead(innerCtx, doneShutdown))
-	eg.Go(r.serveWrite(innerCtx, doneShutdown))
-	eg.Go(r.serveOPLSyntax(innerCtx, doneShutdown))
-	eg.Go(r.serveMetrics(innerCtx, doneShutdown))
+	// We need to separate the setup (invoking the functions that return the serve functions) from running the serve
+	// functions to mitigate race contitions in the HTTP router.
+	for _, serve := range []func() error{
+		r.serveRead(innerCtx, doneShutdown),
+		r.serveWrite(innerCtx, doneShutdown),
+		r.serveOPLSyntax(innerCtx, doneShutdown),
+		r.serveMetrics(innerCtx, doneShutdown),
+	} {
+		eg.Go(serve)
+	}
 
 	return eg.Wait()
 }
