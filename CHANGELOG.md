@@ -5,7 +5,7 @@
 
 **Table of Contents**
 
-- [0.0.0 (2022-11-02)](#000-2022-11-02)
+- [0.0.0 (2022-11-03)](#000-2022-11-03)
   - [Bug Fixes](#bug-fixes)
   - [Documentation](#documentation)
   - [Features](#features)
@@ -139,7 +139,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.10.0-alpha.0...v0.0.0) (2022-11-02)
+# [0.0.0](https://github.com/ory/keto/compare/v0.10.0-alpha.0...v0.0.0) (2022-11-03)
 
 ### Bug Fixes
 
@@ -150,6 +150,8 @@
 
 - Properly lex imports in OPL ([#1041](https://github.com/ory/keto/issues/1041))
   ([26944e9](https://github.com/ory/keto/commit/26944e9e2f5d851aec63e46b3777d2d1ebaca3f8))
+- Race condition in setup ([#1107](https://github.com/ory/keto/issues/1107))
+  ([07dfce7](https://github.com/ory/keto/commit/07dfce7e964425e0fbe37b340c38c4404dd3fd2d))
 - Relax OPL parsing ([#1059](https://github.com/ory/keto/issues/1059))
   ([a15c5ad](https://github.com/ory/keto/commit/a15c5ad8704458a5e8bdcfaa80f80b45f9696418)):
 
