@@ -49,8 +49,9 @@ node_modules: package-lock.json
 	go build -o .bin/clidoc ./cmd/clidoc/.
 
 .PHONY: format
-format: .bin/goimports node_modules
-	goimports -w -local github.com/ory/keto *.go internal cmd contrib ketoctx ketoapi embedx
+format: .bin/ory .bin/goimports node_modules
+	.bin/ory dev headers license --exclude=.bin --exclude=internal/httpclient --exclude=proto
+	.bin/goimports -w -local github.com/ory/keto *.go internal cmd contrib ketoctx ketoapi embedx
 	npm exec -- prettier --write .
 
 .PHONY: install
@@ -70,10 +71,10 @@ sdk: .bin/swagger .bin/ory node_modules
 		-c github.com/ory/x/healthx \
 		-x internal/httpclient \
 		-x internal/e2e
-	ory dev swagger sanitize ./spec/swagger.json
+	.bin/ory dev swagger sanitize ./spec/swagger.json
 	swagger validate ./spec/swagger.json
 	CIRCLE_PROJECT_USERNAME=ory CIRCLE_PROJECT_REPONAME=keto \
-		ory dev openapi migrate \
+		.bin/ory dev openapi migrate \
 			--health-path-tags metadata \
 			-p https://raw.githubusercontent.com/ory/x/master/healthx/openapi/patch.yaml \
 			-p file://.schema/openapi/patches/meta.yaml \
@@ -157,12 +158,17 @@ post-release: .bin/yq
 .PHONY: generate
 generate: .bin/stringer
 	go generate ./...
+	make format
 
 licenses: .bin/licenses node_modules  # checks open-source licenses
 	.bin/licenses
 
 .bin/licenses: Makefile
 	curl https://raw.githubusercontent.com/ory/ci/master/licenses/install | sh
+
+.bin/ory: Makefile
+	curl https://raw.githubusercontent.com/ory/meta/master/install.sh | bash -s -- -b .bin ory v0.1.47
+	touch .bin/ory
 
 node_modules: package-lock.json
 	npm ci
