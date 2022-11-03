@@ -276,9 +276,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.ORY_BOT_PAT }}
         run: |
-          git config --local user.email "60093411+ory-bot@users.noreply.github.com"
-          git config --local user.name "ory-bot"
-
           echo "---
           title: Protocol buffers API
           ---
@@ -290,6 +287,10 @@ jobs:
             echo "No changes to commit"
             exit 0
           fi
+
+          git config --local user.email "60093411+ory-bot@users.noreply.github.com"
+          git config --local user.name "ory-bot"
+
           git stash
           git pull --rebase origin master
           git stash apply
