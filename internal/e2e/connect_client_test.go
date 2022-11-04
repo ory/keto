@@ -131,7 +131,7 @@ func (g *connectClient) queryTupleErr(t require.TestingT, expected herodot.Defau
 }
 
 func (g *connectClient) check(t require.TestingT, r *ketoapi.RelationTuple) bool {
-	c := rtsconnect.NewCheckServiceClient(http.DefaultClient, g.readRemote)
+	c := rtsconnect.NewCheckServiceClient(http.DefaultClient, "http://"+g.readRemote)
 
 	req := &rts.CheckRequest{
 		Tuple: &rts.RelationTuple{

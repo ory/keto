@@ -66,6 +66,12 @@ func Test(t *testing.T) {
 					oplSyntaxRemote: reg.Config(ctx).OPLSyntaxAPIListenOn(),
 					ctx:             ctx,
 				},
+				//&connectClient{
+				//	readRemote:      reg.Config(ctx).ReadAPIListenOn(),
+				//	writeRemote:     reg.Config(ctx).WriteAPIListenOn(),
+				//	oplSyntaxRemote: reg.Config(ctx).OPLSyntaxAPIListenOn(),
+				//	ctx:             ctx,
+				//},
 				&restClient{
 					readURL:      "http://" + reg.Config(ctx).ReadAPIListenOn(),
 					writeURL:     "http://" + reg.Config(ctx).WriteAPIListenOn(),

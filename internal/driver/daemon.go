@@ -216,12 +216,6 @@ func multiplexPort(ctx context.Context, log *logrusx.Logger, addr string, router
 
 	grpcL := m.MatchWithWriters(cmux.HTTP2MatchHeaderFieldSendSettings("content-type", "application/grpc"))
 	httpL := m.Match(cmux.HTTP1())
-	connectL := m.Match(
-		cmux.HTTP1HeaderField("content-type", "application/proto"),
-		cmux.HTTP1HeaderField("content-type", "application/connect+proto"),
-		cmux.HTTP2HeaderField("content-type", "application/proto"),
-		cmux.HTTP2HeaderField("content-type", "application/connect+proto"),
-	)
 
 	// nolint: gosec,G112 graceful.WithDefaults already sets a timeout
 	restS := graceful.WithDefaults(&http.Server{

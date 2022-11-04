@@ -13,6 +13,7 @@ import (
 	"github.com/ory/herodot"
 
 	"github.com/ory/keto/ketoapi"
+	"github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2/rtsconnect"
 
 	"github.com/julienschmidt/httprouter"
 	"google.golang.org/grpc"
@@ -54,6 +55,9 @@ func (h *Handler) RegisterReadRoutes(r *x.ReadRouter) {
 	r.GET(OpenAPIRouteBase, h.getCheckNoStatus)
 	r.POST(RouteBase, h.postCheckMirrorStatus)
 	r.POST(OpenAPIRouteBase, h.postCheckNoStatus)
+
+	path, handler := rtsconnect.NewCheckServiceHandler((*ConnectHandler)(h))
+	r.Handler("POST", path+"*any", handler)
 }
 
 func (h *Handler) RegisterReadGRPC(s *grpc.Server) {
@@ -279,6 +283,5 @@ func (h *ConnectHandler) Check(ctx context.Context, req *connect.Request[rts.Che
 	if err != nil {
 		return nil, err
 	}
-	cRes := connect.NewResponse(res)
-	cRes.Header().Set()
+	return connect.NewResponse(res), nil
 }

@@ -9,6 +9,7 @@ replace (
 )
 
 require (
+	github.com/bufbuild/connect-go v1.1.0
 	github.com/cenkalti/backoff/v3 v3.2.2
 	github.com/ghodss/yaml v1.0.0
 	github.com/go-sql-driver/mysql v1.6.0
