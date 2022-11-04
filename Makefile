@@ -50,7 +50,7 @@ node_modules: package-lock.json
 
 .PHONY: format
 format: .bin/ory .bin/goimports node_modules
-	.bin/ory dev headers copyright --exclude=.bin --exclude=internal/httpclient --exclude=proto
+	.bin/ory dev headers copyright --type=open-source --exclude=.bin --exclude=internal/httpclient --exclude=proto
 	.bin/goimports -w -local github.com/ory/keto *.go internal cmd contrib ketoctx ketoapi embedx
 	npm exec -- prettier --write .
 
