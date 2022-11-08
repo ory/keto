@@ -187,6 +187,13 @@ func (l *lexer) nextItem() item {
 	}
 }
 
+// nextNonCommentItem returns the next item from the input that is not a comment.
+func (l *lexer) nextNonCommentItem() (item item) {
+	for item = l.nextItem(); item.Typ == itemComment; item = l.nextItem() {
+	}
+	return
+}
+
 // scanIdentifier scans an identifier.
 func (l *lexer) scanIdentifier() bool {
 	if !l.accept(letters) {

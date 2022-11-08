@@ -91,12 +91,12 @@ var parserTestCases = []struct {
 	permits = {
 	  view: (ctx: Context): boolean =>
 	    (
-		this.related.parents.traverse((p) =>
+		this.related.parents.traverse((p) /* comment */ =>
 		  p.related.viewers.includes(ctx.subject),
-		) &&
+		) && // comment
 		this.related.parents.traverse(p => p.permits.view(ctx)) ) ||
-		(this.related.viewers.includes(ctx.subject) ||
-		this.related.viewers.includes(ctx.subject) ||
+		(this.related.viewers.includes(ctx.subject) || // some comment
+		this.related.viewers.includes(ctx.subject) || /* another comment */
 		this.related.viewers.includes(ctx.subject) ) ||
 		this.related.owners.includes(ctx.subject),
   
