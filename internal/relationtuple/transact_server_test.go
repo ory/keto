@@ -113,6 +113,35 @@ func TestWriteHandlers(t *testing.T) {
 			assert.Equal(t, http.StatusBadRequest, resp.StatusCode)
 		})
 
+		t.Run("case=empty subject set relation", func(t *testing.T) {
+			nspace := addNamespace(t)
+			rts := []*ketoapi.RelationTuple{{
+				Namespace: nspace.Name,
+				Object:    "object",
+				Relation:  "member",
+				SubjectSet: &ketoapi.SubjectSet{
+					Namespace: nspace.Name,
+					Object:    "subject1",
+					Relation:  "", // empty relation
+				},
+			}, {
+				Namespace: nspace.Name,
+				Object:    "object",
+				Relation:  "member",
+				SubjectSet: &ketoapi.SubjectSet{
+					Namespace: nspace.Name,
+					Object:    "subject2",
+					// missing relation
+				},
+			}}
+			for _, rt := range rts {
+				payload, err := json.Marshal(rt)
+				require.NoError(t, err)
+				resp := doCreate(payload)
+				assert.Equal(t, http.StatusCreated, resp.StatusCode)
+			}
+		})
+
 		t.Run("case=special chars", func(t *testing.T) {
 			nspace := addNamespace(t)
 

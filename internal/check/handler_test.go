@@ -153,6 +153,24 @@ func TestRESTHandler(t *testing.T) {
 
 				assertDenied(t, resp)
 			})
+
+			t.Run("case=returns allowed on empty subject set relation", func(t *testing.T) {
+				rt := &ketoapi.RelationTuple{
+					Namespace: nspaces[0].Name,
+					Object:    "o",
+					Relation:  "r",
+					SubjectSet: &ketoapi.SubjectSet{
+						Namespace: nspaces[0].Name,
+						Object:    "sub_object",
+					},
+				}
+				relationtuple.MapAndWriteTuples(t, reg, rt)
+
+				resp, err := ts.Client().Get(ts.URL + suite.base + "?" + rt.ToURLQuery().Encode())
+				require.NoError(t, err)
+
+				assertAllowed(t, resp)
+			})
 		})
 	}
 }
