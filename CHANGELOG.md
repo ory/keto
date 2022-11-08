@@ -5,7 +5,7 @@
 
 **Table of Contents**
 
-- [0.0.0 (2022-11-03)](#000-2022-11-03)
+- [0.0.0 (2022-11-08)](#000-2022-11-08)
   - [Bug Fixes](#bug-fixes)
   - [Documentation](#documentation)
   - [Features](#features)
@@ -139,10 +139,14 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.10.0-alpha.0...v0.0.0) (2022-11-03)
+# [0.0.0](https://github.com/ory/keto/compare/v0.10.0-alpha.0...v0.0.0) (2022-11-08)
 
 ### Bug Fixes
 
+- Allow comments in more places in OPL
+  ([#1117](https://github.com/ory/keto/issues/1117))
+  ([5f89fcf](https://github.com/ory/keto/commit/5f89fcf6730810b36014fec825e77f0011dc2462)),
+  closes [#1116](https://github.com/ory/keto/issues/1116)
 - Only type-check if there are no parser errors
   ([b4bef07](https://github.com/ory/keto/commit/b4bef07ca91b7585a52d536ee8c0c38ec1d66b9d)):
 
