@@ -40,10 +40,6 @@ $(foreach dep, $(SCRIPT_DEPENDENCIES), $(eval $(call make-script-dependency,$(de
 .bin/yq: .bin/go.mod .bin/go.sum
 	cd .bin; GOBIN=$(PWD)/.bin go install github.com/mikefarah/yq/v4
 
-node_modules: package-lock.json
-	npm ci
-	touch node_modules
-
 .PHONY: .bin/clidoc
 .bin/clidoc:
 	go build -o .bin/clidoc ./cmd/clidoc/.
