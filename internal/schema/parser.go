@@ -36,16 +36,14 @@ func (p *parser) next() (item item) {
 		item = *p.lookahead
 		p.lookahead = nil
 	} else {
-		// Get next non-comment token.
-		for item = p.lexer.nextItem(); item.Typ == itemComment; item = p.lexer.nextItem() {
-		}
+		return p.lexer.nextNonCommentItem()
 	}
 	return
 }
 
 func (p *parser) peek() item {
 	if p.lookahead == nil {
-		i := p.lexer.nextItem()
+		i := p.lexer.nextNonCommentItem()
 		p.lookahead = &i
 		return i
 	}
