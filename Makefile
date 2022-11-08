@@ -48,6 +48,7 @@ $(foreach dep, $(SCRIPT_DEPENDENCIES), $(eval $(call make-script-dependency,$(de
 format: .bin/ory .bin/goimports node_modules
 	.bin/ory dev headers copyright --type=open-source --exclude=.bin --exclude=internal/httpclient --exclude=proto
 	.bin/goimports -w -local github.com/ory/keto *.go internal cmd contrib ketoctx ketoapi embedx
+	curl https://raw.githubusercontent.com/ory/ci/kg-authors/authors/authors.sh | env PRODUCT="Ory Keto" bash
 	npm exec -- prettier --write .
 
 .PHONY: install
