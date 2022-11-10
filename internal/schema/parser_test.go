@@ -151,6 +151,54 @@ class Resource implements Namespace {
   };
 }
 `},
+	{"full example with string parameters", `
+	import { Namespace, SubjectSet, Context } from '@ory/keto-namespace-types';
+
+	class Perm implements Namespace {}
+	class User implements Namespace {}
+	class Role implements Namespace {
+		related: {
+		  perms: (Perm | SubjectSet<Role, "perms">)[]
+		  owners: Group[]
+		  policies: Policy[]
+		}
+	  
+		permits = {
+		  has_perm: (ctx: Context, perm: string): boolean => this.related.perms.includes(perm),
+		  check: (ctx: Context, perm: string): boolean => this.related.owners.traverse((p) => p.permits.check(ctx, perm)) ||
+			this.related.policies.traverse((p) => p.permits.check(ctx, perm)),
+		  get: (ctx: Context): boolean => this.permits.check(ctx, "roles.get"),
+		  }
+	  }
+	  
+	  class Policy implements Namespace {
+		related: {
+		  roles: Role[]
+		  users: (User | SubjectSet<Group, "members">)[]
+		  policies: Policy[]
+		}
+	  
+		permits = {
+		  has_perm: (ctx: Context, perm: string): boolean => this.related.users.includes(ctx.subject) &&
+			this.related.roles.traverse((p) => p.permits.has_perm(ctx, perm)),
+		  check: (ctx: Context, perm: string): boolean => this.related.policies.traverse((p) => p.permits.has_perm(ctx, perm)),
+		  get: (ctx: Context): boolean => this.permits.check(ctx, "policies.get"),
+		}
+	  }
+	  
+	  class Group implements Namespace {
+		related: {
+		  parents: Group[]
+		  members: (User | SubjectSet<Group, "members">)[]
+		  policies: Policy[]
+		}
+	  
+		permits = {
+		  check: (ctx: Context, perm: string): boolean => this.related.parents.traverse((p) => p.permits.check(ctx, perm)) ||
+			this.related.policies.traverse((p) => p.permits.has_perm(ctx, perm)),
+		}
+	  }
+	`},
 }
 
 func TestParser(t *testing.T) {

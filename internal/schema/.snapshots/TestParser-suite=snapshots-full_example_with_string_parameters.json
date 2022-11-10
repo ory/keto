@@ -1,0 +1,282 @@
+{
+  "Group": [
+    {
+      "name": "parents",
+      "types": [
+        {
+          "namespace": "Group"
+        }
+      ],
+      "params": [
+        "subject"
+      ]
+    },
+    {
+      "name": "members",
+      "types": [
+        {
+          "namespace": "User"
+        },
+        {
+          "namespace": "Group",
+          "relation": "members"
+        }
+      ],
+      "params": [
+        "subject"
+      ]
+    },
+    {
+      "name": "policies",
+      "types": [
+        {
+          "namespace": "Policy"
+        }
+      ],
+      "params": [
+        "subject"
+      ]
+    },
+    {
+      "name": "check",
+      "rewrite": {
+        "operator": "or",
+        "children": [
+          {
+            "relation": "parents",
+            "computed_subject_set_relation": "check",
+            "args": [
+              0,
+              "perm"
+            ]
+          },
+          {
+            "relation": "policies",
+            "computed_subject_set_relation": "has_perm",
+            "args": [
+              0,
+              "perm"
+            ]
+          }
+        ]
+      },
+      "params": [
+        "ctx",
+        "perm"
+      ]
+    }
+  ],
+  "Perm": null,
+  "Policy": [
+    {
+      "name": "roles",
+      "types": [
+        {
+          "namespace": "Role"
+        }
+      ],
+      "params": [
+        "subject"
+      ]
+    },
+    {
+      "name": "users",
+      "types": [
+        {
+          "namespace": "User"
+        },
+        {
+          "namespace": "Group",
+          "relation": "members"
+        }
+      ],
+      "params": [
+        "subject"
+      ]
+    },
+    {
+      "name": "policies",
+      "types": [
+        {
+          "namespace": "Policy"
+        }
+      ],
+      "params": [
+        "subject"
+      ]
+    },
+    {
+      "name": "has_perm",
+      "rewrite": {
+        "operator": "and",
+        "children": [
+          {
+            "operator": "or",
+            "children": [
+              {
+                "relation": "users",
+                "args": [
+                  1
+                ]
+              }
+            ]
+          },
+          {
+            "relation": "roles",
+            "computed_subject_set_relation": "has_perm",
+            "args": [
+              0,
+              "perm"
+            ]
+          }
+        ]
+      },
+      "params": [
+        "ctx",
+        "perm"
+      ]
+    },
+    {
+      "name": "check",
+      "rewrite": {
+        "operator": "or",
+        "children": [
+          {
+            "relation": "policies",
+            "computed_subject_set_relation": "has_perm",
+            "args": [
+              0,
+              "perm"
+            ]
+          }
+        ]
+      },
+      "params": [
+        "ctx",
+        "perm"
+      ]
+    },
+    {
+      "name": "get",
+      "rewrite": {
+        "operator": "or",
+        "children": [
+          {
+            "relation": "check",
+            "args": [
+              0,
+              "policies.get"
+            ]
+          }
+        ]
+      },
+      "params": [
+        "ctx"
+      ]
+    }
+  ],
+  "Role": [
+    {
+      "name": "perms",
+      "types": [
+        {
+          "namespace": "Perm"
+        },
+        {
+          "namespace": "Role",
+          "relation": "perms"
+        }
+      ],
+      "params": [
+        "subject"
+      ]
+    },
+    {
+      "name": "owners",
+      "types": [
+        {
+          "namespace": "Group"
+        }
+      ],
+      "params": [
+        "subject"
+      ]
+    },
+    {
+      "name": "policies",
+      "types": [
+        {
+          "namespace": "Policy"
+        }
+      ],
+      "params": [
+        "subject"
+      ]
+    },
+    {
+      "name": "has_perm",
+      "rewrite": {
+        "operator": "or",
+        "children": [
+          {
+            "relation": "perms",
+            "args": [
+              "perm"
+            ]
+          }
+        ]
+      },
+      "params": [
+        "ctx",
+        "perm"
+      ]
+    },
+    {
+      "name": "check",
+      "rewrite": {
+        "operator": "or",
+        "children": [
+          {
+            "relation": "owners",
+            "computed_subject_set_relation": "check",
+            "args": [
+              0,
+              "perm"
+            ]
+          },
+          {
+            "relation": "policies",
+            "computed_subject_set_relation": "check",
+            "args": [
+              0,
+              "perm"
+            ]
+          }
+        ]
+      },
+      "params": [
+        "ctx",
+        "perm"
+      ]
+    },
+    {
+      "name": "get",
+      "rewrite": {
+        "operator": "or",
+        "children": [
+          {
+            "relation": "check",
+            "args": [
+              0,
+              "roles.get"
+            ]
+          }
+        ]
+      },
+      "params": [
+        "ctx"
+      ]
+    }
+  ],
+  "User": null
+}

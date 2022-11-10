@@ -14,6 +14,7 @@ import (
 	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/namespace"
 	"github.com/ory/keto/internal/namespace/ast"
+	"github.com/ory/keto/internal/persistence"
 	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/internal/x"
 	"github.com/ory/keto/internal/x/graph"
@@ -31,6 +32,7 @@ type (
 		relationtuple.ManagerProvider
 		config.Provider
 		x.LoggerProvider
+		Persister() persistence.Persister
 	}
 
 	EngineOpt func(*Engine)
@@ -159,11 +161,32 @@ func (e *Engine) checkDirect(r *relationTuple, restDepth int) checkgroup.CheckFu
 		e.d.Logger().
 			WithField("request", r.String()).
 			Trace("check direct")
+		q := r.ToQuery()
+		if w := argsFromCtx(ctx); w != nil && len(w.Args) == 1 {
+			// fill subject with the passed argument
+			if v, ok := w.Args[0].(ast.StringLiteralArg); ok {
+				u, err := e.d.Persister().MapStringsToUUIDs(ctx, v.Value(ctx))
+				if err != nil {
+					resultCh <- checkgroup.Result{
+						Membership: checkgroup.NotMember,
+					}
+					e.d.Logger().WithField("request", r.String()).Error("failed to check direct", err)
+					return
+				}
+				q.Subject = &relationtuple.SubjectID{ID: u[0]}
+			}
+		}
 		if rels, _, err := e.d.RelationTupleManager().GetRelationTuples(
 			ctx,
-			r.ToQuery(),
+			q,
 			x.WithSize(1),
 		); err == nil && len(rels) > 0 {
+			if q.Subject != r.Subject {
+				// fix the Tree
+				t := *r
+				t.Subject = q.Subject
+				r = &t
+			}
 			resultCh <- checkgroup.Result{
 				Membership: checkgroup.IsMember,
 				Tree: &ketoapi.Tree[*relationtuple.RelationTuple]{
@@ -195,11 +218,26 @@ func (e *Engine) checkIsAllowed(ctx context.Context, r *relationTuple, restDepth
 		WithField("request", r.String()).
 		Trace("check is allowed")
 
-	g := checkgroup.New(ctx)
-	g.Add(e.checkDirect(r, restDepth-1))
-	g.Add(e.checkExpandSubject(r, restDepth))
-
 	relation, err := e.astRelationFor(ctx, r)
+	if w := argsFromCtx(ctx); w != nil && len(w.Args) > 0 && len(relation.Params) > 0 {
+		// map arg-name to value
+		for i, p := range relation.Params {
+			if p != "ctx" {
+				if w.Mapping == nil {
+					w.Mapping = make(map[string]ast.Arg)
+				}
+				w.Mapping[p] = w.Args[i]
+			}
+		}
+	}
+
+	g := checkgroup.New(ctx)
+	// do not make checks for faked helper relations
+	if relation == nil || len(relation.Params) == 1 {
+		g.Add(e.checkDirect(r, restDepth-1))
+		g.Add(e.checkExpandSubject(r, restDepth))
+	}
+
 	if err != nil {
 		g.Add(checkgroup.ErrorFunc(err))
 	} else if relation != nil && relation.SubjectSetRewrite != nil {
@@ -231,6 +269,7 @@ func (e *Engine) astRelationFor(ctx context.Context, r *relationTuple) (*ast.Rel
 
 	for _, rel := range ns.Relations {
 		if rel.Name == r.Relation {
+			r.Formula = &rel
 			return &rel, nil
 		}
 	}

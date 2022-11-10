@@ -9,6 +9,9 @@
         {
           "namespace": "Folder"
         }
+      ],
+      "params": [
+        "subject"
       ]
     },
     {
@@ -21,6 +24,9 @@
           "namespace": "Group",
           "relation": "members"
         }
+      ],
+      "params": [
+        "subject"
       ]
     },
     {
@@ -33,6 +39,9 @@
           "namespace": "Group",
           "relation": "members"
         }
+      ],
+      "params": [
+        "subject"
       ]
     },
     {
@@ -41,6 +50,9 @@
         {
           "namespace": "File"
         }
+      ],
+      "params": [
+        "subject"
       ]
     },
     {
@@ -56,30 +68,51 @@
                 "children": [
                   {
                     "relation": "parents",
-                    "computed_subject_set_relation": "viewers"
+                    "computed_subject_set_relation": "viewers",
+                    "args": [
+                      1
+                    ]
                   }
                 ]
               },
               {
                 "relation": "parents",
-                "computed_subject_set_relation": "view"
+                "computed_subject_set_relation": "view",
+                "args": [
+                  0
+                ]
               }
             ]
           },
           {
-            "relation": "viewers"
+            "relation": "viewers",
+            "args": [
+              1
+            ]
           },
           {
-            "relation": "viewers"
+            "relation": "viewers",
+            "args": [
+              1
+            ]
           },
           {
-            "relation": "viewers"
+            "relation": "viewers",
+            "args": [
+              1
+            ]
           },
           {
-            "relation": "owners"
+            "relation": "owners",
+            "args": [
+              1
+            ]
           }
         ]
-      }
+      },
+      "params": [
+        "ctx"
+      ]
     },
     {
       "name": "edit",
@@ -87,10 +120,16 @@
         "operator": "or",
         "children": [
           {
-            "relation": "owners"
+            "relation": "owners",
+            "args": [
+              1
+            ]
           }
         ]
-      }
+      },
+      "params": [
+        "ctx"
+      ]
     },
     {
       "name": "not",
@@ -99,11 +138,17 @@
         "children": [
           {
             "inverted": {
-              "relation": "owners"
+              "relation": "owners",
+              "args": [
+                1
+              ]
             }
           }
         ]
-      }
+      },
+      "params": [
+        "ctx"
+      ]
     },
     {
       "name": "rename",
@@ -112,10 +157,16 @@
         "children": [
           {
             "relation": "siblings",
-            "computed_subject_set_relation": "edit"
+            "computed_subject_set_relation": "edit",
+            "args": [
+              0
+            ]
           }
         ]
-      }
+      },
+      "params": [
+        "ctx"
+      ]
     }
   ],
   "Folder": [
@@ -125,6 +176,9 @@
         {
           "namespace": "File"
         }
+      ],
+      "params": [
+        "subject"
       ]
     },
     {
@@ -134,6 +188,9 @@
           "namespace": "Group",
           "relation": "members"
         }
+      ],
+      "params": [
+        "subject"
       ]
     },
     {
@@ -142,10 +199,16 @@
         "operator": "or",
         "children": [
           {
-            "relation": "viewers"
+            "relation": "viewers",
+            "args": [
+              1
+            ]
           }
         ]
-      }
+      },
+      "params": [
+        "ctx"
+      ]
     }
   ],
   "Group": [
@@ -158,6 +221,9 @@
         {
           "namespace": "Group"
         }
+      ],
+      "params": [
+        "subject"
       ]
     }
   ],
@@ -168,6 +234,9 @@
         {
           "namespace": "User"
         }
+      ],
+      "params": [
+        "subject"
       ]
     }
   ]

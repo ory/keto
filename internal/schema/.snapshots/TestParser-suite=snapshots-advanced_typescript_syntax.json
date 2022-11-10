@@ -7,6 +7,9 @@
           "namespace": "Role",
           "relation": "member"
         }
+      ],
+      "params": [
+        "subject"
       ]
     },
     {
@@ -16,6 +19,9 @@
           "namespace": "Role",
           "relation": "member"
         }
+      ],
+      "params": [
+        "subject"
       ]
     },
     {
@@ -25,6 +31,9 @@
           "namespace": "Role",
           "relation": "member"
         }
+      ],
+      "params": [
+        "subject"
       ]
     },
     {
@@ -34,6 +43,9 @@
           "namespace": "Role",
           "relation": "member"
         }
+      ],
+      "params": [
+        "subject"
       ]
     },
     {
@@ -43,22 +55,37 @@
         "children": [
           {
             "relation": "admins",
-            "computed_subject_set_relation": "member"
+            "computed_subject_set_relation": "member",
+            "args": [
+              1
+            ]
           },
           {
             "relation": "annotators",
-            "computed_subject_set_relation": "member"
+            "computed_subject_set_relation": "member",
+            "args": [
+              1
+            ]
           },
           {
             "relation": "medicalAnnotators",
-            "computed_subject_set_relation": "member"
+            "computed_subject_set_relation": "member",
+            "args": [
+              1
+            ]
           },
           {
             "relation": "supervisors",
-            "computed_subject_set_relation": "member"
+            "computed_subject_set_relation": "member",
+            "args": [
+              1
+            ]
           }
         ]
-      }
+      },
+      "params": [
+        "ctx"
+      ]
     },
     {
       "name": "comment",
@@ -66,10 +93,16 @@
         "operator": "or",
         "children": [
           {
-            "relation": "read"
+            "relation": "read",
+            "args": [
+              0
+            ]
           }
         ]
-      }
+      },
+      "params": [
+        "ctx"
+      ]
     },
     {
       "name": "update",
@@ -78,22 +111,37 @@
         "children": [
           {
             "relation": "admins",
-            "computed_subject_set_relation": "member"
+            "computed_subject_set_relation": "member",
+            "args": [
+              1
+            ]
           },
           {
             "relation": "annotators",
-            "computed_subject_set_relation": "member"
+            "computed_subject_set_relation": "member",
+            "args": [
+              1
+            ]
           },
           {
             "relation": "medicalAnnotators",
-            "computed_subject_set_relation": "member"
+            "computed_subject_set_relation": "member",
+            "args": [
+              1
+            ]
           },
           {
             "relation": "supervisors",
-            "computed_subject_set_relation": "member"
+            "computed_subject_set_relation": "member",
+            "args": [
+              1
+            ]
           }
         ]
-      }
+      },
+      "params": [
+        "ctx"
+      ]
     },
     {
       "name": "create",
@@ -102,18 +150,30 @@
         "children": [
           {
             "relation": "admins",
-            "computed_subject_set_relation": "member"
+            "computed_subject_set_relation": "member",
+            "args": [
+              1
+            ]
           },
           {
             "relation": "annotators",
-            "computed_subject_set_relation": "member"
+            "computed_subject_set_relation": "member",
+            "args": [
+              1
+            ]
           },
           {
             "relation": "supervisors",
-            "computed_subject_set_relation": "member"
+            "computed_subject_set_relation": "member",
+            "args": [
+              1
+            ]
           }
         ]
-      }
+      },
+      "params": [
+        "ctx"
+      ]
     },
     {
       "name": "approve",
@@ -122,14 +182,23 @@
         "children": [
           {
             "relation": "admins",
-            "computed_subject_set_relation": "member"
+            "computed_subject_set_relation": "member",
+            "args": [
+              1
+            ]
           },
           {
             "relation": "supervisors",
-            "computed_subject_set_relation": "member"
+            "computed_subject_set_relation": "member",
+            "args": [
+              1
+            ]
           }
         ]
-      }
+      },
+      "params": [
+        "ctx"
+      ]
     },
     {
       "name": "delete",
@@ -138,14 +207,23 @@
         "children": [
           {
             "relation": "admins",
-            "computed_subject_set_relation": "member"
+            "computed_subject_set_relation": "member",
+            "args": [
+              1
+            ]
           },
           {
             "relation": "supervisors",
-            "computed_subject_set_relation": "member"
+            "computed_subject_set_relation": "member",
+            "args": [
+              1
+            ]
           }
         ]
-      }
+      },
+      "params": [
+        "ctx"
+      ]
     }
   ],
   "Role": [
@@ -155,6 +233,9 @@
         {
           "namespace": "Role"
         }
+      ],
+      "params": [
+        "subject"
       ]
     }
   ]

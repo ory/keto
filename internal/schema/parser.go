@@ -14,19 +14,22 @@ type (
 	namespace = internalNamespace.Namespace
 
 	parser struct {
-		lexer      *lexer        // lexer to get tokens from
-		namespaces []namespace   // list of parsed namespaces
-		namespace  namespace     // current namespace
-		errors     []*ParseError // errors encountered during parsing
-		fatal      bool          // parser encountered a fatal error
-		lookahead  *item         // lookahead token
-		checks     []typeCheck   // checks to perform on the namespace
+		lexer      *lexer              // lexer to get tokens from
+		namespaces []namespace         // list of parsed namespaces
+		namespace  namespace           // current namespace
+		errors     []*ParseError       // errors encountered during parsing
+		fatal      bool                // parser encountered a fatal error
+		lookahead  *item               // lookahead token
+		checks     []typeCheck         // checks to perform on the namespace
+		curParams  []string            // current permit parameters
+		params     map[string][]string // all permits parameters
 	}
 )
 
 func Parse(input string) ([]namespace, []*ParseError) {
 	p := &parser{
-		lexer: Lex("input", input),
+		lexer:  Lex("input", input),
+		params: make(map[string][]string),
 	}
 	return p.parse()
 }
@@ -212,8 +215,9 @@ func (p *parser) parseRelated() {
 			}
 			p.match("[", "]", optional(","))
 			p.namespace.Relations = append(p.namespace.Relations, ast.Relation{
-				Name:  relation,
-				Types: types,
+				Name:   relation,
+				Types:  types,
+				Params: []string{"subject"},
 			})
 		default:
 			p.addFatal(item, "expected identifier or '}', got %q", item.Val)
@@ -253,17 +257,29 @@ func (p *parser) parseTypeUnion() (types []ast.RelationType) {
 func (p *parser) parsePermits() {
 	p.match("=", "{")
 	for !p.fatal {
-		switch item := p.next(); item.Typ {
+		switch it := p.next(); it.Typ {
 
 		case itemBraceRight:
 			return
 
 		case itemIdentifier:
-			permission := item.Val
-			p.match(
-				":", "(", "ctx", optional(":", "Context"), ")",
-				optional(":", "boolean"), "=>",
-			)
+			permission := it.Val
+			p.curParams = []string{"ctx"}
+			if !p.match(":", "(", "ctx", optional(":", "Context")) {
+				return
+			}
+
+		loop:
+			for {
+				i := &item{}
+				switch {
+				case p.matchIf(is(itemOperatorComma), i):
+				case p.matchIf(is(itemIdentifier), i, ":", "string"):
+					p.curParams = append(p.curParams, i.Val)
+				case p.match(")", it, optional(":", "boolean"), "=>"):
+					break loop
+				}
+			}
 
 			rewrite := simplifyExpression(p.parsePermissionExpressions(itemOperatorComma, expressionNestingMaxDepth))
 			if rewrite == nil {
@@ -273,10 +289,12 @@ func (p *parser) parsePermits() {
 				ast.Relation{
 					Name:              permission,
 					SubjectSetRewrite: rewrite,
+					Params:            p.curParams,
 				})
+			p.params[p.namespace.Name+":"+permission] = p.curParams
 
 		default:
-			p.addFatal(item, "expected identifier or '}', got %q", item.Val)
+			p.addFatal(it, "expected identifier or '}', got %q", it.Val)
 			return
 		}
 	}
@@ -419,11 +437,7 @@ func (p *parser) parsePermissionExpression() (child ast.Child) {
 		}
 
 	case "permits":
-		if !p.match("(", "ctx", ")") {
-			return
-		}
-		p.addCheck(checkCurrentNamespaceHasRelation(&p.namespace, name))
-		return &ast.ComputedSubjectSet{Relation: name.Val}
+		return p.parsePermitCall(name)
 
 	default:
 		p.addFatal(verb, "expected 'related' or 'permits', got %q", verb.Val)
@@ -450,17 +464,19 @@ func (p *parser) parseTupleToSubjectSet(relation item) (rewrite ast.Child) {
 	}
 	p.match("=>", arg.Val, ".", &verb)
 
+	var args []ast.Arg
 	switch verb.Val {
 	case "related":
-		p.match(
-			".", &subjectSetRel, ".", "includes", "(", "ctx", ".", "subject",
-			optional(","), ")", optional(","), ")",
-		)
+		p.match(".", &subjectSetRel, ".", "includes", "(")
+		args = p.parseArgs(verb)
+		p.match(optional(","), ")")
 		p.addCheck(checkAllRelationsTypesHaveRelation(
 			&p.namespace, relation, subjectSetRel,
 		))
 	case "permits":
-		p.match(".", &subjectSetRel, "(", "ctx", ")", ")")
+		p.match(".", &subjectSetRel, "(", "ctx", optional(","))
+		args = append([]ast.Arg{ast.ContextArg}, p.parseArgs(verb)...)
+		p.match(optional(","), ")")
 		p.addCheck(checkAllRelationsTypesHaveRelation(
 			&p.namespace, relation, subjectSetRel,
 		))
@@ -472,15 +488,67 @@ func (p *parser) parseTupleToSubjectSet(relation item) (rewrite ast.Child) {
 	return &ast.TupleToSubjectSet{
 		Relation:                   relation.Val,
 		ComputedSubjectSetRelation: subjectSetRel,
+		Args:                       args,
 	}
 }
 
+func (p *parser) parseArgs(relation item) (args []ast.Arg) {
+	it := &item{Typ: itemOperatorComma}
+loop:
+	for {
+		preTyp := it.Typ
+	cases:
+		switch {
+		case p.matchIf(is(itemOperatorComma), it):
+		case p.matchIf(is(itemStringLiteral), it):
+			args = append(args, ast.StringLiteralArg(it.Val))
+		case p.matchIf(is(itemIdentifier), it):
+			id := it.Val
+			for _, s := range p.curParams {
+				if s == id {
+					args = append(args, ast.NamedArg(id))
+					break cases
+				}
+			}
+			p.addFatal(relation, "undeclared name %q", id)
+			return nil
+		case p.matchIf(is(itemParenRight), it):
+			break loop
+		case p.match("ctx", ".", "subject"):
+			it.Typ = itemIdentifier
+			args = append(args, ast.CtxSubjectArg)
+		}
+		if (preTyp == itemOperatorComma) == (it.Typ == itemOperatorComma) {
+			p.addFatal(relation, "unexpected consecutive %v", it.Typ)
+			return nil
+		}
+	}
+	return
+}
+
 func (p *parser) parseComputedSubjectSet(relation item) (rewrite ast.Child) {
-	if !p.match("(", "ctx", ".", "subject", ")") {
+	if !p.match("(") {
+		return nil
+	}
+	args := p.parseArgs(relation)
+	if p.fatal {
 		return nil
 	}
 	p.addCheck(checkCurrentNamespaceHasRelation(&p.namespace, relation))
-	return &ast.ComputedSubjectSet{Relation: relation.Val}
+	return &ast.ComputedSubjectSet{Relation: relation.Val, Args: args}
+}
+
+func (p *parser) parsePermitCall(relation item) (rewrite ast.Child) {
+	if !p.match("(", "ctx", optional(",")) {
+		return nil
+	}
+	args := p.parseArgs(relation)
+	if p.fatal {
+		return nil
+	}
+	args = append([]ast.Arg{ast.ContextArg}, args...)
+	p.addCheck(checkCurrentNamespaceHasRelation(&p.namespace, relation))
+	return &ast.ComputedSubjectSet{Relation: relation.Val, Args: args}
 }
 
 // simplifyExpression rewrites the expression to use n-ary set operations

@@ -3,13 +3,17 @@
 
 package ast
 
-import "encoding/json"
+import (
+	"context"
+	"encoding/json"
+)
 
 type (
 	Relation struct {
 		Name              string             `json:"name"`
 		Types             []RelationType     `json:"types,omitempty"`
 		SubjectSetRewrite *SubjectSetRewrite `json:"rewrite,omitempty"`
+		Params            []string           `json:"params,omitempty"`
 	}
 
 	RelationType struct {
@@ -31,13 +35,19 @@ type (
 		AsRewrite() *SubjectSetRewrite
 	}
 
+	Arg interface {
+		Value(ctx context.Context) string
+	}
+
 	ComputedSubjectSet struct {
 		Relation string `json:"relation"`
+		Args     []Arg  `json:"args,omitempty"`
 	}
 
 	TupleToSubjectSet struct {
 		Relation                   string `json:"relation"`
 		ComputedSubjectSetRelation string `json:"computed_subject_set_relation"`
+		Args                       []Arg  `json:"args,omitempty"`
 	}
 
 	// InvertResult inverts the check result of the child.
@@ -68,4 +78,27 @@ func (t *TupleToSubjectSet) AsRewrite() *SubjectSetRewrite {
 }
 func (i *InvertResult) AsRewrite() *SubjectSetRewrite {
 	return &SubjectSetRewrite{Children: []Child{i}}
+}
+
+// concrete argument types
+
+type NamedArg string
+
+func (p NamedArg) Value(ctx context.Context) string {
+	return string(p)
+}
+
+type StringLiteralArg string
+
+func (p StringLiteralArg) Value(ctx context.Context) string {
+	return string(p)
+}
+
+var ContextArg = contextArg(0)
+var CtxSubjectArg = contextArg(1)
+
+type contextArg int
+
+func (p contextArg) Value(ctx context.Context) string {
+	panic("should not reach here")
 }
