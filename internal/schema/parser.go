@@ -321,6 +321,12 @@ func (p *parser) parsePermissionExpressions(finalToken itemType, depth int) *ast
 
 		case item.Typ == itemOperatorAnd, item.Typ == itemOperatorOr:
 			p.next() // consume operator
+
+			// A nil root means that we saw a binary expression before the first
+			// expression.
+			if root == nil {
+				return nil
+			}
 			newRoot := &ast.SubjectSetRewrite{
 				Operation: setOperation(item.Typ),
 				Children:  []ast.Child{root},
@@ -491,7 +497,7 @@ func simplifyExpression(root *ast.SubjectSetRewrite) *ast.SubjectSetRewrite {
 	}
 	var newChildren []ast.Child
 	for _, child := range root.Children {
-		if ch, ok := child.(*ast.SubjectSetRewrite); ok && ch.Operation == root.Operation {
+		if ch, ok := child.(*ast.SubjectSetRewrite); ok && ch != nil && ch.Operation == root.Operation {
 			// merge child and root
 			simplifyExpression(ch)
 			newChildren = append(newChildren, ch.Children...)

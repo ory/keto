@@ -48,6 +48,13 @@ var parserErrorTestCases = []struct{ name, input string }{
 	}
   }
 `},
+	{"parser error", `
+class Resource implements Namespace {
+  permits = {
+    update: (ctx: Context) => ||
+      this.related.annotators.traverse((role) => role.related.member.includes(ctx.subject)) ||
+      this.related.supervisors.traverse((role) => role.related.member.includes(ctx.subject)),
+`},
 }
 
 var parserTestCases = []struct {
