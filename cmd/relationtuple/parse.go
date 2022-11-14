@@ -21,7 +21,7 @@ func NewParseCmd() *cobra.Command {
 		Short: "Parse human readable relation tuples",
 		Long: "Parse human readable relation tuples as used in the documentation.\n" +
 			"Supports various output formats. Especially useful for piping into other commands by using `--format json`.\n" +
-			"Ignores comments (starting with `//`) and blank lines.",
+			"Ignores comments (lines starting with `//`) and blank lines.",
 		Args: cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			var rts []*ketoapi.RelationTuple
