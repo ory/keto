@@ -3,3 +3,4 @@ proto/**/*.pb.go linguist-generated=true
 proto/**/*_pb.js linguist-generated=true
 proto/**/*_pb.d.ts linguist-generated=true
 .bin/formula-pins/*.rb linguist-generated=true
+.fuzzer/** linguist-generated=true
