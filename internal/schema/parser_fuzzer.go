@@ -3,7 +3,7 @@
 
 package schema
 
-func Fuzz(data []byte) int {
+func LibfuzzerFuzzParser(data []byte) int {
 	Parse(string(data))
 	return 0
 }

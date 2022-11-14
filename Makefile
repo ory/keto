@@ -139,10 +139,10 @@ fuzz-test:
 
 .PHONY: libfuzzer-fuzz-test
 libfuzzer-fuzz-test: .bin/go114-fuzz-build
-	mkdir -p .fuzzer
-	.bin/go114-fuzz-build -o ./.fuzzer/parser.a ./internal/schema
+	mkdir -p .fuzzer/fuzz_parser_corpus
+	.bin/go114-fuzz-build -o ./.fuzzer/parser.a -func LibfuzzerFuzzParser ./internal/schema
 	clang -fsanitize=fuzzer ./.fuzzer/parser.a -o ./.fuzzer/parser
-	./.fuzzer/parser -timeout=1 -max_total_time=10 -use_value_profile
+	./.fuzzer/parser -use_value_profile=1 -timeout=1 ./.fuzzer/fuzz_parser_corpus ./.fuzzer/fuzz_parser_seeds
 
 .PHONY: cve-scan
 cve-scan: docker .bin/grype
