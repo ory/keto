@@ -4,6 +4,7 @@
 package relationtuple
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -75,10 +76,12 @@ func readTuplesFromArg(cmd *cobra.Command, arg string) ([]*ketoapi.RelationTuple
 		return nil, cmdx.FailSilently(cmd)
 	}
 
+	decoder := json.NewDecoder(bytes.NewReader(fc))
+	decoder.DisallowUnknownFields()
 	// it is ok to not validate beforehand because json.Unmarshal will report errors
 	if fc[0] == '[' {
 		var ts []*ketoapi.RelationTuple
-		if err := json.Unmarshal(fc, &ts); err != nil {
+		if err := decoder.Decode(&ts); err != nil {
 			_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not decode: %s\n", err)
 			return nil, cmdx.FailSilently(cmd)
 		}
@@ -86,7 +89,7 @@ func readTuplesFromArg(cmd *cobra.Command, arg string) ([]*ketoapi.RelationTuple
 	}
 
 	var r ketoapi.RelationTuple
-	if err := json.Unmarshal(fc, &r); err != nil {
+	if err := decoder.Decode(&r); err != nil {
 		_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not decode: %s\n", err)
 		return nil, cmdx.FailSilently(cmd)
 	}
