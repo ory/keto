@@ -5,7 +5,7 @@
 
 **Table of Contents**
 
-- [0.0.0 (2022-11-10)](#000-2022-11-10)
+- [0.0.0 (2022-11-14)](#000-2022-11-14)
   - [Bug Fixes](#bug-fixes)
   - [Documentation](#documentation)
   - [Features](#features)
@@ -139,7 +139,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.10.0-alpha.0...v0.0.0) (2022-11-10)
+# [0.0.0](https://github.com/ory/keto/compare/v0.10.0-alpha.0...v0.0.0) (2022-11-14)
 
 ### Bug Fixes
 
@@ -147,6 +147,8 @@
   ([#1117](https://github.com/ory/keto/issues/1117))
   ([5f89fcf](https://github.com/ory/keto/commit/5f89fcf6730810b36014fec825e77f0011dc2462)),
   closes [#1116](https://github.com/ory/keto/issues/1116)
+- More robust parser
+  ([d38e006](https://github.com/ory/keto/commit/d38e006f13477f7b67ab88f03ff64ced65da7cbd))
 - Only type-check if there are no parser errors
   ([b4bef07](https://github.com/ory/keto/commit/b4bef07ca91b7585a52d536ee8c0c38ec1d66b9d)):
 
@@ -192,6 +194,8 @@
 
 - Add API to list namespaces
   ([a8d8767](https://github.com/ory/keto/commit/a8d8767f02695932ed63b5139dd52534e8c4922f))
+- Add libfuzzer for parser
+  ([05c9a01](https://github.com/ory/keto/commit/05c9a01785bd4ca6055fee655dfb26d16883b8db))
 - Allow permits referencing permits
   ([c4d84f6](https://github.com/ory/keto/commit/c4d84f6209deea8b5993409a66208b5dd35f5807)):
 
