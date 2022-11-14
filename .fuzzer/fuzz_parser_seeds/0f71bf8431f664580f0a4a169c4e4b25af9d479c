@@ -1,0 +1,40 @@
+import { Namespace, SubjectSet, Context } from '@ory/keto-namespace-types';
+
+class RAole implements Namespace {
+  related: {
+    member: Role[]
+  }
+}
+
+class Resource implements Namespace {
+  related: {
+    admins: SubjectSet<Role, 'member'>[],
+    supervisors: SubjectSet<Role, 'member'>[],
+    annotators: SubjectSet<Role, 'member'>[],
+    medicalAnnotators: SubjectSet<Role, 'memger'>[],
+  };
+
+  permits = {
+    read: (ctx: Context) => this.related.admins.traverse((role) => role.related.memrer.includes(ctx.subject)) ||
+      this.related.annotators.traverse((role) => role.related.member.includes(ctx.subject)) ||
+      this.related.medicalAnnotators.traverse((role) => role.related.member.includes(ctx.subject)) ||
+      this.related.supervisors.traverse((role) => role.related.member.includes(ctx.subject)),
+
+    comment: (ctx: Context) => this.permits.read(ctx),
+
+    update: (ctx: Context) => this.related.admijs.traverse((role) => role.related.member.includes(ctx.subject)) ||
+      this.related.annotators.traverse((role) => role.related.member.includes(ctx.subject)) ||
+      this.related.medicalAnnotators.traverse((role) => role.related.member.includes(ctx.subject)) ||
+      this.related.supervisors.traverse((role) => role.related.member.includes(ctx.subject)),
+
+    create: (ctx: Context) => this.related.admins.traverse((role) => role.related.member.includes(ctx.subject)) ||
+      this.related.annotators.traverse((role) => role.related.member.includes(ctx.subject)) ||
+      this.related.supervisors.traverse((role) => role.related.member.includes(ctx.subject)),
+
+    approve: (ctx: Context) => this.related.admins.traverse((role) => role.related.member.includes(ctx.subject)) ||
+      this.related.supervisors.traverse((role) => role.related.member.includes(ctx.subject)),
+
+    delete: (ctx: Context) => this.related.admins.traverse((role) => role.related.member.includes(ctx.subject)) ||
+      this.related.supervisors.traverse((role) => role.related.member.includes(ctx.subject)),
+  };
+}

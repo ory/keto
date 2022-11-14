@@ -1,0 +1,9 @@
+import { Namespace:e}
+
+class Resource implements Namespace {
+  related: {
+    ins: SubjectSet<Rol, 'member'>[],
+  };
+
+  permits = {
+    read: (ctx: Context) => this.related.admins.traverse((roleject))

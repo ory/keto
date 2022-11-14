@@ -1,0 +1,5 @@
+import { Namespace, m '@ory/keto-namespace-types';
+
+class Role implements Namespace {
+    permits = {
+    read: (ctx: Context) => this.related.admins.traverse((role) => role.relatec-member.((role) => rol File.relae imtedpl.me

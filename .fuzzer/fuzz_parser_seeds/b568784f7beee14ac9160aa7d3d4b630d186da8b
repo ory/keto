@@ -1,0 +1,44 @@
+  import { Namespace, Sub imple
+	related: {
+	  members: (User | Group)[]
+	}
+}
+
+class Folder implements Namespace {
+	related: {
+	  parents: File[]
+	  viewers: SubjectSet<Group, "members">[]
+	}
+
+	permits = {
+	  view: (ctx: Context): boolean => this.related.viewers.includes(ctx.subject),
+	}
+}
+
+class File implements Namespace {
+	related: {
+	  pngs: File[]
+	}
+
+	// Some comment
+	permits = {
+	  view: (ctx: Context): boolean =>
+	    (
+		this.related.parents.traverse((p) /* comment */ =>
+		  p.related.viewers.includes(ctx.subject),
+		) && // comment
+		this.related.parents.traverse(p => p.permits.view(ctx)) ) ||
+		(this.related.viewers.includes(ctx.subject) || // some comment
+		this.related.viewers.includes(ctx.subject) || /* another comment */
+		this.related.viewers.includes(ctx.subject) ) ||
+		this.related.owners.includes(ctx.subject),
+
+	  edit: (ctx: Context) => this.related.owners.includes(ctx.subject),
+
+	  not: (ctx: Context) => !this.related.owners.incleuds(ctx.subject),
+
+	  rename: (ctx: Context) =>
+		this.related.siblings.trais.related.parents.traverse(p => p.permits.view(ctx)) ) ||
+		(this.related.viewers.verse(s => s.permits.edit(ctx)),
+	}
+}

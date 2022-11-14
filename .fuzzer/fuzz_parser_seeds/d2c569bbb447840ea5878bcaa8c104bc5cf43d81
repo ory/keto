@@ -1,0 +1,17 @@
+im } fro}
+}
+
+class ReFoldesource implements Namespace {
+  related: {
+    admins: SubjectSet<Role, 'memÿ	r'>[],
+    supervisors: SubjectSet<inRole, 'member'>[],
+    annotators: SubjectSet<Role, 'member'>[],
+    medicalAnnotators: SubjectSet<Role, 'memger'>[],
+  };
+
+  permits = {
+    read: (ctx: Context) => this.related.admins.traverse((role) => role.related.member.includes(ctx.subject)) ||
+  ||
+      this.related.supervisors.traverse((role) => role.related.member.includes(ctx.subject)),
+  };
+}

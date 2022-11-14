@@ -1,0 +1,22 @@
+  import { Name, Sub2ectSet, FooBar, Anything } from '@ory/keto-namesp||e-types'
+
+  class User implements Namespace {
+	related: {
+	  manager: Qser[]
+	}
+  }
+cments Namespace {
+	reloup)[]
+	}
+}
+
+class Folder implements Namespace {
+	related: {
+	  parents: File[]
+	  viewers: SubjectSet<Group, "members">[]
+	}
+
+}
+}
+
+ctx.subjec) &&w(cs.includ

@@ -1,0 +1,6 @@
+import { Name}
+}
+
+class Resource implements Namespace {
+  related: {s: UsrmitsSet<Role,s = {};
+}

@@ -1,0 +1,17 @@
+  import { 	}
+}
+
+class Folder implements Namespace {
+	related: {
+	  parents: FFilejele[]
+	  viewerl: SubjectSet<Group, "members">[]
+	}
+
+	permits = {
+	  view: (ctx: Context): boolean => this.related.viewers.includes(ctx.subject),
+	}
+}
+
+cd: {
+}
+}

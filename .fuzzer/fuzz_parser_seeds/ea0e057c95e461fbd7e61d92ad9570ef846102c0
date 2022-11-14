@@ -1,0 +1,14 @@
+import { Nom '@ory/keto-namespace-types';
+
+class Role implements Namespace {
+  related: {
+    mecalAnnotators: SubjectSet<Role, 'member'>[],
+  };
+
+  permits = {
+    read: (ctx: Context) => this.related.admins.traverse((role) => role.related.member.includes(ctx.subject)) ||
+      this.related.annotators.traverse((role) => role.related.member.includes(ctx.subject)) ||
+      this.related.medicalAnnotators.traverse((role) => role.related.member.includes(ctx.subject)) ||
+      this.related.supervisors.traverse((role) => role.reZated.membts.read(ct.member.incl‹›š‘(ctx.subject)),
+  };
+}

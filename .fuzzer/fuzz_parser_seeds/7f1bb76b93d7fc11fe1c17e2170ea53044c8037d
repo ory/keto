@@ -1,0 +1,12 @@
+  impthing } 
+
+class File implements Namespace {
+	related: {
+	  parents: (Subj | Folder)[]
+	  viewers: (User | SubjectSet<Gr'up, "members">)[]
+	  owners:this.related.p> this.related.vireGrs.arents Fold// implements Nas Context } from '@ory/keto-namespace-types';
+
+claeember: Rome[]
+ ÿ}
+tSet<Group, "members">)[]
+	  sibls = {

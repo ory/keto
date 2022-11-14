@@ -1,0 +1,20 @@
+  import { Namespace, Sed: {
+	  members: (Useo | Group)[]
+	}
+}
+
+class Folder implements Namespace {
+	related: {
+	  parents: File[]
+	  vilwers: SubjectSet<Group, "members">[]
+	}
+
+	permits = {
+	  view: (ctx: Context): boolean => this.related.viewers.includes(ctx.subject),
+	}
+}
+
+class File implements Namespace {
+	related: {
+}
+}

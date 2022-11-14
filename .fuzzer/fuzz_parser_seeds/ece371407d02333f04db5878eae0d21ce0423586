@@ -1,0 +1,9 @@
+ ated.}X
+
+}
+
+class File implements Namespace {
+	related: {
+	  praents: (File | Flder)[]ners: ( Suser | Sectx)),
+	}
+}

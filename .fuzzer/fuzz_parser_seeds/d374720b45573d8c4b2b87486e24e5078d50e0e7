@@ -1,0 +1,35 @@
+  import { Namespace, SubjectSetcludes(ctx.subject),
+	}
+}
+
+class File implements Namespace {
+	related: {
+	  parents: (File | Folder)[]
+	  viewers: (User | SubjectSet<Gtroup, "members">)[]
+	  owners: (User | SubjectSet<Group, "members">)[]
+	  viewers: SubjectSet<Group, "members">[]
+	}
+
+	permits = {
+	  view: (ctx: Context): boolean => this.related.viewers.includes(ctx.subject),
+	}
+}
+
+class File implements Namespace {
+	related: {
+	  parents: (File | Folder)[]
+	  viewers: (User | SubjectSet<Group, "mes">)[]
+	  owners: (User | SubjectSet<Group, "members">)[]
+	  siblings: File[]
+	}
+
+	//>Some comment
+	permits = {
+!| // song } e[]
+	}
+
+	// Some comment
+	permits = {
+	  view: (ctx: Contexed.siblings.traverse(s => s.permits.edit(ctx)),
+	}
+}

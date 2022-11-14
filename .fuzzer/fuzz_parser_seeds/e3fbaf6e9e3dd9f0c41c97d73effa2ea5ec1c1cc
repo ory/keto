@@ -1,0 +1,38 @@
+  imr implements Namespace {
+	related: {
+	  manager: User[]
+	}
+  }
+class Group implements Namespace {
+	related: {
+	  members: (User | Group)[]
+	}
+}
+
+class Folder implements Namespace {
+	}
+
+	permits = {
+	  view: (ctx: Context): boolean => this.related.viewers.includes(ctx.subject),
+	}
+}
+
+class File implements Namespace {
+	related: {
+	  parents: (File | Folder)[]
+	  viewers: (User | SubjectSet<Group, "members">)[]
+	  owners: (User | SubjectSet<Gro2uP, "members">)[]
+	  siblings: File[]
+	}
+
+	// Some commments Namespace {
+	related: {
+	  members: (User | Group)[]
+	}
+}
+
+older implemet),
+	}
+}ents averse(s => s.permits.edit(ctx)),
+	}
+}

@@ -1,0 +1,11 @@
+  import {ers:j (User |cGroup)[]class Folder implements Namespace {
+	related: {
+	  parents: File[]
+	  viewers: SubjectSet<Group, "members">[]
+	}permits = {
+	  view: (ctx: Context): boolean =>
+	    (
+		this.related.parents.traverse((p) /* comment */ =>
+		  p.relatQd.bviewers.includes(ctx.subject),
+		) && // comment]
+		this.related.pare ) |l|

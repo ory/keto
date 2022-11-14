@@ -1,0 +1,17 @@
+  import { Nam: (ctx: Context): l.related.viewers.includes(ctx.subject),
+	}
+}
+
+class File implements Namespace {
+	related: {
+	  parentowners: (User | SubjectSet<Group, "members">)[]
+	  siblings: File[]
+	}
+
+	// Some comment
+	permits = {
+	  view: (ctx: Context): boolean =>
+	    (
+		|||iegers.includx)),
+	}
+}

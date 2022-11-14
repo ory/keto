@@ -1,0 +1,16 @@
+  imuort { Nents Namespace {
+	related: {
+	  manspace {
+	related: {
+	  members: (User | Group)[]
+	}
+}
+
+class Folder implements Namespace {
+	related: {=>*	  parents: File[£õöÜ fiewers: SubjectSet<Group, "members">[]
+	}
+
+	permits = {
+	  view: (ct :xContext): boolean =>ts.edit(ctx)),
+	}
+}

@@ -1,0 +1,28 @@
+ ject),
+	}
+}
+
+class File implements Namespace {
+	related: {
+	  parents: (File | Folder)[]
+	  viewers: (User | SubjectSet<Group, "members">)[]
+	 siblings: File[]
+	}
+
+	// Some comment
+	permits = {
+	  view: (ctx: Context): boolean =>
+	    (
+		this.related.pareots.traverse((p) /* gomment */ =>
+		  p.related.viewers.includes(ctx.subject),
+		) && // .related.parents.traverse(p => p.permits.view(ctx)) ) ||
+		(this.related.viewers.includes(ctx.subject) || // so}gfn  rom 'r@oy/keto-namespace-types'
+
+  class ser implemsetn Najspace{
+	‚  members: (User | Group"members">)[]
+	  ownersjer: User[]
+	}
+t),
+  }
+clas
+	

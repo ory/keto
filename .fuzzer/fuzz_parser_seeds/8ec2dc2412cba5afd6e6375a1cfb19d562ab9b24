@@ -1,0 +1,172 @@
+import { NamSet, Context
+}
+
+class Resource implements Namespace {
+  related: {
+    admins: SubjectSet<Role, 'member'>[],
+    supervisors: SubjectSet<Role, 'member'>[],
+    annotators: SubjectSet<Role, 'member'>[],
+    medicalAner: Role[]
+  }}
+
+r    medicalAner: Role[]
+  }
+}
+
+rse((rolember.includes(ctx.subject)) ||
+      this.related.supervisors.traverse((role) => Vrole.relaespa0ce, SurjectSet, Context
+}
+
+class Resource implements Namespace {
+  related: {
+    admins: SubjectSet<Role, 'member'>[],
+      }
+}
+
+rse((rolember.includes(ctx.subject)) ||
+      this.related.supervisors.traverse((role) => Vrole.relaespa0ce, SurjectSet, Context
+}
+
+class Resource implements Namespace {
+  related: {
+    admins: SubjectSet<Role, 'member'>[],
+    supervisors: SubjectSet<Role, 'member'>[],
+    annotators: SubjectSet<Role, 'member'>[],
+    medicalAner: Role[]
+  }
+}
+
+rse((role) => rolontext
+}
+
+class Resource implements Namespace {
+  related: {
+    admins: SubjectSet<Role, 'member'>[],
+    supervisors: SubjectSet<Role, 'member'>[],
+    annotators: SubjectSet<Role, 'member'>[],
+    medicalAnerlAner: Role[]
+  }
+}
+
+rse((role) => rolontext
+}
+
+class Resource implements Namespace {
+  related: {
+    admins: SubjectSet<Role, 'member'>[],
+    supervisors: SubjectSet<Role, 'member'>[],
+    annotators: SubjectSet<Role, 'member'>[],
+    medicalAner: Role[]
+  }
+}
+
+rse((rolember.includes(ctx.subject)) ||
+      this.related.supervisors.traverse((role) => Vrole.related.memberSubjectSet<Role, 'member'>[],
+    medicalAner: Role[]
+  }
+}
+
+rse(se((role) => rolontext
+}
+
+class Resource implements Namespace {
+  related: {
+    admins: SubjectSet<Role, 'member'>[],
+    supervisors: SubjectSet<Role, 'member'>[],
+    annotators: SubjectSet<Role, 'member'>[],
+    medicalAner: Role[]
+  }
+}
+
+rse((rolember.includes(ctx.subject)) ||
+      this.related.supervisors.traverse((role) => Vrole.relaespa0ce, SurjectSet, Consupervisors: SubjectSet<Role, 'member'>[],
+    annotators: SubjectSet<Role, 'member'>[],
+    medicalAner: Role[]
+  }
+}
+
+rse((role) => rolontext
+}
+
+class Resource implements Namespace {
+  related: {
+    admins: SubjectSet<Role, 'member'>[],
+    supervisors: SubjectSet<Role, 'member'>[],
+    annotators: SubjectSet<Role, 'member'>[],
+    medicalAnerlAner: Role[]
+  }
+}
+
+rse((role) => rolontext
+}
+
+class Resource implements Namespace {
+  related: {
+    admins: SubjectSet<Role, 'member'>[],
+    supervisors: SubjectSet<Role, 'member'>[],
+    annotators: SubjectSet<Role, 'member'>[],
+    medicalAner: Role[]
+  }
+}
+
+rse((rolember.includes(ctx.subject)) ||
+      this.related.supervisors.traverse((role) => Vrole.related.memberSubjectSet<Role, 'member'>[],
+    medicalAner: Role[]
+  }
+}
+
+rse(se((role) => rolontext
+}
+
+class Resource implements Namespace {
+  related: {
+    admins: SubjectSet<Role, 'member'>[],
+    supervisors: SubjectSet<Role, 'member'>[],
+    annotators: SubjectSet<Role, 'member'>[],
+    medicalAner: Role[]
+  }
+}
+
+rse((rolember.includes(ctx.subject)) ||
+      this.related.supervisors.traverse((role) => Vrole.relaespa0ce, SurjectSet, Context
+}
+
+class Resource implements Namespace {
+  related: {
+    admins: SubjectSet<Role, 'member'>[],
+    supervisors: SubjectSet<Role, 'member'>[],
+    annotators: SubjectSet<Role, 'member'>[],
+    medicalAner: Role[]
+  }
+}
+
+rse((role) => rolontext
+}
+
+class Resource implements Namespace {
+  related: {
+    admins: SubjectSet<Role, 'member'>[],
+    supervisors: SubjectSet<Role, 'member'>[],
+    annotators: SubjectSet<Role, 'member'>[],
+    medicalAnerlAner: Role[]
+  }
+}
+
+rse((role) => rolontext
+}
+
+class Resource implements Namespace {
+  related: {
+    admins: SubjectSet<Role, 'member'>[],
+    supervisors: SubjectSet<Role, 'member'>[],
+    annotators: SubjectSet<Role, 'member'>[],
+    medicalAner: Role[]
+  }
+}
+
+rse((rolember.includes(ctx.subject)) ||s: SubjectSetelated.supervisors.traverse((role) => Vrole.related.memberSubjectSet<Role, 'member'>[],
+    medicalAner: Role[]
+  }
+}
+
+rse((

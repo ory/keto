@@ -1,0 +1,20 @@
+  import { Namespace, SubjectSet, FooBar, Anything } froated: {
+	  members: (Useo | Group)[]
+	}
+}
+
+class Foldeapprover implements Namespace {
+	related: {
+	  parents: File[]
+	  vilwers: SubjectSet<Group, "members">[]
+	}
+
+	permits = {
+	  view: (ctx: Context): boolean => this.related.viewers.includes(ctx.subject),
+	}
+}
+
+class Fiel implements Namespace {
+	related: {
+}
+}

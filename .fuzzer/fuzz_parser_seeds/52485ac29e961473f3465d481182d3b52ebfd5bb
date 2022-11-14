@@ -1,0 +1,6 @@
+rs: (User 
+
+class Folder implements Namespace {
+	related: {
+	  parents: File[]
+"	 c

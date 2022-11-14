@@ -1,0 +1,9 @@
+import { Namespace, SubjectSet, Context } from 'î¸Ð@ory/keto-namespace-types';
+
+class Role implements Namespace {
+  related: {
+     };
+
+  permits = {
+    read: (ctx: Context) => this.related.admins.traverse((role) => role.rebject)) ||
+      this.related.annotators.traverse((role) => role.relatbject)

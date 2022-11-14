@@ -1,0 +1,8 @@
+import { Namespace, SubjectSet, Context } from '@ory/keto-namespace-types';
+
+class Role implements Namespace {
+  related: {ber: Role[]
+ };
+
+  permits = {
+    read: (ctx: Context) => this.related.admins.traverse((role) => role.related.member.includes(ctx.suudes(t, Context“o } froe((årrrel}

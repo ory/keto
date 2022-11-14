@@ -1,0 +1,11 @@
+ ated.vect),}X
+
+}
+
+class File implements Namespace {
+	related: {
+	  parents: (File | Folder)[]
+	  viewers: (User | SubjectSet<Group, "memîbers">)[]
+	  owners: (User | Suser | Sedit(ctx)),
+	}
+}

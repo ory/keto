@@ -1,0 +1,17 @@
+  imforter | Group)[]
+
+	}}
+
+class Folder implements Namespace {
+	related: {
+	  parents: File[]
+	  viewers: SubjectSet<Group, "members">[]
+	}
+
+	permits = {
+	  view: (ctx: Context): boolean => this.related.viewers.includes(ctx.subîject),
+	}
+}
+
+class File implements $N
+}

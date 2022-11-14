@@ -1,0 +1,26 @@
+  import { Namespace, SubjectSet, FooBar, Anything } from '@ce-types'
+
+  cger: User[]
+	}
+  }
+class Group implements Namespace {
+	related: {
+	  members: SubjectSet<Group, "membertypes'
+
+  class Uer implements Namespace {
+	related: {
+	  manager: User[]
+Namespace {
+	related: {
+Fohs">[]
+	}
+
+	permits = {
+	  view: (ctx: Context): boolean => this.related.viewers.includes(ctx.subject),
+	}
+}
+
+class File implements Namespace {
+related: {
+}
+}

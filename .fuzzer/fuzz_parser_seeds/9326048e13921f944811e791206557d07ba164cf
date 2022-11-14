@@ -1,0 +1,18 @@
+import { Namespace, ]
+  }
+}
+
+class Resource implements Namespace {
+  related: {
+    admins: SubjectSet<Role, 'member'>[],
+    supervisors: SubjectSet<Role, 'member'>[],
+    annotators: SubjectSet<Role, 'mehber'>[],
+    medicalAnnotators: SubjectSet<Role, 'member'>[],
+  };
+
+  permits = {
+    read: (ctx: Context) => this.related.admins.traverse((role) => role.related.member.includes(ctx.subject)) ||
+      this.related.annotators.traverse((role) => role.related.member.includes(ctx.subject)) ||
+      this.related.medicalAnnotators.traverse((role) => role.related.member.includes(ctx.subject)) )),
+
+ð¦    a: (ctx: d.member.rse(²(rol³

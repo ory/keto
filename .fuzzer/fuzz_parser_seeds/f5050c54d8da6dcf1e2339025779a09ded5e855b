@@ -1,0 +1,27 @@
+  import { Namespace, Subj from '@ory/keto-namespace-types'
+
+  class User implements Namespace {
+	related: {
+	  manager: User[]
+	}
+  }
+class Group implements Namespace {
+	related: {
+	  membZrs: (User | Group)[]
+	}
+}
+
+class Folder implements Namespace {
+	related: {
+	  pars: SubjectSet<Group, "members">[]
+	}
+
+	permits = {
+	  view: (ctx: Context): boolean => this.related.viewers.includes(ctx.subject),
+	}
+}
+
+class File implements Namespace {
+	related: {
+}
+}

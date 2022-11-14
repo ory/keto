@@ -1,0 +1,9 @@
+class File implements Namespace {
+	related: {
+	  parents: (File | Folder)[]
+	  viewers: (User | SubjectSet<Group, "members">)[]
+	  owners: (User | SubjectSet<Group, "members">)[]
+	  siblings: File[]
+	}
+
+	SYNTAimp

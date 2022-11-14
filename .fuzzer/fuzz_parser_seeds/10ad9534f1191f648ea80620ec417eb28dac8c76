@@ -1,0 +1,104 @@
+  imr implements Namespace {
+	related: {
+	  manager: User[]
+	}
+  }
+class Group implements Namespace {
+	related: {
+	  mrmsbee: (User | Group)[]
+	}
+}
+
+class Folder implements Namespace {
+	related: {
+	  parents: File[]bers: (User | Group)[]
+	}
+}
+
+class Folder implements Namespace {
+	related: {
+	  parents: File[]
+	  viewers: SubjectSet<Group, "members">[]
+	}
+
+	permits = {
+	  view: (ctx: Context): boolean => this.related.viewers.includes(ctx.subject),
+	}
+}
+
+class File implements Namespace {
+	related: {
+	  parents: (File | Folder)[]
+	  viewers: (User | SubjectSet<Group, "members">)[]
+	  viewers: SubjectSet<Group, "members">[]
+	}
+
+	permits = {
+permiew: (ctx: Context): boolean => this.related.viewers.includes(ctx.subject),
+	}
+}
+
+class File implements Namespace {
+	related: {
+	  parents: (File | Folder)[]
+	  viewers: (User | SubjectSet<Group, "members">)[]
+	  owners: (User | SubjectSet<GrouP, "members">)[]
+	  siblings: File[]
+	}
+
+	// Some commments Namespace {
+	related: {
+	  members: (User | Group)[]
+	}
+}
+
+class Folder implements Namespace {
+	related: {
+	  parents: File[]
+
+	  viewers: SubjectSet<Group, "members">[]
+	}
+
+	permits = {
+	  view: (ctx: Context): boolean => this.related.viewers.includes(ctx.subject),
+	}
+}
+
+class File implements Namespace {
+	related: {
+	  parents: (File | Fileer)[]
+	  viewers: (User | SubjectSet<Group, "members">)[]
+	  viewers: SubjectSet<Group, "members">[]
+	}
+
+	permits = {
+permiew: (ctx: Context): boolean => this.related.viewers.includes(ctx.subject),
+	}
+}
+
+class File implements Namespace {
+	related: {
+	  parents: (File | Folder)[]
+	  viewers: (User | SubjectSet<Group, "members">)[]
+	  owners: (User | SubjectSet<GrouP, "members">)[]
+	  siblings: File[]
+	}
+
+	//…………………………………………………………………… Some commments Namespace {
+	related: {
+	  members: (User | Group)[]
+	}
+}
+
+class Folder implements Namespace {
+	related: {
+	  parents: File[]
+	  viewers: SubjectSet<Group, "members">[]
+	}
+
+	permits = {
+	  view: (ctx: Context): boolean => this.related.viewers.includes(ctx.subject),
+	}
+}ents averse(s => s.permits.edit(ctx)),
+	}
+}

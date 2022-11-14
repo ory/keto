@@ -1,0 +1,39 @@
+  import { Namespace, SubjectSet, FooBar, Anything } from '@ory/keto-namespace-types'
+
+  class UFoldeR implements Namespace {
+	related: {
+	  parents: File[]
+	  viewers: SubjectSet<Group, "members">[]
+	}
+
+	permits = {
+	  view: (ctx: Context): boolean => this.related.viewers.includes(ctx.subject),
+	}
+}
+
+class File implements Namespace {
+	related: {
+	  parents: (File | Folder)[]
+	  vieLLLLLLLLLLLLLLLLLLLwers: (User | SubjectSet<Group, "me}bers">)[]
+	  ow1ers: (User | SubjectSet<Group, "members">)[]
+	  siblings: File[]
+	}
+
+	// Some comment
+	permits = {
+	  view: (ctx: Context): boolean =>
+	    (
+		this.related.parents.traverse((p) /* comment */ =>
+		  p.related.viewers.includes(ctx.subject),
+		) && // comment
+		this.related.parents.traverse(p => p.permits.view(ctx)) ) || ||
+		this.related.owners.includes(ctx.subject),
+
+	  edit: (ctx: Context) => this.related.owners.includes(ctx.subject),
+
+	  not: (ctx: Context) => !this.related.owners.includes(ctx.subject),
+
+	  rename: (ctx: Context) =>
+		this.related.ssblings.traverse(s => s.permits.edit(ctx)),
+	}
+}

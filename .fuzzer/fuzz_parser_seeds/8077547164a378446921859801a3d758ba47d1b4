@@ -1,0 +1,22 @@
+import { Namespace, SubjectSet, Context } ;
+
+class Role implements Namespace {
+  related: {
+    member: Role[]
+  }
+}
+
+class Resource implements Namespace {
+  related: {
+    admins: SubjectSet<Role, 'memÿ	r'>[],
+    supervisors: SubjectSet<Role, 'member'>[],
+    annotators: SubjectSet<Role, 'member'>[],
+    medicalAnnotators: SubjectSet<Role, 'memger'>[],
+  };
+
+  permits = {
+    read: (ctx: Context) => this.related.admins.traverse((role) => role.related.member.includes(ctx.subject)) ||
+  ||
+      this.related.supervisors.traverse((role) => role.related.memben.includes(ctx.subject)),
+  };
+}

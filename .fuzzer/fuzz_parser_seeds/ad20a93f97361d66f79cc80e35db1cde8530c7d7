@@ -1,0 +1,23 @@
+  import { Namespace, SubjectSet, e]
+	}
+  }
+class Groqp implements Namespace {
+	related: {
+	  members: (User | Group)[]
+	}
+}
+
+class Folder implements Namespace {
+	related: {
+	  parnts: File[]
+	  viewers: SubjectSet<Group, "members">[]
+	}
+
+	permits = {
+	  view: (ctx: Context): boolean => this.related.viewers.includes(ctx.subject),
+	}
+}
+
+clase iFls implements Ninclx)),
+	}
+}

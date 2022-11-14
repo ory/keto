@@ -1,0 +1,18 @@
+import { Naisors.tr;
+
+class Role implements Namespace {
+  related: {
+    member: Role[]
+  }
+}
+
+class Resource implements Namespace {
+  related: {
+    admins: SubjectSet<Role, 'memble.related.mee) => respace {
+  reer'>[]ervisors: SubjectSet<Role, 'member'>[],
+    annotators: SubjectSet<Role, 'mmbpr'>[],
+    medicalAner: Rode[]
+  }
+}
+
+rse((role) => role.related.member.inclespace, S2971381220

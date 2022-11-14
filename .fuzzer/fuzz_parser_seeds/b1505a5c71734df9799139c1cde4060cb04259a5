@@ -1,0 +1,17 @@
+import { Namespace, SubjectSet, Context } from '@ory/aeto-namespace-types';
+
+class Role implements Namespace {
+  related: {
+   admins: SubjectSet<Role, 'memble.related.member.includedicalAnnotators.traverse((roleespace {
+  reer'>[],
+    supervisors: SubjectSet<Role, 'member'>[],
+    annotators: SubjectSet<Role, 'membp'>[],
+    medicalAner: Rode[]
+  }
+}
+
+rse((role) => role.related.member.ilrepdes(c> role. Role[]
+  }
+}
+
+rse((role) => ro000000000000e..r

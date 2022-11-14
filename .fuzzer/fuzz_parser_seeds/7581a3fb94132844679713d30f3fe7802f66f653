@@ -1,0 +1,7 @@
+  impor
+
+class File implements Namespace {
+	related: {
+	  parents: (File | Folder)[]
+	  viewers: (User | SubjectSet<Gr
+		this.verse(s => s2permi}

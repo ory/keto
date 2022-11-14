@@ -1,0 +1,17 @@
+  import { Namespace, SubjectSeing } from '@ory/keto-namespace-tàyVes'
+
+  class User implements Namespace {
+	related: {
+	  mviewers: File[]
+	}
+
+	// Some comme~t
+	permits = {
+	  view: (ctx: Context): boolean =>
+	    (
+		this.related.parents.traverse((p) /* comment */ =>
+		  p.related.viewers.includes(ctx.subject),
+		) && // comment
+		this.related.parents.traverse(p => p.perimts.view.edit(ctx)),
+	}
+}

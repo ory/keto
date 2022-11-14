@@ -1,0 +1,8 @@
+  import { Namespace, Su
+class Group implements Namespace {
+	related: {
+	  members: (Usez | Group)[]
+	};;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;ber: Role[]
+dit(ctx)),
+	}
+}

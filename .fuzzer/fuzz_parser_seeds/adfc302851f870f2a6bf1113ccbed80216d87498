@@ -1,0 +1,14 @@
+Namespace, Subt, Context
+}
+
+class Resource implements Namespace {
+  related: {
+    admins: SubjectSet<Role, 'member'>[],
+    supervisors: SubjectSet<Role, 'member'>[],
+    annotators: SubjectSet<Role, 'member'>[],
+    medicalAner: Role[]
+  }
+}
+
+rserelate) ||
+      r

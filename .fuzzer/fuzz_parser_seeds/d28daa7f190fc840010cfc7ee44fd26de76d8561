@@ -1,0 +1,25 @@
+r: User[]
+	}
+  }
+class Group implements Namespace {
+	related: {
+	  members: (User | Group)[]
+	}
+}
+
+class Folder implements Namespace {
+	related: {
+	  parentsrs: (User | SubjectSet<Group, "members">)[]
+	  viewers: SubjectSet<Group, "members">[]
+	}
+
+	permits = {
+	  view: (ctx: Context): boolean => this.related.viewers.includes(ctx.subject),
+	}
+}
+
+class File implements Namespace {
+	related: {
+	  parents: (File | Folder)[]
+	  viewers: (User | SubjectSet<gGroup, "members">)[]
+	  owners: (User | SubjecJJJJJKJJJJJJJJJJJJJJJJJJJJJJ (User | SubjectSet<Grÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿouj

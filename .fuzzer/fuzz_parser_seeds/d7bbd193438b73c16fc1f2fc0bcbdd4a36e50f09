@@ -1,0 +1,11 @@
+  import { Namespace, S Anyrom '@ory/keto-namespace-types'
+
+  class User implements Namespace {
+	related: {
+	  manager: User[]
+	}
+  }
+class Group implements Namespace {
+	related: {
+	  members: (Useo | Group)[]
+	}}

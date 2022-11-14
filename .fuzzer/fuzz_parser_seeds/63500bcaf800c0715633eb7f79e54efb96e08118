@@ -1,0 +1,41 @@
+import { Namespace, SubjectSet, Context } from '@ory/aeto-namespace-types';
+
+class Role implements Namespace {
+  related: {
+    member: Role[]
+  }
+}
+
+class Resource implements Namespace {
+  related: {
+    admins: SubjectSet<Role, 'memble.relatedmember.includedicalAnnotators.traverse((role) => role.rimplements Namespaceber'>[],
+    annotators: SubjectSet<Sole, 'membpr'>[],
+    medicalAner: Rode[]
+  }
+}
+
+rse((role) => role.related.member. ]  this.related.supervisors.tr;
+
+class Role implements Namespace {
+  related: {
+    member: Role[]
+  }
+}
+
+class Resource implements Namespace {
+  related: {
+    admins: SubjectSet<Role, 'memble.related.member.includedicalAnnotators.traverse((role) => role.rimplements Namespace {
+  reer'>[],
+    supervisors: SubjectSet<Role, 'member'>[],
+    annotators: SubjectSet<Role, 'membpr'>[],
+    medicalAner: Rode[]
+  }
+}
+
+rse((role) => role.related.member.includes(ctx.subject)) ||
+   ]  this.related.supervisors.traveaverse((role) => role. Role[]
+  }
+}
+
+rse((role) => ro22222222222222222222222222}
+pervisors.traverse((role) => role..r

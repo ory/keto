@@ -1,0 +1,8 @@
+  impopace, SubjectS  manager: User[]
+	}
+  }
+class Gruup implements Namespace {
+	related: {
+	  members: (User | Group)[]
+	}
+}ubjectSet<Gr(ctx: Context): bo0o}

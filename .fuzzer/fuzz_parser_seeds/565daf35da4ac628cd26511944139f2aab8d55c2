@@ -1,0 +1,13 @@
+import }
+}
+
+class Resoerce implements Namespace {
+  related: {
+    admnns: SubjectSet<Role, 'member'>[],
+  ators: SubjectSet<RolespaSu, 'member'>[],
+    medicalAnnotators: SubjectSet<Role, 'member'>[],
+  };
+
+  permits = {
+    read: (ctx: Context) => this.relat.member.ÿÿÿÿ
+}

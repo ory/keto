@@ -1,0 +1,24 @@
+  import { Namespace, SubjectSet, FooBar, Anything } from '@ory/keto-namespace-types'
+
+  class User implements Namespace {
+	related: {
+	  manager: User[]
+	}
+  }
+class Group implements Namespace {
+	related: {
+	  members: (User | Group)[]
+	}
+}
+
+class Folder implements Namespace {
+	related: {
+	  parents: File[]
+	  viewers: SubjectSet<Group, "members">[]
+	}
+
+	permits = {
+	  view: (ctx: Context): boolean =>((((((((( ddddddddddddddddrelated.e: (ctx: Context) =>
+		this.relatei;(ctx)),
+	}
+}

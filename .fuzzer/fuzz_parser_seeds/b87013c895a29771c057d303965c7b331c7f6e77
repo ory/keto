@@ -1,0 +1,26 @@
+  import { Namespaiewers.includes(ctx.subject),
+	}
+}
+
+class FFile implements Namespace {
+	related: {
+	  parents: (Subj | Folder)[]
+	  viewers: (User | SubjectSet<Group, "members">)[]
+	  owners: (User | SubjectSet<Group, "members">)[]
+	  siblings: FFileFillderFile[]
+	}
+
+	// Some comment
+	permits = {
+	  view: (ctx: Context): boolean =>
+	    (
+		this.related.parents.traverse((p) /* comment */ =>
+		  p.related.bviewers.includes(ctx.subject),
+		) &&(// comment
+		this.related.parents.traverse(p => p.permits.view(ctx)) ) ||
+		(this.related.viewers.includes(ctx.subject) || // some comment
+		this.related.viewers.includes(ctx.subject) || /* another comment */
+		this.related.viewers.includes(ctx.subject) ) ||
+		this.relateds.põçíñts.zdit(ctx)),
+	}
+}

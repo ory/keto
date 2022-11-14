@@ -1,0 +1,29 @@
+ 
+class Folder implements Namespace {
+	related: {
+	  parents: File[]
+	  viewers: SubjectSet<Group, "members">[]
+	}
+
+	permits = {
+	  view: (ctx: Context): boolean => this.related.viewers.includes(ctx.subject),
+	}
+}
+
+class File implements Namespace {
+	related: {
+	  parents: (File | Folder)[]
+	  viewers: (User | SubjectSet<Group, "members">)[]
+	  owners: (User | SubjectSet<Group, "members">)[]
+	  siblings: File[]
+	}
+
+	// Some comment
+	permits = {
+	  view: (ctx: Context): boolean =>
+	    (
+		this.related.parents.traverse/* ||
+		this.related.owners.) =>
+		this.related.siblings.traverse(s => s.permits.edit(ctx)),
+	}
+}

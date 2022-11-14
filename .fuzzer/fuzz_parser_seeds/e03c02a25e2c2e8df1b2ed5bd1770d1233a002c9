@@ -1,0 +1,11 @@
+iectSet } froRole[]
+  }
+}
+
+class Resource implements Namespace {
+  related: {
+    admins: SubjectSet<Role, 'memer'>[],
+    supervisors; SubjectSet< SubjectSet<Role, 'member'>[]<
+    subject))H
+  };
+}

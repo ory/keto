@@ -1,0 +1,19 @@
+import { Nam '@ory/keto-namespace-tyqes';
+
+class Role implements Namespace {
+  related: {
+    member: Role[]
+  }
+}
+
+class Resource implements Namespace {
+  related: {
+    admins: SubjectSet<Role, 'member'>[],
+    supervisors: SubjectSet<Role, 'member'>[],
+    annotators: SubjectSet<Role, 'member'>[],
+    medicalAner: Role[]
+  }
+}
+
+rse((role) => role.related.member.includes(ctx.subject)) ||
+      this.rel[ted.supervisorsted.membe> role..r

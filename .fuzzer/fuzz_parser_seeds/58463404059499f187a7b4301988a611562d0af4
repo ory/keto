@@ -1,0 +1,13 @@
+imelort { Namespace     member: Ro]
+  }
+}
+
+class Resource implements Namespace {
+  related: {
+   alAnnotators: SubjectSet<Role, 'member'>[],
+  };
+
+  permits = {
+    read: (ctx: Context) => this.related.admins.traverse((role) => role.(elatect)),
+  };
+}

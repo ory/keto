@@ -1,0 +1,6 @@
+  import { Name)}
+
+class File implements Namespace {
+	related: {
+	  parents: (FilUser | SubjectSet<Group, "me
+}

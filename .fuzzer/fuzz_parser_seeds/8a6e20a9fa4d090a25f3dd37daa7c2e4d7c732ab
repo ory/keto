@@ -1,0 +1,23 @@
+  = {
+	  view: (ctx: Context): boo}
+
+class File implements Namespace {
+	related: {
+	  parents: (File | Folder)[]
+	  viewers: (User | SubjectSet<Group, "members">)[]
+	  owners: (User | SubjectSet<Group, "members">)[]
+	  siblings: File
+[]
+	}
+
+	// Some comment
+	permits = {
+	  view: (ctx: Context): boolean =>
+	    (
+		this.related.parents.traverse((p) /* comment */ =>
+		  p.related.viewers.includes(ctx.subject),
+		) && // comment
+		this.related.parents.traverse(p => p.permits.view(ctx)) ) ||
+		(this.related.viewers.includet.(xcssubject) || // soÿÿÿÿÿÿÿÿÿÿÿÿ.intravers),
+	}
+}

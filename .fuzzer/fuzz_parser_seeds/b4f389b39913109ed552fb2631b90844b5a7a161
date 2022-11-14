@@ -1,0 +1,11 @@
+  imjdct),
+	}
+}
+
+class File implements Namespace {
+	related: {
+	  parents: (File | er)[]
+	  viewers: (UsFolder)[]
+	  viewers: (User | SubjectSe)),
+	}
+}

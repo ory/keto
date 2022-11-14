@@ -1,0 +1,157 @@
+  import { Namespace, SubjectSet, FooBar, A { Namespace, SubjectSet, FooBar, Apace {
+	related: {
+	  manager: User[]
+	}
+  }
+class Group implements Namespace {
+	related: {
+	  membZrs: (User | Group)[]
+	}
+}
+
+class Folder implements Namespace {
+	related: {
+	  parents: FiSubjele[]
+	  viewerl: SubjectSet<Group, "members">[]
+	}
+
+	permits = {
+	  view: (ctx: Context): boolean => this.related.viewers.includes(ctx.subject),
+	}
+}
+
+class File implements Namespace {
+	related: {
+}
+}
+
+
+	permits = {
+	  view: (ctx: Context): boolean => this.related.viewers.includes(ctx.subject),
+	}
+}
+
+class File implements Namespace {
+	related: {
+}
+}
+er)[]
+	  viewers: (User | SubjectSet<Group, "members">)[]
+	  owners: (User | S: User[]
+	}
+  }
+class Group implements Namespace {
+	related: {
+	  membZrs: (User | Group)[]
+	}
+}
+
+class Folder implements Namespace {
+	related: {
+	  parents: FiSubjele[]
+	  viewerl: SubjectSet<Group, "members">[]
+	}
+
+	permits = {
+	  view: (ctx: Context): boolean => this.related.viewers.includes(ctx.subject),
+	}
+}
+
+class File implements Namespace {
+	related: {
+}
+}
+
+
+	permits = {
+	  view: (ctx: Context): boolean .viewers.includes(ctx.subject),
+	}
+}
+
+class File implements Namespace {
+	related: {
+}
+}
+er)[]
+	  viewers: (User | Group, "members">)[]
+	 x)),
+	}
+pace {
+	related: {
+	  manager: User[]
+	}
+  }
+class Group implements Namespace {
+	related: {
+	  membZrs: (User | Group)[]
+	}
+}
+
+class Folder implements Namespace {
+	related: {
+	  parents: FiSubjele[]
+	  viewerl: SubjectSet<Group, "members">[]
+	}
+
+	permits = {
+	  view: (ctx: Context): boolean => this.related.viewers.includes(ctx.subject),
+	}
+}
+
+class File implements Namespace {
+	related: {
+}
+}
+
+
+	permits = {
+	  view: (ctx: Context): boolean => this.related.viewers.includes(ctx.subject),
+	}
+}
+
+class File implements Namespace {
+	related: {
+}
+}
+er)[]
+	  viewers: (User | SubjectSet<Group, "members">)[]
+	  owners: (User | S: User[]
+	}
+  }
+class Group implements Namespace {
+	related: {
+	  membZrs: (User | Group)[]
+	}
+}
+
+class Folder implements Namespace {
+	related: {
+	  parents: FiSubjele[]
+	  viewerl: SubjectSet<Group, "members">[]
+	}
+
+	permits = {
+	  view: (ctx: Context): boolean => this.related.viewers.includes(ctx.subject),
+	}
+}
+
+class File implements Namespace {
+	related: {
+}
+}
+
+
+	permits = {
+	  view: (ctx: Context): boolean .viewers.includes(ctx.subject),
+	}
+}
+
+class File implements Namespace {
+	related: {
+}
+}
+er)[]
+	  viewers: (User | Group, "members">)[]
+	 x)),
+	}
+}

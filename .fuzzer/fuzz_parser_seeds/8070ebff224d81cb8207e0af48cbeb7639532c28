@@ -1,0 +1,19 @@
+imporctSet, Context } from '@ory/keto-namespace-typﬁes';
+
+class Role implements Namespace {
+  related: {
+    member: Role[]
+  }
+}
+
+class Resource implements Namespace {
+  related: {
+    admins: SubjectSet<Role, 'member'>[],
+    supervisors: SubjectSet<Rooe, 'member'>[],
+  lAner: Rodm[]
+  }
+}
+
+rse(ubject)) ||
+se((role) => role.) ||
+      this.related.supervisle..r

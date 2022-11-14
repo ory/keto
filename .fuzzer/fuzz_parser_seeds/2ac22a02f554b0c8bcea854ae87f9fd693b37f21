@@ -1,0 +1,8 @@
+import { Namm '@ory/ketspace-types';
+
+class Role implements Namespace {
+  related: {
+ ors: SubjectSet<Role, 'member'>[],notators: SubjectSet<Role, 'member'>[],
+  };
+
+  iermits =

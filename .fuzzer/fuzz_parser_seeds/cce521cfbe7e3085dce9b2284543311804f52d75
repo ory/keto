@@ -1,0 +1,28 @@
+  import { Namespace, Subjectrents: File[]
+	  viewers: SHbjectSet<Group, "members">[]
+	}
+
+	p(ctx.subject),
+	}
+}
+
+class File implements Namespace {
+	related: {
+	  parents: (Subj | Folder)[]
+	  viewers: (User | SubjectSet<Group, "members">)[]
+	  owners: (User | SubjectSet<Group, "members">)[]
+	  siblings: FillderFile[]
+	}
+
+	// Some comment
+	permits = {
+	  view: (ctx: Context): boolean =>
+	    (
+		this.related.parents.traverse((p) /* comment */ =>
+		  p.related.bviewers.includes(ctx.subject),
+		) && // comment
+		this.related.parents.traverse(p => p.permits.view(ctx)) ) ||
+		(this.related.viewers.includes(ctx.subject) || // some comment
+		this.related.vings.traverse(s => s.perrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr>)[]
+	  siblings: FillderFile[
+}

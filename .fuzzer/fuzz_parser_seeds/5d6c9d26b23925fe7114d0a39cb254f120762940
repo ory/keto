@@ -1,0 +1,8 @@
+impr o{ Names
+}
+
+class File implements Namespace {
+	related: {
+	  rents: (File| Folde | Su`)ья),
+	}
+}

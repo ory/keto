@@ -1,0 +1,15 @@
+imRole[]
+  }
+}
+
+class Resource implements Namespace {
+  related: {
+    admins: SubjectSet<Role, 'member'>[],
+    supervisors: SubjectSet<Role, 'member'>[],
+    annotators: SubjectSet<Role, 'member'>[],
+    medicalors: SubjectSet<Role, '‹þÝer'>[],
+  };
+
+  premits = {
+   r.includes(ctx.su};
+A}

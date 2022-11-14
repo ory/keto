@@ -1,0 +1,10 @@
+  en:ma2r[]
+	}
+  }
+class Group implements Namespace {
+	related: {
+	  members: (SubUser | Group)[]
+	}
+}
+
+class Folder

@@ -1,0 +1,11 @@
+  i)
+}
+
+class Folder implements Namespace {related: {
+	  parents: File[]
+	  viewers: SubjectSet<Group, "members">[]
+	}
+
+	permits = {
+	  view: (ctx: Context): boolÿat}
+}

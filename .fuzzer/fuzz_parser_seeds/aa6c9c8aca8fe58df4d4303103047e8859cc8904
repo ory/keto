@@ -1,0 +1,69 @@
+import { NamSet, Context
+}
+
+class Resource implements Namespace {
+  related: {
+    admins: SubjectSet<Role, 'member'>[],
+    supervisors: SubjectSet<Role, 'member'>[],
+    annotatupervisors: SubjectSet<Role, 'member'>[],
+    annotators: SubjectSet<Role, 'member'>[],
+    medicalAnerlAner: Role[]
+  }
+}
+
+rse((role) => rolontext
+}
+
+class Resource implements Namespace {
+  related: {
+    admins: SubjectSet<Role, 'member'>[],
+    supervisors: SubjectSet<Role, 'member'>[],
+    annotators: SubjectSet<Role, 'member'>[],
+    medicalAner: Role[]
+  }
+}
+
+rse((rolember.includes(ctx.subject)) ||
+      this.related.supervisors.traverse((role) => Vrole.relaespa0ce, SubjectSet, Context
+}
+
+class Resource implements Namespace {
+  related: {
+    admins: SubjectSet<Role, 'member'>[],
+    supervisors: SubjectSet<Role, 'member'>[],
+ tors: SubjectSet<Role, 'member'>[],
+    medicalAner: Role[]
+  }
+}
+
+rse((role) => rolontext
+}
+
+class Resource implements Namespace {
+  related: {
+    admins: SubjectSet<Role, 'member'>[],
+    supervisors: SubjectSet<Role, 'member'>[],
+    annotators: SubjectSet<Role, 'member'>[],
+    medicalAnerlAner: Role[]
+  }
+}
+
+rse((role) => rolontext
+}
+
+class Resource implements Namespace {
+  related: {
+    admins: SubjectSet<Role, 'member'>[],
+    supervisors: SubjectSet<Role, 'member'>[],
+    annotators: SubjectSet<Role, 'member'>[],
+    medicalAner: Role[]
+  }
+}
+
+rse((rolember.includes(ctx.subject)) ||
+      this.related.supervisorst<Role, 'member'>[],
+    medicalAner: Role[]
+  }
+}
+
+rse((

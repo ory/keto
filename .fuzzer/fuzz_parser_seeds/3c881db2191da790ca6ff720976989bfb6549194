@@ -1,0 +1,7 @@
+  
+  }
+class Group implements Namespace {
+	permits = {
+	  view: (ctx: Context): boolat "\x01\xean => this.rex)),
+	}
+}

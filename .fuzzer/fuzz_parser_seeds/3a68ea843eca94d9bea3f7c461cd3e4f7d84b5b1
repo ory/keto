@@ -1,0 +1,12 @@
+  i
+
+  class Ur implements Namespace {
+	related: {
+	  managre: User[]
+	}
+  }
+class Group implements Namespace {
+	related: {nts: File[]
+	  videw(s => s.p’mits.edit(ctx)),
+	}
+}

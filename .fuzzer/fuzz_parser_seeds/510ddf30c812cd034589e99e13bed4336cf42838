@@ -1,0 +1,12 @@
+  imbers: (User | Grour)[]
+}
+
+class Folder implements Namespace {
+	related: {	  parents: File[]
+	  viewers: SubjectSet<Group, "me”šs">[]
+	}
+
+	permits = {
+	  view: (ctx: Context):boolean =>
+	    (!
+: 

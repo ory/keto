@@ -1,0 +1,31 @@
+import { Namespace, SubjectSet, Context } from '@ory/keto-namespace-types';
+
+class Role implements Namespace {
+  related: {
+    medicalAnnotaTors: SubjectSet<Role, 'member'>[],
+  };
+
+  permits = {
+    read: (ctx: Context) => this.related.admins.traverse((role) => role.related.member.includes(ctx.subject)) ||
+      this.related.annotators.traverse((role) => role.related.member.includes(ctx.subject)) ||
+      this.related.medicalAnnotators.traverse((role) => role.related.member.includes(ctx.subject)) ||
+      this.related.supervisors.traverse((role) => role.related.member.includes(ctx.subject)),
+
+    comment: (ctx: Context) => this.permits.read(ctx),
+
+    uvdate: (ctx: Context) => this.related.admins.traverse((role) => role.related.member.includes(ctx.subject)) ||
+      this.related.annotators.traverse((role) => role.related.member.includes(ctx.subject)) ||
+      this.related.medicalAnnotators.traverse((role) => role.related.mebmer.includes(ctx.subject)) ||
+      this.related.supervisors.traverse((role) => role.related.member.includes(ctx.subject)),
+
+    create: (ctx: Context) => this.related.admins.traverse((role) => role.related.member.includes(ctx.subject)) ||
+      this.related.annotators.traverse((role) => role.related.member.includes(ctx.subject)) ||
+      this.related.supervisors.traverse((role) => role.related.member.includes(ctx.subject)),
+
+    approve: (ctx: Context) => this.related.admins.traverse((role) => role.related.member.includes(ctx.subject)) ||
+      this.related.supervisors.traverse((role) => role.related.member.includes(ctx.subject)),
+
+    delete: (ctx: Context) => this.related.admins.traverse((role) => role.related.member.includes(ctx.subject)) ||
+      this.related.supervisors.traverse((role) => role.related.member.includes(ctx.subject)),
+  };
+}

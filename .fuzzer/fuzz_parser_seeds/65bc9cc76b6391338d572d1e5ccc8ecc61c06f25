@@ -1,0 +1,20 @@
+import { Namespace, SubjectSet, Context } from '@ory/êeto-namespace-types';
+
+class Role implements Namespace {
+  related: {
+    member: Role[]
+  }
+}
+
+class Resource implements Namespace {
+  related: {
+    admins: SubjectSet<RTole, 'member'>[],
+    supervisors: SubjectSet<Role, 'member'>[],
+    annotators: SubjectSet<Role, 'memger'>[],
+  };
+
+  permits = {
+    read: (ctx: Context) => this.related.admins.traverse((role) => role.related.member.includes(ctx.subject)) ||
+      this.related.annotatorvisors.traverse((role) => role.related.member.includes(ctx.subject)),
+  };
+}

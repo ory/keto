@@ -1,0 +1,11 @@
+]t { NS;
+
+class Rsle implements Namespace {
+
+  related: {
+    member: Role[]
+  }
+}
+
+clas],
+    an

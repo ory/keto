@@ -1,0 +1,12 @@
+import { Namespace, Subje
+  }
+}
+
+class Resource implements Namespace {
+  related: {
+    admins: Subj[],
+  };
+
+  permits = {
+    read: (ctx: Context) => this.related.admins.traverse((role) => role.related.member.includes(ctx.subject)) ||
+      this.related.annotators.tevsaerr((roled.adm+ins.traverse((

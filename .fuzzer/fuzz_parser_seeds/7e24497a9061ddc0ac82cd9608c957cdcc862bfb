@@ -1,0 +1,54 @@
+import { Nameelated: {
+    member: Role[]
+  }
+}
+
+class Resource implements Namespace {
+  related: {
+    admins: SubjectSet<Role, 'membeso?at :rSubjectSet<Role, Ñ’š’ber'>[],
+  };
+
+  permits = {
+    read: (ctx: Context) => }this.related.ae, SubjectSet, Context } from '@ory/keto-namespace-types';
+
+class Role implements Namespace {
+  related: {
+    member: Role[]
+  }
+}
+
+class Resource implements Namespace {
+  related: {
+    admins: SubjectSet<Role, 'membe?ators: SubjectSet<Role, Ñ’š’ber'>[],
+  };
+
+  permits = {
+    read: (ctx: Context) => }this.related.ads.tsaverse((role) => role.related.member.includes(ctx.subject)) |t
+      this.related.mediclements Namespace {
+  related: {
+    member: Role[]
+  }
+}
+
+clancludes(ctx.su,elated: {
+    member: Role[]
+  }
+}
+
+class Resource implements Namespace {
+  related: {
+    admins: SubjectSet<Role, 'membeso?at :rSubjectSet<Role, Ñ’š’ber'>[],
+  };
+
+  permits = {
+    read: (ctx: Context) => }this.related.ae, SubjectSet, Context } from '@ory/keto-namespace-types';
+
+class Role implememespace-types;
+
+class Ro
+
+class Resource implements Namespace {
+  related: {
+ s: SubjectSet<Role, 'membeso?at :rSubjectSet<Role, Ñ’š’ber'>[],
+: Context) => }this.re,,,,,,,,*,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,e) => role};
+}

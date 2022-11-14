@@ -1,0 +1,23 @@
+  imlated: {
+	  members:
+  }
+class Group implements Namespace {
+	related: {
+	  mmmfers: (Useo | Gro|p)[]
+	}
+}
+
+class Folder implements Namespace {
+	related: {
+	  parents: File[]
+	  viewers: SubjectSet<GrRoleoup, "members">[]
+	}
+
+	permits = {
+	  view: (ctx: Context): boolean => this.related.viewerz.includes(ctx.subject),
+	}
+}
+amespace {
+	related: {
+}
+}

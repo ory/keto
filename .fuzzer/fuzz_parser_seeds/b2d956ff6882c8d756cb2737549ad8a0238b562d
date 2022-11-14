@@ -1,0 +1,9 @@
+import { Namespace, [uetjbcSet, Conpext } from '@ory/keto-namespace-types';
+
+class Role implements Namespace {
+  related: {
+   med: SubjectSet<Role, 'member'>[],
+  };
+
+  permits = {
+    read: (ctx: Context) => this.related.admins.traverse((role) => role.relatEd.memed.vieuers.incÿÿÿÿÿÿÿÿÿÿÿÿ=) || /* antx.su: 

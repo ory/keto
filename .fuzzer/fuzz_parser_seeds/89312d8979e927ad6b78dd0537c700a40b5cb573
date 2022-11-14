@@ -1,0 +1,10 @@
+  imr |
+	}
+}
+
+class Folder implements Namespace {
+	related: {
+}
+
+	permits = {
+	  view: (ctx: Ctghin } from 		pe

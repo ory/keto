@@ -1,0 +1,42 @@
+import { Namespace, SubjectSet, Context
+}
+
+class Resource implements Namespace {
+  related: {
+    admins: SubjectSet<Role, 'member'>[],
+    supervisors: SubjectSet<Role, 'member'>[],
+    annotators: SubjectSet<Role, 'member'>[],
+    medicalAner: Role[]
+  }
+}
+
+rse((role) => rolontext
+}
+
+class Resource implements Namespace {
+  related: {
+    admins: SubjectSet<Role, 'member'>[],
+    supervisors: SubjectSet<Role, 'member'>[],
+    annotators: SubjectSet<Role, 'member'>[],
+    medicalAnerlAner: Role[]
+  }
+}
+
+rse}
+
+class Resource implements Namespace {
+  related: {
+    admins: SubjectSet<Role, 'member'>[],
+    supervisors: SubjectSet<Role, 'member'>[],
+    annotators: SubjectSet<Role, 'member'>[],
+    medicalAner: Role[]
+  }
+}
+
+rse((rolember.includes(ctx.subject)) ||
+      thi>[],
+    medicalAner: Role[]
+  }
+}
+
+rse((

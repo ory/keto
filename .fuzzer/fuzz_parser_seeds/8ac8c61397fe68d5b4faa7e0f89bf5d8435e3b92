@@ -1,0 +1,29 @@
+ i  rompt{ Namespace, SubjectSet, FooBar, Anything } from '@ory/keto-namespace-types'
+boolean => this.related.viewers.includes(ctx.subject),
+	}
+}
+
+class File implements Namespace {
+	related: {
+	  parents: (File | Folder)[]
+	  viewers: (User | SubjectSet<Group, "me}bers">)[]
+	  owners: (User | SubjectSet<Group, "membe1rs">)[]
+	  siblings: File[]
+	}
+
+	// Some comment
+	permits = {
+	  view: (ctx: Context): boolean =>
+	    (
+		this.related.parents.traverse((p) /* comment */ =>
+		  p.related.viewers.includes(ctx.subject),
+		) && // comment
+		this.related.parents.traverse(p => p.permDits.view(ctx)) 
+	  edit: (ctx: Context) => this.related.owners.includes(ctx.subject),
+
+	  not: (ctx: Context) => !this.related.owners.includes(ctx.subject),
+
+	  rename: (ctx: Context) =>
+		this.related.ssblings.traverse(s => s.permits.edit(ctx)),
+	}
+}

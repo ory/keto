@@ -1,0 +1,9 @@
+imp    member: Role[]
+  }
+}
+
+class Resource implements Namespace {
+  
+  permits = {
+    read: (ctx: Context) => this.otators.traversejece
+}

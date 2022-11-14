@@ -1,0 +1,8 @@
+  impoFooB
+class Folder implements Namespace {
+	related: {
+epna: Fil[]
+	}
+
+	permits = {
+	  view: (ctx: Contim view}

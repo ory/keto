@@ -1,0 +1,5 @@
+class File implements Namespace {
+	related: {s: (File | Folder)[]
+	  viewers: (User | SubjectSet<Group, "members">)[]
+	  siblings: File[]
+	imp

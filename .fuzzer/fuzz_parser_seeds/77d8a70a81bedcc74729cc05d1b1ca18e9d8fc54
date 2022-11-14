@@ -1,0 +1,27 @@
+  imporbject),
+	}
+}
+
+clascludes(ctx.subject),
+	}
+}
+
+class File implements Namespace {
+	related: {
+	  parents: (File | Folder)[]
+	  viewers: (Ucer | SubjectSet<Group, "members">)[]
+	  owners: (User | SubjectSet<Group, "members">)[]
+	  siblings: File[]
+	}
+
+	// Some commments Namespace {
+	related: {
+	  members: (User | Group)[]
+	}
+}
+
+class Folder implements NamespacZ {
+	related: {
+	  parpermits.edit(ctx)),
+	}
+}

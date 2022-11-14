@@ -144,6 +144,15 @@ libfuzzer-fuzz-test: .bin/go114-fuzz-build
 	clang -fsanitize=fuzzer ./.fuzzer/parser.a -o ./.fuzzer/parser
 	./.fuzzer/parser -use_value_profile=1 -timeout=1 ./.fuzzer/fuzz_parser_corpus ./.fuzzer/fuzz_parser_seeds
 
+.PHONY: libfuzzer-fuzz-test-minimize
+libfuzzer-fuzz-test-minimize: .bin/go114-fuzz-build
+	mkdir -p .fuzzer/fuzz_parser_corpus
+	mv .fuzzer/fuzz_parser_corpus .fuzzer/fuzz_parser_old_corpus
+	mkdir -p .fuzzer/fuzz_parser_corpus
+	.bin/go114-fuzz-build -o ./.fuzzer/parser.a -func LibfuzzerFuzzParser ./internal/schema
+	clang -fsanitize=fuzzer ./.fuzzer/parser.a -o ./.fuzzer/parser
+	./.fuzzer/parser -runs=0 -merge=1 ./.fuzzer/fuzz_parser_corpus ./.fuzzer/fuzz_parser_seeds ./.fuzzer/fuzz_parser_old_corpus
+
 .PHONY: cve-scan
 cve-scan: docker .bin/grype
 	grype oryd/keto:latest

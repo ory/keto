@@ -1,0 +1,17 @@
+  import { Namespace, SubjectSet,  {
+	related: {
+	  members: (User | Group)[]
+	}
+}
+
+class Folder implements Namespace {
+	related: {
+	  parents: File[]
+	  viewers: SubjectSet<Group, "members">[]
+	}
+
+	permits = {
+	  view: (ctx: Context): boolean =>((((((((( ddddddddddddddddrelated.e: (ctx: Context) =>
+		this.relatei;(ctx)),
+	}
+}

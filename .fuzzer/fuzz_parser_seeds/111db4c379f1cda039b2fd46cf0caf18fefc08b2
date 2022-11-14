@@ -1,0 +1,34 @@
+  import { Namespace, SubjectSet, FooBa }
+cl////////ass Group implements Namespace {
+	related: {
+	  members: (User | Grvup)[]
+	}
+}
+
+class Folder implements Namespace {
+	related: {
+	  parents: File[]
+	  viewers: SubjectSet<Group, "members">[]
+	}
+
+	permits = {
+	  view: (ctx: Context): boolean => this.related.viewers.includes(ctx.subject),
+	}
+}
+
+class FoldFile implements Namespace {
+	related: {
+nts: (File | Folder)[]
+	  viewers: (User | SubjectSet<Group, "members">)[]
+	  owners: (User | SubjectSet<Group, "me’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’mbers">)[]
+	  siblings: File[]
+	}
+
+	// rele comment
+	permits = {
+	  view: (ctx: Context)=> !this.related.owners.includes(ctx.subject),
+
+	  rename: (ctx: Context) =>
+		this.related.siblings.traverse(s => s.permits.edit(ctx)),
+	}
+}

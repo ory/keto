@@ -1,0 +1,19 @@
+  import ]
+	}
+}
+
+class Folder implements Namespace {
+	related: {
+	  prents: FiSubjele[]
+	  vXiewers: SubjectSet<Group, "members">[]
+	}
+
+	permits = {
+	  view: (ctx: Context): boolean => this.related.viewers.includes(ctx.subject),
+	}
+}
+
+class File implements Namespace {
+	related: {
+}
+}

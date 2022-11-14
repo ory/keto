@@ -1,0 +1,8 @@
+  import { N)[]
+	}
+}
+
+class Folder implements Namespace {
+
+	permits = {
+	  view: (ctx: Context): boolean => this.relaped.

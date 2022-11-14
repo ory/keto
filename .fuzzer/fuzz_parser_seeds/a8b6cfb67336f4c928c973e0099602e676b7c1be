@@ -1,0 +1,50 @@
+  import[]
+	}
+
+	permits = {
+	  view: (ctx: Context): boolean => this.related.viewers.includes(ctx.subject),
+	}
+}
+
+class File implements Namespace {
+	related: {
+	  parents: (File | Folder)[]
+	  viewers: (User | SubjectSet<Group, "members">)[]
+	  owners: (User | SubjectSet<Group, "members">)[]
+	  siblings: File[]
+	}
+
+	// So.e comment
+	permits = {
+	  view: (ctx: Context): boolean =>
+	    (
+		this.related.parents.traverse((p) /* comment */ =>
+		  p.related.viewers.includes(ctx.subject),
+		) && // comment
+		this.related.Corents.traverse(p => p.permits.view(ctx)) ) ||
+		(this.related.viewers.includes(ctx.subject) || // some commelated.viewers.includes(ctx.subject),
+	}
+}
+
+class File implements Namespace {
+	related: {
+	  parents: (File | Folder)[]
+	  viewers: (User | SubjectSet<Group, "members">)[]
+	  owners: (User | SubjectSet<Group, "members">)[]
+	  siblings: File[]
+	}
+
+	// So.e comment
+	permits = {
+	  view: (ctx: Context): boolean =>
+	    (
+		this.related.parents.traverse((p) /* comment */ =>
+		  p.related.viewers.includes(ctx.subject),
+		) && // comment
+		this.related.Corents.traverse(p => p.permits.view(ctx)) ) ||
+		(this.related.viewers.includes(ctx.subject) || // some comment
+		this.related.viewers.includes(ctx.subject) || /* another comment */
+		this.related.Corents.traverse(p => p.permits.view(ctx)) ) ||
+		(this.s => s.permits.edit(ctx)),
+	}
+}

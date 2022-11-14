@@ -1,0 +1,6 @@
+nclude
+class File implements Namespace {
+	related: {
+	  parents: (File | Fer)[]
+	  viewers: (User | Subjectlder)[]
+	  vi

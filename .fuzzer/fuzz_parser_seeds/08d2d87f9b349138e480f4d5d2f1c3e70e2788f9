@@ -1,0 +1,11 @@
+]import { Namesp'@ory/keto-namespace-types';
+
+class Role implements Namespace {
+
+  related: {
+    member: Role[]
+  }
+}
+
+clas; jectSe, 'member'>[],
+    an

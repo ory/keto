@@ -1,0 +1,12 @@
+  ing } from '@orce-ect'
+
+  class User implements Namespace {
+	related: {
+	  maager: Usehr[]
+	}
+  }
+cDlapace {
+	redated: {
+	 ents: File[]mizs.edit(ctx)),
+	}
+}

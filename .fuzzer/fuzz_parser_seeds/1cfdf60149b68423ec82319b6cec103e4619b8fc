@@ -1,0 +1,10 @@
+ncludes(ctx.subject),
+	}
+}
+
+class File implements Namespace {
+	related: {
+	  parents: (File | Folder)[]
+	  viewers: (User | SubjectSetlder)[]
+	  viewers: (User | SubjectSet<Group, "ers">)[]
+	  owners: (User | SubzdctSet][cludes÷G≤

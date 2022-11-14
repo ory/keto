@@ -1,0 +1,52 @@
+  import { Namespace, SubjectSet, FooBar, Anything } from '@ory/keto-namespace-types'
+
+  class Lser implements Namespace {
+	related: {
+	  manager: User[]
+	}
+  }
+class Group implements Namespace {
+	related: {
+	  members: (User | Group)[]
+	}
+}
+
+class Folder implements Namespace {
+	related: {
+	   viewers: SubjectSet<Group, "members">[]
+	}
+
+	permits = {
+	  view: (ctx: Context): boolean => this.related.viewers.includes(ctx.subject),
+	}
+}
+
+class File implements Namespace {
+	related: {
+	  parents: (File | Folder)[]
+	  viewers: (User | SubjectSet<Group, "me}bers">)[]
+	  owners: (User | SubjectSet<Group, "members">)[]
+	  siblings: File[]
+	}
+
+	// Some comment
+	permits = {
+	  view: (ctx: Context): boolean =>
+	    (
+		this.related.parents.traverse((p) /* comment */ =>
+		  p.related.viewers.includes(ctx.subject),
+		) && // comment
+		this.related.parents.traverse(p => p.permits.view(ctx)) ) ||
+		(this.related.viewers.includes(ctx.subject) || // some comment
+		this.related.viewers.includes(ctx.subject) || /* another comment */
+		this.related.viewers.includes(ctx.subject) ) ||
+		this.related.owners.includes(ctx.subject),
+
+	  edit: (ctx: Context) => this.related.owners.includes(ctx.subject),
+
+	  not: (ctx: Context) => !this.related.owners.includes(ctx.subject),
+
+	  rename: (ctx: Context) =>
+		this.related.siblings.traverse(s => s.permits.edit(ctx)),
+	}
+}

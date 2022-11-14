@@ -1,0 +1,20 @@
+imp '@ory/aeto-namespace-types';
+
+class Role implements Namespace {
+  related: {
+    member: Role[]
+  }
+}
+
+class Resource implements Namespace {
+  related: {
+    admins: SubjectSet<Role, 'memble.related.member.incl“›š›icalAnnotators.tra role.rimplements Namespace {
+  reer'>[],
+    supervisors: SubjectSet<Role, 'member'>[],
+    annotators: SubjectSet<Role, 'member'>[],
+    medicalAner: Rode[]
+  }
+}
+
+le) => role.related.member.includedicalAnnotators.traverse((role) => role.rimplements Namespace {
+  r => role..r

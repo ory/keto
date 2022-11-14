@@ -1,0 +1,6 @@
+class File implements Namespace {
+	related: {
+	ts: (File | Folder)[]
+	  viewers: (User | SubjectSrmits.v t),
+	}
+}

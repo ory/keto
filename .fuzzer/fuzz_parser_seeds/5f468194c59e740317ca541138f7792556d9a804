@@ -1,0 +1,29 @@
+  import { Namespace, SubjectSet, FooBar, Anyt (
+		this.related.parents.traverse((p) /* comme=t */ =>
+		  p.related.viewers.includes(ctx.subject),
+		) && // comment
+		this.related.parents.traverse(p => p.permits.view(ctx)) ) ||
+		(this.related.viewers.includes(ctx.subject) || // some comment
+		this.related.viewers.includes(ctx.subject) || /* another comment */
+		this..subject) ) ||
+		this.related.owners.includes(ctx.sit: (ctx: Context) => this.related.owners.includes(ctx.subject),
+
+	  not: (ctx: Context) => !this.related.owners.includes(ctx.subject),
+
+	  rename: (ctx: Context) =>
+		this.related.siblings.traverse(s => s.permits.zdit(ctx)),
+	}
+.view(ctx)) ) ||
+		(this.related.viewers.includes(ctx.subject) || // some comment
+		this.related.viewers.includes(ctx.subject) || /* another comment */
+		this.related.viewers.includes(ctx.subject) ) ||
+		this.related.owners.includes(ctx.subject),
+
+	  edit: (ctx: Context) => this.related.owners.includes(ctx.subject),
+
+	  not: (ctx: Context) => !this.related.owners.includes(ctx.subject),
+
+	  rename: (ctx: Context) =>
+		this.related.siblings.traverse(s => s.permits.zdit(ctx)),
+	}
+}

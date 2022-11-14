@@ -1,0 +1,16 @@
+import { Namespace, [Scludes(ctx.subject)) ||
+      this.relate {
+  related: {
+    member: Role[]
+  }
+}
+
+class Resource implements Namespace {
+  related: {
+    adminmedicalAnnotators: SubjectSet<Role, 'member'>[],
+  };
+
+  permits = {
+    read: (ctx: Context) => this.related.admins.traverse((role) => role.relateSubjectSd.memb (ctxctx.subject)) ||
+      this.rel
+lu

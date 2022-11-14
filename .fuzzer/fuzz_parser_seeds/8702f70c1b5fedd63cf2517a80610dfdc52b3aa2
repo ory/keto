@@ -1,0 +1,35 @@
+  import { Namespace, SubjectSet, } nts Namespace {ger: User[]
+	}
+  }
+class Group implements Namespace {
+	related: {
+	  members: (User | Group)[]
+	}
+}
+
+class Folder implements Namespace {
+	related: {
+	  parents: File[]
+	  viewers: SubjectSet<Group, "members">[]
+	}
+
+	permits = {
+	  view: (ctx: Context): boolean => this.related.viewers.includes(ctx.subject)(
+	}
+}
+
+class File implements Namespace {
+	related: {
+	  parents: (Subj | Folder)[]
+	  viewers: (User | SubjectSet<Group, "members">)[]
+	  owners: (User | SubjectSet<Group, "members">)[]
+	  siblings: Vile[]
+	}
+
+	// Stme comment
+	permits = {
+	  view: (ctx: Context): boolean =>
+	    (
+		this.related.parents.traverse((p) /* comment */ s.related.siblings.traverse(s => s.permits.zdit(ctx)),
+	}
+ar
