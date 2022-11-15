@@ -183,6 +183,7 @@ func (e *Engine) checkComputedSubjectSet(
 		WithField("computed subjectSet relation", subjectSet.Relation).
 		Trace("check computed subjectSet")
 
+	ctx = wrapArgs(ctx, subjectSet.Args)
 	return e.checkIsAllowed(
 		ctx,
 		&relationTuple{
@@ -227,6 +228,7 @@ func (e *Engine) checkTupleToSubjectSet(
 			tuples             []*relationTuple
 			err                error
 		)
+		ctx = wrapArgs(ctx, subjectSet.Args)
 		g := checkgroup.New(ctx)
 		for nextPage = "x"; nextPage != "" && !g.Done(); prevPage = nextPage {
 			tuples, nextPage, err = e.d.RelationTupleManager().GetRelationTuples(
@@ -260,4 +262,35 @@ func (e *Engine) checkTupleToSubjectSet(
 		}
 		resultCh <- g.Result()
 	}
+}
+
+type argsCtxKey struct{}
+
+func newCtxWithArgs(ctx context.Context, args *ArgsWrapper) context.Context {
+	return context.WithValue(ctx, argsCtxKey{}, args)
+}
+
+func argsFromCtx(ctx context.Context) *ArgsWrapper {
+	args, _ := ctx.Value(argsCtxKey{}).(*ArgsWrapper)
+	return args
+}
+
+type ArgsWrapper struct {
+	Args    []ast.Arg
+	Mapping map[string]ast.Arg
+}
+
+func wrapArgs(ctx context.Context, args []ast.Arg) context.Context {
+	w := argsFromCtx(ctx)
+	if w != nil {
+		// replace named-args with real values
+		a := append([]ast.Arg{}, args...)
+		for i, p := range a {
+			if _, ok := p.(ast.NamedArg); ok {
+				a[i] = w.Mapping[p.Value(ctx)]
+			}
+		}
+		args = a
+	}
+	return newCtxWithArgs(ctx, &ArgsWrapper{Args: args})
 }

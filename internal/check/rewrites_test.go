@@ -17,6 +17,7 @@ import (
 	"github.com/ory/keto/internal/namespace"
 	"github.com/ory/keto/internal/namespace/ast"
 	"github.com/ory/keto/internal/relationtuple"
+	"github.com/ory/keto/internal/schema"
 	"github.com/ory/keto/ketoapi"
 )
 
@@ -24,12 +25,14 @@ var namespaces = []*namespace.Namespace{
 	{Name: "doc",
 		Relations: []ast.Relation{
 			{
-				Name: "owner"},
+				Name: "owner", Params: []string{"subject"}},
 			{
 				Name: "editor",
 				SubjectSetRewrite: &ast.SubjectSetRewrite{
 					Children: ast.Children{&ast.ComputedSubjectSet{
-						Relation: "owner"}}}},
+						Relation: "owner"}}},
+				Params: []string{"ctx"},
+			},
 			{
 				Name: "viewer",
 				SubjectSetRewrite: &ast.SubjectSetRewrite{
@@ -38,35 +41,41 @@ var namespaces = []*namespace.Namespace{
 							Relation: "editor"},
 						&ast.TupleToSubjectSet{
 							Relation:                   "parent",
-							ComputedSubjectSetRelation: "viewer"}}}},
+							ComputedSubjectSetRelation: "viewer"}}},
+				Params: []string{"ctx"},
+			},
 		}},
 	{Name: "users"},
 	{Name: "group",
-		Relations: []ast.Relation{{Name: "member"}},
+		Relations: []ast.Relation{{Name: "member", Params: []string{"subject"}}},
 	},
 	{Name: "level",
-		Relations: []ast.Relation{{Name: "member"}},
+		Relations: []ast.Relation{{Name: "member", Params: []string{"subject"}}},
 	},
 	{Name: "resource",
 		Relations: []ast.Relation{
-			{Name: "level"},
+			{Name: "level", Params: []string{"subject"}},
 			{Name: "viewer",
 				SubjectSetRewrite: &ast.SubjectSetRewrite{
 					Children: ast.Children{
-						&ast.TupleToSubjectSet{Relation: "owner", ComputedSubjectSetRelation: "member"}}}},
+						&ast.TupleToSubjectSet{Relation: "owner", ComputedSubjectSetRelation: "member"}}},
+				Params: []string{"ctx"}},
 			{Name: "owner",
 				SubjectSetRewrite: &ast.SubjectSetRewrite{
 					Children: ast.Children{
-						&ast.TupleToSubjectSet{Relation: "owner", ComputedSubjectSetRelation: "member"}}}},
+						&ast.TupleToSubjectSet{Relation: "owner", ComputedSubjectSetRelation: "member"}}},
+				Params: []string{"ctx"}},
 			{Name: "read",
 				SubjectSetRewrite: &ast.SubjectSetRewrite{
 					Children: ast.Children{
 						&ast.ComputedSubjectSet{Relation: "viewer"},
-						&ast.ComputedSubjectSet{Relation: "owner"}}}},
+						&ast.ComputedSubjectSet{Relation: "owner"}}},
+				Params: []string{"ctx"}},
 			{Name: "update",
 				SubjectSetRewrite: &ast.SubjectSetRewrite{
 					Children: ast.Children{
-						&ast.ComputedSubjectSet{Relation: "owner"}}}},
+						&ast.ComputedSubjectSet{Relation: "owner"}}},
+				Params: []string{"ctx"}},
 			{Name: "delete",
 				SubjectSetRewrite: &ast.SubjectSetRewrite{
 					Operation: ast.OperatorAnd,
@@ -74,19 +83,21 @@ var namespaces = []*namespace.Namespace{
 						&ast.ComputedSubjectSet{Relation: "owner"},
 						&ast.TupleToSubjectSet{
 							Relation:                   "level",
-							ComputedSubjectSetRelation: "member"}}}},
+							ComputedSubjectSetRelation: "member"}}},
+				Params: []string{"ctx"}},
 		}},
 	{Name: "acl",
 		Relations: []ast.Relation{
-			{Name: "allow"},
-			{Name: "deny"},
+			{Name: "allow", Params: []string{"subject"}},
+			{Name: "deny", Params: []string{"subject"}},
 			{Name: "access",
 				SubjectSetRewrite: &ast.SubjectSetRewrite{
 					Operation: ast.OperatorAnd,
 					Children: ast.Children{
 						&ast.ComputedSubjectSet{Relation: "allow"},
 						&ast.InvertResult{
-							Child: &ast.ComputedSubjectSet{Relation: "deny"}}}}}}},
+							Child: &ast.ComputedSubjectSet{Relation: "deny"}}}},
+				Params: []string{"ctx"}}}},
 }
 
 func insertFixtures(t testing.TB, m relationtuple.Manager, tuples []string) {
@@ -293,4 +304,141 @@ func hasPath(t *testing.T, path path, tree *ketoapi.Tree[*relationtuple.Relation
 		}
 	}
 	return false
+}
+
+var rawnsWithStringParameter = `
+import { Namespace, SubjectSet, Context } from '@ory/keto-namespace-types';
+
+class Perm implements Namespace {}
+class User implements Namespace {}
+class Role implements Namespace {
+	related: {
+	  perms: (Perm | SubjectSet<Role, "perms">)[]
+	  owners: Group[]
+	  policies: Policy[]
+	}
+
+	permits = {
+	  has_perm: (ctx: Context, perm: string): boolean => this.related.perms.includes(perm),
+	  check: (ctx: Context, perm: string): boolean => this.related.owners.traverse((p) => p.permits.check(ctx, perm)) ||
+		this.related.policies.traverse((p) => p.permits.check(ctx, perm)),
+	  get: (ctx: Context): boolean => this.permits.check(ctx, "roles.get"),
+	  }
+  }
+
+  class Policy implements Namespace {
+	related: {
+	  roles: Role[]
+	  users: (User | SubjectSet<Group, "members">)[]
+	  policies: Policy[]
+	}
+
+	permits = {
+	  has_perm: (ctx: Context, perm: string): boolean => this.related.users.includes(ctx.subject) &&
+		this.related.roles.traverse((p) => p.permits.has_perm(ctx, perm)),
+	  check: (ctx: Context, perm: string): boolean => this.related.policies.traverse((p) => p.permits.has_perm(ctx, perm)),
+	  get: (ctx: Context): boolean => this.permits.check(ctx, "policies.get"),
+	}
+  }
+
+  class Group implements Namespace {
+	related: {
+	  parents: Group[]
+	  members: (User | SubjectSet<Group, "members">)[]
+	  policies: Policy[]
+	}
+
+	permits = {
+	  check: (ctx: Context, perm: string): boolean => this.related.parents.traverse((p) => p.permits.check(ctx, perm)) ||
+		this.related.policies.traverse((p) => p.permits.has_perm(ctx, perm)),
+	}
+  }
+`
+
+func TestUsersetRewritesWithStringParameter(t *testing.T) {
+	nss, err := schema.Parse(rawnsWithStringParameter)
+	require.True(t, err == nil)
+	namespaces := make([]*namespace.Namespace, len(nss))
+	for i, ns := range nss {
+		ns := ns
+		namespaces[i] = &ns
+	}
+
+	reg := newDepsProvider(t, namespaces)
+	reg.Logger().Logger.SetLevel(logrus.TraceLevel)
+
+	insertFixtures(t, reg.RelationTupleManager(), []string{
+		"Role:viewer#perms@roles.get",
+		"Role:viewer#owners@Group:editors#",
+		"Role:viewer#policies@Policy:role_viewer1#",
+
+		"Policy:role_viewer1#roles@Role:viewer#",
+		"Policy:role_viewer1#users@User:bob#",
+		"Policy:role_viewer1#policies@Policy:role_viewer1#",
+
+		"Group:editors#members@User:mark#",
+		"Group:editors#policies@Policy:role_viewer2#",
+
+		"Policy:role_viewer2#roles@Role:viewer#",
+		"Policy:role_viewer2#users@User:sandy#",
+	})
+
+	testCases := []struct {
+		query         string
+		expected      checkgroup.Result
+		expectedPaths []path
+	}{{
+		query:    "Role:viewer#get@User:sandy",
+		expected: checkgroup.ResultIsMember,
+	}, {
+		query:    "Role:viewer#get@User:bob",
+		expected: checkgroup.ResultIsMember,
+	}, {
+		query:    "Role:viewer#get@User:mark",
+		expected: checkgroup.ResultNotMember,
+	}, {
+		query:    "Policy:role_viewer1#get@User:bob",
+		expected: checkgroup.ResultNotMember,
+	}}
+
+	t.Run("suite=testcases", func(t *testing.T) {
+		ctx := context.Background()
+		e := check.NewEngine(reg)
+		defer goleak.VerifyNone(t, goleak.IgnoreCurrent())
+
+		for _, tc := range testCases {
+			t.Run("case="+tc.query, func(t *testing.T) {
+				rt := tupleFromString(t, tc.query)
+
+				res := e.CheckRelationTuple(ctx, rt, 100)
+				require.NoError(t, res.Err)
+				t.Logf("tree:\n%s", res.Tree)
+				assert.Equal(t, tc.expected.Membership, res.Membership)
+
+				if len(tc.expectedPaths) > 0 {
+					for _, path := range tc.expectedPaths {
+						assertPath(t, path, res.Tree)
+					}
+				}
+			})
+		}
+	})
+
+	t.Run("suite=one worker", func(t *testing.T) {
+		ctx, cancel := context.WithCancel(context.Background())
+		defer cancel()
+
+		e := check.NewEngine(reg)
+		// Currently we always only use one worker.
+		//check.WithPool(
+		//checkgroup.NewPool(
+		//	checkgroup.WithContext(ctx),
+		//	checkgroup.WithWorkers(1),
+		//)),
+
+		rt := tupleFromString(t, "Role:viewer#get@User:sandy")
+		res := e.CheckRelationTuple(ctx, rt, 100)
+		require.NoError(t, res.Err)
+		assert.Equal(t, checkgroup.ResultIsMember.Membership, res.Membership)
+	})
 }

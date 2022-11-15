@@ -15,6 +15,7 @@ import (
 	"github.com/ory/keto/internal/driver"
 	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/namespace"
+	"github.com/ory/keto/internal/persistence"
 	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/internal/x"
 	"github.com/ory/keto/ketoapi"
@@ -40,6 +41,22 @@ func newDepsProvider(t testing.TB, namespaces []*namespace.Namespace, pageOpts .
 		configProvider: reg,
 		loggerProvider: reg,
 	}
+}
+
+func (d *deps) Persister() persistence.Persister {
+	return persister{}
+}
+
+type persister struct {
+	persistence.Persister
+}
+
+func (p persister) MapStringsToUUIDs(ctx context.Context, s ...string) ([]uuid.UUID, error) {
+	u := make([]uuid.UUID, len(s))
+	for i, v := range s {
+		u[i] = toUUID(v)
+	}
+	return u, nil
 }
 
 func toUUID(s string) uuid.UUID {

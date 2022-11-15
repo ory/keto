@@ -10,6 +10,7 @@ import (
 
 	"github.com/gofrs/uuid"
 
+	"github.com/ory/keto/internal/namespace/ast"
 	"github.com/ory/keto/internal/x"
 	"github.com/ory/keto/ketoapi"
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
@@ -51,6 +52,8 @@ type (
 		Object    uuid.UUID `json:"object"`
 		Relation  string    `json:"relation"`
 		Subject   Subject   `json:"subject"`
+
+		Formula *ast.Relation `json:"-"`
 	}
 	InternalRelationTuples []*RelationTuple
 	SubjectSet             struct {
