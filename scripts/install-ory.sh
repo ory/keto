@@ -4,7 +4,7 @@ set -euo pipefail
 source ./scripts/install-helpers.sh
 
 BINDIR=${BINDIR:-./.bin}
-ORY_VERSION="0.1.44"
+ORY_VERSION="0.1.48"
 
 OS=$(uname_os)
 BINNAME="ory"
