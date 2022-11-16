@@ -195,7 +195,7 @@ func (p *parser) parseRelated() {
 		switch item := p.next(); item.Typ {
 		case itemBraceRight:
 			return
-		case itemIdentifier:
+		case itemIdentifier, itemStringLiteral:
 			relation := item.Val
 			var types []ast.RelationType
 			p.match(":")
@@ -216,7 +216,7 @@ func (p *parser) parseRelated() {
 				Types: types,
 			})
 		default:
-			p.addFatal(item, "expected identifier or '}', got %q", item.Val)
+			p.addFatal(item, "expected identifier or '}', got %s %q", item.Typ.String(), item.Val)
 			return
 		}
 	}
@@ -258,7 +258,7 @@ func (p *parser) parsePermits() {
 		case itemBraceRight:
 			return
 
-		case itemIdentifier:
+		case itemIdentifier, itemStringLiteral:
 			permission := item.Val
 			p.match(
 				":", "(", "ctx", optional(":", "Context"), ")",
@@ -276,7 +276,7 @@ func (p *parser) parsePermits() {
 				})
 
 		default:
-			p.addFatal(item, "expected identifier or '}', got %q", item.Val)
+			p.addFatal(item, "expected identifier or '}', got %s %q", item.Typ.String(), item.Val)
 			return
 		}
 	}

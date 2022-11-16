@@ -90,7 +90,7 @@ var parserTestCases = []struct {
 	related: {
 	  parents: (File | Folder)[]
 	  viewers: (User | SubjectSet<Group, "members">)[]
-	  owners: (User | SubjectSet<Group, "members">)[]
+	  "owners": (User | SubjectSet<Group, "members">)[]
 	  siblings: File[]
 	}
   
@@ -107,7 +107,7 @@ var parserTestCases = []struct {
 		this.related.viewers.includes(ctx.subject) ) ||
 		this.related.owners.includes(ctx.subject),
   
-	  edit: (ctx: Context) => this.related.owners.includes(ctx.subject),
+	  'edit': (ctx: Context) => this.related.owners.includes(ctx.subject),
 
 	  not: (ctx: Context) => !this.related.owners.includes(ctx.subject),
   
