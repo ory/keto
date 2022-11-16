@@ -5,7 +5,7 @@
 
 **Table of Contents**
 
-- [0.0.0 (2022-11-14)](#000-2022-11-14)
+- [0.0.0 (2022-11-16)](#000-2022-11-16)
   - [Bug Fixes](#bug-fixes)
   - [Documentation](#documentation)
   - [Features](#features)
@@ -139,7 +139,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.10.0-alpha.0...v0.0.0) (2022-11-14)
+# [0.0.0](https://github.com/ory/keto/compare/v0.10.0-alpha.0...v0.0.0) (2022-11-16)
 
 ### Bug Fixes
 
@@ -196,6 +196,8 @@
   ([a8d8767](https://github.com/ory/keto/commit/a8d8767f02695932ed63b5139dd52534e8c4922f))
 - Add libfuzzer for parser
   ([05c9a01](https://github.com/ory/keto/commit/05c9a01785bd4ca6055fee655dfb26d16883b8db))
+- Allow loading OPL configs from base64 URLs
+  ([640abc1](https://github.com/ory/keto/commit/640abc11acb9b24197bc77710e6b0e8a88719751))
 - Allow permits referencing permits
   ([c4d84f6](https://github.com/ory/keto/commit/c4d84f6209deea8b5993409a66208b5dd35f5807)):
 
@@ -206,6 +208,8 @@
 
       comment: (ctx: Context) => this.permits.read(ctx)
 
+- Allow quoting object keys in OPL
+  ([081d834](https://github.com/ory/keto/commit/081d83454f96a7050c3f451048fb07d5204f839f))
 - Allow setting the authority header in the CLI
   ([17f10ef](https://github.com/ory/keto/commit/17f10effbcc5f45b82093d2c8ec7b2962a3659bf))
 - Expose function to generate OPL
