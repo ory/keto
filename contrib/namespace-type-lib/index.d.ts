@@ -13,7 +13,7 @@ declare interface RegExp {}
 
 declare interface Array<T extends namespace> {
   /**
-   * Checks weather the elements of this Array have a Relation to the given Subject
+   * Checks whether the elements of this Array have a Relation to the given Subject
    * @example
    * class File implements Namespace {
    *   related: {
@@ -29,7 +29,7 @@ declare interface Array<T extends namespace> {
   includes(element: T): boolean
 
   /**
-   * Executes the {@link iteratorfn} on every element in the Array.
+   * Executes the {@link iteratorfn} on every element in the Array and evaluates to true if {@link iteratorfn} returns true for any element.
    *
    * @example
    * class File implements Namespace {
@@ -39,7 +39,7 @@ declare interface Array<T extends namespace> {
    *
    *   permits = {
    *     view: (ctx: Context): boolean =>
-   *        // Checks weather the given context (e.g. subject) has view permissions on any of the parents,
+   *        // Checks whether the given context (e.g. subject) has view permissions on any of the parents,
    *        // effectively inhertiting the view permissions of the parents
    *       this.related.parents.traverse((p) => p.permits.view(ctx))
    *   }
