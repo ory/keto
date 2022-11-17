@@ -5,7 +5,7 @@
 
 **Table of Contents**
 
-- [0.0.0 (2022-11-16)](#000-2022-11-16)
+- [0.0.0 (2022-11-17)](#000-2022-11-17)
   - [Bug Fixes](#bug-fixes)
   - [Documentation](#documentation)
   - [Features](#features)
@@ -139,7 +139,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.10.0-alpha.0...v0.0.0) (2022-11-16)
+# [0.0.0](https://github.com/ory/keto/compare/v0.10.0-alpha.0...v0.0.0) (2022-11-17)
 
 ### Bug Fixes
 
@@ -177,6 +177,9 @@
 - Add getting started guide to readme
   ([#1094](https://github.com/ory/keto/issues/1094))
   ([e3b88d2](https://github.com/ory/keto/commit/e3b88d25e77e6de7f8bd31ae20b65116d33fcfdd))
+- Adds JSDoc to the npm package '@ory/keto-namespace-types'
+  ([#1136](https://github.com/ory/keto/issues/1136))
+  ([b582375](https://github.com/ory/keto/commit/b582375bc5dd8c561090ed07f329d300e8db88b6))
 - Allow $schema key in config.schema.json
   ([#1083](https://github.com/ory/keto/issues/1083))
   ([333af27](https://github.com/ory/keto/commit/333af27a3cf3975f5c879433b4a3f44951691392))
