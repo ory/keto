@@ -96,6 +96,11 @@ func (h *handler) getExpand(w http.ResponseWriter, r *http.Request, _ httprouter
 		h.d.Writer().WriteError(w, r, err)
 		return
 	}
+	if res == nil {
+		h.d.Writer().Write(w, r, herodot.ErrNotFound.WithError("no relation tuple found"))
+		return
+	}
+
 	tree, err := h.d.Mapper().ToTree(r.Context(), res)
 	if err != nil {
 		h.d.Writer().WriteError(w, r, err)

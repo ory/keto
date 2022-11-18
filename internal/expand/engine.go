@@ -79,10 +79,7 @@ func (e *Engine) BuildTree(ctx context.Context, subject relationtuple.Subject, r
 		if err != nil {
 			return nil, err
 		} else if len(rels) == 0 {
-			return &relationtuple.Tree{
-				Type:    ketoapi.TreeNodeLeaf,
-				Subject: subject,
-			}, nil
+			return nil, nil
 		}
 
 		if restDepth <= 1 {
