@@ -5,7 +5,7 @@
 
 **Table of Contents**
 
-- [0.0.0 (2022-11-17)](#000-2022-11-17)
+- [0.0.0 (2022-11-18)](#000-2022-11-18)
   - [Bug Fixes](#bug-fixes)
   - [Documentation](#documentation)
   - [Features](#features)
@@ -139,7 +139,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.10.0-alpha.0...v0.0.0) (2022-11-17)
+# [0.0.0](https://github.com/ory/keto/compare/v0.10.0-alpha.0...v0.0.0) (2022-11-18)
 
 ### Bug Fixes
 
@@ -154,6 +154,9 @@
 
   Type checks are not particularly useful on partially parsed input.
 
+- Panic with unknown subject set during expand
+  ([#1139](https://github.com/ory/keto/issues/1139))
+  ([1f3c568](https://github.com/ory/keto/commit/1f3c5687e726213dba84280f6457867c469b8321))
 - Properly lex imports in OPL ([#1041](https://github.com/ory/keto/issues/1041))
   ([26944e9](https://github.com/ory/keto/commit/26944e9e2f5d851aec63e46b3777d2d1ebaca3f8))
 - Race condition in setup ([#1107](https://github.com/ory/keto/issues/1107))
