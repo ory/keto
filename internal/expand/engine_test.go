@@ -374,4 +374,15 @@ func TestEngine(t *testing.T) {
 		require.NoError(t, err)
 		assert.Equal(t, expectedTree, tree)
 	})
+
+	t.Run("case=returns result on unknown subject", func(t *testing.T) {
+		_, e := newTestEngine(t, []*namespace.Namespace{})
+		tree, err := e.BuildTree(context.Background(), &relationtuple.SubjectSet{
+			Namespace: "unknown",
+			Object:    uuid.Must(uuid.NewV4()),
+			Relation:  "rel",
+		}, 100)
+		require.NoError(t, err)
+		assert.Nil(t, tree)
+	})
 }
