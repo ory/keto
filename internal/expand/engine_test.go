@@ -374,4 +374,20 @@ func TestEngine(t *testing.T) {
 		require.NoError(t, err)
 		assert.Equal(t, expectedTree, tree)
 	})
+
+	t.Run("case=returns result on unknown subject", func(t *testing.T) {
+		_, e := newTestEngine(t, []*namespace.Namespace{})
+		subject := &relationtuple.SubjectSet{
+			Namespace: "unknown",
+			Object:    uuid.Must(uuid.NewV4()),
+			Relation:  "rel",
+		}
+
+		tree, err := e.BuildTree(context.Background(), subject, 100)
+		require.NoError(t, err)
+		assert.Equal(t, &relationtuple.Tree{
+			Type:    ketoapi.TreeNodeLeaf,
+			Subject: subject,
+		}, tree)
+	})
 }
