@@ -98,7 +98,7 @@ func TestMigrations(t *testing.T) {
 					).Exec()), sqlcon.ErrNoSuchTable)
 				})
 
-				t.Run("table=relation tuples", func(t *testing.T) {
+				t.Run("table=relationships", func(t *testing.T) {
 					actualRts, next, err := p.GetRelationTuples(ctx, &relationtuple.RelationQuery{Namespace: &namespaces[0].Name})
 					require.NoError(t, err)
 					assert.Equal(t, "", next)

@@ -50,6 +50,7 @@ type RelationTuple struct {
 	//
 	// Either SubjectSet or SubjectID can be provided.
 	SubjectID *string `json:"subject_id,omitempty"`
+
 	// SubjectSet of the Relation Tuple
 	//
 	// Either SubjectSet or SubjectID can be provided.
@@ -120,7 +121,7 @@ const (
 	SubjectSetRelationKey  = "subject_set.relation"
 )
 
-// swagger:model getRelationTuplesResponse
+// swagger:model getRelationshipsResponse
 type GetResponse struct {
 	RelationTuples []*RelationTuple `json:"relation_tuples"`
 	// The opaque token to provide in a subsequent request
@@ -129,7 +130,7 @@ type GetResponse struct {
 	NextPageToken string `json:"next_page_token"`
 }
 
-// swagger:model getNamespacesResponse
+// swagger:model getRelationshipNamespacesResponse
 type GetNamespacesResponse struct {
 	Namespaces []Namespace `json:"namespaces"`
 }
@@ -187,8 +188,8 @@ type tuple[T any] interface {
 	FromProto(*rts.RelationTuple) T
 }
 
-// Tree is a generic tree of either internal relation tuples (with UUIDs for
-// objects, etc.) or API relation tuples (with strings for objects, etc.).
+// Tree is a generic tree of either internal relationships (with UUIDs for
+// objects, etc.) or API relationships (with strings for objects, etc.).
 type Tree[T tuple[T]] struct {
 	// Propagate all struct changes to `swaggerOnlyExpandTree` as well.
 	// The type of the node.

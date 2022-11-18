@@ -15,30 +15,30 @@ import (
 	"encoding/json"
 )
 
-// GetNamespacesResponse struct for GetNamespacesResponse
-type GetNamespacesResponse struct {
+// GetRelationshipNamespacesResponse struct for GetRelationshipNamespacesResponse
+type GetRelationshipNamespacesResponse struct {
 	Namespaces []Namespace `json:"namespaces,omitempty"`
 }
 
-// NewGetNamespacesResponse instantiates a new GetNamespacesResponse object
+// NewGetRelationshipNamespacesResponse instantiates a new GetRelationshipNamespacesResponse object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewGetNamespacesResponse() *GetNamespacesResponse {
-	this := GetNamespacesResponse{}
+func NewGetRelationshipNamespacesResponse() *GetRelationshipNamespacesResponse {
+	this := GetRelationshipNamespacesResponse{}
 	return &this
 }
 
-// NewGetNamespacesResponseWithDefaults instantiates a new GetNamespacesResponse object
+// NewGetRelationshipNamespacesResponseWithDefaults instantiates a new GetRelationshipNamespacesResponse object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewGetNamespacesResponseWithDefaults() *GetNamespacesResponse {
-	this := GetNamespacesResponse{}
+func NewGetRelationshipNamespacesResponseWithDefaults() *GetRelationshipNamespacesResponse {
+	this := GetRelationshipNamespacesResponse{}
 	return &this
 }
 
 // GetNamespaces returns the Namespaces field value if set, zero value otherwise.
-func (o *GetNamespacesResponse) GetNamespaces() []Namespace {
+func (o *GetRelationshipNamespacesResponse) GetNamespaces() []Namespace {
 	if o == nil || o.Namespaces == nil {
 		var ret []Namespace
 		return ret
@@ -48,7 +48,7 @@ func (o *GetNamespacesResponse) GetNamespaces() []Namespace {
 
 // GetNamespacesOk returns a tuple with the Namespaces field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *GetNamespacesResponse) GetNamespacesOk() ([]Namespace, bool) {
+func (o *GetRelationshipNamespacesResponse) GetNamespacesOk() ([]Namespace, bool) {
 	if o == nil || o.Namespaces == nil {
 		return nil, false
 	}
@@ -56,7 +56,7 @@ func (o *GetNamespacesResponse) GetNamespacesOk() ([]Namespace, bool) {
 }
 
 // HasNamespaces returns a boolean if a field has been set.
-func (o *GetNamespacesResponse) HasNamespaces() bool {
+func (o *GetRelationshipNamespacesResponse) HasNamespaces() bool {
 	if o != nil && o.Namespaces != nil {
 		return true
 	}
@@ -65,11 +65,11 @@ func (o *GetNamespacesResponse) HasNamespaces() bool {
 }
 
 // SetNamespaces gets a reference to the given []Namespace and assigns it to the Namespaces field.
-func (o *GetNamespacesResponse) SetNamespaces(v []Namespace) {
+func (o *GetRelationshipNamespacesResponse) SetNamespaces(v []Namespace) {
 	o.Namespaces = v
 }
 
-func (o GetNamespacesResponse) MarshalJSON() ([]byte, error) {
+func (o GetRelationshipNamespacesResponse) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.Namespaces != nil {
 		toSerialize["namespaces"] = o.Namespaces
@@ -77,38 +77,38 @@ func (o GetNamespacesResponse) MarshalJSON() ([]byte, error) {
 	return json.Marshal(toSerialize)
 }
 
-type NullableGetNamespacesResponse struct {
-	value *GetNamespacesResponse
+type NullableGetRelationshipNamespacesResponse struct {
+	value *GetRelationshipNamespacesResponse
 	isSet bool
 }
 
-func (v NullableGetNamespacesResponse) Get() *GetNamespacesResponse {
+func (v NullableGetRelationshipNamespacesResponse) Get() *GetRelationshipNamespacesResponse {
 	return v.value
 }
 
-func (v *NullableGetNamespacesResponse) Set(val *GetNamespacesResponse) {
+func (v *NullableGetRelationshipNamespacesResponse) Set(val *GetRelationshipNamespacesResponse) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableGetNamespacesResponse) IsSet() bool {
+func (v NullableGetRelationshipNamespacesResponse) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableGetNamespacesResponse) Unset() {
+func (v *NullableGetRelationshipNamespacesResponse) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableGetNamespacesResponse(val *GetNamespacesResponse) *NullableGetNamespacesResponse {
-	return &NullableGetNamespacesResponse{value: val, isSet: true}
+func NewNullableGetRelationshipNamespacesResponse(val *GetRelationshipNamespacesResponse) *NullableGetRelationshipNamespacesResponse {
+	return &NullableGetRelationshipNamespacesResponse{value: val, isSet: true}
 }
 
-func (v NullableGetNamespacesResponse) MarshalJSON() ([]byte, error) {
+func (v NullableGetRelationshipNamespacesResponse) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableGetNamespacesResponse) UnmarshalJSON(src []byte) error {
+func (v *NullableGetRelationshipNamespacesResponse) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

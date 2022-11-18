@@ -51,13 +51,9 @@ type APIClient struct {
 
 	MetadataApi MetadataApi
 
-	NamespacesApi NamespacesApi
+	PermissionApi PermissionApi
 
-	ReadApi ReadApi
-
-	SyntaxApi SyntaxApi
-
-	WriteApi WriteApi
+	RelationshipApi RelationshipApi
 }
 
 type service struct {
@@ -77,10 +73,8 @@ func NewAPIClient(cfg *Configuration) *APIClient {
 
 	// API Services
 	c.MetadataApi = (*MetadataApiService)(&c.common)
-	c.NamespacesApi = (*NamespacesApiService)(&c.common)
-	c.ReadApi = (*ReadApiService)(&c.common)
-	c.SyntaxApi = (*SyntaxApiService)(&c.common)
-	c.WriteApi = (*WriteApiService)(&c.common)
+	c.PermissionApi = (*PermissionApiService)(&c.common)
+	c.RelationshipApi = (*RelationshipApiService)(&c.common)
 
 	return c
 }

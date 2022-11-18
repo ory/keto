@@ -51,7 +51,7 @@ func (h *Handler) Check(_ context.Context, request *opl.CheckRequest) (*opl.Chec
 	return &opl.CheckResponse{ParseErrors: apiErrors}, nil
 }
 
-// swagger:route POST /opl/syntax/check syntax checkOplSyntax
+// swagger:route POST /opl/syntax/check relationship checkOplSyntax
 //
 // # Check the syntax of an OPL file
 //

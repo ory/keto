@@ -15,32 +15,32 @@ import (
 	"encoding/json"
 )
 
-// GetCheckResponse The content of the allowed field is mirrored in the HTTP status code.
-type GetCheckResponse struct {
+// CheckPermissionResponse The content of the allowed field is mirrored in the HTTP status code.
+type CheckPermissionResponse struct {
 	// whether the relation tuple is allowed
 	Allowed bool `json:"allowed"`
 }
 
-// NewGetCheckResponse instantiates a new GetCheckResponse object
+// NewCheckPermissionResponse instantiates a new CheckPermissionResponse object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewGetCheckResponse(allowed bool) *GetCheckResponse {
-	this := GetCheckResponse{}
+func NewCheckPermissionResponse(allowed bool) *CheckPermissionResponse {
+	this := CheckPermissionResponse{}
 	this.Allowed = allowed
 	return &this
 }
 
-// NewGetCheckResponseWithDefaults instantiates a new GetCheckResponse object
+// NewCheckPermissionResponseWithDefaults instantiates a new CheckPermissionResponse object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewGetCheckResponseWithDefaults() *GetCheckResponse {
-	this := GetCheckResponse{}
+func NewCheckPermissionResponseWithDefaults() *CheckPermissionResponse {
+	this := CheckPermissionResponse{}
 	return &this
 }
 
 // GetAllowed returns the Allowed field value
-func (o *GetCheckResponse) GetAllowed() bool {
+func (o *CheckPermissionResponse) GetAllowed() bool {
 	if o == nil {
 		var ret bool
 		return ret
@@ -51,7 +51,7 @@ func (o *GetCheckResponse) GetAllowed() bool {
 
 // GetAllowedOk returns a tuple with the Allowed field value
 // and a boolean to check if the value has been set.
-func (o *GetCheckResponse) GetAllowedOk() (*bool, bool) {
+func (o *CheckPermissionResponse) GetAllowedOk() (*bool, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -59,11 +59,11 @@ func (o *GetCheckResponse) GetAllowedOk() (*bool, bool) {
 }
 
 // SetAllowed sets field value
-func (o *GetCheckResponse) SetAllowed(v bool) {
+func (o *CheckPermissionResponse) SetAllowed(v bool) {
 	o.Allowed = v
 }
 
-func (o GetCheckResponse) MarshalJSON() ([]byte, error) {
+func (o CheckPermissionResponse) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if true {
 		toSerialize["allowed"] = o.Allowed
@@ -71,38 +71,38 @@ func (o GetCheckResponse) MarshalJSON() ([]byte, error) {
 	return json.Marshal(toSerialize)
 }
 
-type NullableGetCheckResponse struct {
-	value *GetCheckResponse
+type NullableCheckPermissionResponse struct {
+	value *CheckPermissionResponse
 	isSet bool
 }
 
-func (v NullableGetCheckResponse) Get() *GetCheckResponse {
+func (v NullableCheckPermissionResponse) Get() *CheckPermissionResponse {
 	return v.value
 }
 
-func (v *NullableGetCheckResponse) Set(val *GetCheckResponse) {
+func (v *NullableCheckPermissionResponse) Set(val *CheckPermissionResponse) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableGetCheckResponse) IsSet() bool {
+func (v NullableCheckPermissionResponse) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableGetCheckResponse) Unset() {
+func (v *NullableCheckPermissionResponse) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableGetCheckResponse(val *GetCheckResponse) *NullableGetCheckResponse {
-	return &NullableGetCheckResponse{value: val, isSet: true}
+func NewNullableCheckPermissionResponse(val *CheckPermissionResponse) *NullableCheckPermissionResponse {
+	return &NullableCheckPermissionResponse{value: val, isSet: true}
 }
 
-func (v NullableGetCheckResponse) MarshalJSON() ([]byte, error) {
+func (v NullableCheckPermissionResponse) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableGetCheckResponse) UnmarshalJSON(src []byte) error {
+func (v *NullableCheckPermissionResponse) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

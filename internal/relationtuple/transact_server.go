@@ -87,11 +87,11 @@ func (h *handler) DeleteRelationTuples(ctx context.Context, req *rts.DeleteRelat
 	return &rts.DeleteRelationTuplesResponse{}, nil
 }
 
-// swagger:route PUT /admin/relation-tuples write createRelationTuple
+// swagger:route PUT /admin/relation-tuples relationship createRelationships
 //
-// # Create a Relation Tuple
+// # Create a Relationship
 //
-// Use this endpoint to create a relation tuple.
+// Use this endpoint to create a relationship.
 //
 //	Consumes:
 //	-  application/json
@@ -139,11 +139,11 @@ func (h *handler) createRelation(w http.ResponseWriter, r *http.Request, _ httpr
 	)
 }
 
-// swagger:route DELETE /admin/relation-tuples write deleteRelationTuples
+// swagger:route DELETE /admin/relation-tuples relationship deleteRelationships
 //
-// # Delete Relation Tuples
+// # Delete Relationships
 //
-// Use this endpoint to delete relation tuples
+// Use this endpoint to delete relationships
 //
 //	Consumes:
 //	-  application/x-www-form-urlencoded
@@ -171,7 +171,7 @@ func (h *handler) deleteRelations(w http.ResponseWriter, r *http.Request, _ http
 	for k := range q {
 		l = l.WithField(k, q.Get(k))
 	}
-	l.Debug("deleting relation tuples")
+	l.Debug("deleting relationships")
 
 	iq, err := h.d.Mapper().FromQuery(ctx, query)
 	if err != nil {
@@ -180,7 +180,7 @@ func (h *handler) deleteRelations(w http.ResponseWriter, r *http.Request, _ http
 		return
 	}
 	if err := h.d.RelationTupleManager().DeleteAllRelationTuples(ctx, iq); err != nil {
-		l.WithError(err).Errorf("got an error while deleting relation tuples")
+		l.WithError(err).Errorf("got an error while deleting relationships")
 		h.d.Writer().WriteError(w, r, herodot.ErrInternalServerError.WithError(err.Error()))
 		return
 	}
@@ -197,11 +197,11 @@ func internalTuplesWithAction(deltas []*ketoapi.PatchDelta, action ketoapi.Patch
 	return
 }
 
-// swagger:route PATCH /admin/relation-tuples write patchRelationTuples
+// swagger:route PATCH /admin/relation-tuples relationship patchRelationships
 //
-// # Patch Multiple Relation Tuples
+// # Patch Multiple Relationships
 //
-// Use this endpoint to patch one or more relation tuples.
+// Use this endpoint to patch one or more relationships.
 //
 //	Consumes:
 //	- application/json

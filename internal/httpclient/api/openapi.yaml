@@ -12,10 +12,10 @@ servers:
 paths:
   /admin/relation-tuples:
     delete:
-      description: Use this endpoint to delete relation tuples
-      operationId: deleteRelationTuples
+      description: Use this endpoint to delete relationships
+      operationId: deleteRelationships
       parameters:
-      - description: Namespace of the Relation Tuple
+      - description: Namespace of the Relationship
         explode: true
         in: query
         name: namespace
@@ -23,7 +23,7 @@ paths:
         schema:
           type: string
         style: form
-      - description: Object of the Relation Tuple
+      - description: Object of the Relationship
         explode: true
         in: query
         name: object
@@ -31,7 +31,7 @@ paths:
         schema:
           type: string
         style: form
-      - description: Relation of the Relation Tuple
+      - description: Relation of the Relationship
         explode: true
         in: query
         name: relation
@@ -39,7 +39,7 @@ paths:
         schema:
           type: string
         style: form
-      - description: SubjectID of the Relation Tuple
+      - description: SubjectID of the Relationship
         explode: true
         in: query
         name: subject_id
@@ -87,12 +87,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/genericError'
           description: genericError
-      summary: Delete Relation Tuples
+      summary: Delete Relationships
       tags:
-      - write
+      - relationship
     patch:
-      description: Use this endpoint to patch one or more relation tuples.
-      operationId: patchRelationTuples
+      description: Use this endpoint to patch one or more relationships.
+      operationId: patchRelationships
       requestBody:
         content:
           application/json:
@@ -123,12 +123,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/genericError'
           description: genericError
-      summary: Patch Multiple Relation Tuples
+      summary: Patch Multiple Relationships
       tags:
-      - write
+      - relationship
     put:
-      description: Use this endpoint to create a relation tuple.
-      operationId: createRelationTuple
+      description: Use this endpoint to create a relationship.
+      operationId: createRelationships
       requestBody:
         content:
           application/json:
@@ -154,9 +154,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/genericError'
           description: genericError
-      summary: Create a Relation Tuple
+      summary: Create a Relationship
       tags:
-      - write
+      - relationship
   /health/alive:
     get:
       description: |-
@@ -216,14 +216,14 @@ paths:
   /namespaces:
     get:
       description: Get all namespaces
-      operationId: getNamespaces
+      operationId: getRelationshipNamespaces
       responses:
         "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/getNamespacesResponse'
-          description: getNamespacesResponse
+                $ref: '#/components/schemas/getRelationshipNamespacesResponse'
+          description: getRelationshipNamespacesResponse
         "500":
           content:
             application/json:
@@ -232,7 +232,7 @@ paths:
           description: genericError
       summary: Query namespaces
       tags:
-      - namespaces
+      - relationship
   /opl/syntax/check:
     post:
       description: The OPL file is expected in the body of the request.
@@ -267,12 +267,12 @@ paths:
           description: genericError
       summary: Check the syntax of an OPL file
       tags:
-      - syntax
+      - relationship
   /relation-tuples:
     get:
-      description: Get all relation tuples that match the query. Only the namespace
+      description: Get all relationships that match the query. Only the namespace
         field is required.
-      operationId: getRelationTuples
+      operationId: getRelationships
       parameters:
       - explode: true
         in: query
@@ -289,7 +289,7 @@ paths:
           format: int64
           type: integer
         style: form
-      - description: Namespace of the Relation Tuple
+      - description: Namespace of the Relationship
         explode: true
         in: query
         name: namespace
@@ -297,7 +297,7 @@ paths:
         schema:
           type: string
         style: form
-      - description: Object of the Relation Tuple
+      - description: Object of the Relationship
         explode: true
         in: query
         name: object
@@ -305,7 +305,7 @@ paths:
         schema:
           type: string
         style: form
-      - description: Relation of the Relation Tuple
+      - description: Relation of the Relationship
         explode: true
         in: query
         name: relation
@@ -313,7 +313,7 @@ paths:
         schema:
           type: string
         style: form
-      - description: SubjectID of the Relation Tuple
+      - description: SubjectID of the Relationship
         explode: true
         in: query
         name: subject_id
@@ -350,8 +350,8 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/getRelationTuplesResponse'
-          description: getRelationTuplesResponse
+                $ref: '#/components/schemas/getRelationshipsResponse'
+          description: getRelationshipsResponse
         "404":
           content:
             application/json:
@@ -364,81 +364,16 @@ paths:
               schema:
                 $ref: '#/components/schemas/genericError'
           description: genericError
-      summary: Query relation tuples
+      summary: Query relationships
       tags:
-      - read
+      - relationship
   /relation-tuples/check:
     get:
-      description: To learn how relation tuples and the check works, head over to
-        [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
-      operationId: getCheckMirrorStatus
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/getCheckResponse'
-          description: getCheckResponse
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/genericError'
-          description: genericError
-        "403":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/getCheckResponse'
-          description: getCheckResponse
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/genericError'
-          description: genericError
-      summary: Check a relation tuple
-      tags:
-      - read
-    post:
-      description: To learn how relation tuples and the check works, head over to
-        [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
-      operationId: postCheckMirrorStatus
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/getCheckResponse'
-          description: getCheckResponse
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/genericError'
-          description: genericError
-        "403":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/getCheckResponse'
-          description: getCheckResponse
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/genericError'
-          description: genericError
-      summary: Check a relation tuple
-      tags:
-      - read
-  /relation-tuples/check/openapi:
-    get:
-      description: To learn how relation tuples and the check works, head over to
-        [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
-      operationId: getCheck
+      description: To learn how relationship tuples and the check works, head over
+        to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
+      operationId: checkPermissionOrError
       parameters:
-      - description: Namespace of the Relation Tuple
+      - description: Namespace of the Relationship
         explode: true
         in: query
         name: namespace
@@ -446,7 +381,7 @@ paths:
         schema:
           type: string
         style: form
-      - description: Object of the Relation Tuple
+      - description: Object of the Relationship
         explode: true
         in: query
         name: object
@@ -454,7 +389,7 @@ paths:
         schema:
           type: string
         style: form
-      - description: Relation of the Relation Tuple
+      - description: Relation of the Relationship
         explode: true
         in: query
         name: relation
@@ -462,7 +397,7 @@ paths:
         schema:
           type: string
         style: form
-      - description: SubjectID of the Relation Tuple
+      - description: SubjectID of the Relationship
         explode: true
         in: query
         name: subject_id
@@ -507,27 +442,33 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/getCheckResponse'
-          description: getCheckResponse
+                $ref: '#/components/schemas/checkPermissionResponse'
+          description: checkPermissionResponse
         "400":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/genericError'
           description: genericError
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/checkPermissionResponse'
+          description: checkPermissionResponse
         "500":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/genericError'
           description: genericError
-      summary: Check a relation tuple
+      summary: Check a permission
       tags:
-      - read
+      - permission
     post:
-      description: To learn how relation tuples and the check works, head over to
-        [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
-      operationId: postCheck
+      description: To learn how relationship tuples and the check works, head over
+        to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
+      operationId: postCheckPermissionOrError
       parameters:
       - explode: true
         in: query
@@ -548,8 +489,106 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/getCheckResponse'
-          description: getCheckResponse
+                $ref: '#/components/schemas/checkPermissionResponse'
+          description: checkPermissionResponse
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/genericError'
+          description: genericError
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/checkPermissionResponse'
+          description: checkPermissionResponse
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/genericError'
+          description: genericError
+      summary: Check a permission
+      tags:
+      - permission
+  /relation-tuples/check/openapi:
+    get:
+      description: To learn how relationship tuples and the check works, head over
+        to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
+      operationId: checkPermission
+      parameters:
+      - description: Namespace of the Relationship
+        explode: true
+        in: query
+        name: namespace
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Object of the Relationship
+        explode: true
+        in: query
+        name: object
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Relation of the Relationship
+        explode: true
+        in: query
+        name: relation
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: SubjectID of the Relationship
+        explode: true
+        in: query
+        name: subject_id
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Namespace of the Subject Set
+        explode: true
+        in: query
+        name: subject_set.namespace
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Object of the Subject Set
+        explode: true
+        in: query
+        name: subject_set.object
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Relation of the Subject Set
+        explode: true
+        in: query
+        name: subject_set.relation
+        required: false
+        schema:
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: max-depth
+        required: false
+        schema:
+          format: int64
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/checkPermissionResponse'
+          description: checkPermissionResponse
         "400":
           content:
             application/json:
@@ -562,13 +601,54 @@ paths:
               schema:
                 $ref: '#/components/schemas/genericError'
           description: genericError
-      summary: Check a relation tuple
+      summary: Check a permission
       tags:
-      - read
+      - permission
+    post:
+      description: To learn how relationship tuples and the check works, head over
+        to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
+      operationId: postCheckPermission
+      parameters:
+      - explode: true
+        in: query
+        name: max-depth
+        required: false
+        schema:
+          format: int64
+          type: integer
+        style: form
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/relationQuery'
+        x-originalParamName: Payload
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/checkPermissionResponse'
+          description: checkPermissionResponse
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/genericError'
+          description: genericError
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/genericError'
+          description: genericError
+      summary: Check a permission
+      tags:
+      - permission
   /relation-tuples/expand:
     get:
-      description: Use this endpoint to expand a relation tuple.
-      operationId: getExpand
+      description: Use this endpoint to expand a relationship tuple into permissions.
+      operationId: expandPermissions
       parameters:
       - description: Namespace of the Subject Set
         explode: true
@@ -627,9 +707,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/genericError'
           description: genericError
-      summary: Expand a Relation Tuple
+      summary: Expand a Relationship into permissions.
       tags:
-      - read
+      - permission
   /version:
     get:
       description: |-
@@ -689,6 +769,19 @@ components:
     UUID:
       format: uuid4
       type: string
+    checkPermissionResponse:
+      description: The content of the allowed field is mirrored in the HTTP status
+        code.
+      example:
+        allowed: true
+      properties:
+        allowed:
+          description: whether the relation tuple is allowed
+          type: boolean
+      required:
+      - allowed
+      title: CheckPermissionResponse represents the response for a check request.
+      type: object
     expandTree:
       example:
         tuple:
@@ -765,20 +858,7 @@ components:
         status:
           type: string
       type: object
-    getCheckResponse:
-      description: The content of the allowed field is mirrored in the HTTP status
-        code.
-      example:
-        allowed: true
-      properties:
-        allowed:
-          description: whether the relation tuple is allowed
-          type: boolean
-      required:
-      - allowed
-      title: RESTResponse represents the response for a check request.
-      type: object
-    getNamespacesResponse:
+    getRelationshipNamespacesResponse:
       example:
         namespaces:
         - name: name
@@ -789,7 +869,7 @@ components:
             $ref: '#/components/schemas/namespace'
           type: array
       type: object
-    getRelationTuplesResponse:
+    getRelationshipsResponse:
       example:
         next_page_token: next_page_token
         relation_tuples:

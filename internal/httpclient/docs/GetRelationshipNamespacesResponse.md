@@ -1,4 +1,4 @@
-# GetNamespacesResponse
+# GetRelationshipNamespacesResponse
 
 ## Properties
 
@@ -8,45 +8,45 @@ Name | Type | Description | Notes
 
 ## Methods
 
-### NewGetNamespacesResponse
+### NewGetRelationshipNamespacesResponse
 
-`func NewGetNamespacesResponse() *GetNamespacesResponse`
+`func NewGetRelationshipNamespacesResponse() *GetRelationshipNamespacesResponse`
 
-NewGetNamespacesResponse instantiates a new GetNamespacesResponse object
+NewGetRelationshipNamespacesResponse instantiates a new GetRelationshipNamespacesResponse object
 This constructor will assign default values to properties that have it defined,
 and makes sure properties required by API are set, but the set of arguments
 will change when the set of required properties is changed
 
-### NewGetNamespacesResponseWithDefaults
+### NewGetRelationshipNamespacesResponseWithDefaults
 
-`func NewGetNamespacesResponseWithDefaults() *GetNamespacesResponse`
+`func NewGetRelationshipNamespacesResponseWithDefaults() *GetRelationshipNamespacesResponse`
 
-NewGetNamespacesResponseWithDefaults instantiates a new GetNamespacesResponse object
+NewGetRelationshipNamespacesResponseWithDefaults instantiates a new GetRelationshipNamespacesResponse object
 This constructor will only assign default values to properties that have it defined,
 but it doesn't guarantee that properties required by API are set
 
 ### GetNamespaces
 
-`func (o *GetNamespacesResponse) GetNamespaces() []Namespace`
+`func (o *GetRelationshipNamespacesResponse) GetNamespaces() []Namespace`
 
 GetNamespaces returns the Namespaces field if non-nil, zero value otherwise.
 
 ### GetNamespacesOk
 
-`func (o *GetNamespacesResponse) GetNamespacesOk() (*[]Namespace, bool)`
+`func (o *GetRelationshipNamespacesResponse) GetNamespacesOk() (*[]Namespace, bool)`
 
 GetNamespacesOk returns a tuple with the Namespaces field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetNamespaces
 
-`func (o *GetNamespacesResponse) SetNamespaces(v []Namespace)`
+`func (o *GetRelationshipNamespacesResponse) SetNamespaces(v []Namespace)`
 
 SetNamespaces sets Namespaces field to given value.
 
 ### HasNamespaces
 
-`func (o *GetNamespacesResponse) HasNamespaces() bool`
+`func (o *GetRelationshipNamespacesResponse) HasNamespaces() bool`
 
 HasNamespaces returns a boolean if a field has been set.
 

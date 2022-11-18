@@ -21,13 +21,13 @@
   "paths": {
     "/admin/relation-tuples": {
       "put": {
-        "description": "Use this endpoint to create a relation tuple.",
+        "description": "Use this endpoint to create a relationship.",
         "consumes": ["application/json"],
         "produces": ["application/json"],
         "schemes": ["http", "https"],
-        "tags": ["write"],
-        "summary": "Create a Relation Tuple",
-        "operationId": "createRelationTuple",
+        "tags": ["relationship"],
+        "summary": "Create a Relationship",
+        "operationId": "createRelationships",
         "parameters": [
           {
             "name": "Payload",
@@ -59,35 +59,35 @@
         }
       },
       "delete": {
-        "description": "Use this endpoint to delete relation tuples",
+        "description": "Use this endpoint to delete relationships",
         "consumes": ["application/x-www-form-urlencoded"],
         "produces": ["application/json"],
         "schemes": ["http", "https"],
-        "tags": ["write"],
-        "summary": "Delete Relation Tuples",
-        "operationId": "deleteRelationTuples",
+        "tags": ["relationship"],
+        "summary": "Delete Relationships",
+        "operationId": "deleteRelationships",
         "parameters": [
           {
             "type": "string",
-            "description": "Namespace of the Relation Tuple",
+            "description": "Namespace of the Relationship",
             "name": "namespace",
             "in": "query"
           },
           {
             "type": "string",
-            "description": "Object of the Relation Tuple",
+            "description": "Object of the Relationship",
             "name": "object",
             "in": "query"
           },
           {
             "type": "string",
-            "description": "Relation of the Relation Tuple",
+            "description": "Relation of the Relationship",
             "name": "relation",
             "in": "query"
           },
           {
             "type": "string",
-            "description": "SubjectID of the Relation Tuple",
+            "description": "SubjectID of the Relationship",
             "name": "subject_id",
             "in": "query"
           },
@@ -129,13 +129,13 @@
         }
       },
       "patch": {
-        "description": "Use this endpoint to patch one or more relation tuples.",
+        "description": "Use this endpoint to patch one or more relationships.",
         "consumes": ["application/json"],
         "produces": ["application/json"],
         "schemes": ["http", "https"],
-        "tags": ["write"],
-        "summary": "Patch Multiple Relation Tuples",
-        "operationId": "patchRelationTuples",
+        "tags": ["relationship"],
+        "summary": "Patch Multiple Relationships",
+        "operationId": "patchRelationships",
         "parameters": [
           {
             "name": "Payload",
@@ -224,14 +224,14 @@
         "description": "Get all namespaces",
         "produces": ["application/json"],
         "schemes": ["http", "https"],
-        "tags": ["namespaces"],
+        "tags": ["relationship"],
         "summary": "Query namespaces",
-        "operationId": "getNamespaces",
+        "operationId": "getRelationshipNamespaces",
         "responses": {
           "200": {
-            "description": "getNamespacesResponse",
+            "description": "getRelationshipNamespacesResponse",
             "schema": {
-              "$ref": "#/definitions/getNamespacesResponse"
+              "$ref": "#/definitions/getRelationshipNamespacesResponse"
             }
           },
           "500": {
@@ -249,7 +249,7 @@
         "consumes": ["text/plain"],
         "produces": ["application/json"],
         "schemes": ["http", "https"],
-        "tags": ["syntax"],
+        "tags": ["relationship"],
         "summary": "Check the syntax of an OPL file",
         "operationId": "checkOplSyntax",
         "parameters": [
@@ -288,13 +288,13 @@
     },
     "/relation-tuples": {
       "get": {
-        "description": "Get all relation tuples that match the query. Only the namespace field is required.",
+        "description": "Get all relationships that match the query. Only the namespace field is required.",
         "consumes": ["application/x-www-form-urlencoded"],
         "produces": ["application/json"],
         "schemes": ["http", "https"],
-        "tags": ["read"],
-        "summary": "Query relation tuples",
-        "operationId": "getRelationTuples",
+        "tags": ["relationship"],
+        "summary": "Query relationships",
+        "operationId": "getRelationships",
         "parameters": [
           {
             "type": "string",
@@ -309,25 +309,25 @@
           },
           {
             "type": "string",
-            "description": "Namespace of the Relation Tuple",
+            "description": "Namespace of the Relationship",
             "name": "namespace",
             "in": "query"
           },
           {
             "type": "string",
-            "description": "Object of the Relation Tuple",
+            "description": "Object of the Relationship",
             "name": "object",
             "in": "query"
           },
           {
             "type": "string",
-            "description": "Relation of the Relation Tuple",
+            "description": "Relation of the Relationship",
             "name": "relation",
             "in": "query"
           },
           {
             "type": "string",
-            "description": "SubjectID of the Relation Tuple",
+            "description": "SubjectID of the Relationship",
             "name": "subject_id",
             "in": "query"
           },
@@ -352,9 +352,9 @@
         ],
         "responses": {
           "200": {
-            "description": "getRelationTuplesResponse",
+            "description": "getRelationshipsResponse",
             "schema": {
-              "$ref": "#/definitions/getRelationTuplesResponse"
+              "$ref": "#/definitions/getRelationshipsResponse"
             }
           },
           "404": {
@@ -374,107 +374,35 @@
     },
     "/relation-tuples/check": {
       "get": {
-        "description": "To learn how relation tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).",
+        "description": "To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).",
         "consumes": ["application/x-www-form-urlencoded"],
         "produces": ["application/json"],
         "schemes": ["http", "https"],
-        "tags": ["read"],
-        "summary": "Check a relation tuple",
-        "operationId": "getCheckMirrorStatus",
-        "responses": {
-          "200": {
-            "description": "getCheckResponse",
-            "schema": {
-              "$ref": "#/definitions/getCheckResponse"
-            }
-          },
-          "400": {
-            "description": "genericError",
-            "schema": {
-              "$ref": "#/definitions/genericError"
-            }
-          },
-          "403": {
-            "description": "getCheckResponse",
-            "schema": {
-              "$ref": "#/definitions/getCheckResponse"
-            }
-          },
-          "500": {
-            "description": "genericError",
-            "schema": {
-              "$ref": "#/definitions/genericError"
-            }
-          }
-        }
-      },
-      "post": {
-        "description": "To learn how relation tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "schemes": ["http", "https"],
-        "tags": ["read"],
-        "summary": "Check a relation tuple",
-        "operationId": "postCheckMirrorStatus",
-        "responses": {
-          "200": {
-            "description": "getCheckResponse",
-            "schema": {
-              "$ref": "#/definitions/getCheckResponse"
-            }
-          },
-          "400": {
-            "description": "genericError",
-            "schema": {
-              "$ref": "#/definitions/genericError"
-            }
-          },
-          "403": {
-            "description": "getCheckResponse",
-            "schema": {
-              "$ref": "#/definitions/getCheckResponse"
-            }
-          },
-          "500": {
-            "description": "genericError",
-            "schema": {
-              "$ref": "#/definitions/genericError"
-            }
-          }
-        }
-      }
-    },
-    "/relation-tuples/check/openapi": {
-      "get": {
-        "description": "To learn how relation tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).",
-        "consumes": ["application/x-www-form-urlencoded"],
-        "produces": ["application/json"],
-        "schemes": ["http", "https"],
-        "tags": ["read"],
-        "summary": "Check a relation tuple",
-        "operationId": "getCheck",
+        "tags": ["permission"],
+        "summary": "Check a permission",
+        "operationId": "checkPermissionOrError",
         "parameters": [
           {
             "type": "string",
-            "description": "Namespace of the Relation Tuple",
+            "description": "Namespace of the Relationship",
             "name": "namespace",
             "in": "query"
           },
           {
             "type": "string",
-            "description": "Object of the Relation Tuple",
+            "description": "Object of the Relationship",
             "name": "object",
             "in": "query"
           },
           {
             "type": "string",
-            "description": "Relation of the Relation Tuple",
+            "description": "Relation of the Relationship",
             "name": "relation",
             "in": "query"
           },
           {
             "type": "string",
-            "description": "SubjectID of the Relation Tuple",
+            "description": "SubjectID of the Relationship",
             "name": "subject_id",
             "in": "query"
           },
@@ -505,15 +433,21 @@
         ],
         "responses": {
           "200": {
-            "description": "getCheckResponse",
+            "description": "checkPermissionResponse",
             "schema": {
-              "$ref": "#/definitions/getCheckResponse"
+              "$ref": "#/definitions/checkPermissionResponse"
             }
           },
           "400": {
             "description": "genericError",
             "schema": {
               "$ref": "#/definitions/genericError"
+            }
+          },
+          "403": {
+            "description": "checkPermissionResponse",
+            "schema": {
+              "$ref": "#/definitions/checkPermissionResponse"
             }
           },
           "500": {
@@ -525,13 +459,13 @@
         }
       },
       "post": {
-        "description": "To learn how relation tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).",
+        "description": "To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).",
         "consumes": ["application/json"],
         "produces": ["application/json"],
         "schemes": ["http", "https"],
-        "tags": ["read"],
-        "summary": "Check a relation tuple",
-        "operationId": "postCheck",
+        "tags": ["permission"],
+        "summary": "Check a permission",
+        "operationId": "postCheckPermissionOrError",
         "parameters": [
           {
             "name": "Payload",
@@ -549,9 +483,140 @@
         ],
         "responses": {
           "200": {
-            "description": "getCheckResponse",
+            "description": "checkPermissionResponse",
             "schema": {
-              "$ref": "#/definitions/getCheckResponse"
+              "$ref": "#/definitions/checkPermissionResponse"
+            }
+          },
+          "400": {
+            "description": "genericError",
+            "schema": {
+              "$ref": "#/definitions/genericError"
+            }
+          },
+          "403": {
+            "description": "checkPermissionResponse",
+            "schema": {
+              "$ref": "#/definitions/checkPermissionResponse"
+            }
+          },
+          "500": {
+            "description": "genericError",
+            "schema": {
+              "$ref": "#/definitions/genericError"
+            }
+          }
+        }
+      }
+    },
+    "/relation-tuples/check/openapi": {
+      "get": {
+        "description": "To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).",
+        "consumes": ["application/x-www-form-urlencoded"],
+        "produces": ["application/json"],
+        "schemes": ["http", "https"],
+        "tags": ["permission"],
+        "summary": "Check a permission",
+        "operationId": "checkPermission",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Namespace of the Relationship",
+            "name": "namespace",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Object of the Relationship",
+            "name": "object",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Relation of the Relationship",
+            "name": "relation",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "SubjectID of the Relationship",
+            "name": "subject_id",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Namespace of the Subject Set",
+            "name": "subject_set.namespace",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Object of the Subject Set",
+            "name": "subject_set.object",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Relation of the Subject Set",
+            "name": "subject_set.relation",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "format": "int64",
+            "name": "max-depth",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "checkPermissionResponse",
+            "schema": {
+              "$ref": "#/definitions/checkPermissionResponse"
+            }
+          },
+          "400": {
+            "description": "genericError",
+            "schema": {
+              "$ref": "#/definitions/genericError"
+            }
+          },
+          "500": {
+            "description": "genericError",
+            "schema": {
+              "$ref": "#/definitions/genericError"
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "schemes": ["http", "https"],
+        "tags": ["permission"],
+        "summary": "Check a permission",
+        "operationId": "postCheckPermission",
+        "parameters": [
+          {
+            "name": "Payload",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/relationQuery"
+            }
+          },
+          {
+            "type": "integer",
+            "format": "int64",
+            "name": "max-depth",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "checkPermissionResponse",
+            "schema": {
+              "$ref": "#/definitions/checkPermissionResponse"
             }
           },
           "400": {
@@ -571,13 +636,13 @@
     },
     "/relation-tuples/expand": {
       "get": {
-        "description": "Use this endpoint to expand a relation tuple.",
+        "description": "Use this endpoint to expand a relationship tuple into permissions.",
         "consumes": ["application/x-www-form-urlencoded"],
         "produces": ["application/json"],
         "schemes": ["http", "https"],
-        "tags": ["read"],
-        "summary": "Expand a Relation Tuple",
-        "operationId": "getExpand",
+        "tags": ["permission"],
+        "summary": "Expand a Relationship into permissions.",
+        "operationId": "expandPermissions",
         "parameters": [
           {
             "type": "string",
@@ -681,6 +746,18 @@
         }
       }
     },
+    "checkPermissionResponse": {
+      "description": "The content of the allowed field is mirrored in the HTTP status code.",
+      "type": "object",
+      "title": "CheckPermissionResponse represents the response for a check request.",
+      "required": ["allowed"],
+      "properties": {
+        "allowed": {
+          "description": "whether the relation tuple is allowed",
+          "type": "boolean"
+        }
+      }
+    },
     "expandTree": {
       "type": "object",
       "required": ["type"],
@@ -741,19 +818,7 @@
         }
       }
     },
-    "getCheckResponse": {
-      "description": "The content of the allowed field is mirrored in the HTTP status code.",
-      "type": "object",
-      "title": "RESTResponse represents the response for a check request.",
-      "required": ["allowed"],
-      "properties": {
-        "allowed": {
-          "description": "whether the relation tuple is allowed",
-          "type": "boolean"
-        }
-      }
-    },
-    "getNamespacesResponse": {
+    "getRelationshipNamespacesResponse": {
       "type": "object",
       "properties": {
         "namespaces": {
@@ -764,7 +829,7 @@
         }
       }
     },
-    "getRelationTuplesResponse": {
+    "getRelationshipsResponse": {
       "type": "object",
       "properties": {
         "next_page_token": {

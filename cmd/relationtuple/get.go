@@ -80,8 +80,8 @@ func NewGetCmd() *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "get",
-		Short: "Get relation tuples",
-		Long: "Get relation tuples matching the given partial tuple.\n" +
+		Short: "Get relationships",
+		Long: "Get relationships matching the given partial tuple.\n" +
 			"Returns paginated results.",
 		Args: cobra.ExactArgs(0),
 		RunE: getTuples(&pageSize, &pageToken),

@@ -33,7 +33,7 @@ type (
 
 var (
 	_ rts.ExpandServiceServer = (*handler)(nil)
-	_ *getExpandRequest       = nil
+	_ *expandPermissions      = nil
 )
 
 const RouteBase = "/relation-tuples/expand"
@@ -50,19 +50,21 @@ func (h *handler) RegisterReadGRPC(s *grpc.Server) {
 	rts.RegisterExpandServiceServer(s, h)
 }
 
-// swagger:parameters getExpand
-type getExpandRequest struct {
+// Expand Permissions Request Parameters
+//
+// swagger:parameters expandPermissions
+type expandPermissions struct {
 	// in:query
 	MaxDepth int `json:"max-depth"`
 	// in:query
 	ketoapi.SubjectSet
 }
 
-// swagger:route GET /relation-tuples/expand read getExpand
+// swagger:route GET /relation-tuples/expand permission expandPermissions
 //
-// # Expand a Relation Tuple
+// # Expand a Relationship into permissions.
 //
-// Use this endpoint to expand a relation tuple.
+// Use this endpoint to expand a relationship tuple into permissions.
 //
 //	Consumes:
 //	-  application/x-www-form-urlencoded

@@ -18,7 +18,7 @@ import (
 	"github.com/ory/keto/cmd/client"
 )
 
-type checkOutput check.RESTResponse
+type checkOutput check.CheckPermissionResponse
 
 func (o *checkOutput) String() string {
 	if o.Allowed {

@@ -82,26 +82,26 @@ Class | Method | HTTP request | Description
 *MetadataApi* | [**GetVersion**](docs/MetadataApi.md#getversion) | **Get** /version | Return Running Software Version.
 *MetadataApi* | [**IsAlive**](docs/MetadataApi.md#isalive) | **Get** /health/alive | Check HTTP Server Status
 *MetadataApi* | [**IsReady**](docs/MetadataApi.md#isready) | **Get** /health/ready | Check HTTP Server and Database Status
-*NamespacesApi* | [**GetNamespaces**](docs/NamespacesApi.md#getnamespaces) | **Get** /namespaces | Query namespaces
-*ReadApi* | [**GetCheck**](docs/ReadApi.md#getcheck) | **Get** /relation-tuples/check/openapi | Check a relation tuple
-*ReadApi* | [**GetCheckMirrorStatus**](docs/ReadApi.md#getcheckmirrorstatus) | **Get** /relation-tuples/check | Check a relation tuple
-*ReadApi* | [**GetExpand**](docs/ReadApi.md#getexpand) | **Get** /relation-tuples/expand | Expand a Relation Tuple
-*ReadApi* | [**GetRelationTuples**](docs/ReadApi.md#getrelationtuples) | **Get** /relation-tuples | Query relation tuples
-*ReadApi* | [**PostCheck**](docs/ReadApi.md#postcheck) | **Post** /relation-tuples/check/openapi | Check a relation tuple
-*ReadApi* | [**PostCheckMirrorStatus**](docs/ReadApi.md#postcheckmirrorstatus) | **Post** /relation-tuples/check | Check a relation tuple
-*SyntaxApi* | [**CheckOplSyntax**](docs/SyntaxApi.md#checkoplsyntax) | **Post** /opl/syntax/check | Check the syntax of an OPL file
-*WriteApi* | [**CreateRelationTuple**](docs/WriteApi.md#createrelationtuple) | **Put** /admin/relation-tuples | Create a Relation Tuple
-*WriteApi* | [**DeleteRelationTuples**](docs/WriteApi.md#deleterelationtuples) | **Delete** /admin/relation-tuples | Delete Relation Tuples
-*WriteApi* | [**PatchRelationTuples**](docs/WriteApi.md#patchrelationtuples) | **Patch** /admin/relation-tuples | Patch Multiple Relation Tuples
+*PermissionApi* | [**CheckPermission**](docs/PermissionApi.md#checkpermission) | **Get** /relation-tuples/check/openapi | Check a permission
+*PermissionApi* | [**CheckPermissionOrError**](docs/PermissionApi.md#checkpermissionorerror) | **Get** /relation-tuples/check | Check a permission
+*PermissionApi* | [**ExpandPermissions**](docs/PermissionApi.md#expandpermissions) | **Get** /relation-tuples/expand | Expand a Relationship into permissions.
+*PermissionApi* | [**PostCheckPermission**](docs/PermissionApi.md#postcheckpermission) | **Post** /relation-tuples/check/openapi | Check a permission
+*PermissionApi* | [**PostCheckPermissionOrError**](docs/PermissionApi.md#postcheckpermissionorerror) | **Post** /relation-tuples/check | Check a permission
+*RelationshipApi* | [**CheckOplSyntax**](docs/RelationshipApi.md#checkoplsyntax) | **Post** /opl/syntax/check | Check the syntax of an OPL file
+*RelationshipApi* | [**CreateRelationships**](docs/RelationshipApi.md#createrelationships) | **Put** /admin/relation-tuples | Create a Relationship
+*RelationshipApi* | [**DeleteRelationships**](docs/RelationshipApi.md#deleterelationships) | **Delete** /admin/relation-tuples | Delete Relationships
+*RelationshipApi* | [**GetRelationshipNamespaces**](docs/RelationshipApi.md#getrelationshipnamespaces) | **Get** /namespaces | Query namespaces
+*RelationshipApi* | [**GetRelationships**](docs/RelationshipApi.md#getrelationships) | **Get** /relation-tuples | Query relationships
+*RelationshipApi* | [**PatchRelationships**](docs/RelationshipApi.md#patchrelationships) | **Patch** /admin/relation-tuples | Patch Multiple Relationships
 
 
 ## Documentation For Models
 
+ - [CheckPermissionResponse](docs/CheckPermissionResponse.md)
  - [ExpandTree](docs/ExpandTree.md)
  - [GenericError](docs/GenericError.md)
- - [GetCheckResponse](docs/GetCheckResponse.md)
- - [GetNamespacesResponse](docs/GetNamespacesResponse.md)
- - [GetRelationTuplesResponse](docs/GetRelationTuplesResponse.md)
+ - [GetRelationshipNamespacesResponse](docs/GetRelationshipNamespacesResponse.md)
+ - [GetRelationshipsResponse](docs/GetRelationshipsResponse.md)
  - [HealthNotReadyStatus](docs/HealthNotReadyStatus.md)
  - [HealthStatus](docs/HealthStatus.md)
  - [InlineResponse200](docs/InlineResponse200.md)

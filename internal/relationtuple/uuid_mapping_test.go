@@ -29,14 +29,14 @@ func TestMapper(t *testing.T) {
 	}
 	require.NoError(t, reg.Config(ctx).Set(config.KeyNamespaces, []*namespace.Namespace{&nspace}))
 
-	t.Run("items=relation tuples", func(t *testing.T) {
+	t.Run("items=relationships", func(t *testing.T) {
 		for _, tc := range []struct {
 			name string
 			rts  []*ketoapi.RelationTuple
 			err  error
 		}{
 			{
-				name: "no relation tuples",
+				name: "no relationships",
 				rts:  []*ketoapi.RelationTuple{},
 			},
 			{
@@ -62,7 +62,7 @@ func TestMapper(t *testing.T) {
 				err: ketoapi.ErrNilSubject,
 			},
 			{
-				name: "many relation tuples",
+				name: "many relationships",
 				rts: func() []*ketoapi.RelationTuple {
 					rts := make([]*ketoapi.RelationTuple, 10)
 					for i := range rts {

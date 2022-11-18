@@ -15,32 +15,32 @@ import (
 	"encoding/json"
 )
 
-// GetRelationTuplesResponse struct for GetRelationTuplesResponse
-type GetRelationTuplesResponse struct {
+// GetRelationshipsResponse struct for GetRelationshipsResponse
+type GetRelationshipsResponse struct {
 	// The opaque token to provide in a subsequent request to get the next page. It is the empty string iff this is the last page.
 	NextPageToken  *string         `json:"next_page_token,omitempty"`
 	RelationTuples []RelationTuple `json:"relation_tuples,omitempty"`
 }
 
-// NewGetRelationTuplesResponse instantiates a new GetRelationTuplesResponse object
+// NewGetRelationshipsResponse instantiates a new GetRelationshipsResponse object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewGetRelationTuplesResponse() *GetRelationTuplesResponse {
-	this := GetRelationTuplesResponse{}
+func NewGetRelationshipsResponse() *GetRelationshipsResponse {
+	this := GetRelationshipsResponse{}
 	return &this
 }
 
-// NewGetRelationTuplesResponseWithDefaults instantiates a new GetRelationTuplesResponse object
+// NewGetRelationshipsResponseWithDefaults instantiates a new GetRelationshipsResponse object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewGetRelationTuplesResponseWithDefaults() *GetRelationTuplesResponse {
-	this := GetRelationTuplesResponse{}
+func NewGetRelationshipsResponseWithDefaults() *GetRelationshipsResponse {
+	this := GetRelationshipsResponse{}
 	return &this
 }
 
 // GetNextPageToken returns the NextPageToken field value if set, zero value otherwise.
-func (o *GetRelationTuplesResponse) GetNextPageToken() string {
+func (o *GetRelationshipsResponse) GetNextPageToken() string {
 	if o == nil || o.NextPageToken == nil {
 		var ret string
 		return ret
@@ -50,7 +50,7 @@ func (o *GetRelationTuplesResponse) GetNextPageToken() string {
 
 // GetNextPageTokenOk returns a tuple with the NextPageToken field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *GetRelationTuplesResponse) GetNextPageTokenOk() (*string, bool) {
+func (o *GetRelationshipsResponse) GetNextPageTokenOk() (*string, bool) {
 	if o == nil || o.NextPageToken == nil {
 		return nil, false
 	}
@@ -58,7 +58,7 @@ func (o *GetRelationTuplesResponse) GetNextPageTokenOk() (*string, bool) {
 }
 
 // HasNextPageToken returns a boolean if a field has been set.
-func (o *GetRelationTuplesResponse) HasNextPageToken() bool {
+func (o *GetRelationshipsResponse) HasNextPageToken() bool {
 	if o != nil && o.NextPageToken != nil {
 		return true
 	}
@@ -67,12 +67,12 @@ func (o *GetRelationTuplesResponse) HasNextPageToken() bool {
 }
 
 // SetNextPageToken gets a reference to the given string and assigns it to the NextPageToken field.
-func (o *GetRelationTuplesResponse) SetNextPageToken(v string) {
+func (o *GetRelationshipsResponse) SetNextPageToken(v string) {
 	o.NextPageToken = &v
 }
 
 // GetRelationTuples returns the RelationTuples field value if set, zero value otherwise.
-func (o *GetRelationTuplesResponse) GetRelationTuples() []RelationTuple {
+func (o *GetRelationshipsResponse) GetRelationTuples() []RelationTuple {
 	if o == nil || o.RelationTuples == nil {
 		var ret []RelationTuple
 		return ret
@@ -82,7 +82,7 @@ func (o *GetRelationTuplesResponse) GetRelationTuples() []RelationTuple {
 
 // GetRelationTuplesOk returns a tuple with the RelationTuples field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *GetRelationTuplesResponse) GetRelationTuplesOk() ([]RelationTuple, bool) {
+func (o *GetRelationshipsResponse) GetRelationTuplesOk() ([]RelationTuple, bool) {
 	if o == nil || o.RelationTuples == nil {
 		return nil, false
 	}
@@ -90,7 +90,7 @@ func (o *GetRelationTuplesResponse) GetRelationTuplesOk() ([]RelationTuple, bool
 }
 
 // HasRelationTuples returns a boolean if a field has been set.
-func (o *GetRelationTuplesResponse) HasRelationTuples() bool {
+func (o *GetRelationshipsResponse) HasRelationTuples() bool {
 	if o != nil && o.RelationTuples != nil {
 		return true
 	}
@@ -99,11 +99,11 @@ func (o *GetRelationTuplesResponse) HasRelationTuples() bool {
 }
 
 // SetRelationTuples gets a reference to the given []RelationTuple and assigns it to the RelationTuples field.
-func (o *GetRelationTuplesResponse) SetRelationTuples(v []RelationTuple) {
+func (o *GetRelationshipsResponse) SetRelationTuples(v []RelationTuple) {
 	o.RelationTuples = v
 }
 
-func (o GetRelationTuplesResponse) MarshalJSON() ([]byte, error) {
+func (o GetRelationshipsResponse) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.NextPageToken != nil {
 		toSerialize["next_page_token"] = o.NextPageToken
@@ -114,38 +114,38 @@ func (o GetRelationTuplesResponse) MarshalJSON() ([]byte, error) {
 	return json.Marshal(toSerialize)
 }
 
-type NullableGetRelationTuplesResponse struct {
-	value *GetRelationTuplesResponse
+type NullableGetRelationshipsResponse struct {
+	value *GetRelationshipsResponse
 	isSet bool
 }
 
-func (v NullableGetRelationTuplesResponse) Get() *GetRelationTuplesResponse {
+func (v NullableGetRelationshipsResponse) Get() *GetRelationshipsResponse {
 	return v.value
 }
 
-func (v *NullableGetRelationTuplesResponse) Set(val *GetRelationTuplesResponse) {
+func (v *NullableGetRelationshipsResponse) Set(val *GetRelationshipsResponse) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableGetRelationTuplesResponse) IsSet() bool {
+func (v NullableGetRelationshipsResponse) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableGetRelationTuplesResponse) Unset() {
+func (v *NullableGetRelationshipsResponse) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableGetRelationTuplesResponse(val *GetRelationTuplesResponse) *NullableGetRelationTuplesResponse {
-	return &NullableGetRelationTuplesResponse{value: val, isSet: true}
+func NewNullableGetRelationshipsResponse(val *GetRelationshipsResponse) *NullableGetRelationshipsResponse {
+	return &NullableGetRelationshipsResponse{value: val, isSet: true}
 }
 
-func (v NullableGetRelationTuplesResponse) MarshalJSON() ([]byte, error) {
+func (v NullableGetRelationshipsResponse) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableGetRelationTuplesResponse) UnmarshalJSON(src []byte) error {
+func (v *NullableGetRelationshipsResponse) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

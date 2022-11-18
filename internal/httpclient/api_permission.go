@@ -24,99 +24,85 @@ var (
 	_ context.Context
 )
 
-type ReadApi interface {
+type PermissionApi interface {
 
 	/*
-	 * GetCheck Check a relation tuple
-	 * To learn how relation tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
+	 * CheckPermission Check a permission
+	 * To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
 	 * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	 * @return ReadApiApiGetCheckRequest
+	 * @return PermissionApiApiCheckPermissionRequest
 	 */
-	GetCheck(ctx context.Context) ReadApiApiGetCheckRequest
+	CheckPermission(ctx context.Context) PermissionApiApiCheckPermissionRequest
 
 	/*
-	 * GetCheckExecute executes the request
-	 * @return GetCheckResponse
+	 * CheckPermissionExecute executes the request
+	 * @return CheckPermissionResponse
 	 */
-	GetCheckExecute(r ReadApiApiGetCheckRequest) (*GetCheckResponse, *http.Response, error)
+	CheckPermissionExecute(r PermissionApiApiCheckPermissionRequest) (*CheckPermissionResponse, *http.Response, error)
 
 	/*
-	 * GetCheckMirrorStatus Check a relation tuple
-	 * To learn how relation tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
+	 * CheckPermissionOrError Check a permission
+	 * To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
 	 * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	 * @return ReadApiApiGetCheckMirrorStatusRequest
+	 * @return PermissionApiApiCheckPermissionOrErrorRequest
 	 */
-	GetCheckMirrorStatus(ctx context.Context) ReadApiApiGetCheckMirrorStatusRequest
+	CheckPermissionOrError(ctx context.Context) PermissionApiApiCheckPermissionOrErrorRequest
 
 	/*
-	 * GetCheckMirrorStatusExecute executes the request
-	 * @return GetCheckResponse
+	 * CheckPermissionOrErrorExecute executes the request
+	 * @return CheckPermissionResponse
 	 */
-	GetCheckMirrorStatusExecute(r ReadApiApiGetCheckMirrorStatusRequest) (*GetCheckResponse, *http.Response, error)
+	CheckPermissionOrErrorExecute(r PermissionApiApiCheckPermissionOrErrorRequest) (*CheckPermissionResponse, *http.Response, error)
 
 	/*
-	 * GetExpand Expand a Relation Tuple
-	 * Use this endpoint to expand a relation tuple.
+	 * ExpandPermissions Expand a Relationship into permissions.
+	 * Use this endpoint to expand a relationship tuple into permissions.
 	 * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	 * @return ReadApiApiGetExpandRequest
+	 * @return PermissionApiApiExpandPermissionsRequest
 	 */
-	GetExpand(ctx context.Context) ReadApiApiGetExpandRequest
+	ExpandPermissions(ctx context.Context) PermissionApiApiExpandPermissionsRequest
 
 	/*
-	 * GetExpandExecute executes the request
+	 * ExpandPermissionsExecute executes the request
 	 * @return ExpandTree
 	 */
-	GetExpandExecute(r ReadApiApiGetExpandRequest) (*ExpandTree, *http.Response, error)
+	ExpandPermissionsExecute(r PermissionApiApiExpandPermissionsRequest) (*ExpandTree, *http.Response, error)
 
 	/*
-	 * GetRelationTuples Query relation tuples
-	 * Get all relation tuples that match the query. Only the namespace field is required.
+	 * PostCheckPermission Check a permission
+	 * To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
 	 * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	 * @return ReadApiApiGetRelationTuplesRequest
+	 * @return PermissionApiApiPostCheckPermissionRequest
 	 */
-	GetRelationTuples(ctx context.Context) ReadApiApiGetRelationTuplesRequest
+	PostCheckPermission(ctx context.Context) PermissionApiApiPostCheckPermissionRequest
 
 	/*
-	 * GetRelationTuplesExecute executes the request
-	 * @return GetRelationTuplesResponse
+	 * PostCheckPermissionExecute executes the request
+	 * @return CheckPermissionResponse
 	 */
-	GetRelationTuplesExecute(r ReadApiApiGetRelationTuplesRequest) (*GetRelationTuplesResponse, *http.Response, error)
+	PostCheckPermissionExecute(r PermissionApiApiPostCheckPermissionRequest) (*CheckPermissionResponse, *http.Response, error)
 
 	/*
-	 * PostCheck Check a relation tuple
-	 * To learn how relation tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
+	 * PostCheckPermissionOrError Check a permission
+	 * To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
 	 * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	 * @return ReadApiApiPostCheckRequest
+	 * @return PermissionApiApiPostCheckPermissionOrErrorRequest
 	 */
-	PostCheck(ctx context.Context) ReadApiApiPostCheckRequest
+	PostCheckPermissionOrError(ctx context.Context) PermissionApiApiPostCheckPermissionOrErrorRequest
 
 	/*
-	 * PostCheckExecute executes the request
-	 * @return GetCheckResponse
+	 * PostCheckPermissionOrErrorExecute executes the request
+	 * @return CheckPermissionResponse
 	 */
-	PostCheckExecute(r ReadApiApiPostCheckRequest) (*GetCheckResponse, *http.Response, error)
-
-	/*
-	 * PostCheckMirrorStatus Check a relation tuple
-	 * To learn how relation tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
-	 * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	 * @return ReadApiApiPostCheckMirrorStatusRequest
-	 */
-	PostCheckMirrorStatus(ctx context.Context) ReadApiApiPostCheckMirrorStatusRequest
-
-	/*
-	 * PostCheckMirrorStatusExecute executes the request
-	 * @return GetCheckResponse
-	 */
-	PostCheckMirrorStatusExecute(r ReadApiApiPostCheckMirrorStatusRequest) (*GetCheckResponse, *http.Response, error)
+	PostCheckPermissionOrErrorExecute(r PermissionApiApiPostCheckPermissionOrErrorRequest) (*CheckPermissionResponse, *http.Response, error)
 }
 
-// ReadApiService ReadApi service
-type ReadApiService service
+// PermissionApiService PermissionApi service
+type PermissionApiService service
 
-type ReadApiApiGetCheckRequest struct {
+type PermissionApiApiCheckPermissionRequest struct {
 	ctx                 context.Context
-	ApiService          ReadApi
+	ApiService          PermissionApi
 	namespace           *string
 	object              *string
 	relation            *string
@@ -127,51 +113,51 @@ type ReadApiApiGetCheckRequest struct {
 	maxDepth            *int64
 }
 
-func (r ReadApiApiGetCheckRequest) Namespace(namespace string) ReadApiApiGetCheckRequest {
+func (r PermissionApiApiCheckPermissionRequest) Namespace(namespace string) PermissionApiApiCheckPermissionRequest {
 	r.namespace = &namespace
 	return r
 }
-func (r ReadApiApiGetCheckRequest) Object(object string) ReadApiApiGetCheckRequest {
+func (r PermissionApiApiCheckPermissionRequest) Object(object string) PermissionApiApiCheckPermissionRequest {
 	r.object = &object
 	return r
 }
-func (r ReadApiApiGetCheckRequest) Relation(relation string) ReadApiApiGetCheckRequest {
+func (r PermissionApiApiCheckPermissionRequest) Relation(relation string) PermissionApiApiCheckPermissionRequest {
 	r.relation = &relation
 	return r
 }
-func (r ReadApiApiGetCheckRequest) SubjectId(subjectId string) ReadApiApiGetCheckRequest {
+func (r PermissionApiApiCheckPermissionRequest) SubjectId(subjectId string) PermissionApiApiCheckPermissionRequest {
 	r.subjectId = &subjectId
 	return r
 }
-func (r ReadApiApiGetCheckRequest) SubjectSetNamespace(subjectSetNamespace string) ReadApiApiGetCheckRequest {
+func (r PermissionApiApiCheckPermissionRequest) SubjectSetNamespace(subjectSetNamespace string) PermissionApiApiCheckPermissionRequest {
 	r.subjectSetNamespace = &subjectSetNamespace
 	return r
 }
-func (r ReadApiApiGetCheckRequest) SubjectSetObject(subjectSetObject string) ReadApiApiGetCheckRequest {
+func (r PermissionApiApiCheckPermissionRequest) SubjectSetObject(subjectSetObject string) PermissionApiApiCheckPermissionRequest {
 	r.subjectSetObject = &subjectSetObject
 	return r
 }
-func (r ReadApiApiGetCheckRequest) SubjectSetRelation(subjectSetRelation string) ReadApiApiGetCheckRequest {
+func (r PermissionApiApiCheckPermissionRequest) SubjectSetRelation(subjectSetRelation string) PermissionApiApiCheckPermissionRequest {
 	r.subjectSetRelation = &subjectSetRelation
 	return r
 }
-func (r ReadApiApiGetCheckRequest) MaxDepth(maxDepth int64) ReadApiApiGetCheckRequest {
+func (r PermissionApiApiCheckPermissionRequest) MaxDepth(maxDepth int64) PermissionApiApiCheckPermissionRequest {
 	r.maxDepth = &maxDepth
 	return r
 }
 
-func (r ReadApiApiGetCheckRequest) Execute() (*GetCheckResponse, *http.Response, error) {
-	return r.ApiService.GetCheckExecute(r)
+func (r PermissionApiApiCheckPermissionRequest) Execute() (*CheckPermissionResponse, *http.Response, error) {
+	return r.ApiService.CheckPermissionExecute(r)
 }
 
 /*
- * GetCheck Check a relation tuple
- * To learn how relation tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
+ * CheckPermission Check a permission
+ * To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @return ReadApiApiGetCheckRequest
+ * @return PermissionApiApiCheckPermissionRequest
  */
-func (a *ReadApiService) GetCheck(ctx context.Context) ReadApiApiGetCheckRequest {
-	return ReadApiApiGetCheckRequest{
+func (a *PermissionApiService) CheckPermission(ctx context.Context) PermissionApiApiCheckPermissionRequest {
+	return PermissionApiApiCheckPermissionRequest{
 		ApiService: a,
 		ctx:        ctx,
 	}
@@ -179,19 +165,19 @@ func (a *ReadApiService) GetCheck(ctx context.Context) ReadApiApiGetCheckRequest
 
 /*
  * Execute executes the request
- * @return GetCheckResponse
+ * @return CheckPermissionResponse
  */
-func (a *ReadApiService) GetCheckExecute(r ReadApiApiGetCheckRequest) (*GetCheckResponse, *http.Response, error) {
+func (a *PermissionApiService) CheckPermissionExecute(r PermissionApiApiCheckPermissionRequest) (*CheckPermissionResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodGet
 		localVarPostBody     interface{}
 		localVarFormFileName string
 		localVarFileName     string
 		localVarFileBytes    []byte
-		localVarReturnValue  *GetCheckResponse
+		localVarReturnValue  *CheckPermissionResponse
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ReadApiService.GetCheck")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PermissionApiService.CheckPermission")
 	if err != nil {
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
@@ -299,23 +285,64 @@ func (a *ReadApiService) GetCheckExecute(r ReadApiApiGetCheckRequest) (*GetCheck
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type ReadApiApiGetCheckMirrorStatusRequest struct {
-	ctx        context.Context
-	ApiService ReadApi
+type PermissionApiApiCheckPermissionOrErrorRequest struct {
+	ctx                 context.Context
+	ApiService          PermissionApi
+	namespace           *string
+	object              *string
+	relation            *string
+	subjectId           *string
+	subjectSetNamespace *string
+	subjectSetObject    *string
+	subjectSetRelation  *string
+	maxDepth            *int64
 }
 
-func (r ReadApiApiGetCheckMirrorStatusRequest) Execute() (*GetCheckResponse, *http.Response, error) {
-	return r.ApiService.GetCheckMirrorStatusExecute(r)
+func (r PermissionApiApiCheckPermissionOrErrorRequest) Namespace(namespace string) PermissionApiApiCheckPermissionOrErrorRequest {
+	r.namespace = &namespace
+	return r
+}
+func (r PermissionApiApiCheckPermissionOrErrorRequest) Object(object string) PermissionApiApiCheckPermissionOrErrorRequest {
+	r.object = &object
+	return r
+}
+func (r PermissionApiApiCheckPermissionOrErrorRequest) Relation(relation string) PermissionApiApiCheckPermissionOrErrorRequest {
+	r.relation = &relation
+	return r
+}
+func (r PermissionApiApiCheckPermissionOrErrorRequest) SubjectId(subjectId string) PermissionApiApiCheckPermissionOrErrorRequest {
+	r.subjectId = &subjectId
+	return r
+}
+func (r PermissionApiApiCheckPermissionOrErrorRequest) SubjectSetNamespace(subjectSetNamespace string) PermissionApiApiCheckPermissionOrErrorRequest {
+	r.subjectSetNamespace = &subjectSetNamespace
+	return r
+}
+func (r PermissionApiApiCheckPermissionOrErrorRequest) SubjectSetObject(subjectSetObject string) PermissionApiApiCheckPermissionOrErrorRequest {
+	r.subjectSetObject = &subjectSetObject
+	return r
+}
+func (r PermissionApiApiCheckPermissionOrErrorRequest) SubjectSetRelation(subjectSetRelation string) PermissionApiApiCheckPermissionOrErrorRequest {
+	r.subjectSetRelation = &subjectSetRelation
+	return r
+}
+func (r PermissionApiApiCheckPermissionOrErrorRequest) MaxDepth(maxDepth int64) PermissionApiApiCheckPermissionOrErrorRequest {
+	r.maxDepth = &maxDepth
+	return r
+}
+
+func (r PermissionApiApiCheckPermissionOrErrorRequest) Execute() (*CheckPermissionResponse, *http.Response, error) {
+	return r.ApiService.CheckPermissionOrErrorExecute(r)
 }
 
 /*
- * GetCheckMirrorStatus Check a relation tuple
- * To learn how relation tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
+ * CheckPermissionOrError Check a permission
+ * To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @return ReadApiApiGetCheckMirrorStatusRequest
+ * @return PermissionApiApiCheckPermissionOrErrorRequest
  */
-func (a *ReadApiService) GetCheckMirrorStatus(ctx context.Context) ReadApiApiGetCheckMirrorStatusRequest {
-	return ReadApiApiGetCheckMirrorStatusRequest{
+func (a *PermissionApiService) CheckPermissionOrError(ctx context.Context) PermissionApiApiCheckPermissionOrErrorRequest {
+	return PermissionApiApiCheckPermissionOrErrorRequest{
 		ApiService: a,
 		ctx:        ctx,
 	}
@@ -323,19 +350,19 @@ func (a *ReadApiService) GetCheckMirrorStatus(ctx context.Context) ReadApiApiGet
 
 /*
  * Execute executes the request
- * @return GetCheckResponse
+ * @return CheckPermissionResponse
  */
-func (a *ReadApiService) GetCheckMirrorStatusExecute(r ReadApiApiGetCheckMirrorStatusRequest) (*GetCheckResponse, *http.Response, error) {
+func (a *PermissionApiService) CheckPermissionOrErrorExecute(r PermissionApiApiCheckPermissionOrErrorRequest) (*CheckPermissionResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodGet
 		localVarPostBody     interface{}
 		localVarFormFileName string
 		localVarFileName     string
 		localVarFileBytes    []byte
-		localVarReturnValue  *GetCheckResponse
+		localVarReturnValue  *CheckPermissionResponse
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ReadApiService.GetCheckMirrorStatus")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PermissionApiService.CheckPermissionOrError")
 	if err != nil {
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
@@ -346,6 +373,30 @@ func (a *ReadApiService) GetCheckMirrorStatusExecute(r ReadApiApiGetCheckMirrorS
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
 
+	if r.namespace != nil {
+		localVarQueryParams.Add("namespace", parameterToString(*r.namespace, ""))
+	}
+	if r.object != nil {
+		localVarQueryParams.Add("object", parameterToString(*r.object, ""))
+	}
+	if r.relation != nil {
+		localVarQueryParams.Add("relation", parameterToString(*r.relation, ""))
+	}
+	if r.subjectId != nil {
+		localVarQueryParams.Add("subject_id", parameterToString(*r.subjectId, ""))
+	}
+	if r.subjectSetNamespace != nil {
+		localVarQueryParams.Add("subject_set.namespace", parameterToString(*r.subjectSetNamespace, ""))
+	}
+	if r.subjectSetObject != nil {
+		localVarQueryParams.Add("subject_set.object", parameterToString(*r.subjectSetObject, ""))
+	}
+	if r.subjectSetRelation != nil {
+		localVarQueryParams.Add("subject_set.relation", parameterToString(*r.subjectSetRelation, ""))
+	}
+	if r.maxDepth != nil {
+		localVarQueryParams.Add("max-depth", parameterToString(*r.maxDepth, ""))
+	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 
@@ -396,7 +447,7 @@ func (a *ReadApiService) GetCheckMirrorStatusExecute(r ReadApiApiGetCheckMirrorS
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
-			var v GetCheckResponse
+			var v CheckPermissionResponse
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -429,44 +480,44 @@ func (a *ReadApiService) GetCheckMirrorStatusExecute(r ReadApiApiGetCheckMirrorS
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type ReadApiApiGetExpandRequest struct {
+type PermissionApiApiExpandPermissionsRequest struct {
 	ctx        context.Context
-	ApiService ReadApi
+	ApiService PermissionApi
 	namespace  *string
 	object     *string
 	relation   *string
 	maxDepth   *int64
 }
 
-func (r ReadApiApiGetExpandRequest) Namespace(namespace string) ReadApiApiGetExpandRequest {
+func (r PermissionApiApiExpandPermissionsRequest) Namespace(namespace string) PermissionApiApiExpandPermissionsRequest {
 	r.namespace = &namespace
 	return r
 }
-func (r ReadApiApiGetExpandRequest) Object(object string) ReadApiApiGetExpandRequest {
+func (r PermissionApiApiExpandPermissionsRequest) Object(object string) PermissionApiApiExpandPermissionsRequest {
 	r.object = &object
 	return r
 }
-func (r ReadApiApiGetExpandRequest) Relation(relation string) ReadApiApiGetExpandRequest {
+func (r PermissionApiApiExpandPermissionsRequest) Relation(relation string) PermissionApiApiExpandPermissionsRequest {
 	r.relation = &relation
 	return r
 }
-func (r ReadApiApiGetExpandRequest) MaxDepth(maxDepth int64) ReadApiApiGetExpandRequest {
+func (r PermissionApiApiExpandPermissionsRequest) MaxDepth(maxDepth int64) PermissionApiApiExpandPermissionsRequest {
 	r.maxDepth = &maxDepth
 	return r
 }
 
-func (r ReadApiApiGetExpandRequest) Execute() (*ExpandTree, *http.Response, error) {
-	return r.ApiService.GetExpandExecute(r)
+func (r PermissionApiApiExpandPermissionsRequest) Execute() (*ExpandTree, *http.Response, error) {
+	return r.ApiService.ExpandPermissionsExecute(r)
 }
 
 /*
- * GetExpand Expand a Relation Tuple
- * Use this endpoint to expand a relation tuple.
+ * ExpandPermissions Expand a Relationship into permissions.
+ * Use this endpoint to expand a relationship tuple into permissions.
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @return ReadApiApiGetExpandRequest
+ * @return PermissionApiApiExpandPermissionsRequest
  */
-func (a *ReadApiService) GetExpand(ctx context.Context) ReadApiApiGetExpandRequest {
-	return ReadApiApiGetExpandRequest{
+func (a *PermissionApiService) ExpandPermissions(ctx context.Context) PermissionApiApiExpandPermissionsRequest {
+	return PermissionApiApiExpandPermissionsRequest{
 		ApiService: a,
 		ctx:        ctx,
 	}
@@ -476,7 +527,7 @@ func (a *ReadApiService) GetExpand(ctx context.Context) ReadApiApiGetExpandReque
  * Execute executes the request
  * @return ExpandTree
  */
-func (a *ReadApiService) GetExpandExecute(r ReadApiApiGetExpandRequest) (*ExpandTree, *http.Response, error) {
+func (a *PermissionApiService) ExpandPermissionsExecute(r PermissionApiApiExpandPermissionsRequest) (*ExpandTree, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodGet
 		localVarPostBody     interface{}
@@ -486,7 +537,7 @@ func (a *ReadApiService) GetExpandExecute(r ReadApiApiGetExpandRequest) (*Expand
 		localVarReturnValue  *ExpandTree
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ReadApiService.GetExpand")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PermissionApiService.ExpandPermissions")
 	if err != nil {
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
@@ -595,227 +646,34 @@ func (a *ReadApiService) GetExpandExecute(r ReadApiApiGetExpandRequest) (*Expand
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type ReadApiApiGetRelationTuplesRequest struct {
-	ctx                 context.Context
-	ApiService          ReadApi
-	pageToken           *string
-	pageSize            *int64
-	namespace           *string
-	object              *string
-	relation            *string
-	subjectId           *string
-	subjectSetNamespace *string
-	subjectSetObject    *string
-	subjectSetRelation  *string
-}
-
-func (r ReadApiApiGetRelationTuplesRequest) PageToken(pageToken string) ReadApiApiGetRelationTuplesRequest {
-	r.pageToken = &pageToken
-	return r
-}
-func (r ReadApiApiGetRelationTuplesRequest) PageSize(pageSize int64) ReadApiApiGetRelationTuplesRequest {
-	r.pageSize = &pageSize
-	return r
-}
-func (r ReadApiApiGetRelationTuplesRequest) Namespace(namespace string) ReadApiApiGetRelationTuplesRequest {
-	r.namespace = &namespace
-	return r
-}
-func (r ReadApiApiGetRelationTuplesRequest) Object(object string) ReadApiApiGetRelationTuplesRequest {
-	r.object = &object
-	return r
-}
-func (r ReadApiApiGetRelationTuplesRequest) Relation(relation string) ReadApiApiGetRelationTuplesRequest {
-	r.relation = &relation
-	return r
-}
-func (r ReadApiApiGetRelationTuplesRequest) SubjectId(subjectId string) ReadApiApiGetRelationTuplesRequest {
-	r.subjectId = &subjectId
-	return r
-}
-func (r ReadApiApiGetRelationTuplesRequest) SubjectSetNamespace(subjectSetNamespace string) ReadApiApiGetRelationTuplesRequest {
-	r.subjectSetNamespace = &subjectSetNamespace
-	return r
-}
-func (r ReadApiApiGetRelationTuplesRequest) SubjectSetObject(subjectSetObject string) ReadApiApiGetRelationTuplesRequest {
-	r.subjectSetObject = &subjectSetObject
-	return r
-}
-func (r ReadApiApiGetRelationTuplesRequest) SubjectSetRelation(subjectSetRelation string) ReadApiApiGetRelationTuplesRequest {
-	r.subjectSetRelation = &subjectSetRelation
-	return r
-}
-
-func (r ReadApiApiGetRelationTuplesRequest) Execute() (*GetRelationTuplesResponse, *http.Response, error) {
-	return r.ApiService.GetRelationTuplesExecute(r)
-}
-
-/*
- * GetRelationTuples Query relation tuples
- * Get all relation tuples that match the query. Only the namespace field is required.
- * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @return ReadApiApiGetRelationTuplesRequest
- */
-func (a *ReadApiService) GetRelationTuples(ctx context.Context) ReadApiApiGetRelationTuplesRequest {
-	return ReadApiApiGetRelationTuplesRequest{
-		ApiService: a,
-		ctx:        ctx,
-	}
-}
-
-/*
- * Execute executes the request
- * @return GetRelationTuplesResponse
- */
-func (a *ReadApiService) GetRelationTuplesExecute(r ReadApiApiGetRelationTuplesRequest) (*GetRelationTuplesResponse, *http.Response, error) {
-	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		localVarFormFileName string
-		localVarFileName     string
-		localVarFileBytes    []byte
-		localVarReturnValue  *GetRelationTuplesResponse
-	)
-
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ReadApiService.GetRelationTuples")
-	if err != nil {
-		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
-	}
-
-	localVarPath := localBasePath + "/relation-tuples"
-
-	localVarHeaderParams := make(map[string]string)
-	localVarQueryParams := url.Values{}
-	localVarFormParams := url.Values{}
-
-	if r.pageToken != nil {
-		localVarQueryParams.Add("page_token", parameterToString(*r.pageToken, ""))
-	}
-	if r.pageSize != nil {
-		localVarQueryParams.Add("page_size", parameterToString(*r.pageSize, ""))
-	}
-	if r.namespace != nil {
-		localVarQueryParams.Add("namespace", parameterToString(*r.namespace, ""))
-	}
-	if r.object != nil {
-		localVarQueryParams.Add("object", parameterToString(*r.object, ""))
-	}
-	if r.relation != nil {
-		localVarQueryParams.Add("relation", parameterToString(*r.relation, ""))
-	}
-	if r.subjectId != nil {
-		localVarQueryParams.Add("subject_id", parameterToString(*r.subjectId, ""))
-	}
-	if r.subjectSetNamespace != nil {
-		localVarQueryParams.Add("subject_set.namespace", parameterToString(*r.subjectSetNamespace, ""))
-	}
-	if r.subjectSetObject != nil {
-		localVarQueryParams.Add("subject_set.object", parameterToString(*r.subjectSetObject, ""))
-	}
-	if r.subjectSetRelation != nil {
-		localVarQueryParams.Add("subject_set.relation", parameterToString(*r.subjectSetRelation, ""))
-	}
-	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{}
-
-	// set Content-Type header
-	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
-	if localVarHTTPContentType != "" {
-		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
-	}
-
-	// to determine the Accept header
-	localVarHTTPHeaderAccepts := []string{"application/json"}
-
-	// set Accept header
-	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
-	if localVarHTTPHeaderAccept != "" {
-		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
-	}
-	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
-	if err != nil {
-		return localVarReturnValue, nil, err
-	}
-
-	localVarHTTPResponse, err := a.client.callAPI(req)
-	if err != nil || localVarHTTPResponse == nil {
-		return localVarReturnValue, localVarHTTPResponse, err
-	}
-
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
-	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
-	if err != nil {
-		return localVarReturnValue, localVarHTTPResponse, err
-	}
-
-	if localVarHTTPResponse.StatusCode >= 300 {
-		newErr := &GenericOpenAPIError{
-			body:  localVarBody,
-			error: localVarHTTPResponse.Status,
-		}
-		if localVarHTTPResponse.StatusCode == 404 {
-			var v GenericError
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-			newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 500 {
-			var v GenericError
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-			newErr.model = v
-		}
-		return localVarReturnValue, localVarHTTPResponse, newErr
-	}
-
-	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-	if err != nil {
-		newErr := &GenericOpenAPIError{
-			body:  localVarBody,
-			error: err.Error(),
-		}
-		return localVarReturnValue, localVarHTTPResponse, newErr
-	}
-
-	return localVarReturnValue, localVarHTTPResponse, nil
-}
-
-type ReadApiApiPostCheckRequest struct {
+type PermissionApiApiPostCheckPermissionRequest struct {
 	ctx           context.Context
-	ApiService    ReadApi
+	ApiService    PermissionApi
 	maxDepth      *int64
 	relationQuery *RelationQuery
 }
 
-func (r ReadApiApiPostCheckRequest) MaxDepth(maxDepth int64) ReadApiApiPostCheckRequest {
+func (r PermissionApiApiPostCheckPermissionRequest) MaxDepth(maxDepth int64) PermissionApiApiPostCheckPermissionRequest {
 	r.maxDepth = &maxDepth
 	return r
 }
-func (r ReadApiApiPostCheckRequest) RelationQuery(relationQuery RelationQuery) ReadApiApiPostCheckRequest {
+func (r PermissionApiApiPostCheckPermissionRequest) RelationQuery(relationQuery RelationQuery) PermissionApiApiPostCheckPermissionRequest {
 	r.relationQuery = &relationQuery
 	return r
 }
 
-func (r ReadApiApiPostCheckRequest) Execute() (*GetCheckResponse, *http.Response, error) {
-	return r.ApiService.PostCheckExecute(r)
+func (r PermissionApiApiPostCheckPermissionRequest) Execute() (*CheckPermissionResponse, *http.Response, error) {
+	return r.ApiService.PostCheckPermissionExecute(r)
 }
 
 /*
- * PostCheck Check a relation tuple
- * To learn how relation tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
+ * PostCheckPermission Check a permission
+ * To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @return ReadApiApiPostCheckRequest
+ * @return PermissionApiApiPostCheckPermissionRequest
  */
-func (a *ReadApiService) PostCheck(ctx context.Context) ReadApiApiPostCheckRequest {
-	return ReadApiApiPostCheckRequest{
+func (a *PermissionApiService) PostCheckPermission(ctx context.Context) PermissionApiApiPostCheckPermissionRequest {
+	return PermissionApiApiPostCheckPermissionRequest{
 		ApiService: a,
 		ctx:        ctx,
 	}
@@ -823,19 +681,19 @@ func (a *ReadApiService) PostCheck(ctx context.Context) ReadApiApiPostCheckReque
 
 /*
  * Execute executes the request
- * @return GetCheckResponse
+ * @return CheckPermissionResponse
  */
-func (a *ReadApiService) PostCheckExecute(r ReadApiApiPostCheckRequest) (*GetCheckResponse, *http.Response, error) {
+func (a *PermissionApiService) PostCheckPermissionExecute(r PermissionApiApiPostCheckPermissionRequest) (*CheckPermissionResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodPost
 		localVarPostBody     interface{}
 		localVarFormFileName string
 		localVarFileName     string
 		localVarFileBytes    []byte
-		localVarReturnValue  *GetCheckResponse
+		localVarReturnValue  *CheckPermissionResponse
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ReadApiService.PostCheck")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PermissionApiService.PostCheckPermission")
 	if err != nil {
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
@@ -924,23 +782,34 @@ func (a *ReadApiService) PostCheckExecute(r ReadApiApiPostCheckRequest) (*GetChe
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type ReadApiApiPostCheckMirrorStatusRequest struct {
-	ctx        context.Context
-	ApiService ReadApi
+type PermissionApiApiPostCheckPermissionOrErrorRequest struct {
+	ctx           context.Context
+	ApiService    PermissionApi
+	maxDepth      *int64
+	relationQuery *RelationQuery
 }
 
-func (r ReadApiApiPostCheckMirrorStatusRequest) Execute() (*GetCheckResponse, *http.Response, error) {
-	return r.ApiService.PostCheckMirrorStatusExecute(r)
+func (r PermissionApiApiPostCheckPermissionOrErrorRequest) MaxDepth(maxDepth int64) PermissionApiApiPostCheckPermissionOrErrorRequest {
+	r.maxDepth = &maxDepth
+	return r
+}
+func (r PermissionApiApiPostCheckPermissionOrErrorRequest) RelationQuery(relationQuery RelationQuery) PermissionApiApiPostCheckPermissionOrErrorRequest {
+	r.relationQuery = &relationQuery
+	return r
+}
+
+func (r PermissionApiApiPostCheckPermissionOrErrorRequest) Execute() (*CheckPermissionResponse, *http.Response, error) {
+	return r.ApiService.PostCheckPermissionOrErrorExecute(r)
 }
 
 /*
- * PostCheckMirrorStatus Check a relation tuple
- * To learn how relation tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
+ * PostCheckPermissionOrError Check a permission
+ * To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @return ReadApiApiPostCheckMirrorStatusRequest
+ * @return PermissionApiApiPostCheckPermissionOrErrorRequest
  */
-func (a *ReadApiService) PostCheckMirrorStatus(ctx context.Context) ReadApiApiPostCheckMirrorStatusRequest {
-	return ReadApiApiPostCheckMirrorStatusRequest{
+func (a *PermissionApiService) PostCheckPermissionOrError(ctx context.Context) PermissionApiApiPostCheckPermissionOrErrorRequest {
+	return PermissionApiApiPostCheckPermissionOrErrorRequest{
 		ApiService: a,
 		ctx:        ctx,
 	}
@@ -948,19 +817,19 @@ func (a *ReadApiService) PostCheckMirrorStatus(ctx context.Context) ReadApiApiPo
 
 /*
  * Execute executes the request
- * @return GetCheckResponse
+ * @return CheckPermissionResponse
  */
-func (a *ReadApiService) PostCheckMirrorStatusExecute(r ReadApiApiPostCheckMirrorStatusRequest) (*GetCheckResponse, *http.Response, error) {
+func (a *PermissionApiService) PostCheckPermissionOrErrorExecute(r PermissionApiApiPostCheckPermissionOrErrorRequest) (*CheckPermissionResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodPost
 		localVarPostBody     interface{}
 		localVarFormFileName string
 		localVarFileName     string
 		localVarFileBytes    []byte
-		localVarReturnValue  *GetCheckResponse
+		localVarReturnValue  *CheckPermissionResponse
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ReadApiService.PostCheckMirrorStatus")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PermissionApiService.PostCheckPermissionOrError")
 	if err != nil {
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
@@ -971,8 +840,11 @@ func (a *ReadApiService) PostCheckMirrorStatusExecute(r ReadApiApiPostCheckMirro
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
 
+	if r.maxDepth != nil {
+		localVarQueryParams.Add("max-depth", parameterToString(*r.maxDepth, ""))
+	}
 	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{}
+	localVarHTTPContentTypes := []string{"application/json"}
 
 	// set Content-Type header
 	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
@@ -988,6 +860,8 @@ func (a *ReadApiService) PostCheckMirrorStatusExecute(r ReadApiApiPostCheckMirro
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
+	// body params
+	localVarPostBody = r.relationQuery
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
@@ -1021,7 +895,7 @@ func (a *ReadApiService) PostCheckMirrorStatusExecute(r ReadApiApiPostCheckMirro
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
-			var v GetCheckResponse
+			var v CheckPermissionResponse
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
