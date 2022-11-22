@@ -110,7 +110,7 @@ func watchTarget(ctx context.Context, target string, handler eventHandler, log *
 		return errors.WithStack(err)
 	}
 	if info.IsDir() {
-		watcher, err = watcherx.WatchDirectory(ctx, targetUrl.Path, eventCh)
+		watcher, err = watcherx.WatchDirectory(ctx, urlx.GetURLFilePath(targetUrl), eventCh)
 	} else {
 		watcher, err = watcherx.Watch(ctx, targetUrl, eventCh)
 	}
