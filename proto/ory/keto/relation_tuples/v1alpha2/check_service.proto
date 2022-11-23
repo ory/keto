@@ -2,14 +2,20 @@ syntax = "proto3";
 
 package ory.keto.relation_tuples.v1alpha2;
 
+import "google/api/annotations.proto";
 import "ory/keto/relation_tuples/v1alpha2/relation_tuples.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
 
-option go_package = "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2;rts";
 option csharp_namespace = "Ory.Keto.RelationTuples.v1alpha2";
+option go_package = "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2;rts";
 option java_multiple_files = true;
 option java_outer_classname = "CheckServiceProto";
 option java_package = "sh.ory.keto.relation_tuples.v1alpha2";
 option php_namespace = "Ory\\Keto\\RelationTuples\\v1alpha2";
+
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+  produces: "application/json";
+};
 
 // The service that performs authorization checks
 // based on the stored Access Control Lists.
@@ -17,7 +23,16 @@ option php_namespace = "Ory\\Keto\\RelationTuples\\v1alpha2";
 // This service is part of the [read-APIs](../concepts/api-overview.mdx#read-apis).
 service CheckService {
   // Performs an authorization check.
-  rpc Check(CheckRequest) returns (CheckResponse);
+  rpc Check(CheckRequest) returns (CheckResponse) {
+    option (google.api.http) = {
+      get: "/relation-tuples/check"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      consumes: "application/x-www-form-urlencoded";
+      tags: "permission";
+      operation_id: "checkPermissionOrError";
+    };
+  }
 }
 
 // The request for a CheckService.Check RPC.
@@ -80,7 +95,7 @@ message CheckRequest {
   //
   // If the value is less than 1 or greater than the global
   // max-depth then the global max-depth will be used instead.
-  int32 max_depth = 7;
+  int32 max_depth = 7 [json_name="max-depth"];
 }
 
 // The response for a CheckService.Check rpc.

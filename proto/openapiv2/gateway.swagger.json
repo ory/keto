@@ -1,0 +1,578 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "ory/keto/relation_tuples/v1alpha2/check_service.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "CheckService"
+    },
+    {
+      "name": "SyntaxService"
+    },
+    {
+      "name": "ExpandService"
+    },
+    {
+      "name": "NamespacesService"
+    },
+    {
+      "name": "ReadService"
+    },
+    {
+      "name": "VersionService"
+    },
+    {
+      "name": "WriteService"
+    },
+    {
+      "name": "CheckService"
+    }
+  ],
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
+  "paths": {
+    "/relation-tuples/check": {
+      "get": {
+        "summary": "Performs an authorization check.",
+        "operationId": "checkPermissionOrError",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1alpha2.CheckResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "namespace",
+            "description": "The namespace to evaluate the check.\n\nNote: If you use the expand-API and the check\nevaluates a RelationTuple specifying a SubjectSet as\nsubject or due to a rewrite rule in a namespace config\nthis check request may involve other namespaces automatically.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "object",
+            "description": "The related object in this check.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "relation",
+            "description": "The relation between the Object and the Subject.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "subject.id",
+            "description": "A concrete id of the subject.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "subject.set.namespace",
+            "description": "The namespace of the object and relation\nreferenced in this subject set.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "subject.set.object",
+            "description": "The object related by this subject set.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "subject.set.relation",
+            "description": "The relation between the object and the subjects.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "tuple.namespace",
+            "description": "The namespace this relation tuple lives in.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "tuple.object",
+            "description": "The object related by this tuple.\nIt is an object in the namespace of the tuple.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "tuple.relation",
+            "description": "The relation between an Object and a Subject.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "tuple.subject.id",
+            "description": "A concrete id of the subject.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "tuple.subject.set.namespace",
+            "description": "The namespace of the object and relation\nreferenced in this subject set.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "tuple.subject.set.object",
+            "description": "The object related by this subject set.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "tuple.subject.set.relation",
+            "description": "The relation between the object and the subjects.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "latest",
+            "description": "This field is not implemented yet and has no effect.\n\u003c!--\nSet this field to `true` in case your application\nneeds to authorize depending on up to date ACLs,\nalso called a \"content-change check\".\n\nIf set to `true` the `snaptoken` field is ignored,\nthe check is evaluated at the latest snapshot\n(globally consistent) and the response includes a\nsnaptoken for clients to store along with object\ncontents that can be used for subsequent checks\nof the same content version.\n\nExample use case:\n - You need to authorize a user to modify/delete some resource\n   and it is unacceptable that if the permission to do that had\n   just been revoked some seconds ago so that the change had not\n   yet been fully replicated to all availability zones.\n--\u003e",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "snaptoken",
+            "description": "This field is not implemented yet and has no effect.\n\u003c!--\nOptional. Like reads, a check is always evaluated at a\nconsistent snapshot no earlier than the given snaptoken.\n\nLeave this field blank if you want to evaluate the check\nbased on eventually consistent ACLs, benefiting from very\nlow latency, but possibly slightly stale results.\n\nIf the specified token is too old and no longer known,\nthe server falls back as if no snaptoken had been specified.\n\nIf not specified the server tries to evaluate the check\non the best snapshot version where it is very likely that\nACLs had already been replicated to all availability zones.\n--\u003e",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "max-depth",
+            "description": "The maximum depth to search for a relation.\n\nIf the value is less than 1 or greater than the global\nmax-depth then the global max-depth will be used instead.",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "tags": ["permission"],
+        "consumes": ["application/x-www-form-urlencoded"]
+      }
+    }
+  },
+  "definitions": {
+    "Action": {
+      "type": "string",
+      "enum": ["ACTION_UNSPECIFIED", "ACTION_INSERT", "ACTION_DELETE"],
+      "default": "ACTION_UNSPECIFIED",
+      "description": " - ACTION_UNSPECIFIED: Unspecified.\nThe `TransactRelationTuples` RPC ignores this\nRelationTupleDelta if an action was unspecified.\n - ACTION_INSERT: Insertion of a new RelationTuple.\nIt is ignored if already existing.\n - ACTION_DELETE: Deletion of the RelationTuple.\nIt is ignored if it does not exist."
+    },
+    "Any": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "DeleteRelationTuplesRequest.Query": {
+      "type": "object",
+      "properties": {
+        "namespace": {
+          "type": "string",
+          "description": "Optional. The namespace to query."
+        },
+        "object": {
+          "type": "string",
+          "description": "Optional. The object to query for."
+        },
+        "relation": {
+          "type": "string",
+          "description": "Optional. The relation to query for."
+        },
+        "subject": {
+          "$ref": "#/definitions/v1alpha2.Subject",
+          "description": "Optional. The subject to query for."
+        }
+      },
+      "title": "The query for deleting relationships"
+    },
+    "DeleteRelationTuplesResponse": {
+      "type": "object"
+    },
+    "ExpandResponse": {
+      "type": "object",
+      "properties": {
+        "tree": {
+          "$ref": "#/definitions/SubjectTree",
+          "description": "The tree the requested subject set expands to.\nThe requested subject set is the subject of the root.\n\nThis field can be nil in some circumstances."
+        }
+      },
+      "description": "The response for a ExpandService.Expand RPC."
+    },
+    "GetVersionResponse": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "type": "string",
+          "description": "The version string of the Ory Keto instance."
+        }
+      },
+      "description": "Response of the VersionService.GetVersion RPC."
+    },
+    "ListNamespacesResponse": {
+      "type": "object",
+      "properties": {
+        "namespaces": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Namespace"
+          }
+        }
+      }
+    },
+    "ListRelationTuplesRequest.Query": {
+      "type": "object",
+      "properties": {
+        "namespace": {
+          "type": "string",
+          "description": "Required. The namespace to query."
+        },
+        "object": {
+          "type": "string",
+          "description": "Optional. The object to query for."
+        },
+        "relation": {
+          "type": "string",
+          "description": "Optional. The relation to query for."
+        },
+        "subject": {
+          "$ref": "#/definitions/v1alpha2.Subject",
+          "description": "Optional. The subject to query for."
+        }
+      },
+      "description": "The query for listing relationships.\nClients can specify any optional field to\npartially filter for specific relationships.\n\nExample use cases (namespace is always required):\n - object only: display a list of all permissions referring to a specific object\n - relation only: get all groups that have members; get all directories that have content\n - object \u0026 relation: display all subjects that have a specific permission relation\n - subject \u0026 relation: display all groups a subject belongs to; display all objects a subject has access to\n - object \u0026 relation \u0026 subject: check whether the relation tuple already exists"
+    },
+    "ListRelationTuplesResponse": {
+      "type": "object",
+      "properties": {
+        "relationTuples": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1alpha2.RelationTuple"
+          },
+          "description": "The relationships matching the list request."
+        },
+        "nextPageToken": {
+          "type": "string",
+          "description": "The token required to get the next page.\nIf this is the last page, the token will be the empty string."
+        }
+      },
+      "description": "The response of a ReadService.ListRelationTuples RPC."
+    },
+    "Namespace": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "NodeType": {
+      "type": "string",
+      "enum": [
+        "NODE_TYPE_UNSPECIFIED",
+        "NODE_TYPE_UNION",
+        "NODE_TYPE_EXCLUSION",
+        "NODE_TYPE_INTERSECTION",
+        "NODE_TYPE_LEAF"
+      ],
+      "default": "NODE_TYPE_UNSPECIFIED",
+      "description": " - NODE_TYPE_UNION: This node expands to a union of all children.\n - NODE_TYPE_EXCLUSION: Not implemented yet.\n - NODE_TYPE_INTERSECTION: Not implemented yet.\n - NODE_TYPE_LEAF: This node is a leaf and contains no children.\nIts subject is a `SubjectID` unless `max_depth` was reached."
+    },
+    "ParseError": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        },
+        "start": {
+          "$ref": "#/definitions/SourcePosition"
+        },
+        "end": {
+          "$ref": "#/definitions/SourcePosition"
+        }
+      }
+    },
+    "RelationTupleDelta": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "$ref": "#/definitions/Action",
+          "description": "The action to do on the RelationTuple."
+        },
+        "relationTuple": {
+          "$ref": "#/definitions/v1alpha2.RelationTuple",
+          "description": "The target RelationTuple."
+        }
+      },
+      "description": "Write-delta for a TransactRelationTuplesRequest."
+    },
+    "SourcePosition": {
+      "type": "object",
+      "properties": {
+        "line": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "column": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "Status": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Any"
+          }
+        }
+      }
+    },
+    "SubjectTree": {
+      "type": "object",
+      "properties": {
+        "nodeType": {
+          "$ref": "#/definitions/NodeType",
+          "description": "The type of the node."
+        },
+        "subject": {
+          "$ref": "#/definitions/v1alpha2.Subject",
+          "description": "The subject this node represents.\nDeprecated: More information is now available in the tuple field."
+        },
+        "tuple": {
+          "$ref": "#/definitions/v1alpha2.RelationTuple",
+          "description": "The relation tuple this node represents."
+        },
+        "children": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SubjectTree"
+          },
+          "description": "The children of this node.\n\nThis is never set if `node_type` == `NODE_TYPE_LEAF`."
+        }
+      }
+    },
+    "TransactRelationTuplesResponse": {
+      "type": "object",
+      "properties": {
+        "snaptokens": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "This field is not implemented yet and has no effect.\n\u003c!--\nThe list of the new latest snapshot tokens of the affected RelationTuple,\nwith the same index as specified in the `relation_tuple_deltas` field of\nthe TransactRelationTuplesRequest request.\n\nIf the RelationTupleDelta_Action was DELETE\nthe snaptoken is empty at the same index.\n--\u003e"
+        }
+      },
+      "description": "The response of a WriteService.TransactRelationTuples rpc."
+    },
+    "v1alpha1.CheckResponse": {
+      "type": "object",
+      "properties": {
+        "parseErrors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ParseError"
+          }
+        }
+      }
+    },
+    "v1alpha2.CheckResponse": {
+      "type": "object",
+      "properties": {
+        "allowed": {
+          "type": "boolean",
+          "description": "Whether the specified subject (id)\nis related to the requested object.\n\nIt is false by default if no ACL matches."
+        },
+        "snaptoken": {
+          "type": "string",
+          "description": "This field is not implemented yet and has no effect.\n\u003c!--\nThe last known snapshot token ONLY specified if\nthe request had not specified a snaptoken,\nsince this performed a \"content-change request\"\nand consistently fetched the last known snapshot token.\n\nThis field is not set if the request had specified a snaptoken!\n\nIf set, clients should cache and use this token\nfor subsequent requests to have minimal latency,\nbut allow slightly stale responses (only some milliseconds or seconds).\n--\u003e"
+        }
+      },
+      "description": "The response for a CheckService.Check rpc."
+    },
+    "v1alpha2.RelationQuery": {
+      "type": "object",
+      "properties": {
+        "namespace": {
+          "type": "string",
+          "description": "The namespace this relation tuple lives in."
+        },
+        "object": {
+          "type": "string",
+          "description": "The object related by this tuple.\nIt is an object in the namespace of the tuple."
+        },
+        "relation": {
+          "type": "string",
+          "description": "The relation between an Object and a Subject."
+        },
+        "subject": {
+          "$ref": "#/definitions/v1alpha2.Subject",
+          "description": "The subject related by this tuple.\nA Subject either represents a concrete subject id or\na `SubjectSet` that expands to more Subjects."
+        }
+      },
+      "description": "The query for listing relationships.\nClients can specify any optional field to\npartially filter for specific relationships.\n\nExample use cases (namespace is always required):\n - object only: display a list of all permissions referring to a specific object\n - relation only: get all groups that have members; get all directories that have content\n - object \u0026 relation: display all subjects that have a specific permission relation\n - subject \u0026 relation: display all groups a subject belongs to; display all objects a subject has access to\n - object \u0026 relation \u0026 subject: check whether the relation tuple already exists"
+    },
+    "v1alpha2.RelationTuple": {
+      "type": "object",
+      "properties": {
+        "namespace": {
+          "type": "string",
+          "description": "The namespace this relation tuple lives in."
+        },
+        "object": {
+          "type": "string",
+          "description": "The object related by this tuple.\nIt is an object in the namespace of the tuple."
+        },
+        "relation": {
+          "type": "string",
+          "description": "The relation between an Object and a Subject."
+        },
+        "subject": {
+          "$ref": "#/definitions/v1alpha2.Subject",
+          "description": "The subject related by this tuple.\nA Subject either represents a concrete subject id or\na `SubjectSet` that expands to more Subjects."
+        }
+      },
+      "description": "RelationTuple defines a relation between an Object and a Subject."
+    },
+    "v1alpha2.Subject": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "A concrete id of the subject."
+        },
+        "set": {
+          "$ref": "#/definitions/v1alpha2.SubjectSet",
+          "description": "A subject set that expands to more Subjects.\nMore information are available under [concepts](../concepts/subjects.mdx)."
+        }
+      },
+      "description": "Subject is either a concrete subject id or\na `SubjectSet` expanding to more Subjects."
+    },
+    "v1alpha2.SubjectSet": {
+      "type": "object",
+      "properties": {
+        "namespace": {
+          "type": "string",
+          "description": "The namespace of the object and relation\nreferenced in this subject set."
+        },
+        "object": {
+          "type": "string",
+          "description": "The object related by this subject set."
+        },
+        "relation": {
+          "type": "string",
+          "description": "The relation between the object and the subjects."
+        }
+      },
+      "description": "SubjectSet refers to all subjects who have\nthe same `relation` on an `object`."
+    },
+    "v1beta.CheckResponse": {
+      "type": "object",
+      "properties": {
+        "allowed": {
+          "type": "boolean",
+          "description": "Whether the specified subject (id)\nis related to the requested object.\n\nIt is false by default if no ACL matches."
+        },
+        "snaptoken": {
+          "type": "string",
+          "description": "This field is not implemented yet and has no effect.\n\u003c!--\nThe last known snapshot token ONLY specified if\nthe request had not specified a snaptoken,\nsince this performed a \"content-change request\"\nand consistently fetched the last known snapshot token.\n\nThis field is not set if the request had specified a snaptoken!\n\nIf set, clients should cache and use this token\nfor subsequent requests to have minimal latency,\nbut allow slightly stale responses (only some milliseconds or seconds).\n--\u003e"
+        }
+      },
+      "description": "The response for a CheckService.Check rpc."
+    },
+    "v1beta.RelationTuple": {
+      "type": "object",
+      "properties": {
+        "namespace": {
+          "type": "string",
+          "description": "The namespace this relation tuple lives in."
+        },
+        "object": {
+          "type": "string",
+          "description": "The object related by this tuple.\nIt is an object in the namespace of the tuple."
+        },
+        "relation": {
+          "type": "string",
+          "description": "The relation between an Object and a Subject."
+        },
+        "subject": {
+          "$ref": "#/definitions/v1beta.Subject",
+          "description": "The subject related by this tuple.\nA Subject either represents a concrete subject id or\na `SubjectSet` that expands to more Subjects."
+        }
+      },
+      "description": "RelationTuple defines a relation between an Object and a Subject."
+    },
+    "v1beta.Subject": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "A concrete id of the subject."
+        },
+        "set": {
+          "$ref": "#/definitions/v1beta.SubjectSet",
+          "description": "A subject set that expands to more Subjects.\nMore information are available under [concepts](../concepts/subjects.mdx)."
+        }
+      },
+      "description": "Subject is either a concrete subject id or\na `SubjectSet` expanding to more Subjects."
+    },
+    "v1beta.SubjectSet": {
+      "type": "object",
+      "properties": {
+        "namespace": {
+          "type": "string",
+          "description": "The namespace of the object and relation\nreferenced in this subject set."
+        },
+        "object": {
+          "type": "string",
+          "description": "The object related by this subject set."
+        },
+        "relation": {
+          "type": "string",
+          "description": "The relation between the object and the subjects."
+        }
+      },
+      "description": "SubjectSet refers to all subjects who have\nthe same `relation` on an `object`."
+    }
+  }
+}

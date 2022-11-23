@@ -7,21 +7,16 @@ GO_DEPENDENCIES = golang.org/x/tools/cmd/goimports \
 				  github.com/mattn/goveralls \
 				  github.com/ory/go-acc \
 				  github.com/bufbuild/buf/cmd/buf \
-				  google.golang.org/protobuf/cmd/protoc-gen-go \
-				  google.golang.org/grpc/cmd/protoc-gen-go-grpc \
-				  github.com/pseudomuto/protoc-gen-doc/cmd/protoc-gen-doc \
 				  github.com/josephburnett/jd \
 				  github.com/mikefarah/yq/v4 \
 				  golang.org/x/tools/cmd/stringer \
 				  github.com/go-swagger/go-swagger/cmd/swagger \
 				  github.com/mdempsky/go114-fuzz-build
 
-SCRIPT_DEPENDENCIES = protoc \
-					grype \
+SCRIPT_DEPENDENCIES = grype \
 					trivy \
 					ory \
-					licenses \
-					protoc-gen-js
+					licenses
 
 define make-go-dependency
   # go install is responsible for not re-building when the code hasn't changed
@@ -103,9 +98,8 @@ build:
 # Generate APIs and client stubs from the definitions
 #
 .PHONY: buf-gen
-buf-gen: .bin/buf .bin/protoc .bin/protoc-gen-go .bin/protoc-gen-go-grpc .bin/protoc-gen-js .bin/protoc-gen-doc node_modules
+buf-gen: .bin/buf node_modules
 	buf generate proto
-	make format
 	@echo "All code was generated successfully!"
 
 #

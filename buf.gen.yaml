@@ -1,23 +1,38 @@
 version: v1
+
 plugins:
-  - name: go
+  - remote: buf.build/protocolbuffers/plugins/go:v1.28.1-1
     out: proto
     opt: paths=source_relative
-  - name: go-grpc
+
+  - remote: buf.build/grpc/plugins/go:v1.2.0-1
     out: proto
     opt: paths=source_relative,require_unimplemented_servers=false
-  - name: js
+
+  - remote: buf.build/grpc-ecosystem/plugins/grpc-gateway:v2.14.0-1
+    out: gen/go
+    opt: paths=source_relative
+
+  - remote: buf.build/grpc-ecosystem/plugins/openapiv2:v2.14.0-1
+    opt:
+      - allow_merge=true
+      - merge_file_name=gateway
+      - openapi_naming_strategy=simple
+    out: proto/openapiv2
+
+  - remote: buf.build/protocolbuffers/plugins/js:v3.20.1-1
     out: proto
     opt: import_style=commonjs,binary
-  - name: js-grpc
+
+  - remote: buf.build/grpc/plugins/node:v1.11.3-1
     out: proto
     opt: grpc_js,binary,import_style=commonjs
-    path: node_modules/.bin/grpc_tools_node_protoc_plugin
+
   - name: ts
     out: proto
     opt: ts_out=proto
     path: node_modules/.bin/protoc-gen-ts
-  - name: doc
+
+  - remote: buf.build/sawadashota/plugins/protoc-gen-doc:v1.5.1
     out: proto
     opt: markdown,proto/buf.md
-    strategy: all
