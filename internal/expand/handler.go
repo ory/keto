@@ -75,10 +75,10 @@ type expandPermissions struct {
 //	Schemes: http, https
 //
 //	Responses:
-//	  200: expandTree
-//	  400: genericError
-//	  404: genericError
-//	  500: genericError
+//	  200: expandedPermissionTree
+//	  400: errorGeneric
+//	  404: errorGeneric
+//	  default: errorGeneric
 func (h *handler) getExpand(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	maxDepth, err := x.GetMaxDepthFromQuery(r.URL.Query())
 	if err != nil {

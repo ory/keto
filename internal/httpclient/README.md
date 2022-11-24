@@ -88,20 +88,21 @@ Class | Method | HTTP request | Description
 *PermissionApi* | [**PostCheckPermission**](docs/PermissionApi.md#postcheckpermission) | **Post** /relation-tuples/check/openapi | Check a permission
 *PermissionApi* | [**PostCheckPermissionOrError**](docs/PermissionApi.md#postcheckpermissionorerror) | **Post** /relation-tuples/check | Check a permission
 *RelationshipApi* | [**CheckOplSyntax**](docs/RelationshipApi.md#checkoplsyntax) | **Post** /opl/syntax/check | Check the syntax of an OPL file
-*RelationshipApi* | [**CreateRelationships**](docs/RelationshipApi.md#createrelationships) | **Put** /admin/relation-tuples | Create a Relationship
+*RelationshipApi* | [**CreateRelationship**](docs/RelationshipApi.md#createrelationship) | **Put** /admin/relation-tuples | Create a Relationship
 *RelationshipApi* | [**DeleteRelationships**](docs/RelationshipApi.md#deleterelationships) | **Delete** /admin/relation-tuples | Delete Relationships
-*RelationshipApi* | [**GetRelationshipNamespaces**](docs/RelationshipApi.md#getrelationshipnamespaces) | **Get** /namespaces | Query namespaces
 *RelationshipApi* | [**GetRelationships**](docs/RelationshipApi.md#getrelationships) | **Get** /relation-tuples | Query relationships
+*RelationshipApi* | [**ListRelationshipNamespaces**](docs/RelationshipApi.md#listrelationshipnamespaces) | **Get** /namespaces | Query namespaces
 *RelationshipApi* | [**PatchRelationships**](docs/RelationshipApi.md#patchrelationships) | **Patch** /admin/relation-tuples | Patch Multiple Relationships
 
 
 ## Documentation For Models
 
- - [CheckPermissionResponse](docs/CheckPermissionResponse.md)
- - [ExpandTree](docs/ExpandTree.md)
+ - [CheckOplSyntaxResult](docs/CheckOplSyntaxResult.md)
+ - [CheckPermissionResult](docs/CheckPermissionResult.md)
+ - [CreateRelationshipBody](docs/CreateRelationshipBody.md)
+ - [ErrorGeneric](docs/ErrorGeneric.md)
+ - [ExpandedPermissionTree](docs/ExpandedPermissionTree.md)
  - [GenericError](docs/GenericError.md)
- - [GetRelationshipNamespacesResponse](docs/GetRelationshipNamespacesResponse.md)
- - [GetRelationshipsResponse](docs/GetRelationshipsResponse.md)
  - [HealthNotReadyStatus](docs/HealthNotReadyStatus.md)
  - [HealthStatus](docs/HealthStatus.md)
  - [InlineResponse200](docs/InlineResponse200.md)
@@ -109,10 +110,13 @@ Class | Method | HTTP request | Description
  - [InlineResponse503](docs/InlineResponse503.md)
  - [Namespace](docs/Namespace.md)
  - [ParseError](docs/ParseError.md)
- - [PatchDelta](docs/PatchDelta.md)
- - [PostCheckOplSyntaxResponse](docs/PostCheckOplSyntaxResponse.md)
+ - [PostCheckPermissionBody](docs/PostCheckPermissionBody.md)
+ - [PostCheckPermissionOrErrorBody](docs/PostCheckPermissionOrErrorBody.md)
  - [RelationQuery](docs/RelationQuery.md)
- - [RelationTuple](docs/RelationTuple.md)
+ - [Relationship](docs/Relationship.md)
+ - [RelationshipNamespaces](docs/RelationshipNamespaces.md)
+ - [RelationshipPatch](docs/RelationshipPatch.md)
+ - [Relationships](docs/Relationships.md)
  - [SourcePosition](docs/SourcePosition.md)
  - [SubjectSet](docs/SubjectSet.md)
  - [Version](docs/Version.md)

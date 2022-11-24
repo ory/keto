@@ -27,33 +27,33 @@
         "schemes": ["http", "https"],
         "tags": ["relationship"],
         "summary": "Create a Relationship",
-        "operationId": "createRelationships",
+        "operationId": "createRelationship",
         "parameters": [
           {
-            "name": "Payload",
+            "name": "Body",
             "in": "body",
             "schema": {
-              "$ref": "#/definitions/relationQuery"
+              "$ref": "#/definitions/createRelationshipBody"
             }
           }
         ],
         "responses": {
           "201": {
-            "description": "relationQuery",
+            "description": "relationship",
             "schema": {
-              "$ref": "#/definitions/relationQuery"
+              "$ref": "#/definitions/relationship"
             }
           },
           "400": {
-            "description": "genericError",
+            "description": "errorGeneric",
             "schema": {
-              "$ref": "#/definitions/genericError"
+              "$ref": "#/definitions/errorGeneric"
             }
           },
-          "500": {
-            "description": "genericError",
+          "default": {
+            "description": "errorGeneric",
             "schema": {
-              "$ref": "#/definitions/genericError"
+              "$ref": "#/definitions/errorGeneric"
             }
           }
         }
@@ -115,15 +115,15 @@
             "$ref": "#/responses/emptyResponse"
           },
           "400": {
-            "description": "genericError",
+            "description": "errorGeneric",
             "schema": {
-              "$ref": "#/definitions/genericError"
+              "$ref": "#/definitions/errorGeneric"
             }
           },
-          "500": {
-            "description": "genericError",
+          "default": {
+            "description": "errorGeneric",
             "schema": {
-              "$ref": "#/definitions/genericError"
+              "$ref": "#/definitions/errorGeneric"
             }
           }
         }
@@ -138,12 +138,12 @@
         "operationId": "patchRelationships",
         "parameters": [
           {
-            "name": "Payload",
+            "name": "Body",
             "in": "body",
             "schema": {
               "type": "array",
               "items": {
-                "$ref": "#/definitions/patchDelta"
+                "$ref": "#/definitions/relationshipPatch"
               }
             }
           }
@@ -153,21 +153,21 @@
             "$ref": "#/responses/emptyResponse"
           },
           "400": {
-            "description": "genericError",
+            "description": "errorGeneric",
             "schema": {
-              "$ref": "#/definitions/genericError"
+              "$ref": "#/definitions/errorGeneric"
             }
           },
           "404": {
-            "description": "genericError",
+            "description": "errorGeneric",
             "schema": {
-              "$ref": "#/definitions/genericError"
+              "$ref": "#/definitions/errorGeneric"
             }
           },
-          "500": {
-            "description": "genericError",
+          "default": {
+            "description": "errorGeneric",
             "schema": {
-              "$ref": "#/definitions/genericError"
+              "$ref": "#/definitions/errorGeneric"
             }
           }
         }
@@ -226,18 +226,18 @@
         "schemes": ["http", "https"],
         "tags": ["relationship"],
         "summary": "Query namespaces",
-        "operationId": "getRelationshipNamespaces",
+        "operationId": "listRelationshipNamespaces",
         "responses": {
           "200": {
-            "description": "getRelationshipNamespacesResponse",
+            "description": "relationshipNamespaces",
             "schema": {
-              "$ref": "#/definitions/getRelationshipNamespacesResponse"
+              "$ref": "#/definitions/relationshipNamespaces"
             }
           },
-          "500": {
-            "description": "genericError",
+          "default": {
+            "description": "errorGeneric",
             "schema": {
-              "$ref": "#/definitions/genericError"
+              "$ref": "#/definitions/errorGeneric"
             }
           }
         }
@@ -254,33 +254,30 @@
         "operationId": "checkOplSyntax",
         "parameters": [
           {
-            "description": "the OPL content to check",
-            "name": "content",
+            "name": "Body",
             "in": "body",
-            "required": true,
             "schema": {
-              "description": "the OPL content to check",
-              "type": "string"
+              "$ref": "#/definitions/checkOplSyntaxBody"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "postCheckOplSyntaxResponse",
+            "description": "checkOplSyntaxResult",
             "schema": {
-              "$ref": "#/definitions/postCheckOplSyntaxResponse"
+              "$ref": "#/definitions/checkOplSyntaxResult"
             }
           },
           "400": {
-            "description": "genericError",
+            "description": "errorGeneric",
             "schema": {
-              "$ref": "#/definitions/genericError"
+              "$ref": "#/definitions/errorGeneric"
             }
           },
-          "500": {
-            "description": "genericError",
+          "default": {
+            "description": "errorGeneric",
             "schema": {
-              "$ref": "#/definitions/genericError"
+              "$ref": "#/definitions/errorGeneric"
             }
           }
         }
@@ -352,21 +349,21 @@
         ],
         "responses": {
           "200": {
-            "description": "getRelationshipsResponse",
+            "description": "relationships",
             "schema": {
-              "$ref": "#/definitions/getRelationshipsResponse"
+              "$ref": "#/definitions/relationships"
             }
           },
           "404": {
-            "description": "genericError",
+            "description": "errorGeneric",
             "schema": {
-              "$ref": "#/definitions/genericError"
+              "$ref": "#/definitions/errorGeneric"
             }
           },
-          "500": {
-            "description": "genericError",
+          "default": {
+            "description": "errorGeneric",
             "schema": {
-              "$ref": "#/definitions/genericError"
+              "$ref": "#/definitions/errorGeneric"
             }
           }
         }
@@ -433,27 +430,27 @@
         ],
         "responses": {
           "200": {
-            "description": "checkPermissionResponse",
+            "description": "checkPermissionResult",
             "schema": {
-              "$ref": "#/definitions/checkPermissionResponse"
+              "$ref": "#/definitions/checkPermissionResult"
             }
           },
           "400": {
-            "description": "genericError",
+            "description": "errorGeneric",
             "schema": {
-              "$ref": "#/definitions/genericError"
+              "$ref": "#/definitions/errorGeneric"
             }
           },
           "403": {
-            "description": "checkPermissionResponse",
+            "description": "checkPermissionResult",
             "schema": {
-              "$ref": "#/definitions/checkPermissionResponse"
+              "$ref": "#/definitions/checkPermissionResult"
             }
           },
-          "500": {
-            "description": "genericError",
+          "default": {
+            "description": "errorGeneric",
             "schema": {
-              "$ref": "#/definitions/genericError"
+              "$ref": "#/definitions/errorGeneric"
             }
           }
         }
@@ -468,42 +465,42 @@
         "operationId": "postCheckPermissionOrError",
         "parameters": [
           {
-            "name": "Payload",
-            "in": "body",
-            "schema": {
-              "$ref": "#/definitions/relationQuery"
-            }
-          },
-          {
             "type": "integer",
             "format": "int64",
             "name": "max-depth",
             "in": "query"
+          },
+          {
+            "name": "Body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/postCheckPermissionOrErrorBody"
+            }
           }
         ],
         "responses": {
           "200": {
-            "description": "checkPermissionResponse",
+            "description": "checkPermissionResult",
             "schema": {
-              "$ref": "#/definitions/checkPermissionResponse"
+              "$ref": "#/definitions/checkPermissionResult"
             }
           },
           "400": {
-            "description": "genericError",
+            "description": "errorGeneric",
             "schema": {
-              "$ref": "#/definitions/genericError"
+              "$ref": "#/definitions/errorGeneric"
             }
           },
           "403": {
-            "description": "checkPermissionResponse",
+            "description": "checkPermissionResult",
             "schema": {
-              "$ref": "#/definitions/checkPermissionResponse"
+              "$ref": "#/definitions/checkPermissionResult"
             }
           },
-          "500": {
-            "description": "genericError",
+          "default": {
+            "description": "errorGeneric",
             "schema": {
-              "$ref": "#/definitions/genericError"
+              "$ref": "#/definitions/errorGeneric"
             }
           }
         }
@@ -570,21 +567,21 @@
         ],
         "responses": {
           "200": {
-            "description": "checkPermissionResponse",
+            "description": "checkPermissionResult",
             "schema": {
-              "$ref": "#/definitions/checkPermissionResponse"
+              "$ref": "#/definitions/checkPermissionResult"
             }
           },
           "400": {
-            "description": "genericError",
+            "description": "errorGeneric",
             "schema": {
-              "$ref": "#/definitions/genericError"
+              "$ref": "#/definitions/errorGeneric"
             }
           },
-          "500": {
-            "description": "genericError",
+          "default": {
+            "description": "errorGeneric",
             "schema": {
-              "$ref": "#/definitions/genericError"
+              "$ref": "#/definitions/errorGeneric"
             }
           }
         }
@@ -599,36 +596,36 @@
         "operationId": "postCheckPermission",
         "parameters": [
           {
-            "name": "Payload",
-            "in": "body",
-            "schema": {
-              "$ref": "#/definitions/relationQuery"
-            }
-          },
-          {
             "type": "integer",
             "format": "int64",
             "name": "max-depth",
             "in": "query"
+          },
+          {
+            "name": "Payload",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/postCheckPermissionBody"
+            }
           }
         ],
         "responses": {
           "200": {
-            "description": "checkPermissionResponse",
+            "description": "checkPermissionResult",
             "schema": {
-              "$ref": "#/definitions/checkPermissionResponse"
+              "$ref": "#/definitions/checkPermissionResult"
             }
           },
           "400": {
-            "description": "genericError",
+            "description": "errorGeneric",
             "schema": {
-              "$ref": "#/definitions/genericError"
+              "$ref": "#/definitions/errorGeneric"
             }
           },
-          "500": {
-            "description": "genericError",
+          "default": {
+            "description": "errorGeneric",
             "schema": {
-              "$ref": "#/definitions/genericError"
+              "$ref": "#/definitions/errorGeneric"
             }
           }
         }
@@ -674,27 +671,27 @@
         ],
         "responses": {
           "200": {
-            "description": "expandTree",
+            "description": "expandedPermissionTree",
             "schema": {
-              "$ref": "#/definitions/expandTree"
+              "$ref": "#/definitions/expandedPermissionTree"
             }
           },
           "400": {
-            "description": "genericError",
+            "description": "errorGeneric",
             "schema": {
-              "$ref": "#/definitions/genericError"
+              "$ref": "#/definitions/errorGeneric"
             }
           },
           "404": {
-            "description": "genericError",
+            "description": "errorGeneric",
             "schema": {
-              "$ref": "#/definitions/genericError"
+              "$ref": "#/definitions/errorGeneric"
             }
           },
-          "500": {
-            "description": "genericError",
+          "default": {
+            "description": "errorGeneric",
             "schema": {
-              "$ref": "#/definitions/genericError"
+              "$ref": "#/definitions/errorGeneric"
             }
           }
         }
@@ -746,10 +743,27 @@
         }
       }
     },
-    "checkPermissionResponse": {
+    "checkOplSyntaxBody": {
+      "description": "Ory Permission Language Document",
+      "type": "string"
+    },
+    "checkOplSyntaxResult": {
+      "type": "object",
+      "title": "CheckOPLSyntaxResponse represents the response for an OPL syntax check request.",
+      "properties": {
+        "errors": {
+          "description": "The list of syntax errors",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ParseError"
+          }
+        }
+      }
+    },
+    "checkPermissionResult": {
       "description": "The content of the allowed field is mirrored in the HTTP status code.",
       "type": "object",
-      "title": "CheckPermissionResponse represents the response for a check request.",
+      "title": "Check Permission Result",
       "required": ["allowed"],
       "properties": {
         "allowed": {
@@ -758,7 +772,43 @@
         }
       }
     },
-    "expandTree": {
+    "createRelationshipBody": {
+      "description": "Create Relationship Request Body",
+      "type": "object",
+      "properties": {
+        "namespace": {
+          "description": "Namespace to query",
+          "type": "string"
+        },
+        "object": {
+          "description": "Object to query",
+          "type": "string"
+        },
+        "relation": {
+          "description": "Relation to query",
+          "type": "string"
+        },
+        "subject_id": {
+          "description": "SubjectID to query\n\nEither SubjectSet or SubjectID can be provided.",
+          "type": "string"
+        },
+        "subject_set": {
+          "$ref": "#/definitions/subjectSet"
+        }
+      }
+    },
+    "errorGeneric": {
+      "description": "The standard Ory JSON API error format.",
+      "type": "object",
+      "title": "JSON API Error Response",
+      "required": ["error"],
+      "properties": {
+        "error": {
+          "$ref": "#/definitions/genericError"
+        }
+      }
+    },
+    "expandedPermissionTree": {
       "type": "object",
       "required": ["type"],
       "properties": {
@@ -766,11 +816,11 @@
           "description": "The children of the node, possibly none.",
           "type": "array",
           "items": {
-            "$ref": "#/definitions/expandTree"
+            "$ref": "#/definitions/expandedPermissionTree"
           }
         },
         "tuple": {
-          "$ref": "#/definitions/relationTuple"
+          "$ref": "#/definitions/relationship"
         },
         "type": {
           "description": "The type of the node.\nunion TreeNodeUnion\nexclusion TreeNodeExclusion\nintersection TreeNodeIntersection\nleaf TreeNodeLeaf\ntuple_to_subject_set TreeNodeTupleToSubjectSet\ncomputed_subject_set TreeNodeComputedSubjectSet\nnot TreeNodeNot\nunspecified TreeNodeUnspecified",
@@ -790,57 +840,48 @@
       }
     },
     "genericError": {
-      "description": "The standard error format",
       "type": "object",
+      "required": ["message"],
       "properties": {
         "code": {
+          "description": "The status code",
           "type": "integer",
-          "format": "int64"
+          "format": "int64",
+          "example": 404
+        },
+        "debug": {
+          "description": "Debug information\n\nThis field is often not exposed to protect against leaking\nsensitive information.",
+          "type": "string",
+          "example": "SQL field \"foo\" is not a bool."
         },
         "details": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "additionalProperties": {}
-          }
+          "description": "Further error details",
+          "type": "object",
+          "additionalProperties": {}
+        },
+        "id": {
+          "description": "The error ID\n\nUseful when trying to identify various errors in application logic.",
+          "type": "string"
         },
         "message": {
-          "type": "string"
+          "description": "Error message\n\nThe error's message.",
+          "type": "string",
+          "example": "The resource could not be found"
         },
         "reason": {
-          "type": "string"
+          "description": "A human-readable reason for the error",
+          "type": "string",
+          "example": "User with ID 1234 does not exist."
         },
         "request": {
-          "type": "string"
+          "description": "The request ID\n\nThe request ID is often exposed internally in order to trace\nerrors across service architectures. This is often a UUID.",
+          "type": "string",
+          "example": "d7ef54b1-ec15-46e6-bccb-524b82c035e6"
         },
         "status": {
-          "type": "string"
-        }
-      }
-    },
-    "getRelationshipNamespacesResponse": {
-      "type": "object",
-      "properties": {
-        "namespaces": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/namespace"
-          }
-        }
-      }
-    },
-    "getRelationshipsResponse": {
-      "type": "object",
-      "properties": {
-        "next_page_token": {
-          "description": "The opaque token to provide in a subsequent request\nto get the next page. It is the empty string iff this is\nthe last page.",
-          "type": "string"
-        },
-        "relation_tuples": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/relationTuple"
-          }
+          "description": "The status description",
+          "type": "string",
+          "example": "Not Found"
         }
       }
     },
@@ -874,33 +915,8 @@
         }
       }
     },
-    "patchDelta": {
-      "type": "object",
-      "properties": {
-        "action": {
-          "type": "string",
-          "enum": ["insert", "delete"],
-          "x-go-enum-desc": "insert ActionInsert\ndelete ActionDelete"
-        },
-        "relation_tuple": {
-          "$ref": "#/definitions/relationTuple"
-        }
-      }
-    },
-    "postCheckOplSyntaxResponse": {
-      "type": "object",
-      "title": "CheckOPLSyntaxResponse represents the response for an OPL syntax check request.",
-      "properties": {
-        "errors": {
-          "description": "The list of syntax errors",
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/ParseError"
-          }
-        }
-      }
-    },
-    "relationQuery": {
+    "postCheckPermissionBody": {
+      "description": "Check Permission using Post Request Body",
       "type": "object",
       "properties": {
         "namespace": {
@@ -924,7 +940,58 @@
         }
       }
     },
-    "relationTuple": {
+    "postCheckPermissionOrErrorBody": {
+      "description": "Post Check Permission Or Error Body",
+      "type": "object",
+      "properties": {
+        "namespace": {
+          "description": "Namespace to query",
+          "type": "string"
+        },
+        "object": {
+          "description": "Object to query",
+          "type": "string"
+        },
+        "relation": {
+          "description": "Relation to query",
+          "type": "string"
+        },
+        "subject_id": {
+          "description": "SubjectID to query\n\nEither SubjectSet or SubjectID can be provided.",
+          "type": "string"
+        },
+        "subject_set": {
+          "$ref": "#/definitions/subjectSet"
+        }
+      }
+    },
+    "relationQuery": {
+      "description": "Relation Query",
+      "type": "object",
+      "properties": {
+        "namespace": {
+          "description": "Namespace to query",
+          "type": "string"
+        },
+        "object": {
+          "description": "Object to query",
+          "type": "string"
+        },
+        "relation": {
+          "description": "Relation to query",
+          "type": "string"
+        },
+        "subject_id": {
+          "description": "SubjectID to query\n\nEither SubjectSet or SubjectID can be provided.",
+          "type": "string"
+        },
+        "subject_set": {
+          "$ref": "#/definitions/subjectSet"
+        }
+      }
+    },
+    "relationship": {
+      "description": "Relationship",
       "type": "object",
       "required": ["namespace", "object", "relation"],
       "properties": {
@@ -946,6 +1013,48 @@
         },
         "subject_set": {
           "$ref": "#/definitions/subjectSet"
+        }
+      }
+    },
+    "relationshipNamespaces": {
+      "description": "Relationship Namespace List",
+      "type": "object",
+      "properties": {
+        "namespaces": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/namespace"
+          }
+        }
+      }
+    },
+    "relationshipPatch": {
+      "description": "Payload for patching a relationship",
+      "type": "object",
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": ["insert", "delete"],
+          "x-go-enum-desc": "insert ActionInsert\ndelete ActionDelete"
+        },
+        "relation_tuple": {
+          "$ref": "#/definitions/relationship"
+        }
+      }
+    },
+    "relationships": {
+      "description": "Paginated Relationship List",
+      "type": "object",
+      "properties": {
+        "next_page_token": {
+          "description": "The opaque token to provide in a subsequent request\nto get the next page. It is the empty string iff this is\nthe last page.",
+          "type": "string"
+        },
+        "relation_tuples": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/relationship"
+          }
         }
       }
     },

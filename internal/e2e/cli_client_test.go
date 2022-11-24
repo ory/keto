@@ -112,7 +112,7 @@ func (g *cliClient) check(t require.TestingT, r *ketoapi.RelationTuple) bool {
 		sub = r.SubjectSet.String()
 	}
 	out := g.c.ExecNoErr(t, "check", sub, r.Relation, r.Namespace, r.Object)
-	var res check.CheckPermissionResponse
+	var res check.CheckPermissionResult
 	require.NoError(t, json.Unmarshal([]byte(out), &res))
 	return res.Allowed
 }

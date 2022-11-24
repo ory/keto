@@ -121,9 +121,9 @@ func (h *handler) ListRelationTuples(ctx context.Context, req *rts.ListRelationT
 //	Schemes: http, https
 //
 //	Responses:
-//	  200: getRelationshipsResponse
-//	  404: genericError
-//	  500: genericError
+//	  200: relationships
+//	  404: errorGeneric
+//	  default: errorGeneric
 func (h *handler) getRelations(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	ctx := r.Context()
 

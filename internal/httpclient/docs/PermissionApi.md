@@ -14,7 +14,7 @@ Method | HTTP request | Description
 
 ## CheckPermission
 
-> CheckPermissionResponse CheckPermission(ctx).Namespace(namespace).Object(object).Relation(relation).SubjectId(subjectId).SubjectSetNamespace(subjectSetNamespace).SubjectSetObject(subjectSetObject).SubjectSetRelation(subjectSetRelation).MaxDepth(maxDepth).Execute()
+> CheckPermissionResult CheckPermission(ctx).Namespace(namespace).Object(object).Relation(relation).SubjectId(subjectId).SubjectSetNamespace(subjectSetNamespace).SubjectSetObject(subjectSetObject).SubjectSetRelation(subjectSetRelation).MaxDepth(maxDepth).Execute()
 
 Check a permission
 
@@ -49,7 +49,7 @@ func main() {
         fmt.Fprintf(os.Stderr, "Error when calling `PermissionApi.CheckPermission``: %v\n", err)
         fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
     }
-    // response from `CheckPermission`: CheckPermissionResponse
+    // response from `CheckPermission`: CheckPermissionResult
     fmt.Fprintf(os.Stdout, "Response from `PermissionApi.CheckPermission`: %v\n", resp)
 }
 ```
@@ -76,7 +76,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**CheckPermissionResponse**](CheckPermissionResponse.md)
+[**CheckPermissionResult**](CheckPermissionResult.md)
 
 ### Authorization
 
@@ -94,7 +94,7 @@ No authorization required
 
 ## CheckPermissionOrError
 
-> CheckPermissionResponse CheckPermissionOrError(ctx).Namespace(namespace).Object(object).Relation(relation).SubjectId(subjectId).SubjectSetNamespace(subjectSetNamespace).SubjectSetObject(subjectSetObject).SubjectSetRelation(subjectSetRelation).MaxDepth(maxDepth).Execute()
+> CheckPermissionResult CheckPermissionOrError(ctx).Namespace(namespace).Object(object).Relation(relation).SubjectId(subjectId).SubjectSetNamespace(subjectSetNamespace).SubjectSetObject(subjectSetObject).SubjectSetRelation(subjectSetRelation).MaxDepth(maxDepth).Execute()
 
 Check a permission
 
@@ -129,7 +129,7 @@ func main() {
         fmt.Fprintf(os.Stderr, "Error when calling `PermissionApi.CheckPermissionOrError``: %v\n", err)
         fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
     }
-    // response from `CheckPermissionOrError`: CheckPermissionResponse
+    // response from `CheckPermissionOrError`: CheckPermissionResult
     fmt.Fprintf(os.Stdout, "Response from `PermissionApi.CheckPermissionOrError`: %v\n", resp)
 }
 ```
@@ -156,7 +156,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**CheckPermissionResponse**](CheckPermissionResponse.md)
+[**CheckPermissionResult**](CheckPermissionResult.md)
 
 ### Authorization
 
@@ -174,7 +174,7 @@ No authorization required
 
 ## ExpandPermissions
 
-> ExpandTree ExpandPermissions(ctx).Namespace(namespace).Object(object).Relation(relation).MaxDepth(maxDepth).Execute()
+> ExpandedPermissionTree ExpandPermissions(ctx).Namespace(namespace).Object(object).Relation(relation).MaxDepth(maxDepth).Execute()
 
 Expand a Relationship into permissions.
 
@@ -205,7 +205,7 @@ func main() {
         fmt.Fprintf(os.Stderr, "Error when calling `PermissionApi.ExpandPermissions``: %v\n", err)
         fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
     }
-    // response from `ExpandPermissions`: ExpandTree
+    // response from `ExpandPermissions`: ExpandedPermissionTree
     fmt.Fprintf(os.Stdout, "Response from `PermissionApi.ExpandPermissions`: %v\n", resp)
 }
 ```
@@ -228,7 +228,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**ExpandTree**](ExpandTree.md)
+[**ExpandedPermissionTree**](ExpandedPermissionTree.md)
 
 ### Authorization
 
@@ -246,7 +246,7 @@ No authorization required
 
 ## PostCheckPermission
 
-> CheckPermissionResponse PostCheckPermission(ctx).MaxDepth(maxDepth).RelationQuery(relationQuery).Execute()
+> CheckPermissionResult PostCheckPermission(ctx).MaxDepth(maxDepth).PostCheckPermissionBody(postCheckPermissionBody).Execute()
 
 Check a permission
 
@@ -266,16 +266,16 @@ import (
 
 func main() {
     maxDepth := int64(789) // int64 |  (optional)
-    relationQuery := *openapiclient.NewRelationQuery() // RelationQuery |  (optional)
+    postCheckPermissionBody := *openapiclient.NewPostCheckPermissionBody() // PostCheckPermissionBody |  (optional)
 
     configuration := openapiclient.NewConfiguration()
     apiClient := openapiclient.NewAPIClient(configuration)
-    resp, r, err := apiClient.PermissionApi.PostCheckPermission(context.Background()).MaxDepth(maxDepth).RelationQuery(relationQuery).Execute()
+    resp, r, err := apiClient.PermissionApi.PostCheckPermission(context.Background()).MaxDepth(maxDepth).PostCheckPermissionBody(postCheckPermissionBody).Execute()
     if err != nil {
         fmt.Fprintf(os.Stderr, "Error when calling `PermissionApi.PostCheckPermission``: %v\n", err)
         fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
     }
-    // response from `PostCheckPermission`: CheckPermissionResponse
+    // response from `PostCheckPermission`: CheckPermissionResult
     fmt.Fprintf(os.Stdout, "Response from `PermissionApi.PostCheckPermission`: %v\n", resp)
 }
 ```
@@ -292,11 +292,11 @@ Other parameters are passed through a pointer to a apiPostCheckPermissionRequest
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **maxDepth** | **int64** |  | 
- **relationQuery** | [**RelationQuery**](RelationQuery.md) |  | 
+ **postCheckPermissionBody** | [**PostCheckPermissionBody**](PostCheckPermissionBody.md) |  | 
 
 ### Return type
 
-[**CheckPermissionResponse**](CheckPermissionResponse.md)
+[**CheckPermissionResult**](CheckPermissionResult.md)
 
 ### Authorization
 
@@ -314,7 +314,7 @@ No authorization required
 
 ## PostCheckPermissionOrError
 
-> CheckPermissionResponse PostCheckPermissionOrError(ctx).MaxDepth(maxDepth).RelationQuery(relationQuery).Execute()
+> CheckPermissionResult PostCheckPermissionOrError(ctx).MaxDepth(maxDepth).PostCheckPermissionOrErrorBody(postCheckPermissionOrErrorBody).Execute()
 
 Check a permission
 
@@ -334,16 +334,16 @@ import (
 
 func main() {
     maxDepth := int64(789) // int64 |  (optional)
-    relationQuery := *openapiclient.NewRelationQuery() // RelationQuery |  (optional)
+    postCheckPermissionOrErrorBody := *openapiclient.NewPostCheckPermissionOrErrorBody() // PostCheckPermissionOrErrorBody |  (optional)
 
     configuration := openapiclient.NewConfiguration()
     apiClient := openapiclient.NewAPIClient(configuration)
-    resp, r, err := apiClient.PermissionApi.PostCheckPermissionOrError(context.Background()).MaxDepth(maxDepth).RelationQuery(relationQuery).Execute()
+    resp, r, err := apiClient.PermissionApi.PostCheckPermissionOrError(context.Background()).MaxDepth(maxDepth).PostCheckPermissionOrErrorBody(postCheckPermissionOrErrorBody).Execute()
     if err != nil {
         fmt.Fprintf(os.Stderr, "Error when calling `PermissionApi.PostCheckPermissionOrError``: %v\n", err)
         fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
     }
-    // response from `PostCheckPermissionOrError`: CheckPermissionResponse
+    // response from `PostCheckPermissionOrError`: CheckPermissionResult
     fmt.Fprintf(os.Stdout, "Response from `PermissionApi.PostCheckPermissionOrError`: %v\n", resp)
 }
 ```
@@ -360,11 +360,11 @@ Other parameters are passed through a pointer to a apiPostCheckPermissionOrError
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **maxDepth** | **int64** |  | 
- **relationQuery** | [**RelationQuery**](RelationQuery.md) |  | 
+ **postCheckPermissionOrErrorBody** | [**PostCheckPermissionOrErrorBody**](PostCheckPermissionOrErrorBody.md) |  | 
 
 ### Return type
 
-[**CheckPermissionResponse**](CheckPermissionResponse.md)
+[**CheckPermissionResult**](CheckPermissionResult.md)
 
 ### Authorization
 

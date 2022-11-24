@@ -87,7 +87,22 @@ func (h *handler) DeleteRelationTuples(ctx context.Context, req *rts.DeleteRelat
 	return &rts.DeleteRelationTuplesResponse{}, nil
 }
 
-// swagger:route PUT /admin/relation-tuples relationship createRelationships
+// Create Relationship Request Parameters
+//
+// swagger:parameters createRelationship
+type createRelationship struct {
+	// in: body
+	Body createRelationshipBody
+}
+
+// Create Relationship Request Body
+//
+// swagger:model createRelationshipBody
+type createRelationshipBody struct {
+	ketoapi.RelationQuery
+}
+
+// swagger:route PUT /admin/relation-tuples relationship createRelationship
 //
 // # Create a Relationship
 //
@@ -102,9 +117,9 @@ func (h *handler) DeleteRelationTuples(ctx context.Context, req *rts.DeleteRelat
 //	Schemes: http, https
 //
 //	Responses:
-//	  201: relationQuery
-//	  400: genericError
-//	  500: genericError
+//	  201: relationship
+//	  400: errorGeneric
+//	  default: errorGeneric
 func (h *handler) createRelation(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	ctx := r.Context()
 
@@ -155,8 +170,8 @@ func (h *handler) createRelation(w http.ResponseWriter, r *http.Request, _ httpr
 //
 //	Responses:
 //	  204: emptyResponse
-//	  400: genericError
-//	  500: genericError
+//	  400: errorGeneric
+//	  default: errorGeneric
 func (h *handler) deleteRelations(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	ctx := r.Context()
 
@@ -213,9 +228,9 @@ func internalTuplesWithAction(deltas []*ketoapi.PatchDelta, action ketoapi.Patch
 //
 //	Responses:
 //	  204: emptyResponse
-//	  400: genericError
-//	  404: genericError
-//	  500: genericError
+//	  400: errorGeneric
+//	  404: errorGeneric
+//	  default: errorGeneric
 func (h *handler) patchRelationTuples(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	ctx := r.Context()
 

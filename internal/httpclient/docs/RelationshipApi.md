@@ -5,17 +5,17 @@ All URIs are relative to *http://localhost*
 Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**CheckOplSyntax**](RelationshipApi.md#CheckOplSyntax) | **Post** /opl/syntax/check | Check the syntax of an OPL file
-[**CreateRelationships**](RelationshipApi.md#CreateRelationships) | **Put** /admin/relation-tuples | Create a Relationship
+[**CreateRelationship**](RelationshipApi.md#CreateRelationship) | **Put** /admin/relation-tuples | Create a Relationship
 [**DeleteRelationships**](RelationshipApi.md#DeleteRelationships) | **Delete** /admin/relation-tuples | Delete Relationships
-[**GetRelationshipNamespaces**](RelationshipApi.md#GetRelationshipNamespaces) | **Get** /namespaces | Query namespaces
 [**GetRelationships**](RelationshipApi.md#GetRelationships) | **Get** /relation-tuples | Query relationships
+[**ListRelationshipNamespaces**](RelationshipApi.md#ListRelationshipNamespaces) | **Get** /namespaces | Query namespaces
 [**PatchRelationships**](RelationshipApi.md#PatchRelationships) | **Patch** /admin/relation-tuples | Patch Multiple Relationships
 
 
 
 ## CheckOplSyntax
 
-> PostCheckOplSyntaxResponse CheckOplSyntax(ctx).Body(body).Execute()
+> CheckOplSyntaxResult CheckOplSyntax(ctx).Body(body).Execute()
 
 Check the syntax of an OPL file
 
@@ -34,7 +34,7 @@ import (
 )
 
 func main() {
-    body := "body_example" // string | the OPL content to check
+    body := "body_example" // string |  (optional)
 
     configuration := openapiclient.NewConfiguration()
     apiClient := openapiclient.NewAPIClient(configuration)
@@ -43,7 +43,7 @@ func main() {
         fmt.Fprintf(os.Stderr, "Error when calling `RelationshipApi.CheckOplSyntax``: %v\n", err)
         fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
     }
-    // response from `CheckOplSyntax`: PostCheckOplSyntaxResponse
+    // response from `CheckOplSyntax`: CheckOplSyntaxResult
     fmt.Fprintf(os.Stdout, "Response from `RelationshipApi.CheckOplSyntax`: %v\n", resp)
 }
 ```
@@ -59,11 +59,11 @@ Other parameters are passed through a pointer to a apiCheckOplSyntaxRequest stru
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **body** | **string** | the OPL content to check | 
+ **body** | **string** |  | 
 
 ### Return type
 
-[**PostCheckOplSyntaxResponse**](PostCheckOplSyntaxResponse.md)
+[**CheckOplSyntaxResult**](CheckOplSyntaxResult.md)
 
 ### Authorization
 
@@ -79,9 +79,9 @@ No authorization required
 [[Back to README]](../README.md)
 
 
-## CreateRelationships
+## CreateRelationship
 
-> RelationQuery CreateRelationships(ctx).RelationQuery(relationQuery).Execute()
+> Relationship CreateRelationship(ctx).CreateRelationshipBody(createRelationshipBody).Execute()
 
 Create a Relationship
 
@@ -100,17 +100,17 @@ import (
 )
 
 func main() {
-    relationQuery := *openapiclient.NewRelationQuery() // RelationQuery |  (optional)
+    createRelationshipBody := *openapiclient.NewCreateRelationshipBody() // CreateRelationshipBody |  (optional)
 
     configuration := openapiclient.NewConfiguration()
     apiClient := openapiclient.NewAPIClient(configuration)
-    resp, r, err := apiClient.RelationshipApi.CreateRelationships(context.Background()).RelationQuery(relationQuery).Execute()
+    resp, r, err := apiClient.RelationshipApi.CreateRelationship(context.Background()).CreateRelationshipBody(createRelationshipBody).Execute()
     if err != nil {
-        fmt.Fprintf(os.Stderr, "Error when calling `RelationshipApi.CreateRelationships``: %v\n", err)
+        fmt.Fprintf(os.Stderr, "Error when calling `RelationshipApi.CreateRelationship``: %v\n", err)
         fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
     }
-    // response from `CreateRelationships`: RelationQuery
-    fmt.Fprintf(os.Stdout, "Response from `RelationshipApi.CreateRelationships`: %v\n", resp)
+    // response from `CreateRelationship`: Relationship
+    fmt.Fprintf(os.Stdout, "Response from `RelationshipApi.CreateRelationship`: %v\n", resp)
 }
 ```
 
@@ -120,16 +120,16 @@ func main() {
 
 ### Other Parameters
 
-Other parameters are passed through a pointer to a apiCreateRelationshipsRequest struct via the builder pattern
+Other parameters are passed through a pointer to a apiCreateRelationshipRequest struct via the builder pattern
 
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **relationQuery** | [**RelationQuery**](RelationQuery.md) |  | 
+ **createRelationshipBody** | [**CreateRelationshipBody**](CreateRelationshipBody.md) |  | 
 
 ### Return type
 
-[**RelationQuery**](RelationQuery.md)
+[**Relationship**](Relationship.md)
 
 ### Authorization
 
@@ -221,70 +221,9 @@ No authorization required
 [[Back to README]](../README.md)
 
 
-## GetRelationshipNamespaces
-
-> GetRelationshipNamespacesResponse GetRelationshipNamespaces(ctx).Execute()
-
-Query namespaces
-
-
-
-### Example
-
-```go
-package main
-
-import (
-    "context"
-    "fmt"
-    "os"
-    openapiclient "./openapi"
-)
-
-func main() {
-
-    configuration := openapiclient.NewConfiguration()
-    apiClient := openapiclient.NewAPIClient(configuration)
-    resp, r, err := apiClient.RelationshipApi.GetRelationshipNamespaces(context.Background()).Execute()
-    if err != nil {
-        fmt.Fprintf(os.Stderr, "Error when calling `RelationshipApi.GetRelationshipNamespaces``: %v\n", err)
-        fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
-    }
-    // response from `GetRelationshipNamespaces`: GetRelationshipNamespacesResponse
-    fmt.Fprintf(os.Stdout, "Response from `RelationshipApi.GetRelationshipNamespaces`: %v\n", resp)
-}
-```
-
-### Path Parameters
-
-This endpoint does not need any parameter.
-
-### Other Parameters
-
-Other parameters are passed through a pointer to a apiGetRelationshipNamespacesRequest struct via the builder pattern
-
-
-### Return type
-
-[**GetRelationshipNamespacesResponse**](GetRelationshipNamespacesResponse.md)
-
-### Authorization
-
-No authorization required
-
-### HTTP request headers
-
-- **Content-Type**: Not defined
-- **Accept**: application/json
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../README.md#documentation-for-models)
-[[Back to README]](../README.md)
-
-
 ## GetRelationships
 
-> GetRelationshipsResponse GetRelationships(ctx).PageToken(pageToken).PageSize(pageSize).Namespace(namespace).Object(object).Relation(relation).SubjectId(subjectId).SubjectSetNamespace(subjectSetNamespace).SubjectSetObject(subjectSetObject).SubjectSetRelation(subjectSetRelation).Execute()
+> Relationships GetRelationships(ctx).PageToken(pageToken).PageSize(pageSize).Namespace(namespace).Object(object).Relation(relation).SubjectId(subjectId).SubjectSetNamespace(subjectSetNamespace).SubjectSetObject(subjectSetObject).SubjectSetRelation(subjectSetRelation).Execute()
 
 Query relationships
 
@@ -320,7 +259,7 @@ func main() {
         fmt.Fprintf(os.Stderr, "Error when calling `RelationshipApi.GetRelationships``: %v\n", err)
         fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
     }
-    // response from `GetRelationships`: GetRelationshipsResponse
+    // response from `GetRelationships`: Relationships
     fmt.Fprintf(os.Stdout, "Response from `RelationshipApi.GetRelationships`: %v\n", resp)
 }
 ```
@@ -348,7 +287,68 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**GetRelationshipsResponse**](GetRelationshipsResponse.md)
+[**Relationships**](Relationships.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
+[[Back to Model list]](../README.md#documentation-for-models)
+[[Back to README]](../README.md)
+
+
+## ListRelationshipNamespaces
+
+> RelationshipNamespaces ListRelationshipNamespaces(ctx).Execute()
+
+Query namespaces
+
+
+
+### Example
+
+```go
+package main
+
+import (
+    "context"
+    "fmt"
+    "os"
+    openapiclient "./openapi"
+)
+
+func main() {
+
+    configuration := openapiclient.NewConfiguration()
+    apiClient := openapiclient.NewAPIClient(configuration)
+    resp, r, err := apiClient.RelationshipApi.ListRelationshipNamespaces(context.Background()).Execute()
+    if err != nil {
+        fmt.Fprintf(os.Stderr, "Error when calling `RelationshipApi.ListRelationshipNamespaces``: %v\n", err)
+        fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+    }
+    // response from `ListRelationshipNamespaces`: RelationshipNamespaces
+    fmt.Fprintf(os.Stdout, "Response from `RelationshipApi.ListRelationshipNamespaces`: %v\n", resp)
+}
+```
+
+### Path Parameters
+
+This endpoint does not need any parameter.
+
+### Other Parameters
+
+Other parameters are passed through a pointer to a apiListRelationshipNamespacesRequest struct via the builder pattern
+
+
+### Return type
+
+[**RelationshipNamespaces**](RelationshipNamespaces.md)
 
 ### Authorization
 
@@ -366,7 +366,7 @@ No authorization required
 
 ## PatchRelationships
 
-> PatchRelationships(ctx).PatchDelta(patchDelta).Execute()
+> PatchRelationships(ctx).RelationshipPatch(relationshipPatch).Execute()
 
 Patch Multiple Relationships
 
@@ -385,11 +385,11 @@ import (
 )
 
 func main() {
-    patchDelta := []openapiclient.PatchDelta{*openapiclient.NewPatchDelta()} // []PatchDelta |  (optional)
+    relationshipPatch := []openapiclient.RelationshipPatch{*openapiclient.NewRelationshipPatch()} // []RelationshipPatch |  (optional)
 
     configuration := openapiclient.NewConfiguration()
     apiClient := openapiclient.NewAPIClient(configuration)
-    resp, r, err := apiClient.RelationshipApi.PatchRelationships(context.Background()).PatchDelta(patchDelta).Execute()
+    resp, r, err := apiClient.RelationshipApi.PatchRelationships(context.Background()).RelationshipPatch(relationshipPatch).Execute()
     if err != nil {
         fmt.Fprintf(os.Stderr, "Error when calling `RelationshipApi.PatchRelationships``: %v\n", err)
         fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
@@ -408,7 +408,7 @@ Other parameters are passed through a pointer to a apiPatchRelationshipsRequest 
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **patchDelta** | [**[]PatchDelta**](PatchDelta.md) |  | 
+ **relationshipPatch** | [**[]RelationshipPatch**](RelationshipPatch.md) |  | 
 
 ### Return type
 

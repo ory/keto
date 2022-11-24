@@ -4,18 +4,20 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Code** | Pointer to **int64** |  | [optional] 
-**Details** | Pointer to **[]map[string]interface{}** |  | [optional] 
-**Message** | Pointer to **string** |  | [optional] 
-**Reason** | Pointer to **string** |  | [optional] 
-**Request** | Pointer to **string** |  | [optional] 
-**Status** | Pointer to **string** |  | [optional] 
+**Code** | Pointer to **int64** | The status code | [optional] 
+**Debug** | Pointer to **string** | Debug information  This field is often not exposed to protect against leaking sensitive information. | [optional] 
+**Details** | Pointer to **map[string]interface{}** | Further error details | [optional] 
+**Id** | Pointer to **string** | The error ID  Useful when trying to identify various errors in application logic. | [optional] 
+**Message** | **string** | Error message  The error&#39;s message. | 
+**Reason** | Pointer to **string** | A human-readable reason for the error | [optional] 
+**Request** | Pointer to **string** | The request ID  The request ID is often exposed internally in order to trace errors across service architectures. This is often a UUID. | [optional] 
+**Status** | Pointer to **string** | The status description | [optional] 
 
 ## Methods
 
 ### NewGenericError
 
-`func NewGenericError() *GenericError`
+`func NewGenericError(message string, ) *GenericError`
 
 NewGenericError instantiates a new GenericError object
 This constructor will assign default values to properties that have it defined,
@@ -55,22 +57,47 @@ SetCode sets Code field to given value.
 
 HasCode returns a boolean if a field has been set.
 
+### GetDebug
+
+`func (o *GenericError) GetDebug() string`
+
+GetDebug returns the Debug field if non-nil, zero value otherwise.
+
+### GetDebugOk
+
+`func (o *GenericError) GetDebugOk() (*string, bool)`
+
+GetDebugOk returns a tuple with the Debug field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetDebug
+
+`func (o *GenericError) SetDebug(v string)`
+
+SetDebug sets Debug field to given value.
+
+### HasDebug
+
+`func (o *GenericError) HasDebug() bool`
+
+HasDebug returns a boolean if a field has been set.
+
 ### GetDetails
 
-`func (o *GenericError) GetDetails() []map[string]interface{}`
+`func (o *GenericError) GetDetails() map[string]interface{}`
 
 GetDetails returns the Details field if non-nil, zero value otherwise.
 
 ### GetDetailsOk
 
-`func (o *GenericError) GetDetailsOk() (*[]map[string]interface{}, bool)`
+`func (o *GenericError) GetDetailsOk() (*map[string]interface{}, bool)`
 
 GetDetailsOk returns a tuple with the Details field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetDetails
 
-`func (o *GenericError) SetDetails(v []map[string]interface{})`
+`func (o *GenericError) SetDetails(v map[string]interface{})`
 
 SetDetails sets Details field to given value.
 
@@ -79,6 +106,31 @@ SetDetails sets Details field to given value.
 `func (o *GenericError) HasDetails() bool`
 
 HasDetails returns a boolean if a field has been set.
+
+### GetId
+
+`func (o *GenericError) GetId() string`
+
+GetId returns the Id field if non-nil, zero value otherwise.
+
+### GetIdOk
+
+`func (o *GenericError) GetIdOk() (*string, bool)`
+
+GetIdOk returns a tuple with the Id field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetId
+
+`func (o *GenericError) SetId(v string)`
+
+SetId sets Id field to given value.
+
+### HasId
+
+`func (o *GenericError) HasId() bool`
+
+HasId returns a boolean if a field has been set.
 
 ### GetMessage
 
@@ -99,11 +151,6 @@ and a boolean to check if the value has been set.
 
 SetMessage sets Message field to given value.
 
-### HasMessage
-
-`func (o *GenericError) HasMessage() bool`
-
-HasMessage returns a boolean if a field has been set.
 
 ### GetReason
 

@@ -11,7 +11,6 @@ import (
 var (
 	_ = (*patchRelationships)(nil)
 	_ = (*getRelationships)(nil)
-	_ = (*relationshipInBody)(nil)
 	_ = (*relationshipInQuery)(nil)
 )
 
@@ -20,7 +19,7 @@ var (
 // swagger:parameters patchRelationships
 type patchRelationships struct {
 	// in:body
-	Payload []*ketoapi.PatchDelta
+	Body []*ketoapi.PatchDelta
 }
 
 // Get Relationships Request Parameters
@@ -68,14 +67,6 @@ type getRelationships struct {
 
 	// swagger:allOf
 	x.PaginationOptions
-}
-
-// The relationship parameters in the request body.
-//
-// swagger:parameters postCheckPermissionOrError postCheckPermission createRelationships
-type relationshipInBody struct {
-	// in: body
-	Payload ketoapi.RelationQuery
 }
 
 // The relationship parameters in the URL query.

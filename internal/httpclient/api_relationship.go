@@ -36,23 +36,23 @@ type RelationshipApi interface {
 
 	/*
 	 * CheckOplSyntaxExecute executes the request
-	 * @return PostCheckOplSyntaxResponse
+	 * @return CheckOplSyntaxResult
 	 */
-	CheckOplSyntaxExecute(r RelationshipApiApiCheckOplSyntaxRequest) (*PostCheckOplSyntaxResponse, *http.Response, error)
+	CheckOplSyntaxExecute(r RelationshipApiApiCheckOplSyntaxRequest) (*CheckOplSyntaxResult, *http.Response, error)
 
 	/*
-	 * CreateRelationships Create a Relationship
+	 * CreateRelationship Create a Relationship
 	 * Use this endpoint to create a relationship.
 	 * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	 * @return RelationshipApiApiCreateRelationshipsRequest
+	 * @return RelationshipApiApiCreateRelationshipRequest
 	 */
-	CreateRelationships(ctx context.Context) RelationshipApiApiCreateRelationshipsRequest
+	CreateRelationship(ctx context.Context) RelationshipApiApiCreateRelationshipRequest
 
 	/*
-	 * CreateRelationshipsExecute executes the request
-	 * @return RelationQuery
+	 * CreateRelationshipExecute executes the request
+	 * @return Relationship
 	 */
-	CreateRelationshipsExecute(r RelationshipApiApiCreateRelationshipsRequest) (*RelationQuery, *http.Response, error)
+	CreateRelationshipExecute(r RelationshipApiApiCreateRelationshipRequest) (*Relationship, *http.Response, error)
 
 	/*
 	 * DeleteRelationships Delete Relationships
@@ -68,20 +68,6 @@ type RelationshipApi interface {
 	DeleteRelationshipsExecute(r RelationshipApiApiDeleteRelationshipsRequest) (*http.Response, error)
 
 	/*
-	 * GetRelationshipNamespaces Query namespaces
-	 * Get all namespaces
-	 * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	 * @return RelationshipApiApiGetRelationshipNamespacesRequest
-	 */
-	GetRelationshipNamespaces(ctx context.Context) RelationshipApiApiGetRelationshipNamespacesRequest
-
-	/*
-	 * GetRelationshipNamespacesExecute executes the request
-	 * @return GetRelationshipNamespacesResponse
-	 */
-	GetRelationshipNamespacesExecute(r RelationshipApiApiGetRelationshipNamespacesRequest) (*GetRelationshipNamespacesResponse, *http.Response, error)
-
-	/*
 	 * GetRelationships Query relationships
 	 * Get all relationships that match the query. Only the namespace field is required.
 	 * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
@@ -91,9 +77,23 @@ type RelationshipApi interface {
 
 	/*
 	 * GetRelationshipsExecute executes the request
-	 * @return GetRelationshipsResponse
+	 * @return Relationships
 	 */
-	GetRelationshipsExecute(r RelationshipApiApiGetRelationshipsRequest) (*GetRelationshipsResponse, *http.Response, error)
+	GetRelationshipsExecute(r RelationshipApiApiGetRelationshipsRequest) (*Relationships, *http.Response, error)
+
+	/*
+	 * ListRelationshipNamespaces Query namespaces
+	 * Get all namespaces
+	 * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	 * @return RelationshipApiApiListRelationshipNamespacesRequest
+	 */
+	ListRelationshipNamespaces(ctx context.Context) RelationshipApiApiListRelationshipNamespacesRequest
+
+	/*
+	 * ListRelationshipNamespacesExecute executes the request
+	 * @return RelationshipNamespaces
+	 */
+	ListRelationshipNamespacesExecute(r RelationshipApiApiListRelationshipNamespacesRequest) (*RelationshipNamespaces, *http.Response, error)
 
 	/*
 	 * PatchRelationships Patch Multiple Relationships
@@ -123,7 +123,7 @@ func (r RelationshipApiApiCheckOplSyntaxRequest) Body(body string) RelationshipA
 	return r
 }
 
-func (r RelationshipApiApiCheckOplSyntaxRequest) Execute() (*PostCheckOplSyntaxResponse, *http.Response, error) {
+func (r RelationshipApiApiCheckOplSyntaxRequest) Execute() (*CheckOplSyntaxResult, *http.Response, error) {
 	return r.ApiService.CheckOplSyntaxExecute(r)
 }
 
@@ -142,16 +142,16 @@ func (a *RelationshipApiService) CheckOplSyntax(ctx context.Context) Relationshi
 
 /*
  * Execute executes the request
- * @return PostCheckOplSyntaxResponse
+ * @return CheckOplSyntaxResult
  */
-func (a *RelationshipApiService) CheckOplSyntaxExecute(r RelationshipApiApiCheckOplSyntaxRequest) (*PostCheckOplSyntaxResponse, *http.Response, error) {
+func (a *RelationshipApiService) CheckOplSyntaxExecute(r RelationshipApiApiCheckOplSyntaxRequest) (*CheckOplSyntaxResult, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodPost
 		localVarPostBody     interface{}
 		localVarFormFileName string
 		localVarFileName     string
 		localVarFileBytes    []byte
-		localVarReturnValue  *PostCheckOplSyntaxResponse
+		localVarReturnValue  *CheckOplSyntaxResult
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "RelationshipApiService.CheckOplSyntax")
@@ -164,9 +164,6 @@ func (a *RelationshipApiService) CheckOplSyntaxExecute(r RelationshipApiApiCheck
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.body == nil {
-		return localVarReturnValue, nil, reportError("body is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"text/plain"}
@@ -210,7 +207,7 @@ func (a *RelationshipApiService) CheckOplSyntaxExecute(r RelationshipApiApiCheck
 			error: localVarHTTPResponse.Status,
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
-			var v GenericError
+			var v ErrorGeneric
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -219,15 +216,13 @@ func (a *RelationshipApiService) CheckOplSyntaxExecute(r RelationshipApiApiCheck
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
-		if localVarHTTPResponse.StatusCode == 500 {
-			var v GenericError
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-			newErr.model = v
+		var v ErrorGeneric
+		err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+		if err != nil {
+			newErr.error = err.Error()
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
@@ -243,29 +238,29 @@ func (a *RelationshipApiService) CheckOplSyntaxExecute(r RelationshipApiApiCheck
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type RelationshipApiApiCreateRelationshipsRequest struct {
-	ctx           context.Context
-	ApiService    RelationshipApi
-	relationQuery *RelationQuery
+type RelationshipApiApiCreateRelationshipRequest struct {
+	ctx                    context.Context
+	ApiService             RelationshipApi
+	createRelationshipBody *CreateRelationshipBody
 }
 
-func (r RelationshipApiApiCreateRelationshipsRequest) RelationQuery(relationQuery RelationQuery) RelationshipApiApiCreateRelationshipsRequest {
-	r.relationQuery = &relationQuery
+func (r RelationshipApiApiCreateRelationshipRequest) CreateRelationshipBody(createRelationshipBody CreateRelationshipBody) RelationshipApiApiCreateRelationshipRequest {
+	r.createRelationshipBody = &createRelationshipBody
 	return r
 }
 
-func (r RelationshipApiApiCreateRelationshipsRequest) Execute() (*RelationQuery, *http.Response, error) {
-	return r.ApiService.CreateRelationshipsExecute(r)
+func (r RelationshipApiApiCreateRelationshipRequest) Execute() (*Relationship, *http.Response, error) {
+	return r.ApiService.CreateRelationshipExecute(r)
 }
 
 /*
- * CreateRelationships Create a Relationship
+ * CreateRelationship Create a Relationship
  * Use this endpoint to create a relationship.
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @return RelationshipApiApiCreateRelationshipsRequest
+ * @return RelationshipApiApiCreateRelationshipRequest
  */
-func (a *RelationshipApiService) CreateRelationships(ctx context.Context) RelationshipApiApiCreateRelationshipsRequest {
-	return RelationshipApiApiCreateRelationshipsRequest{
+func (a *RelationshipApiService) CreateRelationship(ctx context.Context) RelationshipApiApiCreateRelationshipRequest {
+	return RelationshipApiApiCreateRelationshipRequest{
 		ApiService: a,
 		ctx:        ctx,
 	}
@@ -273,19 +268,19 @@ func (a *RelationshipApiService) CreateRelationships(ctx context.Context) Relati
 
 /*
  * Execute executes the request
- * @return RelationQuery
+ * @return Relationship
  */
-func (a *RelationshipApiService) CreateRelationshipsExecute(r RelationshipApiApiCreateRelationshipsRequest) (*RelationQuery, *http.Response, error) {
+func (a *RelationshipApiService) CreateRelationshipExecute(r RelationshipApiApiCreateRelationshipRequest) (*Relationship, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodPut
 		localVarPostBody     interface{}
 		localVarFormFileName string
 		localVarFileName     string
 		localVarFileBytes    []byte
-		localVarReturnValue  *RelationQuery
+		localVarReturnValue  *Relationship
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "RelationshipApiService.CreateRelationships")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "RelationshipApiService.CreateRelationship")
 	if err != nil {
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
@@ -314,7 +309,7 @@ func (a *RelationshipApiService) CreateRelationshipsExecute(r RelationshipApiApi
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.relationQuery
+	localVarPostBody = r.createRelationshipBody
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
@@ -338,7 +333,7 @@ func (a *RelationshipApiService) CreateRelationshipsExecute(r RelationshipApiApi
 			error: localVarHTTPResponse.Status,
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
-			var v GenericError
+			var v ErrorGeneric
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -347,15 +342,13 @@ func (a *RelationshipApiService) CreateRelationshipsExecute(r RelationshipApiApi
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
-		if localVarHTTPResponse.StatusCode == 500 {
-			var v GenericError
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-			newErr.model = v
+		var v ErrorGeneric
+		err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+		if err != nil {
+			newErr.error = err.Error()
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
@@ -513,7 +506,7 @@ func (a *RelationshipApiService) DeleteRelationshipsExecute(r RelationshipApiApi
 			error: localVarHTTPResponse.Status,
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
-			var v GenericError
+			var v ErrorGeneric
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -522,129 +515,17 @@ func (a *RelationshipApiService) DeleteRelationshipsExecute(r RelationshipApiApi
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
-		if localVarHTTPResponse.StatusCode == 500 {
-			var v GenericError
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarHTTPResponse, newErr
-			}
-			newErr.model = v
+		var v ErrorGeneric
+		err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+		if err != nil {
+			newErr.error = err.Error()
+			return localVarHTTPResponse, newErr
 		}
+		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
 
 	return localVarHTTPResponse, nil
-}
-
-type RelationshipApiApiGetRelationshipNamespacesRequest struct {
-	ctx        context.Context
-	ApiService RelationshipApi
-}
-
-func (r RelationshipApiApiGetRelationshipNamespacesRequest) Execute() (*GetRelationshipNamespacesResponse, *http.Response, error) {
-	return r.ApiService.GetRelationshipNamespacesExecute(r)
-}
-
-/*
- * GetRelationshipNamespaces Query namespaces
- * Get all namespaces
- * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @return RelationshipApiApiGetRelationshipNamespacesRequest
- */
-func (a *RelationshipApiService) GetRelationshipNamespaces(ctx context.Context) RelationshipApiApiGetRelationshipNamespacesRequest {
-	return RelationshipApiApiGetRelationshipNamespacesRequest{
-		ApiService: a,
-		ctx:        ctx,
-	}
-}
-
-/*
- * Execute executes the request
- * @return GetRelationshipNamespacesResponse
- */
-func (a *RelationshipApiService) GetRelationshipNamespacesExecute(r RelationshipApiApiGetRelationshipNamespacesRequest) (*GetRelationshipNamespacesResponse, *http.Response, error) {
-	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		localVarFormFileName string
-		localVarFileName     string
-		localVarFileBytes    []byte
-		localVarReturnValue  *GetRelationshipNamespacesResponse
-	)
-
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "RelationshipApiService.GetRelationshipNamespaces")
-	if err != nil {
-		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
-	}
-
-	localVarPath := localBasePath + "/namespaces"
-
-	localVarHeaderParams := make(map[string]string)
-	localVarQueryParams := url.Values{}
-	localVarFormParams := url.Values{}
-
-	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{}
-
-	// set Content-Type header
-	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
-	if localVarHTTPContentType != "" {
-		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
-	}
-
-	// to determine the Accept header
-	localVarHTTPHeaderAccepts := []string{"application/json"}
-
-	// set Accept header
-	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
-	if localVarHTTPHeaderAccept != "" {
-		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
-	}
-	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
-	if err != nil {
-		return localVarReturnValue, nil, err
-	}
-
-	localVarHTTPResponse, err := a.client.callAPI(req)
-	if err != nil || localVarHTTPResponse == nil {
-		return localVarReturnValue, localVarHTTPResponse, err
-	}
-
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
-	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
-	if err != nil {
-		return localVarReturnValue, localVarHTTPResponse, err
-	}
-
-	if localVarHTTPResponse.StatusCode >= 300 {
-		newErr := &GenericOpenAPIError{
-			body:  localVarBody,
-			error: localVarHTTPResponse.Status,
-		}
-		if localVarHTTPResponse.StatusCode == 500 {
-			var v GenericError
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-			newErr.model = v
-		}
-		return localVarReturnValue, localVarHTTPResponse, newErr
-	}
-
-	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-	if err != nil {
-		newErr := &GenericOpenAPIError{
-			body:  localVarBody,
-			error: err.Error(),
-		}
-		return localVarReturnValue, localVarHTTPResponse, newErr
-	}
-
-	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
 type RelationshipApiApiGetRelationshipsRequest struct {
@@ -698,7 +579,7 @@ func (r RelationshipApiApiGetRelationshipsRequest) SubjectSetRelation(subjectSet
 	return r
 }
 
-func (r RelationshipApiApiGetRelationshipsRequest) Execute() (*GetRelationshipsResponse, *http.Response, error) {
+func (r RelationshipApiApiGetRelationshipsRequest) Execute() (*Relationships, *http.Response, error) {
 	return r.ApiService.GetRelationshipsExecute(r)
 }
 
@@ -717,16 +598,16 @@ func (a *RelationshipApiService) GetRelationships(ctx context.Context) Relations
 
 /*
  * Execute executes the request
- * @return GetRelationshipsResponse
+ * @return Relationships
  */
-func (a *RelationshipApiService) GetRelationshipsExecute(r RelationshipApiApiGetRelationshipsRequest) (*GetRelationshipsResponse, *http.Response, error) {
+func (a *RelationshipApiService) GetRelationshipsExecute(r RelationshipApiApiGetRelationshipsRequest) (*Relationships, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodGet
 		localVarPostBody     interface{}
 		localVarFormFileName string
 		localVarFileName     string
 		localVarFileBytes    []byte
-		localVarReturnValue  *GetRelationshipsResponse
+		localVarReturnValue  *Relationships
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "RelationshipApiService.GetRelationships")
@@ -807,7 +688,7 @@ func (a *RelationshipApiService) GetRelationshipsExecute(r RelationshipApiApiGet
 			error: localVarHTTPResponse.Status,
 		}
 		if localVarHTTPResponse.StatusCode == 404 {
-			var v GenericError
+			var v ErrorGeneric
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -816,15 +697,121 @@ func (a *RelationshipApiService) GetRelationshipsExecute(r RelationshipApiApiGet
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
-		if localVarHTTPResponse.StatusCode == 500 {
-			var v GenericError
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-			newErr.model = v
+		var v ErrorGeneric
+		err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+		if err != nil {
+			newErr.error = err.Error()
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.model = v
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type RelationshipApiApiListRelationshipNamespacesRequest struct {
+	ctx        context.Context
+	ApiService RelationshipApi
+}
+
+func (r RelationshipApiApiListRelationshipNamespacesRequest) Execute() (*RelationshipNamespaces, *http.Response, error) {
+	return r.ApiService.ListRelationshipNamespacesExecute(r)
+}
+
+/*
+ * ListRelationshipNamespaces Query namespaces
+ * Get all namespaces
+ * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ * @return RelationshipApiApiListRelationshipNamespacesRequest
+ */
+func (a *RelationshipApiService) ListRelationshipNamespaces(ctx context.Context) RelationshipApiApiListRelationshipNamespacesRequest {
+	return RelationshipApiApiListRelationshipNamespacesRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+/*
+ * Execute executes the request
+ * @return RelationshipNamespaces
+ */
+func (a *RelationshipApiService) ListRelationshipNamespacesExecute(r RelationshipApiApiListRelationshipNamespacesRequest) (*RelationshipNamespaces, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodGet
+		localVarPostBody     interface{}
+		localVarFormFileName string
+		localVarFileName     string
+		localVarFileBytes    []byte
+		localVarReturnValue  *RelationshipNamespaces
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "RelationshipApiService.ListRelationshipNamespaces")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/namespaces"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		var v ErrorGeneric
+		err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+		if err != nil {
+			newErr.error = err.Error()
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
@@ -841,13 +828,13 @@ func (a *RelationshipApiService) GetRelationshipsExecute(r RelationshipApiApiGet
 }
 
 type RelationshipApiApiPatchRelationshipsRequest struct {
-	ctx        context.Context
-	ApiService RelationshipApi
-	patchDelta *[]PatchDelta
+	ctx               context.Context
+	ApiService        RelationshipApi
+	relationshipPatch *[]RelationshipPatch
 }
 
-func (r RelationshipApiApiPatchRelationshipsRequest) PatchDelta(patchDelta []PatchDelta) RelationshipApiApiPatchRelationshipsRequest {
-	r.patchDelta = &patchDelta
+func (r RelationshipApiApiPatchRelationshipsRequest) RelationshipPatch(relationshipPatch []RelationshipPatch) RelationshipApiApiPatchRelationshipsRequest {
+	r.relationshipPatch = &relationshipPatch
 	return r
 }
 
@@ -909,7 +896,7 @@ func (a *RelationshipApiService) PatchRelationshipsExecute(r RelationshipApiApiP
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.patchDelta
+	localVarPostBody = r.relationshipPatch
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return nil, err
@@ -933,7 +920,7 @@ func (a *RelationshipApiService) PatchRelationshipsExecute(r RelationshipApiApiP
 			error: localVarHTTPResponse.Status,
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
-			var v GenericError
+			var v ErrorGeneric
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -943,7 +930,7 @@ func (a *RelationshipApiService) PatchRelationshipsExecute(r RelationshipApiApiP
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 404 {
-			var v GenericError
+			var v ErrorGeneric
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -952,15 +939,13 @@ func (a *RelationshipApiService) PatchRelationshipsExecute(r RelationshipApiApiP
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
-		if localVarHTTPResponse.StatusCode == 500 {
-			var v GenericError
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarHTTPResponse, newErr
-			}
-			newErr.model = v
+		var v ErrorGeneric
+		err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+		if err != nil {
+			newErr.error = err.Error()
+			return localVarHTTPResponse, newErr
 		}
+		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
 

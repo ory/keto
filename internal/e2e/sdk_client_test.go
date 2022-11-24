@@ -82,7 +82,7 @@ func (c *sdkClient) getOPLSyntaxClient() *httpclient.APIClient {
 }
 
 func (c *sdkClient) createTuple(t require.TestingT, r *ketoapi.RelationTuple) {
-	payload := httpclient.RelationQuery{
+	payload := httpclient.CreateRelationshipBody{
 		Namespace: pointerx.Ptr(r.Namespace),
 		Object:    pointerx.Ptr(r.Object),
 		Relation:  pointerx.Ptr(r.Relation),
@@ -97,8 +97,8 @@ func (c *sdkClient) createTuple(t require.TestingT, r *ketoapi.RelationTuple) {
 	}
 
 	_, _, err := c.getWriteClient().RelationshipApi.
-		CreateRelationships(c.requestCtx()).
-		RelationQuery(payload).
+		CreateRelationship(c.requestCtx()).
+		CreateRelationshipBody(payload).
 		Execute()
 	require.NoError(t, err)
 }
@@ -240,7 +240,7 @@ func (c *sdkClient) check(t require.TestingT, r *ketoapi.RelationTuple) bool {
 	return resp.GetAllowed()
 }
 
-func buildTree(t require.TestingT, mt *httpclient.ExpandTree) *ketoapi.Tree[*ketoapi.RelationTuple] {
+func buildTree(t require.TestingT, mt *httpclient.ExpandedPermissionTree) *ketoapi.Tree[*ketoapi.RelationTuple] {
 	result := &ketoapi.Tree[*ketoapi.RelationTuple]{
 		Type: ketoapi.TreeNodeType(mt.Type),
 	}
@@ -290,7 +290,7 @@ func (c *sdkClient) waitUntilLive(t require.TestingT) {
 }
 
 func (c *sdkClient) queryNamespaces(t require.TestingT) (response ketoapi.GetNamespacesResponse) {
-	res, _, err := c.getReadClient().RelationshipApi.GetRelationshipNamespaces(c.requestCtx()).Execute()
+	res, _, err := c.getReadClient().RelationshipApi.ListRelationshipNamespaces(c.requestCtx()).Execute()
 	require.NoError(t, err)
 	require.NoError(t, convert(res, &response))
 

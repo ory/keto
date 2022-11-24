@@ -29,7 +29,9 @@ type Namespace struct {
 	Name string `json:"name"`
 }
 
-// swagger:model relationTuple
+// Relationship
+//
+// swagger:model relationship
 type RelationTuple struct {
 	// Namespace of the Relation Tuple
 	//
@@ -77,6 +79,8 @@ type SubjectSet struct {
 	Relation string `json:"relation"`
 }
 
+// Relation Query
+//
 // swagger:model relationQuery
 type RelationQuery struct {
 	// Namespace to query
@@ -100,7 +104,9 @@ type RelationQuery struct {
 	SubjectSet *SubjectSet `json:"subject_set,omitempty"`
 }
 
-// swagger:model patchDelta
+// Payload for patching a relationship
+//
+// swagger:model relationshipPatch
 type PatchDelta struct {
 	Action        PatchAction    `json:"action"`
 	RelationTuple *RelationTuple `json:"relation_tuple"`
@@ -121,7 +127,9 @@ const (
 	SubjectSetRelationKey  = "subject_set.relation"
 )
 
-// swagger:model getRelationshipsResponse
+// Paginated Relationship List
+//
+// swagger:model relationships
 type GetResponse struct {
 	RelationTuples []*RelationTuple `json:"relation_tuples"`
 	// The opaque token to provide in a subsequent request
@@ -130,7 +138,9 @@ type GetResponse struct {
 	NextPageToken string `json:"next_page_token"`
 }
 
-// swagger:model getRelationshipNamespacesResponse
+// Relationship Namespace List
+//
+// swagger:model relationshipNamespaces
 type GetNamespacesResponse struct {
 	Namespaces []Namespace `json:"namespaces"`
 }
@@ -208,7 +218,7 @@ type Tree[T tuple[T]] struct {
 // OpenAPI spec, since go-swagger does not understand generics :(.
 // This can be fixed by using grpc-gateway.
 
-// swagger:model expandTree
+// swagger:model expandedPermissionTree
 type swaggerOnlyExpandTree struct { // nolint
 	// The type of the node.
 	//
@@ -234,7 +244,7 @@ type SourcePosition struct {
 
 // CheckOPLSyntaxResponse represents the response for an OPL syntax check request.
 //
-// swagger:model postCheckOplSyntaxResponse
+// swagger:model checkOplSyntaxResult
 type CheckOPLSyntaxResponse struct {
 	// The list of syntax errors
 	//

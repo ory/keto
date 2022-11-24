@@ -51,31 +51,37 @@ func (h *Handler) Check(_ context.Context, request *opl.CheckRequest) (*opl.Chec
 	return &opl.CheckResponse{ParseErrors: apiErrors}, nil
 }
 
+// Check OPL Syntax Request Parameters
+//
+// swagger:parameters checkOplSyntax
+type checkOplSyntax struct {
+	// in: body
+	Body checkOplSyntaxBody
+}
+
+// Ory Permission Language Document
+//
+// swagger:model checkOplSyntaxBody
+type checkOplSyntaxBody string
+
 // swagger:route POST /opl/syntax/check relationship checkOplSyntax
 //
 // # Check the syntax of an OPL file
 //
 // The OPL file is expected in the body of the request.
 //
-//		Consumes:
-//		- text/plain
+//	Consumes:
+//	- text/plain
 //
-//		Produces:
-//		- application/json
+//	Produces:
+//	- application/json
 //
-//		Schemes: http, https
+//	Schemes: http, https
 //
-//	 Parameters:
-//	   + name: content
-//	     in: body
-//	     description: the OPL content to check
-//	     required: true
-//	     type: string
-//
-//	 Responses:
-//		  200: postCheckOplSyntaxResponse
-//		  400: genericError
-//		  500: genericError
+//	Responses:
+//	  200: checkOplSyntaxResult
+//	  400: errorGeneric
+//	  default: errorGeneric
 func (h *Handler) postCheckOplSyntax(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	data, err := io.ReadAll(r.Body)
 	if err != nil {

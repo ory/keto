@@ -36,9 +36,9 @@ type PermissionApi interface {
 
 	/*
 	 * CheckPermissionExecute executes the request
-	 * @return CheckPermissionResponse
+	 * @return CheckPermissionResult
 	 */
-	CheckPermissionExecute(r PermissionApiApiCheckPermissionRequest) (*CheckPermissionResponse, *http.Response, error)
+	CheckPermissionExecute(r PermissionApiApiCheckPermissionRequest) (*CheckPermissionResult, *http.Response, error)
 
 	/*
 	 * CheckPermissionOrError Check a permission
@@ -50,9 +50,9 @@ type PermissionApi interface {
 
 	/*
 	 * CheckPermissionOrErrorExecute executes the request
-	 * @return CheckPermissionResponse
+	 * @return CheckPermissionResult
 	 */
-	CheckPermissionOrErrorExecute(r PermissionApiApiCheckPermissionOrErrorRequest) (*CheckPermissionResponse, *http.Response, error)
+	CheckPermissionOrErrorExecute(r PermissionApiApiCheckPermissionOrErrorRequest) (*CheckPermissionResult, *http.Response, error)
 
 	/*
 	 * ExpandPermissions Expand a Relationship into permissions.
@@ -64,9 +64,9 @@ type PermissionApi interface {
 
 	/*
 	 * ExpandPermissionsExecute executes the request
-	 * @return ExpandTree
+	 * @return ExpandedPermissionTree
 	 */
-	ExpandPermissionsExecute(r PermissionApiApiExpandPermissionsRequest) (*ExpandTree, *http.Response, error)
+	ExpandPermissionsExecute(r PermissionApiApiExpandPermissionsRequest) (*ExpandedPermissionTree, *http.Response, error)
 
 	/*
 	 * PostCheckPermission Check a permission
@@ -78,9 +78,9 @@ type PermissionApi interface {
 
 	/*
 	 * PostCheckPermissionExecute executes the request
-	 * @return CheckPermissionResponse
+	 * @return CheckPermissionResult
 	 */
-	PostCheckPermissionExecute(r PermissionApiApiPostCheckPermissionRequest) (*CheckPermissionResponse, *http.Response, error)
+	PostCheckPermissionExecute(r PermissionApiApiPostCheckPermissionRequest) (*CheckPermissionResult, *http.Response, error)
 
 	/*
 	 * PostCheckPermissionOrError Check a permission
@@ -92,9 +92,9 @@ type PermissionApi interface {
 
 	/*
 	 * PostCheckPermissionOrErrorExecute executes the request
-	 * @return CheckPermissionResponse
+	 * @return CheckPermissionResult
 	 */
-	PostCheckPermissionOrErrorExecute(r PermissionApiApiPostCheckPermissionOrErrorRequest) (*CheckPermissionResponse, *http.Response, error)
+	PostCheckPermissionOrErrorExecute(r PermissionApiApiPostCheckPermissionOrErrorRequest) (*CheckPermissionResult, *http.Response, error)
 }
 
 // PermissionApiService PermissionApi service
@@ -146,7 +146,7 @@ func (r PermissionApiApiCheckPermissionRequest) MaxDepth(maxDepth int64) Permiss
 	return r
 }
 
-func (r PermissionApiApiCheckPermissionRequest) Execute() (*CheckPermissionResponse, *http.Response, error) {
+func (r PermissionApiApiCheckPermissionRequest) Execute() (*CheckPermissionResult, *http.Response, error) {
 	return r.ApiService.CheckPermissionExecute(r)
 }
 
@@ -165,16 +165,16 @@ func (a *PermissionApiService) CheckPermission(ctx context.Context) PermissionAp
 
 /*
  * Execute executes the request
- * @return CheckPermissionResponse
+ * @return CheckPermissionResult
  */
-func (a *PermissionApiService) CheckPermissionExecute(r PermissionApiApiCheckPermissionRequest) (*CheckPermissionResponse, *http.Response, error) {
+func (a *PermissionApiService) CheckPermissionExecute(r PermissionApiApiCheckPermissionRequest) (*CheckPermissionResult, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodGet
 		localVarPostBody     interface{}
 		localVarFormFileName string
 		localVarFileName     string
 		localVarFileBytes    []byte
-		localVarReturnValue  *CheckPermissionResponse
+		localVarReturnValue  *CheckPermissionResult
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PermissionApiService.CheckPermission")
@@ -252,7 +252,7 @@ func (a *PermissionApiService) CheckPermissionExecute(r PermissionApiApiCheckPer
 			error: localVarHTTPResponse.Status,
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
-			var v GenericError
+			var v ErrorGeneric
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -261,15 +261,13 @@ func (a *PermissionApiService) CheckPermissionExecute(r PermissionApiApiCheckPer
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
-		if localVarHTTPResponse.StatusCode == 500 {
-			var v GenericError
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-			newErr.model = v
+		var v ErrorGeneric
+		err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+		if err != nil {
+			newErr.error = err.Error()
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
@@ -331,7 +329,7 @@ func (r PermissionApiApiCheckPermissionOrErrorRequest) MaxDepth(maxDepth int64) 
 	return r
 }
 
-func (r PermissionApiApiCheckPermissionOrErrorRequest) Execute() (*CheckPermissionResponse, *http.Response, error) {
+func (r PermissionApiApiCheckPermissionOrErrorRequest) Execute() (*CheckPermissionResult, *http.Response, error) {
 	return r.ApiService.CheckPermissionOrErrorExecute(r)
 }
 
@@ -350,16 +348,16 @@ func (a *PermissionApiService) CheckPermissionOrError(ctx context.Context) Permi
 
 /*
  * Execute executes the request
- * @return CheckPermissionResponse
+ * @return CheckPermissionResult
  */
-func (a *PermissionApiService) CheckPermissionOrErrorExecute(r PermissionApiApiCheckPermissionOrErrorRequest) (*CheckPermissionResponse, *http.Response, error) {
+func (a *PermissionApiService) CheckPermissionOrErrorExecute(r PermissionApiApiCheckPermissionOrErrorRequest) (*CheckPermissionResult, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodGet
 		localVarPostBody     interface{}
 		localVarFormFileName string
 		localVarFileName     string
 		localVarFileBytes    []byte
-		localVarReturnValue  *CheckPermissionResponse
+		localVarReturnValue  *CheckPermissionResult
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PermissionApiService.CheckPermissionOrError")
@@ -437,7 +435,7 @@ func (a *PermissionApiService) CheckPermissionOrErrorExecute(r PermissionApiApiC
 			error: localVarHTTPResponse.Status,
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
-			var v GenericError
+			var v ErrorGeneric
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -447,7 +445,7 @@ func (a *PermissionApiService) CheckPermissionOrErrorExecute(r PermissionApiApiC
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
-			var v CheckPermissionResponse
+			var v CheckPermissionResult
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -456,15 +454,13 @@ func (a *PermissionApiService) CheckPermissionOrErrorExecute(r PermissionApiApiC
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
-		if localVarHTTPResponse.StatusCode == 500 {
-			var v GenericError
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-			newErr.model = v
+		var v ErrorGeneric
+		err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+		if err != nil {
+			newErr.error = err.Error()
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
@@ -506,7 +502,7 @@ func (r PermissionApiApiExpandPermissionsRequest) MaxDepth(maxDepth int64) Permi
 	return r
 }
 
-func (r PermissionApiApiExpandPermissionsRequest) Execute() (*ExpandTree, *http.Response, error) {
+func (r PermissionApiApiExpandPermissionsRequest) Execute() (*ExpandedPermissionTree, *http.Response, error) {
 	return r.ApiService.ExpandPermissionsExecute(r)
 }
 
@@ -525,16 +521,16 @@ func (a *PermissionApiService) ExpandPermissions(ctx context.Context) Permission
 
 /*
  * Execute executes the request
- * @return ExpandTree
+ * @return ExpandedPermissionTree
  */
-func (a *PermissionApiService) ExpandPermissionsExecute(r PermissionApiApiExpandPermissionsRequest) (*ExpandTree, *http.Response, error) {
+func (a *PermissionApiService) ExpandPermissionsExecute(r PermissionApiApiExpandPermissionsRequest) (*ExpandedPermissionTree, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodGet
 		localVarPostBody     interface{}
 		localVarFormFileName string
 		localVarFileName     string
 		localVarFileBytes    []byte
-		localVarReturnValue  *ExpandTree
+		localVarReturnValue  *ExpandedPermissionTree
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PermissionApiService.ExpandPermissions")
@@ -603,7 +599,7 @@ func (a *PermissionApiService) ExpandPermissionsExecute(r PermissionApiApiExpand
 			error: localVarHTTPResponse.Status,
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
-			var v GenericError
+			var v ErrorGeneric
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -613,7 +609,7 @@ func (a *PermissionApiService) ExpandPermissionsExecute(r PermissionApiApiExpand
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 404 {
-			var v GenericError
+			var v ErrorGeneric
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -622,15 +618,13 @@ func (a *PermissionApiService) ExpandPermissionsExecute(r PermissionApiApiExpand
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
-		if localVarHTTPResponse.StatusCode == 500 {
-			var v GenericError
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-			newErr.model = v
+		var v ErrorGeneric
+		err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+		if err != nil {
+			newErr.error = err.Error()
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
@@ -647,22 +641,22 @@ func (a *PermissionApiService) ExpandPermissionsExecute(r PermissionApiApiExpand
 }
 
 type PermissionApiApiPostCheckPermissionRequest struct {
-	ctx           context.Context
-	ApiService    PermissionApi
-	maxDepth      *int64
-	relationQuery *RelationQuery
+	ctx                     context.Context
+	ApiService              PermissionApi
+	maxDepth                *int64
+	postCheckPermissionBody *PostCheckPermissionBody
 }
 
 func (r PermissionApiApiPostCheckPermissionRequest) MaxDepth(maxDepth int64) PermissionApiApiPostCheckPermissionRequest {
 	r.maxDepth = &maxDepth
 	return r
 }
-func (r PermissionApiApiPostCheckPermissionRequest) RelationQuery(relationQuery RelationQuery) PermissionApiApiPostCheckPermissionRequest {
-	r.relationQuery = &relationQuery
+func (r PermissionApiApiPostCheckPermissionRequest) PostCheckPermissionBody(postCheckPermissionBody PostCheckPermissionBody) PermissionApiApiPostCheckPermissionRequest {
+	r.postCheckPermissionBody = &postCheckPermissionBody
 	return r
 }
 
-func (r PermissionApiApiPostCheckPermissionRequest) Execute() (*CheckPermissionResponse, *http.Response, error) {
+func (r PermissionApiApiPostCheckPermissionRequest) Execute() (*CheckPermissionResult, *http.Response, error) {
 	return r.ApiService.PostCheckPermissionExecute(r)
 }
 
@@ -681,16 +675,16 @@ func (a *PermissionApiService) PostCheckPermission(ctx context.Context) Permissi
 
 /*
  * Execute executes the request
- * @return CheckPermissionResponse
+ * @return CheckPermissionResult
  */
-func (a *PermissionApiService) PostCheckPermissionExecute(r PermissionApiApiPostCheckPermissionRequest) (*CheckPermissionResponse, *http.Response, error) {
+func (a *PermissionApiService) PostCheckPermissionExecute(r PermissionApiApiPostCheckPermissionRequest) (*CheckPermissionResult, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodPost
 		localVarPostBody     interface{}
 		localVarFormFileName string
 		localVarFileName     string
 		localVarFileBytes    []byte
-		localVarReturnValue  *CheckPermissionResponse
+		localVarReturnValue  *CheckPermissionResult
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PermissionApiService.PostCheckPermission")
@@ -725,7 +719,7 @@ func (a *PermissionApiService) PostCheckPermissionExecute(r PermissionApiApiPost
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.relationQuery
+	localVarPostBody = r.postCheckPermissionBody
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
@@ -749,7 +743,7 @@ func (a *PermissionApiService) PostCheckPermissionExecute(r PermissionApiApiPost
 			error: localVarHTTPResponse.Status,
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
-			var v GenericError
+			var v ErrorGeneric
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -758,15 +752,13 @@ func (a *PermissionApiService) PostCheckPermissionExecute(r PermissionApiApiPost
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
-		if localVarHTTPResponse.StatusCode == 500 {
-			var v GenericError
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-			newErr.model = v
+		var v ErrorGeneric
+		err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+		if err != nil {
+			newErr.error = err.Error()
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
@@ -783,22 +775,22 @@ func (a *PermissionApiService) PostCheckPermissionExecute(r PermissionApiApiPost
 }
 
 type PermissionApiApiPostCheckPermissionOrErrorRequest struct {
-	ctx           context.Context
-	ApiService    PermissionApi
-	maxDepth      *int64
-	relationQuery *RelationQuery
+	ctx                            context.Context
+	ApiService                     PermissionApi
+	maxDepth                       *int64
+	postCheckPermissionOrErrorBody *PostCheckPermissionOrErrorBody
 }
 
 func (r PermissionApiApiPostCheckPermissionOrErrorRequest) MaxDepth(maxDepth int64) PermissionApiApiPostCheckPermissionOrErrorRequest {
 	r.maxDepth = &maxDepth
 	return r
 }
-func (r PermissionApiApiPostCheckPermissionOrErrorRequest) RelationQuery(relationQuery RelationQuery) PermissionApiApiPostCheckPermissionOrErrorRequest {
-	r.relationQuery = &relationQuery
+func (r PermissionApiApiPostCheckPermissionOrErrorRequest) PostCheckPermissionOrErrorBody(postCheckPermissionOrErrorBody PostCheckPermissionOrErrorBody) PermissionApiApiPostCheckPermissionOrErrorRequest {
+	r.postCheckPermissionOrErrorBody = &postCheckPermissionOrErrorBody
 	return r
 }
 
-func (r PermissionApiApiPostCheckPermissionOrErrorRequest) Execute() (*CheckPermissionResponse, *http.Response, error) {
+func (r PermissionApiApiPostCheckPermissionOrErrorRequest) Execute() (*CheckPermissionResult, *http.Response, error) {
 	return r.ApiService.PostCheckPermissionOrErrorExecute(r)
 }
 
@@ -817,16 +809,16 @@ func (a *PermissionApiService) PostCheckPermissionOrError(ctx context.Context) P
 
 /*
  * Execute executes the request
- * @return CheckPermissionResponse
+ * @return CheckPermissionResult
  */
-func (a *PermissionApiService) PostCheckPermissionOrErrorExecute(r PermissionApiApiPostCheckPermissionOrErrorRequest) (*CheckPermissionResponse, *http.Response, error) {
+func (a *PermissionApiService) PostCheckPermissionOrErrorExecute(r PermissionApiApiPostCheckPermissionOrErrorRequest) (*CheckPermissionResult, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodPost
 		localVarPostBody     interface{}
 		localVarFormFileName string
 		localVarFileName     string
 		localVarFileBytes    []byte
-		localVarReturnValue  *CheckPermissionResponse
+		localVarReturnValue  *CheckPermissionResult
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PermissionApiService.PostCheckPermissionOrError")
@@ -861,7 +853,7 @@ func (a *PermissionApiService) PostCheckPermissionOrErrorExecute(r PermissionApi
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.relationQuery
+	localVarPostBody = r.postCheckPermissionOrErrorBody
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
@@ -885,7 +877,7 @@ func (a *PermissionApiService) PostCheckPermissionOrErrorExecute(r PermissionApi
 			error: localVarHTTPResponse.Status,
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
-			var v GenericError
+			var v ErrorGeneric
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -895,7 +887,7 @@ func (a *PermissionApiService) PostCheckPermissionOrErrorExecute(r PermissionApi
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
-			var v CheckPermissionResponse
+			var v CheckPermissionResult
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -904,15 +896,13 @@ func (a *PermissionApiService) PostCheckPermissionOrErrorExecute(r PermissionApi
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
-		if localVarHTTPResponse.StatusCode == 500 {
-			var v GenericError
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-			newErr.model = v
+		var v ErrorGeneric
+		err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+		if err != nil {
+			newErr.error = err.Error()
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 

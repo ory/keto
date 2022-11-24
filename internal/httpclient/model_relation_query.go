@@ -15,7 +15,7 @@ import (
 	"encoding/json"
 )
 
-// RelationQuery struct for RelationQuery
+// RelationQuery Relation Query
 type RelationQuery struct {
 	// Namespace to query
 	Namespace *string `json:"namespace,omitempty"`

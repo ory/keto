@@ -37,7 +37,24 @@
         "format": "uuid4",
         "type": "string"
       },
-      "checkPermissionResponse": {
+      "checkOplSyntaxBody": {
+        "description": "Ory Permission Language Document",
+        "type": "string"
+      },
+      "checkOplSyntaxResult": {
+        "properties": {
+          "errors": {
+            "description": "The list of syntax errors",
+            "items": {
+              "$ref": "#/components/schemas/ParseError"
+            },
+            "type": "array"
+          }
+        },
+        "title": "CheckOPLSyntaxResponse represents the response for an OPL syntax check request.",
+        "type": "object"
+      },
+      "checkPermissionResult": {
         "description": "The content of the allowed field is mirrored in the HTTP status code.",
         "properties": {
           "allowed": {
@@ -46,20 +63,56 @@
           }
         },
         "required": ["allowed"],
-        "title": "CheckPermissionResponse represents the response for a check request.",
+        "title": "Check Permission Result",
         "type": "object"
       },
-      "expandTree": {
+      "createRelationshipBody": {
+        "description": "Create Relationship Request Body",
+        "properties": {
+          "namespace": {
+            "description": "Namespace to query",
+            "type": "string"
+          },
+          "object": {
+            "description": "Object to query",
+            "type": "string"
+          },
+          "relation": {
+            "description": "Relation to query",
+            "type": "string"
+          },
+          "subject_id": {
+            "description": "SubjectID to query\n\nEither SubjectSet or SubjectID can be provided.",
+            "type": "string"
+          },
+          "subject_set": {
+            "$ref": "#/components/schemas/subjectSet"
+          }
+        },
+        "type": "object"
+      },
+      "errorGeneric": {
+        "description": "The standard Ory JSON API error format.",
+        "properties": {
+          "error": {
+            "$ref": "#/components/schemas/genericError"
+          }
+        },
+        "required": ["error"],
+        "title": "JSON API Error Response",
+        "type": "object"
+      },
+      "expandedPermissionTree": {
         "properties": {
           "children": {
             "description": "The children of the node, possibly none.",
             "items": {
-              "$ref": "#/components/schemas/expandTree"
+              "$ref": "#/components/schemas/expandedPermissionTree"
             },
             "type": "array"
           },
           "tuple": {
-            "$ref": "#/components/schemas/relationTuple"
+            "$ref": "#/components/schemas/relationship"
           },
           "type": {
             "description": "The type of the node.\nunion TreeNodeUnion\nexclusion TreeNodeExclusion\nintersection TreeNodeIntersection\nleaf TreeNodeLeaf\ntuple_to_subject_set TreeNodeTupleToSubjectSet\ncomputed_subject_set TreeNodeComputedSubjectSet\nnot TreeNodeNot\nunspecified TreeNodeUnspecified",
@@ -81,58 +134,49 @@
         "type": "object"
       },
       "genericError": {
-        "description": "The standard error format",
         "properties": {
           "code": {
+            "description": "The status code",
+            "example": 404,
             "format": "int64",
             "type": "integer"
           },
+          "debug": {
+            "description": "Debug information\n\nThis field is often not exposed to protect against leaking\nsensitive information.",
+            "example": "SQL field \"foo\" is not a bool.",
+            "type": "string"
+          },
           "details": {
-            "items": {
-              "additionalProperties": {},
-              "type": "object"
-            },
-            "type": "array"
+            "additionalProperties": {},
+            "description": "Further error details",
+            "type": "object"
+          },
+          "id": {
+            "description": "The error ID\n\nUseful when trying to identify various errors in application logic.",
+            "type": "string"
           },
           "message": {
+            "description": "Error message\n\nThe error's message.",
+            "example": "The resource could not be found",
             "type": "string"
           },
           "reason": {
+            "description": "A human-readable reason for the error",
+            "example": "User with ID 1234 does not exist.",
             "type": "string"
           },
           "request": {
+            "description": "The request ID\n\nThe request ID is often exposed internally in order to trace\nerrors across service architectures. This is often a UUID.",
+            "example": "d7ef54b1-ec15-46e6-bccb-524b82c035e6",
             "type": "string"
           },
           "status": {
+            "description": "The status description",
+            "example": "Not Found",
             "type": "string"
           }
         },
-        "type": "object"
-      },
-      "getRelationshipNamespacesResponse": {
-        "properties": {
-          "namespaces": {
-            "items": {
-              "$ref": "#/components/schemas/namespace"
-            },
-            "type": "array"
-          }
-        },
-        "type": "object"
-      },
-      "getRelationshipsResponse": {
-        "properties": {
-          "next_page_token": {
-            "description": "The opaque token to provide in a subsequent request\nto get the next page. It is the empty string iff this is\nthe last page.",
-            "type": "string"
-          },
-          "relation_tuples": {
-            "items": {
-              "$ref": "#/components/schemas/relationTuple"
-            },
-            "type": "array"
-          }
-        },
+        "required": ["message"],
         "type": "object"
       },
       "healthNotReadyStatus": {
@@ -165,33 +209,8 @@
         },
         "type": "object"
       },
-      "patchDelta": {
-        "properties": {
-          "action": {
-            "enum": ["insert", "delete"],
-            "type": "string",
-            "x-go-enum-desc": "insert ActionInsert\ndelete ActionDelete"
-          },
-          "relation_tuple": {
-            "$ref": "#/components/schemas/relationTuple"
-          }
-        },
-        "type": "object"
-      },
-      "postCheckOplSyntaxResponse": {
-        "properties": {
-          "errors": {
-            "description": "The list of syntax errors",
-            "items": {
-              "$ref": "#/components/schemas/ParseError"
-            },
-            "type": "array"
-          }
-        },
-        "title": "CheckOPLSyntaxResponse represents the response for an OPL syntax check request.",
-        "type": "object"
-      },
-      "relationQuery": {
+      "postCheckPermissionBody": {
+        "description": "Check Permission using Post Request Body",
         "properties": {
           "namespace": {
             "description": "Namespace to query",
@@ -215,7 +234,58 @@
         },
         "type": "object"
       },
-      "relationTuple": {
+      "postCheckPermissionOrErrorBody": {
+        "description": "Post Check Permission Or Error Body",
+        "properties": {
+          "namespace": {
+            "description": "Namespace to query",
+            "type": "string"
+          },
+          "object": {
+            "description": "Object to query",
+            "type": "string"
+          },
+          "relation": {
+            "description": "Relation to query",
+            "type": "string"
+          },
+          "subject_id": {
+            "description": "SubjectID to query\n\nEither SubjectSet or SubjectID can be provided.",
+            "type": "string"
+          },
+          "subject_set": {
+            "$ref": "#/components/schemas/subjectSet"
+          }
+        },
+        "type": "object"
+      },
+      "relationQuery": {
+        "description": "Relation Query",
+        "properties": {
+          "namespace": {
+            "description": "Namespace to query",
+            "type": "string"
+          },
+          "object": {
+            "description": "Object to query",
+            "type": "string"
+          },
+          "relation": {
+            "description": "Relation to query",
+            "type": "string"
+          },
+          "subject_id": {
+            "description": "SubjectID to query\n\nEither SubjectSet or SubjectID can be provided.",
+            "type": "string"
+          },
+          "subject_set": {
+            "$ref": "#/components/schemas/subjectSet"
+          }
+        },
+        "type": "object"
+      },
+      "relationship": {
+        "description": "Relationship",
         "properties": {
           "namespace": {
             "description": "Namespace of the Relation Tuple",
@@ -238,6 +308,48 @@
           }
         },
         "required": ["namespace", "object", "relation"],
+        "type": "object"
+      },
+      "relationshipNamespaces": {
+        "description": "Relationship Namespace List",
+        "properties": {
+          "namespaces": {
+            "items": {
+              "$ref": "#/components/schemas/namespace"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "relationshipPatch": {
+        "description": "Payload for patching a relationship",
+        "properties": {
+          "action": {
+            "enum": ["insert", "delete"],
+            "type": "string",
+            "x-go-enum-desc": "insert ActionInsert\ndelete ActionDelete"
+          },
+          "relation_tuple": {
+            "$ref": "#/components/schemas/relationship"
+          }
+        },
+        "type": "object"
+      },
+      "relationships": {
+        "description": "Paginated Relationship List",
+        "properties": {
+          "next_page_token": {
+            "description": "The opaque token to provide in a subsequent request\nto get the next page. It is the empty string iff this is\nthe last page.",
+            "type": "string"
+          },
+          "relation_tuples": {
+            "items": {
+              "$ref": "#/components/schemas/relationship"
+            },
+            "type": "array"
+          }
+        },
         "type": "object"
       },
       "subjectSet": {
@@ -352,21 +464,21 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/genericError"
+                  "$ref": "#/components/schemas/errorGeneric"
                 }
               }
             },
-            "description": "genericError"
+            "description": "errorGeneric"
           },
-          "500": {
+          "default": {
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/genericError"
+                  "$ref": "#/components/schemas/errorGeneric"
                 }
               }
             },
-            "description": "genericError"
+            "description": "errorGeneric"
           }
         },
         "summary": "Delete Relationships",
@@ -380,13 +492,13 @@
             "application/json": {
               "schema": {
                 "items": {
-                  "$ref": "#/components/schemas/patchDelta"
+                  "$ref": "#/components/schemas/relationshipPatch"
                 },
                 "type": "array"
               }
             }
           },
-          "x-originalParamName": "Payload"
+          "x-originalParamName": "Body"
         },
         "responses": {
           "204": {
@@ -396,31 +508,31 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/genericError"
+                  "$ref": "#/components/schemas/errorGeneric"
                 }
               }
             },
-            "description": "genericError"
+            "description": "errorGeneric"
           },
           "404": {
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/genericError"
+                  "$ref": "#/components/schemas/errorGeneric"
                 }
               }
             },
-            "description": "genericError"
+            "description": "errorGeneric"
           },
-          "500": {
+          "default": {
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/genericError"
+                  "$ref": "#/components/schemas/errorGeneric"
                 }
               }
             },
-            "description": "genericError"
+            "description": "errorGeneric"
           }
         },
         "summary": "Patch Multiple Relationships",
@@ -428,47 +540,47 @@
       },
       "put": {
         "description": "Use this endpoint to create a relationship.",
-        "operationId": "createRelationships",
+        "operationId": "createRelationship",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/relationQuery"
+                "$ref": "#/components/schemas/createRelationshipBody"
               }
             }
           },
-          "x-originalParamName": "Payload"
+          "x-originalParamName": "Body"
         },
         "responses": {
           "201": {
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/relationQuery"
+                  "$ref": "#/components/schemas/relationship"
                 }
               }
             },
-            "description": "relationQuery"
+            "description": "relationship"
           },
           "400": {
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/genericError"
+                  "$ref": "#/components/schemas/errorGeneric"
                 }
               }
             },
-            "description": "genericError"
+            "description": "errorGeneric"
           },
-          "500": {
+          "default": {
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/genericError"
+                  "$ref": "#/components/schemas/errorGeneric"
                 }
               }
             },
-            "description": "genericError"
+            "description": "errorGeneric"
           }
         },
         "summary": "Create a Relationship",
@@ -562,27 +674,27 @@
     "/namespaces": {
       "get": {
         "description": "Get all namespaces",
-        "operationId": "getRelationshipNamespaces",
+        "operationId": "listRelationshipNamespaces",
         "responses": {
           "200": {
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/getRelationshipNamespacesResponse"
+                  "$ref": "#/components/schemas/relationshipNamespaces"
                 }
               }
             },
-            "description": "getRelationshipNamespacesResponse"
+            "description": "relationshipNamespaces"
           },
-          "500": {
+          "default": {
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/genericError"
+                  "$ref": "#/components/schemas/errorGeneric"
                 }
               }
             },
-            "description": "genericError"
+            "description": "errorGeneric"
           }
         },
         "summary": "Query namespaces",
@@ -597,45 +709,42 @@
           "content": {
             "text/plain": {
               "schema": {
-                "description": "the OPL content to check",
-                "type": "string"
+                "$ref": "#/components/schemas/checkOplSyntaxBody"
               }
             }
           },
-          "description": "the OPL content to check",
-          "required": true,
-          "x-originalParamName": "content"
+          "x-originalParamName": "Body"
         },
         "responses": {
           "200": {
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/postCheckOplSyntaxResponse"
+                  "$ref": "#/components/schemas/checkOplSyntaxResult"
                 }
               }
             },
-            "description": "postCheckOplSyntaxResponse"
+            "description": "checkOplSyntaxResult"
           },
           "400": {
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/genericError"
+                  "$ref": "#/components/schemas/errorGeneric"
                 }
               }
             },
-            "description": "genericError"
+            "description": "errorGeneric"
           },
-          "500": {
+          "default": {
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/genericError"
+                  "$ref": "#/components/schemas/errorGeneric"
                 }
               }
             },
-            "description": "genericError"
+            "description": "errorGeneric"
           }
         },
         "summary": "Check the syntax of an OPL file",
@@ -724,31 +833,31 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/getRelationshipsResponse"
+                  "$ref": "#/components/schemas/relationships"
                 }
               }
             },
-            "description": "getRelationshipsResponse"
+            "description": "relationships"
           },
           "404": {
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/genericError"
+                  "$ref": "#/components/schemas/errorGeneric"
                 }
               }
             },
-            "description": "genericError"
+            "description": "errorGeneric"
           },
-          "500": {
+          "default": {
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/genericError"
+                  "$ref": "#/components/schemas/errorGeneric"
                 }
               }
             },
-            "description": "genericError"
+            "description": "errorGeneric"
           }
         },
         "summary": "Query relationships",
@@ -830,41 +939,41 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/checkPermissionResponse"
+                  "$ref": "#/components/schemas/checkPermissionResult"
                 }
               }
             },
-            "description": "checkPermissionResponse"
+            "description": "checkPermissionResult"
           },
           "400": {
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/genericError"
+                  "$ref": "#/components/schemas/errorGeneric"
                 }
               }
             },
-            "description": "genericError"
+            "description": "errorGeneric"
           },
           "403": {
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/checkPermissionResponse"
+                  "$ref": "#/components/schemas/checkPermissionResult"
                 }
               }
             },
-            "description": "checkPermissionResponse"
+            "description": "checkPermissionResult"
           },
-          "500": {
+          "default": {
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/genericError"
+                  "$ref": "#/components/schemas/errorGeneric"
                 }
               }
             },
-            "description": "genericError"
+            "description": "errorGeneric"
           }
         },
         "summary": "Check a permission",
@@ -887,52 +996,52 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/relationQuery"
+                "$ref": "#/components/schemas/postCheckPermissionOrErrorBody"
               }
             }
           },
-          "x-originalParamName": "Payload"
+          "x-originalParamName": "Body"
         },
         "responses": {
           "200": {
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/checkPermissionResponse"
+                  "$ref": "#/components/schemas/checkPermissionResult"
                 }
               }
             },
-            "description": "checkPermissionResponse"
+            "description": "checkPermissionResult"
           },
           "400": {
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/genericError"
+                  "$ref": "#/components/schemas/errorGeneric"
                 }
               }
             },
-            "description": "genericError"
+            "description": "errorGeneric"
           },
           "403": {
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/checkPermissionResponse"
+                  "$ref": "#/components/schemas/checkPermissionResult"
                 }
               }
             },
-            "description": "checkPermissionResponse"
+            "description": "checkPermissionResult"
           },
-          "500": {
+          "default": {
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/genericError"
+                  "$ref": "#/components/schemas/errorGeneric"
                 }
               }
             },
-            "description": "genericError"
+            "description": "errorGeneric"
           }
         },
         "summary": "Check a permission",
@@ -1014,31 +1123,31 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/checkPermissionResponse"
+                  "$ref": "#/components/schemas/checkPermissionResult"
                 }
               }
             },
-            "description": "checkPermissionResponse"
+            "description": "checkPermissionResult"
           },
           "400": {
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/genericError"
+                  "$ref": "#/components/schemas/errorGeneric"
                 }
               }
             },
-            "description": "genericError"
+            "description": "errorGeneric"
           },
-          "500": {
+          "default": {
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/genericError"
+                  "$ref": "#/components/schemas/errorGeneric"
                 }
               }
             },
-            "description": "genericError"
+            "description": "errorGeneric"
           }
         },
         "summary": "Check a permission",
@@ -1061,7 +1170,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/relationQuery"
+                "$ref": "#/components/schemas/postCheckPermissionBody"
               }
             }
           },
@@ -1072,31 +1181,31 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/checkPermissionResponse"
+                  "$ref": "#/components/schemas/checkPermissionResult"
                 }
               }
             },
-            "description": "checkPermissionResponse"
+            "description": "checkPermissionResult"
           },
           "400": {
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/genericError"
+                  "$ref": "#/components/schemas/errorGeneric"
                 }
               }
             },
-            "description": "genericError"
+            "description": "errorGeneric"
           },
-          "500": {
+          "default": {
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/genericError"
+                  "$ref": "#/components/schemas/errorGeneric"
                 }
               }
             },
-            "description": "genericError"
+            "description": "errorGeneric"
           }
         },
         "summary": "Check a permission",
@@ -1149,41 +1258,41 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/expandTree"
+                  "$ref": "#/components/schemas/expandedPermissionTree"
                 }
               }
             },
-            "description": "expandTree"
+            "description": "expandedPermissionTree"
           },
           "400": {
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/genericError"
+                  "$ref": "#/components/schemas/errorGeneric"
                 }
               }
             },
-            "description": "genericError"
+            "description": "errorGeneric"
           },
           "404": {
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/genericError"
+                  "$ref": "#/components/schemas/errorGeneric"
                 }
               }
             },
-            "description": "genericError"
+            "description": "errorGeneric"
           },
-          "500": {
+          "default": {
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/genericError"
+                  "$ref": "#/components/schemas/errorGeneric"
                 }
               }
             },
-            "description": "genericError"
+            "description": "errorGeneric"
           }
         },
         "summary": "Expand a Relationship into permissions.",

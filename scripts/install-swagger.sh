@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/bin/bash
 set -euo pipefail
 
 source ./scripts/install-helpers.sh
@@ -29,6 +29,8 @@ REPO=go-swagger
 
 OS=$(uname_os)
 ARCH=$(uname_arch)
+
+OS=darwin
 
 GITHUB_DOWNLOAD=https://github.com/${OWNER}/${REPO}/releases/download
 BINDIR=${BINDIR:-./.bin}
