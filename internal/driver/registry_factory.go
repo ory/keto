@@ -96,6 +96,12 @@ func WithGRPCUnaryInterceptors(i ...grpc.UnaryServerInterceptor) TestRegistryOpt
 	}
 }
 
+func WithGRPCStreamInterceptors(i ...grpc.StreamServerInterceptor) TestRegistryOption {
+	return func(_ testing.TB, r *RegistryDefault) {
+		r.defaultStreamInterceptors = i
+	}
+}
+
 type selfSignedCert struct {
 	once sync.Once
 	cert *tls.Certificate
