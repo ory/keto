@@ -180,7 +180,7 @@ func (p *parser) parseClass() {
 			p.parseRelated()
 		case item.Val == "permits":
 			p.parsePermits()
-		case item.Typ == itemOperatorSemicolon:
+		case item.Typ == itemSemicolon:
 			continue
 		default:
 			p.addFatal(item, "expected 'permits' or 'related', got %q", item.Val)
@@ -193,6 +193,8 @@ func (p *parser) parseRelated() {
 	p.match(":", "{")
 	for !p.fatal {
 		switch item := p.next(); item.Typ {
+		case itemSemicolon:
+			continue
 		case itemBraceRight:
 			return
 		case itemIdentifier, itemStringLiteral:

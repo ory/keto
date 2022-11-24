@@ -65,14 +65,14 @@ var parserTestCases = []struct {
 
   class User implements Namespace {
 	related: {
-	  manager: User[]
+	  manager: User[];
 	}
   }
   
   class Group implements Namespace {
 	related: {
-	  members: (User | Group)[]
-	}
+	  members: (User | Group)[];
+	};
   }
   
   class Folder implements Namespace {
