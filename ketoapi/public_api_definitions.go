@@ -29,7 +29,9 @@ type Namespace struct {
 	Name string `json:"name"`
 }
 
-// swagger:model relationTuple
+// Relationship
+//
+// swagger:model relationship
 type RelationTuple struct {
 	// Namespace of the Relation Tuple
 	//
@@ -50,6 +52,7 @@ type RelationTuple struct {
 	//
 	// Either SubjectSet or SubjectID can be provided.
 	SubjectID *string `json:"subject_id,omitempty"`
+
 	// SubjectSet of the Relation Tuple
 	//
 	// Either SubjectSet or SubjectID can be provided.
@@ -76,6 +79,8 @@ type SubjectSet struct {
 	Relation string `json:"relation"`
 }
 
+// Relation Query
+//
 // swagger:model relationQuery
 type RelationQuery struct {
 	// Namespace to query
@@ -99,7 +104,9 @@ type RelationQuery struct {
 	SubjectSet *SubjectSet `json:"subject_set,omitempty"`
 }
 
-// swagger:model patchDelta
+// Payload for patching a relationship
+//
+// swagger:model relationshipPatch
 type PatchDelta struct {
 	Action        PatchAction    `json:"action"`
 	RelationTuple *RelationTuple `json:"relation_tuple"`
@@ -120,7 +127,9 @@ const (
 	SubjectSetRelationKey  = "subject_set.relation"
 )
 
-// swagger:model getRelationTuplesResponse
+// Paginated Relationship List
+//
+// swagger:model relationships
 type GetResponse struct {
 	RelationTuples []*RelationTuple `json:"relation_tuples"`
 	// The opaque token to provide in a subsequent request
@@ -129,7 +138,9 @@ type GetResponse struct {
 	NextPageToken string `json:"next_page_token"`
 }
 
-// swagger:model getNamespacesResponse
+// Relationship Namespace List
+//
+// swagger:model relationshipNamespaces
 type GetNamespacesResponse struct {
 	Namespaces []Namespace `json:"namespaces"`
 }
@@ -187,8 +198,8 @@ type tuple[T any] interface {
 	FromProto(*rts.RelationTuple) T
 }
 
-// Tree is a generic tree of either internal relation tuples (with UUIDs for
-// objects, etc.) or API relation tuples (with strings for objects, etc.).
+// Tree is a generic tree of either internal relationships (with UUIDs for
+// objects, etc.) or API relationships (with strings for objects, etc.).
 type Tree[T tuple[T]] struct {
 	// Propagate all struct changes to `swaggerOnlyExpandTree` as well.
 	// The type of the node.
@@ -207,7 +218,7 @@ type Tree[T tuple[T]] struct {
 // OpenAPI spec, since go-swagger does not understand generics :(.
 // This can be fixed by using grpc-gateway.
 
-// swagger:model expandTree
+// swagger:model expandedPermissionTree
 type swaggerOnlyExpandTree struct { // nolint
 	// The type of the node.
 	//
@@ -233,7 +244,7 @@ type SourcePosition struct {
 
 // CheckOPLSyntaxResponse represents the response for an OPL syntax check request.
 //
-// swagger:model postCheckOplSyntaxResponse
+// swagger:model checkOplSyntaxResult
 type CheckOPLSyntaxResponse struct {
 	// The list of syntax errors
 	//

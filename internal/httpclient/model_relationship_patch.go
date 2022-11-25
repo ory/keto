@@ -15,31 +15,31 @@ import (
 	"encoding/json"
 )
 
-// PatchDelta struct for PatchDelta
-type PatchDelta struct {
-	Action        *string        `json:"action,omitempty"`
-	RelationTuple *RelationTuple `json:"relation_tuple,omitempty"`
+// RelationshipPatch Payload for patching a relationship
+type RelationshipPatch struct {
+	Action        *string       `json:"action,omitempty"`
+	RelationTuple *Relationship `json:"relation_tuple,omitempty"`
 }
 
-// NewPatchDelta instantiates a new PatchDelta object
+// NewRelationshipPatch instantiates a new RelationshipPatch object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewPatchDelta() *PatchDelta {
-	this := PatchDelta{}
+func NewRelationshipPatch() *RelationshipPatch {
+	this := RelationshipPatch{}
 	return &this
 }
 
-// NewPatchDeltaWithDefaults instantiates a new PatchDelta object
+// NewRelationshipPatchWithDefaults instantiates a new RelationshipPatch object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewPatchDeltaWithDefaults() *PatchDelta {
-	this := PatchDelta{}
+func NewRelationshipPatchWithDefaults() *RelationshipPatch {
+	this := RelationshipPatch{}
 	return &this
 }
 
 // GetAction returns the Action field value if set, zero value otherwise.
-func (o *PatchDelta) GetAction() string {
+func (o *RelationshipPatch) GetAction() string {
 	if o == nil || o.Action == nil {
 		var ret string
 		return ret
@@ -49,7 +49,7 @@ func (o *PatchDelta) GetAction() string {
 
 // GetActionOk returns a tuple with the Action field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchDelta) GetActionOk() (*string, bool) {
+func (o *RelationshipPatch) GetActionOk() (*string, bool) {
 	if o == nil || o.Action == nil {
 		return nil, false
 	}
@@ -57,7 +57,7 @@ func (o *PatchDelta) GetActionOk() (*string, bool) {
 }
 
 // HasAction returns a boolean if a field has been set.
-func (o *PatchDelta) HasAction() bool {
+func (o *RelationshipPatch) HasAction() bool {
 	if o != nil && o.Action != nil {
 		return true
 	}
@@ -66,14 +66,14 @@ func (o *PatchDelta) HasAction() bool {
 }
 
 // SetAction gets a reference to the given string and assigns it to the Action field.
-func (o *PatchDelta) SetAction(v string) {
+func (o *RelationshipPatch) SetAction(v string) {
 	o.Action = &v
 }
 
 // GetRelationTuple returns the RelationTuple field value if set, zero value otherwise.
-func (o *PatchDelta) GetRelationTuple() RelationTuple {
+func (o *RelationshipPatch) GetRelationTuple() Relationship {
 	if o == nil || o.RelationTuple == nil {
-		var ret RelationTuple
+		var ret Relationship
 		return ret
 	}
 	return *o.RelationTuple
@@ -81,7 +81,7 @@ func (o *PatchDelta) GetRelationTuple() RelationTuple {
 
 // GetRelationTupleOk returns a tuple with the RelationTuple field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchDelta) GetRelationTupleOk() (*RelationTuple, bool) {
+func (o *RelationshipPatch) GetRelationTupleOk() (*Relationship, bool) {
 	if o == nil || o.RelationTuple == nil {
 		return nil, false
 	}
@@ -89,7 +89,7 @@ func (o *PatchDelta) GetRelationTupleOk() (*RelationTuple, bool) {
 }
 
 // HasRelationTuple returns a boolean if a field has been set.
-func (o *PatchDelta) HasRelationTuple() bool {
+func (o *RelationshipPatch) HasRelationTuple() bool {
 	if o != nil && o.RelationTuple != nil {
 		return true
 	}
@@ -97,12 +97,12 @@ func (o *PatchDelta) HasRelationTuple() bool {
 	return false
 }
 
-// SetRelationTuple gets a reference to the given RelationTuple and assigns it to the RelationTuple field.
-func (o *PatchDelta) SetRelationTuple(v RelationTuple) {
+// SetRelationTuple gets a reference to the given Relationship and assigns it to the RelationTuple field.
+func (o *RelationshipPatch) SetRelationTuple(v Relationship) {
 	o.RelationTuple = &v
 }
 
-func (o PatchDelta) MarshalJSON() ([]byte, error) {
+func (o RelationshipPatch) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.Action != nil {
 		toSerialize["action"] = o.Action
@@ -113,38 +113,38 @@ func (o PatchDelta) MarshalJSON() ([]byte, error) {
 	return json.Marshal(toSerialize)
 }
 
-type NullablePatchDelta struct {
-	value *PatchDelta
+type NullableRelationshipPatch struct {
+	value *RelationshipPatch
 	isSet bool
 }
 
-func (v NullablePatchDelta) Get() *PatchDelta {
+func (v NullableRelationshipPatch) Get() *RelationshipPatch {
 	return v.value
 }
 
-func (v *NullablePatchDelta) Set(val *PatchDelta) {
+func (v *NullableRelationshipPatch) Set(val *RelationshipPatch) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullablePatchDelta) IsSet() bool {
+func (v NullableRelationshipPatch) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullablePatchDelta) Unset() {
+func (v *NullableRelationshipPatch) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullablePatchDelta(val *PatchDelta) *NullablePatchDelta {
-	return &NullablePatchDelta{value: val, isSet: true}
+func NewNullableRelationshipPatch(val *RelationshipPatch) *NullableRelationshipPatch {
+	return &NullableRelationshipPatch{value: val, isSet: true}
 }
 
-func (v NullablePatchDelta) MarshalJSON() ([]byte, error) {
+func (v NullableRelationshipPatch) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullablePatchDelta) UnmarshalJSON(src []byte) error {
+func (v *NullableRelationshipPatch) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

@@ -64,7 +64,7 @@ func (h *handler) ListNamespaces(ctx context.Context, _ *rts.ListNamespacesReque
 	return &rts.ListNamespacesResponse{Namespaces: apiNamespaces}, nil
 }
 
-// swagger:route GET /namespaces namespaces getNamespaces
+// swagger:route GET /namespaces relationship listRelationshipNamespaces
 //
 // # Query namespaces
 //
@@ -76,8 +76,8 @@ func (h *handler) ListNamespaces(ctx context.Context, _ *rts.ListNamespacesReque
 //	Schemes: http, https
 //
 //	Responses:
-//	  200: getNamespacesResponse
-//	  500: genericError
+//	  200: relationshipNamespaces
+//	  default: errorGeneric
 func (h *handler) getNamespaces(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	res, err := h.ListNamespaces(r.Context(), nil)
 	if err != nil {

@@ -15,32 +15,32 @@ import (
 	"encoding/json"
 )
 
-// GetCheckResponse The content of the allowed field is mirrored in the HTTP status code.
-type GetCheckResponse struct {
+// CheckPermissionResult The content of the allowed field is mirrored in the HTTP status code.
+type CheckPermissionResult struct {
 	// whether the relation tuple is allowed
 	Allowed bool `json:"allowed"`
 }
 
-// NewGetCheckResponse instantiates a new GetCheckResponse object
+// NewCheckPermissionResult instantiates a new CheckPermissionResult object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewGetCheckResponse(allowed bool) *GetCheckResponse {
-	this := GetCheckResponse{}
+func NewCheckPermissionResult(allowed bool) *CheckPermissionResult {
+	this := CheckPermissionResult{}
 	this.Allowed = allowed
 	return &this
 }
 
-// NewGetCheckResponseWithDefaults instantiates a new GetCheckResponse object
+// NewCheckPermissionResultWithDefaults instantiates a new CheckPermissionResult object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewGetCheckResponseWithDefaults() *GetCheckResponse {
-	this := GetCheckResponse{}
+func NewCheckPermissionResultWithDefaults() *CheckPermissionResult {
+	this := CheckPermissionResult{}
 	return &this
 }
 
 // GetAllowed returns the Allowed field value
-func (o *GetCheckResponse) GetAllowed() bool {
+func (o *CheckPermissionResult) GetAllowed() bool {
 	if o == nil {
 		var ret bool
 		return ret
@@ -51,7 +51,7 @@ func (o *GetCheckResponse) GetAllowed() bool {
 
 // GetAllowedOk returns a tuple with the Allowed field value
 // and a boolean to check if the value has been set.
-func (o *GetCheckResponse) GetAllowedOk() (*bool, bool) {
+func (o *CheckPermissionResult) GetAllowedOk() (*bool, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -59,11 +59,11 @@ func (o *GetCheckResponse) GetAllowedOk() (*bool, bool) {
 }
 
 // SetAllowed sets field value
-func (o *GetCheckResponse) SetAllowed(v bool) {
+func (o *CheckPermissionResult) SetAllowed(v bool) {
 	o.Allowed = v
 }
 
-func (o GetCheckResponse) MarshalJSON() ([]byte, error) {
+func (o CheckPermissionResult) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if true {
 		toSerialize["allowed"] = o.Allowed
@@ -71,38 +71,38 @@ func (o GetCheckResponse) MarshalJSON() ([]byte, error) {
 	return json.Marshal(toSerialize)
 }
 
-type NullableGetCheckResponse struct {
-	value *GetCheckResponse
+type NullableCheckPermissionResult struct {
+	value *CheckPermissionResult
 	isSet bool
 }
 
-func (v NullableGetCheckResponse) Get() *GetCheckResponse {
+func (v NullableCheckPermissionResult) Get() *CheckPermissionResult {
 	return v.value
 }
 
-func (v *NullableGetCheckResponse) Set(val *GetCheckResponse) {
+func (v *NullableCheckPermissionResult) Set(val *CheckPermissionResult) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableGetCheckResponse) IsSet() bool {
+func (v NullableCheckPermissionResult) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableGetCheckResponse) Unset() {
+func (v *NullableCheckPermissionResult) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableGetCheckResponse(val *GetCheckResponse) *NullableGetCheckResponse {
-	return &NullableGetCheckResponse{value: val, isSet: true}
+func NewNullableCheckPermissionResult(val *CheckPermissionResult) *NullableCheckPermissionResult {
+	return &NullableCheckPermissionResult{value: val, isSet: true}
 }
 
-func (v NullableGetCheckResponse) MarshalJSON() ([]byte, error) {
+func (v NullableCheckPermissionResult) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableGetCheckResponse) UnmarshalJSON(src []byte) error {
+func (v *NullableCheckPermissionResult) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

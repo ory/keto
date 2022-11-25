@@ -9,38 +9,39 @@ import (
 )
 
 var (
-	_ = (*patchPayload)(nil)
-	_ = (*getRelationsParams)(nil)
-	_ = (*bodyRelationTuple)(nil)
-	_ = (*queryRelationTuple)(nil)
+	_ = (*patchRelationships)(nil)
+	_ = (*getRelationships)(nil)
+	_ = (*relationshipInQuery)(nil)
 )
 
-// The patch request payload
+// Patch Relationships Request Parameters
 //
-// swagger:parameters patchRelationTuples
-type patchPayload struct {
+// swagger:parameters patchRelationships
+type patchRelationships struct {
 	// in:body
-	Payload []*ketoapi.PatchDelta
+	Body []*ketoapi.PatchDelta
 }
 
-// swagger:parameters getRelationTuples
-type getRelationsParams struct {
-	// Namespace of the Relation Tuple
+// Get Relationships Request Parameters
+//
+// swagger:parameters getRelationships
+type getRelationships struct {
+	// Namespace of the Relationship
 	//
 	// in: query
 	Namespace string `json:"namespace"`
 
-	// Object of the Relation Tuple
+	// Object of the Relationship
 	//
 	// in: query
 	Object string `json:"object"`
 
-	// Relation of the Relation Tuple
+	// Relation of the Relationship
 	//
 	// in: query
 	Relation string `json:"relation"`
 
-	// SubjectID of the Relation Tuple
+	// SubjectID of the Relationship
 	//
 	// in: query
 	// Either subject_set.* or subject_id are required.
@@ -68,34 +69,26 @@ type getRelationsParams struct {
 	x.PaginationOptions
 }
 
-// The basic ACL relation tuple
+// The relationship parameters in the URL query.
 //
-// swagger:parameters postCheck createRelationTuple
-type bodyRelationTuple struct {
-	// in: body
-	Payload ketoapi.RelationQuery
-}
-
-// The basic ACL relation tuple
-//
-// swagger:parameters getCheck deleteRelationTuples
-type queryRelationTuple struct {
-	// Namespace of the Relation Tuple
+// swagger:parameters checkPermission checkPermissionOrError deleteRelationships
+type relationshipInQuery struct {
+	// Namespace of the Relationship
 	//
 	// in: query
 	Namespace string `json:"namespace"`
 
-	// Object of the Relation Tuple
+	// Object of the Relationship
 	//
 	// in: query
 	Object string `json:"object"`
 
-	// Relation of the Relation Tuple
+	// Relation of the Relationship
 	//
 	// in: query
 	Relation string `json:"relation"`
 
-	// SubjectID of the Relation Tuple
+	// SubjectID of the Relationship
 	//
 	// in: query
 	// Either subject_set.* or subject_id are required.

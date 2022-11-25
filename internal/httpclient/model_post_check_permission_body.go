@@ -15,8 +15,8 @@ import (
 	"encoding/json"
 )
 
-// RelationQuery Relation Query
-type RelationQuery struct {
+// PostCheckPermissionBody Check Permission using Post Request Body
+type PostCheckPermissionBody struct {
 	// Namespace to query
 	Namespace *string `json:"namespace,omitempty"`
 	// Object to query
@@ -28,25 +28,25 @@ type RelationQuery struct {
 	SubjectSet *SubjectSet `json:"subject_set,omitempty"`
 }
 
-// NewRelationQuery instantiates a new RelationQuery object
+// NewPostCheckPermissionBody instantiates a new PostCheckPermissionBody object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewRelationQuery() *RelationQuery {
-	this := RelationQuery{}
+func NewPostCheckPermissionBody() *PostCheckPermissionBody {
+	this := PostCheckPermissionBody{}
 	return &this
 }
 
-// NewRelationQueryWithDefaults instantiates a new RelationQuery object
+// NewPostCheckPermissionBodyWithDefaults instantiates a new PostCheckPermissionBody object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewRelationQueryWithDefaults() *RelationQuery {
-	this := RelationQuery{}
+func NewPostCheckPermissionBodyWithDefaults() *PostCheckPermissionBody {
+	this := PostCheckPermissionBody{}
 	return &this
 }
 
 // GetNamespace returns the Namespace field value if set, zero value otherwise.
-func (o *RelationQuery) GetNamespace() string {
+func (o *PostCheckPermissionBody) GetNamespace() string {
 	if o == nil || o.Namespace == nil {
 		var ret string
 		return ret
@@ -56,7 +56,7 @@ func (o *RelationQuery) GetNamespace() string {
 
 // GetNamespaceOk returns a tuple with the Namespace field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *RelationQuery) GetNamespaceOk() (*string, bool) {
+func (o *PostCheckPermissionBody) GetNamespaceOk() (*string, bool) {
 	if o == nil || o.Namespace == nil {
 		return nil, false
 	}
@@ -64,7 +64,7 @@ func (o *RelationQuery) GetNamespaceOk() (*string, bool) {
 }
 
 // HasNamespace returns a boolean if a field has been set.
-func (o *RelationQuery) HasNamespace() bool {
+func (o *PostCheckPermissionBody) HasNamespace() bool {
 	if o != nil && o.Namespace != nil {
 		return true
 	}
@@ -73,12 +73,12 @@ func (o *RelationQuery) HasNamespace() bool {
 }
 
 // SetNamespace gets a reference to the given string and assigns it to the Namespace field.
-func (o *RelationQuery) SetNamespace(v string) {
+func (o *PostCheckPermissionBody) SetNamespace(v string) {
 	o.Namespace = &v
 }
 
 // GetObject returns the Object field value if set, zero value otherwise.
-func (o *RelationQuery) GetObject() string {
+func (o *PostCheckPermissionBody) GetObject() string {
 	if o == nil || o.Object == nil {
 		var ret string
 		return ret
@@ -88,7 +88,7 @@ func (o *RelationQuery) GetObject() string {
 
 // GetObjectOk returns a tuple with the Object field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *RelationQuery) GetObjectOk() (*string, bool) {
+func (o *PostCheckPermissionBody) GetObjectOk() (*string, bool) {
 	if o == nil || o.Object == nil {
 		return nil, false
 	}
@@ -96,7 +96,7 @@ func (o *RelationQuery) GetObjectOk() (*string, bool) {
 }
 
 // HasObject returns a boolean if a field has been set.
-func (o *RelationQuery) HasObject() bool {
+func (o *PostCheckPermissionBody) HasObject() bool {
 	if o != nil && o.Object != nil {
 		return true
 	}
@@ -105,12 +105,12 @@ func (o *RelationQuery) HasObject() bool {
 }
 
 // SetObject gets a reference to the given string and assigns it to the Object field.
-func (o *RelationQuery) SetObject(v string) {
+func (o *PostCheckPermissionBody) SetObject(v string) {
 	o.Object = &v
 }
 
 // GetRelation returns the Relation field value if set, zero value otherwise.
-func (o *RelationQuery) GetRelation() string {
+func (o *PostCheckPermissionBody) GetRelation() string {
 	if o == nil || o.Relation == nil {
 		var ret string
 		return ret
@@ -120,7 +120,7 @@ func (o *RelationQuery) GetRelation() string {
 
 // GetRelationOk returns a tuple with the Relation field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *RelationQuery) GetRelationOk() (*string, bool) {
+func (o *PostCheckPermissionBody) GetRelationOk() (*string, bool) {
 	if o == nil || o.Relation == nil {
 		return nil, false
 	}
@@ -128,7 +128,7 @@ func (o *RelationQuery) GetRelationOk() (*string, bool) {
 }
 
 // HasRelation returns a boolean if a field has been set.
-func (o *RelationQuery) HasRelation() bool {
+func (o *PostCheckPermissionBody) HasRelation() bool {
 	if o != nil && o.Relation != nil {
 		return true
 	}
@@ -137,12 +137,12 @@ func (o *RelationQuery) HasRelation() bool {
 }
 
 // SetRelation gets a reference to the given string and assigns it to the Relation field.
-func (o *RelationQuery) SetRelation(v string) {
+func (o *PostCheckPermissionBody) SetRelation(v string) {
 	o.Relation = &v
 }
 
 // GetSubjectId returns the SubjectId field value if set, zero value otherwise.
-func (o *RelationQuery) GetSubjectId() string {
+func (o *PostCheckPermissionBody) GetSubjectId() string {
 	if o == nil || o.SubjectId == nil {
 		var ret string
 		return ret
@@ -152,7 +152,7 @@ func (o *RelationQuery) GetSubjectId() string {
 
 // GetSubjectIdOk returns a tuple with the SubjectId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *RelationQuery) GetSubjectIdOk() (*string, bool) {
+func (o *PostCheckPermissionBody) GetSubjectIdOk() (*string, bool) {
 	if o == nil || o.SubjectId == nil {
 		return nil, false
 	}
@@ -160,7 +160,7 @@ func (o *RelationQuery) GetSubjectIdOk() (*string, bool) {
 }
 
 // HasSubjectId returns a boolean if a field has been set.
-func (o *RelationQuery) HasSubjectId() bool {
+func (o *PostCheckPermissionBody) HasSubjectId() bool {
 	if o != nil && o.SubjectId != nil {
 		return true
 	}
@@ -169,12 +169,12 @@ func (o *RelationQuery) HasSubjectId() bool {
 }
 
 // SetSubjectId gets a reference to the given string and assigns it to the SubjectId field.
-func (o *RelationQuery) SetSubjectId(v string) {
+func (o *PostCheckPermissionBody) SetSubjectId(v string) {
 	o.SubjectId = &v
 }
 
 // GetSubjectSet returns the SubjectSet field value if set, zero value otherwise.
-func (o *RelationQuery) GetSubjectSet() SubjectSet {
+func (o *PostCheckPermissionBody) GetSubjectSet() SubjectSet {
 	if o == nil || o.SubjectSet == nil {
 		var ret SubjectSet
 		return ret
@@ -184,7 +184,7 @@ func (o *RelationQuery) GetSubjectSet() SubjectSet {
 
 // GetSubjectSetOk returns a tuple with the SubjectSet field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *RelationQuery) GetSubjectSetOk() (*SubjectSet, bool) {
+func (o *PostCheckPermissionBody) GetSubjectSetOk() (*SubjectSet, bool) {
 	if o == nil || o.SubjectSet == nil {
 		return nil, false
 	}
@@ -192,7 +192,7 @@ func (o *RelationQuery) GetSubjectSetOk() (*SubjectSet, bool) {
 }
 
 // HasSubjectSet returns a boolean if a field has been set.
-func (o *RelationQuery) HasSubjectSet() bool {
+func (o *PostCheckPermissionBody) HasSubjectSet() bool {
 	if o != nil && o.SubjectSet != nil {
 		return true
 	}
@@ -201,11 +201,11 @@ func (o *RelationQuery) HasSubjectSet() bool {
 }
 
 // SetSubjectSet gets a reference to the given SubjectSet and assigns it to the SubjectSet field.
-func (o *RelationQuery) SetSubjectSet(v SubjectSet) {
+func (o *PostCheckPermissionBody) SetSubjectSet(v SubjectSet) {
 	o.SubjectSet = &v
 }
 
-func (o RelationQuery) MarshalJSON() ([]byte, error) {
+func (o PostCheckPermissionBody) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.Namespace != nil {
 		toSerialize["namespace"] = o.Namespace
@@ -225,38 +225,38 @@ func (o RelationQuery) MarshalJSON() ([]byte, error) {
 	return json.Marshal(toSerialize)
 }
 
-type NullableRelationQuery struct {
-	value *RelationQuery
+type NullablePostCheckPermissionBody struct {
+	value *PostCheckPermissionBody
 	isSet bool
 }
 
-func (v NullableRelationQuery) Get() *RelationQuery {
+func (v NullablePostCheckPermissionBody) Get() *PostCheckPermissionBody {
 	return v.value
 }
 
-func (v *NullableRelationQuery) Set(val *RelationQuery) {
+func (v *NullablePostCheckPermissionBody) Set(val *PostCheckPermissionBody) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableRelationQuery) IsSet() bool {
+func (v NullablePostCheckPermissionBody) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableRelationQuery) Unset() {
+func (v *NullablePostCheckPermissionBody) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableRelationQuery(val *RelationQuery) *NullableRelationQuery {
-	return &NullableRelationQuery{value: val, isSet: true}
+func NewNullablePostCheckPermissionBody(val *PostCheckPermissionBody) *NullablePostCheckPermissionBody {
+	return &NullablePostCheckPermissionBody{value: val, isSet: true}
 }
 
-func (v NullableRelationQuery) MarshalJSON() ([]byte, error) {
+func (v NullablePostCheckPermissionBody) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableRelationQuery) UnmarshalJSON(src []byte) error {
+func (v *NullablePostCheckPermissionBody) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

@@ -15,37 +15,37 @@ import (
 	"encoding/json"
 )
 
-// ExpandTree struct for ExpandTree
-type ExpandTree struct {
+// ExpandedPermissionTree struct for ExpandedPermissionTree
+type ExpandedPermissionTree struct {
 	// The children of the node, possibly none.
-	Children []ExpandTree   `json:"children,omitempty"`
-	Tuple    *RelationTuple `json:"tuple,omitempty"`
+	Children []ExpandedPermissionTree `json:"children,omitempty"`
+	Tuple    *Relationship            `json:"tuple,omitempty"`
 	// The type of the node. union TreeNodeUnion exclusion TreeNodeExclusion intersection TreeNodeIntersection leaf TreeNodeLeaf tuple_to_subject_set TreeNodeTupleToSubjectSet computed_subject_set TreeNodeComputedSubjectSet not TreeNodeNot unspecified TreeNodeUnspecified
 	Type string `json:"type"`
 }
 
-// NewExpandTree instantiates a new ExpandTree object
+// NewExpandedPermissionTree instantiates a new ExpandedPermissionTree object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewExpandTree(type_ string) *ExpandTree {
-	this := ExpandTree{}
+func NewExpandedPermissionTree(type_ string) *ExpandedPermissionTree {
+	this := ExpandedPermissionTree{}
 	this.Type = type_
 	return &this
 }
 
-// NewExpandTreeWithDefaults instantiates a new ExpandTree object
+// NewExpandedPermissionTreeWithDefaults instantiates a new ExpandedPermissionTree object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewExpandTreeWithDefaults() *ExpandTree {
-	this := ExpandTree{}
+func NewExpandedPermissionTreeWithDefaults() *ExpandedPermissionTree {
+	this := ExpandedPermissionTree{}
 	return &this
 }
 
 // GetChildren returns the Children field value if set, zero value otherwise.
-func (o *ExpandTree) GetChildren() []ExpandTree {
+func (o *ExpandedPermissionTree) GetChildren() []ExpandedPermissionTree {
 	if o == nil || o.Children == nil {
-		var ret []ExpandTree
+		var ret []ExpandedPermissionTree
 		return ret
 	}
 	return o.Children
@@ -53,7 +53,7 @@ func (o *ExpandTree) GetChildren() []ExpandTree {
 
 // GetChildrenOk returns a tuple with the Children field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ExpandTree) GetChildrenOk() ([]ExpandTree, bool) {
+func (o *ExpandedPermissionTree) GetChildrenOk() ([]ExpandedPermissionTree, bool) {
 	if o == nil || o.Children == nil {
 		return nil, false
 	}
@@ -61,7 +61,7 @@ func (o *ExpandTree) GetChildrenOk() ([]ExpandTree, bool) {
 }
 
 // HasChildren returns a boolean if a field has been set.
-func (o *ExpandTree) HasChildren() bool {
+func (o *ExpandedPermissionTree) HasChildren() bool {
 	if o != nil && o.Children != nil {
 		return true
 	}
@@ -69,15 +69,15 @@ func (o *ExpandTree) HasChildren() bool {
 	return false
 }
 
-// SetChildren gets a reference to the given []ExpandTree and assigns it to the Children field.
-func (o *ExpandTree) SetChildren(v []ExpandTree) {
+// SetChildren gets a reference to the given []ExpandedPermissionTree and assigns it to the Children field.
+func (o *ExpandedPermissionTree) SetChildren(v []ExpandedPermissionTree) {
 	o.Children = v
 }
 
 // GetTuple returns the Tuple field value if set, zero value otherwise.
-func (o *ExpandTree) GetTuple() RelationTuple {
+func (o *ExpandedPermissionTree) GetTuple() Relationship {
 	if o == nil || o.Tuple == nil {
-		var ret RelationTuple
+		var ret Relationship
 		return ret
 	}
 	return *o.Tuple
@@ -85,7 +85,7 @@ func (o *ExpandTree) GetTuple() RelationTuple {
 
 // GetTupleOk returns a tuple with the Tuple field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ExpandTree) GetTupleOk() (*RelationTuple, bool) {
+func (o *ExpandedPermissionTree) GetTupleOk() (*Relationship, bool) {
 	if o == nil || o.Tuple == nil {
 		return nil, false
 	}
@@ -93,7 +93,7 @@ func (o *ExpandTree) GetTupleOk() (*RelationTuple, bool) {
 }
 
 // HasTuple returns a boolean if a field has been set.
-func (o *ExpandTree) HasTuple() bool {
+func (o *ExpandedPermissionTree) HasTuple() bool {
 	if o != nil && o.Tuple != nil {
 		return true
 	}
@@ -101,13 +101,13 @@ func (o *ExpandTree) HasTuple() bool {
 	return false
 }
 
-// SetTuple gets a reference to the given RelationTuple and assigns it to the Tuple field.
-func (o *ExpandTree) SetTuple(v RelationTuple) {
+// SetTuple gets a reference to the given Relationship and assigns it to the Tuple field.
+func (o *ExpandedPermissionTree) SetTuple(v Relationship) {
 	o.Tuple = &v
 }
 
 // GetType returns the Type field value
-func (o *ExpandTree) GetType() string {
+func (o *ExpandedPermissionTree) GetType() string {
 	if o == nil {
 		var ret string
 		return ret
@@ -118,7 +118,7 @@ func (o *ExpandTree) GetType() string {
 
 // GetTypeOk returns a tuple with the Type field value
 // and a boolean to check if the value has been set.
-func (o *ExpandTree) GetTypeOk() (*string, bool) {
+func (o *ExpandedPermissionTree) GetTypeOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -126,11 +126,11 @@ func (o *ExpandTree) GetTypeOk() (*string, bool) {
 }
 
 // SetType sets field value
-func (o *ExpandTree) SetType(v string) {
+func (o *ExpandedPermissionTree) SetType(v string) {
 	o.Type = v
 }
 
-func (o ExpandTree) MarshalJSON() ([]byte, error) {
+func (o ExpandedPermissionTree) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.Children != nil {
 		toSerialize["children"] = o.Children
@@ -144,38 +144,38 @@ func (o ExpandTree) MarshalJSON() ([]byte, error) {
 	return json.Marshal(toSerialize)
 }
 
-type NullableExpandTree struct {
-	value *ExpandTree
+type NullableExpandedPermissionTree struct {
+	value *ExpandedPermissionTree
 	isSet bool
 }
 
-func (v NullableExpandTree) Get() *ExpandTree {
+func (v NullableExpandedPermissionTree) Get() *ExpandedPermissionTree {
 	return v.value
 }
 
-func (v *NullableExpandTree) Set(val *ExpandTree) {
+func (v *NullableExpandedPermissionTree) Set(val *ExpandedPermissionTree) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableExpandTree) IsSet() bool {
+func (v NullableExpandedPermissionTree) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableExpandTree) Unset() {
+func (v *NullableExpandedPermissionTree) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableExpandTree(val *ExpandTree) *NullableExpandTree {
-	return &NullableExpandTree{value: val, isSet: true}
+func NewNullableExpandedPermissionTree(val *ExpandedPermissionTree) *NullableExpandedPermissionTree {
+	return &NullableExpandedPermissionTree{value: val, isSet: true}
 }
 
-func (v NullableExpandTree) MarshalJSON() ([]byte, error) {
+func (v NullableExpandedPermissionTree) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableExpandTree) UnmarshalJSON(src []byte) error {
+func (v *NullableExpandedPermissionTree) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

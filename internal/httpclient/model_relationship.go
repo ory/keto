@@ -15,8 +15,8 @@ import (
 	"encoding/json"
 )
 
-// RelationTuple struct for RelationTuple
-type RelationTuple struct {
+// Relationship Relationship
+type Relationship struct {
 	// Namespace of the Relation Tuple
 	Namespace string `json:"namespace"`
 	// Object of the Relation Tuple
@@ -28,28 +28,28 @@ type RelationTuple struct {
 	SubjectSet *SubjectSet `json:"subject_set,omitempty"`
 }
 
-// NewRelationTuple instantiates a new RelationTuple object
+// NewRelationship instantiates a new Relationship object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewRelationTuple(namespace string, object string, relation string) *RelationTuple {
-	this := RelationTuple{}
+func NewRelationship(namespace string, object string, relation string) *Relationship {
+	this := Relationship{}
 	this.Namespace = namespace
 	this.Object = object
 	this.Relation = relation
 	return &this
 }
 
-// NewRelationTupleWithDefaults instantiates a new RelationTuple object
+// NewRelationshipWithDefaults instantiates a new Relationship object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewRelationTupleWithDefaults() *RelationTuple {
-	this := RelationTuple{}
+func NewRelationshipWithDefaults() *Relationship {
+	this := Relationship{}
 	return &this
 }
 
 // GetNamespace returns the Namespace field value
-func (o *RelationTuple) GetNamespace() string {
+func (o *Relationship) GetNamespace() string {
 	if o == nil {
 		var ret string
 		return ret
@@ -60,7 +60,7 @@ func (o *RelationTuple) GetNamespace() string {
 
 // GetNamespaceOk returns a tuple with the Namespace field value
 // and a boolean to check if the value has been set.
-func (o *RelationTuple) GetNamespaceOk() (*string, bool) {
+func (o *Relationship) GetNamespaceOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -68,12 +68,12 @@ func (o *RelationTuple) GetNamespaceOk() (*string, bool) {
 }
 
 // SetNamespace sets field value
-func (o *RelationTuple) SetNamespace(v string) {
+func (o *Relationship) SetNamespace(v string) {
 	o.Namespace = v
 }
 
 // GetObject returns the Object field value
-func (o *RelationTuple) GetObject() string {
+func (o *Relationship) GetObject() string {
 	if o == nil {
 		var ret string
 		return ret
@@ -84,7 +84,7 @@ func (o *RelationTuple) GetObject() string {
 
 // GetObjectOk returns a tuple with the Object field value
 // and a boolean to check if the value has been set.
-func (o *RelationTuple) GetObjectOk() (*string, bool) {
+func (o *Relationship) GetObjectOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -92,12 +92,12 @@ func (o *RelationTuple) GetObjectOk() (*string, bool) {
 }
 
 // SetObject sets field value
-func (o *RelationTuple) SetObject(v string) {
+func (o *Relationship) SetObject(v string) {
 	o.Object = v
 }
 
 // GetRelation returns the Relation field value
-func (o *RelationTuple) GetRelation() string {
+func (o *Relationship) GetRelation() string {
 	if o == nil {
 		var ret string
 		return ret
@@ -108,7 +108,7 @@ func (o *RelationTuple) GetRelation() string {
 
 // GetRelationOk returns a tuple with the Relation field value
 // and a boolean to check if the value has been set.
-func (o *RelationTuple) GetRelationOk() (*string, bool) {
+func (o *Relationship) GetRelationOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -116,12 +116,12 @@ func (o *RelationTuple) GetRelationOk() (*string, bool) {
 }
 
 // SetRelation sets field value
-func (o *RelationTuple) SetRelation(v string) {
+func (o *Relationship) SetRelation(v string) {
 	o.Relation = v
 }
 
 // GetSubjectId returns the SubjectId field value if set, zero value otherwise.
-func (o *RelationTuple) GetSubjectId() string {
+func (o *Relationship) GetSubjectId() string {
 	if o == nil || o.SubjectId == nil {
 		var ret string
 		return ret
@@ -131,7 +131,7 @@ func (o *RelationTuple) GetSubjectId() string {
 
 // GetSubjectIdOk returns a tuple with the SubjectId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *RelationTuple) GetSubjectIdOk() (*string, bool) {
+func (o *Relationship) GetSubjectIdOk() (*string, bool) {
 	if o == nil || o.SubjectId == nil {
 		return nil, false
 	}
@@ -139,7 +139,7 @@ func (o *RelationTuple) GetSubjectIdOk() (*string, bool) {
 }
 
 // HasSubjectId returns a boolean if a field has been set.
-func (o *RelationTuple) HasSubjectId() bool {
+func (o *Relationship) HasSubjectId() bool {
 	if o != nil && o.SubjectId != nil {
 		return true
 	}
@@ -148,12 +148,12 @@ func (o *RelationTuple) HasSubjectId() bool {
 }
 
 // SetSubjectId gets a reference to the given string and assigns it to the SubjectId field.
-func (o *RelationTuple) SetSubjectId(v string) {
+func (o *Relationship) SetSubjectId(v string) {
 	o.SubjectId = &v
 }
 
 // GetSubjectSet returns the SubjectSet field value if set, zero value otherwise.
-func (o *RelationTuple) GetSubjectSet() SubjectSet {
+func (o *Relationship) GetSubjectSet() SubjectSet {
 	if o == nil || o.SubjectSet == nil {
 		var ret SubjectSet
 		return ret
@@ -163,7 +163,7 @@ func (o *RelationTuple) GetSubjectSet() SubjectSet {
 
 // GetSubjectSetOk returns a tuple with the SubjectSet field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *RelationTuple) GetSubjectSetOk() (*SubjectSet, bool) {
+func (o *Relationship) GetSubjectSetOk() (*SubjectSet, bool) {
 	if o == nil || o.SubjectSet == nil {
 		return nil, false
 	}
@@ -171,7 +171,7 @@ func (o *RelationTuple) GetSubjectSetOk() (*SubjectSet, bool) {
 }
 
 // HasSubjectSet returns a boolean if a field has been set.
-func (o *RelationTuple) HasSubjectSet() bool {
+func (o *Relationship) HasSubjectSet() bool {
 	if o != nil && o.SubjectSet != nil {
 		return true
 	}
@@ -180,11 +180,11 @@ func (o *RelationTuple) HasSubjectSet() bool {
 }
 
 // SetSubjectSet gets a reference to the given SubjectSet and assigns it to the SubjectSet field.
-func (o *RelationTuple) SetSubjectSet(v SubjectSet) {
+func (o *Relationship) SetSubjectSet(v SubjectSet) {
 	o.SubjectSet = &v
 }
 
-func (o RelationTuple) MarshalJSON() ([]byte, error) {
+func (o Relationship) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if true {
 		toSerialize["namespace"] = o.Namespace
@@ -204,38 +204,38 @@ func (o RelationTuple) MarshalJSON() ([]byte, error) {
 	return json.Marshal(toSerialize)
 }
 
-type NullableRelationTuple struct {
-	value *RelationTuple
+type NullableRelationship struct {
+	value *Relationship
 	isSet bool
 }
 
-func (v NullableRelationTuple) Get() *RelationTuple {
+func (v NullableRelationship) Get() *Relationship {
 	return v.value
 }
 
-func (v *NullableRelationTuple) Set(val *RelationTuple) {
+func (v *NullableRelationship) Set(val *Relationship) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableRelationTuple) IsSet() bool {
+func (v NullableRelationship) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableRelationTuple) Unset() {
+func (v *NullableRelationship) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableRelationTuple(val *RelationTuple) *NullableRelationTuple {
-	return &NullableRelationTuple{value: val, isSet: true}
+func NewNullableRelationship(val *Relationship) *NullableRelationship {
+	return &NullableRelationship{value: val, isSet: true}
 }
 
-func (v NullableRelationTuple) MarshalJSON() ([]byte, error) {
+func (v NullableRelationship) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableRelationTuple) UnmarshalJSON(src []byte) error {
+func (v *NullableRelationship) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
