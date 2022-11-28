@@ -15,22 +15,33 @@ import (
 	"encoding/json"
 )
 
-// GenericError The standard error format
+// GenericError struct for GenericError
 type GenericError struct {
-	Code    *int64                   `json:"code,omitempty"`
-	Details []map[string]interface{} `json:"details,omitempty"`
-	Message *string                  `json:"message,omitempty"`
-	Reason  *string                  `json:"reason,omitempty"`
-	Request *string                  `json:"request,omitempty"`
-	Status  *string                  `json:"status,omitempty"`
+	// The status code
+	Code *int64 `json:"code,omitempty"`
+	// Debug information  This field is often not exposed to protect against leaking sensitive information.
+	Debug *string `json:"debug,omitempty"`
+	// Further error details
+	Details map[string]interface{} `json:"details,omitempty"`
+	// The error ID  Useful when trying to identify various errors in application logic.
+	Id *string `json:"id,omitempty"`
+	// Error message  The error's message.
+	Message string `json:"message"`
+	// A human-readable reason for the error
+	Reason *string `json:"reason,omitempty"`
+	// The request ID  The request ID is often exposed internally in order to trace errors across service architectures. This is often a UUID.
+	Request *string `json:"request,omitempty"`
+	// The status description
+	Status *string `json:"status,omitempty"`
 }
 
 // NewGenericError instantiates a new GenericError object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewGenericError() *GenericError {
+func NewGenericError(message string) *GenericError {
 	this := GenericError{}
+	this.Message = message
 	return &this
 }
 
@@ -74,10 +85,42 @@ func (o *GenericError) SetCode(v int64) {
 	o.Code = &v
 }
 
+// GetDebug returns the Debug field value if set, zero value otherwise.
+func (o *GenericError) GetDebug() string {
+	if o == nil || o.Debug == nil {
+		var ret string
+		return ret
+	}
+	return *o.Debug
+}
+
+// GetDebugOk returns a tuple with the Debug field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GenericError) GetDebugOk() (*string, bool) {
+	if o == nil || o.Debug == nil {
+		return nil, false
+	}
+	return o.Debug, true
+}
+
+// HasDebug returns a boolean if a field has been set.
+func (o *GenericError) HasDebug() bool {
+	if o != nil && o.Debug != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetDebug gets a reference to the given string and assigns it to the Debug field.
+func (o *GenericError) SetDebug(v string) {
+	o.Debug = &v
+}
+
 // GetDetails returns the Details field value if set, zero value otherwise.
-func (o *GenericError) GetDetails() []map[string]interface{} {
+func (o *GenericError) GetDetails() map[string]interface{} {
 	if o == nil || o.Details == nil {
-		var ret []map[string]interface{}
+		var ret map[string]interface{}
 		return ret
 	}
 	return o.Details
@@ -85,7 +128,7 @@ func (o *GenericError) GetDetails() []map[string]interface{} {
 
 // GetDetailsOk returns a tuple with the Details field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *GenericError) GetDetailsOk() ([]map[string]interface{}, bool) {
+func (o *GenericError) GetDetailsOk() (map[string]interface{}, bool) {
 	if o == nil || o.Details == nil {
 		return nil, false
 	}
@@ -101,41 +144,65 @@ func (o *GenericError) HasDetails() bool {
 	return false
 }
 
-// SetDetails gets a reference to the given []map[string]interface{} and assigns it to the Details field.
-func (o *GenericError) SetDetails(v []map[string]interface{}) {
+// SetDetails gets a reference to the given map[string]interface{} and assigns it to the Details field.
+func (o *GenericError) SetDetails(v map[string]interface{}) {
 	o.Details = v
 }
 
-// GetMessage returns the Message field value if set, zero value otherwise.
-func (o *GenericError) GetMessage() string {
-	if o == nil || o.Message == nil {
+// GetId returns the Id field value if set, zero value otherwise.
+func (o *GenericError) GetId() string {
+	if o == nil || o.Id == nil {
 		var ret string
 		return ret
 	}
-	return *o.Message
+	return *o.Id
 }
 
-// GetMessageOk returns a tuple with the Message field value if set, nil otherwise
+// GetIdOk returns a tuple with the Id field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *GenericError) GetMessageOk() (*string, bool) {
-	if o == nil || o.Message == nil {
+func (o *GenericError) GetIdOk() (*string, bool) {
+	if o == nil || o.Id == nil {
 		return nil, false
 	}
-	return o.Message, true
+	return o.Id, true
 }
 
-// HasMessage returns a boolean if a field has been set.
-func (o *GenericError) HasMessage() bool {
-	if o != nil && o.Message != nil {
+// HasId returns a boolean if a field has been set.
+func (o *GenericError) HasId() bool {
+	if o != nil && o.Id != nil {
 		return true
 	}
 
 	return false
 }
 
-// SetMessage gets a reference to the given string and assigns it to the Message field.
+// SetId gets a reference to the given string and assigns it to the Id field.
+func (o *GenericError) SetId(v string) {
+	o.Id = &v
+}
+
+// GetMessage returns the Message field value
+func (o *GenericError) GetMessage() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.Message
+}
+
+// GetMessageOk returns a tuple with the Message field value
+// and a boolean to check if the value has been set.
+func (o *GenericError) GetMessageOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Message, true
+}
+
+// SetMessage sets field value
 func (o *GenericError) SetMessage(v string) {
-	o.Message = &v
+	o.Message = v
 }
 
 // GetReason returns the Reason field value if set, zero value otherwise.
@@ -239,10 +306,16 @@ func (o GenericError) MarshalJSON() ([]byte, error) {
 	if o.Code != nil {
 		toSerialize["code"] = o.Code
 	}
+	if o.Debug != nil {
+		toSerialize["debug"] = o.Debug
+	}
 	if o.Details != nil {
 		toSerialize["details"] = o.Details
 	}
-	if o.Message != nil {
+	if o.Id != nil {
+		toSerialize["id"] = o.Id
+	}
+	if true {
 		toSerialize["message"] = o.Message
 	}
 	if o.Reason != nil {

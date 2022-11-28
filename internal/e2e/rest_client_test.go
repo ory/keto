@@ -132,14 +132,14 @@ func (rc *restClient) check(t require.TestingT, r *ketoapi.RelationTuple) bool {
 	q := r.ToURLQuery()
 	bodyGet, codeGet := rc.makeRequest(t, http.MethodGet, fmt.Sprintf("%s?%s", check.RouteBase, q.Encode()), "", rc.readURL)
 
-	var respGet check.RESTResponse
+	var respGet check.CheckPermissionResult
 	require.NoError(t, json.Unmarshal([]byte(bodyGet), &respGet))
 
 	j, err := json.Marshal(r)
 	require.NoError(t, err)
 	bodyPost, codePost := rc.makeRequest(t, http.MethodPost, check.RouteBase, string(j), rc.readURL)
 
-	var respPost check.RESTResponse
+	var respPost check.CheckPermissionResult
 	require.NoError(t, json.Unmarshal([]byte(bodyPost), &respPost))
 
 	if codeGet == http.StatusOK && codePost == http.StatusOK {

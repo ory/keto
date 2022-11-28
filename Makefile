@@ -13,10 +13,10 @@ GO_DEPENDENCIES = golang.org/x/tools/cmd/goimports \
 				  github.com/josephburnett/jd \
 				  github.com/mikefarah/yq/v4 \
 				  golang.org/x/tools/cmd/stringer \
+				  github.com/go-swagger/go-swagger/cmd/swagger \
 				  github.com/mdempsky/go114-fuzz-build
 
-SCRIPT_DEPENDENCIES = swagger \
-					protoc \
+SCRIPT_DEPENDENCIES = protoc \
 					grype \
 					trivy \
 					ory \

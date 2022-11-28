@@ -12,20 +12,20 @@ option java_outer_classname = "ReadServiceProto";
 option java_package = "sh.ory.keto.relation_tuples.v1alpha2";
 option php_namespace = "Ory\\Keto\\RelationTuples\\v1alpha2";
 
-// The service to query relation tuples.
+// The service to query relationships.
 //
 // This service is part of the [read-APIs](../concepts/api-overview.mdx#read-apis).
 service ReadService {
-  // Lists ACL relation tuples.
+  // Lists ACL relationships.
   rpc ListRelationTuples(ListRelationTuplesRequest) returns (ListRelationTuplesResponse);
 }
 
 // Request for ReadService.ListRelationTuples RPC.
 // See `ListRelationTuplesRequest_Query` for how to filter the query.
 message ListRelationTuplesRequest {
-  // The query for listing relation tuples.
+  // The query for listing relationships.
   // Clients can specify any optional field to
-  // partially filter for specific relation tuples.
+  // partially filter for specific relationships.
   //
   // Example use cases (namespace is always required):
   //  - object only: display a list of all permissions referring to a specific object
@@ -85,7 +85,7 @@ message ListRelationTuplesRequest {
 
 // The response of a ReadService.ListRelationTuples RPC.
 message ListRelationTuplesResponse {
-  // The relation tuples matching the list request.
+  // The relationships matching the list request.
   repeated RelationTuple relation_tuples = 1;
   // The token required to get the next page.
   // If this is the last page, the token will be the empty string.

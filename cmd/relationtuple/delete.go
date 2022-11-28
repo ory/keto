@@ -19,9 +19,9 @@ import (
 func NewDeleteCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "delete <relation-tuple.json> [<relation-tuple-dir>]",
-		Short: "Delete relation tuples defined in JSON files",
-		Long: "Delete relation tuples defined in the given JSON files.\n" +
-			"A directory will be traversed and all relation tuples will be deleted.\n" +
+		Short: "Delete relationships defined in JSON files",
+		Long: "Delete relationships defined in the given JSON files.\n" +
+			"A directory will be traversed and all relationships will be deleted.\n" +
 			"Pass the special filename `-` to read from STD_IN.",
 		Args: cobra.MinimumNArgs(1),
 		RunE: transactRelationTuples(rts.RelationTupleDelta_ACTION_DELETE),

@@ -6,10 +6,11 @@ package check
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"io"
 	"net/http"
 	"net/url"
+
+	"github.com/pkg/errors"
 
 	"github.com/ory/herodot"
 
@@ -38,7 +39,7 @@ type (
 
 var (
 	_ rts.CheckServiceServer = (*Handler)(nil)
-	_ *getCheckRequest       = nil
+	_ *checkPermission       = nil
 )
 
 func NewHandler(d handlerDependencies) *Handler {
@@ -61,29 +62,31 @@ func (h *Handler) RegisterReadGRPC(s *grpc.Server) {
 	rts.RegisterCheckServiceServer(s, h)
 }
 
-// RESTResponse represents the response for a check request.
+// Check Permission Result
 //
 // The content of the allowed field is mirrored in the HTTP status code.
 //
-// swagger:model getCheckResponse
-type RESTResponse struct {
+// swagger:model checkPermissionResult
+type CheckPermissionResult struct {
 	// whether the relation tuple is allowed
 	//
 	// required: true
 	Allowed bool `json:"allowed"`
 }
 
-// swagger:parameters getCheck postCheck
-type getCheckRequest struct {
-	// in:query
+// Check Permission Request Parameters
+//
+// swagger:parameters checkPermission
+type checkPermission struct {
+	// in: query
 	MaxDepth int `json:"max-depth"`
 }
 
-// swagger:route GET /relation-tuples/check/openapi read getCheck
+// swagger:route GET /relation-tuples/check/openapi permission checkPermission
 //
-// # Check a relation tuple
+// # Check a permission
 //
-// To learn how relation tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
+// To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
 //
 //	Consumes:
 //	-  application/x-www-form-urlencoded
@@ -94,23 +97,31 @@ type getCheckRequest struct {
 //	Schemes: http, https
 //
 //	Responses:
-//	  200: getCheckResponse
-//	  400: genericError
-//	  500: genericError
+//	  200: checkPermissionResult
+//	  400: errorGeneric
+//	  default: errorGeneric
 func (h *Handler) getCheckNoStatus(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	allowed, err := h.getCheck(r.Context(), r.URL.Query())
 	if err != nil {
 		h.d.Writer().WriteError(w, r, err)
 		return
 	}
-	h.d.Writer().Write(w, r, &RESTResponse{Allowed: allowed})
+	h.d.Writer().Write(w, r, &CheckPermissionResult{Allowed: allowed})
 }
 
-// swagger:route GET /relation-tuples/check read getCheckMirrorStatus
+// Check Permission Or Error Request Parameters
 //
-// # Check a relation tuple
+// swagger:parameters checkPermissionOrError
+type checkPermissionOrError struct {
+	// in: query
+	MaxDepth int `json:"max-depth"`
+}
+
+// swagger:route GET /relation-tuples/check permission checkPermissionOrError
 //
-// To learn how relation tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
+// # Check a permission
+//
+// To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
 //
 //	Consumes:
 //	-  application/x-www-form-urlencoded
@@ -121,10 +132,10 @@ func (h *Handler) getCheckNoStatus(w http.ResponseWriter, r *http.Request, _ htt
 //	Schemes: http, https
 //
 //	Responses:
-//	  200: getCheckResponse
-//	  400: genericError
-//	  403: getCheckResponse
-//	  500: genericError
+//	  200: checkPermissionResult
+//	  400: errorGeneric
+//	  403: checkPermissionResult
+//	  default: errorGeneric
 func (h *Handler) getCheckMirrorStatus(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	allowed, err := h.getCheck(r.Context(), r.URL.Query())
 	if err != nil {
@@ -133,11 +144,11 @@ func (h *Handler) getCheckMirrorStatus(w http.ResponseWriter, r *http.Request, _
 	}
 
 	if allowed {
-		h.d.Writer().Write(w, r, &RESTResponse{Allowed: allowed})
+		h.d.Writer().Write(w, r, &CheckPermissionResult{Allowed: allowed})
 		return
 	}
 
-	h.d.Writer().WriteCode(w, r, http.StatusForbidden, &RESTResponse{Allowed: allowed})
+	h.d.Writer().WriteCode(w, r, http.StatusForbidden, &CheckPermissionResult{Allowed: allowed})
 }
 
 func (h *Handler) getCheck(ctx context.Context, q url.Values) (bool, error) {
@@ -162,11 +173,29 @@ func (h *Handler) getCheck(ctx context.Context, q url.Values) (bool, error) {
 	return h.d.PermissionEngine().CheckIsMember(ctx, it[0], maxDepth)
 }
 
-// swagger:route POST /relation-tuples/check/openapi read postCheck
+// Check Permission using Post Request Parameters
 //
-// # Check a relation tuple
+// swagger:parameters postCheckPermission
+type postCheckPermission struct {
+	// in: query
+	MaxDepth int `json:"max-depth"`
+
+	// in: body
+	Payload postCheckPermissionBody
+}
+
+// Check Permission using Post Request Body
 //
-// To learn how relation tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
+// swagger:model postCheckPermissionBody
+type postCheckPermissionBody struct {
+	ketoapi.RelationQuery
+}
+
+// swagger:route POST /relation-tuples/check/openapi permission postCheckPermission
+//
+// # Check a permission
+//
+// To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
 //
 //	Consumes:
 //	-  application/json
@@ -177,23 +206,41 @@ func (h *Handler) getCheck(ctx context.Context, q url.Values) (bool, error) {
 //	Schemes: http, https
 //
 //	Responses:
-//	  200: getCheckResponse
-//	  400: genericError
-//	  500: genericError
+//	  200: checkPermissionResult
+//	  400: errorGeneric
+//	  default: errorGeneric
 func (h *Handler) postCheckNoStatus(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	allowed, err := h.postCheck(r.Context(), r.Body, r.URL.Query())
 	if err != nil {
 		h.d.Writer().WriteError(w, r, err)
 		return
 	}
-	h.d.Writer().Write(w, r, &RESTResponse{Allowed: allowed})
+	h.d.Writer().Write(w, r, &CheckPermissionResult{Allowed: allowed})
 }
 
-// swagger:route POST /relation-tuples/check read postCheckMirrorStatus
+// Post Check Permission Or Error Request Parameters
 //
-// # Check a relation tuple
+// swagger:parameters postCheckPermissionOrError
+type postCheckPermissionOrError struct {
+	// in: query
+	MaxDepth int `json:"max-depth"`
+
+	// in: body
+	Body postCheckPermissionOrErrorBody
+}
+
+// Post Check Permission Or Error Body
 //
-// To learn how relation tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
+// swagger:model postCheckPermissionOrErrorBody
+type postCheckPermissionOrErrorBody struct {
+	ketoapi.RelationQuery
+}
+
+// swagger:route POST /relation-tuples/check permission postCheckPermissionOrError
+//
+// # Check a permission
+//
+// To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
 //
 //	Consumes:
 //	-  application/json
@@ -204,10 +251,10 @@ func (h *Handler) postCheckNoStatus(w http.ResponseWriter, r *http.Request, _ ht
 //	Schemes: http, https
 //
 //	Responses:
-//	  200: getCheckResponse
-//	  400: genericError
-//	  403: getCheckResponse
-//	  500: genericError
+//	  200: checkPermissionResult
+//	  400: errorGeneric
+//	  403: checkPermissionResult
+//	  default: errorGeneric
 func (h *Handler) postCheckMirrorStatus(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	allowed, err := h.postCheck(r.Context(), r.Body, r.URL.Query())
 	if err != nil {
@@ -216,11 +263,11 @@ func (h *Handler) postCheckMirrorStatus(w http.ResponseWriter, r *http.Request, 
 	}
 
 	if allowed {
-		h.d.Writer().Write(w, r, &RESTResponse{Allowed: allowed})
+		h.d.Writer().Write(w, r, &CheckPermissionResult{Allowed: allowed})
 		return
 	}
 
-	h.d.Writer().WriteCode(w, r, http.StatusForbidden, &RESTResponse{Allowed: allowed})
+	h.d.Writer().WriteCode(w, r, http.StatusForbidden, &CheckPermissionResult{Allowed: allowed})
 }
 
 func (h *Handler) postCheck(ctx context.Context, body io.Reader, query url.Values) (bool, error) {
@@ -231,7 +278,7 @@ func (h *Handler) postCheck(ctx context.Context, body io.Reader, query url.Value
 
 	var tuple ketoapi.RelationTuple
 	if err := json.NewDecoder(body).Decode(&tuple); err != nil {
-		return false, herodot.ErrBadRequest.WithErrorf("could not unmarshal json: %s", err.Error())
+		return false, errors.WithStack(herodot.ErrBadRequest.WithErrorf("could not unmarshal json: %s", err.Error()))
 	}
 	t, err := h.d.Mapper().FromTuple(ctx, &tuple)
 	// herodot.ErrNotFound occurs when the namespace is unknown

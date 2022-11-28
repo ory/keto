@@ -18,8 +18,8 @@ import (
 func NewParseCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "parse",
-		Short: "Parse human readable relation tuples",
-		Long: "Parse human readable relation tuples as used in the documentation.\n" +
+		Short: "Parse human readable relationships",
+		Long: "Parse human readable relationships as used in the documentation.\n" +
 			"Supports various output formats. Especially useful for piping into other commands by using `--format json`.\n" +
 			"Ignores comments (lines starting with `//`) and blank lines.",
 		Args: cobra.MinimumNArgs(1),

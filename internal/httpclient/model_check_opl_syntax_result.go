@@ -15,31 +15,31 @@ import (
 	"encoding/json"
 )
 
-// PostCheckOplSyntaxResponse struct for PostCheckOplSyntaxResponse
-type PostCheckOplSyntaxResponse struct {
+// CheckOplSyntaxResult struct for CheckOplSyntaxResult
+type CheckOplSyntaxResult struct {
 	// The list of syntax errors
 	Errors []ParseError `json:"errors,omitempty"`
 }
 
-// NewPostCheckOplSyntaxResponse instantiates a new PostCheckOplSyntaxResponse object
+// NewCheckOplSyntaxResult instantiates a new CheckOplSyntaxResult object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewPostCheckOplSyntaxResponse() *PostCheckOplSyntaxResponse {
-	this := PostCheckOplSyntaxResponse{}
+func NewCheckOplSyntaxResult() *CheckOplSyntaxResult {
+	this := CheckOplSyntaxResult{}
 	return &this
 }
 
-// NewPostCheckOplSyntaxResponseWithDefaults instantiates a new PostCheckOplSyntaxResponse object
+// NewCheckOplSyntaxResultWithDefaults instantiates a new CheckOplSyntaxResult object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewPostCheckOplSyntaxResponseWithDefaults() *PostCheckOplSyntaxResponse {
-	this := PostCheckOplSyntaxResponse{}
+func NewCheckOplSyntaxResultWithDefaults() *CheckOplSyntaxResult {
+	this := CheckOplSyntaxResult{}
 	return &this
 }
 
 // GetErrors returns the Errors field value if set, zero value otherwise.
-func (o *PostCheckOplSyntaxResponse) GetErrors() []ParseError {
+func (o *CheckOplSyntaxResult) GetErrors() []ParseError {
 	if o == nil || o.Errors == nil {
 		var ret []ParseError
 		return ret
@@ -49,7 +49,7 @@ func (o *PostCheckOplSyntaxResponse) GetErrors() []ParseError {
 
 // GetErrorsOk returns a tuple with the Errors field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PostCheckOplSyntaxResponse) GetErrorsOk() ([]ParseError, bool) {
+func (o *CheckOplSyntaxResult) GetErrorsOk() ([]ParseError, bool) {
 	if o == nil || o.Errors == nil {
 		return nil, false
 	}
@@ -57,7 +57,7 @@ func (o *PostCheckOplSyntaxResponse) GetErrorsOk() ([]ParseError, bool) {
 }
 
 // HasErrors returns a boolean if a field has been set.
-func (o *PostCheckOplSyntaxResponse) HasErrors() bool {
+func (o *CheckOplSyntaxResult) HasErrors() bool {
 	if o != nil && o.Errors != nil {
 		return true
 	}
@@ -66,11 +66,11 @@ func (o *PostCheckOplSyntaxResponse) HasErrors() bool {
 }
 
 // SetErrors gets a reference to the given []ParseError and assigns it to the Errors field.
-func (o *PostCheckOplSyntaxResponse) SetErrors(v []ParseError) {
+func (o *CheckOplSyntaxResult) SetErrors(v []ParseError) {
 	o.Errors = v
 }
 
-func (o PostCheckOplSyntaxResponse) MarshalJSON() ([]byte, error) {
+func (o CheckOplSyntaxResult) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.Errors != nil {
 		toSerialize["errors"] = o.Errors
@@ -78,38 +78,38 @@ func (o PostCheckOplSyntaxResponse) MarshalJSON() ([]byte, error) {
 	return json.Marshal(toSerialize)
 }
 
-type NullablePostCheckOplSyntaxResponse struct {
-	value *PostCheckOplSyntaxResponse
+type NullableCheckOplSyntaxResult struct {
+	value *CheckOplSyntaxResult
 	isSet bool
 }
 
-func (v NullablePostCheckOplSyntaxResponse) Get() *PostCheckOplSyntaxResponse {
+func (v NullableCheckOplSyntaxResult) Get() *CheckOplSyntaxResult {
 	return v.value
 }
 
-func (v *NullablePostCheckOplSyntaxResponse) Set(val *PostCheckOplSyntaxResponse) {
+func (v *NullableCheckOplSyntaxResult) Set(val *CheckOplSyntaxResult) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullablePostCheckOplSyntaxResponse) IsSet() bool {
+func (v NullableCheckOplSyntaxResult) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullablePostCheckOplSyntaxResponse) Unset() {
+func (v *NullableCheckOplSyntaxResult) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullablePostCheckOplSyntaxResponse(val *PostCheckOplSyntaxResponse) *NullablePostCheckOplSyntaxResponse {
-	return &NullablePostCheckOplSyntaxResponse{value: val, isSet: true}
+func NewNullableCheckOplSyntaxResult(val *CheckOplSyntaxResult) *NullableCheckOplSyntaxResult {
+	return &NullableCheckOplSyntaxResult{value: val, isSet: true}
 }
 
-func (v NullablePostCheckOplSyntaxResponse) MarshalJSON() ([]byte, error) {
+func (v NullableCheckOplSyntaxResult) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullablePostCheckOplSyntaxResponse) UnmarshalJSON(src []byte) error {
+func (v *NullableCheckOplSyntaxResult) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

@@ -199,7 +199,7 @@ var (
 					for {
 						relationTuples, err = GetRelationTuples[OldRelationTuple](conn, lastID)
 						if err != nil {
-							return fmt.Errorf("could not get old relation tuples: %w", err)
+							return fmt.Errorf("could not get old relationships: %w", err)
 						}
 						if len(relationTuples) == 0 {
 							break
@@ -244,7 +244,7 @@ var (
 					for {
 						relationTuples, err = GetRelationTuples[NewRelationTuple](conn, lastID)
 						if err != nil {
-							return fmt.Errorf("could not get new relation tuples: %w", err)
+							return fmt.Errorf("could not get new relationships: %w", err)
 						}
 						if len(relationTuples) == 0 {
 							break
