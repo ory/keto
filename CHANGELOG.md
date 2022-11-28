@@ -5,7 +5,7 @@
 
 **Table of Contents**
 
-- [0.0.0 (2022-11-25)](#000-2022-11-25)
+- [0.0.0 (2022-11-28)](#000-2022-11-28)
   - [Bug Fixes](#bug-fixes)
   - [Code Refactoring](#code-refactoring)
   - [Documentation](#documentation)
@@ -140,7 +140,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.10.0-alpha.0...v0.0.0) (2022-11-25)
+# [0.0.0](https://github.com/ory/keto/compare/v0.10.0-alpha.0...v0.0.0) (2022-11-28)
 
 ### Bug Fixes
 
@@ -242,6 +242,12 @@
   ([6571bae](https://github.com/ory/keto/commit/6571bae5d10f3218573de3e5a60877bec71a2029))
 - Rename to Ory Network ([#1081](https://github.com/ory/keto/issues/1081))
   ([3fe1d68](https://github.com/ory/keto/commit/3fe1d68bd1c363c9fee8490332477f68dac8b547))
+- Support Array<> syntax in type decl
+  ([#1152](https://github.com/ory/keto/issues/1152))
+  ([c4c456b](https://github.com/ory/keto/commit/c4c456bf6fd97c572f56d6b632853f555ded6451)):
+
+  You can now use `Array<T>` as an alternative to `T[]` when declaring types for
+  relations in the Ory Permission Language.
 
 # [0.10.0-alpha.0](https://github.com/ory/keto/compare/v0.9.0-alpha.0...v0.10.0-alpha.0) (2022-09-27)
 
