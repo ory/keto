@@ -193,30 +193,39 @@ func (p *parser) parseRelated() {
 	p.match(":", "{")
 	for !p.fatal {
 		switch item := p.next(); item.Typ {
+
 		case itemSemicolon:
 			continue
+
 		case itemBraceRight:
 			return
+
 		case itemIdentifier, itemStringLiteral:
 			relation := item.Val
 			var types []ast.RelationType
 			p.match(":")
-			switch item := p.next(); item.Typ {
-			case itemIdentifier:
-				if item.Val == "SubjectSet" {
-					types = append(types, p.matchSubjectSet())
-				} else {
-					types = append(types, ast.RelationType{Namespace: item.Val})
-					p.addCheck(checkNamespaceExists(item))
-				}
-			case itemParenLeft:
-				types = append(types, p.parseTypeUnion()...)
+
+			switch item := p.next(); {
+			case item.Val == "Array":
+				p.match("<")
+				types = append(types, p.parseTypeUnion(itemAngledRight)...)
+			case item.Val == "SubjectSet":
+				types = append(types, p.matchSubjectSet())
+				p.match("[", "]", optional(","))
+			case item.Typ == itemParenLeft:
+				types = append(types, p.parseTypeUnion(itemParenRight)...)
+				p.match("[", "]", optional(","))
+			default:
+				types = append(types, ast.RelationType{Namespace: item.Val})
+				p.addCheck(checkNamespaceExists(item))
+				p.match("[", "]", optional(","))
 			}
-			p.match("[", "]", optional(","))
+
 			p.namespace.Relations = append(p.namespace.Relations, ast.Relation{
 				Name:  relation,
 				Types: types,
 			})
+
 		default:
 			p.addFatal(item, "expected identifier or '}', got %s %q", item.Typ.String(), item.Val)
 			return
@@ -231,7 +240,7 @@ func (p *parser) matchSubjectSet() ast.RelationType {
 	return ast.RelationType{Namespace: namespace.Val, Relation: relation.Val}
 }
 
-func (p *parser) parseTypeUnion() (types []ast.RelationType) {
+func (p *parser) parseTypeUnion(endToken itemType) (types []ast.RelationType) {
 	for !p.fatal {
 		var identifier item
 		p.match(&identifier)
@@ -242,7 +251,7 @@ func (p *parser) parseTypeUnion() (types []ast.RelationType) {
 			p.addCheck(checkNamespaceExists(identifier))
 		}
 		switch item := p.next(); item.Typ {
-		case itemParenRight:
+		case endToken:
 			return
 		case itemTypeUnion:
 		default:

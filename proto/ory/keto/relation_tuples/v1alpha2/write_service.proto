@@ -15,15 +15,15 @@ option php_namespace = "Ory\\Keto\\RelationTuples\\v1alpha2";
 //
 // This service is part of the [write-APIs](../concepts/api-overview.mdx#write-apis).
 service WriteService {
-  // Writes one or more relation tuples in a single transaction.
+  // Writes one or more relationships in a single transaction.
   rpc TransactRelationTuples(TransactRelationTuplesRequest) returns (TransactRelationTuplesResponse);
-  // Deletes relation tuples based on relation query
+  // Deletes relationships based on relation query
   rpc DeleteRelationTuples(DeleteRelationTuplesRequest) returns (DeleteRelationTuplesResponse);
 }
 
 // The request of a WriteService.TransactRelationTuples RPC.
 message TransactRelationTuplesRequest {
-  // The write delta for the relation tuples operated in one single transaction.
+  // The write delta for the relationships operated in one single transaction.
   // Either all actions succeed or no change takes effect on error.
   repeated RelationTupleDelta relation_tuple_deltas = 1;
 }
@@ -65,7 +65,7 @@ message TransactRelationTuplesResponse {
 }
 
 message DeleteRelationTuplesRequest {
-  // The query for deleting relation tuples
+  // The query for deleting relationships
   message Query {
     // Optional. The namespace to query.
     string namespace = 1;

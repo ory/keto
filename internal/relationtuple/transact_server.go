@@ -87,11 +87,26 @@ func (h *handler) DeleteRelationTuples(ctx context.Context, req *rts.DeleteRelat
 	return &rts.DeleteRelationTuplesResponse{}, nil
 }
 
-// swagger:route PUT /admin/relation-tuples write createRelationTuple
+// Create Relationship Request Parameters
 //
-// # Create a Relation Tuple
+// swagger:parameters createRelationship
+type createRelationship struct {
+	// in: body
+	Body createRelationshipBody
+}
+
+// Create Relationship Request Body
 //
-// Use this endpoint to create a relation tuple.
+// swagger:model createRelationshipBody
+type createRelationshipBody struct {
+	ketoapi.RelationQuery
+}
+
+// swagger:route PUT /admin/relation-tuples relationship createRelationship
+//
+// # Create a Relationship
+//
+// Use this endpoint to create a relationship.
 //
 //	Consumes:
 //	-  application/json
@@ -102,9 +117,9 @@ func (h *handler) DeleteRelationTuples(ctx context.Context, req *rts.DeleteRelat
 //	Schemes: http, https
 //
 //	Responses:
-//	  201: relationQuery
-//	  400: genericError
-//	  500: genericError
+//	  201: relationship
+//	  400: errorGeneric
+//	  default: errorGeneric
 func (h *handler) createRelation(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	ctx := r.Context()
 
@@ -139,11 +154,11 @@ func (h *handler) createRelation(w http.ResponseWriter, r *http.Request, _ httpr
 	)
 }
 
-// swagger:route DELETE /admin/relation-tuples write deleteRelationTuples
+// swagger:route DELETE /admin/relation-tuples relationship deleteRelationships
 //
-// # Delete Relation Tuples
+// # Delete Relationships
 //
-// Use this endpoint to delete relation tuples
+// Use this endpoint to delete relationships
 //
 //	Consumes:
 //	-  application/x-www-form-urlencoded
@@ -155,8 +170,8 @@ func (h *handler) createRelation(w http.ResponseWriter, r *http.Request, _ httpr
 //
 //	Responses:
 //	  204: emptyResponse
-//	  400: genericError
-//	  500: genericError
+//	  400: errorGeneric
+//	  default: errorGeneric
 func (h *handler) deleteRelations(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	ctx := r.Context()
 
@@ -171,7 +186,7 @@ func (h *handler) deleteRelations(w http.ResponseWriter, r *http.Request, _ http
 	for k := range q {
 		l = l.WithField(k, q.Get(k))
 	}
-	l.Debug("deleting relation tuples")
+	l.Debug("deleting relationships")
 
 	iq, err := h.d.Mapper().FromQuery(ctx, query)
 	if err != nil {
@@ -180,7 +195,7 @@ func (h *handler) deleteRelations(w http.ResponseWriter, r *http.Request, _ http
 		return
 	}
 	if err := h.d.RelationTupleManager().DeleteAllRelationTuples(ctx, iq); err != nil {
-		l.WithError(err).Errorf("got an error while deleting relation tuples")
+		l.WithError(err).Errorf("got an error while deleting relationships")
 		h.d.Writer().WriteError(w, r, herodot.ErrInternalServerError.WithError(err.Error()))
 		return
 	}
@@ -197,11 +212,11 @@ func internalTuplesWithAction(deltas []*ketoapi.PatchDelta, action ketoapi.Patch
 	return
 }
 
-// swagger:route PATCH /admin/relation-tuples write patchRelationTuples
+// swagger:route PATCH /admin/relation-tuples relationship patchRelationships
 //
-// # Patch Multiple Relation Tuples
+// # Patch Multiple Relationships
 //
-// Use this endpoint to patch one or more relation tuples.
+// Use this endpoint to patch one or more relationships.
 //
 //	Consumes:
 //	- application/json
@@ -213,9 +228,9 @@ func internalTuplesWithAction(deltas []*ketoapi.PatchDelta, action ketoapi.Patch
 //
 //	Responses:
 //	  204: emptyResponse
-//	  400: genericError
-//	  404: genericError
-//	  500: genericError
+//	  400: errorGeneric
+//	  404: errorGeneric
+//	  default: errorGeneric
 func (h *handler) patchRelationTuples(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	ctx := r.Context()
 

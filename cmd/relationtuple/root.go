@@ -15,7 +15,7 @@ import (
 func newRelationCmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "relation-tuple",
-		Short: "Read and manipulate relation tuples",
+		Short: "Read and manipulate relationships",
 	}
 }
 

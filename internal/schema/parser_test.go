@@ -77,8 +77,8 @@ var parserTestCases = []struct {
   
   class Folder implements Namespace {
 	related: {
-	  parents: File[]
-	  viewers: SubjectSet<Group, "members">[]
+	  parents: Array<File>
+	  viewers: Array<SubjectSet<Group, "members">>
 	}
   
 	permits = {
@@ -88,7 +88,7 @@ var parserTestCases = []struct {
   
   class File implements Namespace {
 	related: {
-	  parents: (File | Folder)[]
+	  parents: Array<File | Folder>
 	  viewers: (User | SubjectSet<Group, "members">)[]
 	  "owners": (User | SubjectSet<Group, "members">)[]
 	  siblings: File[]

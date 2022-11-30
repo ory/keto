@@ -24,9 +24,9 @@ message RelationTuple {
   Subject subject = 4;
 }
 
-// The query for listing relation tuples.
+// The query for listing relationships.
 // Clients can specify any optional field to
-// partially filter for specific relation tuples.
+// partially filter for specific relationships.
 //
 // Example use cases (namespace is always required):
 //  - object only: display a list of all permissions referring to a specific object

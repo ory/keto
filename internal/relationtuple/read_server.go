@@ -106,11 +106,11 @@ func (h *handler) ListRelationTuples(ctx context.Context, req *rts.ListRelationT
 	return resp, nil
 }
 
-// swagger:route GET /relation-tuples read getRelationTuples
+// swagger:route GET /relation-tuples relationship getRelationships
 //
-// # Query relation tuples
+// # Query relationships
 //
-// Get all relation tuples that match the query. Only the namespace field is required.
+// Get all relationships that match the query. Only the namespace field is required.
 //
 //	Consumes:
 //	-  application/x-www-form-urlencoded
@@ -121,9 +121,9 @@ func (h *handler) ListRelationTuples(ctx context.Context, req *rts.ListRelationT
 //	Schemes: http, https
 //
 //	Responses:
-//	  200: getRelationTuplesResponse
-//	  404: genericError
-//	  500: genericError
+//	  200: relationships
+//	  404: errorGeneric
+//	  default: errorGeneric
 func (h *handler) getRelations(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	ctx := r.Context()
 
@@ -138,7 +138,7 @@ func (h *handler) getRelations(w http.ResponseWriter, r *http.Request, _ httprou
 	for k := range q {
 		l = l.WithField(k, q.Get(k))
 	}
-	l.Debug("querying relation tuples")
+	l.Debug("querying relationships")
 
 	var paginationOpts []x.PaginationOptionSetter
 	if pageToken := q.Get("page_token"); pageToken != "" {

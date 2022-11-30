@@ -3,21 +3,18 @@
 
 package main
 
-// The standard error format
-// swagger:model genericError
-// nolint:deadcode,unused
-type genericError struct {
-	Code int `json:"code,omitempty"`
+import "github.com/ory/herodot"
 
-	Status string `json:"status,omitempty"`
-
-	Request string `json:"request,omitempty"`
-
-	Reason string `json:"reason,omitempty"`
-
-	Details []map[string]interface{} `json:"details,omitempty"`
-
-	Message string `json:"message"`
+// JSON API Error Response
+//
+// The standard Ory JSON API error format.
+//
+// swagger:model errorGeneric
+type errorGeneric struct {
+	// Contains error details
+	//
+	// required: true
+	Error herodot.DefaultError `json:"error"`
 }
 
 // An empty response

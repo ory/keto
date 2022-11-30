@@ -5,15 +5,16 @@
 
 **Table of Contents**
 
-- [0.0.0 (2022-11-24)](#000-2022-11-24)
+- [0.0.0 (2022-11-28)](#000-2022-11-28)
   - [Bug Fixes](#bug-fixes)
+  - [Code Refactoring](#code-refactoring)
   - [Documentation](#documentation)
   - [Features](#features)
 - [0.10.0-alpha.0 (2022-09-27)](#0100-alpha0-2022-09-27)
   - [Bug Fixes](#bug-fixes-1)
   - [Build System](#build-system)
   - [Code Generation](#code-generation)
-  - [Code Refactoring](#code-refactoring)
+  - [Code Refactoring](#code-refactoring-1)
   - [Documentation](#documentation-1)
   - [Features](#features-1)
   - [Tests](#tests)
@@ -21,7 +22,7 @@
   - [Breaking Changes](#breaking-changes)
     - [Bug Fixes](#bug-fixes-2)
     - [Code Generation](#code-generation-1)
-    - [Code Refactoring](#code-refactoring-1)
+    - [Code Refactoring](#code-refactoring-2)
     - [Documentation](#documentation-2)
     - [Features](#features-2)
     - [Tests](#tests-1)
@@ -36,7 +37,7 @@
 - [0.8.0-alpha.0 (2022-02-10)](#080-alpha0-2022-02-10)
   - [Bug Fixes](#bug-fixes-5)
   - [Code Generation](#code-generation-4)
-  - [Code Refactoring](#code-refactoring-2)
+  - [Code Refactoring](#code-refactoring-3)
   - [Documentation](#documentation-4)
   - [Features](#features-3)
 - [0.7.0-alpha.1 (2021-10-19)](#070-alpha1-2021-10-19)
@@ -47,7 +48,7 @@
     - [Bug Fixes](#bug-fixes-6)
     - [Chores](#chores)
     - [Code Generation](#code-generation-6)
-    - [Code Refactoring](#code-refactoring-3)
+    - [Code Refactoring](#code-refactoring-4)
     - [Documentation](#documentation-6)
     - [Features](#features-4)
     - [Tests](#tests-3)
@@ -62,7 +63,7 @@
   - [Bug Fixes](#bug-fixes-8)
   - [Build System](#build-system-1)
   - [Code Generation](#code-generation-9)
-  - [Code Refactoring](#code-refactoring-4)
+  - [Code Refactoring](#code-refactoring-5)
   - [Documentation](#documentation-8)
   - [Features](#features-6)
   - [Tests](#tests-4)
@@ -77,7 +78,7 @@
   - [Bug Fixes](#bug-fixes-11)
 - [0.5.3-alpha.3 (2020-04-06)](#053-alpha3-2020-04-06)
   - [Code Generation](#code-generation-10)
-  - [Code Refactoring](#code-refactoring-5)
+  - [Code Refactoring](#code-refactoring-6)
   - [Documentation](#documentation-10)
 - [0.5.3-alpha.1 (2020-04-03)](#053-alpha1-2020-04-03)
   - [Chores](#chores-3)
@@ -139,7 +140,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.10.0-alpha.0...v0.0.0) (2022-11-24)
+# [0.0.0](https://github.com/ory/keto/compare/v0.10.0-alpha.0...v0.0.0) (2022-11-28)
 
 ### Bug Fixes
 
@@ -183,6 +184,11 @@
 - Validate subjects before mapping
   ([#1039](https://github.com/ory/keto/issues/1039))
   ([71b30c4](https://github.com/ory/keto/commit/71b30c42be240ed1ea8a3d85aec5b30664c6d68f))
+
+### Code Refactoring
+
+- Move SDK naming to v1 ([#1138](https://github.com/ory/keto/issues/1138))
+  ([ffc3ab7](https://github.com/ory/keto/commit/ffc3ab76989479b397650a3e02e4fb16f470c8d4))
 
 ### Documentation
 
@@ -236,6 +242,12 @@
   ([6571bae](https://github.com/ory/keto/commit/6571bae5d10f3218573de3e5a60877bec71a2029))
 - Rename to Ory Network ([#1081](https://github.com/ory/keto/issues/1081))
   ([3fe1d68](https://github.com/ory/keto/commit/3fe1d68bd1c363c9fee8490332477f68dac8b547))
+- Support Array<> syntax in type decl
+  ([#1152](https://github.com/ory/keto/issues/1152))
+  ([c4c456b](https://github.com/ory/keto/commit/c4c456bf6fd97c572f56d6b632853f555ded6451)):
+
+  You can now use `Array<T>` as an alternative to `T[]` when declaring types for
+  relations in the Ory Permission Language.
 
 # [0.10.0-alpha.0](https://github.com/ory/keto/compare/v0.9.0-alpha.0...v0.10.0-alpha.0) (2022-09-27)
 

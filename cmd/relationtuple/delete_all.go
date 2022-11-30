@@ -24,15 +24,15 @@ const (
 func NewDeleteAllCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "delete-all",
-		Short: "Delete ALL relation tuples matching the relation query.",
-		Long: "Delete all relation tuples matching the relation query.\n" +
+		Short: "Delete ALL relationships matching the relation query.",
+		Long: "Delete all relationships matching the relation query.\n" +
 			"It is recommended to first run the command without the `--force` flag to verify that the operation is safe.",
 		Args: cobra.ExactArgs(0),
 		RunE: deleteRelationTuplesFromQuery,
 	}
 	registerPackageFlags(cmd.Flags())
 	registerRelationTupleFlags(cmd.Flags())
-	cmd.Flags().Bool(FlagForce, false, "Force the deletion of relation tuples")
+	cmd.Flags().Bool(FlagForce, false, "Force the deletion of relationships")
 
 	return cmd
 }
