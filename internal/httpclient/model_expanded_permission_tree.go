@@ -17,18 +17,18 @@ import (
 
 // ExpandedPermissionTree struct for ExpandedPermissionTree
 type ExpandedPermissionTree struct {
-	// The children of the node, possibly none.
-	Children []ExpandedPermissionTree `json:"children,omitempty"`
-	Tuple    *Relationship            `json:"tuple,omitempty"`
-	// The type of the node. union TreeNodeUnion exclusion TreeNodeExclusion intersection TreeNodeIntersection leaf TreeNodeLeaf tuple_to_subject_set TreeNodeTupleToSubjectSet computed_subject_set TreeNodeComputedSubjectSet not TreeNodeNot unspecified TreeNodeUnspecified
-	Type string `json:"type"`
+	// The children of this node.  This is never set if `node_type` == `NODE_TYPE_LEAF`.
+	Children []ExpandedPermissionTree              `json:"children,omitempty"`
+	Subject  *OryKetoRelationTuplesV1alpha2Subject `json:"subject,omitempty"`
+	Tuple    *Relationship                         `json:"tuple,omitempty"`
+	Type     OryKetoRelationTuplesV1alpha2NodeType `json:"type"`
 }
 
 // NewExpandedPermissionTree instantiates a new ExpandedPermissionTree object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewExpandedPermissionTree(type_ string) *ExpandedPermissionTree {
+func NewExpandedPermissionTree(type_ OryKetoRelationTuplesV1alpha2NodeType) *ExpandedPermissionTree {
 	this := ExpandedPermissionTree{}
 	this.Type = type_
 	return &this
@@ -39,6 +39,8 @@ func NewExpandedPermissionTree(type_ string) *ExpandedPermissionTree {
 // but it doesn't guarantee that properties required by API are set
 func NewExpandedPermissionTreeWithDefaults() *ExpandedPermissionTree {
 	this := ExpandedPermissionTree{}
+	var type_ OryKetoRelationTuplesV1alpha2NodeType = ORYKETORELATIONTUPLESV1ALPHA2NODETYPE_UNSPECIFIED
+	this.Type = type_
 	return &this
 }
 
@@ -74,6 +76,38 @@ func (o *ExpandedPermissionTree) SetChildren(v []ExpandedPermissionTree) {
 	o.Children = v
 }
 
+// GetSubject returns the Subject field value if set, zero value otherwise.
+func (o *ExpandedPermissionTree) GetSubject() OryKetoRelationTuplesV1alpha2Subject {
+	if o == nil || o.Subject == nil {
+		var ret OryKetoRelationTuplesV1alpha2Subject
+		return ret
+	}
+	return *o.Subject
+}
+
+// GetSubjectOk returns a tuple with the Subject field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ExpandedPermissionTree) GetSubjectOk() (*OryKetoRelationTuplesV1alpha2Subject, bool) {
+	if o == nil || o.Subject == nil {
+		return nil, false
+	}
+	return o.Subject, true
+}
+
+// HasSubject returns a boolean if a field has been set.
+func (o *ExpandedPermissionTree) HasSubject() bool {
+	if o != nil && o.Subject != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetSubject gets a reference to the given OryKetoRelationTuplesV1alpha2Subject and assigns it to the Subject field.
+func (o *ExpandedPermissionTree) SetSubject(v OryKetoRelationTuplesV1alpha2Subject) {
+	o.Subject = &v
+}
+
 // GetTuple returns the Tuple field value if set, zero value otherwise.
 func (o *ExpandedPermissionTree) GetTuple() Relationship {
 	if o == nil || o.Tuple == nil {
@@ -107,9 +141,9 @@ func (o *ExpandedPermissionTree) SetTuple(v Relationship) {
 }
 
 // GetType returns the Type field value
-func (o *ExpandedPermissionTree) GetType() string {
+func (o *ExpandedPermissionTree) GetType() OryKetoRelationTuplesV1alpha2NodeType {
 	if o == nil {
-		var ret string
+		var ret OryKetoRelationTuplesV1alpha2NodeType
 		return ret
 	}
 
@@ -118,7 +152,7 @@ func (o *ExpandedPermissionTree) GetType() string {
 
 // GetTypeOk returns a tuple with the Type field value
 // and a boolean to check if the value has been set.
-func (o *ExpandedPermissionTree) GetTypeOk() (*string, bool) {
+func (o *ExpandedPermissionTree) GetTypeOk() (*OryKetoRelationTuplesV1alpha2NodeType, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -126,7 +160,7 @@ func (o *ExpandedPermissionTree) GetTypeOk() (*string, bool) {
 }
 
 // SetType sets field value
-func (o *ExpandedPermissionTree) SetType(v string) {
+func (o *ExpandedPermissionTree) SetType(v OryKetoRelationTuplesV1alpha2NodeType) {
 	o.Type = v
 }
 
@@ -134,6 +168,9 @@ func (o ExpandedPermissionTree) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.Children != nil {
 		toSerialize["children"] = o.Children
+	}
+	if o.Subject != nil {
+		toSerialize["subject"] = o.Subject
 	}
 	if o.Tuple != nil {
 		toSerialize["tuple"] = o.Tuple

@@ -15,9 +15,9 @@ import (
 	"encoding/json"
 )
 
-// RelationshipNamespaces Relationship Namespace List
+// RelationshipNamespaces struct for RelationshipNamespaces
 type RelationshipNamespaces struct {
-	Namespaces []Namespace `json:"namespaces,omitempty"`
+	Namespaces []OryKetoRelationTuplesV1alpha2Namespace `json:"namespaces,omitempty"`
 }
 
 // NewRelationshipNamespaces instantiates a new RelationshipNamespaces object
@@ -38,9 +38,9 @@ func NewRelationshipNamespacesWithDefaults() *RelationshipNamespaces {
 }
 
 // GetNamespaces returns the Namespaces field value if set, zero value otherwise.
-func (o *RelationshipNamespaces) GetNamespaces() []Namespace {
+func (o *RelationshipNamespaces) GetNamespaces() []OryKetoRelationTuplesV1alpha2Namespace {
 	if o == nil || o.Namespaces == nil {
-		var ret []Namespace
+		var ret []OryKetoRelationTuplesV1alpha2Namespace
 		return ret
 	}
 	return o.Namespaces
@@ -48,7 +48,7 @@ func (o *RelationshipNamespaces) GetNamespaces() []Namespace {
 
 // GetNamespacesOk returns a tuple with the Namespaces field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *RelationshipNamespaces) GetNamespacesOk() ([]Namespace, bool) {
+func (o *RelationshipNamespaces) GetNamespacesOk() ([]OryKetoRelationTuplesV1alpha2Namespace, bool) {
 	if o == nil || o.Namespaces == nil {
 		return nil, false
 	}
@@ -64,8 +64,8 @@ func (o *RelationshipNamespaces) HasNamespaces() bool {
 	return false
 }
 
-// SetNamespaces gets a reference to the given []Namespace and assigns it to the Namespaces field.
-func (o *RelationshipNamespaces) SetNamespaces(v []Namespace) {
+// SetNamespaces gets a reference to the given []OryKetoRelationTuplesV1alpha2Namespace and assigns it to the Namespaces field.
+func (o *RelationshipNamespaces) SetNamespaces(v []OryKetoRelationTuplesV1alpha2Namespace) {
 	o.Namespaces = v
 }
 

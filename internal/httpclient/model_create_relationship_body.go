@@ -15,15 +15,15 @@ import (
 	"encoding/json"
 )
 
-// CreateRelationshipBody Create Relationship Request Body
+// CreateRelationshipBody struct for CreateRelationshipBody
 type CreateRelationshipBody struct {
-	// Namespace to query
+	// The namespace this relation tuple lives in.
 	Namespace *string `json:"namespace,omitempty"`
-	// Object to query
+	// The object related by this tuple. It is an object in the namespace of the tuple.
 	Object *string `json:"object,omitempty"`
-	// Relation to query
+	// The relation between an Object and a Subject.
 	Relation *string `json:"relation,omitempty"`
-	// SubjectID to query  Either SubjectSet or SubjectID can be provided.
+	// A concrete id of the subject.
 	SubjectId  *string     `json:"subject_id,omitempty"`
 	SubjectSet *SubjectSet `json:"subject_set,omitempty"`
 }

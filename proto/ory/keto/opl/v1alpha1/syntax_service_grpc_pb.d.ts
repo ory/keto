@@ -6,6 +6,7 @@
 
 import * as grpc from "grpc";
 import * as ory_keto_opl_v1alpha1_syntax_service_pb from "../../../../ory/keto/opl/v1alpha1/syntax_service_pb";
+import * as protoc_gen_openapiv2_options_annotations_pb from "../../../../protoc-gen-openapiv2/options/annotations_pb";
 
 interface ISyntaxServiceService extends grpc.ServiceDefinition<grpc.UntypedServiceImplementation> {
     check: ISyntaxServiceService_ICheck;

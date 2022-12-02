@@ -2,8 +2,11 @@ syntax = "proto3";
 
 package ory.keto.relation_tuples.v1alpha2;
 
-import "ory/keto/relation_tuples/v1alpha2/relation_tuples.proto";
+import "google/api/annotations.proto";
+import "google/api/visibility.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
 import "google/protobuf/field_mask.proto";
+import "ory/keto/relation_tuples/v1alpha2/relation_tuples.proto";
 
 option go_package = "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2;rts";
 option csharp_namespace = "Ory.Keto.RelationTuples.v1alpha2";
@@ -17,7 +20,27 @@ option php_namespace = "Ory\\Keto\\RelationTuples\\v1alpha2";
 // This service is part of the [read-APIs](../concepts/api-overview.mdx#read-apis).
 service ReadService {
   // Lists ACL relationships.
-  rpc ListRelationTuples(ListRelationTuplesRequest) returns (ListRelationTuplesResponse);
+  rpc ListRelationTuples(ListRelationTuplesRequest) returns (ListRelationTuplesResponse) {
+    option (google.api.http) = {
+      get: "/relation-tuples"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      consumes: "application/x-www-form-urlencoded";
+      tags: "relationship";
+      operation_id: "getRelationships";
+      responses: {
+        key: "200"
+        value: {
+          description: "The list of relationships."
+          schema:{
+            json_schema: {
+              ref: ".ory.keto.relation_tuples.v1alpha2.ListRelationTuplesResponse";
+            }
+          }
+        }
+      }
+    };
+  };
 }
 
 // Request for ReadService.ListRelationTuples RPC.
@@ -44,14 +67,15 @@ message ListRelationTuplesRequest {
     // Optional. The subject to query for.
     Subject subject = 4;
   }
+
   // All query constraints are concatenated
   // with a logical AND operator.
   //
   // The RelationTuple list from ListRelationTuplesResponse
   // is ordered from the newest RelationTuple to the oldest.
-  Query query = 1 [deprecated = true];
+  Query query = 1 [deprecated = true, (google.api.field_visibility).restriction = "NO_SWAGGER"];
 
-  RelationQuery relation_query = 6;
+  RelationQuery relation_query = 6 [(google.api.field_visibility).restriction = "NO_SWAGGER"];
   // This field is not implemented yet and has no effect.
   // <!--
   // Optional. The list of fields to be expanded
@@ -63,31 +87,49 @@ message ListRelationTuplesRequest {
   // "namespace", "subject.id", "subject.namespace",
   // "subject.object", "subject.relation"
   // -->
-  google.protobuf.FieldMask expand_mask = 2;
+  google.protobuf.FieldMask expand_mask = 2 [(google.api.field_visibility).restriction = "NO_SWAGGER"];
+
   // This field is not implemented yet and has no effect.
   // <!--
   // Optional. The snapshot token for this read.
   // -->
-  string snaptoken = 3;
+  string snaptoken = 3 [(google.api.field_visibility).restriction = "NO_SWAGGER"];
+
   // Optional. The maximum number of
   // RelationTuples to return in the response.
   //
   // Default: 100
-  int32 page_size = 4;
+  int32 page_size = 4 [json_name="page_size"];
+
   // Optional. An opaque pagination token returned from
   // a previous call to `ListRelationTuples` that
   // indicates where the page should start at.
   //
   // An empty token denotes the first page. All successive
   // pages require the token from the previous page.
-  string page_token = 5;
+  string page_token = 5 [json_name="page_token"];
+
+  // The namespace
+  string namespace = 7 [deprecated = true];
+  // The related object in this check.
+  string object = 8 [deprecated = true];
+  // The relation between the Object and the Subject.
+  string relation = 9 [deprecated = true];
+
+  oneof rest_api_subject {
+    // A concrete id of the subject.
+    string subject_id = 10 [json_name="subject_id"];
+    // A subject set that expands to more Subjects.
+    // More information are available under [concepts](../concepts/subjects.mdx).
+    SubjectSetQuery subject_set = 11 [json_name="subject_set"];
+  }
 }
 
 // The response of a ReadService.ListRelationTuples RPC.
 message ListRelationTuplesResponse {
   // The relationships matching the list request.
-  repeated RelationTuple relation_tuples = 1;
+  repeated RelationTuple relation_tuples = 1 [json_name="relation_tuples"];
   // The token required to get the next page.
   // If this is the last page, the token will be the empty string.
-  string next_page_token = 2;
+  string next_page_token = 2 [json_name="next_page_token"];
 }

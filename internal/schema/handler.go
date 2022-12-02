@@ -48,7 +48,7 @@ func (h *Handler) Check(_ context.Context, request *opl.CheckRequest) (*opl.Chec
 	for i, e := range parseErrors {
 		apiErrors[i] = e.ToProto()
 	}
-	return &opl.CheckResponse{ParseErrors: apiErrors}, nil
+	return &opl.CheckResponse{Errors: apiErrors}, nil
 }
 
 // Check OPL Syntax Request Parameters

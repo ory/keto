@@ -4,7 +4,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Errors** | Pointer to [**[]ParseError**](ParseError.md) | The list of syntax errors | [optional] 
+**Errors** | Pointer to [**[]OryKetoOplV1alpha1ParseError**](OryKetoOplV1alpha1ParseError.md) |  | [optional] 
 
 ## Methods
 
@@ -27,20 +27,20 @@ but it doesn't guarantee that properties required by API are set
 
 ### GetErrors
 
-`func (o *CheckOplSyntaxResult) GetErrors() []ParseError`
+`func (o *CheckOplSyntaxResult) GetErrors() []OryKetoOplV1alpha1ParseError`
 
 GetErrors returns the Errors field if non-nil, zero value otherwise.
 
 ### GetErrorsOk
 
-`func (o *CheckOplSyntaxResult) GetErrorsOk() (*[]ParseError, bool)`
+`func (o *CheckOplSyntaxResult) GetErrorsOk() (*[]OryKetoOplV1alpha1ParseError, bool)`
 
 GetErrorsOk returns a tuple with the Errors field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetErrors
 
-`func (o *CheckOplSyntaxResult) SetErrors(v []ParseError)`
+`func (o *CheckOplSyntaxResult) SetErrors(v []OryKetoOplV1alpha1ParseError)`
 
 SetErrors sets Errors field to given value.
 

@@ -59,20 +59,23 @@ docker:
 
 # Generates the SDKs
 .PHONY: sdk
-sdk: .bin/swagger .bin/ory node_modules
+sdk: buf .bin/swagger .bin/ory node_modules
 	rm -rf internal/httpclient
-	swagger generate spec -m -o spec/swagger.json \
-		-c github.com/ory/keto \
-		-c github.com/ory/x/healthx \
-		-x internal/httpclient \
-		-x internal/e2e
+	cp proto/openapiv2/gateway.swagger.json spec/swagger.json
+	#	swagger generate spec -m -o spec/swagger.json \
+	#		-c github.com/ory/keto \
+	#		-c github.com/ory/x/healthx \
+	#		-x internal/httpclient \
+	#		-x internal/e2e
 	.bin/ory dev swagger sanitize ./spec/swagger.json
+	sed -i -f ./.schema/openapi/patches/replacements.sed ./spec/swagger.json
 	swagger validate ./spec/swagger.json
 	CIRCLE_PROJECT_USERNAME=ory CIRCLE_PROJECT_REPONAME=keto \
 		.bin/ory dev openapi migrate \
 			--health-path-tags metadata \
-			-p https://raw.githubusercontent.com/ory/x/master/healthx/openapi/patch.yaml \
+			-p file://.schema/openapi/patches/health.yaml \
 			-p file://.schema/openapi/patches/meta.yaml \
+			-p file://.schema/openapi/patches/checkServices.yaml \
 			spec/swagger.json spec/api.json
 
 	mkdir -p internal/httpclient

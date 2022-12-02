@@ -15,17 +15,19 @@ import (
 	"encoding/json"
 )
 
-// PostCheckPermissionBody Check Permission using Post Request Body
+// PostCheckPermissionBody The request for a CheckService.Check RPC. Checks whether a specific subject is related to an object.
 type PostCheckPermissionBody struct {
-	// Namespace to query
+	// The maximum depth to search for a relation.  If the value is less than 1 or greater than the global max-depth then the global max-depth will be used instead.
+	MaxDepth *int32 `json:"max-depth,omitempty"`
+	// The namespace to evaluate the check.  Note: If you use the expand-API and the check evaluates a RelationTuple specifying a SubjectSet as subject or due to a rewrite rule in a namespace config this check request may involve other namespaces automatically.
 	Namespace *string `json:"namespace,omitempty"`
-	// Object to query
+	// The related object in this check.
 	Object *string `json:"object,omitempty"`
-	// Relation to query
+	// The relation between the Object and the Subject.
 	Relation *string `json:"relation,omitempty"`
-	// SubjectID to query  Either SubjectSet or SubjectID can be provided.
-	SubjectId  *string     `json:"subject_id,omitempty"`
-	SubjectSet *SubjectSet `json:"subject_set,omitempty"`
+	// A concrete id of the subject.
+	SubjectId  *string          `json:"subject_id,omitempty"`
+	SubjectSet *SubjectSetQuery `json:"subject_set,omitempty"`
 }
 
 // NewPostCheckPermissionBody instantiates a new PostCheckPermissionBody object
@@ -43,6 +45,38 @@ func NewPostCheckPermissionBody() *PostCheckPermissionBody {
 func NewPostCheckPermissionBodyWithDefaults() *PostCheckPermissionBody {
 	this := PostCheckPermissionBody{}
 	return &this
+}
+
+// GetMaxDepth returns the MaxDepth field value if set, zero value otherwise.
+func (o *PostCheckPermissionBody) GetMaxDepth() int32 {
+	if o == nil || o.MaxDepth == nil {
+		var ret int32
+		return ret
+	}
+	return *o.MaxDepth
+}
+
+// GetMaxDepthOk returns a tuple with the MaxDepth field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PostCheckPermissionBody) GetMaxDepthOk() (*int32, bool) {
+	if o == nil || o.MaxDepth == nil {
+		return nil, false
+	}
+	return o.MaxDepth, true
+}
+
+// HasMaxDepth returns a boolean if a field has been set.
+func (o *PostCheckPermissionBody) HasMaxDepth() bool {
+	if o != nil && o.MaxDepth != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetMaxDepth gets a reference to the given int32 and assigns it to the MaxDepth field.
+func (o *PostCheckPermissionBody) SetMaxDepth(v int32) {
+	o.MaxDepth = &v
 }
 
 // GetNamespace returns the Namespace field value if set, zero value otherwise.
@@ -174,9 +208,9 @@ func (o *PostCheckPermissionBody) SetSubjectId(v string) {
 }
 
 // GetSubjectSet returns the SubjectSet field value if set, zero value otherwise.
-func (o *PostCheckPermissionBody) GetSubjectSet() SubjectSet {
+func (o *PostCheckPermissionBody) GetSubjectSet() SubjectSetQuery {
 	if o == nil || o.SubjectSet == nil {
-		var ret SubjectSet
+		var ret SubjectSetQuery
 		return ret
 	}
 	return *o.SubjectSet
@@ -184,7 +218,7 @@ func (o *PostCheckPermissionBody) GetSubjectSet() SubjectSet {
 
 // GetSubjectSetOk returns a tuple with the SubjectSet field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PostCheckPermissionBody) GetSubjectSetOk() (*SubjectSet, bool) {
+func (o *PostCheckPermissionBody) GetSubjectSetOk() (*SubjectSetQuery, bool) {
 	if o == nil || o.SubjectSet == nil {
 		return nil, false
 	}
@@ -200,13 +234,16 @@ func (o *PostCheckPermissionBody) HasSubjectSet() bool {
 	return false
 }
 
-// SetSubjectSet gets a reference to the given SubjectSet and assigns it to the SubjectSet field.
-func (o *PostCheckPermissionBody) SetSubjectSet(v SubjectSet) {
+// SetSubjectSet gets a reference to the given SubjectSetQuery and assigns it to the SubjectSet field.
+func (o *PostCheckPermissionBody) SetSubjectSet(v SubjectSetQuery) {
 	o.SubjectSet = &v
 }
 
 func (o PostCheckPermissionBody) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
+	if o.MaxDepth != nil {
+		toSerialize["max-depth"] = o.MaxDepth
+	}
 	if o.Namespace != nil {
 		toSerialize["namespace"] = o.Namespace
 	}

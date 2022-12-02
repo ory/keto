@@ -4,7 +4,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Namespaces** | Pointer to [**[]Namespace**](Namespace.md) |  | [optional] 
+**Namespaces** | Pointer to [**[]OryKetoRelationTuplesV1alpha2Namespace**](OryKetoRelationTuplesV1alpha2Namespace.md) |  | [optional] 
 
 ## Methods
 
@@ -27,20 +27,20 @@ but it doesn't guarantee that properties required by API are set
 
 ### GetNamespaces
 
-`func (o *RelationshipNamespaces) GetNamespaces() []Namespace`
+`func (o *RelationshipNamespaces) GetNamespaces() []OryKetoRelationTuplesV1alpha2Namespace`
 
 GetNamespaces returns the Namespaces field if non-nil, zero value otherwise.
 
 ### GetNamespacesOk
 
-`func (o *RelationshipNamespaces) GetNamespacesOk() (*[]Namespace, bool)`
+`func (o *RelationshipNamespaces) GetNamespacesOk() (*[]OryKetoRelationTuplesV1alpha2Namespace, bool)`
 
 GetNamespacesOk returns a tuple with the Namespaces field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetNamespaces
 
-`func (o *RelationshipNamespaces) SetNamespaces(v []Namespace)`
+`func (o *RelationshipNamespaces) SetNamespaces(v []OryKetoRelationTuplesV1alpha2Namespace)`
 
 SetNamespaces sets Namespaces field to given value.
 

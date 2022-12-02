@@ -1,4 +1,4 @@
-- op: replace
+- op: add
   path: /paths/~1health~1alive
   value:
     get:
@@ -17,17 +17,23 @@
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/healthStatus"
+                required:
+                  - status
+                type: object
+                properties:
+                  status:
+                    description: Always "ok".
+                    type: string
           description: {{.ProjectHumanName}} is ready to accept connections.
         '500':
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/genericError"
+                "$ref": "#/definitions/errorGeneric"
           description: genericError
       summary: Check HTTP Server Status
       tags: {{ .HealthPathTags | toJson }}
-- op: replace
+- op: add
   path: /paths/~1health~1ready
   value:
     get:
@@ -46,6 +52,8 @@
           content:
             application/json:
               schema:
+                required:
+                  - status
                 type: object
                 properties:
                   status:
@@ -56,6 +64,8 @@
           content:
             application/json:
               schema:
+                required:
+                  - errors
                 properties:
                   errors:
                     additionalProperties:
@@ -85,6 +95,8 @@
             application/json:
               schema:
                 type: object
+                required:
+                  - version
                 properties:
                   version:
                     description: The version of {{.ProjectHumanName}}.

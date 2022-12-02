@@ -3,6 +3,8 @@
 'use strict';
 var grpc = require('@grpc/grpc-js');
 var ory_keto_relation_tuples_v1alpha2_namespaces_service_pb = require('../../../../ory/keto/relation_tuples/v1alpha2/namespaces_service_pb.js');
+var google_api_annotations_pb = require('../../../../google/api/annotations_pb.js');
+var protoc$gen$openapiv2_options_annotations_pb = require('../../../../protoc-gen-openapiv2/options/annotations_pb.js');
 
 function serialize_ory_keto_relation_tuples_v1alpha2_ListNamespacesRequest(arg) {
   if (!(arg instanceof ory_keto_relation_tuples_v1alpha2_namespaces_service_pb.ListNamespacesRequest)) {
@@ -32,6 +34,8 @@ function deserialize_ory_keto_relation_tuples_v1alpha2_ListNamespacesResponse(bu
 // This service is part of the [read-APIs](../concepts/api-overview.mdx#read-apis).
 var NamespacesServiceService = exports.NamespacesServiceService = {
   // Lists Namespaces
+//
+// Get all namespaces.
 listNamespaces: {
     path: '/ory.keto.relation_tuples.v1alpha2.NamespacesService/ListNamespaces',
     requestStream: false,

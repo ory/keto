@@ -3,8 +3,11 @@
 'use strict';
 var grpc = require('@grpc/grpc-js');
 var ory_keto_relation_tuples_v1alpha2_read_service_pb = require('../../../../ory/keto/relation_tuples/v1alpha2/read_service_pb.js');
-var ory_keto_relation_tuples_v1alpha2_relation_tuples_pb = require('../../../../ory/keto/relation_tuples/v1alpha2/relation_tuples_pb.js');
+var google_api_annotations_pb = require('../../../../google/api/annotations_pb.js');
+var google_api_visibility_pb = require('../../../../google/api/visibility_pb.js');
+var protoc$gen$openapiv2_options_annotations_pb = require('../../../../protoc-gen-openapiv2/options/annotations_pb.js');
 var google_protobuf_field_mask_pb = require('google-protobuf/google/protobuf/field_mask_pb.js');
+var ory_keto_relation_tuples_v1alpha2_relation_tuples_pb = require('../../../../ory/keto/relation_tuples/v1alpha2/relation_tuples_pb.js');
 
 function serialize_ory_keto_relation_tuples_v1alpha2_ListRelationTuplesRequest(arg) {
   if (!(arg instanceof ory_keto_relation_tuples_v1alpha2_read_service_pb.ListRelationTuplesRequest)) {

@@ -171,7 +171,7 @@ func compileParams(req httpclient.RelationshipApiApiGetRelationshipsRequest, q *
 
 	pagination := x.GetPaginationOptions(opts...)
 	if pagination.Size != 0 {
-		req = req.PageSize(int64(pagination.Size))
+		req = req.PageSize(int32(pagination.Size))
 	}
 	if pagination.Token != "" {
 		req = req.PageToken(pagination.Token)
@@ -273,7 +273,7 @@ func (c *sdkClient) expand(t require.TestingT, r *ketoapi.SubjectSet, depth int)
 		Namespace(r.Namespace).
 		Object(r.Object).
 		Relation(r.Relation).
-		MaxDepth(int64(depth))
+		MaxDepth(int32(depth))
 
 	resp, _, err := request.Execute()
 	require.NoError(t, err)

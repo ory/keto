@@ -4,9 +4,9 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Namespace** | **string** | Namespace of the Subject Set | 
-**Object** | **string** | Object of the Subject Set | 
-**Relation** | **string** | Relation of the Subject Set | 
+**Namespace** | **string** | The namespace of the object and relation referenced in this subject set. | 
+**Object** | **string** | The object related by this subject set. | 
+**Relation** | **string** | The relation between the object and the subjects. | 
 
 ## Methods
 

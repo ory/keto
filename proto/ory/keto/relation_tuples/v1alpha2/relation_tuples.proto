@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+import "google/api/visibility.proto";
+import "google/api/field_behavior.proto";
 package ory.keto.relation_tuples.v1alpha2;
 
 option go_package = "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2;rts";
@@ -12,16 +14,27 @@ option php_namespace = "Ory\\Keto\\RelationTuples\\v1alpha2";
 // RelationTuple defines a relation between an Object and a Subject.
 message RelationTuple {
   // The namespace this relation tuple lives in.
-  string namespace = 1;
+  string namespace = 1 [(google.api.field_behavior) = REQUIRED];
+
   // The object related by this tuple.
   // It is an object in the namespace of the tuple.
-  string object = 2;
+  string object = 2 [(google.api.field_behavior) = REQUIRED] ;
+
   // The relation between an Object and a Subject.
-  string relation = 3;
+  string relation = 3 [(google.api.field_behavior) = REQUIRED];
+
   // The subject related by this tuple.
   // A Subject either represents a concrete subject id or
   // a `SubjectSet` that expands to more Subjects.
-  Subject subject = 4;
+  Subject subject = 4 [(google.api.field_visibility).restriction = "NO_SWAGGER"];
+
+  oneof rest_api_subject {
+    // A concrete id of the subject.
+    string subject_id = 5 [deprecated=true, json_name="subject_id"];
+    // A subject set that expands to more Subjects.
+    // More information are available under [concepts](../concepts/subjects.mdx).
+    SubjectSet subject_set = 6 [deprecated=true, json_name="subject_set"];
+  }
 }
 
 // The query for listing relationships.
@@ -66,9 +79,34 @@ message Subject {
 message SubjectSet {
   // The namespace of the object and relation
   // referenced in this subject set.
-  string namespace = 1;
+  string namespace = 1 [(google.api.field_behavior) = REQUIRED];
   // The object related by this subject set.
-  string object = 2;
+  string object = 2 [(google.api.field_behavior) = REQUIRED];
   // The relation between the object and the subjects.
-  string relation = 3;
+  string relation = 3 [(google.api.field_behavior) = REQUIRED];
+}
+
+// SubjectQuery is either a concrete subject id or
+// a `SubjectSet` expanding to more Subjects.
+message SubjectQuery {
+  // The reference of this abstract subject.
+  oneof ref {
+    // A concrete id of the subject.
+    string id = 1;
+    // A subject set that expands to more Subjects.
+    // More information are available under [concepts](../concepts/subjects.mdx).
+    SubjectSetQuery set = 2;
+  }
+}
+
+// SubjectSetQuery refers to all subjects who have
+// the same `relation` on an `object`.
+message SubjectSetQuery {
+  // The namespace of the object and relation
+  // referenced in this subject set.
+  string namespace = 1 [(google.api.field_behavior) = OPTIONAL];
+  // The object related by this subject set.
+  string object = 2 [(google.api.field_behavior) = OPTIONAL];
+  // The relation between the object and the subjects.
+  string relation = 3 [(google.api.field_behavior) = OPTIONAL];
 }

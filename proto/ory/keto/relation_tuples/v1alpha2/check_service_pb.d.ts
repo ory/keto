@@ -5,8 +5,9 @@
 /* eslint-disable */
 
 import * as jspb from "google-protobuf";
-import * as ory_keto_relation_tuples_v1alpha2_relation_tuples_pb from "../../../../ory/keto/relation_tuples/v1alpha2/relation_tuples_pb";
+import * as google_api_visibility_pb from "../../../../google/api/visibility_pb";
 import * as protoc_gen_openapiv2_options_annotations_pb from "../../../../protoc-gen-openapiv2/options/annotations_pb";
+import * as ory_keto_relation_tuples_v1alpha2_relation_tuples_pb from "../../../../ory/keto/relation_tuples/v1alpha2/relation_tuples_pb";
 
 export class CheckRequest extends jspb.Message { 
     getNamespace(): string;
@@ -21,6 +22,16 @@ export class CheckRequest extends jspb.Message {
     getSubject(): ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.Subject | undefined;
     setSubject(value?: ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.Subject): CheckRequest;
 
+    hasSubjectId(): boolean;
+    clearSubjectId(): void;
+    getSubjectId(): string;
+    setSubjectId(value: string): CheckRequest;
+
+    hasSubjectSet(): boolean;
+    clearSubjectSet(): void;
+    getSubjectSet(): ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.SubjectSetQuery | undefined;
+    setSubjectSet(value?: ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.SubjectSetQuery): CheckRequest;
+
     hasTuple(): boolean;
     clearTuple(): void;
     getTuple(): ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationTuple | undefined;
@@ -31,6 +42,8 @@ export class CheckRequest extends jspb.Message {
     setSnaptoken(value: string): CheckRequest;
     getMaxDepth(): number;
     setMaxDepth(value: number): CheckRequest;
+
+    getRestApiSubjectCase(): CheckRequest.RestApiSubjectCase;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): CheckRequest.AsObject;
@@ -48,11 +61,20 @@ export namespace CheckRequest {
         object: string,
         relation: string,
         subject?: ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.Subject.AsObject,
+        subjectId: string,
+        subjectSet?: ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.SubjectSetQuery.AsObject,
         tuple?: ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationTuple.AsObject,
         latest: boolean,
         snaptoken: string,
         maxDepth: number,
     }
+
+    export enum RestApiSubjectCase {
+        REST_API_SUBJECT_NOT_SET = 0,
+        SUBJECT_ID = 9,
+        SUBJECT_SET = 10,
+    }
+
 }
 
 export class CheckResponse extends jspb.Message { 

@@ -5,6 +5,7 @@
 /* eslint-disable */
 
 import * as jspb from "google-protobuf";
+import * as protoc_gen_openapiv2_options_annotations_pb from "../../../../protoc-gen-openapiv2/options/annotations_pb";
 
 export class CheckRequest extends jspb.Message { 
     getContent(): Uint8Array | string;
@@ -29,10 +30,10 @@ export namespace CheckRequest {
 }
 
 export class CheckResponse extends jspb.Message { 
-    clearParseErrorsList(): void;
-    getParseErrorsList(): Array<ParseError>;
-    setParseErrorsList(value: Array<ParseError>): CheckResponse;
-    addParseErrors(value?: ParseError, index?: number): ParseError;
+    clearErrorsList(): void;
+    getErrorsList(): Array<ParseError>;
+    setErrorsList(value: Array<ParseError>): CheckResponse;
+    addErrors(value?: ParseError, index?: number): ParseError;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): CheckResponse.AsObject;
@@ -46,7 +47,7 @@ export class CheckResponse extends jspb.Message {
 
 export namespace CheckResponse {
     export type AsObject = {
-        parseErrorsList: Array<ParseError.AsObject>,
+        errorsList: Array<ParseError.AsObject>,
     }
 }
 

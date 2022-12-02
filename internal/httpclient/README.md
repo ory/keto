@@ -82,17 +82,17 @@ Class | Method | HTTP request | Description
 *MetadataApi* | [**GetVersion**](docs/MetadataApi.md#getversion) | **Get** /version | Return Running Software Version.
 *MetadataApi* | [**IsAlive**](docs/MetadataApi.md#isalive) | **Get** /health/alive | Check HTTP Server Status
 *MetadataApi* | [**IsReady**](docs/MetadataApi.md#isready) | **Get** /health/ready | Check HTTP Server and Database Status
-*PermissionApi* | [**CheckPermission**](docs/PermissionApi.md#checkpermission) | **Get** /relation-tuples/check/openapi | Check a permission
-*PermissionApi* | [**CheckPermissionOrError**](docs/PermissionApi.md#checkpermissionorerror) | **Get** /relation-tuples/check | Check a permission
-*PermissionApi* | [**ExpandPermissions**](docs/PermissionApi.md#expandpermissions) | **Get** /relation-tuples/expand | Expand a Relationship into permissions.
-*PermissionApi* | [**PostCheckPermission**](docs/PermissionApi.md#postcheckpermission) | **Post** /relation-tuples/check/openapi | Check a permission
-*PermissionApi* | [**PostCheckPermissionOrError**](docs/PermissionApi.md#postcheckpermissionorerror) | **Post** /relation-tuples/check | Check a permission
-*RelationshipApi* | [**CheckOplSyntax**](docs/RelationshipApi.md#checkoplsyntax) | **Post** /opl/syntax/check | Check the syntax of an OPL file
-*RelationshipApi* | [**CreateRelationship**](docs/RelationshipApi.md#createrelationship) | **Put** /admin/relation-tuples | Create a Relationship
-*RelationshipApi* | [**DeleteRelationships**](docs/RelationshipApi.md#deleterelationships) | **Delete** /admin/relation-tuples | Delete Relationships
-*RelationshipApi* | [**GetRelationships**](docs/RelationshipApi.md#getrelationships) | **Get** /relation-tuples | Query relationships
-*RelationshipApi* | [**ListRelationshipNamespaces**](docs/RelationshipApi.md#listrelationshipnamespaces) | **Get** /namespaces | Query namespaces
-*RelationshipApi* | [**PatchRelationships**](docs/RelationshipApi.md#patchrelationships) | **Patch** /admin/relation-tuples | Patch Multiple Relationships
+*PermissionApi* | [**CheckPermission**](docs/PermissionApi.md#checkpermission) | **Get** /relation-tuples/check/openapi | Performs an authorization check.
+*PermissionApi* | [**CheckPermissionOrError**](docs/PermissionApi.md#checkpermissionorerror) | **Get** /relation-tuples/check | Performs an authorization check.
+*PermissionApi* | [**ExpandPermissions**](docs/PermissionApi.md#expandpermissions) | **Get** /relation-tuples/expand | Expands the subject set into a tree of subjects.
+*PermissionApi* | [**PostCheckPermission**](docs/PermissionApi.md#postcheckpermission) | **Post** /relation-tuples/check/openapi | Performs an authorization check.
+*PermissionApi* | [**PostCheckPermissionOrError**](docs/PermissionApi.md#postcheckpermissionorerror) | **Post** /relation-tuples/check | Performs an authorization check.
+*RelationshipApi* | [**CheckOplSyntax**](docs/RelationshipApi.md#checkoplsyntax) | **Post** /opl/syntax/check | Performs a syntax check request.
+*RelationshipApi* | [**CreateRelationship**](docs/RelationshipApi.md#createrelationship) | **Put** /admin/relation-tuples | Creates a relationship
+*RelationshipApi* | [**DeleteRelationships**](docs/RelationshipApi.md#deleterelationships) | **Delete** /admin/relation-tuples | Deletes relationships based on relation query
+*RelationshipApi* | [**GetRelationships**](docs/RelationshipApi.md#getrelationships) | **Get** /relation-tuples | Lists ACL relationships.
+*RelationshipApi* | [**ListRelationshipNamespaces**](docs/RelationshipApi.md#listrelationshipnamespaces) | **Get** /namespaces | Lists Namespaces
+*RelationshipApi* | [**PatchRelationships**](docs/RelationshipApi.md#patchrelationships) | **Patch** /admin/relation-tuples | Writes one or more relationships in a single transaction.
 
 
 ## Documentation For Models
@@ -102,24 +102,26 @@ Class | Method | HTTP request | Description
  - [CreateRelationshipBody](docs/CreateRelationshipBody.md)
  - [ErrorGeneric](docs/ErrorGeneric.md)
  - [ExpandedPermissionTree](docs/ExpandedPermissionTree.md)
- - [GenericError](docs/GenericError.md)
- - [HealthNotReadyStatus](docs/HealthNotReadyStatus.md)
- - [HealthStatus](docs/HealthStatus.md)
  - [InlineResponse200](docs/InlineResponse200.md)
  - [InlineResponse2001](docs/InlineResponse2001.md)
  - [InlineResponse503](docs/InlineResponse503.md)
- - [Namespace](docs/Namespace.md)
- - [ParseError](docs/ParseError.md)
+ - [OryKetoOplV1alpha1ParseError](docs/OryKetoOplV1alpha1ParseError.md)
+ - [OryKetoOplV1alpha1SourcePosition](docs/OryKetoOplV1alpha1SourcePosition.md)
+ - [OryKetoRelationTuplesV1alpha2CreateRelationTupleResponse](docs/OryKetoRelationTuplesV1alpha2CreateRelationTupleResponse.md)
+ - [OryKetoRelationTuplesV1alpha2ErrorObject](docs/OryKetoRelationTuplesV1alpha2ErrorObject.md)
+ - [OryKetoRelationTuplesV1alpha2ExpandResponse](docs/OryKetoRelationTuplesV1alpha2ExpandResponse.md)
+ - [OryKetoRelationTuplesV1alpha2GetVersionResponse](docs/OryKetoRelationTuplesV1alpha2GetVersionResponse.md)
+ - [OryKetoRelationTuplesV1alpha2Namespace](docs/OryKetoRelationTuplesV1alpha2Namespace.md)
+ - [OryKetoRelationTuplesV1alpha2NodeType](docs/OryKetoRelationTuplesV1alpha2NodeType.md)
+ - [OryKetoRelationTuplesV1alpha2Subject](docs/OryKetoRelationTuplesV1alpha2Subject.md)
  - [PostCheckPermissionBody](docs/PostCheckPermissionBody.md)
- - [PostCheckPermissionOrErrorBody](docs/PostCheckPermissionOrErrorBody.md)
- - [RelationQuery](docs/RelationQuery.md)
  - [Relationship](docs/Relationship.md)
+ - [RelationshipDelta](docs/RelationshipDelta.md)
+ - [RelationshipDeltaAction](docs/RelationshipDeltaAction.md)
  - [RelationshipNamespaces](docs/RelationshipNamespaces.md)
- - [RelationshipPatch](docs/RelationshipPatch.md)
  - [Relationships](docs/Relationships.md)
- - [SourcePosition](docs/SourcePosition.md)
  - [SubjectSet](docs/SubjectSet.md)
- - [Version](docs/Version.md)
+ - [SubjectSetQuery](docs/SubjectSetQuery.md)
 
 
 ## Documentation For Authorization

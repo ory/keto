@@ -12,10 +12,9 @@ servers:
 paths:
   /admin/relation-tuples:
     delete:
-      description: Use this endpoint to delete relationships
       operationId: deleteRelationships
       parameters:
-      - description: Namespace of the Relationship
+      - description: The namespace this relation tuple lives in.
         explode: true
         in: query
         name: namespace
@@ -23,7 +22,9 @@ paths:
         schema:
           type: string
         style: form
-      - description: Object of the Relationship
+      - description: |-
+          The object related by this tuple.
+          It is an object in the namespace of the tuple.
         explode: true
         in: query
         name: object
@@ -31,7 +32,7 @@ paths:
         schema:
           type: string
         style: form
-      - description: Relation of the Relationship
+      - description: The relation between an Object and a Subject.
         explode: true
         in: query
         name: relation
@@ -39,7 +40,7 @@ paths:
         schema:
           type: string
         style: form
-      - description: SubjectID of the Relationship
+      - description: A concrete id of the subject.
         explode: true
         in: query
         name: subject_id
@@ -47,7 +48,9 @@ paths:
         schema:
           type: string
         style: form
-      - description: Namespace of the Subject Set
+      - description: |-
+          The namespace of the object and relation
+          referenced in this subject set.
         explode: true
         in: query
         name: subject_set.namespace
@@ -55,7 +58,7 @@ paths:
         schema:
           type: string
         style: form
-      - description: Object of the Subject Set
+      - description: The object related by this subject set.
         explode: true
         in: query
         name: subject_set.object
@@ -63,7 +66,7 @@ paths:
         schema:
           type: string
         style: form
-      - description: Relation of the Subject Set
+      - description: The relation between the object and the subjects.
         explode: true
         in: query
         name: subject_set.relation
@@ -73,88 +76,66 @@ paths:
         style: form
       responses:
         "204":
-          description: Empty responses are sent when, for example, resources are deleted.
-            The HTTP status code for empty responses is typically 201.
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorGeneric'
-          description: errorGeneric
+          description: An empty response.
         default:
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/errorGeneric'
-          description: errorGeneric
-      summary: Delete Relationships
+          description: Generic error
+      summary: Deletes relationships based on relation query
       tags:
       - relationship
     patch:
-      description: Use this endpoint to patch one or more relationships.
       operationId: patchRelationships
       requestBody:
         content:
           application/json:
             schema:
               items:
-                $ref: '#/components/schemas/relationshipPatch'
+                $ref: '#/components/schemas/relationshipDelta'
               type: array
-        x-originalParamName: Body
+        description: |-
+          The write delta for the relationships operated in one single transaction.
+          Either all actions succeed or no change takes effect on error.
+        required: true
+        x-originalParamName: relationTupleDeltas
       responses:
         "204":
-          description: Empty responses are sent when, for example, resources are deleted.
-            The HTTP status code for empty responses is typically 201.
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorGeneric'
-          description: errorGeneric
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorGeneric'
-          description: errorGeneric
+          description: An empty response.
         default:
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/errorGeneric'
-          description: errorGeneric
-      summary: Patch Multiple Relationships
+          description: Generic error
+      summary: Writes one or more relationships in a single transaction.
       tags:
       - relationship
     put:
-      description: Use this endpoint to create a relationship.
       operationId: createRelationship
       requestBody:
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/createRelationshipBody'
-        x-originalParamName: Body
+        description: The relationship to create.
+        required: true
+        x-originalParamName: relationTuple
       responses:
         "201":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/relationship'
-          description: relationship
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorGeneric'
-          description: errorGeneric
+          description: The created relationship.
         default:
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/errorGeneric'
-          description: errorGeneric
-      summary: Create a Relationship
+          description: Generic error
+      summary: Creates a relationship
       tags:
       - relationship
   /health/alive:
@@ -180,7 +161,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/genericError'
+                $ref: '#/definitions/errorGeneric'
           description: genericError
       summary: Check HTTP Server Status
       tags:
@@ -215,7 +196,7 @@ paths:
       - metadata
   /namespaces:
     get:
-      description: Get all namespaces
+      description: Get all namespaces.
       operationId: listRelationshipNamespaces
       responses:
         "200":
@@ -223,70 +204,75 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/relationshipNamespaces'
-          description: relationshipNamespaces
+          description: The list of namespaces.
         default:
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/errorGeneric'
-          description: errorGeneric
-      summary: Query namespaces
+          description: Generic error
+      summary: Lists Namespaces
       tags:
       - relationship
   /opl/syntax/check:
     post:
-      description: The OPL file is expected in the body of the request.
       operationId: checkOplSyntax
       requestBody:
         content:
           text/plain:
             schema:
-              $ref: '#/components/schemas/checkOplSyntaxBody'
-        x-originalParamName: Body
+              format: byte
+              type: string
+        required: true
+        x-originalParamName: content
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/checkOplSyntaxResult'
-          description: checkOplSyntaxResult
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorGeneric'
-          description: errorGeneric
+          description: The result of the syntax checker
         default:
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/errorGeneric'
-          description: errorGeneric
-      summary: Check the syntax of an OPL file
+          description: Generic error
+      summary: Performs a syntax check request.
       tags:
       - relationship
   /relation-tuples:
     get:
-      description: Get all relationships that match the query. Only the namespace
-        field is required.
       operationId: getRelationships
       parameters:
-      - explode: true
+      - description: |-
+          Optional. The maximum number of
+          RelationTuples to return in the response.
+
+          Default: 100
+        explode: true
+        in: query
+        name: page_size
+        required: false
+        schema:
+          format: int32
+          type: integer
+        style: form
+      - description: |-
+          Optional. An opaque pagination token returned from
+          a previous call to `ListRelationTuples` that
+          indicates where the page should start at.
+
+          An empty token denotes the first page. All successive
+          pages require the token from the previous page.
+        explode: true
         in: query
         name: page_token
         required: false
         schema:
           type: string
         style: form
-      - explode: true
-        in: query
-        name: page_size
-        required: false
-        schema:
-          format: int64
-          type: integer
-        style: form
-      - description: Namespace of the Relationship
+      - description: The namespace
         explode: true
         in: query
         name: namespace
@@ -294,7 +280,7 @@ paths:
         schema:
           type: string
         style: form
-      - description: Object of the Relationship
+      - description: The related object in this check.
         explode: true
         in: query
         name: object
@@ -302,7 +288,7 @@ paths:
         schema:
           type: string
         style: form
-      - description: Relation of the Relationship
+      - description: The relation between the Object and the Subject.
         explode: true
         in: query
         name: relation
@@ -310,7 +296,7 @@ paths:
         schema:
           type: string
         style: form
-      - description: SubjectID of the Relationship
+      - description: A concrete id of the subject.
         explode: true
         in: query
         name: subject_id
@@ -318,7 +304,9 @@ paths:
         schema:
           type: string
         style: form
-      - description: Namespace of the Subject Set
+      - description: |-
+          The namespace of the object and relation
+          referenced in this subject set.
         explode: true
         in: query
         name: subject_set.namespace
@@ -326,7 +314,7 @@ paths:
         schema:
           type: string
         style: form
-      - description: Object of the Subject Set
+      - description: The object related by this subject set.
         explode: true
         in: query
         name: subject_set.object
@@ -334,7 +322,7 @@ paths:
         schema:
           type: string
         style: form
-      - description: Relation of the Subject Set
+      - description: The relation between the object and the subjects.
         explode: true
         in: query
         name: subject_set.relation
@@ -348,29 +336,27 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/relationships'
-          description: relationships
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorGeneric'
-          description: errorGeneric
+          description: The list of relationships.
         default:
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/errorGeneric'
-          description: errorGeneric
-      summary: Query relationships
+          description: Generic error
+      summary: Lists ACL relationships.
       tags:
       - relationship
   /relation-tuples/check:
     get:
-      description: To learn how relationship tuples and the check works, head over
-        to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
       operationId: checkPermissionOrError
       parameters:
-      - description: Namespace of the Relationship
+      - description: |-
+          The namespace to evaluate the check.
+
+          Note: If you use the expand-API and the check
+          evaluates a RelationTuple specifying a SubjectSet as
+          subject or due to a rewrite rule in a namespace config
+          this check request may involve other namespaces automatically.
         explode: true
         in: query
         name: namespace
@@ -378,7 +364,7 @@ paths:
         schema:
           type: string
         style: form
-      - description: Object of the Relationship
+      - description: The related object in this check.
         explode: true
         in: query
         name: object
@@ -386,7 +372,7 @@ paths:
         schema:
           type: string
         style: form
-      - description: Relation of the Relationship
+      - description: The relation between the Object and the Subject.
         explode: true
         in: query
         name: relation
@@ -394,7 +380,7 @@ paths:
         schema:
           type: string
         style: form
-      - description: SubjectID of the Relationship
+      - description: A concrete id of the subject.
         explode: true
         in: query
         name: subject_id
@@ -402,7 +388,9 @@ paths:
         schema:
           type: string
         style: form
-      - description: Namespace of the Subject Set
+      - description: |-
+          The namespace of the object and relation
+          referenced in this subject set.
         explode: true
         in: query
         name: subject_set.namespace
@@ -410,7 +398,7 @@ paths:
         schema:
           type: string
         style: form
-      - description: Object of the Subject Set
+      - description: The object related by this subject set.
         explode: true
         in: query
         name: subject_set.object
@@ -418,7 +406,7 @@ paths:
         schema:
           type: string
         style: form
-      - description: Relation of the Subject Set
+      - description: The relation between the object and the subjects.
         explode: true
         in: query
         name: subject_set.relation
@@ -426,12 +414,17 @@ paths:
         schema:
           type: string
         style: form
-      - explode: true
+      - description: |-
+          The maximum depth to search for a relation.
+
+          If the value is less than 1 or greater than the global
+          max-depth then the global max-depth will be used instead.
+        explode: true
         in: query
         name: max-depth
         required: false
         schema:
-          format: int64
+          format: int32
           type: integer
         style: form
       responses:
@@ -440,214 +433,230 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/checkPermissionResult'
-          description: checkPermissionResult
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorGeneric'
-          description: errorGeneric
+          description: The response of the permission check, in case it is allowed.
+            For the `/openapi` endpoints, the status code is always 200.
         "403":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/checkPermissionResult'
-          description: checkPermissionResult
+          description: The response of the permission check, in case it is not allowed.
+            For the `/openapi` endpoints, the status code is always 200.
         default:
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/errorGeneric'
-          description: errorGeneric
-      summary: Check a permission
+          description: Generic error
+      summary: Performs an authorization check.
       tags:
       - permission
     post:
-      description: To learn how relationship tuples and the check works, head over
-        to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
       operationId: postCheckPermissionOrError
-      parameters:
-      - explode: true
-        in: query
-        name: max-depth
-        required: false
-        schema:
-          format: int64
-          type: integer
-        style: form
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/postCheckPermissionOrErrorBody'
-        x-originalParamName: Body
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/checkPermissionResult'
-          description: checkPermissionResult
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorGeneric'
-          description: errorGeneric
-        "403":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/checkPermissionResult'
-          description: checkPermissionResult
-        default:
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorGeneric'
-          description: errorGeneric
-      summary: Check a permission
-      tags:
-      - permission
-  /relation-tuples/check/openapi:
-    get:
-      description: To learn how relationship tuples and the check works, head over
-        to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
-      operationId: checkPermission
-      parameters:
-      - description: Namespace of the Relationship
-        explode: true
-        in: query
-        name: namespace
-        required: false
-        schema:
-          type: string
-        style: form
-      - description: Object of the Relationship
-        explode: true
-        in: query
-        name: object
-        required: false
-        schema:
-          type: string
-        style: form
-      - description: Relation of the Relationship
-        explode: true
-        in: query
-        name: relation
-        required: false
-        schema:
-          type: string
-        style: form
-      - description: SubjectID of the Relationship
-        explode: true
-        in: query
-        name: subject_id
-        required: false
-        schema:
-          type: string
-        style: form
-      - description: Namespace of the Subject Set
-        explode: true
-        in: query
-        name: subject_set.namespace
-        required: false
-        schema:
-          type: string
-        style: form
-      - description: Object of the Subject Set
-        explode: true
-        in: query
-        name: subject_set.object
-        required: false
-        schema:
-          type: string
-        style: form
-      - description: Relation of the Subject Set
-        explode: true
-        in: query
-        name: subject_set.relation
-        required: false
-        schema:
-          type: string
-        style: form
-      - explode: true
-        in: query
-        name: max-depth
-        required: false
-        schema:
-          format: int64
-          type: integer
-        style: form
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/checkPermissionResult'
-          description: checkPermissionResult
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorGeneric'
-          description: errorGeneric
-        default:
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorGeneric'
-          description: errorGeneric
-      summary: Check a permission
-      tags:
-      - permission
-    post:
-      description: To learn how relationship tuples and the check works, head over
-        to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
-      operationId: postCheckPermission
-      parameters:
-      - explode: true
-        in: query
-        name: max-depth
-        required: false
-        schema:
-          format: int64
-          type: integer
-        style: form
       requestBody:
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/postCheckPermissionBody'
-        x-originalParamName: Payload
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/postCheckPermissionBody'
+        description: |-
+          The request for a CheckService.Check RPC.
+          Checks whether a specific subject is related to an object.
+        required: true
+        x-originalParamName: body
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/checkPermissionResult'
-          description: checkPermissionResult
-        "400":
+          description: The response of the permission check, in case it is allowed.
+            For the `/openapi` endpoints, the status code is always 200.
+        "403":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorGeneric'
-          description: errorGeneric
+                $ref: '#/components/schemas/checkPermissionResult'
+          description: The response of the permission check, in case it is not allowed.
+            For the `/openapi` endpoints, the status code is always 200.
         default:
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/errorGeneric'
-          description: errorGeneric
-      summary: Check a permission
+          description: Generic error
+      summary: Performs an authorization check.
+      tags:
+      - permission
+  /relation-tuples/check/openapi:
+    get:
+      operationId: checkPermission
+      parameters:
+      - description: |-
+          The namespace to evaluate the check.
+
+          Note: If you use the expand-API and the check
+          evaluates a RelationTuple specifying a SubjectSet as
+          subject or due to a rewrite rule in a namespace config
+          this check request may involve other namespaces automatically.
+        explode: true
+        in: query
+        name: namespace
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: The related object in this check.
+        explode: true
+        in: query
+        name: object
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: The relation between the Object and the Subject.
+        explode: true
+        in: query
+        name: relation
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: A concrete id of the subject.
+        explode: true
+        in: query
+        name: subject_id
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: |-
+          The namespace of the object and relation
+          referenced in this subject set.
+        explode: true
+        in: query
+        name: subject_set.namespace
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: The object related by this subject set.
+        explode: true
+        in: query
+        name: subject_set.object
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: The relation between the object and the subjects.
+        explode: true
+        in: query
+        name: subject_set.relation
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: |-
+          The maximum depth to search for a relation.
+
+          If the value is less than 1 or greater than the global
+          max-depth then the global max-depth will be used instead.
+        explode: true
+        in: query
+        name: max-depth
+        required: false
+        schema:
+          format: int32
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/checkPermissionResult'
+          description: The response of the permission check, in case it is allowed.
+            For the `/openapi` endpoints, the status code is always 200.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/checkPermissionResult'
+          description: The response of the permission check, in case it is not allowed.
+            For the `/openapi` endpoints, the status code is always 200.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorGeneric'
+          description: Generic error
+      summary: Performs an authorization check.
+      tags:
+      - permission
+    post:
+      operationId: postCheckPermission
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/postCheckPermissionBody'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/postCheckPermissionBody'
+        description: |-
+          The request for a CheckService.Check RPC.
+          Checks whether a specific subject is related to an object.
+        required: true
+        x-originalParamName: body
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/checkPermissionResult'
+          description: The response of the permission check, in case it is allowed.
+            For the `/openapi` endpoints, the status code is always 200.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/checkPermissionResult'
+          description: The response of the permission check, in case it is not allowed.
+            For the `/openapi` endpoints, the status code is always 200.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorGeneric'
+          description: Generic error
+      summary: Performs an authorization check.
       tags:
       - permission
   /relation-tuples/expand:
     get:
-      description: Use this endpoint to expand a relationship tuple into permissions.
       operationId: expandPermissions
       parameters:
-      - description: Namespace of the Subject Set
+      - description: |-
+          The maximum depth of tree to build.
+
+          If the value is less than 1 or greater than the global
+          max-depth then the global max-depth will be used instead.
+
+          It is important to set this parameter to a meaningful
+          value. Ponder how deep you really want to display this.
+        explode: true
+        in: query
+        name: max-depth
+        required: false
+        schema:
+          format: int32
+          type: integer
+        style: form
+      - description: |-
+          The namespace of the object and relation
+          referenced in this subject set.
         explode: true
         in: query
         name: namespace
@@ -655,7 +664,7 @@ paths:
         schema:
           type: string
         style: form
-      - description: Object of the Subject Set
+      - description: The object related by this subject set.
         explode: true
         in: query
         name: object
@@ -663,21 +672,13 @@ paths:
         schema:
           type: string
         style: form
-      - description: Relation of the Subject Set
+      - description: The relation between the object and the subjects.
         explode: true
         in: query
         name: relation
         required: true
         schema:
           type: string
-        style: form
-      - explode: true
-        in: query
-        name: max-depth
-        required: false
-        schema:
-          format: int64
-          type: integer
         style: form
       responses:
         "200":
@@ -685,26 +686,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/expandedPermissionTree'
-          description: expandedPermissionTree
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorGeneric'
-          description: errorGeneric
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorGeneric'
-          description: errorGeneric
+          description: The response of the permission check, in case it is allowed.
+            For the `/openapi` endpoints, the status code is always 200.
         default:
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/errorGeneric'
-          description: errorGeneric
-      summary: Expand a Relationship into permissions.
+          description: Generic error
+      summary: Expands the subject set into a tree of subjects.
       tags:
       - permission
   /version:
@@ -729,45 +719,9 @@ paths:
       tags:
       - metadata
 components:
-  responses:
-    emptyResponse:
-      description: Empty responses are sent when, for example, resources are deleted.
-        The HTTP status code for empty responses is typically 201.
   schemas:
-    ParseError:
-      example:
-        start:
-          Line: 0
-          column: 6
-        end:
-          Line: 0
-          column: 6
-        message: message
-      properties:
-        end:
-          $ref: '#/components/schemas/SourcePosition'
-        message:
-          type: string
-        start:
-          $ref: '#/components/schemas/SourcePosition'
-      type: object
-    SourcePosition:
-      example:
-        Line: 0
-        column: 6
-      properties:
-        Line:
-          format: int64
-          type: integer
-        column:
-          format: int64
-          type: integer
-      type: object
     UUID:
       format: uuid4
-      type: string
-    checkOplSyntaxBody:
-      description: Ory Permission Language Document
       type: string
     checkOplSyntaxResult:
       example:
@@ -788,55 +742,46 @@ components:
           message: message
       properties:
         errors:
-          description: The list of syntax errors
           items:
-            $ref: '#/components/schemas/ParseError'
+            $ref: '#/components/schemas/ory.keto.opl.v1alpha1.ParseError'
           type: array
-      title: CheckOPLSyntaxResponse represents the response for an OPL syntax check
-        request.
       type: object
     checkPermissionResult:
-      description: The content of the allowed field is mirrored in the HTTP status
-        code.
+      description: The response for a CheckService.Check rpc.
       example:
         allowed: true
       properties:
         allowed:
-          description: whether the relation tuple is allowed
+          description: |-
+            Whether the specified subject (id)
+            is related to the requested object.
+
+            It is false by default if no ACL matches.
           type: boolean
-      required:
-      - allowed
-      title: Check Permission Result
       type: object
     createRelationshipBody:
-      description: Create Relationship Request Body
       properties:
         namespace:
-          description: Namespace to query
+          description: The namespace this relation tuple lives in.
           type: string
         object:
-          description: Object to query
+          description: |-
+            The object related by this tuple.
+            It is an object in the namespace of the tuple.
           type: string
         relation:
-          description: Relation to query
+          description: The relation between an Object and a Subject.
           type: string
         subject_id:
-          description: |-
-            SubjectID to query
-
-            Either SubjectSet or SubjectID can be provided.
+          description: A concrete id of the subject.
           type: string
         subject_set:
           $ref: '#/components/schemas/subjectSet'
       type: object
     errorGeneric:
-      description: The standard Ory JSON API error format.
       properties:
         error:
-          $ref: '#/components/schemas/genericError'
-      required:
-      - error
-      title: JSON API Error Response
+          $ref: '#/components/schemas/ory.keto.relation_tuples.v1alpha2.ErrorObject'
       type: object
     expandedPermissionTree:
       example:
@@ -852,187 +797,204 @@ components:
         children:
         - null
         - null
-        type: union
+        subject:
+          set:
+            namespace: namespace
+            object: object
+            relation: relation
+          id: id
       properties:
         children:
-          description: The children of the node, possibly none.
+          description: |-
+            The children of this node.
+
+            This is never set if `node_type` == `NODE_TYPE_LEAF`.
           items:
             $ref: '#/components/schemas/expandedPermissionTree'
           type: array
+        subject:
+          $ref: '#/components/schemas/ory.keto.relation_tuples.v1alpha2.Subject'
         tuple:
           $ref: '#/components/schemas/relationship'
         type:
-          description: |-
-            The type of the node.
-            union TreeNodeUnion
-            exclusion TreeNodeExclusion
-            intersection TreeNodeIntersection
-            leaf TreeNodeLeaf
-            tuple_to_subject_set TreeNodeTupleToSubjectSet
-            computed_subject_set TreeNodeComputedSubjectSet
-            not TreeNodeNot
-            unspecified TreeNodeUnspecified
-          enum:
-          - union
-          - exclusion
-          - intersection
-          - leaf
-          - tuple_to_subject_set
-          - computed_subject_set
-          - not
-          - unspecified
-          type: string
-          x-go-enum-desc: |-
-            union TreeNodeUnion
-            exclusion TreeNodeExclusion
-            intersection TreeNodeIntersection
-            leaf TreeNodeLeaf
-            tuple_to_subject_set TreeNodeTupleToSubjectSet
-            computed_subject_set TreeNodeComputedSubjectSet
-            not TreeNodeNot
-            unspecified TreeNodeUnspecified
+          $ref: '#/components/schemas/ory.keto.relation_tuples.v1alpha2.NodeType'
       required:
       - type
       type: object
-    genericError:
+    ory.keto.opl.v1alpha1.ParseError:
+      example:
+        start:
+          Line: 0
+          column: 6
+        end:
+          Line: 0
+          column: 6
+        message: message
+      properties:
+        end:
+          $ref: '#/components/schemas/ory.keto.opl.v1alpha1.SourcePosition'
+        message:
+          type: string
+        start:
+          $ref: '#/components/schemas/ory.keto.opl.v1alpha1.SourcePosition'
+      type: object
+    ory.keto.opl.v1alpha1.SourcePosition:
+      example:
+        Line: 0
+        column: 6
+      properties:
+        Line:
+          format: int64
+          type: integer
+        column:
+          format: int64
+          type: integer
+      type: object
+    ory.keto.relation_tuples.v1alpha2.CreateRelationTupleResponse:
+      description: The response from creating a new relationship.
+      properties:
+        relationTuple:
+          $ref: '#/components/schemas/relationship'
+      type: object
+    ory.keto.relation_tuples.v1alpha2.DeleteRelationTuplesResponse:
+      type: object
+    ory.keto.relation_tuples.v1alpha2.ErrorObject:
       properties:
         code:
           description: The status code
           example: 404
           format: int64
+          pattern: ^[0-9]$
+          title: code
           type: integer
         debug:
           description: |-
-            Debug information
-
             This field is often not exposed to protect against leaking
-            sensitive information.
-          example: SQL field "foo" is not a bool.
+            sensitive information
+          example: SQL field 'foo' is not a bool
+          title: Debug information
           type: string
         details:
-          additionalProperties: {}
-          description: Further error details
+          additionalProperties:
+            type: string
+          title: Further error details
           type: object
         id:
-          description: |-
-            The error ID
-
-            Useful when trying to identify various errors in application logic.
+          description: Useful when trying to identify various errors in application
+            logic.
+          title: The error ID
           type: string
         message:
-          description: |-
-            Error message
-
-            The error's message.
+          description: Response message
           example: The resource could not be found
+          title: message
           type: string
         reason:
           description: A human-readable reason for the error
           example: User with ID 1234 does not exist.
+          title: The reason for the failure
           type: string
         request:
           description: |-
-            The request ID
-
             The request ID is often exposed internally in order to trace
             errors across service architectures. This is often a UUID.
           example: d7ef54b1-ec15-46e6-bccb-524b82c035e6
+          title: The request ID
           type: string
         status:
-          description: The status description
+          description: The human-readable description of the code.
           example: Not Found
-          type: string
-      required:
-      - message
-      type: object
-    healthNotReadyStatus:
-      properties:
-        errors:
-          additionalProperties:
-            type: string
-          description: Errors contains a list of errors that caused the not ready
-            status.
-          type: object
-      type: object
-    healthStatus:
-      properties:
-        status:
-          description: Status always contains "ok".
+          title: The status description
           type: string
       type: object
-    namespace:
+    ory.keto.relation_tuples.v1alpha2.ExpandResponse:
+      description: The response for a ExpandService.Expand RPC.
+      properties:
+        tree:
+          $ref: '#/components/schemas/expandedPermissionTree'
+      type: object
+    ory.keto.relation_tuples.v1alpha2.GetVersionResponse:
+      description: Response of the VersionService.GetVersion RPC.
+      properties:
+        version:
+          description: The version string of the Ory Keto instance.
+          type: string
+      type: object
+    ory.keto.relation_tuples.v1alpha2.Namespace:
       example:
         name: name
       properties:
         name:
-          description: Name of the namespace.
           type: string
+      type: object
+    ory.keto.relation_tuples.v1alpha2.NodeType:
+      default: unspecified
+      enum:
+      - unspecified
+      - union
+      - exclusion
+      - intersection
+      - leaf
+      - tuple_to_subject_set
+      - computed_subject_set
+      - not
+      type: string
+    ory.keto.relation_tuples.v1alpha2.Subject:
+      description: |-
+        Subject is either a concrete subject id or
+        a `SubjectSet` expanding to more Subjects.
+      example:
+        set:
+          namespace: namespace
+          object: object
+          relation: relation
+        id: id
+      properties:
+        id:
+          description: A concrete id of the subject.
+          type: string
+        set:
+          $ref: '#/components/schemas/subjectSet'
+      type: object
+    ory.keto.relation_tuples.v1alpha2.TransactRelationTuplesResponse:
+      description: The response of a WriteService.TransactRelationTuples rpc.
       type: object
     postCheckPermissionBody:
-      description: Check Permission using Post Request Body
+      description: |-
+        The request for a CheckService.Check RPC.
+        Checks whether a specific subject is related to an object.
       properties:
+        max-depth:
+          description: |-
+            The maximum depth to search for a relation.
+
+            If the value is less than 1 or greater than the global
+            max-depth then the global max-depth will be used instead.
+          format: int32
+          type: integer
         namespace:
-          description: Namespace to query
+          description: |-
+            The namespace to evaluate the check.
+
+            Note: If you use the expand-API and the check
+            evaluates a RelationTuple specifying a SubjectSet as
+            subject or due to a rewrite rule in a namespace config
+            this check request may involve other namespaces automatically.
           type: string
         object:
-          description: Object to query
+          description: The related object in this check.
           type: string
         relation:
-          description: Relation to query
+          description: The relation between the Object and the Subject.
           type: string
         subject_id:
-          description: |-
-            SubjectID to query
-
-            Either SubjectSet or SubjectID can be provided.
+          description: A concrete id of the subject.
           type: string
         subject_set:
-          $ref: '#/components/schemas/subjectSet'
-      type: object
-    postCheckPermissionOrErrorBody:
-      description: Post Check Permission Or Error Body
-      properties:
-        namespace:
-          description: Namespace to query
-          type: string
-        object:
-          description: Object to query
-          type: string
-        relation:
-          description: Relation to query
-          type: string
-        subject_id:
-          description: |-
-            SubjectID to query
-
-            Either SubjectSet or SubjectID can be provided.
-          type: string
-        subject_set:
-          $ref: '#/components/schemas/subjectSet'
-      type: object
-    relationQuery:
-      description: Relation Query
-      properties:
-        namespace:
-          description: Namespace to query
-          type: string
-        object:
-          description: Object to query
-          type: string
-        relation:
-          description: Relation to query
-          type: string
-        subject_id:
-          description: |-
-            SubjectID to query
-
-            Either SubjectSet or SubjectID can be provided.
-          type: string
-        subject_set:
-          $ref: '#/components/schemas/subjectSet'
+          $ref: '#/components/schemas/subjectSetQuery'
       type: object
     relationship:
-      description: Relationship
+      description: RelationTuple defines a relation between an Object and a Subject.
       example:
         subject_id: subject_id
         namespace: namespace
@@ -1044,19 +1006,18 @@ components:
           relation: relation
       properties:
         namespace:
-          description: Namespace of the Relation Tuple
+          description: The namespace this relation tuple lives in.
           type: string
         object:
-          description: Object of the Relation Tuple
+          description: |-
+            The object related by this tuple.
+            It is an object in the namespace of the tuple.
           type: string
         relation:
-          description: Relation of the Relation Tuple
+          description: The relation between an Object and a Subject.
           type: string
         subject_id:
-          description: |-
-            SubjectID of the Relation Tuple
-
-            Either SubjectSet or SubjectID can be provided.
+          description: A concrete id of the subject.
           type: string
         subject_set:
           $ref: '#/components/schemas/subjectSet'
@@ -1065,8 +1026,30 @@ components:
       - object
       - relation
       type: object
+    relationshipDelta:
+      description: Write-delta for a TransactRelationTuplesRequest.
+      properties:
+        action:
+          $ref: '#/components/schemas/relationshipDelta.Action'
+        relation_tuple:
+          $ref: '#/components/schemas/relationship'
+      type: object
+    relationshipDelta.Action:
+      default: ACTION_UNSPECIFIED
+      description: |2-
+         - ACTION_UNSPECIFIED: Unspecified.
+        The `TransactRelationTuples` RPC ignores this
+        RelationTupleDelta if an action was unspecified.
+         - insert: Insertion of a new RelationTuple.
+        It is ignored if already existing.
+         - delete: Deletion of the RelationTuple.
+        It is ignored if it does not exist.
+      enum:
+      - ACTION_UNSPECIFIED
+      - insert
+      - delete
+      type: string
     relationshipNamespaces:
-      description: Relationship Namespace List
       example:
         namespaces:
         - name: name
@@ -1074,25 +1057,11 @@ components:
       properties:
         namespaces:
           items:
-            $ref: '#/components/schemas/namespace'
+            $ref: '#/components/schemas/ory.keto.relation_tuples.v1alpha2.Namespace'
           type: array
       type: object
-    relationshipPatch:
-      description: Payload for patching a relationship
-      properties:
-        action:
-          enum:
-          - insert
-          - delete
-          type: string
-          x-go-enum-desc: |-
-            insert ActionInsert
-            delete ActionDelete
-        relation_tuple:
-          $ref: '#/components/schemas/relationship'
-      type: object
     relationships:
-      description: Paginated Relationship List
+      description: The response of a ReadService.ListRelationTuples RPC.
       example:
         next_page_token: next_page_token
         relation_tuples:
@@ -1115,39 +1084,55 @@ components:
       properties:
         next_page_token:
           description: |-
-            The opaque token to provide in a subsequent request
-            to get the next page. It is the empty string iff this is
-            the last page.
+            The token required to get the next page.
+            If this is the last page, the token will be the empty string.
           type: string
         relation_tuples:
+          description: The relationships matching the list request.
           items:
             $ref: '#/components/schemas/relationship'
           type: array
       type: object
     subjectSet:
+      description: |-
+        SubjectSet refers to all subjects who have
+        the same `relation` on an `object`.
       example:
         namespace: namespace
         object: object
         relation: relation
       properties:
         namespace:
-          description: Namespace of the Subject Set
+          description: |-
+            The namespace of the object and relation
+            referenced in this subject set.
           type: string
         object:
-          description: Object of the Subject Set
+          description: The object related by this subject set.
           type: string
         relation:
-          description: Relation of the Subject Set
+          description: The relation between the object and the subjects.
           type: string
       required:
       - namespace
       - object
       - relation
       type: object
-    version:
+    subjectSetQuery:
+      description: |-
+        SubjectSetQuery refers to all subjects who have
+        the same `relation` on an `object`.
       properties:
-        version:
-          description: Version is the service's version.
+        namespace:
+          description: |-
+            The namespace of the object and relation
+            referenced in this subject set.
+          type: string
+        object:
+          description: The object related by this subject set.
+          type: string
+        relation:
+          description: The relation between the object and the subjects.
           type: string
       type: object
     inline_response_200:

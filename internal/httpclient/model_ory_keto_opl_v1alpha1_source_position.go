@@ -15,31 +15,31 @@ import (
 	"encoding/json"
 )
 
-// SourcePosition struct for SourcePosition
-type SourcePosition struct {
+// OryKetoOplV1alpha1SourcePosition struct for OryKetoOplV1alpha1SourcePosition
+type OryKetoOplV1alpha1SourcePosition struct {
 	Line   *int64 `json:"Line,omitempty"`
 	Column *int64 `json:"column,omitempty"`
 }
 
-// NewSourcePosition instantiates a new SourcePosition object
+// NewOryKetoOplV1alpha1SourcePosition instantiates a new OryKetoOplV1alpha1SourcePosition object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewSourcePosition() *SourcePosition {
-	this := SourcePosition{}
+func NewOryKetoOplV1alpha1SourcePosition() *OryKetoOplV1alpha1SourcePosition {
+	this := OryKetoOplV1alpha1SourcePosition{}
 	return &this
 }
 
-// NewSourcePositionWithDefaults instantiates a new SourcePosition object
+// NewOryKetoOplV1alpha1SourcePositionWithDefaults instantiates a new OryKetoOplV1alpha1SourcePosition object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewSourcePositionWithDefaults() *SourcePosition {
-	this := SourcePosition{}
+func NewOryKetoOplV1alpha1SourcePositionWithDefaults() *OryKetoOplV1alpha1SourcePosition {
+	this := OryKetoOplV1alpha1SourcePosition{}
 	return &this
 }
 
 // GetLine returns the Line field value if set, zero value otherwise.
-func (o *SourcePosition) GetLine() int64 {
+func (o *OryKetoOplV1alpha1SourcePosition) GetLine() int64 {
 	if o == nil || o.Line == nil {
 		var ret int64
 		return ret
@@ -49,7 +49,7 @@ func (o *SourcePosition) GetLine() int64 {
 
 // GetLineOk returns a tuple with the Line field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *SourcePosition) GetLineOk() (*int64, bool) {
+func (o *OryKetoOplV1alpha1SourcePosition) GetLineOk() (*int64, bool) {
 	if o == nil || o.Line == nil {
 		return nil, false
 	}
@@ -57,7 +57,7 @@ func (o *SourcePosition) GetLineOk() (*int64, bool) {
 }
 
 // HasLine returns a boolean if a field has been set.
-func (o *SourcePosition) HasLine() bool {
+func (o *OryKetoOplV1alpha1SourcePosition) HasLine() bool {
 	if o != nil && o.Line != nil {
 		return true
 	}
@@ -66,12 +66,12 @@ func (o *SourcePosition) HasLine() bool {
 }
 
 // SetLine gets a reference to the given int64 and assigns it to the Line field.
-func (o *SourcePosition) SetLine(v int64) {
+func (o *OryKetoOplV1alpha1SourcePosition) SetLine(v int64) {
 	o.Line = &v
 }
 
 // GetColumn returns the Column field value if set, zero value otherwise.
-func (o *SourcePosition) GetColumn() int64 {
+func (o *OryKetoOplV1alpha1SourcePosition) GetColumn() int64 {
 	if o == nil || o.Column == nil {
 		var ret int64
 		return ret
@@ -81,7 +81,7 @@ func (o *SourcePosition) GetColumn() int64 {
 
 // GetColumnOk returns a tuple with the Column field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *SourcePosition) GetColumnOk() (*int64, bool) {
+func (o *OryKetoOplV1alpha1SourcePosition) GetColumnOk() (*int64, bool) {
 	if o == nil || o.Column == nil {
 		return nil, false
 	}
@@ -89,7 +89,7 @@ func (o *SourcePosition) GetColumnOk() (*int64, bool) {
 }
 
 // HasColumn returns a boolean if a field has been set.
-func (o *SourcePosition) HasColumn() bool {
+func (o *OryKetoOplV1alpha1SourcePosition) HasColumn() bool {
 	if o != nil && o.Column != nil {
 		return true
 	}
@@ -98,11 +98,11 @@ func (o *SourcePosition) HasColumn() bool {
 }
 
 // SetColumn gets a reference to the given int64 and assigns it to the Column field.
-func (o *SourcePosition) SetColumn(v int64) {
+func (o *OryKetoOplV1alpha1SourcePosition) SetColumn(v int64) {
 	o.Column = &v
 }
 
-func (o SourcePosition) MarshalJSON() ([]byte, error) {
+func (o OryKetoOplV1alpha1SourcePosition) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.Line != nil {
 		toSerialize["Line"] = o.Line
@@ -113,38 +113,38 @@ func (o SourcePosition) MarshalJSON() ([]byte, error) {
 	return json.Marshal(toSerialize)
 }
 
-type NullableSourcePosition struct {
-	value *SourcePosition
+type NullableOryKetoOplV1alpha1SourcePosition struct {
+	value *OryKetoOplV1alpha1SourcePosition
 	isSet bool
 }
 
-func (v NullableSourcePosition) Get() *SourcePosition {
+func (v NullableOryKetoOplV1alpha1SourcePosition) Get() *OryKetoOplV1alpha1SourcePosition {
 	return v.value
 }
 
-func (v *NullableSourcePosition) Set(val *SourcePosition) {
+func (v *NullableOryKetoOplV1alpha1SourcePosition) Set(val *OryKetoOplV1alpha1SourcePosition) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableSourcePosition) IsSet() bool {
+func (v NullableOryKetoOplV1alpha1SourcePosition) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableSourcePosition) Unset() {
+func (v *NullableOryKetoOplV1alpha1SourcePosition) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableSourcePosition(val *SourcePosition) *NullableSourcePosition {
-	return &NullableSourcePosition{value: val, isSet: true}
+func NewNullableOryKetoOplV1alpha1SourcePosition(val *OryKetoOplV1alpha1SourcePosition) *NullableOryKetoOplV1alpha1SourcePosition {
+	return &NullableOryKetoOplV1alpha1SourcePosition{value: val, isSet: true}
 }
 
-func (v NullableSourcePosition) MarshalJSON() ([]byte, error) {
+func (v NullableOryKetoOplV1alpha1SourcePosition) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableSourcePosition) UnmarshalJSON(src []byte) error {
+func (v *NullableOryKetoOplV1alpha1SourcePosition) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

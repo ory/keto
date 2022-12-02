@@ -1,0 +1,1095 @@
+{
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
+  "schemes": ["http", "https"],
+  "swagger": "2.0",
+  "info": {
+    "description": "Ory Keto is a cloud native access control server providing best-practice patterns (RBAC, ABAC, ACL, AWS IAM Policies, Kubernetes Roles, ...) via REST APIs.",
+    "title": "ORY Keto",
+    "contact": {
+      "name": "ORY",
+      "url": "https://www.ory.sh",
+      "email": "hi@ory.sh"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "https://github.com/ory/keto/blob/master/LICENSE"
+    },
+    "version": "Latest"
+  },
+  "basePath": "/",
+  "paths": {
+    "/admin/relation-tuples": {
+      "put": {
+        "description": "Use this endpoint to create a relationship.",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "schemes": ["http", "https"],
+        "tags": ["relationship"],
+        "summary": "Create a Relationship",
+        "operationId": "createRelationship",
+        "parameters": [
+          {
+            "name": "Body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/createRelationshipBody"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "relationship",
+            "schema": {
+              "$ref": "#/definitions/relationship"
+            }
+          },
+          "400": {
+            "description": "errorGeneric",
+            "schema": {
+              "$ref": "#/definitions/errorGeneric"
+            }
+          },
+          "default": {
+            "description": "errorGeneric",
+            "schema": {
+              "$ref": "#/definitions/errorGeneric"
+            }
+          }
+        }
+      },
+      "delete": {
+        "description": "Use this endpoint to delete relationships",
+        "consumes": ["application/x-www-form-urlencoded"],
+        "produces": ["application/json"],
+        "schemes": ["http", "https"],
+        "tags": ["relationship"],
+        "summary": "Delete Relationships",
+        "operationId": "deleteRelationships",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Namespace of the Relationship",
+            "name": "namespace",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Object of the Relationship",
+            "name": "object",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Relation of the Relationship",
+            "name": "relation",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "SubjectID of the Relationship",
+            "name": "subject_id",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Namespace of the Subject Set",
+            "name": "subject_set.namespace",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Object of the Subject Set",
+            "name": "subject_set.object",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Relation of the Subject Set",
+            "name": "subject_set.relation",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "204": {
+            "$ref": "#/responses/emptyResponse"
+          },
+          "400": {
+            "description": "errorGeneric",
+            "schema": {
+              "$ref": "#/definitions/errorGeneric"
+            }
+          },
+          "default": {
+            "description": "errorGeneric",
+            "schema": {
+              "$ref": "#/definitions/errorGeneric"
+            }
+          }
+        }
+      },
+      "patch": {
+        "description": "Use this endpoint to patch one or more relationships.",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "schemes": ["http", "https"],
+        "tags": ["relationship"],
+        "summary": "Patch Multiple Relationships",
+        "operationId": "patchRelationships",
+        "parameters": [
+          {
+            "name": "Body",
+            "in": "body",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/relationshipPatch"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "$ref": "#/responses/emptyResponse"
+          },
+          "400": {
+            "description": "errorGeneric",
+            "schema": {
+              "$ref": "#/definitions/errorGeneric"
+            }
+          },
+          "404": {
+            "description": "errorGeneric",
+            "schema": {
+              "$ref": "#/definitions/errorGeneric"
+            }
+          },
+          "default": {
+            "description": "errorGeneric",
+            "schema": {
+              "$ref": "#/definitions/errorGeneric"
+            }
+          }
+        }
+      }
+    },
+    "/health/alive": {
+      "get": {
+        "description": "This endpoint returns a 200 status code when the HTTP server is up running.\nThis status does currently not include checks whether the database connection is working.\n\nIf the service supports TLS Edge Termination, this endpoint does not require the\n`X-Forwarded-Proto` header to be set.\n\nBe aware that if you are running multiple nodes of this service, the health status will never\nrefer to the cluster state, only to a single instance.",
+        "produces": ["application/json"],
+        "tags": ["health"],
+        "summary": "Check alive status",
+        "operationId": "isInstanceAlive",
+        "responses": {
+          "200": {
+            "description": "healthStatus",
+            "schema": {
+              "$ref": "#/definitions/healthStatus"
+            }
+          },
+          "500": {
+            "description": "genericError",
+            "schema": {
+              "$ref": "#/definitions/genericError"
+            }
+          }
+        }
+      }
+    },
+    "/health/ready": {
+      "get": {
+        "description": "This endpoint returns a 200 status code when the HTTP server is up running and the environment dependencies (e.g.\nthe database) are responsive as well.\n\nIf the service supports TLS Edge Termination, this endpoint does not require the\n`X-Forwarded-Proto` header to be set.\n\nBe aware that if you are running multiple nodes of this service, the health status will never\nrefer to the cluster state, only to a single instance.",
+        "produces": ["application/json"],
+        "tags": ["health"],
+        "summary": "Check readiness status",
+        "operationId": "isInstanceReady",
+        "responses": {
+          "200": {
+            "description": "healthStatus",
+            "schema": {
+              "$ref": "#/definitions/healthStatus"
+            }
+          },
+          "503": {
+            "description": "healthNotReadyStatus",
+            "schema": {
+              "$ref": "#/definitions/healthNotReadyStatus"
+            }
+          }
+        }
+      }
+    },
+    "/namespaces": {
+      "get": {
+        "description": "Get all namespaces",
+        "produces": ["application/json"],
+        "schemes": ["http", "https"],
+        "tags": ["relationship"],
+        "summary": "Query namespaces",
+        "operationId": "listRelationshipNamespaces",
+        "responses": {
+          "200": {
+            "description": "relationshipNamespaces",
+            "schema": {
+              "$ref": "#/definitions/relationshipNamespaces"
+            }
+          },
+          "default": {
+            "description": "errorGeneric",
+            "schema": {
+              "$ref": "#/definitions/errorGeneric"
+            }
+          }
+        }
+      }
+    },
+    "/opl/syntax/check": {
+      "post": {
+        "description": "The OPL file is expected in the body of the request.",
+        "consumes": ["text/plain"],
+        "produces": ["application/json"],
+        "schemes": ["http", "https"],
+        "tags": ["relationship"],
+        "summary": "Check the syntax of an OPL file",
+        "operationId": "checkOplSyntax",
+        "parameters": [
+          {
+            "name": "Body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/checkOplSyntaxBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "checkOplSyntaxResult",
+            "schema": {
+              "$ref": "#/definitions/checkOplSyntaxResult"
+            }
+          },
+          "400": {
+            "description": "errorGeneric",
+            "schema": {
+              "$ref": "#/definitions/errorGeneric"
+            }
+          },
+          "default": {
+            "description": "errorGeneric",
+            "schema": {
+              "$ref": "#/definitions/errorGeneric"
+            }
+          }
+        }
+      }
+    },
+    "/relation-tuples": {
+      "get": {
+        "description": "Get all relationships that match the query. Only the namespace field is required.",
+        "consumes": ["application/x-www-form-urlencoded"],
+        "produces": ["application/json"],
+        "schemes": ["http", "https"],
+        "tags": ["relationship"],
+        "summary": "Query relationships",
+        "operationId": "getRelationships",
+        "parameters": [
+          {
+            "type": "string",
+            "name": "page_token",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "format": "int64",
+            "name": "page_size",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Namespace of the Relationship",
+            "name": "namespace",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Object of the Relationship",
+            "name": "object",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Relation of the Relationship",
+            "name": "relation",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "SubjectID of the Relationship",
+            "name": "subject_id",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Namespace of the Subject Set",
+            "name": "subject_set.namespace",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Object of the Subject Set",
+            "name": "subject_set.object",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Relation of the Subject Set",
+            "name": "subject_set.relation",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "relationships",
+            "schema": {
+              "$ref": "#/definitions/relationships"
+            }
+          },
+          "404": {
+            "description": "errorGeneric",
+            "schema": {
+              "$ref": "#/definitions/errorGeneric"
+            }
+          },
+          "default": {
+            "description": "errorGeneric",
+            "schema": {
+              "$ref": "#/definitions/errorGeneric"
+            }
+          }
+        }
+      }
+    },
+    "/relation-tuples/check": {
+      "get": {
+        "description": "To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).",
+        "consumes": ["application/x-www-form-urlencoded"],
+        "produces": ["application/json"],
+        "schemes": ["http", "https"],
+        "tags": ["permission"],
+        "summary": "Check a permission",
+        "operationId": "checkPermissionOrError",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Namespace of the Relationship",
+            "name": "namespace",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Object of the Relationship",
+            "name": "object",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Relation of the Relationship",
+            "name": "relation",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "SubjectID of the Relationship",
+            "name": "subject_id",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Namespace of the Subject Set",
+            "name": "subject_set.namespace",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Object of the Subject Set",
+            "name": "subject_set.object",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Relation of the Subject Set",
+            "name": "subject_set.relation",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "format": "int64",
+            "name": "max-depth",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "checkPermissionResult",
+            "schema": {
+              "$ref": "#/definitions/checkPermissionResult"
+            }
+          },
+          "400": {
+            "description": "errorGeneric",
+            "schema": {
+              "$ref": "#/definitions/errorGeneric"
+            }
+          },
+          "403": {
+            "description": "checkPermissionResult",
+            "schema": {
+              "$ref": "#/definitions/checkPermissionResult"
+            }
+          },
+          "default": {
+            "description": "errorGeneric",
+            "schema": {
+              "$ref": "#/definitions/errorGeneric"
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "schemes": ["http", "https"],
+        "tags": ["permission"],
+        "summary": "Check a permission",
+        "operationId": "postCheckPermissionOrError",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int64",
+            "name": "max-depth",
+            "in": "query"
+          },
+          {
+            "name": "Body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/postCheckPermissionOrErrorBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "checkPermissionResult",
+            "schema": {
+              "$ref": "#/definitions/checkPermissionResult"
+            }
+          },
+          "400": {
+            "description": "errorGeneric",
+            "schema": {
+              "$ref": "#/definitions/errorGeneric"
+            }
+          },
+          "403": {
+            "description": "checkPermissionResult",
+            "schema": {
+              "$ref": "#/definitions/checkPermissionResult"
+            }
+          },
+          "default": {
+            "description": "errorGeneric",
+            "schema": {
+              "$ref": "#/definitions/errorGeneric"
+            }
+          }
+        }
+      }
+    },
+    "/relation-tuples/check/openapi": {
+      "get": {
+        "description": "To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).",
+        "consumes": ["application/x-www-form-urlencoded"],
+        "produces": ["application/json"],
+        "schemes": ["http", "https"],
+        "tags": ["permission"],
+        "summary": "Check a permission",
+        "operationId": "checkPermission",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Namespace of the Relationship",
+            "name": "namespace",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Object of the Relationship",
+            "name": "object",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Relation of the Relationship",
+            "name": "relation",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "SubjectID of the Relationship",
+            "name": "subject_id",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Namespace of the Subject Set",
+            "name": "subject_set.namespace",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Object of the Subject Set",
+            "name": "subject_set.object",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Relation of the Subject Set",
+            "name": "subject_set.relation",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "format": "int64",
+            "name": "max-depth",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "checkPermissionResult",
+            "schema": {
+              "$ref": "#/definitions/checkPermissionResult"
+            }
+          },
+          "400": {
+            "description": "errorGeneric",
+            "schema": {
+              "$ref": "#/definitions/errorGeneric"
+            }
+          },
+          "default": {
+            "description": "errorGeneric",
+            "schema": {
+              "$ref": "#/definitions/errorGeneric"
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "schemes": ["http", "https"],
+        "tags": ["permission"],
+        "summary": "Check a permission",
+        "operationId": "postCheckPermission",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int64",
+            "name": "max-depth",
+            "in": "query"
+          },
+          {
+            "name": "Payload",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/postCheckPermissionBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "checkPermissionResult",
+            "schema": {
+              "$ref": "#/definitions/checkPermissionResult"
+            }
+          },
+          "400": {
+            "description": "errorGeneric",
+            "schema": {
+              "$ref": "#/definitions/errorGeneric"
+            }
+          },
+          "default": {
+            "description": "errorGeneric",
+            "schema": {
+              "$ref": "#/definitions/errorGeneric"
+            }
+          }
+        }
+      }
+    },
+    "/relation-tuples/expand": {
+      "get": {
+        "description": "Use this endpoint to expand a relationship tuple into permissions.",
+        "consumes": ["application/x-www-form-urlencoded"],
+        "produces": ["application/json"],
+        "schemes": ["http", "https"],
+        "tags": ["permission"],
+        "summary": "Expand a Relationship into permissions.",
+        "operationId": "expandPermissions",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Namespace of the Subject Set",
+            "name": "namespace",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Object of the Subject Set",
+            "name": "object",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Relation of the Subject Set",
+            "name": "relation",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "integer",
+            "format": "int64",
+            "name": "max-depth",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "expandedPermissionTree",
+            "schema": {
+              "$ref": "#/definitions/expandedPermissionTree"
+            }
+          },
+          "400": {
+            "description": "errorGeneric",
+            "schema": {
+              "$ref": "#/definitions/errorGeneric"
+            }
+          },
+          "404": {
+            "description": "errorGeneric",
+            "schema": {
+              "$ref": "#/definitions/errorGeneric"
+            }
+          },
+          "default": {
+            "description": "errorGeneric",
+            "schema": {
+              "$ref": "#/definitions/errorGeneric"
+            }
+          }
+        }
+      }
+    },
+    "/version": {
+      "get": {
+        "description": "This endpoint returns the service version typically notated using semantic versioning.\n\nIf the service supports TLS Edge Termination, this endpoint does not require the\n`X-Forwarded-Proto` header to be set.\n\nBe aware that if you are running multiple nodes of this service, the health status will never\nrefer to the cluster state, only to a single instance.",
+        "produces": ["application/json"],
+        "tags": ["version"],
+        "summary": "Get service version",
+        "operationId": "getVersion",
+        "responses": {
+          "200": {
+            "description": "version",
+            "schema": {
+              "$ref": "#/definitions/version"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ParseError": {
+      "type": "object",
+      "properties": {
+        "end": {
+          "$ref": "#/definitions/SourcePosition"
+        },
+        "message": {
+          "type": "string"
+        },
+        "start": {
+          "$ref": "#/definitions/SourcePosition"
+        }
+      }
+    },
+    "SourcePosition": {
+      "type": "object",
+      "properties": {
+        "Line": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "column": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "checkOplSyntaxBody": {
+      "description": "Ory Permission Language Document",
+      "type": "string"
+    },
+    "checkOplSyntaxResult": {
+      "type": "object",
+      "title": "CheckOPLSyntaxResponse represents the response for an OPL syntax check request.",
+      "properties": {
+        "errors": {
+          "description": "The list of syntax errors",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ParseError"
+          }
+        }
+      }
+    },
+    "checkPermissionResult": {
+      "description": "The content of the allowed field is mirrored in the HTTP status code.",
+      "type": "object",
+      "title": "Check Permission Result",
+      "required": ["allowed"],
+      "properties": {
+        "allowed": {
+          "description": "whether the relation tuple is allowed",
+          "type": "boolean"
+        }
+      }
+    },
+    "createRelationshipBody": {
+      "description": "Create Relationship Request Body",
+      "type": "object",
+      "properties": {
+        "namespace": {
+          "description": "Namespace to query",
+          "type": "string"
+        },
+        "object": {
+          "description": "Object to query",
+          "type": "string"
+        },
+        "relation": {
+          "description": "Relation to query",
+          "type": "string"
+        },
+        "subject_id": {
+          "description": "SubjectID to query\n\nEither SubjectSet or SubjectID can be provided.",
+          "type": "string"
+        },
+        "subject_set": {
+          "$ref": "#/definitions/subjectSet"
+        }
+      }
+    },
+    "errorGeneric": {
+      "description": "The standard Ory JSON API error format.",
+      "type": "object",
+      "title": "JSON API Error Response",
+      "required": ["error"],
+      "properties": {
+        "error": {
+          "$ref": "#/definitions/genericError"
+        }
+      }
+    },
+    "expandedPermissionTree": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "children": {
+          "description": "The children of the node, possibly none.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/expandedPermissionTree"
+          }
+        },
+        "tuple": {
+          "$ref": "#/definitions/relationship"
+        },
+        "type": {
+          "description": "The type of the node.\nunion TreeNodeUnion\nexclusion TreeNodeExclusion\nintersection TreeNodeIntersection\nleaf TreeNodeLeaf\ntuple_to_subject_set TreeNodeTupleToSubjectSet\ncomputed_subject_set TreeNodeComputedSubjectSet\nnot TreeNodeNot\nunspecified TreeNodeUnspecified",
+          "type": "string",
+          "enum": [
+            "union",
+            "exclusion",
+            "intersection",
+            "leaf",
+            "tuple_to_subject_set",
+            "computed_subject_set",
+            "not",
+            "unspecified"
+          ],
+          "x-go-enum-desc": "union TreeNodeUnion\nexclusion TreeNodeExclusion\nintersection TreeNodeIntersection\nleaf TreeNodeLeaf\ntuple_to_subject_set TreeNodeTupleToSubjectSet\ncomputed_subject_set TreeNodeComputedSubjectSet\nnot TreeNodeNot\nunspecified TreeNodeUnspecified"
+        }
+      }
+    },
+    "genericError": {
+      "type": "object",
+      "required": ["message"],
+      "properties": {
+        "code": {
+          "description": "The status code",
+          "type": "integer",
+          "format": "int64",
+          "example": 404
+        },
+        "debug": {
+          "description": "Debug information\n\nThis field is often not exposed to protect against leaking\nsensitive information.",
+          "type": "string",
+          "example": "SQL field \"foo\" is not a bool."
+        },
+        "details": {
+          "description": "Further error details",
+          "type": "object",
+          "additionalProperties": {}
+        },
+        "id": {
+          "description": "The error ID\n\nUseful when trying to identify various errors in application logic.",
+          "type": "string"
+        },
+        "message": {
+          "description": "Error message\n\nThe error's message.",
+          "type": "string",
+          "example": "The resource could not be found"
+        },
+        "reason": {
+          "description": "A human-readable reason for the error",
+          "type": "string",
+          "example": "User with ID 1234 does not exist."
+        },
+        "request": {
+          "description": "The request ID\n\nThe request ID is often exposed internally in order to trace\nerrors across service architectures. This is often a UUID.",
+          "type": "string",
+          "example": "d7ef54b1-ec15-46e6-bccb-524b82c035e6"
+        },
+        "status": {
+          "description": "The status description",
+          "type": "string",
+          "example": "Not Found"
+        }
+      }
+    },
+    "healthNotReadyStatus": {
+      "type": "object",
+      "properties": {
+        "errors": {
+          "description": "Errors contains a list of errors that caused the not ready status.",
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "healthStatus": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "description": "Status always contains \"ok\".",
+          "type": "string"
+        }
+      }
+    },
+    "namespace": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "description": "Name of the namespace.",
+          "type": "string"
+        }
+      }
+    },
+    "postCheckPermissionBody": {
+      "description": "Check Permission using Post Request Body",
+      "type": "object",
+      "properties": {
+        "namespace": {
+          "description": "Namespace to query",
+          "type": "string"
+        },
+        "object": {
+          "description": "Object to query",
+          "type": "string"
+        },
+        "relation": {
+          "description": "Relation to query",
+          "type": "string"
+        },
+        "subject_id": {
+          "description": "SubjectID to query\n\nEither SubjectSet or SubjectID can be provided.",
+          "type": "string"
+        },
+        "subject_set": {
+          "$ref": "#/definitions/subjectSet"
+        }
+      }
+    },
+    "postCheckPermissionOrErrorBody": {
+      "description": "Post Check Permission Or Error Body",
+      "type": "object",
+      "properties": {
+        "namespace": {
+          "description": "Namespace to query",
+          "type": "string"
+        },
+        "object": {
+          "description": "Object to query",
+          "type": "string"
+        },
+        "relation": {
+          "description": "Relation to query",
+          "type": "string"
+        },
+        "subject_id": {
+          "description": "SubjectID to query\n\nEither SubjectSet or SubjectID can be provided.",
+          "type": "string"
+        },
+        "subject_set": {
+          "$ref": "#/definitions/subjectSet"
+        }
+      }
+    },
+    "relationQuery": {
+      "description": "Relation Query",
+      "type": "object",
+      "properties": {
+        "namespace": {
+          "description": "Namespace to query",
+          "type": "string"
+        },
+        "object": {
+          "description": "Object to query",
+          "type": "string"
+        },
+        "relation": {
+          "description": "Relation to query",
+          "type": "string"
+        },
+        "subject_id": {
+          "description": "SubjectID to query\n\nEither SubjectSet or SubjectID can be provided.",
+          "type": "string"
+        },
+        "subject_set": {
+          "$ref": "#/definitions/subjectSet"
+        }
+      }
+    },
+    "relationship": {
+      "description": "Relationship",
+      "type": "object",
+      "required": ["namespace", "object", "relation"],
+      "properties": {
+        "namespace": {
+          "description": "Namespace of the Relation Tuple",
+          "type": "string"
+        },
+        "object": {
+          "description": "Object of the Relation Tuple",
+          "type": "string"
+        },
+        "relation": {
+          "description": "Relation of the Relation Tuple",
+          "type": "string"
+        },
+        "subject_id": {
+          "description": "SubjectID of the Relation Tuple\n\nEither SubjectSet or SubjectID can be provided.",
+          "type": "string"
+        },
+        "subject_set": {
+          "$ref": "#/definitions/subjectSet"
+        }
+      }
+    },
+    "relationshipNamespaces": {
+      "description": "Relationship Namespace List",
+      "type": "object",
+      "properties": {
+        "namespaces": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/namespace"
+          }
+        }
+      }
+    },
+    "relationshipPatch": {
+      "description": "Payload for patching a relationship",
+      "type": "object",
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": ["insert", "delete"],
+          "x-go-enum-desc": "insert ActionInsert\ndelete ActionDelete"
+        },
+        "relation_tuple": {
+          "$ref": "#/definitions/relationship"
+        }
+      }
+    },
+    "relationships": {
+      "description": "Paginated Relationship List",
+      "type": "object",
+      "properties": {
+        "next_page_token": {
+          "description": "The opaque token to provide in a subsequent request\nto get the next page. It is the empty string iff this is\nthe last page.",
+          "type": "string"
+        },
+        "relation_tuples": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/relationship"
+          }
+        }
+      }
+    },
+    "subjectSet": {
+      "type": "object",
+      "required": ["namespace", "object", "relation"],
+      "properties": {
+        "namespace": {
+          "description": "Namespace of the Subject Set",
+          "type": "string"
+        },
+        "object": {
+          "description": "Object of the Subject Set",
+          "type": "string"
+        },
+        "relation": {
+          "description": "Relation of the Subject Set",
+          "type": "string"
+        }
+      }
+    },
+    "version": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "description": "Version is the service's version.",
+          "type": "string"
+        }
+      }
+    },
+    "UUID": { "type": "string", "format": "uuid4" }
+  },
+  "responses": {
+    "emptyResponse": {
+      "description": "Empty responses are sent when, for example, resources are deleted. The HTTP status code for empty responses is typically 201."
+    }
+  }
+}

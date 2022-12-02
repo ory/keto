@@ -15,46 +15,44 @@ import (
 	"encoding/json"
 )
 
-// GenericError struct for GenericError
-type GenericError struct {
+// OryKetoRelationTuplesV1alpha2ErrorObject struct for OryKetoRelationTuplesV1alpha2ErrorObject
+type OryKetoRelationTuplesV1alpha2ErrorObject struct {
 	// The status code
 	Code *int64 `json:"code,omitempty"`
-	// Debug information  This field is often not exposed to protect against leaking sensitive information.
-	Debug *string `json:"debug,omitempty"`
-	// Further error details
-	Details map[string]interface{} `json:"details,omitempty"`
-	// The error ID  Useful when trying to identify various errors in application logic.
+	// This field is often not exposed to protect against leaking sensitive information
+	Debug   *string            `json:"debug,omitempty"`
+	Details *map[string]string `json:"details,omitempty"`
+	// Useful when trying to identify various errors in application logic.
 	Id *string `json:"id,omitempty"`
-	// Error message  The error's message.
-	Message string `json:"message"`
+	// Response message
+	Message *string `json:"message,omitempty"`
 	// A human-readable reason for the error
 	Reason *string `json:"reason,omitempty"`
-	// The request ID  The request ID is often exposed internally in order to trace errors across service architectures. This is often a UUID.
+	// The request ID is often exposed internally in order to trace errors across service architectures. This is often a UUID.
 	Request *string `json:"request,omitempty"`
-	// The status description
+	// The human-readable description of the code.
 	Status *string `json:"status,omitempty"`
 }
 
-// NewGenericError instantiates a new GenericError object
+// NewOryKetoRelationTuplesV1alpha2ErrorObject instantiates a new OryKetoRelationTuplesV1alpha2ErrorObject object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewGenericError(message string) *GenericError {
-	this := GenericError{}
-	this.Message = message
+func NewOryKetoRelationTuplesV1alpha2ErrorObject() *OryKetoRelationTuplesV1alpha2ErrorObject {
+	this := OryKetoRelationTuplesV1alpha2ErrorObject{}
 	return &this
 }
 
-// NewGenericErrorWithDefaults instantiates a new GenericError object
+// NewOryKetoRelationTuplesV1alpha2ErrorObjectWithDefaults instantiates a new OryKetoRelationTuplesV1alpha2ErrorObject object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewGenericErrorWithDefaults() *GenericError {
-	this := GenericError{}
+func NewOryKetoRelationTuplesV1alpha2ErrorObjectWithDefaults() *OryKetoRelationTuplesV1alpha2ErrorObject {
+	this := OryKetoRelationTuplesV1alpha2ErrorObject{}
 	return &this
 }
 
 // GetCode returns the Code field value if set, zero value otherwise.
-func (o *GenericError) GetCode() int64 {
+func (o *OryKetoRelationTuplesV1alpha2ErrorObject) GetCode() int64 {
 	if o == nil || o.Code == nil {
 		var ret int64
 		return ret
@@ -64,7 +62,7 @@ func (o *GenericError) GetCode() int64 {
 
 // GetCodeOk returns a tuple with the Code field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *GenericError) GetCodeOk() (*int64, bool) {
+func (o *OryKetoRelationTuplesV1alpha2ErrorObject) GetCodeOk() (*int64, bool) {
 	if o == nil || o.Code == nil {
 		return nil, false
 	}
@@ -72,7 +70,7 @@ func (o *GenericError) GetCodeOk() (*int64, bool) {
 }
 
 // HasCode returns a boolean if a field has been set.
-func (o *GenericError) HasCode() bool {
+func (o *OryKetoRelationTuplesV1alpha2ErrorObject) HasCode() bool {
 	if o != nil && o.Code != nil {
 		return true
 	}
@@ -81,12 +79,12 @@ func (o *GenericError) HasCode() bool {
 }
 
 // SetCode gets a reference to the given int64 and assigns it to the Code field.
-func (o *GenericError) SetCode(v int64) {
+func (o *OryKetoRelationTuplesV1alpha2ErrorObject) SetCode(v int64) {
 	o.Code = &v
 }
 
 // GetDebug returns the Debug field value if set, zero value otherwise.
-func (o *GenericError) GetDebug() string {
+func (o *OryKetoRelationTuplesV1alpha2ErrorObject) GetDebug() string {
 	if o == nil || o.Debug == nil {
 		var ret string
 		return ret
@@ -96,7 +94,7 @@ func (o *GenericError) GetDebug() string {
 
 // GetDebugOk returns a tuple with the Debug field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *GenericError) GetDebugOk() (*string, bool) {
+func (o *OryKetoRelationTuplesV1alpha2ErrorObject) GetDebugOk() (*string, bool) {
 	if o == nil || o.Debug == nil {
 		return nil, false
 	}
@@ -104,7 +102,7 @@ func (o *GenericError) GetDebugOk() (*string, bool) {
 }
 
 // HasDebug returns a boolean if a field has been set.
-func (o *GenericError) HasDebug() bool {
+func (o *OryKetoRelationTuplesV1alpha2ErrorObject) HasDebug() bool {
 	if o != nil && o.Debug != nil {
 		return true
 	}
@@ -113,22 +111,22 @@ func (o *GenericError) HasDebug() bool {
 }
 
 // SetDebug gets a reference to the given string and assigns it to the Debug field.
-func (o *GenericError) SetDebug(v string) {
+func (o *OryKetoRelationTuplesV1alpha2ErrorObject) SetDebug(v string) {
 	o.Debug = &v
 }
 
 // GetDetails returns the Details field value if set, zero value otherwise.
-func (o *GenericError) GetDetails() map[string]interface{} {
+func (o *OryKetoRelationTuplesV1alpha2ErrorObject) GetDetails() map[string]string {
 	if o == nil || o.Details == nil {
-		var ret map[string]interface{}
+		var ret map[string]string
 		return ret
 	}
-	return o.Details
+	return *o.Details
 }
 
 // GetDetailsOk returns a tuple with the Details field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *GenericError) GetDetailsOk() (map[string]interface{}, bool) {
+func (o *OryKetoRelationTuplesV1alpha2ErrorObject) GetDetailsOk() (*map[string]string, bool) {
 	if o == nil || o.Details == nil {
 		return nil, false
 	}
@@ -136,7 +134,7 @@ func (o *GenericError) GetDetailsOk() (map[string]interface{}, bool) {
 }
 
 // HasDetails returns a boolean if a field has been set.
-func (o *GenericError) HasDetails() bool {
+func (o *OryKetoRelationTuplesV1alpha2ErrorObject) HasDetails() bool {
 	if o != nil && o.Details != nil {
 		return true
 	}
@@ -144,13 +142,13 @@ func (o *GenericError) HasDetails() bool {
 	return false
 }
 
-// SetDetails gets a reference to the given map[string]interface{} and assigns it to the Details field.
-func (o *GenericError) SetDetails(v map[string]interface{}) {
-	o.Details = v
+// SetDetails gets a reference to the given map[string]string and assigns it to the Details field.
+func (o *OryKetoRelationTuplesV1alpha2ErrorObject) SetDetails(v map[string]string) {
+	o.Details = &v
 }
 
 // GetId returns the Id field value if set, zero value otherwise.
-func (o *GenericError) GetId() string {
+func (o *OryKetoRelationTuplesV1alpha2ErrorObject) GetId() string {
 	if o == nil || o.Id == nil {
 		var ret string
 		return ret
@@ -160,7 +158,7 @@ func (o *GenericError) GetId() string {
 
 // GetIdOk returns a tuple with the Id field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *GenericError) GetIdOk() (*string, bool) {
+func (o *OryKetoRelationTuplesV1alpha2ErrorObject) GetIdOk() (*string, bool) {
 	if o == nil || o.Id == nil {
 		return nil, false
 	}
@@ -168,7 +166,7 @@ func (o *GenericError) GetIdOk() (*string, bool) {
 }
 
 // HasId returns a boolean if a field has been set.
-func (o *GenericError) HasId() bool {
+func (o *OryKetoRelationTuplesV1alpha2ErrorObject) HasId() bool {
 	if o != nil && o.Id != nil {
 		return true
 	}
@@ -177,36 +175,44 @@ func (o *GenericError) HasId() bool {
 }
 
 // SetId gets a reference to the given string and assigns it to the Id field.
-func (o *GenericError) SetId(v string) {
+func (o *OryKetoRelationTuplesV1alpha2ErrorObject) SetId(v string) {
 	o.Id = &v
 }
 
-// GetMessage returns the Message field value
-func (o *GenericError) GetMessage() string {
-	if o == nil {
+// GetMessage returns the Message field value if set, zero value otherwise.
+func (o *OryKetoRelationTuplesV1alpha2ErrorObject) GetMessage() string {
+	if o == nil || o.Message == nil {
 		var ret string
 		return ret
 	}
-
-	return o.Message
+	return *o.Message
 }
 
-// GetMessageOk returns a tuple with the Message field value
+// GetMessageOk returns a tuple with the Message field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *GenericError) GetMessageOk() (*string, bool) {
-	if o == nil {
+func (o *OryKetoRelationTuplesV1alpha2ErrorObject) GetMessageOk() (*string, bool) {
+	if o == nil || o.Message == nil {
 		return nil, false
 	}
-	return &o.Message, true
+	return o.Message, true
 }
 
-// SetMessage sets field value
-func (o *GenericError) SetMessage(v string) {
-	o.Message = v
+// HasMessage returns a boolean if a field has been set.
+func (o *OryKetoRelationTuplesV1alpha2ErrorObject) HasMessage() bool {
+	if o != nil && o.Message != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetMessage gets a reference to the given string and assigns it to the Message field.
+func (o *OryKetoRelationTuplesV1alpha2ErrorObject) SetMessage(v string) {
+	o.Message = &v
 }
 
 // GetReason returns the Reason field value if set, zero value otherwise.
-func (o *GenericError) GetReason() string {
+func (o *OryKetoRelationTuplesV1alpha2ErrorObject) GetReason() string {
 	if o == nil || o.Reason == nil {
 		var ret string
 		return ret
@@ -216,7 +222,7 @@ func (o *GenericError) GetReason() string {
 
 // GetReasonOk returns a tuple with the Reason field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *GenericError) GetReasonOk() (*string, bool) {
+func (o *OryKetoRelationTuplesV1alpha2ErrorObject) GetReasonOk() (*string, bool) {
 	if o == nil || o.Reason == nil {
 		return nil, false
 	}
@@ -224,7 +230,7 @@ func (o *GenericError) GetReasonOk() (*string, bool) {
 }
 
 // HasReason returns a boolean if a field has been set.
-func (o *GenericError) HasReason() bool {
+func (o *OryKetoRelationTuplesV1alpha2ErrorObject) HasReason() bool {
 	if o != nil && o.Reason != nil {
 		return true
 	}
@@ -233,12 +239,12 @@ func (o *GenericError) HasReason() bool {
 }
 
 // SetReason gets a reference to the given string and assigns it to the Reason field.
-func (o *GenericError) SetReason(v string) {
+func (o *OryKetoRelationTuplesV1alpha2ErrorObject) SetReason(v string) {
 	o.Reason = &v
 }
 
 // GetRequest returns the Request field value if set, zero value otherwise.
-func (o *GenericError) GetRequest() string {
+func (o *OryKetoRelationTuplesV1alpha2ErrorObject) GetRequest() string {
 	if o == nil || o.Request == nil {
 		var ret string
 		return ret
@@ -248,7 +254,7 @@ func (o *GenericError) GetRequest() string {
 
 // GetRequestOk returns a tuple with the Request field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *GenericError) GetRequestOk() (*string, bool) {
+func (o *OryKetoRelationTuplesV1alpha2ErrorObject) GetRequestOk() (*string, bool) {
 	if o == nil || o.Request == nil {
 		return nil, false
 	}
@@ -256,7 +262,7 @@ func (o *GenericError) GetRequestOk() (*string, bool) {
 }
 
 // HasRequest returns a boolean if a field has been set.
-func (o *GenericError) HasRequest() bool {
+func (o *OryKetoRelationTuplesV1alpha2ErrorObject) HasRequest() bool {
 	if o != nil && o.Request != nil {
 		return true
 	}
@@ -265,12 +271,12 @@ func (o *GenericError) HasRequest() bool {
 }
 
 // SetRequest gets a reference to the given string and assigns it to the Request field.
-func (o *GenericError) SetRequest(v string) {
+func (o *OryKetoRelationTuplesV1alpha2ErrorObject) SetRequest(v string) {
 	o.Request = &v
 }
 
 // GetStatus returns the Status field value if set, zero value otherwise.
-func (o *GenericError) GetStatus() string {
+func (o *OryKetoRelationTuplesV1alpha2ErrorObject) GetStatus() string {
 	if o == nil || o.Status == nil {
 		var ret string
 		return ret
@@ -280,7 +286,7 @@ func (o *GenericError) GetStatus() string {
 
 // GetStatusOk returns a tuple with the Status field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *GenericError) GetStatusOk() (*string, bool) {
+func (o *OryKetoRelationTuplesV1alpha2ErrorObject) GetStatusOk() (*string, bool) {
 	if o == nil || o.Status == nil {
 		return nil, false
 	}
@@ -288,7 +294,7 @@ func (o *GenericError) GetStatusOk() (*string, bool) {
 }
 
 // HasStatus returns a boolean if a field has been set.
-func (o *GenericError) HasStatus() bool {
+func (o *OryKetoRelationTuplesV1alpha2ErrorObject) HasStatus() bool {
 	if o != nil && o.Status != nil {
 		return true
 	}
@@ -297,11 +303,11 @@ func (o *GenericError) HasStatus() bool {
 }
 
 // SetStatus gets a reference to the given string and assigns it to the Status field.
-func (o *GenericError) SetStatus(v string) {
+func (o *OryKetoRelationTuplesV1alpha2ErrorObject) SetStatus(v string) {
 	o.Status = &v
 }
 
-func (o GenericError) MarshalJSON() ([]byte, error) {
+func (o OryKetoRelationTuplesV1alpha2ErrorObject) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.Code != nil {
 		toSerialize["code"] = o.Code
@@ -315,7 +321,7 @@ func (o GenericError) MarshalJSON() ([]byte, error) {
 	if o.Id != nil {
 		toSerialize["id"] = o.Id
 	}
-	if true {
+	if o.Message != nil {
 		toSerialize["message"] = o.Message
 	}
 	if o.Reason != nil {
@@ -330,38 +336,38 @@ func (o GenericError) MarshalJSON() ([]byte, error) {
 	return json.Marshal(toSerialize)
 }
 
-type NullableGenericError struct {
-	value *GenericError
+type NullableOryKetoRelationTuplesV1alpha2ErrorObject struct {
+	value *OryKetoRelationTuplesV1alpha2ErrorObject
 	isSet bool
 }
 
-func (v NullableGenericError) Get() *GenericError {
+func (v NullableOryKetoRelationTuplesV1alpha2ErrorObject) Get() *OryKetoRelationTuplesV1alpha2ErrorObject {
 	return v.value
 }
 
-func (v *NullableGenericError) Set(val *GenericError) {
+func (v *NullableOryKetoRelationTuplesV1alpha2ErrorObject) Set(val *OryKetoRelationTuplesV1alpha2ErrorObject) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableGenericError) IsSet() bool {
+func (v NullableOryKetoRelationTuplesV1alpha2ErrorObject) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableGenericError) Unset() {
+func (v *NullableOryKetoRelationTuplesV1alpha2ErrorObject) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableGenericError(val *GenericError) *NullableGenericError {
-	return &NullableGenericError{value: val, isSet: true}
+func NewNullableOryKetoRelationTuplesV1alpha2ErrorObject(val *OryKetoRelationTuplesV1alpha2ErrorObject) *NullableOryKetoRelationTuplesV1alpha2ErrorObject {
+	return &NullableOryKetoRelationTuplesV1alpha2ErrorObject{value: val, isSet: true}
 }
 
-func (v NullableGenericError) MarshalJSON() ([]byte, error) {
+func (v NullableOryKetoRelationTuplesV1alpha2ErrorObject) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableGenericError) UnmarshalJSON(src []byte) error {
+func (v *NullableOryKetoRelationTuplesV1alpha2ErrorObject) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

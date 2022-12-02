@@ -15,34 +15,34 @@ import (
 	"encoding/json"
 )
 
-// ParseError struct for ParseError
-type ParseError struct {
-	End     *SourcePosition `json:"end,omitempty"`
-	Message *string         `json:"message,omitempty"`
-	Start   *SourcePosition `json:"start,omitempty"`
+// OryKetoOplV1alpha1ParseError struct for OryKetoOplV1alpha1ParseError
+type OryKetoOplV1alpha1ParseError struct {
+	End     *OryKetoOplV1alpha1SourcePosition `json:"end,omitempty"`
+	Message *string                           `json:"message,omitempty"`
+	Start   *OryKetoOplV1alpha1SourcePosition `json:"start,omitempty"`
 }
 
-// NewParseError instantiates a new ParseError object
+// NewOryKetoOplV1alpha1ParseError instantiates a new OryKetoOplV1alpha1ParseError object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewParseError() *ParseError {
-	this := ParseError{}
+func NewOryKetoOplV1alpha1ParseError() *OryKetoOplV1alpha1ParseError {
+	this := OryKetoOplV1alpha1ParseError{}
 	return &this
 }
 
-// NewParseErrorWithDefaults instantiates a new ParseError object
+// NewOryKetoOplV1alpha1ParseErrorWithDefaults instantiates a new OryKetoOplV1alpha1ParseError object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewParseErrorWithDefaults() *ParseError {
-	this := ParseError{}
+func NewOryKetoOplV1alpha1ParseErrorWithDefaults() *OryKetoOplV1alpha1ParseError {
+	this := OryKetoOplV1alpha1ParseError{}
 	return &this
 }
 
 // GetEnd returns the End field value if set, zero value otherwise.
-func (o *ParseError) GetEnd() SourcePosition {
+func (o *OryKetoOplV1alpha1ParseError) GetEnd() OryKetoOplV1alpha1SourcePosition {
 	if o == nil || o.End == nil {
-		var ret SourcePosition
+		var ret OryKetoOplV1alpha1SourcePosition
 		return ret
 	}
 	return *o.End
@@ -50,7 +50,7 @@ func (o *ParseError) GetEnd() SourcePosition {
 
 // GetEndOk returns a tuple with the End field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ParseError) GetEndOk() (*SourcePosition, bool) {
+func (o *OryKetoOplV1alpha1ParseError) GetEndOk() (*OryKetoOplV1alpha1SourcePosition, bool) {
 	if o == nil || o.End == nil {
 		return nil, false
 	}
@@ -58,7 +58,7 @@ func (o *ParseError) GetEndOk() (*SourcePosition, bool) {
 }
 
 // HasEnd returns a boolean if a field has been set.
-func (o *ParseError) HasEnd() bool {
+func (o *OryKetoOplV1alpha1ParseError) HasEnd() bool {
 	if o != nil && o.End != nil {
 		return true
 	}
@@ -66,13 +66,13 @@ func (o *ParseError) HasEnd() bool {
 	return false
 }
 
-// SetEnd gets a reference to the given SourcePosition and assigns it to the End field.
-func (o *ParseError) SetEnd(v SourcePosition) {
+// SetEnd gets a reference to the given OryKetoOplV1alpha1SourcePosition and assigns it to the End field.
+func (o *OryKetoOplV1alpha1ParseError) SetEnd(v OryKetoOplV1alpha1SourcePosition) {
 	o.End = &v
 }
 
 // GetMessage returns the Message field value if set, zero value otherwise.
-func (o *ParseError) GetMessage() string {
+func (o *OryKetoOplV1alpha1ParseError) GetMessage() string {
 	if o == nil || o.Message == nil {
 		var ret string
 		return ret
@@ -82,7 +82,7 @@ func (o *ParseError) GetMessage() string {
 
 // GetMessageOk returns a tuple with the Message field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ParseError) GetMessageOk() (*string, bool) {
+func (o *OryKetoOplV1alpha1ParseError) GetMessageOk() (*string, bool) {
 	if o == nil || o.Message == nil {
 		return nil, false
 	}
@@ -90,7 +90,7 @@ func (o *ParseError) GetMessageOk() (*string, bool) {
 }
 
 // HasMessage returns a boolean if a field has been set.
-func (o *ParseError) HasMessage() bool {
+func (o *OryKetoOplV1alpha1ParseError) HasMessage() bool {
 	if o != nil && o.Message != nil {
 		return true
 	}
@@ -99,14 +99,14 @@ func (o *ParseError) HasMessage() bool {
 }
 
 // SetMessage gets a reference to the given string and assigns it to the Message field.
-func (o *ParseError) SetMessage(v string) {
+func (o *OryKetoOplV1alpha1ParseError) SetMessage(v string) {
 	o.Message = &v
 }
 
 // GetStart returns the Start field value if set, zero value otherwise.
-func (o *ParseError) GetStart() SourcePosition {
+func (o *OryKetoOplV1alpha1ParseError) GetStart() OryKetoOplV1alpha1SourcePosition {
 	if o == nil || o.Start == nil {
-		var ret SourcePosition
+		var ret OryKetoOplV1alpha1SourcePosition
 		return ret
 	}
 	return *o.Start
@@ -114,7 +114,7 @@ func (o *ParseError) GetStart() SourcePosition {
 
 // GetStartOk returns a tuple with the Start field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ParseError) GetStartOk() (*SourcePosition, bool) {
+func (o *OryKetoOplV1alpha1ParseError) GetStartOk() (*OryKetoOplV1alpha1SourcePosition, bool) {
 	if o == nil || o.Start == nil {
 		return nil, false
 	}
@@ -122,7 +122,7 @@ func (o *ParseError) GetStartOk() (*SourcePosition, bool) {
 }
 
 // HasStart returns a boolean if a field has been set.
-func (o *ParseError) HasStart() bool {
+func (o *OryKetoOplV1alpha1ParseError) HasStart() bool {
 	if o != nil && o.Start != nil {
 		return true
 	}
@@ -130,12 +130,12 @@ func (o *ParseError) HasStart() bool {
 	return false
 }
 
-// SetStart gets a reference to the given SourcePosition and assigns it to the Start field.
-func (o *ParseError) SetStart(v SourcePosition) {
+// SetStart gets a reference to the given OryKetoOplV1alpha1SourcePosition and assigns it to the Start field.
+func (o *OryKetoOplV1alpha1ParseError) SetStart(v OryKetoOplV1alpha1SourcePosition) {
 	o.Start = &v
 }
 
-func (o ParseError) MarshalJSON() ([]byte, error) {
+func (o OryKetoOplV1alpha1ParseError) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.End != nil {
 		toSerialize["end"] = o.End
@@ -149,38 +149,38 @@ func (o ParseError) MarshalJSON() ([]byte, error) {
 	return json.Marshal(toSerialize)
 }
 
-type NullableParseError struct {
-	value *ParseError
+type NullableOryKetoOplV1alpha1ParseError struct {
+	value *OryKetoOplV1alpha1ParseError
 	isSet bool
 }
 
-func (v NullableParseError) Get() *ParseError {
+func (v NullableOryKetoOplV1alpha1ParseError) Get() *OryKetoOplV1alpha1ParseError {
 	return v.value
 }
 
-func (v *NullableParseError) Set(val *ParseError) {
+func (v *NullableOryKetoOplV1alpha1ParseError) Set(val *OryKetoOplV1alpha1ParseError) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableParseError) IsSet() bool {
+func (v NullableOryKetoOplV1alpha1ParseError) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableParseError) Unset() {
+func (v *NullableOryKetoOplV1alpha1ParseError) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableParseError(val *ParseError) *NullableParseError {
-	return &NullableParseError{value: val, isSet: true}
+func NewNullableOryKetoOplV1alpha1ParseError(val *OryKetoOplV1alpha1ParseError) *NullableOryKetoOplV1alpha1ParseError {
+	return &NullableOryKetoOplV1alpha1ParseError{value: val, isSet: true}
 }
 
-func (v NullableParseError) MarshalJSON() ([]byte, error) {
+func (v NullableOryKetoOplV1alpha1ParseError) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableParseError) UnmarshalJSON(src []byte) error {
+func (v *NullableOryKetoOplV1alpha1ParseError) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

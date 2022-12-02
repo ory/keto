@@ -17,7 +17,11 @@ plugins:
     opt:
       - allow_merge=true
       - merge_file_name=gateway
-      - openapi_naming_strategy=simple
+      - openapi_naming_strategy=fqn
+      - visibility_restriction_selectors=PUBLIC
+      - disable_service_tags=true
+      - disable_default_errors=true
+      - disable_default_responses=true
     out: proto/openapiv2
 
   - remote: buf.build/protocolbuffers/plugins/js:v3.20.1-1

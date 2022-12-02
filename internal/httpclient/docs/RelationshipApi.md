@@ -4,12 +4,12 @@ All URIs are relative to *http://localhost*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**CheckOplSyntax**](RelationshipApi.md#CheckOplSyntax) | **Post** /opl/syntax/check | Check the syntax of an OPL file
-[**CreateRelationship**](RelationshipApi.md#CreateRelationship) | **Put** /admin/relation-tuples | Create a Relationship
-[**DeleteRelationships**](RelationshipApi.md#DeleteRelationships) | **Delete** /admin/relation-tuples | Delete Relationships
-[**GetRelationships**](RelationshipApi.md#GetRelationships) | **Get** /relation-tuples | Query relationships
-[**ListRelationshipNamespaces**](RelationshipApi.md#ListRelationshipNamespaces) | **Get** /namespaces | Query namespaces
-[**PatchRelationships**](RelationshipApi.md#PatchRelationships) | **Patch** /admin/relation-tuples | Patch Multiple Relationships
+[**CheckOplSyntax**](RelationshipApi.md#CheckOplSyntax) | **Post** /opl/syntax/check | Performs a syntax check request.
+[**CreateRelationship**](RelationshipApi.md#CreateRelationship) | **Put** /admin/relation-tuples | Creates a relationship
+[**DeleteRelationships**](RelationshipApi.md#DeleteRelationships) | **Delete** /admin/relation-tuples | Deletes relationships based on relation query
+[**GetRelationships**](RelationshipApi.md#GetRelationships) | **Get** /relation-tuples | Lists ACL relationships.
+[**ListRelationshipNamespaces**](RelationshipApi.md#ListRelationshipNamespaces) | **Get** /namespaces | Lists Namespaces
+[**PatchRelationships**](RelationshipApi.md#PatchRelationships) | **Patch** /admin/relation-tuples | Writes one or more relationships in a single transaction.
 
 
 
@@ -17,9 +17,7 @@ Method | HTTP request | Description
 
 > CheckOplSyntaxResult CheckOplSyntax(ctx).Body(body).Execute()
 
-Check the syntax of an OPL file
-
-
+Performs a syntax check request.
 
 ### Example
 
@@ -34,7 +32,7 @@ import (
 )
 
 func main() {
-    body := "body_example" // string |  (optional)
+    body := string(BYTE_ARRAY_DATA_HERE) // string | 
 
     configuration := openapiclient.NewConfiguration()
     apiClient := openapiclient.NewAPIClient(configuration)
@@ -83,9 +81,7 @@ No authorization required
 
 > Relationship CreateRelationship(ctx).CreateRelationshipBody(createRelationshipBody).Execute()
 
-Create a Relationship
-
-
+Creates a relationship
 
 ### Example
 
@@ -100,7 +96,7 @@ import (
 )
 
 func main() {
-    createRelationshipBody := *openapiclient.NewCreateRelationshipBody() // CreateRelationshipBody |  (optional)
+    createRelationshipBody := *openapiclient.NewCreateRelationshipBody() // CreateRelationshipBody | The relationship to create.
 
     configuration := openapiclient.NewConfiguration()
     apiClient := openapiclient.NewAPIClient(configuration)
@@ -125,7 +121,7 @@ Other parameters are passed through a pointer to a apiCreateRelationshipRequest 
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **createRelationshipBody** | [**CreateRelationshipBody**](CreateRelationshipBody.md) |  | 
+ **createRelationshipBody** | [**CreateRelationshipBody**](CreateRelationshipBody.md) | The relationship to create. | 
 
 ### Return type
 
@@ -149,9 +145,7 @@ No authorization required
 
 > DeleteRelationships(ctx).Namespace(namespace).Object(object).Relation(relation).SubjectId(subjectId).SubjectSetNamespace(subjectSetNamespace).SubjectSetObject(subjectSetObject).SubjectSetRelation(subjectSetRelation).Execute()
 
-Delete Relationships
-
-
+Deletes relationships based on relation query
 
 ### Example
 
@@ -166,13 +160,13 @@ import (
 )
 
 func main() {
-    namespace := "namespace_example" // string | Namespace of the Relationship (optional)
-    object := "object_example" // string | Object of the Relationship (optional)
-    relation := "relation_example" // string | Relation of the Relationship (optional)
-    subjectId := "subjectId_example" // string | SubjectID of the Relationship (optional)
-    subjectSetNamespace := "subjectSetNamespace_example" // string | Namespace of the Subject Set (optional)
-    subjectSetObject := "subjectSetObject_example" // string | Object of the Subject Set (optional)
-    subjectSetRelation := "subjectSetRelation_example" // string | Relation of the Subject Set (optional)
+    namespace := "namespace_example" // string | The namespace this relation tuple lives in. (optional)
+    object := "object_example" // string | The object related by this tuple. It is an object in the namespace of the tuple. (optional)
+    relation := "relation_example" // string | The relation between an Object and a Subject. (optional)
+    subjectId := "subjectId_example" // string | A concrete id of the subject. (optional)
+    subjectSetNamespace := "subjectSetNamespace_example" // string | The namespace of the object and relation referenced in this subject set. (optional)
+    subjectSetObject := "subjectSetObject_example" // string | The object related by this subject set. (optional)
+    subjectSetRelation := "subjectSetRelation_example" // string | The relation between the object and the subjects. (optional)
 
     configuration := openapiclient.NewConfiguration()
     apiClient := openapiclient.NewAPIClient(configuration)
@@ -195,13 +189,13 @@ Other parameters are passed through a pointer to a apiDeleteRelationshipsRequest
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **namespace** | **string** | Namespace of the Relationship | 
- **object** | **string** | Object of the Relationship | 
- **relation** | **string** | Relation of the Relationship | 
- **subjectId** | **string** | SubjectID of the Relationship | 
- **subjectSetNamespace** | **string** | Namespace of the Subject Set | 
- **subjectSetObject** | **string** | Object of the Subject Set | 
- **subjectSetRelation** | **string** | Relation of the Subject Set | 
+ **namespace** | **string** | The namespace this relation tuple lives in. | 
+ **object** | **string** | The object related by this tuple. It is an object in the namespace of the tuple. | 
+ **relation** | **string** | The relation between an Object and a Subject. | 
+ **subjectId** | **string** | A concrete id of the subject. | 
+ **subjectSetNamespace** | **string** | The namespace of the object and relation referenced in this subject set. | 
+ **subjectSetObject** | **string** | The object related by this subject set. | 
+ **subjectSetRelation** | **string** | The relation between the object and the subjects. | 
 
 ### Return type
 
@@ -223,11 +217,9 @@ No authorization required
 
 ## GetRelationships
 
-> Relationships GetRelationships(ctx).PageToken(pageToken).PageSize(pageSize).Namespace(namespace).Object(object).Relation(relation).SubjectId(subjectId).SubjectSetNamespace(subjectSetNamespace).SubjectSetObject(subjectSetObject).SubjectSetRelation(subjectSetRelation).Execute()
+> Relationships GetRelationships(ctx).PageSize(pageSize).PageToken(pageToken).Namespace(namespace).Object(object).Relation(relation).SubjectId(subjectId).SubjectSetNamespace(subjectSetNamespace).SubjectSetObject(subjectSetObject).SubjectSetRelation(subjectSetRelation).Execute()
 
-Query relationships
-
-
+Lists ACL relationships.
 
 ### Example
 
@@ -242,19 +234,19 @@ import (
 )
 
 func main() {
-    pageToken := "pageToken_example" // string |  (optional)
-    pageSize := int64(789) // int64 |  (optional)
-    namespace := "namespace_example" // string | Namespace of the Relationship (optional)
-    object := "object_example" // string | Object of the Relationship (optional)
-    relation := "relation_example" // string | Relation of the Relationship (optional)
-    subjectId := "subjectId_example" // string | SubjectID of the Relationship (optional)
-    subjectSetNamespace := "subjectSetNamespace_example" // string | Namespace of the Subject Set (optional)
-    subjectSetObject := "subjectSetObject_example" // string | Object of the Subject Set (optional)
-    subjectSetRelation := "subjectSetRelation_example" // string | Relation of the Subject Set (optional)
+    pageSize := int32(56) // int32 | Optional. The maximum number of RelationTuples to return in the response.  Default: 100 (optional)
+    pageToken := "pageToken_example" // string | Optional. An opaque pagination token returned from a previous call to `ListRelationTuples` that indicates where the page should start at.  An empty token denotes the first page. All successive pages require the token from the previous page. (optional)
+    namespace := "namespace_example" // string | The namespace (optional)
+    object := "object_example" // string | The related object in this check. (optional)
+    relation := "relation_example" // string | The relation between the Object and the Subject. (optional)
+    subjectId := "subjectId_example" // string | A concrete id of the subject. (optional)
+    subjectSetNamespace := "subjectSetNamespace_example" // string | The namespace of the object and relation referenced in this subject set. (optional)
+    subjectSetObject := "subjectSetObject_example" // string | The object related by this subject set. (optional)
+    subjectSetRelation := "subjectSetRelation_example" // string | The relation between the object and the subjects. (optional)
 
     configuration := openapiclient.NewConfiguration()
     apiClient := openapiclient.NewAPIClient(configuration)
-    resp, r, err := apiClient.RelationshipApi.GetRelationships(context.Background()).PageToken(pageToken).PageSize(pageSize).Namespace(namespace).Object(object).Relation(relation).SubjectId(subjectId).SubjectSetNamespace(subjectSetNamespace).SubjectSetObject(subjectSetObject).SubjectSetRelation(subjectSetRelation).Execute()
+    resp, r, err := apiClient.RelationshipApi.GetRelationships(context.Background()).PageSize(pageSize).PageToken(pageToken).Namespace(namespace).Object(object).Relation(relation).SubjectId(subjectId).SubjectSetNamespace(subjectSetNamespace).SubjectSetObject(subjectSetObject).SubjectSetRelation(subjectSetRelation).Execute()
     if err != nil {
         fmt.Fprintf(os.Stderr, "Error when calling `RelationshipApi.GetRelationships``: %v\n", err)
         fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
@@ -275,15 +267,15 @@ Other parameters are passed through a pointer to a apiGetRelationshipsRequest st
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **pageToken** | **string** |  | 
- **pageSize** | **int64** |  | 
- **namespace** | **string** | Namespace of the Relationship | 
- **object** | **string** | Object of the Relationship | 
- **relation** | **string** | Relation of the Relationship | 
- **subjectId** | **string** | SubjectID of the Relationship | 
- **subjectSetNamespace** | **string** | Namespace of the Subject Set | 
- **subjectSetObject** | **string** | Object of the Subject Set | 
- **subjectSetRelation** | **string** | Relation of the Subject Set | 
+ **pageSize** | **int32** | Optional. The maximum number of RelationTuples to return in the response.  Default: 100 | 
+ **pageToken** | **string** | Optional. An opaque pagination token returned from a previous call to &#x60;ListRelationTuples&#x60; that indicates where the page should start at.  An empty token denotes the first page. All successive pages require the token from the previous page. | 
+ **namespace** | **string** | The namespace | 
+ **object** | **string** | The related object in this check. | 
+ **relation** | **string** | The relation between the Object and the Subject. | 
+ **subjectId** | **string** | A concrete id of the subject. | 
+ **subjectSetNamespace** | **string** | The namespace of the object and relation referenced in this subject set. | 
+ **subjectSetObject** | **string** | The object related by this subject set. | 
+ **subjectSetRelation** | **string** | The relation between the object and the subjects. | 
 
 ### Return type
 
@@ -307,7 +299,7 @@ No authorization required
 
 > RelationshipNamespaces ListRelationshipNamespaces(ctx).Execute()
 
-Query namespaces
+Lists Namespaces
 
 
 
@@ -366,11 +358,9 @@ No authorization required
 
 ## PatchRelationships
 
-> PatchRelationships(ctx).RelationshipPatch(relationshipPatch).Execute()
+> PatchRelationships(ctx).RelationshipDelta(relationshipDelta).Execute()
 
-Patch Multiple Relationships
-
-
+Writes one or more relationships in a single transaction.
 
 ### Example
 
@@ -385,11 +375,11 @@ import (
 )
 
 func main() {
-    relationshipPatch := []openapiclient.RelationshipPatch{*openapiclient.NewRelationshipPatch()} // []RelationshipPatch |  (optional)
+    relationshipDelta := []openapiclient.RelationshipDelta{*openapiclient.NewRelationshipDelta()} // []RelationshipDelta | The write delta for the relationships operated in one single transaction. Either all actions succeed or no change takes effect on error.
 
     configuration := openapiclient.NewConfiguration()
     apiClient := openapiclient.NewAPIClient(configuration)
-    resp, r, err := apiClient.RelationshipApi.PatchRelationships(context.Background()).RelationshipPatch(relationshipPatch).Execute()
+    resp, r, err := apiClient.RelationshipApi.PatchRelationships(context.Background()).RelationshipDelta(relationshipDelta).Execute()
     if err != nil {
         fmt.Fprintf(os.Stderr, "Error when calling `RelationshipApi.PatchRelationships``: %v\n", err)
         fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
@@ -408,7 +398,7 @@ Other parameters are passed through a pointer to a apiPatchRelationshipsRequest 
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **relationshipPatch** | [**[]RelationshipPatch**](RelationshipPatch.md) |  | 
+ **relationshipDelta** | [**[]RelationshipDelta**](RelationshipDelta.md) | The write delta for the relationships operated in one single transaction. Either all actions succeed or no change takes effect on error. | 
 
 ### Return type
 

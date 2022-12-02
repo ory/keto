@@ -15,18 +15,17 @@ import (
 	"encoding/json"
 )
 
-// ErrorGeneric The standard Ory JSON API error format.
+// ErrorGeneric struct for ErrorGeneric
 type ErrorGeneric struct {
-	Error GenericError `json:"error"`
+	Error *OryKetoRelationTuplesV1alpha2ErrorObject `json:"error,omitempty"`
 }
 
 // NewErrorGeneric instantiates a new ErrorGeneric object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewErrorGeneric(error_ GenericError) *ErrorGeneric {
+func NewErrorGeneric() *ErrorGeneric {
 	this := ErrorGeneric{}
-	this.Error = error_
 	return &this
 }
 
@@ -38,33 +37,41 @@ func NewErrorGenericWithDefaults() *ErrorGeneric {
 	return &this
 }
 
-// GetError returns the Error field value
-func (o *ErrorGeneric) GetError() GenericError {
-	if o == nil {
-		var ret GenericError
+// GetError returns the Error field value if set, zero value otherwise.
+func (o *ErrorGeneric) GetError() OryKetoRelationTuplesV1alpha2ErrorObject {
+	if o == nil || o.Error == nil {
+		var ret OryKetoRelationTuplesV1alpha2ErrorObject
 		return ret
 	}
-
-	return o.Error
+	return *o.Error
 }
 
-// GetErrorOk returns a tuple with the Error field value
+// GetErrorOk returns a tuple with the Error field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ErrorGeneric) GetErrorOk() (*GenericError, bool) {
-	if o == nil {
+func (o *ErrorGeneric) GetErrorOk() (*OryKetoRelationTuplesV1alpha2ErrorObject, bool) {
+	if o == nil || o.Error == nil {
 		return nil, false
 	}
-	return &o.Error, true
+	return o.Error, true
 }
 
-// SetError sets field value
-func (o *ErrorGeneric) SetError(v GenericError) {
-	o.Error = v
+// HasError returns a boolean if a field has been set.
+func (o *ErrorGeneric) HasError() bool {
+	if o != nil && o.Error != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetError gets a reference to the given OryKetoRelationTuplesV1alpha2ErrorObject and assigns it to the Error field.
+func (o *ErrorGeneric) SetError(v OryKetoRelationTuplesV1alpha2ErrorObject) {
+	o.Error = &v
 }
 
 func (o ErrorGeneric) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
-	if true {
+	if o.Error != nil {
 		toSerialize["error"] = o.Error
 	}
 	return json.Marshal(toSerialize)

@@ -64,6 +64,28 @@ func (h *handler) TransactRelationTuples(ctx context.Context, req *rts.TransactR
 	}, nil
 }
 
+func (h *handler) CreateRelationTuple(ctx context.Context, request *rts.CreateRelationTupleRequest) (*rts.CreateRelationTupleResponse, error) {
+	tuple, err := (&ketoapi.RelationTuple{}).FromDataProvider(request.RelationTuple)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := tuple.Validate(); err != nil {
+		return nil, err
+	}
+
+	mapped, err := h.d.Mapper().FromTuple(ctx, tuple)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := h.d.RelationTupleManager().WriteRelationTuples(ctx, mapped...); err != nil {
+		return nil, err
+	}
+
+	return &rts.CreateRelationTupleResponse{RelationTuple: tuple.ToProto()}, nil
+}
+
 func (h *handler) DeleteRelationTuples(ctx context.Context, req *rts.DeleteRelationTuplesRequest) (*rts.DeleteRelationTuplesResponse, error) {
 	var q ketoapi.RelationQuery
 

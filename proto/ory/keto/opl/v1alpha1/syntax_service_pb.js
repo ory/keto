@@ -15,6 +15,10 @@ var jspb = require('google-protobuf');
 var goog = jspb;
 var global = (function() { return this || window || global || self || Function('return this')(); }).call(null);
 
+var google_api_annotations_pb = require('../../../../google/api/annotations_pb.js');
+goog.object.extend(proto, google_api_annotations_pb);
+var protoc$gen$openapiv2_options_annotations_pb = require('../../../../protoc-gen-openapiv2/options/annotations_pb.js');
+goog.object.extend(proto, protoc$gen$openapiv2_options_annotations_pb);
 goog.exportSymbol('proto.ory.keto.opl.v1alpha1.CheckRequest', null, global);
 goog.exportSymbol('proto.ory.keto.opl.v1alpha1.CheckResponse', null, global);
 goog.exportSymbol('proto.ory.keto.opl.v1alpha1.ParseError', null, global);
@@ -296,7 +300,7 @@ proto.ory.keto.opl.v1alpha1.CheckResponse.prototype.toObject = function(opt_incl
  */
 proto.ory.keto.opl.v1alpha1.CheckResponse.toObject = function(includeInstance, msg) {
   var f, obj = {
-    parseErrorsList: jspb.Message.toObjectList(msg.getParseErrorsList(),
+    errorsList: jspb.Message.toObjectList(msg.getErrorsList(),
     proto.ory.keto.opl.v1alpha1.ParseError.toObject, includeInstance)
   };
 
@@ -337,7 +341,7 @@ proto.ory.keto.opl.v1alpha1.CheckResponse.deserializeBinaryFromReader = function
     case 1:
       var value = new proto.ory.keto.opl.v1alpha1.ParseError;
       reader.readMessage(value,proto.ory.keto.opl.v1alpha1.ParseError.deserializeBinaryFromReader);
-      msg.addParseErrors(value);
+      msg.addErrors(value);
       break;
     default:
       reader.skipField();
@@ -368,7 +372,7 @@ proto.ory.keto.opl.v1alpha1.CheckResponse.prototype.serializeBinary = function()
  */
 proto.ory.keto.opl.v1alpha1.CheckResponse.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = message.getParseErrorsList();
+  f = message.getErrorsList();
   if (f.length > 0) {
     writer.writeRepeatedMessage(
       1,
@@ -380,10 +384,10 @@ proto.ory.keto.opl.v1alpha1.CheckResponse.serializeBinaryToWriter = function(mes
 
 
 /**
- * repeated ParseError parse_errors = 1;
+ * repeated ParseError errors = 1;
  * @return {!Array<!proto.ory.keto.opl.v1alpha1.ParseError>}
  */
-proto.ory.keto.opl.v1alpha1.CheckResponse.prototype.getParseErrorsList = function() {
+proto.ory.keto.opl.v1alpha1.CheckResponse.prototype.getErrorsList = function() {
   return /** @type{!Array<!proto.ory.keto.opl.v1alpha1.ParseError>} */ (
     jspb.Message.getRepeatedWrapperField(this, proto.ory.keto.opl.v1alpha1.ParseError, 1));
 };
@@ -393,7 +397,7 @@ proto.ory.keto.opl.v1alpha1.CheckResponse.prototype.getParseErrorsList = functio
  * @param {!Array<!proto.ory.keto.opl.v1alpha1.ParseError>} value
  * @return {!proto.ory.keto.opl.v1alpha1.CheckResponse} returns this
 */
-proto.ory.keto.opl.v1alpha1.CheckResponse.prototype.setParseErrorsList = function(value) {
+proto.ory.keto.opl.v1alpha1.CheckResponse.prototype.setErrorsList = function(value) {
   return jspb.Message.setRepeatedWrapperField(this, 1, value);
 };
 
@@ -403,7 +407,7 @@ proto.ory.keto.opl.v1alpha1.CheckResponse.prototype.setParseErrorsList = functio
  * @param {number=} opt_index
  * @return {!proto.ory.keto.opl.v1alpha1.ParseError}
  */
-proto.ory.keto.opl.v1alpha1.CheckResponse.prototype.addParseErrors = function(opt_value, opt_index) {
+proto.ory.keto.opl.v1alpha1.CheckResponse.prototype.addErrors = function(opt_value, opt_index) {
   return jspb.Message.addToRepeatedWrapperField(this, 1, opt_value, proto.ory.keto.opl.v1alpha1.ParseError, opt_index);
 };
 
@@ -412,8 +416,8 @@ proto.ory.keto.opl.v1alpha1.CheckResponse.prototype.addParseErrors = function(op
  * Clears the list making it empty but non-null.
  * @return {!proto.ory.keto.opl.v1alpha1.CheckResponse} returns this
  */
-proto.ory.keto.opl.v1alpha1.CheckResponse.prototype.clearParseErrorsList = function() {
-  return this.setParseErrorsList([]);
+proto.ory.keto.opl.v1alpha1.CheckResponse.prototype.clearErrorsList = function() {
+  return this.setErrorsList([]);
 };
 
 

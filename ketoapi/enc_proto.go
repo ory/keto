@@ -12,11 +12,20 @@ import (
 
 type (
 	TupleData interface {
-		GetSubject() *rts.Subject
 		GetObject() string
 		GetNamespace() string
 		GetRelation() string
 	}
+	relationtupleSubjectData interface {
+		GetSubject() *rts.Subject
+	}
+	createRelationSubjectData interface {
+		GetSubject() interface {
+			GetSubjectId() string
+			GetSubjectSet() *rts.SubjectSet
+		}
+	}
+
 	queryData interface {
 		GetSubject() *rts.Subject
 		GetObject() *string
@@ -26,17 +35,34 @@ type (
 )
 
 func (r *RelationTuple) FromDataProvider(d TupleData) (*RelationTuple, error) {
-	switch s := d.GetSubject().GetRef().(type) {
-	case nil:
-		return nil, errors.WithStack(ErrNilSubject)
-	case *rts.Subject_Set:
-		r.SubjectSet = &SubjectSet{
-			Namespace: s.Set.Namespace,
-			Object:    s.Set.Object,
-			Relation:  s.Set.Relation,
+	if s, ok := d.(relationtupleSubjectData); ok {
+		switch s := s.GetSubject().GetRef().(type) {
+		case nil:
+			return nil, errors.WithStack(ErrNilSubject)
+		case *rts.Subject_Set:
+			r.SubjectSet = &SubjectSet{
+				Namespace: s.Set.Namespace,
+				Object:    s.Set.Object,
+				Relation:  s.Set.Relation,
+			}
+		case *rts.Subject_Id:
+			r.SubjectID = pointerx.Ptr(s.Id)
+		default:
+			return nil, errors.WithStack(ErrNilSubject)
 		}
-	case *rts.Subject_Id:
-		r.SubjectID = pointerx.Ptr(s.Id)
+	} else if s, ok := d.(createRelationSubjectData); ok {
+		switch s := any(s.GetSubject()).(type) {
+		case *rts.CreateRelationTupleRequest_Relationship_SubjectId:
+			r.SubjectID = pointerx.Ptr(s.SubjectId)
+		case *rts.CreateRelationTupleRequest_Relationship_SubjectSet:
+			r.SubjectSet = &SubjectSet{
+				Namespace: s.SubjectSet.Namespace,
+				Object:    s.SubjectSet.Object,
+				Relation:  s.SubjectSet.Relation,
+			}
+		default:
+			return nil, errors.WithStack(ErrNilSubject)
+		}
 	}
 
 	r.Object = d.GetObject()

@@ -23,6 +23,11 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type VersionServiceClient interface {
 	// Returns the version of the Ory Keto instance.
+	//
+	// This endpoint returns the service version typically notated using semantic versioning.
+	//
+	// If the service supports TLS Edge Termination, this endpoint does not require the
+	// X-Forwarded-Proto header to be set.
 	GetVersion(ctx context.Context, in *GetVersionRequest, opts ...grpc.CallOption) (*GetVersionResponse, error)
 }
 
@@ -48,6 +53,11 @@ func (c *versionServiceClient) GetVersion(ctx context.Context, in *GetVersionReq
 // for forward compatibility
 type VersionServiceServer interface {
 	// Returns the version of the Ory Keto instance.
+	//
+	// This endpoint returns the service version typically notated using semantic versioning.
+	//
+	// If the service supports TLS Edge Termination, this endpoint does not require the
+	// X-Forwarded-Proto header to be set.
 	GetVersion(context.Context, *GetVersionRequest) (*GetVersionResponse, error)
 }
 

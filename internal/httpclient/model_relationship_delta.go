@@ -15,33 +15,37 @@ import (
 	"encoding/json"
 )
 
-// RelationshipPatch Payload for patching a relationship
-type RelationshipPatch struct {
-	Action        *string       `json:"action,omitempty"`
-	RelationTuple *Relationship `json:"relation_tuple,omitempty"`
+// RelationshipDelta Write-delta for a TransactRelationTuplesRequest.
+type RelationshipDelta struct {
+	Action        *RelationshipDeltaAction `json:"action,omitempty"`
+	RelationTuple *Relationship            `json:"relation_tuple,omitempty"`
 }
 
-// NewRelationshipPatch instantiates a new RelationshipPatch object
+// NewRelationshipDelta instantiates a new RelationshipDelta object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewRelationshipPatch() *RelationshipPatch {
-	this := RelationshipPatch{}
+func NewRelationshipDelta() *RelationshipDelta {
+	this := RelationshipDelta{}
+	var action RelationshipDeltaAction = RELATIONSHIPDELTAACTION_ACTION_UNSPECIFIED
+	this.Action = &action
 	return &this
 }
 
-// NewRelationshipPatchWithDefaults instantiates a new RelationshipPatch object
+// NewRelationshipDeltaWithDefaults instantiates a new RelationshipDelta object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewRelationshipPatchWithDefaults() *RelationshipPatch {
-	this := RelationshipPatch{}
+func NewRelationshipDeltaWithDefaults() *RelationshipDelta {
+	this := RelationshipDelta{}
+	var action RelationshipDeltaAction = RELATIONSHIPDELTAACTION_ACTION_UNSPECIFIED
+	this.Action = &action
 	return &this
 }
 
 // GetAction returns the Action field value if set, zero value otherwise.
-func (o *RelationshipPatch) GetAction() string {
+func (o *RelationshipDelta) GetAction() RelationshipDeltaAction {
 	if o == nil || o.Action == nil {
-		var ret string
+		var ret RelationshipDeltaAction
 		return ret
 	}
 	return *o.Action
@@ -49,7 +53,7 @@ func (o *RelationshipPatch) GetAction() string {
 
 // GetActionOk returns a tuple with the Action field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *RelationshipPatch) GetActionOk() (*string, bool) {
+func (o *RelationshipDelta) GetActionOk() (*RelationshipDeltaAction, bool) {
 	if o == nil || o.Action == nil {
 		return nil, false
 	}
@@ -57,7 +61,7 @@ func (o *RelationshipPatch) GetActionOk() (*string, bool) {
 }
 
 // HasAction returns a boolean if a field has been set.
-func (o *RelationshipPatch) HasAction() bool {
+func (o *RelationshipDelta) HasAction() bool {
 	if o != nil && o.Action != nil {
 		return true
 	}
@@ -65,13 +69,13 @@ func (o *RelationshipPatch) HasAction() bool {
 	return false
 }
 
-// SetAction gets a reference to the given string and assigns it to the Action field.
-func (o *RelationshipPatch) SetAction(v string) {
+// SetAction gets a reference to the given RelationshipDeltaAction and assigns it to the Action field.
+func (o *RelationshipDelta) SetAction(v RelationshipDeltaAction) {
 	o.Action = &v
 }
 
 // GetRelationTuple returns the RelationTuple field value if set, zero value otherwise.
-func (o *RelationshipPatch) GetRelationTuple() Relationship {
+func (o *RelationshipDelta) GetRelationTuple() Relationship {
 	if o == nil || o.RelationTuple == nil {
 		var ret Relationship
 		return ret
@@ -81,7 +85,7 @@ func (o *RelationshipPatch) GetRelationTuple() Relationship {
 
 // GetRelationTupleOk returns a tuple with the RelationTuple field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *RelationshipPatch) GetRelationTupleOk() (*Relationship, bool) {
+func (o *RelationshipDelta) GetRelationTupleOk() (*Relationship, bool) {
 	if o == nil || o.RelationTuple == nil {
 		return nil, false
 	}
@@ -89,7 +93,7 @@ func (o *RelationshipPatch) GetRelationTupleOk() (*Relationship, bool) {
 }
 
 // HasRelationTuple returns a boolean if a field has been set.
-func (o *RelationshipPatch) HasRelationTuple() bool {
+func (o *RelationshipDelta) HasRelationTuple() bool {
 	if o != nil && o.RelationTuple != nil {
 		return true
 	}
@@ -98,11 +102,11 @@ func (o *RelationshipPatch) HasRelationTuple() bool {
 }
 
 // SetRelationTuple gets a reference to the given Relationship and assigns it to the RelationTuple field.
-func (o *RelationshipPatch) SetRelationTuple(v Relationship) {
+func (o *RelationshipDelta) SetRelationTuple(v Relationship) {
 	o.RelationTuple = &v
 }
 
-func (o RelationshipPatch) MarshalJSON() ([]byte, error) {
+func (o RelationshipDelta) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.Action != nil {
 		toSerialize["action"] = o.Action
@@ -113,38 +117,38 @@ func (o RelationshipPatch) MarshalJSON() ([]byte, error) {
 	return json.Marshal(toSerialize)
 }
 
-type NullableRelationshipPatch struct {
-	value *RelationshipPatch
+type NullableRelationshipDelta struct {
+	value *RelationshipDelta
 	isSet bool
 }
 
-func (v NullableRelationshipPatch) Get() *RelationshipPatch {
+func (v NullableRelationshipDelta) Get() *RelationshipDelta {
 	return v.value
 }
 
-func (v *NullableRelationshipPatch) Set(val *RelationshipPatch) {
+func (v *NullableRelationshipDelta) Set(val *RelationshipDelta) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableRelationshipPatch) IsSet() bool {
+func (v NullableRelationshipDelta) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableRelationshipPatch) Unset() {
+func (v *NullableRelationshipDelta) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableRelationshipPatch(val *RelationshipPatch) *NullableRelationshipPatch {
-	return &NullableRelationshipPatch{value: val, isSet: true}
+func NewNullableRelationshipDelta(val *RelationshipDelta) *NullableRelationshipDelta {
+	return &NullableRelationshipDelta{value: val, isSet: true}
 }
 
-func (v NullableRelationshipPatch) MarshalJSON() ([]byte, error) {
+func (v NullableRelationshipDelta) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableRelationshipPatch) UnmarshalJSON(src []byte) error {
+func (v *NullableRelationshipDelta) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
