@@ -5,7 +5,7 @@
 
 **Table of Contents**
 
-- [0.0.0 (2022-11-28)](#000-2022-11-28)
+- [0.0.0 (2022-12-02)](#000-2022-12-02)
   - [Bug Fixes](#bug-fixes)
   - [Code Refactoring](#code-refactoring)
   - [Documentation](#documentation)
@@ -140,7 +140,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.10.0-alpha.0...v0.0.0) (2022-11-28)
+# [0.0.0](https://github.com/ory/keto/compare/v0.10.0-alpha.0...v0.0.0) (2022-12-02)
 
 ### Bug Fixes
 
@@ -203,6 +203,11 @@
   ([333af27](https://github.com/ory/keto/commit/333af27a3cf3975f5c879433b4a3f44951691392))
 - Fix invalid link ([#1072](https://github.com/ory/keto/issues/1072))
   ([2686e98](https://github.com/ory/keto/commit/2686e982772507c9423373405cc406dd47ebaad2))
+- Fix quickstart up.sh ([#1158](https://github.com/ory/keto/issues/1158))
+  ([30a74c6](https://github.com/ory/keto/commit/30a74c6b1e24a0a55c6ce3d33ff614d649991e7c)):
+
+  Added `--insecure-disable-transport-security` flag to all client commands.
+
 - Improve rewrites example
   ([d809c76](https://github.com/ory/keto/commit/d809c76c8359093bb9e73b1fc386b09da3e6b88e))
 - Standardize license headers ([#1061](https://github.com/ory/keto/issues/1061))
@@ -248,6 +253,10 @@
 
   You can now use `Array<T>` as an alternative to `T[]` when declaring types for
   relations in the Ory Permission Language.
+
+- Support semicolons in types ([#1151](https://github.com/ory/keto/issues/1151))
+  ([a06eda7](https://github.com/ory/keto/commit/a06eda71dd1b8364eb424d6e843dd772e2eada51)),
+  closes [#1135](https://github.com/ory/keto/issues/1135)
 
 # [0.10.0-alpha.0](https://github.com/ory/keto/compare/v0.9.0-alpha.0...v0.10.0-alpha.0) (2022-09-27)
 
