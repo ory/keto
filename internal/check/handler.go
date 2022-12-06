@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"net/url"
 
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/pkg/errors"
 
 	"github.com/ory/herodot"
@@ -60,6 +61,10 @@ func (h *Handler) RegisterReadRoutes(r *x.ReadRouter) {
 
 func (h *Handler) RegisterReadGRPC(s *grpc.Server) {
 	rts.RegisterCheckServiceServer(s, h)
+}
+
+func (h *Handler) RegisterReadGRPCGateway(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts ...grpc.DialOption) error {
+	return rts.RegisterCheckServiceHandlerFromEndpoint(ctx, mux, endpoint, opts)
 }
 
 // Check Permission Result

@@ -14,6 +14,7 @@ import (
 	"syscall"
 
 	grpcRecovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
@@ -324,6 +325,15 @@ func (r *RegistryDefault) ReadRouter(ctx context.Context) http.Handler {
 		n.UseFunc(f)
 	}
 	n.Use(reqlog.NewMiddlewareFromLogger(r.l, "read#Ory Keto").ExcludePaths(healthx.AliveCheckPath, healthx.ReadyCheckPath))
+
+	mux := runtime.NewServeMux()
+	for _, h := range r.allHandlers() {
+		if h, ok := h.(ReadHandler); ok {
+			if err := h.RegisterReadGRPCGateway(ctx, mux, r.Config(ctx).ReadAPIListenOn()); err != nil {
+				panic(err)
+			}
+		}
+	}
 
 	br := &x.ReadRouter{Router: httprouter.New()}
 	r.PrometheusManager().RegisterRouter(br.Router)

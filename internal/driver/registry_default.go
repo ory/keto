@@ -9,6 +9,7 @@ import (
 	"sync"
 
 	"github.com/gobuffalo/pop/v6"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/ory/herodot"
 	"github.com/ory/x/dbal"
 	"github.com/ory/x/fsx"
@@ -78,14 +79,17 @@ type (
 	ReadHandler interface {
 		RegisterReadRoutes(r *x.ReadRouter)
 		RegisterReadGRPC(s *grpc.Server)
+		RegisterReadGRPCGateway(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts ...grpc.DialOption) error
 	}
 	WriteHandler interface {
 		RegisterWriteRoutes(r *x.WriteRouter)
 		RegisterWriteGRPC(s *grpc.Server)
+		RegisterWriteGRPCGateway(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts ...grpc.DialOption) error
 	}
 	OPLSyntaxHandler interface {
 		RegisterSyntaxRoutes(r *x.OPLSyntaxRouter)
 		RegisterSyntaxGRPC(s *grpc.Server)
+		RegisterSyntaxGRPCGateway(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts ...grpc.DialOption) error
 	}
 	Handler interface{}
 )
