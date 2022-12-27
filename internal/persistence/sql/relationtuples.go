@@ -212,10 +212,12 @@ func (p *Persister) GetRelationTuples(ctx context.Context, query *relationtuple.
 		return nil, "", err
 	}
 
-	sqlQuery := p.QueryWithNetwork(ctx).
-		Order("shard_id, nid").
-		Where("shard_id > ?", pagination.LastID).
-		Limit(pagination.PerPage + 1)
+	sqlQuery := p.QueryWithNetwork(ctx).Limit(1)
+	if pagination.PerPage != 1 {
+		sqlQuery = sqlQuery.Order("shard_id, nid").
+			Where("shard_id > ?", pagination.LastID).
+			Limit(pagination.PerPage + 1)
+	}
 
 	err = p.whereQuery(ctx, sqlQuery, query)
 	if err != nil {
