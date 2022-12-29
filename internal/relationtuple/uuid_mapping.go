@@ -7,7 +7,9 @@ import (
 	"context"
 	"testing"
 
+	"github.com/ory/x/otelx"
 	"github.com/ory/x/pointerx"
+	"go.opentelemetry.io/otel/trace"
 
 	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/ketoapi"
@@ -62,6 +64,9 @@ func (c *success) apply() {
 }
 
 func (m *Mapper) FromQuery(ctx context.Context, apiQuery *ketoapi.RelationQuery) (res *RelationQuery, err error) {
+	ctx, span := trace.SpanFromContext(ctx).TracerProvider().Tracer("keto/internal/relationtuple").Start(ctx, "Mapper.FromQuery")
+	defer otelx.End(span, &err)
+
 	onSuccess := newSuccess(&err)
 	defer onSuccess.apply()
 
@@ -124,6 +129,9 @@ func (m *Mapper) FromQuery(ctx context.Context, apiQuery *ketoapi.RelationQuery)
 }
 
 func (m *Mapper) ToQuery(ctx context.Context, q *RelationQuery) (res *ketoapi.RelationQuery, err error) {
+	ctx, span := trace.SpanFromContext(ctx).TracerProvider().Tracer("keto/internal/relationtuple").Start(ctx, "Mapper.ToQuery")
+	defer otelx.End(span, &err)
+
 	onSuccess := newSuccess(&err)
 	defer onSuccess.apply()
 
@@ -182,6 +190,9 @@ func (m *Mapper) ToQuery(ctx context.Context, q *RelationQuery) (res *ketoapi.Re
 }
 
 func (m *Mapper) FromTuple(ctx context.Context, ts ...*ketoapi.RelationTuple) (res []*RelationTuple, err error) {
+	ctx, span := trace.SpanFromContext(ctx).TracerProvider().Tracer("keto/internal/relationtuple").Start(ctx, "Mapper.FromTuple")
+	defer otelx.End(span, &err)
+
 	onSuccess := newSuccess(&err)
 	defer onSuccess.apply()
 
@@ -245,6 +256,9 @@ func (m *Mapper) FromTuple(ctx context.Context, ts ...*ketoapi.RelationTuple) (r
 }
 
 func (m *Mapper) ToTuple(ctx context.Context, ts ...*RelationTuple) (res []*ketoapi.RelationTuple, err error) {
+	ctx, span := trace.SpanFromContext(ctx).TracerProvider().Tracer("keto/internal/relationtuple").Start(ctx, "Mapper.ToTuple")
+	defer otelx.End(span, &err)
+
 	onSuccess := newSuccess(&err)
 	defer onSuccess.apply()
 
@@ -291,7 +305,10 @@ func (m *Mapper) ToTuple(ctx context.Context, ts ...*RelationTuple) (res []*keto
 	return res, nil
 }
 
-func (m *Mapper) FromSubjectSet(ctx context.Context, set *ketoapi.SubjectSet) (*SubjectSet, error) {
+func (m *Mapper) FromSubjectSet(ctx context.Context, set *ketoapi.SubjectSet) (_ *SubjectSet, err error) {
+	ctx, span := trace.SpanFromContext(ctx).TracerProvider().Tracer("keto/internal/relationtuple").Start(ctx, "Mapper.FromSubjectSet")
+	defer otelx.End(span, &err)
+
 	nm, err := m.D.Config(ctx).NamespaceManager()
 	if err != nil {
 		return nil, err
@@ -312,6 +329,9 @@ func (m *Mapper) FromSubjectSet(ctx context.Context, set *ketoapi.SubjectSet) (*
 }
 
 func (m *Mapper) ToTree(ctx context.Context, tree *Tree) (res *ketoapi.Tree[*ketoapi.RelationTuple], err error) {
+	ctx, span := trace.SpanFromContext(ctx).TracerProvider().Tracer("keto/internal/relationtuple").Start(ctx, "Mapper.ToTree")
+	defer otelx.End(span, &err)
+
 	onSuccess := newSuccess(&err)
 	defer onSuccess.apply()
 

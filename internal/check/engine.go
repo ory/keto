@@ -9,6 +9,9 @@ import (
 
 	"github.com/ory/herodot"
 	"github.com/pkg/errors"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/codes"
+	"go.opentelemetry.io/otel/trace"
 
 	"github.com/ory/keto/internal/check/checkgroup"
 	"github.com/ory/keto/internal/driver/config"
@@ -65,7 +68,17 @@ func (e *Engine) CheckIsMember(ctx context.Context, r *relationTuple, restDepth 
 // CheckRelationTuple checks if the relation tuple's subject has the relation on
 // the object in the namespace either directly or indirectly and returns a check
 // result.
-func (e *Engine) CheckRelationTuple(ctx context.Context, r *relationTuple, restDepth int) checkgroup.Result {
+func (e *Engine) CheckRelationTuple(ctx context.Context, r *relationTuple, restDepth int) (res checkgroup.Result) {
+	ctx, span := trace.SpanFromContext(ctx).TracerProvider().Tracer("keto/internal/check").Start(ctx, "Engine.CheckRelationTuple")
+	defer func() {
+		if res.Err != nil {
+			span.SetStatus(codes.Error, res.Err.Error())
+		} else {
+			span.SetAttributes(attribute.String("membership", res.Membership.String()))
+		}
+		span.End()
+	}()
+
 	// global max-depth takes precedence when it is the lesser or if the request
 	// max-depth is less than or equal to 0
 	if globalMaxDepth := e.d.Config(ctx).MaxReadDepth(); restDepth <= 0 || globalMaxDepth < restDepth {
