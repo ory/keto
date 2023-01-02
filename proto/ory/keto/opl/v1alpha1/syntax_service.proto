@@ -39,7 +39,7 @@ service SyntaxService {
 }
 
 message CheckRequest {
-  bytes content = 1;
+  string content = 1;
 }
 
 message CheckResponse {

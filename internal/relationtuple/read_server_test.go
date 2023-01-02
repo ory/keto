@@ -8,14 +8,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"net"
 	"net/http"
-	"net/http/httptest"
 	"net/url"
 	"testing"
-
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 
 	"github.com/ory/x/pointerx"
 
@@ -28,7 +23,6 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/tidwall/gjson"
 
-	"github.com/julienschmidt/httprouter"
 	"github.com/stretchr/testify/require"
 
 	"github.com/ory/keto/internal/driver"
@@ -39,12 +33,11 @@ import (
 
 func TestReadHandlers(t *testing.T) {
 	ctx := context.Background()
-	r := &x.ReadRouter{Router: httprouter.New()}
 	reg := driver.NewSqliteTestRegistry(t, false)
-	h := relationtuple.NewHandler(reg)
-	h.RegisterReadRoutes(r)
-	ts := httptest.NewServer(r)
-	t.Cleanup(ts.Close)
+
+	endpoints := x.NewTestEndpoints(t, relationtuple.NewHandler(reg))
+
+	ts := endpoints.HTTP
 
 	var newNamespace func(*testing.T) *namespace.Namespace
 	{
@@ -64,10 +57,11 @@ func TestReadHandlers(t *testing.T) {
 				"namespace": {nspace.Name},
 			}.Encode())
 			require.NoError(t, err)
-			require.Equal(t, http.StatusOK, resp.StatusCode)
 
 			body, err := io.ReadAll(resp.Body)
 			require.NoError(t, err)
+
+			require.Equal(t, http.StatusOK, resp.StatusCode, "code=%d body=%s", resp.StatusCode, body)
 
 			assert.Equal(t, "[]", gjson.GetBytes(body, "relation_tuples").Raw)
 
@@ -135,8 +129,10 @@ func TestReadHandlers(t *testing.T) {
 			require.NoError(t, err)
 			assert.Equal(t, resp.StatusCode, http.StatusOK)
 
+			body, err := io.ReadAll(resp.Body)
+			require.NoError(t, err)
 			var respMsg ketoapi.GetResponse
-			require.NoError(t, json.NewDecoder(resp.Body).Decode(&respMsg))
+			require.NoError(t, json.Unmarshal(body, &respMsg))
 			assert.Equal(t, 1, len(respMsg.RelationTuples))
 			assert.Containsf(t, tuples, respMsg.RelationTuples[0], "expected to find %q in %q", respMsg.RelationTuples[0].String(), tuples)
 			assert.Equal(t, "", respMsg.NextPageToken)
@@ -144,7 +140,7 @@ func TestReadHandlers(t *testing.T) {
 
 		t.Run("case=returns bad request on malformed subject", func(t *testing.T) {
 			resp, err := ts.Client().Get(ts.URL + relationtuple.ReadRouteBase + "?" + url.Values{
-				"subject": {"not#a valid subject"},
+				"subject_set": {"not a valid subject"},
 			}.Encode())
 			require.NoError(t, err)
 
@@ -243,18 +239,9 @@ func TestReadHandlers(t *testing.T) {
 			}
 			return actual
 		}
-		soc, err := net.Listen("tcp", ":0") // nolint
-		require.NoError(t, err)
-		srv := grpc.NewServer()
-		h.RegisterReadGRPC(srv)
-		go srv.Serve(soc) // nolint
-		t.Cleanup(srv.Stop)
-
-		con, err := grpc.Dial(soc.Addr().String(), grpc.WithTransportCredentials(insecure.NewCredentials()))
-		require.NoError(t, err)
 
 		t.Run("method=list", func(t *testing.T) {
-			client := rts.NewReadServiceClient(con)
+			client := rts.NewReadServiceClient(endpoints.GRPC)
 
 			for key, enhancer := range map[string]requestEnhancer{"relation query": withRelationQuery, "deprecated query": withDeprecatedQuery} {
 				t.Run("enhancer="+key, func(t *testing.T) {

@@ -210,8 +210,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "type": "string",
-              "format": "byte"
+              "type": "string"
             }
           }
         ],

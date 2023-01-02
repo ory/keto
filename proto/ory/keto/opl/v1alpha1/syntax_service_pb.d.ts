@@ -8,10 +8,8 @@ import * as jspb from "google-protobuf";
 import * as protoc_gen_openapiv2_options_annotations_pb from "../../../../protoc-gen-openapiv2/options/annotations_pb";
 
 export class CheckRequest extends jspb.Message { 
-    getContent(): Uint8Array | string;
-    getContent_asU8(): Uint8Array;
-    getContent_asB64(): string;
-    setContent(value: Uint8Array | string): CheckRequest;
+    getContent(): string;
+    setContent(value: string): CheckRequest;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): CheckRequest.AsObject;
@@ -25,7 +23,7 @@ export class CheckRequest extends jspb.Message {
 
 export namespace CheckRequest {
     export type AsObject = {
-        content: Uint8Array | string,
+        content: string,
     }
 }
 

@@ -374,6 +374,7 @@ type DeleteRelationTuplesRequest struct {
 	// Deprecated: Do not use.
 	Relation string `protobuf:"bytes,5,opt,name=relation,proto3" json:"relation,omitempty"`
 	// Types that are assignable to RestApiSubject:
+	//
 	//	*DeleteRelationTuplesRequest_SubjectId
 	//	*DeleteRelationTuplesRequest_SubjectSet
 	RestApiSubject isDeleteRelationTuplesRequest_RestApiSubject `protobuf_oneof:"rest_api_subject"`
@@ -547,6 +548,7 @@ type CreateRelationTupleRequest_Relationship struct {
 	// The relation between an Object and a Subject.
 	Relation string `protobuf:"bytes,3,opt,name=relation,proto3" json:"relation,omitempty"`
 	// Types that are assignable to Subject:
+	//
 	//	*CreateRelationTupleRequest_Relationship_SubjectId
 	//	*CreateRelationTupleRequest_Relationship_SubjectSet
 	Subject isCreateRelationTupleRequest_Relationship_Subject `protobuf_oneof:"subject"`

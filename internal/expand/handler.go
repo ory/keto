@@ -7,6 +7,8 @@ import (
 	"context"
 	"net/http"
 
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+
 	"github.com/ory/keto/ketoapi"
 
 	"github.com/julienschmidt/httprouter"
@@ -48,6 +50,13 @@ func (h *handler) RegisterReadRoutes(r *x.ReadRouter) {
 
 func (h *handler) RegisterReadGRPC(s *grpc.Server) {
 	rts.RegisterExpandServiceServer(s, h)
+}
+
+func (h *handler) RegisterReadGRPCGateway(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts ...grpc.DialOption) error {
+	return rts.RegisterExpandServiceHandlerFromEndpoint(ctx, mux, endpoint, opts)
+}
+func (h *handler) RegisterReadGRPCGatewayConn(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
+	return rts.RegisterReadServiceHandler(ctx, mux, conn)
 }
 
 // Expand Permissions Request Parameters

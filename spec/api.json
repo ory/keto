@@ -661,7 +661,6 @@
           "content": {
             "text/plain": {
               "schema": {
-                "format": "byte",
                 "type": "string"
               }
             }

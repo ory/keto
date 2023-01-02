@@ -7,6 +7,7 @@ import (
 	"context"
 	"net/http"
 
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/julienschmidt/httprouter"
 	"github.com/ory/herodot"
 	"google.golang.org/grpc"
@@ -43,8 +44,12 @@ func (h *handler) RegisterReadGRPC(s *grpc.Server) {
 	rts.RegisterNamespacesServiceServer(s, h)
 }
 
-func (h *handler) RegisterWriteRoutes(r *x.WriteRouter) {}
-func (h *handler) RegisterWriteGRPC(s *grpc.Server)     {}
+func (h *handler) RegisterReadGRPCGateway(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts ...grpc.DialOption) error {
+	return rts.RegisterNamespacesServiceHandlerFromEndpoint(ctx, mux, endpoint, opts)
+}
+func (h *handler) RegisterReadGRPCGatewayConn(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
+	return rts.RegisterReadServiceHandler(ctx, mux, conn)
+}
 
 func (h *handler) ListNamespaces(ctx context.Context, _ *rts.ListNamespacesRequest) (*rts.ListNamespacesResponse, error) {
 	m, err := h.Config(ctx).NamespaceManager()

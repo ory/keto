@@ -8,6 +8,9 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/metadata"
+
 	"github.com/ory/keto/ketoapi"
 
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
@@ -24,7 +27,7 @@ var (
 func protoTuplesWithAction(deltas []*rts.RelationTupleDelta, action rts.RelationTupleDelta_Action) (filtered []*ketoapi.RelationTuple, err error) {
 	for _, d := range deltas {
 		if d.Action == action {
-			it, err := (&ketoapi.RelationTuple{}).FromDataProvider(d.RelationTuple)
+			it, err := (&ketoapi.RelationTuple{}).FromDataProvider(&openAPITupleWrapper{d.RelationTuple})
 			if err != nil {
 				return nil, err
 			}
@@ -55,6 +58,7 @@ func (h *handler) TransactRelationTuples(ctx context.Context, req *rts.TransactR
 		return nil, err
 	}
 
+	_ = grpc.SetHeader(ctx, metadata.Pairs("x-http-code", "204"))
 	snaptokens := make([]string, len(insertTuples))
 	for i := range insertTuples {
 		snaptokens[i] = "not yet implemented"
@@ -64,8 +68,37 @@ func (h *handler) TransactRelationTuples(ctx context.Context, req *rts.TransactR
 	}, nil
 }
 
+type openAPITupleWrapper struct {
+	wrapped interface {
+		GetObject() string
+		GetRelation() string
+		GetNamespace() string
+		GetSubjectSet() *rts.SubjectSet
+		GetSubjectId() string
+	}
+}
+
+func (q *openAPITupleWrapper) GetObject() string    { return q.wrapped.GetObject() }
+func (q *openAPITupleWrapper) GetNamespace() string { return q.wrapped.GetNamespace() }
+func (q *openAPITupleWrapper) GetRelation() string  { return q.wrapped.GetRelation() }
+func (q *openAPITupleWrapper) GetSubject() *rts.Subject {
+	if sub, ok := q.wrapped.(interface{ GetSubject() *rts.Subject }); ok && sub.GetSubject() != nil {
+		return sub.GetSubject()
+	}
+	if set := q.wrapped.GetSubjectSet(); set != nil {
+		return rts.NewSubjectSet(set.Namespace, set.Object, set.Relation)
+	}
+	if sID := q.wrapped.GetSubjectId(); sID != "" {
+		return rts.NewSubjectID(q.wrapped.GetSubjectId())
+	}
+	return nil
+}
+
 func (h *handler) CreateRelationTuple(ctx context.Context, request *rts.CreateRelationTupleRequest) (*rts.CreateRelationTupleResponse, error) {
-	tuple, err := (&ketoapi.RelationTuple{}).FromDataProvider(request.RelationTuple)
+	if request.RelationTuple == nil {
+		return nil, errors.WithStack(herodot.ErrBadRequest.WithReason("invalid request: missing relation_tuple"))
+	}
+	tuple, err := (&ketoapi.RelationTuple{}).FromDataProvider(&openAPITupleWrapper{request.RelationTuple})
 	if err != nil {
 		return nil, err
 	}
@@ -83,6 +116,9 @@ func (h *handler) CreateRelationTuple(ctx context.Context, request *rts.CreateRe
 		return nil, err
 	}
 
+	_ = grpc.SetHeader(ctx, metadata.Pairs("x-http-code", "201"))
+	_ = grpc.SetHeader(ctx, metadata.Pairs("x-http-location", ReadRouteBase+"?"+tuple.ToURLQuery().Encode()))
+
 	return &rts.CreateRelationTupleResponse{RelationTuple: tuple.ToProto()}, nil
 }
 
@@ -95,7 +131,7 @@ func (h *handler) DeleteRelationTuples(ctx context.Context, req *rts.DeleteRelat
 	case req.Query != nil: // nolint
 		q.FromDataProvider(&deprecatedQueryWrapper{(*rts.ListRelationTuplesRequest_Query)(req.Query)}) // nolint
 	default:
-		return nil, errors.WithStack(herodot.ErrBadRequest.WithReason("invalid request"))
+		q.FromDataProvider(&openAPIQueryWrapper{req})
 	}
 
 	iq, err := h.d.Mapper().FromQuery(ctx, &q)
@@ -106,6 +142,7 @@ func (h *handler) DeleteRelationTuples(ctx context.Context, req *rts.DeleteRelat
 		return nil, errors.WithStack(herodot.ErrInternalServerError.WithError(err.Error()))
 	}
 
+	_ = grpc.SetHeader(ctx, metadata.Pairs("x-http-code", "204"))
 	return &rts.DeleteRelationTuplesResponse{}, nil
 }
 

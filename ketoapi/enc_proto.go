@@ -15,15 +15,7 @@ type (
 		GetObject() string
 		GetNamespace() string
 		GetRelation() string
-	}
-	relationtupleSubjectData interface {
 		GetSubject() *rts.Subject
-	}
-	createRelationSubjectData interface {
-		GetSubject() interface {
-			GetSubjectId() string
-			GetSubjectSet() *rts.SubjectSet
-		}
 	}
 
 	queryData interface {
@@ -32,37 +24,52 @@ type (
 		GetNamespace() *string
 		GetRelation() *string
 	}
+
+	openAPIFields interface {
+		GetObject() string
+		GetNamespace() string
+		GetRelation() string
+		GetSubject() interface {
+			GetSubjectId() string
+			GetSubjectSet() *rts.SubjectSet
+		}
+	}
 )
 
+func (r *RelationTuple) FromOpenAPIFields(f openAPIFields) (*RelationTuple, error) {
+	subject := f.GetSubject()
+	if subject == nil {
+		return nil, errors.WithStack(ErrNilSubject)
+	}
+	if subjectSet := subject.GetSubjectSet(); subjectSet != nil {
+		r.SubjectSet = &SubjectSet{
+			Namespace: subjectSet.Namespace,
+			Object:    subjectSet.Object,
+			Relation:  subjectSet.Relation,
+		}
+	} else {
+		r.SubjectID = pointerx.Ptr(subject.GetSubjectId())
+	}
+
+	r.Object = f.GetObject()
+	r.Namespace = f.GetNamespace()
+	r.Relation = f.GetRelation()
+
+	return r, nil
+}
+
 func (r *RelationTuple) FromDataProvider(d TupleData) (*RelationTuple, error) {
-	if s, ok := d.(relationtupleSubjectData); ok {
-		switch s := s.GetSubject().GetRef().(type) {
-		case nil:
-			return nil, errors.WithStack(ErrNilSubject)
-		case *rts.Subject_Set:
-			r.SubjectSet = &SubjectSet{
-				Namespace: s.Set.Namespace,
-				Object:    s.Set.Object,
-				Relation:  s.Set.Relation,
-			}
-		case *rts.Subject_Id:
-			r.SubjectID = pointerx.Ptr(s.Id)
-		default:
-			return nil, errors.WithStack(ErrNilSubject)
+	switch s := d.GetSubject().GetRef().(type) {
+	case *rts.Subject_Set:
+		r.SubjectSet = &SubjectSet{
+			Namespace: s.Set.Namespace,
+			Object:    s.Set.Object,
+			Relation:  s.Set.Relation,
 		}
-	} else if s, ok := d.(createRelationSubjectData); ok {
-		switch s := any(s.GetSubject()).(type) {
-		case *rts.CreateRelationTupleRequest_Relationship_SubjectId:
-			r.SubjectID = pointerx.Ptr(s.SubjectId)
-		case *rts.CreateRelationTupleRequest_Relationship_SubjectSet:
-			r.SubjectSet = &SubjectSet{
-				Namespace: s.SubjectSet.Namespace,
-				Object:    s.SubjectSet.Object,
-				Relation:  s.SubjectSet.Relation,
-			}
-		default:
-			return nil, errors.WithStack(ErrNilSubject)
-		}
+	case *rts.Subject_Id:
+		r.SubjectID = pointerx.Ptr(s.Id)
+	default:
+		return nil, errors.WithStack(ErrNilSubject)
 	}
 
 	r.Object = d.GetObject()
@@ -80,8 +87,16 @@ func (r *RelationTuple) ToProto() *rts.RelationTuple {
 	}
 	if r.SubjectID != nil {
 		res.Subject = rts.NewSubjectID(*r.SubjectID)
+		res.RestApiSubject = &rts.RelationTuple_SubjectId{SubjectId: *r.SubjectID}
 	} else {
 		res.Subject = rts.NewSubjectSet(r.SubjectSet.Namespace, r.SubjectSet.Object, r.SubjectSet.Relation)
+		res.RestApiSubject = &rts.RelationTuple_SubjectSet{
+			SubjectSet: &rts.SubjectSet{
+				Namespace: r.SubjectSet.Namespace,
+				Object:    r.SubjectSet.Object,
+				Relation:  r.SubjectSet.Relation,
+			},
+		}
 	}
 	return res
 }

@@ -80,16 +80,19 @@ type (
 		RegisterReadRoutes(r *x.ReadRouter)
 		RegisterReadGRPC(s *grpc.Server)
 		RegisterReadGRPCGateway(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts ...grpc.DialOption) error
+		RegisterReadGRPCGatewayConn(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error
 	}
 	WriteHandler interface {
 		RegisterWriteRoutes(r *x.WriteRouter)
 		RegisterWriteGRPC(s *grpc.Server)
 		RegisterWriteGRPCGateway(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts ...grpc.DialOption) error
+		RegisterWriteGRPCGatewayConn(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error
 	}
 	OPLSyntaxHandler interface {
 		RegisterSyntaxRoutes(r *x.OPLSyntaxRouter)
 		RegisterSyntaxGRPC(s *grpc.Server)
 		RegisterSyntaxGRPCGateway(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts ...grpc.DialOption) error
+		RegisterSyntaxGRPCGatewayConn(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error
 	}
 	Handler interface{}
 )

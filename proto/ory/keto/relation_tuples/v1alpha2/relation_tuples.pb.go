@@ -40,6 +40,7 @@ type RelationTuple struct {
 	// a `SubjectSet` that expands to more Subjects.
 	Subject *Subject `protobuf:"bytes,4,opt,name=subject,proto3" json:"subject,omitempty"`
 	// Types that are assignable to RestApiSubject:
+	//
 	//	*RelationTuple_SubjectId
 	//	*RelationTuple_SubjectSet
 	RestApiSubject isRelationTuple_RestApiSubject `protobuf_oneof:"rest_api_subject"`
@@ -156,11 +157,11 @@ func (*RelationTuple_SubjectSet) isRelationTuple_RestApiSubject() {}
 // partially filter for specific relationships.
 //
 // Example use cases (namespace is always required):
-//  - object only: display a list of all permissions referring to a specific object
-//  - relation only: get all groups that have members; get all directories that have content
-//  - object & relation: display all subjects that have a specific permission relation
-//  - subject & relation: display all groups a subject belongs to; display all objects a subject has access to
-//  - object & relation & subject: check whether the relation tuple already exists
+//   - object only: display a list of all permissions referring to a specific object
+//   - relation only: get all groups that have members; get all directories that have content
+//   - object & relation: display all subjects that have a specific permission relation
+//   - subject & relation: display all groups a subject belongs to; display all objects a subject has access to
+//   - object & relation & subject: check whether the relation tuple already exists
 type RelationQuery struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -249,6 +250,7 @@ type Subject struct {
 	// The reference of this abstract subject.
 	//
 	// Types that are assignable to Ref:
+	//
 	//	*Subject_Id
 	//	*Subject_Set
 	Ref isSubject_Ref `protobuf_oneof:"ref"`
@@ -405,6 +407,7 @@ type SubjectQuery struct {
 	// The reference of this abstract subject.
 	//
 	// Types that are assignable to Ref:
+	//
 	//	*SubjectQuery_Id
 	//	*SubjectQuery_Set
 	Ref isSubjectQuery_Ref `protobuf_oneof:"ref"`

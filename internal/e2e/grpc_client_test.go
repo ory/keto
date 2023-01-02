@@ -237,7 +237,7 @@ func (g *grpcClient) transactTuples(t require.TestingT, ins []*ketoapi.RelationT
 func (g *grpcClient) oplCheckSyntax(t require.TestingT, content []byte) (parseErrors []*ketoapi.ParseError) {
 	c := opl.NewSyntaxServiceClient(g.oplSyntaxConn(t))
 
-	res, err := c.Check(g.ctx, &opl.CheckRequest{Content: content})
+	res, err := c.Check(g.ctx, &opl.CheckRequest{Content: string(content)})
 	require.NoError(t, err)
 
 	raw, err := json.Marshal(res.Errors)

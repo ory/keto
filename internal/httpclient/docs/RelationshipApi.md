@@ -32,7 +32,7 @@ import (
 )
 
 func main() {
-    body := string(BYTE_ARRAY_DATA_HERE) // string | 
+    body := "body_example" // string | 
 
     configuration := openapiclient.NewConfiguration()
     apiClient := openapiclient.NewAPIClient(configuration)

@@ -221,7 +221,6 @@ paths:
         content:
           text/plain:
             schema:
-              format: byte
               type: string
         required: true
         x-originalParamName: content

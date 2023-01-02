@@ -8,6 +8,7 @@ import (
 	"io"
 	"net/http"
 
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/julienschmidt/httprouter"
 	"github.com/ory/herodot"
 	"github.com/pkg/errors"
@@ -40,6 +41,13 @@ func (h *Handler) RegisterSyntaxRoutes(r *x.OPLSyntaxRouter) {
 
 func (h *Handler) RegisterSyntaxGRPC(s *grpc.Server) {
 	opl.RegisterSyntaxServiceServer(s, h)
+}
+
+func (h *Handler) RegisterSyntaxGRPCGateway(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts ...grpc.DialOption) error {
+	return opl.RegisterSyntaxServiceHandlerFromEndpoint(ctx, mux, endpoint, opts)
+}
+func (h *Handler) RegisterSyntaxGRPCGatewayConn(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
+	return opl.RegisterSyntaxServiceHandler(ctx, mux, conn)
 }
 
 func (h *Handler) Check(_ context.Context, request *opl.CheckRequest) (*opl.CheckResponse, error) {

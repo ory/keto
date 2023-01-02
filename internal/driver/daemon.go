@@ -16,6 +16,7 @@ import (
 	grpcRecovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/status"
 
 	"github.com/ory/keto/internal/namespace/namespacehandler"
@@ -319,6 +320,19 @@ func (r *RegistryDefault) allHandlers() []Handler {
 	return r.handlers
 }
 
+type RouterOrGatewayHandler struct {
+	Router   *httprouter.Router
+	ServeMux *runtime.ServeMux
+}
+
+func (h *RouterOrGatewayHandler) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
+	if handle, params, _ := h.Router.Lookup(r.Method, r.URL.Path); handle != nil {
+		handle(rw, r, params)
+		return
+	}
+	h.ServeMux.ServeHTTP(rw, r)
+}
+
 func (r *RegistryDefault) ReadRouter(ctx context.Context) http.Handler {
 	n := negroni.New()
 	for _, f := range r.defaultHttpMiddlewares {
@@ -326,10 +340,10 @@ func (r *RegistryDefault) ReadRouter(ctx context.Context) http.Handler {
 	}
 	n.Use(reqlog.NewMiddlewareFromLogger(r.l, "read#Ory Keto").ExcludePaths(healthx.AliveCheckPath, healthx.ReadyCheckPath))
 
-	mux := runtime.NewServeMux()
+	mux := runtime.NewServeMux(runtime.WithForwardResponseOption(x.HttpResponseModifier))
 	for _, h := range r.allHandlers() {
 		if h, ok := h.(ReadHandler); ok {
-			if err := h.RegisterReadGRPCGateway(ctx, mux, r.Config(ctx).ReadAPIListenOn()); err != nil {
+			if err := h.RegisterReadGRPCGateway(ctx, mux, r.Config(ctx).ReadAPIListenOn(), grpc.WithTransportCredentials(insecure.NewCredentials())); err != nil {
 				panic(err)
 			}
 		}
@@ -342,13 +356,7 @@ func (r *RegistryDefault) ReadRouter(ctx context.Context) http.Handler {
 	r.HealthHandler().SetHealthRoutes(br.Router, false)
 	r.HealthHandler().SetVersionRoutes(br.Router)
 
-	for _, h := range r.allHandlers() {
-		if h, ok := h.(ReadHandler); ok {
-			h.RegisterReadRoutes(br)
-		}
-	}
-
-	n.UseHandler(br)
+	n.UseHandler(&RouterOrGatewayHandler{Router: br.Router, ServeMux: mux})
 	n.Use(r.PrometheusManager())
 
 	if r.sqaService != nil {
@@ -371,6 +379,15 @@ func (r *RegistryDefault) WriteRouter(ctx context.Context) http.Handler {
 	}
 	n.Use(reqlog.NewMiddlewareFromLogger(r.l, "write#Ory Keto").ExcludePaths(healthx.AliveCheckPath, healthx.ReadyCheckPath))
 
+	mux := runtime.NewServeMux(runtime.WithForwardResponseOption(x.HttpResponseModifier))
+	for _, h := range r.allHandlers() {
+		if h, ok := h.(WriteHandler); ok {
+			if err := h.RegisterWriteGRPCGateway(ctx, mux, r.Config(ctx).WriteAPIListenOn(), grpc.WithTransportCredentials(insecure.NewCredentials())); err != nil {
+				panic(err)
+			}
+		}
+	}
+
 	pr := &x.WriteRouter{Router: httprouter.New()}
 	r.PrometheusManager().RegisterRouter(pr.Router)
 	r.MetricsHandler().SetRoutes(pr.Router)
@@ -378,13 +395,7 @@ func (r *RegistryDefault) WriteRouter(ctx context.Context) http.Handler {
 	r.HealthHandler().SetHealthRoutes(pr.Router, false)
 	r.HealthHandler().SetVersionRoutes(pr.Router)
 
-	for _, h := range r.allHandlers() {
-		if h, ok := h.(WriteHandler); ok {
-			h.RegisterWriteRoutes(pr)
-		}
-	}
-
-	n.UseHandler(pr)
+	n.UseHandler(&RouterOrGatewayHandler{Router: pr.Router, ServeMux: mux})
 	n.Use(r.PrometheusManager())
 
 	if r.sqaService != nil {
@@ -414,13 +425,16 @@ func (r *RegistryDefault) OPLSyntaxRouter(ctx context.Context) http.Handler {
 	r.HealthHandler().SetHealthRoutes(pr.Router, false)
 	r.HealthHandler().SetVersionRoutes(pr.Router)
 
+	mux := runtime.NewServeMux(runtime.WithForwardResponseOption(x.HttpResponseModifier))
 	for _, h := range r.allHandlers() {
 		if h, ok := h.(OPLSyntaxHandler); ok {
-			h.RegisterSyntaxRoutes(pr)
+			if err := h.RegisterSyntaxGRPCGateway(ctx, mux, r.Config(ctx).OPLSyntaxAPIListenOn(), grpc.WithTransportCredentials(insecure.NewCredentials())); err != nil {
+				panic(err)
+			}
 		}
 	}
 
-	n.UseHandler(pr)
+	n.UseHandler(&RouterOrGatewayHandler{Router: pr.Router, ServeMux: mux})
 	n.Use(r.PrometheusManager())
 
 	if r.sqaService != nil {

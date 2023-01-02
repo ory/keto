@@ -32,39 +32,45 @@ type (
 	deprecatedQueryWrapper struct {
 		*rts.ListRelationTuplesRequest_Query
 	}
+	openAPIQueryWrapper struct {
+		wrapped interface {
+			GetObject() string
+			GetRelation() string
+			GetNamespace() string
+			GetSubjectSet() *rts.SubjectSetQuery
+			GetSubjectId() string
+		}
+	}
 )
 
-func (q *queryWrapper) GetObject() *string {
-	return q.Object
-}
-
-func (q *queryWrapper) GetNamespace() *string {
-	return q.Namespace
-}
-
-func (q *queryWrapper) GetRelation() *string {
-	return q.Relation
-}
-
-func (q *deprecatedQueryWrapper) GetObject() *string {
-	if q.Object == "" {
+func stringPtr(s string) *string {
+	if s == "" {
 		return nil
 	}
-	return pointerx.Ptr(q.Object)
+	return pointerx.Ptr(s)
 }
 
-func (q *deprecatedQueryWrapper) GetNamespace() *string {
-	if q.Namespace == "" {
-		return nil
-	}
-	return pointerx.Ptr(q.Namespace)
-}
+func (q *queryWrapper) GetObject() *string    { return q.Object }
+func (q *queryWrapper) GetNamespace() *string { return q.Namespace }
+func (q *queryWrapper) GetRelation() *string  { return q.Relation }
 
-func (q *deprecatedQueryWrapper) GetRelation() *string {
-	if q.Relation == "" {
-		return nil
+func (q *deprecatedQueryWrapper) GetObject() *string    { return stringPtr(q.Object) }
+func (q *deprecatedQueryWrapper) GetNamespace() *string { return stringPtr(q.Namespace) }
+func (q *deprecatedQueryWrapper) GetRelation() *string  { return stringPtr(q.Relation) }
+
+func (q *openAPIQueryWrapper) GetObject() *string { return stringPtr(q.wrapped.GetObject()) }
+func (q *openAPIQueryWrapper) GetNamespace() *string {
+	return stringPtr(q.wrapped.GetNamespace())
+}
+func (q *openAPIQueryWrapper) GetRelation() *string { return stringPtr(q.wrapped.GetRelation()) }
+func (q *openAPIQueryWrapper) GetSubject() *rts.Subject {
+	if set := q.wrapped.GetSubjectSet(); set != nil {
+		return rts.NewSubjectSet(set.Namespace, set.Object, set.Relation)
 	}
-	return pointerx.Ptr(q.Relation)
+	if sID := q.wrapped.GetSubjectId(); sID != "" {
+		return rts.NewSubjectID(q.wrapped.GetSubjectId())
+	}
+	return nil
 }
 
 func (h *handler) ListRelationTuples(ctx context.Context, req *rts.ListRelationTuplesRequest) (*rts.ListRelationTuplesResponse, error) {
@@ -76,7 +82,7 @@ func (h *handler) ListRelationTuples(ctx context.Context, req *rts.ListRelationT
 	case req.Query != nil: // nolint
 		q.FromDataProvider(&deprecatedQueryWrapper{req.Query}) // nolint
 	default:
-		return nil, herodot.ErrBadRequest.WithError("you must provide a query")
+		q.FromDataProvider(&openAPIQueryWrapper{req})
 	}
 
 	iq, err := h.d.Mapper().FromQuery(ctx, &q)

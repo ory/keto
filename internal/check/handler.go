@@ -66,6 +66,9 @@ func (h *Handler) RegisterReadGRPC(s *grpc.Server) {
 func (h *Handler) RegisterReadGRPCGateway(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts ...grpc.DialOption) error {
 	return rts.RegisterCheckServiceHandlerFromEndpoint(ctx, mux, endpoint, opts)
 }
+func (h *Handler) RegisterReadGRPCGatewayConn(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
+	return rts.RegisterReadServiceHandler(ctx, mux, conn)
+}
 
 // Check Permission Result
 //
