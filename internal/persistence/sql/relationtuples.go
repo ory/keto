@@ -246,6 +246,20 @@ func (p *Persister) GetRelationTuples(ctx context.Context, query *relationtuple.
 	return internalRes, nextPageToken, nil
 }
 
+func (p *Persister) ExistsRelationTuples(ctx context.Context, query *relationtuple.RelationQuery) (_ bool, err error) {
+	ctx, span := p.d.Tracer(ctx).Tracer().Start(ctx, "persistence.sql.ExistsRelationTuples")
+	defer otelx.End(span, &err)
+
+	sqlQuery := p.QueryWithNetwork(ctx).Limit(1)
+
+	err = p.whereQuery(ctx, sqlQuery, query)
+	if err != nil {
+		return false, err
+	}
+	exists, err := sqlQuery.Exists(&RelationTuple{})
+	return exists, sqlcon.HandleError(err)
+}
+
 func (p *Persister) WriteRelationTuples(ctx context.Context, rs ...*relationtuple.RelationTuple) (err error) {
 	ctx, span := p.d.Tracer(ctx).Tracer().Start(ctx, "persistence.sql.WriteRelationTuples")
 	defer otelx.End(span, &err)

@@ -172,11 +172,22 @@ func (e *Engine) checkDirect(r *relationTuple, restDepth int) checkgroup.CheckFu
 		e.d.Logger().
 			WithField("request", r.String()).
 			Trace("check direct")
-		if rels, _, err := e.d.RelationTupleManager().GetRelationTuples(
+		found, err := e.d.RelationTupleManager().ExistsRelationTuples(
 			ctx,
 			r.ToQuery(),
-			x.WithSize(1),
-		); err == nil && len(rels) > 0 {
+		)
+
+		switch {
+		case err != nil:
+			e.d.Logger().
+				WithField("method", "checkDirect").
+				WithError(err).
+				Error("failed to look up direct access in db")
+			resultCh <- checkgroup.Result{
+				Membership: checkgroup.NotMember,
+			}
+
+		case found:
 			resultCh <- checkgroup.Result{
 				Membership: checkgroup.IsMember,
 				Tree: &ketoapi.Tree[*relationtuple.RelationTuple]{
@@ -184,7 +195,8 @@ func (e *Engine) checkDirect(r *relationTuple, restDepth int) checkgroup.CheckFu
 					Tuple: r,
 				},
 			}
-		} else {
+
+		default:
 			resultCh <- checkgroup.Result{
 				Membership: checkgroup.NotMember,
 			}
@@ -232,7 +244,7 @@ func (e *Engine) astRelationFor(ctx context.Context, r *relationTuple) (*ast.Rel
 	ns, err := e.namespaceFor(ctx, r)
 	if err != nil {
 		// On an unknown namespace the answer should be "not allowed", not "not
-		// found". Therefore we don't return the error here.
+		// found". Therefore, we don't return the error here.
 		return nil, nil
 	}
 
