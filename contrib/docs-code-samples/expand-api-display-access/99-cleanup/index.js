@@ -1,4 +1,4 @@
-// Copyright © 2022 Ory Corp
+// Copyright © 2023 Ory Corp
 // SPDX-License-Identifier: Apache-2.0
 
 import grpc from "@ory/keto-grpc-client/node_modules/@grpc/grpc-js/build/src/index.js"
