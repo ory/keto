@@ -5,7 +5,7 @@
 
 **Table of Contents**
 
-- [0.0.0 (2023-01-03)](#000-2023-01-03)
+- [0.0.0 (2023-01-05)](#000-2023-01-05)
   - [Bug Fixes](#bug-fixes)
   - [Code Refactoring](#code-refactoring)
   - [Documentation](#documentation)
@@ -140,7 +140,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.10.0-alpha.0...v0.0.0) (2023-01-03)
+# [0.0.0](https://github.com/ory/keto/compare/v0.10.0-alpha.0...v0.0.0) (2023-01-05)
 
 ### Bug Fixes
 
@@ -245,6 +245,8 @@
   ([57ff639](https://github.com/ory/keto/commit/57ff639db7a783023e5c47074e485b09874e9aae))
 - Handle HTTP config locations
   ([6571bae](https://github.com/ory/keto/commit/6571bae5d10f3218573de3e5a60877bec71a2029))
+- Improve tracing ([#1169](https://github.com/ory/keto/issues/1169))
+  ([64dc85e](https://github.com/ory/keto/commit/64dc85ee93eaa7322e1c6ffcf766968360c0d527))
 - Rename to Ory Network ([#1081](https://github.com/ory/keto/issues/1081))
   ([3fe1d68](https://github.com/ory/keto/commit/3fe1d68bd1c363c9fee8490332477f68dac8b547))
 - Support Array<> syntax in type decl
