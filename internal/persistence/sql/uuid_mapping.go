@@ -10,6 +10,7 @@ import (
 	"golang.org/x/exp/maps"
 
 	"github.com/gofrs/uuid"
+	"github.com/ory/x/otelx"
 	"github.com/ory/x/sqlcon"
 
 	"github.com/ory/keto/internal/x"
@@ -116,10 +117,16 @@ func (p *Persister) batchFromUUIDs(ctx context.Context, ids []uuid.UUID, opts ..
 	return
 }
 
-func (p *Persister) MapStringsToUUIDs(ctx context.Context, s ...string) ([]uuid.UUID, error) {
+func (p *Persister) MapStringsToUUIDs(ctx context.Context, s ...string) (_ []uuid.UUID, err error) {
+	ctx, span := p.d.Tracer(ctx).Tracer().Start(ctx, "persistence.sql.MapStringsToUUIDs")
+	defer otelx.End(span, &err)
+
 	return p.batchToUUIDs(ctx, s)
 }
 
-func (p *Persister) MapUUIDsToStrings(ctx context.Context, u ...uuid.UUID) ([]string, error) {
+func (p *Persister) MapUUIDsToStrings(ctx context.Context, u ...uuid.UUID) (_ []string, err error) {
+	ctx, span := p.d.Tracer(ctx).Tracer().Start(ctx, "persistence.sql.MapUUIDsToStrings")
+	defer otelx.End(span, &err)
+
 	return p.batchFromUUIDs(ctx, u)
 }

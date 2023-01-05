@@ -16,24 +16,18 @@ import (
 )
 
 func (r *RegistryDefault) PopConnectionWithOpts(ctx context.Context, popOpts ...func(*pop.ConnectionDetails)) (*pop.Connection, error) {
-	tracer := r.Tracer(ctx)
-
-	var opts []instrumentedsql.Opt
-	if tracer.IsLoaded() {
-		opts = []instrumentedsql.Opt{
-			instrumentedsql.WithTracer(otelsql.NewTracer()),
-			instrumentedsql.WithOmitArgs(),
-		}
-	}
 	pool, idlePool, connMaxLifetime, connMaxIdleTime, cleanedDSN := sqlcon.ParseConnectionOptions(r.Logger(), r.Config(ctx).DSN())
 	connDetails := &pop.ConnectionDetails{
-		URL:                       sqlcon.FinalizeDSN(r.Logger(), cleanedDSN),
-		IdlePool:                  idlePool,
-		ConnMaxLifetime:           connMaxLifetime,
-		ConnMaxIdleTime:           connMaxIdleTime,
-		Pool:                      pool,
-		UseInstrumentedDriver:     tracer != nil && tracer.IsLoaded(),
-		InstrumentedDriverOptions: opts,
+		URL:                   sqlcon.FinalizeDSN(r.Logger(), cleanedDSN),
+		IdlePool:              idlePool,
+		ConnMaxLifetime:       connMaxLifetime,
+		ConnMaxIdleTime:       connMaxIdleTime,
+		Pool:                  pool,
+		UseInstrumentedDriver: true,
+		InstrumentedDriverOptions: []instrumentedsql.Opt{
+			instrumentedsql.WithTracer(otelsql.NewTracer()),
+			instrumentedsql.WithIncludeArgs(),
+		},
 	}
 	for _, o := range popOpts {
 		o(connDetails)
