@@ -10,6 +10,7 @@ import (
 
 	"github.com/gofrs/uuid"
 
+	"github.com/ory/keto/internal/namespace/ast"
 	"github.com/ory/keto/internal/x"
 	"github.com/ory/keto/ketoapi"
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
@@ -21,6 +22,7 @@ type (
 	}
 	Traverser interface {
 		TraverseSubjectSetExpansion(ctx context.Context, tuple *RelationTuple) ([]*TraversalResult, error)
+		TraverseSubjectSetRewrite(ctx context.Context, tuple *RelationTuple, rewrite *ast.SubjectSetRewrite) ([]*TraversalResult, error)
 	}
 	Manager interface {
 		GetRelationTuples(ctx context.Context, query *RelationQuery, options ...x.PaginationOptionSetter) ([]*RelationTuple, string, error)

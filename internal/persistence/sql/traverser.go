@@ -1,8 +1,12 @@
+// Copyright © 2023 Ory Corp
+// SPDX-License-Identifier: Apache-2.0
+
 package sql
 
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/gobuffalo/pop/v6"
 	"github.com/gofrs/uuid"
@@ -10,6 +14,7 @@ import (
 	"github.com/ory/x/sqlcon"
 	"github.com/pkg/errors"
 
+	"github.com/ory/keto/internal/namespace/ast"
 	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/ketoapi"
 )
@@ -26,6 +31,11 @@ type (
 		RelationTuple
 
 		Found bool `db:"found"`
+	}
+
+	rewriteRelationTupleRow struct {
+		RelationTuple
+		Traversal relationtuple.Traversal `db:"traversal"`
 	}
 )
 
@@ -65,7 +75,7 @@ SELECT current.subject_set_namespace AS namespace,
                  namespace = current.subject_set_namespace AND
                  object = current.subject_set_object AND
                  relation = current.subject_set_relation AND
-                 %s
+                 %s  -- subject where clause
        ) AS found
 FROM keto_relation_tuples AS current
 WHERE current.nid = ? AND
@@ -76,14 +86,18 @@ WHERE current.nid = ? AND
 `, targetSubjectSQL),
 		append(targetSubjectArgs, t.p.NetworkID(ctx), start.Namespace, start.Object, start.Relation)...,
 	).All(&rows)
+	if err != nil {
+		return nil, sqlcon.HandleError(err)
+	}
+
 	res = make([]*relationtuple.TraversalResult, len(rows))
 
 	for i, r := range rows {
 		to, err := r.RelationTuple.ToInternal()
-		to.Subject = start.Subject
 		if err != nil {
 			return nil, errors.WithStack(err)
 		}
+		to.Subject = start.Subject
 		res[i] = &relationtuple.TraversalResult{
 			From:  start,
 			To:    to,
@@ -92,7 +106,77 @@ WHERE current.nid = ? AND
 		}
 	}
 
-	return res, sqlcon.HandleError(err)
+	return res, nil
+}
+
+func (t *Traverser) TraverseSubjectSetRewrite(ctx context.Context, start *relationtuple.RelationTuple, rewrite *ast.SubjectSetRewrite) (res []*relationtuple.TraversalResult, err error) {
+	ctx, span := t.d.Tracer(ctx).Tracer().Start(ctx, "persistence.sql.TraverseSubjectSetRewrite")
+	defer otelx.End(span, &err)
+
+	subjectSQL, sqlArgs, err := whereSubject(start.Subject)
+
+	var targetRelationPlaceholders []string
+	for _, child := range rewrite.Children {
+		switch c := child.(type) {
+		case *ast.ComputedSubjectSet:
+			sqlArgs = append(sqlArgs, c.Relation)
+			targetRelationPlaceholders = append(targetRelationPlaceholders, "?")
+		}
+	}
+	sqlArgs = append([]any{t.p.NetworkID(ctx), start.Namespace, start.Object}, sqlArgs...)
+
+	var rows []*rewriteRelationTupleRow
+	err = t.conn.RawQuery(fmt.Sprintf(`
+SELECT t.*,
+       'computed userset' as traversal
+FROM keto_relation_tuples AS t
+WHERE t.nid = ? AND
+      t.namespace = ? AND
+      t.object = ? AND
+      %s AND -- subject where clause
+      t.relation IN (%s)
+LIMIT 1;
+`, subjectSQL, strings.Join(targetRelationPlaceholders, ", ")),
+		sqlArgs...,
+	).All(&rows)
+	if err != nil {
+		return nil, sqlcon.HandleError(err)
+	}
+
+	// If we got any rows back, success!
+	if len(rows) > 0 {
+		r := rows[0]
+		to, err := r.RelationTuple.ToInternal()
+		if err != nil {
+			return nil, errors.WithStack(err)
+		}
+		return []*relationtuple.TraversalResult{{
+			From:  start,
+			To:    to,
+			Via:   r.Traversal,
+			Found: true,
+		}}, nil
+	}
+
+	// Otherwise, the next candidates are those tuples with relations from the rewrite
+	for _, child := range rewrite.Children {
+		switch c := child.(type) {
+		case *ast.ComputedSubjectSet:
+			res = append(res, &relationtuple.TraversalResult{
+				From: start,
+				To: &relationtuple.RelationTuple{
+					Namespace: start.Namespace,
+					Object:    start.Object,
+					Relation:  c.Relation,
+					Subject:   start.Subject,
+				},
+				Via:   relationtuple.TraversalComputedUserset,
+				Found: false,
+			})
+		}
+	}
+
+	return res, nil
 }
 
 func NewTraverser(p *Persister) *Traverser {
