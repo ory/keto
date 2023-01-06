@@ -17,6 +17,7 @@ import (
 	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/namespace"
 	"github.com/ory/keto/internal/namespace/ast"
+	"github.com/ory/keto/internal/persistence"
 	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/internal/x"
 	"github.com/ory/keto/internal/x/graph"
@@ -32,6 +33,7 @@ type (
 	}
 	EngineDependencies interface {
 		relationtuple.ManagerProvider
+		persistence.Provider
 		config.Provider
 		x.LoggerProvider
 	}
@@ -101,7 +103,7 @@ func (e *Engine) CheckRelationTuple(ctx context.Context, r *relationTuple, restD
 // subjects that match n:obj#rel@* (arbitrary subjects), and then for each
 // subject set checks subject@user.
 func (e *Engine) checkExpandSubject(r *relationTuple, restDepth int) checkgroup.CheckFunc {
-	if restDepth < 0 {
+	if restDepth <= 0 {
 		e.d.Logger().
 			WithField("request", r.String()).
 			Debug("reached max-depth, therefore this query will not be further expanded")
@@ -113,50 +115,39 @@ func (e *Engine) checkExpandSubject(r *relationTuple, restDepth int) checkgroup.
 			Trace("check expand subject")
 
 		g := checkgroup.New(ctx)
+		defer func() { resultCh <- g.Result() }()
 
 		var (
-			subjects  []*relationTuple
-			pageToken string
-			err       error
-			visited   bool
-			innerCtx  = graph.InitVisited(ctx)
-			query     = &query{Namespace: &r.Namespace, Object: &r.Object, Relation: &r.Relation}
+			visited  bool
+			innerCtx = graph.InitVisited(ctx)
 		)
-		for {
-			subjects, pageToken, err = e.d.RelationTupleManager().GetRelationTuples(innerCtx, query, x.WithToken(pageToken))
-			if errors.Is(err, herodot.ErrNotFound) {
-				g.Add(checkgroup.NotMemberFunc)
-				break
-			} else if err != nil {
-				g.Add(checkgroup.ErrorFunc(err))
-				break
-			}
-			for _, s := range subjects {
-				innerCtx, visited = graph.CheckAndAddVisited(innerCtx, s.Subject)
-				if visited {
-					continue
-				}
-				subjectSet, ok := s.Subject.(*relationtuple.SubjectSet)
-				if !ok || subjectSet.Relation == "" {
-					continue
-				}
-				g.Add(e.checkIsAllowed(
-					innerCtx,
-					&relationTuple{
-						Namespace: subjectSet.Namespace,
-						Object:    subjectSet.Object,
-						Relation:  subjectSet.Relation,
-						Subject:   r.Subject,
-					},
-					restDepth-1,
-				))
-			}
-			if pageToken == "" || g.Done() {
-				break
+
+		results, err := e.d.Traverser().TraverseSubjectSetExpansion(ctx, r)
+
+		if errors.Is(err, herodot.ErrNotFound) {
+			g.Add(checkgroup.NotMemberFunc)
+			return
+		} else if err != nil {
+			g.Add(checkgroup.ErrorFunc(err))
+			return
+		}
+
+		// See if the current hop was already enough to answer the check
+		for _, result := range results {
+			if result.Found {
+				g.Add(checkgroup.IsMemberFunc)
+				return
 			}
 		}
 
-		resultCh <- g.Result()
+		// If not, we must go another hop:
+		for _, result := range results {
+			innerCtx, visited = graph.CheckAndAddVisited(innerCtx, result.To.Subject)
+			if visited {
+				continue
+			}
+			g.Add(e.checkIsAllowed(innerCtx, result.To, restDepth-1))
+		}
 	}
 }
 

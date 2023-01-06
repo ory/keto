@@ -83,6 +83,18 @@ func NewSqliteTestRegistry(t testing.TB, debugOnDisk bool, opts ...TestRegistryO
 	return NewTestRegistry(t, dbx.GetSqlite(t, mode), opts...)
 }
 
+func NewCRDBTestRegistry(t testing.TB) *RegistryDefault {
+	var buf [20]byte
+	_, _ = rand.Read(buf[:])
+	testdb := fmt.Sprintf("testdb_%x", buf)
+	return NewTestRegistry(t, &dbx.DsnT{
+		Name:        "cockroach",
+		Conn:        dbx.RunCockroach(t, testdb),
+		MigrateUp:   true,
+		MigrateDown: true,
+	})
+}
+
 type TestRegistryOption func(t testing.TB, r *RegistryDefault)
 
 func WithNamespaces(namespaces []*namespace.Namespace) TestRegistryOption {

@@ -19,6 +19,9 @@ type (
 	ManagerProvider interface {
 		RelationTupleManager() Manager
 	}
+	Traverser interface {
+		TraverseSubjectSetExpansion(ctx context.Context, tuple *RelationTuple) ([]*TraversalResult, error)
+	}
 	Manager interface {
 		GetRelationTuples(ctx context.Context, query *RelationQuery, options ...x.PaginationOptionSetter) ([]*RelationTuple, string, error)
 		ExistsRelationTuples(ctx context.Context, query *RelationQuery) (bool, error)
@@ -66,6 +69,22 @@ type (
 		Subject  Subject              `json:"subject"`
 		Children []*Tree              `json:"children,omitempty"`
 	}
+
+	TraversalResult struct {
+		From  *RelationTuple
+		To    *RelationTuple
+		Via   Traversal
+		Found bool
+	}
+
+	Traversal string
+)
+
+const (
+	TraversalUnknown          Traversal = "unknown"
+	TraversalSubjectSetExpand Traversal = "subject set expand"
+	TraversalComputedUserset  Traversal = "computed userset"
+	TraversalTupleToUserset   Traversal = "tuple to userset"
 )
 
 var (

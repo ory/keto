@@ -7,6 +7,7 @@ import (
 	"context"
 	"testing"
 
+	"github.com/gobuffalo/pop/v6"
 	"github.com/gofrs/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -15,6 +16,7 @@ import (
 	"github.com/ory/keto/internal/driver"
 	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/namespace"
+	"github.com/ory/keto/internal/persistence"
 	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/internal/x"
 	"github.com/ory/keto/ketoapi"
@@ -23,9 +25,10 @@ import (
 type configProvider = config.Provider
 type loggerProvider = x.LoggerProvider
 
-// deps is defined to capture engine dependencies in a single struct
+// deps are defined to capture engine dependencies in a single struct
 type deps struct {
 	*relationtuple.ManagerWrapper // managerProvider
+	persistence.Provider
 	configProvider
 	loggerProvider
 }
@@ -37,6 +40,7 @@ func newDepsProvider(t testing.TB, namespaces []*namespace.Namespace, pageOpts .
 
 	return &deps{
 		ManagerWrapper: mr,
+		Provider:       reg,
 		configProvider: reg,
 		loggerProvider: reg,
 	}
@@ -95,24 +99,24 @@ func TestEngine(t *testing.T) {
 		// global max-depth defaults to 5
 		assert.Equal(t, reg.Config(ctx).MaxReadDepth(), 5)
 
-		// req max-depth takes precedence, max-depth=2 is not enough
-		res, err := e.CheckIsMember(ctx, userHasAccess, 2)
+		// req max-depth takes precedence, max-depth=1 is not enough
+		res, err := e.CheckIsMember(ctx, userHasAccess, 1)
 		require.NoError(t, err)
 		assert.False(t, res)
 
-		// req max-depth takes precedence, max-depth=3 is enough
-		res, err = e.CheckIsMember(ctx, userHasAccess, 3)
+		// req max-depth takes precedence, max-depth=2 is enough
+		res, err = e.CheckIsMember(ctx, userHasAccess, 2)
 		require.NoError(t, err)
 		assert.True(t, res)
 
-		// global max-depth takes precedence and max-depth=2 is not enough
-		require.NoError(t, reg.Config(ctx).Set(config.KeyLimitMaxReadDepth, 2))
-		res, err = e.CheckIsMember(ctx, userHasAccess, 3)
+		// global max-depth takes precedence and max-depth=1 is not enough
+		require.NoError(t, reg.Config(ctx).Set(config.KeyLimitMaxReadDepth, 1))
+		res, err = e.CheckIsMember(ctx, userHasAccess, 2)
 		require.NoError(t, err)
 		assert.False(t, res)
 
-		// global max-depth takes precedence and max-depth=3 is enough
-		require.NoError(t, reg.Config(ctx).Set(config.KeyLimitMaxReadDepth, 3))
+		// global max-depth takes precedence and max-depth=2 is enough
+		require.NoError(t, reg.Config(ctx).Set(config.KeyLimitMaxReadDepth, 2))
 		res, err = e.CheckIsMember(ctx, userHasAccess, 0)
 		require.NoError(t, err)
 		assert.True(t, res)
@@ -284,67 +288,28 @@ func TestEngine(t *testing.T) {
 	})
 
 	t.Run("indirect inclusion level 2", func(t *testing.T) {
-		object := uuid.Must(uuid.NewV4())
-		someNamespace := "some_namespaces"
-		user := relationtuple.SubjectID{ID: uuid.Must(uuid.NewV4())}
-		organization := uuid.Must(uuid.NewV4())
-		orgNamespace := "organizations"
-
-		ownerUserSet := relationtuple.SubjectSet{
-			Namespace: someNamespace,
-			Relation:  "owner",
-			Object:    object,
-		}
-		orgMembers := relationtuple.SubjectSet{
-			Namespace: orgNamespace,
-			Relation:  "member",
-			Object:    organization,
-		}
-
-		writeRel := relationtuple.RelationTuple{
-			Namespace: someNamespace,
-			Relation:  "write",
-			Object:    object,
-			Subject:   &ownerUserSet,
-		}
-		orgOwnerRel := relationtuple.RelationTuple{
-			Namespace: someNamespace,
-			Relation:  ownerUserSet.Relation,
-			Object:    object,
-			Subject:   &orgMembers,
-		}
-		userMembershipRel := relationtuple.RelationTuple{
-			Namespace: orgNamespace,
-			Relation:  orgMembers.Relation,
-			Object:    organization,
-			Subject:   &user,
-		}
-
 		reg := newDepsProvider(t, []*namespace.Namespace{
-			{Name: someNamespace},
-			{Name: orgNamespace},
+			{Name: "obj"},
+			{Name: "org"},
 		})
-		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(ctx, &writeRel, &orgOwnerRel, &userMembershipRel))
+		//require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(ctx, &writeRel, &orgOwnerRel, &userMembershipRel))
+		insertFixtures(t, reg.RelationTupleManager(), []string{
+			"obj:object#write@obj:object#owner",
+			"obj:object#owner@org:organization#member",
+			"org:organization#member@user",
+		})
 
 		e := check.NewEngine(reg)
 
+		pop.Debug = true
 		// user can write object
-		res, err := e.CheckIsMember(ctx, &relationtuple.RelationTuple{
-			Namespace: someNamespace,
-			Relation:  writeRel.Relation,
-			Object:    object,
-			Subject:   &user,
-		}, 0)
+		res, err := e.CheckIsMember(ctx, tupleFromString(t, "obj:object#write@user"), 0)
 		require.NoError(t, err)
 		assert.True(t, res)
+		pop.Debug = false
 
 		// user is member of the organization
-		res, err = e.CheckIsMember(ctx, &relationtuple.RelationTuple{
-			Namespace: orgNamespace,
-			Relation:  orgMembers.Relation,
-			Object:    organization,
-			Subject:   &user,
-		}, 0)
+		res, err = e.CheckIsMember(ctx, tupleFromString(t, "org:organization#member@user"), 0)
 		require.NoError(t, err)
 		assert.True(t, res)
 	})

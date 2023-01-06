@@ -49,16 +49,17 @@ var (
 
 type (
 	RegistryDefault struct {
-		p              persistence.Persister
-		mb             *popx.MigrationBox
-		l              *logrusx.Logger
-		w              herodot.Writer
-		ce             *check.Engine
-		ee             *expand.Engine
-		c              *config.Config
-		conn           *pop.Connection
-		ctxer          ketoctx.Contextualizer
-		mapper         *relationtuple.Mapper
+		p         persistence.Persister
+		traverser relationtuple.Traverser
+		mb        *popx.MigrationBox
+		l         *logrusx.Logger
+		w         herodot.Writer
+		ce        *check.Engine
+		ee        *expand.Engine
+		c         *config.Config
+		conn      *pop.Connection
+		ctxer     ketoctx.Contextualizer
+		mapper    *relationtuple.Mapper
 		readOnlyMapper *relationtuple.Mapper
 
 		initialized    sync.Once
@@ -198,6 +199,13 @@ func (r *RegistryDefault) Persister() persistence.Persister {
 	return r.p
 }
 
+func (r *RegistryDefault) Traverser() relationtuple.Traverser {
+	if r.traverser == nil {
+		panic("no traverser, but expected to have one")
+	}
+	return r.traverser
+}
+
 func (r *RegistryDefault) PermissionEngine() *check.Engine {
 	if r.ce == nil {
 		r.ce = check.NewEngine(r)
@@ -305,10 +313,12 @@ func (r *RegistryDefault) Init(ctx context.Context) (err error) {
 				return err
 			}
 
-			r.p, err = sql.NewPersister(ctx, r, network.ID)
+			p, err := sql.NewPersister(ctx, r, network.ID)
 			if err != nil {
 				return err
 			}
+			r.p = p
+			r.traverser = sql.NewTraverser(p)
 
 			return nil
 		}()

@@ -51,12 +51,19 @@ func (e *Engine) checkSubjectSetRewrite(
 	)
 	switch rewrite.Operation {
 	case ast.OperatorOr:
-		op = or
+		op = or // UNION
 	case ast.OperatorAnd:
-		op = and
+		op = and // INTERSECT
 	default:
 		return checkNotImplemented
 	}
+
+	// view if admin || editor || viewer -- 6 SQL statements
+	// --> select where admin UNION select where editor UNION select where viewer LIMIT 1;
+	// --> select where IN ('admin', 'editor', 'viewer')
+	// --> 1 SQL statement
+
+	//e.d.RelationTupleManager().HopRewrites(ctx, tuple, rewrite.Children)
 
 	for _, child := range rewrite.Children {
 		switch c := child.(type) {
@@ -77,7 +84,7 @@ func (e *Engine) checkSubjectSetRewrite(
 			checks = append(checks, checkgroup.WithEdge(checkgroup.Edge{
 				Tuple: *tuple,
 				Type:  toTreeNodeType(c.Operation),
-			}, e.checkSubjectSetRewrite(ctx, tuple, c, restDepth)))
+			}, e.checkSubjectSetRewrite(ctx, tuple, c, restDepth-1)))
 
 		case *ast.InvertResult:
 			checks = append(checks, checkgroup.WithEdge(checkgroup.Edge{
