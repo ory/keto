@@ -21,7 +21,7 @@
     "license-checker": "^25.0.1",
     "opencollective": "^1.0.3",
     "ory-prettier-styles": "^1.2.0",
-    "prettier": "2.7.1",
+    "prettier": "2.8.2",
     "prettier-plugin-packagejson": "^2.2.18"
   }
 }
