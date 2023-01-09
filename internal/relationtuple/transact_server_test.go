@@ -158,24 +158,34 @@ func TestWriteHandlers(t *testing.T) {
 		t.Run("case=deletes a tuple", func(t *testing.T) {
 			nspace := addNamespace(t)
 
-			rt := &ketoapi.RelationTuple{
+			for _, rt := range []*ketoapi.RelationTuple{{
 				Namespace: nspace.Name,
 				Object:    "deleted obj",
 				Relation:  "deleted rel",
 				SubjectID: pointerx.Ptr("deleted subj"),
+			}, {
+				Namespace: nspace.Name,
+				Object:    "deleted obj",
+				Relation:  "deleted rel",
+				SubjectSet: &ketoapi.SubjectSet{
+					Namespace: nspace.Name,
+					Object:    "deleted subj obj",
+					Relation:  "deleted subj rel",
+				},
+			}} {
+				relationtuple.MapAndWriteTuples(t, reg, rt)
+
+				req, err := http.NewRequest(http.MethodDelete, ts.URL+relationtuple.WriteRouteBase+"?"+rt.ToURLQuery().Encode(), nil)
+				require.NoError(t, err)
+				resp, err := ts.Client().Do(req)
+				require.NoError(t, err)
+				assert.Equal(t, http.StatusNoContent, resp.StatusCode)
+
+				// set a size > 1 just to make sure it gets all
+				actualRTs, _, err := reg.RelationTupleManager().GetRelationTuples(ctx, &relationtuple.RelationQuery{Namespace: &nspace.Name}, x.WithSize(10))
+				require.NoError(t, err)
+				assert.Equal(t, []*relationtuple.RelationTuple{}, actualRTs)
 			}
-			relationtuple.MapAndWriteTuples(t, reg, rt)
-
-			req, err := http.NewRequest(http.MethodDelete, ts.URL+relationtuple.WriteRouteBase+"?"+rt.ToURLQuery().Encode(), nil)
-			require.NoError(t, err)
-			resp, err := ts.Client().Do(req)
-			require.NoError(t, err)
-			assert.Equal(t, http.StatusNoContent, resp.StatusCode)
-
-			// set a size > 1 just to make sure it gets all
-			actualRTs, _, err := reg.RelationTupleManager().GetRelationTuples(ctx, &relationtuple.RelationQuery{Namespace: &nspace.Name}, x.WithSize(10))
-			require.NoError(t, err)
-			assert.Equal(t, []*relationtuple.RelationTuple{}, actualRTs)
 		})
 
 		t.Run("case=deletes multiple tuples", func(t *testing.T) {

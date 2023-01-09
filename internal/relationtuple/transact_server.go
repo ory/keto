@@ -178,7 +178,7 @@ func (h *handler) deleteRelations(w http.ResponseWriter, r *http.Request, _ http
 	q := r.URL.Query()
 	query, err := (&ketoapi.RelationQuery{}).FromURLQuery(q)
 	if err != nil {
-		h.d.Writer().WriteError(w, r, herodot.ErrBadRequest.WithError(err.Error()))
+		h.d.Writer().WriteError(w, r, err)
 		return
 	}
 
