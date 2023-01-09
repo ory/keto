@@ -5,7 +5,6 @@ package check
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/ory/herodot"
 	"github.com/pkg/errors"
@@ -231,41 +230,9 @@ func (e *Engine) checkIsAllowed(ctx context.Context, r *relationTuple, restDepth
 }
 
 func (e *Engine) astRelationFor(ctx context.Context, r *relationTuple) (*ast.Relation, error) {
-	// Special case: If the relationTuple's relation is empty, then it is not an
-	// error that the relation was not found.
-	if r.Relation == "" {
-		return nil, nil
-	}
-
-	ns, err := e.namespaceFor(ctx, r)
-	if err != nil {
-		// On an unknown namespace the answer should be "not allowed", not "not
-		// found". Therefore, we don't return the error here.
-		return nil, nil
-	}
-
-	// Special case: If Relations is empty, then there is no namespace
-	// configuration, and it is not an error that the relation was not found.
-	if len(ns.Relations) == 0 {
-		return nil, nil
-	}
-
-	for _, rel := range ns.Relations {
-		if rel.Name == r.Relation {
-			return &rel, nil
-		}
-	}
-	return nil, fmt.Errorf("relation %q not found", r.Relation)
-}
-
-func (e *Engine) namespaceFor(ctx context.Context, r *relationTuple) (*namespace.Namespace, error) {
 	namespaceManager, err := e.d.Config(ctx).NamespaceManager()
 	if err != nil {
 		return nil, err
 	}
-	ns, err := namespaceManager.GetNamespaceByName(ctx, r.Namespace)
-	if err != nil {
-		return nil, err
-	}
-	return ns, nil
+	return namespace.ASTRelationFor(ctx, namespaceManager, r.Namespace, r.Relation)
 }

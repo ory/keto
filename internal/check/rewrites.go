@@ -69,25 +69,27 @@ func (e *Engine) checkSubjectSetRewrite(
 				computedSubjectSets = append(computedSubjectSets, c.Relation)
 			}
 		}
-		checks = append(checks, func(ctx context.Context, resultCh chan<- checkgroup.Result) {
-			res, err := e.d.Traverser().TraverseSubjectSetRewrite(ctx, tuple, computedSubjectSets)
-			if err != nil {
-				resultCh <- checkgroup.Result{Err: errors.WithStack(err)}
-				return
-			}
-			g := checkgroup.New(ctx)
-			defer func() { resultCh <- g.Result() }()
-			for _, result := range res {
-				if result.Found {
-					g.SetIsMember()
+		if len(computedSubjectSets) > 0 {
+			checks = append(checks, func(ctx context.Context, resultCh chan<- checkgroup.Result) {
+				res, err := e.d.Traverser().TraverseSubjectSetRewrite(ctx, tuple, computedSubjectSets)
+				if err != nil {
+					resultCh <- checkgroup.Result{Err: errors.WithStack(err)}
 					return
 				}
-			}
-			// If not, we must go another hop:
-			for _, result := range res {
-				g.Add(e.checkIsAllowed(ctx, result.To, restDepth-1, true))
-			}
-		})
+				g := checkgroup.New(ctx)
+				defer func() { resultCh <- g.Result() }()
+				for _, result := range res {
+					if result.Found {
+						g.SetIsMember()
+						return
+					}
+				}
+				// If not, we must go another hop:
+				for _, result := range res {
+					g.Add(e.checkIsAllowed(ctx, result.To, restDepth-1, true))
+				}
+			})
+		}
 	}
 
 	for i, child := range rewrite.Children {

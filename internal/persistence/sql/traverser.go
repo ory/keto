@@ -14,6 +14,7 @@ import (
 	"github.com/ory/x/sqlcon"
 	"github.com/pkg/errors"
 
+	"github.com/ory/keto/internal/namespace"
 	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/ketoapi"
 )
@@ -109,20 +110,31 @@ WHERE current.nid = ? AND
 }
 
 func (t *Traverser) TraverseSubjectSetRewrite(ctx context.Context, start *relationtuple.RelationTuple, computedSubjectSets []string) (res []*relationtuple.TraversalResult, err error) {
-	ctx, span := t.d.Tracer(ctx).Tracer().Start(ctx, "persistence.sql.TraverseSubjectSetRewrite")
-	defer otelx.End(span, &err)
+
+	namespaceManager, err := t.d.Config(ctx).NamespaceManager()
+	if err != nil {
+		return nil, err
+	}
 
 	subjectSQL, sqlArgs, err := whereSubject(start.Subject)
 
 	var targetRelationPlaceholders []string
 	for _, relation := range computedSubjectSets {
+		astRel, _ := namespace.ASTRelationFor(ctx, namespaceManager, start.Namespace, relation)
+		if astRel != nil && astRel.SubjectSetRewrite != nil {
+			continue
+		}
 		sqlArgs = append(sqlArgs, relation)
 		targetRelationPlaceholders = append(targetRelationPlaceholders, "?")
 	}
 	sqlArgs = append([]any{t.p.NetworkID(ctx), start.Namespace, start.Object}, sqlArgs...)
 
-	var rows []*rewriteRelationTupleRow
-	err = t.conn.RawQuery(fmt.Sprintf(`
+	if len(targetRelationPlaceholders) > 0 {
+		_, span := t.d.Tracer(ctx).Tracer().Start(ctx, "persistence.sql.TraverseSubjectSetRewrite")
+		defer otelx.End(span, &err)
+
+		var rows []*rewriteRelationTupleRow
+		err = t.conn.RawQuery(fmt.Sprintf(`
 SELECT t.*,
        'computed userset' as traversal
 FROM keto_relation_tuples AS t
@@ -133,25 +145,26 @@ WHERE t.nid = ? AND
       t.relation IN (%s)
 LIMIT 1;
 `, subjectSQL, strings.Join(targetRelationPlaceholders, ", ")),
-		sqlArgs...,
-	).All(&rows)
-	if err != nil {
-		return nil, sqlcon.HandleError(err)
-	}
-
-	// If we got any rows back, success!
-	if len(rows) > 0 {
-		r := rows[0]
-		to, err := r.RelationTuple.ToInternal()
+			sqlArgs...,
+		).All(&rows)
 		if err != nil {
-			return nil, errors.WithStack(err)
+			return nil, sqlcon.HandleError(err)
 		}
-		return []*relationtuple.TraversalResult{{
-			From:  start,
-			To:    to,
-			Via:   r.Traversal,
-			Found: true,
-		}}, nil
+
+		// If we got any rows back, success!
+		if len(rows) > 0 {
+			r := rows[0]
+			to, err := r.RelationTuple.ToInternal()
+			if err != nil {
+				return nil, errors.WithStack(err)
+			}
+			return []*relationtuple.TraversalResult{{
+				From:  start,
+				To:    to,
+				Via:   r.Traversal,
+				Found: true,
+			}}, nil
+		}
 	}
 
 	// Otherwise, the next candidates are those tuples with relations from the rewrite
