@@ -55,6 +55,8 @@ func whereSubject(sub relationtuple.Subject) (sqlFragment string, args []any, er
 	return sqlFragment, args, nil
 }
 
+// TraverseSubjectSetExpansion gets all subject sets for the object#relation.
+// It also checks whether the requested subject is a member of each of the returned subject sets.
 func (t *Traverser) TraverseSubjectSetExpansion(ctx context.Context, start *relationtuple.RelationTuple) (res []*relationtuple.TraversalResult, err error) {
 	ctx, span := t.d.Tracer(ctx).Tracer().Start(ctx, "persistence.sql.TraverseSubjectSetExpansion")
 	defer otelx.End(span, &err)
@@ -64,11 +66,11 @@ func (t *Traverser) TraverseSubjectSetExpansion(ctx context.Context, start *rela
 		return nil, err
 	}
 
+	shardID := uuid.Nil
 	for {
 		var (
-			rows    []*subjectExpandedRelationTupleRow
-			shardID = uuid.Nil
-			limit   = 1000
+			rows  []*subjectExpandedRelationTupleRow
+			limit = 1000
 		)
 		err = t.conn.RawQuery(fmt.Sprintf(`
 SELECT current.shard_id AS shard_id,
@@ -133,6 +135,9 @@ func (t *Traverser) TraverseSubjectSetRewrite(ctx context.Context, start *relati
 	}
 
 	subjectSQL, sqlArgs, err := whereSubject(start.Subject)
+	if err != nil {
+		return nil, err
+	}
 
 	var targetRelationPlaceholders []string
 	for _, relation := range computedSubjectSets {
@@ -153,16 +158,15 @@ func (t *Traverser) TraverseSubjectSetRewrite(ctx context.Context, start *relati
 
 		var rows []*rewriteRelationTupleRow
 		err = t.conn.RawQuery(fmt.Sprintf(`
-SELECT t.*,
-       'computed userset' as traversal
-FROM keto_relation_tuples AS t
-WHERE t.nid = ? AND
-      t.namespace = ? AND
-      t.object = ? AND
+SELECT *
+FROM keto_relation_tuples
+WHERE nid = ? AND
+      namespace = ? AND
+      object = ? AND
       %s AND -- subject where clause
-      t.relation IN (%s)
+      relation IN (%s)
 LIMIT 1;
-`, subjectSQL, strings.Join(targetRelationPlaceholders, ", ")),
+`, subjectSQL, strings.Join(targetRelationPlaceholders, ",")),
 			sqlArgs...,
 		).All(&rows)
 		if err != nil {
@@ -179,7 +183,7 @@ LIMIT 1;
 			return []*relationtuple.TraversalResult{{
 				From:  start,
 				To:    to,
-				Via:   r.Traversal,
+				Via:   relationtuple.TraversalComputedUserset,
 				Found: true,
 			}}, nil
 		}

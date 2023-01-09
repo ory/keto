@@ -99,8 +99,8 @@ func (e *Engine) CheckRelationTuple(ctx context.Context, r *relationTuple, restD
 // checkExpandSubject checks the expansions of the subject set of the tuple.
 //
 // For a relation tuple n:obj#rel@user, checkExpandSubject first queries for all
-// subjects that match n:obj#rel@* (arbitrary subjects), and then for each
-// subject set checks subject@user.
+// tuples that match n:obj#rel@* (arbitrary subjects), and then for each
+// subject set checks subject_set@user.
 func (e *Engine) checkExpandSubject(r *relationTuple, restDepth int) checkgroup.CheckFunc {
 	if restDepth <= 0 {
 		e.d.Logger().
@@ -219,19 +219,29 @@ func (e *Engine) checkIsAllowed(ctx context.Context, r *relationTuple, restDepth
 	}
 	hasRewrite := relation != nil && relation.SubjectSetRewrite != nil
 	strictMode := e.d.Config(ctx).StrictMode()
+	canHaveSubjectSets := !strictMode || relation == nil || containsSubjectSetExpand(relation)
 	if hasRewrite {
 		g.Add(e.checkSubjectSetRewrite(ctx, r, relation.SubjectSetRewrite, restDepth))
 	}
-	if !strictMode || !hasRewrite {
+	if (!strictMode || !hasRewrite) && !skipDirect {
 		// In strict mode, add a direct check only if there is no subject set rewrite for this relation.
 		// Rewrites are added as 'permits'.
-		if !skipDirect {
-			g.Add(e.checkDirect(r, restDepth-1))
-		}
+		g.Add(e.checkDirect(r, restDepth-1))
+	}
+	if canHaveSubjectSets {
 		g.Add(e.checkExpandSubject(r, restDepth))
 	}
 
 	return g.CheckFunc()
+}
+
+func containsSubjectSetExpand(relation *ast.Relation) bool {
+	for _, t := range relation.Types {
+		if t.Relation != "" {
+			return true
+		}
+	}
+	return false
 }
 
 func (e *Engine) astRelationFor(ctx context.Context, r *relationTuple) (*ast.Relation, error) {
