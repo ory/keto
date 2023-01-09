@@ -88,7 +88,7 @@ func (e *Engine) CheckRelationTuple(ctx context.Context, r *relationTuple, restD
 	}
 
 	resultCh := make(chan checkgroup.Result)
-	go e.checkIsAllowed(ctx, r, restDepth)(ctx, resultCh)
+	go e.checkIsAllowed(ctx, r, restDepth, false)(ctx, resultCh)
 	select {
 	case result := <-resultCh:
 		return result
@@ -146,7 +146,7 @@ func (e *Engine) checkExpandSubject(r *relationTuple, restDepth int) checkgroup.
 			if visited {
 				continue
 			}
-			g.Add(e.checkIsAllowed(innerCtx, result.To, restDepth-1))
+			g.Add(e.checkIsAllowed(innerCtx, result.To, restDepth-1, true))
 		}
 	}
 }
@@ -199,7 +199,7 @@ func (e *Engine) checkDirect(r *relationTuple, restDepth int) checkgroup.CheckFu
 // the relation tuple subject to the namespace, object and relation) either
 // directly (in the database), or through subject-set expansions, or through
 // user-set rewrites.
-func (e *Engine) checkIsAllowed(ctx context.Context, r *relationTuple, restDepth int) checkgroup.CheckFunc {
+func (e *Engine) checkIsAllowed(ctx context.Context, r *relationTuple, restDepth int, skipDirect bool) checkgroup.CheckFunc {
 	if restDepth < 0 {
 		e.d.Logger().
 			WithField("method", "checkIsAllowed").
@@ -212,14 +212,19 @@ func (e *Engine) checkIsAllowed(ctx context.Context, r *relationTuple, restDepth
 		Trace("check is allowed")
 
 	g := checkgroup.New(ctx)
-	g.Add(e.checkDirect(r, restDepth-1))
-	g.Add(e.checkExpandSubject(r, restDepth))
 
 	relation, err := e.astRelationFor(ctx, r)
 	if err != nil {
 		g.Add(checkgroup.ErrorFunc(err))
 	} else if relation != nil && relation.SubjectSetRewrite != nil {
 		g.Add(e.checkSubjectSetRewrite(ctx, r, relation.SubjectSetRewrite, restDepth))
+	} else {
+		// Add a direct check only if there is no subject set rewrite for this relation.
+		// Rewrites are added as 'permits'.
+		if !skipDirect {
+			g.Add(e.checkDirect(r, restDepth-1))
+		}
+		g.Add(e.checkExpandSubject(r, restDepth))
 	}
 
 	return g.CheckFunc()

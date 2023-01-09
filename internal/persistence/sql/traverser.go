@@ -14,7 +14,6 @@ import (
 	"github.com/ory/x/sqlcon"
 	"github.com/pkg/errors"
 
-	"github.com/ory/keto/internal/namespace/ast"
 	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/ketoapi"
 )
@@ -109,19 +108,16 @@ WHERE current.nid = ? AND
 	return res, nil
 }
 
-func (t *Traverser) TraverseSubjectSetRewrite(ctx context.Context, start *relationtuple.RelationTuple, rewrite *ast.SubjectSetRewrite) (res []*relationtuple.TraversalResult, err error) {
+func (t *Traverser) TraverseSubjectSetRewrite(ctx context.Context, start *relationtuple.RelationTuple, computedSubjectSets []string) (res []*relationtuple.TraversalResult, err error) {
 	ctx, span := t.d.Tracer(ctx).Tracer().Start(ctx, "persistence.sql.TraverseSubjectSetRewrite")
 	defer otelx.End(span, &err)
 
 	subjectSQL, sqlArgs, err := whereSubject(start.Subject)
 
 	var targetRelationPlaceholders []string
-	for _, child := range rewrite.Children {
-		switch c := child.(type) {
-		case *ast.ComputedSubjectSet:
-			sqlArgs = append(sqlArgs, c.Relation)
-			targetRelationPlaceholders = append(targetRelationPlaceholders, "?")
-		}
+	for _, relation := range computedSubjectSets {
+		sqlArgs = append(sqlArgs, relation)
+		targetRelationPlaceholders = append(targetRelationPlaceholders, "?")
 	}
 	sqlArgs = append([]any{t.p.NetworkID(ctx), start.Namespace, start.Object}, sqlArgs...)
 
@@ -159,21 +155,18 @@ LIMIT 1;
 	}
 
 	// Otherwise, the next candidates are those tuples with relations from the rewrite
-	for _, child := range rewrite.Children {
-		switch c := child.(type) {
-		case *ast.ComputedSubjectSet:
-			res = append(res, &relationtuple.TraversalResult{
-				From: start,
-				To: &relationtuple.RelationTuple{
-					Namespace: start.Namespace,
-					Object:    start.Object,
-					Relation:  c.Relation,
-					Subject:   start.Subject,
-				},
-				Via:   relationtuple.TraversalComputedUserset,
-				Found: false,
-			})
-		}
+	for _, relation := range computedSubjectSets {
+		res = append(res, &relationtuple.TraversalResult{
+			From: start,
+			To: &relationtuple.RelationTuple{
+				Namespace: start.Namespace,
+				Object:    start.Object,
+				Relation:  relation,
+				Subject:   start.Subject,
+			},
+			Via:   relationtuple.TraversalComputedUserset,
+			Found: false,
+		})
 	}
 
 	return res, nil
