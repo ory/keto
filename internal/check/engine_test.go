@@ -23,14 +23,14 @@ import (
 )
 
 type configProvider = config.Provider
-type loggerProvider = x.LoggerProvider
 
 // deps are defined to capture engine dependencies in a single struct
 type deps struct {
 	*relationtuple.ManagerWrapper // managerProvider
 	persistence.Provider
 	configProvider
-	loggerProvider
+	x.LoggerProvider
+	x.TracingProvider
 }
 
 func newDepsProvider(t testing.TB, namespaces []*namespace.Namespace, pageOpts ...x.PaginationOptionSetter) *deps {
@@ -39,10 +39,11 @@ func newDepsProvider(t testing.TB, namespaces []*namespace.Namespace, pageOpts .
 	mr := relationtuple.NewManagerWrapper(t, reg, pageOpts...)
 
 	return &deps{
-		ManagerWrapper: mr,
-		Provider:       reg,
-		configProvider: reg,
-		loggerProvider: reg,
+		ManagerWrapper:  mr,
+		Provider:        reg,
+		configProvider:  reg,
+		LoggerProvider:  reg,
+		TracingProvider: reg,
 	}
 }
 

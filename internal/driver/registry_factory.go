@@ -14,7 +14,9 @@ import (
 	"testing"
 
 	"github.com/ory/x/configx"
+	"github.com/ory/x/otelx"
 	"github.com/ory/x/tlsx"
+	"go.opentelemetry.io/otel/trace"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 
@@ -107,10 +109,19 @@ func WithGRPCUnaryInterceptors(i ...grpc.UnaryServerInterceptor) TestRegistryOpt
 		r.defaultUnaryInterceptors = i
 	}
 }
-
 func WithGRPCStreamInterceptors(i ...grpc.StreamServerInterceptor) TestRegistryOption {
 	return func(_ testing.TB, r *RegistryDefault) {
 		r.defaultStreamInterceptors = i
+	}
+}
+func WithTracer(tracer trace.Tracer) TestRegistryOption {
+	return func(t testing.TB, r *RegistryDefault) {
+		r.tracer = new(otelx.Tracer).WithOTLP(tracer)
+	}
+}
+func WithLogLevel(level string) TestRegistryOption {
+	return func(t testing.TB, r *RegistryDefault) {
+		require.NoError(t, r.c.Set("log.level", level))
 	}
 }
 
@@ -156,7 +167,7 @@ func NewTestRegistry(t testing.TB, dsn *dbx.DsnT, opts ...TestRegistryOption) *R
 
 	ctx = configx.ContextWithConfigOptions(ctx, configx.WithValues(map[string]interface{}{
 		config.KeyDSN:        dsn.Conn,
-		"log.level":          "debug",
+		"log.level":          "info",
 		config.KeyNamespaces: []*namespace.Namespace{},
 	}))
 	c, err := config.NewDefault(ctx, nil, l)

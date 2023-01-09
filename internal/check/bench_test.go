@@ -6,17 +6,22 @@ package check_test
 import (
 	"context"
 	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"go.opentelemetry.io/otel/sdk/trace"
+	"go.opentelemetry.io/otel/sdk/trace/tracetest"
 
 	"github.com/ory/keto/internal/check"
 	"github.com/ory/keto/internal/check/checkgroup"
+	"github.com/ory/keto/internal/driver"
 	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/namespace"
 	"github.com/ory/keto/internal/namespace/ast"
+	"github.com/ory/keto/internal/schema"
 )
 
 func wideNamespace(width int) *namespace.Namespace {
@@ -96,9 +101,9 @@ func BenchmarkCheckEngine(b *testing.B) {
 	require.NoError(b, reg.Config(ctx).Set(config.KeyLimitMaxReadDepth, 100*maxDepth))
 	e := check.NewEngine(reg)
 
-	b.ResetTimer()
 	b.Run("case=deep tree", func(b *testing.B) {
 		for _, depth := range depths {
+			b.ResetTimer()
 			b.Run(fmt.Sprintf("depth=%03d", depth), func(b *testing.B) {
 				for i := 0; i < b.N; i++ {
 					rt := tupleFromString(b, fmt.Sprintf("deep:deep_file#viewer@user_%d", depth))
@@ -114,6 +119,7 @@ func BenchmarkCheckEngine(b *testing.B) {
 
 	b.Run("case=wide tree", func(b *testing.B) {
 		for _, width := range widths {
+			b.ResetTimer()
 			b.Run(fmt.Sprintf("width=%03d", width), func(b *testing.B) {
 				for i := 0; i < b.N; i++ {
 					rt := tupleFromString(b, fmt.Sprintf("%d-wide:wide_file#editor@user", width))
@@ -126,4 +132,83 @@ func BenchmarkCheckEngine(b *testing.B) {
 			})
 		}
 	})
+}
+
+func BenchmarkComputedUsersets(b *testing.B) {
+	ctx := context.Background()
+
+	parsed, errs := schema.Parse(`
+class User implements Namespace {}
+
+class Project implements Namespace {
+  related: {
+    owner: User[]
+    developer: User[]
+  }
+
+  permits = {
+    isOwner: (ctx: Context) => this.related.owner.includes(ctx.subject),
+    isOwnerOrDeveloper: (ctx: Context) =>
+      this.related.owner.includes(ctx.subject) ||
+      this.related.developer.includes(ctx.subject),
+    writeCollaborator: (ctx: Context) =>
+      this.permits.isOwner(ctx),
+    readCollaborator: (ctx: Context) =>
+      this.permits.isOwnerOrDeveloper(ctx),
+    deleteProject: (ctx: Context) => this.permits.isOwner(ctx),
+    writeProject: (ctx: Context) =>
+      this.permits.isOwnerOrDeveloper(ctx),
+    readProject: (ctx: Context) =>
+      this.permits.isOwnerOrDeveloper(ctx),
+  }
+}
+`)
+	require.Empty(b, errs)
+	namespaces := make([]*namespace.Namespace, len(parsed))
+	for i := range parsed {
+		namespaces[i] = &parsed[i]
+	}
+	spans := tracetest.NewSpanRecorder()
+	tracer := trace.NewTracerProvider(trace.WithSpanProcessor(spans)).Tracer("")
+	reg := driver.NewSqliteTestRegistry(b, false,
+		driver.WithLogLevel("debug"),
+		driver.WithNamespaces(namespaces),
+		driver.WithTracer(tracer))
+	reg.Logger().Logger.SetLevel(logrus.DebugLevel)
+
+	insertFixtures(b, reg.RelationTupleManager(), []string{
+		"Project:Ory#owner@User:Admin",
+		"Project:Ory#developer@User:Dev",
+	})
+
+	e := check.NewEngine(reg)
+
+	query := tupleFromString(b, "Project:Ory#readProject@User:Dev")
+
+	b.ResetTimer()
+
+	b.Run("Computed userset", func(b *testing.B) {
+		initialDBSpans := dbSpans(spans)
+		for i := 0; i < b.N; i++ {
+			res := e.CheckRelationTuple(ctx, query, 0)
+			assert.NoError(b, res.Err)
+			if res.Err != nil {
+				b.Errorf("got unexpected error: %v", res.Err)
+			}
+			if res.Membership != checkgroup.IsMember {
+				b.Error("check failed")
+			}
+		}
+		b.ReportMetric((float64(dbSpans(spans)-initialDBSpans))/float64(b.N), "queries/op")
+	})
+
+}
+
+func dbSpans(spans *tracetest.SpanRecorder) (count int) {
+	for _, s := range spans.Started() {
+		if strings.HasPrefix(s.Name(), "persistence.sql") {
+			count++
+		}
+	}
+	return
 }
