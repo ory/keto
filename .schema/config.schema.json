@@ -347,6 +347,12 @@
                 "file:///etc/configs/keto_namespaces.ts",
                 "ws://my.websocket.server/keto_namespaces.ts"
               ]
+            },
+            "strict_mode": {
+              "type": "boolean",
+              "title": "Strict permission checking mode",
+              "description": "If strict mode is enabled, then relation tuples for permits are not checked directly (but the rewrites are applied). Similarly, subject sets are only expanded if they were declared with SubjectSet<...>. These stricter rules result in much faster checks with fewer queries to the underlying database.",
+              "default": false
             }
           },
           "required": ["location"]

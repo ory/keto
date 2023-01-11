@@ -250,7 +250,7 @@ func (p *Persister) ExistsRelationTuples(ctx context.Context, query *relationtup
 	ctx, span := p.d.Tracer(ctx).Tracer().Start(ctx, "persistence.sql.ExistsRelationTuples")
 	defer otelx.End(span, &err)
 
-	sqlQuery := p.QueryWithNetwork(ctx)
+	sqlQuery := p.queryWithNetwork(ctx)
 
 	err = p.whereQuery(ctx, sqlQuery, query)
 	if err != nil {

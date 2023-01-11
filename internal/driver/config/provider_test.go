@@ -105,6 +105,7 @@ namespaces:
 				require.NoError(t, err)
 				_, ok := nm.(*memoryNamespaceManager)
 				assert.True(t, ok)
+				assert.False(t, p.StrictMode())
 			}
 
 		}
@@ -152,6 +153,7 @@ namespaces: file://%s`,
 		require.NoError(t, err)
 		_, ok := nm.(*NamespaceWatcher)
 		assert.True(t, ok)
+		assert.False(t, p.StrictMode())
 	})
 
 	t.Run("case=uses passed configx provider", func(t *testing.T) {
@@ -232,8 +234,20 @@ namespaces:
 
 			names, relationNames := []string{namespaces[0].Name, namespaces[1].Name}, []string{namespaces[0].Relations[0].Name, namespaces[1].Relations[0].Name}
 
+			assert.False(t, p.StrictMode())
 			assert.ElementsMatch(t, names, []string{"User", "Group"})
 			assert.ElementsMatch(t, relationNames, []string{"manager", "members"})
 		})
 	}
+
+	t.Run("case=strict_mode=true", func(t *testing.T) {
+		config := createFileF(t, `
+dsn: memory
+namespaces:
+  location: file://%s
+  strict_mode: true`, oplConfigFile)
+
+		_, p := setup(t, config)
+		assert.True(t, p.StrictMode())
+	})
 }

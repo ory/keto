@@ -10,6 +10,7 @@ import (
 	"crypto/rand"
 	"crypto/tls"
 	"fmt"
+	"os"
 	"sync"
 	"testing"
 
@@ -35,6 +36,29 @@ import (
 
 	"github.com/ory/keto/internal/driver/config"
 )
+
+// createFile writes the content to a temporary file, returning the path.
+// Good for testing config files.
+func createFile(t testing.TB, content string) (path string) {
+	t.Helper()
+
+	f, err := os.CreateTemp(t.TempDir(), "config-*.yaml")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	t.Cleanup(func() { _ = os.Remove(f.Name()) })
+
+	n, err := f.WriteString(content)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if n != len(content) {
+		t.Fatal("failed to write the complete content")
+	}
+
+	return f.Name()
+}
 
 func NewDefaultRegistry(ctx context.Context, flags *pflag.FlagSet, withoutNetwork bool, opts []ketoctx.Option) (Registry, error) {
 	reg, ok := ctx.Value(RegistryContextKey).(Registry)
@@ -99,9 +123,20 @@ func NewCRDBTestRegistry(t testing.TB) *RegistryDefault {
 
 type TestRegistryOption func(t testing.TB, r *RegistryDefault)
 
+func WithConfig(key string, value any) TestRegistryOption {
+	return func(t testing.TB, r *RegistryDefault) {
+		require.NoError(t, r.c.Set(key, value))
+	}
+}
 func WithNamespaces(namespaces []*namespace.Namespace) TestRegistryOption {
 	return func(t testing.TB, r *RegistryDefault) {
 		require.NoError(t, r.c.Set(config.KeyNamespaces, namespaces))
+	}
+}
+func WithOPL(opl string) TestRegistryOption {
+	return func(t testing.TB, r *RegistryDefault) {
+		f := createFile(t, opl)
+		require.NoError(t, r.c.Set(config.KeyNamespaces+".location", "file://"+f))
 	}
 }
 func WithGRPCUnaryInterceptors(i ...grpc.UnaryServerInterceptor) TestRegistryOption {

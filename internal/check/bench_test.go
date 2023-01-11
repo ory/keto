@@ -21,7 +21,6 @@ import (
 	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/namespace"
 	"github.com/ory/keto/internal/namespace/ast"
-	"github.com/ory/keto/internal/schema"
 )
 
 func wideNamespace(width int) *namespace.Namespace {
@@ -137,7 +136,7 @@ func BenchmarkCheckEngine(b *testing.B) {
 func BenchmarkComputedUsersets(b *testing.B) {
 	ctx := context.Background()
 
-	parsed, errs := schema.Parse(`
+	oplConfig := `
 class User implements Namespace {}
 
 class Project implements Namespace {
@@ -162,18 +161,14 @@ class Project implements Namespace {
       this.permits.isOwnerOrDeveloper(ctx),
   }
 }
-`)
-	require.Empty(b, errs)
-	namespaces := make([]*namespace.Namespace, len(parsed))
-	for i := range parsed {
-		namespaces[i] = &parsed[i]
-	}
+`
 	spans := tracetest.NewSpanRecorder()
 	tracer := trace.NewTracerProvider(trace.WithSpanProcessor(spans)).Tracer("")
 	reg := driver.NewSqliteTestRegistry(b, false,
 		driver.WithLogLevel("debug"),
-		driver.WithNamespaces(namespaces),
-		driver.WithTracer(tracer))
+		driver.WithOPL(oplConfig),
+		driver.WithTracer(tracer),
+		driver.WithConfig("namespaces.strict_mode", true))
 	reg.Logger().Logger.SetLevel(logrus.DebugLevel)
 
 	insertFixtures(b, reg.RelationTupleManager(), []string{

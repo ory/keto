@@ -247,6 +247,10 @@ func (k *Config) NamespaceManager() (namespace.Manager, error) {
 	return k.nm, nil
 }
 
+func (k *Config) StrictMode() bool {
+	return k.p.BoolF("namespaces.strict_mode", false)
+}
+
 type (
 	buildNamespaceFn func(context.Context, *Config) (namespace.Manager, error)
 

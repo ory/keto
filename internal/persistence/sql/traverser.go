@@ -64,9 +64,15 @@ func (t *Traverser) TraverseSubjectSetExpansion(ctx context.Context, start *rela
 		return nil, err
 	}
 
-	var rows []*subjectExpandedRelationTupleRow
-	err = t.conn.RawQuery(fmt.Sprintf(`
-SELECT current.subject_set_namespace AS namespace,
+	for {
+		var (
+			rows    []*subjectExpandedRelationTupleRow
+			shardID = uuid.Nil
+			limit   = 1000
+		)
+		err = t.conn.RawQuery(fmt.Sprintf(`
+SELECT current.shard_id AS shard_id,
+       current.subject_set_namespace AS namespace,
        current.subject_set_object AS object,
        current.subject_set_relation AS relation,
        EXISTS(
@@ -79,30 +85,40 @@ SELECT current.subject_set_namespace AS namespace,
        ) AS found
 FROM keto_relation_tuples AS current
 WHERE current.nid = ? AND
+      current.shard_id > ? AND
       current.namespace = ? AND
       current.object = ? AND
       current.relation = ? AND
       current.subject_id IS NULL
+ORDER BY current.nid, current.shard_id
+LIMIT ?
 `, targetSubjectSQL),
-		append(targetSubjectArgs, t.p.NetworkID(ctx), start.Namespace, start.Object, start.Relation)...,
-	).All(&rows)
-	if err != nil {
-		return nil, sqlcon.HandleError(err)
-	}
-
-	res = make([]*relationtuple.TraversalResult, len(rows))
-
-	for i, r := range rows {
-		to, err := r.RelationTuple.ToInternal()
+			append(targetSubjectArgs, t.p.NetworkID(ctx), shardID, start.Namespace, start.Object, start.Relation, limit)...,
+		).All(&rows)
 		if err != nil {
-			return nil, errors.WithStack(err)
+			return nil, sqlcon.HandleError(err)
 		}
-		to.Subject = start.Subject
-		res[i] = &relationtuple.TraversalResult{
-			From:  start,
-			To:    to,
-			Via:   relationtuple.TraversalSubjectSetExpand,
-			Found: r.Found,
+
+		for _, r := range rows {
+			to, err := r.RelationTuple.ToInternal()
+			if err != nil {
+				return nil, errors.WithStack(err)
+			}
+			to.Subject = start.Subject
+			res = append(res, &relationtuple.TraversalResult{
+				From:  start,
+				To:    to,
+				Via:   relationtuple.TraversalSubjectSetExpand,
+				Found: r.Found,
+			})
+			if r.Found {
+				return res, nil
+			}
+		}
+		if len(rows) == limit {
+			shardID = rows[limit-1].ID
+		} else {
+			break
 		}
 	}
 
@@ -121,7 +137,9 @@ func (t *Traverser) TraverseSubjectSetRewrite(ctx context.Context, start *relati
 	var targetRelationPlaceholders []string
 	for _, relation := range computedSubjectSets {
 		astRel, _ := namespace.ASTRelationFor(ctx, namespaceManager, start.Namespace, relation)
-		if astRel != nil && astRel.SubjectSetRewrite != nil {
+		// In strict mode, we can skip querying for those relations that have userset rewrites defined,
+		// because we can already apply those rewrites in memory.
+		if t.d.Config(ctx).StrictMode() && astRel != nil && astRel.SubjectSetRewrite != nil {
 			continue
 		}
 		sqlArgs = append(sqlArgs, relation)
