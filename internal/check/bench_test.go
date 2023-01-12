@@ -102,7 +102,6 @@ func BenchmarkCheckEngine(b *testing.B) {
 
 	b.Run("case=deep tree", func(b *testing.B) {
 		for _, depth := range depths {
-			b.ResetTimer()
 			b.Run(fmt.Sprintf("depth=%03d", depth), func(b *testing.B) {
 				for i := 0; i < b.N; i++ {
 					rt := tupleFromString(b, fmt.Sprintf("deep:deep_file#viewer@user_%d", depth))
@@ -118,7 +117,6 @@ func BenchmarkCheckEngine(b *testing.B) {
 
 	b.Run("case=wide tree", func(b *testing.B) {
 		for _, width := range widths {
-			b.ResetTimer()
 			b.Run(fmt.Sprintf("width=%03d", width), func(b *testing.B) {
 				for i := 0; i < b.N; i++ {
 					rt := tupleFromString(b, fmt.Sprintf("%d-wide:wide_file#editor@user", width))
@@ -179,8 +177,6 @@ class Project implements Namespace {
 	e := check.NewEngine(reg)
 
 	query := tupleFromString(b, "Project:Ory#readProject@User:Dev")
-
-	b.ResetTimer()
 
 	b.Run("Computed userset", func(b *testing.B) {
 		initialDBSpans := dbSpans(spans)
