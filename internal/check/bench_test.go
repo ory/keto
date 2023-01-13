@@ -166,7 +166,7 @@ class Project implements Namespace {
 		driver.WithLogLevel("debug"),
 		driver.WithOPL(oplConfig),
 		driver.WithTracer(tracer),
-		driver.WithConfig("namespaces.strict_mode", true))
+		driver.WithConfig(config.KeyNamespacesExperimentalStrictMode, true))
 	reg.Logger().Logger.SetLevel(logrus.DebugLevel)
 
 	insertFixtures(b, reg.RelationTupleManager(), []string{
