@@ -29,13 +29,16 @@ type (
 	}
 	MappingManager interface {
 		MapStringsToUUIDs(ctx context.Context, s ...string) ([]uuid.UUID, error)
+		MapStringsToUUIDsReadOnly(ctx context.Context, s ...string) ([]uuid.UUID, error)
 		MapUUIDsToStrings(ctx context.Context, u ...uuid.UUID) ([]string, error)
 	}
 	MapperProvider interface {
 		Mapper() *Mapper
+		ReadOnlyMapper() *Mapper
 	}
 	Mapper struct {
-		D mapperDependencies
+		D        mapperDependencies
+		ReadOnly bool
 	}
 )
 
@@ -121,7 +124,11 @@ func (m *Mapper) FromQuery(ctx context.Context, apiQuery *ketoapi.RelationQuery)
 		}(len(s) - 1))
 	}
 
-	u, err = m.D.MappingManager().MapStringsToUUIDs(ctx, s...)
+	if m.ReadOnly {
+		u, err = m.D.MappingManager().MapStringsToUUIDsReadOnly(ctx, s...)
+	} else {
+		u, err = m.D.MappingManager().MapStringsToUUIDs(ctx, s...)
+	}
 	if err != nil {
 		return nil, err
 	}
@@ -248,7 +255,11 @@ func (m *Mapper) FromTuple(ctx context.Context, ts ...*ketoapi.RelationTuple) (r
 		res = append(res, &mt)
 	}
 
-	u, err = m.D.MappingManager().MapStringsToUUIDs(ctx, s...)
+	if m.ReadOnly {
+		u, err = m.D.MappingManager().MapStringsToUUIDsReadOnly(ctx, s...)
+	} else {
+		u, err = m.D.MappingManager().MapStringsToUUIDs(ctx, s...)
+	}
 	if err != nil {
 		return nil, err
 	}
@@ -317,7 +328,12 @@ func (m *Mapper) FromSubjectSet(ctx context.Context, set *ketoapi.SubjectSet) (_
 	if err != nil {
 		return nil, err
 	}
-	u, err := m.D.MappingManager().MapStringsToUUIDs(ctx, set.Object)
+	var u []uuid.UUID
+	if m.ReadOnly {
+		u, err = m.D.MappingManager().MapStringsToUUIDsReadOnly(ctx, set.Object)
+	} else {
+		u, err = m.D.MappingManager().MapStringsToUUIDs(ctx, set.Object)
+	}
 	if err != nil {
 		return nil, err
 	}

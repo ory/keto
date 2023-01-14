@@ -32,7 +32,7 @@ func (UUIDMapping) TableName() string {
 	return "keto_uuid_mappings"
 }
 
-func (p *Persister) batchToUUIDs(ctx context.Context, values []string) (uuids []uuid.UUID, err error) {
+func (p *Persister) batchToUUIDs(ctx context.Context, values []string, readOnly bool) (uuids []uuid.UUID, err error) {
 	if len(values) == 0 {
 		return
 	}
@@ -49,24 +49,28 @@ func (p *Persister) batchToUUIDs(ctx context.Context, values []string) (uuids []
 
 	p.d.Logger().WithField("values", values).WithField("UUIDs", uuids).Trace("adding UUID mappings")
 
-	// We need to write manual SQL here because the INSERT should not fail if
-	// the UUID already exists, but we still want to return an error if anything
-	// else goes wrong.
-	var query string
-	switch d := p.Connection(ctx).Dialect.Name(); d {
-	case "mysql":
-		query = `
+	if !readOnly {
+		// We need to write manual SQL here because the INSERT should not fail if
+		// the UUID already exists, but we still want to return an error if anything
+		// else goes wrong.
+		var query string
+		switch d := p.Connection(ctx).Dialect.Name(); d {
+		case "mysql":
+			query = `
 			INSERT IGNORE INTO keto_uuid_mappings (id, string_representation) VALUES ` + placeholders
-	default:
-		query = `
+		default:
+			query = `
 			INSERT INTO keto_uuid_mappings (id, string_representation)
 			VALUES ` + placeholders + `
 			ON CONFLICT (id) DO NOTHING`
-	}
+		}
 
-	return uuids, sqlcon.HandleError(
-		p.Connection(ctx).RawQuery(query, args...).Exec(),
-	)
+		return uuids, sqlcon.HandleError(
+			p.Connection(ctx).RawQuery(query, args...).Exec(),
+		)
+	} else {
+		return uuids, nil
+	}
 }
 
 func (p *Persister) batchFromUUIDs(ctx context.Context, ids []uuid.UUID, opts ...x.PaginationOptionSetter) (res []string, err error) {
@@ -121,7 +125,14 @@ func (p *Persister) MapStringsToUUIDs(ctx context.Context, s ...string) (_ []uui
 	ctx, span := p.d.Tracer(ctx).Tracer().Start(ctx, "persistence.sql.MapStringsToUUIDs")
 	defer otelx.End(span, &err)
 
-	return p.batchToUUIDs(ctx, s)
+	return p.batchToUUIDs(ctx, s, false)
+}
+
+func (p *Persister) MapStringsToUUIDsReadOnly(ctx context.Context, s ...string) (_ []uuid.UUID, err error) {
+	ctx, span := p.d.Tracer(ctx).Tracer().Start(ctx, "persistence.sql.MapStringsToUUIDsReadOnly")
+	defer otelx.End(span, &err)
+
+	return p.batchToUUIDs(ctx, s, true)
 }
 
 func (p *Persister) MapUUIDsToStrings(ctx context.Context, u ...uuid.UUID) (_ []string, err error) {

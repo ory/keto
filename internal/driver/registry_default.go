@@ -49,16 +49,17 @@ var (
 
 type (
 	RegistryDefault struct {
-		p      persistence.Persister
-		mb     *popx.MigrationBox
-		l      *logrusx.Logger
-		w      herodot.Writer
-		ce     *check.Engine
-		ee     *expand.Engine
-		c      *config.Config
-		conn   *pop.Connection
-		ctxer  ketoctx.Contextualizer
-		mapper *relationtuple.Mapper
+		p              persistence.Persister
+		mb             *popx.MigrationBox
+		l              *logrusx.Logger
+		w              herodot.Writer
+		ce             *check.Engine
+		ee             *expand.Engine
+		c              *config.Config
+		conn           *pop.Connection
+		ctxer          ketoctx.Contextualizer
+		mapper         *relationtuple.Mapper
+		readOnlyMapper *relationtuple.Mapper
 
 		initialized    sync.Once
 		healthH        *healthx.Handler
@@ -95,6 +96,13 @@ func (r *RegistryDefault) Mapper() *relationtuple.Mapper {
 		r.mapper = &relationtuple.Mapper{D: r}
 	}
 	return r.mapper
+}
+
+func (r *RegistryDefault) ReadOnlyMapper() *relationtuple.Mapper {
+	if r.readOnlyMapper == nil {
+		r.readOnlyMapper = &relationtuple.Mapper{D: r, ReadOnly: true}
+	}
+	return r.readOnlyMapper
 }
 
 func (r *RegistryDefault) Contextualizer() ketoctx.Contextualizer {

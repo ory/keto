@@ -79,7 +79,7 @@ func (h *handler) ListRelationTuples(ctx context.Context, req *rts.ListRelationT
 		return nil, herodot.ErrBadRequest.WithError("you must provide a query")
 	}
 
-	iq, err := h.d.Mapper().FromQuery(ctx, &q)
+	iq, err := h.d.ReadOnlyMapper().FromQuery(ctx, &q)
 	if err != nil {
 		return nil, err
 	}
@@ -90,7 +90,7 @@ func (h *handler) ListRelationTuples(ctx context.Context, req *rts.ListRelationT
 	if err != nil {
 		return nil, err
 	}
-	relations, err := h.d.Mapper().ToTuple(ctx, ir...)
+	relations, err := h.d.ReadOnlyMapper().ToTuple(ctx, ir...)
 	if err != nil {
 		return nil, err
 	}
@@ -154,7 +154,7 @@ func (h *handler) getRelations(w http.ResponseWriter, r *http.Request, _ httprou
 		paginationOpts = append(paginationOpts, x.WithSize(int(s)))
 	}
 
-	iq, err := h.d.Mapper().FromQuery(ctx, query)
+	iq, err := h.d.ReadOnlyMapper().FromQuery(ctx, query)
 	if err != nil {
 		h.d.Writer().WriteError(w, r, err)
 		return
@@ -165,7 +165,7 @@ func (h *handler) getRelations(w http.ResponseWriter, r *http.Request, _ httprou
 		return
 	}
 
-	relations, err := h.d.Mapper().ToTuple(ctx, ir...)
+	relations, err := h.d.ReadOnlyMapper().ToTuple(ctx, ir...)
 	if err != nil {
 		h.d.Writer().WriteError(w, r, err)
 		return
