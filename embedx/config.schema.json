@@ -318,7 +318,7 @@
     },
     "namespaces": {
       "description": "Namespace configuration or it's location.",
-      "default": "file://./keto_namespaces",
+      "default": {},
       "oneOf": [
         {
           "title": "Legacy namespace Repo URI",

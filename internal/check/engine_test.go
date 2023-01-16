@@ -7,7 +7,6 @@ import (
 	"context"
 	"testing"
 
-	"github.com/gobuffalo/pop/v6"
 	"github.com/gofrs/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -302,12 +301,10 @@ func TestEngine(t *testing.T) {
 
 		e := check.NewEngine(reg)
 
-		pop.Debug = true
 		// user can write object
 		res, err := e.CheckIsMember(ctx, tupleFromString(t, "obj:object#write@user"), 0)
 		require.NoError(t, err)
 		assert.True(t, res)
-		pop.Debug = false
 
 		// user is member of the organization
 		res, err = e.CheckIsMember(ctx, tupleFromString(t, "org:organization#member@user"), 0)
@@ -499,6 +496,44 @@ func TestEngine(t *testing.T) {
 				ID: stations[2],
 			},
 		}, 0)
+		require.NoError(t, err)
+		assert.False(t, res)
+	})
+
+	t.Run("case=strict mode", func(t *testing.T) {
+		reg := driver.NewSqliteTestRegistry(t, false, driver.WithOPL(ProjectOPLConfig), driver.WithConfig(config.KeyNamespacesExperimentalStrictMode, true))
+		nid := reg.Persister().NetworkID(ctx)
+
+		obj, userID, user1, readProject, projectN, userN := uuid.NewV5(nid, "abc"), uuid.NewV5(nid, "1"), uuid.NewV5(nid, "user1"), "readProject", "Project", "User"
+
+		insertFixtures(t, reg.RelationTupleManager(), []string{
+			"Project:abc#owner@user1",
+			"Project:abc#owner@User:1",
+			"Project:abc#isOwner@User:2",
+		})
+
+		e := check.NewEngine(reg)
+
+		for _, sub := range []relationtuple.Subject{
+			&relationtuple.SubjectID{ID: user1},
+			&relationtuple.SubjectSet{Namespace: userN, Object: userID},
+		} {
+			res, err := e.CheckIsMember(ctx, &relationtuple.RelationTuple{
+				Namespace: projectN,
+				Object:    obj,
+				Relation:  readProject,
+				Subject:   sub,
+			}, 10)
+			require.NoError(t, err)
+			assert.True(t, res)
+		}
+
+		res, err := e.CheckIsMember(ctx, &relationtuple.RelationTuple{
+			Namespace: projectN,
+			Object:    obj,
+			Relation:  readProject,
+			Subject:   &relationtuple.SubjectSet{Namespace: userN, Object: uuid.NewV5(nid, "2")},
+		}, 10)
 		require.NoError(t, err)
 		assert.False(t, res)
 	})

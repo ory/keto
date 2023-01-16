@@ -5,6 +5,7 @@ package check_test
 
 import (
 	"context"
+	_ "embed"
 	"fmt"
 	"strings"
 	"testing"
@@ -131,40 +132,17 @@ func BenchmarkCheckEngine(b *testing.B) {
 	})
 }
 
+//go:embed testfixtures/project_opl.ts
+var ProjectOPLConfig string
+
 func BenchmarkComputedUsersets(b *testing.B) {
 	ctx := context.Background()
 
-	oplConfig := `
-class User implements Namespace {}
-
-class Project implements Namespace {
-  related: {
-    owner: User[]
-    developer: User[]
-  }
-
-  permits = {
-    isOwner: (ctx: Context) => this.related.owner.includes(ctx.subject),
-    isOwnerOrDeveloper: (ctx: Context) =>
-      this.related.owner.includes(ctx.subject) ||
-      this.related.developer.includes(ctx.subject),
-    writeCollaborator: (ctx: Context) =>
-      this.permits.isOwner(ctx),
-    readCollaborator: (ctx: Context) =>
-      this.permits.isOwnerOrDeveloper(ctx),
-    deleteProject: (ctx: Context) => this.permits.isOwner(ctx),
-    writeProject: (ctx: Context) =>
-      this.permits.isOwnerOrDeveloper(ctx),
-    readProject: (ctx: Context) =>
-      this.permits.isOwnerOrDeveloper(ctx),
-  }
-}
-`
 	spans := tracetest.NewSpanRecorder()
 	tracer := trace.NewTracerProvider(trace.WithSpanProcessor(spans)).Tracer("")
 	reg := driver.NewSqliteTestRegistry(b, false,
 		driver.WithLogLevel("debug"),
-		driver.WithOPL(oplConfig),
+		driver.WithOPL(ProjectOPLConfig),
 		driver.WithTracer(tracer),
 		driver.WithConfig(config.KeyNamespacesExperimentalStrictMode, true))
 	reg.Logger().Logger.SetLevel(logrus.DebugLevel)
