@@ -318,7 +318,7 @@
     },
     "namespaces": {
       "description": "Namespace configuration or it's location.",
-      "default": {},
+      "default": "file://./keto_namespaces",
       "oneOf": [
         {
           "title": "Legacy namespace Repo URI",
@@ -351,8 +351,7 @@
             "experimental_strict_mode": {
               "type": "boolean",
               "title": "Strict permission checking mode",
-              "description": "EXPERIMENTAL: If strict mode is enabled, then relation tuples for permits are not checked directly (but the rewrites are applied). Similarly, subject sets are only expanded if they were declared with SubjectSet<...>. These stricter rules result in much faster checks with fewer queries to the underlying database. The behavior of strict mode might change while it is experimental.",
-              "default": false
+              "description": "EXPERIMENTAL: If strict mode is enabled, then relation tuples for permits are not checked directly (but the rewrites are applied). Similarly, subject sets are only expanded if they were declared with SubjectSet<...>. These stricter rules result in much faster checks with fewer queries to the underlying database. The behavior of strict mode might change while it is experimental."
             }
           },
           "additionalProperties": false,

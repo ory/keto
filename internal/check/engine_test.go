@@ -501,40 +501,29 @@ func TestEngine(t *testing.T) {
 	})
 
 	t.Run("case=strict mode", func(t *testing.T) {
-		reg := driver.NewSqliteTestRegistry(t, false, driver.WithOPL(ProjectOPLConfig), driver.WithConfig(config.KeyNamespacesExperimentalStrictMode, true))
-		nid := reg.Persister().NetworkID(ctx)
-
-		obj, userID, user1, readProject, projectN, userN := uuid.NewV5(nid, "abc"), uuid.NewV5(nid, "1"), uuid.NewV5(nid, "user1"), "readProject", "Project", "User"
+		reg := driver.NewSqliteTestRegistry(t, false,
+			driver.WithOPL(ProjectOPLConfig),
+			driver.WithConfig(config.KeyNamespacesExperimentalStrictMode, true))
 
 		insertFixtures(t, reg.RelationTupleManager(), []string{
-			"Project:abc#owner@user1",
 			"Project:abc#owner@User:1",
-			"Project:abc#isOwner@User:2",
+			// The following tuples are ignored in strict mode
+			"Project:abc#isOwner@User:isOwner",
+			"Project:abc#readProject@readProjectUser",
+			"Project:abc#readProject@User:ReadProject",
 		})
 
 		e := check.NewEngine(reg)
 
-		for _, sub := range []relationtuple.Subject{
-			&relationtuple.SubjectID{ID: user1},
-			&relationtuple.SubjectSet{Namespace: userN, Object: userID},
-		} {
-			res, err := e.CheckIsMember(ctx, &relationtuple.RelationTuple{
-				Namespace: projectN,
-				Object:    obj,
-				Relation:  readProject,
-				Subject:   sub,
-			}, 10)
+		for _, sub := range []string{"readProjectUser", "User:ReadProject", "User:isOwner"} {
+			// These checks should return false, even though the exact tuple is in the db.
+			res, err := e.CheckIsMember(ctx, tupleFromString(t, "Project:abc#readProject@"+sub), 10)
 			require.NoError(t, err)
-			assert.True(t, res)
+			assert.False(t, res)
 		}
 
-		res, err := e.CheckIsMember(ctx, &relationtuple.RelationTuple{
-			Namespace: projectN,
-			Object:    obj,
-			Relation:  readProject,
-			Subject:   &relationtuple.SubjectSet{Namespace: userN, Object: uuid.NewV5(nid, "2")},
-		}, 10)
+		res, err := e.CheckIsMember(ctx, tupleFromString(t, "Project:abc#readProject@User:1"), 10)
 		require.NoError(t, err)
-		assert.False(t, res)
+		assert.True(t, res)
 	})
 }

@@ -245,7 +245,7 @@ namespaces:
 dsn: memory
 namespaces:
   location: file://%s
-  strict_mode: true`, oplConfigFile)
+  experimental_strict_mode: true`, oplConfigFile)
 
 		_, p := setup(t, config)
 		assert.True(t, p.StrictMode())
