@@ -507,6 +507,7 @@ func TestEngine(t *testing.T) {
 
 		insertFixtures(t, reg.RelationTupleManager(), []string{
 			"Project:abc#owner@User:1",
+			"Project:abc#owner@User1",
 			// The following tuples are ignored in strict mode
 			"Project:abc#isOwner@User:isOwner",
 			"Project:abc#readProject@readProjectUser",
@@ -522,8 +523,10 @@ func TestEngine(t *testing.T) {
 			assert.False(t, res)
 		}
 
-		res, err := e.CheckIsMember(ctx, tupleFromString(t, "Project:abc#readProject@User:1"), 10)
-		require.NoError(t, err)
-		assert.True(t, res)
+		for _, sub := range []string{"User:1", "User1"} {
+			res, err := e.CheckIsMember(ctx, tupleFromString(t, "Project:abc#readProject@"+sub), 10)
+			require.NoError(t, err)
+			assert.True(t, res)
+		}
 	})
 }
