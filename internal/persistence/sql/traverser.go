@@ -6,7 +6,6 @@ package sql
 import (
 	"context"
 	"fmt"
-	"strings"
 
 	"github.com/gobuffalo/pop/v6"
 	"github.com/gofrs/uuid"
@@ -134,12 +133,7 @@ func (t *Traverser) TraverseSubjectSetRewrite(ctx context.Context, start *relati
 		return nil, err
 	}
 
-	subjectSQL, sqlArgs, err := whereSubject(start.Subject)
-	if err != nil {
-		return nil, err
-	}
-
-	var targetRelationPlaceholders []string
+	var relations []string
 	for _, relation := range computedSubjectSets {
 		astRel, _ := namespace.ASTRelationFor(ctx, namespaceManager, start.Namespace, relation)
 		// In strict mode, we can skip querying for those relations that have userset rewrites defined,
@@ -147,28 +141,24 @@ func (t *Traverser) TraverseSubjectSetRewrite(ctx context.Context, start *relati
 		if t.d.Config(ctx).StrictMode() && astRel != nil && astRel.SubjectSetRewrite != nil {
 			continue
 		}
-		sqlArgs = append(sqlArgs, relation)
-		targetRelationPlaceholders = append(targetRelationPlaceholders, "?")
+		relations = append(relations, relation)
 	}
-	sqlArgs = append([]any{t.p.NetworkID(ctx), start.Namespace, start.Object}, sqlArgs...)
 
-	if len(targetRelationPlaceholders) > 0 {
+	if len(relations) > 0 {
 		_, span := t.d.Tracer(ctx).Tracer().Start(ctx, "persistence.sql.TraverseSubjectSetRewrite")
 		defer otelx.End(span, &err)
 
-		var rows []*rewriteRelationTupleRow
-		err = t.conn.RawQuery(fmt.Sprintf(`
-SELECT *
-FROM keto_relation_tuples
-WHERE nid = ? AND
-      namespace = ? AND
-      object = ? AND
-      %s AND -- subject where clause
-      relation IN (%s)
-LIMIT 1;
-`, subjectSQL, strings.Join(targetRelationPlaceholders, ",")),
-			sqlArgs...,
-		).All(&rows)
+		var rows relationTuples
+
+		query := t.p.queryWithNetwork(ctx)
+		if err := t.p.whereQuery(ctx, query, &relationtuple.RelationQuery{
+			Namespace: &start.Namespace,
+			Object:    &start.Object,
+			Subject:   start.Subject,
+		}); err != nil {
+			return nil, err
+		}
+		err = query.Where("relation IN (?)", relations).Limit(1).All(&rows)
 		if err != nil {
 			return nil, sqlcon.HandleError(err)
 		}
@@ -176,7 +166,7 @@ LIMIT 1;
 		// If we got any rows back, success!
 		if len(rows) > 0 {
 			r := rows[0]
-			to, err := r.RelationTuple.ToInternal()
+			to, err := r.ToInternal()
 			if err != nil {
 				return nil, errors.WithStack(err)
 			}
