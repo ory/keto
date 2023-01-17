@@ -49,17 +49,17 @@ var (
 
 type (
 	RegistryDefault struct {
-		p         persistence.Persister
-		traverser relationtuple.Traverser
-		mb        *popx.MigrationBox
-		l         *logrusx.Logger
-		w         herodot.Writer
-		ce        *check.Engine
-		ee        *expand.Engine
-		c         *config.Config
-		conn      *pop.Connection
-		ctxer     ketoctx.Contextualizer
-		mapper    *relationtuple.Mapper
+		p              persistence.Persister
+		traverser      relationtuple.Traverser
+		mb             *popx.MigrationBox
+		l              *logrusx.Logger
+		w              herodot.Writer
+		ce             *check.Engine
+		ee             *expand.Engine
+		c              *config.Config
+		conn           *pop.Connection
+		ctxer          ketoctx.Contextualizer
+		mapper         *relationtuple.Mapper
 		readOnlyMapper *relationtuple.Mapper
 
 		initialized    sync.Once

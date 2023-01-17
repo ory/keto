@@ -99,24 +99,24 @@ func TestEngine(t *testing.T) {
 		// global max-depth defaults to 5
 		assert.Equal(t, reg.Config(ctx).MaxReadDepth(), 5)
 
-		// req max-depth takes precedence, max-depth=1 is not enough
-		res, err := e.CheckIsMember(ctx, userHasAccess, 1)
+		// req max-depth takes precedence, max-depth=2 is not enough
+		res, err := e.CheckIsMember(ctx, userHasAccess, 2)
 		require.NoError(t, err)
 		assert.False(t, res)
 
-		// req max-depth takes precedence, max-depth=2 is enough
-		res, err = e.CheckIsMember(ctx, userHasAccess, 2)
+		// req max-depth takes precedence, max-depth=3 is enough
+		res, err = e.CheckIsMember(ctx, userHasAccess, 3)
 		require.NoError(t, err)
 		assert.True(t, res)
 
-		// global max-depth takes precedence and max-depth=1 is not enough
-		require.NoError(t, reg.Config(ctx).Set(config.KeyLimitMaxReadDepth, 1))
+		// global max-depth takes precedence and max-depth=2 is not enough
+		require.NoError(t, reg.Config(ctx).Set(config.KeyLimitMaxReadDepth, 2))
 		res, err = e.CheckIsMember(ctx, userHasAccess, 2)
 		require.NoError(t, err)
 		assert.False(t, res)
 
-		// global max-depth takes precedence and max-depth=2 is enough
-		require.NoError(t, reg.Config(ctx).Set(config.KeyLimitMaxReadDepth, 2))
+		// global max-depth takes precedence and max-depth=3 is enough
+		require.NoError(t, reg.Config(ctx).Set(config.KeyLimitMaxReadDepth, 3))
 		res, err = e.CheckIsMember(ctx, userHasAccess, 0)
 		require.NoError(t, err)
 		assert.True(t, res)

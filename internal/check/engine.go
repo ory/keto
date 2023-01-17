@@ -145,14 +145,14 @@ func (e *Engine) checkExpandSubject(r *relationTuple, restDepth int) checkgroup.
 			if visited {
 				continue
 			}
-			g.Add(e.checkIsAllowed(innerCtx, result.To, restDepth-1, true))
+			g.Add(e.checkIsAllowed(innerCtx, result.To, restDepth, true))
 		}
 	}
 }
 
 // checkDirect checks if the relation tuple is in the database directly.
 func (e *Engine) checkDirect(r *relationTuple, restDepth int) checkgroup.CheckFunc {
-	if restDepth < 0 {
+	if restDepth <= 0 {
 		e.d.Logger().
 			WithField("method", "checkDirect").
 			Debug("reached max-depth, therefore this query will not be further expanded")
@@ -199,7 +199,7 @@ func (e *Engine) checkDirect(r *relationTuple, restDepth int) checkgroup.CheckFu
 // directly (in the database), or through subject-set expansions, or through
 // user-set rewrites.
 func (e *Engine) checkIsAllowed(ctx context.Context, r *relationTuple, restDepth int, skipDirect bool) checkgroup.CheckFunc {
-	if restDepth < 0 {
+	if restDepth <= 0 {
 		e.d.Logger().
 			WithField("method", "checkIsAllowed").
 			Debug("reached max-depth, therefore this query will not be further expanded")
@@ -229,7 +229,7 @@ func (e *Engine) checkIsAllowed(ctx context.Context, r *relationTuple, restDepth
 		g.Add(e.checkDirect(r, restDepth-1))
 	}
 	if canHaveSubjectSets {
-		g.Add(e.checkExpandSubject(r, restDepth))
+		g.Add(e.checkExpandSubject(r, restDepth-1))
 	}
 
 	return g.CheckFunc()

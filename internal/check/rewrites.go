@@ -36,7 +36,7 @@ func (e *Engine) checkSubjectSetRewrite(
 	rewrite *ast.SubjectSetRewrite,
 	restDepth int,
 ) checkgroup.CheckFunc {
-	if restDepth < 0 {
+	if restDepth <= 0 {
 		e.d.Logger().Debug("reached max-depth, therefore this query will not be further expanded")
 		return checkgroup.UnknownMemberFunc
 	}
