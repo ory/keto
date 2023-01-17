@@ -321,4 +321,31 @@ func TestMapper(t *testing.T) {
 			})
 		}
 	})
+
+	t.Run("suite=ro and rw mappers", func(t *testing.T) {
+		roMapper := reg.ReadOnlyMapper()
+		rwMapper := reg.Mapper()
+
+		t.Run("case=ro manager does not insert into DB", func(t *testing.T) {
+			unmapped := &ketoapi.RelationQuery{Object: pointerx.Ptr("unmapped object")}
+			mapped, err := roMapper.FromQuery(ctx, unmapped)
+			require.NoError(t, err)
+			assert.NotNil(t, mapped.Object)
+
+			reUnmapped, err := roMapper.ToQuery(ctx, mapped)
+			require.NoError(t, err)
+			assert.Empty(t, reUnmapped.Object)
+		})
+
+		t.Run("case=rw manager inserts into DB", func(t *testing.T) {
+			unmapped := &ketoapi.RelationQuery{Object: pointerx.Ptr("another unmapped object")}
+			mapped, err := rwMapper.FromQuery(ctx, unmapped)
+			require.NoError(t, err)
+			assert.NotNil(t, mapped.Object)
+
+			reUnmapped, err := rwMapper.ToQuery(ctx, mapped)
+			require.NoError(t, err)
+			assert.NotEmpty(t, reUnmapped.Object)
+		})
+	})
 }
