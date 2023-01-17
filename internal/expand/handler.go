@@ -87,7 +87,7 @@ func (h *handler) getExpand(w http.ResponseWriter, r *http.Request, _ httprouter
 	}
 
 	subSet := (&ketoapi.SubjectSet{}).FromURLQuery(r.URL.Query())
-	internal, err := h.d.Mapper().FromSubjectSet(r.Context(), subSet)
+	internal, err := h.d.ReadOnlyMapper().FromSubjectSet(r.Context(), subSet)
 	if err != nil {
 		h.d.Writer().WriteError(w, r, err)
 		return
@@ -103,7 +103,7 @@ func (h *handler) getExpand(w http.ResponseWriter, r *http.Request, _ httprouter
 		return
 	}
 
-	tree, err := h.d.Mapper().ToTree(r.Context(), res)
+	tree, err := h.d.ReadOnlyMapper().ToTree(r.Context(), res)
 	if err != nil {
 		h.d.Writer().WriteError(w, r, err)
 		return
@@ -131,7 +131,7 @@ func (h *handler) Expand(ctx context.Context, req *rts.ExpandRequest) (*rts.Expa
 		}
 	}
 
-	internal, err := h.d.Mapper().FromSubjectSet(ctx, subSet)
+	internal, err := h.d.ReadOnlyMapper().FromSubjectSet(ctx, subSet)
 	if err != nil {
 		return nil, err
 	}
@@ -143,7 +143,7 @@ func (h *handler) Expand(ctx context.Context, req *rts.ExpandRequest) (*rts.Expa
 		return &rts.ExpandResponse{}, nil
 	}
 
-	tree, err := h.d.Mapper().ToTree(ctx, res)
+	tree, err := h.d.ReadOnlyMapper().ToTree(ctx, res)
 	if err != nil {
 		return nil, err
 	}

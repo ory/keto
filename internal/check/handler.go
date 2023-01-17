@@ -162,7 +162,7 @@ func (h *Handler) getCheck(ctx context.Context, q url.Values) (bool, error) {
 		return false, err
 	}
 
-	it, err := h.d.Mapper().FromTuple(ctx, tuple)
+	it, err := h.d.ReadOnlyMapper().FromTuple(ctx, tuple)
 	// herodot.ErrNotFound occurs when the namespace is unknown
 	if errors.Is(err, herodot.ErrNotFound) {
 		return false, nil
@@ -280,7 +280,7 @@ func (h *Handler) postCheck(ctx context.Context, body io.Reader, query url.Value
 	if err := json.NewDecoder(body).Decode(&tuple); err != nil {
 		return false, errors.WithStack(herodot.ErrBadRequest.WithErrorf("could not unmarshal json: %s", err.Error()))
 	}
-	t, err := h.d.Mapper().FromTuple(ctx, &tuple)
+	t, err := h.d.ReadOnlyMapper().FromTuple(ctx, &tuple)
 	// herodot.ErrNotFound occurs when the namespace is unknown
 	if errors.Is(err, herodot.ErrNotFound) {
 		return false, nil
@@ -304,7 +304,7 @@ func (h *Handler) Check(ctx context.Context, req *rts.CheckRequest) (*rts.CheckR
 		return nil, err
 	}
 
-	internalTuple, err := h.d.Mapper().FromTuple(ctx, tuple)
+	internalTuple, err := h.d.ReadOnlyMapper().FromTuple(ctx, tuple)
 	if err != nil {
 		return nil, err
 	}

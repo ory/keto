@@ -76,7 +76,7 @@ func (h *handler) DeleteRelationTuples(ctx context.Context, req *rts.DeleteRelat
 		return nil, errors.WithStack(herodot.ErrBadRequest.WithReason("invalid request"))
 	}
 
-	iq, err := h.d.Mapper().FromQuery(ctx, &q)
+	iq, err := h.d.ReadOnlyMapper().FromQuery(ctx, &q)
 	if err != nil {
 		return nil, err
 	}
@@ -188,7 +188,7 @@ func (h *handler) deleteRelations(w http.ResponseWriter, r *http.Request, _ http
 	}
 	l.Debug("deleting relationships")
 
-	iq, err := h.d.Mapper().FromQuery(ctx, query)
+	iq, err := h.d.ReadOnlyMapper().FromQuery(ctx, query)
 	if err != nil {
 		h.d.Logger().WithError(err).Errorf("could not map fields to UUIDs")
 		h.d.Writer().WriteError(w, r, err)
