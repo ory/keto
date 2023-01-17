@@ -16,5 +16,6 @@ func TestMain(m *testing.M) {
 		goleak.IgnoreTopFunction("github.com/ory/keto/internal/check/checkgroup.worker"),
 		goleak.IgnoreTopFunction("net/http.(*persistConn).readLoop"),
 		goleak.IgnoreTopFunction("net/http.(*persistConn).writeLoop"),
+		goleak.IgnoreTopFunction("database/sql.(*DB).connectionOpener"),
 	)
 }

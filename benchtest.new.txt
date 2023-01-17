@@ -1,0 +1,7 @@
+goos: linux
+goarch: amd64
+pkg: github.com/ory/keto/internal/check
+cpu: 11th Gen Intel(R) Core(TM) i7-1185G7 @ 3.00GHz
+BenchmarkComputedUsersets/Computed_userset-8         	   14576	     81280 ns/op	         1.000 queries/op	   17675 B/op	     364 allocs/op
+PASS
+ok  	github.com/ory/keto/internal/check	2.055s

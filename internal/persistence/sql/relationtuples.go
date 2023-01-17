@@ -41,11 +41,11 @@ func (relationTuples) TableName() string {
 	return "keto_relation_tuples"
 }
 
-func (RelationTuple) TableName() string {
+func (*RelationTuple) TableName() string {
 	return "keto_relation_tuples"
 }
 
-func (r *RelationTuple) toInternal() (*relationtuple.RelationTuple, error) {
+func (r *RelationTuple) ToInternal() (*relationtuple.RelationTuple, error) {
 	if r == nil {
 		return nil, nil
 	}
@@ -237,13 +237,27 @@ func (p *Persister) GetRelationTuples(ctx context.Context, query *relationtuple.
 
 	internalRes := make([]*relationtuple.RelationTuple, 0, len(res))
 	for _, r := range res {
-		if rt, err := r.toInternal(); err == nil {
+		if rt, err := r.ToInternal(); err == nil {
 			// Ignore error here, which stems from a deleted namespace.
 			internalRes = append(internalRes, rt)
 		}
 	}
 
 	return internalRes, nextPageToken, nil
+}
+
+func (p *Persister) ExistsRelationTuples(ctx context.Context, query *relationtuple.RelationQuery) (_ bool, err error) {
+	ctx, span := p.d.Tracer(ctx).Tracer().Start(ctx, "persistence.sql.ExistsRelationTuples")
+	defer otelx.End(span, &err)
+
+	sqlQuery := p.queryWithNetwork(ctx)
+
+	err = p.whereQuery(ctx, sqlQuery, query)
+	if err != nil {
+		return false, err
+	}
+	exists, err := sqlQuery.Exists(&RelationTuple{})
+	return exists, sqlcon.HandleError(err)
 }
 
 func (p *Persister) WriteRelationTuples(ctx context.Context, rs ...*relationtuple.RelationTuple) (err error) {

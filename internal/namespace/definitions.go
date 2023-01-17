@@ -6,6 +6,7 @@ package namespace
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 
 	"github.com/ory/keto/internal/namespace/ast"
 )
@@ -31,3 +32,30 @@ type (
 		NamespaceManager() (Manager, error)
 	}
 )
+
+func ASTRelationFor(ctx context.Context, m Manager, namespace, relation string) (*ast.Relation, error) {
+	// Special case: If the relationTuple's relation is empty, then it is not an
+	// error that the relation was not found.
+	if relation == "" {
+		return nil, nil
+	}
+	ns, err := m.GetNamespaceByName(ctx, namespace)
+	if err != nil {
+		// On an unknown namespace the answer should be "not allowed", not "not
+		// found". Therefore, we don't return the error here.
+		return nil, nil
+	}
+
+	// Special case: If Relations is empty, then there is no namespace
+	// configuration, and it is not an error that the relation was not found.
+	if len(ns.Relations) == 0 {
+		return nil, nil
+	}
+
+	for _, rel := range ns.Relations {
+		if rel.Name == relation {
+			return &rel, nil
+		}
+	}
+	return nil, fmt.Errorf("relation %q not found", relation)
+}

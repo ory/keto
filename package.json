@@ -17,6 +17,7 @@
     "grpc_tools_node_protoc_ts": "^5.3.2"
   },
   "devDependencies": {
+    "@ory/keto-namespace-types": "file:contrib/namespace-type-lib",
     "doctoc": "^2.0.1",
     "license-checker": "^25.0.1",
     "opencollective": "^1.0.3",
