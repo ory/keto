@@ -5,7 +5,7 @@
 
 **Table of Contents**
 
-- [0.0.0 (2023-01-05)](#000-2023-01-05)
+- [0.0.0 (2023-01-17)](#000-2023-01-17)
   - [Bug Fixes](#bug-fixes)
   - [Code Refactoring](#code-refactoring)
   - [Documentation](#documentation)
@@ -140,7 +140,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.10.0-alpha.0...v0.0.0) (2023-01-05)
+# [0.0.0](https://github.com/ory/keto/compare/v0.10.0-alpha.0...v0.0.0) (2023-01-17)
 
 ### Bug Fixes
 
@@ -148,6 +148,14 @@
   ([#1117](https://github.com/ory/keto/issues/1117))
   ([5f89fcf](https://github.com/ory/keto/commit/5f89fcf6730810b36014fec825e77f0011dc2462)),
   closes [#1116](https://github.com/ory/keto/issues/1116)
+- Do not insert UUID mappings on readonly APIs
+  ([#1190](https://github.com/ory/keto/issues/1190))
+  ([a86db70](https://github.com/ory/keto/commit/a86db70dba4720562b31bfec33d09cc799d9ae53)):
+
+  Endpoints that do not mutate the database (such as list or check) now use a
+  read-only version of the UUID mapper that does not write the mapping to the
+  database (as all relevant mapping information is already mapped).
+
 - More robust parser
   ([d38e006](https://github.com/ory/keto/commit/d38e006f13477f7b67ab88f03ff64ced65da7cbd))
 - Only type-check if there are no parser errors
