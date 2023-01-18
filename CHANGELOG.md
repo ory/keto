@@ -5,7 +5,7 @@
 
 **Table of Contents**
 
-- [0.0.0 (2023-01-17)](#000-2023-01-17)
+- [0.0.0 (2023-01-18)](#000-2023-01-18)
   - [Bug Fixes](#bug-fixes)
   - [Code Refactoring](#code-refactoring)
   - [Documentation](#documentation)
@@ -140,7 +140,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.10.0-alpha.0...v0.0.0) (2023-01-17)
+# [0.0.0](https://github.com/ory/keto/compare/v0.10.0-alpha.0...v0.0.0) (2023-01-18)
 
 ### Bug Fixes
 
@@ -251,6 +251,15 @@
   ([b80a230](https://github.com/ory/keto/commit/b80a230493eabf5056111ce59959c7d0238465fd))
 - Expose OPL syntax check API
   ([57ff639](https://github.com/ory/keto/commit/57ff639db7a783023e5c47074e485b09874e9aae))
+- Faster SQL queries for checks and strict check mode
+  ([#1171](https://github.com/ory/keto/issues/1171))
+  ([8e07890](https://github.com/ory/keto/commit/8e078900043de695094667ab1bdb4e4b0a55a6ab)):
+
+  With this change we introduce an experimental strict mode that drastically
+  reduces the number of SQL queries performed during checks. This is
+  experimental to allow adjusting its behavior in a breaking manner, but it is
+  ready for production usage. Also some of the non-strict queries are optimized.
+
 - Handle HTTP config locations
   ([6571bae](https://github.com/ory/keto/commit/6571bae5d10f3218573de3e5a60877bec71a2029))
 - Improve tracing ([#1169](https://github.com/ory/keto/issues/1169))
