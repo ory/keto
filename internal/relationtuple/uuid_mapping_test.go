@@ -349,3 +349,27 @@ func TestMapper(t *testing.T) {
 		})
 	})
 }
+
+func BenchmarkReadOnlyMapper(b *testing.B) {
+	ctx := context.Background()
+	reg := driver.NewSqliteTestRegistry(b, false,
+		driver.WithNamespaces([]*namespace.Namespace{{Name: "test"}}))
+	m := reg.ReadOnlyMapper()
+
+	b.Run("FromTuple", func(b *testing.B) {
+		for i := 0; i < b.N; i++ {
+			_, err := m.FromTuple(ctx, &ketoapi.RelationTuple{
+				Namespace: "test",
+				Object:    "object",
+				Relation:  "relation",
+				SubjectSet: &ketoapi.SubjectSet{
+					Namespace: "test",
+					Object:    "subject object",
+					Relation:  "relation",
+				},
+			})
+			assert.NoError(b, err)
+		}
+
+	})
+}
