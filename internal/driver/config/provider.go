@@ -167,8 +167,8 @@ func (k *Config) Set(key string, v any) error {
 func (k *Config) addressFor(endpoint EndpointType) string {
 	return fmt.Sprintf(
 		"%s:%d",
-		k.p.String("serve."+string(endpoint)+".host"),
-		k.p.Int("serve."+string(endpoint)+".port"),
+		k.p.StringF("serve."+string(endpoint)+".host", ""),
+		k.p.IntF("serve."+string(endpoint)+".port", 0),
 	)
 }
 

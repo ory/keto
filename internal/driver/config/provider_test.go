@@ -251,3 +251,16 @@ namespaces:
 		assert.True(t, p.StrictMode())
 	})
 }
+
+func TestProvider_DefaultReadAPIListenOn(t *testing.T) {
+	ctx := context.Background()
+	config, err := NewDefault(
+		ctx,
+		pflag.NewFlagSet("test", pflag.ContinueOnError),
+		logrusx.New("", ""),
+		configx.WithValue("dsn", "foo"),
+	)
+	require.NoError(t, err)
+
+	assert.Equal(t, ":4466", config.ReadAPIListenOn())
+}
