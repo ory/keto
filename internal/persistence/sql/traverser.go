@@ -145,7 +145,7 @@ func (t *Traverser) TraverseSubjectSetRewrite(ctx context.Context, start *relati
 	}
 
 	if len(relations) > 0 {
-		_, span := t.d.Tracer(ctx).Tracer().Start(ctx, "persistence.sql.TraverseSubjectSetRewrite")
+		ctx, span := t.d.Tracer(ctx).Tracer().Start(ctx, "persistence.sql.TraverseSubjectSetRewrite")
 		defer otelx.End(span, &err)
 
 		var rows relationTuples
