@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"net/url"
+	"strings"
 	"testing"
 
 	"github.com/ory/x/pointerx"
@@ -217,6 +218,52 @@ func TestWriteHandlers(t *testing.T) {
 			actualRTs, _, err := reg.RelationTupleManager().GetRelationTuples(ctx, mappedQuery, x.WithSize(10))
 			require.NoError(t, err)
 			assert.Equal(t, []*relationtuple.RelationTuple{}, actualRTs)
+		})
+
+		t.Run("case=bad request if body sent", func(t *testing.T) {
+			nspace := addNamespace(t)
+
+			rts := []*ketoapi.RelationTuple{
+				{
+					Namespace: nspace.Name,
+					Object:    "deleted obj",
+					Relation:  "deleted rel",
+					SubjectID: pointerx.Ptr("deleted subj 1"),
+				},
+				{
+					Namespace: nspace.Name,
+					Object:    "deleted obj",
+					Relation:  "deleted rel",
+					SubjectID: pointerx.Ptr("deleted subj 2"),
+				},
+			}
+
+			relationtuple.MapAndWriteTuples(t, reg, rts...)
+
+			q := url.Values{
+				"namespace": {nspace.Name},
+				"object":    {"deleted obj"},
+				"relation":  {"deleted rel"},
+			}
+			req, err := http.NewRequest(
+				http.MethodDelete,
+				ts.URL+relationtuple.WriteRouteBase+"?"+q.Encode(),
+				strings.NewReader("some body"))
+			require.NoError(t, err)
+			resp, err := ts.Client().Do(req)
+			require.NoError(t, err)
+			assert.Equal(t, http.StatusBadRequest, resp.StatusCode)
+
+			query, err := (&ketoapi.RelationQuery{}).FromURLQuery(q)
+			require.NoError(t, err)
+			mappedQuery, err := reg.Mapper().FromQuery(ctx, query)
+			require.NoError(t, err)
+
+			actualRTs, _, err := reg.RelationTupleManager().GetRelationTuples(ctx, mappedQuery, x.WithSize(10))
+			require.NoError(t, err)
+			mappedRTs, err := reg.Mapper().ToTuple(ctx, actualRTs...)
+			require.NoError(t, err)
+			assert.ElementsMatch(t, rts, mappedRTs)
 		})
 	})
 

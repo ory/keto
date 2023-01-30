@@ -6,6 +6,7 @@ package relationtuple
 import (
 	"context"
 	"encoding/json"
+	"io"
 	"net/http"
 
 	"github.com/ory/keto/ketoapi"
@@ -175,6 +176,11 @@ func (h *handler) createRelation(w http.ResponseWriter, r *http.Request, _ httpr
 func (h *handler) deleteRelations(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	ctx := r.Context()
 
+	if !hasEmptyBody(r) {
+		h.d.Writer().WriteError(w, r, herodot.ErrBadRequest.WithReason("body must be empty"))
+		return
+	}
+
 	q := r.URL.Query()
 	query, err := (&ketoapi.RelationQuery{}).FromURLQuery(q)
 	if err != nil {
@@ -201,6 +207,11 @@ func (h *handler) deleteRelations(w http.ResponseWriter, r *http.Request, _ http
 	}
 
 	w.WriteHeader(http.StatusNoContent)
+}
+
+func hasEmptyBody(r *http.Request) bool {
+	_, err := r.Body.Read([]byte{})
+	return err == io.EOF
 }
 
 func internalTuplesWithAction(deltas []*ketoapi.PatchDelta, action ketoapi.PatchAction) (filtered []*ketoapi.RelationTuple) {
