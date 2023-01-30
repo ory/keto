@@ -127,6 +127,8 @@ LIMIT ?
 }
 
 func (t *Traverser) TraverseSubjectSetRewrite(ctx context.Context, start *relationtuple.RelationTuple, computedSubjectSets []string) (res []*relationtuple.TraversalResult, err error) {
+	ctx, span := t.d.Tracer(ctx).Tracer().Start(ctx, "persistence.sql.TraverseSubjectSetRewrite")
+	defer otelx.End(span, &err)
 
 	namespaceManager, err := t.d.Config(ctx).NamespaceManager()
 	if err != nil {
@@ -145,9 +147,6 @@ func (t *Traverser) TraverseSubjectSetRewrite(ctx context.Context, start *relati
 	}
 
 	if len(relations) > 0 {
-		_, span := t.d.Tracer(ctx).Tracer().Start(ctx, "persistence.sql.TraverseSubjectSetRewrite")
-		defer otelx.End(span, &err)
-
 		var rows relationTuples
 
 		query := t.p.queryWithNetwork(ctx)
