@@ -175,7 +175,7 @@ func BenchmarkComputedUsersets(b *testing.B) {
 
 func dbSpans(spans *tracetest.SpanRecorder) (count int) {
 	for _, s := range spans.Started() {
-		if strings.HasPrefix(s.Name(), "persistence.sql") {
+		if strings.HasPrefix(s.Name(), "sql-conn-query") {
 			count++
 		}
 	}
