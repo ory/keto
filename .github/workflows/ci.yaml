@@ -246,9 +246,6 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: "15"
-      - uses: arduino/setup-protoc@v1
-        with:
-          version: "3.19.x"
       - name: Lint and Build
         run: |
           make buf
