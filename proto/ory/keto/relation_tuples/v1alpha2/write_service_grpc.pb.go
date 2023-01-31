@@ -22,9 +22,9 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type WriteServiceClient interface {
-	// Writes one or more relation tuples in a single transaction.
+	// Writes one or more relationships in a single transaction.
 	TransactRelationTuples(ctx context.Context, in *TransactRelationTuplesRequest, opts ...grpc.CallOption) (*TransactRelationTuplesResponse, error)
-	// Deletes relation tuples based on relation query
+	// Deletes relationships based on relation query
 	DeleteRelationTuples(ctx context.Context, in *DeleteRelationTuplesRequest, opts ...grpc.CallOption) (*DeleteRelationTuplesResponse, error)
 }
 
@@ -58,9 +58,9 @@ func (c *writeServiceClient) DeleteRelationTuples(ctx context.Context, in *Delet
 // All implementations should embed UnimplementedWriteServiceServer
 // for forward compatibility
 type WriteServiceServer interface {
-	// Writes one or more relation tuples in a single transaction.
+	// Writes one or more relationships in a single transaction.
 	TransactRelationTuples(context.Context, *TransactRelationTuplesRequest) (*TransactRelationTuplesResponse, error)
-	// Deletes relation tuples based on relation query
+	// Deletes relationships based on relation query
 	DeleteRelationTuples(context.Context, *DeleteRelationTuplesRequest) (*DeleteRelationTuplesResponse, error)
 }
 

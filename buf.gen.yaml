@@ -1,22 +1,27 @@
 version: v1
+
 plugins:
-  - name: go
+  - plugin: buf.build/protocolbuffers/go
     out: proto
     opt: paths=source_relative
-  - name: go-grpc
+
+  - plugin: buf.build/grpc/go
     out: proto
     opt: paths=source_relative,require_unimplemented_servers=false
-  - name: js
+
+  - plugin: buf.build/protocolbuffers/js
     out: proto
     opt: import_style=commonjs,binary
-  - name: js-grpc
+
+  - plugin: buf.build/grpc/node
     out: proto
     opt: grpc_js,binary,import_style=commonjs
-    path: node_modules/.bin/grpc_tools_node_protoc_plugin
+
   - name: ts
     out: proto
     opt: ts_out=proto
     path: node_modules/.bin/protoc-gen-ts
+
   - name: doc
     out: proto
     opt: markdown,proto/buf.md

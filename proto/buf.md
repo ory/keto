@@ -134,8 +134,8 @@ The service that checks the syntax of an OPL file.
 
 ### RelationQuery
 
-The query for listing relation tuples. Clients can specify any optional field to
-partially filter for specific relation tuples.
+The query for listing relationships. Clients can specify any optional field to
+partially filter for specific relationships.
 
 Example use cases (namespace is always required):
 
@@ -455,8 +455,8 @@ from the previous page. |
 
 ### ListRelationTuplesRequest.Query
 
-The query for listing relation tuples. Clients can specify any optional field to
-partially filter for specific relation tuples.
+The query for listing relationships. Clients can specify any optional field to
+partially filter for specific relationships.
 
 Example use cases (namespace is always required):
 
@@ -485,20 +485,20 @@ The response of a ReadService.ListRelationTuples RPC.
 
 | Field           | Type                                                              | Label    | Description                                                                                            |
 | --------------- | ----------------------------------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------ |
-| relation_tuples | [RelationTuple](#ory-keto-relation_tuples-v1alpha2-RelationTuple) | repeated | The relation tuples matching the list request.                                                         |
+| relation_tuples | [RelationTuple](#ory-keto-relation_tuples-v1alpha2-RelationTuple) | repeated | The relationships matching the list request.                                                           |
 | next_page_token | [string](#string)                                                 |          | The token required to get the next page. If this is the last page, the token will be the empty string. |
 
 <a name="ory-keto-relation_tuples-v1alpha2-ReadService"></a>
 
 ### ReadService
 
-The service to query relation tuples.
+The service to query relationships.
 
 This service is part of the [read-APIs](../concepts/api-overview.mdx#read-apis).
 
-| Method Name        | Request Type                                                                              | Response Type                                                                               | Description                |
-| ------------------ | ----------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- | -------------------------- |
-| ListRelationTuples | [ListRelationTuplesRequest](#ory-keto-relation_tuples-v1alpha2-ListRelationTuplesRequest) | [ListRelationTuplesResponse](#ory-keto-relation_tuples-v1alpha2-ListRelationTuplesResponse) | Lists ACL relation tuples. |
+| Method Name        | Request Type                                                                              | Response Type                                                                               | Description              |
+| ------------------ | ----------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- | ------------------------ |
+| ListRelationTuples | [ListRelationTuplesRequest](#ory-keto-relation_tuples-v1alpha2-ListRelationTuplesRequest) | [ListRelationTuplesResponse](#ory-keto-relation_tuples-v1alpha2-ListRelationTuplesResponse) | Lists ACL relationships. |
 
 <a name="ory_keto_relation_tuples_v1alpha2_version-proto"></a>
 
@@ -554,7 +554,7 @@ and [write-APIs](../concepts/api-overview.mdx#write-apis).
 
 ### DeleteRelationTuplesRequest.Query
 
-The query for deleting relation tuples
+The query for deleting relationships
 
 | Field     | Type                                                  | Label | Description                          |
 | --------- | ----------------------------------------------------- | ----- | ------------------------------------ |
@@ -584,9 +584,9 @@ Write-delta for a TransactRelationTuplesRequest.
 
 The request of a WriteService.TransactRelationTuples RPC.
 
-| Field                 | Type                                                                        | Label    | Description                                                                                                                                |
-| --------------------- | --------------------------------------------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| relation_tuple_deltas | [RelationTupleDelta](#ory-keto-relation_tuples-v1alpha2-RelationTupleDelta) | repeated | The write delta for the relation tuples operated in one single transaction. Either all actions succeed or no change takes effect on error. |
+| Field                 | Type                                                                        | Label    | Description                                                                                                                              |
+| --------------------- | --------------------------------------------------------------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| relation_tuple_deltas | [RelationTupleDelta](#ory-keto-relation_tuples-v1alpha2-RelationTupleDelta) | repeated | The write delta for the relationships operated in one single transaction. Either all actions succeed or no change takes effect on error. |
 
 <a name="ory-keto-relation_tuples-v1alpha2-TransactRelationTuplesResponse"></a>
 
@@ -620,10 +620,10 @@ The write service to create and delete Access Control Lists.
 This service is part of the
 [write-APIs](../concepts/api-overview.mdx#write-apis).
 
-| Method Name            | Request Type                                                                                      | Response Type                                                                                       | Description                                                 |
-| ---------------------- | ------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
-| TransactRelationTuples | [TransactRelationTuplesRequest](#ory-keto-relation_tuples-v1alpha2-TransactRelationTuplesRequest) | [TransactRelationTuplesResponse](#ory-keto-relation_tuples-v1alpha2-TransactRelationTuplesResponse) | Writes one or more relation tuples in a single transaction. |
-| DeleteRelationTuples   | [DeleteRelationTuplesRequest](#ory-keto-relation_tuples-v1alpha2-DeleteRelationTuplesRequest)     | [DeleteRelationTuplesResponse](#ory-keto-relation_tuples-v1alpha2-DeleteRelationTuplesResponse)     | Deletes relation tuples based on relation query             |
+| Method Name            | Request Type                                                                                      | Response Type                                                                                       | Description                                               |
+| ---------------------- | ------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
+| TransactRelationTuples | [TransactRelationTuplesRequest](#ory-keto-relation_tuples-v1alpha2-TransactRelationTuplesRequest) | [TransactRelationTuplesResponse](#ory-keto-relation_tuples-v1alpha2-TransactRelationTuplesResponse) | Writes one or more relationships in a single transaction. |
+| DeleteRelationTuples   | [DeleteRelationTuplesRequest](#ory-keto-relation_tuples-v1alpha2-DeleteRelationTuplesRequest)     | [DeleteRelationTuplesResponse](#ory-keto-relation_tuples-v1alpha2-DeleteRelationTuplesResponse)     | Deletes relationships based on relation query             |
 
 ## Scalar Value Types
 
