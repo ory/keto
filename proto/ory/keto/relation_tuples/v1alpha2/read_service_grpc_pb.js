@@ -29,11 +29,11 @@ function deserialize_ory_keto_relation_tuples_v1alpha2_ListRelationTuplesRespons
 }
 
 
-// The service to query relation tuples.
+// The service to query relationships.
 //
 // This service is part of the [read-APIs](../concepts/api-overview.mdx#read-apis).
 var ReadServiceService = exports.ReadServiceService = {
-  // Lists ACL relation tuples.
+  // Lists ACL relationships.
 listRelationTuples: {
     path: '/ory.keto.relation_tuples.v1alpha2.ReadService/ListRelationTuples',
     requestStream: false,

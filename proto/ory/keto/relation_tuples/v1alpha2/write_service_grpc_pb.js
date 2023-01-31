@@ -54,7 +54,7 @@ function deserialize_ory_keto_relation_tuples_v1alpha2_TransactRelationTuplesRes
 //
 // This service is part of the [write-APIs](../concepts/api-overview.mdx#write-apis).
 var WriteServiceService = exports.WriteServiceService = {
-  // Writes one or more relation tuples in a single transaction.
+  // Writes one or more relationships in a single transaction.
 transactRelationTuples: {
     path: '/ory.keto.relation_tuples.v1alpha2.WriteService/TransactRelationTuples',
     requestStream: false,
@@ -66,7 +66,7 @@ transactRelationTuples: {
     responseSerialize: serialize_ory_keto_relation_tuples_v1alpha2_TransactRelationTuplesResponse,
     responseDeserialize: deserialize_ory_keto_relation_tuples_v1alpha2_TransactRelationTuplesResponse,
   },
-  // Deletes relation tuples based on relation query
+  // Deletes relationships based on relation query
 deleteRelationTuples: {
     path: '/ory.keto.relation_tuples.v1alpha2.WriteService/DeleteRelationTuples',
     requestStream: false,
