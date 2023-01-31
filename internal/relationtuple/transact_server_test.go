@@ -14,21 +14,17 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/julienschmidt/httprouter"
 	"github.com/ory/x/pointerx"
-
-	"github.com/ory/keto/ketoapi"
-
-	"github.com/ory/keto/internal/driver/config"
-
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/julienschmidt/httprouter"
-
 	"github.com/ory/keto/internal/driver"
+	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/namespace"
 	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/internal/x"
+	"github.com/ory/keto/ketoapi"
 )
 
 func TestWriteHandlers(t *testing.T) {
@@ -220,7 +216,7 @@ func TestWriteHandlers(t *testing.T) {
 			assert.Equal(t, []*relationtuple.RelationTuple{}, actualRTs)
 		})
 
-		t.Run("case=bad request if body sent", func(t *testing.T) {
+		t.Run("suite=bad requests", func(t *testing.T) {
 			nspace := addNamespace(t)
 
 			rts := []*ketoapi.RelationTuple{
@@ -240,31 +236,53 @@ func TestWriteHandlers(t *testing.T) {
 
 			relationtuple.MapAndWriteTuples(t, reg, rts...)
 
-			q := url.Values{
-				"namespace": {nspace.Name},
-				"object":    {"deleted obj"},
-				"relation":  {"deleted rel"},
+			assertBadRequest := func(t *testing.T, req *http.Request) {
+				resp, err := ts.Client().Do(req)
+				require.NoError(t, err)
+				assert.Equal(t, http.StatusBadRequest, resp.StatusCode)
 			}
-			req, err := http.NewRequest(
-				http.MethodDelete,
-				ts.URL+relationtuple.WriteRouteBase+"?"+q.Encode(),
-				strings.NewReader("some body"))
-			require.NoError(t, err)
-			resp, err := ts.Client().Do(req)
-			require.NoError(t, err)
-			assert.Equal(t, http.StatusBadRequest, resp.StatusCode)
 
-			query, err := (&ketoapi.RelationQuery{}).FromURLQuery(q)
-			require.NoError(t, err)
-			mappedQuery, err := reg.Mapper().FromQuery(ctx, query)
-			require.NoError(t, err)
+			assertTuplesExist := func(t *testing.T) {
+				mappedQuery, err := reg.Mapper().FromQuery(ctx, &ketoapi.RelationQuery{
+					Namespace: &nspace.Name,
+				})
+				require.NoError(t, err)
 
-			actualRTs, _, err := reg.RelationTupleManager().GetRelationTuples(ctx, mappedQuery, x.WithSize(10))
-			require.NoError(t, err)
-			mappedRTs, err := reg.Mapper().ToTuple(ctx, actualRTs...)
-			require.NoError(t, err)
-			assert.ElementsMatch(t, rts, mappedRTs)
+				actualRTs, _, err := reg.RelationTupleManager().GetRelationTuples(ctx, mappedQuery, x.WithSize(10))
+				require.NoError(t, err)
+				mappedRTs, err := reg.Mapper().ToTuple(ctx, actualRTs...)
+				require.NoError(t, err)
+				assert.ElementsMatch(t, rts, mappedRTs)
+			}
+
+			t.Run("case=bad request if body sent", func(t *testing.T) {
+				q := url.Values{
+					"namespace": {nspace.Name},
+					"object":    {"deleted obj"},
+					"relation":  {"deleted rel"},
+				}
+				req, err := http.NewRequest(
+					http.MethodDelete,
+					ts.URL+relationtuple.WriteRouteBase+"?"+q.Encode(),
+					strings.NewReader("some body"))
+				require.NoError(t, err)
+
+				assertBadRequest(t, req)
+				assertTuplesExist(t)
+			})
+
+			t.Run("case=bad request query param misspelled", func(t *testing.T) {
+				req, err := http.NewRequest(
+					http.MethodDelete,
+					ts.URL+relationtuple.WriteRouteBase+"?invalid=param",
+					nil)
+				require.NoError(t, err)
+
+				assertBadRequest(t, req)
+				assertTuplesExist(t)
+			})
 		})
+
 	})
 
 	t.Run("method=patch", func(t *testing.T) {

@@ -40,14 +40,14 @@ func (q *RelationQuery) FromURLQuery(query url.Values) (*RelationQuery, error) {
 		return nil, ErrIncompleteSubject
 	}
 
-	if query.Has("namespace") {
-		q.Namespace = pointerx.Ptr(query.Get("namespace"))
+	if query.Has(NamespaceKey) {
+		q.Namespace = pointerx.Ptr(query.Get(NamespaceKey))
 	}
-	if query.Has("object") {
-		q.Object = pointerx.Ptr(query.Get("object"))
+	if query.Has(ObjectKey) {
+		q.Object = pointerx.Ptr(query.Get(ObjectKey))
 	}
-	if query.Has("relation") {
-		q.Relation = pointerx.Ptr(query.Get("relation"))
+	if query.Has(RelationKey) {
+		q.Relation = pointerx.Ptr(query.Get(RelationKey))
 	}
 
 	return q, nil
@@ -57,13 +57,13 @@ func (q *RelationQuery) ToURLQuery() url.Values {
 	v := make(url.Values, 7)
 
 	if q.Namespace != nil {
-		v.Add("namespace", *q.Namespace)
+		v.Add(NamespaceKey, *q.Namespace)
 	}
 	if q.Relation != nil {
-		v.Add("relation", *q.Relation)
+		v.Add(RelationKey, *q.Relation)
 	}
 	if q.Object != nil {
-		v.Add("object", *q.Object)
+		v.Add(ObjectKey, *q.Object)
 	}
 	if q.SubjectID != nil {
 		v.Add(SubjectIDKey, *q.SubjectID)
@@ -112,17 +112,17 @@ func (s *SubjectSet) FromURLQuery(values url.Values) *SubjectSet {
 		s = &SubjectSet{}
 	}
 
-	s.Namespace = values.Get("namespace")
-	s.Relation = values.Get("relation")
-	s.Object = values.Get("object")
+	s.Namespace = values.Get(NamespaceKey)
+	s.Relation = values.Get(RelationKey)
+	s.Object = values.Get(ObjectKey)
 
 	return s
 }
 
 func (s *SubjectSet) ToURLQuery() url.Values {
 	return url.Values{
-		"namespace": []string{s.Namespace},
-		"object":    []string{s.Object},
-		"relation":  []string{s.Relation},
+		NamespaceKey: []string{s.Namespace},
+		ObjectKey:    []string{s.Object},
+		RelationKey:  []string{s.Relation},
 	}
 }
