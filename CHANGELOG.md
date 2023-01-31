@@ -5,7 +5,7 @@
 
 **Table of Contents**
 
-- [0.0.0 (2023-01-24)](#000-2023-01-24)
+- [0.0.0 (2023-01-31)](#000-2023-01-31)
   - [Bug Fixes](#bug-fixes)
   - [Code Refactoring](#code-refactoring)
   - [Documentation](#documentation)
@@ -140,7 +140,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.10.0-alpha.0...v0.0.0) (2023-01-24)
+# [0.0.0](https://github.com/ory/keto/compare/v0.10.0-alpha.0...v0.0.0) (2023-01-31)
 
 ### Bug Fixes
 
@@ -158,6 +158,8 @@
 
 - More robust parser
   ([d38e006](https://github.com/ory/keto/commit/d38e006f13477f7b67ab88f03ff64ced65da7cbd))
+- More robust query counting ([#1218](https://github.com/ory/keto/issues/1218))
+  ([4503a74](https://github.com/ory/keto/commit/4503a74b52a03385e807b63c293ad643c68b5f46))
 - Only type-check if there are no parser errors
   ([b4bef07](https://github.com/ory/keto/commit/b4bef07ca91b7585a52d536ee8c0c38ec1d66b9d)):
 
@@ -168,6 +170,8 @@
   ([1f3c568](https://github.com/ory/keto/commit/1f3c5687e726213dba84280f6457867c469b8321))
 - Properly lex imports in OPL ([#1041](https://github.com/ory/keto/issues/1041))
   ([26944e9](https://github.com/ory/keto/commit/26944e9e2f5d851aec63e46b3777d2d1ebaca3f8))
+- Race condition
+  ([05ec2da](https://github.com/ory/keto/commit/05ec2da017265b4fbbd860c54272acfa82893503))
 - Race condition in setup ([#1107](https://github.com/ory/keto/issues/1107))
   ([07dfce7](https://github.com/ory/keto/commit/07dfce7e964425e0fbe37b340c38c4404dd3fd2d))
 - Recover from panics in gRPC server
@@ -184,6 +188,13 @@
 
   - Allow semicolons in more places
   - Allow commas in more places
+
+- Tiny stuff ([#1211](https://github.com/ory/keto/issues/1211))
+  ([719a7d5](https://github.com/ory/keto/commit/719a7d5d1bfd77c594528df821f20a061dc2b848)):
+
+  - fix: tracing in persistence.sql.TraverseSubjectSetRewrite
+
+  - fix: incorrect HTTP return code
 
 - Tune error message
   ([b51d215](https://github.com/ory/keto/commit/b51d2151873ce247deb33d9b50924c8fdacdae47))
