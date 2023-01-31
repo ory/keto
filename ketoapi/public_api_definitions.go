@@ -138,7 +138,7 @@ var RelationQueryKeys = []string{
 	SubjectSetNamespaceKey,
 	SubjectSetObjectKey,
 	SubjectSetRelationKey,
-	"subject", // We have a mnore specific error message for this key.
+	"subject", // We have a more specific error message for this key.
 }
 
 // Paginated Relationship List

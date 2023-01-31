@@ -176,11 +176,11 @@ func (h *handler) createRelation(w http.ResponseWriter, r *http.Request, _ httpr
 func (h *handler) deleteRelations(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	ctx := r.Context()
 
-	if err := validate.NoExtraQueryParams(r, ketoapi.RelationQueryKeys...); err != nil {
-		h.d.Writer().WriteError(w, r, err)
-		return
-	}
-	if err := validate.HasEmptyBody(r); err != nil {
+	if err := validate.All(r,
+		validate.NoExtraQueryParams(ketoapi.RelationQueryKeys...),
+		validate.QueryParamsContainsOneOf(ketoapi.NamespaceKey),
+		validate.HasEmptyBody(),
+	); err != nil {
 		h.d.Writer().WriteError(w, r, err)
 		return
 	}
