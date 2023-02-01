@@ -281,6 +281,17 @@ func TestWriteHandlers(t *testing.T) {
 				assertBadRequest(t, req)
 				assertTuplesExist(t)
 			})
+
+			t.Run("case=bad request if query params misssing", func(t *testing.T) {
+				req, err := http.NewRequest(
+					http.MethodDelete,
+					ts.URL+relationtuple.WriteRouteBase,
+					nil)
+				require.NoError(t, err)
+
+				assertBadRequest(t, req)
+				assertTuplesExist(t)
+			})
 		})
 
 	})
