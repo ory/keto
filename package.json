@@ -20,7 +20,6 @@
     "@ory/keto-namespace-types": "file:contrib/namespace-type-lib",
     "doctoc": "^2.0.1",
     "license-checker": "^25.0.1",
-    "opencollective": "^1.0.3",
     "ory-prettier-styles": "^1.2.0",
     "prettier": "2.7.1",
     "prettier-plugin-packagejson": "^2.2.18"
