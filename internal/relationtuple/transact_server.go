@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/ory/keto/internal/x/validate"
 	"github.com/ory/keto/ketoapi"
 
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
@@ -174,6 +175,15 @@ func (h *handler) createRelation(w http.ResponseWriter, r *http.Request, _ httpr
 //	  default: errorGeneric
 func (h *handler) deleteRelations(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	ctx := r.Context()
+
+	if err := validate.All(r,
+		validate.NoExtraQueryParams(ketoapi.RelationQueryKeys...),
+		validate.QueryParamsContainsOneOf(ketoapi.NamespaceKey),
+		validate.HasEmptyBody(),
+	); err != nil {
+		h.d.Writer().WriteError(w, r, err)
+		return
+	}
 
 	q := r.URL.Query()
 	query, err := (&ketoapi.RelationQuery{}).FromURLQuery(q)
