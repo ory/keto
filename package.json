@@ -14,7 +14,7 @@
   "dependencies": {
     "@openapitools/openapi-generator-cli": "^2.1.18",
     "grpc-tools": "^1.11.3",
-    "grpc_tools_node_protoc_ts": "^5.3.2"
+    "grpc_tools_node_protoc_ts": "^5.3.3"
   },
   "devDependencies": {
     "@ory/keto-namespace-types": "file:contrib/namespace-type-lib",
