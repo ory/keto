@@ -76,6 +76,7 @@ type (
 		defaultHttpMiddlewares    []func(rw http.ResponseWriter, r *http.Request, next http.HandlerFunc)
 		grpcTransportCredentials  credentials.TransportCredentials
 		defaultMigrationOptions   []popx.MigrationBoxOption
+		healthReadyCheckers       healthx.ReadyCheckers
 	}
 	ReadHandler interface {
 		RegisterReadRoutes(r *x.ReadRouter)
@@ -119,7 +120,10 @@ func (r *RegistryDefault) Config(ctx context.Context) *config.Config {
 
 func (r *RegistryDefault) HealthHandler() *healthx.Handler {
 	if r.healthH == nil {
-		r.healthH = healthx.NewHandler(r.Writer(), config.Version, healthx.ReadyCheckers{})
+		if r.healthReadyCheckers == nil {
+			r.healthReadyCheckers = healthx.ReadyCheckers{}
+		}
+		r.healthH = healthx.NewHandler(r.Writer(), config.Version, r.healthReadyCheckers)
 	}
 
 	return r.healthH
