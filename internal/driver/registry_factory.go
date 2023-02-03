@@ -15,26 +15,21 @@ import (
 	"testing"
 
 	"github.com/ory/x/configx"
+	"github.com/ory/x/logrusx"
 	"github.com/ory/x/otelx"
 	"github.com/ory/x/tlsx"
+	"github.com/pkg/errors"
+	"github.com/sirupsen/logrus"
+	"github.com/spf13/pflag"
+	"github.com/stretchr/testify/require"
 	"go.opentelemetry.io/otel/trace"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 
-	"github.com/ory/keto/ketoctx"
-
+	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/namespace"
 	"github.com/ory/keto/internal/x/dbx"
-
-	"github.com/sirupsen/logrus"
-
-	"github.com/pkg/errors"
-
-	"github.com/ory/x/logrusx"
-	"github.com/spf13/pflag"
-	"github.com/stretchr/testify/require"
-
-	"github.com/ory/keto/internal/driver/config"
+	"github.com/ory/keto/ketoctx"
 )
 
 // createFile writes the content to a temporary file, returning the path.
@@ -88,6 +83,7 @@ func NewDefaultRegistry(ctx context.Context, flags *pflag.FlagSet, withoutNetwor
 		defaultStreamInterceptors: options.GRPCStreamInterceptors(),
 		defaultHttpMiddlewares:    options.HTTPMiddlewares(),
 		defaultMigrationOptions:   options.MigrationOptions(),
+		healthReadyCheckers:       options.ReadyCheckers(),
 	}
 
 	init := r.Init
@@ -150,7 +146,7 @@ func WithGRPCStreamInterceptors(i ...grpc.StreamServerInterceptor) TestRegistryO
 	}
 }
 func WithTracer(tracer trace.Tracer) TestRegistryOption {
-	return func(t testing.TB, r *RegistryDefault) {
+	return func(_ testing.TB, r *RegistryDefault) {
 		r.tracer = new(otelx.Tracer).WithOTLP(tracer)
 	}
 }
