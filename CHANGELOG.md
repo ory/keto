@@ -5,7 +5,7 @@
 
 **Table of Contents**
 
-- [0.0.0 (2023-02-02)](#000-2023-02-02)
+- [0.0.0 (2023-02-03)](#000-2023-02-03)
   - [Bug Fixes](#bug-fixes)
   - [Code Refactoring](#code-refactoring)
   - [Documentation](#documentation)
@@ -141,7 +141,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.10.0-alpha.0...v0.0.0) (2023-02-02)
+# [0.0.0](https://github.com/ory/keto/compare/v0.10.0-alpha.0...v0.0.0) (2023-02-03)
 
 ### Bug Fixes
 
@@ -242,6 +242,9 @@
   ([a8d8767](https://github.com/ory/keto/commit/a8d8767f02695932ed63b5139dd52534e8c4922f))
 - Add libfuzzer for parser
   ([05c9a01](https://github.com/ory/keto/commit/05c9a01785bd4ca6055fee655dfb26d16883b8db))
+- Add option to add custom health checks
+  ([#1225](https://github.com/ory/keto/issues/1225))
+  ([3399f60](https://github.com/ory/keto/commit/3399f604257df32a9ecc906bc81ddeac1700b718))
 - Allow loading OPL configs from base64 URLs
   ([640abc1](https://github.com/ory/keto/commit/640abc11acb9b24197bc77710e6b0e8a88719751))
 - Allow permits referencing permits
