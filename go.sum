@@ -851,8 +851,8 @@ go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.3
 go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.38.0/go.mod h1:+F41JBSkye7aYJELRvIMF0Z66reIwIOL0St75ZVwSJs=
 go.opentelemetry.io/contrib/instrumentation/net/http/httptrace/otelhttptrace v0.38.0 h1:q2UbRSx6GEv9HSjgMSQKcuJ9xaczm8xeKIRNzV28RJc=
 go.opentelemetry.io/contrib/instrumentation/net/http/httptrace/otelhttptrace v0.38.0/go.mod h1:0qaU8WKebRvZWDd0VqhlLXXzEmTmyELEQbdAsxIbe1k=
-go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.38.0 h1:rTxmym+VN9f6ajzNtITVgyvZrNbpLt3NHr3suLLHLEQ=
-go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.38.0/go.mod h1:w6xNm+kC506KNs5cknSHal6dtdRnc4uema0uN9GSQc0=
+go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.39.0 h1:vFEBG7SieZJzvnRWQ81jxpuEqe6J8Ex+hgc9CqOTzHc=
+go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.39.0/go.mod h1:9rgTcOKdIhDOC0IcAu8a+R+FChqSUBihKpM1lVNi6T0=
 go.opentelemetry.io/contrib/propagators/b3 v1.13.0 h1:f17PBmZK60RoHvOpJVqEka8oS2EXjpjHquESD/8zZ50=
 go.opentelemetry.io/contrib/propagators/b3 v1.13.0/go.mod h1:zy2hz1TpGUoJzSwlBchVGvVAFQS8s2pglKLbrAFZ+Sc=
 go.opentelemetry.io/contrib/propagators/jaeger v1.13.0 h1:+tVlvpiQMOCzi4EYCaBjblibpyKfqoph0fcITmtXMws=
@@ -871,8 +871,8 @@ go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp v1.12.0 h1:L23Mz
 go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp v1.12.0/go.mod h1:C+onYX2j5QH653b3wGJwowYr8jLMjBJw35QcaCQQK0U=
 go.opentelemetry.io/otel/exporters/zipkin v1.12.0 h1:0Pvqi4MAvQ28rGUFoH8uIaNKNCGVLNpn7TbRCkB1gP8=
 go.opentelemetry.io/otel/exporters/zipkin v1.12.0/go.mod h1:zrxX/glbLVD/EFi01JCn2W1KdWNrJb3FkBHF+oRPlXs=
-go.opentelemetry.io/otel/metric v0.35.0 h1:aPT5jk/w7F9zW51L7WgRqNKDElBdyRLGuBtI5MX34e8=
-go.opentelemetry.io/otel/metric v0.35.0/go.mod h1:qAcbhaTRFU6uG8QM7dDo7XvFsWcugziq/5YI065TokQ=
+go.opentelemetry.io/otel/metric v0.36.0 h1:t0lgGI+L68QWt3QtOIlqM9gXoxqxWLhZ3R/e5oOAY0Q=
+go.opentelemetry.io/otel/metric v0.36.0/go.mod h1:wKVw57sd2HdSZAzyfOM9gTqqE8v7CbqWsYL6AyrH9qk=
 go.opentelemetry.io/otel/sdk v1.12.0 h1:8npliVYV7qc0t1FKdpU08eMnOjgPFMnriPhn0HH4q3o=
 go.opentelemetry.io/otel/sdk v1.12.0/go.mod h1:WYcvtgquYvgODEvxOry5owO2y9MyciW7JqMz6cpXShE=
 go.opentelemetry.io/otel/trace v1.13.0 h1:CBgRZ6ntv+Amuj1jDsMhZtlAPT6gbyIRdaIzFhfBSdY=
