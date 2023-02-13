@@ -5,7 +5,7 @@
 
 **Table of Contents**
 
-- [0.0.0 (2023-02-03)](#000-2023-02-03)
+- [0.0.0 (2023-02-13)](#000-2023-02-13)
   - [Bug Fixes](#bug-fixes)
   - [Code Refactoring](#code-refactoring)
   - [Documentation](#documentation)
@@ -141,7 +141,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.10.0-alpha.0...v0.0.0) (2023-02-03)
+# [0.0.0](https://github.com/ory/keto/compare/v0.10.0-alpha.0...v0.0.0) (2023-02-13)
 
 ### Bug Fixes
 
@@ -394,6 +394,9 @@ changelog for all the other fixes and features we included.
   ([52259a3](https://github.com/ory/keto/commit/52259a30d0be0257f1bb7ef591ae769808450230)):
 
   Bumps from v0.10.0-alpha.0.pre.0
+
+- Pin v0.10.0-alpha.0.pre.1 release commit
+  ([2a63481](https://github.com/ory/keto/commit/2a63481863b9d10d05744178a78042a44e9e3872))
 
 ### Code Refactoring
 
