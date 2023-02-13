@@ -41,11 +41,6 @@
   
     - [NamespacesService](#ory-keto-relation_tuples-v1alpha2-NamespacesService)
   
-- [ory/keto/relation_tuples/v1alpha2/openapi.proto](#ory_keto_relation_tuples_v1alpha2_openapi-proto)
-    - [ErrorObject](#ory-keto-relation_tuples-v1alpha2-ErrorObject)
-    - [ErrorObject.DetailsEntry](#ory-keto-relation_tuples-v1alpha2-ErrorObject-DetailsEntry)
-    - [ErrorResponse](#ory-keto-relation_tuples-v1alpha2-ErrorResponse)
-  
 - [ory/keto/relation_tuples/v1alpha2/read_service.proto](#ory_keto_relation_tuples_v1alpha2_read_service-proto)
     - [ListRelationTuplesRequest](#ory-keto-relation_tuples-v1alpha2-ListRelationTuplesRequest)
     - [ListRelationTuplesRequest.Query](#ory-keto-relation_tuples-v1alpha2-ListRelationTuplesRequest-Query)
@@ -578,75 +573,6 @@ This service is part of the [read-APIs](../concepts/api-overview.mdx#read-apis).
 | ListNamespaces | [ListNamespacesRequest](#ory-keto-relation_tuples-v1alpha2-ListNamespacesRequest) | [ListNamespacesResponse](#ory-keto-relation_tuples-v1alpha2-ListNamespacesResponse) | Lists Namespaces
 
 Get all namespaces. |
-
- 
-
-
-
-<a name="ory_keto_relation_tuples_v1alpha2_openapi-proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## ory/keto/relation_tuples/v1alpha2/openapi.proto
-
-
-
-<a name="ory-keto-relation_tuples-v1alpha2-ErrorObject"></a>
-
-### ErrorObject
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| code | [int32](#int32) |  |  |
-| message | [string](#string) |  |  |
-| debug | [string](#string) |  |  |
-| details | [ErrorObject.DetailsEntry](#ory-keto-relation_tuples-v1alpha2-ErrorObject-DetailsEntry) | repeated |  |
-| id | [string](#string) |  |  |
-| reason | [string](#string) |  |  |
-| request | [string](#string) |  |  |
-| status | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="ory-keto-relation_tuples-v1alpha2-ErrorObject-DetailsEntry"></a>
-
-### ErrorObject.DetailsEntry
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| key | [string](#string) |  |  |
-| value | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="ory-keto-relation_tuples-v1alpha2-ErrorResponse"></a>
-
-### ErrorResponse
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| error | [ErrorObject](#ory-keto-relation_tuples-v1alpha2-ErrorObject) |  |  |
-
-
-
-
-
- 
-
- 
-
- 
 
  
 

@@ -1,24 +1,9 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "ORY Keto",
-    "description": "Ory Keto is a cloud native access control server providing best-practice patterns (RBAC, ABAC, ACL, AWS IAM Policies, Kubernetes Roles, ...) via REST APIs.",
-    "version": "Latest",
-    "contact": {
-      "name": "ORY",
-      "url": "https://www.ory.sh",
-      "email": "hi@ory.sh"
-    },
-    "license": {
-      "name": "Apache 2.0",
-      "url": "https://github.com/ory/keto/blob/master/LICENSE"
-    }
+    "title": "ory/keto/opl/v1alpha1/syntax_service.proto",
+    "version": "version not set"
   },
-  "basePath": "/",
-  "schemes": [
-    "http",
-    "https"
-  ],
   "consumes": [
     "application/json"
   ],
@@ -34,12 +19,6 @@
           "204": {
             "description": "An empty response.",
             "schema": {}
-          },
-          "default": {
-            "description": "Generic error",
-            "schema": {
-              "$ref": "#/definitions/ory.keto.relation_tuples.v1alpha2.ErrorResponse"
-            }
           }
         },
         "parameters": [
@@ -109,12 +88,6 @@
             "schema": {
               "$ref": "#/definitions/ory.keto.relation_tuples.v1alpha2.RelationTuple"
             }
-          },
-          "default": {
-            "description": "Generic error",
-            "schema": {
-              "$ref": "#/definitions/ory.keto.relation_tuples.v1alpha2.ErrorResponse"
-            }
           }
         },
         "parameters": [
@@ -141,12 +114,6 @@
             "schema": {},
             "examples": {
               "application/json": {}
-            }
-          },
-          "default": {
-            "description": "Generic error",
-            "schema": {
-              "$ref": "#/definitions/ory.keto.relation_tuples.v1alpha2.ErrorResponse"
             }
           }
         },
@@ -189,12 +156,6 @@
                 ]
               }
             }
-          },
-          "default": {
-            "description": "Generic error",
-            "schema": {
-              "$ref": "#/definitions/ory.keto.relation_tuples.v1alpha2.ErrorResponse"
-            }
           }
         },
         "tags": [
@@ -214,12 +175,6 @@
             "description": "The result of the syntax checker",
             "schema": {
               "$ref": "#/definitions/ory.keto.opl.v1alpha1.CheckResponse"
-            }
-          },
-          "default": {
-            "description": "Generic error",
-            "schema": {
-              "$ref": "#/definitions/ory.keto.relation_tuples.v1alpha2.ErrorResponse"
             }
           }
         },
@@ -250,12 +205,6 @@
             "description": "The list of relationships.",
             "schema": {
               "$ref": "#/definitions/ory.keto.relation_tuples.v1alpha2.ListRelationTuplesResponse"
-            }
-          },
-          "default": {
-            "description": "Generic error",
-            "schema": {
-              "$ref": "#/definitions/ory.keto.relation_tuples.v1alpha2.ErrorResponse"
             }
           }
         },
@@ -349,12 +298,6 @@
             "schema": {
               "$ref": "#/definitions/ory.keto.relation_tuples.v1alpha2.CheckResponse"
             }
-          },
-          "default": {
-            "description": "Generic error",
-            "schema": {
-              "$ref": "#/definitions/ory.keto.relation_tuples.v1alpha2.ErrorResponse"
-            }
           }
         },
         "parameters": [
@@ -439,12 +382,6 @@
             "schema": {
               "$ref": "#/definitions/ory.keto.relation_tuples.v1alpha2.CheckResponse"
             }
-          },
-          "default": {
-            "description": "Generic error",
-            "schema": {
-              "$ref": "#/definitions/ory.keto.relation_tuples.v1alpha2.ErrorResponse"
-            }
           }
         },
         "parameters": [
@@ -482,12 +419,6 @@
             "description": "The response of the permission check, in case it is not allowed. For the `/openapi` endpoints, the status code is always 200.",
             "schema": {
               "$ref": "#/definitions/ory.keto.relation_tuples.v1alpha2.CheckResponse"
-            }
-          },
-          "default": {
-            "description": "Generic error",
-            "schema": {
-              "$ref": "#/definitions/ory.keto.relation_tuples.v1alpha2.ErrorResponse"
             }
           }
         },
@@ -573,12 +504,6 @@
             "schema": {
               "$ref": "#/definitions/ory.keto.relation_tuples.v1alpha2.CheckResponse"
             }
-          },
-          "default": {
-            "description": "Generic error",
-            "schema": {
-              "$ref": "#/definitions/ory.keto.relation_tuples.v1alpha2.ErrorResponse"
-            }
           }
         },
         "parameters": [
@@ -610,12 +535,6 @@
             "description": "The response of the permission check, in case it is allowed. For the `/openapi` endpoints, the status code is always 200.",
             "schema": {
               "$ref": "#/definitions/ory.keto.relation_tuples.v1alpha2.SubjectTree"
-            }
-          },
-          "default": {
-            "description": "Generic error",
-            "schema": {
-              "$ref": "#/definitions/ory.keto.relation_tuples.v1alpha2.ErrorResponse"
             }
           }
         },
@@ -668,12 +587,6 @@
             "description": "The version of the instance.",
             "schema": {
               "$ref": "#/definitions/ory.keto.relation_tuples.v1alpha2.GetVersionResponse"
-            }
-          },
-          "default": {
-            "description": "Generic error",
-            "schema": {
-              "$ref": "#/definitions/ory.keto.relation_tuples.v1alpha2.ErrorResponse"
             }
           }
         },
@@ -800,69 +713,6 @@
     },
     "ory.keto.relation_tuples.v1alpha2.DeleteRelationTuplesResponse": {
       "type": "object"
-    },
-    "ory.keto.relation_tuples.v1alpha2.ErrorObject": {
-      "type": "object",
-      "properties": {
-        "code": {
-          "type": "integer",
-          "format": "int64",
-          "example": 404,
-          "description": "The status code",
-          "title": "code",
-          "pattern": "^[0-9]$"
-        },
-        "message": {
-          "type": "string",
-          "example": "The resource could not be found",
-          "description": "Response message",
-          "title": "message"
-        },
-        "debug": {
-          "type": "string",
-          "example": "SQL field 'foo' is not a bool",
-          "description": "This field is often not exposed to protect against leaking\nsensitive information",
-          "title": "Debug information"
-        },
-        "details": {
-          "type": "object",
-          "additionalProperties": {
-            "type": "string"
-          },
-          "title": "Further error details"
-        },
-        "id": {
-          "type": "string",
-          "description": "Useful when trying to identify various errors in application logic.",
-          "title": "The error ID"
-        },
-        "reason": {
-          "type": "string",
-          "example": "User with ID 1234 does not exist.",
-          "description": "A human-readable reason for the error",
-          "title": "The reason for the failure"
-        },
-        "request": {
-          "type": "string",
-          "example": "d7ef54b1-ec15-46e6-bccb-524b82c035e6",
-          "description": "The request ID is often exposed internally in order to trace\nerrors across service architectures. This is often a UUID.",
-          "title": "The request ID"
-        },
-        "status": {
-          "type": "string",
-          "example": "Not Found",
-          "description": "The human-readable description of the code.",
-          "title": "The status description"
-        }
-      }
-    },
-    "ory.keto.relation_tuples.v1alpha2.ErrorResponse": {
-      "type": "object",
-      "properties": {
-        "error": {
-          "$ref": "#/definitions/ory.keto.relation_tuples.v1alpha2.ErrorObject"
-        }
-      }
     },
     "ory.keto.relation_tuples.v1alpha2.ExpandResponse": {
       "type": "object",
