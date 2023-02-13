@@ -6,6 +6,7 @@ on:
     branches:
       - main
       - master
+  merge_group:
 
 jobs:
   check:
