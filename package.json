@@ -21,7 +21,7 @@
     "doctoc": "^2.0.1",
     "license-checker": "^25.0.1",
     "ory-prettier-styles": "^1.2.0",
-    "prettier": "2.7.1",
+    "prettier": "2.8.4",
     "prettier-plugin-packagejson": "^2.2.18"
   }
 }
