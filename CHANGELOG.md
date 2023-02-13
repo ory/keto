@@ -395,6 +395,9 @@ changelog for all the other fixes and features we included.
 
   Bumps from v0.10.0-alpha.0.pre.0
 
+- Pin v0.10.0-alpha.0.pre.1 release commit
+  ([2a63481](https://github.com/ory/keto/commit/2a63481863b9d10d05744178a78042a44e9e3872))
+
 ### Code Refactoring
 
 - Generalize tree structure
