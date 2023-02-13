@@ -4,12 +4,8 @@
     "title": "ory/keto/opl/v1alpha1/syntax_service.proto",
     "version": "version not set"
   },
-  "consumes": [
-    "application/json"
-  ],
-  "produces": [
-    "application/json"
-  ],
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
   "paths": {
     "/admin/relation-tuples": {
       "delete": {
@@ -72,12 +68,8 @@
             "type": "string"
           }
         ],
-        "tags": [
-          "relationship"
-        ],
-        "consumes": [
-          "application/x-www-form-urlencoded"
-        ]
+        "tags": ["relationship"],
+        "consumes": ["application/x-www-form-urlencoded"]
       },
       "put": {
         "summary": "Creates a relationship",
@@ -101,9 +93,7 @@
             }
           }
         ],
-        "tags": [
-          "relationship"
-        ]
+        "tags": ["relationship"]
       },
       "patch": {
         "summary": "Writes one or more relationships in a single transaction.",
@@ -131,9 +121,7 @@
             }
           }
         ],
-        "tags": [
-          "relationship"
-        ]
+        "tags": ["relationship"]
       }
     },
     "/namespaces": {
@@ -158,12 +146,8 @@
             }
           }
         },
-        "tags": [
-          "relationship"
-        ],
-        "consumes": [
-          "application/x-www-form-urlencoded"
-        ]
+        "tags": ["relationship"],
+        "consumes": ["application/x-www-form-urlencoded"]
       }
     },
     "/opl/syntax/check": {
@@ -188,12 +172,8 @@
             }
           }
         ],
-        "tags": [
-          "relationship"
-        ],
-        "consumes": [
-          "text/plain"
-        ]
+        "tags": ["relationship"],
+        "consumes": ["text/plain"]
       }
     },
     "/relation-tuples": {
@@ -274,12 +254,8 @@
             "type": "string"
           }
         ],
-        "tags": [
-          "relationship"
-        ],
-        "consumes": [
-          "application/x-www-form-urlencoded"
-        ]
+        "tags": ["relationship"],
+        "consumes": ["application/x-www-form-urlencoded"]
       }
     },
     "/relation-tuples/check": {
@@ -359,13 +335,8 @@
             "format": "int32"
           }
         ],
-        "tags": [
-          "permission"
-        ],
-        "consumes": [
-          "application/x-www-form-urlencoded",
-          "application/json"
-        ]
+        "tags": ["permission"],
+        "consumes": ["application/x-www-form-urlencoded", "application/json"]
       },
       "post": {
         "summary": "Performs an authorization check.",
@@ -395,13 +366,8 @@
             }
           }
         ],
-        "tags": [
-          "permission"
-        ],
-        "consumes": [
-          "application/x-www-form-urlencoded",
-          "application/json"
-        ]
+        "tags": ["permission"],
+        "consumes": ["application/x-www-form-urlencoded", "application/json"]
       }
     },
     "/relation-tuples/check/openapi": {
@@ -481,13 +447,8 @@
             "format": "int32"
           }
         ],
-        "tags": [
-          "permission"
-        ],
-        "consumes": [
-          "application/x-www-form-urlencoded",
-          "application/json"
-        ]
+        "tags": ["permission"],
+        "consumes": ["application/x-www-form-urlencoded", "application/json"]
       },
       "post": {
         "summary": "Performs an authorization check.",
@@ -517,13 +478,8 @@
             }
           }
         ],
-        "tags": [
-          "permission"
-        ],
-        "consumes": [
-          "application/x-www-form-urlencoded",
-          "application/json"
-        ]
+        "tags": ["permission"],
+        "consumes": ["application/x-www-form-urlencoded", "application/json"]
       }
     },
     "/relation-tuples/expand": {
@@ -569,12 +525,8 @@
             "type": "string"
           }
         ],
-        "tags": [
-          "permission"
-        ],
-        "consumes": [
-          "application/x-www-form-urlencoded"
-        ]
+        "tags": ["permission"],
+        "consumes": ["application/x-www-form-urlencoded"]
       }
     },
     "/version": {
@@ -590,9 +542,7 @@
             }
           }
         },
-        "tags": [
-          "version"
-        ]
+        "tags": ["version"]
       }
     }
   },
@@ -809,11 +759,7 @@
         }
       },
       "description": "RelationTuple defines a relation between an Object and a Subject.",
-      "required": [
-        "namespace",
-        "object",
-        "relation"
-      ]
+      "required": ["namespace", "object", "relation"]
     },
     "ory.keto.relation_tuples.v1alpha2.RelationTupleDelta": {
       "type": "object",
@@ -831,11 +777,7 @@
     },
     "ory.keto.relation_tuples.v1alpha2.RelationTupleDelta.Action": {
       "type": "string",
-      "enum": [
-        "ACTION_UNSPECIFIED",
-        "insert",
-        "delete"
-      ],
+      "enum": ["ACTION_UNSPECIFIED", "insert", "delete"],
       "default": "ACTION_UNSPECIFIED",
       "description": " - ACTION_UNSPECIFIED: Unspecified.\nThe `TransactRelationTuples` RPC ignores this\nRelationTupleDelta if an action was unspecified.\n - insert: Insertion of a new RelationTuple.\nIt is ignored if already existing.\n - delete: Deletion of the RelationTuple.\nIt is ignored if it does not exist."
     },
@@ -870,11 +812,7 @@
         }
       },
       "description": "SubjectSet refers to all subjects who have\nthe same `relation` on an `object`.",
-      "required": [
-        "namespace",
-        "object",
-        "relation"
-      ]
+      "required": ["namespace", "object", "relation"]
     },
     "ory.keto.relation_tuples.v1alpha2.SubjectSetQuery": {
       "type": "object",
@@ -917,9 +855,7 @@
           "description": "The children of this node.\n\nThis is never set if `node_type` == `NODE_TYPE_LEAF`."
         }
       },
-      "required": [
-        "type"
-      ]
+      "required": ["type"]
     },
     "ory.keto.relation_tuples.v1alpha2.TransactRelationTuplesResponse": {
       "type": "object",

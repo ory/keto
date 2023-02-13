@@ -11,7 +11,6 @@ configuration.go
 docs/CheckOplSyntaxResult.md
 docs/CheckPermissionResult.md
 docs/CreateRelationshipBody.md
-docs/ErrorGeneric.md
 docs/ExpandedPermissionTree.md
 docs/InlineResponse200.md
 docs/InlineResponse2001.md
@@ -20,7 +19,6 @@ docs/MetadataApi.md
 docs/OryKetoOplV1alpha1ParseError.md
 docs/OryKetoOplV1alpha1SourcePosition.md
 docs/OryKetoRelationTuplesV1alpha2CreateRelationTupleResponse.md
-docs/OryKetoRelationTuplesV1alpha2ErrorObject.md
 docs/OryKetoRelationTuplesV1alpha2ExpandResponse.md
 docs/OryKetoRelationTuplesV1alpha2GetVersionResponse.md
 docs/OryKetoRelationTuplesV1alpha2Namespace.md
@@ -42,7 +40,6 @@ go.sum
 model_check_opl_syntax_result.go
 model_check_permission_result.go
 model_create_relationship_body.go
-model_error_generic.go
 model_expanded_permission_tree.go
 model_inline_response_200.go
 model_inline_response_200_1.go
@@ -50,7 +47,6 @@ model_inline_response_503.go
 model_ory_keto_opl_v1alpha1_parse_error.go
 model_ory_keto_opl_v1alpha1_source_position.go
 model_ory_keto_relation_tuples_v1alpha2_create_relation_tuple_response.go
-model_ory_keto_relation_tuples_v1alpha2_error_object.go
 model_ory_keto_relation_tuples_v1alpha2_expand_response.go
 model_ory_keto_relation_tuples_v1alpha2_get_version_response.go
 model_ory_keto_relation_tuples_v1alpha2_namespace.go

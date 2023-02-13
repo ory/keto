@@ -77,12 +77,6 @@ paths:
       responses:
         "204":
           description: An empty response.
-        default:
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorGeneric'
-          description: Generic error
       summary: Deletes relationships based on relation query
       tags:
       - relationship
@@ -103,12 +97,6 @@ paths:
       responses:
         "204":
           description: An empty response.
-        default:
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorGeneric'
-          description: Generic error
       summary: Writes one or more relationships in a single transaction.
       tags:
       - relationship
@@ -129,12 +117,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/relationship'
           description: The created relationship.
-        default:
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorGeneric'
-          description: Generic error
       summary: Creates a relationship
       tags:
       - relationship
@@ -205,12 +187,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/relationshipNamespaces'
           description: The list of namespaces.
-        default:
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorGeneric'
-          description: Generic error
       summary: Lists Namespaces
       tags:
       - relationship
@@ -231,12 +207,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/checkOplSyntaxResult'
           description: The result of the syntax checker
-        default:
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorGeneric'
-          description: Generic error
       summary: Performs a syntax check request.
       tags:
       - relationship
@@ -336,12 +306,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/relationships'
           description: The list of relationships.
-        default:
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorGeneric'
-          description: Generic error
       summary: Lists ACL relationships.
       tags:
       - relationship
@@ -441,12 +405,6 @@ paths:
                 $ref: '#/components/schemas/checkPermissionResult'
           description: The response of the permission check, in case it is not allowed.
             For the `/openapi` endpoints, the status code is always 200.
-        default:
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorGeneric'
-          description: Generic error
       summary: Performs an authorization check.
       tags:
       - permission
@@ -480,12 +438,6 @@ paths:
                 $ref: '#/components/schemas/checkPermissionResult'
           description: The response of the permission check, in case it is not allowed.
             For the `/openapi` endpoints, the status code is always 200.
-        default:
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorGeneric'
-          description: Generic error
       summary: Performs an authorization check.
       tags:
       - permission
@@ -585,12 +537,6 @@ paths:
                 $ref: '#/components/schemas/checkPermissionResult'
           description: The response of the permission check, in case it is not allowed.
             For the `/openapi` endpoints, the status code is always 200.
-        default:
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorGeneric'
-          description: Generic error
       summary: Performs an authorization check.
       tags:
       - permission
@@ -624,12 +570,6 @@ paths:
                 $ref: '#/components/schemas/checkPermissionResult'
           description: The response of the permission check, in case it is not allowed.
             For the `/openapi` endpoints, the status code is always 200.
-        default:
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorGeneric'
-          description: Generic error
       summary: Performs an authorization check.
       tags:
       - permission
@@ -687,12 +627,6 @@ paths:
                 $ref: '#/components/schemas/expandedPermissionTree'
           description: The response of the permission check, in case it is allowed.
             For the `/openapi` endpoints, the status code is always 200.
-        default:
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorGeneric'
-          description: Generic error
       summary: Expands the subject set into a tree of subjects.
       tags:
       - permission
@@ -777,11 +711,6 @@ components:
         subject_set:
           $ref: '#/components/schemas/subjectSet'
       type: object
-    errorGeneric:
-      properties:
-        error:
-          $ref: '#/components/schemas/ory.keto.relation_tuples.v1alpha2.ErrorObject'
-      type: object
     expandedPermissionTree:
       example:
         tuple:
@@ -856,55 +785,6 @@ components:
           $ref: '#/components/schemas/relationship'
       type: object
     ory.keto.relation_tuples.v1alpha2.DeleteRelationTuplesResponse:
-      type: object
-    ory.keto.relation_tuples.v1alpha2.ErrorObject:
-      properties:
-        code:
-          description: The status code
-          example: 404
-          format: int64
-          pattern: ^[0-9]$
-          title: code
-          type: integer
-        debug:
-          description: |-
-            This field is often not exposed to protect against leaking
-            sensitive information
-          example: SQL field 'foo' is not a bool
-          title: Debug information
-          type: string
-        details:
-          additionalProperties:
-            type: string
-          title: Further error details
-          type: object
-        id:
-          description: Useful when trying to identify various errors in application
-            logic.
-          title: The error ID
-          type: string
-        message:
-          description: Response message
-          example: The resource could not be found
-          title: message
-          type: string
-        reason:
-          description: A human-readable reason for the error
-          example: User with ID 1234 does not exist.
-          title: The reason for the failure
-          type: string
-        request:
-          description: |-
-            The request ID is often exposed internally in order to trace
-            errors across service architectures. This is often a UUID.
-          example: d7ef54b1-ec15-46e6-bccb-524b82c035e6
-          title: The request ID
-          type: string
-        status:
-          description: The human-readable description of the code.
-          example: Not Found
-          title: The status description
-          type: string
       type: object
     ory.keto.relation_tuples.v1alpha2.ExpandResponse:
       description: The response for a ExpandService.Expand RPC.
