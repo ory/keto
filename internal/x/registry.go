@@ -6,6 +6,7 @@ package x
 import (
 	"context"
 
+	"github.com/gofrs/uuid"
 	"github.com/ory/herodot"
 	"github.com/ory/x/logrusx"
 	"github.com/ory/x/otelx"
@@ -21,4 +22,8 @@ type WriterProvider interface {
 
 type TracingProvider interface {
 	Tracer(ctx context.Context) *otelx.Tracer
+}
+
+type NetworkIDProvider interface {
+	NetworkID(context.Context) uuid.UUID
 }

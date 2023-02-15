@@ -8,19 +8,17 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/ory/keto/internal/x/validate"
-	"github.com/ory/keto/ketoapi"
-
-	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
-
 	"github.com/julienschmidt/httprouter"
 	"github.com/ory/herodot"
 	"github.com/pkg/errors"
+
+	"github.com/ory/keto/internal/x/events"
+	"github.com/ory/keto/internal/x/validate"
+	"github.com/ory/keto/ketoapi"
+	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 )
 
-var (
-	_ rts.WriteServiceServer = (*handler)(nil)
-)
+var _ rts.WriteServiceServer = (*handler)(nil)
 
 func protoTuplesWithAction(deltas []*rts.RelationTupleDelta, action rts.RelationTupleDelta_Action) (filtered []*ketoapi.RelationTuple, err error) {
 	for _, d := range deltas {
@@ -36,6 +34,8 @@ func protoTuplesWithAction(deltas []*rts.RelationTupleDelta, action rts.Relation
 }
 
 func (h *handler) TransactRelationTuples(ctx context.Context, req *rts.TransactRelationTuplesRequest) (*rts.TransactRelationTuplesResponse, error) {
+	events.Add(ctx, h.d, events.RelationtuplesChanged)
+
 	insertTuples, err := protoTuplesWithAction(req.RelationTupleDeltas, rts.RelationTupleDelta_ACTION_INSERT)
 	if err != nil {
 		return nil, err
@@ -66,6 +66,8 @@ func (h *handler) TransactRelationTuples(ctx context.Context, req *rts.TransactR
 }
 
 func (h *handler) DeleteRelationTuples(ctx context.Context, req *rts.DeleteRelationTuplesRequest) (*rts.DeleteRelationTuplesResponse, error) {
+	events.Add(ctx, h.d, events.RelationtuplesDeleted)
+
 	var q ketoapi.RelationQuery
 
 	switch {
@@ -91,6 +93,7 @@ func (h *handler) DeleteRelationTuples(ctx context.Context, req *rts.DeleteRelat
 // Create Relationship Request Parameters
 //
 // swagger:parameters createRelationship
+// nolint:deadcode,unused
 type createRelationship struct {
 	// in: body
 	Body createRelationshipBody
@@ -99,6 +102,7 @@ type createRelationship struct {
 // Create Relationship Request Body
 //
 // swagger:model createRelationshipBody
+// nolint:deadcode,unused
 type createRelationshipBody struct {
 	ketoapi.RelationQuery
 }
@@ -123,6 +127,8 @@ type createRelationshipBody struct {
 //	  default: errorGeneric
 func (h *handler) createRelation(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	ctx := r.Context()
+
+	events.Add(ctx, h.d, events.RelationtuplesCreated)
 
 	var rt ketoapi.RelationTuple
 	if err := json.NewDecoder(r.Body).Decode(&rt); err != nil {
@@ -175,6 +181,8 @@ func (h *handler) createRelation(w http.ResponseWriter, r *http.Request, _ httpr
 //	  default: errorGeneric
 func (h *handler) deleteRelations(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	ctx := r.Context()
+
+	events.Add(ctx, h.d, events.RelationtuplesDeleted)
 
 	if err := validate.All(r,
 		validate.NoExtraQueryParams(ketoapi.RelationQueryKeys...),
@@ -243,6 +251,8 @@ func internalTuplesWithAction(deltas []*ketoapi.PatchDelta, action ketoapi.Patch
 //	  default: errorGeneric
 func (h *handler) patchRelationTuples(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	ctx := r.Context()
+
+	events.Add(ctx, h.d, events.RelationtuplesChanged)
 
 	var deltas []*ketoapi.PatchDelta
 	if err := json.NewDecoder(r.Body).Decode(&deltas); err != nil {

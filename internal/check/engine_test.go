@@ -30,6 +30,7 @@ type deps struct {
 	configProvider
 	x.LoggerProvider
 	x.TracingProvider
+	x.NetworkIDProvider
 }
 
 func newDepsProvider(t testing.TB, namespaces []*namespace.Namespace, pageOpts ...x.PaginationOptionSetter) *deps {
@@ -38,11 +39,12 @@ func newDepsProvider(t testing.TB, namespaces []*namespace.Namespace, pageOpts .
 	mr := relationtuple.NewManagerWrapper(t, reg, pageOpts...)
 
 	return &deps{
-		ManagerWrapper:  mr,
-		Provider:        reg,
-		configProvider:  reg,
-		LoggerProvider:  reg,
-		TracingProvider: reg,
+		ManagerWrapper:    mr,
+		Provider:          reg,
+		configProvider:    reg,
+		LoggerProvider:    reg,
+		TracingProvider:   reg,
+		NetworkIDProvider: reg,
 	}
 }
 
@@ -292,7 +294,7 @@ func TestEngine(t *testing.T) {
 			{Name: "obj"},
 			{Name: "org"},
 		})
-		//require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(ctx, &writeRel, &orgOwnerRel, &userMembershipRel))
+		// require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(ctx, &writeRel, &orgOwnerRel, &userMembershipRel))
 		insertFixtures(t, reg.RelationTupleManager(), []string{
 			"obj:object#write@obj:object#owner",
 			"obj:object#owner@org:organization#member",
