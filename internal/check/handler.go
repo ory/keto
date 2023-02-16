@@ -112,6 +112,7 @@ func (h *Handler) getCheckNoStatus(w http.ResponseWriter, r *http.Request, _ htt
 // Check Permission Or Error Request Parameters
 //
 // swagger:parameters checkPermissionOrError
+// nolint:deadcode,unused
 type checkPermissionOrError struct {
 	// in: query
 	MaxDepth int `json:"max-depth"`
@@ -176,6 +177,7 @@ func (h *Handler) getCheck(ctx context.Context, q url.Values) (bool, error) {
 // Check Permission using Post Request Parameters
 //
 // swagger:parameters postCheckPermission
+// nolint:deadcode,unused
 type postCheckPermission struct {
 	// in: query
 	MaxDepth int `json:"max-depth"`
@@ -187,6 +189,7 @@ type postCheckPermission struct {
 // Check Permission using Post Request Body
 //
 // swagger:model postCheckPermissionBody
+// nolint:deadcode,unused
 type postCheckPermissionBody struct {
 	ketoapi.RelationQuery
 }
@@ -221,7 +224,9 @@ func (h *Handler) postCheckNoStatus(w http.ResponseWriter, r *http.Request, _ ht
 // Post Check Permission Or Error Request Parameters
 //
 // swagger:parameters postCheckPermissionOrError
+// nolint:deadcode,unused
 type postCheckPermissionOrError struct {
+	// nolint:deadcode,unused
 	// in: query
 	MaxDepth int `json:"max-depth"`
 
@@ -232,6 +237,7 @@ type postCheckPermissionOrError struct {
 // Post Check Permission Or Error Body
 //
 // swagger:model postCheckPermissionOrErrorBody
+// nolint:deadcode,unused
 type postCheckPermissionOrErrorBody struct {
 	ketoapi.RelationQuery
 }

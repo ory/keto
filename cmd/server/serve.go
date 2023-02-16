@@ -23,7 +23,7 @@ ORY Keto can be configured using environment variables as well as a configuratio
 on configuration options, open the configuration documentation:
 
 >> https://www.ory.sh/keto/docs/reference/configuration <<`,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(cmd *cobra.Command, _ []string) error {
 			reg, err := helpers.NewRegistry(cmd, opts)
 			if err != nil {
 				return err

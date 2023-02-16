@@ -6,13 +6,14 @@ package expand
 import (
 	"context"
 
-	"github.com/ory/keto/ketoapi"
+	"github.com/ory/x/otelx"
 
 	"github.com/ory/keto/internal/driver/config"
-	"github.com/ory/keto/internal/x"
-	"github.com/ory/keto/internal/x/graph"
-
 	"github.com/ory/keto/internal/relationtuple"
+	"github.com/ory/keto/internal/x"
+	"github.com/ory/keto/internal/x/events"
+	"github.com/ory/keto/internal/x/graph"
+	"github.com/ory/keto/ketoapi"
 )
 
 type (
@@ -20,6 +21,8 @@ type (
 		relationtuple.ManagerProvider
 		config.Provider
 		x.LoggerProvider
+		x.TracingProvider
+		x.NetworkIDProvider
 	}
 	Engine struct {
 		d EngineDependencies
@@ -35,7 +38,16 @@ func NewEngine(d EngineDependencies) *Engine {
 	}
 }
 
-func (e *Engine) BuildTree(ctx context.Context, subject relationtuple.Subject, restDepth int) (*relationtuple.Tree, error) {
+func (e *Engine) BuildTree(ctx context.Context, subject relationtuple.Subject, restDepth int) (t *relationtuple.Tree, err error) {
+	ctx, span := e.d.Tracer(ctx).Tracer().Start(ctx, "Engine.BuildTree")
+	defer otelx.End(span, &err)
+	events.Add(ctx, e.d, events.PermissionsExpanded)
+
+	t, err = e.buildTreeRecursive(ctx, subject, restDepth)
+	return
+}
+
+func (e *Engine) buildTreeRecursive(ctx context.Context, subject relationtuple.Subject, restDepth int) (*relationtuple.Tree, error) {
 	// global max-depth takes precedence when it is the lesser or if the request max-depth is less than or equal to 0
 	if globalMaxDepth := e.d.Config(ctx).MaxReadDepth(); restDepth <= 0 || globalMaxDepth < restDepth {
 		restDepth = globalMaxDepth
@@ -89,7 +101,7 @@ func (e *Engine) BuildTree(ctx context.Context, subject relationtuple.Subject, r
 
 		children := make([]*relationtuple.Tree, len(rels))
 		for ri, r := range rels {
-			child, err := e.BuildTree(ctx, r.Subject, restDepth-1)
+			child, err := e.buildTreeRecursive(ctx, r.Subject, restDepth-1)
 			if err != nil {
 				return nil, err
 			}

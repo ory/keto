@@ -7,10 +7,8 @@ import (
 	"context"
 
 	"github.com/ory/herodot"
+	"github.com/ory/x/otelx"
 	"github.com/pkg/errors"
-	"go.opentelemetry.io/otel/attribute"
-	"go.opentelemetry.io/otel/codes"
-	"go.opentelemetry.io/otel/trace"
 
 	"github.com/ory/keto/internal/check/checkgroup"
 	"github.com/ory/keto/internal/driver/config"
@@ -19,6 +17,7 @@ import (
 	"github.com/ory/keto/internal/persistence"
 	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/internal/x"
+	"github.com/ory/keto/internal/x/events"
 	"github.com/ory/keto/internal/x/graph"
 	"github.com/ory/keto/ketoapi"
 )
@@ -35,6 +34,8 @@ type (
 		persistence.Provider
 		config.Provider
 		x.LoggerProvider
+		x.TracingProvider
+		x.NetworkIDProvider
 	}
 
 	EngineOpt func(*Engine)
@@ -70,15 +71,10 @@ func (e *Engine) CheckIsMember(ctx context.Context, r *relationTuple, restDepth 
 // the object in the namespace either directly or indirectly and returns a check
 // result.
 func (e *Engine) CheckRelationTuple(ctx context.Context, r *relationTuple, restDepth int) (res checkgroup.Result) {
-	ctx, span := trace.SpanFromContext(ctx).TracerProvider().Tracer("keto/internal/check").Start(ctx, "Engine.CheckRelationTuple")
-	defer func() {
-		if res.Err != nil {
-			span.SetStatus(codes.Error, res.Err.Error())
-		} else {
-			span.SetAttributes(attribute.String("membership", res.Membership.String()))
-		}
-		span.End()
-	}()
+	ctx, span := e.d.Tracer(ctx).Tracer().Start(ctx, "Engine.CheckRelationTuple")
+	defer otelx.End(span, &res.Err)
+
+	events.Add(ctx, e.d, events.PermissionsChecked)
 
 	// global max-depth takes precedence when it is the lesser or if the request
 	// max-depth is less than or equal to 0

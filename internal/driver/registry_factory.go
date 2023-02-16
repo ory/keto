@@ -78,6 +78,7 @@ func NewDefaultRegistry(ctx context.Context, flags *pflag.FlagSet, withoutNetwor
 	r := &RegistryDefault{
 		c:                         c,
 		l:                         l,
+		tracerWrapper:             options.TracerWrapper,
 		ctxer:                     options.Contextualizer(),
 		defaultUnaryInterceptors:  options.GRPCUnaryInterceptors(),
 		defaultStreamInterceptors: options.GRPCStreamInterceptors(),

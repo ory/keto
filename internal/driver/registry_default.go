@@ -9,6 +9,7 @@ import (
 	"sync"
 
 	"github.com/gobuffalo/pop/v6"
+	"github.com/gofrs/uuid"
 	"github.com/ory/herodot"
 	"github.com/ory/x/dbal"
 	"github.com/ory/x/fsx"
@@ -68,6 +69,7 @@ type (
 		handlers       []Handler
 		sqaService     *metricsx.Service
 		tracer         *otelx.Tracer
+		tracerWrapper  ketoctx.TracerWrapper
 		pmm            *prometheus.MetricsManager
 		metricsHandler *prometheus.Handler
 
@@ -148,6 +150,12 @@ func (r *RegistryDefault) Tracer(ctx context.Context) *otelx.Tracer {
 		if err != nil {
 			r.Logger().WithError(err).Fatalf("Unable to initialize Tracer.")
 		}
+
+		// Wrap the tracer if required
+		if r.tracerWrapper != nil {
+			t = r.tracerWrapper(t)
+		}
+
 		r.tracer = t
 	}
 
@@ -201,6 +209,13 @@ func (r *RegistryDefault) Persister() persistence.Persister {
 		panic("no persister, but expected to have one")
 	}
 	return r.p
+}
+
+func (r *RegistryDefault) NetworkID(ctx context.Context) uuid.UUID {
+	if r.p == nil {
+		panic("no persister, but expected to have one")
+	}
+	return r.p.NetworkID(ctx)
 }
 
 func (r *RegistryDefault) Traverser() relationtuple.Traverser {

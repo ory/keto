@@ -8,6 +8,7 @@ import (
 
 	"github.com/ory/x/healthx"
 	"github.com/ory/x/logrusx"
+	"github.com/ory/x/otelx"
 	"github.com/ory/x/popx"
 	"google.golang.org/grpc"
 )
@@ -15,6 +16,7 @@ import (
 type (
 	opts struct {
 		logger                 *logrusx.Logger
+		TracerWrapper          TracerWrapper
 		contextualizer         Contextualizer
 		httpMiddlewares        []func(rw http.ResponseWriter, r *http.Request, next http.HandlerFunc)
 		grpcUnaryInterceptors  []grpc.UnaryServerInterceptor
@@ -22,14 +24,18 @@ type (
 		migrationOpts          []popx.MigrationBoxOption
 		readyCheckers          healthx.ReadyCheckers
 	}
-	Option func(o *opts)
+	Option        func(o *opts)
+	TracerWrapper func(*otelx.Tracer) *otelx.Tracer
 )
 
 // WithLogger sets the logger.
 func WithLogger(l *logrusx.Logger) Option {
-	return func(o *opts) {
-		o.logger = l
-	}
+	return func(o *opts) { o.logger = l }
+}
+
+// WithTracerWrapper sets a function that wraps the tracer.
+func WithTracerWrapper(wrapper TracerWrapper) Option {
+	return func(o *opts) { o.TracerWrapper = wrapper }
 }
 
 // WithContextualizer sets the contextualizer.
