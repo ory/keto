@@ -32,7 +32,7 @@ require (
 	github.com/bufbuild/connect-go v1.0.0 // indirect
 	github.com/bufbuild/protocompile v0.1.0 // indirect
 	github.com/cespare/xxhash v1.1.0 // indirect
-	github.com/containerd/containerd v1.6.12 // indirect
+	github.com/containerd/containerd v1.6.18 // indirect
 	github.com/containerd/typeurl v1.0.2 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.2 // indirect
 	github.com/dgraph-io/ristretto v0.0.2 // indirect
