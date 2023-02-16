@@ -5,7 +5,7 @@
 
 **Table of Contents**
 
-- [0.0.0 (2023-02-14)](#000-2023-02-14)
+- [0.0.0 (2023-02-16)](#000-2023-02-16)
   - [Bug Fixes](#bug-fixes)
   - [Code Refactoring](#code-refactoring)
   - [Documentation](#documentation)
@@ -141,7 +141,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.10.0-alpha.0...v0.0.0) (2023-02-14)
+# [0.0.0](https://github.com/ory/keto/compare/v0.10.0-alpha.0...v0.0.0) (2023-02-16)
 
 ### Bug Fixes
 
@@ -197,6 +197,9 @@
 
   - fix: incorrect HTTP return code
 
+- Trace SQL in TraverseSubjectSetExpansion
+  ([#1242](https://github.com/ory/keto/issues/1242))
+  ([8968451](https://github.com/ory/keto/commit/89684517425b3267e0f1face49f5b9424c79154b))
 - Tune error message
   ([b51d215](https://github.com/ory/keto/commit/b51d2151873ce247deb33d9b50924c8fdacdae47))
 - Use resilient HTTP client
@@ -261,6 +264,8 @@
   ([081d834](https://github.com/ory/keto/commit/081d83454f96a7050c3f451048fb07d5204f839f))
 - Allow setting the authority header in the CLI
   ([17f10ef](https://github.com/ory/keto/commit/17f10effbcc5f45b82093d2c8ec7b2962a3659bf))
+- Emit events through tracing ([#1244](https://github.com/ory/keto/issues/1244))
+  ([70dd8be](https://github.com/ory/keto/commit/70dd8bef88dee295600f295dfcee60118d1b705b))
 - Expose function to generate OPL
   ([#1057](https://github.com/ory/keto/issues/1057))
   ([b80a230](https://github.com/ory/keto/commit/b80a230493eabf5056111ce59959c7d0238465fd))
