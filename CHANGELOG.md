@@ -5,11 +5,13 @@
 
 **Table of Contents**
 
-- [0.0.0 (2022-11-28)](#000-2022-11-28)
+- [0.0.0 (2023-02-16)](#000-2023-02-16)
   - [Bug Fixes](#bug-fixes)
   - [Code Refactoring](#code-refactoring)
   - [Documentation](#documentation)
   - [Features](#features)
+  - [Tests](#tests)
+  - [Unclassified](#unclassified)
 - [0.10.0-alpha.0 (2022-09-27)](#0100-alpha0-2022-09-27)
   - [Bug Fixes](#bug-fixes-1)
   - [Build System](#build-system)
@@ -17,7 +19,7 @@
   - [Code Refactoring](#code-refactoring-1)
   - [Documentation](#documentation-1)
   - [Features](#features-1)
-  - [Tests](#tests)
+  - [Tests](#tests-1)
 - [0.9.0-alpha.0 (2022-08-01)](#090-alpha0-2022-08-01)
   - [Breaking Changes](#breaking-changes)
     - [Bug Fixes](#bug-fixes-2)
@@ -25,7 +27,7 @@
     - [Code Refactoring](#code-refactoring-2)
     - [Documentation](#documentation-2)
     - [Features](#features-2)
-    - [Tests](#tests-1)
+    - [Tests](#tests-2)
 - [0.8.0-alpha.2 (2022-03-04)](#080-alpha2-2022-03-04)
   - [Bug Fixes](#bug-fixes-3)
   - [Code Generation](#code-generation-2)
@@ -33,7 +35,7 @@
 - [0.8.0-alpha.1 (2022-02-22)](#080-alpha1-2022-02-22)
   - [Bug Fixes](#bug-fixes-4)
   - [Code Generation](#code-generation-3)
-  - [Tests](#tests-2)
+  - [Tests](#tests-3)
 - [0.8.0-alpha.0 (2022-02-10)](#080-alpha0-2022-02-10)
   - [Bug Fixes](#bug-fixes-5)
   - [Code Generation](#code-generation-4)
@@ -51,7 +53,7 @@
     - [Code Refactoring](#code-refactoring-4)
     - [Documentation](#documentation-6)
     - [Features](#features-4)
-    - [Tests](#tests-3)
+    - [Tests](#tests-4)
 - [0.6.0-alpha.3 (2021-04-29)](#060-alpha3-2021-04-29)
   - [Code Generation](#code-generation-7)
 - [0.6.0-alpha.2 (2021-04-29)](#060-alpha2-2021-04-29)
@@ -66,7 +68,7 @@
   - [Code Refactoring](#code-refactoring-5)
   - [Documentation](#documentation-8)
   - [Features](#features-6)
-  - [Tests](#tests-4)
+  - [Tests](#tests-5)
 - [0.5.6-alpha.1 (2020-05-28)](#056-alpha1-2020-05-28)
   - [Bug Fixes](#bug-fixes-9)
   - [Chores](#chores-1)
@@ -94,53 +96,53 @@
   - [Bug Fixes](#bug-fixes-14)
   - [Documentation](#documentation-14)
   - [Features](#features-7)
-  - [Unclassified](#unclassified)
-- [0.4.3-alpha.2 (2020-01-31)](#043-alpha2-2020-01-31)
   - [Unclassified](#unclassified-1)
-- [0.4.3-alpha.1 (2020-01-23)](#043-alpha1-2020-01-23)
+- [0.4.3-alpha.2 (2020-01-31)](#043-alpha2-2020-01-31)
   - [Unclassified](#unclassified-2)
-- [0.4.2-alpha.1 (2020-01-14)](#042-alpha1-2020-01-14)
+- [0.4.3-alpha.1 (2020-01-23)](#043-alpha1-2020-01-23)
   - [Unclassified](#unclassified-3)
-- [0.4.1-beta.1 (2020-01-13)](#041-beta1-2020-01-13)
+- [0.4.2-alpha.1 (2020-01-14)](#042-alpha1-2020-01-14)
   - [Unclassified](#unclassified-4)
-- [0.4.0-alpha.1 (2020-01-13)](#040-alpha1-2020-01-13)
+- [0.4.1-beta.1 (2020-01-13)](#041-beta1-2020-01-13)
   - [Unclassified](#unclassified-5)
-- [0.3.9-sandbox (2019-12-16)](#039-sandbox-2019-12-16)
+- [0.4.0-alpha.1 (2020-01-13)](#040-alpha1-2020-01-13)
   - [Unclassified](#unclassified-6)
-- [0.3.7-sandbox (2019-12-11)](#037-sandbox-2019-12-11)
+- [0.3.9-sandbox (2019-12-16)](#039-sandbox-2019-12-16)
   - [Unclassified](#unclassified-7)
-- [0.3.6-sandbox (2019-10-16)](#036-sandbox-2019-10-16)
+- [0.3.7-sandbox (2019-12-11)](#037-sandbox-2019-12-11)
   - [Unclassified](#unclassified-8)
+- [0.3.6-sandbox (2019-10-16)](#036-sandbox-2019-10-16)
+  - [Unclassified](#unclassified-9)
 - [0.3.5-sandbox (2019-08-21)](#035-sandbox-2019-08-21)
   - [Documentation](#documentation-15)
-  - [Unclassified](#unclassified-9)
+  - [Unclassified](#unclassified-10)
 - [0.3.3-sandbox (2019-05-18)](#033-sandbox-2019-05-18)
   - [Continuous Integration](#continuous-integration)
   - [Documentation](#documentation-16)
 - [0.3.1-sandbox (2019-04-29)](#031-sandbox-2019-04-29)
   - [Continuous Integration](#continuous-integration-1)
   - [Documentation](#documentation-17)
-  - [Unclassified](#unclassified-10)
+  - [Unclassified](#unclassified-11)
 - [0.3.0-sandbox (2019-04-29)](#030-sandbox-2019-04-29)
   - [Documentation](#documentation-18)
-  - [Unclassified](#unclassified-11)
+  - [Unclassified](#unclassified-12)
 - [0.2.3-sandbox+oryOS.10 (2019-02-05)](#023-sandboxoryos10-2019-02-05)
   - [Documentation](#documentation-19)
-  - [Unclassified](#unclassified-12)
+  - [Unclassified](#unclassified-13)
 - [0.2.2-sandbox+oryOS.10 (2018-12-13)](#022-sandboxoryos10-2018-12-13)
   - [Continuous Integration](#continuous-integration-2)
 - [0.2.1-sandbox+oryOS.10 (2018-12-13)](#021-sandboxoryos10-2018-12-13)
   - [Continuous Integration](#continuous-integration-3)
 - [0.2.0-sandbox+oryOS.10 (2018-12-13)](#020-sandboxoryos10-2018-12-13)
   - [Documentation](#documentation-20)
-  - [Unclassified](#unclassified-13)
+  - [Unclassified](#unclassified-14)
 - [0.0.1 (2018-05-20)](#001-2018-05-20)
   - [Documentation](#documentation-21)
-  - [Unclassified](#unclassified-14)
+  - [Unclassified](#unclassified-15)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.10.0-alpha.0...v0.0.0) (2022-11-28)
+# [0.0.0](https://github.com/ory/keto/compare/v0.10.0-alpha.0...v0.0.0) (2023-02-16)
 
 ### Bug Fixes
 
@@ -148,8 +150,18 @@
   ([#1117](https://github.com/ory/keto/issues/1117))
   ([5f89fcf](https://github.com/ory/keto/commit/5f89fcf6730810b36014fec825e77f0011dc2462)),
   closes [#1116](https://github.com/ory/keto/issues/1116)
+- Do not insert UUID mappings on readonly APIs
+  ([#1190](https://github.com/ory/keto/issues/1190))
+  ([a86db70](https://github.com/ory/keto/commit/a86db70dba4720562b31bfec33d09cc799d9ae53)):
+
+  Endpoints that do not mutate the database (such as list or check) now use a
+  read-only version of the UUID mapper that does not write the mapping to the
+  database (as all relevant mapping information is already mapped).
+
 - More robust parser
   ([d38e006](https://github.com/ory/keto/commit/d38e006f13477f7b67ab88f03ff64ced65da7cbd))
+- More robust query counting ([#1218](https://github.com/ory/keto/issues/1218))
+  ([4503a74](https://github.com/ory/keto/commit/4503a74b52a03385e807b63c293ad643c68b5f46))
 - Only type-check if there are no parser errors
   ([b4bef07](https://github.com/ory/keto/commit/b4bef07ca91b7585a52d536ee8c0c38ec1d66b9d)):
 
@@ -160,6 +172,8 @@
   ([1f3c568](https://github.com/ory/keto/commit/1f3c5687e726213dba84280f6457867c469b8321))
 - Properly lex imports in OPL ([#1041](https://github.com/ory/keto/issues/1041))
   ([26944e9](https://github.com/ory/keto/commit/26944e9e2f5d851aec63e46b3777d2d1ebaca3f8))
+- Race condition
+  ([05ec2da](https://github.com/ory/keto/commit/05ec2da017265b4fbbd860c54272acfa82893503))
 - Race condition in setup ([#1107](https://github.com/ory/keto/issues/1107))
   ([07dfce7](https://github.com/ory/keto/commit/07dfce7e964425e0fbe37b340c38c4404dd3fd2d))
 - Recover from panics in gRPC server
@@ -177,6 +191,16 @@
   - Allow semicolons in more places
   - Allow commas in more places
 
+- Tiny stuff ([#1211](https://github.com/ory/keto/issues/1211))
+  ([719a7d5](https://github.com/ory/keto/commit/719a7d5d1bfd77c594528df821f20a061dc2b848)):
+
+  - fix: tracing in persistence.sql.TraverseSubjectSetRewrite
+
+  - fix: incorrect HTTP return code
+
+- Trace SQL in TraverseSubjectSetExpansion
+  ([#1242](https://github.com/ory/keto/issues/1242))
+  ([8968451](https://github.com/ory/keto/commit/89684517425b3267e0f1face49f5b9424c79154b))
 - Tune error message
   ([b51d215](https://github.com/ory/keto/commit/b51d2151873ce247deb33d9b50924c8fdacdae47))
 - Use resilient HTTP client
@@ -203,6 +227,11 @@
   ([333af27](https://github.com/ory/keto/commit/333af27a3cf3975f5c879433b4a3f44951691392))
 - Fix invalid link ([#1072](https://github.com/ory/keto/issues/1072))
   ([2686e98](https://github.com/ory/keto/commit/2686e982772507c9423373405cc406dd47ebaad2))
+- Fix quickstart up.sh ([#1158](https://github.com/ory/keto/issues/1158))
+  ([30a74c6](https://github.com/ory/keto/commit/30a74c6b1e24a0a55c6ce3d33ff614d649991e7c)):
+
+  Added `--insecure-disable-transport-security` flag to all client commands.
+
 - Improve rewrites example
   ([d809c76](https://github.com/ory/keto/commit/d809c76c8359093bb9e73b1fc386b09da3e6b88e))
 - Standardize license headers ([#1061](https://github.com/ory/keto/issues/1061))
@@ -217,6 +246,9 @@
   ([a8d8767](https://github.com/ory/keto/commit/a8d8767f02695932ed63b5139dd52534e8c4922f))
 - Add libfuzzer for parser
   ([05c9a01](https://github.com/ory/keto/commit/05c9a01785bd4ca6055fee655dfb26d16883b8db))
+- Add option to add custom health checks
+  ([#1225](https://github.com/ory/keto/issues/1225))
+  ([3399f60](https://github.com/ory/keto/commit/3399f604257df32a9ecc906bc81ddeac1700b718))
 - Allow loading OPL configs from base64 URLs
   ([640abc1](https://github.com/ory/keto/commit/640abc11acb9b24197bc77710e6b0e8a88719751))
 - Allow permits referencing permits
@@ -233,21 +265,53 @@
   ([081d834](https://github.com/ory/keto/commit/081d83454f96a7050c3f451048fb07d5204f839f))
 - Allow setting the authority header in the CLI
   ([17f10ef](https://github.com/ory/keto/commit/17f10effbcc5f45b82093d2c8ec7b2962a3659bf))
+- Emit events through tracing ([#1244](https://github.com/ory/keto/issues/1244))
+  ([70dd8be](https://github.com/ory/keto/commit/70dd8bef88dee295600f295dfcee60118d1b705b))
 - Expose function to generate OPL
   ([#1057](https://github.com/ory/keto/issues/1057))
   ([b80a230](https://github.com/ory/keto/commit/b80a230493eabf5056111ce59959c7d0238465fd))
 - Expose OPL syntax check API
   ([57ff639](https://github.com/ory/keto/commit/57ff639db7a783023e5c47074e485b09874e9aae))
+- Faster SQL queries for checks and strict check mode
+  ([#1171](https://github.com/ory/keto/issues/1171))
+  ([8e07890](https://github.com/ory/keto/commit/8e078900043de695094667ab1bdb4e4b0a55a6ab)):
+
+  With this change we introduce an experimental strict mode that drastically
+  reduces the number of SQL queries performed during checks. This is
+  experimental to allow adjusting its behavior in a breaking manner, but it is
+  ready for production usage. Also some of the non-strict queries are optimized.
+
 - Handle HTTP config locations
   ([6571bae](https://github.com/ory/keto/commit/6571bae5d10f3218573de3e5a60877bec71a2029))
+- Improve tracing ([#1169](https://github.com/ory/keto/issues/1169))
+  ([64dc85e](https://github.com/ory/keto/commit/64dc85ee93eaa7322e1c6ffcf766968360c0d527))
 - Rename to Ory Network ([#1081](https://github.com/ory/keto/issues/1081))
   ([3fe1d68](https://github.com/ory/keto/commit/3fe1d68bd1c363c9fee8490332477f68dac8b547))
+- Return bad request on DELETE body
+  ([#1219](https://github.com/ory/keto/issues/1219))
+  ([195182c](https://github.com/ory/keto/commit/195182c37328cb7803b593cc73444c00cab76a7d))
 - Support Array<> syntax in type decl
   ([#1152](https://github.com/ory/keto/issues/1152))
   ([c4c456b](https://github.com/ory/keto/commit/c4c456bf6fd97c572f56d6b632853f555ded6451)):
 
   You can now use `Array<T>` as an alternative to `T[]` when declaring types for
   relations in the Ory Permission Language.
+
+- Support semicolons in types ([#1151](https://github.com/ory/keto/issues/1151))
+  ([a06eda7](https://github.com/ory/keto/commit/a06eda71dd1b8364eb424d6e843dd772e2eada51)),
+  closes [#1135](https://github.com/ory/keto/issues/1135)
+
+### Tests
+
+- Add benchmark for UUID mapper
+  ([#1200](https://github.com/ory/keto/issues/1200))
+  ([775b065](https://github.com/ory/keto/commit/775b065858436fc90db1e975bebcf337eb87af41))
+
+### Unclassified
+
+- ci: authenticate nancy action (#1239)
+  ([137fe6b](https://github.com/ory/keto/commit/137fe6ba715f835f1ee47baea2c2790b67feec0e)),
+  closes [#1239](https://github.com/ory/keto/issues/1239)
 
 # [0.10.0-alpha.0](https://github.com/ory/keto/compare/v0.9.0-alpha.0...v0.10.0-alpha.0) (2022-09-27)
 
@@ -342,6 +406,9 @@ changelog for all the other fixes and features we included.
   ([52259a3](https://github.com/ory/keto/commit/52259a30d0be0257f1bb7ef591ae769808450230)):
 
   Bumps from v0.10.0-alpha.0.pre.0
+
+- Pin v0.10.0-alpha.0.pre.1 release commit
+  ([2a63481](https://github.com/ory/keto/commit/2a63481863b9d10d05744178a78042a44e9e3872))
 
 ### Code Refactoring
 

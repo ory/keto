@@ -49,7 +49,8 @@ const (
 	KeyMetricsHost      = "serve." + string(EndpointMetrics) + ".host"
 	KeyMetricsPort      = "serve." + string(EndpointMetrics) + ".port"
 
-	KeyNamespaces = "namespaces"
+	KeyNamespaces                       = "namespaces"
+	KeyNamespacesExperimentalStrictMode = KeyNamespaces + ".experimental_strict_mode"
 
 	DSNMemory = "sqlite://file::memory:?_fk=true&cache=shared"
 )
@@ -166,8 +167,8 @@ func (k *Config) Set(key string, v any) error {
 func (k *Config) addressFor(endpoint EndpointType) string {
 	return fmt.Sprintf(
 		"%s:%d",
-		k.p.String("serve."+string(endpoint)+".host"),
-		k.p.Int("serve."+string(endpoint)+".port"),
+		k.p.StringF("serve."+string(endpoint)+".host", ""),
+		k.p.IntF("serve."+string(endpoint)+".port", 0),
 	)
 }
 
@@ -245,6 +246,10 @@ func (k *Config) NamespaceManager() (namespace.Manager, error) {
 	}
 
 	return k.nm, nil
+}
+
+func (k *Config) StrictMode() bool {
+	return k.p.BoolF(KeyNamespacesExperimentalStrictMode, false)
 }
 
 type (

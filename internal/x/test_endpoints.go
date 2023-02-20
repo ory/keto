@@ -16,6 +16,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/test/bufconn"
 	"google.golang.org/protobuf/proto"
 )
@@ -101,10 +102,15 @@ func NewTestEndpoints(
 	)
 	require.NoError(t, err)
 
+	// TODO: Sync with router setup in daemon.go
 	mux := runtime.NewServeMux(
 		runtime.WithForwardResponseOption(HttpResponseModifier),
-		runtime.WithErrorHandler(func(ctx context.Context, mux *runtime.ServeMux, marshaler runtime.Marshaler, writer http.ResponseWriter, request *http.Request, err error) {
-			runtime.DefaultHTTPErrorHandler(ctx, mux, marshaler, writer, request, err)
+		runtime.WithMetadata(func(ctx context.Context, req *http.Request) metadata.MD {
+			md := make(metadata.MD)
+			contentLength, _ := strconv.Atoi(req.Header.Get("Content-Length"))
+			md.Set("hasbody", strconv.FormatBool(contentLength > 0))
+
+			return md
 		}),
 	)
 	if h, ok := handler.(readHandler); ok {

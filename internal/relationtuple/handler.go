@@ -9,9 +9,8 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
 
-	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
-
 	"github.com/ory/keto/internal/x"
+	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 )
 
 type (
@@ -20,6 +19,8 @@ type (
 		MapperProvider
 		x.LoggerProvider
 		x.WriterProvider
+		x.TracingProvider
+		x.NetworkIDProvider
 	}
 	handler struct {
 		d handlerDeps

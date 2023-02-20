@@ -28,7 +28,7 @@ func _() {
 	_ = x[itemOperatorDot-14]
 	_ = x[itemOperatorColon-15]
 	_ = x[itemOperatorComma-16]
-	_ = x[itemOperatorSemicolon-17]
+	_ = x[itemSemicolon-17]
 	_ = x[itemTypeUnion-18]
 	_ = x[itemParenLeft-19]
 	_ = x[itemParenRight-20]

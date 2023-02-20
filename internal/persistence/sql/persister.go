@@ -10,9 +10,11 @@ import (
 
 	"github.com/gobuffalo/pop/v6"
 	"github.com/gofrs/uuid"
+	"github.com/ory/x/otelx"
 	"github.com/ory/x/popx"
 	"github.com/pkg/errors"
 
+	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/persistence"
 	"github.com/ory/keto/internal/x"
 	"github.com/ory/keto/ketoctx"
@@ -32,6 +34,7 @@ type (
 		x.LoggerProvider
 		x.TracingProvider
 		ketoctx.ContextualizerProvider
+		config.Provider
 
 		PopConnection(ctx context.Context) (*pop.Connection, error)
 	}
@@ -67,9 +70,9 @@ func (p *Persister) Connection(ctx context.Context) *pop.Connection {
 	return popx.GetConnection(ctx, p.conn.WithContext(ctx))
 }
 
-func (p *Persister) CreateWithNetwork(ctx context.Context, v interface{}) error {
-	ctx, span := p.d.Tracer(ctx).Tracer().Start(ctx, "persistence.sql.CreateWithNetwork")
-	defer span.End()
+func (p *Persister) createWithNetwork(ctx context.Context, v interface{}) (err error) {
+	ctx, span := p.d.Tracer(ctx).Tracer().Start(ctx, "persistence.sql.createWithNetwork")
+	defer otelx.End(span, &err)
 
 	rv := reflect.ValueOf(v)
 
@@ -85,11 +88,11 @@ func (p *Persister) CreateWithNetwork(ctx context.Context, v interface{}) error 
 	return p.Connection(ctx).Create(v)
 }
 
-func (p *Persister) QueryWithNetwork(ctx context.Context) *pop.Query {
+func (p *Persister) queryWithNetwork(ctx context.Context) *pop.Query {
 	return p.Connection(ctx).Where("nid = ?", p.NetworkID(ctx))
 }
 
-func (p *Persister) Transaction(ctx context.Context, f func(ctx context.Context, c *pop.Connection) error) error {
+func (p *Persister) transaction(ctx context.Context, f func(ctx context.Context, c *pop.Connection) error) error {
 	return popx.Transaction(ctx, p.conn.WithContext(ctx), f)
 }
 

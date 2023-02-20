@@ -6,6 +6,7 @@ on:
     tags:
       - "*"
   pull_request:
+  merge_group:
 
 # Cancel in-progress runs in current workflow.
 concurrency:
@@ -25,7 +26,9 @@ jobs:
         run: make buf-lint
       - run: go list -json > go.list
       - name: Run nancy
-        uses: sonatype-nexus-community/nancy-github-action@v1.0.2
+        uses: zepatrik/nancy-github-action@3b0a989791377b50913568102c0ed5539e4eb29c
+        with:
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
       - name: Run golangci-lint
         uses: golangci/golangci-lint-action@v3
         env:
@@ -246,9 +249,6 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: "15"
-      - uses: arduino/setup-protoc@v1
-        with:
-          version: "3.19.x"
       - name: Lint and Build
         run: |
           make buf

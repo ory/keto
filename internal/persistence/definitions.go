@@ -7,6 +7,7 @@ import (
 	"context"
 	"errors"
 
+	"github.com/gofrs/uuid"
 	"github.com/ory/x/popx"
 
 	"github.com/gobuffalo/pop/v6"
@@ -20,6 +21,7 @@ type (
 		relationtuple.MappingManager
 
 		Connection(ctx context.Context) *pop.Connection
+		NetworkID(ctx context.Context) uuid.UUID
 	}
 	Migrator interface {
 		MigrationBox(ctx context.Context) (*popx.MigrationBox, error)
@@ -28,6 +30,7 @@ type (
 	}
 	Provider interface {
 		Persister() Persister
+		Traverser() relationtuple.Traverser
 	}
 )
 

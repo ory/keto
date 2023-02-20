@@ -9,6 +9,7 @@ import (
 	"sync"
 
 	"github.com/gobuffalo/pop/v6"
+	"github.com/gofrs/uuid"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/ory/herodot"
 	"github.com/ory/x/dbal"
@@ -50,16 +51,18 @@ var (
 
 type (
 	RegistryDefault struct {
-		p      persistence.Persister
-		mb     *popx.MigrationBox
-		l      *logrusx.Logger
-		w      herodot.Writer
-		ce     *check.Engine
-		ee     *expand.Engine
-		c      *config.Config
-		conn   *pop.Connection
-		ctxer  ketoctx.Contextualizer
-		mapper *relationtuple.Mapper
+		p              persistence.Persister
+		traverser      relationtuple.Traverser
+		mb             *popx.MigrationBox
+		l              *logrusx.Logger
+		w              herodot.Writer
+		ce             *check.Engine
+		ee             *expand.Engine
+		c              *config.Config
+		conn           *pop.Connection
+		ctxer          ketoctx.Contextualizer
+		mapper         *relationtuple.Mapper
+		readOnlyMapper *relationtuple.Mapper
 
 		initialized    sync.Once
 		healthH        *healthx.Handler
@@ -67,6 +70,7 @@ type (
 		handlers       []Handler
 		sqaService     *metricsx.Service
 		tracer         *otelx.Tracer
+		tracerWrapper  ketoctx.TracerWrapper
 		pmm            *prometheus.MetricsManager
 		metricsHandler *prometheus.Handler
 
@@ -75,6 +79,7 @@ type (
 		defaultHttpMiddlewares    []func(rw http.ResponseWriter, r *http.Request, next http.HandlerFunc)
 		grpcTransportCredentials  credentials.TransportCredentials
 		defaultMigrationOptions   []popx.MigrationBoxOption
+		healthReadyCheckers       healthx.ReadyCheckers
 	}
 	ReadHandler interface {
 		RegisterReadRoutes(r *x.ReadRouter)
@@ -104,6 +109,13 @@ func (r *RegistryDefault) Mapper() *relationtuple.Mapper {
 	return r.mapper
 }
 
+func (r *RegistryDefault) ReadOnlyMapper() *relationtuple.Mapper {
+	if r.readOnlyMapper == nil {
+		r.readOnlyMapper = &relationtuple.Mapper{D: r, ReadOnly: true}
+	}
+	return r.readOnlyMapper
+}
+
 func (r *RegistryDefault) Contextualizer() ketoctx.Contextualizer {
 	return r.ctxer
 }
@@ -117,7 +129,10 @@ func (r *RegistryDefault) Config(ctx context.Context) *config.Config {
 
 func (r *RegistryDefault) HealthHandler() *healthx.Handler {
 	if r.healthH == nil {
-		r.healthH = healthx.NewHandler(r.Writer(), config.Version, healthx.ReadyCheckers{})
+		if r.healthReadyCheckers == nil {
+			r.healthReadyCheckers = healthx.ReadyCheckers{}
+		}
+		r.healthH = healthx.NewHandler(r.Writer(), config.Version, r.healthReadyCheckers)
 	}
 
 	return r.healthH
@@ -142,6 +157,12 @@ func (r *RegistryDefault) Tracer(ctx context.Context) *otelx.Tracer {
 		if err != nil {
 			r.Logger().WithError(err).Fatalf("Unable to initialize Tracer.")
 		}
+
+		// Wrap the tracer if required
+		if r.tracerWrapper != nil {
+			t = r.tracerWrapper(t)
+		}
+
 		r.tracer = t
 	}
 
@@ -195,6 +216,20 @@ func (r *RegistryDefault) Persister() persistence.Persister {
 		panic("no persister, but expected to have one")
 	}
 	return r.p
+}
+
+func (r *RegistryDefault) NetworkID(ctx context.Context) uuid.UUID {
+	if r.p == nil {
+		panic("no persister, but expected to have one")
+	}
+	return r.p.NetworkID(ctx)
+}
+
+func (r *RegistryDefault) Traverser() relationtuple.Traverser {
+	if r.traverser == nil {
+		panic("no traverser, but expected to have one")
+	}
+	return r.traverser
 }
 
 func (r *RegistryDefault) PermissionEngine() *check.Engine {
@@ -304,10 +339,12 @@ func (r *RegistryDefault) Init(ctx context.Context) (err error) {
 				return err
 			}
 
-			r.p, err = sql.NewPersister(ctx, r, network.ID)
+			p, err := sql.NewPersister(ctx, r, network.ID)
 			if err != nil {
 				return err
 			}
+			r.p = p
+			r.traverser = sql.NewTraverser(p)
 
 			return nil
 		}()

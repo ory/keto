@@ -8,21 +8,19 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/metadata"
-
-	"github.com/ory/keto/ketoapi"
-
-	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
-
 	"github.com/julienschmidt/httprouter"
 	"github.com/ory/herodot"
 	"github.com/pkg/errors"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/metadata"
+
+	"github.com/ory/keto/internal/x/events"
+	"github.com/ory/keto/internal/x/validate"
+	"github.com/ory/keto/ketoapi"
+	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 )
 
-var (
-	_ rts.WriteServiceServer = (*handler)(nil)
-)
+var _ rts.WriteServiceServer = (*handler)(nil)
 
 func protoTuplesWithAction(deltas []*rts.RelationTupleDelta, action rts.RelationTupleDelta_Action) (filtered []*ketoapi.RelationTuple, err error) {
 	for _, d := range deltas {
@@ -38,6 +36,8 @@ func protoTuplesWithAction(deltas []*rts.RelationTupleDelta, action rts.Relation
 }
 
 func (h *handler) TransactRelationTuples(ctx context.Context, req *rts.TransactRelationTuplesRequest) (*rts.TransactRelationTuplesResponse, error) {
+	events.Add(ctx, h.d, events.RelationtuplesChanged)
+
 	insertTuples, err := protoTuplesWithAction(req.RelationTupleDeltas, rts.RelationTupleDelta_ACTION_INSERT)
 	if err != nil {
 		return nil, err
@@ -123,7 +123,16 @@ func (h *handler) CreateRelationTuple(ctx context.Context, request *rts.CreateRe
 }
 
 func (h *handler) DeleteRelationTuples(ctx context.Context, req *rts.DeleteRelationTuplesRequest) (*rts.DeleteRelationTuplesResponse, error) {
+	events.Add(ctx, h.d, events.RelationtuplesDeleted)
+
 	var q ketoapi.RelationQuery
+
+	if md, ok := metadata.FromIncomingContext(ctx); ok {
+		if hasBody := md["hasbody"]; len(hasBody) > 0 && hasBody[0] == "true" {
+			_ = grpc.SetHeader(ctx, metadata.Pairs("x-http-code", "400"))
+			return nil, errors.WithStack(herodot.ErrBadRequest.WithReason("body is not allowed for this request"))
+		}
+	}
 
 	switch {
 	case req.RelationQuery != nil:
@@ -134,7 +143,12 @@ func (h *handler) DeleteRelationTuples(ctx context.Context, req *rts.DeleteRelat
 		q.FromDataProvider(&openAPIQueryWrapper{req})
 	}
 
-	iq, err := h.d.Mapper().FromQuery(ctx, &q)
+	if q.Namespace == nil || *q.Namespace == "" {
+		_ = grpc.SetHeader(ctx, metadata.Pairs("x-http-code", "400"))
+		return nil, errors.WithStack(herodot.ErrBadRequest.WithReason("Namespace must be set"))
+	}
+
+	iq, err := h.d.ReadOnlyMapper().FromQuery(ctx, &q)
 	if err != nil {
 		return nil, err
 	}
@@ -149,6 +163,7 @@ func (h *handler) DeleteRelationTuples(ctx context.Context, req *rts.DeleteRelat
 // Create Relationship Request Parameters
 //
 // swagger:parameters createRelationship
+// nolint:deadcode,unused
 type createRelationship struct {
 	// in: body
 	Body createRelationshipBody
@@ -157,6 +172,7 @@ type createRelationship struct {
 // Create Relationship Request Body
 //
 // swagger:model createRelationshipBody
+// nolint:deadcode,unused
 type createRelationshipBody struct {
 	ketoapi.RelationQuery
 }
@@ -181,6 +197,8 @@ type createRelationshipBody struct {
 //	  default: errorGeneric
 func (h *handler) createRelation(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	ctx := r.Context()
+
+	events.Add(ctx, h.d, events.RelationtuplesCreated)
 
 	var rt ketoapi.RelationTuple
 	if err := json.NewDecoder(r.Body).Decode(&rt); err != nil {
@@ -234,6 +252,17 @@ func (h *handler) createRelation(w http.ResponseWriter, r *http.Request, _ httpr
 func (h *handler) deleteRelations(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	ctx := r.Context()
 
+	events.Add(ctx, h.d, events.RelationtuplesDeleted)
+
+	if err := validate.All(r,
+		validate.NoExtraQueryParams(ketoapi.RelationQueryKeys...),
+		validate.QueryParamsContainsOneOf(ketoapi.NamespaceKey),
+		validate.HasEmptyBody(),
+	); err != nil {
+		h.d.Writer().WriteError(w, r, err)
+		return
+	}
+
 	q := r.URL.Query()
 	query, err := (&ketoapi.RelationQuery{}).FromURLQuery(q)
 	if err != nil {
@@ -247,7 +276,7 @@ func (h *handler) deleteRelations(w http.ResponseWriter, r *http.Request, _ http
 	}
 	l.Debug("deleting relationships")
 
-	iq, err := h.d.Mapper().FromQuery(ctx, query)
+	iq, err := h.d.ReadOnlyMapper().FromQuery(ctx, query)
 	if err != nil {
 		h.d.Logger().WithError(err).Errorf("could not map fields to UUIDs")
 		h.d.Writer().WriteError(w, r, err)
@@ -292,6 +321,8 @@ func internalTuplesWithAction(deltas []*ketoapi.PatchDelta, action ketoapi.Patch
 //	  default: errorGeneric
 func (h *handler) patchRelationTuples(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	ctx := r.Context()
+
+	events.Add(ctx, h.d, events.RelationtuplesChanged)
 
 	var deltas []*ketoapi.PatchDelta
 	if err := json.NewDecoder(r.Body).Decode(&deltas); err != nil {

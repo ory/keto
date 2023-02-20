@@ -450,7 +450,7 @@ func (r *RegistryDefault) OPLSyntaxRouter(ctx context.Context) http.Handler {
 	return handler
 }
 
-func (r *RegistryDefault) grpcRecoveryHandler(_ context.Context, p interface{}) error {
+func (r *RegistryDefault) grpcRecoveryHandler(p interface{}) error {
 	r.Logger().
 		WithField("reason", p).
 		WithField("stack_trace", string(debug.Stack())).
@@ -460,16 +460,17 @@ func (r *RegistryDefault) grpcRecoveryHandler(_ context.Context, p interface{}) 
 }
 
 func (r *RegistryDefault) unaryInterceptors(ctx context.Context) []grpc.UnaryServerInterceptor {
-	is := make([]grpc.UnaryServerInterceptor, len(r.defaultUnaryInterceptors)+1, len(r.defaultUnaryInterceptors)+5)
-	is[0] = grpcRecovery.UnaryServerInterceptor(grpcRecovery.WithRecoveryHandlerContext(r.grpcRecoveryHandler))
-	copy(is[1:], r.defaultUnaryInterceptors)
+	is := []grpc.UnaryServerInterceptor{
+		grpcRecovery.UnaryServerInterceptor(grpcRecovery.WithRecoveryHandler(r.grpcRecoveryHandler)),
+	}
+	if r.Tracer(ctx).IsLoaded() {
+		is = append(is, grpcOtel.UnaryServerInterceptor(grpcOtel.WithTracerProvider(otel.GetTracerProvider())))
+	}
+	is = append(is, r.defaultUnaryInterceptors...)
 	is = append(is,
 		herodot.UnaryErrorUnwrapInterceptor,
 		grpcLogrus.UnaryServerInterceptor(r.l.Entry),
 	)
-	if r.Tracer(ctx).IsLoaded() {
-		is = append(is, grpcOtel.UnaryServerInterceptor(grpcOtel.WithTracerProvider(otel.GetTracerProvider())))
-	}
 	if r.sqaService != nil {
 		is = append(is, r.sqaService.UnaryInterceptor)
 	}
@@ -477,18 +478,17 @@ func (r *RegistryDefault) unaryInterceptors(ctx context.Context) []grpc.UnarySer
 }
 
 func (r *RegistryDefault) streamInterceptors(ctx context.Context) []grpc.StreamServerInterceptor {
-	is := make([]grpc.StreamServerInterceptor, len(r.defaultStreamInterceptors)+1, len(r.defaultStreamInterceptors)+5)
-	// The recovery interceptor must be the first one to recover panics in other interceptors as well.
-	is[0] = grpcRecovery.StreamServerInterceptor(grpcRecovery.WithRecoveryHandlerContext(r.grpcRecoveryHandler))
-
-	copy(is[1:], r.defaultStreamInterceptors)
+	is := []grpc.StreamServerInterceptor{
+		grpcRecovery.StreamServerInterceptor(grpcRecovery.WithRecoveryHandler(r.grpcRecoveryHandler)),
+	}
+	if r.Tracer(ctx).IsLoaded() {
+		is = append(is, grpcOtel.StreamServerInterceptor(grpcOtel.WithTracerProvider(otel.GetTracerProvider())))
+	}
+	is = append(is, r.defaultStreamInterceptors...)
 	is = append(is,
 		herodot.StreamErrorUnwrapInterceptor,
 		grpcLogrus.StreamServerInterceptor(r.l.Entry),
 	)
-	if r.Tracer(ctx).IsLoaded() {
-		is = append(is, grpcOtel.StreamServerInterceptor(grpcOtel.WithTracerProvider(otel.GetTracerProvider())))
-	}
 	if r.sqaService != nil {
 		is = append(is, r.sqaService.StreamInterceptor)
 	}

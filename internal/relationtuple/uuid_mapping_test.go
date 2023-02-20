@@ -21,6 +21,11 @@ import (
 	"github.com/ory/keto/ketoapi"
 )
 
+func runWithMappers(t *testing.T, p relationtuple.MapperProvider, runner func(t *testing.T, m *relationtuple.Mapper)) {
+	t.Run("mapper=readwrite", func(t *testing.T) { runner(t, p.Mapper()) })
+	t.Run("mapper=readonly", func(t *testing.T) { runner(t, p.ReadOnlyMapper()) })
+}
+
 func TestMapper(t *testing.T) {
 	ctx := context.Background()
 	reg := driver.NewSqliteTestRegistry(t, false)
@@ -90,18 +95,19 @@ func TestMapper(t *testing.T) {
 			},
 		} {
 			t.Run(tc.name, func(t *testing.T) {
-				m := reg.Mapper()
-				mapped, err := m.FromTuple(ctx, tc.rts...)
-				require.ErrorIs(t, err, tc.err)
-				if tc.err != nil {
-					// the rest only makes sense if we have no error
-					return
-				}
+				runWithMappers(t, reg, func(t *testing.T, m *relationtuple.Mapper) {
+					mapped, err := m.FromTuple(ctx, tc.rts...)
+					require.ErrorIs(t, err, tc.err)
+					if tc.err != nil {
+						// the rest only makes sense if we have no error
+						return
+					}
 
-				assert.Len(t, mapped, len(tc.rts))
-				actual, err := m.ToTuple(ctx, mapped...)
-				require.NoError(t, err)
-				assert.ElementsMatch(t, tc.rts, actual)
+					assert.Len(t, mapped, len(tc.rts))
+					actual, err := m.ToTuple(ctx, mapped...)
+					require.NoError(t, err)
+					assert.ElementsMatch(t, tc.rts, actual)
+				})
 			})
 		}
 	})
@@ -155,17 +161,18 @@ func TestMapper(t *testing.T) {
 			},
 		} {
 			t.Run(tc.name, func(t *testing.T) {
-				m := reg.Mapper()
-				mapped, err := m.FromQuery(ctx, tc.query)
-				require.ErrorIs(t, err, tc.err)
-				if tc.err != nil {
-					// the rest only makes sense if we have no error
-					return
-				}
+				runWithMappers(t, reg, func(t *testing.T, m *relationtuple.Mapper) {
+					mapped, err := m.FromQuery(ctx, tc.query)
+					require.ErrorIs(t, err, tc.err)
+					if tc.err != nil {
+						// the rest only makes sense if we have no error
+						return
+					}
 
-				actual, err := m.ToQuery(ctx, mapped)
-				require.NoError(t, err)
-				assert.Equal(t, tc.query, actual)
+					actual, err := m.ToQuery(ctx, mapped)
+					require.NoError(t, err)
+					assert.Equal(t, tc.query, actual)
+				})
 			})
 		}
 	})
@@ -195,15 +202,17 @@ func TestMapper(t *testing.T) {
 			},
 		} {
 			t.Run(tc.name, func(t *testing.T) {
-				mapped, err := reg.Mapper().FromSubjectSet(ctx, tc.set)
-				require.ErrorIs(t, err, tc.err)
-				if tc.err != nil {
-					// the rest only makes sense if we have no error
-					return
-				}
-				assert.NotZero(t, mapped.Object)
-				assert.Equal(t, nspace.Name, mapped.Namespace)
-				assert.Equal(t, tc.set.Relation, mapped.Relation)
+				runWithMappers(t, reg, func(t *testing.T, m *relationtuple.Mapper) {
+					mapped, err := reg.Mapper().FromSubjectSet(ctx, tc.set)
+					require.ErrorIs(t, err, tc.err)
+					if tc.err != nil {
+						// the rest only makes sense if we have no error
+						return
+					}
+					assert.NotZero(t, mapped.Object)
+					assert.Equal(t, nspace.Name, mapped.Namespace)
+					assert.Equal(t, tc.set.Relation, mapped.Relation)
+				})
 			})
 		}
 	})
@@ -311,5 +320,56 @@ func TestMapper(t *testing.T) {
 				checkTree(mapped, tc.tree)
 			})
 		}
+	})
+
+	t.Run("suite=ro and rw mappers", func(t *testing.T) {
+		roMapper := reg.ReadOnlyMapper()
+		rwMapper := reg.Mapper()
+
+		t.Run("case=ro manager does not insert into DB", func(t *testing.T) {
+			unmapped := &ketoapi.RelationQuery{Object: pointerx.Ptr("unmapped object")}
+			mapped, err := roMapper.FromQuery(ctx, unmapped)
+			require.NoError(t, err)
+			assert.NotNil(t, mapped.Object)
+
+			reUnmapped, err := roMapper.ToQuery(ctx, mapped)
+			require.NoError(t, err)
+			assert.Empty(t, reUnmapped.Object)
+		})
+
+		t.Run("case=rw manager inserts into DB", func(t *testing.T) {
+			unmapped := &ketoapi.RelationQuery{Object: pointerx.Ptr("another unmapped object")}
+			mapped, err := rwMapper.FromQuery(ctx, unmapped)
+			require.NoError(t, err)
+			assert.NotNil(t, mapped.Object)
+
+			reUnmapped, err := rwMapper.ToQuery(ctx, mapped)
+			require.NoError(t, err)
+			assert.NotEmpty(t, reUnmapped.Object)
+		})
+	})
+}
+
+func BenchmarkReadOnlyMapper(b *testing.B) {
+	ctx := context.Background()
+	reg := driver.NewSqliteTestRegistry(b, false,
+		driver.WithNamespaces([]*namespace.Namespace{{Name: "test"}}))
+	m := reg.ReadOnlyMapper()
+
+	b.Run("FromTuple", func(b *testing.B) {
+		for i := 0; i < b.N; i++ {
+			_, err := m.FromTuple(ctx, &ketoapi.RelationTuple{
+				Namespace: "test",
+				Object:    "object",
+				Relation:  "relation",
+				SubjectSet: &ketoapi.SubjectSet{
+					Namespace: "test",
+					Object:    "subject object",
+					Relation:  "relation",
+				},
+			})
+			assert.NoError(b, err)
+		}
+
 	})
 }

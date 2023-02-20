@@ -27,14 +27,18 @@ import (
 	"github.com/ory/keto/internal/driver"
 )
 
-type configProvider = config.Provider
-type loggerProvider = x.LoggerProvider
+type (
+	configProvider = config.Provider
+	loggerProvider = x.LoggerProvider
+)
 
 // deps is defined to capture engine dependencies in a single struct
 type deps struct {
 	*relationtuple.ManagerWrapper // managerProvider
 	configProvider
 	loggerProvider
+	x.TracingProvider
+	x.NetworkIDProvider
 }
 
 func newTestEngine(t *testing.T, namespaces []*namespace.Namespace, paginationOpts ...x.PaginationOptionSetter) (*relationtuple.ManagerWrapper, *expand.Engine) {
@@ -42,9 +46,11 @@ func newTestEngine(t *testing.T, namespaces []*namespace.Namespace, paginationOp
 	require.NoError(t, innerReg.Config(context.Background()).Set(config.KeyNamespaces, namespaces))
 	reg := relationtuple.NewManagerWrapper(t, innerReg, paginationOpts...)
 	e := expand.NewEngine(&deps{
-		ManagerWrapper: reg,
-		configProvider: innerReg,
-		loggerProvider: innerReg,
+		ManagerWrapper:    reg,
+		configProvider:    innerReg,
+		loggerProvider:    innerReg,
+		TracingProvider:   innerReg,
+		NetworkIDProvider: innerReg,
 	})
 	return reg, e
 }

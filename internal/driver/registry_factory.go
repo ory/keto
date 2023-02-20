@@ -10,29 +10,50 @@ import (
 	"crypto/rand"
 	"crypto/tls"
 	"fmt"
+	"os"
 	"sync"
 	"testing"
 
 	"github.com/ory/x/configx"
+	"github.com/ory/x/logrusx"
+	"github.com/ory/x/otelx"
 	"github.com/ory/x/tlsx"
+	"github.com/pkg/errors"
+	"github.com/sirupsen/logrus"
+	"github.com/spf13/pflag"
+	"github.com/stretchr/testify/require"
+	"go.opentelemetry.io/otel/trace"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 
-	"github.com/ory/keto/ketoctx"
-
+	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/namespace"
 	"github.com/ory/keto/internal/x/dbx"
-
-	"github.com/sirupsen/logrus"
-
-	"github.com/pkg/errors"
-
-	"github.com/ory/x/logrusx"
-	"github.com/spf13/pflag"
-	"github.com/stretchr/testify/require"
-
-	"github.com/ory/keto/internal/driver/config"
+	"github.com/ory/keto/ketoctx"
 )
+
+// createFile writes the content to a temporary file, returning the path.
+// Good for testing config files.
+func createFile(t testing.TB, content string) (path string) {
+	t.Helper()
+
+	f, err := os.CreateTemp(t.TempDir(), "config-*.yaml")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	t.Cleanup(func() { _ = os.Remove(f.Name()) })
+
+	n, err := f.WriteString(content)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if n != len(content) {
+		t.Fatal("failed to write the complete content")
+	}
+
+	return f.Name()
+}
 
 func NewDefaultRegistry(ctx context.Context, flags *pflag.FlagSet, withoutNetwork bool, opts []ketoctx.Option) (Registry, error) {
 	reg, ok := ctx.Value(RegistryContextKey).(Registry)
@@ -57,11 +78,13 @@ func NewDefaultRegistry(ctx context.Context, flags *pflag.FlagSet, withoutNetwor
 	r := &RegistryDefault{
 		c:                         c,
 		l:                         l,
+		tracerWrapper:             options.TracerWrapper,
 		ctxer:                     options.Contextualizer(),
 		defaultUnaryInterceptors:  options.GRPCUnaryInterceptors(),
 		defaultStreamInterceptors: options.GRPCStreamInterceptors(),
 		defaultHttpMiddlewares:    options.HTTPMiddlewares(),
 		defaultMigrationOptions:   options.MigrationOptions(),
+		healthReadyCheckers:       options.ReadyCheckers(),
 	}
 
 	init := r.Init
@@ -83,11 +106,34 @@ func NewSqliteTestRegistry(t testing.TB, debugOnDisk bool, opts ...TestRegistryO
 	return NewTestRegistry(t, dbx.GetSqlite(t, mode), opts...)
 }
 
+func NewCRDBTestRegistry(t testing.TB) *RegistryDefault {
+	var buf [20]byte
+	_, _ = rand.Read(buf[:])
+	testdb := fmt.Sprintf("testdb_%x", buf)
+	return NewTestRegistry(t, &dbx.DsnT{
+		Name:        "cockroach",
+		Conn:        dbx.RunCockroach(t, testdb),
+		MigrateUp:   true,
+		MigrateDown: true,
+	})
+}
+
 type TestRegistryOption func(t testing.TB, r *RegistryDefault)
 
+func WithConfig(key string, value any) TestRegistryOption {
+	return func(t testing.TB, r *RegistryDefault) {
+		require.NoError(t, r.c.Set(key, value))
+	}
+}
 func WithNamespaces(namespaces []*namespace.Namespace) TestRegistryOption {
 	return func(t testing.TB, r *RegistryDefault) {
 		require.NoError(t, r.c.Set(config.KeyNamespaces, namespaces))
+	}
+}
+func WithOPL(opl string) TestRegistryOption {
+	return func(t testing.TB, r *RegistryDefault) {
+		f := createFile(t, opl)
+		require.NoError(t, r.c.Set(config.KeyNamespaces+".location", "file://"+f))
 	}
 }
 func WithGRPCUnaryInterceptors(i ...grpc.UnaryServerInterceptor) TestRegistryOption {
@@ -95,10 +141,19 @@ func WithGRPCUnaryInterceptors(i ...grpc.UnaryServerInterceptor) TestRegistryOpt
 		r.defaultUnaryInterceptors = i
 	}
 }
-
 func WithGRPCStreamInterceptors(i ...grpc.StreamServerInterceptor) TestRegistryOption {
 	return func(_ testing.TB, r *RegistryDefault) {
 		r.defaultStreamInterceptors = i
+	}
+}
+func WithTracer(tracer trace.Tracer) TestRegistryOption {
+	return func(_ testing.TB, r *RegistryDefault) {
+		r.tracer = new(otelx.Tracer).WithOTLP(tracer)
+	}
+}
+func WithLogLevel(level string) TestRegistryOption {
+	return func(t testing.TB, r *RegistryDefault) {
+		require.NoError(t, r.c.Set("log.level", level))
 	}
 }
 
@@ -144,7 +199,7 @@ func NewTestRegistry(t testing.TB, dsn *dbx.DsnT, opts ...TestRegistryOption) *R
 
 	ctx = configx.ContextWithConfigOptions(ctx, configx.WithValues(map[string]interface{}{
 		config.KeyDSN:        dsn.Conn,
-		"log.level":          "debug",
+		"log.level":          "info",
 		config.KeyNamespaces: []*namespace.Namespace{},
 	}))
 	c, err := config.NewDefault(ctx, nil, l)

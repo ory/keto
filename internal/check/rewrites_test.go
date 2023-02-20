@@ -234,7 +234,7 @@ func TestUsersetRewrites(t *testing.T) {
 				res := e.CheckRelationTuple(ctx, rt, 100)
 				require.NoError(t, res.Err)
 				t.Logf("tree:\n%s", res.Tree)
-				assert.Equal(t, tc.expected.Membership, res.Membership)
+				assert.Equal(t, tc.expected.Membership.String(), res.Membership.String())
 
 				if len(tc.expectedPaths) > 0 {
 					for _, path := range tc.expectedPaths {

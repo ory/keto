@@ -36,7 +36,7 @@ func (e *Engine) checkSubjectSetRewrite(
 	rewrite *ast.SubjectSetRewrite,
 	restDepth int,
 ) checkgroup.CheckFunc {
-	if restDepth < 0 {
+	if restDepth <= 0 {
 		e.d.Logger().Debug("reached max-depth, therefore this query will not be further expanded")
 		return checkgroup.UnknownMemberFunc
 	}
@@ -46,8 +46,9 @@ func (e *Engine) checkSubjectSetRewrite(
 		Trace("check subject-set rewrite")
 
 	var (
-		op     binaryOperator
-		checks []checkgroup.CheckFunc
+		op      binaryOperator
+		checks  []checkgroup.CheckFunc
+		handled = make(map[int]struct{})
 	)
 	switch rewrite.Operation {
 	case ast.OperatorOr:
@@ -58,7 +59,44 @@ func (e *Engine) checkSubjectSetRewrite(
 		return checkNotImplemented
 	}
 
-	for _, child := range rewrite.Children {
+	// Shortcut for ORs of ComputedSubjectSets
+	if rewrite.Operation == ast.OperatorOr {
+		var computedSubjectSets []string
+		for i, child := range rewrite.Children {
+			switch c := child.(type) {
+			case *ast.ComputedSubjectSet:
+				handled[i] = struct{}{}
+				computedSubjectSets = append(computedSubjectSets, c.Relation)
+			}
+		}
+		if len(computedSubjectSets) > 0 {
+			checks = append(checks, func(ctx context.Context, resultCh chan<- checkgroup.Result) {
+				res, err := e.d.Traverser().TraverseSubjectSetRewrite(ctx, tuple, computedSubjectSets)
+				if err != nil {
+					resultCh <- checkgroup.Result{Err: errors.WithStack(err)}
+					return
+				}
+				g := checkgroup.New(ctx)
+				defer func() { resultCh <- g.Result() }()
+				for _, result := range res {
+					if result.Found {
+						g.SetIsMember()
+						return
+					}
+				}
+				// If not, we must go another hop:
+				for _, result := range res {
+					g.Add(e.checkIsAllowed(ctx, result.To, restDepth-1, true))
+				}
+			})
+		}
+	}
+
+	for i, child := range rewrite.Children {
+		if _, found := handled[i]; found {
+			continue
+		}
+
 		switch c := child.(type) {
 
 		case *ast.TupleToSubjectSet:
@@ -77,7 +115,7 @@ func (e *Engine) checkSubjectSetRewrite(
 			checks = append(checks, checkgroup.WithEdge(checkgroup.Edge{
 				Tuple: *tuple,
 				Type:  toTreeNodeType(c.Operation),
-			}, e.checkSubjectSetRewrite(ctx, tuple, c, restDepth)))
+			}, e.checkSubjectSetRewrite(ctx, tuple, c, restDepth-1)))
 
 		case *ast.InvertResult:
 			checks = append(checks, checkgroup.WithEdge(checkgroup.Edge{
@@ -183,16 +221,12 @@ func (e *Engine) checkComputedSubjectSet(
 		WithField("computed subjectSet relation", subjectSet.Relation).
 		Trace("check computed subjectSet")
 
-	return e.checkIsAllowed(
-		ctx,
-		&relationTuple{
-			Namespace: r.Namespace,
-			Object:    r.Object,
-			Relation:  subjectSet.Relation,
-			Subject:   r.Subject,
-		},
-		restDepth,
-	)
+	return e.checkIsAllowed(ctx, &relationTuple{
+		Namespace: r.Namespace,
+		Object:    r.Object,
+		Relation:  subjectSet.Relation,
+		Subject:   r.Subject,
+	}, restDepth, false)
 }
 
 // checkTupleToSubjectSet rewrites the relation tuple to use the subject-set relation.
@@ -244,16 +278,12 @@ func (e *Engine) checkTupleToSubjectSet(
 
 			for _, t := range tuples {
 				if subSet, ok := t.Subject.(*relationtuple.SubjectSet); ok {
-					g.Add(e.checkIsAllowed(
-						ctx,
-						&relationTuple{
-							Namespace: subSet.Namespace,
-							Object:    subSet.Object,
-							Relation:  subjectSet.ComputedSubjectSetRelation,
-							Subject:   tuple.Subject,
-						},
-						restDepth-1,
-					))
+					g.Add(e.checkIsAllowed(ctx, &relationTuple{
+						Namespace: subSet.Namespace,
+						Object:    subSet.Object,
+						Relation:  subjectSet.ComputedSubjectSetRelation,
+						Subject:   tuple.Subject,
+					}, restDepth-1, false))
 
 				}
 			}

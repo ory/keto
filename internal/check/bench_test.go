@@ -5,15 +5,20 @@ package check_test
 
 import (
 	"context"
+	_ "embed"
 	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"go.opentelemetry.io/otel/sdk/trace"
+	"go.opentelemetry.io/otel/sdk/trace/tracetest"
 
 	"github.com/ory/keto/internal/check"
 	"github.com/ory/keto/internal/check/checkgroup"
+	"github.com/ory/keto/internal/driver"
 	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/namespace"
 	"github.com/ory/keto/internal/namespace/ast"
@@ -96,7 +101,6 @@ func BenchmarkCheckEngine(b *testing.B) {
 	require.NoError(b, reg.Config(ctx).Set(config.KeyLimitMaxReadDepth, 100*maxDepth))
 	e := check.NewEngine(reg)
 
-	b.ResetTimer()
 	b.Run("case=deep tree", func(b *testing.B) {
 		for _, depth := range depths {
 			b.Run(fmt.Sprintf("depth=%03d", depth), func(b *testing.B) {
@@ -126,4 +130,54 @@ func BenchmarkCheckEngine(b *testing.B) {
 			})
 		}
 	})
+}
+
+//go:embed testfixtures/project_opl.ts
+var ProjectOPLConfig string
+
+func BenchmarkComputedUsersets(b *testing.B) {
+	ctx := context.Background()
+
+	spans := tracetest.NewSpanRecorder()
+	tracer := trace.NewTracerProvider(trace.WithSpanProcessor(spans)).Tracer("")
+	reg := driver.NewSqliteTestRegistry(b, false,
+		driver.WithLogLevel("debug"),
+		driver.WithOPL(ProjectOPLConfig),
+		driver.WithTracer(tracer),
+		driver.WithConfig(config.KeyNamespacesExperimentalStrictMode, true))
+	reg.Logger().Logger.SetLevel(logrus.DebugLevel)
+
+	insertFixtures(b, reg.RelationTupleManager(), []string{
+		"Project:Ory#owner@User:Admin",
+		"Project:Ory#developer@User:Dev",
+	})
+
+	e := check.NewEngine(reg)
+
+	query := tupleFromString(b, "Project:Ory#readProject@User:Dev")
+
+	b.Run("Computed userset", func(b *testing.B) {
+		initialDBSpans := dbSpans(spans)
+		for i := 0; i < b.N; i++ {
+			res := e.CheckRelationTuple(ctx, query, 0)
+			assert.NoError(b, res.Err)
+			if res.Err != nil {
+				b.Errorf("got unexpected error: %v", res.Err)
+			}
+			if res.Membership != checkgroup.IsMember {
+				b.Error("check failed")
+			}
+		}
+		b.ReportMetric((float64(dbSpans(spans)-initialDBSpans))/float64(b.N), "queries/op")
+	})
+
+}
+
+func dbSpans(spans *tracetest.SpanRecorder) (count int) {
+	for _, s := range spans.Started() {
+		if strings.HasPrefix(s.Name(), "sql-conn-query") {
+			count++
+		}
+	}
+	return
 }

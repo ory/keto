@@ -121,11 +121,25 @@ const (
 )
 
 const (
+	NamespaceKey           = "namespace"
+	ObjectKey              = "object"
+	RelationKey            = "relation"
 	SubjectIDKey           = "subject_id"
 	SubjectSetNamespaceKey = "subject_set.namespace"
 	SubjectSetObjectKey    = "subject_set.object"
 	SubjectSetRelationKey  = "subject_set.relation"
 )
+
+var RelationQueryKeys = []string{
+	NamespaceKey,
+	ObjectKey,
+	RelationKey,
+	SubjectIDKey,
+	SubjectSetNamespaceKey,
+	SubjectSetObjectKey,
+	SubjectSetRelationKey,
+	"subject", // We have a more specific error message for this key.
+}
 
 // Paginated Relationship List
 //
