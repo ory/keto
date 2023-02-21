@@ -8,17 +8,15 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/ory/x/pointerx"
-
-	"github.com/ory/keto/internal/expand"
-	"github.com/ory/keto/ketoapi"
-
 	"github.com/ory/herodot"
+	"github.com/ory/x/pointerx"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
+	"github.com/ory/keto/internal/expand"
 	"github.com/ory/keto/internal/namespace"
 	"github.com/ory/keto/internal/x"
+	"github.com/ory/keto/ketoapi"
 )
 
 func runCases(c client, m *namespaceTestManager) func(*testing.T) {

@@ -77,6 +77,12 @@ paths:
       responses:
         "204":
           description: An empty response.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorGeneric'
+          description: errorGeneric
       summary: Deletes relationships based on relation query
       tags:
       - relationship
@@ -97,6 +103,12 @@ paths:
       responses:
         "204":
           description: An empty response.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorGeneric'
+          description: errorGeneric
       summary: Writes one or more relationships in a single transaction.
       tags:
       - relationship
@@ -117,6 +129,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/relationship'
           description: The created relationship.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorGeneric'
+          description: errorGeneric
       summary: Creates a relationship
       tags:
       - relationship
@@ -187,6 +205,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/relationshipNamespaces'
           description: The list of namespaces.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorGeneric'
+          description: errorGeneric
       summary: Lists Namespaces
       tags:
       - relationship
@@ -197,6 +221,7 @@ paths:
         content:
           text/plain:
             schema:
+              format: byte
               type: string
         required: true
         x-originalParamName: content
@@ -207,6 +232,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/checkOplSyntaxResult'
           description: The result of the syntax checker
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorGeneric'
+          description: errorGeneric
       summary: Performs a syntax check request.
       tags:
       - relationship
@@ -306,6 +337,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/relationships'
           description: The list of relationships.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorGeneric'
+          description: errorGeneric
       summary: Lists ACL relationships.
       tags:
       - relationship
@@ -398,6 +435,12 @@ paths:
                 $ref: '#/components/schemas/checkPermissionResult'
           description: The response of the permission check, in case it is allowed.
             For the `/openapi` endpoints, the status code is always 200.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorGeneric'
+          description: errorGeneric
         "403":
           content:
             application/json:
@@ -431,6 +474,12 @@ paths:
                 $ref: '#/components/schemas/checkPermissionResult'
           description: The response of the permission check, in case it is allowed.
             For the `/openapi` endpoints, the status code is always 200.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorGeneric'
+          description: errorGeneric
         "403":
           content:
             application/json:
@@ -530,6 +579,12 @@ paths:
                 $ref: '#/components/schemas/checkPermissionResult'
           description: The response of the permission check, in case it is allowed.
             For the `/openapi` endpoints, the status code is always 200.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorGeneric'
+          description: errorGeneric
         "403":
           content:
             application/json:
@@ -563,6 +618,12 @@ paths:
                 $ref: '#/components/schemas/checkPermissionResult'
           description: The response of the permission check, in case it is allowed.
             For the `/openapi` endpoints, the status code is always 200.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorGeneric'
+          description: errorGeneric
         "403":
           content:
             application/json:
@@ -627,6 +688,12 @@ paths:
                 $ref: '#/components/schemas/expandedPermissionTree'
           description: The response of the permission check, in case it is allowed.
             For the `/openapi` endpoints, the status code is always 200.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorGeneric'
+          description: errorGeneric
       summary: Expands the subject set into a tree of subjects.
       tags:
       - permission
@@ -710,6 +777,62 @@ components:
           type: string
         subject_set:
           $ref: '#/components/schemas/subjectSet'
+      type: object
+    errorGeneric:
+      description: The standard Ory JSON API error format.
+      properties:
+        error:
+          $ref: '#/components/schemas/errorGeneric.Error'
+      required:
+      - error
+      title: JSON API Error Response
+      type: object
+    errorGeneric.Error:
+      properties:
+        code:
+          example: "404"
+          format: int64
+          title: The status code
+          type: string
+        debug:
+          description: Debug information is often not exposed to protect against leaking
+            sensitive information.
+          title: Debug information
+          type: string
+        details:
+          additionalProperties:
+            type: string
+          description: Further details about the error.
+          title: Further error details
+          type: object
+        id:
+          description: The error ID is useful when trying to identify various errors
+            in application logic.
+          title: The error ID
+          type: string
+        message:
+          description: The error's message (required).
+          example: The requested resource could not be found.
+          title: The error message
+          type: string
+        reason:
+          description: Reason holds a human-readable reason for the error.
+          title: The error reason
+          type: string
+        request:
+          description: |-
+            The request ID is often exposed internally in order to trace
+            errors across service architectures. This is often a UUID.
+          example: d7ef54b1-ec15-46e6-bccb-524b82c035e6
+          title: The request ID
+          type: string
+        status:
+          description: Status holds the human-readable HTTP status code.
+          example: Not Found
+          title: The status description
+          type: string
+      required:
+      - message
       type: object
     expandedPermissionTree:
       example:
@@ -808,6 +931,18 @@ components:
       type: object
     ory.keto.relation_tuples.v1alpha2.NodeType:
       default: unspecified
+      description: |2-
+         - union: This node expands to a union of all children.
+         - exclusion: Not implemented yet.
+         - intersection: Not implemented yet.
+         - leaf: This node is a leaf and contains no children.
+        Its subject is a `SubjectID` unless `max_depth` was reached.
+         - tuple_to_subject_set: This node is a leaf and contains no children.
+        Its subject is a `SubjectID` unless `max_depth` was reached.
+         - computed_subject_set: This node is a leaf and contains no children.
+        Its subject is a `SubjectID` unless `max_depth` was reached.
+         - not: This node is a leaf and contains no children.
+        Its subject is a `SubjectID` unless `max_depth` was reached.
       enum:
       - unspecified
       - union
@@ -912,6 +1047,9 @@ components:
           $ref: '#/components/schemas/relationshipDelta.Action'
         relation_tuple:
           $ref: '#/components/schemas/relationship'
+      required:
+      - action
+      - relation_tuple
       type: object
     relationshipDelta.Action:
       default: ACTION_UNSPECIFIED

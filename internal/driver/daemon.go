@@ -340,7 +340,16 @@ func (r *RegistryDefault) ReadRouter(ctx context.Context) http.Handler {
 	}
 	n.Use(reqlog.NewMiddlewareFromLogger(r.l, "read#Ory Keto").ExcludePaths(healthx.AliveCheckPath, healthx.ReadyCheckPath))
 
-	mux := runtime.NewServeMux(runtime.WithForwardResponseOption(x.HttpResponseModifier))
+	conn, err := grpc.DialContext(ctx, r.Config(ctx).ReadAPIListenOn(), grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		panic(err)
+	}
+	healthClient := grpcHealthV1.NewHealthClient(conn)
+	mux := runtime.NewServeMux(append(
+		x.GRPCGatewayMuxOptions,
+		runtime.WithHealthEndpointAt(healthClient, healthx.ReadyCheckPath),
+		runtime.WithHealthEndpointAt(healthClient, healthx.AliveCheckPath),
+	)...)
 	for _, h := range r.allHandlers() {
 		if h, ok := h.(ReadHandler); ok {
 			if err := h.RegisterReadGRPCGateway(ctx, mux, r.Config(ctx).ReadAPIListenOn(), grpc.WithTransportCredentials(insecure.NewCredentials())); err != nil {
@@ -353,7 +362,6 @@ func (r *RegistryDefault) ReadRouter(ctx context.Context) http.Handler {
 	r.PrometheusManager().RegisterRouter(br.Router)
 	r.MetricsHandler().SetRoutes(br.Router)
 
-	r.HealthHandler().SetHealthRoutes(br.Router, false)
 	r.HealthHandler().SetVersionRoutes(br.Router)
 
 	n.UseHandler(&RouterOrGatewayHandler{Router: br.Router, ServeMux: mux})
@@ -379,7 +387,16 @@ func (r *RegistryDefault) WriteRouter(ctx context.Context) http.Handler {
 	}
 	n.Use(reqlog.NewMiddlewareFromLogger(r.l, "write#Ory Keto").ExcludePaths(healthx.AliveCheckPath, healthx.ReadyCheckPath))
 
-	mux := runtime.NewServeMux(runtime.WithForwardResponseOption(x.HttpResponseModifier))
+	conn, err := grpc.DialContext(ctx, r.Config(ctx).WriteAPIListenOn(), grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		panic(err)
+	}
+	healthClient := grpcHealthV1.NewHealthClient(conn)
+	mux := runtime.NewServeMux(append(
+		x.GRPCGatewayMuxOptions,
+		runtime.WithHealthEndpointAt(healthClient, healthx.ReadyCheckPath),
+		runtime.WithHealthEndpointAt(healthClient, healthx.AliveCheckPath),
+	)...)
 	for _, h := range r.allHandlers() {
 		if h, ok := h.(WriteHandler); ok {
 			if err := h.RegisterWriteGRPCGateway(ctx, mux, r.Config(ctx).WriteAPIListenOn(), grpc.WithTransportCredentials(insecure.NewCredentials())); err != nil {
@@ -425,7 +442,16 @@ func (r *RegistryDefault) OPLSyntaxRouter(ctx context.Context) http.Handler {
 	r.HealthHandler().SetHealthRoutes(pr.Router, false)
 	r.HealthHandler().SetVersionRoutes(pr.Router)
 
-	mux := runtime.NewServeMux(runtime.WithForwardResponseOption(x.HttpResponseModifier))
+	conn, err := grpc.DialContext(ctx, r.Config(ctx).OPLSyntaxAPIListenOn(), grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		panic(err)
+	}
+	healthClient := grpcHealthV1.NewHealthClient(conn)
+	mux := runtime.NewServeMux(append(
+		x.GRPCGatewayMuxOptions,
+		runtime.WithHealthEndpointAt(healthClient, healthx.ReadyCheckPath),
+		runtime.WithHealthEndpointAt(healthClient, healthx.AliveCheckPath),
+	)...)
 	for _, h := range r.allHandlers() {
 		if h, ok := h.(OPLSyntaxHandler); ok {
 			if err := h.RegisterSyntaxGRPCGateway(ctx, mux, r.Config(ctx).OPLSyntaxAPIListenOn(), grpc.WithTransportCredentials(insecure.NewCredentials())); err != nil {

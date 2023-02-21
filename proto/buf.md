@@ -45,6 +45,10 @@
 
   - [NamespacesService](#ory-keto-relation_tuples-v1alpha2-NamespacesService)
 
+- [ory/keto/relation_tuples/v1alpha2/openapi.proto](#ory_keto_relation_tuples_v1alpha2_openapi-proto)
+  - [ErrorResponse](#ory-keto-relation_tuples-v1alpha2-ErrorResponse)
+  - [ErrorResponse.Error](#ory-keto-relation_tuples-v1alpha2-ErrorResponse-Error)
+  - [ErrorResponse.Error.DetailsEntry](#ory-keto-relation_tuples-v1alpha2-ErrorResponse-Error-DetailsEntry)
 - [ory/keto/relation_tuples/v1alpha2/read_service.proto](#ory_keto_relation_tuples_v1alpha2_read_service-proto)
 
   - [ListRelationTuplesRequest](#ory-keto-relation_tuples-v1alpha2-ListRelationTuplesRequest)
@@ -88,9 +92,9 @@
 
 ### CheckRequest
 
-| Field   | Type              | Label | Description |
-| ------- | ----------------- | ----- | ----------- |
-| content | [string](#string) |       |             |
+| Field   | Type            | Label | Description |
+| ------- | --------------- | ----- | ----------- |
+| content | [bytes](#bytes) |       |             |
 
 <a name="ory-keto-opl-v1alpha1-CheckResponse"></a>
 
@@ -393,20 +397,20 @@ This is never set if `node_type` == `NODE_TYPE_LEAF`. |
 | ------------------------------ | ------ | ---------------------------------------------------------------------------------------------------------- |
 | unspecified                    | 0      |                                                                                                            |
 | NODE_TYPE_UNSPECIFIED          | 0      |                                                                                                            |
-| NODE_TYPE_UNION                | 1      | This node expands to a union of all children.                                                              |
-| union                          | 1      |                                                                                                            |
-| NODE_TYPE_EXCLUSION            | 2      | Not implemented yet.                                                                                       |
-| exclusion                      | 2      |                                                                                                            |
-| NODE_TYPE_INTERSECTION         | 3      | Not implemented yet.                                                                                       |
-| intersection                   | 3      |                                                                                                            |
-| NODE_TYPE_LEAF                 | 4      | This node is a leaf and contains no children. Its subject is a `SubjectID` unless `max_depth` was reached. |
-| leaf                           | 4      |                                                                                                            |
-| NODE_TYPE_TUPLE_TO_SUBJECT_SET | 5      | This node is a leaf and contains no children. Its subject is a `SubjectID` unless `max_depth` was reached. |
-| tuple_to_subject_set           | 5      |                                                                                                            |
-| NODE_TYPE_COMPUTED_SUBJECT_SET | 6      | This node is a leaf and contains no children. Its subject is a `SubjectID` unless `max_depth` was reached. |
-| computed_subject_set           | 6      |                                                                                                            |
-| NODE_TYPE_NOT                  | 7      | This node is a leaf and contains no children. Its subject is a `SubjectID` unless `max_depth` was reached. |
-| not                            | 7      |                                                                                                            |
+| union                          | 1      | This node expands to a union of all children.                                                              |
+| NODE_TYPE_UNION                | 1      |                                                                                                            |
+| exclusion                      | 2      | Not implemented yet.                                                                                       |
+| NODE_TYPE_EXCLUSION            | 2      |                                                                                                            |
+| intersection                   | 3      | Not implemented yet.                                                                                       |
+| NODE_TYPE_INTERSECTION         | 3      |                                                                                                            |
+| leaf                           | 4      | This node is a leaf and contains no children. Its subject is a `SubjectID` unless `max_depth` was reached. |
+| NODE_TYPE_LEAF                 | 4      |                                                                                                            |
+| tuple_to_subject_set           | 5      | This node is a leaf and contains no children. Its subject is a `SubjectID` unless `max_depth` was reached. |
+| NODE_TYPE_TUPLE_TO_SUBJECT_SET | 5      |                                                                                                            |
+| computed_subject_set           | 6      | This node is a leaf and contains no children. Its subject is a `SubjectID` unless `max_depth` was reached. |
+| NODE_TYPE_COMPUTED_SUBJECT_SET | 6      |                                                                                                            |
+| not                            | 7      | This node is a leaf and contains no children. Its subject is a `SubjectID` unless `max_depth` was reached. |
+| NODE_TYPE_NOT                  | 7      |                                                                                                            |
 
 <a name="ory-keto-relation_tuples-v1alpha2-ExpandService"></a>
 
@@ -462,6 +466,64 @@ This service is part of the [read-APIs](../concepts/api-overview.mdx#read-apis).
 | ListNamespaces | [ListNamespacesRequest](#ory-keto-relation_tuples-v1alpha2-ListNamespacesRequest) | [ListNamespacesResponse](#ory-keto-relation_tuples-v1alpha2-ListNamespacesResponse) | Lists Namespaces |
 
 Get all namespaces. |
+
+<a name="ory_keto_relation_tuples_v1alpha2_openapi-proto"></a>
+
+<p align="right"><a href="#top">Top</a></p>
+
+## ory/keto/relation_tuples/v1alpha2/openapi.proto
+
+<a name="ory-keto-relation_tuples-v1alpha2-ErrorResponse"></a>
+
+### ErrorResponse
+
+JSON API Error Response
+
+The standard Ory JSON API error format.
+
+| Field | Type                                                                          | Label | Description |
+| ----- | ----------------------------------------------------------------------------- | ----- | ----------- |
+| error | [ErrorResponse.Error](#ory-keto-relation_tuples-v1alpha2-ErrorResponse-Error) |       |             |
+
+<a name="ory-keto-relation_tuples-v1alpha2-ErrorResponse-Error"></a>
+
+### ErrorResponse.Error
+
+| Field | Type              | Label | Description       |
+| ----- | ----------------- | ----- | ----------------- |
+| code  | [int64](#int64)   |       | The status code   |
+| debug | [string](#string) |       | Debug information |
+
+Debug information is often not exposed to protect against leaking sensitive
+information. | | details |
+[ErrorResponse.Error.DetailsEntry](#ory-keto-relation_tuples-v1alpha2-ErrorResponse-Error-DetailsEntry)
+| repeated | Further error details
+
+Further details about the error. | | id | [string](#string) | | The error ID
+
+The error ID is useful when trying to identify various errors in application
+logic. | | message | [string](#string) | | The error message
+
+The error&#39;s message (required). | | reason | [string](#string) | | The error
+reason
+
+Reason holds a human-readable reason for the error. | | request |
+[string](#string) | | The request ID
+
+The request ID is often exposed internally in order to trace errors across
+service architectures. This is often a UUID. | | status | [string](#string) | |
+The status description
+
+Status holds the human-readable HTTP status code. |
+
+<a name="ory-keto-relation_tuples-v1alpha2-ErrorResponse-Error-DetailsEntry"></a>
+
+### ErrorResponse.Error.DetailsEntry
+
+| Field | Type              | Label | Description |
+| ----- | ----------------- | ----- | ----------- |
+| key   | [string](#string) |       |             |
+| value | [string](#string) |       |             |
 
 <a name="ory_keto_relation_tuples_v1alpha2_read_service-proto"></a>
 

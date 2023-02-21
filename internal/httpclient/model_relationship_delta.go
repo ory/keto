@@ -17,18 +17,18 @@ import (
 
 // RelationshipDelta Write-delta for a TransactRelationTuplesRequest.
 type RelationshipDelta struct {
-	Action        *RelationshipDeltaAction `json:"action,omitempty"`
-	RelationTuple *Relationship            `json:"relation_tuple,omitempty"`
+	Action        RelationshipDeltaAction `json:"action"`
+	RelationTuple Relationship            `json:"relation_tuple"`
 }
 
 // NewRelationshipDelta instantiates a new RelationshipDelta object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewRelationshipDelta() *RelationshipDelta {
+func NewRelationshipDelta(action RelationshipDeltaAction, relationTuple Relationship) *RelationshipDelta {
 	this := RelationshipDelta{}
-	var action RelationshipDeltaAction = RELATIONSHIPDELTAACTION_ACTION_UNSPECIFIED
-	this.Action = &action
+	this.Action = action
+	this.RelationTuple = relationTuple
 	return &this
 }
 
@@ -38,80 +38,64 @@ func NewRelationshipDelta() *RelationshipDelta {
 func NewRelationshipDeltaWithDefaults() *RelationshipDelta {
 	this := RelationshipDelta{}
 	var action RelationshipDeltaAction = RELATIONSHIPDELTAACTION_ACTION_UNSPECIFIED
-	this.Action = &action
+	this.Action = action
 	return &this
 }
 
-// GetAction returns the Action field value if set, zero value otherwise.
+// GetAction returns the Action field value
 func (o *RelationshipDelta) GetAction() RelationshipDeltaAction {
-	if o == nil || o.Action == nil {
+	if o == nil {
 		var ret RelationshipDeltaAction
 		return ret
 	}
-	return *o.Action
+
+	return o.Action
 }
 
-// GetActionOk returns a tuple with the Action field value if set, nil otherwise
+// GetActionOk returns a tuple with the Action field value
 // and a boolean to check if the value has been set.
 func (o *RelationshipDelta) GetActionOk() (*RelationshipDeltaAction, bool) {
-	if o == nil || o.Action == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.Action, true
+	return &o.Action, true
 }
 
-// HasAction returns a boolean if a field has been set.
-func (o *RelationshipDelta) HasAction() bool {
-	if o != nil && o.Action != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetAction gets a reference to the given RelationshipDeltaAction and assigns it to the Action field.
+// SetAction sets field value
 func (o *RelationshipDelta) SetAction(v RelationshipDeltaAction) {
-	o.Action = &v
+	o.Action = v
 }
 
-// GetRelationTuple returns the RelationTuple field value if set, zero value otherwise.
+// GetRelationTuple returns the RelationTuple field value
 func (o *RelationshipDelta) GetRelationTuple() Relationship {
-	if o == nil || o.RelationTuple == nil {
+	if o == nil {
 		var ret Relationship
 		return ret
 	}
-	return *o.RelationTuple
+
+	return o.RelationTuple
 }
 
-// GetRelationTupleOk returns a tuple with the RelationTuple field value if set, nil otherwise
+// GetRelationTupleOk returns a tuple with the RelationTuple field value
 // and a boolean to check if the value has been set.
 func (o *RelationshipDelta) GetRelationTupleOk() (*Relationship, bool) {
-	if o == nil || o.RelationTuple == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.RelationTuple, true
+	return &o.RelationTuple, true
 }
 
-// HasRelationTuple returns a boolean if a field has been set.
-func (o *RelationshipDelta) HasRelationTuple() bool {
-	if o != nil && o.RelationTuple != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetRelationTuple gets a reference to the given Relationship and assigns it to the RelationTuple field.
+// SetRelationTuple sets field value
 func (o *RelationshipDelta) SetRelationTuple(v Relationship) {
-	o.RelationTuple = &v
+	o.RelationTuple = v
 }
 
 func (o RelationshipDelta) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
-	if o.Action != nil {
+	if true {
 		toSerialize["action"] = o.Action
 	}
-	if o.RelationTuple != nil {
+	if true {
 		toSerialize["relation_tuple"] = o.RelationTuple
 	}
 	return json.Marshal(toSerialize)

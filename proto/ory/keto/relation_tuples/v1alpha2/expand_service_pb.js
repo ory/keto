@@ -848,20 +848,20 @@ proto.ory.keto.relation_tuples.v1alpha2.SubjectTree.prototype.clearChildrenList 
 proto.ory.keto.relation_tuples.v1alpha2.NodeType = {
   UNSPECIFIED: 0,
   NODE_TYPE_UNSPECIFIED: 0,
-  NODE_TYPE_UNION: 1,
   UNION: 1,
-  NODE_TYPE_EXCLUSION: 2,
+  NODE_TYPE_UNION: 1,
   EXCLUSION: 2,
-  NODE_TYPE_INTERSECTION: 3,
+  NODE_TYPE_EXCLUSION: 2,
   INTERSECTION: 3,
-  NODE_TYPE_LEAF: 4,
+  NODE_TYPE_INTERSECTION: 3,
   LEAF: 4,
-  NODE_TYPE_TUPLE_TO_SUBJECT_SET: 5,
+  NODE_TYPE_LEAF: 4,
   TUPLE_TO_SUBJECT_SET: 5,
-  NODE_TYPE_COMPUTED_SUBJECT_SET: 6,
+  NODE_TYPE_TUPLE_TO_SUBJECT_SET: 5,
   COMPUTED_SUBJECT_SET: 6,
-  NODE_TYPE_NOT: 7,
-  NOT: 7
+  NODE_TYPE_COMPUTED_SUBJECT_SET: 6,
+  NOT: 7,
+  NODE_TYPE_NOT: 7
 };
 
 goog.object.extend(exports, proto.ory.keto.relation_tuples.v1alpha2);

@@ -16,7 +16,6 @@ import (
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
-	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/test/bufconn"
 	"google.golang.org/protobuf/proto"
 )
@@ -75,6 +74,7 @@ func NewTestEndpoints(
 	t.Cleanup(cancel)
 
 	l := bufconn.Listen(1024 * 1024)
+	t.Cleanup(func() { _ = l.Close() })
 	s := grpc.NewServer(
 		grpc.ChainUnaryInterceptor(herodot.UnaryErrorUnwrapInterceptor),
 	)
@@ -101,18 +101,9 @@ func NewTestEndpoints(
 		grpc.WithContextDialer(func(context.Context, string) (net.Conn, error) { return l.Dial() }),
 	)
 	require.NoError(t, err)
+	t.Cleanup(func() { _ = conn.Close() })
 
-	// TODO: Sync with router setup in daemon.go
-	mux := runtime.NewServeMux(
-		runtime.WithForwardResponseOption(HttpResponseModifier),
-		runtime.WithMetadata(func(ctx context.Context, req *http.Request) metadata.MD {
-			md := make(metadata.MD)
-			contentLength, _ := strconv.Atoi(req.Header.Get("Content-Length"))
-			md.Set("hasbody", strconv.FormatBool(contentLength > 0))
-
-			return md
-		}),
-	)
+	mux := runtime.NewServeMux(GRPCGatewayMuxOptions...)
 	if h, ok := handler.(readHandler); ok {
 		require.NoError(t, h.RegisterReadGRPCGatewayConn(ctx, mux, conn))
 	}

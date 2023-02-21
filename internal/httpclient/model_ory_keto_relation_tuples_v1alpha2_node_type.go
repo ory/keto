@@ -16,7 +16,7 @@ import (
 	"fmt"
 )
 
-// OryKetoRelationTuplesV1alpha2NodeType the model 'OryKetoRelationTuplesV1alpha2NodeType'
+// OryKetoRelationTuplesV1alpha2NodeType  - union: This node expands to a union of all children.  - exclusion: Not implemented yet.  - intersection: Not implemented yet.  - leaf: This node is a leaf and contains no children. Its subject is a `SubjectID` unless `max_depth` was reached.  - tuple_to_subject_set: This node is a leaf and contains no children. Its subject is a `SubjectID` unless `max_depth` was reached.  - computed_subject_set: This node is a leaf and contains no children. Its subject is a `SubjectID` unless `max_depth` was reached.  - not: This node is a leaf and contains no children. Its subject is a `SubjectID` unless `max_depth` was reached.
 type OryKetoRelationTuplesV1alpha2NodeType string
 
 // List of ory.keto.relation_tuples.v1alpha2.NodeType

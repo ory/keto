@@ -6,6 +6,7 @@ package schema_test
 import (
 	"bytes"
 	"context"
+	"encoding/json"
 	"io"
 	"net/http"
 	"testing"
@@ -28,10 +29,12 @@ func TestNewHandler(t *testing.T) {
 
 	t.Run("proto=REST", func(t *testing.T) {
 		t.Run("method=POST /opl/syntax/check", func(t *testing.T) {
+			content, err := json.Marshal([]byte("/* comment???"))
+			require.NoError(t, err)
 			response, err := endpoints.HTTP.Client().Post(
 				endpoints.HTTP.URL+"/opl/syntax/check",
 				"text/plain",
-				bytes.NewBufferString(`"/* comment???"`))
+				bytes.NewReader(content))
 			require.NoError(t, err)
 			body, err := io.ReadAll(response.Body)
 			require.NoError(t, err)
@@ -46,7 +49,7 @@ func TestNewHandler(t *testing.T) {
 
 		t.Run("method=Syntax.Check", func(t *testing.T) {
 			response, err := client.Check(ctx, &opl.CheckRequest{
-				Content: "/* comment???",
+				Content: []byte("/* comment???"),
 			})
 			require.NoError(t, err)
 			assert.Contains(t, response.Errors[0].Message, "unclosed comment")

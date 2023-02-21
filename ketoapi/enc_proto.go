@@ -34,7 +34,30 @@ type (
 			GetSubjectSet() *rts.SubjectSet
 		}
 	}
+
+	OpenAPITupleData struct {
+		Wrapped interface {
+			GetObject() string
+			GetRelation() string
+			GetNamespace() string
+			GetSubjectSet() *rts.SubjectSet
+			GetSubjectId() string
+		}
+	}
 )
+
+func (q *OpenAPITupleData) GetObject() string    { return q.Wrapped.GetObject() }
+func (q *OpenAPITupleData) GetNamespace() string { return q.Wrapped.GetNamespace() }
+func (q *OpenAPITupleData) GetRelation() string  { return q.Wrapped.GetRelation() }
+func (q *OpenAPITupleData) GetSubject() *rts.Subject {
+	if sub, ok := q.Wrapped.(interface{ GetSubject() *rts.Subject }); ok && sub.GetSubject() != nil {
+		return sub.GetSubject()
+	}
+	if set := q.Wrapped.GetSubjectSet(); set != nil {
+		return rts.NewSubjectSet(set.Namespace, set.Object, set.Relation)
+	}
+	return rts.NewSubjectID(q.Wrapped.GetSubjectId())
+}
 
 func (r *RelationTuple) FromOpenAPIFields(f openAPIFields) (*RelationTuple, error) {
 	subject := f.GetSubject()
@@ -115,6 +138,44 @@ func (r *RelationTuple) FromProto(proto *rts.RelationTuple) *RelationTuple {
 			Namespace: subject.Set.Namespace,
 			Object:    subject.Set.Object,
 			Relation:  subject.Set.Relation,
+		}
+	}
+
+	return r
+}
+
+func (r *RelationTuple) FromCheckRequest(proto *rts.CheckRequest) *RelationTuple {
+	if proto.Tuple != nil {
+		return r.FromProto(proto.Tuple)
+	}
+
+	r = &RelationTuple{
+		Namespace: proto.Namespace,
+		Object:    proto.Object,
+		Relation:  proto.Relation,
+	}
+
+	if proto.Subject != nil {
+		switch subject := proto.Subject.Ref.(type) {
+		case *rts.Subject_Id:
+			r.SubjectID = pointerx.Ptr(subject.Id)
+		case *rts.Subject_Set:
+			r.SubjectSet = &SubjectSet{
+				Namespace: subject.Set.Namespace,
+				Object:    subject.Set.Object,
+				Relation:  subject.Set.Relation,
+			}
+		}
+	} else {
+		switch subject := proto.RestApiSubject.(type) {
+		case *rts.CheckRequest_SubjectId:
+			r.SubjectID = pointerx.Ptr(subject.SubjectId)
+		case *rts.CheckRequest_SubjectSet:
+			r.SubjectSet = &SubjectSet{
+				Namespace: subject.SubjectSet.Namespace,
+				Object:    subject.SubjectSet.Object,
+				Relation:  subject.SubjectSet.Relation,
+			}
 		}
 	}
 

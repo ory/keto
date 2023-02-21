@@ -1,4 +1,5 @@
 s/ory.keto.relation_tuples.v1alpha2.ErrorResponse/errorGeneric/g
+s/ory.keto.relation_tuples.v1alpha2.ErrorResponse.Error/genericError/g
 s/ory.keto.relation_tuples.v1alpha2.CreateRelationTupleRequest.Relationship/createRelationshipBody/g
 s/ory.keto.relation_tuples.v1alpha2.SubjectSet/subjectSet/g
 s/ory.keto.relation_tuples.v1alpha2.SubjectTree/expandedPermissionTree/g

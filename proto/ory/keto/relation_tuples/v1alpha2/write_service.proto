@@ -4,8 +4,11 @@ package ory.keto.relation_tuples.v1alpha2;
 
 import "google/api/annotations.proto";
 import "google/api/visibility.proto";
+import "google/api/field_behavior.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
 import "ory/keto/relation_tuples/v1alpha2/relation_tuples.proto";
+import "validate/validate.proto";
+
 
 option go_package = "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2;rts";
 option csharp_namespace = "Ory.Keto.RelationTuples.v1alpha2";
@@ -117,10 +120,17 @@ message RelationTupleDelta {
     delete = 2;
   }
   // The action to do on the RelationTuple.
-  Action action = 1;
+  Action action = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (validate.rules).enum = {in: [1, 2]}
+  ];
 
   // The target RelationTuple.
-  RelationTuple relation_tuple = 2 [json_name = "relation_tuple"];
+  RelationTuple relation_tuple = 2 [
+    json_name = "relation_tuple",
+    (google.api.field_behavior) = REQUIRED,
+    (validate.rules).message.required = true
+  ];
 }
 
 // The response of a WriteService.TransactRelationTuples rpc.

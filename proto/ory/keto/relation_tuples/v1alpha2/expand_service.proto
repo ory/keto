@@ -106,36 +106,36 @@ enum NodeType {
   NODE_TYPE_UNSPECIFIED = 0 [(google.api.value_visibility).restriction = "NO_SWAGGER"];
 
   // This node expands to a union of all children.
-  NODE_TYPE_UNION = 1 [(google.api.value_visibility).restriction = "NO_SWAGGER"];
   union = 1;
+  NODE_TYPE_UNION = 1 [(google.api.value_visibility).restriction = "NO_SWAGGER"];
 
   // Not implemented yet.
-  NODE_TYPE_EXCLUSION = 2 [(google.api.value_visibility).restriction = "NO_SWAGGER"];
   exclusion = 2;
+  NODE_TYPE_EXCLUSION = 2 [(google.api.value_visibility).restriction = "NO_SWAGGER"];
 
   // Not implemented yet.
-  NODE_TYPE_INTERSECTION = 3 [(google.api.value_visibility).restriction = "NO_SWAGGER"];
   intersection = 3;
+  NODE_TYPE_INTERSECTION = 3 [(google.api.value_visibility).restriction = "NO_SWAGGER"];
 
   // This node is a leaf and contains no children.
   // Its subject is a `SubjectID` unless `max_depth` was reached.
-  NODE_TYPE_LEAF = 4 [(google.api.value_visibility).restriction = "NO_SWAGGER"];
   leaf = 4;
+  NODE_TYPE_LEAF = 4 [(google.api.value_visibility).restriction = "NO_SWAGGER"];
 
   // This node is a leaf and contains no children.
   // Its subject is a `SubjectID` unless `max_depth` was reached.
-  NODE_TYPE_TUPLE_TO_SUBJECT_SET = 5 [(google.api.value_visibility).restriction = "NO_SWAGGER"];
   tuple_to_subject_set = 5;
+  NODE_TYPE_TUPLE_TO_SUBJECT_SET = 5 [(google.api.value_visibility).restriction = "NO_SWAGGER"];
 
   // This node is a leaf and contains no children.
   // Its subject is a `SubjectID` unless `max_depth` was reached.
-  NODE_TYPE_COMPUTED_SUBJECT_SET = 6 [(google.api.value_visibility).restriction = "NO_SWAGGER"];
   computed_subject_set = 6;
+  NODE_TYPE_COMPUTED_SUBJECT_SET = 6 [(google.api.value_visibility).restriction = "NO_SWAGGER"];
 
   // This node is a leaf and contains no children.
   // Its subject is a `SubjectID` unless `max_depth` was reached.
-  NODE_TYPE_NOT = 7 [(google.api.value_visibility).restriction = "NO_SWAGGER"];
   not = 7;
+  NODE_TYPE_NOT = 7 [(google.api.value_visibility).restriction = "NO_SWAGGER"];
 }
 
 message SubjectTree {

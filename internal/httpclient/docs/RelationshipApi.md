@@ -32,7 +32,7 @@ import (
 )
 
 func main() {
-    body := "body_example" // string | 
+    body := string(BYTE_ARRAY_DATA_HERE) // string | 
 
     configuration := openapiclient.NewConfiguration()
     apiClient := openapiclient.NewAPIClient(configuration)
@@ -208,7 +208,7 @@ No authorization required
 ### HTTP request headers
 
 - **Content-Type**: Not defined
-- **Accept**: Not defined
+- **Accept**: application/json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
 [[Back to Model list]](../README.md#documentation-for-models)
@@ -375,7 +375,7 @@ import (
 )
 
 func main() {
-    relationshipDelta := []openapiclient.RelationshipDelta{*openapiclient.NewRelationshipDelta()} // []RelationshipDelta | The write delta for the relationships operated in one single transaction. Either all actions succeed or no change takes effect on error.
+    relationshipDelta := []openapiclient.RelationshipDelta{*openapiclient.NewRelationshipDelta(openapiclient.relationshipDelta.Action("ACTION_UNSPECIFIED"), *openapiclient.NewRelationship("Namespace_example", "Object_example", "Relation_example"))} // []RelationshipDelta | The write delta for the relationships operated in one single transaction. Either all actions succeed or no change takes effect on error.
 
     configuration := openapiclient.NewConfiguration()
     apiClient := openapiclient.NewAPIClient(configuration)
@@ -411,7 +411,7 @@ No authorization required
 ### HTTP request headers
 
 - **Content-Type**: application/json
-- **Accept**: Not defined
+- **Accept**: application/json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
 [[Back to Model list]](../README.md#documentation-for-models)

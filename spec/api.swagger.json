@@ -1,9 +1,21 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "ory/keto/opl/v1alpha1/syntax_service.proto",
-    "version": "version not set"
+    "title": "ORY Keto",
+    "description": "Ory Keto is a cloud native access control server providing best-practice patterns (RBAC, ABAC, ACL, AWS IAM Policies, Kubernetes Roles, ...) via REST APIs.",
+    "version": "Latest",
+    "contact": {
+      "name": "ORY",
+      "url": "https://www.ory.sh",
+      "email": "hi@ory.sh"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "https://github.com/ory/keto/blob/master/LICENSE"
+    }
   },
+  "basePath": "/",
+  "schemes": ["http", "https"],
   "consumes": ["application/json"],
   "produces": ["application/json"],
   "paths": {
@@ -15,6 +27,12 @@
           "204": {
             "description": "An empty response.",
             "schema": {}
+          },
+          "400": {
+            "description": "errorGeneric",
+            "schema": {
+              "$ref": "#/definitions/errorGeneric"
+            }
           }
         },
         "parameters": [
@@ -80,6 +98,12 @@
             "schema": {
               "$ref": "#/definitions/relationship"
             }
+          },
+          "400": {
+            "description": "errorGeneric",
+            "schema": {
+              "$ref": "#/definitions/errorGeneric"
+            }
           }
         },
         "parameters": [
@@ -104,6 +128,12 @@
             "schema": {},
             "examples": {
               "application/json": {}
+            }
+          },
+          "400": {
+            "description": "errorGeneric",
+            "schema": {
+              "$ref": "#/definitions/errorGeneric"
             }
           }
         },
@@ -144,6 +174,12 @@
                 ]
               }
             }
+          },
+          "400": {
+            "description": "errorGeneric",
+            "schema": {
+              "$ref": "#/definitions/errorGeneric"
+            }
           }
         },
         "tags": ["relationship"],
@@ -160,6 +196,12 @@
             "schema": {
               "$ref": "#/definitions/checkOplSyntaxResult"
             }
+          },
+          "400": {
+            "description": "errorGeneric",
+            "schema": {
+              "$ref": "#/definitions/errorGeneric"
+            }
           }
         },
         "parameters": [
@@ -168,7 +210,8 @@
             "in": "body",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "byte"
             }
           }
         ],
@@ -185,6 +228,12 @@
             "description": "The list of relationships.",
             "schema": {
               "$ref": "#/definitions/relationships"
+            }
+          },
+          "400": {
+            "description": "errorGeneric",
+            "schema": {
+              "$ref": "#/definitions/errorGeneric"
             }
           }
         },
@@ -269,6 +318,12 @@
               "$ref": "#/definitions/checkPermissionResult"
             }
           },
+          "400": {
+            "description": "errorGeneric",
+            "schema": {
+              "$ref": "#/definitions/errorGeneric"
+            }
+          },
           "403": {
             "description": "The response of the permission check, in case it is not allowed. For the `/openapi` endpoints, the status code is always 200.",
             "schema": {
@@ -348,6 +403,12 @@
               "$ref": "#/definitions/checkPermissionResult"
             }
           },
+          "400": {
+            "description": "errorGeneric",
+            "schema": {
+              "$ref": "#/definitions/errorGeneric"
+            }
+          },
           "403": {
             "description": "The response of the permission check, in case it is not allowed. For the `/openapi` endpoints, the status code is always 200.",
             "schema": {
@@ -379,6 +440,12 @@
             "description": "The response of the permission check, in case it is allowed. For the `/openapi` endpoints, the status code is always 200.",
             "schema": {
               "$ref": "#/definitions/checkPermissionResult"
+            }
+          },
+          "400": {
+            "description": "errorGeneric",
+            "schema": {
+              "$ref": "#/definitions/errorGeneric"
             }
           },
           "403": {
@@ -460,6 +527,12 @@
               "$ref": "#/definitions/checkPermissionResult"
             }
           },
+          "400": {
+            "description": "errorGeneric",
+            "schema": {
+              "$ref": "#/definitions/errorGeneric"
+            }
+          },
           "403": {
             "description": "The response of the permission check, in case it is not allowed. For the `/openapi` endpoints, the status code is always 200.",
             "schema": {
@@ -491,6 +564,12 @@
             "description": "The response of the permission check, in case it is allowed. For the `/openapi` endpoints, the status code is always 200.",
             "schema": {
               "$ref": "#/definitions/expandedPermissionTree"
+            }
+          },
+          "400": {
+            "description": "errorGeneric",
+            "schema": {
+              "$ref": "#/definitions/errorGeneric"
             }
           }
         },
@@ -539,6 +618,12 @@
             "description": "The version of the instance.",
             "schema": {
               "$ref": "#/definitions/ory.keto.relation_tuples.v1alpha2.GetVersionResponse"
+            }
+          },
+          "400": {
+            "description": "errorGeneric",
+            "schema": {
+              "$ref": "#/definitions/errorGeneric"
             }
           }
         },
@@ -664,6 +749,70 @@
     "ory.keto.relation_tuples.v1alpha2.DeleteRelationTuplesResponse": {
       "type": "object"
     },
+    "errorGeneric": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "$ref": "#/definitions/errorGeneric.Error"
+        }
+      },
+      "description": "The standard Ory JSON API error format.",
+      "title": "JSON API Error Response",
+      "required": ["error"]
+    },
+    "errorGeneric.Error": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string",
+          "format": "int64",
+          "example": 404,
+          "title": "The status code"
+        },
+        "debug": {
+          "type": "string",
+          "description": "Debug information is often not exposed to protect against leaking sensitive information.",
+          "title": "Debug information"
+        },
+        "details": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "Further details about the error.",
+          "title": "Further error details"
+        },
+        "id": {
+          "type": "string",
+          "description": "The error ID is useful when trying to identify various errors in application logic.",
+          "title": "The error ID"
+        },
+        "message": {
+          "type": "string",
+          "example": "The requested resource could not be found.",
+          "description": "The error's message (required).",
+          "title": "The error message"
+        },
+        "reason": {
+          "type": "string",
+          "description": "Reason holds a human-readable reason for the error.",
+          "title": "The error reason"
+        },
+        "request": {
+          "type": "string",
+          "example": "d7ef54b1-ec15-46e6-bccb-524b82c035e6",
+          "description": "The request ID is often exposed internally in order to trace\nerrors across service architectures. This is often a UUID.",
+          "title": "The request ID"
+        },
+        "status": {
+          "type": "string",
+          "example": "Not Found",
+          "description": "Status holds the human-readable HTTP status code.",
+          "title": "The status description"
+        }
+      },
+      "required": ["message"]
+    },
     "ory.keto.relation_tuples.v1alpha2.ExpandResponse": {
       "type": "object",
       "properties": {
@@ -732,7 +881,8 @@
         "computed_subject_set",
         "not"
       ],
-      "default": "unspecified"
+      "default": "unspecified",
+      "description": " - union: This node expands to a union of all children.\n - exclusion: Not implemented yet.\n - intersection: Not implemented yet.\n - leaf: This node is a leaf and contains no children.\nIts subject is a `SubjectID` unless `max_depth` was reached.\n - tuple_to_subject_set: This node is a leaf and contains no children.\nIts subject is a `SubjectID` unless `max_depth` was reached.\n - computed_subject_set: This node is a leaf and contains no children.\nIts subject is a `SubjectID` unless `max_depth` was reached.\n - not: This node is a leaf and contains no children.\nIts subject is a `SubjectID` unless `max_depth` was reached."
     },
     "relationship": {
       "type": "object",
@@ -773,7 +923,8 @@
           "description": "The target RelationTuple."
         }
       },
-      "description": "Write-delta for a TransactRelationTuplesRequest."
+      "description": "Write-delta for a TransactRelationTuplesRequest.",
+      "required": ["action", "relation_tuple"]
     },
     "relationshipDelta.Action": {
       "type": "string",

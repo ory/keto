@@ -12,6 +12,7 @@ import (
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/pkg/errors"
+	"google.golang.org/grpc/metadata"
 
 	"github.com/ory/herodot"
 
@@ -67,7 +68,7 @@ func (h *Handler) RegisterReadGRPCGateway(ctx context.Context, mux *runtime.Serv
 	return rts.RegisterCheckServiceHandlerFromEndpoint(ctx, mux, endpoint, opts)
 }
 func (h *Handler) RegisterReadGRPCGatewayConn(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
-	return rts.RegisterReadServiceHandler(ctx, mux, conn)
+	return rts.RegisterCheckServiceHandler(ctx, mux, conn)
 }
 
 // Check Permission Result
@@ -305,31 +306,38 @@ func (h *Handler) postCheck(ctx context.Context, body io.Reader, query url.Value
 	return h.d.PermissionEngine().CheckIsMember(ctx, t[0], maxDepth)
 }
 
-func (h *Handler) Check(ctx context.Context, req *rts.CheckRequest) (*rts.CheckResponse, error) {
-	var src ketoapi.TupleData
-	if req.Tuple != nil {
-		src = req.Tuple
-	} else {
-		src = req
+func (h *Handler) Check(ctx context.Context, req *rts.CheckRequest) (res *rts.CheckResponse, err error) {
+	tuple := (&ketoapi.RelationTuple{}).FromCheckRequest(req)
+
+	// Check if we should set the HTTP status code to 403 instead of 200 if the check fails.
+	if md, ok := metadata.FromIncomingContext(ctx); ok {
+		path := md["path"]
+		if len(path) > 0 && path[0] == RouteBase {
+			defer func() {
+				if res != nil && !res.Allowed {
+					_ = grpc.SetHeader(ctx, metadata.Pairs("x-http-code", "403"))
+				}
+			}()
+		}
 	}
 
-	tuple, err := (&ketoapi.RelationTuple{}).FromDataProvider(src)
-	if err != nil {
-		return nil, err
+	if tuple.SubjectID == nil && tuple.SubjectSet == nil {
+		return nil, ketoapi.ErrNilSubject
 	}
 
 	internalTuple, err := h.d.ReadOnlyMapper().FromTuple(ctx, tuple)
+	if errors.Is(err, herodot.ErrNotFound) {
+		res = &rts.CheckResponse{Allowed: false}
+		return res, nil
+	}
 	if err != nil {
 		return nil, err
 	}
 	allowed, err := h.d.PermissionEngine().CheckIsMember(ctx, internalTuple[0], int(req.MaxDepth))
-	// TODO add content change handling
 	if err != nil {
 		return nil, err
 	}
 
-	return &rts.CheckResponse{
-		Allowed:   allowed,
-		Snaptoken: "not yet implemented",
-	}, nil
+	res = &rts.CheckResponse{Allowed: allowed}
+	return res, nil
 }

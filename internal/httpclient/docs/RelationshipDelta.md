@@ -4,14 +4,14 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Action** | Pointer to [**RelationshipDeltaAction**](RelationshipDeltaAction.md) |  | [optional] [default to RELATIONSHIPDELTAACTION_ACTION_UNSPECIFIED]
-**RelationTuple** | Pointer to [**Relationship**](Relationship.md) |  | [optional] 
+**Action** | [**RelationshipDeltaAction**](RelationshipDeltaAction.md) |  | [default to RELATIONSHIPDELTAACTION_ACTION_UNSPECIFIED]
+**RelationTuple** | [**Relationship**](Relationship.md) |  | 
 
 ## Methods
 
 ### NewRelationshipDelta
 
-`func NewRelationshipDelta() *RelationshipDelta`
+`func NewRelationshipDelta(action RelationshipDeltaAction, relationTuple Relationship, ) *RelationshipDelta`
 
 NewRelationshipDelta instantiates a new RelationshipDelta object
 This constructor will assign default values to properties that have it defined,
@@ -45,11 +45,6 @@ and a boolean to check if the value has been set.
 
 SetAction sets Action field to given value.
 
-### HasAction
-
-`func (o *RelationshipDelta) HasAction() bool`
-
-HasAction returns a boolean if a field has been set.
 
 ### GetRelationTuple
 
@@ -70,11 +65,6 @@ and a boolean to check if the value has been set.
 
 SetRelationTuple sets RelationTuple field to given value.
 
-### HasRelationTuple
-
-`func (o *RelationshipDelta) HasRelationTuple() bool`
-
-HasRelationTuple returns a boolean if a field has been set.
 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

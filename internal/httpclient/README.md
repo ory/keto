@@ -100,6 +100,8 @@ Class | Method | HTTP request | Description
  - [CheckOplSyntaxResult](docs/CheckOplSyntaxResult.md)
  - [CheckPermissionResult](docs/CheckPermissionResult.md)
  - [CreateRelationshipBody](docs/CreateRelationshipBody.md)
+ - [ErrorGeneric](docs/ErrorGeneric.md)
+ - [ErrorGenericError](docs/ErrorGenericError.md)
  - [ExpandedPermissionTree](docs/ExpandedPermissionTree.md)
  - [InlineResponse200](docs/InlineResponse200.md)
  - [InlineResponse2001](docs/InlineResponse2001.md)

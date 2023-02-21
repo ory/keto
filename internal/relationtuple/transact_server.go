@@ -25,7 +25,7 @@ var _ rts.WriteServiceServer = (*handler)(nil)
 func protoTuplesWithAction(deltas []*rts.RelationTupleDelta, action rts.RelationTupleDelta_Action) (filtered []*ketoapi.RelationTuple, err error) {
 	for _, d := range deltas {
 		if d.Action == action {
-			it, err := (&ketoapi.RelationTuple{}).FromDataProvider(&openAPITupleWrapper{d.RelationTuple})
+			it, err := (&ketoapi.RelationTuple{}).FromDataProvider(&ketoapi.OpenAPITupleData{d.RelationTuple})
 			if err != nil {
 				return nil, err
 			}
@@ -37,6 +37,10 @@ func protoTuplesWithAction(deltas []*rts.RelationTupleDelta, action rts.Relation
 
 func (h *handler) TransactRelationTuples(ctx context.Context, req *rts.TransactRelationTuplesRequest) (*rts.TransactRelationTuplesResponse, error) {
 	events.Add(ctx, h.d, events.RelationtuplesChanged)
+
+	if err := req.ValidateAll(); err != nil {
+		return nil, herodot.ErrBadRequest.WithWrap(err).WithReason(err.Error())
+	}
 
 	insertTuples, err := protoTuplesWithAction(req.RelationTupleDeltas, rts.RelationTupleDelta_ACTION_INSERT)
 	if err != nil {
@@ -68,37 +72,11 @@ func (h *handler) TransactRelationTuples(ctx context.Context, req *rts.TransactR
 	}, nil
 }
 
-type openAPITupleWrapper struct {
-	wrapped interface {
-		GetObject() string
-		GetRelation() string
-		GetNamespace() string
-		GetSubjectSet() *rts.SubjectSet
-		GetSubjectId() string
-	}
-}
-
-func (q *openAPITupleWrapper) GetObject() string    { return q.wrapped.GetObject() }
-func (q *openAPITupleWrapper) GetNamespace() string { return q.wrapped.GetNamespace() }
-func (q *openAPITupleWrapper) GetRelation() string  { return q.wrapped.GetRelation() }
-func (q *openAPITupleWrapper) GetSubject() *rts.Subject {
-	if sub, ok := q.wrapped.(interface{ GetSubject() *rts.Subject }); ok && sub.GetSubject() != nil {
-		return sub.GetSubject()
-	}
-	if set := q.wrapped.GetSubjectSet(); set != nil {
-		return rts.NewSubjectSet(set.Namespace, set.Object, set.Relation)
-	}
-	if sID := q.wrapped.GetSubjectId(); sID != "" {
-		return rts.NewSubjectID(q.wrapped.GetSubjectId())
-	}
-	return nil
-}
-
 func (h *handler) CreateRelationTuple(ctx context.Context, request *rts.CreateRelationTupleRequest) (*rts.CreateRelationTupleResponse, error) {
 	if request.RelationTuple == nil {
 		return nil, errors.WithStack(herodot.ErrBadRequest.WithReason("invalid request: missing relation_tuple"))
 	}
-	tuple, err := (&ketoapi.RelationTuple{}).FromDataProvider(&openAPITupleWrapper{request.RelationTuple})
+	tuple, err := (&ketoapi.RelationTuple{}).FromDataProvider(&ketoapi.OpenAPITupleData{request.RelationTuple})
 	if err != nil {
 		return nil, err
 	}

@@ -12,13 +12,14 @@ require (
 	github.com/gobuffalo/pop/v6 v6.1.1
 	github.com/gofrs/uuid v4.4.0+incompatible
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
+	github.com/grpc-ecosystem/grpc-gateway/v2 v2.15.0
 	github.com/julienschmidt/httprouter v1.3.0
 	github.com/luna-duclos/instrumentedsql v1.1.3
 	github.com/ory/analytics-go/v4 v4.0.3
 	github.com/ory/graceful v0.1.3
-	github.com/ory/herodot v0.9.13
+	github.com/ory/herodot v0.9.14-0.20230221151357-8771415caa58
 	github.com/ory/jsonschema/v3 v3.0.7
-	github.com/ory/keto/proto v0.10.0-alpha.0
+	github.com/ory/keto/proto v0.10.0-alpha.0.pre.1
 	github.com/ory/x v0.0.534
 	github.com/pelletier/go-toml v1.9.5
 	github.com/phayes/freeport v0.0.0-20220201140144-74d24b5ae9f5
@@ -41,6 +42,7 @@ require (
 	golang.org/x/exp v0.0.0-20230131160201-f062dba9d201
 	golang.org/x/oauth2 v0.5.0
 	golang.org/x/sync v0.1.0
+	google.golang.org/genproto v0.0.0-20230131230820-1c016267d619
 	google.golang.org/grpc v1.53.0
 	google.golang.org/protobuf v1.28.1
 )
@@ -68,6 +70,7 @@ require (
 	github.com/docker/go-connections v0.4.0 // indirect
 	github.com/docker/go-units v0.5.0 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
+	github.com/envoyproxy/protoc-gen-validate v0.9.1 // indirect
 	github.com/evanphx/json-patch v5.6.0+incompatible // indirect
 	github.com/fatih/color v1.14.1 // indirect
 	github.com/fatih/structs v1.1.0 // indirect
@@ -96,7 +99,6 @@ require (
 	github.com/google/shlex v0.0.0-20191202100458-e7afc7fbc510 // indirect
 	github.com/gorilla/css v1.0.0 // indirect
 	github.com/gorilla/websocket v1.5.0 // indirect
-	github.com/grpc-ecosystem/grpc-gateway/v2 v2.15.0 // indirect
 	github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
 	github.com/hashicorp/go-hclog v1.4.0 // indirect
 	github.com/hashicorp/go-retryablehttp v0.7.2 // indirect
@@ -181,7 +183,6 @@ require (
 	golang.org/x/tools v0.5.0 // indirect
 	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
-	google.golang.org/genproto v0.0.0-20230131230820-1c016267d619 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect

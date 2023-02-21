@@ -11,6 +11,8 @@ configuration.go
 docs/CheckOplSyntaxResult.md
 docs/CheckPermissionResult.md
 docs/CreateRelationshipBody.md
+docs/ErrorGeneric.md
+docs/ErrorGenericError.md
 docs/ExpandedPermissionTree.md
 docs/InlineResponse200.md
 docs/InlineResponse2001.md
@@ -40,6 +42,8 @@ go.sum
 model_check_opl_syntax_result.go
 model_check_permission_result.go
 model_create_relationship_body.go
+model_error_generic.go
+model_error_generic_error.go
 model_expanded_permission_tree.go
 model_inline_response_200.go
 model_inline_response_200_1.go

@@ -7,7 +7,6 @@ import (
 	"context"
 	"io"
 	"net/http"
-	"net/http/httptest"
 	"net/url"
 	"testing"
 
@@ -17,7 +16,6 @@ import (
 
 	"github.com/ory/keto/internal/driver/config"
 
-	"github.com/julienschmidt/httprouter"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/tidwall/gjson"
@@ -60,19 +58,15 @@ func openAPIAssertDenied(t *testing.T, resp *http.Response) {
 }
 
 func TestRESTHandler(t *testing.T) {
-	nspaces := []*namespace.Namespace{{
-		Name: "check handler",
-	}}
+	nspaces := []*namespace.Namespace{{Name: "check handler"}}
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 	reg := driver.NewSqliteTestRegistry(t, false)
 	require.NoError(t, reg.Config(ctx).Set(config.KeyNamespaces, nspaces))
-	h := check.NewHandler(reg)
-	r := httprouter.New()
-	h.RegisterReadRoutes(&x.ReadRouter{Router: r})
-	ts := httptest.NewServer(r)
-	defer ts.Close()
+
+	endpoints := x.NewTestEndpoints(t, check.NewHandler(reg))
+	ts := endpoints.HTTP
 
 	for _, suite := range []struct {
 		name         string

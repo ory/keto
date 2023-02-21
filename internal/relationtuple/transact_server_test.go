@@ -457,7 +457,7 @@ func TestWriteHandlers(t *testing.T) {
 			defer resp.Body.Close()
 			errContent, err := io.ReadAll(resp.Body)
 			require.NoError(t, err)
-			assert.Contains(t, string(errContent), "subject is not allowed to be nil")
+			assert.Contains(t, string(errContent), "RelationTuple: value is required")
 		})
 
 		t.Run("case=unknown action", func(t *testing.T) {

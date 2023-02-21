@@ -124,19 +124,27 @@ func (h *handler) getExpand(w http.ResponseWriter, r *http.Request, _ httprouter
 func (h *handler) Expand(ctx context.Context, req *rts.ExpandRequest) (*rts.ExpandResponse, error) {
 	var subSet *ketoapi.SubjectSet
 
-	switch sub := req.Subject.Ref.(type) {
-	case *rts.Subject_Id:
-		return &rts.ExpandResponse{
-			Tree: &rts.SubjectTree{
-				NodeType: rts.NodeType_NODE_TYPE_LEAF,
-				Subject:  rts.NewSubjectID(sub.Id),
-			},
-		}, nil
-	case *rts.Subject_Set:
+	if req.Subject == nil {
 		subSet = &ketoapi.SubjectSet{
-			Namespace: sub.Set.Namespace,
-			Object:    sub.Set.Object,
-			Relation:  sub.Set.Relation,
+			Namespace: req.Namespace,
+			Object:    req.Object,
+			Relation:  req.Relation,
+		}
+	} else {
+		switch sub := req.Subject.Ref.(type) {
+		case *rts.Subject_Id:
+			return &rts.ExpandResponse{
+				Tree: &rts.SubjectTree{
+					NodeType: rts.NodeType_NODE_TYPE_LEAF,
+					Subject:  rts.NewSubjectID(sub.Id),
+				},
+			}, nil
+		case *rts.Subject_Set:
+			subSet = &ketoapi.SubjectSet{
+				Namespace: sub.Set.Namespace,
+				Object:    sub.Set.Object,
+				Relation:  sub.Set.Relation,
+			}
 		}
 	}
 
