@@ -4,14 +4,17 @@
 package driver
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
+	prometheus "github.com/ory/x/prometheusx"
 	"github.com/phayes/freeport"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -20,12 +23,6 @@ import (
 	"google.golang.org/grpc/status"
 
 	"github.com/ory/keto/internal/driver/config"
-
-	"context"
-
-	prometheus "github.com/ory/x/prometheusx"
-	"github.com/stretchr/testify/require"
-
 	"github.com/ory/keto/internal/x/dbx"
 )
 
@@ -70,7 +67,10 @@ func TestPanicRecovery(t *testing.T) {
 	doneShutdown := make(chan struct{})
 	eg.Go(r.serveWrite(ctx, doneShutdown))
 
-	conn, err := grpc.DialContext(ctx, fmt.Sprintf("127.0.0.1:%d", port), grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.DialContext(ctx, fmt.Sprintf("127.0.0.1:%d", port),
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+		grpc.WithBlock(),
+	)
 	require.NoError(t, err)
 	defer conn.Close()
 
