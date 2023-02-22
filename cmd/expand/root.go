@@ -6,6 +6,8 @@ package expand
 import (
 	"fmt"
 
+	"google.golang.org/protobuf/encoding/protojson"
+
 	"github.com/ory/keto/ketoapi"
 
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
@@ -53,7 +55,7 @@ func NewExpandCmd() *cobra.Command {
 				tree = ketoapi.TreeFromProto[*ketoapi.RelationTuple](resp.Tree)
 			}
 
-			cmdx.PrintJSONAble(cmd, tree)
+			cmdx.PrintJSONAble(cmd, &pbJSONValue{resp})
 			switch flagx.MustGetString(cmd, cmdx.FlagFormat) {
 			case string(cmdx.FormatDefault), "":
 				if tree == nil && !flagx.MustGetBool(cmd, cmdx.FlagQuiet) {
@@ -75,4 +77,18 @@ func NewExpandCmd() *cobra.Command {
 
 func RegisterCommandsRecursive(parent *cobra.Command) {
 	parent.AddCommand(NewExpandCmd())
+}
+
+type pbJSONValue struct{ *rts.ExpandResponse }
+
+func (v *pbJSONValue) MarshalJSON() ([]byte, error) {
+	marshaler := &protojson.MarshalOptions{EmitUnpopulated: true}
+	return marshaler.Marshal(v.Tree)
+}
+func (v *pbJSONValue) String() string {
+	var tree *ketoapi.Tree[*ketoapi.RelationTuple]
+	if v.Tree != nil {
+		tree = ketoapi.TreeFromProto[*ketoapi.RelationTuple](v.Tree)
+	}
+	return tree.String()
 }

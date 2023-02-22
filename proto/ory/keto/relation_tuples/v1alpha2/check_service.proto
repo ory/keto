@@ -4,8 +4,8 @@ package ory.keto.relation_tuples.v1alpha2;
 
 import "google/api/annotations.proto";
 import "google/api/visibility.proto";
-import "protoc-gen-openapiv2/options/annotations.proto";
 import "ory/keto/relation_tuples/v1alpha2/relation_tuples.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
 
 option csharp_namespace = "Ory.Keto.RelationTuples.v1alpha2";
 option go_package = "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2;rts";
@@ -23,9 +23,7 @@ service CheckService {
   rpc Check(CheckRequest) returns (CheckResponse) {
     option (google.api.http) = {
       get: "/relation-tuples/check"
-      additional_bindings: {
-        get: "/relation-tuples/check/openapi"
-      }
+      additional_bindings: {get: "/relation-tuples/check/openapi"}
       additional_bindings: {
         post: "/relation-tuples/check"
         body: "*"
@@ -44,9 +42,7 @@ service CheckService {
         value: {
           description: "The response of the permission check, in case it is allowed. For the `/openapi` endpoints, the status code is always 200."
           schema: {
-            json_schema: {
-              ref: ".ory.keto.relation_tuples.v1alpha2.CheckResponse";
-            }
+            json_schema: {ref: ".ory.keto.relation_tuples.v1alpha2.CheckResponse"}
           }
         }
       }
@@ -55,9 +51,7 @@ service CheckService {
         value: {
           description: "The response of the permission check, in case it is not allowed. For the `/openapi` endpoints, the status code is always 200."
           schema: {
-            json_schema: {
-              ref: ".ory.keto.relation_tuples.v1alpha2.CheckResponse";
-            }
+            json_schema: {ref: ".ory.keto.relation_tuples.v1alpha2.CheckResponse"}
           }
         }
       }
@@ -80,14 +74,23 @@ message CheckRequest {
   // The relation between the Object and the Subject.
   string relation = 3 [deprecated = true];
   // The related subject in this check.
-  Subject subject = 4 [deprecated = true, (google.api.field_visibility).restriction = "NO_SWAGGER"];
+  Subject subject = 4 [
+    deprecated = true,
+    (google.api.field_visibility).restriction = "NO_SWAGGER"
+  ];
 
   oneof rest_api_subject {
     // A concrete id of the subject.
-    string subject_id = 9 [deprecated = true, json_name="subject_id"];
+    string subject_id = 9 [
+      deprecated = true,
+      json_name = "subject_id"
+    ];
     // A subject set that expands to more Subjects.
     // More information are available under [concepts](../concepts/subjects.mdx).
-    SubjectSetQuery subject_set = 10 [deprecated = true, json_name="subject_set"];
+    SubjectSetQuery subject_set = 10 [
+      deprecated = true,
+      json_name = "subject_set"
+    ];
   }
 
   RelationTuple tuple = 8 [(google.api.field_visibility).restriction = "NO_SWAGGER"];
@@ -133,7 +136,7 @@ message CheckRequest {
   //
   // If the value is less than 1 or greater than the global
   // max-depth then the global max-depth will be used instead.
-  int32 max_depth = 7 [json_name="max-depth"];
+  int32 max_depth = 7 [json_name = "max-depth"];
 }
 
 // The response for a CheckService.Check rpc.

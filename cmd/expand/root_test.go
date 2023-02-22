@@ -25,7 +25,7 @@ func TestExpandCommand(t *testing.T) {
 				"--"+cmdx.FlagFormat, string(cmdx.FormatJSON),
 				"--insecure-skip-hostname-verification=true",
 			)
-			assert.Equal(t, "null\n", stdOut)
+			assert.Equal(t, "{\"type\":\"unspecified\",\"subject\":null,\"tuple\":null,\"children\":[]}\n", stdOut)
 		})
 
 		t.Run("format=default", func(t *testing.T) {

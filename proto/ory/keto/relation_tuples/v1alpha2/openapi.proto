@@ -2,16 +2,15 @@ syntax = "proto3";
 
 package ory.keto.relation_tuples.v1alpha2;
 
-import "protoc-gen-openapiv2/options/annotations.proto";
 import "google/api/field_behavior.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
 
-option go_package = "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2;rts";
 option csharp_namespace = "Ory.Keto.RelationTuples.v1alpha2";
+option go_package = "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2;rts";
 option java_multiple_files = true;
 option java_outer_classname = "OpenapiProto";
 option java_package = "sh.ory.keto.relation_tuples.v1alpha2";
 option php_namespace = "Ory\\Keto\\RelationTuples\\v1alpha2";
-
 option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
   info: {
     title: "ORY Keto";
@@ -28,7 +27,10 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
     version: "Latest";
   };
   base_path: "/";
-  schemes: [HTTP, HTTPS];
+  schemes: [
+    HTTP,
+    HTTPS
+  ];
   consumes: ["application/json"];
   produces: ["application/json"];
   responses: {
@@ -36,9 +38,7 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
     value: {
       description: "errorGeneric";
       schema: {
-        json_schema: {
-          ref: ".ory.keto.relation_tuples.v1alpha2.ErrorResponse"
-        }
+        json_schema: {ref: ".ory.keto.relation_tuples.v1alpha2.ErrorResponse"}
       }
     };
   };
@@ -50,9 +50,7 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
 message ErrorResponse {
   message Error {
     // The status code
-    int64 code = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
-      example: "404";
-    }];
+    int64 code = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {example: "404"}];
 
     // Debug information
     //
@@ -62,7 +60,7 @@ message ErrorResponse {
     // Further error details
     //
     // Further details about the error.
-    map<string,string> details = 3;
+    map<string, string> details = 3;
 
     // The error ID
     //
@@ -72,9 +70,10 @@ message ErrorResponse {
     // The error message
     //
     // The error's message (required).
-    string message = 5 [(google.api.field_behavior) = REQUIRED, (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
-      example: "\"The requested resource could not be found.\"";
-    }];
+    string message = 5 [
+      (google.api.field_behavior) = REQUIRED,
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {example: "\"The requested resource could not be found.\""}
+    ];
 
     // The error reason
     //
@@ -85,16 +84,12 @@ message ErrorResponse {
     //
     // The request ID is often exposed internally in order to trace
     // errors across service architectures. This is often a UUID.
-    string request = 7 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
-      example: "\"d7ef54b1-ec15-46e6-bccb-524b82c035e6\"";
-    }];
+    string request = 7 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {example: "\"d7ef54b1-ec15-46e6-bccb-524b82c035e6\""}];
 
     // The status description
     //
     // Status holds the human-readable HTTP status code.
-    string status = 8 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
-      example: "\"Not Found\"";
-    }];
+    string status = 8 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {example: "\"Not Found\""}];
   }
 
   Error error = 1 [(google.api.field_behavior) = REQUIRED];

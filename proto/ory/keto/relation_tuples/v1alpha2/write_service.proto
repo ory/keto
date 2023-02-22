@@ -3,15 +3,14 @@ syntax = "proto3";
 package ory.keto.relation_tuples.v1alpha2;
 
 import "google/api/annotations.proto";
-import "google/api/visibility.proto";
 import "google/api/field_behavior.proto";
-import "protoc-gen-openapiv2/options/annotations.proto";
+import "google/api/visibility.proto";
 import "ory/keto/relation_tuples/v1alpha2/relation_tuples.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
 import "validate/validate.proto";
 
-
-option go_package = "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2;rts";
 option csharp_namespace = "Ory.Keto.RelationTuples.v1alpha2";
+option go_package = "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2;rts";
 option java_multiple_files = true;
 option java_outer_classname = "WriteServiceProto";
 option java_package = "sh.ory.keto.relation_tuples.v1alpha2";
@@ -41,7 +40,7 @@ service WriteService {
         }
       }
     };
-  };
+  }
 
   // Creates a relationship
   rpc CreateRelationTuple(CreateRelationTupleRequest) returns (CreateRelationTupleResponse) {
@@ -58,32 +57,26 @@ service WriteService {
         value: {
           description: "The created relationship."
           schema: {
-            json_schema: {
-              ref: ".ory.keto.relation_tuples.v1alpha2.RelationTuple";
-            }
+            json_schema: {ref: ".ory.keto.relation_tuples.v1alpha2.RelationTuple"}
           }
         }
       }
     };
-  };
+  }
 
   // Deletes relationships based on relation query
   rpc DeleteRelationTuples(DeleteRelationTuplesRequest) returns (DeleteRelationTuplesResponse) {
-    option (google.api.http) = {
-      delete: "/admin/relation-tuples"
-    };
+    option (google.api.http) = {delete: "/admin/relation-tuples"};
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       consumes: "application/x-www-form-urlencoded";
       tags: "relationship";
       operation_id: "deleteRelationships";
       responses: {
         key: "204"
-        value: {
-          description: "An empty response."
-        }
+        value: {description: "An empty response."}
       }
     };
-  };
+  }
 }
 
 // The request of a WriteService.TransactRelationTuples RPC.
@@ -122,7 +115,12 @@ message RelationTupleDelta {
   // The action to do on the RelationTuple.
   Action action = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (validate.rules).enum = {in: [1, 2]}
+    (validate.rules).enum = {
+      in: [
+        1,
+        2
+      ]
+    }
   ];
 
   // The target RelationTuple.
@@ -162,10 +160,10 @@ message CreateRelationTupleRequest {
 
     oneof subject {
       // A concrete id of the subject.
-      string subject_id = 5 [json_name="subject_id"];
+      string subject_id = 5 [json_name = "subject_id"];
       // A subject set that expands to more Subjects.
       // More information are available under [concepts](../concepts/subjects.mdx).
-      SubjectSet subject_set = 6 [json_name="subject_set"];
+      SubjectSet subject_set = 6 [json_name = "subject_set"];
     }
   }
   // The relationship to create.
@@ -191,30 +189,36 @@ message DeleteRelationTuplesRequest {
     Subject subject = 4;
   }
 
-  Query query = 1 [deprecated=true, (google.api.field_visibility).restriction="NO_SWAGGER"];
+  Query query = 1 [
+    deprecated = true,
+    (google.api.field_visibility).restriction = "NO_SWAGGER"
+  ];
 
-  RelationQuery relation_query = 2 [(google.api.field_visibility).restriction="NO_SWAGGER"];
+  RelationQuery relation_query = 2 [(google.api.field_visibility).restriction = "NO_SWAGGER"];
 
-    // The namespace this relation tuple lives in.
-  string namespace = 3 [deprecated=true];
+  // The namespace this relation tuple lives in.
+  string namespace = 3 [deprecated = true];
 
   // The object related by this tuple.
   // It is an object in the namespace of the tuple.
-  string object = 4 [deprecated=true];
+  string object = 4 [deprecated = true];
 
   // The relation between an Object and a Subject.
-  string relation = 5 [deprecated=true];
+  string relation = 5 [deprecated = true];
 
   oneof rest_api_subject {
     // A concrete id of the subject.
-    string subject_id = 6 [deprecated=true, json_name="subject_id"];
+    string subject_id = 6 [
+      deprecated = true,
+      json_name = "subject_id"
+    ];
     // A subject set that expands to more Subjects.
     // More information are available under [concepts](../concepts/subjects.mdx).
-    SubjectSetQuery subject_set = 7 [deprecated=true, json_name="subject_set"];
+    SubjectSetQuery subject_set = 7 [
+      deprecated = true,
+      json_name = "subject_set"
+    ];
   }
-
 }
 
-message DeleteRelationTuplesResponse {
-
-}
+message DeleteRelationTuplesResponse {}

@@ -23,14 +23,14 @@ var global =
 
 var google_api_annotations_pb = require('../../../../google/api/annotations_pb.js');
 goog.object.extend(proto, google_api_annotations_pb);
-var google_api_visibility_pb = require('../../../../google/api/visibility_pb.js');
-goog.object.extend(proto, google_api_visibility_pb);
 var google_api_field_behavior_pb = require('../../../../google/api/field_behavior_pb.js');
 goog.object.extend(proto, google_api_field_behavior_pb);
-var protoc$gen$openapiv2_options_annotations_pb = require('../../../../protoc-gen-openapiv2/options/annotations_pb.js');
-goog.object.extend(proto, protoc$gen$openapiv2_options_annotations_pb);
+var google_api_visibility_pb = require('../../../../google/api/visibility_pb.js');
+goog.object.extend(proto, google_api_visibility_pb);
 var ory_keto_relation_tuples_v1alpha2_relation_tuples_pb = require('../../../../ory/keto/relation_tuples/v1alpha2/relation_tuples_pb.js');
 goog.object.extend(proto, ory_keto_relation_tuples_v1alpha2_relation_tuples_pb);
+var protoc$gen$openapiv2_options_annotations_pb = require('../../../../protoc-gen-openapiv2/options/annotations_pb.js');
+goog.object.extend(proto, protoc$gen$openapiv2_options_annotations_pb);
 goog.exportSymbol('proto.ory.keto.relation_tuples.v1alpha2.ExpandRequest', null, global);
 goog.exportSymbol('proto.ory.keto.relation_tuples.v1alpha2.ExpandResponse', null, global);
 goog.exportSymbol('proto.ory.keto.relation_tuples.v1alpha2.NodeType', null, global);

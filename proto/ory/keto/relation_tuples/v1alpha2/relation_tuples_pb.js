@@ -21,10 +21,10 @@ var global =
     (function () { return this; }).call(null) ||
     Function('return this')();
 
-var google_api_visibility_pb = require('../../../../google/api/visibility_pb.js');
-goog.object.extend(proto, google_api_visibility_pb);
 var google_api_field_behavior_pb = require('../../../../google/api/field_behavior_pb.js');
 goog.object.extend(proto, google_api_field_behavior_pb);
+var google_api_visibility_pb = require('../../../../google/api/visibility_pb.js');
+goog.object.extend(proto, google_api_visibility_pb);
 goog.exportSymbol('proto.ory.keto.relation_tuples.v1alpha2.RelationQuery', null, global);
 goog.exportSymbol('proto.ory.keto.relation_tuples.v1alpha2.RelationTuple', null, global);
 goog.exportSymbol('proto.ory.keto.relation_tuples.v1alpha2.RelationTuple.RestApiSubjectCase', null, global);

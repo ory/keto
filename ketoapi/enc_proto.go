@@ -221,7 +221,9 @@ func (q *RelationQuery) ToProto() *rts.RelationQuery {
 func (t *Tree[NodeT]) ToProto() *rts.SubjectTree {
 	res := &rts.SubjectTree{
 		NodeType: t.Type.ToProto(),
-		Children: make([]*rts.SubjectTree, len(t.Children)),
+	}
+	if len(t.Children) > 0 {
+		res.Children = make([]*rts.SubjectTree, len(t.Children))
 	}
 	res.Tuple = t.Tuple.ToProto()
 	// nolint - fill deprecated field

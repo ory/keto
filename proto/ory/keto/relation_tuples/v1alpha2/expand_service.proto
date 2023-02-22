@@ -3,13 +3,13 @@ syntax = "proto3";
 package ory.keto.relation_tuples.v1alpha2;
 
 import "google/api/annotations.proto";
-import "google/api/visibility.proto";
 import "google/api/field_behavior.proto";
-import "protoc-gen-openapiv2/options/annotations.proto";
+import "google/api/visibility.proto";
 import "ory/keto/relation_tuples/v1alpha2/relation_tuples.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
 
-option go_package = "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2;rts";
 option csharp_namespace = "Ory.Keto.RelationTuples.v1alpha2";
+option go_package = "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2;rts";
 option java_multiple_files = true;
 option java_outer_classname = "ExpandServiceProto";
 option java_package = "sh.ory.keto.relation_tuples.v1alpha2";
@@ -35,14 +35,12 @@ service ExpandService {
         value: {
           description: "The response of the permission check, in case it is allowed. For the `/openapi` endpoints, the status code is always 200."
           schema: {
-            json_schema: {
-              ref: ".ory.keto.relation_tuples.v1alpha2.SubjectTree";
-            }
+            json_schema: {ref: ".ory.keto.relation_tuples.v1alpha2.SubjectTree"}
           }
         }
       }
     };
-  };
+  }
 }
 
 // The request for an ExpandService.Expand RPC.
@@ -82,12 +80,20 @@ message ExpandRequest {
 
   // The namespace of the object and relation
   // referenced in this subject set.
-  string namespace = 4 [deprecated = true, (google.api.field_behavior) = REQUIRED];
+  string namespace = 4 [
+    deprecated = true,
+    (google.api.field_behavior) = REQUIRED
+  ];
   // The object related by this subject set.
-  string object = 5 [deprecated = true, (google.api.field_behavior) = REQUIRED];
+  string object = 5 [
+    deprecated = true,
+    (google.api.field_behavior) = REQUIRED
+  ];
   // The relation between the object and the subjects.
-  string relation = 6 [deprecated = true, (google.api.field_behavior) = REQUIRED];
-
+  string relation = 6 [
+    deprecated = true,
+    (google.api.field_behavior) = REQUIRED
+  ];
 }
 
 // The response for a ExpandService.Expand RPC.
@@ -140,7 +146,10 @@ enum NodeType {
 
 message SubjectTree {
   // The type of the node.
-  NodeType node_type = 1 [json_name = "type", (google.api.field_behavior) = REQUIRED];
+  NodeType node_type = 1 [
+    json_name = "type",
+    (google.api.field_behavior) = REQUIRED
+  ];
 
   // The subject this node represents.
   // Deprecated: More information is now available in the tuple field.

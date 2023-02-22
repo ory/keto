@@ -5,8 +5,8 @@
 /* eslint-disable */
 
 import * as jspb from "google-protobuf";
-import * as google_api_visibility_pb from "../../../../google/api/visibility_pb";
 import * as google_api_field_behavior_pb from "../../../../google/api/field_behavior_pb";
+import * as google_api_visibility_pb from "../../../../google/api/visibility_pb";
 
 export class RelationTuple extends jspb.Message { 
     getNamespace(): string;
