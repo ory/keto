@@ -38,16 +38,6 @@ func NewHandler(d handlerDeps) *handler {
 	}
 }
 
-func (h *handler) RegisterReadRoutes(r *x.ReadRouter) {
-	r.GET(ReadRouteBase, h.getRelations)
-}
-
-func (h *handler) RegisterWriteRoutes(r *x.WriteRouter) {
-	r.PUT(WriteRouteBase, h.createRelation)
-	r.DELETE(WriteRouteBase, h.deleteRelations)
-	r.PATCH(WriteRouteBase, h.patchRelationTuples)
-}
-
 func (h *handler) RegisterReadGRPC(s *grpc.Server) {
 	rts.RegisterReadServiceServer(s, h)
 }

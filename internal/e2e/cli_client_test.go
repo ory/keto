@@ -13,10 +13,9 @@ import (
 	"time"
 
 	"github.com/ory/keto/ketoapi"
+	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 
 	"github.com/ory/herodot"
-
-	"github.com/ory/keto/internal/check"
 
 	grpcHealthV1 "google.golang.org/grpc/health/grpc_health_v1"
 
@@ -112,7 +111,7 @@ func (g *cliClient) check(t require.TestingT, r *ketoapi.RelationTuple) bool {
 		sub = r.SubjectSet.String()
 	}
 	out := g.c.ExecNoErr(t, "check", sub, r.Relation, r.Namespace, r.Object)
-	var res check.CheckPermissionResult
+	var res rts.CheckResponse
 	require.NoError(t, json.Unmarshal([]byte(out), &res))
 	return res.Allowed
 }

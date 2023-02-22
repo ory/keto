@@ -5,14 +5,11 @@ package expand
 
 import (
 	"context"
-	"net/http"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 
 	"github.com/ory/keto/ketoapi"
 
-	"github.com/julienschmidt/httprouter"
-	"github.com/ory/herodot"
 	"google.golang.org/grpc"
 
 	"github.com/ory/keto/internal/relationtuple"
@@ -35,17 +32,12 @@ type (
 
 var (
 	_ rts.ExpandServiceServer = (*handler)(nil)
-	_ *expandPermissions      = nil
 )
 
 const RouteBase = "/relation-tuples/expand"
 
 func NewHandler(d handlerDependencies) *handler {
 	return &handler{d: d}
-}
-
-func (h *handler) RegisterReadRoutes(r *x.ReadRouter) {
-	r.GET(RouteBase, h.getExpand)
 }
 
 func (h *handler) RegisterReadGRPC(s *grpc.Server) {
@@ -56,69 +48,7 @@ func (h *handler) RegisterReadGRPCGateway(ctx context.Context, mux *runtime.Serv
 	return rts.RegisterExpandServiceHandlerFromEndpoint(ctx, mux, endpoint, opts)
 }
 func (h *handler) RegisterReadGRPCGatewayConn(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
-	return rts.RegisterReadServiceHandler(ctx, mux, conn)
-}
-
-// Expand Permissions Request Parameters
-//
-// swagger:parameters expandPermissions
-type expandPermissions struct {
-	// in:query
-	MaxDepth int `json:"max-depth"`
-	// in:query
-	ketoapi.SubjectSet
-}
-
-// swagger:route GET /relation-tuples/expand permission expandPermissions
-//
-// # Expand a Relationship into permissions.
-//
-// Use this endpoint to expand a relationship tuple into permissions.
-//
-//	Consumes:
-//	-  application/x-www-form-urlencoded
-//
-//	Produces:
-//	- application/json
-//
-//	Schemes: http, https
-//
-//	Responses:
-//	  200: expandedPermissionTree
-//	  400: errorGeneric
-//	  404: errorGeneric
-//	  default: errorGeneric
-func (h *handler) getExpand(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	maxDepth, err := x.GetMaxDepthFromQuery(r.URL.Query())
-	if err != nil {
-		h.d.Writer().WriteError(w, r, herodot.ErrBadRequest.WithError(err.Error()))
-		return
-	}
-
-	subSet := (&ketoapi.SubjectSet{}).FromURLQuery(r.URL.Query())
-	internal, err := h.d.ReadOnlyMapper().FromSubjectSet(r.Context(), subSet)
-	if err != nil {
-		h.d.Writer().WriteError(w, r, err)
-		return
-	}
-
-	res, err := h.d.ExpandEngine().BuildTree(r.Context(), internal, maxDepth)
-	if err != nil {
-		h.d.Writer().WriteError(w, r, err)
-		return
-	}
-	if res == nil {
-		h.d.Writer().Write(w, r, herodot.ErrNotFound.WithError("no relation tuple found"))
-		return
-	}
-
-	tree, err := h.d.ReadOnlyMapper().ToTree(r.Context(), res)
-	if err != nil {
-		h.d.Writer().WriteError(w, r, err)
-		return
-	}
-
-	h.d.Writer().Write(w, r, tree)
+	return rts.RegisterExpandServiceHandler(ctx, mux, conn)
 }
 
 func (h *handler) Expand(ctx context.Context, req *rts.ExpandRequest) (*rts.ExpandResponse, error) {

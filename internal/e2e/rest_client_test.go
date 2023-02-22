@@ -16,6 +16,7 @@ import (
 
 	"github.com/ory/keto/internal/schema"
 	"github.com/ory/keto/ketoapi"
+	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 
 	"github.com/ory/herodot"
 	"github.com/tidwall/gjson"
@@ -134,14 +135,14 @@ func (rc *restClient) check(t require.TestingT, r *ketoapi.RelationTuple) bool {
 	q := r.ToURLQuery()
 	bodyGet, codeGet := rc.makeRequest(t, http.MethodGet, fmt.Sprintf("%s?%s", check.RouteBase, q.Encode()), "", rc.readURL)
 
-	var respGet check.CheckPermissionResult
+	var respGet rts.CheckResponse
 	require.NoError(t, json.Unmarshal([]byte(bodyGet), &respGet))
 
 	j, err := json.Marshal(r)
 	require.NoError(t, err)
 	bodyPost, codePost := rc.makeRequest(t, http.MethodPost, check.RouteBase, string(j), rc.readURL)
 
-	var respPost check.CheckPermissionResult
+	var respPost rts.CheckResponse
 	require.NoError(t, json.Unmarshal([]byte(bodyPost), &respPost))
 
 	if codeGet == http.StatusOK && codePost == http.StatusOK {
