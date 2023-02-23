@@ -113,7 +113,8 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/createRelationshipBody"
+              "$ref": "#/definitions/createRelationshipBody",
+              "required": ["relationTuple"]
             }
           }
         ],

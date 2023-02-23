@@ -13,49 +13,42 @@ import (
 	"strings"
 	"syscall"
 
+	grpcLogrus "github.com/grpc-ecosystem/go-grpc-middleware/logging/logrus"
 	grpcRecovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/credentials/insecure"
-	"google.golang.org/grpc/status"
-
-	"github.com/ory/keto/internal/namespace/namespacehandler"
-	"github.com/ory/keto/internal/schema"
-	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
-
-	prometheus "github.com/ory/x/prometheusx"
-	grpcOtel "go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
-	"go.opentelemetry.io/otel"
-
-	"github.com/ory/x/logrusx"
-
-	grpcLogrus "github.com/grpc-ecosystem/go-grpc-middleware/logging/logrus"
 	"github.com/julienschmidt/httprouter"
-	"github.com/ory/herodot"
-	"github.com/ory/x/reqlog"
-	"github.com/rs/cors"
-	"github.com/urfave/negroni"
-	grpcHealthV1 "google.golang.org/grpc/health/grpc_health_v1"
-	"google.golang.org/grpc/reflection"
-
-	"github.com/ory/keto/internal/check"
-	"github.com/ory/keto/internal/expand"
-	"github.com/ory/keto/internal/relationtuple"
-	"github.com/ory/keto/internal/x"
-
 	"github.com/ory/analytics-go/v4"
+	"github.com/ory/graceful"
+	"github.com/ory/herodot"
 	"github.com/ory/x/healthx"
+	"github.com/ory/x/logrusx"
 	"github.com/ory/x/metricsx"
 	"github.com/ory/x/otelx"
-	"github.com/spf13/cobra"
-
-	"github.com/ory/keto/internal/driver/config"
-
-	"github.com/ory/graceful"
+	prometheus "github.com/ory/x/prometheusx"
+	"github.com/ory/x/reqlog"
 	"github.com/pkg/errors"
+	"github.com/rs/cors"
 	"github.com/soheilhy/cmux"
+	"github.com/spf13/cobra"
+	"github.com/urfave/negroni"
+	grpcOtel "go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
+	"go.opentelemetry.io/otel"
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/credentials/insecure"
+	grpcHealthV1 "google.golang.org/grpc/health/grpc_health_v1"
+	"google.golang.org/grpc/reflection"
+	"google.golang.org/grpc/status"
+
+	"github.com/ory/keto/internal/check"
+	"github.com/ory/keto/internal/driver/config"
+	"github.com/ory/keto/internal/expand"
+	"github.com/ory/keto/internal/namespace/namespacehandler"
+	"github.com/ory/keto/internal/relationtuple"
+	"github.com/ory/keto/internal/schema"
+	"github.com/ory/keto/internal/x"
+	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 )
 
 func (r *RegistryDefault) enableSqa(cmd *cobra.Command) {
@@ -493,10 +486,8 @@ func (r *RegistryDefault) unaryInterceptors(ctx context.Context) []grpc.UnarySer
 		is = append(is, grpcOtel.UnaryServerInterceptor(grpcOtel.WithTracerProvider(otel.GetTracerProvider())))
 	}
 	is = append(is, r.defaultUnaryInterceptors...)
-	is = append(is,
-		herodot.UnaryErrorUnwrapInterceptor,
-		grpcLogrus.UnaryServerInterceptor(r.l.Entry),
-	)
+	is = append(is, grpcLogrus.UnaryServerInterceptor(r.l.Entry))
+	is = append(is, x.GlobalGRPCUnaryServerInterceptors...)
 	if r.sqaService != nil {
 		is = append(is, r.sqaService.UnaryInterceptor)
 	}

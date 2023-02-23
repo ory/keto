@@ -48,6 +48,7 @@ format: .bin/ory .bin/goimports node_modules
 	.bin/ory dev headers copyright --type=open-source --exclude=.bin --exclude=internal/httpclient --exclude=proto
 	.bin/goimports -w -local github.com/ory/keto *.go internal cmd contrib ketoctx ketoapi embedx
 	npm exec -- prettier --write .
+	buf format -w
 
 .PHONY: install
 install:
@@ -102,6 +103,7 @@ build:
 #
 .PHONY: buf-gen
 buf-gen: .bin/buf node_modules
+	buf format -w
 	buf generate proto
 	make format
 	@echo "All code was generated successfully!"

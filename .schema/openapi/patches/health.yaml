@@ -22,7 +22,6 @@
                 type: object
                 properties:
                   status:
-                    description: Always "ok".
                     type: string
           description: {{.ProjectHumanName}} is ready to accept connections.
         '500':

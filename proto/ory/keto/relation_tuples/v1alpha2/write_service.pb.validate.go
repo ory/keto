@@ -455,6 +455,17 @@ func (m *CreateRelationTupleRequest) validate(all bool) error {
 
 	var errors []error
 
+	if m.GetRelationTuple() == nil {
+		err := CreateRelationTupleRequestValidationError{
+			field:  "RelationTuple",
+			reason: "value is required",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
 	if all {
 		switch v := interface{}(m.GetRelationTuple()).(type) {
 		case interface{ ValidateAll() error }:

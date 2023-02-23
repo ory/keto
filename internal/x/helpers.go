@@ -12,9 +12,12 @@ import (
 
 	"github.com/gofrs/uuid"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"github.com/ory/herodot"
 	"google.golang.org/genproto/googleapis/rpc/errdetails"
+	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/proto"
 
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 )
@@ -29,7 +32,7 @@ func UUIDs(n int) []uuid.UUID {
 
 var GRPCGatewayMuxOptions = []runtime.ServeMuxOption{
 	runtime.WithForwardResponseOption(HttpResponseModifier),
-	runtime.WithMetadata(func(ctx context.Context, req *http.Request) metadata.MD {
+	runtime.WithMetadata(func(_ context.Context, req *http.Request) metadata.MD {
 		md := make(metadata.MD)
 
 		contentLength, _ := strconv.Atoi(req.Header.Get("Content-Length"))
@@ -77,4 +80,47 @@ var GRPCGatewayMuxOptions = []runtime.ServeMuxOption{
 		buf, _ := json.Marshal(&errResponse)
 		_, _ = w.Write(buf)
 	}),
+}
+
+var GlobalGRPCUnaryServerInterceptors = []grpc.UnaryServerInterceptor{
+	herodot.UnaryErrorUnwrapInterceptor,
+	validationInterceptor,
+}
+
+func HttpResponseModifier(ctx context.Context, w http.ResponseWriter, _ proto.Message) error {
+	md, ok := runtime.ServerMetadataFromContext(ctx)
+	if !ok {
+		return nil
+	}
+
+	delete(w.Header(), "Grpc-Metadata-Content-Type")
+
+	if vals := md.HeaderMD.Get("x-http-location"); len(vals) > 0 {
+		w.Header().Add("location", vals[0])
+	}
+
+	// set http status code
+	if vals := md.HeaderMD.Get("x-http-code"); len(vals) > 0 {
+		code, err := strconv.Atoi(vals[0])
+		if err != nil {
+			return err
+		}
+		// delete the headers to not expose any grpc-metadata in http response
+		delete(md.HeaderMD, "x-http-code")
+		delete(w.Header(), "Grpc-Metadata-X-Http-Code")
+		w.WriteHeader(code)
+	}
+
+	return nil
+}
+
+type validator interface{ ValidateAll() error }
+
+var validationInterceptor grpc.UnaryServerInterceptor = func(ctx context.Context, req interface{}, _ *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
+	if r, ok := req.(validator); ok {
+		if err := r.ValidateAll(); err != nil {
+			return nil, herodot.ErrBadRequest.WithWrap(err).WithReason(err.Error())
+		}
+	}
+	return handler(ctx, req)
 }

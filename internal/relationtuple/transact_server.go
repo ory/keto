@@ -21,7 +21,7 @@ var _ rts.WriteServiceServer = (*handler)(nil)
 func protoTuplesWithAction(deltas []*rts.RelationTupleDelta, action rts.RelationTupleDelta_Action) (filtered []*ketoapi.RelationTuple, err error) {
 	for _, d := range deltas {
 		if d.Action == action {
-			it, err := (&ketoapi.RelationTuple{}).FromDataProvider(&ketoapi.OpenAPITupleData{d.RelationTuple})
+			it, err := (&ketoapi.RelationTuple{}).FromDataProvider(&ketoapi.OpenAPITupleData{Wrapped: d.RelationTuple})
 			if err != nil {
 				return nil, err
 			}
@@ -33,10 +33,6 @@ func protoTuplesWithAction(deltas []*rts.RelationTupleDelta, action rts.Relation
 
 func (h *handler) TransactRelationTuples(ctx context.Context, req *rts.TransactRelationTuplesRequest) (*rts.TransactRelationTuplesResponse, error) {
 	events.Add(ctx, h.d, events.RelationtuplesChanged)
-
-	if err := req.ValidateAll(); err != nil {
-		return nil, herodot.ErrBadRequest.WithWrap(err).WithReason(err.Error())
-	}
 
 	insertTuples, err := protoTuplesWithAction(req.RelationTupleDeltas, rts.RelationTupleDelta_ACTION_INSERT)
 	if err != nil {
@@ -69,15 +65,8 @@ func (h *handler) TransactRelationTuples(ctx context.Context, req *rts.TransactR
 }
 
 func (h *handler) CreateRelationTuple(ctx context.Context, request *rts.CreateRelationTupleRequest) (*rts.CreateRelationTupleResponse, error) {
-	if request.RelationTuple == nil {
-		return nil, errors.WithStack(herodot.ErrBadRequest.WithReason("invalid request: missing relation_tuple"))
-	}
-	tuple, err := (&ketoapi.RelationTuple{}).FromDataProvider(&ketoapi.OpenAPITupleData{request.RelationTuple})
+	tuple, err := (&ketoapi.RelationTuple{}).FromDataProvider(&ketoapi.OpenAPITupleData{Wrapped: request.RelationTuple})
 	if err != nil {
-		return nil, err
-	}
-
-	if err := tuple.Validate(); err != nil {
 		return nil, err
 	}
 

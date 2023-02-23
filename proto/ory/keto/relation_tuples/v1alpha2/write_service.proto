@@ -159,6 +159,8 @@ message CreateRelationTupleRequest {
     string relation = 3;
 
     oneof subject {
+      //      option (validate.required) = true;
+
       // A concrete id of the subject.
       string subject_id = 5 [json_name = "subject_id"];
       // A subject set that expands to more Subjects.
@@ -167,7 +169,10 @@ message CreateRelationTupleRequest {
     }
   }
   // The relationship to create.
-  Relationship relation_tuple = 1;
+  Relationship relation_tuple = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (validate.rules).message.required = true
+  ];
 }
 
 // The response from creating a new relationship.

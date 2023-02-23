@@ -6,18 +6,14 @@ package x
 import (
 	"context"
 	"net"
-	"net/http"
 	"net/http/httptest"
-	"strconv"
 	"testing"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	"github.com/ory/herodot"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/test/bufconn"
-	"google.golang.org/protobuf/proto"
 )
 
 type (
@@ -39,33 +35,6 @@ type (
 	}
 )
 
-func HttpResponseModifier(ctx context.Context, w http.ResponseWriter, p proto.Message) error {
-	md, ok := runtime.ServerMetadataFromContext(ctx)
-	if !ok {
-		return nil
-	}
-
-	delete(w.Header(), "Grpc-Metadata-Content-Type")
-
-	if vals := md.HeaderMD.Get("x-http-location"); len(vals) > 0 {
-		w.Header().Add("location", vals[0])
-	}
-
-	// set http status code
-	if vals := md.HeaderMD.Get("x-http-code"); len(vals) > 0 {
-		code, err := strconv.Atoi(vals[0])
-		if err != nil {
-			return err
-		}
-		// delete the headers to not expose any grpc-metadata in http response
-		delete(md.HeaderMD, "x-http-code")
-		delete(w.Header(), "Grpc-Metadata-X-Http-Code")
-		w.WriteHeader(code)
-	}
-
-	return nil
-}
-
 func NewTestEndpoints(
 	t *testing.T,
 	handler any,
@@ -76,7 +45,7 @@ func NewTestEndpoints(
 	l := bufconn.Listen(1024 * 1024)
 	t.Cleanup(func() { _ = l.Close() })
 	s := grpc.NewServer(
-		grpc.ChainUnaryInterceptor(herodot.UnaryErrorUnwrapInterceptor),
+		grpc.ChainUnaryInterceptor(GlobalGRPCUnaryServerInterceptors...),
 	)
 
 	if h, ok := handler.(readHandler); ok {
