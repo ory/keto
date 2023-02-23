@@ -2,7 +2,7 @@
   "components": {
     "responses": {
       "emptyResponse": {
-        "description": "Empty responses are sent when, for example, resources are deleted. The HTTP status code for empty responses is typically 201."
+        "description": "Empty responses are sent when, for example, resources are deleted. The HTTP status code for empty responses is typically 204."
       }
     },
     "schemas": {
@@ -984,6 +984,7 @@
         "operationId": "postCheckPermissionOrError",
         "parameters": [
           {
+            "description": "nolint:deadcode,unused",
             "in": "query",
             "name": "max-depth",
             "schema": {
