@@ -5,7 +5,7 @@
 
 **Table of Contents**
 
-- [0.0.0 (2023-02-22)](#000-2023-02-22)
+- [0.0.0 (2023-02-23)](#000-2023-02-23)
   - [Bug Fixes](#bug-fixes)
   - [Code Refactoring](#code-refactoring)
   - [Documentation](#documentation)
@@ -142,7 +142,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.10.0-alpha.0...v0.0.0) (2023-02-22)
+# [0.0.0](https://github.com/ory/keto/compare/v0.10.0-alpha.0...v0.0.0) (2023-02-23)
 
 ### Bug Fixes
 
@@ -157,6 +157,13 @@
   Endpoints that do not mutate the database (such as list or check) now use a
   read-only version of the UUID mapper that does not write the mapping to the
   database (as all relevant mapping information is already mapped).
+
+- Docs broken links ([#1254](https://github.com/ory/keto/issues/1254))
+  ([e646380](https://github.com/ory/keto/commit/e646380d5457df99f75ecd7e26d6fe2ed33b7b49)):
+
+  - fix: docs broken links
+
+  - fix: edit proto files to fix links
 
 - More robust parser
   ([d38e006](https://github.com/ory/keto/commit/d38e006f13477f7b67ab88f03ff64ced65da7cbd))
