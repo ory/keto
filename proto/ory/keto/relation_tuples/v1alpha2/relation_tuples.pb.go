@@ -267,7 +267,7 @@ type Subject_Id struct {
 
 type Subject_Set struct {
 	// A subject set that expands to more Subjects.
-	// More information are available under [concepts](../concepts/subjects.mdx).
+	// More information are available under [concepts](../concepts/15_subjects.mdx).
 	Set *SubjectSet `protobuf:"bytes,2,opt,name=set,proto3,oneof"`
 }
 

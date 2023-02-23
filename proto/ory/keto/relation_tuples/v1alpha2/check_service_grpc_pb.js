@@ -31,7 +31,7 @@ function deserialize_ory_keto_relation_tuples_v1alpha2_CheckResponse(buffer_arg)
 // The service that performs authorization checks
 // based on the stored Access Control Lists.
 //
-// This service is part of the [read-APIs](../concepts/api-overview.mdx#read-apis).
+// This service is part of the [read-APIs](../concepts/25_api-overview.mdx#read-apis).
 var CheckServiceService = exports.CheckServiceService = {
   // Performs an authorization check.
 check: {
