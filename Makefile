@@ -44,7 +44,7 @@ authors:  # updates the AUTHORS file
 	curl https://raw.githubusercontent.com/ory/ci/master/authors/authors.sh | env PRODUCT="Ory Keto" bash
 
 .PHONY: format
-format: .bin/ory .bin/goimports node_modules
+format: .bin/buf .bin/ory .bin/goimports node_modules
 	.bin/ory dev headers copyright --type=open-source --exclude=.bin --exclude=internal/httpclient --exclude=proto
 	.bin/goimports -w -local github.com/ory/keto *.go internal cmd contrib ketoctx ketoapi embedx
 	npm exec -- prettier --write .
@@ -62,12 +62,6 @@ docker:
 .PHONY: sdk
 sdk: buf .bin/swagger .bin/ory node_modules
 	rm -rf internal/httpclient
-	# cp proto/openapiv2/gateway.swagger.json spec/swagger.json
-	#	swagger generate spec -m -o spec/swagger.json \
-	#		-c github.com/ory/keto \
-	#		-c github.com/ory/x/healthx \
-	#		-x internal/httpclient \
-	#		-x internal/e2e
 	.bin/ory dev swagger sanitize ./spec/api.swagger.json
 	sed -i -f ./.schema/openapi/patches/replacements.sed ./spec/api.swagger.json
 	swagger validate ./spec/api.swagger.json
