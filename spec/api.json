@@ -12,6 +12,12 @@
               "$ref": "#/components/schemas/ory.keto.opl.v1alpha1.ParseError"
             },
             "type": "array"
+          },
+          "parseErrors": {
+            "items": {
+              "$ref": "#/components/schemas/ory.keto.opl.v1alpha1.ParseError"
+            },
+            "type": "array"
           }
         },
         "type": "object"
@@ -554,7 +560,6 @@
                 "schema": {
                   "properties": {
                     "status": {
-                      "description": "Always \"ok\".",
                       "type": "string"
                     }
                   },

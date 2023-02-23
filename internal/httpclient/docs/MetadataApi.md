@@ -12,7 +12,7 @@ Method | HTTP request | Description
 
 ## GetVersion
 
-> InlineResponse2001 GetVersion(ctx).Execute()
+> InlineResponse2002 GetVersion(ctx).Execute()
 
 Return Running Software Version.
 
@@ -39,7 +39,7 @@ func main() {
         fmt.Fprintf(os.Stderr, "Error when calling `MetadataApi.GetVersion``: %v\n", err)
         fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
     }
-    // response from `GetVersion`: InlineResponse2001
+    // response from `GetVersion`: InlineResponse2002
     fmt.Fprintf(os.Stdout, "Response from `MetadataApi.GetVersion`: %v\n", resp)
 }
 ```
@@ -55,7 +55,7 @@ Other parameters are passed through a pointer to a apiGetVersionRequest struct v
 
 ### Return type
 
-[**InlineResponse2001**](InlineResponse2001.md)
+[**InlineResponse2002**](InlineResponse2002.md)
 
 ### Authorization
 
@@ -134,7 +134,7 @@ No authorization required
 
 ## IsReady
 
-> InlineResponse200 IsReady(ctx).Execute()
+> InlineResponse2001 IsReady(ctx).Execute()
 
 Check HTTP Server and Database Status
 
@@ -161,7 +161,7 @@ func main() {
         fmt.Fprintf(os.Stderr, "Error when calling `MetadataApi.IsReady``: %v\n", err)
         fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
     }
-    // response from `IsReady`: InlineResponse200
+    // response from `IsReady`: InlineResponse2001
     fmt.Fprintf(os.Stdout, "Response from `MetadataApi.IsReady`: %v\n", resp)
 }
 ```
@@ -177,7 +177,7 @@ Other parameters are passed through a pointer to a apiIsReadyRequest struct via 
 
 ### Return type
 
-[**InlineResponse200**](InlineResponse200.md)
+[**InlineResponse2001**](InlineResponse2001.md)
 
 ### Authorization
 

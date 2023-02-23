@@ -17,17 +17,17 @@ import (
 
 // InlineResponse2001 struct for InlineResponse2001
 type InlineResponse2001 struct {
-	// The version of Ory Keto.
-	Version string `json:"version"`
+	// Always \"ok\".
+	Status string `json:"status"`
 }
 
 // NewInlineResponse2001 instantiates a new InlineResponse2001 object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewInlineResponse2001(version string) *InlineResponse2001 {
+func NewInlineResponse2001(status string) *InlineResponse2001 {
 	this := InlineResponse2001{}
-	this.Version = version
+	this.Status = status
 	return &this
 }
 
@@ -39,34 +39,34 @@ func NewInlineResponse2001WithDefaults() *InlineResponse2001 {
 	return &this
 }
 
-// GetVersion returns the Version field value
-func (o *InlineResponse2001) GetVersion() string {
+// GetStatus returns the Status field value
+func (o *InlineResponse2001) GetStatus() string {
 	if o == nil {
 		var ret string
 		return ret
 	}
 
-	return o.Version
+	return o.Status
 }
 
-// GetVersionOk returns a tuple with the Version field value
+// GetStatusOk returns a tuple with the Status field value
 // and a boolean to check if the value has been set.
-func (o *InlineResponse2001) GetVersionOk() (*string, bool) {
+func (o *InlineResponse2001) GetStatusOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.Version, true
+	return &o.Status, true
 }
 
-// SetVersion sets field value
-func (o *InlineResponse2001) SetVersion(v string) {
-	o.Version = v
+// SetStatus sets field value
+func (o *InlineResponse2001) SetStatus(v string) {
+	o.Status = v
 }
 
 func (o InlineResponse2001) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if true {
-		toSerialize["version"] = o.Version
+		toSerialize["status"] = o.Status
 	}
 	return json.Marshal(toSerialize)
 }

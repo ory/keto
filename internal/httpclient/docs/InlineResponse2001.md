@@ -4,13 +4,13 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Version** | **string** | The version of Ory Keto. | 
+**Status** | **string** | Always \&quot;ok\&quot;. | 
 
 ## Methods
 
 ### NewInlineResponse2001
 
-`func NewInlineResponse2001(version string, ) *InlineResponse2001`
+`func NewInlineResponse2001(status string, ) *InlineResponse2001`
 
 NewInlineResponse2001 instantiates a new InlineResponse2001 object
 This constructor will assign default values to properties that have it defined,
@@ -25,24 +25,24 @@ NewInlineResponse2001WithDefaults instantiates a new InlineResponse2001 object
 This constructor will only assign default values to properties that have it defined,
 but it doesn't guarantee that properties required by API are set
 
-### GetVersion
+### GetStatus
 
-`func (o *InlineResponse2001) GetVersion() string`
+`func (o *InlineResponse2001) GetStatus() string`
 
-GetVersion returns the Version field if non-nil, zero value otherwise.
+GetStatus returns the Status field if non-nil, zero value otherwise.
 
-### GetVersionOk
+### GetStatusOk
 
-`func (o *InlineResponse2001) GetVersionOk() (*string, bool)`
+`func (o *InlineResponse2001) GetStatusOk() (*string, bool)`
 
-GetVersionOk returns a tuple with the Version field if it's non-nil, zero value otherwise
+GetStatusOk returns a tuple with the Status field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
-### SetVersion
+### SetStatus
 
-`func (o *InlineResponse2001) SetVersion(v string)`
+`func (o *InlineResponse2001) SetStatus(v string)`
 
-SetVersion sets Version field to given value.
+SetStatus sets Status field to given value.
 
 
 

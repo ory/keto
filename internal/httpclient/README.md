@@ -105,6 +105,7 @@ Class | Method | HTTP request | Description
  - [ExpandedPermissionTree](docs/ExpandedPermissionTree.md)
  - [InlineResponse200](docs/InlineResponse200.md)
  - [InlineResponse2001](docs/InlineResponse2001.md)
+ - [InlineResponse2002](docs/InlineResponse2002.md)
  - [InlineResponse503](docs/InlineResponse503.md)
  - [OryKetoOplV1alpha1ParseError](docs/OryKetoOplV1alpha1ParseError.md)
  - [OryKetoOplV1alpha1SourcePosition](docs/OryKetoOplV1alpha1SourcePosition.md)

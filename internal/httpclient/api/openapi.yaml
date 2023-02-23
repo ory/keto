@@ -183,7 +183,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/inline_response_200'
+                $ref: '#/components/schemas/inline_response_200_1'
           description: Ory Keto is ready to accept requests.
         "503":
           content:
@@ -713,7 +713,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/inline_response_200_1'
+                $ref: '#/components/schemas/inline_response_200_2'
           description: Returns the Ory Keto version.
       summary: Return Running Software Version.
       tags:
@@ -725,6 +725,21 @@ components:
       type: string
     checkOplSyntaxResult:
       example:
+        parseErrors:
+        - start:
+            Line: 0
+            column: 6
+          end:
+            Line: 0
+            column: 6
+          message: message
+        - start:
+            Line: 0
+            column: 6
+          end:
+            Line: 0
+            column: 6
+          message: message
         errors:
         - start:
             Line: 0
@@ -742,6 +757,10 @@ components:
           message: message
       properties:
         errors:
+          items:
+            $ref: '#/components/schemas/ory.keto.opl.v1alpha1.ParseError'
+          type: array
+        parseErrors:
           items:
             $ref: '#/components/schemas/ory.keto.opl.v1alpha1.ParseError'
           type: array
@@ -1157,6 +1176,15 @@ components:
         status: status
       properties:
         status:
+          type: string
+      required:
+      - status
+      type: object
+    inline_response_200_1:
+      example:
+        status: status
+      properties:
+        status:
           description: Always "ok".
           type: string
       required:
@@ -1173,7 +1201,7 @@ components:
       required:
       - errors
       type: object
-    inline_response_200_1:
+    inline_response_200_2:
       example:
         version: version
       properties:

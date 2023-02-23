@@ -16,6 +16,7 @@ docs/ErrorGenericError.md
 docs/ExpandedPermissionTree.md
 docs/InlineResponse200.md
 docs/InlineResponse2001.md
+docs/InlineResponse2002.md
 docs/InlineResponse503.md
 docs/MetadataApi.md
 docs/OryKetoOplV1alpha1ParseError.md
@@ -47,6 +48,7 @@ model_error_generic_error.go
 model_expanded_permission_tree.go
 model_inline_response_200.go
 model_inline_response_200_1.go
+model_inline_response_200_2.go
 model_inline_response_503.go
 model_ory_keto_opl_v1alpha1_parse_error.go
 model_ory_keto_opl_v1alpha1_source_position.go

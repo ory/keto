@@ -42,9 +42,9 @@ type MetadataApi interface {
 
 	/*
 	 * GetVersionExecute executes the request
-	 * @return InlineResponse2001
+	 * @return InlineResponse2002
 	 */
-	GetVersionExecute(r MetadataApiApiGetVersionRequest) (*InlineResponse2001, *http.Response, error)
+	GetVersionExecute(r MetadataApiApiGetVersionRequest) (*InlineResponse2002, *http.Response, error)
 
 	/*
 			 * IsAlive Check HTTP Server Status
@@ -84,9 +84,9 @@ type MetadataApi interface {
 
 	/*
 	 * IsReadyExecute executes the request
-	 * @return InlineResponse200
+	 * @return InlineResponse2001
 	 */
-	IsReadyExecute(r MetadataApiApiIsReadyRequest) (*InlineResponse200, *http.Response, error)
+	IsReadyExecute(r MetadataApiApiIsReadyRequest) (*InlineResponse2001, *http.Response, error)
 }
 
 // MetadataApiService MetadataApi service
@@ -97,7 +97,7 @@ type MetadataApiApiGetVersionRequest struct {
 	ApiService MetadataApi
 }
 
-func (r MetadataApiApiGetVersionRequest) Execute() (*InlineResponse2001, *http.Response, error) {
+func (r MetadataApiApiGetVersionRequest) Execute() (*InlineResponse2002, *http.Response, error) {
 	return r.ApiService.GetVersionExecute(r)
 }
 
@@ -122,16 +122,16 @@ func (a *MetadataApiService) GetVersion(ctx context.Context) MetadataApiApiGetVe
 
 /*
  * Execute executes the request
- * @return InlineResponse2001
+ * @return InlineResponse2002
  */
-func (a *MetadataApiService) GetVersionExecute(r MetadataApiApiGetVersionRequest) (*InlineResponse2001, *http.Response, error) {
+func (a *MetadataApiService) GetVersionExecute(r MetadataApiApiGetVersionRequest) (*InlineResponse2002, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodGet
 		localVarPostBody     interface{}
 		localVarFormFileName string
 		localVarFileName     string
 		localVarFileBytes    []byte
-		localVarReturnValue  *InlineResponse2001
+		localVarReturnValue  *InlineResponse2002
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "MetadataApiService.GetVersion")
@@ -322,7 +322,7 @@ type MetadataApiApiIsReadyRequest struct {
 	ApiService MetadataApi
 }
 
-func (r MetadataApiApiIsReadyRequest) Execute() (*InlineResponse200, *http.Response, error) {
+func (r MetadataApiApiIsReadyRequest) Execute() (*InlineResponse2001, *http.Response, error) {
 	return r.ApiService.IsReadyExecute(r)
 }
 
@@ -349,16 +349,16 @@ func (a *MetadataApiService) IsReady(ctx context.Context) MetadataApiApiIsReadyR
 
 /*
  * Execute executes the request
- * @return InlineResponse200
+ * @return InlineResponse2001
  */
-func (a *MetadataApiService) IsReadyExecute(r MetadataApiApiIsReadyRequest) (*InlineResponse200, *http.Response, error) {
+func (a *MetadataApiService) IsReadyExecute(r MetadataApiApiIsReadyRequest) (*InlineResponse2001, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodGet
 		localVarPostBody     interface{}
 		localVarFormFileName string
 		localVarFileName     string
 		localVarFileBytes    []byte
-		localVarReturnValue  *InlineResponse200
+		localVarReturnValue  *InlineResponse2001
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "MetadataApiService.IsReady")

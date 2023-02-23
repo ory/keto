@@ -17,7 +17,6 @@ import (
 
 // InlineResponse200 struct for InlineResponse200
 type InlineResponse200 struct {
-	// Always \"ok\".
 	Status string `json:"status"`
 }
 
