@@ -188,10 +188,10 @@ RelationTuple defines a relation between an Object and a Subject.
 Subject is either a concrete subject id or a `SubjectSet` expanding to more
 Subjects.
 
-| Field | Type                                                        | Label | Description                                                                                                             |
-| ----- | ----------------------------------------------------------- | ----- | ----------------------------------------------------------------------------------------------------------------------- |
-| id    | [string](#string)                                           |       | A concrete id of the subject.                                                                                           |
-| set   | [SubjectSet](#ory-keto-relation_tuples-v1alpha2-SubjectSet) |       | A subject set that expands to more Subjects. More information are available under [concepts](../concepts/subjects.mdx). |
+| Field | Type                                                        | Label | Description                                                                                                                |
+| ----- | ----------------------------------------------------------- | ----- | -------------------------------------------------------------------------------------------------------------------------- |
+| id    | [string](#string)                                           |       | A concrete id of the subject.                                                                                              |
+| set   | [SubjectSet](#ory-keto-relation_tuples-v1alpha2-SubjectSet) |       | A subject set that expands to more Subjects. More information are available under [concepts](../concepts/15_subjects.mdx). |
 
 <a name="ory-keto-relation_tuples-v1alpha2-SubjectQuery"></a>
 
@@ -320,7 +320,8 @@ seconds). --&gt; |
 The service that performs authorization checks based on the stored Access
 Control Lists.
 
-This service is part of the [read-APIs](../concepts/api-overview.mdx#read-apis).
+This service is part of the
+[read-APIs](../concepts/25_api-overview.mdx#read-apis).
 
 | Method Name | Request Type                                                    | Response Type                                                     | Description                      |
 | ----------- | --------------------------------------------------------------- | ----------------------------------------------------------------- | -------------------------------- |
@@ -420,7 +421,8 @@ This is never set if `node_type` == `NODE_TYPE_LEAF`. |
 The service that performs subject set expansion based on the stored Access
 Control Lists.
 
-This service is part of the [read-APIs](../concepts/api-overview.mdx#read-apis).
+This service is part of the
+[read-APIs](../concepts/25_api-overview.mdx#read-apis).
 
 | Method Name | Request Type                                                      | Response Type                                                       | Description                                      |
 | ----------- | ----------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------ |
@@ -460,7 +462,8 @@ Request for ReadService.ListNamespaces RPC.
 
 The service to query namespaces.
 
-This service is part of the [read-APIs](../concepts/api-overview.mdx#read-apis).
+This service is part of the
+[read-APIs](../concepts/25_api-overview.mdx#read-apis).
 
 | Method Name    | Request Type                                                                      | Response Type                                                                       | Description      |
 | -------------- | --------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- | ---------------- |
@@ -617,7 +620,8 @@ The response of a ReadService.ListRelationTuples RPC.
 
 The service to query relationships.
 
-This service is part of the [read-APIs](../concepts/api-overview.mdx#read-apis).
+This service is part of the
+[read-APIs](../concepts/25_api-overview.mdx#read-apis).
 
 | Method Name        | Request Type                                                                              | Response Type                                                                               | Description              |
 | ------------------ | ----------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- | ------------------------ |
@@ -651,8 +655,9 @@ Response of the VersionService.GetVersion RPC.
 
 The service returning the specific Ory Keto instance version.
 
-This service is part of the [read-APIs](../concepts/api-overview.mdx#read-apis)
-and [write-APIs](../concepts/api-overview.mdx#write-apis).
+This service is part of the
+[read-APIs](../concepts/25_api-overview.mdx#read-apis) and
+[write-APIs](../concepts/25_api-overview.mdx#write-apis).
 
 | Method Name | Request Type                                                              | Response Type                                                               | Description                                   |
 | ----------- | ------------------------------------------------------------------------- | --------------------------------------------------------------------------- | --------------------------------------------- |
@@ -786,7 +791,7 @@ index. --&gt; |
 The write service to create and delete Access Control Lists.
 
 This service is part of the
-[write-APIs](../concepts/api-overview.mdx#write-apis).
+[write-APIs](../concepts/25_api-overview.mdx#write-apis).
 
 | Method Name            | Request Type                                                                                      | Response Type                                                                                       | Description                                               |
 | ---------------------- | ------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- | --------------------------------------------------------- |

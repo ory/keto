@@ -35,7 +35,7 @@ function deserialize_ory_keto_relation_tuples_v1alpha2_ExpandResponse(buffer_arg
 // The service that performs subject set expansion
 // based on the stored Access Control Lists.
 //
-// This service is part of the [read-APIs](../concepts/api-overview.mdx#read-apis).
+// This service is part of the [read-APIs](../concepts/25_api-overview.mdx#read-apis).
 var ExpandServiceService = exports.ExpandServiceService = {
   // Expands the subject set into a tree of subjects.
 expand: {

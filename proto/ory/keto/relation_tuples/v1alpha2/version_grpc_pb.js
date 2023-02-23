@@ -31,7 +31,7 @@ function deserialize_ory_keto_relation_tuples_v1alpha2_GetVersionResponse(buffer
 
 // The service returning the specific Ory Keto instance version.
 //
-// This service is part of the [read-APIs](../concepts/api-overview.mdx#read-apis) and [write-APIs](../concepts/api-overview.mdx#write-apis).
+// This service is part of the [read-APIs](../concepts/25_api-overview.mdx#read-apis) and [write-APIs](../concepts/25_api-overview.mdx#write-apis).
 var VersionServiceService = exports.VersionServiceService = {
   // Returns the version of the Ory Keto instance.
 //

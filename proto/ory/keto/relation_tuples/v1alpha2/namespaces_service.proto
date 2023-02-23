@@ -13,7 +13,7 @@ option php_namespace = "Ory\\Keto\\RelationTuples\\v1alpha2";
 
 // The service to query namespaces.
 //
-// This service is part of the [read-APIs](../concepts/api-overview.mdx#read-apis).
+// This service is part of the [read-APIs](../concepts/25_api-overview.mdx#read-apis).
 service NamespacesService {
   // Lists Namespaces
   //

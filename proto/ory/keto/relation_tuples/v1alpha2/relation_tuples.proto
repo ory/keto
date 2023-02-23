@@ -75,7 +75,7 @@ message Subject {
     // A concrete id of the subject.
     string id = 1;
     // A subject set that expands to more Subjects.
-    // More information are available under [concepts](../concepts/subjects.mdx).
+    // More information are available under [concepts](../concepts/15_subjects.mdx).
     SubjectSet set = 2;
   }
 }

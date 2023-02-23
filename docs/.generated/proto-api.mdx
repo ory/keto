@@ -4,8 +4,9 @@ title: Protocol Buffers API
 
 <!-- This file is generated. Please edit the .proto files instead to update the documentation -->
 
-The API is divided into the [read APIs](../concepts/api-overview.mdx#read-apis)
-and [write APIs](../concepts/api-overview.mdx#write-apis). Each service is
+The API is divided into the
+[read APIs](../concepts/25_api-overview.mdx#read-apis) and
+[write APIs](../concepts/25_api-overview.mdx#write-apis). Each service is
 annotated with the API it belongs to.
 
 ## ory/keto/acl/v1alpha1/acl.proto
@@ -26,10 +27,10 @@ RelationTuple defines a relation between an Object and a Subject.
 Subject is either a concrete subject id or a `SubjectSet` expanding to more
 Subjects.
 
-| Field | Type                                            | Label | Description                                                                                                             |
-| ----- | ----------------------------------------------- | ----- | ----------------------------------------------------------------------------------------------------------------------- |
-| id    | [string](#string)                               |       | A concrete id of the subject.                                                                                           |
-| set   | [SubjectSet](#ory.keto.acl.v1alpha1.SubjectSet) |       | A subject set that expands to more Subjects. More information are available under [concepts](../concepts/subjects.mdx). |
+| Field | Type                                            | Label | Description                                                                                                                |
+| ----- | ----------------------------------------------- | ----- | -------------------------------------------------------------------------------------------------------------------------- |
+| id    | [string](#string)                               |       | A concrete id of the subject.                                                                                              |
+| set   | [SubjectSet](#ory.keto.acl.v1alpha1.SubjectSet) |       | A subject set that expands to more Subjects. More information are available under [concepts](../concepts/15_subjects.mdx). |
 
 ### SubjectSet
 
@@ -48,7 +49,8 @@ SubjectSet refers to all subjects who have the same `relation` on an `object`.
 The service that performs authorization checks based on the stored Access
 Control Lists.
 
-This service is part of the [read-APIs](../concepts/api-overview.mdx#read-apis).
+This service is part of the
+[read-APIs](../concepts/25_api-overview.mdx#read-apis).
 
 | Method Name | Request Type                                        | Response Type                                         | Description                      |
 | ----------- | --------------------------------------------------- | ----------------------------------------------------- | -------------------------------- |
@@ -85,7 +87,8 @@ The response for a CheckService.Check rpc.
 The service that performs subject set expansion based on the stored Access
 Control Lists.
 
-This service is part of the [read-APIs](../concepts/api-overview.mdx#read-apis).
+This service is part of the
+[read-APIs](../concepts/25_api-overview.mdx#read-apis).
 
 | Method Name | Request Type                                          | Response Type                                           | Description                                      |
 | ----------- | ----------------------------------------------------- | ------------------------------------------------------- | ------------------------------------------------ |
@@ -133,7 +136,8 @@ The response for a ExpandService.Expand RPC.
 
 The service to query relation tuples.
 
-This service is part of the [read-APIs](../concepts/api-overview.mdx#read-apis).
+This service is part of the
+[read-APIs](../concepts/25_api-overview.mdx#read-apis).
 
 | Method Name        | Request Type                                                                  | Response Type                                                                   | Description                |
 | ------------------ | ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------- | -------------------------- |
@@ -190,8 +194,9 @@ The response of a ReadService.ListRelationTuples RPC.
 
 The service returning the specific Ory Keto instance version.
 
-This service is part of the [read-APIs](../concepts/api-overview.mdx#read-apis)
-and [write-APIs](../concepts/api-overview.mdx#write-apis).
+This service is part of the
+[read-APIs](../concepts/25_api-overview.mdx#read-apis) and
+[write-APIs](../concepts/25_api-overview.mdx#write-apis).
 
 | Method Name | Request Type                                                  | Response Type                                                   | Description                                   |
 | ----------- | ------------------------------------------------------------- | --------------------------------------------------------------- | --------------------------------------------- |
@@ -216,7 +221,7 @@ Response of the VersionService.GetVersion RPC.
 The write service to create and delete Access Control Lists.
 
 This service is part of the
-[write-APIs](../concepts/api-overview.mdx#write-apis).
+[write-APIs](../concepts/25_api-overview.mdx#write-apis).
 
 | Method Name            | Request Type                                                                          | Response Type                                                                           | Description                                                 |
 | ---------------------- | ------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
