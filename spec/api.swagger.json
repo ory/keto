@@ -31,7 +31,7 @@
           "400": {
             "description": "errorGeneric",
             "schema": {
-              "$ref": "#/definitions/errorGeneric"
+              "$ref": "#/definitions/ory.keto.relation_tuples.v1alpha2.ErrorResponse"
             }
           }
         },
@@ -96,13 +96,13 @@
           "201": {
             "description": "The created relationship.",
             "schema": {
-              "$ref": "#/definitions/relationship"
+              "$ref": "#/definitions/ory.keto.relation_tuples.v1alpha2.RelationTuple"
             }
           },
           "400": {
             "description": "errorGeneric",
             "schema": {
-              "$ref": "#/definitions/errorGeneric"
+              "$ref": "#/definitions/ory.keto.relation_tuples.v1alpha2.ErrorResponse"
             }
           }
         },
@@ -113,7 +113,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/createRelationshipBody",
+              "$ref": "#/definitions/ory.keto.relation_tuples.v1alpha2.CreateRelationTupleRequest.Relationship",
               "required": ["relationTuple"]
             }
           }
@@ -134,7 +134,7 @@
           "400": {
             "description": "errorGeneric",
             "schema": {
-              "$ref": "#/definitions/errorGeneric"
+              "$ref": "#/definitions/ory.keto.relation_tuples.v1alpha2.ErrorResponse"
             }
           }
         },
@@ -147,7 +147,7 @@
             "schema": {
               "type": "array",
               "items": {
-                "$ref": "#/definitions/relationshipDelta"
+                "$ref": "#/definitions/ory.keto.relation_tuples.v1alpha2.RelationTupleDelta"
               }
             }
           }
@@ -164,7 +164,7 @@
           "200": {
             "description": "The list of namespaces.",
             "schema": {
-              "$ref": "#/definitions/relationshipNamespaces"
+              "$ref": "#/definitions/ory.keto.relation_tuples.v1alpha2.ListNamespacesResponse"
             },
             "examples": {
               "application/json": {
@@ -179,7 +179,7 @@
           "400": {
             "description": "errorGeneric",
             "schema": {
-              "$ref": "#/definitions/errorGeneric"
+              "$ref": "#/definitions/ory.keto.relation_tuples.v1alpha2.ErrorResponse"
             }
           }
         },
@@ -195,13 +195,13 @@
           "200": {
             "description": "The result of the syntax checker",
             "schema": {
-              "$ref": "#/definitions/checkOplSyntaxResult"
+              "$ref": "#/definitions/ory.keto.opl.v1alpha1.CheckResponse"
             }
           },
           "400": {
             "description": "errorGeneric",
             "schema": {
-              "$ref": "#/definitions/errorGeneric"
+              "$ref": "#/definitions/ory.keto.relation_tuples.v1alpha2.ErrorResponse"
             }
           }
         },
@@ -228,13 +228,13 @@
           "200": {
             "description": "The list of relationships.",
             "schema": {
-              "$ref": "#/definitions/relationships"
+              "$ref": "#/definitions/ory.keto.relation_tuples.v1alpha2.ListRelationTuplesResponse"
             }
           },
           "400": {
             "description": "errorGeneric",
             "schema": {
-              "$ref": "#/definitions/errorGeneric"
+              "$ref": "#/definitions/ory.keto.relation_tuples.v1alpha2.ErrorResponse"
             }
           }
         },
@@ -316,19 +316,19 @@
           "200": {
             "description": "The response of the permission check, in case it is allowed. For the `/openapi` endpoints, the status code is always 200.",
             "schema": {
-              "$ref": "#/definitions/checkPermissionResult"
+              "$ref": "#/definitions/ory.keto.relation_tuples.v1alpha2.CheckResponse"
             }
           },
           "400": {
             "description": "errorGeneric",
             "schema": {
-              "$ref": "#/definitions/errorGeneric"
+              "$ref": "#/definitions/ory.keto.relation_tuples.v1alpha2.ErrorResponse"
             }
           },
           "403": {
             "description": "The response of the permission check, in case it is not allowed. For the `/openapi` endpoints, the status code is always 200.",
             "schema": {
-              "$ref": "#/definitions/checkPermissionResult"
+              "$ref": "#/definitions/ory.keto.relation_tuples.v1alpha2.CheckResponse"
             }
           }
         },
@@ -401,19 +401,19 @@
           "200": {
             "description": "The response of the permission check, in case it is allowed. For the `/openapi` endpoints, the status code is always 200.",
             "schema": {
-              "$ref": "#/definitions/checkPermissionResult"
+              "$ref": "#/definitions/ory.keto.relation_tuples.v1alpha2.CheckResponse"
             }
           },
           "400": {
             "description": "errorGeneric",
             "schema": {
-              "$ref": "#/definitions/errorGeneric"
+              "$ref": "#/definitions/ory.keto.relation_tuples.v1alpha2.ErrorResponse"
             }
           },
           "403": {
             "description": "The response of the permission check, in case it is not allowed. For the `/openapi` endpoints, the status code is always 200.",
             "schema": {
-              "$ref": "#/definitions/checkPermissionResult"
+              "$ref": "#/definitions/ory.keto.relation_tuples.v1alpha2.CheckResponse"
             }
           }
         },
@@ -424,7 +424,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/postCheckPermissionBody"
+              "$ref": "#/definitions/ory.keto.relation_tuples.v1alpha2.CheckRequest"
             }
           }
         ],
@@ -440,19 +440,19 @@
           "200": {
             "description": "The response of the permission check, in case it is allowed. For the `/openapi` endpoints, the status code is always 200.",
             "schema": {
-              "$ref": "#/definitions/checkPermissionResult"
+              "$ref": "#/definitions/ory.keto.relation_tuples.v1alpha2.CheckResponse"
             }
           },
           "400": {
             "description": "errorGeneric",
             "schema": {
-              "$ref": "#/definitions/errorGeneric"
+              "$ref": "#/definitions/ory.keto.relation_tuples.v1alpha2.ErrorResponse"
             }
           },
           "403": {
             "description": "The response of the permission check, in case it is not allowed. For the `/openapi` endpoints, the status code is always 200.",
             "schema": {
-              "$ref": "#/definitions/checkPermissionResult"
+              "$ref": "#/definitions/ory.keto.relation_tuples.v1alpha2.CheckResponse"
             }
           }
         },
@@ -525,19 +525,19 @@
           "200": {
             "description": "The response of the permission check, in case it is allowed. For the `/openapi` endpoints, the status code is always 200.",
             "schema": {
-              "$ref": "#/definitions/checkPermissionResult"
+              "$ref": "#/definitions/ory.keto.relation_tuples.v1alpha2.CheckResponse"
             }
           },
           "400": {
             "description": "errorGeneric",
             "schema": {
-              "$ref": "#/definitions/errorGeneric"
+              "$ref": "#/definitions/ory.keto.relation_tuples.v1alpha2.ErrorResponse"
             }
           },
           "403": {
             "description": "The response of the permission check, in case it is not allowed. For the `/openapi` endpoints, the status code is always 200.",
             "schema": {
-              "$ref": "#/definitions/checkPermissionResult"
+              "$ref": "#/definitions/ory.keto.relation_tuples.v1alpha2.CheckResponse"
             }
           }
         },
@@ -548,7 +548,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/postCheckPermissionBody"
+              "$ref": "#/definitions/ory.keto.relation_tuples.v1alpha2.CheckRequest"
             }
           }
         ],
@@ -564,13 +564,13 @@
           "200": {
             "description": "The response of the permission check, in case it is allowed. For the `/openapi` endpoints, the status code is always 200.",
             "schema": {
-              "$ref": "#/definitions/expandedPermissionTree"
+              "$ref": "#/definitions/ory.keto.relation_tuples.v1alpha2.SubjectTree"
             }
           },
           "400": {
             "description": "errorGeneric",
             "schema": {
-              "$ref": "#/definitions/errorGeneric"
+              "$ref": "#/definitions/ory.keto.relation_tuples.v1alpha2.ErrorResponse"
             }
           }
         },
@@ -624,7 +624,7 @@
           "400": {
             "description": "errorGeneric",
             "schema": {
-              "$ref": "#/definitions/errorGeneric"
+              "$ref": "#/definitions/ory.keto.relation_tuples.v1alpha2.ErrorResponse"
             }
           }
         },
@@ -633,9 +633,15 @@
     }
   },
   "definitions": {
-    "checkOplSyntaxResult": {
+    "ory.keto.opl.v1alpha1.CheckResponse": {
       "type": "object",
       "properties": {
+        "parseErrors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ory.keto.opl.v1alpha1.ParseError"
+          }
+        },
         "errors": {
           "type": "array",
           "items": {
@@ -671,7 +677,7 @@
         }
       }
     },
-    "postCheckPermissionBody": {
+    "ory.keto.relation_tuples.v1alpha2.CheckRequest": {
       "type": "object",
       "properties": {
         "namespace": {
@@ -691,7 +697,7 @@
           "description": "A concrete id of the subject."
         },
         "subject_set": {
-          "$ref": "#/definitions/subjectSetQuery",
+          "$ref": "#/definitions/ory.keto.relation_tuples.v1alpha2.SubjectSetQuery",
           "description": "A subject set that expands to more Subjects.\nMore information are available under [concepts](../concepts/subjects.mdx)."
         },
         "max-depth": {
@@ -702,7 +708,7 @@
       },
       "description": "The request for a CheckService.Check RPC.\nChecks whether a specific subject is related to an object."
     },
-    "checkPermissionResult": {
+    "ory.keto.relation_tuples.v1alpha2.CheckResponse": {
       "type": "object",
       "properties": {
         "allowed": {
@@ -712,7 +718,7 @@
       },
       "description": "The response for a CheckService.Check rpc."
     },
-    "createRelationshipBody": {
+    "ory.keto.relation_tuples.v1alpha2.CreateRelationTupleRequest.Relationship": {
       "type": "object",
       "properties": {
         "namespace": {
@@ -732,7 +738,7 @@
           "description": "A concrete id of the subject."
         },
         "subject_set": {
-          "$ref": "#/definitions/subjectSet",
+          "$ref": "#/definitions/ory.keto.relation_tuples.v1alpha2.SubjectSet",
           "description": "A subject set that expands to more Subjects.\nMore information are available under [concepts](../concepts/subjects.mdx)."
         }
       }
@@ -741,7 +747,7 @@
       "type": "object",
       "properties": {
         "relationTuple": {
-          "$ref": "#/definitions/relationship",
+          "$ref": "#/definitions/ory.keto.relation_tuples.v1alpha2.RelationTuple",
           "description": "The created relationship."
         }
       },
@@ -750,18 +756,18 @@
     "ory.keto.relation_tuples.v1alpha2.DeleteRelationTuplesResponse": {
       "type": "object"
     },
-    "errorGeneric": {
+    "ory.keto.relation_tuples.v1alpha2.ErrorResponse": {
       "type": "object",
       "properties": {
         "error": {
-          "$ref": "#/definitions/errorGeneric.Error"
+          "$ref": "#/definitions/ory.keto.relation_tuples.v1alpha2.ErrorResponse.Error"
         }
       },
       "description": "The standard Ory JSON API error format.",
       "title": "JSON API Error Response",
       "required": ["error"]
     },
-    "errorGeneric.Error": {
+    "ory.keto.relation_tuples.v1alpha2.ErrorResponse.Error": {
       "type": "object",
       "properties": {
         "code": {
@@ -818,7 +824,7 @@
       "type": "object",
       "properties": {
         "tree": {
-          "$ref": "#/definitions/expandedPermissionTree",
+          "$ref": "#/definitions/ory.keto.relation_tuples.v1alpha2.SubjectTree",
           "description": "The tree the requested subject set expands to.\nThe requested subject set is the subject of the root.\n\nThis field can be nil in some circumstances."
         }
       },
@@ -834,7 +840,7 @@
       },
       "description": "Response of the VersionService.GetVersion RPC."
     },
-    "relationshipNamespaces": {
+    "ory.keto.relation_tuples.v1alpha2.ListNamespacesResponse": {
       "type": "object",
       "properties": {
         "namespaces": {
@@ -845,13 +851,13 @@
         }
       }
     },
-    "relationships": {
+    "ory.keto.relation_tuples.v1alpha2.ListRelationTuplesResponse": {
       "type": "object",
       "properties": {
         "relation_tuples": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/relationship"
+            "$ref": "#/definitions/ory.keto.relation_tuples.v1alpha2.RelationTuple"
           },
           "description": "The relationships matching the list request."
         },
@@ -885,7 +891,7 @@
       "default": "unspecified",
       "description": " - union: This node expands to a union of all children.\n - exclusion: Not implemented yet.\n - intersection: Not implemented yet.\n - leaf: This node is a leaf and contains no children.\nIts subject is a `SubjectID` unless `max_depth` was reached.\n - tuple_to_subject_set: This node is a leaf and contains no children.\nIts subject is a `SubjectID` unless `max_depth` was reached.\n - computed_subject_set: This node is a leaf and contains no children.\nIts subject is a `SubjectID` unless `max_depth` was reached.\n - not: This node is a leaf and contains no children.\nIts subject is a `SubjectID` unless `max_depth` was reached."
     },
-    "relationship": {
+    "ory.keto.relation_tuples.v1alpha2.RelationTuple": {
       "type": "object",
       "properties": {
         "namespace": {
@@ -905,29 +911,29 @@
           "description": "A concrete id of the subject."
         },
         "subject_set": {
-          "$ref": "#/definitions/subjectSet",
+          "$ref": "#/definitions/ory.keto.relation_tuples.v1alpha2.SubjectSet",
           "description": "A subject set that expands to more Subjects.\nMore information are available under [concepts](../concepts/subjects.mdx)."
         }
       },
       "description": "RelationTuple defines a relation between an Object and a Subject.",
       "required": ["namespace", "object", "relation"]
     },
-    "relationshipDelta": {
+    "ory.keto.relation_tuples.v1alpha2.RelationTupleDelta": {
       "type": "object",
       "properties": {
         "action": {
-          "$ref": "#/definitions/relationshipDelta.Action",
+          "$ref": "#/definitions/ory.keto.relation_tuples.v1alpha2.RelationTupleDelta.Action",
           "description": "The action to do on the RelationTuple."
         },
         "relation_tuple": {
-          "$ref": "#/definitions/relationship",
+          "$ref": "#/definitions/ory.keto.relation_tuples.v1alpha2.RelationTuple",
           "description": "The target RelationTuple."
         }
       },
       "description": "Write-delta for a TransactRelationTuplesRequest.",
       "required": ["action", "relation_tuple"]
     },
-    "relationshipDelta.Action": {
+    "ory.keto.relation_tuples.v1alpha2.RelationTupleDelta.Action": {
       "type": "string",
       "enum": ["ACTION_UNSPECIFIED", "insert", "delete"],
       "default": "ACTION_UNSPECIFIED",
@@ -941,13 +947,13 @@
           "description": "A concrete id of the subject."
         },
         "set": {
-          "$ref": "#/definitions/subjectSet",
+          "$ref": "#/definitions/ory.keto.relation_tuples.v1alpha2.SubjectSet",
           "description": "A subject set that expands to more Subjects.\nMore information are available under [concepts](../concepts/subjects.mdx)."
         }
       },
       "description": "Subject is either a concrete subject id or\na `SubjectSet` expanding to more Subjects."
     },
-    "subjectSet": {
+    "ory.keto.relation_tuples.v1alpha2.SubjectSet": {
       "type": "object",
       "properties": {
         "namespace": {
@@ -966,7 +972,7 @@
       "description": "SubjectSet refers to all subjects who have\nthe same `relation` on an `object`.",
       "required": ["namespace", "object", "relation"]
     },
-    "subjectSetQuery": {
+    "ory.keto.relation_tuples.v1alpha2.SubjectSetQuery": {
       "type": "object",
       "properties": {
         "namespace": {
@@ -984,7 +990,7 @@
       },
       "description": "SubjectSetQuery refers to all subjects who have\nthe same `relation` on an `object`."
     },
-    "expandedPermissionTree": {
+    "ory.keto.relation_tuples.v1alpha2.SubjectTree": {
       "type": "object",
       "properties": {
         "type": {
@@ -996,13 +1002,13 @@
           "description": "The subject this node represents.\nDeprecated: More information is now available in the tuple field."
         },
         "tuple": {
-          "$ref": "#/definitions/relationship",
+          "$ref": "#/definitions/ory.keto.relation_tuples.v1alpha2.RelationTuple",
           "description": "The relation tuple this node represents."
         },
         "children": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/expandedPermissionTree"
+            "$ref": "#/definitions/ory.keto.relation_tuples.v1alpha2.SubjectTree"
           },
           "description": "The children of this node.\n\nThis is never set if `node_type` == `NODE_TYPE_LEAF`."
         }
@@ -1012,7 +1018,6 @@
     "ory.keto.relation_tuples.v1alpha2.TransactRelationTuplesResponse": {
       "type": "object",
       "description": "The response of a WriteService.TransactRelationTuples rpc."
-    },
-    "UUID": { "type": "string", "format": "uuid4" }
+    }
   }
 }

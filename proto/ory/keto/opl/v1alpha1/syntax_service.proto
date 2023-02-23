@@ -41,7 +41,8 @@ message CheckRequest {
 }
 
 message CheckResponse {
-  repeated ParseError errors = 1;
+  repeated ParseError parse_errors = 1;
+  repeated ParseError errors = 2;
 }
 
 message ParseError {

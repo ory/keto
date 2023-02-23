@@ -240,7 +240,7 @@ func (g *grpcClient) oplCheckSyntax(t require.TestingT, content []byte) (parseEr
 	res, err := c.Check(g.ctx, &opl.CheckRequest{Content: content})
 	require.NoError(t, err)
 
-	raw, err := json.Marshal(res.Errors)
+	raw, err := json.Marshal(res.ParseErrors)
 	require.NoError(t, err)
 	err = json.Unmarshal(raw, &parseErrors)
 	require.NoError(t, err)

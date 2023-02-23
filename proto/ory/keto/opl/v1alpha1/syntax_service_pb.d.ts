@@ -30,6 +30,10 @@ export namespace CheckRequest {
 }
 
 export class CheckResponse extends jspb.Message { 
+    clearParseErrorsList(): void;
+    getParseErrorsList(): Array<ParseError>;
+    setParseErrorsList(value: Array<ParseError>): CheckResponse;
+    addParseErrors(value?: ParseError, index?: number): ParseError;
     clearErrorsList(): void;
     getErrorsList(): Array<ParseError>;
     setErrorsList(value: Array<ParseError>): CheckResponse;
@@ -47,6 +51,7 @@ export class CheckResponse extends jspb.Message {
 
 export namespace CheckResponse {
     export type AsObject = {
+        parseErrorsList: Array<ParseError.AsObject>,
         errorsList: Array<ParseError.AsObject>,
     }
 }

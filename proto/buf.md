@@ -100,9 +100,10 @@
 
 ### CheckResponse
 
-| Field  | Type                                            | Label    | Description |
-| ------ | ----------------------------------------------- | -------- | ----------- |
-| errors | [ParseError](#ory-keto-opl-v1alpha1-ParseError) | repeated |             |
+| Field        | Type                                            | Label    | Description |
+| ------------ | ----------------------------------------------- | -------- | ----------- |
+| parse_errors | [ParseError](#ory-keto-opl-v1alpha1-ParseError) | repeated |             |
+| errors       | [ParseError](#ory-keto-opl-v1alpha1-ParseError) | repeated |             |
 
 <a name="ory-keto-opl-v1alpha1-ParseError"></a>
 
