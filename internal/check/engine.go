@@ -137,7 +137,12 @@ func (e *Engine) checkExpandSubject(r *relationTuple, restDepth int) checkgroup.
 
 		// If not, we must go another hop:
 		for _, result := range results {
-			innerCtx, visited = graph.CheckAndAddVisited(innerCtx, result.To.Subject)
+			sub := &relationtuple.SubjectSet{
+				Namespace: result.To.Namespace,
+				Object:    result.To.Object,
+				Relation:  result.To.Relation,
+			}
+			innerCtx, visited = graph.CheckAndAddVisited(innerCtx, sub)
 			if visited {
 				continue
 			}

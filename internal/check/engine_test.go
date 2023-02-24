@@ -15,6 +15,7 @@ import (
 	"github.com/ory/keto/internal/driver"
 	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/namespace"
+	"github.com/ory/keto/internal/namespace/ast"
 	"github.com/ory/keto/internal/persistence"
 	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/internal/x"
@@ -219,6 +220,50 @@ func TestEngine(t *testing.T) {
 		}, 0)
 		require.NoError(t, err)
 		assert.False(t, res)
+	})
+
+	t.Run("subject expansion", func(t *testing.T) {
+		reg := newDepsProvider(t, []*namespace.Namespace{{
+			Name: "n",
+			Relations: []ast.Relation{
+				{
+					Name: "r",
+					Types: []ast.RelationType{
+						{
+							Namespace: "n",
+							Relation:  "r",
+						},
+					},
+				},
+			},
+		}})
+		tuples := []string{
+			`n:a#r@n:b#r`,
+			`n:b#r@n:c#r`,
+			`n:c#r@n:d#r`,
+			`n:d#r@u`,
+		}
+
+		insertFixtures(t, reg.RelationTupleManager(), tuples)
+		e := check.NewEngine(reg)
+		reg.Config(ctx).Set(config.KeyLimitMaxReadDepth, 5)
+
+		cases := []struct {
+			tuple string
+		}{
+			{tuple: "n:d#r@u"},
+			{tuple: "n:c#r@u"},
+			{tuple: "n:b#r@u"},
+			{tuple: "n:a#r@u"},
+		}
+
+		for _, tc := range cases {
+			t.Run("case="+tc.tuple, func(t *testing.T) {
+				res, err := e.CheckIsMember(ctx, tupleFromString(t, tc.tuple), 0)
+				require.NoError(t, err)
+				assert.True(t, res)
+			})
+		}
 	})
 
 	t.Run("wrong object ID", func(t *testing.T) {
