@@ -52,7 +52,7 @@ function deserialize_ory_keto_relation_tuples_v1alpha2_TransactRelationTuplesRes
 
 // The write service to create and delete Access Control Lists.
 //
-// This service is part of the [write-APIs](../concepts/api-overview.mdx#write-apis).
+// This service is part of the [write-APIs](../concepts/25_api-overview.mdx#write-apis).
 var WriteServiceService = exports.WriteServiceService = {
   // Writes one or more relationships in a single transaction.
 transactRelationTuples: {

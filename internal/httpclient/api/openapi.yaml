@@ -74,7 +74,7 @@ paths:
       responses:
         "204":
           description: Empty responses are sent when, for example, resources are deleted.
-            The HTTP status code for empty responses is typically 201.
+            The HTTP status code for empty responses is typically 204.
         "400":
           content:
             application/json:
@@ -104,7 +104,7 @@ paths:
       responses:
         "204":
           description: Empty responses are sent when, for example, resources are deleted.
-            The HTTP status code for empty responses is typically 201.
+            The HTTP status code for empty responses is typically 204.
         "400":
           content:
             application/json:
@@ -467,7 +467,8 @@ paths:
         to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
       operationId: postCheckPermissionOrError
       parameters:
-      - explode: true
+      - description: nolint:deadcode,unused
+        explode: true
         in: query
         name: max-depth
         required: false
@@ -732,7 +733,7 @@ components:
   responses:
     emptyResponse:
       description: Empty responses are sent when, for example, resources are deleted.
-        The HTTP status code for empty responses is typically 201.
+        The HTTP status code for empty responses is typically 204.
   schemas:
     ParseError:
       example:

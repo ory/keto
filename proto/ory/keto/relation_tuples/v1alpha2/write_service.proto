@@ -13,7 +13,7 @@ option php_namespace = "Ory\\Keto\\RelationTuples\\v1alpha2";
 
 // The write service to create and delete Access Control Lists.
 //
-// This service is part of the [write-APIs](../concepts/api-overview.mdx#write-apis).
+// This service is part of the [write-APIs](../concepts/25_api-overview.mdx#write-apis).
 service WriteService {
   // Writes one or more relationships in a single transaction.
   rpc TransactRelationTuples(TransactRelationTuplesRequest) returns (TransactRelationTuplesResponse);
