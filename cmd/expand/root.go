@@ -83,6 +83,9 @@ type pbJSONValue struct{ *rts.ExpandResponse }
 
 func (v *pbJSONValue) MarshalJSON() ([]byte, error) {
 	marshaler := &protojson.MarshalOptions{EmitUnpopulated: true}
+	if v.Tree == nil || v.Tree.NodeType.Number() == 0 {
+		return []byte("null"), nil
+	}
 	return marshaler.Marshal(v.Tree)
 }
 func (v *pbJSONValue) String() string {
