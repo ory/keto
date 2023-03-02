@@ -7,13 +7,14 @@
 
 - [0.0.0 (2023-03-02)](#000-2023-03-02)
   - [Bug Fixes](#bug-fixes)
+  - [Tests](#tests)
 - [0.11.0-alpha.0 (2023-02-23)](#0110-alpha0-2023-02-23)
   - [Bug Fixes](#bug-fixes-1)
   - [Code Generation](#code-generation)
   - [Code Refactoring](#code-refactoring)
   - [Documentation](#documentation)
   - [Features](#features)
-  - [Tests](#tests)
+  - [Tests](#tests-1)
   - [Unclassified](#unclassified)
 - [0.10.0-alpha.0 (2022-09-27)](#0100-alpha0-2022-09-27)
   - [Bug Fixes](#bug-fixes-2)
@@ -22,7 +23,7 @@
   - [Code Refactoring](#code-refactoring-1)
   - [Documentation](#documentation-1)
   - [Features](#features-1)
-  - [Tests](#tests-1)
+  - [Tests](#tests-2)
 - [0.9.0-alpha.0 (2022-08-01)](#090-alpha0-2022-08-01)
   - [Breaking Changes](#breaking-changes)
     - [Bug Fixes](#bug-fixes-3)
@@ -30,7 +31,7 @@
     - [Code Refactoring](#code-refactoring-2)
     - [Documentation](#documentation-2)
     - [Features](#features-2)
-    - [Tests](#tests-2)
+    - [Tests](#tests-3)
 - [0.8.0-alpha.2 (2022-03-04)](#080-alpha2-2022-03-04)
   - [Bug Fixes](#bug-fixes-4)
   - [Code Generation](#code-generation-3)
@@ -38,7 +39,7 @@
 - [0.8.0-alpha.1 (2022-02-22)](#080-alpha1-2022-02-22)
   - [Bug Fixes](#bug-fixes-5)
   - [Code Generation](#code-generation-4)
-  - [Tests](#tests-3)
+  - [Tests](#tests-4)
 - [0.8.0-alpha.0 (2022-02-10)](#080-alpha0-2022-02-10)
   - [Bug Fixes](#bug-fixes-6)
   - [Code Generation](#code-generation-5)
@@ -56,7 +57,7 @@
     - [Code Refactoring](#code-refactoring-4)
     - [Documentation](#documentation-6)
     - [Features](#features-4)
-    - [Tests](#tests-4)
+    - [Tests](#tests-5)
 - [0.6.0-alpha.3 (2021-04-29)](#060-alpha3-2021-04-29)
   - [Code Generation](#code-generation-8)
 - [0.6.0-alpha.2 (2021-04-29)](#060-alpha2-2021-04-29)
@@ -71,7 +72,7 @@
   - [Code Refactoring](#code-refactoring-5)
   - [Documentation](#documentation-8)
   - [Features](#features-6)
-  - [Tests](#tests-5)
+  - [Tests](#tests-6)
 - [0.5.6-alpha.1 (2020-05-28)](#056-alpha1-2020-05-28)
   - [Bug Fixes](#bug-fixes-10)
   - [Chores](#chores-1)
@@ -152,6 +153,11 @@
 - Subject expansion is terminated unexpectedly
   ([#1256](https://github.com/ory/keto/issues/1256))
   ([f88a479](https://github.com/ory/keto/commit/f88a479387df8f6fb1eba26f0cc922469de09804))
+
+### Tests
+
+- Faster tests ([#1266](https://github.com/ory/keto/issues/1266))
+  ([b41bfb8](https://github.com/ory/keto/commit/b41bfb8da04882f2c94d9a3f787bc4cf2f51f1b9))
 
 # [0.11.0-alpha.0](https://github.com/ory/keto/compare/v0.10.0-alpha.0...v0.11.0-alpha.0) (2023-02-23)
 
