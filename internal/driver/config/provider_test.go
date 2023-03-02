@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"os"
 	"testing"
+	"time"
 
 	"github.com/gobuffalo/httptest"
 	"github.com/ory/x/configx"
@@ -57,7 +58,7 @@ func setup(t *testing.T, configFile string) (*test.Hook, *Config) {
 	hook := test.Hook{}
 	l := logrusx.New("test", "today", logrusx.WithHook(&hook))
 
-	ctx, cancel := context.WithCancel(context.Background())
+	ctx, cancel := context.WithTimeout(context.Background(), 500*time.Millisecond)
 	t.Cleanup(cancel)
 
 	config, err := NewDefault(
