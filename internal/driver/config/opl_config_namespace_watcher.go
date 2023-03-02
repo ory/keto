@@ -52,7 +52,7 @@ func newOPLConfigWatcher(ctx context.Context, c *Config, target string) (*oplCon
 	case "file", "":
 		return nw, watchTarget(ctx, target, nw, c.l)
 	case "http", "https", "base64":
-		file, err := c.Fetcher().Fetch(target)
+		file, err := c.Fetcher().FetchContext(ctx, target)
 		if err != nil {
 			return nil, err
 		}
