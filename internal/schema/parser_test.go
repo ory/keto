@@ -157,7 +157,17 @@ class Resource implements Namespace {
       this.related.supervisors.traverse((role) => role.related.member.includes(ctx.subject)),
   };
 }
-`},
+`}, {"quoted property names", `
+class Resource implements Namespace {
+  related: {
+    "scope.relation": Resource[]
+  }
+  permits = {
+    "scope.action_0": (ctx: Context) => this.related["scope.relation"].traverse((r) => r.permits["scope.action_1"](ctx)),
+    "scope.action_1": (ctx: Context) => this.related["scope.relation"].traverse((r) => r.related["scope.relation"].includes(ctx.subject)),
+    "scope.action_2": (ctx: Context) => this.permits["scope.action_0"](ctx),
+  }
+}`},
 }
 
 func TestParser(t *testing.T) {
