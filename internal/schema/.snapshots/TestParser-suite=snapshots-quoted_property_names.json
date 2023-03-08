@@ -1,0 +1,47 @@
+{
+  "Resource": [
+    {
+      "name": "scope.relation",
+      "types": [
+        {
+          "namespace": "Resource"
+        }
+      ]
+    },
+    {
+      "name": "scope.action_0",
+      "rewrite": {
+        "operator": "or",
+        "children": [
+          {
+            "relation": "scope.relation",
+            "computed_subject_set_relation": "scope.action_1"
+          }
+        ]
+      }
+    },
+    {
+      "name": "scope.action_1",
+      "rewrite": {
+        "operator": "or",
+        "children": [
+          {
+            "relation": "scope.relation",
+            "computed_subject_set_relation": "scope.relation"
+          }
+        ]
+      }
+    },
+    {
+      "name": "scope.action_2",
+      "rewrite": {
+        "operator": "or",
+        "children": [
+          {
+            "relation": "scope.action_0"
+          }
+        ]
+      }
+    }
+  ]
+}
