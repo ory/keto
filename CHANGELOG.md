@@ -151,6 +151,9 @@
 
 ### Bug Fixes
 
+- Return meaningful status code when relation is not known
+  ([#1275](https://github.com/ory/keto/issues/1275))
+  ([1fef45a](https://github.com/ory/keto/commit/1fef45a2a0df895ca660225ad032f850d96f1c7d))
 - Subject expansion is terminated unexpectedly
   ([#1256](https://github.com/ory/keto/issues/1256))
   ([f88a479](https://github.com/ory/keto/commit/f88a479387df8f6fb1eba26f0cc922469de09804))
