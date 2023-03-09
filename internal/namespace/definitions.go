@@ -6,7 +6,8 @@ package namespace
 import (
 	"context"
 	"encoding/json"
-	"fmt"
+
+	"github.com/ory/herodot"
 
 	"github.com/ory/keto/internal/namespace/ast"
 )
@@ -57,5 +58,5 @@ func ASTRelationFor(ctx context.Context, m Manager, namespace, relation string) 
 			return &rel, nil
 		}
 	}
-	return nil, fmt.Errorf("relation %q not found", relation)
+	return nil, herodot.ErrBadRequest.WithReasonf("relation %q does not exist", relation)
 }
