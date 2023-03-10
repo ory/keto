@@ -41,8 +41,9 @@ func (h *handler) RegisterReadGRPC(s *grpc.Server) {
 func (h *handler) RegisterReadGRPCGateway(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts ...grpc.DialOption) error {
 	return rts.RegisterNamespacesServiceHandlerFromEndpoint(ctx, mux, endpoint, opts)
 }
+
 func (h *handler) RegisterReadGRPCGatewayConn(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
-	return rts.RegisterReadServiceHandler(ctx, mux, conn)
+	return rts.RegisterNamespacesServiceHandler(ctx, mux, conn)
 }
 
 func (h *handler) ListNamespaces(ctx context.Context, _ *rts.ListNamespacesRequest) (*rts.ListNamespacesResponse, error) {

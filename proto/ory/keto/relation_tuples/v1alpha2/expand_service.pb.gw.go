@@ -104,7 +104,7 @@ func RegisterExpandServiceHandlerServer(ctx context.Context, mux *runtime.ServeM
 // RegisterExpandServiceHandlerFromEndpoint is same as RegisterExpandServiceHandler but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
 func RegisterExpandServiceHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
-	conn, err := grpc.Dial(endpoint, opts...)
+	conn, err := grpc.DialContext(ctx, endpoint, opts...)
 	if err != nil {
 		return err
 	}

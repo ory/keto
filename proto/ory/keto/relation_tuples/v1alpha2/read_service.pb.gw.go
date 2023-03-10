@@ -104,7 +104,7 @@ func RegisterReadServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux
 // RegisterReadServiceHandlerFromEndpoint is same as RegisterReadServiceHandler but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
 func RegisterReadServiceHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
-	conn, err := grpc.Dial(endpoint, opts...)
+	conn, err := grpc.DialContext(ctx, endpoint, opts...)
 	if err != nil {
 		return err
 	}

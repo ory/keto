@@ -12,6 +12,7 @@ import (
 	"runtime/debug"
 	"strings"
 	"syscall"
+	"time"
 
 	grpcLogrus "github.com/grpc-ecosystem/go-grpc-middleware/logging/logrus"
 	grpcRecovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
@@ -40,6 +41,7 @@ import (
 	grpcHealthV1 "google.golang.org/grpc/health/grpc_health_v1"
 	"google.golang.org/grpc/reflection"
 	"google.golang.org/grpc/status"
+	"google.golang.org/grpc/test/bufconn"
 
 	"github.com/ory/keto/internal/check"
 	"github.com/ory/keto/internal/driver/config"
@@ -125,6 +127,7 @@ func (r *RegistryDefault) ServeAll(ctx context.Context) error {
 	// We need to separate the setup (invoking the functions that return the serve functions) from running the serve
 	// functions to mitigate race contitions in the HTTP router.
 	for _, serve := range []func() error{
+		r.serveInternalGRPC(innerCtx),
 		r.serveRead(innerCtx, doneShutdown),
 		r.serveWrite(innerCtx, doneShutdown),
 		r.serveOPLSyntax(innerCtx, doneShutdown),
@@ -134,6 +137,57 @@ func (r *RegistryDefault) ServeAll(ctx context.Context) error {
 	}
 
 	return eg.Wait()
+}
+
+func (r *RegistryDefault) initInternalGRPC() {
+	r.internalGRPC.listener = bufconn.Listen(1024 * 1024 * 10)
+	r.internalGRPC.dialer = func() (*grpc.ClientConn, error) {
+		return grpc.Dial("bufnet",
+			grpc.WithTransportCredentials(insecure.NewCredentials()),
+			grpc.WithContextDialer(func(context.Context, string) (net.Conn, error) { return r.internalGRPC.listener.Dial() }),
+		)
+	}
+
+}
+
+func (r *RegistryDefault) serveInternalGRPC(ctx context.Context) func() error {
+	return func() error {
+		serverDone := make(chan struct{})
+		internalGRPCServer := r.newInternalGRPCServer(ctx)
+		eg := &errgroup.Group{}
+
+		eg.Go(func() error {
+			err := internalGRPCServer.Serve(r.internalGRPCListener())
+			close(serverDone)
+			return err
+		})
+
+		eg.Go(func() (err error) {
+			<-ctx.Done()
+
+			internalGRPCServer.GracefulStop()
+			select {
+			case <-serverDone:
+				return nil
+			case <-time.After(graceful.DefaultShutdownTimeout):
+				internalGRPCServer.Stop()
+				return errors.New("graceful stop of internal gRPC server canceled, had to force it")
+			}
+		})
+
+		err := eg.Wait()
+		return err
+	}
+}
+
+func (r *RegistryDefault) internalGRPCListener() net.Listener {
+	r.internalGRPC.initOnce.Do(r.initInternalGRPC)
+	return r.internalGRPC.listener
+}
+
+func (r *RegistryDefault) internalGRPCDialer() GRPCDialer {
+	r.internalGRPC.initOnce.Do(r.initInternalGRPC)
+	return r.internalGRPC.dialer
 }
 
 func (r *RegistryDefault) serveRead(ctx context.Context, done chan<- struct{}) func() error {
@@ -333,7 +387,7 @@ func (r *RegistryDefault) ReadRouter(ctx context.Context) http.Handler {
 	}
 	n.Use(reqlog.NewMiddlewareFromLogger(r.l, "read#Ory Keto").ExcludePaths(healthx.AliveCheckPath, healthx.ReadyCheckPath))
 
-	conn, err := grpc.DialContext(ctx, r.Config(ctx).ReadAPIListenOn(), grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := r.internalGRPCDialer()()
 	if err != nil {
 		panic(err)
 	}
@@ -345,7 +399,7 @@ func (r *RegistryDefault) ReadRouter(ctx context.Context) http.Handler {
 	)...)
 	for _, h := range r.allHandlers() {
 		if h, ok := h.(ReadHandler); ok {
-			if err := h.RegisterReadGRPCGateway(ctx, mux, r.Config(ctx).ReadAPIListenOn(), grpc.WithTransportCredentials(insecure.NewCredentials())); err != nil {
+			if err := h.RegisterReadGRPCGatewayConn(ctx, mux, conn); err != nil {
 				panic(err)
 			}
 		}
@@ -380,7 +434,7 @@ func (r *RegistryDefault) WriteRouter(ctx context.Context) http.Handler {
 	}
 	n.Use(reqlog.NewMiddlewareFromLogger(r.l, "write#Ory Keto").ExcludePaths(healthx.AliveCheckPath, healthx.ReadyCheckPath))
 
-	conn, err := grpc.DialContext(ctx, r.Config(ctx).WriteAPIListenOn(), grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := r.internalGRPCDialer()()
 	if err != nil {
 		panic(err)
 	}
@@ -392,7 +446,7 @@ func (r *RegistryDefault) WriteRouter(ctx context.Context) http.Handler {
 	)...)
 	for _, h := range r.allHandlers() {
 		if h, ok := h.(WriteHandler); ok {
-			if err := h.RegisterWriteGRPCGateway(ctx, mux, r.Config(ctx).WriteAPIListenOn(), grpc.WithTransportCredentials(insecure.NewCredentials())); err != nil {
+			if err := h.RegisterWriteGRPCGatewayConn(ctx, mux, conn); err != nil {
 				panic(err)
 			}
 		}
@@ -435,7 +489,7 @@ func (r *RegistryDefault) OPLSyntaxRouter(ctx context.Context) http.Handler {
 	r.HealthHandler().SetHealthRoutes(pr.Router, false)
 	r.HealthHandler().SetVersionRoutes(pr.Router)
 
-	conn, err := grpc.DialContext(ctx, r.Config(ctx).OPLSyntaxAPIListenOn(), grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := r.internalGRPCDialer()()
 	if err != nil {
 		panic(err)
 	}
@@ -447,7 +501,7 @@ func (r *RegistryDefault) OPLSyntaxRouter(ctx context.Context) http.Handler {
 	)...)
 	for _, h := range r.allHandlers() {
 		if h, ok := h.(OPLSyntaxHandler); ok {
-			if err := h.RegisterSyntaxGRPCGateway(ctx, mux, r.Config(ctx).OPLSyntaxAPIListenOn(), grpc.WithTransportCredentials(insecure.NewCredentials())); err != nil {
+			if err := h.RegisterSyntaxGRPCGatewayConn(ctx, mux, conn); err != nil {
 				panic(err)
 			}
 		}
@@ -512,6 +566,22 @@ func (r *RegistryDefault) streamInterceptors(ctx context.Context) []grpc.StreamS
 	return is
 }
 
+// newInternalGRPCServer creates a new gRPC server with the default
+// interceptors, but without transport credentials, to be used internally.
+func (r *RegistryDefault) newInternalGRPCServer(ctx context.Context) *grpc.Server {
+	s := grpc.NewServer(
+		grpc.ChainStreamInterceptor(r.streamInterceptors(ctx)...),
+		grpc.ChainUnaryInterceptor(r.unaryInterceptors(ctx)...),
+	)
+
+	r.registerCommonGRPCServices(s)
+	r.registerReadGRPCServices(s)
+	r.registerWriteGRPCServices(s)
+	r.registerOPLGRPCServices(s)
+
+	return s
+}
+
 func (r *RegistryDefault) newGrpcServer(ctx context.Context) *grpc.Server {
 	opts := []grpc.ServerOption{
 		grpc.ChainStreamInterceptor(r.streamInterceptors(ctx)...),
@@ -523,50 +593,56 @@ func (r *RegistryDefault) newGrpcServer(ctx context.Context) *grpc.Server {
 	return grpc.NewServer(opts...)
 }
 
-func (r *RegistryDefault) ReadGRPCServer(ctx context.Context) *grpc.Server {
-	s := r.newGrpcServer(ctx)
-
+func (r *RegistryDefault) registerCommonGRPCServices(s *grpc.Server) {
 	grpcHealthV1.RegisterHealthServer(s, r.HealthServer())
 	rts.RegisterVersionServiceServer(s, r)
 	reflection.Register(s)
+}
 
+func (r *RegistryDefault) registerReadGRPCServices(s *grpc.Server) {
 	for _, h := range r.allHandlers() {
 		if h, ok := h.(ReadHandler); ok {
 			h.RegisterReadGRPC(s)
 		}
 	}
+}
+
+func (r *RegistryDefault) registerWriteGRPCServices(s *grpc.Server) {
+	for _, h := range r.allHandlers() {
+		if h, ok := h.(WriteHandler); ok {
+			h.RegisterWriteGRPC(s)
+		}
+	}
+}
+
+func (r *RegistryDefault) registerOPLGRPCServices(s *grpc.Server) {
+	for _, h := range r.allHandlers() {
+		if h, ok := h.(OPLSyntaxHandler); ok {
+			h.RegisterSyntaxGRPC(s)
+		}
+	}
+}
+
+func (r *RegistryDefault) ReadGRPCServer(ctx context.Context) *grpc.Server {
+	s := r.newGrpcServer(ctx)
+	r.registerCommonGRPCServices(s)
+	r.registerReadGRPCServices(s)
 
 	return s
 }
 
 func (r *RegistryDefault) WriteGRPCServer(ctx context.Context) *grpc.Server {
 	s := r.newGrpcServer(ctx)
-
-	grpcHealthV1.RegisterHealthServer(s, r.HealthServer())
-	rts.RegisterVersionServiceServer(s, r)
-	reflection.Register(s)
-
-	for _, h := range r.allHandlers() {
-		if h, ok := h.(WriteHandler); ok {
-			h.RegisterWriteGRPC(s)
-		}
-	}
+	r.registerCommonGRPCServices(s)
+	r.registerWriteGRPCServices(s)
 
 	return s
 }
 
 func (r *RegistryDefault) OplGRPCServer(ctx context.Context) *grpc.Server {
 	s := r.newGrpcServer(ctx)
-
-	grpcHealthV1.RegisterHealthServer(s, r.HealthServer())
-	rts.RegisterVersionServiceServer(s, r)
-	reflection.Register(s)
-
-	for _, h := range r.allHandlers() {
-		if h, ok := h.(OPLSyntaxHandler); ok {
-			h.RegisterSyntaxGRPC(s)
-		}
-	}
+	r.registerCommonGRPCServices(s)
+	r.registerOPLGRPCServices(s)
 
 	return s
 }
