@@ -23,7 +23,8 @@
         "id": {
           "type": "integer",
           "title": "The unique ID of the namespace. Can not be changed once set.",
-          "minimum": 0
+          "minimum": 0,
+          "maximum": 2147483647
         },
         "config": {
           "type": "object",
