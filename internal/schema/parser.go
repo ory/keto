@@ -141,6 +141,8 @@ func (p *parser) match(tokens ...interface{}) (matched bool) {
 			if !token(p) {
 				return false
 			}
+		default:
+			panic(fmt.Sprintf("unexpected token type %T", token))
 		}
 	}
 	return true
@@ -414,10 +416,17 @@ func setOperation(typ itemType) ast.Operator {
 	panic("not reached")
 }
 
+func (p *parser) matchPropertyAccess(propertyName any) bool {
+	return p.matchIf(is(itemBracketLeft), "[", propertyName, "]") || p.match(".", propertyName)
+}
+
 func (p *parser) parsePermissionExpression() (child ast.Child) {
 	var name, verb item
 
-	if !p.match("this", ".", &verb, ".", &name) {
+	if !p.match("this", ".", &verb) {
+		return
+	}
+	if !p.matchPropertyAccess(&name) {
 		return
 	}
 
@@ -444,7 +453,6 @@ func (p *parser) parsePermissionExpression() (child ast.Child) {
 
 	default:
 		p.addFatal(verb, "expected 'related' or 'permits', got %q", verb.Val)
-
 	}
 
 	return
@@ -469,15 +477,21 @@ func (p *parser) parseTupleToSubjectSet(relation item) (rewrite ast.Child) {
 
 	switch verb.Val {
 	case "related":
+		if !p.matchPropertyAccess(&subjectSetRel) {
+			return nil
+		}
 		p.match(
-			".", &subjectSetRel, ".", "includes", "(", "ctx", ".", "subject",
+			".", "includes", "(", "ctx", ".", "subject",
 			optional(","), ")", optional(","), ")",
 		)
 		p.addCheck(checkAllRelationsTypesHaveRelation(
 			&p.namespace, relation, subjectSetRel,
 		))
 	case "permits":
-		p.match(".", &subjectSetRel, "(", "ctx", ")", ")")
+		if !p.matchPropertyAccess(&subjectSetRel) {
+			return nil
+		}
+		p.match("(", "ctx", ")", ")")
 		p.addCheck(checkAllRelationsTypesHaveRelation(
 			&p.namespace, relation, subjectSetRel,
 		))
