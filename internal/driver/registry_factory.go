@@ -76,15 +76,19 @@ func NewDefaultRegistry(ctx context.Context, flags *pflag.FlagSet, withoutNetwor
 	c.WithSource(options.Contextualizer().Config(ctx, cp))
 
 	r := &RegistryDefault{
-		c:                         c,
-		l:                         l,
-		tracerWrapper:             options.TracerWrapper,
-		ctxer:                     options.Contextualizer(),
-		defaultUnaryInterceptors:  options.GRPCUnaryInterceptors(),
-		defaultStreamInterceptors: options.GRPCStreamInterceptors(),
-		defaultHttpMiddlewares:    options.HTTPMiddlewares(),
-		defaultMigrationOptions:   options.MigrationOptions(),
-		healthReadyCheckers:       options.ReadyCheckers(),
+		c:                          c,
+		l:                          l,
+		tracerWrapper:              options.TracerWrapper,
+		ctxer:                      options.Contextualizer(),
+		defaultUnaryInterceptors:   options.GRPCUnaryInterceptors,
+		defaultStreamInterceptors:  options.GRPCStreamInterceptors,
+		internalUnaryInterceptors:  options.InternalGRPCUnaryInterceptors,
+		internalStreamInterceptors: options.InternalGRPCStreamInterceptors,
+		externalUnaryInterceptors:  options.ExternalGRPCUnaryInterceptors,
+		externalStreamInterceptors: options.ExternalGRPCStreamInterceptors,
+		defaultHttpMiddlewares:     options.HTTPMiddlewares(),
+		defaultMigrationOptions:    options.MigrationOptions(),
+		healthReadyCheckers:        options.ReadyCheckers(),
 	}
 
 	init := r.Init

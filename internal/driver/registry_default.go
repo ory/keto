@@ -75,12 +75,13 @@ type (
 		pmm            *prometheus.MetricsManager
 		metricsHandler *prometheus.Handler
 
-		defaultUnaryInterceptors  []grpc.UnaryServerInterceptor
-		defaultStreamInterceptors []grpc.StreamServerInterceptor
-		defaultHttpMiddlewares    []func(rw http.ResponseWriter, r *http.Request, next http.HandlerFunc)
-		grpcTransportCredentials  credentials.TransportCredentials
-		defaultMigrationOptions   []popx.MigrationBoxOption
-		healthReadyCheckers       healthx.ReadyCheckers
+		defaultUnaryInterceptors, internalUnaryInterceptors, externalUnaryInterceptors    []grpc.UnaryServerInterceptor
+		defaultStreamInterceptors, internalStreamInterceptors, externalStreamInterceptors []grpc.StreamServerInterceptor
+
+		defaultHttpMiddlewares   []func(rw http.ResponseWriter, r *http.Request, next http.HandlerFunc)
+		grpcTransportCredentials credentials.TransportCredentials
+		defaultMigrationOptions  []popx.MigrationBoxOption
+		healthReadyCheckers      healthx.ReadyCheckers
 
 		internalGRPC struct {
 			initOnce sync.Once
