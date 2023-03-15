@@ -25,11 +25,11 @@ const (
 )
 
 // Add adds an event to the current span in the context.
-func Add(ctx context.Context, p x.NetworkIDProvider, event Event) {
-	trace.SpanFromContext(ctx).AddEvent(
+func Add(ctx context.Context, p x.NetworkIDProvider, event Event, opt ...attribute.KeyValue) {
+	trace.SpanFromContext(semconv.ContextWithAttributes(ctx)).AddEvent(
 		string(event),
 		trace.WithAttributes(
-			attribute.String(semconv.AttrNID, p.NetworkID(ctx).String()),
+			opt...,
 		),
 	)
 }
