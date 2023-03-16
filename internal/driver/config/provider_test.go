@@ -168,6 +168,26 @@ namespaces: file://%s`,
 	})
 }
 
+func TestInvalidNamespaceConfig(t *testing.T) {
+	config := createFile(t, `
+dsn: memory
+namespaces:
+  - name: n0
+    id: 2147483648
+`)
+	hook := test.Hook{}
+	l := logrusx.New("test", "today", logrusx.WithHook(&hook))
+	_, err := NewDefault(
+		context.Background(),
+		pflag.NewFlagSet("test", pflag.ContinueOnError),
+		l,
+		configx.WithConfigFiles(config),
+	)
+
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "must be <= 2.147483647e+09 but found 2147483648")
+}
+
 // Test that the namespaces can be configured through the Ory Permission
 // Language.
 func TestRewritesNamespaceConfig(t *testing.T) {
