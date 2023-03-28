@@ -197,7 +197,7 @@ func (m *RelationTupleDelta) validate(all bool) error {
 	if _, ok := _RelationTupleDelta_Action_InLookup[m.GetAction()]; !ok {
 		err := RelationTupleDeltaValidationError{
 			field:  "Action",
-			reason: "value must be in list [1 2]",
+			reason: "value must be in list [ACTION_INSERT ACTION_DELETE]",
 		}
 		if !all {
 			return err
