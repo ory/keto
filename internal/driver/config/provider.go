@@ -12,6 +12,7 @@ import (
 
 	"github.com/ory/x/fetcher"
 	"github.com/ory/x/httpx"
+	"go.opentelemetry.io/otel/trace"
 
 	"github.com/ory/keto/embedx"
 
@@ -205,7 +206,10 @@ func (k *Config) DSN() string {
 }
 
 func (k *Config) Fetcher() *fetcher.Fetcher {
-	var opts []httpx.ResilientOptions
+	// Tracing still works correctly even though we pass a no-op tracer
+	// here, because the otelhttp package will preferentially use the
+	// tracer from the incoming request context over this one.
+	opts := []httpx.ResilientOptions{httpx.ResilientClientWithTracer(trace.NewNoopTracerProvider().Tracer("keto/internal/driver/config"))}
 	if k.p.Bool("clients.http.disallow_private_ip_ranges") {
 		opts = append(opts, httpx.ResilientClientDisallowInternalIPs())
 	}
