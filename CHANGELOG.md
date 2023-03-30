@@ -7,17 +7,18 @@
 
 - [0.0.0 (2023-03-30)](#000-2023-03-30)
   - [Bug Fixes](#bug-fixes)
+  - [Features](#features)
 - [0.11.1-alpha.0 (2023-03-09)](#0111-alpha0-2023-03-09)
   - [Bug Fixes](#bug-fixes-1)
   - [Code Generation](#code-generation)
-  - [Features](#features)
+  - [Features](#features-1)
   - [Tests](#tests)
 - [0.11.0-alpha.0 (2023-02-23)](#0110-alpha0-2023-02-23)
   - [Bug Fixes](#bug-fixes-2)
   - [Code Generation](#code-generation-1)
   - [Code Refactoring](#code-refactoring)
   - [Documentation](#documentation)
-  - [Features](#features-1)
+  - [Features](#features-2)
   - [Tests](#tests-1)
   - [Unclassified](#unclassified)
 - [0.10.0-alpha.0 (2022-09-27)](#0100-alpha0-2022-09-27)
@@ -26,7 +27,7 @@
   - [Code Generation](#code-generation-2)
   - [Code Refactoring](#code-refactoring-1)
   - [Documentation](#documentation-1)
-  - [Features](#features-2)
+  - [Features](#features-3)
   - [Tests](#tests-2)
 - [0.9.0-alpha.0 (2022-08-01)](#090-alpha0-2022-08-01)
   - [Breaking Changes](#breaking-changes)
@@ -34,7 +35,7 @@
     - [Code Generation](#code-generation-3)
     - [Code Refactoring](#code-refactoring-2)
     - [Documentation](#documentation-2)
-    - [Features](#features-3)
+    - [Features](#features-4)
     - [Tests](#tests-3)
 - [0.8.0-alpha.2 (2022-03-04)](#080-alpha2-2022-03-04)
   - [Bug Fixes](#bug-fixes-5)
@@ -49,7 +50,7 @@
   - [Code Generation](#code-generation-6)
   - [Code Refactoring](#code-refactoring-3)
   - [Documentation](#documentation-4)
-  - [Features](#features-4)
+  - [Features](#features-5)
 - [0.7.0-alpha.1 (2021-10-19)](#070-alpha1-2021-10-19)
   - [Code Generation](#code-generation-7)
   - [Documentation](#documentation-5)
@@ -60,7 +61,7 @@
     - [Code Generation](#code-generation-8)
     - [Code Refactoring](#code-refactoring-4)
     - [Documentation](#documentation-6)
-    - [Features](#features-5)
+    - [Features](#features-6)
     - [Tests](#tests-5)
 - [0.6.0-alpha.3 (2021-04-29)](#060-alpha3-2021-04-29)
   - [Code Generation](#code-generation-9)
@@ -68,14 +69,14 @@
   - [Bug Fixes](#bug-fixes-9)
   - [Code Generation](#code-generation-10)
   - [Documentation](#documentation-7)
-  - [Features](#features-6)
+  - [Features](#features-7)
 - [0.6.0-alpha.1 (2021-04-07)](#060-alpha1-2021-04-07)
   - [Bug Fixes](#bug-fixes-10)
   - [Build System](#build-system-1)
   - [Code Generation](#code-generation-11)
   - [Code Refactoring](#code-refactoring-5)
   - [Documentation](#documentation-8)
-  - [Features](#features-7)
+  - [Features](#features-8)
   - [Tests](#tests-6)
 - [0.5.6-alpha.1 (2020-05-28)](#056-alpha1-2020-05-28)
   - [Bug Fixes](#bug-fixes-11)
@@ -103,7 +104,7 @@
 - [0.4.4-alpha.1 (2020-02-14)](#044-alpha1-2020-02-14)
   - [Bug Fixes](#bug-fixes-16)
   - [Documentation](#documentation-14)
-  - [Features](#features-8)
+  - [Features](#features-9)
   - [Unclassified](#unclassified-1)
 - [0.4.3-alpha.2 (2020-01-31)](#043-alpha2-2020-01-31)
   - [Unclassified](#unclassified-2)
@@ -157,6 +158,15 @@
 - Validate that namespace ID is int32
   ([#1278](https://github.com/ory/keto/issues/1278))
   ([d093b37](https://github.com/ory/keto/commit/d093b37930b9e203fd5eb14fe6ca6ba4b8154e92))
+
+### Features
+
+- Add tracing to fetcher ([#1294](https://github.com/ory/keto/issues/1294))
+  ([4ffb7bc](https://github.com/ory/keto/commit/4ffb7bcbbc6a43a9402e39bddf4a2d11e87f4b48)):
+
+  - feat: add tracing to fetcher
+
+  - rerun CI
 
 # [0.11.1-alpha.0](https://github.com/ory/keto/compare/v0.11.0-alpha.0...v0.11.1-alpha.0) (2023-03-09)
 
