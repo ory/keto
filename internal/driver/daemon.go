@@ -67,7 +67,7 @@ func (r *RegistryDefault) enableSqa(cmd *cobra.Command) {
 			Service:       "ory-keto",
 			ClusterID:     metricsx.Hash(r.Config(ctx).DSN()),
 			IsDevelopment: strings.HasPrefix(r.Config(ctx).DSN(), "sqlite"),
-			WriteKey:      "qQlI6q8Q4WvkzTjKQSor4sHYOikHIvvi",
+			WriteKey:      "jk32cFATnj9GKbQdFL7fBB9qtKZdX9j7",
 			WhitelistedPaths: []string{
 				"/",
 				healthx.AliveCheckPath,
