@@ -5,7 +5,7 @@
 
 **Table of Contents**
 
-- [0.0.0 (2023-03-30)](#000-2023-03-30)
+- [0.0.0 (2023-04-04)](#000-2023-04-04)
   - [Bug Fixes](#bug-fixes)
   - [Features](#features)
 - [0.11.1-alpha.0 (2023-03-09)](#0111-alpha0-2023-03-09)
@@ -151,10 +151,12 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.11.1-alpha.0...v0.0.0) (2023-03-30)
+# [0.0.0](https://github.com/ory/keto/compare/v0.11.1-alpha.0...v0.0.0) (2023-04-04)
 
 ### Bug Fixes
 
+- Reduce SQL tracing noise ([#1301](https://github.com/ory/keto/issues/1301))
+  ([b1cf198](https://github.com/ory/keto/commit/b1cf1989ceaf30598e456c13116dafce521a4088))
 - Sqa write key for correct product
   ([#1297](https://github.com/ory/keto/issues/1297))
   ([23ccef8](https://github.com/ory/keto/commit/23ccef87ec0b34d584a88978cd9e91fc0a37ae33))
