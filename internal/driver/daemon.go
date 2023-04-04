@@ -446,6 +446,7 @@ func (r *RegistryDefault) unaryInterceptors(ctx context.Context) []grpc.UnarySer
 	is = append(is,
 		herodot.UnaryErrorUnwrapInterceptor,
 		grpcLogrus.UnaryServerInterceptor(r.l.Entry),
+		prometheus.UnaryServerInterceptor,
 	)
 	if r.sqaService != nil {
 		is = append(is, r.sqaService.UnaryInterceptor)
@@ -464,6 +465,7 @@ func (r *RegistryDefault) streamInterceptors(ctx context.Context) []grpc.StreamS
 	is = append(is,
 		herodot.StreamErrorUnwrapInterceptor,
 		grpcLogrus.StreamServerInterceptor(r.l.Entry),
+		prometheus.StreamServerInterceptor,
 	)
 	if r.sqaService != nil {
 		is = append(is, r.sqaService.StreamInterceptor)
@@ -479,7 +481,9 @@ func (r *RegistryDefault) newGrpcServer(ctx context.Context) *grpc.Server {
 	if r.grpcTransportCredentials != nil {
 		opts = append(opts, grpc.Creds(r.grpcTransportCredentials))
 	}
-	return grpc.NewServer(opts...)
+	server := grpc.NewServer(opts...)
+	prometheus.Register(server)
+	return server
 }
 
 func (r *RegistryDefault) ReadGRPCServer(ctx context.Context) *grpc.Server {
