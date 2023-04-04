@@ -27,6 +27,7 @@ func (r *RegistryDefault) PopConnectionWithOpts(ctx context.Context, popOpts ...
 		InstrumentedDriverOptions: []instrumentedsql.Opt{
 			instrumentedsql.WithTracer(otelsql.NewTracer()),
 			instrumentedsql.WithIncludeArgs(),
+			instrumentedsql.WithOpsExcluded(instrumentedsql.OpSQLRowsNext),
 		},
 	}
 	for _, o := range popOpts {
