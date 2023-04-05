@@ -2,7 +2,7 @@ version: v0.8.0-alpha.2
 
 log:
   level: debug
-  
+
 namespaces:
   - id: 0
     name: videos
