@@ -482,7 +482,6 @@ func (r *RegistryDefault) newGrpcServer(ctx context.Context) *grpc.Server {
 		opts = append(opts, grpc.Creds(r.grpcTransportCredentials))
 	}
 	server := grpc.NewServer(opts...)
-	prometheus.Register(server)
 	return server
 }
 
@@ -491,6 +490,7 @@ func (r *RegistryDefault) ReadGRPCServer(ctx context.Context) *grpc.Server {
 
 	grpcHealthV1.RegisterHealthServer(s, r.HealthServer())
 	rts.RegisterVersionServiceServer(s, r)
+	prometheus.Register(s)
 	reflection.Register(s)
 
 	for _, h := range r.allHandlers() {
@@ -507,6 +507,7 @@ func (r *RegistryDefault) WriteGRPCServer(ctx context.Context) *grpc.Server {
 
 	grpcHealthV1.RegisterHealthServer(s, r.HealthServer())
 	rts.RegisterVersionServiceServer(s, r)
+	prometheus.Register(s)
 	reflection.Register(s)
 
 	for _, h := range r.allHandlers() {
@@ -514,7 +515,6 @@ func (r *RegistryDefault) WriteGRPCServer(ctx context.Context) *grpc.Server {
 			h.RegisterWriteGRPC(s)
 		}
 	}
-
 	return s
 }
 
@@ -523,6 +523,7 @@ func (r *RegistryDefault) OplGRPCServer(ctx context.Context) *grpc.Server {
 
 	grpcHealthV1.RegisterHealthServer(s, r.HealthServer())
 	rts.RegisterVersionServiceServer(s, r)
+	prometheus.Register(s)
 	reflection.Register(s)
 
 	for _, h := range r.allHandlers() {

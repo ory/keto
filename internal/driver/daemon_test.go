@@ -5,15 +5,11 @@ package driver
 
 import (
 	"fmt"
-	"io"
-	"net"
 	"net/http"
-	"net/http/httptest"
 	"testing"
-	"time"
 
-	pbTestproto "github.com/grpc-ecosystem/go-grpc-prometheus/examples/testproto"
 	"github.com/phayes/freeport"
+	"github.com/prometheus/common/expfmt"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/grpc"
@@ -27,60 +23,64 @@ import (
 	"context"
 
 	prometheus "github.com/ory/x/prometheusx"
+	ioprometheusclient "github.com/prometheus/client_model/go"
 	"github.com/stretchr/testify/require"
-
-	"github.com/ory/keto/internal/x/dbx"
 )
 
-const (
-	promLogLine        = "promhttp_metric_handler_requests_total"
-	promGrpcLogLine    = "grpc_server_handled_total"
-	pingDefaultValue   = "I like kittens."
-	countListResponses = 42
-)
+func TestScrapingEndpoint(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
 
-func TestMetricsHandler(t *testing.T) {
-	for _, dsn := range dbx.GetDSNs(t, false) {
-		serverListener, err := net.Listen("tcp", "127.0.0.1:0")
-		require.NoError(t, err, "must be able to allocate a port for serverListener")
-		// This is the point where we hook up the interceptor
-		server := grpc.NewServer(
-			grpc.StreamInterceptor(prometheus.StreamServerInterceptor),
-			grpc.UnaryInterceptor(prometheus.UnaryServerInterceptor),
-		)
-		pbTestproto.RegisterTestServiceServer(server, &testService{t})
+	port, err := freeport.GetFreePort()
+	require.NoError(t, err)
 
-		go func() {
-			server.Serve(serverListener)
-		}()
+	r := NewSqliteTestRegistry(t, false)
+	require.NoError(t, r.Config(ctx).Set(config.KeyWriteAPIPort, port))
 
-		clientConn, err := grpc.Dial(serverListener.Addr().String(), grpc.WithInsecure(), grpc.WithBlock(), grpc.WithTimeout(2*time.Second))
-		require.NoError(t, err, "must not error on client Dial")
-		testClient := pbTestproto.NewTestServiceClient(clientConn)
+	//metrics port
+	portMetrics, err := freeport.GetFreePort()
+	require.NoError(t, err)
+	require.NoError(t, r.Config(ctx).Set(config.KeyMetricsPort, portMetrics))
 
-		ctx, cancel := context.WithTimeout(context.TODO(), 2*time.Second)
+	eg := errgroup.Group{}
+	doneShutdown := make(chan struct{})
+	eg.Go(r.serveWrite(ctx, doneShutdown))
+	eg.Go(r.serveMetrics(ctx, doneShutdown))
 
-		_, err = testClient.PingList(ctx, &pbTestproto.PingRequest{})
-		prometheus.Register(server)
+	conn, err := grpc.DialContext(ctx, fmt.Sprintf("127.0.0.1:%d", port), grpc.WithTransportCredentials(insecure.NewCredentials()))
+	require.NoError(t, err)
+	defer conn.Close()
 
-		r := NewTestRegistry(t, dsn)
-		handler := r.metricsRouter(context.Background())
-		serverHttp := httptest.NewServer(handler)
-		defer serverHttp.Close()
-
-		resp, err := http.Get(serverHttp.URL + prometheus.MetricsPrometheusPath)
-		require.NoError(t, err)
-		require.Equal(t, resp.StatusCode, http.StatusOK)
-
-		body, err := io.ReadAll(resp.Body)
-		require.NoError(t, err)
-		require.Contains(t, string(body), promLogLine)
-		require.Contains(t, string(body), promGrpcLogLine)
-
-		cancel()
-		server.Stop()
-		serverListener.Close()
+	cl := grpcHealthV1.NewHealthClient(conn)
+	watcher, err := cl.Watch(ctx, &grpcHealthV1.HealthCheckRequest{})
+	require.NoError(t, err)
+	require.NoError(t, watcher.CloseSend())
+	for err := status.Error(codes.Unavailable, "init"); status.Code(err) != codes.Unavailable; _, err = watcher.Recv() {
 	}
+
+	promresp, err := http.Get(fmt.Sprintf("http://127.0.0.1:%d", portMetrics) + prometheus.MetricsPrometheusPath)
+	require.NoError(t, err)
+	require.EqualValues(t, http.StatusOK, promresp.StatusCode)
+
+	textParser := expfmt.TextParser{}
+	text, err := textParser.TextToMetricFamilies(promresp.Body)
+	require.NoError(t, err)
+	require.EqualValues(t, "grpc_server_handled_total", *text["grpc_server_handled_total"].Name)
+	require.EqualValues(t, "Check", getLabelValue("grpc_method", text["grpc_server_handled_total"].Metric))
+	require.EqualValues(t, "grpc.health.v1.Health", getLabelValue("grpc_service", text["grpc_server_handled_total"].Metric))
+
+	require.EqualValues(t, "grpc_server_msg_sent_total", *text["grpc_server_msg_sent_total"].Name)
+	require.EqualValues(t, "Check", getLabelValue("grpc_method", text["grpc_server_msg_sent_total"].Metric))
+	require.EqualValues(t, "grpc.health.v1.Health", getLabelValue("grpc_service", text["grpc_server_msg_sent_total"].Metric))
+
+	require.EqualValues(t, "grpc_server_msg_received_total", *text["grpc_server_msg_received_total"].Name)
+	require.EqualValues(t, "Check", getLabelValue("grpc_method", text["grpc_server_msg_received_total"].Metric))
+	require.EqualValues(t, "grpc.health.v1.Health", getLabelValue("grpc_service", text["grpc_server_msg_received_total"].Metric))
+
+	cancel()
+	<-doneShutdown
+	<-doneShutdown
+	require.NoError(t, eg.Wait())
 }
 
 func TestPanicRecovery(t *testing.T) {
@@ -135,31 +135,12 @@ func TestPanicRecovery(t *testing.T) {
 	require.NoError(t, eg.Wait())
 }
 
-type testService struct {
-	t *testing.T
-}
-
-func (s *testService) PingEmpty(ctx context.Context, _ *pbTestproto.Empty) (*pbTestproto.PingResponse, error) {
-	return &pbTestproto.PingResponse{Value: pingDefaultValue, Counter: 42}, nil
-}
-
-func (s *testService) Ping(ctx context.Context, ping *pbTestproto.PingRequest) (*pbTestproto.PingResponse, error) {
-	// Send user trailers and headers.
-	return &pbTestproto.PingResponse{Value: ping.Value, Counter: 42}, nil
-}
-
-func (s *testService) PingError(ctx context.Context, ping *pbTestproto.PingRequest) (*pbTestproto.Empty, error) {
-	code := codes.Code(ping.ErrorCodeReturned)
-	return nil, status.Errorf(code, "Userspace error.")
-}
-
-func (s *testService) PingList(ping *pbTestproto.PingRequest, stream pbTestproto.TestService_PingListServer) error {
-	if ping.ErrorCodeReturned != 0 {
-		return status.Errorf(codes.Code(ping.ErrorCodeReturned), "foobar")
+func getLabelValue(name string, metric []*ioprometheusclient.Metric) string {
+	for _, label := range metric[0].Label {
+		if *label.Name == name {
+			return *label.Value
+		}
 	}
-	// Send user trailers and headers.
-	for i := 0; i < countListResponses; i++ {
-		stream.Send(&pbTestproto.PingResponse{Value: ping.Value, Counter: int32(i)})
-	}
-	return nil
+
+	return ""
 }
