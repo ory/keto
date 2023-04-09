@@ -3,6 +3,10 @@ version: v0.8.0-alpha.2
 log:
   level: debug
 
+namespaces:
+  - name: my_app
+    id: 1
+
 serve:
   read:
     host: 0.0.0.0
