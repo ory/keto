@@ -14,6 +14,7 @@ services:
     command: ["migrate", "up", "-y"]
     restart: on-failure
   keto:
+    image: oryd/keto:v0.11.1-alpha.0
     links:
       - postgresd:postgresd
     volumes:
