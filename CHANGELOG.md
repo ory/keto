@@ -183,6 +183,17 @@
 
   - rerun CI
 
+- Enable GRPC metrics ([#1302](https://github.com/ory/keto/issues/1302))
+  ([91c12c9](https://github.com/ory/keto/commit/91c12c935d34952db5b3798990b346091041dff8)):
+
+  - feat: enable GRPC metrics
+
+  - fix: test and server registration
+
+  - fix: GRPC metrics
+
+  - fix: clean up for PR
+
 # [0.11.1-alpha.0](https://github.com/ory/keto/compare/v0.11.0-alpha.0...v0.11.1-alpha.0) (2023-03-09)
 
 This release includes small fixes and improvements.
