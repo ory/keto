@@ -446,7 +446,7 @@ func (r *RegistryDefault) unaryInterceptors(ctx context.Context) []grpc.UnarySer
 	is = append(is,
 		herodot.UnaryErrorUnwrapInterceptor,
 		grpcLogrus.UnaryServerInterceptor(r.l.Entry),
-		prometheus.UnaryServerInterceptor,
+		r.pmm.UnaryServerInterceptor,
 	)
 	if r.sqaService != nil {
 		is = append(is, r.sqaService.UnaryInterceptor)
@@ -465,7 +465,7 @@ func (r *RegistryDefault) streamInterceptors(ctx context.Context) []grpc.StreamS
 	is = append(is,
 		herodot.StreamErrorUnwrapInterceptor,
 		grpcLogrus.StreamServerInterceptor(r.l.Entry),
-		prometheus.StreamServerInterceptor,
+		r.pmm.StreamServerInterceptor,
 	)
 	if r.sqaService != nil {
 		is = append(is, r.sqaService.StreamInterceptor)
@@ -490,7 +490,6 @@ func (r *RegistryDefault) ReadGRPCServer(ctx context.Context) *grpc.Server {
 
 	grpcHealthV1.RegisterHealthServer(s, r.HealthServer())
 	rts.RegisterVersionServiceServer(s, r)
-	prometheus.Register(s)
 	reflection.Register(s)
 
 	for _, h := range r.allHandlers() {
@@ -498,6 +497,7 @@ func (r *RegistryDefault) ReadGRPCServer(ctx context.Context) *grpc.Server {
 			h.RegisterReadGRPC(s)
 		}
 	}
+	r.pmm.Register(s)
 
 	return s
 }
@@ -507,7 +507,6 @@ func (r *RegistryDefault) WriteGRPCServer(ctx context.Context) *grpc.Server {
 
 	grpcHealthV1.RegisterHealthServer(s, r.HealthServer())
 	rts.RegisterVersionServiceServer(s, r)
-	prometheus.Register(s)
 	reflection.Register(s)
 
 	for _, h := range r.allHandlers() {
@@ -515,6 +514,8 @@ func (r *RegistryDefault) WriteGRPCServer(ctx context.Context) *grpc.Server {
 			h.RegisterWriteGRPC(s)
 		}
 	}
+	r.pmm.Register(s)
+
 	return s
 }
 
@@ -523,7 +524,6 @@ func (r *RegistryDefault) OplGRPCServer(ctx context.Context) *grpc.Server {
 
 	grpcHealthV1.RegisterHealthServer(s, r.HealthServer())
 	rts.RegisterVersionServiceServer(s, r)
-	prometheus.Register(s)
 	reflection.Register(s)
 
 	for _, h := range r.allHandlers() {
@@ -531,6 +531,7 @@ func (r *RegistryDefault) OplGRPCServer(ctx context.Context) *grpc.Server {
 			h.RegisterSyntaxGRPC(s)
 		}
 	}
+	r.pmm.Register(s)
 
 	return s
 }
