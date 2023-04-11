@@ -4,8 +4,6 @@ module github.com/ory/keto
 
 replace github.com/ory/keto/proto => ./proto
 
-replace github.com/ory/x => github.com/nipsufn/x v0.0.421-0.20230411092501-a535cc4dda90
-
 require (
 	github.com/cenkalti/backoff/v3 v3.2.2
 	github.com/ghodss/yaml v1.0.0
@@ -21,7 +19,7 @@ require (
 	github.com/ory/herodot v0.9.13
 	github.com/ory/jsonschema/v3 v3.0.7
 	github.com/ory/keto/proto v0.10.0-alpha.0
-	github.com/ory/x v0.0.547
+	github.com/ory/x v0.0.550
 	github.com/pelletier/go-toml v1.9.5
 	github.com/phayes/freeport v0.0.0-20220201140144-74d24b5ae9f5
 	github.com/pkg/errors v0.9.1
