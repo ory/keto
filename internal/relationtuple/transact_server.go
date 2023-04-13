@@ -34,7 +34,7 @@ func protoTuplesWithAction(deltas []*rts.RelationTupleDelta, action rts.Relation
 }
 
 func (h *handler) TransactRelationTuples(ctx context.Context, req *rts.TransactRelationTuplesRequest) (*rts.TransactRelationTuplesResponse, error) {
-	events.Add(ctx, h.d, events.RelationtuplesChanged)
+	events.Emit(ctx, events.EventRelationtuplesChanged)
 
 	insertTuples, err := protoTuplesWithAction(req.RelationTupleDeltas, rts.RelationTupleDelta_ACTION_INSERT)
 	if err != nil {
@@ -66,7 +66,7 @@ func (h *handler) TransactRelationTuples(ctx context.Context, req *rts.TransactR
 }
 
 func (h *handler) DeleteRelationTuples(ctx context.Context, req *rts.DeleteRelationTuplesRequest) (*rts.DeleteRelationTuplesResponse, error) {
-	events.Add(ctx, h.d, events.RelationtuplesDeleted)
+	events.Emit(ctx, events.EventRelationtuplesDeleted)
 
 	var q ketoapi.RelationQuery
 
@@ -128,7 +128,7 @@ type createRelationshipBody struct {
 func (h *handler) createRelation(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	ctx := r.Context()
 
-	events.Add(ctx, h.d, events.RelationtuplesCreated)
+	events.Emit(ctx, events.EventRelationtuplesCreated)
 
 	var rt ketoapi.RelationTuple
 	if err := json.NewDecoder(r.Body).Decode(&rt); err != nil {
@@ -182,7 +182,7 @@ func (h *handler) createRelation(w http.ResponseWriter, r *http.Request, _ httpr
 func (h *handler) deleteRelations(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	ctx := r.Context()
 
-	events.Add(ctx, h.d, events.RelationtuplesDeleted)
+	events.Emit(ctx, events.EventRelationtuplesDeleted)
 
 	if err := validate.All(r,
 		validate.NoExtraQueryParams(ketoapi.RelationQueryKeys...),
@@ -252,7 +252,7 @@ func internalTuplesWithAction(deltas []*ketoapi.PatchDelta, action ketoapi.Patch
 func (h *handler) patchRelationTuples(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	ctx := r.Context()
 
-	events.Add(ctx, h.d, events.RelationtuplesChanged)
+	events.Emit(ctx, events.EventRelationtuplesChanged)
 
 	var deltas []*ketoapi.PatchDelta
 	if err := json.NewDecoder(r.Body).Decode(&deltas); err != nil {

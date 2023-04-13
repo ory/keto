@@ -9,27 +9,26 @@ import (
 	"github.com/ory/x/otelx/semconv"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
-
-	"github.com/ory/keto/internal/x"
 )
-
-type Event string
 
 const (
-	RelationtuplesCreated Event = "RelationtuplesCreated"
-	RelationtuplesDeleted Event = "RelationtuplesDeleted"
-	RelationtuplesChanged Event = "RelationtuplesChanged"
+	EventRelationtuplesCreated semconv.Event = "RelationtuplesCreated"
+	EventRelationtuplesDeleted semconv.Event = "RelationtuplesDeleted"
+	EventRelationtuplesChanged semconv.Event = "RelationtuplesChanged"
 
-	PermissionsExpanded Event = "PermissionsExpanded"
-	PermissionsChecked  Event = "PermissionsChecked"
+	EventPermissionsExpanded semconv.Event = "PermissionsExpanded"
+	EventPermissionsChecked  semconv.Event = "PermissionsChecked"
 )
 
-// Add adds an event to the current span in the context.
-func Add(ctx context.Context, p x.NetworkIDProvider, event Event) {
+// Emit adds an event to the current span in the context.
+func Emit(ctx context.Context, event semconv.Event, opt ...attribute.KeyValue) {
 	trace.SpanFromContext(ctx).AddEvent(
-		string(event),
+		event.String(),
 		trace.WithAttributes(
-			attribute.String(semconv.AttrNID, p.NetworkID(ctx).String()),
+			append(
+				semconv.AttributesFromContext(ctx),
+				opt...,
+			)...,
 		),
 	)
 }

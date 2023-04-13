@@ -14,6 +14,8 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/ory/x/otelx/semconv"
+
 	grpcRecovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -328,6 +330,7 @@ func (r *RegistryDefault) ReadRouter(ctx context.Context) http.Handler {
 	for _, f := range r.defaultHttpMiddlewares {
 		n.UseFunc(f)
 	}
+	n.UseFunc(semconv.Middleware)
 	n.Use(reqlog.NewMiddlewareFromLogger(r.l, "read#Ory Keto").ExcludePaths(healthx.AliveCheckPath, healthx.ReadyCheckPath))
 
 	br := &x.ReadRouter{Router: httprouter.New()}
@@ -364,6 +367,7 @@ func (r *RegistryDefault) WriteRouter(ctx context.Context) http.Handler {
 	for _, f := range r.defaultHttpMiddlewares {
 		n.UseFunc(f)
 	}
+	n.UseFunc(semconv.Middleware)
 	n.Use(reqlog.NewMiddlewareFromLogger(r.l, "write#Ory Keto").ExcludePaths(healthx.AliveCheckPath, healthx.ReadyCheckPath))
 
 	pr := &x.WriteRouter{Router: httprouter.New()}
@@ -400,6 +404,7 @@ func (r *RegistryDefault) OPLSyntaxRouter(ctx context.Context) http.Handler {
 	for _, f := range r.defaultHttpMiddlewares {
 		n.UseFunc(f)
 	}
+	n.UseFunc(semconv.Middleware)
 	n.Use(reqlog.NewMiddlewareFromLogger(r.l, "syntax#Ory Keto").ExcludePaths(healthx.AliveCheckPath, healthx.ReadyCheckPath))
 
 	pr := &x.OPLSyntaxRouter{Router: httprouter.New()}
