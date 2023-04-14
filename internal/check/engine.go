@@ -6,6 +6,8 @@ package check
 import (
 	"context"
 
+	"github.com/ory/keto/x/events"
+
 	"github.com/ory/herodot"
 	"github.com/ory/x/otelx"
 	"github.com/pkg/errors"
@@ -17,7 +19,6 @@ import (
 	"github.com/ory/keto/internal/persistence"
 	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/internal/x"
-	"github.com/ory/keto/internal/x/events"
 	"github.com/ory/keto/internal/x/graph"
 	"github.com/ory/keto/ketoapi"
 )

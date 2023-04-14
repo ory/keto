@@ -8,11 +8,12 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/ory/keto/x/events"
+
 	"github.com/julienschmidt/httprouter"
 	"github.com/ory/herodot"
 	"github.com/pkg/errors"
 
-	"github.com/ory/keto/internal/x/events"
 	"github.com/ory/keto/internal/x/validate"
 	"github.com/ory/keto/ketoapi"
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"

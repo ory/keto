@@ -6,12 +6,13 @@ package expand
 import (
 	"context"
 
+	"github.com/ory/keto/x/events"
+
 	"github.com/ory/x/otelx"
 
 	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/internal/x"
-	"github.com/ory/keto/internal/x/events"
 	"github.com/ory/keto/internal/x/graph"
 	"github.com/ory/keto/ketoapi"
 )
