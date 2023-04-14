@@ -74,7 +74,7 @@ func (e *Engine) CheckRelationTuple(ctx context.Context, r *relationTuple, restD
 	ctx, span := e.d.Tracer(ctx).Tracer().Start(ctx, "Engine.CheckRelationTuple")
 	defer otelx.End(span, &res.Err)
 
-	events.Emit(ctx, events.EventPermissionsChecked)
+	events.Emit(ctx, events.PermissionsChecked)
 
 	// global max-depth takes precedence when it is the lesser or if the request
 	// max-depth is less than or equal to 0

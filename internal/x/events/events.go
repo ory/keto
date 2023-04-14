@@ -12,12 +12,12 @@ import (
 )
 
 const (
-	EventRelationtuplesCreated semconv.Event = "RelationtuplesCreated"
-	EventRelationtuplesDeleted semconv.Event = "RelationtuplesDeleted"
-	EventRelationtuplesChanged semconv.Event = "RelationtuplesChanged"
+	RelationtuplesCreated semconv.Event = "RelationtuplesCreated"
+	RelationtuplesDeleted semconv.Event = "RelationtuplesDeleted"
+	RelationtuplesChanged semconv.Event = "RelationtuplesChanged"
 
-	EventPermissionsExpanded semconv.Event = "PermissionsExpanded"
-	EventPermissionsChecked  semconv.Event = "PermissionsChecked"
+	PermissionsExpanded semconv.Event = "PermissionsExpanded"
+	PermissionsChecked  semconv.Event = "PermissionsChecked"
 )
 
 // Emit adds an event to the current span in the context.

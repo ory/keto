@@ -41,7 +41,7 @@ func NewEngine(d EngineDependencies) *Engine {
 func (e *Engine) BuildTree(ctx context.Context, subject relationtuple.Subject, restDepth int) (t *relationtuple.Tree, err error) {
 	ctx, span := e.d.Tracer(ctx).Tracer().Start(ctx, "Engine.BuildTree")
 	defer otelx.End(span, &err)
-	events.Emit(ctx, events.EventPermissionsExpanded)
+	events.Emit(ctx, events.PermissionsExpanded)
 
 	t, err = e.buildTreeRecursive(ctx, subject, restDepth)
 	return
