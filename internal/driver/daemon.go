@@ -12,6 +12,7 @@ import (
 	"runtime/debug"
 	"strings"
 	"syscall"
+	"time"
 
 	grpcRecovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	"google.golang.org/grpc/codes"
@@ -82,7 +83,11 @@ func (r *RegistryDefault) enableSqa(cmd *cobra.Command) {
 			BuildHash:    config.Commit,
 			BuildTime:    config.Date,
 			Config: &analytics.Config{
-				Endpoint: "https://sqa.ory.sh",
+				Endpoint:             "https://sqa.ory.sh",
+				GzipCompressionLevel: 6,
+				BatchMaxSize:         500 * 1000,
+				BatchSize:            1000,
+				Interval:             time.Hour * 6,
 			},
 		},
 	)
