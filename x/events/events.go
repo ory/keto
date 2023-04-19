@@ -7,7 +7,6 @@ import (
 	"context"
 
 	"github.com/ory/x/otelx/semconv"
-	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
 )
 
@@ -20,15 +19,37 @@ const (
 	PermissionsChecked  semconv.Event = "PermissionsChecked"
 )
 
-// Emit adds an event to the current span in the context.
-func Emit(ctx context.Context, event semconv.Event, opt ...attribute.KeyValue) {
-	trace.SpanFromContext(ctx).AddEvent(
-		event.String(),
+func NewRelationtuplesCreated(ctx context.Context) (string, trace.EventOption) {
+	return RelationtuplesCreated.String(),
 		trace.WithAttributes(
-			append(
-				semconv.AttributesFromContext(ctx),
-				opt...,
-			)...,
-		),
-	)
+			semconv.AttributesFromContext(ctx)...,
+		)
+}
+
+func NewRelationtuplesDeleted(ctx context.Context) (string, trace.EventOption) {
+	return RelationtuplesDeleted.String(),
+		trace.WithAttributes(
+			semconv.AttributesFromContext(ctx)...,
+		)
+}
+
+func NewRelationtuplesChanged(ctx context.Context) (string, trace.EventOption) {
+	return RelationtuplesChanged.String(),
+		trace.WithAttributes(
+			semconv.AttributesFromContext(ctx)...,
+		)
+}
+
+func NewPermissionsExpanded(ctx context.Context) (string, trace.EventOption) {
+	return PermissionsExpanded.String(),
+		trace.WithAttributes(
+			semconv.AttributesFromContext(ctx)...,
+		)
+}
+
+func NewPermissionsChecked(ctx context.Context) (string, trace.EventOption) {
+	return PermissionsChecked.String(),
+		trace.WithAttributes(
+			semconv.AttributesFromContext(ctx)...,
+		)
 }

@@ -8,6 +8,8 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"go.opentelemetry.io/otel/trace"
+
 	"github.com/ory/keto/x/events"
 
 	"github.com/julienschmidt/httprouter"
@@ -35,8 +37,6 @@ func protoTuplesWithAction(deltas []*rts.RelationTupleDelta, action rts.Relation
 }
 
 func (h *handler) TransactRelationTuples(ctx context.Context, req *rts.TransactRelationTuplesRequest) (*rts.TransactRelationTuplesResponse, error) {
-	events.Emit(ctx, events.RelationtuplesChanged)
-
 	insertTuples, err := protoTuplesWithAction(req.RelationTupleDeltas, rts.RelationTupleDelta_ACTION_INSERT)
 	if err != nil {
 		return nil, err
@@ -57,6 +57,8 @@ func (h *handler) TransactRelationTuples(ctx context.Context, req *rts.TransactR
 		return nil, err
 	}
 
+	trace.SpanFromContext(ctx).AddEvent(events.NewRelationtuplesChanged(ctx))
+
 	snaptokens := make([]string, len(insertTuples))
 	for i := range insertTuples {
 		snaptokens[i] = "not yet implemented"
@@ -67,8 +69,6 @@ func (h *handler) TransactRelationTuples(ctx context.Context, req *rts.TransactR
 }
 
 func (h *handler) DeleteRelationTuples(ctx context.Context, req *rts.DeleteRelationTuplesRequest) (*rts.DeleteRelationTuplesResponse, error) {
-	events.Emit(ctx, events.RelationtuplesDeleted)
-
 	var q ketoapi.RelationQuery
 
 	switch {
@@ -87,6 +87,8 @@ func (h *handler) DeleteRelationTuples(ctx context.Context, req *rts.DeleteRelat
 	if err := h.d.RelationTupleManager().DeleteAllRelationTuples(ctx, iq); err != nil {
 		return nil, errors.WithStack(herodot.ErrInternalServerError.WithError(err.Error()))
 	}
+
+	trace.SpanFromContext(ctx).AddEvent(events.NewRelationtuplesDeleted(ctx))
 
 	return &rts.DeleteRelationTuplesResponse{}, nil
 }
@@ -129,8 +131,6 @@ type createRelationshipBody struct {
 func (h *handler) createRelation(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	ctx := r.Context()
 
-	events.Emit(ctx, events.RelationtuplesCreated)
-
 	var rt ketoapi.RelationTuple
 	if err := json.NewDecoder(r.Body).Decode(&rt); err != nil {
 		h.d.Writer().WriteError(w, r, errors.WithStack(herodot.ErrBadRequest.WithError(err.Error())))
@@ -155,6 +155,8 @@ func (h *handler) createRelation(w http.ResponseWriter, r *http.Request, _ httpr
 		h.d.Writer().WriteError(w, r, err)
 		return
 	}
+
+	trace.SpanFromContext(ctx).AddEvent(events.NewRelationtuplesCreated(ctx))
 
 	h.d.Writer().WriteCreated(w, r,
 		ReadRouteBase+"?"+rt.ToURLQuery().Encode(),
@@ -182,8 +184,6 @@ func (h *handler) createRelation(w http.ResponseWriter, r *http.Request, _ httpr
 //	  default: errorGeneric
 func (h *handler) deleteRelations(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	ctx := r.Context()
-
-	events.Emit(ctx, events.RelationtuplesDeleted)
 
 	if err := validate.All(r,
 		validate.NoExtraQueryParams(ketoapi.RelationQueryKeys...),
@@ -219,6 +219,8 @@ func (h *handler) deleteRelations(w http.ResponseWriter, r *http.Request, _ http
 		return
 	}
 
+	trace.SpanFromContext(ctx).AddEvent(events.NewRelationtuplesDeleted(ctx))
+
 	w.WriteHeader(http.StatusNoContent)
 }
 
@@ -252,8 +254,6 @@ func internalTuplesWithAction(deltas []*ketoapi.PatchDelta, action ketoapi.Patch
 //	  default: errorGeneric
 func (h *handler) patchRelationTuples(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	ctx := r.Context()
-
-	events.Emit(ctx, events.RelationtuplesChanged)
 
 	var deltas []*ketoapi.PatchDelta
 	if err := json.NewDecoder(r.Body).Decode(&deltas); err != nil {
@@ -296,6 +296,8 @@ func (h *handler) patchRelationTuples(w http.ResponseWriter, r *http.Request, _ 
 		h.d.Writer().WriteError(w, r, err)
 		return
 	}
+
+	trace.SpanFromContext(ctx).AddEvent(events.NewRelationtuplesChanged(ctx))
 
 	w.WriteHeader(http.StatusNoContent)
 }
