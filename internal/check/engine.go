@@ -9,6 +9,9 @@ import (
 	"github.com/ory/herodot"
 	"github.com/ory/x/otelx"
 	"github.com/pkg/errors"
+	"go.opentelemetry.io/otel/trace"
+
+	"github.com/ory/keto/x/events"
 
 	"github.com/ory/keto/internal/check/checkgroup"
 	"github.com/ory/keto/internal/driver/config"
@@ -17,7 +20,6 @@ import (
 	"github.com/ory/keto/internal/persistence"
 	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/internal/x"
-	"github.com/ory/keto/internal/x/events"
 	"github.com/ory/keto/internal/x/graph"
 	"github.com/ory/keto/ketoapi"
 )
@@ -74,8 +76,6 @@ func (e *Engine) CheckRelationTuple(ctx context.Context, r *relationTuple, restD
 	ctx, span := e.d.Tracer(ctx).Tracer().Start(ctx, "Engine.CheckRelationTuple")
 	defer otelx.End(span, &res.Err)
 
-	events.Add(ctx, e.d, events.PermissionsChecked)
-
 	// global max-depth takes precedence when it is the lesser or if the request
 	// max-depth is less than or equal to 0
 	if globalMaxDepth := e.d.Config(ctx).MaxReadDepth(); restDepth <= 0 || globalMaxDepth < restDepth {
@@ -86,6 +86,7 @@ func (e *Engine) CheckRelationTuple(ctx context.Context, r *relationTuple, restD
 	go e.checkIsAllowed(ctx, r, restDepth, false)(ctx, resultCh)
 	select {
 	case result := <-resultCh:
+		trace.SpanFromContext(ctx).AddEvent(events.NewPermissionsChecked(ctx))
 		return result
 	case <-ctx.Done():
 		return checkgroup.Result{Err: errors.WithStack(ctx.Err())}

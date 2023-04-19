@@ -7,11 +7,13 @@ import (
 	"context"
 
 	"github.com/ory/x/otelx"
+	"go.opentelemetry.io/otel/trace"
+
+	"github.com/ory/keto/x/events"
 
 	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/internal/x"
-	"github.com/ory/keto/internal/x/events"
 	"github.com/ory/keto/internal/x/graph"
 	"github.com/ory/keto/ketoapi"
 )
@@ -41,9 +43,11 @@ func NewEngine(d EngineDependencies) *Engine {
 func (e *Engine) BuildTree(ctx context.Context, subject relationtuple.Subject, restDepth int) (t *relationtuple.Tree, err error) {
 	ctx, span := e.d.Tracer(ctx).Tracer().Start(ctx, "Engine.BuildTree")
 	defer otelx.End(span, &err)
-	events.Add(ctx, e.d, events.PermissionsExpanded)
 
 	t, err = e.buildTreeRecursive(ctx, subject, restDepth)
+	if err != nil {
+		trace.SpanFromContext(ctx).AddEvent(events.NewPermissionsExpanded(ctx))
+	}
 	return
 }
 
