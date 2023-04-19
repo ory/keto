@@ -5,7 +5,7 @@
 
 **Table of Contents**
 
-- [0.0.0 (2023-04-17)](#000-2023-04-17)
+- [0.0.0 (2023-04-19)](#000-2023-04-19)
   - [Bug Fixes](#bug-fixes)
   - [Features](#features)
 - [0.11.1-alpha.0 (2023-03-09)](#0111-alpha0-2023-03-09)
@@ -151,7 +151,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.11.1-alpha.0...v0.0.0) (2023-04-17)
+# [0.0.0](https://github.com/ory/keto/compare/v0.11.1-alpha.0...v0.0.0) (2023-04-19)
 
 ### Bug Fixes
 
@@ -196,6 +196,17 @@
   - fix: GRPC metrics
 
   - fix: clean up for PR
+
+- Improve emitting of events ([#1314](https://github.com/ory/keto/issues/1314))
+  ([5028c75](https://github.com/ory/keto/commit/5028c75aaaad7a73e51b4477f0d65d73806e5c16)):
+
+  - feat: improve emitting of events
+
+  - rename event constants
+
+  - move events package
+
+  - refactor event emitting
 
 # [0.11.1-alpha.0](https://github.com/ory/keto/compare/v0.11.0-alpha.0...v0.11.1-alpha.0) (2023-03-09)
 
