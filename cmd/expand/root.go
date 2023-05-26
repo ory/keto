@@ -29,7 +29,7 @@ func NewExpandCmd() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			conn, err := client.GetReadConn(cmd)
 			if err != nil {
-				return nil
+				return err
 			}
 			defer conn.Close()
 
