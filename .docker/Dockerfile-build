@@ -1,31 +1,31 @@
-FROM golang:1.20.2-alpine3.16 AS builder
+FROM golang:1.20-alpine3.18 AS builder
 
 RUN apk -U --no-cache add build-base git gcc bash
 
 WORKDIR /go/src/github.com/ory/keto
 
-ADD go.mod go.mod
-ADD go.sum go.sum
+COPY go.mod go.mod
+COPY go.sum go.sum
 
-ADD proto/go.mod proto/go.mod
-ADD proto/go.sum proto/go.sum
+COPY proto/go.mod proto/go.mod
+COPY proto/go.sum proto/go.sum
 
 ENV CGO_ENABLED 1
 
 RUN go mod download
 
-ADD . .
+COPY . .
 
 RUN go build -buildvcs=false -tags sqlite -o /usr/bin/keto .
 
-FROM alpine:3.17.3
+FROM alpine:3.18
 
 RUN addgroup -S ory; \
     adduser -S ory -G ory -D  -h /home/ory -s /bin/nologin; \
     chown -R ory:ory /home/ory
 
-RUN apk --no-cache --latest upgrade
-RUN apk --no-cache --upgrade --latest add ca-certificates
+RUN apk --no-cache --latest upgrade &&\
+    apk --no-cache --upgrade --latest add ca-certificates
 
 COPY --from=builder /usr/bin/keto /usr/bin/keto
 
