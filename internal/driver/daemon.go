@@ -44,7 +44,7 @@ import (
 	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/internal/x"
 
-	"github.com/ory/analytics-go/v4"
+	"github.com/ory/analytics-go/v5"
 	"github.com/ory/x/healthx"
 	"github.com/ory/x/metricsx"
 	"github.com/ory/x/otelx"
@@ -67,8 +67,8 @@ func (r *RegistryDefault) enableSqa(cmd *cobra.Command) {
 		r.Logger(),
 		r.Config(ctx).Source(),
 		&metricsx.Options{
-			Service:       "ory-keto",
-			ClusterID:     metricsx.Hash(r.Config(ctx).DSN()),
+			Service:       "keto",
+			DeploymentId:  metricsx.Hash(r.Config(ctx).DSN()),
 			IsDevelopment: strings.HasPrefix(r.Config(ctx).DSN(), "sqlite"),
 			WriteKey:      "jk32cFATnj9GKbQdFL7fBB9qtKZdX9j7",
 			WhitelistedPaths: []string{
