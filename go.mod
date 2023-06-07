@@ -19,7 +19,7 @@ require (
 	github.com/ory/herodot v0.9.13
 	github.com/ory/jsonschema/v3 v3.0.7
 	github.com/ory/keto/proto v0.10.0-alpha.0
-	github.com/ory/x v0.0.556
+	github.com/ory/x v0.0.559
 	github.com/pelletier/go-toml v1.9.5
 	github.com/phayes/freeport v0.0.0-20220201140144-74d24b5ae9f5
 	github.com/pkg/errors v0.9.1
@@ -70,7 +70,7 @@ require (
 	github.com/docker/go-connections v0.4.0 // indirect
 	github.com/docker/go-units v0.5.0 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
-	github.com/evanphx/json-patch v5.6.0+incompatible // indirect
+	github.com/evanphx/json-patch/v5 v5.6.0 // indirect
 	github.com/fatih/color v1.14.1 // indirect
 	github.com/fatih/structs v1.1.0 // indirect
 	github.com/felixge/fgprof v0.9.3 // indirect
@@ -120,7 +120,12 @@ require (
 	github.com/joho/godotenv v1.4.0 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51 // indirect
-	github.com/knadh/koanf v1.5.0 // indirect
+	github.com/knadh/koanf/maps v0.1.1 // indirect
+	github.com/knadh/koanf/parsers/json v0.1.0 // indirect
+	github.com/knadh/koanf/parsers/toml v0.1.0 // indirect
+	github.com/knadh/koanf/parsers/yaml v0.1.0 // indirect
+	github.com/knadh/koanf/providers/posflag v0.1.0 // indirect
+	github.com/knadh/koanf/v2 v2.0.1 // indirect
 	github.com/lib/pq v1.10.7 // indirect
 	github.com/magiconair/properties v1.8.7 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
