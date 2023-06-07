@@ -208,6 +208,9 @@
 
   - refactor event emitting
 
+- Sqa metrics v2 ([#1335](https://github.com/ory/keto/issues/1335))
+  ([a115e15](https://github.com/ory/keto/commit/a115e151950e3fa30528e39c52760199866eb97a))
+
 # [0.11.1-alpha.0](https://github.com/ory/keto/compare/v0.11.0-alpha.0...v0.11.1-alpha.0) (2023-03-09)
 
 This release includes small fixes and improvements.
