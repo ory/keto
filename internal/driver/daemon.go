@@ -68,7 +68,7 @@ func (r *RegistryDefault) enableSqa(cmd *cobra.Command) {
 		r.Config(ctx).Source(),
 		&metricsx.Options{
 			Service:       "keto",
-			DeploymentId:  metricsx.Hash(r.Config(ctx).DSN()),
+			DeploymentId:  metricsx.Hash(r.Persister().NetworkID(ctx).String()),
 			IsDevelopment: strings.HasPrefix(r.Config(ctx).DSN(), "sqlite"),
 			WriteKey:      "jk32cFATnj9GKbQdFL7fBB9qtKZdX9j7",
 			WhitelistedPaths: []string{
