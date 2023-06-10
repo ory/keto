@@ -5,7 +5,7 @@
 
 **Table of Contents**
 
-- [0.0.0 (2023-06-09)](#000-2023-06-09)
+- [0.0.0 (2023-06-10)](#000-2023-06-10)
   - [Bug Fixes](#bug-fixes)
   - [Features](#features)
 - [0.11.1-alpha.0 (2023-03-09)](#0111-alpha0-2023-03-09)
@@ -151,7 +151,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.11.1-alpha.0...v0.0.0) (2023-06-09)
+# [0.0.0](https://github.com/ory/keto/compare/v0.11.1-alpha.0...v0.0.0) (2023-06-10)
 
 ### Bug Fixes
 
