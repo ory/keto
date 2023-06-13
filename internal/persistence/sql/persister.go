@@ -92,8 +92,8 @@ func (p *Persister) queryWithNetwork(ctx context.Context) *pop.Query {
 	return p.Connection(ctx).Where("nid = ?", p.NetworkID(ctx))
 }
 
-func (p *Persister) transaction(ctx context.Context, f func(ctx context.Context, c *pop.Connection) error) error {
-	return popx.Transaction(ctx, p.conn.WithContext(ctx), f)
+func (p *Persister) Transaction(ctx context.Context, f func(ctx context.Context) error) error {
+	return popx.Transaction(ctx, p.conn.WithContext(ctx), func(ctx context.Context, _ *pop.Connection) error { return f(ctx) })
 }
 
 func (p *Persister) NetworkID(ctx context.Context) uuid.UUID {
