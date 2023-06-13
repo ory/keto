@@ -74,8 +74,10 @@ func (h *handler) DeleteRelationTuples(ctx context.Context, req *rts.DeleteRelat
 	switch {
 	case req.RelationQuery != nil:
 		q.FromDataProvider(&queryWrapper{req.RelationQuery})
-	case req.Query != nil: // nolint
-		q.FromDataProvider(&deprecatedQueryWrapper{(*rts.ListRelationTuplesRequest_Query)(req.Query)}) // nolint
+		//lint:ignore SA1019 required for compatibility
+	case req.Query != nil: //nolint:staticcheck
+		//lint:ignore SA1019 backwards compatibility
+		q.FromDataProvider(&deprecatedQueryWrapper{(*rts.ListRelationTuplesRequest_Query)(req.Query)}) //nolint:staticcheck
 	default:
 		return nil, errors.WithStack(herodot.ErrBadRequest.WithReason("invalid request"))
 	}
@@ -96,7 +98,8 @@ func (h *handler) DeleteRelationTuples(ctx context.Context, req *rts.DeleteRelat
 // Create Relationship Request Parameters
 //
 // swagger:parameters createRelationship
-// nolint:deadcode,unused
+//
+//lint:ignore U1000 required for OpenAPI
 type createRelationship struct {
 	// in: body
 	Body createRelationshipBody
@@ -105,7 +108,6 @@ type createRelationship struct {
 // Create Relationship Request Body
 //
 // swagger:model createRelationshipBody
-// nolint:deadcode,unused
 type createRelationshipBody struct {
 	ketoapi.RelationQuery
 }
