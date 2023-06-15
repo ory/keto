@@ -187,7 +187,7 @@ func (r *RegistryDefault) serveOPLSyntax(ctx context.Context, done chan<- struct
 func (r *RegistryDefault) serveMetrics(ctx context.Context, done chan<- struct{}) func() error {
 	ctx, cancel := context.WithCancel(ctx)
 
-	// nolint: gosec,G112 graceful.WithDefaults already sets a timeout
+	//nolint:gosec // graceful.WithDefaults already sets a timeout
 	s := graceful.WithDefaults(&http.Server{
 		Handler: r.metricsRouter(ctx),
 		Addr:    r.Config(ctx).MetricsListenOn(),
@@ -237,7 +237,7 @@ func multiplexPort(ctx context.Context, log *logrusx.Logger, addr string, router
 	grpcL := m.MatchWithWriters(cmux.HTTP2MatchHeaderFieldSendSettings("content-type", "application/grpc"))
 	httpL := m.Match(cmux.HTTP1())
 
-	// nolint: gosec,G112 graceful.WithDefaults already sets a timeout
+	//nolint:gosec // graceful.WithDefaults already sets a timeout
 	restS := graceful.WithDefaults(&http.Server{
 		Handler: router,
 	})

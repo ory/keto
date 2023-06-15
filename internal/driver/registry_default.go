@@ -344,3 +344,11 @@ func (r *RegistryDefault) Init(ctx context.Context) (err error) {
 	})
 	return
 }
+
+var _ x.TransactorProvider = (*RegistryDefault)(nil)
+
+func (r *RegistryDefault) Transactor() interface {
+	Transaction(ctx context.Context, f func(ctx context.Context) error) error
+} {
+	return r.Persister()
+}

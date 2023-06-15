@@ -45,7 +45,9 @@ func (s *memoryNamespaceManager) GetNamespaceByConfigID(_ context.Context, id in
 	defer s.RUnlock()
 
 	for _, n := range s.byName {
-		if n.ID == id { // nolint ignore deprecated method
+		//lint:ignore SA1019 backwards compatibility
+		//nolint:staticcheck
+		if n.ID == id {
 			return n, nil
 		}
 	}
