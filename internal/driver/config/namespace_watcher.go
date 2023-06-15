@@ -229,7 +229,9 @@ func (nw *NamespaceWatcher) GetNamespaceByConfigID(_ context.Context, id int32) 
 	defer nw.RUnlock()
 
 	for _, nspace := range nw.namespaces {
-		if nspace.namespace.ID == id { // nolint ignore deprecated ID
+		//lint:ignore SA1019 backwards compatibility
+		//nolint:staticcheck
+		if nspace.namespace.ID == id {
 			return nspace.namespace, nil
 		}
 	}

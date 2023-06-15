@@ -47,12 +47,13 @@ func (h *handler) TransactRelationTuples(ctx context.Context, req *rts.TransactR
 		return nil, err
 	}
 
-	its, err := h.d.Mapper().FromTuple(ctx, append(insertTuples, deleteTuples...)...)
-	if err != nil {
-		return nil, err
-	}
-
-	err = h.d.RelationTupleManager().TransactRelationTuples(ctx, its[:len(insertTuples)], its[len(insertTuples):])
+	err = h.d.Transactor().Transaction(ctx, func(ctx context.Context) error {
+		its, err := h.d.Mapper().FromTuple(ctx, append(insertTuples, deleteTuples...)...)
+		if err != nil {
+			return err
+		}
+		return h.d.RelationTupleManager().TransactRelationTuples(ctx, its[:len(insertTuples)], its[len(insertTuples):])
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -74,8 +75,10 @@ func (h *handler) DeleteRelationTuples(ctx context.Context, req *rts.DeleteRelat
 	switch {
 	case req.RelationQuery != nil:
 		q.FromDataProvider(&queryWrapper{req.RelationQuery})
-	case req.Query != nil: // nolint
-		q.FromDataProvider(&deprecatedQueryWrapper{(*rts.ListRelationTuplesRequest_Query)(req.Query)}) // nolint
+		//lint:ignore SA1019 required for compatibility
+	case req.Query != nil: //nolint:staticcheck
+		//lint:ignore SA1019 backwards compatibility
+		q.FromDataProvider(&deprecatedQueryWrapper{(*rts.ListRelationTuplesRequest_Query)(req.Query)}) //nolint:staticcheck
 	default:
 		return nil, errors.WithStack(herodot.ErrBadRequest.WithReason("invalid request"))
 	}
@@ -96,7 +99,8 @@ func (h *handler) DeleteRelationTuples(ctx context.Context, req *rts.DeleteRelat
 // Create Relationship Request Parameters
 //
 // swagger:parameters createRelationship
-// nolint:deadcode,unused
+//
+//lint:ignore U1000 required for OpenAPI
 type createRelationship struct {
 	// in: body
 	Body createRelationshipBody
@@ -105,7 +109,6 @@ type createRelationship struct {
 // Create Relationship Request Body
 //
 // swagger:model createRelationshipBody
-// nolint:deadcode,unused
 type createRelationshipBody struct {
 	ketoapi.RelationQuery
 }
@@ -144,14 +147,19 @@ func (h *handler) createRelation(w http.ResponseWriter, r *http.Request, _ httpr
 
 	h.d.Logger().WithFields(rt.ToLoggerFields()).Debug("creating relation tuple")
 
-	it, err := h.d.Mapper().FromTuple(ctx, &rt)
+	err := h.d.Transactor().Transaction(ctx, func(ctx context.Context) error {
+		it, err := h.d.Mapper().FromTuple(ctx, &rt)
+		if err != nil {
+			h.d.Logger().WithError(err).WithFields(rt.ToLoggerFields()).Errorf("could not map relation tuple to UUIDs")
+			return err
+		}
+		if err := h.d.RelationTupleManager().WriteRelationTuples(ctx, it...); err != nil {
+			h.d.Logger().WithError(err).WithFields(rt.ToLoggerFields()).Errorf("got an error while creating the relation tuple")
+			return err
+		}
+		return nil
+	})
 	if err != nil {
-		h.d.Logger().WithError(err).WithFields(rt.ToLoggerFields()).Errorf("could not map relation tuple to UUIDs")
-		h.d.Writer().WriteError(w, r, err)
-		return
-	}
-	if err := h.d.RelationTupleManager().WriteRelationTuples(ctx, it...); err != nil {
-		h.d.Logger().WithError(err).WithFields(rt.ToLoggerFields()).Errorf("got an error while creating the relation tuple")
 		h.d.Writer().WriteError(w, r, err)
 		return
 	}
@@ -281,18 +289,15 @@ func (h *handler) patchRelationTuples(w http.ResponseWriter, r *http.Request, _ 
 	insertTuples := internalTuplesWithAction(deltas, ketoapi.ActionInsert)
 	deleteTuples := internalTuplesWithAction(deltas, ketoapi.ActionDelete)
 
-	its, err := h.d.Mapper().FromTuple(ctx, append(insertTuples, deleteTuples...)...)
+	err := h.d.Transactor().Transaction(ctx, func(ctx context.Context) error {
+		its, err := h.d.Mapper().FromTuple(ctx, append(insertTuples, deleteTuples...)...)
+		if err != nil {
+			h.d.Logger().WithError(err).Errorf("got an error while mapping fields to UUID")
+			return err
+		}
+		return h.d.RelationTupleManager().TransactRelationTuples(ctx, its[:len(insertTuples)], its[len(insertTuples):])
+	})
 	if err != nil {
-		h.d.Logger().WithError(err).Errorf("got an error while mapping fields to UUID")
-		h.d.Writer().WriteError(w, r, err)
-		return
-	}
-	if err := h.d.RelationTupleManager().
-		TransactRelationTuples(
-			ctx,
-			its[:len(insertTuples)],
-			its[len(insertTuples):]); err != nil {
-
 		h.d.Writer().WriteError(w, r, err)
 		return
 	}

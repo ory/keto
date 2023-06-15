@@ -370,6 +370,9 @@
         "required": ["namespace", "object", "relation"],
         "type": "object"
       },
+      "unexpectedError": {
+        "type": "string"
+      },
       "version": {
         "properties": {
           "version": {
@@ -609,15 +612,15 @@
             },
             "description": "Ory Keto is ready to accept connections."
           },
-          "500": {
+          "default": {
             "content": {
-              "application/json": {
+              "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/genericError"
+                  "type": "string"
                 }
               }
             },
-            "description": "genericError"
+            "description": "Unexpected error"
           }
         },
         "summary": "Check HTTP Server Status",
@@ -665,6 +668,16 @@
               }
             },
             "description": "Ory Kratos is not yet ready to accept requests."
+          },
+          "default": {
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "Unexpected error"
           }
         },
         "summary": "Check HTTP Server and Database Status",

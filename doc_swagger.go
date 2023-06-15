@@ -10,6 +10,8 @@ import "github.com/ory/herodot"
 // The standard Ory JSON API error format.
 //
 // swagger:model errorGeneric
+//
+//lint:ignore U1000 Used to generate Swagger and OpenAPI definitions
 type errorGeneric struct {
 	// Contains error details
 	//
@@ -20,5 +22,6 @@ type errorGeneric struct {
 // An empty response
 //
 // swagger:response emptyResponse
-// nolint:deadcode,unused
+//
+//lint:ignore U1000 Used to generate Swagger and OpenAPI definitions
 type emptyResponse struct{}

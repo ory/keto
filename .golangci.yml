@@ -3,14 +3,12 @@ linters:
   enable:
     - gosec
     - goimports
-    - deadcode
     - errcheck
     - gosimple
     - ineffassign
     - staticcheck
     - typecheck
     - unused
-    - varcheck
 
 linters-settings:
   goimports:

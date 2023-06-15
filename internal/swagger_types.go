@@ -6,5 +6,6 @@ package internal
 // Empty responses are sent when, for example, resources are deleted. The HTTP status code for empty responses is typically 204.
 //
 // swagger:response emptyResponse
-// nolint:deadcode,unused
+//
+//lint:ignore U1000 Used to generate Swagger and OpenAPI definitions
 type emptyResponse struct{}

@@ -176,12 +176,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/inline_response_200'
           description: Ory Keto is ready to accept connections.
-        "500":
+        default:
           content:
-            application/json:
+            text/plain:
               schema:
-                $ref: '#/components/schemas/genericError'
-          description: genericError
+                type: string
+          description: Unexpected error
       summary: Check HTTP Server Status
       tags:
       - metadata
@@ -210,6 +210,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/inline_response_503'
           description: Ory Kratos is not yet ready to accept requests.
+        default:
+          content:
+            text/plain:
+              schema:
+                type: string
+          description: Unexpected error
       summary: Check HTTP Server and Database Status
       tags:
       - metadata
@@ -1145,6 +1151,8 @@ components:
       - object
       - relation
       type: object
+    unexpectedError:
+      type: string
     version:
       properties:
         version:

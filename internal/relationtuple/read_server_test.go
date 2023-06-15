@@ -221,17 +221,21 @@ func TestReadHandlers(t *testing.T) {
 		}
 		withDeprecatedQuery := func(req *rts.ListRelationTuplesRequest, query *ketoapi.RelationQuery) {
 			pq := query.ToProto()
-			req.Query = &rts.ListRelationTuplesRequest_Query{ // nolint
+			//nolint:staticcheck
+			req.Query = &rts.ListRelationTuplesRequest_Query{ //lint:ignore SA1019 backwards compatibility
 				Subject: pq.Subject,
 			}
 			if pq.Namespace != nil {
-				req.Query.Namespace = *pq.Namespace // nolint
+				//nolint:staticcheck
+				req.Query.Namespace = *pq.Namespace //lint:ignore SA1019 backwards compatibility
 			}
 			if pq.Object != nil {
-				req.Query.Object = *pq.Object // nolint
+				//nolint:staticcheck
+				req.Query.Object = *pq.Object //lint:ignore SA1019 backwards compatibility
 			}
 			if pq.Relation != nil {
-				req.Query.Relation = *pq.Relation // nolint
+				//nolint:staticcheck
+				req.Query.Relation = *pq.Relation //lint:ignore SA1019 backwards compatibility
 			}
 		}
 		apiTuplesFromProto := func(t *testing.T, pts ...*rts.RelationTuple) []*ketoapi.RelationTuple {

@@ -20,7 +20,7 @@ import (
 	"github.com/ory/keto/internal/namespace"
 )
 
-// lint:file-ignore SA1019 as we migrate legacy stuff
+//lint:file-ignore SA1019 as we migrate legacy stuff
 
 // We copy the definitions of OldRelationTuple and UUIDMapping here so that the
 // migration will always work on the same definitions.
@@ -123,6 +123,7 @@ func (rt *OldRelationTuple) ToUUID(s string) uuid.UUID {
 }
 
 func namespaceIDtoName(n namespace.Manager, id int32) (string, error) {
+	//nolint:staticcheck
 	ns, err := n.GetNamespaceByConfigID(context.Background(), id)
 	if err != nil {
 		return "", err
@@ -130,7 +131,7 @@ func namespaceIDtoName(n namespace.Manager, id int32) (string, error) {
 	return ns.Name, nil
 }
 
-func (rt *OldRelationTuple) ToNew(n namespace.Manager) (err error, newRT *NewRelationTuple, objectMapping *UUIDMapping, subjectMapping *UUIDMapping) {
+func (rt *OldRelationTuple) ToNew(n namespace.Manager) (newRT *NewRelationTuple, objectMapping *UUIDMapping, subjectMapping *UUIDMapping, err error) {
 	newRT = &NewRelationTuple{
 		ID:        rt.ID,
 		NetworkID: rt.NetworkID,
@@ -209,7 +210,7 @@ var (
 						mappings := make([]*UUIDMapping, len(relationTuples)*2)
 						newTuples := make([]*NewRelationTuple, len(relationTuples))
 						for i := range relationTuples {
-							err, newTuples[i], mappings[i*2], mappings[i*2+1] = relationTuples[i].ToNew(namespaces)
+							newTuples[i], mappings[i*2], mappings[i*2+1], err = relationTuples[i].ToNew(namespaces)
 							if err != nil {
 								return errors.WithStack(err)
 							}
@@ -273,13 +274,14 @@ var (
 							if err != nil {
 								return fmt.Errorf("could not get namespace: %w", err)
 							}
-							ot.NamespaceID = namespace.ID
+							ot.NamespaceID = namespace.ID //nolint:staticcheck
 
 							if rt.SubjectSetNamespace.Valid {
 								subjectSetNamespace, err := namespaces.GetNamespaceByName(ctx, rt.SubjectSetNamespace.String)
 								if err != nil {
 									return fmt.Errorf("could not get subject namespace: %w", err)
 								}
+								//nolint:staticcheck
 								if err = ot.SubjectSetNamespaceID.Scan(subjectSetNamespace.ID); err != nil {
 									return err
 								}
