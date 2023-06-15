@@ -233,7 +233,9 @@ type Tree[T tuple[T]] struct {
 // This can be fixed by using grpc-gateway.
 
 // swagger:model expandedPermissionTree
-type swaggerOnlyExpandTree struct { // nolint
+//
+//lint:ignore U1000 Used to generate Swagger and OpenAPI definitions
+type swaggerOnlyExpandTree struct {
 	// The type of the node.
 	//
 	// required: true

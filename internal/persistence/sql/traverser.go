@@ -31,11 +31,6 @@ type (
 
 		Found bool `db:"found"`
 	}
-
-	rewriteRelationTupleRow struct {
-		RelationTuple
-		Traversal relationtuple.Traversal `db:"traversal"`
-	}
 )
 
 func whereSubject(sub relationtuple.Subject) (sqlFragment string, args []any, err error) {

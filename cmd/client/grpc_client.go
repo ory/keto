@@ -35,7 +35,7 @@ const (
 
 	EnvReadRemote  = "KETO_READ_REMOTE"
 	EnvWriteRemote = "KETO_WRITE_REMOTE"
-	EnvAuthToken   = "KETO_BEARER_TOKEN" // nosec G101 -- just the key, not the value
+	EnvAuthToken   = "KETO_BEARER_TOKEN" //nolint:gosec // just the key, not the value
 	EnvAuthority   = "KETO_AUTHORITY"
 
 	ContextKeyTimeout contextKeys = "timeout"
@@ -51,7 +51,8 @@ func (d *connectionDetails) dialOptions() (opts []grpc.DialOption) {
 	if d.token != "" {
 		opts = append(opts,
 			grpc.WithPerRPCCredentials(
-				oauth.NewOauthAccess(&oauth2.Token{AccessToken: d.token})))
+				oauth.TokenSource{oauth2.StaticTokenSource(&oauth2.Token{AccessToken: d.token})},
+			))
 	}
 	if d.authority != "" {
 		opts = append(opts, grpc.WithAuthority(d.authority))
@@ -63,7 +64,7 @@ func (d *connectionDetails) dialOptions() (opts []grpc.DialOption) {
 		opts = append(opts, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	case d.skipHostVerification:
 		opts = append(opts, grpc.WithTransportCredentials(credentials.NewTLS(&tls.Config{
-			// nolint explicity set through scary flag
+			//nolint:gosec // explicity set through scary flag
 			InsecureSkipVerify: true,
 		})))
 	default:

@@ -54,6 +54,8 @@ func (h *Handler) Check(_ context.Context, request *opl.CheckRequest) (*opl.Chec
 // Check OPL Syntax Request Parameters
 //
 // swagger:parameters checkOplSyntax
+//
+//lint:ignore U1000 Used to generate Swagger and OpenAPI definitions
 type checkOplSyntax struct {
 	// in: body
 	Body checkOplSyntaxBody
@@ -62,6 +64,8 @@ type checkOplSyntax struct {
 // Ory Permission Language Document
 //
 // swagger:model checkOplSyntaxBody
+//
+//lint:ignore U1000 Used to generate Swagger and OpenAPI definitions
 type checkOplSyntaxBody string
 
 // swagger:route POST /opl/syntax/check relationship checkOplSyntax
