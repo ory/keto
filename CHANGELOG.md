@@ -212,6 +212,14 @@
 
 - Sqa metrics v2 ([#1335](https://github.com/ory/keto/issues/1335))
   ([a115e15](https://github.com/ory/keto/commit/a115e151950e3fa30528e39c52760199866eb97a))
+- Write to UUID mapper and relation tuples in one SQL transaction
+  ([#1340](https://github.com/ory/keto/issues/1340))
+  ([eeeecf6](https://github.com/ory/keto/commit/eeeecf657b76c7b18f308433399b231abfcf6e46)):
+
+  - fix: lint
+
+  - feat: wrap an SQL transaction around the UUID mapper's and the relation
+    tuple manager's write operations
 
 # [0.11.1-alpha.0](https://github.com/ory/keto/compare/v0.11.0-alpha.0...v0.11.1-alpha.0) (2023-03-09)
 
