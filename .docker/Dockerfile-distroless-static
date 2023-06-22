@@ -1,0 +1,8 @@
+FROM gcr.io/distroless/static-debian11:nonroot
+
+COPY keto /usr/bin/keto
+# Declare the standard ports used by keto (4433 for read service endpoint, 4434 for write service endpoint)
+EXPOSE 4433 4434
+
+ENTRYPOINT ["keto"]
+CMD ["serve"]
