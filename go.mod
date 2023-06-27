@@ -42,7 +42,7 @@ require (
 	go.uber.org/goleak v1.2.1
 	golang.org/x/exp v0.0.0-20230131160201-f062dba9d201
 	golang.org/x/oauth2 v0.8.0
-	golang.org/x/sync v0.1.0
+	golang.org/x/sync v0.3.0
 	google.golang.org/grpc v1.56.1
 	google.golang.org/protobuf v1.30.0
 )
