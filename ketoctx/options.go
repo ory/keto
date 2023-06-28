@@ -4,6 +4,7 @@
 package ketoctx
 
 import (
+	"io/fs"
 	"net/http"
 
 	"github.com/ory/x/healthx"
@@ -23,6 +24,7 @@ type (
 		grpcStreamInterceptors []grpc.StreamServerInterceptor
 		migrationOpts          []popx.MigrationBoxOption
 		readyCheckers          healthx.ReadyCheckers
+		extraMigrations        []fs.FS
 	}
 	Option        func(o *opts)
 	TracerWrapper func(*otelx.Tracer) *otelx.Tracer
@@ -68,6 +70,13 @@ func WithGRPCStreamInterceptors(i ...grpc.StreamServerInterceptor) Option {
 	}
 }
 
+// WithExtraMigrations adds additional database migrations.
+func WithExtraMigrations(o ...fs.FS) Option {
+	return func(opts *opts) {
+		opts.extraMigrations = append(opts.extraMigrations, o...)
+	}
+}
+
 // WithMigrationOptions adds migration options to the list of migration options.
 func WithMigrationOptions(o ...popx.MigrationBoxOption) Option {
 	return func(opts *opts) {
@@ -105,6 +114,10 @@ func (o *opts) GRPCUnaryInterceptors() []grpc.UnaryServerInterceptor {
 
 func (o *opts) GRPCStreamInterceptors() []grpc.StreamServerInterceptor {
 	return o.grpcStreamInterceptors
+}
+
+func (o *opts) ExtraMigrations() []fs.FS {
+	return o.extraMigrations
 }
 
 func (o *opts) MigrationOptions() []popx.MigrationBoxOption {
