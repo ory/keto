@@ -1,0 +1,7 @@
+FROM gcr.io/distroless/static-debian11:nonroot
+
+COPY keto /usr/bin/keto
+EXPOSE 4466 4467
+
+ENTRYPOINT ["keto"]
+CMD ["serve"]
