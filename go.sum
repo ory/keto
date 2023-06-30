@@ -546,8 +546,8 @@ github.com/ory/herodot v0.9.13/go.mod h1:IWDs9kSvFQqw/cQ8zi5ksyYvITiUU4dI7glUrhZ
 github.com/ory/jsonschema/v3 v3.0.8 h1:Ssdb3eJ4lDZ/+XnGkvQS/te0p+EkolqwTsDOCxr/FmU=
 github.com/ory/jsonschema/v3 v3.0.8/go.mod h1:ZPzqjDkwd3QTnb2Z6PAS+OTvBE2x5i6m25wCGx54W/0=
 github.com/ory/viper v1.7.5/go.mod h1:ypOuyJmEUb3oENywQZRgeAMwqgOyDqwboO1tj3DjTaM=
-github.com/ory/x v0.0.562 h1:luIC7QLUaslkOHChidP3b79F1OPdNCXW93eRbcOsRCI=
-github.com/ory/x v0.0.562/go.mod h1:kup4ebSC4SzwU6KPZJ4G60UR3EEsHxJ0apQVflVw5yQ=
+github.com/ory/x v0.0.567 h1:oUj75hIqBv3ESsmIwc/4u8jaD2zSx/HTGzRnfMKUykg=
+github.com/ory/x v0.0.567/go.mod h1:g0QdN0Z47vdCYtfrTQkgWJdIOPuez9VGiuQivLxa4lo=
 github.com/pborman/uuid v1.2.0/go.mod h1:X/NO0urCmaxf9VXbdlT7C2Yzkj2IKimNn4k+gtPdI/k=
 github.com/pelletier/go-toml v1.2.0/go.mod h1:5z9KED0ma1S8pY6P1sdut58dfprrGBbd/94hg7ilaic=
 github.com/pelletier/go-toml v1.8.0/go.mod h1:D6yutnOGMveHEPV7VQOuvI/gXY61bv+9bAOTRnLElKs=
