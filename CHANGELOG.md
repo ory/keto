@@ -5,7 +5,7 @@
 
 **Table of Contents**
 
-- [0.0.0 (2023-06-23)](#000-2023-06-23)
+- [0.0.0 (2023-07-04)](#000-2023-07-04)
   - [Bug Fixes](#bug-fixes)
   - [Features](#features)
 - [0.11.1-alpha.0 (2023-03-09)](#0111-alpha0-2023-03-09)
@@ -151,7 +151,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.11.1-alpha.0...v0.0.0) (2023-06-23)
+# [0.0.0](https://github.com/ory/keto/compare/v0.11.1-alpha.0...v0.0.0) (2023-07-04)
 
 ### Bug Fixes
 
@@ -181,6 +181,15 @@
 
 ### Features
 
+- Add distroless ([#1348](https://github.com/ory/keto/issues/1348))
+  ([f0839ee](https://github.com/ory/keto/commit/f0839ee6e5f521214ea70117221ae601ff9eb94a)):
+
+  - feat: add distroless
+
+  - Update Dockerfile-build
+
+  - Update Dockerfile-distroless-static
+
 - Add tracing to fetcher ([#1294](https://github.com/ory/keto/issues/1294))
   ([4ffb7bc](https://github.com/ory/keto/commit/4ffb7bcbbc6a43a9402e39bddf4a2d11e87f4b48)):
 
@@ -188,6 +197,9 @@
 
   - rerun CI
 
+- Allow extra database migrations
+  ([#1365](https://github.com/ory/keto/issues/1365))
+  ([d3b62a9](https://github.com/ory/keto/commit/d3b62a9d0c3debec12faa287106be9faaa74b60b))
 - Enable GRPC metrics ([#1302](https://github.com/ory/keto/issues/1302))
   ([91c12c9](https://github.com/ory/keto/commit/91c12c935d34952db5b3798990b346091041dff8)):
 
