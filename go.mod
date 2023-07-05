@@ -7,7 +7,7 @@ replace github.com/ory/keto/proto => ./proto
 require (
 	github.com/cenkalti/backoff/v3 v3.2.2
 	github.com/ghodss/yaml v1.0.0
-	github.com/go-sql-driver/mysql v1.7.0
+	github.com/go-sql-driver/mysql v1.7.1
 	github.com/gobuffalo/httptest v1.5.2
 	github.com/gobuffalo/pop/v6 v6.1.1
 	github.com/gofrs/uuid v4.4.0+incompatible
