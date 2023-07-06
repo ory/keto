@@ -109,9 +109,13 @@ today!
 
 ## Ory Network Hybrid Support Plan
 
-Ory offers a support plan for Ory Network Hybrid, including Ory on private cloud deployments. If you have a self-hosted solution and would like help, consider a support plan!  
-The team at Ory has years of experience in cloud computing. Ory's offering is the only official program for qualified support from the maintainers.  
-For more information see the **[website](https://www.ory.sh/support/)** or **[book a meeting](https://www.ory.sh/contact/)**!
+Ory offers a support plan for Ory Network Hybrid, including Ory on private cloud
+deployments. If you have a self-hosted solution and would like help, consider a
+support plan!
+The team at Ory has years of experience in cloud computing. Ory's offering is
+the only official program for qualified support from the maintainers.
+For more information see the **[website](https://www.ory.sh/support/)** or
+**[book a meeting](https://www.ory.sh/contact/)**!
 
 ## Ory Permissions, Keto and the Google's Zanzibar model
 
