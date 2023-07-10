@@ -14,6 +14,8 @@ import (
 	"syscall"
 	"time"
 
+	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
+
 	"github.com/ory/x/otelx/semconv"
 
 	grpcRecovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
@@ -152,7 +154,7 @@ func (r *RegistryDefault) serveRead(ctx context.Context, done chan<- struct{}) f
 	rt, s := r.ReadRouter(ctx), r.ReadGRPCServer(ctx)
 
 	if tracer := r.Tracer(ctx); tracer.IsLoaded() {
-		rt = otelx.TraceHandler(rt)
+		rt = otelx.TraceHandler(rt, otelhttp.WithTracerProvider(tracer.Provider()))
 	}
 
 	return func() error {
@@ -164,7 +166,7 @@ func (r *RegistryDefault) serveWrite(ctx context.Context, done chan<- struct{}) 
 	rt, s := r.WriteRouter(ctx), r.WriteGRPCServer(ctx)
 
 	if tracer := r.Tracer(ctx); tracer.IsLoaded() {
-		rt = otelx.TraceHandler(rt)
+		rt = otelx.TraceHandler(rt, otelhttp.WithTracerProvider(tracer.Provider()))
 	}
 
 	return func() error {
@@ -176,7 +178,7 @@ func (r *RegistryDefault) serveOPLSyntax(ctx context.Context, done chan<- struct
 	rt, s := r.OPLSyntaxRouter(ctx), r.OplGRPCServer(ctx)
 
 	if tracer := r.Tracer(ctx); tracer.IsLoaded() {
-		rt = otelx.TraceHandler(rt)
+		rt = otelx.TraceHandler(rt, otelhttp.WithTracerProvider(tracer.Provider()))
 	}
 
 	return func() error {
