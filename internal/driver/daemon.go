@@ -5,7 +5,6 @@ package driver
 
 import (
 	"context"
-	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 	"net"
 	"net/http"
 	"os"
@@ -14,6 +13,8 @@ import (
 	"strings"
 	"syscall"
 	"time"
+
+	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 
 	"github.com/ory/x/otelx/semconv"
 
