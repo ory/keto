@@ -175,6 +175,9 @@
 - Sqa write key for correct product
   ([#1297](https://github.com/ory/keto/issues/1297))
   ([23ccef8](https://github.com/ory/keto/commit/23ccef87ec0b34d584a88978cd9e91fc0a37ae33))
+- Use correct tracer in middleware
+  ([#1373](https://github.com/ory/keto/issues/1373))
+  ([2bc4901](https://github.com/ory/keto/commit/2bc490144c2a35392ca818b31b3ff94dffa1c2fd))
 - Validate that namespace ID is int32
   ([#1278](https://github.com/ory/keto/issues/1278))
   ([d093b37](https://github.com/ory/keto/commit/d093b37930b9e203fd5eb14fe6ca6ba4b8154e92))
