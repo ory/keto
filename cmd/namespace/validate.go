@@ -15,8 +15,8 @@ import (
 	"github.com/ory/x/configx"
 	"github.com/ory/x/jsonschemax"
 	"github.com/ory/x/logrusx"
-	"github.com/segmentio/objconv/yaml"
 	"github.com/spf13/cobra"
+	"gopkg.in/yaml.v3"
 
 	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/namespace"

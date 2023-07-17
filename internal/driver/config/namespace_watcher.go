@@ -12,7 +12,6 @@ import (
 	"path/filepath"
 	"sync"
 
-	"github.com/ghodss/yaml"
 	"github.com/ory/herodot"
 	"github.com/ory/x/logrusx"
 	"github.com/ory/x/stringsx"
@@ -20,6 +19,7 @@ import (
 	"github.com/ory/x/watcherx"
 	"github.com/pelletier/go-toml"
 	"github.com/pkg/errors"
+	"gopkg.in/yaml.v3"
 
 	"github.com/ory/keto/internal/namespace"
 )
