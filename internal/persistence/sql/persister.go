@@ -70,6 +70,15 @@ func (p *Persister) Connection(ctx context.Context) *pop.Connection {
 	return popx.GetConnection(ctx, p.conn.WithContext(ctx))
 }
 
+func (p *Persister) Ping() error {
+	type pinger interface {
+		Ping() error
+	}
+
+	// This can not be contextualized because of some gobuffalo/pop limitations.
+	return errors.WithStack(p.conn.Store.(pinger).Ping())
+}
+
 func (p *Persister) createWithNetwork(ctx context.Context, v interface{}) (err error) {
 	ctx, span := p.d.Tracer(ctx).Tracer().Start(ctx, "persistence.sql.createWithNetwork")
 	defer otelx.End(span, &err)
