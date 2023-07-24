@@ -5,7 +5,7 @@
 
 **Table of Contents**
 
-- [0.0.0 (2023-07-17)](#000-2023-07-17)
+- [0.0.0 (2023-07-24)](#000-2023-07-24)
   - [Bug Fixes](#bug-fixes)
   - [Features](#features)
 - [0.11.1-alpha.0 (2023-03-09)](#0111-alpha0-2023-03-09)
@@ -151,7 +151,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.11.1-alpha.0...v0.0.0) (2023-07-17)
+# [0.0.0](https://github.com/ory/keto/compare/v0.11.1-alpha.0...v0.0.0) (2023-07-24)
 
 ### Bug Fixes
 
@@ -193,6 +193,9 @@
 
   - Update Dockerfile-distroless-static
 
+- Add flag to block until migrations are done
+  ([#1380](https://github.com/ory/keto/issues/1380))
+  ([129902b](https://github.com/ory/keto/commit/129902b68d8548c1df1be1e2aaee9baebcc0aaf2))
 - Add tracing to fetcher ([#1294](https://github.com/ory/keto/issues/1294))
   ([4ffb7bc](https://github.com/ory/keto/commit/4ffb7bcbbc6a43a9402e39bddf4a2d11e87f4b48)):
 
