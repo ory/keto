@@ -5,7 +5,7 @@
 
 **Table of Contents**
 
-- [0.0.0 (2023-08-01)](#000-2023-08-01)
+- [0.0.0 (2023-08-02)](#000-2023-08-02)
   - [Bug Fixes](#bug-fixes)
   - [Features](#features)
 - [0.11.1-alpha.0 (2023-03-09)](#0111-alpha0-2023-03-09)
@@ -151,7 +151,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.11.1-alpha.0...v0.0.0) (2023-08-01)
+# [0.0.0](https://github.com/ory/keto/compare/v0.11.1-alpha.0...v0.0.0) (2023-08-02)
 
 ### Bug Fixes
 
@@ -162,9 +162,7 @@
   ([a4218d7](https://github.com/ory/keto/commit/a4218d70fed0e19eb61869f9ac9f55e2a9d54d0e)):
 
   - Fix starting docker-compose-postgres.yml
-
   - bump docker image version
-
   - make format
 
 - Reduce SQL tracing noise ([#1301](https://github.com/ory/keto/issues/1301))
@@ -188,9 +186,7 @@
   ([f0839ee](https://github.com/ory/keto/commit/f0839ee6e5f521214ea70117221ae601ff9eb94a)):
 
   - feat: add distroless
-
   - Update Dockerfile-build
-
   - Update Dockerfile-distroless-static
 
 - Add flag to block until migrations are done
@@ -200,7 +196,6 @@
   ([4ffb7bc](https://github.com/ory/keto/commit/4ffb7bcbbc6a43a9402e39bddf4a2d11e87f4b48)):
 
   - feat: add tracing to fetcher
-
   - rerun CI
 
 - Allow extra database migrations
@@ -210,22 +205,16 @@
   ([91c12c9](https://github.com/ory/keto/commit/91c12c935d34952db5b3798990b346091041dff8)):
 
   - feat: enable GRPC metrics
-
   - fix: test and server registration
-
   - fix: GRPC metrics
-
   - fix: clean up for PR
 
 - Improve emitting of events ([#1314](https://github.com/ory/keto/issues/1314))
   ([5028c75](https://github.com/ory/keto/commit/5028c75aaaad7a73e51b4477f0d65d73806e5c16)):
 
   - feat: improve emitting of events
-
   - rename event constants
-
   - move events package
-
   - refactor event emitting
 
 - Sqa metrics v2 ([#1335](https://github.com/ory/keto/issues/1335))
@@ -235,7 +224,6 @@
   ([eeeecf6](https://github.com/ory/keto/commit/eeeecf657b76c7b18f308433399b231abfcf6e46)):
 
   - fix: lint
-
   - feat: wrap an SQL transaction around the UUID mapper's and the relation
     tuple manager's write operations
 
@@ -298,7 +286,6 @@ documented. Further, we also optimized some of the non-strict queries.
   ([e646380](https://github.com/ory/keto/commit/e646380d5457df99f75ecd7e26d6fe2ed33b7b49)):
 
   - fix: docs broken links
-
   - fix: edit proto files to fix links
 
 - More robust parser
@@ -338,7 +325,6 @@ documented. Further, we also optimized some of the non-strict queries.
   ([719a7d5](https://github.com/ory/keto/commit/719a7d5d1bfd77c594528df821f20a061dc2b848)):
 
   - fix: tracing in persistence.sql.TraverseSubjectSetRewrite
-
   - fix: incorrect HTTP return code
 
 - Trace SQL in TraverseSubjectSetExpansion
@@ -505,25 +491,15 @@ changelog for all the other fixes and features we included.
   endpoint. This commit adds endpoints from non-monitoring routers.
 
   - fix: register read and write routers with PrometheusManager
-
   - fix: register read and write routers with PrometheusManager p2
-
   - fix: register read and write routers with PrometheusManager p3
-
   - feat: grpc request metrics
-
   - chore: add test
-
   - chore: revert gRPC metric test
-
   - chore: re-trigger ci
-
   - chore: re-trigger ci
-
   - chore: re-trigger ci
-
   - fix: lint
-
   - fix: cve
 
 - Sdk generation
@@ -2288,9 +2264,7 @@ Signed-off-by: aeneasr <aeneas@ory.sh>
 
   - transfer UpdateRoleMembers from https://github.com/ory/hydra/pull/768 to
     keto
-
   - fix tests by using right http method & correcting sql request
-
   - Change behavior to overwrite the whole role instead of just the members.
 
   * small sql migration fix
