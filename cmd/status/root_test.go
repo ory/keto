@@ -7,6 +7,7 @@ import (
 	"bytes"
 	"context"
 	"errors"
+	"fmt"
 	"net"
 	"strings"
 	"testing"
@@ -36,8 +37,8 @@ func TestStatusCmd(t *testing.T) {
 				ctx, cancel := context.WithTimeout(context.Background(), time.Millisecond)
 				defer cancel()
 
-				stdOut := cmdx.ExecNoErrCtx(ctx, t, newStatusCmd(), "--"+FlagEndpoint, string(serverType), "--"+ts.FlagRemote, ts.Addr[:len(ts.Addr)-1])
-				assert.Equal(t, grpcHealthV1.HealthCheckResponse_NOT_SERVING.String()+"\n", stdOut)
+				stdErr := cmdx.ExecExpectedErrCtx(ctx, t, newStatusCmd(), "--"+FlagEndpoint, string(serverType), "--"+ts.FlagRemote, ts.Addr[:len(ts.Addr)-1])
+				assert.Equal(t, fmt.Sprintf("Unable to get a check response: rpc error: code = Unavailable desc = connection error: desc = \"transport: Error while dialing: dial tcp %s: connect: connection refused\"\n", ts.Addr[:len(ts.Addr)-1]), stdErr)
 			})
 
 			t.Run("case=noblock", func(t *testing.T) {
