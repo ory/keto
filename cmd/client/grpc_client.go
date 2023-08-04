@@ -132,9 +132,9 @@ func GetWriteConn(cmd *cobra.Command) (*grpc.ClientConn, error) {
 }
 
 func Conn(ctx context.Context, remote string, details connectionDetails) (*grpc.ClientConn, error) {
-	if !details.block {
+	if d, ok := ctx.Value(ContextKeyTimeout).(time.Duration); ok {
 		var cancel context.CancelFunc
-		ctx, cancel = context.WithTimeout(ctx, time.Second*3)
+		ctx, cancel = context.WithTimeout(ctx, d)
 		defer cancel()
 	}
 
