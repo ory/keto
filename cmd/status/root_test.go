@@ -82,7 +82,7 @@ func TestStatusCmd(t *testing.T) {
 						"--"+FlagEndpoint, string(serverType),
 						"--"+ts.FlagRemote, l.Addr().String(),
 						"--insecure-skip-hostname-verification=true",
-						"--"+FlagBlock,
+						"--"+client.FlagBlock,
 					).Wait(),
 				)
 

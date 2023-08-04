@@ -32,6 +32,7 @@ const (
 	FlagInsecureNoTransportSecurity  = "insecure-disable-transport-security"
 	FlagInsecureSkipHostVerification = "insecure-skip-hostname-verification"
 	FlagAuthority                    = "authority"
+	FlagBlock                        = "block"
 
 	EnvReadRemote  = "KETO_READ_REMOTE"
 	EnvWriteRemote = "KETO_WRITE_REMOTE"
@@ -150,4 +151,5 @@ func RegisterRemoteURLFlags(flags *pflag.FlagSet) {
 	flags.String(FlagAuthority, "", "Set the authority header for the remote gRPC server.")
 	flags.Bool(FlagInsecureNoTransportSecurity, false, "Disables transport security. Do not use this in production.")
 	flags.Bool(FlagInsecureSkipHostVerification, false, "Disables hostname verification. Do not use this in production.")
+	flags.Bool(FlagBlock, false, "Block until all migrations have been applied")
 }

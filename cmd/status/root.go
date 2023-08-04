@@ -18,15 +18,11 @@ import (
 )
 
 const (
-	FlagBlock    = "block"
 	FlagEndpoint = "endpoint"
 )
 
 func newStatusCmd() *cobra.Command {
-	var (
-		block    bool
-		endpoint string
-	)
+	var endpoint string
 
 	cmd := &cobra.Command{
 		Use:   "status",
@@ -34,6 +30,11 @@ func newStatusCmd() *cobra.Command {
 		Long:  "Get a status report about the upstream Keto instance. Can also block until the service is healthy.",
 		Args:  cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, _ []string) error {
+			block, err := cmd.Flags().GetBool(cliclient.FlagBlock)
+			if err != nil {
+				return err
+			}
+
 			var connect func(*cobra.Command) (*grpc.ClientConn, error)
 
 			switch endpoints := stringsx.SwitchExact(endpoint); {
@@ -114,7 +115,6 @@ func newStatusCmd() *cobra.Command {
 	cliclient.RegisterRemoteURLFlags(cmd.Flags())
 	cmdx.RegisterNoiseFlags(cmd.Flags())
 
-	cmd.Flags().BoolVarP(&block, FlagBlock, "b", false, "block until the service is healthy")
 	cmd.Flags().StringVar(&endpoint, FlagEndpoint, "read", "which endpoint to use; one of {read, write}")
 
 	return cmd
