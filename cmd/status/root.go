@@ -57,11 +57,9 @@ func newStatusCmd() *cobra.Command {
 				conn, err = connect(cmd)
 			}
 
-			if errors.Is(err, context.DeadlineExceeded) {
-				_, _ = fmt.Fprintln(cmd.OutOrStdout(), grpcHealthV1.HealthCheckResponse_NOT_SERVING.String())
-				return nil
-			} else if err != nil {
-				return err
+			if err != nil {
+				_, _ = fmt.Fprint(cmd.ErrOrStderr(), err.Error())
+				return cmdx.FailSilently(cmd)
 			}
 
 			c := grpcHealthV1.NewHealthClient(conn)

@@ -7,7 +7,6 @@ import (
 	"bytes"
 	"context"
 	"errors"
-	"fmt"
 	"net"
 	"strings"
 	"testing"
@@ -34,11 +33,11 @@ func TestStatusCmd(t *testing.T) {
 			ts.Cmd.PersistentArgs = append(ts.Cmd.PersistentArgs, "--"+cmdx.FlagQuiet, "--"+FlagEndpoint, string(serverType))
 
 			t.Run("case=timeout,noblock", func(t *testing.T) {
-				ctx, cancel := context.WithTimeout(context.Background(), time.Millisecond)
+				ctx, cancel := context.WithTimeout(context.Background(), time.Microsecond)
 				defer cancel()
 
 				stdErr := cmdx.ExecExpectedErrCtx(ctx, t, newStatusCmd(), "--"+FlagEndpoint, string(serverType), "--"+ts.FlagRemote, ts.Addr[:len(ts.Addr)-1])
-				assert.Equal(t, fmt.Sprintf("Unable to get a check response: rpc error: code = Unavailable desc = connection error: desc = \"transport: Error while dialing: dial tcp %s: connect: connection refused\"\n", ts.Addr[:len(ts.Addr)-1]), stdErr)
+				assert.Equal(t, "context deadline exceeded", stdErr)
 			})
 
 			t.Run("case=noblock", func(t *testing.T) {
