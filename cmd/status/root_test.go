@@ -36,7 +36,7 @@ func TestStatusCmd(t *testing.T) {
 				ctx, cancel := context.WithTimeout(context.Background(), time.Millisecond)
 				defer cancel()
 
-				stdOut := cmdx.ExecNoErrCtx(ctx, t, newStatusCmd(), "--"+FlagEndpoint, string(serverType), "--"+ts.FlagRemote, ts.Addr+"0")
+				stdOut := cmdx.ExecNoErrCtx(ctx, t, newStatusCmd(), "--"+FlagEndpoint, string(serverType), "--"+ts.FlagRemote, ts.Addr[:len(ts.Addr)-1])
 				assert.Equal(t, grpcHealthV1.HealthCheckResponse_NOT_SERVING.String()+"\n", stdOut)
 			})
 
