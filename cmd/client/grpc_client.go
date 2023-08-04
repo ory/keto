@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/ory/x/flagx"
 	"golang.org/x/oauth2"
@@ -130,6 +131,12 @@ func GetWriteConn(cmd *cobra.Command) (*grpc.ClientConn, error) {
 }
 
 func Conn(ctx context.Context, remote string, details connectionDetails) (*grpc.ClientConn, error) {
+	if !details.block {
+		var cancel context.CancelFunc
+		ctx, cancel = context.WithTimeout(ctx, time.Second*3)
+		defer cancel()
+	}
+
 	return grpc.DialContext(
 		ctx,
 		remote,
