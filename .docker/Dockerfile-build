@@ -1,5 +1,5 @@
 # Workaround for https://github.com/GoogleContainerTools/distroless/issues/1342
-FROM golang:1.20-bullseye AS builder
+FROM golang:1.21-bullseye AS builder
 
 WORKDIR /go/src/github.com/ory/keto
 
