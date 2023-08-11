@@ -16,10 +16,10 @@ require (
 	github.com/luna-duclos/instrumentedsql v1.1.3
 	github.com/ory/analytics-go/v5 v5.0.1
 	github.com/ory/graceful v0.1.3
-	github.com/ory/herodot v0.9.13
+	github.com/ory/herodot v0.10.3-0.20230626083119-d7e5192f0d88
 	github.com/ory/jsonschema/v3 v3.0.8
 	github.com/ory/keto/proto v0.10.0-alpha.0
-	github.com/ory/x v0.0.573
+	github.com/ory/x v0.0.579
 	github.com/pelletier/go-toml v1.9.5
 	github.com/phayes/freeport v0.0.0-20220201140144-74d24b5ae9f5
 	github.com/pkg/errors v0.9.1
@@ -29,7 +29,7 @@ require (
 	github.com/segmentio/objconv v1.0.1
 	github.com/sirupsen/logrus v1.9.0
 	github.com/soheilhy/cmux v0.1.5
-	github.com/spf13/cobra v1.6.1
+	github.com/spf13/cobra v1.7.0
 	github.com/spf13/pflag v1.0.5
 	github.com/stretchr/testify v1.8.4
 	github.com/tidwall/gjson v1.15.0
@@ -180,7 +180,7 @@ require (
 	go.opentelemetry.io/otel/metric v0.33.0 // indirect
 	go.opentelemetry.io/proto/otlp v0.19.0 // indirect
 	golang.org/x/crypto v0.11.0 // indirect
-	golang.org/x/mod v0.9.0 // indirect
+	golang.org/x/mod v0.10.0 // indirect
 	golang.org/x/net v0.12.0 // indirect
 	golang.org/x/sys v0.10.0 // indirect
 	golang.org/x/text v0.11.0 // indirect
