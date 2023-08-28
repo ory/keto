@@ -5,7 +5,7 @@
 
 **Table of Contents**
 
-- [0.0.0 (2023-08-25)](#000-2023-08-25)
+- [0.0.0 (2023-08-28)](#000-2023-08-28)
   - [Bug Fixes](#bug-fixes)
   - [Features](#features)
 - [0.11.1-alpha.0 (2023-03-09)](#0111-alpha0-2023-03-09)
@@ -151,7 +151,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.11.1-alpha.0...v0.0.0) (2023-08-25)
+# [0.0.0](https://github.com/ory/keto/compare/v0.11.1-alpha.0...v0.0.0) (2023-08-28)
 
 ### Bug Fixes
 
@@ -201,6 +201,18 @@
 - Allow extra database migrations
   ([#1365](https://github.com/ory/keto/issues/1365))
   ([d3b62a9](https://github.com/ory/keto/commit/d3b62a9d0c3debec12faa287106be9faaa74b60b))
+- Clearer error messages when not using block
+  ([#1393](https://github.com/ory/keto/issues/1393))
+  ([a3b5494](https://github.com/ory/keto/commit/a3b5494300ca4cc64b516b168e8a3e6aa2033c75)):
+
+  - feat: clearer error messages when not using block
+  - dont timeout if block is used
+  - consolidate block flag into grpc client package
+  - respect timeout context key
+  - remove flake test by changing port manipulation in test
+  - fix case=timeout,noblock status test
+  - remove flakyness by reducing timeout to micro
+
 - Enable GRPC metrics ([#1302](https://github.com/ory/keto/issues/1302))
   ([91c12c9](https://github.com/ory/keto/commit/91c12c935d34952db5b3798990b346091041dff8)):
 
