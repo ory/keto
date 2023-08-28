@@ -33,11 +33,11 @@ func TestStatusCmd(t *testing.T) {
 			ts.Cmd.PersistentArgs = append(ts.Cmd.PersistentArgs, "--"+cmdx.FlagQuiet, "--"+FlagEndpoint, string(serverType))
 
 			t.Run("case=timeout,noblock", func(t *testing.T) {
-				ctx, cancel := context.WithTimeout(context.Background(), time.Millisecond)
+				ctx, cancel := context.WithTimeout(context.Background(), time.Microsecond)
 				defer cancel()
 
-				stdOut := cmdx.ExecNoErrCtx(ctx, t, newStatusCmd(), "--"+FlagEndpoint, string(serverType), "--"+ts.FlagRemote, ts.Addr+"0")
-				assert.Equal(t, grpcHealthV1.HealthCheckResponse_NOT_SERVING.String()+"\n", stdOut)
+				stdErr := cmdx.ExecExpectedErrCtx(ctx, t, newStatusCmd(), "--"+FlagEndpoint, string(serverType), "--"+ts.FlagRemote, ts.Addr[:len(ts.Addr)-1])
+				assert.Equal(t, "context deadline exceeded", stdErr)
 			})
 
 			t.Run("case=noblock", func(t *testing.T) {
@@ -82,7 +82,7 @@ func TestStatusCmd(t *testing.T) {
 						"--"+FlagEndpoint, string(serverType),
 						"--"+ts.FlagRemote, l.Addr().String(),
 						"--insecure-skip-hostname-verification=true",
-						"--"+FlagBlock,
+						"--"+client.FlagBlock,
 					).Wait(),
 				)
 
