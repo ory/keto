@@ -32,6 +32,7 @@ const (
 	FlagInsecureNoTransportSecurity  = "insecure-disable-transport-security"
 	FlagInsecureSkipHostVerification = "insecure-skip-hostname-verification"
 	FlagAuthority                    = "authority"
+	FlagBlock                        = "block"
 
 	EnvReadRemote  = "KETO_READ_REMOTE"
 	EnvWriteRemote = "KETO_WRITE_REMOTE"
@@ -45,6 +46,7 @@ type connectionDetails struct {
 	token, authority     string
 	skipHostVerification bool
 	noTransportSecurity  bool
+	block                bool
 }
 
 func (d *connectionDetails) dialOptions() (opts []grpc.DialOption) {
@@ -71,6 +73,11 @@ func (d *connectionDetails) dialOptions() (opts []grpc.DialOption) {
 		// Defaults to the default host root CA bundle
 		opts = append(opts, grpc.WithTransportCredentials(credentials.NewTLS(nil)))
 	}
+
+	if d.block {
+		opts = append(opts, grpc.WithBlock())
+	}
+
 	return opts
 }
 
@@ -106,6 +113,7 @@ func getConnectionDetails(cmd *cobra.Command) connectionDetails {
 		authority:            getAuthority(cmd),
 		skipHostVerification: flagx.MustGetBool(cmd, FlagInsecureSkipHostVerification),
 		noTransportSecurity:  flagx.MustGetBool(cmd, FlagInsecureNoTransportSecurity),
+		block:                flagx.MustGetBool(cmd, "block"),
 	}
 }
 
@@ -124,21 +132,16 @@ func GetWriteConn(cmd *cobra.Command) (*grpc.ClientConn, error) {
 }
 
 func Conn(ctx context.Context, remote string, details connectionDetails) (*grpc.ClientConn, error) {
-	timeout := 3 * time.Second
 	if d, ok := ctx.Value(ContextKeyTimeout).(time.Duration); ok {
-		timeout = d
+		var cancel context.CancelFunc
+		ctx, cancel = context.WithTimeout(ctx, d)
+		defer cancel()
 	}
-
-	ctx, cancel := context.WithTimeout(ctx, timeout)
-	defer cancel()
 
 	return grpc.DialContext(
 		ctx,
 		remote,
-		append([]grpc.DialOption{
-			grpc.WithBlock(),
-			grpc.WithDisableHealthCheck(),
-		}, details.dialOptions()...)...,
+		details.dialOptions()...,
 	)
 }
 
@@ -148,4 +151,5 @@ func RegisterRemoteURLFlags(flags *pflag.FlagSet) {
 	flags.String(FlagAuthority, "", "Set the authority header for the remote gRPC server.")
 	flags.Bool(FlagInsecureNoTransportSecurity, false, "Disables transport security. Do not use this in production.")
 	flags.Bool(FlagInsecureSkipHostVerification, false, "Disables hostname verification. Do not use this in production.")
+	flags.Bool(FlagBlock, false, "Block until all migrations have been applied")
 }
