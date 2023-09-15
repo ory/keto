@@ -4,11 +4,14 @@
 package config
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 	"io"
 	"sync"
+	"time"
 
+	"github.com/dgraph-io/ristretto"
 	"github.com/ory/x/logrusx"
 	"github.com/ory/x/urlx"
 	"github.com/ory/x/watcherx"
@@ -33,7 +36,14 @@ type (
 	}
 )
 
-var _ namespace.Manager = (*oplConfigWatcher)(nil)
+var (
+	_        namespace.Manager = (*oplConfigWatcher)(nil)
+	cache, _                   = ristretto.NewCache(&ristretto.Config{
+		MaxCost:     20_000_000, // 20 MB max size, each item ca. 10 KB => max 2000 items
+		NumCounters: 20_000,     // max 2000 items => 20000 counters
+		BufferItems: 64,
+	})
+)
 
 func newOPLConfigWatcher(ctx context.Context, c *Config, target string) (*oplConfigWatcher, error) {
 	nw := &oplConfigWatcher{
@@ -51,10 +61,26 @@ func newOPLConfigWatcher(ctx context.Context, c *Config, target string) (*oplCon
 	switch targetUrl.Scheme {
 	case "file", "":
 		return nw, watchTarget(ctx, target, nw, c.l)
-	case "http", "https", "base64":
+	case "base64":
 		file, err := c.Fetcher().FetchContext(ctx, target)
 		if err != nil {
 			return nil, err
+		}
+		nw.files.byPath[targetUrl.String()] = file
+		nw.parseFiles()
+		return nw, err
+	case "http", "https":
+		var file io.Reader
+		if item, ok := cache.Get(target); ok {
+			file = bytes.NewReader(item.([]byte))
+		} else {
+			buf, err := c.Fetcher().FetchContext(ctx, target)
+			if err != nil {
+				return nil, err
+			}
+			b := buf.Bytes()
+			cache.SetWithTTL(target, b, int64(cap(b)), 30*time.Minute)
+			file = bytes.NewReader(b)
 		}
 		nw.files.byPath[targetUrl.String()] = file
 		nw.parseFiles()
