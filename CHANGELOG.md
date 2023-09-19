@@ -5,7 +5,7 @@
 
 **Table of Contents**
 
-- [0.0.0 (2023-08-30)](#000-2023-08-30)
+- [0.0.0 (2023-09-19)](#000-2023-09-19)
   - [Bug Fixes](#bug-fixes)
   - [Features](#features)
 - [0.11.1-alpha.0 (2023-03-09)](#0111-alpha0-2023-03-09)
@@ -14,8 +14,10 @@
   - [Features](#features-1)
   - [Tests](#tests)
 - [0.11.0-alpha.0 (2023-02-23)](#0110-alpha0-2023-02-23)
-  - [Bug Fixes](#bug-fixes-2)
   - [Code Generation](#code-generation-1)
+- [0.11.0-alpha.0.pre.1 (2023-02-23)](#0110-alpha0pre1-2023-02-23)
+  - [Bug Fixes](#bug-fixes-2)
+  - [Code Generation](#code-generation-2)
   - [Code Refactoring](#code-refactoring)
   - [Documentation](#documentation)
   - [Features](#features-2)
@@ -24,7 +26,7 @@
 - [0.10.0-alpha.0 (2022-09-27)](#0100-alpha0-2022-09-27)
   - [Bug Fixes](#bug-fixes-3)
   - [Build System](#build-system)
-  - [Code Generation](#code-generation-2)
+  - [Code Generation](#code-generation-3)
   - [Code Refactoring](#code-refactoring-1)
   - [Documentation](#documentation-1)
   - [Features](#features-3)
@@ -32,48 +34,48 @@
 - [0.9.0-alpha.0 (2022-08-01)](#090-alpha0-2022-08-01)
   - [Breaking Changes](#breaking-changes)
     - [Bug Fixes](#bug-fixes-4)
-    - [Code Generation](#code-generation-3)
+    - [Code Generation](#code-generation-4)
     - [Code Refactoring](#code-refactoring-2)
     - [Documentation](#documentation-2)
     - [Features](#features-4)
     - [Tests](#tests-3)
 - [0.8.0-alpha.2 (2022-03-04)](#080-alpha2-2022-03-04)
   - [Bug Fixes](#bug-fixes-5)
-  - [Code Generation](#code-generation-4)
+  - [Code Generation](#code-generation-5)
   - [Documentation](#documentation-3)
 - [0.8.0-alpha.1 (2022-02-22)](#080-alpha1-2022-02-22)
   - [Bug Fixes](#bug-fixes-6)
-  - [Code Generation](#code-generation-5)
+  - [Code Generation](#code-generation-6)
   - [Tests](#tests-4)
 - [0.8.0-alpha.0 (2022-02-10)](#080-alpha0-2022-02-10)
   - [Bug Fixes](#bug-fixes-7)
-  - [Code Generation](#code-generation-6)
+  - [Code Generation](#code-generation-7)
   - [Code Refactoring](#code-refactoring-3)
   - [Documentation](#documentation-4)
   - [Features](#features-5)
 - [0.7.0-alpha.1 (2021-10-19)](#070-alpha1-2021-10-19)
-  - [Code Generation](#code-generation-7)
+  - [Code Generation](#code-generation-8)
   - [Documentation](#documentation-5)
 - [0.7.0-alpha.0 (2021-10-06)](#070-alpha0-2021-10-06)
   - [Breaking Changes](#breaking-changes-1)
     - [Bug Fixes](#bug-fixes-8)
     - [Chores](#chores)
-    - [Code Generation](#code-generation-8)
+    - [Code Generation](#code-generation-9)
     - [Code Refactoring](#code-refactoring-4)
     - [Documentation](#documentation-6)
     - [Features](#features-6)
     - [Tests](#tests-5)
 - [0.6.0-alpha.3 (2021-04-29)](#060-alpha3-2021-04-29)
-  - [Code Generation](#code-generation-9)
+  - [Code Generation](#code-generation-10)
 - [0.6.0-alpha.2 (2021-04-29)](#060-alpha2-2021-04-29)
   - [Bug Fixes](#bug-fixes-9)
-  - [Code Generation](#code-generation-10)
+  - [Code Generation](#code-generation-11)
   - [Documentation](#documentation-7)
   - [Features](#features-7)
 - [0.6.0-alpha.1 (2021-04-07)](#060-alpha1-2021-04-07)
   - [Bug Fixes](#bug-fixes-10)
   - [Build System](#build-system-1)
-  - [Code Generation](#code-generation-11)
+  - [Code Generation](#code-generation-12)
   - [Code Refactoring](#code-refactoring-5)
   - [Documentation](#documentation-8)
   - [Features](#features-8)
@@ -88,7 +90,7 @@
 - [0.5.4-alpha.1 (2020-04-07)](#054-alpha1-2020-04-07)
   - [Bug Fixes](#bug-fixes-13)
 - [0.5.3-alpha.3 (2020-04-06)](#053-alpha3-2020-04-06)
-  - [Code Generation](#code-generation-12)
+  - [Code Generation](#code-generation-13)
   - [Code Refactoring](#code-refactoring-6)
   - [Documentation](#documentation-10)
 - [0.5.3-alpha.1 (2020-04-03)](#053-alpha1-2020-04-03)
@@ -151,7 +153,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.11.1-alpha.0...v0.0.0) (2023-08-30)
+# [0.0.0](https://github.com/ory/keto/compare/v0.11.1-alpha.0...v0.0.0) (2023-09-19)
 
 ### Bug Fixes
 
@@ -201,6 +203,9 @@
 - Allow extra database migrations
   ([#1365](https://github.com/ory/keto/issues/1365))
   ([d3b62a9](https://github.com/ory/keto/commit/d3b62a9d0c3debec12faa287106be9faaa74b60b))
+- Cache OPL when loading from HTTP(S)
+  ([#1429](https://github.com/ory/keto/issues/1429))
+  ([b89ce02](https://github.com/ory/keto/commit/b89ce028158f2c0efd469a5f8275a7fd203e1b29))
 - Clearer error messages when not using block
   ([#1393](https://github.com/ory/keto/issues/1393))
   ([a3b5494](https://github.com/ory/keto/commit/a3b5494300ca4cc64b516b168e8a3e6aa2033c75)):
@@ -268,7 +273,7 @@ This release includes small fixes and improvements.
 - Faster tests ([#1266](https://github.com/ory/keto/issues/1266))
   ([b41bfb8](https://github.com/ory/keto/commit/b41bfb8da04882f2c94d9a3f787bc4cf2f51f1b9))
 
-# [0.11.0-alpha.0](https://github.com/ory/keto/compare/v0.10.0-alpha.0...v0.11.0-alpha.0) (2023-02-23)
+# [0.11.0-alpha.0](https://github.com/ory/keto/compare/v0.11.0-alpha.0.pre.1...v0.11.0-alpha.0) (2023-02-23)
 
 This release includes a ton of bugfixes, especially around the Ory Permission
 Language and language parser.
@@ -279,6 +284,15 @@ performed during checks. This is experimental to allow adjusting its behavior in
 a breaking manner, but it is ready for production usage. Do expect a non-stable
 behavior over the next releases. Any breaking behavior will be properly
 documented. Further, we also optimized some of the non-strict queries.
+
+### Code Generation
+
+- Pin v0.11.0-alpha.0 release commit
+  ([7f1f580](https://github.com/ory/keto/commit/7f1f5805f0b6fff68c99a586b55b26a27b91a999))
+
+# [0.11.0-alpha.0.pre.1](https://github.com/ory/keto/compare/v0.10.0-alpha.0...v0.11.0-alpha.0.pre.1) (2023-02-23)
+
+autogen: pin v0.11.0-alpha.0.pre.1 release commit
 
 ### Bug Fixes
 
@@ -352,8 +366,8 @@ documented. Further, we also optimized some of the non-strict queries.
 
 ### Code Generation
 
-- Pin v0.11.0-alpha.0 release commit
-  ([7f1f580](https://github.com/ory/keto/commit/7f1f5805f0b6fff68c99a586b55b26a27b91a999))
+- Pin v0.11.0-alpha.0.pre.1 release commit
+  ([3fb1ca5](https://github.com/ory/keto/commit/3fb1ca58c7f9aadbd3f9fdb1015d3d7dda07cd37))
 
 ### Code Refactoring
 
@@ -542,6 +556,9 @@ changelog for all the other fixes and features we included.
   ([52259a3](https://github.com/ory/keto/commit/52259a30d0be0257f1bb7ef591ae769808450230)):
 
   Bumps from v0.10.0-alpha.0.pre.0
+
+- Pin v0.10.0-alpha.0.pre.1 release commit
+  ([2a63481](https://github.com/ory/keto/commit/2a63481863b9d10d05744178a78042a44e9e3872))
 
 ### Code Refactoring
 
