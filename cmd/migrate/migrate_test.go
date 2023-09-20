@@ -8,6 +8,7 @@ import (
 	"context"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/ory/x/dbal"
 
@@ -97,6 +98,24 @@ func TestMigrate(t *testing.T) {
 				})
 
 				cmd := newCmd(ctx, "-c", cf)
+
+				t.Run("case=shows status", func(t *testing.T) {
+					stdOut := cmd.ExecNoErr(t, "status")
+					assert.Contains(t, stdOut, "Pending")
+					assert.NotContains(t, stdOut, "Applied")
+				})
+
+				t.Run("case=status blocks until all are applied", func(t *testing.T) {
+					cmd := *cmd
+					ctx, cancel := context.WithTimeout(ctx, 100*time.Millisecond)
+					defer cancel()
+					cmd.Ctx = ctx
+
+					stdOut, stdErr, err := cmd.Exec(nil, "status", "--block")
+					require.ErrorIs(t, err, cmdx.ErrNoPrintButFail)
+					assert.Contains(t, stdOut, "Waiting for migrations to finish...")
+					assert.Contains(t, stdErr, "Context was canceled, exiting...", stdOut)
+				})
 
 				t.Run("case=aborts on no", func(t *testing.T) {
 					stdOut, stdErr, err := cmd.Exec(bytes.NewBufferString("n\n"), "up")
