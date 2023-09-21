@@ -6,10 +6,11 @@ package check
 import (
 	"context"
 
-	"github.com/ory/herodot"
-	"github.com/ory/x/otelx"
 	"github.com/pkg/errors"
 	"go.opentelemetry.io/otel/trace"
+
+	"github.com/ory/herodot"
+	"github.com/ory/x/otelx"
 
 	"github.com/ory/keto/x/events"
 
@@ -137,6 +138,16 @@ func (e *Engine) checkExpandSubject(r *relationTuple, restDepth int) checkgroup.
 		}
 
 		// If not, we must go another hop:
+		maxWidth := e.d.Config(ctx).MaxReadWidth()
+		if len(results) > maxWidth {
+			e.d.Logger().
+				WithField("method", "checkExpandSubject").
+				WithField("request", r.String()).
+				WithField("max_width", maxWidth).
+				WithField("results", len(results)).
+				Debug("too many results, truncating")
+			results = results[:maxWidth-1]
+		}
 		for _, result := range results {
 			sub := &relationtuple.SubjectSet{
 				Namespace: result.To.Namespace,
