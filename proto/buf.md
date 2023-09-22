@@ -108,12 +108,6 @@
 | line   | [uint32](#uint32) |       |             |
 | column | [uint32](#uint32) |       |             |
 
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
 <a name="ory-keto-opl-v1alpha1-SyntaxService"></a>
 
 ### SyntaxService
@@ -123,8 +117,6 @@ The service that checks the syntax of an OPL file.
 | Method Name | Request Type                                        | Response Type                                         | Description                      |
 | ----------- | --------------------------------------------------- | ----------------------------------------------------- | -------------------------------- |
 | Check       | [CheckRequest](#ory-keto-opl-v1alpha1-CheckRequest) | [CheckResponse](#ory-keto-opl-v1alpha1-CheckResponse) | Performs a syntax check request. |
-
- <!-- end services -->
 
 <a name="ory_keto_relation_tuples_v1alpha2_relation_tuples-proto"></a>
 
@@ -194,14 +186,6 @@ SubjectSet refers to all subjects who have the same `relation` on an `object`.
 | object    | [string](#string) |       | The object related by this subject set.                                     |
 | relation  | [string](#string) |       | The relation between the object and the subjects.                           |
 
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
- <!-- end services -->
-
 <a name="ory_keto_relation_tuples_v1alpha2_check_service-proto"></a>
 
 <p align="right"><a href="#top">Top</a></p>
@@ -237,12 +221,6 @@ The response for a CheckService.Check rpc.
 | allowed   | [bool](#bool)     |       | Whether the specified subject (id)<br>is related to the requested object.<br><br>It is false by default if no ACL matches.                                                                                                                                                                                                                                                                                                                                                                                                                      |
 | snaptoken | [string](#string) |       | This field is not implemented yet and has no effect.<br><!--<br>The last known snapshot token ONLY specified if<br>the request had not specified a snaptoken,<br>since this performed a "content-change request"<br>and consistently fetched the last known snapshot token.<br><br>This field is not set if the request had specified a snaptoken!<br><br>If set, clients should cache and use this token<br>for subsequent requests to have minimal latency,<br>but allow slightly stale responses (only some milliseconds or seconds).<br>--> |
 
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
 <a name="ory-keto-relation_tuples-v1alpha2-CheckService"></a>
 
 ### CheckService
@@ -256,8 +234,6 @@ This service is part of the
 | Method Name | Request Type                                                    | Response Type                                                     | Description                      |
 | ----------- | --------------------------------------------------------------- | ----------------------------------------------------------------- | -------------------------------- |
 | Check       | [CheckRequest](#ory-keto-relation_tuples-v1alpha2-CheckRequest) | [CheckResponse](#ory-keto-relation_tuples-v1alpha2-CheckResponse) | Performs an authorization check. |
-
- <!-- end services -->
 
 <a name="ory_keto_relation_tuples_v1alpha2_expand_service-proto"></a>
 
@@ -298,8 +274,6 @@ The response for a ExpandService.Expand RPC.
 | tuple     | [RelationTuple](#ory-keto-relation_tuples-v1alpha2-RelationTuple) |          | The relation tuple this node represents.                                                                               |
 | children  | [SubjectTree](#ory-keto-relation_tuples-v1alpha2-SubjectTree)     | repeated | The children of this node.<br><br>This is never set if `node_type` == `NODE_TYPE_LEAF`.                                |
 
- <!-- end messages -->
-
 <a name="ory-keto-relation_tuples-v1alpha2-NodeType"></a>
 
 ### NodeType
@@ -311,10 +285,6 @@ The response for a ExpandService.Expand RPC.
 | NODE_TYPE_EXCLUSION    | 2      | Not implemented yet.                                                                                          |
 | NODE_TYPE_INTERSECTION | 3      | Not implemented yet.                                                                                          |
 | NODE_TYPE_LEAF         | 4      | This node is a leaf and contains no children.<br>Its subject is a `SubjectID` unless `max_depth` was reached. |
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
 
 <a name="ory-keto-relation_tuples-v1alpha2-ExpandService"></a>
 
@@ -329,8 +299,6 @@ This service is part of the
 | Method Name | Request Type                                                      | Response Type                                                       | Description                                      |
 | ----------- | ----------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------ |
 | Expand      | [ExpandRequest](#ory-keto-relation_tuples-v1alpha2-ExpandRequest) | [ExpandResponse](#ory-keto-relation_tuples-v1alpha2-ExpandResponse) | Expands the subject set into a tree of subjects. |
-
- <!-- end services -->
 
 <a name="ory_keto_relation_tuples_v1alpha2_namespaces_service-proto"></a>
 
@@ -360,12 +328,6 @@ Request for ReadService.ListNamespaces RPC.
 | ----- | ----------------- | ----- | ----------- |
 | name  | [string](#string) |       |             |
 
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
 <a name="ory-keto-relation_tuples-v1alpha2-NamespacesService"></a>
 
 ### NamespacesService
@@ -378,8 +340,6 @@ This service is part of the
 | Method Name    | Request Type                                                                      | Response Type                                                                       | Description      |
 | -------------- | --------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- | ---------------- |
 | ListNamespaces | [ListNamespacesRequest](#ory-keto-relation_tuples-v1alpha2-ListNamespacesRequest) | [ListNamespacesResponse](#ory-keto-relation_tuples-v1alpha2-ListNamespacesResponse) | Lists Namespaces |
-
- <!-- end services -->
 
 <a name="ory_keto_relation_tuples_v1alpha2_read_service-proto"></a>
 
@@ -439,12 +399,6 @@ The response of a ReadService.ListRelationTuples RPC.
 | relation_tuples | [RelationTuple](#ory-keto-relation_tuples-v1alpha2-RelationTuple) | repeated | The relationships matching the list request.                                                              |
 | next_page_token | [string](#string)                                                 |          | The token required to get the next page.<br>If this is the last page, the token will be the empty string. |
 
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
 <a name="ory-keto-relation_tuples-v1alpha2-ReadService"></a>
 
 ### ReadService
@@ -457,8 +411,6 @@ This service is part of the
 | Method Name        | Request Type                                                                              | Response Type                                                                               | Description              |
 | ------------------ | ----------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- | ------------------------ |
 | ListRelationTuples | [ListRelationTuplesRequest](#ory-keto-relation_tuples-v1alpha2-ListRelationTuplesRequest) | [ListRelationTuplesResponse](#ory-keto-relation_tuples-v1alpha2-ListRelationTuplesResponse) | Lists ACL relationships. |
-
- <!-- end services -->
 
 <a name="ory_keto_relation_tuples_v1alpha2_version-proto"></a>
 
@@ -482,12 +434,6 @@ Response of the VersionService.GetVersion RPC.
 | ------- | ----------------- | ----- | -------------------------------------------- |
 | version | [string](#string) |       | The version string of the Ory Keto instance. |
 
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
 <a name="ory-keto-relation_tuples-v1alpha2-VersionService"></a>
 
 ### VersionService
@@ -501,8 +447,6 @@ This service is part of the
 | Method Name | Request Type                                                              | Response Type                                                               | Description                                   |
 | ----------- | ------------------------------------------------------------------------- | --------------------------------------------------------------------------- | --------------------------------------------- |
 | GetVersion  | [GetVersionRequest](#ory-keto-relation_tuples-v1alpha2-GetVersionRequest) | [GetVersionResponse](#ory-keto-relation_tuples-v1alpha2-GetVersionResponse) | Returns the version of the Ory Keto instance. |
-
- <!-- end services -->
 
 <a name="ory_keto_relation_tuples_v1alpha2_write_service-proto"></a>
 
@@ -567,8 +511,6 @@ The response of a WriteService.TransactRelationTuples rpc.
 | ---------- | ----------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | snaptokens | [string](#string) | repeated | This field is not implemented yet and has no effect.<br><!--<br>The list of the new latest snapshot tokens of the affected RelationTuple,<br>with the same index as specified in the `relation_tuple_deltas` field of<br>the TransactRelationTuplesRequest request.<br><br>If the RelationTupleDelta_Action was DELETE<br>the snaptoken is empty at the same index.<br>--> |
 
- <!-- end messages -->
-
 <a name="ory-keto-relation_tuples-v1alpha2-RelationTupleDelta-Action"></a>
 
 ### RelationTupleDelta.Action
@@ -578,10 +520,6 @@ The response of a WriteService.TransactRelationTuples rpc.
 | ACTION_UNSPECIFIED | 0      | Unspecified.<br>The `TransactRelationTuples` RPC ignores this<br>RelationTupleDelta if an action was unspecified. |
 | ACTION_INSERT      | 1      | Insertion of a new RelationTuple.<br>It is ignored if already existing.                                           |
 | ACTION_DELETE      | 2      | Deletion of the RelationTuple.<br>It is ignored if it does not exist.                                             |
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
 
 <a name="ory-keto-relation_tuples-v1alpha2-WriteService"></a>
 
@@ -596,8 +534,6 @@ This service is part of the
 | ---------------------- | ------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
 | TransactRelationTuples | [TransactRelationTuplesRequest](#ory-keto-relation_tuples-v1alpha2-TransactRelationTuplesRequest) | [TransactRelationTuplesResponse](#ory-keto-relation_tuples-v1alpha2-TransactRelationTuplesResponse) | Writes one or more relationships in a single transaction. |
 | DeleteRelationTuples   | [DeleteRelationTuplesRequest](#ory-keto-relation_tuples-v1alpha2-DeleteRelationTuplesRequest)     | [DeleteRelationTuplesResponse](#ory-keto-relation_tuples-v1alpha2-DeleteRelationTuplesResponse)     | Deletes relationships based on relation query             |
-
- <!-- end services -->
 
 ## Scalar Value Types
 
