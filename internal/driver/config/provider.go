@@ -10,11 +10,16 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/ory/x/fetcher"
-	"github.com/ory/x/httpx"
 	"go.opentelemetry.io/otel/trace"
 
+	"github.com/ory/x/fetcher"
+	"github.com/ory/x/httpx"
+
 	"github.com/ory/keto/embedx"
+
+	"github.com/pkg/errors"
+	"github.com/rs/cors"
+	"github.com/spf13/pflag"
 
 	"github.com/ory/herodot"
 	_ "github.com/ory/jsonschema/v3/httploader"
@@ -22,9 +27,6 @@ import (
 	"github.com/ory/x/logrusx"
 	"github.com/ory/x/otelx"
 	"github.com/ory/x/watcherx"
-	"github.com/pkg/errors"
-	"github.com/rs/cors"
-	"github.com/spf13/pflag"
 
 	"github.com/ory/keto/internal/namespace"
 )
@@ -40,6 +42,7 @@ const (
 	KeyDSN = "dsn"
 
 	KeyLimitMaxReadDepth = "limit.max_read_depth"
+	KeyLimitMaxReadWidth = "limit.max_read_width"
 
 	KeyReadAPIHost      = "serve." + string(EndpointRead) + ".host"
 	KeyReadAPIPort      = "serve." + string(EndpointRead) + ".port"
@@ -180,6 +183,9 @@ func (k *Config) OPLSyntaxAPIListenOn() string { return k.addressFor(EndpointOPL
 
 func (k *Config) MaxReadDepth() int {
 	return k.p.Int(KeyLimitMaxReadDepth)
+}
+func (k *Config) MaxReadWidth() int {
+	return k.p.Int(KeyLimitMaxReadWidth)
 }
 
 func (k *Config) CORS(iface string) (cors.Options, bool) {
