@@ -24,5 +24,5 @@ plugins:
 
   - name: doc
     out: proto
-    opt: markdown,proto/buf.md
+    opt: proto/markdown.tmpl,proto/buf.md
     strategy: all
