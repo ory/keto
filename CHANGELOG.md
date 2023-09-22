@@ -5,7 +5,7 @@
 
 **Table of Contents**
 
-- [0.0.0 (2023-09-20)](#000-2023-09-20)
+- [0.0.0 (2023-09-22)](#000-2023-09-22)
   - [Bug Fixes](#bug-fixes)
   - [Features](#features)
 - [0.11.1-alpha.0 (2023-03-09)](#0111-alpha0-2023-03-09)
@@ -153,9 +153,17 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.11.1-alpha.0...v0.0.0) (2023-09-20)
+# [0.0.0](https://github.com/ory/keto/compare/v0.11.1-alpha.0...v0.0.0) (2023-09-22)
 
 ### Bug Fixes
+
+- Add width limit when expanding subject-sets in checks
+  ([#1433](https://github.com/ory/keto/issues/1433))
+  ([f1317da](https://github.com/ory/keto/commit/f1317da16d6ebfac2ed1e80cf13c6b0d323314a1)):
+
+  This change limits the max width that can be expanded during checks. An
+  integration that runs into this limit would previously likely have timed out.
+  A correct integration should not run into this limit.
 
 - Incorrect error return ([#1332](https://github.com/ory/keto/issues/1332))
   ([fc09573](https://github.com/ory/keto/commit/fc09573d1bee14058e211303ea98604de4e795d6))
