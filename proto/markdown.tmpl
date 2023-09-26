@@ -44,7 +44,7 @@
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 {{range .Fields -}}
-  | {{.Name}} | [{{.LongType}}](#{{.FullType | anchor}}) | {{.Label}} | {{if (index .Options "deprecated"|default false)}}**Deprecated.** {{end}}{{.Description | replace "\n" "<br>" | nobr}}{{if .DefaultValue}} Default: {{.DefaultValue}}{{end}} |
+  | {{.Name}} | [{{.LongType}}](#{{.FullType | anchor}}) | {{.Label}} | {{if (index .Options "deprecated"|default false)}}**Deprecated.** {{end}}{{.Description | replace "\n" "<br/>" | nobr}}{{if .DefaultValue}} Default: {{.DefaultValue}}{{end}} |
 {{end}}
 {{end}}
 
@@ -52,11 +52,11 @@
 | Extension | Type | Base | Number | Description |
 | --------- | ---- | ---- | ------ | ----------- |
 {{range .Extensions -}}
-  | {{.Name}} | {{.LongType}} | {{.ContainingLongType}} | {{.Number}} | {{.Description | replace "\n" "<br>" | nobr}}{{if .DefaultValue}} Default: {{.DefaultValue}}{{end}} |
+  | {{.Name}} | {{.LongType}} | {{.ContainingLongType}} | {{.Number}} | {{.Description | replace "\n" "<br/>" | nobr}}{{if .DefaultValue}} Default: {{.DefaultValue}}{{end}} |
 {{end}}
 {{end}}
 
-{{end}} <!-- end messages -->
+{{end}}<!-- end messages -->
 
 {{range .Enums}}
 <a name="{{.FullName | anchor}}"></a>
@@ -67,10 +67,10 @@
 | Name | Number | Description |
 | ---- | ------ | ----------- |
 {{range .Values -}}
-  | {{.Name}} | {{.Number}} | {{.Description | replace "\n" "<br>" | nobr}} |
+  | {{.Name}} | {{.Number}} | {{.Description | replace "\n" "<br/>" | nobr}} |
 {{end}}
 
-{{end}} <!-- end enums -->
+{{end}}<!-- end enums -->
 
 {{if .HasExtensions}}
 <a name="{{$file_name | anchor}}-extensions"></a>
@@ -79,9 +79,9 @@
 | Extension | Type | Base | Number | Description |
 | --------- | ---- | ---- | ------ | ----------- |
 {{range .Extensions -}}
-  | {{.Name}} | {{.LongType}} | {{.ContainingLongType}} | {{.Number}} | {{.Description | replace "\n" "<br>" | nobr}}{{if .DefaultValue}} Default: `{{.DefaultValue}}`{{end}} |
+  | {{.Name}} | {{.LongType}} | {{.ContainingLongType}} | {{.Number}} | {{.Description | replace "\n" "<br/>" | nobr}}{{if .DefaultValue}} Default: `{{.DefaultValue}}`{{end}} |
 {{end}}
-{{end}} <!-- end HasExtensions -->
+{{end}}<!-- end HasExtensions -->
 
 {{range .Services}}
 <a name="{{.FullName | anchor}}"></a>
@@ -92,9 +92,9 @@
 | Method Name | Request Type | Response Type | Description |
 | ----------- | ------------ | ------------- | ------------|
 {{range .Methods -}}
-  | {{.Name}} | [{{.RequestLongType}}](#{{.RequestFullType | anchor}}){{if .RequestStreaming}} stream{{end}} | [{{.ResponseLongType}}](#{{.ResponseFullType | anchor}}){{if .ResponseStreaming}} stream{{end}} | {{.Description | replace "\n" "<br>" | nobr}} |
+  | {{.Name}} | [{{.RequestLongType}}](#{{.RequestFullType | anchor}}){{if .RequestStreaming}} stream{{end}} | [{{.ResponseLongType}}](#{{.ResponseFullType | anchor}}){{if .ResponseStreaming}} stream{{end}} | {{.Description | replace "\n" "<br/>" | nobr}} |
 {{end}}
-{{end}} <!-- end services -->
+{{end}}<!-- end services -->
 
 {{end}}
 
