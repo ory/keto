@@ -333,7 +333,7 @@ import (
 )
 
 func main() {
-    maxDepth := int64(789) // int64 | nolint:deadcode,unused (optional)
+    maxDepth := int64(789) // int64 |  (optional)
     postCheckPermissionOrErrorBody := *openapiclient.NewPostCheckPermissionOrErrorBody() // PostCheckPermissionOrErrorBody |  (optional)
 
     configuration := openapiclient.NewConfiguration()
@@ -359,7 +359,7 @@ Other parameters are passed through a pointer to a apiPostCheckPermissionOrError
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **maxDepth** | **int64** | nolint:deadcode,unused | 
+ **maxDepth** | **int64** |  | 
  **postCheckPermissionOrErrorBody** | [**PostCheckPermissionOrErrorBody**](PostCheckPermissionOrErrorBody.md) |  | 
 
 ### Return type

@@ -473,8 +473,7 @@ paths:
         to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
       operationId: postCheckPermissionOrError
       parameters:
-      - description: nolint:deadcode,unused
-        explode: true
+      - explode: true
         in: query
         name: max-depth
         required: false
@@ -741,6 +740,7 @@ components:
       description: Empty responses are sent when, for example, resources are deleted.
         The HTTP status code for empty responses is typically 204.
   schemas:
+    DefaultError: {}
     ParseError:
       example:
         start:
@@ -839,8 +839,7 @@ components:
     errorGeneric:
       description: The standard Ory JSON API error format.
       properties:
-        error:
-          $ref: '#/components/schemas/genericError'
+        error: {}
       required:
       - error
       title: JSON API Error Response
@@ -900,57 +899,6 @@ components:
             unspecified TreeNodeUnspecified
       required:
       - type
-      type: object
-    genericError:
-      properties:
-        code:
-          description: The status code
-          example: 404
-          format: int64
-          type: integer
-        debug:
-          description: |-
-            Debug information
-
-            This field is often not exposed to protect against leaking
-            sensitive information.
-          example: SQL field "foo" is not a bool.
-          type: string
-        details:
-          additionalProperties: {}
-          description: Further error details
-          type: object
-        id:
-          description: |-
-            The error ID
-
-            Useful when trying to identify various errors in application logic.
-          type: string
-        message:
-          description: |-
-            Error message
-
-            The error's message.
-          example: The resource could not be found
-          type: string
-        reason:
-          description: A human-readable reason for the error
-          example: User with ID 1234 does not exist.
-          type: string
-        request:
-          description: |-
-            The request ID
-
-            The request ID is often exposed internally in order to trace
-            errors across service architectures. This is often a UUID.
-          example: d7ef54b1-ec15-46e6-bccb-524b82c035e6
-          type: string
-        status:
-          description: The status description
-          example: Not Found
-          type: string
-      required:
-      - message
       type: object
     healthNotReadyStatus:
       properties:

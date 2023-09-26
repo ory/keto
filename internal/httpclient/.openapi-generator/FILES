@@ -13,7 +13,6 @@ docs/CheckPermissionResult.md
 docs/CreateRelationshipBody.md
 docs/ErrorGeneric.md
 docs/ExpandedPermissionTree.md
-docs/GenericError.md
 docs/HealthNotReadyStatus.md
 docs/HealthStatus.md
 docs/InlineResponse200.md
@@ -42,7 +41,6 @@ model_check_permission_result.go
 model_create_relationship_body.go
 model_error_generic.go
 model_expanded_permission_tree.go
-model_generic_error.go
 model_health_not_ready_status.go
 model_health_status.go
 model_inline_response_200.go

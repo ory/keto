@@ -6,6 +6,7 @@
       }
     },
     "schemas": {
+      "DefaultError": {},
       "ParseError": {
         "properties": {
           "end": {
@@ -95,7 +96,7 @@
         "description": "The standard Ory JSON API error format.",
         "properties": {
           "error": {
-            "$ref": "#/components/schemas/genericError"
+            "$ref": "#/components/schemas/DefaultError"
           }
         },
         "required": ["error"],
@@ -131,52 +132,6 @@
           }
         },
         "required": ["type"],
-        "type": "object"
-      },
-      "genericError": {
-        "properties": {
-          "code": {
-            "description": "The status code",
-            "example": 404,
-            "format": "int64",
-            "type": "integer"
-          },
-          "debug": {
-            "description": "Debug information\n\nThis field is often not exposed to protect against leaking\nsensitive information.",
-            "example": "SQL field \"foo\" is not a bool.",
-            "type": "string"
-          },
-          "details": {
-            "additionalProperties": {},
-            "description": "Further error details",
-            "type": "object"
-          },
-          "id": {
-            "description": "The error ID\n\nUseful when trying to identify various errors in application logic.",
-            "type": "string"
-          },
-          "message": {
-            "description": "Error message\n\nThe error's message.",
-            "example": "The resource could not be found",
-            "type": "string"
-          },
-          "reason": {
-            "description": "A human-readable reason for the error",
-            "example": "User with ID 1234 does not exist.",
-            "type": "string"
-          },
-          "request": {
-            "description": "The request ID\n\nThe request ID is often exposed internally in order to trace\nerrors across service architectures. This is often a UUID.",
-            "example": "d7ef54b1-ec15-46e6-bccb-524b82c035e6",
-            "type": "string"
-          },
-          "status": {
-            "description": "The status description",
-            "example": "Not Found",
-            "type": "string"
-          }
-        },
-        "required": ["message"],
         "type": "object"
       },
       "healthNotReadyStatus": {
@@ -997,7 +952,6 @@
         "operationId": "postCheckPermissionOrError",
         "parameters": [
           {
-            "description": "nolint:deadcode,unused",
             "in": "query",
             "name": "max-depth",
             "schema": {

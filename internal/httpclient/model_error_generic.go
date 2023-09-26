@@ -17,14 +17,14 @@ import (
 
 // ErrorGeneric The standard Ory JSON API error format.
 type ErrorGeneric struct {
-	Error GenericError `json:"error"`
+	Error interface{} `json:"error"`
 }
 
 // NewErrorGeneric instantiates a new ErrorGeneric object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewErrorGeneric(error_ GenericError) *ErrorGeneric {
+func NewErrorGeneric(error_ interface{}) *ErrorGeneric {
 	this := ErrorGeneric{}
 	this.Error = error_
 	return &this
@@ -39,9 +39,10 @@ func NewErrorGenericWithDefaults() *ErrorGeneric {
 }
 
 // GetError returns the Error field value
-func (o *ErrorGeneric) GetError() GenericError {
+// If the value is explicit nil, the zero value for interface{} will be returned
+func (o *ErrorGeneric) GetError() interface{} {
 	if o == nil {
-		var ret GenericError
+		var ret interface{}
 		return ret
 	}
 
@@ -50,21 +51,22 @@ func (o *ErrorGeneric) GetError() GenericError {
 
 // GetErrorOk returns a tuple with the Error field value
 // and a boolean to check if the value has been set.
-func (o *ErrorGeneric) GetErrorOk() (*GenericError, bool) {
-	if o == nil {
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ErrorGeneric) GetErrorOk() (*interface{}, bool) {
+	if o == nil || o.Error == nil {
 		return nil, false
 	}
 	return &o.Error, true
 }
 
 // SetError sets field value
-func (o *ErrorGeneric) SetError(v GenericError) {
+func (o *ErrorGeneric) SetError(v interface{}) {
 	o.Error = v
 }
 
 func (o ErrorGeneric) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
-	if true {
+	if o.Error != nil {
 		toSerialize["error"] = o.Error
 	}
 	return json.Marshal(toSerialize)

@@ -102,7 +102,6 @@ Class | Method | HTTP request | Description
  - [CreateRelationshipBody](docs/CreateRelationshipBody.md)
  - [ErrorGeneric](docs/ErrorGeneric.md)
  - [ExpandedPermissionTree](docs/ExpandedPermissionTree.md)
- - [GenericError](docs/GenericError.md)
  - [HealthNotReadyStatus](docs/HealthNotReadyStatus.md)
  - [HealthStatus](docs/HealthStatus.md)
  - [InlineResponse200](docs/InlineResponse200.md)
