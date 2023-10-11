@@ -6,6 +6,7 @@ replace github.com/ory/keto/proto => ./proto
 
 require (
 	github.com/cenkalti/backoff/v3 v3.2.2
+	github.com/dgraph-io/ristretto v0.1.1
 	github.com/ghodss/yaml v1.0.0
 	github.com/go-sql-driver/mysql v1.7.1
 	github.com/gobuffalo/httptest v1.5.2
@@ -19,7 +20,7 @@ require (
 	github.com/ory/herodot v0.10.3-0.20230626083119-d7e5192f0d88
 	github.com/ory/jsonschema/v3 v3.0.8
 	github.com/ory/keto/proto v0.11.1-alpha.0
-	github.com/ory/x v0.0.585
+	github.com/ory/x v0.0.591
 	github.com/pelletier/go-toml v1.9.5
 	github.com/phayes/freeport v0.0.0-20220201140144-74d24b5ae9f5
 	github.com/pkg/errors v0.9.1
@@ -64,7 +65,6 @@ require (
 	github.com/cockroachdb/cockroach-go/v2 v2.3.5 // indirect
 	github.com/containerd/continuity v0.4.1 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
-	github.com/dgraph-io/ristretto v0.1.1 // indirect
 	github.com/docker/cli v20.10.23+incompatible // indirect
 	github.com/docker/distribution v2.8.2+incompatible // indirect
 	github.com/docker/docker v20.10.24+incompatible // indirect
