@@ -53,7 +53,7 @@ func (d *connectionDetails) dialOptions() (opts []grpc.DialOption) {
 	if d.token != "" {
 		opts = append(opts,
 			grpc.WithPerRPCCredentials(
-				oauth.TokenSource{oauth2.StaticTokenSource(&oauth2.Token{AccessToken: d.token})},
+				oauth.TokenSource{TokenSource: oauth2.StaticTokenSource(&oauth2.Token{AccessToken: d.token})},
 			))
 	}
 	if d.authority != "" {
