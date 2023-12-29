@@ -31,6 +31,8 @@ type (
 		AsRewrite() *SubjectSetRewrite
 	}
 
+	SubjectEqualsObject struct{}
+
 	ComputedSubjectSet struct {
 		Relation string `json:"relation"`
 	}
@@ -68,4 +70,7 @@ func (t *TupleToSubjectSet) AsRewrite() *SubjectSetRewrite {
 }
 func (i *InvertResult) AsRewrite() *SubjectSetRewrite {
 	return &SubjectSetRewrite{Children: []Child{i}}
+}
+func (e *SubjectEqualsObject) AsRewrite() *SubjectSetRewrite {
+	return &SubjectSetRewrite{Children: []Child{e}}
 }

@@ -423,7 +423,12 @@ func (p *parser) matchPropertyAccess(propertyName any) bool {
 func (p *parser) parsePermissionExpression() (child ast.Child) {
 	var name, verb item
 
-	if !p.match("this", ".", &verb) {
+	switch {
+	case !p.match("this"):
+		return
+	case p.matchIf(is(itemOperatorEquals), "==", "ctx", ".", "subject"):
+		return &ast.SubjectEqualsObject{}
+	case !p.match(".", &verb):
 		return
 	}
 	if !p.matchPropertyAccess(&name) {

@@ -61,20 +61,29 @@ var namespaces = []*namespace.Namespace{
 			{Name: "read",
 				SubjectSetRewrite: &ast.SubjectSetRewrite{
 					Children: ast.Children{
+						&ast.SubjectEqualsObject{},
 						&ast.ComputedSubjectSet{Relation: "viewer"},
 						&ast.ComputedSubjectSet{Relation: "owner"}}}},
 			{Name: "update",
 				SubjectSetRewrite: &ast.SubjectSetRewrite{
 					Children: ast.Children{
+						&ast.SubjectEqualsObject{},
 						&ast.ComputedSubjectSet{Relation: "owner"}}}},
 			{Name: "delete",
 				SubjectSetRewrite: &ast.SubjectSetRewrite{
-					Operation: ast.OperatorAnd,
+					Operation: ast.OperatorOr,
 					Children: ast.Children{
-						&ast.ComputedSubjectSet{Relation: "owner"},
-						&ast.TupleToSubjectSet{
-							Relation:                   "level",
-							ComputedSubjectSetRelation: "member"}}}},
+						&ast.SubjectSetRewrite{
+							Operation: ast.OperatorAnd,
+							Children: ast.Children{
+								&ast.ComputedSubjectSet{Relation: "owner"},
+								&ast.TupleToSubjectSet{
+									Relation:                   "level",
+									ComputedSubjectSetRelation: "member"},
+							},
+						},
+						&ast.SubjectEqualsObject{},
+					}}},
 		}},
 	{Name: "acl",
 		Relations: []ast.Relation{
@@ -192,9 +201,18 @@ func TestUsersetRewrites(t *testing.T) {
 		query:    "resource:topsecret#delete@mark",
 		expected: checkgroup.ResultIsMember, // mark is both editor and has correct level
 		expectedPaths: []path{
-			{"*", "resource:topsecret#delete@mark", "level:superadmin#member@mark"},
-			{"*", "resource:topsecret#delete@mark", "resource:topsecret#owner@mark", "group:editors#member@mark"},
+			{"*", "*", "resource:topsecret#delete@mark", "level:superadmin#member@mark"},
+			{"*", "*", "resource:topsecret#delete@mark", "resource:topsecret#owner@mark", "group:editors#member@mark"},
 		},
+	}, {
+		query:    "resource:topsecret#delete@topsecret",
+		expected: checkgroup.ResultIsMember, // topsecret may delete topsecret
+	}, {
+		query:    "resource:topsecret#update@topsecret",
+		expected: checkgroup.ResultIsMember, // topsecret may update topsecret
+	}, {
+		query:    "resource:topsecret#read@topsecret",
+		expected: checkgroup.ResultIsMember, // topsecret may read topsecret
 	}, {
 		query:    "resource:topsecret#update@mike",
 		expected: checkgroup.ResultIsMember, // mike owns the resource

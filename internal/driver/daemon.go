@@ -18,7 +18,7 @@ import (
 
 	"github.com/ory/x/otelx/semconv"
 
-	grpcRecovery "github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/recovery"
+	grpcRecovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
@@ -32,7 +32,7 @@ import (
 
 	"github.com/ory/x/logrusx"
 
-	grpcLogrus "github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/logging"
+	grpcLogrus "github.com/grpc-ecosystem/go-grpc-middleware/logging/logrus"
 	"github.com/julienschmidt/httprouter"
 	"github.com/ory/herodot"
 	"github.com/ory/x/reqlog"
@@ -457,7 +457,7 @@ func (r *RegistryDefault) unaryInterceptors(ctx context.Context) []grpc.UnarySer
 	is = append(is, r.defaultUnaryInterceptors...)
 	is = append(is,
 		herodot.UnaryErrorUnwrapInterceptor,
-		grpcLogrus.UnaryServerInterceptor(InterceptorLogger(r.l.Logrus())),
+		grpcLogrus.UnaryServerInterceptor(r.l.Entry),
 		r.pmm.UnaryServerInterceptor,
 	)
 	if r.sqaService != nil {
@@ -476,7 +476,7 @@ func (r *RegistryDefault) streamInterceptors(ctx context.Context) []grpc.StreamS
 	is = append(is, r.defaultStreamInterceptors...)
 	is = append(is,
 		herodot.StreamErrorUnwrapInterceptor,
-		grpcLogrus.StreamServerInterceptor(InterceptorLogger(r.l.Logrus())),
+		grpcLogrus.StreamServerInterceptor(r.l.Entry),
 		r.pmm.StreamServerInterceptor,
 	)
 	if r.sqaService != nil {
