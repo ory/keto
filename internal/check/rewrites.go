@@ -209,12 +209,14 @@ func (e *Engine) checkInverted(
 	}
 }
 
-// checkSubjectEqualsObject rewrites the relation tuple to use the subject-set relation
-// instead of the relation from the tuple.
+// checkSubjectEqualsObject verifies that the subject and object are the same.
 //
-// A relation tuple n:obj#original_rel@user is rewritten to
-// n:obj#subject-set@user, where the 'subject-set' relation is taken from the
-// subjectSet.Relation.
+// Checks that the subject and object refer to the same entity. The check
+// is performed by creating a subject from the object based on what the tuple subject type is.
+// If the tuple subject is a SubjectSet, the subject's Namespace is used with the object. If the
+// tuple subject is a SubjectID, the object's ID is used as a SubjectID.
+// The object-subject and tuple subject are compared using Subject.Equals. This was added to support
+// `this == ctx.subject` for identity permission cases. See https://github.com/ory/keto/issues/1204
 func (e *Engine) checkSubjectEqualsObject(
 	_ context.Context,
 	r *relationTuple,
