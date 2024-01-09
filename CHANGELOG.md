@@ -166,6 +166,8 @@
   integration that runs into this limit would previously likely have timed out.
   A correct integration should not run into this limit.
 
+- Config schema (generated) ([#1502](https://github.com/ory/keto/issues/1502))
+  ([e7faf48](https://github.com/ory/keto/commit/e7faf4811041c926c53be04c5884005fa460f134))
 - Incorrect error return ([#1332](https://github.com/ory/keto/issues/1332))
   ([fc09573](https://github.com/ory/keto/commit/fc09573d1bee14058e211303ea98604de4e795d6))
 - Missing block flag on migrate status
