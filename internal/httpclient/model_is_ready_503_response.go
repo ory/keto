@@ -3,7 +3,7 @@
  *
  * Documentation for all of Ory Keto's REST APIs. gRPC is documented separately.
  *
- * API version: 1.0.0
+ * API version:
  * Contact: hi@ory.sh
  */
 
@@ -15,32 +15,32 @@ import (
 	"encoding/json"
 )
 
-// InlineResponse503 struct for InlineResponse503
-type InlineResponse503 struct {
+// IsReady503Response struct for IsReady503Response
+type IsReady503Response struct {
 	// Errors contains a list of errors that caused the not ready status.
 	Errors map[string]string `json:"errors"`
 }
 
-// NewInlineResponse503 instantiates a new InlineResponse503 object
+// NewIsReady503Response instantiates a new IsReady503Response object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewInlineResponse503(errors map[string]string) *InlineResponse503 {
-	this := InlineResponse503{}
+func NewIsReady503Response(errors map[string]string) *IsReady503Response {
+	this := IsReady503Response{}
 	this.Errors = errors
 	return &this
 }
 
-// NewInlineResponse503WithDefaults instantiates a new InlineResponse503 object
+// NewIsReady503ResponseWithDefaults instantiates a new IsReady503Response object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewInlineResponse503WithDefaults() *InlineResponse503 {
-	this := InlineResponse503{}
+func NewIsReady503ResponseWithDefaults() *IsReady503Response {
+	this := IsReady503Response{}
 	return &this
 }
 
 // GetErrors returns the Errors field value
-func (o *InlineResponse503) GetErrors() map[string]string {
+func (o *IsReady503Response) GetErrors() map[string]string {
 	if o == nil {
 		var ret map[string]string
 		return ret
@@ -51,7 +51,7 @@ func (o *InlineResponse503) GetErrors() map[string]string {
 
 // GetErrorsOk returns a tuple with the Errors field value
 // and a boolean to check if the value has been set.
-func (o *InlineResponse503) GetErrorsOk() (*map[string]string, bool) {
+func (o *IsReady503Response) GetErrorsOk() (*map[string]string, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -59,11 +59,11 @@ func (o *InlineResponse503) GetErrorsOk() (*map[string]string, bool) {
 }
 
 // SetErrors sets field value
-func (o *InlineResponse503) SetErrors(v map[string]string) {
+func (o *IsReady503Response) SetErrors(v map[string]string) {
 	o.Errors = v
 }
 
-func (o InlineResponse503) MarshalJSON() ([]byte, error) {
+func (o IsReady503Response) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if true {
 		toSerialize["errors"] = o.Errors
@@ -71,38 +71,38 @@ func (o InlineResponse503) MarshalJSON() ([]byte, error) {
 	return json.Marshal(toSerialize)
 }
 
-type NullableInlineResponse503 struct {
-	value *InlineResponse503
+type NullableIsReady503Response struct {
+	value *IsReady503Response
 	isSet bool
 }
 
-func (v NullableInlineResponse503) Get() *InlineResponse503 {
+func (v NullableIsReady503Response) Get() *IsReady503Response {
 	return v.value
 }
 
-func (v *NullableInlineResponse503) Set(val *InlineResponse503) {
+func (v *NullableIsReady503Response) Set(val *IsReady503Response) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableInlineResponse503) IsSet() bool {
+func (v NullableIsReady503Response) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableInlineResponse503) Unset() {
+func (v *NullableIsReady503Response) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableInlineResponse503(val *InlineResponse503) *NullableInlineResponse503 {
-	return &NullableInlineResponse503{value: val, isSet: true}
+func NewNullableIsReady503Response(val *IsReady503Response) *NullableIsReady503Response {
+	return &NullableIsReady503Response{value: val, isSet: true}
 }
 
-func (v NullableInlineResponse503) MarshalJSON() ([]byte, error) {
+func (v NullableIsReady503Response) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableInlineResponse503) UnmarshalJSON(src []byte) error {
+func (v *NullableIsReady503Response) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

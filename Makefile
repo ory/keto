@@ -85,6 +85,8 @@ sdk: .bin/swagger .bin/ory node_modules
 		--git-user-id ory \
 		--git-repo-id keto-client-go \
 		--git-host github.com \
+		--api-name-suffix "Api" \
+		--global-property apiTests=false \
 		-t .schema/openapi/templates/go \
 		-c .schema/openapi/gen.go.yml
 

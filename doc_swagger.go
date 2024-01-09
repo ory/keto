@@ -1,4 +1,4 @@
-// Copyright © 2023 Ory Corp
+// Copyright © 2024 Ory Corp
 // SPDX-License-Identifier: Apache-2.0
 
 package main
@@ -10,18 +10,17 @@ import "github.com/ory/herodot"
 // The standard Ory JSON API error format.
 //
 // swagger:model errorGeneric
-//
-//lint:ignore U1000 Used to generate Swagger and OpenAPI definitions
-type errorGeneric struct {
+type _ struct {
 	// Contains error details
 	//
 	// required: true
-	Error herodot.DefaultError `json:"error"`
+	Error genericError `json:"error"`
 }
 
-// An empty response
+// swagger:model genericError
+type genericError struct{ herodot.DefaultError }
+
+// Empty responses are sent when, for example, resources are deleted. The HTTP status code for empty responses is typically 204.
 //
 // swagger:response emptyResponse
-//
-//lint:ignore U1000 Used to generate Swagger and OpenAPI definitions
-type emptyResponse struct{}
+type _ struct{}

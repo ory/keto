@@ -7,6 +7,7 @@ info:
   license:
     name: Apache 2.0
   title: Ory Keto API
+  version: ""
 servers:
 - url: /
 paths:
@@ -73,8 +74,8 @@ paths:
         style: form
       responses:
         "204":
-          description: Empty responses are sent when, for example, resources are deleted.
-            The HTTP status code for empty responses is typically 204.
+          description: "Empty responses are sent when, for example, resources are\
+            \ deleted. The HTTP status code for empty responses is typically 204."
         "400":
           content:
             application/json:
@@ -103,8 +104,8 @@ paths:
         x-originalParamName: Body
       responses:
         "204":
-          description: Empty responses are sent when, for example, resources are deleted.
-            The HTTP status code for empty responses is typically 204.
+          description: "Empty responses are sent when, for example, resources are\
+            \ deleted. The HTTP status code for empty responses is typically 204."
         "400":
           content:
             application/json:
@@ -174,7 +175,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/inline_response_200'
+                $ref: '#/components/schemas/isAlive_200_response'
           description: Ory Keto is ready to accept connections.
         default:
           content:
@@ -202,13 +203,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/inline_response_200'
+                $ref: '#/components/schemas/isAlive_200_response'
           description: Ory Keto is ready to accept requests.
         "503":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/inline_response_503'
+                $ref: '#/components/schemas/isReady_503_response'
           description: Ory Kratos is not yet ready to accept requests.
         default:
           content:
@@ -372,8 +373,8 @@ paths:
       - relationship
   /relation-tuples/check:
     get:
-      description: To learn how relationship tuples and the check works, head over
-        to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
+      description: "To learn how relationship tuples and the check works, head over\
+        \ to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview)."
       operationId: checkPermissionOrError
       parameters:
       - description: Namespace of the Relationship
@@ -469,12 +470,11 @@ paths:
       tags:
       - permission
     post:
-      description: To learn how relationship tuples and the check works, head over
-        to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
+      description: "To learn how relationship tuples and the check works, head over\
+        \ to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview)."
       operationId: postCheckPermissionOrError
       parameters:
-      - description: nolint:deadcode,unused
-        explode: true
+      - explode: true
         in: query
         name: max-depth
         required: false
@@ -518,8 +518,8 @@ paths:
       - permission
   /relation-tuples/check/openapi:
     get:
-      description: To learn how relationship tuples and the check works, head over
-        to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
+      description: "To learn how relationship tuples and the check works, head over\
+        \ to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview)."
       operationId: checkPermission
       parameters:
       - description: Namespace of the Relationship
@@ -609,8 +609,8 @@ paths:
       tags:
       - permission
     post:
-      description: To learn how relationship tuples and the check works, head over
-        to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
+      description: "To learn how relationship tuples and the check works, head over\
+        \ to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview)."
       operationId: postCheckPermission
       parameters:
       - explode: true
@@ -730,7 +730,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/inline_response_200_1'
+                $ref: '#/components/schemas/getVersion_200_response'
           description: Returns the Ory Keto version.
       summary: Return Running Software Version.
       tags:
@@ -738,9 +738,10 @@ paths:
 components:
   responses:
     emptyResponse:
-      description: Empty responses are sent when, for example, resources are deleted.
-        The HTTP status code for empty responses is typically 204.
+      description: "Empty responses are sent when, for example, resources are deleted.\
+        \ The HTTP status code for empty responses is typically 204."
   schemas:
+    DefaultError: {}
     ParseError:
       example:
         start:
@@ -862,7 +863,7 @@ components:
         type: union
       properties:
         children:
-          description: The children of the node, possibly none.
+          description: "The children of the node, possibly none."
           items:
             $ref: '#/components/schemas/expandedPermissionTree'
           type: array
@@ -1159,7 +1160,7 @@ components:
           description: Version is the service's version.
           type: string
       type: object
-    inline_response_200:
+    isAlive_200_response:
       example:
         status: status
       properties:
@@ -1169,7 +1170,7 @@ components:
       required:
       - status
       type: object
-    inline_response_503:
+    isReady_503_response:
       properties:
         errors:
           additionalProperties:
@@ -1180,7 +1181,7 @@ components:
       required:
       - errors
       type: object
-    inline_response_200_1:
+    getVersion_200_response:
       example:
         version: version
       properties:
