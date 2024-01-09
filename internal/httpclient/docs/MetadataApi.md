@@ -12,7 +12,7 @@ Method | HTTP request | Description
 
 ## GetVersion
 
-> InlineResponse2001 GetVersion(ctx).Execute()
+> GetVersion200Response GetVersion(ctx).Execute()
 
 Return Running Software Version.
 
@@ -39,7 +39,7 @@ func main() {
         fmt.Fprintf(os.Stderr, "Error when calling `MetadataApi.GetVersion``: %v\n", err)
         fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
     }
-    // response from `GetVersion`: InlineResponse2001
+    // response from `GetVersion`: GetVersion200Response
     fmt.Fprintf(os.Stdout, "Response from `MetadataApi.GetVersion`: %v\n", resp)
 }
 ```
@@ -55,7 +55,7 @@ Other parameters are passed through a pointer to a apiGetVersionRequest struct v
 
 ### Return type
 
-[**InlineResponse2001**](InlineResponse2001.md)
+[**GetVersion200Response**](GetVersion200Response.md)
 
 ### Authorization
 
@@ -73,7 +73,7 @@ No authorization required
 
 ## IsAlive
 
-> InlineResponse200 IsAlive(ctx).Execute()
+> IsAlive200Response IsAlive(ctx).Execute()
 
 Check HTTP Server Status
 
@@ -100,7 +100,7 @@ func main() {
         fmt.Fprintf(os.Stderr, "Error when calling `MetadataApi.IsAlive``: %v\n", err)
         fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
     }
-    // response from `IsAlive`: InlineResponse200
+    // response from `IsAlive`: IsAlive200Response
     fmt.Fprintf(os.Stdout, "Response from `MetadataApi.IsAlive`: %v\n", resp)
 }
 ```
@@ -116,7 +116,7 @@ Other parameters are passed through a pointer to a apiIsAliveRequest struct via 
 
 ### Return type
 
-[**InlineResponse200**](InlineResponse200.md)
+[**IsAlive200Response**](IsAlive200Response.md)
 
 ### Authorization
 
@@ -134,7 +134,7 @@ No authorization required
 
 ## IsReady
 
-> InlineResponse200 IsReady(ctx).Execute()
+> IsAlive200Response IsReady(ctx).Execute()
 
 Check HTTP Server and Database Status
 
@@ -161,7 +161,7 @@ func main() {
         fmt.Fprintf(os.Stderr, "Error when calling `MetadataApi.IsReady``: %v\n", err)
         fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
     }
-    // response from `IsReady`: InlineResponse200
+    // response from `IsReady`: IsAlive200Response
     fmt.Fprintf(os.Stdout, "Response from `MetadataApi.IsReady`: %v\n", resp)
 }
 ```
@@ -177,7 +177,7 @@ Other parameters are passed through a pointer to a apiIsReadyRequest struct via 
 
 ### Return type
 
-[**InlineResponse200**](InlineResponse200.md)
+[**IsAlive200Response**](IsAlive200Response.md)
 
 ### Authorization
 
