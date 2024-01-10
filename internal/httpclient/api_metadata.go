@@ -3,7 +3,7 @@
  *
  * Documentation for all of Ory Keto's REST APIs. gRPC is documented separately.
  *
- * API version: 1.0.0
+ * API version:
  * Contact: hi@ory.sh
  */
 
@@ -42,9 +42,9 @@ type MetadataApi interface {
 
 	/*
 	 * GetVersionExecute executes the request
-	 * @return InlineResponse2001
+	 * @return GetVersion200Response
 	 */
-	GetVersionExecute(r MetadataApiApiGetVersionRequest) (*InlineResponse2001, *http.Response, error)
+	GetVersionExecute(r MetadataApiApiGetVersionRequest) (*GetVersion200Response, *http.Response, error)
 
 	/*
 			 * IsAlive Check HTTP Server Status
@@ -63,9 +63,9 @@ type MetadataApi interface {
 
 	/*
 	 * IsAliveExecute executes the request
-	 * @return InlineResponse200
+	 * @return IsAlive200Response
 	 */
-	IsAliveExecute(r MetadataApiApiIsAliveRequest) (*InlineResponse200, *http.Response, error)
+	IsAliveExecute(r MetadataApiApiIsAliveRequest) (*IsAlive200Response, *http.Response, error)
 
 	/*
 			 * IsReady Check HTTP Server and Database Status
@@ -84,9 +84,9 @@ type MetadataApi interface {
 
 	/*
 	 * IsReadyExecute executes the request
-	 * @return InlineResponse200
+	 * @return IsAlive200Response
 	 */
-	IsReadyExecute(r MetadataApiApiIsReadyRequest) (*InlineResponse200, *http.Response, error)
+	IsReadyExecute(r MetadataApiApiIsReadyRequest) (*IsAlive200Response, *http.Response, error)
 }
 
 // MetadataApiService MetadataApi service
@@ -97,7 +97,7 @@ type MetadataApiApiGetVersionRequest struct {
 	ApiService MetadataApi
 }
 
-func (r MetadataApiApiGetVersionRequest) Execute() (*InlineResponse2001, *http.Response, error) {
+func (r MetadataApiApiGetVersionRequest) Execute() (*GetVersion200Response, *http.Response, error) {
 	return r.ApiService.GetVersionExecute(r)
 }
 
@@ -122,16 +122,16 @@ func (a *MetadataApiService) GetVersion(ctx context.Context) MetadataApiApiGetVe
 
 /*
  * Execute executes the request
- * @return InlineResponse2001
+ * @return GetVersion200Response
  */
-func (a *MetadataApiService) GetVersionExecute(r MetadataApiApiGetVersionRequest) (*InlineResponse2001, *http.Response, error) {
+func (a *MetadataApiService) GetVersionExecute(r MetadataApiApiGetVersionRequest) (*GetVersion200Response, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodGet
 		localVarPostBody     interface{}
 		localVarFormFileName string
 		localVarFileName     string
 		localVarFileBytes    []byte
-		localVarReturnValue  *InlineResponse2001
+		localVarReturnValue  *GetVersion200Response
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "MetadataApiService.GetVersion")
@@ -204,7 +204,7 @@ type MetadataApiApiIsAliveRequest struct {
 	ApiService MetadataApi
 }
 
-func (r MetadataApiApiIsAliveRequest) Execute() (*InlineResponse200, *http.Response, error) {
+func (r MetadataApiApiIsAliveRequest) Execute() (*IsAlive200Response, *http.Response, error) {
 	return r.ApiService.IsAliveExecute(r)
 }
 
@@ -231,16 +231,16 @@ func (a *MetadataApiService) IsAlive(ctx context.Context) MetadataApiApiIsAliveR
 
 /*
  * Execute executes the request
- * @return InlineResponse200
+ * @return IsAlive200Response
  */
-func (a *MetadataApiService) IsAliveExecute(r MetadataApiApiIsAliveRequest) (*InlineResponse200, *http.Response, error) {
+func (a *MetadataApiService) IsAliveExecute(r MetadataApiApiIsAliveRequest) (*IsAlive200Response, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodGet
 		localVarPostBody     interface{}
 		localVarFormFileName string
 		localVarFileName     string
 		localVarFileBytes    []byte
-		localVarReturnValue  *InlineResponse200
+		localVarReturnValue  *IsAlive200Response
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "MetadataApiService.IsAlive")
@@ -320,7 +320,7 @@ type MetadataApiApiIsReadyRequest struct {
 	ApiService MetadataApi
 }
 
-func (r MetadataApiApiIsReadyRequest) Execute() (*InlineResponse200, *http.Response, error) {
+func (r MetadataApiApiIsReadyRequest) Execute() (*IsAlive200Response, *http.Response, error) {
 	return r.ApiService.IsReadyExecute(r)
 }
 
@@ -347,16 +347,16 @@ func (a *MetadataApiService) IsReady(ctx context.Context) MetadataApiApiIsReadyR
 
 /*
  * Execute executes the request
- * @return InlineResponse200
+ * @return IsAlive200Response
  */
-func (a *MetadataApiService) IsReadyExecute(r MetadataApiApiIsReadyRequest) (*InlineResponse200, *http.Response, error) {
+func (a *MetadataApiService) IsReadyExecute(r MetadataApiApiIsReadyRequest) (*IsAlive200Response, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodGet
 		localVarPostBody     interface{}
 		localVarFormFileName string
 		localVarFileName     string
 		localVarFileBytes    []byte
-		localVarReturnValue  *InlineResponse200
+		localVarReturnValue  *IsAlive200Response
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "MetadataApiService.IsReady")
@@ -410,7 +410,7 @@ func (a *MetadataApiService) IsReadyExecute(r MetadataApiApiIsReadyRequest) (*In
 			error: localVarHTTPResponse.Status,
 		}
 		if localVarHTTPResponse.StatusCode == 503 {
-			var v InlineResponse503
+			var v IsReady503Response
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()

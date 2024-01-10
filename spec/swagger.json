@@ -473,7 +473,6 @@
           {
             "type": "integer",
             "format": "int64",
-            "description": "nolint:deadcode,unused",
             "name": "max-depth",
             "in": "query"
           },
@@ -723,6 +722,7 @@
     }
   },
   "definitions": {
+    "DefaultError": {},
     "ParseError": {
       "type": "object",
       "properties": {

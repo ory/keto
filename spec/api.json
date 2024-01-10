@@ -6,6 +6,7 @@
       }
     },
     "schemas": {
+      "DefaultError": {},
       "ParseError": {
         "properties": {
           "end": {
@@ -997,7 +998,6 @@
         "operationId": "postCheckPermissionOrError",
         "parameters": [
           {
-            "description": "nolint:deadcode,unused",
             "in": "query",
             "name": "max-depth",
             "schema": {
