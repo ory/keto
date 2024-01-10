@@ -7,7 +7,14 @@ declare interface Boolean {}
 declare interface String {}
 declare interface Number {}
 declare interface Function {}
-declare interface Object {}
+declare interface Object {
+  /**
+  * Placeholder to support `this.equals(ctx.subject)`
+   *
+   * @param element essentially `ctx.subject`
+  */
+  equals(element: never): boolean
+}
 declare interface IArguments {}
 declare interface RegExp {}
 

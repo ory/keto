@@ -167,6 +167,48 @@ class Resource implements Namespace {
     "scope.action_1": (ctx: Context) => this.related["scope.relation"].traverse((r) => r.related["scope.relation"].includes(ctx.subject)),
     "scope.action_2": (ctx: Context) => this.permits["scope.action_0"](ctx),
   }
+}`}, {"this == ctx.subject", `
+import {Context, Namespace} from "@ory/keto-namespace-types"
+
+class AccessToken implements Namespace {
+}
+
+class Account implements Namespace {
+  related: {
+    token: AccessToken[]
+    admin_token: AccessToken[]
+  }
+
+  permits = {
+    edit: (ctx: Context): boolean =>
+      this == ctx.subject ||
+      this.related.admin_token.includes(ctx.subject),
+
+    view: (ctx: Context): boolean =>
+      this.permits.edit(ctx) ||
+      this.related.token.includes(ctx.subject),
+  }
+}`}, {"this.equals(ctx.subject)", `
+import {Context, Namespace} from "@ory/keto-namespace-types"
+
+class AccessToken implements Namespace {
+}
+
+class Account implements Namespace {
+  related: {
+    token: AccessToken[]
+    admin_token: AccessToken[]
+  }
+
+  permits = {
+    edit: (ctx: Context): boolean =>
+      this.equals(ctx.subject) ||
+      this.related.admin_token.includes(ctx.subject),
+
+    view: (ctx: Context): boolean =>
+      this.permits.edit(ctx) ||
+      this.related.token.includes(ctx.subject),
+  }
 }`},
 }
 

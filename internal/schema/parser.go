@@ -431,11 +431,15 @@ func (p *parser) parsePermissionExpression() (child ast.Child) {
 	case !p.match(".", &verb):
 		return
 	}
-	if !p.matchPropertyAccess(&name) {
+	// failfast if verb.Val == "equals" so the matchPropertyAccess does not happen
+	if verb.Val != "equals" && !p.matchPropertyAccess(&name) {
 		return
 	}
 
 	switch verb.Val {
+	case "equals":
+		p.match("(", "ctx", ".", "subject", ")")
+		return &ast.SubjectEqualsObject{}
 	case "related":
 		if !p.match(".") {
 			return
