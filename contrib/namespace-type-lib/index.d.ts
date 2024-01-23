@@ -9,10 +9,10 @@ declare interface Number {}
 declare interface Function {}
 declare interface Object {
   /**
-  * Placeholder to support `this.equals(ctx.subject)`
+   * Placeholder to support `this.equals(ctx.subject)`
    *
    * @param element essentially `ctx.subject`
-  */
+   */
   equals(element: never): boolean
 }
 declare interface IArguments {}
