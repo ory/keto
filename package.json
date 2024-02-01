@@ -12,9 +12,11 @@
   },
   "prettier": "ory-prettier-styles",
   "dependencies": {
+    "@bufbuild/buf": "^1.29.0",
+    "@bufbuild/protobuf": "^1.7.2",
+    "@bufbuild/protoc-gen-es": "^1.7.2",
     "@openapitools/openapi-generator-cli": "^2.7.0",
-    "grpc-tools": "^1.12.4",
-    "grpc_tools_node_protoc_ts": "^5.3.3"
+    "grpc-tools": "^1.12.4"
   },
   "devDependencies": {
     "@ory/keto-namespace-types": "file:contrib/namespace-type-lib",
