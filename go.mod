@@ -4,6 +4,8 @@ module github.com/ory/keto
 
 replace github.com/ory/keto/proto => ./proto
 
+replace github.com/opencontainers/runc => github.com/opencontainers/runc v1.1.12
+
 require (
 	github.com/cenkalti/backoff/v3 v3.2.2
 	github.com/dgraph-io/ristretto v0.1.1
