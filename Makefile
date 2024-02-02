@@ -103,7 +103,7 @@ build:
 #
 .PHONY: buf-gen
 buf-gen: .bin/buf .bin/protoc-gen-doc node_modules
-	buf generate proto
+	buf generate
 	make format
 	@echo "All code was generated successfully!"
 

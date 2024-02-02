@@ -9,20 +9,17 @@ plugins:
     out: proto
     opt: paths=source_relative,require_unimplemented_servers=false
 
-  - plugin: buf.build/protocolbuffers/js
-    out: proto
-    opt: import_style=commonjs,binary
-
-  - plugin: buf.build/grpc/node
-    out: proto
-    opt: grpc_js,binary,import_style=commonjs
-
-  - name: ts
-    out: proto
-    opt: ts_out=proto
-    path: node_modules/.bin/protoc-gen-ts
-
   - name: doc
     out: proto
     opt: proto/markdown.tmpl,proto/buf.md
     strategy: all
+
+  - name: ts
+    out: proto
+    strategy: all
+    path: node_modules/ts-proto/protoc-gen-ts_proto
+    opt:
+      - outputServices=nice-grpc
+      - outputServices=generic-definitions
+      - importSuffix=.js
+      - esModuleInterop=true
