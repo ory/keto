@@ -66,7 +66,7 @@ func newOPLConfigWatcher(ctx context.Context, c *Config, target string) (*oplCon
 		if err != nil {
 			return nil, err
 		}
-		nw.files.byPath[targetUrl.String()] = bytes.NewReader(file)
+		nw.files.byPath[targetUrl.String()] = file
 		nw.parseFiles()
 		return nw, err
 	case "http", "https":
@@ -74,10 +74,11 @@ func newOPLConfigWatcher(ctx context.Context, c *Config, target string) (*oplCon
 		if item, ok := cache.Get(target); ok {
 			file = bytes.NewReader(item.([]byte))
 		} else {
-			b, err := c.Fetcher().FetchContext(ctx, target)
+			buf, err := c.Fetcher().FetchContext(ctx, target)
 			if err != nil {
 				return nil, err
 			}
+			b := buf.Bytes()
 			cache.SetWithTTL(target, b, int64(cap(b)), 30*time.Minute)
 			file = bytes.NewReader(b)
 		}
