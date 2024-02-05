@@ -14,12 +14,31 @@ plugins:
     opt: proto/markdown.tmpl,proto/buf.md
     strategy: all
 
-  - name: ts
+  # - name: ts
+  #   out: proto
+  #   strategy: all
+  #   path: node_modules/ts-proto/protoc-gen-ts_proto
+  #   opt:
+  #     - outputServices=nice-grpc
+  #     - outputServices=generic-definitions
+  #     - importSuffix=.js
+  #     - esModuleInterop=true
+  - plugin: es
+    opt: target=ts
     out: proto
-    strategy: all
-    path: node_modules/ts-proto/protoc-gen-ts_proto
+  - plugin: connect-es
     opt:
-      - outputServices=nice-grpc
-      - outputServices=generic-definitions
-      - importSuffix=.js
-      - esModuleInterop=true
+      - target=js
+      - js_import_style=legacy_commonjs
+    out: proto
+  - plugin: connect-es
+    opt: target=dts
+    out: proto
+  - plugin: es
+    opt:
+      - target=js
+      - js_import_style=legacy_commonjs
+    out: proto
+  - plugin: es
+    opt: target=dts
+    out: proto
