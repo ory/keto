@@ -23,22 +23,27 @@ plugins:
   #     - outputServices=generic-definitions
   #     - importSuffix=.js
   #     - esModuleInterop=true
+
   - plugin: es
-    opt: target=ts
-    out: proto
-  - plugin: connect-es
     opt:
       - target=js
-      - js_import_style=legacy_commonjs
+      - js_import_style=module
     out: proto
-  - plugin: connect-es
+
+  - plugin: es
     opt: target=dts
     out: proto
-  - plugin: es
+  #  - plugin: es
+  #    opt:
+  #      - target=ts
+  #      - js_import_style=module
+  #    out: proto
+
+  - plugin: connect-es
     opt:
       - target=js
-      - js_import_style=legacy_commonjs
+      - js_import_style=module
     out: proto
-  - plugin: es
+  - plugin: connect-es
     opt: target=dts
     out: proto

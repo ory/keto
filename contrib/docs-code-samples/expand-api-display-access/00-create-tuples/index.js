@@ -1,33 +1,50 @@
 // Copyright © 2023 Ory Corp
 // SPDX-License-Identifier: Apache-2.0
 
-import grpc from "@ory/keto-grpc-client/node_modules/@grpc/grpc-js/build/src/index.js"
-import { relationTuples, write, writeService } from "@ory/keto-grpc-client"
+import {
+  RelationTuple,
+  RelationTupleDelta,
+  RelationTupleDelta_Action,
+  Subject,
+  SubjectSet,
+  TransactRelationTuplesRequest,
+  WriteService,
+} from "@ory/keto-grpc-client"
+import { createGrpcTransport } from "@connectrpc/connect-node"
+import { createPromiseClient } from "@connectrpc/connect"
 
-const writeClient = new writeService.WriteServiceClient(
-  "127.0.0.1:4467",
-  grpc.credentials.createInsecure(),
-)
+const transport = createGrpcTransport({
+  baseUrl: "http://127.0.0.1:4466/",
+  httpVersion: "1.1",
+  interceptors: [],
+  nodeOptions: {
+    rejectUnauthorized: false,
+  },
+})
 
-const writeRequest = new write.TransactRelationTuplesRequest()
+const writeClient = createPromiseClient(WriteService, transport)
+
+const writeRequest = new TransactRelationTuplesRequest()
 
 const insert = (tuple) => {
-  const tupleDelta = new write.RelationTupleDelta()
-  tupleDelta.setAction(write.RelationTupleDelta.Action.ACTION_INSERT)
-  tupleDelta.setRelationTuple(tuple)
+  const tupleDelta = new RelationTupleDelta({
+    action: RelationTupleDelta_Action.ACTION_INSERT,
+    relationTuple: tuple,
+  })
 
-  writeRequest.addRelationTupleDeltas(tupleDelta)
+  writeRequest.relationTupleDeltas.push(tupleDelta)
 }
 
 const addSimpleTuple = (namespace, object, relation, user) => {
-  const relationTuple = new relationTuples.RelationTuple()
-  relationTuple.setNamespace(namespace)
-  relationTuple.setObject(object)
-  relationTuple.setRelation(relation)
-
-  const sub = new relationTuples.Subject()
-  sub.setId(user)
-  relationTuple.setSubject(sub)
+  const sub = new Subject({
+    id: user,
+  })
+  const relationTuple = new RelationTuple({
+    namespace,
+    object,
+    relation,
+    subject: sub,
+  })
 
   insert(relationTuple)
 }
@@ -46,19 +63,22 @@ addSimpleTuple("directories", "/photos", "access", "laura")
   ["files", "/photos/mountains.jpg"],
   ["directories", "/photos"],
 ].forEach(([namespace, object]) => {
-  const relationTuple = new relationTuples.RelationTuple()
-  relationTuple.setNamespace(namespace)
-  relationTuple.setObject(object)
-  relationTuple.setRelation("access")
+  const subjectSet = new SubjectSet({
+    namespace: "directories",
+    object: "/photos",
+    relation: "owner",
+  })
 
-  const subjectSet = new relationTuples.SubjectSet()
-  subjectSet.setNamespace(namespace)
-  subjectSet.setObject(object)
-  subjectSet.setRelation("owner")
+  const sub = new Subject({
+    set: subjectSet,
+  })
 
-  const sub = new relationTuples.Subject()
-  sub.setSet(subjectSet)
-  relationTuple.setSubject(sub)
+  const relationTuple = new RelationTuple({
+    namespace,
+    object,
+    relation: "access",
+    subject: sub,
+  })
 
   insert(relationTuple)
 })
@@ -66,19 +86,22 @@ addSimpleTuple("directories", "/photos", "access", "laura")
 // should be subject set rewrite
 // access on parent means access on child
 ;["/photos/beach.jpg", "/photos/mountains.jpg"].forEach((file) => {
-  const relationTuple = new relationTuples.RelationTuple()
-  relationTuple.setNamespace("files")
-  relationTuple.setObject(file)
-  relationTuple.setRelation("access")
+  const subjectSet = new SubjectSet({
+    namespace: "directories",
+    object: "/photos",
+    relation: "access",
+  })
 
-  const subjectSet = new relationTuples.SubjectSet()
-  subjectSet.setNamespace("directories")
-  subjectSet.setObject("/photos")
-  subjectSet.setRelation("access")
+  const sub = new Subject({
+    set: subjectSet,
+  })
 
-  const sub = new relationTuples.Subject()
-  sub.setSet(subjectSet)
-  relationTuple.setSubject(sub)
+  const relationTuple = new RelationTuple({
+    namespace: "files",
+    object: file,
+    relation: "access",
+    subject: sub,
+  })
 
   insert(relationTuple)
 })

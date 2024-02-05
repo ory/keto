@@ -98,11 +98,20 @@ sdk: .bin/swagger .bin/ory node_modules
 build:
 	go build -tags sqlite
 
+.PHONY: proto-clear
+proto-clear:
+	rm proto/ory/keto/opl/v1alpha1/*.ts || true
+	rm proto/ory/keto/opl/v1alpha1/*.js || true
+	rm proto/ory/keto/opl/v1alpha1/*.pb.go || true
+	rm proto/ory/keto/relation_tuples/v1alpha2/*.pb.go || true
+	rm proto/ory/keto/relation_tuples/v1alpha2/*.ts || true
+	rm proto/ory/keto/relation_tuples/v1alpha2/*.js || true
+
 #
 # Generate APIs and client stubs from the definitions
 #
 .PHONY: buf-gen
-buf-gen: .bin/buf .bin/protoc-gen-doc node_modules
+buf-gen: .bin/buf .bin/protoc-gen-doc node_modules proto-clear
 	buf generate
 	make format
 	@echo "All code was generated successfully!"
