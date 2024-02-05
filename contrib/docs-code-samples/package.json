@@ -5,6 +5,8 @@
     "test": "(cd ../../proto && npm i) && ./test.sh"
   },
   "dependencies": {
+    "@connectrpc/connect": "1.3.0",
+    "@connectrpc/connect-node": "1.3.0",
     "@grpc/grpc-js": "^1.2.6",
     "@ory/keto-grpc-client": "file:../../proto",
     "google-protobuf": "^3.21.2"

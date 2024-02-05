@@ -1,0 +1,3 @@
+version: v1
+build:
+  excludes: [node_modules, proto/node_modules]

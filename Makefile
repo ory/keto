@@ -1,7 +1,7 @@
 SHELL=/bin/bash -o pipefail
 
 export PWD				:= $(shell pwd)
-export PATH				:= ${PWD}/.bin:${PATH}
+export PATH				:= ${PWD}/.bin:${PWD}/node_modules/.bin:${PATH}
 export IMAGE_TAG	:= $(if $(IMAGE_TAG),$(IMAGE_TAG),latest)
 
 GO_DEPENDENCIES = golang.org/x/tools/cmd/goimports \
@@ -103,7 +103,7 @@ build:
 #
 .PHONY: buf-gen
 buf-gen: .bin/buf .bin/protoc-gen-doc node_modules
-	buf generate proto
+	buf generate
 	make format
 	@echo "All code was generated successfully!"
 
