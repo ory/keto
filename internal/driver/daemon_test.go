@@ -4,13 +4,16 @@
 package driver
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"testing"
 
 	"github.com/phayes/freeport"
+	ioprometheusclient "github.com/prometheus/client_model/go"
 	"github.com/prometheus/common/expfmt"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -18,13 +21,9 @@ import (
 	grpcHealthV1 "google.golang.org/grpc/health/grpc_health_v1"
 	"google.golang.org/grpc/status"
 
-	"github.com/ory/keto/internal/driver/config"
-
-	"context"
-
 	prometheus "github.com/ory/x/prometheusx"
-	ioprometheusclient "github.com/prometheus/client_model/go"
-	"github.com/stretchr/testify/require"
+
+	"github.com/ory/keto/internal/driver/config"
 )
 
 func TestScrapingEndpoint(t *testing.T) {
@@ -103,7 +102,10 @@ func TestPanicRecovery(t *testing.T) {
 	doneShutdown := make(chan struct{})
 	eg.Go(r.serveWrite(ctx, doneShutdown))
 
-	conn, err := grpc.DialContext(ctx, fmt.Sprintf("127.0.0.1:%d", port), grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.DialContext(ctx, fmt.Sprintf("127.0.0.1:%d", port),
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+		grpc.WithBlock(),
+	)
 	require.NoError(t, err)
 	defer conn.Close()
 

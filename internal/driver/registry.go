@@ -55,6 +55,8 @@ type (
 		ServeAllSQA(cmd *cobra.Command) error
 	}
 
+	GRPCDialer func() (*grpc.ClientConn, error)
+
 	contextKeys string
 )
 

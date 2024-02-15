@@ -2,10 +2,13 @@ syntax = "proto3";
 
 package ory.keto.relation_tuples.v1alpha2;
 
+import "google/api/annotations.proto";
+import "google/api/visibility.proto";
 import "ory/keto/relation_tuples/v1alpha2/relation_tuples.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
 
-option go_package = "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2;rts";
 option csharp_namespace = "Ory.Keto.RelationTuples.v1alpha2";
+option go_package = "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2;rts";
 option java_multiple_files = true;
 option java_outer_classname = "CheckServiceProto";
 option java_package = "sh.ory.keto.relation_tuples.v1alpha2";
@@ -17,7 +20,43 @@ option php_namespace = "Ory\\Keto\\RelationTuples\\v1alpha2";
 // This service is part of the [read-APIs](../concepts/25_api-overview.mdx#read-apis).
 service CheckService {
   // Performs an authorization check.
-  rpc Check(CheckRequest) returns (CheckResponse);
+  rpc Check(CheckRequest) returns (CheckResponse) {
+    option (google.api.http) = {
+      get: "/relation-tuples/check"
+      additional_bindings: {get: "/relation-tuples/check/openapi"}
+      additional_bindings: {
+        post: "/relation-tuples/check"
+        body: "*"
+      }
+      additional_bindings: {
+        post: "/relation-tuples/check/openapi"
+        body: "*"
+      }
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      consumes: "application/x-www-form-urlencoded"
+      consumes: "application/json"
+      tags: "permission"
+      responses: {
+        key: "200"
+        value: {
+          description: "The response of the permission check, in case it is allowed. For the `/openapi` endpoints, the status code is always 200."
+          schema: {
+            json_schema: {ref: ".ory.keto.relation_tuples.v1alpha2.CheckResponse"}
+          }
+        }
+      }
+      responses: {
+        key: "403"
+        value: {
+          description: "The response of the permission check, in case it is not allowed. For the `/openapi` endpoints, the status code is always 200."
+          schema: {
+            json_schema: {ref: ".ory.keto.relation_tuples.v1alpha2.CheckResponse"}
+          }
+        }
+      }
+    };
+  }
 }
 
 // The request for a CheckService.Check RPC.
@@ -35,9 +74,26 @@ message CheckRequest {
   // The relation between the Object and the Subject.
   string relation = 3 [deprecated = true];
   // The related subject in this check.
-  Subject subject = 4 [deprecated = true];
+  Subject subject = 4 [
+    deprecated = true,
+    (google.api.field_visibility).restriction = "NO_SWAGGER"
+  ];
 
-  RelationTuple tuple = 8;
+  oneof rest_api_subject {
+    // A concrete id of the subject.
+    string subject_id = 9 [
+      deprecated = true,
+      json_name = "subject_id"
+    ];
+    // A subject set that expands to more Subjects.
+    // More information are available under [concepts](../concepts/subjects.mdx).
+    SubjectSetQuery subject_set = 10 [
+      deprecated = true,
+      json_name = "subject_set"
+    ];
+  }
+
+  RelationTuple tuple = 8 [(google.api.field_visibility).restriction = "NO_SWAGGER"];
 
   // This field is not implemented yet and has no effect.
   // <!--
@@ -58,7 +114,7 @@ message CheckRequest {
   //    just been revoked some seconds ago so that the change had not
   //    yet been fully replicated to all availability zones.
   // -->
-  bool latest = 5;
+  bool latest = 5 [(google.api.field_visibility).restriction = "NO_SWAGGER"];
   // This field is not implemented yet and has no effect.
   // <!--
   // Optional. Like reads, a check is always evaluated at a
@@ -75,12 +131,12 @@ message CheckRequest {
   // on the best snapshot version where it is very likely that
   // ACLs had already been replicated to all availability zones.
   // -->
-  string snaptoken = 6;
+  string snaptoken = 6 [(google.api.field_visibility).restriction = "NO_SWAGGER"];
   // The maximum depth to search for a relation.
   //
   // If the value is less than 1 or greater than the global
   // max-depth then the global max-depth will be used instead.
-  int32 max_depth = 7;
+  int32 max_depth = 7 [json_name = "max-depth"];
 }
 
 // The response for a CheckService.Check rpc.
@@ -103,5 +159,5 @@ message CheckResponse {
   // for subsequent requests to have minimal latency,
   // but allow slightly stale responses (only some milliseconds or seconds).
   // -->
-  string snaptoken = 2;
+  string snaptoken = 2 [(google.api.field_visibility).restriction = "NO_SWAGGER"];
 }

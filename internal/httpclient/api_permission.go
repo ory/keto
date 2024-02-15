@@ -27,8 +27,7 @@ var (
 type PermissionApi interface {
 
 	/*
-	 * CheckPermission Check a permission
-	 * To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
+	 * CheckPermission Performs an authorization check.
 	 * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	 * @return PermissionApiApiCheckPermissionRequest
 	 */
@@ -41,8 +40,7 @@ type PermissionApi interface {
 	CheckPermissionExecute(r PermissionApiApiCheckPermissionRequest) (*CheckPermissionResult, *http.Response, error)
 
 	/*
-	 * CheckPermissionOrError Check a permission
-	 * To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
+	 * CheckPermissionOrError Performs an authorization check.
 	 * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	 * @return PermissionApiApiCheckPermissionOrErrorRequest
 	 */
@@ -55,8 +53,7 @@ type PermissionApi interface {
 	CheckPermissionOrErrorExecute(r PermissionApiApiCheckPermissionOrErrorRequest) (*CheckPermissionResult, *http.Response, error)
 
 	/*
-	 * ExpandPermissions Expand a Relationship into permissions.
-	 * Use this endpoint to expand a relationship tuple into permissions.
+	 * ExpandPermissions Expands the subject set into a tree of subjects.
 	 * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	 * @return PermissionApiApiExpandPermissionsRequest
 	 */
@@ -69,8 +66,7 @@ type PermissionApi interface {
 	ExpandPermissionsExecute(r PermissionApiApiExpandPermissionsRequest) (*ExpandedPermissionTree, *http.Response, error)
 
 	/*
-	 * PostCheckPermission Check a permission
-	 * To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
+	 * PostCheckPermission Performs an authorization check.
 	 * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	 * @return PermissionApiApiPostCheckPermissionRequest
 	 */
@@ -83,8 +79,7 @@ type PermissionApi interface {
 	PostCheckPermissionExecute(r PermissionApiApiPostCheckPermissionRequest) (*CheckPermissionResult, *http.Response, error)
 
 	/*
-	 * PostCheckPermissionOrError Check a permission
-	 * To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
+	 * PostCheckPermissionOrError Performs an authorization check.
 	 * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	 * @return PermissionApiApiPostCheckPermissionOrErrorRequest
 	 */
@@ -110,7 +105,7 @@ type PermissionApiApiCheckPermissionRequest struct {
 	subjectSetNamespace *string
 	subjectSetObject    *string
 	subjectSetRelation  *string
-	maxDepth            *int64
+	maxDepth            *int32
 }
 
 func (r PermissionApiApiCheckPermissionRequest) Namespace(namespace string) PermissionApiApiCheckPermissionRequest {
@@ -141,7 +136,7 @@ func (r PermissionApiApiCheckPermissionRequest) SubjectSetRelation(subjectSetRel
 	r.subjectSetRelation = &subjectSetRelation
 	return r
 }
-func (r PermissionApiApiCheckPermissionRequest) MaxDepth(maxDepth int64) PermissionApiApiCheckPermissionRequest {
+func (r PermissionApiApiCheckPermissionRequest) MaxDepth(maxDepth int32) PermissionApiApiCheckPermissionRequest {
 	r.maxDepth = &maxDepth
 	return r
 }
@@ -151,8 +146,7 @@ func (r PermissionApiApiCheckPermissionRequest) Execute() (*CheckPermissionResul
 }
 
 /*
- * CheckPermission Check a permission
- * To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
+ * CheckPermission Performs an authorization check.
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @return PermissionApiApiCheckPermissionRequest
  */
@@ -261,13 +255,15 @@ func (a *PermissionApiService) CheckPermissionExecute(r PermissionApiApiCheckPer
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
-		var v ErrorGeneric
-		err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-		if err != nil {
-			newErr.error = err.Error()
-			return localVarReturnValue, localVarHTTPResponse, newErr
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v CheckPermissionResult
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.model = v
 		}
-		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
@@ -293,7 +289,7 @@ type PermissionApiApiCheckPermissionOrErrorRequest struct {
 	subjectSetNamespace *string
 	subjectSetObject    *string
 	subjectSetRelation  *string
-	maxDepth            *int64
+	maxDepth            *int32
 }
 
 func (r PermissionApiApiCheckPermissionOrErrorRequest) Namespace(namespace string) PermissionApiApiCheckPermissionOrErrorRequest {
@@ -324,7 +320,7 @@ func (r PermissionApiApiCheckPermissionOrErrorRequest) SubjectSetRelation(subjec
 	r.subjectSetRelation = &subjectSetRelation
 	return r
 }
-func (r PermissionApiApiCheckPermissionOrErrorRequest) MaxDepth(maxDepth int64) PermissionApiApiCheckPermissionOrErrorRequest {
+func (r PermissionApiApiCheckPermissionOrErrorRequest) MaxDepth(maxDepth int32) PermissionApiApiCheckPermissionOrErrorRequest {
 	r.maxDepth = &maxDepth
 	return r
 }
@@ -334,8 +330,7 @@ func (r PermissionApiApiCheckPermissionOrErrorRequest) Execute() (*CheckPermissi
 }
 
 /*
- * CheckPermissionOrError Check a permission
- * To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
+ * CheckPermissionOrError Performs an authorization check.
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @return PermissionApiApiCheckPermissionOrErrorRequest
  */
@@ -452,15 +447,7 @@ func (a *PermissionApiService) CheckPermissionOrErrorExecute(r PermissionApiApiC
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
 			newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
-		var v ErrorGeneric
-		err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-		if err != nil {
-			newErr.error = err.Error()
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
@@ -482,7 +469,7 @@ type PermissionApiApiExpandPermissionsRequest struct {
 	namespace  *string
 	object     *string
 	relation   *string
-	maxDepth   *int64
+	maxDepth   *int32
 }
 
 func (r PermissionApiApiExpandPermissionsRequest) Namespace(namespace string) PermissionApiApiExpandPermissionsRequest {
@@ -497,7 +484,7 @@ func (r PermissionApiApiExpandPermissionsRequest) Relation(relation string) Perm
 	r.relation = &relation
 	return r
 }
-func (r PermissionApiApiExpandPermissionsRequest) MaxDepth(maxDepth int64) PermissionApiApiExpandPermissionsRequest {
+func (r PermissionApiApiExpandPermissionsRequest) MaxDepth(maxDepth int32) PermissionApiApiExpandPermissionsRequest {
 	r.maxDepth = &maxDepth
 	return r
 }
@@ -507,8 +494,7 @@ func (r PermissionApiApiExpandPermissionsRequest) Execute() (*ExpandedPermission
 }
 
 /*
- * ExpandPermissions Expand a Relationship into permissions.
- * Use this endpoint to expand a relationship tuple into permissions.
+ * ExpandPermissions Expands the subject set into a tree of subjects.
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @return PermissionApiApiExpandPermissionsRequest
  */
@@ -553,12 +539,12 @@ func (a *PermissionApiService) ExpandPermissionsExecute(r PermissionApiApiExpand
 		return localVarReturnValue, nil, reportError("relation is required and must be specified")
 	}
 
-	localVarQueryParams.Add("namespace", parameterToString(*r.namespace, ""))
-	localVarQueryParams.Add("object", parameterToString(*r.object, ""))
-	localVarQueryParams.Add("relation", parameterToString(*r.relation, ""))
 	if r.maxDepth != nil {
 		localVarQueryParams.Add("max-depth", parameterToString(*r.maxDepth, ""))
 	}
+	localVarQueryParams.Add("namespace", parameterToString(*r.namespace, ""))
+	localVarQueryParams.Add("object", parameterToString(*r.object, ""))
+	localVarQueryParams.Add("relation", parameterToString(*r.relation, ""))
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 
@@ -606,25 +592,7 @@ func (a *PermissionApiService) ExpandPermissionsExecute(r PermissionApiApiExpand
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
 			newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
-		if localVarHTTPResponse.StatusCode == 404 {
-			var v ErrorGeneric
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-			newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-		var v ErrorGeneric
-		err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-		if err != nil {
-			newErr.error = err.Error()
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
@@ -643,14 +611,9 @@ func (a *PermissionApiService) ExpandPermissionsExecute(r PermissionApiApiExpand
 type PermissionApiApiPostCheckPermissionRequest struct {
 	ctx                     context.Context
 	ApiService              PermissionApi
-	maxDepth                *int64
 	postCheckPermissionBody *PostCheckPermissionBody
 }
 
-func (r PermissionApiApiPostCheckPermissionRequest) MaxDepth(maxDepth int64) PermissionApiApiPostCheckPermissionRequest {
-	r.maxDepth = &maxDepth
-	return r
-}
 func (r PermissionApiApiPostCheckPermissionRequest) PostCheckPermissionBody(postCheckPermissionBody PostCheckPermissionBody) PermissionApiApiPostCheckPermissionRequest {
 	r.postCheckPermissionBody = &postCheckPermissionBody
 	return r
@@ -661,8 +624,7 @@ func (r PermissionApiApiPostCheckPermissionRequest) Execute() (*CheckPermissionR
 }
 
 /*
- * PostCheckPermission Check a permission
- * To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
+ * PostCheckPermission Performs an authorization check.
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @return PermissionApiApiPostCheckPermissionRequest
  */
@@ -697,12 +659,12 @@ func (a *PermissionApiService) PostCheckPermissionExecute(r PermissionApiApiPost
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-
-	if r.maxDepth != nil {
-		localVarQueryParams.Add("max-depth", parameterToString(*r.maxDepth, ""))
+	if r.postCheckPermissionBody == nil {
+		return localVarReturnValue, nil, reportError("postCheckPermissionBody is required and must be specified")
 	}
+
 	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{"application/json"}
+	localVarHTTPContentTypes := []string{"application/json", "application/x-www-form-urlencoded"}
 
 	// set Content-Type header
 	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
@@ -752,13 +714,15 @@ func (a *PermissionApiService) PostCheckPermissionExecute(r PermissionApiApiPost
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
-		var v ErrorGeneric
-		err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-		if err != nil {
-			newErr.error = err.Error()
-			return localVarReturnValue, localVarHTTPResponse, newErr
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v CheckPermissionResult
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.model = v
 		}
-		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
@@ -775,18 +739,13 @@ func (a *PermissionApiService) PostCheckPermissionExecute(r PermissionApiApiPost
 }
 
 type PermissionApiApiPostCheckPermissionOrErrorRequest struct {
-	ctx                            context.Context
-	ApiService                     PermissionApi
-	maxDepth                       *int64
-	postCheckPermissionOrErrorBody *PostCheckPermissionOrErrorBody
+	ctx                     context.Context
+	ApiService              PermissionApi
+	postCheckPermissionBody *PostCheckPermissionBody
 }
 
-func (r PermissionApiApiPostCheckPermissionOrErrorRequest) MaxDepth(maxDepth int64) PermissionApiApiPostCheckPermissionOrErrorRequest {
-	r.maxDepth = &maxDepth
-	return r
-}
-func (r PermissionApiApiPostCheckPermissionOrErrorRequest) PostCheckPermissionOrErrorBody(postCheckPermissionOrErrorBody PostCheckPermissionOrErrorBody) PermissionApiApiPostCheckPermissionOrErrorRequest {
-	r.postCheckPermissionOrErrorBody = &postCheckPermissionOrErrorBody
+func (r PermissionApiApiPostCheckPermissionOrErrorRequest) PostCheckPermissionBody(postCheckPermissionBody PostCheckPermissionBody) PermissionApiApiPostCheckPermissionOrErrorRequest {
+	r.postCheckPermissionBody = &postCheckPermissionBody
 	return r
 }
 
@@ -795,8 +754,7 @@ func (r PermissionApiApiPostCheckPermissionOrErrorRequest) Execute() (*CheckPerm
 }
 
 /*
- * PostCheckPermissionOrError Check a permission
- * To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
+ * PostCheckPermissionOrError Performs an authorization check.
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @return PermissionApiApiPostCheckPermissionOrErrorRequest
  */
@@ -831,12 +789,12 @@ func (a *PermissionApiService) PostCheckPermissionOrErrorExecute(r PermissionApi
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-
-	if r.maxDepth != nil {
-		localVarQueryParams.Add("max-depth", parameterToString(*r.maxDepth, ""))
+	if r.postCheckPermissionBody == nil {
+		return localVarReturnValue, nil, reportError("postCheckPermissionBody is required and must be specified")
 	}
+
 	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{"application/json"}
+	localVarHTTPContentTypes := []string{"application/json", "application/x-www-form-urlencoded"}
 
 	// set Content-Type header
 	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
@@ -853,7 +811,7 @@ func (a *PermissionApiService) PostCheckPermissionOrErrorExecute(r PermissionApi
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.postCheckPermissionOrErrorBody
+	localVarPostBody = r.postCheckPermissionBody
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
@@ -894,15 +852,7 @@ func (a *PermissionApiService) PostCheckPermissionOrErrorExecute(r PermissionApi
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
 			newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
-		var v ErrorGeneric
-		err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-		if err != nil {
-			newErr.error = err.Error()
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 

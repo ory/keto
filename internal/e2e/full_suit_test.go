@@ -129,7 +129,7 @@ func Test(t *testing.T) {
 	}
 }
 
-func TestServeConfig(t *testing.T) {
+func TestServeCORS(t *testing.T) {
 	t.Parallel()
 
 	ctx, reg, _ := newInitializedReg(t, dbx.GetSqlite(t, dbx.SQLiteMemory), map[string]interface{}{
@@ -150,8 +150,9 @@ func TestServeConfig(t *testing.T) {
 	req, err := http.NewRequest(http.MethodOptions, "http://"+reg.Config(ctx).ReadAPIListenOn()+relationtuple.ReadRouteBase, nil)
 	require.NoError(t, err)
 	req.Header.Set("Origin", "https://ory.sh")
+	req.Header.Set("Access-Control-Request-Method", http.MethodGet)
 	resp, err := http.DefaultClient.Do(req)
 	require.NoError(t, err)
-	require.Equal(t, http.StatusOK, resp.StatusCode)
+	require.Equal(t, http.StatusNoContent, resp.StatusCode)
 	assert.Equal(t, "https://ory.sh", resp.Header.Get("Access-Control-Allow-Origin"), "%+v", resp.Header)
 }

@@ -12,13 +12,14 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/ory/x/healthx"
+
 	"github.com/ory/keto/internal/schema"
 	"github.com/ory/keto/ketoapi"
+	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 
 	"github.com/ory/herodot"
 	"github.com/tidwall/gjson"
-
-	"github.com/ory/x/healthx"
 
 	"github.com/ory/keto/internal/x"
 
@@ -45,7 +46,9 @@ func (rc *restClient) queryNamespaces(t require.TestingT) (res ketoapi.GetNamesp
 }
 
 func (rc *restClient) oplCheckSyntax(t require.TestingT, content []byte) []*ketoapi.ParseError {
-	body, code := rc.makeRequest(t, http.MethodPost, schema.RouteBase, string(content), rc.oplSyntaxURL)
+	enc, err := json.Marshal(content)
+	require.NoError(t, err)
+	body, code := rc.makeRequest(t, http.MethodPost, schema.RouteBase, string(enc), rc.oplSyntaxURL)
 	assert.Equal(t, http.StatusOK, code, body)
 	var response ketoapi.CheckOPLSyntaxResponse
 	require.NoError(t, json.Unmarshal([]byte(body), &response))
@@ -132,14 +135,14 @@ func (rc *restClient) check(t require.TestingT, r *ketoapi.RelationTuple) bool {
 	q := r.ToURLQuery()
 	bodyGet, codeGet := rc.makeRequest(t, http.MethodGet, fmt.Sprintf("%s?%s", check.RouteBase, q.Encode()), "", rc.readURL)
 
-	var respGet check.CheckPermissionResult
+	var respGet rts.CheckResponse
 	require.NoError(t, json.Unmarshal([]byte(bodyGet), &respGet))
 
 	j, err := json.Marshal(r)
 	require.NoError(t, err)
 	bodyPost, codePost := rc.makeRequest(t, http.MethodPost, check.RouteBase, string(j), rc.readURL)
 
-	var respPost check.CheckPermissionResult
+	var respPost rts.CheckResponse
 	require.NoError(t, json.Unmarshal([]byte(bodyPost), &respPost))
 
 	if codeGet == http.StatusOK && codePost == http.StatusOK {
@@ -168,10 +171,8 @@ func (rc *restClient) expand(t require.TestingT, r *ketoapi.SubjectSet, depth in
 	return tree
 }
 
-func healthReady(t require.TestingT, readURL string) bool {
-	req, err := http.NewRequest("GET", readURL+healthx.ReadyCheckPath, nil)
-	require.NoError(t, err)
-	resp, err := http.DefaultClient.Do(req)
+func healthReady(_ require.TestingT, readURL string) bool {
+	resp, err := http.Get(readURL + healthx.ReadyCheckPath)
 	if err != nil {
 		return false
 	}

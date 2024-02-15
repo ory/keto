@@ -36,10 +36,12 @@ func (c *sdkClient) requestCtx() context.Context {
 }
 
 func (c *sdkClient) oplCheckSyntax(t require.TestingT, content []byte) (parseErrors []*ketoapi.ParseError) {
+	body, err := json.Marshal(content)
+	require.NoError(t, err)
 	res, _, err := c.getOPLSyntaxClient().
 		RelationshipApi.
 		CheckOplSyntax(c.requestCtx()).
-		Body(string(content)).
+		Body(string(body)).
 		Execute()
 	require.NoError(t, err)
 
@@ -171,7 +173,7 @@ func compileParams(req httpclient.RelationshipApiApiGetRelationshipsRequest, q *
 
 	pagination := x.GetPaginationOptions(opts...)
 	if pagination.Size != 0 {
-		req = req.PageSize(int64(pagination.Size))
+		req = req.PageSize(int32(pagination.Size))
 	}
 	if pagination.Token != "" {
 		req = req.PageToken(pagination.Token)
@@ -273,7 +275,7 @@ func (c *sdkClient) expand(t require.TestingT, r *ketoapi.SubjectSet, depth int)
 		Namespace(r.Namespace).
 		Object(r.Object).
 		Relation(r.Relation).
-		MaxDepth(int64(depth))
+		MaxDepth(int32(depth))
 
 	resp, _, err := request.Execute()
 	require.NoError(t, err)
@@ -286,7 +288,7 @@ func (c *sdkClient) waitUntilLive(t require.TestingT) {
 	for err != nil {
 		resp, _, err = c.getReadClient().MetadataApi.IsReady(c.requestCtx()).Execute()
 	}
-	require.Equal(t, "ok", resp.Status)
+	require.Equal(t, "SERVING", resp.Status)
 }
 
 func (c *sdkClient) queryNamespaces(t require.TestingT) (response ketoapi.GetNamespacesResponse) {

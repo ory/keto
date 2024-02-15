@@ -19,7 +19,9 @@
   - [RelationQuery](#ory-keto-relation_tuples-v1alpha2-RelationQuery)
   - [RelationTuple](#ory-keto-relation_tuples-v1alpha2-RelationTuple)
   - [Subject](#ory-keto-relation_tuples-v1alpha2-Subject)
+  - [SubjectQuery](#ory-keto-relation_tuples-v1alpha2-SubjectQuery)
   - [SubjectSet](#ory-keto-relation_tuples-v1alpha2-SubjectSet)
+  - [SubjectSetQuery](#ory-keto-relation_tuples-v1alpha2-SubjectSetQuery)
 - [ory/keto/relation_tuples/v1alpha2/check_service.proto](#ory_keto_relation_tuples_v1alpha2_check_service-proto)
 
   - [CheckRequest](#ory-keto-relation_tuples-v1alpha2-CheckRequest)
@@ -41,6 +43,10 @@
   - [Namespace](#ory-keto-relation_tuples-v1alpha2-Namespace)
   - [NamespacesService](#ory-keto-relation_tuples-v1alpha2-NamespacesService)
 
+- [ory/keto/relation_tuples/v1alpha2/openapi.proto](#ory_keto_relation_tuples_v1alpha2_openapi-proto)
+  - [ErrorResponse](#ory-keto-relation_tuples-v1alpha2-ErrorResponse)
+  - [ErrorResponse.Error](#ory-keto-relation_tuples-v1alpha2-ErrorResponse-Error)
+  - [ErrorResponse.Error.DetailsEntry](#ory-keto-relation_tuples-v1alpha2-ErrorResponse-Error-DetailsEntry)
 - [ory/keto/relation_tuples/v1alpha2/read_service.proto](#ory_keto_relation_tuples_v1alpha2_read_service-proto)
 
   - [ListRelationTuplesRequest](#ory-keto-relation_tuples-v1alpha2-ListRelationTuplesRequest)
@@ -56,6 +62,9 @@
 
 - [ory/keto/relation_tuples/v1alpha2/write_service.proto](#ory_keto_relation_tuples_v1alpha2_write_service-proto)
 
+  - [CreateRelationTupleRequest](#ory-keto-relation_tuples-v1alpha2-CreateRelationTupleRequest)
+  - [CreateRelationTupleRequest.Relationship](#ory-keto-relation_tuples-v1alpha2-CreateRelationTupleRequest-Relationship)
+  - [CreateRelationTupleResponse](#ory-keto-relation_tuples-v1alpha2-CreateRelationTupleResponse)
   - [DeleteRelationTuplesRequest](#ory-keto-relation_tuples-v1alpha2-DeleteRelationTuplesRequest)
   - [DeleteRelationTuplesRequest.Query](#ory-keto-relation_tuples-v1alpha2-DeleteRelationTuplesRequest-Query)
   - [DeleteRelationTuplesResponse](#ory-keto-relation_tuples-v1alpha2-DeleteRelationTuplesResponse)
@@ -88,6 +97,7 @@
 | Field        | Type                                            | Label    | Description |
 | ------------ | ----------------------------------------------- | -------- | ----------- |
 | parse_errors | [ParseError](#ory-keto-opl-v1alpha1-ParseError) | repeated |             |
+| errors       | [ParseError](#ory-keto-opl-v1alpha1-ParseError) | repeated |             |
 
 <a name="ory-keto-opl-v1alpha1-ParseError"></a>
 
@@ -163,12 +173,14 @@ Example use cases (namespace is always required):
 
 RelationTuple defines a relation between an Object and a Subject.
 
-| Field     | Type                                                  | Label | Description                                                                                                                                   |
-| --------- | ----------------------------------------------------- | ----- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| namespace | [string](#string)                                     |       | The namespace this relation tuple lives in.                                                                                                   |
-| object    | [string](#string)                                     |       | The object related by this tuple.<br/>It is an object in the namespace of the tuple.                                                          |
-| relation  | [string](#string)                                     |       | The relation between an Object and a Subject.                                                                                                 |
-| subject   | [Subject](#ory-keto-relation_tuples-v1alpha2-Subject) |       | The subject related by this tuple.<br/>A Subject either represents a concrete subject id or<br/>a `SubjectSet` that expands to more Subjects. |
+| Field       | Type                                                        | Label | Description                                                                                                                                   |
+| ----------- | ----------------------------------------------------------- | ----- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| namespace   | [string](#string)                                           |       | The namespace this relation tuple lives in.                                                                                                   |
+| object      | [string](#string)                                           |       | The object related by this tuple.<br/>It is an object in the namespace of the tuple.                                                          |
+| relation    | [string](#string)                                           |       | The relation between an Object and a Subject.                                                                                                 |
+| subject     | [Subject](#ory-keto-relation_tuples-v1alpha2-Subject)       |       | The subject related by this tuple.<br/>A Subject either represents a concrete subject id or<br/>a `SubjectSet` that expands to more Subjects. |
+| subject_id  | [string](#string)                                           |       | **Deprecated.** A concrete id of the subject.                                                                                                 |
+| subject_set | [SubjectSet](#ory-keto-relation_tuples-v1alpha2-SubjectSet) |       | **Deprecated.** A subject set that expands to more Subjects.<br/>More information are available under [concepts](../concepts/subjects.mdx).   |
 
 <a name="ory-keto-relation_tuples-v1alpha2-Subject"></a>
 
@@ -182,11 +194,36 @@ Subjects.
 | id    | [string](#string)                                           |       | A concrete id of the subject.                                                                                                  |
 | set   | [SubjectSet](#ory-keto-relation_tuples-v1alpha2-SubjectSet) |       | A subject set that expands to more Subjects.<br/>More information are available under [concepts](../concepts/15_subjects.mdx). |
 
+<a name="ory-keto-relation_tuples-v1alpha2-SubjectQuery"></a>
+
+### SubjectQuery
+
+SubjectQuery is either a concrete subject id or a `SubjectSet` expanding to more
+Subjects.
+
+| Field | Type                                                                  | Label | Description                                                                                                                 |
+| ----- | --------------------------------------------------------------------- | ----- | --------------------------------------------------------------------------------------------------------------------------- |
+| id    | [string](#string)                                                     |       | A concrete id of the subject.                                                                                               |
+| set   | [SubjectSetQuery](#ory-keto-relation_tuples-v1alpha2-SubjectSetQuery) |       | A subject set that expands to more Subjects.<br/>More information are available under [concepts](../concepts/subjects.mdx). |
+
 <a name="ory-keto-relation_tuples-v1alpha2-SubjectSet"></a>
 
 ### SubjectSet
 
 SubjectSet refers to all subjects who have the same `relation` on an `object`.
+
+| Field     | Type              | Label | Description                                                                  |
+| --------- | ----------------- | ----- | ---------------------------------------------------------------------------- |
+| namespace | [string](#string) |       | The namespace of the object and relation<br/>referenced in this subject set. |
+| object    | [string](#string) |       | The object related by this subject set.                                      |
+| relation  | [string](#string) |       | The relation between the object and the subjects.                            |
+
+<a name="ory-keto-relation_tuples-v1alpha2-SubjectSetQuery"></a>
+
+### SubjectSetQuery
+
+SubjectSetQuery refers to all subjects who have the same `relation` on an
+`object`.
 
 | Field     | Type              | Label | Description                                                                  |
 | --------- | ----------------- | ----- | ---------------------------------------------------------------------------- |
@@ -215,16 +252,18 @@ SubjectSet refers to all subjects who have the same `relation` on an `object`.
 The request for a CheckService.Check RPC. Checks whether a specific subject is
 related to an object.
 
-| Field     | Type                                                              | Label | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
-| --------- | ----------------------------------------------------------------- | ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| namespace | [string](#string)                                                 |       | **Deprecated.** The namespace to evaluate the check.<br/><br/>Note: If you use the expand-API and the check<br/>evaluates a RelationTuple specifying a SubjectSet as<br/>subject or due to a rewrite rule in a namespace config<br/>this check request may involve other namespaces automatically.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
-| object    | [string](#string)                                                 |       | **Deprecated.** The related object in this check.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
-| relation  | [string](#string)                                                 |       | **Deprecated.** The relation between the Object and the Subject.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-| subject   | [Subject](#ory-keto-relation_tuples-v1alpha2-Subject)             |       | **Deprecated.** The related subject in this check.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
-| tuple     | [RelationTuple](#ory-keto-relation_tuples-v1alpha2-RelationTuple) |       |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
-| latest    | [bool](#bool)                                                     |       | This field is not implemented yet and has no effect.<br/><!--<br/>Set this field to `true` in case your application<br/>needs to authorize depending on up to date ACLs,<br/>also called a "content-change check".<br/><br/>If set to `true` the `snaptoken` field is ignored,<br/>the check is evaluated at the latest snapshot<br/>(globally consistent) and the response includes a<br/>snaptoken for clients to store along with object<br/>contents that can be used for subsequent checks<br/>of the same content version.<br/><br/>Example use case:<br/> - You need to authorize a user to modify/delete some resource<br/> and it is unacceptable that if the permission to do that had<br/> just been revoked some seconds ago so that the change had not<br/> yet been fully replicated to all availability zones.<br/>--> |
-| snaptoken | [string](#string)                                                 |       | This field is not implemented yet and has no effect.<br/><!--<br/>Optional. Like reads, a check is always evaluated at a<br/>consistent snapshot no earlier than the given snaptoken.<br/><br/>Leave this field blank if you want to evaluate the check<br/>based on eventually consistent ACLs, benefiting from very<br/>low latency, but possibly slightly stale results.<br/><br/>If the specified token is too old and no longer known,<br/>the server falls back as if no snaptoken had been specified.<br/><br/>If not specified the server tries to evaluate the check<br/>on the best snapshot version where it is very likely that<br/>ACLs had already been replicated to all availability zones.<br/>-->                                                                                                                   |
-| max_depth | [int32](#int32)                                                   |       | The maximum depth to search for a relation.<br/><br/>If the value is less than 1 or greater than the global<br/>max-depth then the global max-depth will be used instead.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| Field       | Type                                                                  | Label | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| ----------- | --------------------------------------------------------------------- | ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| namespace   | [string](#string)                                                     |       | **Deprecated.** The namespace to evaluate the check.<br/><br/>Note: If you use the expand-API and the check<br/>evaluates a RelationTuple specifying a SubjectSet as<br/>subject or due to a rewrite rule in a namespace config<br/>this check request may involve other namespaces automatically.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| object      | [string](#string)                                                     |       | **Deprecated.** The related object in this check.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| relation    | [string](#string)                                                     |       | **Deprecated.** The relation between the Object and the Subject.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| subject     | [Subject](#ory-keto-relation_tuples-v1alpha2-Subject)                 |       | **Deprecated.** The related subject in this check.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| subject_id  | [string](#string)                                                     |       | **Deprecated.** A concrete id of the subject.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| subject_set | [SubjectSetQuery](#ory-keto-relation_tuples-v1alpha2-SubjectSetQuery) |       | **Deprecated.** A subject set that expands to more Subjects.<br/>More information are available under [concepts](../concepts/subjects.mdx).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| tuple       | [RelationTuple](#ory-keto-relation_tuples-v1alpha2-RelationTuple)     |       |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| latest      | [bool](#bool)                                                         |       | This field is not implemented yet and has no effect.<br/><!--<br/>Set this field to `true` in case your application<br/>needs to authorize depending on up to date ACLs,<br/>also called a "content-change check".<br/><br/>If set to `true` the `snaptoken` field is ignored,<br/>the check is evaluated at the latest snapshot<br/>(globally consistent) and the response includes a<br/>snaptoken for clients to store along with object<br/>contents that can be used for subsequent checks<br/>of the same content version.<br/><br/>Example use case:<br/> - You need to authorize a user to modify/delete some resource<br/> and it is unacceptable that if the permission to do that had<br/> just been revoked some seconds ago so that the change had not<br/> yet been fully replicated to all availability zones.<br/>--> |
+| snaptoken   | [string](#string)                                                     |       | This field is not implemented yet and has no effect.<br/><!--<br/>Optional. Like reads, a check is always evaluated at a<br/>consistent snapshot no earlier than the given snaptoken.<br/><br/>Leave this field blank if you want to evaluate the check<br/>based on eventually consistent ACLs, benefiting from very<br/>low latency, but possibly slightly stale results.<br/><br/>If the specified token is too old and no longer known,<br/>the server falls back as if no snaptoken had been specified.<br/><br/>If not specified the server tries to evaluate the check<br/>on the best snapshot version where it is very likely that<br/>ACLs had already been replicated to all availability zones.<br/>-->                                                                                                                   |
+| max_depth   | [int32](#int32)                                                       |       | The maximum depth to search for a relation.<br/><br/>If the value is less than 1 or greater than the global<br/>max-depth then the global max-depth will be used instead.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 
 <a name="ory-keto-relation_tuples-v1alpha2-CheckResponse"></a>
 
@@ -276,6 +315,9 @@ The request for an ExpandService.Expand RPC. Expands the given subject set.
 | subject   | [Subject](#ory-keto-relation_tuples-v1alpha2-Subject) |       | The subject to expand.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 | max_depth | [int32](#int32)                                       |       | The maximum depth of tree to build.<br/><br/>If the value is less than 1 or greater than the global<br/>max-depth then the global max-depth will be used instead.<br/><br/>It is important to set this parameter to a meaningful<br/>value. Ponder how deep you really want to display this.                                                                                                                                                                                                                                                                                                                                                                                                         |
 | snaptoken | [string](#string)                                     |       | This field is not implemented yet and has no effect.<br/><!--<br/>Optional. Like reads, a expand is always evaluated at a<br/>consistent snapshot no earlier than the given snaptoken.<br/><br/>Leave this field blank if you want to expand<br/>based on eventually consistent ACLs, benefiting from very<br/>low latency, but possibly slightly stale results.<br/><br/>If the specified token is too old and no longer known,<br/>the server falls back as if no snaptoken had been specified.<br/><br/>If not specified the server tries to build the tree<br/>on the best snapshot version where it is very likely that<br/>ACLs had already been replicated to all availability zones.<br/>--> |
+| namespace | [string](#string)                                     |       | **Deprecated.** The namespace of the object and relation<br/>referenced in this subject set.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| object    | [string](#string)                                     |       | **Deprecated.** The object related by this subject set.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| relation  | [string](#string)                                     |       | **Deprecated.** The relation between the object and the subjects.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 
 <a name="ory-keto-relation_tuples-v1alpha2-ExpandResponse"></a>
 
@@ -304,13 +346,24 @@ The response for a ExpandService.Expand RPC.
 
 ### NodeType
 
-| Name                   | Number | Description                                                                                                    |
-| ---------------------- | ------ | -------------------------------------------------------------------------------------------------------------- |
-| NODE_TYPE_UNSPECIFIED  | 0      |                                                                                                                |
-| NODE_TYPE_UNION        | 1      | This node expands to a union of all children.                                                                  |
-| NODE_TYPE_EXCLUSION    | 2      | Not implemented yet.                                                                                           |
-| NODE_TYPE_INTERSECTION | 3      | Not implemented yet.                                                                                           |
-| NODE_TYPE_LEAF         | 4      | This node is a leaf and contains no children.<br/>Its subject is a `SubjectID` unless `max_depth` was reached. |
+| Name                           | Number | Description                                                                                                    |
+| ------------------------------ | ------ | -------------------------------------------------------------------------------------------------------------- |
+| unspecified                    | 0      |                                                                                                                |
+| NODE_TYPE_UNSPECIFIED          | 0      |                                                                                                                |
+| union                          | 1      | This node expands to a union of all children.                                                                  |
+| NODE_TYPE_UNION                | 1      |                                                                                                                |
+| exclusion                      | 2      | Not implemented yet.                                                                                           |
+| NODE_TYPE_EXCLUSION            | 2      |                                                                                                                |
+| intersection                   | 3      | Not implemented yet.                                                                                           |
+| NODE_TYPE_INTERSECTION         | 3      |                                                                                                                |
+| leaf                           | 4      | This node is a leaf and contains no children.<br/>Its subject is a `SubjectID` unless `max_depth` was reached. |
+| NODE_TYPE_LEAF                 | 4      |                                                                                                                |
+| tuple_to_subject_set           | 5      | This node is a leaf and contains no children.<br/>Its subject is a `SubjectID` unless `max_depth` was reached. |
+| NODE_TYPE_TUPLE_TO_SUBJECT_SET | 5      |                                                                                                                |
+| computed_subject_set           | 6      | This node is a leaf and contains no children.<br/>Its subject is a `SubjectID` unless `max_depth` was reached. |
+| NODE_TYPE_COMPUTED_SUBJECT_SET | 6      |                                                                                                                |
+| not                            | 7      | This node is a leaf and contains no children.<br/>Its subject is a `SubjectID` unless `max_depth` was reached. |
+| NODE_TYPE_NOT                  | 7      |                                                                                                                |
 
 <!-- end enums -->
 
@@ -375,9 +428,59 @@ The service to query namespaces.
 This service is part of the
 [read-APIs](../concepts/25_api-overview.mdx#read-apis).
 
-| Method Name    | Request Type                                                                      | Response Type                                                                       | Description      |
-| -------------- | --------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- | ---------------- |
-| ListNamespaces | [ListNamespacesRequest](#ory-keto-relation_tuples-v1alpha2-ListNamespacesRequest) | [ListNamespacesResponse](#ory-keto-relation_tuples-v1alpha2-ListNamespacesResponse) | Lists Namespaces |
+| Method Name    | Request Type                                                                      | Response Type                                                                       | Description                                   |
+| -------------- | --------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- | --------------------------------------------- |
+| ListNamespaces | [ListNamespacesRequest](#ory-keto-relation_tuples-v1alpha2-ListNamespacesRequest) | [ListNamespacesResponse](#ory-keto-relation_tuples-v1alpha2-ListNamespacesResponse) | Lists Namespaces<br/><br/>Get all namespaces. |
+
+<!-- end services -->
+
+<a name="ory_keto_relation_tuples_v1alpha2_openapi-proto"></a>
+
+<p align="right"><a href="#top">Top</a></p>
+
+## ory/keto/relation_tuples/v1alpha2/openapi.proto
+
+<a name="ory-keto-relation_tuples-v1alpha2-ErrorResponse"></a>
+
+### ErrorResponse
+
+JSON API Error Response
+
+The standard Ory JSON API error format.
+
+| Field | Type                                                                          | Label | Description |
+| ----- | ----------------------------------------------------------------------------- | ----- | ----------- |
+| error | [ErrorResponse.Error](#ory-keto-relation_tuples-v1alpha2-ErrorResponse-Error) |       |             |
+
+<a name="ory-keto-relation_tuples-v1alpha2-ErrorResponse-Error"></a>
+
+### ErrorResponse.Error
+
+| Field   | Type                                                                                                    | Label    | Description                                                                                                                                         |
+| ------- | ------------------------------------------------------------------------------------------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| code    | [int64](#int64)                                                                                         |          | The status code                                                                                                                                     |
+| debug   | [string](#string)                                                                                       |          | Debug information<br/><br/>Debug information is often not exposed to protect against leaking sensitive information.                                 |
+| details | [ErrorResponse.Error.DetailsEntry](#ory-keto-relation_tuples-v1alpha2-ErrorResponse-Error-DetailsEntry) | repeated | Further error details<br/><br/>Further details about the error.                                                                                     |
+| id      | [string](#string)                                                                                       |          | The error ID<br/><br/>The error ID is useful when trying to identify various errors in application logic.                                           |
+| message | [string](#string)                                                                                       |          | The error message<br/><br/>The error's message (required).                                                                                          |
+| reason  | [string](#string)                                                                                       |          | The error reason<br/><br/>Reason holds a human-readable reason for the error.                                                                       |
+| request | [string](#string)                                                                                       |          | The request ID<br/><br/>The request ID is often exposed internally in order to trace<br/>errors across service architectures. This is often a UUID. |
+| status  | [string](#string)                                                                                       |          | The status description<br/><br/>Status holds the human-readable HTTP status code.                                                                   |
+
+<a name="ory-keto-relation_tuples-v1alpha2-ErrorResponse-Error-DetailsEntry"></a>
+
+### ErrorResponse.Error.DetailsEntry
+
+| Field | Type              | Label | Description |
+| ----- | ----------------- | ----- | ----------- |
+| key   | [string](#string) |       |             |
+| value | [string](#string) |       |             |
+
+<!-- end messages -->
+
+<!-- end enums -->
+
+<!-- end HasExtensions -->
 
 <!-- end services -->
 
@@ -402,6 +505,11 @@ Request for ReadService.ListRelationTuples RPC. See
 | snaptoken      | [string](#string)                                                                                     |       | This field is not implemented yet and has no effect.<br/><!--<br/>Optional. The snapshot token for this read.<br/>-->                                                                                                                                                                                                                                                                                                        |
 | page_size      | [int32](#int32)                                                                                       |       | Optional. The maximum number of<br/>RelationTuples to return in the response.<br/><br/>Default: 100                                                                                                                                                                                                                                                                                                                          |
 | page_token     | [string](#string)                                                                                     |       | Optional. An opaque pagination token returned from<br/>a previous call to `ListRelationTuples` that<br/>indicates where the page should start at.<br/><br/>An empty token denotes the first page. All successive<br/>pages require the token from the previous page.                                                                                                                                                         |
+| namespace      | [string](#string)                                                                                     |       | **Deprecated.** The namespace                                                                                                                                                                                                                                                                                                                                                                                                |
+| object         | [string](#string)                                                                                     |       | **Deprecated.** The related object in this check.                                                                                                                                                                                                                                                                                                                                                                            |
+| relation       | [string](#string)                                                                                     |       | **Deprecated.** The relation between the Object and the Subject.                                                                                                                                                                                                                                                                                                                                                             |
+| subject_id     | [string](#string)                                                                                     |       | A concrete id of the subject.                                                                                                                                                                                                                                                                                                                                                                                                |
+| subject_set    | [SubjectSetQuery](#ory-keto-relation_tuples-v1alpha2-SubjectSetQuery)                                 |       | A subject set that expands to more Subjects.<br/>More information are available under [concepts](../concepts/subjects.mdx).                                                                                                                                                                                                                                                                                                  |
 
 <a name="ory-keto-relation_tuples-v1alpha2-ListRelationTuplesRequest-Query"></a>
 
@@ -498,9 +606,9 @@ This service is part of the
 [read-APIs](../concepts/25_api-overview.mdx#read-apis) and
 [write-APIs](../concepts/25_api-overview.mdx#write-apis).
 
-| Method Name | Request Type                                                              | Response Type                                                               | Description                                   |
-| ----------- | ------------------------------------------------------------------------- | --------------------------------------------------------------------------- | --------------------------------------------- |
-| GetVersion  | [GetVersionRequest](#ory-keto-relation_tuples-v1alpha2-GetVersionRequest) | [GetVersionResponse](#ory-keto-relation_tuples-v1alpha2-GetVersionResponse) | Returns the version of the Ory Keto instance. |
+| Method Name | Request Type                                                              | Response Type                                                               | Description                                                                                                                                                                                                                                                                     |
+| ----------- | ------------------------------------------------------------------------- | --------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| GetVersion  | [GetVersionRequest](#ory-keto-relation_tuples-v1alpha2-GetVersionRequest) | [GetVersionResponse](#ory-keto-relation_tuples-v1alpha2-GetVersionResponse) | Returns the version of the Ory Keto instance.<br/><br/>This endpoint returns the service version typically notated using semantic versioning.<br/><br/>If the service supports TLS Edge Termination, this endpoint does not require the<br/>X-Forwarded-Proto header to be set. |
 
 <!-- end services -->
 
@@ -510,14 +618,51 @@ This service is part of the
 
 ## ory/keto/relation_tuples/v1alpha2/write_service.proto
 
+<a name="ory-keto-relation_tuples-v1alpha2-CreateRelationTupleRequest"></a>
+
+### CreateRelationTupleRequest
+
+The request to create a new relationship.
+
+| Field          | Type                                                                                                                  | Label | Description                 |
+| -------------- | --------------------------------------------------------------------------------------------------------------------- | ----- | --------------------------- |
+| relation_tuple | [CreateRelationTupleRequest.Relationship](#ory-keto-relation_tuples-v1alpha2-CreateRelationTupleRequest-Relationship) |       | The relationship to create. |
+
+<a name="ory-keto-relation_tuples-v1alpha2-CreateRelationTupleRequest-Relationship"></a>
+
+### CreateRelationTupleRequest.Relationship
+
+| Field       | Type                                                        | Label | Description                                                                                                                 |
+| ----------- | ----------------------------------------------------------- | ----- | --------------------------------------------------------------------------------------------------------------------------- |
+| namespace   | [string](#string)                                           |       | The namespace this relation tuple lives in.                                                                                 |
+| object      | [string](#string)                                           |       | The object related by this tuple.<br/>It is an object in the namespace of the tuple.                                        |
+| relation    | [string](#string)                                           |       | The relation between an Object and a Subject.                                                                               |
+| subject_id  | [string](#string)                                           |       | A concrete id of the subject.                                                                                               |
+| subject_set | [SubjectSet](#ory-keto-relation_tuples-v1alpha2-SubjectSet) |       | A subject set that expands to more Subjects.<br/>More information are available under [concepts](../concepts/subjects.mdx). |
+
+<a name="ory-keto-relation_tuples-v1alpha2-CreateRelationTupleResponse"></a>
+
+### CreateRelationTupleResponse
+
+The response from creating a new relationship.
+
+| Field          | Type                                                              | Label | Description               |
+| -------------- | ----------------------------------------------------------------- | ----- | ------------------------- |
+| relation_tuple | [RelationTuple](#ory-keto-relation_tuples-v1alpha2-RelationTuple) |       | The created relationship. |
+
 <a name="ory-keto-relation_tuples-v1alpha2-DeleteRelationTuplesRequest"></a>
 
 ### DeleteRelationTuplesRequest
 
-| Field          | Type                                                                                                      | Label | Description     |
-| -------------- | --------------------------------------------------------------------------------------------------------- | ----- | --------------- |
-| query          | [DeleteRelationTuplesRequest.Query](#ory-keto-relation_tuples-v1alpha2-DeleteRelationTuplesRequest-Query) |       | **Deprecated.** |
-| relation_query | [RelationQuery](#ory-keto-relation_tuples-v1alpha2-RelationQuery)                                         |       |                 |
+| Field          | Type                                                                                                      | Label | Description                                                                                                                                 |
+| -------------- | --------------------------------------------------------------------------------------------------------- | ----- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| query          | [DeleteRelationTuplesRequest.Query](#ory-keto-relation_tuples-v1alpha2-DeleteRelationTuplesRequest-Query) |       | **Deprecated.**                                                                                                                             |
+| relation_query | [RelationQuery](#ory-keto-relation_tuples-v1alpha2-RelationQuery)                                         |       |                                                                                                                                             |
+| namespace      | [string](#string)                                                                                         |       | **Deprecated.** The namespace this relation tuple lives in.                                                                                 |
+| object         | [string](#string)                                                                                         |       | **Deprecated.** The object related by this tuple.<br/>It is an object in the namespace of the tuple.                                        |
+| relation       | [string](#string)                                                                                         |       | **Deprecated.** The relation between an Object and a Subject.                                                                               |
+| subject_id     | [string](#string)                                                                                         |       | **Deprecated.** A concrete id of the subject.                                                                                               |
+| subject_set    | [SubjectSetQuery](#ory-keto-relation_tuples-v1alpha2-SubjectSetQuery)                                     |       | **Deprecated.** A subject set that expands to more Subjects.<br/>More information are available under [concepts](../concepts/subjects.mdx). |
 
 <a name="ory-keto-relation_tuples-v1alpha2-DeleteRelationTuplesRequest-Query"></a>
 
@@ -577,7 +722,9 @@ The response of a WriteService.TransactRelationTuples rpc.
 | ------------------ | ------ | ------------------------------------------------------------------------------------------------------------------- |
 | ACTION_UNSPECIFIED | 0      | Unspecified.<br/>The `TransactRelationTuples` RPC ignores this<br/>RelationTupleDelta if an action was unspecified. |
 | ACTION_INSERT      | 1      | Insertion of a new RelationTuple.<br/>It is ignored if already existing.                                            |
+| insert             | 1      | Insertion of a new RelationTuple.<br/>It is ignored if already existing.                                            |
 | ACTION_DELETE      | 2      | Deletion of the RelationTuple.<br/>It is ignored if it does not exist.                                              |
+| delete             | 2      | Deletion of the RelationTuple.<br/>It is ignored if it does not exist.                                              |
 
 <!-- end enums -->
 
@@ -595,6 +742,7 @@ This service is part of the
 | Method Name            | Request Type                                                                                      | Response Type                                                                                       | Description                                               |
 | ---------------------- | ------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
 | TransactRelationTuples | [TransactRelationTuplesRequest](#ory-keto-relation_tuples-v1alpha2-TransactRelationTuplesRequest) | [TransactRelationTuplesResponse](#ory-keto-relation_tuples-v1alpha2-TransactRelationTuplesResponse) | Writes one or more relationships in a single transaction. |
+| CreateRelationTuple    | [CreateRelationTupleRequest](#ory-keto-relation_tuples-v1alpha2-CreateRelationTupleRequest)       | [CreateRelationTupleResponse](#ory-keto-relation_tuples-v1alpha2-CreateRelationTupleResponse)       | Creates a relationship                                    |
 | DeleteRelationTuples   | [DeleteRelationTuplesRequest](#ory-keto-relation_tuples-v1alpha2-DeleteRelationTuplesRequest)     | [DeleteRelationTuplesResponse](#ory-keto-relation_tuples-v1alpha2-DeleteRelationTuplesResponse)     | Deletes relationships based on relation query             |
 
 <!-- end services -->

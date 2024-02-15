@@ -1,0 +1,22 @@
+- op: add
+  path: /paths/~1relation-tuples~1check/get/operationId
+  value: checkPermissionOrError
+- op: add
+  path: /paths/~1relation-tuples~1check/post/operationId
+  value: postCheckPermissionOrError
+- op: add
+  path: /paths/~1relation-tuples~1check~1openapi/get/operationId
+  value: checkPermission
+- op: add
+  path: /paths/~1relation-tuples~1check~1openapi/post/operationId
+  value: postCheckPermission
+
+# Remove schema from empty response.
+- op: replace
+  path: /paths/~1admin~1relation-tuples/delete/responses/204
+  value:
+    description: An empty response.
+- op: replace
+  path: /paths/~1admin~1relation-tuples/patch/responses/204
+  value:
+    description: An empty response.

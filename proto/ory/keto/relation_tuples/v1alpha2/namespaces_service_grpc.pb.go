@@ -27,6 +27,8 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type NamespacesServiceClient interface {
 	// Lists Namespaces
+	//
+	// Get all namespaces.
 	ListNamespaces(ctx context.Context, in *ListNamespacesRequest, opts ...grpc.CallOption) (*ListNamespacesResponse, error)
 }
 
@@ -52,6 +54,8 @@ func (c *namespacesServiceClient) ListNamespaces(ctx context.Context, in *ListNa
 // for forward compatibility
 type NamespacesServiceServer interface {
 	// Lists Namespaces
+	//
+	// Get all namespaces.
 	ListNamespaces(context.Context, *ListNamespacesRequest) (*ListNamespacesResponse, error)
 }
 

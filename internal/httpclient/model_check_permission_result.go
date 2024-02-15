@@ -15,19 +15,18 @@ import (
 	"encoding/json"
 )
 
-// CheckPermissionResult The content of the allowed field is mirrored in the HTTP status code.
+// CheckPermissionResult The response for a CheckService.Check rpc.
 type CheckPermissionResult struct {
-	// whether the relation tuple is allowed
-	Allowed bool `json:"allowed"`
+	// Whether the specified subject (id) is related to the requested object.  It is false by default if no ACL matches.
+	Allowed *bool `json:"allowed,omitempty"`
 }
 
 // NewCheckPermissionResult instantiates a new CheckPermissionResult object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewCheckPermissionResult(allowed bool) *CheckPermissionResult {
+func NewCheckPermissionResult() *CheckPermissionResult {
 	this := CheckPermissionResult{}
-	this.Allowed = allowed
 	return &this
 }
 
@@ -39,33 +38,41 @@ func NewCheckPermissionResultWithDefaults() *CheckPermissionResult {
 	return &this
 }
 
-// GetAllowed returns the Allowed field value
+// GetAllowed returns the Allowed field value if set, zero value otherwise.
 func (o *CheckPermissionResult) GetAllowed() bool {
-	if o == nil {
+	if o == nil || o.Allowed == nil {
 		var ret bool
 		return ret
 	}
-
-	return o.Allowed
+	return *o.Allowed
 }
 
-// GetAllowedOk returns a tuple with the Allowed field value
+// GetAllowedOk returns a tuple with the Allowed field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *CheckPermissionResult) GetAllowedOk() (*bool, bool) {
-	if o == nil {
+	if o == nil || o.Allowed == nil {
 		return nil, false
 	}
-	return &o.Allowed, true
+	return o.Allowed, true
 }
 
-// SetAllowed sets field value
+// HasAllowed returns a boolean if a field has been set.
+func (o *CheckPermissionResult) HasAllowed() bool {
+	if o != nil && o.Allowed != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetAllowed gets a reference to the given bool and assigns it to the Allowed field.
 func (o *CheckPermissionResult) SetAllowed(v bool) {
-	o.Allowed = v
+	o.Allowed = &v
 }
 
 func (o CheckPermissionResult) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
-	if true {
+	if o.Allowed != nil {
 		toSerialize["allowed"] = o.Allowed
 	}
 	return json.Marshal(toSerialize)

@@ -10,15 +10,15 @@ import (
 	"github.com/ory/keto/ketoapi"
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 
-	"github.com/ory/keto/internal/check"
-
 	"github.com/ory/x/cmdx"
 	"github.com/spf13/cobra"
 
 	"github.com/ory/keto/cmd/client"
 )
 
-type checkOutput check.CheckPermissionResult
+type checkOutput struct {
+	Allowed bool `json:"allowed"`
+}
 
 func (o *checkOutput) String() string {
 	if o.Allowed {

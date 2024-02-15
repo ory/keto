@@ -9,12 +9,10 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
-	"net/http/httptest"
 	"net/url"
 	"strings"
 	"testing"
 
-	"github.com/julienschmidt/httprouter"
 	"github.com/ory/x/pointerx"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -29,9 +27,6 @@ import (
 
 func TestWriteHandlers(t *testing.T) {
 	ctx := context.Background()
-	r := httprouter.New()
-	wr := &x.WriteRouter{Router: r}
-	rr := &x.ReadRouter{Router: r}
 	reg := driver.NewSqliteTestRegistry(t, false)
 
 	var nspaces []*namespace.Namespace
@@ -46,11 +41,8 @@ func TestWriteHandlers(t *testing.T) {
 		return n
 	}
 
-	h := relationtuple.NewHandler(reg)
-	h.RegisterWriteRoutes(wr)
-	h.RegisterReadRoutes(rr)
-	ts := httptest.NewServer(r)
-	defer ts.Close()
+	endpoints := x.NewTestEndpoints(t, relationtuple.NewHandler(reg))
+	ts := endpoints.HTTP
 
 	t.Run("method=create", func(t *testing.T) {
 		doCreate := func(raw []byte) *http.Response {
@@ -80,8 +72,10 @@ func TestWriteHandlers(t *testing.T) {
 
 			body, err := io.ReadAll(resp.Body)
 			require.NoError(t, err)
+			var responseRT ketoapi.RelationTuple
+			require.NoError(t, json.Unmarshal(body, &responseRT))
 
-			assert.JSONEq(t, string(payload), string(body))
+			assert.Equal(t, rt, &responseRT)
 
 			t.Run("check=is contained in the manager", func(t *testing.T) {
 				mapped, err := reg.Mapper().FromTuple(ctx, rt)
@@ -91,7 +85,7 @@ func TestWriteHandlers(t *testing.T) {
 				require.NoError(t, err)
 				actual, err := reg.Mapper().ToTuple(ctx, actualRTs...)
 				require.NoError(t, err)
-				assert.Equalf(t, []*ketoapi.RelationTuple{rt}, actual, "want: %s\ngot:  %s", rt.String(), actual[0].String())
+				assert.Equalf(t, []*ketoapi.RelationTuple{rt}, actual, "want: %s\ngot: %+v", rt.String(), actual)
 			})
 
 			t.Run("check=is gettable with the returned URL", func(t *testing.T) {
@@ -167,7 +161,9 @@ func TestWriteHandlers(t *testing.T) {
 			require.NoError(t, err)
 			resp, err := ts.Client().Do(req)
 			require.NoError(t, err)
-			assert.Equal(t, http.StatusNoContent, resp.StatusCode)
+			body, err := io.ReadAll(resp.Body)
+			require.NoError(t, err)
+			assert.Equal(t, http.StatusNoContent, resp.StatusCode, string(body))
 
 			// set a size > 1 just to make sure it gets all
 			actualRTs, _, err := reg.RelationTupleManager().GetRelationTuples(ctx, &relationtuple.RelationQuery{Namespace: &nspace.Name}, x.WithSize(10))
@@ -461,7 +457,7 @@ func TestWriteHandlers(t *testing.T) {
 			defer resp.Body.Close()
 			errContent, err := io.ReadAll(resp.Body)
 			require.NoError(t, err)
-			assert.Contains(t, string(errContent), "relation_tuple is missing")
+			assert.Contains(t, string(errContent), "RelationTuple: value is required")
 		})
 
 		t.Run("case=unknown action", func(t *testing.T) {

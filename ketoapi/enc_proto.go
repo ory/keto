@@ -12,23 +12,77 @@ import (
 
 type (
 	TupleData interface {
-		GetSubject() *rts.Subject
 		GetObject() string
 		GetNamespace() string
 		GetRelation() string
+		GetSubject() *rts.Subject
 	}
+
 	queryData interface {
 		GetSubject() *rts.Subject
 		GetObject() *string
 		GetNamespace() *string
 		GetRelation() *string
 	}
+
+	openAPIFields interface {
+		GetObject() string
+		GetNamespace() string
+		GetRelation() string
+		GetSubject() interface {
+			GetSubjectId() string
+			GetSubjectSet() *rts.SubjectSet
+		}
+	}
+
+	OpenAPITupleData struct {
+		Wrapped interface {
+			GetObject() string
+			GetRelation() string
+			GetNamespace() string
+			GetSubjectSet() *rts.SubjectSet
+			GetSubjectId() string
+		}
+	}
 )
+
+func (q *OpenAPITupleData) GetObject() string    { return q.Wrapped.GetObject() }
+func (q *OpenAPITupleData) GetNamespace() string { return q.Wrapped.GetNamespace() }
+func (q *OpenAPITupleData) GetRelation() string  { return q.Wrapped.GetRelation() }
+func (q *OpenAPITupleData) GetSubject() *rts.Subject {
+	if sub, ok := q.Wrapped.(interface{ GetSubject() *rts.Subject }); ok && sub.GetSubject() != nil {
+		return sub.GetSubject()
+	}
+	if set := q.Wrapped.GetSubjectSet(); set != nil {
+		return rts.NewSubjectSet(set.Namespace, set.Object, set.Relation)
+	}
+	return rts.NewSubjectID(q.Wrapped.GetSubjectId())
+}
+
+func (r *RelationTuple) FromOpenAPIFields(f openAPIFields) (*RelationTuple, error) {
+	subject := f.GetSubject()
+	if subject == nil {
+		return nil, errors.WithStack(ErrNilSubject)
+	}
+	if subjectSet := subject.GetSubjectSet(); subjectSet != nil {
+		r.SubjectSet = &SubjectSet{
+			Namespace: subjectSet.Namespace,
+			Object:    subjectSet.Object,
+			Relation:  subjectSet.Relation,
+		}
+	} else {
+		r.SubjectID = pointerx.Ptr(subject.GetSubjectId())
+	}
+
+	r.Object = f.GetObject()
+	r.Namespace = f.GetNamespace()
+	r.Relation = f.GetRelation()
+
+	return r, nil
+}
 
 func (r *RelationTuple) FromDataProvider(d TupleData) (*RelationTuple, error) {
 	switch s := d.GetSubject().GetRef().(type) {
-	case nil:
-		return nil, errors.WithStack(ErrNilSubject)
 	case *rts.Subject_Set:
 		r.SubjectSet = &SubjectSet{
 			Namespace: s.Set.Namespace,
@@ -37,6 +91,8 @@ func (r *RelationTuple) FromDataProvider(d TupleData) (*RelationTuple, error) {
 		}
 	case *rts.Subject_Id:
 		r.SubjectID = pointerx.Ptr(s.Id)
+	default:
+		return nil, errors.WithStack(ErrNilSubject)
 	}
 
 	r.Object = d.GetObject()
@@ -54,8 +110,16 @@ func (r *RelationTuple) ToProto() *rts.RelationTuple {
 	}
 	if r.SubjectID != nil {
 		res.Subject = rts.NewSubjectID(*r.SubjectID)
+		res.RestApiSubject = &rts.RelationTuple_SubjectId{SubjectId: *r.SubjectID}
 	} else {
 		res.Subject = rts.NewSubjectSet(r.SubjectSet.Namespace, r.SubjectSet.Object, r.SubjectSet.Relation)
+		res.RestApiSubject = &rts.RelationTuple_SubjectSet{
+			SubjectSet: &rts.SubjectSet{
+				Namespace: r.SubjectSet.Namespace,
+				Object:    r.SubjectSet.Object,
+				Relation:  r.SubjectSet.Relation,
+			},
+		}
 	}
 	return res
 }
@@ -74,6 +138,44 @@ func (r *RelationTuple) FromProto(proto *rts.RelationTuple) *RelationTuple {
 			Namespace: subject.Set.Namespace,
 			Object:    subject.Set.Object,
 			Relation:  subject.Set.Relation,
+		}
+	}
+
+	return r
+}
+
+func (r *RelationTuple) FromCheckRequest(proto *rts.CheckRequest) *RelationTuple {
+	if proto.Tuple != nil {
+		return r.FromProto(proto.Tuple)
+	}
+
+	r = &RelationTuple{
+		Namespace: proto.Namespace,
+		Object:    proto.Object,
+		Relation:  proto.Relation,
+	}
+
+	if proto.Subject != nil {
+		switch subject := proto.Subject.Ref.(type) {
+		case *rts.Subject_Id:
+			r.SubjectID = pointerx.Ptr(subject.Id)
+		case *rts.Subject_Set:
+			r.SubjectSet = &SubjectSet{
+				Namespace: subject.Set.Namespace,
+				Object:    subject.Set.Object,
+				Relation:  subject.Set.Relation,
+			}
+		}
+	} else {
+		switch subject := proto.RestApiSubject.(type) {
+		case *rts.CheckRequest_SubjectId:
+			r.SubjectID = pointerx.Ptr(subject.SubjectId)
+		case *rts.CheckRequest_SubjectSet:
+			r.SubjectSet = &SubjectSet{
+				Namespace: subject.SubjectSet.Namespace,
+				Object:    subject.SubjectSet.Object,
+				Relation:  subject.SubjectSet.Relation,
+			}
 		}
 	}
 
@@ -119,7 +221,9 @@ func (q *RelationQuery) ToProto() *rts.RelationQuery {
 func (t *Tree[NodeT]) ToProto() *rts.SubjectTree {
 	res := &rts.SubjectTree{
 		NodeType: t.Type.ToProto(),
-		Children: make([]*rts.SubjectTree, len(t.Children)),
+	}
+	if len(t.Children) > 0 {
+		res.Children = make([]*rts.SubjectTree, len(t.Children))
 	}
 	res.Tuple = t.Tuple.ToProto()
 	//lint:ignore SA1019 backwards compatibility

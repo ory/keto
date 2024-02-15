@@ -15,15 +15,15 @@ import (
 	"encoding/json"
 )
 
-// Relationship Relationship
+// Relationship RelationTuple defines a relation between an Object and a Subject.
 type Relationship struct {
-	// Namespace of the Relation Tuple
+	// The namespace this relation tuple lives in.
 	Namespace string `json:"namespace"`
-	// Object of the Relation Tuple
+	// The object related by this tuple. It is an object in the namespace of the tuple.
 	Object string `json:"object"`
-	// Relation of the Relation Tuple
+	// The relation between an Object and a Subject.
 	Relation string `json:"relation"`
-	// SubjectID of the Relation Tuple  Either SubjectSet or SubjectID can be provided.
+	// A concrete id of the subject.
 	SubjectId  *string     `json:"subject_id,omitempty"`
 	SubjectSet *SubjectSet `json:"subject_set,omitempty"`
 }
