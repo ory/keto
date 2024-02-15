@@ -7,6 +7,7 @@ export IMAGE_TAG	:= $(if $(IMAGE_TAG),$(IMAGE_TAG),latest)
 GO_DEPENDENCIES = golang.org/x/tools/cmd/goimports \
 				  github.com/mattn/goveralls \
 				  github.com/ory/go-acc \
+				  github.com/pseudomuto/protoc-gen-doc/cmd/protoc-gen-doc \
 				  github.com/bufbuild/buf/cmd/buf \
 				  github.com/josephburnett/jd \
 				  github.com/mikefarah/yq/v4 \
@@ -99,7 +100,7 @@ build:
 # Generate APIs and client stubs from the definitions
 #
 .PHONY: buf-gen
-buf-gen: .bin/buf node_modules
+buf-gen: .bin/buf .bin/protoc-gen-doc node_modules
 	buf format -w
 	buf generate proto
 	make format
