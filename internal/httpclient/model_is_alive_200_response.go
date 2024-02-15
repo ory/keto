@@ -3,7 +3,7 @@
  *
  * Documentation for all of Ory Keto's REST APIs. gRPC is documented separately.
  *
- * API version: 1.0.0
+ * API version:
  * Contact: hi@ory.sh
  */
 
@@ -15,31 +15,31 @@ import (
 	"encoding/json"
 )
 
-// InlineResponse200 struct for InlineResponse200
-type InlineResponse200 struct {
+// IsAlive200Response struct for IsAlive200Response
+type IsAlive200Response struct {
 	Status string `json:"status"`
 }
 
-// NewInlineResponse200 instantiates a new InlineResponse200 object
+// NewIsAlive200Response instantiates a new IsAlive200Response object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewInlineResponse200(status string) *InlineResponse200 {
-	this := InlineResponse200{}
+func NewIsAlive200Response(status string) *IsAlive200Response {
+	this := IsAlive200Response{}
 	this.Status = status
 	return &this
 }
 
-// NewInlineResponse200WithDefaults instantiates a new InlineResponse200 object
+// NewIsAlive200ResponseWithDefaults instantiates a new IsAlive200Response object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewInlineResponse200WithDefaults() *InlineResponse200 {
-	this := InlineResponse200{}
+func NewIsAlive200ResponseWithDefaults() *IsAlive200Response {
+	this := IsAlive200Response{}
 	return &this
 }
 
 // GetStatus returns the Status field value
-func (o *InlineResponse200) GetStatus() string {
+func (o *IsAlive200Response) GetStatus() string {
 	if o == nil {
 		var ret string
 		return ret
@@ -50,7 +50,7 @@ func (o *InlineResponse200) GetStatus() string {
 
 // GetStatusOk returns a tuple with the Status field value
 // and a boolean to check if the value has been set.
-func (o *InlineResponse200) GetStatusOk() (*string, bool) {
+func (o *IsAlive200Response) GetStatusOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -58,11 +58,11 @@ func (o *InlineResponse200) GetStatusOk() (*string, bool) {
 }
 
 // SetStatus sets field value
-func (o *InlineResponse200) SetStatus(v string) {
+func (o *IsAlive200Response) SetStatus(v string) {
 	o.Status = v
 }
 
-func (o InlineResponse200) MarshalJSON() ([]byte, error) {
+func (o IsAlive200Response) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if true {
 		toSerialize["status"] = o.Status
@@ -70,38 +70,38 @@ func (o InlineResponse200) MarshalJSON() ([]byte, error) {
 	return json.Marshal(toSerialize)
 }
 
-type NullableInlineResponse200 struct {
-	value *InlineResponse200
+type NullableIsAlive200Response struct {
+	value *IsAlive200Response
 	isSet bool
 }
 
-func (v NullableInlineResponse200) Get() *InlineResponse200 {
+func (v NullableIsAlive200Response) Get() *IsAlive200Response {
 	return v.value
 }
 
-func (v *NullableInlineResponse200) Set(val *InlineResponse200) {
+func (v *NullableIsAlive200Response) Set(val *IsAlive200Response) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableInlineResponse200) IsSet() bool {
+func (v NullableIsAlive200Response) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableInlineResponse200) Unset() {
+func (v *NullableIsAlive200Response) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableInlineResponse200(val *InlineResponse200) *NullableInlineResponse200 {
-	return &NullableInlineResponse200{value: val, isSet: true}
+func NewNullableIsAlive200Response(val *IsAlive200Response) *NullableIsAlive200Response {
+	return &NullableIsAlive200Response{value: val, isSet: true}
 }
 
-func (v NullableInlineResponse200) MarshalJSON() ([]byte, error) {
+func (v NullableIsAlive200Response) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableInlineResponse200) UnmarshalJSON(src []byte) error {
+func (v *NullableIsAlive200Response) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

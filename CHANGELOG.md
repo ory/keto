@@ -5,102 +5,111 @@
 
 **Table of Contents**
 
-- [0.0.0 (2023-03-09)](#000-2023-03-09)
+- [0.0.0 (2024-02-02)](#000-2024-02-02)
+- [0.12.0-alpha.0 (2024-02-01)](#0120-alpha0-2024-02-01)
   - [Bug Fixes](#bug-fixes)
+  - [Code Generation](#code-generation)
+  - [Documentation](#documentation)
   - [Features](#features)
+- [0.11.1-alpha.0 (2023-03-09)](#0111-alpha0-2023-03-09)
+  - [Bug Fixes](#bug-fixes-1)
+  - [Code Generation](#code-generation-1)
+  - [Features](#features-1)
   - [Tests](#tests)
 - [0.11.0-alpha.0 (2023-02-23)](#0110-alpha0-2023-02-23)
-  - [Bug Fixes](#bug-fixes-1)
-  - [Code Generation](#code-generation)
+  - [Code Generation](#code-generation-2)
+- [0.11.0-alpha.0.pre.1 (2023-02-23)](#0110-alpha0pre1-2023-02-23)
+  - [Bug Fixes](#bug-fixes-2)
+  - [Code Generation](#code-generation-3)
   - [Code Refactoring](#code-refactoring)
-  - [Documentation](#documentation)
-  - [Features](#features-1)
+  - [Documentation](#documentation-1)
+  - [Features](#features-2)
   - [Tests](#tests-1)
   - [Unclassified](#unclassified)
 - [0.10.0-alpha.0 (2022-09-27)](#0100-alpha0-2022-09-27)
-  - [Bug Fixes](#bug-fixes-2)
+  - [Bug Fixes](#bug-fixes-3)
   - [Build System](#build-system)
-  - [Code Generation](#code-generation-1)
+  - [Code Generation](#code-generation-4)
   - [Code Refactoring](#code-refactoring-1)
-  - [Documentation](#documentation-1)
-  - [Features](#features-2)
+  - [Documentation](#documentation-2)
+  - [Features](#features-3)
   - [Tests](#tests-2)
 - [0.9.0-alpha.0 (2022-08-01)](#090-alpha0-2022-08-01)
   - [Breaking Changes](#breaking-changes)
-    - [Bug Fixes](#bug-fixes-3)
-    - [Code Generation](#code-generation-2)
+    - [Bug Fixes](#bug-fixes-4)
+    - [Code Generation](#code-generation-5)
     - [Code Refactoring](#code-refactoring-2)
-    - [Documentation](#documentation-2)
-    - [Features](#features-3)
+    - [Documentation](#documentation-3)
+    - [Features](#features-4)
     - [Tests](#tests-3)
 - [0.8.0-alpha.2 (2022-03-04)](#080-alpha2-2022-03-04)
-  - [Bug Fixes](#bug-fixes-4)
-  - [Code Generation](#code-generation-3)
-  - [Documentation](#documentation-3)
-- [0.8.0-alpha.1 (2022-02-22)](#080-alpha1-2022-02-22)
   - [Bug Fixes](#bug-fixes-5)
-  - [Code Generation](#code-generation-4)
+  - [Code Generation](#code-generation-6)
+  - [Documentation](#documentation-4)
+- [0.8.0-alpha.1 (2022-02-22)](#080-alpha1-2022-02-22)
+  - [Bug Fixes](#bug-fixes-6)
+  - [Code Generation](#code-generation-7)
   - [Tests](#tests-4)
 - [0.8.0-alpha.0 (2022-02-10)](#080-alpha0-2022-02-10)
-  - [Bug Fixes](#bug-fixes-6)
-  - [Code Generation](#code-generation-5)
+  - [Bug Fixes](#bug-fixes-7)
+  - [Code Generation](#code-generation-8)
   - [Code Refactoring](#code-refactoring-3)
-  - [Documentation](#documentation-4)
-  - [Features](#features-4)
-- [0.7.0-alpha.1 (2021-10-19)](#070-alpha1-2021-10-19)
-  - [Code Generation](#code-generation-6)
   - [Documentation](#documentation-5)
+  - [Features](#features-5)
+- [0.7.0-alpha.1 (2021-10-19)](#070-alpha1-2021-10-19)
+  - [Code Generation](#code-generation-9)
+  - [Documentation](#documentation-6)
 - [0.7.0-alpha.0 (2021-10-06)](#070-alpha0-2021-10-06)
   - [Breaking Changes](#breaking-changes-1)
-    - [Bug Fixes](#bug-fixes-7)
+    - [Bug Fixes](#bug-fixes-8)
     - [Chores](#chores)
-    - [Code Generation](#code-generation-7)
+    - [Code Generation](#code-generation-10)
     - [Code Refactoring](#code-refactoring-4)
-    - [Documentation](#documentation-6)
-    - [Features](#features-5)
+    - [Documentation](#documentation-7)
+    - [Features](#features-6)
     - [Tests](#tests-5)
 - [0.6.0-alpha.3 (2021-04-29)](#060-alpha3-2021-04-29)
-  - [Code Generation](#code-generation-8)
+  - [Code Generation](#code-generation-11)
 - [0.6.0-alpha.2 (2021-04-29)](#060-alpha2-2021-04-29)
-  - [Bug Fixes](#bug-fixes-8)
-  - [Code Generation](#code-generation-9)
-  - [Documentation](#documentation-7)
-  - [Features](#features-6)
-- [0.6.0-alpha.1 (2021-04-07)](#060-alpha1-2021-04-07)
   - [Bug Fixes](#bug-fixes-9)
-  - [Build System](#build-system-1)
-  - [Code Generation](#code-generation-10)
-  - [Code Refactoring](#code-refactoring-5)
+  - [Code Generation](#code-generation-12)
   - [Documentation](#documentation-8)
   - [Features](#features-7)
+- [0.6.0-alpha.1 (2021-04-07)](#060-alpha1-2021-04-07)
+  - [Bug Fixes](#bug-fixes-10)
+  - [Build System](#build-system-1)
+  - [Code Generation](#code-generation-13)
+  - [Code Refactoring](#code-refactoring-5)
+  - [Documentation](#documentation-9)
+  - [Features](#features-8)
   - [Tests](#tests-6)
 - [0.5.6-alpha.1 (2020-05-28)](#056-alpha1-2020-05-28)
-  - [Bug Fixes](#bug-fixes-10)
+  - [Bug Fixes](#bug-fixes-11)
   - [Chores](#chores-1)
 - [0.5.5-alpha.1 (2020-05-28)](#055-alpha1-2020-05-28)
-  - [Bug Fixes](#bug-fixes-11)
-  - [Chores](#chores-2)
-  - [Documentation](#documentation-9)
-- [0.5.4-alpha.1 (2020-04-07)](#054-alpha1-2020-04-07)
   - [Bug Fixes](#bug-fixes-12)
-- [0.5.3-alpha.3 (2020-04-06)](#053-alpha3-2020-04-06)
-  - [Code Generation](#code-generation-11)
-  - [Code Refactoring](#code-refactoring-6)
+  - [Chores](#chores-2)
   - [Documentation](#documentation-10)
+- [0.5.4-alpha.1 (2020-04-07)](#054-alpha1-2020-04-07)
+  - [Bug Fixes](#bug-fixes-13)
+- [0.5.3-alpha.3 (2020-04-06)](#053-alpha3-2020-04-06)
+  - [Code Generation](#code-generation-14)
+  - [Code Refactoring](#code-refactoring-6)
+  - [Documentation](#documentation-11)
 - [0.5.3-alpha.1 (2020-04-03)](#053-alpha1-2020-04-03)
   - [Chores](#chores-3)
 - [0.5.2 (2020-04-02)](#052-2020-04-02)
-  - [Documentation](#documentation-11)
-- [0.5.0 (2020-04-02)](#050-2020-04-02)
-  - [Bug Fixes](#bug-fixes-13)
   - [Documentation](#documentation-12)
-- [0.4.5-alpha.1 (2020-02-29)](#045-alpha1-2020-02-29)
+- [0.5.0 (2020-04-02)](#050-2020-04-02)
   - [Bug Fixes](#bug-fixes-14)
   - [Documentation](#documentation-13)
-- [0.4.4-alpha.1 (2020-02-14)](#044-alpha1-2020-02-14)
+- [0.4.5-alpha.1 (2020-02-29)](#045-alpha1-2020-02-29)
   - [Bug Fixes](#bug-fixes-15)
   - [Documentation](#documentation-14)
-  - [Features](#features-8)
+- [0.4.4-alpha.1 (2020-02-14)](#044-alpha1-2020-02-14)
+  - [Bug Fixes](#bug-fixes-16)
+  - [Documentation](#documentation-15)
+  - [Features](#features-9)
   - [Unclassified](#unclassified-1)
 - [0.4.3-alpha.2 (2020-01-31)](#043-alpha2-2020-01-31)
   - [Unclassified](#unclassified-2)
@@ -119,35 +128,165 @@
 - [0.3.6-sandbox (2019-10-16)](#036-sandbox-2019-10-16)
   - [Unclassified](#unclassified-9)
 - [0.3.5-sandbox (2019-08-21)](#035-sandbox-2019-08-21)
-  - [Documentation](#documentation-15)
+  - [Documentation](#documentation-16)
   - [Unclassified](#unclassified-10)
 - [0.3.3-sandbox (2019-05-18)](#033-sandbox-2019-05-18)
   - [Continuous Integration](#continuous-integration)
-  - [Documentation](#documentation-16)
+  - [Documentation](#documentation-17)
 - [0.3.1-sandbox (2019-04-29)](#031-sandbox-2019-04-29)
   - [Continuous Integration](#continuous-integration-1)
-  - [Documentation](#documentation-17)
+  - [Documentation](#documentation-18)
   - [Unclassified](#unclassified-11)
 - [0.3.0-sandbox (2019-04-29)](#030-sandbox-2019-04-29)
-  - [Documentation](#documentation-18)
+  - [Documentation](#documentation-19)
   - [Unclassified](#unclassified-12)
 - [0.2.3-sandbox+oryOS.10 (2019-02-05)](#023-sandboxoryos10-2019-02-05)
-  - [Documentation](#documentation-19)
+  - [Documentation](#documentation-20)
   - [Unclassified](#unclassified-13)
 - [0.2.2-sandbox+oryOS.10 (2018-12-13)](#022-sandboxoryos10-2018-12-13)
   - [Continuous Integration](#continuous-integration-2)
 - [0.2.1-sandbox+oryOS.10 (2018-12-13)](#021-sandboxoryos10-2018-12-13)
   - [Continuous Integration](#continuous-integration-3)
 - [0.2.0-sandbox+oryOS.10 (2018-12-13)](#020-sandboxoryos10-2018-12-13)
-  - [Documentation](#documentation-20)
+  - [Documentation](#documentation-21)
   - [Unclassified](#unclassified-14)
 - [0.0.1 (2018-05-20)](#001-2018-05-20)
-  - [Documentation](#documentation-21)
+  - [Documentation](#documentation-22)
   - [Unclassified](#unclassified-15)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.11.0-alpha.0...v0.0.0) (2023-03-09)
+# [0.0.0](https://github.com/ory/keto/compare/v0.12.0-alpha.0...v0.0.0) (2024-02-02)
+
+# [0.12.0-alpha.0](https://github.com/ory/keto/compare/v0.11.1-alpha.0...v0.12.0-alpha.0) (2024-02-01)
+
+Improves performance, SDKs, and resolves minor issues.
+
+### Bug Fixes
+
+- Add width limit when expanding subject-sets in checks
+  ([#1433](https://github.com/ory/keto/issues/1433))
+  ([f1317da](https://github.com/ory/keto/commit/f1317da16d6ebfac2ed1e80cf13c6b0d323314a1)):
+
+  This change limits the max width that can be expanded during checks. An
+  integration that runs into this limit would previously likely have timed out.
+  A correct integration should not run into this limit.
+
+- Config schema (generated) ([#1502](https://github.com/ory/keto/issues/1502))
+  ([e7faf48](https://github.com/ory/keto/commit/e7faf4811041c926c53be04c5884005fa460f134))
+- Incorrect error return ([#1332](https://github.com/ory/keto/issues/1332))
+  ([fc09573](https://github.com/ory/keto/commit/fc09573d1bee14058e211303ea98604de4e795d6))
+- Missing block flag on migrate status
+  ([#1432](https://github.com/ory/keto/issues/1432))
+  ([040b3db](https://github.com/ory/keto/commit/040b3db104692f8b249f1c0476c3ab08384cffff))
+- Postgres docker-compose startup
+  ([#1295](https://github.com/ory/keto/issues/1295))
+  ([a4218d7](https://github.com/ory/keto/commit/a4218d70fed0e19eb61869f9ac9f55e2a9d54d0e)):
+
+  - Fix starting docker-compose-postgres.yml
+  - bump docker image version
+  - make format
+
+- Reduce SQL tracing noise ([#1301](https://github.com/ory/keto/issues/1301))
+  ([b1cf198](https://github.com/ory/keto/commit/b1cf1989ceaf30598e456c13116dafce521a4088))
+- Sqa config values unified across projects
+  ([#1315](https://github.com/ory/keto/issues/1315))
+  ([0b9baed](https://github.com/ory/keto/commit/0b9baed8f9b04dd2f77d8ef89c499a1dccfa0962))
+- Sqa write key for correct product
+  ([#1297](https://github.com/ory/keto/issues/1297))
+  ([23ccef8](https://github.com/ory/keto/commit/23ccef87ec0b34d584a88978cd9e91fc0a37ae33))
+- Use correct tracer in middleware
+  ([#1373](https://github.com/ory/keto/issues/1373))
+  ([2bc4901](https://github.com/ory/keto/commit/2bc490144c2a35392ca818b31b3ff94dffa1c2fd))
+- Validate that namespace ID is int32
+  ([#1278](https://github.com/ory/keto/issues/1278))
+  ([d093b37](https://github.com/ory/keto/commit/d093b37930b9e203fd5eb14fe6ca6ba4b8154e92))
+
+### Code Generation
+
+- Pin v0.12.0-alpha.0 release commit
+  ([4b40e18](https://github.com/ory/keto/commit/4b40e18cad06b0906307d3ce339bdace124f0bc6))
+
+### Documentation
+
+- Fix multiline comments from proto files breaking tables
+  ([#1431](https://github.com/ory/keto/issues/1431))
+  ([ef9132d](https://github.com/ory/keto/commit/ef9132da66487db078d53cbcf186451d695cc697)):
+
+  - Add markdown.tmpl file for bufbuild
+  - fix typo
+
+  Signed-off-by: Cléo Rebert <cleo.rebert-ext@numspot.com>
+
+  - docs: add issue reference
+
+### Features
+
+- Add distroless ([#1348](https://github.com/ory/keto/issues/1348))
+  ([f0839ee](https://github.com/ory/keto/commit/f0839ee6e5f521214ea70117221ae601ff9eb94a)):
+
+  - feat: add distroless
+  - Update Dockerfile-build
+  - Update Dockerfile-distroless-static
+
+- Add flag to block until migrations are done
+  ([#1380](https://github.com/ory/keto/issues/1380))
+  ([129902b](https://github.com/ory/keto/commit/129902b68d8548c1df1be1e2aaee9baebcc0aaf2))
+- Add tracing to fetcher ([#1294](https://github.com/ory/keto/issues/1294))
+  ([4ffb7bc](https://github.com/ory/keto/commit/4ffb7bcbbc6a43a9402e39bddf4a2d11e87f4b48)):
+
+  - feat: add tracing to fetcher
+  - rerun CI
+
+- Allow extra database migrations
+  ([#1365](https://github.com/ory/keto/issues/1365))
+  ([d3b62a9](https://github.com/ory/keto/commit/d3b62a9d0c3debec12faa287106be9faaa74b60b))
+- Cache OPL when loading from HTTP(S)
+  ([#1429](https://github.com/ory/keto/issues/1429))
+  ([b89ce02](https://github.com/ory/keto/commit/b89ce028158f2c0efd469a5f8275a7fd203e1b29))
+- Clearer error messages when not using block
+  ([#1393](https://github.com/ory/keto/issues/1393))
+  ([a3b5494](https://github.com/ory/keto/commit/a3b5494300ca4cc64b516b168e8a3e6aa2033c75)):
+
+  - feat: clearer error messages when not using block
+  - dont timeout if block is used
+  - consolidate block flag into grpc client package
+  - respect timeout context key
+  - remove flake test by changing port manipulation in test
+  - fix case=timeout,noblock status test
+  - remove flakyness by reducing timeout to micro
+
+- Enable GRPC metrics ([#1302](https://github.com/ory/keto/issues/1302))
+  ([91c12c9](https://github.com/ory/keto/commit/91c12c935d34952db5b3798990b346091041dff8)):
+
+  - feat: enable GRPC metrics
+  - fix: test and server registration
+  - fix: GRPC metrics
+  - fix: clean up for PR
+
+- Improve emitting of events ([#1314](https://github.com/ory/keto/issues/1314))
+  ([5028c75](https://github.com/ory/keto/commit/5028c75aaaad7a73e51b4477f0d65d73806e5c16)):
+
+  - feat: improve emitting of events
+  - rename event constants
+  - move events package
+  - refactor event emitting
+
+- Sqa metrics v2 ([#1335](https://github.com/ory/keto/issues/1335))
+  ([a115e15](https://github.com/ory/keto/commit/a115e151950e3fa30528e39c52760199866eb97a))
+- Upgrade grpc buf generator ([#1507](https://github.com/ory/keto/issues/1507))
+  ([872b118](https://github.com/ory/keto/commit/872b118c95b05485fb24c28112f098f5cc524854))
+- Write to UUID mapper and relation tuples in one SQL transaction
+  ([#1340](https://github.com/ory/keto/issues/1340))
+  ([eeeecf6](https://github.com/ory/keto/commit/eeeecf657b76c7b18f308433399b231abfcf6e46)):
+
+  - fix: lint
+  - feat: wrap an SQL transaction around the UUID mapper's and the relation
+    tuple manager's write operations
+
+# [0.11.1-alpha.0](https://github.com/ory/keto/compare/v0.11.0-alpha.0...v0.11.1-alpha.0) (2023-03-09)
+
+This release includes small fixes and improvements.
 
 ### Bug Fixes
 
@@ -157,6 +296,11 @@
 - Subject expansion is terminated unexpectedly
   ([#1256](https://github.com/ory/keto/issues/1256))
   ([f88a479](https://github.com/ory/keto/commit/f88a479387df8f6fb1eba26f0cc922469de09804))
+
+### Code Generation
+
+- Pin v0.11.1-alpha.0 release commit
+  ([db5c007](https://github.com/ory/keto/commit/db5c007ca2c71f898d4ccc70dcbfc9875866ec00))
 
 ### Features
 
@@ -169,7 +313,7 @@
 - Faster tests ([#1266](https://github.com/ory/keto/issues/1266))
   ([b41bfb8](https://github.com/ory/keto/commit/b41bfb8da04882f2c94d9a3f787bc4cf2f51f1b9))
 
-# [0.11.0-alpha.0](https://github.com/ory/keto/compare/v0.10.0-alpha.0...v0.11.0-alpha.0) (2023-02-23)
+# [0.11.0-alpha.0](https://github.com/ory/keto/compare/v0.11.0-alpha.0.pre.1...v0.11.0-alpha.0) (2023-02-23)
 
 This release includes a ton of bugfixes, especially around the Ory Permission
 Language and language parser.
@@ -180,6 +324,15 @@ performed during checks. This is experimental to allow adjusting its behavior in
 a breaking manner, but it is ready for production usage. Do expect a non-stable
 behavior over the next releases. Any breaking behavior will be properly
 documented. Further, we also optimized some of the non-strict queries.
+
+### Code Generation
+
+- Pin v0.11.0-alpha.0 release commit
+  ([7f1f580](https://github.com/ory/keto/commit/7f1f5805f0b6fff68c99a586b55b26a27b91a999))
+
+# [0.11.0-alpha.0.pre.1](https://github.com/ory/keto/compare/v0.10.0-alpha.0...v0.11.0-alpha.0.pre.1) (2023-02-23)
+
+autogen: pin v0.11.0-alpha.0.pre.1 release commit
 
 ### Bug Fixes
 
@@ -199,7 +352,6 @@ documented. Further, we also optimized some of the non-strict queries.
   ([e646380](https://github.com/ory/keto/commit/e646380d5457df99f75ecd7e26d6fe2ed33b7b49)):
 
   - fix: docs broken links
-
   - fix: edit proto files to fix links
 
 - More robust parser
@@ -239,7 +391,6 @@ documented. Further, we also optimized some of the non-strict queries.
   ([719a7d5](https://github.com/ory/keto/commit/719a7d5d1bfd77c594528df821f20a061dc2b848)):
 
   - fix: tracing in persistence.sql.TraverseSubjectSetRewrite
-
   - fix: incorrect HTTP return code
 
 - Trace SQL in TraverseSubjectSetExpansion
@@ -255,8 +406,8 @@ documented. Further, we also optimized some of the non-strict queries.
 
 ### Code Generation
 
-- Pin v0.11.0-alpha.0 release commit
-  ([7f1f580](https://github.com/ory/keto/commit/7f1f5805f0b6fff68c99a586b55b26a27b91a999))
+- Pin v0.11.0-alpha.0.pre.1 release commit
+  ([3fb1ca5](https://github.com/ory/keto/commit/3fb1ca58c7f9aadbd3f9fdb1015d3d7dda07cd37))
 
 ### Code Refactoring
 
@@ -406,25 +557,15 @@ changelog for all the other fixes and features we included.
   endpoint. This commit adds endpoints from non-monitoring routers.
 
   - fix: register read and write routers with PrometheusManager
-
   - fix: register read and write routers with PrometheusManager p2
-
   - fix: register read and write routers with PrometheusManager p3
-
   - feat: grpc request metrics
-
   - chore: add test
-
   - chore: revert gRPC metric test
-
   - chore: re-trigger ci
-
   - chore: re-trigger ci
-
   - chore: re-trigger ci
-
   - fix: lint
-
   - fix: cve
 
 - Sdk generation
@@ -455,6 +596,9 @@ changelog for all the other fixes and features we included.
   ([52259a3](https://github.com/ory/keto/commit/52259a30d0be0257f1bb7ef591ae769808450230)):
 
   Bumps from v0.10.0-alpha.0.pre.0
+
+- Pin v0.10.0-alpha.0.pre.1 release commit
+  ([2a63481](https://github.com/ory/keto/commit/2a63481863b9d10d05744178a78042a44e9e3872))
 
 ### Code Refactoring
 
@@ -2189,9 +2333,7 @@ Signed-off-by: aeneasr <aeneas@ory.sh>
 
   - transfer UpdateRoleMembers from https://github.com/ory/hydra/pull/768 to
     keto
-
   - fix tests by using right http method & correcting sql request
-
   - Change behavior to overwrite the whole role instead of just the members.
 
   * small sql migration fix

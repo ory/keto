@@ -26,6 +26,11 @@ plugins:
     opt: ts_out=proto
     path: node_modules/.bin/protoc-gen-ts
 
+  - name: doc
+    out: proto
+    opt: proto/markdown.tmpl,proto/buf.md
+    strategy: all
+
   - plugin: buf.build/grpc-ecosystem/gateway
     out: proto
     opt: paths=source_relative
@@ -40,7 +45,3 @@ plugins:
       - disable_default_errors=true
       - disable_default_responses=true
     out: spec
-
-  - plugin: buf.build/community/pseudomuto-doc
-    opt: markdown,docs.md
-    out: proto

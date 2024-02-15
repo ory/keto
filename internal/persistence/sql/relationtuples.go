@@ -169,7 +169,7 @@ func (p *Persister) DeleteRelationTuples(ctx context.Context, rs ...*relationtup
 	ctx, span := p.d.Tracer(ctx).Tracer().Start(ctx, "persistence.sql.DeleteRelationTuples")
 	defer otelx.End(span, &err)
 
-	return p.transaction(ctx, func(ctx context.Context, _ *pop.Connection) error {
+	return p.Transaction(ctx, func(ctx context.Context) error {
 		for _, r := range rs {
 			q := p.queryWithNetwork(ctx).
 				Where("namespace = ?", r.Namespace).
@@ -192,7 +192,7 @@ func (p *Persister) DeleteAllRelationTuples(ctx context.Context, query *relation
 	ctx, span := p.d.Tracer(ctx).Tracer().Start(ctx, "persistence.sql.DeleteAllRelationTuples")
 	defer otelx.End(span, &err)
 
-	return p.transaction(ctx, func(ctx context.Context, _ *pop.Connection) error {
+	return p.Transaction(ctx, func(ctx context.Context) error {
 		sqlQuery := p.queryWithNetwork(ctx)
 		err := p.whereQuery(ctx, sqlQuery, query)
 		if err != nil {
@@ -264,7 +264,7 @@ func (p *Persister) WriteRelationTuples(ctx context.Context, rs ...*relationtupl
 	ctx, span := p.d.Tracer(ctx).Tracer().Start(ctx, "persistence.sql.WriteRelationTuples")
 	defer otelx.End(span, &err)
 
-	return p.transaction(ctx, func(ctx context.Context, _ *pop.Connection) error {
+	return p.Transaction(ctx, func(ctx context.Context) error {
 		for _, r := range rs {
 			if err := p.InsertRelationTuple(ctx, r); err != nil {
 				return err
@@ -278,7 +278,7 @@ func (p *Persister) TransactRelationTuples(ctx context.Context, ins []*relationt
 	ctx, span := p.d.Tracer(ctx).Tracer().Start(ctx, "persistence.sql.TransactRelationTuples")
 	defer otelx.End(span, &err)
 
-	return p.transaction(ctx, func(ctx context.Context, _ *pop.Connection) error {
+	return p.Transaction(ctx, func(ctx context.Context) error {
 		if err := p.WriteRelationTuples(ctx, ins...); err != nil {
 			return err
 		}

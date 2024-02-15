@@ -229,7 +229,9 @@ func (nw *NamespaceWatcher) GetNamespaceByConfigID(_ context.Context, id int32) 
 	defer nw.RUnlock()
 
 	for _, nspace := range nw.namespaces {
-		if nspace.namespace.ID == id { // nolint ignore deprecated ID
+		//lint:ignore SA1019 backwards compatibility
+		//nolint:staticcheck
+		if nspace.namespace.ID == id {
 			return nspace.namespace, nil
 		}
 	}
@@ -275,7 +277,9 @@ func (nw *NamespaceWatcher) ShouldReload(newValue interface{}) bool {
 func GetParser(fn string) (Parser, error) {
 	switch ext := stringsx.SwitchExact(filepath.Ext(fn)); {
 	case ext.AddCase(".yaml"), ext.AddCase(".yml"):
-		return yaml.Unmarshal, nil
+		return func(b []byte, i interface{}) error {
+			return yaml.Unmarshal(b, i)
+		}, nil
 	case ext.AddCase(".json"):
 		return json.Unmarshal, nil
 	case ext.AddCase(".toml"):

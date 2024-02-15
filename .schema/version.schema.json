@@ -7,6 +7,21 @@
         {
           "properties": {
             "version": {
+              "const": "v0.12.0-alpha.0"
+            }
+          },
+          "required": ["version"]
+        },
+        {
+          "$ref": "https://raw.githubusercontent.com/ory/keto/v0.12.0-alpha.0/.schema/config.schema.json"
+        }
+      ]
+    },
+    {
+      "allOf": [
+        {
+          "properties": {
+            "version": {
               "const": "v0.11.1-alpha.0"
             }
           },

@@ -21,6 +21,7 @@ type (
 		x.WriterProvider
 		x.TracingProvider
 		x.NetworkIDProvider
+		x.TransactorProvider
 	}
 	handler struct {
 		d handlerDeps

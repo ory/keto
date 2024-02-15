@@ -5,6 +5,7 @@ package driver
 
 import (
 	"context"
+	"io/fs"
 	"net/http"
 	"sync"
 
@@ -52,18 +53,19 @@ var (
 
 type (
 	RegistryDefault struct {
-		p              persistence.Persister
-		traverser      relationtuple.Traverser
-		mb             *popx.MigrationBox
-		l              *logrusx.Logger
-		w              herodot.Writer
-		ce             *check.Engine
-		ee             *expand.Engine
-		c              *config.Config
-		conn           *pop.Connection
-		ctxer          ketoctx.Contextualizer
-		mapper         *relationtuple.Mapper
-		readOnlyMapper *relationtuple.Mapper
+		p               persistence.Persister
+		traverser       relationtuple.Traverser
+		mb              *popx.MigrationBox
+		extraMigrations []fs.FS
+		l               *logrusx.Logger
+		w               herodot.Writer
+		ce              *check.Engine
+		ee              *expand.Engine
+		c               *config.Config
+		conn            *pop.Connection
+		ctxer           ketoctx.Contextualizer
+		mapper          *relationtuple.Mapper
+		readOnlyMapper  *relationtuple.Mapper
 
 		initialized    sync.Once
 		healthH        *healthx.Handler
@@ -263,7 +265,7 @@ func (r *RegistryDefault) MigrationBox(ctx context.Context) (*popx.MigrationBox,
 		}
 
 		mb, err := popx.NewMigrationBox(
-			fsx.Merge(sql.Migrations, networkx.Migrations),
+			fsx.Merge(append([]fs.FS{sql.Migrations, networkx.Migrations}, r.extraMigrations...)...),
 			popx.NewMigrator(c, r.Logger(), r.Tracer(ctx), 0),
 			append(
 				[]popx.MigrationBoxOption{popx.WithGoMigrations(uuidmapping.Migrations(namespaces))},
@@ -355,4 +357,12 @@ func (r *RegistryDefault) Init(ctx context.Context) (err error) {
 		}()
 	})
 	return
+}
+
+var _ x.TransactorProvider = (*RegistryDefault)(nil)
+
+func (r *RegistryDefault) Transactor() interface {
+	Transaction(ctx context.Context, f func(ctx context.Context) error) error
+} {
+	return r.Persister()
 }

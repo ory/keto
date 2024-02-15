@@ -1,46 +1,46 @@
-# InlineResponse2001
+# IsAlive200Response
 
 ## Properties
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Status** | **string** | Always \&quot;ok\&quot;. | 
+**Status** | **string** |  | 
 
 ## Methods
 
-### NewInlineResponse2001
+### NewIsAlive200Response
 
-`func NewInlineResponse2001(status string, ) *InlineResponse2001`
+`func NewIsAlive200Response(status string, ) *IsAlive200Response`
 
-NewInlineResponse2001 instantiates a new InlineResponse2001 object
+NewIsAlive200Response instantiates a new IsAlive200Response object
 This constructor will assign default values to properties that have it defined,
 and makes sure properties required by API are set, but the set of arguments
 will change when the set of required properties is changed
 
-### NewInlineResponse2001WithDefaults
+### NewIsAlive200ResponseWithDefaults
 
-`func NewInlineResponse2001WithDefaults() *InlineResponse2001`
+`func NewIsAlive200ResponseWithDefaults() *IsAlive200Response`
 
-NewInlineResponse2001WithDefaults instantiates a new InlineResponse2001 object
+NewIsAlive200ResponseWithDefaults instantiates a new IsAlive200Response object
 This constructor will only assign default values to properties that have it defined,
 but it doesn't guarantee that properties required by API are set
 
 ### GetStatus
 
-`func (o *InlineResponse2001) GetStatus() string`
+`func (o *IsAlive200Response) GetStatus() string`
 
 GetStatus returns the Status field if non-nil, zero value otherwise.
 
 ### GetStatusOk
 
-`func (o *InlineResponse2001) GetStatusOk() (*string, bool)`
+`func (o *IsAlive200Response) GetStatusOk() (*string, bool)`
 
 GetStatusOk returns a tuple with the Status field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetStatus
 
-`func (o *InlineResponse2001) SetStatus(v string)`
+`func (o *IsAlive200Response) SetStatus(v string)`
 
 SetStatus sets Status field to given value.
 

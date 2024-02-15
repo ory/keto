@@ -246,7 +246,7 @@ func TestEngine(t *testing.T) {
 
 		insertFixtures(t, reg.RelationTupleManager(), tuples)
 		e := check.NewEngine(reg)
-		reg.Config(ctx).Set(config.KeyLimitMaxReadDepth, 5)
+		require.NoError(t, reg.Config(ctx).Set(config.KeyLimitMaxReadDepth, 5))
 
 		cases := []struct {
 			tuple string

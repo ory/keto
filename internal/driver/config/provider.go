@@ -10,21 +10,20 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/ory/x/fetcher"
-	"github.com/ory/x/httpx"
-
-	"github.com/ory/keto/embedx"
-
 	"github.com/ory/herodot"
 	_ "github.com/ory/jsonschema/v3/httploader"
 	"github.com/ory/x/configx"
+	"github.com/ory/x/fetcher"
+	"github.com/ory/x/httpx"
 	"github.com/ory/x/logrusx"
 	"github.com/ory/x/otelx"
 	"github.com/ory/x/watcherx"
 	"github.com/pkg/errors"
 	"github.com/rs/cors"
 	"github.com/spf13/pflag"
+	"go.opentelemetry.io/otel/trace/noop"
 
+	"github.com/ory/keto/embedx"
 	"github.com/ory/keto/internal/namespace"
 )
 
@@ -39,6 +38,7 @@ const (
 	KeyDSN = "dsn"
 
 	KeyLimitMaxReadDepth = "limit.max_read_depth"
+	KeyLimitMaxReadWidth = "limit.max_read_width"
 
 	KeyReadAPIHost      = "serve." + string(EndpointRead) + ".host"
 	KeyReadAPIPort      = "serve." + string(EndpointRead) + ".port"
@@ -180,6 +180,9 @@ func (k *Config) OPLSyntaxAPIListenOn() string { return k.addressFor(EndpointOPL
 func (k *Config) MaxReadDepth() int {
 	return k.p.Int(KeyLimitMaxReadDepth)
 }
+func (k *Config) MaxReadWidth() int {
+	return k.p.Int(KeyLimitMaxReadWidth)
+}
 
 func (k *Config) CORS(iface string) (cors.Options, bool) {
 	switch iface {
@@ -205,7 +208,10 @@ func (k *Config) DSN() string {
 }
 
 func (k *Config) Fetcher() *fetcher.Fetcher {
-	var opts []httpx.ResilientOptions
+	// Tracing still works correctly even though we pass a no-op tracer
+	// here, because the otelhttp package will preferentially use the
+	// tracer from the incoming request context over this one.
+	opts := []httpx.ResilientOptions{httpx.ResilientClientWithTracer(noop.NewTracerProvider().Tracer("keto/internal/driver/config"))}
 	if k.p.Bool("clients.http.disallow_private_ip_ranges") {
 		opts = append(opts, httpx.ResilientClientDisallowInternalIPs())
 	}

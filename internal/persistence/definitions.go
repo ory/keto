@@ -22,6 +22,7 @@ type (
 
 		Connection(ctx context.Context) *pop.Connection
 		NetworkID(ctx context.Context) uuid.UUID
+		Transaction(ctx context.Context, f func(ctx context.Context) error) error
 	}
 	Migrator interface {
 		MigrationBox(ctx context.Context) (*popx.MigrationBox, error)

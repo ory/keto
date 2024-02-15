@@ -73,8 +73,8 @@ func (h *handler) ListRelationTuples(ctx context.Context, req *rts.ListRelationT
 	switch {
 	case req.RelationQuery != nil:
 		q.FromDataProvider(&queryWrapper{req.RelationQuery})
-	case req.Query != nil: // nolint
-		q.FromDataProvider(&deprecatedQueryWrapper{req.Query}) // nolint
+	case req.Query != nil: //nolint:staticcheck //lint:ignore SA1019 backwards compatibility
+		q.FromDataProvider(&deprecatedQueryWrapper{req.Query}) //nolint:staticcheck //lint:ignore SA1019 backwards compatibility
 	default:
 		q.FromDataProvider(&openAPIQueryWrapper{req})
 	}

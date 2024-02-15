@@ -226,7 +226,8 @@ func (t *Tree[NodeT]) ToProto() *rts.SubjectTree {
 		res.Children = make([]*rts.SubjectTree, len(t.Children))
 	}
 	res.Tuple = t.Tuple.ToProto()
-	// nolint - fill deprecated field
+	//lint:ignore SA1019 backwards compatibility
+	//nolint:staticcheck
 	res.Subject = res.Tuple.Subject
 	for i := range t.Children {
 		res.Children[i] = t.Children[i].ToProto()
@@ -241,7 +242,8 @@ func TreeFromProto[T tuple[T]](pt *rts.SubjectTree) *Tree[T] {
 	var tuple T
 	if pt.Tuple == nil {
 		// legacy case: fetch from deprecated fields
-		// nolint
+		//lint:ignore SA1019 backwards compatibility
+		//nolint:staticcheck
 		switch sub := pt.Subject.Ref.(type) {
 		case *rts.Subject_Id:
 			pt.Tuple.Subject = rts.NewSubjectID(sub.Id)

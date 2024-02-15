@@ -27,3 +27,9 @@ type TracingProvider interface {
 type NetworkIDProvider interface {
 	NetworkID(context.Context) uuid.UUID
 }
+
+type TransactorProvider interface {
+	Transactor() interface {
+		Transaction(ctx context.Context, f func(ctx context.Context) error) error
+	}
+}

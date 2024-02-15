@@ -3,7 +3,7 @@
  *
  * Documentation for all of Ory Keto's REST APIs. gRPC is documented separately.
  *
- * API version: 1.0.0
+ * API version:
  * Contact: hi@ory.sh
  */
 
@@ -15,32 +15,32 @@ import (
 	"encoding/json"
 )
 
-// InlineResponse2001 struct for InlineResponse2001
-type InlineResponse2001 struct {
+// IsReady200Response struct for IsReady200Response
+type IsReady200Response struct {
 	// Always \"ok\".
 	Status string `json:"status"`
 }
 
-// NewInlineResponse2001 instantiates a new InlineResponse2001 object
+// NewIsReady200Response instantiates a new IsReady200Response object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewInlineResponse2001(status string) *InlineResponse2001 {
-	this := InlineResponse2001{}
+func NewIsReady200Response(status string) *IsReady200Response {
+	this := IsReady200Response{}
 	this.Status = status
 	return &this
 }
 
-// NewInlineResponse2001WithDefaults instantiates a new InlineResponse2001 object
+// NewIsReady200ResponseWithDefaults instantiates a new IsReady200Response object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewInlineResponse2001WithDefaults() *InlineResponse2001 {
-	this := InlineResponse2001{}
+func NewIsReady200ResponseWithDefaults() *IsReady200Response {
+	this := IsReady200Response{}
 	return &this
 }
 
 // GetStatus returns the Status field value
-func (o *InlineResponse2001) GetStatus() string {
+func (o *IsReady200Response) GetStatus() string {
 	if o == nil {
 		var ret string
 		return ret
@@ -51,7 +51,7 @@ func (o *InlineResponse2001) GetStatus() string {
 
 // GetStatusOk returns a tuple with the Status field value
 // and a boolean to check if the value has been set.
-func (o *InlineResponse2001) GetStatusOk() (*string, bool) {
+func (o *IsReady200Response) GetStatusOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -59,11 +59,11 @@ func (o *InlineResponse2001) GetStatusOk() (*string, bool) {
 }
 
 // SetStatus sets field value
-func (o *InlineResponse2001) SetStatus(v string) {
+func (o *IsReady200Response) SetStatus(v string) {
 	o.Status = v
 }
 
-func (o InlineResponse2001) MarshalJSON() ([]byte, error) {
+func (o IsReady200Response) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if true {
 		toSerialize["status"] = o.Status
@@ -71,38 +71,38 @@ func (o InlineResponse2001) MarshalJSON() ([]byte, error) {
 	return json.Marshal(toSerialize)
 }
 
-type NullableInlineResponse2001 struct {
-	value *InlineResponse2001
+type NullableIsReady200Response struct {
+	value *IsReady200Response
 	isSet bool
 }
 
-func (v NullableInlineResponse2001) Get() *InlineResponse2001 {
+func (v NullableIsReady200Response) Get() *IsReady200Response {
 	return v.value
 }
 
-func (v *NullableInlineResponse2001) Set(val *InlineResponse2001) {
+func (v *NullableIsReady200Response) Set(val *IsReady200Response) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableInlineResponse2001) IsSet() bool {
+func (v NullableIsReady200Response) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableInlineResponse2001) Unset() {
+func (v *NullableIsReady200Response) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableInlineResponse2001(val *InlineResponse2001) *NullableInlineResponse2001 {
-	return &NullableInlineResponse2001{value: val, isSet: true}
+func NewNullableIsReady200Response(val *IsReady200Response) *NullableIsReady200Response {
+	return &NullableIsReady200Response{value: val, isSet: true}
 }
 
-func (v NullableInlineResponse2001) MarshalJSON() ([]byte, error) {
+func (v NullableIsReady200Response) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableInlineResponse2001) UnmarshalJSON(src []byte) error {
+func (v *NullableIsReady200Response) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

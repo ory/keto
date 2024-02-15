@@ -12,12 +12,13 @@ import (
 
 	"github.com/gofrs/uuid"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	"github.com/ory/herodot"
 	"google.golang.org/genproto/googleapis/rpc/errdetails"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/proto"
+
+	"github.com/ory/herodot"
 
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 )

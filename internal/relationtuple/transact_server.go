@@ -6,14 +6,16 @@ package relationtuple
 import (
 	"context"
 
-	"github.com/ory/herodot"
 	"github.com/pkg/errors"
+	"go.opentelemetry.io/otel/trace"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 
-	"github.com/ory/keto/internal/x/events"
+	"github.com/ory/herodot"
+
 	"github.com/ory/keto/ketoapi"
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
+	"github.com/ory/keto/x/events"
 )
 
 var _ rts.WriteServiceServer = (*handler)(nil)
@@ -32,8 +34,6 @@ func protoTuplesWithAction(deltas []*rts.RelationTupleDelta, action rts.Relation
 }
 
 func (h *handler) TransactRelationTuples(ctx context.Context, req *rts.TransactRelationTuplesRequest) (*rts.TransactRelationTuplesResponse, error) {
-	events.Add(ctx, h.d, events.RelationtuplesChanged)
-
 	insertTuples, err := protoTuplesWithAction(req.RelationTupleDeltas, rts.RelationTupleDelta_ACTION_INSERT)
 	if err != nil {
 		return nil, err
@@ -44,17 +44,20 @@ func (h *handler) TransactRelationTuples(ctx context.Context, req *rts.TransactR
 		return nil, err
 	}
 
-	its, err := h.d.Mapper().FromTuple(ctx, append(insertTuples, deleteTuples...)...)
-	if err != nil {
-		return nil, err
-	}
-
-	err = h.d.RelationTupleManager().TransactRelationTuples(ctx, its[:len(insertTuples)], its[len(insertTuples):])
+	err = h.d.Transactor().Transaction(ctx, func(ctx context.Context) error {
+		its, err := h.d.Mapper().FromTuple(ctx, append(insertTuples, deleteTuples...)...)
+		if err != nil {
+			return err
+		}
+		return h.d.RelationTupleManager().TransactRelationTuples(ctx, its[:len(insertTuples)], its[len(insertTuples):])
+	})
 	if err != nil {
 		return nil, err
 	}
 
 	_ = grpc.SetHeader(ctx, metadata.Pairs("x-http-code", "204"))
+	trace.SpanFromContext(ctx).AddEvent(events.NewRelationtuplesChanged(ctx))
+
 	snaptokens := make([]string, len(insertTuples))
 	for i := range insertTuples {
 		snaptokens[i] = "not yet implemented"
@@ -86,8 +89,6 @@ func (h *handler) CreateRelationTuple(ctx context.Context, request *rts.CreateRe
 }
 
 func (h *handler) DeleteRelationTuples(ctx context.Context, req *rts.DeleteRelationTuplesRequest) (*rts.DeleteRelationTuplesResponse, error) {
-	events.Add(ctx, h.d, events.RelationtuplesDeleted)
-
 	var q ketoapi.RelationQuery
 
 	if md, ok := metadata.FromIncomingContext(ctx); ok {
@@ -100,8 +101,10 @@ func (h *handler) DeleteRelationTuples(ctx context.Context, req *rts.DeleteRelat
 	switch {
 	case req.RelationQuery != nil:
 		q.FromDataProvider(&queryWrapper{req.RelationQuery})
-	case req.Query != nil: // nolint
-		q.FromDataProvider(&deprecatedQueryWrapper{(*rts.ListRelationTuplesRequest_Query)(req.Query)}) // nolint
+		//lint:ignore SA1019 required for compatibility
+	case req.Query != nil: //nolint:staticcheck
+		//lint:ignore SA1019 backwards compatibility
+		q.FromDataProvider(&deprecatedQueryWrapper{(*rts.ListRelationTuplesRequest_Query)(req.Query)}) //nolint:staticcheck
 	default:
 		q.FromDataProvider(&openAPIQueryWrapper{req})
 	}
@@ -119,6 +122,8 @@ func (h *handler) DeleteRelationTuples(ctx context.Context, req *rts.DeleteRelat
 		return nil, errors.WithStack(herodot.ErrInternalServerError.WithError(err.Error()))
 	}
 
+	trace.SpanFromContext(ctx).AddEvent(events.NewRelationtuplesDeleted(ctx))
 	_ = grpc.SetHeader(ctx, metadata.Pairs("x-http-code", "204"))
+
 	return &rts.DeleteRelationTuplesResponse{}, nil
 }

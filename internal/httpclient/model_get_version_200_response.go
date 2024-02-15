@@ -3,7 +3,7 @@
  *
  * Documentation for all of Ory Keto's REST APIs. gRPC is documented separately.
  *
- * API version: 1.0.0
+ * API version:
  * Contact: hi@ory.sh
  */
 
@@ -15,32 +15,32 @@ import (
 	"encoding/json"
 )
 
-// InlineResponse2002 struct for InlineResponse2002
-type InlineResponse2002 struct {
+// GetVersion200Response struct for GetVersion200Response
+type GetVersion200Response struct {
 	// The version of Ory Keto.
 	Version string `json:"version"`
 }
 
-// NewInlineResponse2002 instantiates a new InlineResponse2002 object
+// NewGetVersion200Response instantiates a new GetVersion200Response object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewInlineResponse2002(version string) *InlineResponse2002 {
-	this := InlineResponse2002{}
+func NewGetVersion200Response(version string) *GetVersion200Response {
+	this := GetVersion200Response{}
 	this.Version = version
 	return &this
 }
 
-// NewInlineResponse2002WithDefaults instantiates a new InlineResponse2002 object
+// NewGetVersion200ResponseWithDefaults instantiates a new GetVersion200Response object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewInlineResponse2002WithDefaults() *InlineResponse2002 {
-	this := InlineResponse2002{}
+func NewGetVersion200ResponseWithDefaults() *GetVersion200Response {
+	this := GetVersion200Response{}
 	return &this
 }
 
 // GetVersion returns the Version field value
-func (o *InlineResponse2002) GetVersion() string {
+func (o *GetVersion200Response) GetVersion() string {
 	if o == nil {
 		var ret string
 		return ret
@@ -51,7 +51,7 @@ func (o *InlineResponse2002) GetVersion() string {
 
 // GetVersionOk returns a tuple with the Version field value
 // and a boolean to check if the value has been set.
-func (o *InlineResponse2002) GetVersionOk() (*string, bool) {
+func (o *GetVersion200Response) GetVersionOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -59,11 +59,11 @@ func (o *InlineResponse2002) GetVersionOk() (*string, bool) {
 }
 
 // SetVersion sets field value
-func (o *InlineResponse2002) SetVersion(v string) {
+func (o *GetVersion200Response) SetVersion(v string) {
 	o.Version = v
 }
 
-func (o InlineResponse2002) MarshalJSON() ([]byte, error) {
+func (o GetVersion200Response) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if true {
 		toSerialize["version"] = o.Version
@@ -71,38 +71,38 @@ func (o InlineResponse2002) MarshalJSON() ([]byte, error) {
 	return json.Marshal(toSerialize)
 }
 
-type NullableInlineResponse2002 struct {
-	value *InlineResponse2002
+type NullableGetVersion200Response struct {
+	value *GetVersion200Response
 	isSet bool
 }
 
-func (v NullableInlineResponse2002) Get() *InlineResponse2002 {
+func (v NullableGetVersion200Response) Get() *GetVersion200Response {
 	return v.value
 }
 
-func (v *NullableInlineResponse2002) Set(val *InlineResponse2002) {
+func (v *NullableGetVersion200Response) Set(val *GetVersion200Response) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableInlineResponse2002) IsSet() bool {
+func (v NullableGetVersion200Response) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableInlineResponse2002) Unset() {
+func (v *NullableGetVersion200Response) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableInlineResponse2002(val *InlineResponse2002) *NullableInlineResponse2002 {
-	return &NullableInlineResponse2002{value: val, isSet: true}
+func NewNullableGetVersion200Response(val *GetVersion200Response) *NullableGetVersion200Response {
+	return &NullableGetVersion200Response{value: val, isSet: true}
 }
 
-func (v NullableInlineResponse2002) MarshalJSON() ([]byte, error) {
+func (v NullableGetVersion200Response) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableInlineResponse2002) UnmarshalJSON(src []byte) error {
+func (v *NullableGetVersion200Response) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

@@ -1,7 +1,8 @@
 SHELL=/bin/bash -o pipefail
 
-export PWD := $(shell pwd)
-export PATH := ${PWD}/.bin:${PATH}
+export PWD				:= $(shell pwd)
+export PATH				:= ${PWD}/.bin:${PATH}
+export IMAGE_TAG	:= $(if $(IMAGE_TAG),$(IMAGE_TAG),latest)
 
 GO_DEPENDENCIES = golang.org/x/tools/cmd/goimports \
 				  github.com/mattn/goveralls \
@@ -56,7 +57,7 @@ install:
 
 .PHONY: docker
 docker:
-	docker build -t oryd/keto:latest -f .docker/Dockerfile-build .
+	DOCKER_BUILDKIT=1 DOCKER_CONTENT_TRUST=1 docker build --progress=plain -t oryd/keto:${IMAGE_TAG} -f .docker/Dockerfile-build .
 
 # Generates the SDKs
 .PHONY: sdk
@@ -81,6 +82,8 @@ sdk: buf .bin/swagger .bin/ory node_modules
 		--git-user-id ory \
 		--git-repo-id keto-client-go \
 		--git-host github.com \
+		--api-name-suffix "Api" \
+		--global-property apiTests=false \
 		-t .schema/openapi/templates/go \
 		-c .schema/openapi/gen.go.yml
 

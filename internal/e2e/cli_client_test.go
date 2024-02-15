@@ -19,13 +19,12 @@ import (
 
 	grpcHealthV1 "google.golang.org/grpc/health/grpc_health_v1"
 
-	"github.com/ory/keto/cmd/status"
-
 	"github.com/ory/keto/internal/x"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
+	gprclient "github.com/ory/keto/cmd/client"
 	cliexpand "github.com/ory/keto/cmd/expand"
 	clirelationtuple "github.com/ory/keto/cmd/relationtuple"
 
@@ -137,7 +136,7 @@ func (g *cliClient) waitUntilLive(t require.TestingT) {
 	ctx, cancel := context.WithTimeout(g.c.Ctx, time.Minute)
 	defer cancel()
 
-	out := cmdx.ExecNoErrCtx(ctx, t, g.c.New(), append(flags, "status", "--"+status.FlagBlock)...)
+	out := cmdx.ExecNoErrCtx(ctx, t, g.c.New(), append(flags, "status", "--"+gprclient.FlagBlock)...)
 	require.Equal(t, grpcHealthV1.HealthCheckResponse_SERVING.String()+"\n", out)
 }
 

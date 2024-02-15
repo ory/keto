@@ -5,9 +5,11 @@ package migrate
 
 import (
 	"fmt"
+	"time"
+
+	"github.com/ory/x/popx"
 
 	"github.com/ory/x/cmdx"
-	"github.com/ory/x/popx"
 	"github.com/spf13/cobra"
 
 	"github.com/ory/keto/internal/driver"
@@ -15,6 +17,7 @@ import (
 )
 
 func newStatusCmd(opts []ketoctx.Option) *cobra.Command {
+	block := false
 	cmd := &cobra.Command{
 		Use:   "status",
 		Short: "Get the current migration status",
@@ -33,22 +36,39 @@ func newStatusCmd(opts []ketoctx.Option) *cobra.Command {
 				return err
 			}
 
-			return BoxStatus(cmd, mb, "")
+			s, err := mb.Status(ctx)
+			if err != nil {
+				_, _ = fmt.Fprintf(cmd.OutOrStdout(), "Could not get migration status: %+v\n", err)
+				return cmdx.FailSilently(cmd)
+			}
+
+			for block && s.HasPending() {
+				_, _ = fmt.Fprintf(cmd.OutOrStdout(), "Waiting for migrations to finish...\n")
+				for _, m := range s {
+					if m.State == popx.Pending {
+						_, _ = fmt.Fprintf(cmd.OutOrStdout(), " - %s\n", m.Name)
+					}
+				}
+				select {
+				case <-ctx.Done():
+					_, _ = fmt.Fprintln(cmd.ErrOrStderr(), "Context was canceled, exiting...")
+					return cmdx.FailSilently(cmd)
+				case <-time.After(time.Second):
+				}
+				s, err = mb.Status(ctx)
+				if err != nil {
+					_, _ = fmt.Fprintf(cmd.OutOrStdout(), "Could not get migration status: %+v\n", err)
+					return cmdx.FailSilently(cmd)
+				}
+			}
+
+			cmdx.PrintTable(cmd, s)
+			return nil
 		},
 	}
 
 	cmdx.RegisterFormatFlags(cmd.Flags())
+	cmd.Flags().BoolVar(&block, "block", false, "Block until all migrations have been applied")
 
 	return cmd
-}
-
-func BoxStatus(cmd *cobra.Command, mb *popx.MigrationBox, msgPrefix string) error {
-	s, err := mb.Status(cmd.Context())
-	if err != nil {
-		_, _ = fmt.Fprintf(cmd.OutOrStdout(), "%sCould not get migration status: %+v\n", msgPrefix, err)
-		return cmdx.FailSilently(cmd)
-	}
-
-	cmdx.PrintTable(cmd, s)
-	return nil
 }

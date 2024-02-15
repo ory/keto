@@ -7,6 +7,7 @@ info:
   license:
     name: Apache 2.0
   title: Ory Keto API
+  version: ""
 servers:
 - url: /
 paths:
@@ -155,7 +156,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/inline_response_200'
+                $ref: '#/components/schemas/isAlive_200_response'
           description: Ory Keto is ready to accept connections.
         "500":
           content:
@@ -183,13 +184,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/inline_response_200_1'
+                $ref: '#/components/schemas/isReady_200_response'
           description: Ory Keto is ready to accept requests.
         "503":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/inline_response_503'
+                $ref: '#/components/schemas/isReady_503_response'
           description: Ory Kratos is not yet ready to accept requests.
       summary: Check HTTP Server and Database Status
       tags:
@@ -433,8 +434,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/checkPermissionResult'
-          description: The response of the permission check, in case it is allowed.
-            For the `/openapi` endpoints, the status code is always 200.
+          description: "The response of the permission check, in case it is allowed.\
+            \ For the `/openapi` endpoints, the status code is always 200."
         "400":
           content:
             application/json:
@@ -446,8 +447,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/checkPermissionResult'
-          description: The response of the permission check, in case it is not allowed.
-            For the `/openapi` endpoints, the status code is always 200.
+          description: "The response of the permission check, in case it is not allowed.\
+            \ For the `/openapi` endpoints, the status code is always 200."
       summary: Performs an authorization check.
       tags:
       - permission
@@ -472,8 +473,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/checkPermissionResult'
-          description: The response of the permission check, in case it is allowed.
-            For the `/openapi` endpoints, the status code is always 200.
+          description: "The response of the permission check, in case it is allowed.\
+            \ For the `/openapi` endpoints, the status code is always 200."
         "400":
           content:
             application/json:
@@ -485,8 +486,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/checkPermissionResult'
-          description: The response of the permission check, in case it is not allowed.
-            For the `/openapi` endpoints, the status code is always 200.
+          description: "The response of the permission check, in case it is not allowed.\
+            \ For the `/openapi` endpoints, the status code is always 200."
       summary: Performs an authorization check.
       tags:
       - permission
@@ -577,8 +578,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/checkPermissionResult'
-          description: The response of the permission check, in case it is allowed.
-            For the `/openapi` endpoints, the status code is always 200.
+          description: "The response of the permission check, in case it is allowed.\
+            \ For the `/openapi` endpoints, the status code is always 200."
         "400":
           content:
             application/json:
@@ -590,8 +591,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/checkPermissionResult'
-          description: The response of the permission check, in case it is not allowed.
-            For the `/openapi` endpoints, the status code is always 200.
+          description: "The response of the permission check, in case it is not allowed.\
+            \ For the `/openapi` endpoints, the status code is always 200."
       summary: Performs an authorization check.
       tags:
       - permission
@@ -616,8 +617,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/checkPermissionResult'
-          description: The response of the permission check, in case it is allowed.
-            For the `/openapi` endpoints, the status code is always 200.
+          description: "The response of the permission check, in case it is allowed.\
+            \ For the `/openapi` endpoints, the status code is always 200."
         "400":
           content:
             application/json:
@@ -629,8 +630,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/checkPermissionResult'
-          description: The response of the permission check, in case it is not allowed.
-            For the `/openapi` endpoints, the status code is always 200.
+          description: "The response of the permission check, in case it is not allowed.\
+            \ For the `/openapi` endpoints, the status code is always 200."
       summary: Performs an authorization check.
       tags:
       - permission
@@ -686,8 +687,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/expandedPermissionTree'
-          description: The response of the permission check, in case it is allowed.
-            For the `/openapi` endpoints, the status code is always 200.
+          description: "The response of the permission check, in case it is allowed.\
+            \ For the `/openapi` endpoints, the status code is always 200."
         "400":
           content:
             application/json:
@@ -713,7 +714,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/inline_response_200_2'
+                $ref: '#/components/schemas/getVersion_200_response'
           description: Returns the Ory Keto version.
       summary: Return Running Software Version.
       tags:
@@ -873,6 +874,7 @@ components:
             object: object
             relation: relation
           id: id
+        type: null
       properties:
         children:
           description: |-
@@ -1171,7 +1173,7 @@ components:
           description: The relation between the object and the subjects.
           type: string
       type: object
-    inline_response_200:
+    isAlive_200_response:
       example:
         status: status
       properties:
@@ -1180,7 +1182,7 @@ components:
       required:
       - status
       type: object
-    inline_response_200_1:
+    isReady_200_response:
       example:
         status: status
       properties:
@@ -1190,7 +1192,7 @@ components:
       required:
       - status
       type: object
-    inline_response_503:
+    isReady_503_response:
       properties:
         errors:
           additionalProperties:
@@ -1201,7 +1203,7 @@ components:
       required:
       - errors
       type: object
-    inline_response_200_2:
+    getVersion_200_response:
       example:
         version: version
       properties:
