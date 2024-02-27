@@ -19,7 +19,7 @@ plugins:
 
   - name: ts
     out: proto
-    opt: ts_out=proto
+    opt: grpc_js
     path: node_modules/.bin/protoc-gen-ts
 
   - name: doc
