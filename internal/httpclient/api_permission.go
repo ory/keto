@@ -69,6 +69,20 @@ type PermissionApi interface {
 	ExpandPermissionsExecute(r PermissionApiApiExpandPermissionsRequest) (*ExpandedPermissionTree, *http.Response, error)
 
 	/*
+	 * PostBatchCheckPermissionOrErrorBody Batch check permissions
+	 * To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
+	 * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	 * @return PermissionApiApiPostBatchCheckPermissionOrErrorBodyRequest
+	 */
+	PostBatchCheckPermissionOrErrorBody(ctx context.Context) PermissionApiApiPostBatchCheckPermissionOrErrorBodyRequest
+
+	/*
+	 * PostBatchCheckPermissionOrErrorBodyExecute executes the request
+	 * @return BatchCheckPermissionResult
+	 */
+	PostBatchCheckPermissionOrErrorBodyExecute(r PermissionApiApiPostBatchCheckPermissionOrErrorBodyRequest) (*BatchCheckPermissionResult, *http.Response, error)
+
+	/*
 	 * PostCheckPermission Check a permission
 	 * To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
 	 * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
@@ -609,6 +623,124 @@ func (a *PermissionApiService) ExpandPermissionsExecute(r PermissionApiApiExpand
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 404 {
+			var v ErrorGeneric
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		var v ErrorGeneric
+		err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+		if err != nil {
+			newErr.error = err.Error()
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		newErr.model = v
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type PermissionApiApiPostBatchCheckPermissionOrErrorBodyRequest struct {
+	ctx        context.Context
+	ApiService PermissionApi
+}
+
+func (r PermissionApiApiPostBatchCheckPermissionOrErrorBodyRequest) Execute() (*BatchCheckPermissionResult, *http.Response, error) {
+	return r.ApiService.PostBatchCheckPermissionOrErrorBodyExecute(r)
+}
+
+/*
+ * PostBatchCheckPermissionOrErrorBody Batch check permissions
+ * To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
+ * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ * @return PermissionApiApiPostBatchCheckPermissionOrErrorBodyRequest
+ */
+func (a *PermissionApiService) PostBatchCheckPermissionOrErrorBody(ctx context.Context) PermissionApiApiPostBatchCheckPermissionOrErrorBodyRequest {
+	return PermissionApiApiPostBatchCheckPermissionOrErrorBodyRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+/*
+ * Execute executes the request
+ * @return BatchCheckPermissionResult
+ */
+func (a *PermissionApiService) PostBatchCheckPermissionOrErrorBodyExecute(r PermissionApiApiPostBatchCheckPermissionOrErrorBodyRequest) (*BatchCheckPermissionResult, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodPost
+		localVarPostBody     interface{}
+		localVarFormFileName string
+		localVarFileName     string
+		localVarFileBytes    []byte
+		localVarReturnValue  *BatchCheckPermissionResult
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PermissionApiService.PostBatchCheckPermissionOrErrorBody")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/relation-tuples/batchCheck"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
 			var v ErrorGeneric
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {

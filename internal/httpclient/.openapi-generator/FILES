@@ -8,6 +8,7 @@ api_permission.go
 api_relationship.go
 client.go
 configuration.go
+docs/BatchCheckPermissionResult.md
 docs/CheckOplSyntaxResult.md
 docs/CheckPermissionResult.md
 docs/CreateRelationshipBody.md
@@ -23,6 +24,7 @@ docs/MetadataApi.md
 docs/Namespace.md
 docs/ParseError.md
 docs/PermissionApi.md
+docs/PostBatchCheckPermissionOrErrorBody.md
 docs/PostCheckPermissionBody.md
 docs/PostCheckPermissionOrErrorBody.md
 docs/RelationQuery.md
@@ -37,6 +39,7 @@ docs/Version.md
 git_push.sh
 go.mod
 go.sum
+model_batch_check_permission_result.go
 model_check_opl_syntax_result.go
 model_check_permission_result.go
 model_create_relationship_body.go
@@ -50,6 +53,7 @@ model_is_alive_200_response.go
 model_is_ready_503_response.go
 model_namespace.go
 model_parse_error.go
+model_post_batch_check_permission_or_error_body.go
 model_post_check_permission_body.go
 model_post_check_permission_or_error_body.go
 model_relation_query.go

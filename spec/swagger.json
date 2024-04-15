@@ -375,6 +375,37 @@
         }
       }
     },
+    "/relation-tuples/batchCheck": {
+      "post": {
+        "description": "To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "schemes": ["http", "https"],
+        "tags": ["permission"],
+        "summary": "Batch check permissions",
+        "operationId": "postBatchCheckPermissionOrErrorBody",
+        "responses": {
+          "200": {
+            "description": "batchCheckPermissionResult",
+            "schema": {
+              "$ref": "#/definitions/batchCheckPermissionResult"
+            }
+          },
+          "400": {
+            "description": "errorGeneric",
+            "schema": {
+              "$ref": "#/definitions/errorGeneric"
+            }
+          },
+          "default": {
+            "description": "errorGeneric",
+            "schema": {
+              "$ref": "#/definitions/errorGeneric"
+            }
+          }
+        }
+      }
+    },
     "/relation-tuples/check": {
       "get": {
         "description": "To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).",
@@ -750,6 +781,20 @@
         }
       }
     },
+    "batchCheckPermissionResult": {
+      "description": "Batch Check Permission Result",
+      "type": "object",
+      "required": ["results"],
+      "properties": {
+        "results": {
+          "description": "An array of whether the relation tuple is allowed. The order aligns with the input order.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/checkPermissionResult"
+          }
+        }
+      }
+    },
     "checkOplSyntaxBody": {
       "description": "Ory Permission Language Document",
       "type": "string"
@@ -919,6 +964,18 @@
         "name": {
           "description": "Name of the namespace.",
           "type": "string"
+        }
+      }
+    },
+    "postBatchCheckPermissionOrErrorBody": {
+      "description": "Post Batch Check Permission Or Error Body",
+      "type": "object",
+      "properties": {
+        "tuples": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/relationship"
+          }
         }
       }
     },

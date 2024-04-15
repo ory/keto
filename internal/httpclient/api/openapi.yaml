@@ -371,6 +371,33 @@ paths:
       summary: Query relationships
       tags:
       - relationship
+  /relation-tuples/batchCheck:
+    post:
+      description: "To learn how relationship tuples and the check works, head over\
+        \ to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview)."
+      operationId: postBatchCheckPermissionOrErrorBody
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/batchCheckPermissionResult'
+          description: batchCheckPermissionResult
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorGeneric'
+          description: errorGeneric
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorGeneric'
+          description: errorGeneric
+      summary: Batch check permissions
+      tags:
+      - permission
   /relation-tuples/check:
     get:
       description: "To learn how relationship tuples and the check works, head over\
@@ -774,6 +801,22 @@ components:
     UUID:
       format: uuid4
       type: string
+    batchCheckPermissionResult:
+      description: Batch Check Permission Result
+      example:
+        results:
+        - allowed: true
+        - allowed: true
+      properties:
+        results:
+          description: An array of whether the relation tuple is allowed. The order
+            aligns with the input order.
+          items:
+            $ref: '#/components/schemas/checkPermissionResult'
+          type: array
+      required:
+      - results
+      type: object
     checkOplSyntaxBody:
       description: Ory Permission Language Document
       type: string
@@ -975,6 +1018,14 @@ components:
         name:
           description: Name of the namespace.
           type: string
+      type: object
+    postBatchCheckPermissionOrErrorBody:
+      description: Post Batch Check Permission Or Error Body
+      properties:
+        tuples:
+          items:
+            $ref: '#/components/schemas/relationship'
+          type: array
       type: object
     postCheckPermissionBody:
       description: Check Permission using Post Request Body

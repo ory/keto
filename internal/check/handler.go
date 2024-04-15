@@ -49,6 +49,7 @@ func NewHandler(d handlerDependencies) *Handler {
 const (
 	RouteBase        = "/relation-tuples/check"
 	OpenAPIRouteBase = RouteBase + "/openapi"
+	BatchRoute       = "/relation-tuples/batchCheck"
 )
 
 func (h *Handler) RegisterReadRoutes(r *x.ReadRouter) {
@@ -56,6 +57,7 @@ func (h *Handler) RegisterReadRoutes(r *x.ReadRouter) {
 	r.GET(OpenAPIRouteBase, h.getCheckNoStatus)
 	r.POST(RouteBase, h.postCheckMirrorStatus)
 	r.POST(OpenAPIRouteBase, h.postCheckNoStatus)
+	r.POST(BatchRoute, h.postBatchCheckMirrorStatus)
 }
 
 func (h *Handler) RegisterReadGRPC(s *grpc.Server) {
@@ -327,5 +329,123 @@ func (h *Handler) Check(ctx context.Context, req *rts.CheckRequest) (*rts.CheckR
 	return &rts.CheckResponse{
 		Allowed:   allowed,
 		Snaptoken: "not yet implemented",
+	}, nil
+}
+
+// Post Batch Check Permission Or Error Request Parameters
+//
+// swagger:parameters postBatchCheckPermissionOrError
+//
+//lint:ignore U1000 Used to generate Swagger and OpenAPI definitions
+type postBatchCheckPermissionOrError struct {
+	// in: query
+	MaxDepth int `json:"max-depth"`
+
+	// in: body
+	Body postBatchCheckPermissionOrErrorBody
+}
+
+// Post Batch Check Permission Or Error Body
+//
+// swagger:model postBatchCheckPermissionOrErrorBody
+//
+//lint:ignore U1000 Used to generate Swagger and OpenAPI definitions
+type postBatchCheckPermissionOrErrorBody struct {
+	Tuples []*ketoapi.RelationTuple `json:"tuples"`
+}
+
+// Batch Check Permission Result
+//
+// swagger:model batchCheckPermissionResult
+type BatchCheckPermissionResult struct {
+	// An array of whether the relation tuple is allowed. The order aligns with the input order.
+	//
+	// required: true
+	Results []*CheckPermissionResult `json:"results"`
+}
+
+// swagger:route POST /relation-tuples/batchCheck permission postBatchCheckPermissionOrErrorBody
+//
+// # Batch check permissions
+//
+// To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
+//
+//	Consumes:
+//	-  application/json
+//
+//	Produces:
+//	- application/json
+//
+//	Schemes: http, https
+//
+//	Responses:
+//	  200: batchCheckPermissionResult
+//	  400: errorGeneric
+//	  default: errorGeneric
+func (h *Handler) postBatchCheckMirrorStatus(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	results, err := h.postBatchCheck(r.Context(), r.Body, r.URL.Query())
+	if err != nil {
+		h.d.Writer().WriteError(w, r, err)
+		return
+	}
+
+	h.d.Writer().Write(w, r, &BatchCheckPermissionResult{Results: results})
+}
+
+func (h *Handler) postBatchCheck(ctx context.Context, body io.Reader, query url.Values) ([]*CheckPermissionResult, error) {
+	maxDepth, err := x.GetMaxDepthFromQuery(query)
+	if err != nil {
+		return nil, err
+	}
+
+	var request postBatchCheckPermissionOrErrorBody
+	if err := json.NewDecoder(body).Decode(&request); err != nil {
+		return nil, errors.WithStack(herodot.ErrBadRequest.WithErrorf("could not unmarshal json: %s", err.Error()))
+	}
+
+	results := make([]*CheckPermissionResult, len(request.Tuples))
+	for i, tuple := range request.Tuples {
+		t, err := h.d.ReadOnlyMapper().FromTuple(ctx, tuple)
+		// herodot.ErrNotFound occurs when the namespace is unknown
+		if errors.Is(err, herodot.ErrNotFound) {
+			results[i] = &CheckPermissionResult{
+				Allowed: false,
+			}
+			continue
+		} else if err != nil {
+			return nil, err
+		}
+		allowed, err := h.d.PermissionEngine().CheckIsMember(ctx, t[0], maxDepth)
+		if err != nil {
+			return nil, err
+		}
+		results[i] = &CheckPermissionResult{
+			Allowed: allowed,
+		}
+	}
+
+	return results, nil
+}
+
+func (h *Handler) BatchCheck(ctx context.Context, req *rts.BatchCheckRequest) (*rts.BatchCheckResponse, error) {
+	responses := make([]*rts.CheckResponse, len(req.Tuples))
+	for i, reqTuple := range req.Tuples {
+		tuple := (&ketoapi.RelationTuple{}).FromProto(reqTuple)
+		internalTuple, err := h.d.ReadOnlyMapper().FromTuple(ctx, tuple)
+		if err != nil {
+			return nil, err
+		}
+		allowed, err := h.d.PermissionEngine().CheckIsMember(ctx, internalTuple[0], int(req.MaxDepth))
+		if err != nil {
+			return nil, err
+		}
+		responses[i] = &rts.CheckResponse{
+			Allowed:   allowed,
+			Snaptoken: "not yet implemented",
+		}
+	}
+
+	return &rts.BatchCheckResponse{
+		Results: responses,
 	}, nil
 }

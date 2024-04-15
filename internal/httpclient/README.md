@@ -85,6 +85,7 @@ Class | Method | HTTP request | Description
 *PermissionApi* | [**CheckPermission**](docs/PermissionApi.md#checkpermission) | **Get** /relation-tuples/check/openapi | Check a permission
 *PermissionApi* | [**CheckPermissionOrError**](docs/PermissionApi.md#checkpermissionorerror) | **Get** /relation-tuples/check | Check a permission
 *PermissionApi* | [**ExpandPermissions**](docs/PermissionApi.md#expandpermissions) | **Get** /relation-tuples/expand | Expand a Relationship into permissions.
+*PermissionApi* | [**PostBatchCheckPermissionOrErrorBody**](docs/PermissionApi.md#postbatchcheckpermissionorerrorbody) | **Post** /relation-tuples/batchCheck | Batch check permissions
 *PermissionApi* | [**PostCheckPermission**](docs/PermissionApi.md#postcheckpermission) | **Post** /relation-tuples/check/openapi | Check a permission
 *PermissionApi* | [**PostCheckPermissionOrError**](docs/PermissionApi.md#postcheckpermissionorerror) | **Post** /relation-tuples/check | Check a permission
 *RelationshipApi* | [**CheckOplSyntax**](docs/RelationshipApi.md#checkoplsyntax) | **Post** /opl/syntax/check | Check the syntax of an OPL file
@@ -97,6 +98,7 @@ Class | Method | HTTP request | Description
 
 ## Documentation For Models
 
+ - [BatchCheckPermissionResult](docs/BatchCheckPermissionResult.md)
  - [CheckOplSyntaxResult](docs/CheckOplSyntaxResult.md)
  - [CheckPermissionResult](docs/CheckPermissionResult.md)
  - [CreateRelationshipBody](docs/CreateRelationshipBody.md)
@@ -110,6 +112,7 @@ Class | Method | HTTP request | Description
  - [IsReady503Response](docs/IsReady503Response.md)
  - [Namespace](docs/Namespace.md)
  - [ParseError](docs/ParseError.md)
+ - [PostBatchCheckPermissionOrErrorBody](docs/PostBatchCheckPermissionOrErrorBody.md)
  - [PostCheckPermissionBody](docs/PostCheckPermissionBody.md)
  - [PostCheckPermissionOrErrorBody](docs/PostCheckPermissionOrErrorBody.md)
  - [RelationQuery](docs/RelationQuery.md)
