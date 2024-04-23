@@ -96,6 +96,12 @@ func NewDefaultRegistry(ctx context.Context, flags *pflag.FlagSet, withoutNetwor
 		return nil, errors.Wrap(err, "unable to initialize service registry")
 	}
 
+	if inspect := options.Inspect(); inspect != nil {
+		if err := inspect(r.Persister().Connection(ctx)); err != nil {
+			return nil, errors.Wrap(err, "inspect")
+		}
+	}
+
 	return r, nil
 }
 
