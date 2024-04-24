@@ -23,6 +23,7 @@ type (
 		httpMiddlewares        []func(rw http.ResponseWriter, r *http.Request, next http.HandlerFunc)
 		grpcUnaryInterceptors  []grpc.UnaryServerInterceptor
 		grpcStreamInterceptors []grpc.StreamServerInterceptor
+		grpcServerOptions      []grpc.ServerOption
 		migrationOpts          []popx.MigrationBoxOption
 		readyCheckers          healthx.ReadyCheckers
 		extraMigrations        []fs.FS
@@ -70,6 +71,13 @@ func WithGRPCUnaryInterceptors(i ...grpc.UnaryServerInterceptor) Option {
 func WithGRPCStreamInterceptors(i ...grpc.StreamServerInterceptor) Option {
 	return func(o *opts) {
 		o.grpcStreamInterceptors = i
+	}
+}
+
+// WithGRPCServerOptions adds gRPC server options.
+func WithGRPCServerOptions(serverOpts ...grpc.ServerOption) Option {
+	return func(o *opts) {
+		o.grpcServerOptions = serverOpts
 	}
 }
 
@@ -123,6 +131,10 @@ func (o *opts) GRPCUnaryInterceptors() []grpc.UnaryServerInterceptor {
 
 func (o *opts) GRPCStreamInterceptors() []grpc.StreamServerInterceptor {
 	return o.grpcStreamInterceptors
+}
+
+func (o *opts) GRPCServerOptions() []grpc.ServerOption {
+	return o.grpcServerOptions
 }
 
 func (o *opts) ExtraMigrations() []fs.FS {

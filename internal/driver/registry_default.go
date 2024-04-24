@@ -77,6 +77,7 @@ type (
 
 		defaultUnaryInterceptors  []grpc.UnaryServerInterceptor
 		defaultStreamInterceptors []grpc.StreamServerInterceptor
+		defaultGRPCServerOptions  []grpc.ServerOption
 		defaultHttpMiddlewares    []func(rw http.ResponseWriter, r *http.Request, next http.HandlerFunc)
 		grpcTransportCredentials  credentials.TransportCredentials
 		defaultMigrationOptions   []popx.MigrationBoxOption

@@ -490,6 +490,7 @@ func (r *RegistryDefault) newGrpcServer(ctx context.Context) *grpc.Server {
 		grpc.ChainStreamInterceptor(r.streamInterceptors(ctx)...),
 		grpc.ChainUnaryInterceptor(r.unaryInterceptors(ctx)...),
 	}
+	opts = append(opts, r.defaultGRPCServerOptions...)
 	if r.grpcTransportCredentials != nil {
 		opts = append(opts, grpc.Creds(r.grpcTransportCredentials))
 	}
@@ -503,7 +504,6 @@ func (r *RegistryDefault) ReadGRPCServer(ctx context.Context) *grpc.Server {
 	grpcHealthV1.RegisterHealthServer(s, r.HealthServer())
 	rts.RegisterVersionServiceServer(s, r)
 	reflection.Register(s)
-
 	for _, h := range r.allHandlers() {
 		if h, ok := h.(ReadHandler); ok {
 			h.RegisterReadGRPC(s)
