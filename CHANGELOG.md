@@ -5,7 +5,7 @@
 
 **Table of Contents**
 
-- [0.0.0 (2024-04-23)](#000-2024-04-23)
+- [0.0.0 (2024-04-24)](#000-2024-04-24)
   - [Bug Fixes](#bug-fixes)
   - [Features](#features)
 - [0.13.0-alpha.0 (2024-02-27)](#0130-alpha0-2024-02-27)
@@ -161,7 +161,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.13.0-alpha.0...v0.0.0) (2024-04-23)
+# [0.0.0](https://github.com/ory/keto/compare/v0.13.0-alpha.0...v0.0.0) (2024-04-24)
 
 ### Bug Fixes
 
@@ -169,6 +169,13 @@
   ([4a35588](https://github.com/ory/keto/commit/4a35588d52e9ba0b5779226c4725a8c68c4cfe8c))
 
 ### Features
+
+- Add grpc server opts config ([#1524](https://github.com/ory/keto/issues/1524))
+  ([7278e44](https://github.com/ory/keto/commit/7278e44bd0ac94e5f70f3c347a6e9cccfda11df6)):
+
+  - feat: add grpc server opts config
+  - chore: bump base image
+  - chore: temp ignore cve
 
 - Add Inspect option to registry
   ([#1523](https://github.com/ory/keto/issues/1523))
