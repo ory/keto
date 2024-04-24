@@ -1,4 +1,4 @@
-FROM gcr.io/distroless/static-debian11:nonroot
+FROM gcr.io/distroless/static-debian12:nonroot
 
 COPY keto /usr/bin/keto
 EXPOSE 4466 4467

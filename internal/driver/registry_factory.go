@@ -82,6 +82,7 @@ func NewDefaultRegistry(ctx context.Context, flags *pflag.FlagSet, withoutNetwor
 		ctxer:                     options.Contextualizer(),
 		defaultUnaryInterceptors:  options.GRPCUnaryInterceptors(),
 		defaultStreamInterceptors: options.GRPCStreamInterceptors(),
+		defaultGRPCServerOptions:  options.GRPCServerOptions(),
 		defaultHttpMiddlewares:    options.HTTPMiddlewares(),
 		extraMigrations:           options.ExtraMigrations(),
 		defaultMigrationOptions:   options.MigrationOptions(),
