@@ -5,7 +5,7 @@
 
 **Table of Contents**
 
-- [0.0.0 (2024-04-24)](#000-2024-04-24)
+- [0.0.0 (2024-04-30)](#000-2024-04-30)
   - [Bug Fixes](#bug-fixes)
   - [Features](#features)
 - [0.13.0-alpha.0 (2024-02-27)](#0130-alpha0-2024-02-27)
@@ -161,9 +161,16 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.13.0-alpha.0...v0.0.0) (2024-04-24)
+# [0.0.0](https://github.com/ory/keto/compare/v0.13.0-alpha.0...v0.0.0) (2024-04-30)
 
 ### Bug Fixes
+
+- Missing persister when initializing without network
+  ([#1525](https://github.com/ory/keto/issues/1525))
+  ([e675d5b](https://github.com/ory/keto/commit/e675d5bc230922e8379f87e7f8bbb9360cfee005)):
+
+  - fix: missing persister when initializing without network
+  - chore: ignore CVE-2024-3154
 
 - Typo in error message ([#1520](https://github.com/ory/keto/issues/1520))
   ([4a35588](https://github.com/ory/keto/commit/4a35588d52e9ba0b5779226c4725a8c68c4cfe8c))
