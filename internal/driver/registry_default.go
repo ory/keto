@@ -65,7 +65,9 @@ type (
 		mapper          *relationtuple.Mapper
 		readOnlyMapper  *relationtuple.Mapper
 
-		initialized    sync.Once
+		init1, init2       sync.Once
+		init1err, init2err error
+
 		healthH        *healthx.Handler
 		healthServer   *health.Server
 		handlers       []Handler
@@ -310,42 +312,47 @@ func (r *RegistryDefault) DetermineNetwork(ctx context.Context) (*networkx.Netwo
 }
 
 func (r *RegistryDefault) InitWithoutNetworkID(ctx context.Context) error {
-	if dbal.IsMemorySQLite(r.Config(ctx).DSN()) {
-		mb, err := r.MigrationBox(ctx)
-		if err != nil {
-			return err
+	r.init1.Do(func() {
+		if dbal.IsMemorySQLite(r.Config(ctx).DSN()) {
+			mb, err := r.MigrationBox(ctx)
+			if err != nil {
+				r.init1err = err
+				return
+			}
+
+			if err := mb.Up(ctx); err != nil {
+				r.init1err = err
+				return
+			}
 		}
 
-		if err := mb.Up(ctx); err != nil {
-			return err
+		p, err := sql.NewPersister(ctx, r, uuid.Nil)
+		if err != nil {
+			r.init1err = err
+			return
 		}
-	}
-	return nil
+		r.p = p
+		r.traverser = sql.NewTraverser(p)
+	})
+	return r.init1err
 }
 
 func (r *RegistryDefault) Init(ctx context.Context) (err error) {
-	r.initialized.Do(func() {
-		err = func() error {
-			if err := r.InitWithoutNetworkID(ctx); err != nil {
-				return err
-			}
+	r.init2.Do(func() {
+		if err := r.InitWithoutNetworkID(ctx); err != nil {
+			r.init2err = err
+			return
+		}
 
-			network, err := r.DetermineNetwork(ctx)
-			if err != nil {
-				return err
-			}
+		network, err := r.DetermineNetwork(ctx)
+		if err != nil {
+			r.init2err = err
+			return
+		}
 
-			p, err := sql.NewPersister(ctx, r, network.ID)
-			if err != nil {
-				return err
-			}
-			r.p = p
-			r.traverser = sql.NewTraverser(p)
-
-			return nil
-		}()
+		r.p.SetNetwork(network.ID)
 	})
-	return
+	return r.init2err
 }
 
 var _ x.TransactorProvider = (*RegistryDefault)(nil)

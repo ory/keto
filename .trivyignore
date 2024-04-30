@@ -1,2 +1,4 @@
 # Temp ignore, as 2.36-9+deb12u6 is not yet available in debian
 CVE-2024-2961
+# opencontainers/runc 1.2.0-rc.1 is incompatible with Go 1.22: https://github.com/opencontainers/runc/issues/4233
+CVE-2024-3154

@@ -22,7 +22,6 @@ type (
 	Traverser struct {
 		conn *pop.Connection
 		d    dependencies
-		nid  uuid.UUID
 		p    *Persister
 	}
 
@@ -195,7 +194,6 @@ func NewTraverser(p *Persister) *Traverser {
 	return &Traverser{
 		conn: p.conn,
 		d:    p.d,
-		nid:  p.nid,
 		p:    p,
 	}
 }
