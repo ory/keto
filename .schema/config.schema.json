@@ -312,10 +312,10 @@
       "enum": ["cpu", "mem", ""]
     },
     "log": {
-      "$ref": "https://raw.githubusercontent.com/ory/x/v0.0.607/logrusx/config.schema.json"
+      "$ref": "https://raw.githubusercontent.com/ory/x/v0.0.610/logrusx/config.schema.json"
     },
     "tracing": {
-      "$ref": "https://raw.githubusercontent.com/ory/x/v0.0.607/otelx/config.schema.json"
+      "$ref": "https://raw.githubusercontent.com/ory/x/v0.0.610/otelx/config.schema.json"
     },
     "namespaces": {
       "description": "Namespace configuration or it's location.",

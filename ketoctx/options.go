@@ -7,6 +7,7 @@ import (
 	"io/fs"
 	"net/http"
 
+	"github.com/gobuffalo/pop/v6"
 	"github.com/ory/x/healthx"
 	"github.com/ory/x/logrusx"
 	"github.com/ory/x/otelx"
@@ -22,12 +23,15 @@ type (
 		httpMiddlewares        []func(rw http.ResponseWriter, r *http.Request, next http.HandlerFunc)
 		grpcUnaryInterceptors  []grpc.UnaryServerInterceptor
 		grpcStreamInterceptors []grpc.StreamServerInterceptor
+		grpcServerOptions      []grpc.ServerOption
 		migrationOpts          []popx.MigrationBoxOption
 		readyCheckers          healthx.ReadyCheckers
 		extraMigrations        []fs.FS
+		inspect                InspectFunc
 	}
 	Option        func(o *opts)
 	TracerWrapper func(*otelx.Tracer) *otelx.Tracer
+	InspectFunc   func(*pop.Connection) error
 )
 
 // WithLogger sets the logger.
@@ -70,6 +74,13 @@ func WithGRPCStreamInterceptors(i ...grpc.StreamServerInterceptor) Option {
 	}
 }
 
+// WithGRPCServerOptions adds gRPC server options.
+func WithGRPCServerOptions(serverOpts ...grpc.ServerOption) Option {
+	return func(o *opts) {
+		o.grpcServerOptions = serverOpts
+	}
+}
+
 // WithExtraMigrations adds additional database migrations.
 func WithExtraMigrations(o ...fs.FS) Option {
 	return func(opts *opts) {
@@ -96,6 +107,12 @@ func WithReadinessCheck(name string, rc healthx.ReadyChecker) Option {
 	}
 }
 
+func Inspect(f InspectFunc) Option {
+	return func(o *opts) {
+		o.inspect = f
+	}
+}
+
 func (o *opts) Logger() *logrusx.Logger {
 	return o.logger
 }
@@ -116,6 +133,10 @@ func (o *opts) GRPCStreamInterceptors() []grpc.StreamServerInterceptor {
 	return o.grpcStreamInterceptors
 }
 
+func (o *opts) GRPCServerOptions() []grpc.ServerOption {
+	return o.grpcServerOptions
+}
+
 func (o *opts) ExtraMigrations() []fs.FS {
 	return o.extraMigrations
 }
@@ -126,6 +147,10 @@ func (o *opts) MigrationOptions() []popx.MigrationBoxOption {
 
 func (o *opts) ReadyCheckers() healthx.ReadyCheckers {
 	return o.readyCheckers
+}
+
+func (o *opts) Inspect() InspectFunc {
+	return o.inspect
 }
 
 func Options(options ...Option) *opts {

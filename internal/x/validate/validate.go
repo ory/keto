@@ -59,7 +59,7 @@ func QueryParamsContainsOneOf(keys ...string) Validator {
 				return true, ""
 			}
 		}
-		return false, fmt.Sprintf("quey parameters must specify at least one of the following: %s", strings.Join(keys, ", "))
+		return false, fmt.Sprintf("query parameters must specify at least one of the following: %s", strings.Join(keys, ", "))
 	}
 }
 
