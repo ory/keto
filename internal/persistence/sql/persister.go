@@ -100,6 +100,10 @@ func (p *Persister) NetworkID(ctx context.Context) uuid.UUID {
 	return p.d.Contextualizer().Network(ctx, p.nid)
 }
 
+func (p *Persister) SetNetwork(nid uuid.UUID) {
+	p.nid = nid
+}
+
 func internalPaginationFromOptions(opts ...x.PaginationOptionSetter) (*internalPagination, error) {
 	xp := x.GetPaginationOptions(opts...)
 	ip := &internalPagination{

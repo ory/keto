@@ -3,3 +3,8 @@ ignore:
   # see https://github.com/anchore/grype/issues/558
   - vulnerability: CVE-2015-5237
   - vulnerability: CVE-2021-22570
+  # https://github.com/opencontainers/runc/issues/4233
+  - vulnerability: CVE-2024-3154
+  - package:
+      name: github.com/opencontainers/runc
+      version: v1.1.12

@@ -77,7 +77,6 @@ func (d *connectionDetails) dialOptions() (opts []grpc.DialOption) {
 	if d.block {
 		opts = append(opts, grpc.WithBlock())
 	}
-
 	return opts
 }
 

@@ -5,6 +5,10 @@ package ketoctx
 
 import (
 	"testing"
+	"time"
+
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/keepalive"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -22,5 +26,13 @@ func TestOptions(t *testing.T) {
 
 		opts := Options(WithContextualizer(ctxer))
 		assert.Equal(t, ctxer, opts.Contextualizer())
+	})
+	t.Run("case=overwrites grpcServerOpts", func(t *testing.T) {
+		sp := keepalive.ServerParameters{
+			MaxConnectionAge:      time.Second * 30,
+			MaxConnectionAgeGrace: time.Second * 10,
+		}
+		opts := Options(WithGRPCServerOptions(grpc.KeepaliveParams(sp)))
+		assert.NotNil(t, opts.grpcServerOptions)
 	})
 }

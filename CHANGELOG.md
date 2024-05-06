@@ -5,8 +5,9 @@
 
 **Table of Contents**
 
-- [0.0.0 (2024-04-11)](#000-2024-04-11)
+- [0.0.0 (2024-04-30)](#000-2024-04-30)
   - [Bug Fixes](#bug-fixes)
+  - [Features](#features)
 - [0.13.0-alpha.0 (2024-02-27)](#0130-alpha0-2024-02-27)
   - [Bug Fixes](#bug-fixes-1)
   - [Code Generation](#code-generation)
@@ -14,11 +15,11 @@
   - [Bug Fixes](#bug-fixes-2)
   - [Code Generation](#code-generation-1)
   - [Documentation](#documentation)
-  - [Features](#features)
+  - [Features](#features-1)
 - [0.11.1-alpha.0 (2023-03-09)](#0111-alpha0-2023-03-09)
   - [Bug Fixes](#bug-fixes-3)
   - [Code Generation](#code-generation-2)
-  - [Features](#features-1)
+  - [Features](#features-2)
   - [Tests](#tests)
 - [0.11.0-alpha.0 (2023-02-23)](#0110-alpha0-2023-02-23)
   - [Code Generation](#code-generation-3)
@@ -27,7 +28,7 @@
   - [Code Generation](#code-generation-4)
   - [Code Refactoring](#code-refactoring)
   - [Documentation](#documentation-1)
-  - [Features](#features-2)
+  - [Features](#features-3)
   - [Tests](#tests-1)
   - [Unclassified](#unclassified)
 - [0.10.0-alpha.0 (2022-09-27)](#0100-alpha0-2022-09-27)
@@ -36,7 +37,7 @@
   - [Code Generation](#code-generation-5)
   - [Code Refactoring](#code-refactoring-1)
   - [Documentation](#documentation-2)
-  - [Features](#features-3)
+  - [Features](#features-4)
   - [Tests](#tests-2)
 - [0.9.0-alpha.0 (2022-08-01)](#090-alpha0-2022-08-01)
   - [Breaking Changes](#breaking-changes)
@@ -44,7 +45,7 @@
     - [Code Generation](#code-generation-6)
     - [Code Refactoring](#code-refactoring-2)
     - [Documentation](#documentation-3)
-    - [Features](#features-4)
+    - [Features](#features-5)
     - [Tests](#tests-3)
 - [0.8.0-alpha.2 (2022-03-04)](#080-alpha2-2022-03-04)
   - [Bug Fixes](#bug-fixes-7)
@@ -59,7 +60,7 @@
   - [Code Generation](#code-generation-9)
   - [Code Refactoring](#code-refactoring-3)
   - [Documentation](#documentation-5)
-  - [Features](#features-5)
+  - [Features](#features-6)
 - [0.7.0-alpha.1 (2021-10-19)](#070-alpha1-2021-10-19)
   - [Code Generation](#code-generation-10)
   - [Documentation](#documentation-6)
@@ -70,7 +71,7 @@
     - [Code Generation](#code-generation-11)
     - [Code Refactoring](#code-refactoring-4)
     - [Documentation](#documentation-7)
-    - [Features](#features-6)
+    - [Features](#features-7)
     - [Tests](#tests-5)
 - [0.6.0-alpha.3 (2021-04-29)](#060-alpha3-2021-04-29)
   - [Code Generation](#code-generation-12)
@@ -78,14 +79,14 @@
   - [Bug Fixes](#bug-fixes-11)
   - [Code Generation](#code-generation-13)
   - [Documentation](#documentation-8)
-  - [Features](#features-7)
+  - [Features](#features-8)
 - [0.6.0-alpha.1 (2021-04-07)](#060-alpha1-2021-04-07)
   - [Bug Fixes](#bug-fixes-12)
   - [Build System](#build-system-1)
   - [Code Generation](#code-generation-14)
   - [Code Refactoring](#code-refactoring-5)
   - [Documentation](#documentation-9)
-  - [Features](#features-8)
+  - [Features](#features-9)
   - [Tests](#tests-6)
 - [0.5.6-alpha.1 (2020-05-28)](#056-alpha1-2020-05-28)
   - [Bug Fixes](#bug-fixes-13)
@@ -113,7 +114,7 @@
 - [0.4.4-alpha.1 (2020-02-14)](#044-alpha1-2020-02-14)
   - [Bug Fixes](#bug-fixes-18)
   - [Documentation](#documentation-15)
-  - [Features](#features-9)
+  - [Features](#features-10)
   - [Unclassified](#unclassified-1)
 - [0.4.3-alpha.2 (2020-01-31)](#043-alpha2-2020-01-31)
   - [Unclassified](#unclassified-2)
@@ -160,12 +161,35 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.13.0-alpha.0...v0.0.0) (2024-04-11)
+# [0.0.0](https://github.com/ory/keto/compare/v0.13.0-alpha.0...v0.0.0) (2024-04-30)
 
 ### Bug Fixes
 
+- Missing persister when initializing without network
+  ([#1525](https://github.com/ory/keto/issues/1525))
+  ([e675d5b](https://github.com/ory/keto/commit/e675d5bc230922e8379f87e7f8bbb9360cfee005)):
+
+  - fix: missing persister when initializing without network
+  - chore: ignore CVE-2024-3154
+
 - Typo in error message ([#1520](https://github.com/ory/keto/issues/1520))
   ([4a35588](https://github.com/ory/keto/commit/4a35588d52e9ba0b5779226c4725a8c68c4cfe8c))
+
+### Features
+
+- Add grpc server opts config ([#1524](https://github.com/ory/keto/issues/1524))
+  ([7278e44](https://github.com/ory/keto/commit/7278e44bd0ac94e5f70f3c347a6e9cccfda11df6)):
+
+  - feat: add grpc server opts config
+  - chore: bump base image
+  - chore: temp ignore cve
+
+- Add Inspect option to registry
+  ([#1523](https://github.com/ory/keto/issues/1523))
+  ([213cfa5](https://github.com/ory/keto/commit/213cfa5c7d4a7ebc3957658178a5b1cd24c2669a)):
+
+  - chore: add alnr to codeowners
+  - feat: add Inspect option
 
 # [0.13.0-alpha.0](https://github.com/ory/keto/compare/v0.12.0-alpha.0...v0.13.0-alpha.0) (2024-02-27)
 
