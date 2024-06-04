@@ -142,6 +142,7 @@ The following character sequences represent boolean operators:
 | -------- | -------------- | ------------------------------------ |
 | `&&`     | _x_ `&&` _y_   | true iff. both _x_ and _y_ are true  |
 | `\|\|`   | _x_ `\|\|` _y_ | true iff. either _x_ or _y_ are true |
+| `!`      | `!` _x_        | true iff. _x_ is false               |
 
 The following character sequences represent miscellaneous operators:
 
@@ -248,7 +249,7 @@ geolocation, the time of day, or the security level of the device making the
 request.
 
 ```ebnf
-PermissionBody  = ( "(" PermissionBody ")" ) | ( PermissionCheck | { Operator PermissionBody } ) .
+PermissionBody  = ( "(" PermissionBody ")" ) | ( "!" PermissionBody ) | ( PermissionCheck | { Operator PermissionBody } ) .
 Operator        = "||" | "&&" .
 PermissionCheck = TransitiveCheck | IncludesCheck .
 ```
