@@ -576,4 +576,39 @@ func TestEngine(t *testing.T) {
 			assert.True(t, res)
 		}
 	})
+
+	t.Run("case=bug repro rewrite_and_traversal", func(t *testing.T) {
+		t.Parallel()
+
+		for _, tc := range []struct {
+			name string
+			opl  string
+		}{
+			{"rewrite and traversal", RewriteAndTraversalConfig},
+		} {
+			tc := tc
+			t.Run("opl="+tc.name, func(t *testing.T) {
+				t.Parallel()
+
+				reg := driver.NewSqliteTestRegistry(t, false, driver.WithOPL(RewriteAndTraversalConfig))
+
+				insertFixtures(t, reg.RelationTupleManager(), []string{
+					"Group:g#supers@SuperUsers:super",
+					"Role:admin#members@User:u",
+					"SuperUsers:super#admins@Role:admin#members",
+					"Comment:c#parents@Group:g",
+				})
+
+				e := check.NewEngine(reg)
+
+				res, err := e.CheckIsMember(ctx, tupleFromString(t, "Comment:c#delete@User:u"), 10)
+				require.NoError(t, err)
+				assert.True(t, res)
+
+				res, err = e.CheckIsMember(ctx, tupleFromString(t, "Comment:c#update@User:u"), 10)
+				require.NoError(t, err)
+				assert.True(t, res)
+			})
+		}
+	})
 }
