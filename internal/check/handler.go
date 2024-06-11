@@ -6,22 +6,23 @@ package check
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"net/url"
 
-	"github.com/pkg/errors"
-
-	"github.com/ory/herodot"
-
-	"github.com/ory/keto/ketoapi"
-
 	"github.com/julienschmidt/httprouter"
-	"google.golang.org/grpc"
-
+	"github.com/ory/herodot"
+	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/internal/x"
+	"github.com/ory/keto/ketoapi"
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
+	"github.com/pkg/errors"
+	"golang.org/x/sync/errgroup"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 type (
@@ -31,6 +32,7 @@ type (
 		relationtuple.MapperProvider
 		x.LoggerProvider
 		x.WriterProvider
+		config.Provider // TODO does this need to be instantiated?
 	}
 	Handler struct {
 		d handlerDependencies
@@ -392,55 +394,60 @@ func (h *Handler) postBatchCheckMirrorStatus(w http.ResponseWriter, r *http.Requ
 	h.d.Writer().Write(w, r, &BatchCheckPermissionResult{Results: results})
 }
 
+// postBatchCheck is the HTTP entry point for checking batches of tuples
 func (h *Handler) postBatchCheck(ctx context.Context, body io.Reader, query url.Values) ([]*CheckPermissionResult, error) {
 	maxDepth, err := x.GetMaxDepthFromQuery(query)
 	if err != nil {
 		return nil, err
 	}
-
+	h.d.Writer()
 	var request postBatchCheckPermissionOrErrorBody
 	if err := json.NewDecoder(body).Decode(&request); err != nil {
 		return nil, errors.WithStack(herodot.ErrBadRequest.WithErrorf("could not unmarshal json: %s", err.Error()))
 	}
 
-	results := make([]*CheckPermissionResult, len(request.Tuples))
-	for i, tuple := range request.Tuples {
-		t, err := h.d.ReadOnlyMapper().FromTuple(ctx, tuple)
-		// herodot.ErrNotFound occurs when the namespace is unknown
-		if errors.Is(err, herodot.ErrNotFound) {
-			results[i] = &CheckPermissionResult{
-				Allowed: false,
-			}
-			continue
-		} else if err != nil {
-			return nil, err
-		}
-		allowed, err := h.d.PermissionEngine().CheckIsMember(ctx, t[0], maxDepth)
-		if err != nil {
-			return nil, err
-		}
-		results[i] = &CheckPermissionResult{
-			Allowed: allowed,
+	if len(request.Tuples) > h.d.Config(ctx).BatchCheckMaxBatchSize() {
+		return nil, errors.WithStack(herodot.ErrBadRequest.WithErrorf("batch exceeds max size of %v",
+			h.d.Config(ctx).BatchCheckMaxBatchSize()))
+	}
+
+	results, err := h.batchCheck(ctx, request.Tuples, maxDepth)
+	if err != nil {
+		return nil, err
+	}
+
+	responses := make([]*CheckPermissionResult, len(request.Tuples))
+	for i, result := range results {
+		responses[i] = &CheckPermissionResult{
+			Allowed: result,
 		}
 	}
 
-	return results, nil
+	return responses, nil
 }
 
+// BatchCheck is the gRPC entry point for checking batches of tuples
 func (h *Handler) BatchCheck(ctx context.Context, req *rts.BatchCheckRequest) (*rts.BatchCheckResponse, error) {
-	responses := make([]*rts.CheckResponse, len(req.Tuples))
-	for i, reqTuple := range req.Tuples {
-		tuple := (&ketoapi.RelationTuple{}).FromProto(reqTuple)
-		internalTuple, err := h.d.ReadOnlyMapper().FromTuple(ctx, tuple)
-		if err != nil {
-			return nil, err
-		}
-		allowed, err := h.d.PermissionEngine().CheckIsMember(ctx, internalTuple[0], int(req.MaxDepth))
-		if err != nil {
-			return nil, err
-		}
+	// TODO verify the correct status code is returned
+	if len(req.Tuples) > h.d.Config(ctx).BatchCheckMaxBatchSize() {
+		return nil, status.Errorf(codes.InvalidArgument,
+			"batch exceeds max size of %v", h.d.Config(ctx).BatchCheckMaxBatchSize())
+	}
+
+	ketoTuples := make([]*ketoapi.RelationTuple, len(req.Tuples))
+	for i, tuple := range req.Tuples {
+		ketoTuples[i] = (&ketoapi.RelationTuple{}).FromProto(tuple)
+	}
+
+	results, err := h.batchCheck(ctx, ketoTuples, int(req.MaxDepth))
+	if err != nil {
+		return nil, err
+	}
+
+	responses := make([]*rts.CheckResponse, len(results))
+	for i, result := range results {
 		responses[i] = &rts.CheckResponse{
-			Allowed:   allowed,
+			Allowed:   result,
 			Snaptoken: "not yet implemented",
 		}
 	}
@@ -448,4 +455,40 @@ func (h *Handler) BatchCheck(ctx context.Context, req *rts.BatchCheckRequest) (*
 	return &rts.BatchCheckResponse{
 		Results: responses,
 	}, nil
+}
+
+// batchCheck makes parallelized check requests for tuples. The check result is returned as a boolean slice, where the
+// result index matches the tuple index of the incoming tuples array.
+func (h *Handler) batchCheck(ctx context.Context,
+	tuples []*ketoapi.RelationTuple,
+	maxDepth int) ([]bool, error) {
+
+	eg := &errgroup.Group{}
+	eg.SetLimit(h.d.Config(ctx).BatchCheckParallelizationFactor())
+
+	results := make([]bool, len(tuples))
+	for i, tuple := range tuples {
+		eg.Go(func() error {
+			internalTuple, err := h.d.ReadOnlyMapper().FromTuple(ctx, tuple)
+			// herodot.ErrNotFound occurs when the namespace is unknown
+			if errors.Is(err, herodot.ErrNotFound) {
+				results[i] = false
+				return nil
+			} else if err != nil {
+				return fmt.Errorf("failed to map tuple '%s': %w", tuple.String(), err)
+			}
+			allowed, err := h.d.PermissionEngine().CheckIsMember(ctx, internalTuple[0], maxDepth)
+			if err != nil {
+				return fmt.Errorf("failed to check tuple '%s': %w", tuple.String(), err)
+			}
+			results[i] = allowed
+			return nil
+		})
+	}
+
+	if err := eg.Wait(); err != nil {
+		return nil, err
+	}
+
+	return results, nil
 }

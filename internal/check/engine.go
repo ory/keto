@@ -5,7 +5,6 @@ package check
 
 import (
 	"context"
-
 	"github.com/pkg/errors"
 	"go.opentelemetry.io/otel/trace"
 
