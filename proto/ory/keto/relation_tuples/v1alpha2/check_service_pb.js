@@ -908,7 +908,8 @@ proto.ory.keto.relation_tuples.v1alpha2.BatchCheckRequest.toObject = function(in
     ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationTuple.toObject, includeInstance),
     latest: jspb.Message.getBooleanFieldWithDefault(msg, 2, false),
     snaptoken: jspb.Message.getFieldWithDefault(msg, 3, ""),
-    maxDepth: jspb.Message.getFieldWithDefault(msg, 4, 0)
+    maxDepth: jspb.Message.getFieldWithDefault(msg, 4, 0),
+    parallelizationFactor: jspb.Message.getFieldWithDefault(msg, 5, 0)
   };
 
   if (includeInstance) {
@@ -961,6 +962,10 @@ proto.ory.keto.relation_tuples.v1alpha2.BatchCheckRequest.deserializeBinaryFromR
     case 4:
       var value = /** @type {number} */ (reader.readInt32());
       msg.setMaxDepth(value);
+      break;
+    case 5:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setParallelizationFactor(value);
       break;
     default:
       reader.skipField();
@@ -1017,6 +1022,13 @@ proto.ory.keto.relation_tuples.v1alpha2.BatchCheckRequest.serializeBinaryToWrite
   if (f !== 0) {
     writer.writeInt32(
       4,
+      f
+    );
+  }
+  f = message.getParallelizationFactor();
+  if (f !== 0) {
+    writer.writeInt32(
+      5,
       f
     );
   }
@@ -1112,6 +1124,24 @@ proto.ory.keto.relation_tuples.v1alpha2.BatchCheckRequest.prototype.getMaxDepth 
  */
 proto.ory.keto.relation_tuples.v1alpha2.BatchCheckRequest.prototype.setMaxDepth = function(value) {
   return jspb.Message.setProto3IntField(this, 4, value);
+};
+
+
+/**
+ * optional int32 parallelization_factor = 5;
+ * @return {number}
+ */
+proto.ory.keto.relation_tuples.v1alpha2.BatchCheckRequest.prototype.getParallelizationFactor = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 5, 0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.ory.keto.relation_tuples.v1alpha2.BatchCheckRequest} returns this
+ */
+proto.ory.keto.relation_tuples.v1alpha2.BatchCheckRequest.prototype.setParallelizationFactor = function(value) {
+  return jspb.Message.setProto3IntField(this, 5, value);
 };
 
 

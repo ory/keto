@@ -9,6 +9,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"strconv"
 
 	"github.com/julienschmidt/httprouter"
 	"github.com/ory/herodot"
@@ -51,6 +52,9 @@ const (
 	RouteBase        = "/relation-tuples/check"
 	OpenAPIRouteBase = RouteBase + "/openapi"
 	BatchRoute       = "/relation-tuples/batch/check"
+
+	parallelizationFactorQueryParam        = "parallelization-factor"
+	defaultBatchCheckParallelizationFactor = 5
 )
 
 func (h *Handler) RegisterReadRoutes(r *x.ReadRouter) {
@@ -413,6 +417,13 @@ func (h *Handler) postBatchCheck(ctx context.Context, body io.Reader, query url.
 	if err != nil {
 		return nil, err
 	}
+	parallelizationFactor := defaultBatchCheckParallelizationFactor
+	if query.Get(parallelizationFactorQueryParam) != "" {
+		parallelizationFactor, err = strconv.Atoi(query.Get(parallelizationFactorQueryParam))
+		if err != nil || parallelizationFactor <= 0 {
+			return nil, herodot.ErrBadRequest.WithError("parallelization factor must be a positive number")
+		}
+	}
 	h.d.Writer()
 	var request postBatchCheckPermissionOrErrorBody
 	if err := json.NewDecoder(body).Decode(&request); err != nil {
@@ -420,11 +431,11 @@ func (h *Handler) postBatchCheck(ctx context.Context, body io.Reader, query url.
 	}
 
 	if len(request.Tuples) > h.d.Config(ctx).BatchCheckMaxBatchSize() {
-		return nil, errors.WithStack(herodot.ErrBadRequest.WithErrorf("batch exceeds max size of %v",
-			h.d.Config(ctx).BatchCheckMaxBatchSize()))
+		return nil, herodot.ErrBadRequest.WithErrorf("batch exceeds max size of %v",
+			h.d.Config(ctx).BatchCheckMaxBatchSize())
 	}
 
-	results, err := h.d.PermissionEngine().batchCheck(ctx, request.Tuples, maxDepth)
+	results, err := h.d.PermissionEngine().batchCheck(ctx, request.Tuples, maxDepth, parallelizationFactor)
 	if err != nil {
 		return nil, err
 	}
@@ -453,7 +464,11 @@ func (h *Handler) BatchCheck(ctx context.Context, req *rts.BatchCheckRequest) (*
 		ketoTuples[i] = (&ketoapi.RelationTuple{}).FromProto(tuple)
 	}
 
-	results, err := h.d.PermissionEngine().batchCheck(ctx, ketoTuples, int(req.MaxDepth))
+	parallelizationFactor := defaultBatchCheckParallelizationFactor
+	if req.ParallelizationFactor > 0 {
+		parallelizationFactor = int(req.ParallelizationFactor)
+	}
+	results, err := h.d.PermissionEngine().batchCheck(ctx, ketoTuples, int(req.MaxDepth), parallelizationFactor)
 	if err != nil {
 		return nil, err
 	}

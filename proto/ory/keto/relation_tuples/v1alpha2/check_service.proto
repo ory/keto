@@ -182,6 +182,11 @@ message BatchCheckRequest {
   // If the value is less than 1 or greater than the global
   // max-depth then the global max-depth will be used instead.
   int32 max_depth = 4;
+  // The number of check requests to perform in parallel.
+  //
+  // If the value is less than 1, this value will be ignored and
+  // the default will be used
+  int32 parallelization_factor = 5;
 }
 
 // The response for a CheckService.Check rpc.

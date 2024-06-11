@@ -272,10 +272,10 @@ func (e *Engine) astRelationFor(ctx context.Context, r *relationTuple) (*ast.Rel
 // result index matches the tuple index of the incoming tuples array.
 func (e *Engine) batchCheck(ctx context.Context,
 	tuples []*ketoapi.RelationTuple,
-	maxDepth int) ([]checkgroup.Result, error) {
+	maxDepth, parallelizationFactor int) ([]checkgroup.Result, error) {
 
 	eg := &errgroup.Group{}
-	eg.SetLimit(e.d.Config(ctx).BatchCheckParallelizationFactor())
+	eg.SetLimit(parallelizationFactor)
 
 	results := make([]checkgroup.Result, len(tuples))
 	for i, tuple := range tuples {
