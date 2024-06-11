@@ -85,7 +85,7 @@ Class | Method | HTTP request | Description
 *PermissionApi* | [**CheckPermission**](docs/PermissionApi.md#checkpermission) | **Get** /relation-tuples/check/openapi | Check a permission
 *PermissionApi* | [**CheckPermissionOrError**](docs/PermissionApi.md#checkpermissionorerror) | **Get** /relation-tuples/check | Check a permission
 *PermissionApi* | [**ExpandPermissions**](docs/PermissionApi.md#expandpermissions) | **Get** /relation-tuples/expand | Expand a Relationship into permissions.
-*PermissionApi* | [**PostBatchCheckPermissionOrErrorBody**](docs/PermissionApi.md#postbatchcheckpermissionorerrorbody) | **Post** /relation-tuples/batchCheck | Batch check permissions
+*PermissionApi* | [**PostBatchCheckPermissionOrErrorBody**](docs/PermissionApi.md#postbatchcheckpermissionorerrorbody) | **Post** /relation-tuples/batch/check | Batch check permissions
 *PermissionApi* | [**PostCheckPermission**](docs/PermissionApi.md#postcheckpermission) | **Post** /relation-tuples/check/openapi | Check a permission
 *PermissionApi* | [**PostCheckPermissionOrError**](docs/PermissionApi.md#postcheckpermissionorerror) | **Post** /relation-tuples/check | Check a permission
 *RelationshipApi* | [**CheckOplSyntax**](docs/RelationshipApi.md#checkoplsyntax) | **Post** /opl/syntax/check | Check the syntax of an OPL file

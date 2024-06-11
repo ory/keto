@@ -7,7 +7,7 @@ Method | HTTP request | Description
 [**CheckPermission**](PermissionApi.md#CheckPermission) | **Get** /relation-tuples/check/openapi | Check a permission
 [**CheckPermissionOrError**](PermissionApi.md#CheckPermissionOrError) | **Get** /relation-tuples/check | Check a permission
 [**ExpandPermissions**](PermissionApi.md#ExpandPermissions) | **Get** /relation-tuples/expand | Expand a Relationship into permissions.
-[**PostBatchCheckPermissionOrErrorBody**](PermissionApi.md#PostBatchCheckPermissionOrErrorBody) | **Post** /relation-tuples/batchCheck | Batch check permissions
+[**PostBatchCheckPermissionOrErrorBody**](PermissionApi.md#PostBatchCheckPermissionOrErrorBody) | **Post** /relation-tuples/batch/check | Batch check permissions
 [**PostCheckPermission**](PermissionApi.md#PostCheckPermission) | **Post** /relation-tuples/check/openapi | Check a permission
 [**PostCheckPermissionOrError**](PermissionApi.md#PostCheckPermissionOrError) | **Post** /relation-tuples/check | Check a permission
 

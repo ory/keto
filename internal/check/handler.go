@@ -49,7 +49,7 @@ func NewHandler(d handlerDependencies) *Handler {
 const (
 	RouteBase        = "/relation-tuples/check"
 	OpenAPIRouteBase = RouteBase + "/openapi"
-	BatchRoute       = "/relation-tuples/batchCheck"
+	BatchRoute       = "/relation-tuples/batch/check"
 )
 
 func (h *Handler) RegisterReadRoutes(r *x.ReadRouter) {
@@ -364,7 +364,7 @@ type BatchCheckPermissionResult struct {
 	Results []*CheckPermissionResult `json:"results"`
 }
 
-// swagger:route POST /relation-tuples/batchCheck permission postBatchCheckPermissionOrErrorBody
+// swagger:route POST /relation-tuples/batch/check permission postBatchCheckPermissionOrErrorBody
 //
 // # Batch check permissions
 //

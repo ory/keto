@@ -375,7 +375,7 @@
         }
       }
     },
-    "/relation-tuples/batchCheck": {
+    "/relation-tuples/batch/check": {
       "post": {
         "description": "To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).",
         "consumes": ["application/json"],
