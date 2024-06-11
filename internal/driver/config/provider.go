@@ -40,7 +40,7 @@ const (
 	KeyLimitMaxReadDepth = "limit.max_read_depth"
 	KeyLimitMaxReadWidth = "limit.max_read_width"
 
-	KeyBatchCheckMaxBatchSize = "batch.check.max_batch_size"
+	KeyBatchCheckMaxBatchSize = "limit.max_batch_check_size"
 
 	KeyReadAPIHost      = "serve." + string(EndpointRead) + ".host"
 	KeyReadAPIPort      = "serve." + string(EndpointRead) + ".port"
@@ -187,7 +187,7 @@ func (k *Config) MaxReadWidth() int {
 }
 
 func (k *Config) BatchCheckMaxBatchSize() int {
-	return k.p.IntF(KeyBatchCheckMaxBatchSize, 10)
+	return k.p.Int(KeyBatchCheckMaxBatchSize)
 }
 
 func (k *Config) CORS(iface string) (cors.Options, bool) {
