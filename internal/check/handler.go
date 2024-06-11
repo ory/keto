@@ -6,7 +6,6 @@ package check
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 	"net/url"
@@ -19,7 +18,6 @@ import (
 	"github.com/ory/keto/ketoapi"
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 	"github.com/pkg/errors"
-	"golang.org/x/sync/errgroup"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -411,7 +409,7 @@ func (h *Handler) postBatchCheck(ctx context.Context, body io.Reader, query url.
 			h.d.Config(ctx).BatchCheckMaxBatchSize()))
 	}
 
-	results, err := h.batchCheck(ctx, request.Tuples, maxDepth)
+	results, err := h.d.PermissionEngine().batchCheck(ctx, request.Tuples, maxDepth)
 	if err != nil {
 		return nil, err
 	}
@@ -439,7 +437,7 @@ func (h *Handler) BatchCheck(ctx context.Context, req *rts.BatchCheckRequest) (*
 		ketoTuples[i] = (&ketoapi.RelationTuple{}).FromProto(tuple)
 	}
 
-	results, err := h.batchCheck(ctx, ketoTuples, int(req.MaxDepth))
+	results, err := h.d.PermissionEngine().batchCheck(ctx, ketoTuples, int(req.MaxDepth))
 	if err != nil {
 		return nil, err
 	}
@@ -455,40 +453,4 @@ func (h *Handler) BatchCheck(ctx context.Context, req *rts.BatchCheckRequest) (*
 	return &rts.BatchCheckResponse{
 		Results: responses,
 	}, nil
-}
-
-// batchCheck makes parallelized check requests for tuples. The check result is returned as a boolean slice, where the
-// result index matches the tuple index of the incoming tuples array.
-func (h *Handler) batchCheck(ctx context.Context,
-	tuples []*ketoapi.RelationTuple,
-	maxDepth int) ([]bool, error) {
-
-	eg := &errgroup.Group{}
-	eg.SetLimit(h.d.Config(ctx).BatchCheckParallelizationFactor())
-
-	results := make([]bool, len(tuples))
-	for i, tuple := range tuples {
-		eg.Go(func() error {
-			internalTuple, err := h.d.ReadOnlyMapper().FromTuple(ctx, tuple)
-			// herodot.ErrNotFound occurs when the namespace is unknown
-			if errors.Is(err, herodot.ErrNotFound) {
-				results[i] = false
-				return nil
-			} else if err != nil {
-				return fmt.Errorf("failed to map tuple '%s': %w", tuple.String(), err)
-			}
-			allowed, err := h.d.PermissionEngine().CheckIsMember(ctx, internalTuple[0], maxDepth)
-			if err != nil {
-				return fmt.Errorf("failed to check tuple '%s': %w", tuple.String(), err)
-			}
-			results[i] = allowed
-			return nil
-		})
-	}
-
-	if err := eg.Wait(); err != nil {
-		return nil, err
-	}
-
-	return results, nil
 }

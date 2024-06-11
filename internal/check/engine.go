@@ -5,8 +5,10 @@ package check
 
 import (
 	"context"
+	"fmt"
 	"github.com/pkg/errors"
 	"go.opentelemetry.io/otel/trace"
+	"golang.org/x/sync/errgroup"
 
 	"github.com/ory/herodot"
 	"github.com/ory/x/otelx"
@@ -33,6 +35,7 @@ type (
 	}
 	EngineDependencies interface {
 		relationtuple.ManagerProvider
+		relationtuple.MapperProvider // TODO does this need to be instantiated?
 		persistence.Provider
 		config.Provider
 		x.LoggerProvider
@@ -262,4 +265,40 @@ func (e *Engine) astRelationFor(ctx context.Context, r *relationTuple) (*ast.Rel
 		return nil, err
 	}
 	return namespace.ASTRelationFor(ctx, namespaceManager, r.Namespace, r.Relation)
+}
+
+// batchCheck makes parallelized check requests for tuples. The check result is returned as a boolean slice, where the
+// result index matches the tuple index of the incoming tuples array.
+func (e *Engine) batchCheck(ctx context.Context,
+	tuples []*ketoapi.RelationTuple,
+	maxDepth int) ([]bool, error) {
+
+	eg := &errgroup.Group{}
+	eg.SetLimit(e.d.Config(ctx).BatchCheckParallelizationFactor())
+
+	results := make([]bool, len(tuples))
+	for i, tuple := range tuples {
+		eg.Go(func() error {
+			internalTuple, err := e.d.ReadOnlyMapper().FromTuple(ctx, tuple)
+			// herodot.ErrNotFound occurs when the namespace is unknown
+			if errors.Is(err, herodot.ErrNotFound) {
+				results[i] = false
+				return nil
+			} else if err != nil {
+				return fmt.Errorf("failed to map tuple '%s': %w", tuple.String(), err)
+			}
+			allowed, err := e.CheckIsMember(ctx, internalTuple[0], maxDepth)
+			if err != nil {
+				return fmt.Errorf("failed to check tuple '%s': %w", tuple.String(), err)
+			}
+			results[i] = allowed
+			return nil
+		})
+	}
+
+	if err := eg.Wait(); err != nil {
+		return nil, err
+	}
+
+	return results, nil
 }
