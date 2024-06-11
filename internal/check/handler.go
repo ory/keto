@@ -12,6 +12,7 @@ import (
 
 	"github.com/julienschmidt/httprouter"
 	"github.com/ory/herodot"
+	"github.com/ory/keto/internal/check/checkgroup"
 	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/internal/x"
@@ -74,6 +75,20 @@ type CheckPermissionResult struct {
 	//
 	// required: true
 	Allowed bool `json:"allowed"`
+}
+
+// Check Permission Result With Error
+//
+// swagger:model checkPermissionResultWithError
+type CheckPermissionResultWithError struct {
+	// whether the relation tuple is allowed
+	//
+	// required: true
+	Allowed bool `json:"allowed"`
+	// any error generated while checking the relation tuple
+	//
+	// required: false
+	Error error `json:"error,omitempty"`
 }
 
 // Check Permission Request Parameters
@@ -358,10 +373,10 @@ type postBatchCheckPermissionOrErrorBody struct {
 //
 // swagger:model batchCheckPermissionResult
 type BatchCheckPermissionResult struct {
-	// An array of whether the relation tuple is allowed. The order aligns with the input order.
+	// An array of check results. The order aligns with the input order.
 	//
 	// required: true
-	Results []*CheckPermissionResult `json:"results"`
+	Results []*CheckPermissionResultWithError `json:"results"`
 }
 
 // swagger:route POST /relation-tuples/batch/check permission postBatchCheckPermissionOrErrorBody
@@ -393,7 +408,7 @@ func (h *Handler) postBatchCheckMirrorStatus(w http.ResponseWriter, r *http.Requ
 }
 
 // postBatchCheck is the HTTP entry point for checking batches of tuples
-func (h *Handler) postBatchCheck(ctx context.Context, body io.Reader, query url.Values) ([]*CheckPermissionResult, error) {
+func (h *Handler) postBatchCheck(ctx context.Context, body io.Reader, query url.Values) ([]*CheckPermissionResultWithError, error) {
 	maxDepth, err := x.GetMaxDepthFromQuery(query)
 	if err != nil {
 		return nil, err
@@ -414,10 +429,11 @@ func (h *Handler) postBatchCheck(ctx context.Context, body io.Reader, query url.
 		return nil, err
 	}
 
-	responses := make([]*CheckPermissionResult, len(request.Tuples))
+	responses := make([]*CheckPermissionResultWithError, len(request.Tuples))
 	for i, result := range results {
-		responses[i] = &CheckPermissionResult{
-			Allowed: result,
+		responses[i] = &CheckPermissionResultWithError{
+			Allowed: result.Membership == checkgroup.IsMember,
+			Error:   result.Err,
 		}
 	}
 
@@ -442,10 +458,15 @@ func (h *Handler) BatchCheck(ctx context.Context, req *rts.BatchCheckRequest) (*
 		return nil, err
 	}
 
-	responses := make([]*rts.CheckResponse, len(results))
+	responses := make([]*rts.CheckResponseWithError, len(results))
 	for i, result := range results {
-		responses[i] = &rts.CheckResponse{
-			Allowed:   result,
+		errMsg := ""
+		if result.Err != nil {
+			errMsg = result.Err.Error()
+		}
+		responses[i] = &rts.CheckResponseWithError{
+			Allowed:   result.Membership == checkgroup.IsMember,
+			Error:     errMsg,
 			Snaptoken: "not yet implemented",
 		}
 	}

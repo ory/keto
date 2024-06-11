@@ -26,6 +26,7 @@
   - [BatchCheckResponse](#ory-keto-relation_tuples-v1alpha2-BatchCheckResponse)
   - [CheckRequest](#ory-keto-relation_tuples-v1alpha2-CheckRequest)
   - [CheckResponse](#ory-keto-relation_tuples-v1alpha2-CheckResponse)
+  - [CheckResponseWithError](#ory-keto-relation_tuples-v1alpha2-CheckResponseWithError)
   - [CheckService](#ory-keto-relation_tuples-v1alpha2-CheckService)
 
 - [ory/keto/relation_tuples/v1alpha2/expand_service.proto](#ory_keto_relation_tuples_v1alpha2_expand_service-proto)
@@ -214,8 +215,7 @@ SubjectSet refers to all subjects who have the same `relation` on an `object`.
 
 ### BatchCheckRequest
 
-The request for a CheckService.BatchCheck RPC. Checks whether a specific subject
-is related to an object.
+The request for a CheckService.BatchCheck RPC. Checks a batch of relations.
 
 | Field     | Type                                                              | Label    | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 | --------- | ----------------------------------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -230,9 +230,9 @@ is related to an object.
 
 The response for a CheckService.Check rpc.
 
-| Field   | Type                                                              | Label    | Description |
-| ------- | ----------------------------------------------------------------- | -------- | ----------- |
-| results | [CheckResponse](#ory-keto-relation_tuples-v1alpha2-CheckResponse) | repeated |             |
+| Field   | Type                                                                                | Label    | Description                                                                                       |
+| ------- | ----------------------------------------------------------------------------------- | -------- | ------------------------------------------------------------------------------------------------- |
+| results | [CheckResponseWithError](#ory-keto-relation_tuples-v1alpha2-CheckResponseWithError) | repeated | The results of the batch check. The order of these<br/>results will match the order of the input. |
 
 <a name="ory-keto-relation_tuples-v1alpha2-CheckRequest"></a>
 
@@ -261,6 +261,18 @@ The response for a CheckService.Check rpc.
 | Field     | Type              | Label | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | --------- | ----------------- | ----- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | allowed   | [bool](#bool)     |       | Whether the specified subject (id)<br/>is related to the requested object.<br/><br/>It is false by default if no ACL matches.                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| snaptoken | [string](#string) |       | This field is not implemented yet and has no effect.<br/><!--<br/>The last known snapshot token ONLY specified if<br/>the request had not specified a snaptoken,<br/>since this performed a "content-change request"<br/>and consistently fetched the last known snapshot token.<br/><br/>This field is not set if the request had specified a snaptoken!<br/><br/>If set, clients should cache and use this token<br/>for subsequent requests to have minimal latency,<br/>but allow slightly stale responses (only some milliseconds or seconds).<br/>--> |
+
+<a name="ory-keto-relation_tuples-v1alpha2-CheckResponseWithError"></a>
+
+### CheckResponseWithError
+
+The response for a CheckService.Check rpc.
+
+| Field     | Type              | Label | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| --------- | ----------------- | ----- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| allowed   | [bool](#bool)     |       | Whether the specified subject (id)<br/>is related to the requested object.<br/><br/>It is false by default if no ACL matches.                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| error     | [string](#string) |       | If there was an error checking the tuple,<br/>this will contain the error message<br/><br/>If the check was performed successfully, this will be empty                                                                                                                                                                                                                                                                                                                                                                                                      |
 | snaptoken | [string](#string) |       | This field is not implemented yet and has no effect.<br/><!--<br/>The last known snapshot token ONLY specified if<br/>the request had not specified a snaptoken,<br/>since this performed a "content-change request"<br/>and consistently fetched the last known snapshot token.<br/><br/>This field is not set if the request had specified a snaptoken!<br/><br/>If set, clients should cache and use this token<br/>for subsequent requests to have minimal latency,<br/>but allow slightly stale responses (only some milliseconds or seconds).<br/>--> |
 
 <!-- end messages -->

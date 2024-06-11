@@ -77,6 +77,32 @@ export namespace CheckResponse {
     }
 }
 
+export class CheckResponseWithError extends jspb.Message { 
+    getAllowed(): boolean;
+    setAllowed(value: boolean): CheckResponseWithError;
+    getError(): string;
+    setError(value: string): CheckResponseWithError;
+    getSnaptoken(): string;
+    setSnaptoken(value: string): CheckResponseWithError;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): CheckResponseWithError.AsObject;
+    static toObject(includeInstance: boolean, msg: CheckResponseWithError): CheckResponseWithError.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: CheckResponseWithError, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): CheckResponseWithError;
+    static deserializeBinaryFromReader(message: CheckResponseWithError, reader: jspb.BinaryReader): CheckResponseWithError;
+}
+
+export namespace CheckResponseWithError {
+    export type AsObject = {
+        allowed: boolean,
+        error: string,
+        snaptoken: string,
+    }
+}
+
 export class BatchCheckRequest extends jspb.Message { 
     clearTuplesList(): void;
     getTuplesList(): Array<ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationTuple>;
@@ -110,9 +136,9 @@ export namespace BatchCheckRequest {
 
 export class BatchCheckResponse extends jspb.Message { 
     clearResultsList(): void;
-    getResultsList(): Array<CheckResponse>;
-    setResultsList(value: Array<CheckResponse>): BatchCheckResponse;
-    addResults(value?: CheckResponse, index?: number): CheckResponse;
+    getResultsList(): Array<CheckResponseWithError>;
+    setResultsList(value: Array<CheckResponseWithError>): BatchCheckResponse;
+    addResults(value?: CheckResponseWithError, index?: number): CheckResponseWithError;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): BatchCheckResponse.AsObject;
@@ -126,6 +152,6 @@ export class BatchCheckResponse extends jspb.Message {
 
 export namespace BatchCheckResponse {
     export type AsObject = {
-        resultsList: Array<CheckResponse.AsObject>,
+        resultsList: Array<CheckResponseWithError.AsObject>,
     }
 }

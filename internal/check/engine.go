@@ -6,6 +6,7 @@ package check
 import (
 	"context"
 	"fmt"
+
 	"github.com/pkg/errors"
 	"go.opentelemetry.io/otel/trace"
 	"golang.org/x/sync/errgroup"
@@ -271,27 +272,23 @@ func (e *Engine) astRelationFor(ctx context.Context, r *relationTuple) (*ast.Rel
 // result index matches the tuple index of the incoming tuples array.
 func (e *Engine) batchCheck(ctx context.Context,
 	tuples []*ketoapi.RelationTuple,
-	maxDepth int) ([]bool, error) {
+	maxDepth int) ([]checkgroup.Result, error) {
 
 	eg := &errgroup.Group{}
 	eg.SetLimit(e.d.Config(ctx).BatchCheckParallelizationFactor())
 
-	results := make([]bool, len(tuples))
+	results := make([]checkgroup.Result, len(tuples))
 	for i, tuple := range tuples {
 		eg.Go(func() error {
 			internalTuple, err := e.d.ReadOnlyMapper().FromTuple(ctx, tuple)
-			// herodot.ErrNotFound occurs when the namespace is unknown
-			if errors.Is(err, herodot.ErrNotFound) {
-				results[i] = false
-				return nil
-			} else if err != nil {
-				return fmt.Errorf("failed to map tuple '%s': %w", tuple.String(), err)
-			}
-			allowed, err := e.CheckIsMember(ctx, internalTuple[0], maxDepth)
 			if err != nil {
-				return fmt.Errorf("failed to check tuple '%s': %w", tuple.String(), err)
+				results[i] = checkgroup.Result{
+					Membership: checkgroup.MembershipUnknown,
+					Err:        fmt.Errorf("failed to map tuple: %w", err),
+				}
+				return nil
 			}
-			results[i] = allowed
+			results[i] = e.CheckRelationTuple(ctx, internalTuple[0], maxDepth)
 			return nil
 		})
 	}

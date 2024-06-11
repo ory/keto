@@ -107,6 +107,33 @@ message CheckResponse {
   string snaptoken = 2;
 }
 
+// The response for a CheckService.Check rpc.
+message CheckResponseWithError {
+  // Whether the specified subject (id)
+  // is related to the requested object.
+  //
+  // It is false by default if no ACL matches.
+  bool allowed = 1;
+  // If there was an error checking the tuple,
+  // this will contain the error message
+  //
+  // If the check was performed successfully, this will be empty
+  string error = 2;
+  // This field is not implemented yet and has no effect.
+  // <!--
+  // The last known snapshot token ONLY specified if
+  // the request had not specified a snaptoken,
+  // since this performed a "content-change request"
+  // and consistently fetched the last known snapshot token.
+  //
+  // This field is not set if the request had specified a snaptoken!
+  //
+  // If set, clients should cache and use this token
+  // for subsequent requests to have minimal latency,
+  // but allow slightly stale responses (only some milliseconds or seconds).
+  // -->
+  string snaptoken = 3;
+}
 
 // The request for a CheckService.BatchCheck RPC.
 // Checks a batch of relations.
@@ -159,6 +186,7 @@ message BatchCheckRequest {
 
 // The response for a CheckService.Check rpc.
 message BatchCheckResponse {
-  //
-  repeated CheckResponse results = 1;
+  // The results of the batch check. The order of these
+  // results will match the order of the input.
+  repeated CheckResponseWithError results = 1;
 }
