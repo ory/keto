@@ -13,16 +13,17 @@ import (
 
 	"github.com/julienschmidt/httprouter"
 	"github.com/ory/herodot"
+	"github.com/pkg/errors"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
+
 	"github.com/ory/keto/internal/check/checkgroup"
 	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/internal/x"
 	"github.com/ory/keto/ketoapi"
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
-	"github.com/pkg/errors"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 type (
@@ -62,7 +63,7 @@ func (h *Handler) RegisterReadRoutes(r *x.ReadRouter) {
 	r.GET(OpenAPIRouteBase, h.getCheckNoStatus)
 	r.POST(RouteBase, h.postCheckMirrorStatus)
 	r.POST(OpenAPIRouteBase, h.postCheckNoStatus)
-	r.POST(BatchRoute, h.postBatchCheckMirrorStatus)
+	r.POST(BatchRoute, h.batchCheck)
 }
 
 func (h *Handler) RegisterReadGRPC(s *grpc.Server) {
@@ -92,7 +93,7 @@ type CheckPermissionResultWithError struct {
 	// any error generated while checking the relation tuple
 	//
 	// required: false
-	Error error `json:"error,omitempty"`
+	Error string `json:"error,omitempty"`
 }
 
 // Check Permission Request Parameters
@@ -351,25 +352,28 @@ func (h *Handler) Check(ctx context.Context, req *rts.CheckRequest) (*rts.CheckR
 	}, nil
 }
 
-// Post Batch Check Permission Or Error Request Parameters
+// Batch Check Permission Request Parameters
 //
-// swagger:parameters postBatchCheckPermissionOrError
+// swagger:parameters batchCheckPermission
 //
 //lint:ignore U1000 Used to generate Swagger and OpenAPI definitions
-type postBatchCheckPermissionOrError struct {
+type batchCheckPermission struct {
 	// in: query
 	MaxDepth int `json:"max-depth"`
 
+	// in: query
+	ParallelizationFactor int `json:"parallelization-factor"`
+
 	// in: body
-	Body postBatchCheckPermissionOrErrorBody
+	Body batchCheckPermissionBody
 }
 
-// Post Batch Check Permission Or Error Body
+// Batch Check Permission Body
 //
-// swagger:model postBatchCheckPermissionOrErrorBody
+// swagger:model batchCheckPermissionBody
 //
 //lint:ignore U1000 Used to generate Swagger and OpenAPI definitions
-type postBatchCheckPermissionOrErrorBody struct {
+type batchCheckPermissionBody struct {
 	Tuples []*ketoapi.RelationTuple `json:"tuples"`
 }
 
@@ -383,7 +387,7 @@ type BatchCheckPermissionResult struct {
 	Results []*CheckPermissionResultWithError `json:"results"`
 }
 
-// swagger:route POST /relation-tuples/batch/check permission postBatchCheckPermissionOrErrorBody
+// swagger:route POST /relation-tuples/batch/check permission batchCheckPermission
 //
 // # Batch check permissions
 //
@@ -401,8 +405,8 @@ type BatchCheckPermissionResult struct {
 //	  200: batchCheckPermissionResult
 //	  400: errorGeneric
 //	  default: errorGeneric
-func (h *Handler) postBatchCheckMirrorStatus(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	results, err := h.postBatchCheck(r.Context(), r.Body, r.URL.Query())
+func (h *Handler) batchCheck(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	results, err := h.doBatchCheck(r.Context(), r.Body, r.URL.Query())
 	if err != nil {
 		h.d.Writer().WriteError(w, r, err)
 		return
@@ -411,8 +415,8 @@ func (h *Handler) postBatchCheckMirrorStatus(w http.ResponseWriter, r *http.Requ
 	h.d.Writer().Write(w, r, &BatchCheckPermissionResult{Results: results})
 }
 
-// postBatchCheck is the HTTP entry point for checking batches of tuples
-func (h *Handler) postBatchCheck(ctx context.Context, body io.Reader, query url.Values) ([]*CheckPermissionResultWithError, error) {
+// doBatchCheck is the HTTP entry point for checking batches of tuples
+func (h *Handler) doBatchCheck(ctx context.Context, body io.Reader, query url.Values) ([]*CheckPermissionResultWithError, error) {
 	maxDepth, err := x.GetMaxDepthFromQuery(query)
 	if err != nil {
 		return nil, err
@@ -425,7 +429,7 @@ func (h *Handler) postBatchCheck(ctx context.Context, body io.Reader, query url.
 		}
 	}
 	h.d.Writer()
-	var request postBatchCheckPermissionOrErrorBody
+	var request batchCheckPermissionBody
 	if err := json.NewDecoder(body).Decode(&request); err != nil {
 		return nil, errors.WithStack(herodot.ErrBadRequest.WithErrorf("could not unmarshal json: %s", err.Error()))
 	}
@@ -442,9 +446,13 @@ func (h *Handler) postBatchCheck(ctx context.Context, body io.Reader, query url.
 
 	responses := make([]*CheckPermissionResultWithError, len(request.Tuples))
 	for i, result := range results {
+		errMsg := ""
+		if result.Err != nil {
+			errMsg = result.Err.Error()
+		}
 		responses[i] = &CheckPermissionResultWithError{
 			Allowed: result.Membership == checkgroup.IsMember,
-			Error:   result.Err,
+			Error:   errMsg,
 		}
 	}
 
@@ -453,7 +461,6 @@ func (h *Handler) postBatchCheck(ctx context.Context, body io.Reader, query url.
 
 // BatchCheck is the gRPC entry point for checking batches of tuples
 func (h *Handler) BatchCheck(ctx context.Context, req *rts.BatchCheckRequest) (*rts.BatchCheckResponse, error) {
-	// TODO verify the correct status code is returned
 	if len(req.Tuples) > h.d.Config(ctx).BatchCheckMaxBatchSize() {
 		return nil, status.Errorf(codes.InvalidArgument,
 			"batch exceeds max size of %v", h.d.Config(ctx).BatchCheckMaxBatchSize())
@@ -465,8 +472,11 @@ func (h *Handler) BatchCheck(ctx context.Context, req *rts.BatchCheckRequest) (*
 	}
 
 	parallelizationFactor := defaultBatchCheckParallelizationFactor
-	if req.ParallelizationFactor > 0 {
-		parallelizationFactor = int(req.ParallelizationFactor)
+	if req.ParallelizationFactor != nil {
+		if *req.ParallelizationFactor <= 0 {
+			return nil, status.Error(codes.InvalidArgument, "parallelization factor must be a positive number")
+		}
+		parallelizationFactor = int(*req.ParallelizationFactor)
 	}
 	results, err := h.d.PermissionEngine().batchCheck(ctx, ketoTuples, int(req.MaxDepth), parallelizationFactor)
 	if err != nil {

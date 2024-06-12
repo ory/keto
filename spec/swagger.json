@@ -383,7 +383,28 @@
         "schemes": ["http", "https"],
         "tags": ["permission"],
         "summary": "Batch check permissions",
-        "operationId": "postBatchCheckPermissionOrErrorBody",
+        "operationId": "batchCheckPermission",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int64",
+            "name": "max-depth",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "format": "int64",
+            "name": "parallelization-factor",
+            "in": "query"
+          },
+          {
+            "name": "Body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/batchCheckPermissionBody"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "batchCheckPermissionResult",
@@ -781,16 +802,28 @@
         }
       }
     },
+    "batchCheckPermissionBody": {
+      "description": "Batch Check Permission Body",
+      "type": "object",
+      "properties": {
+        "tuples": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/relationship"
+          }
+        }
+      }
+    },
     "batchCheckPermissionResult": {
       "description": "Batch Check Permission Result",
       "type": "object",
       "required": ["results"],
       "properties": {
         "results": {
-          "description": "An array of whether the relation tuple is allowed. The order aligns with the input order.",
+          "description": "An array of check results. The order aligns with the input order.",
           "type": "array",
           "items": {
-            "$ref": "#/definitions/checkPermissionResult"
+            "$ref": "#/definitions/checkPermissionResultWithError"
           }
         }
       }
@@ -821,6 +854,21 @@
         "allowed": {
           "description": "whether the relation tuple is allowed",
           "type": "boolean"
+        }
+      }
+    },
+    "checkPermissionResultWithError": {
+      "description": "Check Permission Result With Error",
+      "type": "object",
+      "required": ["allowed"],
+      "properties": {
+        "allowed": {
+          "description": "whether the relation tuple is allowed",
+          "type": "boolean"
+        },
+        "error": {
+          "description": "any error generated while checking the relation tuple",
+          "type": "string"
         }
       }
     },
@@ -964,18 +1012,6 @@
         "name": {
           "description": "Name of the namespace.",
           "type": "string"
-        }
-      }
-    },
-    "postBatchCheckPermissionOrErrorBody": {
-      "description": "Post Batch Check Permission Or Error Body",
-      "type": "object",
-      "properties": {
-        "tuples": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/relationship"
-          }
         }
       }
     },

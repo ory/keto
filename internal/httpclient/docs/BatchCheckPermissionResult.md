@@ -4,13 +4,13 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Results** | [**[]CheckPermissionResult**](CheckPermissionResult.md) | An array of whether the relation tuple is allowed. The order aligns with the input order. | 
+**Results** | [**[]CheckPermissionResultWithError**](CheckPermissionResultWithError.md) | An array of check results. The order aligns with the input order. | 
 
 ## Methods
 
 ### NewBatchCheckPermissionResult
 
-`func NewBatchCheckPermissionResult(results []CheckPermissionResult, ) *BatchCheckPermissionResult`
+`func NewBatchCheckPermissionResult(results []CheckPermissionResultWithError, ) *BatchCheckPermissionResult`
 
 NewBatchCheckPermissionResult instantiates a new BatchCheckPermissionResult object
 This constructor will assign default values to properties that have it defined,
@@ -27,20 +27,20 @@ but it doesn't guarantee that properties required by API are set
 
 ### GetResults
 
-`func (o *BatchCheckPermissionResult) GetResults() []CheckPermissionResult`
+`func (o *BatchCheckPermissionResult) GetResults() []CheckPermissionResultWithError`
 
 GetResults returns the Results field if non-nil, zero value otherwise.
 
 ### GetResultsOk
 
-`func (o *BatchCheckPermissionResult) GetResultsOk() (*[]CheckPermissionResult, bool)`
+`func (o *BatchCheckPermissionResult) GetResultsOk() (*[]CheckPermissionResultWithError, bool)`
 
 GetResultsOk returns a tuple with the Results field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetResults
 
-`func (o *BatchCheckPermissionResult) SetResults(v []CheckPermissionResult)`
+`func (o *BatchCheckPermissionResult) SetResults(v []CheckPermissionResultWithError)`
 
 SetResults sets Results field to given value.
 

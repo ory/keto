@@ -8,6 +8,8 @@ import (
 	"encoding/json"
 	"time"
 
+	"github.com/ory/x/pointerx"
+
 	"github.com/ory/keto/ketoapi"
 	opl "github.com/ory/keto/proto/ory/keto/opl/v1alpha1"
 
@@ -148,6 +150,67 @@ func (g *grpcClient) check(t require.TestingT, r *ketoapi.RelationTuple) bool {
 	require.NoError(t, err)
 
 	return resp.Allowed
+}
+
+type checkResponse struct {
+	allowed      bool
+	errorMessage string
+}
+
+func (g *grpcClient) batchCheckErr(t require.TestingT, requestTuples []*ketoapi.RelationTuple,
+	parallelizationFactor *int, expected herodot.DefaultError) {
+
+	_, err := g.doBatchCheck(t, requestTuples, parallelizationFactor)
+	require.Error(t, err)
+	s, ok := status.FromError(err)
+	require.True(t, ok)
+	assert.Equal(t, expected.GRPCCodeField, s.Code(), "%+v", err)
+	assert.Contains(t, s.Message(), expected.Reason())
+}
+
+func (g *grpcClient) batchCheck(t require.TestingT, requestTuples []*ketoapi.RelationTuple, parallelizationFactor *int) []checkResponse {
+	resp, err := g.doBatchCheck(t, requestTuples, parallelizationFactor)
+	require.NoError(t, err)
+
+	checkResponses := make([]checkResponse, len(resp.Results))
+	for i, r := range resp.Results {
+		checkResponses[i] = checkResponse{
+			allowed:      r.Allowed,
+			errorMessage: r.Error,
+		}
+	}
+
+	return checkResponses
+}
+
+func (g *grpcClient) doBatchCheck(t require.TestingT, requestTuples []*ketoapi.RelationTuple,
+	parallelizationFactor *int) (*rts.BatchCheckResponse, error) {
+
+	c := rts.NewCheckServiceClient(g.readConn(t))
+
+	tuples := make([]*rts.RelationTuple, len(requestTuples))
+	for i, tuple := range requestTuples {
+		var subject *rts.Subject
+		if tuple.SubjectID != nil {
+			subject = rts.NewSubjectID(*tuple.SubjectID)
+		} else {
+			subject = rts.NewSubjectSet(tuple.SubjectSet.Namespace, tuple.SubjectSet.Object, tuple.SubjectSet.Relation)
+		}
+		tuples[i] = &rts.RelationTuple{
+			Namespace: tuple.Namespace,
+			Object:    tuple.Object,
+			Relation:  tuple.Relation,
+			Subject:   subject,
+		}
+	}
+
+	req := &rts.BatchCheckRequest{
+		Tuples: tuples,
+	}
+	if parallelizationFactor != nil {
+		req.ParallelizationFactor = pointerx.Ptr(int32(*parallelizationFactor))
+	}
+	return c.BatchCheck(g.ctx, req)
 }
 
 func (g *grpcClient) expand(t require.TestingT, r *ketoapi.SubjectSet, depth int) *ketoapi.Tree[*ketoapi.RelationTuple] {

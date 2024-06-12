@@ -9,8 +9,11 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 	"strconv"
 	"time"
+
+	client2 "github.com/ory/keto/internal/httpclient"
 
 	"github.com/ory/keto/internal/schema"
 	"github.com/ory/keto/ketoapi"
@@ -153,6 +156,51 @@ func (rc *restClient) check(t require.TestingT, r *ketoapi.RelationTuple) bool {
 	assert.Equal(t, false, respGet.Allowed)
 	assert.Equal(t, false, respPost.Allowed)
 	return false
+}
+
+func (rc *restClient) batchCheckErr(t require.TestingT, requestTuples []*ketoapi.RelationTuple,
+	parallelizationFactor *int, expected herodot.DefaultError) {
+
+	queryParams := url.Values{}
+	if parallelizationFactor != nil {
+		queryParams.Add("parallelization-factor", strconv.Itoa(*parallelizationFactor))
+	}
+
+	req := client2.BatchCheckPermissionBody{
+		Tuples: tuplesToRelationships(requestTuples),
+	}
+	j, err := json.Marshal(req)
+	require.NoError(t, err)
+	body, code := rc.makeRequest(t, http.MethodPost, fmt.Sprintf("%s?%s", check.BatchRoute, queryParams.Encode()), string(j), rc.readURL)
+	assert.Equal(t, expected.CodeField, code)
+	assert.Contains(t, body, expected.Reason())
+}
+
+func (rc *restClient) batchCheck(t require.TestingT, requestTuples []*ketoapi.RelationTuple, parallelizationFactor *int) []checkResponse {
+	queryParams := url.Values{}
+	if parallelizationFactor != nil {
+		queryParams.Add("parallelization-factor", strconv.Itoa(*parallelizationFactor))
+	}
+
+	req := client2.BatchCheckPermissionBody{
+		Tuples: tuplesToRelationships(requestTuples),
+	}
+	j, err := json.Marshal(req)
+	require.NoError(t, err)
+	body, code := rc.makeRequest(t, http.MethodPost, fmt.Sprintf("%s?%s", check.BatchRoute, queryParams.Encode()), string(j), rc.readURL)
+	require.Equal(t, http.StatusOK, code, "batch check failed unexpected with error code %d", code)
+
+	var respPost check.BatchCheckPermissionResult
+	require.NoError(t, json.Unmarshal([]byte(body), &respPost))
+
+	responseChecks := make([]checkResponse, len(respPost.Results))
+	for i, result := range respPost.Results {
+		responseChecks[i] = checkResponse{
+			allowed:      result.Allowed,
+			errorMessage: result.Error,
+		}
+	}
+	return responseChecks
 }
 
 func (rc *restClient) expand(t require.TestingT, r *ketoapi.SubjectSet, depth int) *ketoapi.Tree[*ketoapi.RelationTuple] {

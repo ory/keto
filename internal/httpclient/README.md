@@ -82,10 +82,10 @@ Class | Method | HTTP request | Description
 *MetadataApi* | [**GetVersion**](docs/MetadataApi.md#getversion) | **Get** /version | Return Running Software Version.
 *MetadataApi* | [**IsAlive**](docs/MetadataApi.md#isalive) | **Get** /health/alive | Check HTTP Server Status
 *MetadataApi* | [**IsReady**](docs/MetadataApi.md#isready) | **Get** /health/ready | Check HTTP Server and Database Status
+*PermissionApi* | [**BatchCheckPermission**](docs/PermissionApi.md#batchcheckpermission) | **Post** /relation-tuples/batch/check | Batch check permissions
 *PermissionApi* | [**CheckPermission**](docs/PermissionApi.md#checkpermission) | **Get** /relation-tuples/check/openapi | Check a permission
 *PermissionApi* | [**CheckPermissionOrError**](docs/PermissionApi.md#checkpermissionorerror) | **Get** /relation-tuples/check | Check a permission
 *PermissionApi* | [**ExpandPermissions**](docs/PermissionApi.md#expandpermissions) | **Get** /relation-tuples/expand | Expand a Relationship into permissions.
-*PermissionApi* | [**PostBatchCheckPermissionOrErrorBody**](docs/PermissionApi.md#postbatchcheckpermissionorerrorbody) | **Post** /relation-tuples/batch/check | Batch check permissions
 *PermissionApi* | [**PostCheckPermission**](docs/PermissionApi.md#postcheckpermission) | **Post** /relation-tuples/check/openapi | Check a permission
 *PermissionApi* | [**PostCheckPermissionOrError**](docs/PermissionApi.md#postcheckpermissionorerror) | **Post** /relation-tuples/check | Check a permission
 *RelationshipApi* | [**CheckOplSyntax**](docs/RelationshipApi.md#checkoplsyntax) | **Post** /opl/syntax/check | Check the syntax of an OPL file
@@ -98,9 +98,11 @@ Class | Method | HTTP request | Description
 
 ## Documentation For Models
 
+ - [BatchCheckPermissionBody](docs/BatchCheckPermissionBody.md)
  - [BatchCheckPermissionResult](docs/BatchCheckPermissionResult.md)
  - [CheckOplSyntaxResult](docs/CheckOplSyntaxResult.md)
  - [CheckPermissionResult](docs/CheckPermissionResult.md)
+ - [CheckPermissionResultWithError](docs/CheckPermissionResultWithError.md)
  - [CreateRelationshipBody](docs/CreateRelationshipBody.md)
  - [ErrorGeneric](docs/ErrorGeneric.md)
  - [ExpandedPermissionTree](docs/ExpandedPermissionTree.md)
@@ -112,7 +114,6 @@ Class | Method | HTTP request | Description
  - [IsReady503Response](docs/IsReady503Response.md)
  - [Namespace](docs/Namespace.md)
  - [ParseError](docs/ParseError.md)
- - [PostBatchCheckPermissionOrErrorBody](docs/PostBatchCheckPermissionOrErrorBody.md)
  - [PostCheckPermissionBody](docs/PostCheckPermissionBody.md)
  - [PostCheckPermissionOrErrorBody](docs/PostCheckPermissionOrErrorBody.md)
  - [RelationQuery](docs/RelationQuery.md)

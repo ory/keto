@@ -186,7 +186,7 @@ message BatchCheckRequest {
   //
   // If the value is less than 1, this value will be ignored and
   // the default will be used
-  int32 parallelization_factor = 5;
+  optional int32 parallelization_factor = 5;
 }
 
 // The response for a CheckService.Check rpc.

@@ -375,7 +375,30 @@ paths:
     post:
       description: "To learn how relationship tuples and the check works, head over\
         \ to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview)."
-      operationId: postBatchCheckPermissionOrErrorBody
+      operationId: batchCheckPermission
+      parameters:
+      - explode: true
+        in: query
+        name: max-depth
+        required: false
+        schema:
+          format: int64
+          type: integer
+        style: form
+      - explode: true
+        in: query
+        name: parallelization-factor
+        required: false
+        schema:
+          format: int64
+          type: integer
+        style: form
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/batchCheckPermissionBody'
+        x-originalParamName: Body
       responses:
         "200":
           content:
@@ -801,18 +824,28 @@ components:
     UUID:
       format: uuid4
       type: string
+    batchCheckPermissionBody:
+      description: Batch Check Permission Body
+      properties:
+        tuples:
+          items:
+            $ref: '#/components/schemas/relationship'
+          type: array
+      type: object
     batchCheckPermissionResult:
       description: Batch Check Permission Result
       example:
         results:
         - allowed: true
+          error: error
         - allowed: true
+          error: error
       properties:
         results:
-          description: An array of whether the relation tuple is allowed. The order
-            aligns with the input order.
+          description: An array of check results. The order aligns with the input
+            order.
           items:
-            $ref: '#/components/schemas/checkPermissionResult'
+            $ref: '#/components/schemas/checkPermissionResultWithError'
           type: array
       required:
       - results
@@ -858,6 +891,21 @@ components:
       required:
       - allowed
       title: Check Permission Result
+      type: object
+    checkPermissionResultWithError:
+      description: Check Permission Result With Error
+      example:
+        allowed: true
+        error: error
+      properties:
+        allowed:
+          description: whether the relation tuple is allowed
+          type: boolean
+        error:
+          description: any error generated while checking the relation tuple
+          type: string
+      required:
+      - allowed
       type: object
     createRelationshipBody:
       description: Create Relationship Request Body
@@ -1018,14 +1066,6 @@ components:
         name:
           description: Name of the namespace.
           type: string
-      type: object
-    postBatchCheckPermissionOrErrorBody:
-      description: Post Batch Check Permission Or Error Body
-      properties:
-        tuples:
-          items:
-            $ref: '#/components/schemas/relationship'
-          type: array
       type: object
     postCheckPermissionBody:
       description: Check Permission using Post Request Body

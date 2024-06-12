@@ -4,13 +4,83 @@ All URIs are relative to *http://localhost*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
+[**BatchCheckPermission**](PermissionApi.md#BatchCheckPermission) | **Post** /relation-tuples/batch/check | Batch check permissions
 [**CheckPermission**](PermissionApi.md#CheckPermission) | **Get** /relation-tuples/check/openapi | Check a permission
 [**CheckPermissionOrError**](PermissionApi.md#CheckPermissionOrError) | **Get** /relation-tuples/check | Check a permission
 [**ExpandPermissions**](PermissionApi.md#ExpandPermissions) | **Get** /relation-tuples/expand | Expand a Relationship into permissions.
-[**PostBatchCheckPermissionOrErrorBody**](PermissionApi.md#PostBatchCheckPermissionOrErrorBody) | **Post** /relation-tuples/batch/check | Batch check permissions
 [**PostCheckPermission**](PermissionApi.md#PostCheckPermission) | **Post** /relation-tuples/check/openapi | Check a permission
 [**PostCheckPermissionOrError**](PermissionApi.md#PostCheckPermissionOrError) | **Post** /relation-tuples/check | Check a permission
 
+
+
+## BatchCheckPermission
+
+> BatchCheckPermissionResult BatchCheckPermission(ctx).MaxDepth(maxDepth).ParallelizationFactor(parallelizationFactor).BatchCheckPermissionBody(batchCheckPermissionBody).Execute()
+
+Batch check permissions
+
+
+
+### Example
+
+```go
+package main
+
+import (
+    "context"
+    "fmt"
+    "os"
+    openapiclient "./openapi"
+)
+
+func main() {
+    maxDepth := int64(789) // int64 |  (optional)
+    parallelizationFactor := int64(789) // int64 |  (optional)
+    batchCheckPermissionBody := *openapiclient.NewBatchCheckPermissionBody() // BatchCheckPermissionBody |  (optional)
+
+    configuration := openapiclient.NewConfiguration()
+    apiClient := openapiclient.NewAPIClient(configuration)
+    resp, r, err := apiClient.PermissionApi.BatchCheckPermission(context.Background()).MaxDepth(maxDepth).ParallelizationFactor(parallelizationFactor).BatchCheckPermissionBody(batchCheckPermissionBody).Execute()
+    if err != nil {
+        fmt.Fprintf(os.Stderr, "Error when calling `PermissionApi.BatchCheckPermission``: %v\n", err)
+        fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+    }
+    // response from `BatchCheckPermission`: BatchCheckPermissionResult
+    fmt.Fprintf(os.Stdout, "Response from `PermissionApi.BatchCheckPermission`: %v\n", resp)
+}
+```
+
+### Path Parameters
+
+
+
+### Other Parameters
+
+Other parameters are passed through a pointer to a apiBatchCheckPermissionRequest struct via the builder pattern
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **maxDepth** | **int64** |  | 
+ **parallelizationFactor** | **int64** |  | 
+ **batchCheckPermissionBody** | [**BatchCheckPermissionBody**](BatchCheckPermissionBody.md) |  | 
+
+### Return type
+
+[**BatchCheckPermissionResult**](BatchCheckPermissionResult.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+- **Content-Type**: application/json
+- **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
+[[Back to Model list]](../README.md#documentation-for-models)
+[[Back to README]](../README.md)
 
 
 ## CheckPermission
@@ -230,67 +300,6 @@ Name | Type | Description  | Notes
 ### Return type
 
 [**ExpandedPermissionTree**](ExpandedPermissionTree.md)
-
-### Authorization
-
-No authorization required
-
-### HTTP request headers
-
-- **Content-Type**: Not defined
-- **Accept**: application/json
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../README.md#documentation-for-models)
-[[Back to README]](../README.md)
-
-
-## PostBatchCheckPermissionOrErrorBody
-
-> BatchCheckPermissionResult PostBatchCheckPermissionOrErrorBody(ctx).Execute()
-
-Batch check permissions
-
-
-
-### Example
-
-```go
-package main
-
-import (
-    "context"
-    "fmt"
-    "os"
-    openapiclient "./openapi"
-)
-
-func main() {
-
-    configuration := openapiclient.NewConfiguration()
-    apiClient := openapiclient.NewAPIClient(configuration)
-    resp, r, err := apiClient.PermissionApi.PostBatchCheckPermissionOrErrorBody(context.Background()).Execute()
-    if err != nil {
-        fmt.Fprintf(os.Stderr, "Error when calling `PermissionApi.PostBatchCheckPermissionOrErrorBody``: %v\n", err)
-        fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
-    }
-    // response from `PostBatchCheckPermissionOrErrorBody`: BatchCheckPermissionResult
-    fmt.Fprintf(os.Stdout, "Response from `PermissionApi.PostBatchCheckPermissionOrErrorBody`: %v\n", resp)
-}
-```
-
-### Path Parameters
-
-This endpoint does not need any parameter.
-
-### Other Parameters
-
-Other parameters are passed through a pointer to a apiPostBatchCheckPermissionOrErrorBodyRequest struct via the builder pattern
-
-
-### Return type
-
-[**BatchCheckPermissionResult**](BatchCheckPermissionResult.md)
 
 ### Authorization
 

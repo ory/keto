@@ -17,15 +17,15 @@ import (
 
 // BatchCheckPermissionResult Batch Check Permission Result
 type BatchCheckPermissionResult struct {
-	// An array of whether the relation tuple is allowed. The order aligns with the input order.
-	Results []CheckPermissionResult `json:"results"`
+	// An array of check results. The order aligns with the input order.
+	Results []CheckPermissionResultWithError `json:"results"`
 }
 
 // NewBatchCheckPermissionResult instantiates a new BatchCheckPermissionResult object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBatchCheckPermissionResult(results []CheckPermissionResult) *BatchCheckPermissionResult {
+func NewBatchCheckPermissionResult(results []CheckPermissionResultWithError) *BatchCheckPermissionResult {
 	this := BatchCheckPermissionResult{}
 	this.Results = results
 	return &this
@@ -40,9 +40,9 @@ func NewBatchCheckPermissionResultWithDefaults() *BatchCheckPermissionResult {
 }
 
 // GetResults returns the Results field value
-func (o *BatchCheckPermissionResult) GetResults() []CheckPermissionResult {
+func (o *BatchCheckPermissionResult) GetResults() []CheckPermissionResultWithError {
 	if o == nil {
-		var ret []CheckPermissionResult
+		var ret []CheckPermissionResultWithError
 		return ret
 	}
 
@@ -51,7 +51,7 @@ func (o *BatchCheckPermissionResult) GetResults() []CheckPermissionResult {
 
 // GetResultsOk returns a tuple with the Results field value
 // and a boolean to check if the value has been set.
-func (o *BatchCheckPermissionResult) GetResultsOk() ([]CheckPermissionResult, bool) {
+func (o *BatchCheckPermissionResult) GetResultsOk() ([]CheckPermissionResultWithError, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -59,7 +59,7 @@ func (o *BatchCheckPermissionResult) GetResultsOk() ([]CheckPermissionResult, bo
 }
 
 // SetResults sets field value
-func (o *BatchCheckPermissionResult) SetResults(v []CheckPermissionResult) {
+func (o *BatchCheckPermissionResult) SetResults(v []CheckPermissionResultWithError) {
 	o.Results = v
 }
 

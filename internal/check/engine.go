@@ -5,14 +5,14 @@ package check
 
 import (
 	"context"
-	"fmt"
+	"sync"
 
-	"github.com/pkg/errors"
-	"go.opentelemetry.io/otel/trace"
-	"golang.org/x/sync/errgroup"
+	"golang.org/x/sync/semaphore"
 
 	"github.com/ory/herodot"
 	"github.com/ory/x/otelx"
+	"github.com/pkg/errors"
+	"go.opentelemetry.io/otel/trace"
 
 	"github.com/ory/keto/x/events"
 
@@ -274,28 +274,32 @@ func (e *Engine) batchCheck(ctx context.Context,
 	tuples []*ketoapi.RelationTuple,
 	maxDepth, parallelizationFactor int) ([]checkgroup.Result, error) {
 
-	eg := &errgroup.Group{}
-	eg.SetLimit(parallelizationFactor)
+	wg := &sync.WaitGroup{}
+	sem := semaphore.NewWeighted(int64(parallelizationFactor))
 
 	results := make([]checkgroup.Result, len(tuples))
-	for i, tuple := range tuples {
-		eg.Go(func() error {
+	for outerIndex, outerTuple := range tuples {
+		sem.Acquire(context.Background(), 1) // Pass in background context to guarantee this won't return an error
+		wg.Add(1)
+		go func(i int, tuple *ketoapi.RelationTuple) {
+			defer func() {
+				wg.Done()
+				sem.Release(1)
+			}()
+
 			internalTuple, err := e.d.ReadOnlyMapper().FromTuple(ctx, tuple)
 			if err != nil {
 				results[i] = checkgroup.Result{
 					Membership: checkgroup.MembershipUnknown,
-					Err:        fmt.Errorf("failed to map tuple: %w", err),
+					Err:        err,
 				}
-				return nil
+			} else {
+				results[i] = e.CheckRelationTuple(ctx, internalTuple[0], maxDepth)
 			}
-			results[i] = e.CheckRelationTuple(ctx, internalTuple[0], maxDepth)
-			return nil
-		})
+		}(outerIndex, outerTuple)
 	}
 
-	if err := eg.Wait(); err != nil {
-		return nil, err
-	}
+	wg.Wait()
 
 	return results, nil
 }

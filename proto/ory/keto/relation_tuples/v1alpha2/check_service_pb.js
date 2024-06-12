@@ -1025,8 +1025,8 @@ proto.ory.keto.relation_tuples.v1alpha2.BatchCheckRequest.serializeBinaryToWrite
       f
     );
   }
-  f = message.getParallelizationFactor();
-  if (f !== 0) {
+  f = /** @type {number} */ (jspb.Message.getField(message, 5));
+  if (f != null) {
     writer.writeInt32(
       5,
       f
@@ -1141,7 +1141,25 @@ proto.ory.keto.relation_tuples.v1alpha2.BatchCheckRequest.prototype.getParalleli
  * @return {!proto.ory.keto.relation_tuples.v1alpha2.BatchCheckRequest} returns this
  */
 proto.ory.keto.relation_tuples.v1alpha2.BatchCheckRequest.prototype.setParallelizationFactor = function(value) {
-  return jspb.Message.setProto3IntField(this, 5, value);
+  return jspb.Message.setField(this, 5, value);
+};
+
+
+/**
+ * Clears the field making it undefined.
+ * @return {!proto.ory.keto.relation_tuples.v1alpha2.BatchCheckRequest} returns this
+ */
+proto.ory.keto.relation_tuples.v1alpha2.BatchCheckRequest.prototype.clearParallelizationFactor = function() {
+  return jspb.Message.setField(this, 5, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.ory.keto.relation_tuples.v1alpha2.BatchCheckRequest.prototype.hasParallelizationFactor = function() {
+  return jspb.Message.getField(this, 5) != null;
 };
 
 
