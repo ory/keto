@@ -14,7 +14,6 @@ import (
 	"time"
 
 	client2 "github.com/ory/keto/internal/httpclient"
-
 	"github.com/ory/keto/internal/schema"
 	"github.com/ory/keto/ketoapi"
 

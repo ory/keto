@@ -385,7 +385,10 @@ paths:
           format: int64
           type: integer
         style: form
-      - explode: true
+      - description: |-
+          ParallelizationFactor is the maximum number of check requests
+          that can happen concurrently. Optional. Defaults to 5.
+        explode: true
         in: query
         name: parallelization-factor
         required: false

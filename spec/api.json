@@ -933,6 +933,7 @@
             }
           },
           {
+            "description": "ParallelizationFactor is the maximum number of check requests\nthat can happen concurrently. Optional. Defaults to 5.",
             "in": "query",
             "name": "parallelization-factor",
             "schema": {

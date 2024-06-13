@@ -35,7 +35,7 @@ import (
 
 func main() {
     maxDepth := int64(789) // int64 |  (optional)
-    parallelizationFactor := int64(789) // int64 |  (optional)
+    parallelizationFactor := int64(789) // int64 | ParallelizationFactor is the maximum number of check requests that can happen concurrently. Optional. Defaults to 5. (optional)
     batchCheckPermissionBody := *openapiclient.NewBatchCheckPermissionBody() // BatchCheckPermissionBody |  (optional)
 
     configuration := openapiclient.NewConfiguration()
@@ -62,7 +62,7 @@ Other parameters are passed through a pointer to a apiBatchCheckPermissionReques
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **maxDepth** | **int64** |  | 
- **parallelizationFactor** | **int64** |  | 
+ **parallelizationFactor** | **int64** | ParallelizationFactor is the maximum number of check requests that can happen concurrently. Optional. Defaults to 5. | 
  **batchCheckPermissionBody** | [**BatchCheckPermissionBody**](BatchCheckPermissionBody.md) |  | 
 
 ### Return type

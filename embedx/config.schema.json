@@ -385,7 +385,7 @@
           "type": "integer",
           "default": 10,
           "title": "Maximum batch check size",
-          "description": "The maximum number of tuples that will be accepted by the batch check endpoint",
+          "description": "The maximum number of tuples that will be accepted by the batch check endpoint.",
           "minimum": 1,
           "maximum": 65535
         }

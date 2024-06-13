@@ -259,7 +259,7 @@ func (x *CheckResponse) GetSnaptoken() string {
 	return ""
 }
 
-// The response for a CheckService.Check rpc.
+// The response for an individual check in the CheckService.BatchCheck rpc.
 type CheckResponseWithError struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -271,9 +271,9 @@ type CheckResponseWithError struct {
 	// It is false by default if no ACL matches.
 	Allowed bool `protobuf:"varint,1,opt,name=allowed,proto3" json:"allowed,omitempty"`
 	// If there was an error checking the tuple,
-	// this will contain the error message
+	// this will contain the error message.
 	//
-	// If the check was performed successfully, this will be empty
+	// If the check was performed successfully, this will be empty.
 	Error string `protobuf:"bytes,2,opt,name=error,proto3" json:"error,omitempty"`
 	// This field is not implemented yet and has no effect.
 	// <!--
@@ -397,8 +397,8 @@ type BatchCheckRequest struct {
 	MaxDepth int32 `protobuf:"varint,4,opt,name=max_depth,json=maxDepth,proto3" json:"max_depth,omitempty"`
 	// The number of check requests to perform in parallel.
 	//
-	// If the value is less than 1, this value will be ignored and
-	// the default will be used
+	// Will default to 5 if not provided. If provided, it must be
+	// a positive integer
 	ParallelizationFactor *int32 `protobuf:"varint,5,opt,name=parallelization_factor,json=parallelizationFactor,proto3,oneof" json:"parallelization_factor,omitempty"`
 }
 
@@ -469,7 +469,7 @@ func (x *BatchCheckRequest) GetParallelizationFactor() int32 {
 	return 0
 }
 
-// The response for a CheckService.Check rpc.
+// The response for a CheckService.BatchCheck rpc.
 type BatchCheckResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache

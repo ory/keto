@@ -16,29 +16,28 @@ import (
 	"strings"
 	"testing"
 
-	client "github.com/ory/keto/internal/httpclient"
-	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
-	"github.com/ory/x/pointerx"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/status"
 	"google.golang.org/grpc/test/bufconn"
 
-	"github.com/ory/keto/ketoapi"
-
-	"github.com/ory/keto/internal/driver/config"
-
 	"github.com/julienschmidt/httprouter"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/tidwall/gjson"
 
+	"github.com/ory/x/pointerx"
+
 	"github.com/ory/keto/internal/check"
 	"github.com/ory/keto/internal/driver"
+	"github.com/ory/keto/internal/driver/config"
+	client "github.com/ory/keto/internal/httpclient"
 	"github.com/ory/keto/internal/namespace"
 	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/internal/x"
+	"github.com/ory/keto/ketoapi"
+	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 )
 
 func assertAllowed(t *testing.T, resp *http.Response) {
@@ -203,7 +202,7 @@ func TestBatchCheckRESTHandler(t *testing.T) {
 		assert.Equal(t, http.StatusBadRequest, resp.StatusCode)
 		body, err := io.ReadAll(resp.Body)
 		require.NoError(t, err)
-		assert.Contains(t, string(body), "parallelization factor must be a positive number")
+		assert.Contains(t, string(body), "parallelization factor must be a positive integer")
 	})
 
 	t.Run("case=returns bad request on negative parallelization factor", func(t *testing.T) {
@@ -214,7 +213,7 @@ func TestBatchCheckRESTHandler(t *testing.T) {
 		assert.Equal(t, http.StatusBadRequest, resp.StatusCode)
 		body, err := io.ReadAll(resp.Body)
 		require.NoError(t, err)
-		assert.Contains(t, string(body), "parallelization factor must be a positive number")
+		assert.Contains(t, string(body), "parallelization factor must be a positive integer")
 	})
 
 	t.Run("case=returns bad request on invalid request body", func(t *testing.T) {
@@ -402,7 +401,7 @@ func TestBatchCheckGRPCHandler(t *testing.T) {
 		statusErr, ok := status.FromError(err)
 		require.True(t, ok)
 		require.Equal(t, codes.InvalidArgument, statusErr.Code())
-		require.Equal(t, "parallelization factor must be a positive number", statusErr.Message())
+		require.Equal(t, "parallelization factor must be a positive integer", statusErr.Message())
 	})
 
 	t.Run("case=batch check", func(t *testing.T) {

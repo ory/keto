@@ -394,6 +394,7 @@
           {
             "type": "integer",
             "format": "int64",
+            "description": "ParallelizationFactor is the maximum number of check requests\nthat can happen concurrently. Optional. Defaults to 5.",
             "name": "parallelization-factor",
             "in": "query"
           },

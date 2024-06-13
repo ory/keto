@@ -12,12 +12,14 @@ import (
 	"strconv"
 
 	"github.com/julienschmidt/httprouter"
-	"github.com/ory/herodot"
+
 	"github.com/pkg/errors"
+
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
+	"github.com/ory/herodot"
 	"github.com/ory/keto/internal/check/checkgroup"
 	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/relationtuple"
@@ -361,6 +363,9 @@ type batchCheckPermission struct {
 	// in: query
 	MaxDepth int `json:"max-depth"`
 
+	// ParallelizationFactor is the maximum number of check requests
+	// that can happen concurrently. Optional. Defaults to 5.
+	//
 	// in: query
 	ParallelizationFactor int `json:"parallelization-factor"`
 
@@ -425,7 +430,7 @@ func (h *Handler) doBatchCheck(ctx context.Context, body io.Reader, query url.Va
 	if query.Get(parallelizationFactorQueryParam) != "" {
 		parallelizationFactor, err = strconv.Atoi(query.Get(parallelizationFactorQueryParam))
 		if err != nil || parallelizationFactor <= 0 {
-			return nil, herodot.ErrBadRequest.WithError("parallelization factor must be a positive number")
+			return nil, herodot.ErrBadRequest.WithError("parallelization factor must be a positive integer")
 		}
 	}
 	h.d.Writer()
@@ -474,7 +479,7 @@ func (h *Handler) BatchCheck(ctx context.Context, req *rts.BatchCheckRequest) (*
 	parallelizationFactor := defaultBatchCheckParallelizationFactor
 	if req.ParallelizationFactor != nil {
 		if *req.ParallelizationFactor <= 0 {
-			return nil, status.Error(codes.InvalidArgument, "parallelization factor must be a positive number")
+			return nil, status.Error(codes.InvalidArgument, "parallelization factor must be a positive integer")
 		}
 		parallelizationFactor = int(*req.ParallelizationFactor)
 	}
