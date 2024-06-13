@@ -439,7 +439,7 @@ func (h *Handler) doBatchCheck(ctx context.Context, body io.Reader, query url.Va
 			h.d.Config(ctx).BatchCheckMaxBatchSize())
 	}
 
-	results, err := h.d.PermissionEngine().batchCheck(ctx, request.Tuples, maxDepth, parallelizationFactor)
+	results, err := h.d.PermissionEngine().BatchCheck(ctx, request.Tuples, maxDepth, parallelizationFactor)
 	if err != nil {
 		return nil, err
 	}
@@ -478,7 +478,7 @@ func (h *Handler) BatchCheck(ctx context.Context, req *rts.BatchCheckRequest) (*
 		}
 		parallelizationFactor = int(*req.ParallelizationFactor)
 	}
-	results, err := h.d.PermissionEngine().batchCheck(ctx, ketoTuples, int(req.MaxDepth), parallelizationFactor)
+	results, err := h.d.PermissionEngine().BatchCheck(ctx, ketoTuples, int(req.MaxDepth), parallelizationFactor)
 	if err != nil {
 		return nil, err
 	}

@@ -36,7 +36,7 @@ type (
 	}
 	EngineDependencies interface {
 		relationtuple.ManagerProvider
-		relationtuple.MapperProvider // TODO does this need to be instantiated?
+		relationtuple.MapperProvider
 		persistence.Provider
 		config.Provider
 		x.LoggerProvider
@@ -268,11 +268,17 @@ func (e *Engine) astRelationFor(ctx context.Context, r *relationTuple) (*ast.Rel
 	return namespace.ASTRelationFor(ctx, namespaceManager, r.Namespace, r.Relation)
 }
 
-// batchCheck makes parallelized check requests for tuples. The check result is returned as a boolean slice, where the
+// BatchCheck makes parallelized check requests for tuples. The check result is returned as a boolean slice, where the
 // result index matches the tuple index of the incoming tuples array.
-func (e *Engine) batchCheck(ctx context.Context,
+//
+// parallelizationFactor controls the number of checks that will happen in parallel
+func (e *Engine) BatchCheck(ctx context.Context,
 	tuples []*ketoapi.RelationTuple,
 	maxDepth, parallelizationFactor int) ([]checkgroup.Result, error) {
+
+	if parallelizationFactor <= 0 {
+		return nil, errors.New("invalid parallelization factor")
+	}
 
 	wg := &sync.WaitGroup{}
 	sem := semaphore.NewWeighted(int64(parallelizationFactor))
