@@ -283,6 +283,7 @@ func (e *Engine) BatchCheck(ctx context.Context,
 	wg := &sync.WaitGroup{}
 	sem := semaphore.NewWeighted(int64(parallelizationFactor))
 
+	mapper := e.d.ReadOnlyMapper()
 	results := make([]checkgroup.Result, len(tuples))
 	for outerIndex, outerTuple := range tuples {
 		sem.Acquire(context.Background(), 1) // Pass in background context to guarantee this won't return an error
@@ -293,7 +294,7 @@ func (e *Engine) BatchCheck(ctx context.Context,
 				sem.Release(1)
 			}()
 
-			internalTuple, err := e.d.ReadOnlyMapper().FromTuple(ctx, tuple)
+			internalTuple, err := mapper.FromTuple(ctx, tuple)
 			if err != nil {
 				results[i] = checkgroup.Result{
 					Membership: checkgroup.MembershipUnknown,
