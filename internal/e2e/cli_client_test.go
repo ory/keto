@@ -116,6 +116,19 @@ func (g *cliClient) check(t require.TestingT, r *ketoapi.RelationTuple) bool {
 	return res.Allowed
 }
 
+func (g *cliClient) batchCheckErr(t require.TestingT, requestTuples []*ketoapi.RelationTuple,
+	parallelizationFactor *int, expected herodot.DefaultError) {
+	if t, ok := t.(*testing.T); ok {
+		t.Skip("not implemented for the CLI")
+	}
+}
+func (g *cliClient) batchCheck(t require.TestingT, requestTuples []*ketoapi.RelationTuple, parallelizationFactor *int) []checkResponse {
+	if t, ok := t.(*testing.T); ok {
+		t.Skip("not implemented for the CLI")
+	}
+	return nil
+}
+
 func (g *cliClient) expand(t require.TestingT, r *ketoapi.SubjectSet, depth int) *ketoapi.Tree[*ketoapi.RelationTuple] {
 	out := g.c.ExecNoErr(t, "expand", r.Relation, r.Namespace, r.Object, "--"+cliexpand.FlagMaxDepth, fmt.Sprintf("%d", depth), "--"+cmdx.FlagFormat, string(cmdx.FormatJSON))
 	res := ketoapi.Tree[*ketoapi.RelationTuple]{}

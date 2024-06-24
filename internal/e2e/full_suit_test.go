@@ -37,6 +37,8 @@ type (
 		queryTuple(t require.TestingT, q *ketoapi.RelationQuery, opts ...x.PaginationOptionSetter) *ketoapi.GetResponse
 		queryTupleErr(t require.TestingT, expected herodot.DefaultError, q *ketoapi.RelationQuery, opts ...x.PaginationOptionSetter)
 		check(t require.TestingT, r *ketoapi.RelationTuple) bool
+		batchCheck(t require.TestingT, r []*ketoapi.RelationTuple, parallelizationFactor *int) []checkResponse
+		batchCheckErr(t require.TestingT, requestTuples []*ketoapi.RelationTuple, parallelizationFactor *int, expected herodot.DefaultError)
 		expand(t require.TestingT, r *ketoapi.SubjectSet, depth int) *ketoapi.Tree[*ketoapi.RelationTuple]
 		oplCheckSyntax(t require.TestingT, content []byte) []*ketoapi.ParseError
 		waitUntilLive(t require.TestingT)

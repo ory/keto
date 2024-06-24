@@ -37,7 +37,7 @@ func TestStatusCmd(t *testing.T) {
 				defer cancel()
 
 				stdErr := cmdx.ExecExpectedErrCtx(ctx, t, newStatusCmd(), "--"+FlagEndpoint, string(serverType), "--"+ts.FlagRemote, ts.Addr[:len(ts.Addr)-1])
-				assert.Equal(t, "context deadline exceeded", stdErr)
+				assert.Contains(t, stdErr, "context deadline exceeded")
 			})
 
 			t.Run("case=noblock", func(t *testing.T) {

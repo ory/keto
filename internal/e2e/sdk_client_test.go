@@ -240,6 +240,75 @@ func (c *sdkClient) check(t require.TestingT, r *ketoapi.RelationTuple) bool {
 	return resp.GetAllowed()
 }
 
+func (c *sdkClient) batchCheckErr(t require.TestingT, requestTuples []*ketoapi.RelationTuple,
+	parallelizationFactor *int, expected herodot.DefaultError) {
+
+	request := c.getReadClient().PermissionApi.BatchCheckPermission(c.requestCtx()).
+		BatchCheckPermissionBody(httpclient.BatchCheckPermissionBody{
+			Tuples: tuplesToRelationships(requestTuples),
+		})
+	if parallelizationFactor != nil {
+		request = request.ParallelizationFactor(int64(*parallelizationFactor))
+	}
+
+	_, _, err := request.Execute()
+	switch typedErr := err.(type) {
+	case nil:
+		require.FailNow(t, "expected error but got nil")
+	case *httpclient.GenericOpenAPIError:
+		assert.Contains(t, typedErr.Error(), expected.Reason())
+	default:
+		require.FailNow(t, "got unknown error %+v\nexpected %+v", err, expected)
+	}
+}
+
+func (c *sdkClient) batchCheck(t require.TestingT, requestTuples []*ketoapi.RelationTuple, parallelizationFactor *int) []checkResponse {
+	request := c.getReadClient().PermissionApi.BatchCheckPermission(c.requestCtx()).
+		BatchCheckPermissionBody(httpclient.BatchCheckPermissionBody{
+			Tuples: tuplesToRelationships(requestTuples),
+		})
+	if parallelizationFactor != nil {
+		request.ParallelizationFactor(int64(*parallelizationFactor))
+	}
+
+	resp, _, err := request.Execute()
+	require.NoError(t, err)
+
+	responses := make([]checkResponse, len(resp.Results))
+	for i, result := range resp.Results {
+		errMsg := ""
+		if result.Error != nil {
+			errMsg = *result.Error
+		}
+		responses[i] = checkResponse{
+			allowed:      result.Allowed,
+			errorMessage: errMsg,
+		}
+	}
+	return responses
+}
+
+func tuplesToRelationships(tuples []*ketoapi.RelationTuple) []httpclient.Relationship {
+	relationships := make([]httpclient.Relationship, len(tuples))
+	for i, requestTuple := range tuples {
+		relationship := httpclient.Relationship{
+			Namespace: requestTuple.Namespace,
+			Object:    requestTuple.Object,
+			Relation:  requestTuple.Relation,
+			SubjectId: requestTuple.SubjectID,
+		}
+		if requestTuple.SubjectSet != nil {
+			relationship.SubjectSet = &httpclient.SubjectSet{
+				Namespace: requestTuple.SubjectSet.Namespace,
+				Object:    requestTuple.SubjectSet.Object,
+				Relation:  requestTuple.SubjectSet.Relation,
+			}
+		}
+		relationships[i] = relationship
+	}
+	return relationships
+}
+
 func buildTree(t require.TestingT, mt *httpclient.ExpandedPermissionTree) *ketoapi.Tree[*ketoapi.RelationTuple] {
 	result := &ketoapi.Tree[*ketoapi.RelationTuple]{
 		Type: ketoapi.TreeNodeType(mt.Type),
