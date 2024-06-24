@@ -135,6 +135,12 @@ func BenchmarkCheckEngine(b *testing.B) {
 //go:embed testfixtures/project_opl.ts
 var ProjectOPLConfig string
 
+//go:embed testfixtures/expression_ordering_1.ts
+var ExpressionOrdering1 string
+
+//go:embed testfixtures/expression_ordering_2.ts
+var ExpressionOrdering2 string
+
 func BenchmarkComputedUsersets(b *testing.B) {
 	ctx := context.Background()
 

@@ -453,6 +453,7 @@ func TestEngine(t *testing.T) {
 	})
 
 	t.Run("case=wide tuple graph", func(t *testing.T) {
+		t.Parallel()
 		namesp, obj, access, member, users, orgs := "9234", uuid.Must(uuid.NewV4()), "access", "member", x.UUIDs(4), x.UUIDs(2)
 
 		reg := newDepsProvider(t, []*namespace.Namespace{{Name: namesp}})
@@ -495,6 +496,7 @@ func TestEngine(t *testing.T) {
 	})
 
 	t.Run("case=circular tuples", func(t *testing.T) {
+		t.Parallel()
 		sendlingerTor, odeonsplatz, centralStation, connected, namesp := uuid.NewV5(uuid.Nil, "Sendlinger Tor"), uuid.NewV5(uuid.Nil, "Odeonsplatz"), uuid.NewV5(uuid.Nil, "Central Station"), "connected", "7743"
 
 		reg := newDepsProvider(t, []*namespace.Namespace{{Name: namesp}})
@@ -548,6 +550,8 @@ func TestEngine(t *testing.T) {
 	})
 
 	t.Run("case=strict mode", func(t *testing.T) {
+		t.Parallel()
+
 		reg := driver.NewSqliteTestRegistry(t, false,
 			driver.WithOPL(ProjectOPLConfig),
 			driver.WithConfig(config.KeyNamespacesExperimentalStrictMode, true))
@@ -574,6 +578,36 @@ func TestEngine(t *testing.T) {
 			res, err := e.CheckIsMember(ctx, tupleFromString(t, "Project:abc#readProject@"+sub), 10)
 			require.NoError(t, err)
 			assert.True(t, res)
+		}
+	})
+
+	t.Run("case=bug repro", func(t *testing.T) {
+		t.Parallel()
+
+		for _, tc := range []struct {
+			name string
+			opl  string
+		}{
+			{"expression ordering 1", ExpressionOrdering1},
+			{"expression ordering 2", ExpressionOrdering2},
+		} {
+			tc := tc
+			t.Run("opl="+tc.name, func(t *testing.T) {
+				t.Parallel()
+
+				reg := driver.NewSqliteTestRegistry(t, false, driver.WithOPL(ExpressionOrdering1))
+
+				insertFixtures(t, reg.RelationTupleManager(), []string{
+					"LegalEntityUserGroup:group_123#owners@User:user_123",
+					"LegalEntity:legalentity_123#owners@LegalEntityUserGroup:group_123#owners",
+				})
+
+				e := check.NewEngine(reg)
+
+				res, err := e.CheckIsMember(ctx, tupleFromString(t, "LegalEntity:legalentity_123#itemView@User:user_123"), 10)
+				require.NoError(t, err)
+				assert.True(t, res)
+			})
 		}
 	})
 }
