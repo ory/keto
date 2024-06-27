@@ -576,4 +576,45 @@ func TestEngine(t *testing.T) {
 			assert.True(t, res)
 		}
 	})
+
+	t.Run("case=rewrite_and_traversal with depth", func(t *testing.T) {
+		t.Parallel()
+
+		for _, tc := range []struct {
+			name string
+			opl  string
+		}{
+			{"rewrite and traversal", RewriteAndTraversalConfig},
+		} {
+			tc := tc
+			t.Run("opl="+tc.name, func(t *testing.T) {
+				t.Parallel()
+
+				reg := driver.NewSqliteTestRegistry(t, false,
+					driver.WithConfig(config.KeyLimitMaxReadDepth, 10),
+					driver.WithOPL(RewriteAndTraversalConfig))
+
+				insertFixtures(t, reg.RelationTupleManager(), []string{
+					"Group:g#supers@SuperUsers:super",
+					"Role:admin#members@User:u",
+					"SuperUsers:super#admins@Role:admin#members",
+					"Comment:c#parents@Group:g",
+				})
+
+				e := check.NewEngine(reg)
+
+				t.Run("case=enough depth", func(t *testing.T) {
+					res, err := e.CheckIsMember(ctx, tupleFromString(t, "Comment:c#update@User:u"), 6)
+					require.NoError(t, err)
+					assert.True(t, res)
+				})
+
+				t.Run("case=not enough depth", func(t *testing.T) {
+					res, err := e.CheckIsMember(ctx, tupleFromString(t, "Comment:c#update@User:u"), 5)
+					require.NoError(t, err)
+					assert.False(t, res)
+				})
+			})
+		}
+	})
 }
