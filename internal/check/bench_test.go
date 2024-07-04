@@ -135,6 +135,9 @@ func BenchmarkCheckEngine(b *testing.B) {
 //go:embed testfixtures/project_opl.ts
 var ProjectOPLConfig string
 
+//go:embed testfixtures/rewrite_and_traversal_opl.ts
+var RewriteAndTraversalConfig string
+
 func BenchmarkComputedUsersets(b *testing.B) {
 	ctx := context.Background()
 
