@@ -117,12 +117,12 @@ func (g *cliClient) check(t require.TestingT, r *ketoapi.RelationTuple) bool {
 }
 
 func (g *cliClient) batchCheckErr(t require.TestingT, requestTuples []*ketoapi.RelationTuple,
-	parallelizationFactor *int, expected herodot.DefaultError) {
+	expected herodot.DefaultError) {
 	if t, ok := t.(*testing.T); ok {
 		t.Skip("not implemented for the CLI")
 	}
 }
-func (g *cliClient) batchCheck(t require.TestingT, requestTuples []*ketoapi.RelationTuple, parallelizationFactor *int) []checkResponse {
+func (g *cliClient) batchCheck(t require.TestingT, requestTuples []*ketoapi.RelationTuple) []checkResponse {
 	if t, ok := t.(*testing.T); ok {
 		t.Skip("not implemented for the CLI")
 	}

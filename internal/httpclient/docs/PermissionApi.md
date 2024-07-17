@@ -15,7 +15,7 @@ Method | HTTP request | Description
 
 ## BatchCheckPermission
 
-> BatchCheckPermissionResult BatchCheckPermission(ctx).MaxDepth(maxDepth).ParallelizationFactor(parallelizationFactor).BatchCheckPermissionBody(batchCheckPermissionBody).Execute()
+> BatchCheckPermissionResult BatchCheckPermission(ctx).MaxDepth(maxDepth).BatchCheckPermissionBody(batchCheckPermissionBody).Execute()
 
 Batch check permissions
 
@@ -35,12 +35,11 @@ import (
 
 func main() {
     maxDepth := int64(789) // int64 |  (optional)
-    parallelizationFactor := int64(789) // int64 | ParallelizationFactor is the maximum number of check requests that can happen concurrently. Optional. Defaults to 5. (optional)
     batchCheckPermissionBody := *openapiclient.NewBatchCheckPermissionBody() // BatchCheckPermissionBody |  (optional)
 
     configuration := openapiclient.NewConfiguration()
     apiClient := openapiclient.NewAPIClient(configuration)
-    resp, r, err := apiClient.PermissionApi.BatchCheckPermission(context.Background()).MaxDepth(maxDepth).ParallelizationFactor(parallelizationFactor).BatchCheckPermissionBody(batchCheckPermissionBody).Execute()
+    resp, r, err := apiClient.PermissionApi.BatchCheckPermission(context.Background()).MaxDepth(maxDepth).BatchCheckPermissionBody(batchCheckPermissionBody).Execute()
     if err != nil {
         fmt.Fprintf(os.Stderr, "Error when calling `PermissionApi.BatchCheckPermission``: %v\n", err)
         fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
@@ -62,7 +61,6 @@ Other parameters are passed through a pointer to a apiBatchCheckPermissionReques
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **maxDepth** | **int64** |  | 
- **parallelizationFactor** | **int64** | ParallelizationFactor is the maximum number of check requests that can happen concurrently. Optional. Defaults to 5. | 
  **batchCheckPermissionBody** | [**BatchCheckPermissionBody**](BatchCheckPermissionBody.md) |  | 
 
 ### Return type

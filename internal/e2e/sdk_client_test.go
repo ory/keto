@@ -240,16 +240,12 @@ func (c *sdkClient) check(t require.TestingT, r *ketoapi.RelationTuple) bool {
 	return resp.GetAllowed()
 }
 
-func (c *sdkClient) batchCheckErr(t require.TestingT, requestTuples []*ketoapi.RelationTuple,
-	parallelizationFactor *int, expected herodot.DefaultError) {
+func (c *sdkClient) batchCheckErr(t require.TestingT, requestTuples []*ketoapi.RelationTuple, expected herodot.DefaultError) {
 
 	request := c.getReadClient().PermissionApi.BatchCheckPermission(c.requestCtx()).
 		BatchCheckPermissionBody(httpclient.BatchCheckPermissionBody{
 			Tuples: tuplesToRelationships(requestTuples),
 		})
-	if parallelizationFactor != nil {
-		request = request.ParallelizationFactor(int64(*parallelizationFactor))
-	}
 
 	_, _, err := request.Execute()
 	switch typedErr := err.(type) {
@@ -262,14 +258,11 @@ func (c *sdkClient) batchCheckErr(t require.TestingT, requestTuples []*ketoapi.R
 	}
 }
 
-func (c *sdkClient) batchCheck(t require.TestingT, requestTuples []*ketoapi.RelationTuple, parallelizationFactor *int) []checkResponse {
+func (c *sdkClient) batchCheck(t require.TestingT, requestTuples []*ketoapi.RelationTuple) []checkResponse {
 	request := c.getReadClient().PermissionApi.BatchCheckPermission(c.requestCtx()).
 		BatchCheckPermissionBody(httpclient.BatchCheckPermissionBody{
 			Tuples: tuplesToRelationships(requestTuples),
 		})
-	if parallelizationFactor != nil {
-		request.ParallelizationFactor(int64(*parallelizationFactor))
-	}
 
 	resp, _, err := request.Execute()
 	require.NoError(t, err)

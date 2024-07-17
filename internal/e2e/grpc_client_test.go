@@ -8,8 +8,6 @@ import (
 	"encoding/json"
 	"time"
 
-	"github.com/ory/x/pointerx"
-
 	"github.com/ory/keto/ketoapi"
 	opl "github.com/ory/keto/proto/ory/keto/opl/v1alpha1"
 
@@ -158,9 +156,9 @@ type checkResponse struct {
 }
 
 func (g *grpcClient) batchCheckErr(t require.TestingT, requestTuples []*ketoapi.RelationTuple,
-	parallelizationFactor *int, expected herodot.DefaultError) {
+	expected herodot.DefaultError) {
 
-	_, err := g.doBatchCheck(t, requestTuples, parallelizationFactor)
+	_, err := g.doBatchCheck(t, requestTuples)
 	require.Error(t, err)
 	s, ok := status.FromError(err)
 	require.True(t, ok)
@@ -168,8 +166,8 @@ func (g *grpcClient) batchCheckErr(t require.TestingT, requestTuples []*ketoapi.
 	assert.Contains(t, s.Message(), expected.Reason())
 }
 
-func (g *grpcClient) batchCheck(t require.TestingT, requestTuples []*ketoapi.RelationTuple, parallelizationFactor *int) []checkResponse {
-	resp, err := g.doBatchCheck(t, requestTuples, parallelizationFactor)
+func (g *grpcClient) batchCheck(t require.TestingT, requestTuples []*ketoapi.RelationTuple) []checkResponse {
+	resp, err := g.doBatchCheck(t, requestTuples)
 	require.NoError(t, err)
 
 	checkResponses := make([]checkResponse, len(resp.Results))
@@ -183,8 +181,7 @@ func (g *grpcClient) batchCheck(t require.TestingT, requestTuples []*ketoapi.Rel
 	return checkResponses
 }
 
-func (g *grpcClient) doBatchCheck(t require.TestingT, requestTuples []*ketoapi.RelationTuple,
-	parallelizationFactor *int) (*rts.BatchCheckResponse, error) {
+func (g *grpcClient) doBatchCheck(t require.TestingT, requestTuples []*ketoapi.RelationTuple) (*rts.BatchCheckResponse, error) {
 
 	c := rts.NewCheckServiceClient(g.readConn(t))
 
@@ -206,9 +203,6 @@ func (g *grpcClient) doBatchCheck(t require.TestingT, requestTuples []*ketoapi.R
 
 	req := &rts.BatchCheckRequest{
 		Tuples: tuples,
-	}
-	if parallelizationFactor != nil {
-		req.ParallelizationFactor = pointerx.Ptr(int32(*parallelizationFactor))
 	}
 	return c.BatchCheck(g.ctx, req)
 }

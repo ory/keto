@@ -63,7 +63,7 @@ func runCases(c client, m *namespaceTestManager) func(*testing.T) {
 
 			// try the check API to see whether the tuple is interpreted correctly
 			assert.True(t, c.check(t, tuple))
-			batchResult := c.batchCheck(t, []*ketoapi.RelationTuple{tuple}, nil)
+			batchResult := c.batchCheck(t, []*ketoapi.RelationTuple{tuple})
 			require.Len(t, batchResult, 1)
 			assert.True(t, batchResult[0].allowed)
 			assert.Empty(t, batchResult[0].errorMessage)
@@ -93,7 +93,7 @@ func runCases(c client, m *namespaceTestManager) func(*testing.T) {
 				c.createTuple(t, tp)
 				// try the check API to see whether the tuple is interpreted correctly
 				assert.True(t, c.check(t, tp))
-				batchResult := c.batchCheck(t, []*ketoapi.RelationTuple{tp}, nil)
+				batchResult := c.batchCheck(t, []*ketoapi.RelationTuple{tp})
 				require.Len(t, batchResult, 1)
 				assert.True(t, batchResult[0].allowed)
 				assert.Empty(t, batchResult[0].errorMessage)
@@ -123,7 +123,7 @@ func runCases(c client, m *namespaceTestManager) func(*testing.T) {
 			c.createTuple(t, rt)
 
 			assert.True(t, c.check(t, rt))
-			batchResult := c.batchCheck(t, []*ketoapi.RelationTuple{rt}, nil)
+			batchResult := c.batchCheck(t, []*ketoapi.RelationTuple{rt})
 			require.Len(t, batchResult, 1)
 			assert.True(t, batchResult[0].allowed)
 			assert.Empty(t, batchResult[0].errorMessage)
@@ -182,7 +182,7 @@ func runCases(c client, m *namespaceTestManager) func(*testing.T) {
 			}
 
 			batchResult := c.batchCheck(t, []*ketoapi.RelationTuple{tupleSubjectSet, tupleSingleSubject,
-				unknownNamespaceTuple, unknownSubjectTuple}, nil)
+				unknownNamespaceTuple, unknownSubjectTuple})
 			require.Len(t, batchResult, 4)
 			assert.True(t, batchResult[0].allowed)
 			assert.Empty(t, batchResult[0].errorMessage)
@@ -193,28 +193,12 @@ func runCases(c client, m *namespaceTestManager) func(*testing.T) {
 			assert.False(t, batchResult[3].allowed)
 			assert.Empty(t, batchResult[3].errorMessage)
 
-			// Run again with parallelization factor of 1
-			singleThreadedBatchResult := c.batchCheck(t, []*ketoapi.RelationTuple{tupleSubjectSet, tupleSingleSubject,
-				unknownNamespaceTuple, unknownSubjectTuple}, pointerx.Ptr(1))
-			require.Equal(t, batchResult, singleThreadedBatchResult)
-
-			// Run again with parallelization factor of 10000
-			highlyParallelBatchResult := c.batchCheck(t, []*ketoapi.RelationTuple{tupleSubjectSet, tupleSingleSubject,
-				unknownNamespaceTuple, unknownSubjectTuple}, pointerx.Ptr(10000))
-			require.Equal(t, batchResult, highlyParallelBatchResult)
-
 			// Verify a call with no tuples returns successfully with no results
-			emptyResults := c.batchCheck(t, []*ketoapi.RelationTuple{}, nil)
+			emptyResults := c.batchCheck(t, []*ketoapi.RelationTuple{})
 			require.Empty(t, emptyResults)
 		})
 
 		t.Run("case=batch check validation errors", func(t *testing.T) {
-			// negative parallelization factor
-			c.batchCheckErr(t, []*ketoapi.RelationTuple{}, pointerx.Ptr(-1), herodot.ErrBadRequest)
-
-			// zero parallelization factor
-			c.batchCheckErr(t, []*ketoapi.RelationTuple{}, pointerx.Ptr(0), herodot.ErrBadRequest)
-
 			// Pass in 11 tuples to check, more than the default limit of 10, and verify the request is rejected
 			tuples := make([]*ketoapi.RelationTuple, 11)
 			for i := range tuples {
@@ -225,7 +209,7 @@ func runCases(c client, m *namespaceTestManager) func(*testing.T) {
 					SubjectID: pointerx.Ptr("sub"),
 				}
 			}
-			c.batchCheckErr(t, tuples, nil, herodot.ErrBadRequest)
+			c.batchCheckErr(t, tuples, herodot.ErrBadRequest)
 		})
 
 		t.Run("case=expand API", func(t *testing.T) {

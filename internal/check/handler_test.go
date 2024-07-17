@@ -194,30 +194,8 @@ func TestBatchCheckRESTHandler(t *testing.T) {
 		assert.Contains(t, string(body), "invalid syntax")
 	})
 
-	t.Run("case=returns bad request on non-int parallelization factor", func(t *testing.T) {
-		resp, err := ts.Client().Post(buildBatchURL(ts.URL, "5", "abc"),
-			"application/json", nil)
-		require.NoError(t, err)
-
-		assert.Equal(t, http.StatusBadRequest, resp.StatusCode)
-		body, err := io.ReadAll(resp.Body)
-		require.NoError(t, err)
-		assert.Contains(t, string(body), "parallelization factor must be a positive integer")
-	})
-
-	t.Run("case=returns bad request on negative parallelization factor", func(t *testing.T) {
-		resp, err := ts.Client().Post(buildBatchURL(ts.URL, "5", "-1"),
-			"application/json", nil)
-		require.NoError(t, err)
-
-		assert.Equal(t, http.StatusBadRequest, resp.StatusCode)
-		body, err := io.ReadAll(resp.Body)
-		require.NoError(t, err)
-		assert.Contains(t, string(body), "parallelization factor must be a positive integer")
-	})
-
 	t.Run("case=returns bad request on invalid request body", func(t *testing.T) {
-		resp, err := ts.Client().Post(buildBatchURL(ts.URL, "5", "5"),
+		resp, err := ts.Client().Post(buildBatchURL(ts.URL, "5"),
 			"application/json", strings.NewReader("not-json"))
 		require.NoError(t, err)
 
@@ -241,7 +219,7 @@ func TestBatchCheckRESTHandler(t *testing.T) {
 		bodyBytes, err := json.Marshal(reqBody)
 		require.NoError(t, err)
 
-		resp, err := ts.Client().Post(buildBatchURL(ts.URL, "5", "5"),
+		resp, err := ts.Client().Post(buildBatchURL(ts.URL, "5"),
 			"application/json", bytes.NewReader(bodyBytes))
 		require.NoError(t, err)
 
@@ -283,7 +261,7 @@ func TestBatchCheckRESTHandler(t *testing.T) {
 		bodyBytes, err := json.Marshal(reqBody)
 		require.NoError(t, err)
 
-		resp, err := ts.Client().Post(buildBatchURL(ts.URL, "5", "5"),
+		resp, err := ts.Client().Post(buildBatchURL(ts.URL, "5"),
 			"application/json", bytes.NewReader(bodyBytes))
 		require.NoError(t, err)
 		assert.Equal(t, http.StatusOK, resp.StatusCode)
@@ -321,9 +299,9 @@ func TestBatchCheckRESTHandler(t *testing.T) {
 	})
 }
 
-func buildBatchURL(baseURL, maxDepth, parallelizationFactor string) string {
-	return fmt.Sprintf("%s%s?max-depth=%s&parallelization-factor=%s",
-		baseURL, check.BatchRoute, maxDepth, parallelizationFactor)
+func buildBatchURL(baseURL, maxDepth string) string {
+	return fmt.Sprintf("%s%s?max-depth=%s",
+		baseURL, check.BatchRoute, maxDepth)
 }
 
 func TestBatchCheckGRPCHandler(t *testing.T) {
@@ -371,37 +349,13 @@ func TestBatchCheckGRPCHandler(t *testing.T) {
 			}
 		}
 		_, err := checkClient.BatchCheck(ctx, &rts.BatchCheckRequest{
-			Tuples:                tuples,
-			MaxDepth:              5,
-			ParallelizationFactor: nil,
+			Tuples:   tuples,
+			MaxDepth: 5,
 		})
 		statusErr, ok := status.FromError(err)
 		require.True(t, ok)
 		require.Equal(t, codes.InvalidArgument, statusErr.Code())
 		require.Equal(t, "batch exceeds max size of 10", statusErr.Message())
-	})
-
-	t.Run("case=returns bad request when batch too large", func(t *testing.T) {
-		_, err := checkClient.BatchCheck(ctx, &rts.BatchCheckRequest{
-			Tuples: []*rts.RelationTuple{
-				{
-					Namespace: "n",
-					Object:    "o",
-					Relation:  "r",
-					Subject: &rts.Subject{
-						Ref: &rts.Subject_Id{
-							Id: "s",
-						},
-					},
-				},
-			},
-			MaxDepth:              5,
-			ParallelizationFactor: pointerx.Ptr[int32](0),
-		})
-		statusErr, ok := status.FromError(err)
-		require.True(t, ok)
-		require.Equal(t, codes.InvalidArgument, statusErr.Code())
-		require.Equal(t, "parallelization factor must be a positive integer", statusErr.Message())
 	})
 
 	t.Run("case=batch check", func(t *testing.T) {
@@ -446,8 +400,7 @@ func TestBatchCheckGRPCHandler(t *testing.T) {
 					},
 				},
 			},
-			MaxDepth:              5,
-			ParallelizationFactor: pointerx.Ptr[int32](5),
+			MaxDepth: 5,
 		})
 		require.NoError(t, err)
 		require.Len(t, resp.Results, 3)

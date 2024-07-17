@@ -9,7 +9,6 @@ import (
 	"io"
 	"net/http"
 	"net/url"
-	"strconv"
 
 	"github.com/julienschmidt/httprouter"
 
@@ -56,9 +55,6 @@ const (
 	RouteBase        = "/relation-tuples/check"
 	OpenAPIRouteBase = RouteBase + "/openapi"
 	BatchRoute       = "/relation-tuples/batch/check"
-
-	parallelizationFactorQueryParam        = "parallelization-factor"
-	defaultBatchCheckParallelizationFactor = 5
 )
 
 func (h *Handler) RegisterReadRoutes(r *x.ReadRouter) {
@@ -364,12 +360,6 @@ type batchCheckPermission struct {
 	// in: query
 	MaxDepth int `json:"max-depth"`
 
-	// ParallelizationFactor is the maximum number of check requests
-	// that can happen concurrently. Optional. Defaults to 5.
-	//
-	// in: query
-	ParallelizationFactor int `json:"parallelization-factor"`
-
 	// in: body
 	Body batchCheckPermissionBody
 }
@@ -427,14 +417,6 @@ func (h *Handler) doBatchCheck(ctx context.Context, body io.Reader, query url.Va
 	if err != nil {
 		return nil, err
 	}
-	parallelizationFactor := defaultBatchCheckParallelizationFactor
-	if query.Get(parallelizationFactorQueryParam) != "" {
-		parallelizationFactor, err = strconv.Atoi(query.Get(parallelizationFactorQueryParam))
-		if err != nil || parallelizationFactor <= 0 {
-			return nil, herodot.ErrBadRequest.WithError("parallelization factor must be a positive integer")
-		}
-	}
-	h.d.Writer()
 	var request batchCheckPermissionBody
 	if err := json.NewDecoder(body).Decode(&request); err != nil {
 		return nil, errors.WithStack(herodot.ErrBadRequest.WithErrorf("could not unmarshal json: %s", err.Error()))
@@ -445,7 +427,7 @@ func (h *Handler) doBatchCheck(ctx context.Context, body io.Reader, query url.Va
 			h.d.Config(ctx).BatchCheckMaxBatchSize())
 	}
 
-	results, err := h.d.PermissionEngine().BatchCheck(ctx, request.Tuples, maxDepth, parallelizationFactor)
+	results, err := h.d.PermissionEngine().BatchCheck(ctx, request.Tuples, maxDepth)
 	if err != nil {
 		return nil, err
 	}
@@ -477,14 +459,7 @@ func (h *Handler) BatchCheck(ctx context.Context, req *rts.BatchCheckRequest) (*
 		ketoTuples[i] = (&ketoapi.RelationTuple{}).FromProto(tuple)
 	}
 
-	parallelizationFactor := defaultBatchCheckParallelizationFactor
-	if req.ParallelizationFactor != nil {
-		if *req.ParallelizationFactor <= 0 {
-			return nil, status.Error(codes.InvalidArgument, "parallelization factor must be a positive integer")
-		}
-		parallelizationFactor = int(*req.ParallelizationFactor)
-	}
-	results, err := h.d.PermissionEngine().BatchCheck(ctx, ketoTuples, int(req.MaxDepth), parallelizationFactor)
+	results, err := h.d.PermissionEngine().BatchCheck(ctx, ketoTuples, int(req.MaxDepth))
 	if err != nil {
 		return nil, err
 	}

@@ -115,11 +115,6 @@ export class BatchCheckRequest extends jspb.Message {
     getMaxDepth(): number;
     setMaxDepth(value: number): BatchCheckRequest;
 
-    hasParallelizationFactor(): boolean;
-    clearParallelizationFactor(): void;
-    getParallelizationFactor(): number | undefined;
-    setParallelizationFactor(value: number): BatchCheckRequest;
-
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): BatchCheckRequest.AsObject;
     static toObject(includeInstance: boolean, msg: BatchCheckRequest): BatchCheckRequest.AsObject;
@@ -136,7 +131,6 @@ export namespace BatchCheckRequest {
         latest: boolean,
         snaptoken: string,
         maxDepth: number,
-        parallelizationFactor?: number,
     }
 }
 

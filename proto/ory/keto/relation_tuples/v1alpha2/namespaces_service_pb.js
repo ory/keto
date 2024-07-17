@@ -227,7 +227,7 @@ proto.ory.keto.relation_tuples.v1alpha2.ListNamespacesResponse.prototype.toObjec
  */
 proto.ory.keto.relation_tuples.v1alpha2.ListNamespacesResponse.toObject = function(includeInstance, msg) {
   var f, obj = {
-    namespacesList: jspb.Message.toObjectList(msg.getNamespacesList(),
+namespacesList: jspb.Message.toObjectList(msg.getNamespacesList(),
     proto.ory.keto.relation_tuples.v1alpha2.Namespace.toObject, includeInstance)
   };
 
@@ -380,7 +380,7 @@ proto.ory.keto.relation_tuples.v1alpha2.Namespace.prototype.toObject = function(
  */
 proto.ory.keto.relation_tuples.v1alpha2.Namespace.toObject = function(includeInstance, msg) {
   var f, obj = {
-    name: jspb.Message.getFieldWithDefault(msg, 1, "")
+name: jspb.Message.getFieldWithDefault(msg, 1, "")
   };
 
   if (includeInstance) {

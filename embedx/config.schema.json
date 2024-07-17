@@ -388,6 +388,14 @@
           "description": "The maximum number of tuples that will be accepted by the batch check endpoint.",
           "minimum": 1,
           "maximum": 65535
+        },
+        "batch_check_max_parallelization": {
+          "type": "integer",
+          "default": 5,
+          "title": "Max concurrent checks during batch check",
+          "description": "The limit for the number of tuples that will be checked concurrently during a batch check.",
+          "minimum": 1,
+          "maximum": 65535
         }
       },
       "additionalProperties": false

@@ -165,14 +165,14 @@ proto.ory.keto.relation_tuples.v1alpha2.CheckRequest.prototype.toObject = functi
  */
 proto.ory.keto.relation_tuples.v1alpha2.CheckRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
-    namespace: jspb.Message.getFieldWithDefault(msg, 1, ""),
-    object: jspb.Message.getFieldWithDefault(msg, 2, ""),
-    relation: jspb.Message.getFieldWithDefault(msg, 3, ""),
-    subject: (f = msg.getSubject()) && ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.Subject.toObject(includeInstance, f),
-    tuple: (f = msg.getTuple()) && ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationTuple.toObject(includeInstance, f),
-    latest: jspb.Message.getBooleanFieldWithDefault(msg, 5, false),
-    snaptoken: jspb.Message.getFieldWithDefault(msg, 6, ""),
-    maxDepth: jspb.Message.getFieldWithDefault(msg, 7, 0)
+namespace: jspb.Message.getFieldWithDefault(msg, 1, ""),
+object: jspb.Message.getFieldWithDefault(msg, 2, ""),
+relation: jspb.Message.getFieldWithDefault(msg, 3, ""),
+subject: (f = msg.getSubject()) && ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.Subject.toObject(includeInstance, f),
+tuple: (f = msg.getTuple()) && ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationTuple.toObject(includeInstance, f),
+latest: jspb.Message.getBooleanFieldWithDefault(msg, 5, false),
+snaptoken: jspb.Message.getFieldWithDefault(msg, 6, ""),
+maxDepth: jspb.Message.getFieldWithDefault(msg, 7, 0)
   };
 
   if (includeInstance) {
@@ -547,8 +547,8 @@ proto.ory.keto.relation_tuples.v1alpha2.CheckResponse.prototype.toObject = funct
  */
 proto.ory.keto.relation_tuples.v1alpha2.CheckResponse.toObject = function(includeInstance, msg) {
   var f, obj = {
-    allowed: jspb.Message.getBooleanFieldWithDefault(msg, 1, false),
-    snaptoken: jspb.Message.getFieldWithDefault(msg, 2, "")
+allowed: jspb.Message.getBooleanFieldWithDefault(msg, 1, false),
+snaptoken: jspb.Message.getFieldWithDefault(msg, 2, "")
   };
 
   if (includeInstance) {
@@ -707,9 +707,9 @@ proto.ory.keto.relation_tuples.v1alpha2.CheckResponseWithError.prototype.toObjec
  */
 proto.ory.keto.relation_tuples.v1alpha2.CheckResponseWithError.toObject = function(includeInstance, msg) {
   var f, obj = {
-    allowed: jspb.Message.getBooleanFieldWithDefault(msg, 1, false),
-    error: jspb.Message.getFieldWithDefault(msg, 2, ""),
-    snaptoken: jspb.Message.getFieldWithDefault(msg, 3, "")
+allowed: jspb.Message.getBooleanFieldWithDefault(msg, 1, false),
+error: jspb.Message.getFieldWithDefault(msg, 2, ""),
+snaptoken: jspb.Message.getFieldWithDefault(msg, 3, "")
   };
 
   if (includeInstance) {
@@ -904,12 +904,11 @@ proto.ory.keto.relation_tuples.v1alpha2.BatchCheckRequest.prototype.toObject = f
  */
 proto.ory.keto.relation_tuples.v1alpha2.BatchCheckRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
-    tuplesList: jspb.Message.toObjectList(msg.getTuplesList(),
+tuplesList: jspb.Message.toObjectList(msg.getTuplesList(),
     ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationTuple.toObject, includeInstance),
-    latest: jspb.Message.getBooleanFieldWithDefault(msg, 2, false),
-    snaptoken: jspb.Message.getFieldWithDefault(msg, 3, ""),
-    maxDepth: jspb.Message.getFieldWithDefault(msg, 4, 0),
-    parallelizationFactor: jspb.Message.getFieldWithDefault(msg, 5, 0)
+latest: jspb.Message.getBooleanFieldWithDefault(msg, 2, false),
+snaptoken: jspb.Message.getFieldWithDefault(msg, 3, ""),
+maxDepth: jspb.Message.getFieldWithDefault(msg, 4, 0)
   };
 
   if (includeInstance) {
@@ -962,10 +961,6 @@ proto.ory.keto.relation_tuples.v1alpha2.BatchCheckRequest.deserializeBinaryFromR
     case 4:
       var value = /** @type {number} */ (reader.readInt32());
       msg.setMaxDepth(value);
-      break;
-    case 5:
-      var value = /** @type {number} */ (reader.readInt32());
-      msg.setParallelizationFactor(value);
       break;
     default:
       reader.skipField();
@@ -1022,13 +1017,6 @@ proto.ory.keto.relation_tuples.v1alpha2.BatchCheckRequest.serializeBinaryToWrite
   if (f !== 0) {
     writer.writeInt32(
       4,
-      f
-    );
-  }
-  f = /** @type {number} */ (jspb.Message.getField(message, 5));
-  if (f != null) {
-    writer.writeInt32(
-      5,
       f
     );
   }
@@ -1127,42 +1115,6 @@ proto.ory.keto.relation_tuples.v1alpha2.BatchCheckRequest.prototype.setMaxDepth 
 };
 
 
-/**
- * optional int32 parallelization_factor = 5;
- * @return {number}
- */
-proto.ory.keto.relation_tuples.v1alpha2.BatchCheckRequest.prototype.getParallelizationFactor = function() {
-  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 5, 0));
-};
-
-
-/**
- * @param {number} value
- * @return {!proto.ory.keto.relation_tuples.v1alpha2.BatchCheckRequest} returns this
- */
-proto.ory.keto.relation_tuples.v1alpha2.BatchCheckRequest.prototype.setParallelizationFactor = function(value) {
-  return jspb.Message.setField(this, 5, value);
-};
-
-
-/**
- * Clears the field making it undefined.
- * @return {!proto.ory.keto.relation_tuples.v1alpha2.BatchCheckRequest} returns this
- */
-proto.ory.keto.relation_tuples.v1alpha2.BatchCheckRequest.prototype.clearParallelizationFactor = function() {
-  return jspb.Message.setField(this, 5, undefined);
-};
-
-
-/**
- * Returns whether this field is set.
- * @return {boolean}
- */
-proto.ory.keto.relation_tuples.v1alpha2.BatchCheckRequest.prototype.hasParallelizationFactor = function() {
-  return jspb.Message.getField(this, 5) != null;
-};
-
-
 
 /**
  * List of repeated fields within this message type.
@@ -1202,7 +1154,7 @@ proto.ory.keto.relation_tuples.v1alpha2.BatchCheckResponse.prototype.toObject = 
  */
 proto.ory.keto.relation_tuples.v1alpha2.BatchCheckResponse.toObject = function(includeInstance, msg) {
   var f, obj = {
-    resultsList: jspb.Message.toObjectList(msg.getResultsList(),
+resultsList: jspb.Message.toObjectList(msg.getResultsList(),
     proto.ory.keto.relation_tuples.v1alpha2.CheckResponseWithError.toObject, includeInstance)
   };
 

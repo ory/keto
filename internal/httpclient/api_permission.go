@@ -118,16 +118,11 @@ type PermissionApiApiBatchCheckPermissionRequest struct {
 	ctx                      context.Context
 	ApiService               PermissionApi
 	maxDepth                 *int64
-	parallelizationFactor    *int64
 	batchCheckPermissionBody *BatchCheckPermissionBody
 }
 
 func (r PermissionApiApiBatchCheckPermissionRequest) MaxDepth(maxDepth int64) PermissionApiApiBatchCheckPermissionRequest {
 	r.maxDepth = &maxDepth
-	return r
-}
-func (r PermissionApiApiBatchCheckPermissionRequest) ParallelizationFactor(parallelizationFactor int64) PermissionApiApiBatchCheckPermissionRequest {
-	r.parallelizationFactor = &parallelizationFactor
 	return r
 }
 func (r PermissionApiApiBatchCheckPermissionRequest) BatchCheckPermissionBody(batchCheckPermissionBody BatchCheckPermissionBody) PermissionApiApiBatchCheckPermissionRequest {
@@ -179,9 +174,6 @@ func (a *PermissionApiService) BatchCheckPermissionExecute(r PermissionApiApiBat
 
 	if r.maxDepth != nil {
 		localVarQueryParams.Add("max-depth", parameterToString(*r.maxDepth, ""))
-	}
-	if r.parallelizationFactor != nil {
-		localVarQueryParams.Add("parallelization-factor", parameterToString(*r.parallelizationFactor, ""))
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"application/json"}

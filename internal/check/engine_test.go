@@ -660,7 +660,7 @@ func TestEngine(t *testing.T) {
 		}
 
 		// Batch check with low max depth
-		results, err := e.BatchCheck(ctx, targetTuples, 2, 5)
+		results, err := e.BatchCheck(ctx, targetTuples, 2)
 		require.NoError(t, err)
 
 		require.Equal(t, checkgroup.IsMember, results[0].Membership)
@@ -677,17 +677,8 @@ func TestEngine(t *testing.T) {
 		require.NoError(t, results[5].Err)
 
 		// Check with higher max depth and verify the third tuple is now shown as a member
-		results, err = e.BatchCheck(ctx, targetTuples, 3, 5)
+		results, err = e.BatchCheck(ctx, targetTuples, 3)
 		require.NoError(t, err)
 		require.Equal(t, checkgroup.IsMember, results[2].Membership)
-
-		// Check success with no parallelization
-		noParallelizationResults, err := e.BatchCheck(ctx, targetTuples, 3, 1)
-		require.NoError(t, err)
-		require.Equal(t, results, noParallelizationResults)
-
-		// Attempt with an invalid parallelization factor
-		_, err = e.BatchCheck(ctx, targetTuples, 3, 0)
-		require.EqualError(t, err, "invalid parallelization factor")
 	})
 }

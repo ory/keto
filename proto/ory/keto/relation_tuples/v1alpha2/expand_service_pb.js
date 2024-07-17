@@ -122,9 +122,9 @@ proto.ory.keto.relation_tuples.v1alpha2.ExpandRequest.prototype.toObject = funct
  */
 proto.ory.keto.relation_tuples.v1alpha2.ExpandRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
-    subject: (f = msg.getSubject()) && ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.Subject.toObject(includeInstance, f),
-    maxDepth: jspb.Message.getFieldWithDefault(msg, 2, 0),
-    snaptoken: jspb.Message.getFieldWithDefault(msg, 3, "")
+subject: (f = msg.getSubject()) && ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.Subject.toObject(includeInstance, f),
+maxDepth: jspb.Message.getFieldWithDefault(msg, 2, 0),
+snaptoken: jspb.Message.getFieldWithDefault(msg, 3, "")
   };
 
   if (includeInstance) {
@@ -333,7 +333,7 @@ proto.ory.keto.relation_tuples.v1alpha2.ExpandResponse.prototype.toObject = func
  */
 proto.ory.keto.relation_tuples.v1alpha2.ExpandResponse.toObject = function(includeInstance, msg) {
   var f, obj = {
-    tree: (f = msg.getTree()) && proto.ory.keto.relation_tuples.v1alpha2.SubjectTree.toObject(includeInstance, f)
+tree: (f = msg.getTree()) && proto.ory.keto.relation_tuples.v1alpha2.SubjectTree.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -491,10 +491,10 @@ proto.ory.keto.relation_tuples.v1alpha2.SubjectTree.prototype.toObject = functio
  */
 proto.ory.keto.relation_tuples.v1alpha2.SubjectTree.toObject = function(includeInstance, msg) {
   var f, obj = {
-    nodeType: jspb.Message.getFieldWithDefault(msg, 1, 0),
-    subject: (f = msg.getSubject()) && ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.Subject.toObject(includeInstance, f),
-    tuple: (f = msg.getTuple()) && ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationTuple.toObject(includeInstance, f),
-    childrenList: jspb.Message.toObjectList(msg.getChildrenList(),
+nodeType: jspb.Message.getFieldWithDefault(msg, 1, 0),
+subject: (f = msg.getSubject()) && ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.Subject.toObject(includeInstance, f),
+tuple: (f = msg.getTuple()) && ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationTuple.toObject(includeInstance, f),
+childrenList: jspb.Message.toObjectList(msg.getChildrenList(),
     proto.ory.keto.relation_tuples.v1alpha2.SubjectTree.toObject, includeInstance)
   };
 

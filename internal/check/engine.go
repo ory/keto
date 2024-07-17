@@ -5,14 +5,12 @@ package check
 
 import (
 	"context"
-	"sync"
-
-	"golang.org/x/sync/semaphore"
 
 	"github.com/ory/herodot"
 	"github.com/ory/x/otelx"
 	"github.com/pkg/errors"
 	"go.opentelemetry.io/otel/trace"
+	"golang.org/x/sync/errgroup"
 
 	"github.com/ory/keto/x/events"
 
@@ -270,30 +268,19 @@ func (e *Engine) astRelationFor(ctx context.Context, r *relationTuple) (*ast.Rel
 
 // BatchCheck makes parallelized check requests for tuples. The check results are returned as slice, where the
 // result index matches the tuple index of the incoming tuples array.
-//
-// parallelizationFactor is the max the number of checks that can happen in parallel.
 func (e *Engine) BatchCheck(ctx context.Context,
 	tuples []*ketoapi.RelationTuple,
-	maxDepth, parallelizationFactor int) ([]checkgroup.Result, error) {
+	maxDepth int) ([]checkgroup.Result, error) {
 
-	if parallelizationFactor <= 0 {
-		return nil, errors.New("invalid parallelization factor")
-	}
-
-	wg := &sync.WaitGroup{}
-	sem := semaphore.NewWeighted(int64(parallelizationFactor))
+	eg := &errgroup.Group{}
+	eg.SetLimit(e.d.Config(ctx).BatchCheckParallelizationLimit())
 
 	mapper := e.d.ReadOnlyMapper()
 	results := make([]checkgroup.Result, len(tuples))
-	for outerIndex, outerTuple := range tuples {
-		sem.Acquire(context.Background(), 1) // Pass in background context to guarantee this won't return an error
-		wg.Add(1)
-		go func(i int, tuple *ketoapi.RelationTuple) {
-			defer func() {
-				wg.Done()
-				sem.Release(1)
-			}()
-
+	for i, tuple := range tuples {
+		i := i
+		tuple := tuple
+		eg.Go(func() error {
 			internalTuple, err := mapper.FromTuple(ctx, tuple)
 			if err != nil {
 				results[i] = checkgroup.Result{
@@ -303,10 +290,13 @@ func (e *Engine) BatchCheck(ctx context.Context,
 			} else {
 				results[i] = e.CheckRelationTuple(ctx, internalTuple[0], maxDepth)
 			}
-		}(outerIndex, outerTuple)
+			return nil
+		})
 	}
 
-	wg.Wait()
+	if err := eg.Wait(); err != nil {
+		return nil, err
+	}
 
 	return results, nil
 }

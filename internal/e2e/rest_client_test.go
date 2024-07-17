@@ -9,7 +9,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"net/url"
 	"strconv"
 	"time"
 
@@ -158,35 +157,25 @@ func (rc *restClient) check(t require.TestingT, r *ketoapi.RelationTuple) bool {
 }
 
 func (rc *restClient) batchCheckErr(t require.TestingT, requestTuples []*ketoapi.RelationTuple,
-	parallelizationFactor *int, expected herodot.DefaultError) {
-
-	queryParams := url.Values{}
-	if parallelizationFactor != nil {
-		queryParams.Add("parallelization-factor", strconv.Itoa(*parallelizationFactor))
-	}
+	expected herodot.DefaultError) {
 
 	req := client2.BatchCheckPermissionBody{
 		Tuples: tuplesToRelationships(requestTuples),
 	}
 	j, err := json.Marshal(req)
 	require.NoError(t, err)
-	body, code := rc.makeRequest(t, http.MethodPost, fmt.Sprintf("%s?%s", check.BatchRoute, queryParams.Encode()), string(j), rc.readURL)
+	body, code := rc.makeRequest(t, http.MethodPost, check.BatchRoute, string(j), rc.readURL)
 	assert.Equal(t, expected.CodeField, code)
 	assert.Contains(t, body, expected.Reason())
 }
 
-func (rc *restClient) batchCheck(t require.TestingT, requestTuples []*ketoapi.RelationTuple, parallelizationFactor *int) []checkResponse {
-	queryParams := url.Values{}
-	if parallelizationFactor != nil {
-		queryParams.Add("parallelization-factor", strconv.Itoa(*parallelizationFactor))
-	}
-
+func (rc *restClient) batchCheck(t require.TestingT, requestTuples []*ketoapi.RelationTuple) []checkResponse {
 	req := client2.BatchCheckPermissionBody{
 		Tuples: tuplesToRelationships(requestTuples),
 	}
 	j, err := json.Marshal(req)
 	require.NoError(t, err)
-	body, code := rc.makeRequest(t, http.MethodPost, fmt.Sprintf("%s?%s", check.BatchRoute, queryParams.Encode()), string(j), rc.readURL)
+	body, code := rc.makeRequest(t, http.MethodPost, check.BatchRoute, string(j), rc.readURL)
 	require.Equal(t, http.StatusOK, code, "batch check failed unexpected with error code %d", code)
 
 	var respPost check.BatchCheckPermissionResult
