@@ -5,7 +5,7 @@
 
 **Table of Contents**
 
-- [0.0.0 (2024-07-04)](#000-2024-07-04)
+- [0.0.0 (2024-07-18)](#000-2024-07-18)
   - [Bug Fixes](#bug-fixes)
   - [Features](#features)
 - [0.13.0-alpha.0 (2024-02-27)](#0130-alpha0-2024-02-27)
@@ -161,7 +161,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.13.0-alpha.0...v0.0.0) (2024-07-04)
+# [0.0.0](https://github.com/ory/keto/compare/v0.13.0-alpha.0...v0.0.0) (2024-07-18)
 
 ### Bug Fixes
 
@@ -194,6 +194,23 @@
 
   - chore: add alnr to codeowners
   - feat: add Inspect option
+
+- Batch check relations ([#1521](https://github.com/ory/keto/issues/1521))
+  ([d670d50](https://github.com/ory/keto/commit/d670d508a618f5f881a215085beb6ac5371b8a85)):
+
+  - batch check relations
+  - rename path
+  - shared parallelized function. batch size and parallelization configurable
+  - move check to engine
+  - fail individual requests
+  - move parallelization factor to be request parameter
+  - document and update configurable max batch size
+  - end to end tests
+  - unit tests
+  - cleanup
+  - run make format
+  - fix pipeline failures
+  - PR Feedback: move parallelization factor to config. Use err group
 
 # [0.13.0-alpha.0](https://github.com/ory/keto/compare/v0.12.0-alpha.0...v0.13.0-alpha.0) (2024-02-27)
 
