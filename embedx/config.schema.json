@@ -380,6 +380,22 @@
           "description": "The global maximum width on all read operations. Note that this does not affect how deeply nested the tuples can be. This value can be decreased for a request by a value specified on the request, only if the request-specific value is greater than 1 and less than the global maximum width.",
           "minimum": 1,
           "maximum": 65535
+        },
+        "max_batch_check_size": {
+          "type": "integer",
+          "default": 10,
+          "title": "Maximum batch check size",
+          "description": "The maximum number of tuples that will be accepted by the batch check endpoint.",
+          "minimum": 1,
+          "maximum": 65535
+        },
+        "batch_check_max_parallelization": {
+          "type": "integer",
+          "default": 5,
+          "title": "Max concurrent checks during batch check",
+          "description": "The limit for the number of tuples that will be checked concurrently during a batch check.",
+          "minimum": 1,
+          "maximum": 65535
         }
       },
       "additionalProperties": false

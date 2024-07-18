@@ -141,7 +141,7 @@ proto.ory.keto.opl.v1alpha1.CheckRequest.prototype.toObject = function(opt_inclu
  */
 proto.ory.keto.opl.v1alpha1.CheckRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
-    content: msg.getContent_asB64()
+content: msg.getContent_asB64()
   };
 
   if (includeInstance) {
@@ -302,7 +302,7 @@ proto.ory.keto.opl.v1alpha1.CheckResponse.prototype.toObject = function(opt_incl
  */
 proto.ory.keto.opl.v1alpha1.CheckResponse.toObject = function(includeInstance, msg) {
   var f, obj = {
-    parseErrorsList: jspb.Message.toObjectList(msg.getParseErrorsList(),
+parseErrorsList: jspb.Message.toObjectList(msg.getParseErrorsList(),
     proto.ory.keto.opl.v1alpha1.ParseError.toObject, includeInstance)
   };
 
@@ -455,9 +455,9 @@ proto.ory.keto.opl.v1alpha1.ParseError.prototype.toObject = function(opt_include
  */
 proto.ory.keto.opl.v1alpha1.ParseError.toObject = function(includeInstance, msg) {
   var f, obj = {
-    message: jspb.Message.getFieldWithDefault(msg, 1, ""),
-    start: (f = msg.getStart()) && proto.ory.keto.opl.v1alpha1.SourcePosition.toObject(includeInstance, f),
-    end: (f = msg.getEnd()) && proto.ory.keto.opl.v1alpha1.SourcePosition.toObject(includeInstance, f)
+message: jspb.Message.getFieldWithDefault(msg, 1, ""),
+start: (f = msg.getStart()) && proto.ory.keto.opl.v1alpha1.SourcePosition.toObject(includeInstance, f),
+end: (f = msg.getEnd()) && proto.ory.keto.opl.v1alpha1.SourcePosition.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -687,8 +687,8 @@ proto.ory.keto.opl.v1alpha1.SourcePosition.prototype.toObject = function(opt_inc
  */
 proto.ory.keto.opl.v1alpha1.SourcePosition.toObject = function(includeInstance, msg) {
   var f, obj = {
-    line: jspb.Message.getFieldWithDefault(msg, 1, 0),
-    column: jspb.Message.getFieldWithDefault(msg, 2, 0)
+line: jspb.Message.getFieldWithDefault(msg, 1, 0),
+column: jspb.Message.getFieldWithDefault(msg, 2, 0)
   };
 
   if (includeInstance) {

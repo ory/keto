@@ -76,3 +76,82 @@ export namespace CheckResponse {
         snaptoken: string,
     }
 }
+
+export class CheckResponseWithError extends jspb.Message { 
+    getAllowed(): boolean;
+    setAllowed(value: boolean): CheckResponseWithError;
+    getError(): string;
+    setError(value: string): CheckResponseWithError;
+    getSnaptoken(): string;
+    setSnaptoken(value: string): CheckResponseWithError;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): CheckResponseWithError.AsObject;
+    static toObject(includeInstance: boolean, msg: CheckResponseWithError): CheckResponseWithError.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: CheckResponseWithError, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): CheckResponseWithError;
+    static deserializeBinaryFromReader(message: CheckResponseWithError, reader: jspb.BinaryReader): CheckResponseWithError;
+}
+
+export namespace CheckResponseWithError {
+    export type AsObject = {
+        allowed: boolean,
+        error: string,
+        snaptoken: string,
+    }
+}
+
+export class BatchCheckRequest extends jspb.Message { 
+    clearTuplesList(): void;
+    getTuplesList(): Array<ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationTuple>;
+    setTuplesList(value: Array<ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationTuple>): BatchCheckRequest;
+    addTuples(value?: ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationTuple, index?: number): ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationTuple;
+    getLatest(): boolean;
+    setLatest(value: boolean): BatchCheckRequest;
+    getSnaptoken(): string;
+    setSnaptoken(value: string): BatchCheckRequest;
+    getMaxDepth(): number;
+    setMaxDepth(value: number): BatchCheckRequest;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): BatchCheckRequest.AsObject;
+    static toObject(includeInstance: boolean, msg: BatchCheckRequest): BatchCheckRequest.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: BatchCheckRequest, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): BatchCheckRequest;
+    static deserializeBinaryFromReader(message: BatchCheckRequest, reader: jspb.BinaryReader): BatchCheckRequest;
+}
+
+export namespace BatchCheckRequest {
+    export type AsObject = {
+        tuplesList: Array<ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationTuple.AsObject>,
+        latest: boolean,
+        snaptoken: string,
+        maxDepth: number,
+    }
+}
+
+export class BatchCheckResponse extends jspb.Message { 
+    clearResultsList(): void;
+    getResultsList(): Array<CheckResponseWithError>;
+    setResultsList(value: Array<CheckResponseWithError>): BatchCheckResponse;
+    addResults(value?: CheckResponseWithError, index?: number): CheckResponseWithError;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): BatchCheckResponse.AsObject;
+    static toObject(includeInstance: boolean, msg: BatchCheckResponse): BatchCheckResponse.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: BatchCheckResponse, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): BatchCheckResponse;
+    static deserializeBinaryFromReader(message: BatchCheckResponse, reader: jspb.BinaryReader): BatchCheckResponse;
+}
+
+export namespace BatchCheckResponse {
+    export type AsObject = {
+        resultsList: Array<CheckResponseWithError.AsObject>,
+    }
+}

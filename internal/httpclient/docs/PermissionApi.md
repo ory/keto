@@ -4,12 +4,81 @@ All URIs are relative to *http://localhost*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
+[**BatchCheckPermission**](PermissionApi.md#BatchCheckPermission) | **Post** /relation-tuples/batch/check | Batch check permissions
 [**CheckPermission**](PermissionApi.md#CheckPermission) | **Get** /relation-tuples/check/openapi | Check a permission
 [**CheckPermissionOrError**](PermissionApi.md#CheckPermissionOrError) | **Get** /relation-tuples/check | Check a permission
 [**ExpandPermissions**](PermissionApi.md#ExpandPermissions) | **Get** /relation-tuples/expand | Expand a Relationship into permissions.
 [**PostCheckPermission**](PermissionApi.md#PostCheckPermission) | **Post** /relation-tuples/check/openapi | Check a permission
 [**PostCheckPermissionOrError**](PermissionApi.md#PostCheckPermissionOrError) | **Post** /relation-tuples/check | Check a permission
 
+
+
+## BatchCheckPermission
+
+> BatchCheckPermissionResult BatchCheckPermission(ctx).MaxDepth(maxDepth).BatchCheckPermissionBody(batchCheckPermissionBody).Execute()
+
+Batch check permissions
+
+
+
+### Example
+
+```go
+package main
+
+import (
+    "context"
+    "fmt"
+    "os"
+    openapiclient "./openapi"
+)
+
+func main() {
+    maxDepth := int64(789) // int64 |  (optional)
+    batchCheckPermissionBody := *openapiclient.NewBatchCheckPermissionBody() // BatchCheckPermissionBody |  (optional)
+
+    configuration := openapiclient.NewConfiguration()
+    apiClient := openapiclient.NewAPIClient(configuration)
+    resp, r, err := apiClient.PermissionApi.BatchCheckPermission(context.Background()).MaxDepth(maxDepth).BatchCheckPermissionBody(batchCheckPermissionBody).Execute()
+    if err != nil {
+        fmt.Fprintf(os.Stderr, "Error when calling `PermissionApi.BatchCheckPermission``: %v\n", err)
+        fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+    }
+    // response from `BatchCheckPermission`: BatchCheckPermissionResult
+    fmt.Fprintf(os.Stdout, "Response from `PermissionApi.BatchCheckPermission`: %v\n", resp)
+}
+```
+
+### Path Parameters
+
+
+
+### Other Parameters
+
+Other parameters are passed through a pointer to a apiBatchCheckPermissionRequest struct via the builder pattern
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **maxDepth** | **int64** |  | 
+ **batchCheckPermissionBody** | [**BatchCheckPermissionBody**](BatchCheckPermissionBody.md) |  | 
+
+### Return type
+
+[**BatchCheckPermissionResult**](BatchCheckPermissionResult.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+- **Content-Type**: application/json
+- **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
+[[Back to Model list]](../README.md#documentation-for-models)
+[[Back to README]](../README.md)
 
 
 ## CheckPermission
