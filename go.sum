@@ -487,8 +487,8 @@ github.com/ory/herodot v0.10.3-0.20230626083119-d7e5192f0d88 h1:J0CIFKdpUeqKbVMw
 github.com/ory/herodot v0.10.3-0.20230626083119-d7e5192f0d88/go.mod h1:MMNmY6MG1uB6fnXYFaHoqdV23DTWctlPsmRCeq/2+wc=
 github.com/ory/jsonschema/v3 v3.0.8 h1:Ssdb3eJ4lDZ/+XnGkvQS/te0p+EkolqwTsDOCxr/FmU=
 github.com/ory/jsonschema/v3 v3.0.8/go.mod h1:ZPzqjDkwd3QTnb2Z6PAS+OTvBE2x5i6m25wCGx54W/0=
-github.com/ory/x v0.0.646 h1:hZ3qHqXG7fofQFdgAO8DVuww5XwO7W9KUiCWzRWeoq0=
-github.com/ory/x v0.0.646/go.mod h1:M+0EAXo7DT7Z2/Yrzvh4mgxOoV1fGI1jOKyAJ72d4Qs=
+github.com/ory/x v0.0.647 h1:DVKgA3ykMB9qXuMdSl5C8SFWr3yw7Xe8jpSm0+iqGeU=
+github.com/ory/x v0.0.647/go.mod h1:M+0EAXo7DT7Z2/Yrzvh4mgxOoV1fGI1jOKyAJ72d4Qs=
 github.com/pelletier/go-toml v1.9.5 h1:4yBQzkHv+7BHq2PQUZF3Mx0IYxG7LsP222s7Agd3ve8=
 github.com/pelletier/go-toml v1.9.5/go.mod h1:u1nR/EPcESfeI/szUZKdtJ0xRNbUoANCkoOuaOx1Y+c=
 github.com/pelletier/go-toml/v2 v2.1.0 h1:FnwAJ4oYMvbT/34k9zzHuZNrhlz48GB3/s6at6/MHO4=
