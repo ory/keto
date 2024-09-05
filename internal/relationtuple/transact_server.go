@@ -13,6 +13,8 @@ import (
 
 	"github.com/ory/herodot"
 
+	"github.com/ory/keto/internal/x/api"
+
 	"github.com/ory/keto/ketoapi"
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 	"github.com/ory/keto/x/events"
@@ -82,8 +84,8 @@ func (h *handler) CreateRelationTuple(ctx context.Context, request *rts.CreateRe
 		return nil, err
 	}
 
-	_ = grpc.SetHeader(ctx, metadata.Pairs("x-http-code", "201"))
-	_ = grpc.SetHeader(ctx, metadata.Pairs("x-http-location", ReadRouteBase+"?"+tuple.ToURLQuery().Encode()))
+	api.SetStatusCode(ctx, 201)
+	api.SetLocationHeader(ctx, ReadRouteBase+"?"+tuple.ToURLQuery().Encode())
 
 	return &rts.CreateRelationTupleResponse{RelationTuple: tuple.ToProto()}, nil
 }
@@ -93,7 +95,7 @@ func (h *handler) DeleteRelationTuples(ctx context.Context, req *rts.DeleteRelat
 
 	if md, ok := metadata.FromIncomingContext(ctx); ok {
 		if hasBody := md["hasbody"]; len(hasBody) > 0 && hasBody[0] == "true" {
-			_ = grpc.SetHeader(ctx, metadata.Pairs("x-http-code", "400"))
+			api.SetStatusCode(ctx, 400)
 			return nil, errors.WithStack(herodot.ErrBadRequest.WithReason("body is not allowed for this request"))
 		}
 	}
@@ -110,7 +112,7 @@ func (h *handler) DeleteRelationTuples(ctx context.Context, req *rts.DeleteRelat
 	}
 
 	if q.Namespace == nil || *q.Namespace == "" {
-		_ = grpc.SetHeader(ctx, metadata.Pairs("x-http-code", "400"))
+		api.SetStatusCode(ctx, 400)
 		return nil, errors.WithStack(herodot.ErrBadRequest.WithReason("Namespace must be set"))
 	}
 
@@ -123,7 +125,7 @@ func (h *handler) DeleteRelationTuples(ctx context.Context, req *rts.DeleteRelat
 	}
 
 	trace.SpanFromContext(ctx).AddEvent(events.NewRelationtuplesDeleted(ctx))
-	_ = grpc.SetHeader(ctx, metadata.Pairs("x-http-code", "204"))
+	api.SetStatusCode(ctx, 204)
 
 	return &rts.DeleteRelationTuplesResponse{}, nil
 }

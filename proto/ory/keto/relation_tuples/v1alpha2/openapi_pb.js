@@ -101,7 +101,7 @@ proto.ory.keto.relation_tuples.v1alpha2.ErrorResponse.prototype.toObject = funct
  */
 proto.ory.keto.relation_tuples.v1alpha2.ErrorResponse.toObject = function(includeInstance, msg) {
   var f, obj = {
-    error: (f = msg.getError()) && proto.ory.keto.relation_tuples.v1alpha2.ErrorResponse.Error.toObject(includeInstance, f)
+error: (f = msg.getError()) && proto.ory.keto.relation_tuples.v1alpha2.ErrorResponse.Error.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -215,14 +215,14 @@ proto.ory.keto.relation_tuples.v1alpha2.ErrorResponse.Error.prototype.toObject =
  */
 proto.ory.keto.relation_tuples.v1alpha2.ErrorResponse.Error.toObject = function(includeInstance, msg) {
   var f, obj = {
-    code: jspb.Message.getFieldWithDefault(msg, 1, 0),
-    debug: jspb.Message.getFieldWithDefault(msg, 2, ""),
-    detailsMap: (f = msg.getDetailsMap()) ? f.toObject(includeInstance, undefined) : [],
-    id: jspb.Message.getFieldWithDefault(msg, 4, ""),
-    message: jspb.Message.getFieldWithDefault(msg, 5, ""),
-    reason: jspb.Message.getFieldWithDefault(msg, 6, ""),
-    request: jspb.Message.getFieldWithDefault(msg, 7, ""),
-    status: jspb.Message.getFieldWithDefault(msg, 8, "")
+code: jspb.Message.getFieldWithDefault(msg, 1, 0),
+debug: jspb.Message.getFieldWithDefault(msg, 2, ""),
+detailsMap: (f = msg.getDetailsMap()) ? f.toObject(includeInstance, undefined) : [],
+id: jspb.Message.getFieldWithDefault(msg, 4, ""),
+message: jspb.Message.getFieldWithDefault(msg, 5, ""),
+reason: jspb.Message.getFieldWithDefault(msg, 6, ""),
+request: jspb.Message.getFieldWithDefault(msg, 7, ""),
+status: jspb.Message.getFieldWithDefault(msg, 8, "")
   };
 
   if (includeInstance) {

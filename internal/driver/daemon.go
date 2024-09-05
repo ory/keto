@@ -46,6 +46,8 @@ import (
 	prometheus "github.com/ory/x/prometheusx"
 	"github.com/ory/x/reqlog"
 
+	"github.com/ory/keto/internal/x/api"
+
 	"github.com/ory/keto/internal/check"
 	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/expand"
@@ -198,38 +200,65 @@ func (r *RegistryDefault) internalGRPCDialer() GRPCDialer {
 }
 
 func (r *RegistryDefault) serveRead(ctx context.Context, done chan<- struct{}) func() error {
-	rt, s := r.ReadRouter(ctx), r.ReadGRPCServer(ctx)
+	server := r.newAPIServer(ctx)
+	r.registerCommonGRPCServices(server.GRPCServer)
+	r.registerReadGRPCServices(server.GRPCServer)
+
+	apiHandler, err := server.Handler()
+	if err != nil {
+		return func() error { return err }
+	}
+
+	handler := r.ReadRouter(ctx, apiHandler)
 
 	if tracer := r.Tracer(ctx); tracer.IsLoaded() {
-		rt = otelx.TraceHandler(rt, otelhttp.WithTracerProvider(tracer.Provider()))
+		handler = otelx.TraceHandler(handler, otelhttp.WithTracerProvider(tracer.Provider()))
 	}
 
 	return func() error {
-		return multiplexPort(ctx, r.Logger().WithField("endpoint", "read"), r.Config(ctx).ReadAPIListenOn(), rt, s, done)
+		return serve(ctx, r.Logger().WithField("endpoint", "read"), r.Config(ctx).ReadAPIListenOn(), handler, done)
 	}
 }
 
 func (r *RegistryDefault) serveWrite(ctx context.Context, done chan<- struct{}) func() error {
-	rt, s := r.WriteRouter(ctx), r.WriteGRPCServer(ctx)
+	server := r.newAPIServer(ctx)
+	r.registerCommonGRPCServices(server.GRPCServer)
+	r.registerWriteGRPCServices(server.GRPCServer)
+
+	apiHandler, err := server.Handler()
+	if err != nil {
+		return func() error { return err }
+	}
+
+	handler := r.WriteRouter(ctx, apiHandler)
 
 	if tracer := r.Tracer(ctx); tracer.IsLoaded() {
-		rt = otelx.TraceHandler(rt, otelhttp.WithTracerProvider(tracer.Provider()))
+		handler = otelx.TraceHandler(handler, otelhttp.WithTracerProvider(tracer.Provider()))
 	}
 
 	return func() error {
-		return multiplexPort(ctx, r.Logger().WithField("endpoint", "write"), r.Config(ctx).WriteAPIListenOn(), rt, s, done)
+		return serve(ctx, r.Logger().WithField("endpoint", "write"), r.Config(ctx).WriteAPIListenOn(), handler, done)
 	}
 }
 
 func (r *RegistryDefault) serveOPLSyntax(ctx context.Context, done chan<- struct{}) func() error {
-	rt, s := r.OPLSyntaxRouter(ctx), r.OplGRPCServer(ctx)
+	server := r.newAPIServer(ctx)
+	r.registerCommonGRPCServices(server.GRPCServer)
+	r.registerOPLGRPCServices(server.GRPCServer)
+
+	apiHandler, err := server.Handler()
+	if err != nil {
+		return func() error { return err }
+	}
+
+	handler := r.OPLSyntaxRouter(ctx, apiHandler)
 
 	if tracer := r.Tracer(ctx); tracer.IsLoaded() {
-		rt = otelx.TraceHandler(rt, otelhttp.WithTracerProvider(tracer.Provider()))
+		handler = otelx.TraceHandler(handler, otelhttp.WithTracerProvider(tracer.Provider()))
 	}
 
 	return func() error {
-		return multiplexPort(ctx, r.Logger().WithField("endpoint", "opl"), r.Config(ctx).OPLSyntaxAPIListenOn(), rt, s, done)
+		return serve(ctx, r.Logger().WithField("endpoint", "opl"), r.Config(ctx).OPLSyntaxAPIListenOn(), handler, done)
 	}
 }
 
@@ -272,6 +301,46 @@ func (r *RegistryDefault) serveMetrics(ctx context.Context, done chan<- struct{}
 
 		return eg.Wait()
 	}
+}
+
+func serve(ctx context.Context, log *logrusx.Logger, addr string, router http.Handler, done chan<- struct{}) error {
+	//nolint:gosec // graceful.WithDefaults already sets a timeout
+	server := graceful.WithDefaults(&http.Server{
+		Handler: router,
+		Addr:    addr,
+	})
+
+	eg := &errgroup.Group{}
+
+	eg.Go(func() error {
+		if err := server.ListenAndServe(); !errors.Is(err, http.ErrServerClosed) && !errors.Is(err, cmux.ErrServerClosed) {
+			return errors.WithStack(err)
+		}
+		return nil
+	})
+
+	eg.Go(func() (err error) {
+		defer func() {
+			if err != nil {
+				log.WithError(err).Error("graceful shutdown failed")
+			} else {
+				log.Info("gracefully shutdown server")
+			}
+			done <- struct{}{}
+		}()
+
+		<-ctx.Done()
+
+		ctx, cancel := context.WithTimeout(context.Background(), graceful.DefaultShutdownTimeout)
+		defer cancel()
+
+		if err := server.Shutdown(ctx); err != nil {
+			return errors.WithStack(err)
+		}
+		return nil
+	})
+
+	return eg.Wait()
 }
 
 func multiplexPort(ctx context.Context, log *logrusx.Logger, addr string, router http.Handler, grpcS *grpc.Server, done chan<- struct{}) error {
@@ -379,6 +448,11 @@ type RouterOrGatewayHandler struct {
 	ServeMux *runtime.ServeMux
 }
 
+type RouterOrHandler struct {
+	Router  *httprouter.Router
+	Handler http.Handler
+}
+
 func (h *RouterOrGatewayHandler) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	if handle, params, _ := h.Router.Lookup(r.Method, r.URL.Path); handle != nil {
 		handle(rw, r, params)
@@ -387,7 +461,16 @@ func (h *RouterOrGatewayHandler) ServeHTTP(rw http.ResponseWriter, r *http.Reque
 	h.ServeMux.ServeHTTP(rw, r)
 }
 
-func (r *RegistryDefault) ReadRouter(ctx context.Context) http.Handler {
+func (h *RouterOrHandler) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
+	if handle, params, _ := h.Router.Lookup(r.Method, r.URL.Path); handle != nil {
+		handle(rw, r, params)
+		return
+	}
+	h.Handler.ServeHTTP(rw, r)
+}
+
+// TODO: Merge this with WriteRouter and OPLSyntaxRouter.
+func (r *RegistryDefault) ReadRouter(ctx context.Context, apiHandler http.Handler) http.Handler {
 	n := negroni.New()
 	for _, f := range r.defaultHttpMiddlewares {
 		n.UseFunc(f)
@@ -395,31 +478,14 @@ func (r *RegistryDefault) ReadRouter(ctx context.Context) http.Handler {
 	n.UseFunc(semconv.Middleware)
 	n.Use(reqlog.NewMiddlewareFromLogger(r.l, "read#Ory Keto").ExcludePaths(healthx.AliveCheckPath, healthx.ReadyCheckPath))
 
-	conn, err := r.internalGRPCDialer()()
-	if err != nil {
-		panic(err)
-	}
-	healthClient := grpcHealthV1.NewHealthClient(conn)
-	mux := runtime.NewServeMux(append(
-		x.GRPCGatewayMuxOptions,
-		runtime.WithHealthEndpointAt(healthClient, healthx.ReadyCheckPath),
-		runtime.WithHealthEndpointAt(healthClient, healthx.AliveCheckPath),
-	)...)
-	for _, h := range r.allHandlers() {
-		if h, ok := h.(ReadHandler); ok {
-			if err := h.RegisterReadGRPCGatewayConn(ctx, mux, conn); err != nil {
-				panic(err)
-			}
-		}
-	}
-
 	br := &x.ReadRouter{Router: httprouter.New()}
 	r.PrometheusManager().RegisterRouter(br.Router)
 	r.MetricsHandler().SetRoutes(br.Router)
 
+	r.HealthHandler().SetHealthRoutes(br.Router, false)
 	r.HealthHandler().SetVersionRoutes(br.Router)
 
-	n.UseHandler(&RouterOrGatewayHandler{Router: br.Router, ServeMux: mux})
+	n.UseHandler(&RouterOrHandler{Router: br.Router, Handler: apiHandler})
 	n.Use(r.PrometheusManager())
 
 	if r.sqaService != nil {
@@ -435,31 +501,13 @@ func (r *RegistryDefault) ReadRouter(ctx context.Context) http.Handler {
 	return handler
 }
 
-func (r *RegistryDefault) WriteRouter(ctx context.Context) http.Handler {
+func (r *RegistryDefault) WriteRouter(ctx context.Context, apiHandler http.Handler) http.Handler {
 	n := negroni.New()
 	for _, f := range r.defaultHttpMiddlewares {
 		n.UseFunc(f)
 	}
 	n.UseFunc(semconv.Middleware)
 	n.Use(reqlog.NewMiddlewareFromLogger(r.l, "write#Ory Keto").ExcludePaths(healthx.AliveCheckPath, healthx.ReadyCheckPath))
-
-	conn, err := r.internalGRPCDialer()()
-	if err != nil {
-		panic(err)
-	}
-	healthClient := grpcHealthV1.NewHealthClient(conn)
-	mux := runtime.NewServeMux(append(
-		x.GRPCGatewayMuxOptions,
-		runtime.WithHealthEndpointAt(healthClient, healthx.ReadyCheckPath),
-		runtime.WithHealthEndpointAt(healthClient, healthx.AliveCheckPath),
-	)...)
-	for _, h := range r.allHandlers() {
-		if h, ok := h.(WriteHandler); ok {
-			if err := h.RegisterWriteGRPCGatewayConn(ctx, mux, conn); err != nil {
-				panic(err)
-			}
-		}
-	}
 
 	pr := &x.WriteRouter{Router: httprouter.New()}
 	r.PrometheusManager().RegisterRouter(pr.Router)
@@ -468,7 +516,7 @@ func (r *RegistryDefault) WriteRouter(ctx context.Context) http.Handler {
 	r.HealthHandler().SetHealthRoutes(pr.Router, false)
 	r.HealthHandler().SetVersionRoutes(pr.Router)
 
-	n.UseHandler(&RouterOrGatewayHandler{Router: pr.Router, ServeMux: mux})
+	n.UseHandler(&RouterOrHandler{Router: pr.Router, Handler: apiHandler})
 	n.Use(r.PrometheusManager())
 
 	if r.sqaService != nil {
@@ -484,7 +532,7 @@ func (r *RegistryDefault) WriteRouter(ctx context.Context) http.Handler {
 	return handler
 }
 
-func (r *RegistryDefault) OPLSyntaxRouter(ctx context.Context) http.Handler {
+func (r *RegistryDefault) OPLSyntaxRouter(ctx context.Context, apiHandler http.Handler) http.Handler {
 	n := negroni.New()
 	for _, f := range r.defaultHttpMiddlewares {
 		n.UseFunc(f)
@@ -499,25 +547,7 @@ func (r *RegistryDefault) OPLSyntaxRouter(ctx context.Context) http.Handler {
 	r.HealthHandler().SetHealthRoutes(pr.Router, false)
 	r.HealthHandler().SetVersionRoutes(pr.Router)
 
-	conn, err := r.internalGRPCDialer()()
-	if err != nil {
-		panic(err)
-	}
-	healthClient := grpcHealthV1.NewHealthClient(conn)
-	mux := runtime.NewServeMux(append(
-		x.GRPCGatewayMuxOptions,
-		runtime.WithHealthEndpointAt(healthClient, healthx.ReadyCheckPath),
-		runtime.WithHealthEndpointAt(healthClient, healthx.AliveCheckPath),
-	)...)
-	for _, h := range r.allHandlers() {
-		if h, ok := h.(OPLSyntaxHandler); ok {
-			if err := h.RegisterSyntaxGRPCGatewayConn(ctx, mux, conn); err != nil {
-				panic(err)
-			}
-		}
-	}
-
-	n.UseHandler(&RouterOrGatewayHandler{Router: pr.Router, ServeMux: mux})
+	n.UseHandler(&RouterOrHandler{Router: pr.Router, Handler: apiHandler})
 	n.Use(r.PrometheusManager())
 
 	if r.sqaService != nil {
@@ -606,8 +636,20 @@ func (r *RegistryDefault) newGrpcServer(ctx context.Context) *grpc.Server {
 	if r.grpcTransportCredentials != nil {
 		opts = append(opts, grpc.Creds(r.grpcTransportCredentials))
 	}
-	server := grpc.NewServer(opts...)
-	return server
+
+	return grpc.NewServer(opts...)
+}
+
+func (r *RegistryDefault) newAPIServer(ctx context.Context) *api.Server {
+	opts := []api.ServerOption{
+		api.WithGRPCOption(grpc.ChainStreamInterceptor(r.streamInterceptors(r.externalStreamInterceptors...)...)),
+		api.WithGRPCOption(grpc.ChainUnaryInterceptor(r.unaryInterceptors(r.externalUnaryInterceptors...)...)),
+	}
+	if r.grpcTransportCredentials != nil {
+		opts = append(opts, api.WithGRPCOption(grpc.Creds(r.grpcTransportCredentials)))
+	}
+
+	return api.NewServer(opts...)
 }
 
 func (r *RegistryDefault) registerCommonGRPCServices(s *grpc.Server) {

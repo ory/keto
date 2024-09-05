@@ -202,7 +202,7 @@ proto.ory.keto.relation_tuples.v1alpha2.GetVersionResponse.prototype.toObject = 
  */
 proto.ory.keto.relation_tuples.v1alpha2.GetVersionResponse.toObject = function(includeInstance, msg) {
   var f, obj = {
-    version: jspb.Message.getFieldWithDefault(msg, 1, "")
+version: jspb.Message.getFieldWithDefault(msg, 1, "")
   };
 
   if (includeInstance) {

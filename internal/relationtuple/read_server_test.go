@@ -12,30 +12,26 @@ import (
 	"net/url"
 	"testing"
 
-	"github.com/ory/x/pointerx"
-
-	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
-
-	"github.com/ory/keto/ketoapi"
-
-	"github.com/ory/keto/internal/driver/config"
-
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"github.com/tidwall/gjson"
 
-	"github.com/stretchr/testify/require"
+	"github.com/ory/x/pointerx"
 
 	"github.com/ory/keto/internal/driver"
+	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/namespace"
 	"github.com/ory/keto/internal/relationtuple"
-	"github.com/ory/keto/internal/x"
+	"github.com/ory/keto/internal/x/api"
+	"github.com/ory/keto/ketoapi"
+	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 )
 
 func TestReadHandlers(t *testing.T) {
 	ctx := context.Background()
 	reg := driver.NewSqliteTestRegistry(t, false)
 
-	endpoints := x.NewTestEndpoints(t, relationtuple.NewHandler(reg))
+	endpoints := api.NewTestServer(t, relationtuple.NewHandler(reg))
 
 	ts := endpoints.HTTP
 
@@ -206,7 +202,7 @@ func TestReadHandlers(t *testing.T) {
 			body, err := io.ReadAll(resp.Body)
 			require.NoError(t, err)
 			assert.Equal(t, http.StatusBadRequest, resp.StatusCode)
-			assert.Contains(t, string(body), "invalid syntax")
+			assert.Contains(t, string(body), "invalid parameter \\\"page_size\\\"")
 		})
 	})
 

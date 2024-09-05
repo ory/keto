@@ -218,12 +218,12 @@ proto.ory.keto.relation_tuples.v1alpha2.RelationTuple.prototype.toObject = funct
  */
 proto.ory.keto.relation_tuples.v1alpha2.RelationTuple.toObject = function(includeInstance, msg) {
   var f, obj = {
-    namespace: jspb.Message.getFieldWithDefault(msg, 1, ""),
-    object: jspb.Message.getFieldWithDefault(msg, 2, ""),
-    relation: jspb.Message.getFieldWithDefault(msg, 3, ""),
-    subject: (f = msg.getSubject()) && proto.ory.keto.relation_tuples.v1alpha2.Subject.toObject(includeInstance, f),
-    subjectId: jspb.Message.getFieldWithDefault(msg, 5, ""),
-    subjectSet: (f = msg.getSubjectSet()) && proto.ory.keto.relation_tuples.v1alpha2.SubjectSet.toObject(includeInstance, f)
+namespace: jspb.Message.getFieldWithDefault(msg, 1, ""),
+object: jspb.Message.getFieldWithDefault(msg, 2, ""),
+relation: jspb.Message.getFieldWithDefault(msg, 3, ""),
+subject: (f = msg.getSubject()) && proto.ory.keto.relation_tuples.v1alpha2.Subject.toObject(includeInstance, f),
+subjectId: (f = jspb.Message.getField(msg, 5)) == null ? undefined : f,
+subjectSet: (f = msg.getSubjectSet()) && proto.ory.keto.relation_tuples.v1alpha2.SubjectSet.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -558,10 +558,10 @@ proto.ory.keto.relation_tuples.v1alpha2.RelationQuery.prototype.toObject = funct
  */
 proto.ory.keto.relation_tuples.v1alpha2.RelationQuery.toObject = function(includeInstance, msg) {
   var f, obj = {
-    namespace: jspb.Message.getFieldWithDefault(msg, 1, ""),
-    object: jspb.Message.getFieldWithDefault(msg, 2, ""),
-    relation: jspb.Message.getFieldWithDefault(msg, 3, ""),
-    subject: (f = msg.getSubject()) && proto.ory.keto.relation_tuples.v1alpha2.Subject.toObject(includeInstance, f)
+namespace: (f = jspb.Message.getField(msg, 1)) == null ? undefined : f,
+object: (f = jspb.Message.getField(msg, 2)) == null ? undefined : f,
+relation: (f = jspb.Message.getField(msg, 3)) == null ? undefined : f,
+subject: (f = msg.getSubject()) && proto.ory.keto.relation_tuples.v1alpha2.Subject.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -879,8 +879,8 @@ proto.ory.keto.relation_tuples.v1alpha2.Subject.prototype.toObject = function(op
  */
 proto.ory.keto.relation_tuples.v1alpha2.Subject.toObject = function(includeInstance, msg) {
   var f, obj = {
-    id: jspb.Message.getFieldWithDefault(msg, 1, ""),
-    set: (f = msg.getSet()) && proto.ory.keto.relation_tuples.v1alpha2.SubjectSet.toObject(includeInstance, f)
+id: (f = jspb.Message.getField(msg, 1)) == null ? undefined : f,
+set: (f = msg.getSet()) && proto.ory.keto.relation_tuples.v1alpha2.SubjectSet.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -1078,9 +1078,9 @@ proto.ory.keto.relation_tuples.v1alpha2.SubjectSet.prototype.toObject = function
  */
 proto.ory.keto.relation_tuples.v1alpha2.SubjectSet.toObject = function(includeInstance, msg) {
   var f, obj = {
-    namespace: jspb.Message.getFieldWithDefault(msg, 1, ""),
-    object: jspb.Message.getFieldWithDefault(msg, 2, ""),
-    relation: jspb.Message.getFieldWithDefault(msg, 3, "")
+namespace: jspb.Message.getFieldWithDefault(msg, 1, ""),
+object: jspb.Message.getFieldWithDefault(msg, 2, ""),
+relation: jspb.Message.getFieldWithDefault(msg, 3, "")
   };
 
   if (includeInstance) {
@@ -1294,8 +1294,8 @@ proto.ory.keto.relation_tuples.v1alpha2.SubjectQuery.prototype.toObject = functi
  */
 proto.ory.keto.relation_tuples.v1alpha2.SubjectQuery.toObject = function(includeInstance, msg) {
   var f, obj = {
-    id: jspb.Message.getFieldWithDefault(msg, 1, ""),
-    set: (f = msg.getSet()) && proto.ory.keto.relation_tuples.v1alpha2.SubjectSetQuery.toObject(includeInstance, f)
+id: (f = jspb.Message.getField(msg, 1)) == null ? undefined : f,
+set: (f = msg.getSet()) && proto.ory.keto.relation_tuples.v1alpha2.SubjectSetQuery.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -1493,9 +1493,9 @@ proto.ory.keto.relation_tuples.v1alpha2.SubjectSetQuery.prototype.toObject = fun
  */
 proto.ory.keto.relation_tuples.v1alpha2.SubjectSetQuery.toObject = function(includeInstance, msg) {
   var f, obj = {
-    namespace: jspb.Message.getFieldWithDefault(msg, 1, ""),
-    object: jspb.Message.getFieldWithDefault(msg, 2, ""),
-    relation: jspb.Message.getFieldWithDefault(msg, 3, "")
+namespace: jspb.Message.getFieldWithDefault(msg, 1, ""),
+object: jspb.Message.getFieldWithDefault(msg, 2, ""),
+relation: jspb.Message.getFieldWithDefault(msg, 3, "")
   };
 
   if (includeInstance) {

@@ -123,6 +123,7 @@ func local_request_WriteService_DeleteRelationTuples_0(ctx context.Context, mars
 // UnaryRPC     :call WriteServiceServer directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterWriteServiceHandlerFromEndpoint instead.
+// GRPC interceptors will not work for this type of registration. To use interceptors, you must use the "runtime.WithMiddlewares" option in the "runtime.NewServeMux" call.
 func RegisterWriteServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server WriteServiceServer) error {
 
 	mux.Handle("PATCH", pattern_WriteService_TransactRelationTuples_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -171,7 +172,7 @@ func RegisterWriteServiceHandlerServer(ctx context.Context, mux *runtime.ServeMu
 			return
 		}
 
-		forward_WriteService_CreateRelationTuple_0(annotatedContext, mux, outboundMarshaler, w, req, response_WriteService_CreateRelationTuple_0{resp}, mux.GetForwardResponseOptions()...)
+		forward_WriteService_CreateRelationTuple_0(annotatedContext, mux, outboundMarshaler, w, req, response_WriteService_CreateRelationTuple_0{resp.(*CreateRelationTupleResponse)}, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -206,21 +207,21 @@ func RegisterWriteServiceHandlerServer(ctx context.Context, mux *runtime.ServeMu
 // RegisterWriteServiceHandlerFromEndpoint is same as RegisterWriteServiceHandler but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
 func RegisterWriteServiceHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
-	conn, err := grpc.DialContext(ctx, endpoint, opts...)
+	conn, err := grpc.NewClient(endpoint, opts...)
 	if err != nil {
 		return err
 	}
 	defer func() {
 		if err != nil {
 			if cerr := conn.Close(); cerr != nil {
-				grpclog.Infof("Failed to close conn to %s: %v", endpoint, cerr)
+				grpclog.Errorf("Failed to close conn to %s: %v", endpoint, cerr)
 			}
 			return
 		}
 		go func() {
 			<-ctx.Done()
 			if cerr := conn.Close(); cerr != nil {
-				grpclog.Infof("Failed to close conn to %s: %v", endpoint, cerr)
+				grpclog.Errorf("Failed to close conn to %s: %v", endpoint, cerr)
 			}
 		}()
 	}()
@@ -238,7 +239,7 @@ func RegisterWriteServiceHandler(ctx context.Context, mux *runtime.ServeMux, con
 // to "mux". The handlers forward requests to the grpc endpoint over the given implementation of "WriteServiceClient".
 // Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "WriteServiceClient"
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
-// "WriteServiceClient" to call the correct interceptors.
+// "WriteServiceClient" to call the correct interceptors. This client ignores the HTTP middlewares.
 func RegisterWriteServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client WriteServiceClient) error {
 
 	mux.Handle("PATCH", pattern_WriteService_TransactRelationTuples_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -281,7 +282,7 @@ func RegisterWriteServiceHandlerClient(ctx context.Context, mux *runtime.ServeMu
 			return
 		}
 
-		forward_WriteService_CreateRelationTuple_0(annotatedContext, mux, outboundMarshaler, w, req, response_WriteService_CreateRelationTuple_0{resp}, mux.GetForwardResponseOptions()...)
+		forward_WriteService_CreateRelationTuple_0(annotatedContext, mux, outboundMarshaler, w, req, response_WriteService_CreateRelationTuple_0{resp.(*CreateRelationTupleResponse)}, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -311,12 +312,11 @@ func RegisterWriteServiceHandlerClient(ctx context.Context, mux *runtime.ServeMu
 }
 
 type response_WriteService_CreateRelationTuple_0 struct {
-	proto.Message
+	*CreateRelationTupleResponse
 }
 
 func (m response_WriteService_CreateRelationTuple_0) XXX_ResponseBody() interface{} {
-	response := m.Message.(*CreateRelationTupleResponse)
-	return response.RelationTuple
+	return m.RelationTuple
 }
 
 var (

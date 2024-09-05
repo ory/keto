@@ -132,16 +132,16 @@ proto.ory.keto.relation_tuples.v1alpha2.CheckRequest.prototype.toObject = functi
  */
 proto.ory.keto.relation_tuples.v1alpha2.CheckRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
-    namespace: jspb.Message.getFieldWithDefault(msg, 1, ""),
-    object: jspb.Message.getFieldWithDefault(msg, 2, ""),
-    relation: jspb.Message.getFieldWithDefault(msg, 3, ""),
-    subject: (f = msg.getSubject()) && ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.Subject.toObject(includeInstance, f),
-    subjectId: jspb.Message.getFieldWithDefault(msg, 9, ""),
-    subjectSet: (f = msg.getSubjectSet()) && ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.SubjectSetQuery.toObject(includeInstance, f),
-    tuple: (f = msg.getTuple()) && ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationTuple.toObject(includeInstance, f),
-    latest: jspb.Message.getBooleanFieldWithDefault(msg, 5, false),
-    snaptoken: jspb.Message.getFieldWithDefault(msg, 6, ""),
-    maxDepth: jspb.Message.getFieldWithDefault(msg, 7, 0)
+namespace: jspb.Message.getFieldWithDefault(msg, 1, ""),
+object: jspb.Message.getFieldWithDefault(msg, 2, ""),
+relation: jspb.Message.getFieldWithDefault(msg, 3, ""),
+subject: (f = msg.getSubject()) && ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.Subject.toObject(includeInstance, f),
+subjectId: (f = jspb.Message.getField(msg, 9)) == null ? undefined : f,
+subjectSet: (f = msg.getSubjectSet()) && ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.SubjectSetQuery.toObject(includeInstance, f),
+tuple: (f = msg.getTuple()) && ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationTuple.toObject(includeInstance, f),
+latest: jspb.Message.getBooleanFieldWithDefault(msg, 5, false),
+snaptoken: jspb.Message.getFieldWithDefault(msg, 6, ""),
+maxDepth: jspb.Message.getFieldWithDefault(msg, 7, 0)
   };
 
   if (includeInstance) {
@@ -613,8 +613,8 @@ proto.ory.keto.relation_tuples.v1alpha2.CheckResponse.prototype.toObject = funct
  */
 proto.ory.keto.relation_tuples.v1alpha2.CheckResponse.toObject = function(includeInstance, msg) {
   var f, obj = {
-    allowed: jspb.Message.getBooleanFieldWithDefault(msg, 1, false),
-    snaptoken: jspb.Message.getFieldWithDefault(msg, 2, "")
+allowed: jspb.Message.getBooleanFieldWithDefault(msg, 1, false),
+snaptoken: jspb.Message.getFieldWithDefault(msg, 2, "")
   };
 
   if (includeInstance) {

@@ -13,15 +13,17 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/ory/x/pointerx"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"github.com/ory/x/pointerx"
 
 	"github.com/ory/keto/internal/driver"
 	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/namespace"
 	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/internal/x"
+	"github.com/ory/keto/internal/x/api"
 	"github.com/ory/keto/ketoapi"
 )
 
@@ -41,7 +43,7 @@ func TestWriteHandlers(t *testing.T) {
 		return n
 	}
 
-	endpoints := x.NewTestEndpoints(t, relationtuple.NewHandler(reg))
+	endpoints := api.NewTestServer(t, relationtuple.NewHandler(reg))
 	ts := endpoints.HTTP
 
 	t.Run("method=create", func(t *testing.T) {
@@ -100,8 +102,10 @@ func TestWriteHandlers(t *testing.T) {
 		})
 
 		t.Run("case=returns bad request on JSON parse error", func(t *testing.T) {
-			resp := doCreate([]byte("foo"))
+			resp := doCreate([]byte(`{"invalid]`))
 			assert.Equal(t, http.StatusBadRequest, resp.StatusCode)
+			body, _ := io.ReadAll(resp.Body)
+			require.NotEmpty(t, body)
 		})
 
 		t.Run("case=special chars", func(t *testing.T) {
@@ -161,9 +165,7 @@ func TestWriteHandlers(t *testing.T) {
 			require.NoError(t, err)
 			resp, err := ts.Client().Do(req)
 			require.NoError(t, err)
-			body, err := io.ReadAll(resp.Body)
-			require.NoError(t, err)
-			assert.Equal(t, http.StatusNoContent, resp.StatusCode, string(body))
+			assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 
 			// set a size > 1 just to make sure it gets all
 			actualRTs, _, err := reg.RelationTupleManager().GetRelationTuples(ctx, &relationtuple.RelationQuery{Namespace: &nspace.Name}, x.WithSize(10))
@@ -236,6 +238,8 @@ func TestWriteHandlers(t *testing.T) {
 				resp, err := ts.Client().Do(req)
 				require.NoError(t, err)
 				assert.Equal(t, http.StatusBadRequest, resp.StatusCode)
+				body, _ := io.ReadAll(resp.Body)
+				require.NotEmpty(t, body)
 			}
 
 			assertTuplesExist := func(t *testing.T) {
@@ -482,7 +486,7 @@ func TestWriteHandlers(t *testing.T) {
 			defer resp.Body.Close()
 			errContent, err := io.ReadAll(resp.Body)
 			require.NoError(t, err)
-			assert.Contains(t, string(errContent), "unknown_action_foo")
+			assert.Contains(t, string(errContent), "value must be in list [ACTION_INSERT ACTION_DELETE]")
 		})
 	})
 }

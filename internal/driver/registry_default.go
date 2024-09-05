@@ -11,7 +11,12 @@ import (
 
 	"github.com/gobuffalo/pop/v6"
 	"github.com/gofrs/uuid"
-	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"github.com/pkg/errors"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/health"
+	"google.golang.org/grpc/test/bufconn"
+
 	"github.com/ory/herodot"
 	"github.com/ory/x/dbal"
 	"github.com/ory/x/fsx"
@@ -22,11 +27,6 @@ import (
 	"github.com/ory/x/otelx"
 	"github.com/ory/x/popx"
 	prometheus "github.com/ory/x/prometheusx"
-	"github.com/pkg/errors"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials"
-	"google.golang.org/grpc/health"
-	"google.golang.org/grpc/test/bufconn"
 
 	"github.com/ory/keto/internal/check"
 	"github.com/ory/keto/internal/driver/config"
@@ -93,18 +93,12 @@ type (
 	}
 	ReadHandler interface {
 		RegisterReadGRPC(s *grpc.Server)
-		RegisterReadGRPCGateway(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts ...grpc.DialOption) error
-		RegisterReadGRPCGatewayConn(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error
 	}
 	WriteHandler interface {
 		RegisterWriteGRPC(s *grpc.Server)
-		RegisterWriteGRPCGateway(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts ...grpc.DialOption) error
-		RegisterWriteGRPCGatewayConn(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error
 	}
 	OPLSyntaxHandler interface {
 		RegisterSyntaxGRPC(s *grpc.Server)
-		RegisterSyntaxGRPCGateway(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts ...grpc.DialOption) error
-		RegisterSyntaxGRPCGatewayConn(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error
 	}
 	Handler interface{}
 )
