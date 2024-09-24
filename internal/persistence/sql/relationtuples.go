@@ -214,7 +214,7 @@ func (p *Persister) GetRelationTuples(ctx context.Context, query *relationtuple.
 	}
 
 	sqlQuery := p.queryWithNetwork(ctx).
-		Order("shard_id, nid").
+		Order("shard_id").
 		Where("shard_id > ?", pagination.LastID).
 		Limit(pagination.PerPage + 1)
 

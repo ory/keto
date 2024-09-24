@@ -85,7 +85,7 @@ WHERE current.nid = ? AND
       current.object = ? AND
       current.relation = ? AND
       current.subject_id IS NULL
-ORDER BY current.nid, current.shard_id
+ORDER BY current.shard_id
 LIMIT ?
 `, targetSubjectSQL),
 			append(targetSubjectArgs, t.p.NetworkID(ctx), shardID, start.Namespace, start.Object, start.Relation, limit)...,
