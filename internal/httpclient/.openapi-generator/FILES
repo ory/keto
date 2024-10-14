@@ -8,8 +8,11 @@ api_permission.go
 api_relationship.go
 client.go
 configuration.go
+docs/BatchCheckPermissionBody.md
+docs/BatchCheckPermissionResult.md
 docs/CheckOplSyntaxResult.md
 docs/CheckPermissionResult.md
+docs/CheckPermissionResultWithError.md
 docs/CreateRelationshipBody.md
 docs/ErrorGeneric.md
 docs/ExpandedPermissionTree.md
@@ -37,8 +40,11 @@ docs/Version.md
 git_push.sh
 go.mod
 go.sum
+model_batch_check_permission_body.go
+model_batch_check_permission_result.go
 model_check_opl_syntax_result.go
 model_check_permission_result.go
+model_check_permission_result_with_error.go
 model_create_relationship_body.go
 model_error_generic.go
 model_expanded_permission_tree.go

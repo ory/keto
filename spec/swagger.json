@@ -375,6 +375,52 @@
         }
       }
     },
+    "/relation-tuples/batch/check": {
+      "post": {
+        "description": "To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "schemes": ["http", "https"],
+        "tags": ["permission"],
+        "summary": "Batch check permissions",
+        "operationId": "batchCheckPermission",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int64",
+            "name": "max-depth",
+            "in": "query"
+          },
+          {
+            "name": "Body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/batchCheckPermissionBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "batchCheckPermissionResult",
+            "schema": {
+              "$ref": "#/definitions/batchCheckPermissionResult"
+            }
+          },
+          "400": {
+            "description": "errorGeneric",
+            "schema": {
+              "$ref": "#/definitions/errorGeneric"
+            }
+          },
+          "default": {
+            "description": "errorGeneric",
+            "schema": {
+              "$ref": "#/definitions/errorGeneric"
+            }
+          }
+        }
+      }
+    },
     "/relation-tuples/check": {
       "get": {
         "description": "To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).",
@@ -750,6 +796,32 @@
         }
       }
     },
+    "batchCheckPermissionBody": {
+      "description": "Batch Check Permission Body",
+      "type": "object",
+      "properties": {
+        "tuples": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/relationship"
+          }
+        }
+      }
+    },
+    "batchCheckPermissionResult": {
+      "description": "Batch Check Permission Result",
+      "type": "object",
+      "required": ["results"],
+      "properties": {
+        "results": {
+          "description": "An array of check results. The order aligns with the input order.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/checkPermissionResultWithError"
+          }
+        }
+      }
+    },
     "checkOplSyntaxBody": {
       "description": "Ory Permission Language Document",
       "type": "string"
@@ -776,6 +848,21 @@
         "allowed": {
           "description": "whether the relation tuple is allowed",
           "type": "boolean"
+        }
+      }
+    },
+    "checkPermissionResultWithError": {
+      "description": "Check Permission Result With Error",
+      "type": "object",
+      "required": ["allowed"],
+      "properties": {
+        "allowed": {
+          "description": "whether the relation tuple is allowed",
+          "type": "boolean"
+        },
+        "error": {
+          "description": "any error generated while checking the relation tuple",
+          "type": "string"
         }
       }
     },

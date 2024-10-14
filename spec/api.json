@@ -38,6 +38,32 @@
         "format": "uuid4",
         "type": "string"
       },
+      "batchCheckPermissionBody": {
+        "description": "Batch Check Permission Body",
+        "properties": {
+          "tuples": {
+            "items": {
+              "$ref": "#/components/schemas/relationship"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "batchCheckPermissionResult": {
+        "description": "Batch Check Permission Result",
+        "properties": {
+          "results": {
+            "description": "An array of check results. The order aligns with the input order.",
+            "items": {
+              "$ref": "#/components/schemas/checkPermissionResultWithError"
+            },
+            "type": "array"
+          }
+        },
+        "required": ["results"],
+        "type": "object"
+      },
       "checkOplSyntaxBody": {
         "description": "Ory Permission Language Document",
         "type": "string"
@@ -65,6 +91,21 @@
         },
         "required": ["allowed"],
         "title": "Check Permission Result",
+        "type": "object"
+      },
+      "checkPermissionResultWithError": {
+        "description": "Check Permission Result With Error",
+        "properties": {
+          "allowed": {
+            "description": "whether the relation tuple is allowed",
+            "type": "boolean"
+          },
+          "error": {
+            "description": "any error generated while checking the relation tuple",
+            "type": "string"
+          }
+        },
+        "required": ["allowed"],
         "type": "object"
       },
       "createRelationshipBody": {
@@ -876,6 +917,66 @@
         },
         "summary": "Query relationships",
         "tags": ["relationship"]
+      }
+    },
+    "/relation-tuples/batch/check": {
+      "post": {
+        "description": "To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).",
+        "operationId": "batchCheckPermission",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "max-depth",
+            "schema": {
+              "format": "int64",
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/batchCheckPermissionBody"
+              }
+            }
+          },
+          "x-originalParamName": "Body"
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/batchCheckPermissionResult"
+                }
+              }
+            },
+            "description": "batchCheckPermissionResult"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorGeneric"
+                }
+              }
+            },
+            "description": "errorGeneric"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorGeneric"
+                }
+              }
+            },
+            "description": "errorGeneric"
+          }
+        },
+        "summary": "Batch check permissions",
+        "tags": ["permission"]
       }
     },
     "/relation-tuples/check": {

@@ -5,7 +5,7 @@
 
 **Table of Contents**
 
-- [0.0.0 (2024-04-30)](#000-2024-04-30)
+- [0.0.0 (2024-08-22)](#000-2024-08-22)
   - [Bug Fixes](#bug-fixes)
   - [Features](#features)
 - [0.13.0-alpha.0 (2024-02-27)](#0130-alpha0-2024-02-27)
@@ -161,10 +161,12 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.13.0-alpha.0...v0.0.0) (2024-04-30)
+# [0.0.0](https://github.com/ory/keto/compare/v0.13.0-alpha.0...v0.0.0) (2024-08-22)
 
 ### Bug Fixes
 
+- Add not to docs ([#1530](https://github.com/ory/keto/issues/1530))
+  ([3b3b768](https://github.com/ory/keto/commit/3b3b76854052cf7a00506c35edded19cd5fe3258))
 - Missing persister when initializing without network
   ([#1525](https://github.com/ory/keto/issues/1525))
   ([e675d5b](https://github.com/ory/keto/commit/e675d5bc230922e8379f87e7f8bbb9360cfee005)):
@@ -177,6 +179,8 @@
 
 ### Features
 
+- Add ContextKeyDialFunc ([#1534](https://github.com/ory/keto/issues/1534))
+  ([567ceb9](https://github.com/ory/keto/commit/567ceb9144b0e1efa4a88820cf23f53e1e8ec77d))
 - Add grpc server opts config ([#1524](https://github.com/ory/keto/issues/1524))
   ([7278e44](https://github.com/ory/keto/commit/7278e44bd0ac94e5f70f3c347a6e9cccfda11df6)):
 
@@ -190,6 +194,23 @@
 
   - chore: add alnr to codeowners
   - feat: add Inspect option
+
+- Batch check relations ([#1521](https://github.com/ory/keto/issues/1521))
+  ([d670d50](https://github.com/ory/keto/commit/d670d508a618f5f881a215085beb6ac5371b8a85)):
+
+  - batch check relations
+  - rename path
+  - shared parallelized function. batch size and parallelization configurable
+  - move check to engine
+  - fail individual requests
+  - move parallelization factor to be request parameter
+  - document and update configurable max batch size
+  - end to end tests
+  - unit tests
+  - cleanup
+  - run make format
+  - fix pipeline failures
+  - PR Feedback: move parallelization factor to config. Use err group
 
 # [0.13.0-alpha.0](https://github.com/ory/keto/compare/v0.12.0-alpha.0...v0.13.0-alpha.0) (2024-02-27)
 

@@ -63,6 +63,10 @@ func runCases(c client, m *namespaceTestManager) func(*testing.T) {
 
 			// try the check API to see whether the tuple is interpreted correctly
 			assert.True(t, c.check(t, tuple))
+			batchResult := c.batchCheck(t, []*ketoapi.RelationTuple{tuple})
+			require.Len(t, batchResult, 1)
+			assert.True(t, batchResult[0].allowed)
+			assert.Empty(t, batchResult[0].errorMessage)
 		})
 
 		t.Run("case=creates tuple with empty IDs", func(t *testing.T) {
@@ -89,6 +93,10 @@ func runCases(c client, m *namespaceTestManager) func(*testing.T) {
 				c.createTuple(t, tp)
 				// try the check API to see whether the tuple is interpreted correctly
 				assert.True(t, c.check(t, tp))
+				batchResult := c.batchCheck(t, []*ketoapi.RelationTuple{tp})
+				require.Len(t, batchResult, 1)
+				assert.True(t, batchResult[0].allowed)
+				assert.Empty(t, batchResult[0].errorMessage)
 			}
 
 			resp := c.queryTuple(t, &ketoapi.RelationQuery{Namespace: &n.Name})
@@ -115,6 +123,93 @@ func runCases(c client, m *namespaceTestManager) func(*testing.T) {
 			c.createTuple(t, rt)
 
 			assert.True(t, c.check(t, rt))
+			batchResult := c.batchCheck(t, []*ketoapi.RelationTuple{rt})
+			require.Len(t, batchResult, 1)
+			assert.True(t, batchResult[0].allowed)
+			assert.Empty(t, batchResult[0].errorMessage)
+		})
+
+		t.Run("case=batch check", func(t *testing.T) {
+			/*
+			 Test batch check with four cases:
+			   - Allowed single subject tuple
+			   - Allowed subject set tuple
+			   - Tuple with unknown namespace (will return an error for this case)
+			   - Dis-allowed tuple
+			*/
+			namespace1 := &namespace.Namespace{Name: t.Name()}
+			namespace2 := &namespace.Namespace{Name: t.Name() + "-2"}
+			m.add(t, namespace1)
+			m.add(t, namespace2)
+
+			obj1 := fmt.Sprintf("obj for client %T", c)
+			obj2 := fmt.Sprintf("another obj for client %T", c)
+			rel1 := "check"
+			rel2 := "access"
+
+			tupleSubjectSet := &ketoapi.RelationTuple{
+				Namespace: namespace1.Name,
+				Object:    obj1,
+				Relation:  rel1,
+				SubjectSet: &ketoapi.SubjectSet{
+					Namespace: namespace1.Name,
+					Object:    obj1,
+					Relation:  rel1,
+				},
+			}
+			c.createTuple(t, tupleSubjectSet)
+
+			tupleSingleSubject := &ketoapi.RelationTuple{
+				Namespace: namespace2.Name,
+				Object:    obj2,
+				Relation:  rel2,
+				SubjectID: pointerx.Ptr("sub1"),
+			}
+			c.createTuple(t, tupleSingleSubject)
+
+			unknownNamespaceTuple := &ketoapi.RelationTuple{
+				Namespace: "unknown-namespace",
+				Object:    obj1,
+				Relation:  rel1,
+				SubjectID: pointerx.Ptr("sub1"),
+			}
+
+			unknownSubjectTuple := &ketoapi.RelationTuple{
+				Namespace: namespace1.Name,
+				Object:    obj1,
+				Relation:  rel1,
+				SubjectID: pointerx.Ptr("unknown-sub"),
+			}
+
+			batchResult := c.batchCheck(t, []*ketoapi.RelationTuple{tupleSubjectSet, tupleSingleSubject,
+				unknownNamespaceTuple, unknownSubjectTuple})
+			require.Len(t, batchResult, 4)
+			assert.True(t, batchResult[0].allowed)
+			assert.Empty(t, batchResult[0].errorMessage)
+			assert.True(t, batchResult[1].allowed)
+			assert.Empty(t, batchResult[1].errorMessage)
+			assert.False(t, batchResult[2].allowed)
+			assert.Contains(t, batchResult[2].errorMessage, "The requested resource could not be found")
+			assert.False(t, batchResult[3].allowed)
+			assert.Empty(t, batchResult[3].errorMessage)
+
+			// Verify a call with no tuples returns successfully with no results
+			emptyResults := c.batchCheck(t, []*ketoapi.RelationTuple{})
+			require.Empty(t, emptyResults)
+		})
+
+		t.Run("case=batch check validation errors", func(t *testing.T) {
+			// Pass in 11 tuples to check, more than the default limit of 10, and verify the request is rejected
+			tuples := make([]*ketoapi.RelationTuple, 11)
+			for i := range tuples {
+				tuples[i] = &ketoapi.RelationTuple{
+					Namespace: "namespace-name",
+					Object:    "obj",
+					Relation:  "rel",
+					SubjectID: pointerx.Ptr("sub"),
+				}
+			}
+			c.batchCheckErr(t, tuples, herodot.ErrBadRequest)
 		})
 
 		t.Run("case=expand API", func(t *testing.T) {

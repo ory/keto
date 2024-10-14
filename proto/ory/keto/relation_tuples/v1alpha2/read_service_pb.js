@@ -123,12 +123,12 @@ proto.ory.keto.relation_tuples.v1alpha2.ListRelationTuplesRequest.prototype.toOb
  */
 proto.ory.keto.relation_tuples.v1alpha2.ListRelationTuplesRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
-    query: (f = msg.getQuery()) && proto.ory.keto.relation_tuples.v1alpha2.ListRelationTuplesRequest.Query.toObject(includeInstance, f),
-    relationQuery: (f = msg.getRelationQuery()) && ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationQuery.toObject(includeInstance, f),
-    expandMask: (f = msg.getExpandMask()) && google_protobuf_field_mask_pb.FieldMask.toObject(includeInstance, f),
-    snaptoken: jspb.Message.getFieldWithDefault(msg, 3, ""),
-    pageSize: jspb.Message.getFieldWithDefault(msg, 4, 0),
-    pageToken: jspb.Message.getFieldWithDefault(msg, 5, "")
+query: (f = msg.getQuery()) && proto.ory.keto.relation_tuples.v1alpha2.ListRelationTuplesRequest.Query.toObject(includeInstance, f),
+relationQuery: (f = msg.getRelationQuery()) && ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationQuery.toObject(includeInstance, f),
+expandMask: (f = msg.getExpandMask()) && google_protobuf_field_mask_pb.FieldMask.toObject(includeInstance, f),
+snaptoken: jspb.Message.getFieldWithDefault(msg, 3, ""),
+pageSize: jspb.Message.getFieldWithDefault(msg, 4, 0),
+pageToken: jspb.Message.getFieldWithDefault(msg, 5, "")
   };
 
   if (includeInstance) {
@@ -301,10 +301,10 @@ proto.ory.keto.relation_tuples.v1alpha2.ListRelationTuplesRequest.Query.prototyp
  */
 proto.ory.keto.relation_tuples.v1alpha2.ListRelationTuplesRequest.Query.toObject = function(includeInstance, msg) {
   var f, obj = {
-    namespace: jspb.Message.getFieldWithDefault(msg, 1, ""),
-    object: jspb.Message.getFieldWithDefault(msg, 2, ""),
-    relation: jspb.Message.getFieldWithDefault(msg, 3, ""),
-    subject: (f = msg.getSubject()) && ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.Subject.toObject(includeInstance, f)
+namespace: jspb.Message.getFieldWithDefault(msg, 1, ""),
+object: jspb.Message.getFieldWithDefault(msg, 2, ""),
+relation: jspb.Message.getFieldWithDefault(msg, 3, ""),
+subject: (f = msg.getSubject()) && ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.Subject.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -714,9 +714,9 @@ proto.ory.keto.relation_tuples.v1alpha2.ListRelationTuplesResponse.prototype.toO
  */
 proto.ory.keto.relation_tuples.v1alpha2.ListRelationTuplesResponse.toObject = function(includeInstance, msg) {
   var f, obj = {
-    relationTuplesList: jspb.Message.toObjectList(msg.getRelationTuplesList(),
+relationTuplesList: jspb.Message.toObjectList(msg.getRelationTuplesList(),
     ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationTuple.toObject, includeInstance),
-    nextPageToken: jspb.Message.getFieldWithDefault(msg, 2, "")
+nextPageToken: jspb.Message.getFieldWithDefault(msg, 2, "")
   };
 
   if (includeInstance) {
