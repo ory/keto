@@ -582,7 +582,6 @@ func TestEngine(t *testing.T) {
 		}
 	})
 
-
 	t.Run("case=rewrite_and_traversal with depth", func(t *testing.T) {
 		t.Parallel()
 
