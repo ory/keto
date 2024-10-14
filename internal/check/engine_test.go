@@ -622,6 +622,7 @@ func TestEngine(t *testing.T) {
 				})
 			})
 		}
+	})
 
 	t.Run("case=batch check", func(t *testing.T) {
 		reg := newDepsProvider(t, []*namespace.Namespace{
