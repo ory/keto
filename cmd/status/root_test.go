@@ -12,13 +12,14 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ory/x/cmdx"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/grpc"
 	grpcHealthV1 "google.golang.org/grpc/health/grpc_health_v1"
 	"google.golang.org/grpc/metadata"
+
+	"github.com/ory/x/cmdx"
 
 	"github.com/ory/keto/cmd/client"
 	"github.com/ory/keto/internal/driver"
@@ -37,7 +38,7 @@ func TestStatusCmd(t *testing.T) {
 				defer cancel()
 
 				stdErr := cmdx.ExecExpectedErrCtx(ctx, t, newStatusCmd(), "--"+FlagEndpoint, string(serverType), "--"+ts.FlagRemote, ts.Addr[:len(ts.Addr)-1])
-				assert.Equal(t, "context deadline exceeded", stdErr)
+				assert.Contains(t, stdErr, "context deadline exceeded")
 			})
 
 			t.Run("case=noblock", func(t *testing.T) {

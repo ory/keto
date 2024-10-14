@@ -21,6 +21,7 @@ import (
 	grpcHealthV1 "google.golang.org/grpc/health/grpc_health_v1"
 	"google.golang.org/grpc/status"
 
+	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 	prometheus "github.com/ory/x/prometheusx"
 
 	"github.com/ory/keto/internal/driver/config"
@@ -50,7 +51,17 @@ func TestScrapingEndpoint(t *testing.T) {
 	require.NoError(t, err)
 	defer conn.Close()
 
+	versionClient := rts.NewVersionServiceClient(conn)
+	versionRes, err := versionClient.GetVersion(ctx, &rts.GetVersionRequest{})
+	require.NoError(t, err)
+	assert.Equal(t, "dev", versionRes.Version)
+
 	cl := grpcHealthV1.NewHealthClient(conn)
+
+	res, err := cl.Check(ctx, &grpcHealthV1.HealthCheckRequest{})
+	require.NoError(t, err)
+	assert.Equal(t, grpcHealthV1.HealthCheckResponse_SERVING, res.Status)
+
 	watcher, err := cl.Watch(ctx, &grpcHealthV1.HealthCheckRequest{})
 	require.NoError(t, err)
 	require.NoError(t, watcher.CloseSend())

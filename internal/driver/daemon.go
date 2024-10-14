@@ -31,7 +31,6 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/credentials/insecure"
 	grpcHealthV1 "google.golang.org/grpc/health/grpc_health_v1"
-	"google.golang.org/grpc/reflection"
 	"google.golang.org/grpc/status"
 	"google.golang.org/grpc/test/bufconn"
 
@@ -655,7 +654,6 @@ func (r *RegistryDefault) newAPIServer(ctx context.Context) *api.Server {
 func (r *RegistryDefault) registerCommonGRPCServices(s *grpc.Server) {
 	grpcHealthV1.RegisterHealthServer(s, r.HealthServer())
 	rts.RegisterVersionServiceServer(s, r)
-	reflection.Register(s)
 	r.pmm.Register(s)
 }
 

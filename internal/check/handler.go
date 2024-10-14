@@ -5,12 +5,13 @@ package check
 
 import (
 	"context"
+	"net/http"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/pkg/errors"
-	"google.golang.org/grpc/metadata"
 
 	"github.com/ory/herodot"
+	"github.com/ory/keto/internal/x/api"
 
 	"github.com/ory/keto/ketoapi"
 
@@ -62,15 +63,13 @@ func (h *Handler) Check(ctx context.Context, req *rts.CheckRequest) (res *rts.Ch
 	tuple := (&ketoapi.RelationTuple{}).FromCheckRequest(req)
 
 	// Check if we should set the HTTP status code to 403 instead of 200 if the check fails.
-	if md, ok := metadata.FromIncomingContext(ctx); ok {
-		path := md["path"]
-		if len(path) > 0 && path[0] == RouteBase {
-			defer func() {
-				if res != nil && !res.Allowed {
-					_ = grpc.SetHeader(ctx, metadata.Pairs("x-http-code", "403"))
-				}
-			}()
-		}
+
+	if api.RequestPath(ctx) == RouteBase {
+		defer func() {
+			if res != nil && !res.Allowed {
+				api.SetStatusCode(ctx, http.StatusForbidden)
+			}
+		}()
 	}
 
 	if tuple.SubjectID == nil && tuple.SubjectSet == nil {

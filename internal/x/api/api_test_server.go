@@ -5,13 +5,9 @@ import (
 	"strings"
 	"testing"
 
-	"connectrpc.com/vanguard"
-	"connectrpc.com/vanguard/vanguardgrpc"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
-	"google.golang.org/grpc/encoding"
-	"google.golang.org/protobuf/encoding/protojson"
 
 	"github.com/ory/keto/internal/x"
 )
@@ -31,13 +27,6 @@ type (
 		RegisterSyntaxGRPC(s *grpc.Server)
 	}
 )
-
-func init() {
-	encoding.RegisterCodec(vanguardgrpc.NewCodec(&vanguard.JSONCodec{
-		MarshalOptions:   protojson.MarshalOptions{EmitUnpopulated: true},
-		UnmarshalOptions: protojson.UnmarshalOptions{DiscardUnknown: true},
-	}))
-}
 
 func NewTestServer(t *testing.T, handler any) *TestServer {
 	apiServer := NewServer(WithGRPCOption(grpc.ChainUnaryInterceptor(x.GlobalGRPCUnaryServerInterceptors...)))

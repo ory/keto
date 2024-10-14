@@ -8,13 +8,14 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"strings"
 	"testing"
 
-	"github.com/ory/x/pointerx"
-
-	"github.com/ory/keto/ketoapi"
-
 	"github.com/ory/keto/internal/driver/config"
+	"github.com/ory/keto/internal/relationtuple"
+	"github.com/ory/keto/internal/x/api"
+	"github.com/ory/keto/ketoapi"
+	"github.com/ory/x/pointerx"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -23,8 +24,6 @@ import (
 	"github.com/ory/keto/internal/check"
 	"github.com/ory/keto/internal/driver"
 	"github.com/ory/keto/internal/namespace"
-	"github.com/ory/keto/internal/relationtuple"
-	"github.com/ory/keto/internal/x"
 )
 
 func assertAllowed(t *testing.T, resp *http.Response) {
@@ -65,7 +64,8 @@ func TestRESTHandler(t *testing.T) {
 	reg := driver.NewSqliteTestRegistry(t, false)
 	require.NoError(t, reg.Config(ctx).Set(config.KeyNamespaces, nspaces))
 
-	endpoints := x.NewTestEndpoints(t, check.NewHandler(reg))
+	endpoints := api.NewTestServer(t, check.NewHandler(reg))
+
 	ts := endpoints.HTTP
 
 	for _, suite := range []struct {
@@ -86,7 +86,7 @@ func TestRESTHandler(t *testing.T) {
 				assert.Equal(t, http.StatusBadRequest, resp.StatusCode)
 				body, err := io.ReadAll(resp.Body)
 				require.NoError(t, err)
-				assert.Contains(t, string(body), "invalid syntax")
+				assert.Contains(t, string(body), "invalid parameter \\\"max_depth\\\"")
 			})
 
 			t.Run("case=returns bad request on malformed input", func(t *testing.T) {
@@ -96,6 +96,12 @@ func TestRESTHandler(t *testing.T) {
 				require.NoError(t, err)
 
 				assert.Equal(t, http.StatusBadRequest, resp.StatusCode)
+			})
+			t.Run("case=returns bad request invalid json", func(t *testing.T) {
+				resp, err := ts.Client().Post(ts.URL+suite.base, "", strings.NewReader(`{"invalid]`))
+				require.NoError(t, err)
+				body, _ := io.ReadAll(resp.Body)
+				assert.Equal(t, http.StatusBadRequest, resp.StatusCode, body)
 			})
 
 			t.Run("case=returns bad request on missing subject", func(t *testing.T) {

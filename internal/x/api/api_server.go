@@ -7,15 +7,17 @@ import (
 	"maps"
 	"net/http"
 	"net/http/httptest"
+	"regexp"
 	"strconv"
 	"strings"
 
+	"connectrpc.com/vanguard"
 	"connectrpc.com/vanguard/vanguardgrpc"
 	"github.com/urfave/negroni"
 	"google.golang.org/genproto/googleapis/rpc/errdetails"
 	statuspb "google.golang.org/genproto/googleapis/rpc/status"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/encoding"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/reflection"
 	"google.golang.org/grpc/status"
@@ -23,6 +25,13 @@ import (
 
 	v1alpha2 "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 )
+
+func init() {
+	encoding.RegisterCodec(vanguardgrpc.NewCodec(&vanguard.JSONCodec{
+		MarshalOptions:   protojson.MarshalOptions{EmitUnpopulated: true},
+		UnmarshalOptions: protojson.UnmarshalOptions{DiscardUnknown: true},
+	}))
+}
 
 type (
 	Server struct {
@@ -90,19 +99,26 @@ var setErrorResponse = negroni.HandlerFunc(func(w http.ResponseWriter, r *http.R
 	body := rr.Body.Bytes()
 	protojson.Unmarshal(body, &spb)
 
-	if spb.Code == int32(codes.Unknown) && strings.HasPrefix(spb.Message, "proto: ") {
+	invalidFieldPathRe := regexp.MustCompile(`in field path ".*":`)
+	unexpectedBodyRe := regexp.MustCompile(`request should have no body; instead got \d bytes`)
+
+	// Proto errors in the REST request path are always bad requests.
+	if strings.HasPrefix(spb.Message, "proto:") ||
+		spb.Message == "empty field path" ||
+		invalidFieldPathRe.MatchString(spb.Message) ||
+		unexpectedBodyRe.MatchString(spb.Message) ||
+		strings.HasPrefix(spb.Message, "grpc: error unmarshalling request:") {
 		// Special case: error deserializing request into a protobuf is a bad request.
-		w.WriteHeader(http.StatusBadRequest)
+		rr.Code = http.StatusBadRequest
 	} else if w.Header().Get("x-http-code") != "" {
 		statusCode, err := strconv.Atoi(w.Header().Get("x-http-code"))
 		if err != nil {
 			log.Println("error:", err)
 		}
 		w.Header().Del("x-http-code")
-		w.WriteHeader(statusCode)
-	} else {
-		w.WriteHeader(rr.Code)
+		rr.Code = statusCode
 	}
+	w.WriteHeader(rr.Code)
 
 	if spb.Code == 0 && spb.Message == "" {
 		_, _ = w.Write(body)
