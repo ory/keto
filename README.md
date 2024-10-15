@@ -771,3 +771,5 @@ You can build a development Docker Image using:
 <pre type="make/command">
 make docker
 </pre>
+
+Test workflow
