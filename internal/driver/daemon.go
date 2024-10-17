@@ -106,7 +106,14 @@ func (r *RegistryDefault) ServeAll(ctx context.Context) error {
 	innerCtx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
-	doneShutdown := make(chan struct{}, 3)
+	serveFuncs := []func(context.Context, chan<- struct{}) error{
+		r.serveRead,
+		r.serveWrite,
+		r.serveOPLSyntax,
+		r.serveMetrics,
+	}
+
+	doneShutdown := make(chan struct{}, len(serveFuncs))
 
 	go func() {
 		osSignals := make(chan os.Signal, 1)
@@ -118,18 +125,20 @@ func (r *RegistryDefault) ServeAll(ctx context.Context) error {
 		case <-innerCtx.Done():
 		}
 
-		ctx, cancel := context.WithTimeout(context.Background(), graceful.DefaultShutdownTimeout)
+		ctx, cancel := context.WithTimeout(context.WithoutCancel(ctx), graceful.DefaultShutdownTimeout)
 		defer cancel()
 
-		nWaitingForShutdown := cap(doneShutdown)
-		select {
-		case <-ctx.Done():
-			return
-		case <-doneShutdown:
-			nWaitingForShutdown--
-			if nWaitingForShutdown == 0 {
-				// graceful shutdown done
+		nWaitingForShutdown := len(serveFuncs)
+		for {
+			select {
+			case <-ctx.Done():
 				return
+			case <-doneShutdown:
+				nWaitingForShutdown--
+				if nWaitingForShutdown == 0 {
+					// graceful shutdown done
+					return
+				}
 			}
 		}
 	}()
@@ -137,57 +146,49 @@ func (r *RegistryDefault) ServeAll(ctx context.Context) error {
 	eg := &errgroup.Group{}
 
 	// We need to separate the setup (invoking the functions that return the serve functions) from running the serve
-	// functions to mitigate race contitions in the HTTP router.
-	for _, serve := range []func() error{
-		r.serveRead(innerCtx, doneShutdown),
-		r.serveWrite(innerCtx, doneShutdown),
-		r.serveOPLSyntax(innerCtx, doneShutdown),
-		r.serveMetrics(innerCtx, doneShutdown),
-	} {
-		eg.Go(serve)
+	// functions to mitigate race conditions in the HTTP router.
+	for _, serve := range serveFuncs {
+		eg.Go(func() error {
+			return serve(innerCtx, doneShutdown)
+		})
 	}
 
 	return eg.Wait()
 }
 
-func (r *RegistryDefault) serveRead(ctx context.Context, done chan<- struct{}) func() error {
+func (r *RegistryDefault) serveRead(ctx context.Context, done chan<- struct{}) error {
 	rt, s := r.ReadRouter(ctx), r.ReadGRPCServer(ctx)
 
 	if tracer := r.Tracer(ctx); tracer.IsLoaded() {
 		rt = otelx.TraceHandler(rt, otelhttp.WithTracerProvider(tracer.Provider()))
 	}
 
-	return func() error {
-		return multiplexPort(ctx, r.Logger().WithField("endpoint", "read"), r.Config(ctx).ReadAPIListenOn(), rt, s, done)
-	}
+	return multiplexPort(ctx, r.Logger().WithField("endpoint", "read"), r.Config(ctx).ReadAPIListenOn(), rt, s, done)
 }
 
-func (r *RegistryDefault) serveWrite(ctx context.Context, done chan<- struct{}) func() error {
+func (r *RegistryDefault) serveWrite(ctx context.Context, done chan<- struct{}) error {
 	rt, s := r.WriteRouter(ctx), r.WriteGRPCServer(ctx)
 
 	if tracer := r.Tracer(ctx); tracer.IsLoaded() {
 		rt = otelx.TraceHandler(rt, otelhttp.WithTracerProvider(tracer.Provider()))
 	}
 
-	return func() error {
-		return multiplexPort(ctx, r.Logger().WithField("endpoint", "write"), r.Config(ctx).WriteAPIListenOn(), rt, s, done)
-	}
+	return multiplexPort(ctx, r.Logger().WithField("endpoint", "write"), r.Config(ctx).WriteAPIListenOn(), rt, s, done)
 }
 
-func (r *RegistryDefault) serveOPLSyntax(ctx context.Context, done chan<- struct{}) func() error {
+func (r *RegistryDefault) serveOPLSyntax(ctx context.Context, done chan<- struct{}) error {
 	rt, s := r.OPLSyntaxRouter(ctx), r.OplGRPCServer(ctx)
 
 	if tracer := r.Tracer(ctx); tracer.IsLoaded() {
 		rt = otelx.TraceHandler(rt, otelhttp.WithTracerProvider(tracer.Provider()))
 	}
 
-	return func() error {
-		return multiplexPort(ctx, r.Logger().WithField("endpoint", "opl"), r.Config(ctx).OPLSyntaxAPIListenOn(), rt, s, done)
-	}
+	return multiplexPort(ctx, r.Logger().WithField("endpoint", "opl"), r.Config(ctx).OPLSyntaxAPIListenOn(), rt, s, done)
 }
 
-func (r *RegistryDefault) serveMetrics(ctx context.Context, done chan<- struct{}) func() error {
+func (r *RegistryDefault) serveMetrics(ctx context.Context, done chan<- struct{}) error {
 	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
 
 	//nolint:gosec // graceful.WithDefaults already sets a timeout
 	s := graceful.WithDefaults(&http.Server{
@@ -195,36 +196,32 @@ func (r *RegistryDefault) serveMetrics(ctx context.Context, done chan<- struct{}
 		Addr:    r.Config(ctx).MetricsListenOn(),
 	})
 
-	return func() error {
-		defer cancel()
+	eg := &errgroup.Group{}
 
-		eg := &errgroup.Group{}
-
-		eg.Go(func() error {
-			if err := s.ListenAndServe(); !errors.Is(err, http.ErrServerClosed) {
-				return errors.WithStack(err)
+	eg.Go(func() error {
+		if err := s.ListenAndServe(); !errors.Is(err, http.ErrServerClosed) {
+			return errors.WithStack(err)
+		}
+		return nil
+	})
+	eg.Go(func() (err error) {
+		defer func() {
+			l := r.Logger().WithField("endpoint", "metrics")
+			if err != nil {
+				l.WithError(err).Error("graceful shutdown failed")
+			} else {
+				l.Info("gracefully shutdown server")
 			}
-			return nil
-		})
-		eg.Go(func() (err error) {
-			defer func() {
-				l := r.Logger().WithField("endpoint", "metrics")
-				if err != nil {
-					l.WithError(err).Error("graceful shutdown failed")
-				} else {
-					l.Info("gracefully shutdown server")
-				}
-				done <- struct{}{}
-			}()
+			done <- struct{}{}
+		}()
 
-			<-ctx.Done()
-			ctx, cancel := context.WithTimeout(context.Background(), graceful.DefaultShutdownTimeout)
-			defer cancel()
-			return s.Shutdown(ctx)
-		})
+		<-ctx.Done()
+		ctx, cancel := context.WithTimeout(context.Background(), graceful.DefaultShutdownTimeout)
+		defer cancel()
+		return s.Shutdown(ctx)
+	})
 
-		return eg.Wait()
-	}
+	return eg.Wait()
 }
 
 func multiplexPort(ctx context.Context, log *logrusx.Logger, addr string, router http.Handler, grpcS *grpc.Server, done chan<- struct{}) error {
@@ -281,7 +278,7 @@ func multiplexPort(ctx context.Context, log *logrusx.Logger, addr string, router
 
 		<-ctx.Done()
 
-		ctx, cancel := context.WithTimeout(context.Background(), graceful.DefaultShutdownTimeout)
+		ctx, cancel := context.WithTimeout(context.WithoutCancel(ctx), graceful.DefaultShutdownTimeout)
 		defer cancel()
 
 		shutdownEg := errgroup.Group{}
@@ -304,7 +301,7 @@ func multiplexPort(ctx context.Context, log *logrusx.Logger, addr string, router
 				return nil
 			case <-ctx.Done():
 				grpcS.Stop()
-				return errors.New("graceful stop of gRPC server canceled, had to force it")
+				return errors.New("graceful stop of gRPC server timed out, had to force it")
 			}
 		})
 
