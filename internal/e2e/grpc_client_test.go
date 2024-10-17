@@ -6,6 +6,7 @@ package e2e
 import (
 	"context"
 	"encoding/json"
+	"google.golang.org/grpc/codes"
 	"time"
 
 	"github.com/ory/keto/ketoapi"
@@ -220,28 +221,26 @@ func (g *grpcClient) expand(t require.TestingT, r *ketoapi.SubjectSet, depth int
 }
 
 func (g *grpcClient) waitUntilLive(t require.TestingT) {
-	c := grpcHealthV1.NewHealthClient(g.readConn(t))
+	require.EventuallyWithT(t, func(t *assert.CollectT) {
+		c := grpcHealthV1.NewHealthClient(g.readConn(t))
 
-	ctx, cancel := context.WithCancel(g.ctx)
-	defer cancel()
+		ctx, cancel := context.WithCancel(g.ctx)
+		defer cancel()
 
-	cl, err := c.Watch(ctx, &grpcHealthV1.HealthCheckRequest{})
-	require.NoError(t, err)
-	require.NoError(t, cl.CloseSend())
-
-	for {
-		select {
-		case <-g.ctx.Done():
-			return
-		default:
-		}
-		resp, err := cl.Recv()
+		cl, err := c.Watch(ctx, &grpcHealthV1.HealthCheckRequest{})
 		require.NoError(t, err)
+		require.NoError(t, cl.CloseSend())
 
-		if resp.Status == grpcHealthV1.HealthCheckResponse_SERVING {
-			return
+		for {
+			resp, err := cl.Recv()
+			if status.Code(err) == codes.Unavailable {
+				continue
+			}
+			if resp.Status == grpcHealthV1.HealthCheckResponse_SERVING {
+				return
+			}
 		}
-	}
+	}, 2*time.Second, 100*time.Millisecond)
 }
 
 func (g *grpcClient) deleteTuple(t require.TestingT, r *ketoapi.RelationTuple) {

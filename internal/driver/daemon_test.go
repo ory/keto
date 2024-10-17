@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net/http"
 	"testing"
+	"time"
 
 	"github.com/phayes/freeport"
 	"github.com/prometheus/common/expfmt"
@@ -44,19 +45,25 @@ func TestScrapingEndpoint(t *testing.T) {
 
 	eg := errgroup.Group{}
 	doneShutdown := make(chan struct{})
-	eg.Go(r.serveWrite(ctx, doneShutdown))
-	eg.Go(r.serveMetrics(ctx, doneShutdown))
+	eg.Go(func() error {
+		return r.serveWrite(ctx, doneShutdown)
+	})
+	eg.Go(func() error {
+		return r.serveMetrics(ctx, doneShutdown)
+	})
 
-	conn, err := grpc.DialContext(ctx, fmt.Sprintf("127.0.0.1:%d", port), grpc.WithTransportCredentials(insecure.NewCredentials()))
-	require.NoError(t, err)
-	defer conn.Close()
+	require.EventuallyWithT(t, func(t *assert.CollectT) {
+		conn, err := grpc.DialContext(ctx, fmt.Sprintf("127.0.0.1:%d", port), grpc.WithTransportCredentials(insecure.NewCredentials()))
+		require.NoError(t, err)
+		defer conn.Close()
 
-	cl := grpcHealthV1.NewHealthClient(conn)
-	watcher, err := cl.Watch(ctx, &grpcHealthV1.HealthCheckRequest{})
-	require.NoError(t, err)
-	require.NoError(t, watcher.CloseSend())
-	for err := status.Error(codes.Unavailable, "init"); status.Code(err) != codes.Unavailable; _, err = watcher.Recv() {
-	}
+		cl := grpcHealthV1.NewHealthClient(conn)
+		watcher, err := cl.Watch(ctx, &grpcHealthV1.HealthCheckRequest{})
+		require.NoError(t, err)
+		require.NoError(t, watcher.CloseSend())
+		for err := status.Error(codes.Unavailable, "init"); status.Code(err) != codes.Unavailable; _, err = watcher.Recv() {
+		}
+	}, 2*time.Second, 100*time.Millisecond)
 
 	promresp, err := http.Get(fmt.Sprintf("http://127.0.0.1:%d", portMetrics) + prometheus.MetricsPrometheusPath)
 	require.NoError(t, err)
@@ -101,22 +108,27 @@ func TestPanicRecovery(t *testing.T) {
 
 	eg := errgroup.Group{}
 	doneShutdown := make(chan struct{})
-	eg.Go(r.serveWrite(ctx, doneShutdown))
+	eg.Go(func() error {
+		return r.serveWrite(ctx, doneShutdown)
+	})
 
 	conn, err := grpc.DialContext(ctx, fmt.Sprintf("127.0.0.1:%d", port), grpc.WithTransportCredentials(insecure.NewCredentials()))
 	require.NoError(t, err)
 	defer conn.Close()
 
+	require.EventuallyWithT(t, func(t *assert.CollectT) {
+		cl := grpcHealthV1.NewHealthClient(conn)
+
+		watcher, err := cl.Watch(ctx, &grpcHealthV1.HealthCheckRequest{})
+		require.NoError(t, err)
+		require.NoError(t, watcher.CloseSend())
+		for err := status.Error(codes.Unavailable, "init"); status.Code(err) != codes.Unavailable; _, err = watcher.Recv() {
+		}
+	}, 2*time.Second, 100*time.Millisecond)
+
 	cl := grpcHealthV1.NewHealthClient(conn)
-
-	watcher, err := cl.Watch(ctx, &grpcHealthV1.HealthCheckRequest{})
-	require.NoError(t, err)
-	require.NoError(t, watcher.CloseSend())
-	for err := status.Error(codes.Unavailable, "init"); status.Code(err) != codes.Unavailable; _, err = watcher.Recv() {
-	}
-
 	// we want to ensure the server is still running after the panic
-	for i := 0; i < 10; i++ {
+	for range 10 {
 		// Unary call
 		resp, err := cl.Check(ctx, &grpcHealthV1.HealthCheckRequest{})
 		require.Error(t, err, "%+v", resp)
