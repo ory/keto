@@ -12,10 +12,11 @@ import (
 
 	"github.com/gobuffalo/pop/v6"
 	"github.com/gofrs/uuid"
-	"github.com/ory/keto/internal/namespace"
 	"github.com/ory/x/popx"
 	"github.com/ory/x/sqlcon"
 	"github.com/pkg/errors"
+
+	"github.com/ory/keto/internal/namespace"
 )
 
 //lint:file-ignore SA1019 as we migrate legacy stuff
