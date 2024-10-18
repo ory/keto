@@ -6,8 +6,9 @@ package e2e
 import (
 	"context"
 	"encoding/json"
-	"google.golang.org/grpc/codes"
 	"time"
+
+	"google.golang.org/grpc/codes"
 
 	"github.com/ory/keto/ketoapi"
 	opl "github.com/ory/keto/proto/ory/keto/opl/v1alpha1"

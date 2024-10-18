@@ -283,5 +283,7 @@ func TestProvider_DefaultReadAPIListenOn(t *testing.T) {
 	)
 	require.NoError(t, err)
 
-	assert.Equal(t, ":4466", config.ReadAPIListenOn())
+	addr, listenFile := config.ReadAPIListenOn()
+	assert.Equal(t, ":4466", addr)
+	assert.Zero(t, listenFile)
 }

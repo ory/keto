@@ -5,6 +5,7 @@ package driver
 
 import (
 	"context"
+	"fmt"
 	"net"
 	"net/http"
 	"os"
@@ -163,7 +164,8 @@ func (r *RegistryDefault) serveRead(ctx context.Context, done chan<- struct{}) e
 		rt = otelx.TraceHandler(rt, otelhttp.WithTracerProvider(tracer.Provider()))
 	}
 
-	return multiplexPort(ctx, r.Logger().WithField("endpoint", "read"), r.Config(ctx).ReadAPIListenOn(), rt, s, done)
+	addr, listenFile := r.Config(ctx).ReadAPIListenOn()
+	return multiplexPort(ctx, r.Logger().WithField("endpoint", "read"), addr, listenFile, rt, s, done)
 }
 
 func (r *RegistryDefault) serveWrite(ctx context.Context, done chan<- struct{}) error {
@@ -173,7 +175,8 @@ func (r *RegistryDefault) serveWrite(ctx context.Context, done chan<- struct{}) 
 		rt = otelx.TraceHandler(rt, otelhttp.WithTracerProvider(tracer.Provider()))
 	}
 
-	return multiplexPort(ctx, r.Logger().WithField("endpoint", "write"), r.Config(ctx).WriteAPIListenOn(), rt, s, done)
+	addr, listenFile := r.Config(ctx).WriteAPIListenOn()
+	return multiplexPort(ctx, r.Logger().WithField("endpoint", "write"), addr, listenFile, rt, s, done)
 }
 
 func (r *RegistryDefault) serveOPLSyntax(ctx context.Context, done chan<- struct{}) error {
@@ -183,23 +186,29 @@ func (r *RegistryDefault) serveOPLSyntax(ctx context.Context, done chan<- struct
 		rt = otelx.TraceHandler(rt, otelhttp.WithTracerProvider(tracer.Provider()))
 	}
 
-	return multiplexPort(ctx, r.Logger().WithField("endpoint", "opl"), r.Config(ctx).OPLSyntaxAPIListenOn(), rt, s, done)
+	addr, listenFile := r.Config(ctx).OPLSyntaxAPIListenOn()
+	return multiplexPort(ctx, r.Logger().WithField("endpoint", "opl"), addr, listenFile, rt, s, done)
 }
 
 func (r *RegistryDefault) serveMetrics(ctx context.Context, done chan<- struct{}) error {
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
+	addr, listenFile := r.Config(ctx).MetricsListenOn()
+	l, err := listenAndWriteFile(ctx, addr, listenFile)
+	if err != nil {
+		return err
+	}
+
 	//nolint:gosec // graceful.WithDefaults already sets a timeout
 	s := graceful.WithDefaults(&http.Server{
 		Handler: r.metricsRouter(ctx),
-		Addr:    r.Config(ctx).MetricsListenOn(),
 	})
 
 	eg := &errgroup.Group{}
 
 	eg.Go(func() error {
-		if err := s.ListenAndServe(); !errors.Is(err, http.ErrServerClosed) {
+		if err := s.Serve(l); !errors.Is(err, http.ErrServerClosed) {
 			return errors.WithStack(err)
 		}
 		return nil
@@ -224,8 +233,8 @@ func (r *RegistryDefault) serveMetrics(ctx context.Context, done chan<- struct{}
 	return eg.Wait()
 }
 
-func multiplexPort(ctx context.Context, log *logrusx.Logger, addr string, router http.Handler, grpcS *grpc.Server, done chan<- struct{}) error {
-	l, err := (&net.ListenConfig{}).Listen(ctx, "tcp", addr)
+func multiplexPort(ctx context.Context, log *logrusx.Logger, addr, listenFile string, router http.Handler, grpcS *grpc.Server, done chan<- struct{}) error {
+	l, err := listenAndWriteFile(ctx, addr, listenFile)
 	if err != nil {
 		return err
 	}
@@ -322,6 +331,20 @@ func (r *RegistryDefault) allHandlers() []Handler {
 		}
 	}
 	return r.handlers
+}
+
+func listenAndWriteFile(ctx context.Context, addr, listenFile string) (net.Listener, error) {
+	l, err := (&net.ListenConfig{}).Listen(ctx, "tcp", addr)
+	if err != nil {
+		return nil, errors.WithStack(fmt.Errorf("unable to listen on %q: %w", addr, err))
+	}
+	const filePrefix = "file://"
+	if strings.HasPrefix(listenFile, filePrefix) {
+		if err := os.WriteFile(listenFile[len(filePrefix):], []byte(l.Addr().String()), 0600); err != nil {
+			return nil, errors.WithStack(fmt.Errorf("unable to write listen file %q: %w", listenFile, err))
+		}
+	}
+	return l, nil
 }
 
 func (r *RegistryDefault) ReadRouter(ctx context.Context) http.Handler {
