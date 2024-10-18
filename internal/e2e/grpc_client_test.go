@@ -6,9 +6,13 @@ package e2e
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"testing"
 	"time"
+
+	"github.com/ory/keto/ketoapi"
+	opl "github.com/ory/keto/proto/ory/keto/opl/v1alpha1"
+
+	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 
 	"github.com/ory/herodot"
 	"github.com/stretchr/testify/assert"
@@ -19,9 +23,6 @@ import (
 	"google.golang.org/grpc/status"
 
 	"github.com/ory/keto/internal/x"
-	"github.com/ory/keto/ketoapi"
-	opl "github.com/ory/keto/proto/ory/keto/opl/v1alpha1"
-	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 )
 
 type grpcClient struct {
