@@ -178,7 +178,7 @@ func TestMigrations(t *testing.T) {
 
 					oldRTs := make([]tuplesBeforeUUID, 2000)
 					expected := make([]*ketoapi.RelationTuple, len(oldRTs))
-					for i := 0; i < len(oldRTs); i++ {
+					for i := range oldRTs {
 						oldRTs[i] = tuplesBeforeUUID{
 							NetworkID: p.NetworkID(ctx),
 							//lint:ignore SA1019 backwards compatibility
