@@ -83,8 +83,7 @@ func (p *Persister) batchFromUUIDs(ctx context.Context, ids []uuid.UUID, opts ..
 	// We need to paginate on the ids, because we want to get the exact chunk of
 	// string representations for the given ids.
 	pagination, _ := internalPaginationFromOptions(opts...)
-	_ = pagination
-	pageSize := 4
+	pageSize := pagination.PerPage
 
 	// Build a map from UUID -> indices in the result.
 	idIdx := make(map[uuid.UUID][]int, len(ids))
