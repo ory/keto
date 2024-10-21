@@ -33,12 +33,12 @@ jobs:
         with:
           githubToken: ${{ secrets.GITHUB_TOKEN }}
       - name: Run golangci-lint
-        uses: golangci/golangci-lint-action@v3
+        uses: golangci/golangci-lint-action@v6
         env:
           GOGC: 100
         with:
+          version: v1.61.0
           args: --timeout 10m0s --issues-exit-code=0
-          skip-pkg-cache: true
       - name: Test documentation examples
         run: make test-docs-samples
       - name: Test OPL typelib
