@@ -6,13 +6,13 @@ package relationtuple_test
 import (
 	"context"
 	"fmt"
+	"slices"
 	"testing"
 
 	"github.com/ory/herodot"
 	"github.com/ory/x/pointerx"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"golang.org/x/exp/slices"
 
 	"github.com/ory/keto/internal/driver"
 	"github.com/ory/keto/internal/driver/config"

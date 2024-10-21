@@ -38,7 +38,7 @@ type (
 
 var (
 	_        namespace.Manager = (*oplConfigWatcher)(nil)
-	cache, _                   = ristretto.NewCache(&ristretto.Config{
+	cache, _                   = ristretto.NewCache[string, []byte](&ristretto.Config[string, []byte]{
 		MaxCost:     20_000_000, // 20 MB max size, each item ca. 10 KB => max 2000 items
 		NumCounters: 20_000,     // max 2000 items => 20000 counters
 		BufferItems: 64,
@@ -72,7 +72,7 @@ func newOPLConfigWatcher(ctx context.Context, c *Config, target string) (*oplCon
 	case "http", "https":
 		var file io.Reader
 		if item, ok := cache.Get(target); ok {
-			file = bytes.NewReader(item.([]byte))
+			file = bytes.NewReader(item)
 		} else {
 			buf, err := c.Fetcher().FetchContext(ctx, target)
 			if err != nil {
