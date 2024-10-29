@@ -348,8 +348,8 @@ func (r *RegistryDefault) ReadRouter(ctx context.Context) http.Handler {
 		}
 	}
 
-	n.UseHandler(br)
 	n.Use(r.PrometheusManager())
+	n.UseHandler(br)
 
 	if r.sqaService != nil {
 		n.Use(r.sqaService)
@@ -385,8 +385,8 @@ func (r *RegistryDefault) WriteRouter(ctx context.Context) http.Handler {
 		}
 	}
 
-	n.UseHandler(pr)
 	n.Use(r.PrometheusManager())
+	n.UseHandler(pr)
 
 	if r.sqaService != nil {
 		n.Use(r.sqaService)
@@ -422,8 +422,8 @@ func (r *RegistryDefault) OPLSyntaxRouter(ctx context.Context) http.Handler {
 		}
 	}
 
-	n.UseHandler(pr)
 	n.Use(r.PrometheusManager())
+	n.UseHandler(pr)
 
 	if r.sqaService != nil {
 		n.Use(r.sqaService)
@@ -554,8 +554,8 @@ func (r *RegistryDefault) metricsRouter(ctx context.Context) http.Handler {
 
 	r.PrometheusManager().RegisterRouter(router)
 	r.MetricsHandler().SetRoutes(router)
-	n.UseHandler(router)
 	n.Use(r.PrometheusManager())
+	n.UseHandler(router)
 
 	var handler http.Handler = n
 	options, enabled := r.Config(ctx).CORS("metrics")
