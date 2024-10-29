@@ -5,9 +5,9 @@ package sql
 
 import (
 	"context"
+	"iter"
+	"maps"
 	"strings"
-
-	"golang.org/x/exp/maps"
 
 	"github.com/gofrs/uuid"
 	"github.com/ory/x/otelx"
@@ -86,7 +86,7 @@ func (p *Persister) batchFromUUIDs(ctx context.Context, ids []uuid.UUID, opts ..
 	pageSize := pagination.PerPage
 
 	// Build a map from UUID -> indices in the result.
-	idIdx := make(map[uuid.UUID][]int)
+	idIdx := make(map[uuid.UUID][]int, len(ids))
 	for i, id := range ids {
 		if ids, ok := idIdx[id]; ok {
 			idIdx[id] = append(ids, i)
@@ -94,17 +94,24 @@ func (p *Persister) batchFromUUIDs(ctx context.Context, ids []uuid.UUID, opts ..
 			idIdx[id] = []int{i}
 		}
 	}
-	uniqueIDs := maps.Keys(idIdx)
+	nextID, stop := iter.Pull(maps.Keys(idIdx))
+	defer stop()
 
 	res = make([]string, len(ids))
 
-	for i := 0; i < len(uniqueIDs); i += pageSize {
-		end := i + pageSize
-		if end > len(uniqueIDs) {
-			end = len(uniqueIDs)
+	idsToLookup := make([]uuid.UUID, 0, pageSize)
+	mappings := make([]UUIDMapping, 0, pageSize)
+	for i := 0; i < len(idIdx); i += pageSize {
+		idsToLookup = idsToLookup[:0]
+		mappings = mappings[:0]
+
+		for range pageSize {
+			id, ok := nextID()
+			if !ok {
+				break
+			}
+			idsToLookup = append(idsToLookup, id)
 		}
-		idsToLookup := uniqueIDs[i:end]
-		var mappings []UUIDMapping
 		query := p.Connection(ctx).Where("id in (?)", idsToLookup)
 		if err := sqlcon.HandleError(query.All(&mappings)); err != nil {
 			return []string{}, err

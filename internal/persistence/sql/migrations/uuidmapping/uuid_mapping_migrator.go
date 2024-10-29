@@ -15,7 +15,6 @@ import (
 	"github.com/ory/x/popx"
 	"github.com/ory/x/sqlcon"
 	"github.com/pkg/errors"
-	"golang.org/x/exp/maps"
 
 	"github.com/ory/keto/internal/namespace"
 )
@@ -385,16 +384,19 @@ func BatchReplaceUUIDs(conn *pop.Connection, uuidToTargets map[uuid.UUID][]*stri
 		return nil
 	}
 
-	ids := maps.Keys(uuidToTargets)
+	ids := make([]uuid.UUID, 0, len(uuidToTargets))
+	for id := range uuidToTargets {
+		ids = append(ids, id)
+	}
 
-	mappings := &[]UUIDMapping{}
+	mappings := make([]UUIDMapping, 0, len(ids))
 	query := conn.Where("id in (?)", ids)
-	if err := sqlcon.HandleError(query.All(mappings)); err != nil {
+	if err := sqlcon.HandleError(query.All(&mappings)); err != nil {
 		return err
 	}
 
 	// Write the representation to the correct pointer(s).
-	for _, m := range *mappings {
+	for _, m := range mappings {
 		for _, target := range uuidToTargets[m.ID] {
 			*target = m.StringRepresentation
 		}
