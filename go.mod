@@ -27,7 +27,7 @@ require (
 	github.com/phayes/freeport v0.0.0-20220201140144-74d24b5ae9f5
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_model v0.6.1
-	github.com/prometheus/common v0.60.0
+	github.com/prometheus/common v0.60.1
 	github.com/rs/cors v1.11.1
 	github.com/segmentio/objconv v1.0.1
 	github.com/sirupsen/logrus v1.9.3
