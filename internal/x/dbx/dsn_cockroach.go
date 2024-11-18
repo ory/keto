@@ -12,7 +12,7 @@ import (
 )
 
 func RunCockroach(t testing.TB, testDB string) string {
-	url := dockertest.RunTestCockroachDB(t)
+	url := dockertest.RunTestCockroachDBWithVersion(t, "latest-v24.2")
 	if err := createDB(t, url, testDB); err != nil {
 		t.Fatal(err)
 	}

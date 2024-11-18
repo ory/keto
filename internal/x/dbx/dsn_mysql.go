@@ -13,7 +13,7 @@ import (
 )
 
 func RunMySQL(t testing.TB, testDB string) string {
-	url := dockertest.RunTestMySQL(t)
+	url := dockertest.RunTestMySQLWithVersion(t, "8.0")
 	time.Sleep(1 * time.Second)
 	if err := createDB(t, url, testDB); err != nil {
 		t.Fatal(err)
