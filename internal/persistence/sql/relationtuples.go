@@ -6,18 +6,29 @@ package sql
 import (
 	"context"
 	"database/sql"
+	"fmt"
+	"slices"
+	"strings"
 	"time"
-
-	"github.com/ory/keto/ketoapi"
 
 	"github.com/gobuffalo/pop/v6"
 	"github.com/gofrs/uuid"
 	"github.com/ory/x/otelx"
 	"github.com/ory/x/sqlcon"
 	"github.com/pkg/errors"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/trace"
 
 	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/internal/x"
+	"github.com/ory/keto/ketoapi"
+)
+
+// Typical database limits for placeholders/bind vars are 1<<15 (32k, MySQL, SQLite) and 1<<16 (64k, PostgreSQL, CockroachDB).
+const (
+	chunkSizeInsertUUIDMappings = 15000 // two placeholders per mapping
+	chunkSizeInsertTuple        = 3000  // ten placeholders per tuple
+	chunkSizeDeleteTuple        = 100   // the database must build an expression tree for each chunk, so we must limit more aggressively
 )
 
 type (
@@ -71,7 +82,7 @@ func (r *RelationTuple) ToInternal() (*relationtuple.RelationTuple, error) {
 	return rt, nil
 }
 
-func (r *RelationTuple) insertSubject(_ context.Context, s relationtuple.Subject) error {
+func (r *RelationTuple) insertSubject(s relationtuple.Subject) error {
 	switch st := s.(type) {
 	case *relationtuple.SubjectID:
 		r.SubjectID = uuid.NullUUID{
@@ -90,39 +101,12 @@ func (r *RelationTuple) insertSubject(_ context.Context, s relationtuple.Subject
 	return nil
 }
 
-func (r *RelationTuple) FromInternal(ctx context.Context, p *Persister, rt *relationtuple.RelationTuple) (err error) {
-	ctx, span := p.d.Tracer(ctx).Tracer().Start(ctx, "persistence.sql.FromInternal")
-	defer otelx.End(span, &err)
-
+func (r *RelationTuple) FromInternal(rt *relationtuple.RelationTuple) (err error) {
 	r.Namespace = rt.Namespace
 	r.Object = rt.Object
 	r.Relation = rt.Relation
 
-	return r.insertSubject(ctx, rt.Subject)
-}
-
-func (p *Persister) InsertRelationTuple(ctx context.Context, rel *relationtuple.RelationTuple) (err error) {
-	ctx, span := p.d.Tracer(ctx).Tracer().Start(ctx, "persistence.sql.InsertRelationTuple")
-	defer otelx.End(span, &err)
-
-	if rel.Subject == nil {
-		return errors.WithStack(ketoapi.ErrNilSubject)
-	}
-
-	rt := &RelationTuple{
-		ID:         uuid.Must(uuid.NewV4()),
-		CommitTime: time.Now(),
-	}
-	if err := rt.FromInternal(ctx, p, rel); err != nil {
-		return err
-	}
-
-	if err := sqlcon.HandleError(
-		p.createWithNetwork(ctx, rt),
-	); err != nil {
-		return err
-	}
-	return nil
+	return r.insertSubject(rt.Subject)
 }
 
 func (p *Persister) whereSubject(_ context.Context, q *pop.Query, sub relationtuple.Subject) error {
@@ -165,25 +149,53 @@ func (p *Persister) whereQuery(ctx context.Context, q *pop.Query, rq *relationtu
 	return nil
 }
 
+func buildDelete(nid uuid.UUID, rs []*relationtuple.RelationTuple) (query string, args []any, err error) {
+	if len(rs) == 0 {
+		return "", nil, errors.WithStack(ketoapi.ErrMalformedInput)
+	}
+
+	args = make([]any, 0, 6*len(rs)+1)
+	ors := make([]string, 0, len(rs))
+	for _, rt := range rs {
+		switch s := rt.Subject.(type) {
+		case *relationtuple.SubjectID:
+			ors = append(ors, "(namespace = ? AND object = ? AND relation = ? AND subject_id = ? AND subject_set_namespace IS NULL AND subject_set_object IS NULL AND subject_set_relation IS NULL)")
+			args = append(args, rt.Namespace, rt.Object, rt.Relation, s.ID)
+		case *relationtuple.SubjectSet:
+			ors = append(ors, "(namespace = ? AND object = ? AND relation = ? AND subject_id IS NULL AND subject_set_namespace = ? AND subject_set_object = ? AND subject_set_relation = ?)")
+			args = append(args, rt.Namespace, rt.Object, rt.Relation, s.Namespace, s.Object, s.Relation)
+		case nil:
+			return "", nil, errors.WithStack(ketoapi.ErrNilSubject)
+		}
+	}
+
+	query = fmt.Sprintf("DELETE FROM %s WHERE (%s) AND nid = ?", (&RelationTuple{}).TableName(), strings.Join(ors, " OR "))
+	args = append(args, nid)
+	return query, args, nil
+}
+
 func (p *Persister) DeleteRelationTuples(ctx context.Context, rs ...*relationtuple.RelationTuple) (err error) {
-	ctx, span := p.d.Tracer(ctx).Tracer().Start(ctx, "persistence.sql.DeleteRelationTuples")
+	ctx, span := p.d.Tracer(ctx).Tracer().Start(ctx, "persistence.sql.DeleteRelationTuples",
+		trace.WithAttributes(attribute.Int("count", len(rs))))
 	defer otelx.End(span, &err)
 
+	if len(rs) == 0 {
+		return nil
+	}
+
 	return p.Transaction(ctx, func(ctx context.Context) error {
-		for _, r := range rs {
-			q := p.queryWithNetwork(ctx).
-				Where("namespace = ?", r.Namespace).
-				Where("object = ?", r.Object).
-				Where("relation = ?", r.Relation)
-			if err := p.whereSubject(ctx, q, r.Subject); err != nil {
+		for chunk := range slices.Chunk(rs, chunkSizeDeleteTuple) {
+			q, args, err := buildDelete(p.NetworkID(ctx), chunk)
+			if err != nil {
 				return err
 			}
-
-			if err := q.Delete(&RelationTuple{}); err != nil {
-				return err
+			if q == "" {
+				continue
+			}
+			if err := p.Connection(ctx).RawQuery(q, args...).Exec(); err != nil {
+				return sqlcon.HandleError(err)
 			}
 		}
-
 		return nil
 	})
 }
@@ -260,14 +272,62 @@ func (p *Persister) ExistsRelationTuples(ctx context.Context, query *relationtup
 	return exists, sqlcon.HandleError(err)
 }
 
+func buildInsert(commitTime time.Time, nid uuid.UUID, rs []*relationtuple.RelationTuple) (query string, args []any, err error) {
+	if len(rs) == 0 {
+		return "", nil, errors.WithStack(ketoapi.ErrMalformedInput)
+	}
+
+	var q strings.Builder
+	fmt.Fprintf(&q, "INSERT INTO %s (shard_id, nid, namespace, object, relation, subject_id, subject_set_namespace, subject_set_object, subject_set_relation, commit_time) VALUES ", (&RelationTuple{}).TableName())
+	const placeholders = "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+	const separator = ", "
+	q.Grow(len(rs) * (len(placeholders) + len(separator)))
+	args = make([]any, 0, 10*len(rs))
+
+	for i, r := range rs {
+		if r.Subject == nil {
+			return "", nil, errors.WithStack(ketoapi.ErrNilSubject)
+		}
+
+		rt := &RelationTuple{
+			ID:         uuid.Must(uuid.NewV4()),
+			NetworkID:  nid,
+			CommitTime: commitTime,
+		}
+		if err := rt.FromInternal(r); err != nil {
+			return "", nil, err
+		}
+
+		if i > 0 {
+			q.WriteString(separator)
+		}
+		q.WriteString(placeholders)
+		args = append(args, rt.ID, rt.NetworkID, rt.Namespace, rt.Object, rt.Relation, rt.SubjectID, rt.SubjectSetNamespace, rt.SubjectSetObject, rt.SubjectSetRelation, rt.CommitTime)
+	}
+
+	query = q.String()
+	return query, args, nil
+}
+
 func (p *Persister) WriteRelationTuples(ctx context.Context, rs ...*relationtuple.RelationTuple) (err error) {
-	ctx, span := p.d.Tracer(ctx).Tracer().Start(ctx, "persistence.sql.WriteRelationTuples")
+	ctx, span := p.d.Tracer(ctx).Tracer().Start(ctx, "persistence.sql.WriteRelationTuples",
+		trace.WithAttributes(attribute.Int("count", len(rs))))
 	defer otelx.End(span, &err)
 
+	if len(rs) == 0 {
+		return nil
+	}
+
+	commitTime := time.Now()
+
 	return p.Transaction(ctx, func(ctx context.Context) error {
-		for _, r := range rs {
-			if err := p.InsertRelationTuple(ctx, r); err != nil {
+		for chunk := range slices.Chunk(rs, chunkSizeInsertTuple) {
+			q, args, err := buildInsert(commitTime, p.NetworkID(ctx), chunk)
+			if err != nil {
 				return err
+			}
+			if err := p.Connection(ctx).RawQuery(q, args...).Exec(); err != nil {
+				return sqlcon.HandleError(err)
 			}
 		}
 		return nil
@@ -277,6 +337,10 @@ func (p *Persister) WriteRelationTuples(ctx context.Context, rs ...*relationtupl
 func (p *Persister) TransactRelationTuples(ctx context.Context, ins []*relationtuple.RelationTuple, del []*relationtuple.RelationTuple) (err error) {
 	ctx, span := p.d.Tracer(ctx).Tracer().Start(ctx, "persistence.sql.TransactRelationTuples")
 	defer otelx.End(span, &err)
+
+	if len(ins)+len(del) == 0 {
+		return nil
+	}
 
 	return p.Transaction(ctx, func(ctx context.Context) error {
 		if err := p.WriteRelationTuples(ctx, ins...); err != nil {

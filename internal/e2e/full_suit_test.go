@@ -28,21 +28,21 @@ import (
 type (
 	transactClient interface {
 		client
-		transactTuples(t require.TestingT, ins []*ketoapi.RelationTuple, del []*ketoapi.RelationTuple)
+		transactTuples(t *testing.T, ins []*ketoapi.RelationTuple, del []*ketoapi.RelationTuple)
 	}
 	client interface {
-		createTuple(t require.TestingT, r *ketoapi.RelationTuple)
-		deleteTuple(t require.TestingT, r *ketoapi.RelationTuple)
-		deleteAllTuples(t require.TestingT, q *ketoapi.RelationQuery)
-		queryTuple(t require.TestingT, q *ketoapi.RelationQuery, opts ...x.PaginationOptionSetter) *ketoapi.GetResponse
-		queryTupleErr(t require.TestingT, expected herodot.DefaultError, q *ketoapi.RelationQuery, opts ...x.PaginationOptionSetter)
-		check(t require.TestingT, r *ketoapi.RelationTuple) bool
-		batchCheck(t require.TestingT, r []*ketoapi.RelationTuple) []checkResponse
-		batchCheckErr(t require.TestingT, requestTuples []*ketoapi.RelationTuple, expected herodot.DefaultError)
-		expand(t require.TestingT, r *ketoapi.SubjectSet, depth int) *ketoapi.Tree[*ketoapi.RelationTuple]
-		oplCheckSyntax(t require.TestingT, content []byte) []*ketoapi.ParseError
-		waitUntilLive(t require.TestingT)
-		queryNamespaces(t require.TestingT) ketoapi.GetNamespacesResponse
+		createTuple(t *testing.T, r *ketoapi.RelationTuple)
+		deleteTuple(t *testing.T, r *ketoapi.RelationTuple)
+		deleteAllTuples(t *testing.T, q *ketoapi.RelationQuery)
+		queryTuple(t *testing.T, q *ketoapi.RelationQuery, opts ...x.PaginationOptionSetter) *ketoapi.GetResponse
+		queryTupleErr(t *testing.T, expected herodot.DefaultError, q *ketoapi.RelationQuery, opts ...x.PaginationOptionSetter)
+		check(t *testing.T, r *ketoapi.RelationTuple) bool
+		batchCheck(t *testing.T, r []*ketoapi.RelationTuple) []checkResponse
+		batchCheckErr(t *testing.T, requestTuples []*ketoapi.RelationTuple, expected herodot.DefaultError)
+		expand(t *testing.T, r *ketoapi.SubjectSet, depth int) *ketoapi.Tree[*ketoapi.RelationTuple]
+		oplCheckSyntax(t *testing.T, content []byte) []*ketoapi.ParseError
+		waitUntilLive(t *testing.T)
+		queryNamespaces(t *testing.T) ketoapi.GetNamespacesResponse
 	}
 )
 
@@ -65,12 +65,11 @@ func Test(t *testing.T) {
 			// The test cases start here
 			// We execute every test with all clients available
 			for _, cl := range []client{
-				&grpcClient{
-					readRemote:      reg.Config(ctx).ReadAPIListenOn(),
-					writeRemote:     reg.Config(ctx).WriteAPIListenOn(),
-					oplSyntaxRemote: reg.Config(ctx).OPLSyntaxAPIListenOn(),
-					ctx:             ctx,
-				},
+				newGrpcClient(t, ctx,
+					reg.Config(ctx).ReadAPIListenOn(),
+					reg.Config(ctx).WriteAPIListenOn(),
+					reg.Config(ctx).OPLSyntaxAPIListenOn(),
+				),
 				&restClient{
 					readURL:      "http://" + reg.Config(ctx).ReadAPIListenOn(),
 					writeURL:     "http://" + reg.Config(ctx).WriteAPIListenOn(),
@@ -104,11 +103,11 @@ func Test(t *testing.T) {
 
 			t.Run("case=metrics are served", func(t *testing.T) {
 				t.Parallel()
-				(&grpcClient{
-					readRemote:  reg.Config(ctx).ReadAPIListenOn(),
-					writeRemote: reg.Config(ctx).WriteAPIListenOn(),
-					ctx:         ctx,
-				}).waitUntilLive(t)
+				newGrpcClient(t, ctx,
+					reg.Config(ctx).ReadAPIListenOn(),
+					reg.Config(ctx).WriteAPIListenOn(),
+					reg.Config(ctx).OPLSyntaxAPIListenOn(),
+				).waitUntilLive(t)
 
 				t.Run("case=on "+prometheus.MetricsPrometheusPath, func(t *testing.T) {
 					t.Parallel()
@@ -148,6 +147,7 @@ func TestServeConfig(t *testing.T) {
 		t.Log("Waiting for health check to be ready")
 		time.Sleep(10 * time.Millisecond)
 	}
+	t.Log("Health check is ready")
 
 	req, err := http.NewRequest(http.MethodOptions, "http://"+reg.Config(ctx).ReadAPIListenOn()+relationtuple.ReadRouteBase, nil)
 	require.NoError(t, err)
