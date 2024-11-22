@@ -178,8 +178,6 @@ github.com/gobuffalo/github_flavored_markdown v1.1.4 h1:WacrEGPXUDX+BpU1GM/Y0ADg
 github.com/gobuffalo/github_flavored_markdown v1.1.4/go.mod h1:Vl9686qrVVQou4GrHRK/KOG3jCZOKLUqV8MMOAYtlso=
 github.com/gobuffalo/helpers v0.6.7 h1:C9CedoRSfgWg2ZoIkVXgjI5kgmSpL34Z3qdnzpfNVd8=
 github.com/gobuffalo/helpers v0.6.7/go.mod h1:j0u1iC1VqlCaJEEVkZN8Ia3TEzfj/zoXANqyJExTMTA=
-github.com/gobuffalo/here v0.6.7 h1:hpfhh+kt2y9JLDfhYUxxCRxQol540jsVfKUZzjlbp8o=
-github.com/gobuffalo/here v0.6.7/go.mod h1:vuCfanjqckTuRlqAitJz6QC4ABNnS27wLb816UhsPcc=
 github.com/gobuffalo/httptest v1.5.2 h1:GpGy520SfY1QEmyPvaqmznTpG4gEQqQ82HtHqyNEreM=
 github.com/gobuffalo/httptest v1.5.2/go.mod h1:FA23yjsWLGj92mVV74Qtc8eqluc11VqcWr8/C1vxt4g=
 github.com/gobuffalo/logger v1.0.7/go.mod h1:u40u6Bq3VVvaMcy5sRBclD8SXhBYPS0Qk95ubt+1xJM=
@@ -424,8 +422,6 @@ github.com/magiconair/properties v1.8.7 h1:IeQXZAiQcpL9mgcAe1Nu6cX9LLw6ExEHKjN0V
 github.com/magiconair/properties v1.8.7/go.mod h1:Dhd985XPs7jluiymwWYZ0G4Z61jb3vdS329zhj2hYo0=
 github.com/mailru/easyjson v0.7.7 h1:UGYAvKxe3sBsEDzO8ZeWOSlIQfWFlxbzLZe7hwFURr0=
 github.com/mailru/easyjson v0.7.7/go.mod h1:xzfreul335JAWq5oZzymOObrkdz5UnU4kGfJJLY9Nlc=
-github.com/markbates/pkger v0.17.1 h1:/MKEtWqtc0mZvu9OinB9UzVN9iYCwLWuyUv4Bw+PCno=
-github.com/markbates/pkger v0.17.1/go.mod h1:0JoVlrol20BSywW79rN3kdFFsE5xYM+rSCQDXbLhiuI=
 github.com/mattn/go-colorable v0.1.1/go.mod h1:FuOcm+DKB9mbwrcAfNl7/TZVBZ6rcnceauSikq3lYCQ=
 github.com/mattn/go-colorable v0.1.6/go.mod h1:u6P/XSegPjTcexA+o6vUJrdnUu04hMope9wVRipJSqc=
 github.com/mattn/go-colorable v0.1.9/go.mod h1:u6P/XSegPjTcexA+o6vUJrdnUu04hMope9wVRipJSqc=
@@ -485,8 +481,8 @@ github.com/ory/herodot v0.10.3-0.20230626083119-d7e5192f0d88 h1:J0CIFKdpUeqKbVMw
 github.com/ory/herodot v0.10.3-0.20230626083119-d7e5192f0d88/go.mod h1:MMNmY6MG1uB6fnXYFaHoqdV23DTWctlPsmRCeq/2+wc=
 github.com/ory/jsonschema/v3 v3.0.8 h1:Ssdb3eJ4lDZ/+XnGkvQS/te0p+EkolqwTsDOCxr/FmU=
 github.com/ory/jsonschema/v3 v3.0.8/go.mod h1:ZPzqjDkwd3QTnb2Z6PAS+OTvBE2x5i6m25wCGx54W/0=
-github.com/ory/x v0.0.665 h1:61vv0ObCDSX1vOQYbxBeqDiv4YiPmMT91lYxDaaKX08=
-github.com/ory/x v0.0.665/go.mod h1:7SCTki3N0De3ZpqlxhxU/94ZrOCfNEnXwVtd0xVt+L8=
+github.com/ory/x v0.0.669 h1:pBrju8B5Oie9RjebOwWf1Sj+6dPNIPI3nkVeC8rjUno=
+github.com/ory/x v0.0.669/go.mod h1:0Av1u/Gh7WXCrEDJJnySAJrDzluaWllOfl5zqf9Dky8=
 github.com/pelletier/go-toml v1.9.5 h1:4yBQzkHv+7BHq2PQUZF3Mx0IYxG7LsP222s7Agd3ve8=
 github.com/pelletier/go-toml v1.9.5/go.mod h1:u1nR/EPcESfeI/szUZKdtJ0xRNbUoANCkoOuaOx1Y+c=
 github.com/pelletier/go-toml/v2 v2.1.0 h1:FnwAJ4oYMvbT/34k9zzHuZNrhlz48GB3/s6at6/MHO4=
