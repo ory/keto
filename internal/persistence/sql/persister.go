@@ -25,6 +25,8 @@ type (
 		conn *pop.Connection
 		d    dependencies
 		nid  uuid.UUID
+		mb   *popx.MigrationBox
+		mbs  popx.MigrationStatuses
 	}
 	internalPagination struct {
 		PerPage int
@@ -34,6 +36,7 @@ type (
 		x.LoggerProvider
 		x.TracingProvider
 		ketoctx.ContextualizerProvider
+		persistence.Migrator
 		config.Provider
 
 		PopConnection(ctx context.Context) (*pop.Connection, error)
@@ -102,6 +105,18 @@ func (p *Persister) NetworkID(ctx context.Context) uuid.UUID {
 
 func (p *Persister) SetNetwork(nid uuid.UUID) {
 	p.nid = nid
+}
+
+func (p *Persister) MigrateUp(ctx context.Context) error {
+	return p.d.MigrateUp(ctx)
+}
+
+func (p *Persister) MigrateDown(ctx context.Context, i int) error {
+	return p.d.MigrateDown(ctx, i)
+}
+
+func (p *Persister) MigrationStatus(ctx context.Context) (popx.MigrationStatuses, error) {
+	return p.d.MigrationStatus(ctx)
 }
 
 func internalPaginationFromOptions(opts ...x.PaginationOptionSetter) (*internalPagination, error) {

@@ -283,12 +283,20 @@ func (r *RegistryDefault) MigrateUp(ctx context.Context) error {
 	return r.Init(ctx)
 }
 
-func (r *RegistryDefault) MigrateDown(ctx context.Context) error {
+func (r *RegistryDefault) MigrateDown(ctx context.Context, i int) error {
 	mb, err := r.MigrationBox(ctx)
 	if err != nil {
 		return err
 	}
-	return mb.Down(ctx, -1)
+	return mb.Down(ctx, i)
+}
+
+func (r *RegistryDefault) MigrationStatus(ctx context.Context) (popx.MigrationStatuses, error) {
+	mb, err := r.MigrationBox(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return mb.Status(ctx)
 }
 
 func (r *RegistryDefault) DetermineNetwork(ctx context.Context) (*networkx.Network, error) {

@@ -19,6 +19,7 @@ type (
 	Persister interface {
 		relationtuple.Manager
 		relationtuple.MappingManager
+		Migrator
 
 		Connection(ctx context.Context) *pop.Connection
 		NetworkID(ctx context.Context) uuid.UUID
@@ -26,9 +27,7 @@ type (
 		Transaction(ctx context.Context, f func(ctx context.Context) error) error
 	}
 	Migrator interface {
-		MigrationBox(ctx context.Context) (*popx.MigrationBox, error)
-		MigrateUp(ctx context.Context) error
-		MigrateDown(ctx context.Context) error
+		popx.MigrationProvider
 	}
 	Provider interface {
 		Persister() Persister

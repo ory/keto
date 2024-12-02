@@ -79,7 +79,7 @@ func TestMigrate(t *testing.T) {
 
 					cmd := newCmd(ctx, "-c", cf)
 
-					out := cmd.ExecNoErr(t, "up", "--"+FlagYes)
+					out := cmd.ExecNoErr(t, "up", "-y")
 					assert.Contains(t, out, "All migrations are already applied, there is nothing to do.")
 				})
 			})
@@ -132,7 +132,7 @@ func TestMigrate(t *testing.T) {
 
 					t.Cleanup(func() {
 						// migrate all down
-						t.Logf("cleanup:\n%s\n", cmd.ExecNoErr(t, "down", "0", "--"+FlagYes))
+						t.Logf("cleanup:\n%s\n", cmd.ExecNoErr(t, "down", "--steps", "10000", "-y"))
 					})
 
 					parts := strings.Split(stdOut, "Are you sure that you want to apply this migration?")
@@ -143,11 +143,11 @@ func TestMigrate(t *testing.T) {
 				})
 
 				t.Run("case=applies on yes flag", func(t *testing.T) {
-					out := cmd.ExecNoErr(t, "up", "--"+FlagYes)
+					out := cmd.ExecNoErr(t, "up", "-y")
 
 					t.Cleanup(func() {
 						// migrate all down
-						t.Logf("cleanup:\n%s\n", cmd.ExecNoErr(t, "down", "0", "--"+FlagYes))
+						t.Logf("cleanup:\n%s\n", cmd.ExecNoErr(t, "down", "--steps", "10000", "-y"))
 					})
 
 					parts := strings.Split(out, "Applying migrations...")
@@ -185,8 +185,8 @@ func TestUpAndDown(t *testing.T) {
 				config.KeyNamespaces: []*namespace.Namespace{},
 			})
 
-			t.Log(cmd.ExecNoErr(t, "up", "-c", cf, "--"+FlagYes))
-			t.Log(cmd.ExecNoErr(t, "down", "0", "-c", cf, "--"+FlagYes))
+			t.Log(cmd.ExecNoErr(t, "up", "-c", cf, "-y"))
+			t.Log(cmd.ExecNoErr(t, "down", "--steps", "10000", "-c", cf, "-y"))
 		})
 	}
 }
