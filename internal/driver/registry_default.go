@@ -52,6 +52,7 @@ var (
 type (
 	RegistryDefault struct {
 		p               persistence.Persister
+		migrationStatus popx.MigrationStatuses
 		traverser       relationtuple.Traverser
 		mb              *popx.MigrationBox
 		extraMigrations []fs.FS
@@ -130,6 +131,38 @@ func (r *RegistryDefault) HealthHandler() *healthx.Handler {
 		if r.healthReadyCheckers == nil {
 			r.healthReadyCheckers = healthx.ReadyCheckers{}
 		}
+
+		if _, found := r.healthReadyCheckers["database"]; !found {
+			r.healthReadyCheckers["database"] = func(_ *http.Request) error {
+				return r.p.Ping()
+			}
+		}
+
+		if _, found := r.healthReadyCheckers["migrations"]; !found {
+			r.healthReadyCheckers["migrations"] = func(req *http.Request) error {
+				if r.migrationStatus != nil && !r.migrationStatus.HasPending() {
+					return nil
+				}
+
+				mb, err := r.MigrationBox(req.Context())
+				if err != nil {
+					return err
+				}
+
+				status, err := mb.Status(req.Context())
+				if err != nil {
+					return err
+				}
+
+				if status.HasPending() {
+					return errors.Errorf("migrations have not yet been fully applied")
+				}
+
+				r.migrationStatus = status
+				return nil
+			}
+		}
+
 		r.healthH = healthx.NewHandler(r.Writer(), config.Version, r.healthReadyCheckers)
 	}
 
