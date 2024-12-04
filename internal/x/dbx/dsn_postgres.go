@@ -12,7 +12,7 @@ import (
 )
 
 func RunPostgres(t testing.TB, testDB string) string {
-	url := dockertest.RunTestPostgreSQL(t)
+	url := dockertest.RunTestPostgreSQLWithVersion(t, "16")
 	if err := createDB(t, url, testDB); err != nil {
 		t.Fatal(err)
 	}
