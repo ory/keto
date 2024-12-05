@@ -419,8 +419,8 @@ github.com/ory/jsonschema/v3 v3.0.8 h1:Ssdb3eJ4lDZ/+XnGkvQS/te0p+EkolqwTsDOCxr/F
 github.com/ory/jsonschema/v3 v3.0.8/go.mod h1:ZPzqjDkwd3QTnb2Z6PAS+OTvBE2x5i6m25wCGx54W/0=
 github.com/ory/pop/v6 v6.2.1-0.20241121111754-e5dfc0f3344b h1:BIzoOe2/wynZBQak1po0tzgvARseIKsR2bF6b+SZoKE=
 github.com/ory/pop/v6 v6.2.1-0.20241121111754-e5dfc0f3344b/go.mod h1:okVAYKGtgunD/wbW3NGhZTndJCS+6FqO+cA89rQ4doc=
-github.com/ory/x v0.0.675 h1:K6GpVo99BXBFv2UiwMjySNNNqCFKGswynrt7vWQJFU8=
-github.com/ory/x v0.0.675/go.mod h1:zJmnDtKje2FCP4EeFvRsKk94XXiqKCSGJMZcirAfhUs=
+github.com/ory/x v0.0.677 h1:ZulzE4EBhNBXNotWmGSmGsVNbgbZpIr4snMURRkski0=
+github.com/ory/x v0.0.677/go.mod h1:zJmnDtKje2FCP4EeFvRsKk94XXiqKCSGJMZcirAfhUs=
 github.com/pelletier/go-toml v1.9.5 h1:4yBQzkHv+7BHq2PQUZF3Mx0IYxG7LsP222s7Agd3ve8=
 github.com/pelletier/go-toml v1.9.5/go.mod h1:u1nR/EPcESfeI/szUZKdtJ0xRNbUoANCkoOuaOx1Y+c=
 github.com/pelletier/go-toml/v2 v2.1.0 h1:FnwAJ4oYMvbT/34k9zzHuZNrhlz48GB3/s6at6/MHO4=

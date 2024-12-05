@@ -6,33 +6,55 @@ package e2e
 import (
 	"context"
 	"encoding/json"
+	"errors"
+	"testing"
 	"time"
-
-	"github.com/ory/keto/ketoapi"
-	opl "github.com/ory/keto/proto/ory/keto/opl/v1alpha1"
-
-	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 
 	"github.com/ory/herodot"
 	"github.com/stretchr/testify/assert"
-	"google.golang.org/grpc/credentials/insecure"
-	"google.golang.org/grpc/status"
-
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 	grpcHealthV1 "google.golang.org/grpc/health/grpc_health_v1"
+	"google.golang.org/grpc/status"
 
 	"github.com/ory/keto/internal/x"
+	"github.com/ory/keto/ketoapi"
+	opl "github.com/ory/keto/proto/ory/keto/opl/v1alpha1"
+	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 )
 
 type grpcClient struct {
-	readRemote, writeRemote, oplSyntaxRemote string
-	wc, rc, oc                               *grpc.ClientConn
-	ctx                                      context.Context
+	read, write, oplSyntax *grpc.ClientConn
+	ctx                    context.Context
 }
 
-func (g *grpcClient) queryNamespaces(t require.TestingT) (apiResponse ketoapi.GetNamespacesResponse) {
-	client := rts.NewNamespacesServiceClient(g.readConn(t))
+func newGrpcClient(t *testing.T, ctx context.Context, readRemote, writeRemote, oplSyntaxRemote string) *grpcClient {
+	read, err := grpc.NewClient(readRemote, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	require.NoError(t, err)
+	t.Cleanup(func() { read.Close() })
+
+	write, err := grpc.NewClient(writeRemote, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	require.NoError(t, err)
+	t.Cleanup(func() { write.Close() })
+
+	oplSyntax, err := grpc.NewClient(oplSyntaxRemote, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	require.NoError(t, err)
+	t.Cleanup(func() { oplSyntax.Close() })
+
+	ctx, cancel := context.WithCancel(ctx)
+	t.Cleanup(cancel)
+
+	return &grpcClient{
+		read:      read,
+		write:     write,
+		oplSyntax: oplSyntax,
+		ctx:       ctx,
+	}
+}
+
+func (g *grpcClient) queryNamespaces(t *testing.T) (apiResponse ketoapi.GetNamespacesResponse) {
+	client := rts.NewNamespacesServiceClient(g.read)
 	res, err := client.ListNamespaces(g.ctx, &rts.ListNamespacesRequest{})
 	require.NoError(t, err)
 	require.NoError(t, convert(res, &apiResponse))
@@ -42,38 +64,7 @@ func (g *grpcClient) queryNamespaces(t require.TestingT) (apiResponse ketoapi.Ge
 
 var _ transactClient = (*grpcClient)(nil)
 
-func (g *grpcClient) conn(t require.TestingT, remote string) *grpc.ClientConn {
-	ctx, cancel := context.WithTimeout(g.ctx, 3*time.Second)
-	defer cancel()
-
-	conn, err := grpc.DialContext(ctx, remote, grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithBlock(), grpc.WithDisableHealthCheck())
-	require.NoError(t, err)
-
-	return conn
-}
-
-func (g *grpcClient) readConn(t require.TestingT) *grpc.ClientConn {
-	if g.rc == nil {
-		g.rc = g.conn(t, g.readRemote)
-	}
-	return g.rc
-}
-
-func (g *grpcClient) writeConn(t require.TestingT) *grpc.ClientConn {
-	if g.wc == nil {
-		g.wc = g.conn(t, g.writeRemote)
-	}
-	return g.wc
-}
-
-func (g *grpcClient) oplSyntaxConn(t require.TestingT) *grpc.ClientConn {
-	if g.oc == nil {
-		g.oc = g.conn(t, g.oplSyntaxRemote)
-	}
-	return g.oc
-}
-
-func (g *grpcClient) createTuple(t require.TestingT, r *ketoapi.RelationTuple) {
+func (g *grpcClient) createTuple(t *testing.T, r *ketoapi.RelationTuple) {
 	g.transactTuples(t, []*ketoapi.RelationTuple{r}, nil)
 }
 
@@ -91,8 +82,8 @@ func (*grpcClient) createQuery(q *ketoapi.RelationQuery) *rts.RelationQuery {
 	return query
 }
 
-func (g *grpcClient) queryTuple(t require.TestingT, q *ketoapi.RelationQuery, opts ...x.PaginationOptionSetter) *ketoapi.GetResponse {
-	c := rts.NewReadServiceClient(g.readConn(t))
+func (g *grpcClient) queryTuple(t *testing.T, q *ketoapi.RelationQuery, opts ...x.PaginationOptionSetter) *ketoapi.GetResponse {
+	c := rts.NewReadServiceClient(g.read)
 	pagination := x.GetPaginationOptions(opts...)
 
 	resp, err := c.ListRelationTuples(g.ctx, &rts.ListRelationTuplesRequest{
@@ -114,8 +105,8 @@ func (g *grpcClient) queryTuple(t require.TestingT, q *ketoapi.RelationQuery, op
 	}
 }
 
-func (g *grpcClient) queryTupleErr(t require.TestingT, expected herodot.DefaultError, q *ketoapi.RelationQuery, opts ...x.PaginationOptionSetter) {
-	c := rts.NewReadServiceClient(g.readConn(t))
+func (g *grpcClient) queryTupleErr(t *testing.T, expected herodot.DefaultError, q *ketoapi.RelationQuery, opts ...x.PaginationOptionSetter) {
+	c := rts.NewReadServiceClient(g.read)
 	pagination := x.GetPaginationOptions(opts...)
 
 	_, err := c.ListRelationTuples(g.ctx, &rts.ListRelationTuplesRequest{
@@ -129,8 +120,8 @@ func (g *grpcClient) queryTupleErr(t require.TestingT, expected herodot.DefaultE
 	assert.Equal(t, expected.GRPCCodeField, s.Code(), "%+v", err)
 }
 
-func (g *grpcClient) check(t require.TestingT, r *ketoapi.RelationTuple) bool {
-	c := rts.NewCheckServiceClient(g.readConn(t))
+func (g *grpcClient) check(t *testing.T, r *ketoapi.RelationTuple) bool {
+	c := rts.NewCheckServiceClient(g.read)
 
 	req := &rts.CheckRequest{
 		Tuple: &rts.RelationTuple{
@@ -155,7 +146,7 @@ type checkResponse struct {
 	errorMessage string
 }
 
-func (g *grpcClient) batchCheckErr(t require.TestingT, requestTuples []*ketoapi.RelationTuple,
+func (g *grpcClient) batchCheckErr(t *testing.T, requestTuples []*ketoapi.RelationTuple,
 	expected herodot.DefaultError) {
 
 	_, err := g.doBatchCheck(t, requestTuples)
@@ -166,7 +157,7 @@ func (g *grpcClient) batchCheckErr(t require.TestingT, requestTuples []*ketoapi.
 	assert.Contains(t, s.Message(), expected.Reason())
 }
 
-func (g *grpcClient) batchCheck(t require.TestingT, requestTuples []*ketoapi.RelationTuple) []checkResponse {
+func (g *grpcClient) batchCheck(t *testing.T, requestTuples []*ketoapi.RelationTuple) []checkResponse {
 	resp, err := g.doBatchCheck(t, requestTuples)
 	require.NoError(t, err)
 
@@ -181,9 +172,9 @@ func (g *grpcClient) batchCheck(t require.TestingT, requestTuples []*ketoapi.Rel
 	return checkResponses
 }
 
-func (g *grpcClient) doBatchCheck(t require.TestingT, requestTuples []*ketoapi.RelationTuple) (*rts.BatchCheckResponse, error) {
+func (g *grpcClient) doBatchCheck(_ *testing.T, requestTuples []*ketoapi.RelationTuple) (*rts.BatchCheckResponse, error) {
 
-	c := rts.NewCheckServiceClient(g.readConn(t))
+	c := rts.NewCheckServiceClient(g.read)
 
 	tuples := make([]*rts.RelationTuple, len(requestTuples))
 	for i, tuple := range requestTuples {
@@ -207,8 +198,8 @@ func (g *grpcClient) doBatchCheck(t require.TestingT, requestTuples []*ketoapi.R
 	return c.BatchCheck(g.ctx, req)
 }
 
-func (g *grpcClient) expand(t require.TestingT, r *ketoapi.SubjectSet, depth int) *ketoapi.Tree[*ketoapi.RelationTuple] {
-	c := rts.NewExpandServiceClient(g.readConn(t))
+func (g *grpcClient) expand(t *testing.T, r *ketoapi.SubjectSet, depth int) *ketoapi.Tree[*ketoapi.RelationTuple] {
+	c := rts.NewExpandServiceClient(g.read)
 
 	resp, err := c.Expand(g.ctx, &rts.ExpandRequest{
 		Subject:  rts.NewSubjectSet(r.Namespace, r.Object, r.Relation),
@@ -219,37 +210,29 @@ func (g *grpcClient) expand(t require.TestingT, r *ketoapi.SubjectSet, depth int
 	return ketoapi.TreeFromProto[*ketoapi.RelationTuple](resp.Tree)
 }
 
-func (g *grpcClient) waitUntilLive(t require.TestingT) {
-	c := grpcHealthV1.NewHealthClient(g.readConn(t))
-
-	ctx, cancel := context.WithCancel(g.ctx)
-	defer cancel()
-
-	cl, err := c.Watch(ctx, &grpcHealthV1.HealthCheckRequest{})
-	require.NoError(t, err)
-	require.NoError(t, cl.CloseSend())
+func (g *grpcClient) waitUntilLive(t *testing.T) {
+	c := grpcHealthV1.NewHealthClient(g.read)
 
 	for {
-		select {
-		case <-g.ctx.Done():
-			return
-		default:
+		res, err := c.Check(g.ctx, &grpcHealthV1.HealthCheckRequest{})
+		if errors.Is(err, context.Canceled) {
+			t.Fatalf("timed out waiting for service to be live: %s", err)
 		}
-		resp, err := cl.Recv()
-		require.NoError(t, err)
-
-		if resp.Status == grpcHealthV1.HealthCheckResponse_SERVING {
+		if err == nil {
+			require.Equal(t, grpcHealthV1.HealthCheckResponse_SERVING, res.Status)
 			return
 		}
+		t.Logf("waiting for service to be live: %s", err)
+		time.Sleep(10 * time.Millisecond)
 	}
 }
 
-func (g *grpcClient) deleteTuple(t require.TestingT, r *ketoapi.RelationTuple) {
+func (g *grpcClient) deleteTuple(t *testing.T, r *ketoapi.RelationTuple) {
 	g.transactTuples(t, nil, []*ketoapi.RelationTuple{r})
 }
 
-func (g *grpcClient) deleteAllTuples(t require.TestingT, q *ketoapi.RelationQuery) {
-	c := rts.NewWriteServiceClient(g.writeConn(t))
+func (g *grpcClient) deleteAllTuples(t *testing.T, q *ketoapi.RelationQuery) {
+	c := rts.NewWriteServiceClient(g.write)
 	query := &rts.RelationQuery{
 		Namespace: q.Namespace,
 		Object:    q.Object,
@@ -267,8 +250,8 @@ func (g *grpcClient) deleteAllTuples(t require.TestingT, q *ketoapi.RelationQuer
 	require.NoError(t, err)
 }
 
-func (g *grpcClient) transactTuples(t require.TestingT, ins []*ketoapi.RelationTuple, del []*ketoapi.RelationTuple) {
-	c := rts.NewWriteServiceClient(g.writeConn(t))
+func (g *grpcClient) transactTuples(t *testing.T, ins []*ketoapi.RelationTuple, del []*ketoapi.RelationTuple) {
+	c := rts.NewWriteServiceClient(g.write)
 
 	deltas := make([]*rts.RelationTupleDelta, len(ins)+len(del))
 	for i := range ins {
@@ -291,8 +274,8 @@ func (g *grpcClient) transactTuples(t require.TestingT, ins []*ketoapi.RelationT
 	require.NoError(t, err)
 }
 
-func (g *grpcClient) oplCheckSyntax(t require.TestingT, content []byte) (parseErrors []*ketoapi.ParseError) {
-	c := opl.NewSyntaxServiceClient(g.oplSyntaxConn(t))
+func (g *grpcClient) oplCheckSyntax(t *testing.T, content []byte) (parseErrors []*ketoapi.ParseError) {
+	c := opl.NewSyntaxServiceClient(g.oplSyntax)
 
 	res, err := c.Check(g.ctx, &opl.CheckRequest{Content: content})
 	require.NoError(t, err)

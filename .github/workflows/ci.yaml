@@ -49,7 +49,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       postgres:
-        image: postgres:11.8
+        image: postgres:16
         env:
           POSTGRES_DB: keto
           POSTGRES_PASSWORD: test
@@ -69,7 +69,7 @@ jobs:
     steps:
       - run: |
           docker create --name cockroach -p 26257:26257 \
-            cockroachdb/cockroach:latest-v23.2 start-single-node --insecure
+            cockroachdb/cockroach:latest-v24.2 start-single-node --insecure
           docker start cockroach
         name: Start CockroachDB
       - uses: ory/ci/checkout@master
