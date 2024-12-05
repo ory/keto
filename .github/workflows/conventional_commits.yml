@@ -18,9 +18,11 @@ on:
       - ready_for_review
       - reopened
   # pull_request: # for debugging, uses config in local branch but supports only Pull Requests from this repo
+  merge_group:
 
 jobs:
   main:
+    if: github.event_name != 'merge_group'
     name: Validate PR title
     runs-on: ubuntu-latest
     steps:
