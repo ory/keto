@@ -4,6 +4,7 @@
 package sql
 
 import (
+	"bytes"
 	"context"
 	"iter"
 	"maps"
@@ -13,6 +14,8 @@ import (
 	"github.com/gofrs/uuid"
 	"github.com/ory/x/otelx"
 	"github.com/ory/x/sqlcon"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/trace"
 
 	"github.com/ory/keto/internal/x"
 )
@@ -89,12 +92,13 @@ func (p *Persister) batchFromUUIDs(ctx context.Context, ids []uuid.UUID, opts ..
 }
 
 func (p *Persister) MapStringsToUUIDs(ctx context.Context, values ...string) (uuids []uuid.UUID, err error) {
-	ctx, span := p.d.Tracer(ctx).Tracer().Start(ctx, "persistence.sql.MapStringsToUUIDs")
-	defer otelx.End(span, &err)
-
 	if len(values) == 0 {
 		return
 	}
+
+	ctx, span := p.d.Tracer(ctx).Tracer().Start(ctx, "persistence.sql.MapStringsToUUIDs",
+		trace.WithAttributes(attribute.Int("num_values", len(values))))
+	defer otelx.End(span, &err)
 
 	uuids, err = p.MapStringsToUUIDsReadOnly(ctx, values...)
 	if err != nil {
@@ -110,6 +114,14 @@ func (p *Persister) MapStringsToUUIDs(ctx context.Context, values ...string) (uu
 			StringRepresentation: values[i],
 		}
 	}
+	slices.SortFunc(mappings, func(a, b UUIDMapping) int {
+		return bytes.Compare(a.ID[:], b.ID[:])
+	})
+	mappings = slices.CompactFunc(mappings, func(a, b UUIDMapping) bool {
+		return a.ID == b.ID
+	})
+
+	span.SetAttributes(attribute.Int("num_mappings", len(mappings)))
 
 	err = p.Transaction(ctx, func(ctx context.Context) error {
 		for chunk := range slices.Chunk(mappings, chunkSizeInsertUUIDMappings) {

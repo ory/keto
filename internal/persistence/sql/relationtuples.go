@@ -175,13 +175,13 @@ func buildDelete(nid uuid.UUID, rs []*relationtuple.RelationTuple) (query string
 }
 
 func (p *Persister) DeleteRelationTuples(ctx context.Context, rs ...*relationtuple.RelationTuple) (err error) {
-	ctx, span := p.d.Tracer(ctx).Tracer().Start(ctx, "persistence.sql.DeleteRelationTuples",
-		trace.WithAttributes(attribute.Int("count", len(rs))))
-	defer otelx.End(span, &err)
-
 	if len(rs) == 0 {
 		return nil
 	}
+
+	ctx, span := p.d.Tracer(ctx).Tracer().Start(ctx, "persistence.sql.DeleteRelationTuples",
+		trace.WithAttributes(attribute.Int("count", len(rs))))
+	defer otelx.End(span, &err)
 
 	return p.Transaction(ctx, func(ctx context.Context) error {
 		for chunk := range slices.Chunk(rs, chunkSizeDeleteTuple) {
@@ -310,13 +310,13 @@ func buildInsert(commitTime time.Time, nid uuid.UUID, rs []*relationtuple.Relati
 }
 
 func (p *Persister) WriteRelationTuples(ctx context.Context, rs ...*relationtuple.RelationTuple) (err error) {
-	ctx, span := p.d.Tracer(ctx).Tracer().Start(ctx, "persistence.sql.WriteRelationTuples",
-		trace.WithAttributes(attribute.Int("count", len(rs))))
-	defer otelx.End(span, &err)
-
 	if len(rs) == 0 {
 		return nil
 	}
+
+	ctx, span := p.d.Tracer(ctx).Tracer().Start(ctx, "persistence.sql.WriteRelationTuples",
+		trace.WithAttributes(attribute.Int("count", len(rs))))
+	defer otelx.End(span, &err)
 
 	commitTime := time.Now()
 
