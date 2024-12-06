@@ -62,6 +62,25 @@ func runTransactionCases(c transactClient, m *namespaceTestManager) func(*testin
 			assert.Len(t, resp.RelationTuples, 0)
 		})
 
+		t.Run("case=duplicate string representations", func(t *testing.T) {
+			n := &namespace.Namespace{Name: t.Name()}
+			m.add(t, n)
+			c.transactTuples(t, []*ketoapi.RelationTuple{
+				{
+					Namespace: n.Name,
+					Object:    "o",
+					Relation:  "rel",
+					SubjectID: pointerx.Ptr("sid"),
+				},
+				{
+					Namespace: n.Name,
+					Object:    "o",
+					Relation:  "rel",
+					SubjectID: pointerx.Ptr("sid"),
+				},
+			}, nil)
+		})
+
 		t.Run("case=large inserts and deletes", func(t *testing.T) {
 			if !testing.Short() {
 				t.Skip("This test is fairly expensive, especially the deletion.")
