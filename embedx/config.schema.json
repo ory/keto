@@ -11,6 +11,30 @@
     },
     "namespace": {
       "type": "object",
+      "title": "Namespace configuration",
+      "properties": {
+        "location": {
+          "type": "string",
+          "title": "Ory Permission Language config file URI",
+          "description": "A URI that points to a directory of namespace files, a single file with all namespaces, or a websocket connection that provides former via `github.com/ory/x/watcherx.WatchAndServeWS`",
+          "format": "uri",
+          "examples": [
+            "file://./keto_namespaces.ts",
+            "file:///etc/configs/keto_namespaces.ts",
+            "ws://my.websocket.server/keto_namespaces.ts"
+          ]
+        },
+        "experimental_strict_mode": {
+          "type": "boolean",
+          "title": "Strict permission checking mode",
+          "description": "EXPERIMENTAL: If strict mode is enabled, then relation tuples for permits are not checked directly (but the rewrites are applied). Similarly, subject sets are only expanded if they were declared with SubjectSet<...>. These stricter rules result in much faster checks with fewer queries to the underlying database. The behavior of strict mode might change while it is experimental."
+        }
+      },
+      "additionalProperties": false,
+      "required": ["location"]
+    },
+    "legacyNamespace": {
+      "type": "object",
       "properties": {
         "$schema": {
           "$ref": "#/definitions/$schema"
@@ -331,32 +355,11 @@
           "type": "array",
           "title": "Legacy namespace configuration",
           "items": {
-            "$ref": "#/definitions/namespace"
+            "$ref": "#/definitions/legacyNamespace"
           }
         },
         {
-          "type": "object",
-          "title": "Namespace configuration",
-          "properties": {
-            "location": {
-              "type": "string",
-              "title": "Ory Permission Language config file URI",
-              "description": "A URI that points to a directory of namespace files, a single file with all namespaces, or a websocket connection that provides former via `github.com/ory/x/watcherx.WatchAndServeWS`",
-              "format": "uri",
-              "examples": [
-                "file://./keto_namespaces.ts",
-                "file:///etc/configs/keto_namespaces.ts",
-                "ws://my.websocket.server/keto_namespaces.ts"
-              ]
-            },
-            "experimental_strict_mode": {
-              "type": "boolean",
-              "title": "Strict permission checking mode",
-              "description": "EXPERIMENTAL: If strict mode is enabled, then relation tuples for permits are not checked directly (but the rewrites are applied). Similarly, subject sets are only expanded if they were declared with SubjectSet<...>. These stricter rules result in much faster checks with fewer queries to the underlying database. The behavior of strict mode might change while it is experimental."
-            }
-          },
-          "additionalProperties": false,
-          "required": ["location"]
+          "$ref": "#/definitions/namespace"
         }
       ]
     },
