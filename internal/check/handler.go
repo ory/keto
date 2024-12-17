@@ -11,6 +11,7 @@ import (
 	"github.com/pkg/errors"
 
 	"github.com/ory/herodot"
+
 	"github.com/ory/keto/internal/x/api"
 
 	"github.com/ory/keto/ketoapi"

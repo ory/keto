@@ -10,6 +10,7 @@ package rts
 
 import (
 	"context"
+	"errors"
 	"io"
 	"net/http"
 
@@ -24,47 +25,46 @@ import (
 )
 
 // Suppress "imported and not used" errors
-var _ codes.Code
-var _ io.Reader
-var _ status.Status
-var _ = runtime.String
-var _ = utilities.NewDoubleArray
-var _ = metadata.Join
-
 var (
-	filter_ReadService_ListRelationTuples_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
+	_ codes.Code
+	_ io.Reader
+	_ status.Status
+	_ = errors.New
+	_ = runtime.String
+	_ = utilities.NewDoubleArray
+	_ = metadata.Join
 )
 
-func request_ReadService_ListRelationTuples_0(ctx context.Context, marshaler runtime.Marshaler, client ReadServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq ListRelationTuplesRequest
-	var metadata runtime.ServerMetadata
+var filter_ReadService_ListRelationTuples_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
 
+func request_ReadService_ListRelationTuples_0(ctx context.Context, marshaler runtime.Marshaler, client ReadServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq ListRelationTuplesRequest
+		metadata runtime.ServerMetadata
+	)
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_ReadService_ListRelationTuples_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := client.ListRelationTuples(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_ReadService_ListRelationTuples_0(ctx context.Context, marshaler runtime.Marshaler, server ReadServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq ListRelationTuplesRequest
-	var metadata runtime.ServerMetadata
-
+	var (
+		protoReq ListRelationTuplesRequest
+		metadata runtime.ServerMetadata
+	)
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_ReadService_ListRelationTuples_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := server.ListRelationTuples(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 // RegisterReadServiceHandlerServer registers the http handlers for service ReadService to "mux".
@@ -73,16 +73,13 @@ func local_request_ReadService_ListRelationTuples_0(ctx context.Context, marshal
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterReadServiceHandlerFromEndpoint instead.
 // GRPC interceptors will not work for this type of registration. To use interceptors, you must use the "runtime.WithMiddlewares" option in the "runtime.NewServeMux" call.
 func RegisterReadServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server ReadServiceServer) error {
-
-	mux.Handle("GET", pattern_ReadService_ListRelationTuples_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodGet, pattern_ReadService_ListRelationTuples_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/ory.keto.relation_tuples.v1alpha2.ReadService/ListRelationTuples", runtime.WithHTTPPathPattern("/relation-tuples"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/ory.keto.relation_tuples.v1alpha2.ReadService/ListRelationTuples", runtime.WithHTTPPathPattern("/relation-tuples"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -94,9 +91,7 @@ func RegisterReadServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_ReadService_ListRelationTuples_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	return nil
@@ -123,7 +118,6 @@ func RegisterReadServiceHandlerFromEndpoint(ctx context.Context, mux *runtime.Se
 			}
 		}()
 	}()
-
 	return RegisterReadServiceHandler(ctx, mux, conn)
 }
 
@@ -139,14 +133,11 @@ func RegisterReadServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
 // "ReadServiceClient" to call the correct interceptors. This client ignores the HTTP middlewares.
 func RegisterReadServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client ReadServiceClient) error {
-
-	mux.Handle("GET", pattern_ReadService_ListRelationTuples_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodGet, pattern_ReadService_ListRelationTuples_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/ory.keto.relation_tuples.v1alpha2.ReadService/ListRelationTuples", runtime.WithHTTPPathPattern("/relation-tuples"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/ory.keto.relation_tuples.v1alpha2.ReadService/ListRelationTuples", runtime.WithHTTPPathPattern("/relation-tuples"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -157,11 +148,8 @@ func RegisterReadServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_ReadService_ListRelationTuples_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
 	return nil
 }
 

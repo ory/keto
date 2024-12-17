@@ -20,7 +20,6 @@ service SyntaxService {
       body: "content"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      consumes: "text/plain";
       tags: "relationship";
       operation_id: "checkOplSyntax";
       responses: {

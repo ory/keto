@@ -69,7 +69,7 @@ No authorization required
 
 ### HTTP request headers
 
-- **Content-Type**: text/plain
+- **Content-Type**: application/json
 - **Accept**: application/json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)

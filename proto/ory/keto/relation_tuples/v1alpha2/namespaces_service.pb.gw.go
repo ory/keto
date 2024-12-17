@@ -10,6 +10,7 @@ package rts
 
 import (
 	"context"
+	"errors"
 	"io"
 	"net/http"
 
@@ -24,29 +25,32 @@ import (
 )
 
 // Suppress "imported and not used" errors
-var _ codes.Code
-var _ io.Reader
-var _ status.Status
-var _ = runtime.String
-var _ = utilities.NewDoubleArray
-var _ = metadata.Join
+var (
+	_ codes.Code
+	_ io.Reader
+	_ status.Status
+	_ = errors.New
+	_ = runtime.String
+	_ = utilities.NewDoubleArray
+	_ = metadata.Join
+)
 
 func request_NamespacesService_ListNamespaces_0(ctx context.Context, marshaler runtime.Marshaler, client NamespacesServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq ListNamespacesRequest
-	var metadata runtime.ServerMetadata
-
+	var (
+		protoReq ListNamespacesRequest
+		metadata runtime.ServerMetadata
+	)
 	msg, err := client.ListNamespaces(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_NamespacesService_ListNamespaces_0(ctx context.Context, marshaler runtime.Marshaler, server NamespacesServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq ListNamespacesRequest
-	var metadata runtime.ServerMetadata
-
+	var (
+		protoReq ListNamespacesRequest
+		metadata runtime.ServerMetadata
+	)
 	msg, err := server.ListNamespaces(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 // RegisterNamespacesServiceHandlerServer registers the http handlers for service NamespacesService to "mux".
@@ -55,16 +59,13 @@ func local_request_NamespacesService_ListNamespaces_0(ctx context.Context, marsh
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterNamespacesServiceHandlerFromEndpoint instead.
 // GRPC interceptors will not work for this type of registration. To use interceptors, you must use the "runtime.WithMiddlewares" option in the "runtime.NewServeMux" call.
 func RegisterNamespacesServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server NamespacesServiceServer) error {
-
-	mux.Handle("GET", pattern_NamespacesService_ListNamespaces_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodGet, pattern_NamespacesService_ListNamespaces_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/ory.keto.relation_tuples.v1alpha2.NamespacesService/ListNamespaces", runtime.WithHTTPPathPattern("/namespaces"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/ory.keto.relation_tuples.v1alpha2.NamespacesService/ListNamespaces", runtime.WithHTTPPathPattern("/namespaces"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -76,9 +77,7 @@ func RegisterNamespacesServiceHandlerServer(ctx context.Context, mux *runtime.Se
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_NamespacesService_ListNamespaces_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	return nil
@@ -105,7 +104,6 @@ func RegisterNamespacesServiceHandlerFromEndpoint(ctx context.Context, mux *runt
 			}
 		}()
 	}()
-
 	return RegisterNamespacesServiceHandler(ctx, mux, conn)
 }
 
@@ -121,14 +119,11 @@ func RegisterNamespacesServiceHandler(ctx context.Context, mux *runtime.ServeMux
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
 // "NamespacesServiceClient" to call the correct interceptors. This client ignores the HTTP middlewares.
 func RegisterNamespacesServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client NamespacesServiceClient) error {
-
-	mux.Handle("GET", pattern_NamespacesService_ListNamespaces_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodGet, pattern_NamespacesService_ListNamespaces_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/ory.keto.relation_tuples.v1alpha2.NamespacesService/ListNamespaces", runtime.WithHTTPPathPattern("/namespaces"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/ory.keto.relation_tuples.v1alpha2.NamespacesService/ListNamespaces", runtime.WithHTTPPathPattern("/namespaces"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -139,11 +134,8 @@ func RegisterNamespacesServiceHandlerClient(ctx context.Context, mux *runtime.Se
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_NamespacesService_ListNamespaces_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
 	return nil
 }
 

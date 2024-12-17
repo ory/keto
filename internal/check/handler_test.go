@@ -11,11 +11,12 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/ory/x/pointerx"
+
 	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/internal/x/api"
 	"github.com/ory/keto/ketoapi"
-	"github.com/ory/x/pointerx"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"

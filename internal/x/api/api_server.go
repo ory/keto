@@ -2,7 +2,6 @@ package api
 
 import (
 	"context"
-	"encoding/json"
 	"log"
 	"maps"
 	"net/http"
@@ -149,7 +148,11 @@ var setErrorResponse = negroni.HandlerFunc(func(w http.ResponseWriter, r *http.R
 		}
 	}
 
-	json.NewEncoder(w).Encode(&errResponse)
+	out, err := protojson.Marshal(&errResponse)
+	if err != nil {
+		log.Println("error:", err)
+	}
+	_, _ = w.Write(out)
 })
 
 var setRequestPath = negroni.HandlerFunc(func(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {

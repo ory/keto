@@ -10,6 +10,7 @@ package rts
 
 import (
 	"context"
+	"errors"
 	"io"
 	"net/http"
 
@@ -24,99 +25,94 @@ import (
 )
 
 // Suppress "imported and not used" errors
-var _ codes.Code
-var _ io.Reader
-var _ status.Status
-var _ = runtime.String
-var _ = utilities.NewDoubleArray
-var _ = metadata.Join
+var (
+	_ codes.Code
+	_ io.Reader
+	_ status.Status
+	_ = errors.New
+	_ = runtime.String
+	_ = utilities.NewDoubleArray
+	_ = metadata.Join
+)
 
 func request_WriteService_TransactRelationTuples_0(ctx context.Context, marshaler runtime.Marshaler, client WriteServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq TransactRelationTuplesRequest
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.RelationTupleDeltas); err != nil && err != io.EOF {
+	var (
+		protoReq TransactRelationTuplesRequest
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.RelationTupleDeltas); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := client.TransactRelationTuples(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_WriteService_TransactRelationTuples_0(ctx context.Context, marshaler runtime.Marshaler, server WriteServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq TransactRelationTuplesRequest
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.RelationTupleDeltas); err != nil && err != io.EOF {
+	var (
+		protoReq TransactRelationTuplesRequest
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.RelationTupleDeltas); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := server.TransactRelationTuples(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_WriteService_CreateRelationTuple_0(ctx context.Context, marshaler runtime.Marshaler, client WriteServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq CreateRelationTupleRequest
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.RelationTuple); err != nil && err != io.EOF {
+	var (
+		protoReq CreateRelationTupleRequest
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.RelationTuple); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := client.CreateRelationTuple(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_WriteService_CreateRelationTuple_0(ctx context.Context, marshaler runtime.Marshaler, server WriteServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq CreateRelationTupleRequest
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.RelationTuple); err != nil && err != io.EOF {
+	var (
+		protoReq CreateRelationTupleRequest
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.RelationTuple); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := server.CreateRelationTuple(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
-var (
-	filter_WriteService_DeleteRelationTuples_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
-)
+var filter_WriteService_DeleteRelationTuples_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
 
 func request_WriteService_DeleteRelationTuples_0(ctx context.Context, marshaler runtime.Marshaler, client WriteServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq DeleteRelationTuplesRequest
-	var metadata runtime.ServerMetadata
-
+	var (
+		protoReq DeleteRelationTuplesRequest
+		metadata runtime.ServerMetadata
+	)
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_WriteService_DeleteRelationTuples_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := client.DeleteRelationTuples(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_WriteService_DeleteRelationTuples_0(ctx context.Context, marshaler runtime.Marshaler, server WriteServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq DeleteRelationTuplesRequest
-	var metadata runtime.ServerMetadata
-
+	var (
+		protoReq DeleteRelationTuplesRequest
+		metadata runtime.ServerMetadata
+	)
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_WriteService_DeleteRelationTuples_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := server.DeleteRelationTuples(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 // RegisterWriteServiceHandlerServer registers the http handlers for service WriteService to "mux".
@@ -125,16 +121,13 @@ func local_request_WriteService_DeleteRelationTuples_0(ctx context.Context, mars
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterWriteServiceHandlerFromEndpoint instead.
 // GRPC interceptors will not work for this type of registration. To use interceptors, you must use the "runtime.WithMiddlewares" option in the "runtime.NewServeMux" call.
 func RegisterWriteServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server WriteServiceServer) error {
-
-	mux.Handle("PATCH", pattern_WriteService_TransactRelationTuples_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPatch, pattern_WriteService_TransactRelationTuples_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/ory.keto.relation_tuples.v1alpha2.WriteService/TransactRelationTuples", runtime.WithHTTPPathPattern("/admin/relation-tuples"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/ory.keto.relation_tuples.v1alpha2.WriteService/TransactRelationTuples", runtime.WithHTTPPathPattern("/admin/relation-tuples"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -146,20 +139,15 @@ func RegisterWriteServiceHandlerServer(ctx context.Context, mux *runtime.ServeMu
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_WriteService_TransactRelationTuples_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("PUT", pattern_WriteService_CreateRelationTuple_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPut, pattern_WriteService_CreateRelationTuple_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/ory.keto.relation_tuples.v1alpha2.WriteService/CreateRelationTuple", runtime.WithHTTPPathPattern("/admin/relation-tuples"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/ory.keto.relation_tuples.v1alpha2.WriteService/CreateRelationTuple", runtime.WithHTTPPathPattern("/admin/relation-tuples"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -171,20 +159,15 @@ func RegisterWriteServiceHandlerServer(ctx context.Context, mux *runtime.ServeMu
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_WriteService_CreateRelationTuple_0(annotatedContext, mux, outboundMarshaler, w, req, response_WriteService_CreateRelationTuple_0{resp.(*CreateRelationTupleResponse)}, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("DELETE", pattern_WriteService_DeleteRelationTuples_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodDelete, pattern_WriteService_DeleteRelationTuples_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/ory.keto.relation_tuples.v1alpha2.WriteService/DeleteRelationTuples", runtime.WithHTTPPathPattern("/admin/relation-tuples"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/ory.keto.relation_tuples.v1alpha2.WriteService/DeleteRelationTuples", runtime.WithHTTPPathPattern("/admin/relation-tuples"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -196,9 +179,7 @@ func RegisterWriteServiceHandlerServer(ctx context.Context, mux *runtime.ServeMu
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_WriteService_DeleteRelationTuples_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	return nil
@@ -225,7 +206,6 @@ func RegisterWriteServiceHandlerFromEndpoint(ctx context.Context, mux *runtime.S
 			}
 		}()
 	}()
-
 	return RegisterWriteServiceHandler(ctx, mux, conn)
 }
 
@@ -241,14 +221,11 @@ func RegisterWriteServiceHandler(ctx context.Context, mux *runtime.ServeMux, con
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
 // "WriteServiceClient" to call the correct interceptors. This client ignores the HTTP middlewares.
 func RegisterWriteServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client WriteServiceClient) error {
-
-	mux.Handle("PATCH", pattern_WriteService_TransactRelationTuples_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPatch, pattern_WriteService_TransactRelationTuples_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/ory.keto.relation_tuples.v1alpha2.WriteService/TransactRelationTuples", runtime.WithHTTPPathPattern("/admin/relation-tuples"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/ory.keto.relation_tuples.v1alpha2.WriteService/TransactRelationTuples", runtime.WithHTTPPathPattern("/admin/relation-tuples"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -259,18 +236,13 @@ func RegisterWriteServiceHandlerClient(ctx context.Context, mux *runtime.ServeMu
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_WriteService_TransactRelationTuples_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("PUT", pattern_WriteService_CreateRelationTuple_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPut, pattern_WriteService_CreateRelationTuple_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/ory.keto.relation_tuples.v1alpha2.WriteService/CreateRelationTuple", runtime.WithHTTPPathPattern("/admin/relation-tuples"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/ory.keto.relation_tuples.v1alpha2.WriteService/CreateRelationTuple", runtime.WithHTTPPathPattern("/admin/relation-tuples"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -281,18 +253,13 @@ func RegisterWriteServiceHandlerClient(ctx context.Context, mux *runtime.ServeMu
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_WriteService_CreateRelationTuple_0(annotatedContext, mux, outboundMarshaler, w, req, response_WriteService_CreateRelationTuple_0{resp.(*CreateRelationTupleResponse)}, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("DELETE", pattern_WriteService_DeleteRelationTuples_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodDelete, pattern_WriteService_DeleteRelationTuples_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/ory.keto.relation_tuples.v1alpha2.WriteService/DeleteRelationTuples", runtime.WithHTTPPathPattern("/admin/relation-tuples"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/ory.keto.relation_tuples.v1alpha2.WriteService/DeleteRelationTuples", runtime.WithHTTPPathPattern("/admin/relation-tuples"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -303,11 +270,8 @@ func RegisterWriteServiceHandlerClient(ctx context.Context, mux *runtime.ServeMu
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_WriteService_DeleteRelationTuples_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
 	return nil
 }
 
@@ -321,16 +285,12 @@ func (m response_WriteService_CreateRelationTuple_0) XXX_ResponseBody() interfac
 
 var (
 	pattern_WriteService_TransactRelationTuples_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"admin", "relation-tuples"}, ""))
-
-	pattern_WriteService_CreateRelationTuple_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"admin", "relation-tuples"}, ""))
-
-	pattern_WriteService_DeleteRelationTuples_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"admin", "relation-tuples"}, ""))
+	pattern_WriteService_CreateRelationTuple_0    = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"admin", "relation-tuples"}, ""))
+	pattern_WriteService_DeleteRelationTuples_0   = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"admin", "relation-tuples"}, ""))
 )
 
 var (
 	forward_WriteService_TransactRelationTuples_0 = runtime.ForwardResponseMessage
-
-	forward_WriteService_CreateRelationTuple_0 = runtime.ForwardResponseMessage
-
-	forward_WriteService_DeleteRelationTuples_0 = runtime.ForwardResponseMessage
+	forward_WriteService_CreateRelationTuple_0    = runtime.ForwardResponseMessage
+	forward_WriteService_DeleteRelationTuples_0   = runtime.ForwardResponseMessage
 )

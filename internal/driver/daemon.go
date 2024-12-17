@@ -5,7 +5,6 @@ package driver
 
 import (
 	"context"
-	"net"
 	"net/http"
 	"os"
 	"os/signal"
@@ -16,7 +15,6 @@ import (
 
 	grpcLogrus "github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/logging"
 	grpcRecovery "github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/recovery"
-	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/julienschmidt/httprouter"
 	"github.com/pkg/errors"
 	"github.com/rs/cors"
@@ -26,13 +24,13 @@ import (
 	grpcOtel "go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 	"go.opentelemetry.io/otel"
+	"golang.org/x/net/http2"
+	"golang.org/x/net/http2/h2c"
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/credentials/insecure"
 	grpcHealthV1 "google.golang.org/grpc/health/grpc_health_v1"
 	"google.golang.org/grpc/status"
-	"google.golang.org/grpc/test/bufconn"
 
 	"github.com/ory/analytics-go/v5"
 	"github.com/ory/graceful"
@@ -135,7 +133,7 @@ func (r *RegistryDefault) ServeAll(ctx context.Context) error {
 	// We need to separate the setup (invoking the functions that return the serve functions) from running the serve
 	// functions to mitigate race contitions in the HTTP router.
 	for _, serve := range []func() error{
-		r.serveInternalGRPC(innerCtx),
+		//r.serveInternalGRPC(innerCtx),
 		r.serveRead(innerCtx, doneShutdown),
 		r.serveWrite(innerCtx, doneShutdown),
 		r.serveOPLSyntax(innerCtx, doneShutdown),
@@ -145,57 +143,6 @@ func (r *RegistryDefault) ServeAll(ctx context.Context) error {
 	}
 
 	return eg.Wait()
-}
-
-func (r *RegistryDefault) initInternalGRPC() {
-	r.internalGRPC.listener = bufconn.Listen(1024 * 1024 * 10)
-	r.internalGRPC.dialer = func() (*grpc.ClientConn, error) {
-		return grpc.Dial("bufnet",
-			grpc.WithTransportCredentials(insecure.NewCredentials()),
-			grpc.WithContextDialer(func(context.Context, string) (net.Conn, error) { return r.internalGRPC.listener.Dial() }),
-		)
-	}
-
-}
-
-func (r *RegistryDefault) serveInternalGRPC(ctx context.Context) func() error {
-	return func() error {
-		serverDone := make(chan struct{})
-		internalGRPCServer := r.newInternalGRPCServer(ctx)
-		eg := &errgroup.Group{}
-
-		eg.Go(func() error {
-			err := internalGRPCServer.Serve(r.internalGRPCListener())
-			close(serverDone)
-			return err
-		})
-
-		eg.Go(func() (err error) {
-			<-ctx.Done()
-
-			internalGRPCServer.GracefulStop()
-			select {
-			case <-serverDone:
-				return nil
-			case <-time.After(graceful.DefaultShutdownTimeout):
-				internalGRPCServer.Stop()
-				return errors.New("graceful stop of internal gRPC server canceled, had to force it")
-			}
-		})
-
-		err := eg.Wait()
-		return err
-	}
-}
-
-func (r *RegistryDefault) internalGRPCListener() net.Listener {
-	r.internalGRPC.initOnce.Do(r.initInternalGRPC)
-	return r.internalGRPC.listener
-}
-
-func (r *RegistryDefault) internalGRPCDialer() GRPCDialer {
-	r.internalGRPC.initOnce.Do(r.initInternalGRPC)
-	return r.internalGRPC.dialer
 }
 
 func (r *RegistryDefault) serveRead(ctx context.Context, done chan<- struct{}) func() error {
@@ -302,10 +249,10 @@ func (r *RegistryDefault) serveMetrics(ctx context.Context, done chan<- struct{}
 	}
 }
 
-func serve(ctx context.Context, log *logrusx.Logger, addr string, router http.Handler, done chan<- struct{}) error {
+func serve(ctx context.Context, log *logrusx.Logger, addr string, handler http.Handler, done chan<- struct{}) error {
 	//nolint:gosec // graceful.WithDefaults already sets a timeout
 	server := graceful.WithDefaults(&http.Server{
-		Handler: router,
+		Handler: h2c.NewHandler(handler, &http2.Server{}),
 		Addr:    addr,
 	})
 
@@ -342,93 +289,6 @@ func serve(ctx context.Context, log *logrusx.Logger, addr string, router http.Ha
 	return eg.Wait()
 }
 
-func multiplexPort(ctx context.Context, log *logrusx.Logger, addr string, router http.Handler, grpcS *grpc.Server, done chan<- struct{}) error {
-	l, err := (&net.ListenConfig{}).Listen(ctx, "tcp", addr)
-	if err != nil {
-		return err
-	}
-
-	m := cmux.New(l)
-	m.SetReadTimeout(graceful.DefaultReadTimeout)
-
-	grpcL := m.MatchWithWriters(cmux.HTTP2MatchHeaderFieldSendSettings("content-type", "application/grpc"))
-	httpL := m.Match(cmux.HTTP1())
-
-	//nolint:gosec // graceful.WithDefaults already sets a timeout
-	restS := graceful.WithDefaults(&http.Server{
-		Handler: router,
-	})
-
-	eg := &errgroup.Group{}
-
-	eg.Go(func() error {
-		if err := grpcS.Serve(grpcL); !errors.Is(err, cmux.ErrServerClosed) {
-			return errors.WithStack(err)
-		}
-		return nil
-	})
-
-	eg.Go(func() error {
-		if err := restS.Serve(httpL); !errors.Is(err, http.ErrServerClosed) && !errors.Is(err, cmux.ErrServerClosed) {
-			return errors.WithStack(err)
-		}
-		return nil
-	})
-
-	eg.Go(func() error {
-		err := m.Serve()
-		if err != nil && !errors.Is(err, net.ErrClosed) {
-			// unexpected error
-			return errors.WithStack(err)
-		}
-		return nil
-	})
-
-	eg.Go(func() (err error) {
-		defer func() {
-			if err != nil {
-				log.WithError(err).Error("graceful shutdown failed")
-			} else {
-				log.Info("gracefully shutdown server")
-			}
-			done <- struct{}{}
-		}()
-
-		<-ctx.Done()
-
-		ctx, cancel := context.WithTimeout(context.Background(), graceful.DefaultShutdownTimeout)
-		defer cancel()
-
-		shutdownEg := errgroup.Group{}
-		shutdownEg.Go(func() error {
-			// we ignore net.ErrClosed, because a cmux listener's close func is actually the one of the root listener (which is closed in a racy fashion)
-			if err := restS.Shutdown(ctx); !(err == nil || errors.Is(err, http.ErrServerClosed) || errors.Is(err, net.ErrClosed)) {
-				// unexpected error
-				return errors.WithStack(err)
-			}
-			return nil
-		})
-		shutdownEg.Go(func() error {
-			gracefulDone := make(chan struct{})
-			go func() {
-				grpcS.GracefulStop()
-				close(gracefulDone)
-			}()
-			select {
-			case <-gracefulDone:
-				return nil
-			case <-ctx.Done():
-				grpcS.Stop()
-				return errors.New("graceful stop of gRPC server canceled, had to force it")
-			}
-		})
-
-		return shutdownEg.Wait()
-	})
-
-	return eg.Wait()
-}
-
 func (r *RegistryDefault) allHandlers() []Handler {
 	if len(r.handlers) == 0 {
 		r.handlers = []Handler{
@@ -442,22 +302,9 @@ func (r *RegistryDefault) allHandlers() []Handler {
 	return r.handlers
 }
 
-type RouterOrGatewayHandler struct {
-	Router   *httprouter.Router
-	ServeMux *runtime.ServeMux
-}
-
 type RouterOrHandler struct {
 	Router  *httprouter.Router
 	Handler http.Handler
-}
-
-func (h *RouterOrGatewayHandler) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
-	if handle, params, _ := h.Router.Lookup(r.Method, r.URL.Path); handle != nil {
-		handle(rw, r, params)
-		return
-	}
-	h.ServeMux.ServeHTTP(rw, r)
 }
 
 func (h *RouterOrHandler) ServeHTTP(rw http.ResponseWriter, r *http.Request) {

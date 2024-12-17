@@ -163,7 +163,7 @@ func (a *RelationshipApiService) CheckOplSyntaxExecute(r RelationshipApiApiCheck
 	}
 
 	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{"text/plain"}
+	localVarHTTPContentTypes := []string{"application/json"}
 
 	// set Content-Type header
 	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)

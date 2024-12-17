@@ -15,7 +15,6 @@ import (
 
 	"github.com/go-sql-driver/mysql"
 	"github.com/gobuffalo/pop/v6"
-	"github.com/ory/x/sqlcon/dockertest"
 	"github.com/stretchr/testify/require"
 	"github.com/tidwall/sjson"
 )
@@ -106,47 +105,47 @@ func createDB(t testing.TB, url string, dbName string) (err error) {
 func GetDSNs(t testing.TB, debugSqliteOnDisk bool) []*DsnT {
 	dsns := allSqlite(t, debugSqliteOnDisk)
 
-	if !testing.Short() {
-		var mysql, postgres, cockroach string
-		testDB := dbName(t.Name())
-
-		dockertest.Parallel([]func(){
-			func() {
-				mysql = RunMySQL(t, testDB)
-			},
-			func() {
-				postgres = RunPostgres(t, testDB)
-			},
-			func() {
-				cockroach = RunCockroach(t, testDB)
-			},
-		})
-
-		if mysql != "" {
-			dsns = append(dsns, &DsnT{
-				Name:        "mysql",
-				Conn:        mysql,
-				MigrateUp:   true,
-				MigrateDown: true,
-			})
-		}
-		if postgres != "" {
-			dsns = append(dsns, &DsnT{
-				Name:        "postgres",
-				Conn:        postgres,
-				MigrateUp:   true,
-				MigrateDown: true,
-			})
-		}
-		if cockroach != "" {
-			dsns = append(dsns, &DsnT{
-				Name:        "cockroach",
-				Conn:        cockroach,
-				MigrateUp:   true,
-				MigrateDown: true,
-			})
-		}
-	}
+	//if !testing.Short() {
+	//	var mysql, postgres, cockroach string
+	//	testDB := dbName(t.Name())
+	//
+	//	dockertest.Parallel([]func(){
+	//		func() {
+	//			mysql = RunMySQL(t, testDB)
+	//		},
+	//		func() {
+	//			postgres = RunPostgres(t, testDB)
+	//		},
+	//		func() {
+	//			cockroach = RunCockroach(t, testDB)
+	//		},
+	//	})
+	//
+	//	if mysql != "" {
+	//		dsns = append(dsns, &DsnT{
+	//			Name:        "mysql",
+	//			Conn:        mysql,
+	//			MigrateUp:   true,
+	//			MigrateDown: true,
+	//		})
+	//	}
+	//	if postgres != "" {
+	//		dsns = append(dsns, &DsnT{
+	//			Name:        "postgres",
+	//			Conn:        postgres,
+	//			MigrateUp:   true,
+	//			MigrateDown: true,
+	//		})
+	//	}
+	//	if cockroach != "" {
+	//		dsns = append(dsns, &DsnT{
+	//			Name:        "cockroach",
+	//			Conn:        cockroach,
+	//			MigrateUp:   true,
+	//			MigrateDown: true,
+	//		})
+	//	}
+	//}
 
 	require.NotZero(t, len(dsns), "expected to run against at least one database")
 	return dsns

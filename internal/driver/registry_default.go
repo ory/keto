@@ -15,7 +15,6 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/health"
-	"google.golang.org/grpc/test/bufconn"
 
 	"github.com/ory/herodot"
 	"github.com/ory/x/dbal"
@@ -84,12 +83,6 @@ type (
 		grpcTransportCredentials credentials.TransportCredentials
 		defaultMigrationOptions  []popx.MigrationBoxOption
 		healthReadyCheckers      healthx.ReadyCheckers
-
-		internalGRPC struct {
-			initOnce sync.Once
-			listener *bufconn.Listener
-			dialer   GRPCDialer
-		}
 	}
 	ReadHandler interface {
 		RegisterReadGRPC(s *grpc.Server)

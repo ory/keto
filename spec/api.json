@@ -667,7 +667,7 @@
         "operationId": "checkOplSyntax",
         "requestBody": {
           "content": {
-            "text/plain": {
+            "application/json": {
               "schema": {
                 "format": "byte",
                 "type": "string"

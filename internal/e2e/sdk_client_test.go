@@ -9,10 +9,11 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/ory/herodot"
-	"github.com/ory/x/pointerx"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"github.com/ory/herodot"
+	"github.com/ory/x/pointerx"
 
 	httpclient "github.com/ory/keto/internal/httpclient"
 	"github.com/ory/keto/internal/x"
@@ -36,12 +37,12 @@ func (c *sdkClient) requestCtx() context.Context {
 }
 
 func (c *sdkClient) oplCheckSyntax(t require.TestingT, content []byte) (parseErrors []*ketoapi.ParseError) {
-	body, err := json.Marshal(content)
+	enc, err := json.Marshal(content)
 	require.NoError(t, err)
 	res, _, err := c.getOPLSyntaxClient().
 		RelationshipApi.
 		CheckOplSyntax(c.requestCtx()).
-		Body(string(body)).
+		Body(string(enc)).
 		Execute()
 	require.NoError(t, err)
 
@@ -288,7 +289,7 @@ func (c *sdkClient) waitUntilLive(t require.TestingT) {
 	for err != nil {
 		resp, _, err = c.getReadClient().MetadataApi.IsReady(c.requestCtx()).Execute()
 	}
-	require.Equal(t, "SERVING", resp.Status)
+	require.Equal(t, "ok", resp.Status)
 }
 
 func (c *sdkClient) queryNamespaces(t require.TestingT) (response ketoapi.GetNamespacesResponse) {
