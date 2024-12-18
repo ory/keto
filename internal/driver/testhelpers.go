@@ -14,7 +14,7 @@ import (
 	"github.com/ory/keto/internal/driver/config"
 )
 
-type GetAddr = func(testing.TB, string) (host string, port string, fullAddr string)
+type GetAddr = func(t testing.TB, endpoint string) (host string, port string, fullAddr string)
 
 func UseDynamicPorts(ctx context.Context, t testing.TB, r Registry) GetAddr {
 	t.Helper()

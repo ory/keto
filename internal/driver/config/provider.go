@@ -171,7 +171,7 @@ func (k *Config) Set(key string, v any) error {
 	return nil
 }
 
-func (k *Config) addressFor(endpoint EndpointType) (string, string) {
+func (k *Config) addressFor(endpoint EndpointType) (addr string, listenFile string) {
 	return fmt.Sprintf(
 		"%s:%d",
 		k.p.StringF("serve."+string(endpoint)+".host", ""),
@@ -179,10 +179,18 @@ func (k *Config) addressFor(endpoint EndpointType) (string, string) {
 	), k.p.StringF("serve."+string(endpoint)+".write_listen_file", "")
 }
 
-func (k *Config) ReadAPIListenOn() (string, string)      { return k.addressFor(EndpointRead) }
-func (k *Config) WriteAPIListenOn() (string, string)     { return k.addressFor(EndpointWrite) }
-func (k *Config) MetricsListenOn() (string, string)      { return k.addressFor(EndpointMetrics) }
-func (k *Config) OPLSyntaxAPIListenOn() (string, string) { return k.addressFor(EndpointOPLSyntax) }
+func (k *Config) ReadAPIListenOn() (addr string, listenFile string) {
+	return k.addressFor(EndpointRead)
+}
+func (k *Config) WriteAPIListenOn() (addr string, listenFile string) {
+	return k.addressFor(EndpointWrite)
+}
+func (k *Config) MetricsListenOn() (addr string, listenFile string) {
+	return k.addressFor(EndpointMetrics)
+}
+func (k *Config) OPLSyntaxAPIListenOn() (addr string, listenFile string) {
+	return k.addressFor(EndpointOPLSyntax)
+}
 
 func (k *Config) MaxReadDepth() int {
 	return k.p.Int(KeyLimitMaxReadDepth)
