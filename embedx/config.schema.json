@@ -211,6 +211,13 @@
               "title": "Host",
               "description": "The network interface to listen on."
             },
+            "write_listen_file": {
+              "type": "string",
+              "title": "Read Listen File",
+              "description": "The path to a file that will be created when the read API is ready to accept connections. The content of the file is the host:port of the read API. Use this to get the actual port when using port 0. The service might not yet be ready to accept connections when the file is created.",
+              "format": "uri",
+              "examples": ["file:///tmp/keto-read-api"]
+            },
             "cors": {
               "$ref": "#/definitions/cors"
             },
@@ -238,6 +245,13 @@
               "examples": ["localhost", "127.0.0.1"],
               "title": "Host",
               "description": "The network interface to listen on."
+            },
+            "write_listen_file": {
+              "type": "string",
+              "title": "Write Listen File",
+              "description": "The path to a file that will be created when the write API is ready to accept connections. The content of the file is the host:port of the write API. Use this to get the actual port when using port 0. The service might not yet be ready to accept connections when the file is created.",
+              "format": "uri",
+              "examples": ["file:///tmp/keto-write-api"]
             },
             "cors": {
               "$ref": "#/definitions/cors"
@@ -267,6 +281,13 @@
               "title": "Host",
               "description": "The network interface to listen on."
             },
+            "write_listen_file": {
+              "type": "string",
+              "title": "Metrics Listen File",
+              "description": "The path to a file that will be created when the metrics API is ready to accept connections. The content of the file is the host:port of the metrics API. Use this to get the actual port when using port 0. The service might not yet be ready to accept connections when the file is created.",
+              "format": "uri",
+              "examples": ["file:///tmp/keto-metrics-api"]
+            },
             "cors": {
               "$ref": "#/definitions/cors"
             },
@@ -294,6 +315,13 @@
               "examples": ["localhost", "127.0.0.1"],
               "title": "Host",
               "description": "The network interface to listen on."
+            },
+            "write_listen_file": {
+              "type": "string",
+              "title": "OPL Listen File",
+              "description": "The path to a file that will be created when the OPL API is ready to accept connections. The content of the file is the host:port of the OPL API. Use this to get the actual port when using port 0. The service might not yet be ready to accept connections when the file is created.",
+              "format": "uri",
+              "examples": ["file:///tmp/keto-opl-api"]
             },
             "cors": {
               "$ref": "#/definitions/cors"

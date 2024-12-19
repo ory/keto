@@ -15,7 +15,6 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/ory/x/configx"
-	"github.com/phayes/freeport"
 	"github.com/spf13/pflag"
 
 	"github.com/ory/keto/internal/driver/config"
@@ -58,14 +57,11 @@ func (m *namespaceTestManager) remove(t *testing.T, name string) {
 	require.NoError(t, m.reg.Config(m.ctx).Set(config.KeyNamespaces, m.nspaces))
 }
 
-func newInitializedReg(t testing.TB, dsn *dbx.DsnT, cfgOverwrites map[string]interface{}) (context.Context, driver.Registry, *namespaceTestManager) {
+func newInitializedReg(t testing.TB, dsn *dbx.DsnT, cfgOverwrites map[string]interface{}) (context.Context, driver.Registry, *namespaceTestManager, driver.GetAddr) {
 	ctx, cancel := context.WithCancel(context.Background())
 	t.Cleanup(func() {
 		cancel()
 	})
-
-	ports, err := freeport.GetFreePorts(4)
-	require.NoError(t, err)
 
 	flags := pflag.NewFlagSet("", pflag.ContinueOnError)
 	configx.RegisterConfigFlag(flags, nil)
@@ -75,13 +71,9 @@ func newInitializedReg(t testing.TB, dsn *dbx.DsnT, cfgOverwrites map[string]int
 		"log.level":                 "debug",
 		"log.leak_sensitive_values": true,
 		config.KeyReadAPIHost:       "127.0.0.1",
-		config.KeyReadAPIPort:       ports[0],
 		config.KeyWriteAPIHost:      "127.0.0.1",
-		config.KeyWriteAPIPort:      ports[1],
 		config.KeyOPLSyntaxAPIHost:  "127.0.0.1",
-		config.KeyOPLSyntaxAPIPort:  ports[2],
 		config.KeyMetricsHost:       "127.0.0.1",
-		config.KeyMetricsPort:       ports[3],
 		config.KeyNamespaces:        []*namespace.Namespace{},
 	}
 	for k, v := range cfgOverwrites {
@@ -94,6 +86,8 @@ func newInitializedReg(t testing.TB, dsn *dbx.DsnT, cfgOverwrites map[string]int
 	reg, err := driver.NewDefaultRegistry(ctx, flags, true, nil)
 	require.NoError(t, err)
 
+	getAddr := driver.UseDynamicPorts(ctx, t, reg)
+
 	require.NoError(t, reg.MigrateUp(ctx))
 	assertMigrated(ctx, t, reg)
 
@@ -101,7 +95,7 @@ func newInitializedReg(t testing.TB, dsn *dbx.DsnT, cfgOverwrites map[string]int
 		reg:     reg,
 		ctx:     ctx,
 		nspaces: []*namespace.Namespace{},
-	}
+	}, getAddr
 }
 
 func assertMigrated(ctx context.Context, t testing.TB, r driver.Registry) {

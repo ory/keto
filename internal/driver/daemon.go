@@ -5,6 +5,7 @@ package driver
 
 import (
 	"context"
+	"fmt"
 	"net"
 	"net/http"
 	"os"
@@ -106,7 +107,14 @@ func (r *RegistryDefault) ServeAll(ctx context.Context) error {
 	innerCtx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
-	doneShutdown := make(chan struct{}, 3)
+	serveFuncs := []func(context.Context, chan<- struct{}) func() error{
+		r.serveRead,
+		r.serveWrite,
+		r.serveOPLSyntax,
+		r.serveMetrics,
+	}
+
+	doneShutdown := make(chan struct{}, len(serveFuncs))
 
 	go func() {
 		osSignals := make(chan os.Signal, 1)
@@ -118,18 +126,20 @@ func (r *RegistryDefault) ServeAll(ctx context.Context) error {
 		case <-innerCtx.Done():
 		}
 
-		ctx, cancel := context.WithTimeout(context.Background(), graceful.DefaultShutdownTimeout)
+		ctx, cancel := context.WithTimeout(context.WithoutCancel(ctx), graceful.DefaultShutdownTimeout)
 		defer cancel()
 
-		nWaitingForShutdown := cap(doneShutdown)
-		select {
-		case <-ctx.Done():
-			return
-		case <-doneShutdown:
-			nWaitingForShutdown--
-			if nWaitingForShutdown == 0 {
-				// graceful shutdown done
+		nWaitingForShutdown := len(serveFuncs)
+		for {
+			select {
+			case <-ctx.Done():
 				return
+			case <-doneShutdown:
+				nWaitingForShutdown--
+				if nWaitingForShutdown == 0 {
+					// graceful shutdown done
+					return
+				}
 			}
 		}
 	}()
@@ -137,14 +147,9 @@ func (r *RegistryDefault) ServeAll(ctx context.Context) error {
 	eg := &errgroup.Group{}
 
 	// We need to separate the setup (invoking the functions that return the serve functions) from running the serve
-	// functions to mitigate race contitions in the HTTP router.
-	for _, serve := range []func() error{
-		r.serveRead(innerCtx, doneShutdown),
-		r.serveWrite(innerCtx, doneShutdown),
-		r.serveOPLSyntax(innerCtx, doneShutdown),
-		r.serveMetrics(innerCtx, doneShutdown),
-	} {
-		eg.Go(serve)
+	// functions to mitigate race conditions in the HTTP router.
+	for _, serve := range serveFuncs {
+		eg.Go(serve(innerCtx, doneShutdown))
 	}
 
 	return eg.Wait()
@@ -158,7 +163,8 @@ func (r *RegistryDefault) serveRead(ctx context.Context, done chan<- struct{}) f
 	}
 
 	return func() error {
-		return multiplexPort(ctx, r.Logger().WithField("endpoint", "read"), r.Config(ctx).ReadAPIListenOn(), rt, s, done)
+		addr, listenFile := r.Config(ctx).ReadAPIListenOn()
+		return multiplexPort(ctx, r.Logger().WithField("endpoint", "read"), addr, listenFile, rt, s, done)
 	}
 }
 
@@ -170,7 +176,8 @@ func (r *RegistryDefault) serveWrite(ctx context.Context, done chan<- struct{}) 
 	}
 
 	return func() error {
-		return multiplexPort(ctx, r.Logger().WithField("endpoint", "write"), r.Config(ctx).WriteAPIListenOn(), rt, s, done)
+		addr, listenFile := r.Config(ctx).WriteAPIListenOn()
+		return multiplexPort(ctx, r.Logger().WithField("endpoint", "write"), addr, listenFile, rt, s, done)
 	}
 }
 
@@ -182,7 +189,8 @@ func (r *RegistryDefault) serveOPLSyntax(ctx context.Context, done chan<- struct
 	}
 
 	return func() error {
-		return multiplexPort(ctx, r.Logger().WithField("endpoint", "opl"), r.Config(ctx).OPLSyntaxAPIListenOn(), rt, s, done)
+		addr, listenFile := r.Config(ctx).OPLSyntaxAPIListenOn()
+		return multiplexPort(ctx, r.Logger().WithField("endpoint", "opl"), addr, listenFile, rt, s, done)
 	}
 }
 
@@ -192,16 +200,20 @@ func (r *RegistryDefault) serveMetrics(ctx context.Context, done chan<- struct{}
 	//nolint:gosec // graceful.WithDefaults already sets a timeout
 	s := graceful.WithDefaults(&http.Server{
 		Handler: r.metricsRouter(ctx),
-		Addr:    r.Config(ctx).MetricsListenOn(),
 	})
 
 	return func() error {
 		defer cancel()
-
 		eg := &errgroup.Group{}
 
+		addr, listenFile := r.Config(ctx).MetricsListenOn()
+		l, err := listenAndWriteFile(ctx, addr, listenFile)
+		if err != nil {
+			return err
+		}
+
 		eg.Go(func() error {
-			if err := s.ListenAndServe(); !errors.Is(err, http.ErrServerClosed) {
+			if err := s.Serve(l); !errors.Is(err, http.ErrServerClosed) {
 				return errors.WithStack(err)
 			}
 			return nil
@@ -227,8 +239,8 @@ func (r *RegistryDefault) serveMetrics(ctx context.Context, done chan<- struct{}
 	}
 }
 
-func multiplexPort(ctx context.Context, log *logrusx.Logger, addr string, router http.Handler, grpcS *grpc.Server, done chan<- struct{}) error {
-	l, err := (&net.ListenConfig{}).Listen(ctx, "tcp", addr)
+func multiplexPort(ctx context.Context, log *logrusx.Logger, addr, listenFile string, router http.Handler, grpcS *grpc.Server, done chan<- struct{}) error {
+	l, err := listenAndWriteFile(ctx, addr, listenFile)
 	if err != nil {
 		return err
 	}
@@ -281,7 +293,7 @@ func multiplexPort(ctx context.Context, log *logrusx.Logger, addr string, router
 
 		<-ctx.Done()
 
-		ctx, cancel := context.WithTimeout(context.Background(), graceful.DefaultShutdownTimeout)
+		ctx, cancel := context.WithTimeout(context.WithoutCancel(ctx), graceful.DefaultShutdownTimeout)
 		defer cancel()
 
 		shutdownEg := errgroup.Group{}
@@ -304,7 +316,7 @@ func multiplexPort(ctx context.Context, log *logrusx.Logger, addr string, router
 				return nil
 			case <-ctx.Done():
 				grpcS.Stop()
-				return errors.New("graceful stop of gRPC server canceled, had to force it")
+				return errors.New("graceful stop of gRPC server timed out, had to force it")
 			}
 		})
 
@@ -325,6 +337,20 @@ func (r *RegistryDefault) allHandlers() []Handler {
 		}
 	}
 	return r.handlers
+}
+
+func listenAndWriteFile(ctx context.Context, addr, listenFile string) (net.Listener, error) {
+	l, err := (&net.ListenConfig{}).Listen(ctx, "tcp", addr)
+	if err != nil {
+		return nil, errors.WithStack(fmt.Errorf("unable to listen on %q: %w", addr, err))
+	}
+	const filePrefix = "file://"
+	if strings.HasPrefix(listenFile, filePrefix) {
+		if err := os.WriteFile(listenFile[len(filePrefix):], []byte(l.Addr().String()), 0600); err != nil {
+			return nil, errors.WithStack(fmt.Errorf("unable to write listen file %q: %w", listenFile, err))
+		}
+	}
+	return l, nil
 }
 
 func (r *RegistryDefault) ReadRouter(ctx context.Context) http.Handler {

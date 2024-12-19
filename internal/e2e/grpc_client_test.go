@@ -6,9 +6,13 @@ package e2e
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"testing"
 	"time"
+
+	"github.com/ory/keto/ketoapi"
+	opl "github.com/ory/keto/proto/ory/keto/opl/v1alpha1"
+
+	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 
 	"github.com/ory/herodot"
 	"github.com/stretchr/testify/assert"
@@ -19,9 +23,6 @@ import (
 	"google.golang.org/grpc/status"
 
 	"github.com/ory/keto/internal/x"
-	"github.com/ory/keto/ketoapi"
-	opl "github.com/ory/keto/proto/ory/keto/opl/v1alpha1"
-	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 )
 
 type grpcClient struct {
@@ -211,20 +212,13 @@ func (g *grpcClient) expand(t *testing.T, r *ketoapi.SubjectSet, depth int) *ket
 }
 
 func (g *grpcClient) waitUntilLive(t *testing.T) {
-	c := grpcHealthV1.NewHealthClient(g.read)
+	require.EventuallyWithT(t, func(t *assert.CollectT) {
+		c := grpcHealthV1.NewHealthClient(g.read)
 
-	for {
 		res, err := c.Check(g.ctx, &grpcHealthV1.HealthCheckRequest{})
-		if errors.Is(err, context.Canceled) {
-			t.Fatalf("timed out waiting for service to be live: %s", err)
-		}
-		if err == nil {
-			require.Equal(t, grpcHealthV1.HealthCheckResponse_SERVING, res.Status)
-			return
-		}
-		t.Logf("waiting for service to be live: %s", err)
-		time.Sleep(10 * time.Millisecond)
-	}
+		require.NoError(t, err)
+		assert.Equal(t, grpcHealthV1.HealthCheckResponse_SERVING, res.Status)
+	}, 2*time.Second, 10*time.Millisecond)
 }
 
 func (g *grpcClient) deleteTuple(t *testing.T, r *ketoapi.RelationTuple) {

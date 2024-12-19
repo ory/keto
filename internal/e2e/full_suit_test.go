@@ -53,27 +53,31 @@ const (
 func Test(t *testing.T) {
 	t.Parallel()
 	for _, dsn := range dbx.GetDSNs(t, false) {
-		dsn := dsn
 		t.Run(fmt.Sprintf("dsn=%s", dsn.Name), func(t *testing.T) {
 			t.Parallel()
 
-			ctx, reg, namespaceTestMgr := newInitializedReg(t, dsn, nil)
+			ctx, reg, namespaceTestMgr, getAddr := newInitializedReg(t, dsn, nil)
 
 			closeServer := startServer(ctx, t, reg)
 			t.Cleanup(closeServer)
+
+			_, _, readAddr := getAddr(t, "read")
+			_, _, writeAddr := getAddr(t, "write")
+			_, _, oplAddr := getAddr(t, "opl")
+			_, _, metricsAddr := getAddr(t, "metrics")
 
 			// The test cases start here
 			// We execute every test with all clients available
 			for _, cl := range []client{
 				newGrpcClient(t, ctx,
-					reg.Config(ctx).ReadAPIListenOn(),
-					reg.Config(ctx).WriteAPIListenOn(),
-					reg.Config(ctx).OPLSyntaxAPIListenOn(),
+					readAddr,
+					writeAddr,
+					oplAddr,
 				),
 				&restClient{
-					readURL:      "http://" + reg.Config(ctx).ReadAPIListenOn(),
-					writeURL:     "http://" + reg.Config(ctx).WriteAPIListenOn(),
-					oplSyntaxURL: "http://" + reg.Config(ctx).OPLSyntaxAPIListenOn(),
+					readURL:      "http://" + readAddr,
+					writeURL:     "http://" + writeAddr,
+					oplSyntaxURL: "http://" + oplAddr,
 				},
 				&cliClient{c: &cmdx.CommandExecuter{
 					New: func() *cobra.Command {
@@ -81,19 +85,18 @@ func Test(t *testing.T) {
 					},
 					Ctx: ctx,
 					PersistentArgs: []string{
-						"--" + cliclient.FlagReadRemote, reg.Config(ctx).ReadAPIListenOn(),
-						"--" + cliclient.FlagWriteRemote, reg.Config(ctx).WriteAPIListenOn(),
+						"--" + cliclient.FlagReadRemote, readAddr,
+						"--" + cliclient.FlagWriteRemote, writeAddr,
 						"--insecure-disable-transport-security=true",
 						"--" + cmdx.FlagFormat, string(cmdx.FormatJSON),
 					},
 				}},
 				&sdkClient{
-					readRemote:   reg.Config(ctx).ReadAPIListenOn(),
-					writeRemote:  reg.Config(ctx).WriteAPIListenOn(),
-					syntaxRemote: reg.Config(ctx).OPLSyntaxAPIListenOn(),
+					readRemote:   readAddr,
+					writeRemote:  writeAddr,
+					syntaxRemote: oplAddr,
 				},
 			} {
-				cl := cl
 				t.Run(fmt.Sprintf("client=%T", cl), runCases(cl, namespaceTestMgr))
 
 				if tc, ok := cl.(transactClient); ok {
@@ -104,14 +107,14 @@ func Test(t *testing.T) {
 			t.Run("case=metrics are served", func(t *testing.T) {
 				t.Parallel()
 				newGrpcClient(t, ctx,
-					reg.Config(ctx).ReadAPIListenOn(),
-					reg.Config(ctx).WriteAPIListenOn(),
-					reg.Config(ctx).OPLSyntaxAPIListenOn(),
+					readAddr,
+					writeAddr,
+					oplAddr,
 				).waitUntilLive(t)
 
 				t.Run("case=on "+prometheus.MetricsPrometheusPath, func(t *testing.T) {
 					t.Parallel()
-					resp, err := http.Get(fmt.Sprintf("http://%s%s", reg.Config(ctx).MetricsListenOn(), prometheus.MetricsPrometheusPath))
+					resp, err := http.Get(fmt.Sprintf("http://%s%s", metricsAddr, prometheus.MetricsPrometheusPath))
 					require.NoError(t, err)
 					require.Equal(t, resp.StatusCode, http.StatusOK)
 					body, err := io.ReadAll(resp.Body)
@@ -121,7 +124,7 @@ func Test(t *testing.T) {
 
 				t.Run("case=not on /", func(t *testing.T) {
 					t.Parallel()
-					resp, err := http.Get(fmt.Sprintf("http://%s", reg.Config(ctx).MetricsListenOn()))
+					resp, err := http.Get(fmt.Sprintf("http://%s", metricsAddr))
 					require.NoError(t, err)
 					require.Equal(t, resp.StatusCode, http.StatusNotFound)
 				})
@@ -133,7 +136,7 @@ func Test(t *testing.T) {
 func TestServeConfig(t *testing.T) {
 	t.Parallel()
 
-	ctx, reg, _ := newInitializedReg(t, dbx.GetSqlite(t, dbx.SQLiteMemory), map[string]interface{}{
+	ctx, reg, _, getAddr := newInitializedReg(t, dbx.GetSqlite(t, dbx.SQLiteMemory), map[string]interface{}{
 		"serve.read.cors.enabled":         true,
 		"serve.read.cors.debug":           true,
 		"serve.read.cors.allowed_methods": []string{http.MethodGet},
@@ -143,13 +146,15 @@ func TestServeConfig(t *testing.T) {
 	closeServer := startServer(ctx, t, reg)
 	t.Cleanup(closeServer)
 
-	for !healthReady(t, "http://"+reg.Config(ctx).ReadAPIListenOn()) {
+	_, _, readAddr := getAddr(t, "read")
+
+	for !healthReady(t, "http://"+readAddr) {
 		t.Log("Waiting for health check to be ready")
 		time.Sleep(10 * time.Millisecond)
 	}
 	t.Log("Health check is ready")
 
-	req, err := http.NewRequest(http.MethodOptions, "http://"+reg.Config(ctx).ReadAPIListenOn()+relationtuple.ReadRouteBase, nil)
+	req, err := http.NewRequest(http.MethodOptions, "http://"+readAddr+relationtuple.ReadRouteBase, nil)
 	require.NoError(t, err)
 	req.Header.Set("Origin", "https://ory.sh")
 	resp, err := http.DefaultClient.Do(req)

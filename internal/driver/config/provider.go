@@ -43,14 +43,18 @@ const (
 	KeyBatchCheckMaxBatchSize         = "limit.max_batch_check_size"
 	KeyBatchCheckParallelizationLimit = "limit.batch_check_max_parallelization"
 
-	KeyReadAPIHost      = "serve." + string(EndpointRead) + ".host"
-	KeyReadAPIPort      = "serve." + string(EndpointRead) + ".port"
-	KeyWriteAPIHost     = "serve." + string(EndpointWrite) + ".host"
-	KeyWriteAPIPort     = "serve." + string(EndpointWrite) + ".port"
-	KeyOPLSyntaxAPIHost = "serve." + string(EndpointOPLSyntax) + ".host"
-	KeyOPLSyntaxAPIPort = "serve." + string(EndpointOPLSyntax) + ".port"
-	KeyMetricsHost      = "serve." + string(EndpointMetrics) + ".host"
-	KeyMetricsPort      = "serve." + string(EndpointMetrics) + ".port"
+	KeyReadAPIHost         = "serve." + string(EndpointRead) + ".host"
+	KeyReadAPIPort         = "serve." + string(EndpointRead) + ".port"
+	KeyReadAPIListenFile   = "serve." + string(EndpointRead) + ".write_listen_file"
+	KeyWriteAPIHost        = "serve." + string(EndpointWrite) + ".host"
+	KeyWriteAPIPort        = "serve." + string(EndpointWrite) + ".port"
+	KeyWriteAPIListenFile  = "serve." + string(EndpointWrite) + ".write_listen_file"
+	KeyOPLSyntaxAPIHost    = "serve." + string(EndpointOPLSyntax) + ".host"
+	KeyOPLSyntaxAPIPort    = "serve." + string(EndpointOPLSyntax) + ".port"
+	KeyOPLSyntaxListenFile = "serve." + string(EndpointOPLSyntax) + ".write_listen_file"
+	KeyMetricsHost         = "serve." + string(EndpointMetrics) + ".host"
+	KeyMetricsPort         = "serve." + string(EndpointMetrics) + ".port"
+	KeyMetricsListenFile   = "serve." + string(EndpointMetrics) + ".write_listen_file"
 
 	KeyNamespaces                       = "namespaces"
 	KeyNamespacesExperimentalStrictMode = KeyNamespaces + ".experimental_strict_mode"
@@ -167,18 +171,26 @@ func (k *Config) Set(key string, v any) error {
 	return nil
 }
 
-func (k *Config) addressFor(endpoint EndpointType) string {
+func (k *Config) addressFor(endpoint EndpointType) (addr string, listenFile string) {
 	return fmt.Sprintf(
 		"%s:%d",
 		k.p.StringF("serve."+string(endpoint)+".host", ""),
 		k.p.IntF("serve."+string(endpoint)+".port", 0),
-	)
+	), k.p.StringF("serve."+string(endpoint)+".write_listen_file", "")
 }
 
-func (k *Config) ReadAPIListenOn() string      { return k.addressFor(EndpointRead) }
-func (k *Config) WriteAPIListenOn() string     { return k.addressFor(EndpointWrite) }
-func (k *Config) MetricsListenOn() string      { return k.addressFor(EndpointMetrics) }
-func (k *Config) OPLSyntaxAPIListenOn() string { return k.addressFor(EndpointOPLSyntax) }
+func (k *Config) ReadAPIListenOn() (addr string, listenFile string) {
+	return k.addressFor(EndpointRead)
+}
+func (k *Config) WriteAPIListenOn() (addr string, listenFile string) {
+	return k.addressFor(EndpointWrite)
+}
+func (k *Config) MetricsListenOn() (addr string, listenFile string) {
+	return k.addressFor(EndpointMetrics)
+}
+func (k *Config) OPLSyntaxAPIListenOn() (addr string, listenFile string) {
+	return k.addressFor(EndpointOPLSyntax)
+}
 
 func (k *Config) MaxReadDepth() int {
 	return k.p.Int(KeyLimitMaxReadDepth)
