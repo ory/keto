@@ -163,7 +163,7 @@ func (a *RelationshipApiService) CheckOplSyntaxExecute(r RelationshipApiApiCheck
 	}
 
 	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{"application/json"}
+	localVarHTTPContentTypes := []string{"text/plain"}
 
 	// set Content-Type header
 	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
@@ -211,7 +211,15 @@ func (a *RelationshipApiService) CheckOplSyntaxExecute(r RelationshipApiApiCheck
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
 			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		var v ErrorGeneric
+		err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+		if err != nil {
+			newErr.error = err.Error()
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
@@ -797,11 +805,11 @@ func (a *RelationshipApiService) ListRelationshipNamespacesExecute(r Relationshi
 type RelationshipApiApiPatchRelationshipsRequest struct {
 	ctx               context.Context
 	ApiService        RelationshipApi
-	relationshipDelta *[]RelationshipDelta
+	relationshipPatch *[]RelationshipPatch
 }
 
-func (r RelationshipApiApiPatchRelationshipsRequest) RelationshipDelta(relationshipDelta []RelationshipDelta) RelationshipApiApiPatchRelationshipsRequest {
-	r.relationshipDelta = &relationshipDelta
+func (r RelationshipApiApiPatchRelationshipsRequest) RelationshipPatch(relationshipPatch []RelationshipPatch) RelationshipApiApiPatchRelationshipsRequest {
+	r.relationshipPatch = &relationshipPatch
 	return r
 }
 
@@ -843,8 +851,8 @@ func (a *RelationshipApiService) PatchRelationshipsExecute(r RelationshipApiApiP
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.relationshipDelta == nil {
-		return nil, reportError("relationshipDelta is required and must be specified")
+	if r.relationshipPatch == nil {
+		return nil, reportError("relationshipPatch is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -865,7 +873,7 @@ func (a *RelationshipApiService) PatchRelationshipsExecute(r RelationshipApiApiP
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.relationshipDelta
+	localVarPostBody = r.relationshipPatch
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return nil, err

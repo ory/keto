@@ -4,13 +4,13 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Allowed** | Pointer to **bool** | Whether the specified subject (id) is related to the requested object.  It is false by default if no ACL matches. | [optional] 
+**Allowed** | **bool** | Whether the specified subject (id) is related to the requested object.  It is false by default if no ACL matches. | 
 
 ## Methods
 
 ### NewCheckPermissionResult
 
-`func NewCheckPermissionResult() *CheckPermissionResult`
+`func NewCheckPermissionResult(allowed bool, ) *CheckPermissionResult`
 
 NewCheckPermissionResult instantiates a new CheckPermissionResult object
 This constructor will assign default values to properties that have it defined,
@@ -44,11 +44,6 @@ and a boolean to check if the value has been set.
 
 SetAllowed sets Allowed field to given value.
 
-### HasAllowed
-
-`func (o *CheckPermissionResult) HasAllowed() bool`
-
-HasAllowed returns a boolean if a field has been set.
 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

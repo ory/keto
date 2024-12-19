@@ -1,67 +1,67 @@
-# RelationshipDelta
+# RelationshipPatch
 
 ## Properties
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Action** | [**RelationshipDeltaAction**](RelationshipDeltaAction.md) |  | [default to RELATIONSHIPDELTAACTION_ACTION_UNSPECIFIED]
+**Action** | [**RelationshipPatchAction**](RelationshipPatchAction.md) |  | [default to RELATIONSHIPPATCHACTION_ACTION_UNSPECIFIED]
 **RelationTuple** | [**Relationship**](Relationship.md) |  | 
 
 ## Methods
 
-### NewRelationshipDelta
+### NewRelationshipPatch
 
-`func NewRelationshipDelta(action RelationshipDeltaAction, relationTuple Relationship, ) *RelationshipDelta`
+`func NewRelationshipPatch(action RelationshipPatchAction, relationTuple Relationship, ) *RelationshipPatch`
 
-NewRelationshipDelta instantiates a new RelationshipDelta object
+NewRelationshipPatch instantiates a new RelationshipPatch object
 This constructor will assign default values to properties that have it defined,
 and makes sure properties required by API are set, but the set of arguments
 will change when the set of required properties is changed
 
-### NewRelationshipDeltaWithDefaults
+### NewRelationshipPatchWithDefaults
 
-`func NewRelationshipDeltaWithDefaults() *RelationshipDelta`
+`func NewRelationshipPatchWithDefaults() *RelationshipPatch`
 
-NewRelationshipDeltaWithDefaults instantiates a new RelationshipDelta object
+NewRelationshipPatchWithDefaults instantiates a new RelationshipPatch object
 This constructor will only assign default values to properties that have it defined,
 but it doesn't guarantee that properties required by API are set
 
 ### GetAction
 
-`func (o *RelationshipDelta) GetAction() RelationshipDeltaAction`
+`func (o *RelationshipPatch) GetAction() RelationshipPatchAction`
 
 GetAction returns the Action field if non-nil, zero value otherwise.
 
 ### GetActionOk
 
-`func (o *RelationshipDelta) GetActionOk() (*RelationshipDeltaAction, bool)`
+`func (o *RelationshipPatch) GetActionOk() (*RelationshipPatchAction, bool)`
 
 GetActionOk returns a tuple with the Action field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetAction
 
-`func (o *RelationshipDelta) SetAction(v RelationshipDeltaAction)`
+`func (o *RelationshipPatch) SetAction(v RelationshipPatchAction)`
 
 SetAction sets Action field to given value.
 
 
 ### GetRelationTuple
 
-`func (o *RelationshipDelta) GetRelationTuple() Relationship`
+`func (o *RelationshipPatch) GetRelationTuple() Relationship`
 
 GetRelationTuple returns the RelationTuple field if non-nil, zero value otherwise.
 
 ### GetRelationTupleOk
 
-`func (o *RelationshipDelta) GetRelationTupleOk() (*Relationship, bool)`
+`func (o *RelationshipPatch) GetRelationTupleOk() (*Relationship, bool)`
 
 GetRelationTupleOk returns a tuple with the RelationTuple field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetRelationTuple
 
-`func (o *RelationshipDelta) SetRelationTuple(v Relationship)`
+`func (o *RelationshipPatch) SetRelationTuple(v Relationship)`
 
 SetRelationTuple sets RelationTuple field to given value.
 

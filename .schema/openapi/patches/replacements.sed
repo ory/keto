@@ -3,6 +3,7 @@ s/ory.keto.relation_tuples.v1alpha2.ErrorResponse.Error/genericError/g
 s/ory.keto.relation_tuples.v1alpha2.CreateRelationTupleRequest.Relationship/createRelationshipBody/g
 s/ory.keto.relation_tuples.v1alpha2.SubjectSet/subjectSet/g
 s/ory.keto.relation_tuples.v1alpha2.SubjectTree/expandedPermissionTree/g
+s/ory.keto.relation_tuples.v1alpha2.RelationTupleDelta/relationshipPatch/g
 s/ory.keto.relation_tuples.v1alpha2.RelationTuple/relationship/g
 s/ory.keto.relation_tuples.v1alpha2.ListRelationTuplesResponse/relationships/g
 s/ory.keto.relation_tuples.v1alpha2.ListNamespacesResponse/relationshipNamespaces/g

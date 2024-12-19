@@ -37,14 +37,21 @@ func (c *sdkClient) requestCtx() context.Context {
 }
 
 func (c *sdkClient) oplCheckSyntax(t require.TestingT, content []byte) (parseErrors []*ketoapi.ParseError) {
-	enc, err := json.Marshal(content)
-	require.NoError(t, err)
 	res, _, err := c.getOPLSyntaxClient().
 		RelationshipApi.
 		CheckOplSyntax(c.requestCtx()).
-		Body(string(enc)).
+		Body(string(content)).
 		Execute()
 	require.NoError(t, err)
+
+	//enc, err := json.Marshal(content)
+	//require.NoError(t, err)
+	//res, _, err := c.getOPLSyntaxClient().
+	//	RelationshipApi.
+	//	CheckOplSyntax(c.requestCtx()).
+	//	Body(string(enc)).
+	//	Execute()
+	//require.NoError(t, err)
 
 	raw, err := json.Marshal(res.Errors)
 	require.NoError(t, err)

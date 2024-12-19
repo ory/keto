@@ -4,7 +4,10 @@
 package driver
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
+	"io"
 	"net/http"
 	"os"
 	"os/signal"
@@ -385,6 +388,24 @@ func (r *RegistryDefault) OPLSyntaxRouter(ctx context.Context, apiHandler http.H
 	}
 	n.UseFunc(semconv.Middleware)
 	n.Use(reqlog.NewMiddlewareFromLogger(r.l, "syntax#Ory Keto").ExcludePaths(healthx.AliveCheckPath, healthx.ReadyCheckPath))
+	n.UseFunc(func(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
+		if r.URL.Path == "/opl/syntax/check" && r.Header.Get("Content-Type") != "application/json" {
+			body, err := io.ReadAll(r.Body)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusBadRequest)
+				return
+			}
+			newBody, err := json.Marshal(body)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusBadRequest)
+				return
+			}
+			r.Body = io.NopCloser(bytes.NewReader(newBody))
+			r.ContentLength = int64(len(newBody))
+			r.Header.Set("Content-Type", "application/json")
+		}
+		next(w, r)
+	})
 
 	pr := &x.OPLSyntaxRouter{Router: httprouter.New()}
 	r.PrometheusManager().RegisterRouter(pr.Router)

@@ -6,6 +6,7 @@
 
 import * as grpc from "grpc";
 import * as ory_keto_relation_tuples_v1alpha2_check_service_pb from "../../../../ory/keto/relation_tuples/v1alpha2/check_service_pb";
+import * as google_api_field_behavior_pb from "../../../../google/api/field_behavior_pb";
 import * as google_api_visibility_pb from "../../../../google/api/visibility_pb";
 import * as ory_keto_relation_tuples_v1alpha2_relation_tuples_pb from "../../../../ory/keto/relation_tuples/v1alpha2/relation_tuples_pb";
 import * as protoc_gen_openapiv2_options_annotations_pb from "../../../../protoc-gen-openapiv2/options/annotations_pb";

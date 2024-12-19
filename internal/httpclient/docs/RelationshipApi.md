@@ -69,7 +69,7 @@ No authorization required
 
 ### HTTP request headers
 
-- **Content-Type**: application/json
+- **Content-Type**: text/plain
 - **Accept**: application/json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
@@ -358,7 +358,7 @@ No authorization required
 
 ## PatchRelationships
 
-> PatchRelationships(ctx).RelationshipDelta(relationshipDelta).Execute()
+> PatchRelationships(ctx).RelationshipPatch(relationshipPatch).Execute()
 
 Writes one or more relationships in a single transaction.
 
@@ -375,11 +375,11 @@ import (
 )
 
 func main() {
-    relationshipDelta := []openapiclient.RelationshipDelta{*openapiclient.NewRelationshipDelta(openapiclient.relationshipDelta.Action("ACTION_UNSPECIFIED"), *openapiclient.NewRelationship("Namespace_example", "Object_example", "Relation_example"))} // []RelationshipDelta | The write delta for the relationships operated in one single transaction. Either all actions succeed or no change takes effect on error.
+    relationshipPatch := []openapiclient.RelationshipPatch{*openapiclient.NewRelationshipPatch(openapiclient.relationshipPatch.Action("ACTION_UNSPECIFIED"), *openapiclient.NewRelationship("Namespace_example", "Object_example", "Relation_example"))} // []RelationshipPatch | The write delta for the relationships operated in one single transaction. Either all actions succeed or no change takes effect on error.
 
     configuration := openapiclient.NewConfiguration()
     apiClient := openapiclient.NewAPIClient(configuration)
-    resp, r, err := apiClient.RelationshipApi.PatchRelationships(context.Background()).RelationshipDelta(relationshipDelta).Execute()
+    resp, r, err := apiClient.RelationshipApi.PatchRelationships(context.Background()).RelationshipPatch(relationshipPatch).Execute()
     if err != nil {
         fmt.Fprintf(os.Stderr, "Error when calling `RelationshipApi.PatchRelationships``: %v\n", err)
         fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
@@ -398,7 +398,7 @@ Other parameters are passed through a pointer to a apiPatchRelationshipsRequest 
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **relationshipDelta** | [**[]RelationshipDelta**](RelationshipDelta.md) | The write delta for the relationships operated in one single transaction. Either all actions succeed or no change takes effect on error. | 
+ **relationshipPatch** | [**[]RelationshipPatch**](RelationshipPatch.md) | The write delta for the relationships operated in one single transaction. Either all actions succeed or no change takes effect on error. | 
 
 ### Return type
 

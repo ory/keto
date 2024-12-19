@@ -3,6 +3,7 @@ syntax = "proto3";
 package ory.keto.relation_tuples.v1alpha2;
 
 import "google/api/annotations.proto";
+import "google/api/field_behavior.proto";
 import "google/api/visibility.proto";
 import "ory/keto/relation_tuples/v1alpha2/relation_tuples.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
@@ -139,13 +140,13 @@ message CheckRequest {
   int32 max_depth = 7 [json_name = "max-depth"];
 }
 
-// The response for a CheckService.Check rpc.
+// The response for a permission check.
 message CheckResponse {
   // Whether the specified subject (id)
   // is related to the requested object.
   //
   // It is false by default if no ACL matches.
-  bool allowed = 1;
+  bool allowed = 1 [(google.api.field_behavior) = REQUIRED];
   // This field is not implemented yet and has no effect.
   // <!--
   // The last known snapshot token ONLY specified if

@@ -18,8 +18,9 @@ import (
 	"github.com/ory/keto/ketoapi"
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 
-	"github.com/ory/herodot"
 	"github.com/tidwall/gjson"
+
+	"github.com/ory/herodot"
 
 	"github.com/ory/keto/internal/x"
 
@@ -46,9 +47,7 @@ func (rc *restClient) queryNamespaces(t require.TestingT) (res ketoapi.GetNamesp
 }
 
 func (rc *restClient) oplCheckSyntax(t require.TestingT, content []byte) []*ketoapi.ParseError {
-	enc, err := json.Marshal(content)
-	require.NoError(t, err)
-	body, code := rc.makeRequest(t, http.MethodPost, schema.RouteBase, string(enc), rc.oplSyntaxURL)
+	body, code := rc.makeRequest(t, http.MethodPost, schema.RouteBase, string(content), rc.oplSyntaxURL)
 	assert.Equal(t, http.StatusOK, code, body)
 	var response ketoapi.CheckOPLSyntaxResponse
 	require.NoError(t, json.Unmarshal([]byte(body), &response))
@@ -171,8 +170,10 @@ func (rc *restClient) expand(t require.TestingT, r *ketoapi.SubjectSet, depth in
 	return tree
 }
 
-func healthReady(_ require.TestingT, readURL string) bool {
-	resp, err := http.Get(readURL + healthx.ReadyCheckPath)
+func healthReady(t require.TestingT, readURL string) bool {
+	req, err := http.NewRequest("GET", readURL+healthx.ReadyCheckPath, nil)
+	require.NoError(t, err)
+	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return false
 	}

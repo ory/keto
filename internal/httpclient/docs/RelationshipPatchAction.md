@@ -1,4 +1,4 @@
-# RelationshipDeltaAction
+# RelationshipPatchAction
 
 ## Enum
 

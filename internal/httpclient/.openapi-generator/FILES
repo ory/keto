@@ -31,9 +31,9 @@ docs/PermissionApi.md
 docs/PostCheckPermissionBody.md
 docs/Relationship.md
 docs/RelationshipApi.md
-docs/RelationshipDelta.md
-docs/RelationshipDeltaAction.md
 docs/RelationshipNamespaces.md
+docs/RelationshipPatch.md
+docs/RelationshipPatchAction.md
 docs/Relationships.md
 docs/SubjectSet.md
 docs/SubjectSetQuery.md
@@ -60,9 +60,9 @@ model_ory_keto_relation_tuples_v1alpha2_node_type.go
 model_ory_keto_relation_tuples_v1alpha2_subject.go
 model_post_check_permission_body.go
 model_relationship.go
-model_relationship_delta.go
-model_relationship_delta_action.go
 model_relationship_namespaces.go
+model_relationship_patch.go
+model_relationship_patch_action.go
 model_relationships.go
 model_subject_set.go
 model_subject_set_query.go

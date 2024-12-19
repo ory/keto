@@ -148,7 +148,7 @@
               "type": "array",
               "items": {
                 "type": "object",
-                "$ref": "#/definitions/relationshipDelta"
+                "$ref": "#/definitions/relationshipPatch"
               }
             }
           }
@@ -204,6 +204,12 @@
             "schema": {
               "$ref": "#/definitions/errorGeneric"
             }
+          },
+          "default": {
+            "description": "errorGeneric",
+            "schema": {
+              "$ref": "#/definitions/errorGeneric"
+            }
           }
         },
         "parameters": [
@@ -217,7 +223,9 @@
             }
           }
         ],
-        "tags": ["relationship"]
+        "tags": ["relationship"],
+        "consumes": ["text/plain"],
+        "produces": ["application/json"]
       }
     },
     "/relation-tuples": {
@@ -718,7 +726,8 @@
           "description": "Whether the specified subject (id)\nis related to the requested object.\n\nIt is false by default if no ACL matches."
         }
       },
-      "description": "The response for a CheckService.Check rpc."
+      "description": "The response for a permission check.",
+      "required": ["allowed"]
     },
     "createRelationshipBody": {
       "type": "object",
@@ -922,11 +931,11 @@
       "description": "RelationTuple defines a relation between an Object and a Subject.",
       "required": ["namespace", "object", "relation"]
     },
-    "relationshipDelta": {
+    "relationshipPatch": {
       "type": "object",
       "properties": {
         "action": {
-          "$ref": "#/definitions/relationshipDelta.Action",
+          "$ref": "#/definitions/relationshipPatch.Action",
           "description": "The action to do on the RelationTuple."
         },
         "relation_tuple": {
@@ -937,7 +946,7 @@
       "description": "Write-delta for a TransactRelationTuplesRequest.",
       "required": ["action", "relation_tuple"]
     },
-    "relationshipDelta.Action": {
+    "relationshipPatch.Action": {
       "type": "string",
       "enum": ["ACTION_UNSPECIFIED", "insert", "delete"],
       "default": "ACTION_UNSPECIFIED",

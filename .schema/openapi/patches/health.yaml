@@ -73,6 +73,12 @@
                     type: object
                 type: object
           description: Ory Kratos is not yet ready to accept requests.
+        default:
+          content:
+            text/plain:
+              schema:
+                type: string
+          description: Unexpected error
       summary: Check HTTP Server and Database Status
       tags: {{ .HealthPathTags | toJson }}
 - op: replace

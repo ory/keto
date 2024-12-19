@@ -94,7 +94,7 @@ paths:
           application/json:
             schema:
               items:
-                $ref: '#/components/schemas/relationshipDelta'
+                $ref: '#/components/schemas/relationshipPatch'
               type: array
         description: |-
           The write delta for the relationships operated in one single transaction.
@@ -192,6 +192,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/isReady_503_response'
           description: Ory Kratos is not yet ready to accept requests.
+        default:
+          content:
+            text/plain:
+              schema:
+                type: string
+          description: Unexpected error
       summary: Check HTTP Server and Database Status
       tags:
       - metadata
@@ -220,7 +226,7 @@ paths:
       operationId: checkOplSyntax
       requestBody:
         content:
-          application/json:
+          text/plain:
             schema:
               format: byte
               type: string
@@ -234,6 +240,12 @@ paths:
                 $ref: '#/components/schemas/checkOplSyntaxResult'
           description: The result of the syntax checker
         "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorGeneric'
+          description: errorGeneric
+        default:
           content:
             application/json:
               schema:
@@ -767,7 +779,7 @@ components:
           type: array
       type: object
     checkPermissionResult:
-      description: The response for a CheckService.Check rpc.
+      description: The response for a permission check.
       example:
         allowed: true
       properties:
@@ -778,6 +790,8 @@ components:
 
             It is false by default if no ACL matches.
           type: boolean
+      required:
+      - allowed
       type: object
     createRelationshipBody:
       properties:
@@ -1061,18 +1075,29 @@ components:
       - object
       - relation
       type: object
-    relationshipDelta:
+    relationshipNamespaces:
+      example:
+        namespaces:
+        - name: name
+        - name: name
+      properties:
+        namespaces:
+          items:
+            $ref: '#/components/schemas/ory.keto.relation_tuples.v1alpha2.Namespace'
+          type: array
+      type: object
+    relationshipPatch:
       description: Write-delta for a TransactRelationTuplesRequest.
       properties:
         action:
-          $ref: '#/components/schemas/relationshipDelta.Action'
+          $ref: '#/components/schemas/relationshipPatch.Action'
         relation_tuple:
           $ref: '#/components/schemas/relationship'
       required:
       - action
       - relation_tuple
       type: object
-    relationshipDelta.Action:
+    relationshipPatch.Action:
       default: ACTION_UNSPECIFIED
       description: |2-
          - ACTION_UNSPECIFIED: Unspecified.
@@ -1087,17 +1112,6 @@ components:
       - insert
       - delete
       type: string
-    relationshipNamespaces:
-      example:
-        namespaces:
-        - name: name
-        - name: name
-      properties:
-        namespaces:
-          items:
-            $ref: '#/components/schemas/ory.keto.relation_tuples.v1alpha2.Namespace'
-          type: array
-      type: object
     relationships:
       description: The response of a ReadService.ListRelationTuples RPC.
       example:
