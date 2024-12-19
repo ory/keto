@@ -53,7 +53,6 @@ const (
 func Test(t *testing.T) {
 	t.Parallel()
 	for _, dsn := range dbx.GetDSNs(t, false) {
-		dsn := dsn
 		t.Run(fmt.Sprintf("dsn=%s", dsn.Name), func(t *testing.T) {
 			t.Parallel()
 
@@ -98,7 +97,6 @@ func Test(t *testing.T) {
 					syntaxRemote: oplAddr,
 				},
 			} {
-				cl := cl
 				t.Run(fmt.Sprintf("client=%T", cl), runCases(cl, namespaceTestMgr))
 
 				if tc, ok := cl.(transactClient); ok {

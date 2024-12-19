@@ -36,12 +36,8 @@ func TestScrapingEndpoint(t *testing.T) {
 
 	eg := errgroup.Group{}
 	doneShutdown := make(chan struct{})
-	eg.Go(func() error {
-		return r.serveWrite(ctx, doneShutdown)
-	})
-	eg.Go(func() error {
-		return r.serveMetrics(ctx, doneShutdown)
-	})
+	eg.Go(r.serveWrite(ctx, doneShutdown))
+	eg.Go(r.serveMetrics(ctx, doneShutdown))
 
 	_, writePort, _ := getAddr(t, "write")
 	_, metricsPort, _ := getAddr(t, "metrics")
@@ -104,9 +100,7 @@ func TestPanicRecovery(t *testing.T) {
 
 	eg := errgroup.Group{}
 	doneShutdown := make(chan struct{})
-	eg.Go(func() error {
-		return r.serveWrite(ctx, doneShutdown)
-	})
+	eg.Go(r.serveWrite(ctx, doneShutdown))
 
 	_, port, _ := getAddr(t, "write")
 

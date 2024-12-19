@@ -107,7 +107,7 @@ func (r *RegistryDefault) ServeAll(ctx context.Context) error {
 	innerCtx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
-	serveFuncs := []func(context.Context, chan<- struct{}) error{
+	serveFuncs := []func(context.Context, chan<- struct{}) func() error{
 		r.serveRead,
 		r.serveWrite,
 		r.serveOPLSyntax,
@@ -149,88 +149,94 @@ func (r *RegistryDefault) ServeAll(ctx context.Context) error {
 	// We need to separate the setup (invoking the functions that return the serve functions) from running the serve
 	// functions to mitigate race conditions in the HTTP router.
 	for _, serve := range serveFuncs {
-		eg.Go(func() error {
-			return serve(innerCtx, doneShutdown)
-		})
+		eg.Go(serve(innerCtx, doneShutdown))
 	}
 
 	return eg.Wait()
 }
 
-func (r *RegistryDefault) serveRead(ctx context.Context, done chan<- struct{}) error {
+func (r *RegistryDefault) serveRead(ctx context.Context, done chan<- struct{}) func() error {
 	rt, s := r.ReadRouter(ctx), r.ReadGRPCServer(ctx)
 
 	if tracer := r.Tracer(ctx); tracer.IsLoaded() {
 		rt = otelx.TraceHandler(rt, otelhttp.WithTracerProvider(tracer.Provider()))
 	}
 
-	addr, listenFile := r.Config(ctx).ReadAPIListenOn()
-	return multiplexPort(ctx, r.Logger().WithField("endpoint", "read"), addr, listenFile, rt, s, done)
+	return func() error {
+		addr, listenFile := r.Config(ctx).ReadAPIListenOn()
+		return multiplexPort(ctx, r.Logger().WithField("endpoint", "read"), addr, listenFile, rt, s, done)
+	}
 }
 
-func (r *RegistryDefault) serveWrite(ctx context.Context, done chan<- struct{}) error {
+func (r *RegistryDefault) serveWrite(ctx context.Context, done chan<- struct{}) func() error {
 	rt, s := r.WriteRouter(ctx), r.WriteGRPCServer(ctx)
 
 	if tracer := r.Tracer(ctx); tracer.IsLoaded() {
 		rt = otelx.TraceHandler(rt, otelhttp.WithTracerProvider(tracer.Provider()))
 	}
 
-	addr, listenFile := r.Config(ctx).WriteAPIListenOn()
-	return multiplexPort(ctx, r.Logger().WithField("endpoint", "write"), addr, listenFile, rt, s, done)
+	return func() error {
+		addr, listenFile := r.Config(ctx).WriteAPIListenOn()
+		return multiplexPort(ctx, r.Logger().WithField("endpoint", "write"), addr, listenFile, rt, s, done)
+	}
 }
 
-func (r *RegistryDefault) serveOPLSyntax(ctx context.Context, done chan<- struct{}) error {
+func (r *RegistryDefault) serveOPLSyntax(ctx context.Context, done chan<- struct{}) func() error {
 	rt, s := r.OPLSyntaxRouter(ctx), r.OplGRPCServer(ctx)
 
 	if tracer := r.Tracer(ctx); tracer.IsLoaded() {
 		rt = otelx.TraceHandler(rt, otelhttp.WithTracerProvider(tracer.Provider()))
 	}
 
-	addr, listenFile := r.Config(ctx).OPLSyntaxAPIListenOn()
-	return multiplexPort(ctx, r.Logger().WithField("endpoint", "opl"), addr, listenFile, rt, s, done)
+	return func() error {
+		addr, listenFile := r.Config(ctx).OPLSyntaxAPIListenOn()
+		return multiplexPort(ctx, r.Logger().WithField("endpoint", "opl"), addr, listenFile, rt, s, done)
+	}
 }
 
-func (r *RegistryDefault) serveMetrics(ctx context.Context, done chan<- struct{}) error {
+func (r *RegistryDefault) serveMetrics(ctx context.Context, done chan<- struct{}) func() error {
 	ctx, cancel := context.WithCancel(ctx)
-	defer cancel()
-
-	addr, listenFile := r.Config(ctx).MetricsListenOn()
-	l, err := listenAndWriteFile(ctx, addr, listenFile)
-	if err != nil {
-		return err
-	}
 
 	//nolint:gosec // graceful.WithDefaults already sets a timeout
 	s := graceful.WithDefaults(&http.Server{
 		Handler: r.metricsRouter(ctx),
 	})
 
-	eg := &errgroup.Group{}
-
-	eg.Go(func() error {
-		if err := s.Serve(l); !errors.Is(err, http.ErrServerClosed) {
-			return errors.WithStack(err)
-		}
-		return nil
-	})
-	eg.Go(func() (err error) {
-		defer func() {
-			l := r.Logger().WithField("endpoint", "metrics")
-			if err != nil {
-				l.WithError(err).Error("graceful shutdown failed")
-			} else {
-				l.Info("gracefully shutdown server")
-			}
-			done <- struct{}{}
-		}()
-
-		<-ctx.Done()
-		ctx, cancel := context.WithTimeout(context.Background(), graceful.DefaultShutdownTimeout)
+	return func() error {
 		defer cancel()
-		return s.Shutdown(ctx)
-	})
+		eg := &errgroup.Group{}
 
-	return eg.Wait()
+		addr, listenFile := r.Config(ctx).MetricsListenOn()
+		l, err := listenAndWriteFile(ctx, addr, listenFile)
+		if err != nil {
+			return err
+		}
+
+		eg.Go(func() error {
+			if err := s.Serve(l); !errors.Is(err, http.ErrServerClosed) {
+				return errors.WithStack(err)
+			}
+			return nil
+		})
+		eg.Go(func() (err error) {
+			defer func() {
+				l := r.Logger().WithField("endpoint", "metrics")
+				if err != nil {
+					l.WithError(err).Error("graceful shutdown failed")
+				} else {
+					l.Info("gracefully shutdown server")
+				}
+				done <- struct{}{}
+			}()
+
+			<-ctx.Done()
+			ctx, cancel := context.WithTimeout(context.Background(), graceful.DefaultShutdownTimeout)
+			defer cancel()
+			return s.Shutdown(ctx)
+		})
+
+		return eg.Wait()
+	}
 }
 
 func multiplexPort(ctx context.Context, log *logrusx.Logger, addr, listenFile string, router http.Handler, grpcS *grpc.Server, done chan<- struct{}) error {
