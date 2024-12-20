@@ -470,6 +470,16 @@
               }
             },
             "description": "errorGeneric"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorGeneric"
+                }
+              }
+            },
+            "description": "errorGeneric"
           }
         },
         "summary": "Deletes relationships based on relation query",
@@ -515,6 +525,16 @@
               }
             },
             "description": "errorGeneric"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorGeneric"
+                }
+              }
+            },
+            "description": "errorGeneric"
           }
         },
         "summary": "Writes one or more relationships in a single transaction.",
@@ -546,6 +566,16 @@
             "description": "The created relationship."
           },
           "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorGeneric"
+                }
+              }
+            },
+            "description": "errorGeneric"
+          },
+          "default": {
             "content": {
               "application/json": {
                 "schema": {
@@ -669,6 +699,16 @@
             "description": "The list of namespaces."
           },
           "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorGeneric"
+                }
+              }
+            },
+            "description": "errorGeneric"
+          },
+          "default": {
             "content": {
               "application/json": {
                 "schema": {
@@ -832,6 +872,16 @@
               }
             },
             "description": "errorGeneric"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorGeneric"
+                }
+              }
+            },
+            "description": "errorGeneric"
           }
         },
         "summary": "Lists ACL relationships.",
@@ -938,6 +988,16 @@
               }
             },
             "description": "The response of the permission check, in case it is not allowed. For the `/openapi` endpoints, the status code is always 200."
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorGeneric"
+                }
+              }
+            },
+            "description": "errorGeneric"
           }
         },
         "summary": "Performs an authorization check.",
@@ -992,6 +1052,16 @@
               }
             },
             "description": "The response of the permission check, in case it is not allowed. For the `/openapi` endpoints, the status code is always 200."
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorGeneric"
+                }
+              }
+            },
+            "description": "errorGeneric"
           }
         },
         "summary": "Performs an authorization check.",
@@ -1098,6 +1168,16 @@
               }
             },
             "description": "The response of the permission check, in case it is not allowed. For the `/openapi` endpoints, the status code is always 200."
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorGeneric"
+                }
+              }
+            },
+            "description": "errorGeneric"
           }
         },
         "summary": "Performs an authorization check.",
@@ -1152,6 +1232,16 @@
               }
             },
             "description": "The response of the permission check, in case it is not allowed. For the `/openapi` endpoints, the status code is always 200."
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorGeneric"
+                }
+              }
+            },
+            "description": "errorGeneric"
           }
         },
         "summary": "Performs an authorization check.",
@@ -1211,6 +1301,16 @@
             "description": "The response of the permission check, in case it is allowed. For the `/openapi` endpoints, the status code is always 200."
           },
           "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorGeneric"
+                }
+              }
+            },
+            "description": "errorGeneric"
+          },
+          "default": {
             "content": {
               "application/json": {
                 "schema": {

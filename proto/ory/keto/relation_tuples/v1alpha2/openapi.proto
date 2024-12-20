@@ -42,6 +42,15 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
       }
     };
   };
+  responses: {
+    key: "default";
+    value: {
+      description: "errorGeneric";
+      schema: {
+        json_schema: {ref: ".ory.keto.relation_tuples.v1alpha2.ErrorResponse"}
+      }
+    };
+  };
 };
 
 // JSON API Error Response

@@ -33,6 +33,12 @@
             "schema": {
               "$ref": "#/definitions/errorGeneric"
             }
+          },
+          "default": {
+            "description": "errorGeneric",
+            "schema": {
+              "$ref": "#/definitions/errorGeneric"
+            }
           }
         },
         "parameters": [
@@ -104,6 +110,12 @@
             "schema": {
               "$ref": "#/definitions/errorGeneric"
             }
+          },
+          "default": {
+            "description": "errorGeneric",
+            "schema": {
+              "$ref": "#/definitions/errorGeneric"
+            }
           }
         },
         "parameters": [
@@ -138,6 +150,12 @@
             }
           },
           "404": {
+            "description": "errorGeneric",
+            "schema": {
+              "$ref": "#/definitions/errorGeneric"
+            }
+          },
+          "default": {
             "description": "errorGeneric",
             "schema": {
               "$ref": "#/definitions/errorGeneric"
@@ -184,6 +202,12 @@
             }
           },
           "400": {
+            "description": "errorGeneric",
+            "schema": {
+              "$ref": "#/definitions/errorGeneric"
+            }
+          },
+          "default": {
             "description": "errorGeneric",
             "schema": {
               "$ref": "#/definitions/errorGeneric"
@@ -246,6 +270,12 @@
             }
           },
           "400": {
+            "description": "errorGeneric",
+            "schema": {
+              "$ref": "#/definitions/errorGeneric"
+            }
+          },
+          "default": {
             "description": "errorGeneric",
             "schema": {
               "$ref": "#/definitions/errorGeneric"
@@ -344,6 +374,12 @@
             "schema": {
               "$ref": "#/definitions/checkPermissionResult"
             }
+          },
+          "default": {
+            "description": "errorGeneric",
+            "schema": {
+              "$ref": "#/definitions/errorGeneric"
+            }
           }
         },
         "parameters": [
@@ -429,6 +465,12 @@
             "schema": {
               "$ref": "#/definitions/checkPermissionResult"
             }
+          },
+          "default": {
+            "description": "errorGeneric",
+            "schema": {
+              "$ref": "#/definitions/errorGeneric"
+            }
           }
         },
         "parameters": [
@@ -467,6 +509,12 @@
             "description": "The response of the permission check, in case it is not allowed. For the `/openapi` endpoints, the status code is always 200.",
             "schema": {
               "$ref": "#/definitions/checkPermissionResult"
+            }
+          },
+          "default": {
+            "description": "errorGeneric",
+            "schema": {
+              "$ref": "#/definitions/errorGeneric"
             }
           }
         },
@@ -553,6 +601,12 @@
             "schema": {
               "$ref": "#/definitions/checkPermissionResult"
             }
+          },
+          "default": {
+            "description": "errorGeneric",
+            "schema": {
+              "$ref": "#/definitions/errorGeneric"
+            }
           }
         },
         "parameters": [
@@ -582,6 +636,12 @@
             }
           },
           "400": {
+            "description": "errorGeneric",
+            "schema": {
+              "$ref": "#/definitions/errorGeneric"
+            }
+          },
+          "default": {
             "description": "errorGeneric",
             "schema": {
               "$ref": "#/definitions/errorGeneric"
@@ -636,6 +696,12 @@
             }
           },
           "400": {
+            "description": "errorGeneric",
+            "schema": {
+              "$ref": "#/definitions/errorGeneric"
+            }
+          },
+          "default": {
             "description": "errorGeneric",
             "schema": {
               "$ref": "#/definitions/errorGeneric"
