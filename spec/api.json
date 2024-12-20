@@ -505,6 +505,16 @@
               }
             },
             "description": "errorGeneric"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorGeneric"
+                }
+              }
+            },
+            "description": "errorGeneric"
           }
         },
         "summary": "Writes one or more relationships in a single transaction.",

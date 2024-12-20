@@ -136,6 +136,12 @@
             "schema": {
               "$ref": "#/definitions/errorGeneric"
             }
+          },
+          "404": {
+            "description": "errorGeneric",
+            "schema": {
+              "$ref": "#/definitions/errorGeneric"
+            }
           }
         },
         "parameters": [
