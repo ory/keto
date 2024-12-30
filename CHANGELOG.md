@@ -5,7 +5,7 @@
 
 **Table of Contents**
 
-- [0.0.0 (2024-08-22)](#000-2024-08-22)
+- [0.0.0 (2024-12-30)](#000-2024-12-30)
   - [Bug Fixes](#bug-fixes)
   - [Features](#features)
 - [0.13.0-alpha.0 (2024-02-27)](#0130-alpha0-2024-02-27)
@@ -161,12 +161,15 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.13.0-alpha.0...v0.0.0) (2024-08-22)
+# [0.0.0](https://github.com/ory/keto/compare/v0.13.0-alpha.0...v0.0.0) (2024-12-30)
 
 ### Bug Fixes
 
 - Add not to docs ([#1530](https://github.com/ory/keto/issues/1530))
   ([3b3b768](https://github.com/ory/keto/commit/3b3b76854052cf7a00506c35edded19cd5fe3258))
+- Http request metrics([#1611](https://github.com/ory/keto/issues/1611))
+  ([#1612](https://github.com/ory/keto/issues/1612))
+  ([b2e6d34](https://github.com/ory/keto/commit/b2e6d34d65d03158b6a30f3d2029c7c2c1eaae2b))
 - Missing persister when initializing without network
   ([#1525](https://github.com/ory/keto/issues/1525))
   ([e675d5b](https://github.com/ory/keto/commit/e675d5bc230922e8379f87e7f8bbb9360cfee005)):
@@ -176,6 +179,14 @@
 
 - Typo in error message ([#1520](https://github.com/ory/keto/issues/1520))
   ([4a35588](https://github.com/ory/keto/commit/4a35588d52e9ba0b5779226c4725a8c68c4cfe8c))
+- Unused order ([#1590](https://github.com/ory/keto/issues/1590))
+  ([47548c0](https://github.com/ory/keto/commit/47548c058960de272472ccd3eb2e98f08e9c25a9)):
+
+  We filter for `nid = ?` so there is no point in ordering by nid.
+
+  Column `shard_id` is the prefix
+  (`CONSTRAINT keto_relation_tuples_uuid_pkey PRIMARY KEY (shard_id ASC, nid ASC)`)
+  so it should not impact the query planner.
 
 ### Features
 
@@ -211,6 +222,23 @@
   - run make format
   - fix pipeline failures
   - PR Feedback: move parallelization factor to config. Use err group
+
+- Batched and chunked insertion+deletion of relation tuples
+  ([#1631](https://github.com/ory/keto/issues/1631))
+  ([c01b9c3](https://github.com/ory/keto/commit/c01b9c35eb45739e716e2df4e5619689fdde4392))
+- Check migration status in readiness probes
+  ([#1643](https://github.com/ory/keto/issues/1643))
+  ([e270279](https://github.com/ory/keto/commit/e27027925e2c834ef87abcc345688b8455d15a36))
+- Deduplicate UUID mappings before database insert
+  ([#1654](https://github.com/ory/keto/issues/1654))
+  ([ac812ee](https://github.com/ory/keto/commit/ac812ee85c57c3068439b54735de26c20c5fdbd1))
+- Write listen files with actual address
+  ([#1607](https://github.com/ory/keto/issues/1607))
+  ([0ba58c7](https://github.com/ory/keto/commit/0ba58c7cf3dec2d33d0e503fc6a744b8898aba0c)):
+
+  This change improves spinning up test Keto servers that use port `0`. A new
+  config value enables to set a file path where the server writes the actual
+  address it listens on after it was assigned a random free port by the OS.
 
 # [0.13.0-alpha.0](https://github.com/ory/keto/compare/v0.12.0-alpha.0...v0.13.0-alpha.0) (2024-02-27)
 
