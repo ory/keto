@@ -136,7 +136,6 @@ func (r *RegistryDefault) ServeAll(ctx context.Context) error {
 	// We need to separate the setup (invoking the functions that return the serve functions) from running the serve
 	// functions to mitigate race contitions in the HTTP router.
 	for _, serve := range []func() error{
-		//r.serveInternalGRPC(innerCtx),
 		r.serveRead(innerCtx, doneShutdown),
 		r.serveWrite(innerCtx, doneShutdown),
 		r.serveOPLSyntax(innerCtx, doneShutdown),
@@ -318,7 +317,6 @@ func (h *RouterOrHandler) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	h.Handler.ServeHTTP(rw, r)
 }
 
-// TODO: Merge this with WriteRouter and OPLSyntaxRouter.
 func (r *RegistryDefault) ReadRouter(ctx context.Context, apiHandler http.Handler) http.Handler {
 	n := negroni.New()
 	for _, f := range r.defaultHttpMiddlewares {
@@ -439,29 +437,33 @@ func (r *RegistryDefault) grpcRecoveryHandler(p interface{}) error {
 	return status.Errorf(codes.Internal, "%v", p)
 }
 
-func (r *RegistryDefault) unaryInterceptors(additional ...grpc.UnaryServerInterceptor) []grpc.UnaryServerInterceptor {
+func (r *RegistryDefault) unaryInterceptors(ctx context.Context) []grpc.UnaryServerInterceptor {
 	is := []grpc.UnaryServerInterceptor{
 		grpcRecovery.UnaryServerInterceptor(grpcRecovery.WithRecoveryHandler(r.grpcRecoveryHandler)),
 	}
+	if r.Tracer(ctx).IsLoaded() {
+		is = append(is, grpcOtel.UnaryServerInterceptor(grpcOtel.WithTracerProvider(otel.GetTracerProvider())))
+	}
 	is = append(is, r.defaultUnaryInterceptors...)
-	is = append(is, additional...)
 	is = append(is,
 		herodot.UnaryErrorUnwrapInterceptor,
 		grpcLogrus.UnaryServerInterceptor(InterceptorLogger(r.l.Logrus())),
-		r.pmm.UnaryServerInterceptor)
-	is = append(is, x.GlobalGRPCUnaryServerInterceptors...)
+		r.pmm.UnaryServerInterceptor,
+	)
 	if r.sqaService != nil {
 		is = append(is, r.sqaService.UnaryInterceptor)
 	}
 	return is
 }
 
-func (r *RegistryDefault) streamInterceptors(additional ...grpc.StreamServerInterceptor) []grpc.StreamServerInterceptor {
+func (r *RegistryDefault) streamInterceptors(ctx context.Context) []grpc.StreamServerInterceptor {
 	is := []grpc.StreamServerInterceptor{
 		grpcRecovery.StreamServerInterceptor(grpcRecovery.WithRecoveryHandler(r.grpcRecoveryHandler)),
 	}
+	if r.Tracer(ctx).IsLoaded() {
+		is = append(is, grpcOtel.StreamServerInterceptor(grpcOtel.WithTracerProvider(otel.GetTracerProvider())))
+	}
 	is = append(is, r.defaultStreamInterceptors...)
-	is = append(is, additional...)
 	is = append(is,
 		herodot.StreamErrorUnwrapInterceptor,
 		grpcLogrus.StreamServerInterceptor(InterceptorLogger(r.l.Logrus())),
@@ -473,32 +475,10 @@ func (r *RegistryDefault) streamInterceptors(additional ...grpc.StreamServerInte
 	return is
 }
 
-// newInternalGRPCServer creates a new gRPC server with the default
-// interceptors, but without transport credentials, to be used internally.
-func (r *RegistryDefault) newInternalGRPCServer(ctx context.Context) *grpc.Server {
-	newServerOpts := []grpc.ServerOption{
-		grpc.ChainStreamInterceptor(r.streamInterceptors(r.internalStreamInterceptors...)...),
-		grpc.ChainUnaryInterceptor(r.unaryInterceptors(r.internalUnaryInterceptors...)...),
-	}
-	if r.Tracer(ctx).IsLoaded() {
-		newServerOpts = append(
-			newServerOpts,
-			grpc.StatsHandler(grpcOtel.NewServerHandler(grpcOtel.WithTracerProvider(otel.GetTracerProvider()))))
-	}
-	s := grpc.NewServer(newServerOpts...)
-
-	r.registerCommonGRPCServices(s)
-	r.registerReadGRPCServices(s)
-	r.registerWriteGRPCServices(s)
-	r.registerOPLGRPCServices(s)
-
-	return s
-}
-
 func (r *RegistryDefault) newGrpcServer(ctx context.Context) *grpc.Server {
 	opts := []grpc.ServerOption{
-		grpc.ChainStreamInterceptor(r.streamInterceptors(r.externalStreamInterceptors...)...),
-		grpc.ChainUnaryInterceptor(r.unaryInterceptors(r.externalUnaryInterceptors...)...),
+		grpc.ChainStreamInterceptor(r.streamInterceptors(ctx)...),
+		grpc.ChainUnaryInterceptor(r.unaryInterceptors(ctx)...),
 	}
 	if r.grpcTransportCredentials != nil {
 		opts = append(opts, grpc.Creds(r.grpcTransportCredentials))
@@ -509,8 +489,8 @@ func (r *RegistryDefault) newGrpcServer(ctx context.Context) *grpc.Server {
 
 func (r *RegistryDefault) newAPIServer(ctx context.Context) *api.Server {
 	opts := []api.ServerOption{
-		api.WithGRPCOption(grpc.ChainStreamInterceptor(r.streamInterceptors(r.externalStreamInterceptors...)...)),
-		api.WithGRPCOption(grpc.ChainUnaryInterceptor(r.unaryInterceptors(r.externalUnaryInterceptors...)...)),
+		api.WithGRPCOption(grpc.ChainStreamInterceptor(r.streamInterceptors(ctx)...)),
+		api.WithGRPCOption(grpc.ChainUnaryInterceptor(r.unaryInterceptors(ctx)...)),
 	}
 	if r.grpcTransportCredentials != nil {
 		opts = append(opts, api.WithGRPCOption(grpc.Creds(r.grpcTransportCredentials)))

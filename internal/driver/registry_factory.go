@@ -14,10 +14,6 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/ory/x/configx"
-	"github.com/ory/x/logrusx"
-	"github.com/ory/x/otelx"
-	"github.com/ory/x/tlsx"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/pflag"
@@ -25,6 +21,11 @@ import (
 	"go.opentelemetry.io/otel/trace"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
+
+	"github.com/ory/x/configx"
+	"github.com/ory/x/logrusx"
+	"github.com/ory/x/otelx"
+	"github.com/ory/x/tlsx"
 
 	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/namespace"
@@ -76,20 +77,17 @@ func NewDefaultRegistry(ctx context.Context, flags *pflag.FlagSet, withoutNetwor
 	c.WithSource(options.Contextualizer().Config(ctx, cp))
 
 	r := &RegistryDefault{
-		c:                          c,
-		l:                          l,
-		tracerWrapper:              options.TracerWrapper,
-		ctxer:                      options.Contextualizer(),
-		defaultUnaryInterceptors:   options.GRPCUnaryInterceptors,
-		defaultStreamInterceptors:  options.GRPCStreamInterceptors,
-		internalUnaryInterceptors:  options.InternalGRPCUnaryInterceptors,
-		internalStreamInterceptors: options.InternalGRPCStreamInterceptors,
-		externalUnaryInterceptors:  options.ExternalGRPCUnaryInterceptors,
-		externalStreamInterceptors: options.ExternalGRPCStreamInterceptors,
-		defaultHttpMiddlewares:     options.HTTPMiddlewares(),
-		extraMigrations:            options.ExtraMigrations(),
-		defaultMigrationOptions:    options.MigrationOptions(),
-		healthReadyCheckers:        options.ReadyCheckers(),
+		c:                         c,
+		l:                         l,
+		tracerWrapper:             options.TracerWrapper,
+		ctxer:                     options.Contextualizer(),
+		defaultUnaryInterceptors:  options.GRPCUnaryInterceptors(),
+		defaultStreamInterceptors: options.GRPCStreamInterceptors(),
+		defaultGRPCServerOptions:  options.GRPCServerOptions(),
+		defaultHttpMiddlewares:    options.HTTPMiddlewares(),
+		extraMigrations:           options.ExtraMigrations(),
+		defaultMigrationOptions:   options.MigrationOptions(),
+		healthReadyCheckers:       options.ReadyCheckers(),
 	}
 
 	init := r.Init

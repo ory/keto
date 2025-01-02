@@ -7,30 +7,26 @@ import (
 	"io/fs"
 	"net/http"
 
+	"google.golang.org/grpc"
+
 	"github.com/ory/x/healthx"
 	"github.com/ory/x/logrusx"
 	"github.com/ory/x/otelx"
 	"github.com/ory/x/popx"
-	"google.golang.org/grpc"
 )
 
 type (
 	opts struct {
-		logger          *logrusx.Logger
-		TracerWrapper   TracerWrapper
-		contextualizer  Contextualizer
-		httpMiddlewares []func(rw http.ResponseWriter, r *http.Request, next http.HandlerFunc)
-
-		GRPCUnaryInterceptors          []grpc.UnaryServerInterceptor
-		GRPCStreamInterceptors         []grpc.StreamServerInterceptor
-		ExternalGRPCUnaryInterceptors  []grpc.UnaryServerInterceptor
-		ExternalGRPCStreamInterceptors []grpc.StreamServerInterceptor
-		InternalGRPCUnaryInterceptors  []grpc.UnaryServerInterceptor
-		InternalGRPCStreamInterceptors []grpc.StreamServerInterceptor
-
-		migrationOpts   []popx.MigrationBoxOption
-		extraMigrations []fs.FS
-		readyCheckers   healthx.ReadyCheckers
+		logger                 *logrusx.Logger
+		TracerWrapper          TracerWrapper
+		contextualizer         Contextualizer
+		httpMiddlewares        []func(rw http.ResponseWriter, r *http.Request, next http.HandlerFunc)
+		grpcUnaryInterceptors  []grpc.UnaryServerInterceptor
+		grpcStreamInterceptors []grpc.StreamServerInterceptor
+		grpcServerOptions      []grpc.ServerOption
+		migrationOpts          []popx.MigrationBoxOption
+		readyCheckers          healthx.ReadyCheckers
+		extraMigrations        []fs.FS
 	}
 	Option        func(o *opts)
 	TracerWrapper func(*otelx.Tracer) *otelx.Tracer
@@ -60,40 +56,27 @@ func WithHTTPMiddlewares(m ...func(rw http.ResponseWriter, r *http.Request, next
 	}
 }
 
-// WithGRPCUnaryInterceptors adds gRPC unary interceptors to the list of common gRPC
+// WithGRPCUnaryInterceptors adds gRPC unary interceptors to the list of gRPC
 // interceptors.
 func WithGRPCUnaryInterceptors(i ...grpc.UnaryServerInterceptor) Option {
-	return func(o *opts) { o.GRPCUnaryInterceptors = i }
+	return func(o *opts) {
+		o.grpcUnaryInterceptors = i
+	}
 }
 
-// WithGRPCStreamInterceptors adds gRPC stream interceptors to the list of common gRPC
+// WithGRPCStreamInterceptors adds gRPC stream interceptors to the list of gRPC
 // stream interceptors.
 func WithGRPCStreamInterceptors(i ...grpc.StreamServerInterceptor) Option {
-	return func(o *opts) { o.GRPCStreamInterceptors = i }
+	return func(o *opts) {
+		o.grpcStreamInterceptors = i
+	}
 }
 
-// WithExternalGRPCUnaryInterceptors adds gRPC unary interceptors to the list of external gRPC
-// interceptors.
-func WithExternalGRPCUnaryInterceptors(i ...grpc.UnaryServerInterceptor) Option {
-	return func(o *opts) { o.ExternalGRPCUnaryInterceptors = i }
-}
-
-// WithExternalGRPCStreamInterceptors adds gRPC stream interceptors to the list of external gRPC
-// stream interceptors.
-func WithExternalGRPCStreamInterceptors(i ...grpc.StreamServerInterceptor) Option {
-	return func(o *opts) { o.ExternalGRPCStreamInterceptors = i }
-}
-
-// WithInternalGRPCUnaryInterceptors adds gRPC unary interceptors to the list of internal gRPC
-// interceptors.
-func WithInternalGRPCUnaryInterceptors(i ...grpc.UnaryServerInterceptor) Option {
-	return func(o *opts) { o.InternalGRPCUnaryInterceptors = i }
-}
-
-// WithInternalGRPCStreamInterceptors adds gRPC stream interceptors to the list of internal gRPC
-// stream interceptors.
-func WithInternalGRPCStreamInterceptors(i ...grpc.StreamServerInterceptor) Option {
-	return func(o *opts) { o.InternalGRPCStreamInterceptors = i }
+// WithGRPCServerOptions adds gRPC server options.
+func WithGRPCServerOptions(serverOpts ...grpc.ServerOption) Option {
+	return func(o *opts) {
+		o.grpcServerOptions = serverOpts
+	}
 }
 
 // WithExtraMigrations adds additional database migrations.
@@ -132,6 +115,18 @@ func (o *opts) Contextualizer() Contextualizer {
 
 func (o *opts) HTTPMiddlewares() []func(rw http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
 	return o.httpMiddlewares
+}
+
+func (o *opts) GRPCUnaryInterceptors() []grpc.UnaryServerInterceptor {
+	return o.grpcUnaryInterceptors
+}
+
+func (o *opts) GRPCStreamInterceptors() []grpc.StreamServerInterceptor {
+	return o.grpcStreamInterceptors
+}
+
+func (o *opts) GRPCServerOptions() []grpc.ServerOption {
+	return o.grpcServerOptions
 }
 
 func (o *opts) ExtraMigrations() []fs.FS {
