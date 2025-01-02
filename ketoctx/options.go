@@ -7,6 +7,7 @@ import (
 	"io/fs"
 	"net/http"
 
+	"github.com/gobuffalo/pop/v6"
 	"google.golang.org/grpc"
 
 	"github.com/ory/x/healthx"
@@ -27,9 +28,11 @@ type (
 		migrationOpts          []popx.MigrationBoxOption
 		readyCheckers          healthx.ReadyCheckers
 		extraMigrations        []fs.FS
+		inspect                InspectFunc
 	}
 	Option        func(o *opts)
 	TracerWrapper func(*otelx.Tracer) *otelx.Tracer
+	InspectFunc   func(*pop.Connection) error
 )
 
 // WithLogger sets the logger.
@@ -105,6 +108,12 @@ func WithReadinessCheck(name string, rc healthx.ReadyChecker) Option {
 	}
 }
 
+func Inspect(f InspectFunc) Option {
+	return func(o *opts) {
+		o.inspect = f
+	}
+}
+
 func (o *opts) Logger() *logrusx.Logger {
 	return o.logger
 }
@@ -139,6 +148,10 @@ func (o *opts) MigrationOptions() []popx.MigrationBoxOption {
 
 func (o *opts) ReadyCheckers() healthx.ReadyCheckers {
 	return o.readyCheckers
+}
+
+func (o *opts) Inspect() InspectFunc {
+	return o.inspect
 }
 
 func Options(options ...Option) *opts {

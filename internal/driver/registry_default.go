@@ -6,6 +6,7 @@ package driver
 import (
 	"context"
 	"io/fs"
+	"maps"
 	"net/http"
 	"sync"
 
@@ -124,12 +125,33 @@ func (r *RegistryDefault) Config(ctx context.Context) *config.Config {
 }
 
 func (r *RegistryDefault) HealthHandler() *healthx.Handler {
-	if r.healthH == nil {
-		if r.healthReadyCheckers == nil {
-			r.healthReadyCheckers = healthx.ReadyCheckers{}
-		}
-		r.healthH = healthx.NewHandler(r.Writer(), config.Version, r.healthReadyCheckers)
+	if r.healthH != nil {
+		return r.healthH
 	}
+
+	h := healthx.ReadyCheckers{
+		"database": func(req *http.Request) error {
+			return r.Persister().Connection(req.Context()).Store.PingContext(req.Context())
+		},
+		"migrations": func(req *http.Request) error {
+			mb, err := r.MigrationBox(req.Context())
+			if err != nil {
+				return err
+			}
+			status, err := mb.Status(req.Context())
+			if err != nil {
+				return err
+			}
+
+			if status.HasPending() {
+				return errors.Errorf("migrations have not yet been fully applied")
+			}
+			return nil
+		},
+	}
+	maps.Copy(h, r.healthReadyCheckers) // possibly override default checkers
+
+	r.healthH = healthx.NewHandler(r.Writer(), config.Version, h)
 
 	return r.healthH
 }

@@ -21,7 +21,7 @@ jobs:
       - uses: ory/ci/checkout@master
       - uses: actions/setup-go@v3
         with:
-          go-version: "1.21"
+          go-version: "1.23.2"
           check-latest: true
       - name: Update npm to a non-buggy version
         run: sudo npm i -g npm@9.5.0
@@ -33,12 +33,12 @@ jobs:
         with:
           githubToken: ${{ secrets.GITHUB_TOKEN }}
       - name: Run golangci-lint
-        uses: golangci/golangci-lint-action@v3
+        uses: golangci/golangci-lint-action@v6
         env:
           GOGC: 100
         with:
+          version: v1.61.0
           args: --timeout 10m0s --issues-exit-code=0
-          skip-pkg-cache: true
       - name: Test documentation examples
         run: make test-docs-samples
       - name: Test OPL typelib
@@ -49,7 +49,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       postgres:
-        image: postgres:11.8
+        image: postgres:16
         env:
           POSTGRES_DB: keto
           POSTGRES_PASSWORD: test
@@ -69,13 +69,13 @@ jobs:
     steps:
       - run: |
           docker create --name cockroach -p 26257:26257 \
-            cockroachdb/cockroach:v20.2.5 start-single-node --insecure
+            cockroachdb/cockroach:latest-v24.2 start-single-node --insecure
           docker start cockroach
         name: Start CockroachDB
       - uses: ory/ci/checkout@master
       - uses: actions/setup-go@v3
         with:
-          go-version: "1.21"
+          go-version: "1.23.2"
           check-latest: true
       - name: Prepare Dependencies
         run: |
@@ -102,7 +102,7 @@ jobs:
       - uses: ory/ci/checkout@master
       - uses: actions/setup-go@v3
         with:
-          go-version: "1.21"
+          go-version: "1.23.2"
           check-latest: true
       - run: |
           go test -tags sqlite -race -short ./...
@@ -250,7 +250,7 @@ jobs:
           path: current-repo
       - uses: actions/setup-go@v3
         with:
-          go-version: "1.21"
+          go-version: "1.23.2"
           check-latest: true
       - uses: actions/setup-node@v3
         with:

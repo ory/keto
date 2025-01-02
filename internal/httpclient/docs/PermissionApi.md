@@ -4,12 +4,81 @@ All URIs are relative to *http://localhost*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
+[**BatchCheckPermission**](PermissionApi.md#BatchCheckPermission) | **Post** /relation-tuples/batch/check | Performs an authorization check for a batch of tuples.
 [**CheckPermission**](PermissionApi.md#CheckPermission) | **Get** /relation-tuples/check/openapi | Performs an authorization check.
 [**CheckPermissionOrError**](PermissionApi.md#CheckPermissionOrError) | **Get** /relation-tuples/check | Performs an authorization check.
 [**ExpandPermissions**](PermissionApi.md#ExpandPermissions) | **Get** /relation-tuples/expand | Expands the subject set into a tree of subjects.
 [**PostCheckPermission**](PermissionApi.md#PostCheckPermission) | **Post** /relation-tuples/check/openapi | Performs an authorization check.
 [**PostCheckPermissionOrError**](PermissionApi.md#PostCheckPermissionOrError) | **Post** /relation-tuples/check | Performs an authorization check.
 
+
+
+## BatchCheckPermission
+
+> BatchCheckPermissionResult BatchCheckPermission(ctx).BatchCheckPermissionBody(batchCheckPermissionBody).MaxDepth(maxDepth).Execute()
+
+Performs an authorization check for a batch of tuples.
+
+
+
+### Example
+
+```go
+package main
+
+import (
+    "context"
+    "fmt"
+    "os"
+    openapiclient "./openapi"
+)
+
+func main() {
+    batchCheckPermissionBody := *openapiclient.NewBatchCheckPermissionBody() // BatchCheckPermissionBody | Batch Check Permission Body.
+    maxDepth := int32(56) // int32 | The maximum depth to search for a relation.  If the value is less than 1 or greater than the global max-depth then the global max-depth will be used instead. (optional)
+
+    configuration := openapiclient.NewConfiguration()
+    apiClient := openapiclient.NewAPIClient(configuration)
+    resp, r, err := apiClient.PermissionApi.BatchCheckPermission(context.Background()).BatchCheckPermissionBody(batchCheckPermissionBody).MaxDepth(maxDepth).Execute()
+    if err != nil {
+        fmt.Fprintf(os.Stderr, "Error when calling `PermissionApi.BatchCheckPermission``: %v\n", err)
+        fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+    }
+    // response from `BatchCheckPermission`: BatchCheckPermissionResult
+    fmt.Fprintf(os.Stdout, "Response from `PermissionApi.BatchCheckPermission`: %v\n", resp)
+}
+```
+
+### Path Parameters
+
+
+
+### Other Parameters
+
+Other parameters are passed through a pointer to a apiBatchCheckPermissionRequest struct via the builder pattern
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **batchCheckPermissionBody** | [**BatchCheckPermissionBody**](BatchCheckPermissionBody.md) | Batch Check Permission Body. | 
+ **maxDepth** | **int32** | The maximum depth to search for a relation.  If the value is less than 1 or greater than the global max-depth then the global max-depth will be used instead. | 
+
+### Return type
+
+[**BatchCheckPermissionResult**](BatchCheckPermissionResult.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+- **Content-Type**: application/json
+- **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
+[[Back to Model list]](../README.md#documentation-for-models)
+[[Back to README]](../README.md)
 
 
 ## CheckPermission

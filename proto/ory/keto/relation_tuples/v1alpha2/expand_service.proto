@@ -39,6 +39,24 @@ service ExpandService {
           }
         }
       }
+      responses: {
+        key: "400";
+        value: {
+          description: "errorGeneric";
+          schema: {
+            json_schema: {ref: ".ory.keto.relation_tuples.v1alpha2.ErrorResponse"}
+          }
+        };
+      };
+      responses: {
+        key: "default";
+        value: {
+          description: "errorGeneric";
+          schema: {
+            json_schema: {ref: ".ory.keto.relation_tuples.v1alpha2.ErrorResponse"}
+          }
+        };
+      };
     };
   }
 }

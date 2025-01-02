@@ -4,15 +4,20 @@
 package e2e
 
 import (
+	"cmp"
+	"slices"
+	"strconv"
 	"testing"
+	"time"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/ory/x/pointerx"
 
-	"github.com/ory/keto/ketoapi"
-
-	"github.com/stretchr/testify/assert"
-
 	"github.com/ory/keto/internal/namespace"
+	"github.com/ory/keto/internal/x"
+	"github.com/ory/keto/ketoapi"
 )
 
 func runTransactionCases(c transactClient, m *namespaceTestManager) func(*testing.T) {
@@ -56,6 +61,104 @@ func runTransactionCases(c transactClient, m *namespaceTestManager) func(*testin
 				Namespace: &n.Name,
 			})
 			assert.Len(t, resp.RelationTuples, 0)
+		})
+
+		t.Run("case=duplicate string representations", func(t *testing.T) {
+			n := &namespace.Namespace{Name: t.Name()}
+			m.add(t, n)
+			c.transactTuples(t, []*ketoapi.RelationTuple{
+				{
+					Namespace: n.Name,
+					Object:    "o",
+					Relation:  "rel",
+					SubjectID: pointerx.Ptr("sid"),
+				},
+				{
+					Namespace: n.Name,
+					Object:    "o",
+					Relation:  "rel",
+					SubjectID: pointerx.Ptr("sid"),
+				},
+			}, nil)
+		})
+
+		t.Run("case=large inserts and deletes", func(t *testing.T) {
+			if !testing.Short() {
+				t.Skip("This test is fairly expensive, especially the deletion.")
+			}
+
+			ns := []*namespace.Namespace{
+				{Name: t.Name() + "1"},
+				{Name: t.Name() + "2"},
+			}
+			m.add(t, ns...)
+
+			var tuples []*ketoapi.RelationTuple
+			//for i := range 12001 {
+			for i := range 12001 {
+				tuples = append(tuples,
+					&ketoapi.RelationTuple{
+						Namespace: ns[0].Name,
+						Object:    "o" + strconv.Itoa(i),
+						Relation:  "rela",
+						SubjectSet: &ketoapi.SubjectSet{
+							Namespace: ns[1].Name,
+							Object:    "o" + strconv.Itoa(i),
+							Relation:  "relx",
+						},
+					},
+					&ketoapi.RelationTuple{
+						Namespace: ns[0].Name,
+						Object:    "o" + strconv.Itoa(i),
+						Relation:  "relb",
+						SubjectID: pointerx.Ptr("sid"),
+					},
+				)
+			}
+
+			t0 := time.Now()
+			c.transactTuples(t, tuples, nil)
+			t.Log("insert", time.Since(t0))
+
+			t0 = time.Now()
+			var resp []*ketoapi.RelationTuple
+			var pt string
+			for {
+				r := c.queryTuple(t, &ketoapi.RelationQuery{
+					Namespace: &ns[0].Name,
+				}, x.WithSize(1000), x.WithToken(pt))
+				resp = append(resp, r.RelationTuples...)
+				pt = r.NextPageToken
+				if pt == "" {
+					break
+				}
+			}
+			t.Log("query", time.Since(t0))
+
+			sort := func(a, b *ketoapi.RelationTuple) int {
+				return cmp.Or(
+					cmp.Compare(a.Namespace, b.Namespace),
+					cmp.Compare(a.Object, b.Object),
+					cmp.Compare(a.Relation, b.Relation),
+				)
+			}
+			t0 = time.Now()
+			slices.SortFunc(resp, sort)
+			slices.SortFunc(tuples, sort)
+			t.Log("sort", time.Since(t0))
+
+			t0 = time.Now()
+			require.Equal(t, tuples, resp)
+			t.Log("equal", time.Since(t0))
+
+			t0 = time.Now()
+			c.transactTuples(t, nil, tuples)
+			t.Log(t.Name(), "delete took:", time.Since(t0))
+
+			resp = c.queryTuple(t, &ketoapi.RelationQuery{
+				Namespace: &ns[0].Name,
+			}).RelationTuples
+			assert.Len(t, resp, 0)
 		})
 
 		t.Run("case=expand-api-display-access docs code sample", func(t *testing.T) {

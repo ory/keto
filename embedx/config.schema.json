@@ -211,6 +211,13 @@
               "title": "Host",
               "description": "The network interface to listen on."
             },
+            "write_listen_file": {
+              "type": "string",
+              "title": "Read Listen File",
+              "description": "The path to a file that will be created when the read API is ready to accept connections. The content of the file is the host:port of the read API. Use this to get the actual port when using port 0. The service might not yet be ready to accept connections when the file is created.",
+              "format": "uri",
+              "examples": ["file:///tmp/keto-read-api"]
+            },
             "cors": {
               "$ref": "#/definitions/cors"
             },
@@ -238,6 +245,13 @@
               "examples": ["localhost", "127.0.0.1"],
               "title": "Host",
               "description": "The network interface to listen on."
+            },
+            "write_listen_file": {
+              "type": "string",
+              "title": "Write Listen File",
+              "description": "The path to a file that will be created when the write API is ready to accept connections. The content of the file is the host:port of the write API. Use this to get the actual port when using port 0. The service might not yet be ready to accept connections when the file is created.",
+              "format": "uri",
+              "examples": ["file:///tmp/keto-write-api"]
             },
             "cors": {
               "$ref": "#/definitions/cors"
@@ -267,6 +281,13 @@
               "title": "Host",
               "description": "The network interface to listen on."
             },
+            "write_listen_file": {
+              "type": "string",
+              "title": "Metrics Listen File",
+              "description": "The path to a file that will be created when the metrics API is ready to accept connections. The content of the file is the host:port of the metrics API. Use this to get the actual port when using port 0. The service might not yet be ready to accept connections when the file is created.",
+              "format": "uri",
+              "examples": ["file:///tmp/keto-metrics-api"]
+            },
             "cors": {
               "$ref": "#/definitions/cors"
             },
@@ -294,6 +315,13 @@
               "examples": ["localhost", "127.0.0.1"],
               "title": "Host",
               "description": "The network interface to listen on."
+            },
+            "write_listen_file": {
+              "type": "string",
+              "title": "OPL Listen File",
+              "description": "The path to a file that will be created when the OPL API is ready to accept connections. The content of the file is the host:port of the OPL API. Use this to get the actual port when using port 0. The service might not yet be ready to accept connections when the file is created.",
+              "format": "uri",
+              "examples": ["file:///tmp/keto-opl-api"]
             },
             "cors": {
               "$ref": "#/definitions/cors"
@@ -378,6 +406,22 @@
           "default": 100,
           "title": "Global maximum read width",
           "description": "The global maximum width on all read operations. Note that this does not affect how deeply nested the tuples can be. This value can be decreased for a request by a value specified on the request, only if the request-specific value is greater than 1 and less than the global maximum width.",
+          "minimum": 1,
+          "maximum": 65535
+        },
+        "max_batch_check_size": {
+          "type": "integer",
+          "default": 10,
+          "title": "Maximum batch check size",
+          "description": "The maximum number of tuples that will be accepted by the batch check endpoint.",
+          "minimum": 1,
+          "maximum": 65535
+        },
+        "batch_check_max_parallelization": {
+          "type": "integer",
+          "default": 5,
+          "title": "Max concurrent checks during batch check",
+          "description": "The limit for the number of tuples that will be checked concurrently during a batch check.",
           "minimum": 1,
           "maximum": 65535
         }

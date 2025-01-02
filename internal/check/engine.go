@@ -6,11 +6,11 @@ package check
 import (
 	"context"
 
-	"github.com/pkg/errors"
-	"go.opentelemetry.io/otel/trace"
-
 	"github.com/ory/herodot"
 	"github.com/ory/x/otelx"
+	"github.com/pkg/errors"
+	"go.opentelemetry.io/otel/trace"
+	"golang.org/x/sync/errgroup"
 
 	"github.com/ory/keto/x/events"
 
@@ -34,6 +34,7 @@ type (
 	}
 	EngineDependencies interface {
 		relationtuple.ManagerProvider
+		relationtuple.MapperProvider
 		persistence.Provider
 		config.Provider
 		x.LoggerProvider
@@ -263,4 +264,39 @@ func (e *Engine) astRelationFor(ctx context.Context, r *relationTuple) (*ast.Rel
 		return nil, err
 	}
 	return namespace.ASTRelationFor(ctx, namespaceManager, r.Namespace, r.Relation)
+}
+
+// BatchCheck makes parallelized check requests for tuples. The check results are returned as slice, where the
+// result index matches the tuple index of the incoming tuples array.
+func (e *Engine) BatchCheck(ctx context.Context,
+	tuples []*ketoapi.RelationTuple,
+	maxDepth int) ([]checkgroup.Result, error) {
+
+	eg := &errgroup.Group{}
+	eg.SetLimit(e.d.Config(ctx).BatchCheckParallelizationLimit())
+
+	mapper := e.d.ReadOnlyMapper()
+	results := make([]checkgroup.Result, len(tuples))
+	for i, tuple := range tuples {
+		i := i
+		tuple := tuple
+		eg.Go(func() error {
+			internalTuple, err := mapper.FromTuple(ctx, tuple)
+			if err != nil {
+				results[i] = checkgroup.Result{
+					Membership: checkgroup.MembershipUnknown,
+					Err:        err,
+				}
+			} else {
+				results[i] = e.CheckRelationTuple(ctx, internalTuple[0], maxDepth)
+			}
+			return nil
+		})
+	}
+
+	if err := eg.Wait(); err != nil {
+		return nil, err
+	}
+
+	return results, nil
 }

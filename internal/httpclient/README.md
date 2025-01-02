@@ -82,6 +82,7 @@ Class | Method | HTTP request | Description
 *MetadataApi* | [**GetVersion**](docs/MetadataApi.md#getversion) | **Get** /version | Return Running Software Version.
 *MetadataApi* | [**IsAlive**](docs/MetadataApi.md#isalive) | **Get** /health/alive | Check HTTP Server Status
 *MetadataApi* | [**IsReady**](docs/MetadataApi.md#isready) | **Get** /health/ready | Check HTTP Server and Database Status
+*PermissionApi* | [**BatchCheckPermission**](docs/PermissionApi.md#batchcheckpermission) | **Post** /relation-tuples/batch/check | Performs an authorization check for a batch of tuples.
 *PermissionApi* | [**CheckPermission**](docs/PermissionApi.md#checkpermission) | **Get** /relation-tuples/check/openapi | Performs an authorization check.
 *PermissionApi* | [**CheckPermissionOrError**](docs/PermissionApi.md#checkpermissionorerror) | **Get** /relation-tuples/check | Performs an authorization check.
 *PermissionApi* | [**ExpandPermissions**](docs/PermissionApi.md#expandpermissions) | **Get** /relation-tuples/expand | Expands the subject set into a tree of subjects.
@@ -97,8 +98,11 @@ Class | Method | HTTP request | Description
 
 ## Documentation For Models
 
+ - [BatchCheckPermissionBody](docs/BatchCheckPermissionBody.md)
+ - [BatchCheckPermissionResult](docs/BatchCheckPermissionResult.md)
  - [CheckOplSyntaxResult](docs/CheckOplSyntaxResult.md)
  - [CheckPermissionResult](docs/CheckPermissionResult.md)
+ - [CheckPermissionResultWithError](docs/CheckPermissionResultWithError.md)
  - [CreateRelationshipBody](docs/CreateRelationshipBody.md)
  - [ErrorGeneric](docs/ErrorGeneric.md)
  - [ErrorGenericError](docs/ErrorGenericError.md)

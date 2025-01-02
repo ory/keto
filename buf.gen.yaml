@@ -1,11 +1,11 @@
 version: v1
 
 plugins:
-  - plugin: buf.build/protocolbuffers/go
+  - plugin: buf.build/protocolbuffers/go:v1.36.1
     out: proto
     opt: paths=source_relative
 
-  - plugin: buf.build/grpc/go
+  - plugin: buf.build/grpc/go:v1.5.1
     out: proto
     opt: paths=source_relative,require_unimplemented_servers=false
 
@@ -23,17 +23,13 @@ plugins:
 
   - name: ts
     out: proto
-    opt: ts_out=proto
+    opt: grpc_js
     path: node_modules/.bin/protoc-gen-ts
 
   - name: doc
     out: proto
     opt: proto/markdown.tmpl,proto/buf.md
     strategy: all
-
-  - plugin: buf.build/grpc-ecosystem/gateway
-    out: proto
-    opt: paths=source_relative
 
   - plugin: buf.build/grpc-ecosystem/openapiv2
     opt:

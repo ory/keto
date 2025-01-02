@@ -10,6 +10,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"sync"
 	"testing"
 	"time"
 
@@ -17,8 +18,6 @@ import (
 	"github.com/gobuffalo/pop/v6"
 	"github.com/stretchr/testify/require"
 	"github.com/tidwall/sjson"
-
-	"github.com/ory/x/sqlcon/dockertest"
 )
 
 type DsnT struct {
@@ -111,17 +110,21 @@ func GetDSNs(t testing.TB, debugSqliteOnDisk bool) []*DsnT {
 		var mysql, postgres, cockroach string
 		testDB := dbName(t.Name())
 
-		dockertest.Parallel([]func(){
-			func() {
-				mysql = RunMySQL(t, testDB)
-			},
-			func() {
-				postgres = RunPostgres(t, testDB)
-			},
-			func() {
-				cockroach = RunCockroach(t, testDB)
-			},
-		})
+		var wg sync.WaitGroup
+		wg.Add(3)
+		go func() {
+			defer wg.Done()
+			postgres = RunPostgres(t, testDB)
+		}()
+		go func() {
+			defer wg.Done()
+			mysql = RunMySQL(t, testDB)
+		}()
+		go func() {
+			defer wg.Done()
+			cockroach = RunCockroach(t, testDB)
+		}()
+		wg.Wait()
 
 		if mysql != "" {
 			dsns = append(dsns, &DsnT{

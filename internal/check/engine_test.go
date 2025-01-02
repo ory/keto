@@ -8,10 +8,13 @@ import (
 	"testing"
 
 	"github.com/gofrs/uuid"
+	"github.com/ory/herodot"
+	"github.com/ory/x/pointerx"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
 	"github.com/ory/keto/internal/check"
+	"github.com/ory/keto/internal/check/checkgroup"
 	"github.com/ory/keto/internal/driver"
 	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/namespace"
@@ -27,6 +30,7 @@ type configProvider = config.Provider
 // deps are defined to capture engine dependencies in a single struct
 type deps struct {
 	*relationtuple.ManagerWrapper // managerProvider
+	relationtuple.MapperProvider
 	persistence.Provider
 	configProvider
 	x.LoggerProvider
@@ -41,6 +45,7 @@ func newDepsProvider(t testing.TB, namespaces []*namespace.Namespace, pageOpts .
 
 	return &deps{
 		ManagerWrapper:    mr,
+		MapperProvider:    reg,
 		Provider:          reg,
 		configProvider:    reg,
 		LoggerProvider:    reg,
@@ -575,5 +580,105 @@ func TestEngine(t *testing.T) {
 			require.NoError(t, err)
 			assert.True(t, res)
 		}
+	})
+
+	t.Run("case=batch check", func(t *testing.T) {
+		reg := newDepsProvider(t, []*namespace.Namespace{
+			{Name: "test"},
+		})
+
+		relationtuple.MapAndWriteTuples(t, reg, &ketoapi.RelationTuple{
+			Namespace: "test",
+			Object:    "object",
+			Relation:  "admin",
+			SubjectID: pointerx.Ptr("user"),
+		},
+			&ketoapi.RelationTuple{
+				Namespace: "test",
+				Object:    "object",
+				Relation:  "owner",
+				SubjectSet: &ketoapi.SubjectSet{
+					Namespace: "test",
+					Object:    "object",
+					Relation:  "admin",
+				},
+			},
+			&ketoapi.RelationTuple{
+				Namespace: "test",
+				Object:    "object",
+				Relation:  "access",
+				SubjectSet: &ketoapi.SubjectSet{
+					Namespace: "test",
+					Object:    "object",
+					Relation:  "owner",
+				},
+			})
+
+		e := check.NewEngine(reg)
+
+		targetTuples := []*ketoapi.RelationTuple{
+			{ // direct relation
+				Namespace: "test",
+				Object:    "object",
+				Relation:  "admin",
+				SubjectID: pointerx.Ptr("user"),
+			},
+			{ // indirect relation
+				Namespace: "test",
+				Object:    "object",
+				Relation:  "owner",
+				SubjectID: pointerx.Ptr("user"),
+			},
+			{ // indirect relation, greater than max depth
+				Namespace: "test",
+				Object:    "object",
+				Relation:  "access",
+				SubjectID: pointerx.Ptr("user"),
+			},
+			{ // non-existent namespace
+				Namespace: "test2",
+				Object:    "object",
+				Relation:  "admin",
+				SubjectID: pointerx.Ptr("user"),
+			},
+			{ // unknown subject
+				Namespace: "test",
+				Object:    "object",
+				Relation:  "admin",
+				SubjectID: pointerx.Ptr("user2"),
+			},
+			{ // relation via subject set
+				Namespace: "test",
+				Object:    "object",
+				Relation:  "access",
+				SubjectSet: &ketoapi.SubjectSet{
+					Namespace: "test",
+					Object:    "object",
+					Relation:  "owner",
+				},
+			},
+		}
+
+		// Batch check with low max depth
+		results, err := e.BatchCheck(ctx, targetTuples, 2)
+		require.NoError(t, err)
+
+		require.Equal(t, checkgroup.IsMember, results[0].Membership)
+		require.NoError(t, results[0].Err)
+		require.Equal(t, checkgroup.IsMember, results[1].Membership)
+		require.NoError(t, results[1].Err)
+		require.Equal(t, checkgroup.NotMember, results[2].Membership)
+		require.NoError(t, results[2].Err)
+		require.Equal(t, checkgroup.MembershipUnknown, results[3].Membership)
+		require.EqualError(t, results[3].Err, herodot.ErrNotFound.Error())
+		require.Equal(t, checkgroup.NotMember, results[4].Membership)
+		require.NoError(t, results[4].Err)
+		require.Equal(t, checkgroup.IsMember, results[5].Membership)
+		require.NoError(t, results[5].Err)
+
+		// Check with higher max depth and verify the third tuple is now shown as a member
+		results, err = e.BatchCheck(ctx, targetTuples, 3)
+		require.NoError(t, err)
+		require.Equal(t, checkgroup.IsMember, results[2].Membership)
 	})
 }

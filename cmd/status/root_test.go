@@ -47,7 +47,7 @@ func TestStatusCmd(t *testing.T) {
 			})
 
 			t.Run("case=block", func(t *testing.T) {
-				ctx := context.WithValue(context.Background(), client.ContextKeyTimeout, time.Millisecond)
+				ctx := context.WithValue(context.Background(), client.ContextKeyTimeout, 100*time.Millisecond)
 
 				l, err := net.Listen("tcp", "127.0.0.1:0")
 				require.NoError(t, err)

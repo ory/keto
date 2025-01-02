@@ -7,16 +7,19 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"github.com/gogo/status"
 	"github.com/pkg/errors"
 
 	"github.com/ory/herodot"
 
+	"github.com/ory/keto/internal/check/checkgroup"
+	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/x/api"
 
 	"github.com/ory/keto/ketoapi"
 
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
 
 	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/internal/x"
@@ -30,6 +33,7 @@ type (
 		relationtuple.MapperProvider
 		x.LoggerProvider
 		x.WriterProvider
+		config.Provider
 	}
 	Handler struct {
 		d handlerDependencies
@@ -47,17 +51,11 @@ func NewHandler(d handlerDependencies) *Handler {
 const (
 	RouteBase        = "/relation-tuples/check"
 	OpenAPIRouteBase = RouteBase + "/openapi"
+	BatchRoute       = "/relation-tuples/batch/check"
 )
 
 func (h *Handler) RegisterReadGRPC(s *grpc.Server) {
 	rts.RegisterCheckServiceServer(s, h)
-}
-
-func (h *Handler) RegisterReadGRPCGateway(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts ...grpc.DialOption) error {
-	return rts.RegisterCheckServiceHandlerFromEndpoint(ctx, mux, endpoint, opts)
-}
-func (h *Handler) RegisterReadGRPCGatewayConn(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
-	return rts.RegisterCheckServiceHandler(ctx, mux, conn)
 }
 
 func (h *Handler) Check(ctx context.Context, req *rts.CheckRequest) (res *rts.CheckResponse, err error) {
@@ -92,4 +90,46 @@ func (h *Handler) Check(ctx context.Context, req *rts.CheckRequest) (res *rts.Ch
 
 	res = &rts.CheckResponse{Allowed: allowed}
 	return res, nil
+}
+
+// BatchCheck is the gRPC entry point for checking batches of tuples
+func (h *Handler) BatchCheck(ctx context.Context, req *rts.BatchCheckRequest) (*rts.BatchCheckResponse, error) {
+	// Handle the case where the tuples are passed in the request body.
+	if req.RestBody != nil {
+		if req.Tuples != nil {
+			return nil, status.Error(codes.InvalidArgument, "either tuples or rest_body should be set, not both")
+		}
+		req.Tuples = req.RestBody.Tuples
+	}
+
+	if len(req.Tuples) > h.d.Config(ctx).BatchCheckMaxBatchSize() {
+		return nil, status.Errorf(codes.InvalidArgument,
+			"batch exceeds max size of %v", h.d.Config(ctx).BatchCheckMaxBatchSize())
+	}
+
+	ketoTuples := make([]*ketoapi.RelationTuple, len(req.Tuples))
+	for i, tuple := range req.Tuples {
+		ketoTuples[i] = (&ketoapi.RelationTuple{}).FromProto(tuple)
+	}
+
+	results, err := h.d.PermissionEngine().BatchCheck(ctx, ketoTuples, int(req.MaxDepth))
+	if err != nil {
+		return nil, err
+	}
+
+	responses := make([]*rts.CheckResponseWithError, len(results))
+	for i, result := range results {
+		errMsg := ""
+		if result.Err != nil {
+			errMsg = result.Err.Error()
+		}
+		responses[i] = &rts.CheckResponseWithError{
+			Allowed: result.Membership == checkgroup.IsMember,
+			Error:   errMsg,
+		}
+	}
+
+	return &rts.BatchCheckResponse{
+		Results: responses,
+	}, nil
 }

@@ -1,5 +1,5 @@
 # Workaround for https://github.com/GoogleContainerTools/distroless/issues/1342
-FROM golang:1.21-bullseye AS builder
+FROM golang:1.23.4-bullseye AS builder
 
 WORKDIR /go/src/github.com/ory/keto
 
@@ -23,7 +23,7 @@ RUN go build -buildvcs=false -tags sqlite -o /usr/bin/keto .
 
 #########################
 
-FROM gcr.io/distroless/base-nossl-debian11:nonroot AS runner
+FROM gcr.io/distroless/base-nossl-debian12:nonroot AS runner
 
 COPY --from=builder --chown=nonroot:nonroot /var/lib/sqlite /var/lib/sqlite
 COPY --from=builder /usr/bin/keto /usr/bin/keto

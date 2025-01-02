@@ -24,8 +24,12 @@
   - [SubjectSetQuery](#ory-keto-relation_tuples-v1alpha2-SubjectSetQuery)
 - [ory/keto/relation_tuples/v1alpha2/check_service.proto](#ory_keto_relation_tuples_v1alpha2_check_service-proto)
 
+  - [BatchCheckRequest](#ory-keto-relation_tuples-v1alpha2-BatchCheckRequest)
+  - [BatchCheckRequestBody](#ory-keto-relation_tuples-v1alpha2-BatchCheckRequestBody)
+  - [BatchCheckResponse](#ory-keto-relation_tuples-v1alpha2-BatchCheckResponse)
   - [CheckRequest](#ory-keto-relation_tuples-v1alpha2-CheckRequest)
   - [CheckResponse](#ory-keto-relation_tuples-v1alpha2-CheckResponse)
+  - [CheckResponseWithError](#ory-keto-relation_tuples-v1alpha2-CheckResponseWithError)
   - [CheckService](#ory-keto-relation_tuples-v1alpha2-CheckService)
 
 - [ory/keto/relation_tuples/v1alpha2/expand_service.proto](#ory_keto_relation_tuples_v1alpha2_expand_service-proto)
@@ -245,6 +249,38 @@ SubjectSetQuery refers to all subjects who have the same `relation` on an
 
 ## ory/keto/relation_tuples/v1alpha2/check_service.proto
 
+<a name="ory-keto-relation_tuples-v1alpha2-BatchCheckRequest"></a>
+
+### BatchCheckRequest
+
+The request for a CheckService.BatchCheck RPC. Checks a batch of relations.
+
+| Field     | Type                                                                              | Label    | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| --------- | --------------------------------------------------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| tuples    | [RelationTuple](#ory-keto-relation_tuples-v1alpha2-RelationTuple)                 | repeated |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| rest_body | [BatchCheckRequestBody](#ory-keto-relation_tuples-v1alpha2-BatchCheckRequestBody) |          | **Deprecated.** Batch Check Permission Body.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| latest    | [bool](#bool)                                                                     |          | This field is not implemented yet and has no effect.<br/><!--<br/>Set this field to `true` in case your application<br/>needs to authorize depending on up to date ACLs,<br/>also called a "content-change check".<br/><br/>If set to `true` the `snaptoken` field is ignored,<br/>the check is evaluated at the latest snapshot<br/>(globally consistent) and the response includes a<br/>snaptoken for clients to store along with object<br/>contents that can be used for subsequent checks<br/>of the same content version.<br/><br/>Example use case:<br/> - You need to authorize a user to modify/delete some resource<br/> and it is unacceptable that if the permission to do that had<br/> just been revoked some seconds ago so that the change had not<br/> yet been fully replicated to all availability zones.<br/>--> |
+| snaptoken | [string](#string)                                                                 |          | This field is not implemented yet and has no effect.<br/><!--<br/>Optional. Like reads, a check is always evaluated at a<br/>consistent snapshot no earlier than the given snaptoken.<br/><br/>Leave this field blank if you want to evaluate the check<br/>based on eventually consistent ACLs, benefiting from very<br/>low latency, but possibly slightly stale results.<br/><br/>If the specified token is too old and no longer known,<br/>the server falls back as if no snaptoken had been specified.<br/><br/>If not specified the server tries to evaluate the check<br/>on the best snapshot version where it is very likely that<br/>ACLs had already been replicated to all availability zones.<br/>-->                                                                                                                   |
+| max_depth | [int32](#int32)                                                                   |          | The maximum depth to search for a relation.<br/><br/>If the value is less than 1 or greater than the global<br/>max-depth then the global max-depth will be used instead.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+
+<a name="ory-keto-relation_tuples-v1alpha2-BatchCheckRequestBody"></a>
+
+### BatchCheckRequestBody
+
+| Field  | Type                                                              | Label    | Description |
+| ------ | ----------------------------------------------------------------- | -------- | ----------- |
+| tuples | [RelationTuple](#ory-keto-relation_tuples-v1alpha2-RelationTuple) | repeated |             |
+
+<a name="ory-keto-relation_tuples-v1alpha2-BatchCheckResponse"></a>
+
+### BatchCheckResponse
+
+The response for a CheckService.BatchCheck rpc.
+
+| Field   | Type                                                                                | Label    | Description                                                                                       |
+| ------- | ----------------------------------------------------------------------------------- | -------- | ------------------------------------------------------------------------------------------------- |
+| results | [CheckResponseWithError](#ory-keto-relation_tuples-v1alpha2-CheckResponseWithError) | repeated | The results of the batch check. The order of these<br/>results will match the order of the input. |
+
 <a name="ory-keto-relation_tuples-v1alpha2-CheckRequest"></a>
 
 ### CheckRequest
@@ -276,6 +312,18 @@ The response for a permission check.
 | allowed   | [bool](#bool)     |       | Whether the specified subject (id)<br/>is related to the requested object.<br/><br/>It is false by default if no ACL matches.                                                                                                                                                                                                                                                                                                                                                                                                                               |
 | snaptoken | [string](#string) |       | This field is not implemented yet and has no effect.<br/><!--<br/>The last known snapshot token ONLY specified if<br/>the request had not specified a snaptoken,<br/>since this performed a "content-change request"<br/>and consistently fetched the last known snapshot token.<br/><br/>This field is not set if the request had specified a snaptoken!<br/><br/>If set, clients should cache and use this token<br/>for subsequent requests to have minimal latency,<br/>but allow slightly stale responses (only some milliseconds or seconds).<br/>--> |
 
+<a name="ory-keto-relation_tuples-v1alpha2-CheckResponseWithError"></a>
+
+### CheckResponseWithError
+
+The response for an individual check in the CheckService.BatchCheck rpc.
+
+| Field     | Type              | Label | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| --------- | ----------------- | ----- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| allowed   | [bool](#bool)     |       | Whether the specified subject (id)<br/>is related to the requested object.<br/><br/>It is false by default if no ACL matches.                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| error     | [string](#string) |       | If there was an error checking the tuple,<br/>this will contain the error message.<br/><br/>If the check was performed successfully, this will be empty.                                                                                                                                                                                                                                                                                                                                                                                                    |
+| snaptoken | [string](#string) |       | This field is not implemented yet and has no effect.<br/><!--<br/>The last known snapshot token ONLY specified if<br/>the request had not specified a snaptoken,<br/>since this performed a "content-change request"<br/>and consistently fetched the last known snapshot token.<br/><br/>This field is not set if the request had specified a snaptoken!<br/><br/>If set, clients should cache and use this token<br/>for subsequent requests to have minimal latency,<br/>but allow slightly stale responses (only some milliseconds or seconds).<br/>--> |
+
 <!-- end messages -->
 
 <!-- end enums -->
@@ -292,9 +340,10 @@ Control Lists.
 This service is part of the
 [read-APIs](../concepts/25_api-overview.mdx#read-apis).
 
-| Method Name | Request Type                                                    | Response Type                                                     | Description                      |
-| ----------- | --------------------------------------------------------------- | ----------------------------------------------------------------- | -------------------------------- |
-| Check       | [CheckRequest](#ory-keto-relation_tuples-v1alpha2-CheckRequest) | [CheckResponse](#ory-keto-relation_tuples-v1alpha2-CheckResponse) | Performs an authorization check. |
+| Method Name | Request Type                                                              | Response Type                                                               | Description                                                                                                                                                                                                 |
+| ----------- | ------------------------------------------------------------------------- | --------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Check       | [CheckRequest](#ory-keto-relation_tuples-v1alpha2-CheckRequest)           | [CheckResponse](#ory-keto-relation_tuples-v1alpha2-CheckResponse)           | Performs an authorization check.                                                                                                                                                                            |
+| BatchCheck  | [BatchCheckRequest](#ory-keto-relation_tuples-v1alpha2-BatchCheckRequest) | [BatchCheckResponse](#ory-keto-relation_tuples-v1alpha2-BatchCheckResponse) | Performs an authorization check for a batch of tuples.<br/><br/>To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview). |
 
 <!-- end services -->
 

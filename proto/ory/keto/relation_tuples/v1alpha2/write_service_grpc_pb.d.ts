@@ -4,7 +4,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import * as grpc from "grpc";
+import * as grpc from "@grpc/grpc-js";
 import * as ory_keto_relation_tuples_v1alpha2_write_service_pb from "../../../../ory/keto/relation_tuples/v1alpha2/write_service_pb";
 import * as google_api_field_behavior_pb from "../../../../google/api/field_behavior_pb";
 import * as google_api_visibility_pb from "../../../../google/api/visibility_pb";
@@ -48,7 +48,7 @@ interface IWriteServiceService_IDeleteRelationTuples extends grpc.MethodDefiniti
 
 export const WriteServiceService: IWriteServiceService;
 
-export interface IWriteServiceServer {
+export interface IWriteServiceServer extends grpc.UntypedServiceImplementation {
     transactRelationTuples: grpc.handleUnaryCall<ory_keto_relation_tuples_v1alpha2_write_service_pb.TransactRelationTuplesRequest, ory_keto_relation_tuples_v1alpha2_write_service_pb.TransactRelationTuplesResponse>;
     createRelationTuple: grpc.handleUnaryCall<ory_keto_relation_tuples_v1alpha2_write_service_pb.CreateRelationTupleRequest, ory_keto_relation_tuples_v1alpha2_write_service_pb.CreateRelationTupleResponse>;
     deleteRelationTuples: grpc.handleUnaryCall<ory_keto_relation_tuples_v1alpha2_write_service_pb.DeleteRelationTuplesRequest, ory_keto_relation_tuples_v1alpha2_write_service_pb.DeleteRelationTuplesResponse>;
@@ -67,7 +67,7 @@ export interface IWriteServiceClient {
 }
 
 export class WriteServiceClient extends grpc.Client implements IWriteServiceClient {
-    constructor(address: string, credentials: grpc.ChannelCredentials, options?: object);
+    constructor(address: string, credentials: grpc.ChannelCredentials, options?: Partial<grpc.ClientOptions>);
     public transactRelationTuples(request: ory_keto_relation_tuples_v1alpha2_write_service_pb.TransactRelationTuplesRequest, callback: (error: grpc.ServiceError | null, response: ory_keto_relation_tuples_v1alpha2_write_service_pb.TransactRelationTuplesResponse) => void): grpc.ClientUnaryCall;
     public transactRelationTuples(request: ory_keto_relation_tuples_v1alpha2_write_service_pb.TransactRelationTuplesRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: ory_keto_relation_tuples_v1alpha2_write_service_pb.TransactRelationTuplesResponse) => void): grpc.ClientUnaryCall;
     public transactRelationTuples(request: ory_keto_relation_tuples_v1alpha2_write_service_pb.TransactRelationTuplesRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: ory_keto_relation_tuples_v1alpha2_write_service_pb.TransactRelationTuplesResponse) => void): grpc.ClientUnaryCall;

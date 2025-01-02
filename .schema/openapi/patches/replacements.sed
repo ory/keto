@@ -9,4 +9,6 @@ s/ory.keto.relation_tuples.v1alpha2.ListRelationTuplesResponse/relationships/g
 s/ory.keto.relation_tuples.v1alpha2.ListNamespacesResponse/relationshipNamespaces/g
 s/ory.keto.relation_tuples.v1alpha2.CheckRequest/postCheckPermissionBody/g
 s/ory.keto.relation_tuples.v1alpha2.CheckResponse/checkPermissionResult/g
+s/ory.keto.relation_tuples.v1alpha2.BatchCheckRequestBody/batchCheckPermissionBody/g
+s/ory.keto.relation_tuples.v1alpha2.BatchCheckResponse/batchCheckPermissionResult/g
 s/ory.keto.opl.v1alpha1.CheckResponse/checkOplSyntaxResult/g

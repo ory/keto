@@ -9,6 +9,28 @@ var google_api_visibility_pb = require('../../../../google/api/visibility_pb.js'
 var ory_keto_relation_tuples_v1alpha2_relation_tuples_pb = require('../../../../ory/keto/relation_tuples/v1alpha2/relation_tuples_pb.js');
 var protoc$gen$openapiv2_options_annotations_pb = require('../../../../protoc-gen-openapiv2/options/annotations_pb.js');
 
+function serialize_ory_keto_relation_tuples_v1alpha2_BatchCheckRequest(arg) {
+  if (!(arg instanceof ory_keto_relation_tuples_v1alpha2_check_service_pb.BatchCheckRequest)) {
+    throw new Error('Expected argument of type ory.keto.relation_tuples.v1alpha2.BatchCheckRequest');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_ory_keto_relation_tuples_v1alpha2_BatchCheckRequest(buffer_arg) {
+  return ory_keto_relation_tuples_v1alpha2_check_service_pb.BatchCheckRequest.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_ory_keto_relation_tuples_v1alpha2_BatchCheckResponse(arg) {
+  if (!(arg instanceof ory_keto_relation_tuples_v1alpha2_check_service_pb.BatchCheckResponse)) {
+    throw new Error('Expected argument of type ory.keto.relation_tuples.v1alpha2.BatchCheckResponse');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_ory_keto_relation_tuples_v1alpha2_BatchCheckResponse(buffer_arg) {
+  return ory_keto_relation_tuples_v1alpha2_check_service_pb.BatchCheckResponse.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
 function serialize_ory_keto_relation_tuples_v1alpha2_CheckRequest(arg) {
   if (!(arg instanceof ory_keto_relation_tuples_v1alpha2_check_service_pb.CheckRequest)) {
     throw new Error('Expected argument of type ory.keto.relation_tuples.v1alpha2.CheckRequest');
@@ -48,6 +70,20 @@ check: {
     requestDeserialize: deserialize_ory_keto_relation_tuples_v1alpha2_CheckRequest,
     responseSerialize: serialize_ory_keto_relation_tuples_v1alpha2_CheckResponse,
     responseDeserialize: deserialize_ory_keto_relation_tuples_v1alpha2_CheckResponse,
+  },
+  // Performs an authorization check for a batch of tuples.
+//
+// To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
+batchCheck: {
+    path: '/ory.keto.relation_tuples.v1alpha2.CheckService/BatchCheck',
+    requestStream: false,
+    responseStream: false,
+    requestType: ory_keto_relation_tuples_v1alpha2_check_service_pb.BatchCheckRequest,
+    responseType: ory_keto_relation_tuples_v1alpha2_check_service_pb.BatchCheckResponse,
+    requestSerialize: serialize_ory_keto_relation_tuples_v1alpha2_BatchCheckRequest,
+    requestDeserialize: deserialize_ory_keto_relation_tuples_v1alpha2_BatchCheckRequest,
+    responseSerialize: serialize_ory_keto_relation_tuples_v1alpha2_BatchCheckResponse,
+    responseDeserialize: deserialize_ory_keto_relation_tuples_v1alpha2_BatchCheckResponse,
   },
 };
 

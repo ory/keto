@@ -7,7 +7,9 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
 	"io"
+	"net"
 	"net/http"
 	"os"
 	"os/signal"
@@ -46,8 +48,6 @@ import (
 	prometheus "github.com/ory/x/prometheusx"
 	"github.com/ory/x/reqlog"
 
-	"github.com/ory/keto/internal/x/api"
-
 	"github.com/ory/keto/internal/check"
 	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/expand"
@@ -55,6 +55,7 @@ import (
 	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/internal/schema"
 	"github.com/ory/keto/internal/x"
+	"github.com/ory/keto/internal/x/api"
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 )
 
@@ -103,7 +104,14 @@ func (r *RegistryDefault) ServeAll(ctx context.Context) error {
 	innerCtx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
-	doneShutdown := make(chan struct{}, 3)
+	serveFuncs := []func(context.Context, chan<- struct{}) func() error{
+		r.serveRead,
+		r.serveWrite,
+		r.serveOPLSyntax,
+		r.serveMetrics,
+	}
+
+	doneShutdown := make(chan struct{}, len(serveFuncs))
 
 	go func() {
 		osSignals := make(chan os.Signal, 1)
@@ -115,18 +123,20 @@ func (r *RegistryDefault) ServeAll(ctx context.Context) error {
 		case <-innerCtx.Done():
 		}
 
-		ctx, cancel := context.WithTimeout(context.Background(), graceful.DefaultShutdownTimeout)
+		ctx, cancel := context.WithTimeout(context.WithoutCancel(ctx), graceful.DefaultShutdownTimeout)
 		defer cancel()
 
-		nWaitingForShutdown := cap(doneShutdown)
-		select {
-		case <-ctx.Done():
-			return
-		case <-doneShutdown:
-			nWaitingForShutdown--
-			if nWaitingForShutdown == 0 {
-				// graceful shutdown done
+		nWaitingForShutdown := len(serveFuncs)
+		for {
+			select {
+			case <-ctx.Done():
 				return
+			case <-doneShutdown:
+				nWaitingForShutdown--
+				if nWaitingForShutdown == 0 {
+					// graceful shutdown done
+					return
+				}
 			}
 		}
 	}()
@@ -134,14 +144,9 @@ func (r *RegistryDefault) ServeAll(ctx context.Context) error {
 	eg := &errgroup.Group{}
 
 	// We need to separate the setup (invoking the functions that return the serve functions) from running the serve
-	// functions to mitigate race contitions in the HTTP router.
-	for _, serve := range []func() error{
-		r.serveRead(innerCtx, doneShutdown),
-		r.serveWrite(innerCtx, doneShutdown),
-		r.serveOPLSyntax(innerCtx, doneShutdown),
-		r.serveMetrics(innerCtx, doneShutdown),
-	} {
-		eg.Go(serve)
+	// functions to mitigate race conditions in the HTTP router.
+	for _, serve := range serveFuncs {
+		eg.Go(serve(innerCtx, doneShutdown))
 	}
 
 	return eg.Wait()
@@ -164,7 +169,8 @@ func (r *RegistryDefault) serveRead(ctx context.Context, done chan<- struct{}) f
 	}
 
 	return func() error {
-		return serve(ctx, r.Logger().WithField("endpoint", "read"), r.Config(ctx).ReadAPIListenOn(), handler, done)
+		addr, listenFile := r.Config(ctx).ReadAPIListenOn()
+		return serve(ctx, r.Logger().WithField("endpoint", "read"), addr, listenFile, handler, done)
 	}
 }
 
@@ -185,7 +191,8 @@ func (r *RegistryDefault) serveWrite(ctx context.Context, done chan<- struct{}) 
 	}
 
 	return func() error {
-		return serve(ctx, r.Logger().WithField("endpoint", "write"), r.Config(ctx).WriteAPIListenOn(), handler, done)
+		addr, listenFile := r.Config(ctx).WriteAPIListenOn()
+		return serve(ctx, r.Logger().WithField("endpoint", "write"), addr, listenFile, handler, done)
 	}
 }
 
@@ -206,7 +213,8 @@ func (r *RegistryDefault) serveOPLSyntax(ctx context.Context, done chan<- struct
 	}
 
 	return func() error {
-		return serve(ctx, r.Logger().WithField("endpoint", "opl"), r.Config(ctx).OPLSyntaxAPIListenOn(), handler, done)
+		addr, listenFile := r.Config(ctx).OPLSyntaxAPIListenOn()
+		return serve(ctx, r.Logger().WithField("endpoint", "opl"), addr, listenFile, handler, done)
 	}
 }
 
@@ -216,16 +224,20 @@ func (r *RegistryDefault) serveMetrics(ctx context.Context, done chan<- struct{}
 	//nolint:gosec // graceful.WithDefaults already sets a timeout
 	s := graceful.WithDefaults(&http.Server{
 		Handler: r.metricsRouter(ctx),
-		Addr:    r.Config(ctx).MetricsListenOn(),
 	})
 
 	return func() error {
 		defer cancel()
-
 		eg := &errgroup.Group{}
 
+		addr, listenFile := r.Config(ctx).MetricsListenOn()
+		l, err := listenAndWriteFile(ctx, addr, listenFile)
+		if err != nil {
+			return err
+		}
+
 		eg.Go(func() error {
-			if err := s.ListenAndServe(); !errors.Is(err, http.ErrServerClosed) {
+			if err := s.Serve(l); !errors.Is(err, http.ErrServerClosed) {
 				return errors.WithStack(err)
 			}
 			return nil
@@ -251,17 +263,22 @@ func (r *RegistryDefault) serveMetrics(ctx context.Context, done chan<- struct{}
 	}
 }
 
-func serve(ctx context.Context, log *logrusx.Logger, addr string, handler http.Handler, done chan<- struct{}) error {
+func serve(ctx context.Context, log *logrusx.Logger, addr string, listenFile string, handler http.Handler, done chan<- struct{}) error {
+	l, err := listenAndWriteFile(ctx, addr, listenFile)
+	if err != nil {
+		return err
+	}
+
 	//nolint:gosec // graceful.WithDefaults already sets a timeout
 	server := graceful.WithDefaults(&http.Server{
-		Handler: h2c.NewHandler(handler, &http2.Server{}),
-		Addr:    addr,
+		WriteTimeout: 120 * time.Second,
+		Handler:      http.MaxBytesHandler(h2c.NewHandler(handler, &http2.Server{}), 1024*1024*4),
 	})
 
 	eg := &errgroup.Group{}
 
 	eg.Go(func() error {
-		if err := server.ListenAndServe(); !errors.Is(err, http.ErrServerClosed) && !errors.Is(err, cmux.ErrServerClosed) {
+		if err := server.Serve(l); !errors.Is(err, http.ErrServerClosed) && !errors.Is(err, cmux.ErrServerClosed) {
 			return errors.WithStack(err)
 		}
 		return nil
@@ -279,7 +296,7 @@ func serve(ctx context.Context, log *logrusx.Logger, addr string, handler http.H
 
 		<-ctx.Done()
 
-		ctx, cancel := context.WithTimeout(context.Background(), graceful.DefaultShutdownTimeout)
+		ctx, cancel := context.WithTimeout(context.WithoutCancel(ctx), graceful.DefaultShutdownTimeout)
 		defer cancel()
 
 		if err := server.Shutdown(ctx); err != nil {
@@ -302,6 +319,20 @@ func (r *RegistryDefault) allHandlers() []Handler {
 		}
 	}
 	return r.handlers
+}
+
+func listenAndWriteFile(ctx context.Context, addr, listenFile string) (net.Listener, error) {
+	l, err := (&net.ListenConfig{}).Listen(ctx, "tcp", addr)
+	if err != nil {
+		return nil, errors.WithStack(fmt.Errorf("unable to listen on %q: %w", addr, err))
+	}
+	const filePrefix = "file://"
+	if strings.HasPrefix(listenFile, filePrefix) {
+		if err := os.WriteFile(listenFile[len(filePrefix):], []byte(l.Addr().String()), 0600); err != nil {
+			return nil, errors.WithStack(fmt.Errorf("unable to write listen file %q: %w", listenFile, err))
+		}
+	}
+	return l, nil
 }
 
 type RouterOrHandler struct {
@@ -480,6 +511,7 @@ func (r *RegistryDefault) newGrpcServer(ctx context.Context) *grpc.Server {
 		grpc.ChainStreamInterceptor(r.streamInterceptors(ctx)...),
 		grpc.ChainUnaryInterceptor(r.unaryInterceptors(ctx)...),
 	}
+	opts = append(opts, r.defaultGRPCServerOptions...)
 	if r.grpcTransportCredentials != nil {
 		opts = append(opts, grpc.Creds(r.grpcTransportCredentials))
 	}
@@ -491,6 +523,10 @@ func (r *RegistryDefault) newAPIServer(ctx context.Context) *api.Server {
 	opts := []api.ServerOption{
 		api.WithGRPCOption(grpc.ChainStreamInterceptor(r.streamInterceptors(ctx)...)),
 		api.WithGRPCOption(grpc.ChainUnaryInterceptor(r.unaryInterceptors(ctx)...)),
+		api.WithGRPCOption(grpc.MaxRecvMsgSize(1024 * 1024 * 8)),
+	}
+	for _, o := range r.defaultGRPCServerOptions {
+		opts = append(opts, api.WithGRPCOption(o))
 	}
 	if r.grpcTransportCredentials != nil {
 		opts = append(opts, api.WithGRPCOption(grpc.Creds(r.grpcTransportCredentials)))

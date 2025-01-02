@@ -352,6 +352,54 @@
         "consumes": ["application/x-www-form-urlencoded"]
       }
     },
+    "/relation-tuples/batch/check": {
+      "post": {
+        "summary": "Performs an authorization check for a batch of tuples.",
+        "description": "To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).",
+        "operationId": "batchCheckPermission",
+        "responses": {
+          "200": {
+            "description": "The response of the permission check, in case it is allowed. For the `/openapi` endpoints, the status code is always 200.",
+            "schema": {
+              "$ref": "#/definitions/batchCheckPermissionResult"
+            }
+          },
+          "400": {
+            "description": "errorGeneric",
+            "schema": {
+              "$ref": "#/definitions/errorGeneric"
+            }
+          },
+          "default": {
+            "description": "errorGeneric",
+            "schema": {
+              "$ref": "#/definitions/errorGeneric"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": "Batch Check Permission Body.",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/batchCheckPermissionBody"
+            }
+          },
+          {
+            "name": "max-depth",
+            "description": "The maximum depth to search for a relation.\n\nIf the value is less than 1 or greater than the global\nmax-depth then the global max-depth will be used instead.",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "tags": ["permission"],
+        "consumes": ["application/json"]
+      }
+    },
     "/relation-tuples/check": {
       "get": {
         "summary": "Performs an authorization check.",
@@ -759,6 +807,32 @@
         }
       }
     },
+    "batchCheckPermissionBody": {
+      "type": "object",
+      "properties": {
+        "tuples": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/relationship"
+          }
+        }
+      }
+    },
+    "batchCheckPermissionResult": {
+      "type": "object",
+      "properties": {
+        "results": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/checkPermissionResultWithError"
+          },
+          "description": "The results of the batch check. The order of these\nresults will match the order of the input."
+        }
+      },
+      "description": "The response for a CheckService.BatchCheck rpc."
+    },
     "postCheckPermissionBody": {
       "type": "object",
       "properties": {
@@ -799,6 +873,21 @@
         }
       },
       "description": "The response for a permission check.",
+      "required": ["allowed"]
+    },
+    "checkPermissionResultWithError": {
+      "type": "object",
+      "properties": {
+        "allowed": {
+          "type": "boolean",
+          "description": "Whether the specified subject (id)\nis related to the requested object.\n\nIt is false by default if no ACL matches."
+        },
+        "error": {
+          "type": "string",
+          "description": "If there was an error checking the tuple,\nthis will contain the error message.\n\nIf the check was performed successfully, this will be empty."
+        }
+      },
+      "description": "The response for an individual check in the CheckService.BatchCheck rpc.",
       "required": ["allowed"]
     },
     "createRelationshipBody": {

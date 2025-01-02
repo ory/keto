@@ -4,7 +4,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import * as grpc from "grpc";
+import * as grpc from "@grpc/grpc-js";
 import * as ory_keto_relation_tuples_v1alpha2_version_pb from "../../../../ory/keto/relation_tuples/v1alpha2/version_pb";
 import * as protoc_gen_openapiv2_options_annotations_pb from "../../../../protoc-gen-openapiv2/options/annotations_pb";
 
@@ -24,7 +24,7 @@ interface IVersionServiceService_IGetVersion extends grpc.MethodDefinition<ory_k
 
 export const VersionServiceService: IVersionServiceService;
 
-export interface IVersionServiceServer {
+export interface IVersionServiceServer extends grpc.UntypedServiceImplementation {
     getVersion: grpc.handleUnaryCall<ory_keto_relation_tuples_v1alpha2_version_pb.GetVersionRequest, ory_keto_relation_tuples_v1alpha2_version_pb.GetVersionResponse>;
 }
 
@@ -35,7 +35,7 @@ export interface IVersionServiceClient {
 }
 
 export class VersionServiceClient extends grpc.Client implements IVersionServiceClient {
-    constructor(address: string, credentials: grpc.ChannelCredentials, options?: object);
+    constructor(address: string, credentials: grpc.ChannelCredentials, options?: Partial<grpc.ClientOptions>);
     public getVersion(request: ory_keto_relation_tuples_v1alpha2_version_pb.GetVersionRequest, callback: (error: grpc.ServiceError | null, response: ory_keto_relation_tuples_v1alpha2_version_pb.GetVersionResponse) => void): grpc.ClientUnaryCall;
     public getVersion(request: ory_keto_relation_tuples_v1alpha2_version_pb.GetVersionRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: ory_keto_relation_tuples_v1alpha2_version_pb.GetVersionResponse) => void): grpc.ClientUnaryCall;
     public getVersion(request: ory_keto_relation_tuples_v1alpha2_version_pb.GetVersionRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: ory_keto_relation_tuples_v1alpha2_version_pb.GetVersionResponse) => void): grpc.ClientUnaryCall;

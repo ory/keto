@@ -19,7 +19,8 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	CheckService_Check_FullMethodName = "/ory.keto.relation_tuples.v1alpha2.CheckService/Check"
+	CheckService_Check_FullMethodName      = "/ory.keto.relation_tuples.v1alpha2.CheckService/Check"
+	CheckService_BatchCheck_FullMethodName = "/ory.keto.relation_tuples.v1alpha2.CheckService/BatchCheck"
 )
 
 // CheckServiceClient is the client API for CheckService service.
@@ -33,6 +34,10 @@ const (
 type CheckServiceClient interface {
 	// Performs an authorization check.
 	Check(ctx context.Context, in *CheckRequest, opts ...grpc.CallOption) (*CheckResponse, error)
+	// Performs an authorization check for a batch of tuples.
+	//
+	// To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
+	BatchCheck(ctx context.Context, in *BatchCheckRequest, opts ...grpc.CallOption) (*BatchCheckResponse, error)
 }
 
 type checkServiceClient struct {
@@ -53,6 +58,16 @@ func (c *checkServiceClient) Check(ctx context.Context, in *CheckRequest, opts .
 	return out, nil
 }
 
+func (c *checkServiceClient) BatchCheck(ctx context.Context, in *BatchCheckRequest, opts ...grpc.CallOption) (*BatchCheckResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(BatchCheckResponse)
+	err := c.cc.Invoke(ctx, CheckService_BatchCheck_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // CheckServiceServer is the server API for CheckService service.
 // All implementations should embed UnimplementedCheckServiceServer
 // for forward compatibility.
@@ -64,6 +79,10 @@ func (c *checkServiceClient) Check(ctx context.Context, in *CheckRequest, opts .
 type CheckServiceServer interface {
 	// Performs an authorization check.
 	Check(context.Context, *CheckRequest) (*CheckResponse, error)
+	// Performs an authorization check for a batch of tuples.
+	//
+	// To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
+	BatchCheck(context.Context, *BatchCheckRequest) (*BatchCheckResponse, error)
 }
 
 // UnimplementedCheckServiceServer should be embedded to have
@@ -75,6 +94,9 @@ type UnimplementedCheckServiceServer struct{}
 
 func (UnimplementedCheckServiceServer) Check(context.Context, *CheckRequest) (*CheckResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Check not implemented")
+}
+func (UnimplementedCheckServiceServer) BatchCheck(context.Context, *BatchCheckRequest) (*BatchCheckResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method BatchCheck not implemented")
 }
 func (UnimplementedCheckServiceServer) testEmbeddedByValue() {}
 
@@ -114,6 +136,24 @@ func _CheckService_Check_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
+func _CheckService_BatchCheck_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(BatchCheckRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CheckServiceServer).BatchCheck(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: CheckService_BatchCheck_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CheckServiceServer).BatchCheck(ctx, req.(*BatchCheckRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // CheckService_ServiceDesc is the grpc.ServiceDesc for CheckService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -124,6 +164,10 @@ var CheckService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Check",
 			Handler:    _CheckService_Check_Handler,
+		},
+		{
+			MethodName: "BatchCheck",
+			Handler:    _CheckService_BatchCheck_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

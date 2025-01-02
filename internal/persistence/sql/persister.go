@@ -6,11 +6,9 @@ package sql
 import (
 	"context"
 	"embed"
-	"reflect"
 
 	"github.com/gobuffalo/pop/v6"
 	"github.com/gofrs/uuid"
-	"github.com/ory/x/otelx"
 	"github.com/ory/x/popx"
 	"github.com/pkg/errors"
 
@@ -70,24 +68,6 @@ func (p *Persister) Connection(ctx context.Context) *pop.Connection {
 	return popx.GetConnection(ctx, p.conn.WithContext(ctx))
 }
 
-func (p *Persister) createWithNetwork(ctx context.Context, v interface{}) (err error) {
-	ctx, span := p.d.Tracer(ctx).Tracer().Start(ctx, "persistence.sql.createWithNetwork")
-	defer otelx.End(span, &err)
-
-	rv := reflect.ValueOf(v)
-
-	if rv.Kind() != reflect.Ptr && rv.Elem().Kind() != reflect.Struct {
-		panic("expected to get *struct in create")
-	}
-	nID := rv.Elem().FieldByName("NetworkID")
-	if !nID.IsValid() || !nID.CanSet() {
-		panic("expected struct to have a 'NetworkID uuid.UUID' field")
-	}
-	nID.Set(reflect.ValueOf(p.NetworkID(ctx)))
-
-	return p.Connection(ctx).Create(v)
-}
-
 func (p *Persister) queryWithNetwork(ctx context.Context) *pop.Query {
 	return p.Connection(ctx).Where("nid = ?", p.NetworkID(ctx))
 }
@@ -98,6 +78,10 @@ func (p *Persister) Transaction(ctx context.Context, f func(ctx context.Context)
 
 func (p *Persister) NetworkID(ctx context.Context) uuid.UUID {
 	return p.d.Contextualizer().Network(ctx, p.nid)
+}
+
+func (p *Persister) SetNetwork(nid uuid.UUID) {
+	p.nid = nid
 }
 
 func internalPaginationFromOptions(opts ...x.PaginationOptionSetter) (*internalPagination, error) {

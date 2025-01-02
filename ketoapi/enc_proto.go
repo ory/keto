@@ -4,8 +4,9 @@
 package ketoapi
 
 import (
-	"github.com/ory/x/pointerx"
 	"github.com/pkg/errors"
+
+	"github.com/ory/x/pointerx"
 
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 )
@@ -130,14 +131,28 @@ func (r *RelationTuple) FromProto(proto *rts.RelationTuple) *RelationTuple {
 		Object:    proto.Object,
 		Relation:  proto.Relation,
 	}
-	switch subject := proto.Subject.Ref.(type) {
-	case *rts.Subject_Id:
-		r.SubjectID = pointerx.Ptr(subject.Id)
-	case *rts.Subject_Set:
-		r.SubjectSet = &SubjectSet{
-			Namespace: subject.Set.Namespace,
-			Object:    subject.Set.Object,
-			Relation:  subject.Set.Relation,
+
+	if proto.Subject != nil {
+		switch subject := proto.Subject.Ref.(type) {
+		case *rts.Subject_Id:
+			r.SubjectID = pointerx.Ptr(subject.Id)
+		case *rts.Subject_Set:
+			r.SubjectSet = &SubjectSet{
+				Namespace: subject.Set.Namespace,
+				Object:    subject.Set.Object,
+				Relation:  subject.Set.Relation,
+			}
+		}
+	} else {
+		switch subject := proto.RestApiSubject.(type) {
+		case *rts.RelationTuple_SubjectId:
+			r.SubjectID = pointerx.Ptr(subject.SubjectId)
+		case *rts.RelationTuple_SubjectSet:
+			r.SubjectSet = &SubjectSet{
+				Namespace: subject.SubjectSet.Namespace,
+				Object:    subject.SubjectSet.Object,
+				Relation:  subject.SubjectSet.Relation,
+			}
 		}
 	}
 

@@ -4,7 +4,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import * as grpc from "grpc";
+import * as grpc from "@grpc/grpc-js";
 import * as ory_keto_opl_v1alpha1_syntax_service_pb from "../../../../ory/keto/opl/v1alpha1/syntax_service_pb";
 import * as protoc_gen_openapiv2_options_annotations_pb from "../../../../protoc-gen-openapiv2/options/annotations_pb";
 
@@ -24,7 +24,7 @@ interface ISyntaxServiceService_ICheck extends grpc.MethodDefinition<ory_keto_op
 
 export const SyntaxServiceService: ISyntaxServiceService;
 
-export interface ISyntaxServiceServer {
+export interface ISyntaxServiceServer extends grpc.UntypedServiceImplementation {
     check: grpc.handleUnaryCall<ory_keto_opl_v1alpha1_syntax_service_pb.CheckRequest, ory_keto_opl_v1alpha1_syntax_service_pb.CheckResponse>;
 }
 
@@ -35,7 +35,7 @@ export interface ISyntaxServiceClient {
 }
 
 export class SyntaxServiceClient extends grpc.Client implements ISyntaxServiceClient {
-    constructor(address: string, credentials: grpc.ChannelCredentials, options?: object);
+    constructor(address: string, credentials: grpc.ChannelCredentials, options?: Partial<grpc.ClientOptions>);
     public check(request: ory_keto_opl_v1alpha1_syntax_service_pb.CheckRequest, callback: (error: grpc.ServiceError | null, response: ory_keto_opl_v1alpha1_syntax_service_pb.CheckResponse) => void): grpc.ClientUnaryCall;
     public check(request: ory_keto_opl_v1alpha1_syntax_service_pb.CheckRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: ory_keto_opl_v1alpha1_syntax_service_pb.CheckResponse) => void): grpc.ClientUnaryCall;
     public check(request: ory_keto_opl_v1alpha1_syntax_service_pb.CheckRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: ory_keto_opl_v1alpha1_syntax_service_pb.CheckResponse) => void): grpc.ClientUnaryCall;

@@ -39,7 +39,8 @@ const (
 	EnvAuthToken   = "KETO_BEARER_TOKEN" //nolint:gosec // just the key, not the value
 	EnvAuthority   = "KETO_AUTHORITY"
 
-	ContextKeyTimeout contextKeys = "timeout"
+	ContextKeyTimeout  contextKeys = "timeout"
+	ContextKeyDialFunc contextKeys = "dial"
 )
 
 type connectionDetails struct {
@@ -77,7 +78,6 @@ func (d *connectionDetails) dialOptions() (opts []grpc.DialOption) {
 	if d.block {
 		opts = append(opts, grpc.WithBlock())
 	}
-
 	return opts
 }
 
@@ -136,6 +136,10 @@ func Conn(ctx context.Context, remote string, details connectionDetails) (*grpc.
 		var cancel context.CancelFunc
 		ctx, cancel = context.WithTimeout(ctx, d)
 		defer cancel()
+	}
+
+	if dial, ok := ctx.Value(ContextKeyDialFunc).(func(context.Context, string) (*grpc.ClientConn, error)); ok {
+		return dial(ctx, remote)
 	}
 
 	return grpc.DialContext(

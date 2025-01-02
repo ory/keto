@@ -5,7 +5,6 @@ package driver
 
 import (
 	"context"
-	"net/http"
 
 	"github.com/gobuffalo/pop/v6"
 	"github.com/spf13/cobra"
@@ -45,8 +44,8 @@ type (
 		MetricsHandler() *prometheus.Handler
 		PrometheusManager() *prometheus.MetricsManager
 
-		ReadRouter(ctx context.Context, apiHandler http.Handler) http.Handler
-		WriteRouter(ctx context.Context, apiHandler http.Handler) http.Handler
+		//ReadRouter(ctx context.Context, apiHandler http.Handler) http.Handler
+		//WriteRouter(ctx context.Context, apiHandler http.Handler) http.Handler
 
 		ReadGRPCServer(ctx context.Context) *grpc.Server
 		WriteGRPCServer(ctx context.Context) *grpc.Server
