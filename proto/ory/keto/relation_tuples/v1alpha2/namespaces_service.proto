@@ -21,7 +21,6 @@ service NamespacesService {
   rpc ListNamespaces(ListNamespacesRequest) returns (ListNamespacesResponse) {
     option (google.api.http) = {get: "/namespaces"};
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      consumes: "application/x-www-form-urlencoded";
       tags: "relationship";
       operation_id: "listRelationshipNamespaces";
       responses: {

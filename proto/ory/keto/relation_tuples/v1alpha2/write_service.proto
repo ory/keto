@@ -77,7 +77,6 @@ service WriteService {
   rpc DeleteRelationTuples(DeleteRelationTuplesRequest) returns (DeleteRelationTuplesResponse) {
     option (google.api.http) = {delete: "/admin/relation-tuples"};
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      consumes: "application/x-www-form-urlencoded";
       tags: "relationship";
       operation_id: "deleteRelationships";
       responses: {

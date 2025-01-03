@@ -27,7 +27,7 @@ service ExpandService {
       response_body: "tree"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      consumes: "application/x-www-form-urlencoded";
+      consumes: "application/json"
       tags: "permission";
       operation_id: "expandPermissions";
       responses: {
