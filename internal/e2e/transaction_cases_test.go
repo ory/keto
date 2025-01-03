@@ -83,7 +83,7 @@ func runTransactionCases(c transactClient, m *namespaceTestManager) func(*testin
 		})
 
 		t.Run("case=large inserts and deletes", func(t *testing.T) {
-			if !testing.Short() {
+			if testing.Short() {
 				t.Skip("This test is fairly expensive, especially the deletion.")
 			}
 
@@ -94,7 +94,6 @@ func runTransactionCases(c transactClient, m *namespaceTestManager) func(*testin
 			m.add(t, ns...)
 
 			var tuples []*ketoapi.RelationTuple
-			//for i := range 12001 {
 			for i := range 12001 {
 				tuples = append(tuples,
 					&ketoapi.RelationTuple{
