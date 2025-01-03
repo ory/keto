@@ -10,6 +10,7 @@ import (
 	"google.golang.org/grpc/credentials"
 
 	"github.com/ory/herodot"
+
 	"github.com/ory/keto/internal/x"
 )
 
