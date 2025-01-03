@@ -10,10 +10,13 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ory/herodot"
-	"github.com/ory/x/pointerx"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"github.com/ory/herodot"
+	"github.com/ory/x/pointerx"
+
+	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 
 	httpclient "github.com/ory/keto/internal/httpclient"
 	"github.com/ory/keto/internal/x"
@@ -44,6 +47,15 @@ func (c *sdkClient) oplCheckSyntax(t *testing.T, content []byte) (parseErrors []
 		Body(string(content)).
 		Execute()
 	require.NoError(t, err)
+
+	//enc, err := json.Marshal(content)
+	//require.NoError(t, err)
+	//res, _, err := c.getOPLSyntaxClient().
+	//	RelationshipApi.
+	//	CheckOplSyntax(c.requestCtx()).
+	//	Body(string(enc)).
+	//	Execute()
+	//require.NoError(t, err)
 
 	raw, err := json.Marshal(res.Errors)
 	require.NoError(t, err)
@@ -173,7 +185,7 @@ func compileParams(req httpclient.RelationshipApiApiGetRelationshipsRequest, q *
 
 	pagination := x.GetPaginationOptions(opts...)
 	if pagination.Size != 0 {
-		req = req.PageSize(int64(pagination.Size))
+		req = req.PageSize(int32(pagination.Size))
 	}
 	if pagination.Token != "" {
 		req = req.PageToken(pagination.Token)
@@ -243,7 +255,6 @@ func (c *sdkClient) check(t *testing.T, r *ketoapi.RelationTuple) bool {
 }
 
 func (c *sdkClient) batchCheckErr(t *testing.T, requestTuples []*ketoapi.RelationTuple, expected herodot.DefaultError) {
-
 	request := c.getReadClient().PermissionApi.BatchCheckPermission(c.requestCtx(t)).
 		BatchCheckPermissionBody(httpclient.BatchCheckPermissionBody{
 			Tuples: tuplesToRelationships(requestTuples),
@@ -281,6 +292,14 @@ func (c *sdkClient) batchCheck(t *testing.T, requestTuples []*ketoapi.RelationTu
 		}
 	}
 	return responses
+}
+
+func tuplesToProto(tuples []*ketoapi.RelationTuple) []*rts.RelationTuple {
+	relationships := make([]*rts.RelationTuple, len(tuples))
+	for i, requestTuple := range tuples {
+		relationships[i] = requestTuple.ToProto()
+	}
+	return relationships
 }
 
 func tuplesToRelationships(tuples []*ketoapi.RelationTuple) []httpclient.Relationship {
@@ -337,7 +356,7 @@ func (c *sdkClient) expand(t *testing.T, r *ketoapi.SubjectSet, depth int) *keto
 		Namespace(r.Namespace).
 		Object(r.Object).
 		Relation(r.Relation).
-		MaxDepth(int64(depth))
+		MaxDepth(int32(depth))
 
 	resp, _, err := request.Execute()
 	require.NoError(t, err)

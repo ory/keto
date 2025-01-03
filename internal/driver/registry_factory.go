@@ -14,10 +14,6 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/ory/x/configx"
-	"github.com/ory/x/logrusx"
-	"github.com/ory/x/otelx"
-	"github.com/ory/x/tlsx"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/pflag"
@@ -25,6 +21,11 @@ import (
 	"go.opentelemetry.io/otel/trace"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
+
+	"github.com/ory/x/configx"
+	"github.com/ory/x/logrusx"
+	"github.com/ory/x/otelx"
+	"github.com/ory/x/tlsx"
 
 	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/namespace"

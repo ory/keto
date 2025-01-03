@@ -8,11 +8,12 @@ import (
 	"net/http"
 
 	"github.com/gobuffalo/pop/v6"
+	"google.golang.org/grpc"
+
 	"github.com/ory/x/healthx"
 	"github.com/ory/x/logrusx"
 	"github.com/ory/x/otelx"
 	"github.com/ory/x/popx"
-	"google.golang.org/grpc"
 )
 
 type (

@@ -1,13 +1,17 @@
 version: v1
 
 plugins:
-  - plugin: buf.build/protocolbuffers/go
+  - plugin: buf.build/protocolbuffers/go:v1.36.1
     out: proto
     opt: paths=source_relative
 
-  - plugin: buf.build/grpc/go
+  - plugin: buf.build/grpc/go:v1.5.1
     out: proto
     opt: paths=source_relative,require_unimplemented_servers=false
+
+  - plugin: buf.build/bufbuild/validate-go
+    out: proto
+    opt: paths=source_relative
 
   - plugin: buf.build/protocolbuffers/js
     out: proto
@@ -26,3 +30,14 @@ plugins:
     out: proto
     opt: proto/markdown.tmpl,proto/buf.md
     strategy: all
+
+  - plugin: buf.build/grpc-ecosystem/openapiv2
+    opt:
+      - allow_merge=true
+      - merge_file_name=api
+      - openapi_naming_strategy=fqn
+      - visibility_restriction_selectors=PUBLIC
+      - disable_service_tags=true
+      - disable_default_errors=true
+      - disable_default_responses=true
+    out: spec

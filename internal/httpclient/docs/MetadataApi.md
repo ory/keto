@@ -125,7 +125,7 @@ No authorization required
 ### HTTP request headers
 
 - **Content-Type**: Not defined
-- **Accept**: application/json, text/plain
+- **Accept**: application/json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
 [[Back to Model list]](../README.md#documentation-for-models)
@@ -134,7 +134,7 @@ No authorization required
 
 ## IsReady
 
-> IsAlive200Response IsReady(ctx).Execute()
+> IsReady200Response IsReady(ctx).Execute()
 
 Check HTTP Server and Database Status
 
@@ -161,7 +161,7 @@ func main() {
         fmt.Fprintf(os.Stderr, "Error when calling `MetadataApi.IsReady``: %v\n", err)
         fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
     }
-    // response from `IsReady`: IsAlive200Response
+    // response from `IsReady`: IsReady200Response
     fmt.Fprintf(os.Stdout, "Response from `MetadataApi.IsReady`: %v\n", resp)
 }
 ```
@@ -177,7 +177,7 @@ Other parameters are passed through a pointer to a apiIsReadyRequest struct via 
 
 ### Return type
 
-[**IsAlive200Response**](IsAlive200Response.md)
+[**IsReady200Response**](IsReady200Response.md)
 
 ### Authorization
 

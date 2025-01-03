@@ -13,19 +13,24 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ory/herodot"
-	"github.com/ory/x/healthx"
+	httpclient "github.com/ory/keto/internal/httpclient"
+	"github.com/ory/keto/internal/schema"
+	"github.com/ory/keto/ketoapi"
+	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
+
+	"github.com/tidwall/gjson"
+
+	"github.com/ory/keto/internal/x"
+
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/tidwall/gjson"
+
+	"github.com/ory/herodot"
+	"github.com/ory/x/healthx"
 
 	"github.com/ory/keto/internal/check"
 	"github.com/ory/keto/internal/expand"
-	client2 "github.com/ory/keto/internal/httpclient"
 	"github.com/ory/keto/internal/relationtuple"
-	"github.com/ory/keto/internal/schema"
-	"github.com/ory/keto/internal/x"
-	"github.com/ory/keto/ketoapi"
 )
 
 var _ client = &restClient{}
@@ -130,14 +135,14 @@ func (rc *restClient) check(t *testing.T, r *ketoapi.RelationTuple) bool {
 	q := r.ToURLQuery()
 	bodyGet, codeGet := rc.makeRequest(t, http.MethodGet, fmt.Sprintf("%s?%s", check.RouteBase, q.Encode()), "", rc.readURL)
 
-	var respGet check.CheckPermissionResult
+	var respGet rts.CheckResponse
 	require.NoError(t, json.Unmarshal([]byte(bodyGet), &respGet))
 
 	j, err := json.Marshal(r)
 	require.NoError(t, err)
 	bodyPost, codePost := rc.makeRequest(t, http.MethodPost, check.RouteBase, string(j), rc.readURL)
 
-	var respPost check.CheckPermissionResult
+	var respPost rts.CheckResponse
 	require.NoError(t, json.Unmarshal([]byte(bodyPost), &respPost))
 
 	if codeGet == http.StatusOK && codePost == http.StatusOK {
@@ -156,7 +161,7 @@ func (rc *restClient) check(t *testing.T, r *ketoapi.RelationTuple) bool {
 func (rc *restClient) batchCheckErr(t *testing.T, requestTuples []*ketoapi.RelationTuple,
 	expected herodot.DefaultError) {
 
-	req := client2.BatchCheckPermissionBody{
+	req := httpclient.BatchCheckPermissionBody{
 		Tuples: tuplesToRelationships(requestTuples),
 	}
 	j, err := json.Marshal(req)
@@ -167,7 +172,7 @@ func (rc *restClient) batchCheckErr(t *testing.T, requestTuples []*ketoapi.Relat
 }
 
 func (rc *restClient) batchCheck(t *testing.T, requestTuples []*ketoapi.RelationTuple) []checkResponse {
-	req := client2.BatchCheckPermissionBody{
+	req := httpclient.BatchCheckPermissionBody{
 		Tuples: tuplesToRelationships(requestTuples),
 	}
 	j, err := json.Marshal(req)
@@ -175,7 +180,7 @@ func (rc *restClient) batchCheck(t *testing.T, requestTuples []*ketoapi.Relation
 	body, code := rc.makeRequest(t, http.MethodPost, check.BatchRoute, string(j), rc.readURL)
 	require.Equal(t, http.StatusOK, code, "batch check failed unexpected with error code %d", code)
 
-	var respPost check.BatchCheckPermissionResult
+	var respPost rts.BatchCheckResponse
 	require.NoError(t, json.Unmarshal([]byte(body), &respPost))
 
 	responseChecks := make([]checkResponse, len(respPost.Results))

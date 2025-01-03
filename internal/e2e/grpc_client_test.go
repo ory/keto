@@ -14,13 +14,14 @@ import (
 
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 
-	"github.com/ory/herodot"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	grpcHealthV1 "google.golang.org/grpc/health/grpc_health_v1"
 	"google.golang.org/grpc/status"
+
+	"github.com/ory/herodot"
 
 	"github.com/ory/keto/internal/x"
 )
@@ -261,9 +262,9 @@ func (g *grpcClient) transactTuples(t *testing.T, ins []*ketoapi.RelationTuple, 
 		}
 	}
 
-	_, err := c.TransactRelationTuples(g.ctx, &rts.TransactRelationTuplesRequest{
-		RelationTupleDeltas: deltas,
-	})
+	_, err := c.TransactRelationTuples(g.ctx,
+		&rts.TransactRelationTuplesRequest{RelationTupleDeltas: deltas},
+	)
 
 	require.NoError(t, err)
 }

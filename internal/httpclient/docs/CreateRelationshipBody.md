@@ -4,10 +4,10 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Namespace** | Pointer to **string** | Namespace to query | [optional] 
-**Object** | Pointer to **string** | Object to query | [optional] 
-**Relation** | Pointer to **string** | Relation to query | [optional] 
-**SubjectId** | Pointer to **string** | SubjectID to query  Either SubjectSet or SubjectID can be provided. | [optional] 
+**Namespace** | Pointer to **string** | The namespace this relation tuple lives in. | [optional] 
+**Object** | Pointer to **string** | The object related by this tuple. It is an object in the namespace of the tuple. | [optional] 
+**Relation** | Pointer to **string** | The relation between an Object and a Subject. | [optional] 
+**SubjectId** | Pointer to **string** | A concrete id of the subject. | [optional] 
 **SubjectSet** | Pointer to [**SubjectSet**](SubjectSet.md) |  | [optional] 
 
 ## Methods
