@@ -461,7 +461,7 @@ func TestWriteHandlers(t *testing.T) {
 			defer resp.Body.Close()
 			errContent, err := io.ReadAll(resp.Body)
 			require.NoError(t, err)
-			assert.Contains(t, string(errContent), "RelationTuple: value is required")
+			assert.Contains(t, string(errContent), "relation_tuple: value is required")
 		})
 
 		t.Run("case=unknown action", func(t *testing.T) {
@@ -486,7 +486,7 @@ func TestWriteHandlers(t *testing.T) {
 			defer resp.Body.Close()
 			errContent, err := io.ReadAll(resp.Body)
 			require.NoError(t, err)
-			assert.Contains(t, string(errContent), "value must be in list [ACTION_INSERT ACTION_DELETE]")
+			assert.Contains(t, string(errContent), "value must be in list [1, 2]")
 		})
 	})
 }

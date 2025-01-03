@@ -7,22 +7,18 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/gogo/status"
-	"github.com/pkg/errors"
-
 	"github.com/ory/herodot"
+	"github.com/pkg/errors"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 
 	"github.com/ory/keto/internal/check/checkgroup"
 	"github.com/ory/keto/internal/driver/config"
-	"github.com/ory/keto/internal/x/api"
-
-	"github.com/ory/keto/ketoapi"
-
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/codes"
-
 	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/internal/x"
+	"github.com/ory/keto/internal/x/api"
+	"github.com/ory/keto/ketoapi"
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 )
 

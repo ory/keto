@@ -12,16 +12,17 @@ import (
 	"net/url"
 	"testing"
 
-	"github.com/ory/x/pointerx"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"github.com/ory/x/pointerx"
 
 	"github.com/ory/keto/internal/driver"
 	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/expand"
 	"github.com/ory/keto/internal/namespace"
 	"github.com/ory/keto/internal/relationtuple"
-	"github.com/ory/keto/internal/x"
+	"github.com/ory/keto/internal/x/api"
 	"github.com/ory/keto/ketoapi"
 )
 
@@ -34,7 +35,7 @@ func TestRESTHandler(t *testing.T) {
 	reg := driver.NewSqliteTestRegistry(t, false)
 	require.NoError(t, reg.Config(ctx).Set(config.KeyNamespaces, nspaces))
 
-	endpoints := x.NewTestEndpoints(t, expand.NewHandler(reg))
+	endpoints := api.NewTestServer(t, expand.NewHandler(reg))
 	ts := endpoints.HTTP
 
 	t.Run("case=returns bad request on malformed int", func(t *testing.T) {
@@ -44,7 +45,7 @@ func TestRESTHandler(t *testing.T) {
 		assert.Equal(t, http.StatusBadRequest, resp.StatusCode)
 		body, err := io.ReadAll(resp.Body)
 		require.NoError(t, err)
-		assert.Contains(t, string(body), "invalid syntax")
+		assert.Contains(t, string(body), "invalid parameter \\\"max_depth\\\"")
 	})
 
 	t.Run("case=returns not found on unknown namespace", func(t *testing.T) {

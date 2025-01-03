@@ -478,6 +478,7 @@ func (r *RegistryDefault) unaryInterceptors(ctx context.Context) []grpc.UnarySer
 	is = append(is, r.defaultUnaryInterceptors...)
 	is = append(is,
 		herodot.UnaryErrorUnwrapInterceptor,
+		x.ValidationInterceptor,
 		grpcLogrus.UnaryServerInterceptor(InterceptorLogger(r.l.Logrus())),
 		r.pmm.UnaryServerInterceptor,
 	)

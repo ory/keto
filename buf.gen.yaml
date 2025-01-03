@@ -9,10 +9,6 @@ plugins:
     out: proto
     opt: paths=source_relative,require_unimplemented_servers=false
 
-  - plugin: buf.build/bufbuild/validate-go
-    out: proto
-    opt: paths=source_relative
-
   - plugin: buf.build/protocolbuffers/js
     out: proto
     opt: import_style=commonjs,binary

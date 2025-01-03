@@ -9,6 +9,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 
+	"github.com/ory/herodot"
 	"github.com/ory/keto/internal/x"
 )
 
@@ -29,7 +30,10 @@ type (
 )
 
 func NewTestServer(t *testing.T, handler any) *TestServer {
-	apiServer := NewServer(WithGRPCOption(grpc.ChainUnaryInterceptor(x.GlobalGRPCUnaryServerInterceptors...)))
+	interceptors := []grpc.UnaryServerInterceptor{}
+	interceptors = append(interceptors, herodot.UnaryErrorUnwrapInterceptor)
+	interceptors = append(interceptors, x.ValidationInterceptor)
+	apiServer := NewServer(WithGRPCOption(grpc.ChainUnaryInterceptor(interceptors...)))
 
 	if h, ok := handler.(readHandler); ok {
 		h.RegisterReadGRPC(apiServer.GRPCServer)

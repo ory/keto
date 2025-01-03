@@ -1113,11 +1113,6 @@
               "schema": {
                 "$ref": "#/components/schemas/postCheckPermissionBody"
               }
-            },
-            "application/x-www-form-urlencoded": {
-              "schema": {
-                "$ref": "#/components/schemas/postCheckPermissionBody"
-              }
             }
           },
           "description": "The request for a CheckService.Check RPC.\nChecks whether a specific subject is related to an object.",
@@ -1290,11 +1285,6 @@
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/postCheckPermissionBody"
-              }
-            },
-            "application/x-www-form-urlencoded": {
               "schema": {
                 "$ref": "#/components/schemas/postCheckPermissionBody"
               }

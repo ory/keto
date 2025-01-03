@@ -15,10 +15,10 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/gogo/status"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/status"
 	"google.golang.org/grpc/test/bufconn"
 
 	"github.com/ory/x/pointerx"
@@ -79,7 +79,6 @@ func TestRESTHandler(t *testing.T) {
 	require.NoError(t, reg.Config(ctx).Set(config.KeyNamespaces, nspaces))
 
 	endpoints := api.NewTestServer(t, check.NewHandler(reg))
-
 	ts := endpoints.HTTP
 
 	for _, suite := range []struct {

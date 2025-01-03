@@ -6,14 +6,11 @@ package expand
 import (
 	"context"
 
-	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-
-	"github.com/ory/keto/ketoapi"
-
 	"google.golang.org/grpc"
 
 	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/internal/x"
+	"github.com/ory/keto/ketoapi"
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 )
 
@@ -42,13 +39,6 @@ func NewHandler(d handlerDependencies) *handler {
 
 func (h *handler) RegisterReadGRPC(s *grpc.Server) {
 	rts.RegisterExpandServiceServer(s, h)
-}
-
-func (h *handler) RegisterReadGRPCGateway(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts ...grpc.DialOption) error {
-	return rts.RegisterExpandServiceHandlerFromEndpoint(ctx, mux, endpoint, opts)
-}
-func (h *handler) RegisterReadGRPCGatewayConn(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
-	return rts.RegisterExpandServiceHandler(ctx, mux, conn)
 }
 
 func (h *handler) Expand(ctx context.Context, req *rts.ExpandRequest) (*rts.ExpandResponse, error) {

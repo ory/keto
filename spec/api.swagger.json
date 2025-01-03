@@ -92,8 +92,7 @@
             "type": "string"
           }
         ],
-        "tags": ["relationship"],
-        "consumes": ["application/x-www-form-urlencoded"]
+        "tags": ["relationship"]
       },
       "put": {
         "summary": "Creates a relationship",
@@ -214,8 +213,7 @@
             }
           }
         },
-        "tags": ["relationship"],
-        "consumes": ["application/x-www-form-urlencoded"]
+        "tags": ["relationship"]
       }
     },
     "/opl/syntax/check": {
@@ -348,8 +346,7 @@
             "type": "string"
           }
         ],
-        "tags": ["relationship"],
-        "consumes": ["application/x-www-form-urlencoded"]
+        "tags": ["relationship"]
       }
     },
     "/relation-tuples/batch/check": {
@@ -490,7 +487,7 @@
           }
         ],
         "tags": ["permission"],
-        "consumes": ["application/x-www-form-urlencoded", "application/json"]
+        "consumes": ["application/json"]
       },
       "post": {
         "summary": "Performs an authorization check.",
@@ -533,7 +530,7 @@
           }
         ],
         "tags": ["permission"],
-        "consumes": ["application/x-www-form-urlencoded", "application/json"]
+        "consumes": ["application/json"]
       }
     },
     "/relation-tuples/check/openapi": {
@@ -626,7 +623,7 @@
           }
         ],
         "tags": ["permission"],
-        "consumes": ["application/x-www-form-urlencoded", "application/json"]
+        "consumes": ["application/json"]
       },
       "post": {
         "summary": "Performs an authorization check.",
@@ -669,7 +666,7 @@
           }
         ],
         "tags": ["permission"],
-        "consumes": ["application/x-www-form-urlencoded", "application/json"]
+        "consumes": ["application/json"]
       }
     },
     "/relation-tuples/expand": {
@@ -728,7 +725,7 @@
           }
         ],
         "tags": ["permission"],
-        "consumes": ["application/x-www-form-urlencoded"]
+        "consumes": ["application/json"]
       }
     },
     "/version": {
