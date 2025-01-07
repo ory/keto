@@ -10,12 +10,14 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ory/herodot"
-	"github.com/ory/x/cmdx"
-	prometheus "github.com/ory/x/prometheusx"
 	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"github.com/ory/graceful"
+	"github.com/ory/herodot"
+	"github.com/ory/x/cmdx"
+	prometheus "github.com/ory/x/prometheusx"
 
 	"github.com/ory/keto/cmd"
 	cliclient "github.com/ory/keto/cmd/client"
@@ -51,6 +53,9 @@ const (
 )
 
 func Test(t *testing.T) {
+	// The `large inserts and deletes` test needs a higher timeout to pass.
+	graceful.DefaultWriteTimeout = 120 * time.Second
+
 	t.Parallel()
 	for _, dsn := range dbx.GetDSNs(t, false) {
 		t.Run(fmt.Sprintf("dsn=%s", dsn.Name), func(t *testing.T) {

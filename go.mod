@@ -10,6 +10,7 @@ replace github.com/gobuffalo/pop/v6 => github.com/ory/pop/v6 v6.2.1-0.2024112111
 
 require (
 	connectrpc.com/vanguard v0.3.0
+	github.com/bufbuild/protovalidate-go v0.8.2
 	github.com/cenkalti/backoff/v3 v3.2.2
 	github.com/dgraph-io/ristretto v0.2.0
 	github.com/ghodss/yaml v1.0.0
@@ -72,7 +73,6 @@ require (
 	github.com/aymerick/douceur v0.2.0 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/bradleyjkemp/cupaloy/v2 v2.8.0 // indirect
-	github.com/bufbuild/protovalidate-go v0.8.2 // indirect
 	github.com/cenkalti/backoff/v4 v4.3.0 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/cockroachdb/cockroach-go/v2 v2.3.5 // indirect

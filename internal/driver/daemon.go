@@ -271,8 +271,7 @@ func serve(ctx context.Context, log *logrusx.Logger, addr string, listenFile str
 
 	//nolint:gosec // graceful.WithDefaults already sets a timeout
 	server := graceful.WithDefaults(&http.Server{
-		WriteTimeout: 120 * time.Second,
-		Handler:      http.MaxBytesHandler(h2c.NewHandler(handler, &http2.Server{}), 1024*1024*4),
+		Handler: http.MaxBytesHandler(h2c.NewHandler(handler, &http2.Server{}), 1024*1024*4),
 	})
 
 	eg := &errgroup.Group{}
