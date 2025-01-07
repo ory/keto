@@ -10,12 +10,13 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ory/herodot"
-	"github.com/ory/x/cmdx"
-	prometheus "github.com/ory/x/prometheusx"
 	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"github.com/ory/herodot"
+	"github.com/ory/x/cmdx"
+	prometheus "github.com/ory/x/prometheusx"
 
 	"github.com/ory/keto/cmd"
 	cliclient "github.com/ory/keto/cmd/client"
@@ -28,21 +29,21 @@ import (
 type (
 	transactClient interface {
 		client
-		transactTuples(t *testing.T, ins []*ketoapi.RelationTuple, del []*ketoapi.RelationTuple)
+		transactTuples(t testing.TB, ins []*ketoapi.RelationTuple, del []*ketoapi.RelationTuple)
 	}
 	client interface {
-		createTuple(t *testing.T, r *ketoapi.RelationTuple)
-		deleteTuple(t *testing.T, r *ketoapi.RelationTuple)
-		deleteAllTuples(t *testing.T, q *ketoapi.RelationQuery)
-		queryTuple(t *testing.T, q *ketoapi.RelationQuery, opts ...x.PaginationOptionSetter) *ketoapi.GetResponse
-		queryTupleErr(t *testing.T, expected herodot.DefaultError, q *ketoapi.RelationQuery, opts ...x.PaginationOptionSetter)
-		check(t *testing.T, r *ketoapi.RelationTuple) bool
-		batchCheck(t *testing.T, r []*ketoapi.RelationTuple) []checkResponse
-		batchCheckErr(t *testing.T, requestTuples []*ketoapi.RelationTuple, expected herodot.DefaultError)
-		expand(t *testing.T, r *ketoapi.SubjectSet, depth int) *ketoapi.Tree[*ketoapi.RelationTuple]
-		oplCheckSyntax(t *testing.T, content []byte) []*ketoapi.ParseError
-		waitUntilLive(t *testing.T)
-		queryNamespaces(t *testing.T) ketoapi.GetNamespacesResponse
+		createTuple(t testing.TB, r *ketoapi.RelationTuple)
+		deleteTuple(t testing.TB, r *ketoapi.RelationTuple)
+		deleteAllTuples(t testing.TB, q *ketoapi.RelationQuery)
+		queryTuple(t testing.TB, q *ketoapi.RelationQuery, opts ...x.PaginationOptionSetter) *ketoapi.GetResponse
+		queryTupleErr(t testing.TB, expected herodot.DefaultError, q *ketoapi.RelationQuery, opts ...x.PaginationOptionSetter)
+		check(t testing.TB, r *ketoapi.RelationTuple) bool
+		batchCheck(t testing.TB, r []*ketoapi.RelationTuple) []checkResponse
+		batchCheckErr(t testing.TB, requestTuples []*ketoapi.RelationTuple, expected herodot.DefaultError)
+		expand(t testing.TB, r *ketoapi.SubjectSet, depth int) *ketoapi.Tree[*ketoapi.RelationTuple]
+		oplCheckSyntax(t testing.TB, content []byte) []*ketoapi.ParseError
+		waitUntilLive(t testing.TB)
+		queryNamespaces(t testing.TB) ketoapi.GetNamespacesResponse
 	}
 )
 

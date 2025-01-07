@@ -12,11 +12,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ory/herodot"
-	"github.com/ory/x/cmdx"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	grpcHealthV1 "google.golang.org/grpc/health/grpc_health_v1"
+
+	"github.com/ory/herodot"
+	"github.com/ory/x/cmdx"
 
 	gprclient "github.com/ory/keto/cmd/client"
 	cliexpand "github.com/ory/keto/cmd/expand"
@@ -30,19 +31,19 @@ type cliClient struct {
 	c *cmdx.CommandExecuter
 }
 
-func (g *cliClient) queryNamespaces(t *testing.T) (res ketoapi.GetNamespacesResponse) {
+func (g *cliClient) queryNamespaces(t testing.TB) (res ketoapi.GetNamespacesResponse) {
 	t.Skip("not implemented for the CLI")
 	return
 }
 
 var _ client = (*cliClient)(nil)
 
-func (g *cliClient) oplCheckSyntax(t *testing.T, _ []byte) []*ketoapi.ParseError {
+func (g *cliClient) oplCheckSyntax(t testing.TB, content []byte) []*ketoapi.ParseError {
 	t.Skip("not implemented as a command yet")
 	return []*ketoapi.ParseError{}
 }
 
-func (g *cliClient) createTuple(t *testing.T, r *ketoapi.RelationTuple) {
+func (g *cliClient) createTuple(t testing.TB, r *ketoapi.RelationTuple) {
 	tupleEnc, err := json.Marshal(r)
 	require.NoError(t, err)
 
@@ -78,7 +79,7 @@ func (g *cliClient) assembleQueryFlags(q *ketoapi.RelationQuery, opts []x.Pagina
 	return flags
 }
 
-func (g *cliClient) queryTuple(t *testing.T, q *ketoapi.RelationQuery, opts ...x.PaginationOptionSetter) *ketoapi.GetResponse {
+func (g *cliClient) queryTuple(t testing.TB, q *ketoapi.RelationQuery, opts ...x.PaginationOptionSetter) *ketoapi.GetResponse {
 	out := g.c.ExecNoErr(t, append(g.assembleQueryFlags(q, opts), "relation-tuple", "get")...)
 
 	var resp ketoapi.GetResponse
@@ -87,13 +88,13 @@ func (g *cliClient) queryTuple(t *testing.T, q *ketoapi.RelationQuery, opts ...x
 	return &resp
 }
 
-func (g *cliClient) queryTupleErr(t *testing.T, expected herodot.DefaultError, q *ketoapi.RelationQuery, opts ...x.PaginationOptionSetter) {
+func (g *cliClient) queryTupleErr(t testing.TB, expected herodot.DefaultError, q *ketoapi.RelationQuery, opts ...x.PaginationOptionSetter) {
 	stdErr := g.c.ExecExpectedErr(t, append(g.assembleQueryFlags(q, opts), "relation-tuple", "get")...)
 	assert.Contains(t, stdErr, expected.GRPCCodeField.String())
 	assert.Contains(t, stdErr, expected.Error())
 }
 
-func (g *cliClient) check(t *testing.T, r *ketoapi.RelationTuple) bool {
+func (g *cliClient) check(t testing.TB, r *ketoapi.RelationTuple) bool {
 	var sub string
 	if r.SubjectID != nil {
 		sub = *r.SubjectID
@@ -106,23 +107,23 @@ func (g *cliClient) check(t *testing.T, r *ketoapi.RelationTuple) bool {
 	return res.Allowed
 }
 
-func (g *cliClient) batchCheckErr(t *testing.T, requestTuples []*ketoapi.RelationTuple, expected herodot.DefaultError) {
+func (g *cliClient) batchCheckErr(t testing.TB, requestTuples []*ketoapi.RelationTuple, expected herodot.DefaultError) {
 	t.Skip("not implemented for the CLI")
 }
 
-func (g *cliClient) batchCheck(t *testing.T, requestTuples []*ketoapi.RelationTuple) []checkResponse {
+func (g *cliClient) batchCheck(t testing.TB, r []*ketoapi.RelationTuple) []checkResponse {
 	t.Skip("not implemented for the CLI")
 	return nil
 }
 
-func (g *cliClient) expand(t *testing.T, r *ketoapi.SubjectSet, depth int) *ketoapi.Tree[*ketoapi.RelationTuple] {
+func (g *cliClient) expand(t testing.TB, r *ketoapi.SubjectSet, depth int) *ketoapi.Tree[*ketoapi.RelationTuple] {
 	out := g.c.ExecNoErr(t, "expand", r.Relation, r.Namespace, r.Object, "--"+cliexpand.FlagMaxDepth, fmt.Sprintf("%d", depth), "--"+cmdx.FlagFormat, string(cmdx.FormatJSON))
 	res := ketoapi.Tree[*ketoapi.RelationTuple]{}
 	require.NoError(t, json.Unmarshal([]byte(out), &res))
 	return &res
 }
 
-func (g *cliClient) waitUntilLive(t *testing.T) {
+func (g *cliClient) waitUntilLive(t testing.TB) {
 	flags := make([]string, len(g.c.PersistentArgs))
 	copy(flags, g.c.PersistentArgs)
 
@@ -140,7 +141,7 @@ func (g *cliClient) waitUntilLive(t *testing.T) {
 	require.Equal(t, grpcHealthV1.HealthCheckResponse_SERVING.String()+"\n", out)
 }
 
-func (g *cliClient) deleteTuple(t *testing.T, r *ketoapi.RelationTuple) {
+func (g *cliClient) deleteTuple(t testing.TB, r *ketoapi.RelationTuple) {
 	tupleEnc, err := json.Marshal(r)
 	require.NoError(t, err)
 
@@ -149,6 +150,6 @@ func (g *cliClient) deleteTuple(t *testing.T, r *ketoapi.RelationTuple) {
 	assert.Len(t, stderr, 0, stdout)
 }
 
-func (g *cliClient) deleteAllTuples(t *testing.T, q *ketoapi.RelationQuery) {
+func (g *cliClient) deleteAllTuples(t testing.TB, q *ketoapi.RelationQuery) {
 	_ = g.c.ExecNoErr(t, append(g.assembleQueryFlags(q, nil), "relation-tuple", "delete-all", "--force")...)
 }

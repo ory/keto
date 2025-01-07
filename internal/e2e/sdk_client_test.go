@@ -10,10 +10,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ory/herodot"
-	"github.com/ory/x/pointerx"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"github.com/ory/herodot"
+	"github.com/ory/x/pointerx"
 
 	httpclient "github.com/ory/keto/internal/httpclient"
 	"github.com/ory/keto/internal/x"
@@ -31,13 +32,13 @@ var _ client = (*sdkClient)(nil)
 
 var requestTimeout = 5 * time.Second
 
-func (c *sdkClient) requestCtx(t *testing.T) context.Context {
+func (c *sdkClient) requestCtx(t testing.TB) context.Context {
 	ctx, cancel := context.WithTimeout(context.Background(), requestTimeout)
 	t.Cleanup(cancel)
 	return ctx
 }
 
-func (c *sdkClient) oplCheckSyntax(t *testing.T, content []byte) (parseErrors []*ketoapi.ParseError) {
+func (c *sdkClient) oplCheckSyntax(t testing.TB, content []byte) (parseErrors []*ketoapi.ParseError) {
 	res, _, err := c.getOPLSyntaxClient().
 		RelationshipApi.
 		CheckOplSyntax(c.requestCtx(t)).
@@ -83,7 +84,7 @@ func (c *sdkClient) getOPLSyntaxClient() *httpclient.APIClient {
 	return c.sc
 }
 
-func (c *sdkClient) createTuple(t *testing.T, r *ketoapi.RelationTuple) {
+func (c *sdkClient) createTuple(t testing.TB, r *ketoapi.RelationTuple) {
 	payload := httpclient.CreateRelationshipBody{
 		Namespace: pointerx.Ptr(r.Namespace),
 		Object:    pointerx.Ptr(r.Object),
@@ -123,7 +124,7 @@ func withSubject[P interface {
 	return params
 }
 
-func (c *sdkClient) deleteTuple(t *testing.T, r *ketoapi.RelationTuple) {
+func (c *sdkClient) deleteTuple(t testing.TB, r *ketoapi.RelationTuple) {
 	request := c.getWriteClient().RelationshipApi.
 		DeleteRelationships(c.requestCtx(t)).
 		Namespace(r.Namespace).
@@ -135,7 +136,7 @@ func (c *sdkClient) deleteTuple(t *testing.T, r *ketoapi.RelationTuple) {
 	require.NoError(t, err)
 }
 
-func (c *sdkClient) deleteAllTuples(t *testing.T, q *ketoapi.RelationQuery) {
+func (c *sdkClient) deleteAllTuples(t testing.TB, q *ketoapi.RelationQuery) {
 	request := c.getWriteClient().RelationshipApi.DeleteRelationships(c.requestCtx(t))
 	if q.Namespace != nil {
 		request = request.Namespace(*q.Namespace)
@@ -182,7 +183,7 @@ func compileParams(req httpclient.RelationshipApiApiGetRelationshipsRequest, q *
 	return req
 }
 
-func (c *sdkClient) queryTuple(t *testing.T, q *ketoapi.RelationQuery, opts ...x.PaginationOptionSetter) *ketoapi.GetResponse {
+func (c *sdkClient) queryTuple(t testing.TB, q *ketoapi.RelationQuery, opts ...x.PaginationOptionSetter) *ketoapi.GetResponse {
 	request := c.getReadClient().RelationshipApi.GetRelationships(c.requestCtx(t))
 	request = compileParams(request, q, opts)
 
@@ -214,7 +215,7 @@ func (c *sdkClient) queryTuple(t *testing.T, q *ketoapi.RelationQuery, opts ...x
 	return getResp
 }
 
-func (c *sdkClient) queryTupleErr(t *testing.T, expected herodot.DefaultError, q *ketoapi.RelationQuery, opts ...x.PaginationOptionSetter) {
+func (c *sdkClient) queryTupleErr(t testing.TB, expected herodot.DefaultError, q *ketoapi.RelationQuery, opts ...x.PaginationOptionSetter) {
 	request := c.getReadClient().RelationshipApi.GetRelationships(c.requestCtx(t))
 	request = compileParams(request, q, opts)
 	_, _, err := request.Execute()
@@ -229,7 +230,7 @@ func (c *sdkClient) queryTupleErr(t *testing.T, expected herodot.DefaultError, q
 	}
 }
 
-func (c *sdkClient) check(t *testing.T, r *ketoapi.RelationTuple) bool {
+func (c *sdkClient) check(t testing.TB, r *ketoapi.RelationTuple) bool {
 	request := c.getReadClient().PermissionApi.CheckPermission(c.requestCtx(t)).
 		Namespace(r.Namespace).
 		Object(r.Object).
@@ -242,7 +243,7 @@ func (c *sdkClient) check(t *testing.T, r *ketoapi.RelationTuple) bool {
 	return resp.GetAllowed()
 }
 
-func (c *sdkClient) batchCheckErr(t *testing.T, requestTuples []*ketoapi.RelationTuple, expected herodot.DefaultError) {
+func (c *sdkClient) batchCheckErr(t testing.TB, requestTuples []*ketoapi.RelationTuple, expected herodot.DefaultError) {
 
 	request := c.getReadClient().PermissionApi.BatchCheckPermission(c.requestCtx(t)).
 		BatchCheckPermissionBody(httpclient.BatchCheckPermissionBody{
@@ -260,7 +261,7 @@ func (c *sdkClient) batchCheckErr(t *testing.T, requestTuples []*ketoapi.Relatio
 	}
 }
 
-func (c *sdkClient) batchCheck(t *testing.T, requestTuples []*ketoapi.RelationTuple) []checkResponse {
+func (c *sdkClient) batchCheck(t testing.TB, requestTuples []*ketoapi.RelationTuple) []checkResponse {
 	request := c.getReadClient().PermissionApi.BatchCheckPermission(c.requestCtx(t)).
 		BatchCheckPermissionBody(httpclient.BatchCheckPermissionBody{
 			Tuples: tuplesToRelationships(requestTuples),
@@ -304,7 +305,7 @@ func tuplesToRelationships(tuples []*ketoapi.RelationTuple) []httpclient.Relatio
 	return relationships
 }
 
-func buildTree(t *testing.T, mt *httpclient.ExpandedPermissionTree) *ketoapi.Tree[*ketoapi.RelationTuple] {
+func buildTree(t testing.TB, mt *httpclient.ExpandedPermissionTree) *ketoapi.Tree[*ketoapi.RelationTuple] {
 	result := &ketoapi.Tree[*ketoapi.RelationTuple]{
 		Type: ketoapi.TreeNodeType(mt.Type),
 	}
@@ -332,7 +333,7 @@ func buildTree(t *testing.T, mt *httpclient.ExpandedPermissionTree) *ketoapi.Tre
 	return result
 }
 
-func (c *sdkClient) expand(t *testing.T, r *ketoapi.SubjectSet, depth int) *ketoapi.Tree[*ketoapi.RelationTuple] {
+func (c *sdkClient) expand(t testing.TB, r *ketoapi.SubjectSet, depth int) *ketoapi.Tree[*ketoapi.RelationTuple] {
 	request := c.getReadClient().PermissionApi.ExpandPermissions(c.requestCtx(t)).
 		Namespace(r.Namespace).
 		Object(r.Object).
@@ -345,7 +346,7 @@ func (c *sdkClient) expand(t *testing.T, r *ketoapi.SubjectSet, depth int) *keto
 	return buildTree(t, resp)
 }
 
-func (c *sdkClient) waitUntilLive(t *testing.T) {
+func (c *sdkClient) waitUntilLive(t testing.TB) {
 	resp, _, err := c.getReadClient().MetadataApi.IsReady(c.requestCtx(t)).Execute()
 	for err != nil {
 		resp, _, err = c.getReadClient().MetadataApi.IsReady(c.requestCtx(t)).Execute()
@@ -353,7 +354,7 @@ func (c *sdkClient) waitUntilLive(t *testing.T) {
 	require.Equal(t, "ok", resp.Status)
 }
 
-func (c *sdkClient) queryNamespaces(t *testing.T) (response ketoapi.GetNamespacesResponse) {
+func (c *sdkClient) queryNamespaces(t testing.TB) (response ketoapi.GetNamespacesResponse) {
 	res, _, err := c.getReadClient().RelationshipApi.ListRelationshipNamespaces(c.requestCtx(t)).Execute()
 	require.NoError(t, err)
 	require.NoError(t, convert(res, &response))
