@@ -39,7 +39,7 @@ type restClient struct {
 	readURL, writeURL, oplSyntaxURL string
 }
 
-func (rc *restClient) queryNamespaces(t *testing.T) (res ketoapi.GetNamespacesResponse) {
+func (rc *restClient) queryNamespaces(t testing.TB) (res ketoapi.GetNamespacesResponse) {
 	body, code := rc.makeRequest(t, http.MethodGet, "/namespaces", "", rc.readURL)
 	assert.Equal(t, http.StatusOK, code, body)
 	require.NoError(t, json.Unmarshal([]byte(body), &res))
@@ -47,7 +47,7 @@ func (rc *restClient) queryNamespaces(t *testing.T) (res ketoapi.GetNamespacesRe
 	return
 }
 
-func (rc *restClient) oplCheckSyntax(t *testing.T, content []byte) []*ketoapi.ParseError {
+func (rc *restClient) oplCheckSyntax(t testing.TB, content []byte) []*ketoapi.ParseError {
 	body, code := rc.makeRequest(t, http.MethodPost, schema.RouteBase, string(content), rc.oplSyntaxURL)
 	assert.Equal(t, http.StatusOK, code, body)
 	var response ketoapi.CheckOPLSyntaxResponse
@@ -56,7 +56,7 @@ func (rc *restClient) oplCheckSyntax(t *testing.T, content []byte) []*ketoapi.Pa
 	return response.Errors
 }
 
-func (rc *restClient) makeRequest(t *testing.T, method, path, body string, baseURL string) (string, int) {
+func (rc *restClient) makeRequest(t testing.TB, method, path, body string, baseURL string) (string, int) {
 	var b io.Reader
 	if body != "" {
 		b = bytes.NewBufferString(body)
@@ -74,7 +74,7 @@ func (rc *restClient) makeRequest(t *testing.T, method, path, body string, baseU
 	return string(respBody), resp.StatusCode
 }
 
-func (rc *restClient) createTuple(t *testing.T, r *ketoapi.RelationTuple) {
+func (rc *restClient) createTuple(t testing.TB, r *ketoapi.RelationTuple) {
 	tEnc, err := json.Marshal(r)
 	require.NoError(t, err)
 
@@ -82,17 +82,17 @@ func (rc *restClient) createTuple(t *testing.T, r *ketoapi.RelationTuple) {
 	assert.Equal(t, http.StatusCreated, code, body)
 }
 
-func (rc *restClient) deleteTuple(t *testing.T, r *ketoapi.RelationTuple) {
+func (rc *restClient) deleteTuple(t testing.TB, r *ketoapi.RelationTuple) {
 	body, code := rc.makeRequest(t, http.MethodDelete, relationtuple.WriteRouteBase+"?"+r.ToURLQuery().Encode(), "", rc.writeURL)
 	require.Equal(t, http.StatusNoContent, code, body)
 }
 
-func (rc *restClient) deleteAllTuples(t *testing.T, q *ketoapi.RelationQuery) {
+func (rc *restClient) deleteAllTuples(t testing.TB, q *ketoapi.RelationQuery) {
 	body, code := rc.makeRequest(t, http.MethodDelete, relationtuple.WriteRouteBase+"?"+q.ToURLQuery().Encode(), "", rc.writeURL)
 	require.Equal(t, http.StatusNoContent, code, body)
 }
 
-func (rc *restClient) queryTuple(t *testing.T, q *ketoapi.RelationQuery, opts ...x.PaginationOptionSetter) *ketoapi.GetResponse {
+func (rc *restClient) queryTuple(t testing.TB, q *ketoapi.RelationQuery, opts ...x.PaginationOptionSetter) *ketoapi.GetResponse {
 	urlQuery := q.ToURLQuery()
 
 	pagination := x.GetPaginationOptions(opts...)
@@ -112,7 +112,7 @@ func (rc *restClient) queryTuple(t *testing.T, q *ketoapi.RelationQuery, opts ..
 	return &dec
 }
 
-func (rc *restClient) queryTupleErr(t *testing.T, expected herodot.DefaultError, q *ketoapi.RelationQuery, opts ...x.PaginationOptionSetter) {
+func (rc *restClient) queryTupleErr(t testing.TB, expected herodot.DefaultError, q *ketoapi.RelationQuery, opts ...x.PaginationOptionSetter) {
 	urlQuery := q.ToURLQuery()
 
 	pagination := x.GetPaginationOptions(opts...)
@@ -131,7 +131,7 @@ func (rc *restClient) queryTupleErr(t *testing.T, expected herodot.DefaultError,
 	assert.Equal(t, expected.Error(), gjson.Get(body, "error.message").String(), body)
 }
 
-func (rc *restClient) check(t *testing.T, r *ketoapi.RelationTuple) bool {
+func (rc *restClient) check(t testing.TB, r *ketoapi.RelationTuple) bool {
 	q := r.ToURLQuery()
 	bodyGet, codeGet := rc.makeRequest(t, http.MethodGet, fmt.Sprintf("%s?%s", check.RouteBase, q.Encode()), "", rc.readURL)
 
@@ -158,8 +158,7 @@ func (rc *restClient) check(t *testing.T, r *ketoapi.RelationTuple) bool {
 	return false
 }
 
-func (rc *restClient) batchCheckErr(t *testing.T, requestTuples []*ketoapi.RelationTuple,
-	expected herodot.DefaultError) {
+func (rc *restClient) batchCheckErr(t testing.TB, requestTuples []*ketoapi.RelationTuple, expected herodot.DefaultError) {
 
 	req := httpclient.BatchCheckPermissionBody{
 		Tuples: tuplesToRelationships(requestTuples),
@@ -171,7 +170,7 @@ func (rc *restClient) batchCheckErr(t *testing.T, requestTuples []*ketoapi.Relat
 	assert.Contains(t, body, expected.Reason())
 }
 
-func (rc *restClient) batchCheck(t *testing.T, requestTuples []*ketoapi.RelationTuple) []checkResponse {
+func (rc *restClient) batchCheck(t testing.TB, requestTuples []*ketoapi.RelationTuple) []checkResponse {
 	req := httpclient.BatchCheckPermissionBody{
 		Tuples: tuplesToRelationships(requestTuples),
 	}
@@ -193,7 +192,7 @@ func (rc *restClient) batchCheck(t *testing.T, requestTuples []*ketoapi.Relation
 	return responseChecks
 }
 
-func (rc *restClient) expand(t *testing.T, r *ketoapi.SubjectSet, depth int) *ketoapi.Tree[*ketoapi.RelationTuple] {
+func (rc *restClient) expand(t testing.TB, r *ketoapi.SubjectSet, depth int) *ketoapi.Tree[*ketoapi.RelationTuple] {
 	query := r.ToURLQuery()
 	query.Set("max-depth", fmt.Sprintf("%d", depth))
 
@@ -206,7 +205,7 @@ func (rc *restClient) expand(t *testing.T, r *ketoapi.SubjectSet, depth int) *ke
 	return tree
 }
 
-func healthReady(t *testing.T, readURL string) bool {
+func healthReady(t testing.TB, readURL string) bool {
 	req, err := http.NewRequest("GET", readURL+healthx.ReadyCheckPath, nil)
 	require.NoError(t, err)
 	resp, err := http.DefaultClient.Do(req)
@@ -217,7 +216,7 @@ func healthReady(t *testing.T, readURL string) bool {
 	return resp.StatusCode == http.StatusOK
 }
 
-func (rc *restClient) waitUntilLive(t *testing.T) {
+func (rc *restClient) waitUntilLive(t testing.TB) {
 	// wait for /health/ready
 	for !healthReady(t, rc.readURL) {
 		time.Sleep(10 * time.Millisecond)
