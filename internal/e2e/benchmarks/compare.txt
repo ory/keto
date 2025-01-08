@@ -1,0 +1,27 @@
+goos: darwin
+goarch: arm64
+pkg: github.com/ory/keto/internal/e2e
+cpu: Apple M1 Max
+                                                                       │  master.txt  │             vanguard.txt              │
+                                                                       │    sec/op    │    sec/op      vs base                │
+E2E/client=*e2e.grpcClient/create,_query,_check,_batchCheck,_delete-10   2.056m ± 65%    2.984m ±  9%  +45.15% (p=0.035 n=10)
+E2E/client=*e2e.grpcClient/check_subject_expand-10                       375.7µ ± 20%    505.7µ ± 10%  +34.60% (p=0.000 n=10)
+E2E/client=*e2e.restClient/create,_query,_check,_batchCheck,_delete-10   2.277m ±  3%    3.422m ± 20%  +50.26% (p=0.000 n=10)
+E2E/client=*e2e.restClient/check_subject_expand-10                       778.3µ ± 13%   1210.9µ ±  7%  +55.59% (p=0.000 n=10)
+geomean                                                                  1.082m          1.581m        +46.19%
+
+                                                                       │  master.txt   │             vanguard.txt              │
+                                                                       │     B/op      │     B/op      vs base                 │
+E2E/client=*e2e.grpcClient/create,_query,_check,_batchCheck,_delete-10   229.2Ki ±  1%   472.3Ki ± 0%  +106.06% (p=0.000 n=10)
+E2E/client=*e2e.grpcClient/check_subject_expand-10                       58.93Ki ± 14%   98.60Ki ± 8%   +67.32% (p=0.000 n=10)
+E2E/client=*e2e.restClient/create,_query,_check,_batchCheck,_delete-10   415.9Ki ±  0%   642.5Ki ± 0%   +54.49% (p=0.000 n=10)
+E2E/client=*e2e.restClient/check_subject_expand-10                       156.9Ki ±  8%   218.5Ki ± 6%   +39.30% (p=0.000 n=10)
+geomean                                                                  172.3Ki         284.3Ki        +65.04%
+
+                                                                       │  master.txt  │             vanguard.txt             │
+                                                                       │  allocs/op   │  allocs/op    vs base                │
+E2E/client=*e2e.grpcClient/create,_query,_check,_batchCheck,_delete-10   4.392k ±  0%   7.656k ±  0%  +74.32% (p=0.000 n=10)
+E2E/client=*e2e.grpcClient/check_subject_expand-10                       1.052k ± 16%   1.579k ± 10%  +50.10% (p=0.000 n=10)
+E2E/client=*e2e.restClient/create,_query,_check,_batchCheck,_delete-10   6.374k ±  0%   9.081k ±  0%  +42.47% (p=0.000 n=10)
+E2E/client=*e2e.restClient/check_subject_expand-10                       2.464k ± 10%   3.194k ±  8%  +29.63% (p=0.000 n=10)
+geomean                                                                  2.919k         4.327k        +48.26%
