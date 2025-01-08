@@ -7,10 +7,11 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
+	"github.com/ory/x/pointerx"
+
 	"github.com/ory/keto/internal/namespace"
 	"github.com/ory/keto/internal/x/dbx"
 	"github.com/ory/keto/ketoapi"
-	"github.com/ory/x/pointerx"
 )
 
 func BenchmarkE2E(b *testing.B) {
