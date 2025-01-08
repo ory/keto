@@ -1,0 +1,38 @@
+goos: darwin
+goarch: arm64
+pkg: github.com/ory/keto/internal/e2e
+cpu: Apple M1 Max
+BenchmarkE2E
+BenchmarkE2E/client=*e2e.grpcClient
+BenchmarkE2E/client=*e2e.grpcClient-10         	    3063	   1762968 ns/op	  486098 B/op	    7655 allocs/op
+BenchmarkE2E/client=*e2e.grpcClient-10         	    3392	   1765246 ns/op	  485333 B/op	    7655 allocs/op
+BenchmarkE2E/client=*e2e.grpcClient-10         	    3440	   1796983 ns/op	  486591 B/op	    7655 allocs/op
+BenchmarkE2E/client=*e2e.grpcClient-10         	    3369	   1766199 ns/op	  486478 B/op	    7655 allocs/op
+BenchmarkE2E/client=*e2e.grpcClient-10         	    3310	   1785052 ns/op	  484908 B/op	    7655 allocs/op
+BenchmarkE2E/client=*e2e.grpcClient-10         	    3417	   1769167 ns/op	  485589 B/op	    7655 allocs/op
+BenchmarkE2E/client=*e2e.grpcClient-10         	    3138	   1812099 ns/op	  486188 B/op	    7655 allocs/op
+BenchmarkE2E/client=*e2e.grpcClient-10         	    3325	   1781891 ns/op	  484732 B/op	    7655 allocs/op
+BenchmarkE2E/client=*e2e.grpcClient-10         	    3058	   1798362 ns/op	  486371 B/op	    7655 allocs/op
+BenchmarkE2E/client=*e2e.grpcClient-10         	    3382	   1784228 ns/op	  485064 B/op	    7655 allocs/op
+BenchmarkE2E/client=*e2e.restClient
+BenchmarkE2E/client=*e2e.restClient-10         	    3180	   2172578 ns/op	  662315 B/op	    9081 allocs/op
+BenchmarkE2E/client=*e2e.restClient-10         	    2624	   2171165 ns/op	  662733 B/op	    9081 allocs/op
+BenchmarkE2E/client=*e2e.restClient-10         	    2336	   2204380 ns/op	  661935 B/op	    9081 allocs/op
+BenchmarkE2E/client=*e2e.restClient-10         	    2796	   2175026 ns/op	  661497 B/op	    9081 allocs/op
+BenchmarkE2E/client=*e2e.restClient-10         	    2811	   2217507 ns/op	  661061 B/op	    9081 allocs/op
+BenchmarkE2E/client=*e2e.restClient-10         	    2552	   2176063 ns/op	  662318 B/op	    9081 allocs/op
+BenchmarkE2E/client=*e2e.restClient-10         	    2556	   2164480 ns/op	  661061 B/op	    9081 allocs/op
+BenchmarkE2E/client=*e2e.restClient-10         	    2610	   2220574 ns/op	  661613 B/op	    9081 allocs/op
+BenchmarkE2E/client=*e2e.restClient-10         	    2780	   2158031 ns/op	  660738 B/op	    9080 allocs/op
+BenchmarkE2E/client=*e2e.restClient-10         	    2736	   2514460 ns/op	  660864 B/op	    9081 allocs/op
+BenchmarkE2E/client=*e2e.sdkClient
+BenchmarkE2E/client=*e2e.sdkClient-10          	    3103	   1935755 ns/op	  575658 B/op	    8178 allocs/op
+BenchmarkE2E/client=*e2e.sdkClient-10          	    3225	   1887992 ns/op	  566836 B/op	    8173 allocs/op
+BenchmarkE2E/client=*e2e.sdkClient-10          	    3060	   1875584 ns/op	  567187 B/op	    8173 allocs/op
+BenchmarkE2E/client=*e2e.sdkClient-10          	    3158	   1920366 ns/op	  566388 B/op	    8173 allocs/op
+BenchmarkE2E/client=*e2e.sdkClient-10          	    3019	   1883744 ns/op	  566358 B/op	    8173 allocs/op
+BenchmarkE2E/client=*e2e.sdkClient-10          	    3092	   1895905 ns/op	  567201 B/op	    8173 allocs/op
+BenchmarkE2E/client=*e2e.sdkClient-10          	    3148	   1934761 ns/op	  566955 B/op	    8173 allocs/op
+BenchmarkE2E/client=*e2e.sdkClient-10          	    2985	   1887415 ns/op	  566844 B/op	    8173 allocs/op
+BenchmarkE2E/client=*e2e.sdkClient-10          	    3189	   1904714 ns/op	  566641 B/op	    8173 allocs/op
+BenchmarkE2E/client=*e2e.sdkClient-10          	    3141	   1925372 ns/op	  566988 B/op	    8173 allocs/op
