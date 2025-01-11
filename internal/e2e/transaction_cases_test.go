@@ -10,9 +10,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ory/x/pointerx"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"github.com/ory/x/pointerx"
 
 	"github.com/ory/keto/internal/namespace"
 	"github.com/ory/keto/internal/x"
@@ -82,7 +83,7 @@ func runTransactionCases(c transactClient, m *namespaceTestManager) func(*testin
 		})
 
 		t.Run("case=large inserts and deletes", func(t *testing.T) {
-			if !testing.Short() {
+			if testing.Short() {
 				t.Skip("This test is fairly expensive, especially the deletion.")
 			}
 
@@ -151,7 +152,7 @@ func runTransactionCases(c transactClient, m *namespaceTestManager) func(*testin
 
 			t0 = time.Now()
 			c.transactTuples(t, nil, tuples)
-			t.Log(t.Name(), "delete", time.Since(t0))
+			t.Log(t.Name(), "delete took:", time.Since(t0))
 
 			resp = c.queryTuple(t, &ketoapi.RelationQuery{
 				Namespace: &ns[0].Name,

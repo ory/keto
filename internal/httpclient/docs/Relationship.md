@@ -4,10 +4,10 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Namespace** | **string** | Namespace of the Relation Tuple | 
-**Object** | **string** | Object of the Relation Tuple | 
-**Relation** | **string** | Relation of the Relation Tuple | 
-**SubjectId** | Pointer to **string** | SubjectID of the Relation Tuple  Either SubjectSet or SubjectID can be provided. | [optional] 
+**Namespace** | **string** | The namespace this relation tuple lives in. | 
+**Object** | **string** | The object related by this tuple. It is an object in the namespace of the tuple. | 
+**Relation** | **string** | The relation between an Object and a Subject. | 
+**SubjectId** | Pointer to **string** | A concrete id of the subject. | [optional] 
 **SubjectSet** | Pointer to [**SubjectSet**](SubjectSet.md) |  | [optional] 
 
 ## Methods

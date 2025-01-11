@@ -7,8 +7,8 @@ export IMAGE_TAG	:= $(if $(IMAGE_TAG),$(IMAGE_TAG),latest)
 GO_DEPENDENCIES = golang.org/x/tools/cmd/goimports \
 				  github.com/mattn/goveralls \
 				  github.com/ory/go-acc \
-				  github.com/bufbuild/buf/cmd/buf \
 				  github.com/pseudomuto/protoc-gen-doc/cmd/protoc-gen-doc \
+				  github.com/bufbuild/buf/cmd/buf \
 				  github.com/josephburnett/jd \
 				  github.com/mikefarah/yq/v4 \
 				  golang.org/x/tools/cmd/stringer \
@@ -46,10 +46,11 @@ authors:  # updates the AUTHORS file
 	curl https://raw.githubusercontent.com/ory/ci/master/authors/authors.sh | env PRODUCT="Ory Keto" bash
 
 .PHONY: format
-format: .bin/ory .bin/goimports node_modules
+format: .bin/buf .bin/ory .bin/goimports node_modules
 	.bin/ory dev headers copyright --type=open-source --exclude=.bin --exclude=internal/httpclient --exclude=proto
 	.bin/goimports -w -local github.com/ory/keto *.go internal cmd contrib ketoctx ketoapi embedx
 	npm exec -- prettier --write .
+	buf format -w
 
 .PHONY: install
 install:
@@ -61,21 +62,18 @@ docker:
 
 # Generates the SDKs
 .PHONY: sdk
-sdk: .bin/swagger .bin/ory node_modules
+sdk: buf .bin/swagger .bin/ory node_modules
 	rm -rf internal/httpclient
-	swagger generate spec -m -o spec/swagger.json \
-		-c github.com/ory/keto \
-		-c github.com/ory/x/healthx \
-		-x internal/httpclient \
-		-x internal/e2e
-	.bin/ory dev swagger sanitize ./spec/swagger.json
-	swagger validate ./spec/swagger.json
+	.bin/ory dev swagger sanitize ./spec/api.swagger.json
+	sed -i -f ./.schema/openapi/patches/replacements.sed ./spec/api.swagger.json
+	swagger validate ./spec/api.swagger.json
 	CIRCLE_PROJECT_USERNAME=ory CIRCLE_PROJECT_REPONAME=keto \
 		.bin/ory dev openapi migrate \
 			--health-path-tags metadata \
-			-p https://raw.githubusercontent.com/ory/x/master/healthx/openapi/patch.yaml \
+			-p file://.schema/openapi/patches/health.yaml \
 			-p file://.schema/openapi/patches/meta.yaml \
-			spec/swagger.json spec/api.json
+			-p file://.schema/openapi/patches/checkServices.yaml \
+			spec/api.swagger.json spec/api.json
 
 	mkdir -p internal/httpclient
 
@@ -103,7 +101,8 @@ build:
 #
 .PHONY: buf-gen
 buf-gen: .bin/buf .bin/protoc-gen-doc node_modules
-	buf generate proto
+	buf format -w
+	buf generate proto --include-imports --include-wkt
 	make format
 	@echo "All code was generated successfully!"
 

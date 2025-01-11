@@ -5,14 +5,14 @@ package driver
 
 import (
 	"context"
-	"net/http"
 
 	"github.com/gobuffalo/pop/v6"
+	"github.com/spf13/cobra"
+	"google.golang.org/grpc"
+
 	"github.com/ory/x/healthx"
 	"github.com/ory/x/otelx"
 	prometheus "github.com/ory/x/prometheusx"
-	"github.com/spf13/cobra"
-	"google.golang.org/grpc"
 
 	"github.com/ory/keto/internal/check"
 	"github.com/ory/keto/internal/driver/config"
@@ -44,8 +44,8 @@ type (
 		MetricsHandler() *prometheus.Handler
 		PrometheusManager() *prometheus.MetricsManager
 
-		ReadRouter(ctx context.Context) http.Handler
-		WriteRouter(ctx context.Context) http.Handler
+		//ReadRouter(ctx context.Context, apiHandler http.Handler) http.Handler
+		//WriteRouter(ctx context.Context, apiHandler http.Handler) http.Handler
 
 		ReadGRPCServer(ctx context.Context) *grpc.Server
 		WriteGRPCServer(ctx context.Context) *grpc.Server
@@ -54,6 +54,8 @@ type (
 		ServeAll(ctx context.Context) error
 		ServeAllSQA(cmd *cobra.Command) error
 	}
+
+	GRPCDialer func() (*grpc.ClientConn, error)
 
 	contextKeys string
 )
