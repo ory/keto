@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@ory/keto-namespace-types": "file:../namespace-type-lib"
+  }
+}
