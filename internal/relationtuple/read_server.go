@@ -178,3 +178,11 @@ func (h *handler) getRelations(w http.ResponseWriter, r *http.Request, _ httprou
 
 	h.d.Writer().Write(w, r, resp)
 }
+
+func (h *handler) basicRouteTest(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	l := h.d.Logger()
+	l.Debug("Basic Route Test")
+	// pprof.StopCPUProfile()
+	h.d.Writer().Write(w, r, "Basic Route Test")
+	
+}
