@@ -8,23 +8,16 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/ory/keto/internal/x/dbx"
-
-	"github.com/ory/keto/internal/relationtuple"
-
-	"github.com/stretchr/testify/assert"
-
 	"github.com/spf13/pflag"
-
-	"github.com/ory/x/configx"
-
-	"github.com/ory/keto/internal/driver/config"
-
-	"github.com/ory/keto/internal/namespace"
-
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
 	"github.com/ory/keto/internal/driver"
+	"github.com/ory/keto/internal/driver/config"
+	"github.com/ory/keto/internal/namespace"
+	"github.com/ory/keto/internal/relationtuple"
+	"github.com/ory/keto/internal/x/dbx"
+	"github.com/ory/x/configx"
 )
 
 type namespaceTestManager struct {
