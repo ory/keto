@@ -27,8 +27,8 @@ service WriteService {
       body: "relation_tuple_deltas"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      tags: "relationship";
-      operation_id: "patchRelationships";
+      tags: "relationship"
+      operation_id: "patchRelationships"
       responses: {
         key: "204"
         value: {
@@ -40,14 +40,14 @@ service WriteService {
         }
       }
       responses: {
-        key: "404";
+        key: "404"
         value: {
-          description: "errorGeneric";
+          description: "errorGeneric"
           schema: {
             json_schema: {ref: ".ory.keto.relation_tuples.v1alpha2.ErrorResponse"}
           }
-        };
-      };
+        }
+      }
     };
   }
 
@@ -59,8 +59,8 @@ service WriteService {
       response_body: "relation_tuple"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      tags: "relationship";
-      operation_id: "createRelationship";
+      tags: "relationship"
+      operation_id: "createRelationship"
       responses: {
         key: "201"
         value: {
@@ -77,8 +77,8 @@ service WriteService {
   rpc DeleteRelationTuples(DeleteRelationTuplesRequest) returns (DeleteRelationTuplesResponse) {
     option (google.api.http) = {delete: "/admin/relation-tuples"};
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      tags: "relationship";
-      operation_id: "deleteRelationships";
+      tags: "relationship"
+      operation_id: "deleteRelationships"
       responses: {
         key: "204"
         value: {description: "An empty response."}

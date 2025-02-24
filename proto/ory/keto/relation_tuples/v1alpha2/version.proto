@@ -24,8 +24,8 @@ service VersionService {
   rpc GetVersion(GetVersionRequest) returns (GetVersionResponse) {
     option (google.api.http) = {get: "/version"};
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      tags: "version";
-      operation_id: "getVersion";
+      tags: "version"
+      operation_id: "getVersion"
       responses: {
         key: "200"
         value: {

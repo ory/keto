@@ -13,44 +13,44 @@ option java_package = "sh.ory.keto.relation_tuples.v1alpha2";
 option php_namespace = "Ory\\Keto\\RelationTuples\\v1alpha2";
 option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
   info: {
-    title: "ORY Keto";
-    description: "Ory Keto is a cloud native access control server providing best-practice patterns (RBAC, ABAC, ACL, AWS IAM Policies, Kubernetes Roles, ...) via REST APIs.";
+    title: "ORY Keto"
+    description: "Ory Keto is a cloud native access control server providing best-practice patterns (RBAC, ABAC, ACL, AWS IAM Policies, Kubernetes Roles, ...) via REST APIs."
     contact: {
-      name: "ORY";
-      url: "https://www.ory.sh";
-      email: "hi@ory.sh";
-    };
+      name: "ORY"
+      url: "https://www.ory.sh"
+      email: "hi@ory.sh"
+    }
     license: {
-      name: "Apache 2.0";
-      url: "https://github.com/ory/keto/blob/master/LICENSE";
-    };
-    version: "Latest";
-  };
-  base_path: "/";
+      name: "Apache 2.0"
+      url: "https://github.com/ory/keto/blob/master/LICENSE"
+    }
+    version: "Latest"
+  }
+  base_path: "/"
   schemes: [
     HTTP,
     HTTPS
-  ];
-  consumes: ["application/json"];
-  produces: ["application/json"];
+  ]
+  consumes: ["application/json"]
+  produces: ["application/json"]
   responses: {
-    key: "400";
+    key: "400"
     value: {
-      description: "errorGeneric";
+      description: "errorGeneric"
       schema: {
         json_schema: {ref: ".ory.keto.relation_tuples.v1alpha2.ErrorResponse"}
       }
-    };
-  };
+    }
+  }
   responses: {
-    key: "default";
+    key: "default"
     value: {
-      description: "errorGeneric";
+      description: "errorGeneric"
       schema: {
         json_schema: {ref: ".ory.keto.relation_tuples.v1alpha2.ErrorResponse"}
       }
-    };
-  };
+    }
+  }
 };
 
 // JSON API Error Response

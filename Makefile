@@ -103,6 +103,7 @@ build:
 buf-gen: .bin/buf .bin/protoc-gen-doc node_modules
 	buf format -w
 	buf generate proto --include-imports --include-wkt
+	rm proto/google/{api,protobuf}/*.pb.go
 	make format
 	@echo "All code was generated successfully!"
 

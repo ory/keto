@@ -23,8 +23,8 @@ service ReadService {
   rpc ListRelationTuples(ListRelationTuplesRequest) returns (ListRelationTuplesResponse) {
     option (google.api.http) = {get: "/relation-tuples"};
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      tags: "relationship";
-      operation_id: "getRelationships";
+      tags: "relationship"
+      operation_id: "getRelationships"
       responses: {
         key: "200"
         value: {

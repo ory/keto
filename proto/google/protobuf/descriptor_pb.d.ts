@@ -734,11 +734,6 @@ export class FileOptions extends jspb.Message {
     getPyGenericServices(): boolean | undefined;
     setPyGenericServices(value: boolean): FileOptions;
 
-    hasPhpGenericServices(): boolean;
-    clearPhpGenericServices(): void;
-    getPhpGenericServices(): boolean | undefined;
-    setPhpGenericServices(value: boolean): FileOptions;
-
     hasDeprecated(): boolean;
     clearDeprecated(): void;
     getDeprecated(): boolean | undefined;
@@ -815,7 +810,6 @@ export namespace FileOptions {
         ccGenericServices?: boolean,
         javaGenericServices?: boolean,
         pyGenericServices?: boolean,
-        phpGenericServices?: boolean,
         deprecated?: boolean,
         ccEnableArenas?: boolean,
         objcClassPrefix?: string,
@@ -954,6 +948,11 @@ export class FieldOptions extends jspb.Message {
     clearFeatures(): void;
     getFeatures(): FeatureSet | undefined;
     setFeatures(value?: FeatureSet): FieldOptions;
+
+    hasFeatureSupport(): boolean;
+    clearFeatureSupport(): void;
+    getFeatureSupport(): FieldOptions.FeatureSupport | undefined;
+    setFeatureSupport(value?: FieldOptions.FeatureSupport): FieldOptions;
     clearUninterpretedOptionList(): void;
     getUninterpretedOptionList(): Array<UninterpretedOption>;
     setUninterpretedOptionList(value: Array<UninterpretedOption>): FieldOptions;
@@ -983,6 +982,7 @@ export namespace FieldOptions {
         targetsList: Array<FieldOptions.OptionTargetType>,
         editionDefaultsList: Array<FieldOptions.EditionDefault.AsObject>,
         features?: FeatureSet.AsObject,
+        featureSupport?: FieldOptions.FeatureSupport.AsObject,
         uninterpretedOptionList: Array<UninterpretedOption.AsObject>,
     }
 
@@ -1013,6 +1013,47 @@ export namespace FieldOptions {
         export type AsObject = {
             edition?: Edition,
             value?: string,
+        }
+    }
+
+    export class FeatureSupport extends jspb.Message { 
+
+        hasEditionIntroduced(): boolean;
+        clearEditionIntroduced(): void;
+        getEditionIntroduced(): Edition | undefined;
+        setEditionIntroduced(value: Edition): FeatureSupport;
+
+        hasEditionDeprecated(): boolean;
+        clearEditionDeprecated(): void;
+        getEditionDeprecated(): Edition | undefined;
+        setEditionDeprecated(value: Edition): FeatureSupport;
+
+        hasDeprecationWarning(): boolean;
+        clearDeprecationWarning(): void;
+        getDeprecationWarning(): string | undefined;
+        setDeprecationWarning(value: string): FeatureSupport;
+
+        hasEditionRemoved(): boolean;
+        clearEditionRemoved(): void;
+        getEditionRemoved(): Edition | undefined;
+        setEditionRemoved(value: Edition): FeatureSupport;
+
+        serializeBinary(): Uint8Array;
+        toObject(includeInstance?: boolean): FeatureSupport.AsObject;
+        static toObject(includeInstance: boolean, msg: FeatureSupport): FeatureSupport.AsObject;
+        static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+        static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+        static serializeBinaryToWriter(message: FeatureSupport, writer: jspb.BinaryWriter): void;
+        static deserializeBinary(bytes: Uint8Array): FeatureSupport;
+        static deserializeBinaryFromReader(message: FeatureSupport, reader: jspb.BinaryReader): FeatureSupport;
+    }
+
+    export namespace FeatureSupport {
+        export type AsObject = {
+            editionIntroduced?: Edition,
+            editionDeprecated?: Edition,
+            deprecationWarning?: string,
+            editionRemoved?: Edition,
         }
     }
 
@@ -1140,6 +1181,11 @@ export class EnumValueOptions extends jspb.Message {
     clearDebugRedact(): void;
     getDebugRedact(): boolean | undefined;
     setDebugRedact(value: boolean): EnumValueOptions;
+
+    hasFeatureSupport(): boolean;
+    clearFeatureSupport(): void;
+    getFeatureSupport(): FieldOptions.FeatureSupport | undefined;
+    setFeatureSupport(value?: FieldOptions.FeatureSupport): EnumValueOptions;
     clearUninterpretedOptionList(): void;
     getUninterpretedOptionList(): Array<UninterpretedOption>;
     setUninterpretedOptionList(value: Array<UninterpretedOption>): EnumValueOptions;
@@ -1160,6 +1206,7 @@ export namespace EnumValueOptions {
         deprecated?: boolean,
         features?: FeatureSet.AsObject,
         debugRedact?: boolean,
+        featureSupport?: FieldOptions.FeatureSupport.AsObject,
         uninterpretedOptionList: Array<UninterpretedOption.AsObject>,
     }
 }
@@ -1409,8 +1456,8 @@ export namespace FeatureSet {
 
     export enum Utf8Validation {
     UTF8_VALIDATION_UNKNOWN = 0,
-    NONE = 1,
     VERIFY = 2,
+    NONE = 3,
     }
 
     export enum MessageEncoding {
@@ -1468,10 +1515,15 @@ export namespace FeatureSetDefaults {
         getEdition(): Edition | undefined;
         setEdition(value: Edition): FeatureSetEditionDefault;
 
-        hasFeatures(): boolean;
-        clearFeatures(): void;
-        getFeatures(): FeatureSet | undefined;
-        setFeatures(value?: FeatureSet): FeatureSetEditionDefault;
+        hasOverridableFeatures(): boolean;
+        clearOverridableFeatures(): void;
+        getOverridableFeatures(): FeatureSet | undefined;
+        setOverridableFeatures(value?: FeatureSet): FeatureSetEditionDefault;
+
+        hasFixedFeatures(): boolean;
+        clearFixedFeatures(): void;
+        getFixedFeatures(): FeatureSet | undefined;
+        setFixedFeatures(value?: FeatureSet): FeatureSetEditionDefault;
 
         serializeBinary(): Uint8Array;
         toObject(includeInstance?: boolean): FeatureSetEditionDefault.AsObject;
@@ -1486,7 +1538,8 @@ export namespace FeatureSetDefaults {
     export namespace FeatureSetEditionDefault {
         export type AsObject = {
             edition?: Edition,
-            features?: FeatureSet.AsObject,
+            overridableFeatures?: FeatureSet.AsObject,
+            fixedFeatures?: FeatureSet.AsObject,
         }
     }
 
@@ -1639,12 +1692,15 @@ export namespace GeneratedCodeInfo {
 
 export enum Edition {
     EDITION_UNKNOWN = 0,
+    EDITION_LEGACY = 900,
     EDITION_PROTO2 = 998,
     EDITION_PROTO3 = 999,
     EDITION_2023 = 1000,
+    EDITION_2024 = 1001,
     EDITION_1_TEST_ONLY = 1,
     EDITION_2_TEST_ONLY = 2,
     EDITION_99997_TEST_ONLY = 99997,
     EDITION_99998_TEST_ONLY = 99998,
     EDITION_99999_TEST_ONLY = 99999,
+    EDITION_MAX = 2147483647,
 }
