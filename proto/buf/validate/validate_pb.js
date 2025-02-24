@@ -2033,9 +2033,7 @@ repeated: (f = msg.getRepeated()) && proto.buf.validate.RepeatedRules.toObject(i
 map: (f = msg.getMap()) && proto.buf.validate.MapRules.toObject(includeInstance, f),
 any: (f = msg.getAny()) && proto.buf.validate.AnyRules.toObject(includeInstance, f),
 duration: (f = msg.getDuration()) && proto.buf.validate.DurationRules.toObject(includeInstance, f),
-timestamp: (f = msg.getTimestamp()) && proto.buf.validate.TimestampRules.toObject(includeInstance, f),
-skipped: (f = jspb.Message.getBooleanField(msg, 24)) == null ? undefined : f,
-ignoreEmpty: (f = jspb.Message.getBooleanField(msg, 26)) == null ? undefined : f
+timestamp: (f = msg.getTimestamp()) && proto.buf.validate.TimestampRules.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -2189,14 +2187,6 @@ proto.buf.validate.FieldConstraints.deserializeBinaryFromReader = function(msg, 
       var value = new proto.buf.validate.TimestampRules;
       reader.readMessage(value,proto.buf.validate.TimestampRules.deserializeBinaryFromReader);
       msg.setTimestamp(value);
-      break;
-    case 24:
-      var value = /** @type {boolean} */ (reader.readBool());
-      msg.setSkipped(value);
-      break;
-    case 26:
-      var value = /** @type {boolean} */ (reader.readBool());
-      msg.setIgnoreEmpty(value);
       break;
     default:
       reader.skipField();
@@ -2415,20 +2405,6 @@ proto.buf.validate.FieldConstraints.serializeBinaryToWriter = function(message, 
       22,
       f,
       proto.buf.validate.TimestampRules.serializeBinaryToWriter
-    );
-  }
-  f = /** @type {boolean} */ (jspb.Message.getField(message, 24));
-  if (f != null) {
-    writer.writeBool(
-      24,
-      f
-    );
-  }
-  f = /** @type {boolean} */ (jspb.Message.getField(message, 26));
-  if (f != null) {
-    writer.writeBool(
-      26,
-      f
     );
   }
 };
@@ -3318,78 +3294,6 @@ proto.buf.validate.FieldConstraints.prototype.clearTimestamp = function() {
  */
 proto.buf.validate.FieldConstraints.prototype.hasTimestamp = function() {
   return jspb.Message.getField(this, 22) != null;
-};
-
-
-/**
- * optional bool skipped = 24;
- * @return {boolean}
- */
-proto.buf.validate.FieldConstraints.prototype.getSkipped = function() {
-  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 24, false));
-};
-
-
-/**
- * @param {boolean} value
- * @return {!proto.buf.validate.FieldConstraints} returns this
- */
-proto.buf.validate.FieldConstraints.prototype.setSkipped = function(value) {
-  return jspb.Message.setField(this, 24, value);
-};
-
-
-/**
- * Clears the field making it undefined.
- * @return {!proto.buf.validate.FieldConstraints} returns this
- */
-proto.buf.validate.FieldConstraints.prototype.clearSkipped = function() {
-  return jspb.Message.setField(this, 24, undefined);
-};
-
-
-/**
- * Returns whether this field is set.
- * @return {boolean}
- */
-proto.buf.validate.FieldConstraints.prototype.hasSkipped = function() {
-  return jspb.Message.getField(this, 24) != null;
-};
-
-
-/**
- * optional bool ignore_empty = 26;
- * @return {boolean}
- */
-proto.buf.validate.FieldConstraints.prototype.getIgnoreEmpty = function() {
-  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 26, false));
-};
-
-
-/**
- * @param {boolean} value
- * @return {!proto.buf.validate.FieldConstraints} returns this
- */
-proto.buf.validate.FieldConstraints.prototype.setIgnoreEmpty = function(value) {
-  return jspb.Message.setField(this, 26, value);
-};
-
-
-/**
- * Clears the field making it undefined.
- * @return {!proto.buf.validate.FieldConstraints} returns this
- */
-proto.buf.validate.FieldConstraints.prototype.clearIgnoreEmpty = function() {
-  return jspb.Message.setField(this, 26, undefined);
-};
-
-
-/**
- * Returns whether this field is set.
- * @return {boolean}
- */
-proto.buf.validate.FieldConstraints.prototype.hasIgnoreEmpty = function() {
-  return jspb.Message.getField(this, 26) != null;
 };
 
 
@@ -15797,7 +15701,6 @@ proto.buf.validate.Violation.toObject = function(includeInstance, msg) {
   var f, obj = {
 field: (f = msg.getField()) && proto.buf.validate.FieldPath.toObject(includeInstance, f),
 rule: (f = msg.getRule()) && proto.buf.validate.FieldPath.toObject(includeInstance, f),
-fieldPath: (f = jspb.Message.getField(msg, 1)) == null ? undefined : f,
 constraintId: (f = jspb.Message.getField(msg, 2)) == null ? undefined : f,
 message: (f = jspb.Message.getField(msg, 3)) == null ? undefined : f,
 forKey: (f = jspb.Message.getBooleanField(msg, 4)) == null ? undefined : f
@@ -15846,10 +15749,6 @@ proto.buf.validate.Violation.deserializeBinaryFromReader = function(msg, reader)
       var value = new proto.buf.validate.FieldPath;
       reader.readMessage(value,proto.buf.validate.FieldPath.deserializeBinaryFromReader);
       msg.setRule(value);
-      break;
-    case 1:
-      var value = /** @type {string} */ (reader.readString());
-      msg.setFieldPath(value);
       break;
     case 2:
       var value = /** @type {string} */ (reader.readString());
@@ -15906,13 +15805,6 @@ proto.buf.validate.Violation.serializeBinaryToWriter = function(message, writer)
       6,
       f,
       proto.buf.validate.FieldPath.serializeBinaryToWriter
-    );
-  }
-  f = /** @type {string} */ (jspb.Message.getField(message, 1));
-  if (f != null) {
-    writer.writeString(
-      1,
-      f
     );
   }
   f = /** @type {string} */ (jspb.Message.getField(message, 2));
@@ -16010,42 +15902,6 @@ proto.buf.validate.Violation.prototype.clearRule = function() {
  */
 proto.buf.validate.Violation.prototype.hasRule = function() {
   return jspb.Message.getField(this, 6) != null;
-};
-
-
-/**
- * optional string field_path = 1;
- * @return {string}
- */
-proto.buf.validate.Violation.prototype.getFieldPath = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
-};
-
-
-/**
- * @param {string} value
- * @return {!proto.buf.validate.Violation} returns this
- */
-proto.buf.validate.Violation.prototype.setFieldPath = function(value) {
-  return jspb.Message.setField(this, 1, value);
-};
-
-
-/**
- * Clears the field making it undefined.
- * @return {!proto.buf.validate.Violation} returns this
- */
-proto.buf.validate.Violation.prototype.clearFieldPath = function() {
-  return jspb.Message.setField(this, 1, undefined);
-};
-
-
-/**
- * Returns whether this field is set.
- * @return {boolean}
- */
-proto.buf.validate.Violation.prototype.hasFieldPath = function() {
-  return jspb.Message.getField(this, 1) != null;
 };
 
 
@@ -16933,9 +16789,7 @@ proto.buf.validate.Ignore = {
   IGNORE_UNSPECIFIED: 0,
   IGNORE_IF_UNPOPULATED: 1,
   IGNORE_IF_DEFAULT_VALUE: 2,
-  IGNORE_ALWAYS: 3,
-  IGNORE_EMPTY: 1,
-  IGNORE_DEFAULT: 2
+  IGNORE_ALWAYS: 3
 };
 
 /**
