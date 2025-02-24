@@ -5,7 +5,7 @@ inputs:
 
 plugins:
   - remote: buf.build/protocolbuffers/go
-    out: gentest
+    out: proto
     opt: paths=source_relative
 
   - remote: buf.build/grpc/go

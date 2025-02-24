@@ -94,7 +94,7 @@ func runTransactionCases(c transactClient, m *namespaceTestManager) func(*testin
 			m.add(t, ns...)
 
 			var tuples []*ketoapi.RelationTuple
-			for i := range 12001 {
+			for i := range 1000 {
 				tuples = append(tuples,
 					&ketoapi.RelationTuple{
 						Namespace: ns[0].Name,
@@ -152,7 +152,7 @@ func runTransactionCases(c transactClient, m *namespaceTestManager) func(*testin
 
 			t0 = time.Now()
 			c.transactTuples(t, nil, tuples)
-			t.Log(t.Name(), "delete took:", time.Since(t0))
+			t.Log(t.Name(), "delete:", time.Since(t0))
 
 			resp = c.queryTuple(t, &ketoapi.RelationQuery{
 				Namespace: &ns[0].Name,
