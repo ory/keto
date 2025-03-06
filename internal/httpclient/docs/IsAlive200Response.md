@@ -4,7 +4,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Status** | **string** | Always \&quot;ok\&quot;. | 
+**Status** | **string** |  | 
 
 ## Methods
 

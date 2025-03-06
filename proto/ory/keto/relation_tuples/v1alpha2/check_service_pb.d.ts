@@ -5,7 +5,10 @@
 /* eslint-disable */
 
 import * as jspb from "google-protobuf";
+import * as google_api_field_behavior_pb from "../../../../google/api/field_behavior_pb";
+import * as google_api_visibility_pb from "../../../../google/api/visibility_pb";
 import * as ory_keto_relation_tuples_v1alpha2_relation_tuples_pb from "../../../../ory/keto/relation_tuples/v1alpha2/relation_tuples_pb";
+import * as protoc_gen_openapiv2_options_annotations_pb from "../../../../protoc-gen-openapiv2/options/annotations_pb";
 
 export class CheckRequest extends jspb.Message { 
     getNamespace(): string;
@@ -20,6 +23,16 @@ export class CheckRequest extends jspb.Message {
     getSubject(): ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.Subject | undefined;
     setSubject(value?: ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.Subject): CheckRequest;
 
+    hasSubjectId(): boolean;
+    clearSubjectId(): void;
+    getSubjectId(): string;
+    setSubjectId(value: string): CheckRequest;
+
+    hasSubjectSet(): boolean;
+    clearSubjectSet(): void;
+    getSubjectSet(): ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.SubjectSetQuery | undefined;
+    setSubjectSet(value?: ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.SubjectSetQuery): CheckRequest;
+
     hasTuple(): boolean;
     clearTuple(): void;
     getTuple(): ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationTuple | undefined;
@@ -30,6 +43,8 @@ export class CheckRequest extends jspb.Message {
     setSnaptoken(value: string): CheckRequest;
     getMaxDepth(): number;
     setMaxDepth(value: number): CheckRequest;
+
+    getRestApiSubjectCase(): CheckRequest.RestApiSubjectCase;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): CheckRequest.AsObject;
@@ -47,11 +62,20 @@ export namespace CheckRequest {
         object: string,
         relation: string,
         subject?: ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.Subject.AsObject,
+        subjectId: string,
+        subjectSet?: ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.SubjectSetQuery.AsObject,
         tuple?: ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationTuple.AsObject,
         latest: boolean,
         snaptoken: string,
         maxDepth: number,
     }
+
+    export enum RestApiSubjectCase {
+        REST_API_SUBJECT_NOT_SET = 0,
+        SUBJECT_ID = 9,
+        SUBJECT_SET = 10,
+    }
+
 }
 
 export class CheckResponse extends jspb.Message { 
@@ -103,11 +127,38 @@ export namespace CheckResponseWithError {
     }
 }
 
+export class BatchCheckRequestBody extends jspb.Message { 
+    clearTuplesList(): void;
+    getTuplesList(): Array<ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationTuple>;
+    setTuplesList(value: Array<ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationTuple>): BatchCheckRequestBody;
+    addTuples(value?: ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationTuple, index?: number): ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationTuple;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): BatchCheckRequestBody.AsObject;
+    static toObject(includeInstance: boolean, msg: BatchCheckRequestBody): BatchCheckRequestBody.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: BatchCheckRequestBody, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): BatchCheckRequestBody;
+    static deserializeBinaryFromReader(message: BatchCheckRequestBody, reader: jspb.BinaryReader): BatchCheckRequestBody;
+}
+
+export namespace BatchCheckRequestBody {
+    export type AsObject = {
+        tuplesList: Array<ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationTuple.AsObject>,
+    }
+}
+
 export class BatchCheckRequest extends jspb.Message { 
     clearTuplesList(): void;
     getTuplesList(): Array<ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationTuple>;
     setTuplesList(value: Array<ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationTuple>): BatchCheckRequest;
     addTuples(value?: ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationTuple, index?: number): ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationTuple;
+
+    hasRestBody(): boolean;
+    clearRestBody(): void;
+    getRestBody(): BatchCheckRequestBody | undefined;
+    setRestBody(value?: BatchCheckRequestBody): BatchCheckRequest;
     getLatest(): boolean;
     setLatest(value: boolean): BatchCheckRequest;
     getSnaptoken(): string;
@@ -128,6 +179,7 @@ export class BatchCheckRequest extends jspb.Message {
 export namespace BatchCheckRequest {
     export type AsObject = {
         tuplesList: Array<ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationTuple.AsObject>,
+        restBody?: BatchCheckRequestBody.AsObject,
         latest: boolean,
         snaptoken: string,
         maxDepth: number,

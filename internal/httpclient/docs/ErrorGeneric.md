@@ -4,13 +4,13 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Error** | [**GenericError**](GenericError.md) |  | 
+**Error** | [**ErrorGenericError**](ErrorGenericError.md) |  | 
 
 ## Methods
 
 ### NewErrorGeneric
 
-`func NewErrorGeneric(error_ GenericError, ) *ErrorGeneric`
+`func NewErrorGeneric(error_ ErrorGenericError, ) *ErrorGeneric`
 
 NewErrorGeneric instantiates a new ErrorGeneric object
 This constructor will assign default values to properties that have it defined,
@@ -27,20 +27,20 @@ but it doesn't guarantee that properties required by API are set
 
 ### GetError
 
-`func (o *ErrorGeneric) GetError() GenericError`
+`func (o *ErrorGeneric) GetError() ErrorGenericError`
 
 GetError returns the Error field if non-nil, zero value otherwise.
 
 ### GetErrorOk
 
-`func (o *ErrorGeneric) GetErrorOk() (*GenericError, bool)`
+`func (o *ErrorGeneric) GetErrorOk() (*ErrorGenericError, bool)`
 
 GetErrorOk returns a tuple with the Error field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetError
 
-`func (o *ErrorGeneric) SetError(v GenericError)`
+`func (o *ErrorGeneric) SetError(v ErrorGenericError)`
 
 SetError sets Error field to given value.
 

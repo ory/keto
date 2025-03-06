@@ -12,10 +12,11 @@ import (
 	"time"
 
 	"github.com/dgraph-io/ristretto"
+	"github.com/pkg/errors"
+
 	"github.com/ory/x/logrusx"
 	"github.com/ory/x/urlx"
 	"github.com/ory/x/watcherx"
-	"github.com/pkg/errors"
 
 	"github.com/ory/keto/internal/namespace"
 	"github.com/ory/keto/internal/schema"

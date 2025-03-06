@@ -4,20 +4,20 @@ All URIs are relative to *http://localhost*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**BatchCheckPermission**](PermissionApi.md#BatchCheckPermission) | **Post** /relation-tuples/batch/check | Batch check permissions
-[**CheckPermission**](PermissionApi.md#CheckPermission) | **Get** /relation-tuples/check/openapi | Check a permission
-[**CheckPermissionOrError**](PermissionApi.md#CheckPermissionOrError) | **Get** /relation-tuples/check | Check a permission
-[**ExpandPermissions**](PermissionApi.md#ExpandPermissions) | **Get** /relation-tuples/expand | Expand a Relationship into permissions.
-[**PostCheckPermission**](PermissionApi.md#PostCheckPermission) | **Post** /relation-tuples/check/openapi | Check a permission
-[**PostCheckPermissionOrError**](PermissionApi.md#PostCheckPermissionOrError) | **Post** /relation-tuples/check | Check a permission
+[**BatchCheckPermission**](PermissionApi.md#BatchCheckPermission) | **Post** /relation-tuples/batch/check | Performs an authorization check for a batch of tuples.
+[**CheckPermission**](PermissionApi.md#CheckPermission) | **Get** /relation-tuples/check/openapi | Performs an authorization check.
+[**CheckPermissionOrError**](PermissionApi.md#CheckPermissionOrError) | **Get** /relation-tuples/check | Performs an authorization check.
+[**ExpandPermissions**](PermissionApi.md#ExpandPermissions) | **Get** /relation-tuples/expand | Expands the subject set into a tree of subjects.
+[**PostCheckPermission**](PermissionApi.md#PostCheckPermission) | **Post** /relation-tuples/check/openapi | Performs an authorization check.
+[**PostCheckPermissionOrError**](PermissionApi.md#PostCheckPermissionOrError) | **Post** /relation-tuples/check | Performs an authorization check.
 
 
 
 ## BatchCheckPermission
 
-> BatchCheckPermissionResult BatchCheckPermission(ctx).MaxDepth(maxDepth).BatchCheckPermissionBody(batchCheckPermissionBody).Execute()
+> BatchCheckPermissionResult BatchCheckPermission(ctx).BatchCheckPermissionBody(batchCheckPermissionBody).MaxDepth(maxDepth).Execute()
 
-Batch check permissions
+Performs an authorization check for a batch of tuples.
 
 
 
@@ -34,12 +34,12 @@ import (
 )
 
 func main() {
-    maxDepth := int64(789) // int64 |  (optional)
-    batchCheckPermissionBody := *openapiclient.NewBatchCheckPermissionBody() // BatchCheckPermissionBody |  (optional)
+    batchCheckPermissionBody := *openapiclient.NewBatchCheckPermissionBody() // BatchCheckPermissionBody | Batch Check Permission Body.
+    maxDepth := int32(56) // int32 | The maximum depth to search for a relation.  If the value is less than 1 or greater than the global max-depth then the global max-depth will be used instead. (optional)
 
     configuration := openapiclient.NewConfiguration()
     apiClient := openapiclient.NewAPIClient(configuration)
-    resp, r, err := apiClient.PermissionApi.BatchCheckPermission(context.Background()).MaxDepth(maxDepth).BatchCheckPermissionBody(batchCheckPermissionBody).Execute()
+    resp, r, err := apiClient.PermissionApi.BatchCheckPermission(context.Background()).BatchCheckPermissionBody(batchCheckPermissionBody).MaxDepth(maxDepth).Execute()
     if err != nil {
         fmt.Fprintf(os.Stderr, "Error when calling `PermissionApi.BatchCheckPermission``: %v\n", err)
         fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
@@ -60,8 +60,8 @@ Other parameters are passed through a pointer to a apiBatchCheckPermissionReques
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **maxDepth** | **int64** |  | 
- **batchCheckPermissionBody** | [**BatchCheckPermissionBody**](BatchCheckPermissionBody.md) |  | 
+ **batchCheckPermissionBody** | [**BatchCheckPermissionBody**](BatchCheckPermissionBody.md) | Batch Check Permission Body. | 
+ **maxDepth** | **int32** | The maximum depth to search for a relation.  If the value is less than 1 or greater than the global max-depth then the global max-depth will be used instead. | 
 
 ### Return type
 
@@ -85,9 +85,7 @@ No authorization required
 
 > CheckPermissionResult CheckPermission(ctx).Namespace(namespace).Object(object).Relation(relation).SubjectId(subjectId).SubjectSetNamespace(subjectSetNamespace).SubjectSetObject(subjectSetObject).SubjectSetRelation(subjectSetRelation).MaxDepth(maxDepth).Execute()
 
-Check a permission
-
-
+Performs an authorization check.
 
 ### Example
 
@@ -102,14 +100,14 @@ import (
 )
 
 func main() {
-    namespace := "namespace_example" // string | Namespace of the Relationship (optional)
-    object := "object_example" // string | Object of the Relationship (optional)
-    relation := "relation_example" // string | Relation of the Relationship (optional)
-    subjectId := "subjectId_example" // string | SubjectID of the Relationship (optional)
-    subjectSetNamespace := "subjectSetNamespace_example" // string | Namespace of the Subject Set (optional)
-    subjectSetObject := "subjectSetObject_example" // string | Object of the Subject Set (optional)
-    subjectSetRelation := "subjectSetRelation_example" // string | Relation of the Subject Set (optional)
-    maxDepth := int64(789) // int64 |  (optional)
+    namespace := "namespace_example" // string | The namespace to evaluate the check.  Note: If you use the expand-API and the check evaluates a RelationTuple specifying a SubjectSet as subject or due to a rewrite rule in a namespace config this check request may involve other namespaces automatically. (optional)
+    object := "object_example" // string | The related object in this check. (optional)
+    relation := "relation_example" // string | The relation between the Object and the Subject. (optional)
+    subjectId := "subjectId_example" // string | A concrete id of the subject. (optional)
+    subjectSetNamespace := "subjectSetNamespace_example" // string | The namespace of the object and relation referenced in this subject set. (optional)
+    subjectSetObject := "subjectSetObject_example" // string | The object related by this subject set. (optional)
+    subjectSetRelation := "subjectSetRelation_example" // string | The relation between the object and the subjects. (optional)
+    maxDepth := int32(56) // int32 | The maximum depth to search for a relation.  If the value is less than 1 or greater than the global max-depth then the global max-depth will be used instead. (optional)
 
     configuration := openapiclient.NewConfiguration()
     apiClient := openapiclient.NewAPIClient(configuration)
@@ -134,14 +132,14 @@ Other parameters are passed through a pointer to a apiCheckPermissionRequest str
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **namespace** | **string** | Namespace of the Relationship | 
- **object** | **string** | Object of the Relationship | 
- **relation** | **string** | Relation of the Relationship | 
- **subjectId** | **string** | SubjectID of the Relationship | 
- **subjectSetNamespace** | **string** | Namespace of the Subject Set | 
- **subjectSetObject** | **string** | Object of the Subject Set | 
- **subjectSetRelation** | **string** | Relation of the Subject Set | 
- **maxDepth** | **int64** |  | 
+ **namespace** | **string** | The namespace to evaluate the check.  Note: If you use the expand-API and the check evaluates a RelationTuple specifying a SubjectSet as subject or due to a rewrite rule in a namespace config this check request may involve other namespaces automatically. | 
+ **object** | **string** | The related object in this check. | 
+ **relation** | **string** | The relation between the Object and the Subject. | 
+ **subjectId** | **string** | A concrete id of the subject. | 
+ **subjectSetNamespace** | **string** | The namespace of the object and relation referenced in this subject set. | 
+ **subjectSetObject** | **string** | The object related by this subject set. | 
+ **subjectSetRelation** | **string** | The relation between the object and the subjects. | 
+ **maxDepth** | **int32** | The maximum depth to search for a relation.  If the value is less than 1 or greater than the global max-depth then the global max-depth will be used instead. | 
 
 ### Return type
 
@@ -165,9 +163,7 @@ No authorization required
 
 > CheckPermissionResult CheckPermissionOrError(ctx).Namespace(namespace).Object(object).Relation(relation).SubjectId(subjectId).SubjectSetNamespace(subjectSetNamespace).SubjectSetObject(subjectSetObject).SubjectSetRelation(subjectSetRelation).MaxDepth(maxDepth).Execute()
 
-Check a permission
-
-
+Performs an authorization check.
 
 ### Example
 
@@ -182,14 +178,14 @@ import (
 )
 
 func main() {
-    namespace := "namespace_example" // string | Namespace of the Relationship (optional)
-    object := "object_example" // string | Object of the Relationship (optional)
-    relation := "relation_example" // string | Relation of the Relationship (optional)
-    subjectId := "subjectId_example" // string | SubjectID of the Relationship (optional)
-    subjectSetNamespace := "subjectSetNamespace_example" // string | Namespace of the Subject Set (optional)
-    subjectSetObject := "subjectSetObject_example" // string | Object of the Subject Set (optional)
-    subjectSetRelation := "subjectSetRelation_example" // string | Relation of the Subject Set (optional)
-    maxDepth := int64(789) // int64 |  (optional)
+    namespace := "namespace_example" // string | The namespace to evaluate the check.  Note: If you use the expand-API and the check evaluates a RelationTuple specifying a SubjectSet as subject or due to a rewrite rule in a namespace config this check request may involve other namespaces automatically. (optional)
+    object := "object_example" // string | The related object in this check. (optional)
+    relation := "relation_example" // string | The relation between the Object and the Subject. (optional)
+    subjectId := "subjectId_example" // string | A concrete id of the subject. (optional)
+    subjectSetNamespace := "subjectSetNamespace_example" // string | The namespace of the object and relation referenced in this subject set. (optional)
+    subjectSetObject := "subjectSetObject_example" // string | The object related by this subject set. (optional)
+    subjectSetRelation := "subjectSetRelation_example" // string | The relation between the object and the subjects. (optional)
+    maxDepth := int32(56) // int32 | The maximum depth to search for a relation.  If the value is less than 1 or greater than the global max-depth then the global max-depth will be used instead. (optional)
 
     configuration := openapiclient.NewConfiguration()
     apiClient := openapiclient.NewAPIClient(configuration)
@@ -214,14 +210,14 @@ Other parameters are passed through a pointer to a apiCheckPermissionOrErrorRequ
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **namespace** | **string** | Namespace of the Relationship | 
- **object** | **string** | Object of the Relationship | 
- **relation** | **string** | Relation of the Relationship | 
- **subjectId** | **string** | SubjectID of the Relationship | 
- **subjectSetNamespace** | **string** | Namespace of the Subject Set | 
- **subjectSetObject** | **string** | Object of the Subject Set | 
- **subjectSetRelation** | **string** | Relation of the Subject Set | 
- **maxDepth** | **int64** |  | 
+ **namespace** | **string** | The namespace to evaluate the check.  Note: If you use the expand-API and the check evaluates a RelationTuple specifying a SubjectSet as subject or due to a rewrite rule in a namespace config this check request may involve other namespaces automatically. | 
+ **object** | **string** | The related object in this check. | 
+ **relation** | **string** | The relation between the Object and the Subject. | 
+ **subjectId** | **string** | A concrete id of the subject. | 
+ **subjectSetNamespace** | **string** | The namespace of the object and relation referenced in this subject set. | 
+ **subjectSetObject** | **string** | The object related by this subject set. | 
+ **subjectSetRelation** | **string** | The relation between the object and the subjects. | 
+ **maxDepth** | **int32** | The maximum depth to search for a relation.  If the value is less than 1 or greater than the global max-depth then the global max-depth will be used instead. | 
 
 ### Return type
 
@@ -245,9 +241,7 @@ No authorization required
 
 > ExpandedPermissionTree ExpandPermissions(ctx).Namespace(namespace).Object(object).Relation(relation).MaxDepth(maxDepth).Execute()
 
-Expand a Relationship into permissions.
-
-
+Expands the subject set into a tree of subjects.
 
 ### Example
 
@@ -262,10 +256,10 @@ import (
 )
 
 func main() {
-    namespace := "namespace_example" // string | Namespace of the Subject Set
-    object := "object_example" // string | Object of the Subject Set
-    relation := "relation_example" // string | Relation of the Subject Set
-    maxDepth := int64(789) // int64 |  (optional)
+    namespace := "namespace_example" // string | The namespace of the object and relation referenced in this subject set.
+    object := "object_example" // string | The object related by this subject set.
+    relation := "relation_example" // string | The relation between the object and the subjects.
+    maxDepth := int32(56) // int32 | The maximum depth of tree to build.  If the value is less than 1 or greater than the global max-depth then the global max-depth will be used instead.  It is important to set this parameter to a meaningful value. Ponder how deep you really want to display this. (optional)
 
     configuration := openapiclient.NewConfiguration()
     apiClient := openapiclient.NewAPIClient(configuration)
@@ -290,10 +284,10 @@ Other parameters are passed through a pointer to a apiExpandPermissionsRequest s
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **namespace** | **string** | Namespace of the Subject Set | 
- **object** | **string** | Object of the Subject Set | 
- **relation** | **string** | Relation of the Subject Set | 
- **maxDepth** | **int64** |  | 
+ **namespace** | **string** | The namespace of the object and relation referenced in this subject set. | 
+ **object** | **string** | The object related by this subject set. | 
+ **relation** | **string** | The relation between the object and the subjects. | 
+ **maxDepth** | **int32** | The maximum depth of tree to build.  If the value is less than 1 or greater than the global max-depth then the global max-depth will be used instead.  It is important to set this parameter to a meaningful value. Ponder how deep you really want to display this. | 
 
 ### Return type
 
@@ -315,11 +309,9 @@ No authorization required
 
 ## PostCheckPermission
 
-> CheckPermissionResult PostCheckPermission(ctx).MaxDepth(maxDepth).PostCheckPermissionBody(postCheckPermissionBody).Execute()
+> CheckPermissionResult PostCheckPermission(ctx).PostCheckPermissionBody(postCheckPermissionBody).Execute()
 
-Check a permission
-
-
+Performs an authorization check.
 
 ### Example
 
@@ -334,12 +326,11 @@ import (
 )
 
 func main() {
-    maxDepth := int64(789) // int64 |  (optional)
-    postCheckPermissionBody := *openapiclient.NewPostCheckPermissionBody() // PostCheckPermissionBody |  (optional)
+    postCheckPermissionBody := *openapiclient.NewPostCheckPermissionBody() // PostCheckPermissionBody | The request for a CheckService.Check RPC. Checks whether a specific subject is related to an object.
 
     configuration := openapiclient.NewConfiguration()
     apiClient := openapiclient.NewAPIClient(configuration)
-    resp, r, err := apiClient.PermissionApi.PostCheckPermission(context.Background()).MaxDepth(maxDepth).PostCheckPermissionBody(postCheckPermissionBody).Execute()
+    resp, r, err := apiClient.PermissionApi.PostCheckPermission(context.Background()).PostCheckPermissionBody(postCheckPermissionBody).Execute()
     if err != nil {
         fmt.Fprintf(os.Stderr, "Error when calling `PermissionApi.PostCheckPermission``: %v\n", err)
         fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
@@ -360,8 +351,7 @@ Other parameters are passed through a pointer to a apiPostCheckPermissionRequest
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **maxDepth** | **int64** |  | 
- **postCheckPermissionBody** | [**PostCheckPermissionBody**](PostCheckPermissionBody.md) |  | 
+ **postCheckPermissionBody** | [**PostCheckPermissionBody**](PostCheckPermissionBody.md) | The request for a CheckService.Check RPC. Checks whether a specific subject is related to an object. | 
 
 ### Return type
 
@@ -383,11 +373,9 @@ No authorization required
 
 ## PostCheckPermissionOrError
 
-> CheckPermissionResult PostCheckPermissionOrError(ctx).MaxDepth(maxDepth).PostCheckPermissionOrErrorBody(postCheckPermissionOrErrorBody).Execute()
+> CheckPermissionResult PostCheckPermissionOrError(ctx).PostCheckPermissionBody(postCheckPermissionBody).Execute()
 
-Check a permission
-
-
+Performs an authorization check.
 
 ### Example
 
@@ -402,12 +390,11 @@ import (
 )
 
 func main() {
-    maxDepth := int64(789) // int64 |  (optional)
-    postCheckPermissionOrErrorBody := *openapiclient.NewPostCheckPermissionOrErrorBody() // PostCheckPermissionOrErrorBody |  (optional)
+    postCheckPermissionBody := *openapiclient.NewPostCheckPermissionBody() // PostCheckPermissionBody | The request for a CheckService.Check RPC. Checks whether a specific subject is related to an object.
 
     configuration := openapiclient.NewConfiguration()
     apiClient := openapiclient.NewAPIClient(configuration)
-    resp, r, err := apiClient.PermissionApi.PostCheckPermissionOrError(context.Background()).MaxDepth(maxDepth).PostCheckPermissionOrErrorBody(postCheckPermissionOrErrorBody).Execute()
+    resp, r, err := apiClient.PermissionApi.PostCheckPermissionOrError(context.Background()).PostCheckPermissionBody(postCheckPermissionBody).Execute()
     if err != nil {
         fmt.Fprintf(os.Stderr, "Error when calling `PermissionApi.PostCheckPermissionOrError``: %v\n", err)
         fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
@@ -428,8 +415,7 @@ Other parameters are passed through a pointer to a apiPostCheckPermissionOrError
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **maxDepth** | **int64** |  | 
- **postCheckPermissionOrErrorBody** | [**PostCheckPermissionOrErrorBody**](PostCheckPermissionOrErrorBody.md) |  | 
+ **postCheckPermissionBody** | [**PostCheckPermissionBody**](PostCheckPermissionBody.md) | The request for a CheckService.Check RPC. Checks whether a specific subject is related to an object. | 
 
 ### Return type
 

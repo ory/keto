@@ -8,22 +8,17 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/ory/keto/internal/x/dbx"
-
-	"github.com/ory/keto/internal/relationtuple"
-
-	"github.com/stretchr/testify/assert"
-
-	"github.com/ory/x/configx"
 	"github.com/spf13/pflag"
-
-	"github.com/ory/keto/internal/driver/config"
-
-	"github.com/ory/keto/internal/namespace"
-
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
+	"github.com/ory/x/configx"
+
 	"github.com/ory/keto/internal/driver"
+	"github.com/ory/keto/internal/driver/config"
+	"github.com/ory/keto/internal/namespace"
+	"github.com/ory/keto/internal/relationtuple"
+	"github.com/ory/keto/internal/x/dbx"
 )
 
 type namespaceTestManager struct {
@@ -32,7 +27,7 @@ type namespaceTestManager struct {
 	nspaces []*namespace.Namespace
 }
 
-func (m *namespaceTestManager) add(t *testing.T, nn ...*namespace.Namespace) {
+func (m *namespaceTestManager) add(t testing.TB, nn ...*namespace.Namespace) {
 	m.nspaces = append(m.nspaces, nn...)
 
 	require.NoError(t, m.reg.Config(m.ctx).Set(config.KeyNamespaces, m.nspaces))

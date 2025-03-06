@@ -4,8 +4,8 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**NextPageToken** | Pointer to **string** | The opaque token to provide in a subsequent request to get the next page. It is the empty string iff this is the last page. | [optional] 
-**RelationTuples** | Pointer to [**[]Relationship**](Relationship.md) |  | [optional] 
+**NextPageToken** | Pointer to **string** | The token required to get the next page. If this is the last page, the token will be the empty string. | [optional] 
+**RelationTuples** | Pointer to [**[]Relationship**](Relationship.md) | The relationships matching the list request. | [optional] 
 
 ## Methods
 

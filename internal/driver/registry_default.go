@@ -12,6 +12,11 @@ import (
 
 	"github.com/gobuffalo/pop/v6"
 	"github.com/gofrs/uuid"
+	"github.com/pkg/errors"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/health"
+
 	"github.com/ory/herodot"
 	"github.com/ory/x/dbal"
 	"github.com/ory/x/fsx"
@@ -22,10 +27,6 @@ import (
 	"github.com/ory/x/otelx"
 	"github.com/ory/x/popx"
 	prometheus "github.com/ory/x/prometheusx"
-	"github.com/pkg/errors"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials"
-	"google.golang.org/grpc/health"
 
 	"github.com/ory/keto/internal/check"
 	"github.com/ory/keto/internal/driver/config"
@@ -87,15 +88,12 @@ type (
 		healthReadyCheckers       healthx.ReadyCheckers
 	}
 	ReadHandler interface {
-		RegisterReadRoutes(r *x.ReadRouter)
 		RegisterReadGRPC(s *grpc.Server)
 	}
 	WriteHandler interface {
-		RegisterWriteRoutes(r *x.WriteRouter)
 		RegisterWriteGRPC(s *grpc.Server)
 	}
 	OPLSyntaxHandler interface {
-		RegisterSyntaxRoutes(r *x.OPLSyntaxRouter)
 		RegisterSyntaxGRPC(s *grpc.Server)
 	}
 	Handler interface{}
