@@ -1,201 +1,244 @@
 {
-  "$id": "https://github.com/ory/keto/.schema/versions.config.schema.json",
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "oneOf": [
-    {
-      "allOf": [
+    "$id": "https://github.com/ory/keto/.schema/versions.config.schema.json",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "oneOf": [
         {
-          "properties": {
-            "version": {
-              "const": "v0.12.0-alpha.0"
-            }
-          },
-          "required": ["version"]
-        },
-        {
-          "$ref": "https://raw.githubusercontent.com/ory/keto/v0.12.0-alpha.0/.schema/config.schema.json"
-        }
-      ]
-    },
-    {
-      "allOf": [
-        {
-          "properties": {
-            "version": {
-              "const": "v0.11.1-alpha.0"
-            }
-          },
-          "required": ["version"]
-        },
-        {
-          "$ref": "https://raw.githubusercontent.com/ory/keto/v0.11.1-alpha.0/.schema/config.schema.json"
-        }
-      ]
-    },
-    {
-      "allOf": [
-        {
-          "properties": {
-            "version": {
-              "const": "v0.11.0-alpha.0"
-            }
-          },
-          "required": ["version"]
-        },
-        {
-          "$ref": "https://raw.githubusercontent.com/ory/keto/v0.11.0-alpha.0/.schema/config.schema.json"
-        }
-      ]
-    },
-    {
-      "allOf": [
-        {
-          "properties": {
-            "version": {
-              "const": "v0.10.0-alpha.0"
-            }
-          },
-          "required": ["version"]
-        },
-        {
-          "$ref": "https://raw.githubusercontent.com/ory/keto/v0.10.0-alpha.0/.schema/config.schema.json"
-        }
-      ]
-    },
-    {
-      "allOf": [
-        {
-          "properties": {
-            "version": {
-              "const": "v0.9.0-alpha.0"
-            }
-          },
-          "required": ["version"]
-        },
-        {
-          "$ref": "https://raw.githubusercontent.com/ory/keto/v0.9.0-alpha.0/.schema/config.schema.json"
-        }
-      ]
-    },
-    {
-      "allOf": [
-        {
-          "properties": {
-            "version": {
-              "const": "v0.8.0-alpha.2"
-            }
-          },
-          "required": ["version"]
-        },
-        {
-          "$ref": "https://raw.githubusercontent.com/ory/keto/v0.8.0-alpha.2/.schema/config.schema.json"
-        }
-      ]
-    },
-    {
-      "allOf": [
-        {
-          "properties": {
-            "version": {
-              "const": "v0.6.0-alpha.1"
-            }
-          },
-          "required": ["version"]
-        },
-        {
-          "$ref": "https://raw.githubusercontent.com/ory/keto/v0.6.0-alpha.1/internal/driver/config/config.schema.json"
-        }
-      ]
-    },
-    {
-      "allOf": [
-        {
-          "properties": {
-            "version": {
-              "const": "v0.6.0-alpha.3"
-            }
-          },
-          "required": ["version"]
-        },
-        {
-          "$ref": "https://raw.githubusercontent.com/ory/keto/v0.6.0-alpha.3/internal/driver/config/config.schema.json"
-        }
-      ]
-    },
-    {
-      "allOf": [
-        {
-          "properties": {
-            "version": {
-              "const": "v0.7.0-alpha.0"
-            }
-          },
-          "required": ["version"]
-        },
-        {
-          "$ref": "https://raw.githubusercontent.com/ory/keto/v0.7.0-alpha.0/.schema/config.schema.json"
-        }
-      ]
-    },
-    {
-      "allOf": [
-        {
-          "properties": {
-            "version": {
-              "const": "v0.7.0-alpha.1"
-            }
-          },
-          "required": ["version"]
-        },
-        {
-          "$ref": "https://raw.githubusercontent.com/ory/keto/v0.7.0-alpha.1/.schema/config.schema.json"
-        }
-      ]
-    },
-    {
-      "allOf": [
-        {
-          "properties": {
-            "version": {
-              "const": "v0.8.0-alpha.1"
-            }
-          },
-          "required": ["version"]
-        },
-        {
-          "$ref": "https://raw.githubusercontent.com/ory/keto/v0.8.0-alpha.1/.schema/config.schema.json"
-        }
-      ]
-    },
-    {
-      "allOf": [
-        {
-          "oneOf": [
-            {
-              "properties": {
-                "version": {
-                  "type": "string",
-                  "maxLength": 0
-                }
-              },
-              "required": ["version"]
-            },
-            {
-              "not": {
-                "properties": {
-                  "version": {}
+            "allOf": [
+                {
+                    "properties": {
+                        "version": {
+                            "const": "v0.14.0"
+                        }
+                    },
+                    "required": [
+                        "version"
+                    ]
                 },
-                "required": ["version"]
-              }
-            }
-          ]
+                {
+                    "$ref": "https://raw.githubusercontent.com/ory/keto/v0.14.0/.schema/config.schema.json"
+                }
+            ]
         },
         {
-          "$ref": "#/oneOf/0/allOf/1"
+            "allOf": [
+                {
+                    "properties": {
+                        "version": {
+                            "const": "v0.12.0-alpha.0"
+                        }
+                    },
+                    "required": [
+                        "version"
+                    ]
+                },
+                {
+                    "$ref": "https://raw.githubusercontent.com/ory/keto/v0.12.0-alpha.0/.schema/config.schema.json"
+                }
+            ]
+        },
+        {
+            "allOf": [
+                {
+                    "properties": {
+                        "version": {
+                            "const": "v0.11.1-alpha.0"
+                        }
+                    },
+                    "required": [
+                        "version"
+                    ]
+                },
+                {
+                    "$ref": "https://raw.githubusercontent.com/ory/keto/v0.11.1-alpha.0/.schema/config.schema.json"
+                }
+            ]
+        },
+        {
+            "allOf": [
+                {
+                    "properties": {
+                        "version": {
+                            "const": "v0.11.0-alpha.0"
+                        }
+                    },
+                    "required": [
+                        "version"
+                    ]
+                },
+                {
+                    "$ref": "https://raw.githubusercontent.com/ory/keto/v0.11.0-alpha.0/.schema/config.schema.json"
+                }
+            ]
+        },
+        {
+            "allOf": [
+                {
+                    "properties": {
+                        "version": {
+                            "const": "v0.10.0-alpha.0"
+                        }
+                    },
+                    "required": [
+                        "version"
+                    ]
+                },
+                {
+                    "$ref": "https://raw.githubusercontent.com/ory/keto/v0.10.0-alpha.0/.schema/config.schema.json"
+                }
+            ]
+        },
+        {
+            "allOf": [
+                {
+                    "properties": {
+                        "version": {
+                            "const": "v0.9.0-alpha.0"
+                        }
+                    },
+                    "required": [
+                        "version"
+                    ]
+                },
+                {
+                    "$ref": "https://raw.githubusercontent.com/ory/keto/v0.9.0-alpha.0/.schema/config.schema.json"
+                }
+            ]
+        },
+        {
+            "allOf": [
+                {
+                    "properties": {
+                        "version": {
+                            "const": "v0.8.0-alpha.2"
+                        }
+                    },
+                    "required": [
+                        "version"
+                    ]
+                },
+                {
+                    "$ref": "https://raw.githubusercontent.com/ory/keto/v0.8.0-alpha.2/.schema/config.schema.json"
+                }
+            ]
+        },
+        {
+            "allOf": [
+                {
+                    "properties": {
+                        "version": {
+                            "const": "v0.6.0-alpha.1"
+                        }
+                    },
+                    "required": [
+                        "version"
+                    ]
+                },
+                {
+                    "$ref": "https://raw.githubusercontent.com/ory/keto/v0.6.0-alpha.1/internal/driver/config/config.schema.json"
+                }
+            ]
+        },
+        {
+            "allOf": [
+                {
+                    "properties": {
+                        "version": {
+                            "const": "v0.6.0-alpha.3"
+                        }
+                    },
+                    "required": [
+                        "version"
+                    ]
+                },
+                {
+                    "$ref": "https://raw.githubusercontent.com/ory/keto/v0.6.0-alpha.3/internal/driver/config/config.schema.json"
+                }
+            ]
+        },
+        {
+            "allOf": [
+                {
+                    "properties": {
+                        "version": {
+                            "const": "v0.7.0-alpha.0"
+                        }
+                    },
+                    "required": [
+                        "version"
+                    ]
+                },
+                {
+                    "$ref": "https://raw.githubusercontent.com/ory/keto/v0.7.0-alpha.0/.schema/config.schema.json"
+                }
+            ]
+        },
+        {
+            "allOf": [
+                {
+                    "properties": {
+                        "version": {
+                            "const": "v0.7.0-alpha.1"
+                        }
+                    },
+                    "required": [
+                        "version"
+                    ]
+                },
+                {
+                    "$ref": "https://raw.githubusercontent.com/ory/keto/v0.7.0-alpha.1/.schema/config.schema.json"
+                }
+            ]
+        },
+        {
+            "allOf": [
+                {
+                    "properties": {
+                        "version": {
+                            "const": "v0.8.0-alpha.1"
+                        }
+                    },
+                    "required": [
+                        "version"
+                    ]
+                },
+                {
+                    "$ref": "https://raw.githubusercontent.com/ory/keto/v0.8.0-alpha.1/.schema/config.schema.json"
+                }
+            ]
+        },
+        {
+            "allOf": [
+                {
+                    "oneOf": [
+                        {
+                            "properties": {
+                                "version": {
+                                    "type": "string",
+                                    "maxLength": 0
+                                }
+                            },
+                            "required": [
+                                "version"
+                            ]
+                        },
+                        {
+                            "not": {
+                                "properties": {
+                                    "version": {}
+                                },
+                                "required": [
+                                    "version"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "$ref": "#/oneOf/0/allOf/1"
+                }
+            ]
         }
-      ]
-    }
-  ],
-  "title": "All Versions of the ORY Keto Configuration",
-  "type": "object"
+    ],
+    "title": "All Versions of the ORY Keto Configuration",
+    "type": "object"
 }
