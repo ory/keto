@@ -5,7 +5,7 @@
 
 **Table of Contents**
 
-- [0.0.0 (2025-03-12)](#000-2025-03-12)
+- [0.0.0 (2025-03-17)](#000-2025-03-17)
 - [0.14.0 (2025-03-06)](#0140-2025-03-06)
   - [Bug Fixes](#bug-fixes)
   - [Code Generation](#code-generation)
@@ -163,7 +163,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.14.0...v0.0.0) (2025-03-12)
+# [0.0.0](https://github.com/ory/keto/compare/v0.14.0...v0.0.0) (2025-03-17)
 
 # [0.14.0](https://github.com/ory/keto/compare/v0.13.0-alpha.0...v0.14.0) (2025-03-06)
 
