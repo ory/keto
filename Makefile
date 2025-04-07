@@ -109,10 +109,10 @@ test-e2e:
 .PHONY: test-docs-samples
 test-docs-samples:
 	go tool -n jd # Apparently on the first run the path is the temporary build output and will be deleted again. Later invocations use the correct go build cache path.
-	PATH=$$PATH:$$(dirname "$$(go tool -n jd)") \
-		cd ./contrib/docs-code-samples && \
+	PATH=$$PATH:$$(dirname "$$(go tool -n jd)") && \
+		(cd ./contrib/docs-code-samples && \
 		npm i && \
-		npm test
+		npm test)
 
 .PHONY: fuzz-test
 fuzz-test:
