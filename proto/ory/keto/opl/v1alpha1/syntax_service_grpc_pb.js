@@ -43,4 +43,4 @@ check: {
   },
 };
 
-exports.SyntaxServiceClient = grpc.makeGenericClientConstructor(SyntaxServiceService);
+exports.SyntaxServiceClient = grpc.makeGenericClientConstructor(SyntaxServiceService, 'SyntaxService');

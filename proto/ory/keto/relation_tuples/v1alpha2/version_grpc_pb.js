@@ -45,4 +45,4 @@ getVersion: {
   },
 };
 
-exports.VersionServiceClient = grpc.makeGenericClientConstructor(VersionServiceService);
+exports.VersionServiceClient = grpc.makeGenericClientConstructor(VersionServiceService, 'VersionService');

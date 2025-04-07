@@ -11,7 +11,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/dgraph-io/ristretto"
+	"github.com/dgraph-io/ristretto/v2"
 	"github.com/ory/x/logrusx"
 	"github.com/ory/x/urlx"
 	"github.com/ory/x/watcherx"

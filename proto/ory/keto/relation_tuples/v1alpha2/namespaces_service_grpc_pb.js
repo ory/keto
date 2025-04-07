@@ -45,4 +45,4 @@ listNamespaces: {
   },
 };
 
-exports.NamespacesServiceClient = grpc.makeGenericClientConstructor(NamespacesServiceService);
+exports.NamespacesServiceClient = grpc.makeGenericClientConstructor(NamespacesServiceService, 'NamespacesService');
