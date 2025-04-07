@@ -82,7 +82,7 @@ build:
 #
 .PHONY: buf-gen
 buf-gen: node_modules
-	@echo $(shell go tool -n protoc-gen-doc)
+	go tool -n protoc-gen-doc # Apparently on the first run the path is the temporary build output and will be deleted again. Later invocations use the correct go build cache path.
 	PATH=$$PATH:$(shell dirname "$$(go tool -n protoc-gen-doc)") \
 		go tool buf generate proto
 	make format
@@ -108,6 +108,7 @@ test-e2e:
 
 .PHONY: test-docs-samples
 test-docs-samples:
+	go tool -n jd # Apparently on the first run the path is the temporary build output and will be deleted again. Later invocations use the correct go build cache path.
 	PATH=$$PATH:$(shell dirname "$$(go tool -n jd)") \
 		cd ./contrib/docs-code-samples && \
 		npm i && \
