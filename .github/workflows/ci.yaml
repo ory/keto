@@ -37,7 +37,7 @@ jobs:
         env:
           GOGC: 100
         with:
-          version: v1.61.0
+          version: v1.64.8
           args: --timeout 10m0s --issues-exit-code=0
       - name: Test documentation examples
         run: make test-docs-samples
