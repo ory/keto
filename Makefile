@@ -82,6 +82,7 @@ build:
 #
 .PHONY: buf-gen
 buf-gen: node_modules
+	@echo $(shell go tool -n protoc-gen-doc)
 	PATH=$$PATH:$(shell dirname "$$(go tool -n protoc-gen-doc)") \
 		go tool buf generate proto
 	make format
