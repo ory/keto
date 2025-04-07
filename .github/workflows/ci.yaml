@@ -85,6 +85,8 @@ jobs:
       - name: Test Keto
         run: |
           go test -coverprofile coverage.txt -tags sqlite ./...
+          grep -v "ory/keto/internal/httpclient" coverage.txt > coverage_cleared.txt
+          mv coverage_cleared.txt coverage.txt
       - run: |
           go tool goveralls -service=github -coverprofile=coverage.txt
         env:
