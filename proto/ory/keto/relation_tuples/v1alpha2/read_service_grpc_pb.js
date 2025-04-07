@@ -47,4 +47,4 @@ listRelationTuples: {
   },
 };
 
-exports.ReadServiceClient = grpc.makeGenericClientConstructor(ReadServiceService);
+exports.ReadServiceClient = grpc.makeGenericClientConstructor(ReadServiceService, 'ReadService');

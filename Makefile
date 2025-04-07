@@ -2,30 +2,12 @@ SHELL=/bin/bash -o pipefail
 
 export PWD				:= $(shell pwd)
 export PATH				:= ${PWD}/.bin:${PATH}
-export IMAGE_TAG	:= $(if $(IMAGE_TAG),$(IMAGE_TAG),latest)
-
-GO_DEPENDENCIES = golang.org/x/tools/cmd/goimports \
-				  github.com/mattn/goveralls \
-				  github.com/ory/go-acc \
-				  github.com/bufbuild/buf/cmd/buf \
-				  github.com/pseudomuto/protoc-gen-doc/cmd/protoc-gen-doc \
-				  github.com/josephburnett/jd \
-				  github.com/mikefarah/yq/v4 \
-				  golang.org/x/tools/cmd/stringer \
-				  github.com/go-swagger/go-swagger/cmd/swagger \
-				  github.com/mdempsky/go114-fuzz-build
+export IMAGE_TAG		:= $(if $(IMAGE_TAG),$(IMAGE_TAG),latest)
 
 SCRIPT_DEPENDENCIES = grype \
 					trivy \
 					ory \
 					licenses
-
-define make-go-dependency
-  # go install is responsible for not re-building when the code hasn't changed
-  .bin/$2: .bin/go.sum
-		cd .bin; GOBIN=$(PWD)/.bin go install $1
-endef
-$(foreach dep, $(GO_DEPENDENCIES), $(eval $(call make-go-dependency,$(dep),$(notdir $(dep)))))
 
 define make-script-dependency
   # each script is responsible to figure out whether it should re-install
@@ -35,9 +17,6 @@ define make-script-dependency
 endef
 $(foreach dep, $(SCRIPT_DEPENDENCIES), $(eval $(call make-script-dependency,$(dep))))
 
-.bin/yq: .bin/go.mod .bin/go.sum
-	cd .bin; GOBIN=$(PWD)/.bin go install github.com/mikefarah/yq/v4
-
 .PHONY: .bin/clidoc
 .bin/clidoc:
 	go build -o .bin/clidoc ./cmd/clidoc/.
@@ -46,9 +25,9 @@ authors:  # updates the AUTHORS file
 	curl https://raw.githubusercontent.com/ory/ci/master/authors/authors.sh | env PRODUCT="Ory Keto" bash
 
 .PHONY: format
-format: .bin/ory .bin/goimports node_modules
+format: .bin/ory node_modules
 	.bin/ory dev headers copyright --type=open-source --exclude=.bin --exclude=internal/httpclient --exclude=proto
-	.bin/goimports -w -local github.com/ory/keto *.go internal cmd contrib ketoctx ketoapi embedx
+	go tool goimports -w -local github.com/ory/keto *.go internal cmd contrib ketoctx ketoapi embedx
 	npm exec -- prettier --write .
 
 .PHONY: install
@@ -61,15 +40,15 @@ docker:
 
 # Generates the SDKs
 .PHONY: sdk
-sdk: .bin/swagger .bin/ory node_modules
+sdk: .bin/ory node_modules
 	rm -rf internal/httpclient
-	swagger generate spec -m -o spec/swagger.json \
+	go tool swagger generate spec -m -o spec/swagger.json \
 		-c github.com/ory/keto \
 		-c github.com/ory/x/healthx \
 		-x internal/httpclient \
 		-x internal/e2e
 	.bin/ory dev swagger sanitize ./spec/swagger.json
-	swagger validate ./spec/swagger.json
+	go tool swagger validate ./spec/swagger.json
 	CIRCLE_PROJECT_USERNAME=ory CIRCLE_PROJECT_REPONAME=keto \
 		.bin/ory dev openapi migrate \
 			--health-path-tags metadata \
@@ -102,8 +81,10 @@ build:
 # Generate APIs and client stubs from the definitions
 #
 .PHONY: buf-gen
-buf-gen: .bin/buf .bin/protoc-gen-doc node_modules
-	buf generate proto
+buf-gen: node_modules
+	go tool -n protoc-gen-doc # Apparently on the first run the path is the temporary build output and will be deleted again. Later invocations use the correct go build cache path.
+	PATH=$$PATH:$$(dirname "$$(go tool -n protoc-gen-doc)") \
+		go tool buf generate proto
 	make format
 	@echo "All code was generated successfully!"
 
@@ -111,8 +92,8 @@ buf-gen: .bin/buf .bin/protoc-gen-doc node_modules
 # Lint API definitions
 #
 .PHONY: buf-lint
-buf-lint: .bin/buf
-	cd proto; buf lint
+buf-lint:
+	go tool buf lint ./proto
 	@echo "All lint checks passed successfully!"
 
 #
@@ -126,12 +107,12 @@ test-e2e:
 	go test -tags sqlite -failfast -v ./internal/e2e
 
 .PHONY: test-docs-samples
-test-docs-samples: .bin/jd
-	cd ./contrib/docs-code-samples \
-	&& \
-	npm i \
-	&& \
-	npm test
+test-docs-samples:
+	go tool -n jd # Apparently on the first run the path is the temporary build output and will be deleted again. Later invocations use the correct go build cache path.
+	PATH=$$PATH:$$(dirname "$$(go tool -n jd)") && \
+		(cd ./contrib/docs-code-samples && \
+		npm i && \
+		npm test)
 
 .PHONY: fuzz-test
 fuzz-test:
@@ -158,10 +139,10 @@ cve-scan: docker .bin/grype
 	grype oryd/keto:latest
 
 .PHONY: post-release
-post-release: .bin/yq
-	cat docker-compose.yml | yq '.services.keto.image = "oryd/keto:'$$DOCKER_TAG'"' | sponge docker-compose.yml
-	cat docker-compose-mysql.yml | yq '.services.keto-migrate.image = "oryd/keto:'$$DOCKER_TAG'"' | sponge docker-compose-mysql.yml
-	cat docker-compose-postgres.yml | yq '.services.keto-migrate.image = "oryd/keto:'$$DOCKER_TAG'"' | sponge docker-compose-postgres.yml
+post-release:
+	cat docker-compose.yml | go tool yq '.services.keto.image = "oryd/keto:'$$DOCKER_TAG'"' | sponge docker-compose.yml
+	cat docker-compose-mysql.yml | go tool yq '.services.keto-migrate.image = "oryd/keto:'$$DOCKER_TAG'"' | sponge docker-compose-mysql.yml
+	cat docker-compose-postgres.yml | go tool yq '.services.keto-migrate.image = "oryd/keto:'$$DOCKER_TAG'"' | sponge docker-compose-postgres.yml
 
 .PHONY: generate
 generate: .bin/stringer
