@@ -135,37 +135,6 @@ jobs:
         with:
           token: ${{ secrets.ORY_BOT_PAT }}
 
-  sdk-generate:
-    name: Generate SDKs
-    runs-on: ubuntu-latest
-    if:
-      ${{ github.ref_type == 'tag' || github.ref_name != 'master' ||
-      github.event_name == 'pull_request' }}
-    needs:
-      - test
-      - test-race
-      - validate
-    steps:
-      - uses: ory/ci/sdk/generate@master
-        with:
-          token: ${{ secrets.ORY_BOT_PAT }}
-
-  sdk-release:
-    name: Release SDKs
-    runs-on: ubuntu-latest
-    if: ${{ startsWith(github.ref, 'refs/tags/v') }}
-    needs:
-      - test
-      - test-race
-      - validate
-      - sdk-generate
-      - release
-    steps:
-      - uses: ory/ci/sdk/release@master
-        with:
-          token: ${{ secrets.ORY_BOT_PAT }}
-          swag-spec-location: spec/api.json
-
   release:
     name: Generate release
     runs-on: ubuntu-latest
