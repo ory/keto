@@ -15,7 +15,6 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/ory/keto/internal/namespace"
-	"github.com/ory/keto/internal/x"
 	"github.com/ory/keto/ketoapi"
 )
 
@@ -124,7 +123,7 @@ func runTransactionCases(c transactClient, m *namespaceTestManager) func(*testin
 			for {
 				r := c.queryTuple(t, &ketoapi.RelationQuery{
 					Namespace: &ns[0].Name,
-				}, x.WithSize(1000), x.WithToken(pt))
+				}, withSize(1000), withToken(pt))
 				resp = append(resp, r.RelationTuples...)
 				pt = r.NextPageToken
 				if pt == "" {

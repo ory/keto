@@ -4,7 +4,8 @@
 package relationtuple
 
 import (
-	"github.com/ory/keto/internal/x"
+	"github.com/ory/x/pagination/keysetpagination"
+
 	"github.com/ory/keto/ketoapi"
 )
 
@@ -66,7 +67,7 @@ type getRelationships struct {
 	SRelation string `json:"subject_set.relation"`
 
 	// swagger:allOf
-	x.PaginationOptions
+	keysetpagination.RequestParameters
 }
 
 // The relationship parameters in the URL query.

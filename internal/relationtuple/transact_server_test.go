@@ -15,6 +15,7 @@ import (
 	"testing"
 
 	"github.com/julienschmidt/httprouter"
+	"github.com/ory/x/pagination/keysetpagination"
 	"github.com/ory/x/pointerx"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -87,7 +88,7 @@ func TestWriteHandlers(t *testing.T) {
 				mapped, err := reg.Mapper().FromTuple(ctx, rt)
 				require.NoError(t, err)
 				// set a size > 1 just to make sure it gets all
-				actualRTs, _, err := reg.RelationTupleManager().GetRelationTuples(ctx, mapped[0].ToQuery(), x.WithSize(10))
+				actualRTs, _, err := reg.RelationTupleManager().GetRelationTuples(ctx, mapped[0].ToQuery(), keysetpagination.WithSize(10))
 				require.NoError(t, err)
 				actual, err := reg.Mapper().ToTuple(ctx, actualRTs...)
 				require.NoError(t, err)
@@ -146,7 +147,7 @@ func TestWriteHandlers(t *testing.T) {
 			require.NoError(t, err)
 			actualMapped, err := reg.Mapper().ToTuple(ctx, actual...)
 			require.NoError(t, err)
-			assert.Equal(t, "", next)
+			assert.True(t, next.IsLast())
 			assert.ElementsMatch(t, rts, actualMapped)
 		})
 	})
@@ -170,7 +171,7 @@ func TestWriteHandlers(t *testing.T) {
 			assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 
 			// set a size > 1 just to make sure it gets all
-			actualRTs, _, err := reg.RelationTupleManager().GetRelationTuples(ctx, &relationtuple.RelationQuery{Namespace: &nspace.Name}, x.WithSize(10))
+			actualRTs, _, err := reg.RelationTupleManager().GetRelationTuples(ctx, &relationtuple.RelationQuery{Namespace: &nspace.Name}, keysetpagination.WithSize(10))
 			require.NoError(t, err)
 			assert.Equal(t, []*relationtuple.RelationTuple{}, actualRTs)
 		})
@@ -211,7 +212,7 @@ func TestWriteHandlers(t *testing.T) {
 			mappedQuery, err := reg.Mapper().FromQuery(ctx, query)
 			require.NoError(t, err)
 
-			actualRTs, _, err := reg.RelationTupleManager().GetRelationTuples(ctx, mappedQuery, x.WithSize(10))
+			actualRTs, _, err := reg.RelationTupleManager().GetRelationTuples(ctx, mappedQuery, keysetpagination.WithSize(10))
 			require.NoError(t, err)
 			assert.Equal(t, []*relationtuple.RelationTuple{}, actualRTs)
 		})
@@ -248,7 +249,7 @@ func TestWriteHandlers(t *testing.T) {
 				})
 				require.NoError(t, err)
 
-				actualRTs, _, err := reg.RelationTupleManager().GetRelationTuples(ctx, mappedQuery, x.WithSize(10))
+				actualRTs, _, err := reg.RelationTupleManager().GetRelationTuples(ctx, mappedQuery, keysetpagination.WithSize(10))
 				require.NoError(t, err)
 				mappedRTs, err := reg.Mapper().ToTuple(ctx, actualRTs...)
 				require.NoError(t, err)
@@ -374,7 +375,7 @@ func TestWriteHandlers(t *testing.T) {
 			assert.Equal(t, http.StatusNotFound, resp.StatusCode)
 
 			// set a size > 1 just to make sure it gets all
-			actualRTs, _, err := reg.RelationTupleManager().GetRelationTuples(ctx, &relationtuple.RelationQuery{Namespace: &nspace.Name}, x.WithSize(10))
+			actualRTs, _, err := reg.RelationTupleManager().GetRelationTuples(ctx, &relationtuple.RelationQuery{Namespace: &nspace.Name}, keysetpagination.WithSize(10))
 			require.NoError(t, err)
 			assert.Len(t, actualRTs, 0)
 		})

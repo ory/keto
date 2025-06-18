@@ -463,12 +463,14 @@ github.com/ory/jsonschema/v3 v3.0.9-0.20250317235931-280c5fc7bf0e h1:4tUrC7x4YWR
 github.com/ory/jsonschema/v3 v3.0.9-0.20250317235931-280c5fc7bf0e/go.mod h1:XWLxVK4un/iuIcrw+6lCeanbF3NZwO5k6RdLeu/loQk=
 github.com/ory/pop/v6 v6.2.1-0.20241121111754-e5dfc0f3344b h1:BIzoOe2/wynZBQak1po0tzgvARseIKsR2bF6b+SZoKE=
 github.com/ory/pop/v6 v6.2.1-0.20241121111754-e5dfc0f3344b/go.mod h1:okVAYKGtgunD/wbW3NGhZTndJCS+6FqO+cA89rQ4doc=
-github.com/ory/x v0.0.708 h1:WX3DRhGr5LC9ys81bIl6SkqD7ooK6Mq6J+/3qh+zy8c=
-github.com/ory/x v0.0.708/go.mod h1:gEgiiLvpxJE+rruw8ZlYJT5Ow3nSA1PMSpAVI1e9/Ho=
+github.com/ory/x v0.0.720 h1:wZMkpDD6XUQtUdnd2Tfm/zbqGydRT9N9Gqcnaz1cqN0=
+github.com/ory/x v0.0.720/go.mod h1:FxgJl980fq/41JTPPloNawYPCY25KRYuMO98SRk1czc=
 github.com/pelletier/go-toml v1.9.5 h1:4yBQzkHv+7BHq2PQUZF3Mx0IYxG7LsP222s7Agd3ve8=
 github.com/pelletier/go-toml v1.9.5/go.mod h1:u1nR/EPcESfeI/szUZKdtJ0xRNbUoANCkoOuaOx1Y+c=
 github.com/pelletier/go-toml/v2 v2.2.3 h1:YmeHyLY8mFWbdkNWwpr+qIL2bEqT0o95WSdkNHvL12M=
 github.com/pelletier/go-toml/v2 v2.2.3/go.mod h1:MfCQTFTvCcUyyvvwm1+G6H/jORL20Xlb6rzQu9GuUkc=
+github.com/peterhellberg/link v1.2.0 h1:UA5pg3Gp/E0F2WdX7GERiNrPQrM1K6CVJUUWfHa4t6c=
+github.com/peterhellberg/link v1.2.0/go.mod h1:gYfAh+oJgQu2SrZHg5hROVRQe1ICoK0/HHJTcE0edxc=
 github.com/pkg/browser v0.0.0-20240102092130-5ac0b6a4141c h1:+mdjkGKdHQG3305AYmdv1U2eRNDiU2ErMBj1gwrq8eQ=
 github.com/pkg/browser v0.0.0-20240102092130-5ac0b6a4141c/go.mod h1:7rwL4CYBLnjLxUqIJNnCWiEdr3bn6IUYi15bNlnbCCU=
 github.com/pkg/diff v0.0.0-20210226163009-20ebb0f2a09e h1:aoZm08cpOy4WuID//EZDgcC4zIxODThtZNPirFr42+A=

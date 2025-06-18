@@ -9,8 +9,8 @@ import (
 	"sync"
 
 	"github.com/gofrs/uuid"
+	"github.com/ory/x/pagination/keysetpagination"
 
-	"github.com/ory/keto/internal/x"
 	"github.com/ory/keto/ketoapi"
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 )
@@ -24,7 +24,7 @@ type (
 		TraverseSubjectSetRewrite(ctx context.Context, tuple *RelationTuple, computedSubjectSets []string) ([]*TraversalResult, error)
 	}
 	Manager interface {
-		GetRelationTuples(ctx context.Context, query *RelationQuery, options ...x.PaginationOptionSetter) ([]*RelationTuple, string, error)
+		GetRelationTuples(ctx context.Context, query *RelationQuery, options ...keysetpagination.Option) ([]*RelationTuple, *keysetpagination.Paginator, error)
 		ExistsRelationTuples(ctx context.Context, query *RelationQuery) (bool, error)
 		WriteRelationTuples(ctx context.Context, rs ...*RelationTuple) error
 		DeleteRelationTuples(ctx context.Context, rs ...*RelationTuple) error
@@ -146,8 +146,8 @@ func (t *RelationTuple) ToProto() *rts.RelationTuple {
 
 type ManagerWrapper struct {
 	Reg            ManagerProvider
-	PageOpts       []x.PaginationOptionSetter
-	RequestedPages []string
+	PageOpts       []keysetpagination.Option
+	RequestedPages []keysetpagination.PageToken
 	// lock is necessary so that GetRelationTuples() is safe for concurrency.
 	requestedPagesLock sync.Mutex
 }
@@ -157,18 +157,18 @@ var (
 	_ ManagerProvider = (*ManagerWrapper)(nil)
 )
 
-func NewManagerWrapper(_ any, reg ManagerProvider, options ...x.PaginationOptionSetter) *ManagerWrapper {
+func NewManagerWrapper(_ any, reg ManagerProvider, options ...keysetpagination.Option) *ManagerWrapper {
 	return &ManagerWrapper{
 		Reg:      reg,
 		PageOpts: options,
 	}
 }
 
-func (t *ManagerWrapper) GetRelationTuples(ctx context.Context, query *RelationQuery, options ...x.PaginationOptionSetter) ([]*RelationTuple, string, error) {
-	opts := x.GetPaginationOptions(options...)
+func (t *ManagerWrapper) GetRelationTuples(ctx context.Context, query *RelationQuery, options ...keysetpagination.Option) ([]*RelationTuple, *keysetpagination.Paginator, error) {
+	p := keysetpagination.GetPaginator(options...)
 	t.requestedPagesLock.Lock()
 	defer t.requestedPagesLock.Unlock()
-	t.RequestedPages = append(t.RequestedPages, opts.Token)
+	t.RequestedPages = append(t.RequestedPages, p.Token())
 	return t.Reg.RelationTupleManager().GetRelationTuples(ctx, query, append(t.PageOpts, options...)...)
 }
 

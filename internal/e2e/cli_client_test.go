@@ -22,7 +22,6 @@ import (
 	cliexpand "github.com/ory/keto/cmd/expand"
 	clirelationtuple "github.com/ory/keto/cmd/relationtuple"
 	"github.com/ory/keto/internal/check"
-	"github.com/ory/keto/internal/x"
 	"github.com/ory/keto/ketoapi"
 )
 
@@ -51,7 +50,7 @@ func (g *cliClient) createTuple(t *testing.T, r *ketoapi.RelationTuple) {
 	assert.Len(t, stderr, 0, stdout)
 }
 
-func (g *cliClient) assembleQueryFlags(q *ketoapi.RelationQuery, opts []x.PaginationOptionSetter) []string {
+func (g *cliClient) assembleQueryFlags(q *ketoapi.RelationQuery, opts []paginationOptionSetter) []string {
 	var flags []string
 	if q.Namespace != nil {
 		flags = append(flags, "--"+clirelationtuple.FlagNamespace, *q.Namespace)
@@ -68,7 +67,7 @@ func (g *cliClient) assembleQueryFlags(q *ketoapi.RelationQuery, opts []x.Pagina
 	if q.Object != nil {
 		flags = append(flags, "--"+clirelationtuple.FlagObject, *q.Object)
 	}
-	pagination := x.GetPaginationOptions(opts...)
+	pagination := getPaginationOptions(opts...)
 	if pagination.Token != "" {
 		flags = append(flags, "--"+clirelationtuple.FlagPageToken, pagination.Token)
 	}
@@ -78,7 +77,7 @@ func (g *cliClient) assembleQueryFlags(q *ketoapi.RelationQuery, opts []x.Pagina
 	return flags
 }
 
-func (g *cliClient) queryTuple(t *testing.T, q *ketoapi.RelationQuery, opts ...x.PaginationOptionSetter) *ketoapi.GetResponse {
+func (g *cliClient) queryTuple(t *testing.T, q *ketoapi.RelationQuery, opts ...paginationOptionSetter) *ketoapi.GetResponse {
 	out := g.c.ExecNoErr(t, append(g.assembleQueryFlags(q, opts), "relation-tuple", "get")...)
 
 	var resp ketoapi.GetResponse
@@ -87,7 +86,7 @@ func (g *cliClient) queryTuple(t *testing.T, q *ketoapi.RelationQuery, opts ...x
 	return &resp
 }
 
-func (g *cliClient) queryTupleErr(t *testing.T, expected herodot.DefaultError, q *ketoapi.RelationQuery, opts ...x.PaginationOptionSetter) {
+func (g *cliClient) queryTupleErr(t *testing.T, expected herodot.DefaultError, q *ketoapi.RelationQuery, opts ...paginationOptionSetter) {
 	stdErr := g.c.ExecExpectedErr(t, append(g.assembleQueryFlags(q, opts), "relation-tuple", "get")...)
 	assert.Contains(t, stdErr, expected.GRPCCodeField.String())
 	assert.Contains(t, stdErr, expected.Error())

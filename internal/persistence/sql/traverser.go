@@ -95,10 +95,7 @@ LIMIT ?
 		}
 
 		for _, r := range rows {
-			to, err := r.RelationTuple.ToInternal()
-			if err != nil {
-				return nil, errors.WithStack(err)
-			}
+			to := r.RelationTuple.ToInternal()
 			to.Subject = start.Subject
 			res = append(res, &relationtuple.TraversalResult{
 				From:  start,
@@ -159,10 +156,7 @@ func (t *Traverser) TraverseSubjectSetRewrite(ctx context.Context, start *relati
 		// If we got any rows back, success!
 		if len(rows) > 0 {
 			r := rows[0]
-			to, err := r.ToInternal()
-			if err != nil {
-				return nil, errors.WithStack(err)
-			}
+			to := r.ToInternal()
 			return []*relationtuple.TraversalResult{{
 				From:  start,
 				To:    to,

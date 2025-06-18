@@ -17,6 +17,7 @@ import (
 	"github.com/ory/x/fsx"
 	"github.com/ory/x/logrusx"
 	"github.com/ory/x/networkx"
+	"github.com/ory/x/pagination/keysetpagination"
 	"github.com/ory/x/pointerx"
 	"github.com/ory/x/popx"
 	"github.com/ory/x/sqlcon"
@@ -30,7 +31,6 @@ import (
 	"github.com/ory/keto/internal/persistence/sql"
 	"github.com/ory/keto/internal/persistence/sql/migrations/uuidmapping"
 	"github.com/ory/keto/internal/relationtuple"
-	"github.com/ory/keto/internal/x"
 	"github.com/ory/keto/internal/x/dbx"
 	"github.com/ory/keto/ketoapi"
 )
@@ -101,7 +101,7 @@ func TestMigrations(t *testing.T) {
 				t.Run("table=relationships", func(t *testing.T) {
 					actualRts, next, err := p.GetRelationTuples(ctx, &relationtuple.RelationQuery{Namespace: &namespaces[0].Name})
 					require.NoError(t, err)
-					assert.Equal(t, "", next)
+					assert.True(t, next.IsLast())
 					t.Log("actual rts:", actualRts)
 
 					expectedRts := []*ketoapi.RelationTuple{
@@ -199,8 +199,13 @@ func TestMigrations(t *testing.T) {
 					require.NoError(t, p.Connection(ctx).Create(oldRTs))
 					require.NoError(t, tm.Up(ctx))
 
-					newRTs, _, err := p.GetRelationTuples(ctx, &relationtuple.RelationQuery{Relation: pointerx.Ptr("pagination-works")}, x.WithSize(len(oldRTs)))
-					require.NoError(t, err)
+					newRTs := make([]*relationtuple.RelationTuple, 0, len(oldRTs))
+					for nextPage := keysetpagination.GetPaginator(); !nextPage.IsLast(); {
+						var rts []*relationtuple.RelationTuple
+						rts, nextPage, err = p.GetRelationTuples(ctx, &relationtuple.RelationQuery{Relation: pointerx.Ptr("pagination-works")}, nextPage.ToOptions()...)
+						require.NoError(t, err)
+						newRTs = append(newRTs, rts...)
+					}
 					assert.Len(t, newRTs, len(oldRTs))
 					actual, err := reg.Mapper().ToTuple(ctx, newRTs...)
 					require.NoError(t, err)

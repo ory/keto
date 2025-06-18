@@ -15,7 +15,6 @@ import (
 
 	"github.com/ory/keto/internal/expand"
 	"github.com/ory/keto/internal/namespace"
-	"github.com/ory/keto/internal/x"
 	"github.com/ory/keto/ketoapi"
 )
 
@@ -281,8 +280,8 @@ func runCases(c client, m *namespaceTestManager) func(*testing.T) {
 						Namespace: &n.Name,
 						Relation:  &rel,
 					},
-					x.WithToken(resp.NextPageToken),
-					x.WithSize(1),
+					withToken(resp.NextPageToken),
+					withSize(1),
 				)
 				nPages++
 				assert.Len(t, resp.RelationTuples, 1)

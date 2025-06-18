@@ -84,17 +84,6 @@ func (p *Persister) SetNetwork(nid uuid.UUID) {
 	p.nid = nid
 }
 
-func internalPaginationFromOptions(opts ...x.PaginationOptionSetter) (*internalPagination, error) {
-	xp := x.GetPaginationOptions(opts...)
-	ip := &internalPagination{
-		PerPage: xp.Size,
-	}
-	if ip.PerPage == 0 {
-		ip.PerPage = defaultPageSize
-	}
-	return ip, ip.parsePageToken(xp.Token)
-}
-
 func (p *internalPagination) parsePageToken(t string) error {
 	if t == "" {
 		p.LastID = uuid.Nil

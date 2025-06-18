@@ -24,7 +24,6 @@ import (
 	client2 "github.com/ory/keto/internal/httpclient"
 	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/internal/schema"
-	"github.com/ory/keto/internal/x"
 	"github.com/ory/keto/ketoapi"
 )
 
@@ -87,10 +86,10 @@ func (rc *restClient) deleteAllTuples(t *testing.T, q *ketoapi.RelationQuery) {
 	require.Equal(t, http.StatusNoContent, code, body)
 }
 
-func (rc *restClient) queryTuple(t *testing.T, q *ketoapi.RelationQuery, opts ...x.PaginationOptionSetter) *ketoapi.GetResponse {
+func (rc *restClient) queryTuple(t *testing.T, q *ketoapi.RelationQuery, opts ...paginationOptionSetter) *ketoapi.GetResponse {
 	urlQuery := q.ToURLQuery()
 
-	pagination := x.GetPaginationOptions(opts...)
+	pagination := getPaginationOptions(opts...)
 	if pagination.Size != 0 {
 		urlQuery.Set("page_size", strconv.Itoa(pagination.Size))
 	}
@@ -107,10 +106,10 @@ func (rc *restClient) queryTuple(t *testing.T, q *ketoapi.RelationQuery, opts ..
 	return &dec
 }
 
-func (rc *restClient) queryTupleErr(t *testing.T, expected herodot.DefaultError, q *ketoapi.RelationQuery, opts ...x.PaginationOptionSetter) {
+func (rc *restClient) queryTupleErr(t *testing.T, expected herodot.DefaultError, q *ketoapi.RelationQuery, opts ...paginationOptionSetter) {
 	urlQuery := q.ToURLQuery()
 
-	pagination := x.GetPaginationOptions(opts...)
+	pagination := getPaginationOptions(opts...)
 	if pagination.Size != 0 {
 		urlQuery.Set("page_size", strconv.Itoa(pagination.Size))
 	}

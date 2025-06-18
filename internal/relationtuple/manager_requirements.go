@@ -10,16 +10,14 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/ory/x/pointerx"
-
-	"github.com/ory/keto/ketoapi"
-
 	"github.com/gofrs/uuid"
-
+	"github.com/ory/x/pagination/keysetpagination"
+	"github.com/ory/x/pointerx"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
 	"github.com/ory/keto/internal/x"
+	"github.com/ory/keto/ketoapi"
 )
 
 func ManagerTest(t *testing.T, m Manager) {
@@ -54,7 +52,7 @@ func ManagerTest(t *testing.T, m Manager) {
 				Namespace: pointerx.Ptr(nspace),
 			})
 			require.NoError(t, err)
-			assert.Equal(t, "", nextPage)
+			assert.True(t, nextPage.IsLast())
 			assert.ElementsMatch(t, tuples, resp)
 		})
 	})
@@ -167,7 +165,7 @@ func ManagerTest(t *testing.T, m Manager) {
 				t.Run(fmt.Sprintf("case=%d", i), func(t *testing.T) {
 					res, nextPage, err := m.GetRelationTuples(ctx, tc.query)
 					require.NoError(t, err)
-					assert.Equal(t, "", nextPage)
+					assert.True(t, nextPage.IsLast())
 					assert.ElementsMatch(t, tc.expected, res)
 				})
 			}
@@ -192,43 +190,35 @@ func ManagerTest(t *testing.T, m Manager) {
 			notEncounteredTuples := make([]*RelationTuple, len(tuples))
 			copy(notEncounteredTuples, tuples)
 
-			var nextPage string
+			var (
+				res, thisPage []*RelationTuple
+				err           error
+			)
+			nextPage := keysetpagination.GetPaginator(keysetpagination.WithSize(1))
 			for range tuples[:len(tuples)-1] {
-				var (
-					res []*RelationTuple
-					err error
-				)
-
-				res, nextPage, err = m.GetRelationTuples(ctx, &RelationQuery{
+				thisPage, nextPage, err = m.GetRelationTuples(ctx, &RelationQuery{
 					Namespace: pointerx.Ptr(nspace),
 					Object:    &oID,
 					Relation:  pointerx.Ptr("r"),
-				}, x.WithSize(1), x.WithToken(nextPage))
+				}, nextPage.ToOptions()...)
 				require.NoError(t, err)
-				assert.NotEqual(t, "", nextPage)
-				require.Len(t, res, 1)
+				assert.False(t, nextPage.IsLast())
+				require.Len(t, thisPage, 1)
 
-				var found bool
-				for i, r := range notEncounteredTuples {
-					if assert.ObjectsAreEqual(r, res[0]) {
-						found = true
-						notEncounteredTuples[i] = notEncounteredTuples[len(notEncounteredTuples)-1]
-						notEncounteredTuples = notEncounteredTuples[:len(notEncounteredTuples)-1]
-						break
-					}
-				}
-				assert.True(t, found, "not encountered: %+v, res: %+v", notEncounteredTuples, res[0])
+				res = append(res, thisPage[0])
 			}
 
-			res, nextPage, err := m.GetRelationTuples(ctx, &RelationQuery{
+			thisPage, nextPage, err = m.GetRelationTuples(ctx, &RelationQuery{
 				Namespace: pointerx.Ptr(nspace),
 				Object:    &oID,
 				Relation:  pointerx.Ptr("r"),
-			}, x.WithSize(1), x.WithToken(nextPage))
+			}, nextPage.ToOptions()...)
 			require.NoError(t, err)
-			assert.Equal(t, "", nextPage)
-			assert.Len(t, res, 1)
-			assert.Equal(t, notEncounteredTuples, res)
+			assert.True(t, nextPage.IsLast())
+			require.Len(t, thisPage, 1)
+
+			res = append(res, thisPage[0])
+			assert.ElementsMatch(t, tuples, res)
 		})
 
 		t.Run("case=empty list", func(t *testing.T) {
@@ -240,7 +230,7 @@ func ManagerTest(t *testing.T, m Manager) {
 
 			assert.NoError(t, err)
 			assert.Equal(t, []*RelationTuple{}, res)
-			assert.Equal(t, "", nextPage)
+			assert.True(t, nextPage.IsLast())
 		})
 	})
 

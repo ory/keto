@@ -14,13 +14,13 @@ import (
 	"github.com/gobuffalo/pop/v6"
 	"github.com/gofrs/uuid"
 	"github.com/ory/x/otelx"
+	"github.com/ory/x/pagination/keysetpagination"
 	"github.com/ory/x/sqlcon"
 	"github.com/pkg/errors"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
 
 	"github.com/ory/keto/internal/relationtuple"
-	"github.com/ory/keto/internal/x"
 	"github.com/ory/keto/ketoapi"
 )
 
@@ -45,7 +45,7 @@ type (
 		SubjectSetRelation  sql.NullString `db:"subject_set_relation"`
 		CommitTime          time.Time      `db:"commit_time"`
 	}
-	relationTuples []*RelationTuple
+	relationTuples []RelationTuple
 )
 
 func (relationTuples) TableName() string {
@@ -56,9 +56,9 @@ func (*RelationTuple) TableName() string {
 	return "keto_relation_tuples"
 }
 
-func (r *RelationTuple) ToInternal() (*relationtuple.RelationTuple, error) {
+func (r *RelationTuple) ToInternal() *relationtuple.RelationTuple {
 	if r == nil {
-		return nil, nil
+		return nil
 	}
 
 	rt := &relationtuple.RelationTuple{
@@ -79,7 +79,7 @@ func (r *RelationTuple) ToInternal() (*relationtuple.RelationTuple, error) {
 		}
 	}
 
-	return rt, nil
+	return rt
 }
 
 func (r *RelationTuple) insertSubject(s relationtuple.Subject) error {
@@ -109,6 +109,10 @@ func (r *RelationTuple) FromInternal(rt *relationtuple.RelationTuple) (err error
 	return r.insertSubject(rt.Subject)
 }
 
+func (r *RelationTuple) PageToken() keysetpagination.PageToken {
+	return keysetpagination.StringPageToken(r.ID.String())
+}
+
 func (p *Persister) whereSubject(_ context.Context, q *pop.Query, sub relationtuple.Subject) error {
 	switch s := sub.(type) {
 	case *relationtuple.SubjectID:
@@ -133,13 +137,13 @@ func (p *Persister) whereSubject(_ context.Context, q *pop.Query, sub relationtu
 
 func (p *Persister) whereQuery(ctx context.Context, q *pop.Query, rq *relationtuple.RelationQuery) error {
 	if rq.Namespace != nil {
-		q.Where("namespace = ?", rq.Namespace)
+		q.Where("namespace = ?", *rq.Namespace)
 	}
 	if rq.Object != nil {
-		q.Where("object = ?", rq.Object)
+		q.Where("object = ?", *rq.Object)
 	}
 	if rq.Relation != nil {
-		q.Where("relation = ?", rq.Relation)
+		q.Where("relation = ?", *rq.Relation)
 	}
 	if s := rq.Subject; s != nil {
 		if err := p.whereSubject(ctx, q, s); err != nil {
@@ -216,46 +220,32 @@ func (p *Persister) DeleteAllRelationTuples(ctx context.Context, query *relation
 	})
 }
 
-func (p *Persister) GetRelationTuples(ctx context.Context, query *relationtuple.RelationQuery, options ...x.PaginationOptionSetter) (_ []*relationtuple.RelationTuple, nextPageToken string, err error) {
+func (p *Persister) GetRelationTuples(ctx context.Context, query *relationtuple.RelationQuery, pageOpts ...keysetpagination.Option) (_ []*relationtuple.RelationTuple, _ *keysetpagination.Paginator, err error) {
 	ctx, span := p.d.Tracer(ctx).Tracer().Start(ctx, "persistence.sql.GetRelationTuples")
 	defer otelx.End(span, &err)
 
-	pagination, err := internalPaginationFromOptions(options...)
-	if err != nil {
-		return nil, "", err
-	}
+	paginator := keysetpagination.GetPaginator(append(pageOpts,
+		keysetpagination.WithDefaultToken(keysetpagination.StringPageToken(uuid.Nil.String())),
+	)...)
 
-	sqlQuery := p.queryWithNetwork(ctx).
-		Order("shard_id").
-		Where("shard_id > ?", pagination.LastID).
-		Limit(pagination.PerPage + 1)
+	sqlQuery := p.queryWithNetwork(ctx).Scope(keysetpagination.Paginate[RelationTuple](paginator))
 
 	err = p.whereQuery(ctx, sqlQuery, query)
 	if err != nil {
-		return nil, "", err
+		return nil, nil, err
 	}
 	var res relationTuples
 	if err := sqlQuery.All(&res); err != nil {
-		return nil, "", sqlcon.HandleError(err)
-	}
-	if len(res) == 0 {
-		return make([]*relationtuple.RelationTuple, 0), "", nil
+		return nil, nil, sqlcon.HandleError(err)
 	}
 
-	if len(res) > pagination.PerPage {
-		res = res[:len(res)-1]
-		nextPageToken = pagination.encodeNextPageToken(res[len(res)-1].ID)
+	res, nextPage := keysetpagination.Result(res, paginator)
+	internalRes := make([]*relationtuple.RelationTuple, len(res))
+	for i := range res {
+		internalRes[i] = res[i].ToInternal()
 	}
 
-	internalRes := make([]*relationtuple.RelationTuple, 0, len(res))
-	for _, r := range res {
-		if rt, err := r.ToInternal(); err == nil {
-			// Ignore error here, which stems from a deleted namespace.
-			internalRes = append(internalRes, rt)
-		}
-	}
-
-	return internalRes, nextPageToken, nil
+	return internalRes, nextPage, nil
 }
 
 func (p *Persister) ExistsRelationTuples(ctx context.Context, query *relationtuple.RelationQuery) (_ bool, err error) {

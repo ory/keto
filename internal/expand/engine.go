@@ -7,15 +7,15 @@ import (
 	"context"
 
 	"github.com/ory/x/otelx"
+	"github.com/ory/x/pagination/keysetpagination"
 	"go.opentelemetry.io/otel/trace"
-
-	"github.com/ory/keto/x/events"
 
 	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/internal/x"
 	"github.com/ory/keto/internal/x/graph"
 	"github.com/ory/keto/ketoapi"
+	"github.com/ory/keto/x/events"
 )
 
 type (
@@ -76,21 +76,15 @@ func (e *Engine) buildTreeRecursive(ctx context.Context, subject relationtuple.S
 		Subject: subject,
 	}
 
-	var (
-		rels     []*relationtuple.RelationTuple
-		nextPage string
-	)
-	// do ... while nextPage != ""
-	for ok := true; ok; ok = nextPage != "" {
+	for nextPage := keysetpagination.GetPaginator(); !nextPage.IsLast(); {
+		var rels []*relationtuple.RelationTuple
 		var err error
-		rels, nextPage, err = e.d.RelationTupleManager().GetRelationTuples(
-			ctx,
-			&relationtuple.RelationQuery{
-				Relation:  &subSet.Relation,
-				Object:    &subSet.Object,
-				Namespace: &subSet.Namespace,
-			},
-			x.WithToken(nextPage),
+		rels, nextPage, err = e.d.RelationTupleManager().GetRelationTuples(ctx, &relationtuple.RelationQuery{
+			Relation:  &subSet.Relation,
+			Object:    &subSet.Object,
+			Namespace: &subSet.Namespace,
+		},
+			nextPage.ToOptions()...,
 		)
 		if err != nil {
 			return nil, err
