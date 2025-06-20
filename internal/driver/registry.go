@@ -7,7 +7,7 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/gobuffalo/pop/v6"
+	"github.com/ory/pop/v6"
 	"github.com/ory/x/healthx"
 	"github.com/ory/x/otelx"
 	prometheus "github.com/ory/x/prometheusx"

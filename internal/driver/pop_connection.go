@@ -8,8 +8,8 @@ import (
 	"time"
 
 	"github.com/cenkalti/backoff/v3"
-	"github.com/gobuffalo/pop/v6"
 	"github.com/luna-duclos/instrumentedsql"
+	"github.com/ory/pop/v6"
 	otelsql "github.com/ory/x/otelx/sql"
 	"github.com/ory/x/sqlcon"
 	"github.com/pkg/errors"

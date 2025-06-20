@@ -4,15 +4,12 @@ module github.com/ory/keto
 
 replace github.com/ory/keto/proto => ./proto
 
-replace github.com/gobuffalo/pop/v6 => github.com/ory/pop/v6 v6.2.1-0.20241121111754-e5dfc0f3344b
-
 require (
 	github.com/cenkalti/backoff/v3 v3.2.2
 	github.com/dgraph-io/ristretto/v2 v2.2.0
 	github.com/ghodss/yaml v1.0.0
 	github.com/go-sql-driver/mysql v1.9.1
 	github.com/gobuffalo/httptest v1.5.2
-	github.com/gobuffalo/pop/v6 v6.1.1
 	github.com/gofrs/uuid v4.4.0+incompatible
 	github.com/grpc-ecosystem/go-grpc-middleware/v2 v2.3.1
 	github.com/julienschmidt/httprouter v1.3.0
@@ -22,7 +19,8 @@ require (
 	github.com/ory/herodot v0.10.3-0.20250318104651-3179543efba8
 	github.com/ory/jsonschema/v3 v3.0.9-0.20250317235931-280c5fc7bf0e
 	github.com/ory/keto/proto v0.13.0-alpha.0
-	github.com/ory/x v0.0.720
+	github.com/ory/pop/v6 v6.3.0
+	github.com/ory/x v0.0.721
 	github.com/pelletier/go-toml v1.9.5
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_model v0.6.1
