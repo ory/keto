@@ -11,7 +11,7 @@ import (
 	"testing"
 
 	"github.com/gofrs/uuid"
-	"github.com/ory/x/pagination/keysetpagination"
+	keysetpagination "github.com/ory/x/pagination/keysetpagination_v2"
 	"github.com/ory/x/pointerx"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -194,7 +194,7 @@ func ManagerTest(t *testing.T, m Manager) {
 				res, thisPage []*RelationTuple
 				err           error
 			)
-			nextPage := keysetpagination.GetPaginator(keysetpagination.WithSize(1))
+			nextPage := keysetpagination.NewPaginator(keysetpagination.WithSize(1))
 			for range tuples[:len(tuples)-1] {
 				thisPage, nextPage, err = m.GetRelationTuples(ctx, &RelationQuery{
 					Namespace: pointerx.Ptr(nspace),

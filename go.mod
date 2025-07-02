@@ -20,7 +20,7 @@ require (
 	github.com/ory/jsonschema/v3 v3.0.9-0.20250317235931-280c5fc7bf0e
 	github.com/ory/keto/proto v0.13.0-alpha.0
 	github.com/ory/pop/v6 v6.3.0
-	github.com/ory/x v0.0.721
+	github.com/ory/x v0.0.724
 	github.com/pelletier/go-toml v1.9.5
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_model v0.6.1
@@ -245,6 +245,7 @@ require (
 	github.com/spf13/afero v1.11.0 // indirect
 	github.com/spf13/cast v1.7.1 // indirect
 	github.com/spf13/viper v1.18.2 // indirect
+	github.com/ssoready/hyrumtoken v1.0.0 // indirect
 	github.com/stoewer/go-strcase v1.3.0 // indirect
 	github.com/subosito/gotenv v1.6.0 // indirect
 	github.com/tetratelabs/wazero v1.9.0 // indirect

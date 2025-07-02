@@ -17,7 +17,7 @@ import (
 	"github.com/ory/x/fsx"
 	"github.com/ory/x/logrusx"
 	"github.com/ory/x/networkx"
-	"github.com/ory/x/pagination/keysetpagination"
+	keysetpagination "github.com/ory/x/pagination/keysetpagination_v2"
 	"github.com/ory/x/pointerx"
 	"github.com/ory/x/popx"
 	"github.com/ory/x/sqlcon"
@@ -200,7 +200,7 @@ func TestMigrations(t *testing.T) {
 					require.NoError(t, tm.Up(ctx))
 
 					newRTs := make([]*relationtuple.RelationTuple, 0, len(oldRTs))
-					for nextPage := keysetpagination.GetPaginator(); !nextPage.IsLast(); {
+					for nextPage := keysetpagination.NewPaginator(); !nextPage.IsLast(); {
 						var rts []*relationtuple.RelationTuple
 						rts, nextPage, err = p.GetRelationTuples(ctx, &relationtuple.RelationQuery{Relation: pointerx.Ptr("pagination-works")}, nextPage.ToOptions()...)
 						require.NoError(t, err)

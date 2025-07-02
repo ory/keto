@@ -14,7 +14,7 @@ import (
 	"github.com/gofrs/uuid"
 	"github.com/ory/pop/v6"
 	"github.com/ory/x/otelx"
-	"github.com/ory/x/pagination/keysetpagination"
+	keysetpagination "github.com/ory/x/pagination/keysetpagination_v2"
 	"github.com/ory/x/sqlcon"
 	"github.com/pkg/errors"
 	"go.opentelemetry.io/otel/attribute"
@@ -107,10 +107,6 @@ func (r *RelationTuple) FromInternal(rt *relationtuple.RelationTuple) (err error
 	r.Relation = rt.Relation
 
 	return r.insertSubject(rt.Subject)
-}
-
-func (r *RelationTuple) PageToken() keysetpagination.PageToken {
-	return keysetpagination.StringPageToken(r.ID.String())
 }
 
 func (p *Persister) whereSubject(_ context.Context, q *pop.Query, sub relationtuple.Subject) error {
@@ -224,11 +220,11 @@ func (p *Persister) GetRelationTuples(ctx context.Context, query *relationtuple.
 	ctx, span := p.d.Tracer(ctx).Tracer().Start(ctx, "persistence.sql.GetRelationTuples")
 	defer otelx.End(span, &err)
 
-	paginator := keysetpagination.GetPaginator(append(pageOpts,
-		keysetpagination.WithDefaultToken(keysetpagination.StringPageToken(uuid.Nil.String())),
+	paginator := keysetpagination.NewPaginator(append(pageOpts,
+		keysetpagination.WithDefaultToken(keysetpagination.NewPageToken(keysetpagination.Column{Name: "shard_id", Value: uuid.Nil})),
 	)...)
 
-	sqlQuery := p.queryWithNetwork(ctx).Scope(keysetpagination.Paginate[RelationTuple](paginator))
+	sqlQuery := p.queryWithNetwork(ctx).Scope(keysetpagination.Paginate[*RelationTuple](paginator))
 
 	err = p.whereQuery(ctx, sqlQuery, query)
 	if err != nil {

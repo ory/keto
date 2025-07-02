@@ -69,6 +69,7 @@ func newInitializedReg(t testing.TB, dsn *dbx.DsnT, cfgOverwrites map[string]int
 		config.KeyOPLSyntaxAPIHost:  "127.0.0.1",
 		config.KeyMetricsHost:       "127.0.0.1",
 		config.KeyNamespaces:        []*namespace.Namespace{},
+		config.KeySecretsPagination: []string{"test pagination secret"},
 	}
 	for k, v := range cfgOverwrites {
 		cfgValues[k] = v

@@ -8,7 +8,7 @@ import (
 	"testing"
 
 	"github.com/gofrs/uuid"
-	"github.com/ory/x/pagination/keysetpagination"
+	keysetpagination "github.com/ory/x/pagination/keysetpagination_v2"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
@@ -88,6 +88,7 @@ func TestEngine(t *testing.T) {
 
 		tree, err := e.BuildTree(context.Background(), bouldererUserSet, 100)
 		require.NoError(t, err)
+
 		expand.AssertInternalTreesAreEqual(t, &relationtuple.Tree{
 			Type:    ketoapi.TreeNodeUnion,
 			Subject: bouldererUserSet,

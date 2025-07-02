@@ -5,6 +5,7 @@ package config
 
 import (
 	"context"
+	"crypto/sha512"
 	_ "embed"
 	"encoding/json"
 	"fmt"
@@ -60,6 +61,8 @@ const (
 	KeyNamespacesExperimentalStrictMode = KeyNamespaces + ".experimental_strict_mode"
 
 	DSNMemory = "sqlite://file::memory:?_fk=true&cache=shared"
+
+	KeySecretsPagination = "secrets.pagination"
 )
 
 type (
@@ -107,7 +110,7 @@ func NewProvider(ctx context.Context, flags *pflag.FlagSet, config *Config, opts
 			configx.OmitKeysFromTracing(KeyDSN),
 			configx.WithLogrusWatcher(config.l),
 			configx.WithContext(ctx),
-			configx.AttachWatcher(config.watcher),
+			configx.AttachWatcher(config.namespaceWatcher),
 		)...,
 	)
 	if err != nil {
@@ -126,13 +129,13 @@ func (k *Config) WithSource(p *configx.Provider) {
 	k.l.UseConfig(p)
 }
 
-func (k *Config) watcher(_ watcherx.Event, err error) {
+func (k *Config) namespaceWatcher(_ watcherx.Event, err error) {
 	if err != nil {
 		return
 	}
 	nm, err := k.NamespaceManager()
 	if err != nil {
-		k.l.WithError(err).Error("got internal error in config watcher: could not get namespace manager")
+		k.l.WithError(err).Error("got internal error in config namespace watcher: could not get namespace manager")
 		return
 	}
 
@@ -362,4 +365,15 @@ func (k *Config) namespaceConfig() (namespaceConfig, error) {
 	default:
 		return nil, errors.WithStack(herodot.ErrInternalServerError.WithReasonf("could not infer namespaces for type %T", nTyped))
 	}
+}
+
+func (k *Config) PaginationEncryptionKeys() [][32]byte {
+	secrets := k.p.Strings(KeySecretsPagination)
+
+	encryptionKeys := make([][32]byte, len(secrets))
+	for i, key := range secrets {
+		encryptionKeys[i] = sha512.Sum512_256([]byte(key))
+	}
+
+	return encryptionKeys
 }

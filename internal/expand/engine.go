@@ -7,7 +7,7 @@ import (
 	"context"
 
 	"github.com/ory/x/otelx"
-	"github.com/ory/x/pagination/keysetpagination"
+	keysetpagination "github.com/ory/x/pagination/keysetpagination_v2"
 	"go.opentelemetry.io/otel/trace"
 
 	"github.com/ory/keto/internal/driver/config"
@@ -76,7 +76,7 @@ func (e *Engine) buildTreeRecursive(ctx context.Context, subject relationtuple.S
 		Subject: subject,
 	}
 
-	for nextPage := keysetpagination.GetPaginator(); !nextPage.IsLast(); {
+	for nextPage := keysetpagination.NewPaginator(); !nextPage.IsLast(); {
 		var rels []*relationtuple.RelationTuple
 		var err error
 		rels, nextPage, err = e.d.RelationTupleManager().GetRelationTuples(ctx, &relationtuple.RelationQuery{

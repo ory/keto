@@ -6,7 +6,7 @@ package check
 import (
 	"context"
 
-	"github.com/ory/x/pagination/keysetpagination"
+	keysetpagination "github.com/ory/x/pagination/keysetpagination_v2"
 	"github.com/pkg/errors"
 
 	"github.com/ory/keto/internal/check/checkgroup"
@@ -257,7 +257,7 @@ func (e *Engine) checkTupleToSubjectSet(
 
 	return func(ctx context.Context, resultCh chan<- checkgroup.Result) {
 		g := checkgroup.New(ctx)
-		for nextPage := keysetpagination.GetPaginator(); !nextPage.IsLast(); {
+		for nextPage := keysetpagination.NewPaginator(); !nextPage.IsLast(); {
 			var tuples []*relationTuple
 			var err error
 			tuples, nextPage, err = e.d.RelationTupleManager().GetRelationTuples(ctx, &query{

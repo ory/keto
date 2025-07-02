@@ -6,6 +6,8 @@ package relationtuple
 import (
 	"google.golang.org/grpc"
 
+	"github.com/ory/keto/internal/driver/config"
+
 	"github.com/ory/keto/internal/x"
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 )
@@ -14,6 +16,7 @@ type (
 	handlerDeps interface {
 		ManagerProvider
 		MapperProvider
+		config.Provider
 		x.LoggerProvider
 		x.WriterProvider
 		x.TracingProvider

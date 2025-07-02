@@ -9,7 +9,7 @@ import (
 	"sync"
 
 	"github.com/gofrs/uuid"
-	"github.com/ory/x/pagination/keysetpagination"
+	keysetpagination "github.com/ory/x/pagination/keysetpagination_v2"
 
 	"github.com/ory/keto/ketoapi"
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
@@ -165,10 +165,10 @@ func NewManagerWrapper(_ any, reg ManagerProvider, options ...keysetpagination.O
 }
 
 func (t *ManagerWrapper) GetRelationTuples(ctx context.Context, query *RelationQuery, options ...keysetpagination.Option) ([]*RelationTuple, *keysetpagination.Paginator, error) {
-	p := keysetpagination.GetPaginator(options...)
+	p := keysetpagination.NewPaginator(options...)
 	t.requestedPagesLock.Lock()
 	defer t.requestedPagesLock.Unlock()
-	t.RequestedPages = append(t.RequestedPages, p.Token())
+	t.RequestedPages = append(t.RequestedPages, p.PageToken())
 	return t.Reg.RelationTupleManager().GetRelationTuples(ctx, query, append(t.PageOpts, options...)...)
 }
 
