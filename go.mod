@@ -26,7 +26,7 @@ require (
 	github.com/ory/x v0.0.0-00010101000000-000000000000
 	github.com/pelletier/go-toml v1.9.5
 	github.com/pkg/errors v0.9.1
-	github.com/prometheus/client_model v0.6.1
+	github.com/prometheus/client_model v0.6.2
 	github.com/prometheus/common v0.63.0
 	github.com/rs/cors v1.11.1
 	github.com/segmentio/objconv v1.0.1
