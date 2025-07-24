@@ -12,7 +12,7 @@
   },
   "prettier": "ory-prettier-styles",
   "dependencies": {
-    "@openapitools/openapi-generator-cli": "^2.15.3",
+    "@openapitools/openapi-generator-cli": "^2.21.4",
     "grpc-tools": "^1.13.0",
     "grpc_tools_node_protoc_ts": "^5.3.3"
   },
