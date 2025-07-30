@@ -8,7 +8,6 @@ import (
 	stdSql "database/sql"
 	"os"
 	"strconv"
-	"strings"
 	"testing"
 	"time"
 
@@ -69,7 +68,7 @@ func TestMigrations(t *testing.T) {
 			nm := config.NewMemoryNamespaceManager(namespaces...)
 			tm, err := popx.NewMigrationBox(
 				fsx.Merge(sql.Migrations, networkx.Migrations),
-				popx.NewMigrator(conn, logrusx.New("", "", logrusx.ForceLevel(logrus.DebugLevel)), nil, 1*time.Minute),
+				conn, logrusx.New("", "", logrusx.ForceLevel(logrus.DebugLevel)),
 				popx.WithGoMigrations(uuidmapping.Migrations(nm)),
 				popx.WithTestdata(t, os.DirFS("./testdata")),
 			)
@@ -257,9 +256,7 @@ func logMigrationStatus(t *testing.T, m *popx.MigrationBox) {
 
 	status, err := m.Status(context.Background())
 	require.NoError(t, err)
-	s := strings.Builder{}
-	_ = status.Write(&s)
-	t.Log("Migration status:\n", s.String())
+	t.Logf("status: %+v", status)
 }
 
 type tuplesBeforeUUID struct {

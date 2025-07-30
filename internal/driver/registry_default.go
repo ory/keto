@@ -279,7 +279,7 @@ func (r *RegistryDefault) MigrationBox(ctx context.Context) (*popx.MigrationBox,
 
 		mb, err := popx.NewMigrationBox(
 			fsx.Merge(append([]fs.FS{sql.Migrations, networkx.Migrations}, r.extraMigrations...)...),
-			popx.NewMigrator(c, r.Logger(), r.Tracer(ctx), 0),
+			c, r.Logger(),
 			append(
 				[]popx.MigrationBoxOption{popx.WithGoMigrations(uuidmapping.Migrations(namespaces))},
 				r.defaultMigrationOptions...,
@@ -318,7 +318,7 @@ func (r *RegistryDefault) DetermineNetwork(ctx context.Context) (*networkx.Netwo
 	if err != nil {
 		return nil, err
 	}
-	mb, err := popx.NewMigrationBox(networkx.Migrations, popx.NewMigrator(c, r.Logger(), r.Tracer(ctx), 0))
+	mb, err := popx.NewMigrationBox(networkx.Migrations, c, r.Logger())
 	if err != nil {
 		return nil, err
 	}
@@ -330,7 +330,7 @@ func (r *RegistryDefault) DetermineNetwork(ctx context.Context) (*networkx.Netwo
 		return nil, errors.WithStack(persistence.ErrNetworkMigrationsMissing)
 	}
 
-	return networkx.NewManager(c, r.Logger(), r.Tracer(ctx)).Determine(ctx)
+	return networkx.NewManager(c, r.Logger()).Determine(ctx)
 }
 
 func (r *RegistryDefault) InitWithoutNetworkID(ctx context.Context) error {
