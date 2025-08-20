@@ -223,7 +223,7 @@ No authorization required
 
 ## GetRelationships
 
-> Relationships GetRelationships(ctx).PageToken(pageToken).PageSize(pageSize).Namespace(namespace).Object(object).Relation(relation).SubjectId(subjectId).SubjectSetNamespace(subjectSetNamespace).SubjectSetObject(subjectSetObject).SubjectSetRelation(subjectSetRelation).Execute()
+> Relationships GetRelationships(ctx).PageSize(pageSize).PageToken(pageToken).Namespace(namespace).Object(object).Relation(relation).SubjectId(subjectId).SubjectSetNamespace(subjectSetNamespace).SubjectSetObject(subjectSetObject).SubjectSetRelation(subjectSetRelation).Execute()
 
 Query relationships
 
@@ -242,8 +242,8 @@ import (
 )
 
 func main() {
-    pageToken := "pageToken_example" // string |  (optional)
-    pageSize := int64(789) // int64 |  (optional)
+    pageSize := int64(789) // int64 | Items per Page  This is the number of items per page to return. For details on pagination please head over to the [pagination documentation](https://www.ory.sh/docs/ecosystem/api-design#pagination). (optional) (default to 250)
+    pageToken := "pageToken_example" // string | Next Page Token  The next page token. For details on pagination please head over to the [pagination documentation](https://www.ory.sh/docs/ecosystem/api-design#pagination). (optional)
     namespace := "namespace_example" // string | Namespace of the Relationship (optional)
     object := "object_example" // string | Object of the Relationship (optional)
     relation := "relation_example" // string | Relation of the Relationship (optional)
@@ -254,7 +254,7 @@ func main() {
 
     configuration := openapiclient.NewConfiguration()
     apiClient := openapiclient.NewAPIClient(configuration)
-    resp, r, err := apiClient.RelationshipApi.GetRelationships(context.Background()).PageToken(pageToken).PageSize(pageSize).Namespace(namespace).Object(object).Relation(relation).SubjectId(subjectId).SubjectSetNamespace(subjectSetNamespace).SubjectSetObject(subjectSetObject).SubjectSetRelation(subjectSetRelation).Execute()
+    resp, r, err := apiClient.RelationshipApi.GetRelationships(context.Background()).PageSize(pageSize).PageToken(pageToken).Namespace(namespace).Object(object).Relation(relation).SubjectId(subjectId).SubjectSetNamespace(subjectSetNamespace).SubjectSetObject(subjectSetObject).SubjectSetRelation(subjectSetRelation).Execute()
     if err != nil {
         fmt.Fprintf(os.Stderr, "Error when calling `RelationshipApi.GetRelationships``: %v\n", err)
         fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
@@ -275,8 +275,8 @@ Other parameters are passed through a pointer to a apiGetRelationshipsRequest st
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **pageToken** | **string** |  | 
- **pageSize** | **int64** |  | 
+ **pageSize** | **int64** | Items per Page  This is the number of items per page to return. For details on pagination please head over to the [pagination documentation](https://www.ory.sh/docs/ecosystem/api-design#pagination). | [default to 250]
+ **pageToken** | **string** | Next Page Token  The next page token. For details on pagination please head over to the [pagination documentation](https://www.ory.sh/docs/ecosystem/api-design#pagination). | 
  **namespace** | **string** | Namespace of the Relationship | 
  **object** | **string** | Object of the Relationship | 
  **relation** | **string** | Relation of the Relationship | 

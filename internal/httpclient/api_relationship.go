@@ -531,8 +531,8 @@ func (a *RelationshipApiService) DeleteRelationshipsExecute(r RelationshipApiApi
 type RelationshipApiApiGetRelationshipsRequest struct {
 	ctx                 context.Context
 	ApiService          RelationshipApi
-	pageToken           *string
 	pageSize            *int64
+	pageToken           *string
 	namespace           *string
 	object              *string
 	relation            *string
@@ -542,12 +542,12 @@ type RelationshipApiApiGetRelationshipsRequest struct {
 	subjectSetRelation  *string
 }
 
-func (r RelationshipApiApiGetRelationshipsRequest) PageToken(pageToken string) RelationshipApiApiGetRelationshipsRequest {
-	r.pageToken = &pageToken
-	return r
-}
 func (r RelationshipApiApiGetRelationshipsRequest) PageSize(pageSize int64) RelationshipApiApiGetRelationshipsRequest {
 	r.pageSize = &pageSize
+	return r
+}
+func (r RelationshipApiApiGetRelationshipsRequest) PageToken(pageToken string) RelationshipApiApiGetRelationshipsRequest {
+	r.pageToken = &pageToken
 	return r
 }
 func (r RelationshipApiApiGetRelationshipsRequest) Namespace(namespace string) RelationshipApiApiGetRelationshipsRequest {
@@ -621,11 +621,11 @@ func (a *RelationshipApiService) GetRelationshipsExecute(r RelationshipApiApiGet
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
 
-	if r.pageToken != nil {
-		localVarQueryParams.Add("page_token", parameterToString(*r.pageToken, ""))
-	}
 	if r.pageSize != nil {
 		localVarQueryParams.Add("page_size", parameterToString(*r.pageSize, ""))
+	}
+	if r.pageToken != nil {
+		localVarQueryParams.Add("page_token", parameterToString(*r.pageToken, ""))
 	}
 	if r.namespace != nil {
 		localVarQueryParams.Add("namespace", parameterToString(*r.namespace, ""))
