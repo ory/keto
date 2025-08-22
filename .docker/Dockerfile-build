@@ -1,5 +1,5 @@
 # Workaround for https://github.com/GoogleContainerTools/distroless/issues/1342
-FROM golang:1.24.2-bullseye AS builder
+FROM golang:1.24.4-bullseye AS builder
 
 WORKDIR /go/src/github.com/ory/keto
 
@@ -12,6 +12,8 @@ COPY go.sum go.sum
 
 COPY proto/go.mod proto/go.mod
 COPY proto/go.sum proto/go.sum
+COPY oryx/go.mod oryx/go.mod
+COPY oryx/go.sum oryx/go.sum
 
 ENV CGO_ENABLED=1
 
