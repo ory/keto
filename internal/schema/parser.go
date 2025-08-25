@@ -311,10 +311,10 @@ func (p *parser) parsePermissionExpressions(finalToken itemType, depth int) *ast
 	// TODO(hperl): Split this into two state machines: One that parses an
 	// expression or expression group; and one that parses a binary operator.
 	for !p.fatal {
-		switch item := p.peek(); {
+		switch item := p.peek(); item.Typ {
 
 		// A "(" starts a new expression group that is parsed recursively.
-		case item.Typ == itemParenLeft:
+		case itemParenLeft:
 			p.next() // consume paren
 			child := p.parsePermissionExpressions(itemParenRight, depth-1)
 			if child == nil {
@@ -323,16 +323,16 @@ func (p *parser) parsePermissionExpressions(finalToken itemType, depth int) *ast
 			root = addChild(root, child)
 			expectExpression = false
 
-		case item.Typ == finalToken:
+		case finalToken:
 			p.next() // consume final token
 			return root
 
-		case item.Typ == itemBraceRight:
+		case itemBraceRight:
 			// We don't consume the '}' here, to allow `parsePermits` to consume
 			// it.
 			return root
 
-		case item.Typ == itemOperatorAnd, item.Typ == itemOperatorOr:
+		case itemOperatorAnd, itemOperatorOr:
 			p.next() // consume operator
 
 			// A nil root means that we saw a binary expression before the first
@@ -349,7 +349,7 @@ func (p *parser) parsePermissionExpressions(finalToken itemType, depth int) *ast
 
 		// A "not" creates an AST node where the children are either a
 		// single expression, or a list of expressions grouped by "()".
-		case item.Typ == itemOperatorNot:
+		case itemOperatorNot:
 			p.next() // consume operator
 			child := p.parseNotExpression(depth - 1)
 			if child == nil {

@@ -95,7 +95,7 @@ LIMIT ?
 		}
 
 		for _, r := range rows {
-			to := r.RelationTuple.ToInternal()
+			to := r.ToInternal()
 			to.Subject = start.Subject
 			res = append(res, &relationtuple.TraversalResult{
 				From:  start,

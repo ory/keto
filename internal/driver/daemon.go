@@ -298,7 +298,7 @@ func multiplexPort(ctx context.Context, log *logrusx.Logger, addr, listenFile st
 		shutdownEg := errgroup.Group{}
 		shutdownEg.Go(func() error {
 			// we ignore net.ErrClosed, because a cmux listener's close func is actually the one of the root listener (which is closed in a racy fashion)
-			if err := restS.Shutdown(ctx); !(err == nil || errors.Is(err, http.ErrServerClosed) || errors.Is(err, net.ErrClosed)) {
+			if err := restS.Shutdown(ctx); err != nil && !errors.Is(err, http.ErrServerClosed) && !errors.Is(err, net.ErrClosed) {
 				// unexpected error
 				return errors.WithStack(err)
 			}

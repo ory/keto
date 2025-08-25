@@ -8,14 +8,12 @@ import (
 	"embed"
 
 	"github.com/gofrs/uuid"
-	"github.com/ory/pop/v6"
-	"github.com/ory/x/popx"
-	"github.com/pkg/errors"
-
 	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/persistence"
 	"github.com/ory/keto/internal/x"
 	"github.com/ory/keto/ketoctx"
+	"github.com/ory/pop/v6"
+	"github.com/ory/x/popx"
 )
 
 type (
@@ -23,10 +21,6 @@ type (
 		conn *pop.Connection
 		d    dependencies
 		nid  uuid.UUID
-	}
-	internalPagination struct {
-		PerPage int
-		LastID  uuid.UUID
 	}
 	dependencies interface {
 		x.LoggerProvider
@@ -36,10 +30,6 @@ type (
 
 		PopConnection(ctx context.Context) (*pop.Connection, error)
 	}
-)
-
-const (
-	defaultPageSize int = 100
 )
 
 var (
@@ -82,23 +72,4 @@ func (p *Persister) NetworkID(ctx context.Context) uuid.UUID {
 
 func (p *Persister) SetNetwork(nid uuid.UUID) {
 	p.nid = nid
-}
-
-func (p *internalPagination) parsePageToken(t string) error {
-	if t == "" {
-		p.LastID = uuid.Nil
-		return nil
-	}
-
-	i, err := uuid.FromString(t)
-	if err != nil {
-		return errors.WithStack(persistence.ErrMalformedPageToken)
-	}
-
-	p.LastID = i
-	return nil
-}
-
-func (p *internalPagination) encodeNextPageToken(lastID uuid.UUID) string {
-	return lastID.String()
 }
