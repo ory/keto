@@ -7,6 +7,6 @@
   "main": "./index.js",
   "dependencies": {
     "@grpc/grpc-js": "1.12.4",
-    "google-protobuf": "^3.21.2"
+    "google-protobuf": "^4.0.0"
   }
 }
