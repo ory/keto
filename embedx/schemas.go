@@ -20,7 +20,6 @@ var ConfigSchema []byte
 
 var ConfigSchemaID string
 
-
 func init() {
 	ConfigSchemaID = gjson.GetBytes(ConfigSchema, "$id").String()
 	if ConfigSchemaID == "" {

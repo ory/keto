@@ -8,12 +8,13 @@ import (
 	"embed"
 
 	"github.com/gofrs/uuid"
+	"github.com/ory/pop/v6"
+	"github.com/ory/x/popx"
+
 	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/persistence"
 	"github.com/ory/keto/internal/x"
 	"github.com/ory/keto/ketoctx"
-	"github.com/ory/pop/v6"
-	"github.com/ory/x/popx"
 )
 
 type (
