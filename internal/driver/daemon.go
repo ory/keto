@@ -93,6 +93,7 @@ func (r *RegistryDefault) enableSqa(cmd *cobra.Command) {
 				BatchSize:            1000,
 				Interval:             time.Hour * 6,
 			},
+			Hostname: "", // TODO: figure out config to use
 		},
 	)
 }
@@ -345,7 +346,7 @@ func listenAndWriteFile(ctx context.Context, addr, listenFile string) (net.Liste
 	}
 	const filePrefix = "file://"
 	if strings.HasPrefix(listenFile, filePrefix) {
-		if err := os.WriteFile(listenFile[len(filePrefix):], []byte(l.Addr().String()), 0600); err != nil {
+		if err := os.WriteFile(listenFile[len(filePrefix):], []byte(l.Addr().String()), 0o600); err != nil {
 			return nil, errors.WithStack(fmt.Errorf("unable to write listen file %q: %w", listenFile, err))
 		}
 	}
