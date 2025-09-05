@@ -1,4 +1,4 @@
-go 1.24.6
+go 1.25
 
 module github.com/ory/keto
 
@@ -16,13 +16,12 @@ require (
 	github.com/gofrs/uuid v4.4.0+incompatible
 	github.com/grpc-ecosystem/go-grpc-middleware/v2 v2.3.1
 	github.com/julienschmidt/httprouter v1.3.0
-	github.com/luna-duclos/instrumentedsql v1.1.3
 	github.com/ory/analytics-go/v5 v5.0.1
 	github.com/ory/graceful v0.1.3
 	github.com/ory/herodot v0.10.5
 	github.com/ory/jsonschema/v3 v3.0.9-0.20250317235931-280c5fc7bf0e
 	github.com/ory/keto/proto v0.0.0-00010101000000-000000000000
-	github.com/ory/pop/v6 v6.3.0
+	github.com/ory/pop/v6 v6.3.1-0.20250905152254-368678361c90
 	github.com/ory/x v0.0.0-00010101000000-000000000000
 	github.com/pelletier/go-toml v1.9.5
 	github.com/pkg/errors v0.9.1
@@ -32,17 +31,17 @@ require (
 	github.com/segmentio/objconv v1.0.1
 	github.com/sirupsen/logrus v1.9.3
 	github.com/soheilhy/cmux v0.1.5
-	github.com/spf13/cobra v1.9.1
-	github.com/spf13/pflag v1.0.7
-	github.com/stretchr/testify v1.10.0
+	github.com/spf13/cobra v1.10.1
+	github.com/spf13/pflag v1.0.10
+	github.com/stretchr/testify v1.11.1
 	github.com/tidwall/gjson v1.18.0
 	github.com/tidwall/sjson v1.2.5
 	github.com/urfave/negroni v1.0.0
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.62.0
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.62.0
-	go.opentelemetry.io/otel v1.37.0
-	go.opentelemetry.io/otel/sdk v1.37.0
-	go.opentelemetry.io/otel/trace v1.37.0
+	go.opentelemetry.io/otel v1.38.0
+	go.opentelemetry.io/otel/sdk v1.38.0
+	go.opentelemetry.io/otel/trace v1.38.0
 	go.uber.org/goleak v1.3.0
 	golang.org/x/oauth2 v0.30.0
 	golang.org/x/sync v0.16.0
@@ -74,6 +73,7 @@ require (
 	github.com/Masterminds/sprig/v3 v3.3.0 // indirect
 	github.com/Microsoft/go-winio v0.6.2 // indirect
 	github.com/Nvveen/Gotty v0.0.0-20120604004816-cd527374f1e5 // indirect
+	github.com/XSAM/otelsql v0.39.0 // indirect
 	github.com/a8m/envsubst v1.4.2 // indirect
 	github.com/alecthomas/participle/v2 v2.1.1 // indirect
 	github.com/antlr4-go/antlr/v4 v4.13.1 // indirect
@@ -139,7 +139,7 @@ require (
 	github.com/gobuffalo/helpers v0.6.10 // indirect
 	github.com/gobuffalo/nulls v0.4.2 // indirect
 	github.com/gobuffalo/plush/v4 v4.1.22 // indirect
-	github.com/gobuffalo/plush/v5 v5.0.4 // indirect
+	github.com/gobuffalo/plush/v5 v5.0.7 // indirect
 	github.com/gobuffalo/tags/v3 v3.1.4 // indirect
 	github.com/gobuffalo/validate/v3 v3.3.3 // indirect
 	github.com/gobwas/glob v0.2.3 // indirect
@@ -284,7 +284,7 @@ require (
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.37.0 // indirect
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp v1.37.0 // indirect
 	go.opentelemetry.io/otel/exporters/zipkin v1.37.0 // indirect
-	go.opentelemetry.io/otel/metric v1.37.0 // indirect
+	go.opentelemetry.io/otel/metric v1.38.0 // indirect
 	go.opentelemetry.io/proto/otlp v1.7.1 // indirect
 	go.uber.org/mock v0.5.2 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
