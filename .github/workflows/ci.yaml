@@ -21,7 +21,7 @@ jobs:
       - uses: ory/ci/checkout@master
       - uses: actions/setup-go@v3
         with:
-          go-version: "1.24.2"
+          go-version: "1.25"
           check-latest: true
       - name: Update npm to a non-buggy version
         run: sudo npm i -g npm@9.5.0
@@ -76,7 +76,7 @@ jobs:
       - uses: ory/ci/checkout@master
       - uses: actions/setup-go@v3
         with:
-          go-version: "1.24.2"
+          go-version: "1.25"
           check-latest: true
       - name: Test proto package
         run: |
@@ -100,7 +100,7 @@ jobs:
       - uses: ory/ci/checkout@master
       - uses: actions/setup-go@v3
         with:
-          go-version: "1.24.2"
+          go-version: "1.25"
           check-latest: true
       - run: |
           go test -tags sqlite -race -short ./...
@@ -217,7 +217,7 @@ jobs:
           path: current-repo
       - uses: actions/setup-go@v3
         with:
-          go-version: "1.24.2"
+          go-version: "1.25"
           check-latest: true
       - uses: actions/setup-node@v3
         with:
