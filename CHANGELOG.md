@@ -5,122 +5,118 @@
 
 **Table of Contents**
 
-- [0.0.0 (2025-09-05)](#000-2025-09-05)
-  - [Bug Fixes](#bug-fixes)
-  - [Code Refactoring](#code-refactoring)
-  - [Features](#features)
-  - [Tests](#tests)
+- [0.0.0 (2025-04-28)](#000-2025-04-28)
 - [0.14.0 (2025-03-06)](#0140-2025-03-06)
-  - [Bug Fixes](#bug-fixes-1)
+  - [Bug Fixes](#bug-fixes)
   - [Code Generation](#code-generation)
-  - [Features](#features-1)
+  - [Features](#features)
 - [0.13.0-alpha.0 (2024-02-27)](#0130-alpha0-2024-02-27)
-  - [Bug Fixes](#bug-fixes-2)
+  - [Bug Fixes](#bug-fixes-1)
   - [Code Generation](#code-generation-1)
 - [0.12.0-alpha.0 (2024-02-01)](#0120-alpha0-2024-02-01)
-  - [Bug Fixes](#bug-fixes-3)
+  - [Bug Fixes](#bug-fixes-2)
   - [Code Generation](#code-generation-2)
   - [Documentation](#documentation)
-  - [Features](#features-2)
+  - [Features](#features-1)
 - [0.11.1-alpha.0 (2023-03-09)](#0111-alpha0-2023-03-09)
-  - [Bug Fixes](#bug-fixes-4)
+  - [Bug Fixes](#bug-fixes-3)
   - [Code Generation](#code-generation-3)
-  - [Features](#features-3)
-  - [Tests](#tests-1)
+  - [Features](#features-2)
+  - [Tests](#tests)
 - [0.11.0-alpha.0 (2023-02-23)](#0110-alpha0-2023-02-23)
   - [Code Generation](#code-generation-4)
 - [0.11.0-alpha.0.pre.1 (2023-02-23)](#0110-alpha0pre1-2023-02-23)
-  - [Bug Fixes](#bug-fixes-5)
+  - [Bug Fixes](#bug-fixes-4)
   - [Code Generation](#code-generation-5)
-  - [Code Refactoring](#code-refactoring-1)
+  - [Code Refactoring](#code-refactoring)
   - [Documentation](#documentation-1)
-  - [Features](#features-4)
-  - [Tests](#tests-2)
+  - [Features](#features-3)
+  - [Tests](#tests-1)
   - [Unclassified](#unclassified)
 - [0.10.0-alpha.0 (2022-09-27)](#0100-alpha0-2022-09-27)
-  - [Bug Fixes](#bug-fixes-6)
+  - [Bug Fixes](#bug-fixes-5)
   - [Build System](#build-system)
   - [Code Generation](#code-generation-6)
-  - [Code Refactoring](#code-refactoring-2)
+  - [Code Refactoring](#code-refactoring-1)
   - [Documentation](#documentation-2)
-  - [Features](#features-5)
-  - [Tests](#tests-3)
+  - [Features](#features-4)
+  - [Tests](#tests-2)
 - [0.9.0-alpha.0 (2022-08-01)](#090-alpha0-2022-08-01)
   - [Breaking Changes](#breaking-changes)
-    - [Bug Fixes](#bug-fixes-7)
+    - [Bug Fixes](#bug-fixes-6)
     - [Code Generation](#code-generation-7)
-    - [Code Refactoring](#code-refactoring-3)
+    - [Code Refactoring](#code-refactoring-2)
     - [Documentation](#documentation-3)
-    - [Features](#features-6)
-    - [Tests](#tests-4)
+    - [Features](#features-5)
+    - [Tests](#tests-3)
 - [0.8.0-alpha.2 (2022-03-04)](#080-alpha2-2022-03-04)
-  - [Bug Fixes](#bug-fixes-8)
+  - [Bug Fixes](#bug-fixes-7)
   - [Code Generation](#code-generation-8)
   - [Documentation](#documentation-4)
 - [0.8.0-alpha.1 (2022-02-22)](#080-alpha1-2022-02-22)
-  - [Bug Fixes](#bug-fixes-9)
+  - [Bug Fixes](#bug-fixes-8)
   - [Code Generation](#code-generation-9)
-  - [Tests](#tests-5)
+  - [Tests](#tests-4)
 - [0.8.0-alpha.0 (2022-02-10)](#080-alpha0-2022-02-10)
-  - [Bug Fixes](#bug-fixes-10)
+  - [Bug Fixes](#bug-fixes-9)
   - [Code Generation](#code-generation-10)
-  - [Code Refactoring](#code-refactoring-4)
+  - [Code Refactoring](#code-refactoring-3)
   - [Documentation](#documentation-5)
-  - [Features](#features-7)
+  - [Features](#features-6)
 - [0.7.0-alpha.1 (2021-10-19)](#070-alpha1-2021-10-19)
   - [Code Generation](#code-generation-11)
   - [Documentation](#documentation-6)
 - [0.7.0-alpha.0 (2021-10-06)](#070-alpha0-2021-10-06)
   - [Breaking Changes](#breaking-changes-1)
-    - [Bug Fixes](#bug-fixes-11)
+    - [Bug Fixes](#bug-fixes-10)
     - [Chores](#chores)
     - [Code Generation](#code-generation-12)
-    - [Code Refactoring](#code-refactoring-5)
+    - [Code Refactoring](#code-refactoring-4)
     - [Documentation](#documentation-7)
-    - [Features](#features-8)
-    - [Tests](#tests-6)
+    - [Features](#features-7)
+    - [Tests](#tests-5)
 - [0.6.0-alpha.3 (2021-04-29)](#060-alpha3-2021-04-29)
   - [Code Generation](#code-generation-13)
 - [0.6.0-alpha.2 (2021-04-29)](#060-alpha2-2021-04-29)
-  - [Bug Fixes](#bug-fixes-12)
+  - [Bug Fixes](#bug-fixes-11)
   - [Code Generation](#code-generation-14)
   - [Documentation](#documentation-8)
-  - [Features](#features-9)
+  - [Features](#features-8)
 - [0.6.0-alpha.1 (2021-04-07)](#060-alpha1-2021-04-07)
-  - [Bug Fixes](#bug-fixes-13)
+  - [Bug Fixes](#bug-fixes-12)
   - [Build System](#build-system-1)
   - [Code Generation](#code-generation-15)
-  - [Code Refactoring](#code-refactoring-6)
+  - [Code Refactoring](#code-refactoring-5)
   - [Documentation](#documentation-9)
-  - [Features](#features-10)
-  - [Tests](#tests-7)
+  - [Features](#features-9)
+  - [Tests](#tests-6)
 - [0.5.6-alpha.1 (2020-05-28)](#056-alpha1-2020-05-28)
-  - [Bug Fixes](#bug-fixes-14)
+  - [Bug Fixes](#bug-fixes-13)
   - [Chores](#chores-1)
 - [0.5.5-alpha.1 (2020-05-28)](#055-alpha1-2020-05-28)
-  - [Bug Fixes](#bug-fixes-15)
+  - [Bug Fixes](#bug-fixes-14)
   - [Chores](#chores-2)
   - [Documentation](#documentation-10)
 - [0.5.4-alpha.1 (2020-04-07)](#054-alpha1-2020-04-07)
-  - [Bug Fixes](#bug-fixes-16)
+  - [Bug Fixes](#bug-fixes-15)
 - [0.5.3-alpha.3 (2020-04-06)](#053-alpha3-2020-04-06)
   - [Code Generation](#code-generation-16)
-  - [Code Refactoring](#code-refactoring-7)
+  - [Code Refactoring](#code-refactoring-6)
   - [Documentation](#documentation-11)
 - [0.5.3-alpha.1 (2020-04-03)](#053-alpha1-2020-04-03)
   - [Chores](#chores-3)
 - [0.5.2 (2020-04-02)](#052-2020-04-02)
   - [Documentation](#documentation-12)
 - [0.5.0 (2020-04-02)](#050-2020-04-02)
-  - [Bug Fixes](#bug-fixes-17)
+  - [Bug Fixes](#bug-fixes-16)
   - [Documentation](#documentation-13)
 - [0.4.5-alpha.1 (2020-02-29)](#045-alpha1-2020-02-29)
-  - [Bug Fixes](#bug-fixes-18)
+  - [Bug Fixes](#bug-fixes-17)
   - [Documentation](#documentation-14)
 - [0.4.4-alpha.1 (2020-02-14)](#044-alpha1-2020-02-14)
-  - [Bug Fixes](#bug-fixes-19)
+  - [Bug Fixes](#bug-fixes-18)
   - [Documentation](#documentation-15)
-  - [Features](#features-11)
+  - [Features](#features-10)
   - [Unclassified](#unclassified-1)
 - [0.4.3-alpha.2 (2020-01-31)](#043-alpha2-2020-01-31)
   - [Unclassified](#unclassified-2)
@@ -167,182 +163,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# [0.0.0](https://github.com/ory/keto/compare/v0.14.0...v0.0.0) (2025-09-05)
-
-### Bug Fixes
-
-- Add missing values to the session method enum
-  ([6c9016a](https://github.com/ory/keto/commit/6c9016a1cbcbddf088e12b3f9768a7f620a7aa49)):
-
-  GitOrigin-RevId: 60b31e9f7d7b50dc652efc5f3a385be4adb25ba1
-
-- Add repo syncing for polis
-  ([bef7ae6](https://github.com/ory/keto/commit/bef7ae66d0543afb2edf7b06343c9b8a4a7aa47b)):
-
-  GitOrigin-RevId: e277a25d594b512b800d39dd18f36ea3d99fcf84
-
-- Copybara script
-  ([372b1ff](https://github.com/ory/keto/commit/372b1ffd5a17aa68db977501b8b791e7c912cb26)):
-
-  GitOrigin-RevId: 14665e01451ac5fcdda148b473b8fc35d4fe21ef
-
-- Deduplicate down migrations
-  ([4af256d](https://github.com/ory/keto/commit/4af256de453ec1fd86757b70028685edfd9d2df7)):
-
-  GitOrigin-RevId: 94c68daeded4f3b6f42d079d71415d8935a74e69
-
-- **deps:** Update dependency @grpc/grpc-js to v1.8.22 [security]
-  ([7315350](https://github.com/ory/keto/commit/7315350ee43707912ae41241d6f2b8e2ab471b4f)):
-
-  GitOrigin-RevId: 5ea94eaf5494ad0e4df2cb3dac29c00e52716258
-
-- **deps:** Update go-x
-  ([ce0b6dd](https://github.com/ory/keto/commit/ce0b6dd791544bc66b6d4858f289b082781ff1bf)):
-
-  GitOrigin-RevId: 2d32f7710b9c6111a30f4e0d3cc0abc967d7dfb6
-
-- Failing CI in OSS repos
-  ([3fb907f](https://github.com/ory/keto/commit/3fb907f4a03d22a7ed7c5113523c66890ad798e7)):
-
-  GitOrigin-RevId: 3d1f84b0f0d006971aea9489322b3e0f32a6a7e3
-
-- **hydra:** Instrument metrics also on public endpoints
-  ([9ea9bba](https://github.com/ory/keto/commit/9ea9bbaf299f2c5870b133a7c3253b6dd1fb0f61)):
-
-  GitOrigin-RevId: 84ae1df26bd3d9a025655e50792ea7312f250cca
-
-- **hydra:** Use prometheus metrics instead of SQA metrics
-  ([f39a886](https://github.com/ory/keto/commit/f39a886c1696845b513c858aa0860083084856be)):
-
-  GitOrigin-RevId: 2ca878d66e4ab101af51bc32f8606ce6c3af0587
-
-- Include go.mod in vendored oryx
-  ([03b3bae](https://github.com/ory/keto/commit/03b3bae550514685d5dc2e654b55bfeeaff62d22)):
-
-  GitOrigin-RevId: 20365bbe6b2cf95ac7973bcca9056455d2cb3803
-
-- Jsonx.ApplyJSONPatch
-  ([f8c1f68](https://github.com/ory/keto/commit/f8c1f68fb7d74db950732edd7f8a9910acb5ad46)):
-
-  GitOrigin-RevId: 43c10801f5051e3d5fbea5f4f5e90394f6da0fbb
-
-- **keto:** Use helpers from ory/x for pagination
-  ([a545c35](https://github.com/ory/keto/commit/a545c355fd32f3368e4a992efacb54e3c76fa4db)):
-
-  GitOrigin-RevId: 6a878b4697f1ecf9c7375b7eafdfae713f22414b
-
-- Otlp sampling rate default
-  ([bcede30](https://github.com/ory/keto/commit/bcede304eceb0725600214f1170a28af9472485a)):
-
-  GitOrigin-RevId: 8a01bded7d8eca0ac3a81de793286144aab16426
-
-- Print correct content of down migrations
-  ([727b2a9](https://github.com/ory/keto/commit/727b2a90faae40b3ea2e6e5eb2e94f4f5284aa97)):
-
-  GitOrigin-RevId: 48b1efa8d3d4f6c6648d3941f67f622fdfb0075c
-
-- Remove keto from gitignore
-  ([ed39ad7](https://github.com/ory/keto/commit/ed39ad7aa9df3b49998af8024644f75f38d91f3b)):
-
-  GitOrigin-RevId: 576af019d48783dec6e0ecdca359f510b6f76eb5
-
-- Revert "fix: otlp sampling rate default
-  ([#9055](https://github.com/ory/keto/issues/9055))"
-  ([957b1e2](https://github.com/ory/keto/commit/957b1e20a33adaf8489286aac9ea288266b9c3a5)):
-
-  GitOrigin-RevId: 9de37a48b68c7ee29caefb01c83f1a78999dc15b
-
-- Simplify and fix Copybara sync job
-  ([54f5194](https://github.com/ory/keto/commit/54f519448a88fc5572a5b6e6d853af32a0aaa4d4)):
-
-  GitOrigin-RevId: 115f1ba1aa8f92d9c546046b37d4fb27dacedec8
-
-- Upgrade to go 1.24.4 to fix CVE-2025-4673
-  ([e8c829a](https://github.com/ory/keto/commit/e8c829a27c932becc4869e23c215bbb16ecc3306)):
-
-  GitOrigin-RevId: 64950988a466bbdb4f25b8d9f5c416ff591c00bf
-
-- Use hard-coded fallback key instead of panic
-  ([7f3ca7f](https://github.com/ory/keto/commit/7f3ca7fc583a8563c72fc142129b9026c8069b27)):
-
-  GitOrigin-RevId: d7a2270bbf5360288199e9632b2eac6cbc29737c
-
-- Use main branch for polis
-  ([1add72c](https://github.com/ory/keto/commit/1add72c7604c93cb4c75a0c8f0455cf0cc26627c)):
-
-  GitOrigin-RevId: 04533493184c6abdc3a211daffd98f6b68e1c9cc
-
-### Code Refactoring
-
-- Move database meta functions to root x folder for reusability
-  ([7d38bde](https://github.com/ory/keto/commit/7d38bded099a3fc6aad07d803ea0235643969ff4)):
-
-  GitOrigin-RevId: 30ee938ea5f1d19bac8967e0ebfe2d595ec27d2b
-
-### Features
-
-- Add allowed domains configuration for captcha
-  ([bff0ddd](https://github.com/ory/keto/commit/bff0dddc32e9a17bf25b274d0542f8be5353352c)):
-
-  GitOrigin-RevId: 03395362054593f07ff6405c2a747256b5ff528e
-
-- Autoconfigure kratos-changefeed
-  ([a3124de](https://github.com/ory/keto/commit/a3124de67ad523cbd3b1b82c08e81083dddfc50b)):
-
-  GitOrigin-RevId: 8e684d3c1ed528798c0c81cc4330858c54a39acf
-
-- **changelog-oel:** Choose identity schema in self-service registration and
-  login flows
-  ([c4d8d94](https://github.com/ory/keto/commit/c4d8d94277a7830c1f4c243da06aacf0bd94e541)):
-
-  GitOrigin-RevId: 8d6ee03cc8181d3277100a4b7412a3a113799964
-
-- **changelog:** Migrate http router to stdlib router
-  ([d1a6695](https://github.com/ory/keto/commit/d1a66955b899c55d1f79f31288588037a5c7991b)):
-
-  GitOrigin-RevId: ebd7ec330a4f7b9826cb70ba36ba2f727ea64c96
-
-- Improve domain telemetry for OSS (Hydra & Kratos)
-  ([b9901ca](https://github.com/ory/keto/commit/b9901ca74e8cb6f5f39b0318042222ca18d406f0)):
-
-  GitOrigin-RevId: b8aebb0ad8bae28ee8295b9052b2f60603244b7e
-
-- **keto:** Encrypted page tokens
-  ([1483345](https://github.com/ory/keto/commit/14833453189f977095d3e67580312addbb18a201)):
-
-  GitOrigin-RevId: 5ff9f6eaca77de3ebc8f116a9943e4dde01cdd47
-
-- Move config testhelpers to ory/x
-  ([8e82c30](https://github.com/ory/keto/commit/8e82c30c66400f7b7bbd21431ef1bdc2cc9baea5)):
-
-  GitOrigin-RevId: fd484445e9715760231f7f86ec212d094e826377
-
-- Use stdlib HTTP router in Kratos
-  ([3fd922c](https://github.com/ory/keto/commit/3fd922c87ee05ea2a8ef8fce16948b2c04a9f1e4)):
-
-  GitOrigin-RevId: 799513e99acbf43a05fe3113ffda45d2fff2a9e0
-
-- Use vendored ory/x
-  ([a1e3ef6](https://github.com/ory/keto/commit/a1e3ef64ec6b3f5dd213443c3fae653ef79ae7ff)):
-
-  GitOrigin-RevId: 994f3b754946ca5b2bd1bab0fe20532f5d5ab62f
-
-### Tests
-
-- Add golangci-lint config and GHA
-  ([90979c1](https://github.com/ory/keto/commit/90979c18b59800778681608184e668f705dd5b2e)):
-
-  GitOrigin-RevId: eb14c9f38e2b98d11a78ee0b90fd8f4f689abd3d
-
-- **e2e:** Ensure Keto pagination works
-  ([459771e](https://github.com/ory/keto/commit/459771ef408179319c278b58b23e3eb7d805c044)):
-
-  GitOrigin-RevId: a4c5a79b37cff38c4aa62db5c8d8a757210fc48e
-
-- **hydra:** Add snapshots for login & consent requests
-  ([e51f852](https://github.com/ory/keto/commit/e51f852b8f0c156fa1f5fa36a10b2b5f33afc6cd)):
-
-  GitOrigin-RevId: 47d041cf207af6c3e9e21bf3016e5ea0cf044344
+# [0.0.0](https://github.com/ory/keto/compare/v0.14.0...v0.0.0) (2025-04-28)
 
 # [0.14.0](https://github.com/ory/keto/compare/v0.13.0-alpha.0...v0.14.0) (2025-03-06)
 
