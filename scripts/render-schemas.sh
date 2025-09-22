@@ -2,10 +2,10 @@
 
 set -euxo pipefail
 
-ory_x_version="$(go list -f '{{.Version}}' -m github.com/ory/x)"
+schema_version="$(git rev-parse --short HEAD)"
 
-sed "s!ory://tracing-config!https://raw.githubusercontent.com/ory/x/$ory_x_version/otelx/config.schema.json!g;
-s!ory://logging-config!https://raw.githubusercontent.com/ory/x/$ory_x_version/logrusx/config.schema.json!g" embedx/config.schema.json > .schema/config.schema.json
+sed "s!ory://tracing-config!https://raw.githubusercontent.com/ory/keto/$schema_version/oryx/otelx/config.schema.json!g;
+s!ory://logging-config!https://raw.githubusercontent.com/ory/keto/$schema_version/oryx/logrusx/config.schema.json!g" embedx/config.schema.json > .schema/config.schema.json
 
 git add .schema/config.schema.json
 

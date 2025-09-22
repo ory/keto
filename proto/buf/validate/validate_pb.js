@@ -13,13 +13,7 @@
 
 var jspb = require('google-protobuf');
 var goog = jspb;
-var global =
-    (typeof globalThis !== 'undefined' && globalThis) ||
-    (typeof window !== 'undefined' && window) ||
-    (typeof global !== 'undefined' && global) ||
-    (typeof self !== 'undefined' && self) ||
-    (function () { return this; }).call(null) ||
-    Function('return this')();
+var global = globalThis;
 
 var google_protobuf_descriptor_pb = require('google-protobuf/google/protobuf/descriptor_pb.js');
 goog.object.extend(proto, google_protobuf_descriptor_pb);
@@ -3607,26 +3601,17 @@ proto.buf.validate.FloatRules.deserializeBinaryFromReader = function(msg, reader
       msg.setGte(value);
       break;
     case 6:
-      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedFloat() : [reader.readFloat()]);
-      for (var i = 0; i < values.length; i++) {
-        msg.addIn(values[i]);
-      }
+      reader.readPackableFloatInto(msg.getInList());
       break;
     case 7:
-      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedFloat() : [reader.readFloat()]);
-      for (var i = 0; i < values.length; i++) {
-        msg.addNotIn(values[i]);
-      }
+      reader.readPackableFloatInto(msg.getNotInList());
       break;
     case 8:
       var value = /** @type {boolean} */ (reader.readBool());
       msg.setFinite(value);
       break;
     case 9:
-      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedFloat() : [reader.readFloat()]);
-      for (var i = 0; i < values.length; i++) {
-        msg.addExample(values[i]);
-      }
+      reader.readPackableFloatInto(msg.getExampleList());
       break;
     default:
       jspb.Message.readBinaryExtension(msg, reader,
@@ -4205,26 +4190,17 @@ proto.buf.validate.DoubleRules.deserializeBinaryFromReader = function(msg, reade
       msg.setGte(value);
       break;
     case 6:
-      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedDouble() : [reader.readDouble()]);
-      for (var i = 0; i < values.length; i++) {
-        msg.addIn(values[i]);
-      }
+      reader.readPackableDoubleInto(msg.getInList());
       break;
     case 7:
-      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedDouble() : [reader.readDouble()]);
-      for (var i = 0; i < values.length; i++) {
-        msg.addNotIn(values[i]);
-      }
+      reader.readPackableDoubleInto(msg.getNotInList());
       break;
     case 8:
       var value = /** @type {boolean} */ (reader.readBool());
       msg.setFinite(value);
       break;
     case 9:
-      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedDouble() : [reader.readDouble()]);
-      for (var i = 0; i < values.length; i++) {
-        msg.addExample(values[i]);
-      }
+      reader.readPackableDoubleInto(msg.getExampleList());
       break;
     default:
       jspb.Message.readBinaryExtension(msg, reader,
@@ -4802,22 +4778,13 @@ proto.buf.validate.Int32Rules.deserializeBinaryFromReader = function(msg, reader
       msg.setGte(value);
       break;
     case 6:
-      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedInt32() : [reader.readInt32()]);
-      for (var i = 0; i < values.length; i++) {
-        msg.addIn(values[i]);
-      }
+      reader.readPackableInt32Into(msg.getInList());
       break;
     case 7:
-      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedInt32() : [reader.readInt32()]);
-      for (var i = 0; i < values.length; i++) {
-        msg.addNotIn(values[i]);
-      }
+      reader.readPackableInt32Into(msg.getNotInList());
       break;
     case 8:
-      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedInt32() : [reader.readInt32()]);
-      for (var i = 0; i < values.length; i++) {
-        msg.addExample(values[i]);
-      }
+      reader.readPackableInt32Into(msg.getExampleList());
       break;
     default:
       jspb.Message.readBinaryExtension(msg, reader,
@@ -5352,22 +5319,13 @@ proto.buf.validate.Int64Rules.deserializeBinaryFromReader = function(msg, reader
       msg.setGte(value);
       break;
     case 6:
-      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedInt64() : [reader.readInt64()]);
-      for (var i = 0; i < values.length; i++) {
-        msg.addIn(values[i]);
-      }
+      reader.readPackableInt64Into(msg.getInList());
       break;
     case 7:
-      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedInt64() : [reader.readInt64()]);
-      for (var i = 0; i < values.length; i++) {
-        msg.addNotIn(values[i]);
-      }
+      reader.readPackableInt64Into(msg.getNotInList());
       break;
     case 9:
-      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedInt64() : [reader.readInt64()]);
-      for (var i = 0; i < values.length; i++) {
-        msg.addExample(values[i]);
-      }
+      reader.readPackableInt64Into(msg.getExampleList());
       break;
     default:
       jspb.Message.readBinaryExtension(msg, reader,
@@ -5902,22 +5860,13 @@ proto.buf.validate.UInt32Rules.deserializeBinaryFromReader = function(msg, reade
       msg.setGte(value);
       break;
     case 6:
-      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedUint32() : [reader.readUint32()]);
-      for (var i = 0; i < values.length; i++) {
-        msg.addIn(values[i]);
-      }
+      reader.readPackableUint32Into(msg.getInList());
       break;
     case 7:
-      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedUint32() : [reader.readUint32()]);
-      for (var i = 0; i < values.length; i++) {
-        msg.addNotIn(values[i]);
-      }
+      reader.readPackableUint32Into(msg.getNotInList());
       break;
     case 8:
-      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedUint32() : [reader.readUint32()]);
-      for (var i = 0; i < values.length; i++) {
-        msg.addExample(values[i]);
-      }
+      reader.readPackableUint32Into(msg.getExampleList());
       break;
     default:
       jspb.Message.readBinaryExtension(msg, reader,
@@ -6452,22 +6401,13 @@ proto.buf.validate.UInt64Rules.deserializeBinaryFromReader = function(msg, reade
       msg.setGte(value);
       break;
     case 6:
-      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedUint64() : [reader.readUint64()]);
-      for (var i = 0; i < values.length; i++) {
-        msg.addIn(values[i]);
-      }
+      reader.readPackableUint64Into(msg.getInList());
       break;
     case 7:
-      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedUint64() : [reader.readUint64()]);
-      for (var i = 0; i < values.length; i++) {
-        msg.addNotIn(values[i]);
-      }
+      reader.readPackableUint64Into(msg.getNotInList());
       break;
     case 8:
-      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedUint64() : [reader.readUint64()]);
-      for (var i = 0; i < values.length; i++) {
-        msg.addExample(values[i]);
-      }
+      reader.readPackableUint64Into(msg.getExampleList());
       break;
     default:
       jspb.Message.readBinaryExtension(msg, reader,
@@ -7002,22 +6942,13 @@ proto.buf.validate.SInt32Rules.deserializeBinaryFromReader = function(msg, reade
       msg.setGte(value);
       break;
     case 6:
-      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedSint32() : [reader.readSint32()]);
-      for (var i = 0; i < values.length; i++) {
-        msg.addIn(values[i]);
-      }
+      reader.readPackableSint32Into(msg.getInList());
       break;
     case 7:
-      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedSint32() : [reader.readSint32()]);
-      for (var i = 0; i < values.length; i++) {
-        msg.addNotIn(values[i]);
-      }
+      reader.readPackableSint32Into(msg.getNotInList());
       break;
     case 8:
-      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedSint32() : [reader.readSint32()]);
-      for (var i = 0; i < values.length; i++) {
-        msg.addExample(values[i]);
-      }
+      reader.readPackableSint32Into(msg.getExampleList());
       break;
     default:
       jspb.Message.readBinaryExtension(msg, reader,
@@ -7552,22 +7483,13 @@ proto.buf.validate.SInt64Rules.deserializeBinaryFromReader = function(msg, reade
       msg.setGte(value);
       break;
     case 6:
-      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedSint64() : [reader.readSint64()]);
-      for (var i = 0; i < values.length; i++) {
-        msg.addIn(values[i]);
-      }
+      reader.readPackableSint64Into(msg.getInList());
       break;
     case 7:
-      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedSint64() : [reader.readSint64()]);
-      for (var i = 0; i < values.length; i++) {
-        msg.addNotIn(values[i]);
-      }
+      reader.readPackableSint64Into(msg.getNotInList());
       break;
     case 8:
-      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedSint64() : [reader.readSint64()]);
-      for (var i = 0; i < values.length; i++) {
-        msg.addExample(values[i]);
-      }
+      reader.readPackableSint64Into(msg.getExampleList());
       break;
     default:
       jspb.Message.readBinaryExtension(msg, reader,
@@ -8102,22 +8024,13 @@ proto.buf.validate.Fixed32Rules.deserializeBinaryFromReader = function(msg, read
       msg.setGte(value);
       break;
     case 6:
-      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedFixed32() : [reader.readFixed32()]);
-      for (var i = 0; i < values.length; i++) {
-        msg.addIn(values[i]);
-      }
+      reader.readPackableFixed32Into(msg.getInList());
       break;
     case 7:
-      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedFixed32() : [reader.readFixed32()]);
-      for (var i = 0; i < values.length; i++) {
-        msg.addNotIn(values[i]);
-      }
+      reader.readPackableFixed32Into(msg.getNotInList());
       break;
     case 8:
-      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedFixed32() : [reader.readFixed32()]);
-      for (var i = 0; i < values.length; i++) {
-        msg.addExample(values[i]);
-      }
+      reader.readPackableFixed32Into(msg.getExampleList());
       break;
     default:
       jspb.Message.readBinaryExtension(msg, reader,
@@ -8652,22 +8565,13 @@ proto.buf.validate.Fixed64Rules.deserializeBinaryFromReader = function(msg, read
       msg.setGte(value);
       break;
     case 6:
-      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedFixed64() : [reader.readFixed64()]);
-      for (var i = 0; i < values.length; i++) {
-        msg.addIn(values[i]);
-      }
+      reader.readPackableFixed64Into(msg.getInList());
       break;
     case 7:
-      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedFixed64() : [reader.readFixed64()]);
-      for (var i = 0; i < values.length; i++) {
-        msg.addNotIn(values[i]);
-      }
+      reader.readPackableFixed64Into(msg.getNotInList());
       break;
     case 8:
-      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedFixed64() : [reader.readFixed64()]);
-      for (var i = 0; i < values.length; i++) {
-        msg.addExample(values[i]);
-      }
+      reader.readPackableFixed64Into(msg.getExampleList());
       break;
     default:
       jspb.Message.readBinaryExtension(msg, reader,
@@ -9202,22 +9106,13 @@ proto.buf.validate.SFixed32Rules.deserializeBinaryFromReader = function(msg, rea
       msg.setGte(value);
       break;
     case 6:
-      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedSfixed32() : [reader.readSfixed32()]);
-      for (var i = 0; i < values.length; i++) {
-        msg.addIn(values[i]);
-      }
+      reader.readPackableSfixed32Into(msg.getInList());
       break;
     case 7:
-      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedSfixed32() : [reader.readSfixed32()]);
-      for (var i = 0; i < values.length; i++) {
-        msg.addNotIn(values[i]);
-      }
+      reader.readPackableSfixed32Into(msg.getNotInList());
       break;
     case 8:
-      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedSfixed32() : [reader.readSfixed32()]);
-      for (var i = 0; i < values.length; i++) {
-        msg.addExample(values[i]);
-      }
+      reader.readPackableSfixed32Into(msg.getExampleList());
       break;
     default:
       jspb.Message.readBinaryExtension(msg, reader,
@@ -9752,22 +9647,13 @@ proto.buf.validate.SFixed64Rules.deserializeBinaryFromReader = function(msg, rea
       msg.setGte(value);
       break;
     case 6:
-      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedSfixed64() : [reader.readSfixed64()]);
-      for (var i = 0; i < values.length; i++) {
-        msg.addIn(values[i]);
-      }
+      reader.readPackableSfixed64Into(msg.getInList());
       break;
     case 7:
-      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedSfixed64() : [reader.readSfixed64()]);
-      for (var i = 0; i < values.length; i++) {
-        msg.addNotIn(values[i]);
-      }
+      reader.readPackableSfixed64Into(msg.getNotInList());
       break;
     case 8:
-      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedSfixed64() : [reader.readSfixed64()]);
-      for (var i = 0; i < values.length; i++) {
-        msg.addExample(values[i]);
-      }
+      reader.readPackableSfixed64Into(msg.getExampleList());
       break;
     default:
       jspb.Message.readBinaryExtension(msg, reader,
@@ -10238,10 +10124,7 @@ proto.buf.validate.BoolRules.deserializeBinaryFromReader = function(msg, reader)
       msg.setConst(value);
       break;
     case 2:
-      var values = /** @type {!Array<boolean>} */ (reader.isDelimited() ? reader.readPackedBool() : [reader.readBool()]);
-      for (var i = 0; i < values.length; i++) {
-        msg.addExample(values[i]);
-      }
+      reader.readPackableBoolInto(msg.getExampleList());
       break;
     default:
       jspb.Message.readBinaryExtension(msg, reader,
@@ -13236,22 +13119,13 @@ proto.buf.validate.EnumRules.deserializeBinaryFromReader = function(msg, reader)
       msg.setDefinedOnly(value);
       break;
     case 3:
-      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedInt32() : [reader.readInt32()]);
-      for (var i = 0; i < values.length; i++) {
-        msg.addIn(values[i]);
-      }
+      reader.readPackableInt32Into(msg.getInList());
       break;
     case 4:
-      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedInt32() : [reader.readInt32()]);
-      for (var i = 0; i < values.length; i++) {
-        msg.addNotIn(values[i]);
-      }
+      reader.readPackableInt32Into(msg.getNotInList());
       break;
     case 5:
-      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedInt32() : [reader.readInt32()]);
-      for (var i = 0; i < values.length; i++) {
-        msg.addExample(values[i]);
-      }
+      reader.readPackableInt32Into(msg.getExampleList());
       break;
     default:
       jspb.Message.readBinaryExtension(msg, reader,

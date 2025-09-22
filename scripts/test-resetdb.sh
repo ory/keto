@@ -8,7 +8,7 @@ docker rm -f test_keto_cockroach || true
 
 postgres_port="$(docker port "$(docker run --name test_keto_postgres -e "POSTGRES_PASSWORD=secret" -e "POSTGRES_DB=postgres" -p 0.0.0.0:0:5432 -d postgres:16)" 5432 | sed 's/.*:\([0-9]*\)/\1/')"
 mysql_port="$(docker port "$(docker run --name test_keto_mysql -e "MYSQL_ROOT_PASSWORD=secret" -p 0.0.0.0:0:3306 -d mysql:8.0)" 3306 | sed 's/.*:\([0-9]*\)/\1/')"
-cockroach_port="$(docker port "$(docker run --name test_keto_cockroach -p 0.0.0.0:0:26257 -d cockroachdb/cockroach:latest-v23.2 start-single-node --insecure)" 26257 | sed 's/.*:\([0-9]*\)/\1/')"
+cockroach_port="$(docker port "$(docker run --name test_keto_cockroach -p 0.0.0.0:0:26257 -d cockroachdb/cockroach:latest-v25.2 start-single-node --insecure)" 26257 | sed 's/.*:\([0-9]*\)/\1/')"
 
 TEST_DATABASE_POSTGRESQL=$(printf "postgres://postgres:secret@localhost:%s/postgres?sslmode=disable" "$postgres_port")
 TEST_DATABASE_MYSQL=$(printf "mysql://root:secret@(localhost:%s)/mysql?parseTime=true&multiStatements=true" "$mysql_port")

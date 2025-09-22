@@ -448,6 +448,29 @@
         }
       }
     },
+    "secrets": {
+      "title": "Secrets for signing and encryption",
+      "description": "Make sure to use unique and random secrets for production deployments. Horizontally scaled deployments have to use the same secrets across all instances.",
+      "type": "object",
+      "properties": {
+        "pagination": {
+          "description": "Pagination secrets are used to encrypt pagination tokens. The first secret is used for encryption, while all others are used for decryption. This allows you to rotate the encryption key without invalidating all existing pagination tokens.",
+          "type": "array",
+          "minLength": 1,
+          "items": {
+            "type": "string",
+            "minLength": 16
+          },
+          "examples": [
+            [
+              "secret used for encryption",
+              "old secret kept for decryption",
+              "another old secret kept for decryption"
+            ]
+          ]
+        }
+      }
+    },
     "version": {
       "type": "string",
       "title": "The Keto version this config is written for.",

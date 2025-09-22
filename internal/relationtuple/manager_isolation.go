@@ -34,7 +34,7 @@ func reset(t *testing.T, ms ...Manager) {
 
 			require.NoError(t, m.DeleteRelationTuples(ctx, rts...))
 
-			if next == "" {
+			if next.IsLast() {
 				break
 			}
 		}

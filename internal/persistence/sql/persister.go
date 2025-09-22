@@ -7,10 +7,9 @@ import (
 	"context"
 	"embed"
 
-	"github.com/gobuffalo/pop/v6"
 	"github.com/gofrs/uuid"
+	"github.com/ory/pop/v6"
 	"github.com/ory/x/popx"
-	"github.com/pkg/errors"
 
 	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/persistence"
@@ -24,10 +23,6 @@ type (
 		d    dependencies
 		nid  uuid.UUID
 	}
-	internalPagination struct {
-		PerPage int
-		LastID  uuid.UUID
-	}
 	dependencies interface {
 		x.LoggerProvider
 		x.TracingProvider
@@ -36,10 +31,6 @@ type (
 
 		PopConnection(ctx context.Context) (*pop.Connection, error)
 	}
-)
-
-const (
-	defaultPageSize int = 100
 )
 
 var (
@@ -82,34 +73,4 @@ func (p *Persister) NetworkID(ctx context.Context) uuid.UUID {
 
 func (p *Persister) SetNetwork(nid uuid.UUID) {
 	p.nid = nid
-}
-
-func internalPaginationFromOptions(opts ...x.PaginationOptionSetter) (*internalPagination, error) {
-	xp := x.GetPaginationOptions(opts...)
-	ip := &internalPagination{
-		PerPage: xp.Size,
-	}
-	if ip.PerPage == 0 {
-		ip.PerPage = defaultPageSize
-	}
-	return ip, ip.parsePageToken(xp.Token)
-}
-
-func (p *internalPagination) parsePageToken(t string) error {
-	if t == "" {
-		p.LastID = uuid.Nil
-		return nil
-	}
-
-	i, err := uuid.FromString(t)
-	if err != nil {
-		return errors.WithStack(persistence.ErrMalformedPageToken)
-	}
-
-	p.LastID = i
-	return nil
-}
-
-func (p *internalPagination) encodeNextPageToken(lastID uuid.UUID) string {
-	return lastID.String()
 }

@@ -6,12 +6,12 @@ package check
 import (
 	"context"
 
+	keysetpagination "github.com/ory/x/pagination/keysetpagination_v2"
 	"github.com/pkg/errors"
 
 	"github.com/ory/keto/internal/check/checkgroup"
 	"github.com/ory/keto/internal/namespace/ast"
 	"github.com/ory/keto/internal/relationtuple"
-	"github.com/ory/keto/internal/x"
 	"github.com/ory/keto/ketoapi"
 )
 
@@ -256,21 +256,16 @@ func (e *Engine) checkTupleToSubjectSet(
 		Trace("check tuple to subjectSet")
 
 	return func(ctx context.Context, resultCh chan<- checkgroup.Result) {
-		var (
-			prevPage, nextPage string
-			tuples             []*relationTuple
-			err                error
-		)
 		g := checkgroup.New(ctx)
-		for nextPage = "x"; nextPage != "" && !g.Done(); prevPage = nextPage {
-			tuples, nextPage, err = e.d.RelationTupleManager().GetRelationTuples(
-				ctx,
-				&query{
-					Namespace: &tuple.Namespace,
-					Object:    &tuple.Object,
-					Relation:  &subjectSet.Relation,
-				},
-				x.WithToken(prevPage))
+		for nextPage := keysetpagination.NewPaginator(); !nextPage.IsLast(); {
+			var tuples []*relationTuple
+			var err error
+			tuples, nextPage, err = e.d.RelationTupleManager().GetRelationTuples(ctx, &query{
+				Namespace: &tuple.Namespace,
+				Object:    &tuple.Object,
+				Relation:  &subjectSet.Relation,
+			},
+				nextPage.ToOptions()...)
 			if err != nil {
 				g.Add(checkgroup.ErrorFunc(err))
 				return
@@ -284,7 +279,6 @@ func (e *Engine) checkTupleToSubjectSet(
 						Relation:  subjectSet.ComputedSubjectSetRelation,
 						Subject:   tuple.Subject,
 					}, restDepth-1, false))
-
 				}
 			}
 		}

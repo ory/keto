@@ -15,7 +15,7 @@ import (
 	"time"
 
 	"github.com/go-sql-driver/mysql"
-	"github.com/gobuffalo/pop/v6"
+	"github.com/ory/pop/v6"
 	"github.com/stretchr/testify/require"
 	"github.com/tidwall/sjson"
 )

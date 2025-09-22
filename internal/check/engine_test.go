@@ -9,6 +9,7 @@ import (
 
 	"github.com/gofrs/uuid"
 	"github.com/ory/herodot"
+	keysetpagination "github.com/ory/x/pagination/keysetpagination_v2"
 	"github.com/ory/x/pointerx"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -38,7 +39,7 @@ type deps struct {
 	x.NetworkIDProvider
 }
 
-func newDepsProvider(t testing.TB, namespaces []*namespace.Namespace, pageOpts ...x.PaginationOptionSetter) *deps {
+func newDepsProvider(t testing.TB, namespaces []*namespace.Namespace, pageOpts ...keysetpagination.Option) *deps {
 	reg := driver.NewSqliteTestRegistry(t, false)
 	require.NoError(t, reg.Config(context.Background()).Set(config.KeyNamespaces, namespaces))
 	mr := relationtuple.NewManagerWrapper(t, reg, pageOpts...)

@@ -19,7 +19,6 @@ import (
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 
 	httpclient "github.com/ory/keto/internal/httpclient"
-	"github.com/ory/keto/internal/x"
 	"github.com/ory/keto/ketoapi"
 )
 
@@ -163,7 +162,7 @@ func (c *sdkClient) deleteAllTuples(t testing.TB, q *ketoapi.RelationQuery) {
 	require.NoError(t, err)
 }
 
-func compileParams(req httpclient.RelationshipApiApiGetRelationshipsRequest, q *ketoapi.RelationQuery, opts []x.PaginationOptionSetter) httpclient.RelationshipApiApiGetRelationshipsRequest {
+func compileParams(req httpclient.RelationshipApiApiGetRelationshipsRequest, q *ketoapi.RelationQuery, opts []paginationOptionSetter) httpclient.RelationshipApiApiGetRelationshipsRequest {
 	if q.Namespace != nil {
 		req = req.Namespace(*q.Namespace)
 	}
@@ -183,7 +182,7 @@ func compileParams(req httpclient.RelationshipApiApiGetRelationshipsRequest, q *
 			SubjectSetRelation(q.SubjectSet.Relation)
 	}
 
-	pagination := x.GetPaginationOptions(opts...)
+	pagination := getPaginationOptions(opts...)
 	if pagination.Size != 0 {
 		req = req.PageSize(int32(pagination.Size))
 	}
@@ -194,7 +193,7 @@ func compileParams(req httpclient.RelationshipApiApiGetRelationshipsRequest, q *
 	return req
 }
 
-func (c *sdkClient) queryTuple(t testing.TB, q *ketoapi.RelationQuery, opts ...x.PaginationOptionSetter) *ketoapi.GetResponse {
+func (c *sdkClient) queryTuple(t testing.TB, q *ketoapi.RelationQuery, opts ...paginationOptionSetter) *ketoapi.GetResponse {
 	request := c.getReadClient().RelationshipApi.GetRelationships(c.requestCtx(t))
 	request = compileParams(request, q, opts)
 
@@ -226,7 +225,7 @@ func (c *sdkClient) queryTuple(t testing.TB, q *ketoapi.RelationQuery, opts ...x
 	return getResp
 }
 
-func (c *sdkClient) queryTupleErr(t testing.TB, expected herodot.DefaultError, q *ketoapi.RelationQuery, opts ...x.PaginationOptionSetter) {
+func (c *sdkClient) queryTupleErr(t testing.TB, expected herodot.DefaultError, q *ketoapi.RelationQuery, opts ...paginationOptionSetter) {
 	request := c.getReadClient().RelationshipApi.GetRelationships(c.requestCtx(t))
 	request = compileParams(request, q, opts)
 	_, _, err := request.Execute()

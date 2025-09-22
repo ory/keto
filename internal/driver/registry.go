@@ -6,13 +6,12 @@ package driver
 import (
 	"context"
 
-	"github.com/gobuffalo/pop/v6"
-	"github.com/spf13/cobra"
-	"google.golang.org/grpc"
-
+	"github.com/ory/pop/v6"
 	"github.com/ory/x/healthx"
 	"github.com/ory/x/otelx"
 	prometheus "github.com/ory/x/prometheusx"
+	"github.com/spf13/cobra"
+	"google.golang.org/grpc"
 
 	"github.com/ory/keto/internal/check"
 	"github.com/ory/keto/internal/driver/config"

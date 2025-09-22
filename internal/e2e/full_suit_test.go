@@ -22,7 +22,6 @@ import (
 	"github.com/ory/keto/cmd"
 	cliclient "github.com/ory/keto/cmd/client"
 	"github.com/ory/keto/internal/relationtuple"
-	"github.com/ory/keto/internal/x"
 	"github.com/ory/keto/internal/x/dbx"
 	"github.com/ory/keto/ketoapi"
 )
@@ -36,8 +35,8 @@ type (
 		createTuple(t testing.TB, r *ketoapi.RelationTuple)
 		deleteTuple(t testing.TB, r *ketoapi.RelationTuple)
 		deleteAllTuples(t testing.TB, q *ketoapi.RelationQuery)
-		queryTuple(t testing.TB, q *ketoapi.RelationQuery, opts ...x.PaginationOptionSetter) *ketoapi.GetResponse
-		queryTupleErr(t testing.TB, expected herodot.DefaultError, q *ketoapi.RelationQuery, opts ...x.PaginationOptionSetter)
+		queryTuple(t testing.TB, q *ketoapi.RelationQuery, opts ...paginationOptionSetter) *ketoapi.GetResponse
+		queryTupleErr(t testing.TB, expected herodot.DefaultError, q *ketoapi.RelationQuery, opts ...paginationOptionSetter)
 		check(t testing.TB, r *ketoapi.RelationTuple) bool
 		batchCheck(t testing.TB, r []*ketoapi.RelationTuple) []checkResponse
 		batchCheckErr(t testing.TB, requestTuples []*ketoapi.RelationTuple, expected herodot.DefaultError)

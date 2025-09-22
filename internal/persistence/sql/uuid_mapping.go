@@ -13,11 +13,10 @@ import (
 
 	"github.com/gofrs/uuid"
 	"github.com/ory/x/otelx"
+	"github.com/ory/x/pagination/keysetpagination"
 	"github.com/ory/x/sqlcon"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
-
-	"github.com/ory/keto/internal/x"
 )
 
 type (
@@ -36,17 +35,12 @@ func (UUIDMapping) TableName() string {
 	return "keto_uuid_mappings"
 }
 
-func (p *Persister) batchFromUUIDs(ctx context.Context, ids []uuid.UUID, opts ...x.PaginationOptionSetter) (res []string, err error) {
+func (p *Persister) batchFromUUIDs(ctx context.Context, ids []uuid.UUID) (res []string, err error) {
 	if len(ids) == 0 {
 		return
 	}
 
 	p.d.Logger().Trace("looking up UUIDs")
-
-	// We need to paginate on the ids, because we want to get the exact chunk of
-	// string representations for the given ids.
-	pagination, _ := internalPaginationFromOptions(opts...)
-	pageSize := pagination.PerPage
 
 	// Build a map from UUID -> indices in the result.
 	idIdx := make(map[uuid.UUID][]int, len(ids))
@@ -62,13 +56,13 @@ func (p *Persister) batchFromUUIDs(ctx context.Context, ids []uuid.UUID, opts ..
 
 	res = make([]string, len(ids))
 
-	idsToLookup := make([]uuid.UUID, 0, pageSize)
-	mappings := make([]UUIDMapping, 0, pageSize)
-	for i := 0; i < len(idIdx); i += pageSize {
+	idsToLookup := make([]uuid.UUID, 0, keysetpagination.DefaultMaxSize)
+	mappings := make([]UUIDMapping, 0, keysetpagination.DefaultMaxSize)
+	for i := 0; i < len(idIdx); i += keysetpagination.DefaultMaxSize {
 		idsToLookup = idsToLookup[:0]
 		mappings = mappings[:0]
 
-		for range pageSize {
+		for range keysetpagination.DefaultMaxSize {
 			id, ok := nextID()
 			if !ok {
 				break

@@ -8,9 +8,7 @@ import (
 	"time"
 
 	"github.com/cenkalti/backoff/v3"
-	"github.com/gobuffalo/pop/v6"
-	"github.com/luna-duclos/instrumentedsql"
-	otelsql "github.com/ory/x/otelx/sql"
+	"github.com/ory/pop/v6"
 	"github.com/ory/x/sqlcon"
 	"github.com/pkg/errors"
 )
@@ -18,17 +16,12 @@ import (
 func (r *RegistryDefault) PopConnectionWithOpts(ctx context.Context, popOpts ...func(*pop.ConnectionDetails)) (*pop.Connection, error) {
 	pool, idlePool, connMaxLifetime, connMaxIdleTime, cleanedDSN := sqlcon.ParseConnectionOptions(r.Logger(), r.Config(ctx).DSN())
 	connDetails := &pop.ConnectionDetails{
-		URL:                   sqlcon.FinalizeDSN(r.Logger(), cleanedDSN),
-		IdlePool:              idlePool,
-		ConnMaxLifetime:       connMaxLifetime,
-		ConnMaxIdleTime:       connMaxIdleTime,
-		Pool:                  pool,
-		UseInstrumentedDriver: true,
-		InstrumentedDriverOptions: []instrumentedsql.Opt{
-			instrumentedsql.WithTracer(otelsql.NewTracer()),
-			instrumentedsql.WithIncludeArgs(),
-			instrumentedsql.WithOpsExcluded(instrumentedsql.OpSQLRowsNext),
-		},
+		URL:             sqlcon.FinalizeDSN(r.Logger(), cleanedDSN),
+		IdlePool:        idlePool,
+		ConnMaxLifetime: connMaxLifetime,
+		ConnMaxIdleTime: connMaxIdleTime,
+		Pool:            pool,
+		TracerProvider:  r.Tracer(ctx).Provider(),
 	}
 	for _, o := range popOpts {
 		o(connDetails)

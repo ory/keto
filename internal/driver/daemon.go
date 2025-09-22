@@ -18,8 +18,24 @@ import (
 	"syscall"
 	"time"
 
-	grpcLogrus "github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/logging"
+	grpcOtel "go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
+	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
+	"go.opentelemetry.io/otel"
+
+	"github.com/ory/x/otelx/semconv"
+
 	grpcRecovery "github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/recovery"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
+
+	"github.com/ory/keto/internal/namespace/namespacehandler"
+	"github.com/ory/keto/internal/schema"
+	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
+
+	"github.com/ory/x/logrusx"
+	prometheus "github.com/ory/x/prometheusx"
+
+	grpcLogrus "github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/logging"
 	"github.com/julienschmidt/httprouter"
 	"github.com/pkg/errors"
 	"github.com/rs/cors"
@@ -91,6 +107,7 @@ func (r *RegistryDefault) enableSqa(cmd *cobra.Command) {
 				BatchSize:            1000,
 				Interval:             time.Hour * 6,
 			},
+			Hostname: "", // TODO: figure out config to use
 		},
 	)
 }
@@ -327,7 +344,7 @@ func listenAndWriteFile(ctx context.Context, addr, listenFile string) (net.Liste
 	}
 	const filePrefix = "file://"
 	if strings.HasPrefix(listenFile, filePrefix) {
-		if err := os.WriteFile(listenFile[len(filePrefix):], []byte(l.Addr().String()), 0600); err != nil {
+		if err := os.WriteFile(listenFile[len(filePrefix):], []byte(l.Addr().String()), 0o600); err != nil {
 			return nil, errors.WithStack(fmt.Errorf("unable to write listen file %q: %w", listenFile, err))
 		}
 	}
@@ -471,9 +488,6 @@ func (r *RegistryDefault) unaryInterceptors(ctx context.Context) []grpc.UnarySer
 	is := []grpc.UnaryServerInterceptor{
 		grpcRecovery.UnaryServerInterceptor(grpcRecovery.WithRecoveryHandler(r.grpcRecoveryHandler)),
 	}
-	if r.Tracer(ctx).IsLoaded() {
-		is = append(is, grpcOtel.UnaryServerInterceptor(grpcOtel.WithTracerProvider(otel.GetTracerProvider())))
-	}
 	is = append(is, r.defaultUnaryInterceptors...)
 	is = append(is,
 		herodot.UnaryErrorUnwrapInterceptor,
@@ -490,9 +504,6 @@ func (r *RegistryDefault) unaryInterceptors(ctx context.Context) []grpc.UnarySer
 func (r *RegistryDefault) streamInterceptors(ctx context.Context) []grpc.StreamServerInterceptor {
 	is := []grpc.StreamServerInterceptor{
 		grpcRecovery.StreamServerInterceptor(grpcRecovery.WithRecoveryHandler(r.grpcRecoveryHandler)),
-	}
-	if r.Tracer(ctx).IsLoaded() {
-		is = append(is, grpcOtel.StreamServerInterceptor(grpcOtel.WithTracerProvider(otel.GetTracerProvider())))
 	}
 	is = append(is, r.defaultStreamInterceptors...)
 	is = append(is,
@@ -511,6 +522,12 @@ func (r *RegistryDefault) newGrpcServer(ctx context.Context) *grpc.Server {
 		grpc.ChainStreamInterceptor(r.streamInterceptors(ctx)...),
 		grpc.ChainUnaryInterceptor(r.unaryInterceptors(ctx)...),
 	}
+	if r.Tracer(ctx).IsLoaded() {
+		opts = append(opts,
+			grpc.StatsHandler(grpcOtel.NewServerHandler(grpcOtel.WithTracerProvider(otel.GetTracerProvider()))),
+		)
+	}
+
 	opts = append(opts, r.defaultGRPCServerOptions...)
 	if r.grpcTransportCredentials != nil {
 		opts = append(opts, grpc.Creds(r.grpcTransportCredentials))

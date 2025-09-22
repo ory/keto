@@ -8,11 +8,10 @@ import (
 	"encoding/json"
 	"testing"
 
+	"github.com/ory/x/configx"
 	"github.com/spf13/pflag"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-
-	"github.com/ory/x/configx"
 
 	"github.com/ory/keto/internal/driver"
 	"github.com/ory/keto/internal/driver/config"
@@ -70,6 +69,7 @@ func newInitializedReg(t testing.TB, dsn *dbx.DsnT, cfgOverwrites map[string]int
 		config.KeyOPLSyntaxAPIHost:  "127.0.0.1",
 		config.KeyMetricsHost:       "127.0.0.1",
 		config.KeyNamespaces:        []*namespace.Namespace{},
+		config.KeySecretsPagination: []string{"test pagination secret"},
 	}
 	for k, v := range cfgOverwrites {
 		cfgValues[k] = v
@@ -126,4 +126,34 @@ func convert(from, toPtr any) error {
 		return err
 	}
 	return json.Unmarshal(raw, toPtr)
+}
+
+type (
+	paginationOptions struct {
+		Token string `json:"page_token"`
+		Size  int    `json:"page_size"`
+	}
+	paginationOptionSetter func(*paginationOptions) *paginationOptions
+)
+
+func withToken(t string) paginationOptionSetter {
+	return func(opts *paginationOptions) *paginationOptions {
+		opts.Token = t
+		return opts
+	}
+}
+
+func withSize(size int) paginationOptionSetter {
+	return func(opts *paginationOptions) *paginationOptions {
+		opts.Size = size
+		return opts
+	}
+}
+
+func getPaginationOptions(modifiers ...paginationOptionSetter) *paginationOptions {
+	opts := &paginationOptions{}
+	for _, f := range modifiers {
+		opts = f(opts)
+	}
+	return opts
 }

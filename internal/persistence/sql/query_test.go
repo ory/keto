@@ -93,7 +93,7 @@ func TestBuildInsert(t *testing.T) {
 		"ns1",
 		obj1,
 		"rel1",
-		uuid.NullUUID{sub1, true},
+		uuid.NullUUID{UUID: sub1, Valid: true},
 		sql.NullString{}, uuid.NullUUID{}, sql.NullString{},
 		now,
 
@@ -103,7 +103,7 @@ func TestBuildInsert(t *testing.T) {
 		obj2,
 		"rel2",
 		uuid.NullUUID{},
-		sql.NullString{"ns3", true}, uuid.NullUUID{obj3, true}, sql.NullString{"rel3", true},
+		sql.NullString{String: "ns3", Valid: true}, uuid.NullUUID{UUID: obj3, Valid: true}, sql.NullString{String: "rel3", Valid: true},
 		now,
 	}, args)
 }

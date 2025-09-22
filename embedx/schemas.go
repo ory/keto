@@ -25,7 +25,6 @@ func init() {
 	if ConfigSchemaID == "" {
 		ConfigSchemaID = uuid.Must(uuid.NewV4()).String() + ".json"
 	}
-
 }
 
 // AddConfigSchema should be used instead of the schema itself to auto-register the dependencies schemas.

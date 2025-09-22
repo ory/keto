@@ -21,7 +21,7 @@ jobs:
       - uses: ory/ci/checkout@master
       - uses: actions/setup-go@v3
         with:
-          go-version: "1.23.2"
+          go-version: "1.25"
           check-latest: true
       - name: Update npm to a non-buggy version
         run: sudo npm i -g npm@9.5.0
@@ -29,16 +29,17 @@ jobs:
         run: make buf-lint
       - run: go list -json > go.list
       - name: Run nancy
-        uses: zepatrik/nancy-github-action@3b0a989791377b50913568102c0ed5539e4eb29c
+        uses: sonatype-nexus-community/nancy-github-action@395e2fb168f674f96502e5652103d112899ea369
         with:
           githubToken: ${{ secrets.GITHUB_TOKEN }}
       - name: Run golangci-lint
-        uses: golangci/golangci-lint-action@v6
+        uses: golangci/golangci-lint-action@v8
         env:
           GOGC: 100
         with:
-          version: v1.61.0
-          args: --timeout 10m0s --issues-exit-code=0
+          version: "v2.4.0"
+          args: --timeout 10m0s
+          only-new-issues: "true"
       - name: Test documentation examples
         run: make test-docs-samples
       - name: Test OPL typelib
@@ -69,17 +70,14 @@ jobs:
     steps:
       - run: |
           docker create --name cockroach -p 26257:26257 \
-            cockroachdb/cockroach:latest-v24.2 start-single-node --insecure
+            cockroachdb/cockroach:latest-v25.2 start-single-node --insecure
           docker start cockroach
         name: Start CockroachDB
       - uses: ory/ci/checkout@master
       - uses: actions/setup-go@v3
         with:
-          go-version: "1.23.2"
+          go-version: "1.25"
           check-latest: true
-      - name: Prepare Dependencies
-        run: |
-          make .bin/goveralls .bin/go-acc
       - name: Test proto package
         run: |
           cd proto
@@ -87,11 +85,11 @@ jobs:
           go test ./...
       - name: Test Keto
         run: |
-          source scripts/local-dependencies.sh
-          go-acc --ignore "internal/httpclient" -o coverage.txt ./... -- -tags sqlite
+          go test -coverprofile coverage.txt -tags sqlite ./...
+          grep -v "ory/keto/internal/httpclient" coverage.txt > coverage_cleared.txt
+          mv coverage_cleared.txt coverage.txt
       - run: |
-          source scripts/local-dependencies.sh
-          goveralls -service=github -coverprofile=coverage.txt
+          go tool goveralls -service=github -coverprofile=coverage.txt
         env:
           COVERALLS_TOKEN: ${{ github.token }}
 
@@ -102,7 +100,7 @@ jobs:
       - uses: ory/ci/checkout@master
       - uses: actions/setup-go@v3
         with:
-          go-version: "1.23.2"
+          go-version: "1.25"
           check-latest: true
       - run: |
           go test -tags sqlite -race -short ./...
@@ -137,37 +135,6 @@ jobs:
       - uses: ory/ci/changelog@master
         with:
           token: ${{ secrets.ORY_BOT_PAT }}
-
-  sdk-generate:
-    name: Generate SDKs
-    runs-on: ubuntu-latest
-    if:
-      ${{ github.ref_type == 'tag' || github.ref_name != 'master' ||
-      github.event_name == 'pull_request' }}
-    needs:
-      - test
-      - test-race
-      - validate
-    steps:
-      - uses: ory/ci/sdk/generate@master
-        with:
-          token: ${{ secrets.ORY_BOT_PAT }}
-
-  sdk-release:
-    name: Release SDKs
-    runs-on: ubuntu-latest
-    if: ${{ startsWith(github.ref, 'refs/tags/v') }}
-    needs:
-      - test
-      - test-race
-      - validate
-      - sdk-generate
-      - release
-    steps:
-      - uses: ory/ci/sdk/release@master
-        with:
-          token: ${{ secrets.ORY_BOT_PAT }}
-          swag-spec-location: spec/api.json
 
   release:
     name: Generate release
@@ -250,7 +217,7 @@ jobs:
           path: current-repo
       - uses: actions/setup-go@v3
         with:
-          go-version: "1.23.2"
+          go-version: "1.25"
           check-latest: true
       - uses: actions/setup-node@v3
         with:

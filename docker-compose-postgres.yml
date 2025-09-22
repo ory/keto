@@ -1,7 +1,7 @@
 version: "3.2"
 services:
   keto-migrate:
-    image: oryd/keto:v0.12.0-alpha.0
+    image: oryd/keto:v0.14.0
     links:
       - postgresd:postgresd
     volumes:

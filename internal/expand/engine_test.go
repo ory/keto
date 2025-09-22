@@ -8,23 +8,17 @@ import (
 	"testing"
 
 	"github.com/gofrs/uuid"
-
-	"github.com/ory/keto/ketoapi"
-
-	"github.com/ory/keto/internal/driver/config"
-
-	"github.com/ory/keto/internal/x"
-
-	"github.com/ory/keto/internal/namespace"
-
-	"github.com/ory/keto/internal/relationtuple"
-
-	"github.com/ory/keto/internal/expand"
-
+	keysetpagination "github.com/ory/x/pagination/keysetpagination_v2"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
 	"github.com/ory/keto/internal/driver"
+	"github.com/ory/keto/internal/driver/config"
+	"github.com/ory/keto/internal/expand"
+	"github.com/ory/keto/internal/namespace"
+	"github.com/ory/keto/internal/relationtuple"
+	"github.com/ory/keto/internal/x"
+	"github.com/ory/keto/ketoapi"
 )
 
 type (
@@ -41,7 +35,7 @@ type deps struct {
 	x.NetworkIDProvider
 }
 
-func newTestEngine(t *testing.T, namespaces []*namespace.Namespace, paginationOpts ...x.PaginationOptionSetter) (*relationtuple.ManagerWrapper, *expand.Engine) {
+func newTestEngine(t *testing.T, namespaces []*namespace.Namespace, paginationOpts ...keysetpagination.Option) (*relationtuple.ManagerWrapper, *expand.Engine) {
 	innerReg := driver.NewSqliteTestRegistry(t, false)
 	require.NoError(t, innerReg.Config(context.Background()).Set(config.KeyNamespaces, namespaces))
 	reg := relationtuple.NewManagerWrapper(t, innerReg, paginationOpts...)
@@ -94,6 +88,7 @@ func TestEngine(t *testing.T) {
 
 		tree, err := e.BuildTree(context.Background(), bouldererUserSet, 100)
 		require.NoError(t, err)
+
 		expand.AssertInternalTreesAreEqual(t, &relationtuple.Tree{
 			Type:    ketoapi.TreeNodeUnion,
 			Subject: bouldererUserSet,
@@ -246,16 +241,15 @@ func TestEngine(t *testing.T) {
 	})
 
 	t.Run("case=paginates", func(t *testing.T) {
-		reg, e := newTestEngine(t, []*namespace.Namespace{{}}, x.WithSize(2))
+		reg, e := newTestEngine(t, []*namespace.Namespace{{}}, keysetpagination.WithSize(2))
 
 		root := uuid.Must(uuid.NewV4())
-		users := x.UUIDs(4)
 		expectedTree := &relationtuple.Tree{
 			Type:    ketoapi.TreeNodeUnion,
 			Subject: &relationtuple.SubjectSet{Object: root, Relation: "access"},
 		}
 
-		for _, user := range users {
+		for _, user := range x.UUIDs(4) {
 			require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), &relationtuple.RelationTuple{
 				Object:   root,
 				Relation: "access",
@@ -273,7 +267,7 @@ func TestEngine(t *testing.T) {
 		}, 10)
 		require.NoError(t, err)
 
-		expand.AssertInternalTreesAreEqual(t, expectedTree, tree)
+		assert.True(t, expand.AssertInternalTreesAreEqual(t, expectedTree, tree))
 		assert.Len(t, reg.RequestedPages, 2)
 	})
 

@@ -300,14 +300,19 @@
         "operationId": "getRelationships",
         "parameters": [
           {
-            "type": "string",
-            "name": "page_token",
+            "maximum": 1000,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int64",
+            "default": 250,
+            "description": "Items per Page\n\nThis is the number of items per page to return.\nFor details on pagination please head over to the [pagination documentation](https://www.ory.sh/docs/ecosystem/api-design#pagination).",
+            "name": "page_size",
             "in": "query"
           },
           {
-            "type": "integer",
-            "format": "int64",
-            "name": "page_size",
+            "type": "string",
+            "description": "Next Page Token\n\nThe next page token.\nFor details on pagination please head over to the [pagination documentation](https://www.ory.sh/docs/ecosystem/api-design#pagination).",
+            "name": "page_token",
             "in": "query"
           },
           {
@@ -981,6 +986,7 @@
     },
     "healthNotReadyStatus": {
       "type": "object",
+      "title": "The not ready status of the service.",
       "properties": {
         "errors": {
           "description": "Errors contains a list of errors that caused the not ready status.",
@@ -993,6 +999,7 @@
     },
     "healthStatus": {
       "type": "object",
+      "title": "The health status of the service.",
       "properties": {
         "status": {
           "description": "Status always contains \"ok\".",

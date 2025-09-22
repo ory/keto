@@ -9,6 +9,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/ory/herodot"
+
 	"github.com/ory/keto/ketoapi"
 	opl "github.com/ory/keto/proto/ory/keto/opl/v1alpha1"
 
@@ -20,10 +22,6 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 	grpcHealthV1 "google.golang.org/grpc/health/grpc_health_v1"
 	"google.golang.org/grpc/status"
-
-	"github.com/ory/herodot"
-
-	"github.com/ory/keto/internal/x"
 )
 
 type grpcClient struct {
@@ -84,9 +82,9 @@ func (*grpcClient) createQuery(q *ketoapi.RelationQuery) *rts.RelationQuery {
 	return query
 }
 
-func (g *grpcClient) queryTuple(t testing.TB, q *ketoapi.RelationQuery, opts ...x.PaginationOptionSetter) *ketoapi.GetResponse {
+func (g *grpcClient) queryTuple(t testing.TB, q *ketoapi.RelationQuery, opts ...paginationOptionSetter) *ketoapi.GetResponse {
 	c := rts.NewReadServiceClient(g.read)
-	pagination := x.GetPaginationOptions(opts...)
+	pagination := getPaginationOptions(opts...)
 
 	resp, err := c.ListRelationTuples(g.ctx, &rts.ListRelationTuplesRequest{
 		RelationQuery: g.createQuery(q),
@@ -107,9 +105,9 @@ func (g *grpcClient) queryTuple(t testing.TB, q *ketoapi.RelationQuery, opts ...
 	}
 }
 
-func (g *grpcClient) queryTupleErr(t testing.TB, expected herodot.DefaultError, q *ketoapi.RelationQuery, opts ...x.PaginationOptionSetter) {
+func (g *grpcClient) queryTupleErr(t testing.TB, expected herodot.DefaultError, q *ketoapi.RelationQuery, opts ...paginationOptionSetter) {
 	c := rts.NewReadServiceClient(g.read)
-	pagination := x.GetPaginationOptions(opts...)
+	pagination := getPaginationOptions(opts...)
 
 	_, err := c.ListRelationTuples(g.ctx, &rts.ListRelationTuplesRequest{
 		RelationQuery: g.createQuery(q),

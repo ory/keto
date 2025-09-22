@@ -7,4 +7,3 @@ dist/
 **/*.sqlite-journal
 .vscode/
 .fuzzer/
-keto

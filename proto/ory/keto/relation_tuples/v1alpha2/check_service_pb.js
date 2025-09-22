@@ -13,13 +13,7 @@
 
 var jspb = require('google-protobuf');
 var goog = jspb;
-var global =
-    (typeof globalThis !== 'undefined' && globalThis) ||
-    (typeof window !== 'undefined' && window) ||
-    (typeof global !== 'undefined' && global) ||
-    (typeof self !== 'undefined' && self) ||
-    (function () { return this; }).call(null) ||
-    Function('return this')();
+var global = globalThis;
 
 var google_api_annotations_pb = require('../../../../google/api/annotations_pb.js');
 goog.object.extend(proto, google_api_annotations_pb);
@@ -269,15 +263,15 @@ proto.ory.keto.relation_tuples.v1alpha2.CheckRequest.deserializeBinaryFromReader
     var field = reader.getFieldNumber();
     switch (field) {
     case 1:
-      var value = /** @type {string} */ (reader.readString());
+      var value = /** @type {string} */ (reader.readStringRequireUtf8());
       msg.setNamespace(value);
       break;
     case 2:
-      var value = /** @type {string} */ (reader.readString());
+      var value = /** @type {string} */ (reader.readStringRequireUtf8());
       msg.setObject(value);
       break;
     case 3:
-      var value = /** @type {string} */ (reader.readString());
+      var value = /** @type {string} */ (reader.readStringRequireUtf8());
       msg.setRelation(value);
       break;
     case 4:
@@ -286,7 +280,7 @@ proto.ory.keto.relation_tuples.v1alpha2.CheckRequest.deserializeBinaryFromReader
       msg.setSubject(value);
       break;
     case 9:
-      var value = /** @type {string} */ (reader.readString());
+      var value = /** @type {string} */ (reader.readStringRequireUtf8());
       msg.setSubjectId(value);
       break;
     case 10:
@@ -304,7 +298,7 @@ proto.ory.keto.relation_tuples.v1alpha2.CheckRequest.deserializeBinaryFromReader
       msg.setLatest(value);
       break;
     case 6:
-      var value = /** @type {string} */ (reader.readString());
+      var value = /** @type {string} */ (reader.readStringRequireUtf8());
       msg.setSnaptoken(value);
       break;
     case 7:
@@ -746,7 +740,7 @@ proto.ory.keto.relation_tuples.v1alpha2.CheckResponse.deserializeBinaryFromReade
       msg.setAllowed(value);
       break;
     case 2:
-      var value = /** @type {string} */ (reader.readString());
+      var value = /** @type {string} */ (reader.readStringRequireUtf8());
       msg.setSnaptoken(value);
       break;
     default:
@@ -907,11 +901,11 @@ proto.ory.keto.relation_tuples.v1alpha2.CheckResponseWithError.deserializeBinary
       msg.setAllowed(value);
       break;
     case 2:
-      var value = /** @type {string} */ (reader.readString());
+      var value = /** @type {string} */ (reader.readStringRequireUtf8());
       msg.setError(value);
       break;
     case 3:
-      var value = /** @type {string} */ (reader.readString());
+      var value = /** @type {string} */ (reader.readStringRequireUtf8());
       msg.setSnaptoken(value);
       break;
     default:
@@ -1277,7 +1271,7 @@ proto.ory.keto.relation_tuples.v1alpha2.BatchCheckRequest.deserializeBinaryFromR
       msg.setLatest(value);
       break;
     case 3:
-      var value = /** @type {string} */ (reader.readString());
+      var value = /** @type {string} */ (reader.readStringRequireUtf8());
       msg.setSnaptoken(value);
       break;
     case 4:

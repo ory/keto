@@ -14,6 +14,12 @@ import (
 	"sync"
 	"testing"
 
+	"github.com/gofrs/uuid"
+
+	"github.com/ory/x/configx"
+	"github.com/ory/x/logrusx"
+	"github.com/ory/x/otelx"
+	"github.com/ory/x/tlsx"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/pflag"
@@ -21,11 +27,6 @@ import (
 	"go.opentelemetry.io/otel/trace"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
-
-	"github.com/ory/x/configx"
-	"github.com/ory/x/logrusx"
-	"github.com/ory/x/otelx"
-	"github.com/ory/x/tlsx"
 
 	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/namespace"
@@ -207,9 +208,10 @@ func NewTestRegistry(t testing.TB, dsn *dbx.DsnT, opts ...TestRegistryOption) *R
 	t.Cleanup(cancel)
 
 	ctx = configx.ContextWithConfigOptions(ctx, configx.WithValues(map[string]interface{}{
-		config.KeyDSN:        dsn.Conn,
-		"log.level":          "info",
-		config.KeyNamespaces: []*namespace.Namespace{},
+		config.KeyDSN:               dsn.Conn,
+		"log.level":                 "info",
+		config.KeyNamespaces:        []*namespace.Namespace{},
+		config.KeySecretsPagination: []string{uuid.Must(uuid.NewV4()).String()},
 	}))
 	c, err := config.NewDefault(ctx, nil, l)
 	require.NoError(t, err)

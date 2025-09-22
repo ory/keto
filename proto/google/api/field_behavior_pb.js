@@ -13,13 +13,7 @@
 
 var jspb = require('google-protobuf');
 var goog = jspb;
-var global =
-    (typeof globalThis !== 'undefined' && globalThis) ||
-    (typeof window !== 'undefined' && window) ||
-    (typeof global !== 'undefined' && global) ||
-    (typeof self !== 'undefined' && self) ||
-    (function () { return this; }).call(null) ||
-    Function('return this')();
+var global = globalThis;
 
 var google_protobuf_descriptor_pb = require('google-protobuf/google/protobuf/descriptor_pb.js');
 goog.object.extend(proto, google_protobuf_descriptor_pb);
@@ -56,11 +50,11 @@ proto.google.api.fieldBehaviorList = new jspb.ExtensionFieldInfo(
 
 google_protobuf_descriptor_pb.FieldOptions.extensionsBinary[1052] = new jspb.ExtensionFieldBinaryInfo(
     proto.google.api.fieldBehaviorList,
-    jspb.BinaryReader.prototype.readEnum,
+    jspb.BinaryReader.prototype.readPackableEnumInto,
     jspb.BinaryWriter.prototype.writeRepeatedEnum,
     undefined,
     undefined,
-    false);
+    true);
 // This registers the extension field with the extended class, so that
 // toObject() will function correctly.
 google_protobuf_descriptor_pb.FieldOptions.extensions[1052] = proto.google.api.fieldBehaviorList;
