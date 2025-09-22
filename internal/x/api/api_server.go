@@ -2,10 +2,7 @@ package api
 
 import (
 	"context"
-	"log"
-	"maps"
 	"net/http"
-	"net/http/httptest"
 	"regexp"
 	"strconv"
 	"strings"
@@ -13,16 +10,11 @@ import (
 	"connectrpc.com/vanguard"
 	"connectrpc.com/vanguard/vanguardgrpc"
 	"github.com/urfave/negroni"
-	"google.golang.org/genproto/googleapis/rpc/errdetails"
-	statuspb "google.golang.org/genproto/googleapis/rpc/status"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/encoding"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/reflection"
-	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/encoding/protojson"
-
-	v1alpha2 "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 )
 
 func init() {
@@ -83,76 +75,20 @@ func (s *Server) RegisterService(desc *grpc.ServiceDesc, impl any) {
 	s.GRPCServer.RegisterService(desc, impl)
 }
 
+var (
+	invalidFieldPathRe = regexp.MustCompile(`in field path ".*":`)
+	unexpectedBodyRe   = regexp.MustCompile(`request should have no body; instead got \d bytes`)
+)
+
 var setErrorResponse = negroni.HandlerFunc(func(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
 	if ct := r.Header.Get("content-type"); strings.HasPrefix(ct, "application/grpc") || strings.HasPrefix(ct, "application/connect") {
 		next(w, r)
 		return
 	}
 
-	rr := httptest.NewRecorder()
-	next(rr, r)
-
-	maps.Copy(w.Header(), rr.Header())
-
-	var spb statuspb.Status
-	body := rr.Body.Bytes()
-	protojson.Unmarshal(body, &spb)
-
-	invalidFieldPathRe := regexp.MustCompile(`in field path ".*":`)
-	unexpectedBodyRe := regexp.MustCompile(`request should have no body; instead got \d bytes`)
-
-	// Proto errors in the REST request path are always bad requests.
-	if strings.HasPrefix(spb.Message, "proto:") ||
-		spb.Message == "empty field path" ||
-		invalidFieldPathRe.MatchString(spb.Message) ||
-		unexpectedBodyRe.MatchString(spb.Message) ||
-		strings.HasPrefix(spb.Message, "grpc: error unmarshalling request:") {
-		// Special case: error deserializing request into a protobuf is a bad request.
-		rr.Code = http.StatusBadRequest
-	} else if w.Header().Get("x-http-code") != "" {
-		statusCode, err := strconv.Atoi(w.Header().Get("x-http-code"))
-		if err != nil {
-			log.Println("error:", err)
-		}
-		w.Header().Del("x-http-code")
-		rr.Code = statusCode
-	}
-	w.WriteHeader(rr.Code)
-
-	if spb.Code == 0 && spb.Message == "" {
-		_, _ = w.Write(body)
-		return
-	}
-
-	s := status.FromProto(&spb)
-	errResponse := v1alpha2.ErrorResponse{
-		Error: &v1alpha2.ErrorResponse_Error{
-			Code:    int64(rr.Code),
-			Status:  http.StatusText(rr.Code),
-			Message: s.Message(),
-		},
-	}
-	for _, detail := range s.Details() {
-		switch t := detail.(type) {
-		case *errdetails.ErrorInfo:
-			errResponse.Error.Reason = t.Reason
-		case *errdetails.DebugInfo:
-			errResponse.Error.Debug = t.Detail
-		case *errdetails.RequestInfo:
-			errResponse.Error.Request = t.RequestId
-		case *errdetails.BadRequest:
-			errResponse.Error.Details = make(map[string]string, len(t.FieldViolations))
-			for _, v := range t.FieldViolations {
-				errResponse.Error.Details[v.Field] = v.Description
-			}
-		}
-	}
-
-	out, err := protojson.Marshal(&errResponse)
-	if err != nil {
-		log.Println("error:", err)
-	}
-	_, _ = w.Write(out)
+	resp := &response{w: w}
+	next(resp, r)
+	resp.flush()
 })
 
 var setRequestPath = negroni.HandlerFunc(func(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {

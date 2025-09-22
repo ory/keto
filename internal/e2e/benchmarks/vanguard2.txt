@@ -1,0 +1,51 @@
+goos: darwin
+goarch: arm64
+pkg: github.com/ory/keto/internal/e2e
+cpu: Apple M1 Max
+BenchmarkE2E
+BenchmarkE2E/client=*e2e.grpcClient
+BenchmarkE2E/client=*e2e.grpcClient/create,_query,_check,_batchCheck,_delete
+BenchmarkE2E/client=*e2e.grpcClient/create,_query,_check,_batchCheck,_delete-10         	    2026	   2946005 ns/op	  484084 B/op	    7598 allocs/op
+BenchmarkE2E/client=*e2e.grpcClient/create,_query,_check,_batchCheck,_delete-10         	    2070	   3172719 ns/op	  482648 B/op	    7597 allocs/op
+BenchmarkE2E/client=*e2e.grpcClient/create,_query,_check,_batchCheck,_delete-10         	    2071	   3125987 ns/op	  485073 B/op	    7598 allocs/op
+BenchmarkE2E/client=*e2e.grpcClient/create,_query,_check,_batchCheck,_delete-10         	    1806	   2955758 ns/op	  485460 B/op	    7598 allocs/op
+BenchmarkE2E/client=*e2e.grpcClient/create,_query,_check,_batchCheck,_delete-10         	    2142	   2739811 ns/op	  485089 B/op	    7598 allocs/op
+BenchmarkE2E/client=*e2e.grpcClient/create,_query,_check,_batchCheck,_delete-10         	    2092	   3100270 ns/op	  484960 B/op	    7598 allocs/op
+BenchmarkE2E/client=*e2e.grpcClient/create,_query,_check,_batchCheck,_delete-10         	    2050	   2866319 ns/op	  486026 B/op	    7598 allocs/op
+BenchmarkE2E/client=*e2e.grpcClient/create,_query,_check,_batchCheck,_delete-10         	    2181	   2641929 ns/op	  485714 B/op	    7599 allocs/op
+BenchmarkE2E/client=*e2e.grpcClient/create,_query,_check,_batchCheck,_delete-10         	    2230	   2741168 ns/op	  485430 B/op	    7598 allocs/op
+BenchmarkE2E/client=*e2e.grpcClient/create,_query,_check,_batchCheck,_delete-10         	    2136	   2862861 ns/op	  485811 B/op	    7598 allocs/op
+BenchmarkE2E/client=*e2e.grpcClient/check_subject_expand
+BenchmarkE2E/client=*e2e.grpcClient/check_subject_expand-10                             	   13032	    510906 ns/op	   91053 B/op	    1375 allocs/op
+BenchmarkE2E/client=*e2e.grpcClient/check_subject_expand-10                             	   12504	    496846 ns/op	   93449 B/op	    1424 allocs/op
+BenchmarkE2E/client=*e2e.grpcClient/check_subject_expand-10                             	   12890	    459806 ns/op	   95987 B/op	    1473 allocs/op
+BenchmarkE2E/client=*e2e.grpcClient/check_subject_expand-10                             	   12898	    491116 ns/op	   98233 B/op	    1521 allocs/op
+BenchmarkE2E/client=*e2e.grpcClient/check_subject_expand-10                             	   10000	    512981 ns/op	  100402 B/op	    1558 allocs/op
+BenchmarkE2E/client=*e2e.grpcClient/check_subject_expand-10                             	   10000	    540473 ns/op	  102263 B/op	    1594 allocs/op
+BenchmarkE2E/client=*e2e.grpcClient/check_subject_expand-10                             	   10000	    529924 ns/op	  103772 B/op	    1630 allocs/op
+BenchmarkE2E/client=*e2e.grpcClient/check_subject_expand-10                             	   10000	    552118 ns/op	  105561 B/op	    1666 allocs/op
+BenchmarkE2E/client=*e2e.grpcClient/check_subject_expand-10                             	   10000	    544366 ns/op	  107443 B/op	    1702 allocs/op
+BenchmarkE2E/client=*e2e.grpcClient/check_subject_expand-10                             	   10000	    545504 ns/op	  109726 B/op	    1739 allocs/op
+BenchmarkE2E/client=*e2e.restClient
+BenchmarkE2E/client=*e2e.restClient/create,_query,_check,_batchCheck,_delete
+BenchmarkE2E/client=*e2e.restClient/create,_query,_check,_batchCheck,_delete-10         	    2150	   2882252 ns/op	  579469 B/op	    8721 allocs/op
+BenchmarkE2E/client=*e2e.restClient/create,_query,_check,_batchCheck,_delete-10         	    2347	   2557743 ns/op	  578292 B/op	    8721 allocs/op
+BenchmarkE2E/client=*e2e.restClient/create,_query,_check,_batchCheck,_delete-10         	    2151	   2580486 ns/op	  578461 B/op	    8721 allocs/op
+BenchmarkE2E/client=*e2e.restClient/create,_query,_check,_batchCheck,_delete-10         	    2407	   2533778 ns/op	  580783 B/op	    8722 allocs/op
+BenchmarkE2E/client=*e2e.restClient/create,_query,_check,_batchCheck,_delete-10         	    2212	   2533304 ns/op	  578970 B/op	    8721 allocs/op
+BenchmarkE2E/client=*e2e.restClient/create,_query,_check,_batchCheck,_delete-10         	    2461	   2570151 ns/op	  577257 B/op	    8721 allocs/op
+BenchmarkE2E/client=*e2e.restClient/create,_query,_check,_batchCheck,_delete-10         	    2337	   2579865 ns/op	  581790 B/op	    8722 allocs/op
+BenchmarkE2E/client=*e2e.restClient/create,_query,_check,_batchCheck,_delete-10         	    2274	   2588435 ns/op	  577554 B/op	    8721 allocs/op
+BenchmarkE2E/client=*e2e.restClient/create,_query,_check,_batchCheck,_delete-10         	    2256	   2577838 ns/op	  578500 B/op	    8721 allocs/op
+BenchmarkE2E/client=*e2e.restClient/create,_query,_check,_batchCheck,_delete-10         	    2398	   2505777 ns/op	  579960 B/op	    8722 allocs/op
+BenchmarkE2E/client=*e2e.restClient/check_subject_expand
+BenchmarkE2E/client=*e2e.restClient/check_subject_expand-10                             	    8439	    685271 ns/op	  185732 B/op	    2764 allocs/op
+BenchmarkE2E/client=*e2e.restClient/check_subject_expand-10                             	    8288	    686521 ns/op	  189246 B/op	    2838 allocs/op
+BenchmarkE2E/client=*e2e.restClient/check_subject_expand-10                             	    8529	    731837 ns/op	  193100 B/op	    2913 allocs/op
+BenchmarkE2E/client=*e2e.restClient/check_subject_expand-10                             	    7729	    750060 ns/op	  196731 B/op	    2985 allocs/op
+BenchmarkE2E/client=*e2e.restClient/check_subject_expand-10                             	    8229	    765787 ns/op	  199726 B/op	    3057 allocs/op
+BenchmarkE2E/client=*e2e.restClient/check_subject_expand-10                             	    7806	    803999 ns/op	  204046 B/op	    3131 allocs/op
+BenchmarkE2E/client=*e2e.restClient/check_subject_expand-10                             	    6662	    832482 ns/op	  207864 B/op	    3204 allocs/op
+BenchmarkE2E/client=*e2e.restClient/check_subject_expand-10                             	    7185	    858038 ns/op	  210710 B/op	    3275 allocs/op
+BenchmarkE2E/client=*e2e.restClient/check_subject_expand-10                             	    6381	    869133 ns/op	  213991 B/op	    3347 allocs/op
+BenchmarkE2E/client=*e2e.restClient/check_subject_expand-10                             	    6607	    879502 ns/op	  218587 B/op	    3420 allocs/op
