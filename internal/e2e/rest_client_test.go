@@ -13,24 +13,19 @@ import (
 	"testing"
 	"time"
 
-	httpclient "github.com/ory/keto/internal/httpclient"
-	"github.com/ory/keto/internal/schema"
-	"github.com/ory/keto/ketoapi"
-	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
-
-	"github.com/tidwall/gjson"
-
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/tidwall/gjson"
 
 	"github.com/ory/herodot"
-	"github.com/ory/x/healthx"
-
 	"github.com/ory/keto/internal/check"
 	"github.com/ory/keto/internal/expand"
+	httpclient "github.com/ory/keto/internal/httpclient"
 	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/internal/schema"
 	"github.com/ory/keto/ketoapi"
+	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
+	"github.com/ory/x/healthx"
 )
 
 var _ client = &restClient{}

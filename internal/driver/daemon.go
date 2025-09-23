@@ -18,24 +18,8 @@ import (
 	"syscall"
 	"time"
 
-	grpcOtel "go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
-	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
-	"go.opentelemetry.io/otel"
-
-	"github.com/ory/x/otelx/semconv"
-
-	grpcRecovery "github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/recovery"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
-
-	"github.com/ory/keto/internal/namespace/namespacehandler"
-	"github.com/ory/keto/internal/schema"
-	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
-
-	"github.com/ory/x/logrusx"
-	prometheus "github.com/ory/x/prometheusx"
-
 	grpcLogrus "github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/logging"
+	grpcRecovery "github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/recovery"
 	"github.com/julienschmidt/httprouter"
 	"github.com/pkg/errors"
 	"github.com/rs/cors"
@@ -56,14 +40,6 @@ import (
 	"github.com/ory/analytics-go/v5"
 	"github.com/ory/graceful"
 	"github.com/ory/herodot"
-	"github.com/ory/x/healthx"
-	"github.com/ory/x/logrusx"
-	"github.com/ory/x/metricsx"
-	"github.com/ory/x/otelx"
-	"github.com/ory/x/otelx/semconv"
-	prometheus "github.com/ory/x/prometheusx"
-	"github.com/ory/x/reqlog"
-
 	"github.com/ory/keto/internal/check"
 	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/expand"
@@ -73,6 +49,13 @@ import (
 	"github.com/ory/keto/internal/x"
 	"github.com/ory/keto/internal/x/api"
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
+	"github.com/ory/x/healthx"
+	"github.com/ory/x/logrusx"
+	"github.com/ory/x/metricsx"
+	"github.com/ory/x/otelx"
+	"github.com/ory/x/otelx/semconv"
+	prometheus "github.com/ory/x/prometheusx"
+	"github.com/ory/x/reqlog"
 )
 
 func (r *RegistryDefault) enableSqa(cmd *cobra.Command) {

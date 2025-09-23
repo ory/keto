@@ -13,12 +13,8 @@ import (
 	"strings"
 	"testing"
 
-	keysetpagination "github.com/ory/x/pagination/keysetpagination_v2"
-	"github.com/ory/x/pointerx"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-
-	"github.com/ory/x/pointerx"
 
 	"github.com/ory/keto/internal/driver"
 	"github.com/ory/keto/internal/driver/config"
@@ -26,6 +22,8 @@ import (
 	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/internal/x/api"
 	"github.com/ory/keto/ketoapi"
+	keysetpagination "github.com/ory/x/pagination/keysetpagination_v2"
+	"github.com/ory/x/pointerx"
 )
 
 func TestWriteHandlers(t *testing.T) {
