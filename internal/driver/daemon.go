@@ -50,6 +50,7 @@ import (
 	"github.com/ory/x/healthx"
 	"github.com/ory/x/metricsx"
 	"github.com/ory/x/otelx"
+	"github.com/ory/x/urlx"
 	"github.com/spf13/cobra"
 
 	"github.com/ory/keto/internal/driver/config"
@@ -63,6 +64,28 @@ import (
 
 func (r *RegistryDefault) enableSqa(cmd *cobra.Command) {
 	ctx := cmd.Context()
+
+	var urls []string
+	addr, _ := r.Config(ctx).ReadAPIListenOn()
+	urls = append(urls, addr)
+	addr, _ = r.Config(ctx).WriteAPIListenOn()
+	urls = append(urls, addr)
+	addr, _ = r.Config(ctx).MetricsListenOn()
+	urls = append(urls, addr)
+	addr, _ = r.Config(ctx).OPLSyntaxAPIListenOn()
+	urls = append(urls, addr)
+
+	if c, y := r.Config(ctx).CORS("read"); y {
+		urls = append(urls, c.AllowedOrigins...)
+	}
+	if c, y := r.Config(ctx).CORS("write"); y {
+		urls = append(urls, c.AllowedOrigins...)
+	}
+	if c, y := r.Config(ctx).CORS("metrics"); y {
+		urls = append(urls, c.AllowedOrigins...)
+	}
+
+	host := urlx.ExtractPublicAddress(urls...)
 
 	r.sqaService = metricsx.New(
 		cmd,
@@ -93,7 +116,7 @@ func (r *RegistryDefault) enableSqa(cmd *cobra.Command) {
 				BatchSize:            1000,
 				Interval:             time.Hour * 6,
 			},
-			Hostname: "", // TODO: figure out config to use
+			Hostname: host,
 		},
 	)
 }
