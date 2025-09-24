@@ -25,7 +25,7 @@ authors:  # updates the AUTHORS file
 	curl https://raw.githubusercontent.com/ory/ci/master/authors/authors.sh | env PRODUCT="Ory Keto" bash
 
 .PHONY: format
-format: .bin/buf .bin/ory node_modules
+format: .bin/ory node_modules
 	.bin/ory dev headers copyright --type=open-source --exclude=.bin --exclude=internal/httpclient --exclude=proto --exclude=oryx
 	go tool goimports -w -local github.com/ory/keto *.go internal cmd contrib ketoctx ketoapi embedx
 	npm exec -- prettier --write .
@@ -80,9 +80,7 @@ build:
 #
 .PHONY: buf-gen
 buf-gen: node_modules
-	go tool -n protoc-gen-doc # Apparently on the first run the path is the temporary build output and will be deleted again. Later invocations use the correct go build cache path.
-	PATH=$$PATH:$$(dirname "$$(go tool -n protoc-gen-doc)") \
-		go tool buf generate proto
+	go tool buf generate proto
 	make format
 	@echo "All code was generated successfully!"
 

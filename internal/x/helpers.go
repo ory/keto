@@ -6,7 +6,7 @@ package x
 import (
 	"context"
 
-	"github.com/bufbuild/protovalidate-go"
+	"buf.build/go/protovalidate"
 	"github.com/gofrs/uuid"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/proto"

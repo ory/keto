@@ -26,7 +26,7 @@ plugins:
     out: proto
     opt: grpc_js
 
-  - local: .bin/protoc-gen-doc
+  - local: ["go", "tool", "protoc-gen-doc"]
     out: proto
     opt: proto/markdown.tmpl,proto/buf.md
     strategy: all

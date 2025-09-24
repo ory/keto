@@ -1,8 +1,7 @@
 version: "2"
 
 linters:
-  default:
-    none
+  default: none
   enable:
     - gosec
     - errcheck
