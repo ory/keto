@@ -109,7 +109,6 @@ Class | Method | HTTP request | Description
  - [ExpandedPermissionTree](docs/ExpandedPermissionTree.md)
  - [GetVersion200Response](docs/GetVersion200Response.md)
  - [IsAlive200Response](docs/IsAlive200Response.md)
- - [IsReady200Response](docs/IsReady200Response.md)
  - [IsReady503Response](docs/IsReady503Response.md)
  - [OryKetoOplV1alpha1ParseError](docs/OryKetoOplV1alpha1ParseError.md)
  - [OryKetoOplV1alpha1SourcePosition](docs/OryKetoOplV1alpha1SourcePosition.md)

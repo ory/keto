@@ -1,9 +1,25 @@
 version: "2"
 
 linters:
+  default:
+    none
   enable:
     - gosec
     - errcheck
     - ineffassign
     - staticcheck
     - unused
+  settings:
+    gosec:
+      excludes:
+        - G115
+    staticcheck:
+      checks:
+        - all
+        - "-ST1000"
+        - "-ST1003"
+        - "-ST1016"
+        - "-ST1020"
+        - "-ST1021"
+        - "-ST1022"
+        - "-SA1019" # Ignore warnings about deprecated code for now

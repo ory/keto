@@ -7,11 +7,14 @@ import (
 	"fmt"
 	"strings"
 
+	"google.golang.org/grpc"
+
 	"github.com/ory/keto/ketoapi"
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 
-	"github.com/ory/x/cmdx"
 	"github.com/spf13/cobra"
+
+	"github.com/ory/x/cmdx"
 
 	"github.com/ory/keto/cmd/client"
 )
@@ -40,7 +43,12 @@ func NewCheckCmd() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			defer conn.Close()
+			defer func(conn *grpc.ClientConn) {
+				err := conn.Close()
+				if err != nil {
+					_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not close connection: %s\n", err)
+				}
+			}(conn)
 
 			maxDepth, err := cmd.Flags().GetInt32(FlagMaxDepth)
 			if err != nil {

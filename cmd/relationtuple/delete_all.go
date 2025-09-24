@@ -6,13 +6,16 @@ package relationtuple
 import (
 	"fmt"
 
+	"google.golang.org/grpc"
+
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 
 	"github.com/ory/x/pointerx"
 
+	"github.com/spf13/cobra"
+
 	"github.com/ory/x/cmdx"
 	"github.com/ory/x/flagx"
-	"github.com/spf13/cobra"
 
 	"github.com/ory/keto/cmd/client"
 )
@@ -56,7 +59,12 @@ func deleteRelationTuplesFromQuery(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	defer conn.Close()
+	defer func(conn *grpc.ClientConn) {
+		err := conn.Close()
+		if err != nil {
+			_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not close connection: %s\n", err)
+		}
+	}(conn)
 	cl := rts.NewWriteServiceClient(conn)
 	_, err = cl.DeleteRelationTuples(cmd.Context(), &rts.DeleteRelationTuplesRequest{
 		RelationQuery: query,

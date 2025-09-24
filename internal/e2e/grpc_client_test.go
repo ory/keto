@@ -32,15 +32,15 @@ type grpcClient struct {
 func newGrpcClient(t testing.TB, ctx context.Context, readRemote, writeRemote, oplSyntaxRemote string) *grpcClient {
 	read, err := grpc.NewClient(readRemote, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	require.NoError(t, err)
-	t.Cleanup(func() { read.Close() })
+	t.Cleanup(func() { require.NoError(t, read.Close()) })
 
 	write, err := grpc.NewClient(writeRemote, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	require.NoError(t, err)
-	t.Cleanup(func() { write.Close() })
+	t.Cleanup(func() { require.NoError(t, write.Close()) })
 
 	oplSyntax, err := grpc.NewClient(oplSyntaxRemote, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	require.NoError(t, err)
-	t.Cleanup(func() { oplSyntax.Close() })
+	t.Cleanup(func() { require.NoError(t, oplSyntax.Close()) })
 
 	ctx, cancel := context.WithCancel(ctx)
 	t.Cleanup(cancel)

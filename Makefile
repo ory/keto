@@ -29,7 +29,7 @@ format: .bin/buf .bin/ory node_modules
 	.bin/ory dev headers copyright --type=open-source --exclude=.bin --exclude=internal/httpclient --exclude=proto --exclude=oryx
 	go tool goimports -w -local github.com/ory/keto *.go internal cmd contrib ketoctx ketoapi embedx
 	npm exec -- prettier --write .
-	buf format -w
+	go tool buf format -w
 
 .PHONY: install
 install:
@@ -49,7 +49,7 @@ sdk: buf .bin/ory node_modules
 	CIRCLE_PROJECT_USERNAME=ory CIRCLE_PROJECT_REPONAME=keto \
 		.bin/ory dev openapi migrate \
 			--health-path-tags metadata \
-			-p file://.schema/openapi/patches/health.yaml \
+			-p https://raw.githubusercontent.com/ory/x/master/healthx/openapi/patch.yaml \
 			-p file://.schema/openapi/patches/meta.yaml \
 			-p file://.schema/openapi/patches/checkServices.yaml \
 			spec/api.swagger.json spec/api.json
@@ -82,8 +82,7 @@ build:
 buf-gen: node_modules
 	go tool -n protoc-gen-doc # Apparently on the first run the path is the temporary build output and will be deleted again. Later invocations use the correct go build cache path.
 	PATH=$$PATH:$$(dirname "$$(go tool -n protoc-gen-doc)") \
-		go tool buf format -w
-	buf generate
+		go tool buf generate proto
 	make format
 	@echo "All code was generated successfully!"
 

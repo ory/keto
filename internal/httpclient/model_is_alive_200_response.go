@@ -17,6 +17,7 @@ import (
 
 // IsAlive200Response struct for IsAlive200Response
 type IsAlive200Response struct {
+	// Always \"ok\".
 	Status string `json:"status"`
 }
 

@@ -67,7 +67,11 @@ func (r *response) flush() {
 	}
 
 	var spb statuspb.Status
-	protojson.Unmarshal(r.buf.Bytes(), &spb)
+	if err := protojson.Unmarshal(r.buf.Bytes(), &spb); err != nil {
+		r.w.WriteHeader(r.code)
+		_, _ = r.w.Write(r.buf.Bytes())
+		return
+	}
 
 	// Proto errors in the REST request path are always bad requests.
 	if strings.HasPrefix(spb.Message, "proto:") ||

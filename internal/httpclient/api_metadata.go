@@ -84,9 +84,9 @@ type MetadataApi interface {
 
 	/*
 	 * IsReadyExecute executes the request
-	 * @return IsReady200Response
+	 * @return IsAlive200Response
 	 */
-	IsReadyExecute(r MetadataApiApiIsReadyRequest) (*IsReady200Response, *http.Response, error)
+	IsReadyExecute(r MetadataApiApiIsReadyRequest) (*IsAlive200Response, *http.Response, error)
 }
 
 // MetadataApiService MetadataApi service
@@ -264,7 +264,7 @@ func (a *MetadataApiService) IsAliveExecute(r MetadataApiApiIsAliveRequest) (*Is
 	}
 
 	// to determine the Accept header
-	localVarHTTPHeaderAccepts := []string{"application/json"}
+	localVarHTTPHeaderAccepts := []string{"application/json", "text/plain"}
 
 	// set Accept header
 	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
@@ -293,15 +293,13 @@ func (a *MetadataApiService) IsAliveExecute(r MetadataApiApiIsAliveRequest) (*Is
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
 		}
-		if localVarHTTPResponse.StatusCode == 500 {
-			var v ErrorGeneric
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-			newErr.model = v
+		var v string
+		err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+		if err != nil {
+			newErr.error = err.Error()
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
@@ -322,7 +320,7 @@ type MetadataApiApiIsReadyRequest struct {
 	ApiService MetadataApi
 }
 
-func (r MetadataApiApiIsReadyRequest) Execute() (*IsReady200Response, *http.Response, error) {
+func (r MetadataApiApiIsReadyRequest) Execute() (*IsAlive200Response, *http.Response, error) {
 	return r.ApiService.IsReadyExecute(r)
 }
 
@@ -349,16 +347,16 @@ func (a *MetadataApiService) IsReady(ctx context.Context) MetadataApiApiIsReadyR
 
 /*
  * Execute executes the request
- * @return IsReady200Response
+ * @return IsAlive200Response
  */
-func (a *MetadataApiService) IsReadyExecute(r MetadataApiApiIsReadyRequest) (*IsReady200Response, *http.Response, error) {
+func (a *MetadataApiService) IsReadyExecute(r MetadataApiApiIsReadyRequest) (*IsAlive200Response, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodGet
 		localVarPostBody     interface{}
 		localVarFormFileName string
 		localVarFileName     string
 		localVarFileBytes    []byte
-		localVarReturnValue  *IsReady200Response
+		localVarReturnValue  *IsAlive200Response
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "MetadataApiService.IsReady")

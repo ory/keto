@@ -19,7 +19,6 @@ docs/ErrorGenericError.md
 docs/ExpandedPermissionTree.md
 docs/GetVersion200Response.md
 docs/IsAlive200Response.md
-docs/IsReady200Response.md
 docs/IsReady503Response.md
 docs/MetadataApi.md
 docs/OryKetoOplV1alpha1ParseError.md
@@ -54,7 +53,6 @@ model_error_generic_error.go
 model_expanded_permission_tree.go
 model_get_version_200_response.go
 model_is_alive_200_response.go
-model_is_ready_200_response.go
 model_is_ready_503_response.go
 model_ory_keto_opl_v1alpha1_parse_error.go
 model_ory_keto_opl_v1alpha1_source_position.go

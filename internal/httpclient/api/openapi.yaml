@@ -182,12 +182,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/isAlive_200_response'
           description: Ory Keto is ready to accept connections.
-        "500":
+        default:
           content:
-            application/json:
+            text/plain:
               schema:
-                $ref: '#/definitions/errorGeneric'
-          description: genericError
+                type: string
+          description: Unexpected error
       summary: Check HTTP Server Status
       tags:
       - metadata
@@ -208,7 +208,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/isReady_200_response'
+                $ref: '#/components/schemas/isAlive_200_response'
           description: Ory Keto is ready to accept requests.
         "503":
           content:
@@ -1346,15 +1346,6 @@ components:
           type: string
       type: object
     isAlive_200_response:
-      example:
-        status: status
-      properties:
-        status:
-          type: string
-      required:
-      - status
-      type: object
-    isReady_200_response:
       example:
         status: status
       properties:

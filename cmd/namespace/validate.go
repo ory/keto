@@ -10,13 +10,14 @@ import (
 
 	"github.com/ory/keto/embedx"
 
+	"github.com/segmentio/objconv/yaml"
+	"github.com/spf13/cobra"
+
 	"github.com/ory/jsonschema/v3"
 	"github.com/ory/x/cmdx"
 	"github.com/ory/x/configx"
 	"github.com/ory/x/jsonschemax"
 	"github.com/ory/x/logrusx"
-	"github.com/segmentio/objconv/yaml"
-	"github.com/spf13/cobra"
 
 	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/namespace"
@@ -87,7 +88,7 @@ func getSchema(cmd *cobra.Command) (*jsonschema.Schema, error) {
 }
 
 func validateNamespaceFile(cmd *cobra.Command, fn string) (*namespace.Namespace, error) {
-	fc, err := os.ReadFile(fn)
+	fc, err := os.ReadFile(fn) //nolint:gosec
 	if err != nil {
 		_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not read file \"%s\": %+v\n", fn, err)
 		return nil, cmdx.FailSilently(cmd)
@@ -115,7 +116,7 @@ func validateNamespaceBytes(cmd *cobra.Command, name string, b []byte, parser co
 	}
 
 	if err := schema.ValidateInterface(val); err != nil {
-		fmt.Fprintf(cmd.ErrOrStderr(), "File %s was not a valid namespace file. Reasons:\n", name)
+		_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "File %s was not a valid namespace file. Reasons:\n", name)
 		jsonschemax.FormatValidationErrorForCLI(cmd.ErrOrStderr(), embedx.ConfigSchema, err)
 		return nil, cmdx.FailSilently(cmd)
 	}
@@ -130,7 +131,7 @@ func validateNamespaceBytes(cmd *cobra.Command, name string, b []byte, parser co
 }
 
 func validateConfigFile(cmd *cobra.Command, fn string) error {
-	fc, err := os.ReadFile(fn)
+	fc, err := os.ReadFile(fn) //nolint:gosec
 	if err != nil {
 		_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not read file \"%s\": %+v\n", fn, err)
 		return cmdx.FailSilently(cmd)

@@ -18,6 +18,8 @@ import (
 	"github.com/tidwall/gjson"
 
 	"github.com/ory/herodot"
+	"github.com/ory/x/healthx"
+
 	"github.com/ory/keto/internal/check"
 	"github.com/ory/keto/internal/expand"
 	httpclient "github.com/ory/keto/internal/httpclient"
@@ -25,7 +27,6 @@ import (
 	"github.com/ory/keto/internal/schema"
 	"github.com/ory/keto/ketoapi"
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
-	"github.com/ory/x/healthx"
 )
 
 var _ client = &restClient{}
@@ -207,7 +208,7 @@ func healthReady(t testing.TB, readURL string) bool {
 	if err != nil {
 		return false
 	}
-	defer resp.Body.Close()
+	defer func() { require.NoError(t, resp.Body.Close()) }()
 	return resp.StatusCode == http.StatusOK
 }
 

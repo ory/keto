@@ -640,6 +640,7 @@
                 "schema": {
                   "properties": {
                     "status": {
+                      "description": "Always \"ok\".",
                       "type": "string"
                     }
                   },
@@ -650,15 +651,15 @@
             },
             "description": "Ory Keto is ready to accept connections."
           },
-          "500": {
+          "default": {
             "content": {
-              "application/json": {
+              "text/plain": {
                 "schema": {
-                  "$ref": "#/definitions/errorGeneric"
+                  "type": "string"
                 }
               }
             },
-            "description": "genericError"
+            "description": "Unexpected error"
           }
         },
         "summary": "Check HTTP Server Status",

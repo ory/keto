@@ -14,8 +14,9 @@ import (
 
 	"github.com/ory/x/flagx"
 
-	"github.com/ory/x/cmdx"
 	"github.com/spf13/cobra"
+
+	"github.com/ory/x/cmdx"
 
 	"github.com/ory/keto/cmd/client"
 )
@@ -33,7 +34,11 @@ func NewExpandCmd() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			defer conn.Close()
+			defer func() {
+				if err := conn.Close(); err != nil {
+					_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Error closing connection: %v\n", err)
+				}
+			}()
 
 			maxDepth, err := cmd.Flags().GetInt32(FlagMaxDepth)
 			if err != nil {

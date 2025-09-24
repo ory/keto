@@ -16,8 +16,6 @@ import (
 	"github.com/ory/herodot"
 	"github.com/ory/x/pointerx"
 
-	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
-
 	httpclient "github.com/ory/keto/internal/httpclient"
 	"github.com/ory/keto/ketoapi"
 )
@@ -291,14 +289,6 @@ func (c *sdkClient) batchCheck(t testing.TB, requestTuples []*ketoapi.RelationTu
 		}
 	}
 	return responses
-}
-
-func tuplesToProto(tuples []*ketoapi.RelationTuple) []*rts.RelationTuple {
-	relationships := make([]*rts.RelationTuple, len(tuples))
-	for i, requestTuple := range tuples {
-		relationships[i] = requestTuple.ToProto()
-	}
-	return relationships
 }
 
 func tuplesToRelationships(tuples []*ketoapi.RelationTuple) []httpclient.Relationship {

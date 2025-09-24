@@ -325,7 +325,7 @@ func TestBatchCheckGRPCHandler(t *testing.T) {
 		grpc.WithContextDialer(func(context.Context, string) (net.Conn, error) { return l.Dial() }),
 	)
 	require.NoError(t, err)
-	t.Cleanup(func() { conn.Close() })
+	t.Cleanup(func() { require.NoError(t, conn.Close()) })
 
 	nspaces := []*namespace.Namespace{{
 		Name: "batch-check-grpc",
