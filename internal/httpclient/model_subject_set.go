@@ -15,13 +15,13 @@ import (
 	"encoding/json"
 )
 
-// SubjectSet struct for SubjectSet
+// SubjectSet SubjectSet refers to all subjects who have the same `relation` on an `object`.
 type SubjectSet struct {
-	// Namespace of the Subject Set
+	// The namespace of the object and relation referenced in this subject set.
 	Namespace string `json:"namespace"`
-	// Object of the Subject Set
+	// The object related by this subject set.
 	Object string `json:"object"`
-	// Relation of the Subject Set
+	// The relation between the object and the subjects.
 	Relation string `json:"relation"`
 }
 

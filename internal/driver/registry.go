@@ -5,7 +5,6 @@ package driver
 
 import (
 	"context"
-	"net/http"
 
 	"github.com/ory/pop/v6"
 	"github.com/ory/x/healthx"
@@ -44,8 +43,8 @@ type (
 		MetricsHandler() *prometheus.Handler
 		PrometheusManager() *prometheus.MetricsManager
 
-		ReadRouter(ctx context.Context) http.Handler
-		WriteRouter(ctx context.Context) http.Handler
+		//ReadRouter(ctx context.Context, apiHandler http.Handler) http.Handler
+		//WriteRouter(ctx context.Context, apiHandler http.Handler) http.Handler
 
 		ReadGRPCServer(ctx context.Context) *grpc.Server
 		WriteGRPCServer(ctx context.Context) *grpc.Server
@@ -54,6 +53,8 @@ type (
 		ServeAll(ctx context.Context) error
 		ServeAllSQA(cmd *cobra.Command) error
 	}
+
+	GRPCDialer func() (*grpc.ClientConn, error)
 
 	contextKeys string
 )

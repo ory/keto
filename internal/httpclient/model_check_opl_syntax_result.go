@@ -17,8 +17,8 @@ import (
 
 // CheckOplSyntaxResult struct for CheckOplSyntaxResult
 type CheckOplSyntaxResult struct {
-	// The list of syntax errors
-	Errors []ParseError `json:"errors,omitempty"`
+	Errors      []OryKetoOplV1alpha1ParseError `json:"errors,omitempty"`
+	ParseErrors []OryKetoOplV1alpha1ParseError `json:"parseErrors,omitempty"`
 }
 
 // NewCheckOplSyntaxResult instantiates a new CheckOplSyntaxResult object
@@ -39,9 +39,9 @@ func NewCheckOplSyntaxResultWithDefaults() *CheckOplSyntaxResult {
 }
 
 // GetErrors returns the Errors field value if set, zero value otherwise.
-func (o *CheckOplSyntaxResult) GetErrors() []ParseError {
+func (o *CheckOplSyntaxResult) GetErrors() []OryKetoOplV1alpha1ParseError {
 	if o == nil || o.Errors == nil {
-		var ret []ParseError
+		var ret []OryKetoOplV1alpha1ParseError
 		return ret
 	}
 	return o.Errors
@@ -49,7 +49,7 @@ func (o *CheckOplSyntaxResult) GetErrors() []ParseError {
 
 // GetErrorsOk returns a tuple with the Errors field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *CheckOplSyntaxResult) GetErrorsOk() ([]ParseError, bool) {
+func (o *CheckOplSyntaxResult) GetErrorsOk() ([]OryKetoOplV1alpha1ParseError, bool) {
 	if o == nil || o.Errors == nil {
 		return nil, false
 	}
@@ -65,15 +65,50 @@ func (o *CheckOplSyntaxResult) HasErrors() bool {
 	return false
 }
 
-// SetErrors gets a reference to the given []ParseError and assigns it to the Errors field.
-func (o *CheckOplSyntaxResult) SetErrors(v []ParseError) {
+// SetErrors gets a reference to the given []OryKetoOplV1alpha1ParseError and assigns it to the Errors field.
+func (o *CheckOplSyntaxResult) SetErrors(v []OryKetoOplV1alpha1ParseError) {
 	o.Errors = v
+}
+
+// GetParseErrors returns the ParseErrors field value if set, zero value otherwise.
+func (o *CheckOplSyntaxResult) GetParseErrors() []OryKetoOplV1alpha1ParseError {
+	if o == nil || o.ParseErrors == nil {
+		var ret []OryKetoOplV1alpha1ParseError
+		return ret
+	}
+	return o.ParseErrors
+}
+
+// GetParseErrorsOk returns a tuple with the ParseErrors field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CheckOplSyntaxResult) GetParseErrorsOk() ([]OryKetoOplV1alpha1ParseError, bool) {
+	if o == nil || o.ParseErrors == nil {
+		return nil, false
+	}
+	return o.ParseErrors, true
+}
+
+// HasParseErrors returns a boolean if a field has been set.
+func (o *CheckOplSyntaxResult) HasParseErrors() bool {
+	if o != nil && o.ParseErrors != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetParseErrors gets a reference to the given []OryKetoOplV1alpha1ParseError and assigns it to the ParseErrors field.
+func (o *CheckOplSyntaxResult) SetParseErrors(v []OryKetoOplV1alpha1ParseError) {
+	o.ParseErrors = v
 }
 
 func (o CheckOplSyntaxResult) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.Errors != nil {
 		toSerialize["errors"] = o.Errors
+	}
+	if o.ParseErrors != nil {
+		toSerialize["parseErrors"] = o.ParseErrors
 	}
 	return json.Marshal(toSerialize)
 }

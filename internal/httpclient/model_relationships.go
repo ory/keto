@@ -15,10 +15,11 @@ import (
 	"encoding/json"
 )
 
-// Relationships Paginated Relationship List
+// Relationships The response of a ReadService.ListRelationTuples RPC.
 type Relationships struct {
-	// The opaque token to provide in a subsequent request to get the next page. It is the empty string iff this is the last page.
-	NextPageToken  *string        `json:"next_page_token,omitempty"`
+	// The token required to get the next page. If this is the last page, the token will be the empty string.
+	NextPageToken *string `json:"next_page_token,omitempty"`
+	// The relationships matching the list request.
 	RelationTuples []Relationship `json:"relation_tuples,omitempty"`
 }
 
