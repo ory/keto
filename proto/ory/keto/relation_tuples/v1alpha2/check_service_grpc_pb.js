@@ -87,4 +87,4 @@ batchCheck: {
   },
 };
 
-exports.CheckServiceClient = grpc.makeGenericClientConstructor(CheckServiceService, 'CheckService');
+exports.CheckServiceClient = grpc.makeGenericClientConstructor(CheckServiceService);

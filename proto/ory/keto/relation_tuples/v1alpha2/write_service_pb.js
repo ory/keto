@@ -13,7 +13,13 @@
 
 var jspb = require('google-protobuf');
 var goog = jspb;
-var global = globalThis;
+var global =
+    (typeof globalThis !== 'undefined' && globalThis) ||
+    (typeof window !== 'undefined' && window) ||
+    (typeof global !== 'undefined' && global) ||
+    (typeof self !== 'undefined' && self) ||
+    (function () { return this; }).call(null) ||
+    Function('return this')();
 
 var buf_validate_validate_pb = require('../../../../buf/validate/validate_pb.js');
 goog.object.extend(proto, buf_validate_validate_pb);
@@ -267,7 +273,7 @@ proto.ory.keto.relation_tuples.v1alpha2.TransactRelationTuplesRequest.prototype.
  */
 proto.ory.keto.relation_tuples.v1alpha2.TransactRelationTuplesRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
-relationTupleDeltasList: jspb.Message.toObjectList(msg.getRelationTupleDeltasList(),
+    relationTupleDeltasList: jspb.Message.toObjectList(msg.getRelationTupleDeltasList(),
     proto.ory.keto.relation_tuples.v1alpha2.RelationTupleDelta.toObject, includeInstance)
   };
 
@@ -420,8 +426,8 @@ proto.ory.keto.relation_tuples.v1alpha2.RelationTupleDelta.prototype.toObject = 
  */
 proto.ory.keto.relation_tuples.v1alpha2.RelationTupleDelta.toObject = function(includeInstance, msg) {
   var f, obj = {
-action: jspb.Message.getFieldWithDefault(msg, 1, 0),
-relationTuple: (f = msg.getRelationTuple()) && ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationTuple.toObject(includeInstance, f)
+    action: jspb.Message.getFieldWithDefault(msg, 1, 0),
+    relationTuple: (f = msg.getRelationTuple()) && ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationTuple.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -619,7 +625,7 @@ proto.ory.keto.relation_tuples.v1alpha2.TransactRelationTuplesResponse.prototype
  */
 proto.ory.keto.relation_tuples.v1alpha2.TransactRelationTuplesResponse.toObject = function(includeInstance, msg) {
   var f, obj = {
-snaptokensList: (f = jspb.Message.getRepeatedField(msg, 1)) == null ? undefined : f
+    snaptokensList: (f = jspb.Message.getRepeatedField(msg, 1)) == null ? undefined : f
   };
 
   if (includeInstance) {
@@ -657,7 +663,7 @@ proto.ory.keto.relation_tuples.v1alpha2.TransactRelationTuplesResponse.deseriali
     var field = reader.getFieldNumber();
     switch (field) {
     case 1:
-      var value = /** @type {string} */ (reader.readStringRequireUtf8());
+      var value = /** @type {string} */ (reader.readString());
       msg.addSnaptokens(value);
       break;
     default:
@@ -768,7 +774,7 @@ proto.ory.keto.relation_tuples.v1alpha2.CreateRelationTupleRequest.prototype.toO
  */
 proto.ory.keto.relation_tuples.v1alpha2.CreateRelationTupleRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
-relationTuple: (f = msg.getRelationTuple()) && proto.ory.keto.relation_tuples.v1alpha2.CreateRelationTupleRequest.Relationship.toObject(includeInstance, f)
+    relationTuple: (f = msg.getRelationTuple()) && proto.ory.keto.relation_tuples.v1alpha2.CreateRelationTupleRequest.Relationship.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -908,11 +914,11 @@ proto.ory.keto.relation_tuples.v1alpha2.CreateRelationTupleRequest.Relationship.
  */
 proto.ory.keto.relation_tuples.v1alpha2.CreateRelationTupleRequest.Relationship.toObject = function(includeInstance, msg) {
   var f, obj = {
-namespace: jspb.Message.getFieldWithDefault(msg, 1, ""),
-object: jspb.Message.getFieldWithDefault(msg, 2, ""),
-relation: jspb.Message.getFieldWithDefault(msg, 3, ""),
-subjectId: (f = jspb.Message.getField(msg, 5)) == null ? undefined : f,
-subjectSet: (f = msg.getSubjectSet()) && ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.SubjectSet.toObject(includeInstance, f)
+    namespace: jspb.Message.getFieldWithDefault(msg, 1, ""),
+    object: jspb.Message.getFieldWithDefault(msg, 2, ""),
+    relation: jspb.Message.getFieldWithDefault(msg, 3, ""),
+    subjectId: jspb.Message.getFieldWithDefault(msg, 5, ""),
+    subjectSet: (f = msg.getSubjectSet()) && ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.SubjectSet.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -950,19 +956,19 @@ proto.ory.keto.relation_tuples.v1alpha2.CreateRelationTupleRequest.Relationship.
     var field = reader.getFieldNumber();
     switch (field) {
     case 1:
-      var value = /** @type {string} */ (reader.readStringRequireUtf8());
+      var value = /** @type {string} */ (reader.readString());
       msg.setNamespace(value);
       break;
     case 2:
-      var value = /** @type {string} */ (reader.readStringRequireUtf8());
+      var value = /** @type {string} */ (reader.readString());
       msg.setObject(value);
       break;
     case 3:
-      var value = /** @type {string} */ (reader.readStringRequireUtf8());
+      var value = /** @type {string} */ (reader.readString());
       msg.setRelation(value);
       break;
     case 5:
-      var value = /** @type {string} */ (reader.readStringRequireUtf8());
+      var value = /** @type {string} */ (reader.readString());
       msg.setSubjectId(value);
       break;
     case 6:
@@ -1234,7 +1240,7 @@ proto.ory.keto.relation_tuples.v1alpha2.CreateRelationTupleResponse.prototype.to
  */
 proto.ory.keto.relation_tuples.v1alpha2.CreateRelationTupleResponse.toObject = function(includeInstance, msg) {
   var f, obj = {
-relationTuple: (f = msg.getRelationTuple()) && ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationTuple.toObject(includeInstance, f)
+    relationTuple: (f = msg.getRelationTuple()) && ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationTuple.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -1411,13 +1417,13 @@ proto.ory.keto.relation_tuples.v1alpha2.DeleteRelationTuplesRequest.prototype.to
  */
 proto.ory.keto.relation_tuples.v1alpha2.DeleteRelationTuplesRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
-query: (f = msg.getQuery()) && proto.ory.keto.relation_tuples.v1alpha2.DeleteRelationTuplesRequest.Query.toObject(includeInstance, f),
-relationQuery: (f = msg.getRelationQuery()) && ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationQuery.toObject(includeInstance, f),
-namespace: jspb.Message.getFieldWithDefault(msg, 3, ""),
-object: jspb.Message.getFieldWithDefault(msg, 4, ""),
-relation: jspb.Message.getFieldWithDefault(msg, 5, ""),
-subjectId: (f = jspb.Message.getField(msg, 6)) == null ? undefined : f,
-subjectSet: (f = msg.getSubjectSet()) && ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.SubjectSetQuery.toObject(includeInstance, f)
+    query: (f = msg.getQuery()) && proto.ory.keto.relation_tuples.v1alpha2.DeleteRelationTuplesRequest.Query.toObject(includeInstance, f),
+    relationQuery: (f = msg.getRelationQuery()) && ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationQuery.toObject(includeInstance, f),
+    namespace: jspb.Message.getFieldWithDefault(msg, 3, ""),
+    object: jspb.Message.getFieldWithDefault(msg, 4, ""),
+    relation: jspb.Message.getFieldWithDefault(msg, 5, ""),
+    subjectId: jspb.Message.getFieldWithDefault(msg, 6, ""),
+    subjectSet: (f = msg.getSubjectSet()) && ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.SubjectSetQuery.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -1465,19 +1471,19 @@ proto.ory.keto.relation_tuples.v1alpha2.DeleteRelationTuplesRequest.deserializeB
       msg.setRelationQuery(value);
       break;
     case 3:
-      var value = /** @type {string} */ (reader.readStringRequireUtf8());
+      var value = /** @type {string} */ (reader.readString());
       msg.setNamespace(value);
       break;
     case 4:
-      var value = /** @type {string} */ (reader.readStringRequireUtf8());
+      var value = /** @type {string} */ (reader.readString());
       msg.setObject(value);
       break;
     case 5:
-      var value = /** @type {string} */ (reader.readStringRequireUtf8());
+      var value = /** @type {string} */ (reader.readString());
       msg.setRelation(value);
       break;
     case 6:
-      var value = /** @type {string} */ (reader.readStringRequireUtf8());
+      var value = /** @type {string} */ (reader.readString());
       msg.setSubjectId(value);
       break;
     case 7:
@@ -1601,10 +1607,10 @@ proto.ory.keto.relation_tuples.v1alpha2.DeleteRelationTuplesRequest.Query.protot
  */
 proto.ory.keto.relation_tuples.v1alpha2.DeleteRelationTuplesRequest.Query.toObject = function(includeInstance, msg) {
   var f, obj = {
-namespace: jspb.Message.getFieldWithDefault(msg, 1, ""),
-object: jspb.Message.getFieldWithDefault(msg, 2, ""),
-relation: jspb.Message.getFieldWithDefault(msg, 3, ""),
-subject: (f = msg.getSubject()) && ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.Subject.toObject(includeInstance, f)
+    namespace: jspb.Message.getFieldWithDefault(msg, 1, ""),
+    object: jspb.Message.getFieldWithDefault(msg, 2, ""),
+    relation: jspb.Message.getFieldWithDefault(msg, 3, ""),
+    subject: (f = msg.getSubject()) && ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.Subject.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -1642,15 +1648,15 @@ proto.ory.keto.relation_tuples.v1alpha2.DeleteRelationTuplesRequest.Query.deseri
     var field = reader.getFieldNumber();
     switch (field) {
     case 1:
-      var value = /** @type {string} */ (reader.readStringRequireUtf8());
+      var value = /** @type {string} */ (reader.readString());
       msg.setNamespace(value);
       break;
     case 2:
-      var value = /** @type {string} */ (reader.readStringRequireUtf8());
+      var value = /** @type {string} */ (reader.readString());
       msg.setObject(value);
       break;
     case 3:
-      var value = /** @type {string} */ (reader.readStringRequireUtf8());
+      var value = /** @type {string} */ (reader.readString());
       msg.setRelation(value);
       break;
     case 4:

@@ -13,7 +13,13 @@
 
 var jspb = require('google-protobuf');
 var goog = jspb;
-var global = globalThis;
+var global =
+    (typeof globalThis !== 'undefined' && globalThis) ||
+    (typeof window !== 'undefined' && window) ||
+    (typeof global !== 'undefined' && global) ||
+    (typeof self !== 'undefined' && self) ||
+    (function () { return this; }).call(null) ||
+    Function('return this')();
 
 goog.exportSymbol('proto.google.protobuf.ListValue', null, global);
 goog.exportSymbol('proto.google.protobuf.NullValue', null, global);
@@ -115,7 +121,7 @@ proto.google.protobuf.Struct.prototype.toObject = function(opt_includeInstance) 
  */
 proto.google.protobuf.Struct.toObject = function(includeInstance, msg) {
   var f, obj = {
-fieldsMap: (f = msg.getFieldsMap()) ? f.toObject(includeInstance, proto.google.protobuf.Value.toObject) : []
+    fieldsMap: (f = msg.getFieldsMap()) ? f.toObject(includeInstance, proto.google.protobuf.Value.toObject) : []
   };
 
   if (includeInstance) {
@@ -155,7 +161,7 @@ proto.google.protobuf.Struct.deserializeBinaryFromReader = function(msg, reader)
     case 1:
       var value = msg.getFieldsMap();
       reader.readMessage(value, function(message, reader) {
-        jspb.Map.deserializeBinary(message, reader, jspb.BinaryReader.prototype.readStringRequireUtf8, jspb.BinaryReader.prototype.readMessage, proto.google.protobuf.Value.deserializeBinaryFromReader, "", new proto.google.protobuf.Value());
+        jspb.Map.deserializeBinary(message, reader, jspb.BinaryReader.prototype.readString, jspb.BinaryReader.prototype.readMessage, proto.google.protobuf.Value.deserializeBinaryFromReader, "", new proto.google.protobuf.Value());
          });
       break;
     default:
@@ -189,13 +195,7 @@ proto.google.protobuf.Struct.serializeBinaryToWriter = function(message, writer)
   var f = undefined;
   f = message.getFieldsMap(true);
   if (f && f.getLength() > 0) {
-jspb.internal.public_for_gencode.serializeMapToBinary(
-    message.getFieldsMap(true),
-    1,
-    writer,
-    jspb.BinaryWriter.prototype.writeString,
-    jspb.BinaryWriter.prototype.writeMessage,
-    proto.google.protobuf.Value.serializeBinaryToWriter);
+    f.serializeBinary(1, writer, jspb.BinaryWriter.prototype.writeString, jspb.BinaryWriter.prototype.writeMessage, proto.google.protobuf.Value.serializeBinaryToWriter);
   }
 };
 
@@ -285,12 +285,12 @@ proto.google.protobuf.Value.prototype.toObject = function(opt_includeInstance) {
  */
 proto.google.protobuf.Value.toObject = function(includeInstance, msg) {
   var f, obj = {
-nullValue: (f = jspb.Message.getField(msg, 1)) == null ? undefined : f,
-numberValue: (f = jspb.Message.getOptionalFloatingPointField(msg, 2)) == null ? undefined : f,
-stringValue: (f = jspb.Message.getField(msg, 3)) == null ? undefined : f,
-boolValue: (f = jspb.Message.getBooleanField(msg, 4)) == null ? undefined : f,
-structValue: (f = msg.getStructValue()) && proto.google.protobuf.Struct.toObject(includeInstance, f),
-listValue: (f = msg.getListValue()) && proto.google.protobuf.ListValue.toObject(includeInstance, f)
+    nullValue: jspb.Message.getFieldWithDefault(msg, 1, 0),
+    numberValue: jspb.Message.getFloatingPointFieldWithDefault(msg, 2, 0.0),
+    stringValue: jspb.Message.getFieldWithDefault(msg, 3, ""),
+    boolValue: jspb.Message.getBooleanFieldWithDefault(msg, 4, false),
+    structValue: (f = msg.getStructValue()) && proto.google.protobuf.Struct.toObject(includeInstance, f),
+    listValue: (f = msg.getListValue()) && proto.google.protobuf.ListValue.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -336,7 +336,7 @@ proto.google.protobuf.Value.deserializeBinaryFromReader = function(msg, reader) 
       msg.setNumberValue(value);
       break;
     case 3:
-      var value = /** @type {string} */ (reader.readStringRequireUtf8());
+      var value = /** @type {string} */ (reader.readString());
       msg.setStringValue(value);
       break;
     case 4:
@@ -686,7 +686,7 @@ proto.google.protobuf.ListValue.prototype.toObject = function(opt_includeInstanc
  */
 proto.google.protobuf.ListValue.toObject = function(includeInstance, msg) {
   var f, obj = {
-valuesList: jspb.Message.toObjectList(msg.getValuesList(),
+    valuesList: jspb.Message.toObjectList(msg.getValuesList(),
     proto.google.protobuf.Value.toObject, includeInstance)
   };
 

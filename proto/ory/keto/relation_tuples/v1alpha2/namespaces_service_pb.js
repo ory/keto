@@ -13,7 +13,13 @@
 
 var jspb = require('google-protobuf');
 var goog = jspb;
-var global = globalThis;
+var global =
+    (typeof globalThis !== 'undefined' && globalThis) ||
+    (typeof window !== 'undefined' && window) ||
+    (typeof global !== 'undefined' && global) ||
+    (typeof self !== 'undefined' && self) ||
+    (function () { return this; }).call(null) ||
+    Function('return this')();
 
 var google_api_annotations_pb = require('../../../../google/api/annotations_pb.js');
 goog.object.extend(proto, google_api_annotations_pb);
@@ -225,7 +231,7 @@ proto.ory.keto.relation_tuples.v1alpha2.ListNamespacesResponse.prototype.toObjec
  */
 proto.ory.keto.relation_tuples.v1alpha2.ListNamespacesResponse.toObject = function(includeInstance, msg) {
   var f, obj = {
-namespacesList: jspb.Message.toObjectList(msg.getNamespacesList(),
+    namespacesList: jspb.Message.toObjectList(msg.getNamespacesList(),
     proto.ory.keto.relation_tuples.v1alpha2.Namespace.toObject, includeInstance)
   };
 
@@ -378,7 +384,7 @@ proto.ory.keto.relation_tuples.v1alpha2.Namespace.prototype.toObject = function(
  */
 proto.ory.keto.relation_tuples.v1alpha2.Namespace.toObject = function(includeInstance, msg) {
   var f, obj = {
-name: jspb.Message.getFieldWithDefault(msg, 1, "")
+    name: jspb.Message.getFieldWithDefault(msg, 1, "")
   };
 
   if (includeInstance) {
@@ -416,7 +422,7 @@ proto.ory.keto.relation_tuples.v1alpha2.Namespace.deserializeBinaryFromReader = 
     var field = reader.getFieldNumber();
     switch (field) {
     case 1:
-      var value = /** @type {string} */ (reader.readStringRequireUtf8());
+      var value = /** @type {string} */ (reader.readString());
       msg.setName(value);
       break;
     default:

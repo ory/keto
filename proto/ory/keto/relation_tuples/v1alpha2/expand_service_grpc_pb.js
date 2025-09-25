@@ -51,4 +51,4 @@ expand: {
   },
 };
 
-exports.ExpandServiceClient = grpc.makeGenericClientConstructor(ExpandServiceService, 'ExpandService');
+exports.ExpandServiceClient = grpc.makeGenericClientConstructor(ExpandServiceService);

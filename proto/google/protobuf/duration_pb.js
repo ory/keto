@@ -13,7 +13,13 @@
 
 var jspb = require('google-protobuf');
 var goog = jspb;
-var global = globalThis;
+var global =
+    (typeof globalThis !== 'undefined' && globalThis) ||
+    (typeof window !== 'undefined' && window) ||
+    (typeof global !== 'undefined' && global) ||
+    (typeof self !== 'undefined' && self) ||
+    (function () { return this; }).call(null) ||
+    Function('return this')();
 
 goog.exportSymbol('proto.google.protobuf.Duration', null, global);
 /**
@@ -69,8 +75,8 @@ proto.google.protobuf.Duration.prototype.toObject = function(opt_includeInstance
  */
 proto.google.protobuf.Duration.toObject = function(includeInstance, msg) {
   var f, obj = {
-seconds: jspb.Message.getFieldWithDefault(msg, 1, 0),
-nanos: jspb.Message.getFieldWithDefault(msg, 2, 0)
+    seconds: jspb.Message.getFieldWithDefault(msg, 1, 0),
+    nanos: jspb.Message.getFieldWithDefault(msg, 2, 0)
   };
 
   if (includeInstance) {

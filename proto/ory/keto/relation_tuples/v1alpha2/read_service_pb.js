@@ -13,7 +13,13 @@
 
 var jspb = require('google-protobuf');
 var goog = jspb;
-var global = globalThis;
+var global =
+    (typeof globalThis !== 'undefined' && globalThis) ||
+    (typeof window !== 'undefined' && window) ||
+    (typeof global !== 'undefined' && global) ||
+    (typeof self !== 'undefined' && self) ||
+    (function () { return this; }).call(null) ||
+    Function('return this')();
 
 var google_api_annotations_pb = require('../../../../google/api/annotations_pb.js');
 goog.object.extend(proto, google_api_annotations_pb);
@@ -150,17 +156,17 @@ proto.ory.keto.relation_tuples.v1alpha2.ListRelationTuplesRequest.prototype.toOb
  */
 proto.ory.keto.relation_tuples.v1alpha2.ListRelationTuplesRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
-query: (f = msg.getQuery()) && proto.ory.keto.relation_tuples.v1alpha2.ListRelationTuplesRequest.Query.toObject(includeInstance, f),
-relationQuery: (f = msg.getRelationQuery()) && ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationQuery.toObject(includeInstance, f),
-expandMask: (f = msg.getExpandMask()) && google_protobuf_field_mask_pb.FieldMask.toObject(includeInstance, f),
-snaptoken: jspb.Message.getFieldWithDefault(msg, 3, ""),
-pageSize: jspb.Message.getFieldWithDefault(msg, 4, 0),
-pageToken: jspb.Message.getFieldWithDefault(msg, 5, ""),
-namespace: jspb.Message.getFieldWithDefault(msg, 7, ""),
-object: jspb.Message.getFieldWithDefault(msg, 8, ""),
-relation: jspb.Message.getFieldWithDefault(msg, 9, ""),
-subjectId: (f = jspb.Message.getField(msg, 10)) == null ? undefined : f,
-subjectSet: (f = msg.getSubjectSet()) && ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.SubjectSetQuery.toObject(includeInstance, f)
+    query: (f = msg.getQuery()) && proto.ory.keto.relation_tuples.v1alpha2.ListRelationTuplesRequest.Query.toObject(includeInstance, f),
+    relationQuery: (f = msg.getRelationQuery()) && ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationQuery.toObject(includeInstance, f),
+    expandMask: (f = msg.getExpandMask()) && google_protobuf_field_mask_pb.FieldMask.toObject(includeInstance, f),
+    snaptoken: jspb.Message.getFieldWithDefault(msg, 3, ""),
+    pageSize: jspb.Message.getFieldWithDefault(msg, 4, 0),
+    pageToken: jspb.Message.getFieldWithDefault(msg, 5, ""),
+    namespace: jspb.Message.getFieldWithDefault(msg, 7, ""),
+    object: jspb.Message.getFieldWithDefault(msg, 8, ""),
+    relation: jspb.Message.getFieldWithDefault(msg, 9, ""),
+    subjectId: jspb.Message.getFieldWithDefault(msg, 10, ""),
+    subjectSet: (f = msg.getSubjectSet()) && ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.SubjectSetQuery.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -213,7 +219,7 @@ proto.ory.keto.relation_tuples.v1alpha2.ListRelationTuplesRequest.deserializeBin
       msg.setExpandMask(value);
       break;
     case 3:
-      var value = /** @type {string} */ (reader.readStringRequireUtf8());
+      var value = /** @type {string} */ (reader.readString());
       msg.setSnaptoken(value);
       break;
     case 4:
@@ -221,23 +227,23 @@ proto.ory.keto.relation_tuples.v1alpha2.ListRelationTuplesRequest.deserializeBin
       msg.setPageSize(value);
       break;
     case 5:
-      var value = /** @type {string} */ (reader.readStringRequireUtf8());
+      var value = /** @type {string} */ (reader.readString());
       msg.setPageToken(value);
       break;
     case 7:
-      var value = /** @type {string} */ (reader.readStringRequireUtf8());
+      var value = /** @type {string} */ (reader.readString());
       msg.setNamespace(value);
       break;
     case 8:
-      var value = /** @type {string} */ (reader.readStringRequireUtf8());
+      var value = /** @type {string} */ (reader.readString());
       msg.setObject(value);
       break;
     case 9:
-      var value = /** @type {string} */ (reader.readStringRequireUtf8());
+      var value = /** @type {string} */ (reader.readString());
       msg.setRelation(value);
       break;
     case 10:
-      var value = /** @type {string} */ (reader.readStringRequireUtf8());
+      var value = /** @type {string} */ (reader.readString());
       msg.setSubjectId(value);
       break;
     case 11:
@@ -390,10 +396,10 @@ proto.ory.keto.relation_tuples.v1alpha2.ListRelationTuplesRequest.Query.prototyp
  */
 proto.ory.keto.relation_tuples.v1alpha2.ListRelationTuplesRequest.Query.toObject = function(includeInstance, msg) {
   var f, obj = {
-namespace: jspb.Message.getFieldWithDefault(msg, 1, ""),
-object: jspb.Message.getFieldWithDefault(msg, 2, ""),
-relation: jspb.Message.getFieldWithDefault(msg, 3, ""),
-subject: (f = msg.getSubject()) && ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.Subject.toObject(includeInstance, f)
+    namespace: jspb.Message.getFieldWithDefault(msg, 1, ""),
+    object: jspb.Message.getFieldWithDefault(msg, 2, ""),
+    relation: jspb.Message.getFieldWithDefault(msg, 3, ""),
+    subject: (f = msg.getSubject()) && ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.Subject.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -431,15 +437,15 @@ proto.ory.keto.relation_tuples.v1alpha2.ListRelationTuplesRequest.Query.deserial
     var field = reader.getFieldNumber();
     switch (field) {
     case 1:
-      var value = /** @type {string} */ (reader.readStringRequireUtf8());
+      var value = /** @type {string} */ (reader.readString());
       msg.setNamespace(value);
       break;
     case 2:
-      var value = /** @type {string} */ (reader.readStringRequireUtf8());
+      var value = /** @type {string} */ (reader.readString());
       msg.setObject(value);
       break;
     case 3:
-      var value = /** @type {string} */ (reader.readStringRequireUtf8());
+      var value = /** @type {string} */ (reader.readString());
       msg.setRelation(value);
       break;
     case 4:
@@ -930,9 +936,9 @@ proto.ory.keto.relation_tuples.v1alpha2.ListRelationTuplesResponse.prototype.toO
  */
 proto.ory.keto.relation_tuples.v1alpha2.ListRelationTuplesResponse.toObject = function(includeInstance, msg) {
   var f, obj = {
-relationTuplesList: jspb.Message.toObjectList(msg.getRelationTuplesList(),
+    relationTuplesList: jspb.Message.toObjectList(msg.getRelationTuplesList(),
     ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationTuple.toObject, includeInstance),
-nextPageToken: jspb.Message.getFieldWithDefault(msg, 2, "")
+    nextPageToken: jspb.Message.getFieldWithDefault(msg, 2, "")
   };
 
   if (includeInstance) {
@@ -975,7 +981,7 @@ proto.ory.keto.relation_tuples.v1alpha2.ListRelationTuplesResponse.deserializeBi
       msg.addRelationTuples(value);
       break;
     case 2:
-      var value = /** @type {string} */ (reader.readStringRequireUtf8());
+      var value = /** @type {string} */ (reader.readString());
       msg.setNextPageToken(value);
       break;
     default:

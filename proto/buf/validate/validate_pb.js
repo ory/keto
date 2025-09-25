@@ -13,7 +13,13 @@
 
 var jspb = require('google-protobuf');
 var goog = jspb;
-var global = globalThis;
+var global =
+    (typeof globalThis !== 'undefined' && globalThis) ||
+    (typeof window !== 'undefined' && window) ||
+    (typeof global !== 'undefined' && global) ||
+    (typeof self !== 'undefined' && self) ||
+    (function () { return this; }).call(null) ||
+    Function('return this')();
 
 var google_protobuf_descriptor_pb = require('google-protobuf/google/protobuf/descriptor_pb.js');
 goog.object.extend(proto, google_protobuf_descriptor_pb);
@@ -1351,9 +1357,9 @@ proto.buf.validate.Constraint.prototype.toObject = function(opt_includeInstance)
  */
 proto.buf.validate.Constraint.toObject = function(includeInstance, msg) {
   var f, obj = {
-id: (f = jspb.Message.getField(msg, 1)) == null ? undefined : f,
-message: (f = jspb.Message.getField(msg, 2)) == null ? undefined : f,
-expression: (f = jspb.Message.getField(msg, 3)) == null ? undefined : f
+    id: (f = jspb.Message.getField(msg, 1)) == null ? undefined : f,
+    message: (f = jspb.Message.getField(msg, 2)) == null ? undefined : f,
+    expression: (f = jspb.Message.getField(msg, 3)) == null ? undefined : f
   };
 
   if (includeInstance) {
@@ -1602,8 +1608,8 @@ proto.buf.validate.MessageConstraints.prototype.toObject = function(opt_includeI
  */
 proto.buf.validate.MessageConstraints.toObject = function(includeInstance, msg) {
   var f, obj = {
-disabled: (f = jspb.Message.getBooleanField(msg, 1)) == null ? undefined : f,
-celList: jspb.Message.toObjectList(msg.getCelList(),
+    disabled: (f = jspb.Message.getBooleanField(msg, 1)) == null ? undefined : f,
+    celList: jspb.Message.toObjectList(msg.getCelList(),
     proto.buf.validate.Constraint.toObject, includeInstance)
   };
 
@@ -1803,7 +1809,7 @@ proto.buf.validate.OneofConstraints.prototype.toObject = function(opt_includeIns
  */
 proto.buf.validate.OneofConstraints.toObject = function(includeInstance, msg) {
   var f, obj = {
-required: (f = jspb.Message.getBooleanField(msg, 1)) == null ? undefined : f
+    required: (f = jspb.Message.getBooleanField(msg, 1)) == null ? undefined : f
   };
 
   if (includeInstance) {
@@ -2003,31 +2009,31 @@ proto.buf.validate.FieldConstraints.prototype.toObject = function(opt_includeIns
  */
 proto.buf.validate.FieldConstraints.toObject = function(includeInstance, msg) {
   var f, obj = {
-celList: jspb.Message.toObjectList(msg.getCelList(),
+    celList: jspb.Message.toObjectList(msg.getCelList(),
     proto.buf.validate.Constraint.toObject, includeInstance),
-required: (f = jspb.Message.getBooleanField(msg, 25)) == null ? undefined : f,
-ignore: (f = jspb.Message.getField(msg, 27)) == null ? undefined : f,
-pb_float: (f = msg.getFloat()) && proto.buf.validate.FloatRules.toObject(includeInstance, f),
-pb_double: (f = msg.getDouble()) && proto.buf.validate.DoubleRules.toObject(includeInstance, f),
-int32: (f = msg.getInt32()) && proto.buf.validate.Int32Rules.toObject(includeInstance, f),
-int64: (f = msg.getInt64()) && proto.buf.validate.Int64Rules.toObject(includeInstance, f),
-uint32: (f = msg.getUint32()) && proto.buf.validate.UInt32Rules.toObject(includeInstance, f),
-uint64: (f = msg.getUint64()) && proto.buf.validate.UInt64Rules.toObject(includeInstance, f),
-sint32: (f = msg.getSint32()) && proto.buf.validate.SInt32Rules.toObject(includeInstance, f),
-sint64: (f = msg.getSint64()) && proto.buf.validate.SInt64Rules.toObject(includeInstance, f),
-fixed32: (f = msg.getFixed32()) && proto.buf.validate.Fixed32Rules.toObject(includeInstance, f),
-fixed64: (f = msg.getFixed64()) && proto.buf.validate.Fixed64Rules.toObject(includeInstance, f),
-sfixed32: (f = msg.getSfixed32()) && proto.buf.validate.SFixed32Rules.toObject(includeInstance, f),
-sfixed64: (f = msg.getSfixed64()) && proto.buf.validate.SFixed64Rules.toObject(includeInstance, f),
-bool: (f = msg.getBool()) && proto.buf.validate.BoolRules.toObject(includeInstance, f),
-string: (f = msg.getString()) && proto.buf.validate.StringRules.toObject(includeInstance, f),
-bytes: (f = msg.getBytes()) && proto.buf.validate.BytesRules.toObject(includeInstance, f),
-pb_enum: (f = msg.getEnum()) && proto.buf.validate.EnumRules.toObject(includeInstance, f),
-repeated: (f = msg.getRepeated()) && proto.buf.validate.RepeatedRules.toObject(includeInstance, f),
-map: (f = msg.getMap()) && proto.buf.validate.MapRules.toObject(includeInstance, f),
-any: (f = msg.getAny()) && proto.buf.validate.AnyRules.toObject(includeInstance, f),
-duration: (f = msg.getDuration()) && proto.buf.validate.DurationRules.toObject(includeInstance, f),
-timestamp: (f = msg.getTimestamp()) && proto.buf.validate.TimestampRules.toObject(includeInstance, f)
+    required: (f = jspb.Message.getBooleanField(msg, 25)) == null ? undefined : f,
+    ignore: (f = jspb.Message.getField(msg, 27)) == null ? undefined : f,
+    pb_float: (f = msg.getFloat()) && proto.buf.validate.FloatRules.toObject(includeInstance, f),
+    pb_double: (f = msg.getDouble()) && proto.buf.validate.DoubleRules.toObject(includeInstance, f),
+    int32: (f = msg.getInt32()) && proto.buf.validate.Int32Rules.toObject(includeInstance, f),
+    int64: (f = msg.getInt64()) && proto.buf.validate.Int64Rules.toObject(includeInstance, f),
+    uint32: (f = msg.getUint32()) && proto.buf.validate.UInt32Rules.toObject(includeInstance, f),
+    uint64: (f = msg.getUint64()) && proto.buf.validate.UInt64Rules.toObject(includeInstance, f),
+    sint32: (f = msg.getSint32()) && proto.buf.validate.SInt32Rules.toObject(includeInstance, f),
+    sint64: (f = msg.getSint64()) && proto.buf.validate.SInt64Rules.toObject(includeInstance, f),
+    fixed32: (f = msg.getFixed32()) && proto.buf.validate.Fixed32Rules.toObject(includeInstance, f),
+    fixed64: (f = msg.getFixed64()) && proto.buf.validate.Fixed64Rules.toObject(includeInstance, f),
+    sfixed32: (f = msg.getSfixed32()) && proto.buf.validate.SFixed32Rules.toObject(includeInstance, f),
+    sfixed64: (f = msg.getSfixed64()) && proto.buf.validate.SFixed64Rules.toObject(includeInstance, f),
+    bool: (f = msg.getBool()) && proto.buf.validate.BoolRules.toObject(includeInstance, f),
+    string: (f = msg.getString()) && proto.buf.validate.StringRules.toObject(includeInstance, f),
+    bytes: (f = msg.getBytes()) && proto.buf.validate.BytesRules.toObject(includeInstance, f),
+    pb_enum: (f = msg.getEnum()) && proto.buf.validate.EnumRules.toObject(includeInstance, f),
+    repeated: (f = msg.getRepeated()) && proto.buf.validate.RepeatedRules.toObject(includeInstance, f),
+    map: (f = msg.getMap()) && proto.buf.validate.MapRules.toObject(includeInstance, f),
+    any: (f = msg.getAny()) && proto.buf.validate.AnyRules.toObject(includeInstance, f),
+    duration: (f = msg.getDuration()) && proto.buf.validate.DurationRules.toObject(includeInstance, f),
+    timestamp: (f = msg.getTimestamp()) && proto.buf.validate.TimestampRules.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -3330,7 +3336,7 @@ proto.buf.validate.PredefinedConstraints.prototype.toObject = function(opt_inclu
  */
 proto.buf.validate.PredefinedConstraints.toObject = function(includeInstance, msg) {
   var f, obj = {
-celList: jspb.Message.toObjectList(msg.getCelList(),
+    celList: jspb.Message.toObjectList(msg.getCelList(),
     proto.buf.validate.Constraint.toObject, includeInstance)
   };
 
@@ -3532,15 +3538,15 @@ proto.buf.validate.FloatRules.prototype.toObject = function(opt_includeInstance)
  */
 proto.buf.validate.FloatRules.toObject = function(includeInstance, msg) {
   var f, obj = {
-pb_const: (f = jspb.Message.getOptionalFloatingPointField(msg, 1)) == null ? undefined : f,
-lt: (f = jspb.Message.getOptionalFloatingPointField(msg, 2)) == null ? undefined : f,
-lte: (f = jspb.Message.getOptionalFloatingPointField(msg, 3)) == null ? undefined : f,
-gt: (f = jspb.Message.getOptionalFloatingPointField(msg, 4)) == null ? undefined : f,
-gte: (f = jspb.Message.getOptionalFloatingPointField(msg, 5)) == null ? undefined : f,
-inList: (f = jspb.Message.getRepeatedFloatingPointField(msg, 6)) == null ? undefined : f,
-notInList: (f = jspb.Message.getRepeatedFloatingPointField(msg, 7)) == null ? undefined : f,
-finite: (f = jspb.Message.getBooleanField(msg, 8)) == null ? undefined : f,
-exampleList: (f = jspb.Message.getRepeatedFloatingPointField(msg, 9)) == null ? undefined : f
+    pb_const: (f = jspb.Message.getOptionalFloatingPointField(msg, 1)) == null ? undefined : f,
+    lt: (f = jspb.Message.getOptionalFloatingPointField(msg, 2)) == null ? undefined : f,
+    lte: (f = jspb.Message.getOptionalFloatingPointField(msg, 3)) == null ? undefined : f,
+    gt: (f = jspb.Message.getOptionalFloatingPointField(msg, 4)) == null ? undefined : f,
+    gte: (f = jspb.Message.getOptionalFloatingPointField(msg, 5)) == null ? undefined : f,
+    inList: (f = jspb.Message.getRepeatedFloatingPointField(msg, 6)) == null ? undefined : f,
+    notInList: (f = jspb.Message.getRepeatedFloatingPointField(msg, 7)) == null ? undefined : f,
+    finite: (f = jspb.Message.getBooleanField(msg, 8)) == null ? undefined : f,
+    exampleList: (f = jspb.Message.getRepeatedFloatingPointField(msg, 9)) == null ? undefined : f
   };
 
   jspb.Message.toObjectExtension(/** @type {!jspb.Message} */ (msg), obj,
@@ -3601,17 +3607,26 @@ proto.buf.validate.FloatRules.deserializeBinaryFromReader = function(msg, reader
       msg.setGte(value);
       break;
     case 6:
-      reader.readPackableFloatInto(msg.getInList());
+      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedFloat() : [reader.readFloat()]);
+      for (var i = 0; i < values.length; i++) {
+        msg.addIn(values[i]);
+      }
       break;
     case 7:
-      reader.readPackableFloatInto(msg.getNotInList());
+      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedFloat() : [reader.readFloat()]);
+      for (var i = 0; i < values.length; i++) {
+        msg.addNotIn(values[i]);
+      }
       break;
     case 8:
       var value = /** @type {boolean} */ (reader.readBool());
       msg.setFinite(value);
       break;
     case 9:
-      reader.readPackableFloatInto(msg.getExampleList());
+      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedFloat() : [reader.readFloat()]);
+      for (var i = 0; i < values.length; i++) {
+        msg.addExample(values[i]);
+      }
       break;
     default:
       jspb.Message.readBinaryExtension(msg, reader,
@@ -4121,15 +4136,15 @@ proto.buf.validate.DoubleRules.prototype.toObject = function(opt_includeInstance
  */
 proto.buf.validate.DoubleRules.toObject = function(includeInstance, msg) {
   var f, obj = {
-pb_const: (f = jspb.Message.getOptionalFloatingPointField(msg, 1)) == null ? undefined : f,
-lt: (f = jspb.Message.getOptionalFloatingPointField(msg, 2)) == null ? undefined : f,
-lte: (f = jspb.Message.getOptionalFloatingPointField(msg, 3)) == null ? undefined : f,
-gt: (f = jspb.Message.getOptionalFloatingPointField(msg, 4)) == null ? undefined : f,
-gte: (f = jspb.Message.getOptionalFloatingPointField(msg, 5)) == null ? undefined : f,
-inList: (f = jspb.Message.getRepeatedFloatingPointField(msg, 6)) == null ? undefined : f,
-notInList: (f = jspb.Message.getRepeatedFloatingPointField(msg, 7)) == null ? undefined : f,
-finite: (f = jspb.Message.getBooleanField(msg, 8)) == null ? undefined : f,
-exampleList: (f = jspb.Message.getRepeatedFloatingPointField(msg, 9)) == null ? undefined : f
+    pb_const: (f = jspb.Message.getOptionalFloatingPointField(msg, 1)) == null ? undefined : f,
+    lt: (f = jspb.Message.getOptionalFloatingPointField(msg, 2)) == null ? undefined : f,
+    lte: (f = jspb.Message.getOptionalFloatingPointField(msg, 3)) == null ? undefined : f,
+    gt: (f = jspb.Message.getOptionalFloatingPointField(msg, 4)) == null ? undefined : f,
+    gte: (f = jspb.Message.getOptionalFloatingPointField(msg, 5)) == null ? undefined : f,
+    inList: (f = jspb.Message.getRepeatedFloatingPointField(msg, 6)) == null ? undefined : f,
+    notInList: (f = jspb.Message.getRepeatedFloatingPointField(msg, 7)) == null ? undefined : f,
+    finite: (f = jspb.Message.getBooleanField(msg, 8)) == null ? undefined : f,
+    exampleList: (f = jspb.Message.getRepeatedFloatingPointField(msg, 9)) == null ? undefined : f
   };
 
   jspb.Message.toObjectExtension(/** @type {!jspb.Message} */ (msg), obj,
@@ -4190,17 +4205,26 @@ proto.buf.validate.DoubleRules.deserializeBinaryFromReader = function(msg, reade
       msg.setGte(value);
       break;
     case 6:
-      reader.readPackableDoubleInto(msg.getInList());
+      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedDouble() : [reader.readDouble()]);
+      for (var i = 0; i < values.length; i++) {
+        msg.addIn(values[i]);
+      }
       break;
     case 7:
-      reader.readPackableDoubleInto(msg.getNotInList());
+      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedDouble() : [reader.readDouble()]);
+      for (var i = 0; i < values.length; i++) {
+        msg.addNotIn(values[i]);
+      }
       break;
     case 8:
       var value = /** @type {boolean} */ (reader.readBool());
       msg.setFinite(value);
       break;
     case 9:
-      reader.readPackableDoubleInto(msg.getExampleList());
+      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedDouble() : [reader.readDouble()]);
+      for (var i = 0; i < values.length; i++) {
+        msg.addExample(values[i]);
+      }
       break;
     default:
       jspb.Message.readBinaryExtension(msg, reader,
@@ -4710,14 +4734,14 @@ proto.buf.validate.Int32Rules.prototype.toObject = function(opt_includeInstance)
  */
 proto.buf.validate.Int32Rules.toObject = function(includeInstance, msg) {
   var f, obj = {
-pb_const: (f = jspb.Message.getField(msg, 1)) == null ? undefined : f,
-lt: (f = jspb.Message.getField(msg, 2)) == null ? undefined : f,
-lte: (f = jspb.Message.getField(msg, 3)) == null ? undefined : f,
-gt: (f = jspb.Message.getField(msg, 4)) == null ? undefined : f,
-gte: (f = jspb.Message.getField(msg, 5)) == null ? undefined : f,
-inList: (f = jspb.Message.getRepeatedField(msg, 6)) == null ? undefined : f,
-notInList: (f = jspb.Message.getRepeatedField(msg, 7)) == null ? undefined : f,
-exampleList: (f = jspb.Message.getRepeatedField(msg, 8)) == null ? undefined : f
+    pb_const: (f = jspb.Message.getField(msg, 1)) == null ? undefined : f,
+    lt: (f = jspb.Message.getField(msg, 2)) == null ? undefined : f,
+    lte: (f = jspb.Message.getField(msg, 3)) == null ? undefined : f,
+    gt: (f = jspb.Message.getField(msg, 4)) == null ? undefined : f,
+    gte: (f = jspb.Message.getField(msg, 5)) == null ? undefined : f,
+    inList: (f = jspb.Message.getRepeatedField(msg, 6)) == null ? undefined : f,
+    notInList: (f = jspb.Message.getRepeatedField(msg, 7)) == null ? undefined : f,
+    exampleList: (f = jspb.Message.getRepeatedField(msg, 8)) == null ? undefined : f
   };
 
   jspb.Message.toObjectExtension(/** @type {!jspb.Message} */ (msg), obj,
@@ -4778,13 +4802,22 @@ proto.buf.validate.Int32Rules.deserializeBinaryFromReader = function(msg, reader
       msg.setGte(value);
       break;
     case 6:
-      reader.readPackableInt32Into(msg.getInList());
+      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedInt32() : [reader.readInt32()]);
+      for (var i = 0; i < values.length; i++) {
+        msg.addIn(values[i]);
+      }
       break;
     case 7:
-      reader.readPackableInt32Into(msg.getNotInList());
+      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedInt32() : [reader.readInt32()]);
+      for (var i = 0; i < values.length; i++) {
+        msg.addNotIn(values[i]);
+      }
       break;
     case 8:
-      reader.readPackableInt32Into(msg.getExampleList());
+      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedInt32() : [reader.readInt32()]);
+      for (var i = 0; i < values.length; i++) {
+        msg.addExample(values[i]);
+      }
       break;
     default:
       jspb.Message.readBinaryExtension(msg, reader,
@@ -5251,14 +5284,14 @@ proto.buf.validate.Int64Rules.prototype.toObject = function(opt_includeInstance)
  */
 proto.buf.validate.Int64Rules.toObject = function(includeInstance, msg) {
   var f, obj = {
-pb_const: (f = jspb.Message.getField(msg, 1)) == null ? undefined : f,
-lt: (f = jspb.Message.getField(msg, 2)) == null ? undefined : f,
-lte: (f = jspb.Message.getField(msg, 3)) == null ? undefined : f,
-gt: (f = jspb.Message.getField(msg, 4)) == null ? undefined : f,
-gte: (f = jspb.Message.getField(msg, 5)) == null ? undefined : f,
-inList: (f = jspb.Message.getRepeatedField(msg, 6)) == null ? undefined : f,
-notInList: (f = jspb.Message.getRepeatedField(msg, 7)) == null ? undefined : f,
-exampleList: (f = jspb.Message.getRepeatedField(msg, 9)) == null ? undefined : f
+    pb_const: (f = jspb.Message.getField(msg, 1)) == null ? undefined : f,
+    lt: (f = jspb.Message.getField(msg, 2)) == null ? undefined : f,
+    lte: (f = jspb.Message.getField(msg, 3)) == null ? undefined : f,
+    gt: (f = jspb.Message.getField(msg, 4)) == null ? undefined : f,
+    gte: (f = jspb.Message.getField(msg, 5)) == null ? undefined : f,
+    inList: (f = jspb.Message.getRepeatedField(msg, 6)) == null ? undefined : f,
+    notInList: (f = jspb.Message.getRepeatedField(msg, 7)) == null ? undefined : f,
+    exampleList: (f = jspb.Message.getRepeatedField(msg, 9)) == null ? undefined : f
   };
 
   jspb.Message.toObjectExtension(/** @type {!jspb.Message} */ (msg), obj,
@@ -5319,13 +5352,22 @@ proto.buf.validate.Int64Rules.deserializeBinaryFromReader = function(msg, reader
       msg.setGte(value);
       break;
     case 6:
-      reader.readPackableInt64Into(msg.getInList());
+      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedInt64() : [reader.readInt64()]);
+      for (var i = 0; i < values.length; i++) {
+        msg.addIn(values[i]);
+      }
       break;
     case 7:
-      reader.readPackableInt64Into(msg.getNotInList());
+      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedInt64() : [reader.readInt64()]);
+      for (var i = 0; i < values.length; i++) {
+        msg.addNotIn(values[i]);
+      }
       break;
     case 9:
-      reader.readPackableInt64Into(msg.getExampleList());
+      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedInt64() : [reader.readInt64()]);
+      for (var i = 0; i < values.length; i++) {
+        msg.addExample(values[i]);
+      }
       break;
     default:
       jspb.Message.readBinaryExtension(msg, reader,
@@ -5792,14 +5834,14 @@ proto.buf.validate.UInt32Rules.prototype.toObject = function(opt_includeInstance
  */
 proto.buf.validate.UInt32Rules.toObject = function(includeInstance, msg) {
   var f, obj = {
-pb_const: (f = jspb.Message.getField(msg, 1)) == null ? undefined : f,
-lt: (f = jspb.Message.getField(msg, 2)) == null ? undefined : f,
-lte: (f = jspb.Message.getField(msg, 3)) == null ? undefined : f,
-gt: (f = jspb.Message.getField(msg, 4)) == null ? undefined : f,
-gte: (f = jspb.Message.getField(msg, 5)) == null ? undefined : f,
-inList: (f = jspb.Message.getRepeatedField(msg, 6)) == null ? undefined : f,
-notInList: (f = jspb.Message.getRepeatedField(msg, 7)) == null ? undefined : f,
-exampleList: (f = jspb.Message.getRepeatedField(msg, 8)) == null ? undefined : f
+    pb_const: (f = jspb.Message.getField(msg, 1)) == null ? undefined : f,
+    lt: (f = jspb.Message.getField(msg, 2)) == null ? undefined : f,
+    lte: (f = jspb.Message.getField(msg, 3)) == null ? undefined : f,
+    gt: (f = jspb.Message.getField(msg, 4)) == null ? undefined : f,
+    gte: (f = jspb.Message.getField(msg, 5)) == null ? undefined : f,
+    inList: (f = jspb.Message.getRepeatedField(msg, 6)) == null ? undefined : f,
+    notInList: (f = jspb.Message.getRepeatedField(msg, 7)) == null ? undefined : f,
+    exampleList: (f = jspb.Message.getRepeatedField(msg, 8)) == null ? undefined : f
   };
 
   jspb.Message.toObjectExtension(/** @type {!jspb.Message} */ (msg), obj,
@@ -5860,13 +5902,22 @@ proto.buf.validate.UInt32Rules.deserializeBinaryFromReader = function(msg, reade
       msg.setGte(value);
       break;
     case 6:
-      reader.readPackableUint32Into(msg.getInList());
+      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedUint32() : [reader.readUint32()]);
+      for (var i = 0; i < values.length; i++) {
+        msg.addIn(values[i]);
+      }
       break;
     case 7:
-      reader.readPackableUint32Into(msg.getNotInList());
+      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedUint32() : [reader.readUint32()]);
+      for (var i = 0; i < values.length; i++) {
+        msg.addNotIn(values[i]);
+      }
       break;
     case 8:
-      reader.readPackableUint32Into(msg.getExampleList());
+      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedUint32() : [reader.readUint32()]);
+      for (var i = 0; i < values.length; i++) {
+        msg.addExample(values[i]);
+      }
       break;
     default:
       jspb.Message.readBinaryExtension(msg, reader,
@@ -6333,14 +6384,14 @@ proto.buf.validate.UInt64Rules.prototype.toObject = function(opt_includeInstance
  */
 proto.buf.validate.UInt64Rules.toObject = function(includeInstance, msg) {
   var f, obj = {
-pb_const: (f = jspb.Message.getField(msg, 1)) == null ? undefined : f,
-lt: (f = jspb.Message.getField(msg, 2)) == null ? undefined : f,
-lte: (f = jspb.Message.getField(msg, 3)) == null ? undefined : f,
-gt: (f = jspb.Message.getField(msg, 4)) == null ? undefined : f,
-gte: (f = jspb.Message.getField(msg, 5)) == null ? undefined : f,
-inList: (f = jspb.Message.getRepeatedField(msg, 6)) == null ? undefined : f,
-notInList: (f = jspb.Message.getRepeatedField(msg, 7)) == null ? undefined : f,
-exampleList: (f = jspb.Message.getRepeatedField(msg, 8)) == null ? undefined : f
+    pb_const: (f = jspb.Message.getField(msg, 1)) == null ? undefined : f,
+    lt: (f = jspb.Message.getField(msg, 2)) == null ? undefined : f,
+    lte: (f = jspb.Message.getField(msg, 3)) == null ? undefined : f,
+    gt: (f = jspb.Message.getField(msg, 4)) == null ? undefined : f,
+    gte: (f = jspb.Message.getField(msg, 5)) == null ? undefined : f,
+    inList: (f = jspb.Message.getRepeatedField(msg, 6)) == null ? undefined : f,
+    notInList: (f = jspb.Message.getRepeatedField(msg, 7)) == null ? undefined : f,
+    exampleList: (f = jspb.Message.getRepeatedField(msg, 8)) == null ? undefined : f
   };
 
   jspb.Message.toObjectExtension(/** @type {!jspb.Message} */ (msg), obj,
@@ -6401,13 +6452,22 @@ proto.buf.validate.UInt64Rules.deserializeBinaryFromReader = function(msg, reade
       msg.setGte(value);
       break;
     case 6:
-      reader.readPackableUint64Into(msg.getInList());
+      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedUint64() : [reader.readUint64()]);
+      for (var i = 0; i < values.length; i++) {
+        msg.addIn(values[i]);
+      }
       break;
     case 7:
-      reader.readPackableUint64Into(msg.getNotInList());
+      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedUint64() : [reader.readUint64()]);
+      for (var i = 0; i < values.length; i++) {
+        msg.addNotIn(values[i]);
+      }
       break;
     case 8:
-      reader.readPackableUint64Into(msg.getExampleList());
+      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedUint64() : [reader.readUint64()]);
+      for (var i = 0; i < values.length; i++) {
+        msg.addExample(values[i]);
+      }
       break;
     default:
       jspb.Message.readBinaryExtension(msg, reader,
@@ -6874,14 +6934,14 @@ proto.buf.validate.SInt32Rules.prototype.toObject = function(opt_includeInstance
  */
 proto.buf.validate.SInt32Rules.toObject = function(includeInstance, msg) {
   var f, obj = {
-pb_const: (f = jspb.Message.getField(msg, 1)) == null ? undefined : f,
-lt: (f = jspb.Message.getField(msg, 2)) == null ? undefined : f,
-lte: (f = jspb.Message.getField(msg, 3)) == null ? undefined : f,
-gt: (f = jspb.Message.getField(msg, 4)) == null ? undefined : f,
-gte: (f = jspb.Message.getField(msg, 5)) == null ? undefined : f,
-inList: (f = jspb.Message.getRepeatedField(msg, 6)) == null ? undefined : f,
-notInList: (f = jspb.Message.getRepeatedField(msg, 7)) == null ? undefined : f,
-exampleList: (f = jspb.Message.getRepeatedField(msg, 8)) == null ? undefined : f
+    pb_const: (f = jspb.Message.getField(msg, 1)) == null ? undefined : f,
+    lt: (f = jspb.Message.getField(msg, 2)) == null ? undefined : f,
+    lte: (f = jspb.Message.getField(msg, 3)) == null ? undefined : f,
+    gt: (f = jspb.Message.getField(msg, 4)) == null ? undefined : f,
+    gte: (f = jspb.Message.getField(msg, 5)) == null ? undefined : f,
+    inList: (f = jspb.Message.getRepeatedField(msg, 6)) == null ? undefined : f,
+    notInList: (f = jspb.Message.getRepeatedField(msg, 7)) == null ? undefined : f,
+    exampleList: (f = jspb.Message.getRepeatedField(msg, 8)) == null ? undefined : f
   };
 
   jspb.Message.toObjectExtension(/** @type {!jspb.Message} */ (msg), obj,
@@ -6942,13 +7002,22 @@ proto.buf.validate.SInt32Rules.deserializeBinaryFromReader = function(msg, reade
       msg.setGte(value);
       break;
     case 6:
-      reader.readPackableSint32Into(msg.getInList());
+      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedSint32() : [reader.readSint32()]);
+      for (var i = 0; i < values.length; i++) {
+        msg.addIn(values[i]);
+      }
       break;
     case 7:
-      reader.readPackableSint32Into(msg.getNotInList());
+      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedSint32() : [reader.readSint32()]);
+      for (var i = 0; i < values.length; i++) {
+        msg.addNotIn(values[i]);
+      }
       break;
     case 8:
-      reader.readPackableSint32Into(msg.getExampleList());
+      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedSint32() : [reader.readSint32()]);
+      for (var i = 0; i < values.length; i++) {
+        msg.addExample(values[i]);
+      }
       break;
     default:
       jspb.Message.readBinaryExtension(msg, reader,
@@ -7415,14 +7484,14 @@ proto.buf.validate.SInt64Rules.prototype.toObject = function(opt_includeInstance
  */
 proto.buf.validate.SInt64Rules.toObject = function(includeInstance, msg) {
   var f, obj = {
-pb_const: (f = jspb.Message.getField(msg, 1)) == null ? undefined : f,
-lt: (f = jspb.Message.getField(msg, 2)) == null ? undefined : f,
-lte: (f = jspb.Message.getField(msg, 3)) == null ? undefined : f,
-gt: (f = jspb.Message.getField(msg, 4)) == null ? undefined : f,
-gte: (f = jspb.Message.getField(msg, 5)) == null ? undefined : f,
-inList: (f = jspb.Message.getRepeatedField(msg, 6)) == null ? undefined : f,
-notInList: (f = jspb.Message.getRepeatedField(msg, 7)) == null ? undefined : f,
-exampleList: (f = jspb.Message.getRepeatedField(msg, 8)) == null ? undefined : f
+    pb_const: (f = jspb.Message.getField(msg, 1)) == null ? undefined : f,
+    lt: (f = jspb.Message.getField(msg, 2)) == null ? undefined : f,
+    lte: (f = jspb.Message.getField(msg, 3)) == null ? undefined : f,
+    gt: (f = jspb.Message.getField(msg, 4)) == null ? undefined : f,
+    gte: (f = jspb.Message.getField(msg, 5)) == null ? undefined : f,
+    inList: (f = jspb.Message.getRepeatedField(msg, 6)) == null ? undefined : f,
+    notInList: (f = jspb.Message.getRepeatedField(msg, 7)) == null ? undefined : f,
+    exampleList: (f = jspb.Message.getRepeatedField(msg, 8)) == null ? undefined : f
   };
 
   jspb.Message.toObjectExtension(/** @type {!jspb.Message} */ (msg), obj,
@@ -7483,13 +7552,22 @@ proto.buf.validate.SInt64Rules.deserializeBinaryFromReader = function(msg, reade
       msg.setGte(value);
       break;
     case 6:
-      reader.readPackableSint64Into(msg.getInList());
+      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedSint64() : [reader.readSint64()]);
+      for (var i = 0; i < values.length; i++) {
+        msg.addIn(values[i]);
+      }
       break;
     case 7:
-      reader.readPackableSint64Into(msg.getNotInList());
+      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedSint64() : [reader.readSint64()]);
+      for (var i = 0; i < values.length; i++) {
+        msg.addNotIn(values[i]);
+      }
       break;
     case 8:
-      reader.readPackableSint64Into(msg.getExampleList());
+      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedSint64() : [reader.readSint64()]);
+      for (var i = 0; i < values.length; i++) {
+        msg.addExample(values[i]);
+      }
       break;
     default:
       jspb.Message.readBinaryExtension(msg, reader,
@@ -7956,14 +8034,14 @@ proto.buf.validate.Fixed32Rules.prototype.toObject = function(opt_includeInstanc
  */
 proto.buf.validate.Fixed32Rules.toObject = function(includeInstance, msg) {
   var f, obj = {
-pb_const: (f = jspb.Message.getField(msg, 1)) == null ? undefined : f,
-lt: (f = jspb.Message.getField(msg, 2)) == null ? undefined : f,
-lte: (f = jspb.Message.getField(msg, 3)) == null ? undefined : f,
-gt: (f = jspb.Message.getField(msg, 4)) == null ? undefined : f,
-gte: (f = jspb.Message.getField(msg, 5)) == null ? undefined : f,
-inList: (f = jspb.Message.getRepeatedField(msg, 6)) == null ? undefined : f,
-notInList: (f = jspb.Message.getRepeatedField(msg, 7)) == null ? undefined : f,
-exampleList: (f = jspb.Message.getRepeatedField(msg, 8)) == null ? undefined : f
+    pb_const: (f = jspb.Message.getField(msg, 1)) == null ? undefined : f,
+    lt: (f = jspb.Message.getField(msg, 2)) == null ? undefined : f,
+    lte: (f = jspb.Message.getField(msg, 3)) == null ? undefined : f,
+    gt: (f = jspb.Message.getField(msg, 4)) == null ? undefined : f,
+    gte: (f = jspb.Message.getField(msg, 5)) == null ? undefined : f,
+    inList: (f = jspb.Message.getRepeatedField(msg, 6)) == null ? undefined : f,
+    notInList: (f = jspb.Message.getRepeatedField(msg, 7)) == null ? undefined : f,
+    exampleList: (f = jspb.Message.getRepeatedField(msg, 8)) == null ? undefined : f
   };
 
   jspb.Message.toObjectExtension(/** @type {!jspb.Message} */ (msg), obj,
@@ -8024,13 +8102,22 @@ proto.buf.validate.Fixed32Rules.deserializeBinaryFromReader = function(msg, read
       msg.setGte(value);
       break;
     case 6:
-      reader.readPackableFixed32Into(msg.getInList());
+      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedFixed32() : [reader.readFixed32()]);
+      for (var i = 0; i < values.length; i++) {
+        msg.addIn(values[i]);
+      }
       break;
     case 7:
-      reader.readPackableFixed32Into(msg.getNotInList());
+      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedFixed32() : [reader.readFixed32()]);
+      for (var i = 0; i < values.length; i++) {
+        msg.addNotIn(values[i]);
+      }
       break;
     case 8:
-      reader.readPackableFixed32Into(msg.getExampleList());
+      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedFixed32() : [reader.readFixed32()]);
+      for (var i = 0; i < values.length; i++) {
+        msg.addExample(values[i]);
+      }
       break;
     default:
       jspb.Message.readBinaryExtension(msg, reader,
@@ -8497,14 +8584,14 @@ proto.buf.validate.Fixed64Rules.prototype.toObject = function(opt_includeInstanc
  */
 proto.buf.validate.Fixed64Rules.toObject = function(includeInstance, msg) {
   var f, obj = {
-pb_const: (f = jspb.Message.getField(msg, 1)) == null ? undefined : f,
-lt: (f = jspb.Message.getField(msg, 2)) == null ? undefined : f,
-lte: (f = jspb.Message.getField(msg, 3)) == null ? undefined : f,
-gt: (f = jspb.Message.getField(msg, 4)) == null ? undefined : f,
-gte: (f = jspb.Message.getField(msg, 5)) == null ? undefined : f,
-inList: (f = jspb.Message.getRepeatedField(msg, 6)) == null ? undefined : f,
-notInList: (f = jspb.Message.getRepeatedField(msg, 7)) == null ? undefined : f,
-exampleList: (f = jspb.Message.getRepeatedField(msg, 8)) == null ? undefined : f
+    pb_const: (f = jspb.Message.getField(msg, 1)) == null ? undefined : f,
+    lt: (f = jspb.Message.getField(msg, 2)) == null ? undefined : f,
+    lte: (f = jspb.Message.getField(msg, 3)) == null ? undefined : f,
+    gt: (f = jspb.Message.getField(msg, 4)) == null ? undefined : f,
+    gte: (f = jspb.Message.getField(msg, 5)) == null ? undefined : f,
+    inList: (f = jspb.Message.getRepeatedField(msg, 6)) == null ? undefined : f,
+    notInList: (f = jspb.Message.getRepeatedField(msg, 7)) == null ? undefined : f,
+    exampleList: (f = jspb.Message.getRepeatedField(msg, 8)) == null ? undefined : f
   };
 
   jspb.Message.toObjectExtension(/** @type {!jspb.Message} */ (msg), obj,
@@ -8565,13 +8652,22 @@ proto.buf.validate.Fixed64Rules.deserializeBinaryFromReader = function(msg, read
       msg.setGte(value);
       break;
     case 6:
-      reader.readPackableFixed64Into(msg.getInList());
+      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedFixed64() : [reader.readFixed64()]);
+      for (var i = 0; i < values.length; i++) {
+        msg.addIn(values[i]);
+      }
       break;
     case 7:
-      reader.readPackableFixed64Into(msg.getNotInList());
+      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedFixed64() : [reader.readFixed64()]);
+      for (var i = 0; i < values.length; i++) {
+        msg.addNotIn(values[i]);
+      }
       break;
     case 8:
-      reader.readPackableFixed64Into(msg.getExampleList());
+      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedFixed64() : [reader.readFixed64()]);
+      for (var i = 0; i < values.length; i++) {
+        msg.addExample(values[i]);
+      }
       break;
     default:
       jspb.Message.readBinaryExtension(msg, reader,
@@ -9038,14 +9134,14 @@ proto.buf.validate.SFixed32Rules.prototype.toObject = function(opt_includeInstan
  */
 proto.buf.validate.SFixed32Rules.toObject = function(includeInstance, msg) {
   var f, obj = {
-pb_const: (f = jspb.Message.getField(msg, 1)) == null ? undefined : f,
-lt: (f = jspb.Message.getField(msg, 2)) == null ? undefined : f,
-lte: (f = jspb.Message.getField(msg, 3)) == null ? undefined : f,
-gt: (f = jspb.Message.getField(msg, 4)) == null ? undefined : f,
-gte: (f = jspb.Message.getField(msg, 5)) == null ? undefined : f,
-inList: (f = jspb.Message.getRepeatedField(msg, 6)) == null ? undefined : f,
-notInList: (f = jspb.Message.getRepeatedField(msg, 7)) == null ? undefined : f,
-exampleList: (f = jspb.Message.getRepeatedField(msg, 8)) == null ? undefined : f
+    pb_const: (f = jspb.Message.getField(msg, 1)) == null ? undefined : f,
+    lt: (f = jspb.Message.getField(msg, 2)) == null ? undefined : f,
+    lte: (f = jspb.Message.getField(msg, 3)) == null ? undefined : f,
+    gt: (f = jspb.Message.getField(msg, 4)) == null ? undefined : f,
+    gte: (f = jspb.Message.getField(msg, 5)) == null ? undefined : f,
+    inList: (f = jspb.Message.getRepeatedField(msg, 6)) == null ? undefined : f,
+    notInList: (f = jspb.Message.getRepeatedField(msg, 7)) == null ? undefined : f,
+    exampleList: (f = jspb.Message.getRepeatedField(msg, 8)) == null ? undefined : f
   };
 
   jspb.Message.toObjectExtension(/** @type {!jspb.Message} */ (msg), obj,
@@ -9106,13 +9202,22 @@ proto.buf.validate.SFixed32Rules.deserializeBinaryFromReader = function(msg, rea
       msg.setGte(value);
       break;
     case 6:
-      reader.readPackableSfixed32Into(msg.getInList());
+      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedSfixed32() : [reader.readSfixed32()]);
+      for (var i = 0; i < values.length; i++) {
+        msg.addIn(values[i]);
+      }
       break;
     case 7:
-      reader.readPackableSfixed32Into(msg.getNotInList());
+      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedSfixed32() : [reader.readSfixed32()]);
+      for (var i = 0; i < values.length; i++) {
+        msg.addNotIn(values[i]);
+      }
       break;
     case 8:
-      reader.readPackableSfixed32Into(msg.getExampleList());
+      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedSfixed32() : [reader.readSfixed32()]);
+      for (var i = 0; i < values.length; i++) {
+        msg.addExample(values[i]);
+      }
       break;
     default:
       jspb.Message.readBinaryExtension(msg, reader,
@@ -9579,14 +9684,14 @@ proto.buf.validate.SFixed64Rules.prototype.toObject = function(opt_includeInstan
  */
 proto.buf.validate.SFixed64Rules.toObject = function(includeInstance, msg) {
   var f, obj = {
-pb_const: (f = jspb.Message.getField(msg, 1)) == null ? undefined : f,
-lt: (f = jspb.Message.getField(msg, 2)) == null ? undefined : f,
-lte: (f = jspb.Message.getField(msg, 3)) == null ? undefined : f,
-gt: (f = jspb.Message.getField(msg, 4)) == null ? undefined : f,
-gte: (f = jspb.Message.getField(msg, 5)) == null ? undefined : f,
-inList: (f = jspb.Message.getRepeatedField(msg, 6)) == null ? undefined : f,
-notInList: (f = jspb.Message.getRepeatedField(msg, 7)) == null ? undefined : f,
-exampleList: (f = jspb.Message.getRepeatedField(msg, 8)) == null ? undefined : f
+    pb_const: (f = jspb.Message.getField(msg, 1)) == null ? undefined : f,
+    lt: (f = jspb.Message.getField(msg, 2)) == null ? undefined : f,
+    lte: (f = jspb.Message.getField(msg, 3)) == null ? undefined : f,
+    gt: (f = jspb.Message.getField(msg, 4)) == null ? undefined : f,
+    gte: (f = jspb.Message.getField(msg, 5)) == null ? undefined : f,
+    inList: (f = jspb.Message.getRepeatedField(msg, 6)) == null ? undefined : f,
+    notInList: (f = jspb.Message.getRepeatedField(msg, 7)) == null ? undefined : f,
+    exampleList: (f = jspb.Message.getRepeatedField(msg, 8)) == null ? undefined : f
   };
 
   jspb.Message.toObjectExtension(/** @type {!jspb.Message} */ (msg), obj,
@@ -9647,13 +9752,22 @@ proto.buf.validate.SFixed64Rules.deserializeBinaryFromReader = function(msg, rea
       msg.setGte(value);
       break;
     case 6:
-      reader.readPackableSfixed64Into(msg.getInList());
+      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedSfixed64() : [reader.readSfixed64()]);
+      for (var i = 0; i < values.length; i++) {
+        msg.addIn(values[i]);
+      }
       break;
     case 7:
-      reader.readPackableSfixed64Into(msg.getNotInList());
+      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedSfixed64() : [reader.readSfixed64()]);
+      for (var i = 0; i < values.length; i++) {
+        msg.addNotIn(values[i]);
+      }
       break;
     case 8:
-      reader.readPackableSfixed64Into(msg.getExampleList());
+      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedSfixed64() : [reader.readSfixed64()]);
+      for (var i = 0; i < values.length; i++) {
+        msg.addExample(values[i]);
+      }
       break;
     default:
       jspb.Message.readBinaryExtension(msg, reader,
@@ -10078,8 +10192,8 @@ proto.buf.validate.BoolRules.prototype.toObject = function(opt_includeInstance) 
  */
 proto.buf.validate.BoolRules.toObject = function(includeInstance, msg) {
   var f, obj = {
-pb_const: (f = jspb.Message.getBooleanField(msg, 1)) == null ? undefined : f,
-exampleList: (f = jspb.Message.getRepeatedBooleanField(msg, 2)) == null ? undefined : f
+    pb_const: (f = jspb.Message.getBooleanField(msg, 1)) == null ? undefined : f,
+    exampleList: (f = jspb.Message.getRepeatedBooleanField(msg, 2)) == null ? undefined : f
   };
 
   jspb.Message.toObjectExtension(/** @type {!jspb.Message} */ (msg), obj,
@@ -10124,7 +10238,10 @@ proto.buf.validate.BoolRules.deserializeBinaryFromReader = function(msg, reader)
       msg.setConst(value);
       break;
     case 2:
-      reader.readPackableBoolInto(msg.getExampleList());
+      var values = /** @type {!Array<boolean>} */ (reader.isDelimited() ? reader.readPackedBool() : [reader.readBool()]);
+      for (var i = 0; i < values.length; i++) {
+        msg.addExample(values[i]);
+      }
       break;
     default:
       jspb.Message.readBinaryExtension(msg, reader,
@@ -10331,40 +10448,40 @@ proto.buf.validate.StringRules.prototype.toObject = function(opt_includeInstance
  */
 proto.buf.validate.StringRules.toObject = function(includeInstance, msg) {
   var f, obj = {
-pb_const: (f = jspb.Message.getField(msg, 1)) == null ? undefined : f,
-len: (f = jspb.Message.getField(msg, 19)) == null ? undefined : f,
-minLen: (f = jspb.Message.getField(msg, 2)) == null ? undefined : f,
-maxLen: (f = jspb.Message.getField(msg, 3)) == null ? undefined : f,
-lenBytes: (f = jspb.Message.getField(msg, 20)) == null ? undefined : f,
-minBytes: (f = jspb.Message.getField(msg, 4)) == null ? undefined : f,
-maxBytes: (f = jspb.Message.getField(msg, 5)) == null ? undefined : f,
-pattern: (f = jspb.Message.getField(msg, 6)) == null ? undefined : f,
-prefix: (f = jspb.Message.getField(msg, 7)) == null ? undefined : f,
-suffix: (f = jspb.Message.getField(msg, 8)) == null ? undefined : f,
-contains: (f = jspb.Message.getField(msg, 9)) == null ? undefined : f,
-notContains: (f = jspb.Message.getField(msg, 23)) == null ? undefined : f,
-inList: (f = jspb.Message.getRepeatedField(msg, 10)) == null ? undefined : f,
-notInList: (f = jspb.Message.getRepeatedField(msg, 11)) == null ? undefined : f,
-email: (f = jspb.Message.getBooleanField(msg, 12)) == null ? undefined : f,
-hostname: (f = jspb.Message.getBooleanField(msg, 13)) == null ? undefined : f,
-ip: (f = jspb.Message.getBooleanField(msg, 14)) == null ? undefined : f,
-ipv4: (f = jspb.Message.getBooleanField(msg, 15)) == null ? undefined : f,
-ipv6: (f = jspb.Message.getBooleanField(msg, 16)) == null ? undefined : f,
-uri: (f = jspb.Message.getBooleanField(msg, 17)) == null ? undefined : f,
-uriRef: (f = jspb.Message.getBooleanField(msg, 18)) == null ? undefined : f,
-address: (f = jspb.Message.getBooleanField(msg, 21)) == null ? undefined : f,
-uuid: (f = jspb.Message.getBooleanField(msg, 22)) == null ? undefined : f,
-tuuid: (f = jspb.Message.getBooleanField(msg, 33)) == null ? undefined : f,
-ipWithPrefixlen: (f = jspb.Message.getBooleanField(msg, 26)) == null ? undefined : f,
-ipv4WithPrefixlen: (f = jspb.Message.getBooleanField(msg, 27)) == null ? undefined : f,
-ipv6WithPrefixlen: (f = jspb.Message.getBooleanField(msg, 28)) == null ? undefined : f,
-ipPrefix: (f = jspb.Message.getBooleanField(msg, 29)) == null ? undefined : f,
-ipv4Prefix: (f = jspb.Message.getBooleanField(msg, 30)) == null ? undefined : f,
-ipv6Prefix: (f = jspb.Message.getBooleanField(msg, 31)) == null ? undefined : f,
-hostAndPort: (f = jspb.Message.getBooleanField(msg, 32)) == null ? undefined : f,
-wellKnownRegex: (f = jspb.Message.getField(msg, 24)) == null ? undefined : f,
-strict: (f = jspb.Message.getBooleanField(msg, 25)) == null ? undefined : f,
-exampleList: (f = jspb.Message.getRepeatedField(msg, 34)) == null ? undefined : f
+    pb_const: (f = jspb.Message.getField(msg, 1)) == null ? undefined : f,
+    len: (f = jspb.Message.getField(msg, 19)) == null ? undefined : f,
+    minLen: (f = jspb.Message.getField(msg, 2)) == null ? undefined : f,
+    maxLen: (f = jspb.Message.getField(msg, 3)) == null ? undefined : f,
+    lenBytes: (f = jspb.Message.getField(msg, 20)) == null ? undefined : f,
+    minBytes: (f = jspb.Message.getField(msg, 4)) == null ? undefined : f,
+    maxBytes: (f = jspb.Message.getField(msg, 5)) == null ? undefined : f,
+    pattern: (f = jspb.Message.getField(msg, 6)) == null ? undefined : f,
+    prefix: (f = jspb.Message.getField(msg, 7)) == null ? undefined : f,
+    suffix: (f = jspb.Message.getField(msg, 8)) == null ? undefined : f,
+    contains: (f = jspb.Message.getField(msg, 9)) == null ? undefined : f,
+    notContains: (f = jspb.Message.getField(msg, 23)) == null ? undefined : f,
+    inList: (f = jspb.Message.getRepeatedField(msg, 10)) == null ? undefined : f,
+    notInList: (f = jspb.Message.getRepeatedField(msg, 11)) == null ? undefined : f,
+    email: (f = jspb.Message.getBooleanField(msg, 12)) == null ? undefined : f,
+    hostname: (f = jspb.Message.getBooleanField(msg, 13)) == null ? undefined : f,
+    ip: (f = jspb.Message.getBooleanField(msg, 14)) == null ? undefined : f,
+    ipv4: (f = jspb.Message.getBooleanField(msg, 15)) == null ? undefined : f,
+    ipv6: (f = jspb.Message.getBooleanField(msg, 16)) == null ? undefined : f,
+    uri: (f = jspb.Message.getBooleanField(msg, 17)) == null ? undefined : f,
+    uriRef: (f = jspb.Message.getBooleanField(msg, 18)) == null ? undefined : f,
+    address: (f = jspb.Message.getBooleanField(msg, 21)) == null ? undefined : f,
+    uuid: (f = jspb.Message.getBooleanField(msg, 22)) == null ? undefined : f,
+    tuuid: (f = jspb.Message.getBooleanField(msg, 33)) == null ? undefined : f,
+    ipWithPrefixlen: (f = jspb.Message.getBooleanField(msg, 26)) == null ? undefined : f,
+    ipv4WithPrefixlen: (f = jspb.Message.getBooleanField(msg, 27)) == null ? undefined : f,
+    ipv6WithPrefixlen: (f = jspb.Message.getBooleanField(msg, 28)) == null ? undefined : f,
+    ipPrefix: (f = jspb.Message.getBooleanField(msg, 29)) == null ? undefined : f,
+    ipv4Prefix: (f = jspb.Message.getBooleanField(msg, 30)) == null ? undefined : f,
+    ipv6Prefix: (f = jspb.Message.getBooleanField(msg, 31)) == null ? undefined : f,
+    hostAndPort: (f = jspb.Message.getBooleanField(msg, 32)) == null ? undefined : f,
+    wellKnownRegex: (f = jspb.Message.getField(msg, 24)) == null ? undefined : f,
+    strict: (f = jspb.Message.getBooleanField(msg, 25)) == null ? undefined : f,
+    exampleList: (f = jspb.Message.getRepeatedField(msg, 34)) == null ? undefined : f
   };
 
   jspb.Message.toObjectExtension(/** @type {!jspb.Message} */ (msg), obj,
@@ -12108,20 +12225,20 @@ proto.buf.validate.BytesRules.prototype.toObject = function(opt_includeInstance)
  */
 proto.buf.validate.BytesRules.toObject = function(includeInstance, msg) {
   var f, obj = {
-pb_const: msg.getConst_asB64(),
-len: (f = jspb.Message.getField(msg, 13)) == null ? undefined : f,
-minLen: (f = jspb.Message.getField(msg, 2)) == null ? undefined : f,
-maxLen: (f = jspb.Message.getField(msg, 3)) == null ? undefined : f,
-pattern: (f = jspb.Message.getField(msg, 4)) == null ? undefined : f,
-prefix: msg.getPrefix_asB64(),
-suffix: msg.getSuffix_asB64(),
-contains: msg.getContains_asB64(),
-inList: msg.getInList_asB64(),
-notInList: msg.getNotInList_asB64(),
-ip: (f = jspb.Message.getBooleanField(msg, 10)) == null ? undefined : f,
-ipv4: (f = jspb.Message.getBooleanField(msg, 11)) == null ? undefined : f,
-ipv6: (f = jspb.Message.getBooleanField(msg, 12)) == null ? undefined : f,
-exampleList: msg.getExampleList_asB64()
+    pb_const: msg.getConst_asB64(),
+    len: (f = jspb.Message.getField(msg, 13)) == null ? undefined : f,
+    minLen: (f = jspb.Message.getField(msg, 2)) == null ? undefined : f,
+    maxLen: (f = jspb.Message.getField(msg, 3)) == null ? undefined : f,
+    pattern: (f = jspb.Message.getField(msg, 4)) == null ? undefined : f,
+    prefix: msg.getPrefix_asB64(),
+    suffix: msg.getSuffix_asB64(),
+    contains: msg.getContains_asB64(),
+    inList: msg.getInList_asB64(),
+    notInList: msg.getNotInList_asB64(),
+    ip: (f = jspb.Message.getBooleanField(msg, 10)) == null ? undefined : f,
+    ipv4: (f = jspb.Message.getBooleanField(msg, 11)) == null ? undefined : f,
+    ipv6: (f = jspb.Message.getBooleanField(msg, 12)) == null ? undefined : f,
+    exampleList: msg.getExampleList_asB64()
   };
 
   jspb.Message.toObjectExtension(/** @type {!jspb.Message} */ (msg), obj,
@@ -13066,11 +13183,11 @@ proto.buf.validate.EnumRules.prototype.toObject = function(opt_includeInstance) 
  */
 proto.buf.validate.EnumRules.toObject = function(includeInstance, msg) {
   var f, obj = {
-pb_const: (f = jspb.Message.getField(msg, 1)) == null ? undefined : f,
-definedOnly: (f = jspb.Message.getBooleanField(msg, 2)) == null ? undefined : f,
-inList: (f = jspb.Message.getRepeatedField(msg, 3)) == null ? undefined : f,
-notInList: (f = jspb.Message.getRepeatedField(msg, 4)) == null ? undefined : f,
-exampleList: (f = jspb.Message.getRepeatedField(msg, 5)) == null ? undefined : f
+    pb_const: (f = jspb.Message.getField(msg, 1)) == null ? undefined : f,
+    definedOnly: (f = jspb.Message.getBooleanField(msg, 2)) == null ? undefined : f,
+    inList: (f = jspb.Message.getRepeatedField(msg, 3)) == null ? undefined : f,
+    notInList: (f = jspb.Message.getRepeatedField(msg, 4)) == null ? undefined : f,
+    exampleList: (f = jspb.Message.getRepeatedField(msg, 5)) == null ? undefined : f
   };
 
   jspb.Message.toObjectExtension(/** @type {!jspb.Message} */ (msg), obj,
@@ -13119,13 +13236,22 @@ proto.buf.validate.EnumRules.deserializeBinaryFromReader = function(msg, reader)
       msg.setDefinedOnly(value);
       break;
     case 3:
-      reader.readPackableInt32Into(msg.getInList());
+      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedInt32() : [reader.readInt32()]);
+      for (var i = 0; i < values.length; i++) {
+        msg.addIn(values[i]);
+      }
       break;
     case 4:
-      reader.readPackableInt32Into(msg.getNotInList());
+      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedInt32() : [reader.readInt32()]);
+      for (var i = 0; i < values.length; i++) {
+        msg.addNotIn(values[i]);
+      }
       break;
     case 5:
-      reader.readPackableInt32Into(msg.getExampleList());
+      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedInt32() : [reader.readInt32()]);
+      for (var i = 0; i < values.length; i++) {
+        msg.addExample(values[i]);
+      }
       break;
     default:
       jspb.Message.readBinaryExtension(msg, reader,
@@ -13414,10 +13540,10 @@ proto.buf.validate.RepeatedRules.prototype.toObject = function(opt_includeInstan
  */
 proto.buf.validate.RepeatedRules.toObject = function(includeInstance, msg) {
   var f, obj = {
-minItems: (f = jspb.Message.getField(msg, 1)) == null ? undefined : f,
-maxItems: (f = jspb.Message.getField(msg, 2)) == null ? undefined : f,
-unique: (f = jspb.Message.getBooleanField(msg, 3)) == null ? undefined : f,
-items: (f = msg.getItems()) && proto.buf.validate.FieldConstraints.toObject(includeInstance, f)
+    minItems: (f = jspb.Message.getField(msg, 1)) == null ? undefined : f,
+    maxItems: (f = jspb.Message.getField(msg, 2)) == null ? undefined : f,
+    unique: (f = jspb.Message.getBooleanField(msg, 3)) == null ? undefined : f,
+    items: (f = msg.getItems()) && proto.buf.validate.FieldConstraints.toObject(includeInstance, f)
   };
 
   jspb.Message.toObjectExtension(/** @type {!jspb.Message} */ (msg), obj,
@@ -13717,10 +13843,10 @@ proto.buf.validate.MapRules.prototype.toObject = function(opt_includeInstance) {
  */
 proto.buf.validate.MapRules.toObject = function(includeInstance, msg) {
   var f, obj = {
-minPairs: (f = jspb.Message.getField(msg, 1)) == null ? undefined : f,
-maxPairs: (f = jspb.Message.getField(msg, 2)) == null ? undefined : f,
-keys: (f = msg.getKeys()) && proto.buf.validate.FieldConstraints.toObject(includeInstance, f),
-values: (f = msg.getValues()) && proto.buf.validate.FieldConstraints.toObject(includeInstance, f)
+    minPairs: (f = jspb.Message.getField(msg, 1)) == null ? undefined : f,
+    maxPairs: (f = jspb.Message.getField(msg, 2)) == null ? undefined : f,
+    keys: (f = msg.getKeys()) && proto.buf.validate.FieldConstraints.toObject(includeInstance, f),
+    values: (f = msg.getValues()) && proto.buf.validate.FieldConstraints.toObject(includeInstance, f)
   };
 
   jspb.Message.toObjectExtension(/** @type {!jspb.Message} */ (msg), obj,
@@ -14030,8 +14156,8 @@ proto.buf.validate.AnyRules.prototype.toObject = function(opt_includeInstance) {
  */
 proto.buf.validate.AnyRules.toObject = function(includeInstance, msg) {
   var f, obj = {
-inList: (f = jspb.Message.getRepeatedField(msg, 2)) == null ? undefined : f,
-notInList: (f = jspb.Message.getRepeatedField(msg, 3)) == null ? undefined : f
+    inList: (f = jspb.Message.getRepeatedField(msg, 2)) == null ? undefined : f,
+    notInList: (f = jspb.Message.getRepeatedField(msg, 3)) == null ? undefined : f
   };
 
   if (includeInstance) {
@@ -14277,16 +14403,16 @@ proto.buf.validate.DurationRules.prototype.toObject = function(opt_includeInstan
  */
 proto.buf.validate.DurationRules.toObject = function(includeInstance, msg) {
   var f, obj = {
-pb_const: (f = msg.getConst()) && google_protobuf_duration_pb.Duration.toObject(includeInstance, f),
-lt: (f = msg.getLt()) && google_protobuf_duration_pb.Duration.toObject(includeInstance, f),
-lte: (f = msg.getLte()) && google_protobuf_duration_pb.Duration.toObject(includeInstance, f),
-gt: (f = msg.getGt()) && google_protobuf_duration_pb.Duration.toObject(includeInstance, f),
-gte: (f = msg.getGte()) && google_protobuf_duration_pb.Duration.toObject(includeInstance, f),
-inList: jspb.Message.toObjectList(msg.getInList(),
+    pb_const: (f = msg.getConst()) && google_protobuf_duration_pb.Duration.toObject(includeInstance, f),
+    lt: (f = msg.getLt()) && google_protobuf_duration_pb.Duration.toObject(includeInstance, f),
+    lte: (f = msg.getLte()) && google_protobuf_duration_pb.Duration.toObject(includeInstance, f),
+    gt: (f = msg.getGt()) && google_protobuf_duration_pb.Duration.toObject(includeInstance, f),
+    gte: (f = msg.getGte()) && google_protobuf_duration_pb.Duration.toObject(includeInstance, f),
+    inList: jspb.Message.toObjectList(msg.getInList(),
     google_protobuf_duration_pb.Duration.toObject, includeInstance),
-notInList: jspb.Message.toObjectList(msg.getNotInList(),
+    notInList: jspb.Message.toObjectList(msg.getNotInList(),
     google_protobuf_duration_pb.Duration.toObject, includeInstance),
-exampleList: jspb.Message.toObjectList(msg.getExampleList(),
+    exampleList: jspb.Message.toObjectList(msg.getExampleList(),
     google_protobuf_duration_pb.Duration.toObject, includeInstance)
   };
 
@@ -14850,15 +14976,15 @@ proto.buf.validate.TimestampRules.prototype.toObject = function(opt_includeInsta
  */
 proto.buf.validate.TimestampRules.toObject = function(includeInstance, msg) {
   var f, obj = {
-pb_const: (f = msg.getConst()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f),
-lt: (f = msg.getLt()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f),
-lte: (f = msg.getLte()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f),
-ltNow: (f = jspb.Message.getBooleanField(msg, 7)) == null ? undefined : f,
-gt: (f = msg.getGt()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f),
-gte: (f = msg.getGte()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f),
-gtNow: (f = jspb.Message.getBooleanField(msg, 8)) == null ? undefined : f,
-within: (f = msg.getWithin()) && google_protobuf_duration_pb.Duration.toObject(includeInstance, f),
-exampleList: jspb.Message.toObjectList(msg.getExampleList(),
+    pb_const: (f = msg.getConst()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f),
+    lt: (f = msg.getLt()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f),
+    lte: (f = msg.getLte()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f),
+    ltNow: (f = jspb.Message.getBooleanField(msg, 7)) == null ? undefined : f,
+    gt: (f = msg.getGt()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f),
+    gte: (f = msg.getGte()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f),
+    gtNow: (f = jspb.Message.getBooleanField(msg, 8)) == null ? undefined : f,
+    within: (f = msg.getWithin()) && google_protobuf_duration_pb.Duration.toObject(includeInstance, f),
+    exampleList: jspb.Message.toObjectList(msg.getExampleList(),
     google_protobuf_timestamp_pb.Timestamp.toObject, includeInstance)
   };
 
@@ -15420,7 +15546,7 @@ proto.buf.validate.Violations.prototype.toObject = function(opt_includeInstance)
  */
 proto.buf.validate.Violations.toObject = function(includeInstance, msg) {
   var f, obj = {
-violationsList: jspb.Message.toObjectList(msg.getViolationsList(),
+    violationsList: jspb.Message.toObjectList(msg.getViolationsList(),
     proto.buf.validate.Violation.toObject, includeInstance)
   };
 
@@ -15573,11 +15699,11 @@ proto.buf.validate.Violation.prototype.toObject = function(opt_includeInstance) 
  */
 proto.buf.validate.Violation.toObject = function(includeInstance, msg) {
   var f, obj = {
-field: (f = msg.getField()) && proto.buf.validate.FieldPath.toObject(includeInstance, f),
-rule: (f = msg.getRule()) && proto.buf.validate.FieldPath.toObject(includeInstance, f),
-constraintId: (f = jspb.Message.getField(msg, 2)) == null ? undefined : f,
-message: (f = jspb.Message.getField(msg, 3)) == null ? undefined : f,
-forKey: (f = jspb.Message.getBooleanField(msg, 4)) == null ? undefined : f
+    field: (f = msg.getField()) && proto.buf.validate.FieldPath.toObject(includeInstance, f),
+    rule: (f = msg.getRule()) && proto.buf.validate.FieldPath.toObject(includeInstance, f),
+    constraintId: (f = jspb.Message.getField(msg, 2)) == null ? undefined : f,
+    message: (f = jspb.Message.getField(msg, 3)) == null ? undefined : f,
+    forKey: (f = jspb.Message.getBooleanField(msg, 4)) == null ? undefined : f
   };
 
   if (includeInstance) {
@@ -15926,7 +16052,7 @@ proto.buf.validate.FieldPath.prototype.toObject = function(opt_includeInstance) 
  */
 proto.buf.validate.FieldPath.toObject = function(includeInstance, msg) {
   var f, obj = {
-elementsList: jspb.Message.toObjectList(msg.getElementsList(),
+    elementsList: jspb.Message.toObjectList(msg.getElementsList(),
     proto.buf.validate.FieldPathElement.toObject, includeInstance)
   };
 
@@ -16108,16 +16234,16 @@ proto.buf.validate.FieldPathElement.prototype.toObject = function(opt_includeIns
  */
 proto.buf.validate.FieldPathElement.toObject = function(includeInstance, msg) {
   var f, obj = {
-fieldNumber: (f = jspb.Message.getField(msg, 1)) == null ? undefined : f,
-fieldName: (f = jspb.Message.getField(msg, 2)) == null ? undefined : f,
-fieldType: (f = jspb.Message.getField(msg, 3)) == null ? undefined : f,
-keyType: (f = jspb.Message.getField(msg, 4)) == null ? undefined : f,
-valueType: (f = jspb.Message.getField(msg, 5)) == null ? undefined : f,
-index: (f = jspb.Message.getField(msg, 6)) == null ? undefined : f,
-boolKey: (f = jspb.Message.getBooleanField(msg, 7)) == null ? undefined : f,
-intKey: (f = jspb.Message.getField(msg, 8)) == null ? undefined : f,
-uintKey: (f = jspb.Message.getField(msg, 9)) == null ? undefined : f,
-stringKey: (f = jspb.Message.getField(msg, 10)) == null ? undefined : f
+    fieldNumber: (f = jspb.Message.getField(msg, 1)) == null ? undefined : f,
+    fieldName: (f = jspb.Message.getField(msg, 2)) == null ? undefined : f,
+    fieldType: (f = jspb.Message.getField(msg, 3)) == null ? undefined : f,
+    keyType: (f = jspb.Message.getField(msg, 4)) == null ? undefined : f,
+    valueType: (f = jspb.Message.getField(msg, 5)) == null ? undefined : f,
+    index: (f = jspb.Message.getField(msg, 6)) == null ? undefined : f,
+    boolKey: (f = jspb.Message.getBooleanField(msg, 7)) == null ? undefined : f,
+    intKey: (f = jspb.Message.getField(msg, 8)) == null ? undefined : f,
+    uintKey: (f = jspb.Message.getField(msg, 9)) == null ? undefined : f,
+    stringKey: (f = jspb.Message.getField(msg, 10)) == null ? undefined : f
   };
 
   if (includeInstance) {

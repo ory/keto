@@ -13,7 +13,13 @@
 
 var jspb = require('google-protobuf');
 var goog = jspb;
-var global = globalThis;
+var global =
+    (typeof globalThis !== 'undefined' && globalThis) ||
+    (typeof window !== 'undefined' && window) ||
+    (typeof global !== 'undefined' && global) ||
+    (typeof self !== 'undefined' && self) ||
+    (function () { return this; }).call(null) ||
+    Function('return this')();
 
 goog.exportSymbol('proto.google.protobuf.FieldMask', null, global);
 /**
@@ -76,7 +82,7 @@ proto.google.protobuf.FieldMask.prototype.toObject = function(opt_includeInstanc
  */
 proto.google.protobuf.FieldMask.toObject = function(includeInstance, msg) {
   var f, obj = {
-pathsList: (f = jspb.Message.getRepeatedField(msg, 1)) == null ? undefined : f
+    pathsList: (f = jspb.Message.getRepeatedField(msg, 1)) == null ? undefined : f
   };
 
   if (includeInstance) {
@@ -114,7 +120,7 @@ proto.google.protobuf.FieldMask.deserializeBinaryFromReader = function(msg, read
     var field = reader.getFieldNumber();
     switch (field) {
     case 1:
-      var value = /** @type {string} */ (reader.readStringRequireUtf8());
+      var value = /** @type {string} */ (reader.readString());
       msg.addPaths(value);
       break;
     default:

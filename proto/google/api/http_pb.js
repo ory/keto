@@ -13,7 +13,13 @@
 
 var jspb = require('google-protobuf');
 var goog = jspb;
-var global = globalThis;
+var global =
+    (typeof globalThis !== 'undefined' && globalThis) ||
+    (typeof window !== 'undefined' && window) ||
+    (typeof global !== 'undefined' && global) ||
+    (typeof self !== 'undefined' && self) ||
+    (function () { return this; }).call(null) ||
+    Function('return this')();
 
 goog.exportSymbol('proto.google.api.CustomHttpPattern', null, global);
 goog.exportSymbol('proto.google.api.Http', null, global);
@@ -121,9 +127,9 @@ proto.google.api.Http.prototype.toObject = function(opt_includeInstance) {
  */
 proto.google.api.Http.toObject = function(includeInstance, msg) {
   var f, obj = {
-rulesList: jspb.Message.toObjectList(msg.getRulesList(),
+    rulesList: jspb.Message.toObjectList(msg.getRulesList(),
     proto.google.api.HttpRule.toObject, includeInstance),
-fullyDecodeReservedExpansion: jspb.Message.getBooleanFieldWithDefault(msg, 2, false)
+    fullyDecodeReservedExpansion: jspb.Message.getBooleanFieldWithDefault(msg, 2, false)
   };
 
   if (includeInstance) {
@@ -341,16 +347,16 @@ proto.google.api.HttpRule.prototype.toObject = function(opt_includeInstance) {
  */
 proto.google.api.HttpRule.toObject = function(includeInstance, msg) {
   var f, obj = {
-selector: jspb.Message.getFieldWithDefault(msg, 1, ""),
-get: (f = jspb.Message.getField(msg, 2)) == null ? undefined : f,
-put: (f = jspb.Message.getField(msg, 3)) == null ? undefined : f,
-post: (f = jspb.Message.getField(msg, 4)) == null ? undefined : f,
-pb_delete: (f = jspb.Message.getField(msg, 5)) == null ? undefined : f,
-patch: (f = jspb.Message.getField(msg, 6)) == null ? undefined : f,
-custom: (f = msg.getCustom()) && proto.google.api.CustomHttpPattern.toObject(includeInstance, f),
-body: jspb.Message.getFieldWithDefault(msg, 7, ""),
-responseBody: jspb.Message.getFieldWithDefault(msg, 12, ""),
-additionalBindingsList: jspb.Message.toObjectList(msg.getAdditionalBindingsList(),
+    selector: jspb.Message.getFieldWithDefault(msg, 1, ""),
+    get: jspb.Message.getFieldWithDefault(msg, 2, ""),
+    put: jspb.Message.getFieldWithDefault(msg, 3, ""),
+    post: jspb.Message.getFieldWithDefault(msg, 4, ""),
+    pb_delete: jspb.Message.getFieldWithDefault(msg, 5, ""),
+    patch: jspb.Message.getFieldWithDefault(msg, 6, ""),
+    custom: (f = msg.getCustom()) && proto.google.api.CustomHttpPattern.toObject(includeInstance, f),
+    body: jspb.Message.getFieldWithDefault(msg, 7, ""),
+    responseBody: jspb.Message.getFieldWithDefault(msg, 12, ""),
+    additionalBindingsList: jspb.Message.toObjectList(msg.getAdditionalBindingsList(),
     proto.google.api.HttpRule.toObject, includeInstance)
   };
 
@@ -389,27 +395,27 @@ proto.google.api.HttpRule.deserializeBinaryFromReader = function(msg, reader) {
     var field = reader.getFieldNumber();
     switch (field) {
     case 1:
-      var value = /** @type {string} */ (reader.readStringRequireUtf8());
+      var value = /** @type {string} */ (reader.readString());
       msg.setSelector(value);
       break;
     case 2:
-      var value = /** @type {string} */ (reader.readStringRequireUtf8());
+      var value = /** @type {string} */ (reader.readString());
       msg.setGet(value);
       break;
     case 3:
-      var value = /** @type {string} */ (reader.readStringRequireUtf8());
+      var value = /** @type {string} */ (reader.readString());
       msg.setPut(value);
       break;
     case 4:
-      var value = /** @type {string} */ (reader.readStringRequireUtf8());
+      var value = /** @type {string} */ (reader.readString());
       msg.setPost(value);
       break;
     case 5:
-      var value = /** @type {string} */ (reader.readStringRequireUtf8());
+      var value = /** @type {string} */ (reader.readString());
       msg.setDelete(value);
       break;
     case 6:
-      var value = /** @type {string} */ (reader.readStringRequireUtf8());
+      var value = /** @type {string} */ (reader.readString());
       msg.setPatch(value);
       break;
     case 8:
@@ -418,11 +424,11 @@ proto.google.api.HttpRule.deserializeBinaryFromReader = function(msg, reader) {
       msg.setCustom(value);
       break;
     case 7:
-      var value = /** @type {string} */ (reader.readStringRequireUtf8());
+      var value = /** @type {string} */ (reader.readString());
       msg.setBody(value);
       break;
     case 12:
-      var value = /** @type {string} */ (reader.readStringRequireUtf8());
+      var value = /** @type {string} */ (reader.readString());
       msg.setResponseBody(value);
       break;
     case 11:
@@ -875,8 +881,8 @@ proto.google.api.CustomHttpPattern.prototype.toObject = function(opt_includeInst
  */
 proto.google.api.CustomHttpPattern.toObject = function(includeInstance, msg) {
   var f, obj = {
-kind: jspb.Message.getFieldWithDefault(msg, 1, ""),
-path: jspb.Message.getFieldWithDefault(msg, 2, "")
+    kind: jspb.Message.getFieldWithDefault(msg, 1, ""),
+    path: jspb.Message.getFieldWithDefault(msg, 2, "")
   };
 
   if (includeInstance) {
@@ -914,11 +920,11 @@ proto.google.api.CustomHttpPattern.deserializeBinaryFromReader = function(msg, r
     var field = reader.getFieldNumber();
     switch (field) {
     case 1:
-      var value = /** @type {string} */ (reader.readStringRequireUtf8());
+      var value = /** @type {string} */ (reader.readString());
       msg.setKind(value);
       break;
     case 2:
-      var value = /** @type {string} */ (reader.readStringRequireUtf8());
+      var value = /** @type {string} */ (reader.readString());
       msg.setPath(value);
       break;
     default:

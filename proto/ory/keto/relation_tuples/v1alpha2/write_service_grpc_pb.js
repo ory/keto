@@ -119,4 +119,4 @@ deleteRelationTuples: {
   },
 };
 
-exports.WriteServiceClient = grpc.makeGenericClientConstructor(WriteServiceService, 'WriteService');
+exports.WriteServiceClient = grpc.makeGenericClientConstructor(WriteServiceService);

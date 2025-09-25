@@ -13,7 +13,13 @@
 
 var jspb = require('google-protobuf');
 var goog = jspb;
-var global = globalThis;
+var global =
+    (typeof globalThis !== 'undefined' && globalThis) ||
+    (typeof window !== 'undefined' && window) ||
+    (typeof global !== 'undefined' && global) ||
+    (typeof self !== 'undefined' && self) ||
+    (function () { return this; }).call(null) ||
+    Function('return this')();
 
 var google_api_field_behavior_pb = require('../../../../google/api/field_behavior_pb.js');
 goog.object.extend(proto, google_api_field_behavior_pb);
@@ -95,7 +101,7 @@ proto.ory.keto.relation_tuples.v1alpha2.ErrorResponse.prototype.toObject = funct
  */
 proto.ory.keto.relation_tuples.v1alpha2.ErrorResponse.toObject = function(includeInstance, msg) {
   var f, obj = {
-error: (f = msg.getError()) && proto.ory.keto.relation_tuples.v1alpha2.ErrorResponse.Error.toObject(includeInstance, f)
+    error: (f = msg.getError()) && proto.ory.keto.relation_tuples.v1alpha2.ErrorResponse.Error.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -209,14 +215,14 @@ proto.ory.keto.relation_tuples.v1alpha2.ErrorResponse.Error.prototype.toObject =
  */
 proto.ory.keto.relation_tuples.v1alpha2.ErrorResponse.Error.toObject = function(includeInstance, msg) {
   var f, obj = {
-code: jspb.Message.getFieldWithDefault(msg, 1, 0),
-debug: jspb.Message.getFieldWithDefault(msg, 2, ""),
-detailsMap: (f = msg.getDetailsMap()) ? f.toObject(includeInstance, undefined) : [],
-id: jspb.Message.getFieldWithDefault(msg, 4, ""),
-message: jspb.Message.getFieldWithDefault(msg, 5, ""),
-reason: jspb.Message.getFieldWithDefault(msg, 6, ""),
-request: jspb.Message.getFieldWithDefault(msg, 7, ""),
-status: jspb.Message.getFieldWithDefault(msg, 8, "")
+    code: jspb.Message.getFieldWithDefault(msg, 1, 0),
+    debug: jspb.Message.getFieldWithDefault(msg, 2, ""),
+    detailsMap: (f = msg.getDetailsMap()) ? f.toObject(includeInstance, undefined) : [],
+    id: jspb.Message.getFieldWithDefault(msg, 4, ""),
+    message: jspb.Message.getFieldWithDefault(msg, 5, ""),
+    reason: jspb.Message.getFieldWithDefault(msg, 6, ""),
+    request: jspb.Message.getFieldWithDefault(msg, 7, ""),
+    status: jspb.Message.getFieldWithDefault(msg, 8, "")
   };
 
   if (includeInstance) {
@@ -258,33 +264,33 @@ proto.ory.keto.relation_tuples.v1alpha2.ErrorResponse.Error.deserializeBinaryFro
       msg.setCode(value);
       break;
     case 2:
-      var value = /** @type {string} */ (reader.readStringRequireUtf8());
+      var value = /** @type {string} */ (reader.readString());
       msg.setDebug(value);
       break;
     case 3:
       var value = msg.getDetailsMap();
       reader.readMessage(value, function(message, reader) {
-        jspb.Map.deserializeBinary(message, reader, jspb.BinaryReader.prototype.readStringRequireUtf8, jspb.BinaryReader.prototype.readStringRequireUtf8, null, "", "");
+        jspb.Map.deserializeBinary(message, reader, jspb.BinaryReader.prototype.readString, jspb.BinaryReader.prototype.readString, null, "", "");
          });
       break;
     case 4:
-      var value = /** @type {string} */ (reader.readStringRequireUtf8());
+      var value = /** @type {string} */ (reader.readString());
       msg.setId(value);
       break;
     case 5:
-      var value = /** @type {string} */ (reader.readStringRequireUtf8());
+      var value = /** @type {string} */ (reader.readString());
       msg.setMessage(value);
       break;
     case 6:
-      var value = /** @type {string} */ (reader.readStringRequireUtf8());
+      var value = /** @type {string} */ (reader.readString());
       msg.setReason(value);
       break;
     case 7:
-      var value = /** @type {string} */ (reader.readStringRequireUtf8());
+      var value = /** @type {string} */ (reader.readString());
       msg.setRequest(value);
       break;
     case 8:
-      var value = /** @type {string} */ (reader.readStringRequireUtf8());
+      var value = /** @type {string} */ (reader.readString());
       msg.setStatus(value);
       break;
     default:
@@ -332,12 +338,7 @@ proto.ory.keto.relation_tuples.v1alpha2.ErrorResponse.Error.serializeBinaryToWri
   }
   f = message.getDetailsMap(true);
   if (f && f.getLength() > 0) {
-jspb.internal.public_for_gencode.serializeMapToBinary(
-    message.getDetailsMap(true),
-    3,
-    writer,
-    jspb.BinaryWriter.prototype.writeString,
-    jspb.BinaryWriter.prototype.writeString);
+    f.serializeBinary(3, writer, jspb.BinaryWriter.prototype.writeString, jspb.BinaryWriter.prototype.writeString);
   }
   f = message.getId();
   if (f.length > 0) {
