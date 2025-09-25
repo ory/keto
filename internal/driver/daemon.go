@@ -40,14 +40,6 @@ import (
 	"github.com/ory/analytics-go/v5"
 	"github.com/ory/graceful"
 	"github.com/ory/herodot"
-	"github.com/ory/x/healthx"
-	"github.com/ory/x/logrusx"
-	"github.com/ory/x/metricsx"
-	"github.com/ory/x/otelx"
-	"github.com/ory/x/otelx/semconv"
-	prometheus "github.com/ory/x/prometheusx"
-	"github.com/ory/x/reqlog"
-
 	"github.com/ory/keto/internal/check"
 	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/expand"
@@ -57,10 +49,40 @@ import (
 	"github.com/ory/keto/internal/x"
 	"github.com/ory/keto/internal/x/api"
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
+	"github.com/ory/x/healthx"
+	"github.com/ory/x/logrusx"
+	"github.com/ory/x/metricsx"
+	"github.com/ory/x/otelx"
+	"github.com/ory/x/otelx/semconv"
+	prometheus "github.com/ory/x/prometheusx"
+	"github.com/ory/x/reqlog"
+	"github.com/ory/x/urlx"
 )
 
 func (r *RegistryDefault) enableSqa(cmd *cobra.Command) {
 	ctx := cmd.Context()
+
+	var urls []string
+	addr, _ := r.Config(ctx).ReadAPIListenOn()
+	urls = append(urls, addr)
+	addr, _ = r.Config(ctx).WriteAPIListenOn()
+	urls = append(urls, addr)
+	addr, _ = r.Config(ctx).MetricsListenOn()
+	urls = append(urls, addr)
+	addr, _ = r.Config(ctx).OPLSyntaxAPIListenOn()
+	urls = append(urls, addr)
+
+	if c, y := r.Config(ctx).CORS("read"); y {
+		urls = append(urls, c.AllowedOrigins...)
+	}
+	if c, y := r.Config(ctx).CORS("write"); y {
+		urls = append(urls, c.AllowedOrigins...)
+	}
+	if c, y := r.Config(ctx).CORS("metrics"); y {
+		urls = append(urls, c.AllowedOrigins...)
+	}
+
+	host := urlx.ExtractPublicAddress(urls...)
 
 	r.sqaService = metricsx.New(
 		cmd,
@@ -91,7 +113,7 @@ func (r *RegistryDefault) enableSqa(cmd *cobra.Command) {
 				BatchSize:            1000,
 				Interval:             time.Hour * 6,
 			},
-			Hostname: "", // TODO: figure out config to use
+			Hostname: host,
 		},
 	)
 }
