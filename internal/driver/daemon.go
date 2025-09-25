@@ -40,6 +40,15 @@ import (
 	"github.com/ory/analytics-go/v5"
 	"github.com/ory/graceful"
 	"github.com/ory/herodot"
+	"github.com/ory/x/healthx"
+	"github.com/ory/x/logrusx"
+	"github.com/ory/x/metricsx"
+	"github.com/ory/x/otelx"
+	"github.com/ory/x/otelx/semconv"
+	prometheus "github.com/ory/x/prometheusx"
+	"github.com/ory/x/reqlog"
+	"github.com/ory/x/urlx"
+
 	"github.com/ory/keto/internal/check"
 	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/expand"
@@ -49,14 +58,6 @@ import (
 	"github.com/ory/keto/internal/x"
 	"github.com/ory/keto/internal/x/api"
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
-	"github.com/ory/x/healthx"
-	"github.com/ory/x/logrusx"
-	"github.com/ory/x/metricsx"
-	"github.com/ory/x/otelx"
-	"github.com/ory/x/otelx/semconv"
-	prometheus "github.com/ory/x/prometheusx"
-	"github.com/ory/x/reqlog"
-	"github.com/ory/x/urlx"
 )
 
 func (r *RegistryDefault) enableSqa(cmd *cobra.Command) {
