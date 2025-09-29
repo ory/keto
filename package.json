@@ -12,17 +12,17 @@
   },
   "prettier": "ory-prettier-styles",
   "dependencies": {
-    "@openapitools/openapi-generator-cli": "^2.23.1",
-    "grpc-tools": "^1.13.0",
-    "grpc_tools_node_protoc_ts": "^5.3.3"
+    "@openapitools/openapi-generator-cli": "2.23.4",
+    "grpc-tools": "1.13.0",
+    "grpc_tools_node_protoc_ts": "5.3.3"
   },
   "devDependencies": {
     "@ory/keto-namespace-types": "file:contrib/namespace-type-lib",
-    "doctoc": "^2.0.1",
-    "license-checker": "^25.0.1",
+    "doctoc": "2.2.1",
+    "license-checker": "25.0.1",
     "ory-prettier-styles": "1.3.0",
-    "prettier": "3.0.3",
-    "prettier-plugin-packagejson": "^2.4.6"
+    "prettier": "3.6.2",
+    "prettier-plugin-packagejson": "2.5.19"
   },
   "overrides": {
     "axios": ">=1.12.0"

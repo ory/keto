@@ -71,8 +71,6 @@ declare module "@ory/keto-namespace-types" {
 
   export type Namespace = namespace
 
-  export type SubjectSet<
-    A extends Namespace,
-    R extends keyof A["related"],
-  > = A["related"][R] extends Array<infer T> ? T : never
+  export type SubjectSet<A extends Namespace, R extends keyof A["related"]> =
+    A["related"][R] extends Array<infer T> ? T : never
 }

@@ -128,10 +128,8 @@ interface Array<Namespace> {
   traverse(iteratorfn: (element: Namespace) => boolean): boolean
 }
 
-type SubjectSet<
-  A extends Namespace,
-  R extends keyof A["related"],
-> = A["related"][R] extends Array<infer T> ? T : never
+type SubjectSet<A extends Namespace, R extends keyof A["related"]> =
+  A["related"][R] extends Array<infer T> ? T : never
 ```
 
 ### Operators

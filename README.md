@@ -168,9 +168,8 @@ more.
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
-- [Ory Permissions, Keto and the Google's Zanzibar model](#ory-permissions-keto-and-the-googles-zanzibar-model)
 - [Who's Using It?](#whos-using-it)
-  - [Installation](#installation)
+- [Installation](#installation)
 - [Ecosystem](#ecosystem)
   - [Ory Kratos: Identity and User Infrastructure and Management](#ory-kratos-identity-and-user-infrastructure-and-management)
   - [Ory Hydra: OAuth2 & OpenID Connect Server](#ory-hydra-oauth2--openid-connect-server)

@@ -8,7 +8,6 @@
 ## Table of Contents
 
 - [ory/keto/opl/v1alpha1/syntax_service.proto](#ory_keto_opl_v1alpha1_syntax_service-proto)
-
   - [CheckRequest](#ory-keto-opl-v1alpha1-CheckRequest)
   - [CheckResponse](#ory-keto-opl-v1alpha1-CheckResponse)
   - [ParseError](#ory-keto-opl-v1alpha1-ParseError)
@@ -21,7 +20,6 @@
   - [Subject](#ory-keto-relation_tuples-v1alpha2-Subject)
   - [SubjectSet](#ory-keto-relation_tuples-v1alpha2-SubjectSet)
 - [ory/keto/relation_tuples/v1alpha2/check_service.proto](#ory_keto_relation_tuples_v1alpha2_check_service-proto)
-
   - [BatchCheckRequest](#ory-keto-relation_tuples-v1alpha2-BatchCheckRequest)
   - [BatchCheckResponse](#ory-keto-relation_tuples-v1alpha2-BatchCheckResponse)
   - [CheckRequest](#ory-keto-relation_tuples-v1alpha2-CheckRequest)
@@ -30,7 +28,6 @@
   - [CheckService](#ory-keto-relation_tuples-v1alpha2-CheckService)
 
 - [ory/keto/relation_tuples/v1alpha2/expand_service.proto](#ory_keto_relation_tuples_v1alpha2_expand_service-proto)
-
   - [ExpandRequest](#ory-keto-relation_tuples-v1alpha2-ExpandRequest)
   - [ExpandResponse](#ory-keto-relation_tuples-v1alpha2-ExpandResponse)
   - [SubjectTree](#ory-keto-relation_tuples-v1alpha2-SubjectTree)
@@ -38,27 +35,23 @@
   - [ExpandService](#ory-keto-relation_tuples-v1alpha2-ExpandService)
 
 - [ory/keto/relation_tuples/v1alpha2/namespaces_service.proto](#ory_keto_relation_tuples_v1alpha2_namespaces_service-proto)
-
   - [ListNamespacesRequest](#ory-keto-relation_tuples-v1alpha2-ListNamespacesRequest)
   - [ListNamespacesResponse](#ory-keto-relation_tuples-v1alpha2-ListNamespacesResponse)
   - [Namespace](#ory-keto-relation_tuples-v1alpha2-Namespace)
   - [NamespacesService](#ory-keto-relation_tuples-v1alpha2-NamespacesService)
 
 - [ory/keto/relation_tuples/v1alpha2/read_service.proto](#ory_keto_relation_tuples_v1alpha2_read_service-proto)
-
   - [ListRelationTuplesRequest](#ory-keto-relation_tuples-v1alpha2-ListRelationTuplesRequest)
   - [ListRelationTuplesRequest.Query](#ory-keto-relation_tuples-v1alpha2-ListRelationTuplesRequest-Query)
   - [ListRelationTuplesResponse](#ory-keto-relation_tuples-v1alpha2-ListRelationTuplesResponse)
   - [ReadService](#ory-keto-relation_tuples-v1alpha2-ReadService)
 
 - [ory/keto/relation_tuples/v1alpha2/version.proto](#ory_keto_relation_tuples_v1alpha2_version-proto)
-
   - [GetVersionRequest](#ory-keto-relation_tuples-v1alpha2-GetVersionRequest)
   - [GetVersionResponse](#ory-keto-relation_tuples-v1alpha2-GetVersionResponse)
   - [VersionService](#ory-keto-relation_tuples-v1alpha2-VersionService)
 
 - [ory/keto/relation_tuples/v1alpha2/write_service.proto](#ory_keto_relation_tuples_v1alpha2_write_service-proto)
-
   - [DeleteRelationTuplesRequest](#ory-keto-relation_tuples-v1alpha2-DeleteRelationTuplesRequest)
   - [DeleteRelationTuplesRequest.Query](#ory-keto-relation_tuples-v1alpha2-DeleteRelationTuplesRequest-Query)
   - [DeleteRelationTuplesResponse](#ory-keto-relation_tuples-v1alpha2-DeleteRelationTuplesResponse)
