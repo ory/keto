@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: ory/ci/checkout@master
-      - uses: actions/setup-go@v3
+      - uses: actions/setup-go@v6
         with:
           go-version: "1.25"
           check-latest: true
@@ -74,7 +74,7 @@ jobs:
           docker start cockroach
         name: Start CockroachDB
       - uses: ory/ci/checkout@master
-      - uses: actions/setup-go@v3
+      - uses: actions/setup-go@v6
         with:
           go-version: "1.25"
           check-latest: true
@@ -98,7 +98,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: ory/ci/checkout@master
-      - uses: actions/setup-go@v3
+      - uses: actions/setup-go@v6
         with:
           go-version: "1.25"
           check-latest: true
@@ -215,7 +215,7 @@ jobs:
       - uses: ory/ci/checkout@master
         with:
           path: current-repo
-      - uses: actions/setup-go@v5
+      - uses: actions/setup-go@v6
         with:
           go-version: "1.25"
           check-latest: true
