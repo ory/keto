@@ -20,6 +20,7 @@ const _ = grpc.SupportPackageIsVersion9
 
 const (
 	WriteService_TransactRelationTuples_FullMethodName = "/ory.keto.relation_tuples.v1alpha2.WriteService/TransactRelationTuples"
+	WriteService_CreateRelationTuple_FullMethodName    = "/ory.keto.relation_tuples.v1alpha2.WriteService/CreateRelationTuple"
 	WriteService_DeleteRelationTuples_FullMethodName   = "/ory.keto.relation_tuples.v1alpha2.WriteService/DeleteRelationTuples"
 )
 
@@ -33,6 +34,8 @@ const (
 type WriteServiceClient interface {
 	// Writes one or more relationships in a single transaction.
 	TransactRelationTuples(ctx context.Context, in *TransactRelationTuplesRequest, opts ...grpc.CallOption) (*TransactRelationTuplesResponse, error)
+	// Creates a relationship
+	CreateRelationTuple(ctx context.Context, in *CreateRelationTupleRequest, opts ...grpc.CallOption) (*CreateRelationTupleResponse, error)
 	// Deletes relationships based on relation query
 	DeleteRelationTuples(ctx context.Context, in *DeleteRelationTuplesRequest, opts ...grpc.CallOption) (*DeleteRelationTuplesResponse, error)
 }
@@ -49,6 +52,16 @@ func (c *writeServiceClient) TransactRelationTuples(ctx context.Context, in *Tra
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(TransactRelationTuplesResponse)
 	err := c.cc.Invoke(ctx, WriteService_TransactRelationTuples_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *writeServiceClient) CreateRelationTuple(ctx context.Context, in *CreateRelationTupleRequest, opts ...grpc.CallOption) (*CreateRelationTupleResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateRelationTupleResponse)
+	err := c.cc.Invoke(ctx, WriteService_CreateRelationTuple_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -75,6 +88,8 @@ func (c *writeServiceClient) DeleteRelationTuples(ctx context.Context, in *Delet
 type WriteServiceServer interface {
 	// Writes one or more relationships in a single transaction.
 	TransactRelationTuples(context.Context, *TransactRelationTuplesRequest) (*TransactRelationTuplesResponse, error)
+	// Creates a relationship
+	CreateRelationTuple(context.Context, *CreateRelationTupleRequest) (*CreateRelationTupleResponse, error)
 	// Deletes relationships based on relation query
 	DeleteRelationTuples(context.Context, *DeleteRelationTuplesRequest) (*DeleteRelationTuplesResponse, error)
 }
@@ -88,6 +103,9 @@ type UnimplementedWriteServiceServer struct{}
 
 func (UnimplementedWriteServiceServer) TransactRelationTuples(context.Context, *TransactRelationTuplesRequest) (*TransactRelationTuplesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TransactRelationTuples not implemented")
+}
+func (UnimplementedWriteServiceServer) CreateRelationTuple(context.Context, *CreateRelationTupleRequest) (*CreateRelationTupleResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateRelationTuple not implemented")
 }
 func (UnimplementedWriteServiceServer) DeleteRelationTuples(context.Context, *DeleteRelationTuplesRequest) (*DeleteRelationTuplesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteRelationTuples not implemented")
@@ -130,6 +148,24 @@ func _WriteService_TransactRelationTuples_Handler(srv interface{}, ctx context.C
 	return interceptor(ctx, in, info, handler)
 }
 
+func _WriteService_CreateRelationTuple_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateRelationTupleRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(WriteServiceServer).CreateRelationTuple(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: WriteService_CreateRelationTuple_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(WriteServiceServer).CreateRelationTuple(ctx, req.(*CreateRelationTupleRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _WriteService_DeleteRelationTuples_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(DeleteRelationTuplesRequest)
 	if err := dec(in); err != nil {
@@ -158,6 +194,10 @@ var WriteService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "TransactRelationTuples",
 			Handler:    _WriteService_TransactRelationTuples_Handler,
+		},
+		{
+			MethodName: "CreateRelationTuple",
+			Handler:    _WriteService_CreateRelationTuple_Handler,
 		},
 		{
 			MethodName: "DeleteRelationTuples",
