@@ -229,7 +229,6 @@ Happy coding!
 - Missing persister when initializing without network
   ([#1525](https://github.com/ory/keto/issues/1525))
   ([e675d5b](https://github.com/ory/keto/commit/e675d5bc230922e8379f87e7f8bbb9360cfee005)):
-
   - fix: missing persister when initializing without network
   - chore: ignore CVE-2024-3154
 
@@ -255,7 +254,6 @@ Happy coding!
   ([567ceb9](https://github.com/ory/keto/commit/567ceb9144b0e1efa4a88820cf23f53e1e8ec77d))
 - Add grpc server opts config ([#1524](https://github.com/ory/keto/issues/1524))
   ([7278e44](https://github.com/ory/keto/commit/7278e44bd0ac94e5f70f3c347a6e9cccfda11df6)):
-
   - feat: add grpc server opts config
   - chore: bump base image
   - chore: temp ignore cve
@@ -263,13 +261,11 @@ Happy coding!
 - Add Inspect option to registry
   ([#1523](https://github.com/ory/keto/issues/1523))
   ([213cfa5](https://github.com/ory/keto/commit/213cfa5c7d4a7ebc3957658178a5b1cd24c2669a)):
-
   - chore: add alnr to codeowners
   - feat: add Inspect option
 
 - Batch check relations ([#1521](https://github.com/ory/keto/issues/1521))
   ([d670d50](https://github.com/ory/keto/commit/d670d508a618f5f881a215085beb6ac5371b8a85)):
-
   - batch check relations
   - rename path
   - shared parallelized function. batch size and parallelization configurable
@@ -344,7 +340,6 @@ Improves performance, SDKs, and resolves minor issues.
 - Postgres docker-compose startup
   ([#1295](https://github.com/ory/keto/issues/1295))
   ([a4218d7](https://github.com/ory/keto/commit/a4218d70fed0e19eb61869f9ac9f55e2a9d54d0e)):
-
   - Fix starting docker-compose-postgres.yml
   - bump docker image version
   - make format
@@ -374,19 +369,16 @@ Improves performance, SDKs, and resolves minor issues.
 - Fix multiline comments from proto files breaking tables
   ([#1431](https://github.com/ory/keto/issues/1431))
   ([ef9132d](https://github.com/ory/keto/commit/ef9132da66487db078d53cbcf186451d695cc697)):
-
   - Add markdown.tmpl file for bufbuild
   - fix typo
 
   Signed-off-by: Cléo Rebert <cleo.rebert-ext@numspot.com>
-
   - docs: add issue reference
 
 ### Features
 
 - Add distroless ([#1348](https://github.com/ory/keto/issues/1348))
   ([f0839ee](https://github.com/ory/keto/commit/f0839ee6e5f521214ea70117221ae601ff9eb94a)):
-
   - feat: add distroless
   - Update Dockerfile-build
   - Update Dockerfile-distroless-static
@@ -396,7 +388,6 @@ Improves performance, SDKs, and resolves minor issues.
   ([129902b](https://github.com/ory/keto/commit/129902b68d8548c1df1be1e2aaee9baebcc0aaf2))
 - Add tracing to fetcher ([#1294](https://github.com/ory/keto/issues/1294))
   ([4ffb7bc](https://github.com/ory/keto/commit/4ffb7bcbbc6a43a9402e39bddf4a2d11e87f4b48)):
-
   - feat: add tracing to fetcher
   - rerun CI
 
@@ -409,7 +400,6 @@ Improves performance, SDKs, and resolves minor issues.
 - Clearer error messages when not using block
   ([#1393](https://github.com/ory/keto/issues/1393))
   ([a3b5494](https://github.com/ory/keto/commit/a3b5494300ca4cc64b516b168e8a3e6aa2033c75)):
-
   - feat: clearer error messages when not using block
   - dont timeout if block is used
   - consolidate block flag into grpc client package
@@ -420,7 +410,6 @@ Improves performance, SDKs, and resolves minor issues.
 
 - Enable GRPC metrics ([#1302](https://github.com/ory/keto/issues/1302))
   ([91c12c9](https://github.com/ory/keto/commit/91c12c935d34952db5b3798990b346091041dff8)):
-
   - feat: enable GRPC metrics
   - fix: test and server registration
   - fix: GRPC metrics
@@ -428,7 +417,6 @@ Improves performance, SDKs, and resolves minor issues.
 
 - Improve emitting of events ([#1314](https://github.com/ory/keto/issues/1314))
   ([5028c75](https://github.com/ory/keto/commit/5028c75aaaad7a73e51b4477f0d65d73806e5c16)):
-
   - feat: improve emitting of events
   - rename event constants
   - move events package
@@ -441,7 +429,6 @@ Improves performance, SDKs, and resolves minor issues.
 - Write to UUID mapper and relation tuples in one SQL transaction
   ([#1340](https://github.com/ory/keto/issues/1340))
   ([eeeecf6](https://github.com/ory/keto/commit/eeeecf657b76c7b18f308433399b231abfcf6e46)):
-
   - fix: lint
   - feat: wrap an SQL transaction around the UUID mapper's and the relation
     tuple manager's write operations
@@ -512,7 +499,6 @@ autogen: pin v0.11.0-alpha.0.pre.1 release commit
 
 - Docs broken links ([#1254](https://github.com/ory/keto/issues/1254))
   ([e646380](https://github.com/ory/keto/commit/e646380d5457df99f75ecd7e26d6fe2ed33b7b49)):
-
   - fix: docs broken links
   - fix: edit proto files to fix links
 
@@ -545,13 +531,11 @@ autogen: pin v0.11.0-alpha.0.pre.1 release commit
   ([03cac63](https://github.com/ory/keto/commit/03cac633ea8f340b84b1ef219cef0b9cf4d71353))
 - Relax OPL parsing ([#1059](https://github.com/ory/keto/issues/1059))
   ([a15c5ad](https://github.com/ory/keto/commit/a15c5ad8704458a5e8bdcfaa80f80b45f9696418)):
-
   - Allow semicolons in more places
   - Allow commas in more places
 
 - Tiny stuff ([#1211](https://github.com/ory/keto/issues/1211))
   ([719a7d5](https://github.com/ory/keto/commit/719a7d5d1bfd77c594528df821f20a061dc2b848)):
-
   - fix: tracing in persistence.sql.TraverseSubjectSetRewrite
   - fix: incorrect HTTP return code
 
@@ -717,7 +701,6 @@ changelog for all the other fixes and features we included.
 
   http*request*\* metrics contain data related only to /metrics/prometheus
   endpoint. This commit adds endpoints from non-monitoring routers.
-
   - fix: register read and write routers with PrometheusManager
   - fix: register read and write routers with PrometheusManager p2
   - fix: register read and write routers with PrometheusManager p3
@@ -732,7 +715,6 @@ changelog for all the other fixes and features we included.
 
 - Sdk generation
   ([acc1546](https://github.com/ory/keto/commit/acc1546e6be8d5fa42c25904189b2aa688934ade)):
-
   - fix: better error handling
   - chore: remove old httpclient
 
@@ -799,7 +781,6 @@ changelog for all the other fixes and features we included.
   ([5f056b7](https://github.com/ory/keto/commit/5f056b78aaeb40f85e70fb62623d3ba55fb23553)):
 
   This adds two new flags to the Keto CLI:
-
   - --insecure-disable-transport-security: Use plaintext instead of TLS
   - --insecure-skip-hostname-verification: Use TLS, but do not verify the
     certificate
@@ -1342,7 +1323,6 @@ be returned if `subject` is still used.
   ([f4253b8](https://github.com/ory/keto/commit/f4253b8a555afdee718be94140ca4fd4175c1413)):
 
   The `keto namespace validate` command now additionally supports:
-
   - validation of namespaces in config files
   - validation of a directory specified in config files
 
@@ -2492,12 +2472,10 @@ Signed-off-by: aeneasr <aeneas@ory.sh>
 - Adds ability to update a role using PUT
   ([#14](https://github.com/ory/keto/issues/14))
   ([97ccbe6](https://github.com/ory/keto/commit/97ccbe6d808823c56901ad237878aa6d53cddeeb)):
-
   - transfer UpdateRoleMembers from https://github.com/ory/hydra/pull/768 to
     keto
   - fix tests by using right http method & correcting sql request
   - Change behavior to overwrite the whole role instead of just the members.
-
   * small sql migration fix
 
 - Adds log message when telemetry is active

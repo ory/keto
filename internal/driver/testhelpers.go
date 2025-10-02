@@ -49,15 +49,20 @@ func UseDynamicPorts(ctx context.Context, t testing.TB, r Registry) GetAddr {
 			t.Fatalf("unknown endpoint: %q", endpoint)
 		}
 
+		var addr []byte
+		var host, port string
+
 		require.EventuallyWithT(t, func(t *assert.CollectT) {
-			_, err := os.Stat(fp)
+			var err error
+			addr, err = os.ReadFile(fp)
+			require.NotEmpty(t, addr)
 			require.NoError(t, err)
+			host, port, err = net.SplitHostPort(string(addr))
+			require.NoError(t, err)
+			require.NotEmpty(t, host)
+			require.NotEmpty(t, port)
 		}, 2*time.Second, 10*time.Millisecond)
 
-		addr, err := os.ReadFile(fp)
-		require.NoError(t, err)
-		host, port, err := net.SplitHostPort(string(addr))
-		require.NoError(t, err)
 		return host, port, string(addr)
 	}
 }
