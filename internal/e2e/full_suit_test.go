@@ -145,10 +145,13 @@ func TestServeConfig(t *testing.T) {
 	closeServer := startServer(ctx, t, reg)
 	t.Cleanup(closeServer)
 
-	_, _, readAddr := getAddr(t, "read")
-
-	for !healthReady(t, "http://"+readAddr) {
-		t.Log("Waiting for health check to be ready")
+	var readAddr string
+	for {
+		_, _, readAddr = getAddr(t, "read")
+		t.Logf("Waiting for health check to be ready: %s", readAddr)
+		if healthReady(t, "http://"+readAddr) {
+			break
+		}
 		time.Sleep(10 * time.Millisecond)
 	}
 	t.Log("Health check is ready")
