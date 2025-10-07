@@ -138,11 +138,15 @@ libfuzzer-fuzz-test-minimize: .bin/go114-fuzz-build
 cve-scan: docker .bin/grype
 	grype oryd/keto:latest
 
+.PHONY: pre-release
+pre-release:
+	go tool yq '.services.keto.image = "oryd/keto:'$$DOCKER_TAG'"' -i docker-compose.yml
+	go tool yq '.services.keto-migrate.image = "oryd/keto:'$$DOCKER_TAG'"' -i docker-compose-mysql.yml
+	go tool yq '.services.keto-migrate.image = "oryd/keto:'$$DOCKER_TAG'"' -i docker-compose-postgres.yml
+
 .PHONY: post-release
 post-release:
-	cat docker-compose.yml | go tool yq '.services.keto.image = "oryd/keto:'$$DOCKER_TAG'"' | sponge docker-compose.yml
-	cat docker-compose-mysql.yml | go tool yq '.services.keto-migrate.image = "oryd/keto:'$$DOCKER_TAG'"' | sponge docker-compose-mysql.yml
-	cat docker-compose-postgres.yml | go tool yq '.services.keto-migrate.image = "oryd/keto:'$$DOCKER_TAG'"' | sponge docker-compose-postgres.yml
+	echo "nothing to do"
 
 .PHONY: generate
 generate: .bin/stringer
