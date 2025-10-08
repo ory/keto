@@ -5,7 +5,10 @@
 /* eslint-disable */
 
 import * as jspb from "google-protobuf";
+import * as google_api_field_behavior_pb from "../../../../google/api/field_behavior_pb";
+import * as google_api_visibility_pb from "../../../../google/api/visibility_pb";
 import * as ory_keto_relation_tuples_v1alpha2_relation_tuples_pb from "../../../../ory/keto/relation_tuples/v1alpha2/relation_tuples_pb";
+import * as protoc_gen_openapiv2_options_annotations_pb from "../../../../protoc-gen-openapiv2/options/annotations_pb";
 
 export class ExpandRequest extends jspb.Message { 
 
@@ -17,6 +20,12 @@ export class ExpandRequest extends jspb.Message {
     setMaxDepth(value: number): ExpandRequest;
     getSnaptoken(): string;
     setSnaptoken(value: string): ExpandRequest;
+    getNamespace(): string;
+    setNamespace(value: string): ExpandRequest;
+    getObject(): string;
+    setObject(value: string): ExpandRequest;
+    getRelation(): string;
+    setRelation(value: string): ExpandRequest;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): ExpandRequest.AsObject;
@@ -33,6 +42,9 @@ export namespace ExpandRequest {
         subject?: ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.Subject.AsObject,
         maxDepth: number,
         snaptoken: string,
+        namespace: string,
+        object: string,
+        relation: string,
     }
 }
 
@@ -97,9 +109,20 @@ export namespace SubjectTree {
 }
 
 export enum NodeType {
+    UNSPECIFIED = 0,
     NODE_TYPE_UNSPECIFIED = 0,
+    UNION = 1,
     NODE_TYPE_UNION = 1,
+    EXCLUSION = 2,
     NODE_TYPE_EXCLUSION = 2,
+    INTERSECTION = 3,
     NODE_TYPE_INTERSECTION = 3,
+    LEAF = 4,
     NODE_TYPE_LEAF = 4,
+    TUPLE_TO_SUBJECT_SET = 5,
+    NODE_TYPE_TUPLE_TO_SUBJECT_SET = 5,
+    COMPUTED_SUBJECT_SET = 6,
+    NODE_TYPE_COMPUTED_SUBJECT_SET = 6,
+    NOT = 7,
+    NODE_TYPE_NOT = 7,
 }

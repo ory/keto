@@ -1,28 +1,43 @@
-version: v1
+version: v2
+
+inputs:
+  - directory: "proto"
 
 plugins:
-  - plugin: buf.build/protocolbuffers/go
+  - remote: buf.build/protocolbuffers/go
     out: proto
     opt: paths=source_relative
 
-  - plugin: buf.build/grpc/go
+  - remote: buf.build/grpc/go
     out: proto
     opt: paths=source_relative,require_unimplemented_servers=false
 
-  - plugin: buf.build/protocolbuffers/js
+  - remote: buf.build/protocolbuffers/js:v3.21.2
     out: proto
     opt: import_style=commonjs,binary
+    include_imports: true
+    include_wkt: true
 
-  - plugin: buf.build/grpc/node
+  - remote: buf.build/grpc/node:v1.12.4
     out: proto
     opt: grpc_js,binary,import_style=commonjs
 
-  - name: ts
+  - local: node_modules/.bin/protoc-gen-ts
     out: proto
     opt: grpc_js
-    path: node_modules/.bin/protoc-gen-ts
 
-  - name: doc
+  - local: ["go", "tool", "protoc-gen-doc"]
     out: proto
     opt: proto/markdown.tmpl,proto/buf.md
     strategy: all
+
+  - remote: buf.build/grpc-ecosystem/openapiv2
+    opt:
+      - allow_merge=true
+      - merge_file_name=api
+      - openapi_naming_strategy=fqn
+      - visibility_restriction_selectors=PUBLIC
+      - disable_service_tags=true
+      - disable_default_errors=true
+      - disable_default_responses=true
+    out: spec

@@ -5,6 +5,8 @@
 /* eslint-disable */
 
 import * as jspb from "google-protobuf";
+import * as google_api_field_behavior_pb from "../../../../google/api/field_behavior_pb";
+import * as google_api_visibility_pb from "../../../../google/api/visibility_pb";
 
 export class RelationTuple extends jspb.Message { 
     getNamespace(): string;
@@ -18,6 +20,18 @@ export class RelationTuple extends jspb.Message {
     clearSubject(): void;
     getSubject(): Subject | undefined;
     setSubject(value?: Subject): RelationTuple;
+
+    hasSubjectId(): boolean;
+    clearSubjectId(): void;
+    getSubjectId(): string;
+    setSubjectId(value: string): RelationTuple;
+
+    hasSubjectSet(): boolean;
+    clearSubjectSet(): void;
+    getSubjectSet(): SubjectSet | undefined;
+    setSubjectSet(value?: SubjectSet): RelationTuple;
+
+    getRestApiSubjectCase(): RelationTuple.RestApiSubjectCase;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): RelationTuple.AsObject;
@@ -35,7 +49,16 @@ export namespace RelationTuple {
         object: string,
         relation: string,
         subject?: Subject.AsObject,
+        subjectId: string,
+        subjectSet?: SubjectSet.AsObject,
     }
+
+    export enum RestApiSubjectCase {
+        REST_API_SUBJECT_NOT_SET = 0,
+        SUBJECT_ID = 5,
+        SUBJECT_SET = 6,
+    }
+
 }
 
 export class RelationQuery extends jspb.Message { 
@@ -136,6 +159,70 @@ export class SubjectSet extends jspb.Message {
 }
 
 export namespace SubjectSet {
+    export type AsObject = {
+        namespace: string,
+        object: string,
+        relation: string,
+    }
+}
+
+export class SubjectQuery extends jspb.Message { 
+
+    hasId(): boolean;
+    clearId(): void;
+    getId(): string;
+    setId(value: string): SubjectQuery;
+
+    hasSet(): boolean;
+    clearSet(): void;
+    getSet(): SubjectSetQuery | undefined;
+    setSet(value?: SubjectSetQuery): SubjectQuery;
+
+    getRefCase(): SubjectQuery.RefCase;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): SubjectQuery.AsObject;
+    static toObject(includeInstance: boolean, msg: SubjectQuery): SubjectQuery.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: SubjectQuery, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): SubjectQuery;
+    static deserializeBinaryFromReader(message: SubjectQuery, reader: jspb.BinaryReader): SubjectQuery;
+}
+
+export namespace SubjectQuery {
+    export type AsObject = {
+        id: string,
+        set?: SubjectSetQuery.AsObject,
+    }
+
+    export enum RefCase {
+        REF_NOT_SET = 0,
+        ID = 1,
+        SET = 2,
+    }
+
+}
+
+export class SubjectSetQuery extends jspb.Message { 
+    getNamespace(): string;
+    setNamespace(value: string): SubjectSetQuery;
+    getObject(): string;
+    setObject(value: string): SubjectSetQuery;
+    getRelation(): string;
+    setRelation(value: string): SubjectSetQuery;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): SubjectSetQuery.AsObject;
+    static toObject(includeInstance: boolean, msg: SubjectSetQuery): SubjectSetQuery.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: SubjectSetQuery, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): SubjectSetQuery;
+    static deserializeBinaryFromReader(message: SubjectSetQuery, reader: jspb.BinaryReader): SubjectSetQuery;
+}
+
+export namespace SubjectSetQuery {
     export type AsObject = {
         namespace: string,
         object: string,

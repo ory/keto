@@ -5,8 +5,10 @@
 /* eslint-disable */
 
 import * as jspb from "google-protobuf";
-import * as ory_keto_relation_tuples_v1alpha2_relation_tuples_pb from "../../../../ory/keto/relation_tuples/v1alpha2/relation_tuples_pb";
+import * as google_api_visibility_pb from "../../../../google/api/visibility_pb";
 import * as google_protobuf_field_mask_pb from "google-protobuf/google/protobuf/field_mask_pb";
+import * as ory_keto_relation_tuples_v1alpha2_relation_tuples_pb from "../../../../ory/keto/relation_tuples/v1alpha2/relation_tuples_pb";
+import * as protoc_gen_openapiv2_options_annotations_pb from "../../../../protoc-gen-openapiv2/options/annotations_pb";
 
 export class ListRelationTuplesRequest extends jspb.Message { 
 
@@ -30,6 +32,24 @@ export class ListRelationTuplesRequest extends jspb.Message {
     setPageSize(value: number): ListRelationTuplesRequest;
     getPageToken(): string;
     setPageToken(value: string): ListRelationTuplesRequest;
+    getNamespace(): string;
+    setNamespace(value: string): ListRelationTuplesRequest;
+    getObject(): string;
+    setObject(value: string): ListRelationTuplesRequest;
+    getRelation(): string;
+    setRelation(value: string): ListRelationTuplesRequest;
+
+    hasSubjectId(): boolean;
+    clearSubjectId(): void;
+    getSubjectId(): string;
+    setSubjectId(value: string): ListRelationTuplesRequest;
+
+    hasSubjectSet(): boolean;
+    clearSubjectSet(): void;
+    getSubjectSet(): ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.SubjectSetQuery | undefined;
+    setSubjectSet(value?: ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.SubjectSetQuery): ListRelationTuplesRequest;
+
+    getRestApiSubjectCase(): ListRelationTuplesRequest.RestApiSubjectCase;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): ListRelationTuplesRequest.AsObject;
@@ -49,6 +69,11 @@ export namespace ListRelationTuplesRequest {
         snaptoken: string,
         pageSize: number,
         pageToken: string,
+        namespace: string,
+        object: string,
+        relation: string,
+        subjectId: string,
+        subjectSet?: ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.SubjectSetQuery.AsObject,
     }
 
 
@@ -82,6 +107,13 @@ export namespace ListRelationTuplesRequest {
             relation: string,
             subject?: ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.Subject.AsObject,
         }
+    }
+
+
+    export enum RestApiSubjectCase {
+        REST_API_SUBJECT_NOT_SET = 0,
+        SUBJECT_ID = 10,
+        SUBJECT_SET = 11,
     }
 
 }

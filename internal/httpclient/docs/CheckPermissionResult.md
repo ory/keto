@@ -4,7 +4,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Allowed** | **bool** | whether the relation tuple is allowed | 
+**Allowed** | **bool** | Whether the specified subject (id) is related to the requested object.  It is false by default if no ACL matches. | 
 
 ## Methods
 

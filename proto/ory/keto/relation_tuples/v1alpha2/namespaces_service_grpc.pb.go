@@ -31,6 +31,8 @@ const (
 // This service is part of the [read-APIs](../concepts/25_api-overview.mdx#read-apis).
 type NamespacesServiceClient interface {
 	// Lists Namespaces
+	//
+	// Get all namespaces.
 	ListNamespaces(ctx context.Context, in *ListNamespacesRequest, opts ...grpc.CallOption) (*ListNamespacesResponse, error)
 }
 
@@ -61,6 +63,8 @@ func (c *namespacesServiceClient) ListNamespaces(ctx context.Context, in *ListNa
 // This service is part of the [read-APIs](../concepts/25_api-overview.mdx#read-apis).
 type NamespacesServiceServer interface {
 	// Lists Namespaces
+	//
+	// Get all namespaces.
 	ListNamespaces(context.Context, *ListNamespacesRequest) (*ListNamespacesResponse, error)
 }
 

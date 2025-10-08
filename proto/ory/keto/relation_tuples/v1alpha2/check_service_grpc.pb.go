@@ -34,6 +34,9 @@ const (
 type CheckServiceClient interface {
 	// Performs an authorization check.
 	Check(ctx context.Context, in *CheckRequest, opts ...grpc.CallOption) (*CheckResponse, error)
+	// Performs an authorization check for a batch of tuples.
+	//
+	// To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
 	BatchCheck(ctx context.Context, in *BatchCheckRequest, opts ...grpc.CallOption) (*BatchCheckResponse, error)
 }
 
@@ -76,6 +79,9 @@ func (c *checkServiceClient) BatchCheck(ctx context.Context, in *BatchCheckReque
 type CheckServiceServer interface {
 	// Performs an authorization check.
 	Check(context.Context, *CheckRequest) (*CheckResponse, error)
+	// Performs an authorization check for a batch of tuples.
+	//
+	// To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
 	BatchCheck(context.Context, *BatchCheckRequest) (*BatchCheckResponse, error)
 }
 
