@@ -118,24 +118,6 @@ jobs:
           token: ${{ secrets.ORY_BOT_PAT }}
           output-dir: docs/keto/cli
 
-  changelog:
-    name: Generate changelog
-    runs-on: ubuntu-latest
-    if:
-      ${{ startsWith(github.ref, 'refs/tags/v') || github.ref_name == 'master'
-      }}
-    needs:
-      - test
-      - test-race
-      - validate
-    steps:
-      - uses: ory/ci/checkout@master
-        with:
-          fetch-depth: 0
-      - uses: ory/ci/changelog@master
-        with:
-          token: ${{ secrets.ORY_BOT_PAT }}
-
   release:
     name: Generate release
     runs-on: ubuntu-latest
@@ -144,7 +126,6 @@ jobs:
       - test
       - test-race
       - validate
-      - changelog
     steps:
       - uses: ory/ci/releaser@master
         with:
@@ -153,18 +134,6 @@ jobs:
           cosign_pwd: ${{ secrets.COSIGN_PWD }}
           docker_username: ${{ secrets.DOCKERHUB_USERNAME }}
           docker_password: ${{ secrets.DOCKERHUB_PASSWORD }}
-
-  render-version-schema:
-    name: Render version schema
-    runs-on: ubuntu-latest
-    if: ${{ startsWith(github.ref, 'refs/tags/v') }}
-    needs:
-      - release
-    steps:
-      - uses: ory/ci/releaser/render-version-schema@master
-        with:
-          token: ${{ secrets.ORY_BOT_PAT }}
-          schema-path: .schema/config.schema.json
 
   newsletter-draft:
     name: Draft newsletter
