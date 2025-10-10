@@ -15,8 +15,8 @@ jobs:
     runs-on: ubuntu-latest
     name: Publish
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
           node-version: "14"
           registry-url: "https://registry.npmjs.org"
@@ -24,7 +24,8 @@ jobs:
       - name: Bump version
         run: |-
           cd proto
-          cat <<< $(jq '.version = (env.RELEASE_VERSION | sub("(^refs/tags/v)|(^v)"; ""))' package.json) > package.json
+          jq '.version = (env.RELEASE_VERSION | sub("(^refs/tags/v)|(^v)"; ""))' package.json > package.json.tmp \
+             && mv package.json.tmp package.json
         env:
           RELEASE_VERSION: ${{ github.event.inputs.version || github.ref }}
       - run: |-
