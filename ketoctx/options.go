@@ -28,11 +28,20 @@ type (
 		readyCheckers          healthx.ReadyCheckers
 		extraMigrations        []fs.FS
 		inspect                InspectFunc
+		dbOpts                 []func(details *pop.ConnectionDetails)
 	}
 	Option        func(o *opts)
 	TracerWrapper func(*otelx.Tracer) *otelx.Tracer
 	InspectFunc   func(*pop.Connection) error
 )
+
+// WithDBOptionsModifier adds database connection options that will be applied to the
+// underlying connection.
+func WithDBOptionsModifier(mods ...func(details *pop.ConnectionDetails)) Option {
+	return func(o *opts) {
+		o.dbOpts = append(o.dbOpts, mods...)
+	}
+}
 
 // WithLogger sets the logger.
 func WithLogger(l *logrusx.Logger) Option {
@@ -151,6 +160,10 @@ func (o *opts) ReadyCheckers() healthx.ReadyCheckers {
 
 func (o *opts) Inspect() InspectFunc {
 	return o.inspect
+}
+
+func (o *opts) DBOptionsModifiers() []func(details *pop.ConnectionDetails) {
+	return o.dbOpts
 }
 
 func Options(options ...Option) *opts {

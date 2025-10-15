@@ -85,6 +85,7 @@ type (
 		grpcTransportCredentials  credentials.TransportCredentials
 		defaultMigrationOptions   []popx.MigrationBoxOption
 		healthReadyCheckers       healthx.ReadyCheckers
+		dbOpts                    []func(details *pop.ConnectionDetails)
 	}
 	ReadHandler interface {
 		RegisterReadRoutes(r *x.ReadRouter)

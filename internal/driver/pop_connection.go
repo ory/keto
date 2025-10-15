@@ -67,7 +67,7 @@ func (r *RegistryDefault) PopConnectionWithOpts(ctx context.Context, popOpts ...
 func (r *RegistryDefault) PopConnection(ctx context.Context) (*pop.Connection, error) {
 	if r.conn == nil {
 		var err error
-		r.conn, err = r.PopConnectionWithOpts(ctx)
+		r.conn, err = r.PopConnectionWithOpts(ctx, r.dbOpts...)
 		return r.conn, err
 	}
 	return r.conn, nil

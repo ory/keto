@@ -89,6 +89,7 @@ func NewDefaultRegistry(ctx context.Context, flags *pflag.FlagSet, withoutNetwor
 		extraMigrations:           options.ExtraMigrations(),
 		defaultMigrationOptions:   options.MigrationOptions(),
 		healthReadyCheckers:       options.ReadyCheckers(),
+		dbOpts:                    options.DBOptionsModifiers(),
 	}
 
 	init := r.Init
