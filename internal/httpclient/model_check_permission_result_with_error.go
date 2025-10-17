@@ -15,11 +15,11 @@ import (
 	"encoding/json"
 )
 
-// CheckPermissionResultWithError Check Permission Result With Error
+// CheckPermissionResultWithError The response for an individual check in the CheckService.BatchCheck rpc.
 type CheckPermissionResultWithError struct {
-	// whether the relation tuple is allowed
+	// Whether the specified subject (id) is related to the requested object.  It is false by default if no ACL matches.
 	Allowed bool `json:"allowed"`
-	// any error generated while checking the relation tuple
+	// If there was an error checking the tuple, this will contain the error message.  If the check was performed successfully, this will be empty.
 	Error *string `json:"error,omitempty"`
 }
 

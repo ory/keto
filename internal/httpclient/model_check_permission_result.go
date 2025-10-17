@@ -15,9 +15,9 @@ import (
 	"encoding/json"
 )
 
-// CheckPermissionResult The content of the allowed field is mirrored in the HTTP status code.
+// CheckPermissionResult The response for a permission check.
 type CheckPermissionResult struct {
-	// whether the relation tuple is allowed
+	// Whether the specified subject (id) is related to the requested object.  It is false by default if no ACL matches.
 	Allowed bool `json:"allowed"`
 }
 

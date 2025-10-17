@@ -3,6 +3,8 @@
 'use strict';
 var grpc = require('@grpc/grpc-js');
 var ory_keto_relation_tuples_v1alpha2_version_pb = require('../../../../ory/keto/relation_tuples/v1alpha2/version_pb.js');
+var google_api_annotations_pb = require('../../../../google/api/annotations_pb.js');
+var protoc$gen$openapiv2_options_annotations_pb = require('../../../../protoc-gen-openapiv2/options/annotations_pb.js');
 
 function serialize_ory_keto_relation_tuples_v1alpha2_GetVersionRequest(arg) {
   if (!(arg instanceof ory_keto_relation_tuples_v1alpha2_version_pb.GetVersionRequest)) {
@@ -32,6 +34,11 @@ function deserialize_ory_keto_relation_tuples_v1alpha2_GetVersionResponse(buffer
 // This service is part of the [read-APIs](../concepts/25_api-overview.mdx#read-apis) and [write-APIs](../concepts/25_api-overview.mdx#write-apis).
 var VersionServiceService = exports.VersionServiceService = {
   // Returns the version of the Ory Keto instance.
+//
+// This endpoint returns the service version typically notated using semantic versioning.
+//
+// If the service supports TLS Edge Termination, this endpoint does not require the
+// X-Forwarded-Proto header to be set.
 getVersion: {
     path: '/ory.keto.relation_tuples.v1alpha2.VersionService/GetVersion',
     requestStream: false,
@@ -45,4 +52,4 @@ getVersion: {
   },
 };
 
-exports.VersionServiceClient = grpc.makeGenericClientConstructor(VersionServiceService, 'VersionService');
+exports.VersionServiceClient = grpc.makeGenericClientConstructor(VersionServiceService);

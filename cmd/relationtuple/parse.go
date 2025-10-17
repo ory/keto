@@ -11,8 +11,9 @@ import (
 
 	"github.com/ory/keto/ketoapi"
 
-	"github.com/ory/x/cmdx"
 	"github.com/spf13/cobra"
+
+	"github.com/ory/x/cmdx"
 )
 
 func NewParseCmd() *cobra.Command {
@@ -54,12 +55,14 @@ func parseFile(cmd *cobra.Command, fn string) ([]*ketoapi.RelationTuple, error) 
 		fn = "stdin"
 		f = cmd.InOrStdin()
 	} else {
-		ff, err := os.Open(fn)
+		ff, err := os.Open(fn) //nolint:gosec
 		if err != nil {
 			_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not open file %s: %v\n", fn, err)
 			return nil, cmdx.FailSilently(cmd)
 		}
-		defer ff.Close()
+		defer func(ff *os.File) {
+			_ = ff.Close()
+		}(ff)
 		f = ff
 	}
 

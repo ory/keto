@@ -21,8 +21,16 @@ var global =
     (function () { return this; }).call(null) ||
     Function('return this')();
 
+var google_api_annotations_pb = require('../../../../google/api/annotations_pb.js');
+goog.object.extend(proto, google_api_annotations_pb);
+var google_api_field_behavior_pb = require('../../../../google/api/field_behavior_pb.js');
+goog.object.extend(proto, google_api_field_behavior_pb);
+var google_api_visibility_pb = require('../../../../google/api/visibility_pb.js');
+goog.object.extend(proto, google_api_visibility_pb);
 var ory_keto_relation_tuples_v1alpha2_relation_tuples_pb = require('../../../../ory/keto/relation_tuples/v1alpha2/relation_tuples_pb.js');
 goog.object.extend(proto, ory_keto_relation_tuples_v1alpha2_relation_tuples_pb);
+var protoc$gen$openapiv2_options_annotations_pb = require('../../../../protoc-gen-openapiv2/options/annotations_pb.js');
+goog.object.extend(proto, protoc$gen$openapiv2_options_annotations_pb);
 goog.exportSymbol('proto.ory.keto.relation_tuples.v1alpha2.ExpandRequest', null, global);
 goog.exportSymbol('proto.ory.keto.relation_tuples.v1alpha2.ExpandResponse', null, global);
 goog.exportSymbol('proto.ory.keto.relation_tuples.v1alpha2.NodeType', null, global);
@@ -122,9 +130,12 @@ proto.ory.keto.relation_tuples.v1alpha2.ExpandRequest.prototype.toObject = funct
  */
 proto.ory.keto.relation_tuples.v1alpha2.ExpandRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
-subject: (f = msg.getSubject()) && ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.Subject.toObject(includeInstance, f),
-maxDepth: jspb.Message.getFieldWithDefault(msg, 2, 0),
-snaptoken: jspb.Message.getFieldWithDefault(msg, 3, "")
+    subject: (f = msg.getSubject()) && ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.Subject.toObject(includeInstance, f),
+    maxDepth: jspb.Message.getFieldWithDefault(msg, 2, 0),
+    snaptoken: jspb.Message.getFieldWithDefault(msg, 3, ""),
+    namespace: jspb.Message.getFieldWithDefault(msg, 4, ""),
+    object: jspb.Message.getFieldWithDefault(msg, 5, ""),
+    relation: jspb.Message.getFieldWithDefault(msg, 6, "")
   };
 
   if (includeInstance) {
@@ -174,6 +185,18 @@ proto.ory.keto.relation_tuples.v1alpha2.ExpandRequest.deserializeBinaryFromReade
       var value = /** @type {string} */ (reader.readString());
       msg.setSnaptoken(value);
       break;
+    case 4:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setNamespace(value);
+      break;
+    case 5:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setObject(value);
+      break;
+    case 6:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setRelation(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -222,6 +245,27 @@ proto.ory.keto.relation_tuples.v1alpha2.ExpandRequest.serializeBinaryToWriter = 
   if (f.length > 0) {
     writer.writeString(
       3,
+      f
+    );
+  }
+  f = message.getNamespace();
+  if (f.length > 0) {
+    writer.writeString(
+      4,
+      f
+    );
+  }
+  f = message.getObject();
+  if (f.length > 0) {
+    writer.writeString(
+      5,
+      f
+    );
+  }
+  f = message.getRelation();
+  if (f.length > 0) {
+    writer.writeString(
+      6,
       f
     );
   }
@@ -301,6 +345,60 @@ proto.ory.keto.relation_tuples.v1alpha2.ExpandRequest.prototype.setSnaptoken = f
 };
 
 
+/**
+ * optional string namespace = 4;
+ * @return {string}
+ */
+proto.ory.keto.relation_tuples.v1alpha2.ExpandRequest.prototype.getNamespace = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 4, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.ory.keto.relation_tuples.v1alpha2.ExpandRequest} returns this
+ */
+proto.ory.keto.relation_tuples.v1alpha2.ExpandRequest.prototype.setNamespace = function(value) {
+  return jspb.Message.setProto3StringField(this, 4, value);
+};
+
+
+/**
+ * optional string object = 5;
+ * @return {string}
+ */
+proto.ory.keto.relation_tuples.v1alpha2.ExpandRequest.prototype.getObject = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 5, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.ory.keto.relation_tuples.v1alpha2.ExpandRequest} returns this
+ */
+proto.ory.keto.relation_tuples.v1alpha2.ExpandRequest.prototype.setObject = function(value) {
+  return jspb.Message.setProto3StringField(this, 5, value);
+};
+
+
+/**
+ * optional string relation = 6;
+ * @return {string}
+ */
+proto.ory.keto.relation_tuples.v1alpha2.ExpandRequest.prototype.getRelation = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 6, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.ory.keto.relation_tuples.v1alpha2.ExpandRequest} returns this
+ */
+proto.ory.keto.relation_tuples.v1alpha2.ExpandRequest.prototype.setRelation = function(value) {
+  return jspb.Message.setProto3StringField(this, 6, value);
+};
+
+
 
 
 
@@ -333,7 +431,7 @@ proto.ory.keto.relation_tuples.v1alpha2.ExpandResponse.prototype.toObject = func
  */
 proto.ory.keto.relation_tuples.v1alpha2.ExpandResponse.toObject = function(includeInstance, msg) {
   var f, obj = {
-tree: (f = msg.getTree()) && proto.ory.keto.relation_tuples.v1alpha2.SubjectTree.toObject(includeInstance, f)
+    tree: (f = msg.getTree()) && proto.ory.keto.relation_tuples.v1alpha2.SubjectTree.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -491,10 +589,10 @@ proto.ory.keto.relation_tuples.v1alpha2.SubjectTree.prototype.toObject = functio
  */
 proto.ory.keto.relation_tuples.v1alpha2.SubjectTree.toObject = function(includeInstance, msg) {
   var f, obj = {
-nodeType: jspb.Message.getFieldWithDefault(msg, 1, 0),
-subject: (f = msg.getSubject()) && ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.Subject.toObject(includeInstance, f),
-tuple: (f = msg.getTuple()) && ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationTuple.toObject(includeInstance, f),
-childrenList: jspb.Message.toObjectList(msg.getChildrenList(),
+    nodeType: jspb.Message.getFieldWithDefault(msg, 1, 0),
+    subject: (f = msg.getSubject()) && ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.Subject.toObject(includeInstance, f),
+    tuple: (f = msg.getTuple()) && ory_keto_relation_tuples_v1alpha2_relation_tuples_pb.RelationTuple.toObject(includeInstance, f),
+    childrenList: jspb.Message.toObjectList(msg.getChildrenList(),
     proto.ory.keto.relation_tuples.v1alpha2.SubjectTree.toObject, includeInstance)
   };
 
@@ -748,11 +846,22 @@ proto.ory.keto.relation_tuples.v1alpha2.SubjectTree.prototype.clearChildrenList 
  * @enum {number}
  */
 proto.ory.keto.relation_tuples.v1alpha2.NodeType = {
+  UNSPECIFIED: 0,
   NODE_TYPE_UNSPECIFIED: 0,
+  UNION: 1,
   NODE_TYPE_UNION: 1,
+  EXCLUSION: 2,
   NODE_TYPE_EXCLUSION: 2,
+  INTERSECTION: 3,
   NODE_TYPE_INTERSECTION: 3,
-  NODE_TYPE_LEAF: 4
+  LEAF: 4,
+  NODE_TYPE_LEAF: 4,
+  TUPLE_TO_SUBJECT_SET: 5,
+  NODE_TYPE_TUPLE_TO_SUBJECT_SET: 5,
+  COMPUTED_SUBJECT_SET: 6,
+  NODE_TYPE_COMPUTED_SUBJECT_SET: 6,
+  NOT: 7,
+  NODE_TYPE_NOT: 7
 };
 
 goog.object.extend(exports, proto.ory.keto.relation_tuples.v1alpha2);

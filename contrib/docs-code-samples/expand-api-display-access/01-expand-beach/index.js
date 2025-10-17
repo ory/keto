@@ -22,9 +22,14 @@ expandRequest.setSubject(sub)
 expandRequest.setMaxDepth(3)
 
 // helper to get a nice result
-const subjectJSON = (subject) => {
+const tupleSubjectJSON = (subject) => {
   if (subject.hasId()) {
-    return { subject_id: subject.getId() }
+    return {
+      subject_id: subject.getId(),
+      subject: {
+        id: subject.getId(),
+      },
+    }
   }
   const set = subject.getSet()
   return {
@@ -32,6 +37,33 @@ const subjectJSON = (subject) => {
       namespace: set.getNamespace(),
       object: set.getObject(),
       relation: set.getRelation(),
+    },
+    subject: {
+      set: {
+        namespace: set.getNamespace(),
+        object: set.getObject(),
+        relation: set.getRelation(),
+      },
+    },
+  }
+}
+
+const toplevelSubjectJSON = (subject) => {
+  if (subject.hasId()) {
+    return {
+      subject: {
+        id: subject.getId(),
+      },
+    }
+  }
+  const set = subject.getSet()
+  return {
+    subject: {
+      set: {
+        namespace: set.getNamespace(),
+        object: set.getObject(),
+        relation: set.getRelation(),
+      },
     },
   }
 }
@@ -41,18 +73,19 @@ const prettyTree = (tree) => {
   const [nodeType, tuple, children] = [
     tree.getNodeType(),
     {
+      ...toplevelSubjectJSON(tree.getSubject()),
       tuple: {
         namespace: "",
         object: "",
         relation: "",
-        ...subjectJSON(tree.getSubject()),
+        ...tupleSubjectJSON(tree.getSubject()),
       },
     },
     tree.getChildrenList(),
   ]
   switch (nodeType) {
     case expand.NodeType.NODE_TYPE_LEAF:
-      return { type: "leaf", ...tuple }
+      return { type: "leaf", children: [], ...tuple }
     case expand.NodeType.NODE_TYPE_UNION:
       return { type: "union", children: children.map(prettyTree), ...tuple }
   }

@@ -5,9 +5,7 @@ package relationtuple
 
 import (
 	"context"
-	"net/http"
 
-	"github.com/julienschmidt/httprouter"
 	"github.com/ory/herodot"
 	keysetpagination "github.com/ory/x/pagination/keysetpagination_v2"
 	"github.com/ory/x/pointerx"
@@ -27,39 +25,45 @@ type (
 	deprecatedQueryWrapper struct {
 		*rts.ListRelationTuplesRequest_Query
 	}
+	openAPIQueryWrapper struct {
+		wrapped interface {
+			GetObject() string
+			GetRelation() string
+			GetNamespace() string
+			GetSubjectSet() *rts.SubjectSetQuery
+			GetSubjectId() string
+		}
+	}
 )
 
-func (q *queryWrapper) GetObject() *string {
-	return q.Object
-}
-
-func (q *queryWrapper) GetNamespace() *string {
-	return q.Namespace
-}
-
-func (q *queryWrapper) GetRelation() *string {
-	return q.Relation
-}
-
-func (q *deprecatedQueryWrapper) GetObject() *string {
-	if q.Object == "" {
+func stringPtr(s string) *string {
+	if s == "" {
 		return nil
 	}
-	return pointerx.Ptr(q.Object)
+	return pointerx.Ptr(s)
 }
 
-func (q *deprecatedQueryWrapper) GetNamespace() *string {
-	if q.Namespace == "" {
-		return nil
-	}
-	return pointerx.Ptr(q.Namespace)
-}
+func (q *queryWrapper) GetObject() *string    { return q.Object }
+func (q *queryWrapper) GetNamespace() *string { return q.Namespace }
+func (q *queryWrapper) GetRelation() *string  { return q.Relation }
 
-func (q *deprecatedQueryWrapper) GetRelation() *string {
-	if q.Relation == "" {
-		return nil
+func (q *deprecatedQueryWrapper) GetObject() *string    { return stringPtr(q.Object) }
+func (q *deprecatedQueryWrapper) GetNamespace() *string { return stringPtr(q.Namespace) }
+func (q *deprecatedQueryWrapper) GetRelation() *string  { return stringPtr(q.Relation) }
+
+func (q *openAPIQueryWrapper) GetObject() *string { return stringPtr(q.wrapped.GetObject()) }
+func (q *openAPIQueryWrapper) GetNamespace() *string {
+	return stringPtr(q.wrapped.GetNamespace())
+}
+func (q *openAPIQueryWrapper) GetRelation() *string { return stringPtr(q.wrapped.GetRelation()) }
+func (q *openAPIQueryWrapper) GetSubject() *rts.Subject {
+	if set := q.wrapped.GetSubjectSet(); set != nil {
+		return rts.NewSubjectSet(set.Namespace, set.Object, set.Relation)
 	}
-	return pointerx.Ptr(q.Relation)
+	if sID := q.wrapped.GetSubjectId(); sID != "" {
+		return rts.NewSubjectID(q.wrapped.GetSubjectId())
+	}
+	return nil
 }
 
 func (h *handler) ListRelationTuples(ctx context.Context, req *rts.ListRelationTuplesRequest) (*rts.ListRelationTuplesResponse, error) {
@@ -71,7 +75,7 @@ func (h *handler) ListRelationTuples(ctx context.Context, req *rts.ListRelationT
 	case req.Query != nil: //nolint:staticcheck //lint:ignore SA1019 backwards compatibility
 		q.FromDataProvider(&deprecatedQueryWrapper{req.Query}) //nolint:staticcheck //lint:ignore SA1019 backwards compatibility
 	default:
-		return nil, herodot.ErrBadRequest.WithError("you must provide a query")
+		q.FromDataProvider(&openAPIQueryWrapper{req})
 	}
 
 	iq, err := h.d.ReadOnlyMapper().FromQuery(ctx, &q)
@@ -111,72 +115,4 @@ func (h *handler) ListRelationTuples(ctx context.Context, req *rts.ListRelationT
 	}
 
 	return resp, nil
-}
-
-// swagger:route GET /relation-tuples relationship getRelationships
-//
-// # Query relationships
-//
-// Get all relationships that match the query. Only the namespace field is required.
-//
-//	Consumes:
-//	-  application/x-www-form-urlencoded
-//
-//	Produces:
-//	- application/json
-//
-//	Schemes: http, https
-//
-//	Responses:
-//	  200: relationships
-//	  404: errorGeneric
-//	  default: errorGeneric
-func (h *handler) getRelations(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	ctx := r.Context()
-
-	q := r.URL.Query()
-	query, err := (&ketoapi.RelationQuery{}).FromURLQuery(q)
-	if err != nil {
-		h.d.Writer().WriteError(w, r, herodot.ErrBadRequest.WithError(err.Error()))
-		return
-	}
-
-	l := h.d.Logger()
-	for k := range q {
-		l = l.WithField(k, q.Get(k))
-	}
-	l.Debug("querying relationships")
-
-	paginationKeys := h.d.Config(ctx).PaginationEncryptionKeys()
-	paginationOpts, err := keysetpagination.ParseQueryParams(paginationKeys, q)
-	if err != nil {
-		h.d.Writer().WriteError(w, r, herodot.ErrBadRequest.WithError(err.Error()))
-		return
-	}
-
-	iq, err := h.d.ReadOnlyMapper().FromQuery(ctx, query)
-	if err != nil {
-		h.d.Writer().WriteError(w, r, err)
-		return
-	}
-	ir, nextPage, err := h.d.RelationTupleManager().GetRelationTuples(ctx, iq, paginationOpts...)
-	if err != nil {
-		h.d.Writer().WriteError(w, r, err)
-		return
-	}
-
-	relations, err := h.d.ReadOnlyMapper().ToTuple(ctx, ir...)
-	if err != nil {
-		h.d.Writer().WriteError(w, r, err)
-		return
-	}
-
-	resp := &ketoapi.GetResponse{
-		RelationTuples: relations,
-	}
-	if !nextPage.IsLast() {
-		resp.NextPageToken = nextPage.PageToken().Encrypt(paginationKeys)
-	}
-
-	h.d.Writer().Write(w, r, resp)
 }

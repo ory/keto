@@ -1,9 +1,11 @@
 syntax = "proto3";
-
 package ory.keto.opl.v1alpha1;
 
-option go_package = "github.com/ory/keto/proto/ory/keto/opl/v1alpha1;opl";
+import "google/api/annotations.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
 option csharp_namespace = "Ory.Keto.Opl.v1alpha1";
+option go_package = "github.com/ory/keto/proto/ory/keto/opl/v1alpha1;opl";
 option java_multiple_files = true;
 option java_outer_classname = "SyntaxServiceProto";
 option java_package = "sh.ory.keto.opl.v1alpha1";
@@ -12,7 +14,45 @@ option php_namespace = "Ory\\Keto\\Opl\\v1alpha1";
 // The service that checks the syntax of an OPL file.
 service SyntaxService {
   // Performs a syntax check request.
-  rpc Check(CheckRequest) returns (CheckResponse);
+  rpc Check(CheckRequest) returns (CheckResponse) {
+    option (google.api.http) = {
+      post: "/opl/syntax/check"
+      body: "content"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      tags: "relationship"
+      operation_id: "checkOplSyntax"
+      consumes: "text/plain"
+      produces: "application/json"
+      responses: {
+        key: "200"
+        value: {
+          description: "The result of the syntax checker"
+          schema: {
+            json_schema: {ref: ".ory.keto.opl.v1alpha1.CheckResponse"}
+          }
+        }
+      }
+      responses: {
+        key: "400"
+        value: {
+          description: "errorGeneric"
+          schema: {
+            json_schema: {ref: ".ory.keto.relation_tuples.v1alpha2.ErrorResponse"}
+          }
+        }
+      }
+      responses: {
+        key: "default"
+        value: {
+          description: "errorGeneric"
+          schema: {
+            json_schema: {ref: ".ory.keto.relation_tuples.v1alpha2.ErrorResponse"}
+          }
+        }
+      }
+    };
+  }
 }
 
 message CheckRequest {
@@ -21,6 +61,7 @@ message CheckRequest {
 
 message CheckResponse {
   repeated ParseError parse_errors = 1;
+  repeated ParseError errors = 2;
 }
 
 message ParseError {
@@ -30,6 +71,6 @@ message ParseError {
 }
 
 message SourcePosition {
-  uint32 line = 1;
+  uint32 line = 1 [json_name = "Line"];
   uint32 column = 2;
 }

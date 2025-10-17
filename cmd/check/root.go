@@ -7,18 +7,21 @@ import (
 	"fmt"
 	"strings"
 
+	"google.golang.org/grpc"
+
 	"github.com/ory/keto/ketoapi"
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 
-	"github.com/ory/keto/internal/check"
+	"github.com/spf13/cobra"
 
 	"github.com/ory/x/cmdx"
-	"github.com/spf13/cobra"
 
 	"github.com/ory/keto/cmd/client"
 )
 
-type checkOutput check.CheckPermissionResult
+type checkOutput struct {
+	Allowed bool `json:"allowed"`
+}
 
 func (o *checkOutput) String() string {
 	if o.Allowed {
@@ -40,7 +43,12 @@ func NewCheckCmd() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			defer conn.Close()
+			defer func(conn *grpc.ClientConn) {
+				err := conn.Close()
+				if err != nil {
+					_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not close connection: %s\n", err)
+				}
+			}(conn)
 
 			maxDepth, err := cmd.Flags().GetInt32(FlagMaxDepth)
 			if err != nil {
