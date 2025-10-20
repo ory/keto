@@ -9,7 +9,7 @@ import (
 	"github.com/ory/keto/ketoctx"
 )
 
-func newMigrateCmd(opts []ketoctx.Option) *cobra.Command {
+func NewMigrateCmd(opts []ketoctx.Option) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "migrate",
 		Short: "Commands to migrate the database",
@@ -25,5 +25,5 @@ func newMigrateCmd(opts []ketoctx.Option) *cobra.Command {
 }
 
 func RegisterCommandsRecursive(parent *cobra.Command, opts []ketoctx.Option) {
-	parent.AddCommand(newMigrateCmd(opts))
+	parent.AddCommand(NewMigrateCmd(opts))
 }

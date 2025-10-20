@@ -51,7 +51,7 @@ func TestMigrate(t *testing.T) {
 	newCmd := func(ctx context.Context, persistentArgs ...string) *cmdx.CommandExecuter {
 		return &cmdx.CommandExecuter{
 			New: func() *cobra.Command {
-				cmd := newMigrateCmd(nil)
+				cmd := NewMigrateCmd(nil)
 				configx.RegisterFlags(cmd.PersistentFlags())
 				return cmd
 			},
@@ -171,7 +171,7 @@ func TestUpAndDown(t *testing.T) {
 
 	cmd := &cmdx.CommandExecuter{
 		New: func() *cobra.Command {
-			cmd := newMigrateCmd(nil)
+			cmd := NewMigrateCmd(nil)
 			configx.RegisterFlags(cmd.PersistentFlags())
 			return cmd
 		},
