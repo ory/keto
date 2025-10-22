@@ -10,16 +10,17 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/stretchr/testify/require"
+
 	"github.com/ory/x/configx"
 	"github.com/ory/x/logrusx"
-	"github.com/stretchr/testify/require"
 )
 
 func TestNewOPLConfigWatcher(t *testing.T) {
 	hits := 0
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		hits++
-		io.WriteString(w, testOPL)
+		_, _ = io.WriteString(w, testOPL)
 	}))
 	t.Cleanup(ts.Close)
 	ctx := context.Background()

@@ -5,9 +5,10 @@ package rts
 // WriteServiceClient.TransactRelationTuples operation.
 //
 // Example:
-//  c.TransactRelationTuples(context.Background(), &rts.TransactRelationTuplesRequest{
-// 		RelationTupleDeltas: append(rts.RelationTupleToDeltas(insertTuples, rts.RelationTupleDelta_INSERT), rts.RelationTupleToDeltas(deleteTuples, rts.RelationTupleDelta_DELETE)...),
-//  })
+//
+//	 c.TransactRelationTuples(context.Background(), &rts.TransactRelationTuplesRequest{
+//			RelationTupleDeltas: append(rts.RelationTupleToDeltas(insertTuples, rts.RelationTupleDelta_INSERT), rts.RelationTupleToDeltas(deleteTuples, rts.RelationTupleDelta_DELETE)...),
+//	 })
 func RelationTupleToDeltas(rs []*RelationTuple, action RelationTupleDelta_Action) []*RelationTupleDelta {
 	deltas := make([]*RelationTupleDelta, len(rs))
 	for i := range rs {
@@ -31,4 +32,18 @@ func NewSubjectSet(namespace, object, relation string) *Subject {
 // NewSubjectID returns a Subject with a subject ID ref.
 func NewSubjectID(id string) *Subject {
 	return &Subject{Ref: &Subject_Id{Id: id}}
+}
+
+// NewSubjectQueryFromSet returns a subject query with a SubjectSet ref.
+func NewSubjectQueryFromSet(namespace, object, relation string) *SubjectQuery {
+	return &SubjectQuery{Ref: &SubjectQuery_Set{Set: &SubjectSetQuery{
+		Namespace: namespace,
+		Object:    object,
+		Relation:  relation,
+	}}}
+}
+
+// NewSubjectQueryFromID returns a subject query with a subject ID ref.
+func NewSubjectQueryFromID(id string) *SubjectQuery {
+	return &SubjectQuery{Ref: &SubjectQuery_Id{Id: id}}
 }

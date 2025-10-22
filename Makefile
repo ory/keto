@@ -29,6 +29,7 @@ format: .bin/ory node_modules
 	.bin/ory dev headers copyright --type=open-source --exclude=.bin --exclude=internal/httpclient --exclude=proto --exclude=oryx
 	go tool goimports -w -local github.com/ory/keto *.go internal cmd contrib ketoctx ketoapi embedx
 	npm exec -- prettier --write .
+	go tool buf format -w
 
 .PHONY: install
 install:
@@ -40,21 +41,18 @@ docker:
 
 # Generates the SDKs
 .PHONY: sdk
-sdk: .bin/ory node_modules
+sdk: buf .bin/ory node_modules
 	rm -rf internal/httpclient
-	go tool swagger generate spec -m -o spec/swagger.json \
-		-c github.com/ory/keto \
-		-c github.com/ory/x/healthx \
-		-x internal/httpclient \
-		-x internal/e2e
-	.bin/ory dev swagger sanitize ./spec/swagger.json
-	go tool swagger validate ./spec/swagger.json
+	.bin/ory dev swagger sanitize ./spec/api.swagger.json
+	sed -i -f ./.schema/openapi/patches/replacements.sed ./spec/api.swagger.json
+	go tool swagger validate ./spec/api.swagger.json
 	CIRCLE_PROJECT_USERNAME=ory CIRCLE_PROJECT_REPONAME=keto \
 		.bin/ory dev openapi migrate \
 			--health-path-tags metadata \
 			-p https://raw.githubusercontent.com/ory/x/master/healthx/openapi/patch.yaml \
 			-p file://.schema/openapi/patches/meta.yaml \
-			spec/swagger.json spec/api.json
+			-p file://.schema/openapi/patches/checkServices.yaml \
+			spec/api.swagger.json spec/api.json
 
 	mkdir -p internal/httpclient
 
@@ -82,9 +80,7 @@ build:
 #
 .PHONY: buf-gen
 buf-gen: node_modules
-	go tool -n protoc-gen-doc # Apparently on the first run the path is the temporary build output and will be deleted again. Later invocations use the correct go build cache path.
-	PATH=$$PATH:$$(dirname "$$(go tool -n protoc-gen-doc)") \
-		go tool buf generate proto
+	go tool buf generate proto
 	make format
 	@echo "All code was generated successfully!"
 

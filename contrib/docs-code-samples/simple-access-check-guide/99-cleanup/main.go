@@ -17,7 +17,9 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	defer wc.Close()
+	defer func(wc *grpc.ClientConn) {
+		_ = wc.Close()
+	}(wc)
 
 	wClient := rts.NewWriteServiceClient(wc)
 	_, err = wClient.TransactRelationTuples(context.Background(), &rts.TransactRelationTuplesRequest{

@@ -1,45 +1,11 @@
 {
   "components": {
-    "responses": {
-      "emptyResponse": {
-        "description": "Empty responses are sent when, for example, resources are deleted. The HTTP status code for empty responses is typically 204."
-      }
-    },
     "schemas": {
-      "DefaultError": {},
-      "ParseError": {
-        "properties": {
-          "end": {
-            "$ref": "#/components/schemas/SourcePosition"
-          },
-          "message": {
-            "type": "string"
-          },
-          "start": {
-            "$ref": "#/components/schemas/SourcePosition"
-          }
-        },
-        "type": "object"
-      },
-      "SourcePosition": {
-        "properties": {
-          "Line": {
-            "format": "int64",
-            "type": "integer"
-          },
-          "column": {
-            "format": "int64",
-            "type": "integer"
-          }
-        },
-        "type": "object"
-      },
       "UUID": {
         "format": "uuid4",
         "type": "string"
       },
       "batchCheckPermissionBody": {
-        "description": "Batch Check Permission Body",
         "properties": {
           "tuples": {
             "items": {
@@ -51,57 +17,55 @@
         "type": "object"
       },
       "batchCheckPermissionResult": {
-        "description": "Batch Check Permission Result",
+        "description": "The response for a CheckService.BatchCheck rpc.",
         "properties": {
           "results": {
-            "description": "An array of check results. The order aligns with the input order.",
+            "description": "The results of the batch check. The order of these\nresults will match the order of the input.",
             "items": {
               "$ref": "#/components/schemas/checkPermissionResultWithError"
             },
             "type": "array"
           }
         },
-        "required": ["results"],
         "type": "object"
-      },
-      "checkOplSyntaxBody": {
-        "description": "Ory Permission Language Document",
-        "type": "string"
       },
       "checkOplSyntaxResult": {
         "properties": {
           "errors": {
-            "description": "The list of syntax errors",
             "items": {
-              "$ref": "#/components/schemas/ParseError"
+              "$ref": "#/components/schemas/ory.keto.opl.v1alpha1.ParseError"
+            },
+            "type": "array"
+          },
+          "parseErrors": {
+            "items": {
+              "$ref": "#/components/schemas/ory.keto.opl.v1alpha1.ParseError"
             },
             "type": "array"
           }
         },
-        "title": "CheckOPLSyntaxResponse represents the response for an OPL syntax check request.",
         "type": "object"
       },
       "checkPermissionResult": {
-        "description": "The content of the allowed field is mirrored in the HTTP status code.",
+        "description": "The response for a permission check.",
         "properties": {
           "allowed": {
-            "description": "whether the relation tuple is allowed",
+            "description": "Whether the specified subject (id)\nis related to the requested object.\n\nIt is false by default if no ACL matches.",
             "type": "boolean"
           }
         },
         "required": ["allowed"],
-        "title": "Check Permission Result",
         "type": "object"
       },
       "checkPermissionResultWithError": {
-        "description": "Check Permission Result With Error",
+        "description": "The response for an individual check in the CheckService.BatchCheck rpc.",
         "properties": {
           "allowed": {
-            "description": "whether the relation tuple is allowed",
+            "description": "Whether the specified subject (id)\nis related to the requested object.\n\nIt is false by default if no ACL matches.",
             "type": "boolean"
           },
           "error": {
-            "description": "any error generated while checking the relation tuple",
+            "description": "If there was an error checking the tuple,\nthis will contain the error message.\n\nIf the check was performed successfully, this will be empty.",
             "type": "string"
           }
         },
@@ -109,22 +73,21 @@
         "type": "object"
       },
       "createRelationshipBody": {
-        "description": "Create Relationship Request Body",
         "properties": {
           "namespace": {
-            "description": "Namespace to query",
+            "description": "The namespace this relation tuple lives in.",
             "type": "string"
           },
           "object": {
-            "description": "Object to query",
+            "description": "The object related by this tuple.\nIt is an object in the namespace of the tuple.",
             "type": "string"
           },
           "relation": {
-            "description": "Relation to query",
+            "description": "The relation between an Object and a Subject.",
             "type": "string"
           },
           "subject_id": {
-            "description": "SubjectID to query\n\nEither SubjectSet or SubjectID can be provided.",
+            "description": "A concrete id of the subject.",
             "type": "string"
           },
           "subject_set": {
@@ -137,214 +100,233 @@
         "description": "The standard Ory JSON API error format.",
         "properties": {
           "error": {
-            "$ref": "#/components/schemas/genericError"
+            "$ref": "#/components/schemas/errorGeneric.Error"
           }
         },
         "required": ["error"],
         "title": "JSON API Error Response",
         "type": "object"
       },
-      "expandedPermissionTree": {
-        "properties": {
-          "children": {
-            "description": "The children of the node, possibly none.",
-            "items": {
-              "$ref": "#/components/schemas/expandedPermissionTree"
-            },
-            "type": "array"
-          },
-          "tuple": {
-            "$ref": "#/components/schemas/relationship"
-          },
-          "type": {
-            "description": "The type of the node.\nunion TreeNodeUnion\nexclusion TreeNodeExclusion\nintersection TreeNodeIntersection\nleaf TreeNodeLeaf\ntuple_to_subject_set TreeNodeTupleToSubjectSet\ncomputed_subject_set TreeNodeComputedSubjectSet\nnot TreeNodeNot\nunspecified TreeNodeUnspecified",
-            "enum": [
-              "union",
-              "exclusion",
-              "intersection",
-              "leaf",
-              "tuple_to_subject_set",
-              "computed_subject_set",
-              "not",
-              "unspecified"
-            ],
-            "type": "string",
-            "x-go-enum-desc": "union TreeNodeUnion\nexclusion TreeNodeExclusion\nintersection TreeNodeIntersection\nleaf TreeNodeLeaf\ntuple_to_subject_set TreeNodeTupleToSubjectSet\ncomputed_subject_set TreeNodeComputedSubjectSet\nnot TreeNodeNot\nunspecified TreeNodeUnspecified"
-          }
-        },
-        "required": ["type"],
-        "type": "object"
-      },
-      "genericError": {
+      "errorGeneric.Error": {
         "properties": {
           "code": {
-            "description": "The status code",
             "example": 404,
             "format": "int64",
-            "type": "integer"
+            "title": "The status code",
+            "type": "string"
           },
           "debug": {
-            "description": "Debug information\n\nThis field is often not exposed to protect against leaking\nsensitive information.",
-            "example": "SQL field \"foo\" is not a bool.",
+            "description": "Debug information is often not exposed to protect against leaking sensitive information.",
+            "title": "Debug information",
             "type": "string"
           },
           "details": {
-            "additionalProperties": {},
-            "description": "Further error details",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "Further details about the error.",
+            "title": "Further error details",
             "type": "object"
           },
           "id": {
-            "description": "The error ID\n\nUseful when trying to identify various errors in application logic.",
+            "description": "The error ID is useful when trying to identify various errors in application logic.",
+            "title": "The error ID",
             "type": "string"
           },
           "message": {
-            "description": "Error message\n\nThe error's message.",
-            "example": "The resource could not be found",
+            "description": "The error's message (required).",
+            "example": "The requested resource could not be found.",
+            "title": "The error message",
             "type": "string"
           },
           "reason": {
-            "description": "A human-readable reason for the error",
-            "example": "User with ID 1234 does not exist.",
+            "description": "Reason holds a human-readable reason for the error.",
+            "title": "The error reason",
             "type": "string"
           },
           "request": {
-            "description": "The request ID\n\nThe request ID is often exposed internally in order to trace\nerrors across service architectures. This is often a UUID.",
+            "description": "The request ID is often exposed internally in order to trace\nerrors across service architectures. This is often a UUID.",
             "example": "d7ef54b1-ec15-46e6-bccb-524b82c035e6",
+            "title": "The request ID",
             "type": "string"
           },
           "status": {
-            "description": "The status description",
+            "description": "Status holds the human-readable HTTP status code.",
             "example": "Not Found",
+            "title": "The status description",
             "type": "string"
           }
         },
         "required": ["message"],
         "type": "object"
       },
-      "healthNotReadyStatus": {
+      "expandedPermissionTree": {
         "properties": {
-          "errors": {
-            "additionalProperties": {
-              "type": "string"
+          "children": {
+            "description": "The children of this node.\n\nThis is never set if `node_type` == `NODE_TYPE_LEAF`.",
+            "items": {
+              "$ref": "#/components/schemas/expandedPermissionTree"
             },
-            "description": "Errors contains a list of errors that caused the not ready status.",
-            "type": "object"
+            "type": "array"
+          },
+          "subject": {
+            "$ref": "#/components/schemas/ory.keto.relation_tuples.v1alpha2.Subject"
+          },
+          "tuple": {
+            "$ref": "#/components/schemas/relationship"
+          },
+          "type": {
+            "$ref": "#/components/schemas/ory.keto.relation_tuples.v1alpha2.NodeType"
           }
         },
-        "title": "The not ready status of the service.",
+        "required": ["type"],
         "type": "object"
       },
-      "healthStatus": {
+      "ory.keto.opl.v1alpha1.ParseError": {
         "properties": {
-          "status": {
-            "description": "Status always contains \"ok\".",
+          "end": {
+            "$ref": "#/components/schemas/ory.keto.opl.v1alpha1.SourcePosition"
+          },
+          "message": {
+            "type": "string"
+          },
+          "start": {
+            "$ref": "#/components/schemas/ory.keto.opl.v1alpha1.SourcePosition"
+          }
+        },
+        "type": "object"
+      },
+      "ory.keto.opl.v1alpha1.SourcePosition": {
+        "properties": {
+          "Line": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "column": {
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "ory.keto.relation_tuples.v1alpha2.CreateRelationTupleResponse": {
+        "description": "The response from creating a new relationship.",
+        "properties": {
+          "relationTuple": {
+            "$ref": "#/components/schemas/relationship"
+          }
+        },
+        "type": "object"
+      },
+      "ory.keto.relation_tuples.v1alpha2.DeleteRelationTuplesResponse": {
+        "type": "object"
+      },
+      "ory.keto.relation_tuples.v1alpha2.ExpandResponse": {
+        "description": "The response for a ExpandService.Expand RPC.",
+        "properties": {
+          "tree": {
+            "$ref": "#/components/schemas/expandedPermissionTree"
+          }
+        },
+        "type": "object"
+      },
+      "ory.keto.relation_tuples.v1alpha2.GetVersionResponse": {
+        "description": "Response of the VersionService.GetVersion RPC.",
+        "properties": {
+          "version": {
+            "description": "The version string of the Ory Keto instance.",
             "type": "string"
           }
         },
-        "title": "The health status of the service.",
         "type": "object"
       },
-      "namespace": {
+      "ory.keto.relation_tuples.v1alpha2.Namespace": {
         "properties": {
           "name": {
-            "description": "Name of the namespace.",
             "type": "string"
           }
         },
+        "type": "object"
+      },
+      "ory.keto.relation_tuples.v1alpha2.NodeType": {
+        "default": "unspecified",
+        "description": " - union: This node expands to a union of all children.\n - exclusion: Not implemented yet.\n - intersection: Not implemented yet.\n - leaf: This node is a leaf and contains no children.\nIts subject is a `SubjectID` unless `max_depth` was reached.\n - tuple_to_subject_set: This node is a leaf and contains no children.\nIts subject is a `SubjectID` unless `max_depth` was reached.\n - computed_subject_set: This node is a leaf and contains no children.\nIts subject is a `SubjectID` unless `max_depth` was reached.\n - not: This node is a leaf and contains no children.\nIts subject is a `SubjectID` unless `max_depth` was reached.",
+        "enum": [
+          "unspecified",
+          "union",
+          "exclusion",
+          "intersection",
+          "leaf",
+          "tuple_to_subject_set",
+          "computed_subject_set",
+          "not"
+        ],
+        "type": "string"
+      },
+      "ory.keto.relation_tuples.v1alpha2.Subject": {
+        "description": "Subject is either a concrete subject id or\na `SubjectSet` expanding to more Subjects.",
+        "properties": {
+          "id": {
+            "description": "A concrete id of the subject.",
+            "type": "string"
+          },
+          "set": {
+            "$ref": "#/components/schemas/subjectSet"
+          }
+        },
+        "type": "object"
+      },
+      "ory.keto.relation_tuples.v1alpha2.TransactRelationTuplesResponse": {
+        "description": "The response of a WriteService.TransactRelationTuples rpc.",
         "type": "object"
       },
       "postCheckPermissionBody": {
-        "description": "Check Permission using Post Request Body",
+        "description": "The request for a CheckService.Check RPC.\nChecks whether a specific subject is related to an object.",
         "properties": {
+          "max-depth": {
+            "description": "The maximum depth to search for a relation.\n\nIf the value is less than 1 or greater than the global\nmax-depth then the global max-depth will be used instead.",
+            "format": "int32",
+            "type": "integer"
+          },
           "namespace": {
-            "description": "Namespace to query",
+            "description": "The namespace to evaluate the check.\n\nNote: If you use the expand-API and the check\nevaluates a RelationTuple specifying a SubjectSet as\nsubject or due to a rewrite rule in a namespace config\nthis check request may involve other namespaces automatically.",
             "type": "string"
           },
           "object": {
-            "description": "Object to query",
+            "description": "The related object in this check.",
             "type": "string"
           },
           "relation": {
-            "description": "Relation to query",
+            "description": "The relation between the Object and the Subject.",
             "type": "string"
           },
           "subject_id": {
-            "description": "SubjectID to query\n\nEither SubjectSet or SubjectID can be provided.",
+            "description": "A concrete id of the subject.",
             "type": "string"
           },
           "subject_set": {
-            "$ref": "#/components/schemas/subjectSet"
-          }
-        },
-        "type": "object"
-      },
-      "postCheckPermissionOrErrorBody": {
-        "description": "Post Check Permission Or Error Body",
-        "properties": {
-          "namespace": {
-            "description": "Namespace to query",
-            "type": "string"
-          },
-          "object": {
-            "description": "Object to query",
-            "type": "string"
-          },
-          "relation": {
-            "description": "Relation to query",
-            "type": "string"
-          },
-          "subject_id": {
-            "description": "SubjectID to query\n\nEither SubjectSet or SubjectID can be provided.",
-            "type": "string"
-          },
-          "subject_set": {
-            "$ref": "#/components/schemas/subjectSet"
-          }
-        },
-        "type": "object"
-      },
-      "relationQuery": {
-        "description": "Relation Query",
-        "properties": {
-          "namespace": {
-            "description": "Namespace to query",
-            "type": "string"
-          },
-          "object": {
-            "description": "Object to query",
-            "type": "string"
-          },
-          "relation": {
-            "description": "Relation to query",
-            "type": "string"
-          },
-          "subject_id": {
-            "description": "SubjectID to query\n\nEither SubjectSet or SubjectID can be provided.",
-            "type": "string"
-          },
-          "subject_set": {
-            "$ref": "#/components/schemas/subjectSet"
+            "$ref": "#/components/schemas/subjectSetQuery"
           }
         },
         "type": "object"
       },
       "relationship": {
-        "description": "Relationship",
+        "description": "RelationTuple defines a relation between an Object and a Subject.",
         "properties": {
           "namespace": {
-            "description": "Namespace of the Relation Tuple",
+            "description": "The namespace this relation tuple lives in.",
             "type": "string"
           },
           "object": {
-            "description": "Object of the Relation Tuple",
+            "description": "The object related by this tuple.\nIt is an object in the namespace of the tuple.",
             "type": "string"
           },
           "relation": {
-            "description": "Relation of the Relation Tuple",
+            "description": "The relation between an Object and a Subject.",
             "type": "string"
           },
           "subject_id": {
-            "description": "SubjectID of the Relation Tuple\n\nEither SubjectSet or SubjectID can be provided.",
+            "description": "A concrete id of the subject.",
             "type": "string"
           },
           "subject_set": {
@@ -355,11 +337,10 @@
         "type": "object"
       },
       "relationshipNamespaces": {
-        "description": "Relationship Namespace List",
         "properties": {
           "namespaces": {
             "items": {
-              "$ref": "#/components/schemas/namespace"
+              "$ref": "#/components/schemas/ory.keto.relation_tuples.v1alpha2.Namespace"
             },
             "type": "array"
           }
@@ -367,27 +348,33 @@
         "type": "object"
       },
       "relationshipPatch": {
-        "description": "Payload for patching a relationship",
+        "description": "Write-delta for a TransactRelationTuplesRequest.",
         "properties": {
           "action": {
-            "enum": ["insert", "delete"],
-            "type": "string",
-            "x-go-enum-desc": "insert ActionInsert\ndelete ActionDelete"
+            "$ref": "#/components/schemas/relationshipPatch.Action"
           },
           "relation_tuple": {
             "$ref": "#/components/schemas/relationship"
           }
         },
+        "required": ["action", "relation_tuple"],
         "type": "object"
       },
+      "relationshipPatch.Action": {
+        "default": "ACTION_UNSPECIFIED",
+        "description": " - ACTION_UNSPECIFIED: Unspecified.\nThe `TransactRelationTuples` RPC ignores this\nRelationTupleDelta if an action was unspecified.\n - insert: Insertion of a new RelationTuple.\nIt is ignored if already existing.\n - delete: Deletion of the RelationTuple.\nIt is ignored if it does not exist.",
+        "enum": ["ACTION_UNSPECIFIED", "insert", "delete"],
+        "type": "string"
+      },
       "relationships": {
-        "description": "Paginated Relationship List",
+        "description": "The response of a ReadService.ListRelationTuples RPC.",
         "properties": {
           "next_page_token": {
-            "description": "The opaque token to provide in a subsequent request\nto get the next page. It is the empty string iff this is\nthe last page.",
+            "description": "The token required to get the next page.\nIf this is the last page, the token will be the empty string.",
             "type": "string"
           },
           "relation_tuples": {
+            "description": "The relationships matching the list request.",
             "items": {
               "$ref": "#/components/schemas/relationship"
             },
@@ -397,30 +384,37 @@
         "type": "object"
       },
       "subjectSet": {
+        "description": "SubjectSet refers to all subjects who have\nthe same `relation` on an `object`.",
         "properties": {
           "namespace": {
-            "description": "Namespace of the Subject Set",
+            "description": "The namespace of the object and relation\nreferenced in this subject set.",
             "type": "string"
           },
           "object": {
-            "description": "Object of the Subject Set",
+            "description": "The object related by this subject set.",
             "type": "string"
           },
           "relation": {
-            "description": "Relation of the Subject Set",
+            "description": "The relation between the object and the subjects.",
             "type": "string"
           }
         },
         "required": ["namespace", "object", "relation"],
         "type": "object"
       },
-      "unexpectedError": {
-        "type": "string"
-      },
-      "version": {
+      "subjectSetQuery": {
+        "description": "SubjectSetQuery refers to all subjects who have\nthe same `relation` on an `object`.",
         "properties": {
-          "version": {
-            "description": "Version is the service's version.",
+          "namespace": {
+            "description": "The namespace of the object and relation\nreferenced in this subject set.",
+            "type": "string"
+          },
+          "object": {
+            "description": "The object related by this subject set.",
+            "type": "string"
+          },
+          "relation": {
+            "description": "The relation between the object and the subjects.",
             "type": "string"
           }
         },
@@ -443,11 +437,10 @@
   "paths": {
     "/admin/relation-tuples": {
       "delete": {
-        "description": "Use this endpoint to delete relationships",
         "operationId": "deleteRelationships",
         "parameters": [
           {
-            "description": "Namespace of the Relationship",
+            "description": "The namespace this relation tuple lives in.",
             "in": "query",
             "name": "namespace",
             "schema": {
@@ -455,7 +448,7 @@
             }
           },
           {
-            "description": "Object of the Relationship",
+            "description": "The object related by this tuple.\nIt is an object in the namespace of the tuple.",
             "in": "query",
             "name": "object",
             "schema": {
@@ -463,7 +456,7 @@
             }
           },
           {
-            "description": "Relation of the Relationship",
+            "description": "The relation between an Object and a Subject.",
             "in": "query",
             "name": "relation",
             "schema": {
@@ -471,7 +464,7 @@
             }
           },
           {
-            "description": "SubjectID of the Relationship",
+            "description": "A concrete id of the subject.",
             "in": "query",
             "name": "subject_id",
             "schema": {
@@ -479,7 +472,7 @@
             }
           },
           {
-            "description": "Namespace of the Subject Set",
+            "description": "The namespace of the object and relation\nreferenced in this subject set.",
             "in": "query",
             "name": "subject_set.namespace",
             "schema": {
@@ -487,7 +480,7 @@
             }
           },
           {
-            "description": "Object of the Subject Set",
+            "description": "The object related by this subject set.",
             "in": "query",
             "name": "subject_set.object",
             "schema": {
@@ -495,7 +488,7 @@
             }
           },
           {
-            "description": "Relation of the Subject Set",
+            "description": "The relation between the object and the subjects.",
             "in": "query",
             "name": "subject_set.relation",
             "schema": {
@@ -505,7 +498,7 @@
         ],
         "responses": {
           "204": {
-            "$ref": "#/components/responses/emptyResponse"
+            "description": "An empty response."
           },
           "400": {
             "content": {
@@ -528,11 +521,10 @@
             "description": "errorGeneric"
           }
         },
-        "summary": "Delete Relationships",
+        "summary": "Deletes relationships based on relation query",
         "tags": ["relationship"]
       },
       "patch": {
-        "description": "Use this endpoint to patch one or more relationships.",
         "operationId": "patchRelationships",
         "requestBody": {
           "content": {
@@ -545,11 +537,13 @@
               }
             }
           },
-          "x-originalParamName": "Body"
+          "description": "The write delta for the relationships operated in one single transaction.\nEither all actions succeed or no change takes effect on error.",
+          "required": true,
+          "x-originalParamName": "relationTupleDeltas"
         },
         "responses": {
           "204": {
-            "$ref": "#/components/responses/emptyResponse"
+            "description": "An empty response."
           },
           "400": {
             "content": {
@@ -582,11 +576,10 @@
             "description": "errorGeneric"
           }
         },
-        "summary": "Patch Multiple Relationships",
+        "summary": "Writes one or more relationships in a single transaction.",
         "tags": ["relationship"]
       },
       "put": {
-        "description": "Use this endpoint to create a relationship.",
         "operationId": "createRelationship",
         "requestBody": {
           "content": {
@@ -596,7 +589,9 @@
               }
             }
           },
-          "x-originalParamName": "Body"
+          "description": "The relationship to create.",
+          "required": true,
+          "x-originalParamName": "relationTuple"
         },
         "responses": {
           "201": {
@@ -607,7 +602,7 @@
                 }
               }
             },
-            "description": "relationship"
+            "description": "The created relationship."
           },
           "400": {
             "content": {
@@ -630,7 +625,7 @@
             "description": "errorGeneric"
           }
         },
-        "summary": "Create a Relationship",
+        "summary": "Creates a relationship",
         "tags": ["relationship"]
       }
     },
@@ -730,7 +725,7 @@
     },
     "/namespaces": {
       "get": {
-        "description": "Get all namespaces",
+        "description": "Get all namespaces.",
         "operationId": "listRelationshipNamespaces",
         "responses": {
           "200": {
@@ -741,47 +736,7 @@
                 }
               }
             },
-            "description": "relationshipNamespaces"
-          },
-          "default": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorGeneric"
-                }
-              }
-            },
-            "description": "errorGeneric"
-          }
-        },
-        "summary": "Query namespaces",
-        "tags": ["relationship"]
-      }
-    },
-    "/opl/syntax/check": {
-      "post": {
-        "description": "The OPL file is expected in the body of the request.",
-        "operationId": "checkOplSyntax",
-        "requestBody": {
-          "content": {
-            "text/plain": {
-              "schema": {
-                "$ref": "#/components/schemas/checkOplSyntaxBody"
-              }
-            }
-          },
-          "x-originalParamName": "Body"
-        },
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/checkOplSyntaxResult"
-                }
-              }
-            },
-            "description": "checkOplSyntaxResult"
+            "description": "The list of namespaces."
           },
           "400": {
             "content": {
@@ -804,29 +759,76 @@
             "description": "errorGeneric"
           }
         },
-        "summary": "Check the syntax of an OPL file",
+        "summary": "Lists Namespaces",
+        "tags": ["relationship"]
+      }
+    },
+    "/opl/syntax/check": {
+      "post": {
+        "operationId": "checkOplSyntax",
+        "requestBody": {
+          "content": {
+            "text/plain": {
+              "schema": {
+                "format": "byte",
+                "type": "string"
+              }
+            }
+          },
+          "required": true,
+          "x-originalParamName": "content"
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/checkOplSyntaxResult"
+                }
+              }
+            },
+            "description": "The result of the syntax checker"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorGeneric"
+                }
+              }
+            },
+            "description": "errorGeneric"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorGeneric"
+                }
+              }
+            },
+            "description": "errorGeneric"
+          }
+        },
+        "summary": "Performs a syntax check request.",
         "tags": ["relationship"]
       }
     },
     "/relation-tuples": {
       "get": {
-        "description": "Get all relationships that match the query. Only the namespace field is required.",
         "operationId": "getRelationships",
         "parameters": [
           {
-            "description": "Items per Page\n\nThis is the number of items per page to return.\nFor details on pagination please head over to the [pagination documentation](https://www.ory.sh/docs/ecosystem/api-design#pagination).",
+            "description": "Optional. The maximum number of\nRelationTuples to return in the response.\n\nDefault: 100",
             "in": "query",
             "name": "page_size",
             "schema": {
-              "default": 250,
-              "format": "int64",
-              "maximum": 1000,
-              "minimum": 1,
+              "format": "int32",
               "type": "integer"
             }
           },
           {
-            "description": "Next Page Token\n\nThe next page token.\nFor details on pagination please head over to the [pagination documentation](https://www.ory.sh/docs/ecosystem/api-design#pagination).",
+            "description": "Optional. An opaque pagination token returned from\na previous call to `ListRelationTuples` that\nindicates where the page should start at.\n\nAn empty token denotes the first page. All successive\npages require the token from the previous page.",
             "in": "query",
             "name": "page_token",
             "schema": {
@@ -834,7 +836,7 @@
             }
           },
           {
-            "description": "Namespace of the Relationship",
+            "description": "The namespace",
             "in": "query",
             "name": "namespace",
             "schema": {
@@ -842,7 +844,7 @@
             }
           },
           {
-            "description": "Object of the Relationship",
+            "description": "The related object in this check.",
             "in": "query",
             "name": "object",
             "schema": {
@@ -850,7 +852,7 @@
             }
           },
           {
-            "description": "Relation of the Relationship",
+            "description": "The relation between the Object and the Subject.",
             "in": "query",
             "name": "relation",
             "schema": {
@@ -858,7 +860,7 @@
             }
           },
           {
-            "description": "SubjectID of the Relationship",
+            "description": "A concrete id of the subject.",
             "in": "query",
             "name": "subject_id",
             "schema": {
@@ -866,7 +868,7 @@
             }
           },
           {
-            "description": "Namespace of the Subject Set",
+            "description": "The namespace of the object and relation\nreferenced in this subject set.",
             "in": "query",
             "name": "subject_set.namespace",
             "schema": {
@@ -874,7 +876,7 @@
             }
           },
           {
-            "description": "Object of the Subject Set",
+            "description": "The object related by this subject set.",
             "in": "query",
             "name": "subject_set.object",
             "schema": {
@@ -882,7 +884,7 @@
             }
           },
           {
-            "description": "Relation of the Subject Set",
+            "description": "The relation between the object and the subjects.",
             "in": "query",
             "name": "subject_set.relation",
             "schema": {
@@ -899,9 +901,9 @@
                 }
               }
             },
-            "description": "relationships"
+            "description": "The list of relationships."
           },
-          "404": {
+          "400": {
             "content": {
               "application/json": {
                 "schema": {
@@ -922,7 +924,7 @@
             "description": "errorGeneric"
           }
         },
-        "summary": "Query relationships",
+        "summary": "Lists ACL relationships.",
         "tags": ["relationship"]
       }
     },
@@ -932,10 +934,11 @@
         "operationId": "batchCheckPermission",
         "parameters": [
           {
+            "description": "The maximum depth to search for a relation.\n\nIf the value is less than 1 or greater than the global\nmax-depth then the global max-depth will be used instead.",
             "in": "query",
             "name": "max-depth",
             "schema": {
-              "format": "int64",
+              "format": "int32",
               "type": "integer"
             }
           }
@@ -948,7 +951,9 @@
               }
             }
           },
-          "x-originalParamName": "Body"
+          "description": "Batch Check Permission Body.",
+          "required": true,
+          "x-originalParamName": "body"
         },
         "responses": {
           "200": {
@@ -959,7 +964,7 @@
                 }
               }
             },
-            "description": "batchCheckPermissionResult"
+            "description": "The response of the permission check, in case it is allowed. For the `/openapi` endpoints, the status code is always 200."
           },
           "400": {
             "content": {
@@ -982,17 +987,16 @@
             "description": "errorGeneric"
           }
         },
-        "summary": "Batch check permissions",
+        "summary": "Performs an authorization check for a batch of tuples.",
         "tags": ["permission"]
       }
     },
     "/relation-tuples/check": {
       "get": {
-        "description": "To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).",
         "operationId": "checkPermissionOrError",
         "parameters": [
           {
-            "description": "Namespace of the Relationship",
+            "description": "The namespace to evaluate the check.\n\nNote: If you use the expand-API and the check\nevaluates a RelationTuple specifying a SubjectSet as\nsubject or due to a rewrite rule in a namespace config\nthis check request may involve other namespaces automatically.",
             "in": "query",
             "name": "namespace",
             "schema": {
@@ -1000,7 +1004,7 @@
             }
           },
           {
-            "description": "Object of the Relationship",
+            "description": "The related object in this check.",
             "in": "query",
             "name": "object",
             "schema": {
@@ -1008,7 +1012,7 @@
             }
           },
           {
-            "description": "Relation of the Relationship",
+            "description": "The relation between the Object and the Subject.",
             "in": "query",
             "name": "relation",
             "schema": {
@@ -1016,7 +1020,7 @@
             }
           },
           {
-            "description": "SubjectID of the Relationship",
+            "description": "A concrete id of the subject.",
             "in": "query",
             "name": "subject_id",
             "schema": {
@@ -1024,7 +1028,7 @@
             }
           },
           {
-            "description": "Namespace of the Subject Set",
+            "description": "The namespace of the object and relation\nreferenced in this subject set.",
             "in": "query",
             "name": "subject_set.namespace",
             "schema": {
@@ -1032,7 +1036,7 @@
             }
           },
           {
-            "description": "Object of the Subject Set",
+            "description": "The object related by this subject set.",
             "in": "query",
             "name": "subject_set.object",
             "schema": {
@@ -1040,7 +1044,7 @@
             }
           },
           {
-            "description": "Relation of the Subject Set",
+            "description": "The relation between the object and the subjects.",
             "in": "query",
             "name": "subject_set.relation",
             "schema": {
@@ -1048,10 +1052,11 @@
             }
           },
           {
+            "description": "The maximum depth to search for a relation.\n\nIf the value is less than 1 or greater than the global\nmax-depth then the global max-depth will be used instead.",
             "in": "query",
             "name": "max-depth",
             "schema": {
-              "format": "int64",
+              "format": "int32",
               "type": "integer"
             }
           }
@@ -1065,7 +1070,7 @@
                 }
               }
             },
-            "description": "checkPermissionResult"
+            "description": "The response of the permission check, in case it is allowed. For the `/openapi` endpoints, the status code is always 200."
           },
           "400": {
             "content": {
@@ -1085,7 +1090,7 @@
                 }
               }
             },
-            "description": "checkPermissionResult"
+            "description": "The response of the permission check, in case it is not allowed. For the `/openapi` endpoints, the status code is always 200."
           },
           "default": {
             "content": {
@@ -1098,196 +1103,11 @@
             "description": "errorGeneric"
           }
         },
-        "summary": "Check a permission",
+        "summary": "Performs an authorization check.",
         "tags": ["permission"]
       },
       "post": {
-        "description": "To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).",
         "operationId": "postCheckPermissionOrError",
-        "parameters": [
-          {
-            "in": "query",
-            "name": "max-depth",
-            "schema": {
-              "format": "int64",
-              "type": "integer"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/postCheckPermissionOrErrorBody"
-              }
-            }
-          },
-          "x-originalParamName": "Body"
-        },
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/checkPermissionResult"
-                }
-              }
-            },
-            "description": "checkPermissionResult"
-          },
-          "400": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorGeneric"
-                }
-              }
-            },
-            "description": "errorGeneric"
-          },
-          "403": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/checkPermissionResult"
-                }
-              }
-            },
-            "description": "checkPermissionResult"
-          },
-          "default": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorGeneric"
-                }
-              }
-            },
-            "description": "errorGeneric"
-          }
-        },
-        "summary": "Check a permission",
-        "tags": ["permission"]
-      }
-    },
-    "/relation-tuples/check/openapi": {
-      "get": {
-        "description": "To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).",
-        "operationId": "checkPermission",
-        "parameters": [
-          {
-            "description": "Namespace of the Relationship",
-            "in": "query",
-            "name": "namespace",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "description": "Object of the Relationship",
-            "in": "query",
-            "name": "object",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "description": "Relation of the Relationship",
-            "in": "query",
-            "name": "relation",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "description": "SubjectID of the Relationship",
-            "in": "query",
-            "name": "subject_id",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "description": "Namespace of the Subject Set",
-            "in": "query",
-            "name": "subject_set.namespace",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "description": "Object of the Subject Set",
-            "in": "query",
-            "name": "subject_set.object",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "description": "Relation of the Subject Set",
-            "in": "query",
-            "name": "subject_set.relation",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "in": "query",
-            "name": "max-depth",
-            "schema": {
-              "format": "int64",
-              "type": "integer"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/checkPermissionResult"
-                }
-              }
-            },
-            "description": "checkPermissionResult"
-          },
-          "400": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorGeneric"
-                }
-              }
-            },
-            "description": "errorGeneric"
-          },
-          "default": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorGeneric"
-                }
-              }
-            },
-            "description": "errorGeneric"
-          }
-        },
-        "summary": "Check a permission",
-        "tags": ["permission"]
-      },
-      "post": {
-        "description": "To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).",
-        "operationId": "postCheckPermission",
-        "parameters": [
-          {
-            "in": "query",
-            "name": "max-depth",
-            "schema": {
-              "format": "int64",
-              "type": "integer"
-            }
-          }
-        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -1296,7 +1116,9 @@
               }
             }
           },
-          "x-originalParamName": "Payload"
+          "description": "The request for a CheckService.Check RPC.\nChecks whether a specific subject is related to an object.",
+          "required": true,
+          "x-originalParamName": "body"
         },
         "responses": {
           "200": {
@@ -1307,7 +1129,7 @@
                 }
               }
             },
-            "description": "checkPermissionResult"
+            "description": "The response of the permission check, in case it is allowed. For the `/openapi` endpoints, the status code is always 200."
           },
           "400": {
             "content": {
@@ -1318,6 +1140,16 @@
               }
             },
             "description": "errorGeneric"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/checkPermissionResult"
+                }
+              }
+            },
+            "description": "The response of the permission check, in case it is not allowed. For the `/openapi` endpoints, the status code is always 200."
           },
           "default": {
             "content": {
@@ -1330,17 +1162,200 @@
             "description": "errorGeneric"
           }
         },
-        "summary": "Check a permission",
+        "summary": "Performs an authorization check.",
+        "tags": ["permission"]
+      }
+    },
+    "/relation-tuples/check/openapi": {
+      "get": {
+        "operationId": "checkPermission",
+        "parameters": [
+          {
+            "description": "The namespace to evaluate the check.\n\nNote: If you use the expand-API and the check\nevaluates a RelationTuple specifying a SubjectSet as\nsubject or due to a rewrite rule in a namespace config\nthis check request may involve other namespaces automatically.",
+            "in": "query",
+            "name": "namespace",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The related object in this check.",
+            "in": "query",
+            "name": "object",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The relation between the Object and the Subject.",
+            "in": "query",
+            "name": "relation",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "A concrete id of the subject.",
+            "in": "query",
+            "name": "subject_id",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The namespace of the object and relation\nreferenced in this subject set.",
+            "in": "query",
+            "name": "subject_set.namespace",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The object related by this subject set.",
+            "in": "query",
+            "name": "subject_set.object",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The relation between the object and the subjects.",
+            "in": "query",
+            "name": "subject_set.relation",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The maximum depth to search for a relation.\n\nIf the value is less than 1 or greater than the global\nmax-depth then the global max-depth will be used instead.",
+            "in": "query",
+            "name": "max-depth",
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/checkPermissionResult"
+                }
+              }
+            },
+            "description": "The response of the permission check, in case it is allowed. For the `/openapi` endpoints, the status code is always 200."
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorGeneric"
+                }
+              }
+            },
+            "description": "errorGeneric"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/checkPermissionResult"
+                }
+              }
+            },
+            "description": "The response of the permission check, in case it is not allowed. For the `/openapi` endpoints, the status code is always 200."
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorGeneric"
+                }
+              }
+            },
+            "description": "errorGeneric"
+          }
+        },
+        "summary": "Performs an authorization check.",
+        "tags": ["permission"]
+      },
+      "post": {
+        "operationId": "postCheckPermission",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/postCheckPermissionBody"
+              }
+            }
+          },
+          "description": "The request for a CheckService.Check RPC.\nChecks whether a specific subject is related to an object.",
+          "required": true,
+          "x-originalParamName": "body"
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/checkPermissionResult"
+                }
+              }
+            },
+            "description": "The response of the permission check, in case it is allowed. For the `/openapi` endpoints, the status code is always 200."
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorGeneric"
+                }
+              }
+            },
+            "description": "errorGeneric"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/checkPermissionResult"
+                }
+              }
+            },
+            "description": "The response of the permission check, in case it is not allowed. For the `/openapi` endpoints, the status code is always 200."
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorGeneric"
+                }
+              }
+            },
+            "description": "errorGeneric"
+          }
+        },
+        "summary": "Performs an authorization check.",
         "tags": ["permission"]
       }
     },
     "/relation-tuples/expand": {
       "get": {
-        "description": "Use this endpoint to expand a relationship tuple into permissions.",
         "operationId": "expandPermissions",
         "parameters": [
           {
-            "description": "Namespace of the Subject Set",
+            "description": "The maximum depth of tree to build.\n\nIf the value is less than 1 or greater than the global\nmax-depth then the global max-depth will be used instead.\n\nIt is important to set this parameter to a meaningful\nvalue. Ponder how deep you really want to display this.",
+            "in": "query",
+            "name": "max-depth",
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "description": "The namespace of the object and relation\nreferenced in this subject set.",
             "in": "query",
             "name": "namespace",
             "required": true,
@@ -1349,7 +1364,7 @@
             }
           },
           {
-            "description": "Object of the Subject Set",
+            "description": "The object related by this subject set.",
             "in": "query",
             "name": "object",
             "required": true,
@@ -1358,20 +1373,12 @@
             }
           },
           {
-            "description": "Relation of the Subject Set",
+            "description": "The relation between the object and the subjects.",
             "in": "query",
             "name": "relation",
             "required": true,
             "schema": {
               "type": "string"
-            }
-          },
-          {
-            "in": "query",
-            "name": "max-depth",
-            "schema": {
-              "format": "int64",
-              "type": "integer"
             }
           }
         ],
@@ -1384,19 +1391,9 @@
                 }
               }
             },
-            "description": "expandedPermissionTree"
+            "description": "The response of the permission check, in case it is allowed. For the `/openapi` endpoints, the status code is always 200."
           },
           "400": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorGeneric"
-                }
-              }
-            },
-            "description": "errorGeneric"
-          },
-          "404": {
             "content": {
               "application/json": {
                 "schema": {
@@ -1417,7 +1414,7 @@
             "description": "errorGeneric"
           }
         },
-        "summary": "Expand a Relationship into permissions.",
+        "summary": "Expands the subject set into a tree of subjects.",
         "tags": ["permission"]
       }
     },

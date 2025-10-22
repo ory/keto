@@ -15,18 +15,20 @@ import (
 	"encoding/json"
 )
 
-// RelationshipPatch Payload for patching a relationship
+// RelationshipPatch Write-delta for a TransactRelationTuplesRequest.
 type RelationshipPatch struct {
-	Action        *string       `json:"action,omitempty"`
-	RelationTuple *Relationship `json:"relation_tuple,omitempty"`
+	Action        RelationshipPatchAction `json:"action"`
+	RelationTuple Relationship            `json:"relation_tuple"`
 }
 
 // NewRelationshipPatch instantiates a new RelationshipPatch object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewRelationshipPatch() *RelationshipPatch {
+func NewRelationshipPatch(action RelationshipPatchAction, relationTuple Relationship) *RelationshipPatch {
 	this := RelationshipPatch{}
+	this.Action = action
+	this.RelationTuple = relationTuple
 	return &this
 }
 
@@ -35,79 +37,65 @@ func NewRelationshipPatch() *RelationshipPatch {
 // but it doesn't guarantee that properties required by API are set
 func NewRelationshipPatchWithDefaults() *RelationshipPatch {
 	this := RelationshipPatch{}
+	var action RelationshipPatchAction = RELATIONSHIPPATCHACTION_ACTION_UNSPECIFIED
+	this.Action = action
 	return &this
 }
 
-// GetAction returns the Action field value if set, zero value otherwise.
-func (o *RelationshipPatch) GetAction() string {
-	if o == nil || o.Action == nil {
-		var ret string
+// GetAction returns the Action field value
+func (o *RelationshipPatch) GetAction() RelationshipPatchAction {
+	if o == nil {
+		var ret RelationshipPatchAction
 		return ret
 	}
-	return *o.Action
+
+	return o.Action
 }
 
-// GetActionOk returns a tuple with the Action field value if set, nil otherwise
+// GetActionOk returns a tuple with the Action field value
 // and a boolean to check if the value has been set.
-func (o *RelationshipPatch) GetActionOk() (*string, bool) {
-	if o == nil || o.Action == nil {
+func (o *RelationshipPatch) GetActionOk() (*RelationshipPatchAction, bool) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Action, true
+	return &o.Action, true
 }
 
-// HasAction returns a boolean if a field has been set.
-func (o *RelationshipPatch) HasAction() bool {
-	if o != nil && o.Action != nil {
-		return true
-	}
-
-	return false
+// SetAction sets field value
+func (o *RelationshipPatch) SetAction(v RelationshipPatchAction) {
+	o.Action = v
 }
 
-// SetAction gets a reference to the given string and assigns it to the Action field.
-func (o *RelationshipPatch) SetAction(v string) {
-	o.Action = &v
-}
-
-// GetRelationTuple returns the RelationTuple field value if set, zero value otherwise.
+// GetRelationTuple returns the RelationTuple field value
 func (o *RelationshipPatch) GetRelationTuple() Relationship {
-	if o == nil || o.RelationTuple == nil {
+	if o == nil {
 		var ret Relationship
 		return ret
 	}
-	return *o.RelationTuple
+
+	return o.RelationTuple
 }
 
-// GetRelationTupleOk returns a tuple with the RelationTuple field value if set, nil otherwise
+// GetRelationTupleOk returns a tuple with the RelationTuple field value
 // and a boolean to check if the value has been set.
 func (o *RelationshipPatch) GetRelationTupleOk() (*Relationship, bool) {
-	if o == nil || o.RelationTuple == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.RelationTuple, true
+	return &o.RelationTuple, true
 }
 
-// HasRelationTuple returns a boolean if a field has been set.
-func (o *RelationshipPatch) HasRelationTuple() bool {
-	if o != nil && o.RelationTuple != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetRelationTuple gets a reference to the given Relationship and assigns it to the RelationTuple field.
+// SetRelationTuple sets field value
 func (o *RelationshipPatch) SetRelationTuple(v Relationship) {
-	o.RelationTuple = &v
+	o.RelationTuple = v
 }
 
 func (o RelationshipPatch) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
-	if o.Action != nil {
+	if true {
 		toSerialize["action"] = o.Action
 	}
-	if o.RelationTuple != nil {
+	if true {
 		toSerialize["relation_tuple"] = o.RelationTuple
 	}
 	return json.Marshal(toSerialize)

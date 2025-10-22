@@ -6,6 +6,7 @@
 
 import * as grpc from "@grpc/grpc-js";
 import * as ory_keto_relation_tuples_v1alpha2_version_pb from "../../../../ory/keto/relation_tuples/v1alpha2/version_pb";
+import * as protoc_gen_openapiv2_options_annotations_pb from "../../../../protoc-gen-openapiv2/options/annotations_pb";
 
 interface IVersionServiceService extends grpc.ServiceDefinition<grpc.UntypedServiceImplementation> {
     getVersion: IVersionServiceService_IGetVersion;

@@ -4,8 +4,11 @@
 package driver
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
+	"io"
 	"net"
 	"net/http"
 	"os"
@@ -15,51 +18,46 @@ import (
 	"syscall"
 	"time"
 
+	grpcLogrus "github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/logging"
+	grpcRecovery "github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/recovery"
+	"github.com/julienschmidt/httprouter"
+	"github.com/pkg/errors"
+	"github.com/rs/cors"
+	"github.com/soheilhy/cmux"
+	"github.com/spf13/cobra"
+	"github.com/urfave/negroni"
 	grpcOtel "go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 	"go.opentelemetry.io/otel"
-
-	"github.com/ory/x/otelx/semconv"
-
-	grpcRecovery "github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/recovery"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
-
-	"github.com/ory/keto/internal/namespace/namespacehandler"
-	"github.com/ory/keto/internal/schema"
-	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
-
-	"github.com/ory/x/logrusx"
-	prometheus "github.com/ory/x/prometheusx"
-
-	grpcLogrus "github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/logging"
-	"github.com/julienschmidt/httprouter"
-	"github.com/ory/herodot"
-	"github.com/ory/x/reqlog"
-	"github.com/rs/cors"
-	"github.com/urfave/negroni"
-	grpcHealthV1 "google.golang.org/grpc/health/grpc_health_v1"
-	"google.golang.org/grpc/reflection"
-
-	"github.com/ory/keto/internal/check"
-	"github.com/ory/keto/internal/expand"
-	"github.com/ory/keto/internal/relationtuple"
-	"github.com/ory/keto/internal/x"
-
-	"github.com/ory/analytics-go/v5"
-	"github.com/ory/x/healthx"
-	"github.com/ory/x/metricsx"
-	"github.com/ory/x/otelx"
-	"github.com/ory/x/urlx"
-	"github.com/spf13/cobra"
-
-	"github.com/ory/keto/internal/driver/config"
-
-	"github.com/ory/graceful"
-	"github.com/pkg/errors"
-	"github.com/soheilhy/cmux"
+	"golang.org/x/net/http2"
+	"golang.org/x/net/http2/h2c"
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	grpcHealthV1 "google.golang.org/grpc/health/grpc_health_v1"
+	"google.golang.org/grpc/status"
+
+	"github.com/ory/analytics-go/v5"
+	"github.com/ory/graceful"
+	"github.com/ory/herodot"
+	"github.com/ory/x/healthx"
+	"github.com/ory/x/logrusx"
+	"github.com/ory/x/metricsx"
+	"github.com/ory/x/otelx"
+	"github.com/ory/x/otelx/semconv"
+	prometheus "github.com/ory/x/prometheusx"
+	"github.com/ory/x/reqlog"
+	"github.com/ory/x/urlx"
+
+	"github.com/ory/keto/internal/check"
+	"github.com/ory/keto/internal/driver/config"
+	"github.com/ory/keto/internal/expand"
+	"github.com/ory/keto/internal/namespace/namespacehandler"
+	"github.com/ory/keto/internal/relationtuple"
+	"github.com/ory/keto/internal/schema"
+	"github.com/ory/keto/internal/x"
+	"github.com/ory/keto/internal/x/api"
+	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 )
 
 func (r *RegistryDefault) enableSqa(cmd *cobra.Command) {
@@ -179,41 +177,68 @@ func (r *RegistryDefault) ServeAll(ctx context.Context) error {
 }
 
 func (r *RegistryDefault) serveRead(ctx context.Context, done chan<- struct{}) func() error {
-	rt, s := r.ReadRouter(ctx), r.ReadGRPCServer(ctx)
+	server := r.newAPIServer(ctx)
+	r.registerCommonGRPCServices(server.GRPCServer)
+	r.registerReadGRPCServices(server.GRPCServer)
+
+	apiHandler, err := server.Handler()
+	if err != nil {
+		return func() error { return err }
+	}
+
+	handler := r.ReadRouter(ctx, apiHandler)
 
 	if tracer := r.Tracer(ctx); tracer.IsLoaded() {
-		rt = otelx.TraceHandler(rt, otelhttp.WithTracerProvider(tracer.Provider()))
+		handler = otelx.TraceHandler(handler, otelhttp.WithTracerProvider(tracer.Provider()))
 	}
 
 	return func() error {
 		addr, listenFile := r.Config(ctx).ReadAPIListenOn()
-		return multiplexPort(ctx, r.Logger().WithField("endpoint", "read"), addr, listenFile, rt, s, done)
+		return serve(ctx, r.Logger().WithField("endpoint", "read"), addr, listenFile, handler, done)
 	}
 }
 
 func (r *RegistryDefault) serveWrite(ctx context.Context, done chan<- struct{}) func() error {
-	rt, s := r.WriteRouter(ctx), r.WriteGRPCServer(ctx)
+	server := r.newAPIServer(ctx)
+	r.registerCommonGRPCServices(server.GRPCServer)
+	r.registerWriteGRPCServices(server.GRPCServer)
+
+	apiHandler, err := server.Handler()
+	if err != nil {
+		return func() error { return err }
+	}
+
+	handler := r.WriteRouter(ctx, apiHandler)
 
 	if tracer := r.Tracer(ctx); tracer.IsLoaded() {
-		rt = otelx.TraceHandler(rt, otelhttp.WithTracerProvider(tracer.Provider()))
+		handler = otelx.TraceHandler(handler, otelhttp.WithTracerProvider(tracer.Provider()))
 	}
 
 	return func() error {
 		addr, listenFile := r.Config(ctx).WriteAPIListenOn()
-		return multiplexPort(ctx, r.Logger().WithField("endpoint", "write"), addr, listenFile, rt, s, done)
+		return serve(ctx, r.Logger().WithField("endpoint", "write"), addr, listenFile, handler, done)
 	}
 }
 
 func (r *RegistryDefault) serveOPLSyntax(ctx context.Context, done chan<- struct{}) func() error {
-	rt, s := r.OPLSyntaxRouter(ctx), r.OplGRPCServer(ctx)
+	server := r.newAPIServer(ctx)
+	r.registerCommonGRPCServices(server.GRPCServer)
+	r.registerOPLGRPCServices(server.GRPCServer)
+
+	apiHandler, err := server.Handler()
+	if err != nil {
+		return func() error { return err }
+	}
+
+	handler := r.OPLSyntaxRouter(ctx, apiHandler)
 
 	if tracer := r.Tracer(ctx); tracer.IsLoaded() {
-		rt = otelx.TraceHandler(rt, otelhttp.WithTracerProvider(tracer.Provider()))
+		handler = otelx.TraceHandler(handler, otelhttp.WithTracerProvider(tracer.Provider()))
 	}
 
 	return func() error {
 		addr, listenFile := r.Config(ctx).OPLSyntaxAPIListenOn()
-		return multiplexPort(ctx, r.Logger().WithField("endpoint", "opl"), addr, listenFile, rt, s, done)
+		return serve(ctx, r.Logger().WithField("endpoint", "opl"), addr, listenFile, handler, done)
 	}
 }
 
@@ -262,43 +287,21 @@ func (r *RegistryDefault) serveMetrics(ctx context.Context, done chan<- struct{}
 	}
 }
 
-func multiplexPort(ctx context.Context, log *logrusx.Logger, addr, listenFile string, router http.Handler, grpcS *grpc.Server, done chan<- struct{}) error {
+func serve(ctx context.Context, log *logrusx.Logger, addr string, listenFile string, handler http.Handler, done chan<- struct{}) error {
 	l, err := listenAndWriteFile(ctx, addr, listenFile)
 	if err != nil {
 		return err
 	}
 
-	m := cmux.New(l)
-	m.SetReadTimeout(graceful.DefaultReadTimeout)
-
-	grpcL := m.MatchWithWriters(cmux.HTTP2MatchHeaderFieldSendSettings("content-type", "application/grpc"))
-	httpL := m.Match(cmux.HTTP1())
-
 	//nolint:gosec // graceful.WithDefaults already sets a timeout
-	restS := graceful.WithDefaults(&http.Server{
-		Handler: router,
+	server := graceful.WithDefaults(&http.Server{
+		Handler: http.MaxBytesHandler(h2c.NewHandler(handler, &http2.Server{}), 1024*1024*4),
 	})
 
 	eg := &errgroup.Group{}
 
 	eg.Go(func() error {
-		if err := grpcS.Serve(grpcL); !errors.Is(err, cmux.ErrServerClosed) {
-			return errors.WithStack(err)
-		}
-		return nil
-	})
-
-	eg.Go(func() error {
-		if err := restS.Serve(httpL); !errors.Is(err, http.ErrServerClosed) && !errors.Is(err, cmux.ErrServerClosed) {
-			return errors.WithStack(err)
-		}
-		return nil
-	})
-
-	eg.Go(func() error {
-		err := m.Serve()
-		if err != nil && !errors.Is(err, net.ErrClosed) {
-			// unexpected error
+		if err := server.Serve(l); !errors.Is(err, http.ErrServerClosed) && !errors.Is(err, cmux.ErrServerClosed) {
 			return errors.WithStack(err)
 		}
 		return nil
@@ -319,31 +322,10 @@ func multiplexPort(ctx context.Context, log *logrusx.Logger, addr, listenFile st
 		ctx, cancel := context.WithTimeout(context.WithoutCancel(ctx), graceful.DefaultShutdownTimeout)
 		defer cancel()
 
-		shutdownEg := errgroup.Group{}
-		shutdownEg.Go(func() error {
-			// we ignore net.ErrClosed, because a cmux listener's close func is actually the one of the root listener (which is closed in a racy fashion)
-			if err := restS.Shutdown(ctx); err != nil && !errors.Is(err, http.ErrServerClosed) && !errors.Is(err, net.ErrClosed) {
-				// unexpected error
-				return errors.WithStack(err)
-			}
-			return nil
-		})
-		shutdownEg.Go(func() error {
-			gracefulDone := make(chan struct{})
-			go func() {
-				grpcS.GracefulStop()
-				close(gracefulDone)
-			}()
-			select {
-			case <-gracefulDone:
-				return nil
-			case <-ctx.Done():
-				grpcS.Stop()
-				return errors.New("graceful stop of gRPC server timed out, had to force it")
-			}
-		})
-
-		return shutdownEg.Wait()
+		if err := server.Shutdown(ctx); err != nil {
+			return errors.WithStack(err)
+		}
+		return nil
 	})
 
 	return eg.Wait()
@@ -376,7 +358,20 @@ func listenAndWriteFile(ctx context.Context, addr, listenFile string) (net.Liste
 	return l, nil
 }
 
-func (r *RegistryDefault) ReadRouter(ctx context.Context) http.Handler {
+type RouterOrHandler struct {
+	Router  *httprouter.Router
+	Handler http.Handler
+}
+
+func (h *RouterOrHandler) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
+	if handle, params, _ := h.Router.Lookup(r.Method, r.URL.Path); handle != nil {
+		handle(rw, r, params)
+		return
+	}
+	h.Handler.ServeHTTP(rw, r)
+}
+
+func (r *RegistryDefault) ReadRouter(ctx context.Context, apiHandler http.Handler) http.Handler {
 	n := negroni.New()
 	for _, f := range r.defaultHttpMiddlewares {
 		n.UseFunc(f)
@@ -391,14 +386,8 @@ func (r *RegistryDefault) ReadRouter(ctx context.Context) http.Handler {
 	r.HealthHandler().SetHealthRoutes(br.Router, false)
 	r.HealthHandler().SetVersionRoutes(br.Router)
 
-	for _, h := range r.allHandlers() {
-		if h, ok := h.(ReadHandler); ok {
-			h.RegisterReadRoutes(br)
-		}
-	}
-
+	n.UseHandler(&RouterOrHandler{Router: br.Router, Handler: apiHandler})
 	n.Use(r.PrometheusManager())
-	n.UseHandler(br)
 
 	if r.sqaService != nil {
 		n.Use(r.sqaService)
@@ -413,7 +402,7 @@ func (r *RegistryDefault) ReadRouter(ctx context.Context) http.Handler {
 	return handler
 }
 
-func (r *RegistryDefault) WriteRouter(ctx context.Context) http.Handler {
+func (r *RegistryDefault) WriteRouter(ctx context.Context, apiHandler http.Handler) http.Handler {
 	n := negroni.New()
 	for _, f := range r.defaultHttpMiddlewares {
 		n.UseFunc(f)
@@ -428,14 +417,8 @@ func (r *RegistryDefault) WriteRouter(ctx context.Context) http.Handler {
 	r.HealthHandler().SetHealthRoutes(pr.Router, false)
 	r.HealthHandler().SetVersionRoutes(pr.Router)
 
-	for _, h := range r.allHandlers() {
-		if h, ok := h.(WriteHandler); ok {
-			h.RegisterWriteRoutes(pr)
-		}
-	}
-
+	n.UseHandler(&RouterOrHandler{Router: pr.Router, Handler: apiHandler})
 	n.Use(r.PrometheusManager())
-	n.UseHandler(pr)
 
 	if r.sqaService != nil {
 		n.Use(r.sqaService)
@@ -450,13 +433,31 @@ func (r *RegistryDefault) WriteRouter(ctx context.Context) http.Handler {
 	return handler
 }
 
-func (r *RegistryDefault) OPLSyntaxRouter(ctx context.Context) http.Handler {
+func (r *RegistryDefault) OPLSyntaxRouter(ctx context.Context, apiHandler http.Handler) http.Handler {
 	n := negroni.New()
 	for _, f := range r.defaultHttpMiddlewares {
 		n.UseFunc(f)
 	}
 	n.UseFunc(semconv.Middleware)
 	n.Use(reqlog.NewMiddlewareFromLogger(r.l, "syntax#Ory Keto").ExcludePaths(healthx.AliveCheckPath, healthx.ReadyCheckPath))
+	n.UseFunc(func(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
+		if r.URL.Path == "/opl/syntax/check" && r.Header.Get("Content-Type") != "application/json" {
+			body, err := io.ReadAll(r.Body)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusBadRequest)
+				return
+			}
+			newBody, err := json.Marshal(body)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusBadRequest)
+				return
+			}
+			r.Body = io.NopCloser(bytes.NewReader(newBody))
+			r.ContentLength = int64(len(newBody))
+			r.Header.Set("Content-Type", "application/json")
+		}
+		next(w, r)
+	})
 
 	pr := &x.OPLSyntaxRouter{Router: httprouter.New()}
 	r.PrometheusManager().RegisterRouter(pr.Router)
@@ -465,14 +466,8 @@ func (r *RegistryDefault) OPLSyntaxRouter(ctx context.Context) http.Handler {
 	r.HealthHandler().SetHealthRoutes(pr.Router, false)
 	r.HealthHandler().SetVersionRoutes(pr.Router)
 
-	for _, h := range r.allHandlers() {
-		if h, ok := h.(OPLSyntaxHandler); ok {
-			h.RegisterSyntaxRoutes(pr)
-		}
-	}
-
+	n.UseHandler(&RouterOrHandler{Router: pr.Router, Handler: apiHandler})
 	n.Use(r.PrometheusManager())
-	n.UseHandler(pr)
 
 	if r.sqaService != nil {
 		n.Use(r.sqaService)
@@ -503,6 +498,7 @@ func (r *RegistryDefault) unaryInterceptors(ctx context.Context) []grpc.UnarySer
 	is = append(is, r.defaultUnaryInterceptors...)
 	is = append(is,
 		herodot.UnaryErrorUnwrapInterceptor,
+		x.ValidationInterceptor,
 		grpcLogrus.UnaryServerInterceptor(InterceptorLogger(r.l.Logrus())),
 		r.pmm.UnaryServerInterceptor,
 	)
@@ -543,56 +539,76 @@ func (r *RegistryDefault) newGrpcServer(ctx context.Context) *grpc.Server {
 	if r.grpcTransportCredentials != nil {
 		opts = append(opts, grpc.Creds(r.grpcTransportCredentials))
 	}
-	server := grpc.NewServer(opts...)
-	return server
+
+	return grpc.NewServer(opts...)
 }
 
-func (r *RegistryDefault) ReadGRPCServer(ctx context.Context) *grpc.Server {
-	s := r.newGrpcServer(ctx)
+func (r *RegistryDefault) newAPIServer(ctx context.Context) *api.Server {
+	opts := []api.ServerOption{
+		api.WithGRPCOption(grpc.ChainStreamInterceptor(r.streamInterceptors(ctx)...)),
+		api.WithGRPCOption(grpc.ChainUnaryInterceptor(r.unaryInterceptors(ctx)...)),
+		api.WithGRPCOption(grpc.MaxRecvMsgSize(1024 * 1024 * 8)),
+	}
+	for _, o := range r.defaultGRPCServerOptions {
+		opts = append(opts, api.WithGRPCOption(o))
+	}
+	if r.grpcTransportCredentials != nil {
+		opts = append(opts, api.WithGRPCOption(grpc.Creds(r.grpcTransportCredentials)))
+	}
 
+	return api.NewServer(opts...)
+}
+
+func (r *RegistryDefault) registerCommonGRPCServices(s *grpc.Server) {
 	grpcHealthV1.RegisterHealthServer(s, r.HealthServer())
 	rts.RegisterVersionServiceServer(s, r)
-	reflection.Register(s)
+	r.pmm.Register(s)
+}
+
+func (r *RegistryDefault) registerReadGRPCServices(s *grpc.Server) {
 	for _, h := range r.allHandlers() {
 		if h, ok := h.(ReadHandler); ok {
 			h.RegisterReadGRPC(s)
 		}
 	}
-	r.pmm.Register(s)
+}
+
+func (r *RegistryDefault) registerWriteGRPCServices(s *grpc.Server) {
+	for _, h := range r.allHandlers() {
+		if h, ok := h.(WriteHandler); ok {
+			h.RegisterWriteGRPC(s)
+		}
+	}
+}
+
+func (r *RegistryDefault) registerOPLGRPCServices(s *grpc.Server) {
+	for _, h := range r.allHandlers() {
+		if h, ok := h.(OPLSyntaxHandler); ok {
+			h.RegisterSyntaxGRPC(s)
+		}
+	}
+}
+
+func (r *RegistryDefault) ReadGRPCServer(ctx context.Context) *grpc.Server {
+	s := r.newGrpcServer(ctx)
+	r.registerCommonGRPCServices(s)
+	r.registerReadGRPCServices(s)
 
 	return s
 }
 
 func (r *RegistryDefault) WriteGRPCServer(ctx context.Context) *grpc.Server {
 	s := r.newGrpcServer(ctx)
-
-	grpcHealthV1.RegisterHealthServer(s, r.HealthServer())
-	rts.RegisterVersionServiceServer(s, r)
-	reflection.Register(s)
-
-	for _, h := range r.allHandlers() {
-		if h, ok := h.(WriteHandler); ok {
-			h.RegisterWriteGRPC(s)
-		}
-	}
-	r.pmm.Register(s)
+	r.registerCommonGRPCServices(s)
+	r.registerWriteGRPCServices(s)
 
 	return s
 }
 
 func (r *RegistryDefault) OplGRPCServer(ctx context.Context) *grpc.Server {
 	s := r.newGrpcServer(ctx)
-
-	grpcHealthV1.RegisterHealthServer(s, r.HealthServer())
-	rts.RegisterVersionServiceServer(s, r)
-	reflection.Register(s)
-
-	for _, h := range r.allHandlers() {
-		if h, ok := h.(OPLSyntaxHandler); ok {
-			h.RegisterSyntaxGRPC(s)
-		}
-	}
-	r.pmm.Register(s)
+	r.registerCommonGRPCServices(s)
+	r.registerOPLGRPCServices(s)
 
 	return s
 }
@@ -603,8 +619,8 @@ func (r *RegistryDefault) metricsRouter(ctx context.Context) http.Handler {
 
 	r.PrometheusManager().RegisterRouter(router)
 	r.MetricsHandler().SetRoutes(router)
-	n.Use(r.PrometheusManager())
 	n.UseHandler(router)
+	n.Use(r.PrometheusManager())
 
 	var handler http.Handler = n
 	options, enabled := r.Config(ctx).CORS("metrics")

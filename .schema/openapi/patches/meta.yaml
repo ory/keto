@@ -1,4 +1,4 @@
-- op: replace
+- op: add
   path: /info
   value:
     title: Ory Keto API

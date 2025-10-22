@@ -6,14 +6,17 @@ package expand
 import (
 	"fmt"
 
+	"google.golang.org/protobuf/encoding/protojson"
+
 	"github.com/ory/keto/ketoapi"
 
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 
 	"github.com/ory/x/flagx"
 
-	"github.com/ory/x/cmdx"
 	"github.com/spf13/cobra"
+
+	"github.com/ory/x/cmdx"
 
 	"github.com/ory/keto/cmd/client"
 )
@@ -31,7 +34,11 @@ func NewExpandCmd() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			defer conn.Close()
+			defer func() {
+				if err := conn.Close(); err != nil {
+					_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Error closing connection: %v\n", err)
+				}
+			}()
 
 			maxDepth, err := cmd.Flags().GetInt32(FlagMaxDepth)
 			if err != nil {
@@ -53,7 +60,7 @@ func NewExpandCmd() *cobra.Command {
 				tree = ketoapi.TreeFromProto[*ketoapi.RelationTuple](resp.Tree)
 			}
 
-			cmdx.PrintJSONAble(cmd, tree)
+			cmdx.PrintJSONAble(cmd, &pbJSONValue{resp})
 			switch flagx.MustGetString(cmd, cmdx.FlagFormat) {
 			case string(cmdx.FormatDefault), "":
 				if tree == nil && !flagx.MustGetBool(cmd, cmdx.FlagQuiet) {
@@ -75,4 +82,21 @@ func NewExpandCmd() *cobra.Command {
 
 func RegisterCommandsRecursive(parent *cobra.Command) {
 	parent.AddCommand(NewExpandCmd())
+}
+
+type pbJSONValue struct{ *rts.ExpandResponse }
+
+func (v *pbJSONValue) MarshalJSON() ([]byte, error) {
+	marshaler := &protojson.MarshalOptions{EmitUnpopulated: true}
+	if v.Tree == nil || v.Tree.NodeType.Number() == 0 {
+		return []byte("null"), nil
+	}
+	return marshaler.Marshal(v.Tree)
+}
+func (v *pbJSONValue) String() string {
+	var tree *ketoapi.Tree[*ketoapi.RelationTuple]
+	if v.Tree != nil {
+		tree = ketoapi.TreeFromProto[*ketoapi.RelationTuple](v.Tree)
+	}
+	return tree.String()
 }

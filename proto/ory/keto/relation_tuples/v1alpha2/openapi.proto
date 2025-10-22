@@ -1,0 +1,105 @@
+syntax = "proto3";
+
+package ory.keto.relation_tuples.v1alpha2;
+
+import "google/api/field_behavior.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+option csharp_namespace = "Ory.Keto.RelationTuples.v1alpha2";
+option go_package = "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2;rts";
+option java_multiple_files = true;
+option java_outer_classname = "OpenapiProto";
+option java_package = "sh.ory.keto.relation_tuples.v1alpha2";
+option php_namespace = "Ory\\Keto\\RelationTuples\\v1alpha2";
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+  info: {
+    title: "ORY Keto"
+    description: "Ory Keto is a cloud native access control server providing best-practice patterns (RBAC, ABAC, ACL, AWS IAM Policies, Kubernetes Roles, ...) via REST APIs."
+    contact: {
+      name: "ORY"
+      url: "https://www.ory.sh"
+      email: "hi@ory.sh"
+    }
+    license: {
+      name: "Apache 2.0"
+      url: "https://github.com/ory/keto/blob/master/LICENSE"
+    }
+    version: "Latest"
+  }
+  base_path: "/"
+  schemes: [
+    HTTP,
+    HTTPS
+  ]
+  consumes: ["application/json"]
+  produces: ["application/json"]
+  responses: {
+    key: "400"
+    value: {
+      description: "errorGeneric"
+      schema: {
+        json_schema: {ref: ".ory.keto.relation_tuples.v1alpha2.ErrorResponse"}
+      }
+    }
+  }
+  responses: {
+    key: "default"
+    value: {
+      description: "errorGeneric"
+      schema: {
+        json_schema: {ref: ".ory.keto.relation_tuples.v1alpha2.ErrorResponse"}
+      }
+    }
+  }
+};
+
+// JSON API Error Response
+//
+// The standard Ory JSON API error format.
+message ErrorResponse {
+  message Error {
+    // The status code
+    int64 code = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {example: "404"}];
+
+    // Debug information
+    //
+    // Debug information is often not exposed to protect against leaking sensitive information.
+    string debug = 2;
+
+    // Further error details
+    //
+    // Further details about the error.
+    map<string, string> details = 3;
+
+    // The error ID
+    //
+    // The error ID is useful when trying to identify various errors in application logic.
+    string id = 4;
+
+    // The error message
+    //
+    // The error's message (required).
+    string message = 5 [
+      (google.api.field_behavior) = REQUIRED,
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {example: "\"The requested resource could not be found.\""}
+    ];
+
+    // The error reason
+    //
+    // Reason holds a human-readable reason for the error.
+    string reason = 6;
+
+    // The request ID
+    //
+    // The request ID is often exposed internally in order to trace
+    // errors across service architectures. This is often a UUID.
+    string request = 7 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {example: "\"d7ef54b1-ec15-46e6-bccb-524b82c035e6\""}];
+
+    // The status description
+    //
+    // Status holds the human-readable HTTP status code.
+    string status = 8 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {example: "\"Not Found\""}];
+  }
+
+  Error error = 1 [(google.api.field_behavior) = REQUIRED];
+}

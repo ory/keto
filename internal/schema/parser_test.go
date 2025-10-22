@@ -6,8 +6,9 @@ package schema
 import (
 	"testing"
 
-	"github.com/ory/x/snapshotx"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/ory/x/snapshotx"
 
 	"github.com/ory/keto/internal/namespace/ast"
 )
@@ -167,8 +168,31 @@ class Resource implements Namespace {
     "scope.action_1": (ctx: Context) => this.related["scope.relation"].traverse((r) => r.related["scope.relation"].includes(ctx.subject)),
     "scope.action_2": (ctx: Context) => this.permits["scope.action_0"](ctx),
   }
-}`},
 }
+`}, {"bidi utf chars", `
+class Role implements Namespace {
+  related: {
+    member: Role[]
+  }
+}
+
+class Resource implements Namespace {
+  related: {
+    admins: SubjectSet<Role, 'member'>[],
+    supervisors: SubjectSet<Role, 'member'>[],
+    annotators: SubjectSet<Role, 'member'>[],
+    medicalAnnotators: SubjectSet<Role, 'member'>[],
+  }
+  permits = {
+    update: (ctx: Context) => this.related.admins.traverse((role) => role.related.member.includes(ctx.subject)) ||
+` +
+		"      /* \u202e || \u2066 this.related.invalid.traverse((role) => role.related.member.includes(ctx.subject))\u2069 \u2066 check: */" + `
+      this.related.annotators.traverse((role) => role.related.member.includes(ctx.subject)) ||
+      this.related.medicalAnnotators.traverse((role) => role.related.member.includes(ctx.subject)) ||
+      this.related.supervisors.traverse((role) => role.related.member.includes(ctx.subject)),
+  }
+}
+`}}
 
 func TestParser(t *testing.T) {
 	t.Run("suite=snapshots", func(t *testing.T) {

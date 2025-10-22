@@ -17,14 +17,14 @@ import (
 
 // ErrorGeneric The standard Ory JSON API error format.
 type ErrorGeneric struct {
-	Error GenericError `json:"error"`
+	Error ErrorGenericError `json:"error"`
 }
 
 // NewErrorGeneric instantiates a new ErrorGeneric object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewErrorGeneric(error_ GenericError) *ErrorGeneric {
+func NewErrorGeneric(error_ ErrorGenericError) *ErrorGeneric {
 	this := ErrorGeneric{}
 	this.Error = error_
 	return &this
@@ -39,9 +39,9 @@ func NewErrorGenericWithDefaults() *ErrorGeneric {
 }
 
 // GetError returns the Error field value
-func (o *ErrorGeneric) GetError() GenericError {
+func (o *ErrorGeneric) GetError() ErrorGenericError {
 	if o == nil {
-		var ret GenericError
+		var ret ErrorGenericError
 		return ret
 	}
 
@@ -50,7 +50,7 @@ func (o *ErrorGeneric) GetError() GenericError {
 
 // GetErrorOk returns a tuple with the Error field value
 // and a boolean to check if the value has been set.
-func (o *ErrorGeneric) GetErrorOk() (*GenericError, bool) {
+func (o *ErrorGeneric) GetErrorOk() (*ErrorGenericError, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -58,7 +58,7 @@ func (o *ErrorGeneric) GetErrorOk() (*GenericError, bool) {
 }
 
 // SetError sets field value
-func (o *ErrorGeneric) SetError(v GenericError) {
+func (o *ErrorGeneric) SetError(v ErrorGenericError) {
 	o.Error = v
 }
 

@@ -23,15 +23,11 @@ var (
 	ErrUnknownNodeType   = errors.New("unknown node type")
 )
 
-// swagger:model namespace
 type Namespace struct {
 	// Name of the namespace.
 	Name string `json:"name"`
 }
 
-// Relationship
-//
-// swagger:model relationship
 type RelationTuple struct {
 	// Namespace of the Relation Tuple
 	//
@@ -56,12 +52,9 @@ type RelationTuple struct {
 	// SubjectSet of the Relation Tuple
 	//
 	// Either SubjectSet or SubjectID can be provided.
-	//
-	// swagger:allOf
 	SubjectSet *SubjectSet `json:"subject_set,omitempty"`
 }
 
-// swagger:model subjectSet
 type SubjectSet struct {
 	// Namespace of the Subject Set
 	//
@@ -79,9 +72,6 @@ type SubjectSet struct {
 	Relation string `json:"relation"`
 }
 
-// Relation Query
-//
-// swagger:model relationQuery
 type RelationQuery struct {
 	// Namespace to query
 	Namespace *string `json:"namespace"`
@@ -99,20 +89,15 @@ type RelationQuery struct {
 	// SubjectSet to query
 	//
 	// Either SubjectSet or SubjectID can be provided.
-	//
-	// swagger:allOf
 	SubjectSet *SubjectSet `json:"subject_set,omitempty"`
 }
 
-// Payload for patching a relationship
-//
-// swagger:model relationshipPatch
+// Payload for patching a relationship.
 type PatchDelta struct {
 	Action        PatchAction    `json:"action"`
 	RelationTuple *RelationTuple `json:"relation_tuple"`
 }
 
-// swagger:enum PatchAction
 type PatchAction string
 
 const (
@@ -142,8 +127,6 @@ var RelationQueryKeys = []string{
 }
 
 // Paginated Relationship List
-//
-// swagger:model relationships
 type GetResponse struct {
 	RelationTuples []*RelationTuple `json:"relation_tuples"`
 	// The opaque token to provide in a subsequent request
@@ -153,8 +136,6 @@ type GetResponse struct {
 }
 
 // Relationship Namespace List
-//
-// swagger:model relationshipNamespaces
 type GetNamespacesResponse struct {
 	Namespaces []Namespace `json:"namespaces"`
 }
@@ -175,10 +156,8 @@ func (r *RelationTuple) Validate() error {
 	return nil
 }
 
-// swagger:enum ExpandNodeType
 type ExpandNodeType TreeNodeType
 
-// swagger:enum TreeNodeType
 type TreeNodeType string
 
 const (
@@ -232,10 +211,7 @@ type Tree[T tuple[T]] struct {
 // OpenAPI spec, since go-swagger does not understand generics :(.
 // This can be fixed by using grpc-gateway.
 
-// swagger:model expandedPermissionTree
-//
-//lint:ignore U1000 Used to generate Swagger and OpenAPI definitions
-type swaggerOnlyExpandTree struct {
+type swaggerOnlyExpandTree struct { // nolint
 	// The type of the node.
 	//
 	// required: true
@@ -259,8 +235,6 @@ type SourcePosition struct {
 }
 
 // CheckOPLSyntaxResponse represents the response for an OPL syntax check request.
-//
-// swagger:model checkOplSyntaxResult
 type CheckOPLSyntaxResponse struct {
 	// The list of syntax errors
 	//

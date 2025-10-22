@@ -4,13 +4,13 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Results** | [**[]CheckPermissionResultWithError**](CheckPermissionResultWithError.md) | An array of check results. The order aligns with the input order. | 
+**Results** | Pointer to [**[]CheckPermissionResultWithError**](CheckPermissionResultWithError.md) | The results of the batch check. The order of these results will match the order of the input. | [optional] 
 
 ## Methods
 
 ### NewBatchCheckPermissionResult
 
-`func NewBatchCheckPermissionResult(results []CheckPermissionResultWithError, ) *BatchCheckPermissionResult`
+`func NewBatchCheckPermissionResult() *BatchCheckPermissionResult`
 
 NewBatchCheckPermissionResult instantiates a new BatchCheckPermissionResult object
 This constructor will assign default values to properties that have it defined,
@@ -44,6 +44,11 @@ and a boolean to check if the value has been set.
 
 SetResults sets Results field to given value.
 
+### HasResults
+
+`func (o *BatchCheckPermissionResult) HasResults() bool`
+
+HasResults returns a boolean if a field has been set.
 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

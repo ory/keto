@@ -15,9 +15,10 @@ import (
 	"time"
 
 	"github.com/go-sql-driver/mysql"
-	"github.com/ory/pop/v6"
 	"github.com/stretchr/testify/require"
 	"github.com/tidwall/sjson"
+
+	"github.com/ory/pop/v6"
 )
 
 type DsnT struct {
@@ -96,7 +97,7 @@ func createDB(t testing.TB, url string, dbName string) (err error) {
 		if err := conn.RawQuery("DROP DATABASE " + dbName).Exec(); err != nil {
 			t.Logf("could not drop database %q in %q: %v", dbName, url, err)
 		}
-		conn.Close()
+		require.NoError(t, conn.Close())
 	})
 
 	return

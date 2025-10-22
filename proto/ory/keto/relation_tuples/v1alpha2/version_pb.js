@@ -21,6 +21,10 @@ var global =
     (function () { return this; }).call(null) ||
     Function('return this')();
 
+var google_api_annotations_pb = require('../../../../google/api/annotations_pb.js');
+goog.object.extend(proto, google_api_annotations_pb);
+var protoc$gen$openapiv2_options_annotations_pb = require('../../../../protoc-gen-openapiv2/options/annotations_pb.js');
+goog.object.extend(proto, protoc$gen$openapiv2_options_annotations_pb);
 goog.exportSymbol('proto.ory.keto.relation_tuples.v1alpha2.GetVersionRequest', null, global);
 goog.exportSymbol('proto.ory.keto.relation_tuples.v1alpha2.GetVersionResponse', null, global);
 /**
@@ -198,7 +202,7 @@ proto.ory.keto.relation_tuples.v1alpha2.GetVersionResponse.prototype.toObject = 
  */
 proto.ory.keto.relation_tuples.v1alpha2.GetVersionResponse.toObject = function(includeInstance, msg) {
   var f, obj = {
-version: jspb.Message.getFieldWithDefault(msg, 1, "")
+    version: jspb.Message.getFieldWithDefault(msg, 1, "")
   };
 
   if (includeInstance) {

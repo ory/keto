@@ -63,7 +63,7 @@ func readTuplesFromArg(cmd *cobra.Command, arg string) ([]*ketoapi.RelationTuple
 			return tuples, nil
 		}
 
-		f, err = os.Open(arg)
+		f, err = os.Open(arg) //nolint:gosec
 		if err != nil {
 			_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Error processing arg %s: %s\n", arg, err)
 			return nil, cmdx.FailSilently(cmd)

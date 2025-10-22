@@ -11,7 +11,6 @@ import (
 	"io"
 	"net"
 	"net/http"
-	"net/http/httptest"
 	"net/url"
 	"strings"
 	"testing"
@@ -22,22 +21,23 @@ import (
 	"google.golang.org/grpc/status"
 	"google.golang.org/grpc/test/bufconn"
 
-	"github.com/julienschmidt/httprouter"
+	"github.com/ory/x/pointerx"
+
+	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
+
+	"github.com/ory/keto/internal/driver/config"
+	client "github.com/ory/keto/internal/httpclient"
+	"github.com/ory/keto/internal/relationtuple"
+	"github.com/ory/keto/internal/x/api"
+	"github.com/ory/keto/ketoapi"
+
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/tidwall/gjson"
 
-	"github.com/ory/x/pointerx"
-
 	"github.com/ory/keto/internal/check"
 	"github.com/ory/keto/internal/driver"
-	"github.com/ory/keto/internal/driver/config"
-	client "github.com/ory/keto/internal/httpclient"
 	"github.com/ory/keto/internal/namespace"
-	"github.com/ory/keto/internal/relationtuple"
-	"github.com/ory/keto/internal/x"
-	"github.com/ory/keto/ketoapi"
-	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 )
 
 func assertAllowed(t *testing.T, resp *http.Response) {
@@ -70,20 +70,16 @@ func openAPIAssertDenied(t *testing.T, resp *http.Response) {
 	assert.False(t, gjson.GetBytes(body, "allowed").Bool())
 }
 
-func TestCheckRESTHandler(t *testing.T) {
-	nspaces := []*namespace.Namespace{{
-		Name: "check handler",
-	}}
+func TestRESTHandler(t *testing.T) {
+	nspaces := []*namespace.Namespace{{Name: "check handler"}}
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 	reg := driver.NewSqliteTestRegistry(t, false)
 	require.NoError(t, reg.Config(ctx).Set(config.KeyNamespaces, nspaces))
-	h := check.NewHandler(reg)
-	r := httprouter.New()
-	h.RegisterReadRoutes(&x.ReadRouter{Router: r})
-	ts := httptest.NewServer(r)
-	defer ts.Close()
+
+	endpoints := api.NewTestServer(t, check.NewHandler(reg))
+	ts := endpoints.HTTP
 
 	for _, suite := range []struct {
 		name         string
@@ -103,7 +99,7 @@ func TestCheckRESTHandler(t *testing.T) {
 				assert.Equal(t, http.StatusBadRequest, resp.StatusCode)
 				body, err := io.ReadAll(resp.Body)
 				require.NoError(t, err)
-				assert.Contains(t, string(body), "invalid syntax")
+				assert.Contains(t, string(body), "invalid parameter \\\"max_depth\\\"")
 			})
 
 			t.Run("case=returns bad request on malformed input", func(t *testing.T) {
@@ -113,6 +109,12 @@ func TestCheckRESTHandler(t *testing.T) {
 				require.NoError(t, err)
 
 				assert.Equal(t, http.StatusBadRequest, resp.StatusCode)
+			})
+			t.Run("case=returns bad request invalid json", func(t *testing.T) {
+				resp, err := ts.Client().Post(ts.URL+suite.base, "", strings.NewReader(`{"invalid]`))
+				require.NoError(t, err)
+				body, _ := io.ReadAll(resp.Body)
+				assert.Equal(t, http.StatusBadRequest, resp.StatusCode, body)
 			})
 
 			t.Run("case=returns bad request on missing subject", func(t *testing.T) {
@@ -177,11 +179,9 @@ func TestBatchCheckRESTHandler(t *testing.T) {
 	defer cancel()
 	reg := driver.NewSqliteTestRegistry(t, false)
 	require.NoError(t, reg.Config(ctx).Set(config.KeyNamespaces, nspaces))
-	h := check.NewHandler(reg)
-	r := httprouter.New()
-	h.RegisterReadRoutes(&x.ReadRouter{Router: r})
-	ts := httptest.NewServer(r)
-	defer ts.Close()
+
+	endpoints := api.NewTestServer(t, check.NewHandler(reg))
+	ts := endpoints.HTTP
 
 	t.Run("case=returns bad request on non-int max depth", func(t *testing.T) {
 		resp, err := ts.Client().Post(ts.URL+check.BatchRoute+"?max-depth=foo",
@@ -191,7 +191,7 @@ func TestBatchCheckRESTHandler(t *testing.T) {
 		assert.Equal(t, http.StatusBadRequest, resp.StatusCode)
 		body, err := io.ReadAll(resp.Body)
 		require.NoError(t, err)
-		assert.Contains(t, string(body), "invalid syntax")
+		assert.Contains(t, string(body), "invalid parameter \\\"max_depth\\\"")
 	})
 
 	t.Run("case=returns bad request on invalid request body", func(t *testing.T) {
@@ -202,7 +202,7 @@ func TestBatchCheckRESTHandler(t *testing.T) {
 		assert.Equal(t, http.StatusBadRequest, resp.StatusCode)
 		body, err := io.ReadAll(resp.Body)
 		require.NoError(t, err)
-		assert.Contains(t, string(body), "could not unmarshal json")
+		assert.Contains(t, string(body), "invalid value not-json")
 	})
 
 	t.Run("case=returns bad request with too many tuples", func(t *testing.T) {
@@ -273,11 +273,11 @@ func TestBatchCheckRESTHandler(t *testing.T) {
 			Results: []client.CheckPermissionResultWithError{
 				{
 					Allowed: true,
-					Error:   nil,
+					Error:   pointerx.Ptr(""),
 				},
 				{
 					Allowed: false,
-					Error:   nil,
+					Error:   pointerx.Ptr(""),
 				},
 				{
 					Allowed: false,
@@ -325,7 +325,7 @@ func TestBatchCheckGRPCHandler(t *testing.T) {
 		grpc.WithContextDialer(func(context.Context, string) (net.Conn, error) { return l.Dial() }),
 	)
 	require.NoError(t, err)
-	t.Cleanup(func() { conn.Close() })
+	t.Cleanup(func() { require.NoError(t, conn.Close()) })
 
 	nspaces := []*namespace.Namespace{{
 		Name: "batch-check-grpc",

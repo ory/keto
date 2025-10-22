@@ -15,19 +15,18 @@ import (
 	"encoding/json"
 )
 
-// BatchCheckPermissionResult Batch Check Permission Result
+// BatchCheckPermissionResult The response for a CheckService.BatchCheck rpc.
 type BatchCheckPermissionResult struct {
-	// An array of check results. The order aligns with the input order.
-	Results []CheckPermissionResultWithError `json:"results"`
+	// The results of the batch check. The order of these results will match the order of the input.
+	Results []CheckPermissionResultWithError `json:"results,omitempty"`
 }
 
 // NewBatchCheckPermissionResult instantiates a new BatchCheckPermissionResult object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBatchCheckPermissionResult(results []CheckPermissionResultWithError) *BatchCheckPermissionResult {
+func NewBatchCheckPermissionResult() *BatchCheckPermissionResult {
 	this := BatchCheckPermissionResult{}
-	this.Results = results
 	return &this
 }
 
@@ -39,33 +38,41 @@ func NewBatchCheckPermissionResultWithDefaults() *BatchCheckPermissionResult {
 	return &this
 }
 
-// GetResults returns the Results field value
+// GetResults returns the Results field value if set, zero value otherwise.
 func (o *BatchCheckPermissionResult) GetResults() []CheckPermissionResultWithError {
-	if o == nil {
+	if o == nil || o.Results == nil {
 		var ret []CheckPermissionResultWithError
 		return ret
 	}
-
 	return o.Results
 }
 
-// GetResultsOk returns a tuple with the Results field value
+// GetResultsOk returns a tuple with the Results field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BatchCheckPermissionResult) GetResultsOk() ([]CheckPermissionResultWithError, bool) {
-	if o == nil {
+	if o == nil || o.Results == nil {
 		return nil, false
 	}
 	return o.Results, true
 }
 
-// SetResults sets field value
+// HasResults returns a boolean if a field has been set.
+func (o *BatchCheckPermissionResult) HasResults() bool {
+	if o != nil && o.Results != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetResults gets a reference to the given []CheckPermissionResultWithError and assigns it to the Results field.
 func (o *BatchCheckPermissionResult) SetResults(v []CheckPermissionResultWithError) {
 	o.Results = v
 }
 
 func (o BatchCheckPermissionResult) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
-	if true {
+	if o.Results != nil {
 		toSerialize["results"] = o.Results
 	}
 	return json.Marshal(toSerialize)

@@ -15,7 +15,7 @@ import (
 	"encoding/json"
 )
 
-// BatchCheckPermissionBody Batch Check Permission Body
+// BatchCheckPermissionBody struct for BatchCheckPermissionBody
 type BatchCheckPermissionBody struct {
 	Tuples []Relationship `json:"tuples,omitempty"`
 }

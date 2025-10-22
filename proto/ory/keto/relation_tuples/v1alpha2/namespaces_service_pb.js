@@ -21,6 +21,10 @@ var global =
     (function () { return this; }).call(null) ||
     Function('return this')();
 
+var google_api_annotations_pb = require('../../../../google/api/annotations_pb.js');
+goog.object.extend(proto, google_api_annotations_pb);
+var protoc$gen$openapiv2_options_annotations_pb = require('../../../../protoc-gen-openapiv2/options/annotations_pb.js');
+goog.object.extend(proto, protoc$gen$openapiv2_options_annotations_pb);
 goog.exportSymbol('proto.ory.keto.relation_tuples.v1alpha2.ListNamespacesRequest', null, global);
 goog.exportSymbol('proto.ory.keto.relation_tuples.v1alpha2.ListNamespacesResponse', null, global);
 goog.exportSymbol('proto.ory.keto.relation_tuples.v1alpha2.Namespace', null, global);
@@ -227,7 +231,7 @@ proto.ory.keto.relation_tuples.v1alpha2.ListNamespacesResponse.prototype.toObjec
  */
 proto.ory.keto.relation_tuples.v1alpha2.ListNamespacesResponse.toObject = function(includeInstance, msg) {
   var f, obj = {
-namespacesList: jspb.Message.toObjectList(msg.getNamespacesList(),
+    namespacesList: jspb.Message.toObjectList(msg.getNamespacesList(),
     proto.ory.keto.relation_tuples.v1alpha2.Namespace.toObject, includeInstance)
   };
 
@@ -380,7 +384,7 @@ proto.ory.keto.relation_tuples.v1alpha2.Namespace.prototype.toObject = function(
  */
 proto.ory.keto.relation_tuples.v1alpha2.Namespace.toObject = function(includeInstance, msg) {
   var f, obj = {
-name: jspb.Message.getFieldWithDefault(msg, 1, "")
+    name: jspb.Message.getFieldWithDefault(msg, 1, "")
   };
 
   if (includeInstance) {

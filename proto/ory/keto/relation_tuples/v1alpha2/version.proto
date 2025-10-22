@@ -1,9 +1,11 @@
 syntax = "proto3";
-
 package ory.keto.relation_tuples.v1alpha2;
 
-option go_package = "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2;rts";
+import "google/api/annotations.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
 option csharp_namespace = "Ory.Keto.RelationTuples.v1alpha2";
+option go_package = "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2;rts";
 option java_multiple_files = true;
 option java_outer_classname = "VersionServiceProto";
 option java_package = "sh.ory.keto.relation_tuples.v1alpha2";
@@ -14,7 +16,27 @@ option php_namespace = "Ory\\Keto\\RelationTuples\\v1alpha2";
 // This service is part of the [read-APIs](../concepts/25_api-overview.mdx#read-apis) and [write-APIs](../concepts/25_api-overview.mdx#write-apis).
 service VersionService {
   // Returns the version of the Ory Keto instance.
-  rpc GetVersion(GetVersionRequest) returns (GetVersionResponse);
+  //
+  // This endpoint returns the service version typically notated using semantic versioning.
+  //
+  // If the service supports TLS Edge Termination, this endpoint does not require the
+  // X-Forwarded-Proto header to be set.
+  rpc GetVersion(GetVersionRequest) returns (GetVersionResponse) {
+    option (google.api.http) = {get: "/version"};
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      tags: "version"
+      operation_id: "getVersion"
+      responses: {
+        key: "200"
+        value: {
+          description: "The version of the instance."
+          schema: {
+            json_schema: {ref: ".ory.keto.relation_tuples.v1alpha2.GetVersionResponse"}
+          }
+        }
+      }
+    };
+  }
 }
 
 // Request for the VersionService.GetVersion RPC.

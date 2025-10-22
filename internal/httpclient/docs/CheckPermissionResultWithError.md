@@ -4,8 +4,8 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Allowed** | **bool** | whether the relation tuple is allowed | 
-**Error** | Pointer to **string** | any error generated while checking the relation tuple | [optional] 
+**Allowed** | **bool** | Whether the specified subject (id) is related to the requested object.  It is false by default if no ACL matches. | 
+**Error** | Pointer to **string** | If there was an error checking the tuple, this will contain the error message.  If the check was performed successfully, this will be empty. | [optional] 
 
 ## Methods
 

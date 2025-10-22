@@ -4,11 +4,12 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Namespace** | Pointer to **string** | Namespace to query | [optional] 
-**Object** | Pointer to **string** | Object to query | [optional] 
-**Relation** | Pointer to **string** | Relation to query | [optional] 
-**SubjectId** | Pointer to **string** | SubjectID to query  Either SubjectSet or SubjectID can be provided. | [optional] 
-**SubjectSet** | Pointer to [**SubjectSet**](SubjectSet.md) |  | [optional] 
+**MaxDepth** | Pointer to **int32** | The maximum depth to search for a relation.  If the value is less than 1 or greater than the global max-depth then the global max-depth will be used instead. | [optional] 
+**Namespace** | Pointer to **string** | The namespace to evaluate the check.  Note: If you use the expand-API and the check evaluates a RelationTuple specifying a SubjectSet as subject or due to a rewrite rule in a namespace config this check request may involve other namespaces automatically. | [optional] 
+**Object** | Pointer to **string** | The related object in this check. | [optional] 
+**Relation** | Pointer to **string** | The relation between the Object and the Subject. | [optional] 
+**SubjectId** | Pointer to **string** | A concrete id of the subject. | [optional] 
+**SubjectSet** | Pointer to [**SubjectSetQuery**](SubjectSetQuery.md) |  | [optional] 
 
 ## Methods
 
@@ -28,6 +29,31 @@ will change when the set of required properties is changed
 NewPostCheckPermissionBodyWithDefaults instantiates a new PostCheckPermissionBody object
 This constructor will only assign default values to properties that have it defined,
 but it doesn't guarantee that properties required by API are set
+
+### GetMaxDepth
+
+`func (o *PostCheckPermissionBody) GetMaxDepth() int32`
+
+GetMaxDepth returns the MaxDepth field if non-nil, zero value otherwise.
+
+### GetMaxDepthOk
+
+`func (o *PostCheckPermissionBody) GetMaxDepthOk() (*int32, bool)`
+
+GetMaxDepthOk returns a tuple with the MaxDepth field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetMaxDepth
+
+`func (o *PostCheckPermissionBody) SetMaxDepth(v int32)`
+
+SetMaxDepth sets MaxDepth field to given value.
+
+### HasMaxDepth
+
+`func (o *PostCheckPermissionBody) HasMaxDepth() bool`
+
+HasMaxDepth returns a boolean if a field has been set.
 
 ### GetNamespace
 
@@ -131,20 +157,20 @@ HasSubjectId returns a boolean if a field has been set.
 
 ### GetSubjectSet
 
-`func (o *PostCheckPermissionBody) GetSubjectSet() SubjectSet`
+`func (o *PostCheckPermissionBody) GetSubjectSet() SubjectSetQuery`
 
 GetSubjectSet returns the SubjectSet field if non-nil, zero value otherwise.
 
 ### GetSubjectSetOk
 
-`func (o *PostCheckPermissionBody) GetSubjectSetOk() (*SubjectSet, bool)`
+`func (o *PostCheckPermissionBody) GetSubjectSetOk() (*SubjectSetQuery, bool)`
 
 GetSubjectSetOk returns a tuple with the SubjectSet field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetSubjectSet
 
-`func (o *PostCheckPermissionBody) SetSubjectSet(v SubjectSet)`
+`func (o *PostCheckPermissionBody) SetSubjectSet(v SubjectSetQuery)`
 
 SetSubjectSet sets SubjectSet field to given value.
 

@@ -5,11 +5,10 @@ package namespacehandler
 
 import (
 	"context"
-	"net/http"
 
-	"github.com/julienschmidt/httprouter"
-	"github.com/ory/herodot"
 	"google.golang.org/grpc"
+
+	"github.com/ory/herodot"
 
 	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/x"
@@ -35,16 +34,9 @@ func New(d handlerDeps) *handler {
 	return &handler{d}
 }
 
-func (h *handler) RegisterReadRoutes(r *x.ReadRouter) {
-	r.GET(RouteBase, h.getNamespaces)
-}
-
 func (h *handler) RegisterReadGRPC(s *grpc.Server) {
 	rts.RegisterNamespacesServiceServer(s, h)
 }
-
-func (h *handler) RegisterWriteRoutes(r *x.WriteRouter) {}
-func (h *handler) RegisterWriteGRPC(s *grpc.Server)     {}
 
 func (h *handler) ListNamespaces(ctx context.Context, _ *rts.ListNamespacesRequest) (*rts.ListNamespacesResponse, error) {
 	m, err := h.Config(ctx).NamespaceManager()
@@ -62,27 +54,4 @@ func (h *handler) ListNamespaces(ctx context.Context, _ *rts.ListNamespacesReque
 		apiNamespaces[i] = &rts.Namespace{Name: n.Name}
 	}
 	return &rts.ListNamespacesResponse{Namespaces: apiNamespaces}, nil
-}
-
-// swagger:route GET /namespaces relationship listRelationshipNamespaces
-//
-// # Query namespaces
-//
-// Get all namespaces
-//
-//	Produces:
-//	- application/json
-//
-//	Schemes: http, https
-//
-//	Responses:
-//	  200: relationshipNamespaces
-//	  default: errorGeneric
-func (h *handler) getNamespaces(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	res, err := h.ListNamespaces(r.Context(), nil)
-	if err != nil {
-		h.Writer().WriteError(w, r, err)
-		return
-	}
-	h.Writer().Write(w, r, res)
 }

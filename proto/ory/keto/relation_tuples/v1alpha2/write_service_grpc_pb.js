@@ -3,7 +3,34 @@
 'use strict';
 var grpc = require('@grpc/grpc-js');
 var ory_keto_relation_tuples_v1alpha2_write_service_pb = require('../../../../ory/keto/relation_tuples/v1alpha2/write_service_pb.js');
+var buf_validate_validate_pb = require('../../../../buf/validate/validate_pb.js');
+var google_api_annotations_pb = require('../../../../google/api/annotations_pb.js');
+var google_api_field_behavior_pb = require('../../../../google/api/field_behavior_pb.js');
+var google_api_visibility_pb = require('../../../../google/api/visibility_pb.js');
 var ory_keto_relation_tuples_v1alpha2_relation_tuples_pb = require('../../../../ory/keto/relation_tuples/v1alpha2/relation_tuples_pb.js');
+var protoc$gen$openapiv2_options_annotations_pb = require('../../../../protoc-gen-openapiv2/options/annotations_pb.js');
+
+function serialize_ory_keto_relation_tuples_v1alpha2_CreateRelationTupleRequest(arg) {
+  if (!(arg instanceof ory_keto_relation_tuples_v1alpha2_write_service_pb.CreateRelationTupleRequest)) {
+    throw new Error('Expected argument of type ory.keto.relation_tuples.v1alpha2.CreateRelationTupleRequest');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_ory_keto_relation_tuples_v1alpha2_CreateRelationTupleRequest(buffer_arg) {
+  return ory_keto_relation_tuples_v1alpha2_write_service_pb.CreateRelationTupleRequest.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_ory_keto_relation_tuples_v1alpha2_CreateRelationTupleResponse(arg) {
+  if (!(arg instanceof ory_keto_relation_tuples_v1alpha2_write_service_pb.CreateRelationTupleResponse)) {
+    throw new Error('Expected argument of type ory.keto.relation_tuples.v1alpha2.CreateRelationTupleResponse');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_ory_keto_relation_tuples_v1alpha2_CreateRelationTupleResponse(buffer_arg) {
+  return ory_keto_relation_tuples_v1alpha2_write_service_pb.CreateRelationTupleResponse.deserializeBinary(new Uint8Array(buffer_arg));
+}
 
 function serialize_ory_keto_relation_tuples_v1alpha2_DeleteRelationTuplesRequest(arg) {
   if (!(arg instanceof ory_keto_relation_tuples_v1alpha2_write_service_pb.DeleteRelationTuplesRequest)) {
@@ -66,6 +93,18 @@ transactRelationTuples: {
     responseSerialize: serialize_ory_keto_relation_tuples_v1alpha2_TransactRelationTuplesResponse,
     responseDeserialize: deserialize_ory_keto_relation_tuples_v1alpha2_TransactRelationTuplesResponse,
   },
+  // Creates a relationship
+createRelationTuple: {
+    path: '/ory.keto.relation_tuples.v1alpha2.WriteService/CreateRelationTuple',
+    requestStream: false,
+    responseStream: false,
+    requestType: ory_keto_relation_tuples_v1alpha2_write_service_pb.CreateRelationTupleRequest,
+    responseType: ory_keto_relation_tuples_v1alpha2_write_service_pb.CreateRelationTupleResponse,
+    requestSerialize: serialize_ory_keto_relation_tuples_v1alpha2_CreateRelationTupleRequest,
+    requestDeserialize: deserialize_ory_keto_relation_tuples_v1alpha2_CreateRelationTupleRequest,
+    responseSerialize: serialize_ory_keto_relation_tuples_v1alpha2_CreateRelationTupleResponse,
+    responseDeserialize: deserialize_ory_keto_relation_tuples_v1alpha2_CreateRelationTupleResponse,
+  },
   // Deletes relationships based on relation query
 deleteRelationTuples: {
     path: '/ory.keto.relation_tuples.v1alpha2.WriteService/DeleteRelationTuples',
@@ -80,4 +119,4 @@ deleteRelationTuples: {
   },
 };
 
-exports.WriteServiceClient = grpc.makeGenericClientConstructor(WriteServiceService, 'WriteService');
+exports.WriteServiceClient = grpc.makeGenericClientConstructor(WriteServiceService);

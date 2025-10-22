@@ -12,6 +12,10 @@ import (
 	"time"
 
 	"github.com/gofrs/uuid"
+	"github.com/sirupsen/logrus"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
 	"github.com/ory/pop/v6"
 	"github.com/ory/x/fsx"
 	"github.com/ory/x/logrusx"
@@ -20,9 +24,6 @@ import (
 	"github.com/ory/x/pointerx"
 	"github.com/ory/x/popx"
 	"github.com/ory/x/sqlcon"
-	"github.com/sirupsen/logrus"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 
 	"github.com/ory/keto/internal/driver"
 	"github.com/ory/keto/internal/driver/config"
@@ -59,7 +60,7 @@ func TestMigrations(t *testing.T) {
 				time.Sleep(time.Second)
 			}
 			require.NoError(t, dbx.Ping(conn))
-			t.Cleanup(func() { conn.Close() })
+			t.Cleanup(func() { require.NoError(t, conn.Close()) })
 
 			namespaces := []*namespace.Namespace{
 				{ID: 1, Name: "foo"},
