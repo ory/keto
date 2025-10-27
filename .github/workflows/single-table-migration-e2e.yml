@@ -20,7 +20,7 @@ jobs:
           check-latest: true
       - name: Run test script
         run: ./scripts/single-table-migration-e2e.sh
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         if: failure()
         with:
           name: sqlite-db
