@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/gofrs/uuid"
+	"github.com/jmoiron/sqlx"
 	"github.com/ory/pop/v6"
 	"github.com/ory/x/popx"
 	"github.com/ory/x/sqlcon"
@@ -190,7 +191,7 @@ var (
 				Direction: "up",
 				DBType:    "all",
 				Type:      "go",
-				Runner: func(_ popx.Migration, conn *pop.Connection, _ *pop.Tx) error {
+				Runner: func(_ popx.Migration, conn *pop.Connection) error {
 					var (
 						relationTuples []OldRelationTuple
 						err            error
@@ -235,7 +236,7 @@ var (
 				Direction: "down",
 				DBType:    "all",
 				Type:      "go",
-				Runner: func(_ popx.Migration, conn *pop.Connection, _ *pop.Tx) error {
+				Runner: func(_ popx.Migration, conn *pop.Connection) error {
 					var (
 						relationTuples []NewRelationTuple
 						err            error
@@ -340,7 +341,7 @@ func GetRelationTuples[RT interface {
 	const pageSize = 500
 	var rt RT
 
-	q := conn.TX.Rebind("SELECT * FROM %s WHERE shard_id > ? ORDER BY shard_id LIMIT ?")
+	q := sqlx.Rebind(sqlx.BindType(conn.Dialect.Name()), "SELECT * FROM %s WHERE shard_id > ? ORDER BY shard_id LIMIT ?")
 
 	err = conn.Store.Select(
 		&res, fmt.Sprintf(q, rt.TableName()), lastID, pageSize)
