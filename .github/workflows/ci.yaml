@@ -191,7 +191,7 @@ jobs:
           check-latest: true
       - uses: actions/setup-node@v6
         with:
-          node-version: "22"
+          node-version: "24"
       - name: Lint and Build
         run: |
           make buf
