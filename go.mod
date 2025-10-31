@@ -9,7 +9,7 @@ replace (
 
 require (
 	github.com/cenkalti/backoff/v3 v3.2.2
-	github.com/dgraph-io/ristretto/v2 v2.2.0
+	github.com/dgraph-io/ristretto/v2 v2.3.0
 	github.com/ghodss/yaml v1.0.0
 	github.com/go-sql-driver/mysql v1.9.3
 	github.com/gobuffalo/httptest v1.5.2
