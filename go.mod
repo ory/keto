@@ -19,7 +19,7 @@ require (
 	github.com/julienschmidt/httprouter v1.3.0
 	github.com/ory/analytics-go/v5 v5.0.1
 	github.com/ory/graceful v0.1.3
-	github.com/ory/herodot v0.10.5
+	github.com/ory/herodot v0.10.7
 	github.com/ory/jsonschema/v3 v3.0.9-0.20250317235931-280c5fc7bf0e
 	github.com/ory/keto/proto v0.0.0-00010101000000-000000000000
 	github.com/ory/pop/v6 v6.3.1
