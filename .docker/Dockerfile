@@ -1,4 +1,4 @@
-FROM alpine:3.21.3
+FROM alpine:3.22.2
 
 RUN addgroup -S ory; \
     adduser -S ory -G ory -D  -h /home/ory -s /bin/nologin; \
