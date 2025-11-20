@@ -17,4 +17,4 @@ if [[ "$("$BINDIR/$BINNAME" version)" == *"$LICENCES_VERSION"* ]]; then
     exit 0
 fi
 
-curl -sSfL https://raw.githubusercontent.com/ory/ci/master/licenses/install | bash -s -- -b "$BINDIR" licences "v$LICENCES_VERSION"
+curl --retry 7 --retry-connrefused -sSfL https://raw.githubusercontent.com/ory/ci/master/licenses/install | bash -s -- -b "$BINDIR" licences "v$LICENCES_VERSION"

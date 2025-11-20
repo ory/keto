@@ -17,4 +17,4 @@ if [[ "$("$BINDIR/$BINNAME" version)" == *"$TRIVY_VERSION"* ]]; then
     exit 0
 fi
 
-curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | bash -s -- -b "$BINDIR" "v$TRIVY_VERSION"
+curl --retry 7 --retry-connrefused -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | bash -s -- -b "$BINDIR" "v$TRIVY_VERSION"

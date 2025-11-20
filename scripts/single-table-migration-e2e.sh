@@ -3,7 +3,7 @@ set -euxo pipefail
 
 rm migrate_e2e.sqlite || true
 
-bash <(curl https://raw.githubusercontent.com/ory/keto/master/install.sh) -b . v0.6.0-alpha.3
+bash <(curl --retry 7 --retry-connrefused https://raw.githubusercontent.com/ory/keto/master/install.sh) -b . v0.6.0-alpha.3
 
 export DSN="sqlite://./migrate_e2e.sqlite?_fk=true"
 export KETO_READ_REMOTE="127.0.0.1:4466"

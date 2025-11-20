@@ -15,6 +15,7 @@ chats:coffee-break#member@Patrik' | \
   keto relation-tuple parse - --format json | \
     jq "[ .[] | { relation_tuple: . , action: \"insert\" } ]" -c | \
       curl -X PATCH --silent --fail \
+        --retry 7 --retry-connrefused \
         --data @- \
         http://127.0.0.1:4467/admin/relation-tuples
 

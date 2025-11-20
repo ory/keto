@@ -2,6 +2,7 @@
 set -euo pipefail
 
 curl -G --silent \
+     --retry 7 --retry-connrefused \
      --data-urlencode "namespace=files" \
      --data-urlencode "relation=access" \
      --data-urlencode "object=/photos/beach.jpg" \

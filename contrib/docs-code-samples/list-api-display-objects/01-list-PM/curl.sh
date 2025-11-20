@@ -2,6 +2,7 @@
 set -euo pipefail
 
 curl -G --silent \
+     --retry 7 --retry-connrefused \
      --data-urlencode "namespace=chats" \
      --data-urlencode "relation=member" \
      --data-urlencode "subject_id=PM" \

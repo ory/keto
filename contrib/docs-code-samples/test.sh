@@ -29,11 +29,7 @@ for suite in */ ; do
     keto serve -c "$suite/keto.yml" &> "serve_$suite.log" &
     keto_server_pid=$!
 
-    until curl --output /dev/null --silent --fail http://127.0.0.1:4466/health/ready; do
-        printf '.'
-        sleep 0.2
-    done
-    echo
+    curl --retry 7 --retry-connrefused --output /dev/null --silent --fail http://127.0.0.1:4466/health/ready
 
     for main in "$suite"/*/main.go; do
         echo "Running $main"

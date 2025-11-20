@@ -10,6 +10,7 @@ relationtuple='
 }'
 
 curl --fail --silent -X PUT \
+     --retry 7 --retry-connrefused \
      --data "$relationtuple" \
      http://127.0.0.1:4467/admin/relation-tuples > /dev/null \
   && echo "Successfully created tuple" \

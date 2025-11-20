@@ -17,4 +17,4 @@ if [[ "$("$BINDIR/$BINNAME" version)" == *"$GRYPE_VERSION"* ]]; then
     exit 0
 fi
 
-curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | bash -s -- -b "$BINDIR" "v$GRYPE_VERSION"
+curl --retry 7 --retry-connrefused -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | bash -s -- -b "$BINDIR" "v$GRYPE_VERSION"

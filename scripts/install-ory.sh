@@ -17,4 +17,4 @@ if [[ "$("$BINDIR/$BINNAME" version)" == *"$ORY_VERSION"* ]]; then
     exit 0
 fi
 
-curl -sSfL https://raw.githubusercontent.com/ory/meta/master/install.sh | bash -s -- -b "$BINDIR" ory "v$ORY_VERSION"
+curl --retry 7 --retry-connrefused -sSfL https://raw.githubusercontent.com/ory/meta/master/install.sh | bash -s -- -b "$BINDIR" ory "v$ORY_VERSION"

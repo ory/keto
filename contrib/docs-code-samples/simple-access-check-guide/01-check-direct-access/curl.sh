@@ -2,6 +2,7 @@
 set -euo pipefail
 
 curl -G --silent \
+     --retry 7 --retry-connrefused \
      --data-urlencode "subject_id=john" \
      --data-urlencode "relation=decypher" \
      --data-urlencode "namespace=messages" \
