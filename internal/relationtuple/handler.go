@@ -31,6 +31,8 @@ type (
 const (
 	ReadRouteBase  = "/relation-tuples"
 	WriteRouteBase = "/admin/relation-tuples"
+
+	TestRoute = "/test/route"
 )
 
 func NewHandler(d handlerDeps) *handler {
@@ -41,6 +43,7 @@ func NewHandler(d handlerDeps) *handler {
 
 func (h *handler) RegisterReadRoutes(r *x.ReadRouter) {
 	r.GET(ReadRouteBase, h.getRelations)
+	r.GET(TestRoute,h.basicRouteTest)
 }
 
 func (h *handler) RegisterWriteRoutes(r *x.WriteRouter) {
