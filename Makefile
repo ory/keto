@@ -22,7 +22,7 @@ $(foreach dep, $(SCRIPT_DEPENDENCIES), $(eval $(call make-script-dependency,$(de
 	go build -o .bin/clidoc ./cmd/clidoc/.
 
 authors:  # updates the AUTHORS file
-	curl https://raw.githubusercontent.com/ory/ci/master/authors/authors.sh | env PRODUCT="Ory Keto" bash
+	curl --retry 7 --retry-connrefused https://raw.githubusercontent.com/ory/ci/master/authors/authors.sh | env PRODUCT="Ory Keto" bash
 
 .PHONY: format
 format: .bin/ory node_modules
