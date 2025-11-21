@@ -25,6 +25,7 @@
     "prettier-plugin-packagejson": "2.5.19"
   },
   "overrides": {
-    "axios": ">=1.12.0"
+    "axios": ">=1.12.0",
+    "glob": ">=11.1.0"
   }
 }
