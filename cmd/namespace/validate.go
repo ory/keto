@@ -149,7 +149,7 @@ func validateConfigFile(cmd *cobra.Command, fn string) error {
 	}
 
 	if ns, ok := val["namespaces"]; ok {
-		// ns can either be a ws url or a list of namespace objects)
+		// ns can either be a file url or a list of namespace objects
 		switch t := ns.(type) {
 		case string:
 			logger := logrusx.New("cmd", "0")

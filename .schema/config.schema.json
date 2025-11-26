@@ -351,7 +351,7 @@
       "oneOf": [
         {
           "title": "Legacy namespace Repo URI",
-          "description": "A URI that points to a directory of namespace files, a single file with all namespaces, or a websocket connection that provides former via `github.com/ory/x/watcherx.WatchAndServeWS`",
+          "description": "A URI that points to a directory of namespace files, or a single file with all namespaces",
           "type": "string",
           "format": "uri"
         },
@@ -369,12 +369,11 @@
             "location": {
               "type": "string",
               "title": "Ory Permission Language config file URI",
-              "description": "A URI that points to a directory of namespace files, a single file with all namespaces, or a websocket connection that provides former via `github.com/ory/x/watcherx.WatchAndServeWS`",
+              "description": "A URI that points to a directory of namespace files, or a single file with all namespaces",
               "format": "uri",
               "examples": [
                 "file://./keto_namespaces.ts",
-                "file:///etc/configs/keto_namespaces.ts",
-                "ws://my.websocket.server/keto_namespaces.ts"
+                "file:///etc/configs/keto_namespaces.ts"
               ]
             },
             "experimental_strict_mode": {
