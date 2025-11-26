@@ -89,10 +89,12 @@ func init() {
 		ssrf.WithNetworks("tcp4", "tcp6"),
 		ssrf.WithAllowedV4Prefixes(
 			netip.MustParsePrefix("10.0.0.0/8"),     // Private-Use (RFC 1918)
+			netip.MustParsePrefix("100.64.0.0/10"), // Shared Address Space (RFC 6598)
 			netip.MustParsePrefix("127.0.0.0/8"),    // Loopback (RFC 1122, Section 3.2.1.3))
 			netip.MustParsePrefix("169.254.0.0/16"), // Link Local (RFC 3927)
 			netip.MustParsePrefix("172.16.0.0/12"),  // Private-Use (RFC 1918)
 			netip.MustParsePrefix("192.168.0.0/16"), // Private-Use (RFC 1918)
+			netip.MustParsePrefix("198.18.0.0/15"), // Benchmarking (RFC 2544)
 		),
 		ssrf.WithAllowedV6Prefixes(
 			netip.MustParsePrefix("::1/128"),  // Loopback (RFC 4193)
@@ -109,10 +111,12 @@ func init() {
 		ssrf.WithNetworks("tcp4"),
 		ssrf.WithAllowedV4Prefixes(
 			netip.MustParsePrefix("10.0.0.0/8"),     // Private-Use (RFC 1918)
+			netip.MustParsePrefix("100.64.0.0/10"), // Shared Address Space (RFC 6598)
 			netip.MustParsePrefix("127.0.0.0/8"),    // Loopback (RFC 1122, Section 3.2.1.3))
 			netip.MustParsePrefix("169.254.0.0/16"), // Link Local (RFC 3927)
 			netip.MustParsePrefix("172.16.0.0/12"),  // Private-Use (RFC 1918)
 			netip.MustParsePrefix("192.168.0.0/16"), // Private-Use (RFC 1918)
+			netip.MustParsePrefix("198.18.0.0/15"), // Benchmarking (RFC 2544)
 		),
 		ssrf.WithAllowedV6Prefixes(
 			netip.MustParsePrefix("::1/128"),  // Loopback (RFC 4193)
