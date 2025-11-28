@@ -182,7 +182,9 @@ func (r *RegistryDefault) serveRead(ctx context.Context, done chan<- struct{}) f
 	rt, s := r.ReadRouter(ctx), r.ReadGRPCServer(ctx)
 
 	if tracer := r.Tracer(ctx); tracer.IsLoaded() {
-		rt = otelx.TraceHandler(rt, otelhttp.WithTracerProvider(tracer.Provider()))
+		rt = otelx.NewMiddleware(rt, "serveRead",
+			otelhttp.WithTracerProvider(tracer.Provider()),
+		)
 	}
 
 	return func() error {
@@ -195,7 +197,9 @@ func (r *RegistryDefault) serveWrite(ctx context.Context, done chan<- struct{}) 
 	rt, s := r.WriteRouter(ctx), r.WriteGRPCServer(ctx)
 
 	if tracer := r.Tracer(ctx); tracer.IsLoaded() {
-		rt = otelx.TraceHandler(rt, otelhttp.WithTracerProvider(tracer.Provider()))
+		rt = otelx.NewMiddleware(rt, "serveWrite",
+			otelhttp.WithTracerProvider(tracer.Provider()),
+		)
 	}
 
 	return func() error {
@@ -208,7 +212,9 @@ func (r *RegistryDefault) serveOPLSyntax(ctx context.Context, done chan<- struct
 	rt, s := r.OPLSyntaxRouter(ctx), r.OplGRPCServer(ctx)
 
 	if tracer := r.Tracer(ctx); tracer.IsLoaded() {
-		rt = otelx.TraceHandler(rt, otelhttp.WithTracerProvider(tracer.Provider()))
+		rt = otelx.NewMiddleware(rt, "serveOPLSyntax",
+			otelhttp.WithTracerProvider(tracer.Provider()),
+		)
 	}
 
 	return func() error {
@@ -385,6 +391,7 @@ func (r *RegistryDefault) ReadRouter(ctx context.Context) http.Handler {
 	n.Use(reqlog.NewMiddlewareFromLogger(r.l, "read#Ory Keto").ExcludePaths(healthx.AliveCheckPath, healthx.ReadyCheckPath))
 
 	br := &x.ReadRouter{Router: httprouter.New()}
+	br.SaveMatchedRoutePath = true // for tracing
 	r.PrometheusManager().RegisterRouter(br.Router)
 	r.MetricsHandler().SetRoutes(br.Router)
 
@@ -422,6 +429,7 @@ func (r *RegistryDefault) WriteRouter(ctx context.Context) http.Handler {
 	n.Use(reqlog.NewMiddlewareFromLogger(r.l, "write#Ory Keto").ExcludePaths(healthx.AliveCheckPath, healthx.ReadyCheckPath))
 
 	pr := &x.WriteRouter{Router: httprouter.New()}
+	pr.SaveMatchedRoutePath = true // for tracing
 	r.PrometheusManager().RegisterRouter(pr.Router)
 	r.MetricsHandler().SetRoutes(pr.Router)
 
@@ -459,6 +467,7 @@ func (r *RegistryDefault) OPLSyntaxRouter(ctx context.Context) http.Handler {
 	n.Use(reqlog.NewMiddlewareFromLogger(r.l, "syntax#Ory Keto").ExcludePaths(healthx.AliveCheckPath, healthx.ReadyCheckPath))
 
 	pr := &x.OPLSyntaxRouter{Router: httprouter.New()}
+	pr.SaveMatchedRoutePath = true // for tracing
 	r.PrometheusManager().RegisterRouter(pr.Router)
 	r.MetricsHandler().SetRoutes(pr.Router)
 
