@@ -6,6 +6,7 @@ package e2e
 import (
 	"context"
 	"encoding/json"
+	"math"
 	"testing"
 	"time"
 
@@ -31,15 +32,15 @@ type grpcClient struct {
 func newGrpcClient(t *testing.T, ctx context.Context, readRemote, writeRemote, oplSyntaxRemote string) *grpcClient {
 	read, err := grpc.NewClient(readRemote, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	require.NoError(t, err)
-	t.Cleanup(func() { read.Close() })
+	t.Cleanup(func() { require.NoError(t, read.Close()) })
 
 	write, err := grpc.NewClient(writeRemote, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	require.NoError(t, err)
-	t.Cleanup(func() { write.Close() })
+	t.Cleanup(func() { require.NoError(t, write.Close()) })
 
 	oplSyntax, err := grpc.NewClient(oplSyntaxRemote, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	require.NoError(t, err)
-	t.Cleanup(func() { oplSyntax.Close() })
+	t.Cleanup(func() { require.NoError(t, oplSyntax.Close()) })
 
 	ctx, cancel := context.WithCancel(ctx)
 	t.Cleanup(cancel)
@@ -81,6 +82,12 @@ func (*grpcClient) createQuery(q *ketoapi.RelationQuery) *rts.RelationQuery {
 	return query
 }
 
+func requireInt32WithinBounds(t *testing.T, v int) int32 {
+	require.GreaterOrEqual(t, v, math.MinInt32)
+	require.LessOrEqual(t, v, math.MaxInt32)
+	return int32(v) // #nosec G115 -- value validated above
+}
+
 func (g *grpcClient) queryTuple(t *testing.T, q *ketoapi.RelationQuery, opts ...paginationOptionSetter) *ketoapi.GetResponse {
 	c := rts.NewReadServiceClient(g.read)
 	pagination := getPaginationOptions(opts...)
@@ -88,7 +95,7 @@ func (g *grpcClient) queryTuple(t *testing.T, q *ketoapi.RelationQuery, opts ...
 	resp, err := c.ListRelationTuples(g.ctx, &rts.ListRelationTuplesRequest{
 		RelationQuery: g.createQuery(q),
 		PageToken:     pagination.Token,
-		PageSize:      int32(pagination.Size),
+		PageSize:      requireInt32WithinBounds(t, pagination.Size),
 	})
 	require.NoError(t, err)
 
@@ -111,7 +118,7 @@ func (g *grpcClient) queryTupleErr(t *testing.T, expected herodot.DefaultError, 
 	_, err := c.ListRelationTuples(g.ctx, &rts.ListRelationTuplesRequest{
 		RelationQuery: g.createQuery(q),
 		PageToken:     pagination.Token,
-		PageSize:      int32(pagination.Size),
+		PageSize:      requireInt32WithinBounds(t, pagination.Size),
 	})
 	require.Error(t, err)
 	s, ok := status.FromError(err)
@@ -202,7 +209,7 @@ func (g *grpcClient) expand(t *testing.T, r *ketoapi.SubjectSet, depth int) *ket
 
 	resp, err := c.Expand(g.ctx, &rts.ExpandRequest{
 		Subject:  rts.NewSubjectSet(r.Namespace, r.Object, r.Relation),
-		MaxDepth: int32(depth),
+		MaxDepth: requireInt32WithinBounds(t, depth),
 	})
 	require.NoError(t, err)
 

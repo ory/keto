@@ -254,7 +254,7 @@ func TestReadHandlers(t *testing.T) {
 		go srv.Serve(soc) // nolint
 		t.Cleanup(srv.Stop)
 
-		con, err := grpc.Dial(soc.Addr().String(), grpc.WithTransportCredentials(insecure.NewCredentials()))
+		con, err := grpc.NewClient(soc.Addr().String(), grpc.WithTransportCredentials(insecure.NewCredentials()))
 		require.NoError(t, err)
 
 		t.Run("method=list", func(t *testing.T) {

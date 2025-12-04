@@ -7,6 +7,7 @@ import (
 	"bytes"
 	"fmt"
 	"os"
+	"path/filepath"
 
 	"github.com/ory/keto/embedx"
 
@@ -87,19 +88,20 @@ func getSchema(cmd *cobra.Command) (*jsonschema.Schema, error) {
 }
 
 func validateNamespaceFile(cmd *cobra.Command, fn string) (*namespace.Namespace, error) {
-	fc, err := os.ReadFile(fn)
+	cleanName := filepath.Clean(fn)
+	fc, err := os.ReadFile(cleanName)
 	if err != nil {
 		_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not read file \"%s\": %+v\n", fn, err)
 		return nil, cmdx.FailSilently(cmd)
 	}
 
-	parse, err := config.GetParser(fn)
+	parse, err := config.GetParser(cleanName)
 	if err != nil {
 		_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Unable to infer file type from \"%s\": %+v\n", fn, err)
 		return nil, cmdx.FailSilently(cmd)
 	}
 
-	return validateNamespaceBytes(cmd, fn, fc, parse)
+	return validateNamespaceBytes(cmd, cleanName, fc, parse)
 }
 
 func validateNamespaceBytes(cmd *cobra.Command, name string, b []byte, parser config.Parser) (*namespace.Namespace, error) {
@@ -115,7 +117,7 @@ func validateNamespaceBytes(cmd *cobra.Command, name string, b []byte, parser co
 	}
 
 	if err := schema.ValidateInterface(val); err != nil {
-		fmt.Fprintf(cmd.ErrOrStderr(), "File %s was not a valid namespace file. Reasons:\n", name)
+		_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "File %s was not a valid namespace file. Reasons:\n", name)
 		jsonschemax.FormatValidationErrorForCLI(cmd.ErrOrStderr(), embedx.ConfigSchema, err)
 		return nil, cmdx.FailSilently(cmd)
 	}
@@ -130,13 +132,14 @@ func validateNamespaceBytes(cmd *cobra.Command, name string, b []byte, parser co
 }
 
 func validateConfigFile(cmd *cobra.Command, fn string) error {
-	fc, err := os.ReadFile(fn)
+	cleanName := filepath.Clean(fn)
+	fc, err := os.ReadFile(cleanName)
 	if err != nil {
 		_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not read file \"%s\": %+v\n", fn, err)
 		return cmdx.FailSilently(cmd)
 	}
 
-	parse, err := config.GetParser(fn)
+	parse, err := config.GetParser(cleanName)
 	if err != nil {
 		_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Unable to infer file type from \"%s\": %+v\n", fn, err)
 		return cmdx.FailSilently(cmd)

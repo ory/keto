@@ -96,7 +96,9 @@ func createDB(t testing.TB, url string, dbName string) (err error) {
 		if err := conn.RawQuery("DROP DATABASE " + dbName).Exec(); err != nil {
 			t.Logf("could not drop database %q in %q: %v", dbName, url, err)
 		}
-		conn.Close()
+		if err := conn.Close(); err != nil {
+			t.Logf("could not close connection for %q in %q: %v", dbName, url, err)
+		}
 	})
 
 	return

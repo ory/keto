@@ -106,7 +106,7 @@ func getTuples(pageSize *int32, pageToken *string) func(cmd *cobra.Command, _ []
 		if err != nil {
 			return err
 		}
-		defer conn.Close()
+		defer func() { _ = conn.Close() }()
 
 		cl := rts.NewReadServiceClient(conn)
 		query, err := readQueryFromFlags(cmd)

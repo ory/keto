@@ -56,7 +56,7 @@ func deleteRelationTuplesFromQuery(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	defer conn.Close()
+	defer func() { _ = conn.Close() }()
 	cl := rts.NewWriteServiceClient(conn)
 	_, err = cl.DeleteRelationTuples(cmd.Context(), &rts.DeleteRelationTuplesRequest{
 		RelationQuery: query,

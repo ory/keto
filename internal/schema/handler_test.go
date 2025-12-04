@@ -62,7 +62,7 @@ func TestNewHandler(t *testing.T) {
 		}()
 		t.Cleanup(s.Stop)
 
-		conn, err := grpc.Dial("bufnet",
+		conn, err := grpc.NewClient("passthrough:///bufnet",
 			grpc.WithTransportCredentials(insecure.NewCredentials()),
 			grpc.WithContextDialer(func(context.Context, string) (net.Conn, error) { return l.Dial() }),
 		)

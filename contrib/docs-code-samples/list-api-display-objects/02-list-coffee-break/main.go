@@ -17,7 +17,7 @@ import (
 )
 
 func main() {
-	conn, err := grpc.Dial("127.0.0.1:4466", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.NewClient("127.0.0.1:4466", grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		panic(err.Error())
 	}

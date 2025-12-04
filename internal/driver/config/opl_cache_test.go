@@ -19,7 +19,9 @@ func TestNewOPLConfigWatcher(t *testing.T) {
 	hits := 0
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		hits++
-		io.WriteString(w, testOPL)
+		if _, err := io.WriteString(w, testOPL); err != nil {
+			t.Fatalf("failed to write OPL response: %v", err)
+		}
 	}))
 	t.Cleanup(ts.Close)
 	ctx := context.Background()

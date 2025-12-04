@@ -57,7 +57,9 @@ func (r *RegistryDefault) PopConnectionWithOpts(ctx context.Context, popOpts ...
 	// Close this connection when the context is closed.
 	go func() {
 		<-ctx.Done()
-		conn.Close()
+		if err := conn.Close(); err != nil {
+			r.Logger().WithError(err).Error("Unable to close database connection")
+		}
 	}()
 
 	return conn.WithContext(ctx), nil

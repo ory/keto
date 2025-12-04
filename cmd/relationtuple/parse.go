@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/ory/keto/ketoapi"
@@ -54,12 +55,12 @@ func parseFile(cmd *cobra.Command, fn string) ([]*ketoapi.RelationTuple, error) 
 		fn = "stdin"
 		f = cmd.InOrStdin()
 	} else {
-		ff, err := os.Open(fn)
+		ff, err := os.Open(filepath.Clean(fn))
 		if err != nil {
 			_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not open file %s: %v\n", fn, err)
 			return nil, cmdx.FailSilently(cmd)
 		}
-		defer ff.Close()
+		defer func() { _ = ff.Close() }()
 		f = ff
 	}
 

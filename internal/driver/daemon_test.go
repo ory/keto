@@ -4,6 +4,7 @@
 package driver
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"testing"
@@ -17,8 +18,6 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 	grpcHealthV1 "google.golang.org/grpc/health/grpc_health_v1"
 	"google.golang.org/grpc/status"
-
-	"context"
 
 	prometheus "github.com/ory/x/prometheusx"
 	ioprometheusclient "github.com/prometheus/client_model/go"
@@ -45,9 +44,9 @@ func TestScrapingEndpoint(t *testing.T) {
 	t.Logf("write port: %s, metrics port: %s", writePort, metricsPort)
 
 	assert.EventuallyWithT(t, func(t *assert.CollectT) {
-		conn, err := grpc.DialContext(ctx, fmt.Sprintf("127.0.0.1:%s", writePort), grpc.WithTransportCredentials(insecure.NewCredentials()))
+		conn, err := grpc.NewClient(fmt.Sprintf("127.0.0.1:%s", writePort), grpc.WithTransportCredentials(insecure.NewCredentials()))
 		require.NoError(t, err)
-		defer conn.Close()
+		defer func() { require.NoError(t, conn.Close()) }()
 
 		cl := grpcHealthV1.NewHealthClient(conn)
 		watcher, err := cl.Watch(ctx, &grpcHealthV1.HealthCheckRequest{})
@@ -104,9 +103,9 @@ func TestPanicRecovery(t *testing.T) {
 
 	_, port, _ := getAddr(t, "write")
 
-	conn, err := grpc.DialContext(ctx, fmt.Sprintf("127.0.0.1:%s", port), grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.NewClient(fmt.Sprintf("127.0.0.1:%s", port), grpc.WithTransportCredentials(insecure.NewCredentials()))
 	require.NoError(t, err)
-	defer conn.Close()
+	defer func() { require.NoError(t, conn.Close()) }()
 
 	assert.EventuallyWithT(t, func(t *assert.CollectT) {
 		cl := grpcHealthV1.NewHealthClient(conn)

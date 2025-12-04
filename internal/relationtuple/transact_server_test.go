@@ -459,7 +459,7 @@ func TestWriteHandlers(t *testing.T) {
 			require.NoError(t, err)
 			assert.Equal(t, http.StatusBadRequest, resp.StatusCode)
 
-			defer resp.Body.Close()
+			defer func() { _ = resp.Body.Close() }()
 			errContent, err := io.ReadAll(resp.Body)
 			require.NoError(t, err)
 			assert.Contains(t, string(errContent), "relation_tuple is missing")
@@ -484,7 +484,7 @@ func TestWriteHandlers(t *testing.T) {
 			require.NoError(t, err)
 			assert.Equal(t, http.StatusBadRequest, resp.StatusCode)
 
-			defer resp.Body.Close()
+			defer func() { _ = resp.Body.Close() }()
 			errContent, err := io.ReadAll(resp.Body)
 			require.NoError(t, err)
 			assert.Contains(t, string(errContent), "unknown_action_foo")

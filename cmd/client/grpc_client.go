@@ -11,8 +11,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/ory/x/flagx"
 	"golang.org/x/oauth2"
+
+	"github.com/ory/x/flagx"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
@@ -74,7 +75,6 @@ func (d *connectionDetails) dialOptions() (opts []grpc.DialOption) {
 		// Defaults to the default host root CA bundle
 		opts = append(opts, grpc.WithTransportCredentials(credentials.NewTLS(nil)))
 	}
-
 	if d.block {
 		opts = append(opts, grpc.WithBlock())
 	}
@@ -142,7 +142,7 @@ func Conn(ctx context.Context, remote string, details connectionDetails) (*grpc.
 		return dial(ctx, remote)
 	}
 
-	return grpc.DialContext(
+	return grpc.DialContext( // nolint:staticcheck // SA1019 grpc.DialContext is deprecated, but we actually want to connect here right away.
 		ctx,
 		remote,
 		details.dialOptions()...,

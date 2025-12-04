@@ -331,7 +331,7 @@ func (r *RegistryDefault) DetermineNetwork(ctx context.Context) (*networkx.Netwo
 		return nil, errors.WithStack(persistence.ErrNetworkMigrationsMissing)
 	}
 
-	return networkx.NewManager(c, r.Logger()).Determine(ctx)
+	return networkx.Determine(c.WithContext(ctx))
 }
 
 func (r *RegistryDefault) InitWithoutNetworkID(ctx context.Context) error {

@@ -40,21 +40,22 @@ func readTuplesFromArg(cmd *cobra.Command, arg string) ([]*ketoapi.RelationTuple
 	if arg == "-" {
 		f = cmd.InOrStdin()
 	} else {
-		stats, err := os.Stat(arg)
+		cleanArg := filepath.Clean(arg)
+		stats, err := os.Stat(cleanArg)
 		if err != nil {
 			_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Error getting stats for %s: %s\n", arg, err)
 			return nil, cmdx.FailSilently(cmd)
 		}
 
 		if stats.IsDir() {
-			fi, err := os.ReadDir(arg)
+			fi, err := os.ReadDir(cleanArg)
 			if err != nil {
 				return nil, err
 			}
 
 			var tuples []*ketoapi.RelationTuple
 			for _, child := range fi {
-				t, err := readTuplesFromArg(cmd, filepath.Join(arg, child.Name()))
+				t, err := readTuplesFromArg(cmd, filepath.Join(cleanArg, child.Name()))
 				if err != nil {
 					return nil, err
 				}
@@ -63,11 +64,13 @@ func readTuplesFromArg(cmd *cobra.Command, arg string) ([]*ketoapi.RelationTuple
 			return tuples, nil
 		}
 
-		f, err = os.Open(arg)
+		ff, err := os.Open(cleanArg)
 		if err != nil {
 			_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Error processing arg %s: %s\n", arg, err)
 			return nil, cmdx.FailSilently(cmd)
 		}
+		defer func() { _ = ff.Close() }()
+		f = ff
 	}
 
 	fc, err := io.ReadAll(f)

@@ -113,9 +113,9 @@ func TestPool(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	numWorkers := 5
+	numWorkers := int32(5)
 	p := NewPool(
-		WithWorkers(numWorkers),
+		WithWorkers(int(numWorkers)),
 		WithContext(ctx),
 	)
 
@@ -128,7 +128,7 @@ func TestPool(t *testing.T) {
 	for i := 0; i < 1000; i++ {
 		p.Add(func() {
 			defer wg.Done()
-			if jobs := atomic.AddInt32(&jobsCount, 1); jobs > int32(numWorkers) {
+			if jobs := atomic.AddInt32(&jobsCount, 1); jobs > numWorkers {
 				t.Errorf("%d jobs in flight, more than %d", jobs, numWorkers)
 			}
 			time.Sleep(1 * time.Millisecond)

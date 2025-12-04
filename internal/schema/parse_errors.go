@@ -5,6 +5,7 @@ package schema
 
 import (
 	"fmt"
+	"math"
 	"strings"
 	"unicode"
 
@@ -84,12 +85,12 @@ func (e *ParseError) ToProto() *opl.ParseError {
 	return &opl.ParseError{
 		Message: e.msg,
 		Start: &opl.SourcePosition{
-			Line:   uint32(start.Line),
-			Column: uint32(start.Col),
+			Line:   clampUint32(start.Line),
+			Column: clampUint32(start.Col),
 		},
 		End: &opl.SourcePosition{
-			Line:   uint32(end.Line),
-			Column: uint32(end.Col),
+			Line:   clampUint32(end.Line),
+			Column: clampUint32(end.Col),
 		},
 	}
 }
@@ -110,6 +111,17 @@ func (e *ParseError) toSrcPos(pos int) (srcPos ketoapi.SourcePosition) {
 		}
 	}
 	return
+}
+
+func clampUint32(v int) uint32 {
+	switch {
+	case v < 0:
+		return 0
+	case v > math.MaxUint32:
+		return math.MaxUint32
+	default:
+		return uint32(v)
+	}
 }
 
 func (e *ParseError) rows() []string {

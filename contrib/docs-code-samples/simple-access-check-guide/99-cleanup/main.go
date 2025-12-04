@@ -13,11 +13,11 @@ import (
 )
 
 func main() {
-	wc, err := grpc.Dial("127.0.0.1:4467", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	wc, err := grpc.NewClient("127.0.0.1:4467", grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		panic(err)
 	}
-	defer wc.Close()
+	defer func() { _ = wc.Close() }()
 
 	wClient := rts.NewWriteServiceClient(wc)
 	_, err = wClient.TransactRelationTuples(context.Background(), &rts.TransactRelationTuplesRequest{

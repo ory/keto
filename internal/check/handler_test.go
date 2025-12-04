@@ -320,12 +320,12 @@ func TestBatchCheckGRPCHandler(t *testing.T) {
 	}()
 	t.Cleanup(s.Stop)
 
-	conn, err := grpc.Dial("bufnet",
+	conn, err := grpc.NewClient("passthrough:///bufnet",
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 		grpc.WithContextDialer(func(context.Context, string) (net.Conn, error) { return l.Dial() }),
 	)
 	require.NoError(t, err)
-	t.Cleanup(func() { conn.Close() })
+	t.Cleanup(func() { require.NoError(t, conn.Close()) })
 
 	nspaces := []*namespace.Namespace{{
 		Name: "batch-check-grpc",

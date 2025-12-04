@@ -59,7 +59,7 @@ func TestMigrations(t *testing.T) {
 				time.Sleep(time.Second)
 			}
 			require.NoError(t, dbx.Ping(conn))
-			t.Cleanup(func() { conn.Close() })
+			t.Cleanup(func() { require.NoError(t, conn.Close()) })
 
 			namespaces := []*namespace.Namespace{
 				{ID: 1, Name: "foo"},
