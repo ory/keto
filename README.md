@@ -11,7 +11,9 @@
   <a href="https://www.ory.sh/jobs/">Jobs</a>
 </h4>
 
-Ory Keto is the first and most popular open source implementation of "Zanzibar: Google's Consistent, Global Authorization System". It provides a scalable, performant authorization server for managing permissions at scale.
+Ory Keto is the first and most popular open source implementation of "Zanzibar:
+Google's Consistent, Global Authorization System". It provides a scalable,
+performant authorization server for managing permissions at scale.
 
 ---
 
@@ -40,7 +42,10 @@ Ory Keto is the first and most popular open source implementation of "Zanzibar: 
 
 ## What is Ory Keto?
 
-Ory Keto is an open source implementation of "Zanzibar: Google's Consistent, Global Authorization System". It follows [cloud architecture best practices](https://www.ory.sh/docs/ecosystem/software-architecture-philosophy) and focuses on:
+Ory Keto is an open source implementation of "Zanzibar: Google's Consistent,
+Global Authorization System". It follows
+[cloud architecture best practices](https://www.ory.sh/docs/ecosystem/software-architecture-philosophy)
+and focuses on:
 
 - Scalable permission checks based on the Zanzibar model
 - The Ory Permission Language for defining access control policies
@@ -49,7 +54,9 @@ Ory Keto is an open source implementation of "Zanzibar: Google's Consistent, Glo
 - Horizontal scaling to billions of relationships
 - Consistency and high availability
 
-We recommend starting with the [Ory Keto introduction docs](https://www.ory.sh/docs/keto) to learn more about its architecture, feature set, and how it compares to other systems.
+We recommend starting with the
+[Ory Keto introduction docs](https://www.ory.sh/docs/keto) to learn more about
+its architecture, feature set, and how it compares to other systems.
 
 ### Why Ory Keto
 
@@ -60,58 +67,84 @@ Ory Keto is designed to:
 - Support the Ory Permission Language for flexible access control
 - Work with any identity provider through integration points
 - Scale horizontally without effort
-- Fit into modern cloud native environments such as Kubernetes and managed platforms
+- Fit into modern cloud native environments such as Kubernetes and managed
+  platforms
 
 ## Deployment options
 
 You can run Ory Keto in two main ways:
 
 - As a managed service on the Ory Network
-- As a self hosted service under your own control, with or without the Ory Enterprise License
+- As a self hosted service under your own control, with or without the Ory
+  Enterprise License
 
 ### Use Ory Keto on the Ory Network
 
-The [Ory Network](https://www.ory.sh/cloud) is the fastest way to use Ory services in production. **Ory Permissions** is powered by the open source Ory Keto server and is API compatible.
+The [Ory Network](https://www.ory.sh/cloud) is the fastest way to use Ory
+services in production. **Ory Permissions** is powered by the open source Ory
+Keto server and is API compatible.
 
 The Ory Network provides:
 
-- Low latency permission checks based on Google's Zanzibar model with built-in support for the Ory Permission Language
-- Identity and credential management that scales to billions of users and devices
-- Registration, login, and account management flows for passkeys, biometrics, social login, SSO, and multi factor authentication
-- OAuth2 and OpenID Connect for single sign on, API access, and machine to machine authorization
+- Low latency permission checks based on Google's Zanzibar model with built-in
+  support for the Ory Permission Language
+- Identity and credential management that scales to billions of users and
+  devices
+- Registration, login, and account management flows for passkeys, biometrics,
+  social login, SSO, and multi factor authentication
+- OAuth2 and OpenID Connect for single sign on, API access, and machine to
+  machine authorization
 - GDPR friendly storage with data locality and compliance in mind
 - Web based Ory Console and Ory CLI for administration and operations
 - Cloud native APIs compatible with the open source servers
 - Fair, usage based [pricing](https://www.ory.sh/pricing)
 
-Sign up for a [free developer account](https://console.ory.sh/registration?utm_source=github&utm_medium=banner&utm_campaign=keto-readme) to get started.
+Sign up for a
+[free developer account](https://console.ory.sh/registration?utm_source=github&utm_medium=banner&utm_campaign=keto-readme)
+to get started.
 
 ### Self-host Ory Keto
 
-You can run Ory Keto yourself for full control over infrastructure, deployment, and customization.
+You can run Ory Keto yourself for full control over infrastructure, deployment,
+and customization.
 
 The [install guide](https://www.ory.sh/docs/keto/install) explains how to:
 
-* Install Keto on Linux, macOS, Windows, and Docker
-* Configure databases such as PostgreSQL, MySQL, and CockroachDB
-* Deploy to Kubernetes and other orchestration systems
-* Build Keto from source
+- Install Keto on Linux, macOS, Windows, and Docker
+- Configure databases such as PostgreSQL, MySQL, and CockroachDB
+- Deploy to Kubernetes and other orchestration systems
+- Build Keto from source
 
-This guide uses the open source distribution to get you started without license requirements. It is a great fit for individuals, researchers, hackers, and companies that want to experiment, prototype, or run unimportant workloads without SLAs. You get the full core engine, and you are free to inspect, extend, and build it from source.
+This guide uses the open source distribution to get you started without license
+requirements. It is a great fit for individuals, researchers, hackers, and
+companies that want to experiment, prototype, or run unimportant workloads
+without SLAs. You get the full core engine, and you are free to inspect, extend,
+and build it from source.
 
-If you run Keto as part of a business-critical system, you should use a commercial agreement to reduce operational and security risk. The **Ory Enterprise License (OEL)** layers on top of self-hosted Keto and provides:
+If you run Keto as part of a business-critical system, you should use a
+commercial agreement to reduce operational and security risk. The **Ory
+Enterprise License (OEL)** layers on top of self-hosted Keto and provides:
 
-* Additional enterprise features that are not available in the open source version
-* Regular security releases, including CVE patches, with service level agreements
-* Support for advanced scaling, multi-tenancy, and complex deployments
-* Premium support options with SLAs, direct access to engineers, and onboarding help
-* Access to a private Docker registry with frequent and vetted, up-to-date enterprise builds
+- Additional enterprise features that are not available in the open source
+  version
+- Regular security releases, including CVE patches, with service level
+  agreements
+- Support for advanced scaling, multi-tenancy, and complex deployments
+- Premium support options with SLAs, direct access to engineers, and onboarding
+  help
+- Access to a private Docker registry with frequent and vetted, up-to-date
+  enterprise builds
 
-For guaranteed CVE fixes, current enterprise builds, advanced features, and support in production, you need a valid [Ory Enterprise License](https://www.ory.com/ory-enterprise-license) and access to the Ory Enterprise Docker registry. To learn more, [contact the Ory team](https://www.ory.sh/contact/).
+For guaranteed CVE fixes, current enterprise builds, advanced features, and
+support in production, you need a valid
+[Ory Enterprise License](https://www.ory.com/ory-enterprise-license) and access
+to the Ory Enterprise Docker registry. To learn more,
+[contact the Ory team](https://www.ory.sh/contact/).
 
 ## Quickstart
 
-Install the [Ory CLI](https://www.ory.sh/docs/guides/cli/installation) and create a new project to try Ory Permissions.
+Install the [Ory CLI](https://www.ory.sh/docs/guides/cli/installation) and
+create a new project to try Ory Permissions.
 
 ```bash
 # Install the Ory CLI if you do not have it yet:
@@ -548,14 +581,16 @@ to perform a certain action on a resource.
 
 ## Documentation
 
-The full Ory Keto documentation is available at [www.ory.sh/docs/keto](https://www.ory.sh/docs/keto), including:
+The full Ory Keto documentation is available at
+[www.ory.sh/docs/keto](https://www.ory.sh/docs/keto), including:
 
 - [Installation guides](https://www.ory.sh/docs/keto/install)
 - [Configuration reference](https://www.ory.sh/docs/keto/reference/configuration)
 - [HTTP API documentation](https://www.ory.sh/docs/keto/sdk/api)
 - [Ory Permission Language guide](https://www.ory.sh/docs/keto/modeling/create-permission-model)
 
-For upgrading and changelogs, check [UPGRADE.md](./UPGRADE.md) and [CHANGELOG.md](./CHANGELOG.md).
+For upgrading and changelogs, check [UPGRADE.md](./UPGRADE.md) and
+[CHANGELOG.md](./CHANGELOG.md).
 
 ## Developing Ory Keto
 

@@ -1,10 +1,13 @@
 # Development
 
-This document explains how to develop Ory Keto, run tests, and work with the tooling around it.
+This document explains how to develop Ory Keto, run tests, and work with the
+tooling around it.
 
 ## Upgrading and changelog
 
-New releases might introduce breaking changes. To help you identify and incorporate those changes, we document these changes in [UPGRADE.md](./UPGRADE.md) and [CHANGELOG.md](./CHANGELOG.md).
+New releases might introduce breaking changes. To help you identify and
+incorporate those changes, we document these changes in
+[UPGRADE.md](./UPGRADE.md) and [CHANGELOG.md](./CHANGELOG.md).
 
 ## Command line documentation
 
@@ -18,7 +21,8 @@ keto help
 
 ## Contribution guidelines
 
-We encourage all contributions. Before opening a pull request, read the [contribution guidelines](./CONTRIBUTING.md).
+We encourage all contributions. Before opening a pull request, read the
+[contribution guidelines](./CONTRIBUTING.md).
 
 ## Prerequisites
 
@@ -28,7 +32,8 @@ You need Go 1.19+ and, for the test suites:
 - GNU Make 4.3
 - Node.js and npm >= v7
 
-It is possible to develop Ory Keto on Windows, but please be aware that all guides assume a Unix shell like bash or zsh.
+It is possible to develop Ory Keto on Windows, but please be aware that all
+guides assume a Unix shell like bash or zsh.
 
 ## Install from source
 
@@ -75,7 +80,10 @@ go test -tags sqlite -short ./internal/check/...
 
 Regular tests require a database setup.
 
-The test suite can work with docker directly using [ory/dockertest](https://github.com/ory/dockertest), but we encourage using the script instead. Using dockertest can bloat the number of Docker Images on your system and starting them on each run is quite slow.
+The test suite can work with docker directly using
+[ory/dockertest](https://github.com/ory/dockertest), but we encourage using the
+script instead. Using dockertest can bloat the number of Docker Images on your
+system and starting them on each run is quite slow.
 
 Run the full test suite:
 
