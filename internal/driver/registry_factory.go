@@ -15,6 +15,7 @@ import (
 	"testing"
 
 	"github.com/gofrs/uuid"
+	"github.com/ory/x/contextx"
 
 	"github.com/ory/x/configx"
 	"github.com/ory/x/logrusx"
@@ -220,7 +221,7 @@ func NewTestRegistry(t testing.TB, dsn *dbx.DsnT, opts ...TestRegistryOption) *R
 	r := &RegistryDefault{
 		c:     c,
 		l:     l,
-		ctxer: &ketoctx.DefaultContextualizer{},
+		ctxer: &contextx.Default{},
 	}
 
 	for _, opt := range opts {

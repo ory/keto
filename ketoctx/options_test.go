@@ -7,6 +7,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/ory/x/contextx"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/keepalive"
 
@@ -15,12 +16,12 @@ import (
 
 func TestOptions(t *testing.T) {
 	t.Run("case=has default contextualizer", func(t *testing.T) {
-		assert.Equal(t, &DefaultContextualizer{}, Options().Contextualizer())
+		assert.Equal(t, &contextx.Default{}, Options().Contextualizer())
 	})
 
 	t.Run("case=overwrites contextualizer", func(t *testing.T) {
 		ctxer := &struct {
-			DefaultContextualizer
+			contextx.Default
 			x string
 		}{x: "x"}
 

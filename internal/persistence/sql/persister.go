@@ -9,12 +9,12 @@ import (
 
 	"github.com/gofrs/uuid"
 	"github.com/ory/pop/v6"
+	"github.com/ory/x/contextx"
 	"github.com/ory/x/popx"
 
 	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/persistence"
 	"github.com/ory/keto/internal/x"
-	"github.com/ory/keto/ketoctx"
 )
 
 type (
@@ -26,7 +26,7 @@ type (
 	dependencies interface {
 		x.LoggerProvider
 		x.TracingProvider
-		ketoctx.ContextualizerProvider
+		contextx.Provider
 		config.Provider
 
 		PopConnection(ctx context.Context) (*pop.Connection, error)

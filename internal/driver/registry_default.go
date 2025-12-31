@@ -13,6 +13,7 @@ import (
 	"github.com/gofrs/uuid"
 	"github.com/ory/herodot"
 	"github.com/ory/pop/v6"
+	"github.com/ory/x/contextx"
 	"github.com/ory/x/dbal"
 	"github.com/ory/x/fsx"
 	"github.com/ory/x/healthx"
@@ -47,7 +48,6 @@ var (
 	_ x.LoggerProvider                     = (*RegistryDefault)(nil)
 	_ Registry                             = (*RegistryDefault)(nil)
 	_ rts.VersionServiceServer             = (*RegistryDefault)(nil)
-	_ ketoctx.ContextualizerProvider       = (*RegistryDefault)(nil)
 )
 
 type (
@@ -62,7 +62,7 @@ type (
 		ee              *expand.Engine
 		c               *config.Config
 		conn            *pop.Connection
-		ctxer           ketoctx.Contextualizer
+		ctxer           contextx.Contextualizer
 		mapper          *relationtuple.Mapper
 		readOnlyMapper  *relationtuple.Mapper
 
@@ -116,7 +116,7 @@ func (r *RegistryDefault) ReadOnlyMapper() *relationtuple.Mapper {
 	return r.readOnlyMapper
 }
 
-func (r *RegistryDefault) Contextualizer() ketoctx.Contextualizer {
+func (r *RegistryDefault) Contextualizer() contextx.Contextualizer {
 	return r.ctxer
 }
 
