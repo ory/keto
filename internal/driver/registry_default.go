@@ -17,12 +17,12 @@ import (
 	"github.com/ory/x/dbal"
 	"github.com/ory/x/fsx"
 	"github.com/ory/x/healthx"
+	"github.com/ory/x/httprouterx"
 	"github.com/ory/x/logrusx"
 	"github.com/ory/x/metricsx"
 	"github.com/ory/x/networkx"
 	"github.com/ory/x/otelx"
 	"github.com/ory/x/popx"
-	prometheus "github.com/ory/x/prometheusx"
 	"github.com/pkg/errors"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
@@ -69,14 +69,11 @@ type (
 		init1, init2       sync.Once
 		init1err, init2err error
 
-		healthH        *healthx.Handler
-		healthServer   *health.Server
-		handlers       []Handler
-		sqaService     *metricsx.Service
-		tracer         *otelx.Tracer
-		tracerWrapper  ketoctx.TracerWrapper
-		pmm            *prometheus.MetricsManager
-		metricsHandler *prometheus.Handler
+		healthH       *healthx.Handler
+		healthServer  *health.Server
+		sqaService    *metricsx.Service
+		tracer        *otelx.Tracer
+		tracerWrapper ketoctx.TracerWrapper
 
 		defaultUnaryInterceptors  []grpc.UnaryServerInterceptor
 		defaultStreamInterceptors []grpc.StreamServerInterceptor
@@ -88,15 +85,15 @@ type (
 		dbOpts                    []func(details *pop.ConnectionDetails)
 	}
 	ReadHandler interface {
-		RegisterReadRoutes(r *x.ReadRouter)
+		RegisterReadRoutes(r *httprouterx.RouterPublic)
 		RegisterReadGRPC(s *grpc.Server)
 	}
 	WriteHandler interface {
-		RegisterWriteRoutes(r *x.WriteRouter)
+		RegisterWriteRoutes(r *httprouterx.RouterAdmin)
 		RegisterWriteGRPC(s *grpc.Server)
 	}
 	OPLSyntaxHandler interface {
-		RegisterSyntaxRoutes(r *x.OPLSyntaxRouter)
+		RegisterSyntaxRoutes(r httprouterx.Router)
 		RegisterSyntaxGRPC(s *grpc.Server)
 	}
 	Handler interface{}
@@ -190,23 +187,9 @@ func (r *RegistryDefault) Tracer(ctx context.Context) *otelx.Tracer {
 	return r.tracer
 }
 
-func (r *RegistryDefault) MetricsHandler() *prometheus.Handler {
-	if r.metricsHandler == nil {
-		r.metricsHandler = prometheus.NewHandler(r.Writer(), config.Version)
-	}
-	return r.metricsHandler
-}
-
-func (r *RegistryDefault) PrometheusManager() *prometheus.MetricsManager {
-	if r.pmm == nil {
-		r.pmm = prometheus.NewMetricsManagerWithPrefix("keto", prometheus.HTTPMetrics, config.Version, config.Commit, config.Date)
-	}
-	return r.pmm
-}
-
 func (r *RegistryDefault) Logger() *logrusx.Logger {
 	if r.l == nil {
-		r.l = logrusx.New("ORY Keto", config.Version)
+		r.l = logrusx.New("Ory Keto", config.Version)
 	}
 	return r.l
 }

@@ -200,20 +200,23 @@ func (rc *restClient) expand(t *testing.T, r *ketoapi.SubjectSet, depth int) *ke
 	return tree
 }
 
-func healthReady(t *testing.T, readURL string) bool {
+func healthReady(t require.TestingT, readURL string) int {
 	req, err := http.NewRequest("GET", readURL+healthx.ReadyCheckPath, nil)
 	require.NoError(t, err)
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
-		return false
+		return 0
 	}
 	defer func() { _ = resp.Body.Close() }()
-	return resp.StatusCode == http.StatusOK
+	return resp.StatusCode
+}
+
+func waitUntilLive(t *testing.T, readURL string) {
+	require.EventuallyWithT(t, func(t *assert.CollectT) {
+		assert.Equal(t, http.StatusOK, healthReady(t, readURL))
+	}, 5*time.Second, 10*time.Millisecond)
 }
 
 func (rc *restClient) waitUntilLive(t *testing.T) {
-	// wait for /health/ready
-	for !healthReady(t, rc.readURL) {
-		time.Sleep(10 * time.Millisecond)
-	}
+	waitUntilLive(t, rc.readURL)
 }

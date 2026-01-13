@@ -7,7 +7,6 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/julienschmidt/httprouter"
 	"github.com/ory/herodot"
 	keysetpagination "github.com/ory/x/pagination/keysetpagination_v2"
 	"github.com/ory/x/pointerx"
@@ -17,7 +16,7 @@ import (
 )
 
 var (
-	_ rts.ReadServiceServer = (*handler)(nil)
+	_ rts.ReadServiceServer = (*Handler)(nil)
 )
 
 type (
@@ -62,7 +61,7 @@ func (q *deprecatedQueryWrapper) GetRelation() *string {
 	return pointerx.Ptr(q.Relation)
 }
 
-func (h *handler) ListRelationTuples(ctx context.Context, req *rts.ListRelationTuplesRequest) (*rts.ListRelationTuplesResponse, error) {
+func (h *Handler) ListRelationTuples(ctx context.Context, req *rts.ListRelationTuplesRequest) (*rts.ListRelationTuplesResponse, error) {
 	var q ketoapi.RelationQuery
 
 	switch {
@@ -131,7 +130,7 @@ func (h *handler) ListRelationTuples(ctx context.Context, req *rts.ListRelationT
 //	  200: relationships
 //	  404: errorGeneric
 //	  default: errorGeneric
-func (h *handler) getRelations(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+func (h *Handler) getRelations(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	q := r.URL.Query()

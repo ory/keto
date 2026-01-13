@@ -14,32 +14,27 @@ import (
 	"net/url"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+	"github.com/tidwall/gjson"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
+	"github.com/ory/x/httprouterx"
 	"github.com/ory/x/pointerx"
-
-	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
-
-	"github.com/ory/keto/ketoapi"
-
-	"github.com/ory/keto/internal/driver/config"
-
-	"github.com/stretchr/testify/assert"
-	"github.com/tidwall/gjson"
-
-	"github.com/julienschmidt/httprouter"
-	"github.com/stretchr/testify/require"
+	"github.com/ory/x/prometheusx"
 
 	"github.com/ory/keto/internal/driver"
+	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/namespace"
 	"github.com/ory/keto/internal/relationtuple"
-	"github.com/ory/keto/internal/x"
+	"github.com/ory/keto/ketoapi"
+	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 )
 
 func TestReadHandlers(t *testing.T) {
 	ctx := context.Background()
-	r := &x.ReadRouter{Router: httprouter.New()}
+	r := httprouterx.NewRouterPublic(prometheusx.NewMetricsManager("keto", "test", "", ""))
 	reg := driver.NewSqliteTestRegistry(t, false)
 	h := relationtuple.NewHandler(reg)
 	h.RegisterReadRoutes(r)

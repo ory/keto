@@ -16,18 +16,18 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+	"github.com/tidwall/gjson"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/status"
 	"google.golang.org/grpc/test/bufconn"
 
-	"github.com/julienschmidt/httprouter"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
-	"github.com/tidwall/gjson"
-
+	"github.com/ory/x/httprouterx"
 	"github.com/ory/x/pointerx"
+	"github.com/ory/x/prometheusx"
 
 	"github.com/ory/keto/internal/check"
 	"github.com/ory/keto/internal/driver"
@@ -35,7 +35,6 @@ import (
 	client "github.com/ory/keto/internal/httpclient"
 	"github.com/ory/keto/internal/namespace"
 	"github.com/ory/keto/internal/relationtuple"
-	"github.com/ory/keto/internal/x"
 	"github.com/ory/keto/ketoapi"
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 )
@@ -75,13 +74,10 @@ func TestCheckRESTHandler(t *testing.T) {
 		Name: "check handler",
 	}}
 
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-	reg := driver.NewSqliteTestRegistry(t, false)
-	require.NoError(t, reg.Config(ctx).Set(config.KeyNamespaces, nspaces))
+	reg := driver.NewSqliteTestRegistry(t, false, driver.WithNamespaces(nspaces))
 	h := check.NewHandler(reg)
-	r := httprouter.New()
-	h.RegisterReadRoutes(&x.ReadRouter{Router: r})
+	r := httprouterx.NewRouterPublic(prometheusx.NewMetricsManager("keto", "test", "", ""))
+	h.RegisterReadRoutes(r)
 	ts := httptest.NewServer(r)
 	defer ts.Close()
 
@@ -173,13 +169,10 @@ func TestBatchCheckRESTHandler(t *testing.T) {
 		Name: "batch-check-handler",
 	}}
 
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-	reg := driver.NewSqliteTestRegistry(t, false)
-	require.NoError(t, reg.Config(ctx).Set(config.KeyNamespaces, nspaces))
+	reg := driver.NewSqliteTestRegistry(t, false, driver.WithNamespaces(nspaces))
 	h := check.NewHandler(reg)
-	r := httprouter.New()
-	h.RegisterReadRoutes(&x.ReadRouter{Router: r})
+	r := httprouterx.NewRouterPublic(prometheusx.NewMetricsManager("keto", "test", "", ""))
+	h.RegisterReadRoutes(r)
 	ts := httptest.NewServer(r)
 	defer ts.Close()
 

@@ -5,7 +5,6 @@ package relationtuple_test
 
 import (
 	"bytes"
-	"context"
 	"encoding/json"
 	"io"
 	"net/http"
@@ -14,9 +13,10 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/julienschmidt/httprouter"
+	"github.com/ory/x/httprouterx"
 	keysetpagination "github.com/ory/x/pagination/keysetpagination_v2"
 	"github.com/ory/x/pointerx"
+	"github.com/ory/x/prometheusx"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
@@ -24,15 +24,11 @@ import (
 	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/namespace"
 	"github.com/ory/keto/internal/relationtuple"
-	"github.com/ory/keto/internal/x"
 	"github.com/ory/keto/ketoapi"
 )
 
 func TestWriteHandlers(t *testing.T) {
-	ctx := context.Background()
-	r := httprouter.New()
-	wr := &x.WriteRouter{Router: r}
-	rr := &x.ReadRouter{Router: r}
+	r := httprouterx.NewRouterAdmin(prometheusx.NewMetricsManager("keto", "test", "", ""))
 	reg := driver.NewSqliteTestRegistry(t, false)
 
 	var nspaces []*namespace.Namespace
@@ -42,14 +38,14 @@ func TestWriteHandlers(t *testing.T) {
 		}
 		nspaces = append(nspaces, n)
 
-		require.NoError(t, reg.Config(ctx).Set(config.KeyNamespaces, nspaces))
+		require.NoError(t, reg.Config(t.Context()).Set(config.KeyNamespaces, nspaces))
 
 		return n
 	}
 
 	h := relationtuple.NewHandler(reg)
-	h.RegisterWriteRoutes(wr)
-	h.RegisterReadRoutes(rr)
+	h.RegisterWriteRoutes(r)
+	h.RegisterReadRoutes(r.ToPublic())
 	ts := httptest.NewServer(r)
 	defer ts.Close()
 
@@ -85,12 +81,12 @@ func TestWriteHandlers(t *testing.T) {
 			assert.JSONEq(t, string(payload), string(body))
 
 			t.Run("check=is contained in the manager", func(t *testing.T) {
-				mapped, err := reg.Mapper().FromTuple(ctx, rt)
+				mapped, err := reg.Mapper().FromTuple(t.Context(), rt)
 				require.NoError(t, err)
 				// set a size > 1 just to make sure it gets all
-				actualRTs, _, err := reg.RelationTupleManager().GetRelationTuples(ctx, mapped[0].ToQuery(), keysetpagination.WithSize(10))
+				actualRTs, _, err := reg.RelationTupleManager().GetRelationTuples(t.Context(), mapped[0].ToQuery(), keysetpagination.WithSize(10))
 				require.NoError(t, err)
-				actual, err := reg.Mapper().ToTuple(ctx, actualRTs...)
+				actual, err := reg.Mapper().ToTuple(t.Context(), actualRTs...)
 				require.NoError(t, err)
 				assert.Equalf(t, []*ketoapi.RelationTuple{rt}, actual, "want: %s\ngot:  %s", rt.String(), actual[0].String())
 			})
@@ -141,11 +137,11 @@ func TestWriteHandlers(t *testing.T) {
 				assert.Equal(t, http.StatusCreated, resp.StatusCode)
 			}
 
-			actual, next, err := reg.RelationTupleManager().GetRelationTuples(ctx, &relationtuple.RelationQuery{
+			actual, next, err := reg.RelationTupleManager().GetRelationTuples(t.Context(), &relationtuple.RelationQuery{
 				Namespace: &nspace.Name,
 			})
 			require.NoError(t, err)
-			actualMapped, err := reg.Mapper().ToTuple(ctx, actual...)
+			actualMapped, err := reg.Mapper().ToTuple(t.Context(), actual...)
 			require.NoError(t, err)
 			assert.True(t, next.IsLast())
 			assert.ElementsMatch(t, rts, actualMapped)
@@ -171,7 +167,7 @@ func TestWriteHandlers(t *testing.T) {
 			assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 
 			// set a size > 1 just to make sure it gets all
-			actualRTs, _, err := reg.RelationTupleManager().GetRelationTuples(ctx, &relationtuple.RelationQuery{Namespace: &nspace.Name}, keysetpagination.WithSize(10))
+			actualRTs, _, err := reg.RelationTupleManager().GetRelationTuples(t.Context(), &relationtuple.RelationQuery{Namespace: &nspace.Name}, keysetpagination.WithSize(10))
 			require.NoError(t, err)
 			assert.Equal(t, []*relationtuple.RelationTuple{}, actualRTs)
 		})
@@ -209,10 +205,10 @@ func TestWriteHandlers(t *testing.T) {
 
 			query, err := (&ketoapi.RelationQuery{}).FromURLQuery(q)
 			require.NoError(t, err)
-			mappedQuery, err := reg.Mapper().FromQuery(ctx, query)
+			mappedQuery, err := reg.Mapper().FromQuery(t.Context(), query)
 			require.NoError(t, err)
 
-			actualRTs, _, err := reg.RelationTupleManager().GetRelationTuples(ctx, mappedQuery, keysetpagination.WithSize(10))
+			actualRTs, _, err := reg.RelationTupleManager().GetRelationTuples(t.Context(), mappedQuery, keysetpagination.WithSize(10))
 			require.NoError(t, err)
 			assert.Equal(t, []*relationtuple.RelationTuple{}, actualRTs)
 		})
@@ -244,14 +240,14 @@ func TestWriteHandlers(t *testing.T) {
 			}
 
 			assertTuplesExist := func(t *testing.T) {
-				mappedQuery, err := reg.Mapper().FromQuery(ctx, &ketoapi.RelationQuery{
+				mappedQuery, err := reg.Mapper().FromQuery(t.Context(), &ketoapi.RelationQuery{
 					Namespace: &nspace.Name,
 				})
 				require.NoError(t, err)
 
-				actualRTs, _, err := reg.RelationTupleManager().GetRelationTuples(ctx, mappedQuery, keysetpagination.WithSize(10))
+				actualRTs, _, err := reg.RelationTupleManager().GetRelationTuples(t.Context(), mappedQuery, keysetpagination.WithSize(10))
 				require.NoError(t, err)
-				mappedRTs, err := reg.Mapper().ToTuple(ctx, actualRTs...)
+				mappedRTs, err := reg.Mapper().ToTuple(t.Context(), actualRTs...)
 				require.NoError(t, err)
 				assert.ElementsMatch(t, rts, mappedRTs)
 			}
@@ -332,12 +328,12 @@ func TestWriteHandlers(t *testing.T) {
 			require.NoError(t, err)
 			assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 
-			actualRTs, _, err := reg.RelationTupleManager().GetRelationTuples(ctx, &relationtuple.RelationQuery{
+			actualRTs, _, err := reg.RelationTupleManager().GetRelationTuples(t.Context(), &relationtuple.RelationQuery{
 				Namespace: &nspace.Name,
 				Relation:  &relation,
 			})
 			require.NoError(t, err)
-			mapped, err := reg.Mapper().ToTuple(ctx, actualRTs...)
+			mapped, err := reg.Mapper().ToTuple(t.Context(), actualRTs...)
 			require.NoError(t, err)
 			assert.Equal(t, []*ketoapi.RelationTuple{deltas[0].RelationTuple}, mapped)
 		})
@@ -375,7 +371,7 @@ func TestWriteHandlers(t *testing.T) {
 			assert.Equal(t, http.StatusNotFound, resp.StatusCode)
 
 			// set a size > 1 just to make sure it gets all
-			actualRTs, _, err := reg.RelationTupleManager().GetRelationTuples(ctx, &relationtuple.RelationQuery{Namespace: &nspace.Name}, keysetpagination.WithSize(10))
+			actualRTs, _, err := reg.RelationTupleManager().GetRelationTuples(t.Context(), &relationtuple.RelationQuery{Namespace: &nspace.Name}, keysetpagination.WithSize(10))
 			require.NoError(t, err)
 			assert.Len(t, actualRTs, 0)
 		})
@@ -403,11 +399,11 @@ func TestWriteHandlers(t *testing.T) {
 			require.NoError(t, err)
 			assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 
-			actualRTs, _, err := reg.RelationTupleManager().GetRelationTuples(ctx, &relationtuple.RelationQuery{
+			actualRTs, _, err := reg.RelationTupleManager().GetRelationTuples(t.Context(), &relationtuple.RelationQuery{
 				Namespace: &nspace.Name,
 			})
 			require.NoError(t, err)
-			mapped, err := reg.Mapper().ToTuple(ctx, actualRTs...)
+			mapped, err := reg.Mapper().ToTuple(t.Context(), actualRTs...)
 			require.NoError(t, err)
 			assert.Equal(t, []*ketoapi.RelationTuple{deltas[0].RelationTuple}, mapped)
 		})
@@ -435,7 +431,7 @@ func TestWriteHandlers(t *testing.T) {
 			require.NoError(t, err)
 			assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 
-			actualRTs, _, err := reg.RelationTupleManager().GetRelationTuples(ctx, &relationtuple.RelationQuery{
+			actualRTs, _, err := reg.RelationTupleManager().GetRelationTuples(t.Context(), &relationtuple.RelationQuery{
 				Namespace: &nspace.Name,
 			})
 			require.NoError(t, err)

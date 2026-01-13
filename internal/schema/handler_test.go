@@ -12,7 +12,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/julienschmidt/httprouter"
+	"github.com/ory/x/httprouterx"
+	"github.com/ory/x/prometheusx"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/tidwall/gjson"
@@ -22,14 +23,11 @@ import (
 
 	"github.com/ory/keto/internal/driver"
 	"github.com/ory/keto/internal/schema"
-	"github.com/ory/keto/internal/x"
 	opl "github.com/ory/keto/proto/ory/keto/opl/v1alpha1"
 )
 
 func TestNewHandler(t *testing.T) {
-	ctx := context.Background()
-
-	r := &x.OPLSyntaxRouter{Router: httprouter.New()}
+	r := httprouterx.NewRouter(prometheusx.NewMetricsManager("keto", "test", "", ""))
 	reg := driver.NewSqliteTestRegistry(t, false)
 	h := schema.NewHandler(reg)
 	h.RegisterSyntaxRoutes(r)
@@ -71,7 +69,7 @@ func TestNewHandler(t *testing.T) {
 		client := opl.NewSyntaxServiceClient(conn)
 
 		t.Run("method=Syntax.Check", func(t *testing.T) {
-			response, err := client.Check(ctx, &opl.CheckRequest{
+			response, err := client.Check(t.Context(), &opl.CheckRequest{
 				Content: []byte("/* comment???"),
 			})
 			require.NoError(t, err)

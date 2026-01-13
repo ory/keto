@@ -8,8 +8,8 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/julienschmidt/httprouter"
 	"github.com/ory/herodot"
+	"github.com/ory/x/httprouterx"
 	"github.com/pkg/errors"
 	"google.golang.org/grpc"
 
@@ -34,7 +34,7 @@ func NewHandler(d handlerDependencies) *Handler {
 	return &Handler{d: d}
 }
 
-func (h *Handler) RegisterSyntaxRoutes(r *x.OPLSyntaxRouter) {
+func (h *Handler) RegisterSyntaxRoutes(r httprouterx.Router) {
 	r.POST(RouteBase, h.postCheckOplSyntax)
 }
 
@@ -86,7 +86,7 @@ type checkOplSyntaxBody string
 //	  200: checkOplSyntaxResult
 //	  400: errorGeneric
 //	  default: errorGeneric
-func (h *Handler) postCheckOplSyntax(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+func (h *Handler) postCheckOplSyntax(w http.ResponseWriter, r *http.Request) {
 	data, err := io.ReadAll(r.Body)
 	if err != nil {
 		h.d.Writer().WriteError(w, r, errors.WithStack(herodot.ErrBadRequest.WithError(err.Error())))

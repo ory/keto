@@ -10,7 +10,6 @@ import (
 	"github.com/ory/pop/v6"
 	"github.com/ory/x/healthx"
 	"github.com/ory/x/otelx"
-	prometheus "github.com/ory/x/prometheusx"
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
 
@@ -41,8 +40,6 @@ type (
 
 		HealthHandler() *healthx.Handler
 		Tracer(ctx context.Context) *otelx.Tracer
-		MetricsHandler() *prometheus.Handler
-		PrometheusManager() *prometheus.MetricsManager
 
 		ReadRouter(ctx context.Context) http.Handler
 		WriteRouter(ctx context.Context) http.Handler

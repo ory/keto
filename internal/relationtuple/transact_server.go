@@ -12,7 +12,6 @@ import (
 
 	"github.com/ory/keto/x/events"
 
-	"github.com/julienschmidt/httprouter"
 	"github.com/ory/herodot"
 	"github.com/pkg/errors"
 
@@ -21,7 +20,7 @@ import (
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 )
 
-var _ rts.WriteServiceServer = (*handler)(nil)
+var _ rts.WriteServiceServer = (*Handler)(nil)
 
 func protoTuplesWithAction(deltas []*rts.RelationTupleDelta, action rts.RelationTupleDelta_Action) (filtered []*ketoapi.RelationTuple, err error) {
 	for _, d := range deltas {
@@ -36,7 +35,7 @@ func protoTuplesWithAction(deltas []*rts.RelationTupleDelta, action rts.Relation
 	return
 }
 
-func (h *handler) TransactRelationTuples(ctx context.Context, req *rts.TransactRelationTuplesRequest) (*rts.TransactRelationTuplesResponse, error) {
+func (h *Handler) TransactRelationTuples(ctx context.Context, req *rts.TransactRelationTuplesRequest) (*rts.TransactRelationTuplesResponse, error) {
 	insertTuples, err := protoTuplesWithAction(req.RelationTupleDeltas, rts.RelationTupleDelta_ACTION_INSERT)
 	if err != nil {
 		return nil, err
@@ -69,7 +68,7 @@ func (h *handler) TransactRelationTuples(ctx context.Context, req *rts.TransactR
 	}, nil
 }
 
-func (h *handler) DeleteRelationTuples(ctx context.Context, req *rts.DeleteRelationTuplesRequest) (*rts.DeleteRelationTuplesResponse, error) {
+func (h *Handler) DeleteRelationTuples(ctx context.Context, req *rts.DeleteRelationTuplesRequest) (*rts.DeleteRelationTuplesResponse, error) {
 	var q ketoapi.RelationQuery
 
 	switch {
@@ -131,7 +130,7 @@ type createRelationshipBody struct {
 //	  201: relationship
 //	  400: errorGeneric
 //	  default: errorGeneric
-func (h *handler) createRelation(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+func (h *Handler) createRelation(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	var rt ketoapi.RelationTuple
@@ -190,7 +189,7 @@ func (h *handler) createRelation(w http.ResponseWriter, r *http.Request, _ httpr
 //	  204: emptyResponse
 //	  400: errorGeneric
 //	  default: errorGeneric
-func (h *handler) deleteRelations(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+func (h *Handler) deleteRelations(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	if err := validate.All(r,
@@ -260,7 +259,7 @@ func internalTuplesWithAction(deltas []*ketoapi.PatchDelta, action ketoapi.Patch
 //	  400: errorGeneric
 //	  404: errorGeneric
 //	  default: errorGeneric
-func (h *handler) patchRelationTuples(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+func (h *Handler) patchRelationTuples(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	var deltas []*ketoapi.PatchDelta

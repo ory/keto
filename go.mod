@@ -15,8 +15,8 @@ require (
 	github.com/gobuffalo/httptest v1.5.2
 	github.com/gofrs/uuid v4.4.0+incompatible
 	github.com/grpc-ecosystem/go-grpc-middleware/v2 v2.3.1
+	github.com/grpc-ecosystem/go-grpc-prometheus v1.2.0
 	github.com/jmoiron/sqlx v1.4.0
-	github.com/julienschmidt/httprouter v1.3.1-0.20240130105656-484018016424
 	github.com/ory/analytics-go/v5 v5.0.1
 	github.com/ory/graceful v0.1.3
 	github.com/ory/herodot v0.10.7
@@ -160,7 +160,6 @@ require (
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/gorilla/css v1.0.1 // indirect
 	github.com/gorilla/handlers v1.5.2 // indirect
-	github.com/grpc-ecosystem/go-grpc-prometheus v1.2.0 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.27.2 // indirect
 	github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
 	github.com/hashicorp/go-retryablehttp v0.7.8 // indirect
@@ -184,6 +183,7 @@ require (
 	github.com/joho/godotenv v1.5.1 // indirect
 	github.com/josephburnett/jd v1.9.2 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
+	github.com/julienschmidt/httprouter v1.3.1-0.20240130105656-484018016424 // indirect
 	github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51 // indirect
 	github.com/klauspost/compress v1.18.0 // indirect
 	github.com/klauspost/pgzip v1.2.6 // indirect

@@ -8,7 +8,6 @@ import (
 	"io"
 	"net/http"
 	"testing"
-	"time"
 
 	"github.com/ory/herodot"
 	"github.com/ory/x/cmdx"
@@ -135,7 +134,7 @@ func Test(t *testing.T) {
 func TestServeConfig(t *testing.T) {
 	t.Parallel()
 
-	ctx, reg, _, getAddr := newInitializedReg(t, dbx.GetSqlite(t, dbx.SQLiteMemory), map[string]interface{}{
+	ctx, reg, _, getAddr := newInitializedReg(t, dbx.GetSqlite(t, dbx.SQLiteMemory), map[string]any{
 		"serve.read.cors.enabled":         true,
 		"serve.read.cors.debug":           true,
 		"serve.read.cors.allowed_methods": []string{http.MethodGet},
@@ -145,22 +144,16 @@ func TestServeConfig(t *testing.T) {
 	closeServer := startServer(ctx, t, reg)
 	t.Cleanup(closeServer)
 
-	var readAddr string
-	for {
-		_, _, readAddr = getAddr(t, "read")
-		t.Logf("Waiting for health check to be ready: %s", readAddr)
-		if healthReady(t, "http://"+readAddr) {
-			break
-		}
-		time.Sleep(10 * time.Millisecond)
-	}
+	_, _, readAddr := getAddr(t, "read")
+	waitUntilLive(t, "http://"+readAddr)
 	t.Log("Health check is ready")
 
 	req, err := http.NewRequest(http.MethodOptions, "http://"+readAddr+relationtuple.ReadRouteBase, nil)
 	require.NoError(t, err)
 	req.Header.Set("Origin", "https://ory.sh")
+	req.Header.Set("Access-Control-Request-Method", "GET")
 	resp, err := http.DefaultClient.Do(req)
 	require.NoError(t, err)
-	require.Equal(t, http.StatusOK, resp.StatusCode)
-	assert.Equal(t, "https://ory.sh", resp.Header.Get("Access-Control-Allow-Origin"), "%+v", resp.Header)
+	require.Equal(t, http.StatusNoContent, resp.StatusCode)
+	assert.Equalf(t, "https://ory.sh", resp.Header.Get("Access-Control-Allow-Origin"), "%+v", resp.Header)
 }

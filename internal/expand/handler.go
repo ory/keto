@@ -7,9 +7,10 @@ import (
 	"context"
 	"net/http"
 
+	"github.com/ory/x/httprouterx"
+
 	"github.com/ory/keto/ketoapi"
 
-	"github.com/julienschmidt/httprouter"
 	"github.com/ory/herodot"
 	"google.golang.org/grpc"
 
@@ -26,27 +27,27 @@ type (
 		x.LoggerProvider
 		x.WriterProvider
 	}
-	handler struct {
+	Handler struct {
 		d handlerDependencies
 	}
 )
 
 var (
-	_ rts.ExpandServiceServer = (*handler)(nil)
+	_ rts.ExpandServiceServer = (*Handler)(nil)
 	_ *expandPermissions      = nil
 )
 
 const RouteBase = "/relation-tuples/expand"
 
-func NewHandler(d handlerDependencies) *handler {
-	return &handler{d: d}
+func NewHandler(d handlerDependencies) *Handler {
+	return &Handler{d: d}
 }
 
-func (h *handler) RegisterReadRoutes(r *x.ReadRouter) {
+func (h *Handler) RegisterReadRoutes(r *httprouterx.RouterPublic) {
 	r.GET(RouteBase, h.getExpand)
 }
 
-func (h *handler) RegisterReadGRPC(s *grpc.Server) {
+func (h *Handler) RegisterReadGRPC(s *grpc.Server) {
 	rts.RegisterExpandServiceServer(s, h)
 }
 
@@ -79,7 +80,7 @@ type expandPermissions struct {
 //	  400: errorGeneric
 //	  404: errorGeneric
 //	  default: errorGeneric
-func (h *handler) getExpand(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+func (h *Handler) getExpand(w http.ResponseWriter, r *http.Request) {
 	maxDepth, err := x.GetMaxDepthFromQuery(r.URL.Query())
 	if err != nil {
 		h.d.Writer().WriteError(w, r, herodot.ErrBadRequest.WithError(err.Error()))
@@ -112,7 +113,7 @@ func (h *handler) getExpand(w http.ResponseWriter, r *http.Request, _ httprouter
 	h.d.Writer().Write(w, r, tree)
 }
 
-func (h *handler) Expand(ctx context.Context, req *rts.ExpandRequest) (*rts.ExpandResponse, error) {
+func (h *Handler) Expand(ctx context.Context, req *rts.ExpandRequest) (*rts.ExpandResponse, error) {
 	var subSet *ketoapi.SubjectSet
 
 	switch sub := req.Subject.Ref.(type) {

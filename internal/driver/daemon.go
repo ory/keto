@@ -15,51 +15,44 @@ import (
 	"syscall"
 	"time"
 
+	grpcLogrus "github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/logging"
+	grpcRecovery "github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/recovery"
+	grpcPrometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
+	"github.com/pkg/errors"
+	"github.com/rs/cors"
+	"github.com/soheilhy/cmux"
+	"github.com/spf13/cobra"
+	"github.com/urfave/negroni"
 	grpcOtel "go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 	"go.opentelemetry.io/otel"
-
-	"github.com/ory/x/otelx/semconv"
-
-	grpcRecovery "github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/recovery"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
-
-	"github.com/ory/keto/internal/namespace/namespacehandler"
-	"github.com/ory/keto/internal/schema"
-	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
-
-	"github.com/ory/x/logrusx"
-	prometheus "github.com/ory/x/prometheusx"
-
-	grpcLogrus "github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/logging"
-	"github.com/julienschmidt/httprouter"
-	"github.com/ory/herodot"
-	"github.com/ory/x/reqlog"
-	"github.com/rs/cors"
-	"github.com/urfave/negroni"
-	grpcHealthV1 "google.golang.org/grpc/health/grpc_health_v1"
-	"google.golang.org/grpc/reflection"
-
-	"github.com/ory/keto/internal/check"
-	"github.com/ory/keto/internal/expand"
-	"github.com/ory/keto/internal/relationtuple"
-	"github.com/ory/keto/internal/x"
-
-	"github.com/ory/analytics-go/v5"
-	"github.com/ory/x/healthx"
-	"github.com/ory/x/metricsx"
-	"github.com/ory/x/otelx"
-	"github.com/ory/x/urlx"
-	"github.com/spf13/cobra"
-
-	"github.com/ory/keto/internal/driver/config"
-
-	"github.com/ory/graceful"
-	"github.com/pkg/errors"
-	"github.com/soheilhy/cmux"
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	grpcHealthV1 "google.golang.org/grpc/health/grpc_health_v1"
+	"google.golang.org/grpc/reflection"
+	"google.golang.org/grpc/status"
+
+	"github.com/ory/analytics-go/v5"
+	"github.com/ory/graceful"
+	"github.com/ory/herodot"
+	"github.com/ory/x/healthx"
+	"github.com/ory/x/httprouterx"
+	"github.com/ory/x/logrusx"
+	"github.com/ory/x/metricsx"
+	"github.com/ory/x/otelx"
+	"github.com/ory/x/otelx/semconv"
+	"github.com/ory/x/prometheusx"
+	"github.com/ory/x/reqlog"
+	"github.com/ory/x/urlx"
+
+	"github.com/ory/keto/internal/check"
+	"github.com/ory/keto/internal/driver/config"
+	"github.com/ory/keto/internal/expand"
+	"github.com/ory/keto/internal/namespace/namespacehandler"
+	"github.com/ory/keto/internal/relationtuple"
+	"github.com/ory/keto/internal/schema"
+	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 )
 
 func (r *RegistryDefault) enableSqa(cmd *cobra.Command) {
@@ -356,16 +349,13 @@ func multiplexPort(ctx context.Context, log *logrusx.Logger, addr, listenFile st
 }
 
 func (r *RegistryDefault) allHandlers() []Handler {
-	if len(r.handlers) == 0 {
-		r.handlers = []Handler{
-			relationtuple.NewHandler(r),
-			check.NewHandler(r),
-			expand.NewHandler(r),
-			namespacehandler.New(r),
-			schema.NewHandler(r),
-		}
+	return []Handler{
+		relationtuple.NewHandler(r),
+		check.NewHandler(r),
+		expand.NewHandler(r),
+		namespacehandler.New(r),
+		schema.NewHandler(r),
 	}
-	return r.handlers
 }
 
 func listenAndWriteFile(ctx context.Context, addr, listenFile string) (net.Listener, error) {
@@ -382,6 +372,8 @@ func listenAndWriteFile(ctx context.Context, addr, listenFile string) (net.Liste
 	return l, nil
 }
 
+var metricsManager = prometheusx.NewMetricsManagerWithPrefix("keto", prometheusx.HTTPMetrics, config.Version, config.Commit, config.Date)
+
 func (r *RegistryDefault) ReadRouter(ctx context.Context) http.Handler {
 	n := negroni.New()
 	for _, f := range r.defaultHttpMiddlewares {
@@ -390,13 +382,11 @@ func (r *RegistryDefault) ReadRouter(ctx context.Context) http.Handler {
 	n.UseFunc(semconv.Middleware)
 	n.Use(reqlog.NewMiddlewareFromLogger(r.l, "read#Ory Keto").ExcludePaths(healthx.AliveCheckPath, healthx.ReadyCheckPath))
 
-	br := &x.ReadRouter{Router: httprouter.New()}
-	br.SaveMatchedRoutePath = true // for tracing
-	r.PrometheusManager().RegisterRouter(br.Router)
-	r.MetricsHandler().SetRoutes(br.Router)
+	br := httprouterx.NewRouterPublic(metricsManager)
+	prometheusx.SetMuxRoutes(br)
 
-	r.HealthHandler().SetHealthRoutes(br.Router, false)
-	r.HealthHandler().SetVersionRoutes(br.Router)
+	r.HealthHandler().SetHealthRoutes(br, false)
+	r.HealthHandler().SetVersionRoutes(br)
 
 	for _, h := range r.allHandlers() {
 		if h, ok := h.(ReadHandler); ok {
@@ -404,7 +394,6 @@ func (r *RegistryDefault) ReadRouter(ctx context.Context) http.Handler {
 		}
 	}
 
-	n.Use(r.PrometheusManager())
 	n.UseHandler(br)
 
 	if r.sqaService != nil {
@@ -428,13 +417,11 @@ func (r *RegistryDefault) WriteRouter(ctx context.Context) http.Handler {
 	n.UseFunc(semconv.Middleware)
 	n.Use(reqlog.NewMiddlewareFromLogger(r.l, "write#Ory Keto").ExcludePaths(healthx.AliveCheckPath, healthx.ReadyCheckPath))
 
-	pr := &x.WriteRouter{Router: httprouter.New()}
-	pr.SaveMatchedRoutePath = true // for tracing
-	r.PrometheusManager().RegisterRouter(pr.Router)
-	r.MetricsHandler().SetRoutes(pr.Router)
+	pr := httprouterx.NewRouterAdmin(metricsManager)
+	prometheusx.SetMuxRoutes(pr)
 
-	r.HealthHandler().SetHealthRoutes(pr.Router, false)
-	r.HealthHandler().SetVersionRoutes(pr.Router)
+	r.HealthHandler().SetHealthRoutes(pr, false)
+	r.HealthHandler().SetVersionRoutes(pr)
 
 	for _, h := range r.allHandlers() {
 		if h, ok := h.(WriteHandler); ok {
@@ -442,7 +429,6 @@ func (r *RegistryDefault) WriteRouter(ctx context.Context) http.Handler {
 		}
 	}
 
-	n.Use(r.PrometheusManager())
 	n.UseHandler(pr)
 
 	if r.sqaService != nil {
@@ -466,13 +452,11 @@ func (r *RegistryDefault) OPLSyntaxRouter(ctx context.Context) http.Handler {
 	n.UseFunc(semconv.Middleware)
 	n.Use(reqlog.NewMiddlewareFromLogger(r.l, "syntax#Ory Keto").ExcludePaths(healthx.AliveCheckPath, healthx.ReadyCheckPath))
 
-	pr := &x.OPLSyntaxRouter{Router: httprouter.New()}
-	pr.SaveMatchedRoutePath = true // for tracing
-	r.PrometheusManager().RegisterRouter(pr.Router)
-	r.MetricsHandler().SetRoutes(pr.Router)
+	pr := httprouterx.NewRouter(metricsManager)
+	prometheusx.SetMuxRoutes(pr)
 
-	r.HealthHandler().SetHealthRoutes(pr.Router, false)
-	r.HealthHandler().SetVersionRoutes(pr.Router)
+	r.HealthHandler().SetHealthRoutes(pr, false)
+	r.HealthHandler().SetVersionRoutes(pr)
 
 	for _, h := range r.allHandlers() {
 		if h, ok := h.(OPLSyntaxHandler); ok {
@@ -480,7 +464,6 @@ func (r *RegistryDefault) OPLSyntaxRouter(ctx context.Context) http.Handler {
 		}
 	}
 
-	n.Use(r.PrometheusManager())
 	n.UseHandler(pr)
 
 	if r.sqaService != nil {
@@ -505,7 +488,7 @@ func (r *RegistryDefault) grpcRecoveryHandler(p interface{}) error {
 	return status.Errorf(codes.Internal, "%v", p)
 }
 
-func (r *RegistryDefault) unaryInterceptors(ctx context.Context) []grpc.UnaryServerInterceptor {
+func (r *RegistryDefault) unaryInterceptors(_ context.Context) []grpc.UnaryServerInterceptor {
 	is := []grpc.UnaryServerInterceptor{
 		grpcRecovery.UnaryServerInterceptor(grpcRecovery.WithRecoveryHandler(r.grpcRecoveryHandler)),
 	}
@@ -513,7 +496,7 @@ func (r *RegistryDefault) unaryInterceptors(ctx context.Context) []grpc.UnarySer
 	is = append(is,
 		herodot.UnaryErrorUnwrapInterceptor,
 		grpcLogrus.UnaryServerInterceptor(InterceptorLogger(r.l.Logrus())),
-		r.pmm.UnaryServerInterceptor,
+		grpcPrometheus.UnaryServerInterceptor,
 	)
 	if r.sqaService != nil {
 		is = append(is, r.sqaService.UnaryInterceptor)
@@ -521,7 +504,7 @@ func (r *RegistryDefault) unaryInterceptors(ctx context.Context) []grpc.UnarySer
 	return is
 }
 
-func (r *RegistryDefault) streamInterceptors(ctx context.Context) []grpc.StreamServerInterceptor {
+func (r *RegistryDefault) streamInterceptors(_ context.Context) []grpc.StreamServerInterceptor {
 	is := []grpc.StreamServerInterceptor{
 		grpcRecovery.StreamServerInterceptor(grpcRecovery.WithRecoveryHandler(r.grpcRecoveryHandler)),
 	}
@@ -529,7 +512,7 @@ func (r *RegistryDefault) streamInterceptors(ctx context.Context) []grpc.StreamS
 	is = append(is,
 		herodot.StreamErrorUnwrapInterceptor,
 		grpcLogrus.StreamServerInterceptor(InterceptorLogger(r.l.Logrus())),
-		r.pmm.StreamServerInterceptor,
+		grpcPrometheus.StreamServerInterceptor,
 	)
 	if r.sqaService != nil {
 		is = append(is, r.sqaService.StreamInterceptor)
@@ -567,7 +550,7 @@ func (r *RegistryDefault) ReadGRPCServer(ctx context.Context) *grpc.Server {
 			h.RegisterReadGRPC(s)
 		}
 	}
-	r.pmm.Register(s)
+	grpcPrometheus.Register(s)
 
 	return s
 }
@@ -584,7 +567,7 @@ func (r *RegistryDefault) WriteGRPCServer(ctx context.Context) *grpc.Server {
 			h.RegisterWriteGRPC(s)
 		}
 	}
-	r.pmm.Register(s)
+	grpcPrometheus.Register(s)
 
 	return s
 }
@@ -601,18 +584,17 @@ func (r *RegistryDefault) OplGRPCServer(ctx context.Context) *grpc.Server {
 			h.RegisterSyntaxGRPC(s)
 		}
 	}
-	r.pmm.Register(s)
+	grpcPrometheus.Register(s)
 
 	return s
 }
 
 func (r *RegistryDefault) metricsRouter(ctx context.Context) http.Handler {
-	n := negroni.New(reqlog.NewMiddlewareFromLogger(r.Logger(), "keto").ExcludePaths(prometheus.MetricsPrometheusPath))
-	router := httprouter.New()
+	n := negroni.New(reqlog.NewMiddlewareFromLogger(r.Logger(), "keto").ExcludePaths(prometheusx.MetricsPrometheusPath))
+	router := httprouterx.NewRouter(metricsManager)
 
-	r.PrometheusManager().RegisterRouter(router)
-	r.MetricsHandler().SetRoutes(router)
-	n.Use(r.PrometheusManager())
+	prometheusx.SetMuxRoutes(router)
+
 	n.UseHandler(router)
 
 	var handler http.Handler = n
