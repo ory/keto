@@ -26,7 +26,7 @@ type namespaceTestManager struct {
 	nspaces []*namespace.Namespace
 }
 
-func (m *namespaceTestManager) add(t *testing.T, nn ...*namespace.Namespace) {
+func (m *namespaceTestManager) add(t testing.TB, nn ...*namespace.Namespace) {
 	m.nspaces = append(m.nspaces, nn...)
 
 	require.NoError(t, m.reg.Config(m.ctx).Set(config.KeyNamespaces, m.nspaces))

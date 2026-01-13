@@ -10,9 +10,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ory/x/pointerx"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"github.com/ory/x/pointerx"
 
 	"github.com/ory/keto/internal/namespace"
 	"github.com/ory/keto/ketoapi"
@@ -81,7 +82,7 @@ func runTransactionCases(c transactClient, m *namespaceTestManager) func(*testin
 		})
 
 		t.Run("case=large inserts and deletes", func(t *testing.T) {
-			if !testing.Short() {
+			if testing.Short() {
 				t.Skip("This test is fairly expensive, especially the deletion.")
 			}
 
@@ -115,7 +116,7 @@ func runTransactionCases(c transactClient, m *namespaceTestManager) func(*testin
 
 			t0 := time.Now()
 			c.transactTuples(t, tuples, nil)
-			t.Log("insert", time.Since(t0))
+			t.Logf("insert took %s", time.Since(t0))
 
 			t0 = time.Now()
 			var resp []*ketoapi.RelationTuple
@@ -130,7 +131,7 @@ func runTransactionCases(c transactClient, m *namespaceTestManager) func(*testin
 					break
 				}
 			}
-			t.Log("query", time.Since(t0))
+			t.Logf("query took %s", time.Since(t0))
 
 			sort := func(a, b *ketoapi.RelationTuple) int {
 				return cmp.Or(
@@ -142,15 +143,13 @@ func runTransactionCases(c transactClient, m *namespaceTestManager) func(*testin
 			t0 = time.Now()
 			slices.SortFunc(resp, sort)
 			slices.SortFunc(tuples, sort)
-			t.Log("sort", time.Since(t0))
 
 			t0 = time.Now()
 			require.Equal(t, tuples, resp)
-			t.Log("equal", time.Since(t0))
 
 			t0 = time.Now()
 			c.transactTuples(t, nil, tuples)
-			t.Log(t.Name(), "delete", time.Since(t0))
+			t.Logf("delete took %s", time.Since(t0))
 
 			resp = c.queryTuple(t, &ketoapi.RelationQuery{
 				Namespace: &ns[0].Name,

@@ -10,8 +10,10 @@ import (
 	"testing"
 	"time"
 
+	ioprometheusclient "github.com/prometheus/client_model/go"
 	"github.com/prometheus/common/expfmt"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -20,8 +22,6 @@ import (
 	"google.golang.org/grpc/status"
 
 	prometheus "github.com/ory/x/prometheusx"
-	ioprometheusclient "github.com/prometheus/client_model/go"
-	"github.com/stretchr/testify/require"
 )
 
 func TestScrapingEndpoint(t *testing.T) {

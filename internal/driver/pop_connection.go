@@ -8,9 +8,10 @@ import (
 	"time"
 
 	"github.com/cenkalti/backoff/v3"
+	"github.com/pkg/errors"
+
 	"github.com/ory/pop/v6"
 	"github.com/ory/x/sqlcon"
-	"github.com/pkg/errors"
 )
 
 func (r *RegistryDefault) PopConnectionWithOpts(ctx context.Context, popOpts ...func(*pop.ConnectionDetails)) (*pop.Connection, error) {

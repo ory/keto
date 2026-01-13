@@ -6,16 +6,13 @@ package expand
 import (
 	"fmt"
 
-	"github.com/ory/keto/ketoapi"
-
-	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
-
-	"github.com/ory/x/flagx"
-
 	"github.com/ory/x/cmdx"
+	"github.com/ory/x/flagx"
 	"github.com/spf13/cobra"
 
 	"github.com/ory/keto/cmd/client"
+	"github.com/ory/keto/ketoapi"
+	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 )
 
 const FlagMaxDepth = "max-depth"

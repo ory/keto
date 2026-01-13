@@ -10,10 +10,11 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/ory/keto/ketoapi"
+	"github.com/spf13/cobra"
 
 	"github.com/ory/x/cmdx"
-	"github.com/spf13/cobra"
+
+	"github.com/ory/keto/ketoapi"
 )
 
 func NewParseCmd() *cobra.Command {

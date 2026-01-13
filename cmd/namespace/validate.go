@@ -9,16 +9,16 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/ory/keto/embedx"
+	"github.com/segmentio/objconv/yaml"
+	"github.com/spf13/cobra"
 
 	"github.com/ory/jsonschema/v3"
 	"github.com/ory/x/cmdx"
 	"github.com/ory/x/configx"
 	"github.com/ory/x/jsonschemax"
 	"github.com/ory/x/logrusx"
-	"github.com/segmentio/objconv/yaml"
-	"github.com/spf13/cobra"
 
+	"github.com/ory/keto/embedx"
 	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/namespace"
 )

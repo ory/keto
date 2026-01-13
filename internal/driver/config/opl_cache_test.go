@@ -8,19 +8,21 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
+	"sync/atomic"
 	"testing"
+
+	"github.com/stretchr/testify/require"
 
 	"github.com/ory/x/configx"
 	"github.com/ory/x/logrusx"
-	"github.com/stretchr/testify/require"
 )
 
 func TestNewOPLConfigWatcher(t *testing.T) {
-	hits := 0
+	var hits atomic.Int64
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		hits++
+		hits.Add(1)
 		if _, err := io.WriteString(w, testOPL); err != nil {
-			t.Fatalf("failed to write OPL response: %v", err)
+			w.WriteHeader(http.StatusInternalServerError)
 		}
 	}))
 	t.Cleanup(ts.Close)
@@ -29,7 +31,7 @@ func TestNewOPLConfigWatcher(t *testing.T) {
 	require.NoError(t, err)
 	cw, err := newOPLConfigWatcher(ctx, cfg, ts.URL)
 	require.NoError(t, err)
-	require.Equal(t, 1, hits, "HTTP request made")
+	require.EqualValues(t, 1, hits.Load(), "HTTP request made")
 	_, err = cw.GetNamespaceByName(ctx, "User")
 	require.NoError(t, err)
 	_, err = cw.GetNamespaceByName(ctx, "Document")
@@ -39,7 +41,7 @@ func TestNewOPLConfigWatcher(t *testing.T) {
 
 	cw, err = newOPLConfigWatcher(ctx, cfg, ts.URL)
 	require.NoError(t, err)
-	require.Equal(t, 1, hits, "content was cached")
+	require.EqualValues(t, 1, hits.Load(), "content was cached")
 	_, err = cw.GetNamespaceByName(ctx, "User")
 	require.NoError(t, err)
 	_, err = cw.GetNamespaceByName(ctx, "Document")

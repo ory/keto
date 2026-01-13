@@ -230,7 +230,6 @@ func runCases(c client, m *namespaceTestManager) func(*testing.T) {
 			}
 
 			for i, subjectID := range subjects {
-				subjectID := subjectID
 				c.createTuple(t, &ketoapi.RelationTuple{
 					Namespace: n.Name,
 					Object:    obj,
