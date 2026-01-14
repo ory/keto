@@ -7,20 +7,15 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/ory/keto/ketoapi"
-
-	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
-
-	"github.com/ory/x/flagx"
-	"github.com/ory/x/pointerx"
-
+	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 
 	"github.com/ory/x/cmdx"
-
-	"github.com/spf13/cobra"
+	"github.com/ory/x/pointerx"
 
 	"github.com/ory/keto/cmd/client"
+	"github.com/ory/keto/ketoapi"
+	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 )
 
 const (
@@ -62,7 +57,7 @@ func readQueryFromFlags(cmd *cobra.Command) (*rts.RelationQuery, error) {
 		SubjectID: getStringPtr(FlagSubjectID),
 	}
 	if f := cmd.Flags().Lookup(FlagSubjectSet); f.Changed {
-		s, err := (&ketoapi.SubjectSet{}).FromString(flagx.MustGetString(cmd, FlagSubjectSet))
+		s, err := (&ketoapi.SubjectSet{}).FromString(f.Value.String())
 		if err != nil {
 			return nil, err
 		}
@@ -156,16 +151,8 @@ func (r *responseOutput) Table() [][]string {
 	)
 }
 
-func (r *responseOutput) Interface() interface{} {
-	return r
-}
-
-func (r *responseOutput) Len() int {
-	return r.RelationTuples.Len() + 3
-}
-
-func (r *responseOutput) IDs() []string {
-	return r.RelationTuples.IDs()
-}
+func (r *responseOutput) Interface() any { return r }
+func (r *responseOutput) Len() int       { return r.RelationTuples.Len() + 3 }
+func (r *responseOutput) IDs() []string  { return r.RelationTuples.IDs() }
 
 var _ cmdx.Table = (*responseOutput)(nil)

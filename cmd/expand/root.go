@@ -7,7 +7,6 @@ import (
 	"fmt"
 
 	"github.com/ory/x/cmdx"
-	"github.com/ory/x/flagx"
 	"github.com/spf13/cobra"
 
 	"github.com/ory/keto/cmd/client"
@@ -18,6 +17,8 @@ import (
 const FlagMaxDepth = "max-depth"
 
 func NewExpandCmd() *cobra.Command {
+	var maxDepth int32
+
 	cmd := &cobra.Command{
 		Use:   "expand <relation> <namespace> <object>",
 		Short: "Expand a subject set",
@@ -29,11 +30,6 @@ func NewExpandCmd() *cobra.Command {
 				return err
 			}
 			defer func() { _ = conn.Close() }()
-
-			maxDepth, err := cmd.Flags().GetInt32(FlagMaxDepth)
-			if err != nil {
-				return err
-			}
 
 			cl := rts.NewExpandServiceClient(conn)
 			resp, err := cl.Expand(cmd.Context(), &rts.ExpandRequest{
@@ -51,9 +47,17 @@ func NewExpandCmd() *cobra.Command {
 			}
 
 			cmdx.PrintJSONAble(cmd, tree)
-			switch flagx.MustGetString(cmd, cmdx.FlagFormat) {
+			format, err := cmd.Flags().GetString(cmdx.FlagFormat)
+			if err != nil {
+				return err
+			}
+			quiet, err := cmd.Flags().GetBool(cmdx.FlagQuiet)
+			if err != nil {
+				return err
+			}
+			switch format {
 			case string(cmdx.FormatDefault), "":
-				if tree == nil && !flagx.MustGetBool(cmd, cmdx.FlagQuiet) {
+				if tree == nil && !quiet {
 					_, _ = fmt.Fprint(cmd.OutOrStdout(), "Got an empty tree. This probably means that the requested relation tuple is not present in Keto.")
 				}
 				_, _ = fmt.Fprintln(cmd.OutOrStdout())
@@ -65,7 +69,7 @@ func NewExpandCmd() *cobra.Command {
 	client.RegisterRemoteURLFlags(cmd.Flags())
 	cmdx.RegisterJSONFormatFlags(cmd.Flags())
 	cmdx.RegisterNoiseFlags(cmd.Flags())
-	cmd.Flags().Int32P(FlagMaxDepth, "d", 0, "Maximum depth of the tree to be returned. If the value is less than 1 or greater than the global max-depth then the global max-depth will be used instead.")
+	cmd.Flags().Int32VarP(&maxDepth, FlagMaxDepth, "d", 0, "Maximum depth of the tree to be returned. If the value is less than 1 or greater than the global max-depth then the global max-depth will be used instead.")
 
 	return cmd
 }

@@ -30,6 +30,8 @@ func (o *checkOutput) String() string {
 const FlagMaxDepth = "max-depth"
 
 func NewCheckCmd() *cobra.Command {
+	var maxDepth int32
+
 	cmd := &cobra.Command{
 		Use:   "check <subject> <relation> <namespace> <object>",
 		Short: "Check whether a subject has a relation on an object",
@@ -41,11 +43,6 @@ func NewCheckCmd() *cobra.Command {
 				return err
 			}
 			defer func() { _ = conn.Close() }()
-
-			maxDepth, err := cmd.Flags().GetInt32(FlagMaxDepth)
-			if err != nil {
-				return err
-			}
 
 			cl := rts.NewCheckServiceClient(conn)
 
@@ -75,7 +72,7 @@ func NewCheckCmd() *cobra.Command {
 
 	client.RegisterRemoteURLFlags(cmd.Flags())
 	cmdx.RegisterFormatFlags(cmd.Flags())
-	cmd.Flags().Int32P(FlagMaxDepth, "d", 0, "Maximum depth of the search tree. If the value is less than 1 or greater than the global max-depth then the global max-depth will be used instead.")
+	cmd.Flags().Int32VarP(&maxDepth, FlagMaxDepth, "d", 0, "Maximum depth of the search tree. If the value is less than 1 or greater than the global max-depth then the global max-depth will be used instead.")
 
 	return cmd
 }

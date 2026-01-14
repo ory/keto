@@ -11,28 +11,22 @@ import (
 	"path/filepath"
 	"runtime"
 
-	"github.com/ory/keto/ketoctx"
-
-	"github.com/ory/keto/cmd/status"
-
-	"github.com/ory/keto/cmd/expand"
-
-	"github.com/ory/keto/cmd/check"
-
-	"github.com/ory/keto/cmd/server"
-	"github.com/ory/keto/internal/driver/config"
+	"github.com/spf13/cobra"
 
 	"github.com/ory/x/cmdx"
 	"github.com/ory/x/configx"
 
+	"github.com/ory/keto/cmd/check"
+	"github.com/ory/keto/cmd/expand"
 	"github.com/ory/keto/cmd/migrate"
 	"github.com/ory/keto/cmd/namespace"
 	"github.com/ory/keto/cmd/relationtuple"
-
-	"github.com/spf13/cobra"
+	"github.com/ory/keto/cmd/server"
+	"github.com/ory/keto/cmd/status"
+	"github.com/ory/keto/internal/driver/config"
+	"github.com/ory/keto/ketoctx"
 )
 
-// RootCmd represents the base command when called without any subcommands
 func NewRootCmd(opts ...ketoctx.Option) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "keto",

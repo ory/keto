@@ -7,9 +7,9 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 
-	"github.com/ory/keto/cmd/client"
-
 	"github.com/ory/x/cmdx"
+
+	"github.com/ory/keto/cmd/client"
 )
 
 func newRelationCmd() *cobra.Command {

@@ -52,7 +52,7 @@ func NewParseCmd() *cobra.Command {
 func parseFile(cmd *cobra.Command, fn string) ([]*ketoapi.RelationTuple, error) {
 	var f io.Reader
 	if fn == "-" {
-		// set human readable filename here for debug and error messages
+		// set human-readable filename here for debug and error messages
 		fn = "stdin"
 		f = cmd.InOrStdin()
 	} else {

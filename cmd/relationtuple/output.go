@@ -70,21 +70,13 @@ func (r *Collection) Table() [][]string {
 	return data
 }
 
-func (r *Collection) Interface() interface{} {
-	return r.apiRelations
-}
+func (r *Collection) Interface() any                 { return r.apiRelations }
+func (r *Collection) UnmarshalJSON(raw []byte) error { return json.Unmarshal(raw, &r.apiRelations) }
+func (r *Collection) Len() int                       { return len(r.apiRelations) }
 
 func (r *Collection) MarshalJSON() ([]byte, error) {
 	ir := r.apiRelations
 	return json.Marshal(ir)
-}
-
-func (r *Collection) UnmarshalJSON(raw []byte) error {
-	return json.Unmarshal(raw, &r.apiRelations)
-}
-
-func (r *Collection) Len() int {
-	return len(r.apiRelations)
 }
 
 func (r *Collection) IDs() []string {

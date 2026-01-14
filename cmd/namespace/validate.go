@@ -91,13 +91,13 @@ func validateNamespaceFile(cmd *cobra.Command, fn string) (*namespace.Namespace,
 	cleanName := filepath.Clean(fn)
 	fc, err := os.ReadFile(cleanName)
 	if err != nil {
-		_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not read file \"%s\": %+v\n", fn, err)
+		_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not read file %q: %+v\n", fn, err)
 		return nil, cmdx.FailSilently(cmd)
 	}
 
 	parse, err := config.GetParser(cleanName)
 	if err != nil {
-		_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Unable to infer file type from \"%s\": %+v\n", fn, err)
+		_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Unable to infer file type from %q: %+v\n", fn, err)
 		return nil, cmdx.FailSilently(cmd)
 	}
 
@@ -110,9 +110,9 @@ func validateNamespaceBytes(cmd *cobra.Command, name string, b []byte, parser co
 		return nil, err
 	}
 
-	var val map[string]interface{}
+	var val map[string]any
 	if err := parser(b, &val); err != nil {
-		_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Encountered unmarshal error for \"%s\": %+v\n", name, err)
+		_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Encountered unmarshal error for %q: %+v\n", name, err)
 		return nil, cmdx.FailSilently(cmd)
 	}
 
@@ -124,7 +124,7 @@ func validateNamespaceBytes(cmd *cobra.Command, name string, b []byte, parser co
 
 	var n namespace.Namespace
 	if err := parser(b, &n); err != nil {
-		_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Encountered unmarshal error for \"%s\": %+v\n", name, err)
+		_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Encountered unmarshal error for %q: %+v\n", name, err)
 		return nil, cmdx.FailSilently(cmd)
 	}
 
@@ -135,19 +135,19 @@ func validateConfigFile(cmd *cobra.Command, fn string) error {
 	cleanName := filepath.Clean(fn)
 	fc, err := os.ReadFile(cleanName)
 	if err != nil {
-		_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not read file \"%s\": %+v\n", fn, err)
+		_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not read file %q: %+v\n", fn, err)
 		return cmdx.FailSilently(cmd)
 	}
 
 	parse, err := config.GetParser(cleanName)
 	if err != nil {
-		_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Unable to infer file type from \"%s\": %+v\n", fn, err)
+		_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Unable to infer file type from %q: %+v\n", fn, err)
 		return cmdx.FailSilently(cmd)
 	}
 
-	var val map[string]interface{}
+	var val map[string]any
 	if err := parse(fc, &val); err != nil {
-		_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Encountered parse error for \"%s\": %+v\n", fn, err)
+		_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Encountered parse error for %q: %+v\n", fn, err)
 		return cmdx.FailSilently(cmd)
 	}
 
@@ -170,7 +170,7 @@ func validateConfigFile(cmd *cobra.Command, fn string) error {
 				}
 			}
 			return nil
-		case []interface{}:
+		case []any:
 			for i, obj := range t {
 				fc, err := yaml.Marshal(obj)
 				if err != nil {
@@ -183,7 +183,7 @@ func validateConfigFile(cmd *cobra.Command, fn string) error {
 				}
 			}
 			return nil
-		case []map[string]interface{}:
+		case []map[string]any:
 			for i, obj := range t {
 				fc, err := yaml.Marshal(obj)
 				if err != nil {

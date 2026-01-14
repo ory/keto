@@ -84,7 +84,7 @@ func (d *connectionDetails) dialOptions() (opts []grpc.DialOption) {
 func getRemote(cmd *cobra.Command, flagRemote, envRemote string) (remote string) {
 	defer (func() {
 		if strings.HasPrefix(remote, "http://") || strings.HasPrefix(remote, "https://") {
-			_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "remote \"%s\" seems to be an http URL instead of a remote address\n", remote)
+			_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "remote %q seems to be an http URL instead of a remote address\n", remote)
 		}
 	})()
 
