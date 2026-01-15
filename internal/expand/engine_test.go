@@ -21,31 +21,19 @@ import (
 	"github.com/ory/keto/ketoapi"
 )
 
-type (
-	configProvider = config.Provider
-	loggerProvider = x.LoggerProvider
-)
-
 // deps is defined to capture engine dependencies in a single struct
 type deps struct {
-	*relationtuple.ManagerWrapper // managerProvider
-	configProvider
-	loggerProvider
-	x.TracingProvider
-	x.NetworkIDProvider
+	mw *relationtuple.ManagerWrapper // managerProvider
+	*driver.RegistryDefault
 }
+
+func (d *deps) RelationTupleManager() relationtuple.Manager { return d.mw }
 
 func newTestEngine(t *testing.T, namespaces []*namespace.Namespace, paginationOpts ...keysetpagination.Option) (*relationtuple.ManagerWrapper, *expand.Engine) {
 	innerReg := driver.NewSqliteTestRegistry(t, false)
 	require.NoError(t, innerReg.Config(context.Background()).Set(config.KeyNamespaces, namespaces))
 	reg := relationtuple.NewManagerWrapper(t, innerReg, paginationOpts...)
-	e := expand.NewEngine(&deps{
-		ManagerWrapper:    reg,
-		configProvider:    innerReg,
-		loggerProvider:    innerReg,
-		TracingProvider:   innerReg,
-		NetworkIDProvider: innerReg,
-	})
+	e := expand.NewEngine(&deps{mw: reg, RegistryDefault: innerReg})
 	return reg, e
 }
 

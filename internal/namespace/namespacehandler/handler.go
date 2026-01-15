@@ -9,17 +9,18 @@ import (
 
 	"github.com/ory/herodot"
 	"github.com/ory/x/httprouterx"
+	"github.com/ory/x/httpx"
+	"github.com/ory/x/logrusx"
 	"google.golang.org/grpc"
 
 	"github.com/ory/keto/internal/driver/config"
-	"github.com/ory/keto/internal/x"
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 )
 
 type (
 	handlerDeps interface {
-		x.LoggerProvider
-		x.WriterProvider
+		logrusx.Provider
+		httpx.WriterProvider
 		config.Provider
 	}
 	Handler struct {

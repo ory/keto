@@ -6,6 +6,7 @@ package expand
 import (
 	"context"
 
+	"github.com/ory/x/logrusx"
 	"github.com/ory/x/otelx"
 	keysetpagination "github.com/ory/x/pagination/keysetpagination_v2"
 	"go.opentelemetry.io/otel/trace"
@@ -22,8 +23,8 @@ type (
 	EngineDependencies interface {
 		relationtuple.ManagerProvider
 		config.Provider
-		x.LoggerProvider
-		x.TracingProvider
+		logrusx.Provider
+		otelx.Provider
 		x.NetworkIDProvider
 	}
 	Engine struct {

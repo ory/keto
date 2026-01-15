@@ -8,6 +8,8 @@ import (
 	"net/http"
 
 	"github.com/ory/x/httprouterx"
+	"github.com/ory/x/httpx"
+	"github.com/ory/x/logrusx"
 
 	"github.com/ory/keto/ketoapi"
 
@@ -24,8 +26,8 @@ type (
 		EngineProvider
 		relationtuple.ManagerProvider
 		relationtuple.MapperProvider
-		x.LoggerProvider
-		x.WriterProvider
+		logrusx.Provider
+		httpx.WriterProvider
 	}
 	Handler struct {
 		d handlerDependencies

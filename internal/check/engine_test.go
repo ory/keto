@@ -20,39 +20,25 @@ import (
 	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/namespace"
 	"github.com/ory/keto/internal/namespace/ast"
-	"github.com/ory/keto/internal/persistence"
 	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/internal/x"
 	"github.com/ory/keto/ketoapi"
 )
 
-type configProvider = config.Provider
-
 // deps are defined to capture engine dependencies in a single struct
 type deps struct {
-	*relationtuple.ManagerWrapper // managerProvider
-	relationtuple.MapperProvider
-	persistence.Provider
-	configProvider
-	x.LoggerProvider
-	x.TracingProvider
-	x.NetworkIDProvider
+	mw *relationtuple.ManagerWrapper // managerProvider
+	*driver.RegistryDefault
 }
+
+func (d *deps) RelationTupleManager() relationtuple.Manager { return d.mw }
 
 func newDepsProvider(t testing.TB, namespaces []*namespace.Namespace, pageOpts ...keysetpagination.Option) *deps {
 	reg := driver.NewSqliteTestRegistry(t, false)
 	require.NoError(t, reg.Config(context.Background()).Set(config.KeyNamespaces, namespaces))
 	mr := relationtuple.NewManagerWrapper(t, reg, pageOpts...)
 
-	return &deps{
-		ManagerWrapper:    mr,
-		MapperProvider:    reg,
-		Provider:          reg,
-		configProvider:    reg,
-		LoggerProvider:    reg,
-		TracingProvider:   reg,
-		NetworkIDProvider: reg,
-	}
+	return &deps{mw: mr, RegistryDefault: reg}
 }
 
 func toUUID(s string) uuid.UUID {

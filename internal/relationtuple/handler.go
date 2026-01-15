@@ -5,6 +5,9 @@ package relationtuple
 
 import (
 	"github.com/ory/x/httprouterx"
+	"github.com/ory/x/httpx"
+	"github.com/ory/x/logrusx"
+	"github.com/ory/x/otelx"
 	"google.golang.org/grpc"
 
 	"github.com/ory/keto/internal/driver/config"
@@ -18,9 +21,9 @@ type (
 		ManagerProvider
 		MapperProvider
 		config.Provider
-		x.LoggerProvider
-		x.WriterProvider
-		x.TracingProvider
+		logrusx.Provider
+		httpx.WriterProvider
+		otelx.Provider
 		x.NetworkIDProvider
 		x.TransactorProvider
 	}

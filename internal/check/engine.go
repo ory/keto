@@ -7,6 +7,7 @@ import (
 	"context"
 
 	"github.com/ory/herodot"
+	"github.com/ory/x/logrusx"
 	"github.com/ory/x/otelx"
 	"github.com/pkg/errors"
 	"go.opentelemetry.io/otel/trace"
@@ -37,8 +38,8 @@ type (
 		relationtuple.MapperProvider
 		persistence.Provider
 		config.Provider
-		x.LoggerProvider
-		x.TracingProvider
+		logrusx.Provider
+		otelx.Provider
 		x.NetworkIDProvider
 	}
 

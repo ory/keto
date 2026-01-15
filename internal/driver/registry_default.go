@@ -18,6 +18,7 @@ import (
 	"github.com/ory/x/fsx"
 	"github.com/ory/x/healthx"
 	"github.com/ory/x/httprouterx"
+	"github.com/ory/x/httpx"
 	"github.com/ory/x/logrusx"
 	"github.com/ory/x/metricsx"
 	"github.com/ory/x/networkx"
@@ -44,8 +45,8 @@ var (
 	_ relationtuple.ManagerProvider        = (*RegistryDefault)(nil)
 	_ relationtuple.MapperProvider         = (*RegistryDefault)(nil)
 	_ relationtuple.MappingManagerProvider = (*RegistryDefault)(nil)
-	_ x.WriterProvider                     = (*RegistryDefault)(nil)
-	_ x.LoggerProvider                     = (*RegistryDefault)(nil)
+	_ httpx.WriterProvider                 = (*RegistryDefault)(nil)
+	_ logrusx.Provider                     = (*RegistryDefault)(nil)
 	_ Registry                             = (*RegistryDefault)(nil)
 	_ rts.VersionServiceServer             = (*RegistryDefault)(nil)
 )

@@ -17,6 +17,8 @@ import (
 
 	"github.com/ory/herodot"
 	"github.com/ory/x/httprouterx"
+	"github.com/ory/x/httpx"
+	"github.com/ory/x/logrusx"
 
 	"github.com/ory/keto/internal/check/checkgroup"
 	"github.com/ory/keto/internal/driver/config"
@@ -31,8 +33,8 @@ type (
 		EngineProvider
 		relationtuple.ManagerProvider
 		relationtuple.MapperProvider
-		x.LoggerProvider
-		x.WriterProvider
+		logrusx.Provider
+		httpx.WriterProvider
 		config.Provider // TODO does this need to be instantiated?
 	}
 	Handler struct {

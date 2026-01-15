@@ -10,11 +10,12 @@ import (
 	"github.com/gofrs/uuid"
 	"github.com/ory/pop/v6"
 	"github.com/ory/x/contextx"
+	"github.com/ory/x/logrusx"
+	"github.com/ory/x/otelx"
 	"github.com/ory/x/popx"
 
 	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/persistence"
-	"github.com/ory/keto/internal/x"
 )
 
 type (
@@ -24,8 +25,8 @@ type (
 		nid  uuid.UUID
 	}
 	dependencies interface {
-		x.LoggerProvider
-		x.TracingProvider
+		logrusx.Provider
+		otelx.Provider
 		contextx.Provider
 		config.Provider
 
