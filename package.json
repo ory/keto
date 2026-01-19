@@ -22,7 +22,7 @@
     "license-checker": "25.0.1",
     "ory-prettier-styles": "1.3.0",
     "prettier": "3.7.4",
-    "prettier-plugin-packagejson": "2.5.20"
+    "prettier-plugin-packagejson": "2.5.22"
   },
   "overrides": {
     "axios": ">=1.12.0",
