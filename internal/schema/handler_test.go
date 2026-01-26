@@ -13,7 +13,6 @@ import (
 	"testing"
 
 	"github.com/ory/x/httprouterx"
-	"github.com/ory/x/prometheusx"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/tidwall/gjson"
@@ -27,7 +26,7 @@ import (
 )
 
 func TestNewHandler(t *testing.T) {
-	r := httprouterx.NewRouter(prometheusx.NewMetricsManager("keto", "test", "", ""))
+	r := httprouterx.NewTestRouterPublic(t)
 	reg := driver.NewSqliteTestRegistry(t, false)
 	h := schema.NewHandler(reg)
 	h.RegisterSyntaxRoutes(r)

@@ -22,7 +22,6 @@ import (
 
 	"github.com/ory/x/httprouterx"
 	"github.com/ory/x/pointerx"
-	"github.com/ory/x/prometheusx"
 
 	"github.com/ory/keto/internal/driver"
 	"github.com/ory/keto/internal/driver/config"
@@ -34,7 +33,7 @@ import (
 
 func TestReadHandlers(t *testing.T) {
 	ctx := context.Background()
-	r := httprouterx.NewRouterPublic(prometheusx.NewMetricsManager("keto", "test", "", ""))
+	r := httprouterx.NewTestRouterPublic(t)
 	reg := driver.NewSqliteTestRegistry(t, false)
 	h := relationtuple.NewHandler(reg)
 	h.RegisterReadRoutes(r)

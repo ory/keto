@@ -27,7 +27,6 @@ import (
 
 	"github.com/ory/x/httprouterx"
 	"github.com/ory/x/pointerx"
-	"github.com/ory/x/prometheusx"
 
 	"github.com/ory/keto/internal/check"
 	"github.com/ory/keto/internal/driver"
@@ -76,7 +75,7 @@ func TestCheckRESTHandler(t *testing.T) {
 
 	reg := driver.NewSqliteTestRegistry(t, false, driver.WithNamespaces(nspaces))
 	h := check.NewHandler(reg)
-	r := httprouterx.NewRouterPublic(prometheusx.NewMetricsManager("keto", "test", "", ""))
+	r := httprouterx.NewTestRouterPublic(t)
 	h.RegisterReadRoutes(r)
 	ts := httptest.NewServer(r)
 	defer ts.Close()
@@ -171,7 +170,7 @@ func TestBatchCheckRESTHandler(t *testing.T) {
 
 	reg := driver.NewSqliteTestRegistry(t, false, driver.WithNamespaces(nspaces))
 	h := check.NewHandler(reg)
-	r := httprouterx.NewRouterPublic(prometheusx.NewMetricsManager("keto", "test", "", ""))
+	r := httprouterx.NewTestRouterPublic(t)
 	h.RegisterReadRoutes(r)
 	ts := httptest.NewServer(r)
 	defer ts.Close()

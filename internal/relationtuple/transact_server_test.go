@@ -16,7 +16,6 @@ import (
 	"github.com/ory/x/httprouterx"
 	keysetpagination "github.com/ory/x/pagination/keysetpagination_v2"
 	"github.com/ory/x/pointerx"
-	"github.com/ory/x/prometheusx"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
@@ -28,7 +27,7 @@ import (
 )
 
 func TestWriteHandlers(t *testing.T) {
-	r := httprouterx.NewRouterAdmin(prometheusx.NewMetricsManager("keto", "test", "", ""))
+	r := httprouterx.NewTestRouterAdmin(t)
 	reg := driver.NewSqliteTestRegistry(t, false)
 
 	var nspaces []*namespace.Namespace

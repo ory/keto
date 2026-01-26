@@ -372,7 +372,7 @@ func listenAndWriteFile(ctx context.Context, addr, listenFile string) (net.Liste
 	return l, nil
 }
 
-var metricsManager = prometheusx.NewMetricsManagerWithPrefix("keto", prometheusx.HTTPMetrics, config.Version, config.Commit, config.Date)
+var httpMetrics = prometheusx.NewHTTPMetrics("keto", prometheusx.HTTPPrefix, config.Version, config.Commit, config.Date)
 
 func (r *RegistryDefault) ReadRouter(ctx context.Context) http.Handler {
 	n := negroni.New()
@@ -382,7 +382,7 @@ func (r *RegistryDefault) ReadRouter(ctx context.Context) http.Handler {
 	n.UseFunc(semconv.Middleware)
 	n.Use(reqlog.NewMiddlewareFromLogger(r.l, "read#Ory Keto").ExcludePaths(healthx.AliveCheckPath, healthx.ReadyCheckPath))
 
-	br := httprouterx.NewRouterPublic(metricsManager)
+	br := httprouterx.NewRouterPublic(httpMetrics)
 	prometheusx.SetMuxRoutes(br)
 
 	r.HealthHandler().SetHealthRoutes(br, false)
@@ -417,7 +417,7 @@ func (r *RegistryDefault) WriteRouter(ctx context.Context) http.Handler {
 	n.UseFunc(semconv.Middleware)
 	n.Use(reqlog.NewMiddlewareFromLogger(r.l, "write#Ory Keto").ExcludePaths(healthx.AliveCheckPath, healthx.ReadyCheckPath))
 
-	pr := httprouterx.NewRouterAdmin(metricsManager)
+	pr := httprouterx.NewRouterAdmin(httpMetrics)
 	prometheusx.SetMuxRoutes(pr)
 
 	r.HealthHandler().SetHealthRoutes(pr, false)
@@ -452,7 +452,7 @@ func (r *RegistryDefault) OPLSyntaxRouter(ctx context.Context) http.Handler {
 	n.UseFunc(semconv.Middleware)
 	n.Use(reqlog.NewMiddlewareFromLogger(r.l, "syntax#Ory Keto").ExcludePaths(healthx.AliveCheckPath, healthx.ReadyCheckPath))
 
-	pr := httprouterx.NewRouter(metricsManager)
+	pr := httprouterx.NewRouter(httpMetrics)
 	prometheusx.SetMuxRoutes(pr)
 
 	r.HealthHandler().SetHealthRoutes(pr, false)
@@ -591,7 +591,7 @@ func (r *RegistryDefault) OplGRPCServer(ctx context.Context) *grpc.Server {
 
 func (r *RegistryDefault) metricsRouter(ctx context.Context) http.Handler {
 	n := negroni.New(reqlog.NewMiddlewareFromLogger(r.Logger(), "keto").ExcludePaths(prometheusx.MetricsPrometheusPath))
-	router := httprouterx.NewRouter(metricsManager)
+	router := httprouterx.NewRouter(httpMetrics)
 
 	prometheusx.SetMuxRoutes(router)
 

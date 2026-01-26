@@ -14,9 +14,6 @@ import (
 
 	"github.com/ory/x/httprouterx"
 	"github.com/ory/x/pointerx"
-	"github.com/ory/x/prometheusx"
-
-	"github.com/ory/keto/ketoapi"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -25,6 +22,7 @@ import (
 	"github.com/ory/keto/internal/expand"
 	"github.com/ory/keto/internal/namespace"
 	"github.com/ory/keto/internal/relationtuple"
+	"github.com/ory/keto/ketoapi"
 )
 
 func TestRESTHandler(t *testing.T) {
@@ -34,7 +32,7 @@ func TestRESTHandler(t *testing.T) {
 
 	reg := driver.NewSqliteTestRegistry(t, false, driver.WithNamespaces([]*namespace.Namespace{nspace}))
 	h := expand.NewHandler(reg)
-	r := httprouterx.NewRouterPublic(prometheusx.NewMetricsManager("keto", "test", "", ""))
+	r := httprouterx.NewTestRouterPublic(t)
 	h.RegisterReadRoutes(r)
 	ts := httptest.NewServer(r)
 	defer ts.Close()

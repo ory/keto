@@ -183,7 +183,6 @@ require (
 	github.com/joho/godotenv v1.5.1 // indirect
 	github.com/josephburnett/jd v1.9.2 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
-	github.com/julienschmidt/httprouter v1.3.1-0.20240130105656-484018016424 // indirect
 	github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51 // indirect
 	github.com/klauspost/compress v1.18.0 // indirect
 	github.com/klauspost/pgzip v1.2.6 // indirect
