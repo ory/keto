@@ -1,11 +1,10 @@
-version: v0.6.0-alpha.1
+version: v0.10.0-alpha.0
 
 log:
   level: debug
 
 namespaces:
-  - id: 0
-    name: videos
+  location: file://./contrib/cat-videos-example/namespaces.ts
 
 dsn: memory
 
