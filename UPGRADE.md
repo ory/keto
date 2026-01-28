@@ -98,10 +98,10 @@ long-term use of this particular piece of software, and they will allow you to
 build better systems.
 
 If you relied on ORY Keto before this release and you are looking for a
-migration path, don't hesitate to ask in [the forums](https://community.ory.sh/)
-or open a [GitHub issue](https://github.com/ory/keto/issues/new/). Feel free to
-do the same if you want the access control policy feature implemented in ORY
-Hydra before version `1.0.0`.
+migration path, don't hesitate to ask in [Ory Community Chat](https://slack.ory.com/) or
+open a [GitHub issue](https://github.com/ory/keto/issues/new/). Feel free to do
+the same if you want the access control policy feature implemented in ORY Hydra
+before version `1.0.0`.
 
 ### Conceptual changes
 
@@ -203,7 +203,7 @@ as syntax. This endpoint is available in the exact same format at
 ### Migration
 
 If you relied on ORY Keto before this release and you are looking for a
-migration path, don't hesitate to [contact us](mailto:hi@ory.sh). We will help
+migration path, don't hesitate to [contact us](mailto:hi@ory.com). We will help
 you migrate and improve this guide as we see more migration use cases.
 
 #### SQL
