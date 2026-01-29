@@ -98,9 +98,10 @@ long-term use of this particular piece of software, and they will allow you to
 build better systems.
 
 If you relied on ORY Keto before this release and you are looking for a
-migration path, don't hesitate to ask in [Ory Community Chat](https://slack.ory.com/) or
-open a [GitHub issue](https://github.com/ory/keto/issues/new/). Feel free to do
-the same if you want the access control policy feature implemented in ORY Hydra
+migration path, don't hesitate to ask in
+[Ory Community Chat](https://slack.ory.com/) or open a
+[GitHub issue](https://github.com/ory/keto/issues/new/). Feel free to do the
+same if you want the access control policy feature implemented in ORY Hydra
 before version `1.0.0`.
 
 ### Conceptual changes
