@@ -130,6 +130,9 @@ func (h *Handler) ListRelationTuples(ctx context.Context, req *rts.ListRelationT
 //	  200: relationships
 //	  404: errorGeneric
 //	  default: errorGeneric
+//
+//	Extensions:
+//	  x-ory-ratelimit-bucket: keto-admin-medium
 func (h *Handler) getRelations(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 

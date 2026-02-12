@@ -56,7 +56,8 @@
               "$ref": "#/definitions/errorGeneric"
             }
           }
-        }
+        },
+        "x-ory-ratelimit-bucket": "keto-admin-high"
       },
       "delete": {
         "description": "Use this endpoint to delete relationships",
@@ -126,7 +127,8 @@
               "$ref": "#/definitions/errorGeneric"
             }
           }
-        }
+        },
+        "x-ory-ratelimit-bucket": "keto-admin-high"
       },
       "patch": {
         "description": "Use this endpoint to patch one or more relationships.",
@@ -170,7 +172,8 @@
               "$ref": "#/definitions/errorGeneric"
             }
           }
-        }
+        },
+        "x-ory-ratelimit-bucket": "keto-admin-high"
       }
     },
     "/health/alive": {
@@ -246,7 +249,8 @@
               "$ref": "#/definitions/errorGeneric"
             }
           }
-        }
+        },
+        "x-ory-ratelimit-bucket": "keto-admin-high"
       }
     },
     "/opl/syntax/check": {
@@ -286,7 +290,8 @@
               "$ref": "#/definitions/errorGeneric"
             }
           }
-        }
+        },
+        "x-ory-ratelimit-bucket": "keto-admin-medium"
       }
     },
     "/relation-tuples": {
@@ -377,7 +382,8 @@
               "$ref": "#/definitions/errorGeneric"
             }
           }
-        }
+        },
+        "x-ory-ratelimit-bucket": "keto-admin-medium"
       }
     },
     "/relation-tuples/batch/check": {
@@ -423,7 +429,8 @@
               "$ref": "#/definitions/errorGeneric"
             }
           }
-        }
+        },
+        "x-ory-ratelimit-bucket": "keto-public-low"
       }
     },
     "/relation-tuples/check": {
@@ -510,7 +517,8 @@
               "$ref": "#/definitions/errorGeneric"
             }
           }
-        }
+        },
+        "x-ory-ratelimit-bucket": "keto-public-low"
       },
       "post": {
         "description": "To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).",
@@ -560,7 +568,8 @@
               "$ref": "#/definitions/errorGeneric"
             }
           }
-        }
+        },
+        "x-ory-ratelimit-bucket": "keto-public-low"
       }
     },
     "/relation-tuples/check/openapi": {
@@ -641,7 +650,8 @@
               "$ref": "#/definitions/errorGeneric"
             }
           }
-        }
+        },
+        "x-ory-ratelimit-bucket": "keto-public-low"
       },
       "post": {
         "description": "To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).",
@@ -685,7 +695,8 @@
               "$ref": "#/definitions/errorGeneric"
             }
           }
-        }
+        },
+        "x-ory-ratelimit-bucket": "keto-public-low"
       }
     },
     "/relation-tuples/expand": {
@@ -751,7 +762,8 @@
               "$ref": "#/definitions/errorGeneric"
             }
           }
-        }
+        },
+        "x-ory-ratelimit-bucket": "keto-admin-medium"
       }
     },
     "/version": {

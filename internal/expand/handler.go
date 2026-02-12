@@ -82,6 +82,9 @@ type expandPermissions struct {
 //	  400: errorGeneric
 //	  404: errorGeneric
 //	  default: errorGeneric
+//
+//	Extensions:
+//	  x-ory-ratelimit-bucket: keto-admin-medium
 func (h *Handler) getExpand(w http.ResponseWriter, r *http.Request) {
 	maxDepth, err := x.GetMaxDepthFromQuery(r.URL.Query())
 	if err != nil {

@@ -91,6 +91,7 @@ paths:
       summary: Delete Relationships
       tags:
       - relationship
+      x-ory-ratelimit-bucket: keto-admin-high
     patch:
       description: Use this endpoint to patch one or more relationships.
       operationId: patchRelationships
@@ -127,6 +128,7 @@ paths:
       summary: Patch Multiple Relationships
       tags:
       - relationship
+      x-ory-ratelimit-bucket: keto-admin-high
     put:
       description: Use this endpoint to create a relationship.
       operationId: createRelationship
@@ -158,6 +160,7 @@ paths:
       summary: Create a Relationship
       tags:
       - relationship
+      x-ory-ratelimit-bucket: keto-admin-high
   /health/alive:
     get:
       description: |-
@@ -240,6 +243,7 @@ paths:
       summary: Query namespaces
       tags:
       - relationship
+      x-ory-ratelimit-bucket: keto-admin-high
   /opl/syntax/check:
     post:
       description: The OPL file is expected in the body of the request.
@@ -272,6 +276,7 @@ paths:
       summary: Check the syntax of an OPL file
       tags:
       - relationship
+      x-ory-ratelimit-bucket: keto-admin-medium
   /relation-tuples:
     get:
       description: Get all relationships that match the query. Only the namespace
@@ -384,6 +389,7 @@ paths:
       summary: Query relationships
       tags:
       - relationship
+      x-ory-ratelimit-bucket: keto-admin-medium
   /relation-tuples/batch/check:
     post:
       description: "To learn how relationship tuples and the check works, head over\
@@ -426,6 +432,7 @@ paths:
       summary: Batch check permissions
       tags:
       - permission
+      x-ory-ratelimit-bucket: keto-public-low
   /relation-tuples/check:
     get:
       description: "To learn how relationship tuples and the check works, head over\
@@ -524,6 +531,7 @@ paths:
       summary: Check a permission
       tags:
       - permission
+      x-ory-ratelimit-bucket: keto-public-low
     post:
       description: "To learn how relationship tuples and the check works, head over\
         \ to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview)."
@@ -571,6 +579,7 @@ paths:
       summary: Check a permission
       tags:
       - permission
+      x-ory-ratelimit-bucket: keto-public-low
   /relation-tuples/check/openapi:
     get:
       description: "To learn how relationship tuples and the check works, head over\
@@ -663,6 +672,7 @@ paths:
       summary: Check a permission
       tags:
       - permission
+      x-ory-ratelimit-bucket: keto-public-low
     post:
       description: "To learn how relationship tuples and the check works, head over\
         \ to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview)."
@@ -704,6 +714,7 @@ paths:
       summary: Check a permission
       tags:
       - permission
+      x-ory-ratelimit-bucket: keto-public-low
   /relation-tuples/expand:
     get:
       description: Use this endpoint to expand a relationship tuple into permissions.
@@ -769,6 +780,7 @@ paths:
       summary: Expand a Relationship into permissions.
       tags:
       - permission
+      x-ory-ratelimit-bucket: keto-admin-medium
   /version:
     get:
       description: |-

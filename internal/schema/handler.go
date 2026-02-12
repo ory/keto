@@ -87,6 +87,9 @@ type checkOplSyntaxBody string
 //	  200: checkOplSyntaxResult
 //	  400: errorGeneric
 //	  default: errorGeneric
+//
+//	Extensions:
+//	  x-ory-ratelimit-bucket: keto-admin-medium
 func (h *Handler) postCheckOplSyntax(w http.ResponseWriter, r *http.Request) {
 	data, err := io.ReadAll(r.Body)
 	if err != nil {

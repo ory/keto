@@ -130,6 +130,9 @@ type createRelationshipBody struct {
 //	  201: relationship
 //	  400: errorGeneric
 //	  default: errorGeneric
+//
+//	Extensions:
+//	  x-ory-ratelimit-bucket: keto-admin-high
 func (h *Handler) createRelation(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
@@ -189,6 +192,9 @@ func (h *Handler) createRelation(w http.ResponseWriter, r *http.Request) {
 //	  204: emptyResponse
 //	  400: errorGeneric
 //	  default: errorGeneric
+//
+//	Extensions:
+//	  x-ory-ratelimit-bucket: keto-admin-high
 func (h *Handler) deleteRelations(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
@@ -259,6 +265,9 @@ func internalTuplesWithAction(deltas []*ketoapi.PatchDelta, action ketoapi.Patch
 //	  400: errorGeneric
 //	  404: errorGeneric
 //	  default: errorGeneric
+//
+//	Extensions:
+//	  x-ory-ratelimit-bucket: keto-admin-high
 func (h *Handler) patchRelationTuples(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 

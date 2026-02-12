@@ -121,6 +121,9 @@ type checkPermission struct {
 //	  200: checkPermissionResult
 //	  400: errorGeneric
 //	  default: errorGeneric
+//
+//	Extensions:
+//	  x-ory-ratelimit-bucket: keto-public-low
 func (h *Handler) getCheckNoStatus(w http.ResponseWriter, r *http.Request) {
 	allowed, err := h.getCheck(r.Context(), r.URL.Query())
 	if err != nil {
@@ -159,6 +162,9 @@ type checkPermissionOrError struct {
 //	  400: errorGeneric
 //	  403: checkPermissionResult
 //	  default: errorGeneric
+//
+//	Extensions:
+//	  x-ory-ratelimit-bucket: keto-public-low
 func (h *Handler) getCheckMirrorStatus(w http.ResponseWriter, r *http.Request) {
 	allowed, err := h.getCheck(r.Context(), r.URL.Query())
 	if err != nil {
@@ -236,6 +242,9 @@ type postCheckPermissionBody struct {
 //	  200: checkPermissionResult
 //	  400: errorGeneric
 //	  default: errorGeneric
+//
+//	Extensions:
+//	  x-ory-ratelimit-bucket: keto-public-low
 func (h *Handler) postCheckNoStatus(w http.ResponseWriter, r *http.Request) {
 	allowed, err := h.postCheck(r.Context(), r.Body, r.URL.Query())
 	if err != nil {
@@ -286,6 +295,9 @@ type postCheckPermissionOrErrorBody struct {
 //	  400: errorGeneric
 //	  403: checkPermissionResult
 //	  default: errorGeneric
+//
+//	Extensions:
+//	  x-ory-ratelimit-bucket: keto-public-low
 func (h *Handler) postCheckMirrorStatus(w http.ResponseWriter, r *http.Request) {
 	allowed, err := h.postCheck(r.Context(), r.Body, r.URL.Query())
 	if err != nil {
@@ -401,6 +413,9 @@ type BatchCheckPermissionResult struct {
 //	  200: batchCheckPermissionResult
 //	  400: errorGeneric
 //	  default: errorGeneric
+//
+//	Extensions:
+//	  x-ory-ratelimit-bucket: keto-public-low
 func (h *Handler) batchCheck(w http.ResponseWriter, r *http.Request) {
 	results, err := h.doBatchCheck(r.Context(), r.Body, r.URL.Query())
 	if err != nil {

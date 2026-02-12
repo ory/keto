@@ -76,6 +76,9 @@ func (h *Handler) ListNamespaces(ctx context.Context, _ *rts.ListNamespacesReque
 //	Responses:
 //	  200: relationshipNamespaces
 //	  default: errorGeneric
+//
+//	Extensions:
+//	  x-ory-ratelimit-bucket: keto-admin-high
 func (h *Handler) getNamespaces(w http.ResponseWriter, r *http.Request) {
 	res, err := h.ListNamespaces(r.Context(), nil)
 	if err != nil {
