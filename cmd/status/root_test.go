@@ -34,7 +34,7 @@ func TestStatusCmd(t *testing.T) {
 			ts.Cmd.PersistentArgs = append(ts.Cmd.PersistentArgs, "--"+cmdx.FlagQuiet, "--"+FlagEndpoint, string(serverType))
 
 			t.Run("case=timeout,noblock", func(t *testing.T) {
-				ctx, cancel := context.WithTimeout(context.Background(), time.Microsecond)
+				ctx, cancel := context.WithDeadline(t.Context(), time.Now().Add(-time.Second))
 				defer cancel()
 
 				stdErr := cmdx.ExecExpectedErrCtx(ctx, t, newStatusCmd(), "--"+FlagEndpoint, string(serverType), "--"+ts.FlagRemote, ts.Addr[:len(ts.Addr)-1])
@@ -47,7 +47,7 @@ func TestStatusCmd(t *testing.T) {
 			})
 
 			t.Run("case=block", func(t *testing.T) {
-				ctx := context.WithValue(context.Background(), client.ContextKeyTimeout, 100*time.Millisecond)
+				ctx := context.WithValue(t.Context(), client.ContextKeyTimeout, 100*time.Millisecond)
 
 				l, err := net.Listen("tcp", "127.0.0.1:0")
 				require.NoError(t, err)
