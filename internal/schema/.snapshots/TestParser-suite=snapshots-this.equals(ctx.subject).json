@@ -1,0 +1,47 @@
+{
+  "AccessToken": null,
+  "Account": [
+    {
+      "name": "token",
+      "types": [
+        {
+          "namespace": "AccessToken"
+        }
+      ]
+    },
+    {
+      "name": "admin_token",
+      "types": [
+        {
+          "namespace": "AccessToken"
+        }
+      ]
+    },
+    {
+      "name": "edit",
+      "rewrite": {
+        "operator": "or",
+        "children": [
+          {},
+          {
+            "relation": "admin_token"
+          }
+        ]
+      }
+    },
+    {
+      "name": "view",
+      "rewrite": {
+        "operator": "or",
+        "children": [
+          {
+            "relation": "edit"
+          },
+          {
+            "relation": "token"
+          }
+        ]
+      }
+    }
+  ]
+}

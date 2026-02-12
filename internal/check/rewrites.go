@@ -122,6 +122,11 @@ func (e *Engine) checkSubjectSetRewrite(
 				Tuple: *tuple,
 				Type:  ketoapi.TreeNodeNot,
 			}, e.checkInverted(ctx, tuple, c, restDepth)))
+		case *ast.SubjectEqualsObject:
+			checks = append(checks, checkgroup.WithEdge(checkgroup.Edge{
+				Tuple: *tuple,
+				Type:  ketoapi.TreeNodeLeaf,
+			}, e.checkSubjectEqualsObject(ctx, tuple, restDepth)))
 
 		default:
 			return checkNotImplemented
@@ -175,6 +180,11 @@ func (e *Engine) checkInverted(
 			Tuple: *tuple,
 			Type:  ketoapi.TreeNodeNot,
 		}, e.checkInverted(ctx, tuple, c, restDepth))
+	case *ast.SubjectEqualsObject:
+		check = checkgroup.WithEdge(checkgroup.Edge{
+			Tuple: *tuple,
+			Type:  ketoapi.TreeNodeLeaf,
+		}, e.checkSubjectEqualsObject(ctx, tuple, restDepth))
 
 	default:
 		return checkNotImplemented
@@ -197,6 +207,49 @@ func (e *Engine) checkInverted(
 			resultCh <- checkgroup.Result{Err: errors.WithStack(ctx.Err())}
 		}
 	}
+}
+
+// checkSubjectEqualsObject verifies that the subject and object are the same.
+//
+// Checks that the subject and object refer to the same entity. The check
+// is performed by creating a subject from the object based on what the tuple subject type is.
+// If the tuple subject is a SubjectSet, the subject's Namespace is used with the object. If the
+// tuple subject is a SubjectID, the object's ID is used as a SubjectID.
+// The object-subject and tuple subject are compared using Subject.Equals. This was added to support
+// `this == ctx.subject` for identity permission cases. See https://github.com/ory/keto/issues/1204
+func (e *Engine) checkSubjectEqualsObject(
+	_ context.Context,
+	r *relationTuple,
+	restDepth int,
+) checkgroup.CheckFunc {
+	if restDepth < 0 {
+		e.d.Logger().Debug("reached max-depth, therefore this query will not be further expanded")
+		return checkgroup.UnknownMemberFunc
+	}
+
+	e.d.Logger().
+		WithField("request", r.String()).
+		Trace("check subject equals object")
+
+	var objAsSubj relationtuple.Subject
+	switch r.Subject.(type) {
+	case *relationtuple.SubjectSet:
+		objAsSubj = &relationtuple.SubjectSet{
+			Namespace: r.Namespace,
+			Object:    r.Object,
+		}
+	case *relationtuple.SubjectID:
+		objAsSubj = &relationtuple.SubjectID{
+			ID: r.Object,
+		}
+	default:
+		return checkgroup.UnknownMemberFunc
+	}
+	if r.Subject.Equals(objAsSubj) {
+		return checkgroup.IsMemberFunc
+	}
+
+	return checkgroup.NotMemberFunc
 }
 
 // checkComputedSubjectSet rewrites the relation tuple to use the subject-set relation

@@ -61,6 +61,7 @@ const (
 	itemOperatorOr     // "||"
 	itemOperatorNot    // "!"
 	itemOperatorAssign // "="
+	itemOperatorEquals // "=="
 	itemOperatorArrow  // "=>"
 	itemOperatorDot    // "."
 	itemOperatorColon  // ":"
@@ -236,6 +237,7 @@ var oneRuneTokens = map[rune]itemType{
 }
 
 var multiRuneTokens = map[string]itemType{
+	"==": itemOperatorEquals,
 	"=>": itemOperatorArrow,
 	"||": itemOperatorOr,
 	"&&": itemOperatorAnd,
