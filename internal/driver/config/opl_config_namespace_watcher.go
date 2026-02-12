@@ -18,7 +18,7 @@ import (
 	"github.com/pkg/errors"
 
 	"github.com/ory/keto/internal/namespace"
-	"github.com/ory/keto/internal/schema"
+	"github.com/ory/keto/schema"
 )
 
 type (

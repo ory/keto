@@ -51,8 +51,8 @@ import (
 	"github.com/ory/keto/internal/expand"
 	"github.com/ory/keto/internal/namespace/namespacehandler"
 	"github.com/ory/keto/internal/relationtuple"
-	"github.com/ory/keto/internal/schema"
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
+	"github.com/ory/keto/schema"
 )
 
 func (r *RegistryDefault) enableSqa(cmd *cobra.Command) {

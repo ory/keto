@@ -21,8 +21,8 @@ import (
 	"google.golang.org/grpc/test/bufconn"
 
 	"github.com/ory/keto/internal/driver"
-	"github.com/ory/keto/internal/schema"
 	opl "github.com/ory/keto/proto/ory/keto/opl/v1alpha1"
+	"github.com/ory/keto/schema"
 )
 
 func TestNewHandler(t *testing.T) {
