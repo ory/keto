@@ -15,6 +15,8 @@ import (
 	"github.com/ory/pop/v6"
 	"github.com/ory/x/otelx"
 	keysetpagination "github.com/ory/x/pagination/keysetpagination_v2"
+	paginationplanner "github.com/ory/x/pagination/paginationplanner"
+
 	"github.com/ory/x/sqlcon"
 	"github.com/pkg/errors"
 	"go.opentelemetry.io/otel/attribute"
@@ -149,6 +151,31 @@ func (p *Persister) whereQuery(ctx context.Context, q *pop.Query, rq *relationtu
 	return nil
 }
 
+// buildPlannerQuery sets the pagination planner constraints.
+func buildPlannerQuery(rq *relationtuple.RelationQuery) paginationplanner.Query {
+	cs := paginationplanner.NewQuery()
+	if rq.Namespace != nil {
+		cs.SetEq(TupleColNamespace)
+	}
+	if rq.Object != nil {
+		cs.SetEq(TupleColObject)
+	}
+	if rq.Relation != nil {
+		cs.SetIsNull(TupleColRel)
+	}
+	if s := rq.Subject; s != nil {
+		switch s.(type) {
+		case *relationtuple.SubjectID:
+			cs.SetEq(TupleColSubjectId)
+			cs.SetIsNull(TupleColSubjectSetNamespace, TupleColSubjectSetObject, TupleColSubjectSetRel)
+		case *relationtuple.SubjectSet:
+			cs.SetIsNull(TupleColSubjectId)
+			cs.SetEq(TupleColSubjectSetNamespace, TupleColSubjectSetObject, TupleColSubjectSetRel)
+		}
+	}
+	return cs
+}
+
 func buildDelete(nid uuid.UUID, rs []*relationtuple.RelationTuple) (query string, args []any, err error) {
 	if len(rs) == 0 {
 		return "", nil, errors.WithStack(ketoapi.ErrMalformedInput)
@@ -220,16 +247,17 @@ func (p *Persister) GetRelationTuples(ctx context.Context, query *relationtuple.
 	ctx, span := p.d.Tracer(ctx).Tracer().Start(ctx, "persistence.sql.GetRelationTuples")
 	defer otelx.End(span, &err)
 
-	paginator := keysetpagination.NewPaginator(append(pageOpts,
-		keysetpagination.WithDefaultToken(keysetpagination.NewPageToken(keysetpagination.Column{Name: "shard_id", Value: uuid.Nil})),
-	)...)
+	constraints := buildPlannerQuery(query)
 
-	sqlQuery := p.queryWithNetwork(ctx).Scope(keysetpagination.Paginate[*RelationTuple](paginator))
-
+	sqlQuery := p.queryWithNetwork(ctx)
 	err = p.whereQuery(ctx, sqlQuery, query)
 	if err != nil {
 		return nil, nil, err
 	}
+
+	paginator := p.planner.GetPaginator(constraints, pageOpts...)
+	sqlQuery = sqlQuery.Scope(keysetpagination.Paginate[*RelationTuple](paginator))
+
 	var res relationTuples
 	if err := sqlQuery.All(&res); err != nil {
 		return nil, nil, sqlcon.HandleError(err)
