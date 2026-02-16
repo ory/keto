@@ -1,4 +1,5 @@
 .bin
+.snapshots
 internal
 cmd
 ketoctx
