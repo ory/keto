@@ -1,0 +1,6 @@
+dsn: memory
+log:
+  level: trace
+
+namespaces:
+  location: file://./list-api-display-objects-subjectset/namespaces.ts
