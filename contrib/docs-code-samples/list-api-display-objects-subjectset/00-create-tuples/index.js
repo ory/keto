@@ -32,9 +32,9 @@ const addToChat = (chatName) => (user) => {
   writeRequest.addRelationTupleDeltas(tupleDelta)
 }
 
-  ;["PM", "Vincent", "Julia"].forEach(addToChat("memes"))
-  ;["PM", "Julia"].forEach(addToChat("cars"))
-  ;["PM", "Vincent", "Julia", "Patrik"].forEach(addToChat("coffee-break"))
+;["PM", "Vincent", "Julia"].forEach(addToChat("memes"))
+;["PM", "Julia"].forEach(addToChat("cars"))
+;["PM", "Vincent", "Julia", "Patrik"].forEach(addToChat("coffee-break"))
 
 writeClient.transactRelationTuples(writeRequest, (error) => {
   if (error) {
