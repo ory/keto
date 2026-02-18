@@ -3,12 +3,6 @@
     "namespace": "Group",
     "object": "developer",
     "relation": "members",
-    "subject_id": "patrik"
-  },
-  {
-    "namespace": "Group",
-    "object": "developer",
-    "relation": "members",
     "subject_set": {
       "namespace": "User",
       "object": "Patrik"

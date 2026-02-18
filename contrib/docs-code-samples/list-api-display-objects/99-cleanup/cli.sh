@@ -6,4 +6,4 @@ export KETO_WRITE_REMOTE="127.0.0.1:4467"
 
 keto relation-tuple get --namespace chats --format json --insecure-disable-transport-security | \
   jq ".relation_tuples" | \
-    keto relation-tuple delete - -q > /dev/null --insecure-disable-transport-security
+    keto relation-tuple delete -f - -q > /dev/null --insecure-disable-transport-security

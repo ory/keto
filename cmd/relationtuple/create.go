@@ -4,98 +4,34 @@
 package relationtuple
 
 import (
-	"bytes"
-	"encoding/json"
-	"fmt"
-	"io"
-	"os"
-	"path/filepath"
-
-	"github.com/ory/keto/ketoapi"
-
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 
 	"github.com/spf13/cobra"
-
-	"github.com/ory/x/cmdx"
 )
+
+const FlagFile = "file"
 
 func NewCreateCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create <relationships.json> [<relationships-dir>]",
-		Short: "Create relationships from JSON files",
-		Long: "Create relationships from JSON files.\n" +
-			"A directory will be traversed and all relationships will be created.\n" +
-			"Pass the special filename `-` to read from STD_IN.",
-		Args: cobra.MinimumNArgs(1),
-		RunE: transactRelationTuples(rts.RelationTupleDelta_ACTION_INSERT),
+		Use:   "create <subject_namespace>:<subject_id> <relation> <object_namespace>:<object_id>",
+		Short: "Create relationship tuples from inline arguments or JSON files and folders",
+		Long: "Create relationship tuples from inline arguments or JSON files and folders.\n\n" +
+			"Inline example:\n" +
+			"	keto relation-tuple create User:alice owner Doc:readme\n\n" +
+
+			"From file or folder:\n" +
+			"	keto relation-tuple create -f relationships1.json -f relationships2.json\n" +
+			"	keto relation-tuple create -f relationships-dir1 -f relationships-dir2\n\n" +
+
+			"If a directory is provided, all JSON files inside it are processed.\n" +
+			"Use '-' as filename to read from STD_IN:\n" +
+			"	keto relation-tuple create -f -",
+		Args: cobra.ArbitraryArgs,
+		RunE: transactTuples(rts.RelationTupleDelta_ACTION_INSERT),
 	}
+
+	registerFileFlag(cmd.Flags())
 	registerPackageFlags(cmd.Flags())
 
 	return cmd
-}
-
-func readTuplesFromArg(cmd *cobra.Command, arg string) ([]*ketoapi.RelationTuple, error) {
-	var f io.Reader
-	if arg == "-" {
-		f = cmd.InOrStdin()
-	} else {
-		cleanArg := filepath.Clean(arg)
-		stats, err := os.Stat(cleanArg)
-		if err != nil {
-			_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Error getting stats for %s: %s\n", arg, err)
-			return nil, cmdx.FailSilently(cmd)
-		}
-
-		if stats.IsDir() {
-			fi, err := os.ReadDir(cleanArg)
-			if err != nil {
-				return nil, err
-			}
-
-			var tuples []*ketoapi.RelationTuple
-			for _, child := range fi {
-				t, err := readTuplesFromArg(cmd, filepath.Join(cleanArg, child.Name()))
-				if err != nil {
-					return nil, err
-				}
-				tuples = append(tuples, t...)
-			}
-			return tuples, nil
-		}
-
-		ff, err := os.Open(cleanArg)
-		if err != nil {
-			_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Error processing arg %s: %s\n", arg, err)
-			return nil, cmdx.FailSilently(cmd)
-		}
-		defer func() { _ = ff.Close() }()
-		f = ff
-	}
-
-	fc, err := io.ReadAll(f)
-	if err != nil {
-		_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could read file %s: %s\n", arg, err)
-		return nil, cmdx.FailSilently(cmd)
-	}
-
-	decoder := json.NewDecoder(bytes.NewReader(fc))
-	decoder.DisallowUnknownFields()
-	// it is ok to not validate beforehand because json.Unmarshal will report errors
-	if fc[0] == '[' {
-		var ts []*ketoapi.RelationTuple
-		if err := decoder.Decode(&ts); err != nil {
-			_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not decode: %s\n", err)
-			return nil, cmdx.FailSilently(cmd)
-		}
-		return ts, nil
-	}
-
-	var r ketoapi.RelationTuple
-	if err := decoder.Decode(&r); err != nil {
-		_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not decode: %s\n", err)
-		return nil, cmdx.FailSilently(cmd)
-	}
-
-	return []*ketoapi.RelationTuple{&r}, nil
 }

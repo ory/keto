@@ -46,7 +46,7 @@ func (g *cliClient) createTuple(t testing.TB, r *ketoapi.RelationTuple) {
 	tupleEnc, err := json.Marshal(r)
 	require.NoError(t, err)
 
-	stdout, stderr, err := g.c.Exec(bytes.NewBuffer(tupleEnc), "relation-tuple", "create", "-")
+	stdout, stderr, err := g.c.Exec(bytes.NewBuffer(tupleEnc), "relation-tuple", "create", "-f", "-")
 	require.NoError(t, err, "stdout: %s\nstderr: %s", stdout, stderr)
 	assert.Len(t, stderr, 0, stdout)
 }
@@ -88,7 +88,8 @@ func (g *cliClient) queryTuple(t testing.TB, q *ketoapi.RelationQuery, opts ...p
 }
 
 func (g *cliClient) queryTupleErr(t testing.TB, expected herodot.DefaultError, q *ketoapi.RelationQuery, opts ...paginationOptionSetter) {
-	stdErr := g.c.ExecExpectedErr(t, append(g.assembleQueryFlags(q, opts), "relation-tuple", "get")...)
+	_, stdErr, err := g.c.Exec(nil, append(g.assembleQueryFlags(q, opts), "relation-tuple", "get")...)
+	assert.Error(t, err)
 	assert.Contains(t, stdErr, expected.GRPCCodeField.String())
 	assert.Contains(t, stdErr, expected.Error())
 }
@@ -100,7 +101,7 @@ func (g *cliClient) check(t testing.TB, r *ketoapi.RelationTuple) bool {
 	} else {
 		sub = r.SubjectSet.String()
 	}
-	out := g.c.ExecNoErr(t, "check", sub, r.Relation, r.Namespace, r.Object)
+	out := g.c.ExecNoErr(t, "check", sub, r.Relation, r.Namespace+":"+r.Object)
 	var res rts.CheckResponse
 	require.NoError(t, json.Unmarshal([]byte(out), &res))
 	return res.Allowed
@@ -116,7 +117,7 @@ func (g *cliClient) batchCheck(t testing.TB, r []*ketoapi.RelationTuple) []check
 }
 
 func (g *cliClient) expand(t testing.TB, r *ketoapi.SubjectSet, depth int) *ketoapi.Tree[*ketoapi.RelationTuple] {
-	out := g.c.ExecNoErr(t, "expand", r.Relation, r.Namespace, r.Object, "--"+cliexpand.FlagMaxDepth, fmt.Sprintf("%d", depth), "--"+cmdx.FlagFormat, string(cmdx.FormatJSON))
+	out := g.c.ExecNoErr(t, "expand", r.Relation, r.Namespace+":"+r.Object, "--"+cliexpand.FlagMaxDepth, fmt.Sprintf("%d", depth), "--"+cmdx.FlagFormat, string(cmdx.FormatJSON))
 	res := ketoapi.Tree[*ketoapi.RelationTuple]{}
 	require.NoError(t, json.Unmarshal([]byte(out), &res))
 	return &res
@@ -144,9 +145,9 @@ func (g *cliClient) deleteTuple(t testing.TB, r *ketoapi.RelationTuple) {
 	tupleEnc, err := json.Marshal(r)
 	require.NoError(t, err)
 
-	stdout, stderr, err := g.c.Exec(bytes.NewBuffer(tupleEnc), "relation-tuple", "delete", "-")
+	stdout, stderr, err := g.c.Exec(bytes.NewBuffer(tupleEnc), "relation-tuple", "delete", "-f", "-")
 	require.NoError(t, err, "stdout: %s\nstderr: %s", stdout, stderr)
-	assert.Len(t, stderr, 0, stdout)
+	assert.Len(t, stderr, 0, stderr)
 }
 
 func (g *cliClient) deleteAllTuples(t testing.TB, q *ketoapi.RelationQuery) {

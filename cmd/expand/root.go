@@ -10,6 +10,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/ory/keto/cmd/client"
+	"github.com/ory/keto/cmd/helpers"
 	"github.com/ory/keto/ketoapi"
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 )
@@ -20,11 +21,18 @@ func NewExpandCmd() *cobra.Command {
 	var maxDepth int32
 
 	cmd := &cobra.Command{
-		Use:   "expand <relation> <namespace> <object>",
-		Short: "Expand a subject set",
-		Long:  "Expand a subject set into a tree of subjects.",
-		Args:  cobra.ExactArgs(3),
+		Use:   "expand <relation> <object_namespace>:<object_id>",
+		Short: "Expand all subjects that have the relation on the object",
+		Long: "Expand all subjects that have the relation on the object, including how access is granted.\n\n" +
+			"Example:\n" +
+			"	keto expand view Doc:readme\n\n",
+		Args: cobra.RangeArgs(2, 3),
 		RunE: func(cmd *cobra.Command, args []string) error {
+			namespace, object, err := helpers.ParseNamespaceObject(cmd, args[1:])
+			if err != nil {
+				return err
+			}
+
 			conn, err := client.GetReadConn(cmd)
 			if err != nil {
 				return err
@@ -33,11 +41,11 @@ func NewExpandCmd() *cobra.Command {
 
 			cl := rts.NewExpandServiceClient(conn)
 			resp, err := cl.Expand(cmd.Context(), &rts.ExpandRequest{
-				Subject:  rts.NewSubjectSet(args[1], args[2], args[0]),
+				Subject:  rts.NewSubjectSet(namespace, object, args[0]),
 				MaxDepth: maxDepth,
 			})
 			if err != nil {
-				_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Error making the request: %s\n", err.Error())
+				_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not make request: %s\n", err)
 				return cmdx.FailSilently(cmd)
 			}
 

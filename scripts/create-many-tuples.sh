@@ -10,5 +10,5 @@ for i in {1..500} ; do
     done
     echo '{"namespace": "default", "object": "'$i'", "subject_id": "'$j'", "relation": "last"}]' >> "$d/$j.json"
   done
-  ./keto relation-tuple create "$d"
+  ./keto relation-tuple create -f "$d"
 done

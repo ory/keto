@@ -18,8 +18,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-// the command delegates most of the functionality to the parseFile helper, so we test that
-func TestParseCmdParseFile(t *testing.T) {
+func TestParseTuplesFromPath(t *testing.T) {
 	for _, tc := range []struct {
 		input, name string
 		expected    []*ketoapi.RelationTuple
@@ -91,11 +90,21 @@ nspace:obj#rel@sub
 			cmd := &cobra.Command{}
 			cmd.SetIn(bytes.NewBufferString(tc.input))
 
-			actual, err := parseFile(cmd, "-")
+			actual, err := readTuplesFromPath(cmd, "-", 0, parseHumanReadable)
 			require.NoError(t, err)
 			assert.Equal(t, tc.expected, actual)
 		})
 	}
+
+	t.Run("case=error contains line number", func(t *testing.T) {
+		input := "nspace:obj#rel@subns:subid\n\n\ninvalid-line\nnspace:obj2#rel@subns:subid2\n"
+		cmd := &cobra.Command{}
+		cmd.SetIn(bytes.NewBufferString(input))
+
+		_, err := readTuplesFromPath(cmd, "-", 0, parseHumanReadable)
+		require.Error(t, err)
+		assert.Contains(t, err.Error(), "line 4:")
+	})
 
 	t.Run("case=reads from fs", func(t *testing.T) {
 		dir := t.TempDir()
@@ -103,9 +112,9 @@ nspace:obj#rel@sub
 		require.NoError(t, os.WriteFile(fn, []byte(`
 nspace:obj1#rel@sub1
 
-nspace:obj2#rel@sub2`), 0600))
+nspace:obj2#rel@sub2`), 0o600))
 
-		actual, err := parseFile(&cobra.Command{}, fn)
+		actual, err := readTuplesFromPath(&cobra.Command{}, fn, 0, parseHumanReadable)
 		require.NoError(t, err)
 		assert.Equal(t, []*ketoapi.RelationTuple{
 			{

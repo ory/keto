@@ -4,7 +4,7 @@
 package client
 
 import (
-	"context"
+	"fmt"
 	"net"
 	"testing"
 
@@ -22,14 +22,10 @@ import (
 
 type (
 	TestServer struct {
-		Reg              driver.Registry
-		Namespace        *namespace.Namespace
-		Addr, FlagRemote string
-		Cmd              *cmdx.CommandExecuter
-		Server           *grpc.Server
-		NewServer        func(ctx context.Context) *grpc.Server
-
-		errG *errgroup.Group
+		Reg     driver.Registry
+		Cmd     *cmdx.CommandExecuter
+		Servers []*grpc.Server
+		errG    *errgroup.Group
 	}
 	ServerType string
 )
@@ -40,56 +36,72 @@ const (
 	OplServer   ServerType = "opl"
 )
 
-func NewTestServer(t *testing.T,
-	rw ServerType, nspaces []*namespace.Namespace, newCmd func() *cobra.Command,
-	registryOpts ...driver.TestRegistryOption,
-) *TestServer {
-	ctx := context.Background()
-	ts := &TestServer{
-		Reg: driver.NewSqliteTestRegistry(t, false,
-			append(registryOpts, driver.WithSelfsignedTransportCredentials())...),
-	}
-	require.NoError(t, ts.Reg.Config(ctx).Set(config.KeyNamespaces, nspaces))
-
-	switch rw {
-	case ReadServer:
-		ts.NewServer = ts.Reg.ReadGRPCServer
-		ts.FlagRemote = FlagReadRemote
+func (st ServerType) FlagName() string {
+	switch st {
 	case WriteServer:
-		ts.NewServer = ts.Reg.WriteGRPCServer
-		ts.FlagRemote = FlagWriteRemote
+		return FlagWriteRemote
+	case ReadServer:
+		return FlagReadRemote
 	case OplServer:
-		ts.NewServer = ts.Reg.OplGRPCServer
-		ts.FlagRemote = FlagOplRemote
+		return FlagOplRemote
 	default:
-		t.Logf("Got unknown server type %s", rw)
-		t.FailNow()
+		panic(fmt.Sprintf("unknown ServerType %s", st))
 	}
+}
 
-	ts.Server = ts.NewServer(ctx)
+func NewTestServer(t *testing.T, nspaces []*namespace.Namespace, newCmd func() *cobra.Command, registryOpts ...driver.TestRegistryOption) *TestServer {
+	reg := driver.NewSqliteTestRegistry(t, false, append(registryOpts, driver.WithSelfsignedTransportCredentials())...)
 
-	l, err := net.Listen("tcp", "127.0.0.1:0")
-	require.NoError(t, err)
-	ts.Addr = l.Addr().String()
+	require.NoError(t, reg.Config(t.Context()).Set(config.KeyNamespaces, nspaces))
 
-	ts.errG = &errgroup.Group{}
-	ts.errG.Go(func() error {
-		return ts.Server.Serve(l)
-	})
-
-	ts.Cmd = &cmdx.CommandExecuter{
-		New: newCmd,
-		PersistentArgs: []string{
-			"--" + ts.FlagRemote, ts.Addr,
-			"--insecure-skip-hostname-verification=true",
+	ts := &TestServer{
+		Reg:  reg,
+		errG: &errgroup.Group{},
+		Cmd: &cmdx.CommandExecuter{
+			New:            newCmd,
+			PersistentArgs: []string{"--insecure-skip-hostname-verification=true"},
+			Ctx:            t.Context(),
 		},
-		Ctx: ctx,
 	}
-
+	ts.serve(t)
 	return ts
 }
 
+func (ts *TestServer) serve(t *testing.T, serverTypes ...ServerType) {
+	if len(serverTypes) == 0 {
+		serverTypes = []ServerType{WriteServer, ReadServer}
+	}
+
+	for _, st := range serverTypes {
+		l, err := net.Listen("tcp", "127.0.0.1:0")
+		require.NoError(t, err)
+
+		server := ts.NewServer(t, st)
+		ts.errG.Go(func() error {
+			return server.Serve(l)
+		})
+
+		ts.Servers = append(ts.Servers, server)
+		ts.Cmd.PersistentArgs = append(ts.Cmd.PersistentArgs, "--"+st.FlagName(), l.Addr().String())
+	}
+}
+
+func (ts *TestServer) NewServer(t *testing.T, st ServerType) *grpc.Server {
+	switch st {
+	case ReadServer:
+		return ts.Reg.ReadGRPCServer(t.Context())
+	case WriteServer:
+		return ts.Reg.WriteGRPCServer(t.Context())
+	case OplServer:
+		return ts.Reg.OplGRPCServer(t.Context())
+	default:
+		panic(fmt.Sprintf("unknown ServerType %s", st))
+	}
+}
+
 func (ts *TestServer) Shutdown(t *testing.T) {
-	ts.Server.GracefulStop()
+	for _, s := range ts.Servers {
+		s.GracefulStop()
+	}
 	require.NoError(t, ts.errG.Wait())
 }

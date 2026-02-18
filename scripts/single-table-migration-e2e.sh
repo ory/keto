@@ -32,7 +32,7 @@ function teardown() {
 trap teardown EXIT
 
 jq '[range(300)] | map({namespace: (if . % 2 == 0 then "a" else "b" end), object: . | tostring, relation: "view", subject: "user"})' <(echo '{}') \
-  | ./keto relation-tuple create -q -
+  | ./keto relation-tuple create -q -f -
 
 kill $keto_server_pid
 

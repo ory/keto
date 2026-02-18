@@ -5,14 +5,13 @@ package check
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/spf13/cobra"
 
 	"github.com/ory/x/cmdx"
 
 	"github.com/ory/keto/cmd/client"
-	"github.com/ory/keto/ketoapi"
+	"github.com/ory/keto/cmd/helpers"
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 )
 
@@ -30,65 +29,64 @@ func (o *checkOutput) String() string {
 const FlagMaxDepth = "max-depth"
 
 func NewCheckCmd() *cobra.Command {
-	var maxDepth int32
-
 	cmd := &cobra.Command{
-		Use:   "check <subject> <relation> <namespace> <object>",
+		Use:   "check <subject_namespace>:<subject_id> <relation> <object_namespace>:<object_id>",
 		Short: "Check whether a subject has a relation on an object",
-		Long:  "Check whether a subject has a relation on an object. This method resolves subject sets and subject set rewrites.",
-		Args:  cobra.ExactArgs(4),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			conn, err := client.GetReadConn(cmd)
-			if err != nil {
-				return err
-			}
-			defer func() { _ = conn.Close() }()
-
-			cl := rts.NewCheckServiceClient(conn)
-
-			sub, err := parseSubject(args[0])
-			if err != nil {
-				_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not parse subject %q: %s\n", args[0], err)
-				return err
-			}
-			resp, err := cl.Check(cmd.Context(), &rts.CheckRequest{
-				Tuple: &rts.RelationTuple{
-					Namespace: args[2],
-					Object:    args[3],
-					Relation:  args[1],
-					Subject:   sub,
-				},
-				MaxDepth: maxDepth,
-			})
-			if err != nil {
-				_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not make request: %s\n", err)
-				return err
-			}
-
-			cmdx.PrintJSONAble(cmd, &checkOutput{Allowed: resp.Allowed})
-			return nil
-		},
+		Long: "Check whether a subject has a relation on an object.\n\n" +
+			"Example:\n" +
+			"	keto check User:Alice view Doc:readme\n\n" +
+			"Legacy format 'keto check <subject_namespace>:<subject_id> <relation> <object_namespace> <object_id>' is deprecated.",
+		Args: cobra.RangeArgs(3, 4),
+		RunE: check,
 	}
 
 	client.RegisterRemoteURLFlags(cmd.Flags())
 	cmdx.RegisterFormatFlags(cmd.Flags())
-	cmd.Flags().Int32VarP(&maxDepth, FlagMaxDepth, "d", 0, "Maximum depth of the search tree. If the value is less than 1 or greater than the global max-depth then the global max-depth will be used instead.")
+	cmd.Flags().Int32P(FlagMaxDepth, "d", 0, "Maximum depth of the search tree. If the value is less than 1 or greater than the global max-depth then the global max-depth will be used instead.")
 
 	return cmd
 }
 
-func RegisterCommandsRecursive(parent *cobra.Command) {
-	parent.AddCommand(NewCheckCmd())
+func check(cmd *cobra.Command, args []string) error {
+	namespace, object, err := helpers.ParseNamespaceObject(cmd, args[2:])
+	if err != nil {
+		return err
+	}
+
+	sub, err := helpers.ParseSubject(args[0])
+	if err != nil {
+		return fmt.Errorf("could not parse subject %q: %w", args[0], err)
+	}
+	conn, err := client.GetReadConn(cmd)
+	if err != nil {
+		return err
+	}
+	defer func() { _ = conn.Close() }()
+
+	maxDepth, err := cmd.Flags().GetInt32(FlagMaxDepth)
+	if err != nil {
+		return err
+	}
+
+	cl := rts.NewCheckServiceClient(conn)
+	resp, err := cl.Check(cmd.Context(), &rts.CheckRequest{
+		Tuple: &rts.RelationTuple{
+			Namespace: namespace,
+			Object:    object,
+			Relation:  args[1],
+			Subject:   sub,
+		},
+		MaxDepth: maxDepth,
+	})
+	if err != nil {
+		_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not make request: %s\n", err)
+		return cmdx.FailSilently(cmd)
+	}
+
+	cmdx.PrintJSONAble(cmd, &checkOutput{Allowed: resp.Allowed})
+	return nil
 }
 
-func parseSubject(s string) (*rts.Subject, error) {
-	if strings.Contains(s, ":") {
-		su, err := (&ketoapi.SubjectSet{}).FromString(s)
-		if err != nil {
-			return nil, err
-		}
-
-		return rts.NewSubjectSet(su.Namespace, su.Object, su.Relation), nil
-	}
-	return rts.NewSubjectID(s), nil
+func RegisterCommandsRecursive(parent *cobra.Command) {
+	parent.AddCommand(NewCheckCmd())
 }

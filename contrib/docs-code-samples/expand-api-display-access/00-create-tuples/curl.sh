@@ -15,7 +15,7 @@ files:/photos/beach.jpg#access@(files:/photos/beach.jpg#owner)
 files:/photos/beach.jpg#access@(directories:/photos#access)
 files:/photos/mountains.jpg#access@(files:/photos/mountains.jpg#owner)
 files:/photos/mountains.jpg#access@(directories:/photos#access)' | \
-  keto relation-tuple parse - --format json | \
+  keto relation-tuple parse -f - --format json | \
     jq "[ .[] | { relation_tuple: . , action: \"insert\" } ]" -c | \
       curl -X PATCH --silent --fail \
         -H 'Content-Type: application/json' \

@@ -31,3 +31,7 @@ func registerPackageFlags(flags *pflag.FlagSet) {
 	client.RegisterRemoteURLFlags(flags)
 	cmdx.RegisterFormatFlags(flags)
 }
+
+func registerFileFlag(flags *pflag.FlagSet) {
+	flags.StringSliceP(FlagFile, "f", nil, "Read relationships from JSON files or directories (use the special filename - for stdin)")
+}

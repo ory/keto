@@ -27,17 +27,18 @@ import (
 )
 
 func TestStatusCmd(t *testing.T) {
+	ts := client.NewTestServer(t, []*namespace.Namespace{{Name: t.Name()}}, newStatusCmd)
+	defer ts.Shutdown(t)
+
 	for _, serverType := range []client.ServerType{client.ReadServer, client.WriteServer} {
 		t.Run("server_type="+string(serverType), func(t *testing.T) {
-			ts := client.NewTestServer(t, serverType, []*namespace.Namespace{{Name: t.Name()}}, newStatusCmd)
-			defer ts.Shutdown(t)
 			ts.Cmd.PersistentArgs = append(ts.Cmd.PersistentArgs, "--"+cmdx.FlagQuiet, "--"+FlagEndpoint, string(serverType))
 
 			t.Run("case=timeout,noblock", func(t *testing.T) {
 				ctx, cancel := context.WithDeadline(t.Context(), time.Now().Add(-time.Second))
 				defer cancel()
 
-				stdErr := cmdx.ExecExpectedErrCtx(ctx, t, newStatusCmd(), "--"+FlagEndpoint, string(serverType), "--"+ts.FlagRemote, ts.Addr[:len(ts.Addr)-1])
+				stdErr := cmdx.ExecExpectedErrCtx(ctx, t, newStatusCmd(), "--"+FlagEndpoint, string(serverType))
 				assert.Contains(t, stdErr, "context deadline exceeded")
 			})
 
@@ -51,7 +52,7 @@ func TestStatusCmd(t *testing.T) {
 
 				l, err := net.Listen("tcp", "127.0.0.1:0")
 				require.NoError(t, err)
-				s := ts.NewServer(ctx)
+				s := ts.NewServer(t, serverType)
 
 				startServe := make(chan struct{})
 
@@ -81,7 +82,7 @@ func TestStatusCmd(t *testing.T) {
 				require.NoError(t,
 					cmdx.ExecBackgroundCtx(ctx, newStatusCmd(), &stdIn, &stdOut, &stdErr,
 						"--"+FlagEndpoint, string(serverType),
-						"--"+ts.FlagRemote, l.Addr().String(),
+						"--"+serverType.FlagName(), l.Addr().String(),
 						"--insecure-skip-hostname-verification=true",
 						"--"+client.FlagBlock,
 					).Wait(),
@@ -116,7 +117,7 @@ func authInterceptor(header, validValue string) func(ctx context.Context, req an
 
 func TestAuthorizedRequest(t *testing.T) {
 	ts := client.NewTestServer(
-		t, "read", []*namespace.Namespace{{Name: t.Name()}}, newStatusCmd,
+		t, []*namespace.Namespace{{Name: t.Name()}}, newStatusCmd,
 		driver.WithGRPCUnaryInterceptors(authInterceptor("authorization", "Bearer secret")),
 	)
 	defer ts.Shutdown(t)
@@ -135,7 +136,7 @@ func TestAuthorizedRequest(t *testing.T) {
 
 func TestAuthorityRequest(t *testing.T) {
 	ts := client.NewTestServer(
-		t, "read", []*namespace.Namespace{{Name: t.Name()}}, newStatusCmd,
+		t, []*namespace.Namespace{{Name: t.Name()}}, newStatusCmd,
 		driver.WithGRPCUnaryInterceptors(authInterceptor(":authority", "example.com")),
 	)
 	defer ts.Shutdown(t)

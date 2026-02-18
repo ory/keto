@@ -12,7 +12,7 @@ chats:coffee-break#member@PM
 chats:coffee-break#member@Vincent
 chats:coffee-break#member@Julia
 chats:coffee-break#member@Patrik' | \
-  keto relation-tuple parse - --format json | \
+  keto relation-tuple parse -f - --format json | \
     jq "[ .[] | { relation_tuple: . , action: \"insert\" } ]" -c | \
       curl -X PATCH --silent --fail \
         -H 'Content-Type: application/json' \
