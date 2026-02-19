@@ -10,7 +10,6 @@ import (
 
 	"github.com/ory/jsonschema/v3"
 	"github.com/ory/x/cmdx"
-	"github.com/ory/x/pointerx"
 	"github.com/ory/x/randx"
 	"github.com/spf13/cobra"
 
@@ -85,6 +84,6 @@ func RandomTupleWithSubjectID(ns1 string) *ketoapi.RelationTuple {
 		Namespace: ns1,
 		Object:    randx.MustString(8, randx.AlphaNum),
 		Relation:  randx.MustString(8, randx.AlphaNum),
-		SubjectID: pointerx.Ptr(randx.MustString(8, randx.AlphaNum)),
+		SubjectID: new(randx.MustString(8, randx.AlphaNum)),
 	}
 }
