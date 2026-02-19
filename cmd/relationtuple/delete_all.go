@@ -9,7 +9,6 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/ory/x/cmdx"
-	"github.com/ory/x/pointerx"
 
 	"github.com/ory/keto/cmd/client"
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
@@ -31,7 +30,7 @@ func NewDeleteAllCmd() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if !force {
 				_, _ = fmt.Fprintf(cmd.OutOrStdout(), "WARNING: This operation is not reversible. Please use the `--%s` flag to proceed.\nThese tuples would be deleted:\n\n", FlagForce)
-				return getTuples(pointerx.Ptr(int32(100)), pointerx.Ptr(""))(cmd, args)
+				return getTuples(new(int32(100)), new(""))(cmd, args)
 			}
 
 			if cmd.Flags().Changed(FlagSubject) {

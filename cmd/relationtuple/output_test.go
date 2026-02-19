@@ -13,8 +13,6 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/ory/x/pointerx"
-
 	"github.com/ory/keto/ketoapi"
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 )
@@ -27,7 +25,7 @@ func TestRelationCollection(t *testing.T) {
 				Namespace: "n" + strconv.Itoa(i),
 				Object:    "o" + strconv.Itoa(i),
 				Relation:  "r" + strconv.Itoa(i),
-				SubjectID: pointerx.Ptr("s" + strconv.Itoa(i)),
+				SubjectID: new("s" + strconv.Itoa(i)),
 			}
 		}
 		expected[2].SubjectSet = &ketoapi.SubjectSet{
@@ -72,7 +70,7 @@ func TestRelationCollection(t *testing.T) {
 						switch k := v.Kind(); {
 						case k == reflect.String:
 							assert.Contains(t, vals, v.String())
-						case k == reflect.Ptr && v.Elem().Kind() == reflect.String:
+						case k == reflect.Pointer && v.Elem().Kind() == reflect.String:
 							assert.Contains(t, vals, v.Elem().String())
 						default:
 							t.Logf("unhandled kind %s %T", v.Kind(), v.Interface())
@@ -96,7 +94,7 @@ func TestRelationCollection(t *testing.T) {
 				Namespace: "n",
 				Object:    "o",
 				Relation:  "r",
-				SubjectID: pointerx.Ptr("s"),
+				SubjectID: new("s"),
 			},
 			{
 				Namespace: "n",

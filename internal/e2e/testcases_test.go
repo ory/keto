@@ -9,7 +9,6 @@ import (
 	"testing"
 
 	"github.com/ory/herodot"
-	"github.com/ory/x/pointerx"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
@@ -49,7 +48,7 @@ func runCases(c client, m *namespaceTestManager) func(*testing.T) {
 				Namespace: n.Name,
 				Object:    fmt.Sprintf("object for client %T", c),
 				Relation:  "access",
-				SubjectID: pointerx.Ptr("client"),
+				SubjectID: new("client"),
 			}
 
 			c.createTuple(t, tuple)
@@ -74,7 +73,7 @@ func runCases(c client, m *namespaceTestManager) func(*testing.T) {
 				Namespace: n.Name,
 				Object:    "",
 				Relation:  "access",
-				SubjectID: pointerx.Ptr(""),
+				SubjectID: new(""),
 			}, {
 				Namespace: n.Name,
 				Object:    "",
@@ -160,7 +159,7 @@ func runCases(c client, m *namespaceTestManager) func(*testing.T) {
 				Namespace: namespace2.Name,
 				Object:    obj2,
 				Relation:  rel2,
-				SubjectID: pointerx.Ptr("sub1"),
+				SubjectID: new("sub1"),
 			}
 			c.createTuple(t, tupleSingleSubject)
 
@@ -168,18 +167,20 @@ func runCases(c client, m *namespaceTestManager) func(*testing.T) {
 				Namespace: "unknown-namespace",
 				Object:    obj1,
 				Relation:  rel1,
-				SubjectID: pointerx.Ptr("sub1"),
+				SubjectID: new("sub1"),
 			}
 
 			unknownSubjectTuple := &ketoapi.RelationTuple{
 				Namespace: namespace1.Name,
 				Object:    obj1,
 				Relation:  rel1,
-				SubjectID: pointerx.Ptr("unknown-sub"),
+				SubjectID: new("unknown-sub"),
 			}
 
-			batchResult := c.batchCheck(t, []*ketoapi.RelationTuple{tupleSubjectSet, tupleSingleSubject,
-				unknownNamespaceTuple, unknownSubjectTuple})
+			batchResult := c.batchCheck(t, []*ketoapi.RelationTuple{
+				tupleSubjectSet, tupleSingleSubject,
+				unknownNamespaceTuple, unknownSubjectTuple,
+			})
 			require.Len(t, batchResult, 4)
 			assert.True(t, batchResult[0].allowed)
 			assert.Empty(t, batchResult[0].errorMessage)
@@ -203,7 +204,7 @@ func runCases(c client, m *namespaceTestManager) func(*testing.T) {
 					Namespace: "namespace-name",
 					Object:    "obj",
 					Relation:  "rel",
-					SubjectID: pointerx.Ptr("sub"),
+					SubjectID: new("sub"),
 				}
 			}
 			c.batchCheckErr(t, tuples, herodot.ErrBadRequest)
@@ -264,7 +265,7 @@ func runCases(c client, m *namespaceTestManager) func(*testing.T) {
 					Namespace: n.Name,
 					Object:    "o" + strconv.Itoa(i),
 					Relation:  rel,
-					SubjectID: pointerx.Ptr("s" + strconv.Itoa(i)),
+					SubjectID: new("s" + strconv.Itoa(i)),
 				})
 			}
 
@@ -295,7 +296,7 @@ func runCases(c client, m *namespaceTestManager) func(*testing.T) {
 
 			for _, rt := range []*ketoapi.RelationTuple{
 				{
-					SubjectID: pointerx.Ptr("s"),
+					SubjectID: new("s"),
 				},
 				{
 					SubjectSet: &ketoapi.SubjectSet{
@@ -331,13 +332,13 @@ func runCases(c client, m *namespaceTestManager) func(*testing.T) {
 					Namespace: n.Name,
 					Object:    "o1",
 					Relation:  "rel",
-					SubjectID: pointerx.Ptr("s1"),
+					SubjectID: new("s1"),
 				},
 				{
 					Namespace: n.Name,
 					Object:    "o2",
 					Relation:  "rel",
-					SubjectID: pointerx.Ptr("s2"),
+					SubjectID: new("s2"),
 				},
 			}
 			for i := 0; i < len(rts); i++ {
@@ -346,7 +347,7 @@ func runCases(c client, m *namespaceTestManager) func(*testing.T) {
 
 			q := &ketoapi.RelationQuery{
 				Namespace: &n.Name,
-				Relation:  pointerx.Ptr("rel"),
+				Relation:  new("rel"),
 			}
 			resp := c.queryTuple(t, q)
 			require.ElementsMatch(t, resp.RelationTuples, rts)
@@ -357,7 +358,7 @@ func runCases(c client, m *namespaceTestManager) func(*testing.T) {
 		})
 
 		t.Run("case=returns error with status code on unknown namespace", func(t *testing.T) {
-			c.queryTupleErr(t, herodot.ErrNotFound, &ketoapi.RelationQuery{Namespace: pointerx.Ptr("unknown namespace")})
+			c.queryTupleErr(t, herodot.ErrNotFound, &ketoapi.RelationQuery{Namespace: new("unknown namespace")})
 		})
 
 		t.Run("case=still serves tuples from deleted namespace", func(t *testing.T) {
@@ -368,7 +369,7 @@ func runCases(c client, m *namespaceTestManager) func(*testing.T) {
 				Namespace: n.Name,
 				Object:    "o",
 				Relation:  "rel",
-				SubjectID: pointerx.Ptr("s"),
+				SubjectID: new("s"),
 			}
 			c.createTuple(t, tuple)
 

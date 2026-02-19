@@ -14,7 +14,6 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/ory/herodot"
-	"github.com/ory/x/pointerx"
 
 	httpclient "github.com/ory/keto/internal/httpclient"
 	"github.com/ory/keto/ketoapi"
@@ -85,9 +84,9 @@ func (c *sdkClient) getOPLSyntaxClient() *httpclient.APIClient {
 
 func (c *sdkClient) createTuple(t testing.TB, r *ketoapi.RelationTuple) {
 	payload := httpclient.CreateRelationshipBody{
-		Namespace: pointerx.Ptr(r.Namespace),
-		Object:    pointerx.Ptr(r.Object),
-		Relation:  pointerx.Ptr(r.Relation),
+		Namespace: new(r.Namespace),
+		Object:    new(r.Object),
+		Relation:  new(r.Relation),
 		SubjectId: r.SubjectID,
 	}
 	if r.SubjectID == nil {

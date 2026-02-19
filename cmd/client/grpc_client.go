@@ -76,7 +76,7 @@ func (d *connectionDetails) dialOptions() (opts []grpc.DialOption) {
 		opts = append(opts, grpc.WithTransportCredentials(credentials.NewTLS(nil)))
 	}
 	if d.block {
-		opts = append(opts, grpc.WithBlock())
+		opts = append(opts, grpc.WithBlock()) //nolint:staticcheck // SA1019 grpc.WithBlock is deprecated, but we actually want to block here until the connection is up.
 	}
 	return opts
 }

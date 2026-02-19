@@ -11,7 +11,6 @@ import (
 	"github.com/spf13/pflag"
 
 	"github.com/ory/x/cmdx"
-	"github.com/ory/x/pointerx"
 
 	"github.com/ory/keto/cmd/client"
 	"github.com/ory/keto/ketoapi"
@@ -45,7 +44,7 @@ func registerRelationTupleFlags(flags *pflag.FlagSet) {
 func readQueryFromFlags(cmd *cobra.Command) (*rts.RelationQuery, error) {
 	getStringPtr := func(flagName string) *string {
 		if f := cmd.Flags().Lookup(flagName); f.Changed {
-			return pointerx.Ptr(f.Value.String())
+			return new(f.Value.String())
 		}
 		return nil
 	}

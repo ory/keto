@@ -10,7 +10,6 @@ import (
 	"github.com/gofrs/uuid"
 	"github.com/ory/herodot"
 	keysetpagination "github.com/ory/x/pagination/keysetpagination_v2"
-	"github.com/ory/x/pointerx"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
@@ -578,7 +577,7 @@ func TestEngine(t *testing.T) {
 			Namespace: "test",
 			Object:    "object",
 			Relation:  "admin",
-			SubjectID: pointerx.Ptr("user"),
+			SubjectID: new("user"),
 		},
 			&ketoapi.RelationTuple{
 				Namespace: "test",
@@ -608,31 +607,31 @@ func TestEngine(t *testing.T) {
 				Namespace: "test",
 				Object:    "object",
 				Relation:  "admin",
-				SubjectID: pointerx.Ptr("user"),
+				SubjectID: new("user"),
 			},
 			{ // indirect relation
 				Namespace: "test",
 				Object:    "object",
 				Relation:  "owner",
-				SubjectID: pointerx.Ptr("user"),
+				SubjectID: new("user"),
 			},
 			{ // indirect relation, greater than max depth
 				Namespace: "test",
 				Object:    "object",
 				Relation:  "access",
-				SubjectID: pointerx.Ptr("user"),
+				SubjectID: new("user"),
 			},
 			{ // non-existent namespace
 				Namespace: "test2",
 				Object:    "object",
 				Relation:  "admin",
-				SubjectID: pointerx.Ptr("user"),
+				SubjectID: new("user"),
 			},
 			{ // unknown subject
 				Namespace: "test",
 				Object:    "object",
 				Relation:  "admin",
-				SubjectID: pointerx.Ptr("user2"),
+				SubjectID: new("user2"),
 			},
 			{ // relation via subject set
 				Namespace: "test",

@@ -13,8 +13,6 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/ory/x/pointerx"
-
 	"github.com/ory/keto/internal/namespace"
 	"github.com/ory/keto/ketoapi"
 )
@@ -41,7 +39,7 @@ func runTransactionCases(c transactClient, m *namespaceTestManager) func(*testin
 					Namespace: n.Name,
 					Object:    "o",
 					Relation:  "rel",
-					SubjectID: pointerx.Ptr("sid"),
+					SubjectID: new("sid"),
 				},
 			}
 
@@ -70,13 +68,13 @@ func runTransactionCases(c transactClient, m *namespaceTestManager) func(*testin
 					Namespace: n.Name,
 					Object:    "o",
 					Relation:  "rel",
-					SubjectID: pointerx.Ptr("sid"),
+					SubjectID: new("sid"),
 				},
 				{
 					Namespace: n.Name,
 					Object:    "o",
 					Relation:  "rel",
-					SubjectID: pointerx.Ptr("sid"),
+					SubjectID: new("sid"),
 				},
 			}, nil)
 		})
@@ -109,7 +107,7 @@ func runTransactionCases(c transactClient, m *namespaceTestManager) func(*testin
 						Namespace: ns[0].Name,
 						Object:    "o" + strconv.Itoa(i),
 						Relation:  "relb",
-						SubjectID: pointerx.Ptr("sid"),
+						SubjectID: new("sid"),
 					},
 				)
 			}
@@ -140,11 +138,9 @@ func runTransactionCases(c transactClient, m *namespaceTestManager) func(*testin
 					cmp.Compare(a.Relation, b.Relation),
 				)
 			}
-			t0 = time.Now()
 			slices.SortFunc(resp, sort)
 			slices.SortFunc(tuples, sort)
 
-			t0 = time.Now()
 			require.Equal(t, tuples, resp)
 
 			t0 = time.Now()
@@ -167,25 +163,25 @@ func runTransactionCases(c transactClient, m *namespaceTestManager) func(*testin
 					Namespace: directories.Name,
 					Object:    "/photos",
 					Relation:  "owner",
-					SubjectID: pointerx.Ptr("maureen"),
+					SubjectID: new("maureen"),
 				},
 				{
 					Namespace: files.Name,
 					Object:    "/photos/beach.jpg",
 					Relation:  "owner",
-					SubjectID: pointerx.Ptr("maureen"),
+					SubjectID: new("maureen"),
 				},
 				{
 					Namespace: files.Name,
 					Object:    "/photos/mountains.jpg",
 					Relation:  "owner",
-					SubjectID: pointerx.Ptr("laura"),
+					SubjectID: new("laura"),
 				},
 				{
 					Namespace: directories.Name,
 					Object:    "/photos",
 					Relation:  "access",
-					SubjectID: pointerx.Ptr("laura"),
+					SubjectID: new("laura"),
 				},
 			}
 			for _, o := range []struct{ n, o string }{

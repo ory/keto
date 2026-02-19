@@ -9,8 +9,6 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/ory/x/pointerx"
-
 	"github.com/ory/keto/ketoapi"
 
 	"github.com/spf13/cobra"
@@ -30,7 +28,7 @@ func TestParseTuplesFromPath(t *testing.T) {
 				Namespace: "nspace",
 				Object:    "obj",
 				Relation:  "rel",
-				SubjectID: pointerx.Ptr("sub"),
+				SubjectID: new("sub"),
 			}},
 		},
 		{
@@ -43,13 +41,13 @@ nspace:obj2#rel@(nspace:obj2#rel)`,
 					Namespace: "nspace",
 					Object:    "obj1",
 					Relation:  "rel",
-					SubjectID: pointerx.Ptr("sub1"),
+					SubjectID: new("sub1"),
 				},
 				{
 					Namespace: "nspace",
 					Object:    "obj2",
 					Relation:  "rel",
-					SubjectID: pointerx.Ptr("sub2"),
+					SubjectID: new("sub2"),
 				},
 				{
 					Namespace: "nspace",
@@ -75,13 +73,13 @@ nspace:obj#rel@sub
 					Namespace: "nspace",
 					Object:    "obj",
 					Relation:  "rel",
-					SubjectID: pointerx.Ptr("sub"),
+					SubjectID: new("sub"),
 				},
 				{
 					Namespace: "nspace",
 					Object:    "indent",
 					Relation:  "rel",
-					SubjectID: pointerx.Ptr("sub"),
+					SubjectID: new("sub"),
 				},
 			},
 		},
@@ -121,13 +119,13 @@ nspace:obj2#rel@sub2`), 0o600))
 				Namespace: "nspace",
 				Object:    "obj1",
 				Relation:  "rel",
-				SubjectID: pointerx.Ptr("sub1"),
+				SubjectID: new("sub1"),
 			},
 			{
 				Namespace: "nspace",
 				Object:    "obj2",
 				Relation:  "rel",
-				SubjectID: pointerx.Ptr("sub2"),
+				SubjectID: new("sub2"),
 			},
 		}, actual)
 	})

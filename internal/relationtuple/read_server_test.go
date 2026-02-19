@@ -21,7 +21,6 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 
 	"github.com/ory/x/httprouterx"
-	"github.com/ory/x/pointerx"
 
 	"github.com/ory/keto/internal/driver"
 	"github.com/ory/keto/internal/driver/config"
@@ -81,7 +80,7 @@ func TestReadHandlers(t *testing.T) {
 					Namespace: nspace.Name,
 					Object:    "o1",
 					Relation:  "r1",
-					SubjectID: pointerx.Ptr("s1"),
+					SubjectID: new("s1"),
 				},
 				{
 					Namespace: nspace.Name,
@@ -117,7 +116,7 @@ func TestReadHandlers(t *testing.T) {
 					Namespace: nspace.Name,
 					Object:    "obj",
 					Relation:  "r1",
-					SubjectID: pointerx.Ptr("s1"),
+					SubjectID: new("s1"),
 				},
 			}
 
@@ -153,13 +152,13 @@ func TestReadHandlers(t *testing.T) {
 					Namespace: nspace.Name,
 					Object:    "o1",
 					Relation:  "r1",
-					SubjectID: pointerx.Ptr("s1"),
+					SubjectID: new("s1"),
 				},
 				{
 					Namespace: nspace.Name,
 					Object:    "o2",
 					Relation:  "r2",
-					SubjectID: pointerx.Ptr("s2"),
+					SubjectID: new("s2"),
 				},
 			}
 			relationtuple.MapAndWriteTuples(t, reg, tuples...)
@@ -274,7 +273,7 @@ func TestReadHandlers(t *testing.T) {
 								Namespace: nspace.Name,
 								Object:    "o1",
 								Relation:  "rel",
-								SubjectID: pointerx.Ptr("s1"),
+								SubjectID: new("s1"),
 							},
 							{
 								Namespace: nspace.Name,
@@ -308,19 +307,19 @@ func TestReadHandlers(t *testing.T) {
 								Namespace: nspace.Name,
 								Object:    "o1",
 								Relation:  "rel",
-								SubjectID: pointerx.Ptr("s1"),
+								SubjectID: new("s1"),
 							},
 							{
 								Namespace: nspace.Name,
 								Object:    "o2",
 								Relation:  "rel",
-								SubjectID: pointerx.Ptr("s2"),
+								SubjectID: new("s2"),
 							},
 							{
 								Namespace: nspace.Name,
 								Object:    "o3",
 								Relation:  "rel",
-								SubjectID: pointerx.Ptr("s3"),
+								SubjectID: new("s3"),
 							},
 						}
 						relationtuple.MapAndWriteTuples(t, reg, tuples...)

@@ -21,7 +21,6 @@ import (
 	"github.com/ory/x/logrusx"
 	"github.com/ory/x/networkx"
 	keysetpagination "github.com/ory/x/pagination/keysetpagination_v2"
-	"github.com/ory/x/pointerx"
 	"github.com/ory/x/popx"
 	"github.com/ory/x/sqlcon"
 
@@ -109,7 +108,7 @@ func TestMigrations(t *testing.T) {
 							Namespace: "foo",
 							Object:    "object",
 							Relation:  "relation",
-							SubjectID: pointerx.Ptr("user"),
+							SubjectID: new("user"),
 						},
 						{
 							Namespace: "foo",
@@ -193,7 +192,7 @@ func TestMigrations(t *testing.T) {
 							Namespace: namespaces[1].Name,
 							Object:    oldRTs[i].Object,
 							Relation:  "pagination-works",
-							SubjectID: pointerx.Ptr(oldRTs[i].SubjectID.String),
+							SubjectID: new(oldRTs[i].SubjectID.String),
 						}
 					}
 					require.NoError(t, p.Connection(ctx).Create(oldRTs))
@@ -202,7 +201,7 @@ func TestMigrations(t *testing.T) {
 					newRTs := make([]*relationtuple.RelationTuple, 0, len(oldRTs))
 					for nextPage := keysetpagination.NewPaginator(); !nextPage.IsLast(); {
 						var rts []*relationtuple.RelationTuple
-						rts, nextPage, err = p.GetRelationTuples(ctx, &relationtuple.RelationQuery{Relation: pointerx.Ptr("pagination-works")}, nextPage.ToOptions()...)
+						rts, nextPage, err = p.GetRelationTuples(ctx, &relationtuple.RelationQuery{Relation: new("pagination-works")}, nextPage.ToOptions()...)
 						require.NoError(t, err)
 						newRTs = append(newRTs, rts...)
 					}

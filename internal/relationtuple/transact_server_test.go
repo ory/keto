@@ -15,7 +15,6 @@ import (
 
 	"github.com/ory/x/httprouterx"
 	keysetpagination "github.com/ory/x/pagination/keysetpagination_v2"
-	"github.com/ory/x/pointerx"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
@@ -65,7 +64,7 @@ func TestWriteHandlers(t *testing.T) {
 				Namespace: nspace.Name,
 				Object:    "obj",
 				Relation:  "rel",
-				SubjectID: pointerx.Ptr("subj"),
+				SubjectID: new("subj"),
 			}
 			payload, err := json.Marshal(rt)
 			require.NoError(t, err)
@@ -124,7 +123,7 @@ func TestWriteHandlers(t *testing.T) {
 					Namespace: nspace.Name,
 					Object:    "@all",
 					Relation:  "member",
-					SubjectID: pointerx.Ptr("this:could#be interpreted:as a@subject set"),
+					SubjectID: new("this:could#be interpreted:as a@subject set"),
 				},
 			}
 
@@ -155,7 +154,7 @@ func TestWriteHandlers(t *testing.T) {
 				Namespace: nspace.Name,
 				Object:    "deleted obj",
 				Relation:  "deleted rel",
-				SubjectID: pointerx.Ptr("deleted subj"),
+				SubjectID: new("deleted subj"),
 			}
 			relationtuple.MapAndWriteTuples(t, reg, rt)
 
@@ -179,13 +178,13 @@ func TestWriteHandlers(t *testing.T) {
 					Namespace: nspace.Name,
 					Object:    "deleted obj",
 					Relation:  "deleted rel",
-					SubjectID: pointerx.Ptr("deleted subj 1"),
+					SubjectID: new("deleted subj 1"),
 				},
 				{
 					Namespace: nspace.Name,
 					Object:    "deleted obj",
 					Relation:  "deleted rel",
-					SubjectID: pointerx.Ptr("deleted subj 2"),
+					SubjectID: new("deleted subj 2"),
 				},
 			}
 
@@ -220,13 +219,13 @@ func TestWriteHandlers(t *testing.T) {
 					Namespace: nspace.Name,
 					Object:    "deleted obj",
 					Relation:  "deleted rel",
-					SubjectID: pointerx.Ptr("deleted subj 1"),
+					SubjectID: new("deleted subj 1"),
 				},
 				{
 					Namespace: nspace.Name,
 					Object:    "deleted obj",
 					Relation:  "deleted rel",
-					SubjectID: pointerx.Ptr("deleted subj 2"),
+					SubjectID: new("deleted subj 2"),
 				},
 			}
 
@@ -289,7 +288,6 @@ func TestWriteHandlers(t *testing.T) {
 				assertTuplesExist(t)
 			})
 		})
-
 	})
 
 	t.Run("method=patch", func(t *testing.T) {
@@ -304,7 +302,7 @@ func TestWriteHandlers(t *testing.T) {
 						Namespace: nspace.Name,
 						Object:    "create obj",
 						Relation:  relation,
-						SubjectID: pointerx.Ptr("create sub"),
+						SubjectID: new("create sub"),
 					},
 				},
 				{
@@ -313,7 +311,7 @@ func TestWriteHandlers(t *testing.T) {
 						Namespace: nspace.Name,
 						Object:    "delete obj",
 						Relation:  relation,
-						SubjectID: pointerx.Ptr("delete sub"),
+						SubjectID: new("delete sub"),
 					},
 				},
 			}
@@ -347,7 +345,7 @@ func TestWriteHandlers(t *testing.T) {
 						Namespace: nspace.Name,
 						Object:    "create obj",
 						Relation:  t.Name(),
-						SubjectID: pointerx.Ptr("create sub"),
+						SubjectID: new("create sub"),
 					},
 				},
 				{
@@ -356,7 +354,7 @@ func TestWriteHandlers(t *testing.T) {
 						Namespace: "not " + nspace.Name,
 						Object:    "o",
 						Relation:  "r",
-						SubjectID: pointerx.Ptr("s"),
+						SubjectID: new("s"),
 					},
 				},
 			}
@@ -385,7 +383,7 @@ func TestWriteHandlers(t *testing.T) {
 						Namespace: nspace.Name,
 						Object:    "create obj",
 						Relation:  "rel",
-						SubjectID: pointerx.Ptr("create sub"),
+						SubjectID: new("create sub"),
 					},
 				},
 			}
@@ -417,7 +415,7 @@ func TestWriteHandlers(t *testing.T) {
 						Namespace: nspace.Name,
 						Object:    "delete obj",
 						Relation:  "rel",
-						SubjectID: pointerx.Ptr("delete sub"),
+						SubjectID: new("delete sub"),
 					},
 				},
 			}

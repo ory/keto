@@ -26,7 +26,6 @@ import (
 	"google.golang.org/grpc/test/bufconn"
 
 	"github.com/ory/x/httprouterx"
-	"github.com/ory/x/pointerx"
 
 	"github.com/ory/keto/internal/check"
 	"github.com/ory/keto/internal/driver"
@@ -125,7 +124,7 @@ func TestCheckRESTHandler(t *testing.T) {
 					Namespace: "not" + nspaces[0].Name,
 					Object:    "o",
 					Relation:  "r",
-					SubjectID: pointerx.Ptr("s"),
+					SubjectID: new("s"),
 				}).ToURLQuery().Encode())
 				require.NoError(t, err)
 
@@ -137,7 +136,7 @@ func TestCheckRESTHandler(t *testing.T) {
 					Namespace: nspaces[0].Name,
 					Object:    "o",
 					Relation:  "r",
-					SubjectID: pointerx.Ptr("s"),
+					SubjectID: new("s"),
 				}
 				relationtuple.MapAndWriteTuples(t, reg, rt)
 
@@ -153,7 +152,7 @@ func TestCheckRESTHandler(t *testing.T) {
 					Namespace: nspaces[0].Name,
 					Object:    "foo",
 					Relation:  "r",
-					SubjectID: pointerx.Ptr("s"),
+					SubjectID: new("s"),
 				}).ToURLQuery().Encode())
 				require.NoError(t, err)
 
@@ -204,7 +203,7 @@ func TestBatchCheckRESTHandler(t *testing.T) {
 				Namespace: "n",
 				Object:    "o",
 				Relation:  "r",
-				SubjectId: pointerx.Ptr("s"),
+				SubjectId: new("s"),
 			}
 		}
 		reqBody := client.BatchCheckPermissionBody{Tuples: tuples}
@@ -226,7 +225,7 @@ func TestBatchCheckRESTHandler(t *testing.T) {
 			Namespace: nspaces[0].Name,
 			Object:    "o",
 			Relation:  "r",
-			SubjectID: pointerx.Ptr("s"),
+			SubjectID: new("s"),
 		}
 		relationtuple.MapAndWriteTuples(t, reg, rt)
 
@@ -235,19 +234,19 @@ func TestBatchCheckRESTHandler(t *testing.T) {
 				Namespace: nspaces[0].Name,
 				Object:    "o",
 				Relation:  "r",
-				SubjectId: pointerx.Ptr("s"),
+				SubjectId: new("s"),
 			},
 			{ // Not-allowed
 				Namespace: nspaces[0].Name,
 				Object:    "o2",
 				Relation:  "r",
-				SubjectId: pointerx.Ptr("s"),
+				SubjectId: new("s"),
 			},
 			{ // Unknown namespace
 				Namespace: "n2",
 				Object:    "o",
 				Relation:  "r",
-				SubjectId: pointerx.Ptr("s"),
+				SubjectId: new("s"),
 			},
 		}}
 		bodyBytes, err := json.Marshal(reqBody)
@@ -273,7 +272,7 @@ func TestBatchCheckRESTHandler(t *testing.T) {
 				},
 				{
 					Allowed: false,
-					Error:   pointerx.Ptr("The requested resource could not be found"),
+					Error:   new("The requested resource could not be found"),
 				},
 			},
 		})
@@ -355,7 +354,7 @@ func TestBatchCheckGRPCHandler(t *testing.T) {
 			Namespace: nspaces[0].Name,
 			Object:    "o",
 			Relation:  "r",
-			SubjectID: pointerx.Ptr("s"),
+			SubjectID: new("s"),
 		}
 		relationtuple.MapAndWriteTuples(t, reg, rt)
 

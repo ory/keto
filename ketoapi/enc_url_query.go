@@ -6,7 +6,6 @@ package ketoapi
 import (
 	"net/url"
 
-	"github.com/ory/x/pointerx"
 	"github.com/pkg/errors"
 )
 
@@ -29,7 +28,7 @@ func (q *RelationQuery) FromURLQuery(query url.Values) (*RelationQuery, error) {
 	case query.Has(SubjectIDKey) && (query.Has(SubjectSetNamespaceKey) || query.Has(SubjectSetObjectKey) || query.Has(SubjectSetRelationKey)):
 		return nil, ErrDuplicateSubject.WithDebugf("please provide either %s or all of %s, %s, and %s", SubjectIDKey, SubjectSetNamespaceKey, SubjectSetObjectKey, SubjectSetRelationKey)
 	case query.Has(SubjectIDKey):
-		q.SubjectID = pointerx.Ptr(query.Get(SubjectIDKey))
+		q.SubjectID = new(query.Get(SubjectIDKey))
 	case query.Has(SubjectSetNamespaceKey) && query.Has(SubjectSetObjectKey) && query.Has(SubjectSetRelationKey):
 		q.SubjectSet = &SubjectSet{
 			Namespace: query.Get(SubjectSetNamespaceKey),
@@ -41,13 +40,13 @@ func (q *RelationQuery) FromURLQuery(query url.Values) (*RelationQuery, error) {
 	}
 
 	if query.Has(NamespaceKey) {
-		q.Namespace = pointerx.Ptr(query.Get(NamespaceKey))
+		q.Namespace = new(query.Get(NamespaceKey))
 	}
 	if query.Has(ObjectKey) {
-		q.Object = pointerx.Ptr(query.Get(ObjectKey))
+		q.Object = new(query.Get(ObjectKey))
 	}
 	if query.Has(RelationKey) {
-		q.Relation = pointerx.Ptr(query.Get(RelationKey))
+		q.Relation = new(query.Get(RelationKey))
 	}
 
 	return q, nil

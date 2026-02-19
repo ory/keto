@@ -8,8 +8,6 @@ import (
 	"fmt"
 	"sort"
 
-	"github.com/ory/x/pointerx"
-
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 
 	"google.golang.org/grpc"
@@ -26,9 +24,9 @@ func main() {
 
 	res, err := client.ListRelationTuples(context.Background(), &rts.ListRelationTuplesRequest{
 		RelationQuery: &rts.RelationQuery{
-			Namespace: pointerx.Ptr("Chat"),
-			Object:    pointerx.Ptr("coffee-break"),
-			Relation:  pointerx.Ptr("member"),
+			Namespace: new("Chat"),
+			Object:    new("coffee-break"),
+			Relation:  new("member"),
 		},
 	})
 	if err != nil {

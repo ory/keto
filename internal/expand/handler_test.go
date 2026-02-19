@@ -13,7 +13,6 @@ import (
 	"testing"
 
 	"github.com/ory/x/httprouterx"
-	"github.com/ory/x/pointerx"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -75,13 +74,13 @@ func TestRESTHandler(t *testing.T) {
 				{
 					Type: ketoapi.TreeNodeLeaf,
 					Tuple: &ketoapi.RelationTuple{
-						SubjectID: pointerx.Ptr("child0"),
+						SubjectID: new("child0"),
 					},
 				},
 				{
 					Type: ketoapi.TreeNodeLeaf,
 					Tuple: &ketoapi.RelationTuple{
-						SubjectID: pointerx.Ptr("child1"),
+						SubjectID: new("child1"),
 					},
 				},
 			},

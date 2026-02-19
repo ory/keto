@@ -10,7 +10,6 @@ import (
 	"testing"
 
 	"github.com/ory/herodot"
-	"github.com/ory/x/pointerx"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
@@ -51,7 +50,7 @@ func TestMapper(t *testing.T) {
 						Namespace: nspace.Name,
 						Object:    "object",
 						Relation:  "relation",
-						SubjectID: pointerx.Ptr("subject"),
+						SubjectID: new("subject"),
 					},
 				},
 			},
@@ -75,7 +74,7 @@ func TestMapper(t *testing.T) {
 							Namespace: nspace.Name,
 							Object:    fmt.Sprintf("object %d", i),
 							Relation:  "relation",
-							SubjectID: pointerx.Ptr("subject"),
+							SubjectID: new("subject"),
 						}
 					}
 					return rts
@@ -88,7 +87,7 @@ func TestMapper(t *testing.T) {
 						Namespace: "unknown",
 						Object:    "object",
 						Relation:  "relation",
-						SubjectID: pointerx.Ptr("subject"),
+						SubjectID: new("subject"),
 					},
 				},
 				err: herodot.ErrNotFound,
@@ -125,10 +124,10 @@ func TestMapper(t *testing.T) {
 			{
 				name: "all fields set",
 				query: &ketoapi.RelationQuery{
-					Namespace: pointerx.Ptr(nspace.Name),
-					Object:    pointerx.Ptr("object"),
-					Relation:  pointerx.Ptr("relation"),
-					SubjectID: pointerx.Ptr("subject"),
+					Namespace: new(nspace.Name),
+					Object:    new("object"),
+					Relation:  new("relation"),
+					SubjectID: new("subject"),
 				},
 			},
 			{
@@ -144,7 +143,7 @@ func TestMapper(t *testing.T) {
 			{
 				name: "non-mapped fields",
 				query: &ketoapi.RelationQuery{
-					Relation: pointerx.Ptr("relation"),
+					Relation: new("relation"),
 					SubjectSet: &ketoapi.SubjectSet{
 						Namespace: nspace.Name,
 						Relation:  "relation",
@@ -155,7 +154,7 @@ func TestMapper(t *testing.T) {
 			{
 				name: "unknown namespace",
 				query: &ketoapi.RelationQuery{
-					Namespace: pointerx.Ptr("unknown"),
+					Namespace: new("unknown"),
 				},
 				err: herodot.ErrNotFound,
 			},
@@ -327,7 +326,7 @@ func TestMapper(t *testing.T) {
 		rwMapper := reg.Mapper()
 
 		t.Run("case=ro manager does not insert into DB", func(t *testing.T) {
-			unmapped := &ketoapi.RelationQuery{Object: pointerx.Ptr("unmapped object")}
+			unmapped := &ketoapi.RelationQuery{Object: new("unmapped object")}
 			mapped, err := roMapper.FromQuery(ctx, unmapped)
 			require.NoError(t, err)
 			assert.NotNil(t, mapped.Object)
@@ -338,7 +337,7 @@ func TestMapper(t *testing.T) {
 		})
 
 		t.Run("case=rw manager inserts into DB", func(t *testing.T) {
-			unmapped := &ketoapi.RelationQuery{Object: pointerx.Ptr("another unmapped object")}
+			unmapped := &ketoapi.RelationQuery{Object: new("another unmapped object")}
 			mapped, err := rwMapper.FromQuery(ctx, unmapped)
 			require.NoError(t, err)
 			assert.NotNil(t, mapped.Object)
@@ -370,6 +369,5 @@ func BenchmarkReadOnlyMapper(b *testing.B) {
 			})
 			assert.NoError(b, err)
 		}
-
 	})
 }

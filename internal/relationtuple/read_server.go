@@ -9,15 +9,12 @@ import (
 
 	"github.com/ory/herodot"
 	keysetpagination "github.com/ory/x/pagination/keysetpagination_v2"
-	"github.com/ory/x/pointerx"
 
 	"github.com/ory/keto/ketoapi"
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 )
 
-var (
-	_ rts.ReadServiceServer = (*Handler)(nil)
-)
+var _ rts.ReadServiceServer = (*Handler)(nil)
 
 type (
 	queryWrapper struct {
@@ -44,21 +41,21 @@ func (q *deprecatedQueryWrapper) GetObject() *string {
 	if q.Object == "" {
 		return nil
 	}
-	return pointerx.Ptr(q.Object)
+	return new(q.Object)
 }
 
 func (q *deprecatedQueryWrapper) GetNamespace() *string {
 	if q.Namespace == "" {
 		return nil
 	}
-	return pointerx.Ptr(q.Namespace)
+	return new(q.Namespace)
 }
 
 func (q *deprecatedQueryWrapper) GetRelation() *string {
 	if q.Relation == "" {
 		return nil
 	}
-	return pointerx.Ptr(q.Relation)
+	return new(q.Relation)
 }
 
 func (h *Handler) ListRelationTuples(ctx context.Context, req *rts.ListRelationTuplesRequest) (*rts.ListRelationTuplesResponse, error) {

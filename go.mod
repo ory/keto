@@ -1,4 +1,4 @@
-go 1.25
+go 1.26
 
 module github.com/ory/keto
 

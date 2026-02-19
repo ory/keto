@@ -11,7 +11,6 @@ import (
 
 	"github.com/gofrs/uuid"
 	keysetpagination "github.com/ory/x/pagination/keysetpagination_v2"
-	"github.com/ory/x/pointerx"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
@@ -46,7 +45,7 @@ func ManagerTest(t *testing.T, m Manager) {
 			require.NoError(t, m.WriteRelationTuples(t.Context(), tuples...))
 
 			resp, nextPage, err := m.GetRelationTuples(t.Context(), &RelationQuery{
-				Namespace: pointerx.Ptr(nspace),
+				Namespace: new(nspace),
 			})
 			require.NoError(t, err)
 			assert.True(t, nextPage.IsLast())
@@ -98,7 +97,7 @@ func ManagerTest(t *testing.T, m Manager) {
 				{
 					query: &RelationQuery{
 						Namespace: &nspace,
-						Relation:  pointerx.Ptr("r 0"),
+						Relation:  new("r 0"),
 					},
 					expected: []*RelationTuple{
 						tuples[0],
@@ -110,7 +109,7 @@ func ManagerTest(t *testing.T, m Manager) {
 					query: &RelationQuery{
 						Namespace: &nspace,
 						Object:    &ids[0],
-						Relation:  pointerx.Ptr("r 0"),
+						Relation:  new("r 0"),
 					},
 					expected: []*RelationTuple{
 						tuples[0],
@@ -140,7 +139,7 @@ func ManagerTest(t *testing.T, m Manager) {
 				{
 					query: &RelationQuery{
 						Namespace: &nspace,
-						Relation:  pointerx.Ptr("r 0"),
+						Relation:  new("r 0"),
 						Subject:   &SubjectID{ids[0]},
 					},
 					expected: []*RelationTuple{
@@ -151,7 +150,7 @@ func ManagerTest(t *testing.T, m Manager) {
 					query: &RelationQuery{
 						Namespace: &nspace,
 						Object:    &ids[0],
-						Relation:  pointerx.Ptr("r 0"),
+						Relation:  new("r 0"),
 						Subject:   &SubjectID{ids[0]},
 					},
 					expected: []*RelationTuple{
@@ -191,15 +190,15 @@ func ManagerTest(t *testing.T, m Manager) {
 				{
 					name: "search=ns,obj,rel",
 					searchCriteria: &RelationQuery{
-						Namespace: pointerx.Ptr(nspace),
+						Namespace: new(nspace),
 						Object:    &oID,
-						Relation:  pointerx.Ptr("r"),
+						Relation:  new("r"),
 					},
 				},
 				{
 					name: "search=ns",
 					searchCriteria: &RelationQuery{
-						Namespace: pointerx.Ptr(nspace),
+						Namespace: new(nspace),
 						Object:    nil,
 						Relation:  nil,
 					},
@@ -265,23 +264,23 @@ func ManagerTest(t *testing.T, m Manager) {
 				{
 					name: "search=ns",
 					searchCriteria: &RelationQuery{
-						Namespace: pointerx.Ptr(ns),
+						Namespace: new(ns),
 					},
 					pageSizes: []int{1, 2, 50},
 				},
 				{
 					name: "search=obj",
 					searchCriteria: &RelationQuery{
-						Object: pointerx.Ptr(oID),
+						Object: new(oID),
 					},
 					pageSizes: []int{1, 2, 50},
 				},
 				{
 					name: "search=ns,obj,rel",
 					searchCriteria: &RelationQuery{
-						Namespace: pointerx.Ptr(ns),
-						Object:    pointerx.Ptr(oID),
-						Relation:  pointerx.Ptr("r"),
+						Namespace: new(ns),
+						Object:    new(oID),
+						Relation:  new("r"),
 					},
 					pageSizes: []int{1, 2, 50},
 				},
@@ -363,7 +362,7 @@ func ManagerTest(t *testing.T, m Manager) {
 					require.NoError(t, m.WriteRelationTuples(t.Context(), rt))
 
 					res, _, err := m.GetRelationTuples(t.Context(), &RelationQuery{
-						Namespace: pointerx.Ptr(nspace),
+						Namespace: new(nspace),
 					})
 					require.NoError(t, err)
 					assert.Equal(t, []*RelationTuple{rt}, res)
@@ -371,7 +370,7 @@ func ManagerTest(t *testing.T, m Manager) {
 					require.NoError(t, m.DeleteRelationTuples(t.Context(), rt))
 
 					res, _, err = m.GetRelationTuples(t.Context(), &RelationQuery{
-						Namespace: pointerx.Ptr(nspace),
+						Namespace: new(nspace),
 					})
 					require.NoError(t, err)
 					assert.Len(t, res, 0)

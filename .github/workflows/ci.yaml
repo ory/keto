@@ -21,8 +21,8 @@ jobs:
       - uses: ory/ci/checkout@master
       - uses: actions/setup-go@v6
         with:
-          go-version: "1.25"
           check-latest: true
+          go-version-file: go.mod
       - name: Update npm to a non-buggy version
         run: sudo npm i -g npm@9.5.0
       - name: Lint buf
@@ -77,8 +77,8 @@ jobs:
       - uses: ory/ci/checkout@master
       - uses: actions/setup-go@v6
         with:
-          go-version: "1.25"
           check-latest: true
+          go-version-file: go.mod
       - name: Test proto package
         run: |
           cd proto
@@ -101,8 +101,8 @@ jobs:
       - uses: ory/ci/checkout@master
       - uses: actions/setup-go@v6
         with:
-          go-version: "1.25"
           check-latest: true
+          go-version-file: go.mod
       - run: |
           go test -tags sqlite -race -short ./...
 
@@ -187,8 +187,8 @@ jobs:
           path: current-repo
       - uses: actions/setup-go@v6
         with:
-          go-version: "1.25"
           check-latest: true
+          go-version-file: go.mod
       - uses: actions/setup-node@v6
         with:
           node-version: "24"

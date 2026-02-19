@@ -8,7 +8,6 @@ import (
 	"testing"
 
 	"github.com/ory/x/otelx"
-	"github.com/ory/x/pointerx"
 	"go.opentelemetry.io/otel/trace"
 
 	"github.com/ory/keto/internal/driver/config"
@@ -89,13 +88,13 @@ func (m *Mapper) FromQuery(ctx context.Context, apiQuery *ketoapi.RelationQuery)
 		if err != nil {
 			return nil, err
 		}
-		res.Namespace = pointerx.Ptr(n.Name)
+		res.Namespace = new(n.Name)
 	}
 	if apiQuery.Object != nil {
 		s = append(s, *apiQuery.Object)
 		onSuccess.do(func(i int) func() {
 			return func() {
-				res.Object = pointerx.Ptr(u[i])
+				res.Object = new(u[i])
 			}
 		}(len(s) - 1))
 	}
@@ -158,12 +157,12 @@ func (m *Mapper) ToQuery(ctx context.Context, q *RelationQuery) (res *ketoapi.Re
 		if err != nil {
 			return nil, err
 		}
-		res.Namespace = pointerx.Ptr(n.Name)
+		res.Namespace = new(n.Name)
 	}
 	if q.Object != nil {
 		u = append(u, *q.Object)
 		onSuccess.do(func() {
-			res.Object = pointerx.Ptr(s[0])
+			res.Object = new(s[0])
 		})
 	}
 	if q.Subject != nil {
@@ -171,7 +170,7 @@ func (m *Mapper) ToQuery(ctx context.Context, q *RelationQuery) (res *ketoapi.Re
 		case *SubjectID:
 			u = append(u, sub.ID)
 			onSuccess.do(func() {
-				res.SubjectID = pointerx.Ptr(s[len(s)-1])
+				res.SubjectID = new(s[len(s)-1])
 			})
 		case *SubjectSet:
 			u = append(u, sub.Object)
@@ -288,7 +287,7 @@ func (m *Mapper) ToTuple(ctx context.Context, ts ...*RelationTuple) (res []*keto
 		case *SubjectID:
 			u = append(u, sub.ID)
 			onSuccess.do(func() {
-				mt.SubjectID = pointerx.Ptr(s[2*i])
+				mt.SubjectID = new(s[2*i])
 			})
 		case *SubjectSet:
 			u = append(u, sub.Object)
@@ -380,7 +379,7 @@ func (m *Mapper) ToTree(ctx context.Context, tree *Tree) (res *ketoapi.Tree[*ket
 	case *SubjectID:
 		u = append(u, sub.ID)
 		onSuccess.do(func() {
-			res.Tuple.SubjectID = pointerx.Ptr(s[0])
+			res.Tuple.SubjectID = new(s[0])
 		})
 	}
 	for _, c := range tree.Children {

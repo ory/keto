@@ -9,7 +9,6 @@ import (
 	"testing"
 
 	"github.com/ory/herodot"
-	"github.com/ory/x/pointerx"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
@@ -31,7 +30,7 @@ func TestASTRelationFor(t *testing.T) {
 
 	_, err = namespace.ASTRelationFor(ctx, nm, "test", "unknown")
 	herodotErr := herodot.ErrBadRequest
-	require.ErrorAs(t, err, pointerx.Ptr(&herodotErr))
+	require.ErrorAs(t, err, new(&herodotErr))
 	assert.Equal(t, http.StatusBadRequest, herodotErr.CodeField)
 
 	rel, err = namespace.ASTRelationFor(ctx, nm, "unknown", "")
