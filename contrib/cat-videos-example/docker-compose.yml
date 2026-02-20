@@ -23,5 +23,7 @@ services:
       - type: bind
         source: .
         target: /home/ory
-    command: relation-tuple create ./relation-tuples  --insecure-disable-transport-security
+    command:
+      relation-tuple create
+      ./relation-tuples  --insecure-disable-transport-security
     restart: on-failure

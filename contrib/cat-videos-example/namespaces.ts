@@ -7,7 +7,7 @@ class User implements Namespace {}
 
 class Video implements Namespace {
   related: {
-    view: (User|SubjectSet<Video, "owner">)[]
+    view: (User | SubjectSet<Video, "owner">)[]
     owner: User[]
   }
 }
