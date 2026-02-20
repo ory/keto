@@ -1,7 +1,9 @@
 {
-  "$schema": "../../../.schema/relation_tuple.schema.json",
-  "namespace": "videos",
+  "namespace": "Video",
   "object": "/cats",
   "relation": "owner",
-  "subject_id": "cat lady"
+  "subject_set": {
+    "namespace": "User",
+    "object": "Alice"
+  }
 }

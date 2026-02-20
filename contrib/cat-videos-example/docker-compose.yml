@@ -2,11 +2,12 @@ version: "3.2"
 
 services:
   keto:
-    image: oryd/keto:v0.7.0-alpha.1-sqlite
+    image: oryd/keto:v25.4.0
+    working_dir: /home/ory
     ports:
       - "4466:4466"
       - "4467:4467"
-    command: serve -c /home/ory/keto.yml
+    command: serve -c keto.yml
     restart: on-failure
     volumes:
       - type: bind
@@ -14,12 +15,13 @@ services:
         target: /home/ory
 
   keto-init:
-    image: oryd/keto:v0.7.0-alpha.1-sqlite
+    image: oryd/keto:v25.4.0
+    working_dir: /home/ory
     environment:
       - KETO_WRITE_REMOTE=keto:4467
     volumes:
       - type: bind
         source: .
         target: /home/ory
-    command: relation-tuple create -f /home/ory/relation-tuples
+    command: relation-tuple create ./relation-tuples  --insecure-disable-transport-security
     restart: on-failure

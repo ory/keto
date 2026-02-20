@@ -4,8 +4,7 @@ log:
   level: debug
 
 namespaces:
-  - id: 0
-    name: videos
+  location: file://./namespaces.ts
 
 dsn: memory
 
