@@ -36,10 +36,10 @@ func (e *ParseError) Error() string {
 	startLineIdx := max(start.Line-2, 0)
 	errorLineIdx := max(start.Line-1, 0)
 
-	s.WriteString(fmt.Sprintf("error from %d:%d to %d:%d: %s\n\n",
+	_, _ = fmt.Fprintf(&s, "error from %d:%d to %d:%d: %s\n\n",
 		start.Line, start.Col,
 		end.Line, end.Col,
-		e.msg))
+		e.msg)
 
 	if len(rows) < start.Line {
 		s.WriteString("meta error: could not find source position in input\n")
@@ -47,7 +47,7 @@ func (e *ParseError) Error() string {
 	}
 
 	for line := startLineIdx; line <= errorLineIdx; line++ {
-		s.WriteString(fmt.Sprintf("%4d | %s\n", line, rows[line]))
+		_, _ = fmt.Fprintf(&s, "%4d | %s\n", line, rows[line])
 	}
 	s.WriteString("     | ")
 	for i, r := range rows[errorLineIdx] {
@@ -65,7 +65,7 @@ func (e *ParseError) Error() string {
 	s.WriteRune('\n')
 
 	if errorLineIdx+1 < len(rows) {
-		s.WriteString(fmt.Sprintf("%4d | %s\n", errorLineIdx+1, rows[errorLineIdx+1]))
+		_, _ = fmt.Fprintf(&s, "%4d | %s\n", errorLineIdx+1, rows[errorLineIdx+1])
 		s.WriteRune('\n')
 	}
 
