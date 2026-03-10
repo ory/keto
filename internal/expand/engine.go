@@ -77,7 +77,7 @@ func (e *Engine) buildTreeRecursive(ctx context.Context, subject relationtuple.S
 		Subject: subject,
 	}
 
-	for nextPage := keysetpagination.NewPaginator(); !nextPage.IsLast(); {
+	for nextPage, _ := keysetpagination.NewPaginator(); !nextPage.IsLast(); {
 		var rels []*relationtuple.RelationTuple
 		var err error
 		rels, nextPage, err = e.d.RelationTupleManager().GetRelationTuples(ctx, &relationtuple.RelationQuery{

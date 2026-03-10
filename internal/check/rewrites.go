@@ -257,7 +257,7 @@ func (e *Engine) checkTupleToSubjectSet(
 
 	return func(ctx context.Context, resultCh chan<- checkgroup.Result) {
 		g := checkgroup.New(ctx)
-		for nextPage := keysetpagination.NewPaginator(); !nextPage.IsLast(); {
+		for nextPage, _ := keysetpagination.NewPaginator(); !nextPage.IsLast(); {
 			var tuples []*relationTuple
 			var err error
 			tuples, nextPage, err = e.d.RelationTupleManager().GetRelationTuples(ctx, &query{

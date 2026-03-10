@@ -199,7 +199,7 @@ func TestMigrations(t *testing.T) {
 					require.NoError(t, tm.Up(ctx))
 
 					newRTs := make([]*relationtuple.RelationTuple, 0, len(oldRTs))
-					for nextPage := keysetpagination.NewPaginator(); !nextPage.IsLast(); {
+					for nextPage, _ := keysetpagination.NewPaginator(); !nextPage.IsLast(); {
 						var rts []*relationtuple.RelationTuple
 						rts, nextPage, err = p.GetRelationTuples(ctx, &relationtuple.RelationQuery{Relation: new("pagination-works")}, nextPage.ToOptions()...)
 						require.NoError(t, err)

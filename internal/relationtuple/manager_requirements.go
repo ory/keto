@@ -211,7 +211,8 @@ func ManagerTest(t *testing.T, m Manager) {
 						res, thisPage []*RelationTuple
 						err           error
 					)
-					nextPage := keysetpagination.NewPaginator(keysetpagination.WithSize(1))
+					nextPage, err := keysetpagination.NewPaginator(keysetpagination.WithSize(1))
+					require.NoError(t, err)
 					for range tuples[:len(tuples)-1] {
 						thisPage, nextPage, err = m.GetRelationTuples(t.Context(), tt.searchCriteria, nextPage.ToOptions()...)
 						require.NoError(t, err)
@@ -294,7 +295,7 @@ func ManagerTest(t *testing.T, m Manager) {
 					require.Len(t, expected, len(tuples))
 
 					for _, pageSize := range tt.pageSizes {
-						nextPage := keysetpagination.NewPaginator(keysetpagination.WithSize(pageSize))
+						nextPage, _ := keysetpagination.NewPaginator(keysetpagination.WithSize(pageSize))
 
 						var got []*RelationTuple
 						for {

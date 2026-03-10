@@ -88,9 +88,7 @@ const (
 	TraversalTupleToUserset   Traversal = "tuple to userset"
 )
 
-var (
-	_, _ Subject = (*SubjectID)(nil), (*SubjectSet)(nil)
-)
+var _, _ Subject = (*SubjectID)(nil), (*SubjectSet)(nil)
 
 func (s *SubjectID) Equals(other Subject) bool {
 	uv, ok := other.(*SubjectID)
@@ -139,6 +137,7 @@ func (t *RelationTuple) FromProto(proto *rts.RelationTuple) *RelationTuple {
 	// TODO(hperl)
 	return t
 }
+
 func (t *RelationTuple) ToProto() *rts.RelationTuple {
 	// TODO(hperl)
 	return &rts.RelationTuple{}
@@ -165,7 +164,10 @@ func NewManagerWrapper(_ any, reg ManagerProvider, options ...keysetpagination.O
 }
 
 func (t *ManagerWrapper) GetRelationTuples(ctx context.Context, query *RelationQuery, options ...keysetpagination.Option) ([]*RelationTuple, *keysetpagination.Paginator, error) {
-	p := keysetpagination.NewPaginator(options...)
+	p, err := keysetpagination.NewPaginator(options...)
+	if err != nil {
+		return nil, nil, err
+	}
 	t.requestedPagesLock.Lock()
 	defer t.requestedPagesLock.Unlock()
 	t.RequestedPages = append(t.RequestedPages, p.PageToken())

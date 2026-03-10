@@ -255,7 +255,10 @@ func (p *Persister) GetRelationTuples(ctx context.Context, query *relationtuple.
 		return nil, nil, err
 	}
 
-	paginator := p.planner.GetPaginator(constraints, pageOpts...)
+	paginator, err := p.planner.GetPaginator(constraints, pageOpts...)
+	if err != nil {
+		return nil, nil, err
+	}
 	sqlQuery = sqlQuery.Scope(keysetpagination.Paginate[*RelationTuple](paginator))
 
 	var res relationTuples
