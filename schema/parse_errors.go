@@ -117,7 +117,7 @@ func clampUint32(v int) uint32 {
 	switch {
 	case v < 0:
 		return 0
-	case v > math.MaxUint32:
+	case uint64(v) > math.MaxUint32:
 		return math.MaxUint32
 	default:
 		return uint32(v)
