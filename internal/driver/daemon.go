@@ -375,26 +375,28 @@ func listenAndWriteFile(ctx context.Context, addr, listenFile string) (net.Liste
 var httpMetrics = prometheusx.NewHTTPMetrics("keto", prometheusx.HTTPPrefix, config.Version, config.Commit, config.Date)
 
 func (r *RegistryDefault) ReadRouter(ctx context.Context) http.Handler {
-	n := negroni.New()
+	router := httprouterx.NewRouterPublic()
+	n := negroni.New(
+		httprouterx.PopulatePatternNegroni(router),
+		httpMetrics,
+	)
 	for _, f := range r.defaultHttpMiddlewares {
 		n.UseFunc(f)
 	}
 	n.UseFunc(semconv.Middleware)
 	n.Use(reqlog.NewMiddlewareFromLogger(r.l, "read#Ory Keto").ExcludePaths(healthx.AliveCheckPath, healthx.ReadyCheckPath))
 
-	br := httprouterx.NewRouterPublic(httpMetrics)
-	prometheusx.SetMuxRoutes(br)
-
-	r.HealthHandler().SetHealthRoutes(br, false)
-	r.HealthHandler().SetVersionRoutes(br)
+	prometheusx.SetMuxRoutes(router)
+	r.HealthHandler().SetHealthRoutes(router, false)
+	r.HealthHandler().SetVersionRoutes(router)
 
 	for _, h := range r.allHandlers() {
 		if h, ok := h.(ReadHandler); ok {
-			h.RegisterReadRoutes(br)
+			h.RegisterReadRoutes(router)
 		}
 	}
 
-	n.UseHandler(br)
+	n.UseHandler(router)
 
 	if r.sqaService != nil {
 		n.Use(r.sqaService)
@@ -410,26 +412,29 @@ func (r *RegistryDefault) ReadRouter(ctx context.Context) http.Handler {
 }
 
 func (r *RegistryDefault) WriteRouter(ctx context.Context) http.Handler {
-	n := negroni.New()
+	router := httprouterx.NewRouterAdmin()
+	n := negroni.New(
+		httprouterx.PopulatePatternNegroni(router),
+		httpMetrics,
+	)
 	for _, f := range r.defaultHttpMiddlewares {
 		n.UseFunc(f)
 	}
 	n.UseFunc(semconv.Middleware)
 	n.Use(reqlog.NewMiddlewareFromLogger(r.l, "write#Ory Keto").ExcludePaths(healthx.AliveCheckPath, healthx.ReadyCheckPath))
 
-	pr := httprouterx.NewRouterAdmin(httpMetrics)
-	prometheusx.SetMuxRoutes(pr)
+	prometheusx.SetMuxRoutes(router)
 
-	r.HealthHandler().SetHealthRoutes(pr, false)
-	r.HealthHandler().SetVersionRoutes(pr)
+	r.HealthHandler().SetHealthRoutes(router, false)
+	r.HealthHandler().SetVersionRoutes(router)
 
 	for _, h := range r.allHandlers() {
 		if h, ok := h.(WriteHandler); ok {
-			h.RegisterWriteRoutes(pr)
+			h.RegisterWriteRoutes(router)
 		}
 	}
 
-	n.UseHandler(pr)
+	n.UseHandler(router)
 
 	if r.sqaService != nil {
 		n.Use(r.sqaService)
@@ -445,26 +450,29 @@ func (r *RegistryDefault) WriteRouter(ctx context.Context) http.Handler {
 }
 
 func (r *RegistryDefault) OPLSyntaxRouter(ctx context.Context) http.Handler {
-	n := negroni.New()
+	router := httprouterx.NewRouter()
+	n := negroni.New(
+		httprouterx.PopulatePatternNegroni(router),
+		httpMetrics,
+	)
 	for _, f := range r.defaultHttpMiddlewares {
 		n.UseFunc(f)
 	}
 	n.UseFunc(semconv.Middleware)
 	n.Use(reqlog.NewMiddlewareFromLogger(r.l, "syntax#Ory Keto").ExcludePaths(healthx.AliveCheckPath, healthx.ReadyCheckPath))
 
-	pr := httprouterx.NewRouter(httpMetrics)
-	prometheusx.SetMuxRoutes(pr)
+	prometheusx.SetMuxRoutes(router)
 
-	r.HealthHandler().SetHealthRoutes(pr, false)
-	r.HealthHandler().SetVersionRoutes(pr)
+	r.HealthHandler().SetHealthRoutes(router, false)
+	r.HealthHandler().SetVersionRoutes(router)
 
 	for _, h := range r.allHandlers() {
 		if h, ok := h.(OPLSyntaxHandler); ok {
-			h.RegisterSyntaxRoutes(pr)
+			h.RegisterSyntaxRoutes(router)
 		}
 	}
 
-	n.UseHandler(pr)
+	n.UseHandler(router)
 
 	if r.sqaService != nil {
 		n.Use(r.sqaService)
@@ -591,7 +599,7 @@ func (r *RegistryDefault) OplGRPCServer(ctx context.Context) *grpc.Server {
 
 func (r *RegistryDefault) metricsRouter(ctx context.Context) http.Handler {
 	n := negroni.New(reqlog.NewMiddlewareFromLogger(r.Logger(), "keto").ExcludePaths(prometheusx.MetricsPrometheusPath))
-	router := httprouterx.NewRouter(httpMetrics)
+	router := httprouterx.NewRouter()
 
 	prometheusx.SetMuxRoutes(router)
 
