@@ -14,7 +14,8 @@ import (
 
 var parserErrorTestCases = []struct{ name, input string }{
 	{"lexer error", "/* unclosed comment"},
-	{"syntax and type errors",
+	{
+		"syntax and type errors",
 		`
   class File implements Namespace {
 	related: {
@@ -47,7 +48,8 @@ var parserErrorTestCases = []struct{ name, input string }{
 		this.related.siblings.traverse(s => s.permits.edit(ctx)),
 	}
   }
-`},
+`,
+	},
 	{"parser error", `
 class Resource implements Namespace {
   permits = {
@@ -115,7 +117,8 @@ var parserTestCases = []struct {
 		this.related.siblings.traverse(s => s.permits.edit(ctx)),
 	}
   }
-`}, {"advanced typescript syntax",
+`}, {
+		"advanced typescript syntax",
 		`
 import { Namespace, SubjectSet, Context } from '@ory/keto-namespace-types';
 
@@ -157,7 +160,8 @@ class Resource implements Namespace {
       this.related.supervisors.traverse((role) => role.related.member.includes(ctx.subject)),
   };
 }
-`}, {"quoted property names", `
+`,
+	}, {"quoted property names", `
 class Resource implements Namespace {
   related: {
     "scope.relation": Resource[]
@@ -248,6 +252,67 @@ func Test_simplify(t *testing.T) {
 					&ast.ComputedSubjectSet{Relation: "B"},
 					&ast.ComputedSubjectSet{Relation: "C"},
 					&ast.ComputedSubjectSet{Relation: "D"},
+				},
+			},
+		},
+		{
+			// ( ( (A || B) ) ) = A || B
+			name: "merges OR children",
+			input: &ast.SubjectSetRewrite{
+				Operation: ast.OperatorOr,
+				Children: ast.Children{
+					&ast.SubjectSetRewrite{
+						Operation: ast.OperatorOr,
+						Children: ast.Children{
+							&ast.ComputedSubjectSet{Relation: "A"},
+						},
+					},
+					&ast.SubjectSetRewrite{
+						Operation: ast.OperatorOr,
+						Children: ast.Children{
+							&ast.ComputedSubjectSet{Relation: "B"},
+						},
+					},
+				},
+			},
+			expected: &ast.SubjectSetRewrite{
+				Operation: ast.OperatorOr,
+				Children: ast.Children{
+					&ast.ComputedSubjectSet{Relation: "A"},
+					&ast.ComputedSubjectSet{Relation: "B"},
+				},
+			},
+		},
+		{
+			// ( ( A && ((B)) ) ) = A && B
+			name: "merges AND children",
+			input: &ast.SubjectSetRewrite{
+				Operation: ast.OperatorAnd,
+				Children: ast.Children{
+					&ast.SubjectSetRewrite{
+						Operation: ast.OperatorOr,
+						Children: ast.Children{
+							&ast.ComputedSubjectSet{Relation: "A"},
+						},
+					},
+					&ast.SubjectSetRewrite{
+						Operation: ast.OperatorOr,
+						Children: ast.Children{
+							&ast.SubjectSetRewrite{
+								Operation: ast.OperatorOr,
+								Children: ast.Children{
+									&ast.ComputedSubjectSet{Relation: "B"},
+								},
+							},
+						},
+					},
+				},
+			},
+			expected: &ast.SubjectSetRewrite{
+				Operation: ast.OperatorAnd,
+				Children: ast.Children{
+					&ast.ComputedSubjectSet{Relation: "A"},
+					&ast.ComputedSubjectSet{Relation: "B"},
 				},
 			},
 		},

@@ -52,13 +52,8 @@
             "operator": "and",
             "children": [
               {
-                "operator": "or",
-                "children": [
-                  {
-                    "relation": "parents",
-                    "computed_subject_set_relation": "viewers"
-                  }
-                ]
+                "relation": "parents",
+                "computed_subject_set_relation": "viewers"
               },
               {
                 "relation": "parents",

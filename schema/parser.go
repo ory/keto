@@ -74,6 +74,7 @@ func (p *parser) addFatal(item item, format string, a ...interface{}) {
 	p.addErr(item, format, a...)
 	p.fatal = true
 }
+
 func (p *parser) addErr(item item, format string, a ...interface{}) {
 	err := &ParseError{
 		msg:  fmt.Sprintf(format, a...),
@@ -522,14 +523,18 @@ func simplifyExpression(root *ast.SubjectSetRewrite) *ast.SubjectSetRewrite {
 	}
 	var newChildren []ast.Child
 	for _, child := range root.Children {
-		if ch, ok := child.(*ast.SubjectSetRewrite); ok && ch != nil && ch.Operation == root.Operation {
-			// merge child and root
+		if ch, ok := child.(*ast.SubjectSetRewrite); ok && ch != nil {
 			simplifyExpression(ch)
-			newChildren = append(newChildren, ch.Children...)
-		} else {
-			// can't merge, just copy
-			newChildren = append(newChildren, child)
+			if len(ch.Children) == 1 || ch.Operation == root.Operation {
+				// Flatten the child to parent, when:
+				// - it's a single-element wrapper (AND(OR(A)) ≡ AND(A))
+				// - shares the root's operation (OR(OR(A,B),C) ≡ OR(A,B,C)).
+				newChildren = append(newChildren, ch.Children...)
+				continue
+			}
 		}
+		// Leaf node or different operation with multiple children; keep as-is.
+		newChildren = append(newChildren, child)
 	}
 	root.Children = newChildren
 

@@ -77,7 +77,7 @@ func TestEngine(t *testing.T) {
 		tree, err := e.BuildTree(context.Background(), bouldererUserSet, 100)
 		require.NoError(t, err)
 
-		expand.AssertInternalTreesAreEqual(t, &relationtuple.Tree{
+		require.True(t, expand.AssertInternalTreesAreEqual(t, &relationtuple.Tree{
 			Type:    ketoapi.TreeNodeUnion,
 			Subject: bouldererUserSet,
 			Children: []*relationtuple.Tree{
@@ -90,7 +90,7 @@ func TestEngine(t *testing.T) {
 					Subject: tommy,
 				},
 			},
-		}, tree)
+		}, tree))
 	})
 
 	t.Run("case=expands two levels", func(t *testing.T) {
@@ -169,7 +169,7 @@ func TestEngine(t *testing.T) {
 
 		actualTree, err := e.BuildTree(context.Background(), expectedTree.Subject, 100)
 		require.NoError(t, err)
-		expand.AssertInternalTreesAreEqual(t, expectedTree, actualTree)
+		require.True(t, expand.AssertInternalTreesAreEqual(t, expectedTree, actualTree))
 	})
 
 	t.Run("case=respects max depth", func(t *testing.T) {
