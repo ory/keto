@@ -57,7 +57,7 @@
             }
           }
         },
-        "x-ory-ratelimit-bucket": "keto-admin-high"
+        "x-ory-ratelimit-bucket": "keto-admin-low"
       },
       "delete": {
         "description": "Use this endpoint to delete relationships",
@@ -128,7 +128,7 @@
             }
           }
         },
-        "x-ory-ratelimit-bucket": "keto-admin-high"
+        "x-ory-ratelimit-bucket": "keto-admin-low"
       },
       "patch": {
         "description": "Use this endpoint to patch one or more relationships.",
@@ -173,7 +173,7 @@
             }
           }
         },
-        "x-ory-ratelimit-bucket": "keto-admin-high"
+        "x-ory-ratelimit-bucket": "keto-admin-low"
       }
     },
     "/health/alive": {
@@ -250,7 +250,7 @@
             }
           }
         },
-        "x-ory-ratelimit-bucket": "keto-admin-high"
+        "x-ory-ratelimit-bucket": "keto-admin-low"
       }
     },
     "/opl/syntax/check": {
@@ -430,7 +430,7 @@
             }
           }
         },
-        "x-ory-ratelimit-bucket": "keto-public-low"
+        "x-ory-ratelimit-bucket": "keto-public-high"
       }
     },
     "/relation-tuples/check": {
@@ -518,7 +518,7 @@
             }
           }
         },
-        "x-ory-ratelimit-bucket": "keto-public-low"
+        "x-ory-ratelimit-bucket": "keto-public-high"
       },
       "post": {
         "description": "To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).",
@@ -569,7 +569,7 @@
             }
           }
         },
-        "x-ory-ratelimit-bucket": "keto-public-low"
+        "x-ory-ratelimit-bucket": "keto-public-high"
       }
     },
     "/relation-tuples/check/openapi": {
@@ -651,7 +651,7 @@
             }
           }
         },
-        "x-ory-ratelimit-bucket": "keto-public-low"
+        "x-ory-ratelimit-bucket": "keto-public-high"
       },
       "post": {
         "description": "To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).",
@@ -696,7 +696,7 @@
             }
           }
         },
-        "x-ory-ratelimit-bucket": "keto-public-low"
+        "x-ory-ratelimit-bucket": "keto-public-high"
       }
     },
     "/relation-tuples/expand": {

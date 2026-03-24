@@ -530,7 +530,7 @@
         },
         "summary": "Delete Relationships",
         "tags": ["relationship"],
-        "x-ory-ratelimit-bucket": "keto-admin-high"
+        "x-ory-ratelimit-bucket": "keto-admin-low"
       },
       "patch": {
         "description": "Use this endpoint to patch one or more relationships.",
@@ -585,7 +585,7 @@
         },
         "summary": "Patch Multiple Relationships",
         "tags": ["relationship"],
-        "x-ory-ratelimit-bucket": "keto-admin-high"
+        "x-ory-ratelimit-bucket": "keto-admin-low"
       },
       "put": {
         "description": "Use this endpoint to create a relationship.",
@@ -634,7 +634,7 @@
         },
         "summary": "Create a Relationship",
         "tags": ["relationship"],
-        "x-ory-ratelimit-bucket": "keto-admin-high"
+        "x-ory-ratelimit-bucket": "keto-admin-low"
       }
     },
     "/health/alive": {
@@ -759,7 +759,7 @@
         },
         "summary": "Query namespaces",
         "tags": ["relationship"],
-        "x-ory-ratelimit-bucket": "keto-admin-high"
+        "x-ory-ratelimit-bucket": "keto-admin-low"
       }
     },
     "/opl/syntax/check": {
@@ -990,7 +990,7 @@
         },
         "summary": "Batch check permissions",
         "tags": ["permission"],
-        "x-ory-ratelimit-bucket": "keto-public-low"
+        "x-ory-ratelimit-bucket": "keto-public-high"
       }
     },
     "/relation-tuples/check": {
@@ -1107,7 +1107,7 @@
         },
         "summary": "Check a permission",
         "tags": ["permission"],
-        "x-ory-ratelimit-bucket": "keto-public-low"
+        "x-ory-ratelimit-bucket": "keto-public-high"
       },
       "post": {
         "description": "To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).",
@@ -1176,7 +1176,7 @@
         },
         "summary": "Check a permission",
         "tags": ["permission"],
-        "x-ory-ratelimit-bucket": "keto-public-low"
+        "x-ory-ratelimit-bucket": "keto-public-high"
       }
     },
     "/relation-tuples/check/openapi": {
@@ -1283,7 +1283,7 @@
         },
         "summary": "Check a permission",
         "tags": ["permission"],
-        "x-ory-ratelimit-bucket": "keto-public-low"
+        "x-ory-ratelimit-bucket": "keto-public-high"
       },
       "post": {
         "description": "To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).",
@@ -1342,7 +1342,7 @@
         },
         "summary": "Check a permission",
         "tags": ["permission"],
-        "x-ory-ratelimit-bucket": "keto-public-low"
+        "x-ory-ratelimit-bucket": "keto-public-high"
       }
     },
     "/relation-tuples/expand": {
