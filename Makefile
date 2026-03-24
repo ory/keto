@@ -5,7 +5,6 @@ export PATH				:= ${PWD}/.bin:${PATH}
 export IMAGE_TAG		:= $(if $(IMAGE_TAG),$(IMAGE_TAG),latest)
 
 SCRIPT_DEPENDENCIES = grype \
-					trivy \
 					ory \
 					licenses
 
