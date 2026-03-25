@@ -375,8 +375,12 @@ func listenAndWriteFile(ctx context.Context, addr, listenFile string) (net.Liste
 var httpMetrics = prometheusx.NewHTTPMetrics("keto", prometheusx.HTTPPrefix, config.Version, config.Commit, config.Date)
 
 func (r *RegistryDefault) ReadRouter(ctx context.Context) http.Handler {
+	recovery := negroni.NewRecovery()
+	recovery.Logger = r.Logger()
+
 	router := httprouterx.NewRouterPublic()
 	n := negroni.New(
+		recovery,
 		httprouterx.PopulatePatternNegroni(router),
 		httpMetrics,
 	)
@@ -412,8 +416,12 @@ func (r *RegistryDefault) ReadRouter(ctx context.Context) http.Handler {
 }
 
 func (r *RegistryDefault) WriteRouter(ctx context.Context) http.Handler {
+	recovery := negroni.NewRecovery()
+	recovery.Logger = r.Logger()
+
 	router := httprouterx.NewRouterAdmin()
 	n := negroni.New(
+		recovery,
 		httprouterx.PopulatePatternNegroni(router),
 		httpMetrics,
 	)
@@ -450,8 +458,12 @@ func (r *RegistryDefault) WriteRouter(ctx context.Context) http.Handler {
 }
 
 func (r *RegistryDefault) OPLSyntaxRouter(ctx context.Context) http.Handler {
+	recovery := negroni.NewRecovery()
+	recovery.Logger = r.Logger()
+
 	router := httprouterx.NewRouter()
 	n := negroni.New(
+		recovery,
 		httprouterx.PopulatePatternNegroni(router),
 		httpMetrics,
 	)
@@ -598,11 +610,16 @@ func (r *RegistryDefault) OplGRPCServer(ctx context.Context) *grpc.Server {
 }
 
 func (r *RegistryDefault) metricsRouter(ctx context.Context) http.Handler {
-	n := negroni.New(reqlog.NewMiddlewareFromLogger(r.Logger(), "keto").ExcludePaths(prometheusx.MetricsPrometheusPath))
-	router := httprouterx.NewRouter()
+	recovery := negroni.NewRecovery()
+	recovery.Logger = r.Logger()
 
+	n := negroni.New(
+		recovery,
+		reqlog.NewMiddlewareFromLogger(r.Logger(), "keto").ExcludePaths(prometheusx.MetricsPrometheusPath),
+	)
+
+	router := http.NewServeMux()
 	prometheusx.SetMuxRoutes(router)
-
 	n.UseHandler(router)
 
 	var handler http.Handler = n
