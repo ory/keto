@@ -523,7 +523,8 @@ func simplifyExpression(root *ast.SubjectSetRewrite) *ast.SubjectSetRewrite {
 	}
 	var newChildren []ast.Child
 	for _, child := range root.Children {
-		if ch, ok := child.(*ast.SubjectSetRewrite); ok && ch != nil {
+		switch ch := child.(type) {
+		case *ast.SubjectSetRewrite:
 			simplifyExpression(ch)
 			if len(ch.Children) == 1 || ch.Operation == root.Operation {
 				// Flatten the child to parent, when:
@@ -532,9 +533,16 @@ func simplifyExpression(root *ast.SubjectSetRewrite) *ast.SubjectSetRewrite {
 				newChildren = append(newChildren, ch.Children...)
 				continue
 			}
+			newChildren = append(newChildren, child)
+		case *ast.InvertResult:
+			if innerCh, ok := ch.Child.(*ast.SubjectSetRewrite); ok {
+				simplifyExpression(innerCh)
+			}
+			newChildren = append(newChildren, child)
+		default:
+			// Leaf node or different operation with multiple children; keep as-is.
+			newChildren = append(newChildren, child)
 		}
-		// Leaf node or different operation with multiple children; keep as-is.
-		newChildren = append(newChildren, child)
 	}
 	root.Children = newChildren
 

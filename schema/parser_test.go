@@ -117,7 +117,8 @@ var parserTestCases = []struct {
 		this.related.siblings.traverse(s => s.permits.edit(ctx)),
 	}
   }
-`}, {
+`},
+	{
 		"advanced typescript syntax",
 		`
 import { Namespace, SubjectSet, Context } from '@ory/keto-namespace-types';
@@ -161,7 +162,8 @@ class Resource implements Namespace {
   };
 }
 `,
-	}, {"quoted property names", `
+	},
+	{"quoted property names", `
 class Resource implements Namespace {
   related: {
     "scope.relation": Resource[]
@@ -172,6 +174,24 @@ class Resource implements Namespace {
     "scope.action_2": (ctx: Context) => this.permits["scope.action_0"](ctx),
   }
 }`},
+	{"inverted relationship not case", `
+	class User implements Namespace{}
+	class File implements Namespace{
+		related: {
+			viewers: User[]
+			blocklist1: User[]
+			blocklist2: User[]
+		}
+		permits = {
+			view: (ctx: Context) => 
+				!this.related.viewers.includes(ctx.subject) &&
+				(!(
+					this.related.blocklist1.includes(ctx.subject) &&
+					this.related.blocklist2.includes(ctx.subject)
+				))
+		}
+	}
+`},
 }
 
 func TestParser(t *testing.T) {
@@ -313,6 +333,82 @@ func Test_simplify(t *testing.T) {
 				Children: ast.Children{
 					&ast.ComputedSubjectSet{Relation: "A"},
 					&ast.ComputedSubjectSet{Relation: "B"},
+				},
+			},
+		},
+
+		{
+			// A AND !!B = A AND !!B
+			name: "preserve double NOT",
+			input: &ast.SubjectSetRewrite{
+				Operation: ast.OperatorAnd,
+				Children: ast.Children{
+					&ast.ComputedSubjectSet{Relation: "A"},
+					&ast.InvertResult{
+						Child: &ast.InvertResult{
+							Child: &ast.SubjectSetRewrite{
+								Operation: ast.OperatorOr,
+								Children: ast.Children{
+									&ast.ComputedSubjectSet{Relation: "B"},
+								},
+							},
+						},
+					},
+				},
+			},
+			expected: &ast.SubjectSetRewrite{
+				Operation: ast.OperatorAnd,
+				Children: ast.Children{
+					&ast.ComputedSubjectSet{Relation: "A"},
+					&ast.InvertResult{
+						Child: &ast.InvertResult{
+							Child: &ast.SubjectSetRewrite{
+								Operation: ast.OperatorOr,
+								Children: ast.Children{
+									&ast.ComputedSubjectSet{Relation: "B"},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		{
+			// A AND NOT(B OR (C)) -> A AND NOT(B OR C)
+			name: "simplifies the expression inside the inverted relationship",
+			input: &ast.SubjectSetRewrite{
+				Operation: ast.OperatorAnd,
+				Children: ast.Children{
+					&ast.ComputedSubjectSet{Relation: "A"},
+					&ast.InvertResult{
+						Child: &ast.SubjectSetRewrite{
+							Operation: ast.OperatorOr,
+							Children: ast.Children{
+								&ast.ComputedSubjectSet{Relation: "B"},
+								&ast.SubjectSetRewrite{
+									Operation: ast.OperatorOr,
+									Children: ast.Children{
+										&ast.ComputedSubjectSet{Relation: "C"},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			expected: &ast.SubjectSetRewrite{
+				Operation: ast.OperatorAnd,
+				Children: ast.Children{
+					&ast.ComputedSubjectSet{Relation: "A"},
+					&ast.InvertResult{
+						Child: &ast.SubjectSetRewrite{
+							Operation: ast.OperatorOr,
+							Children: ast.Children{
+								&ast.ComputedSubjectSet{Relation: "B"},
+								&ast.ComputedSubjectSet{Relation: "C"},
+							},
+						},
+					},
 				},
 			},
 		},

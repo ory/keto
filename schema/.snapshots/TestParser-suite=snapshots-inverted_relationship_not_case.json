@@ -1,0 +1,55 @@
+{
+  "File": [
+    {
+      "name": "viewers",
+      "types": [
+        {
+          "namespace": "User"
+        }
+      ]
+    },
+    {
+      "name": "blocklist1",
+      "types": [
+        {
+          "namespace": "User"
+        }
+      ]
+    },
+    {
+      "name": "blocklist2",
+      "types": [
+        {
+          "namespace": "User"
+        }
+      ]
+    },
+    {
+      "name": "view",
+      "rewrite": {
+        "operator": "and",
+        "children": [
+          {
+            "inverted": {
+              "relation": "viewers"
+            }
+          },
+          {
+            "inverted": {
+              "operator": "and",
+              "children": [
+                {
+                  "relation": "blocklist1"
+                },
+                {
+                  "relation": "blocklist2"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "User": null
+}
