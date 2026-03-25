@@ -51,7 +51,7 @@ func TestWriteHandlers(t *testing.T) {
 		doCreate := func(raw []byte) *http.Response {
 			req, err := http.NewRequest(http.MethodPut, ts.URL+relationtuple.WriteRouteBase, bytes.NewBuffer(raw))
 			require.NoError(t, err)
-			resp, err := ts.Client().Do(req)
+			resp, err := ts.Client().Do(req) //nolint:gosec // Test code with controlled URL.
 			require.NoError(t, err)
 
 			return resp
@@ -160,7 +160,7 @@ func TestWriteHandlers(t *testing.T) {
 
 			req, err := http.NewRequest(http.MethodDelete, ts.URL+relationtuple.WriteRouteBase+"?"+rt.ToURLQuery().Encode(), nil)
 			require.NoError(t, err)
-			resp, err := ts.Client().Do(req)
+			resp, err := ts.Client().Do(req) //nolint:gosec // Test code with controlled URL.
 			require.NoError(t, err)
 			assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 
@@ -197,7 +197,7 @@ func TestWriteHandlers(t *testing.T) {
 			}
 			req, err := http.NewRequest(http.MethodDelete, ts.URL+relationtuple.WriteRouteBase+"?"+q.Encode(), nil)
 			require.NoError(t, err)
-			resp, err := ts.Client().Do(req)
+			resp, err := ts.Client().Do(req) //nolint:gosec // Test code with controlled URL.
 			require.NoError(t, err)
 			assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 
@@ -232,7 +232,7 @@ func TestWriteHandlers(t *testing.T) {
 			relationtuple.MapAndWriteTuples(t, reg, rts...)
 
 			assertBadRequest := func(t *testing.T, req *http.Request) {
-				resp, err := ts.Client().Do(req)
+				resp, err := ts.Client().Do(req) //nolint:gosec // Test code with controlled URL.
 				require.NoError(t, err)
 				assert.Equal(t, http.StatusBadRequest, resp.StatusCode)
 			}
@@ -321,7 +321,7 @@ func TestWriteHandlers(t *testing.T) {
 			require.NoError(t, err)
 			req, err := http.NewRequest(http.MethodPatch, ts.URL+relationtuple.WriteRouteBase, bytes.NewBuffer(body))
 			require.NoError(t, err)
-			resp, err := ts.Client().Do(req)
+			resp, err := ts.Client().Do(req) //nolint:gosec // Test code with controlled URL.
 			require.NoError(t, err)
 			assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 
@@ -363,7 +363,7 @@ func TestWriteHandlers(t *testing.T) {
 			require.NoError(t, err)
 			req, err := http.NewRequest(http.MethodPatch, ts.URL+relationtuple.WriteRouteBase, bytes.NewBuffer(body))
 			require.NoError(t, err)
-			resp, err := ts.Client().Do(req)
+			resp, err := ts.Client().Do(req) //nolint:gosec // Test code with controlled URL.
 			require.NoError(t, err)
 			assert.Equal(t, http.StatusNotFound, resp.StatusCode)
 
@@ -392,7 +392,7 @@ func TestWriteHandlers(t *testing.T) {
 			require.NoError(t, err)
 			req, err := http.NewRequest(http.MethodPatch, ts.URL+relationtuple.WriteRouteBase, bytes.NewBuffer(body))
 			require.NoError(t, err)
-			resp, err := ts.Client().Do(req)
+			resp, err := ts.Client().Do(req) //nolint:gosec // Test code with controlled URL.
 			require.NoError(t, err)
 			assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 
@@ -424,7 +424,7 @@ func TestWriteHandlers(t *testing.T) {
 			require.NoError(t, err)
 			req, err := http.NewRequest(http.MethodPatch, ts.URL+relationtuple.WriteRouteBase, bytes.NewBuffer(body))
 			require.NoError(t, err)
-			resp, err := ts.Client().Do(req)
+			resp, err := ts.Client().Do(req) //nolint:gosec // Test code with controlled URL.
 			require.NoError(t, err)
 			assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 
@@ -448,7 +448,7 @@ func TestWriteHandlers(t *testing.T) {
 ]`
 			req, err := http.NewRequest(http.MethodPatch, ts.URL+relationtuple.WriteRouteBase, bytes.NewBufferString(rawJSON))
 			require.NoError(t, err)
-			resp, err := ts.Client().Do(req)
+			resp, err := ts.Client().Do(req) //nolint:gosec // Test code with controlled URL.
 			require.NoError(t, err)
 			assert.Equal(t, http.StatusBadRequest, resp.StatusCode)
 
@@ -473,7 +473,7 @@ func TestWriteHandlers(t *testing.T) {
 ]`
 			req, err := http.NewRequest(http.MethodPatch, ts.URL+relationtuple.WriteRouteBase, bytes.NewBufferString(rawJSON))
 			require.NoError(t, err)
-			resp, err := ts.Client().Do(req)
+			resp, err := ts.Client().Do(req) //nolint:gosec // Test code with controlled URL.
 			require.NoError(t, err)
 			assert.Equal(t, http.StatusBadRequest, resp.StatusCode)
 

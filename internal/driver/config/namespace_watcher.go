@@ -105,7 +105,7 @@ func watchTarget(ctx context.Context, target string, handler eventHandler, log *
 	if err != nil {
 		return errors.WithStack(err)
 	}
-	info, err := os.Stat(targetUrl.Path)
+	info, err := os.Stat(targetUrl.Path) //nolint:gosec // Path is from a validated configuration URL, not user input.
 	if err != nil {
 		return errors.WithStack(err)
 	}

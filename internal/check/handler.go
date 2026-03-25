@@ -357,7 +357,7 @@ func (h *Handler) Check(ctx context.Context, req *rts.CheckRequest) (*rts.CheckR
 		return nil, err
 	}
 
-	return &rts.CheckResponse{
+	return &rts.CheckResponse{ //nolint:gosec // Snaptoken is not a credential, just a placeholder value.
 		Allowed:   allowed,
 		Snaptoken: "not yet implemented",
 	}, nil
@@ -485,7 +485,7 @@ func (h *Handler) BatchCheck(ctx context.Context, req *rts.BatchCheckRequest) (*
 		if result.Err != nil {
 			errMsg = result.Err.Error()
 		}
-		responses[i] = &rts.CheckResponseWithError{
+		responses[i] = &rts.CheckResponseWithError{ //nolint:gosec // Snaptoken is not a credential, just a placeholder value.
 			Allowed:   result.Membership == checkgroup.IsMember,
 			Error:     errMsg,
 			Snaptoken: "not yet implemented",

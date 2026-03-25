@@ -153,7 +153,7 @@ func TestServeCORS(t *testing.T) {
 	require.NoError(t, err)
 	req.Header.Set("Origin", "https://ory.sh")
 	req.Header.Set("Access-Control-Request-Method", "GET")
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := http.DefaultClient.Do(req) //nolint:gosec // Test code with controlled URL.
 	require.NoError(t, err)
 	require.Equal(t, http.StatusNoContent, resp.StatusCode)
 	assert.Equalf(t, "https://ory.sh", resp.Header.Get("Access-Control-Allow-Origin"), "%+v", resp.Header)

@@ -61,7 +61,7 @@ func (rc *restClient) makeRequest(t testing.TB, method, path, body string, baseU
 	// t.Logf("Requesting %s %s%s with body %#v", method, baseURL, path, body)
 	req, err := http.NewRequest(method, baseURL+path, b)
 	require.NoError(t, err)
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := http.DefaultClient.Do(req) //nolint:gosec // Test code with controlled URL.
 	require.NoError(t, err)
 	respBody, err := io.ReadAll(resp.Body)
 	require.NoError(t, err)
@@ -203,7 +203,7 @@ func (rc *restClient) expand(t testing.TB, r *ketoapi.SubjectSet, depth int) *ke
 func healthReady(t require.TestingT, readURL string) int {
 	req, err := http.NewRequest("GET", readURL+healthx.ReadyCheckPath, nil)
 	require.NoError(t, err)
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := http.DefaultClient.Do(req) //nolint:gosec // Test code with controlled URL.
 	if err != nil {
 		return 0
 	}

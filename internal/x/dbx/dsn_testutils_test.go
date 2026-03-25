@@ -11,6 +11,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+//nolint:gosec // Test DSNs with dummy credentials, not real secrets.
 func Test_withDbName(t *testing.T) {
 	type args struct {
 		dsn string

@@ -34,7 +34,7 @@ func createFile(t *testing.T, content string) (path string) {
 		t.Fatal(err)
 	}
 
-	t.Cleanup(func() { _ = os.Remove(f.Name()) })
+	t.Cleanup(func() { _ = os.Remove(f.Name()) }) //nolint:gosec // Test file path from os.CreateTemp, not user input.
 
 	n, err := f.WriteString(content)
 	if err != nil {
