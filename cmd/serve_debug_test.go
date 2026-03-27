@@ -26,7 +26,7 @@ import (
 	"github.com/ory/keto/internal/driver"
 )
 
-// This test is intended for debug purposes. Just comment out t.SkipNow() and run it through your IDE debugger with -tags sqlite
+// This test is intended for debug purposes. Just comment out t.SkipNow() and run it through your IDE debugger with
 func Test_DebugOnly(t *testing.T) {
 	t.SkipNow()
 

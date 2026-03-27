@@ -309,7 +309,7 @@ func buildInsert(commitTime time.Time, nid uuid.UUID, rs []*relationtuple.Relati
 		rt := &RelationTuple{
 			ID:         uuid.Must(uuid.NewV4()),
 			NetworkID:  nid,
-			CommitTime: commitTime,
+			CommitTime: commitTime.UTC(),
 		}
 		if err := rt.FromInternal(r); err != nil {
 			return "", nil, err

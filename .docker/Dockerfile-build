@@ -21,7 +21,7 @@ RUN go mod download
 
 COPY . .
 
-RUN go build -buildvcs=false -tags sqlite -o /usr/bin/keto .
+RUN go build -buildvcs=false  -o /usr/bin/keto .
 
 #########################
 

@@ -95,7 +95,7 @@ func TestBuildInsert(t *testing.T) {
 		"rel1",
 		uuid.NullUUID{UUID: sub1, Valid: true},
 		sql.NullString{}, uuid.NullUUID{}, sql.NullString{},
-		now,
+		now.UTC(),
 
 		args[10], // again, cheating
 		nid,
@@ -104,7 +104,7 @@ func TestBuildInsert(t *testing.T) {
 		"rel2",
 		uuid.NullUUID{},
 		sql.NullString{String: "ns3", Valid: true}, uuid.NullUUID{UUID: obj3, Valid: true}, sql.NullString{String: "rel3", Valid: true},
-		now,
+		now.UTC(),
 	}, args)
 }
 

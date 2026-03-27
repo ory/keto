@@ -185,4 +185,10 @@ func ConfigFile(t testing.TB, values map[string]interface{}) string {
 
 type pinger interface{ Ping() error }
 
-func Ping(conn *pop.Connection) error { return conn.Store.(pinger).Ping() }
+func Ping(conn *pop.Connection) error {
+	p, ok := conn.Store.(pinger)
+	if !ok {
+		return fmt.Errorf("connection not opened: Store is %T", conn.Store)
+	}
+	return p.Ping()
+}

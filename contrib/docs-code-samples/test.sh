@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-(cd ../..; go install -tags sqlite .)
+(cd ../..; go install  .)
 PATH="../../.bin/gobin:../../.bin/brew/bin:../../.bin/brew/sbin:$PATH"
 
 function teardown() {

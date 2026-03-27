@@ -36,7 +36,7 @@ jq '[range(300)] | map({namespace: (if . % 2 == 0 then "a" else "b" end), object
 
 kill $keto_server_pid
 
-go build -tags sqlite -o keto_new .
+go build  -o keto_new .
 
 ./keto_new migrate up -y -c "$config"
 ./keto_new namespace migrate legacy -y -c "$config"

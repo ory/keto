@@ -86,7 +86,7 @@ jobs:
           go test ./...
       - name: Test Keto
         run: |
-          go test -coverprofile coverage.txt -tags sqlite ./...
+          go test -coverprofile coverage.txt  ./...
           grep -v "ory/keto/internal/httpclient" coverage.txt > coverage_cleared.txt
           mv coverage_cleared.txt coverage.txt
       - run: |
@@ -104,7 +104,7 @@ jobs:
           check-latest: true
           go-version-file: go.mod
       - run: |
-          go test -tags sqlite -race -short ./...
+          go test -race -short ./...
 
   docs-cli:
     runs-on: ubuntu-latest

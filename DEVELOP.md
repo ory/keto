@@ -67,13 +67,13 @@ Short tests run fairly quickly and use SQLite in-memory.
 Run all short tests:
 
 ```shell
-go test -short -tags sqlite ./...
+go test -short  ./...
 ```
 
 Run short tests in a specific module:
 
 ```shell
-go test -tags sqlite -short ./internal/check/...
+go test -short ./internal/check/...
 ```
 
 ### Regular tests
@@ -89,7 +89,7 @@ Run the full test suite:
 
 ```shell
 source ./scripts/test-resetdb.sh
-go test -tags sqlite ./...
+go test ./...
 ```
 
 ### End-to-end tests
@@ -98,7 +98,7 @@ The e2e tests are part of the normal `go test`. To only run the e2e test, use:
 
 ```shell
 source ./scripts/test-resetdb.sh
-go test -tags sqlite ./internal/e2e/...
+go test ./internal/e2e/...
 ```
 
 or add the `-short` tag to only test against sqlite in-memory.

@@ -31,7 +31,7 @@ format: .bin/ory node_modules
 
 .PHONY: install
 install:
-	go install -tags sqlite .
+	go install  .
 
 .PHONY: docker
 docker:
@@ -74,7 +74,7 @@ sdk: .bin/ory node_modules
 
 .PHONY: build
 build:
-	go build -tags sqlite
+	go build
 
 #
 # Generate APIs and client stubs from the definitions
@@ -103,7 +103,7 @@ buf: buf-lint buf-gen
 
 .PHONY: test-e2e
 test-e2e:
-	go test -tags sqlite -failfast -v ./internal/e2e
+	go test -failfast -v ./internal/e2e
 
 .PHONY: test-docs-samples
 test-docs-samples:

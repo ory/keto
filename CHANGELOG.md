@@ -1860,7 +1860,7 @@ be returned if `subject` is still used.
   Confirmed that the fix works because
 
   ```
-  $ go test -tags sqlite -run TestStatusCmd/server_type=read/case=block -count 1000 ./cmd/status
+  $ go test -run TestStatusCmd/server_type=read/case=block -count 1000 ./cmd/status
   ```
 
   passed.
