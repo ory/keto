@@ -27,6 +27,9 @@
   "overrides": {
     "axios": ">=1.13.5",
     "glob": ">=11.1.0",
-    "tar": ">=7.5.10"
+    "tar": ">=7.5.10",
+    "grpc_tools_node_protoc_ts": {
+      "handlebars": "4.7.9"
+    }
   }
 }
