@@ -10,7 +10,11 @@
     "doctoc": "doctoc README.md",
     "openapi-generator-cli": "openapi-generator-cli"
   },
-  "prettier": "ory-prettier-styles",
+  "prettier": {
+    "proseWrap": "always",
+    "semi": false,
+    "trailingComma": "all"
+  },
   "dependencies": {
     "@openapitools/openapi-generator-cli": "2.30.2",
     "grpc-tools": "1.13.1",
@@ -20,7 +24,6 @@
     "@ory/keto-namespace-types": "file:contrib/namespace-type-lib",
     "doctoc": "2.3.0",
     "license-checker": "25.0.1",
-    "ory-prettier-styles": "1.3.0",
     "prettier": "3.8.1",
     "prettier-plugin-packagejson": "3.0.2"
   },
