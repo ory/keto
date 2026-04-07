@@ -5,7 +5,6 @@ package relationtuple
 
 import (
 	"context"
-	"strings"
 	"sync"
 
 	"github.com/gofrs/uuid"
@@ -114,18 +113,10 @@ func (s *SubjectSet) UniqueID() uuid.UUID {
 }
 
 func (s *SubjectSet) String() string {
-	object := s.Object.String()
-
-	var b strings.Builder
-	b.Grow(len(s.Namespace) + len(object) + len(s.Relation) + 2)
-
-	b.WriteString(s.Namespace)
-	b.WriteByte(':')
-	b.WriteString(object)
-	b.WriteByte('#')
-	b.WriteString(s.Relation)
-
-	return b.String()
+	if s == nil {
+		return ""
+	}
+	return s.Namespace + ":" + s.Object.String() + "#" + s.Relation
 }
 
 func (t *RelationTuple) ToQuery() *RelationQuery {
@@ -146,21 +137,7 @@ func (t *RelationTuple) String() string {
 	if t.Subject != nil {
 		subject = t.Subject.String()
 	}
-
-	object := t.Object.String()
-
-	var b strings.Builder
-	b.Grow(len(t.Namespace) + len(object) + len(t.Relation) + len(subject) + 3)
-
-	b.WriteString(t.Namespace)
-	b.WriteByte(':')
-	b.WriteString(object)
-	b.WriteByte('#')
-	b.WriteString(t.Relation)
-	b.WriteByte('@')
-	b.WriteString(subject)
-
-	return b.String()
+	return t.Namespace + ":" + t.Object.String() + "#" + t.Relation + "@" + subject
 }
 
 func (t *RelationTuple) FromProto(proto *rts.RelationTuple) *RelationTuple {
