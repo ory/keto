@@ -5,7 +5,7 @@ package relationtuple
 
 import (
 	"context"
-	"fmt"
+	"strings"
 	"sync"
 
 	"github.com/gofrs/uuid"
@@ -114,7 +114,18 @@ func (s *SubjectSet) UniqueID() uuid.UUID {
 }
 
 func (s *SubjectSet) String() string {
-	return fmt.Sprintf("%s:%s#%s", s.Namespace, s.Object, s.Relation)
+	object := s.Object.String()
+
+	var b strings.Builder
+	b.Grow(len(s.Namespace) + len(object) + len(s.Relation) + 2)
+
+	b.WriteString(s.Namespace)
+	b.WriteByte(':')
+	b.WriteString(object)
+	b.WriteByte('#')
+	b.WriteString(s.Relation)
+
+	return b.String()
 }
 
 func (t *RelationTuple) ToQuery() *RelationQuery {
@@ -130,7 +141,26 @@ func (t *RelationTuple) String() string {
 	if t == nil {
 		return ""
 	}
-	return fmt.Sprintf("%s:%s#%s@%s", t.Namespace, t.Object, t.Relation, t.Subject)
+
+	subject := ""
+	if t.Subject != nil {
+		subject = t.Subject.String()
+	}
+
+	object := t.Object.String()
+
+	var b strings.Builder
+	b.Grow(len(t.Namespace) + len(object) + len(t.Relation) + len(subject) + 3)
+
+	b.WriteString(t.Namespace)
+	b.WriteByte(':')
+	b.WriteString(object)
+	b.WriteByte('#')
+	b.WriteString(t.Relation)
+	b.WriteByte('@')
+	b.WriteString(subject)
+
+	return b.String()
 }
 
 func (t *RelationTuple) FromProto(proto *rts.RelationTuple) *RelationTuple {

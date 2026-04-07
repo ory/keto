@@ -113,28 +113,20 @@ func (e *Engine) checkExpandSubject(r *relationTuple, restDepth int) checkgroup.
 			WithField("request", r.String()).
 			Trace("check expand subject")
 
-		g := checkgroup.New(ctx)
-		defer func() { resultCh <- g.Result() }()
-
-		var (
-			visited  bool
-			innerCtx = graph.InitVisited(ctx)
-		)
-
 		results, err := e.d.Traverser().TraverseSubjectSetExpansion(ctx, r)
 
 		if errors.Is(err, herodot.ErrNotFound) {
-			g.Add(checkgroup.NotMemberFunc)
+			resultCh <- checkgroup.ResultNotMember
 			return
 		} else if err != nil {
-			g.Add(checkgroup.ErrorFunc(err))
+			resultCh <- checkgroup.Result{Err: errors.WithStack(err)}
 			return
 		}
 
 		// See if the current hop was already enough to answer the check
 		for _, result := range results {
 			if result.Found {
-				g.Add(checkgroup.IsMemberFunc)
+				resultCh <- checkgroup.ResultIsMember
 				return
 			}
 		}
@@ -150,7 +142,20 @@ func (e *Engine) checkExpandSubject(r *relationTuple, restDepth int) checkgroup.
 				Debug("too many results, truncating")
 			results = results[:maxWidth-1]
 		}
+
+		var (
+			visited  bool
+			innerCtx = graph.InitVisited(ctx)
+		)
+
+		g := checkgroup.New(ctx)
+		defer func() { resultCh <- g.Result() }()
+
 		for _, result := range results {
+			if g.Done() {
+				break
+			}
+
 			sub := &relationtuple.SubjectSet{
 				Namespace: result.To.Namespace,
 				Object:    result.To.Object,
@@ -225,26 +230,36 @@ func (e *Engine) checkIsAllowed(ctx context.Context, r *relationTuple, restDepth
 		WithField("request", r.String()).
 		Trace("check is allowed")
 
-	g := checkgroup.New(ctx)
-
 	relation, err := e.astRelationFor(ctx, r)
 	if err != nil {
-		g.Add(checkgroup.ErrorFunc(err))
-		return g.CheckFunc()
+		return checkgroup.ErrorFunc(err)
 	}
 	hasRewrite := relation != nil && relation.SubjectSetRewrite != nil
 	strictMode := e.d.Config(ctx).StrictMode()
 	canHaveSubjectSets := !strictMode || relation == nil || containsSubjectSetExpand(relation)
+
+	branches := make([]checkgroup.CheckFunc, 0, 3)
 	if hasRewrite {
-		g.Add(e.checkSubjectSetRewrite(ctx, r, relation.SubjectSetRewrite, restDepth))
+		branches = append(branches, e.checkSubjectSetRewrite(ctx, r, relation.SubjectSetRewrite, restDepth))
 	}
 	if (!strictMode || !hasRewrite) && !skipDirect {
 		// In strict mode, add a direct check only if there is no subject set rewrite for this relation.
 		// Rewrites are added as 'permits'.
-		g.Add(e.checkDirect(r, restDepth-1))
+		branches = append(branches, e.checkDirect(r, restDepth-1))
 	}
 	if canHaveSubjectSets {
-		g.Add(e.checkExpandSubject(r, restDepth-1))
+		branches = append(branches, e.checkExpandSubject(r, restDepth-1))
+	}
+
+	if len(branches) == 1 {
+		return branches[0]
+	}
+	if len(branches) == 0 {
+		return checkgroup.NotMemberFunc
+	}
+	g := checkgroup.New(ctx)
+	for _, b := range branches {
+		g.Add(b)
 	}
 
 	return g.CheckFunc()
@@ -271,8 +286,8 @@ func (e *Engine) astRelationFor(ctx context.Context, r *relationTuple) (*ast.Rel
 // result index matches the tuple index of the incoming tuples array.
 func (e *Engine) BatchCheck(ctx context.Context,
 	tuples []*ketoapi.RelationTuple,
-	maxDepth int) ([]checkgroup.Result, error) {
-
+	maxDepth int,
+) ([]checkgroup.Result, error) {
 	eg := &errgroup.Group{}
 	eg.SetLimit(e.d.Config(ctx).BatchCheckParallelizationLimit())
 
