@@ -265,6 +265,38 @@ func (e *Engine) checkIsAllowed(ctx context.Context, r *relationTuple, restDepth
 	return g.CheckFunc()
 }
 
+// checkDirectWithRelations checks if any of the given relations exist directly in the database.
+func (e *Engine) checkDirectWithRelations(_ context.Context, r *relationTuple, relations []string, restDepth int) checkgroup.CheckFunc {
+	if restDepth <= 0 {
+		e.d.Logger().
+			WithField("method", "checkDirectWithRelations").
+			Debug("reached max-depth, therefore this query will not be further expanded")
+		return checkgroup.UnknownMemberFunc
+	}
+	return func(ctx context.Context, resultCh chan<- checkgroup.Result) {
+		e.d.Logger().
+			WithField("request", r.String()).
+			WithField("relations", relations).
+			Trace("check direct")
+
+		res, err := e.d.Traverser().FindTupleWithRelations(ctx, r, relations)
+		if err != nil {
+			resultCh <- checkgroup.Result{Err: errors.WithStack(err)}
+			return
+		}
+		if res != nil {
+			resultCh <- checkgroup.Result{
+				Membership: checkgroup.IsMember,
+			}
+			return
+		}
+
+		resultCh <- checkgroup.Result{
+			Membership: checkgroup.NotMember,
+		}
+	}
+}
+
 func containsSubjectSetExpand(relation *ast.Relation) bool {
 	for _, t := range relation.Types {
 		if t.Relation != "" {

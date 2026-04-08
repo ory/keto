@@ -13,7 +13,6 @@ import (
 	"github.com/ory/x/sqlcon"
 	"github.com/pkg/errors"
 
-	"github.com/ory/keto/internal/namespace"
 	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/ketoapi"
 )
@@ -117,71 +116,36 @@ LIMIT ?
 	return res, nil
 }
 
-func (t *Traverser) TraverseSubjectSetRewrite(ctx context.Context, start *relationtuple.RelationTuple, computedSubjectSets []string) (res []*relationtuple.TraversalResult, err error) {
-	ctx, span := t.d.Tracer(ctx).Tracer().Start(ctx, "persistence.sql.TraverseSubjectSetRewrite")
+func (t *Traverser) FindTupleWithRelations(ctx context.Context, tuple *relationtuple.RelationTuple, relations []string) (_ *relationtuple.RelationTuple, err error) {
+	ctx, span := t.d.Tracer(ctx).Tracer().Start(ctx, "persistence.sql.FindTupleWithRelations")
 	defer otelx.End(span, &err)
 
-	namespaceManager, err := t.d.Config(ctx).NamespaceManager()
-	if err != nil {
+	if len(relations) == 0 {
+		return nil, nil
+	}
+	var rows relationTuples
+
+	query := t.p.queryWithNetwork(ctx)
+	if err := t.p.whereQuery(ctx, query, &relationtuple.RelationQuery{
+		Namespace: &tuple.Namespace,
+		Object:    &tuple.Object,
+		Subject:   tuple.Subject,
+	}); err != nil {
 		return nil, err
 	}
-
-	var relations []string
-	for _, relation := range computedSubjectSets {
-		astRel, _ := namespace.ASTRelationFor(ctx, namespaceManager, start.Namespace, relation)
-		// In strict mode, we can skip querying for those relations that have userset rewrites defined,
-		// because we can already apply those rewrites in memory.
-		if t.d.Config(ctx).StrictMode() && astRel != nil && astRel.SubjectSetRewrite != nil {
-			continue
-		}
-		relations = append(relations, relation)
+	err = query.Where("relation IN (?)", relations).Limit(1).All(&rows)
+	if err != nil {
+		return nil, sqlcon.HandleError(err)
 	}
 
-	if len(relations) > 0 {
-		var rows relationTuples
-
-		query := t.p.queryWithNetwork(ctx)
-		if err := t.p.whereQuery(ctx, query, &relationtuple.RelationQuery{
-			Namespace: &start.Namespace,
-			Object:    &start.Object,
-			Subject:   start.Subject,
-		}); err != nil {
-			return nil, err
-		}
-		err = query.Where("relation IN (?)", relations).Limit(1).All(&rows)
-		if err != nil {
-			return nil, sqlcon.HandleError(err)
-		}
-
-		// If we got any rows back, success!
-		if len(rows) > 0 {
-			r := rows[0]
-			to := r.ToInternal()
-			return []*relationtuple.TraversalResult{{
-				From:  start,
-				To:    to,
-				Via:   relationtuple.TraversalComputedUserset,
-				Found: true,
-			}}, nil
-		}
+	// If we got any rows back, success!
+	if len(rows) > 0 {
+		r := rows[0]
+		to := r.ToInternal()
+		return to, nil
 	}
 
-	// Otherwise, the next candidates are those tuples with relations from the rewrite
-	for _, relation := range computedSubjectSets {
-		res = append(res, &relationtuple.TraversalResult{
-			From: start,
-			To: &relationtuple.RelationTuple{
-				Namespace: start.Namespace,
-				Object:    start.Object,
-				Relation:  relation,
-				Subject:   start.Subject,
-			},
-			Via:   relationtuple.TraversalComputedUserset,
-			Found: false,
-		})
-	}
-
-	return res, nil
+	return nil, nil
 }
 
 func NewTraverser(p *Persister) *Traverser {

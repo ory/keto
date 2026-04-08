@@ -10,6 +10,7 @@ import (
 	"github.com/pkg/errors"
 
 	"github.com/ory/keto/internal/check/checkgroup"
+	"github.com/ory/keto/internal/namespace"
 	"github.com/ory/keto/internal/namespace/ast"
 	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/ketoapi"
@@ -70,23 +71,42 @@ func (e *Engine) checkSubjectSetRewrite(
 			}
 		}
 		if len(computedSubjectSets) > 0 {
+			namespaceManager, err := e.d.Config(ctx).NamespaceManager()
+			if err != nil {
+				return checkgroup.ErrorFunc(err)
+			}
+
+			var relations []string
+			isStrictMode := e.d.Config(ctx).StrictMode()
+			for _, relation := range computedSubjectSets {
+				astRel, _ := namespace.ASTRelationFor(ctx, namespaceManager, tuple.Namespace, relation)
+				// In strict mode, we can skip querying for those relations that have userset rewrites defined,
+				// because we can already apply those rewrites in memory.
+				if isStrictMode && astRel != nil && astRel.SubjectSetRewrite != nil {
+					continue
+				}
+				relations = append(relations, relation)
+			}
+
+			if len(relations) > 0 {
+				checks = append(checks, e.checkDirectWithRelations(ctx, tuple, relations, restDepth))
+			}
 			checks = append(checks, func(ctx context.Context, resultCh chan<- checkgroup.Result) {
-				res, err := e.d.Traverser().TraverseSubjectSetRewrite(ctx, tuple, computedSubjectSets)
-				if err != nil {
-					resultCh <- checkgroup.Result{Err: errors.WithStack(err)}
-					return
-				}
 				g := checkgroup.New(ctx)
+
 				defer func() { resultCh <- g.Result() }()
-				for _, result := range res {
-					if result.Found {
-						g.SetIsMember()
-						return
+
+				for _, rel := range computedSubjectSets {
+					if g.Done() {
+						break
 					}
-				}
-				// If not, we must go another hop:
-				for _, result := range res {
-					g.Add(e.checkIsAllowed(ctx, result.To, restDepth-1, true))
+					relationTupleToCheck := &relationTuple{
+						Namespace: tuple.Namespace,
+						Object:    tuple.Object,
+						Relation:  rel,
+						Subject:   tuple.Subject,
+					}
+					g.Add(e.checkIsAllowed(ctx, relationTupleToCheck, restDepth-1, true))
 				}
 			})
 		}

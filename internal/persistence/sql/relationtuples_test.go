@@ -37,7 +37,6 @@ func TestRelationTupleSubjectTypeCheck(t *testing.T) {
 	t.Parallel()
 
 	for _, dsn := range dbx.GetDSNs(t, false) {
-		dsn := dsn
 		t.Run("dsn="+dsn.Name, func(t *testing.T) {
 			t.Parallel()
 			ctx := context.Background()

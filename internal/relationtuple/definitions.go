@@ -20,7 +20,7 @@ type (
 	}
 	Traverser interface {
 		TraverseSubjectSetExpansion(ctx context.Context, tuple *RelationTuple) ([]*TraversalResult, error)
-		TraverseSubjectSetRewrite(ctx context.Context, tuple *RelationTuple, computedSubjectSets []string) ([]*TraversalResult, error)
+		FindTupleWithRelations(ctx context.Context, tuple *RelationTuple, relations []string) (*RelationTuple, error)
 	}
 	Manager interface {
 		GetRelationTuples(ctx context.Context, query *RelationQuery, options ...keysetpagination.Option) ([]*RelationTuple, *keysetpagination.Paginator, error)

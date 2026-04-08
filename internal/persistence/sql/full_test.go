@@ -57,6 +57,11 @@ func TestPersister(t *testing.T) {
 				p, _, _ := setup(t, dsn)
 				relationtuple.MappingManagerTest(t, p)
 			})
+
+			t.Run("relationtuple.TraverserTest", func(t *testing.T) {
+				p, _, _ := setup(t, dsn)
+				relationtuple.TraverserTest(t, p, sql.NewTraverser(p))
+			})
 		})
 	}
 }
