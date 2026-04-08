@@ -107,7 +107,7 @@ type checkPermission struct {
 //
 // # Check a permission
 //
-// To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
+// To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.com/docs/keto/concepts/api-overview).
 //
 //	Consumes:
 //	-  application/x-www-form-urlencoded
@@ -147,7 +147,7 @@ type checkPermissionOrError struct {
 //
 // # Check a permission
 //
-// To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
+// To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.com/docs/keto/concepts/api-overview).
 //
 //	Consumes:
 //	-  application/x-www-form-urlencoded
@@ -228,7 +228,7 @@ type postCheckPermissionBody struct {
 //
 // # Check a permission
 //
-// To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
+// To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.com/docs/keto/concepts/api-overview).
 //
 //	Consumes:
 //	-  application/json
@@ -280,7 +280,7 @@ type postCheckPermissionOrErrorBody struct {
 //
 // # Check a permission
 //
-// To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
+// To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.com/docs/keto/concepts/api-overview).
 //
 //	Consumes:
 //	-  application/json
@@ -399,7 +399,7 @@ type BatchCheckPermissionResult struct {
 //
 // # Batch check permissions
 //
-// To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
+// To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.com/docs/keto/concepts/api-overview).
 //
 //	Consumes:
 //	-  application/json

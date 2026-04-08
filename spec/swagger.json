@@ -310,13 +310,13 @@
             "type": "integer",
             "format": "int64",
             "default": 250,
-            "description": "Items per Page\n\nThis is the number of items per page to return.\nFor details on pagination please head over to the [pagination documentation](https://www.ory.sh/docs/ecosystem/api-design#pagination).",
+            "description": "Items per Page\n\nThis is the number of items per page to return.\nFor details on pagination please head over to the [pagination documentation](https://www.ory.com/docs/ecosystem/api-design#pagination).",
             "name": "page_size",
             "in": "query"
           },
           {
             "type": "string",
-            "description": "Next Page Token\n\nThe next page token.\nFor details on pagination please head over to the [pagination documentation](https://www.ory.sh/docs/ecosystem/api-design#pagination).",
+            "description": "Next Page Token\n\nThe next page token.\nFor details on pagination please head over to the [pagination documentation](https://www.ory.com/docs/ecosystem/api-design#pagination).",
             "name": "page_token",
             "in": "query"
           },
@@ -388,7 +388,7 @@
     },
     "/relation-tuples/batch/check": {
       "post": {
-        "description": "To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).",
+        "description": "To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.com/docs/keto/concepts/api-overview).",
         "consumes": ["application/json"],
         "produces": ["application/json"],
         "schemes": ["http", "https"],
@@ -435,7 +435,7 @@
     },
     "/relation-tuples/check": {
       "get": {
-        "description": "To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).",
+        "description": "To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.com/docs/keto/concepts/api-overview).",
         "consumes": ["application/x-www-form-urlencoded"],
         "produces": ["application/json"],
         "schemes": ["http", "https"],
@@ -521,7 +521,7 @@
         "x-ory-ratelimit-bucket": "keto-public-high"
       },
       "post": {
-        "description": "To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).",
+        "description": "To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.com/docs/keto/concepts/api-overview).",
         "consumes": ["application/json"],
         "produces": ["application/json"],
         "schemes": ["http", "https"],
@@ -574,7 +574,7 @@
     },
     "/relation-tuples/check/openapi": {
       "get": {
-        "description": "To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).",
+        "description": "To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.com/docs/keto/concepts/api-overview).",
         "consumes": ["application/x-www-form-urlencoded"],
         "produces": ["application/json"],
         "schemes": ["http", "https"],
@@ -654,7 +654,7 @@
         "x-ory-ratelimit-bucket": "keto-public-high"
       },
       "post": {
-        "description": "To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).",
+        "description": "To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.com/docs/keto/concepts/api-overview).",
         "consumes": ["application/json"],
         "produces": ["application/json"],
         "schemes": ["http", "https"],

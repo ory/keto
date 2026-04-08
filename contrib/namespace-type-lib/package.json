@@ -2,7 +2,7 @@
   "name": "@ory/keto-namespace-types",
   "version": "0.9.0-alpha.0",
   "description": "TypeScript definitions for Ory Keto Namespaces",
-  "homepage": "https://www.ory.sh/keto",
+  "homepage": "https://www.ory.com/keto",
   "bugs": "https://github.com/ory/keto/issues",
   "main": "",
   "types": "index.d.ts",

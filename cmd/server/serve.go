@@ -22,7 +22,7 @@ func newServe(opts []ketoctx.Option) *cobra.Command {
 ORY Keto can be configured using environment variables as well as a configuration file. For more information
 on configuration options, open the configuration documentation:
 
->> https://www.ory.sh/keto/docs/reference/configuration <<`,
+>> https://www.ory.com/keto/docs/reference/configuration <<`,
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			reg, err := helpers.NewRegistry(cmd, opts)
 			if err != nil {
@@ -33,7 +33,7 @@ on configuration options, open the configuration documentation:
 		},
 	}
 
-	cmd.Flags().Bool("sqa-opt-out", false, "Disable anonymized telemetry reports - for more information please visit https://www.ory.sh/docs/ecosystem/sqa")
+	cmd.Flags().Bool("sqa-opt-out", false, "Disable anonymized telemetry reports - for more information please visit https://www.ory.com/docs/ecosystem/sqa")
 
 	return cmd
 }

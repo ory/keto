@@ -28,7 +28,7 @@ type PermissionApi interface {
 
 	/*
 	 * BatchCheckPermission Batch check permissions
-	 * To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
+	 * To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.com/docs/keto/concepts/api-overview).
 	 * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	 * @return PermissionApiApiBatchCheckPermissionRequest
 	 */
@@ -42,7 +42,7 @@ type PermissionApi interface {
 
 	/*
 	 * CheckPermission Check a permission
-	 * To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
+	 * To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.com/docs/keto/concepts/api-overview).
 	 * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	 * @return PermissionApiApiCheckPermissionRequest
 	 */
@@ -56,7 +56,7 @@ type PermissionApi interface {
 
 	/*
 	 * CheckPermissionOrError Check a permission
-	 * To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
+	 * To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.com/docs/keto/concepts/api-overview).
 	 * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	 * @return PermissionApiApiCheckPermissionOrErrorRequest
 	 */
@@ -84,7 +84,7 @@ type PermissionApi interface {
 
 	/*
 	 * PostCheckPermission Check a permission
-	 * To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
+	 * To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.com/docs/keto/concepts/api-overview).
 	 * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	 * @return PermissionApiApiPostCheckPermissionRequest
 	 */
@@ -98,7 +98,7 @@ type PermissionApi interface {
 
 	/*
 	 * PostCheckPermissionOrError Check a permission
-	 * To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
+	 * To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.com/docs/keto/concepts/api-overview).
 	 * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	 * @return PermissionApiApiPostCheckPermissionOrErrorRequest
 	 */
@@ -136,7 +136,7 @@ func (r PermissionApiApiBatchCheckPermissionRequest) Execute() (*BatchCheckPermi
 
 /*
  * BatchCheckPermission Batch check permissions
- * To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
+ * To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.com/docs/keto/concepts/api-overview).
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @return PermissionApiApiBatchCheckPermissionRequest
  */
@@ -300,7 +300,7 @@ func (r PermissionApiApiCheckPermissionRequest) Execute() (*CheckPermissionResul
 
 /*
  * CheckPermission Check a permission
- * To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
+ * To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.com/docs/keto/concepts/api-overview).
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @return PermissionApiApiCheckPermissionRequest
  */
@@ -483,7 +483,7 @@ func (r PermissionApiApiCheckPermissionOrErrorRequest) Execute() (*CheckPermissi
 
 /*
  * CheckPermissionOrError Check a permission
- * To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
+ * To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.com/docs/keto/concepts/api-overview).
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @return PermissionApiApiCheckPermissionOrErrorRequest
  */
@@ -810,7 +810,7 @@ func (r PermissionApiApiPostCheckPermissionRequest) Execute() (*CheckPermissionR
 
 /*
  * PostCheckPermission Check a permission
- * To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
+ * To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.com/docs/keto/concepts/api-overview).
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @return PermissionApiApiPostCheckPermissionRequest
  */
@@ -944,7 +944,7 @@ func (r PermissionApiApiPostCheckPermissionOrErrorRequest) Execute() (*CheckPerm
 
 /*
  * PostCheckPermissionOrError Check a permission
- * To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.sh/docs/keto/concepts/api-overview).
+ * To learn how relationship tuples and the check works, head over to [the documentation](https://www.ory.com/docs/keto/concepts/api-overview).
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @return PermissionApiApiPostCheckPermissionOrErrorRequest
  */
