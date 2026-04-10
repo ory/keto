@@ -22,13 +22,13 @@
   },
   "devDependencies": {
     "@ory/keto-namespace-types": "file:contrib/namespace-type-lib",
-    "doctoc": "2.3.0",
+    "doctoc": "2.4.0",
     "license-checker": "25.0.1",
-    "prettier": "3.8.1",
+    "prettier": "3.8.2",
     "prettier-plugin-packagejson": "3.0.2"
   },
   "overrides": {
-    "axios": ">=1.13.5",
+    "axios": ">=1.15.0",
     "glob": ">=11.1.0",
     "tar": ">=7.5.10",
     "grpc_tools_node_protoc_ts": {
