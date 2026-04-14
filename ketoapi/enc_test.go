@@ -143,15 +143,15 @@ func TestRelationTuple(t *testing.T) {
 			},
 			{
 				enc: "no-colon#in@this",
-				err: ErrMalformedInput,
+				err: ErrMalformedInput(),
 			},
 			{
 				enc: "no:hash-in@this",
-				err: ErrMalformedInput,
+				err: ErrMalformedInput(),
 			},
 			{
 				enc: "no:at#in-this",
-				err: ErrMalformedInput,
+				err: ErrMalformedInput(),
 			},
 		} {
 			t.Run(fmt.Sprintf("string=%s", tc.enc), func(t *testing.T) {
@@ -232,7 +232,7 @@ func TestRelationTuple(t *testing.T) {
 					Relation:  "r",
 					Subject:   nil,
 				},
-				err: ErrNilSubject,
+				err: ErrNilSubject(),
 			},
 			{
 				proto: &rts.RelationTuple{

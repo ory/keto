@@ -27,7 +27,7 @@ type (
 func (r *RelationTuple) FromDataProvider(d TupleData) (*RelationTuple, error) {
 	switch s := d.GetSubject().GetRef().(type) {
 	case nil:
-		return nil, errors.WithStack(ErrNilSubject)
+		return nil, errors.WithStack(ErrNilSubject())
 	case *rts.Subject_Set:
 		r.SubjectSet = &SubjectSet{
 			Namespace: s.Set.Namespace,

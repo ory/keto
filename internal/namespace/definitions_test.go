@@ -5,6 +5,7 @@ package namespace_test
 
 import (
 	"context"
+	"errors"
 	"net/http"
 	"testing"
 
@@ -29,9 +30,9 @@ func TestASTRelationFor(t *testing.T) {
 	assert.Equal(t, "test", rel.Name)
 
 	_, err = namespace.ASTRelationFor(ctx, nm, "test", "unknown")
-	herodotErr := herodot.ErrBadRequest
-	require.ErrorAs(t, err, new(&herodotErr))
-	assert.Equal(t, http.StatusBadRequest, herodotErr.CodeField)
+	herr, ok := errors.AsType[*herodot.DefaultError](err)
+	require.True(t, ok)
+	assert.Equal(t, http.StatusBadRequest, herr.CodeField)
 
 	rel, err = namespace.ASTRelationFor(ctx, nm, "unknown", "")
 	require.NoError(t, err)

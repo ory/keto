@@ -58,5 +58,5 @@ func ASTRelationFor(ctx context.Context, m Manager, namespace, relation string) 
 			return &rel, nil
 		}
 	}
-	return nil, herodot.ErrBadRequest.WithReasonf("relation %q does not exist", relation)
+	return nil, herodot.ErrBadRequest().WithReasonf("relation %q does not exist", relation)
 }

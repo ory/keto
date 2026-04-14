@@ -79,7 +79,7 @@ func (h *Handler) DeleteRelationTuples(ctx context.Context, req *rts.DeleteRelat
 		//lint:ignore SA1019 backwards compatibility
 		q.FromDataProvider(&deprecatedQueryWrapper{(*rts.ListRelationTuplesRequest_Query)(req.Query)}) //nolint:staticcheck
 	default:
-		return nil, errors.WithStack(herodot.ErrBadRequest.WithReason("invalid request"))
+		return nil, errors.WithStack(herodot.ErrBadRequest().WithReason("invalid request"))
 	}
 
 	iq, err := h.d.ReadOnlyMapper().FromQuery(ctx, &q)
@@ -87,7 +87,7 @@ func (h *Handler) DeleteRelationTuples(ctx context.Context, req *rts.DeleteRelat
 		return nil, err
 	}
 	if err := h.d.RelationTupleManager().DeleteAllRelationTuples(ctx, iq); err != nil {
-		return nil, errors.WithStack(herodot.ErrInternalServerError.WithError(err.Error()))
+		return nil, errors.WithStack(herodot.ErrInternalServerError().WithError(err.Error()))
 	}
 
 	trace.SpanFromContext(ctx).AddEvent(events.NewRelationtuplesDeleted(ctx))
@@ -138,7 +138,7 @@ func (h *Handler) createRelation(w http.ResponseWriter, r *http.Request) {
 
 	var rt ketoapi.RelationTuple
 	if err := json.NewDecoder(r.Body).Decode(&rt); err != nil {
-		h.d.Writer().WriteError(w, r, errors.WithStack(herodot.ErrBadRequest.WithError(err.Error())))
+		h.d.Writer().WriteError(w, r, errors.WithStack(herodot.ErrBadRequest().WithError(err.Error())))
 		return
 	}
 
@@ -210,7 +210,7 @@ func (h *Handler) deleteRelations(w http.ResponseWriter, r *http.Request) {
 	q := r.URL.Query()
 	query, err := (&ketoapi.RelationQuery{}).FromURLQuery(q)
 	if err != nil {
-		h.d.Writer().WriteError(w, r, herodot.ErrBadRequest.WithError(err.Error()))
+		h.d.Writer().WriteError(w, r, herodot.ErrBadRequest().WithError(err.Error()))
 		return
 	}
 
@@ -228,7 +228,7 @@ func (h *Handler) deleteRelations(w http.ResponseWriter, r *http.Request) {
 	}
 	if err := h.d.RelationTupleManager().DeleteAllRelationTuples(ctx, iq); err != nil {
 		l.WithError(err).Errorf("got an error while deleting relationships")
-		h.d.Writer().WriteError(w, r, herodot.ErrInternalServerError.WithError(err.Error()))
+		h.d.Writer().WriteError(w, r, herodot.ErrInternalServerError().WithError(err.Error()))
 		return
 	}
 
@@ -273,12 +273,12 @@ func (h *Handler) patchRelationTuples(w http.ResponseWriter, r *http.Request) {
 
 	var deltas []*ketoapi.PatchDelta
 	if err := json.NewDecoder(r.Body).Decode(&deltas); err != nil {
-		h.d.Writer().WriteError(w, r, herodot.ErrBadRequest.WithError(err.Error()))
+		h.d.Writer().WriteError(w, r, herodot.ErrBadRequest().WithError(err.Error()))
 		return
 	}
 	for _, d := range deltas {
 		if d.RelationTuple == nil {
-			h.d.Writer().WriteError(w, r, herodot.ErrBadRequest.WithError("relation_tuple is missing"))
+			h.d.Writer().WriteError(w, r, herodot.ErrBadRequest().WithError("relation_tuple is missing"))
 			return
 		}
 		if err := d.RelationTuple.Validate(); err != nil {
@@ -289,7 +289,7 @@ func (h *Handler) patchRelationTuples(w http.ResponseWriter, r *http.Request) {
 		switch d.Action {
 		case ketoapi.ActionInsert, ketoapi.ActionDelete:
 		default:
-			h.d.Writer().WriteError(w, r, herodot.ErrBadRequest.WithError("unknown action "+string(d.Action)))
+			h.d.Writer().WriteError(w, r, herodot.ErrBadRequest().WithError("unknown action "+string(d.Action)))
 			return
 		}
 	}

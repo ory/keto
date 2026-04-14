@@ -656,7 +656,7 @@ func TestEngine(t *testing.T) {
 		require.Equal(t, checkgroup.NotMember, results[2].Membership)
 		require.NoError(t, results[2].Err)
 		require.Equal(t, checkgroup.MembershipUnknown, results[3].Membership)
-		require.EqualError(t, results[3].Err, herodot.ErrNotFound.Error())
+		require.EqualError(t, results[3].Err, herodot.ErrNotFound().Error())
 		require.Equal(t, checkgroup.NotMember, results[4].Membership)
 		require.NoError(t, results[4].Err)
 		require.Equal(t, checkgroup.IsMember, results[5].Membership)

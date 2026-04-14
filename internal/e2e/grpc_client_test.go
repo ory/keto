@@ -111,7 +111,7 @@ func (g *grpcClient) queryTuple(t testing.TB, q *ketoapi.RelationQuery, opts ...
 	}
 }
 
-func (g *grpcClient) queryTupleErr(t testing.TB, expected herodot.DefaultError, q *ketoapi.RelationQuery, opts ...paginationOptionSetter) {
+func (g *grpcClient) queryTupleErr(t testing.TB, expected *herodot.DefaultError, q *ketoapi.RelationQuery, opts ...paginationOptionSetter) {
 	c := rts.NewReadServiceClient(g.read)
 	pagination := getPaginationOptions(opts...)
 
@@ -152,7 +152,7 @@ type checkResponse struct {
 	errorMessage string
 }
 
-func (g *grpcClient) batchCheckErr(t testing.TB, requestTuples []*ketoapi.RelationTuple, expected herodot.DefaultError) {
+func (g *grpcClient) batchCheckErr(t testing.TB, requestTuples []*ketoapi.RelationTuple, expected *herodot.DefaultError) {
 	_, err := g.doBatchCheck(t, requestTuples)
 	require.Error(t, err)
 	s, ok := status.FromError(err)

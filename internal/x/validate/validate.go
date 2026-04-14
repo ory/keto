@@ -24,7 +24,7 @@ func All(r *http.Request, validator ...Validator) error {
 		}
 	}
 	if len(reasons) > 0 {
-		return herodot.ErrBadRequest.WithReason(strings.Join(reasons, "; "))
+		return herodot.ErrBadRequest().WithReason(strings.Join(reasons, "; "))
 	}
 	return nil
 }

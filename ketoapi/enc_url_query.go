@@ -15,7 +15,7 @@ func (q *RelationQuery) FromURLQuery(query url.Values) (*RelationQuery, error) {
 	}
 
 	if query.Has("subject") {
-		return nil, ErrDroppedSubjectKey
+		return nil, ErrDroppedSubjectKey()
 	}
 
 	// reset subject
@@ -26,7 +26,7 @@ func (q *RelationQuery) FromURLQuery(query url.Values) (*RelationQuery, error) {
 	case !query.Has(SubjectIDKey) && !query.Has(SubjectSetNamespaceKey) && !query.Has(SubjectSetObjectKey) && !query.Has(SubjectSetRelationKey):
 		// was not queried for the subject
 	case query.Has(SubjectIDKey) && (query.Has(SubjectSetNamespaceKey) || query.Has(SubjectSetObjectKey) || query.Has(SubjectSetRelationKey)):
-		return nil, ErrDuplicateSubject.WithDebugf("please provide either %s or all of %s, %s, and %s", SubjectIDKey, SubjectSetNamespaceKey, SubjectSetObjectKey, SubjectSetRelationKey)
+		return nil, ErrDuplicateSubject().WithDebugf("please provide either %s or all of %s, %s, and %s", SubjectIDKey, SubjectSetNamespaceKey, SubjectSetObjectKey, SubjectSetRelationKey)
 	case query.Has(SubjectIDKey):
 		q.SubjectID = new(query.Get(SubjectIDKey))
 	case query.Has(SubjectSetNamespaceKey) && query.Has(SubjectSetObjectKey) && query.Has(SubjectSetRelationKey):
@@ -36,7 +36,7 @@ func (q *RelationQuery) FromURLQuery(query url.Values) (*RelationQuery, error) {
 			Relation:  query.Get(SubjectSetRelationKey),
 		}
 	default:
-		return nil, ErrIncompleteSubject
+		return nil, ErrIncompleteSubject()
 	}
 
 	if query.Has(NamespaceKey) {
@@ -81,10 +81,10 @@ func (r *RelationTuple) FromURLQuery(query url.Values) (*RelationTuple, error) {
 		return nil, err
 	}
 	if q.SubjectID == nil && q.SubjectSet == nil {
-		return nil, errors.WithStack(ErrNilSubject)
+		return nil, errors.WithStack(ErrNilSubject())
 	}
 	if q.Namespace == nil || q.Object == nil || q.Relation == nil {
-		return nil, errors.WithStack(ErrIncompleteTuple)
+		return nil, errors.WithStack(ErrIncompleteTuple())
 	}
 
 	r.Namespace = *q.Namespace

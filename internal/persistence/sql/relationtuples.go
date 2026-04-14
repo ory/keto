@@ -128,7 +128,7 @@ func (p *Persister) whereSubject(_ context.Context, q *pop.Query, sub relationtu
 			// NULL checks to leverage partial indexes
 			Where("subject_id IS NULL")
 	case nil:
-		return errors.WithStack(ketoapi.ErrNilSubject)
+		return errors.WithStack(ketoapi.ErrNilSubject())
 	}
 	return nil
 }
@@ -178,7 +178,7 @@ func buildPlannerQuery(rq *relationtuple.RelationQuery) paginationplanner.Query 
 
 func buildDelete(nid uuid.UUID, rs []*relationtuple.RelationTuple) (query string, args []any, err error) {
 	if len(rs) == 0 {
-		return "", nil, errors.WithStack(ketoapi.ErrMalformedInput)
+		return "", nil, errors.WithStack(ketoapi.ErrMalformedInput())
 	}
 
 	args = make([]any, 0, 6*len(rs)+1)
@@ -192,7 +192,7 @@ func buildDelete(nid uuid.UUID, rs []*relationtuple.RelationTuple) (query string
 			ors = append(ors, "(namespace = ? AND object = ? AND relation = ? AND subject_id IS NULL AND subject_set_namespace = ? AND subject_set_object = ? AND subject_set_relation = ?)")
 			args = append(args, rt.Namespace, rt.Object, rt.Relation, s.Namespace, s.Object, s.Relation)
 		case nil:
-			return "", nil, errors.WithStack(ketoapi.ErrNilSubject)
+			return "", nil, errors.WithStack(ketoapi.ErrNilSubject())
 		}
 	}
 
@@ -291,7 +291,7 @@ func (p *Persister) ExistsRelationTuples(ctx context.Context, query *relationtup
 
 func buildInsert(commitTime time.Time, nid uuid.UUID, rs []*relationtuple.RelationTuple) (query string, args []any, err error) {
 	if len(rs) == 0 {
-		return "", nil, errors.WithStack(ketoapi.ErrMalformedInput)
+		return "", nil, errors.WithStack(ketoapi.ErrMalformedInput())
 	}
 
 	var q strings.Builder
@@ -303,7 +303,7 @@ func buildInsert(commitTime time.Time, nid uuid.UUID, rs []*relationtuple.Relati
 
 	for i, r := range rs {
 		if r.Subject == nil {
-			return "", nil, errors.WithStack(ketoapi.ErrNilSubject)
+			return "", nil, errors.WithStack(ketoapi.ErrNilSubject())
 		}
 
 		rt := &RelationTuple{

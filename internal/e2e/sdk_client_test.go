@@ -213,7 +213,7 @@ func (c *sdkClient) queryTuple(t testing.TB, q *ketoapi.RelationQuery, opts ...p
 	return getResp
 }
 
-func (c *sdkClient) queryTupleErr(t testing.TB, expected herodot.DefaultError, q *ketoapi.RelationQuery, opts ...paginationOptionSetter) {
+func (c *sdkClient) queryTupleErr(t testing.TB, expected *herodot.DefaultError, q *ketoapi.RelationQuery, opts ...paginationOptionSetter) {
 	request := c.getReadClient().RelationshipApi.GetRelationships(c.requestCtx(t))
 	request = compileParams(request, q, opts)
 	_, _, err := request.Execute()
@@ -241,7 +241,7 @@ func (c *sdkClient) check(t testing.TB, r *ketoapi.RelationTuple) bool {
 	return resp.GetAllowed()
 }
 
-func (c *sdkClient) batchCheckErr(t testing.TB, requestTuples []*ketoapi.RelationTuple, expected herodot.DefaultError) {
+func (c *sdkClient) batchCheckErr(t testing.TB, requestTuples []*ketoapi.RelationTuple, expected *herodot.DefaultError) {
 	request := c.getReadClient().PermissionApi.BatchCheckPermission(c.requestCtx(t)).
 		BatchCheckPermissionBody(httpclient.BatchCheckPermissionBody{
 			Tuples: tuplesToRelationships(requestTuples),

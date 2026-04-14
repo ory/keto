@@ -515,7 +515,7 @@ func ManagerTest(t *testing.T, m Manager) {
 			assert.Equal(t, []*RelationTuple{rs[0]}, res)
 
 			t.Run("invalid=insert", func(t *testing.T) {
-				assert.ErrorIs(t, m.TransactRelationTuples(t.Context(), []*RelationTuple{invalidRt}, []*RelationTuple{rs[0]}), ketoapi.ErrNilSubject)
+				assert.ErrorIs(t, m.TransactRelationTuples(t.Context(), []*RelationTuple{invalidRt}, []*RelationTuple{rs[0]}), ketoapi.ErrNilSubject())
 			})
 
 			res, _, err = m.GetRelationTuples(t.Context(), &RelationQuery{
@@ -525,7 +525,7 @@ func ManagerTest(t *testing.T, m Manager) {
 			assert.Equal(t, []*RelationTuple{rs[0]}, res)
 
 			t.Run("invalid=delete", func(t *testing.T) {
-				assert.ErrorIs(t, m.TransactRelationTuples(t.Context(), []*RelationTuple{rs[1]}, []*RelationTuple{invalidRt}), ketoapi.ErrNilSubject)
+				assert.ErrorIs(t, m.TransactRelationTuples(t.Context(), []*RelationTuple{rs[1]}, []*RelationTuple{invalidRt}), ketoapi.ErrNilSubject())
 			})
 
 			res, _, err = m.GetRelationTuples(t.Context(), &RelationQuery{

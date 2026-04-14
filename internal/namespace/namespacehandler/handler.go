@@ -48,12 +48,12 @@ func (h *Handler) ListNamespaces(ctx context.Context, _ *rts.ListNamespacesReque
 	m, err := h.Config(ctx).NamespaceManager()
 	if err != nil {
 		h.Logger().WithError(err).Errorf("could not get namespace manager")
-		return nil, herodot.ErrInternalServerError
+		return nil, herodot.ErrInternalServerError()
 	}
 	namespaces, err := m.Namespaces(ctx)
 	if err != nil {
 		h.Logger().WithError(err).Errorf("could not get namespaces")
-		return nil, herodot.ErrInternalServerError
+		return nil, herodot.ErrInternalServerError()
 	}
 	apiNamespaces := make([]*rts.Namespace, len(namespaces))
 	for i, n := range namespaces {

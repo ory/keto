@@ -85,7 +85,7 @@ func TestRelationCollection(t *testing.T) {
 
 	t.Run("func=NewProtoCollection", func(t *testing.T) {
 		_, err := NewProtoCollection([]*rts.RelationTuple{{ /*subject is nil*/ }})
-		require.ErrorIs(t, err, ketoapi.ErrNilSubject)
+		require.ErrorIs(t, err, ketoapi.ErrNilSubject())
 	})
 
 	t.Run("func=json", func(t *testing.T) {

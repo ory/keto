@@ -93,7 +93,7 @@ type checkOplSyntaxBody string
 func (h *Handler) postCheckOplSyntax(w http.ResponseWriter, r *http.Request) {
 	data, err := io.ReadAll(r.Body)
 	if err != nil {
-		h.d.Writer().WriteError(w, r, errors.WithStack(herodot.ErrBadRequest.WithError(err.Error())))
+		h.d.Writer().WriteError(w, r, errors.WithStack(herodot.ErrBadRequest().WithError(err.Error())))
 		return
 	}
 	_, parseErrors := Parse(string(data))

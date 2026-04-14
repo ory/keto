@@ -115,7 +115,7 @@ func (e *Engine) checkExpandSubject(r *relationTuple, restDepth int) checkgroup.
 
 		results, err := e.d.Traverser().TraverseSubjectSetExpansion(ctx, r)
 
-		if errors.Is(err, herodot.ErrNotFound) {
+		if errors.Is(err, herodot.ErrNotFound()) {
 			resultCh <- checkgroup.ResultNotMember
 			return
 		} else if err != nil {

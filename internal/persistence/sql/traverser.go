@@ -42,7 +42,7 @@ func whereSubject(sub relationtuple.Subject) (sqlFragment string, args []any, er
 		args = []any{s.Namespace, s.Object, s.Relation}
 
 	case nil:
-		return "", nil, errors.WithStack(ketoapi.ErrNilSubject)
+		return "", nil, errors.WithStack(ketoapi.ErrNilSubject())
 	}
 	return sqlFragment, args, nil
 }

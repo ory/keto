@@ -88,7 +88,7 @@ type expandPermissions struct {
 func (h *Handler) getExpand(w http.ResponseWriter, r *http.Request) {
 	maxDepth, err := x.GetMaxDepthFromQuery(r.URL.Query())
 	if err != nil {
-		h.d.Writer().WriteError(w, r, herodot.ErrBadRequest.WithError(err.Error()))
+		h.d.Writer().WriteError(w, r, herodot.ErrBadRequest().WithError(err.Error()))
 		return
 	}
 
@@ -105,7 +105,7 @@ func (h *Handler) getExpand(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if res == nil {
-		h.d.Writer().Write(w, r, herodot.ErrNotFound.WithError("no relation tuple found"))
+		h.d.Writer().Write(w, r, herodot.ErrNotFound().WithError("no relation tuple found"))
 		return
 	}
 

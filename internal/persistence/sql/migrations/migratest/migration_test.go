@@ -94,7 +94,7 @@ func TestMigrations(t *testing.T) {
 					// as they are legacy, we expect them to be actually dropped
 					assert.ErrorIs(t, sqlcon.HandleError(conn.RawQuery(
 						"SELECT * FROM keto_namespace",
-					).Exec()), sqlcon.ErrNoSuchTable)
+					).Exec()), sqlcon.ErrNoSuchTable())
 				})
 
 				t.Run("table=relationships", func(t *testing.T) {

@@ -207,7 +207,7 @@ func runCases(c client, m *namespaceTestManager) func(*testing.T) {
 					SubjectID: new("sub"),
 				}
 			}
-			c.batchCheckErr(t, tuples, herodot.ErrBadRequest)
+			c.batchCheckErr(t, tuples, herodot.ErrBadRequest())
 		})
 
 		t.Run("case=expand API", func(t *testing.T) {
@@ -358,7 +358,7 @@ func runCases(c client, m *namespaceTestManager) func(*testing.T) {
 		})
 
 		t.Run("case=returns error with status code on unknown namespace", func(t *testing.T) {
-			c.queryTupleErr(t, herodot.ErrNotFound, &ketoapi.RelationQuery{Namespace: new("unknown namespace")})
+			c.queryTupleErr(t, herodot.ErrNotFound(), &ketoapi.RelationQuery{Namespace: new("unknown namespace")})
 		})
 
 		t.Run("case=still serves tuples from deleted namespace", func(t *testing.T) {

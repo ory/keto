@@ -108,7 +108,7 @@ func (rc *restClient) queryTuple(t testing.TB, q *ketoapi.RelationQuery, opts ..
 	return &dec
 }
 
-func (rc *restClient) queryTupleErr(t testing.TB, expected herodot.DefaultError, q *ketoapi.RelationQuery, opts ...paginationOptionSetter) {
+func (rc *restClient) queryTupleErr(t testing.TB, expected *herodot.DefaultError, q *ketoapi.RelationQuery, opts ...paginationOptionSetter) {
 	urlQuery := q.ToURLQuery()
 
 	pagination := getPaginationOptions(opts...)
@@ -154,7 +154,7 @@ func (rc *restClient) check(t testing.TB, r *ketoapi.RelationTuple) bool {
 	return false
 }
 
-func (rc *restClient) batchCheckErr(t testing.TB, requestTuples []*ketoapi.RelationTuple, expected herodot.DefaultError) {
+func (rc *restClient) batchCheckErr(t testing.TB, requestTuples []*ketoapi.RelationTuple, expected *herodot.DefaultError) {
 	req := httpclient.BatchCheckPermissionBody{
 		Tuples: tuplesToRelationships(requestTuples),
 	}

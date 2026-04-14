@@ -14,14 +14,27 @@ import (
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 )
 
-var (
-	ErrDroppedSubjectKey = herodot.ErrBadRequest.WithDebug(`provide "subject_id" or "subject_set.*"; support for "subject" was dropped`)
-	ErrDuplicateSubject  = herodot.ErrBadRequest.WithError("exactly one of subject_set or subject_id has to be provided")
-	ErrIncompleteSubject = herodot.ErrBadRequest.WithError(`incomplete subject, provide "subject_id" or a complete "subject_set.*"`)
-	ErrNilSubject        = herodot.ErrBadRequest.WithError("subject is not allowed to be nil").WithDebug("Please provide a subject.")
-	ErrIncompleteTuple   = herodot.ErrBadRequest.WithError(`incomplete tuple, provide "namespace", "object", "relation", and a subject`)
-	ErrUnknownNodeType   = errors.New("unknown node type")
-)
+var ErrUnknownNodeType = errors.New("unknown node type")
+
+func ErrDroppedSubjectKey() *herodot.DefaultError {
+	return herodot.ErrBadRequest().WithDebug(`provide "subject_id" or "subject_set.*"; support for "subject" was dropped`)
+}
+
+func ErrDuplicateSubject() *herodot.DefaultError {
+	return herodot.ErrBadRequest().WithError("exactly one of subject_set or subject_id has to be provided")
+}
+
+func ErrIncompleteSubject() *herodot.DefaultError {
+	return herodot.ErrBadRequest().WithError(`incomplete subject, provide "subject_id" or a complete "subject_set.*"`)
+}
+
+func ErrNilSubject() *herodot.DefaultError {
+	return herodot.ErrBadRequest().WithError("subject is not allowed to be nil").WithDebug("Please provide a subject.")
+}
+
+func ErrIncompleteTuple() *herodot.DefaultError {
+	return herodot.ErrBadRequest().WithError(`incomplete tuple, provide "namespace", "object", "relation", and a subject`)
+}
 
 // swagger:model namespace
 type Namespace struct {
@@ -170,7 +183,7 @@ func (r *RelationTuple) ToLoggerFields() logrus.Fields {
 
 func (r *RelationTuple) Validate() error {
 	if r.SubjectSet == nil && r.SubjectID == nil {
-		return errors.WithStack(ErrNilSubject)
+		return errors.WithStack(ErrNilSubject())
 	}
 	return nil
 }

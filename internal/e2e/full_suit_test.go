@@ -34,10 +34,10 @@ type (
 		deleteTuple(t testing.TB, r *ketoapi.RelationTuple)
 		deleteAllTuples(t testing.TB, q *ketoapi.RelationQuery)
 		queryTuple(t testing.TB, q *ketoapi.RelationQuery, opts ...paginationOptionSetter) *ketoapi.GetResponse
-		queryTupleErr(t testing.TB, expected herodot.DefaultError, q *ketoapi.RelationQuery, opts ...paginationOptionSetter)
+		queryTupleErr(t testing.TB, expected *herodot.DefaultError, q *ketoapi.RelationQuery, opts ...paginationOptionSetter)
 		check(t testing.TB, r *ketoapi.RelationTuple) bool
 		batchCheck(t testing.TB, r []*ketoapi.RelationTuple) []checkResponse
-		batchCheckErr(t testing.TB, requestTuples []*ketoapi.RelationTuple, expected herodot.DefaultError)
+		batchCheckErr(t testing.TB, requestTuples []*ketoapi.RelationTuple, expected *herodot.DefaultError)
 		expand(t testing.TB, r *ketoapi.SubjectSet, depth int) *ketoapi.Tree[*ketoapi.RelationTuple]
 		oplCheckSyntax(t testing.TB, content []byte) []*ketoapi.ParseError
 		waitUntilLive(t testing.TB)

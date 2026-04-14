@@ -369,7 +369,7 @@ func (k *Config) namespaceConfig() (namespaceConfig, error) {
 		return oplNamespaceConfig(nTyped), nil
 
 	default:
-		return nil, errors.WithStack(herodot.ErrInternalServerError.WithReasonf("could not infer namespaces for type %T", nTyped))
+		return nil, errors.WithStack(herodot.ErrInternalServerError().WithReasonf("could not infer namespaces for type %T", nTyped))
 	}
 }
 

@@ -193,7 +193,7 @@ func (h *Handler) getCheck(ctx context.Context, q url.Values) (bool, error) {
 
 	it, err := h.d.ReadOnlyMapper().FromTuple(ctx, tuple)
 	// herodot.ErrNotFound occurs when the namespace is unknown
-	if errors.Is(err, herodot.ErrNotFound) {
+	if errors.Is(err, herodot.ErrNotFound()) {
 		return false, nil
 	} else if err != nil {
 		return false, err
@@ -321,11 +321,11 @@ func (h *Handler) postCheck(ctx context.Context, body io.Reader, query url.Value
 
 	var tuple ketoapi.RelationTuple
 	if err := json.NewDecoder(body).Decode(&tuple); err != nil {
-		return false, errors.WithStack(herodot.ErrBadRequest.WithErrorf("could not unmarshal json: %s", err.Error()))
+		return false, errors.WithStack(herodot.ErrBadRequest().WithErrorf("could not unmarshal json: %s", err.Error()))
 	}
 	t, err := h.d.ReadOnlyMapper().FromTuple(ctx, &tuple)
 	// herodot.ErrNotFound occurs when the namespace is unknown
-	if errors.Is(err, herodot.ErrNotFound) {
+	if errors.Is(err, herodot.ErrNotFound()) {
 		return false, nil
 	} else if err != nil {
 		return false, err
@@ -434,11 +434,11 @@ func (h *Handler) doBatchCheck(ctx context.Context, body io.Reader, query url.Va
 	}
 	var request batchCheckPermissionBody
 	if err := json.NewDecoder(body).Decode(&request); err != nil {
-		return nil, errors.WithStack(herodot.ErrBadRequest.WithErrorf("could not unmarshal json: %s", err.Error()))
+		return nil, errors.WithStack(herodot.ErrBadRequest().WithErrorf("could not unmarshal json: %s", err.Error()))
 	}
 
 	if len(request.Tuples) > h.d.Config(ctx).BatchCheckMaxBatchSize() {
-		return nil, herodot.ErrBadRequest.WithErrorf("batch exceeds max size of %v",
+		return nil, herodot.ErrBadRequest().WithErrorf("batch exceeds max size of %v",
 			h.d.Config(ctx).BatchCheckMaxBatchSize())
 	}
 

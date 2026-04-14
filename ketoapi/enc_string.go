@@ -11,7 +11,9 @@ import (
 	"github.com/pkg/errors"
 )
 
-var ErrMalformedInput = herodot.ErrBadRequest.WithError("malformed string input")
+func ErrMalformedInput() *herodot.DefaultError {
+	return herodot.ErrBadRequest().WithError("malformed string input")
+}
 
 func (r *RelationTuple) String() string {
 	if r == nil {
@@ -43,15 +45,15 @@ func (r *RelationTuple) FromString(s string) (*RelationTuple, error) {
 		ok                          bool
 	)
 	if r.Namespace, objectAndRelationAndSubject, ok = strings.Cut(s, ":"); !ok {
-		return nil, errors.WithStack(ErrMalformedInput.WithDebug("expected input to contain ':'"))
+		return nil, errors.WithStack(ErrMalformedInput().WithDebug("expected input to contain ':'"))
 	}
 
 	if r.Object, relationAndSubject, ok = strings.Cut(objectAndRelationAndSubject, "#"); !ok {
-		return nil, errors.WithStack(ErrMalformedInput.WithDebug("expected input to contain '#'"))
+		return nil, errors.WithStack(ErrMalformedInput().WithDebug("expected input to contain '#'"))
 	}
 
 	if r.Relation, subject, ok = strings.Cut(relationAndSubject, "@"); !ok {
-		return nil, errors.WithStack(ErrMalformedInput.WithDebug("expected input to contain '@'"))
+		return nil, errors.WithStack(ErrMalformedInput().WithDebug("expected input to contain '@'"))
 	}
 
 	// remove optional brackets around the subject set
@@ -83,7 +85,7 @@ func (s *SubjectSet) FromString(str string) (*SubjectSet, error) {
 
 	namespace, object, ok := strings.Cut(namespaceAndObject, ":")
 	if !ok {
-		return nil, errors.WithStack(ErrMalformedInput.WithDebug("expected subject set to contain ':'"))
+		return nil, errors.WithStack(ErrMalformedInput().WithDebug("expected subject set to contain ':'"))
 	}
 
 	return &SubjectSet{

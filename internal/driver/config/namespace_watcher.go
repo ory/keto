@@ -220,7 +220,7 @@ func (nw *NamespaceWatcher) GetNamespaceByName(_ context.Context, name string) (
 		}
 	}
 
-	return nil, errors.WithStack(herodot.ErrNotFound.WithErrorf(
+	return nil, errors.WithStack(herodot.ErrNotFound().WithErrorf(
 		"Unknown namespace with name %s", name))
 }
 
@@ -236,7 +236,7 @@ func (nw *NamespaceWatcher) GetNamespaceByConfigID(_ context.Context, id int32) 
 		}
 	}
 
-	return nil, errors.WithStack(herodot.ErrNotFound.WithErrorf(
+	return nil, errors.WithStack(herodot.ErrNotFound().WithErrorf(
 		"Unknown namespace with ID %d", id))
 }
 

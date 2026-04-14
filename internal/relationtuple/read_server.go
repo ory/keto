@@ -67,7 +67,7 @@ func (h *Handler) ListRelationTuples(ctx context.Context, req *rts.ListRelationT
 	case req.Query != nil: //nolint:staticcheck //lint:ignore SA1019 backwards compatibility
 		q.FromDataProvider(&deprecatedQueryWrapper{req.Query}) //nolint:staticcheck //lint:ignore SA1019 backwards compatibility
 	default:
-		return nil, herodot.ErrBadRequest.WithError("you must provide a query")
+		return nil, herodot.ErrBadRequest().WithError("you must provide a query")
 	}
 
 	iq, err := h.d.ReadOnlyMapper().FromQuery(ctx, &q)
@@ -83,7 +83,7 @@ func (h *Handler) ListRelationTuples(ctx context.Context, req *rts.ListRelationT
 	if req.PageToken != "" {
 		token, err := keysetpagination.ParsePageToken(paginationKeys, req.PageToken)
 		if err != nil {
-			return nil, herodot.ErrBadRequest.WithError(err.Error())
+			return nil, herodot.ErrBadRequest().WithError(err.Error())
 		}
 		pageOpts = append(pageOpts, keysetpagination.WithToken(token))
 	}
@@ -136,7 +136,7 @@ func (h *Handler) getRelations(w http.ResponseWriter, r *http.Request) {
 	q := r.URL.Query()
 	query, err := (&ketoapi.RelationQuery{}).FromURLQuery(q)
 	if err != nil {
-		h.d.Writer().WriteError(w, r, herodot.ErrBadRequest.WithError(err.Error()))
+		h.d.Writer().WriteError(w, r, herodot.ErrBadRequest().WithError(err.Error()))
 		return
 	}
 
@@ -149,7 +149,7 @@ func (h *Handler) getRelations(w http.ResponseWriter, r *http.Request) {
 	paginationKeys := h.d.Config(ctx).PaginationEncryptionKeys()
 	paginationOpts, err := keysetpagination.ParseQueryParams(paginationKeys, q)
 	if err != nil {
-		h.d.Writer().WriteError(w, r, herodot.ErrBadRequest.WithError(err.Error()))
+		h.d.Writer().WriteError(w, r, herodot.ErrBadRequest().WithError(err.Error()))
 		return
 	}
 

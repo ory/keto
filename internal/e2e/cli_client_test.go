@@ -87,7 +87,7 @@ func (g *cliClient) queryTuple(t testing.TB, q *ketoapi.RelationQuery, opts ...p
 	return &resp
 }
 
-func (g *cliClient) queryTupleErr(t testing.TB, expected herodot.DefaultError, q *ketoapi.RelationQuery, opts ...paginationOptionSetter) {
+func (g *cliClient) queryTupleErr(t testing.TB, expected *herodot.DefaultError, q *ketoapi.RelationQuery, opts ...paginationOptionSetter) {
 	_, stdErr, err := g.c.Exec(nil, append(g.assembleQueryFlags(q, opts), "relation-tuple", "get")...)
 	assert.Error(t, err)
 	assert.Contains(t, stdErr, expected.GRPCCodeField.String())
@@ -107,7 +107,7 @@ func (g *cliClient) check(t testing.TB, r *ketoapi.RelationTuple) bool {
 	return res.Allowed
 }
 
-func (g *cliClient) batchCheckErr(t testing.TB, _ []*ketoapi.RelationTuple, expected herodot.DefaultError) {
+func (g *cliClient) batchCheckErr(t testing.TB, _ []*ketoapi.RelationTuple, expected *herodot.DefaultError) {
 	t.Skip("not implemented for the CLI")
 }
 

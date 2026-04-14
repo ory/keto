@@ -63,7 +63,7 @@ func TestMapper(t *testing.T) {
 						Relation:  "relation",
 					},
 				},
-				err: ketoapi.ErrNilSubject,
+				err: ketoapi.ErrNilSubject(),
 			},
 			{
 				name: "many relationships",
@@ -90,7 +90,7 @@ func TestMapper(t *testing.T) {
 						SubjectID: new("subject"),
 					},
 				},
-				err: herodot.ErrNotFound,
+				err: herodot.ErrNotFound(),
 			},
 		} {
 			t.Run(tc.name, func(t *testing.T) {
@@ -156,7 +156,7 @@ func TestMapper(t *testing.T) {
 				query: &ketoapi.RelationQuery{
 					Namespace: new("unknown"),
 				},
-				err: herodot.ErrNotFound,
+				err: herodot.ErrNotFound(),
 			},
 		} {
 			t.Run(tc.name, func(t *testing.T) {
@@ -197,7 +197,7 @@ func TestMapper(t *testing.T) {
 					Object:    "object",
 					Relation:  "relation",
 				},
-				err: herodot.ErrNotFound,
+				err: herodot.ErrNotFound(),
 			},
 		} {
 			t.Run(tc.name, func(t *testing.T) {
