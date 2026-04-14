@@ -5,9 +5,10 @@ package rts
 // WriteServiceClient.TransactRelationTuples operation.
 //
 // Example:
-//  c.TransactRelationTuples(context.Background(), &rts.TransactRelationTuplesRequest{
-// 		RelationTupleDeltas: append(rts.RelationTupleToDeltas(insertTuples, rts.RelationTupleDelta_INSERT), rts.RelationTupleToDeltas(deleteTuples, rts.RelationTupleDelta_DELETE)...),
-//  })
+//
+//	 c.TransactRelationTuples(context.Background(), &rts.TransactRelationTuplesRequest{
+//			RelationTupleDeltas: append(rts.RelationTupleToDeltas(insertTuples, rts.RelationTupleDelta_INSERT), rts.RelationTupleToDeltas(deleteTuples, rts.RelationTupleDelta_DELETE)...),
+//	 })
 func RelationTupleToDeltas(rs []*RelationTuple, action RelationTupleDelta_Action) []*RelationTupleDelta {
 	deltas := make([]*RelationTupleDelta, len(rs))
 	for i := range rs {
