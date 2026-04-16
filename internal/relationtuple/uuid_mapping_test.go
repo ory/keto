@@ -31,7 +31,10 @@ func TestMapper(t *testing.T) {
 	nspace := namespace.Namespace{
 		Name: "test",
 	}
-	require.NoError(t, reg.Config(ctx).Set(config.KeyNamespaces, []*namespace.Namespace{&nspace}))
+	nspace2 := namespace.Namespace{
+		Name: "test2",
+	}
+	require.NoError(t, reg.Config(ctx).Set(config.KeyNamespaces, []*namespace.Namespace{&nspace, &nspace2}))
 
 	t.Run("items=relationships", func(t *testing.T) {
 		for _, tc := range []struct {
@@ -284,6 +287,33 @@ func TestMapper(t *testing.T) {
 					},
 				},
 			},
+			{
+				name: "deeply nested tree with different namespaces",
+				tree: &relationtuple.Tree{
+					Type: ketoapi.TreeNodeUnion,
+					Subject: &relationtuple.SubjectSet{
+						Namespace: nspace.Name,
+						Object:    uuids[0],
+						Relation:  "members",
+					},
+					Children: []*relationtuple.Tree{
+						{
+							Type: ketoapi.TreeNodeUnion,
+							Subject: &relationtuple.SubjectSet{
+								Namespace: nspace2.Name,
+								Object:    uuids[1],
+								Relation:  "owners",
+							},
+							Children: []*relationtuple.Tree{
+								{
+									Type:    ketoapi.TreeNodeLeaf,
+									Subject: &relationtuple.SubjectID{ID: uuids[2]},
+								},
+							},
+						},
+					},
+				},
+			},
 		} {
 			t.Run(tc.name, func(t *testing.T) {
 				mapped, err := reg.Mapper().ToTree(ctx, tc.tree)
@@ -303,7 +333,7 @@ func TestMapper(t *testing.T) {
 					case *relationtuple.SubjectSet:
 						require.NotNil(t, mapped.Tuple.SubjectSet)
 						assert.Nil(t, mapped.Tuple.SubjectID)
-						assert.Equal(t, nspace.Name, mapped.Tuple.SubjectSet.Namespace)
+						assert.Equal(t, s.Namespace, mapped.Tuple.SubjectSet.Namespace)
 						assert.Equal(t, strs[slices.Index(uuids, s.Object)], mapped.Tuple.SubjectSet.Object)
 						assert.Equal(t, s.Relation, mapped.Tuple.SubjectSet.Relation)
 					default:

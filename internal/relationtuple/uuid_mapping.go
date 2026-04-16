@@ -343,55 +343,53 @@ func (m *Mapper) FromSubjectSet(ctx context.Context, set *ketoapi.SubjectSet) (_
 	}, nil
 }
 
-func (m *Mapper) ToTree(ctx context.Context, tree *Tree) (res *ketoapi.Tree[*ketoapi.RelationTuple], err error) {
+func (m *Mapper) ToTree(ctx context.Context, tree *Tree) (_ *ketoapi.Tree[*ketoapi.RelationTuple], err error) {
 	ctx, span := trace.SpanFromContext(ctx).TracerProvider().Tracer("keto/internal/relationtuple").Start(ctx, "Mapper.ToTree")
 	defer otelx.End(span, &err)
 
-	onSuccess := newSuccess(&err)
-	defer onSuccess.apply()
-
-	var s []string
 	var u []uuid.UUID
-	res = &ketoapi.Tree[*ketoapi.RelationTuple]{
-		Type:  tree.Type,
-		Tuple: &ketoapi.RelationTuple{},
-	}
+	var targets []*string
 
-	nm, err := m.D.Config(ctx).NamespaceManager()
-	if err != nil {
-		return nil, err
-	}
-
-	switch sub := tree.Subject.(type) {
-	case *SubjectSet:
-		u = append(u, sub.Object)
-		n, err := nm.GetNamespaceByName(ctx, sub.Namespace)
-		if err != nil {
-			return nil, err
+	// collect walks the tree, and collects the UUIDs and target pointers
+	var collect func(*Tree) *ketoapi.Tree[*ketoapi.RelationTuple]
+	collect = func(tree *Tree) *ketoapi.Tree[*ketoapi.RelationTuple] {
+		res := &ketoapi.Tree[*ketoapi.RelationTuple]{
+			Type:     tree.Type,
+			Tuple:    &ketoapi.RelationTuple{},
+			Children: make([]*ketoapi.Tree[*ketoapi.RelationTuple], len(tree.Children)),
 		}
-		onSuccess.do(func() {
-			res.Tuple.SubjectSet = &ketoapi.SubjectSet{
-				Namespace: n.Name,
-				Object:    s[0],
+
+		switch sub := tree.Subject.(type) {
+		case *SubjectSet:
+			ss := &ketoapi.SubjectSet{
+				Namespace: sub.Namespace,
 				Relation:  sub.Relation,
 			}
-		})
-	case *SubjectID:
-		u = append(u, sub.ID)
-		onSuccess.do(func() {
-			res.Tuple.SubjectID = new(s[0])
-		})
-	}
-	for _, c := range tree.Children {
-		mc, err := m.ToTree(ctx, c)
-		if err != nil {
-			return nil, err
+			res.Tuple.SubjectSet = ss
+			targets = append(targets, &ss.Object)
+			u = append(u, sub.Object)
+		case *SubjectID:
+			res.Tuple.SubjectID = new(string)
+			targets = append(targets, res.Tuple.SubjectID)
+			u = append(u, sub.ID)
 		}
-		res.Children = append(res.Children, mc)
+
+		for i, c := range tree.Children {
+			res.Children[i] = collect(c)
+		}
+
+		return res
 	}
-	s, err = m.D.MappingManager().MapUUIDsToStrings(ctx, u...)
+
+	res := collect(tree)
+
+	s, err := m.D.MappingManager().MapUUIDsToStrings(ctx, u...)
 	if err != nil {
 		return nil, err
+	}
+
+	for i, ptr := range targets {
+		*ptr = s[i]
 	}
 
 	return res, nil
