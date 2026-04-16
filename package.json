@@ -16,9 +16,9 @@
     "trailingComma": "all"
   },
   "dependencies": {
-    "@openapitools/openapi-generator-cli": "2.30.2",
-    "grpc-tools": "1.13.1",
-    "grpc_tools_node_protoc_ts": "5.3.3"
+    "@openapitools/openapi-generator-cli": "2.31.1",
+    "grpc_tools_node_protoc_ts": "5.3.3",
+    "grpc-tools": "1.13.1"
   },
   "devDependencies": {
     "@ory/keto-namespace-types": "file:contrib/namespace-type-lib",
