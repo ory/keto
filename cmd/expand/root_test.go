@@ -49,15 +49,17 @@ func TestExpandCommand(t *testing.T) {
 		assert.Contains(t, stdOut, tuple.SubjectSet.Object)
 	})
 
-	t.Run("case=unknown tuple returns null JSON", func(t *testing.T) {
+	t.Run("case=unknown tuple returns single node tree", func(t *testing.T) {
 		stdOut := ts.Cmd.ExecNoErr(t, "expand", rel, nspace.Name+":unknown-obj",
 			"--"+cmdx.FlagFormat, string(cmdx.FormatJSON))
-		assert.Equal(t, "null\n", stdOut)
+		assert.Contains(t, stdOut, rel)
+		assert.Contains(t, stdOut, nspace.Name)
 	})
 
 	t.Run("case=unknown tuple prints empty tree in default format", func(t *testing.T) {
 		stdOut := ts.Cmd.ExecNoErr(t, "expand", rel, nspace.Name+":unknown-obj")
-		assert.Contains(t, stdOut, "empty tree")
+		assert.Contains(t, stdOut, rel)
+		assert.Contains(t, stdOut, nspace.Name)
 	})
 
 	t.Run("case=3-arg format still works with deprecation warning", func(t *testing.T) {

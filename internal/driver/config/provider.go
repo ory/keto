@@ -37,8 +37,9 @@ const (
 
 	KeyDSN = "dsn"
 
-	KeyLimitMaxReadDepth = "limit.max_read_depth"
-	KeyLimitMaxReadWidth = "limit.max_read_width"
+	KeyLimitMaxReadDepth  = "limit.max_read_depth"
+	KeyLimitMaxReadWidth  = "limit.max_read_width"
+	KeyLimitExpandMaxSize = "limit.max_expand_size"
 
 	KeyBatchCheckMaxBatchSize         = "limit.max_batch_check_size"
 	KeyBatchCheckParallelizationLimit = "limit.batch_check_max_parallelization"
@@ -58,6 +59,8 @@ const (
 
 	KeyNamespaces                       = "namespaces"
 	KeyNamespacesExperimentalStrictMode = KeyNamespaces + ".experimental_strict_mode"
+
+	KeyFeatureFlagExpandRewrites = "feature_flags.expand_rewrites"
 
 	DSNMemory = "sqlite://file::memory:?_fk=true&"
 
@@ -213,6 +216,10 @@ func (k *Config) BatchCheckParallelizationLimit() int {
 	return k.p.Int(KeyBatchCheckParallelizationLimit)
 }
 
+func (k *Config) ExpandMaxTupleCount() int {
+	return k.p.Int(KeyLimitExpandMaxSize)
+}
+
 func (k *Config) CORS(iface string) (cors.Options, bool) {
 	switch iface {
 	case "read", "write", "metrics":
@@ -285,6 +292,10 @@ func (k *Config) NamespaceManager() (namespace.Manager, error) {
 
 func (k *Config) StrictMode() bool {
 	return k.p.BoolF(KeyNamespacesExperimentalStrictMode, false)
+}
+
+func (k *Config) ExpandRewrites() bool {
+	return k.p.Bool(KeyFeatureFlagExpandRewrites)
 }
 
 type (

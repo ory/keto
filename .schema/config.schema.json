@@ -423,6 +423,14 @@
           "description": "The limit for the number of tuples that will be checked concurrently during a batch check.",
           "minimum": 1,
           "maximum": 65535
+        },
+        "max_expand_size": {
+          "type": "integer",
+          "default": 4000,
+          "title": "Maximum tuples during expand",
+          "description": "The maximum total number of relation tuples the expand engine will return in a single BuildTree call. Once the limit is reached, further nodes are returned as truncated.",
+          "minimum": 0,
+          "maximum": 65535
         }
       },
       "additionalProperties": false
@@ -467,6 +475,20 @@
               "another old secret kept for decryption"
             ]
           ]
+        }
+      }
+    },
+    "feature_flags": {
+      "title": "Feature flags",
+      "description": "Opt in to features that are still being refined. Behavior may change in future releases.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "expand_rewrites": {
+          "type": "boolean",
+          "title": "Expand OPL rewrite rules",
+          "description": "If enabled, the expand API follows OPL rewrite rules when building permission trees.",
+          "default": false
         }
       }
     },

@@ -34,6 +34,18 @@ type (
 	}
 )
 
+func (ns *Namespace) FindRelation(name string) *ast.Relation {
+	if ns == nil || len(ns.Relations) == 0 {
+		return nil
+	}
+	for _, rel := range ns.Relations {
+		if rel.Name == name {
+			return &rel
+		}
+	}
+	return nil
+}
+
 func ASTRelationFor(ctx context.Context, m Manager, namespace, relation string) (*ast.Relation, error) {
 	// Special case: If the relationTuple's relation is empty, then it is not an
 	// error that the relation was not found.
@@ -53,10 +65,9 @@ func ASTRelationFor(ctx context.Context, m Manager, namespace, relation string) 
 		return nil, nil
 	}
 
-	for _, rel := range ns.Relations {
-		if rel.Name == relation {
-			return &rel, nil
-		}
+	rel := ns.FindRelation(relation)
+	if rel == nil {
+		return nil, herodot.ErrBadRequest().WithReasonf("relation %q does not exist", relation)
 	}
-	return nil, herodot.ErrBadRequest().WithReasonf("relation %q does not exist", relation)
+	return rel, nil
 }

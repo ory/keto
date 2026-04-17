@@ -378,6 +378,11 @@ func (m *Mapper) ToTree(ctx context.Context, tree *Tree) (_ *ketoapi.Tree[*ketoa
 			res.Children[i] = collect(c)
 		}
 
+		// to support backward compatibility: Nodes without children were always treated as Leaf,
+		// even if the type is Union or Intersection. Keep the backward compatibility on api level.
+		if len(res.Children) == 0 {
+			res.Type = ketoapi.TreeNodeLeaf
+		}
 		return res
 	}
 
@@ -391,7 +396,6 @@ func (m *Mapper) ToTree(ctx context.Context, tree *Tree) (_ *ketoapi.Tree[*ketoa
 	for i, ptr := range targets {
 		*ptr = s[i]
 	}
-
 	return res, nil
 }
 

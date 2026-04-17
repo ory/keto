@@ -4,12 +4,15 @@
 package expand
 
 import (
+	"fmt"
+	"slices"
+	"strings"
 	"testing"
 
-	"github.com/ory/keto/internal/relationtuple"
-
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
+	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/ketoapi"
 )
 
@@ -52,29 +55,73 @@ outer:
 	return true
 }
 
-func AssertInternalTreesAreEqual(t *testing.T, expected, actual *relationtuple.Tree) bool {
-	if !assert.ObjectsAreEqual(expected.Type, actual.Type) {
-		t.Logf("expected type %+v, but got %+v", expected.Type, actual.Type)
-		return false
+// formatTree returns a human-readable, indented representation of a tree.
+func formatTree(tree *relationtuple.Tree, indent string) string {
+	if tree == nil {
+		return indent + "<nil>\n"
 	}
-	if !assert.ObjectsAreEqual(expected.Subject, actual.Subject) {
-		t.Logf("expected subject %+v, but got %+v", expected.Subject, actual.Subject)
-		return false
+	var b strings.Builder
+	fmt.Fprintf(&b, "%s(%s) %+v", indent, tree.Type, tree.Subject)
+	if e := tree.Truncation; e != nil {
+		fmt.Fprintf(&b, " [truncation: reason=%s cursor=%s]", e.Reason, formatExpandCursor(e.Cursor))
 	}
-	if len(expected.Children) != len(actual.Children) {
-		t.Logf("expected %d children, but got %d", len(expected.Children), len(actual.Children))
-		return false
+	b.WriteByte('\n')
+	for _, child := range tree.Children {
+		b.WriteString(formatTree(child, indent+"  "))
 	}
+	return b.String()
+}
 
-outer:
-	for _, child := range expected.Children {
-		for _, actualChild := range actual.Children {
-			if AssertInternalTreesAreEqual(t, child, actualChild) {
-				continue outer
-			}
-		}
-		assert.Truef(t, false, "could not find %+v", child)
-		return false
+func formatExpandCursor(c *relationtuple.ExpandCursor) string {
+	if c == nil {
+		return "<nil>"
 	}
-	return true
+	var parts []string
+	parts = append(parts, "kind="+string(c.Kind))
+	parts = append(parts, "subject_set="+c.SubjectSet.String())
+	if c.TraverseRelation != nil {
+		parts = append(parts, "traverseRel="+*c.TraverseRelation)
+	}
+	return "{" + strings.Join(parts, " ") + "}"
+}
+
+// sortTree recursively sorts the children of a tree by subject string, in-place.
+func sortTree(tree *relationtuple.Tree) {
+	if tree == nil {
+		return
+	}
+	for _, child := range tree.Children {
+		sortTree(child)
+	}
+	if tree.Children == nil {
+		return
+	}
+	slices.SortFunc(tree.Children, func(a, b *relationtuple.Tree) int {
+		if a.Subject == nil && b.Subject == nil {
+			return 0
+		}
+		if a.Subject == nil {
+			return 1
+		}
+		if b.Subject == nil {
+			return -1
+		}
+		return strings.Compare(a.Subject.String(), b.Subject.String())
+	})
+}
+
+// AssertInternalTreesAreEqual compares two trees for equality, ignoring child order.
+func AssertInternalTreesAreEqual(t *testing.T, expected, actual *relationtuple.Tree) bool {
+	t.Helper()
+	sortTree(expected)
+	sortTree(actual)
+	return assert.Equal(t, formatTree(expected, ""), formatTree(actual, ""))
+}
+
+// RequireInternalTreesAreEqual compares two trees for equality, ignoring child order.
+func RequireInternalTreesAreEqual(t *testing.T, expected, actual *relationtuple.Tree) {
+	t.Helper()
+	sortTree(expected)
+	sortTree(actual)
+	require.Equal(t, formatTree(expected, ""), formatTree(actual, ""))
 }

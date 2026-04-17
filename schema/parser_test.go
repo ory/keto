@@ -336,7 +336,6 @@ func Test_simplify(t *testing.T) {
 				},
 			},
 		},
-
 		{
 			// A AND !!B = A AND !!B
 			name: "preserve double NOT",

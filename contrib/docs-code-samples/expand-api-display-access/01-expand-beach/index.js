@@ -53,8 +53,12 @@ const prettyTree = (tree) => {
   switch (nodeType) {
     case expand.NodeType.NODE_TYPE_LEAF:
       return { type: "leaf", ...tuple }
-    case expand.NodeType.NODE_TYPE_UNION:
-      return { type: "union", children: children.map(prettyTree), ...tuple }
+    case expand.NodeType.NODE_TYPE_UNION: {
+      const mapped = children.map(prettyTree)
+      return mapped.length > 0
+        ? { type: "union", children: mapped, ...tuple }
+        : { type: "union", ...tuple }
+    }
   }
 }
 

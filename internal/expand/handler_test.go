@@ -59,6 +59,19 @@ func TestRESTHandler(t *testing.T) {
 		assert.Contains(t, string(body), "Unknown namespace")
 	})
 
+	t.Run("case=returns not found on unknown namespace", func(t *testing.T) {
+		resp, err := ts.Client().Get(ts.URL + expand.RouteBase + "?" + url.Values{
+			"max-depth": {"10"},
+			"namespace": {"not " + nspace.Name},
+		}.Encode())
+		require.NoError(t, err)
+
+		assert.Equal(t, http.StatusNotFound, resp.StatusCode)
+		body, err := io.ReadAll(resp.Body)
+		require.NoError(t, err)
+		assert.Contains(t, string(body), "Unknown namespace")
+	})
+
 	t.Run("case=returns expand tree", func(t *testing.T) {
 		rootSub := &ketoapi.SubjectSet{
 			Namespace: nspace.Name,
