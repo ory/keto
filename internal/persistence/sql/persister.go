@@ -36,6 +36,7 @@ type (
 		config.Provider
 
 		PopConnection(ctx context.Context) (*pop.Connection, error)
+		MapperNamespace(ctx context.Context) uuid.UUID
 	}
 )
 

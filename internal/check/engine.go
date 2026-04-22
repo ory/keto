@@ -21,7 +21,6 @@ import (
 	"github.com/ory/keto/internal/namespace/ast"
 	"github.com/ory/keto/internal/persistence"
 	"github.com/ory/keto/internal/relationtuple"
-	"github.com/ory/keto/internal/x"
 	"github.com/ory/keto/internal/x/graph"
 	"github.com/ory/keto/ketoapi"
 )
@@ -40,7 +39,6 @@ type (
 		config.Provider
 		logrusx.Provider
 		otelx.Provider
-		x.NetworkIDProvider
 	}
 
 	EngineOpt func(*Engine)

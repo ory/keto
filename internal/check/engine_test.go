@@ -9,7 +9,6 @@ import (
 
 	"github.com/gofrs/uuid"
 	"github.com/ory/herodot"
-	keysetpagination "github.com/ory/x/pagination/keysetpagination_v2"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
@@ -20,52 +19,10 @@ import (
 	"github.com/ory/keto/internal/namespace"
 	"github.com/ory/keto/internal/namespace/ast"
 	"github.com/ory/keto/internal/relationtuple"
+	"github.com/ory/keto/internal/testhelpers"
 	"github.com/ory/keto/internal/x"
 	"github.com/ory/keto/ketoapi"
 )
-
-// deps are defined to capture engine dependencies in a single struct
-type deps struct {
-	mw *relationtuple.ManagerWrapper // managerProvider
-	*driver.RegistryDefault
-}
-
-func (d *deps) RelationTupleManager() relationtuple.Manager { return d.mw }
-
-func newDepsProvider(t testing.TB, namespaces []*namespace.Namespace, pageOpts ...keysetpagination.Option) *deps {
-	reg := driver.NewSqliteTestRegistry(t, false)
-	require.NoError(t, reg.Config(context.Background()).Set(config.KeyNamespaces, namespaces))
-	mr := relationtuple.NewManagerWrapper(t, reg, pageOpts...)
-
-	return &deps{mw: mr, RegistryDefault: reg}
-}
-
-func toUUID(s string) uuid.UUID {
-	return uuid.NewV5(uuid.Nil, s)
-}
-
-func tupleFromString(t testing.TB, s string) *relationtuple.RelationTuple {
-	rt, err := (&ketoapi.RelationTuple{}).FromString(s)
-	require.NoError(t, err)
-	result := &relationtuple.RelationTuple{
-		Namespace: rt.Namespace,
-		Object:    toUUID(rt.Object),
-		Relation:  rt.Relation,
-	}
-	switch {
-	case rt.SubjectID != nil:
-		result.Subject = &relationtuple.SubjectID{ID: toUUID(*rt.SubjectID)}
-	case rt.SubjectSet != nil:
-		result.Subject = &relationtuple.SubjectSet{
-			Namespace: rt.SubjectSet.Namespace,
-			Object:    toUUID(rt.SubjectSet.Object),
-			Relation:  rt.SubjectSet.Relation,
-		}
-	default:
-		t.Fatal("invalid tuple")
-	}
-	return result
-}
 
 func TestEngine(t *testing.T) {
 	ctx := context.Background()
@@ -73,14 +30,12 @@ func TestEngine(t *testing.T) {
 	t.Run("respects max depth", func(t *testing.T) {
 		// "user" has relation "access" through being an "owner" through being an "admin"
 		// which requires at least 2 units of depth. If max-depth is 2 then we hit max-depth
-		reg := newDepsProvider(t, []*namespace.Namespace{
-			{Name: "test"},
-		})
+		reg := driver.NewSqliteTestRegistry(t, false)
 
 		// "user" has relation "access" through being an "owner" through being
 		// an "admin" which requires at least 2 units of depth. If max-depth is
 		// 2 then we hit max-depth
-		insertFixtures(t, reg.RelationTupleManager(), []string{
+		testhelpers.MapAndInsertTuplesFromString(t, reg, []string{
 			"test:object#admin@user",
 			"test:object#owner@test:object#admin",
 			"test:object#access@test:object#owner",
@@ -88,7 +43,7 @@ func TestEngine(t *testing.T) {
 
 		e := check.NewEngine(reg)
 
-		userHasAccess := tupleFromString(t, "test:object#access@user")
+		userHasAccess := testhelpers.TupleFromString(t, "test:object#access@user")
 
 		// global max-depth defaults to 5
 		assert.Equal(t, reg.Config(ctx).MaxReadDepth(), 5)
@@ -117,7 +72,7 @@ func TestEngine(t *testing.T) {
 	})
 
 	t.Run("direct inclusion", func(t *testing.T) {
-		reg := newDepsProvider(t, []*namespace.Namespace{{Name: "n"}, {Name: "u"}})
+		reg := driver.NewSqliteTestRegistry(t, false, driver.WithNamespaces([]*namespace.Namespace{{Name: "n"}, {Name: "u"}}))
 		tuples := []string{
 			`n:o#r@subject_id`,
 			`n:o#r@u:with_relation#r`,
@@ -125,7 +80,7 @@ func TestEngine(t *testing.T) {
 			`n:o#r@u:missing_relation`,
 		}
 
-		insertFixtures(t, reg.RelationTupleManager(), tuples)
+		testhelpers.MapAndInsertTuplesFromString(t, reg, tuples)
 		e := check.NewEngine(reg)
 
 		cases := []struct {
@@ -143,7 +98,7 @@ func TestEngine(t *testing.T) {
 
 		for _, tc := range cases {
 			t.Run("case="+tc.tuple, func(t *testing.T) {
-				res, err := e.CheckIsMember(ctx, tupleFromString(t, tc.tuple), 0)
+				res, err := e.CheckIsMember(ctx, testhelpers.TupleFromString(t, tc.tuple), 0)
 				require.NoError(t, err)
 				assert.True(t, res)
 			})
@@ -151,40 +106,15 @@ func TestEngine(t *testing.T) {
 	})
 
 	t.Run("indirect inclusion level 1", func(t *testing.T) {
-		// the set of users that are produces of "dust" have to remove it
-		dust := uuid.Must(uuid.NewV4())
-		sofaNamespace := "sofa"
-		mark := relationtuple.SubjectID{ID: uuid.Must(uuid.NewV4())}
-		cleaningRelation := relationtuple.RelationTuple{
-			Namespace: sofaNamespace,
-			Relation:  "have to remove",
-			Object:    dust,
-			Subject: &relationtuple.SubjectSet{
-				Relation:  "producer",
-				Object:    dust,
-				Namespace: sofaNamespace,
-			},
-		}
-		markProducesDust := relationtuple.RelationTuple{
-			Namespace: sofaNamespace,
-			Relation:  "producer",
-			Object:    dust,
-			Subject:   &mark,
-		}
+		reg := driver.NewSqliteTestRegistry(t, false, driver.WithNamespaces([]*namespace.Namespace{{Name: "sofa"}}))
 
-		reg := newDepsProvider(t, []*namespace.Namespace{
-			{Name: sofaNamespace},
+		testhelpers.MapAndInsertTuplesFromString(t, reg, []string{
+			"sofa:dust#producer@mark",
+			"sofa:dust#have_to_remove@sofa:dust#producer",
 		})
-		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(ctx, &cleaningRelation, &markProducesDust))
-
 		e := check.NewEngine(reg)
 
-		res, err := e.CheckIsMember(ctx, &relationtuple.RelationTuple{
-			Relation:  cleaningRelation.Relation,
-			Object:    dust,
-			Subject:   &mark,
-			Namespace: sofaNamespace,
-		}, 0)
+		res, err := e.CheckIsMember(ctx, testhelpers.TupleFromString(t, "sofa:dust#have_to_remove@mark"), 0)
 		require.NoError(t, err)
 		assert.True(t, res)
 	})
@@ -198,15 +128,15 @@ func TestEngine(t *testing.T) {
 			Subject:   user,
 		}
 
-		reg := newDepsProvider(t, []*namespace.Namespace{{Name: rel.Namespace}})
+		reg := driver.NewSqliteTestRegistry(t, false, driver.WithNamespaces([]*namespace.Namespace{{Name: rel.Namespace}}))
 		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(ctx, &rel))
 
 		e := check.NewEngine(reg)
 
 		res, err := e.CheckIsMember(ctx, &relationtuple.RelationTuple{
-			Relation:  rel.Relation,
-			Object:    rel.Object,
 			Namespace: rel.Namespace,
+			Object:    rel.Object,
+			Relation:  rel.Relation,
 			Subject:   &relationtuple.SubjectID{ID: uuid.Must(uuid.NewV4())},
 		}, 0)
 		require.NoError(t, err)
@@ -214,7 +144,7 @@ func TestEngine(t *testing.T) {
 	})
 
 	t.Run("subject expansion", func(t *testing.T) {
-		reg := newDepsProvider(t, []*namespace.Namespace{{
+		reg := driver.NewSqliteTestRegistry(t, false, driver.WithNamespaces([]*namespace.Namespace{{
 			Name: "n",
 			Relations: []ast.Relation{
 				{
@@ -227,7 +157,7 @@ func TestEngine(t *testing.T) {
 					},
 				},
 			},
-		}})
+		}}))
 		tuples := []string{
 			`n:a#r@n:b#r`,
 			`n:b#r@n:c#r`,
@@ -235,7 +165,7 @@ func TestEngine(t *testing.T) {
 			`n:d#r@u`,
 		}
 
-		insertFixtures(t, reg.RelationTupleManager(), tuples)
+		testhelpers.MapAndInsertTuplesFromString(t, reg, tuples)
 		e := check.NewEngine(reg)
 		require.NoError(t, reg.Config(ctx).Set(config.KeyLimitMaxReadDepth, 5))
 
@@ -250,7 +180,7 @@ func TestEngine(t *testing.T) {
 
 		for _, tc := range cases {
 			t.Run("case="+tc.tuple, func(t *testing.T) {
-				res, err := e.CheckIsMember(ctx, tupleFromString(t, tc.tuple), 0)
+				res, err := e.CheckIsMember(ctx, testhelpers.TupleFromString(t, tc.tuple), 0)
 				require.NoError(t, err)
 				assert.True(t, res)
 			})
@@ -273,7 +203,7 @@ func TestEngine(t *testing.T) {
 			Subject:  &relationtuple.SubjectID{ID: uuid.Must(uuid.NewV4())},
 		}
 
-		reg := newDepsProvider(t, []*namespace.Namespace{{Name: ""}})
+		reg := driver.NewSqliteTestRegistry(t, false)
 		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(ctx, &access, &user))
 
 		e := check.NewEngine(reg)
@@ -308,9 +238,7 @@ func TestEngine(t *testing.T) {
 			Subject:   &relationtuple.SubjectID{ID: uuid.Must(uuid.NewV4())},
 		}
 
-		reg := newDepsProvider(t, []*namespace.Namespace{
-			{Name: diaryNamespace},
-		})
+		reg := driver.NewSqliteTestRegistry(t, false, driver.WithNamespaces([]*namespace.Namespace{{Name: diaryNamespace}}))
 		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(ctx, &readDiary, &user))
 
 		e := check.NewEngine(reg)
@@ -326,12 +254,12 @@ func TestEngine(t *testing.T) {
 	})
 
 	t.Run("indirect inclusion level 2", func(t *testing.T) {
-		reg := newDepsProvider(t, []*namespace.Namespace{
+		reg := driver.NewSqliteTestRegistry(t, false, driver.WithNamespaces([]*namespace.Namespace{
 			{Name: "obj"},
 			{Name: "org"},
-		})
-		// require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(ctx, &writeRel, &orgOwnerRel, &userMembershipRel))
-		insertFixtures(t, reg.RelationTupleManager(), []string{
+		}))
+
+		testhelpers.MapAndInsertTuplesFromString(t, reg, []string{
 			"obj:object#write@obj:object#owner",
 			"obj:object#owner@org:organization#member",
 			"org:organization#member@user",
@@ -340,12 +268,12 @@ func TestEngine(t *testing.T) {
 		e := check.NewEngine(reg)
 
 		// user can write object
-		res, err := e.CheckIsMember(ctx, tupleFromString(t, "obj:object#write@user"), 0)
+		res, err := e.CheckIsMember(ctx, testhelpers.TupleFromString(t, "obj:object#write@user"), 0)
 		require.NoError(t, err)
 		assert.True(t, res)
 
 		// user is member of the organization
-		res, err = e.CheckIsMember(ctx, tupleFromString(t, "org:organization#member@user"), 0)
+		res, err = e.CheckIsMember(ctx, testhelpers.TupleFromString(t, "org:organization#member@user"), 0)
 		require.NoError(t, err)
 		assert.True(t, res)
 	})
@@ -374,9 +302,9 @@ func TestEngine(t *testing.T) {
 			Subject:  &user,
 		}
 
-		reg := newDepsProvider(t, []*namespace.Namespace{
+		reg := driver.NewSqliteTestRegistry(t, false, driver.WithNamespaces([]*namespace.Namespace{
 			{Name: "2"},
-		})
+		}))
 		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(ctx, &parent, &directoryAccess))
 
 		e := check.NewEngine(reg)
@@ -393,9 +321,7 @@ func TestEngine(t *testing.T) {
 	t.Run("case=subject id next to subject set", func(t *testing.T) {
 		namesp, obj, org, directOwner, indirectOwner, ownerRel, memberRel := "39231", uuid.Must(uuid.NewV4()), uuid.Must(uuid.NewV4()), uuid.Must(uuid.NewV4()), uuid.Must(uuid.NewV4()), "owner", "member"
 
-		reg := newDepsProvider(t, []*namespace.Namespace{
-			{Name: namesp},
-		})
+		reg := driver.NewSqliteTestRegistry(t, false, driver.WithNamespaces([]*namespace.Namespace{{Name: namesp}}))
 		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(
 			ctx,
 			&relationtuple.RelationTuple{
@@ -446,7 +372,7 @@ func TestEngine(t *testing.T) {
 	t.Run("case=wide tuple graph", func(t *testing.T) {
 		namesp, obj, access, member, users, orgs := "9234", uuid.Must(uuid.NewV4()), "access", "member", x.UUIDs(4), x.UUIDs(2)
 
-		reg := newDepsProvider(t, []*namespace.Namespace{{Name: namesp}})
+		reg := driver.NewSqliteTestRegistry(t, false, driver.WithNamespaces([]*namespace.Namespace{{Name: namesp}}))
 
 		for _, org := range orgs {
 			require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(ctx, &relationtuple.RelationTuple{
@@ -488,7 +414,7 @@ func TestEngine(t *testing.T) {
 	t.Run("case=circular tuples", func(t *testing.T) {
 		sendlingerTor, odeonsplatz, centralStation, connected, namesp := uuid.NewV5(uuid.Nil, "Sendlinger Tor"), uuid.NewV5(uuid.Nil, "Odeonsplatz"), uuid.NewV5(uuid.Nil, "Central Station"), "connected", "7743"
 
-		reg := newDepsProvider(t, []*namespace.Namespace{{Name: namesp}})
+		reg := driver.NewSqliteTestRegistry(t, false, driver.WithNamespaces([]*namespace.Namespace{{Name: namesp}}))
 
 		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(ctx, []*relationtuple.RelationTuple{
 			{
@@ -543,7 +469,7 @@ func TestEngine(t *testing.T) {
 			driver.WithOPL(ProjectOPLConfig),
 			driver.WithConfig(config.KeyNamespacesExperimentalStrictMode, true))
 
-		insertFixtures(t, reg.RelationTupleManager(), []string{
+		testhelpers.MapAndInsertTuplesFromString(t, reg, []string{
 			"Project:abc#owner@User:1",
 			"Project:abc#owner@User1",
 			// The following tuples are ignored in strict mode
@@ -556,93 +482,43 @@ func TestEngine(t *testing.T) {
 
 		for _, sub := range []string{"readProjectUser", "User:ReadProject", "User:isOwner"} {
 			// These checks should return false, even though the exact tuple is in the db.
-			res, err := e.CheckIsMember(ctx, tupleFromString(t, "Project:abc#readProject@"+sub), 10)
+			res, err := e.CheckIsMember(ctx, testhelpers.TupleFromString(t, "Project:abc#readProject@"+sub), 10)
 			require.NoError(t, err)
 			assert.False(t, res)
 		}
 
 		for _, sub := range []string{"User:1", "User1"} {
-			res, err := e.CheckIsMember(ctx, tupleFromString(t, "Project:abc#readProject@"+sub), 10)
+			res, err := e.CheckIsMember(ctx, testhelpers.TupleFromString(t, "Project:abc#readProject@"+sub), 10)
 			require.NoError(t, err)
 			assert.True(t, res)
 		}
 	})
 
 	t.Run("case=batch check", func(t *testing.T) {
-		reg := newDepsProvider(t, []*namespace.Namespace{
-			{Name: "test"},
-		})
+		reg := driver.NewSqliteTestRegistry(t, false,
+			driver.WithNamespaces([]*namespace.Namespace{{Name: "test"}}), driver.WithMapperNamespace(testhelpers.CustomMapperNamespace))
 
-		relationtuple.MapAndWriteTuples(t, reg, &ketoapi.RelationTuple{
-			Namespace: "test",
-			Object:    "object",
-			Relation:  "admin",
-			SubjectID: new("user"),
-		},
-			&ketoapi.RelationTuple{
-				Namespace: "test",
-				Object:    "object",
-				Relation:  "owner",
-				SubjectSet: &ketoapi.SubjectSet{
-					Namespace: "test",
-					Object:    "object",
-					Relation:  "admin",
-				},
-			},
-			&ketoapi.RelationTuple{
-				Namespace: "test",
-				Object:    "object",
-				Relation:  "access",
-				SubjectSet: &ketoapi.SubjectSet{
-					Namespace: "test",
-					Object:    "object",
-					Relation:  "owner",
-				},
-			})
+		testhelpers.MapAndInsertTuplesFromString(t, reg, []string{
+			"test:object#admin@user",
+			"test:object#owner@test:object#admin",
+			"test:object#access@test:object#owner",
+		})
 
 		e := check.NewEngine(reg)
 
 		targetTuples := []*ketoapi.RelationTuple{
-			{ // direct relation
-				Namespace: "test",
-				Object:    "object",
-				Relation:  "admin",
-				SubjectID: new("user"),
-			},
-			{ // indirect relation
-				Namespace: "test",
-				Object:    "object",
-				Relation:  "owner",
-				SubjectID: new("user"),
-			},
-			{ // indirect relation, greater than max depth
-				Namespace: "test",
-				Object:    "object",
-				Relation:  "access",
-				SubjectID: new("user"),
-			},
-			{ // non-existent namespace
-				Namespace: "test2",
-				Object:    "object",
-				Relation:  "admin",
-				SubjectID: new("user"),
-			},
-			{ // unknown subject
-				Namespace: "test",
-				Object:    "object",
-				Relation:  "admin",
-				SubjectID: new("user2"),
-			},
-			{ // relation via subject set
-				Namespace: "test",
-				Object:    "object",
-				Relation:  "access",
-				SubjectSet: &ketoapi.SubjectSet{
-					Namespace: "test",
-					Object:    "object",
-					Relation:  "owner",
-				},
-			},
+			// direct relation
+			testhelpers.APITupleFromString(t, "test:object#admin@user"),
+			// indirect relation
+			testhelpers.APITupleFromString(t, "test:object#owner@user"),
+			// indirect relation, greater than max depth
+			testhelpers.APITupleFromString(t, "test:object#access@user"),
+			// non-existent namespace
+			testhelpers.APITupleFromString(t, "test2:object#admin@user"),
+			// unknown subject
+			testhelpers.APITupleFromString(t, "test:object#admin@user2"),
+			// relation via subject set
+			testhelpers.APITupleFromString(t, "test:object#access@test:object#owner"),
 		}
 
 		// Batch check with low max depth

@@ -20,7 +20,7 @@ import (
 	"github.com/ory/keto/internal/driver"
 	"github.com/ory/keto/internal/expand"
 	"github.com/ory/keto/internal/namespace"
-	"github.com/ory/keto/internal/relationtuple"
+	"github.com/ory/keto/internal/testhelpers"
 	"github.com/ory/keto/ketoapi"
 )
 
@@ -99,7 +99,7 @@ func TestRESTHandler(t *testing.T) {
 			},
 		}
 
-		relationtuple.MapAndWriteTuples(t, reg,
+		testhelpers.MapAndInsertTuples(t, reg,
 			&ketoapi.RelationTuple{
 				Namespace: nspace.Name,
 				Object:    rootSub.Object,

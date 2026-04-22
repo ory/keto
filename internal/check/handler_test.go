@@ -32,7 +32,7 @@ import (
 	"github.com/ory/keto/internal/driver/config"
 	client "github.com/ory/keto/internal/httpclient"
 	"github.com/ory/keto/internal/namespace"
-	"github.com/ory/keto/internal/relationtuple"
+	"github.com/ory/keto/internal/testhelpers"
 	"github.com/ory/keto/ketoapi"
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 )
@@ -138,7 +138,7 @@ func TestCheckRESTHandler(t *testing.T) {
 					Relation:  "r",
 					SubjectID: new("s"),
 				}
-				relationtuple.MapAndWriteTuples(t, reg, rt)
+				testhelpers.MapAndInsertTuples(t, reg, rt)
 
 				q := rt.ToURLQuery()
 				resp, err := ts.Client().Get(ts.URL + suite.base + "?" + q.Encode())
@@ -227,7 +227,7 @@ func TestBatchCheckRESTHandler(t *testing.T) {
 			Relation:  "r",
 			SubjectID: new("s"),
 		}
-		relationtuple.MapAndWriteTuples(t, reg, rt)
+		testhelpers.MapAndInsertTuples(t, reg, rt)
 
 		reqBody := client.BatchCheckPermissionBody{Tuples: []client.Relationship{
 			{ // Allowed
@@ -356,7 +356,7 @@ func TestBatchCheckGRPCHandler(t *testing.T) {
 			Relation:  "r",
 			SubjectID: new("s"),
 		}
-		relationtuple.MapAndWriteTuples(t, reg, rt)
+		testhelpers.MapAndInsertTuples(t, reg, rt)
 
 		resp, err := checkClient.BatchCheck(ctx, &rts.BatchCheckRequest{
 			Tuples: []*rts.RelationTuple{

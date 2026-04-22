@@ -22,6 +22,7 @@ import (
 	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/namespace"
 	"github.com/ory/keto/internal/namespace/ast"
+	"github.com/ory/keto/internal/testhelpers"
 )
 
 func wideNamespace(width int) *namespace.Namespace {
@@ -61,26 +62,38 @@ func BenchmarkCheckEngine(b *testing.B) {
 		maxDepth = depths[len(depths)-1]
 	)
 
-	var namespaces = []*namespace.Namespace{
-		{Name: "deep",
+	namespaces := []*namespace.Namespace{
+		{
+			Name: "deep",
 			Relations: []ast.Relation{
 				{Name: "owner"},
-				{Name: "editor",
+				{
+					Name: "editor",
 					SubjectSetRewrite: &ast.SubjectSetRewrite{
 						Children: ast.Children{&ast.ComputedSubjectSet{
-							Relation: "owner"}}}},
-				{Name: "viewer",
+							Relation: "owner",
+						}},
+					},
+				},
+				{
+					Name: "viewer",
 					SubjectSetRewrite: &ast.SubjectSetRewrite{
 						Children: ast.Children{
 							&ast.ComputedSubjectSet{
-								Relation: "editor"},
+								Relation: "editor",
+							},
 							&ast.TupleToSubjectSet{
 								Relation:                   "parent",
-								ComputedSubjectSetRelation: "viewer"}}}},
-			}},
+								ComputedSubjectSetRelation: "viewer",
+							},
+						},
+					},
+				},
+			},
+		},
 	}
 
-	reg := newDepsProvider(b, namespaces)
+	reg := driver.NewSqliteTestRegistry(b, false, driver.WithNamespaces(namespaces))
 	reg.Logger().Logger.SetLevel(logrus.InfoLevel)
 
 	tuples := []string{
@@ -96,7 +109,7 @@ func BenchmarkCheckEngine(b *testing.B) {
 		namespaces = append(namespaces, wideNamespace(w))
 		tuples = append(tuples, fmt.Sprintf("%d-wide:wide_file#editor@user", w))
 	}
-	insertFixtures(b, reg.RelationTupleManager(), tuples)
+	testhelpers.MapAndInsertTuplesFromString(b, reg, tuples)
 
 	require.NoError(b, reg.Config(ctx).Set(config.KeyLimitMaxReadDepth, 100*maxDepth))
 	e := check.NewEngine(reg)
@@ -105,7 +118,7 @@ func BenchmarkCheckEngine(b *testing.B) {
 		for _, depth := range depths {
 			b.Run(fmt.Sprintf("depth=%03d", depth), func(b *testing.B) {
 				for i := 0; i < b.N; i++ {
-					rt := tupleFromString(b, fmt.Sprintf("deep:deep_file#viewer@user_%d", depth))
+					rt := testhelpers.TupleFromString(b, fmt.Sprintf("deep:deep_file#viewer@user_%d", depth))
 					res := e.CheckRelationTuple(ctx, rt, 2*depth)
 					assert.NoError(b, res.Err)
 					if res.Membership != checkgroup.IsMember {
@@ -120,7 +133,7 @@ func BenchmarkCheckEngine(b *testing.B) {
 		for _, width := range widths {
 			b.Run(fmt.Sprintf("width=%03d", width), func(b *testing.B) {
 				for i := 0; i < b.N; i++ {
-					rt := tupleFromString(b, fmt.Sprintf("%d-wide:wide_file#editor@user", width))
+					rt := testhelpers.TupleFromString(b, fmt.Sprintf("%d-wide:wide_file#editor@user", width))
 					res := e.CheckRelationTuple(ctx, rt, 2*width)
 					assert.NoError(b, res.Err)
 					if res.Membership != checkgroup.IsMember {
@@ -147,14 +160,14 @@ func BenchmarkComputedUsersets(b *testing.B) {
 		driver.WithConfig(config.KeyNamespacesExperimentalStrictMode, true))
 	reg.Logger().Logger.SetLevel(logrus.DebugLevel)
 
-	insertFixtures(b, reg.RelationTupleManager(), []string{
+	testhelpers.MapAndInsertTuplesFromString(b, reg, []string{
 		"Project:Ory#owner@User:Admin",
 		"Project:Ory#developer@User:Dev",
 	})
 
 	e := check.NewEngine(reg)
 
-	query := tupleFromString(b, "Project:Ory#readProject@User:Dev")
+	query := testhelpers.TupleFromString(b, "Project:Ory#readProject@User:Dev")
 
 	b.Run("Computed userset", func(b *testing.B) {
 		initialDBSpans := dbSpans(spans)
@@ -170,7 +183,6 @@ func BenchmarkComputedUsersets(b *testing.B) {
 		}
 		b.ReportMetric((float64(dbSpans(spans)-initialDBSpans))/float64(b.N), "queries/op")
 	})
-
 }
 
 func dbSpans(spans *tracetest.SpanRecorder) (count int) {

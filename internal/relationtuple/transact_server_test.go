@@ -22,6 +22,7 @@ import (
 	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/namespace"
 	"github.com/ory/keto/internal/relationtuple"
+	"github.com/ory/keto/internal/testhelpers"
 	"github.com/ory/keto/ketoapi"
 )
 
@@ -156,7 +157,7 @@ func TestWriteHandlers(t *testing.T) {
 				Relation:  "deleted rel",
 				SubjectID: new("deleted subj"),
 			}
-			relationtuple.MapAndWriteTuples(t, reg, rt)
+			testhelpers.MapAndInsertTuples(t, reg, rt)
 
 			req, err := http.NewRequest(http.MethodDelete, ts.URL+relationtuple.WriteRouteBase+"?"+rt.ToURLQuery().Encode(), nil)
 			require.NoError(t, err)
@@ -188,7 +189,7 @@ func TestWriteHandlers(t *testing.T) {
 				},
 			}
 
-			relationtuple.MapAndWriteTuples(t, reg, rts...)
+			testhelpers.MapAndInsertTuples(t, reg, rts...)
 
 			q := url.Values{
 				"namespace": {nspace.Name},
@@ -229,7 +230,7 @@ func TestWriteHandlers(t *testing.T) {
 				},
 			}
 
-			relationtuple.MapAndWriteTuples(t, reg, rts...)
+			testhelpers.MapAndInsertTuples(t, reg, rts...)
 
 			assertBadRequest := func(t *testing.T, req *http.Request) {
 				resp, err := ts.Client().Do(req) //nolint:gosec // Test code with controlled URL.
@@ -315,7 +316,7 @@ func TestWriteHandlers(t *testing.T) {
 					},
 				},
 			}
-			relationtuple.MapAndWriteTuples(t, reg, deltas[1].RelationTuple)
+			testhelpers.MapAndInsertTuples(t, reg, deltas[1].RelationTuple)
 
 			body, err := json.Marshal(deltas)
 			require.NoError(t, err)

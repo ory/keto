@@ -137,32 +137,44 @@ func WithConfig(key string, value any) TestRegistryOption {
 		require.NoError(t, r.c.Set(key, value))
 	}
 }
+
+func WithMapperNamespace(f func(ctx context.Context) uuid.UUID) TestRegistryOption {
+	return func(t testing.TB, r *RegistryDefault) {
+		r.replaceMapperNs = f
+	}
+}
+
 func WithNamespaces(namespaces []*namespace.Namespace) TestRegistryOption {
 	return func(t testing.TB, r *RegistryDefault) {
 		require.NoError(t, r.c.Set(config.KeyNamespaces, namespaces))
 	}
 }
+
 func WithOPL(opl string) TestRegistryOption {
 	return func(t testing.TB, r *RegistryDefault) {
 		f := createFile(t, opl)
 		require.NoError(t, r.c.Set(config.KeyNamespaces+".location", "file://"+f))
 	}
 }
+
 func WithGRPCUnaryInterceptors(i ...grpc.UnaryServerInterceptor) TestRegistryOption {
 	return func(_ testing.TB, r *RegistryDefault) {
 		r.defaultUnaryInterceptors = i
 	}
 }
+
 func WithGRPCStreamInterceptors(i ...grpc.StreamServerInterceptor) TestRegistryOption {
 	return func(_ testing.TB, r *RegistryDefault) {
 		r.defaultStreamInterceptors = i
 	}
 }
+
 func WithTracer(tracer trace.Tracer) TestRegistryOption {
 	return func(_ testing.TB, r *RegistryDefault) {
 		r.tracer = new(otelx.Tracer).WithOTLP(tracer)
 	}
 }
+
 func WithLogLevel(level string) TestRegistryOption {
 	return func(t testing.TB, r *RegistryDefault) {
 		require.NoError(t, r.c.Set("log.level", level))

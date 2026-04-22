@@ -26,6 +26,7 @@ import (
 	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/namespace"
 	"github.com/ory/keto/internal/relationtuple"
+	"github.com/ory/keto/internal/testhelpers"
 	"github.com/ory/keto/ketoapi"
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 )
@@ -94,7 +95,7 @@ func TestReadHandlers(t *testing.T) {
 				},
 			}
 
-			relationtuple.MapAndWriteTuples(t, reg, tuples...)
+			testhelpers.MapAndInsertTuples(t, reg, tuples...)
 
 			resp, err := ts.Client().Get(ts.URL + relationtuple.ReadRouteBase + "?" + url.Values{
 				"namespace": {nspace.Name},
@@ -120,7 +121,7 @@ func TestReadHandlers(t *testing.T) {
 				},
 			}
 
-			relationtuple.MapAndWriteTuples(t, reg, tuples...)
+			testhelpers.MapAndInsertTuples(t, reg, tuples...)
 
 			resp, err := ts.Client().Get(ts.URL + relationtuple.ReadRouteBase + "?" + url.Values{
 				"object": {"obj"},
@@ -161,7 +162,7 @@ func TestReadHandlers(t *testing.T) {
 					SubjectID: new("s2"),
 				},
 			}
-			relationtuple.MapAndWriteTuples(t, reg, tuples...)
+			testhelpers.MapAndInsertTuples(t, reg, tuples...)
 
 			var firstResp ketoapi.GetResponse
 			resp, err := ts.Client().Get(ts.URL + relationtuple.ReadRouteBase + "?" + url.Values{
@@ -286,7 +287,7 @@ func TestReadHandlers(t *testing.T) {
 								},
 							},
 						}
-						relationtuple.MapAndWriteTuples(t, reg, tuples...)
+						testhelpers.MapAndInsertTuples(t, reg, tuples...)
 
 						req := &rts.ListRelationTuplesRequest{}
 						enhancer(req, &ketoapi.RelationQuery{
@@ -322,7 +323,7 @@ func TestReadHandlers(t *testing.T) {
 								SubjectID: new("s3"),
 							},
 						}
-						relationtuple.MapAndWriteTuples(t, reg, tuples...)
+						testhelpers.MapAndInsertTuples(t, reg, tuples...)
 
 						query := &ketoapi.RelationQuery{
 							Namespace: &nspace.Name,

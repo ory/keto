@@ -66,6 +66,7 @@ type (
 		ctxer           contextx.Contextualizer
 		mapper          *relationtuple.Mapper
 		readOnlyMapper  *relationtuple.Mapper
+		replaceMapperNs func(ctx context.Context) uuid.UUID
 
 		init1, init2       sync.Once
 		init1err, init2err error
@@ -226,6 +227,13 @@ func (r *RegistryDefault) Persister() persistence.Persister {
 func (r *RegistryDefault) NetworkID(ctx context.Context) uuid.UUID {
 	if r.p == nil {
 		panic("no persister, but expected to have one")
+	}
+	return r.p.NetworkID(ctx)
+}
+
+func (r *RegistryDefault) MapperNamespace(ctx context.Context) uuid.UUID {
+	if r.replaceMapperNs != nil {
+		return r.replaceMapperNs(ctx)
 	}
 	return r.p.NetworkID(ctx)
 }

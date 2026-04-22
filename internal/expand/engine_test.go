@@ -5,43 +5,29 @@ package expand_test
 
 import (
 	"context"
-	"fmt"
 	"slices"
 	"testing"
 
 	"github.com/gofrs/uuid"
-	keysetpagination "github.com/ory/x/pagination/keysetpagination_v2"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	keysetpagination "github.com/ory/x/pagination/keysetpagination_v2"
 
 	"github.com/ory/keto/internal/driver"
 	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/expand"
 	"github.com/ory/keto/internal/namespace"
 	"github.com/ory/keto/internal/relationtuple"
+	"github.com/ory/keto/internal/testhelpers"
 	"github.com/ory/keto/internal/x"
 	"github.com/ory/keto/ketoapi"
 	"github.com/ory/keto/schema"
 )
 
-// deps is defined to capture engine dependencies in a single struct
-type deps struct {
-	mw *relationtuple.ManagerWrapper // managerProvider
-	*driver.RegistryDefault
-}
-
-func (d *deps) RelationTupleManager() relationtuple.Manager { return d.mw }
-
-func newTestEngine(t *testing.T, namespaces []*namespace.Namespace, paginationOpts ...keysetpagination.Option) (*relationtuple.ManagerWrapper, *expand.Engine) {
-	innerReg := driver.NewSqliteTestRegistry(t, false)
-
-	require.NoError(t, innerReg.Config(context.Background()).Set(config.KeyNamespaces, namespaces))
-	reg := relationtuple.NewManagerWrapper(t, innerReg, paginationOpts...)
-	e := expand.NewEngine(&deps{mw: reg, RegistryDefault: innerReg})
-	return reg, e
-}
-
 func TestEngine(t *testing.T) {
+	emptyNs := driver.WithNamespaces([]*namespace.Namespace{{}})
+
 	t.Run("case=returns SubjectID on expand", func(t *testing.T) {
 		groupObj := uuid.Must(uuid.NewV4())
 		tuple := &relationtuple.RelationTuple{
@@ -51,7 +37,8 @@ func TestEngine(t *testing.T) {
 			Subject:   &relationtuple.SubjectID{ID: uuid.Must(uuid.NewV4())},
 		}
 
-		reg, e := newTestEngine(t, []*namespace.Namespace{})
+		reg := driver.NewSqliteTestRegistry(t, false)
+		e := expand.NewEngine(reg)
 		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), tuple))
 
 		t.Run(`tuple does not exist, but ns:obj exists`, func(t *testing.T) {
@@ -115,7 +102,8 @@ func TestEngine(t *testing.T) {
 				Subject:  paul,
 			},
 		}
-		reg, e := newTestEngine(t, []*namespace.Namespace{{}})
+		reg := driver.NewSqliteTestRegistry(t, false, emptyNs)
+		e := expand.NewEngine(reg)
 
 		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), boulderers...))
 
@@ -191,7 +179,8 @@ func TestEngine(t *testing.T) {
 			},
 		}
 
-		reg, e := newTestEngine(t, []*namespace.Namespace{{}})
+		reg := driver.NewSqliteTestRegistry(t, false, emptyNs)
+		e := expand.NewEngine(reg)
 
 		for _, group := range expectedTree.Children {
 			require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), &relationtuple.RelationTuple{
@@ -218,7 +207,8 @@ func TestEngine(t *testing.T) {
 	})
 
 	t.Run("case=respects max depth", func(t *testing.T) {
-		reg, e := newTestEngine(t, []*namespace.Namespace{{}})
+		reg := driver.NewSqliteTestRegistry(t, false, emptyNs)
+		e := expand.NewEngine(reg)
 
 		ids := x.UUIDs(5)
 		for i := 1; i < len(ids); i++ {
@@ -284,8 +274,10 @@ func TestEngine(t *testing.T) {
 	})
 
 	t.Run("case=paginates", func(t *testing.T) {
-		reg, e := newTestEngine(t, []*namespace.Namespace{{}}, keysetpagination.WithSize(2))
+		innerReg := driver.NewSqliteTestRegistry(t, false, emptyNs)
+		reg, mw := testhelpers.RegistryWithManagerWrapper(t, innerReg, keysetpagination.WithSize(2))
 
+		e := expand.NewEngine(reg)
 		root := uuid.Must(uuid.NewV4())
 		expectedTree := &relationtuple.Tree{
 			Type:    ketoapi.TreeNodeUnion,
@@ -311,11 +303,12 @@ func TestEngine(t *testing.T) {
 		require.NoError(t, err)
 
 		assert.True(t, expand.AssertInternalTreesAreEqual(t, expectedTree, tree))
-		assert.Len(t, reg.RequestedPages, 2)
+		assert.Len(t, mw.RequestedPages, 2)
 	})
 
 	t.Run("case=handles subject sets as leaf", func(t *testing.T) {
-		reg, e := newTestEngine(t, []*namespace.Namespace{{}})
+		reg := driver.NewSqliteTestRegistry(t, false, emptyNs)
+		e := expand.NewEngine(reg)
 
 		expectedTree := &relationtuple.Tree{
 			Type: ketoapi.TreeNodeUnion,
@@ -334,7 +327,7 @@ func TestEngine(t *testing.T) {
 			},
 		}
 
-		require.NoError(t, reg.WriteRelationTuples(context.Background(), &relationtuple.RelationTuple{
+		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), &relationtuple.RelationTuple{
 			Object:   expectedTree.Subject.(*relationtuple.SubjectSet).Object,
 			Relation: expectedTree.Subject.(*relationtuple.SubjectSet).Relation,
 			Subject:  expectedTree.Children[0].Subject,
@@ -362,7 +355,8 @@ func TestEngine(t *testing.T) {
 			Relation:  connected,
 		}
 
-		reg, e := newTestEngine(t, []*namespace.Namespace{{Name: namesp}})
+		reg := driver.NewSqliteTestRegistry(t, false, driver.WithNamespaces([]*namespace.Namespace{{Name: namesp}}))
+		e := expand.NewEngine(reg)
 
 		expectedTree := &relationtuple.Tree{
 			Type:    ketoapi.TreeNodeUnion,
@@ -422,7 +416,8 @@ func TestEngine(t *testing.T) {
 	})
 
 	t.Run("case=returns result on unknown subject", func(t *testing.T) {
-		_, e := newTestEngine(t, []*namespace.Namespace{})
+		reg := driver.NewSqliteTestRegistry(t, false, emptyNs)
+		e := expand.NewEngine(reg)
 		ss := &relationtuple.SubjectSet{
 			Namespace: "unknown",
 			Object:    uuid.Must(uuid.NewV4()),
@@ -1027,7 +1022,7 @@ func TestEngineOpl(t *testing.T) {
 						Reason: relationtuple.TruncationReasonTupleLimit,
 						Cursor: &relationtuple.ExpandCursor{
 							Kind:       relationtuple.ExpandCursorKindDirect,
-							SubjectSet: subjectSetFromString(t, "Group:g3#members"),
+							SubjectSet: testhelpers.SubjectSetFromString(t, "Group:g3#members"),
 						},
 					}),
 				),
@@ -1086,7 +1081,7 @@ func TestEngineOpl(t *testing.T) {
 						Reason: relationtuple.TruncationReasonTupleLimit,
 						Cursor: &relationtuple.ExpandCursor{
 							Kind:             relationtuple.ExpandCursorKindTTU,
-							SubjectSet:       subjectSetFromString(t, "File:f1#viewerGroups"),
+							SubjectSet:       testhelpers.SubjectSetFromString(t, "File:f1#viewerGroups"),
 							TraverseRelation: new("members"),
 						},
 					}),
@@ -1232,21 +1227,21 @@ func TestEngineOpl(t *testing.T) {
 						Reason: relationtuple.TruncationReasonTupleLimit,
 						Cursor: &relationtuple.ExpandCursor{
 							Kind:       relationtuple.ExpandCursorKindDirect,
-							SubjectSet: subjectSetFromString(t, "Folder:31#members"),
+							SubjectSet: testhelpers.SubjectSetFromString(t, "Folder:31#members"),
 						},
 					}),
 					treeNode(t, union, "Folder:32#members", &relationtuple.Truncation{
 						Reason: relationtuple.TruncationReasonTupleLimit,
 						Cursor: &relationtuple.ExpandCursor{
 							Kind:       relationtuple.ExpandCursorKindDirect,
-							SubjectSet: subjectSetFromString(t, "Folder:32#members"),
+							SubjectSet: testhelpers.SubjectSetFromString(t, "Folder:32#members"),
 						},
 					}),
 					treeNode(t, union, "Folder:33#members", &relationtuple.Truncation{
 						Reason: relationtuple.TruncationReasonTupleLimit,
 						Cursor: &relationtuple.ExpandCursor{
 							Kind:       relationtuple.ExpandCursorKindDirect,
-							SubjectSet: subjectSetFromString(t, "Folder:33#members"),
+							SubjectSet: testhelpers.SubjectSetFromString(t, "Folder:33#members"),
 						},
 					}),
 				),
@@ -1254,7 +1249,7 @@ func TestEngineOpl(t *testing.T) {
 					Reason: relationtuple.TruncationReasonTupleLimit,
 					Cursor: &relationtuple.ExpandCursor{
 						Kind:       relationtuple.ExpandCursorKindDirect,
-						SubjectSet: subjectSetFromString(t, "Folder:22#members"),
+						SubjectSet: testhelpers.SubjectSetFromString(t, "Folder:22#members"),
 					},
 				}),
 			),
@@ -1303,7 +1298,7 @@ func TestEngineOpl(t *testing.T) {
 					Reason: relationtuple.TruncationReasonTupleLimit,
 					Cursor: &relationtuple.ExpandCursor{
 						Kind:             relationtuple.ExpandCursorKindTTU,
-						SubjectSet:       subjectSetFromString(t, "Group:Sales#parent"),
+						SubjectSet:       testhelpers.SubjectSetFromString(t, "Group:Sales#parent"),
 						TraverseRelation: new("isMember"),
 					},
 				}),
@@ -1339,81 +1334,20 @@ func TestEngineOpl(t *testing.T) {
 					opts = append(opts, driver.WithConfig(config.KeyNamespacesExperimentalStrictMode, tt.strict))
 				}
 
-				innerReg := driver.NewSqliteTestRegistry(t, false, opts...)
+				reg := driver.NewSqliteTestRegistry(t, false, opts...)
 
-				reg := relationtuple.NewManagerWrapper(t, innerReg)
-				e := expand.NewEngine(&deps{mw: reg, RegistryDefault: innerReg})
+				e := expand.NewEngine(reg)
 
 				ctx := context.Background()
-				for _, row := range tt.inputTuples {
-					require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(ctx, tupleFromString(t, row)))
-				}
+				testhelpers.MapAndInsertTuplesFromString(t, reg, tt.inputTuples)
 
-				tree, err := e.BuildTree(ctx, subjectSetFromString(t, tt.expandInput), 100)
+				tree, err := e.BuildTree(ctx, testhelpers.SubjectSetFromString(t, tt.expandInput), 100)
 				require.NoError(t, err)
 
 				expand.RequireInternalTreesAreEqual(t, tt.expected, tree)
 			})
 		}
 	})
-}
-
-func toUUID(s string) uuid.UUID {
-	return uuid.NewV5(uuid.Nil, s)
-}
-
-func tupleFromString(t testing.TB, s string) *relationtuple.RelationTuple {
-	rt, err := (&ketoapi.RelationTuple{}).FromString(s)
-	require.NoError(t, err)
-	result := &relationtuple.RelationTuple{
-		Namespace: rt.Namespace,
-		Object:    toUUID(rt.Object),
-		Relation:  rt.Relation,
-	}
-	switch {
-	case rt.SubjectID != nil:
-		result.Subject = &relationtuple.SubjectID{ID: toUUID(*rt.SubjectID)}
-	case rt.SubjectSet != nil:
-		result.Subject = &relationtuple.SubjectSet{
-			Namespace: rt.SubjectSet.Namespace,
-			Object:    toUUID(rt.SubjectSet.Object),
-			Relation:  rt.SubjectSet.Relation,
-		}
-	default:
-		t.Fatal("invalid tuple")
-	}
-	return result
-}
-
-func subjectFromString(t testing.TB, s string) relationtuple.Subject {
-	tuple := fmt.Sprintf("Ns:obj#rel@%s", s)
-	rt, err := (&ketoapi.RelationTuple{}).FromString(tuple)
-	require.NoError(t, err)
-
-	switch {
-	case rt.SubjectID != nil:
-		return &relationtuple.SubjectID{
-			ID: toUUID(*rt.SubjectID),
-		}
-	case rt.SubjectSet != nil:
-		return &relationtuple.SubjectSet{
-			Namespace: rt.SubjectSet.Namespace,
-			Object:    toUUID(rt.SubjectSet.Object),
-			Relation:  rt.SubjectSet.Relation,
-		}
-	}
-	return nil
-}
-
-func subjectSetFromString(t testing.TB, s string) *relationtuple.SubjectSet {
-	rt, err := (&ketoapi.SubjectSet{}).FromString(s)
-	require.NoError(t, err)
-
-	return &relationtuple.SubjectSet{
-		Namespace: rt.Namespace,
-		Object:    toUUID(rt.Object),
-		Relation:  rt.Relation,
-	}
 }
 
 var (
@@ -1434,7 +1368,7 @@ func treeNode(t testing.TB, nodeType ketoapi.TreeNodeType, subject string, trunc
 		Children:   children,
 	}
 	if subject != "" {
-		node.Subject = subjectFromString(t, subject)
+		node.Subject = testhelpers.SubjectFromString(t, subject)
 	}
 	if len(children) == 0 {
 		node.Children = nil

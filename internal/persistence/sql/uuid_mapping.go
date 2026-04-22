@@ -137,7 +137,7 @@ func (p *Persister) MapStringsToUUIDsReadOnly(ctx context.Context, ss ...string)
 
 	uuids = make([]uuid.UUID, len(ss))
 	for i := range ss {
-		uuids[i] = uuid.NewV5(p.NetworkID(ctx), ss[i])
+		uuids[i] = uuid.NewV5(p.d.MapperNamespace(ctx), ss[i])
 	}
 	return uuids, nil
 }

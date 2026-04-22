@@ -14,99 +14,134 @@ import (
 
 	"github.com/ory/keto/internal/check"
 	"github.com/ory/keto/internal/check/checkgroup"
+	"github.com/ory/keto/internal/driver"
 	"github.com/ory/keto/internal/namespace"
 	"github.com/ory/keto/internal/namespace/ast"
 	"github.com/ory/keto/internal/relationtuple"
+	"github.com/ory/keto/internal/testhelpers"
 	"github.com/ory/keto/ketoapi"
 )
 
 var namespaces = []*namespace.Namespace{
-	{Name: "doc",
+	{
+		Name: "doc",
 		Relations: []ast.Relation{
 			{
-				Name: "owner"},
+				Name: "owner",
+			},
 			{
 				Name: "editor",
 				SubjectSetRewrite: &ast.SubjectSetRewrite{
 					Children: ast.Children{&ast.ComputedSubjectSet{
-						Relation: "owner"}}}},
+						Relation: "owner",
+					}},
+				},
+			},
 			{
 				Name: "viewer",
 				SubjectSetRewrite: &ast.SubjectSetRewrite{
 					Children: ast.Children{
 						&ast.ComputedSubjectSet{
-							Relation: "editor"},
+							Relation: "editor",
+						},
 						&ast.TupleToSubjectSet{
 							Relation:                   "parent",
-							ComputedSubjectSetRelation: "viewer"}}}},
-		}},
+							ComputedSubjectSetRelation: "viewer",
+						},
+					},
+				},
+			},
+		},
+	},
 	{Name: "users"},
-	{Name: "group",
+	{
+		Name:      "group",
 		Relations: []ast.Relation{{Name: "member"}},
 	},
-	{Name: "level",
+	{
+		Name:      "level",
 		Relations: []ast.Relation{{Name: "member"}},
 	},
-	{Name: "resource",
+	{
+		Name: "resource",
 		Relations: []ast.Relation{
 			{Name: "level"},
-			{Name: "viewer",
+			{
+				Name: "viewer",
 				SubjectSetRewrite: &ast.SubjectSetRewrite{
 					Children: ast.Children{
-						&ast.TupleToSubjectSet{Relation: "owner", ComputedSubjectSetRelation: "member"}}}},
-			{Name: "owner",
+						&ast.TupleToSubjectSet{Relation: "owner", ComputedSubjectSetRelation: "member"},
+					},
+				},
+			},
+			{
+				Name: "owner",
 				SubjectSetRewrite: &ast.SubjectSetRewrite{
 					Children: ast.Children{
-						&ast.TupleToSubjectSet{Relation: "owner", ComputedSubjectSetRelation: "member"}}}},
-			{Name: "read",
+						&ast.TupleToSubjectSet{Relation: "owner", ComputedSubjectSetRelation: "member"},
+					},
+				},
+			},
+			{
+				Name: "read",
 				SubjectSetRewrite: &ast.SubjectSetRewrite{
 					Children: ast.Children{
 						&ast.ComputedSubjectSet{Relation: "viewer"},
-						&ast.ComputedSubjectSet{Relation: "owner"}}}},
-			{Name: "update",
+						&ast.ComputedSubjectSet{Relation: "owner"},
+					},
+				},
+			},
+			{
+				Name: "update",
 				SubjectSetRewrite: &ast.SubjectSetRewrite{
 					Children: ast.Children{
-						&ast.ComputedSubjectSet{Relation: "owner"}}}},
-			{Name: "delete",
+						&ast.ComputedSubjectSet{Relation: "owner"},
+					},
+				},
+			},
+			{
+				Name: "delete",
 				SubjectSetRewrite: &ast.SubjectSetRewrite{
 					Operation: ast.OperatorAnd,
 					Children: ast.Children{
 						&ast.ComputedSubjectSet{Relation: "owner"},
 						&ast.TupleToSubjectSet{
 							Relation:                   "level",
-							ComputedSubjectSetRelation: "member"}}}},
-		}},
-	{Name: "acl",
+							ComputedSubjectSetRelation: "member",
+						},
+					},
+				},
+			},
+		},
+	},
+	{
+		Name: "acl",
 		Relations: []ast.Relation{
 			{Name: "allow"},
 			{Name: "deny"},
-			{Name: "access",
+			{
+				Name: "access",
 				SubjectSetRewrite: &ast.SubjectSetRewrite{
 					Operation: ast.OperatorAnd,
 					Children: ast.Children{
 						&ast.ComputedSubjectSet{Relation: "allow"},
 						&ast.InvertResult{
-							Child: &ast.ComputedSubjectSet{Relation: "deny"}}}}}}},
-}
-
-func insertFixtures(t testing.TB, m relationtuple.Manager, tuples []string) {
-	t.Helper()
-	relationTuples := make([]*relationtuple.RelationTuple, len(tuples))
-	var err error
-	for i, tuple := range tuples {
-		relationTuples[i] = tupleFromString(t, tuple)
-		require.NoError(t, err)
-	}
-	require.NoError(t, m.WriteRelationTuples(context.Background(), relationTuples...))
+							Child: &ast.ComputedSubjectSet{Relation: "deny"},
+						},
+					},
+				},
+			},
+		},
+	},
 }
 
 type path []string
 
 func TestUsersetRewrites(t *testing.T) {
-	reg := newDepsProvider(t, namespaces)
+	reg := driver.NewSqliteTestRegistry(t, false, driver.WithNamespaces(namespaces))
 	reg.Logger().Logger.SetLevel(logrus.TraceLevel)
 
-	insertFixtures(t, reg.RelationTupleManager(), []string{
+	testhelpers.MapAndInsertTuplesFromString(t, reg, []string{
 		"doc:document#owner@plain_user",       // user owns doc
 		"doc:document#owner@users:user",       // user owns doc
 		"doc:doc_in_folder#parent@doc:folder", // doc_in_folder is in folder
@@ -229,7 +264,7 @@ func TestUsersetRewrites(t *testing.T) {
 
 		for _, tc := range testCases {
 			t.Run("case="+tc.query, func(t *testing.T) {
-				rt := tupleFromString(t, tc.query)
+				rt := testhelpers.TupleFromString(t, tc.query)
 
 				res := e.CheckRelationTuple(ctx, rt, 100)
 				require.NoError(t, res.Err)
@@ -257,7 +292,7 @@ func TestUsersetRewrites(t *testing.T) {
 		//	checkgroup.WithWorkers(1),
 		//)),
 
-		rt := tupleFromString(t, "doc:file#viewer@user")
+		rt := testhelpers.TupleFromString(t, "doc:file#viewer@user")
 		res := e.CheckRelationTuple(ctx, rt, 100)
 		require.NoError(t, res.Err)
 		assert.Equal(t, checkgroup.ResultIsMember.Membership, res.Membership)
@@ -276,8 +311,8 @@ func hasPath(t *testing.T, path path, tree *ketoapi.Tree[*relationtuple.Relation
 	}
 	treeLabel := tree.Label()
 	if path[0] != "*" {
-		// use tupleFromString to compare against paths with UUIDs.
-		tuple := tupleFromString(t, path[0])
+		// use testhelpers.TupleFromString to compare against paths with UUIDs.
+		tuple := testhelpers.TupleFromString(t, path[0])
 		if tuple.String() != treeLabel {
 			return false
 		}

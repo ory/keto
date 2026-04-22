@@ -15,7 +15,6 @@ import (
 	"github.com/ory/keto/internal/namespace"
 	"github.com/ory/keto/internal/namespace/ast"
 	"github.com/ory/keto/internal/relationtuple"
-	"github.com/ory/keto/internal/x"
 	"github.com/ory/keto/ketoapi"
 	"github.com/ory/keto/x/events"
 )
@@ -26,7 +25,6 @@ type (
 		config.Provider
 		logrusx.Provider
 		otelx.Provider
-		x.NetworkIDProvider
 	}
 	Engine struct {
 		d EngineDependencies

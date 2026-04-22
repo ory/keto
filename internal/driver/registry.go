@@ -31,6 +31,7 @@ type (
 		httpx.WriterProvider
 
 		relationtuple.ManagerProvider
+		relationtuple.MapperProvider
 		expand.EngineProvider
 		check.EngineProvider
 		persistence.Migrator
