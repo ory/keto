@@ -38,7 +38,7 @@ type (
 
 var (
 	_        namespace.Manager = (*oplConfigWatcher)(nil)
-	cache, _                   = ristretto.NewCache[string, []byte](&ristretto.Config[string, []byte]{
+	cache, _                   = ristretto.NewCache(&ristretto.Config[string, []byte]{
 		MaxCost:     20_000_000, // 20 MB max size, each item ca. 10 KB => max 2000 items
 		NumCounters: 20_000,     // max 2000 items => 20000 counters
 		BufferItems: 64,
