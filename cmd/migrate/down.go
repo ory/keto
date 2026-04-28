@@ -35,7 +35,7 @@ func newDownCmd(opts []ketoctx.Option) *cobra.Command {
 				return err
 			}
 
-			mb, err := reg.MigrationBox(cmd.Context())
+			mb, err := reg.MigrationBox(cmd.Context(), popx.WithoutGoldenDatabase())
 			if err != nil {
 				return err
 			}

@@ -259,7 +259,7 @@ func (r *RegistryDefault) ExpandEngine() *expand.Engine {
 	return r.ee
 }
 
-func (r *RegistryDefault) MigrationBox(ctx context.Context) (*popx.MigrationBox, error) {
+func (r *RegistryDefault) MigrationBox(ctx context.Context, opts ...popx.MigrationBoxOption) (*popx.MigrationBox, error) {
 	if r.mb == nil {
 		c, err := r.PopConnection(ctx)
 		if err != nil {
@@ -270,13 +270,15 @@ func (r *RegistryDefault) MigrationBox(ctx context.Context) (*popx.MigrationBox,
 			return nil, err
 		}
 
+		migrationBoxOptions := append(opts,
+			popx.WithGoMigrations(uuidmapping.Migrations(namespaces)))
+
+		migrationBoxOptions = append(migrationBoxOptions, r.defaultMigrationOptions...)
+
 		mb, err := popx.NewMigrationBox(
 			fsx.Merge(append([]fs.FS{sql.Migrations, networkx.Migrations}, r.extraMigrations...)...),
 			c, r.Logger(),
-			append(
-				[]popx.MigrationBoxOption{popx.WithGoMigrations(uuidmapping.Migrations(namespaces))},
-				r.defaultMigrationOptions...,
-			)...,
+			migrationBoxOptions...,
 		)
 		if err != nil {
 			return nil, err

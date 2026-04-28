@@ -26,7 +26,7 @@ type (
 		Transaction(ctx context.Context, f func(ctx context.Context) error) error
 	}
 	Migrator interface {
-		MigrationBox(ctx context.Context) (*popx.MigrationBox, error)
+		MigrationBox(ctx context.Context, opts ...popx.MigrationBoxOption) (*popx.MigrationBox, error)
 		MigrateUp(ctx context.Context) error
 		MigrateDown(ctx context.Context) error
 	}

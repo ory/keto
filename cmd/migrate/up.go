@@ -42,7 +42,7 @@ Before running this command on an existing database, create a back up!
 				return err
 			}
 
-			mb, err := reg.MigrationBox(ctx)
+			mb, err := reg.MigrationBox(ctx, popx.WithoutGoldenDatabase())
 			if err != nil {
 				return err
 			}
