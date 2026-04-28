@@ -4,543 +4,427 @@
 package check_test
 
 import (
-	"context"
 	"testing"
 
-	"github.com/gofrs/uuid"
-	"github.com/ory/herodot"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"github.com/ory/herodot"
 
 	"github.com/ory/keto/internal/check"
 	"github.com/ory/keto/internal/check/checkgroup"
 	"github.com/ory/keto/internal/driver"
 	"github.com/ory/keto/internal/driver/config"
-	"github.com/ory/keto/internal/namespace"
-	"github.com/ory/keto/internal/namespace/ast"
-	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/internal/testhelpers"
-	"github.com/ory/keto/internal/x"
 	"github.com/ory/keto/ketoapi"
 )
 
-func TestEngine(t *testing.T) {
-	ctx := context.Background()
-
-	t.Run("respects max depth", func(t *testing.T) {
-		// "user" has relation "access" through being an "owner" through being an "admin"
-		// which requires at least 2 units of depth. If max-depth is 2 then we hit max-depth
-		reg := driver.NewSqliteTestRegistry(t, false)
-
-		// "user" has relation "access" through being an "owner" through being
-		// an "admin" which requires at least 2 units of depth. If max-depth is
-		// 2 then we hit max-depth
-		testhelpers.MapAndInsertTuplesFromString(t, reg, []string{
-			"test:object#admin@user",
-			"test:object#owner@test:object#admin",
-			"test:object#access@test:object#owner",
-		})
-
-		e := check.NewEngine(reg)
-
-		userHasAccess := testhelpers.TupleFromString(t, "test:object#access@user")
-
-		// global max-depth defaults to 5
-		assert.Equal(t, reg.Config(ctx).MaxReadDepth(), 5)
-
-		// req max-depth takes precedence, max-depth=2 is not enough
-		res, err := e.CheckIsMember(ctx, userHasAccess, 2)
-		require.NoError(t, err)
-		assert.False(t, res)
-
-		// req max-depth takes precedence, max-depth=3 is enough
-		res, err = e.CheckIsMember(ctx, userHasAccess, 3)
-		require.NoError(t, err)
-		assert.True(t, res)
-
-		// global max-depth takes precedence and max-depth=2 is not enough
-		require.NoError(t, reg.Config(ctx).Set(config.KeyLimitMaxReadDepth, 2))
-		res, err = e.CheckIsMember(ctx, userHasAccess, 2)
-		require.NoError(t, err)
-		assert.False(t, res)
-
-		// global max-depth takes precedence and max-depth=3 is enough
-		require.NoError(t, reg.Config(ctx).Set(config.KeyLimitMaxReadDepth, 3))
-		res, err = e.CheckIsMember(ctx, userHasAccess, 0)
-		require.NoError(t, err)
-		assert.True(t, res)
-	})
-
-	t.Run("direct inclusion", func(t *testing.T) {
-		reg := driver.NewSqliteTestRegistry(t, false, driver.WithNamespaces([]*namespace.Namespace{{Name: "n"}, {Name: "u"}}))
-		tuples := []string{
-			`n:o#r@subject_id`,
-			`n:o#r@u:with_relation#r`,
-			`n:o#r@u:empty_relation#`,
-			`n:o#r@u:missing_relation`,
-		}
-
-		testhelpers.MapAndInsertTuplesFromString(t, reg, tuples)
-		e := check.NewEngine(reg)
-
-		cases := []struct {
-			tuple string
-		}{
-			{tuple: "n:o#r@subject_id"},
-			{tuple: "n:o#r@u:with_relation#r"},
-
-			{tuple: "n:o#r@u:empty_relation"},
-			{tuple: "n:o#r@u:empty_relation#"},
-
-			{tuple: "n:o#r@u:missing_relation"},
-			{tuple: "n:o#r@u:missing_relation#"},
-		}
-
-		for _, tc := range cases {
-			t.Run("case="+tc.tuple, func(t *testing.T) {
-				res, err := e.CheckIsMember(ctx, testhelpers.TupleFromString(t, tc.tuple), 0)
-				require.NoError(t, err)
-				assert.True(t, res)
-			})
-		}
-	})
-
-	t.Run("indirect inclusion level 1", func(t *testing.T) {
-		reg := driver.NewSqliteTestRegistry(t, false, driver.WithNamespaces([]*namespace.Namespace{{Name: "sofa"}}))
-
-		testhelpers.MapAndInsertTuplesFromString(t, reg, []string{
-			"sofa:dust#producer@mark",
-			"sofa:dust#have_to_remove@sofa:dust#producer",
-		})
-		e := check.NewEngine(reg)
-
-		res, err := e.CheckIsMember(ctx, testhelpers.TupleFromString(t, "sofa:dust#have_to_remove@mark"), 0)
-		require.NoError(t, err)
-		assert.True(t, res)
-	})
-
-	t.Run("direct exclusion", func(t *testing.T) {
-		user := &relationtuple.SubjectID{ID: uuid.Must(uuid.NewV4())}
-		rel := relationtuple.RelationTuple{
-			Relation:  "relation",
-			Object:    uuid.Must(uuid.NewV4()),
-			Namespace: t.Name(),
-			Subject:   user,
-		}
-
-		reg := driver.NewSqliteTestRegistry(t, false, driver.WithNamespaces([]*namespace.Namespace{{Name: rel.Namespace}}))
-		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(ctx, &rel))
-
-		e := check.NewEngine(reg)
-
-		res, err := e.CheckIsMember(ctx, &relationtuple.RelationTuple{
-			Namespace: rel.Namespace,
-			Object:    rel.Object,
-			Relation:  rel.Relation,
-			Subject:   &relationtuple.SubjectID{ID: uuid.Must(uuid.NewV4())},
-		}, 0)
-		require.NoError(t, err)
-		assert.False(t, res)
-	})
-
-	t.Run("subject expansion", func(t *testing.T) {
-		reg := driver.NewSqliteTestRegistry(t, false, driver.WithNamespaces([]*namespace.Namespace{{
-			Name: "n",
-			Relations: []ast.Relation{
-				{
-					Name: "r",
-					Types: []ast.RelationType{
-						{
-							Namespace: "n",
-							Relation:  "r",
-						},
-					},
-				},
-			},
-		}}))
-		tuples := []string{
-			`n:a#r@n:b#r`,
-			`n:b#r@n:c#r`,
-			`n:c#r@n:d#r`,
-			`n:d#r@u`,
-		}
-
-		testhelpers.MapAndInsertTuplesFromString(t, reg, tuples)
-		e := check.NewEngine(reg)
-		require.NoError(t, reg.Config(ctx).Set(config.KeyLimitMaxReadDepth, 5))
-
-		cases := []struct {
-			tuple string
-		}{
-			{tuple: "n:d#r@u"},
-			{tuple: "n:c#r@u"},
-			{tuple: "n:b#r@u"},
-			{tuple: "n:a#r@u"},
-		}
-
-		for _, tc := range cases {
-			t.Run("case="+tc.tuple, func(t *testing.T) {
-				res, err := e.CheckIsMember(ctx, testhelpers.TupleFromString(t, tc.tuple), 0)
-				require.NoError(t, err)
-				assert.True(t, res)
-			})
-		}
-	})
-
-	t.Run("wrong object ID", func(t *testing.T) {
-		object := uuid.Must(uuid.NewV4())
-		access := relationtuple.RelationTuple{
-			Relation: "access",
-			Object:   object,
-			Subject: &relationtuple.SubjectSet{
-				Relation: "owner",
-				Object:   object,
-			},
-		}
-		user := relationtuple.RelationTuple{
-			Relation: "owner",
-			Object:   uuid.Must(uuid.NewV4()),
-			Subject:  &relationtuple.SubjectID{ID: uuid.Must(uuid.NewV4())},
-		}
-
-		reg := driver.NewSqliteTestRegistry(t, false)
-		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(ctx, &access, &user))
-
-		e := check.NewEngine(reg)
-
-		res, err := e.CheckIsMember(ctx, &relationtuple.RelationTuple{
-			Relation: access.Relation,
-			Object:   object,
-			Subject:  user.Subject,
-		}, 0)
-		require.NoError(t, err)
-		assert.False(t, res)
-	})
-
-	t.Run("wrong relation name", func(t *testing.T) {
-		diaryEntry := uuid.Must(uuid.NewV4())
-		diaryNamespace := "diaries"
-		// this would be a user-set rewrite
-		readDiary := relationtuple.RelationTuple{
-			Namespace: diaryNamespace,
-			Relation:  "read",
-			Object:    diaryEntry,
-			Subject: &relationtuple.SubjectSet{
-				Relation:  "author",
-				Object:    diaryEntry,
-				Namespace: diaryNamespace,
-			},
-		}
-		user := relationtuple.RelationTuple{
-			Namespace: diaryNamespace,
-			Relation:  "not author",
-			Object:    diaryEntry,
-			Subject:   &relationtuple.SubjectID{ID: uuid.Must(uuid.NewV4())},
-		}
-
-		reg := driver.NewSqliteTestRegistry(t, false, driver.WithNamespaces([]*namespace.Namespace{{Name: diaryNamespace}}))
-		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(ctx, &readDiary, &user))
-
-		e := check.NewEngine(reg)
-
-		res, err := e.CheckIsMember(ctx, &relationtuple.RelationTuple{
-			Relation:  readDiary.Relation,
-			Object:    diaryEntry,
-			Namespace: diaryNamespace,
-			Subject:   user.Subject,
-		}, 0)
-		require.NoError(t, err)
-		assert.False(t, res)
-	})
-
-	t.Run("indirect inclusion level 2", func(t *testing.T) {
-		reg := driver.NewSqliteTestRegistry(t, false, driver.WithNamespaces([]*namespace.Namespace{
-			{Name: "obj"},
-			{Name: "org"},
-		}))
-
-		testhelpers.MapAndInsertTuplesFromString(t, reg, []string{
-			"obj:object#write@obj:object#owner",
-			"obj:object#owner@org:organization#member",
-			"org:organization#member@user",
-		})
-
-		e := check.NewEngine(reg)
-
-		// user can write object
-		res, err := e.CheckIsMember(ctx, testhelpers.TupleFromString(t, "obj:object#write@user"), 0)
-		require.NoError(t, err)
-		assert.True(t, res)
-
-		// user is member of the organization
-		res, err = e.CheckIsMember(ctx, testhelpers.TupleFromString(t, "org:organization#member@user"), 0)
-		require.NoError(t, err)
-		assert.True(t, res)
-	})
-
-	t.Run("rejects transitive relation", func(t *testing.T) {
-		// (file) <--parent-- (directory) <--access-- [user]
-		//
-		// note the missing access relation from "users who have access to directory also have access to files inside of the directory"
-		// as we don't know how to interpret the "parent" relation, there would have to be a userset rewrite to allow access
-		// to files when you have access to the parent
-
-		file := uuid.Must(uuid.NewV4())
-		directory := uuid.Must(uuid.NewV4())
-		user := relationtuple.SubjectID{ID: uuid.Must(uuid.NewV4())}
-
-		parent := relationtuple.RelationTuple{
-			Relation: "parent",
-			Object:   file,
-			Subject: &relationtuple.SubjectSet{ // <- this is only an object, but this is allowed as a userset can have the "..." relation which means any relation
-				Object: directory,
-			},
-		}
-		directoryAccess := relationtuple.RelationTuple{
-			Relation: "access",
-			Object:   directory,
-			Subject:  &user,
-		}
-
-		reg := driver.NewSqliteTestRegistry(t, false, driver.WithNamespaces([]*namespace.Namespace{
-			{Name: "2"},
-		}))
-		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(ctx, &parent, &directoryAccess))
-
-		e := check.NewEngine(reg)
-
-		res, err := e.CheckIsMember(ctx, &relationtuple.RelationTuple{
-			Relation: directoryAccess.Relation,
-			Object:   file,
-			Subject:  &user,
-		}, 0)
-		require.NoError(t, err)
-		assert.False(t, res)
-	})
-
-	t.Run("case=subject id next to subject set", func(t *testing.T) {
-		namesp, obj, org, directOwner, indirectOwner, ownerRel, memberRel := "39231", uuid.Must(uuid.NewV4()), uuid.Must(uuid.NewV4()), uuid.Must(uuid.NewV4()), uuid.Must(uuid.NewV4()), "owner", "member"
-
-		reg := driver.NewSqliteTestRegistry(t, false, driver.WithNamespaces([]*namespace.Namespace{{Name: namesp}}))
-		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(
-			ctx,
-			&relationtuple.RelationTuple{
-				Namespace: namesp,
-				Object:    obj,
-				Relation:  ownerRel,
-				Subject:   &relationtuple.SubjectID{ID: directOwner},
-			},
-			&relationtuple.RelationTuple{
-				Namespace: namesp,
-				Object:    obj,
-				Relation:  ownerRel,
-				Subject: &relationtuple.SubjectSet{
-					Namespace: namesp,
-					Object:    org,
-					Relation:  memberRel,
-				},
-			},
-			&relationtuple.RelationTuple{
-				Namespace: namesp,
-				Object:    org,
-				Relation:  memberRel,
-				Subject:   &relationtuple.SubjectID{ID: indirectOwner},
-			},
-		))
-
-		e := check.NewEngine(reg)
-
-		res, err := e.CheckIsMember(ctx, &relationtuple.RelationTuple{
-			Namespace: namesp,
-			Object:    obj,
-			Relation:  ownerRel,
-			Subject:   &relationtuple.SubjectID{ID: directOwner},
-		}, 0)
-		require.NoError(t, err)
-		assert.True(t, res)
-
-		res, err = e.CheckIsMember(ctx, &relationtuple.RelationTuple{
-			Namespace: namesp,
-			Object:    obj,
-			Relation:  ownerRel,
-			Subject:   &relationtuple.SubjectID{ID: indirectOwner},
-		}, 0)
-		require.NoError(t, err)
-		assert.True(t, res)
-	})
-
-	t.Run("case=wide tuple graph", func(t *testing.T) {
-		namesp, obj, access, member, users, orgs := "9234", uuid.Must(uuid.NewV4()), "access", "member", x.UUIDs(4), x.UUIDs(2)
-
-		reg := driver.NewSqliteTestRegistry(t, false, driver.WithNamespaces([]*namespace.Namespace{{Name: namesp}}))
-
-		for _, org := range orgs {
-			require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(ctx, &relationtuple.RelationTuple{
-				Namespace: namesp,
-				Object:    obj,
-				Relation:  access,
-				Subject: &relationtuple.SubjectSet{
-					Namespace: namesp,
-					Object:    org,
-					Relation:  member,
-				},
-			}))
-		}
-
-		for i, user := range users {
-			require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(ctx, &relationtuple.RelationTuple{
-				Namespace: namesp,
-				Object:    orgs[i%len(orgs)],
-				Relation:  member,
-				Subject:   &relationtuple.SubjectID{ID: user},
-			}))
-		}
-
-		e := check.NewEngine(reg)
-
-		for _, user := range users {
-			req := &relationtuple.RelationTuple{
-				Namespace: namesp,
-				Object:    obj,
-				Relation:  access,
-				Subject:   &relationtuple.SubjectID{ID: user},
+// ExpansionRecursive is a three-level group hierarchy where engineering branches
+// into two sibling sub-groups. Safe to run with WithStrict(true).
+//
+// company ⊃ engineering ⊃ (frontend, backend)
+// company ⊃ User:cto
+// engineering ⊃ User:manager
+// backend ⊃ User:Alice, Alice
+// frontend ⊃ User:Bob, Bob
+var ExpansionRecursive = testhelpers.Scenario{
+	Name: "Expansion Recursive",
+	Opl: `
+		class User implements Namespace{}
+		class Group implements Namespace{
+			related: {
+				members: (User | SubjectSet<Group, "members">)[]
 			}
-			allowed, err := e.CheckIsMember(ctx, req, 0)
-			require.NoError(t, err)
-			assert.Truef(t, allowed, "%+v", req)
+		}
+	`,
+	InputTuples: []string{
+		"Group:company#members@Group:engineering#members",
+
+		"Group:company#members@User:cto",
+		"Group:engineering#members@User:manager",
+
+		"Group:engineering#members@Group:frontend#members",
+		"Group:engineering#members@Group:backend#members",
+
+		"Group:backend#members@User:Alice",
+		"Group:frontend#members@User:Bob",
+
+		"Group:backend#members@Alice", // SubjectID
+		"Group:frontend#members@Bob",  // SubjectID
+	},
+}
+
+var ExpansionRecursiveNamespaceOnly = testhelpers.Scenario{
+	Name:        ExpansionRecursive.Name + " (namespaces only)",
+	Opl:         `class User implements Namespace{} class Group implements Namespace{}`,
+	InputTuples: ExpansionRecursive.InputTuples,
+}
+
+// SubjectSetExpansion3Hop combines cross-namespace and within-namespace SubjectSet expansion.
+//
+// File:team-report#viewers ⊃ File:team-report#editors ⊃ Group:finance#member → (User:Alice, User:Bob).
+// File:personal-note#viewers ⊃ User:Alice, User:Bob
+var SubjectSetExpansion3Hop = testhelpers.Scenario{
+	Name: "SubjectSet Expansion 3 Hops",
+	Opl: `
+		class User implements Namespace{}
+		class Group implements Namespace{
+			related: {
+				member: User[]
+			}
+		}
+		class File implements Namespace{
+			related: {
+				editors: (User | SubjectSet<Group, "member">)[]
+				viewers: (User | SubjectSet<File, "editors">)[]
+			}
+		}
+	`,
+	InputTuples: []string{
+		"Group:finance#member@User:Alice",
+		"Group:finance#member@User:Bob",
+
+		"File:team-report#editors@Group:finance#member",     // group members are editors
+		"File:team-report#viewers@File:team-report#editors", // editors are also viewers
+
+		"File:personal-note#viewers@User:Alice",
+		"File:personal-note#viewers@User:Bob",
+	},
+}
+
+var SubjectSetExpansion3HopNamespacesOnly = testhelpers.Scenario{
+	Name:        SubjectSetExpansion3Hop.Name + " (namespaces only)",
+	Opl:         `class User implements Namespace{} class Group implements Namespace{} class File implements Namespace{}`,
+	InputTuples: SubjectSetExpansion3Hop.InputTuples,
+}
+
+// CircularGraphNamespacesOnly covers a fully circular SubjectSet graph with no leaf subjects.
+//
+// A → B → C → A.
+var CircularGraphNamespacesOnly = testhelpers.Scenario{
+	Name: "Circular Graph (namespaces only)",
+	Opl: `
+		class Folder implements Namespace{}
+	`,
+	InputTuples: []string{
+		"Folder:a#parent@Folder:b#parent",
+		"Folder:b#parent@Folder:c#parent",
+		"Folder:c#parent@Folder:a#parent",
+	},
+}
+
+// FileWithNonConformingTuples covers a schema where a client incorrectly stores
+// tuples directly under permit names (canEdit, canView) instead of the backing
+// related fields (editors, viewers).
+//
+// In strict mode the engine ignores those tuples and resolves access only via
+// OPL rewrites. In non-strict mode the direct tuples are visible alongside the
+// rewrites.
+var FileWithNonConformingTuples = testhelpers.Scenario{
+	Name: "File With Non-Conforming Tuples",
+	Opl: `
+		class User implements Namespace {}
+		class File implements Namespace {
+			related: {
+				editors: User[]
+				viewers: User[]
+			}
+			permits = {
+				canEdit: (ctx: Context) => this.related.editors.includes(ctx.subject),
+				canView: (ctx: Context) => this.permits.canEdit(ctx) || this.related.viewers.includes(ctx.subject),
+			}
+		}
+	`,
+	InputTuples: []string{
+		"File:secret-doc#editors@User:Alice",
+		"File:secret-doc#viewers@User:Bob",
+
+		// Bad client data: permit names used as direct relation targets.
+		"File:secret-doc#canEdit@User:Eve",
+		"File:secret-doc#canEdit@Eve", // subjectID
+	},
+}
+
+// NotionPage models a simplified Notion-like workspace with nested pages.
+//
+// canView requires direct or parent access.
+// canEdit requires direct editor access AND workspace membership.
+var NotionPage = testhelpers.Scenario{
+	Name: "Notion Page",
+	Opl: `
+		class User implements Namespace {}
+		class Workspace implements Namespace {
+			related: {
+				member: User[]
+			}
+		}
+		class Page implements Namespace {
+			related: {
+				workspace: Workspace[]
+				parent: Page[]
+				viewer: User[]
+				editor: User[]
+			}
+			permits = {
+				canView: (ctx: Context) =>
+					this.related.viewer.includes(ctx.subject) ||
+					this.related.editor.includes(ctx.subject) ||
+					this.related.parent.traverse(p => p.permits.canView(ctx)),
+				canEdit: (ctx: Context) =>
+					this.related.editor.includes(ctx.subject) &&
+					this.related.workspace.traverse(w => w.related.member.includes(ctx.subject)),
+			}
+		}
+	`,
+	InputTuples: []string{
+		"Workspace:acme#member@User:Alice",
+		"Workspace:acme#member@User:Bob",
+
+		"Page:home#workspace@Workspace:acme",
+		"Page:home#viewer@User:Alice",
+		"Page:home#editor@User:Bob",
+		"Page:home#editor@User:Eve", // Eve is not workspace member
+
+		"Page:intro#workspace@Workspace:acme",
+		"Page:intro#parent@Page:home", // intro inherits canView from home
+		"Page:intro#editor@User:Alice",
+	},
+}
+
+var testcases = []struct {
+	scenarios          []testhelpers.Scenario
+	expectedMembers    []string
+	expectedNonMembers []string
+}{
+	{
+		scenarios: []testhelpers.Scenario{ExpansionRecursive, ExpansionRecursiveNamespaceOnly},
+		expectedMembers: []string{
+			// direct: SubjectSet and SubjectID members
+			"Group:backend#members@User:Alice", "Group:backend#members@Alice",
+			"Group:frontend#members@User:Bob", "Group:frontend#members@Bob",
+
+			// engineering: own direct member plus frontend and backend
+			"Group:engineering#members@User:manager",
+			"Group:engineering#members@User:Alice", "Group:engineering#members@Alice",
+			"Group:engineering#members@User:Bob", "Group:engineering#members@Bob",
+
+			// company: own direct member plus everything from engineering
+			"Group:company#members@User:cto",
+			"Group:company#members@User:manager",
+			"Group:company#members@User:Alice", "Group:company#members@Alice",
+			"Group:company#members@User:Bob", "Group:company#members@Bob",
+		},
+		expectedNonMembers: []string{
+			// frontend and backend members do not cross.
+			"Group:frontend#members@User:Alice",
+			"Group:backend#members@User:Bob",
+
+			// Membership flows upward only.
+			"Group:backend#members@User:manager", "Group:backend#members@User:cto",
+			"Group:frontend#members@User:manager", "Group:frontend#members@User:cto",
+			"Group:engineering#members@User:cto",
+		},
+	},
+	{
+		scenarios: []testhelpers.Scenario{SubjectSetExpansion3Hop, SubjectSetExpansion3HopNamespacesOnly},
+		expectedMembers: []string{
+			// direct
+			"Group:finance#member@User:Alice", "Group:finance#member@User:Bob",
+
+			// via group expansion
+			"File:team-report#editors@User:Alice", "File:team-report#editors@User:Bob",
+
+			// via editors are viewers
+			"File:team-report#viewers@User:Alice", "File:team-report#viewers@User:Bob",
+
+			// direct viewers on personal note
+			"File:personal-note#viewers@User:Alice", "File:personal-note#viewers@User:Bob",
+		},
+		expectedNonMembers: []string{
+			// File:personal-note is missing subject-set relationship;
+			// Therefore editors are not viewers;
+			"File:personal-note#editors@User:Alice",
+			"File:personal-note#editors@User:Bob",
+		},
+	},
+	{
+		scenarios: []testhelpers.Scenario{CircularGraphNamespacesOnly},
+		expectedMembers: []string{
+			"Folder:a#parent@Folder:a#parent",
+			"Folder:a#parent@Folder:b#parent",
+			"Folder:a#parent@Folder:c#parent",
+
+			"Folder:b#parent@Folder:a#parent",
+			"Folder:b#parent@Folder:b#parent",
+			"Folder:b#parent@Folder:c#parent",
+
+			"Folder:c#parent@Folder:a#parent",
+			"Folder:c#parent@Folder:b#parent",
+			"Folder:c#parent@Folder:c#parent",
+		},
+	},
+	{
+		scenarios: []testhelpers.Scenario{{
+			Name: "rejects transitive relation",
+			Opl: `
+						class User implements Namespace{}
+						class Directory implements Namespace{}
+						class File implements Namespace{}
+					`,
+			InputTuples: []string{
+				"File:report#parent@Directory:docs",
+				"Directory:docs#access@User:Alice",
+			},
+		}},
+		expectedNonMembers: []string{
+			"File:report#access@User:Alice",
+		},
+	},
+	{
+		scenarios: []testhelpers.Scenario{FileWithNonConformingTuples.WithStrict(true)},
+		expectedMembers: []string{
+			"File:secret-doc#viewers@User:Bob",
+			"File:secret-doc#editors@User:Alice",
+
+			// via OPL
+			"File:secret-doc#canView@User:Bob",
+			"File:secret-doc#canEdit@User:Alice",
+			"File:secret-doc#canView@User:Alice",
+		},
+		expectedNonMembers: []string{
+			"File:secret-doc#canEdit@User:Eve",
+			"File:secret-doc#canView@User:Eve",
+		},
+	},
+	{
+		scenarios: []testhelpers.Scenario{NotionPage},
+		expectedMembers: []string{
+			// direct viewer/editor on home
+			"Page:home#canView@User:Alice",
+			"Page:home#canView@User:Bob", // editor also satisfies canView
+			"Page:home#canView@User:Eve", // stale editor tuple still satisfies canView (no workspace check)
+			// canEdit requires editor AND workspace member
+			"Page:home#canEdit@User:Bob",
+			// intro: direct editor + workspace member
+			"Page:intro#canEdit@User:Alice",
+			// intro canView via TTU: intro → parent → home → Alice/Bob/Eve
+			"Page:intro#canView@User:Alice",
+			"Page:intro#canView@User:Bob",
+			"Page:intro#canView@User:Eve",
+		},
+		expectedNonMembers: []string{
+			// Eve has editor tuple but is not a workspace member — AND fails
+			"Page:home#canEdit@User:Eve",
+			// Bob is editor of home, not intro — canEdit requires explicit editor tuple
+			"Page:intro#canEdit@User:Bob",
+			// Alice is only a viewer on home, not an editor
+			"Page:home#canEdit@User:Alice",
+		},
+	},
+	{
+		scenarios: []testhelpers.Scenario{FileWithNonConformingTuples},
+		expectedMembers: []string{
+			"File:secret-doc#viewers@User:Bob",
+			"File:secret-doc#editors@User:Alice",
+
+			// via OPL
+			"File:secret-doc#canView@User:Bob",
+			"File:secret-doc#canEdit@User:Alice",
+			"File:secret-doc#canView@User:Alice",
+
+			// canEdit is a direct tuple, visible in non-strict mode
+			"File:secret-doc#canEdit@User:Eve",
+			// canView is visible via OPL rewrite in non-strict mode
+			"File:secret-doc#canView@User:Eve",
+		},
+		expectedNonMembers: []string{},
+	},
+}
+
+func TestEngine(t *testing.T) {
+	t.Run(`membership tests`, func(t *testing.T) {
+		for _, tc := range testcases {
+			for _, scenario := range tc.scenarios {
+				scenario.Run(t, func(t *testing.T, reg driver.Registry) {
+					e := check.NewEngine(reg)
+					ctx := t.Context()
+
+					for _, tuple := range tc.expectedMembers {
+						res, err := e.CheckIsMember(ctx, testhelpers.TupleFromString(t, tuple), 5)
+						require.NoError(t, err)
+						assert.Truef(t, res, "expected %q to be a member", tuple)
+					}
+
+					for _, tuple := range tc.expectedNonMembers {
+						res, err := e.CheckIsMember(ctx, testhelpers.TupleFromString(t, tuple), 5)
+						require.NoError(t, err)
+						assert.Falsef(t, res, "expected %q to not be a member", tuple)
+					}
+				})
+			}
 		}
 	})
 
-	t.Run("case=circular tuples", func(t *testing.T) {
-		sendlingerTor, odeonsplatz, centralStation, connected, namesp := uuid.NewV5(uuid.Nil, "Sendlinger Tor"), uuid.NewV5(uuid.Nil, "Odeonsplatz"), uuid.NewV5(uuid.Nil, "Central Station"), "connected", "7743"
+	t.Run("respects max-depth", func(t *testing.T) {
+		ExpansionRecursive.Run(t, func(t *testing.T, reg driver.Registry) {
+			e := check.NewEngine(reg)
+			ctx := t.Context()
 
-		reg := driver.NewSqliteTestRegistry(t, false, driver.WithNamespaces([]*namespace.Namespace{{Name: namesp}}))
+			// company → engineering → backend → User:Alice requires exactly 3 hops.
+			tuple := testhelpers.TupleFromString(t, "Group:company#members@User:Alice")
 
-		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(ctx, []*relationtuple.RelationTuple{
-			{
-				Namespace: namesp,
-				Object:    sendlingerTor,
-				Relation:  connected,
-				Subject: &relationtuple.SubjectSet{
-					Namespace: namesp,
-					Object:    odeonsplatz,
-					Relation:  connected,
-				},
-			},
-			{
-				Namespace: namesp,
-				Object:    odeonsplatz,
-				Relation:  connected,
-				Subject: &relationtuple.SubjectSet{
-					Namespace: namesp,
-					Object:    centralStation,
-					Relation:  connected,
-				},
-			},
-			{
-				Namespace: namesp,
-				Object:    centralStation,
-				Relation:  connected,
-				Subject: &relationtuple.SubjectSet{
-					Namespace: namesp,
-					Object:    sendlingerTor,
-					Relation:  connected,
-				},
-			},
-		}...))
+			assert.Equal(t, 5, reg.Config(ctx).MaxReadDepth())
 
-		e := check.NewEngine(reg)
+			res, err := e.CheckIsMember(ctx, tuple, 2)
+			require.NoError(t, err)
+			assert.False(t, res, "depth=2 is not enough for a 3-hop chain")
 
-		stations := []uuid.UUID{sendlingerTor, odeonsplatz, centralStation}
-		res, err := e.CheckIsMember(ctx, &relationtuple.RelationTuple{
-			Namespace: namesp,
-			Object:    stations[0],
-			Relation:  connected,
-			Subject: &relationtuple.SubjectID{
-				ID: stations[2],
-			},
-		}, 0)
-		require.NoError(t, err)
-		assert.False(t, res)
-	})
+			res, err = e.CheckIsMember(ctx, tuple, 3)
+			require.NoError(t, err)
+			assert.True(t, res, "depth=3 is enough for a 3-hop chain")
 
-	t.Run("case=strict mode", func(t *testing.T) {
-		reg := driver.NewSqliteTestRegistry(t, false,
-			driver.WithOPL(ProjectOPLConfig),
-			driver.WithConfig(config.KeyNamespacesExperimentalStrictMode, true))
+			require.NoError(t, reg.Config(ctx).Set(config.KeyLimitMaxReadDepth, 2))
+			res, err = e.CheckIsMember(ctx, tuple, 5)
+			require.NoError(t, err)
+			assert.False(t, res, "global max-depth=2 overrides request depth=5")
 
-		testhelpers.MapAndInsertTuplesFromString(t, reg, []string{
-			"Project:abc#owner@User:1",
-			"Project:abc#owner@User1",
-			// The following tuples are ignored in strict mode
-			"Project:abc#isOwner@User:isOwner",
-			"Project:abc#readProject@readProjectUser",
-			"Project:abc#readProject@User:ReadProject",
+			require.NoError(t, reg.Config(ctx).Set(config.KeyLimitMaxReadDepth, 3))
+			res, err = e.CheckIsMember(ctx, tuple, 0)
+			require.NoError(t, err)
+			assert.True(t, res, "global max-depth=3 is enough")
 		})
-
-		e := check.NewEngine(reg)
-
-		for _, sub := range []string{"readProjectUser", "User:ReadProject", "User:isOwner"} {
-			// These checks should return false, even though the exact tuple is in the db.
-			res, err := e.CheckIsMember(ctx, testhelpers.TupleFromString(t, "Project:abc#readProject@"+sub), 10)
-			require.NoError(t, err)
-			assert.False(t, res)
-		}
-
-		for _, sub := range []string{"User:1", "User1"} {
-			res, err := e.CheckIsMember(ctx, testhelpers.TupleFromString(t, "Project:abc#readProject@"+sub), 10)
-			require.NoError(t, err)
-			assert.True(t, res)
-		}
 	})
 
-	t.Run("case=batch check", func(t *testing.T) {
-		reg := driver.NewSqliteTestRegistry(t, false,
-			driver.WithNamespaces([]*namespace.Namespace{{Name: "test"}}), driver.WithMapperNamespace(testhelpers.CustomMapperNamespace))
+	t.Run("batch check", func(t *testing.T) {
+		SubjectSetExpansion3Hop.Run(t, func(t *testing.T, reg driver.Registry) {
+			e := check.NewEngine(reg)
+			ctx := t.Context()
 
-		testhelpers.MapAndInsertTuplesFromString(t, reg, []string{
-			"test:object#admin@user",
-			"test:object#owner@test:object#admin",
-			"test:object#access@test:object#owner",
+			targetTuples := []*ketoapi.RelationTuple{
+				testhelpers.APITupleFromString(t, "Group:finance#member@User:Alice"),                   // direct
+				testhelpers.APITupleFromString(t, "File:team-report#editors@User:Alice"),               // 2-hop
+				testhelpers.APITupleFromString(t, "File:team-report#viewers@User:Alice"),               // 3-hop
+				testhelpers.APITupleFromString(t, "NonExistent:x#rel@User:Alice"),                      // non-existent namespace
+				testhelpers.APITupleFromString(t, "Group:finance#member@User:Eve"),                     // unknown subject
+				testhelpers.APITupleFromString(t, "File:team-report#viewers@File:team-report#editors"), // via subject set
+			}
+
+			// At depth=2, the 3-hop viewers chain is not resolved.
+			results, err := e.BatchCheck(ctx, targetTuples, 2)
+			require.NoError(t, err)
+
+			require.Equal(t, checkgroup.IsMember, results[0].Membership)
+			require.Equal(t, checkgroup.IsMember, results[1].Membership)
+			require.Equal(t, checkgroup.NotMember, results[2].Membership)
+			require.Equal(t, checkgroup.MembershipUnknown, results[3].Membership)
+			require.EqualError(t, results[3].Err, herodot.ErrNotFound().Error())
+			require.Equal(t, checkgroup.NotMember, results[4].Membership)
+			require.Equal(t, checkgroup.IsMember, results[5].Membership)
+
+			// At depth=3, the 3-hop viewers chain resolves
+			results, err = e.BatchCheck(ctx, targetTuples, 3)
+			require.NoError(t, err)
+			require.Equal(t, checkgroup.IsMember, results[2].Membership)
 		})
-
-		e := check.NewEngine(reg)
-
-		targetTuples := []*ketoapi.RelationTuple{
-			// direct relation
-			testhelpers.APITupleFromString(t, "test:object#admin@user"),
-			// indirect relation
-			testhelpers.APITupleFromString(t, "test:object#owner@user"),
-			// indirect relation, greater than max depth
-			testhelpers.APITupleFromString(t, "test:object#access@user"),
-			// non-existent namespace
-			testhelpers.APITupleFromString(t, "test2:object#admin@user"),
-			// unknown subject
-			testhelpers.APITupleFromString(t, "test:object#admin@user2"),
-			// relation via subject set
-			testhelpers.APITupleFromString(t, "test:object#access@test:object#owner"),
-		}
-
-		// Batch check with low max depth
-		results, err := e.BatchCheck(ctx, targetTuples, 2)
-		require.NoError(t, err)
-
-		require.Equal(t, checkgroup.IsMember, results[0].Membership)
-		require.NoError(t, results[0].Err)
-		require.Equal(t, checkgroup.IsMember, results[1].Membership)
-		require.NoError(t, results[1].Err)
-		require.Equal(t, checkgroup.NotMember, results[2].Membership)
-		require.NoError(t, results[2].Err)
-		require.Equal(t, checkgroup.MembershipUnknown, results[3].Membership)
-		require.EqualError(t, results[3].Err, herodot.ErrNotFound().Error())
-		require.Equal(t, checkgroup.NotMember, results[4].Membership)
-		require.NoError(t, results[4].Err)
-		require.Equal(t, checkgroup.IsMember, results[5].Membership)
-		require.NoError(t, results[5].Err)
-
-		// Check with higher max depth and verify the third tuple is now shown as a member
-		results, err = e.BatchCheck(ctx, targetTuples, 3)
-		require.NoError(t, err)
-		require.Equal(t, checkgroup.IsMember, results[2].Membership)
 	})
 }
