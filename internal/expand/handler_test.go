@@ -31,7 +31,7 @@ func TestRESTHandler(t *testing.T) {
 
 	reg := driver.NewSqliteTestRegistry(t, false, driver.WithNamespaces([]*namespace.Namespace{nspace}))
 	h := expand.NewHandler(reg)
-	r := httprouterx.NewTestRouterPublic(t)
+	r := httprouterx.NewRouterPublic()
 	h.RegisterReadRoutes(r)
 	ts := httptest.NewServer(r)
 	defer ts.Close()

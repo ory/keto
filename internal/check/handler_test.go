@@ -74,7 +74,7 @@ func TestCheckRESTHandler(t *testing.T) {
 
 	reg := driver.NewSqliteTestRegistry(t, false, driver.WithNamespaces(nspaces))
 	h := check.NewHandler(reg)
-	r := httprouterx.NewTestRouterPublic(t)
+	r := httprouterx.NewRouterPublic()
 	h.RegisterReadRoutes(r)
 	ts := httptest.NewServer(r)
 	defer ts.Close()
@@ -169,7 +169,7 @@ func TestBatchCheckRESTHandler(t *testing.T) {
 
 	reg := driver.NewSqliteTestRegistry(t, false, driver.WithNamespaces(nspaces))
 	h := check.NewHandler(reg)
-	r := httprouterx.NewTestRouterPublic(t)
+	r := httprouterx.NewRouterPublic()
 	h.RegisterReadRoutes(r)
 	ts := httptest.NewServer(r)
 	defer ts.Close()

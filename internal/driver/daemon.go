@@ -381,7 +381,6 @@ func (r *RegistryDefault) ReadRouter(ctx context.Context) http.Handler {
 	router := httprouterx.NewRouterPublic()
 	n := negroni.New(
 		recovery,
-		httprouterx.PopulatePatternNegroni(router),
 		httpMetrics,
 	)
 	for _, f := range r.defaultHttpMiddlewares {
@@ -422,7 +421,6 @@ func (r *RegistryDefault) WriteRouter(ctx context.Context) http.Handler {
 	router := httprouterx.NewRouterAdmin()
 	n := negroni.New(
 		recovery,
-		httprouterx.PopulatePatternNegroni(router),
 		httpMetrics,
 	)
 	for _, f := range r.defaultHttpMiddlewares {
@@ -464,7 +462,6 @@ func (r *RegistryDefault) OPLSyntaxRouter(ctx context.Context) http.Handler {
 	router := httprouterx.NewRouter()
 	n := negroni.New(
 		recovery,
-		httprouterx.PopulatePatternNegroni(router),
 		httpMetrics,
 	)
 	for _, f := range r.defaultHttpMiddlewares {

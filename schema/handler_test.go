@@ -26,7 +26,7 @@ import (
 )
 
 func TestNewHandler(t *testing.T) {
-	r := httprouterx.NewTestRouterPublic(t)
+	r := httprouterx.NewRouterPublic()
 	reg := driver.NewSqliteTestRegistry(t, false)
 	h := schema.NewHandler(reg)
 	h.RegisterSyntaxRoutes(r)

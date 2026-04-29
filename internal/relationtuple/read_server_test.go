@@ -33,7 +33,7 @@ import (
 
 func TestReadHandlers(t *testing.T) {
 	ctx := context.Background()
-	r := httprouterx.NewTestRouterPublic(t)
+	r := httprouterx.NewRouterPublic()
 	reg := driver.NewSqliteTestRegistry(t, false)
 	h := relationtuple.NewHandler(reg)
 	h.RegisterReadRoutes(r)
