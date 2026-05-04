@@ -9,4 +9,4 @@ import (
 	"testing"
 )
 
-func RunMySQL(testing.TB, string) string { return "" }
+func RunMySQL(testing.TB, string) (string, error) { return "", nil }

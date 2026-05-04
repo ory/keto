@@ -38,20 +38,17 @@ func TestMigrations(t *testing.T) {
 	t.Parallel()
 	const debugOnDisk = false
 
-	for _, db := range dbx.GetDSNs(t, debugOnDisk) {
-		db := db
+	for _, db := range dbx.GetDSNs(t) {
 		t.Run("dsn="+db.Name, func(t *testing.T) {
 			t.Parallel()
 
 			db.MigrateUp, db.MigrateDown = false, false
 
-			ctx := context.Background()
-
 			var conn *pop.Connection
 			var err error
 			conn, err = pop.NewConnection(&pop.ConnectionDetails{URL: db.Conn})
 			require.NoError(t, err)
-			for i := 0; i < 120; i++ {
+			for range 120 {
 				require.NoError(t, conn.Open())
 				if err := dbx.Ping(conn); err == nil {
 					break
@@ -75,10 +72,10 @@ func TestMigrations(t *testing.T) {
 			require.NoError(t, err)
 
 			// cleanup first
-			require.NoError(t, tm.Down(ctx, -1))
+			require.NoError(t, tm.Down(t.Context(), -1))
 
 			t.Run("suite=up", func(t *testing.T) {
-				if err := tm.Up(ctx); err != nil {
+				if err := tm.Up(t.Context()); err != nil {
 					t.Log("migrations failed:", err)
 					logMigrationStatus(t, tm)
 					t.FailNow()
@@ -86,7 +83,7 @@ func TestMigrations(t *testing.T) {
 			})
 
 			reg := driver.NewTestRegistry(t, db, driver.WithNamespaces(namespaces))
-			p, err := sql.NewPersister(ctx, reg, uuid.Must(uuid.FromString("77fdc5e0-2260-49da-8aae-c36ba255d05b")))
+			p, err := sql.NewPersister(t.Context(), reg, uuid.Must(uuid.FromString("77fdc5e0-2260-49da-8aae-c36ba255d05b")))
 			require.NoError(t, err)
 
 			t.Run("suite=fixtures", func(t *testing.T) {
@@ -98,7 +95,7 @@ func TestMigrations(t *testing.T) {
 				})
 
 				t.Run("table=relationships", func(t *testing.T) {
-					actualRts, next, err := p.GetRelationTuples(ctx, &relationtuple.RelationQuery{Namespace: &namespaces[0].Name})
+					actualRts, next, err := p.GetRelationTuples(t.Context(), &relationtuple.RelationQuery{Namespace: &namespaces[0].Name})
 					require.NoError(t, err)
 					assert.True(t, next.IsLast())
 					t.Log("actual rts:", actualRts)
@@ -124,7 +121,7 @@ func TestMigrations(t *testing.T) {
 
 					// The relationship tuples in the db have a UUID mapping, so
 					// we need to convert our expectations to that.
-					expectedUUID, err := reg.Mapper().FromTuple(ctx, expectedRts...)
+					expectedUUID, err := reg.Mapper().FromTuple(t.Context(), expectedRts...)
 					require.NoError(t, err)
 					assert.ElementsMatch(t, expectedUUID, actualRts)
 					logMigrationStatus(t, tm)
@@ -133,7 +130,7 @@ func TestMigrations(t *testing.T) {
 
 			t.Run("suite=uuid_migrations", func(t *testing.T) {
 				t.Run("correct types", func(t *testing.T) {
-					ctx, cancel := context.WithTimeout(ctx, time.Minute)
+					ctx, cancel := context.WithTimeout(t.Context(), time.Minute)
 					defer cancel()
 					require.NoError(t, tm.Down(ctx, -1))
 
@@ -166,7 +163,7 @@ func TestMigrations(t *testing.T) {
 				})
 
 				t.Run("paginates", func(t *testing.T) {
-					ctx, cancel := context.WithTimeout(ctx, 2*time.Minute)
+					ctx, cancel := context.WithTimeout(t.Context(), 2*time.Minute)
 					defer cancel()
 					require.NoError(t, tm.Down(ctx, -1))
 
@@ -216,7 +213,7 @@ func TestMigrations(t *testing.T) {
 				if debugOnDisk && db.Name == "sqlite" {
 					t.SkipNow()
 				}
-				require.NoError(t, tm.Down(ctx, -1))
+				require.NoError(t, tm.Down(t.Context(), -1))
 			})
 		})
 	}

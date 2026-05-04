@@ -28,7 +28,7 @@ import (
 
 func TestWriteHandlers(t *testing.T) {
 	r := httprouterx.NewRouterAdmin()
-	reg := driver.NewSqliteTestRegistry(t, false)
+	reg := driver.NewSqliteTestRegistry(t)
 
 	var nspaces []*namespace.Namespace
 	addNamespace := func(t *testing.T) *namespace.Namespace {

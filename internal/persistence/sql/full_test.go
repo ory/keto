@@ -29,7 +29,7 @@ func TestPersister(t *testing.T) {
 		return
 	}
 
-	for _, dsn := range dbx.GetDSNs(t, false) {
+	for _, dsn := range dbx.GetDSNs(t) {
 		dsn := dsn
 		t.Run(fmt.Sprintf("dsn=%s", dsn.Name), func(t *testing.T) {
 			t.Parallel()

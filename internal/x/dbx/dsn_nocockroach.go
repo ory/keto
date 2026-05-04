@@ -9,4 +9,4 @@ import (
 	"testing"
 )
 
-func RunCockroach(t testing.TB, testDB string) string { return "" }
+func RunCockroach(testing.TB, string) (string, error) { return "", nil }

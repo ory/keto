@@ -93,7 +93,7 @@ func BenchmarkCheckEngine(b *testing.B) {
 		},
 	}
 
-	reg := driver.NewSqliteTestRegistry(b, false, driver.WithNamespaces(namespaces))
+	reg := driver.NewSqliteTestRegistry(b, driver.WithNamespaces(namespaces))
 	reg.Logger().Logger.SetLevel(logrus.InfoLevel)
 
 	tuples := []string{
@@ -153,11 +153,7 @@ func BenchmarkComputedUsersets(b *testing.B) {
 
 	spans := tracetest.NewSpanRecorder()
 	tracer := trace.NewTracerProvider(trace.WithSpanProcessor(spans)).Tracer("")
-	reg := driver.NewSqliteTestRegistry(b, false,
-		driver.WithLogLevel("debug"),
-		driver.WithOPL(ProjectOPLConfig),
-		driver.WithTracer(tracer),
-		driver.WithConfig(config.KeyNamespacesExperimentalStrictMode, true))
+	reg := driver.NewSqliteTestRegistry(b, driver.WithLogLevel("debug"), driver.WithOPL(ProjectOPLConfig), driver.WithTracer(tracer), driver.WithConfig(config.KeyNamespacesExperimentalStrictMode, true))
 	reg.Logger().Logger.SetLevel(logrus.DebugLevel)
 
 	testhelpers.MapAndInsertTuplesFromString(b, reg, []string{

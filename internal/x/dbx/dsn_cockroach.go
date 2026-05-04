@@ -11,10 +11,10 @@ import (
 	"github.com/ory/x/sqlcon/dockertest"
 )
 
-func RunCockroach(t testing.TB, testDB string) string {
+func RunCockroach(t testing.TB, testDB string) (string, error) {
 	url := dockertest.RunTestCockroachDBWithVersion(t, "latest-v25.4")
 	if err := createDB(t, url, testDB); err != nil {
-		t.Fatal(err)
+		return "", err
 	}
-	return withDbName(url, testDB)
+	return withDbName(url, testDB), nil
 }

@@ -72,7 +72,7 @@ func TestCheckRESTHandler(t *testing.T) {
 		Name: "check handler",
 	}}
 
-	reg := driver.NewSqliteTestRegistry(t, false, driver.WithNamespaces(nspaces))
+	reg := driver.NewSqliteTestRegistry(t, driver.WithNamespaces(nspaces))
 	h := check.NewHandler(reg)
 	r := httprouterx.NewRouterPublic()
 	h.RegisterReadRoutes(r)
@@ -167,7 +167,7 @@ func TestBatchCheckRESTHandler(t *testing.T) {
 		Name: "batch-check-handler",
 	}}
 
-	reg := driver.NewSqliteTestRegistry(t, false, driver.WithNamespaces(nspaces))
+	reg := driver.NewSqliteTestRegistry(t, driver.WithNamespaces(nspaces))
 	h := check.NewHandler(reg)
 	r := httprouterx.NewRouterPublic()
 	h.RegisterReadRoutes(r)
@@ -298,7 +298,7 @@ func buildBatchURL(baseURL, maxDepth string) string {
 func TestBatchCheckGRPCHandler(t *testing.T) {
 	ctx := context.Background()
 
-	reg := driver.NewSqliteTestRegistry(t, false)
+	reg := driver.NewSqliteTestRegistry(t)
 	h := check.NewHandler(reg)
 
 	l := bufconn.Listen(1024 * 1024)

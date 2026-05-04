@@ -27,7 +27,7 @@ func runWithMappers(t *testing.T, p relationtuple.MapperProvider, runner func(t 
 
 func TestMapper(t *testing.T) {
 	ctx := context.Background()
-	reg := driver.NewSqliteTestRegistry(t, false)
+	reg := driver.NewSqliteTestRegistry(t)
 	nspace := namespace.Namespace{
 		Name: "test",
 	}
@@ -381,8 +381,7 @@ func TestMapper(t *testing.T) {
 
 func BenchmarkReadOnlyMapper(b *testing.B) {
 	ctx := context.Background()
-	reg := driver.NewSqliteTestRegistry(b, false,
-		driver.WithNamespaces([]*namespace.Namespace{{Name: "test"}}))
+	reg := driver.NewSqliteTestRegistry(b, driver.WithNamespaces([]*namespace.Namespace{{Name: "test"}}))
 	m := reg.ReadOnlyMapper()
 
 	b.Run("FromTuple", func(b *testing.B) {

@@ -4,7 +4,6 @@
 package sql_test
 
 import (
-	"context"
 	stdSql "database/sql"
 	"strings"
 	"testing"
@@ -36,14 +35,13 @@ func rt(nw *networkx.Network, setSID, setNID, setO, setR bool) *sql.RelationTupl
 func TestRelationTupleSubjectTypeCheck(t *testing.T) {
 	t.Parallel()
 
-	for _, dsn := range dbx.GetDSNs(t, false) {
+	for _, dsn := range dbx.GetDSNs(t) {
 		t.Run("dsn="+dsn.Name, func(t *testing.T) {
 			t.Parallel()
-			ctx := context.Background()
 			reg := driver.NewTestRegistry(t, dsn)
-			c, err := reg.PopConnection(context.Background())
+			c, err := reg.PopConnection(t.Context())
 			require.NoError(t, err)
-			nw, err := reg.DetermineNetwork(ctx)
+			nw, err := reg.DetermineNetwork(t.Context())
 			require.NoError(t, err)
 
 			for _, tc := range []struct {
@@ -91,7 +89,6 @@ func TestRelationTupleSubjectTypeCheck(t *testing.T) {
 					success: false,
 				},
 			} {
-				tc := tc
 				t.Run("case="+tc.desc, func(t *testing.T) {
 					t.Parallel()
 					err := c.Create(rt(nw, tc.setSID, tc.setNID, tc.setO, tc.setR))

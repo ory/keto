@@ -45,16 +45,13 @@ func Test_withDbName(t *testing.T) {
 	}}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := withDbName(tt.args.dsn, tt.args.db); got != tt.want {
-				t.Errorf("\nwant %q\ngot  %q", tt.want, got)
-			}
+			assert.Equal(t, tt.want, withDbName(tt.args.dsn, tt.args.db))
 		})
 	}
 }
 
 func Test_GetDSNs_can_connect_to_each_db(t *testing.T) {
-	for _, db := range GetDSNs(t, false) {
-		db := db
+	for _, db := range GetDSNs(t) {
 		t.Run("dsn="+db.Name, func(t *testing.T) {
 			t.Parallel()
 			conn, err := pop.NewConnection(&pop.ConnectionDetails{URL: db.Conn})

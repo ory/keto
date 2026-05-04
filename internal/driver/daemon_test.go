@@ -30,7 +30,7 @@ func TestScrapingEndpoint(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	r := NewSqliteTestRegistry(t, false)
+	r := NewSqliteTestRegistry(t)
 	getAddr := UseDynamicPorts(ctx, t, r)
 
 	eg := errgroup.Group{}
@@ -94,7 +94,7 @@ func TestPanicRecovery(t *testing.T) {
 		panic("test panic")
 	}
 
-	r := NewSqliteTestRegistry(t, false, WithGRPCUnaryInterceptors(unaryPanicInterceptor), WithGRPCUnaryInterceptors(streamPanicInterceptor))
+	r := NewSqliteTestRegistry(t, WithGRPCUnaryInterceptors(unaryPanicInterceptor), WithGRPCUnaryInterceptors(streamPanicInterceptor))
 	getAddr := UseDynamicPorts(ctx, t, r)
 
 	eg := errgroup.Group{}

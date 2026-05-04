@@ -9,31 +9,13 @@ import (
 	"github.com/ory/x/dbal"
 )
 
-func GetSqlite(t testing.TB, mode sqliteMode) *DsnT {
+func GetSqlite(t testing.TB) *DsnT {
 	dsn := &DsnT{
 		MigrateUp:   true,
 		MigrateDown: false,
 	}
 
-	if mode == SQLiteMemory {
-		dsn.Name = "sqlite-memory"
-		dsn.Conn = dbal.NewSQLiteTestDatabase(t) + "&mode=memory"
-		return dsn
-	}
-
-	dsn.Name = "sqlite-file"
+	dsn.Name = "sqlite"
 	dsn.Conn = dbal.NewSQLiteTestDatabase(t)
 	return dsn
-}
-
-func allSqlite(t testing.TB, debugSqliteOnDisk bool) []*DsnT {
-	sqliteMode := SQLiteFile
-	if debugSqliteOnDisk {
-		sqliteMode = SQLiteDebug
-	}
-
-	return []*DsnT{
-		GetSqlite(t, sqliteMode),
-		GetSqlite(t, SQLiteMemory),
-	}
 }

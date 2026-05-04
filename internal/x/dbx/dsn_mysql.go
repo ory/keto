@@ -12,11 +12,11 @@ import (
 	"github.com/ory/x/sqlcon/dockertest"
 )
 
-func RunMySQL(t testing.TB, testDB string) string {
+func RunMySQL(t testing.TB, testDB string) (string, error) {
 	url := dockertest.RunTestMySQLWithVersion(t, "8.0")
 	time.Sleep(1 * time.Second)
 	if err := createDB(t, url, testDB); err != nil {
-		t.Fatal(err)
+		return "", err
 	}
-	return withDbName(url, testDB)
+	return withDbName(url, testDB), nil
 }

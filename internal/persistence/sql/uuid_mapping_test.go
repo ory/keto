@@ -4,7 +4,6 @@
 package sql_test
 
 import (
-	"context"
 	"fmt"
 	"strings"
 	"testing"
@@ -36,12 +35,11 @@ func assertCheckErr(t assert.TestingT, err error, msgAndArgs ...interface{}) boo
 func TestUUIDMapping(t *testing.T) {
 	t.Parallel()
 
-	for _, dsn := range dbx.GetDSNs(t, false) {
-		dsn := dsn
+	for _, dsn := range dbx.GetDSNs(t) {
 		t.Run("dsn="+dsn.Name, func(t *testing.T) {
 			t.Parallel()
 			reg := driver.NewTestRegistry(t, dsn)
-			c, err := reg.PopConnection(context.Background())
+			c, err := reg.PopConnection(t.Context())
 			require.NoError(t, err)
 
 			testUUID := uuid.Must(uuid.NewV4())

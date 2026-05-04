@@ -50,7 +50,7 @@ func (st ServerType) FlagName() string {
 }
 
 func NewTestServer(t *testing.T, nspaces []*namespace.Namespace, newCmd func() *cobra.Command, registryOpts ...driver.TestRegistryOption) *TestServer {
-	reg := driver.NewSqliteTestRegistry(t, false, append(registryOpts, driver.WithSelfsignedTransportCredentials())...)
+	reg := driver.NewSqliteTestRegistry(t, append(registryOpts, driver.WithSelfsignedTransportCredentials())...)
 
 	require.NoError(t, reg.Config(t.Context()).Set(config.KeyNamespaces, nspaces))
 

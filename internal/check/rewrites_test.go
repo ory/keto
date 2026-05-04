@@ -138,7 +138,7 @@ var namespaces = []*namespace.Namespace{
 type path []string
 
 func TestUsersetRewrites(t *testing.T) {
-	reg := driver.NewSqliteTestRegistry(t, false, driver.WithNamespaces(namespaces))
+	reg := driver.NewSqliteTestRegistry(t, driver.WithNamespaces(namespaces))
 	reg.Logger().Logger.SetLevel(logrus.TraceLevel)
 
 	testhelpers.MapAndInsertTuplesFromString(t, reg, []string{

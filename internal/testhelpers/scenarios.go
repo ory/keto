@@ -25,11 +25,7 @@ func (s Scenario) Run(t *testing.T, f func(t *testing.T, reg driver.Registry)) {
 		name += " (strict)"
 	}
 	t.Run(name, func(t *testing.T) {
-		reg := driver.NewSqliteTestRegistry(t, false,
-			driver.WithOPL(s.Opl),
-			driver.WithMapperNamespace(CustomMapperNamespace),
-			driver.WithConfig(config.KeyNamespacesExperimentalStrictMode, s.Strict),
-		)
+		reg := driver.NewSqliteTestRegistry(t, driver.WithOPL(s.Opl), driver.WithMapperNamespace(CustomMapperNamespace), driver.WithConfig(config.KeyNamespacesExperimentalStrictMode, s.Strict))
 
 		MapAndInsertTuplesFromString(t, reg, s.InputTuples)
 		f(t, reg)

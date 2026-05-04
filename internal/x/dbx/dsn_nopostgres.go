@@ -9,4 +9,4 @@ import (
 	"testing"
 )
 
-func RunPostgres(testing.TB, string) string { return "" }
+func RunPostgres(testing.TB, string) (string, error) { return "", nil }

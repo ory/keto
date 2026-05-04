@@ -10,13 +10,13 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-	"sync"
 	"testing"
 	"time"
 
 	"github.com/go-sql-driver/mysql"
 	"github.com/stretchr/testify/require"
 	"github.com/tidwall/sjson"
+	"golang.org/x/sync/errgroup"
 
 	"github.com/ory/pop/v6"
 )
@@ -53,18 +53,18 @@ func withDbName(dsn string, db string) string {
 	return u.String()
 }
 
-// dbName returns a name for the database based on the test name.
-func dbName(_ string) string {
+func dbName() string {
 	var buf [20]byte
 	_, _ = rand.Read(buf[:])
 	return fmt.Sprintf("testdb_%x", buf)
 }
 
-func openAndPing(url string) (conn *pop.Connection, err error) {
-	if conn, err = pop.NewConnection(&pop.ConnectionDetails{URL: url}); err != nil {
+func openAndPing(url string) (*pop.Connection, error) {
+	conn, err := pop.NewConnection(&pop.ConnectionDetails{URL: url})
+	if err != nil {
 		return nil, fmt.Errorf("failed to connect to %q: %w", url, err)
 	}
-	for i := 0; i < 120; i++ {
+	for range 120 {
 		fmt.Println("trying to open connection to", url)
 		if err := conn.Open(); err != nil {
 			// return nil, fmt.Errorf("failed to open connection: %w", err)
@@ -77,6 +77,7 @@ func openAndPing(url string) (conn *pop.Connection, err error) {
 		time.Sleep(1 * time.Second)
 	}
 	if err := Ping(conn); err != nil {
+		_ = conn.Close()
 		return nil, fmt.Errorf("failed to ping: %w", err)
 	}
 	return conn, nil
@@ -88,6 +89,11 @@ func createDB(t testing.TB, url string, dbName string) (err error) {
 	if conn, err = openAndPing(url); err != nil {
 		return fmt.Errorf("failed to connect to %q: %w", url, err)
 	}
+	t.Cleanup(func() {
+		if err := conn.Close(); err != nil {
+			t.Logf("could not close connection for %q in %q: %v", dbName, url, err)
+		}
+	})
 
 	if err := conn.RawQuery("CREATE DATABASE " + dbName).Exec(); err != nil {
 		return fmt.Errorf("failed to create db %q in %q: %w", dbName, url, err)
@@ -97,37 +103,33 @@ func createDB(t testing.TB, url string, dbName string) (err error) {
 		if err := conn.RawQuery("DROP DATABASE " + dbName).Exec(); err != nil {
 			t.Logf("could not drop database %q in %q: %v", dbName, url, err)
 		}
-		if err := conn.Close(); err != nil {
-			t.Logf("could not close connection for %q in %q: %v", dbName, url, err)
-		}
 	})
 
 	return
 
 }
 
-func GetDSNs(t testing.TB, debugSqliteOnDisk bool) []*DsnT {
-	dsns := allSqlite(t, debugSqliteOnDisk)
+func GetDSNs(t testing.TB) []*DsnT {
+	dsns := []*DsnT{GetSqlite(t)}
 
 	if !testing.Short() {
 		var mysql, postgres, cockroach string
-		testDB := dbName(t.Name())
+		testDB := dbName()
 
-		var wg sync.WaitGroup
-		wg.Add(3)
-		go func() {
-			defer wg.Done()
-			postgres = RunPostgres(t, testDB)
-		}()
-		go func() {
-			defer wg.Done()
-			mysql = RunMySQL(t, testDB)
-		}()
-		go func() {
-			defer wg.Done()
-			cockroach = RunCockroach(t, testDB)
-		}()
-		wg.Wait()
+		var eg errgroup.Group
+		eg.Go(func() (err error) {
+			postgres, err = RunPostgres(t, testDB)
+			return
+		})
+		eg.Go(func() (err error) {
+			mysql, err = RunMySQL(t, testDB)
+			return
+		})
+		eg.Go(func() (err error) {
+			cockroach, err = RunCockroach(t, testDB)
+			return
+		})
+		require.NoError(t, eg.Wait())
 
 		if mysql != "" {
 			dsns = append(dsns, &DsnT{
@@ -158,14 +160,6 @@ func GetDSNs(t testing.TB, debugSqliteOnDisk bool) []*DsnT {
 	require.NotZero(t, len(dsns), "expected to run against at least one database")
 	return dsns
 }
-
-type sqliteMode = int
-
-const (
-	SQLiteMemory = iota
-	SQLiteFile
-	SQLiteDebug
-)
 
 func ConfigFile(t testing.TB, values map[string]interface{}) string {
 	dir := t.TempDir()

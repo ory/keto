@@ -11,10 +11,10 @@ import (
 	"github.com/ory/x/sqlcon/dockertest"
 )
 
-func RunPostgres(t testing.TB, testDB string) string {
+func RunPostgres(t testing.TB, testDB string) (string, error) {
 	url := dockertest.RunTestPostgreSQLWithVersion(t, "16")
 	if err := createDB(t, url, testDB); err != nil {
-		t.Fatal(err)
+		return "", err
 	}
-	return withDbName(url, testDB)
+	return withDbName(url, testDB), nil
 }

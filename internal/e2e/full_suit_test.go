@@ -51,7 +51,7 @@ const (
 
 func Test(t *testing.T) {
 	t.Parallel()
-	for _, dsn := range dbx.GetDSNs(t, false) {
+	for _, dsn := range dbx.GetDSNs(t) {
 		t.Run(fmt.Sprintf("dsn=%s", dsn.Name), func(t *testing.T) {
 			t.Parallel()
 
@@ -135,7 +135,7 @@ func Test(t *testing.T) {
 func TestServeCORS(t *testing.T) {
 	t.Parallel()
 
-	ctx, reg, _, getAddr := newInitializedReg(t, dbx.GetSqlite(t, dbx.SQLiteMemory), map[string]any{
+	ctx, reg, _, getAddr := newInitializedReg(t, dbx.GetSqlite(t), map[string]any{
 		"serve.read.cors.enabled":         true,
 		"serve.read.cors.debug":           true,
 		"serve.read.cors.allowed_methods": []string{http.MethodGet},

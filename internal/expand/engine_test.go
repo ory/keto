@@ -37,7 +37,7 @@ func TestEngine(t *testing.T) {
 			Subject:   &relationtuple.SubjectID{ID: uuid.Must(uuid.NewV4())},
 		}
 
-		reg := driver.NewSqliteTestRegistry(t, false)
+		reg := driver.NewSqliteTestRegistry(t)
 		e := expand.NewEngine(reg)
 		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), tuple))
 
@@ -102,7 +102,7 @@ func TestEngine(t *testing.T) {
 				Subject:  paul,
 			},
 		}
-		reg := driver.NewSqliteTestRegistry(t, false, emptyNs)
+		reg := driver.NewSqliteTestRegistry(t, emptyNs)
 		e := expand.NewEngine(reg)
 
 		require.NoError(t, reg.RelationTupleManager().WriteRelationTuples(context.Background(), boulderers...))
@@ -179,7 +179,7 @@ func TestEngine(t *testing.T) {
 			},
 		}
 
-		reg := driver.NewSqliteTestRegistry(t, false, emptyNs)
+		reg := driver.NewSqliteTestRegistry(t, emptyNs)
 		e := expand.NewEngine(reg)
 
 		for _, group := range expectedTree.Children {
@@ -207,7 +207,7 @@ func TestEngine(t *testing.T) {
 	})
 
 	t.Run("case=respects max depth", func(t *testing.T) {
-		reg := driver.NewSqliteTestRegistry(t, false, emptyNs)
+		reg := driver.NewSqliteTestRegistry(t, emptyNs)
 		e := expand.NewEngine(reg)
 
 		ids := x.UUIDs(5)
@@ -274,7 +274,7 @@ func TestEngine(t *testing.T) {
 	})
 
 	t.Run("case=paginates", func(t *testing.T) {
-		innerReg := driver.NewSqliteTestRegistry(t, false, emptyNs)
+		innerReg := driver.NewSqliteTestRegistry(t, emptyNs)
 		reg, mw := testhelpers.RegistryWithManagerWrapper(t, innerReg, keysetpagination.WithSize(2))
 
 		e := expand.NewEngine(reg)
@@ -307,7 +307,7 @@ func TestEngine(t *testing.T) {
 	})
 
 	t.Run("case=handles subject sets as leaf", func(t *testing.T) {
-		reg := driver.NewSqliteTestRegistry(t, false, emptyNs)
+		reg := driver.NewSqliteTestRegistry(t, emptyNs)
 		e := expand.NewEngine(reg)
 
 		expectedTree := &relationtuple.Tree{
@@ -355,7 +355,7 @@ func TestEngine(t *testing.T) {
 			Relation:  connected,
 		}
 
-		reg := driver.NewSqliteTestRegistry(t, false, driver.WithNamespaces([]*namespace.Namespace{{Name: namesp}}))
+		reg := driver.NewSqliteTestRegistry(t, driver.WithNamespaces([]*namespace.Namespace{{Name: namesp}}))
 		e := expand.NewEngine(reg)
 
 		expectedTree := &relationtuple.Tree{
@@ -416,7 +416,7 @@ func TestEngine(t *testing.T) {
 	})
 
 	t.Run("case=returns result on unknown subject", func(t *testing.T) {
-		reg := driver.NewSqliteTestRegistry(t, false, emptyNs)
+		reg := driver.NewSqliteTestRegistry(t, emptyNs)
 		e := expand.NewEngine(reg)
 		ss := &relationtuple.SubjectSet{
 			Namespace: "unknown",
@@ -1334,7 +1334,7 @@ func TestEngineOpl(t *testing.T) {
 					opts = append(opts, driver.WithConfig(config.KeyNamespacesExperimentalStrictMode, tt.strict))
 				}
 
-				reg := driver.NewSqliteTestRegistry(t, false, opts...)
+				reg := driver.NewSqliteTestRegistry(t, opts...)
 
 				e := expand.NewEngine(reg)
 

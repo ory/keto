@@ -110,24 +110,8 @@ func NewDefaultRegistry(ctx context.Context, flags *pflag.FlagSet, withoutNetwor
 	return r, nil
 }
 
-func NewSqliteTestRegistry(t testing.TB, debugOnDisk bool, opts ...TestRegistryOption) *RegistryDefault {
-	mode := dbx.SQLiteMemory
-	if debugOnDisk {
-		mode = dbx.SQLiteDebug
-	}
-	return NewTestRegistry(t, dbx.GetSqlite(t, mode), opts...)
-}
-
-func NewCRDBTestRegistry(t testing.TB) *RegistryDefault {
-	var buf [20]byte
-	_, _ = rand.Read(buf[:])
-	testdb := fmt.Sprintf("testdb_%x", buf)
-	return NewTestRegistry(t, &dbx.DsnT{
-		Name:        "cockroach",
-		Conn:        dbx.RunCockroach(t, testdb),
-		MigrateUp:   true,
-		MigrateDown: true,
-	})
+func NewSqliteTestRegistry(t testing.TB, opts ...TestRegistryOption) *RegistryDefault {
+	return NewTestRegistry(t, dbx.GetSqlite(t), opts...)
 }
 
 type TestRegistryOption func(t testing.TB, r *RegistryDefault)
