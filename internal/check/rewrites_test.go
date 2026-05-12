@@ -13,13 +13,12 @@ import (
 	"go.uber.org/goleak"
 
 	"github.com/ory/keto/internal/check"
-	"github.com/ory/keto/internal/check/checkgroup"
+	"github.com/ory/keto/internal/check/trace"
 	"github.com/ory/keto/internal/driver"
+	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/namespace"
 	"github.com/ory/keto/internal/namespace/ast"
-	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/internal/testhelpers"
-	"github.com/ory/keto/ketoapi"
 )
 
 var namespaces = []*namespace.Namespace{
@@ -138,7 +137,7 @@ var namespaces = []*namespace.Namespace{
 type path []string
 
 func TestUsersetRewrites(t *testing.T) {
-	reg := driver.NewSqliteTestRegistry(t, driver.WithNamespaces(namespaces))
+	reg := driver.NewSqliteTestRegistry(t, driver.WithNamespaces(namespaces), driver.WithConfig(config.KeyLimitMaxReadDepth, 100))
 	reg.Logger().Logger.SetLevel(logrus.TraceLevel)
 
 	testhelpers.MapAndInsertTuplesFromString(t, reg, []string{
@@ -170,110 +169,109 @@ func TestUsersetRewrites(t *testing.T) {
 
 	testCases := []struct {
 		query         string
-		expected      checkgroup.Result
+		expected      check.Result
 		expectedPaths []path
 	}{{
 		// direct
 		query: "doc:document#owner@users:user",
-		expected: checkgroup.Result{
-			Membership: checkgroup.IsMember,
+		expected: check.Result{
+			Membership: check.IsMember,
 		},
 	}, {
 		// userset rewrite
 		query: "doc:document#editor@users:user",
-		expected: checkgroup.Result{
-			Membership: checkgroup.IsMember,
+		expected: check.Result{
+			Membership: check.IsMember,
 		},
 	}, {
 		// userset rewrite
 		query:    "doc:document#editor@plain_user",
-		expected: checkgroup.ResultIsMember,
+		expected: check.ResultIsMember,
 	}, {
 		// transitive userset rewrite
 		query:    "doc:document#viewer@users:user",
-		expected: checkgroup.ResultIsMember,
+		expected: check.ResultIsMember,
 	}, {
 		query:    "doc:document#editor@nobody",
-		expected: checkgroup.ResultNotMember,
+		expected: check.ResultNotMember,
 	}, {
 		query:    "doc:folder#viewer@users:user",
-		expected: checkgroup.ResultIsMember,
+		expected: check.ResultIsMember,
 	}, {
 		// tuple to userset
 		query:    "doc:doc_in_folder#viewer@users:user",
-		expected: checkgroup.ResultIsMember,
+		expected: check.ResultIsMember,
 	}, {
 		// tuple to userset
 		query:    "doc:doc_in_folder#viewer@plain_user",
-		expected: checkgroup.ResultIsMember,
+		expected: check.ResultIsMember,
 	}, {
 		// tuple to userset
 		query:    "doc:doc_in_folder#viewer@nobody",
-		expected: checkgroup.ResultNotMember,
+		expected: check.ResultNotMember,
 	}, {
 		// tuple to userset
 		query:    "doc:another_doc#viewer@user",
-		expected: checkgroup.ResultNotMember,
+		expected: check.ResultNotMember,
 	}, {
 		query:    "doc:file#viewer@user",
-		expected: checkgroup.ResultIsMember,
+		expected: check.ResultIsMember,
 	}, {
 		query:    "level:superadmin#member@mark",
-		expected: checkgroup.ResultIsMember, // mark is both editor and has correct level
+		expected: check.ResultIsMember, // mark is both editor and has correct level
 	}, {
 		query:    "resource:topsecret#owner@mark",
-		expected: checkgroup.ResultIsMember, // mark is both editor and has correct level
+		expected: check.ResultIsMember, // mark is both editor and has correct level
 	}, {
 		query:    "resource:topsecret#delete@mark",
-		expected: checkgroup.ResultIsMember, // mark is both editor and has correct level
+		expected: check.ResultIsMember, // mark is both editor and has correct level
 		expectedPaths: []path{
-			{"*", "resource:topsecret#delete@mark", "level:superadmin#member@mark"},
-			{"*", "resource:topsecret#delete@mark", "resource:topsecret#owner@mark", "group:editors#member@mark"},
+			{"*", "resource:topsecret#delete@mark", "*", "level:superadmin#member@mark"},
+			{"*", "resource:topsecret#delete@mark", "resource:topsecret#owner@mark", "*", "*", "*", "group:editors#member@mark"},
 		},
 	}, {
 		query:    "resource:topsecret#update@mike",
-		expected: checkgroup.ResultIsMember, // mike owns the resource
+		expected: check.ResultIsMember, // mike owns the resource
 	}, {
 		query:    "level:superadmin#member@mike",
-		expected: checkgroup.ResultNotMember, // mike does not have correct level
+		expected: check.ResultNotMember, // mike does not have correct level
 	}, {
 		query:    "resource:topsecret#delete@mike",
-		expected: checkgroup.ResultNotMember, // mike does not have correct level
+		expected: check.ResultNotMember, // mike does not have correct level
 	}, {
 		query:    "resource:topsecret#delete@sandy",
-		expected: checkgroup.ResultNotMember, // sandy is not in the editor group
+		expected: check.ResultNotMember, // sandy is not in the editor group
 	}, {
 		query:         "acl:document#access@alice",
-		expected:      checkgroup.ResultIsMember,
+		expected:      check.ResultIsMember,
 		expectedPaths: []path{{"*", "acl:document#access@alice", "acl:document#allow@alice"}},
 	}, {
 		query:    "acl:document#access@bob",
-		expected: checkgroup.ResultIsMember,
+		expected: check.ResultIsMember,
 	}, {
 		query:    "acl:document#allow@mallory",
-		expected: checkgroup.ResultIsMember,
+		expected: check.ResultIsMember,
 	}, {
 		query:    "acl:document#access@mallory",
-		expected: checkgroup.ResultNotMember, // mallory is also on deny-list
+		expected: check.ResultNotMember, // mallory is also on deny-list
 	}}
 
 	t.Run("suite=testcases", func(t *testing.T) {
 		ctx := context.Background()
-		e := check.NewEngine(reg)
+		e := trace.NewEngine(reg)
 		defer goleak.VerifyNone(t, goleak.IgnoreCurrent())
 
 		for _, tc := range testCases {
 			t.Run("case="+tc.query, func(t *testing.T) {
 				rt := testhelpers.TupleFromString(t, tc.query)
 
-				res := e.CheckRelationTuple(ctx, rt, 100)
+				res, tree := e.CheckRelationTupleWithTrace(ctx, rt, 100)
 				require.NoError(t, res.Err)
-				t.Logf("tree:\n%s", res.Tree)
 				assert.Equal(t, tc.expected.Membership.String(), res.Membership.String())
 
 				if len(tc.expectedPaths) > 0 {
 					for _, path := range tc.expectedPaths {
-						assertPath(t, path, res.Tree)
+						assertPath(t, path, tree)
 					}
 				}
 			})
@@ -285,35 +283,30 @@ func TestUsersetRewrites(t *testing.T) {
 		defer cancel()
 
 		e := check.NewEngine(reg)
-		// Currently we always only use one worker.
-		//check.WithPool(
-		//checkgroup.NewPool(
-		//	checkgroup.WithContext(ctx),
-		//	checkgroup.WithWorkers(1),
-		//)),
 
 		rt := testhelpers.TupleFromString(t, "doc:file#viewer@user")
 		res := e.CheckRelationTuple(ctx, rt, 100)
 		require.NoError(t, res.Err)
-		assert.Equal(t, checkgroup.ResultIsMember.Membership, res.Membership)
+		assert.Equal(t, check.ResultIsMember.Membership, res.Membership)
 	})
 }
 
 // assertPath asserts that the given path can be found in the tree.
-func assertPath(t *testing.T, path path, tree *ketoapi.Tree[*relationtuple.RelationTuple]) {
+func assertPath(t *testing.T, path path, tree *trace.Node) {
 	require.NotNil(t, tree)
 	assert.True(t, hasPath(t, path, tree), "could not find path %s in tree:\n%s", path, tree)
 }
 
-func hasPath(t *testing.T, path path, tree *ketoapi.Tree[*relationtuple.RelationTuple]) bool {
+func hasPath(t *testing.T, path path, tree *trace.Node) bool {
 	if len(path) == 0 {
 		return true
 	}
-	treeLabel := tree.Label()
+	treeLabel := tree.Tuple.String()
 	if path[0] != "*" {
 		// use testhelpers.TupleFromString to compare against paths with UUIDs.
 		tuple := testhelpers.TupleFromString(t, path[0])
-		if tuple.String() != treeLabel {
+		tupleStr := tuple.String()
+		if tupleStr != treeLabel {
 			return false
 		}
 	}

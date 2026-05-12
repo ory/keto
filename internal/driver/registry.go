@@ -33,6 +33,7 @@ type (
 		relationtuple.ManagerProvider
 		relationtuple.MapperProvider
 		expand.EngineProvider
+		check.CheckerProvider
 		check.EngineProvider
 		persistence.Migrator
 		persistence.Provider

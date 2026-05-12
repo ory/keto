@@ -20,7 +20,6 @@ import (
 	"github.com/ory/x/httpx"
 	"github.com/ory/x/logrusx"
 
-	"github.com/ory/keto/internal/check/checkgroup"
 	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/internal/x"
@@ -454,7 +453,7 @@ func (h *Handler) doBatchCheck(ctx context.Context, body io.Reader, query url.Va
 			errMsg = result.Err.Error()
 		}
 		responses[i] = &CheckPermissionResultWithError{
-			Allowed: result.Membership == checkgroup.IsMember,
+			Allowed: result.Membership == IsMember,
 			Error:   errMsg,
 		}
 	}
@@ -486,7 +485,7 @@ func (h *Handler) BatchCheck(ctx context.Context, req *rts.BatchCheckRequest) (*
 			errMsg = result.Err.Error()
 		}
 		responses[i] = &rts.CheckResponseWithError{ //nolint:gosec // Snaptoken is not a credential, just a placeholder value.
-			Allowed:   result.Membership == checkgroup.IsMember,
+			Allowed:   result.Membership == IsMember,
 			Error:     errMsg,
 			Snaptoken: "not yet implemented",
 		}

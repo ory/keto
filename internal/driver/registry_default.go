@@ -30,6 +30,7 @@ import (
 	"google.golang.org/grpc/health"
 
 	"github.com/ory/keto/internal/check"
+	"github.com/ory/keto/internal/check/step"
 	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/expand"
 	"github.com/ory/keto/internal/persistence"
@@ -60,6 +61,7 @@ type (
 		l               *logrusx.Logger
 		w               herodot.Writer
 		ce              *check.Engine
+		ck              *step.Executor
 		ee              *expand.Engine
 		c               *config.Config
 		conn            *pop.Connection
@@ -259,6 +261,13 @@ func (r *RegistryDefault) ExpandEngine() *expand.Engine {
 	return r.ee
 }
 
+func (r *RegistryDefault) Checker() check.Checker {
+	if r.ck == nil {
+		r.ck = step.NewExecutor(r)
+	}
+	return r.ck
+}
+
 func (r *RegistryDefault) MigrationBox(ctx context.Context, opts ...popx.MigrationBoxOption) (*popx.MigrationBox, error) {
 	if r.mb == nil {
 		c, err := r.PopConnection(ctx)
@@ -350,8 +359,15 @@ func (r *RegistryDefault) InitWithoutNetworkID(ctx context.Context) error {
 		}
 		r.p = p
 		r.traverser = sql.NewTraverser(p)
+		r.initEngines()
 	})
 	return r.init1err
+}
+
+func (r *RegistryDefault) initEngines() {
+	_ = r.PermissionEngine()
+	_ = r.ExpandEngine()
+	_ = r.Checker()
 }
 
 func (r *RegistryDefault) Init(ctx context.Context) (err error) {

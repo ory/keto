@@ -17,7 +17,6 @@ import (
 	"go.opentelemetry.io/otel/sdk/trace/tracetest"
 
 	"github.com/ory/keto/internal/check"
-	"github.com/ory/keto/internal/check/checkgroup"
 	"github.com/ory/keto/internal/driver"
 	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/namespace"
@@ -121,7 +120,7 @@ func BenchmarkCheckEngine(b *testing.B) {
 					rt := testhelpers.TupleFromString(b, fmt.Sprintf("deep:deep_file#viewer@user_%d", depth))
 					res := e.CheckRelationTuple(ctx, rt, 2*depth)
 					assert.NoError(b, res.Err)
-					if res.Membership != checkgroup.IsMember {
+					if res.Membership != check.IsMember {
 						b.Error("user should be able to view 'deep_file'")
 					}
 				}
@@ -136,7 +135,7 @@ func BenchmarkCheckEngine(b *testing.B) {
 					rt := testhelpers.TupleFromString(b, fmt.Sprintf("%d-wide:wide_file#editor@user", width))
 					res := e.CheckRelationTuple(ctx, rt, 2*width)
 					assert.NoError(b, res.Err)
-					if res.Membership != checkgroup.IsMember {
+					if res.Membership != check.IsMember {
 						b.Error("user should be able to view 'wide_file'")
 					}
 				}
@@ -173,7 +172,7 @@ func BenchmarkComputedUsersets(b *testing.B) {
 			if res.Err != nil {
 				b.Errorf("got unexpected error: %v", res.Err)
 			}
-			if res.Membership != checkgroup.IsMember {
+			if res.Membership != check.IsMember {
 				b.Error("check failed")
 			}
 		}

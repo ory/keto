@@ -12,7 +12,6 @@ import (
 	"github.com/ory/herodot"
 
 	"github.com/ory/keto/internal/check"
-	"github.com/ory/keto/internal/check/checkgroup"
 	"github.com/ory/keto/internal/driver"
 	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/testhelpers"
@@ -413,18 +412,160 @@ func TestEngine(t *testing.T) {
 			results, err := e.BatchCheck(ctx, targetTuples, 2)
 			require.NoError(t, err)
 
-			require.Equal(t, checkgroup.IsMember, results[0].Membership)
-			require.Equal(t, checkgroup.IsMember, results[1].Membership)
-			require.Equal(t, checkgroup.NotMember, results[2].Membership)
-			require.Equal(t, checkgroup.MembershipUnknown, results[3].Membership)
+			require.Equal(t, check.IsMember, results[0].Membership)
+			require.Equal(t, check.IsMember, results[1].Membership)
+			require.Equal(t, check.NotMember, results[2].Membership)
+			require.Equal(t, check.MembershipUnknown, results[3].Membership)
 			require.EqualError(t, results[3].Err, herodot.ErrNotFound().Error())
-			require.Equal(t, checkgroup.NotMember, results[4].Membership)
-			require.Equal(t, checkgroup.IsMember, results[5].Membership)
+			require.Equal(t, check.NotMember, results[4].Membership)
+			require.Equal(t, check.IsMember, results[5].Membership)
 
 			// At depth=3, the 3-hop viewers chain resolves
 			results, err = e.BatchCheck(ctx, targetTuples, 3)
 			require.NoError(t, err)
-			require.Equal(t, checkgroup.IsMember, results[2].Membership)
+			require.Equal(t, check.IsMember, results[2].Membership)
 		})
 	})
+}
+
+// Alice is in both deep and short chains.
+// Depth of 4 is needed to reach Alice via shortRel.
+// Depth of 6 is needed to reach Alice via deepRel.
+var depthLimitScenario = testhelpers.Scenario{
+	Name: "Depth Limit",
+	Opl: `
+		class User implements Namespace {}
+		class Group implements Namespace {
+			related: {
+				members: (User | SubjectSet<Group, "members">)[]
+			}
+		}
+		class Resource implements Namespace {
+			related: {
+				deepRel: (User | SubjectSet<Group, "members">)[]
+				shortRel: (User | SubjectSet<Group, "members">)[]
+			}
+			permits = {
+				union: (ctx:Context) => 
+						this.related.deepRel.includes(ctx.subject) 
+						|| this.related.shortRel.includes(ctx.subject),
+				intersection: (ctx:Context) => 
+						this.related.deepRel.includes(ctx.subject) 
+						&& this.related.shortRel.includes(ctx.subject),
+				shortButNotDeep: (ctx:Context) => this.related.shortRel.includes(ctx.subject) 
+						&& !this.related.deepRel.includes(ctx.subject),
+
+				// notEither simulates a client that authorizes users when Keto returns NotMember
+				notEither: (ctx:Context) => !this.permits.union(ctx),
+			}
+		}
+	`,
+	InputTuples: []string{
+		"Resource:doc#deepRel@Group:deep#members",
+		"Resource:doc#shortRel@Group:short#members",
+		"Group:deep#members@Group:deep1#members",
+		"Group:deep1#members@Group:deep2#members",
+		"Group:deep2#members@Group:deep3#members",
+		"Group:deep3#members@Group:deep4#members",
+		"Group:deep4#members@User:Alice",
+		"Group:short#members@Group:short1#members",
+		"Group:short1#members@User:Alice",
+	},
+	Strict: false,
+}
+
+func TestDepthLimit(t *testing.T) {
+	type tc struct {
+		name               string
+		tuple              string
+		depth              int
+		expectedMembership check.Membership
+		expectedIsMember   bool
+		expectedErr        error
+	}
+
+	tests := []tc{
+		{
+			name:               "union: too shallow depth for both branches yields NotMember",
+			tuple:              "Resource:doc#union@User:Alice",
+			depth:              2,
+			expectedMembership: check.NotMember,
+			expectedIsMember:   false,
+		},
+		{
+			name:               "union: enough depth for 1 branch yields Member",
+			tuple:              "Resource:doc#union@User:Alice",
+			depth:              4,
+			expectedMembership: check.IsMember,
+			expectedIsMember:   true,
+		},
+		{
+			name:               "intersection: too shallow depth for both branches yields NotMember",
+			tuple:              "Resource:doc#intersection@User:Alice",
+			depth:              2,
+			expectedMembership: check.NotMember,
+			expectedIsMember:   false,
+		},
+		{
+			name:               "intersection: enough depth for only 1 branch yields NotMember",
+			tuple:              "Resource:doc#intersection@User:Alice",
+			depth:              4,
+			expectedMembership: check.NotMember,
+			expectedIsMember:   false,
+		},
+		{
+			name:               "intersection: enough depth for both branches yields Member",
+			tuple:              "Resource:doc#intersection@User:Alice",
+			depth:              6,
+			expectedMembership: check.IsMember,
+			expectedIsMember:   true,
+		},
+
+		{
+			name:               "shortButNotDeep: too shallow depth for both branches yields NotMember",
+			tuple:              "Resource:doc#shortButNotDeep@User:Alice",
+			depth:              2,
+			expectedMembership: check.NotMember,
+			expectedIsMember:   false,
+		},
+		{
+			name:               "shortButNotDeep: enough depth for only 1 branch yields NotMember",
+			tuple:              "Resource:doc#shortButNotDeep@User:Alice",
+			depth:              4,
+			expectedMembership: check.IsMember,
+			expectedIsMember:   true,
+		},
+		{
+			name:               "notEither: not enough depth for any branch yields Member",
+			tuple:              "Resource:doc#notEither@User:Alice",
+			depth:              2,
+			expectedMembership: check.IsMember,
+			expectedIsMember:   true,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			depthLimitScenario.Run(t, func(t *testing.T, reg driver.Registry) {
+				ctx := t.Context()
+				e := check.NewEngine(reg)
+
+				if tc.depth > 0 {
+					require.NoError(t, reg.Config(ctx).Set(config.KeyLimitMaxReadDepth, tc.depth))
+				}
+
+				res := e.CheckRelationTuple(ctx, testhelpers.TupleFromString(t, tc.tuple), 10)
+
+				require.NoError(t, res.Err)
+				assert.Equal(t, tc.expectedMembership, res.Membership)
+				if tc.expectedErr != nil {
+					assert.EqualError(t, res.Err, tc.expectedErr.Error())
+				} else {
+					assert.NoError(t, res.Err)
+				}
+
+				assert.Equal(t, tc.expectedIsMember, res.Membership == check.IsMember)
+			})
+		})
+	}
 }

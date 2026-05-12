@@ -6,22 +6,15 @@ package check
 import (
 	"context"
 
-	"github.com/ory/herodot"
 	"github.com/ory/x/logrusx"
 	"github.com/ory/x/otelx"
-	"github.com/pkg/errors"
-	"go.opentelemetry.io/otel/trace"
 	"golang.org/x/sync/errgroup"
 
 	"github.com/ory/keto/x/events"
 
-	"github.com/ory/keto/internal/check/checkgroup"
 	"github.com/ory/keto/internal/driver/config"
-	"github.com/ory/keto/internal/namespace"
-	"github.com/ory/keto/internal/namespace/ast"
 	"github.com/ory/keto/internal/persistence"
 	"github.com/ory/keto/internal/relationtuple"
-	"github.com/ory/keto/internal/x/graph"
 	"github.com/ory/keto/ketoapi"
 )
 
@@ -29,34 +22,28 @@ type (
 	EngineProvider interface {
 		PermissionEngine() *Engine
 	}
+
 	Engine struct {
-		d EngineDependencies
+		dep EngineDependencies
 	}
+
 	EngineDependencies interface {
 		relationtuple.ManagerProvider
 		relationtuple.MapperProvider
+		CheckerProvider
 		persistence.Provider
 		config.Provider
 		logrusx.Provider
 		otelx.Provider
 	}
 
-	EngineOpt func(*Engine)
-
-	// Type aliases for shorter signatures
+	// Type alias for shorter signatures.
 	relationTuple = relationtuple.RelationTuple
-	query         = relationtuple.RelationQuery
 )
 
-const WildcardRelation = "..."
-
-func NewEngine(d EngineDependencies, opts ...EngineOpt) *Engine {
-	e := &Engine{d: d}
-	for _, opt := range opts {
-		opt(e)
-	}
-
-	return e
+// NewEngine creates an Engine that delegates checks to checker.
+func NewEngine(d EngineDependencies) *Engine {
+	return &Engine{dep: d}
 }
 
 // CheckIsMember checks if the relation tuple's subject has the relation on the
@@ -67,270 +54,41 @@ func (e *Engine) CheckIsMember(ctx context.Context, r *relationTuple, restDepth 
 	if result.Err != nil {
 		return false, result.Err
 	}
-	return result.Membership == checkgroup.IsMember, nil
+	return result.Membership == IsMember, nil
 }
 
 // CheckRelationTuple checks if the relation tuple's subject has the relation on
 // the object in the namespace either directly or indirectly and returns a check
 // result.
-func (e *Engine) CheckRelationTuple(ctx context.Context, r *relationTuple, restDepth int) (res checkgroup.Result) {
-	ctx, span := e.d.Tracer(ctx).Tracer().Start(ctx, "Engine.CheckRelationTuple")
+func (e *Engine) CheckRelationTuple(ctx context.Context, r *relationTuple, restDepth int) (res Result) {
+	ctx, span := e.dep.Tracer(ctx).Tracer().Start(ctx, "Engine.CheckRelationTuple")
 	defer otelx.End(span, &res.Err)
 
-	// global max-depth takes precedence when it is the lesser or if the request
-	// max-depth is less than or equal to 0
-	if globalMaxDepth := e.d.Config(ctx).MaxReadDepth(); restDepth <= 0 || globalMaxDepth < restDepth {
-		restDepth = globalMaxDepth
+	res = e.dep.Checker().CheckRelationTuple(ctx, r, restDepth)
+	if res.Err == nil {
+		span.AddEvent(events.NewPermissionsChecked(ctx))
 	}
-
-	resultCh := make(chan checkgroup.Result)
-	go e.checkIsAllowed(ctx, r, restDepth, false)(ctx, resultCh)
-	select {
-	case result := <-resultCh:
-		trace.SpanFromContext(ctx).AddEvent(events.NewPermissionsChecked(ctx))
-		return result
-	case <-ctx.Done():
-		return checkgroup.Result{Err: errors.WithStack(ctx.Err())}
-	}
+	return res
 }
 
-// checkExpandSubject checks the expansions of the subject set of the tuple.
-//
-// For a relation tuple n:obj#rel@user, checkExpandSubject first queries for all
-// tuples that match n:obj#rel@* (arbitrary subjects), and then for each
-// subject set checks subject_set@user.
-func (e *Engine) checkExpandSubject(r *relationTuple, restDepth int) checkgroup.CheckFunc {
-	if restDepth <= 0 {
-		e.d.Logger().
-			WithField("request", r.String()).
-			Debug("reached max-depth, therefore this query will not be further expanded")
-		return checkgroup.UnknownMemberFunc
-	}
-	return func(ctx context.Context, resultCh chan<- checkgroup.Result) {
-		e.d.Logger().
-			WithField("request", r.String()).
-			Trace("check expand subject")
-
-		results, err := e.d.Traverser().TraverseSubjectSetExpansion(ctx, r)
-
-		if errors.Is(err, herodot.ErrNotFound()) {
-			resultCh <- checkgroup.ResultNotMember
-			return
-		} else if err != nil {
-			resultCh <- checkgroup.Result{Err: errors.WithStack(err)}
-			return
-		}
-
-		// See if the current hop was already enough to answer the check
-		for _, result := range results {
-			if result.Found {
-				resultCh <- checkgroup.ResultIsMember
-				return
-			}
-		}
-
-		// If not, we must go another hop:
-		maxWidth := e.d.Config(ctx).MaxReadWidth()
-		if len(results) > maxWidth {
-			e.d.Logger().
-				WithField("method", "checkExpandSubject").
-				WithField("request", r.String()).
-				WithField("max_width", maxWidth).
-				WithField("results", len(results)).
-				Debug("too many results, truncating")
-			results = results[:maxWidth-1]
-		}
-
-		var (
-			visited  bool
-			innerCtx = graph.InitVisited(ctx)
-		)
-
-		g := checkgroup.New(ctx)
-		defer func() { resultCh <- g.Result() }()
-
-		for _, result := range results {
-			if g.Done() {
-				break
-			}
-
-			sub := &relationtuple.SubjectSet{
-				Namespace: result.To.Namespace,
-				Object:    result.To.Object,
-				Relation:  result.To.Relation,
-			}
-			innerCtx, visited = graph.CheckAndAddVisited(innerCtx, sub)
-			if visited {
-				continue
-			}
-			g.Add(e.checkIsAllowed(innerCtx, result.To, restDepth, true))
-		}
-	}
-}
-
-// checkDirect checks if the relation tuple is in the database directly.
-func (e *Engine) checkDirect(r *relationTuple, restDepth int) checkgroup.CheckFunc {
-	if restDepth <= 0 {
-		e.d.Logger().
-			WithField("method", "checkDirect").
-			Debug("reached max-depth, therefore this query will not be further expanded")
-		return checkgroup.UnknownMemberFunc
-	}
-	return func(ctx context.Context, resultCh chan<- checkgroup.Result) {
-		e.d.Logger().
-			WithField("request", r.String()).
-			Trace("check direct")
-		found, err := e.d.RelationTupleManager().ExistsRelationTuples(
-			ctx,
-			r.ToQuery(),
-		)
-
-		switch {
-		case err != nil:
-			e.d.Logger().
-				WithField("method", "checkDirect").
-				WithError(err).
-				Error("failed to look up direct access in db")
-			resultCh <- checkgroup.Result{
-				Membership: checkgroup.NotMember,
-			}
-
-		case found:
-			resultCh <- checkgroup.Result{
-				Membership: checkgroup.IsMember,
-				Tree: &ketoapi.Tree[*relationtuple.RelationTuple]{
-					Type:  ketoapi.TreeNodeLeaf,
-					Tuple: r,
-				},
-			}
-
-		default:
-			resultCh <- checkgroup.Result{
-				Membership: checkgroup.NotMember,
-			}
-		}
-	}
-}
-
-// checkIsAllowed checks if the relation tuple is allowed (there is a path from
-// the relation tuple subject to the namespace, object and relation) either
-// directly (in the database), or through subject-set expansions, or through
-// user-set rewrites.
-func (e *Engine) checkIsAllowed(ctx context.Context, r *relationTuple, restDepth int, skipDirect bool) checkgroup.CheckFunc {
-	if restDepth <= 0 {
-		e.d.Logger().
-			WithField("method", "checkIsAllowed").
-			Debug("reached max-depth, therefore this query will not be further expanded")
-		return checkgroup.UnknownMemberFunc
-	}
-
-	e.d.Logger().
-		WithField("request", r.String()).
-		Trace("check is allowed")
-
-	relation, err := e.astRelationFor(ctx, r)
-	if err != nil {
-		return checkgroup.ErrorFunc(err)
-	}
-	hasRewrite := relation != nil && relation.SubjectSetRewrite != nil
-	strictMode := e.d.Config(ctx).StrictMode()
-	canHaveSubjectSets := !strictMode || relation == nil || containsSubjectSetExpand(relation)
-
-	branches := make([]checkgroup.CheckFunc, 0, 3)
-	if hasRewrite {
-		branches = append(branches, e.checkSubjectSetRewrite(ctx, r, relation.SubjectSetRewrite, restDepth))
-	}
-	if (!strictMode || !hasRewrite) && !skipDirect {
-		// In strict mode, add a direct check only if there is no subject set rewrite for this relation.
-		// Rewrites are added as 'permits'.
-		branches = append(branches, e.checkDirect(r, restDepth-1))
-	}
-	if canHaveSubjectSets {
-		branches = append(branches, e.checkExpandSubject(r, restDepth-1))
-	}
-
-	if len(branches) == 1 {
-		return branches[0]
-	}
-	if len(branches) == 0 {
-		return checkgroup.NotMemberFunc
-	}
-	g := checkgroup.New(ctx)
-	for _, b := range branches {
-		g.Add(b)
-	}
-
-	return g.CheckFunc()
-}
-
-// checkDirectWithRelations checks if any of the given relations exist directly in the database.
-func (e *Engine) checkDirectWithRelations(_ context.Context, r *relationTuple, relations []string, restDepth int) checkgroup.CheckFunc {
-	if restDepth <= 0 {
-		e.d.Logger().
-			WithField("method", "checkDirectWithRelations").
-			Debug("reached max-depth, therefore this query will not be further expanded")
-		return checkgroup.UnknownMemberFunc
-	}
-	return func(ctx context.Context, resultCh chan<- checkgroup.Result) {
-		e.d.Logger().
-			WithField("request", r.String()).
-			WithField("relations", relations).
-			Trace("check direct")
-
-		res, err := e.d.Traverser().FindTupleWithRelations(ctx, r, relations)
-		if err != nil {
-			resultCh <- checkgroup.Result{Err: errors.WithStack(err)}
-			return
-		}
-		if res != nil {
-			resultCh <- checkgroup.Result{
-				Membership: checkgroup.IsMember,
-			}
-			return
-		}
-
-		resultCh <- checkgroup.Result{
-			Membership: checkgroup.NotMember,
-		}
-	}
-}
-
-func containsSubjectSetExpand(relation *ast.Relation) bool {
-	for _, t := range relation.Types {
-		if t.Relation != "" {
-			return true
-		}
-	}
-	return false
-}
-
-func (e *Engine) astRelationFor(ctx context.Context, r *relationTuple) (*ast.Relation, error) {
-	namespaceManager, err := e.d.Config(ctx).NamespaceManager()
-	if err != nil {
-		return nil, err
-	}
-	return namespace.ASTRelationFor(ctx, namespaceManager, r.Namespace, r.Relation)
-}
-
-// BatchCheck makes parallelized check requests for tuples. The check results are returned as slice, where the
-// result index matches the tuple index of the incoming tuples array.
-func (e *Engine) BatchCheck(ctx context.Context,
+// BatchCheck makes parallelized check requests for tuples. The check results
+// are returned as a slice where the result index matches the input tuple index.
+func (e *Engine) BatchCheck(
+	ctx context.Context,
 	tuples []*ketoapi.RelationTuple,
 	maxDepth int,
-) ([]checkgroup.Result, error) {
+) ([]Result, error) {
 	eg := &errgroup.Group{}
-	eg.SetLimit(e.d.Config(ctx).BatchCheckParallelizationLimit())
+	eg.SetLimit(e.dep.Config(ctx).BatchCheckParallelizationLimit())
 
-	mapper := e.d.ReadOnlyMapper()
-	results := make([]checkgroup.Result, len(tuples))
+	mapper := e.dep.ReadOnlyMapper()
+	results := make([]Result, len(tuples))
 	for i, tuple := range tuples {
-		i := i
-		tuple := tuple
 		eg.Go(func() error {
 			internalTuple, err := mapper.FromTuple(ctx, tuple)
 			if err != nil {
-				results[i] = checkgroup.Result{
-					Membership: checkgroup.MembershipUnknown,
+				results[i] = Result{
+					Membership: MembershipUnknown,
 					Err:        err,
 				}
 			} else {
@@ -343,6 +101,5 @@ func (e *Engine) BatchCheck(ctx context.Context,
 	if err := eg.Wait(); err != nil {
 		return nil, err
 	}
-
 	return results, nil
 }
