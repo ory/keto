@@ -6,8 +6,10 @@ package step
 import (
 	"context"
 
+	"github.com/ory/x/otelx"
 	keysetpagination "github.com/ory/x/pagination/keysetpagination_v2"
 	"github.com/pkg/errors"
+	"go.opentelemetry.io/otel/attribute"
 
 	"github.com/ory/keto/internal/check"
 	"github.com/ory/keto/internal/namespace/ast"
@@ -23,7 +25,14 @@ type TraverseStep struct {
 
 func (TraverseStep) Kind() check.StepKind { return check.StepTraverse }
 
-func (s TraverseStep) Execute(ctx context.Context, req check.CheckRequest, ex check.Executor) check.Result {
+func (s TraverseStep) Execute(ctx context.Context, req check.CheckRequest, ex check.Executor) (res check.Result) {
+	ctx, span := ex.Deps().Tracer(ctx).Tracer().Start(ctx, "check.step.TraverseStep")
+	var rowCount int
+	defer func() {
+		span.SetAttributes(attribute.Int("tuples_loaded", rowCount))
+		otelx.End(span, &res.Err)
+	}()
+
 	if req.RestDepth <= 0 {
 		ex.Deps().Logger().Debug("reached max-depth, therefore this query will not be further expanded")
 		return check.Result{Membership: check.MembershipUnknown}
@@ -47,6 +56,7 @@ func (s TraverseStep) Execute(ctx context.Context, req check.CheckRequest, ex ch
 		if err != nil {
 			return check.Result{Err: errors.WithStack(err)}
 		}
+		rowCount += len(tuples)
 		check.ReportTuplesLoaded(runner.Ctx(), len(tuples))
 
 		for _, t := range tuples {

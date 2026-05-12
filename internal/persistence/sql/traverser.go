@@ -12,6 +12,7 @@ import (
 	"github.com/ory/x/otelx"
 	"github.com/ory/x/sqlcon"
 	"github.com/pkg/errors"
+	"go.opentelemetry.io/otel/attribute"
 
 	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/ketoapi"
@@ -58,6 +59,9 @@ func (t *Traverser) TraverseSubjectSetExpansion(ctx context.Context, start *rela
 		return nil, err
 	}
 
+	var rowCount int
+	defer func() { span.SetAttributes(attribute.Int("tuples_loaded", rowCount)) }()
+
 	shardID := uuid.Nil
 	for {
 		var (
@@ -92,6 +96,7 @@ LIMIT ?
 		if err != nil {
 			return nil, sqlcon.HandleError(err)
 		}
+		rowCount += len(rows)
 
 		for _, r := range rows {
 			to := r.ToInternal()
