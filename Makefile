@@ -118,7 +118,7 @@ test-docs-samples:
 
 .PHONY: fuzz-test
 fuzz-test:
-	go test -tags=sqlite -fuzz=FuzzParser -fuzztime=10s ./internal/schema
+	go test -fuzz=FuzzParser -fuzztime=10s ./internal/schema
 
 .PHONY: libfuzzer-fuzz-test
 libfuzzer-fuzz-test: .bin/go114-fuzz-build

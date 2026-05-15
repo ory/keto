@@ -11,6 +11,9 @@ on:
     types:
       - created
 
+env:
+  CGO_ENABLED: "0"
+
 jobs:
   tag:
     #   this is set on dispatch        this should prevent the action from triggering itself

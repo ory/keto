@@ -97,6 +97,8 @@ jobs:
   test-race:
     name: Run race tests
     runs-on: ubuntu-latest
+    env:
+      CGO_ENABLED: "1"
     steps:
       - uses: ory/ci/checkout@master
       - uses: actions/setup-go@v6
