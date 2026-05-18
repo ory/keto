@@ -3,8 +3,11 @@ package testhelpers
 import (
 	"testing"
 
+	"github.com/stretchr/testify/require"
+
 	"github.com/ory/keto/internal/driver"
 	"github.com/ory/keto/internal/driver/config"
+	"github.com/ory/keto/schema"
 )
 
 type Scenario struct {
@@ -25,6 +28,10 @@ func (s Scenario) Run(t *testing.T, f func(t *testing.T, reg driver.Registry)) {
 		name += " (strict)"
 	}
 	t.Run(name, func(t *testing.T) {
+		if s.Opl != "" {
+			_, errs := schema.Parse(s.Opl)
+			require.Len(t, errs, 0)
+		}
 		reg := driver.NewSqliteTestRegistry(t, driver.WithOPL(s.Opl), driver.WithMapperNamespace(CustomMapperNamespace), driver.WithConfig(config.KeyNamespacesExperimentalStrictMode, s.Strict))
 
 		MapAndInsertTuplesFromString(t, reg, s.InputTuples)

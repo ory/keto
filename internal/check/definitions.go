@@ -7,13 +7,11 @@ import (
 	"context"
 
 	"github.com/ory/keto/internal/relationtuple"
-	"github.com/ory/keto/ketoapi"
 )
 
 type (
 	Result struct {
 		Membership Membership
-		Tree       *ketoapi.Tree[*relationtuple.RelationTuple]
 		Err        error
 	}
 

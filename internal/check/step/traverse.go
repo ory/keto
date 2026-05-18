@@ -34,8 +34,7 @@ func (s TraverseStep) Execute(ctx context.Context, req check.CheckRequest, ex ch
 	}()
 
 	if req.RestDepth <= 0 {
-		ex.Deps().Logger().Debug("reached max-depth, therefore this query will not be further expanded")
-		return check.Result{Membership: check.MembershipUnknown}
+		return maxDepthReached(ex, req)
 	}
 
 	ex.Deps().Logger().

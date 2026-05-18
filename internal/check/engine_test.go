@@ -369,23 +369,23 @@ func TestEngine(t *testing.T) {
 			e := check.NewEngine(reg)
 			ctx := t.Context()
 
-			// company → engineering → backend → User:Alice requires exactly 3 hops.
+			// company → engineering → backend → User:Alice requires exactly 2 hops.
 			tuple := testhelpers.TupleFromString(t, "Group:company#members@User:Alice")
 
 			assert.Equal(t, 5, reg.Config(ctx).MaxReadDepth())
 
-			res, err := e.CheckIsMember(ctx, tuple, 2)
+			res, err := e.CheckIsMember(ctx, tuple, 1)
 			require.NoError(t, err)
-			assert.False(t, res, "depth=2 is not enough for a 3-hop chain")
+			assert.False(t, res, "depth=1 is not enough for a 2-hop chain")
 
-			res, err = e.CheckIsMember(ctx, tuple, 3)
+			res, err = e.CheckIsMember(ctx, tuple, 2)
 			require.NoError(t, err)
-			assert.True(t, res, "depth=3 is enough for a 3-hop chain")
+			assert.True(t, res, "depth=2 is enough for a 2-hop chain")
 
-			require.NoError(t, reg.Config(ctx).Set(config.KeyLimitMaxReadDepth, 2))
+			require.NoError(t, reg.Config(ctx).Set(config.KeyLimitMaxReadDepth, 1))
 			res, err = e.CheckIsMember(ctx, tuple, 5)
 			require.NoError(t, err)
-			assert.False(t, res, "global max-depth=2 overrides request depth=5")
+			assert.False(t, res, "global max-depth=1 overrides request depth=5")
 
 			require.NoError(t, reg.Config(ctx).Set(config.KeyLimitMaxReadDepth, 3))
 			res, err = e.CheckIsMember(ctx, tuple, 0)
@@ -401,15 +401,15 @@ func TestEngine(t *testing.T) {
 
 			targetTuples := []*ketoapi.RelationTuple{
 				testhelpers.APITupleFromString(t, "Group:finance#member@User:Alice"),                   // direct
-				testhelpers.APITupleFromString(t, "File:team-report#editors@User:Alice"),               // 2-hop
-				testhelpers.APITupleFromString(t, "File:team-report#viewers@User:Alice"),               // 3-hop
+				testhelpers.APITupleFromString(t, "File:team-report#editors@User:Alice"),               // 1-hop
+				testhelpers.APITupleFromString(t, "File:team-report#viewers@User:Alice"),               // 2-hop
 				testhelpers.APITupleFromString(t, "NonExistent:x#rel@User:Alice"),                      // non-existent namespace
 				testhelpers.APITupleFromString(t, "Group:finance#member@User:Eve"),                     // unknown subject
 				testhelpers.APITupleFromString(t, "File:team-report#viewers@File:team-report#editors"), // via subject set
 			}
 
-			// At depth=2, the 3-hop viewers chain is not resolved.
-			results, err := e.BatchCheck(ctx, targetTuples, 2)
+			// At depth=1, the 2-hop viewers chain is not resolved.
+			results, err := e.BatchCheck(ctx, targetTuples, 1)
 			require.NoError(t, err)
 
 			require.Equal(t, check.IsMember, results[0].Membership)
@@ -420,7 +420,7 @@ func TestEngine(t *testing.T) {
 			require.Equal(t, check.NotMember, results[4].Membership)
 			require.Equal(t, check.IsMember, results[5].Membership)
 
-			// At depth=3, the 3-hop viewers chain resolves
+			// At depth=2, the 2-hop viewers chain resolves
 			results, err = e.BatchCheck(ctx, targetTuples, 3)
 			require.NoError(t, err)
 			require.Equal(t, check.IsMember, results[2].Membership)
@@ -429,8 +429,8 @@ func TestEngine(t *testing.T) {
 }
 
 // Alice is in both deep and short chains.
-// Depth of 4 is needed to reach Alice via shortRel.
-// Depth of 6 is needed to reach Alice via deepRel.
+// Depth of 3 is needed to reach Alice via shortRel.
+// Depth of 5 is needed to reach Alice via deepRel.
 var depthLimitScenario = testhelpers.Scenario{
 	Name: "Depth Limit",
 	Opl: `
@@ -463,13 +463,16 @@ var depthLimitScenario = testhelpers.Scenario{
 	InputTuples: []string{
 		"Resource:doc#deepRel@Group:deep#members",
 		"Resource:doc#shortRel@Group:short#members",
+
 		"Group:deep#members@Group:deep1#members",
 		"Group:deep1#members@Group:deep2#members",
 		"Group:deep2#members@Group:deep3#members",
 		"Group:deep3#members@Group:deep4#members",
 		"Group:deep4#members@User:Alice",
+
 		"Group:short#members@Group:short1#members",
-		"Group:short1#members@User:Alice",
+		"Group:short1#members@Group:short2#members",
+		"Group:short2#members@User:Alice",
 	},
 	Strict: false,
 }
@@ -516,7 +519,7 @@ func TestDepthLimit(t *testing.T) {
 		{
 			name:               "intersection: enough depth for both branches yields Member",
 			tuple:              "Resource:doc#intersection@User:Alice",
-			depth:              6,
+			depth:              5,
 			expectedMembership: check.IsMember,
 			expectedIsMember:   true,
 		},

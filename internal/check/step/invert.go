@@ -19,11 +19,6 @@ type InvertStep struct {
 func (InvertStep) Kind() check.StepKind { return check.StepInvert }
 
 func (s InvertStep) Execute(ctx context.Context, req check.CheckRequest, ex check.Executor) check.Result {
-	if req.RestDepth <= 0 {
-		ex.Deps().Logger().Debug("reached max-depth, therefore this query will not be further expanded")
-		return check.Result{Membership: check.MembershipUnknown}
-	}
-
 	ex.Deps().Logger().
 		WithField("request", req.Tuple.String()).
 		Trace("invert check")

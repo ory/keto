@@ -21,6 +21,15 @@ func astRelationFor(ctx context.Context, c check.EngineDependencies, r *relation
 	return namespace.ASTRelationFor(ctx, namespaceManager, r.Namespace, r.Relation)
 }
 
+// maxDepthReached logs a debug message and returns MembershipUnknown.
+// Call it when RestDepth is exhausted and the check cannot be expanded further.
+func maxDepthReached(ex check.Executor, req check.CheckRequest) check.Result {
+	ex.Deps().Logger().
+		WithField("request", req.Tuple.String()).
+		Debug("reached max-depth, therefore this query will not be further expanded")
+	return check.Result{Membership: check.MembershipUnknown}
+}
+
 // containsSubjectSetExpand reports whether the relation's type list includes
 // at least one SubjectSet type (i.e. a type with a non-empty Relation field).
 func containsSubjectSetExpand(relation *ast.Relation) bool {

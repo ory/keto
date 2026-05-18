@@ -104,7 +104,7 @@ func TestTraceEngine(t *testing.T) {
 					directNode(t, notMember, "Group:c#members@User:99"),
 					expandNode(t, notMember, "Group:c#members@User:99", 1,
 						checkNode(t, unknown, "Group:b1#members@User:99",
-							expandNode(t, unknown, "Group:b1#members@User:99", 0),
+							expandNode(t, unknown, "Group:b1#members@User:99", 1),
 						),
 					),
 				)

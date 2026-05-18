@@ -19,10 +19,7 @@ func (IsAllowedStep) Kind() check.StepKind { return check.StepIsAllowed }
 
 func (s IsAllowedStep) Execute(ctx context.Context, req check.CheckRequest, ex check.Executor) check.Result {
 	if req.RestDepth <= 0 {
-		ex.Deps().Logger().
-			WithField("method", "IsAllowedStep").
-			Debug("reached max-depth, therefore this query will not be further expanded")
-		return check.Result{Membership: check.MembershipUnknown}
+		return maxDepthReached(ex, req)
 	}
 
 	ex.Deps().Logger().
@@ -49,13 +46,13 @@ func (s IsAllowedStep) Execute(ctx context.Context, req check.CheckRequest, ex c
 	if (!strictMode || !hasRewrite) && !s.skipDirect {
 		steps = append(steps, check.PlannedStep{
 			Step: DirectStep{},
-			Req:  req.WithDepth(req.RestDepth - 1),
+			Req:  req,
 		})
 	}
 	if canHaveSubjectSets {
 		steps = append(steps, check.PlannedStep{
 			Step: ExpandSubjectStep{},
-			Req:  req.WithDepth(req.RestDepth - 1),
+			Req:  req,
 		})
 	}
 

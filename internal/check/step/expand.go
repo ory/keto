@@ -22,10 +22,7 @@ func (ExpandSubjectStep) Kind() check.StepKind { return check.StepExpand }
 
 func (ExpandSubjectStep) Execute(ctx context.Context, req check.CheckRequest, ex check.Executor) check.Result {
 	if req.RestDepth <= 0 {
-		ex.Deps().Logger().
-			WithField("request", req.Tuple.String()).
-			Debug("reached max-depth, therefore this query will not be further expanded")
-		return check.Result{Membership: check.MembershipUnknown}
+		return maxDepthReached(ex, req)
 	}
 
 	ex.Deps().Logger().
@@ -47,6 +44,16 @@ func (ExpandSubjectStep) Execute(ctx context.Context, req check.CheckRequest, ex
 			check.ReportSubjectFound(ctx, result.To)
 			return check.ResultIsMember
 		}
+	}
+
+	if len(results) == 0 {
+		return check.ResultNotMember
+	}
+
+	// If we have results, but no direct hits, we need to check the next level of expansion.
+	// We check the depth here to prevent planning a large number of child checks when they will already be at max depth.
+	if req.RestDepth <= 1 {
+		return maxDepthReached(ex, req)
 	}
 
 	// Build the visited-tracking context from the current ctx so that child
@@ -80,7 +87,7 @@ func (ExpandSubjectStep) Execute(ctx context.Context, req check.CheckRequest, ex
 		}
 		runner.Add(check.PlannedStep{
 			Step: IsAllowedStep{skipDirect: true},
-			Req:  check.CheckRequest{Tuple: result.To, RestDepth: req.RestDepth},
+			Req:  check.CheckRequest{Tuple: result.To, RestDepth: req.RestDepth - 1},
 		})
 	}
 	return runner.Result()
