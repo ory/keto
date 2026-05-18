@@ -37,6 +37,7 @@ type (
 
 		PopConnection(ctx context.Context) (*pop.Connection, error)
 		MapperNamespace(ctx context.Context) uuid.UUID
+		NewShardID() uuid.UUID
 	}
 )
 

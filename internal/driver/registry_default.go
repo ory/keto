@@ -69,6 +69,7 @@ type (
 		mapper          *relationtuple.Mapper
 		readOnlyMapper  *relationtuple.Mapper
 		replaceMapperNs func(ctx context.Context) uuid.UUID
+		replaceShardID  func() uuid.UUID
 
 		init1, init2       sync.Once
 		init1err, init2err error
@@ -231,6 +232,13 @@ func (r *RegistryDefault) NetworkID(ctx context.Context) uuid.UUID {
 		panic("no persister, but expected to have one")
 	}
 	return r.p.NetworkID(ctx)
+}
+
+func (r *RegistryDefault) NewShardID() uuid.UUID {
+	if r.replaceShardID != nil {
+		return r.replaceShardID()
+	}
+	return uuid.Must(uuid.NewV4())
 }
 
 func (r *RegistryDefault) MapperNamespace(ctx context.Context) uuid.UUID {

@@ -128,6 +128,14 @@ func WithMapperNamespace(f func(ctx context.Context) uuid.UUID) TestRegistryOpti
 	}
 }
 
+// WithOrderedShardID switches shard ID generation to UUID v7 so that inserts
+// are monotonically ordered and predictable in tests.
+func WithOrderedShardID() TestRegistryOption {
+	return func(t testing.TB, r *RegistryDefault) {
+		r.replaceShardID = func() uuid.UUID { return uuid.Must(uuid.NewV7()) }
+	}
+}
+
 func WithNamespaces(namespaces []*namespace.Namespace) TestRegistryOption {
 	return func(t testing.TB, r *RegistryDefault) {
 		require.NoError(t, r.c.Set(config.KeyNamespaces, namespaces))

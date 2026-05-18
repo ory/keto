@@ -289,7 +289,7 @@ func (p *Persister) ExistsRelationTuples(ctx context.Context, query *relationtup
 	return exists, sqlcon.HandleError(err)
 }
 
-func buildInsert(commitTime time.Time, nid uuid.UUID, rs []*relationtuple.RelationTuple) (query string, args []any, err error) {
+func buildInsert(newShardID func() uuid.UUID, commitTime time.Time, nid uuid.UUID, rs []*relationtuple.RelationTuple) (query string, args []any, err error) {
 	if len(rs) == 0 {
 		return "", nil, errors.WithStack(ketoapi.ErrMalformedInput())
 	}
@@ -307,7 +307,7 @@ func buildInsert(commitTime time.Time, nid uuid.UUID, rs []*relationtuple.Relati
 		}
 
 		rt := &RelationTuple{
-			ID:         uuid.Must(uuid.NewV4()),
+			ID:         newShardID(),
 			NetworkID:  nid,
 			CommitTime: commitTime.UTC(),
 		}
@@ -339,7 +339,7 @@ func (p *Persister) WriteRelationTuples(ctx context.Context, rs ...*relationtupl
 
 	return p.Transaction(ctx, func(ctx context.Context) error {
 		for chunk := range slices.Chunk(rs, chunkSizeInsertTuple) {
-			q, args, err := buildInsert(commitTime, p.NetworkID(ctx), chunk)
+			q, args, err := buildInsert(p.d.NewShardID, commitTime, p.NetworkID(ctx), chunk)
 			if err != nil {
 				return err
 			}

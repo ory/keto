@@ -55,7 +55,7 @@ func TestBuildInsert(t *testing.T) {
 	t.Parallel()
 	nid := uuidx.NewV4()
 
-	q, args, err := buildInsert(time.Now(), nid, nil)
+	q, args, err := buildInsert(uuidx.NewV4, time.Now(), nid, nil)
 	assert.Error(t, err)
 	assert.Empty(t, q)
 	assert.Empty(t, args)
@@ -64,7 +64,7 @@ func TestBuildInsert(t *testing.T) {
 
 	now := time.Now()
 
-	q, args, err = buildInsert(now, nid, []*relationtuple.RelationTuple{
+	q, args, err = buildInsert(uuidx.NewV4, now, nid, []*relationtuple.RelationTuple{
 		{
 			Namespace: "ns1",
 			Object:    obj1,
