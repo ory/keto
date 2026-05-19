@@ -6,7 +6,6 @@ package trace_test
 import (
 	"context"
 	"slices"
-	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -506,6 +505,7 @@ func TestTraceEngine(t *testing.T) {
 					for i, u := range users {
 						members[i] = leafCheck("User:" + u + "#@User:1")
 					}
+
 					return checkNode(t, notMember, "Group:"+g+"#members@User:1",
 						directNode(t, notMember, "Group:"+g+"#members@User:1"),
 						expandNode(t, notMember, "Group:"+g+"#members@User:1", len(users), members...),
@@ -577,118 +577,30 @@ func TestTraceEngine(t *testing.T) {
 			_, tree, err := e.CheckIsMemberWithTrace(ctx, testhelpers.TupleFromString(t, tt.checkInput), 100)
 			require.NoError(t, err)
 
-			expected := sortNode(tt.expected(t))
-			actual := sortNode(stripTiming(tree))
+			expected := trace.SortNode(tt.expected(t))
+			actual := trace.SortNode(trace.StripTiming(tree))
 			require.Equal(t, expected.String(), actual.String())
 		})
 	}
-}
-
-// sortNode sorts children of NodeExpand and NodeTupleToSet nodes by Tuple.String(),
-// recursively. Both node kinds have non-deterministic child order because the
-// underlying queries order by shard_id (a random UUIDv4 assigned at write
-// time). All other sibling orderings are engine-controlled and must be
-// asserted as-is.
-func sortNode(n *trace.Node) *trace.Node {
-	if n == nil {
-		return nil
-	}
-	if n.Kind == trace.NodeExpandSubject || n.Kind == trace.NodeTraverse {
-		slices.SortFunc(n.Children, func(a, b *trace.Node) int {
-			as, bs := "", ""
-			if a.Tuple != nil {
-				as = a.Tuple.String()
-			}
-			if b.Tuple != nil {
-				bs = b.Tuple.String()
-			}
-			if c := strings.Compare(as, bs); c != 0 {
-				return c
-			}
-			return strings.Compare(string(a.Kind), string(b.Kind))
-		})
-	}
-	for _, child := range n.Children {
-		sortNode(child)
-	}
-	return n
-}
-
-func stripTiming(n *trace.Node) *trace.Node {
-	if n == nil {
-		return nil
-	}
-	n.Duration = 0
-	for _, child := range n.Children {
-		stripTiming(child)
-	}
-	return n
 }
 
 // result helpers — used as the first argument to every node builder.
 const (
 	member    = trace.ResultMember
 	notMember = trace.ResultNotMember
-	skipped   = trace.ResultSkipped
 	unknown   = trace.ResultUnknown
 )
 
-// checkNode builds a NodeCheck node.
-func checkNode(t testing.TB, result trace.NodeResult, tuple string, children ...*trace.Node) *trace.Node {
-	t.Helper()
-	return &trace.Node{Kind: trace.NodeIsAllowed, Tuple: testhelpers.TupleFromString(t, tuple), Result: result, Children: children}
-}
-
-// directNode builds a NodeDirect leaf (no children).
-func directNode(t testing.TB, result trace.NodeResult, tuple string) *trace.Node {
-	t.Helper()
-	return &trace.Node{Kind: trace.NodeDirect, Tuple: testhelpers.TupleFromString(t, tuple), Result: result}
-}
-
-// expandNode builds a NodeExpand node.
-func expandNode(t testing.TB, result trace.NodeResult, tuple string, tuplesLoaded int, children ...*trace.Node) *trace.Node {
-	t.Helper()
-	return &trace.Node{Kind: trace.NodeExpandSubject, Tuple: testhelpers.TupleFromString(t, tuple), Result: result, TuplesLoaded: tuplesLoaded, Children: children}
-}
-
-// foundNode builds a NodeFoundSubject leaf (no children).
-func foundNode(t testing.TB, tuple string) *trace.Node {
-	t.Helper()
-	return &trace.Node{Kind: trace.NodeFoundSubject, Tuple: testhelpers.TupleFromString(t, tuple), Result: trace.ResultMember}
-}
-
-// unionNode builds a NodeUnion node.
-func unionNode(t testing.TB, result trace.NodeResult, tuple string, children ...*trace.Node) *trace.Node {
-	t.Helper()
-	return &trace.Node{Kind: trace.NodeUnion, Tuple: testhelpers.TupleFromString(t, tuple), Result: result, Children: children}
-}
-
-// intersectionNode builds a NodeIntersection node.
-func intersectionNode(t testing.TB, result trace.NodeResult, tuple string, children ...*trace.Node) *trace.Node {
-	t.Helper()
-	return &trace.Node{Kind: trace.NodeIntersection, Tuple: testhelpers.TupleFromString(t, tuple), Result: result, Children: children}
-}
-
-// invertNode builds a NodeInvert node.
-func invertNode(t testing.TB, result trace.NodeResult, tuple string, children ...*trace.Node) *trace.Node {
-	t.Helper()
-	return &trace.Node{Kind: trace.NodeInvert, Tuple: testhelpers.TupleFromString(t, tuple), Result: result, Children: children}
-}
-
-// computedNode builds a NodeComputed node.
-func computedNode(t testing.TB, result trace.NodeResult, tuple string, children ...*trace.Node) *trace.Node {
-	t.Helper()
-	return &trace.Node{Kind: trace.NodeComputed, Tuple: testhelpers.TupleFromString(t, tuple), Result: result, Children: children}
-}
-
-// traverseNode builds a NodeTupleToSet node.
-func traverseNode(t testing.TB, result trace.NodeResult, tuple string, tuplesLoaded int, children ...*trace.Node) *trace.Node {
-	t.Helper()
-	return &trace.Node{Kind: trace.NodeTraverse, Tuple: testhelpers.TupleFromString(t, tuple), Result: result, TuplesLoaded: tuplesLoaded, Children: children}
-}
-
-// multiDirectNode builds a NodeMultiDirect leaf (no children).
-func multiDirectNode(t testing.TB, result trace.NodeResult, tuple string, relations []string) *trace.Node {
-	t.Helper()
-	return &trace.Node{Kind: trace.NodeMultiDirect, Tuple: testhelpers.TupleFromString(t, tuple), Relations: relations, Result: result}
-}
+// Local aliases for the exported helpers in trace so test cases stay concise.
+var (
+	checkNode        = trace.CheckNode
+	directNode       = trace.DirectNode
+	expandNode       = trace.ExpandNode
+	foundNode        = trace.FoundNode
+	unionNode        = trace.UnionNode
+	intersectionNode = trace.IntersectionNode
+	invertNode       = trace.InvertNode
+	computedNode     = trace.ComputedNode
+	traverseNode     = trace.TraverseNode
+	multiDirectNode  = trace.MultiDirectNode
+)

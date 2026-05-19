@@ -8,9 +8,10 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/ory/herodot"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"github.com/ory/herodot"
 
 	"github.com/ory/keto/internal/expand"
 	"github.com/ory/keto/internal/namespace"

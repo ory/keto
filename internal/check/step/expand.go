@@ -14,13 +14,16 @@ import (
 	"github.com/ory/keto/internal/x/graph"
 )
 
-// ExpandSubjectStep expands all subject-set pointers stored under the tuple's
-// relation and recursively checks each one.
-type ExpandSubjectStep struct{}
+// ExpandSubjectStep expands subject-set pointers under the tuple's relation and recursively checks each one.
+type ExpandSubjectStep struct {
+	StrictMode bool
+	// SubjectSetTypes are the subject-set types declared in OPL for this relation.
+	SubjectSetTypes []relationtuple.SubjectSetType
+}
 
 func (ExpandSubjectStep) Kind() check.StepKind { return check.StepExpand }
 
-func (ExpandSubjectStep) Execute(ctx context.Context, req check.CheckRequest, ex check.Executor) check.Result {
+func (s ExpandSubjectStep) Execute(ctx context.Context, req check.CheckRequest, ex check.Executor) check.Result {
 	if req.RestDepth <= 0 {
 		return maxDepthReached(ex, req)
 	}
@@ -29,7 +32,12 @@ func (ExpandSubjectStep) Execute(ctx context.Context, req check.CheckRequest, ex
 		WithField("request", req.Tuple.String()).
 		Trace("check expand subject")
 
-	results, err := ex.Deps().Traverser().TraverseSubjectSetExpansion(ctx, req.Tuple)
+	subjectSetTypes := s.SubjectSetTypes
+	if !s.StrictMode {
+		subjectSetTypes = nil
+	}
+
+	results, err := ex.Deps().Traverser().TraverseSubjectSetExpansion(ctx, req.Tuple, subjectSetTypes)
 	if errors.Is(err, herodot.ErrNotFound()) {
 		return check.ResultNotMember
 	} else if err != nil {

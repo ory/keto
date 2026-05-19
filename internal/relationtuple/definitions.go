@@ -18,8 +18,16 @@ type (
 	ManagerProvider interface {
 		RelationTupleManager() Manager
 	}
+
+	// SubjectSetType identifies a subject-set by its target namespace and relation,
+	// as declared in OPL
+	SubjectSetType struct {
+		Namespace string
+		Relation  string
+	}
+
 	Traverser interface {
-		TraverseSubjectSetExpansion(ctx context.Context, tuple *RelationTuple) ([]*TraversalResult, error)
+		TraverseSubjectSetExpansion(ctx context.Context, tuple *RelationTuple, allowedSubjectSets []SubjectSetType) ([]*TraversalResult, error)
 		FindTupleWithRelations(ctx context.Context, tuple *RelationTuple, relations []string) (*RelationTuple, error)
 	}
 	Manager interface {

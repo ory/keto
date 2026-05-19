@@ -33,7 +33,15 @@ func (s IsAllowedStep) Execute(ctx context.Context, req check.CheckRequest, ex c
 
 	hasRewrite := relation != nil && relation.SubjectSetRewrite != nil
 	strictMode := ex.Deps().Config(ctx).StrictMode()
-	canHaveSubjectSets := !strictMode || relation == nil || containsSubjectSetExpand(relation)
+	// In strict mode, only expand when OPL explicitly declares subject-set types, and
+	// filter expansion to only those declared types.
+	// In non-strict mode, always expand without any OPL filter to preserve backwards
+	// compatibility.
+	subjectSetTypes := subjectSetTypesFor(relation)
+	canHaveSubjectSets := !strictMode
+	if strictMode {
+		canHaveSubjectSets = len(subjectSetTypes) > 0
+	}
 
 	steps := make([]check.PlannedStep, 0, 3)
 
@@ -51,7 +59,7 @@ func (s IsAllowedStep) Execute(ctx context.Context, req check.CheckRequest, ex c
 	}
 	if canHaveSubjectSets {
 		steps = append(steps, check.PlannedStep{
-			Step: ExpandSubjectStep{},
+			Step: ExpandSubjectStep{SubjectSetTypes: subjectSetTypes, StrictMode: strictMode},
 			Req:  req,
 		})
 	}

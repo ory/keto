@@ -9,6 +9,7 @@ import (
 	"github.com/ory/keto/internal/check"
 	"github.com/ory/keto/internal/namespace"
 	"github.com/ory/keto/internal/namespace/ast"
+	"github.com/ory/keto/internal/relationtuple"
 )
 
 // astRelationFor looks up the AST Relation for the given tuple's namespace and
@@ -30,13 +31,19 @@ func maxDepthReached(ex check.Executor, req check.CheckRequest) check.Result {
 	return check.Result{Membership: check.MembershipUnknown}
 }
 
-// containsSubjectSetExpand reports whether the relation's type list includes
-// at least one SubjectSet type (i.e. a type with a non-empty Relation field).
-func containsSubjectSetExpand(relation *ast.Relation) bool {
+// subjectSetTypesFor returns the SubjectSet types declared for the relation in OPL.
+func subjectSetTypesFor(relation *ast.Relation) []relationtuple.SubjectSetType {
+	if relation == nil {
+		return nil
+	}
+	subjectSets := make([]relationtuple.SubjectSetType, 0)
 	for _, t := range relation.Types {
 		if t.Relation != "" {
-			return true
+			subjectSets = append(subjectSets, relationtuple.SubjectSetType{
+				Namespace: t.Namespace,
+				Relation:  t.Relation,
+			})
 		}
 	}
-	return false
+	return subjectSets
 }

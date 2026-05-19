@@ -77,7 +77,7 @@ func TraverserTest(t *testing.T, m Manager, tr Traverser) {
 				Subject:   &SubjectID{ID: uuid.Must(uuid.NewV4())},
 			}
 
-			res, err := tr.TraverseSubjectSetExpansion(t.Context(), start)
+			res, err := tr.TraverseSubjectSetExpansion(t.Context(), start, nil)
 			require.NoError(t, err)
 			assert.Empty(t, res)
 		})
@@ -111,7 +111,7 @@ func TraverserTest(t *testing.T, m Manager, tr Traverser) {
 				Relation:  "rel",
 				Subject:   &SubjectID{ID: userID},
 			}
-			res, err := tr.TraverseSubjectSetExpansion(t.Context(), start)
+			res, err := tr.TraverseSubjectSetExpansion(t.Context(), start, nil)
 			require.NoError(t, err)
 			require.Len(t, res, 1)
 			assert.True(t, res[0].Found)
@@ -143,10 +143,118 @@ func TraverserTest(t *testing.T, m Manager, tr Traverser) {
 				Relation:  "rel",
 				Subject:   &SubjectID{ID: uuid.Must(uuid.NewV4())},
 			}
-			res, err := tr.TraverseSubjectSetExpansion(t.Context(), start)
+			res, err := tr.TraverseSubjectSetExpansion(t.Context(), start, nil)
 			require.NoError(t, err)
 			require.Len(t, res, 1)
 			assert.False(t, res[0].Found)
+		})
+
+		t.Run("case=allowedSubjectSets filters out non-matching types", func(t *testing.T) {
+			docNs := strconv.Itoa(rand.Int())   // nolint
+			groupNs := strconv.Itoa(rand.Int()) // nolint
+			obj := uuid.Must(uuid.NewV4())
+
+			// ns:obj#rel@(docNs:docObj#member) and ns:obj#rel@(groupNs:groupObj#admin)
+			require.NoError(t, m.WriteRelationTuples(t.Context(),
+				&RelationTuple{
+					Namespace: nspace,
+					Object:    obj,
+					Relation:  "rel",
+					Subject:   &SubjectSet{Namespace: docNs, Object: uuid.Must(uuid.NewV4()), Relation: "member"},
+				},
+				&RelationTuple{
+					Namespace: nspace,
+					Object:    obj,
+					Relation:  "rel",
+					Subject:   &SubjectSet{Namespace: groupNs, Object: uuid.Must(uuid.NewV4()), Relation: "admin"},
+				},
+			))
+
+			start := &RelationTuple{
+				Namespace: nspace,
+				Object:    obj,
+				Relation:  "rel",
+				Subject:   &SubjectID{ID: uuid.Must(uuid.NewV4())},
+			}
+			res, err := tr.TraverseSubjectSetExpansion(t.Context(), start, []SubjectSetType{{Namespace: docNs, Relation: "member"}})
+			require.NoError(t, err)
+			require.Len(t, res, 1)
+			assert.Equal(t, docNs, res[0].To.Namespace)
+			assert.Equal(t, "member", res[0].To.Relation)
+		})
+
+		t.Run("case=nil allowedSubjectSets returns all types", func(t *testing.T) {
+			docNs := strconv.Itoa(rand.Int())   // nolint
+			groupNs := strconv.Itoa(rand.Int()) // nolint
+			obj := uuid.Must(uuid.NewV4())
+
+			// ns:obj#rel@(docNs:docObj#member) and ns:obj#rel@(groupNs:groupObj#admin)
+			require.NoError(t, m.WriteRelationTuples(t.Context(),
+				&RelationTuple{
+					Namespace: nspace,
+					Object:    obj,
+					Relation:  "rel",
+					Subject:   &SubjectSet{Namespace: docNs, Object: uuid.Must(uuid.NewV4()), Relation: "member"},
+				},
+				&RelationTuple{
+					Namespace: nspace,
+					Object:    obj,
+					Relation:  "rel",
+					Subject:   &SubjectSet{Namespace: groupNs, Object: uuid.Must(uuid.NewV4()), Relation: "admin"},
+				},
+			))
+
+			start := &RelationTuple{
+				Namespace: nspace,
+				Object:    obj,
+				Relation:  "rel",
+				Subject:   &SubjectID{ID: uuid.Must(uuid.NewV4())},
+			}
+			res, err := tr.TraverseSubjectSetExpansion(t.Context(), start, nil)
+			require.NoError(t, err)
+			assert.Len(t, res, 2)
+		})
+
+		t.Run("case=multiple allowedSubjectSets entries each match independently", func(t *testing.T) {
+			docNs := strconv.Itoa(rand.Int())   // nolint
+			groupNs := strconv.Itoa(rand.Int()) // nolint
+			obj := uuid.Must(uuid.NewV4())
+
+			// ns:obj#rel@(docNs:docObj#member), ns:obj#rel@(groupNs:groupObj#admin), and
+			// ns:obj#rel@(groupNs:otherObj#viewer) which is not in the allowed list
+			require.NoError(t, m.WriteRelationTuples(t.Context(),
+				&RelationTuple{
+					Namespace: nspace,
+					Object:    obj,
+					Relation:  "rel",
+					Subject:   &SubjectSet{Namespace: docNs, Object: uuid.Must(uuid.NewV4()), Relation: "member"},
+				},
+				&RelationTuple{
+					Namespace: nspace,
+					Object:    obj,
+					Relation:  "rel",
+					Subject:   &SubjectSet{Namespace: groupNs, Object: uuid.Must(uuid.NewV4()), Relation: "admin"},
+				},
+				&RelationTuple{
+					Namespace: nspace,
+					Object:    obj,
+					Relation:  "rel",
+					Subject:   &SubjectSet{Namespace: groupNs, Object: uuid.Must(uuid.NewV4()), Relation: "viewer"},
+				},
+			))
+
+			start := &RelationTuple{
+				Namespace: nspace,
+				Object:    obj,
+				Relation:  "rel",
+				Subject:   &SubjectID{ID: uuid.Must(uuid.NewV4())},
+			}
+			res, err := tr.TraverseSubjectSetExpansion(t.Context(), start, []SubjectSetType{
+				{Namespace: docNs, Relation: "member"},
+				{Namespace: groupNs, Relation: "admin"},
+			})
+			require.NoError(t, err)
+			assert.Len(t, res, 2)
 		})
 	})
 }

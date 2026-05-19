@@ -6,6 +6,7 @@ package sql
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/gofrs/uuid"
 	"github.com/ory/pop/v6"
@@ -48,9 +49,26 @@ func whereSubject(sub relationtuple.Subject) (sqlFragment string, args []any, er
 	return sqlFragment, args, nil
 }
 
-// TraverseSubjectSetExpansion gets all subject sets for the object#relation.
-// It also checks whether the requested subject is a member of each of the returned subject sets.
-func (t *Traverser) TraverseSubjectSetExpansion(ctx context.Context, start *relationtuple.RelationTuple) (res []*relationtuple.TraversalResult, err error) {
+// buildSubjectSetTypeSQL builds an optional SQL fragment and args to filter
+// subject-set tuples by (namespace, relation) pairs. Returns empty string and
+// nil args when allowedSubjectSets is nil (no filter applied).
+func buildSubjectSetTypeSQL(allowedSubjectSets []relationtuple.SubjectSetType) (string, []any) {
+	if len(allowedSubjectSets) == 0 {
+		return "", nil
+	}
+	parts := make([]string, len(allowedSubjectSets))
+	args := make([]any, 0, len(allowedSubjectSets)*2)
+	for i, f := range allowedSubjectSets {
+		parts[i] = "(current.subject_set_namespace = ? AND current.subject_set_relation = ?)"
+		args = append(args, f.Namespace, f.Relation)
+	}
+	return "\nAND (" + strings.Join(parts, " OR ") + ")", args
+}
+
+// TraverseSubjectSetExpansion gets all subject sets for the object#relation and checks
+// whether the requested subject is a member of each. When allowedSubjectSets is non-empty,
+// only subject-set pointers matching the declared (namespace, relation) pairs are returned.
+func (t *Traverser) TraverseSubjectSetExpansion(ctx context.Context, start *relationtuple.RelationTuple, allowedSubjectSets []relationtuple.SubjectSetType) (res []*relationtuple.TraversalResult, err error) {
 	ctx, span := t.d.Tracer(ctx).Tracer().Start(ctx, "persistence.sql.TraverseSubjectSetExpansion")
 	defer otelx.End(span, &err)
 
@@ -62,12 +80,20 @@ func (t *Traverser) TraverseSubjectSetExpansion(ctx context.Context, start *rela
 	var rowCount int
 	defer func() { span.SetAttributes(attribute.Int("tuples_loaded", rowCount)) }()
 
+	subjectSetFilterSQL, subjectSetFilterArgs := buildSubjectSetTypeSQL(allowedSubjectSets)
+
 	shardID := uuid.Nil
 	for {
 		var (
 			rows  []*subjectExpandedRelationTupleRow
 			limit = 1000
 		)
+		queryArgs := make([]any, 0)
+		queryArgs = append(queryArgs, targetSubjectArgs...)
+		queryArgs = append(queryArgs, t.p.NetworkID(ctx), shardID, start.Namespace, start.Object, start.Relation)
+		queryArgs = append(queryArgs, subjectSetFilterArgs...)
+		queryArgs = append(queryArgs, limit)
+
 		err = t.conn.WithContext(ctx).RawQuery(fmt.Sprintf(`
 SELECT current.shard_id AS shard_id,
        current.subject_set_namespace AS namespace,
@@ -88,10 +114,11 @@ WHERE current.nid = ? AND
       current.object = ? AND
       current.relation = ? AND
       current.subject_id IS NULL
+	  %s
 ORDER BY current.shard_id
 LIMIT ?
-`, targetSubjectSQL),
-			append(targetSubjectArgs, t.p.NetworkID(ctx), shardID, start.Namespace, start.Object, start.Relation, limit)...,
+`, targetSubjectSQL, subjectSetFilterSQL),
+			queryArgs...,
 		).All(&rows)
 		if err != nil {
 			return nil, sqlcon.HandleError(err)
