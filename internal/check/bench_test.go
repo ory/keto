@@ -152,7 +152,7 @@ func BenchmarkComputedUsersets(b *testing.B) {
 
 	spans := tracetest.NewSpanRecorder()
 	tracer := trace.NewTracerProvider(trace.WithSpanProcessor(spans)).Tracer("")
-	reg := driver.NewSqliteTestRegistry(b, driver.WithLogLevel("debug"), driver.WithOPL(ProjectOPLConfig), driver.WithTracer(tracer), driver.WithConfig(config.KeyNamespacesExperimentalStrictMode, true))
+	reg := driver.NewSqliteTestRegistry(b, driver.WithLogLevel("debug"), driver.WithOPL(ProjectOPLConfig), driver.WithTracer(tracer), driver.WithConfig(config.KeyFeatureFlagStrictMode, true))
 	reg.Logger().Logger.SetLevel(logrus.DebugLevel)
 
 	testhelpers.MapAndInsertTuplesFromString(b, reg, []string{

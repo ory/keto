@@ -61,6 +61,7 @@ const (
 	KeyNamespacesExperimentalStrictMode = KeyNamespaces + ".experimental_strict_mode"
 
 	KeyFeatureFlagExpandRewrites = "feature_flags.expand_rewrites"
+	KeyFeatureFlagStrictMode     = "feature_flags.strict_mode"
 
 	DSNMemory = "sqlite://file::memory:?_fk=true&"
 
@@ -291,7 +292,7 @@ func (k *Config) NamespaceManager() (namespace.Manager, error) {
 }
 
 func (k *Config) StrictMode() bool {
-	return k.p.BoolF(KeyNamespacesExperimentalStrictMode, false)
+	return k.p.Bool(KeyFeatureFlagStrictMode) || k.p.Bool(KeyNamespacesExperimentalStrictMode)
 }
 
 func (k *Config) ExpandRewrites() bool {

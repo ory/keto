@@ -1331,7 +1331,7 @@ func TestEngineOpl(t *testing.T) {
 					opts = append(opts, driver.WithConfig(config.KeyLimitExpandMaxSize, tt.maxNodes))
 				}
 				if tt.strict {
-					opts = append(opts, driver.WithConfig(config.KeyNamespacesExperimentalStrictMode, tt.strict))
+					opts = append(opts, driver.WithConfig(config.KeyFeatureFlagStrictMode, tt.strict))
 				}
 
 				reg := driver.NewSqliteTestRegistry(t, opts...)

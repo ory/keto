@@ -32,7 +32,7 @@ func (s Scenario) Run(t *testing.T, f func(t *testing.T, reg driver.Registry)) {
 			_, errs := schema.Parse(s.Opl)
 			require.Len(t, errs, 0)
 		}
-		reg := driver.NewSqliteTestRegistry(t, driver.WithOPL(s.Opl), driver.WithMapperNamespace(CustomMapperNamespace), driver.WithConfig(config.KeyNamespacesExperimentalStrictMode, s.Strict))
+		reg := driver.NewSqliteTestRegistry(t, driver.WithOPL(s.Opl), driver.WithMapperNamespace(CustomMapperNamespace), driver.WithConfig(config.KeyFeatureFlagStrictMode, s.Strict))
 
 		MapAndInsertTuplesFromString(t, reg, s.InputTuples)
 		f(t, reg)

@@ -108,7 +108,6 @@ namespaces:
 				assert.True(t, ok)
 				assert.False(t, p.StrictMode())
 			}
-
 		}
 
 		nn := []*namespace.Namespace{
@@ -261,16 +260,30 @@ namespaces:
 		})
 	}
 
-	t.Run("case=strict_mode=true", func(t *testing.T) {
-		config := createFileF(t, `
+	for _, tt := range []struct {
+		name       string
+		deprecated bool
+		new        bool
+		want       bool
+	}{
+		{name: "neither key set", deprecated: false, new: false, want: false},
+		{name: "deprecated key only", deprecated: true, new: false, want: true},
+		{name: "new key only", deprecated: false, new: true, want: true},
+		{name: "both keys true", deprecated: true, new: true, want: true},
+	} {
+		t.Run("case=strict_mode/"+tt.name, func(t *testing.T) {
+			cfg := createFileF(t, `
 dsn: memory
 namespaces:
   location: file://%s
-  experimental_strict_mode: true`, oplConfigFile)
+  experimental_strict_mode: %v
+feature_flags:
+  strict_mode: %v`, oplConfigFile, tt.deprecated, tt.new)
 
-		_, p := setup(t, config)
-		assert.True(t, p.StrictMode())
-	})
+			_, p := setup(t, cfg)
+			assert.Equal(t, tt.want, p.StrictMode())
+		})
+	}
 }
 
 func TestProvider_DefaultReadAPIListenOn(t *testing.T) {

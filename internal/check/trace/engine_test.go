@@ -563,7 +563,7 @@ func TestTraceEngine(t *testing.T) {
 			}
 
 			if tt.strict {
-				opts = append(opts, driver.WithConfig(config.KeyNamespacesExperimentalStrictMode, tt.strict))
+				opts = append(opts, driver.WithConfig(config.KeyFeatureFlagStrictMode, tt.strict))
 			}
 
 			reg := driver.NewSqliteTestRegistry(t, opts...)
