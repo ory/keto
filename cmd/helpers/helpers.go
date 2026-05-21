@@ -10,6 +10,7 @@ import (
 
 	"github.com/ory/jsonschema/v3"
 	"github.com/ory/x/cmdx"
+	"github.com/ory/x/popx"
 	"github.com/ory/x/randx"
 	"github.com/spf13/cobra"
 
@@ -29,6 +30,14 @@ func NewRegistry(cmd *cobra.Command, opts []ketoctx.Option) (driver.Registry, er
 		// the configx provider already printed the validation error
 		return nil, cmdx.FailSilently(cmd)
 	} else if err != nil {
+		return nil, err
+	}
+
+	conn, err := reg.PopConnection(cmd.Context())
+	if err != nil {
+		return nil, err
+	}
+	if err := popx.VerifyDialect(cmd.Context(), conn); err != nil {
 		return nil, err
 	}
 

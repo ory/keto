@@ -31,6 +31,14 @@ func newStatusCmd(opts []ketoctx.Option) *cobra.Command {
 				return err
 			}
 
+			conn, err := reg.PopConnection(ctx)
+			if err != nil {
+				return err
+			}
+			if err := popx.VerifyDialect(ctx, conn); err != nil {
+				return err
+			}
+
 			mb, err := reg.MigrationBox(ctx)
 			if err != nil {
 				return err
