@@ -446,15 +446,12 @@ func (h *Handler) doBatchCheck(ctx context.Context, body io.Reader, query url.Va
 		return nil, err
 	}
 
+	strict := h.d.Config(ctx).StrictMode()
 	responses := make([]*CheckPermissionResultWithError, len(request.Tuples))
 	for i, result := range results {
-		errMsg := ""
-		if result.Err != nil {
-			errMsg = result.Err.Error()
-		}
 		responses[i] = &CheckPermissionResultWithError{
 			Allowed: result.Membership == IsMember,
-			Error:   errMsg,
+			Error:   batchResultErrMsg(result, strict),
 		}
 	}
 
@@ -478,15 +475,12 @@ func (h *Handler) BatchCheck(ctx context.Context, req *rts.BatchCheckRequest) (*
 		return nil, err
 	}
 
+	strict := h.d.Config(ctx).StrictMode()
 	responses := make([]*rts.CheckResponseWithError, len(results))
 	for i, result := range results {
-		errMsg := ""
-		if result.Err != nil {
-			errMsg = result.Err.Error()
-		}
 		responses[i] = &rts.CheckResponseWithError{ //nolint:gosec // Snaptoken is not a credential, just a placeholder value.
 			Allowed:   result.Membership == IsMember,
-			Error:     errMsg,
+			Error:     batchResultErrMsg(result, strict),
 			Snaptoken: "not yet implemented",
 		}
 	}
@@ -494,4 +488,17 @@ func (h *Handler) BatchCheck(ctx context.Context, req *rts.BatchCheckRequest) (*
 	return &rts.BatchCheckResponse{
 		Results: responses,
 	}, nil
+}
+
+// batchResultErrMsg returns an error string for a single batch check result.
+// In strict mode a limitation is surfaced so callers can distinguish
+// "definitely not a member" from "could not determine membership".
+func batchResultErrMsg(r Result, strict bool) string {
+	if r.Err != nil {
+		return r.Err.Error()
+	}
+	if r.Membership == MembershipUnknown && r.Limitation != "" && strict {
+		return string(r.Limitation)
+	}
+	return ""
 }

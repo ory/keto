@@ -99,9 +99,9 @@ func TestTraceEngine(t *testing.T) {
 			},
 			checkInput: "Group:c#members@User:99",
 			expected: func(t testing.TB) *trace.Node {
-				return checkNode(t, notMember, "Group:c#members@User:99",
+				return checkNode(t, unknown, "Group:c#members@User:99",
 					directNode(t, notMember, "Group:c#members@User:99"),
-					expandNode(t, notMember, "Group:c#members@User:99", 1,
+					expandNode(t, unknown, "Group:c#members@User:99", 1,
 						checkNode(t, unknown, "Group:b1#members@User:99",
 							expandNode(t, unknown, "Group:b1#members@User:99", 1),
 						),

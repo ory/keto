@@ -48,7 +48,7 @@ func (unionRunMode) NoStepsResult() check.Result    { return check.ResultNotMemb
 type intersectionRunMode struct{}
 
 func (intersectionRunMode) IsDecisive(r check.Result) bool {
-	return r.Membership != check.IsMember || r.Err != nil
+	return r.Membership == check.NotMember || r.Err != nil
 }
 func (intersectionRunMode) NoDecisionResult() check.Result { return check.ResultIsMember }
 func (intersectionRunMode) NoStepsResult() check.Result    { return check.ResultNotMember }
@@ -143,9 +143,10 @@ type stepGroup struct {
 	sem chan struct{}
 	wg  sync.WaitGroup
 
-	mu     sync.Mutex
-	result check.Result
-	set    bool
+	mu         sync.Mutex
+	result     check.Result
+	set        bool
+	limitation check.LimitationKind
 
 	mode runMode
 }
@@ -205,9 +206,21 @@ func (g *stepGroup) add(f func(context.Context) check.Result) {
 	}()
 }
 
+func (g *stepGroup) AddLimitation(l check.LimitationKind) {
+	g.mu.Lock()
+	if !g.set && g.limitation == "" {
+		g.limitation = l
+	}
+	g.mu.Unlock()
+}
+
 func (g *stepGroup) handle(r check.Result) {
 	if g.mode.IsDecisive(r) && g.trySetResult(r) {
 		g.cancel()
+		return
+	}
+	if r.Membership == check.MembershipUnknown && r.Limitation != "" {
+		g.AddLimitation(r.Limitation)
 	}
 }
 
@@ -234,9 +247,16 @@ func (g *stepGroup) Result() check.Result {
 	g.cancel()
 	g.mu.Lock()
 	defer g.mu.Unlock()
+
+	// No decisive result was set. Return in priority order:
+	// 1. Context cancelled by parent or sibling — propagate the error.
+	// 2. A limitation was recorded — result is indeterminate.
+	// 3. Neither — no step was decisive, so fall back to the mode default.
 	if !g.set {
 		if ctxErr != nil {
 			g.result = check.Result{Membership: check.MembershipUnknown, Err: ctxErr}
+		} else if g.limitation != "" {
+			g.result = check.Result{Membership: check.MembershipUnknown, Limitation: g.limitation}
 		} else {
 			g.result = g.mode.NoDecisionResult()
 		}

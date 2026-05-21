@@ -10,12 +10,19 @@ import (
 )
 
 type (
+	// Result holds the outcome of a single permission check.
+	// Limitation is non-empty only when Membership is MembershipUnknown.
 	Result struct {
 		Membership Membership
 		Err        error
+		Limitation LimitationKind
 	}
 
 	Membership int
+
+	// LimitationKind identifies which traversal constraint was hit. A non-empty
+	// value on a Result means the membership answer is indeterminate.
+	LimitationKind string
 )
 
 //go:generate stringer -type Membership
@@ -23,6 +30,11 @@ const (
 	MembershipUnknown Membership = iota
 	IsMember
 	NotMember
+)
+
+const (
+	LimitationMaxDepthExceeded LimitationKind = "max_depth_exceeded"
+	LimitationMaxWidthExceeded LimitationKind = "max_width_exceeded"
 )
 
 var (
@@ -69,6 +81,9 @@ type StepRunner interface {
 	// Ctx returns the runner's context, usable for shared state like visited tracking.
 	// The context is cancelled when a decisive result is reached (to signal siblings).
 	Ctx() context.Context
+
+	// AddLimitation records that some branches were skipped due to given [LimitationKind] constraint.
+	AddLimitation(LimitationKind)
 
 	// Result waits for all in-flight steps to complete and returns the aggregated result.
 	// Call it after the Add loop finishes (or breaks early on Done()).

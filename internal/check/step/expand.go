@@ -78,6 +78,8 @@ func (s ExpandSubjectStep) Execute(ctx context.Context, req check.CheckRequest, 
 			WithField("results", len(results)).
 			Debug("too many results, truncating to width limit")
 		results = results[:maxWidth]
+
+		runner.AddLimitation(check.LimitationMaxWidthExceeded)
 	}
 
 	for _, result := range results {

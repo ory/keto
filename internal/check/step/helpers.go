@@ -28,7 +28,8 @@ func maxDepthReached(ex check.Executor, req check.CheckRequest) check.Result {
 	ex.Deps().Logger().
 		WithField("request", req.Tuple.String()).
 		Debug("reached max-depth, therefore this query will not be further expanded")
-	return check.Result{Membership: check.MembershipUnknown}
+
+	return check.Result{Membership: check.MembershipUnknown, Limitation: check.LimitationMaxDepthExceeded}
 }
 
 // subjectSetTypesFor returns the SubjectSet types declared for the relation in OPL.

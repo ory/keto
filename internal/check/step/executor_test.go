@@ -19,6 +19,10 @@ import (
 func TestBaseExecutorRunSequential(t *testing.T) {
 	t.Parallel()
 
+	sentinel := errors.New("planted error")
+	unknownErr := check.Result{Membership: check.MembershipUnknown, Err: sentinel}
+	unknownLimit := check.Result{Membership: check.MembershipUnknown, Limitation: check.LimitationMaxDepthExceeded}
+
 	t.Run("RunUnion", func(t *testing.T) {
 		t.Parallel()
 
@@ -44,8 +48,6 @@ func TestBaseExecutorRunSequential(t *testing.T) {
 
 		t.Run("table", func(t *testing.T) {
 			t.Parallel()
-
-			sentinel := errors.New("planted error")
 
 			type testCase struct {
 				name           string
@@ -86,6 +88,38 @@ func TestBaseExecutorRunSequential(t *testing.T) {
 					results:        []check.Result{check.ResultNotMember, {Err: sentinel}, check.ResultNotMember, check.ResultNotMember},
 					expectedResult: check.ResultUnknown,
 					expectedErr:    sentinel,
+					expectedCalls:  []int{0, 1},
+				},
+				{
+					name:           "NotMember + Error = Unknown+error",
+					results:        []check.Result{check.ResultNotMember, unknownErr},
+					expectedResult: check.ResultUnknown,
+					expectedErr:    sentinel,
+					expectedCalls:  []int{0, 1},
+				},
+				{
+					name:           "should stop on first error",
+					results:        []check.Result{unknownErr, check.ResultIsMember},
+					expectedResult: check.ResultUnknown,
+					expectedErr:    sentinel,
+					expectedCalls:  []int{0},
+				},
+				{
+					name:           "NotMember + limit = Unknown",
+					results:        []check.Result{check.ResultNotMember, unknownLimit},
+					expectedResult: unknownLimit,
+					expectedCalls:  []int{0, 1},
+				},
+				{
+					name:           "Limit + NotMember = Unknown",
+					results:        []check.Result{unknownLimit, check.ResultNotMember},
+					expectedResult: unknownLimit,
+					expectedCalls:  []int{0, 1},
+				},
+				{
+					name:           "Limit + Member = Member",
+					results:        []check.Result{unknownLimit, check.ResultIsMember},
+					expectedResult: check.ResultIsMember,
 					expectedCalls:  []int{0, 1},
 				},
 			} {
@@ -130,8 +164,6 @@ func TestBaseExecutorRunSequential(t *testing.T) {
 		t.Run("table", func(t *testing.T) {
 			t.Parallel()
 
-			sentinel := errors.New("planted error")
-
 			type testCase struct {
 				name           string
 				results        []check.Result
@@ -167,16 +199,36 @@ func TestBaseExecutorRunSequential(t *testing.T) {
 					expectedCalls:  []int{0, 1},
 				},
 				{
-					name:           "should stop on first unknown: unknown is last",
-					results:        []check.Result{check.ResultIsMember, check.ResultUnknown},
+					name:           "Member + Error = Unknown+error",
+					results:        []check.Result{check.ResultIsMember, unknownErr},
 					expectedResult: check.ResultUnknown,
+					expectedErr:    sentinel,
 					expectedCalls:  []int{0, 1},
 				},
 				{
-					name:           "should stop on first unknown: unknown is first",
-					results:        []check.Result{check.ResultUnknown, check.ResultIsMember},
+					name:           "should stop on first error",
+					results:        []check.Result{unknownErr, check.ResultIsMember},
 					expectedResult: check.ResultUnknown,
+					expectedErr:    sentinel,
 					expectedCalls:  []int{0},
+				},
+				{
+					name:           "Member + limit = Unknown",
+					results:        []check.Result{check.ResultIsMember, unknownLimit},
+					expectedResult: unknownLimit,
+					expectedCalls:  []int{0, 1},
+				},
+				{
+					name:           "Limit + Member = Unknown",
+					results:        []check.Result{unknownLimit, check.ResultIsMember},
+					expectedResult: unknownLimit,
+					expectedCalls:  []int{0, 1},
+				},
+				{
+					name:           "Limit + NotMember = NotMember",
+					results:        []check.Result{unknownLimit, check.ResultNotMember},
+					expectedResult: check.ResultNotMember,
+					expectedCalls:  []int{0, 1},
 				},
 			} {
 				t.Run(tc.name, func(t *testing.T) {
@@ -187,6 +239,7 @@ func TestBaseExecutorRunSequential(t *testing.T) {
 
 					result := NewExecutor(nil).RunIntersection(t.Context(), steps...)
 					assert.Equal(t, tc.expectedResult.Membership, result.Membership)
+					assert.Equal(t, tc.expectedResult.Limitation, result.Limitation)
 					assert.ErrorIs(t, result.Err, tc.expectedErr)
 					assert.Equal(t, tc.expectedCalls, calls)
 				})

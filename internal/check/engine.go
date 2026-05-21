@@ -5,10 +5,13 @@ package check
 
 import (
 	"context"
+	"net/http"
 
+	"github.com/ory/herodot"
 	"github.com/ory/x/logrusx"
 	"github.com/ory/x/otelx"
 	"golang.org/x/sync/errgroup"
+	"google.golang.org/grpc/codes"
 
 	"github.com/ory/keto/x/events"
 
@@ -41,6 +44,15 @@ type (
 	relationTuple = relationtuple.RelationTuple
 )
 
+func errLimitationExceeded() *herodot.DefaultError {
+	return &herodot.DefaultError{
+		StatusField:   http.StatusText(http.StatusUnprocessableEntity),
+		ErrorField:    "The check could not be completed",
+		CodeField:     http.StatusUnprocessableEntity,
+		GRPCCodeField: codes.FailedPrecondition,
+	}
+}
+
 // NewEngine creates an Engine that delegates checks to checker.
 func NewEngine(d EngineDependencies) *Engine {
 	return &Engine{dep: d}
@@ -53,6 +65,9 @@ func (e *Engine) CheckIsMember(ctx context.Context, r *relationTuple, restDepth 
 	result := e.CheckRelationTuple(ctx, r, restDepth)
 	if result.Err != nil {
 		return false, result.Err
+	}
+	if result.Membership == MembershipUnknown && result.Limitation != "" && e.dep.Config(ctx).StrictMode() {
+		return false, errLimitationExceeded().WithReason(string(result.Limitation))
 	}
 	return result.Membership == IsMember, nil
 }
