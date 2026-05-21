@@ -107,7 +107,7 @@ func buildBatchURL(baseURL, maxDepth string) string {
 
 func TestCheckRESTHandler(t *testing.T) {
 	nspaces := []*namespace.Namespace{{
-		Name: "check handler",
+		Name: "ns",
 	}}
 
 	reg := driver.NewSqliteTestRegistry(t, driver.WithNamespaces(nspaces))
@@ -154,24 +154,15 @@ func TestCheckRESTHandler(t *testing.T) {
 			})
 
 			t.Run("case=returns denied on unknown namespace", func(t *testing.T) {
-				resp, err := ts.Client().Get(ts.URL + suite.base + "?" + (&ketoapi.RelationTuple{
-					Namespace: "not" + nspaces[0].Name,
-					Object:    "o",
-					Relation:  "r",
-					SubjectID: new("s"),
-				}).ToURLQuery().Encode())
+				rt := testhelpers.APITupleFromString(t, "not:o#r@s")
+				resp, err := ts.Client().Get(ts.URL + suite.base + "?" + rt.ToURLQuery().Encode())
 				require.NoError(t, err)
 
 				assertDenied(t, resp)
 			})
 
 			t.Run("case=returns allowed", func(t *testing.T) {
-				rt := &ketoapi.RelationTuple{
-					Namespace: nspaces[0].Name,
-					Object:    "o",
-					Relation:  "r",
-					SubjectID: new("s"),
-				}
+				rt := testhelpers.APITupleFromString(t, "ns:o#r@s")
 				testhelpers.MapAndInsertTuples(t, reg, rt)
 
 				q := rt.ToURLQuery()
@@ -182,12 +173,8 @@ func TestCheckRESTHandler(t *testing.T) {
 			})
 
 			t.Run("case=returns denied", func(t *testing.T) {
-				resp, err := ts.Client().Get(ts.URL + suite.base + "?" + (&ketoapi.RelationTuple{
-					Namespace: nspaces[0].Name,
-					Object:    "foo",
-					Relation:  "r",
-					SubjectID: new("s"),
-				}).ToURLQuery().Encode())
+				rt := testhelpers.APITupleFromString(t, "ns:foo#r@s")
+				resp, err := ts.Client().Get(ts.URL + suite.base + "?" + rt.ToURLQuery().Encode())
 				require.NoError(t, err)
 
 				assertDenied(t, resp)
@@ -197,16 +184,11 @@ func TestCheckRESTHandler(t *testing.T) {
 }
 
 func TestBatchCheckHandler(t *testing.T) {
-	nspaces := []*namespace.Namespace{{Name: "batch-check"}}
+	nspaces := []*namespace.Namespace{{Name: "ns"}}
 	reg := driver.NewSqliteTestRegistry(t, driver.WithNamespaces(nspaces))
 	h := check.NewHandler(reg)
 
-	rt := &ketoapi.RelationTuple{
-		Namespace: nspaces[0].Name,
-		Object:    "o",
-		Relation:  "r",
-		SubjectID: new("s"),
-	}
+	rt := testhelpers.APITupleFromString(t, "ns:o#r@s")
 	testhelpers.MapAndInsertTuples(t, reg, rt)
 
 	// REST setup.
@@ -240,7 +222,7 @@ func TestBatchCheckHandler(t *testing.T) {
 		t.Run("protocol=REST", func(t *testing.T) {
 			tuples := make([]client.Relationship, 11)
 			for i := range tuples {
-				tuples[i] = client.Relationship{Namespace: "n", Object: "o", Relation: "r", SubjectId: new("s")}
+				tuples[i] = relationshipFromAPITuple(testhelpers.APITupleFromString(t, "ns:o#r@s"))
 			}
 			bodyBytes, err := json.Marshal(client.BatchCheckPermissionBody{Tuples: tuples})
 			require.NoError(t, err)
@@ -253,10 +235,7 @@ func TestBatchCheckHandler(t *testing.T) {
 		t.Run("protocol=gRPC", func(t *testing.T) {
 			tuples := make([]*rts.RelationTuple, 11)
 			for i := range tuples {
-				tuples[i] = &rts.RelationTuple{
-					Namespace: "n", Object: "o", Relation: "r",
-					Subject: &rts.Subject{Ref: &rts.Subject_Id{Id: "s"}},
-				}
+				tuples[i] = testhelpers.APITupleFromString(t, "ns:o#r@s").ToProto()
 			}
 			_, err := checkClient.BatchCheck(t.Context(), &rts.BatchCheckRequest{Tuples: tuples, MaxDepth: 5})
 			st, ok := status.FromError(err)
@@ -269,14 +248,14 @@ func TestBatchCheckHandler(t *testing.T) {
 	t.Run("case=returns correct results per tuple", func(t *testing.T) {
 		// Three tuples: allowed, not-allowed, unknown namespace.
 		restTuples := []client.Relationship{
-			{Namespace: nspaces[0].Name, Object: "o", Relation: "r", SubjectId: new("s")},  // allowed
-			{Namespace: nspaces[0].Name, Object: "o2", Relation: "r", SubjectId: new("s")}, // not allowed
-			{Namespace: "n2", Object: "o", Relation: "r", SubjectId: new("s")},             // unknown namespace
+			relationshipFromAPITuple(testhelpers.APITupleFromString(t, "ns:o#r@s")),  // allowed
+			relationshipFromAPITuple(testhelpers.APITupleFromString(t, "ns:o2#r@s")), // not allowed
+			relationshipFromAPITuple(testhelpers.APITupleFromString(t, "n2:o#r@s")),  // unknown namespace
 		}
 		grpcTuples := []*rts.RelationTuple{
-			{Namespace: nspaces[0].Name, Object: "o", Relation: "r", Subject: &rts.Subject{Ref: &rts.Subject_Id{Id: "s"}}},  // allowed
-			{Namespace: nspaces[0].Name, Object: "o2", Relation: "r", Subject: &rts.Subject{Ref: &rts.Subject_Id{Id: "s"}}}, // not allowed
-			{Namespace: "n2", Object: "o", Relation: "r", Subject: &rts.Subject{Ref: &rts.Subject_Id{Id: "s"}}},             // unknown namespace
+			testhelpers.APITupleFromString(t, "ns:o#r@s").ToProto(),  // allowed
+			testhelpers.APITupleFromString(t, "ns:o2#r@s").ToProto(), // not allowed
+			testhelpers.APITupleFromString(t, "n2:o#r@s").ToProto(),  // unknown namespace
 		}
 
 		t.Run("protocol=REST", func(t *testing.T) {

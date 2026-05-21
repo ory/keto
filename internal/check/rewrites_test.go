@@ -7,7 +7,6 @@ import (
 	"context"
 	"testing"
 
-	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/goleak"
@@ -15,279 +14,240 @@ import (
 	"github.com/ory/keto/internal/check"
 	"github.com/ory/keto/internal/check/trace"
 	"github.com/ory/keto/internal/driver"
-	"github.com/ory/keto/internal/driver/config"
-	"github.com/ory/keto/internal/namespace"
-	"github.com/ory/keto/internal/namespace/ast"
 	"github.com/ory/keto/internal/testhelpers"
 )
 
-var namespaces = []*namespace.Namespace{
-	{
-		Name: "doc",
-		Relations: []ast.Relation{
-			{
-				Name: "owner",
-			},
-			{
-				Name: "editor",
-				SubjectSetRewrite: &ast.SubjectSetRewrite{
-					Children: ast.Children{&ast.ComputedSubjectSet{
-						Relation: "owner",
-					}},
-				},
-			},
-			{
-				Name: "viewer",
-				SubjectSetRewrite: &ast.SubjectSetRewrite{
-					Children: ast.Children{
-						&ast.ComputedSubjectSet{
-							Relation: "editor",
-						},
-						&ast.TupleToSubjectSet{
-							Relation:                   "parent",
-							ComputedSubjectSetRelation: "viewer",
-						},
-					},
-				},
-			},
-		},
-	},
-	{Name: "users"},
-	{
-		Name:      "group",
-		Relations: []ast.Relation{{Name: "member"}},
-	},
-	{
-		Name:      "level",
-		Relations: []ast.Relation{{Name: "member"}},
-	},
-	{
-		Name: "resource",
-		Relations: []ast.Relation{
-			{Name: "level"},
-			{
-				Name: "viewer",
-				SubjectSetRewrite: &ast.SubjectSetRewrite{
-					Children: ast.Children{
-						&ast.TupleToSubjectSet{Relation: "owner", ComputedSubjectSetRelation: "member"},
-					},
-				},
-			},
-			{
-				Name: "owner",
-				SubjectSetRewrite: &ast.SubjectSetRewrite{
-					Children: ast.Children{
-						&ast.TupleToSubjectSet{Relation: "owner", ComputedSubjectSetRelation: "member"},
-					},
-				},
-			},
-			{
-				Name: "read",
-				SubjectSetRewrite: &ast.SubjectSetRewrite{
-					Children: ast.Children{
-						&ast.ComputedSubjectSet{Relation: "viewer"},
-						&ast.ComputedSubjectSet{Relation: "owner"},
-					},
-				},
-			},
-			{
-				Name: "update",
-				SubjectSetRewrite: &ast.SubjectSetRewrite{
-					Children: ast.Children{
-						&ast.ComputedSubjectSet{Relation: "owner"},
-					},
-				},
-			},
-			{
-				Name: "delete",
-				SubjectSetRewrite: &ast.SubjectSetRewrite{
-					Operation: ast.OperatorAnd,
-					Children: ast.Children{
-						&ast.ComputedSubjectSet{Relation: "owner"},
-						&ast.TupleToSubjectSet{
-							Relation:                   "level",
-							ComputedSubjectSetRelation: "member",
-						},
-					},
-				},
-			},
-		},
-	},
-	{
-		Name: "acl",
-		Relations: []ast.Relation{
-			{Name: "allow"},
-			{Name: "deny"},
-			{
-				Name: "access",
-				SubjectSetRewrite: &ast.SubjectSetRewrite{
-					Operation: ast.OperatorAnd,
-					Children: ast.Children{
-						&ast.ComputedSubjectSet{Relation: "allow"},
-						&ast.InvertResult{
-							Child: &ast.ComputedSubjectSet{Relation: "deny"},
-						},
-					},
-				},
-			},
-		},
+var rewrites = testhelpers.Scenario{
+	Name: "userset rewrites",
+	Opl: `
+	class User implements Namespace {}
+
+	class Doc implements Namespace {
+		related: {
+			owner: User[]
+			parent: Doc[]
+		}
+		permits = {
+			editor: (ctx: Context) => this.related.owner.includes(ctx.subject),
+			viewer: (ctx: Context) => this.permits.editor(ctx) ||
+				this.related.parent.traverse(p => p.permits.viewer(ctx))
+		}
+	}
+
+	class Group implements Namespace {
+		related: {
+			member: User[]
+		}
+	}
+
+	class Level implements Namespace {
+		related: {
+			member: User[]
+		}
+	}
+
+	class Resource implements Namespace {
+		related: {
+			level: Level[]
+			owner: Group[]
+		}
+		permits = {
+			viewer: (ctx: Context) => this.related.owner.traverse(g => g.related.member.includes(ctx.subject)),
+			isOwner: (ctx: Context) => this.related.owner.traverse(g => g.related.member.includes(ctx.subject)),
+
+			read: (ctx: Context) => this.permits.viewer(ctx) || this.permits.isOwner(ctx),
+			update: (ctx: Context) => this.permits.isOwner(ctx),
+			delete: (ctx: Context) => this.permits.isOwner(ctx) && this.related.level.traverse(l => l.related.member.includes(ctx.subject)),
+		}
+	}
+
+	class Acl implements Namespace {
+		related: {
+			allow: User[]
+			deny: User[]
+		}
+		permits = {
+			access: (ctx: Context) => this.related.allow.includes(ctx.subject) && !this.related.deny.includes(ctx.subject)
+		}
+	}
+	`,
+	InputTuples: []string{
+		// Direct ownership — plain and namespace-qualified subjects both work.
+		"Doc:document#owner@plain_user",
+		"Doc:document#owner@User:user",
+
+		// Single-level parent: doc_in_folder inherits viewer from its parent folder.
+		"Doc:folder#owner@plain_user",
+		"Doc:folder#owner@User:user",
+		"Doc:doc_in_folder#parent@Doc:folder",
+
+		// Deep hierarchy: user owns folder_a; viewer propagates down 4 levels to file.
+		"Doc:folder_a#owner@user",
+		"Doc:folder_b#parent@Doc:folder_a",
+		"Doc:folder_c#parent@Doc:folder_b",
+		"Doc:file#parent@Doc:folder_c",
+
+		// Group + level gating: delete requires owner-group membership AND correct level.
+		"Group:editors#member@mark",
+		"Group:editors#member@mike",
+		"Level:superadmin#member@mark",
+		"Level:superadmin#member@sandy",
+		"Resource:topsecret#owner@Group:editors#",
+		"Resource:topsecret#level@Level:superadmin#",
+
+		// Allow/deny ACL: deny overrides allow (mallory is on both lists).
+		"Acl:document#allow@alice",
+		"Acl:document#allow@bob",
+		"Acl:document#allow@mallory",
+		"Acl:document#deny@mallory",
 	},
 }
 
 type path []string
 
 func TestUsersetRewrites(t *testing.T) {
-	reg := driver.NewSqliteTestRegistry(t, driver.WithNamespaces(namespaces), driver.WithConfig(config.KeyLimitMaxReadDepth, 100))
-	reg.Logger().Logger.SetLevel(logrus.TraceLevel)
-
-	testhelpers.MapAndInsertTuplesFromString(t, reg, []string{
-		"doc:document#owner@plain_user",       // user owns doc
-		"doc:document#owner@users:user",       // user owns doc
-		"doc:doc_in_folder#parent@doc:folder", // doc_in_folder is in folder
-		"doc:folder#owner@plain_user",         // user owns folder
-		"doc:folder#owner@users:user",         // user owns folder
-
-		// Folder hierarchy folder_a -> folder_b -> folder_c -> file
-		// and folder_a is owned by user. Then user should have access to file.
-		"doc:file#parent@doc:folder_c",
-		"doc:folder_c#parent@doc:folder_b",
-		"doc:folder_b#parent@doc:folder_a",
-		"doc:folder_a#owner@user",
-
-		"group:editors#member@mark",
-		"level:superadmin#member@mark",
-		"level:superadmin#member@sandy",
-		"resource:topsecret#owner@group:editors#",
-		"resource:topsecret#level@level:superadmin#",
-		"resource:topsecret#owner@mike",
-
-		"acl:document#allow@alice",
-		"acl:document#allow@bob",
-		"acl:document#allow@mallory",
-		"acl:document#deny@mallory",
-	})
-
 	testCases := []struct {
 		query         string
 		expected      check.Result
 		expectedPaths []path
-	}{{
-		// direct
-		query: "doc:document#owner@users:user",
-		expected: check.Result{
-			Membership: check.IsMember,
+	}{
+		{
+			// direct
+			query:    "Doc:document#owner@User:user",
+			expected: check.ResultIsMember,
 		},
-	}, {
-		// userset rewrite
-		query: "doc:document#editor@users:user",
-		expected: check.Result{
-			Membership: check.IsMember,
+		{
+			// userset rewrite
+			query:    "Doc:document#editor@User:user",
+			expected: check.ResultIsMember,
 		},
-	}, {
-		// userset rewrite
-		query:    "doc:document#editor@plain_user",
-		expected: check.ResultIsMember,
-	}, {
-		// transitive userset rewrite
-		query:    "doc:document#viewer@users:user",
-		expected: check.ResultIsMember,
-	}, {
-		query:    "doc:document#editor@nobody",
-		expected: check.ResultNotMember,
-	}, {
-		query:    "doc:folder#viewer@users:user",
-		expected: check.ResultIsMember,
-	}, {
-		// tuple to userset
-		query:    "doc:doc_in_folder#viewer@users:user",
-		expected: check.ResultIsMember,
-	}, {
-		// tuple to userset
-		query:    "doc:doc_in_folder#viewer@plain_user",
-		expected: check.ResultIsMember,
-	}, {
-		// tuple to userset
-		query:    "doc:doc_in_folder#viewer@nobody",
-		expected: check.ResultNotMember,
-	}, {
-		// tuple to userset
-		query:    "doc:another_doc#viewer@user",
-		expected: check.ResultNotMember,
-	}, {
-		query:    "doc:file#viewer@user",
-		expected: check.ResultIsMember,
-	}, {
-		query:    "level:superadmin#member@mark",
-		expected: check.ResultIsMember, // mark is both editor and has correct level
-	}, {
-		query:    "resource:topsecret#owner@mark",
-		expected: check.ResultIsMember, // mark is both editor and has correct level
-	}, {
-		query:    "resource:topsecret#delete@mark",
-		expected: check.ResultIsMember, // mark is both editor and has correct level
-		expectedPaths: []path{
-			{"*", "resource:topsecret#delete@mark", "*", "level:superadmin#member@mark"},
-			{"*", "resource:topsecret#delete@mark", "resource:topsecret#owner@mark", "*", "*", "*", "group:editors#member@mark"},
+		{
+			// userset rewrite
+			query:    "Doc:document#editor@plain_user",
+			expected: check.ResultIsMember,
 		},
-	}, {
-		query:    "resource:topsecret#update@mike",
-		expected: check.ResultIsMember, // mike owns the resource
-	}, {
-		query:    "level:superadmin#member@mike",
-		expected: check.ResultNotMember, // mike does not have correct level
-	}, {
-		query:    "resource:topsecret#delete@mike",
-		expected: check.ResultNotMember, // mike does not have correct level
-	}, {
-		query:    "resource:topsecret#delete@sandy",
-		expected: check.ResultNotMember, // sandy is not in the editor group
-	}, {
-		query:         "acl:document#access@alice",
-		expected:      check.ResultIsMember,
-		expectedPaths: []path{{"*", "acl:document#access@alice", "acl:document#allow@alice"}},
-	}, {
-		query:    "acl:document#access@bob",
-		expected: check.ResultIsMember,
-	}, {
-		query:    "acl:document#allow@mallory",
-		expected: check.ResultIsMember,
-	}, {
-		query:    "acl:document#access@mallory",
-		expected: check.ResultNotMember, // mallory is also on deny-list
-	}}
+		{
+			// transitive userset rewrite
+			query:    "Doc:document#viewer@User:user",
+			expected: check.ResultIsMember,
+		},
+		{
+			query:    "Doc:document#editor@nobody",
+			expected: check.ResultNotMember,
+		},
+		{
+			query:    "Doc:folder#viewer@User:user",
+			expected: check.ResultIsMember,
+		},
+		{
+			// tuple to userset
+			query:    "Doc:doc_in_folder#viewer@User:user",
+			expected: check.ResultIsMember,
+		},
+		{
+			// tuple to userset
+			query:    "Doc:doc_in_folder#viewer@plain_user",
+			expected: check.ResultIsMember,
+		},
+		{
+			// tuple to userset
+			query:    "Doc:doc_in_folder#viewer@nobody",
+			expected: check.ResultNotMember,
+		},
+		{
+			// tuple to userset
+			query:    "Doc:another_doc#viewer@user",
+			expected: check.ResultNotMember,
+		},
+		{
+			query:    "Doc:file#viewer@user",
+			expected: check.ResultIsMember,
+		},
+		{
+			query:    "Level:superadmin#member@mark",
+			expected: check.ResultIsMember, // mark is both editor and has correct level
+		},
+		{
+			query:    "Resource:topsecret#isOwner@mark",
+			expected: check.ResultIsMember, // mark is both editor and has correct level
+		},
+		{
+			query:    "Resource:topsecret#delete@mark",
+			expected: check.ResultIsMember, // mark is both editor and has correct level
+			expectedPaths: []path{
+				{"*", "Resource:topsecret#delete@mark", "*", "Level:superadmin#member@mark"},
+				{"*", "Resource:topsecret#delete@mark", "Resource:topsecret#isOwner@mark", "*", "*", "*", "Group:editors#member@mark"},
+			},
+		},
+		{
+			query:    "Resource:topsecret#update@mike",
+			expected: check.ResultIsMember, // mike owns the resource
+		},
+		{
+			query:    "Level:superadmin#member@mike",
+			expected: check.ResultNotMember, // mike does not have correct level
+		},
+		{
+			query:    "Resource:topsecret#delete@mike",
+			expected: check.ResultNotMember, // mike does not have correct level
+		},
+		{
+			query:    "Resource:topsecret#delete@sandy",
+			expected: check.ResultNotMember, // sandy is not in the editor Group
+		},
+		{
+			query:         "Acl:document#access@alice",
+			expected:      check.ResultIsMember,
+			expectedPaths: []path{{"*", "Acl:document#access@alice", "Acl:document#allow@alice"}},
+		},
+		{
+			query:    "Acl:document#access@bob",
+			expected: check.ResultIsMember,
+		},
+		{
+			query:    "Acl:document#allow@mallory",
+			expected: check.ResultIsMember,
+		},
+		{
+			query:    "Acl:document#access@mallory",
+			expected: check.ResultNotMember, // mallory is also on deny-list
+		},
+	}
 
-	t.Run("suite=testcases", func(t *testing.T) {
-		ctx := context.Background()
+	rewrites.Run(t, func(t *testing.T, reg driver.Registry) {
 		e := trace.NewEngine(reg)
 		defer goleak.VerifyNone(t, goleak.IgnoreCurrent())
 
-		for _, tc := range testCases {
-			t.Run("case="+tc.query, func(t *testing.T) {
-				rt := testhelpers.TupleFromString(t, tc.query)
+		t.Run("suite=testcases", func(t *testing.T) {
+			defer goleak.VerifyNone(t, goleak.IgnoreCurrent())
 
-				res, tree := e.CheckRelationTupleWithTrace(ctx, rt, 100)
-				require.NoError(t, res.Err)
-				assert.Equal(t, tc.expected.Membership.String(), res.Membership.String())
+			for _, tc := range testCases {
+				t.Run("case="+tc.query, func(t *testing.T) {
+					rt := testhelpers.TupleFromString(t, tc.query)
 
-				if len(tc.expectedPaths) > 0 {
-					for _, path := range tc.expectedPaths {
-						assertPath(t, path, tree)
+					res, tree := e.CheckRelationTupleWithTrace(t.Context(), rt, 100)
+					require.NoError(t, res.Err)
+					assert.Equal(t, tc.expected.Membership.String(), res.Membership.String())
+
+					if len(tc.expectedPaths) > 0 {
+						for _, path := range tc.expectedPaths {
+							assertPath(t, path, tree)
+						}
 					}
-				}
-			})
-		}
-	})
+				})
+			}
+		})
+		t.Run("suite=one worker", func(t *testing.T) {
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
 
-	t.Run("suite=one worker", func(t *testing.T) {
-		ctx, cancel := context.WithCancel(context.Background())
-		defer cancel()
+			e := trace.NewEngine(reg)
 
-		e := check.NewEngine(reg)
-
-		rt := testhelpers.TupleFromString(t, "doc:file#viewer@user")
-		res := e.CheckRelationTuple(ctx, rt, 100)
-		require.NoError(t, res.Err)
-		assert.Equal(t, check.ResultIsMember.Membership, res.Membership)
+			rt := testhelpers.TupleFromString(t, "Doc:file#viewer@user")
+			res, _ := e.CheckRelationTupleWithTrace(ctx, rt, 100)
+			require.NoError(t, res.Err)
+			assert.Equal(t, check.ResultIsMember.Membership, res.Membership)
+		})
 	})
 }
 
