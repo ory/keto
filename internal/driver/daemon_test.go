@@ -12,6 +12,7 @@ import (
 
 	ioprometheusclient "github.com/prometheus/client_model/go"
 	"github.com/prometheus/common/expfmt"
+	"github.com/prometheus/common/model"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"golang.org/x/sync/errgroup"
@@ -60,7 +61,7 @@ func TestScrapingEndpoint(t *testing.T) {
 	require.NoError(t, err)
 	require.EqualValues(t, http.StatusOK, promresp.StatusCode)
 
-	textParser := expfmt.TextParser{}
+	textParser := expfmt.NewTextParser(model.UTF8Validation)
 	text, err := textParser.TextToMetricFamilies(promresp.Body)
 	require.NoError(t, err)
 	require.EqualValues(t, "grpc_server_handled_total", *text["grpc_server_handled_total"].Name)
