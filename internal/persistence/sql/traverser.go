@@ -94,7 +94,7 @@ func (t *Traverser) TraverseSubjectSetExpansion(ctx context.Context, start *rela
 		queryArgs = append(queryArgs, subjectSetFilterArgs...)
 		queryArgs = append(queryArgs, limit)
 
-		err = t.conn.WithContext(ctx).RawQuery(fmt.Sprintf(`
+		err = t.p.Connection(ctx).RawQuery(fmt.Sprintf(`
 SELECT current.shard_id AS shard_id,
        current.subject_set_namespace AS namespace,
        current.subject_set_object AS object,
@@ -172,9 +172,7 @@ func (t *Traverser) FindTupleWithRelations(ctx context.Context, tuple *relationt
 
 	// If we got any rows back, success!
 	if len(rows) > 0 {
-		r := rows[0]
-		to := r.ToInternal()
-		return to, nil
+		return rows[0].ToInternal(), nil
 	}
 
 	return nil, nil

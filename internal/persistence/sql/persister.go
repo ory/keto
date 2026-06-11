@@ -5,6 +5,7 @@ package sql
 
 import (
 	"context"
+	"database/sql"
 	"embed"
 
 	"github.com/gofrs/uuid"
@@ -117,6 +118,26 @@ func (p *Persister) queryWithNetwork(ctx context.Context) *pop.Query {
 
 func (p *Persister) Transaction(ctx context.Context, f func(ctx context.Context) error) error {
 	return popx.Transaction(ctx, p.conn.WithContext(ctx), func(ctx context.Context, _ *pop.Connection) error { return f(ctx) })
+}
+
+func (p *Persister) WithLatestSnapshot(ctx context.Context, f func(ctx context.Context) error) error {
+	conn := p.conn.WithContext(ctx)
+
+	// Reuse an existing transaction rather than nesting.
+	if popx.GetConnection(ctx, conn).TX != nil {
+		return f(ctx)
+	}
+
+	// REPEATABLE READ pins a consistent snapshot so all queries in the check see
+	// the same database state. ReadOnly enforces read-only at the DB level.
+	// CockroachDB promotes that level to SERIALIZABLE; SQLite ignores
+	// the isolation level entirely.
+	return popx.TransactionWithOptions(ctx, conn, &sql.TxOptions{
+		Isolation: sql.LevelRepeatableRead,
+		ReadOnly:  true,
+	}, func(ctx context.Context, _ *pop.Connection) error {
+		return f(ctx)
+	})
 }
 
 func (p *Persister) NetworkID(ctx context.Context) uuid.UUID {

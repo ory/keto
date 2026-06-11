@@ -4,6 +4,8 @@
 package check_test
 
 import (
+	"context"
+	"sync"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -12,9 +14,11 @@ import (
 	"github.com/ory/herodot"
 
 	"github.com/ory/keto/internal/check"
+	"github.com/ory/keto/internal/check/step"
 	"github.com/ory/keto/internal/driver"
 	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/testhelpers"
+	"github.com/ory/keto/internal/x/dbx"
 	"github.com/ory/keto/ketoapi"
 )
 
@@ -743,4 +747,96 @@ func TestDepthLimit(t *testing.T) {
 			})
 		})
 	}
+}
+
+// TestCheckSnapshotIsolation verifies that a concurrent write committed between
+// two SQL queries within the same check does not affect the result.
+func TestCheckSnapshotIsolation(t *testing.T) {
+	t.Parallel()
+
+	const opl = `
+		class User implements Namespace {}
+		class Folder implements Namespace {
+			related: {
+				members: User[]
+			}
+			permits = {
+				isMember: (ctx: Context) => this.related.members.includes(ctx.subject),
+			}
+		}
+		class File implements Namespace {
+			related: {
+				parent: Folder[]
+			}
+			permits = {
+				view: (ctx: Context) => this.related.parent.traverse(p => p.permits.isMember(ctx)),
+			}
+		}
+	`
+	inputTuples := []string{
+		"File:readme#parent@Folder:docs",
+		"Folder:docs#members@User:u1", // this tuple will be deleted during check execution
+	}
+
+	var snapshotDSNs []*dbx.DsnT
+	for _, dsn := range dbx.GetDSNs(t) {
+		switch dsn.Name {
+		case "cockroach", "mysql", "postgres":
+			snapshotDSNs = append(snapshotDSNs, dsn)
+		}
+	}
+	if len(snapshotDSNs) == 0 {
+		// SQLite is excluded. pop serialises all SQLite transactions with a mutex,
+		// so the middleware's concurrent delete gets deadlocked against the outer check
+		// transaction
+		t.Skip("sqlite is excluded from snapshot isolation test; run without -short to start CockroachDB/MySQL/PostgreSQL")
+	}
+
+	for _, dsn := range snapshotDSNs {
+		t.Run("dsn="+dsn.Name, func(t *testing.T) {
+			t.Parallel()
+
+			reg := driver.NewTestRegistry(t, dsn,
+				driver.WithOPL(opl),
+				driver.WithMapperNamespace(testhelpers.CustomMapperNamespace),
+				driver.WithConfig(config.KeyFeatureFlagStrictMode, true),
+			)
+			testhelpers.MapAndInsertTuplesFromString(t, reg, inputTuples)
+
+			ctx := t.Context()
+
+			// The delete must happen after the first SQL query in the transaction so
+			// the snapshot is already established in PostgreSQL/MySQL REPEATABLE READ
+			// (which snapshots at first statement, not at BEGIN).
+			var once sync.Once
+			middleware := func(mCtx context.Context, s check.Step, req check.CheckRequest, next func(context.Context, check.Step, check.CheckRequest) check.Result) check.Result {
+				if s.Kind() == check.StepIsAllowed && req.Tuple.Namespace == "Folder" && req.Tuple.Relation == "isMember" {
+					once.Do(func() {
+						assert.NoError(t, reg.RelationTupleManager().DeleteRelationTuples(t.Context(),
+							testhelpers.TupleFromString(t, "Folder:docs#members@User:u1"),
+						))
+					})
+				}
+				return next(mCtx, s, req)
+			}
+
+			engine := check.NewEngine(&checkerOverrideRegistry{Registry: reg, mw: middleware})
+
+			result := engine.CheckRelationTuple(ctx, testhelpers.TupleFromString(t, "File:readme#view@User:u1"), 5)
+			require.NoError(t, result.Err)
+			assert.Equal(t, check.IsMember, result.Membership,
+				"check must reflect the database state at the start of the evaluation")
+		})
+	}
+}
+
+// checkerOverrideRegistry wraps a Registry and replaces its Checker.
+// mw can be used to inject a middleware to the Executor.
+type checkerOverrideRegistry struct {
+	driver.Registry
+	mw check.Middleware
+}
+
+func (r *checkerOverrideRegistry) Checker() check.Checker {
+	return step.NewExecutor(r.Registry, r.mw)
 }

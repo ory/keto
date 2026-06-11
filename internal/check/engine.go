@@ -79,7 +79,16 @@ func (e *Engine) CheckRelationTuple(ctx context.Context, r *relationTuple, restD
 	ctx, span := e.dep.Tracer(ctx).Tracer().Start(ctx, "Engine.CheckRelationTuple")
 	defer otelx.End(span, &res.Err)
 
-	res = e.dep.Checker().CheckRelationTuple(ctx, r, restDepth)
+	txErr := e.dep.Persister().WithLatestSnapshot(ctx, func(ctx context.Context) error {
+		res = e.dep.Checker().CheckRelationTuple(ctx, r, restDepth)
+		return res.Err
+	})
+	if txErr != nil && res.Err == nil {
+		res.Membership = MembershipUnknown
+		res.Err = herodot.ErrInternalServerError().WithWrap(txErr)
+
+		e.dep.Logger().WithError(txErr).WithField("tuple", r.String()).Error("could not open a consistent read snapshot for the check")
+	}
 	if res.Err == nil {
 		span.AddEvent(events.NewPermissionsChecked(ctx))
 	}
