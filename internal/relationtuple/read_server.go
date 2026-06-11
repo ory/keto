@@ -7,14 +7,16 @@ import (
 	"context"
 	"net/http"
 
+	"connectrpc.com/connect"
 	"github.com/ory/herodot"
 	keysetpagination "github.com/ory/x/pagination/keysetpagination_v2"
 
+	rts "github.com/ory/keto/gen/go/ory/keto/relation_tuples/v1alpha2"
+	"github.com/ory/keto/gen/go/ory/keto/relation_tuples/v1alpha2/relationtuplesconnect"
 	"github.com/ory/keto/ketoapi"
-	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 )
 
-var _ rts.ReadServiceServer = (*Handler)(nil)
+var _ relationtuplesconnect.ReadServiceHandler = (*ReadHandler)(nil)
 
 type (
 	queryWrapper struct {
@@ -25,17 +27,9 @@ type (
 	}
 )
 
-func (q *queryWrapper) GetObject() *string {
-	return q.Object
-}
-
-func (q *queryWrapper) GetNamespace() *string {
-	return q.Namespace
-}
-
-func (q *queryWrapper) GetRelation() *string {
-	return q.Relation
-}
+func (q *queryWrapper) GetObject() *string    { return q.Object }
+func (q *queryWrapper) GetNamespace() *string { return q.Namespace }
+func (q *queryWrapper) GetRelation() *string  { return q.Relation }
 
 func (q *deprecatedQueryWrapper) GetObject() *string {
 	if q.Object == "" {
@@ -58,14 +52,14 @@ func (q *deprecatedQueryWrapper) GetRelation() *string {
 	return new(q.Relation)
 }
 
-func (h *Handler) ListRelationTuples(ctx context.Context, req *rts.ListRelationTuplesRequest) (*rts.ListRelationTuplesResponse, error) {
+func (h *ReadHandler) ListRelationTuples(ctx context.Context, req *connect.Request[rts.ListRelationTuplesRequest]) (*connect.Response[rts.ListRelationTuplesResponse], error) {
 	var q ketoapi.RelationQuery
 
 	switch {
-	case req.RelationQuery != nil:
-		q.FromDataProvider(&queryWrapper{req.RelationQuery})
-	case req.Query != nil: //nolint:staticcheck //lint:ignore SA1019 backwards compatibility
-		q.FromDataProvider(&deprecatedQueryWrapper{req.Query}) //nolint:staticcheck //lint:ignore SA1019 backwards compatibility
+	case req.Msg.RelationQuery != nil:
+		q.FromDataProvider(&queryWrapper{req.Msg.RelationQuery})
+	case req.Msg.Query != nil: //nolint:staticcheck //lint:ignore SA1019 backwards compatibility
+		q.FromDataProvider(&deprecatedQueryWrapper{req.Msg.Query}) //nolint:staticcheck //lint:ignore SA1019 backwards compatibility
 	default:
 		return nil, herodot.ErrBadRequest().WithError("you must provide a query")
 	}
@@ -77,11 +71,11 @@ func (h *Handler) ListRelationTuples(ctx context.Context, req *rts.ListRelationT
 
 	paginationKeys := h.d.Config(ctx).PaginationEncryptionKeys()
 	pageOpts := make([]keysetpagination.Option, 0, 2)
-	if req.PageSize > 0 {
-		pageOpts = append(pageOpts, keysetpagination.WithSize(int(req.PageSize)))
+	if req.Msg.PageSize > 0 {
+		pageOpts = append(pageOpts, keysetpagination.WithSize(int(req.Msg.PageSize)))
 	}
-	if req.PageToken != "" {
-		token, err := keysetpagination.ParsePageToken(paginationKeys, req.PageToken)
+	if req.Msg.PageToken != "" {
+		token, err := keysetpagination.ParsePageToken(paginationKeys, req.Msg.PageToken)
 		if err != nil {
 			return nil, herodot.ErrBadRequest().WithError(err.Error())
 		}
@@ -106,7 +100,7 @@ func (h *Handler) ListRelationTuples(ctx context.Context, req *rts.ListRelationT
 		resp.RelationTuples[i] = r.ToProto()
 	}
 
-	return resp, nil
+	return connect.NewResponse(resp), nil
 }
 
 // swagger:route GET /relation-tuples relationship getRelationships
@@ -130,7 +124,7 @@ func (h *Handler) ListRelationTuples(ctx context.Context, req *rts.ListRelationT
 //
 //	Extensions:
 //	  x-ory-ratelimit-bucket: keto-admin-medium
-func (h *Handler) getRelations(w http.ResponseWriter, r *http.Request) {
+func (h *ReadHandler) getRelations(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	q := r.URL.Query()

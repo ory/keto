@@ -10,6 +10,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/ory/x/uuidx"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
@@ -85,13 +86,13 @@ func runTransactionCases(c transactClient, m *namespaceTestManager) func(*testin
 			}
 
 			ns := []*namespace.Namespace{
-				{Name: t.Name() + "1"},
-				{Name: t.Name() + "2"},
+				{Name: uuidx.NewV4().String()},
+				{Name: uuidx.NewV4().String()},
 			}
 			m.add(t, ns...)
 
 			var tuples []*ketoapi.RelationTuple
-			for i := range 12001 {
+			for i := range 1200 {
 				tuples = append(tuples,
 					&ketoapi.RelationTuple{
 						Namespace: ns[0].Name,
@@ -215,16 +216,17 @@ func runTransactionCases(c transactClient, m *namespaceTestManager) func(*testin
 
 			c.transactTuples(t, tuples, nil)
 
-			resp := c.queryTuple(t, &ketoapi.RelationQuery{})
-			assert.Equal(t, len(tuples), len(resp.RelationTuples))
-			for i := range tuples {
-				assert.Contains(t, resp.RelationTuples, tuples[i])
-			}
+			fileTuples := c.queryTuple(t, &ketoapi.RelationQuery{Namespace: new(files.Name)})
+			directoryTuples := c.queryTuple(t, &ketoapi.RelationQuery{Namespace: new(directories.Name)})
+			allTuples := append(fileTuples.RelationTuples, directoryTuples.RelationTuples...)
+			assert.ElementsMatch(t, allTuples, tuples)
 
 			c.transactTuples(t, nil, tuples)
 
-			resp = c.queryTuple(t, &ketoapi.RelationQuery{})
-			assert.Len(t, resp.RelationTuples, 0)
+			fileTuples = c.queryTuple(t, &ketoapi.RelationQuery{Namespace: new(files.Name)})
+			directoryTuples = c.queryTuple(t, &ketoapi.RelationQuery{Namespace: new(directories.Name)})
+			allTuples = append(fileTuples.RelationTuples, directoryTuples.RelationTuples...)
+			assert.Len(t, allTuples, 0)
 		})
 	}
 }

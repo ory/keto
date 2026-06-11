@@ -11,7 +11,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 
-	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
+	rts "github.com/ory/keto/gen/go/ory/keto/relation_tuples/v1alpha2"
 )
 
 var ErrUnknownNodeType = errors.New("unknown node type")

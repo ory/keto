@@ -12,7 +12,7 @@ import (
 
 	"github.com/ory/keto/cmd/client"
 	"github.com/ory/keto/cmd/helpers"
-	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
+	rts "github.com/ory/keto/gen/go/ory/keto/relation_tuples/v1alpha2"
 )
 
 type checkOutput struct {

@@ -1,4 +1,4 @@
-package rts
+package relationtuples
 
 import (
 	"testing"

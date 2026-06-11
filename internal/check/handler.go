@@ -6,25 +6,26 @@ package check
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"net/url"
 
+	"connectrpc.com/connect"
 	"github.com/pkg/errors"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/reflect/protoreflect"
 
 	"github.com/ory/herodot"
 	"github.com/ory/x/httprouterx"
 	"github.com/ory/x/httpx"
 	"github.com/ory/x/logrusx"
 
+	rts "github.com/ory/keto/gen/go/ory/keto/relation_tuples/v1alpha2"
+	"github.com/ory/keto/gen/go/ory/keto/relation_tuples/v1alpha2/relationtuplesconnect"
 	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/internal/x"
 	"github.com/ory/keto/ketoapi"
-	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 )
 
 type (
@@ -34,21 +35,21 @@ type (
 		relationtuple.MapperProvider
 		logrusx.Provider
 		httpx.WriterProvider
-		config.Provider // TODO does this need to be instantiated?
+		config.Provider
+		x.HandlerOptionsProvider
 	}
 	Handler struct {
+		relationtuplesconnect.UnimplementedCheckServiceHandler
 		d handlerDependencies
 	}
 )
 
 var (
-	_ rts.CheckServiceServer = (*Handler)(nil)
-	_ *checkPermission       = nil
+	_ relationtuplesconnect.CheckServiceHandler = (*Handler)(nil)
+	_ *checkPermission                          = nil
 )
 
-func NewHandler(d handlerDependencies) *Handler {
-	return &Handler{d: d}
-}
+func NewHandler(d handlerDependencies) *Handler { return &Handler{d: d} }
 
 const (
 	RouteBase        = "/relation-tuples/check"
@@ -62,10 +63,31 @@ func (h *Handler) RegisterReadRoutes(r *httprouterx.RouterPublic) {
 	r.POST(RouteBase, h.postCheckMirrorStatus)
 	r.POST(OpenAPIRouteBase, h.postCheckNoStatus)
 	r.POST(BatchRoute, h.batchCheck)
+
+	checkServiceMethods := rts.File_ory_keto_relation_tuples_v1alpha2_check_service_proto.Services().ByName("CheckService").Methods()
+
+	checkHandler := connect.NewUnaryHandler(
+		relationtuplesconnect.CheckServiceCheckProcedure,
+		h.Check,
+		connect.WithSchema(checkServiceMethods.ByName("Check")),
+		connect.WithHandlerOptions(h.d.HandlerOptions()...),
+	)
+	r.Handle(relationtuplesconnect.CheckServiceCheckProcedure, checkHandler)
+
+	batchCheckHandler := connect.NewUnaryHandler(
+		relationtuplesconnect.CheckServiceBatchCheckProcedure,
+		h.BatchCheck,
+		connect.WithSchema(checkServiceMethods.ByName("BatchCheck")),
+		connect.WithHandlerOptions(h.d.HandlerOptions()...),
+	)
+	r.Handle(relationtuplesconnect.CheckServiceBatchCheckProcedure, batchCheckHandler)
 }
 
-func (h *Handler) RegisterReadGRPC(s *grpc.Server) {
-	rts.RegisterCheckServiceServer(s, h)
+func (h *Handler) ProtoFiles() []protoreflect.FileDescriptor {
+	return []protoreflect.FileDescriptor{
+		rts.File_ory_keto_relation_tuples_v1alpha2_check_service_proto,
+		rts.File_ory_keto_relation_tuples_v1alpha2_relation_tuples_proto,
+	}
 }
 
 // Check Permission Result
@@ -333,12 +355,12 @@ func (h *Handler) postCheck(ctx context.Context, body io.Reader, query url.Value
 	return h.d.PermissionEngine().CheckIsMember(ctx, t[0], maxDepth)
 }
 
-func (h *Handler) Check(ctx context.Context, req *rts.CheckRequest) (*rts.CheckResponse, error) {
+func (h *Handler) Check(ctx context.Context, req *connect.Request[rts.CheckRequest]) (*connect.Response[rts.CheckResponse], error) {
 	var src ketoapi.TupleData
-	if req.Tuple != nil {
-		src = req.Tuple
+	if req.Msg.Tuple != nil {
+		src = req.Msg.Tuple
 	} else {
-		src = req
+		src = req.Msg
 	}
 
 	tuple, err := (&ketoapi.RelationTuple{}).FromDataProvider(src)
@@ -350,16 +372,16 @@ func (h *Handler) Check(ctx context.Context, req *rts.CheckRequest) (*rts.CheckR
 	if err != nil {
 		return nil, err
 	}
-	allowed, err := h.d.PermissionEngine().CheckIsMember(ctx, internalTuple[0], int(req.MaxDepth))
+	allowed, err := h.d.PermissionEngine().CheckIsMember(ctx, internalTuple[0], int(req.Msg.MaxDepth))
 	// TODO add content change handling
 	if err != nil {
 		return nil, err
 	}
 
-	return &rts.CheckResponse{ //nolint:gosec // Snaptoken is not a credential, just a placeholder value.
+	return connect.NewResponse(&rts.CheckResponse{ //nolint:gosec // Snaptoken is not a credential, just a placeholder value.
 		Allowed:   allowed,
 		Snaptoken: "not yet implemented",
-	}, nil
+	}), nil
 }
 
 // Batch Check Permission Request Parameters
@@ -459,18 +481,18 @@ func (h *Handler) doBatchCheck(ctx context.Context, body io.Reader, query url.Va
 }
 
 // BatchCheck is the gRPC entry point for checking batches of tuples
-func (h *Handler) BatchCheck(ctx context.Context, req *rts.BatchCheckRequest) (*rts.BatchCheckResponse, error) {
-	if len(req.Tuples) > h.d.Config(ctx).BatchCheckMaxBatchSize() {
-		return nil, status.Errorf(codes.InvalidArgument,
-			"batch exceeds max size of %v", h.d.Config(ctx).BatchCheckMaxBatchSize())
+func (h *Handler) BatchCheck(ctx context.Context, req *connect.Request[rts.BatchCheckRequest]) (*connect.Response[rts.BatchCheckResponse], error) {
+	if len(req.Msg.Tuples) > h.d.Config(ctx).BatchCheckMaxBatchSize() {
+		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf(
+			"batch exceeds max size of %v", h.d.Config(ctx).BatchCheckMaxBatchSize()))
 	}
 
-	ketoTuples := make([]*ketoapi.RelationTuple, len(req.Tuples))
-	for i, tuple := range req.Tuples {
+	ketoTuples := make([]*ketoapi.RelationTuple, len(req.Msg.Tuples))
+	for i, tuple := range req.Msg.Tuples {
 		ketoTuples[i] = (&ketoapi.RelationTuple{}).FromProto(tuple)
 	}
 
-	results, err := h.d.PermissionEngine().BatchCheck(ctx, ketoTuples, int(req.MaxDepth))
+	results, err := h.d.PermissionEngine().BatchCheck(ctx, ketoTuples, int(req.Msg.MaxDepth))
 	if err != nil {
 		return nil, err
 	}
@@ -485,9 +507,9 @@ func (h *Handler) BatchCheck(ctx context.Context, req *rts.BatchCheckRequest) (*
 		}
 	}
 
-	return &rts.BatchCheckResponse{
+	return connect.NewResponse(&rts.BatchCheckResponse{
 		Results: responses,
-	}, nil
+	}), nil
 }
 
 // batchResultErrMsg returns an error string for a single batch check result.

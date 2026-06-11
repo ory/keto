@@ -3,11 +3,15 @@ go 1.26
 module github.com/ory/keto
 
 replace (
+	github.com/ory/keto/gen/go => ./gen/go
 	github.com/ory/keto/proto => ./proto
 	github.com/ory/x => ./oryx
 )
 
 require (
+	connectrpc.com/connect v1.20.0
+	connectrpc.com/grpchealth v1.4.1-0.20260420170649-371aedad91aa
+	connectrpc.com/grpcreflect v1.3.0
 	github.com/cenkalti/backoff/v3 v3.2.2
 	github.com/dgraph-io/ristretto/v2 v2.4.0
 	github.com/ghodss/yaml v1.0.0
@@ -15,12 +19,12 @@ require (
 	github.com/gobuffalo/httptest v1.5.2
 	github.com/gofrs/uuid v4.4.0+incompatible
 	github.com/grpc-ecosystem/go-grpc-middleware/v2 v2.3.3
-	github.com/grpc-ecosystem/go-grpc-prometheus v1.2.0
 	github.com/jmoiron/sqlx v1.4.0
 	github.com/ory/analytics-go/v5 v5.0.1
 	github.com/ory/graceful v0.2.0
 	github.com/ory/herodot v0.10.9-0.20260330111132-da75ef0fbc22
 	github.com/ory/jsonschema/v3 v3.0.9-0.20250317235931-280c5fc7bf0e
+	github.com/ory/keto/gen/go v0.0.0-00010101000000-000000000000
 	github.com/ory/keto/proto v0.0.0-00010101000000-000000000000
 	github.com/ory/pop/v6 v6.4.2-0.20260507161217-89126558d369
 	github.com/ory/x v0.0.0-00010101000000-000000000000
@@ -31,14 +35,12 @@ require (
 	github.com/rs/cors v1.11.1
 	github.com/segmentio/objconv v1.0.1
 	github.com/sirupsen/logrus v1.9.4
-	github.com/soheilhy/cmux v0.1.5
 	github.com/spf13/cobra v1.10.2
 	github.com/spf13/pflag v1.0.10
 	github.com/stretchr/testify v1.11.1
 	github.com/tidwall/gjson v1.19.0
 	github.com/tidwall/sjson v1.2.5
 	github.com/urfave/negroni v1.0.0
-	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.62.0
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.69.0
 	go.opentelemetry.io/otel v1.44.0
 	go.opentelemetry.io/otel/sdk v1.44.0
@@ -69,7 +71,6 @@ require (
 	cel.dev/expr v0.25.2 // indirect
 	cloud.google.com/go/compute/metadata v0.9.0 // indirect
 	code.dny.dev/ssrf v0.2.0 // indirect
-	connectrpc.com/connect v1.20.0 // indirect
 	connectrpc.com/otelconnect v0.9.0 // indirect
 	dario.cat/mergo v1.0.2 // indirect
 	filippo.io/edwards25519 v1.2.0 // indirect
@@ -153,6 +154,7 @@ require (
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/gorilla/css v1.0.1 // indirect
 	github.com/gorilla/handlers v1.5.2 // indirect
+	github.com/grpc-ecosystem/go-grpc-prometheus v1.2.0 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.29.0 // indirect
 	github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
 	github.com/hashicorp/go-retryablehttp v0.7.8 // indirect
@@ -287,6 +289,7 @@ require (
 )
 
 tool (
+	connectrpc.com/connect/cmd/protoc-gen-connect-go
 	github.com/bufbuild/buf/cmd/buf
 	github.com/go-swagger/go-swagger/cmd/swagger
 	github.com/josephburnett/jd
@@ -296,4 +299,5 @@ tool (
 	golang.org/x/tools/cmd/goimports
 	google.golang.org/grpc/cmd/protoc-gen-go-grpc
 	google.golang.org/protobuf
+	google.golang.org/protobuf/cmd/protoc-gen-go
 )

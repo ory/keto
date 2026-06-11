@@ -4,9 +4,9 @@
 package relationtuple
 
 import (
-	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
-
 	"github.com/spf13/cobra"
+
+	rts "github.com/ory/keto/gen/go/ory/keto/relation_tuples/v1alpha2"
 )
 
 const FlagFile = "file"
@@ -15,17 +15,17 @@ func NewCreateCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "create <subject_namespace>:<subject_id> <relation> <object_namespace>:<object_id>",
 		Short: "Create relationship tuples from inline arguments or JSON files and folders",
-		Long: "Create relationship tuples from inline arguments or JSON files and folders.\n\n" +
-			"Inline example:\n" +
-			"	keto relation-tuple create User:alice owner Doc:readme\n\n" +
+		Long: `Create relationship tuples from inline arguments or JSON files and folders.
+Inline example:
+	keto relation-tuple create User:alice owner Doc:readme
 
-			"From file or folder:\n" +
-			"	keto relation-tuple create -f relationships1.json -f relationships2.json\n" +
-			"	keto relation-tuple create -f relationships-dir1 -f relationships-dir2\n\n" +
+From file or folder:
+	keto relation-tuple create -f relationships1.json -f relationships2.json
+	keto relation-tuple create -f relationships-dir1 -f relationships-dir2
 
-			"If a directory is provided, all JSON files inside it are processed.\n" +
-			"Use '-' as filename to read from STD_IN:\n" +
-			"	keto relation-tuple create -f -",
+If a directory is provided, all JSON files inside it are processed.
+Use '-' as filename to read from STD_IN:
+	keto relation-tuple create -f -`,
 		Args: cobra.ArbitraryArgs,
 		RunE: transactTuples(rts.RelationTupleDelta_ACTION_INSERT),
 	}

@@ -19,9 +19,9 @@ import (
 
 	"github.com/ory/herodot"
 
+	opl "github.com/ory/keto/gen/go/ory/keto/opl/v1alpha1"
+	rts "github.com/ory/keto/gen/go/ory/keto/relation_tuples/v1alpha2"
 	"github.com/ory/keto/ketoapi"
-	opl "github.com/ory/keto/proto/ory/keto/opl/v1alpha1"
-	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 )
 
 type grpcClient struct {
@@ -157,7 +157,7 @@ func (g *grpcClient) batchCheckErr(t testing.TB, requestTuples []*ketoapi.Relati
 	require.Error(t, err)
 	s, ok := status.FromError(err)
 	require.True(t, ok)
-	assert.Equal(t, expected.GRPCCodeField, s.Code(), "%+v", err)
+	assert.Equalf(t, expected.GRPCCodeField, s.Code(), "%+v", err)
 	assert.Contains(t, s.Message(), expected.Reason())
 }
 

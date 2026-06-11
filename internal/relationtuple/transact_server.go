@@ -8,19 +8,20 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"connectrpc.com/connect"
+	"github.com/pkg/errors"
 	"go.opentelemetry.io/otel/trace"
 
-	"github.com/ory/keto/x/events"
-
 	"github.com/ory/herodot"
-	"github.com/pkg/errors"
 
+	rts "github.com/ory/keto/gen/go/ory/keto/relation_tuples/v1alpha2"
+	"github.com/ory/keto/gen/go/ory/keto/relation_tuples/v1alpha2/relationtuplesconnect"
 	"github.com/ory/keto/internal/x/validate"
 	"github.com/ory/keto/ketoapi"
-	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
+	"github.com/ory/keto/x/events"
 )
 
-var _ rts.WriteServiceServer = (*Handler)(nil)
+var _ relationtuplesconnect.WriteServiceHandler = (*WriteHandler)(nil)
 
 func protoTuplesWithAction(deltas []*rts.RelationTupleDelta, action rts.RelationTupleDelta_Action) (filtered []*ketoapi.RelationTuple, err error) {
 	for _, d := range deltas {
@@ -35,13 +36,13 @@ func protoTuplesWithAction(deltas []*rts.RelationTupleDelta, action rts.Relation
 	return
 }
 
-func (h *Handler) TransactRelationTuples(ctx context.Context, req *rts.TransactRelationTuplesRequest) (*rts.TransactRelationTuplesResponse, error) {
-	insertTuples, err := protoTuplesWithAction(req.RelationTupleDeltas, rts.RelationTupleDelta_ACTION_INSERT)
+func (h *WriteHandler) TransactRelationTuples(ctx context.Context, req *connect.Request[rts.TransactRelationTuplesRequest]) (*connect.Response[rts.TransactRelationTuplesResponse], error) {
+	insertTuples, err := protoTuplesWithAction(req.Msg.RelationTupleDeltas, rts.RelationTupleDelta_ACTION_INSERT)
 	if err != nil {
 		return nil, err
 	}
 
-	deleteTuples, err := protoTuplesWithAction(req.RelationTupleDeltas, rts.RelationTupleDelta_ACTION_DELETE)
+	deleteTuples, err := protoTuplesWithAction(req.Msg.RelationTupleDeltas, rts.RelationTupleDelta_ACTION_DELETE)
 	if err != nil {
 		return nil, err
 	}
@@ -63,21 +64,21 @@ func (h *Handler) TransactRelationTuples(ctx context.Context, req *rts.TransactR
 	for i := range insertTuples {
 		snaptokens[i] = "not yet implemented"
 	}
-	return &rts.TransactRelationTuplesResponse{
+	return connect.NewResponse(&rts.TransactRelationTuplesResponse{
 		Snaptokens: snaptokens,
-	}, nil
+	}), nil
 }
 
-func (h *Handler) DeleteRelationTuples(ctx context.Context, req *rts.DeleteRelationTuplesRequest) (*rts.DeleteRelationTuplesResponse, error) {
+func (h *WriteHandler) DeleteRelationTuples(ctx context.Context, req *connect.Request[rts.DeleteRelationTuplesRequest]) (*connect.Response[rts.DeleteRelationTuplesResponse], error) {
 	var q ketoapi.RelationQuery
 
 	switch {
-	case req.RelationQuery != nil:
-		q.FromDataProvider(&queryWrapper{req.RelationQuery})
+	case req.Msg.RelationQuery != nil:
+		q.FromDataProvider(&queryWrapper{req.Msg.RelationQuery})
 		//lint:ignore SA1019 required for compatibility
-	case req.Query != nil: //nolint:staticcheck
+	case req.Msg.Query != nil: //nolint:staticcheck
 		//lint:ignore SA1019 backwards compatibility
-		q.FromDataProvider(&deprecatedQueryWrapper{(*rts.ListRelationTuplesRequest_Query)(req.Query)}) //nolint:staticcheck
+		q.FromDataProvider(&deprecatedQueryWrapper{(*rts.ListRelationTuplesRequest_Query)(req.Msg.Query)}) //nolint:staticcheck
 	default:
 		return nil, errors.WithStack(herodot.ErrBadRequest().WithReason("invalid request"))
 	}
@@ -92,7 +93,7 @@ func (h *Handler) DeleteRelationTuples(ctx context.Context, req *rts.DeleteRelat
 
 	trace.SpanFromContext(ctx).AddEvent(events.NewRelationtuplesDeleted(ctx))
 
-	return &rts.DeleteRelationTuplesResponse{}, nil
+	return connect.NewResponse(&rts.DeleteRelationTuplesResponse{}), nil
 }
 
 // Create Relationship Request Parameters
@@ -133,7 +134,7 @@ type createRelationshipBody struct {
 //
 //	Extensions:
 //	  x-ory-ratelimit-bucket: keto-admin-low
-func (h *Handler) createRelation(w http.ResponseWriter, r *http.Request) {
+func (h *WriteHandler) createRelation(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	var rt ketoapi.RelationTuple
@@ -195,7 +196,7 @@ func (h *Handler) createRelation(w http.ResponseWriter, r *http.Request) {
 //
 //	Extensions:
 //	  x-ory-ratelimit-bucket: keto-admin-low
-func (h *Handler) deleteRelations(w http.ResponseWriter, r *http.Request) {
+func (h *WriteHandler) deleteRelations(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	if err := validate.All(r,
@@ -268,7 +269,7 @@ func internalTuplesWithAction(deltas []*ketoapi.PatchDelta, action ketoapi.Patch
 //
 //	Extensions:
 //	  x-ory-ratelimit-bucket: keto-admin-low
-func (h *Handler) patchRelationTuples(w http.ResponseWriter, r *http.Request) {
+func (h *WriteHandler) patchRelationTuples(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	var deltas []*ketoapi.PatchDelta

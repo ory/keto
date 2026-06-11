@@ -42,7 +42,6 @@ func TestCreateCmd(t *testing.T) {
 
 	otherNspace := &namespace.Namespace{Name: "other"}
 	ts := client.NewTestServer(t, []*namespace.Namespace{nspace, nspaceUser, otherNspace}, newCmd)
-	defer ts.Shutdown(t)
 
 	createFile := func(t *testing.T, tuple any) string {
 		dir := t.TempDir()

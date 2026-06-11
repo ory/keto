@@ -14,6 +14,7 @@ import (
 	"sync"
 	"testing"
 
+	"connectrpc.com/connect"
 	"github.com/gofrs/uuid"
 	"github.com/ory/x/contextx"
 
@@ -26,7 +27,6 @@ import (
 	"github.com/spf13/pflag"
 	"github.com/stretchr/testify/require"
 	"go.opentelemetry.io/otel/trace"
-	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 
 	"github.com/ory/keto/internal/driver/config"
@@ -79,18 +79,16 @@ func NewDefaultRegistry(ctx context.Context, flags *pflag.FlagSet, withoutNetwor
 	c.WithSource(options.Contextualizer().Config(ctx, cp))
 
 	r := &RegistryDefault{
-		c:                         c,
-		l:                         l,
-		tracerWrapper:             options.TracerWrapper,
-		ctxer:                     options.Contextualizer(),
-		defaultUnaryInterceptors:  options.GRPCUnaryInterceptors(),
-		defaultStreamInterceptors: options.GRPCStreamInterceptors(),
-		defaultGRPCServerOptions:  options.GRPCServerOptions(),
-		defaultHttpMiddlewares:    options.HTTPMiddlewares(),
-		extraMigrations:           options.ExtraMigrations(),
-		defaultMigrationOptions:   options.MigrationOptions(),
-		healthReadyCheckers:       options.ReadyCheckers(),
-		dbOpts:                    options.DBOptionsModifiers(),
+		c:                          c,
+		l:                          l,
+		tracerWrapper:              options.TracerWrapper,
+		ctxer:                      options.Contextualizer(),
+		defaultConnectInterceptors: options.ConnectInterceptors(),
+		defaultHttpMiddlewares:     options.HTTPMiddlewares(),
+		extraMigrations:            options.ExtraMigrations(),
+		defaultMigrationOptions:    options.MigrationOptions(),
+		healthReadyCheckers:        options.ReadyCheckers(),
+		dbOpts:                     options.DBOptionsModifiers(),
 	}
 
 	init := r.Init
@@ -149,15 +147,9 @@ func WithOPL(opl string) TestRegistryOption {
 	}
 }
 
-func WithGRPCUnaryInterceptors(i ...grpc.UnaryServerInterceptor) TestRegistryOption {
+func WithHandlerOptions(opts ...connect.HandlerOption) TestRegistryOption {
 	return func(_ testing.TB, r *RegistryDefault) {
-		r.defaultUnaryInterceptors = i
-	}
-}
-
-func WithGRPCStreamInterceptors(i ...grpc.StreamServerInterceptor) TestRegistryOption {
-	return func(_ testing.TB, r *RegistryDefault) {
-		r.defaultStreamInterceptors = i
+		r.defaultHandlerOptions = append(r.defaultHandlerOptions, opts...)
 	}
 }
 
@@ -196,13 +188,10 @@ func (s *selfSignedCert) generate() {
 	})
 }
 
-func WithSelfsignedTransportCredentials() TestRegistryOption {
+func WithSelfSignedTransportCredentials() TestRegistryOption {
 	return func(t testing.TB, r *RegistryDefault) {
 		sharedTestCert.generate()
-		if sharedTestCert.err != nil {
-			t.Error(sharedTestCert.err)
-			return
-		}
+		require.NoError(t, sharedTestCert.err)
 
 		r.grpcTransportCredentials = credentials.NewServerTLSFromCert(sharedTestCert.cert)
 	}

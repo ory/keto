@@ -1,28 +1,58 @@
-version: v1
+version: v2
+
+inputs:
+  - module: buf.build/ory/keto
 
 plugins:
-  - plugin: buf.build/protocolbuffers/go
+  - local: ["go", "tool", "protoc-gen-go"]
+    out: gen/go
+    opt: paths=source_relative
+
+  - local: ["go", "tool", "protoc-gen-go-grpc"]
+    out: gen/go
+    opt: paths=source_relative
+
+  - local: ["go", "tool", "protoc-gen-connect-go"]
+    out: gen/go
+    opt: paths=source_relative
+
+    # remove once generated code is removed from the proto directory
+  - local: ["go", "tool", "protoc-gen-go"]
     out: proto
     opt: paths=source_relative
 
-  - plugin: buf.build/grpc/go
+    # remove once generated code is removed from the proto directory
+  - local: ["go", "tool", "protoc-gen-go-grpc"]
     out: proto
-    opt: paths=source_relative,require_unimplemented_servers=false
+    opt: paths=source_relative
 
-  - plugin: buf.build/protocolbuffers/js
-    out: proto
-    opt: import_style=commonjs,binary
+  - local: ["npx", "@bufbuild/protoc-gen-es"]
+    out: gen/es
 
-  - plugin: buf.build/grpc/node
-    out: proto
-    opt: grpc_js,binary,import_style=commonjs
+  - local: ["npx", "@connectrpc/protoc-gen-connect-es"]
+    out: gen/es
 
-  - name: ts
-    out: proto
-    opt: grpc_js
-    path: node_modules/.bin/protoc-gen-ts
-
-  - name: doc
-    out: proto
-    opt: proto/markdown.tmpl,proto/buf.md
+  - local: ["go", "tool", "protoc-gen-doc"]
+    out: gen/doc
+    opt: proto/markdown.tmpl,gen/doc/buf.md
     strategy: all
+
+managed:
+  enabled: true
+  # currently not used but keep it for future reference, as it took me quite some time to figure out
+  # disable:
+  #   - file_option: go_package
+  #     module: buf.build/googleapis/googleapis
+  override:
+    - file_option: go_package_prefix
+      value: github.com/ory/keto/gen/go
+    - file_option: go_package
+      value: github.com/ory/keto/gen/go/ory/keto/relation_tuples/v1alpha2;relationtuples
+      path: ory/keto/relation_tuples/v1alpha2
+    - file_option: go_package
+      value: github.com/ory/keto/gen/go/ory/keto/opl/v1alpha1;opl
+      path: ory/keto/opl/v1alpha1
+    # currently not used but keep it for future reference, as it took me quite some time to figure out
+    # - file_option: go_package_prefix
+    #   module: buf.build/grpc-ecosystem/grpc-gateway
+    #   value: github.com/grpc-ecosystem/grpc-gateway/v2

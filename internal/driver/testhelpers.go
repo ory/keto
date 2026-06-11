@@ -1,22 +1,26 @@
 package driver
 
 import (
-	"context"
+	"crypto/tls"
+	"crypto/x509"
 	"fmt"
 	"net"
+	"net/http"
+	"net/http/httptest"
 	"os"
 	"testing"
 	"time"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"google.golang.org/grpc/credentials"
 
 	"github.com/ory/keto/internal/driver/config"
 )
 
 type GetAddr = func(t testing.TB, endpoint string) (host string, port string, fullAddr string)
 
-func UseDynamicPorts(ctx context.Context, t testing.TB, r Registry) GetAddr {
+func UseDynamicPorts(t testing.TB, r Registry) GetAddr {
 	t.Helper()
 
 	listenDir := t.TempDir()
@@ -25,14 +29,14 @@ func UseDynamicPorts(ctx context.Context, t testing.TB, r Registry) GetAddr {
 	metricsListenFile := fmt.Sprintf("%s/metrics.addr", listenDir)
 	oplListenFile := fmt.Sprintf("%s/opl.addr", listenDir)
 
-	require.NoError(t, r.Config(ctx).Set(config.KeyReadAPIPort, 0))
-	require.NoError(t, r.Config(ctx).Set(config.KeyReadAPIListenFile, "file://"+readListenFile))
-	require.NoError(t, r.Config(ctx).Set(config.KeyWriteAPIPort, 0))
-	require.NoError(t, r.Config(ctx).Set(config.KeyWriteAPIListenFile, "file://"+writeListenFile))
-	require.NoError(t, r.Config(ctx).Set(config.KeyMetricsPort, 0))
-	require.NoError(t, r.Config(ctx).Set(config.KeyMetricsListenFile, "file://"+metricsListenFile))
-	require.NoError(t, r.Config(ctx).Set(config.KeyOPLSyntaxAPIPort, 0))
-	require.NoError(t, r.Config(ctx).Set(config.KeyOPLSyntaxListenFile, "file://"+oplListenFile))
+	require.NoError(t, r.Config(t.Context()).Set(config.KeyReadAPIPort, 0))
+	require.NoError(t, r.Config(t.Context()).Set(config.KeyReadAPIListenFile, "file://"+readListenFile))
+	require.NoError(t, r.Config(t.Context()).Set(config.KeyWriteAPIPort, 0))
+	require.NoError(t, r.Config(t.Context()).Set(config.KeyWriteAPIListenFile, "file://"+writeListenFile))
+	require.NoError(t, r.Config(t.Context()).Set(config.KeyMetricsPort, 0))
+	require.NoError(t, r.Config(t.Context()).Set(config.KeyMetricsListenFile, "file://"+metricsListenFile))
+	require.NoError(t, r.Config(t.Context()).Set(config.KeyOPLSyntaxAPIPort, 0))
+	require.NoError(t, r.Config(t.Context()).Set(config.KeyOPLSyntaxListenFile, "file://"+oplListenFile))
 
 	return func(t testing.TB, endpoint string) (string, string, string) {
 		fp := ""
@@ -65,4 +69,16 @@ func UseDynamicPorts(ctx context.Context, t testing.TB, r Registry) GetAddr {
 
 		return host, port, string(addr)
 	}
+}
+
+func HTTP2TestServer(t testing.TB, handler http.Handler) (*httptest.Server, credentials.TransportCredentials) {
+	ts := httptest.NewUnstartedServer(handler)
+	ts.EnableHTTP2 = true
+	ts.StartTLS()
+	ts.Client()
+	t.Cleanup(ts.Close)
+
+	certPool := x509.NewCertPool()
+	certPool.AddCert(ts.Certificate())
+	return ts, credentials.NewTLS(&tls.Config{RootCAs: certPool})
 }

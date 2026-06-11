@@ -6,6 +6,7 @@ package x
 import (
 	"context"
 
+	"connectrpc.com/connect"
 	"github.com/gofrs/uuid"
 )
 
@@ -17,4 +18,8 @@ type TransactorProvider interface {
 	Transactor() interface {
 		Transaction(ctx context.Context, f func(ctx context.Context) error) error
 	}
+}
+
+type HandlerOptionsProvider interface {
+	HandlerOptions() []connect.HandlerOption
 }

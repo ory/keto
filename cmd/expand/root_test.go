@@ -32,7 +32,6 @@ func TestExpandCommand(t *testing.T) {
 	}
 
 	ts := client.NewTestServer(t, []*namespace.Namespace{nspace, nspaceUser}, newCmd)
-	defer ts.Shutdown(t)
 
 	tuple := helpers.RandomTupleWithSubjectSet(nspace.Name, nspaceUser.Name)
 

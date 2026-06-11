@@ -8,37 +8,32 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"net"
 	"net/http"
-	"net/http/httptest"
 	"net/url"
 	"testing"
 
+	"github.com/ory/x/httprouterx"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/tidwall/gjson"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 
-	"github.com/ory/x/httprouterx"
-
+	rts "github.com/ory/keto/gen/go/ory/keto/relation_tuples/v1alpha2"
 	"github.com/ory/keto/internal/driver"
 	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/namespace"
 	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/internal/testhelpers"
 	"github.com/ory/keto/ketoapi"
-	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 )
 
 func TestReadHandlers(t *testing.T) {
 	ctx := context.Background()
 	r := httprouterx.NewRouterPublic()
 	reg := driver.NewSqliteTestRegistry(t)
-	h := relationtuple.NewHandler(reg)
+	h := relationtuple.NewReadHandler(reg)
 	h.RegisterReadRoutes(r)
-	ts := httptest.NewServer(r)
-	t.Cleanup(ts.Close)
+	ts, clientTLS := driver.HTTP2TestServer(t, r)
 
 	var newNamespace func(*testing.T) *namespace.Namespace
 	{
@@ -241,14 +236,8 @@ func TestReadHandlers(t *testing.T) {
 			}
 			return actual
 		}
-		soc, err := net.Listen("tcp", ":0") // nolint
-		require.NoError(t, err)
-		srv := grpc.NewServer()
-		h.RegisterReadGRPC(srv)
-		go srv.Serve(soc) // nolint
-		t.Cleanup(srv.Stop)
 
-		con, err := grpc.NewClient(soc.Addr().String(), grpc.WithTransportCredentials(insecure.NewCredentials()))
+		con, err := grpc.NewClient(ts.Listener.Addr().String(), grpc.WithTransportCredentials(clientTLS))
 		require.NoError(t, err)
 
 		t.Run("method=list", func(t *testing.T) {

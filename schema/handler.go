@@ -8,23 +8,29 @@ import (
 	"io"
 	"net/http"
 
+	"connectrpc.com/connect"
+	"github.com/pkg/errors"
+	"google.golang.org/protobuf/reflect/protoreflect"
+
 	"github.com/ory/herodot"
 	"github.com/ory/x/httprouterx"
 	"github.com/ory/x/httpx"
 	"github.com/ory/x/logrusx"
-	"github.com/pkg/errors"
-	"google.golang.org/grpc"
 
+	opl "github.com/ory/keto/gen/go/ory/keto/opl/v1alpha1"
+	"github.com/ory/keto/gen/go/ory/keto/opl/v1alpha1/oplconnect"
+	"github.com/ory/keto/internal/x"
 	"github.com/ory/keto/ketoapi"
-	opl "github.com/ory/keto/proto/ory/keto/opl/v1alpha1"
 )
 
 type (
 	handlerDependencies interface {
 		logrusx.Provider
 		httpx.WriterProvider
+		x.HandlerOptionsProvider
 	}
 	Handler struct {
+		oplconnect.UnimplementedSyntaxServiceHandler
 		d handlerDependencies
 	}
 )
@@ -37,19 +43,20 @@ func NewHandler(d handlerDependencies) *Handler {
 
 func (h *Handler) RegisterSyntaxRoutes(r httprouterx.Router) {
 	r.POST(RouteBase, h.postCheckOplSyntax)
+	r.Handle(oplconnect.NewSyntaxServiceHandler(h, h.d.HandlerOptions()...))
 }
 
-func (h *Handler) RegisterSyntaxGRPC(s *grpc.Server) {
-	opl.RegisterSyntaxServiceServer(s, h)
+func (h *Handler) ProtoFiles() []protoreflect.FileDescriptor {
+	return []protoreflect.FileDescriptor{opl.File_ory_keto_opl_v1alpha1_syntax_service_proto}
 }
 
-func (h *Handler) Check(_ context.Context, request *opl.CheckRequest) (*opl.CheckResponse, error) {
-	_, parseErrors := Parse(string(request.GetContent()))
+func (h *Handler) Check(_ context.Context, request *connect.Request[opl.CheckRequest]) (*connect.Response[opl.CheckResponse], error) {
+	_, parseErrors := Parse(string(request.Msg.GetContent()))
 	apiErrors := make([]*opl.ParseError, len(parseErrors))
 	for i, e := range parseErrors {
 		apiErrors[i] = e.ToProto()
 	}
-	return &opl.CheckResponse{ParseErrors: apiErrors}, nil
+	return connect.NewResponse(&opl.CheckResponse{ParseErrors: apiErrors}), nil
 }
 
 // Check OPL Syntax Request Parameters

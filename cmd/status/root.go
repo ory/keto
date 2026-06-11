@@ -7,6 +7,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 
 	"github.com/ory/x/cmdx"
 	"github.com/ory/x/stringsx"
@@ -64,49 +65,19 @@ func newStatusCmd() *cobra.Command {
 
 			c := grpcHealthV1.NewHealthClient(conn)
 
-			var status interface {
-				GetStatus() grpcHealthV1.HealthCheckResponse_ServingStatus
-			}
-			if block {
-				ctx, cancel := context.WithCancel(cmd.Context())
-				defer cancel()
-
-				wc, err := c.Watch(ctx, &grpcHealthV1.HealthCheckRequest{})
-				if err != nil {
-					_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not start watching the status: %+v\n", err)
-					return cmdx.FailSilently(cmd)
-				}
-
-				for {
-					select {
-					case <-cmd.Context().Done():
-						return nil
-					default:
-					}
-
-					status, err = wc.Recv()
-					if err != nil {
-						_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Could not watch the status: %+v\n", err)
-						return cmdx.FailSilently(cmd)
-					}
-
-					if status.GetStatus() == grpcHealthV1.HealthCheckResponse_SERVING {
-						cancel()
-						break
-					}
-
-					_, _ = loudPrinter.Printf("Got the status %s, waiting until %s.\n", status.GetStatus(), grpcHealthV1.HealthCheckResponse_SERVING)
-				}
-			} else {
-				status, err = c.Check(cmd.Context(), &grpcHealthV1.HealthCheckRequest{})
+			for {
+				status, err := c.Check(cmd.Context(), &grpcHealthV1.HealthCheckRequest{})
 				if err != nil {
 					_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Unable to get a check response: %+v\n", err)
 					return cmdx.FailSilently(cmd)
 				}
+				if !block || status.GetStatus() == grpcHealthV1.HealthCheckResponse_SERVING {
+					_, _ = fmt.Fprintln(cmd.OutOrStdout(), status.GetStatus().String())
+					return nil
+				}
+				_, _ = loudPrinter.Printf("Got the status %s, waiting until %s.\n", status.GetStatus(), grpcHealthV1.HealthCheckResponse_SERVING)
+				time.Sleep(500 * time.Millisecond)
 			}
-
-			_, _ = fmt.Fprintln(cmd.OutOrStdout(), status.GetStatus().String())
-			return nil
 		},
 	}
 

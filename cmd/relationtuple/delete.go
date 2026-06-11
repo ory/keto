@@ -13,14 +13,13 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/ory/keto/cmd/client"
-	"github.com/ory/keto/cmd/helpers"
-	"github.com/ory/keto/ketoapi"
-
-	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
-
 	"github.com/ory/x/cmdx"
 	"github.com/spf13/cobra"
+
+	"github.com/ory/keto/cmd/client"
+	"github.com/ory/keto/cmd/helpers"
+	rts "github.com/ory/keto/gen/go/ory/keto/relation_tuples/v1alpha2"
+	"github.com/ory/keto/ketoapi"
 )
 
 const (
@@ -32,17 +31,17 @@ func NewDeleteCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "delete <subject_namespace>:<subject_id> <relation> <object_namespace>:<object_id>",
 		Short: "Delete relationship tuples from inline arguments or JSON files and folders",
-		Long: "Delete relationship tuples from inline arguments or JSON files and folders.\n\n" +
-			"Inline example:\n" +
-			"	keto relation-tuple delete User:alice owner Doc:readme\n\n" +
+		Long: `Delete relationship tuples from inline arguments or JSON files and folders.
+Inline example:
+	keto relation-tuple delete User:alice owner Doc:readme
 
-			"From file or folder:\n" +
-			"	keto relation-tuple delete -f relationships1.json -f relationships2.json\n" +
-			"	keto relation-tuple delete -f relationships-dir1 -f relationships-dir2\n\n" +
+From file or folder:
+	keto relation-tuple delete -f relationships1.json -f relationships2.json
+	keto relation-tuple delete -f relationships-dir1 -f relationships-dir2
 
-			"If a directory is provided, all JSON files inside it are processed.\n" +
-			"Use '-' as filename to read from STD_IN:\n" +
-			"	keto relation-tuple delete -f -",
+If a directory is provided, all JSON files inside it are processed.
+Use '-' as filename to read from STD_IN:
+	keto relation-tuple delete -f -`,
 		Args: cobra.ArbitraryArgs,
 		RunE: transactTuples(rts.RelationTupleDelta_ACTION_DELETE),
 	}

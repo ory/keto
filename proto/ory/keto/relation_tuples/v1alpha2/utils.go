@@ -1,4 +1,4 @@
-package rts
+package relationtuples
 
 // RelationTupleToDeltas is a helper that converts a slice of RelationTuple to a slice of RelationTupleDelta
 // with the specified RelationTupleDelta_Action. This allows you to conveniently assemble a request for the

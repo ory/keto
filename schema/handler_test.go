@@ -5,33 +5,28 @@ package schema_test
 
 import (
 	"bytes"
-	"context"
 	"io"
-	"net"
 	"net/http"
-	"net/http/httptest"
 	"testing"
 
+	opl "github.com/ory/keto/gen/go/ory/keto/opl/v1alpha1"
+	"github.com/ory/keto/internal/driver"
+	"github.com/ory/keto/schema"
 	"github.com/ory/x/httprouterx"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/tidwall/gjson"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
-	"google.golang.org/grpc/test/bufconn"
-
-	"github.com/ory/keto/internal/driver"
-	opl "github.com/ory/keto/proto/ory/keto/opl/v1alpha1"
-	"github.com/ory/keto/schema"
 )
 
 func TestNewHandler(t *testing.T) {
-	r := httprouterx.NewRouterPublic()
 	reg := driver.NewSqliteTestRegistry(t)
 	h := schema.NewHandler(reg)
+
+	r := httprouterx.NewRouterPublic()
 	h.RegisterSyntaxRoutes(r)
-	ts := httptest.NewServer(r)
-	t.Cleanup(ts.Close)
+
+	ts, clientTLS := driver.HTTP2TestServer(t, r)
 
 	t.Run("proto=REST", func(t *testing.T) {
 		t.Run("method=POST /opl/syntax/check", func(t *testing.T) {
@@ -49,20 +44,7 @@ func TestNewHandler(t *testing.T) {
 	})
 
 	t.Run("proto=gRPC", func(t *testing.T) {
-		l := bufconn.Listen(1024 * 1024)
-		s := grpc.NewServer()
-		h.RegisterSyntaxGRPC(s)
-		go func() {
-			if err := s.Serve(l); err != nil {
-				t.Logf("Server exited with error: %v", err)
-			}
-		}()
-		t.Cleanup(s.Stop)
-
-		conn, err := grpc.NewClient("passthrough:///bufnet",
-			grpc.WithTransportCredentials(insecure.NewCredentials()),
-			grpc.WithContextDialer(func(context.Context, string) (net.Conn, error) { return l.Dial() }),
-		)
+		conn, err := grpc.NewClient(ts.Listener.Addr().String(), grpc.WithTransportCredentials(clientTLS))
 		require.NoError(t, err)
 
 		client := opl.NewSyntaxServiceClient(conn)

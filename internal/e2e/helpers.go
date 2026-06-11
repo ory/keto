@@ -6,6 +6,7 @@ package e2e
 import (
 	"context"
 	"encoding/json"
+	"sync"
 	"testing"
 
 	"github.com/ory/x/configx"
@@ -21,12 +22,16 @@ import (
 )
 
 type namespaceTestManager struct {
+	sync.Mutex
 	reg     driver.Registry
 	ctx     context.Context
 	nspaces []*namespace.Namespace
 }
 
 func (m *namespaceTestManager) add(t testing.TB, nn ...*namespace.Namespace) {
+	m.Lock()
+	defer m.Unlock()
+
 	m.nspaces = append(m.nspaces, nn...)
 
 	require.NoError(t, m.reg.Config(m.ctx).Set(config.KeyNamespaces, m.nspaces))
@@ -81,7 +86,7 @@ func newInitializedReg(t testing.TB, dsn *dbx.DsnT, cfgOverwrites map[string]int
 	reg, err := driver.NewDefaultRegistry(ctx, flags, true, nil)
 	require.NoError(t, err)
 
-	getAddr := driver.UseDynamicPorts(ctx, t, reg)
+	getAddr := driver.UseDynamicPorts(t, reg)
 
 	require.NoError(t, reg.MigrateUp(ctx))
 	assertMigrated(ctx, t, reg)
@@ -118,7 +123,7 @@ func startServer(ctx context.Context, t testing.TB, reg driver.Registry) func() 
 	}
 }
 
-// convert the struct in `from` to the pointer in `to` using JSON mashal and unmarshal. from and toPtr must have the
+// convert the struct in `from` to the pointer in `to` using JSON marshal and unmarshal. from and toPtr must have the
 // same json field tags.
 func convert(from, toPtr any) error {
 	raw, err := json.Marshal(from)

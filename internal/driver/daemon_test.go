@@ -4,12 +4,15 @@
 package driver
 
 import (
+	"bytes"
 	"context"
 	"fmt"
+	"io"
 	"net/http"
 	"testing"
 	"time"
 
+	"connectrpc.com/connect"
 	ioprometheusclient "github.com/prometheus/client_model/go"
 	"github.com/prometheus/common/expfmt"
 	"github.com/prometheus/common/model"
@@ -23,58 +26,71 @@ import (
 	"google.golang.org/grpc/status"
 
 	prometheus "github.com/ory/x/prometheusx"
+
+	rts "github.com/ory/keto/gen/go/ory/keto/relation_tuples/v1alpha2"
 )
 
 func TestScrapingEndpoint(t *testing.T) {
 	t.Parallel()
 
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-
 	r := NewSqliteTestRegistry(t)
-	getAddr := UseDynamicPorts(ctx, t, r)
+	getAddr := UseDynamicPorts(t, r)
+
+	ctx, cancel := context.WithCancel(t.Context())
+	defer cancel()
 
 	eg := errgroup.Group{}
 	doneShutdown := make(chan struct{})
-	eg.Go(r.serveWrite(ctx, doneShutdown))
+	eg.Go(r.serveRead(ctx, doneShutdown))
 	eg.Go(r.serveMetrics(ctx, doneShutdown))
 
-	_, writePort, _ := getAddr(t, "write")
+	_, readPort, _ := getAddr(t, "read")
 	_, metricsPort, _ := getAddr(t, "metrics")
 
-	t.Logf("write port: %s, metrics port: %s", writePort, metricsPort)
+	t.Logf("write port: %s, metrics port: %s", readPort, metricsPort)
 
 	assert.EventuallyWithT(t, func(t *assert.CollectT) {
-		conn, err := grpc.NewClient(fmt.Sprintf("127.0.0.1:%s", writePort), grpc.WithTransportCredentials(insecure.NewCredentials()))
+		conn, err := grpc.NewClient(fmt.Sprintf("127.0.0.1:%s", readPort), grpc.WithTransportCredentials(insecure.NewCredentials()))
 		require.NoError(t, err)
 		defer func() { require.NoError(t, conn.Close()) }()
 
 		cl := grpcHealthV1.NewHealthClient(conn)
-		watcher, err := cl.Watch(ctx, &grpcHealthV1.HealthCheckRequest{})
+		resp, err := cl.Check(ctx, &grpcHealthV1.HealthCheckRequest{})
 		require.NoError(t, err)
-		require.NoError(t, watcher.CloseSend())
-		for err := status.Error(codes.Unavailable, "init"); status.Code(err) != codes.Unavailable; _, err = watcher.Recv() {
-		}
+		assert.Equal(t, grpcHealthV1.HealthCheckResponse_SERVING, resp.Status)
 	}, 2*time.Second, 10*time.Millisecond)
 
-	promresp, err := http.Get(fmt.Sprintf("http://127.0.0.1:%s", metricsPort) + prometheus.MetricsPrometheusPath)
+	conn, err := grpc.NewClient(fmt.Sprintf("127.0.0.1:%s", readPort), grpc.WithTransportCredentials(insecure.NewCredentials()))
+	require.NoError(t, err)
+	defer func() { require.NoError(t, conn.Close()) }()
+
+	cl := rts.NewReadServiceClient(conn)
+	resp, err := cl.ListRelationTuples(ctx, &rts.ListRelationTuplesRequest{RelationQuery: &rts.RelationQuery{}})
+	require.NoError(t, err)
+	require.Len(t, resp.RelationTuples, 0)
+
+	respx, err := http.Get(fmt.Sprintf("http://127.0.0.1:%s/relation-tuples", readPort))
+	require.NoError(t, err)
+	require.EqualValues(t, http.StatusOK, respx.StatusCode)
+	body, err := io.ReadAll(respx.Body)
+	require.NoError(t, err)
+	require.Contains(t, string(body), `"relation_tuples":[]`)
+
+	promresp, err := http.Get(fmt.Sprintf("http://127.0.0.1:%s%s", metricsPort, prometheus.MetricsPrometheusPath))
 	require.NoError(t, err)
 	require.EqualValues(t, http.StatusOK, promresp.StatusCode)
+	promrespBody, err := io.ReadAll(promresp.Body)
+	require.NoError(t, err)
 
 	textParser := expfmt.NewTextParser(model.UTF8Validation)
-	text, err := textParser.TextToMetricFamilies(promresp.Body)
+	text, err := textParser.TextToMetricFamilies(bytes.NewReader(promrespBody))
 	require.NoError(t, err)
-	require.EqualValues(t, "grpc_server_handled_total", *text["grpc_server_handled_total"].Name)
-	require.EqualValues(t, "Check", getLabelValue("grpc_method", text["grpc_server_handled_total"].Metric))
-	require.EqualValues(t, "grpc.health.v1.Health", getLabelValue("grpc_service", text["grpc_server_handled_total"].Metric))
 
-	require.EqualValues(t, "grpc_server_msg_sent_total", *text["grpc_server_msg_sent_total"].Name)
-	require.EqualValues(t, "Check", getLabelValue("grpc_method", text["grpc_server_msg_sent_total"].Metric))
-	require.EqualValues(t, "grpc.health.v1.Health", getLabelValue("grpc_service", text["grpc_server_msg_sent_total"].Metric))
-
-	require.EqualValues(t, "grpc_server_msg_received_total", *text["grpc_server_msg_received_total"].Name)
-	require.EqualValues(t, "Check", getLabelValue("grpc_method", text["grpc_server_msg_received_total"].Metric))
-	require.EqualValues(t, "grpc.health.v1.Health", getLabelValue("grpc_service", text["grpc_server_msg_received_total"].Metric))
+	require.EqualValuesf(t, "http_requests_total", *text["http_requests_total"].Name, "%s", promrespBody)
+	require.ElementsMatch(t,
+		[]string{"/grpc.health.v1.Health/", "/ory.keto.relation_tuples.v1alpha2.ReadService/ListRelationTuples", "/relation-tuples"},
+		getLabelValues("endpoint", text["http_requests_total"].Metric),
+	)
 
 	cancel()
 	<-doneShutdown
@@ -82,21 +98,28 @@ func TestScrapingEndpoint(t *testing.T) {
 	require.NoError(t, eg.Wait())
 }
 
+type panicInterceptor struct{}
+
+func (panicInterceptor) WrapUnary(connect.UnaryFunc) connect.UnaryFunc {
+	return func(context.Context, connect.AnyRequest) (connect.AnyResponse, error) { panic("test panic") }
+}
+func (panicInterceptor) WrapStreamingClient(connect.StreamingClientFunc) connect.StreamingClientFunc {
+	return func(context.Context, connect.Spec) connect.StreamingClientConn { panic("test panic") }
+}
+func (panicInterceptor) WrapStreamingHandler(connect.StreamingHandlerFunc) connect.StreamingHandlerFunc {
+	return func(context.Context, connect.StreamingHandlerConn) error { panic("test panic") }
+}
+
+var _ connect.Interceptor = (*panicInterceptor)(nil)
+
 func TestPanicRecovery(t *testing.T) {
 	t.Parallel()
 
-	ctx, cancel := context.WithCancel(context.Background())
+	r := NewSqliteTestRegistry(t, WithHandlerOptions(connect.WithInterceptors(panicInterceptor{})))
+	getAddr := UseDynamicPorts(t, r)
+
+	ctx, cancel := context.WithCancel(t.Context())
 	defer cancel()
-
-	unaryPanicInterceptor := func(context.Context, interface{}, *grpc.UnaryServerInfo, grpc.UnaryHandler) (interface{}, error) {
-		panic("test panic")
-	}
-	streamPanicInterceptor := func(context.Context, interface{}, *grpc.UnaryServerInfo, grpc.UnaryHandler) (interface{}, error) {
-		panic("test panic")
-	}
-
-	r := NewSqliteTestRegistry(t, WithGRPCUnaryInterceptors(unaryPanicInterceptor), WithGRPCUnaryInterceptors(streamPanicInterceptor))
-	getAddr := UseDynamicPorts(ctx, t, r)
 
 	eg := errgroup.Group{}
 	doneShutdown := make(chan struct{})
@@ -123,7 +146,7 @@ func TestPanicRecovery(t *testing.T) {
 	for range 10 {
 		// Unary call
 		resp, err := cl.Check(ctx, &grpcHealthV1.HealthCheckRequest{})
-		require.Error(t, err, "%+v", resp)
+		require.Errorf(t, err, "%+v", resp)
 		assert.Equal(t, codes.Internal, status.Code(err))
 
 		// Streaming call
@@ -139,12 +162,13 @@ func TestPanicRecovery(t *testing.T) {
 	require.NoError(t, eg.Wait())
 }
 
-func getLabelValue(name string, metric []*ioprometheusclient.Metric) string {
-	for _, label := range metric[0].Label {
-		if *label.Name == name {
-			return *label.Value
+func getLabelValues(name string, metric []*ioprometheusclient.Metric) (vals []string) {
+	for _, m := range metric {
+		for _, label := range m.Label {
+			if *label.Name == name {
+				vals = append(vals, *label.Value)
+			}
 		}
 	}
-
-	return ""
+	return vals
 }

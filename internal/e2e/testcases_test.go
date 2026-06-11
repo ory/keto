@@ -249,9 +249,8 @@ func runCases(c client, m *namespaceTestManager) func(*testing.T) {
 			actualTree := c.expand(t, expectedTree.Tuple.SubjectSet, 100)
 
 			assert.Equal(t, expectedTree.Type, actualTree.Type)
-			assert.Equalf(t, expectedTree.Tuple, actualTree.Tuple,
-				"want:\t%s\ngot:\t%s", expectedTree.Tuple, actualTree.Tuple)
-			assert.Equal(t, len(expectedTree.Children), len(actualTree.Children), "expected: %+v; actual: %+v", expectedTree.Children, actualTree.Children)
+			assert.Equal(t, expectedTree.Tuple, actualTree.Tuple)
+			assert.Len(t, actualTree.Children, len(expectedTree.Children))
 			expand.AssertExternalTreesAreEqual(t, expectedTree, actualTree)
 		})
 

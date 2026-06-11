@@ -42,9 +42,8 @@ func TestWriteHandlers(t *testing.T) {
 		return n
 	}
 
-	h := relationtuple.NewHandler(reg)
-	h.RegisterWriteRoutes(r)
-	h.RegisterReadRoutes(r.ToPublic())
+	relationtuple.NewWriteHandler(reg).RegisterWriteRoutes(r)
+	relationtuple.NewReadHandler(reg).RegisterReadRoutes(r.ToPublic())
 	ts := httptest.NewServer(r)
 	defer ts.Close()
 

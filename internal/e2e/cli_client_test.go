@@ -22,8 +22,8 @@ import (
 	gprclient "github.com/ory/keto/cmd/client"
 	cliexpand "github.com/ory/keto/cmd/expand"
 	clirelationtuple "github.com/ory/keto/cmd/relationtuple"
+	rts "github.com/ory/keto/gen/go/ory/keto/relation_tuples/v1alpha2"
 	"github.com/ory/keto/ketoapi"
-	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 )
 
 type cliClient struct {

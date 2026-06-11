@@ -10,8 +10,14 @@ import (
 	"net/http"
 	"sync"
 
+	"connectrpc.com/connect"
 	"github.com/gofrs/uuid"
 	"github.com/ory/herodot"
+	"github.com/pkg/errors"
+	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/health"
+	"google.golang.org/protobuf/reflect/protoreflect"
+
 	"github.com/ory/pop/v6"
 	"github.com/ory/x/contextx"
 	"github.com/ory/x/dbal"
@@ -24,11 +30,9 @@ import (
 	"github.com/ory/x/networkx"
 	"github.com/ory/x/otelx"
 	"github.com/ory/x/popx"
-	"github.com/pkg/errors"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials"
-	"google.golang.org/grpc/health"
 
+	rts "github.com/ory/keto/gen/go/ory/keto/relation_tuples/v1alpha2"
+	"github.com/ory/keto/gen/go/ory/keto/relation_tuples/v1alpha2/relationtuplesconnect"
 	"github.com/ory/keto/internal/check"
 	"github.com/ory/keto/internal/check/step"
 	"github.com/ory/keto/internal/driver/config"
@@ -39,21 +43,21 @@ import (
 	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/internal/x"
 	"github.com/ory/keto/ketoctx"
-	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 )
 
 var (
-	_ relationtuple.ManagerProvider        = (*RegistryDefault)(nil)
-	_ relationtuple.MapperProvider         = (*RegistryDefault)(nil)
-	_ relationtuple.MappingManagerProvider = (*RegistryDefault)(nil)
-	_ httpx.WriterProvider                 = (*RegistryDefault)(nil)
-	_ logrusx.Provider                     = (*RegistryDefault)(nil)
-	_ Registry                             = (*RegistryDefault)(nil)
-	_ rts.VersionServiceServer             = (*RegistryDefault)(nil)
+	_ relationtuple.ManagerProvider               = (*RegistryDefault)(nil)
+	_ relationtuple.MapperProvider                = (*RegistryDefault)(nil)
+	_ relationtuple.MappingManagerProvider        = (*RegistryDefault)(nil)
+	_ httpx.WriterProvider                        = (*RegistryDefault)(nil)
+	_ logrusx.Provider                            = (*RegistryDefault)(nil)
+	_ Registry                                    = (*RegistryDefault)(nil)
+	_ relationtuplesconnect.VersionServiceHandler = (*RegistryDefault)(nil)
 )
 
 type (
 	RegistryDefault struct {
+		relationtuplesconnect.UnimplementedVersionServiceHandler
 		p               persistence.Persister
 		traverser       relationtuple.Traverser
 		mb              *popx.MigrationBox
@@ -80,28 +84,29 @@ type (
 		tracer        *otelx.Tracer
 		tracerWrapper ketoctx.TracerWrapper
 
-		defaultUnaryInterceptors  []grpc.UnaryServerInterceptor
-		defaultStreamInterceptors []grpc.StreamServerInterceptor
-		defaultGRPCServerOptions  []grpc.ServerOption
-		defaultHttpMiddlewares    []func(rw http.ResponseWriter, r *http.Request, next http.HandlerFunc)
-		grpcTransportCredentials  credentials.TransportCredentials
-		defaultMigrationOptions   []popx.MigrationBoxOption
-		healthReadyCheckers       healthx.ReadyCheckers
-		dbOpts                    []func(details *pop.ConnectionDetails)
+		defaultHandlerOptions      []connect.HandlerOption
+		defaultConnectInterceptors []connect.Interceptor
+		defaultHttpMiddlewares     []func(rw http.ResponseWriter, r *http.Request, next http.HandlerFunc)
+		grpcTransportCredentials   credentials.TransportCredentials
+		defaultMigrationOptions    []popx.MigrationBoxOption
+		healthReadyCheckers        healthx.ReadyCheckers
+		dbOpts                     []func(details *pop.ConnectionDetails)
 	}
 	ReadHandler interface {
+		Handler
 		RegisterReadRoutes(r *httprouterx.RouterPublic)
-		RegisterReadGRPC(s *grpc.Server)
 	}
 	WriteHandler interface {
+		Handler
 		RegisterWriteRoutes(r *httprouterx.RouterAdmin)
-		RegisterWriteGRPC(s *grpc.Server)
 	}
 	OPLSyntaxHandler interface {
+		Handler
 		RegisterSyntaxRoutes(r httprouterx.Router)
-		RegisterSyntaxGRPC(s *grpc.Server)
 	}
-	Handler interface{}
+	Handler interface {
+		ProtoFiles() []protoreflect.FileDescriptor
+	}
 )
 
 func (r *RegistryDefault) Mapper() *relationtuple.Mapper {
@@ -169,8 +174,8 @@ func (r *RegistryDefault) HealthServer() *health.Server {
 	return r.healthServer
 }
 
-func (r *RegistryDefault) GetVersion(_ context.Context, _ *rts.GetVersionRequest) (*rts.GetVersionResponse, error) {
-	return &rts.GetVersionResponse{Version: config.Version}, nil
+func (r *RegistryDefault) GetVersion(_ context.Context, _ *connect.Request[rts.GetVersionRequest]) (*connect.Response[rts.GetVersionResponse], error) {
+	return connect.NewResponse(&rts.GetVersionResponse{Version: config.Version}), nil
 }
 
 func (r *RegistryDefault) Tracer(ctx context.Context) *otelx.Tracer {

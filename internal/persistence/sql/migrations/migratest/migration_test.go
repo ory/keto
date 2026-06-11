@@ -68,6 +68,7 @@ func TestMigrations(t *testing.T) {
 				conn, logrusx.New("", "", logrusx.ForceLevel(logrus.DebugLevel)),
 				popx.WithGoMigrations(uuidmapping.Migrations(nm)),
 				popx.WithTestdata(t, os.DirFS("./testdata")),
+				popx.WithoutGoldenDatabase(),
 			)
 			require.NoError(t, err)
 

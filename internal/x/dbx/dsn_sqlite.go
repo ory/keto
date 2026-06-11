@@ -10,12 +10,10 @@ import (
 )
 
 func GetSqlite(t testing.TB) *DsnT {
-	dsn := &DsnT{
+	return &DsnT{
 		MigrateUp:   true,
 		MigrateDown: false,
+		Conn:        dbal.NewSQLiteTestDatabase(t),
+		Name:        "sqlite",
 	}
-
-	dsn.Name = "sqlite"
-	dsn.Conn = dbal.NewSQLiteTestDatabase(t)
-	return dsn
 }

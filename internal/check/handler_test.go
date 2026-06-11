@@ -5,29 +5,28 @@ package check_test
 
 import (
 	"bytes"
-	"context"
+	"crypto/tls"
+	"crypto/x509"
 	"encoding/json"
 	"fmt"
 	"io"
-	"net"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
 	"strings"
 	"testing"
 
+	"github.com/ory/x/httprouterx"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/tidwall/gjson"
 	"google.golang.org/genproto/googleapis/rpc/errdetails"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/status"
-	"google.golang.org/grpc/test/bufconn"
 
-	"github.com/ory/x/httprouterx"
-
+	rts "github.com/ory/keto/gen/go/ory/keto/relation_tuples/v1alpha2"
 	"github.com/ory/keto/internal/check"
 	"github.com/ory/keto/internal/driver"
 	"github.com/ory/keto/internal/driver/config"
@@ -35,7 +34,6 @@ import (
 	"github.com/ory/keto/internal/namespace"
 	"github.com/ory/keto/internal/testhelpers"
 	"github.com/ory/keto/ketoapi"
-	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 )
 
 func readBody(t *testing.T, resp *http.Response) []byte {
@@ -79,22 +77,18 @@ func openAPIAssertDenied(t *testing.T, resp *http.Response) {
 
 func newTestGRPCCheckClient(t *testing.T, h *check.Handler) rts.CheckServiceClient {
 	t.Helper()
-	l := bufconn.Listen(1024 * 1024)
-	s := grpc.NewServer()
-	h.RegisterReadGRPC(s)
-	go func() {
-		if err := s.Serve(l); err != nil {
-			select {
-			case <-t.Context().Done():
-			default:
-				t.Logf("gRPC server exited unexpectedly: %v", err)
-			}
-		}
-	}()
-	t.Cleanup(s.Stop)
-	conn, err := grpc.NewClient("passthrough:///bufnet",
-		grpc.WithTransportCredentials(insecure.NewCredentials()),
-		grpc.WithContextDialer(func(context.Context, string) (net.Conn, error) { return l.Dial() }),
+	router := httprouterx.NewRouterPublic()
+	h.RegisterReadRoutes(router)
+	ts := httptest.NewUnstartedServer(router)
+	ts.EnableHTTP2 = true
+	ts.StartTLS()
+	t.Cleanup(ts.Close)
+
+	rootCA := x509.NewCertPool()
+	rootCA.AddCert(ts.Certificate())
+
+	conn, err := grpc.NewClient(ts.Listener.Addr().String(),
+		grpc.WithTransportCredentials(credentials.NewTLS(&tls.Config{RootCAs: rootCA})),
 	)
 	require.NoError(t, err)
 	t.Cleanup(func() { require.NoError(t, conn.Close()) })
@@ -353,7 +347,7 @@ func TestCheckStrictModeLimit(t *testing.T) {
 					break
 				}
 			}
-			require.NotNil(t, ei)
+			require.NotNilf(t, ei, "%+v", st.Details())
 			require.Contains(t, ei.Reason, string(check.LimitationMaxDepthExceeded))
 		})
 	})

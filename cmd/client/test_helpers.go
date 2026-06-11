@@ -5,27 +5,23 @@ package client
 
 import (
 	"fmt"
-	"net"
+	"net/http"
+	"net/http/httptest"
 	"testing"
-
-	"github.com/ory/keto/internal/driver/config"
 
 	"github.com/ory/x/cmdx"
 	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/require"
-	"golang.org/x/sync/errgroup"
-	"google.golang.org/grpc"
 
 	"github.com/ory/keto/internal/driver"
+	"github.com/ory/keto/internal/driver/config"
 	"github.com/ory/keto/internal/namespace"
 )
 
 type (
 	TestServer struct {
-		Reg     driver.Registry
-		Cmd     *cmdx.CommandExecuter
-		Servers []*grpc.Server
-		errG    *errgroup.Group
+		Reg driver.Registry
+		Cmd *cmdx.CommandExecuter
 	}
 	ServerType string
 )
@@ -50,13 +46,12 @@ func (st ServerType) FlagName() string {
 }
 
 func NewTestServer(t *testing.T, nspaces []*namespace.Namespace, newCmd func() *cobra.Command, registryOpts ...driver.TestRegistryOption) *TestServer {
-	reg := driver.NewSqliteTestRegistry(t, append(registryOpts, driver.WithSelfsignedTransportCredentials())...)
+	reg := driver.NewSqliteTestRegistry(t, append(registryOpts, driver.WithSelfSignedTransportCredentials())...)
 
 	require.NoError(t, reg.Config(t.Context()).Set(config.KeyNamespaces, nspaces))
 
 	ts := &TestServer{
-		Reg:  reg,
-		errG: &errgroup.Group{},
+		Reg: reg,
 		Cmd: &cmdx.CommandExecuter{
 			New:            newCmd,
 			PersistentArgs: []string{"--insecure-skip-hostname-verification=true"},
@@ -73,35 +68,24 @@ func (ts *TestServer) serve(t *testing.T, serverTypes ...ServerType) {
 	}
 
 	for _, st := range serverTypes {
-		l, err := net.Listen("tcp", "127.0.0.1:0")
-		require.NoError(t, err)
+		s := httptest.NewUnstartedServer(ts.NewHandler(t, st))
+		s.EnableHTTP2 = true
+		s.StartTLS()
+		t.Cleanup(s.Close)
 
-		server := ts.NewServer(t, st)
-		ts.errG.Go(func() error {
-			return server.Serve(l)
-		})
-
-		ts.Servers = append(ts.Servers, server)
-		ts.Cmd.PersistentArgs = append(ts.Cmd.PersistentArgs, "--"+st.FlagName(), l.Addr().String())
+		ts.Cmd.PersistentArgs = append(ts.Cmd.PersistentArgs, "--"+st.FlagName(), s.Listener.Addr().String())
 	}
 }
 
-func (ts *TestServer) NewServer(t *testing.T, st ServerType) *grpc.Server {
+func (ts *TestServer) NewHandler(t *testing.T, st ServerType) http.Handler {
 	switch st {
 	case ReadServer:
-		return ts.Reg.ReadGRPCServer(t.Context())
+		return ts.Reg.ReadRouter(t.Context())
 	case WriteServer:
-		return ts.Reg.WriteGRPCServer(t.Context())
+		return ts.Reg.WriteRouter(t.Context())
 	case OplServer:
-		return ts.Reg.OplGRPCServer(t.Context())
+		return ts.Reg.OPLSyntaxRouter(t.Context())
 	default:
 		panic(fmt.Sprintf("unknown ServerType %s", st))
 	}
-}
-
-func (ts *TestServer) Shutdown(t *testing.T) {
-	for _, s := range ts.Servers {
-		s.GracefulStop()
-	}
-	require.NoError(t, ts.errG.Wait())
 }

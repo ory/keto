@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
+	rts "github.com/ory/keto/gen/go/ory/keto/relation_tuples/v1alpha2"
 )
 
 func TestParseSubject(t *testing.T) {

@@ -4,16 +4,18 @@
 package relationtuple
 
 import (
+	"connectrpc.com/connect"
+	"google.golang.org/protobuf/reflect/protoreflect"
+
 	"github.com/ory/x/httprouterx"
 	"github.com/ory/x/httpx"
 	"github.com/ory/x/logrusx"
 	"github.com/ory/x/otelx"
-	"google.golang.org/grpc"
 
+	rts "github.com/ory/keto/gen/go/ory/keto/relation_tuples/v1alpha2"
+	"github.com/ory/keto/gen/go/ory/keto/relation_tuples/v1alpha2/relationtuplesconnect"
 	"github.com/ory/keto/internal/driver/config"
-
 	"github.com/ory/keto/internal/x"
-	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 )
 
 type (
@@ -26,8 +28,14 @@ type (
 		otelx.Provider
 		x.NetworkIDProvider
 		x.TransactorProvider
+		x.HandlerOptionsProvider
 	}
-	Handler struct {
+	ReadHandler struct {
+		relationtuplesconnect.UnimplementedReadServiceHandler
+		d handlerDeps
+	}
+	WriteHandler struct {
+		relationtuplesconnect.UnimplementedWriteServiceHandler
 		d handlerDeps
 	}
 )
@@ -37,26 +45,55 @@ const (
 	WriteRouteBase = "/admin/relation-tuples"
 )
 
-func NewHandler(d handlerDeps) *Handler {
-	return &Handler{
-		d: d,
-	}
-}
+func NewReadHandler(d handlerDeps) *ReadHandler   { return &ReadHandler{d: d} }
+func NewWriteHandler(d handlerDeps) *WriteHandler { return &WriteHandler{d: d} }
 
-func (h *Handler) RegisterReadRoutes(r *httprouterx.RouterPublic) {
+func (h *ReadHandler) RegisterReadRoutes(r *httprouterx.RouterPublic) {
 	r.GET(ReadRouteBase, h.getRelations)
+
+	listRelationTuplesHandler := connect.NewUnaryHandler(
+		relationtuplesconnect.ReadServiceListRelationTuplesProcedure,
+		h.ListRelationTuples,
+		connect.WithSchema(rts.File_ory_keto_relation_tuples_v1alpha2_read_service_proto.
+			Services().ByName("ReadService").
+			Methods().ByName("ListRelationTuples")),
+		connect.WithHandlerOptions(h.d.HandlerOptions()...),
+	)
+	r.Handle(relationtuplesconnect.ReadServiceListRelationTuplesProcedure, listRelationTuplesHandler)
 }
 
-func (h *Handler) RegisterWriteRoutes(r *httprouterx.RouterAdmin) {
+func (h *WriteHandler) RegisterWriteRoutes(r *httprouterx.RouterAdmin) {
 	r.PUT(WriteRouteBase, h.createRelation)
 	r.DELETE(WriteRouteBase, h.deleteRelations)
 	r.PATCH(WriteRouteBase, h.patchRelationTuples)
+
+	writeServiceMethods := rts.File_ory_keto_relation_tuples_v1alpha2_write_service_proto.Services().ByName("WriteService").Methods()
+	transactRelationTuplesHandler := connect.NewUnaryHandler(
+		relationtuplesconnect.WriteServiceTransactRelationTuplesProcedure,
+		h.TransactRelationTuples,
+		connect.WithSchema(writeServiceMethods.ByName("TransactRelationTuples")),
+		connect.WithHandlerOptions(h.d.HandlerOptions()...),
+	)
+	r.Handle(relationtuplesconnect.WriteServiceTransactRelationTuplesProcedure, transactRelationTuplesHandler)
+	deleteRelationTuplesHandler := connect.NewUnaryHandler(
+		relationtuplesconnect.WriteServiceDeleteRelationTuplesProcedure,
+		h.DeleteRelationTuples,
+		connect.WithSchema(writeServiceMethods.ByName("DeleteRelationTuples")),
+		connect.WithHandlerOptions(h.d.HandlerOptions()...),
+	)
+	r.Handle(relationtuplesconnect.WriteServiceDeleteRelationTuplesProcedure, deleteRelationTuplesHandler)
 }
 
-func (h *Handler) RegisterReadGRPC(s *grpc.Server) {
-	rts.RegisterReadServiceServer(s, h)
+func (h *ReadHandler) ProtoFiles() []protoreflect.FileDescriptor {
+	return []protoreflect.FileDescriptor{
+		rts.File_ory_keto_relation_tuples_v1alpha2_read_service_proto,
+		rts.File_ory_keto_relation_tuples_v1alpha2_relation_tuples_proto,
+	}
 }
 
-func (h *Handler) RegisterWriteGRPC(s *grpc.Server) {
-	rts.RegisterWriteServiceServer(s, h)
+func (h *WriteHandler) ProtoFiles() []protoreflect.FileDescriptor {
+	return []protoreflect.FileDescriptor{
+		rts.File_ory_keto_relation_tuples_v1alpha2_write_service_proto,
+		rts.File_ory_keto_relation_tuples_v1alpha2_relation_tuples_proto,
+	}
 }

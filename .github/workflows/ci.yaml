@@ -85,6 +85,8 @@ jobs:
           go mod tidy
           go test ./...
       - name: Test Keto
+        env:
+          GOLANG_PROTOBUF_REGISTRATION_CONFLICT: warn
         run: |
           go test -coverprofile coverage.txt  ./...
           grep -v "ory/keto/internal/httpclient" coverage.txt > coverage_cleared.txt
@@ -105,7 +107,9 @@ jobs:
         with:
           check-latest: true
           go-version-file: go.mod
-      - run: |
+      - env:
+          GOLANG_PROTOBUF_REGISTRATION_CONFLICT: warn
+        run: |
           go test -race -short ./...
 
   docs-cli:
@@ -226,7 +230,7 @@ jobs:
           ---
 
           <!-- This file is generated. Please edit the .proto files instead to update the documentation -->" > "docs/docs/keto/reference/proto-api.mdx"
-          cat "current-repo/proto/buf.md" >> "docs/docs/keto/reference/proto-api.mdx"
+          cat "current-repo/gen/doc/buf.md" >> "docs/docs/keto/reference/proto-api.mdx"
           cd docs
           if git diff --exit-code; then
             echo "No changes to commit"

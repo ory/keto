@@ -34,7 +34,6 @@ func TestDeleteCmd(t *testing.T) {
 
 	otherNspace := &namespace.Namespace{Name: "other"}
 	ts := client.NewTestServer(t, []*namespace.Namespace{nspace, nspaceUser, otherNspace}, newCmd)
-	defer ts.Shutdown(t)
 
 	// createTuple is a helper that creates a tuple via the create command so we can then delete it.
 	createTuple := func(t *testing.T, tuple *ketoapi.RelationTuple) {

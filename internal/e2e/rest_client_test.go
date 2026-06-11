@@ -20,12 +20,12 @@ import (
 	"github.com/ory/herodot"
 	"github.com/ory/x/healthx"
 
+	rts "github.com/ory/keto/gen/go/ory/keto/relation_tuples/v1alpha2"
 	"github.com/ory/keto/internal/check"
 	"github.com/ory/keto/internal/expand"
 	httpclient "github.com/ory/keto/internal/httpclient"
 	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/ketoapi"
-	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 	"github.com/ory/keto/schema"
 )
 

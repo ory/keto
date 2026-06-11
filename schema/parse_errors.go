@@ -9,8 +9,8 @@ import (
 	"strings"
 	"unicode"
 
+	opl "github.com/ory/keto/gen/go/ory/keto/opl/v1alpha1"
 	"github.com/ory/keto/ketoapi"
-	opl "github.com/ory/keto/proto/ory/keto/opl/v1alpha1"
 )
 
 type (

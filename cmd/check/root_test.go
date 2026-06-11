@@ -29,7 +29,6 @@ func TestCheckCommand(t *testing.T) {
 	}
 
 	ts := client.NewTestServer(t, []*namespace.Namespace{nspace, nspaceUser}, newCmd)
-	defer ts.Shutdown(t)
 
 	tuple1 := helpers.RandomTupleWithSubjectID(nspace.Name)
 	tuple2 := helpers.RandomTupleWithSubjectSet(nspace.Name, nspaceUser.Name)

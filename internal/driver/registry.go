@@ -7,13 +7,13 @@ import (
 	"context"
 	"net/http"
 
+	"connectrpc.com/connect"
 	"github.com/ory/pop/v6"
 	"github.com/ory/x/healthx"
 	"github.com/ory/x/httpx"
 	"github.com/ory/x/logrusx"
 	"github.com/ory/x/otelx"
 	"github.com/spf13/cobra"
-	"google.golang.org/grpc"
 
 	"github.com/ory/keto/internal/check"
 	"github.com/ory/keto/internal/driver/config"
@@ -46,13 +46,12 @@ type (
 
 		ReadRouter(ctx context.Context) http.Handler
 		WriteRouter(ctx context.Context) http.Handler
-
-		ReadGRPCServer(ctx context.Context) *grpc.Server
-		WriteGRPCServer(ctx context.Context) *grpc.Server
-		OplGRPCServer(ctx context.Context) *grpc.Server
+		OPLSyntaxRouter(ctx context.Context) http.Handler
 
 		ServeAll(ctx context.Context) error
 		ServeAllSQA(cmd *cobra.Command) error
+
+		HandlerOptions() []connect.HandlerOption
 	}
 
 	contextKeys string

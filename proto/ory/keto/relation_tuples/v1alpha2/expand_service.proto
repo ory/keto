@@ -4,13 +4,6 @@ package ory.keto.relation_tuples.v1alpha2;
 
 import "ory/keto/relation_tuples/v1alpha2/relation_tuples.proto";
 
-option go_package = "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2;rts";
-option csharp_namespace = "Ory.Keto.RelationTuples.v1alpha2";
-option java_multiple_files = true;
-option java_outer_classname = "ExpandServiceProto";
-option java_package = "sh.ory.keto.relation_tuples.v1alpha2";
-option php_namespace = "Ory\\Keto\\RelationTuples\\v1alpha2";
-
 // The service that performs subject set expansion
 // based on the stored Access Control Lists.
 //

@@ -7,17 +7,16 @@ import (
 	"bytes"
 	"context"
 	"errors"
-	"net"
+	"net/http/httptest"
 	"strings"
 	"testing"
 	"time"
 
+	"connectrpc.com/connect"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"golang.org/x/sync/errgroup"
-	"google.golang.org/grpc"
 	grpcHealthV1 "google.golang.org/grpc/health/grpc_health_v1"
-	"google.golang.org/grpc/metadata"
 
 	"github.com/ory/x/cmdx"
 
@@ -28,7 +27,6 @@ import (
 
 func TestStatusCmd(t *testing.T) {
 	ts := client.NewTestServer(t, []*namespace.Namespace{{Name: t.Name()}}, newStatusCmd)
-	defer ts.Shutdown(t)
 
 	for _, serverType := range []client.ServerType{client.ReadServer, client.WriteServer} {
 		t.Run("server_type="+string(serverType), func(t *testing.T) {
@@ -50,9 +48,8 @@ func TestStatusCmd(t *testing.T) {
 			t.Run("case=block", func(t *testing.T) {
 				ctx := context.WithValue(t.Context(), client.ContextKeyTimeout, 100*time.Millisecond)
 
-				l, err := net.Listen("tcp", "127.0.0.1:0")
-				require.NoError(t, err)
-				s := ts.NewServer(t, serverType)
+				s := httptest.NewUnstartedServer(ts.NewHandler(t, serverType))
+				s.EnableHTTP2 = true
 
 				startServe := make(chan struct{})
 
@@ -60,7 +57,8 @@ func TestStatusCmd(t *testing.T) {
 				serveErr.Go(func() error {
 					// wait until we get the signal to start
 					<-startServe
-					return s.Serve(l)
+					s.StartTLS()
+					return nil
 				})
 
 				var stdIn, stdErr bytes.Buffer
@@ -82,7 +80,7 @@ func TestStatusCmd(t *testing.T) {
 				require.NoError(t,
 					cmdx.ExecBackgroundCtx(ctx, newStatusCmd(), &stdIn, &stdOut, &stdErr,
 						"--"+FlagEndpoint, string(serverType),
-						"--"+serverType.FlagName(), l.Addr().String(),
+						"--"+serverType.FlagName(), s.Listener.Addr().String(),
 						"--insecure-skip-hostname-verification=true",
 						"--"+client.FlagBlock,
 					).Wait(),
@@ -91,36 +89,32 @@ func TestStatusCmd(t *testing.T) {
 				fullStdOut := stdOut.String()
 				assert.True(t, strings.HasSuffix(fullStdOut, "\n"+grpcHealthV1.HealthCheckResponse_SERVING.String()+"\n"), fullStdOut)
 
-				s.GracefulStop()
 				require.NoError(t, serveErr.Wait())
 			})
 		})
 	}
 }
 
-func authInterceptor(header, validValue string) func(ctx context.Context, req any, _ *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp any, err error) {
-	return func(ctx context.Context, req any, _ *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp any, err error) {
-		md, ok := metadata.FromIncomingContext(ctx)
-		if !ok {
-			return nil, errors.New("not authorized, no metadata")
+func authInterceptor(header, validValue string) connect.UnaryInterceptorFunc {
+	return func(next connect.UnaryFunc) connect.UnaryFunc {
+		return func(ctx context.Context, req connect.AnyRequest) (connect.AnyResponse, error) {
+			val := req.Header().Get(header)
+			if val == "" {
+				return nil, errors.New("not authorized, no header values")
+			}
+			if val != validValue {
+				return nil, errors.New("not authorized, incorrect value")
+			}
+			return next(ctx, req)
 		}
-		vals := md.Get(header)
-		if len(vals) != 1 {
-			return nil, errors.New("not authorized, no header values")
-		}
-		if vals[0] != validValue {
-			return nil, errors.New("not authorized, incorrect value")
-		}
-		return handler(ctx, req)
 	}
 }
 
 func TestAuthorizedRequest(t *testing.T) {
 	ts := client.NewTestServer(
 		t, []*namespace.Namespace{{Name: t.Name()}}, newStatusCmd,
-		driver.WithGRPCUnaryInterceptors(authInterceptor("authorization", "Bearer secret")),
+		driver.WithHandlerOptions(connect.WithInterceptors(authInterceptor("authorization", "Bearer secret"))),
 	)
-	defer ts.Shutdown(t)
 
 	t.Run("case=not authorized", func(t *testing.T) {
 		out := ts.Cmd.ExecExpectedErr(t)
@@ -137,9 +131,8 @@ func TestAuthorizedRequest(t *testing.T) {
 func TestAuthorityRequest(t *testing.T) {
 	ts := client.NewTestServer(
 		t, []*namespace.Namespace{{Name: t.Name()}}, newStatusCmd,
-		driver.WithGRPCUnaryInterceptors(authInterceptor(":authority", "example.com")),
+		driver.WithHandlerOptions(connect.WithInterceptors(authInterceptor("Host", "example.com"))),
 	)
-	defer ts.Shutdown(t)
 
 	t.Run("case=no authority", func(t *testing.T) {
 		out := ts.Cmd.ExecExpectedErr(t)

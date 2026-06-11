@@ -14,11 +14,11 @@ import (
 	"github.com/ory/x/randx"
 	"github.com/spf13/cobra"
 
+	rts "github.com/ory/keto/gen/go/ory/keto/relation_tuples/v1alpha2"
 	"github.com/ory/keto/internal/driver"
 	"github.com/ory/keto/internal/persistence"
 	"github.com/ory/keto/ketoapi"
 	"github.com/ory/keto/ketoctx"
-	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 )
 
 func NewRegistry(cmd *cobra.Command, opts []ketoctx.Option) (driver.Registry, error) {

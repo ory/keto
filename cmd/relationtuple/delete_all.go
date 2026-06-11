@@ -11,7 +11,7 @@ import (
 	"github.com/ory/x/cmdx"
 
 	"github.com/ory/keto/cmd/client"
-	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
+	rts "github.com/ory/keto/gen/go/ory/keto/relation_tuples/v1alpha2"
 )
 
 const (
