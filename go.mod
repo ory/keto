@@ -4,7 +4,6 @@ module github.com/ory/keto
 
 replace (
 	github.com/ory/keto/gen/go => ./gen/go
-	github.com/ory/keto/proto => ./proto
 	github.com/ory/x => ./oryx
 )
 
@@ -25,7 +24,6 @@ require (
 	github.com/ory/herodot v0.10.9-0.20260330111132-da75ef0fbc22
 	github.com/ory/jsonschema/v3 v3.0.9-0.20250317235931-280c5fc7bf0e
 	github.com/ory/keto/gen/go v0.0.0-00010101000000-000000000000
-	github.com/ory/keto/proto v0.0.0-00010101000000-000000000000
 	github.com/ory/pop/v6 v6.4.2-0.20260507161217-89126558d369
 	github.com/ory/x v0.0.0-00010101000000-000000000000
 	github.com/pelletier/go-toml v1.9.5

@@ -16,16 +16,6 @@ plugins:
     out: gen/go
     opt: paths=source_relative
 
-    # remove once generated code is removed from the proto directory
-  - local: ["go", "tool", "protoc-gen-go"]
-    out: proto
-    opt: paths=source_relative
-
-    # remove once generated code is removed from the proto directory
-  - local: ["go", "tool", "protoc-gen-go-grpc"]
-    out: proto
-    opt: paths=source_relative
-
   - local: ["npx", "@bufbuild/protoc-gen-es"]
     out: gen/es
 

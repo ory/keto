@@ -1,4 +1,4 @@
-name: Release the go gRPC client as `proto/$VERSION`
+name: Release the go gRPC client as `gen/go/$VERSION`
 
 on:
   workflow_dispatch:
@@ -17,7 +17,7 @@ env:
 jobs:
   tag:
     #   this is set on dispatch        this should prevent the action from triggering itself
-    if: github.event.inputs.version || !startsWith('proto/', github.ref)
+    if: github.event.inputs.version || !startsWith(github.ref, 'gen/go/')
     runs-on: ubuntu-latest
     name: Publish
     steps:
@@ -27,15 +27,15 @@ jobs:
           check-latest: true
           go-version-file: go.mod
       - name: Download dependencies
-        run: cd proto; go mod tidy
+        run: go -C gen/go mod tidy
       - name: Test
-        run: cd proto; go test ./...
+        run: go -C gen/go test ./...
       - name: Create git tag
         run: |
-          git config --local user.email "zepatrik@users.noreply.github.com"
-          git config --local user.name "zepatrik"
+          git config --global user.email "60093411+ory-bot@users.noreply.github.com"
+          git config --global user.name "ory-bot"
           RELEASE_VERSION="$(sed 's#^refs/tags/##' <(echo "$RELEASE_REF"))"
-          git tag -a "proto/$RELEASE_VERSION" -m "Release $RELEASE_VERSION of the go gRPC Client. See CHANGELOG.md for more info."
-          git push origin "proto/$RELEASE_VERSION"
+          git tag -a "gen/go/$RELEASE_VERSION" -m "Release $RELEASE_VERSION of the go gRPC Client. See CHANGELOG.md for more info."
+          git push origin "gen/go/$RELEASE_VERSION"
         env:
           RELEASE_REF: ${{ github.event.inputs.version || github.ref }}

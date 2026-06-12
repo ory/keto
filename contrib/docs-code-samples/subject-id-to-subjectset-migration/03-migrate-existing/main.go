@@ -11,7 +11,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
-	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
+	rts "github.com/ory/keto/gen/go/ory/keto/relation_tuples/v1alpha2"
 )
 
 const batchSize = 100

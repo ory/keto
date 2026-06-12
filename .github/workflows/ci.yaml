@@ -79,14 +79,9 @@ jobs:
         with:
           check-latest: true
           go-version-file: go.mod
-      - name: Test proto package
-        run: |
-          cd proto
-          go mod tidy
-          go test ./...
+      - name: Test gen/go package
+        run: go -C gen/go test ./...
       - name: Test Keto
-        env:
-          GOLANG_PROTOBUF_REGISTRATION_CONFLICT: warn
         run: |
           go test -coverprofile coverage.txt  ./...
           grep -v "ory/keto/internal/httpclient" coverage.txt > coverage_cleared.txt
@@ -107,9 +102,7 @@ jobs:
         with:
           check-latest: true
           go-version-file: go.mod
-      - env:
-          GOLANG_PROTOBUF_REGISTRATION_CONFLICT: warn
-        run: |
+      - run: |
           go test -race -short ./...
 
   docs-cli:
@@ -210,7 +203,7 @@ jobs:
         run: |
           git config --local user.email "60093411+ory-bot@users.noreply.github.com"
           git config --local user.name "ory-bot"
-          git add proto
+          git add gen
           git commit -a -m "autogen: build buf" && git push "https://${GITHUB_ACTOR}:${{ secrets.ORY_BOT_PAT }}@github.com/${GITHUB_REPOSITORY}.git" "HEAD:${GITHUB_REF#"refs/heads/"}" || true
         working-directory: current-repo
       - if: ${{ github.ref_name == 'master' || github.ref_type == 'tag' }}

@@ -1,3 +1,4 @@
+// Deprecated: This module is replaced by github.com/ory/keto/gen/go. Please update your imports to use the new module path.
 module github.com/ory/keto/proto
 
 go 1.26

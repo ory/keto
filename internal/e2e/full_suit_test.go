@@ -73,11 +73,6 @@ func Test(t *testing.T) {
 					writeAddr,
 					oplAddr,
 				),
-				newGrpcClientLegacy(t, ctx,
-					readAddr,
-					writeAddr,
-					oplAddr,
-				),
 				&restClient{
 					readURL:      "http://" + readAddr,
 					writeURL:     "http://" + writeAddr,
