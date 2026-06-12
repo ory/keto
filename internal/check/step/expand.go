@@ -37,7 +37,7 @@ func (s ExpandSubjectStep) Execute(ctx context.Context, req check.CheckRequest, 
 		subjectSetTypes = nil
 	}
 
-	results, err := ex.Deps().Traverser().TraverseSubjectSetExpansion(ctx, req.Tuple, subjectSetTypes)
+	results, err := ex.Deps().RelationTupleManager().TraverseSubjectSetExpansion(ctx, req.Tuple, subjectSetTypes)
 	if errors.Is(err, herodot.ErrNotFound()) {
 		return check.ResultNotMember
 	} else if err != nil {

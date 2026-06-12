@@ -23,10 +23,6 @@ type (
 		Connection(ctx context.Context) *pop.Connection
 		NetworkID(ctx context.Context) uuid.UUID
 		SetNetwork(nid uuid.UUID)
-		Transaction(ctx context.Context, f func(ctx context.Context) error) error
-		// WithLatestSnapshot runs f inside a snapshot-isolated read transaction,
-		// ensuring all SQL queries within f see a consistent database state.
-		WithLatestSnapshot(ctx context.Context, f func(ctx context.Context) error) error
 	}
 	Migrator interface {
 		MigrationBox(ctx context.Context, opts ...popx.MigrationBoxOption) (*popx.MigrationBox, error)
@@ -35,7 +31,6 @@ type (
 	}
 	Provider interface {
 		Persister() Persister
-		Traverser() relationtuple.Traverser
 	}
 )
 

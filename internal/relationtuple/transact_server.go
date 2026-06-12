@@ -47,13 +47,14 @@ func (h *WriteHandler) TransactRelationTuples(ctx context.Context, req *connect.
 		return nil, err
 	}
 
-	err = h.d.Transactor().Transaction(ctx, func(ctx context.Context) error {
+	err = h.d.RelationTupleManager().Transaction(ctx, func(ctx context.Context) error {
 		its, err := h.d.Mapper().FromTuple(ctx, append(insertTuples, deleteTuples...)...)
 		if err != nil {
 			return err
 		}
 		return h.d.RelationTupleManager().TransactRelationTuples(ctx, its[:len(insertTuples)], its[len(insertTuples):])
 	})
+
 	if err != nil {
 		return nil, err
 	}
@@ -150,7 +151,7 @@ func (h *WriteHandler) createRelation(w http.ResponseWriter, r *http.Request) {
 
 	h.d.Logger().WithFields(rt.ToLoggerFields()).Debug("creating relation tuple")
 
-	err := h.d.Transactor().Transaction(ctx, func(ctx context.Context) error {
+	err := h.d.RelationTupleManager().Transaction(ctx, func(ctx context.Context) error {
 		it, err := h.d.Mapper().FromTuple(ctx, &rt)
 		if err != nil {
 			h.d.Logger().WithError(err).WithFields(rt.ToLoggerFields()).Errorf("could not map relation tuple to UUIDs")
@@ -162,6 +163,7 @@ func (h *WriteHandler) createRelation(w http.ResponseWriter, r *http.Request) {
 		}
 		return nil
 	})
+
 	if err != nil {
 		h.d.Writer().WriteError(w, r, err)
 		return
@@ -298,7 +300,7 @@ func (h *WriteHandler) patchRelationTuples(w http.ResponseWriter, r *http.Reques
 	insertTuples := internalTuplesWithAction(deltas, ketoapi.ActionInsert)
 	deleteTuples := internalTuplesWithAction(deltas, ketoapi.ActionDelete)
 
-	err := h.d.Transactor().Transaction(ctx, func(ctx context.Context) error {
+	err := h.d.RelationTupleManager().Transaction(ctx, func(ctx context.Context) error {
 		its, err := h.d.Mapper().FromTuple(ctx, append(insertTuples, deleteTuples...)...)
 		if err != nil {
 			h.d.Logger().WithError(err).Errorf("got an error while mapping fields to UUID")
@@ -306,6 +308,7 @@ func (h *WriteHandler) patchRelationTuples(w http.ResponseWriter, r *http.Reques
 		}
 		return h.d.RelationTupleManager().TransactRelationTuples(ctx, its[:len(insertTuples)], its[len(insertTuples):])
 	})
+
 	if err != nil {
 		h.d.Writer().WriteError(w, r, err)
 		return

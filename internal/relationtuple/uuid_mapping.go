@@ -5,7 +5,6 @@ package relationtuple
 
 import (
 	"context"
-	"testing"
 
 	"github.com/ory/x/otelx"
 	"go.opentelemetry.io/otel/trace"
@@ -14,8 +13,6 @@ import (
 	"github.com/ory/keto/ketoapi"
 
 	"github.com/gofrs/uuid"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 type (
@@ -397,45 +394,4 @@ func (m *Mapper) ToTree(ctx context.Context, tree *Tree) (_ *ketoapi.Tree[*ketoa
 		*ptr = s[i]
 	}
 	return res, nil
-}
-
-func MappingManagerTest(t *testing.T, m MappingManager) {
-	ctx := context.Background()
-
-	t.Run("case=str -> uuid -> str", func(t *testing.T) {
-		const s = "rep1"
-		u, err := m.MapStringsToUUIDs(ctx, s)
-		require.NoError(t, err)
-
-		actual, err := m.MapUUIDsToStrings(ctx, u[0])
-		require.NoError(t, err)
-		require.Len(t, actual, 1)
-		assert.Equal(t, s, actual[0])
-
-		t.Run("case=batch", func(t *testing.T) {
-			s := []string{"rep1", "rep2", "rep3"}
-
-			u, err := m.MapStringsToUUIDs(ctx, s...)
-			require.NoError(t, err)
-			require.Len(t, u, len(s))
-
-			assert.NotContains(t, u, uuid.Nil)
-
-			actual, err := m.MapUUIDsToStrings(ctx, u...)
-			require.NoError(t, err)
-			require.Len(t, actual, len(s))
-			assert.Equal(t, s, actual)
-		})
-	})
-
-	t.Run("case=deterministic MapStringsToUUIDs", func(t *testing.T) {
-		const s = "some string"
-
-		u0, err := m.MapStringsToUUIDs(ctx, s)
-		require.NoError(t, err)
-		u1, err := m.MapStringsToUUIDs(ctx, s)
-		require.NoError(t, err)
-
-		assert.Equal(t, u0, u1)
-	})
 }

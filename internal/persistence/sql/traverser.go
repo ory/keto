@@ -9,7 +9,6 @@ import (
 	"strings"
 
 	"github.com/gofrs/uuid"
-	"github.com/ory/pop/v6"
 	"github.com/ory/x/otelx"
 	"github.com/ory/x/sqlcon"
 	"github.com/pkg/errors"
@@ -20,12 +19,6 @@ import (
 )
 
 type (
-	Traverser struct {
-		conn *pop.Connection
-		d    dependencies
-		p    *Persister
-	}
-
 	subjectExpandedRelationTupleRow struct {
 		RelationTuple
 
@@ -68,7 +61,7 @@ func buildSubjectSetTypeSQL(allowedSubjectSets []relationtuple.SubjectSetType) (
 // TraverseSubjectSetExpansion gets all subject sets for the object#relation and checks
 // whether the requested subject is a member of each. When allowedSubjectSets is non-empty,
 // only subject-set pointers matching the declared (namespace, relation) pairs are returned.
-func (t *Traverser) TraverseSubjectSetExpansion(ctx context.Context, start *relationtuple.RelationTuple, allowedSubjectSets []relationtuple.SubjectSetType) (res []*relationtuple.TraversalResult, err error) {
+func (t *Persister) TraverseSubjectSetExpansion(ctx context.Context, start *relationtuple.RelationTuple, allowedSubjectSets []relationtuple.SubjectSetType) (res []*relationtuple.TraversalResult, err error) {
 	ctx, span := t.d.Tracer(ctx).Tracer().Start(ctx, "persistence.sql.TraverseSubjectSetExpansion")
 	defer otelx.End(span, &err)
 
@@ -90,11 +83,11 @@ func (t *Traverser) TraverseSubjectSetExpansion(ctx context.Context, start *rela
 		)
 		queryArgs := make([]any, 0)
 		queryArgs = append(queryArgs, targetSubjectArgs...)
-		queryArgs = append(queryArgs, t.p.NetworkID(ctx), shardID, start.Namespace, start.Object, start.Relation)
+		queryArgs = append(queryArgs, t.NetworkID(ctx), shardID, start.Namespace, start.Object, start.Relation)
 		queryArgs = append(queryArgs, subjectSetFilterArgs...)
 		queryArgs = append(queryArgs, limit)
 
-		err = t.p.Connection(ctx).RawQuery(fmt.Sprintf(`
+		err = t.Connection(ctx).RawQuery(fmt.Sprintf(`
 SELECT current.shard_id AS shard_id,
        current.subject_set_namespace AS namespace,
        current.subject_set_object AS object,
@@ -148,7 +141,7 @@ LIMIT ?
 	return res, nil
 }
 
-func (t *Traverser) FindTupleWithRelations(ctx context.Context, tuple *relationtuple.RelationTuple, relations []string) (_ *relationtuple.RelationTuple, err error) {
+func (t *Persister) FindTupleWithRelations(ctx context.Context, tuple *relationtuple.RelationTuple, relations []string) (_ *relationtuple.RelationTuple, err error) {
 	ctx, span := t.d.Tracer(ctx).Tracer().Start(ctx, "persistence.sql.FindTupleWithRelations")
 	defer otelx.End(span, &err)
 
@@ -157,8 +150,8 @@ func (t *Traverser) FindTupleWithRelations(ctx context.Context, tuple *relationt
 	}
 	var rows relationTuples
 
-	query := t.p.queryWithNetwork(ctx)
-	if err := t.p.whereQuery(ctx, query, &relationtuple.RelationQuery{
+	query := t.queryWithNetwork(ctx)
+	if err := t.whereQuery(ctx, query, &relationtuple.RelationQuery{
 		Namespace: &tuple.Namespace,
 		Object:    &tuple.Object,
 		Subject:   tuple.Subject,
@@ -176,12 +169,4 @@ func (t *Traverser) FindTupleWithRelations(ctx context.Context, tuple *relationt
 	}
 
 	return nil, nil
-}
-
-func NewTraverser(p *Persister) *Traverser {
-	return &Traverser{
-		conn: p.conn,
-		d:    p.d,
-		p:    p,
-	}
 }

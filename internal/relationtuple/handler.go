@@ -27,7 +27,6 @@ type (
 		httpx.WriterProvider
 		otelx.Provider
 		x.NetworkIDProvider
-		x.TransactorProvider
 		x.HandlerOptionsProvider
 	}
 	ReadHandler struct {

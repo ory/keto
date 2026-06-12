@@ -13,31 +13,31 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/ory/keto/internal/driver"
+	"github.com/ory/keto/internal/persistence"
 	"github.com/ory/keto/internal/persistence/sql"
-	"github.com/ory/keto/internal/relationtuple"
+	relationtupletest "github.com/ory/keto/internal/relationtuple/test"
 	"github.com/ory/keto/internal/x/dbx"
 )
 
 func TestPersister(t *testing.T) {
 	t.Parallel()
 
-	setup := func(t *testing.T, dsn *dbx.DsnT) (p *sql.Persister, r *driver.RegistryDefault, hook *test.Hook) {
+	setup := func(t *testing.T, dsn *dbx.DsnT) (p persistence.Persister, r *driver.RegistryDefault, hook *test.Hook) {
 		r = driver.NewTestRegistry(t, dsn)
-		p, ok := r.Persister().(*sql.Persister)
-		require.True(t, ok)
+		p = r.Persister()
+		require.NotNil(t, p)
 		require.NoError(t, r.MigrateUp(context.Background()))
 		return
 	}
 
 	for _, dsn := range dbx.GetDSNs(t) {
-		dsn := dsn
 		t.Run(fmt.Sprintf("dsn=%s", dsn.Name), func(t *testing.T) {
 			t.Parallel()
 
 			t.Run("relationtuple.ManagerTest", func(t *testing.T) {
 				p, _, _ := setup(t, dsn)
 
-				relationtuple.ManagerTest(t, p)
+				relationtupletest.ManagerTest(t, p)
 			})
 
 			t.Run("relationtuple.IsolationTest", func(t *testing.T) {
@@ -50,17 +50,12 @@ func TestPersister(t *testing.T) {
 				require.NoError(t, err)
 
 				// same registry, but different persisters only differing in the network ID
-				relationtuple.IsolationTest(t, p0, p1)
+				relationtupletest.IsolationTest(t, p0, p1)
 			})
 
 			t.Run("relationtuple.UUIDMappingManagerTest", func(t *testing.T) {
 				p, _, _ := setup(t, dsn)
-				relationtuple.MappingManagerTest(t, p)
-			})
-
-			t.Run("relationtuple.TraverserTest", func(t *testing.T) {
-				p, _, _ := setup(t, dsn)
-				relationtuple.TraverserTest(t, p, sql.NewTraverser(p))
+				relationtupletest.MappingManagerTest(t, p)
 			})
 		})
 	}

@@ -29,7 +29,7 @@ func (s DirectMultiStep) Execute(ctx context.Context, req check.CheckRequest, ex
 		WithField("relations", s.Relations).
 		Trace("check direct multi")
 
-	res, err := ex.Deps().Traverser().FindTupleWithRelations(ctx, req.Tuple, s.Relations)
+	res, err := ex.Deps().RelationTupleManager().FindTupleWithRelations(ctx, req.Tuple, s.Relations)
 	if err != nil {
 		return check.Result{Err: errors.WithStack(err)}
 	}

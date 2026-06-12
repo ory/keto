@@ -26,10 +26,6 @@ type (
 		Relation  string
 	}
 
-	Traverser interface {
-		TraverseSubjectSetExpansion(ctx context.Context, tuple *RelationTuple, allowedSubjectSets []SubjectSetType) ([]*TraversalResult, error)
-		FindTupleWithRelations(ctx context.Context, tuple *RelationTuple, relations []string) (*RelationTuple, error)
-	}
 	Manager interface {
 		GetRelationTuples(ctx context.Context, query *RelationQuery, options ...keysetpagination.Option) ([]*RelationTuple, *keysetpagination.Paginator, error)
 		ExistsRelationTuples(ctx context.Context, query *RelationQuery) (bool, error)
@@ -37,6 +33,22 @@ type (
 		DeleteRelationTuples(ctx context.Context, rs ...*RelationTuple) error
 		DeleteAllRelationTuples(ctx context.Context, query *RelationQuery) error
 		TransactRelationTuples(ctx context.Context, insert []*RelationTuple, delete []*RelationTuple) error
+		// TraverseSubjectSetExpansion gets all subject sets for the tuple's
+		// object#relation and checks whether the tuple's subject is a member of
+		// each. When allowedSubjectSets is non-empty, only subject-set pointers
+		// matching the declared (namespace, relation) pairs are considered.
+		TraverseSubjectSetExpansion(ctx context.Context, tuple *RelationTuple, allowedSubjectSets []SubjectSetType) ([]*TraversalResult, error)
+		// FindTupleWithRelations returns the first tuple that matches the given
+		// tuple on namespace, object, and subject and has any of the given
+		// relations, or nil if there is none.
+		FindTupleWithRelations(ctx context.Context, tuple *RelationTuple, relations []string) (*RelationTuple, error)
+
+		// Transaction runs f inside a database transaction. Nested calls reuse
+		// the outer transaction.
+		Transaction(ctx context.Context, f func(ctx context.Context) error) error
+		// WithLatestSnapshot runs f inside a snapshot-isolated read transaction,
+		// ensuring all SQL queries within f see a consistent database state.
+		WithLatestSnapshot(ctx context.Context, f func(ctx context.Context) error) error
 	}
 	SubjectID struct {
 		ID uuid.UUID `json:"id"`
@@ -237,6 +249,22 @@ func (t *ManagerWrapper) DeleteAllRelationTuples(ctx context.Context, query *Rel
 
 func (t *ManagerWrapper) TransactRelationTuples(ctx context.Context, insert []*RelationTuple, delete []*RelationTuple) error {
 	return t.Reg.RelationTupleManager().TransactRelationTuples(ctx, insert, delete)
+}
+
+func (t *ManagerWrapper) TraverseSubjectSetExpansion(ctx context.Context, tuple *RelationTuple, allowedSubjectSets []SubjectSetType) ([]*TraversalResult, error) {
+	return t.Reg.RelationTupleManager().TraverseSubjectSetExpansion(ctx, tuple, allowedSubjectSets)
+}
+
+func (t *ManagerWrapper) FindTupleWithRelations(ctx context.Context, tuple *RelationTuple, relations []string) (*RelationTuple, error) {
+	return t.Reg.RelationTupleManager().FindTupleWithRelations(ctx, tuple, relations)
+}
+
+func (t *ManagerWrapper) Transaction(ctx context.Context, f func(ctx context.Context) error) error {
+	return t.Reg.RelationTupleManager().Transaction(ctx, f)
+}
+
+func (t *ManagerWrapper) WithLatestSnapshot(ctx context.Context, f func(ctx context.Context) error) error {
+	return t.Reg.RelationTupleManager().WithLatestSnapshot(ctx, f)
 }
 
 func (t *ManagerWrapper) RelationTupleManager() Manager {

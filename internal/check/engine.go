@@ -16,7 +16,6 @@ import (
 	"github.com/ory/keto/x/events"
 
 	"github.com/ory/keto/internal/driver/config"
-	"github.com/ory/keto/internal/persistence"
 	"github.com/ory/keto/internal/relationtuple"
 	"github.com/ory/keto/ketoapi"
 )
@@ -34,7 +33,6 @@ type (
 		relationtuple.ManagerProvider
 		relationtuple.MapperProvider
 		CheckerProvider
-		persistence.Provider
 		config.Provider
 		logrusx.Provider
 		otelx.Provider
@@ -79,7 +77,7 @@ func (e *Engine) CheckRelationTuple(ctx context.Context, r *relationTuple, restD
 	ctx, span := e.dep.Tracer(ctx).Tracer().Start(ctx, "Engine.CheckRelationTuple")
 	defer otelx.End(span, &res.Err)
 
-	txErr := e.dep.Persister().WithLatestSnapshot(ctx, func(ctx context.Context) error {
+	txErr := e.dep.RelationTupleManager().WithLatestSnapshot(ctx, func(ctx context.Context) error {
 		res = e.dep.Checker().CheckRelationTuple(ctx, r, restDepth)
 		return res.Err
 	})

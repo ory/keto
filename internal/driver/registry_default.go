@@ -41,7 +41,6 @@ import (
 	"github.com/ory/keto/internal/persistence/sql"
 	"github.com/ory/keto/internal/persistence/sql/migrations/uuidmapping"
 	"github.com/ory/keto/internal/relationtuple"
-	"github.com/ory/keto/internal/x"
 	"github.com/ory/keto/ketoctx"
 )
 
@@ -59,7 +58,6 @@ type (
 	RegistryDefault struct {
 		relationtuplesconnect.UnimplementedVersionServiceHandler
 		p               persistence.Persister
-		traverser       relationtuple.Traverser
 		mb              *popx.MigrationBox
 		extraMigrations []fs.FS
 		l               *logrusx.Logger
@@ -253,13 +251,6 @@ func (r *RegistryDefault) MapperNamespace(ctx context.Context) uuid.UUID {
 	return r.p.NetworkID(ctx)
 }
 
-func (r *RegistryDefault) Traverser() relationtuple.Traverser {
-	if r.traverser == nil {
-		panic("no traverser, but expected to have one")
-	}
-	return r.traverser
-}
-
 func (r *RegistryDefault) PermissionEngine() *check.Engine {
 	if r.ce == nil {
 		r.ce = check.NewEngine(r)
@@ -371,7 +362,6 @@ func (r *RegistryDefault) InitWithoutNetworkID(ctx context.Context) error {
 			return
 		}
 		r.p = p
-		r.traverser = sql.NewTraverser(p)
 		r.initEngines()
 	})
 	return r.init1err
@@ -399,12 +389,4 @@ func (r *RegistryDefault) Init(ctx context.Context) (err error) {
 		r.p.SetNetwork(network.ID)
 	})
 	return r.init2err
-}
-
-var _ x.TransactorProvider = (*RegistryDefault)(nil)
-
-func (r *RegistryDefault) Transactor() interface {
-	Transaction(ctx context.Context, f func(ctx context.Context) error) error
-} {
-	return r.Persister()
 }
