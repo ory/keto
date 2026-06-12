@@ -18,7 +18,7 @@
   "devDependencies": {
     "@bufbuild/protoc-gen-es": "2.11.0",
     "@connectrpc/protoc-gen-connect-es": "1.7.0",
-    "@openapitools/openapi-generator-cli": "2.26.0",
+    "@openapitools/openapi-generator-cli": "2.38.0",
     "@ory/keto-namespace-types": "file:contrib/namespace-type-lib",
     "doctoc": "2.4.0",
     "license-checker": "25.0.1",
