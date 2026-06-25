@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Test Migration
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: actions/setup-go@v6
         with:
           check-latest: true
