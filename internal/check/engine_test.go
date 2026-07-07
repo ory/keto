@@ -297,6 +297,9 @@ var testcases = []struct {
 		expectedNonMembers: []string{
 			"File:secret-doc#canEdit@User:Eve",
 			"File:secret-doc#canView@User:Eve",
+
+			"File:secret-doc#canEdit@Eve",
+			"File:secret-doc#canView@Eve",
 		},
 	},
 	{

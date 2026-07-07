@@ -69,13 +69,14 @@ func planRewrite(ctx context.Context, ex check.Executor, req check.CheckRequest,
 				return nil, err
 			}
 
-			// In strict mode, skip direct checks for relations that have their
-			// own subject-set rewrite; the rewrite handles them in memory.
+			// In strict mode, skip direct checks for relations where OPL does not
+			// allow a direct subject match, mirroring the DirectStep gate in
+			// IsAllowedStep so nested and top-level checks agree.
 			var directRelations []string
 			isStrictMode := ex.Deps().Config(ctx).StrictMode()
 			for _, rel := range computedRelations {
 				astRel, _ := namespace.ASTRelationFor(ctx, namespaceManager, req.Tuple.Namespace, rel)
-				if isStrictMode && astRel != nil && astRel.SubjectSetRewrite != nil {
+				if isStrictMode && !AllowsDirectMember(astRel, req.Tuple.Subject) {
 					continue
 				}
 				directRelations = append(directRelations, rel)

@@ -19,11 +19,13 @@ type (
 		RelationTupleManager() Manager
 	}
 
-	// SubjectSetType identifies a subject-set by its target namespace and relation,
-	// as declared in OPL
+	// SubjectSetType identifies a subject-set pointer by its target namespace and
+	// relation, as declared in OPL. AllowsDirect indicates that OPL permits a
+	// direct subject match for this type.
 	SubjectSetType struct {
-		Namespace string
-		Relation  string
+		Namespace    string
+		Relation     string
+		AllowsDirect bool
 	}
 
 	Manager interface {

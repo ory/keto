@@ -16,8 +16,9 @@ import (
 
 // ExpandSubjectStep expands subject-set pointers under the tuple's relation and recursively checks each one.
 type ExpandSubjectStep struct {
-	StrictMode bool
-	// SubjectSetTypes are the subject-set types declared in OPL for this relation.
+	// SubjectSetTypes are the OPL-declared subject-set types for this relation.
+	// When empty, all subject-set pointers are expanded.
+	// When non-empty, these types can be used to narrow down the expansion.
 	SubjectSetTypes []relationtuple.SubjectSetType
 }
 
@@ -32,12 +33,7 @@ func (s ExpandSubjectStep) Execute(ctx context.Context, req check.CheckRequest, 
 		WithField("request", req.Tuple.String()).
 		Trace("check expand subject")
 
-	subjectSetTypes := s.SubjectSetTypes
-	if !s.StrictMode {
-		subjectSetTypes = nil
-	}
-
-	results, err := ex.Deps().RelationTupleManager().TraverseSubjectSetExpansion(ctx, req.Tuple, subjectSetTypes)
+	results, err := ex.Deps().RelationTupleManager().TraverseSubjectSetExpansion(ctx, req.Tuple, s.SubjectSetTypes)
 	if errors.Is(err, herodot.ErrNotFound()) {
 		return check.ResultNotMember
 	} else if err != nil {

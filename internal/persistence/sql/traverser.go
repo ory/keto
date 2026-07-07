@@ -49,32 +49,85 @@ func buildSubjectSetTypeSQL(allowedSubjectSets []relationtuple.SubjectSetType) (
 	if len(allowedSubjectSets) == 0 {
 		return "", nil
 	}
-	parts := make([]string, len(allowedSubjectSets))
 	args := make([]any, 0, len(allowedSubjectSets)*2)
-	for i, f := range allowedSubjectSets {
-		parts[i] = "(current.subject_set_namespace = ? AND current.subject_set_relation = ?)"
+	for _, f := range allowedSubjectSets {
 		args = append(args, f.Namespace, f.Relation)
 	}
-	return "\nAND (" + strings.Join(parts, " OR ") + ")", args
+	return "\nAND (current.subject_set_namespace, current.subject_set_relation) IN (" + tuplePlaceholders(len(allowedSubjectSets)) + ")", args
 }
 
-// TraverseSubjectSetExpansion gets all subject sets for the object#relation and checks
-// whether the requested subject is a member of each. When allowedSubjectSets is non-empty,
-// only subject-set pointers matching the declared (namespace, relation) pairs are returned.
+// tuplePlaceholders returns n comma-separated "(?, ?)" pairs for use in a
+// row-value IN list.
+func tuplePlaceholders(n int) string {
+	return strings.TrimSuffix(strings.Repeat("(?, ?), ", n), ", ")
+}
+
+// buildFoundExpr builds the SQL expression for the found column.
+//
+// When allowedSubjectSets is empty, found is the result of the EXISTS subquery for every row.
+// When non-empty, AllowsDirect on each entry controls whether found can be true for that type:
+//   - no entries have AllowsDirect: found is always false (literal, no subquery).
+//   - all entries have AllowsDirect: found is the EXISTS result for every row.
+//   - mixed: found can be true only for rows whose type is in the AllowsDirect set
+func buildFoundExpr(allowedSubjectSets []relationtuple.SubjectSetType, subject relationtuple.Subject) (string, []any, error) {
+	var directTypes []relationtuple.SubjectSetType
+	if len(allowedSubjectSets) > 0 {
+		for _, t := range allowedSubjectSets {
+			if t.AllowsDirect {
+				directTypes = append(directTypes, t)
+			}
+		}
+		if len(directTypes) == 0 {
+			return "false", nil, nil
+		}
+	}
+
+	subjectSQL, subjectArgs, err := whereSubject(subject)
+	if err != nil {
+		return "", nil, err
+	}
+
+	existsQuery := fmt.Sprintf(`EXISTS(
+           SELECT 1 FROM keto_relation_tuples
+           WHERE nid = current.nid AND
+                 namespace = current.subject_set_namespace AND
+                 object = current.subject_set_object AND
+                 relation = current.subject_set_relation AND
+                 %s
+       )`, subjectSQL)
+
+	// No filter, or all types allow direct membership: EXISTS runs for every matched row.
+	if len(allowedSubjectSets) == 0 || len(directTypes) == len(allowedSubjectSets) {
+		return existsQuery, subjectArgs, nil
+	}
+
+	// Only some types allow direct membership: gate the EXISTS result to those
+	// types. The EXISTS subquery may still be evaluated for every returned row.
+	args := make([]any, 0, len(subjectArgs)+len(directTypes)*2)
+	args = append(args, subjectArgs...)
+	for _, t := range directTypes {
+		args = append(args, t.Namespace, t.Relation)
+	}
+	return fmt.Sprintf("(%s AND (current.subject_set_namespace, current.subject_set_relation) IN (%s))", existsQuery, tuplePlaceholders(len(directTypes))), args, nil
+}
+
+// TraverseSubjectSetExpansion gets all subject-set pointers for the object#relation and
+// checks whether the requested subject is a direct member of each. When allowedSubjectSets
+// is non-empty, only pointers matching the declared (namespace, relation) pairs are returned,
+// and AllowsDirect on each type controls whether a direct membership check(subquery) is performed.
 func (t *Persister) TraverseSubjectSetExpansion(ctx context.Context, start *relationtuple.RelationTuple, allowedSubjectSets []relationtuple.SubjectSetType) (res []*relationtuple.TraversalResult, err error) {
 	ctx, span := t.d.Tracer(ctx).Tracer().Start(ctx, "persistence.sql.TraverseSubjectSetExpansion")
 	defer otelx.End(span, &err)
 
-	targetSubjectSQL, targetSubjectArgs, err := whereSubject(start.Subject)
+	var rowCount int
+	defer func() { span.SetAttributes(attribute.Int("tuples_loaded", rowCount)) }()
+
+	foundExpr, foundArgs, err := buildFoundExpr(allowedSubjectSets, start.Subject)
 	if err != nil {
 		return nil, err
 	}
 
-	var rowCount int
-	defer func() { span.SetAttributes(attribute.Int("tuples_loaded", rowCount)) }()
-
 	subjectSetFilterSQL, subjectSetFilterArgs := buildSubjectSetTypeSQL(allowedSubjectSets)
-
 	shardID := uuid.Nil
 	for {
 		var (
@@ -82,7 +135,7 @@ func (t *Persister) TraverseSubjectSetExpansion(ctx context.Context, start *rela
 			limit = 1000
 		)
 		queryArgs := make([]any, 0)
-		queryArgs = append(queryArgs, targetSubjectArgs...)
+		queryArgs = append(queryArgs, foundArgs...)
 		queryArgs = append(queryArgs, t.NetworkID(ctx), shardID, start.Namespace, start.Object, start.Relation)
 		queryArgs = append(queryArgs, subjectSetFilterArgs...)
 		queryArgs = append(queryArgs, limit)
@@ -92,14 +145,7 @@ SELECT current.shard_id AS shard_id,
        current.subject_set_namespace AS namespace,
        current.subject_set_object AS object,
        current.subject_set_relation AS relation,
-       EXISTS(
-           SELECT 1 FROM keto_relation_tuples
-           WHERE nid = current.nid AND
-                 namespace = current.subject_set_namespace AND
-                 object = current.subject_set_object AND
-                 relation = current.subject_set_relation AND
-                 %s  -- subject where clause
-       ) AS found
+       %s AS found
 FROM keto_relation_tuples AS current
 WHERE current.nid = ? AND
       current.shard_id > ? AND
@@ -110,7 +156,7 @@ WHERE current.nid = ? AND
 	  %s
 ORDER BY current.shard_id
 LIMIT ?
-`, targetSubjectSQL, subjectSetFilterSQL),
+`, foundExpr, subjectSetFilterSQL),
 			queryArgs...,
 		).All(&rows)
 		if err != nil {

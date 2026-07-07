@@ -743,6 +743,138 @@ func traversalTest(t *testing.T, m relationtuple.Manager) {
 			assert.Len(t, res, 2)
 		})
 
+		t.Run("case=AllowsDirect=false direct relationship is not checked", func(t *testing.T) {
+			memberNs := strconv.Itoa(rand.Int()) // nolint
+			groupNs := strconv.Itoa(rand.Int())  // nolint
+			obj := uuid.Must(uuid.NewV4())
+			groupObj := uuid.Must(uuid.NewV4())
+
+			checkSubject := &relationtuple.SubjectSet{Namespace: memberNs, Object: uuid.Must(uuid.NewV4()), Relation: ""}
+
+			require.NoError(t, m.WriteRelationTuples(t.Context(),
+				// ns:obj#rel@groupNs:groupObj#member - subjectset reference
+				&relationtuple.RelationTuple{
+					Namespace: nspace,
+					Object:    obj,
+					Relation:  "rel",
+					Subject:   &relationtuple.SubjectSet{Namespace: groupNs, Object: groupObj, Relation: "member"},
+				},
+				// groupNs:groupObj#member@checkSubject
+				&relationtuple.RelationTuple{
+					Namespace: groupNs,
+					Object:    groupObj,
+					Relation:  "member",
+					Subject:   checkSubject,
+				},
+			))
+
+			start := &relationtuple.RelationTuple{Namespace: nspace, Object: obj, Relation: "rel", Subject: checkSubject}
+			res, err := m.TraverseSubjectSetExpansion(t.Context(), start, []relationtuple.SubjectSetType{{Namespace: groupNs, Relation: "member", AllowsDirect: false}})
+			require.NoError(t, err)
+			require.Len(t, res, 1)
+			assert.False(t, res[0].Found)
+		})
+
+		t.Run("case=AllowsDirect gates EXISTS per type", func(t *testing.T) {
+			allowedNs := strconv.Itoa(rand.Int())    // nolint
+			notAllowedNs := strconv.Itoa(rand.Int()) // nolint
+			memberNs := strconv.Itoa(rand.Int())     // nolint
+			obj := uuid.Must(uuid.NewV4())
+			allowedObj := uuid.Must(uuid.NewV4())
+			notAllowedObj := uuid.Must(uuid.NewV4())
+
+			checkSubject := &relationtuple.SubjectSet{Namespace: memberNs, Object: uuid.Must(uuid.NewV4()), Relation: ""}
+
+			require.NoError(t, m.WriteRelationTuples(t.Context(),
+				&relationtuple.RelationTuple{
+					Namespace: nspace, Object: obj, Relation: "rel",
+					Subject: &relationtuple.SubjectSet{Namespace: allowedNs, Object: allowedObj, Relation: "member"},
+				},
+				&relationtuple.RelationTuple{
+					Namespace: nspace, Object: obj, Relation: "rel",
+					Subject: &relationtuple.SubjectSet{Namespace: notAllowedNs, Object: notAllowedObj, Relation: "member"},
+				},
+				&relationtuple.RelationTuple{Namespace: allowedNs, Object: allowedObj, Relation: "member", Subject: checkSubject},
+				&relationtuple.RelationTuple{Namespace: notAllowedNs, Object: notAllowedObj, Relation: "member", Subject: checkSubject},
+			))
+
+			start := &relationtuple.RelationTuple{Namespace: nspace, Object: obj, Relation: "rel", Subject: checkSubject}
+
+			t.Run("non-allowed type returns found=false", func(t *testing.T) {
+				res, err := m.TraverseSubjectSetExpansion(t.Context(), start,
+					[]relationtuple.SubjectSetType{{Namespace: notAllowedNs, Relation: "member", AllowsDirect: false}},
+				)
+				require.NoError(t, err)
+				require.Len(t, res, 1)
+				assert.Equal(t, notAllowedNs, res[0].To.Namespace)
+				assert.False(t, res[0].Found)
+			})
+
+			t.Run("mixed: allowed returns found=true, non-allowed returns found=false", func(t *testing.T) {
+				res, err := m.TraverseSubjectSetExpansion(t.Context(), start, []relationtuple.SubjectSetType{
+					{Namespace: allowedNs, Relation: "member", AllowsDirect: true},
+					{Namespace: notAllowedNs, Relation: "member", AllowsDirect: false},
+				})
+				require.NoError(t, err)
+				// TraverseSubjectSetExpansion can short-circuit if it reads the allowedNs first,
+				// returning only 1 item.
+				require.GreaterOrEqual(t, len(res), 1)
+
+				byNs := make(map[string]*relationtuple.TraversalResult)
+				for _, r := range res {
+					byNs[r.To.Namespace] = r
+				}
+				assert.True(t, byNs[allowedNs].Found)
+			})
+		})
+
+		// Two AllowsDirect types plus one non-direct type make the query gate
+		t.Run("case=multiple AllowsDirect types are checked in one query", func(t *testing.T) {
+			groupANs := strconv.Itoa(rand.Int()) // nolint
+			groupBNs := strconv.Itoa(rand.Int()) // nolint
+			staleNs := strconv.Itoa(rand.Int())  // nolint
+			memberNs := strconv.Itoa(rand.Int()) // nolint
+			obj := uuid.Must(uuid.NewV4())
+			groupAObj := uuid.Must(uuid.NewV4())
+			groupBObj := uuid.Must(uuid.NewV4())
+			staleObj := uuid.Must(uuid.NewV4())
+
+			checkSubject := &relationtuple.SubjectSet{Namespace: memberNs, Object: uuid.Must(uuid.NewV4()), Relation: ""}
+
+			require.NoError(t, m.WriteRelationTuples(t.Context(),
+				&relationtuple.RelationTuple{
+					Namespace: nspace, Object: obj, Relation: "rel",
+					Subject: &relationtuple.SubjectSet{Namespace: groupANs, Object: groupAObj, Relation: "member"},
+				},
+				&relationtuple.RelationTuple{
+					Namespace: nspace, Object: obj, Relation: "rel",
+					Subject: &relationtuple.SubjectSet{Namespace: groupBNs, Object: groupBObj, Relation: "member"},
+				},
+				&relationtuple.RelationTuple{
+					Namespace: nspace, Object: obj, Relation: "rel",
+					Subject: &relationtuple.SubjectSet{Namespace: staleNs, Object: staleObj, Relation: "member"},
+				},
+				// A stale membership under the type that does not allow direct matches.
+				&relationtuple.RelationTuple{Namespace: staleNs, Object: staleObj, Relation: "member", Subject: checkSubject},
+			))
+
+			start := &relationtuple.RelationTuple{Namespace: nspace, Object: obj, Relation: "rel", Subject: checkSubject}
+			types := []relationtuple.SubjectSetType{
+				{Namespace: groupANs, Relation: "member", AllowsDirect: true},
+				{Namespace: groupBNs, Relation: "member", AllowsDirect: true},
+				{Namespace: staleNs, Relation: "member", AllowsDirect: false},
+			}
+
+			// Nothing is found, so the traversal cannot short-circuit and must
+			// return all three pointers with found=false.
+			res, err := m.TraverseSubjectSetExpansion(t.Context(), start, types)
+			require.NoError(t, err)
+			require.Len(t, res, 3)
+			for _, r := range res {
+				assert.False(t, r.Found, "namespace %s must not be found", r.To.Namespace)
+			}
+		})
+
 		t.Run("case=multiple allowedSubjectSets entries each match independently", func(t *testing.T) {
 			docNs := strconv.Itoa(rand.Int())   // nolint
 			groupNs := strconv.Itoa(rand.Int()) // nolint

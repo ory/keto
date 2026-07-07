@@ -26,22 +26,22 @@ func (s IsAllowedStep) Execute(ctx context.Context, req check.CheckRequest, ex c
 		WithField("request", req.Tuple.String()).
 		Trace("check is allowed")
 
-	relation, err := astRelationFor(ctx, ex.Deps(), req.Tuple)
+	nm, err := ex.Deps().Config(ctx).NamespaceManager()
+	if err != nil {
+		return check.Result{Err: err}
+	}
+
+	relation, err := astRelationFor(ctx, nm, req.Tuple)
 	if err != nil {
 		return check.Result{Err: err}
 	}
 
 	hasRewrite := relation != nil && relation.SubjectSetRewrite != nil
 	strictMode := ex.Deps().Config(ctx).StrictMode()
-	// In strict mode, only expand when OPL explicitly declares subject-set types, and
-	// filter expansion to only those declared types.
-	// In non-strict mode, always expand without any OPL filter to preserve backwards
-	// compatibility.
-	subjectSetTypes := subjectSetTypesFor(relation)
-	canHaveSubjectSets := !strictMode
-	if strictMode {
-		canHaveSubjectSets = len(subjectSetTypes) > 0
-	}
+
+	// In strict mode, only run steps that OPL explicitly permits.
+	// In non-strict mode, run all applicable steps for backwards compatibility.
+	canHaveDirect := !strictMode || AllowsDirectMember(relation, req.Tuple.Subject)
 
 	steps := make([]check.PlannedStep, 0, 3)
 
@@ -51,15 +51,31 @@ func (s IsAllowedStep) Execute(ctx context.Context, req check.CheckRequest, ex c
 			Req:  req,
 		})
 	}
-	if (!strictMode || !hasRewrite) && !s.skipDirect {
+
+	if canHaveDirect && !s.skipDirect {
 		steps = append(steps, check.PlannedStep{
 			Step: DirectStep{},
 			Req:  req,
 		})
 	}
-	if canHaveSubjectSets {
+
+	// In strict mode, only expand when OPL explicitly declares subject-set types, and
+	// filter expansion to only those declared types.
+	// In non-strict mode, always expand to preserve backwards compatibility.
+	if strictMode {
+		subjectSetTypes, err := subjectSetTypesFor(ctx, nm, req.Tuple.Subject, relation)
+		if err != nil {
+			return check.Result{Err: err}
+		}
+		if len(subjectSetTypes) > 0 {
+			steps = append(steps, check.PlannedStep{
+				Step: ExpandSubjectStep{SubjectSetTypes: subjectSetTypes},
+				Req:  req,
+			})
+		}
+	} else {
 		steps = append(steps, check.PlannedStep{
-			Step: ExpandSubjectStep{SubjectSetTypes: subjectSetTypes, StrictMode: strictMode},
+			Step: ExpandSubjectStep{},
 			Req:  req,
 		})
 	}

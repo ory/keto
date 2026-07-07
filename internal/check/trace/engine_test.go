@@ -141,7 +141,8 @@ func TestTraceEngine(t *testing.T) {
 			expected: func(t testing.TB) *trace.Node {
 				return checkNode(t, notMember, "File:f1#view@User:u1",
 					unionNode(t, notMember, "File:f1#view@User:u1",
-						multiDirectNode(t, notMember, "File:f1#view@User:u1", []string{"viewers"}),
+						// viewers only declares SubjectSet<Group,"members">, so User:u1 can
+						// never be a direct match, so no direct or multi-direct check runs.
 						checkNode(t, notMember, "File:f1#viewers@User:u1",
 							// expand fires because viewers declares SubjectSet<Group,"members">.
 							// expand found 1 node, which is Group:g1#members, which is not a direct hit → not-member.
