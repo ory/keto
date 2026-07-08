@@ -10,6 +10,48 @@ import (
 	"github.com/ory/keto/ketoapi"
 )
 
+// TupleFactory parses human-readable tuples like "File:x#view@User:u" into
+// internal relation tuples. It adds a randomized suffix to namespaces and maps
+// object/subject IDs to UUIDs unique per factory.
+type TupleFactory struct {
+	suffix string
+	seed   uuid.UUID
+}
+
+func NewTupleFactory() *TupleFactory {
+	seed := uuid.Must(uuid.NewV4())
+	return &TupleFactory{suffix: "_" + seed.String(), seed: seed}
+}
+
+// NS returns the namespace name with the factory's isolation suffix applied.
+func (f *TupleFactory) NS(namespace string) string { return namespace + f.suffix }
+
+// UUID maps an object or subject ID to a UUID unique to this factory.
+func (f *TupleFactory) UUID(id string) uuid.UUID { return uuid.NewV5(f.seed, id) }
+
+func (f *TupleFactory) Tuple(t testing.TB, s string) *relationtuple.RelationTuple {
+	t.Helper()
+	rt := APITupleFromString(t, s)
+	result := &relationtuple.RelationTuple{
+		Namespace: f.NS(rt.Namespace),
+		Object:    f.UUID(rt.Object),
+		Relation:  rt.Relation,
+	}
+	switch {
+	case rt.SubjectID != nil:
+		result.Subject = &relationtuple.SubjectID{ID: f.UUID(*rt.SubjectID)}
+	case rt.SubjectSet != nil:
+		result.Subject = &relationtuple.SubjectSet{
+			Namespace: f.NS(rt.SubjectSet.Namespace),
+			Object:    f.UUID(rt.SubjectSet.Object),
+			Relation:  rt.SubjectSet.Relation,
+		}
+	default:
+		t.Fatalf("tuple %q has no subject", s)
+	}
+	return result
+}
+
 func APITupleFromString(t testing.TB, s string) *ketoapi.RelationTuple {
 	t.Helper()
 	rt, err := (&ketoapi.RelationTuple{}).FromString(s)

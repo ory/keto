@@ -6,8 +6,6 @@ package test
 import (
 	"context"
 	"fmt"
-	"math/rand"
-	"strconv"
 	"testing"
 
 	"github.com/gofrs/uuid"
@@ -16,38 +14,24 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/ory/keto/internal/relationtuple"
-	"github.com/ory/keto/internal/x"
+	"github.com/ory/keto/internal/testhelpers"
 	"github.com/ory/keto/ketoapi"
 )
 
 func ManagerTest(t *testing.T, m relationtuple.Manager) {
 	t.Run("method=Write", func(t *testing.T) {
 		t.Run("case=success", func(t *testing.T) {
-			nspace := strconv.Itoa(rand.Int()) // nolint
-
+			t.Parallel()
+			tf := testhelpers.NewTupleFactory()
 			tuples := []*relationtuple.RelationTuple{
-				{
-					Namespace: nspace,
-					Object:    uuid.Must(uuid.NewV4()),
-					Relation:  "rel",
-					Subject:   &relationtuple.SubjectID{ID: uuid.Must(uuid.NewV4())},
-				},
-				{
-					Namespace: nspace,
-					Object:    uuid.Must(uuid.NewV4()),
-					Relation:  "rel",
-					Subject: &relationtuple.SubjectSet{
-						Namespace: nspace,
-						Object:    uuid.Must(uuid.NewV4()),
-						Relation:  "sub rel",
-					},
-				},
+				tf.Tuple(t, "Obj:o1#rel@s1"),
+				tf.Tuple(t, "Obj:o2#rel@Obj:o3#sub rel"),
 			}
 
 			require.NoError(t, m.WriteRelationTuples(t.Context(), tuples...))
 
 			resp, nextPage, err := m.GetRelationTuples(t.Context(), &relationtuple.RelationQuery{
-				Namespace: new(nspace),
+				Namespace: new(tf.NS("Obj")),
 			})
 			require.NoError(t, err)
 			assert.True(t, nextPage.IsLast())
@@ -57,18 +41,15 @@ func ManagerTest(t *testing.T, m relationtuple.Manager) {
 
 	t.Run("method=Get", func(t *testing.T) {
 		t.Run("case=queries", func(t *testing.T) {
-			nspace := strconv.Itoa(rand.Int()) // nolint
+			t.Parallel()
+			tf := testhelpers.NewTupleFactory()
+			nspace := tf.NS("Obj")
+			obj0 := tf.UUID("o0")
 
+			// Tuple i has object o{i%2}, relation "r {i%4}", and subject s{i}.
 			tuples := make([]*relationtuple.RelationTuple, 10)
-			ids := x.UUIDs(len(tuples))
-
 			for i := range tuples {
-				tuples[i] = &relationtuple.RelationTuple{
-					Namespace: nspace,
-					Object:    ids[i%2],
-					Relation:  fmt.Sprintf("r %d", i%4),
-					Subject:   &relationtuple.SubjectID{ID: ids[i]},
-				}
+				tuples[i] = tf.Tuple(t, fmt.Sprintf("Obj:o%d#r %d@s%d", i%2, i%4, i))
 			}
 
 			require.NoError(t, m.WriteRelationTuples(t.Context(), tuples...))
@@ -86,7 +67,7 @@ func ManagerTest(t *testing.T, m relationtuple.Manager) {
 				{
 					query: &relationtuple.RelationQuery{
 						Namespace: &nspace,
-						Object:    &ids[0],
+						Object:    &obj0,
 					},
 					expected: []*relationtuple.RelationTuple{
 						tuples[0],
@@ -110,7 +91,7 @@ func ManagerTest(t *testing.T, m relationtuple.Manager) {
 				{
 					query: &relationtuple.RelationQuery{
 						Namespace: &nspace,
-						Object:    &ids[0],
+						Object:    &obj0,
 						Relation:  new("r 0"),
 					},
 					expected: []*relationtuple.RelationTuple{
@@ -122,7 +103,7 @@ func ManagerTest(t *testing.T, m relationtuple.Manager) {
 				{
 					query: &relationtuple.RelationQuery{
 						Namespace: &nspace,
-						Subject:   &relationtuple.SubjectID{ID: ids[0]},
+						Subject:   tuples[0].Subject,
 					},
 					expected: []*relationtuple.RelationTuple{
 						tuples[0],
@@ -131,8 +112,8 @@ func ManagerTest(t *testing.T, m relationtuple.Manager) {
 				{
 					query: &relationtuple.RelationQuery{
 						Namespace: &nspace,
-						Object:    &ids[0],
-						Subject:   &relationtuple.SubjectID{ID: ids[0]},
+						Object:    &obj0,
+						Subject:   tuples[0].Subject,
 					},
 					expected: []*relationtuple.RelationTuple{
 						tuples[0],
@@ -142,7 +123,7 @@ func ManagerTest(t *testing.T, m relationtuple.Manager) {
 					query: &relationtuple.RelationQuery{
 						Namespace: &nspace,
 						Relation:  new("r 0"),
-						Subject:   &relationtuple.SubjectID{ID: ids[0]},
+						Subject:   tuples[0].Subject,
 					},
 					expected: []*relationtuple.RelationTuple{
 						tuples[0],
@@ -151,9 +132,9 @@ func ManagerTest(t *testing.T, m relationtuple.Manager) {
 				{
 					query: &relationtuple.RelationQuery{
 						Namespace: &nspace,
-						Object:    &ids[0],
+						Object:    &obj0,
 						Relation:  new("r 0"),
-						Subject:   &relationtuple.SubjectID{ID: ids[0]},
+						Subject:   tuples[0].Subject,
 					},
 					expected: []*relationtuple.RelationTuple{
 						tuples[0],
@@ -170,17 +151,12 @@ func ManagerTest(t *testing.T, m relationtuple.Manager) {
 		})
 
 		t.Run("case=pagination", func(t *testing.T) {
-			nspace := strconv.Itoa(rand.Int()) // nolint
+			t.Parallel()
+			tf := testhelpers.NewTupleFactory()
 
 			tuples := make([]*relationtuple.RelationTuple, 20)
-			oID := uuid.Must(uuid.NewV4())
 			for i := range tuples {
-				tuples[i] = &relationtuple.RelationTuple{
-					Namespace: nspace,
-					Object:    oID,
-					Relation:  "r",
-					Subject:   &relationtuple.SubjectID{ID: uuid.Must(uuid.NewV4())},
-				}
+				tuples[i] = tf.Tuple(t, fmt.Sprintf("Obj:o#r@s%d", i))
 			}
 
 			require.NoError(t, m.WriteRelationTuples(t.Context(), tuples...))
@@ -192,15 +168,15 @@ func ManagerTest(t *testing.T, m relationtuple.Manager) {
 				{
 					name: "search=ns,obj,rel",
 					searchCriteria: &relationtuple.RelationQuery{
-						Namespace: new(nspace),
-						Object:    &oID,
+						Namespace: new(tf.NS("Obj")),
+						Object:    new(tf.UUID("o")),
 						Relation:  new("r"),
 					},
 				},
 				{
 					name: "search=ns",
 					searchCriteria: &relationtuple.RelationQuery{
-						Namespace: new(nspace),
+						Namespace: new(tf.NS("Obj")),
 						Object:    nil,
 						Relation:  nil,
 					},
@@ -238,23 +214,24 @@ func ManagerTest(t *testing.T, m relationtuple.Manager) {
 		// Comparing paginated results against a non-paginated fetch,
 		// asserting order and correctness with different page sizes
 		t.Run("case=pagination returns all rows without skips in correct order", func(t *testing.T) {
-			ns := "ns_" + strconv.Itoa(rand.Int()) // nolint:gosec
-			oID := uuid.Must(uuid.NewV4())
+			t.Parallel()
+			tf := testhelpers.NewTupleFactory()
 
-			// 11 tuples manually, mixing relationtuple.SubjectID and relationtuple.SubjectSet.
-			duplicate := &relationtuple.RelationTuple{Namespace: ns, Object: oID, Relation: "r", Subject: &relationtuple.SubjectSet{Namespace: "teams", Object: uuid.Must(uuid.NewV4()), Relation: "editor"}}
+			// 11 tuples, mixing SubjectID and SubjectSet subjects, including one
+			// exact duplicate row.
+			duplicate := tf.Tuple(t, "Obj:o#r@teams:t1#editor")
 			tuples := []*relationtuple.RelationTuple{
-				{Namespace: ns, Object: oID, Relation: "r", Subject: &relationtuple.SubjectSet{Namespace: "groups", Object: uuid.Must(uuid.NewV4()), Relation: "member"}},
-				{Namespace: ns, Object: oID, Relation: "r", Subject: &relationtuple.SubjectID{ID: uuid.Must(uuid.NewV4())}},
-				{Namespace: ns, Object: oID, Relation: "r", Subject: &relationtuple.SubjectID{ID: uuid.Must(uuid.NewV4())}},
-				{Namespace: ns, Object: oID, Relation: "r", Subject: &relationtuple.SubjectSet{Namespace: "teams", Object: uuid.Must(uuid.NewV4()), Relation: "viewer"}},
-				{Namespace: ns, Object: oID, Relation: "r", Subject: &relationtuple.SubjectSet{Namespace: "groups", Object: uuid.Must(uuid.NewV4()), Relation: "owner"}},
-				{Namespace: ns, Object: oID, Relation: "r", Subject: &relationtuple.SubjectID{ID: uuid.Must(uuid.NewV4())}},
-				{Namespace: ns, Object: oID, Relation: "r", Subject: &relationtuple.SubjectSet{Namespace: "orgs", Object: uuid.Must(uuid.NewV4()), Relation: "admin"}},
-				{Namespace: ns, Object: oID, Relation: "r", Subject: &relationtuple.SubjectID{ID: uuid.Must(uuid.NewV4())}},
+				tf.Tuple(t, "Obj:o#r@groups:g1#member"),
+				tf.Tuple(t, "Obj:o#r@s1"),
+				tf.Tuple(t, "Obj:o#r@s2"),
+				tf.Tuple(t, "Obj:o#r@teams:t2#viewer"),
+				tf.Tuple(t, "Obj:o#r@groups:g2#owner"),
+				tf.Tuple(t, "Obj:o#r@s3"),
+				tf.Tuple(t, "Obj:o#r@orgs:org1#admin"),
+				tf.Tuple(t, "Obj:o#r@s4"),
 				duplicate,
 				duplicate,
-				{Namespace: ns, Object: oID, Relation: "r", Subject: &relationtuple.SubjectID{ID: uuid.Must(uuid.NewV4())}},
+				tf.Tuple(t, "Obj:o#r@s5"),
 			}
 
 			require.NoError(t, m.WriteRelationTuples(t.Context(), tuples...))
@@ -267,22 +244,22 @@ func ManagerTest(t *testing.T, m relationtuple.Manager) {
 				{
 					name: "search=ns",
 					searchCriteria: &relationtuple.RelationQuery{
-						Namespace: new(ns),
+						Namespace: new(tf.NS("Obj")),
 					},
 					pageSizes: []int{1, 2, 50},
 				},
 				{
 					name: "search=obj",
 					searchCriteria: &relationtuple.RelationQuery{
-						Object: new(oID),
+						Object: new(tf.UUID("o")),
 					},
 					pageSizes: []int{1, 2, 50},
 				},
 				{
 					name: "search=ns,obj,rel",
 					searchCriteria: &relationtuple.RelationQuery{
-						Namespace: new(ns),
-						Object:    new(oID),
+						Namespace: new(tf.NS("Obj")),
+						Object:    new(tf.UUID("o")),
 						Relation:  new("r"),
 					},
 					pageSizes: []int{1, 2, 50},
@@ -325,6 +302,7 @@ func ManagerTest(t *testing.T, m relationtuple.Manager) {
 		})
 
 		t.Run("case=empty list", func(t *testing.T) {
+			t.Parallel()
 			nspace := t.Name()
 
 			res, nextPage, err := m.GetRelationTuples(t.Context(), &relationtuple.RelationQuery{
@@ -339,33 +317,18 @@ func ManagerTest(t *testing.T, m relationtuple.Manager) {
 
 	t.Run("method=Delete", func(t *testing.T) {
 		t.Run("case=deletes tuple", func(t *testing.T) {
-			nspace := strconv.Itoa(rand.Int()) // nolint
-			oID := uuid.Must(uuid.NewV4())
-			sID := uuid.Must(uuid.NewV4())
+			t.Parallel()
+			tf := testhelpers.NewTupleFactory()
 
 			for _, rt := range []*relationtuple.RelationTuple{
-				{
-					Namespace: nspace,
-					Object:    oID,
-					Relation:  "r to delete",
-					Subject:   &relationtuple.SubjectID{ID: sID},
-				},
-				{
-					Namespace: nspace,
-					Object:    oID,
-					Relation:  "r to delete",
-					Subject: &relationtuple.SubjectSet{
-						Namespace: nspace,
-						Object:    uuid.Must(uuid.NewV4()),
-						Relation:  "r2",
-					},
-				},
+				tf.Tuple(t, "Obj:o#r to delete@s"),
+				tf.Tuple(t, "Obj:o#r to delete@Obj:o2#r2"),
 			} {
 				t.Run(fmt.Sprintf("subject_type=%T", rt.Subject), func(t *testing.T) {
 					require.NoError(t, m.WriteRelationTuples(t.Context(), rt))
 
 					res, _, err := m.GetRelationTuples(t.Context(), &relationtuple.RelationQuery{
-						Namespace: new(nspace),
+						Namespace: new(tf.NS("Obj")),
 					})
 					require.NoError(t, err)
 					assert.Equal(t, []*relationtuple.RelationTuple{rt}, res)
@@ -373,7 +336,7 @@ func ManagerTest(t *testing.T, m relationtuple.Manager) {
 					require.NoError(t, m.DeleteRelationTuples(t.Context(), rt))
 
 					res, _, err = m.GetRelationTuples(t.Context(), &relationtuple.RelationQuery{
-						Namespace: new(nspace),
+						Namespace: new(tf.NS("Obj")),
 					})
 					require.NoError(t, err)
 					assert.Len(t, res, 0)
@@ -382,27 +345,17 @@ func ManagerTest(t *testing.T, m relationtuple.Manager) {
 		})
 
 		t.Run("case=deletes only one tuple", func(t *testing.T) {
-			nspace := strconv.Itoa(rand.Int()) // nolint
+			t.Parallel()
+			tf := testhelpers.NewTupleFactory()
 
 			rs := make([]*relationtuple.RelationTuple, 4)
-			oIDs, sIDs := make([]uuid.UUID, len(rs)), make([]uuid.UUID, len(rs))
-			for i := range oIDs {
-				oIDs[i] = uuid.Must(uuid.NewV4())
-				sIDs[i] = uuid.Must(uuid.NewV4())
-			}
-
 			for i := range rs {
-				rs[i] = &relationtuple.RelationTuple{
-					Namespace: nspace,
-					Object:    oIDs[i],
-					Relation:  "r" + strconv.Itoa(i),
-					Subject:   &relationtuple.SubjectID{ID: sIDs[i]},
-				}
+				rs[i] = tf.Tuple(t, fmt.Sprintf("Obj:o%d#r%d@s%d", i, i, i))
 			}
 			require.NoError(t, m.WriteRelationTuples(t.Context(), rs...))
 
 			res, _, err := m.GetRelationTuples(t.Context(), &relationtuple.RelationQuery{
-				Namespace: &nspace,
+				Namespace: new(tf.NS("Obj")),
 			})
 			require.NoError(t, err)
 			for _, rt := range rs {
@@ -412,35 +365,26 @@ func ManagerTest(t *testing.T, m relationtuple.Manager) {
 			require.NoError(t, m.DeleteRelationTuples(t.Context(), rs[0], rs[2]))
 
 			res, _, err = m.GetRelationTuples(t.Context(), &relationtuple.RelationQuery{
-				Namespace: &nspace,
+				Namespace: new(tf.NS("Obj")),
 			})
 			require.NoError(t, err)
 			assert.ElementsMatch(t, []*relationtuple.RelationTuple{rs[1], rs[3]}, res)
 		})
 
 		t.Run("case=tuple and subject namespace differ", func(t *testing.T) {
-			n0, n1 := t.Name()[:60], t.Name()[:60]+"1"
-			oID := uuid.Must(uuid.NewV4())
+			t.Parallel()
+			tf := testhelpers.NewTupleFactory()
 
-			rt := &relationtuple.RelationTuple{
-				Namespace: n0,
-				Object:    oID,
-				Relation:  "r",
-				Subject: &relationtuple.SubjectSet{
-					Namespace: n1,
-					Object:    oID,
-					Relation:  "r",
-				},
-			}
+			rt := tf.Tuple(t, "N0:o#r@N1:o#r")
 			require.NoError(t, m.WriteRelationTuples(t.Context(), rt))
 
-			actual, _, err := m.GetRelationTuples(t.Context(), &relationtuple.RelationQuery{Namespace: &n0})
+			actual, _, err := m.GetRelationTuples(t.Context(), &relationtuple.RelationQuery{Namespace: new(tf.NS("N0"))})
 			require.NoError(t, err)
 			assert.Equal(t, []*relationtuple.RelationTuple{rt}, actual)
 
 			require.NoError(t, m.DeleteRelationTuples(t.Context(), rt))
 
-			actual, _, err = m.GetRelationTuples(t.Context(), &relationtuple.RelationQuery{Namespace: &n0})
+			actual, _, err = m.GetRelationTuples(t.Context(), &relationtuple.RelationQuery{Namespace: new(tf.NS("N0"))})
 			require.NoError(t, err)
 			assert.Len(t, actual, 0)
 		})
@@ -448,27 +392,17 @@ func ManagerTest(t *testing.T, m relationtuple.Manager) {
 
 	t.Run("method=Transact", func(t *testing.T) {
 		t.Run("case=success", func(t *testing.T) {
-			nspace := strconv.Itoa(rand.Int()) // nolint
+			t.Parallel()
+			tf := testhelpers.NewTupleFactory()
 
 			rs := make([]*relationtuple.RelationTuple, 4)
-			oIDs, sIDs := make([]uuid.UUID, len(rs)), make([]uuid.UUID, len(rs))
-			for i := range oIDs {
-				oIDs[i] = uuid.Must(uuid.NewV4())
-				sIDs[i] = uuid.Must(uuid.NewV4())
-			}
-
 			for i := range rs {
-				rs[i] = &relationtuple.RelationTuple{
-					Namespace: nspace,
-					Object:    oIDs[i],
-					Relation:  "r" + strconv.Itoa(i),
-					Subject:   &relationtuple.SubjectID{ID: sIDs[i]},
-				}
+				rs[i] = tf.Tuple(t, fmt.Sprintf("Obj:o%d#r%d@s%d", i, i, i))
 			}
 			require.NoError(t, m.WriteRelationTuples(t.Context(), rs[0], rs[1]))
 
 			res, _, err := m.GetRelationTuples(t.Context(), &relationtuple.RelationQuery{
-				Namespace: &nspace,
+				Namespace: new(tf.NS("Obj")),
 			})
 			require.NoError(t, err)
 			assert.ElementsMatch(t, []*relationtuple.RelationTuple{rs[0], rs[1]}, res)
@@ -476,7 +410,7 @@ func ManagerTest(t *testing.T, m relationtuple.Manager) {
 			require.NoError(t, m.TransactRelationTuples(t.Context(), []*relationtuple.RelationTuple{rs[2], rs[3]}, []*relationtuple.RelationTuple{rs[0]}))
 
 			res, _, err = m.GetRelationTuples(t.Context(), &relationtuple.RelationQuery{
-				Namespace: &nspace,
+				Namespace: new(tf.NS("Obj")),
 			})
 			require.NoError(t, err)
 
@@ -486,32 +420,23 @@ func ManagerTest(t *testing.T, m relationtuple.Manager) {
 		})
 
 		t.Run("case=err rolls back all", func(t *testing.T) {
-			nspace := strconv.Itoa(rand.Int()) // nolint
+			t.Parallel()
+			tf := testhelpers.NewTupleFactory()
 
-			rs := make([]*relationtuple.RelationTuple, 2)
-			oIDs, sIDs := make([]uuid.UUID, len(rs)), make([]uuid.UUID, len(rs))
-			for i := range oIDs {
-				oIDs[i] = uuid.Must(uuid.NewV4())
-				sIDs[i] = uuid.Must(uuid.NewV4())
-			}
-			for i := range rs {
-				rs[i] = &relationtuple.RelationTuple{
-					Namespace: nspace,
-					Object:    oIDs[i],
-					Relation:  "r" + strconv.Itoa(i),
-					Subject:   &relationtuple.SubjectID{ID: sIDs[i]},
-				}
+			rs := []*relationtuple.RelationTuple{
+				tf.Tuple(t, "Obj:o0#r0@s0"),
+				tf.Tuple(t, "Obj:o1#r1@s1"),
 			}
 			invalidRt := &relationtuple.RelationTuple{
-				Namespace: nspace,
-				Object:    oIDs[0],
+				Namespace: tf.NS("Obj"),
+				Object:    tf.UUID("o0"),
 				Relation:  "r0",
 				Subject:   nil, // subject is not allowed to be nil
 			}
 			require.NoError(t, m.WriteRelationTuples(t.Context(), rs[0]))
 
 			res, _, err := m.GetRelationTuples(t.Context(), &relationtuple.RelationQuery{
-				Namespace: &nspace,
+				Namespace: new(tf.NS("Obj")),
 			})
 			require.NoError(t, err)
 			assert.Equal(t, []*relationtuple.RelationTuple{rs[0]}, res)
@@ -521,7 +446,7 @@ func ManagerTest(t *testing.T, m relationtuple.Manager) {
 			})
 
 			res, _, err = m.GetRelationTuples(t.Context(), &relationtuple.RelationQuery{
-				Namespace: &nspace,
+				Namespace: new(tf.NS("Obj")),
 			})
 			require.NoError(t, err)
 			assert.Equal(t, []*relationtuple.RelationTuple{rs[0]}, res)
@@ -531,7 +456,7 @@ func ManagerTest(t *testing.T, m relationtuple.Manager) {
 			})
 
 			res, _, err = m.GetRelationTuples(t.Context(), &relationtuple.RelationQuery{
-				Namespace: &nspace,
+				Namespace: new(tf.NS("Obj")),
 			})
 			require.NoError(t, err)
 			assert.Equal(t, []*relationtuple.RelationTuple{rs[0]}, res)
@@ -542,38 +467,30 @@ func ManagerTest(t *testing.T, m relationtuple.Manager) {
 }
 
 func traversalTest(t *testing.T, m relationtuple.Manager) {
-	nspace := strconv.Itoa(rand.Int()) // nolint
-
 	t.Run("method=FindTupleWithRelations", func(t *testing.T) {
 		t.Run("case=nil relations returns nil", func(t *testing.T) {
+			t.Parallel()
 			result, err := m.FindTupleWithRelations(t.Context(), &relationtuple.RelationTuple{}, nil)
 			require.NoError(t, err)
 			assert.Nil(t, result)
 		})
 
 		t.Run("case=matching relation returns tuple", func(t *testing.T) {
-			tuple := &relationtuple.RelationTuple{
-				Namespace: nspace,
-				Object:    uuid.Must(uuid.NewV4()),
-				Relation:  "viewer",
-				Subject:   &relationtuple.SubjectSet{Namespace: "User", Object: uuid.Must(uuid.NewV4())},
-			}
+			t.Parallel()
+			tf := testhelpers.NewTupleFactory()
+			tuple := tf.Tuple(t, "Obj:o#viewer@User:u")
 			require.NoError(t, m.WriteRelationTuples(t.Context(), tuple))
 
-			cpy := *tuple
-			cpy.Relation = "editor"
-			result, err := m.FindTupleWithRelations(t.Context(), &cpy, []string{"viewer"})
+			// The query tuple's own relation is ignored; only the relations list matters.
+			result, err := m.FindTupleWithRelations(t.Context(), tf.Tuple(t, "Obj:o#editor@User:u"), []string{"viewer"})
 			require.NoError(t, err)
 			assert.Equal(t, tuple, result)
 		})
 
 		t.Run("case=non-matching relation returns nil", func(t *testing.T) {
-			tuple := &relationtuple.RelationTuple{
-				Namespace: nspace,
-				Object:    uuid.Must(uuid.NewV4()),
-				Relation:  "viewer",
-				Subject:   &relationtuple.SubjectID{ID: uuid.Must(uuid.NewV4())},
-			}
+			t.Parallel()
+			tf := testhelpers.NewTupleFactory()
+			tuple := tf.Tuple(t, "Obj:o#viewer@u")
 			require.NoError(t, m.WriteRelationTuples(t.Context(), tuple))
 
 			result, err := m.FindTupleWithRelations(t.Context(), tuple, []string{"editor"})
@@ -582,12 +499,9 @@ func traversalTest(t *testing.T, m relationtuple.Manager) {
 		})
 
 		t.Run("case=multiple relations with one matching returns tuple", func(t *testing.T) {
-			tuple := &relationtuple.RelationTuple{
-				Namespace: nspace,
-				Object:    uuid.Must(uuid.NewV4()),
-				Relation:  "viewer",
-				Subject:   &relationtuple.SubjectID{ID: uuid.Must(uuid.NewV4())},
-			}
+			t.Parallel()
+			tf := testhelpers.NewTupleFactory()
+			tuple := tf.Tuple(t, "Obj:o#viewer@u")
 			require.NoError(t, m.WriteRelationTuples(t.Context(), tuple))
 
 			result, err := m.FindTupleWithRelations(t.Context(), tuple, []string{"editor", "viewer", "owner"})
@@ -598,271 +512,149 @@ func traversalTest(t *testing.T, m relationtuple.Manager) {
 
 	t.Run("method=TraverseSubjectSetExpansion", func(t *testing.T) {
 		t.Run("case=no subject set tuples returns empty", func(t *testing.T) {
-			start := &relationtuple.RelationTuple{
-				Namespace: nspace,
-				Object:    uuid.Must(uuid.NewV4()),
-				Relation:  "rel",
-				Subject:   &relationtuple.SubjectID{ID: uuid.Must(uuid.NewV4())},
-			}
-
-			res, err := m.TraverseSubjectSetExpansion(t.Context(), start, nil)
+			t.Parallel()
+			tf := testhelpers.NewTupleFactory()
+			res, err := m.TraverseSubjectSetExpansion(t.Context(), tf.Tuple(t, "Obj:o#rel@u"), nil)
 			require.NoError(t, err)
 			assert.Empty(t, res)
 		})
 
 		t.Run("case=subject found in subject set", func(t *testing.T) {
-			groupNs := strconv.Itoa(rand.Int()) // nolint
-			obj := uuid.Must(uuid.NewV4())
-			groupObj := uuid.Must(uuid.NewV4())
-			userID := uuid.Must(uuid.NewV4())
-
-			// ns:obj#rel@(groupNs:groupObj#member)
+			t.Parallel()
+			tf := testhelpers.NewTupleFactory()
+			membership := tf.Tuple(t, "Group:g#member@u")
 			require.NoError(t, m.WriteRelationTuples(t.Context(),
-				&relationtuple.RelationTuple{
-					Namespace: nspace,
-					Object:    obj,
-					Relation:  "rel",
-					Subject:   &relationtuple.SubjectSet{Namespace: groupNs, Object: groupObj, Relation: "member"},
-				},
-				// groupNs:groupObj#member@userID
-				&relationtuple.RelationTuple{
-					Namespace: groupNs,
-					Object:    groupObj,
-					Relation:  "member",
-					Subject:   &relationtuple.SubjectID{ID: userID},
-				},
+				tf.Tuple(t, "Obj:o#rel@Group:g#member"),
+				membership,
 			))
 
-			start := &relationtuple.RelationTuple{
-				Namespace: nspace,
-				Object:    obj,
-				Relation:  "rel",
-				Subject:   &relationtuple.SubjectID{ID: userID},
-			}
+			start := tf.Tuple(t, "Obj:o#rel@u")
 			res, err := m.TraverseSubjectSetExpansion(t.Context(), start, nil)
 			require.NoError(t, err)
 			require.Len(t, res, 1)
 			assert.True(t, res[0].Found)
 			assert.Equal(t, relationtuple.TraversalSubjectSetExpand, res[0].Via)
 			assert.Equal(t, start, res[0].From)
-			assert.Equal(t, groupNs, res[0].To.Namespace)
-			assert.Equal(t, groupObj, res[0].To.Object)
-			assert.Equal(t, "member", res[0].To.Relation)
+			assert.Equal(t, membership.Namespace, res[0].To.Namespace)
+			assert.Equal(t, membership.Object, res[0].To.Object)
+			assert.Equal(t, membership.Relation, res[0].To.Relation)
 		})
 
 		t.Run("case=subject not found in subject set", func(t *testing.T) {
-			groupNs := strconv.Itoa(rand.Int()) // nolint
-			obj := uuid.Must(uuid.NewV4())
-			groupObj := uuid.Must(uuid.NewV4())
-
-			// ns:obj#rel@(groupNs:groupObj#member), but no membership tuple
+			t.Parallel()
+			tf := testhelpers.NewTupleFactory()
+			// Subject-set pointer without a membership tuple behind it.
 			require.NoError(t, m.WriteRelationTuples(t.Context(),
-				&relationtuple.RelationTuple{
-					Namespace: nspace,
-					Object:    obj,
-					Relation:  "rel",
-					Subject:   &relationtuple.SubjectSet{Namespace: groupNs, Object: groupObj, Relation: "member"},
-				},
+				tf.Tuple(t, "Obj:o#rel@Group:g#member"),
 			))
 
-			start := &relationtuple.RelationTuple{
-				Namespace: nspace,
-				Object:    obj,
-				Relation:  "rel",
-				Subject:   &relationtuple.SubjectID{ID: uuid.Must(uuid.NewV4())},
-			}
-			res, err := m.TraverseSubjectSetExpansion(t.Context(), start, nil)
+			res, err := m.TraverseSubjectSetExpansion(t.Context(), tf.Tuple(t, "Obj:o#rel@u"), nil)
 			require.NoError(t, err)
 			require.Len(t, res, 1)
 			assert.False(t, res[0].Found)
 		})
 
 		t.Run("case=allowedSubjectSets filters out non-matching types", func(t *testing.T) {
-			docNs := strconv.Itoa(rand.Int())   // nolint
-			groupNs := strconv.Itoa(rand.Int()) // nolint
-			obj := uuid.Must(uuid.NewV4())
-
-			// ns:obj#rel@(docNs:docObj#member) and ns:obj#rel@(groupNs:groupObj#admin)
+			t.Parallel()
+			tf := testhelpers.NewTupleFactory()
 			require.NoError(t, m.WriteRelationTuples(t.Context(),
-				&relationtuple.RelationTuple{
-					Namespace: nspace,
-					Object:    obj,
-					Relation:  "rel",
-					Subject:   &relationtuple.SubjectSet{Namespace: docNs, Object: uuid.Must(uuid.NewV4()), Relation: "member"},
-				},
-				&relationtuple.RelationTuple{
-					Namespace: nspace,
-					Object:    obj,
-					Relation:  "rel",
-					Subject:   &relationtuple.SubjectSet{Namespace: groupNs, Object: uuid.Must(uuid.NewV4()), Relation: "admin"},
-				},
+				tf.Tuple(t, "Obj:o#rel@Doc:d#member"),
+				tf.Tuple(t, "Obj:o#rel@Group:g#admin"),
 			))
 
-			start := &relationtuple.RelationTuple{
-				Namespace: nspace,
-				Object:    obj,
-				Relation:  "rel",
-				Subject:   &relationtuple.SubjectID{ID: uuid.Must(uuid.NewV4())},
-			}
-			res, err := m.TraverseSubjectSetExpansion(t.Context(), start, []relationtuple.SubjectSetType{{Namespace: docNs, Relation: "member"}})
+			res, err := m.TraverseSubjectSetExpansion(t.Context(), tf.Tuple(t, "Obj:o#rel@u"), []relationtuple.SubjectSetType{{Namespace: tf.NS("Doc"), Relation: "member"}})
 			require.NoError(t, err)
 			require.Len(t, res, 1)
-			assert.Equal(t, docNs, res[0].To.Namespace)
+			assert.Equal(t, tf.NS("Doc"), res[0].To.Namespace)
 			assert.Equal(t, "member", res[0].To.Relation)
 		})
 
 		t.Run("case=nil allowedSubjectSets returns all types", func(t *testing.T) {
-			docNs := strconv.Itoa(rand.Int())   // nolint
-			groupNs := strconv.Itoa(rand.Int()) // nolint
-			obj := uuid.Must(uuid.NewV4())
-
-			// ns:obj#rel@(docNs:docObj#member) and ns:obj#rel@(groupNs:groupObj#admin)
+			t.Parallel()
+			tf := testhelpers.NewTupleFactory()
 			require.NoError(t, m.WriteRelationTuples(t.Context(),
-				&relationtuple.RelationTuple{
-					Namespace: nspace,
-					Object:    obj,
-					Relation:  "rel",
-					Subject:   &relationtuple.SubjectSet{Namespace: docNs, Object: uuid.Must(uuid.NewV4()), Relation: "member"},
-				},
-				&relationtuple.RelationTuple{
-					Namespace: nspace,
-					Object:    obj,
-					Relation:  "rel",
-					Subject:   &relationtuple.SubjectSet{Namespace: groupNs, Object: uuid.Must(uuid.NewV4()), Relation: "admin"},
-				},
+				tf.Tuple(t, "Obj:o#rel@Doc:d#member"),
+				tf.Tuple(t, "Obj:o#rel@Group:g#admin"),
 			))
 
-			start := &relationtuple.RelationTuple{
-				Namespace: nspace,
-				Object:    obj,
-				Relation:  "rel",
-				Subject:   &relationtuple.SubjectID{ID: uuid.Must(uuid.NewV4())},
-			}
-			res, err := m.TraverseSubjectSetExpansion(t.Context(), start, nil)
+			res, err := m.TraverseSubjectSetExpansion(t.Context(), tf.Tuple(t, "Obj:o#rel@u"), nil)
 			require.NoError(t, err)
 			assert.Len(t, res, 2)
 		})
 
 		t.Run("case=AllowsDirect=false direct relationship is not checked", func(t *testing.T) {
-			memberNs := strconv.Itoa(rand.Int()) // nolint
-			groupNs := strconv.Itoa(rand.Int())  // nolint
-			obj := uuid.Must(uuid.NewV4())
-			groupObj := uuid.Must(uuid.NewV4())
-
-			checkSubject := &relationtuple.SubjectSet{Namespace: memberNs, Object: uuid.Must(uuid.NewV4()), Relation: ""}
-
+			t.Parallel()
+			tf := testhelpers.NewTupleFactory()
 			require.NoError(t, m.WriteRelationTuples(t.Context(),
-				// ns:obj#rel@groupNs:groupObj#member - subjectset reference
-				&relationtuple.RelationTuple{
-					Namespace: nspace,
-					Object:    obj,
-					Relation:  "rel",
-					Subject:   &relationtuple.SubjectSet{Namespace: groupNs, Object: groupObj, Relation: "member"},
-				},
-				// groupNs:groupObj#member@checkSubject
-				&relationtuple.RelationTuple{
-					Namespace: groupNs,
-					Object:    groupObj,
-					Relation:  "member",
-					Subject:   checkSubject,
-				},
+				tf.Tuple(t, "Obj:o#rel@Group:g#member"),
+				tf.Tuple(t, "Group:g#member@User:u"),
 			))
 
-			start := &relationtuple.RelationTuple{Namespace: nspace, Object: obj, Relation: "rel", Subject: checkSubject}
-			res, err := m.TraverseSubjectSetExpansion(t.Context(), start, []relationtuple.SubjectSetType{{Namespace: groupNs, Relation: "member", AllowsDirect: false}})
+			start := tf.Tuple(t, "Obj:o#rel@User:u")
+			res, err := m.TraverseSubjectSetExpansion(t.Context(), start, []relationtuple.SubjectSetType{{Namespace: tf.NS("Group"), Relation: "member", AllowsDirect: false}})
 			require.NoError(t, err)
 			require.Len(t, res, 1)
 			assert.False(t, res[0].Found)
 		})
 
 		t.Run("case=AllowsDirect gates EXISTS per type", func(t *testing.T) {
-			allowedNs := strconv.Itoa(rand.Int())    // nolint
-			notAllowedNs := strconv.Itoa(rand.Int()) // nolint
-			memberNs := strconv.Itoa(rand.Int())     // nolint
-			obj := uuid.Must(uuid.NewV4())
-			allowedObj := uuid.Must(uuid.NewV4())
-			notAllowedObj := uuid.Must(uuid.NewV4())
-
-			checkSubject := &relationtuple.SubjectSet{Namespace: memberNs, Object: uuid.Must(uuid.NewV4()), Relation: ""}
-
+			t.Parallel()
+			tf := testhelpers.NewTupleFactory()
 			require.NoError(t, m.WriteRelationTuples(t.Context(),
-				&relationtuple.RelationTuple{
-					Namespace: nspace, Object: obj, Relation: "rel",
-					Subject: &relationtuple.SubjectSet{Namespace: allowedNs, Object: allowedObj, Relation: "member"},
-				},
-				&relationtuple.RelationTuple{
-					Namespace: nspace, Object: obj, Relation: "rel",
-					Subject: &relationtuple.SubjectSet{Namespace: notAllowedNs, Object: notAllowedObj, Relation: "member"},
-				},
-				&relationtuple.RelationTuple{Namespace: allowedNs, Object: allowedObj, Relation: "member", Subject: checkSubject},
-				&relationtuple.RelationTuple{Namespace: notAllowedNs, Object: notAllowedObj, Relation: "member", Subject: checkSubject},
+				tf.Tuple(t, "Obj:o#rel@Allowed:a#member"),
+				tf.Tuple(t, "Obj:o#rel@NotAllowed:n#member"),
+				tf.Tuple(t, "Allowed:a#member@User:u"),
+				tf.Tuple(t, "NotAllowed:n#member@User:u"),
 			))
 
-			start := &relationtuple.RelationTuple{Namespace: nspace, Object: obj, Relation: "rel", Subject: checkSubject}
+			start := tf.Tuple(t, "Obj:o#rel@User:u")
 
 			t.Run("non-allowed type returns found=false", func(t *testing.T) {
+				t.Parallel()
 				res, err := m.TraverseSubjectSetExpansion(t.Context(), start,
-					[]relationtuple.SubjectSetType{{Namespace: notAllowedNs, Relation: "member", AllowsDirect: false}},
+					[]relationtuple.SubjectSetType{{Namespace: tf.NS("NotAllowed"), Relation: "member", AllowsDirect: false}},
 				)
 				require.NoError(t, err)
 				require.Len(t, res, 1)
-				assert.Equal(t, notAllowedNs, res[0].To.Namespace)
+				assert.Equal(t, tf.NS("NotAllowed"), res[0].To.Namespace)
 				assert.False(t, res[0].Found)
 			})
 
 			t.Run("mixed: allowed returns found=true, non-allowed returns found=false", func(t *testing.T) {
+				t.Parallel()
 				res, err := m.TraverseSubjectSetExpansion(t.Context(), start, []relationtuple.SubjectSetType{
-					{Namespace: allowedNs, Relation: "member", AllowsDirect: true},
-					{Namespace: notAllowedNs, Relation: "member", AllowsDirect: false},
+					{Namespace: tf.NS("Allowed"), Relation: "member", AllowsDirect: true},
+					{Namespace: tf.NS("NotAllowed"), Relation: "member", AllowsDirect: false},
 				})
 				require.NoError(t, err)
-				// TraverseSubjectSetExpansion can short-circuit if it reads the allowedNs first,
-				// returning only 1 item.
+				// TraverseSubjectSetExpansion can short-circuit if it reads the allowed
+				// namespace first, returning only 1 item.
 				require.GreaterOrEqual(t, len(res), 1)
 
 				byNs := make(map[string]*relationtuple.TraversalResult)
 				for _, r := range res {
 					byNs[r.To.Namespace] = r
 				}
-				assert.True(t, byNs[allowedNs].Found)
+				assert.True(t, byNs[tf.NS("Allowed")].Found)
 			})
 		})
 
-		// Two AllowsDirect types plus one non-direct type make the query gate
 		t.Run("case=multiple AllowsDirect types are checked in one query", func(t *testing.T) {
-			groupANs := strconv.Itoa(rand.Int()) // nolint
-			groupBNs := strconv.Itoa(rand.Int()) // nolint
-			staleNs := strconv.Itoa(rand.Int())  // nolint
-			memberNs := strconv.Itoa(rand.Int()) // nolint
-			obj := uuid.Must(uuid.NewV4())
-			groupAObj := uuid.Must(uuid.NewV4())
-			groupBObj := uuid.Must(uuid.NewV4())
-			staleObj := uuid.Must(uuid.NewV4())
-
-			checkSubject := &relationtuple.SubjectSet{Namespace: memberNs, Object: uuid.Must(uuid.NewV4()), Relation: ""}
-
+			t.Parallel()
+			tf := testhelpers.NewTupleFactory()
 			require.NoError(t, m.WriteRelationTuples(t.Context(),
-				&relationtuple.RelationTuple{
-					Namespace: nspace, Object: obj, Relation: "rel",
-					Subject: &relationtuple.SubjectSet{Namespace: groupANs, Object: groupAObj, Relation: "member"},
-				},
-				&relationtuple.RelationTuple{
-					Namespace: nspace, Object: obj, Relation: "rel",
-					Subject: &relationtuple.SubjectSet{Namespace: groupBNs, Object: groupBObj, Relation: "member"},
-				},
-				&relationtuple.RelationTuple{
-					Namespace: nspace, Object: obj, Relation: "rel",
-					Subject: &relationtuple.SubjectSet{Namespace: staleNs, Object: staleObj, Relation: "member"},
-				},
+				tf.Tuple(t, "Obj:o#rel@GroupA:a#member"),
+				tf.Tuple(t, "Obj:o#rel@GroupB:b#member"),
+				tf.Tuple(t, "Obj:o#rel@Stale:s#member"),
 				// A stale membership under the type that does not allow direct matches.
-				&relationtuple.RelationTuple{Namespace: staleNs, Object: staleObj, Relation: "member", Subject: checkSubject},
+				tf.Tuple(t, "Stale:s#member@User:u"),
 			))
 
-			start := &relationtuple.RelationTuple{Namespace: nspace, Object: obj, Relation: "rel", Subject: checkSubject}
+			start := tf.Tuple(t, "Obj:o#rel@User:u")
 			types := []relationtuple.SubjectSetType{
-				{Namespace: groupANs, Relation: "member", AllowsDirect: true},
-				{Namespace: groupBNs, Relation: "member", AllowsDirect: true},
-				{Namespace: staleNs, Relation: "member", AllowsDirect: false},
+				{Namespace: tf.NS("GroupA"), Relation: "member", AllowsDirect: true},
+				{Namespace: tf.NS("GroupB"), Relation: "member", AllowsDirect: true},
+				{Namespace: tf.NS("Stale"), Relation: "member", AllowsDirect: false},
 			}
 
 			// Nothing is found, so the traversal cannot short-circuit and must
@@ -876,42 +668,18 @@ func traversalTest(t *testing.T, m relationtuple.Manager) {
 		})
 
 		t.Run("case=multiple allowedSubjectSets entries each match independently", func(t *testing.T) {
-			docNs := strconv.Itoa(rand.Int())   // nolint
-			groupNs := strconv.Itoa(rand.Int()) // nolint
-			obj := uuid.Must(uuid.NewV4())
-
-			// ns:obj#rel@(docNs:docObj#member), ns:obj#rel@(groupNs:groupObj#admin), and
-			// ns:obj#rel@(groupNs:otherObj#viewer) which is not in the allowed list
+			t.Parallel()
+			tf := testhelpers.NewTupleFactory()
 			require.NoError(t, m.WriteRelationTuples(t.Context(),
-				&relationtuple.RelationTuple{
-					Namespace: nspace,
-					Object:    obj,
-					Relation:  "rel",
-					Subject:   &relationtuple.SubjectSet{Namespace: docNs, Object: uuid.Must(uuid.NewV4()), Relation: "member"},
-				},
-				&relationtuple.RelationTuple{
-					Namespace: nspace,
-					Object:    obj,
-					Relation:  "rel",
-					Subject:   &relationtuple.SubjectSet{Namespace: groupNs, Object: uuid.Must(uuid.NewV4()), Relation: "admin"},
-				},
-				&relationtuple.RelationTuple{
-					Namespace: nspace,
-					Object:    obj,
-					Relation:  "rel",
-					Subject:   &relationtuple.SubjectSet{Namespace: groupNs, Object: uuid.Must(uuid.NewV4()), Relation: "viewer"},
-				},
+				tf.Tuple(t, "Obj:o#rel@Doc:d#member"),
+				tf.Tuple(t, "Obj:o#rel@Group:g#admin"),
+				// Not in the allowed list below.
+				tf.Tuple(t, "Obj:o#rel@Group:g2#viewer"),
 			))
 
-			start := &relationtuple.RelationTuple{
-				Namespace: nspace,
-				Object:    obj,
-				Relation:  "rel",
-				Subject:   &relationtuple.SubjectID{ID: uuid.Must(uuid.NewV4())},
-			}
-			res, err := m.TraverseSubjectSetExpansion(t.Context(), start, []relationtuple.SubjectSetType{
-				{Namespace: docNs, Relation: "member"},
-				{Namespace: groupNs, Relation: "admin"},
+			res, err := m.TraverseSubjectSetExpansion(t.Context(), tf.Tuple(t, "Obj:o#rel@u"), []relationtuple.SubjectSetType{
+				{Namespace: tf.NS("Doc"), Relation: "member"},
+				{Namespace: tf.NS("Group"), Relation: "admin"},
 			})
 			require.NoError(t, err)
 			assert.Len(t, res, 2)
