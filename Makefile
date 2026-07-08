@@ -85,6 +85,10 @@ build:
 .PHONY: buf-gen
 buf-gen: node_modules
 	go tool buf generate proto
+	# The gen/go module has its own go.mod, so license scanners resolve its
+	# license at that module root. buf generate does not emit a LICENSE, so copy
+	# ours in to keep the module covered after every regeneration.
+	cp LICENSE gen/go/LICENSE
 	make format
 	@echo "All code was generated successfully!"
 
