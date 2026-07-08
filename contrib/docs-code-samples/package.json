@@ -8,5 +8,10 @@
     "@grpc/grpc-js": "1.14.4",
     "@ory/keto-grpc-client": "0.13.0-alpha.0",
     "google-protobuf": "3.21.2"
+  },
+  "overrides": {
+    "@ory/keto-grpc-client": {
+      "@grpc/grpc-js": "1.9.16"
+    }
   }
 }
