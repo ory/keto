@@ -88,7 +88,6 @@ export enum RelationTupleDelta_Action {
 
   /**
    * Insertion of a new RelationTuple.
-   * It is ignored if already existing.
    *
    * @generated from enum value: ACTION_INSERT = 1;
    */

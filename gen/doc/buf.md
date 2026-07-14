@@ -608,7 +608,7 @@ The response of a WriteService.TransactRelationTuples rpc.
 | Name               | Number | Description                                                                                                         |
 | ------------------ | ------ | ------------------------------------------------------------------------------------------------------------------- |
 | ACTION_UNSPECIFIED | 0      | Unspecified.<br/>The `TransactRelationTuples` RPC ignores this<br/>RelationTupleDelta if an action was unspecified. |
-| ACTION_INSERT      | 1      | Insertion of a new RelationTuple.<br/>It is ignored if already existing.                                            |
+| ACTION_INSERT      | 1      | Insertion of a new RelationTuple.                                                                                   |
 | ACTION_DELETE      | 2      | Deletion of the RelationTuple.<br/>It is ignored if it does not exist.                                              |
 
 <!-- end enums -->

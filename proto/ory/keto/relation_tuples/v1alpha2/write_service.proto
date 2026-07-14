@@ -30,7 +30,6 @@ message RelationTupleDelta {
     ACTION_UNSPECIFIED = 0;
 
     // Insertion of a new RelationTuple.
-    // It is ignored if already existing.
     ACTION_INSERT = 1;
 
     // Deletion of the RelationTuple.

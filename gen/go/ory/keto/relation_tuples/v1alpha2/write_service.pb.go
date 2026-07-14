@@ -32,7 +32,6 @@ const (
 	// RelationTupleDelta if an action was unspecified.
 	RelationTupleDelta_ACTION_UNSPECIFIED RelationTupleDelta_Action = 0
 	// Insertion of a new RelationTuple.
-	// It is ignored if already existing.
 	RelationTupleDelta_ACTION_INSERT RelationTupleDelta_Action = 1
 	// Deletion of the RelationTuple.
 	// It is ignored if it does not exist.
