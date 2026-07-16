@@ -267,7 +267,7 @@ func (r *RegistryDefault) ExpandEngine() *expand.Engine {
 
 func (r *RegistryDefault) Checker() check.Checker {
 	if r.ck == nil {
-		r.ck = step.NewExecutor(r)
+		r.ck = step.NewExecutor(r, step.CallLimitMiddleware())
 	}
 	return r.ck
 }
