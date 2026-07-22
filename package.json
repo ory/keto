@@ -22,7 +22,7 @@
     "@ory/keto-namespace-types": "file:contrib/namespace-type-lib",
     "doctoc": "2.4.0",
     "license-checker": "25.0.1",
-    "prettier": "3.8.2",
+    "prettier": "3.8.4",
     "prettier-plugin-packagejson": "3.0.2"
   },
   "overrides": {
