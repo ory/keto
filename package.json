@@ -33,7 +33,7 @@
     "grpc_tools_node_protoc_ts": {
       "handlebars": "4.7.9"
     },
-    "shell-quote": "1.8.4",
+    "shell-quote": "1.9.0",
     "@nestjs/core": "11.1.19"
   }
 }
