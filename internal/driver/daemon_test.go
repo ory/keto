@@ -69,15 +69,23 @@ func TestScrapingEndpoint(t *testing.T) {
 	require.NoError(t, err)
 	require.Len(t, resp.RelationTuples, 0)
 
-	respx, err := http.Get(fmt.Sprintf("http://127.0.0.1:%s/relation-tuples", readPort))
+	// A dedicated transport keeps httptest.Server.Close in parallel tests from
+	// breaking these requests via http.DefaultTransport.CloseIdleConnections.
+	transport := http.DefaultTransport.(*http.Transport).Clone()
+	t.Cleanup(transport.CloseIdleConnections)
+	hc := &http.Client{Transport: transport}
+
+	respx, err := hc.Get(fmt.Sprintf("http://127.0.0.1:%s/relation-tuples", readPort))
 	require.NoError(t, err)
+	t.Cleanup(func() { _ = respx.Body.Close() })
 	require.EqualValues(t, http.StatusOK, respx.StatusCode)
 	body, err := io.ReadAll(respx.Body)
 	require.NoError(t, err)
 	require.Contains(t, string(body), `"relation_tuples":[]`)
 
-	promresp, err := http.Get(fmt.Sprintf("http://127.0.0.1:%s%s", metricsPort, prometheus.MetricsPrometheusPath))
+	promresp, err := hc.Get(fmt.Sprintf("http://127.0.0.1:%s%s", metricsPort, prometheus.MetricsPrometheusPath))
 	require.NoError(t, err)
+	t.Cleanup(func() { _ = promresp.Body.Close() })
 	require.EqualValues(t, http.StatusOK, promresp.StatusCode)
 	promrespBody, err := io.ReadAll(promresp.Body)
 	require.NoError(t, err)
