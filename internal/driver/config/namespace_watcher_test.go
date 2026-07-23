@@ -10,9 +10,11 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/ghodss/yaml"
 	"github.com/ory/x/logrusx"
+	"github.com/ory/x/watcherx"
 	"github.com/pelletier/go-toml"
 	"github.com/sirupsen/logrus"
 	"github.com/sirupsen/logrus/hooks/test"
@@ -197,4 +199,52 @@ func TestNamespaceProvider(t *testing.T) {
 		assert.True(t, nw.ShouldReload("bar"))
 		assert.True(t, nw.ShouldReload([]*namespace.Namespace{}))
 	})
+}
+
+type noopEventHandler struct{}
+
+func (noopEventHandler) handleRemove(*watcherx.RemoveEvent) {}
+func (noopEventHandler) handleChange(*watcherx.ChangeEvent) {}
+func (noopEventHandler) handleError(*watcherx.ErrorEvent)   {}
+
+func TestStartEventHandlerDoesNotCloseInitialDoneTwice(t *testing.T) {
+	ctx, cancel := context.WithCancel(t.Context())
+	t.Cleanup(cancel)
+
+	eventCh := make(watcherx.EventChannel)
+	done := make(chan int, 1)
+	initialEventsProcessed := make(chan struct{})
+	handlerReturned := make(chan any, 1)
+
+	go func() {
+		defer func() {
+			handlerReturned <- recover()
+		}()
+
+		startEventHandler(ctx, eventCh, noopEventHandler{}, done, initialEventsProcessed, logrusx.New("", ""))
+	}()
+
+	done <- 0
+	select {
+	case <-initialEventsProcessed:
+	case <-time.After(time.Second):
+		t.Fatal("timed out waiting for initial events to be processed")
+	}
+
+	close(done)
+	select {
+	case recovered := <-handlerReturned:
+		require.Nil(t, recovered)
+		t.Fatal("event handler returned before context cancellation")
+	case <-time.After(100 * time.Millisecond):
+	}
+
+	cancel()
+
+	select {
+	case recovered := <-handlerReturned:
+		require.Nil(t, recovered)
+	case <-time.After(time.Second):
+		t.Fatal("timed out waiting for event handler to stop")
+	}
 }

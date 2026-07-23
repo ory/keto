@@ -141,14 +141,19 @@ func startEventHandler(ctx context.Context,
 	initialEventsProcessed chan<- struct{},
 	log *logrusx.Logger) {
 
-	initalDone := false
+	initialDone := false
 	for {
 		select {
 		// because we use an unbuffered chan we can be sure that at least all
 		// initial events are handled
 		case <-done:
-			initalDone = true
+			initialDone = true
 			close(initialEventsProcessed)
+			// Disable this case after it fires once. watcherx closes done when
+			// the watcher shuts down (e.g. directoryWatcher on ctx cancel); a
+			// closed channel is always ready, so leaving done set would re-enter
+			// this branch and close(initialEventsProcessed) a second time (panic).
+			done = nil
 
 		case <-ctx.Done():
 			return
@@ -158,7 +163,7 @@ func startEventHandler(ctx context.Context,
 				return
 			}
 
-			if initalDone {
+			if initialDone {
 				log.
 					WithField("file", e.Source()).
 					WithField("event_type", fmt.Sprintf("%T", e)).
