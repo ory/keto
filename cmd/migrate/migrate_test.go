@@ -95,14 +95,24 @@ func TestMigrate(t *testing.T) {
 
 				t.Run("case=status blocks until all are applied", func(t *testing.T) {
 					cmd := *cmd
-					ctx, cancel := context.WithTimeout(t.Context(), 100*time.Millisecond)
+					ctx, cancel := context.WithTimeout(t.Context(), 5*time.Second)
 					defer cancel()
 					cmd.Ctx = ctx
 
-					stdOut, stdErr, err := cmd.Exec(nil, "status", "--block")
+					stdErr := &bytes.Buffer{}
+					stdOut := &cmdx.CallbackWriter{
+						Callbacks: map[string]func([]byte) error{
+							"Waiting for migrations to finish...": func([]byte) error {
+								cancel()
+								return nil
+							},
+						},
+					}
+
+					err := cmd.ExecBackground(nil, stdOut, stdErr, "status", "--block").Wait()
 					require.ErrorIs(t, err, cmdx.ErrNoPrintButFail)
-					assert.Contains(t, stdOut, "Waiting for migrations to finish...")
-					assert.Contains(t, stdErr, "Context was canceled, exiting...", stdOut)
+					assert.Contains(t, stdOut.String(), "Waiting for migrations to finish...")
+					assert.Contains(t, stdErr.String(), "Context was canceled, exiting...", stdOut.String())
 				})
 
 				t.Run("case=aborts on no", func(t *testing.T) {
