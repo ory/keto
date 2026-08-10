@@ -16,7 +16,7 @@
     "trailingComma": "all"
   },
   "devDependencies": {
-    "@bufbuild/protoc-gen-es": "2.11.0",
+    "@bufbuild/protoc-gen-es": "2.12.0",
     "@connectrpc/protoc-gen-connect-es": "1.7.0",
     "@openapitools/openapi-generator-cli": "2.26.0",
     "@ory/keto-namespace-types": "file:contrib/namespace-type-lib",
@@ -26,7 +26,7 @@
     "prettier-plugin-packagejson": "3.0.2"
   },
   "overrides": {
-    "@bufbuild/protoc-gen-es": "2.11.0",
+    "@bufbuild/protoc-gen-es": "2.12.0",
     "axios": ">=1.15.2",
     "glob": ">=11.1.0",
     "tar": ">=7.5.10",
