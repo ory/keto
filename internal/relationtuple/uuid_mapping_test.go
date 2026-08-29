@@ -177,6 +177,20 @@ func TestMapper(t *testing.T) {
 				})
 			})
 		}
+
+		t.Run("unknown namespace is allowed for delete", func(t *testing.T) {
+			runWithMappers(t, reg, func(t *testing.T, m *relationtuple.Mapper) {
+				query := &ketoapi.RelationQuery{
+					Namespace: new("unknown"),
+					Object:    new("object"),
+				}
+				mapped, err := m.FromDeleteQuery(ctx, query)
+				require.NoError(t, err)
+				require.NotNil(t, mapped.Namespace)
+				assert.Equal(t, "unknown", *mapped.Namespace)
+				require.NotNil(t, mapped.Object)
+			})
+		})
 	})
 
 	t.Run("item=subject set", func(t *testing.T) {

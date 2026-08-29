@@ -382,6 +382,28 @@ func runCases(c client, m *namespaceTestManager) func(*testing.T) {
 			m.add(t, n)
 		})
 
+		t.Run("case=deletes leftover tuples after namespace is removed", func(t *testing.T) {
+			n := &namespace.Namespace{Name: t.Name()}
+			m.add(t, n)
+
+			tuple := &ketoapi.RelationTuple{
+				Namespace: n.Name,
+				Object:    "o",
+				Relation:  "rel",
+				SubjectID: new("s"),
+			}
+			c.createTuple(t, tuple)
+
+			m.remove(t, n.Name)
+
+			c.deleteAllTuples(t, &ketoapi.RelationQuery{Namespace: &n.Name})
+
+			// Re-add the namespace so the list API can confirm the leftovers are gone.
+			m.add(t, n)
+			resp := c.queryTuple(t, &ketoapi.RelationQuery{Namespace: &n.Name})
+			assert.Len(t, resp.RelationTuples, 0)
+		})
+
 		t.Run("case=OPL syntax check", func(t *testing.T) {
 			parseErrors := c.oplCheckSyntax(t, []byte("/* unclosed comment"))
 			require.Len(t, parseErrors, 1)
