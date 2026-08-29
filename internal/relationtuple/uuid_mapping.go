@@ -6,10 +6,13 @@ package relationtuple
 import (
 	"context"
 
+	"github.com/ory/herodot"
 	"github.com/ory/x/otelx"
+	"github.com/pkg/errors"
 	"go.opentelemetry.io/otel/trace"
 
 	"github.com/ory/keto/internal/driver/config"
+	"github.com/ory/keto/internal/namespace"
 	"github.com/ory/keto/ketoapi"
 
 	"github.com/gofrs/uuid"
@@ -65,7 +68,29 @@ func (c *success) apply() {
 func (m *Mapper) FromQuery(ctx context.Context, apiQuery *ketoapi.RelationQuery) (res *RelationQuery, err error) {
 	ctx, span := trace.SpanFromContext(ctx).TracerProvider().Tracer("keto/internal/relationtuple").Start(ctx, "Mapper.FromQuery")
 	defer otelx.End(span, &err)
+	return m.fromQuery(ctx, apiQuery, false)
+}
 
+// FromDeleteQuery maps a delete query. Unlike FromQuery, a missing namespace
+// definition is not an error so leftover relationships can still be removed.
+func (m *Mapper) FromDeleteQuery(ctx context.Context, apiQuery *ketoapi.RelationQuery) (res *RelationQuery, err error) {
+	ctx, span := trace.SpanFromContext(ctx).TracerProvider().Tracer("keto/internal/relationtuple").Start(ctx, "Mapper.FromDeleteQuery")
+	defer otelx.End(span, &err)
+	return m.fromQuery(ctx, apiQuery, true)
+}
+
+func resolveNamespaceName(ctx context.Context, nm namespace.Manager, name string, allowUnknown bool) (string, error) {
+	n, err := nm.GetNamespaceByName(ctx, name)
+	if err != nil {
+		if allowUnknown && errors.Is(err, herodot.ErrNotFound()) {
+			return name, nil
+		}
+		return "", err
+	}
+	return n.Name, nil
+}
+
+func (m *Mapper) fromQuery(ctx context.Context, apiQuery *ketoapi.RelationQuery, allowUnknownNamespace bool) (res *RelationQuery, err error) {
 	onSuccess := newSuccess(&err)
 	defer onSuccess.apply()
 
@@ -81,11 +106,11 @@ func (m *Mapper) FromQuery(ctx context.Context, apiQuery *ketoapi.RelationQuery)
 	}
 
 	if apiQuery.Namespace != nil {
-		n, err := nm.GetNamespaceByName(ctx, *apiQuery.Namespace)
+		name, err := resolveNamespaceName(ctx, nm, *apiQuery.Namespace, allowUnknownNamespace)
 		if err != nil {
 			return nil, err
 		}
-		res.Namespace = new(n.Name)
+		res.Namespace = new(name)
 	}
 	if apiQuery.Object != nil {
 		s = append(s, *apiQuery.Object)
@@ -105,14 +130,14 @@ func (m *Mapper) FromQuery(ctx context.Context, apiQuery *ketoapi.RelationQuery)
 	}
 	if apiQuery.SubjectSet != nil {
 		s = append(s, apiQuery.SubjectSet.Object)
-		n, err := nm.GetNamespaceByName(ctx, apiQuery.SubjectSet.Namespace)
+		name, err := resolveNamespaceName(ctx, nm, apiQuery.SubjectSet.Namespace, allowUnknownNamespace)
 		if err != nil {
 			return nil, err
 		}
 		onSuccess.do(func(i int) func() {
 			return func() {
 				res.Subject = &SubjectSet{
-					Namespace: n.Name,
+					Namespace: name,
 					Object:    u[i],
 					Relation:  apiQuery.SubjectSet.Relation,
 				}
