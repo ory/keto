@@ -170,6 +170,37 @@ func TestWriteHandlers(t *testing.T) {
 			assert.Equal(t, []*relationtuple.RelationTuple{}, actualRTs)
 		})
 
+		t.Run("case=deletes leftover tuples after namespace is removed", func(t *testing.T) {
+			nspace := addNamespace(t)
+
+			rt := &ketoapi.RelationTuple{
+				Namespace: nspace.Name,
+				Object:    "leftover obj",
+				Relation:  "leftover rel",
+				SubjectID: new("leftover subj"),
+			}
+			testhelpers.MapAndInsertTuples(t, reg, rt)
+
+			remaining := make([]*namespace.Namespace, 0, len(nspaces))
+			for _, n := range nspaces {
+				if n.Name != nspace.Name {
+					remaining = append(remaining, n)
+				}
+			}
+			nspaces = remaining
+			require.NoError(t, reg.Config(t.Context()).Set(config.KeyNamespaces, nspaces))
+
+			req, err := http.NewRequest(http.MethodDelete, ts.URL+relationtuple.WriteRouteBase+"?"+rt.ToURLQuery().Encode(), nil)
+			require.NoError(t, err)
+			resp, err := ts.Client().Do(req) //nolint:gosec // Test code with controlled URL.
+			require.NoError(t, err)
+			assert.Equal(t, http.StatusNoContent, resp.StatusCode)
+
+			actualRTs, _, err := reg.RelationTupleManager().GetRelationTuples(t.Context(), &relationtuple.RelationQuery{Namespace: &nspace.Name}, keysetpagination.WithSize(10))
+			require.NoError(t, err)
+			assert.Equal(t, []*relationtuple.RelationTuple{}, actualRTs)
+		})
+
 		t.Run("case=deletes multiple tuples", func(t *testing.T) {
 			nspace := addNamespace(t)
 
