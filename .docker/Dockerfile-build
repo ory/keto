@@ -14,6 +14,8 @@ COPY proto/go.mod proto/go.mod
 COPY proto/go.sum proto/go.sum
 COPY oryx/go.mod oryx/go.mod
 COPY oryx/go.sum oryx/go.sum
+COPY gen/go/go.mod gen/go/go.mod
+COPY gen/go/go.sum gen/go/go.sum
 
 ENV CGO_ENABLED=1
 
